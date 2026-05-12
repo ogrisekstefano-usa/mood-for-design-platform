@@ -36,17 +36,83 @@ function detectInitialLocale() {
   return DEFAULT_LOCALE;
 }
 
-const applyTheme = (theme) => {
-  if (!theme) return;
+// Lookup of loaded Google Fonts URLs to avoid duplicate <link> tags
+const _loadedFonts = new Set();
+
+const loadGoogleFont = (familyString) => {
+  if (!familyString) return;
+  // Extract first family name from CSS font stack
+  const match = familyString.match(/^['"]?([^'",]+)['"]?/);
+  if (!match) return;
+  const family = match[1].trim();
+  // Skip system fonts and generic families
+  const systemFonts = ['Georgia', 'Arial', 'Helvetica', 'system-ui', 'sans-serif', 'serif', 'monospace', 'ui-monospace'];
+  if (systemFonts.includes(family)) return;
+  const key = family.replace(/ /g, '+');
+  if (_loadedFonts.has(key)) return;
+  _loadedFonts.add(key);
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `https://fonts.googleapis.com/css2?family=${key}:wght@300;400;500;600;700&display=swap`;
+  document.head.appendChild(link);
+};
+
+export const applyTheme = (effective) => {
+  if (!effective) return;
   const root = document.documentElement;
-  if (theme.primary_color) root.style.setProperty('--bp-primary', theme.primary_color);
-  if (theme.secondary_color) root.style.setProperty('--bp-accent', theme.secondary_color);
-  if (theme.font_heading && theme.font_heading !== 'serif') {
-    root.style.setProperty('--bp-font-heading', theme.font_heading);
-  }
-  if (theme.font_body && theme.font_body !== 'sans-serif') {
-    root.style.setProperty('--bp-font-body', theme.font_body);
-  }
+  const p = effective.palette || {};
+  const t = effective.typography || {};
+  const s = effective.shape || {};
+  const e = effective.elevation || {};
+  const m = effective.motion || {};
+  const sp = effective.spacing || {};
+
+  // Palette
+  if (p.primary) root.style.setProperty('--bp-primary', p.primary);
+  if (p.accent)  root.style.setProperty('--bp-accent',  p.accent);
+  if (p.background) root.style.setProperty('--bp-bg', p.background);
+  if (p.surface_1) root.style.setProperty('--bp-surface-1', p.surface_1);
+  if (p.surface_2) root.style.setProperty('--bp-surface-2', p.surface_2);
+  if (p.surface_3) root.style.setProperty('--bp-surface-3', p.surface_3);
+  if (p.border) root.style.setProperty('--bp-border', p.border);
+  if (p.border_strong) root.style.setProperty('--bp-border-strong', p.border_strong);
+  if (p.text_primary)   root.style.setProperty('--bp-text-primary', p.text_primary);
+  if (p.text_secondary) root.style.setProperty('--bp-text-secondary', p.text_secondary);
+  if (p.text_muted) root.style.setProperty('--bp-text-muted', p.text_muted);
+  if (p.text_subtle) root.style.setProperty('--bp-text-subtle', p.text_subtle);
+
+  // Typography
+  if (t.font_heading) root.style.setProperty('--bp-font-heading', t.font_heading);
+  if (t.font_body) root.style.setProperty('--bp-font-body', t.font_body);
+  if (t.font_mono) root.style.setProperty('--bp-font-mono', t.font_mono);
+  if (t.font_size_base) root.style.setProperty('--bp-font-size-base', `${t.font_size_base}px`);
+  if (t.line_height_base) root.style.setProperty('--bp-line-height', t.line_height_base);
+  if (t.letter_spacing_heading) root.style.setProperty('--bp-tracking-heading', t.letter_spacing_heading);
+
+  // Load fonts
+  loadGoogleFont(t.font_heading);
+  loadGoogleFont(t.font_body);
+  loadGoogleFont(t.font_mono);
+
+  // Shape
+  Object.entries(s).forEach(([k, v]) => root.style.setProperty(`--bp-${k.replace(/_/g, '-')}`, v));
+
+  // Elevation
+  if (e.sm) root.style.setProperty('--bp-shadow-sm', e.sm);
+  if (e.md) root.style.setProperty('--bp-shadow-md', e.md);
+  if (e.lg) root.style.setProperty('--bp-shadow-lg', e.lg);
+
+  // Motion
+  if (m.duration_fast) root.style.setProperty('--bp-duration-fast', m.duration_fast);
+  if (m.duration_normal) root.style.setProperty('--bp-duration-normal', m.duration_normal);
+  if (m.duration_slow) root.style.setProperty('--bp-duration-slow', m.duration_slow);
+  if (m.ease) root.style.setProperty('--bp-ease', m.ease);
+
+  // Spacing unit + density
+  if (sp.unit) root.style.setProperty('--bp-spacing-unit', `${sp.unit}px`);
+  const densityClass = { compact: 'density-compact', comfortable: 'density-comfortable', spacious: 'density-spacious' };
+  document.body.classList.remove('density-compact', 'density-comfortable', 'density-spacious');
+  document.body.classList.add(densityClass[sp.scale] || 'density-comfortable');
 };
 
 const interpolate = (template, vars) => {

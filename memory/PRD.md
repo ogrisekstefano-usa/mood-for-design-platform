@@ -75,8 +75,47 @@ Multi-tenant SaaS platform per interior designer e architetti, costruita come Bl
   - `/admin/audit` audit log
 - **Impersonation banner** automatico nel DashboardLayout quando session attivo
 
-### Tested End-to-End
-✅ Login demo@moodfordesign.com (ora super_admin)
+### ✅ Phase B — Tenant Branding Studio (DONE — 12 Mag 2026)
+- **Theme Engine** (`core/theme_engine.py`) — design system runtime tokens:
+  - Palette (12 tokens: primary, accent, background, surface 1/2/3, borders, text 4 levels, success/warning/danger)
+  - Typography (font_heading, font_body, font_mono, font_size_base, line_height, letter_spacing)
+  - Shape (radius_xs through xl + pill)
+  - Spacing (compact / comfortable / spacious + base unit)
+  - Elevation (sm/md/lg shadows configurabili)
+  - Motion (3 preset: subtle/standard/expressive + durations + ease)
+  - Components (button_style: sharp/pill/ghost · card_style · ui_density)
+  - Brand assets (logo_dark, logo_light, logo_mobile, favicon, og_image)
+- **Backend endpoints** (`/api/settings/*`):
+  - `GET /theme` → `{default, overrides, effective}`
+  - `PUT /theme` deep-merge update
+  - `POST /theme/reset`
+  - `GET /fonts/catalog` — 16 curated Google Fonts (Cormorant, Playfair, Bodoni Moda, Tenor Sans, Manrope, Syne, Italiana, JetBrains Mono…)
+  - `GET/POST/DELETE /domains` (multi-domain support, type: platform_subdomain | custom_domain, verification_status)
+  - `POST /assets/register` — hook post-upload Supabase Storage, registra in media_library + theme.assets, mirror su tenants.logo_url
+  - Brand color: **#26F5C9** (MOOD teal) ora default
+- **Frontend Brand Studio** (`/settings/brand`)
+  - Linear/Stripe-inspired luxury panel split 440px editor / fluid live preview
+  - 5 tabs: Palette · Typography · Shape · Motion · Assets
+  - 6 preset palette (MOOD Teal · Editorial Gold · Pure Noir · Rose Quartz · Deep Forest · Midnight Sea) one-click
+  - Color picker nativo + hex input per ogni token
+  - Google Fonts loader runtime (link tag injection on-demand)
+  - Slider px-based per radius / font size / line height
+  - **Live preview pane** responsive (Monitor/Tablet/Mobile viewport switcher)
+  - Asset uploader Supabase Storage (signed URL → PUT → register)
+  - Save bar dirty-state + Reset to default
+- **Theme application runtime**: ~25 CSS variables `--bp-*` settate da BlueprintContext + density classes `body.density-{compact|comfortable|spacious}`
+- **Brand component** (`Brand.jsx`) ora usa logo da `theme.assets.logo_dark|light` con fallback tipografico
+- **Settings hub** (`/settings`) — 4 tile (Brand Studio · Domains · Locales · Team)
+- **DomainsPage** (`/settings/domains`) — add/delete con validazione regex, badge verification status
+- **Resilienza**: middleware FastAPI retry trasparente su httpx.RemoteProtocolError (Supabase pooler hiccups)
+
+### Tested End-to-End ✅
+- Login → tema teal #26F5C9 caricato runtime
+- Brand Studio carica tutti i tab
+- Preset palette applicato → preview live aggiorna istantaneamente colors+shapes+fonts
+- Viewport switcher desktop/tablet/mobile cambia preview width animata
+- Save → teal applicato globalmente in sidebar + active states + buttons
+- Domains: add custom_domain → riga con badge pending
 ✅ Sidebar tenant mostra "Super Admin" entry
 ✅ Navigate to /admin → control-center UI
 ✅ Platform overview KPI cross-tenant
@@ -122,16 +161,11 @@ Multi-tenant SaaS platform per interior designer e architetti, costruita come Bl
 - Phase 1 (Tenant MVP) — auth, CRUD, dashboard, i18n, theme
 - Phase A (Super Admin Foundation) — permissions, modules, flags, impersonation
 
-### 🔜 Phase B — Tenant Branding Studio
-- Tenant Admin Brand Studio (logo light/dark, favicon, palette, typography Google Fonts, corner radius, button styles, spacing, UI density)
-- Live preview con tema applicato
-- Domain/subdomain management (`tenant_domains`)
-- Animations & motion presets
-
-### Phase C — Homepage / Public Site Builder
+### 🔜 Phase C — Homepage / Public Site Builder
 - Visual section builder (Hero, CTA, Services, Gallery, Testimonials, Featured Projects, Stats, A&D, Magazine, Final CTA)
 - Drag reorder, hide/show, multi-language content, publish flow
-- Tenant homepage live su `/{tenant-slug}`
+- Tenant homepage live su `/{tenant-slug}` o custom domain
+- **Public Tenant Showcase** opt-in (enterprise) — `/showcase/{tenant-slug}` directory pubblica per SEO
 
 ### Phase D — Form Builder + Design Request Settings
 - Multi-step form builder con file upload

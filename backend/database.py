@@ -21,8 +21,11 @@ def get_admin_client():
     if not (SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY):
         return None
     from supabase import create_client
+    from supabase.client import ClientOptions
     try:
-        client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+        # Longer timeout to mitigate transient pooler hiccups
+        opts = ClientOptions(postgrest_client_timeout=30, schema='public')
+        client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, options=opts)
         logger.info("✅ Supabase admin client ready")
         return client
     except Exception as e:

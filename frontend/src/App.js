@@ -18,6 +18,8 @@ const MoodboardsPage = lazy(() => import('./pages/moodboards/MoodboardsPage'));
 const InspirationsPage = lazy(() => import('./pages/inspirations/InspirationsPage'));
 const InsightsPage = lazy(() => import('./pages/insights/InsightsPage'));
 const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'));
+const BrandStudioPage = lazy(() => import('./pages/settings/BrandStudioPage'));
+const DomainsPage = lazy(() => import('./pages/settings/DomainsPage'));
 const LeadFormPage = lazy(() => import('./pages/public/LeadFormPage'));
 
 // Admin
@@ -84,6 +86,8 @@ function App() {
                   <Route path="/inspirations" element={<InspirationsPage />} />
                   <Route path="/insights" element={<InsightsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
+                  <Route path="/settings/brand" element={<BrandStudioPage />} />
+                  <Route path="/settings/domains" element={<DomainsPage />} />
                 </Route>
 
                 <Route element={<SuperAdminRoute><AdminLayout /></SuperAdminRoute>}>

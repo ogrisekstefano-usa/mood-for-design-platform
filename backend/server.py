@@ -3,10 +3,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import os
+import time
 import logging
 from datetime import datetime, timezone
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+import httpx
 
 from routers import auth, leads, projects, proposals, moodboards, inspirations, insights, settings, storage, blueprint, superadmin
 
@@ -23,6 +26,21 @@ else:
     origins = [o.strip() for o in cors_origins_env.split(',')]
     app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True,
                        allow_methods=["*"], allow_headers=["*"])
+
+
+@app.middleware("http")
+async def transient_error_retry(request: Request, call_next):
+    """Transparently retry once on transient Supabase HTTP/2 disconnects."""
+    for attempt in range(2):
+        try:
+            return await call_next(request)
+        except (httpx.RemoteProtocolError, httpx.ReadError, httpx.ConnectError) as e:
+            if attempt == 0:
+                logger.warning(f"Transient {type(e).__name__} on {request.url.path}, retrying once")
+                time.sleep(0.2)
+                continue
+            logger.error(f"Permanent failure on {request.url.path}: {e}")
+            return JSONResponse({"detail": "Upstream temporarily unavailable"}, status_code=503)
 
 api_router = APIRouter(prefix="/api")
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
