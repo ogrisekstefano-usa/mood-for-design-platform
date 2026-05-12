@@ -4,7 +4,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBlueprint } from '../../contexts/BlueprintContext';
-import { Palette, Globe, Languages, Users, ArrowRight } from 'lucide-react';
+import { Palette, Globe, Languages, Users, ArrowRight, Layers } from 'lucide-react';
 
 const SettingsTile = ({ icon: Icon, title, description, to, testid }) => {
   const navigate = useNavigate();
@@ -42,6 +42,10 @@ const SettingsPage = () => {
         <SettingsTile testid="tile-brand" icon={Palette} to="/settings/brand"
           title={t('settings.brand.title', null, 'Brand Studio')}
           description={t('settings.brand.sub', null, 'Theme engine — palette, typography, shape, motion, brand assets.')}
+        />
+        <SettingsTile testid="tile-pages" icon={Layers} to="/settings/pages"
+          title={t('settings.pages.title', null, 'Pages Builder')}
+          description={t('settings.pages.sub', null, 'Compose homepage, showcase, and editorial pages with Blueprint Sections.')}
         />
         <SettingsTile testid="tile-domains" icon={Globe} to="/settings/domains"
           title={t('settings.domains.title', null, 'Domains')}

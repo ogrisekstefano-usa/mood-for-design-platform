@@ -14,6 +14,12 @@ const PRESETS = [
   { id: 'mood',    name: 'MOOD Teal',     primary: '#26F5C9', accent: '#B8977A', bg: '#0A0A0B' },
   { id: 'gold',    name: 'Editorial Gold', primary: '#D4AF37', accent: '#B8977A', bg: '#0A0A0B' },
   { id: 'noir',    name: 'Pure Noir',     primary: '#FFFFFF', accent: '#A19D98', bg: '#000000' },
+  { id: 'editorial-noir', name: 'Editorial Noir', primary: '#C8A687', accent: '#7A6553', bg: '#08070A',
+    extra: { surface_1: '#11100F', surface_2: '#1A1816', text_primary: '#F1EAE1', text_secondary: '#A89C8C' },
+    atmosphere: { grain_intensity: 0.06, vignette_intensity: 0.35 } },
+  { id: 'linear-mist', name: 'Linear Mist', primary: '#8B7CFF', accent: '#0063D4', bg: '#080808',
+    extra: { surface_1: '#0F0F11', surface_2: '#16161A', text_primary: '#E1E1E7', text_secondary: '#9A9AA8' },
+    atmosphere: { grain_intensity: 0.02, vignette_intensity: 0.15, glass_opacity: 0.7 } },
   { id: 'rose',    name: 'Rose Quartz',   primary: '#E8B4B8', accent: '#9B7B7E', bg: '#0E0A0B' },
   { id: 'forest',  name: 'Deep Forest',   primary: '#7AA489', accent: '#B89C7A', bg: '#0A0E0B' },
   { id: 'ocean',   name: 'Midnight Sea',  primary: '#5B8FB8', accent: '#B8977A', bg: '#070B11' },
@@ -242,6 +248,12 @@ const BrandStudioPage = () => {
     setPath('palette.primary', preset.primary);
     setPath('palette.accent', preset.accent);
     setPath('palette.background', preset.bg);
+    if (preset.extra) {
+      Object.entries(preset.extra).forEach(([k, v]) => setPath(`palette.${k}`, v));
+    }
+    if (preset.atmosphere) {
+      Object.entries(preset.atmosphere).forEach(([k, v]) => setPath(`atmosphere.${k}`, v));
+    }
   };
 
   if (!theme) return <div className="p-10 text-[var(--bp-text-muted)]">{t('common.loading')}…</div>;

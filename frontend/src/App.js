@@ -20,6 +20,7 @@ const InsightsPage = lazy(() => import('./pages/insights/InsightsPage'));
 const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'));
 const BrandStudioPage = lazy(() => import('./pages/settings/BrandStudioPage'));
 const DomainsPage = lazy(() => import('./pages/settings/DomainsPage'));
+const HomepageBuilderPage = lazy(() => import('./pages/settings/HomepageBuilderPage'));
 const LeadFormPage = lazy(() => import('./pages/public/LeadFormPage'));
 
 // Admin
@@ -87,6 +88,7 @@ function App() {
                   <Route path="/insights" element={<InsightsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="/settings/brand" element={<BrandStudioPage />} />
+                  <Route path="/settings/pages" element={<HomepageBuilderPage />} />
                   <Route path="/settings/domains" element={<DomainsPage />} />
                 </Route>
 
