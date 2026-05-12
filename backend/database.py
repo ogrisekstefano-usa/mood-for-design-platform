@@ -1,29 +1,39 @@
+"""Supabase clients + Postgres connection helpers."""
 import os
+import logging
 from dotenv import load_dotenv
 from pathlib import Path
-import logging
+from functools import lru_cache
 
 load_dotenv(Path(__file__).parent / '.env')
 logger = logging.getLogger(__name__)
 
 SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
+SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY', '')
 SUPABASE_SERVICE_ROLE_KEY = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')
+SUPABASE_JWT_SECRET = os.environ.get('SUPABASE_JWT_SECRET', '')
+DATABASE_URL = os.environ.get('DATABASE_URL', '')
 
-_client = None
+
+@lru_cache(maxsize=1)
+def get_admin_client():
+    """Service role client — bypasses RLS. Server-side only."""
+    if not (SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY):
+        return None
+    from supabase import create_client
+    try:
+        client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+        logger.info("✅ Supabase admin client ready")
+        return client
+    except Exception as e:
+        logger.warning(f"Supabase admin init failed: {e}")
+        return None
 
 
-def get_db():
-    global _client
-    if _client is None:
-        if SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY:
-            try:
-                from supabase import create_client
-                _client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
-                logger.info("✅ Supabase connected")
-            except Exception as e:
-                logger.warning(f"⚠️  Supabase connection failed: {e}")
-    return _client
+def db():
+    """Shortcut to admin client."""
+    return get_admin_client()
 
 
 def db_available() -> bool:
-    return get_db() is not None
+    return get_admin_client() is not None

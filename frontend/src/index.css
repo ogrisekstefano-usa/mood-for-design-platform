@@ -6,6 +6,12 @@
 
 @layer base {
   :root {
+    --bp-bg: #0A0A0B;
+    --bp-primary: #D4AF37;
+    --bp-accent: #B8977A;
+    --bp-font-heading: 'Cormorant Garamond', Georgia, serif;
+    --bp-font-body: 'Manrope', system-ui, sans-serif;
+
     --background: 240 5% 4%;
     --foreground: 38 25% 92%;
     --card: 240 4% 8%;

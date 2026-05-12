@@ -1,78 +1,98 @@
-import os
+"""Storage — Supabase Storage signed uploads + media library tracking."""
 import uuid
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Query
-from middleware.auth import get_current_user
-from database import get_db, db_available
 from datetime import datetime, timezone
+from fastapi import APIRouter, HTTPException, Depends, Query
+from models.schemas import SignedUploadRequest, MediaUploadComplete
+from middleware.auth import get_current_user
+from database import db
 
 router = APIRouter()
 
-BUCKET_MAP = {
-    'project': 'project-files',
-    'moodboard': 'moodboard-assets',
-    'proposal': 'proposal-files',
-    'magazine': 'magazine-media',
-    'tenant': 'tenant-assets',
-    'export': 'exports',
+ALLOWED_BUCKETS = {
+    'tenant-assets', 'project-files', 'proposal-files',
+    'moodboard-assets', 'magazine-media', 'exports',
 }
 
 
-@router.post("/upload")
-async def upload_file(
-    file: UploadFile = File(...),
-    bucket: str = Query('project-files'),
-    reference_id: str = Query(None),
-    reference_type: str = Query(None),
-    current_user: dict = Depends(get_current_user)
-):
-    if not db_available():
-        raise HTTPException(503, "Storage not configured")
+def _now():
+    return datetime.now(timezone.utc).isoformat()
 
-    db = get_db()
-    file_bytes = await file.read()
-    file_ext = file.filename.split('.')[-1] if '.' in file.filename else 'bin'
-    storage_filename = f"{current_user['tenant_id']}/{uuid.uuid4()}.{file_ext}"
 
+@router.post("/signed-upload")
+def create_signed_upload(body: SignedUploadRequest, current_user: dict = Depends(get_current_user)):
+    """Generate a signed URL for direct upload to Supabase Storage from client."""
+    if body.bucket not in ALLOWED_BUCKETS:
+        raise HTTPException(400, "Invalid bucket")
+    client = db()
+    # Namespace under tenant_id to prevent cross-tenant leakage
+    safe_path = f"{current_user['tenant_id']}/{body.path}"
     try:
-        db.storage.from_(bucket).upload(storage_filename, file_bytes, {'content-type': file.content_type})
-        public_url = db.storage.from_(bucket).get_public_url(storage_filename)
+        signed = client.storage.from_(body.bucket).create_signed_upload_url(safe_path)
+        # signed contains: {'signed_url', 'token', 'path'}
+        return {
+            "bucket": body.bucket,
+            "path": safe_path,
+            "signed_url": signed.get('signed_url') or signed.get('signedUrl'),
+            "token": signed.get('token'),
+        }
     except Exception as e:
-        raise HTTPException(500, f"Upload failed: {str(e)}")
+        raise HTTPException(500, f"Could not generate signed URL: {e}")
 
-    now = datetime.now(timezone.utc).isoformat()
-    file_record = {
-        'id': str(uuid.uuid4()),
-        'tenant_id': current_user['tenant_id'],
-        'reference_id': reference_id,
-        'reference_type': reference_type,
-        'filename': storage_filename,
-        'original_name': file.filename,
-        'storage_path': storage_filename,
-        'storage_bucket': bucket,
-        'mime_type': file.content_type,
-        'size': len(file_bytes),
-        'url': public_url,
-        'uploaded_by': current_user['sub'],
-        'created_at': now,
+
+@router.post("/media", status_code=201)
+def register_media(body: MediaUploadComplete, current_user: dict = Depends(get_current_user)):
+    """Register an uploaded file in media_library after client-side upload."""
+    if body.bucket not in ALLOWED_BUCKETS:
+        raise HTTPException(400, "Invalid bucket")
+    client = db()
+    now = _now()
+    safe_path = body.storage_path if body.storage_path.startswith(current_user['tenant_id'] + '/') else f"{current_user['tenant_id']}/{body.storage_path}"
+
+    # Public URL helper (works for public buckets; private uses signed URLs)
+    public = client.storage.from_(body.bucket).get_public_url(safe_path)
+    media = {
+        'id': str(uuid.uuid4()), 'tenant_id': current_user['tenant_id'],
+        'uploaded_by': current_user['profile_id'],
+        'bucket': body.bucket, 'storage_path': safe_path,
+        'file_url': public, 'file_name': body.file_name, 'file_type': body.file_type,
+        'file_size': body.file_size, 'alt_text': body.alt_text, 'category': body.category,
+        'tags': body.tags or [], 'metadata_json': {}, 'created_at': now,
     }
-    db.table('files').insert(file_record).execute()
+    r = client.table('media_library').insert(media).execute()
 
-    return {"url": public_url, "filename": storage_filename, "id": file_record['id']}
+    # If linked to a project, register in project_files too
+    if body.project_id:
+        client.table('project_files').insert({
+            'id': str(uuid.uuid4()), 'tenant_id': current_user['tenant_id'],
+            'project_id': body.project_id, 'uploaded_by': current_user['profile_id'],
+            'bucket': body.bucket, 'storage_path': safe_path,
+            'file_url': public, 'file_name': body.file_name, 'file_type': body.file_type,
+            'file_size': body.file_size, 'category': body.category, 'created_at': now,
+        }).execute()
+    return r.data[0] if r.data else media
 
 
-@router.get("/files")
-def list_files(
-    reference_id: str = Query(None),
-    reference_type: str = Query(None),
-    current_user: dict = Depends(get_current_user)
-):
-    if not db_available():
-        return {"data": [], "total": 0}
-    db = get_db()
-    q = db.table('files').select('*').eq('tenant_id', current_user['tenant_id'])
-    if reference_id:
-        q = q.eq('reference_id', reference_id)
-    if reference_type:
-        q = q.eq('reference_type', reference_type)
-    result = q.order('created_at', desc=True).execute()
-    return {"data": result.data, "total": len(result.data)}
+@router.get("/signed-download")
+def signed_download(bucket: str = Query(...), path: str = Query(...),
+                    current_user: dict = Depends(get_current_user)):
+    if bucket not in ALLOWED_BUCKETS:
+        raise HTTPException(400, "Invalid bucket")
+    if not path.startswith(current_user['tenant_id'] + '/'):
+        raise HTTPException(403, "Path outside tenant scope")
+    client = db()
+    try:
+        res = client.storage.from_(bucket).create_signed_url(path, 3600)
+        return {"url": res.get('signed_url') or res.get('signedUrl')}
+    except Exception as e:
+        raise HTTPException(500, f"Could not create signed URL: {e}")
+
+
+@router.get("/media")
+def list_media(current_user: dict = Depends(get_current_user),
+               category: str = Query(None), limit: int = Query(50, le=200)):
+    client = db()
+    q = client.table('media_library').select('*').eq('tenant_id', current_user['tenant_id'])
+    if category:
+        q = q.eq('category', category)
+    r = q.order('created_at', desc=True).limit(limit).execute()
+    return {"data": r.data or []}

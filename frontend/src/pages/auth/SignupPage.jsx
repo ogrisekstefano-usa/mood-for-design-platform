@@ -1,98 +1,97 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { useBlueprint } from '../../contexts/BlueprintContext';
+import { ArrowRight } from 'lucide-react';
 import { formatError } from '../../lib/api';
+import Brand from '../../components/common/Brand';
+import LocaleSwitcher from '../../components/common/LocaleSwitcher';
 
 const SignupPage = () => {
-  const { register } = useAuth();
+  const { signUp } = useAuth();
+  const { t, locale } = useBlueprint();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ full_name: '', email: '', password: '', company_name: '' });
-  const [showPw, setShowPw] = useState(false);
+  const [form, setForm] = useState({
+    first_name: '', last_name: '', email: '', password: '', company_name: '',
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const set = (k) => (e) => setForm(p => ({ ...p, [k]: e.target.value }));
+  const set = (k) => (e) => setForm((p) => ({ ...p, [k]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (form.password.length < 8) { setError('Password must be at least 8 characters'); return; }
     setError('');
     setLoading(true);
     try {
-      await register(form);
+      await signUp({ ...form, locale });
       navigate('/dashboard');
-    } catch (e) {
-      setError(formatError(e));
+    } catch (err) {
+      setError(formatError(err));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center px-4 py-12 auth-bg">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="flex items-center gap-2.5 mb-10 justify-center">
-          <div className="w-8 h-8 bg-[#D4AF37] rounded-[3px] flex items-center justify-center">
-            <span className="text-[#0A0A0B] text-sm font-bold font-body">M</span>
-          </div>
-          <div>
-            <p className="text-[#EFEBE4] text-sm font-semibold font-body tracking-[0.1em] uppercase">Mood for Design</p>
-            <p className="text-[#4A4845] text-[10px] font-body tracking-[0.2em] uppercase">Blueprint OS™</p>
-          </div>
+    <div className="min-h-screen flex auth-bg" data-testid="signup-page">
+      <div className="w-full lg:w-[480px] flex flex-col justify-center px-10 py-12 bg-[#0A0A0B]">
+        <div className="flex items-center justify-between mb-12">
+          <Brand />
+          <LocaleSwitcher />
         </div>
 
-        <div className="bg-[#141416] border border-white/[0.06] rounded-[6px] p-8 animate-fadeIn">
-          <div className="mb-7">
-            <h1 className="font-heading text-3xl font-light text-[#EFEBE4] mb-1">Crea il tuo workspace</h1>
-            <p className="text-[#6B6863] text-sm font-body">Inizia il tuo percorso Blueprint OS™</p>
+        <div className="mb-8">
+          <h1 className="font-heading text-4xl font-light text-[#EFEBE4] mb-2 leading-tight">
+            {t('auth.signup.title')}
+          </h1>
+          <p className="text-[#6B6863] text-sm font-body">{t('auth.signup.subtitle')}</p>
+        </div>
+
+        {error && (
+          <div data-testid="signup-error" className="mb-6 px-4 py-3 bg-[#F44336]/10 border border-[#F44336]/20 rounded-[3px]">
+            <p className="text-[#F44336] text-sm font-body">{error}</p>
           </div>
+        )}
 
-          {error && (
-            <div data-testid="signup-error" className="mb-5 px-4 py-3 bg-[#F44336]/10 border border-[#F44336]/20 rounded-[3px]">
-              <p className="text-[#F44336] text-sm font-body">{error}</p>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {[
-              { key: 'full_name', label: 'Full Name', placeholder: 'Marco Rossi', type: 'text', testid: 'signup-name-input' },
-              { key: 'company_name', label: 'Studio / Company', placeholder: 'Studio Rossi Interiors', type: 'text', testid: 'signup-company-input' },
-              { key: 'email', label: 'Email', placeholder: 'you@studio.com', type: 'email', testid: 'signup-email-input' },
-            ].map(({ key, label, placeholder, type, testid }) => (
-              <div key={key}>
-                <label className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6B6863] font-body mb-2">{label}</label>
-                <input data-testid={testid} type={type} required value={form[key]} onChange={set(key)} placeholder={placeholder}
-                  className="input-luxury w-full px-4 py-3 text-sm font-body rounded-[3px]" />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            {[['first_name', 'auth.signup.firstName'], ['last_name', 'auth.signup.lastName']].map(([k, lk]) => (
+              <div key={k}>
+                <label className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6B6863] font-body mb-2">{t(lk)}</label>
+                <input data-testid={`signup-${k}`} required value={form[k]} onChange={set(k)} className="input-luxury w-full px-4 py-3 text-sm font-body rounded-[3px]" />
               </div>
             ))}
+          </div>
 
-            <div>
-              <label className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6B6863] font-body mb-2">Password</label>
-              <div className="relative">
-                <input data-testid="signup-password-input" type={showPw ? 'text' : 'password'} required minLength={8}
-                  value={form.password} onChange={set('password')} placeholder="Min. 8 characters"
-                  className="input-luxury w-full px-4 py-3 pr-11 text-sm font-body rounded-[3px]" />
-                <button type="button" onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A4845] hover:text-[#A19D98] transition-colors">
-                  {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
-                </button>
-              </div>
-            </div>
+          <div>
+            <label className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6B6863] font-body mb-2">{t('auth.signup.company')}</label>
+            <input data-testid="signup-company" required value={form.company_name} onChange={set('company_name')} className="input-luxury w-full px-4 py-3 text-sm font-body rounded-[3px]" />
+          </div>
 
-            <button data-testid="signup-submit-btn" type="submit" disabled={loading}
-              className="w-full mt-2 flex items-center justify-center gap-2 px-6 py-3 bg-[#D4AF37] hover:bg-[#E2C365] text-[#0A0A0B] font-semibold text-sm font-body rounded-[3px] transition-colors disabled:opacity-50">
-              {loading ? <div className="w-4 h-4 border-2 border-[#0A0A0B] border-t-transparent rounded-full animate-spin" /> : <>Crea workspace <ArrowRight size={15} /></>}
-            </button>
-          </form>
+          <div>
+            <label className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6B6863] font-body mb-2">{t('auth.login.email')}</label>
+            <input data-testid="signup-email" required type="email" value={form.email} onChange={set('email')} className="input-luxury w-full px-4 py-3 text-sm font-body rounded-[3px]" />
+          </div>
 
-          <p className="mt-6 text-center text-[#4A4845] text-xs font-body">
-            Hai già un account?{' '}
-            <Link to="/auth/login" className="text-[#D4AF37] hover:text-[#E2C365] transition-colors">Accedi</Link>
-          </p>
-        </div>
+          <div>
+            <label className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6B6863] font-body mb-2">{t('auth.login.password')}</label>
+            <input data-testid="signup-password" required type="password" minLength={8} value={form.password} onChange={set('password')} className="input-luxury w-full px-4 py-3 text-sm font-body rounded-[3px]" />
+            <p className="text-[10px] text-[#4A4845] mt-1 font-body">{t('form.password_min')}</p>
+          </div>
+
+          <button data-testid="signup-submit-btn" type="submit" disabled={loading}
+            className="w-full mt-2 flex items-center justify-center gap-2 px-6 py-3 bg-[var(--bp-primary,#D4AF37)] hover:opacity-90 text-[#0A0A0B] font-semibold text-sm font-body rounded-[3px] disabled:opacity-50">
+            {loading ? <div className="w-4 h-4 border-2 border-[#0A0A0B] border-t-transparent rounded-full animate-spin" /> : <>{t('auth.signup.submit')} <ArrowRight size={15} /></>}
+          </button>
+        </form>
+
+        <p className="mt-8 text-center text-[#4A4845] text-xs font-body">
+          {t('auth.signup.hasAccount')}{' '}
+          <Link data-testid="link-login" to="/auth/login" className="text-[var(--bp-primary,#D4AF37)] hover:opacity-80">{t('auth.signup.signin')}</Link>
+        </p>
       </div>
+
+      <div className="hidden lg:block flex-1 bg-gradient-to-br from-[#0A0A0B] to-[#141416]" />
     </div>
   );
 };

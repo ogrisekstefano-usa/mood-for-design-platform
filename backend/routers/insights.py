@@ -1,80 +1,69 @@
-import uuid
-from datetime import datetime, timezone
+"""Insights — dashboard KPI + activity feed."""
 from fastapi import APIRouter, Depends, Query
-from models.analytics import AnalyticsEvent
 from middleware.auth import get_current_user
-from database import get_db, db_available
+from database import db
 
 router = APIRouter()
 
 
-@router.post("/events", status_code=201)
-def track_event(body: AnalyticsEvent, current_user: dict = Depends(get_current_user)):
-    if not db_available():
-        return {"message": "Event tracked (no DB)"}
-    db = get_db()
-    db.table('analytics_events').insert({
-        'id': str(uuid.uuid4()),
-        'tenant_id': current_user['tenant_id'],
-        'user_id': current_user['sub'],
-        'event_type': body.event_type,
-        'session_id': body.session_id,
-        'properties': body.properties or {},
-        'url': body.url,
-        'referrer': body.referrer,
-        'created_at': datetime.now(timezone.utc).isoformat(),
-    }).execute()
-    return {"message": "Event tracked"}
-
-
-@router.post("/events/public", status_code=201)
-def track_public_event(body: AnalyticsEvent, tenant_id: str = Query(None)):
-    """Track events from public pages (no auth)."""
-    if not db_available():
-        return {"message": "Event tracked (no DB)"}
-    db = get_db()
-    db.table('analytics_events').insert({
-        'id': str(uuid.uuid4()),
-        'tenant_id': tenant_id,
-        'event_type': body.event_type,
-        'session_id': body.session_id,
-        'properties': body.properties or {},
-        'url': body.url,
-        'referrer': body.referrer,
-        'created_at': datetime.now(timezone.utc).isoformat(),
-    }).execute()
-    return {"message": "Event tracked"}
+def _count(table, tenant_id, filters=None):
+    client = db()
+    q = client.table(table).select('id', count='exact').eq('tenant_id', tenant_id)
+    for k, v in (filters or {}).items():
+        q = q.eq(k, v)
+    r = q.execute()
+    return r.count or 0
 
 
 @router.get("/dashboard")
-def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
-    if not db_available():
-        return {
-            "leads": {"total": 0, "new": 0, "converted": 0},
-            "projects": {"total": 0, "active": 0, "completed": 0},
-            "proposals": {"total": 0, "pending": 0, "approved": 0},
-        }
-    db = get_db()
+def dashboard(current_user: dict = Depends(get_current_user)):
     tid = current_user['tenant_id']
-
-    leads = db.table('leads').select('status').eq('tenant_id', tid).execute()
-    projects = db.table('projects').select('status').eq('tenant_id', tid).execute()
-    proposals = db.table('proposals').select('status').eq('tenant_id', tid).execute()
-
-    def count_by_status(items, statuses):
-        return {s: sum(1 for i in items if i.get('status') == s) for s in statuses}
-
     return {
         "leads": {
-            "total": len(leads.data),
-            **count_by_status(leads.data, ['new', 'contacted', 'qualified', 'converted', 'lost'])
+            "total": _count('leads', tid),
+            "new": _count('leads', tid, {'status': 'new'}),
+            "qualified": _count('leads', tid, {'status': 'qualified'}),
         },
         "projects": {
-            "total": len(projects.data),
-            **count_by_status(projects.data, ['discovery', 'design', 'execution', 'completed', 'on_hold'])
+            "total": _count('projects', tid),
+            "in_progress": _count('projects', tid, {'status': 'proposal_in_progress'}),
+            "won": _count('projects', tid, {'status': 'won'}),
         },
         "proposals": {
-            "total": len(proposals.data),
-            **count_by_status(proposals.data, ['draft', 'sent', 'viewed', 'approved', 'revision_requested', 'rejected'])
+            "total": _count('proposals', tid),
+            "sent": _count('proposals', tid, {'status': 'sent'}),
+            "approved": _count('proposals', tid, {'status': 'approved'}),
+        },
+        "moodboards": {
+            "total": _count('moodboards', tid),
         },
     }
+
+
+@router.get("/activity")
+def recent_activity(limit: int = Query(15, le=50), current_user: dict = Depends(get_current_user)):
+    client = db()
+    tid = current_user['tenant_id']
+    # Pull latest events from multiple sources, merge in-memory.
+    leads = client.table('leads').select('id, first_name, last_name, email, status, created_at').eq('tenant_id', tid).order('created_at', desc=True).limit(limit).execute().data or []
+    projects = client.table('projects').select('id, title, status, created_at').eq('tenant_id', tid).order('created_at', desc=True).limit(limit).execute().data or []
+    proposals = client.table('proposals').select('id, title, status, created_at').eq('tenant_id', tid).order('created_at', desc=True).limit(limit).execute().data or []
+    moodboards = client.table('moodboards').select('id, title, status, created_at').eq('tenant_id', tid).order('created_at', desc=True).limit(limit).execute().data or []
+
+    events = []
+    for l in leads:
+        name = (l.get('first_name') or '') + ' ' + (l.get('last_name') or '')
+        events.append({"type": "lead", "id": l['id'], "title": name.strip() or l.get('email', ''),
+                       "status": l.get('status'), "created_at": l['created_at'], "tone": "blue"})
+    for p in projects:
+        events.append({"type": "project", "id": p['id'], "title": p.get('title'),
+                       "status": p.get('status'), "created_at": p['created_at'], "tone": "purple"})
+    for p in proposals:
+        events.append({"type": "proposal", "id": p['id'], "title": p.get('title'),
+                       "status": p.get('status'), "created_at": p['created_at'], "tone": "gold"})
+    for m in moodboards:
+        events.append({"type": "moodboard", "id": m['id'], "title": m.get('title'),
+                       "status": m.get('status'), "created_at": m['created_at'], "tone": "emerald"})
+
+    events.sort(key=lambda e: e['created_at'] or '', reverse=True)
+    return {"data": events[:limit]}

@@ -1,48 +1,40 @@
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
-from typing import Optional, Dict, Any
-from middleware.auth import get_current_user
-from database import get_db, db_available
+"""Tenant settings router — branding, theme, navigation overrides."""
+import uuid
 from datetime import datetime, timezone
+from fastapi import APIRouter, HTTPException, Depends
+from middleware.auth import require_roles
+from database import db
 
 router = APIRouter()
 
 
-class TenantSettingsUpdate(BaseModel):
-    name: Optional[str] = None
-    logo_url: Optional[str] = None
-    settings: Optional[Dict[str, Any]] = None
-    feature_flags: Optional[Dict[str, Any]] = None
+def _now():
+    return datetime.now(timezone.utc).isoformat()
 
 
-@router.get("/tenant")
-def get_tenant_settings(current_user: dict = Depends(get_current_user)):
-    if not db_available():
-        return {"id": current_user['tenant_id'], "name": "Demo Studio", "slug": "demo"}
-    db = get_db()
-    result = db.table('tenants').select('*').eq('id', current_user['tenant_id']).execute()
-    if not result.data:
-        raise HTTPException(404, "Tenant not found")
-    return result.data[0]
+@router.put("/branding")
+def update_branding(body: dict,
+                    current_user: dict = Depends(require_roles('tenant_admin', 'super_admin'))):
+    """Updates tenant base columns: logo_url, primary_color, secondary_color, fonts."""
+    client = db()
+    allowed = {'logo_url', 'primary_color', 'secondary_color', 'font_heading', 'font_body', 'name'}
+    updates = {k: v for k, v in body.items() if k in allowed and v is not None}
+    if not updates:
+        raise HTTPException(400, "No valid fields")
+    updates['updated_at'] = _now()
+    r = client.table('tenants').update(updates).eq('id', current_user['tenant_id']).execute()
+    return r.data[0] if r.data else {}
 
 
-@router.put("/tenant")
-def update_tenant_settings(body: TenantSettingsUpdate, current_user: dict = Depends(get_current_user)):
-    if not db_available():
-        raise HTTPException(503, "Database not configured")
-    db = get_db()
-    updates = {k: v for k, v in body.model_dump().items() if v is not None}
-    updates['updated_at'] = datetime.now(timezone.utc).isoformat()
-    result = db.table('tenants').update(updates).eq('id', current_user['tenant_id']).execute()
-    if not result.data:
-        raise HTTPException(404, "Tenant not found")
-    return result.data[0]
-
-
-@router.get("/team")
-def get_team(current_user: dict = Depends(get_current_user)):
-    if not db_available():
-        return {"data": [], "total": 0}
-    db = get_db()
-    result = db.table('users').select('id,email,full_name,role,avatar_url,is_active,created_at').eq('tenant_id', current_user['tenant_id']).execute()
-    return {"data": result.data, "total": len(result.data)}
+@router.put("/locales")
+def update_locales(body: dict,
+                   current_user: dict = Depends(require_roles('tenant_admin', 'super_admin'))):
+    """Updates tenant default_language and active_languages."""
+    client = db()
+    allowed = {'default_language', 'active_languages'}
+    updates = {k: v for k, v in body.items() if k in allowed}
+    if not updates:
+        raise HTTPException(400, "No valid fields")
+    updates['updated_at'] = _now()
+    r = client.table('tenants').update(updates).eq('id', current_user['tenant_id']).execute()
+    return r.data[0] if r.data else {}
