@@ -9,6 +9,10 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from middleware.auth import get_current_user, require_roles
 from models.schemas import TenantSettingUpsert
 from database import db, db_available
+from core.modules import get_all_modules, default_enabled_modules
+from core.feature_flags import get_all_flags, resolve_flags
+from core.permissions import get_role_permissions, is_super_admin
+from core.tenant_context import get_tenant_context
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -88,12 +92,55 @@ def _enrich_tenant_config(client, tenant: dict) -> dict:
 
 # ── AUTHED: current tenant config ────────────────────────────────────────────
 @router.get("/tenant/me")
-def get_my_tenant(current_user: dict = Depends(get_current_user)):
+def get_my_tenant(ctx: dict = Depends(get_tenant_context)):
     client = db()
-    r = client.table('tenants').select('*').eq('id', current_user['tenant_id']).limit(1).execute()
+    r = client.table('tenants').select('*').eq('id', ctx['tenant_id']).limit(1).execute()
     if not r.data:
         raise HTTPException(404, "Tenant not found")
-    return _enrich_tenant_config(client, r.data[0])
+    cfg = _enrich_tenant_config(client, r.data[0])
+    cfg["impersonating"] = ctx.get("impersonating", False)
+    return cfg
+
+
+# ── Module registry resolved for current user ────────────────────────────────
+@router.get("/modules")
+def get_modules(ctx: dict = Depends(get_tenant_context)):
+    """Returns the active module list for current tenant + user permissions filter."""
+    client = db()
+    enabled_ids = _get_setting(client, ctx['tenant_id'], 'modules.enabled', None) or default_enabled_modules()
+    enabled_set = set(enabled_ids)
+    user_perms = set(get_role_permissions(ctx.get('role')))
+
+    modules = []
+    for m in get_all_modules():
+        if m['id'] not in enabled_set:
+            continue
+        # require_permissions: user must have at least one to see the module (or none required)
+        req = m.get('requires_permissions') or []
+        if req and not any(p in user_perms for p in req):
+            continue
+        # filter routes by per-route permissions
+        routes = [r for r in (m.get('routes') or []) if not r.get('requires') or all(p in user_perms for p in r['requires'])]
+        modules.append({**m, "routes": routes})
+    return {"modules": modules, "enabled_ids": list(enabled_set)}
+
+
+# ── Effective feature flags for current tenant ───────────────────────────────
+@router.get("/feature-flags")
+def get_feature_flags(ctx: dict = Depends(get_tenant_context)):
+    client = db()
+    overrides = _get_setting(client, ctx['tenant_id'], 'feature_flags', {}) or {}
+    return {"flags": resolve_flags(overrides), "catalog": get_all_flags()}
+
+
+# ── User capabilities (permissions resolved for client UI gating) ────────────
+@router.get("/me/permissions")
+def my_permissions(current_user: dict = Depends(get_current_user)):
+    return {
+        "role": current_user.get('role'),
+        "permissions": get_role_permissions(current_user.get('role')),
+        "is_super_admin": is_super_admin(current_user.get('role')),
+    }
 
 
 # ── Tenant settings CRUD ─────────────────────────────────────────────────────
@@ -234,6 +281,27 @@ DEFAULT_I18N = {
         "insights": {"title": "Insights"},
         "settings": {"title": "Settings", "branding": "Branding", "locale": "Locale & Languages",
                      "team": "Team"},
+        "admin": {"nav.overview": "Overview", "nav.tenants": "Tenants", "nav.modules": "Modules",
+                  "nav.audit": "Audit log", "exit": "Exit to workspace",
+                  "overview.title": "Platform Overview",
+                  "overview.subtitle": "Real-time intelligence across every tenant on the platform.",
+                  "stats.tenants": "Tenants", "stats.users": "Users", "stats.leads": "Leads",
+                  "stats.projects": "Projects", "stats.proposals": "Proposals",
+                  "stats.moodboards": "Moodboards", "stats.magazine": "Articles",
+                  "stats.suspended": "Suspended",
+                  "tenants.title": "Tenants", "tenants.new": "New tenant",
+                  "tenants.totalSub": "across the platform", "tenants.empty": "No tenants yet",
+                  "modules.title": "Module Registry",
+                  "modules.sub": "The platform-wide Blueprint module catalog. Activate per tenant from the tenant detail.",
+                  "audit.title": "Audit Log",
+                  "detail.statusPlan": "Status & Plan", "detail.modules": "Modules",
+                  "detail.flags": "Feature Flags", "detail.members": "Members",
+                  "impersonate": "Impersonate", "saved": "Saved"},
+        "nav.superAdmin": "Super Admin", "nav.section.platform": "Platform",
+        "impersonation.active": "Impersonating", "impersonation.stop": "Exit",
+        "module.workspace": "Workspace", "module.moodboards": "Moodboards",
+        "module.inspirations": "Inspirations", "module.insights": "Insights",
+        "module.concierge": "Concierge",
         "form": {"required": "Required", "invalid_email": "Invalid email",
                  "password_min": "Password must be at least 8 characters"},
         "brand": {"name": "MOOD for DESIGN", "tagline": "A Blueprint OS™ Platform"},
@@ -297,6 +365,27 @@ DEFAULT_I18N["it"] = {
     "insights": {"title": "Analytics"},
     "settings": {"title": "Impostazioni", "branding": "Branding", "locale": "Lingue e Locale",
                  "team": "Team"},
+    "admin": {"nav.overview": "Panoramica", "nav.tenants": "Tenant", "nav.modules": "Moduli",
+              "nav.audit": "Audit log", "exit": "Esci dal workspace",
+              "overview.title": "Panoramica Piattaforma",
+              "overview.subtitle": "Intelligence real-time su ogni tenant della piattaforma.",
+              "stats.tenants": "Tenant", "stats.users": "Utenti", "stats.leads": "Lead",
+              "stats.projects": "Progetti", "stats.proposals": "Proposte",
+              "stats.moodboards": "Moodboard", "stats.magazine": "Articoli",
+              "stats.suspended": "Sospesi",
+              "tenants.title": "Tenant", "tenants.new": "Nuovo tenant",
+              "tenants.totalSub": "sulla piattaforma", "tenants.empty": "Nessun tenant",
+              "modules.title": "Registro Moduli",
+              "modules.sub": "Catalogo Blueprint dei moduli della piattaforma. Attiva per tenant dal dettaglio.",
+              "audit.title": "Audit Log",
+              "detail.statusPlan": "Stato e Piano", "detail.modules": "Moduli",
+              "detail.flags": "Feature Flag", "detail.members": "Membri",
+              "impersonate": "Impersona", "saved": "Salvato"},
+    "nav.superAdmin": "Super Admin", "nav.section.platform": "Piattaforma",
+    "impersonation.active": "Impersoning", "impersonation.stop": "Esci",
+    "module.workspace": "Workspace", "module.moodboards": "Moodboard",
+    "module.inspirations": "Inspirations", "module.insights": "Insights",
+    "module.concierge": "Concierge",
     "form": {"required": "Campo richiesto", "invalid_email": "Email non valida",
              "password_min": "La password deve avere almeno 8 caratteri"},
     "brand": {"name": "MOOD for DESIGN", "tagline": "A Blueprint OS™ Platform"},

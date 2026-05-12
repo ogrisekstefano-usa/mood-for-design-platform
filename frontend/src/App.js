@@ -5,6 +5,7 @@ import { BlueprintProvider, useBlueprint } from './contexts/BlueprintContext';
 import './App.css';
 
 const DashboardLayout = lazy(() => import('./components/layout/DashboardLayout'));
+const AdminLayout = lazy(() => import('./components/layout/AdminLayout'));
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
 const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage'));
@@ -19,12 +20,16 @@ const InsightsPage = lazy(() => import('./pages/insights/InsightsPage'));
 const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'));
 const LeadFormPage = lazy(() => import('./pages/public/LeadFormPage'));
 
+// Admin
+const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
+const AdminTenantsPage = lazy(() => import('./pages/admin/AdminTenantsPage'));
+const AdminTenantDetailPage = lazy(() => import('./pages/admin/AdminTenantDetailPage'));
+const AdminModulesPage = lazy(() => import('./pages/admin/AdminModulesPage'));
+const AdminAuditPage = lazy(() => import('./pages/admin/AdminAuditPage'));
+
 const Loading = () => {
   let label = 'Loading';
-  try {
-    const ctx = useBlueprint();
-    label = ctx?.t?.('common.loading', null, 'Loading') || 'Loading';
-  } catch (_) {}
+  try { const ctx = useBlueprint(); label = ctx?.t?.('common.loading', null, 'Loading') || 'Loading'; } catch (_) {}
   return (
     <div className="min-h-screen bg-[var(--bp-bg,#0A0A0B)] flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
@@ -39,6 +44,14 @@ const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <Loading />;
   return user ? children : <Navigate to="/auth/login" replace />;
+};
+
+const SuperAdminRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  const { isSuperAdmin, loading: bpLoading } = useBlueprint();
+  if (loading || bpLoading) return <Loading />;
+  if (!user) return <Navigate to="/auth/login" replace />;
+  return isSuperAdmin ? children : <Navigate to="/dashboard" replace />;
 };
 
 const PublicRoute = ({ children }) => {
@@ -71,6 +84,14 @@ function App() {
                   <Route path="/inspirations" element={<InspirationsPage />} />
                   <Route path="/insights" element={<InsightsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
+                </Route>
+
+                <Route element={<SuperAdminRoute><AdminLayout /></SuperAdminRoute>}>
+                  <Route path="/admin" element={<AdminOverviewPage />} />
+                  <Route path="/admin/tenants" element={<AdminTenantsPage />} />
+                  <Route path="/admin/tenants/:id" element={<AdminTenantDetailPage />} />
+                  <Route path="/admin/modules" element={<AdminModulesPage />} />
+                  <Route path="/admin/audit" element={<AdminAuditPage />} />
                 </Route>
 
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />

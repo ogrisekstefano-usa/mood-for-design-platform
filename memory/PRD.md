@@ -1,164 +1,157 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 ## Original Problem Statement
-Multi-tenant SaaS platform per interior designer e architetti.
-Stack: **React + FastAPI + Supabase** (PostgreSQL + Auth + Storage). Multi-tenant via `tenant_id`, no RLS (enforced in backend).
-Tutto **Blueprint-driven**: testi, navigazione, dashboard, branding, locales — niente hardcoded.
+Multi-tenant SaaS platform per interior designer e architetti, costruita come Blueprint OS™ — operating system configurabile multi-tenant. Stack: React + FastAPI + Supabase. Tutto Blueprint-driven (zero hardcoded UI), multi-locale, tenant-themed, permission-aware.
 
 ## Brand Architecture
 - **Platform**: MOOD for DESIGN™
 - **Framework**: A Blueprint OS™ Platform
-- **Operational module**: Blueprint Workspace™ (Leads + Projects + Proposals + Client Portal — integrato, NON moduli separati)
-- **Standalone modules**: Blueprint Moodboards™ · Blueprint Inspirations™ · Blueprint Insights™ · Blueprint Concierge™ · Blueprint Match™ (futuro)
+- **Operational core**: Blueprint Workspace™ (Leads + Projects + Proposals + Client Portal integrati)
+- **Standalone modules**: Blueprint Moodboards™ · Blueprint Inspirations™ · Blueprint Insights™ · Blueprint Concierge™ · Blueprint Match™ (future)
 
-## Tech Stack (locked)
-- **Frontend**: React 19 (JSX), Tailwind, react-router-dom, lucide-react, @supabase/supabase-js installed (auth via backend tokens persistono in `localStorage`)
-- **Backend**: FastAPI, supabase-py (admin), PyJWT (JWKS ES256 verification), psycopg2 (one-off DDL/grant scripts)
-- **DB**: Supabase Postgres (Transaction Pooler, port 6543)
-- **Auth**: Supabase Auth (email/password) — JWT verificati via JWKS asymmetric (ES256)
-- **Storage**: Supabase Storage (6 bucket pre-esistenti)
+## Tech Stack
+- **Frontend**: React 19 JSX, Tailwind, react-router, lucide-react, @supabase/supabase-js (anon)
+- **Backend**: FastAPI, supabase-py (service_role), PyJWT (JWKS ES256 + HS256 fallback)
+- **DB**: Supabase Postgres (Transaction Pooler 6543)
+- **Auth**: Supabase Auth (email/password) — JWT verificati via JWKS
+- **Storage**: Supabase Storage (6 bucket esistenti)
 
-## Multi-tenant + Locale Architecture
-- Ogni signup crea un nuovo `tenant` + `users_profile` linkato ad `auth.users.id` via `auth_user_id`
-- Tutte le query backend filtrano per `tenant_id`
-- Tenant memorizza: `default_language`, `active_languages[]`, `primary_color`, `secondary_color`, `font_heading`, `font_body`, `logo_url`
-- I18n locales supportati: **en-US** (fallback), **en-GB**, **it**, **fr**, **de**, **es**
+## Architecture Principles (CRITICAL)
+1. **No hardcoded**: testi, colori, navigazione, dashboard widgets, sezioni, module visibility → tutto via API
+2. **Blueprint-driven**: ogni configurazione vive in DB (`tenants` + `tenant_settings` KV JSON)
+3. **Centralized engines**:
+   - `core/permissions.py` (8 ruoli, 31 permission tuples `resource:action`)
+   - `core/modules.py` (module registry con routes + required_permissions)
+   - `core/feature_flags.py` (catalog + tenant override engine)
+   - `core/tenant_context.py` (impersonation + audit + tenant scoping)
+4. **RLS disabled** — multi-tenancy enforced backend (`tenant_id` in ogni query, centralizzato in `get_tenant_context`)
+5. **Locale-aware**: 6 lingue (en-US, en-GB, it, fr, de, es) + architettura pronta per RTL (AE/ZH/JA future)
 
-## Implementation Status (12 Maggio 2026)
+## Implementation Status
 
-### ✅ Phase 1 (DONE — end-to-end verified)
-- Database: 22 tabelle pre-esistenti su Supabase, RLS disabilitato, grants applicati via `grant_perms.py`
-- Auth: signup (admin API + tenant + profile), login (REST password grant), refresh, me, forgot-password (Supabase recover)
-- JWT verification via JWKS (`/auth/v1/.well-known/jwks.json`) — supporta ES256/RS256/HS256
-- CRUD: Leads, Projects (con status history), Proposals (con signoffs), Moodboards
-- Storage: signed upload URL, signed download, media_library tracking
-- Insights: KPI dashboard, activity feed multi-source
-- Blueprint API: `/tenant/me`, `/navigation`, `/dashboard`, `/i18n/{locale}`, `/i18n` (locale list)
-- Public lead form: `POST /api/leads/public?tenant_slug=…`
-- Frontend completo Blueprint-driven:
-  - `BlueprintContext` carica tenant + theme + navigation + dashboard + i18n strings
-  - Theme applicato via CSS variables (`--bp-primary`, `--bp-accent`)
-  - Componenti usano `t('key')` — zero stringhe hardcoded user-facing
-  - Sidebar generata da `/api/blueprint/navigation`
-  - Dashboard generato da `/api/blueprint/dashboard` (widget types: kpi, feed, actions)
-  - LocaleSwitcher in topbar + settings page
-- Settings page: branding update (logo, colors, fonts) + locale picker
-- Public lead capture form scoped per tenant slug
+### ✅ Phase 1 — Tenant MVP (DONE — 12 Mag 2026)
+- Schema Supabase 22 tabelle, RLS off, grants service_role
+- Auth Supabase end-to-end (signup → tenant + profile; login JWKS ES256)
+- CRUD: leads, projects (con status history), proposals (con signoffs), moodboards
+- Storage: signed upload/download, media_library
+- Blueprint API: tenant config + navigation + dashboard widgets + i18n
+- Frontend Blueprint-driven (sidebar/dashboard/copy tutti via API)
+- LocaleSwitcher live, ImpersonationBanner
+
+### ✅ Phase A — Super Admin Foundation (DONE — 12 Mag 2026)
+- **Permissions Engine** centralizzato (`core/permissions.py`)
+  - 8 ruoli: super_admin, tenant_admin, editor, analyst, project_manager, designer, client, ad_partner
+  - 31 permission tuples (`leads:read`, `super:tenants:write`, ecc.)
+  - Decorator `require_permission(*perms)` per route gating
+  - Frontend hook `can('perm')` + `isSuperAdmin`
+- **Module Registry** (`core/modules.py`)
+  - 5 moduli: workspace, moodboards, inspirations, insights, concierge
+  - Ogni modulo: requires_permissions, routes con per-route gating, enterprise_only flag
+  - Frontend Sidebar filtra automaticamente by enabled modules + user permissions
+- **Feature Flags Engine** (`core/feature_flags.py`)
+  - 11 flag catalog: hotspot, video_upload, proposal_approvals, ai_suggestions, public_magazine, lead_forms, ad_section, crm_integrations, exports, custom_domain, analytics_advanced
+  - Default in code, tenant override via `tenant_settings.key='feature_flags'`
+- **Tenant Context + Impersonation** (`core/tenant_context.py`)
+  - Super_admin può passare header `X-Tenant-Override: <id>` per scope query su altro tenant
+  - Tutte le route workspace usano `get_tenant_context` (centralizzato)
+  - Audit logger su ogni mutation super_admin
+- **Super Admin Routes** (`/api/super/*`)
+  - `GET /tenants` list con member count, plan
+  - `POST /tenants` create
+  - `GET /tenants/:id` detail con usage stats + members + modules + flags
+  - `PUT /tenants/:id` update name/status/plan/languages
+  - `DELETE /tenants/:id` soft archive
+  - `PUT /tenants/:id/modules` toggle module enabled list
+  - `PUT /tenants/:id/feature-flags` toggle flag overrides
+  - `POST /tenants/:id/impersonate` (audit-logged)
+  - `GET /stats` cross-tenant KPI
+  - `GET /audit-logs` recent platform actions
+  - `GET /catalog/modules`, `GET /catalog/flags`
+- **Frontend Admin Experience** (`/admin/*` — separate AdminLayout luxury control-center)
+  - `/admin` Platform Overview (8 KPI cards)
+  - `/admin/tenants` list + create modal
+  - `/admin/tenants/:id` detail con toggle moduli/flag, status/plan picker, impersonate button, members table
+  - `/admin/modules` module registry view
+  - `/admin/audit` audit log
+- **Impersonation banner** automatico nel DashboardLayout quando session attivo
 
 ### Tested End-to-End
-✅ Signup → tenant + profile creati su Supabase
-✅ Login → token persistito in localStorage
-✅ Dashboard KPI letti da `/api/insights/dashboard` (1 lead, 1 progetto, 1 proposta)
-✅ Activity feed mostra eventi reali  
-✅ Locale switch en-US ↔ it ↔ fr ↔ de ↔ es ↔ en-GB (127 messaggi flat per locale)
-✅ Sidebar navigation dinamica  
-✅ Leads list + create modal funzionante
+✅ Login demo@moodfordesign.com (ora super_admin)
+✅ Sidebar tenant mostra "Super Admin" entry
+✅ Navigate to /admin → control-center UI
+✅ Platform overview KPI cross-tenant
+✅ Tenants list (2 tenants)
+✅ Open tenant detail con tutti i toggle visibili
+✅ Toggle Feature Flag (ai_suggestions) → backend persisted
+✅ Impersonate tenant → banner amber visibile, queries con header
+✅ Stop impersonation → banner removed
 
-## API Endpoints (auth required unless noted)
-| Method | Path | Notes |
-|--------|------|-------|
-| POST | `/api/auth/signup` | Public; crea tenant + profile |
-| POST | `/api/auth/login` | Public |
-| POST | `/api/auth/refresh` | Public |
-| GET | `/api/auth/me` | |
-| POST | `/api/auth/forgot-password` | Public |
-| GET | `/api/blueprint/tenant/me` | Tenant config + theme + locales |
-| GET | `/api/blueprint/tenant/by-slug/{slug}` | Public; per public lead form |
-| GET | `/api/blueprint/navigation` | Sidebar config |
-| GET | `/api/blueprint/dashboard` | Dashboard widgets |
-| GET | `/api/blueprint/i18n/{locale}` | Public; flattened messages |
-| GET | `/api/blueprint/i18n` | Public; locale list |
-| GET/PUT | `/api/blueprint/settings` | Tenant settings KV |
-| GET/POST/PUT/DELETE | `/api/leads/*` | tenant-scoped |
-| POST | `/api/leads/public?tenant_slug=` | Public capture |
-| GET/POST/PUT/DELETE | `/api/projects/*` | con status history |
-| GET/POST/PUT/DELETE | `/api/proposals/*` + `/{id}/signoff` | |
-| GET/POST/PUT/DELETE | `/api/moodboards/*` | |
-| GET | `/api/insights/dashboard` | |
-| GET | `/api/insights/activity` | |
-| POST | `/api/storage/signed-upload` | Genera URL firmato |
-| POST | `/api/storage/media` | Registra metadata |
-| GET | `/api/storage/signed-download` | |
-| PUT | `/api/settings/branding` | Tenant branding |
-| PUT | `/api/settings/locales` | Default + active locales |
-
-## Files Architecture
+## File Map
 ```
-/app/
-├── backend/
-│   ├── database.py            # Supabase admin client (service_role)
-│   ├── middleware/auth.py     # JWKS + HS256 fallback JWT verify, get_current_user
-│   ├── models/schemas.py      # Pydantic schemas aligned to DB
-│   ├── routers/
-│   │   ├── auth.py            # signup/login/me/refresh/forgot
-│   │   ├── blueprint.py       # tenant config + i18n + nav + dashboard widgets
-│   │   ├── leads.py
-│   │   ├── projects.py
-│   │   ├── proposals.py
-│   │   ├── moodboards.py
-│   │   ├── inspirations.py
-│   │   ├── insights.py
-│   │   ├── settings.py
-│   │   └── storage.py
-│   ├── grant_perms.py         # one-shot: grants + RLS disable
-│   └── server.py
-├── frontend/src/
-│   ├── App.js                 # routes + provider tree
-│   ├── contexts/
-│   │   ├── AuthContext.jsx    # localStorage session
-│   │   └── BlueprintContext.jsx  # tenant + theme + nav + dashboard + i18n
-│   ├── lib/api.js             # axios + bearer interceptor
-│   ├── components/
-│   │   ├── common/{Brand, LocaleSwitcher}.jsx
-│   │   └── layout/{Sidebar, Topbar, DashboardLayout}.jsx
-│   └── pages/
-│       ├── auth/{Login, Signup, ForgotPassword}.jsx
-│       ├── dashboard/DashboardPage.jsx       # widget-driven
-│       ├── workspace/{Leads, Projects, ProjectDetail, Proposals}.jsx
-│       ├── moodboards/MoodboardsPage.jsx
-│       ├── inspirations/InspirationsPage.jsx
-│       ├── insights/InsightsPage.jsx
-│       ├── settings/SettingsPage.jsx
-│       └── public/LeadFormPage.jsx
-└── memory/test_credentials.md
+/app/backend/
+├── core/
+│   ├── permissions.py        # 8 roles × 31 perms, centralized
+│   ├── modules.py            # Blueprint module registry
+│   ├── feature_flags.py      # 11 flags + override engine
+│   └── tenant_context.py     # impersonation + audit + scope
+├── routers/
+│   ├── auth.py, leads.py, projects.py, proposals.py, moodboards.py
+│   ├── blueprint.py          # i18n, tenant/me, navigation, dashboard, modules, flags
+│   ├── superadmin.py         # /api/super/* cross-tenant management
+│   └── storage.py, insights.py, settings.py, inspirations.py
+├── middleware/auth.py        # JWKS ES256 + HS256 fallback
+├── models/schemas.py         # Pydantic
+└── server.py
+
+/app/frontend/src/
+├── contexts/
+│   ├── AuthContext.jsx       # localStorage session
+│   └── BlueprintContext.jsx  # theme + i18n + modules + permissions + impersonation
+├── components/
+│   ├── layout/{Sidebar,Topbar,DashboardLayout,AdminLayout}.jsx
+│   └── common/{Brand,LocaleSwitcher,ImpersonationBanner}.jsx
+├── pages/
+│   ├── auth/, dashboard/, workspace/, moodboards/, inspirations/, insights/, settings/, public/
+│   └── admin/{Overview,Tenants,TenantDetail,Modules,Audit}.jsx
+└── App.js
 ```
 
 ## Roadmap
 
-### P0 — Next (Blueprint Workspace completion)
-- ProjectDetail tabs funzionanti (Files upload via Supabase Storage, Comments, Tasks)
-- Proposals: create modal + items editor + send to client + signoff approval flow
-- Public lead form polish + tenant theme preview
+### ✅ DONE
+- Phase 1 (Tenant MVP) — auth, CRUD, dashboard, i18n, theme
+- Phase A (Super Admin Foundation) — permissions, modules, flags, impersonation
 
-### P1
-- Moodboards: block-based editor (@dnd-kit/core, Zustand state, TipTap rich text)
-- Notifications real-time (Supabase realtime subscription)
-- Tenant onboarding wizard (logo upload, locale selection, brand colors)
+### 🔜 Phase B — Tenant Branding Studio
+- Tenant Admin Brand Studio (logo light/dark, favicon, palette, typography Google Fonts, corner radius, button styles, spacing, UI density)
+- Live preview con tema applicato
+- Domain/subdomain management (`tenant_domains`)
+- Animations & motion presets
 
-### P2
-- Blueprint Inspirations (Magazine CMS) — editor TipTap, magazine_posts + paragraphs
-- Blueprint Insights advanced (funnel, conversion, retention charts)
-- AI localization engine (auto-translate tenant content keeping luxury tone)
-- White-label custom domain support (tenant_domains table already present)
+### Phase C — Homepage / Public Site Builder
+- Visual section builder (Hero, CTA, Services, Gallery, Testimonials, Featured Projects, Stats, A&D, Magazine, Final CTA)
+- Drag reorder, hide/show, multi-language content, publish flow
+- Tenant homepage live su `/{tenant-slug}`
 
-### P3
-- Blueprint Concierge™ (client communication hub)
-- Blueprint Match™ (designer ↔ client matchmaking)
-- Mobile responsive polish
-- Tests pytest in `/app/backend/tests/`
-- GitHub push to `ogrisekstefano-usa/mood-for-design-platform` (user via "Save to Github" button)
+### Phase D — Form Builder + Design Request Settings
+- Multi-step form builder con file upload
+- Design Request settings (types/styles/budgets/scoring/auto-assignment)
 
-## Critical Rules (enforced)
-1. No hardcoded UI strings — all via `t('key.path')` from `/api/blueprint/i18n/{locale}`
-2. No hardcoded theme — CSS vars driven by tenant config
-3. No hardcoded navigation — fetched from `/api/blueprint/navigation`
-4. No hardcoded dashboard layout — fetched from `/api/blueprint/dashboard`
-5. RLS disabled — multi-tenancy enforced in backend via `current_user['tenant_id']`
-6. Service role key + JWT secret + DATABASE_URL only in `/app/backend/.env` (gitignored)
-7. Frontend only has `REACT_APP_SUPABASE_URL` + `REACT_APP_SUPABASE_ANON_KEY` (anon = safe to expose)
+### Phase E — Blueprint Moodboards Editor
+- Block-based canvas (@dnd-kit/core + Zustand)
+- Image positioning, hotspot, palette, typography, versioning, export PDF, share link
 
-## Demo Credentials (also in `/app/memory/test_credentials.md`)
-- Email: `demo@moodfordesign.com`
-- Password: `Blueprint2024!`
-- Tenant: MOOD Demo Studio
-- Default locale: `it`
+### Phase F — Inspirations CMS + Insights advanced + Concierge
+- Magazine builder (paragraph builder, hero video, SEO, related)
+- Recharts premium dashboards (funnels, conversion, top categories)
+- Concierge service requests
+
+### Future
+- RLS migration path (codebase pronto, basta abilitare policies)
+- AI localization engine (auto-translate Blueprint copy)
+- White-label custom domains
+- RTL/AR locale support
+
+## Demo Credentials (`/app/memory/test_credentials.md`)
+- Email: `demo@moodfordesign.com` · Password: `Blueprint2024!`
+- Role: `super_admin` (può accedere a `/admin/*` e impersonare tenants)

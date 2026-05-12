@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends, Query, Body
 from models.schemas import LeadCreate, LeadUpdate
 from middleware.auth import get_current_user
+from core.tenant_context import get_tenant_context
 from database import db, db_available
 
 router = APIRouter()
@@ -26,7 +27,7 @@ def list_leads(
     lead_type: str = Query(None),
     limit: int = Query(50, le=200),
     offset: int = Query(0),
-    current_user: dict = Depends(get_current_user),
+    current_user: dict = Depends(get_tenant_context),
 ):
     client = db()
     q = client.table('leads').select('*').eq('tenant_id', current_user['tenant_id'])
@@ -39,7 +40,7 @@ def list_leads(
 
 
 @router.post("", status_code=201)
-def create_lead(body: LeadCreate, current_user: dict = Depends(get_current_user)):
+def create_lead(body: LeadCreate, current_user: dict = Depends(get_tenant_context)):
     client = db()
     now = _now()
     payload = _scrub(body.model_dump())
@@ -58,7 +59,7 @@ def create_lead(body: LeadCreate, current_user: dict = Depends(get_current_user)
 
 
 @router.get("/{lead_id}")
-def get_lead(lead_id: str, current_user: dict = Depends(get_current_user)):
+def get_lead(lead_id: str, current_user: dict = Depends(get_tenant_context)):
     client = db()
     result = client.table('leads').select('*').eq('id', lead_id).eq('tenant_id', current_user['tenant_id']).execute()
     if not result.data:
@@ -67,7 +68,7 @@ def get_lead(lead_id: str, current_user: dict = Depends(get_current_user)):
 
 
 @router.put("/{lead_id}")
-def update_lead(lead_id: str, body: LeadUpdate, current_user: dict = Depends(get_current_user)):
+def update_lead(lead_id: str, body: LeadUpdate, current_user: dict = Depends(get_tenant_context)):
     client = db()
     updates = _scrub(body.model_dump())
     if not updates:
@@ -82,7 +83,7 @@ def update_lead(lead_id: str, body: LeadUpdate, current_user: dict = Depends(get
 
 
 @router.delete("/{lead_id}")
-def delete_lead(lead_id: str, current_user: dict = Depends(get_current_user)):
+def delete_lead(lead_id: str, current_user: dict = Depends(get_tenant_context)):
     client = db()
     client.table('leads').delete().eq('id', lead_id).eq('tenant_id', current_user['tenant_id']).execute()
     return {"message": "Lead deleted"}

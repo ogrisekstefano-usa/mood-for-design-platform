@@ -1,9 +1,8 @@
 /**
- * BlueprintContext — loads tenant config (theme + locales + navigation) and i18n strings.
+ * BlueprintContext — tenant config + theme + i18n + module registry + permissions + impersonation.
  *
- * No hardcoded text in components — they use t('key.path').
- * Theme variables are applied as CSS custom properties on <html>.
- * Locale can be switched at runtime; tenant override is respected via tenant_slug.
+ * Tenant impersonation: when set, axios sends `X-Tenant-Override` header so backend
+ * scopes queries to that tenant (super_admin only). Stored in sessionStorage.
  */
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import axios from 'axios';
@@ -12,7 +11,8 @@ import { useAuth } from './AuthContext';
 
 const BlueprintContext = createContext(null);
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-const STORAGE_KEY = 'mfd_locale';
+const LOCALE_KEY = 'mfd_locale';
+const IMPERSONATE_KEY = 'mfd_impersonate_tenant';
 const DEFAULT_LOCALE = 'en-US';
 
 const FALLBACK_LOCALES = [
@@ -25,7 +25,7 @@ const FALLBACK_LOCALES = [
 ];
 
 function detectInitialLocale() {
-  const stored = localStorage.getItem(STORAGE_KEY);
+  const stored = localStorage.getItem(LOCALE_KEY);
   if (stored) return stored;
   if (typeof navigator !== 'undefined' && navigator.language) {
     const nl = navigator.language;
@@ -59,64 +59,67 @@ export const BlueprintProvider = ({ children }) => {
   const [tenant, setTenant] = useState(null);
   const [navigation, setNavigation] = useState(null);
   const [dashboardConfig, setDashboardConfig] = useState(null);
+  const [modules, setModules] = useState(null);
+  const [featureFlags, setFeatureFlags] = useState(null);
+  const [permissions, setPermissions] = useState([]);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [impersonating, setImpersonating] = useState(() => sessionStorage.getItem(IMPERSONATE_KEY));
   const [locale, setLocaleState] = useState(detectInitialLocale());
   const [messages, setMessages] = useState({});
   const [availableLocales, setAvailableLocales] = useState(FALLBACK_LOCALES);
   const [loading, setLoading] = useState(true);
 
-  // Load available locales once
   useEffect(() => {
     axios.get(`${BACKEND_URL}/api/blueprint/i18n`)
       .then((r) => setAvailableLocales(r.data.locales || FALLBACK_LOCALES))
       .catch(() => {});
   }, []);
 
-  // Load locale messages (re-fetch on locale change OR tenant change)
   const loadMessages = useCallback(async (loc, slug) => {
     try {
       const params = slug ? `?tenant_slug=${encodeURIComponent(slug)}` : '';
       const { data } = await axios.get(`${BACKEND_URL}/api/blueprint/i18n/${loc}${params}`);
       setMessages(data.messages || {});
-    } catch (_) {
-      setMessages({});
-    }
+    } catch (_) { setMessages({}); }
   }, []);
 
-  // When user logs in: load tenant + navigation + dashboard config
+  // Load tenant/modules/flags/permissions on user change OR impersonation change
   useEffect(() => {
     let cancelled = false;
     async function load() {
-      if (!user?.tenant_id) {
-        setTenant(null);
-        setNavigation(null);
-        setDashboardConfig(null);
+      if (!user) {
+        setTenant(null); setNavigation(null); setDashboardConfig(null);
+        setModules(null); setFeatureFlags(null); setPermissions([]); setIsSuperAdmin(false);
         await loadMessages(locale, null);
         setLoading(false);
         return;
       }
-      const [tRes, nRes, dRes] = await Promise.allSettled([
+      const results = await Promise.allSettled([
         api.get('/api/blueprint/tenant/me'),
         api.get('/api/blueprint/navigation'),
         api.get('/api/blueprint/dashboard'),
+        api.get('/api/blueprint/modules'),
+        api.get('/api/blueprint/feature-flags'),
+        api.get('/api/blueprint/me/permissions'),
       ]);
       if (cancelled) return;
+      const [tRes, nRes, dRes, mRes, fRes, pRes] = results;
       let tData = null;
       if (tRes.status === 'fulfilled') {
         tData = tRes.value.data;
         setTenant(tData);
         applyTheme(tData?.theme);
-        if (!localStorage.getItem(STORAGE_KEY) && tData?.locales?.default) {
+        if (!localStorage.getItem(LOCALE_KEY) && tData?.locales?.default) {
           setLocaleState(tData.locales.default);
         }
       }
       if (nRes.status === 'fulfilled') setNavigation(nRes.value.data);
-      else {
-        // retry once
-        try { const r = await api.get('/api/blueprint/navigation'); setNavigation(r.data); } catch (_) {}
-      }
       if (dRes.status === 'fulfilled') setDashboardConfig(dRes.value.data);
-      else {
-        try { const r = await api.get('/api/blueprint/dashboard'); setDashboardConfig(r.data); } catch (_) {}
+      if (mRes.status === 'fulfilled') setModules(mRes.value.data);
+      if (fRes.status === 'fulfilled') setFeatureFlags(fRes.value.data);
+      if (pRes.status === 'fulfilled') {
+        setPermissions(pRes.value.data.permissions || []);
+        setIsSuperAdmin(!!pRes.value.data.is_super_admin);
       }
       await loadMessages(locale, tData?.slug);
       if (!cancelled) setLoading(false);
@@ -124,16 +127,23 @@ export const BlueprintProvider = ({ children }) => {
     load();
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.tenant_id]);
+  }, [user?.tenant_id, user?.profile_id, impersonating]);
 
-  // Reload messages when locale changes
-  useEffect(() => {
-    loadMessages(locale, tenant?.slug);
-  }, [locale, tenant?.slug, loadMessages]);
+  useEffect(() => { loadMessages(locale, tenant?.slug); }, [locale, tenant?.slug, loadMessages]);
 
   const setLocale = useCallback((newLocale) => {
-    localStorage.setItem(STORAGE_KEY, newLocale);
+    localStorage.setItem(LOCALE_KEY, newLocale);
     setLocaleState(newLocale);
+  }, []);
+
+  const startImpersonation = useCallback((tenantId) => {
+    sessionStorage.setItem(IMPERSONATE_KEY, tenantId);
+    setImpersonating(tenantId);
+  }, []);
+
+  const stopImpersonation = useCallback(() => {
+    sessionStorage.removeItem(IMPERSONATE_KEY);
+    setImpersonating(null);
   }, []);
 
   const t = useCallback((key, vars, fallback) => {
@@ -142,17 +152,20 @@ export const BlueprintProvider = ({ children }) => {
     return interpolate(value, vars);
   }, [messages]);
 
+  const can = useCallback((perm) => permissions.includes(perm), [permissions]);
+
+  const enabledModuleIds = useMemo(() => new Set(modules?.modules?.map((m) => m.id) || []), [modules]);
+  const isModuleEnabled = useCallback((id) => enabledModuleIds.has(id), [enabledModuleIds]);
+
   const value = useMemo(() => ({
-    tenant,
-    navigation,
-    dashboardConfig,
-    locale,
-    setLocale,
-    availableLocales,
-    messages,
-    t,
-    loading,
-  }), [tenant, navigation, dashboardConfig, locale, setLocale, availableLocales, messages, t, loading]);
+    tenant, navigation, dashboardConfig, modules, featureFlags,
+    permissions, isSuperAdmin, can, isModuleEnabled,
+    impersonating, startImpersonation, stopImpersonation,
+    locale, setLocale, availableLocales, messages, t, loading,
+  }), [tenant, navigation, dashboardConfig, modules, featureFlags,
+       permissions, isSuperAdmin, can, isModuleEnabled,
+       impersonating, startImpersonation, stopImpersonation,
+       locale, setLocale, availableLocales, messages, t, loading]);
 
   return <BlueprintContext.Provider value={value}>{children}</BlueprintContext.Provider>;
 };

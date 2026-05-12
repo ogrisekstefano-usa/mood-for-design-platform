@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends, Query
 from models.schemas import SignedUploadRequest, MediaUploadComplete
 from middleware.auth import get_current_user
+from core.tenant_context import get_tenant_context
 from database import db
 
 router = APIRouter()
@@ -19,7 +20,7 @@ def _now():
 
 
 @router.post("/signed-upload")
-def create_signed_upload(body: SignedUploadRequest, current_user: dict = Depends(get_current_user)):
+def create_signed_upload(body: SignedUploadRequest, current_user: dict = Depends(get_tenant_context)):
     """Generate a signed URL for direct upload to Supabase Storage from client."""
     if body.bucket not in ALLOWED_BUCKETS:
         raise HTTPException(400, "Invalid bucket")
@@ -40,7 +41,7 @@ def create_signed_upload(body: SignedUploadRequest, current_user: dict = Depends
 
 
 @router.post("/media", status_code=201)
-def register_media(body: MediaUploadComplete, current_user: dict = Depends(get_current_user)):
+def register_media(body: MediaUploadComplete, current_user: dict = Depends(get_tenant_context)):
     """Register an uploaded file in media_library after client-side upload."""
     if body.bucket not in ALLOWED_BUCKETS:
         raise HTTPException(400, "Invalid bucket")
@@ -74,7 +75,7 @@ def register_media(body: MediaUploadComplete, current_user: dict = Depends(get_c
 
 @router.get("/signed-download")
 def signed_download(bucket: str = Query(...), path: str = Query(...),
-                    current_user: dict = Depends(get_current_user)):
+                    current_user: dict = Depends(get_tenant_context)):
     if bucket not in ALLOWED_BUCKETS:
         raise HTTPException(400, "Invalid bucket")
     if not path.startswith(current_user['tenant_id'] + '/'):
@@ -88,7 +89,7 @@ def signed_download(bucket: str = Query(...), path: str = Query(...),
 
 
 @router.get("/media")
-def list_media(current_user: dict = Depends(get_current_user),
+def list_media(current_user: dict = Depends(get_tenant_context),
                category: str = Query(None), limit: int = Query(50, le=200)):
     client = db()
     q = client.table('media_library').select('*').eq('tenant_id', current_user['tenant_id'])

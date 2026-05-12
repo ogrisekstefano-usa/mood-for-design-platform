@@ -1,6 +1,7 @@
 """Insights — dashboard KPI + activity feed."""
 from fastapi import APIRouter, Depends, Query
 from middleware.auth import get_current_user
+from core.tenant_context import get_tenant_context
 from database import db
 
 router = APIRouter()
@@ -16,7 +17,7 @@ def _count(table, tenant_id, filters=None):
 
 
 @router.get("/dashboard")
-def dashboard(current_user: dict = Depends(get_current_user)):
+def dashboard(current_user: dict = Depends(get_tenant_context)):
     tid = current_user['tenant_id']
     return {
         "leads": {
@@ -41,7 +42,7 @@ def dashboard(current_user: dict = Depends(get_current_user)):
 
 
 @router.get("/activity")
-def recent_activity(limit: int = Query(15, le=50), current_user: dict = Depends(get_current_user)):
+def recent_activity(limit: int = Query(15, le=50), current_user: dict = Depends(get_tenant_context)):
     client = db()
     tid = current_user['tenant_id']
     # Pull latest events from multiple sources, merge in-memory.

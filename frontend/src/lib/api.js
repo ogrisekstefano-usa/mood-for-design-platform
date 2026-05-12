@@ -16,6 +16,9 @@ api.interceptors.request.use((config) => {
       const s = JSON.parse(raw);
       if (s?.access_token) config.headers.Authorization = `Bearer ${s.access_token}`;
     }
+    // Tenant impersonation header (super_admin only — backend enforces role check)
+    const impersonate = sessionStorage.getItem('mfd_impersonate_tenant');
+    if (impersonate) config.headers['X-Tenant-Override'] = impersonate;
   } catch (_) {}
   return config;
 });

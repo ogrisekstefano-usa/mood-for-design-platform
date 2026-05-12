@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends, Query
 from models.schemas import MoodboardCreate, MoodboardUpdate
 from middleware.auth import get_current_user
+from core.tenant_context import get_tenant_context
 from database import db
 
 router = APIRouter()
@@ -21,7 +22,7 @@ def _scrub(d: dict) -> dict:
 def list_moodboards(
     project_id: str = Query(None),
     status: str = Query(None),
-    current_user: dict = Depends(get_current_user),
+    current_user: dict = Depends(get_tenant_context),
 ):
     client = db()
     q = client.table('moodboards').select('*').eq('tenant_id', current_user['tenant_id'])
@@ -34,7 +35,7 @@ def list_moodboards(
 
 
 @router.post("", status_code=201)
-def create_moodboard(body: MoodboardCreate, current_user: dict = Depends(get_current_user)):
+def create_moodboard(body: MoodboardCreate, current_user: dict = Depends(get_tenant_context)):
     client = db()
     now = _now()
     payload = _scrub(body.model_dump())
@@ -48,7 +49,7 @@ def create_moodboard(body: MoodboardCreate, current_user: dict = Depends(get_cur
 
 
 @router.get("/{moodboard_id}")
-def get_moodboard(moodboard_id: str, current_user: dict = Depends(get_current_user)):
+def get_moodboard(moodboard_id: str, current_user: dict = Depends(get_tenant_context)):
     client = db()
     r = client.table('moodboards').select('*').eq('id', moodboard_id).eq('tenant_id', current_user['tenant_id']).execute()
     if not r.data:
@@ -60,7 +61,7 @@ def get_moodboard(moodboard_id: str, current_user: dict = Depends(get_current_us
 
 
 @router.put("/{moodboard_id}")
-def update_moodboard(moodboard_id: str, body: MoodboardUpdate, current_user: dict = Depends(get_current_user)):
+def update_moodboard(moodboard_id: str, body: MoodboardUpdate, current_user: dict = Depends(get_tenant_context)):
     client = db()
     updates = _scrub(body.model_dump())
     if not updates:
@@ -73,7 +74,7 @@ def update_moodboard(moodboard_id: str, body: MoodboardUpdate, current_user: dic
 
 
 @router.delete("/{moodboard_id}")
-def delete_moodboard(moodboard_id: str, current_user: dict = Depends(get_current_user)):
+def delete_moodboard(moodboard_id: str, current_user: dict = Depends(get_tenant_context)):
     client = db()
     client.table('moodboards').delete().eq('id', moodboard_id).eq('tenant_id', current_user['tenant_id']).execute()
     return {"message": "deleted"}
