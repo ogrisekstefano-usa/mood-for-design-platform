@@ -1,52 +1,74 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import './App.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const DashboardLayout = lazy(() => import('./components/layout/DashboardLayout'));
+const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
+const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
+const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage'));
+const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage'));
+const LeadsPage = lazy(() => import('./pages/workspace/LeadsPage'));
+const ProjectsPage = lazy(() => import('./pages/workspace/ProjectsPage'));
+const ProjectDetailPage = lazy(() => import('./pages/workspace/ProjectDetailPage'));
+const ProposalsPage = lazy(() => import('./pages/proposals/ProposalsPage'));
+const MoodboardsPage = lazy(() => import('./pages/moodboards/MoodboardsPage'));
+const InspirationsPage = lazy(() => import('./pages/inspirations/InspirationsPage'));
+const InsightsPage = lazy(() => import('./pages/insights/InsightsPage'));
+const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'));
+const LeadFormPage = lazy(() => import('./pages/public/LeadFormPage'));
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
+const Loading = () => (
+  <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center">
+    <div className="flex flex-col items-center gap-3">
+      <div className="w-6 h-6 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin" />
+      <p className="text-[#6B6863] text-xs font-body tracking-widest uppercase">Loading</p>
     </div>
-  );
+  </div>
+);
+
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return <Loading />;
+  return user ? children : <Navigate to="/auth/login" replace />;
+};
+
+const PublicRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return <Loading />;
+  return !user ? children : <Navigate to="/dashboard" replace />;
 };
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/auth/login" replace />} />
+              <Route path="/auth/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+              <Route path="/auth/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
+              <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/form/:slug" element={<LeadFormPage />} />
+
+              <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/workspace/leads" element={<LeadsPage />} />
+                <Route path="/workspace/projects" element={<ProjectsPage />} />
+                <Route path="/workspace/projects/:id" element={<ProjectDetailPage />} />
+                <Route path="/proposals" element={<ProposalsPage />} />
+                <Route path="/moodboards" element={<MoodboardsPage />} />
+                <Route path="/inspirations" element={<InspirationsPage />} />
+                <Route path="/insights" element={<InsightsPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+              </Route>
+
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </AuthProvider>
     </div>
   );
 }
