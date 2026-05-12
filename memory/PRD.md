@@ -76,7 +76,6 @@ Multi-tenant SaaS platform per interior designer e architetti, costruita come Bl
 - **Impersonation banner** automatico nel DashboardLayout quando session attivo
 
 ### ✅ Phase B — Tenant Branding Studio (DONE — 12 Mag 2026)
-- **Theme Engine** (`core/theme_engine.py`) — design system runtime tokens:
   - Palette (12 tokens: primary, accent, background, surface 1/2/3, borders, text 4 levels, success/warning/danger)
   - Typography (font_heading, font_body, font_mono, font_size_base, line_height, letter_spacing)
   - Shape (radius_xs through xl + pill)
@@ -108,6 +107,51 @@ Multi-tenant SaaS platform per interior designer e architetti, costruita come Bl
 - **Settings hub** (`/settings`) — 4 tile (Brand Studio · Domains · Locales · Team)
 - **DomainsPage** (`/settings/domains`) — add/delete con validazione regex, badge verification status
 - **Resilienza**: middleware FastAPI retry trasparente su httpx.RemoteProtocolError (Supabase pooler hiccups)
+
+### ✅ Phase B+ — Design DNA Expansion (DONE — 12 Mag 2026)
+Mockups (3 luxury hospitality UI references) absorbed into the Theme Engine — NOT replicated as static pages. Extracted: editorial typography rhythm, cinematic atmosphere, motion personality, spacing system.
+
+- **Theme Engine v2** (`core/theme_engine.py`): 80+ tokens (was ~40)
+  - `editorial` scale: display/h1/h2/h3/lead/body/caption/eyebrow as fluid clamp() + line-heights + tracking
+  - `atmosphere`: grain_intensity, glow_intensity, vignette_intensity, glass_blur, glass_opacity, hero_gradient, section_divider
+  - `spacing` extended: section_y, section_x, gutter, max_width, stack_tight/default/loose/editorial
+  - `motion` extended: duration_cinematic, ease_emphasis, ease_entrance, stagger, hover_lift
+  - `elevation` extended: xl, glow, inset_soft
+  - `palette` extended: overlay, selection_bg, selection_fg
+  - `components` extended: image_treatment, cursor_style, input_style
+- **2 new palette presets** in Brand Studio: `editorial-noir` (warm noir + copper accent + grain) · `linear-mist` (cool tech violet + clean glass)
+- **CSS utilities** in `index.css`: `.bp-display .bp-h1 .bp-h2 .bp-h3 .bp-lead .bp-body .bp-caption .bp-eyebrow .bp-section .bp-container .bp-glass .bp-grain .bp-vignette .bp-hero-gradient .bp-btn .bp-btn-primary .bp-btn-ghost .bp-enter .bp-marquee-track .bp-img-cinematic`
+- **BlueprintContext.applyTheme** propagates all new tokens to `:root` CSS variables (no rebuild)
+- **Fix**: `ThemeUpdate` Pydantic model now accepts `atmosphere` + `editorial` fields (were silently dropped)
+
+### ✅ Phase B+ — Section Engine (DONE — 12 Mag 2026)
+Server-configurable rendering backbone reusable across: homepage · landing · proposals · magazine · moodboards · showcase · client portals · onboarding flows. ZERO hardcoded content.
+
+- **Backend** (`core/section_registry.py` + `routers/pages.py`):
+  - 10 section types: `hero · feature_grid · gallery · quote · stats · cta · split · logo_strip · magazine_grid · faq` — each with schema + defaults + reusable_in[] + category
+  - DEFAULT_PAGE_TEMPLATES: `homepage` (8 sections) · `showcase` (4) · `about` (4)
+  - Pages stored per tenant in `tenant_settings` (key pattern `page.{slug}`)
+  - Endpoints under `/api/blueprint`: `GET sections/catalog`, `GET pages`, `GET/PUT pages/:slug`, `POST/PUT/DELETE/PATCH sections`, `POST sections/:id/duplicate`, `POST pages/:slug/reset`, `GET palette-presets`
+- **Frontend** (`/app/frontend/src/blueprint/`):
+  - `SectionRegistry.js` — type → React component map + `resolveContent(section, locale, fallback)`
+  - `PageRenderer.jsx` — generic `<BlueprintPageRenderer slug=... />` or with `page` prop for live preview
+  - `Kit.jsx` — Blueprint UI Kit primitives (Eyebrow/Display/H1-3/Lead/Body/Caption/Section/Container/Button/CTAGroup), all token-driven
+  - 10 section components in `blueprint/sections/`, all theme-aware, locale-aware
+- **HomepageBuilderPage** (`/settings/pages`): Shopify-Sections-style UX
+  - 440px left rail with section stack (chevron reorder · eye toggle · copy · trash · edit), right pane = live preview
+  - Switch between pages (homepage/showcase/about) via topbar
+  - Viewport switcher (Desktop/Tablet/Mobile) with smooth animated width
+  - Locale switcher for editing translations per language (content stored as `{_default, en-US, it, fr, de, es}`)
+  - Add modal with all 10 section types categorized
+  - Save bar dirty-state + Reset to default template
+  - Inline property editor renders different fields per section type
+- **Tested End-to-End** ✅
+  - 10/10 backend endpoints pass (catalog, page CRUD, section CRUD, reorder, duplicate, reset, palette presets, extended theme tokens)
+  - All critical frontend testids present (`homepage-builder-page`, `tile-pages`, `add-section-btn`, `save-page`, `reset-page`, `viewport-*`, `preview-locale`)
+  - 8 brand presets visible including Editorial Noir + Linear Mist
+  - Property editor opens correctly per section type; preview updates live
+  - Italian locale active in sidebar
+
 
 ### Tested End-to-End ✅
 - Login → tema teal #26F5C9 caricato runtime
@@ -162,9 +206,10 @@ Multi-tenant SaaS platform per interior designer e architetti, costruita come Bl
 - Phase A (Super Admin Foundation) — permissions, modules, flags, impersonation
 
 ### 🔜 Phase C — Homepage / Public Site Builder
-- Visual section builder (Hero, CTA, Services, Gallery, Testimonials, Featured Projects, Stats, A&D, Magazine, Final CTA)
-- Drag reorder, hide/show, multi-language content, publish flow
-- Tenant homepage live su `/{tenant-slug}` o custom domain
+- ✅ Section Engine fondazionale (DONE in Phase B+)
+- ✅ Homepage Builder UI (DONE in Phase B+)
+- Public route for tenant homepage live su `/{tenant-slug}` o custom domain (renderer pubblico, no auth)
+- Dynamic Menu / Navigation / Footer configuration
 - **Public Tenant Showcase** opt-in (enterprise) — `/showcase/{tenant-slug}` directory pubblica per SEO
 
 ### Phase D — Form Builder + Design Request Settings

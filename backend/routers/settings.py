@@ -45,10 +45,12 @@ class ThemeUpdate(BaseModel):
     """Partial theme update — deep-merged with existing overrides."""
     palette: Optional[Dict[str, Any]] = None
     typography: Optional[Dict[str, Any]] = None
+    editorial: Optional[Dict[str, Any]] = None
     shape: Optional[Dict[str, Any]] = None
     spacing: Optional[Dict[str, Any]] = None
     elevation: Optional[Dict[str, Any]] = None
     motion: Optional[Dict[str, Any]] = None
+    atmosphere: Optional[Dict[str, Any]] = None
     components: Optional[Dict[str, Any]] = None
     assets: Optional[Dict[str, Any]] = None
     mode: Optional[str] = None
