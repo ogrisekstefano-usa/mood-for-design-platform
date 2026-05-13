@@ -168,6 +168,23 @@ def _fetch_template(client, template_id: str, tenant_id: str) -> dict:
     return tpl
 
 
+def _list_template_pages(client, template_id: str) -> list:
+    """Return template_pages with their blocks attached, for the gallery
+    carousel preview. Empty list for legacy single-page templates."""
+    pages = client.table("template_pages").select("*") \
+        .eq("template_id", template_id).order("sort_order").execute().data or []
+    if not pages:
+        return []
+    blocks_q = client.table("template_blocks").select("*") \
+        .eq("template_id", template_id).order("sort_order").execute()
+    by_page: dict = {}
+    for b in (blocks_q.data or []):
+        pid = b.get("template_page_id")
+        if pid:
+            by_page.setdefault(pid, []).append(b)
+    return [{**p, "blocks": by_page.get(p["id"], [])} for p in pages]
+
+
 def _list_template_blocks(client, template_id: str) -> list:
     r = client.table("template_blocks").select("*") \
         .eq("template_id", template_id).order("sort_order").execute()
@@ -183,12 +200,32 @@ def _raw_template_blocks(client, template_id: str) -> list:
 
 
 def _attach_preview(client, tpl: dict) -> dict:
-    """Adds preview_svg + palette to a template dict (mutates a copy)."""
+    """Adds preview_svg + palette to a template dict. For multi-page
+    templates also fills `pages_preview` (carousel of mini-SVGs)."""
     raw = _raw_template_blocks(client, tpl["id"])
     pv = build_preview(raw)
     tpl["preview_svg"] = pv["preview_svg"]
     tpl["palette"] = pv["palette"]
     tpl["block_count"] = len(raw)
+
+    # F.1: per-page preview carousel (only emitted when the template is multi-page)
+    pages = client.table("template_pages").select("id, title, sort_order") \
+        .eq("template_id", tpl["id"]).order("sort_order").execute().data or []
+    if len(pages) > 1:
+        carousel = []
+        for p in pages:
+            pblocks = client.table("template_blocks") \
+                .select("type, content, position_json, sort_order") \
+                .eq("template_page_id", p["id"]).order("sort_order").execute().data or []
+            pv2 = build_preview(pblocks)
+            carousel.append({
+                "id": p["id"], "title": p["title"], "sort_order": p["sort_order"],
+                "preview_svg": pv2["preview_svg"],
+            })
+        tpl["pages_preview"] = carousel
+        tpl["page_count"] = len(pages)
+    else:
+        tpl["page_count"] = max(1, len(pages))
     return tpl
 
 
@@ -364,40 +401,77 @@ def apply_template(template_id: str, body: ApplyTemplate,
     mb = {k: v for k, v in mb.items() if v is not None}
     client.table("moodboards").insert(mb).execute()
 
-    # F.0: every applied template materializes a single "Cover" page that
-    # holds all the cloned blocks. F.1 will extend this to multi-page templates.
-    default_page_id = str(uuid.uuid4())
-    client.table("moodboard_pages").insert({
-        "id": default_page_id,
-        "tenant_id": ctx["tenant_id"],
-        "moodboard_id": moodboard_id,
-        "title": body.title,
-        "page_type": "blank",
-        "aspect_ratio": "portrait_a4",
-        "width": 1400, "height": 2400,
-        "sort_order": 0,
-        "created_by": ctx["profile_id"],
-    }).execute()
-    client.table("moodboards").update({"current_page_id": default_page_id}) \
+    # F.1: clone template_pages → moodboard_pages, then each template_block →
+    # moodboard_element scoped to its corresponding new page. Fallback for
+    # legacy single-page templates (no template_pages rows): synthesize one
+    # default page so the loop semantics stay uniform.
+    tpl_pages = client.table("template_pages").select("*") \
+        .eq("template_id", template_id).order("sort_order").execute().data or []
+
+    page_id_map = {}  # template_page_id → new moodboard_page_id
+    if tpl_pages:
+        for tp in tpl_pages:
+            new_pid = str(uuid.uuid4())
+            page_id_map[tp["id"]] = new_pid
+            client.table("moodboard_pages").insert({
+                "id": new_pid,
+                "tenant_id": ctx["tenant_id"],
+                "moodboard_id": moodboard_id,
+                "title": tp.get("title") or "Page",
+                "page_type": tp.get("page_type") or "blank",
+                "aspect_ratio": tp.get("aspect_ratio") or "portrait_a4",
+                "width": tp.get("width") or 1400,
+                "height": tp.get("height") or 2400,
+                "background": tp.get("background") or {},
+                "settings": tp.get("settings") or {},
+                "sort_order": tp.get("sort_order") or 0,
+                "created_by": ctx["profile_id"],
+            }).execute()
+        landing_page_id = page_id_map[tpl_pages[0]["id"]]
+    else:
+        landing_page_id = str(uuid.uuid4())
+        client.table("moodboard_pages").insert({
+            "id": landing_page_id,
+            "tenant_id": ctx["tenant_id"],
+            "moodboard_id": moodboard_id,
+            "title": body.title,
+            "page_type": "blank",
+            "aspect_ratio": "portrait_a4",
+            "width": 1400, "height": 2400, "sort_order": 0,
+            "created_by": ctx["profile_id"],
+        }).execute()
+
+    client.table("moodboards").update({"current_page_id": landing_page_id}) \
         .eq("id", moodboard_id).execute()
 
-    # Clone template_blocks → moodboard_elements (attached to the default page)
+    # Clone template_blocks → moodboard_elements (attached to the cloned pages)
     tpl_blocks = client.table("template_blocks").select("*") \
         .eq("template_id", template_id).order("sort_order").execute().data or []
     for tb in tpl_blocks:
         content = _parse_jsonish(tb.get("content"))
         pos = _parse_jsonish(tb.get("position_json"))
         style = _parse_jsonish(tb.get("style_json"))
+        # Carry placeholder semantics into metadata so the editor knows to
+        # render the "Replace with ..." affordance.
+        meta = {}
+        if tb.get("is_placeholder"):
+            meta["placeholder"] = {
+                "label": tb.get("placeholder_label"),
+                "type": tb.get("placeholder_type"),
+                "required": tb.get("placeholder_required", False),
+            }
+        target_page_id = page_id_map.get(tb.get("template_page_id"), landing_page_id)
         row = {
             "id": str(uuid.uuid4()),
             "tenant_id": ctx["tenant_id"],
             "moodboard_id": moodboard_id,
-            "page_id": default_page_id,
+            "page_id": target_page_id,
             "type": tb["type"],
             "title": tb.get("title") or (content.get("caption") if tb["type"] == "image" else None),
             "content": json.dumps(content),
             "position_json": pos,
             "style_json": style,
+            "metadata_json": meta if meta else None,
             "sort_order": tb.get("sort_order") or 0,
         }
         # Mirror src→image_url for image blocks (parity with regular create_block)
@@ -452,15 +526,36 @@ def save_as_template(moodboard_id: str, body: SaveAsTemplate,
             raise HTTPException(409, "A template with that slug already exists in this tenant")
         raise
 
-    # Snapshot all current elements → template_blocks (structure only, no
-    # per-tenant URLs leak: image_url and content.src are intentionally kept
-    # because a tenant-saved template is private to that tenant by default).
+    # F.1: snapshot multi-page — clone moodboard_pages → template_pages first,
+    # then clone moodboard_elements → template_blocks scoped to the cloned pages.
+    src_pages = client.table("moodboard_pages").select("*") \
+        .eq("moodboard_id", moodboard_id).order("sort_order").execute().data or []
+    page_id_map: dict = {}
+    for sp in src_pages:
+        new_tpid = str(uuid.uuid4())
+        page_id_map[sp["id"]] = new_tpid
+        client.table("template_pages").insert({
+            "id": new_tpid,
+            "template_id": tid,
+            "title": sp.get("title"),
+            "page_type": sp.get("page_type") or "blank",
+            "aspect_ratio": sp.get("aspect_ratio") or "portrait_a4",
+            "width": sp.get("width") or 1400,
+            "height": sp.get("height") or 2400,
+            "background": sp.get("background") or {},
+            "settings": sp.get("settings") or {},
+            "sort_order": sp.get("sort_order") or 0,
+        }).execute()
+
     els = client.table("moodboard_elements").select("*") \
         .eq("moodboard_id", moodboard_id).order("sort_order").execute().data or []
     for el in els:
         content = _parse_jsonish(el.get("content"))
+        meta = _parse_jsonish(el.get("metadata_json"))
+        ph = meta.get("placeholder") if isinstance(meta, dict) else None
         client.table("template_blocks").insert({
             "template_id": tid,
+            "template_page_id": page_id_map.get(el.get("page_id")),
             "type": el["type"],
             "title": el.get("title"),
             "image_url": el.get("image_url"),
@@ -468,9 +563,15 @@ def save_as_template(moodboard_id: str, body: SaveAsTemplate,
             "position_json": _parse_jsonish(el.get("position_json")),
             "style_json": _parse_jsonish(el.get("style_json")),
             "sort_order": el.get("sort_order") or 0,
+            "is_placeholder": bool(ph),
+            "placeholder_label": ph.get("label") if ph else None,
+            "placeholder_type": ph.get("type") if ph else None,
+            "placeholder_required": ph.get("required") if ph else False,
         }).execute()
 
     audit_log(ctx["tenant_id"], ctx["profile_id"], "template.saved_from_moodboard",
               resource_type="template", resource_id=tid,
-              metadata={"source_moodboard_id": moodboard_id})
-    return {"id": tid, "slug": body.slug, "blocks_count": len(els)}
+              metadata={"source_moodboard_id": moodboard_id,
+                        "page_count": len(src_pages), "block_count": len(els)})
+    return {"id": tid, "slug": body.slug,
+            "page_count": len(src_pages), "blocks_count": len(els)}

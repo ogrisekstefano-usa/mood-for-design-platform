@@ -1,0 +1,36 @@
+{
+  "summary": "Phase F.1 (Structural Multi-page Templates) — BACKEND 14/14 NEW + 19/19 F.0 regression = 33/33 PASS. FRONTEND verified live: TemplatePicker loads 13 cards; structural templates show '8 pagine' and '6 pagine' badges via data-testid='template-page-count-{slug}' with Layers icon; Luxury card renders multi-layered stack (4 SVGs) while Material Board renders single SVG (correct per spec); IT i18n strings present (AVVIO RAPIDO, Tela vuota, Apri, pagine, Derivato da un altro template, Sostituisci con immagine, Aggiungi pagina); apply flow E2E → 8 pages cloned with localized page-type labels (Copertina / Citazione / Mood / Palette / ...), placeholder ★ HERO COVE... rendered with required marker, page tiles visible in PagesNavigator; '+' add-page-btn header button and inline dashed 'Aggiungi pagina' tile present on fixture moodboard. NO bugs found.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_f1_structural_templates.py",
+    "/app/test_reports/pytest/iteration_13_f1.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "templates._attach_preview correctly emits pages_preview carousel only when len(pages) > 1; single-page templates get page_count=1 without carousel. Verified: Luxury 8/8 SVGs, Hospitality 6/6 SVGs, Material Board no carousel.",
+    "apply_template clones template_pages → moodboard_pages, builds page_id_map, then attaches each template_block to the corresponding new page_id. landing_page_id is the first cloned page (sort_order ASC). Placeholder metadata correctly propagated via metadata_json.placeholder = {label,type,required}. Verified by test_apply_luxury_creates_8_pages_with_placeholders.",
+    "save_as_template snapshots multi-page round-trip: source 6-page moodboard → template with 6 template_pages + 6 pages_preview → re-apply produces 6 cloned pages with elements properly scoped. Round-trip verified.",
+    "Cross-tenant: studio2 CAN read platform structural templates (RBAC by ownership: archived_at is null + tenant_id IS NULL — platform-visible) and CAN apply to their own tenant, but the resulting moodboard lives in studio2 tenant; designer GET on it returns 404. No leak. Verified.",
+    "RBAC client → 403 on POST apply + POST from-moodboard fires BEFORE resource lookup (decorator-level). Verified.",
+    "TemplatePicker UI: page-count badge uses data-testid='template-page-count-structural-luxury-residential' = '8 pagine' (and 6 pagine for hospitality). Material Board (single page) intentionally does NOT show a page-count badge — matches spec ('badge for multi-page templates').",
+    "Note (minor): page tiles in PagesNavigator do NOT match data-testid='page-tile-{id}' selector — agent context referenced this pattern but rendered DOM uses a different attribute; visual proof of 8 tiles confirms the UI behavior is correct. Main agent may want to standardize data-testid on the page tile element for next-iteration test automation."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase_f1_structural_templates.py (NEW — 14 tests across 7 classes: list page_count, detail pages_preview carousel, apply multi-page with placeholder metadata, save-as round-trip, cross-tenant isolation, RBAC client 403, IT i18n)"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 new F.1 + 19/19 F.0 regression = 33/33)",
+    "frontend": "100% on observable F.1 flows: picker loads 13 cards in ~12s, structural badges + layered preview verified, apply→editor with 8 pages + placeholder ★ + localized page types verified, IT i18n strings rendered, PagesNavigator + button + inline dashed tile present"
+  },
+  "test_credentials": "designer@moodfordesign.com / Designer2024! (primary) + studio2@moodfordesign.com / Studio2024! (cross-tenant — confirmed READ allowed on platform structural templates, apply scoped to own tenant) + client@moodfordesign.com / Client2024! (RBAC — 403 on apply + from-moodboard)",
+  "seed_data_creation": "Tests create TEST_F1_* moodboards via /api/templates/{id}/apply and TEST_F1_TPL_* templates via /api/templates/from-moodboard; all cleaned up via DELETE in finally blocks. Cross-tenant test creates a studio2 moodboard then deletes it. Structural seed templates (UUIDs 22222222-...001/002/003) are idempotent platform fixtures — NEVER mutated.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "F.1 GREEN. SaveAsTemplate Pydantic model requires `slug` (3-64 chars) in addition to `name` — easy to miss in payload. Blueprint i18n endpoint is /api/blueprint/i18n/{locale} (path segment), NOT ?locale=it (query). 'AVVIO RAPIDO' / 'PAGINE' eyebrows in the UI are rendered uppercase via CSS text-transform but source IT strings are 'Avvio rapido' / 'Pagine' — match the source form when grepping i18n response, and the rendered form when grepping page.innerText in Chromium. TemplatePicker spinner takes 8-12s on first paint due to 13 templates × N pages × preview SVG fetches; use page.wait_for_timeout(12000) before asserting cards. Material Board structural template intentionally has NO page-count badge (single page). The 4-svg count on Luxury card includes 3 stacked mini-previews + 1 palette swatch container — proves layered design.",
+  "rca of the issue": "No bugs found in F.1 implementation. Backend, integrations, RBAC, cross-tenant isolation, i18n IT — all GREEN."
+}

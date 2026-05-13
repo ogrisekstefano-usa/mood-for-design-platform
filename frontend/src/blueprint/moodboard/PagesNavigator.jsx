@@ -138,12 +138,22 @@ const PagesNavigator = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
 
   return (
     <aside data-testid="pages-navigator"
-           className="relative w-[180px] border-r border-[var(--bp-border)] bg-[var(--bp-surface-1)]/50 flex flex-col">
-      <div className="px-3 pt-4 pb-2">
+           className="relative w-[200px] flex-shrink-0 border-r border-[var(--bp-border)] bg-[var(--bp-surface-1)]/50 flex flex-col min-h-0">
+      <div className="px-3 pt-4 pb-2 flex items-center justify-between">
         <p className="bp-eyebrow !text-[9px] !text-[var(--bp-text-muted)]">{t('moodboards.page.eyebrow')}</p>
+        {!readOnly && (
+          <button onClick={() => setPicker(true)}
+                  data-testid="add-page-btn"
+                  title={t('moodboards.page.add')}
+                  className="w-6 h-6 flex items-center justify-center rounded-full
+                             text-[var(--bp-text-muted)] hover:text-[var(--bp-primary)]
+                             hover:bg-[var(--bp-surface-2)] transition-colors">
+            <Plus size={12} strokeWidth={1.5} />
+          </button>
+        )}
       </div>
 
-      <div className="flex-1 overflow-y-auto px-3 pb-3 space-y-2">
+      <div className="flex-1 overflow-y-auto px-3 pb-3 space-y-2 min-h-0">
         {pages.map((p, i) => {
           const active = p.id === currentPageId;
           return (
@@ -195,18 +205,32 @@ const PagesNavigator = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
             </div>
           );
         })}
+
+        {/* Inline "Add page" tile — always visible at the end of the list,
+            scrolls with the pages so it never gets cut off by overflow.   */}
+        {!readOnly && (
+          <button onClick={() => setPicker(true)}
+                  data-testid="add-page-inline-btn"
+                  className="group w-full p-2 rounded-[var(--bp-radius-sm)] border border-dashed
+                             border-[var(--bp-border)] hover:border-[var(--bp-primary)]
+                             bg-transparent hover:bg-[var(--bp-surface-1)]/60 transition-colors
+                             flex flex-col items-center justify-center gap-1.5">
+            <div className="w-7 h-7 rounded-full flex items-center justify-center
+                            border border-[var(--bp-border)] group-hover:border-[var(--bp-primary)]
+                            text-[var(--bp-text-muted)] group-hover:text-[var(--bp-primary)] transition-colors">
+              <Plus size={12} strokeWidth={1.5} />
+            </div>
+            <span className="bp-caption !text-[10px] !text-[var(--bp-text-muted)] group-hover:text-[var(--bp-text-primary)] transition-colors">
+              {t('moodboards.page.add')}
+            </span>
+          </button>
+        )}
       </div>
 
-      {!readOnly && (
-        <div className="p-3 border-t border-[var(--bp-border)] relative">
-          <button onClick={() => setPicker(true)}
-                  data-testid="add-page-btn"
-                  className="bp-btn bp-btn-ghost text-[11px] w-full">
-            <Plus size={11} strokeWidth={1.5} /> {t('moodboards.page.add')}
-          </button>
-          {picker && (
-            <AddPagePicker presets={presets} onAdd={handleAdd} onClose={() => setPicker(false)} t={t} />
-          )}
+      {/* Sticky bottom picker overlay */}
+      {picker && (
+        <div className="absolute bottom-2 left-3 right-3 z-40">
+          <AddPagePicker presets={presets} onAdd={handleAdd} onClose={() => setPicker(false)} t={t} />
         </div>
       )}
     </aside>

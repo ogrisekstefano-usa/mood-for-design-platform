@@ -13,7 +13,7 @@
  * NOT: marketplace grid · ecommerce thumbnails.
  */
 import React, { useEffect, useState } from 'react';
-import { FilePlus, Check, GitBranch } from 'lucide-react';
+import { FilePlus, Check, GitBranch, Layers } from 'lucide-react';
 import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 
@@ -41,30 +41,53 @@ const Swatches = ({ colors }) => {
   );
 };
 
-const PreviewBox = ({ svg, ratio }) => (
-  <div
-    className="relative w-full overflow-hidden rounded-[var(--bp-radius-xs)] bg-[var(--bp-bg)]"
-    style={{ aspectRatio: ratio }}
-  >
-    {svg ? (
-      // Server-generated SVG — safe (we control the source, no user-injected HTML)
-      <div
-        className="absolute inset-0 [&>svg]:w-full [&>svg]:h-full"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: svg }}
-      />
-    ) : (
-      <div className="absolute inset-0 flex items-center justify-center">
-        <FilePlus size={20} strokeWidth={1} className="text-[var(--bp-text-subtle)]" />
+const PreviewBox = ({ tpl, ratio }) => {
+  const pages = tpl.pages_preview || [];
+  const isMulti = pages.length > 1;
+
+  if (isMulti) {
+    // Layered card-stack to telegraph the structural multi-page nature
+    return (
+      <div className="relative w-full overflow-hidden rounded-[var(--bp-radius-xs)] bg-[var(--bp-bg)]"
+           style={{ aspectRatio: ratio }}>
+        {pages.slice(0, 3).map((p, idx) => {
+          const offset = (2 - idx) * 6;
+          const scale  = 1 - (2 - idx) * 0.05;
+          const opacity = idx === Math.min(2, pages.length - 1) ? 1 : 0.55;
+          return (
+            <div key={p.id}
+                 className="absolute inset-0 [&>svg]:w-full [&>svg]:h-full"
+                 style={{
+                   transform: `translate(${offset}px, ${offset}px) scale(${scale})`,
+                   opacity, transformOrigin: 'top left',
+                 }}
+                 // eslint-disable-next-line react/no-danger
+                 dangerouslySetInnerHTML={{ __html: p.preview_svg || '' }} />
+          );
+        })}
+        <div className="absolute inset-0 pointer-events-none"
+             style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.32) 100%)' }} />
       </div>
-    )}
-    {/* cinematic vignette */}
-    <div className="absolute inset-0 pointer-events-none"
-         style={{
-           background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.32) 100%)',
-         }} />
-  </div>
-);
+    );
+  }
+
+  return (
+    <div className="relative w-full overflow-hidden rounded-[var(--bp-radius-xs)] bg-[var(--bp-bg)]"
+         style={{ aspectRatio: ratio }}>
+      {tpl.preview_svg ? (
+        <div className="absolute inset-0 [&>svg]:w-full [&>svg]:h-full"
+             // eslint-disable-next-line react/no-danger
+             dangerouslySetInnerHTML={{ __html: tpl.preview_svg }} />
+      ) : (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <FilePlus size={20} strokeWidth={1} className="text-[var(--bp-text-subtle)]" />
+        </div>
+      )}
+      <div className="absolute inset-0 pointer-events-none"
+           style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.32) 100%)' }} />
+    </div>
+  );
+};
 
 const TemplateCard = ({ tpl, active, onClick, t }) => {
   const ratio = RATIOS[tpl.category] || '4 / 5';
@@ -85,7 +108,7 @@ const TemplateCard = ({ tpl, active, onClick, t }) => {
           ? 'border-[var(--bp-primary)] -translate-y-0.5 shadow-[var(--bp-elevation-md)]'
           : 'border-[var(--bp-border)] hover:border-[var(--bp-border-strong)] hover:-translate-y-0.5'}`}
     >
-      <PreviewBox svg={tpl.preview_svg} ratio={ratio} />
+      <PreviewBox tpl={tpl} ratio={ratio} />
       <div className="p-3 bg-[var(--bp-surface-1)]">
         <div className="flex items-start justify-between gap-2 min-h-[12px]">
           {eyebrow && (
@@ -99,12 +122,21 @@ const TemplateCard = ({ tpl, active, onClick, t }) => {
           {tpl.name}
         </h4>
         <Swatches colors={tpl.palette} />
-        {tpl.parent_id && (
-          <div className="flex items-center gap-1 mt-2 bp-caption !text-[10px] !text-[var(--bp-text-subtle)]">
-            <GitBranch size={9} strokeWidth={1.5} />
-            <span className="truncate">{t('moodboards.templates.derivedFrom')}</span>
-          </div>
-        )}
+        <div className="flex items-center gap-2 mt-2 flex-wrap">
+          {(tpl.page_count || 1) > 1 && (
+            <span className="bp-caption !text-[10px] !text-[var(--bp-primary)] flex items-center gap-1"
+                  data-testid={`template-page-count-${tpl.slug}`}>
+              <Layers size={9} strokeWidth={1.5} />
+              {t('moodboards.templates.pageCount', { count: tpl.page_count })}
+            </span>
+          )}
+          {tpl.parent_id && (
+            <span className="bp-caption !text-[10px] !text-[var(--bp-text-subtle)] flex items-center gap-1">
+              <GitBranch size={9} strokeWidth={1.5} />
+              <span className="truncate">{t('moodboards.templates.derivedFrom')}</span>
+            </span>
+          )}
+        </div>
       </div>
     </button>
   );

@@ -68,7 +68,18 @@ const ImageBlock = ({ block, readOnly, t }) => {
         <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-[var(--bp-text-subtle)] bp-caption px-3 text-center"
              data-testid="image-block-empty">
           <ImagePlus size={22} strokeWidth={0.8} />
-          <span>{readOnly ? '—' : (t ? t('moodboards.block.image.placeholder') : '')}</span>
+          {block.metadata?.placeholder?.label ? (
+            <div className="space-y-1">
+              <p className="bp-eyebrow !text-[9px] !text-[var(--bp-text-muted)]">
+                {block.metadata.placeholder.required ? '★ ' : ''}{block.metadata.placeholder.label}
+              </p>
+              <p className="text-[10px] text-[var(--bp-text-subtle)]">
+                {readOnly ? '—' : (t ? t('moodboards.placeholder.replaceImage') : 'Replace with image')}
+              </p>
+            </div>
+          ) : (
+            <span>{readOnly ? '—' : (t ? t('moodboards.block.image.placeholder') : '')}</span>
+          )}
         </div>
       )}
 
