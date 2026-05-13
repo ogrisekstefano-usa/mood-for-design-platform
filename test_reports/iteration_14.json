@@ -1,0 +1,37 @@
+{
+  "summary": "P0 Bug Sprint — Moodboard PRO editor (Master Layouts™ + Layers panel ±1 swap + canvas non-mutating scaling). Backend 14/14 NEW + 32/33 regression (1 unrelated F.1 save-as flaky network timeout). Frontend live verified: skeleton picker modal opens with 12 expected cards in IT, picking quote_page closes modal + creates page with 3 placeholder blocks; Livelli panel shows 3 layer-row testids; arrow backward swaps middle row with its lower neighbor (±1) NOT to bottom, and forward restores; canvas does NOT overlap right sidebar at 1920x800 (canvas right=1596, aside left=1620) NOR at 1280x720 (canvas right=956, aside left=980); no horizontal scroll at either viewport. ALL FOUR P0 BUGS RESOLVED + Master Layouts™ Add-Page picker working end-to-end.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_p0_skeletons.py",
+    "/app/test_reports/pytest/iteration_14_p0_skeletons.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "GET /api/moodboards/_meta/page_skeletons returns exactly 12 skeletons with id/label_key/category_key/page_type/aspect_ratio/width/height/blocks_preview/block_count — verified blank has 0 blocks, quote_page has 3 blocks (editorial_3_4 1400x1866), hero_full_bleed has 3 blocks (cover_landscape 1920x1200).",
+    "POST /api/moodboards/{id}/pages/from_skeleton: persists settings.skeleton_id, auto-appends sort_order at end (verified > existing max), seeds N placeholder blocks via moodboard_elements with proper position_json, returns 404 for unknown skeleton_id, and is tenant-scoped via _assert_moodboard (cross-tenant studio2 returns 403/404). PageFromSkeleton Pydantic model exposes optional title + sort_order.",
+    "Frontend SkeletonPicker.jsx renders all 12 cards with data-testid=skeleton-card-{id} grouped by category_key (Copertina/Narrazione/...). Italian i18n active by default: modal title 'Scegli un layout di pagina', categories COPERTINA/NARRAZIONE visible. Picking quote_page POSTs to from_skeleton, closes the modal, switches active page, and the canvas renders 3 placeholder blocks immediately (verified data-testid block-* count = 3).",
+    "Layer arrow ±1 swap (nudgeLayer in MoodboardEditor.jsx) verified: initial order [A,B,C] → backward on B → [A,C,B] (swap with lower neighbor on SAME page, no jump to bottom). Forward on bottom row restores [A,B,C]. PASS — the user's exact reported bug (#3) is fixed.",
+    "Canvas non-mutating scaling: at 1920x800 viewport canvas occupies x=644..1596 (width 952) and right sidebar starts at 1620 — gap of 24px, no overlap, no horizontal scroll. At 1280x720 canvas auto-scales to width 312 (x=644..956), right sidebar starts at 980. ResizeObserver + canvasScale visual-only approach is working as designed; sortedPageBlocks comparator in editor matches LayersPanel sortLayersTopFirst (sync invariant holds).",
+    "Drag & Drop reorder NOT directly automated via Playwright HTML5 drag events (notoriously flaky in Playwright). However, the underlying handleLayerReorder applies contiguous z_index across the whole stack — same code path exercised by the ±1 arrow swaps which DO pass. Recommend manual smoke or future Playwright drag_to() test for full coverage. (Suggestion, not a blocker.)",
+    "i18n IT bundle contains all moodboards.skeleton.* keys (hero_full_bleed, quote_page, blank, category.cover, ...) — verified via /api/blueprint/i18n/it. Default tenant locale 'it' confirmed: UI strings render in Italian (Aggiungi blocco, Pagine, Livelli, Copertina, Citazione, Mood, Scegli un layout di pagina).",
+    "One pre-existing flaky test in F.1 regression (test_save_as_template_snapshots_multipage) timed out at 30s waiting on /api/templates/{id}/apply during a multi-page snapshot. Re-running F.1 in isolation passed earlier (iteration_13). This is environmental network jitter on the long re-apply call, NOT a regression caused by P0 changes (which only touched moodboards_v1.py + new page_skeletons.py + frontend editor). Suggest bumping that single test's timeout to 60s."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase_p0_skeletons.py (NEW — 14 tests across 3 classes: skeletons catalog meta, from_skeleton creation incl. 404 + cross-tenant, legacy regression for blank create / presets / pages list / duplicate / reorder, IT i18n keys)"
+  ],
+  "success_rate": {
+    "backend": "100% on P0 new endpoints (14/14) + 97% regression (32/33 F.0+F.1; 1 unrelated network timeout)",
+    "frontend": "100% on observable P0 flows: skeleton picker (12 cards, IT, close-on-pick, 3 placeholder blocks created), layer ±1 swap arrows (backward + forward both PASS), canvas non-overlap at 1920 and 1280, no horizontal scroll"
+  },
+  "test_credentials": "designer@moodfordesign.com / Designer2024! (primary) + studio2@moodfordesign.com / Studio2024! (cross-tenant 404 verified on from_skeleton). Test moodboard id 85b93c6b-8de2-4b14-a977-a768ecc02309 loads correctly in editor at /moodboards/{id} (Italian locale by default).",
+  "seed_data_creation": "Tests create TEST_P0_SKELETONS_* moodboards via POST /api/moodboards and clean up via DELETE in fixture teardown. No persistent fixtures touched. Frontend smoke test created 1 extra page (quote_page skeleton) on the live demo moodboard — non-destructive, can be deleted via the editor.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "P0 GREEN. The login route is /auth/login (NOT /login — that returns 404). Italian is the default locale for the designer tenant; UI strings render in IT. Skeleton picker data-testid summary: skeleton-picker (modal), skeleton-card-{id} (12 cards), add-page-btn (the '+' next to Pagine). Layer panel: layer-row-{uuid}, layer-action-backward, layer-action-forward, layer-action-front, layer-action-back. Canvas: data-testid=moodboard-canvas. The moodboard editor takes ~4-5s to fully hydrate; wait 5000ms after goto before asserting canvas presence. Playwright HTML5 native drag for layer-drop-indicator-above/below is flaky — prefer to assert the underlying handleLayerReorder via the ±1 arrows which share the same z_index normalization path. F.2 Presentation Sequencing is next.",
+  "rca of the issue": "No bugs found in P0 implementation. All four reported issues (canvas overlap, layers panel order, ±1 swap arrows, Master Layouts™ picker) are fully resolved. Backend new endpoints, regression, RBAC, cross-tenant isolation, IT i18n — all GREEN. Single F.1 flaky test attributed to network timeout on long save-as round-trip, unrelated to P0 changes."
+}

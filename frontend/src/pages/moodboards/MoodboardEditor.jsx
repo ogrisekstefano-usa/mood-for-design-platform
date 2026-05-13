@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegistry';
 import StatusBadge from '../../components/common/StatusBadge';
-import LayersPanel from '../../blueprint/moodboard/LayersPanel';
+import LayersPanel, { sortLayersTopFirst } from '../../blueprint/moodboard/LayersPanel';
 import ImageUploader from '../../blueprint/moodboard/ImageUploader';
 import PagesNavigator from '../../blueprint/moodboard/PagesNavigator';
 import { computeSnap } from '../../blueprint/moodboard/useSnap';
@@ -63,6 +63,14 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const pageBlocks = blocks.filter((b) =>
     (b.page_id || firstPageId) === activePageId
   );
+  // Canvas renders bottom-first → top-last. Tie-break by created_at so the
+  // visual order matches LayersPanel ordering EXACTLY (same comparator).
+  // Canvas: ASC z_index, older first (older = behind, newer = in front).
+  const sortedPageBlocks = [...pageBlocks].sort((a, b) => {
+    const dz = (a.z_index || 0) - (b.z_index || 0);
+    if (dz !== 0) return dz;
+    return (a.created_at || '').localeCompare(b.created_at || '');
+  });
 
   // Index for the PagesNavigator thumbnails — blocks grouped by page_id
   const blocksByPage = blocks.reduce((acc, b) => {
@@ -78,8 +86,33 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const canvasH = activePage?.height || CANVAS_H;
 
   const canvasRef = useRef();
+  const canvasViewportRef = useRef(null);  // outer scroll container — drives scale
   const saveTimer = useRef();
   const retryCount = useRef(0);
+  const [canvasScale, setCanvasScale] = useState(1);
+  const canvasScaleRef = useRef(1);  // drag handlers read this without re-binding
+  useEffect(() => { canvasScaleRef.current = canvasScale; }, [canvasScale]);
+
+  // ── Responsive canvas scale ──────────────────────────────────────────────
+  // Visual-only transform: divides the canvas to fit its column without
+  // overflow / horizontal scroll. Internal coordinates (block x/y/w/h)
+  // remain in their original reference frame — drag handlers compensate
+  // by dividing screen deltas by `canvasScaleRef.current`.
+  useEffect(() => {
+    const el = canvasViewportRef.current;
+    if (!el) return undefined;
+    const compute = () => {
+      const rect = el.getBoundingClientRect();
+      // 48px of breathing room on each side; never scale above 1 (no upscale)
+      const targetW = Math.max(160, rect.width - 48);
+      const next = Math.min(1, targetW / (canvasW || 1));
+      setCanvasScale((prev) => (Math.abs(prev - next) > 0.005 ? next : prev));
+    };
+    compute();
+    const ro = new ResizeObserver(compute);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [canvasW]);
 
   // ── Load ──────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -216,8 +249,15 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const addBlock = async (type) => {
     if (readOnly) return;
     const meta = BLOCK_TYPES.find((b) => b.type === type);
+    // New blocks always sit on top of the same-page stack — eliminates
+    // z-index collisions and keeps panel ↔ canvas in sync from creation.
+    const samePageBlocks = blocks.filter((b) =>
+      (b.page_id || firstPageId) === activePageId
+    );
+    const maxZ = samePageBlocks.reduce((m, b) => Math.max(m, b.z_index || 0), -1);
     const payload = {
       type, x: 60, y: 60, ...meta.defaults,
+      z_index: maxZ + 1,
       page_id: activePageId,  // F.0: scope new blocks to the active page
     };
     const r = await api.post(`/api/moodboards/${id}/blocks`, payload);
@@ -292,6 +332,53 @@ const MoodboardEditor = ({ readOnly = false }) => {
   }, [onUndo, onRedo, readOnly]);
 
   // ── Layer actions ─────────────────────────────────────────────────────────
+  // Helper: persist a fully-reordered stack as a contiguous z_index sequence,
+  // marking each affected block dirty so autosave eventually flushes them.
+  // `orderedIdsTopFirst` is the panel order (highest z_index first), so the
+  // new z_index = (length - 1 - index).
+  const applyStackOrder = useCallback((orderedIdsTopFirst) => {
+    if (readOnly) return;
+    const n = orderedIdsTopFirst.length;
+    const indexOf = new Map(orderedIdsTopFirst.map((id, i) => [id, i]));
+    setBlocks((bs) => {
+      const next = bs.map((b) => {
+        if (!indexOf.has(b.id)) return b;
+        const newZ = n - 1 - indexOf.get(b.id);
+        if ((b.z_index || 0) === newZ) return b;
+        return { ...b, z_index: newZ };
+      });
+      history.record(next);
+      return next;
+    });
+    setDirtyMap((m) => {
+      const x = { ...m };
+      orderedIdsTopFirst.forEach((id) => { x[id] = true; });
+      return x;
+    });
+  }, [readOnly, history]);
+
+  // ±1 neighbor swap — keeps the operation visually meaningful even when
+  // multiple blocks share the same z_index. Operates on the SAME page only.
+  const nudgeLayer = (block, direction /* 'forward' | 'backward' */) => {
+    if (readOnly) return;
+    const samePage = blocks.filter((b) =>
+      (b.page_id || firstPageId) === (block.page_id || firstPageId)
+    );
+    const ordered = sortLayersTopFirst(samePage);  // top-first
+    const idx = ordered.findIndex((b) => b.id === block.id);
+    if (idx < 0) return;
+    // 'forward' = move toward top of stack = lower idx in the top-first list
+    const swapIdx = direction === 'forward' ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= ordered.length) return;
+    const ids = ordered.map((b) => b.id);
+    [ids[idx], ids[swapIdx]] = [ids[swapIdx], ids[idx]];
+    applyStackOrder(ids);
+  };
+
+  const handleLayerReorder = useCallback((orderedIdsTopFirst) => {
+    applyStackOrder(orderedIdsTopFirst);
+  }, [applyStackOrder]);
+
   const handleLayerAction = (action, block) => {
     if (!block) return;
     switch (action) {
@@ -301,24 +388,32 @@ const MoodboardEditor = ({ readOnly = false }) => {
       case 'toggleHidden':
         updateBlock(block.id, { hidden: !block.hidden });
         break;
-      case 'bringForward': {
-        const next = (block.z_index || 0) + 1;
-        updateBlock(block.id, { z_index: next });
+      case 'bringForward':
+        nudgeLayer(block, 'forward');
         break;
-      }
-      case 'sendBackward': {
-        const next = Math.max(0, (block.z_index || 0) - 1);
-        updateBlock(block.id, { z_index: next });
+      case 'sendBackward':
+        nudgeLayer(block, 'backward');
         break;
-      }
       case 'bringToFront': {
-        const maxZ = Math.max(0, ...blocks.map((b) => b.z_index || 0));
-        updateBlock(block.id, { z_index: maxZ + 1 });
+        const samePage = blocks.filter((b) =>
+          (b.page_id || firstPageId) === (block.page_id || firstPageId)
+        );
+        const ordered = sortLayersTopFirst(samePage);
+        const ids = ordered.map((b) => b.id).filter((id) => id !== block.id);
+        ids.unshift(block.id);  // top of the stack
+        applyStackOrder(ids);
         break;
       }
-      case 'sendToBack':
-        updateBlock(block.id, { z_index: 0 });
+      case 'sendToBack': {
+        const samePage = blocks.filter((b) =>
+          (b.page_id || firstPageId) === (block.page_id || firstPageId)
+        );
+        const ordered = sortLayersTopFirst(samePage);
+        const ids = ordered.map((b) => b.id).filter((id) => id !== block.id);
+        ids.push(block.id);  // bottom of the stack
+        applyStackOrder(ids);
         break;
+      }
       case 'duplicate':
         duplicateBlock(block.id);
         break;
@@ -348,8 +443,11 @@ const MoodboardEditor = ({ readOnly = false }) => {
   useEffect(() => {
     if (!drag) return;
     const onMove = (e) => {
-      const dx = e.clientX - drag.startX;
-      const dy = e.clientY - drag.startY;
+      // Compensate the visual canvas scaling so canvas-internal coordinates
+      // remain pixel-precise regardless of the responsive transform.
+      const scale = canvasScaleRef.current || 1;
+      const dx = (e.clientX - drag.startX) / scale;
+      const dy = (e.clientY - drag.startY) / scale;
       let nextGuides = [];
       setBlocks((bs) => bs.map((b) => {
         if (b.id !== drag.id) return b;
@@ -619,38 +717,51 @@ const MoodboardEditor = ({ readOnly = false }) => {
           </aside>
         )}
 
-        {/* CENTER — Canvas */}
-        <main className="flex-1 overflow-auto p-6">
-          <div ref={canvasRef} onClick={() => setSelectedId(null)} data-testid="moodboard-canvas"
-               className="relative bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] mx-auto"
-               style={{ width: canvasW, height: canvasH }}>
-            {!readOnly && drag && snapEnabled && (
-              <SnapGuides guides={snapGuides} canvasWidth={canvasW} canvasHeight={canvasH} />
-            )}
-            {pageBlocks.map((b) => {
-              if (b.hidden && readOnly) return null;
-              const Component = resolveBlock(b.type);
-              const isSelected = selectedId === b.id;
-              return (
-                <div key={b.id} data-testid={`block-${b.type}`}
-                     className={`absolute group ${isSelected ? 'ring-2 ring-[var(--bp-primary)]' : 'hover:ring-1 hover:ring-[var(--bp-border-strong)]'} ${b.hidden ? 'opacity-30' : ''} ${b.locked ? 'cursor-default' : 'cursor-move'}`}
-                     style={{
-                       left: b.x, top: b.y, width: b.width, height: b.height, zIndex: b.z_index || 0,
-                       opacity: (b.opacity !== undefined ? b.opacity : 1) * (b.hidden ? 0.3 : 1),
-                       transform: b.rotation ? `rotate(${b.rotation}deg)` : undefined,
-                     }}
-                     onMouseDown={(e) => startDrag(e, b, 'move')}
-                     onClick={(e) => { e.stopPropagation(); setSelectedId(b.id); setRightTab('inspector'); }}>
-                  {Component
-                    ? <Component block={b} readOnly={readOnly} t={t} />
-                    : <div className="bp-caption text-[var(--bp-text-muted)] p-2">{b.type}</div>}
-                  {!readOnly && isSelected && !b.locked && (
-                    <div onMouseDown={(e) => startDrag(e, b, 'resize')}
-                         className="absolute bottom-0 right-0 w-3 h-3 bg-[var(--bp-primary)] rounded-tl-[var(--bp-radius-xs)] cursor-se-resize" />
-                  )}
-                </div>
-              );
-            })}
+        {/* CENTER — Canvas Viewport (drives responsive scale) */}
+        <main ref={canvasViewportRef}
+              className="flex-1 overflow-auto min-w-0 p-6 flex justify-center items-start">
+          {/* Outer wrapper occupies the SCALED footprint so the scrollarea
+              never falls under the right sidebar. */}
+          <div style={{
+                 width: canvasW * canvasScale,
+                 height: canvasH * canvasScale,
+                 flexShrink: 0,
+               }}>
+            <div ref={canvasRef} onClick={() => setSelectedId(null)} data-testid="moodboard-canvas"
+                 className="relative bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)]"
+                 style={{
+                   width: canvasW, height: canvasH,
+                   transform: `scale(${canvasScale})`,
+                   transformOrigin: 'top left',
+                 }}>
+              {!readOnly && drag && snapEnabled && (
+                <SnapGuides guides={snapGuides} canvasWidth={canvasW} canvasHeight={canvasH} />
+              )}
+              {sortedPageBlocks.map((b) => {
+                if (b.hidden && readOnly) return null;
+                const Component = resolveBlock(b.type);
+                const isSelected = selectedId === b.id;
+                return (
+                  <div key={b.id} data-testid={`block-${b.type}`}
+                       className={`absolute group ${isSelected ? 'ring-2 ring-[var(--bp-primary)]' : 'hover:ring-1 hover:ring-[var(--bp-border-strong)]'} ${b.hidden ? 'opacity-30' : ''} ${b.locked ? 'cursor-default' : 'cursor-move'}`}
+                       style={{
+                         left: b.x, top: b.y, width: b.width, height: b.height, zIndex: b.z_index || 0,
+                         opacity: (b.opacity !== undefined ? b.opacity : 1) * (b.hidden ? 0.3 : 1),
+                         transform: b.rotation ? `rotate(${b.rotation}deg)` : undefined,
+                       }}
+                       onMouseDown={(e) => startDrag(e, b, 'move')}
+                       onClick={(e) => { e.stopPropagation(); setSelectedId(b.id); setRightTab('inspector'); }}>
+                    {Component
+                      ? <Component block={b} readOnly={readOnly} t={t} />
+                      : <div className="bp-caption text-[var(--bp-text-muted)] p-2">{b.type}</div>}
+                    {!readOnly && isSelected && !b.locked && (
+                      <div onMouseDown={(e) => startDrag(e, b, 'resize')}
+                           className="absolute bottom-0 right-0 w-3 h-3 bg-[var(--bp-primary)] rounded-tl-[var(--bp-radius-xs)] cursor-se-resize" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </main>
 
@@ -684,7 +795,8 @@ const MoodboardEditor = ({ readOnly = false }) => {
             ) : (
               <LayersPanel blocks={pageBlocks} selectedId={selectedId}
                            onSelect={(bid) => { setSelectedId(bid); }}
-                           onAction={handleLayerAction} t={t} />
+                           onAction={handleLayerAction}
+                           onReorder={handleLayerReorder} t={t} />
             )}
           </aside>
         )}

@@ -26,6 +26,7 @@ from core.tenant_context import get_tenant_context, require_permission, audit_lo
 from core.permissions import (
     P_MOODBOARDS_READ, P_MOODBOARDS_WRITE,
 )
+from core.page_skeletons import PAGE_SKELETONS, get_skeleton
 from database import db, db_available
 
 router = APIRouter()
@@ -246,6 +247,107 @@ def get_page_presets(ctx: dict = Depends(require_permission(P_MOODBOARDS_READ)))
             {"id": pt, "label_key": f"moodboards.page.type.{pt}"} for pt in PAGE_TYPES
         ],
     }
+
+
+# ── Page Skeletons (Master Layouts™) ────────────────────────────────────────
+# Code-defined structural single-page layouts. Frontend reads via this endpoint
+# and renders them in the "Add page" picker. Coordinates are absolute against
+# each skeleton's aspect ratio canvas (1400x1866 editorial, 1920x1200 cover…).
+@router.get("/_meta/page_skeletons")
+def get_page_skeletons(ctx: dict = Depends(require_permission(P_MOODBOARDS_READ))):
+    """Return the structural page skeleton catalog with computed
+    width/height per skeleton so the frontend can render scale-correct previews
+    without a second lookup."""
+    out = []
+    for sk in PAGE_SKELETONS:
+        preset = ASPECT_RATIO_PRESETS.get(sk["aspect_ratio"], ASPECT_RATIO_PRESETS["portrait_a4"])
+        out.append({
+            "id": sk["id"],
+            "label_key": sk["label_key"],
+            "category_key": sk["category_key"],
+            "page_type": sk["page_type"],
+            "aspect_ratio": sk["aspect_ratio"],
+            "width": preset["width"],
+            "height": preset["height"],
+            # Slim preview payload — only what's needed to draw the mini canvas
+            "blocks_preview": [
+                {"type": b["type"], "x": b["x"], "y": b["y"],
+                 "width": b["width"], "height": b["height"], "z_index": b.get("z_index", 0)}
+                for b in sk["blocks"]
+            ],
+            "block_count": len(sk["blocks"]),
+        })
+    return {"data": out}
+
+
+class PageFromSkeleton(BaseModel):
+    skeleton_id: str
+    title: Optional[str] = None
+    sort_order: Optional[int] = None  # if absent → appended at the end
+
+
+@router.post("/{moodboard_id}/pages/from_skeleton", status_code=201)
+def create_page_from_skeleton(moodboard_id: str, body: PageFromSkeleton,
+                              ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
+    """Create a new page and seed it with placeholder blocks from a
+    structural skeleton. Atomic-ish: page + blocks inserted in sequence.
+    The page is appended at the end unless `sort_order` is provided."""
+    client = db()
+    mb = _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
+    try:
+        sk = get_skeleton(body.skeleton_id)
+    except KeyError:
+        raise HTTPException(404, f"Unknown skeleton: {body.skeleton_id}")
+
+    preset = ASPECT_RATIO_PRESETS.get(sk["aspect_ratio"], ASPECT_RATIO_PRESETS["portrait_a4"])
+
+    # Auto-append if sort_order absent
+    if body.sort_order is None:
+        max_q = client.table("moodboard_pages").select("sort_order") \
+            .eq("moodboard_id", moodboard_id).order("sort_order", desc=True).limit(1).execute()
+        sort_order = ((max_q.data[0]["sort_order"] if max_q.data else -1) + 1)
+    else:
+        sort_order = body.sort_order
+
+    page_id = str(uuid.uuid4())
+    page_row = {
+        "id": page_id,
+        "tenant_id": ctx["tenant_id"],
+        "moodboard_id": moodboard_id,
+        "title": body.title or None,
+        "page_type": sk["page_type"],
+        "aspect_ratio": sk["aspect_ratio"],
+        "width": preset["width"], "height": preset["height"],
+        "background": {},
+        "settings": {"skeleton_id": sk["id"]},
+        "sort_order": sort_order,
+        "created_by": ctx["profile_id"],
+    }
+    client.table("moodboard_pages").insert(page_row).execute()
+
+    # Seed placeholder blocks for the new page
+    for idx, b in enumerate(sk["blocks"]):
+        if b["type"] not in SUPPORTED_BLOCK_TYPES:
+            continue
+        content = b.get("content") or {}
+        client.table("moodboard_elements").insert({
+            "id": str(uuid.uuid4()),
+            "tenant_id": ctx["tenant_id"],
+            "moodboard_id": moodboard_id,
+            "page_id": page_id,
+            "type": b["type"],
+            "sort_order": idx,
+            "content": json.dumps(content),
+            "position_json": _build_position(b["x"], b["y"], b["width"], b["height"], b.get("z_index", 0)),
+            "style_json": b.get("style") or {},
+            "title": content.get("caption") if b["type"] == "image" else None,
+        }).execute()
+
+    client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
+    _push_activity(ctx["tenant_id"], mb.get("project_id"), ctx["profile_id"],
+                   "moodboard.page_added", moodboard_id, mb.get("title"),
+                   {"page_id": page_id, "skeleton_id": sk["id"]})
+    return page_row
 
 
 # ── Page CRUD ───────────────────────────────────────────────────────────────
