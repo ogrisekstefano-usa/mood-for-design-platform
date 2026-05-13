@@ -201,6 +201,46 @@ Pre-requisito esplicito utente prima della Fase F: "verificare bene tenant_id en
 - **90/90 backend pytest pass** + 5 skipped + 1 xpass = ZERO regressione su 6 fasi precedenti
 
 
+### ✅ Phase E.5 — Moodboard Stability & Media Polish Pass (DONE — 13 Mag 2026)
+Chiusura blocker UX core dell'editor prima dell'apertura di Fase F. Reliability + media editor reale.
+
+- **Autosave reliability** (`MoodboardEditor.jsx`)
+  - `blocksRef`/`dirtyRef` → flushSave legge sempre lo stato corrente, no più stale closures su mutazioni rapide
+  - `setDirtyMap` partial clear (solo ids effettivamente persistiti) → in-flight edits restano in queue
+  - `useEffect` cleanup con `flushRef.current()` → flush forzato su unmount/SPA navigation (verificato pattern by construction)
+  - `beforeunload` → `navigator.sendBeacon` con JSON blob best-effort (limitazione documented: no auth header)
+  - `retry` con backoff lineare 500ms × tentativo, max 3 tentativi
+- **updateBlock deep-merge** (P0 root cause)
+  - Patch `{content: {...}}` ora fonde con esistente invece di sostituire → fix bug "upload immagine perde caption / altri campi siblings"
+  - Stesso pattern per `style` patches
+- **Real Image Editor** — `BlockInspector` image case
+  - **Crop section** invariato (fit/focal/zoom) + nuovo `reset-crop-btn` per ripristino completo
+  - **AdjustmentsSection** — 7 slider editorial-bounded (NON Photoshop):
+    - brightness 0.5–1.5, contrast 0.5–1.5, saturation 0–2, warmth -1..+1, grayscale 0–1, blur 0–8px, vignette 0–1
+    - Persistenza in `style_json.adjustments` via batch update (verificata E2E)
+    - Reset button per azzerare tutte le regolazioni
+- **CSS-filter pipeline** (`ImageBlock.jsx` rewritten)
+  - `buildFilter()` helper dependency-free: elide identity ops (brightness==1 non emesso) → costo CSS recalc minimo
+  - Warmth → `sepia()` per positivo, `hue-rotate(neg)` per negativo (editorial mood control)
+  - Vignette overlay separato come radial-gradient softness (no filter)
+  - Transition `filter 220ms ease` per slider real-time feedback
+- **ImageBlock polish**
+  - **Skeleton** con shimmer keyframe (data-testid=`image-block-skeleton`)
+  - **Fade-in** opacity 0→1 transition 480ms cubic-bezier(0.22, 0.61, 0.36, 1) — cinematic load
+  - **Error fallback** con icona ImageOff + copy "Immagine non disponibile" (data-testid=`image-block-error`)
+  - **Empty placeholder** con icona ImagePlus + copy localizzata (data-testid=`image-block-empty`)
+- **Save Status UX** premium (Linear/Notion style)
+  - 4 stati con testids dedicati: `status-saving` (pulsing dot teal), `status-saved` (check icon), `status-unsaved` (CLICCABILE per manual flush), `status-save-error` (CLICCABILE per retry + tooltip errore)
+- **i18n** — 12 nuove chiavi EN+IT
+  - editor: `unsaved/resetCrop/adjustments/reset/imageMissing`
+  - field: `brightness/contrast/saturation/warmth/grayscale/blur/vignette`
+- **Tested ✅** (`iteration_10.json`)
+  - Backend: **6/6 new E.5** + **25/25 regression** E.2+E.4
+  - Frontend code-review 100% su tutti 13 testids + 7 adjustment paths
+  - Persistenza E2E `style.adjustments` verificata via batch PATCH → GET roundtrip
+  - Caption preserved across content updates (regression del bug originale) ✓
+
+
 ### ✅ Phase E.4 — Template Preview Gallery + micro Lineage (DONE — 13 Mag 2026)
 Trasformazione del picker da "lista nomi" a **editorial archive / design catalog**. Foundation per marketplace futuro.
 
