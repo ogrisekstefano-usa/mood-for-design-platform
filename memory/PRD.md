@@ -153,6 +153,37 @@ Server-configurable rendering backbone reusable across: homepage · landing · p
   - Italian locale active in sidebar
 
 
+### ✅ Sprint Cleanup P0 — Foundation Hardening (DONE — 13 Mag 2026)
+Pre-requisito **non negoziabile** prima delle fasi F. Migrazione completa da JSON-blob-in-tenant_settings a tabelle relazionali dedicate, fix dello schema drift su `moodboard_elements`, setup del workflow migration professionale, autosave hardening e dedupe architetturale.
+
+- **Migration workflow** (`/app/supabase/migrations/` + `apply.py`):
+  - `001_baseline_2026_05_13.sql` — snapshot documentale (22 tabelle, 9 enum)
+  - `002_moodboard_schema_cleanup.sql` — backfill di `position_json`/`style_json`/`image_url` da `content`; aggiunte colonne strutturate `locked`/`hidden`/`opacity`/`rotation`/`updated_at`; indici `(moodboard_id, sort_order)` + GIN su `position_json`; V2 scaffold (`cover_strategy`/`cover_metadata`/`presentation_metadata`/`ai_metadata`)
+  - `003_workspace_dedicated_tables.sql` — nuove tabelle `project_notes`, `project_activity`, `moodboard_shares` con backfill **automatico** da `tenant_settings.project.*` e `moodboard_share.*` (30 events + 2 notes + 4 share token migrati senza data loss)
+  - `004_grant_new_tables.sql` — `service_role`/`authenticated`/`anon` privileges (PostgREST permission fix) + default privileges su future tables
+  - `005_tasks_completed_at.sql` — colonna `completed_at` su `tasks` (auto-set in update_task)
+  - `apply.py` runner idempotente con `schema_migrations` tracking table, supporto `--list` e `--dry-run`
+- **`moodboards_v1.py` refactor**:
+  - Layout (x/y/width/height/z_index) ora in `position_json` reale (JSONB); style (crop_x/crop_y/focal_point/fit_mode/opacity/rotation/zoom) in `style_json`
+  - Frontend riceve la forma normalizzata (flat top-level) via `_normalize_block`, **senza** leak di `position_json`/`style_json`
+  - Image blocks mirror `src` nella colonna dedicata `image_url`
+  - Backward-compatible: parser fallback per blocchi pre-migration con `layout` dentro `content`
+  - Share endpoint ritorna sia `share_token` che `share_path` (frontend non costruisce più l'URL)
+- **`workspace.py` refactor**: tasks/notes/activity ora leggono/scrivono dalle **tabelle reali** (no più JSON in `tenant_settings`); `update_task` setta `completed_at` automaticamente al transito → done
+- **`moodboard_shares`** table: view tracking automatico (`view_count`, `first_viewed_at`, `last_viewed_at`); revoke via `revoked_at`; lookup veloce con UNIQUE index parziale `WHERE revoked_at IS NULL`
+- **Storage hardening** (`storage.py`): `register_media` rifiuta path di altri tenant (403), forza prefisso `{tenant_id}/`
+- **Frontend cleanup**:
+  - `components/common/StatusBadge.jsx` consolidato (era duplicato in 3 punti, ora unico, prop `kind` per moodboards/projects/leads/proposals)
+  - MoodboardEditor: autosave con retry x3 + backoff esponenziale + error state visibile (testid `status-save-error`) + warning beforeunload se ci sono modifiche pendenti
+  - Cancellato `pages/proposals/` (duplicato di `pages/workspace/ProposalsPage.jsx`)
+- **Tested** ✅
+  - Backend: **86/86 pytest pass** (Phase A/B/C/D/E baseline + sprint cleanup suite 15/15)
+  - Frontend smoke: list IT (4 cards), editor IT (Aggiungi blocco / Immagine/Testo/Palette/Nota/Prodotto/Materiale, badge "APPROVATO"), Velvet sofa block rendering, autosave testids esposti
+- **NON ancora fatto** (next sprint):
+  - Cleanup delle legacy keys in `tenant_settings.project.*.tasks|notes|activity` (mantenute per backward compat — purge dopo verifica produzione)
+  - Theme leak fix su 5 pagine legacy (Dashboard, Leads, Projects, Proposals, Admin Overview)
+
+
 ### ✅ Phase E (V1) — Blueprint Moodboards™ + Workspace Extended (DONE — 13 Mag 2026)
 End-to-end operational loop closed: **Lead → Project → Workspace → Moodboard → Approval → Share**. ZERO hardcoded copy, ZERO Figma/Canva clone — stable V1 dedicated to luxury interior-design workflow.
 

@@ -26,7 +26,7 @@ EMAIL = "demo@moodfordesign.com"
 PASSWORD = "Blueprint2024!"
 
 EXPECTED_TYPES = {"hero", "feature_grid", "gallery", "quote", "stats",
-                  "cta", "split", "logo_strip", "magazine_grid", "faq"}
+                  "cta", "split", "logo_strip", "magazine_grid", "faq", "form_embed"}
 
 
 @pytest.fixture(scope="module")

@@ -332,7 +332,10 @@ def create_share_token(moodboard_id: str, ctx: dict = Depends(get_tenant_context
     }).execute()
     audit_log(ctx["tenant_id"], ctx["profile_id"], "moodboard.share_created",
               resource_type="moodboard", resource_id=moodboard_id)
-    return {"share_token": token}
+    return {
+        "share_token": token,
+        "share_path": f"/moodboard/share/{token}",
+    }
 
 
 @router.delete("/{moodboard_id}/share")

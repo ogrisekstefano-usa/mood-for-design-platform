@@ -116,13 +116,19 @@ def update_task(project_id: str, task_id: str, body: TaskUpdate,
                 ctx: dict = Depends(get_tenant_context)):
     client = db()
     _assert_project_in_tenant(client, project_id, ctx["tenant_id"])
-    cur = client.table("tasks").select("status,title") \
+    cur = client.table("tasks").select("status,title,completed_at") \
         .eq("id", task_id).eq("project_id", project_id).limit(1).execute()
     if not cur.data:
         raise HTTPException(404, "Task not found")
     old_status = cur.data[0].get("status")
     payload = body.model_dump(exclude_none=True)
     payload["updated_at"] = _now()
+    # Side effect: track completion time when transitioning to done / un-track otherwise
+    if "status" in payload:
+        if payload["status"] == "done" and old_status != "done":
+            payload["completed_at"] = _now()
+        elif payload["status"] != "done" and old_status == "done":
+            payload["completed_at"] = None
     r = client.table("tasks").update(payload).eq("id", task_id).eq("project_id", project_id).execute()
     if payload.get("status") and payload["status"] != old_status:
         push_activity(ctx["tenant_id"], project_id, {
