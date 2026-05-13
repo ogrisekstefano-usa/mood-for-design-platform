@@ -59,7 +59,8 @@ const PublicPresentation = () => {
       transitions={transitions}
       clientSafe
       startIndex={0}
-      onExit={() => { window.location.href = '/'; }}
+      showExit={false}
+      onExit={() => { /* swallow — public surface */ }}
       t={t}
     />
   );

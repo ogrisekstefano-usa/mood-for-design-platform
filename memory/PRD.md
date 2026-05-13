@@ -624,10 +624,25 @@ Enterprise-grade schema-driven form engine. Reusable for: lead-gen · design req
 
 ### Phase E — Blueprint Moodboards Editor
 - ✅ V1: block-based canvas (image/text/palette/note/product/material), drag+resize, debounced autosave, approval state machine, public share token (DONE in Phase E)
+- ✅ E.2 Templates V1 — Apply/Save-as flow, Template Picker, RBAC (DONE)
+- ✅ E.3 Polish Sprint — Snap System, Undo/Redo, Theme leak cleanup (DONE)
+- ✅ E.4 Template Preview Gallery + Lineage (SVG previews, parent_id tracking) (DONE)
+- ✅ E.5 P0 Stability & Media Pass — Image adjustments, reliable autosave, upload persistence (DONE)
 - ✅ Lead→Project converter + Tasks/Notes/Activity (DONE in Phase E)
-- Future (V2): PDF export engine, hotspot system, AI material suggestions, presentation mode, version history UI
+- Future (V2 advanced): PDF export, hotspot system, AI material suggestions, version history UI
 
-### Phase F — Inspirations CMS + Insights advanced + Concierge
+### Phase F — Blueprint Moodboard PRO™ (Multi-page Presentation OS)
+- ✅ F.0 Multi-page Foundation — pages CRUD, PagesNavigator sidebar, auto-migration of legacy moodboards (DONE)
+- ✅ F.1 Structural Multi-page Templates — Luxury Residential / Hospitality / Material Board seeds, placeholder semantics, page cloning (DONE)
+- ✅ P0 Bug Sprint (Feb 14 2026) — Responsive canvas (non-mutating scale), Layers ↔ Canvas sync, ±1 neighbor swap arrows, HTML5 Drag&Drop layers, Master Layouts™ Skeleton Picker on Add-page (12 skeletons across 7 categories) (DONE — iteration_14)
+- ✅ F.2 Presentation Sequencing V2™ (Feb 14 2026) — PresentationMode V2 cinematic engine with letterboxing, 6 GPU-only transitions (fade/dissolve/slow_slide_left/up/cinematic_zoom/soft_blur_crossfade), chapter navigation overlay (press `c`), idle auto-hide overlays, keyboard-first nav (→ ← Space Esc Home End), PageInspector tab for per-page transition + chapter_label + hidden_from_client + hidden_in_presentation, public /presentation/{shareToken} route (no auth, client-safe filter), BONUS: POST /api/templates/inject-into/{moodboard_id} for appending template pages into existing moodboards (DONE — iterations 15+16)
+- ⏳ F.3 Master Layouts + Placeholder Inspector V2 (P2)
+- ⏳ F.4 Reusable Blocks + Asset Library (P2)
+- ⏳ F.5 Global Project Styles (P1)
+- ⏳ F.6 Skeleton Rebuild Foundation — AI extract layout from reference image (P3)
+- ⏳ F.7 Product Library Foundation (P3)
+
+### Phase F continued — Inspirations CMS + Insights + Concierge (post-Moodboard)
 - Magazine builder (paragraph builder, hero video, SEO, related)
 - Recharts premium dashboards (funnels, conversion, top categories)
 - Concierge service requests

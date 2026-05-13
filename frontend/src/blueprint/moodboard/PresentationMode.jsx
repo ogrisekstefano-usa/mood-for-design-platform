@@ -129,6 +129,7 @@ const PresentationMode = ({
   transitions = [],
   clientSafe = false,
   startIndex = 0,
+  showExit = true,
   onExit,
   t,
 }) => {
@@ -186,7 +187,7 @@ const PresentationMode = ({
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'Escape') { handleExit(); return; }
+      if (e.key === 'Escape' && showExit) { handleExit(); return; }
       if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); advance(1); }
       if (e.key === 'ArrowLeft') { e.preventDefault(); advance(-1); }
       if (e.key === 'Home') { e.preventDefault(); setIndex(0); bumpIdle(); }
@@ -195,7 +196,7 @@ const PresentationMode = ({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [advance, handleExit, visiblePages.length, bumpIdle]);
+  }, [advance, handleExit, visiblePages.length, bumpIdle, showExit]);
 
   // Viewport size — drives letterboxing
   const stageRef = useRef(null);
@@ -297,7 +298,7 @@ const PresentationMode = ({
             </button>
           )}
           <button onClick={handleExit} data-testid="presentation-exit-btn"
-                  className="text-white/55 hover:text-white/90 transition-colors p-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08]">
+                  className={`text-white/55 hover:text-white/90 transition-colors p-1.5 rounded-full bg-white/[0.04] hover:bg-white/[0.08] ${showExit ? '' : 'hidden'}`}>
             <X size={14} strokeWidth={1.5} />
           </button>
         </div>
