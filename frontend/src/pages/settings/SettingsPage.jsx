@@ -4,7 +4,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBlueprint } from '../../contexts/BlueprintContext';
-import { Palette, Globe, Languages, Users, ArrowRight, Layers, Compass } from 'lucide-react';
+import { Palette, Globe, Languages, Users, ArrowRight, Layers, Compass, ClipboardList } from 'lucide-react';
 
 const SettingsTile = ({ icon: Icon, title, description, to, testid }) => {
   const navigate = useNavigate();
@@ -50,6 +50,10 @@ const SettingsPage = () => {
         <SettingsTile testid="tile-navigation" icon={Compass} to="/settings/navigation"
           title={t('settings.navigation.title', null, 'Navigation & Footer')}
           description={t('settings.navigation.sub', null, 'Schema-driven top bar and footer for your public tenant pages.')}
+        />
+        <SettingsTile testid="tile-forms" icon={ClipboardList} to="/settings/forms"
+          title={t('settings.forms.title', null, 'Forms')}
+          description={t('settings.forms.sub', null, 'Blueprint Form Engine™ — dynamic lead, onboarding, approval and concierge forms.')}
         />
         <SettingsTile testid="tile-domains" icon={Globe} to="/settings/domains"
           title={t('settings.domains.title', null, 'Domains')}

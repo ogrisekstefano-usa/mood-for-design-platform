@@ -259,6 +259,32 @@ SECTION_TYPES: List[Dict[str, Any]] = [
             "items": [],
         },
     },
+    {
+        "type": "form_embed",
+        "category": "conversion",
+        "label": "Form embed",
+        "description": "Embed a Blueprint form (lead, onboarding, concierge…) inline",
+        "icon": "ClipboardList",
+        "reusable_in": ["homepage", "landing", "showcase", "client_portal"],
+        "schema": {
+            "eyebrow":  {"type": "string", "i18n": True},
+            "headline": {"type": "string", "i18n": True},
+            "subline":  {"type": "richtext", "i18n": True},
+            "form_slug":{"type": "string", "required": True,
+                         "description": "Slug of the form to embed (must be published)"},
+            "variant":  {"type": "enum", "options": ["inline", "modal_trigger"], "default": "inline"},
+            "cta_label":{"type": "string", "i18n": True,
+                         "description": "Used only when variant=modal_trigger"},
+        },
+        "defaults": {
+            "eyebrow": "Start a conversation",
+            "headline": "Tell us about your project.",
+            "subline":  "Take a few minutes — we'll be in touch within 24 hours.",
+            "form_slug": "design-request",
+            "variant": "inline",
+            "cta_label": "Start the brief",
+        },
+    },
 ]
 
 

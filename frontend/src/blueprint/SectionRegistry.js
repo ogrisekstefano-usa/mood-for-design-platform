@@ -18,6 +18,7 @@ import SplitSection from './sections/SplitSection';
 import LogoStripSection from './sections/LogoStripSection';
 import MagazineGridSection from './sections/MagazineGridSection';
 import FAQSection from './sections/FAQSection';
+import FormEmbedSection from './sections/FormEmbedSection';
 
 export const SECTION_COMPONENTS = {
   hero:           HeroSection,
@@ -30,6 +31,7 @@ export const SECTION_COMPONENTS = {
   logo_strip:     LogoStripSection,
   magazine_grid:  MagazineGridSection,
   faq:            FAQSection,
+  form_embed:     FormEmbedSection,
 };
 
 export function resolveSection(type) {

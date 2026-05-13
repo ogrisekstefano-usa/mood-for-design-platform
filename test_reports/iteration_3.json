@@ -1,0 +1,45 @@
+{
+  "summary": "Phase D — Form Engine end-to-end testing. Backend: 19/19 pytest pass after fixing one CRITICAL bug (lead row insert was using non-existent 'budget' column; corrected to 'budget_range'). All CRUD, public publish gate, internal field stripping (ai/scoring/integrations), submission validation (required + email), conditional logic primitives (equals/not_equals/in/not_in/gt/lt/truthy), and reusability check (concierge purpose does NOT write to leads) all pass. Frontend: Settings → Forms tile, FormBuilderPage list view, FormEditView with all 4 step rows, build/preview toggle, publish toggle (DRAFT→PUBLISHED with teal badge + Saved indicator), 18 field type cards in add-field modal, public form route /f/{tenant}/{form} loads with form-next-btn and first_name input. UI fully Italian (Sistema/Impostazioni/Lead/Progetti/Proposte/Moodboard/Ispirazioni). visit-form-link appears after publish.",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "/api/forms/public/{tenant}/{form}/submit", "issue": "CRITICAL — Lead row insert in routers/forms.py used 'budget' column but `leads` schema has 'budget_range'. PostgREST returned 400 `PGRST204 Could not find the 'budget' column of 'leads' in the schema cache` and the exception was silently swallowed (logger.warning only). Result: lead-purpose / design_request submissions did NOT create lead rows, breaking workspace continuity. FIXED by testing agent — mapped answers['budget'] -> 'budget_range' (str()).", "priority": "CRITICAL"}
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Public form validation feedback", "issue": "After clicking Continue on /f/.../design-request with empty required fields, no DOM element with class containing 'error' was found. Validation likely uses a different className/data-testid for inline error messages. Backend validation works; frontend should expose an error-text data-testid so users can see why the step did not advance. Worth verifying in code.", "affected_selectors": [".error", "[class*=\"error\"]"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_form_engine.py",
+    "/app/test_reports/pytest/iteration_3.xml"
+  ],
+  "action_items": [
+    "VERIFY the budget_range fix applied in /app/backend/routers/forms.py (the lead insert now writes budget_range as a string instead of writing to a non-existent 'budget' column). Consider promoting the silent logger.warning to a structured error log or surfacing it in the API response metadata so future schema drifts are not invisible.",
+    "Expose a data-testid for field-level error messages in the public FormRenderer (e.g., [data-testid=\"field-error-{key}\"]) so QA can assert validation visibility. Current generic '.error' selector did not match.",
+    "Consider validating phone/country format server-side too (currently only email format is enforced beyond required-presence).",
+    "Submission storage in tenant_settings will scale poorly. Plan a migration to a dedicated form_submissions table before high-volume launches (router already accepts the contract — only the persistence layer needs swapping)."
+  ],
+  "critical_code_review_comments": [
+    "routers/forms.py: lead persistence swallows ANY exception silently — the schema-drift bug would have remained hidden in prod. Replace bare except with explicit error capture and add a 'lead_persistence_status' field on the audit_log metadata.",
+    "routers/forms.py: tenant resolution by slug-or-domain is duplicated across public_get_form and public_submit_form. Extract into _resolve_public_tenant() to keep behaviour in sync (same comment was raised in Phase C for routers/public.py).",
+    "core/form_registry.py validate_submission: email regex is just '@' substring check. Tighten to a real regex (e.g., '[^@\\s]+@[^@\\s]+\\.[^@\\s]+') — current check accepts 'a@' or '@b' as valid.",
+    "routers/forms.py upsert_form: payload spread `{**existing, **payload}` is shallow — partial updates to nested dicts (e.g., settings.thank_you) will wipe sibling keys. Document the contract or do a deep merge for top-level dict-typed fields (settings, ai, integrations).",
+    "form_registry default_form returns 4 steps with 10 fields (matches spec). Good. But step UUIDs are regenerated every call — fine for 'seed' shape, but if a tenant resets twice you should warn users that field IDs change (breaking analytics joins).",
+    "FIELD_TYPES has 18 entries but the frontend FieldRegistry exposes 14 components. signature is registered server-side but not implemented client-side. Either remove signature from FIELD_TYPES until shipped or add a 'coming_soon' flag and grey it out in the add-field modal."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_form_engine.py (new — 19 tests)",
+    "/app/backend/routers/forms.py (fixed budget -> budget_range)"
+  ],
+  "success_rate": {"backend": "100% (19/19)", "frontend": "Critical flows verified: list view, edit view, publish toggle, public form load, 18 field cards"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin, IT locale, tenant mood-demo-studio-81a09e)",
+  "seed_data_creation": "Tests create + delete forms 'content-hub-pro-22', 'content-hub-pro-22-copy', 'test-concierge-form'. design-request is reset to default seed (4 steps, 10 fields) then republished via UI during frontend run. After my run the design-request form is in status=published.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Test file /app/backend/tests/test_form_engine.py covers all Phase D endpoints. Pairs with test_section_engine.py (which now has updated expectation of 11 sections including form_embed). Field component count gap: 18 registered server-side vs 14 implemented client-side — signature/scale/image_choice/phone may be missing some — confirm before next iteration.",
+  "rca of the issue": "BUG: lead persistence column mismatch. RCA: /app/backend/routers/forms.py line ~294 wrote answers['budget'] into a column literally named 'budget' on the `leads` Supabase table. The actual schema column is 'budget_range' (verified via direct supabase select '*' on a sample row). PostgREST therefore returned 400 `PGRST204 Could not find the 'budget' column of 'leads' in the schema cache`, but the outer try/except in the route ate the exception with only a logger.warning, so the public /submit endpoint returned 200 with a submission_id while leads were never persisted. Reproduction: POST /api/forms/public/mood-demo-studio-81a09e/{published-lead-form}/submit with valid answers, then GET /api/leads — no row with source='form:{slug}'. Backend log showed PGRST204. Mitigation applied by testing agent: changed insert payload to `'budget_range': str(answers.get('budget'))` (str cast because schema column type is text/varchar). After fix, leads now persist on every lead/design_request submission. Recommend adding a unit test that asserts the actual leads row was written, not just the audit log — currently the silent except hides any future schema drift."
+}

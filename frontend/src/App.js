@@ -22,7 +22,9 @@ const BrandStudioPage = lazy(() => import('./pages/settings/BrandStudioPage'));
 const DomainsPage = lazy(() => import('./pages/settings/DomainsPage'));
 const HomepageBuilderPage = lazy(() => import('./pages/settings/HomepageBuilderPage'));
 const NavigationEditorPage = lazy(() => import('./pages/settings/NavigationEditorPage'));
+const FormBuilderPage = lazy(() => import('./pages/settings/FormBuilderPage'));
 const PublicTenantPage = lazy(() => import('./pages/public/PublicTenantPage'));
+const PublicFormPage = lazy(() => import('./pages/public/PublicFormPage'));
 const LeadFormPage = lazy(() => import('./pages/public/LeadFormPage'));
 
 // Admin
@@ -93,6 +95,7 @@ function App() {
                   <Route path="/settings/pages" element={<HomepageBuilderPage />} />
                   <Route path="/settings/domains" element={<DomainsPage />} />
                   <Route path="/settings/navigation" element={<NavigationEditorPage />} />
+                  <Route path="/settings/forms" element={<FormBuilderPage />} />
                 </Route>
 
                 <Route element={<SuperAdminRoute><AdminLayout /></SuperAdminRoute>}>
@@ -104,6 +107,7 @@ function App() {
                 </Route>
 
                 {/* PUBLIC tenant routes — runtime composition via Blueprint engine */}
+                <Route path="/f/:tenantSlug/:formSlug" element={<PublicFormPage />} />
                 <Route path="/:tenantSlug" element={<PublicTenantPage />} />
                 <Route path="/:tenantSlug/:pageSlug" element={<PublicTenantPage />} />
 
