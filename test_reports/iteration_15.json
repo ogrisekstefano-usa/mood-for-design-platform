@@ -1,0 +1,43 @@
+{
+  "summary": "F.2 Presentation Sequencing V2 — Backend GREEN (12/12 new + 33/33 regression). Frontend editor (PageInspector tab, 6 IT transitions, autosave, Presenta button, keyboard nav, chapter overlay, Esc exit) GREEN. PUBLIC /presentation/{token} route BROKEN: hard-redirects to /auth/login because PublicPresentation.jsx calls auth-gated /api/moodboards/_meta/presentation_transitions and the global axios 401 interceptor in /app/frontend/src/lib/api.js (line 29-31) forcefully bounces to /auth/login before the local .catch can fall back. This breaks the client-safe share experience entirely.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Public /presentation/{share_token}", "issue": "PublicPresentation.jsx fetches the auth-gated /api/moodboards/_meta/presentation_transitions endpoint. That call returns 401 for unauthenticated visitors and the global axios interceptor in lib/api.js hard-redirects to /auth/login, so the public share link is unusable. Visited URL /presentation/PXSdp8bsX6b4sjdhok2zL74w5yAciKeQ resolves to the login page instead of PresentationMode. The presentation-mode/loading/error testids never mount (DOM check returned all false).", "affected_selectors": ["public-presentation-loading", "public-presentation-error", "presentation-mode"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_f2_presentation.py",
+    "/app/test_reports/pytest/iteration_15_f2.xml",
+    "/app/test_reports/pytest/iteration_15_regression.xml"
+  ],
+  "action_items": [
+    "Fix public route: either (a) remove the /_meta/presentation_transitions fetch from PublicPresentation.jsx (the component already falls back to fade) or (b) expose a public variant of the transitions endpoint (e.g. /api/moodboards/public/_meta/presentation_transitions) with no auth dependency, or (c) make the existing endpoint public since it returns only a static catalog. Preferred: option (a)+(c) — drop the call AND make /_meta/presentation_transitions auth-free since the registry has no tenant data.",
+    "Optional: harden lib/api.js interceptor to skip the hard redirect when window.location.pathname.startsWith('/presentation/') so future public surfaces don't get bounced."
+  ],
+  "critical_code_review_comments": [
+    "GET /api/moodboards/_meta/presentation_transitions returns exactly 6 transitions (fade/dissolve/slow_slide_left/slow_slide_up/cinematic_zoom/soft_blur_crossfade). Each has cubic-bezier(0.22,1,0.36,1) easing and duration_ms in 700-1000ms range (premium, not flashy). GPU-only properties (opacity/transform/filter) in css.from/to as required.",
+    "PUT /pages/{pid} correctly merges F.2 fields under settings JSONB (verified preexisting skeleton_id survives the merge). Invalid transition_in/out → 400 with descriptive error. Empty string chapter_label correctly clears the key. Legacy fields (title, hidden_in_presentation) still write to structured columns.",
+    "GET /public/share/{token} now returns pages array, filters hidden_from_client pages and drops blocks whose page_id belongs to filtered pages. 403 enforced when status='draft'.",
+    "POST /api/templates/inject-into/{moodboard_id} appends template_pages after the existing max sort_order, preserves existing pages, clones template_blocks with placeholder metadata, returns {moodboard_id, pages_added, blocks_added, first_new_page_id}. Tenant-scoped (studio2 → 404 on cross-tenant moodboard, verified). Unknown template_id/moodboard_id → 404.",
+    "Frontend editor: 'Pagina' tab (data-testid=tab-page) appears between Inspector and Layers. Italian labels active by default — transition select shows: Dissolvenza / Cross-dissolve / Slide lento · sinistra / Slide lento · alto / Zoom cinematografico / Blur crossfade (6 options). All inspector fields render: page-title-input, page-chapter-input, page-transition-in, page-transition-duration, page-hidden-from-client, page-hidden-in-presentation.",
+    "Frontend autosave verified: chapter_label='Concept' + transition_in='cinematic_zoom' persisted via PUT and survived reload (settings.transition_in === 'cinematic_zoom' on next GET).",
+    "PresentationMode V2 opens on Presenta click, is fullscreen overlay (covers viewport), ArrowRight/ArrowLeft change page, 'c' opens presentation-chapters-panel, Escape exits cleanly (presentation-mode unmounts).",
+    "BUG: /app/frontend/src/lib/api.js global interceptor blindly redirects any 401 to /auth/login. This is incompatible with public surfaces — currently breaks /presentation/{token}. The unconditional redirect should ignore requests originating from /presentation/* and /moodboard/share/* routes."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase_f2_presentation.py (NEW — 12 tests: transitions registry, PUT settings merge + invalid 400 + legacy, public share pages+filter+draft403, inject-into success+unknown404+cross-tenant404, regression smokes)"
+  ],
+  "success_rate": {
+    "backend": "100% — 12/12 F.2 new tests pass + 33/33 F.0+P0 regression",
+    "frontend": "~85% — editor + PresentationMode in editor are GREEN; public /presentation/{token} route is broken by auth-gated meta call + global 401 redirect"
+  },
+  "test_credentials": "designer@moodfordesign.com / Designer2024! · studio2@moodfordesign.com / Studio2024! (cross-tenant). Test moodboard id: 85b93c6b-8de2-4b14-a977-a768ecc02309. Ephemeral share token used during this run: PXSdp8bsX6b4sjdhok2zL74w5yAciKeQ.",
+  "seed_data_creation": "Tests create one ephemeral template (slug TEST_F2_INJECT_<hex>) via /api/templates/from-moodboard and clean it up via DELETE in fixture teardown. Newly injected pages on the live moodboard are deleted at end of test. Live moodboard status flipped to 'sent' (was 'sent' already per iteration_14, so non-destructive).",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend F.2 endpoints (transitions registry, page settings merge, public share filtering, inject-into) are all verified and stable — re-run /app/backend/tests/test_phase_f2_presentation.py for regression. Frontend Page Inspector and in-editor PresentationMode work end-to-end. The OPEN ITEM is the public /presentation/{token} route — once main agent removes the auth-gated transitions fetch from PublicPresentation.jsx (or makes the meta endpoint public), retest by: (1) login as designer, (2) POST /share to get a token, (3) ensure status='sent', (4) open /presentation/{token} in a fresh context — should mount data-testid=presentation-mode with NO redirect to /auth/login. Italian is default locale; UI strings are Italian on first paint.",
+  "rca of the issue": "Public route /presentation/:shareToken (PublicPresentation.jsx) issues TWO axios calls on mount: GET /api/moodboards/public/share/{token} (public, OK) AND GET /api/moodboards/_meta/presentation_transitions (auth-gated via require_permission(P_MOODBOARDS_READ)). The second call returns 401 for an unauthenticated visitor. The axios response interceptor in /app/frontend/src/lib/api.js (lines 29-31) does `window.location.href = '/auth/login'` on any 401 regardless of route — this preempts the local .catch fallback and tears the user out of the share experience entirely. Reproduction: open /presentation/{any-valid-token} in private/incognito mode → page flashes then lands on the login form. Mitigation (recommended): (1) remove the transitions fetch from PublicPresentation.jsx (PresentationMode safely defaults to 'fade'), AND (2) drop require_permission from the /_meta/presentation_transitions endpoint since the catalog is purely static. Optionally also guard the lib/api.js interceptor to skip redirect on /presentation/* + /moodboard/share/* paths."
+}

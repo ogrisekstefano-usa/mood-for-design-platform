@@ -27,6 +27,7 @@ from core.permissions import (
     P_MOODBOARDS_READ, P_MOODBOARDS_WRITE,
 )
 from core.page_skeletons import PAGE_SKELETONS, get_skeleton
+from core.presentation_transitions import PRESENTATION_TRANSITIONS, VALID_TRANSITION_IDS
 from database import db, db_available
 
 router = APIRouter()
@@ -179,6 +180,12 @@ class PageUpdate(BaseModel):
     background: Optional[Dict[str, Any]] = None
     settings: Optional[Dict[str, Any]] = None
     hidden_in_presentation: Optional[bool] = None
+    # F.2 Presentation Sequencing™ — fields stored under `settings` JSONB
+    chapter_label: Optional[str] = None
+    transition_in: Optional[str] = None
+    transition_out: Optional[str] = None
+    transition_duration: Optional[int] = None
+    hidden_from_client: Optional[bool] = None
 
 
 class PageReorder(BaseModel):
@@ -253,6 +260,14 @@ def get_page_presets(ctx: dict = Depends(require_permission(P_MOODBOARDS_READ)))
 # Code-defined structural single-page layouts. Frontend reads via this endpoint
 # and renders them in the "Add page" picker. Coordinates are absolute against
 # each skeleton's aspect ratio canvas (1400x1866 editorial, 1920x1200 cover…).
+@router.get("/_meta/presentation_transitions")
+def get_presentation_transitions(ctx: dict = Depends(require_permission(P_MOODBOARDS_READ))):
+    """F.2 Presentation Engine — cinematic transition catalog. NEVER hardcoded
+    in JSX. Frontend reads this once at presentation boot and emits inline
+    style keyframes for each page enter/exit."""
+    return {"data": PRESENTATION_TRANSITIONS}
+
+
 @router.get("/_meta/page_skeletons")
 def get_page_skeletons(ctx: dict = Depends(require_permission(P_MOODBOARDS_READ))):
     """Return the structural page skeleton catalog with computed
@@ -418,6 +433,30 @@ def update_page(moodboard_id: str, page_id: str, body: PageUpdate,
         preset = ASPECT_RATIO_PRESETS[body_d["aspect_ratio"]]
         body_d["width"] = preset["width"]
         body_d["height"] = preset["height"]
+
+    # F.2: Presentation fields are stored inside `settings` JSONB (no schema
+    # migration needed). Validate transition ids against the registry.
+    presentation_keys = ("chapter_label", "transition_in", "transition_out",
+                         "transition_duration", "hidden_from_client")
+    presentation_patch = {k: body_d.pop(k) for k in presentation_keys if k in body_d}
+    if presentation_patch:
+        for k in ("transition_in", "transition_out"):
+            v = presentation_patch.get(k)
+            if v is not None and v not in VALID_TRANSITION_IDS:
+                raise HTTPException(400, f"Invalid {k}: {v}")
+        cur_settings = cur.data[0].get("settings") or {}
+        if not isinstance(cur_settings, dict):
+            cur_settings = {}
+        # Merge atomically so unrelated keys (e.g. skeleton_id) survive
+        merged = {**cur_settings, **presentation_patch}
+        # Allow explicit clearing via empty string for chapter_label
+        if presentation_patch.get("chapter_label") == "":
+            merged.pop("chapter_label", None)
+        # Settings explicitly provided in body merges on top
+        if "settings" in body_d and isinstance(body_d["settings"], dict):
+            merged = {**merged, **body_d["settings"]}
+        body_d["settings"] = merged
+
     body_d["updated_at"] = _now()
     r = client.table("moodboard_pages").update(body_d) \
         .eq("id", page_id).eq("moodboard_id", moodboard_id).execute()
@@ -772,8 +811,33 @@ def public_get_by_share(share_token: str):
     mb = mb_q.data[0]
     if mb.get("status") in (None, "draft"):
         raise HTTPException(403, "Not ready for review")
+    # F.2: include pages so the public Presentation Mode can render
+    # cinematic multi-page sequences. Filter out pages flagged as
+    # `settings.hidden_from_client == True` (internal designer pages).
+    pages_q = client.table("moodboard_pages").select("*") \
+        .eq("moodboard_id", mb["id"]).order("sort_order").execute()
+    all_pages = pages_q.data or []
+    visible_pages = [
+        p for p in all_pages
+        if not (isinstance(p.get("settings"), dict)
+                and p["settings"].get("hidden_from_client") is True)
+    ]
+    mb["pages"] = visible_pages
+    visible_page_ids = {p["id"] for p in visible_pages}
+
     els = client.table("moodboard_elements").select("*") \
         .eq("moodboard_id", mb["id"]).order("sort_order").execute()
-    mb["elements"] = [_normalize_block(b) for b in (els.data or []) if not b.get("hidden")]
+    raw_blocks = els.data or []
+    mb["elements"] = [
+        _normalize_block(b) for b in raw_blocks
+        if not b.get("hidden")
+        # Drop blocks belonging to client-hidden pages (or to no page on
+        # a moodboard with the multi-page model). Legacy blocks without
+        # page_id stay attached to the first visible page.
+        and (
+            b.get("page_id") in visible_page_ids
+            or (not b.get("page_id") and visible_pages)
+        )
+    ]
     mb.pop("tenant_id", None)
     return mb

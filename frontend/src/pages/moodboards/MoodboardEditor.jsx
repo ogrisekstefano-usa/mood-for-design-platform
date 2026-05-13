@@ -19,7 +19,7 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
   ArrowLeft, Plus, Check, Share2, ExternalLink, Send, X, AlertCircle,
   Play, Maximize2, ChevronLeft, ChevronRight, PanelRight, ListChecks,
-  BookmarkPlus, Undo2, Redo2, Magnet, RotateCcw,
+  BookmarkPlus, Undo2, Redo2, Magnet, RotateCcw, FileText,
 } from 'lucide-react';
 import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegistry';
 import StatusBadge from '../../components/common/StatusBadge';
@@ -29,6 +29,8 @@ import PagesNavigator from '../../blueprint/moodboard/PagesNavigator';
 import { computeSnap } from '../../blueprint/moodboard/useSnap';
 import SnapGuides from '../../blueprint/moodboard/SnapGuides';
 import useHistory from '../../blueprint/moodboard/useHistory';
+import PresentationMode from '../../blueprint/moodboard/PresentationMode';
+import PageInspector from '../../blueprint/moodboard/PageInspector';
 
 const CANVAS_W = 1400;
 const CANVAS_H = 2400;
@@ -48,14 +50,22 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const [saveError, setSaveError] = useState(null);
   const [drag, setDrag] = useState(null);
   const [shareDialog, setShareDialog] = useState(null);
-  const [rightTab, setRightTab] = useState('inspector'); // inspector | layers
+  const [rightTab, setRightTab] = useState('inspector'); // inspector | layers | page
   const [presenting, setPresenting] = useState(false);
   const [presentIndex, setPresentIndex] = useState(0);
   const [snapGuides, setSnapGuides] = useState([]);
   const [snapEnabled, setSnapEnabled] = useState(true);
   const [pages, setPages] = useState([]);
   const [activePageId, setActivePageId] = useState(null);
+  const [transitions, setTransitions] = useState([]);
   const history = useHistory();
+
+  // Load transitions registry once
+  useEffect(() => {
+    api.get('/api/moodboards/_meta/presentation_transitions')
+      .then((r) => setTransitions(r.data?.data || []))
+      .catch(() => setTransitions([]));
+  }, []);
 
   // Filter blocks to the active page (legacy elements without page_id stay
   // visible on the first page for backward-compat). Memo not needed — list is small.
@@ -536,20 +546,8 @@ const MoodboardEditor = ({ readOnly = false }) => {
     }
   };
 
-  // ── Presentation mode keyboard nav ────────────────────────────────────────
-  useEffect(() => {
-    if (!presenting) return;
-    const visibleBlocks = blocks.filter((b) => !b.hidden);
-    const handler = (e) => {
-      if (e.key === 'Escape') setPresenting(false);
-      if (e.key === 'ArrowRight' || e.key === ' ')
-        setPresentIndex((i) => Math.min(visibleBlocks.length - 1, i + 1));
-      if (e.key === 'ArrowLeft')
-        setPresentIndex((i) => Math.max(0, i - 1));
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [presenting, blocks]);
+  // ── Presentation Mode V2 — handled by PresentationMode component ────────
+  // (keyboard nav + chapter logic + transitions all live there)
 
   const selectedBlock = useMemo(() => blocks.find((b) => b.id === selectedId), [blocks, selectedId]);
   const visibleBlocks = useMemo(() => blocks.filter((b) => !b.hidden), [blocks]);
@@ -562,10 +560,12 @@ const MoodboardEditor = ({ readOnly = false }) => {
     );
   }
 
-  // ── Presentation Mode ────────────────────────────────────────────────────
+  // ── Presentation Mode V2 ────────────────────────────────────────────────
   if (presenting) {
-    return <PresentationMode mb={mb} blocks={visibleBlocks} index={presentIndex}
-                             setIndex={setPresentIndex} onExit={() => setPresenting(false)} t={t} />;
+    return <PresentationMode mb={mb} pages={pages} blocks={visibleBlocks}
+                             transitions={transitions} clientSafe={readOnly}
+                             startIndex={Math.max(0, pages.findIndex((p) => p.id === activePageId))}
+                             onExit={() => setPresenting(false)} t={t} />;
   }
 
   return (
@@ -771,6 +771,8 @@ const MoodboardEditor = ({ readOnly = false }) => {
             <div className="flex border-b border-[var(--bp-border)]" data-testid="right-tabs">
               <TabBtn active={rightTab === 'inspector'} onClick={() => setRightTab('inspector')}
                       icon={PanelRight} label={t('moodboards.editor.inspector')} testid="tab-inspector" />
+              <TabBtn active={rightTab === 'page'} onClick={() => setRightTab('page')}
+                      icon={FileText} label={t('moodboards.editor.page')} testid="tab-page" />
               <TabBtn active={rightTab === 'layers'} onClick={() => setRightTab('layers')}
                       icon={ListChecks} label={t('moodboards.editor.layers')} testid="tab-layers" />
             </div>
@@ -792,6 +794,10 @@ const MoodboardEditor = ({ readOnly = false }) => {
                   </p>
                 </div>
               )
+            ) : rightTab === 'page' ? (
+              <PageInspector moodboardId={id}
+                             page={activePage}
+                             onSaved={reloadPagesAndBlocks} />
             ) : (
               <LayersPanel blocks={pageBlocks} selectedId={selectedId}
                            onSelect={(bid) => { setSelectedId(bid); }}
@@ -837,46 +843,6 @@ const TabBtn = ({ active, onClick, icon: Icon, label, testid }) => (
     <Icon size={11} strokeWidth={1.5} /> {label}
   </button>
 );
-
-// ── Presentation Mode ──────────────────────────────────────────────────────
-const PresentationMode = ({ mb, blocks, index, setIndex, onExit, t }) => {
-  const active = blocks[index];
-  return (
-    <div className="fixed inset-0 z-50 bg-[var(--bp-bg)] flex flex-col" data-testid="presentation-mode">
-      <header className="flex items-center justify-between px-8 py-5 flex-shrink-0">
-        <div>
-          <p className="bp-eyebrow !text-[var(--bp-text-muted)] mb-1">{t('moodboards.editor.present')}</p>
-          <h1 className="bp-h2 text-[var(--bp-text-primary)] font-light">{mb.title}</h1>
-        </div>
-        <button onClick={onExit} className="bp-btn bp-btn-ghost text-xs" data-testid="exit-present-btn">
-          <X size={12} strokeWidth={1.5} /> {t('moodboards.editor.exitPresent')}
-        </button>
-      </header>
-      <main className="flex-1 flex items-center justify-center px-12 pb-12">
-        {active ? (
-          <div key={active.id} className="relative animate-[fadeIn_0.6s_ease-out]"
-               style={{ width: Math.min(active.width * 1.5, 900), height: Math.min(active.height * 1.5, 700) }}>
-            {React.createElement(resolveBlock(active.type), { block: active, readOnly: true, t })}
-          </div>
-        ) : (
-          <p className="bp-h3 text-[var(--bp-text-muted)]">—</p>
-        )}
-      </main>
-      <footer className="flex items-center justify-between px-8 py-5 border-t border-[var(--bp-border)] flex-shrink-0">
-        <button onClick={() => setIndex(Math.max(0, index - 1))} disabled={index === 0}
-                className="bp-btn bp-btn-ghost text-xs disabled:opacity-30" data-testid="present-prev">
-          <ChevronLeft size={13} strokeWidth={1.5} />
-        </button>
-        <span className="bp-caption text-[var(--bp-text-muted)]">{index + 1} / {blocks.length}</span>
-        <button onClick={() => setIndex(Math.min(blocks.length - 1, index + 1))}
-                disabled={index >= blocks.length - 1}
-                className="bp-btn bp-btn-ghost text-xs disabled:opacity-30" data-testid="present-next">
-          <ChevronRight size={13} strokeWidth={1.5} />
-        </button>
-      </footer>
-    </div>
-  );
-};
 
 // ── Inspector primitives ────────────────────────────────────────────────────
 const InspectorInput = ({ label, value, onChange, testid }) => (

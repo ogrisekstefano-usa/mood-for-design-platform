@@ -489,6 +489,107 @@ def apply_template(template_id: str, body: ApplyTemplate,
             "blocks_count": len(tpl_blocks), "template_slug": tpl.get("slug")}
 
 
+# ── INJECT (append template pages into an EXISTING moodboard) ───────────────
+class InjectTemplate(BaseModel):
+    template_id: str
+
+
+@router.post("/inject-into/{moodboard_id}", status_code=201)
+def inject_template_into_moodboard(moodboard_id: str, body: InjectTemplate,
+                                   ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
+    """F.2 BONUS — Append the multi-page structure of a template AT THE END of an
+    existing moodboard without touching existing pages/blocks.
+
+    Reuses the same page_id_map + block-cloning logic as `apply_template`,
+    but offsets the new pages' `sort_order` past the current maximum so the
+    structure slots in cleanly after the existing pages.
+    """
+    _require_uuid(moodboard_id)
+    _require_uuid(body.template_id)
+    client = db()
+    # Tenant-scoped lookup
+    mb_q = client.table("moodboards").select("id, project_id, title, tenant_id") \
+        .eq("id", moodboard_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute()
+    if not mb_q.data:
+        raise HTTPException(404, "Moodboard not found")
+    tpl = _fetch_template(client, body.template_id, ctx["tenant_id"])
+
+    # Where to start appending
+    max_q = client.table("moodboard_pages").select("sort_order") \
+        .eq("moodboard_id", moodboard_id).order("sort_order", desc=True).limit(1).execute()
+    base_sort = ((max_q.data[0]["sort_order"] if max_q.data else -1) + 1)
+
+    tpl_pages = client.table("template_pages").select("*") \
+        .eq("template_id", body.template_id).order("sort_order").execute().data or []
+    page_id_map: Dict[str, str] = {}
+    first_new_page_id: Optional[str] = None
+    for offset, tp in enumerate(tpl_pages):
+        new_pid = str(uuid.uuid4())
+        if first_new_page_id is None:
+            first_new_page_id = new_pid
+        page_id_map[tp["id"]] = new_pid
+        client.table("moodboard_pages").insert({
+            "id": new_pid,
+            "tenant_id": ctx["tenant_id"],
+            "moodboard_id": moodboard_id,
+            "title": tp.get("title") or "Page",
+            "page_type": tp.get("page_type") or "blank",
+            "aspect_ratio": tp.get("aspect_ratio") or "portrait_a4",
+            "width": tp.get("width") or 1400,
+            "height": tp.get("height") or 2400,
+            "background": tp.get("background") or {},
+            "settings": tp.get("settings") or {},
+            "sort_order": base_sort + offset,
+            "created_by": ctx["profile_id"],
+        }).execute()
+
+    tpl_blocks = client.table("template_blocks").select("*") \
+        .eq("template_id", body.template_id).order("sort_order").execute().data or []
+    for tb in tpl_blocks:
+        if not tb.get("template_page_id") or tb["template_page_id"] not in page_id_map:
+            # legacy single-page templates: skip — caller can use apply_template
+            continue
+        content = _parse_jsonish(tb.get("content"))
+        meta = {}
+        if tb.get("is_placeholder"):
+            meta["placeholder"] = {
+                "label": tb.get("placeholder_label"),
+                "type": tb.get("placeholder_type"),
+                "required": tb.get("placeholder_required", False),
+            }
+        row = {
+            "id": str(uuid.uuid4()),
+            "tenant_id": ctx["tenant_id"],
+            "moodboard_id": moodboard_id,
+            "page_id": page_id_map[tb["template_page_id"]],
+            "type": tb["type"],
+            "title": tb.get("title") or (content.get("caption") if tb["type"] == "image" else None),
+            "content": json.dumps(content),
+            "position_json": _parse_jsonish(tb.get("position_json")),
+            "style_json": _parse_jsonish(tb.get("style_json")),
+            "metadata_json": meta if meta else None,
+            "sort_order": tb.get("sort_order") or 0,
+        }
+        if tb["type"] == "image":
+            img = tb.get("image_url") or content.get("src")
+            if img:
+                row["image_url"] = img
+        row = {k: v for k, v in row.items() if v is not None}
+        client.table("moodboard_elements").insert(row).execute()
+
+    client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
+    audit_log(ctx["tenant_id"], ctx["profile_id"], "template.injected",
+              resource_type="moodboard", resource_id=moodboard_id,
+              metadata={"template_id": body.template_id, "slug": tpl.get("slug"),
+                        "pages_added": len(tpl_pages), "blocks_added": len(tpl_blocks)})
+    return {
+        "moodboard_id": moodboard_id,
+        "pages_added": len(tpl_pages),
+        "blocks_added": len(tpl_blocks),
+        "first_new_page_id": first_new_page_id,
+    }
+
+
 # ── SAVE-AS-TEMPLATE (from existing moodboard) ──────────────────────────────
 @router.post("/from-moodboard/{moodboard_id}", status_code=201)
 def save_as_template(moodboard_id: str, body: SaveAsTemplate,
