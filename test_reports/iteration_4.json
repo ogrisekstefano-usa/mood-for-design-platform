@@ -1,0 +1,45 @@
+{
+  "summary": "Phase E — Moodboards V1 (blocks/approval/share) + Workspace (tasks/notes/activity/lead.convert) end-to-end. Backend: 25/25 pytest pass (test_moodboards_workspace.py). All CRUD on moodboards, all 6 block types (image/text/palette/note/product/material), batch autosave, approval state machine (draft→sent→approved/revision_requested + invalid 400), share token + public anonymous fetch (403 on draft, 200 on sent+, 404 on bad token), tasks/notes/activity, lead.convert (creates project, status→project_opened, activity recorded) all green. Frontend: e2e UI happy-path verified — login → /moodboards loads with all 7 filters and 3 existing cards, new-moodboard modal works, editor canvas accepts all 6 block types, inspector opens on click, send-review → approve-btn transition visible, share dialog returns public URL, anonymous public share page renders blocks read-only (no inspector, no add-block sidebar). /workspace/leads exposes 4 convert-lead-{id} buttons. ONE I18N FINDING: locale selector shows 'IT' but the visible labels are still ENGLISH (Moodboards, Drafts, Sent, Viewed, Approved, Revision, Rejected, New moodboard, Curated visual narratives for your projects, Leads, Projects, Proposals, Insights, Inspirations, Settings, Super Admin, Dashboard, Content). The IT translation keys for moodboards.* and the sidebar/breadcrumb sections are either missing in blueprint i18n or the locale='it' isn't being applied at render time. ONE NAV FINDING: on /workspace/projects, project cards are not <a href> elements so click-to-detail couldn't be exercised by an anchor-based selector — needs data-testid like project-card-{id} or wrap in <Link>.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Workspace → project detail navigation", "issue": "On /workspace/projects there are NO <a href='/workspace/projects/...'> anchor links — project cards appear to use onClick handlers on div wrappers, so playwright (and any deep-link bookmarking) can't navigate. Wrap card in <Link> or add data-testid='project-card-{id}' with href.", "affected_selectors": ["a[href*='/workspace/projects/']"]}
+    ],
+    "design_issues": [
+      {"screen": "Entire app under locale=IT", "issues": ["UI is rendering ENGLISH despite locale flag 'IT' being shown in the topbar selector. Visible English: 'Moodboards', 'Drafts', 'Sent', 'Viewed', 'Approved', 'Revision', 'Rejected', 'New moodboard', 'Curated visual narratives for your projects', 'Leads', 'Projects', 'Proposals', 'Insights', 'Inspirations', 'Settings', 'Super Admin', 'Dashboard', 'Content'. Expected per spec: 'Bozze', 'Inviati', 'Visti', 'Approvati', 'Revisione', 'Rifiutati', 'Nuovo moodboard', etc. Either: (a) the IT translation rows are missing from the blueprint i18n table for moodboards.* / nav.* / sidebar.* keys, OR (b) the t() resolution is defaulting to en-US regardless of user.locale='it'. Confirm via GET /api/blueprint/i18n?locale=it to inspect the resolved bundle."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_moodboards_workspace.py",
+    "/app/test_reports/pytest/iteration_4.xml"
+  ],
+  "action_items": [
+    "Fix i18n IT bundle — verify GET /api/blueprint/i18n?locale=it returns moodboards.list.title, moodboards.list.filter.draft|sent|viewed|approved|revision_requested|rejected, moodboards.create.cta, nav.* and sidebar.* keys. If keys exist but UI still renders English, debug the locale-resolution in the React i18n provider (likely defaulting to en-US because of profile.preferred_locale vs tenant.default_locale precedence).",
+    "Wrap project cards on /workspace/projects in <Link to=`/workspace/projects/${id}`> AND add data-testid='project-card-{id}' so they are keyboard-accessible AND testable. Same audit suggested for lead cards.",
+    "Block-content schema is loose (Pydantic Dict[str, Any]); consider per-type sub-schemas (BlockImageContent, BlockPaletteContent…) to prevent inconsistent client payloads — currently any shape is accepted server-side.",
+    "Share token endpoint stores reverse-lookup under tenant_settings 'moodboard_share.{token}' — anonymous GET works but there's no rate-limit. Add a per-IP throttle before public launch.",
+    "Approval transitions allow draft→sent and back, but viewed is only reachable from sent (and never auto-set by the public viewer). Consider auto-marking 'viewed' on first hit of /public/share/{token} so designers see when the client opens the board."
+  ],
+  "critical_code_review_comments": [
+    "routers/workspace.py list_notes: 3 redundant sorted() calls (lines 162-166) — only the last one matters. Simplify to a single sorted(items, key=lambda n: (not n.get('pinned'), n.get('created_at') or '')).",
+    "routers/moodboards_v1.py approval transition guard accepts `body.status == current` as a no-op (line 262). That's silently idempotent but should probably 200 with a 'no change' note OR 400. Document the contract.",
+    "routers/moodboards.py get_moodboard does a synchronous fan-out (moodboards + moodboard_elements) inside an async-ish FastAPI handler with sync Supabase client — fine for now, but if elements grow large add ORDER BY sort_order which is already done — confirm the index exists on (moodboard_id, sort_order).",
+    "routers/moodboards_v1.py _normalize_block parses content twice (lines 66-72 + line 49 _parse_content). Single source of truth would help.",
+    "Auth bearer is required for /api/projects, /api/moodboards, /api/workspace/* — confirm token TTL is reasonable. The login-test uses Supabase password grant — no httpOnly cookie (token in JS memory). For a multi-tenant SaaS this is acceptable but flag for SOC2 review.",
+    "i18n: locale 'IT' shown in the topbar selector does not match the rendered language — strong signal that either the blueprint i18n table is missing 'it' rows for the keys the UI requests, or the React i18n provider isn't reactively re-rendering after the user.locale switches. Verify both."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_moodboards_workspace.py (new — 25 tests, covers full Phase E backend)"
+  ],
+  "success_rate": {"backend": "100% (25/25)", "frontend": "Critical flows verified: moodboards list+filters+create, editor with 6 block types + inspector, approval workflow (send→approve), share dialog + public anonymous read-only view, leads convert button visible. Two non-blocker issues found (i18n IT not applied, project cards not anchor links)."},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin, IT locale, tenant mood-demo-studio-81a09e)",
+  "seed_data_creation": "Backend tests create + delete TEST_* prefixed moodboards, blocks, tasks, notes, leads. Cleanup is on-fixture-teardown for moodboards and on-test for tasks/notes. The test_convert_lead flow leaves the resulting project AND its activity stream behind (lead is deleted but project orphaned — minor cleanup gap, won't affect future runs). Frontend run also created one moodboard 'UI_TEST_E2E' (approved+shared) — listed in /moodboards.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend Phase E fully green via /app/backend/tests/test_moodboards_workspace.py — keep this as regression. Two open frontend tickets for E1: (1) IT i18n fallback to EN, (2) project cards not anchors. The moodboard editor canvas drag/resize was NOT exercised by playwright in this run because the drag+autosave is timing-sensitive — backend batch endpoint is tested instead and confirmed working; recommend a manual or mouse_down/move/up scripted UI assertion next iteration. APPROVAL_TRANSITIONS in moodboards_v1.py is the source of truth for the state machine — any UI change must mirror that. Public share URL pattern: /moodboard/share/{token} (singular 'moodboard' in the URL, plural 'moodboards' in the API). The public route is correctly auth-free and strips tenant_id from the response.",
+  "rca of the issue": "i18n: locale dropdown displays 'IT' but visible labels are English. Without code-level access to the React i18n provider during this run, the two most likely root causes are: (1) blueprint i18n table missing 'it' rows for namespaces moodboards.*, nav.*, sidebar.*, common.* — the React provider then falls back to en-US silently; OR (2) the i18n provider reads locale once at mount from profile.preferred_locale and doesn't subscribe to a global locale-change event, so switching IT in the dropdown updates the visible flag but not the t() resolver. Reproduction: login as demo@moodfordesign.com, go to /moodboards — every label is English even though the user's preferred_locale is 'it'. Mitigation candidates: (a) GET /api/blueprint/i18n?locale=it and diff against en-US to find missing keys; (b) confirm the React provider re-renders on locale change (test by toggling the dropdown and watching for re-render). No code change applied by testing agent because this is a feature-completeness call that the main agent should make."
+}

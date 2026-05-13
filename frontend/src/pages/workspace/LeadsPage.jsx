@@ -2,9 +2,10 @@
  * LeadsPage — list, filter, create. Blueprint-driven labels via t().
  */
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api, { formatError } from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
-import { Plus, Search, Mail } from 'lucide-react';
+import { Plus, Search, Mail, ArrowRight } from 'lucide-react';
 
 const STATUS_TONES = {
   new: 'bg-blue-500/10 text-blue-400',
@@ -82,11 +83,13 @@ const NewLeadModal = ({ onClose, onSaved }) => {
 
 const LeadsPage = () => {
   const { t } = useBlueprint();
+  const navigate = useNavigate();
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [convertingId, setConvertingId] = useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -99,6 +102,16 @@ const LeadsPage = () => {
   }, [statusFilter]);
 
   useEffect(() => { load(); }, [load]);
+
+  const convertLead = async (leadId, e) => {
+    e.preventDefault(); e.stopPropagation();
+    setConvertingId(leadId);
+    try {
+      const r = await api.post(`/api/workspace/leads/${leadId}/convert`);
+      navigate(`/workspace/projects/${r.data.id}`);
+    } catch (err) { alert(formatError(err)); }
+    finally { setConvertingId(null); }
+  };
 
   const filtered = leads.filter((l) => {
     if (!search) return true;
@@ -143,17 +156,17 @@ const LeadsPage = () => {
         <table className="w-full">
           <thead>
             <tr className="border-b border-white/[0.05]">
-              {['leads.field.firstName', 'leads.field.email', 'leads.field.leadType', 'leads.field.budget', 'leads.field.status', 'leads.field.createdAt'].map((k) => (
+              {['leads.field.firstName', 'leads.field.email', 'leads.field.leadType', 'leads.field.budget', 'leads.field.status', 'leads.field.createdAt', 'common.actions'].map((k) => (
                 <th key={k} className="text-left px-5 py-3.5 text-[10px] font-body font-bold uppercase tracking-[0.12em] text-[#4A4845]">{t(k)}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={6} className="text-center py-16 text-[#4A4845] text-sm font-body">{t('common.loading')}…</td></tr>
+              <tr><td colSpan={7} className="text-center py-16 text-[#4A4845] text-sm font-body">{t('common.loading')}…</td></tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center py-16">
+                <td colSpan={7} className="text-center py-16">
                   <p className="text-[#6B6863] text-sm font-body">{t('leads.empty')}</p>
                   <button onClick={() => setShowModal(true)} className="mt-3 text-[var(--bp-primary,#D4AF37)] text-sm font-body hover:opacity-80">
                     + {t('leads.emptyCta')}
@@ -181,6 +194,16 @@ const LeadsPage = () => {
                   </span>
                 </td>
                 <td className="px-5 py-3.5"><span className="text-[#4A4845] text-xs font-body">{lead.created_at ? new Date(lead.created_at).toLocaleDateString() : '—'}</span></td>
+                <td className="px-5 py-3.5 text-right">
+                  {lead.status !== 'project_opened' && lead.status !== 'archived' && (
+                    <button onClick={(e) => convertLead(lead.id, e)}
+                            disabled={convertingId === lead.id}
+                            data-testid={`convert-lead-${lead.id}`}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-body text-[var(--bp-primary,#D4AF37)] border border-[var(--bp-primary,#D4AF37)]/30 hover:bg-[var(--bp-primary,#D4AF37)]/10 rounded-[3px] disabled:opacity-50">
+                      {convertingId === lead.id ? '…' : <>{t('workspace.lead.convert')} <ArrowRight size={11} strokeWidth={1.5} /></>}
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

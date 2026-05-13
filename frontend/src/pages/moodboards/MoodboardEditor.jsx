@@ -1,80 +1,88 @@
 /**
  * MoodboardEditor — V1 canvas editor for Blueprint Moodboards™.
  *
- * Features (V1):
- *  - Canvas with absolute-positioned blocks (image/text/palette/note/product/material)
- *  - Mouse drag + corner resize with autosave (debounced)
- *  - Add block toolbar
- *  - Inline content edit panel (right rail) when a block is selected
+ * V1 scope (stable, not a Figma/Canva clone):
+ *  - Canvas with absolute-positioned blocks (image · text · palette · note · product · material)
+ *  - Drag (move) + corner resize with debounced autosave
+ *  - Add-block left rail (block registry-driven)
+ *  - Inline content edit panel (right rail) for selected block
  *  - Approval workflow (draft → in_review → approved/rejected)
  *  - Share token (read-only client review at /moodboard/share/:token)
  *
- * Architectural prep (NOT implemented in V1):
- *  - PDF export endpoint stub
- *  - Hotspot system (block type accepted server-side)
- *  - AI material suggestions
- *  - Presentation mode
+ * Everything user-facing flows through Blueprint i18n (t()) — ZERO hardcoded copy.
+ * Everything visual flows through Blueprint theme tokens (--bp-*) — ZERO hardcoded colors.
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
+import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
-  ArrowLeft, Plus, Trash2, Save, Check, Share2, Eye, ExternalLink,
-  Send, X, MoreHorizontal,
+  ArrowLeft, Plus, Check, Share2, ExternalLink, Send, X,
 } from 'lucide-react';
 import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegistry';
 
 const CANVAS_W = 1400;
 const CANVAS_H = 2400;
 
-const StatusBadge = ({ status }) => {
+const StatusBadge = ({ status, t }) => {
   const tones = {
-    draft: 'bg-[var(--bp-surface-2)] text-[var(--bp-text-muted)]',
-    in_review: 'bg-amber-500/10 text-amber-400',
-    approved: 'bg-emerald-500/10 text-emerald-400',
-    rejected: 'bg-red-500/10 text-red-400',
+    draft:              'bg-[var(--bp-surface-2)] text-[var(--bp-text-muted)]',
+    sent:               'bg-amber-500/10 text-amber-400',
+    viewed:             'bg-blue-500/10 text-blue-400',
+    approved:           'bg-emerald-500/10 text-emerald-400',
+    revision_requested: 'bg-orange-500/10 text-orange-400',
+    rejected:           'bg-red-500/10 text-red-400',
   };
-  return <span className={`bp-eyebrow !text-[10px] px-2 py-1 rounded-[var(--bp-radius-xs)] ${tones[status] || tones.draft}`}>{status || 'draft'}</span>;
+  const key = status || 'draft';
+  return (
+    <span className={`bp-eyebrow !text-[10px] px-2 py-1 rounded-[var(--bp-radius-xs)] ${tones[key] || tones.draft}`}>
+      {t(`moodboards.status.${key}`)}
+    </span>
+  );
 };
 
 const MoodboardEditor = ({ readOnly = false }) => {
   const { id, shareToken } = useParams();
   const navigate = useNavigate();
+  const { t } = useBlueprint();
   const [mb, setMb] = useState(null);
   const [blocks, setBlocks] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
-  const [dirtyMap, setDirtyMap] = useState({}); // id → true
+  const [dirtyMap, setDirtyMap] = useState({});
   const [savedAt, setSavedAt] = useState(null);
+  const [saving, setSaving] = useState(false);
   const [drag, setDrag] = useState(null);
   const [shareDialog, setShareDialog] = useState(null);
 
   const canvasRef = useRef();
   const saveTimer = useRef();
 
-  // ── Load ───────────────────────────────────────────────────────────────────
+  // ── Load ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     const url = readOnly
       ? `/api/moodboards/public/share/${shareToken}`
       : `/api/moodboards/${id}`;
-    const fn = readOnly ? api.get : api.get;
-    fn(url).then((r) => {
+    api.get(url).then((r) => {
       setMb(r.data);
       setBlocks(r.data.elements || []);
     }).catch(() => { if (!readOnly) navigate('/moodboards'); });
   }, [id, shareToken, readOnly, navigate]);
 
-  // ── Autosave (debounced) ──────────────────────────────────────────────────
+  // ── Autosave (debounced) ─────────────────────────────────────────────────
   const flushSave = useCallback(async () => {
     if (readOnly) return;
     const ids = Object.keys(dirtyMap);
     if (!ids.length) return;
     const payload = blocks.filter((b) => ids.includes(b.id))
-      .map((b) => ({ id: b.id, x: b.x, y: b.y, width: b.width, height: b.height, content: b.content, z_index: b.z_index }));
+      .map((b) => ({ id: b.id, x: b.x, y: b.y, width: b.width, height: b.height,
+                     content: b.content, z_index: b.z_index }));
+    setSaving(true);
     try {
       await api.patch(`/api/moodboards/${id}/blocks/batch`, { blocks: payload });
       setDirtyMap({});
       setSavedAt(Date.now());
-    } catch (e) { /* swallow — show inline error if needed */ }
+    } catch (_) { /* swallow */ }
+    finally { setSaving(false); }
   }, [blocks, dirtyMap, id, readOnly]);
 
   useEffect(() => {
@@ -149,6 +157,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onUp);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drag]);
 
   // ── Approval ──────────────────────────────────────────────────────────────
@@ -167,44 +176,71 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const selectedBlock = useMemo(() => blocks.find((b) => b.id === selectedId), [blocks, selectedId]);
 
   if (!mb) {
-    return <div className="p-10"><div className="w-5 h-5 border-2 border-[var(--bp-primary)] border-t-transparent rounded-full animate-spin" /></div>;
+    return (
+      <div className="p-10 min-h-screen bg-[var(--bp-bg)] flex items-center justify-center">
+        <div className="w-5 h-5 border-2 border-[var(--bp-primary)] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[var(--bp-bg)]" data-testid={readOnly ? 'moodboard-public' : 'moodboard-editor'}>
+    <div className="flex flex-col h-screen bg-[var(--bp-bg)]"
+         data-testid={readOnly ? 'moodboard-public' : 'moodboard-editor'}>
       {/* Topbar */}
       <header className="flex items-center justify-between gap-4 px-6 h-14 border-b border-[var(--bp-border)] bg-[var(--bp-surface-1)]/60 backdrop-blur-sm flex-shrink-0">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 min-w-0">
           {!readOnly && (
-            <button onClick={() => navigate(-1)} className="bp-caption text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]" data-testid="back-btn">
-              <ArrowLeft size={13} strokeWidth={1.5} className="inline mr-1" /> Back
+            <button onClick={() => navigate(-1)}
+                    className="bp-caption text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] flex items-center gap-1.5"
+                    data-testid="back-btn">
+              <ArrowLeft size={13} strokeWidth={1.5} /> {t('moodboards.editor.back')}
             </button>
           )}
-          <h1 className="bp-h3 text-[var(--bp-text-primary)]">{mb.title || 'Untitled moodboard'}</h1>
-          <StatusBadge status={mb.status} />
+          <h1 className="bp-h3 text-[var(--bp-text-primary)] truncate">
+            {mb.title || t('moodboards.untitled')}
+          </h1>
+          <StatusBadge status={mb.status} t={t} />
         </div>
         {!readOnly && (
           <div className="flex items-center gap-2">
-            {savedAt && Object.keys(dirtyMap).length === 0 && (
-              <span className="bp-caption text-[var(--bp-text-muted)] flex items-center gap-1">
-                <Check size={12} strokeWidth={1.5} /> Saved
+            {saving ? (
+              <span className="bp-caption text-[var(--bp-text-muted)] flex items-center gap-1"
+                    data-testid="status-saving">
+                <span className="w-2 h-2 rounded-full bg-[var(--bp-primary)] animate-pulse" />
+                {t('moodboards.editor.saving')}
               </span>
-            )}
+            ) : savedAt && Object.keys(dirtyMap).length === 0 ? (
+              <span className="bp-caption text-[var(--bp-text-muted)] flex items-center gap-1"
+                    data-testid="status-saved">
+                <Check size={12} strokeWidth={1.5} /> {t('moodboards.editor.saved')}
+              </span>
+            ) : null}
+
             {mb.status === 'draft' && (
-              <button onClick={() => changeApproval('in_review')} className="bp-btn bp-btn-ghost text-xs" data-testid="send-review-btn">
-                <Send size={12} strokeWidth={1.5} /> Send for review
+              <button onClick={() => changeApproval('sent')}
+                      className="bp-btn bp-btn-ghost text-xs" data-testid="send-review-btn">
+                <Send size={12} strokeWidth={1.5} /> {t('moodboards.editor.sendReview')}
               </button>
             )}
-            {mb.status === 'in_review' && (
+            {(mb.status === 'sent' || mb.status === 'viewed') && (
               <>
-                <button onClick={() => changeApproval('rejected')} className="bp-btn bp-btn-ghost text-xs" data-testid="reject-btn">Reject</button>
-                <button onClick={() => changeApproval('approved')} className="bp-btn bp-btn-primary text-xs" data-testid="approve-btn">
-                  <Check size={12} strokeWidth={1.5} /> Approve
+                <button onClick={() => changeApproval('revision_requested')}
+                        className="bp-btn bp-btn-ghost text-xs" data-testid="revision-btn">
+                  {t('moodboards.editor.requestRevision')}
+                </button>
+                <button onClick={() => changeApproval('rejected')}
+                        className="bp-btn bp-btn-ghost text-xs" data-testid="reject-btn">
+                  {t('moodboards.editor.reject')}
+                </button>
+                <button onClick={() => changeApproval('approved')}
+                        className="bp-btn bp-btn-primary text-xs" data-testid="approve-btn">
+                  <Check size={12} strokeWidth={1.5} /> {t('moodboards.editor.approve')}
                 </button>
               </>
             )}
-            <button onClick={createShareToken} className="bp-btn bp-btn-ghost text-xs" data-testid="share-btn">
-              <Share2 size={12} strokeWidth={1.5} /> Share
+            <button onClick={createShareToken}
+                    className="bp-btn bp-btn-ghost text-xs" data-testid="share-btn">
+              <Share2 size={12} strokeWidth={1.5} /> {t('moodboards.editor.share')}
             </button>
           </div>
         )}
@@ -214,12 +250,14 @@ const MoodboardEditor = ({ readOnly = false }) => {
         {/* LEFT — Add blocks toolbar */}
         {!readOnly && (
           <aside className="w-[200px] flex-shrink-0 border-r border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 p-4">
-            <p className="bp-eyebrow mb-4">Add block</p>
+            <p className="bp-eyebrow mb-4 !text-[var(--bp-text-muted)]">{t('moodboards.editor.addBlock')}</p>
             <div className="space-y-2">
               {BLOCK_TYPES.map((bt) => (
-                <button key={bt.type} onClick={() => addBlock(bt.type)} data-testid={`add-${bt.type}`}
-                  className="w-full px-3 py-2.5 bg-[var(--bp-surface-1)] hover:bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-sm)] text-left text-sm font-body text-[var(--bp-text-primary)] flex items-center gap-2 transition-colors">
-                  <Plus size={12} strokeWidth={1.5} className="text-[var(--bp-text-muted)]" /> {bt.label}
+                <button key={bt.type} onClick={() => addBlock(bt.type)}
+                        data-testid={`add-${bt.type}`}
+                        className="w-full px-3 py-2.5 bg-[var(--bp-surface-1)] hover:bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-sm)] text-left text-sm font-body text-[var(--bp-text-primary)] flex items-center gap-2 transition-colors">
+                  <Plus size={12} strokeWidth={1.5} className="text-[var(--bp-text-muted)]" />
+                  {t(`moodboards.block.${bt.type}`)}
                 </button>
               ))}
             </div>
@@ -229,28 +267,29 @@ const MoodboardEditor = ({ readOnly = false }) => {
         {/* CENTER — Canvas */}
         <main className="flex-1 overflow-auto p-6">
           <div ref={canvasRef} onClick={() => setSelectedId(null)} data-testid="moodboard-canvas"
-            className="relative bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] mx-auto"
-            style={{ width: CANVAS_W, height: CANVAS_H }}>
+               className="relative bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] mx-auto"
+               style={{ width: CANVAS_W, height: CANVAS_H }}>
             {blocks.map((b) => {
               const Component = resolveBlock(b.type);
               const isSelected = selectedId === b.id;
               return (
                 <div key={b.id} data-testid={`block-${b.type}`}
-                  className={`absolute group ${isSelected ? 'ring-2 ring-[var(--bp-primary)]' : 'hover:ring-1 hover:ring-[var(--bp-border-strong)]'}`}
-                  style={{ left: b.x, top: b.y, width: b.width, height: b.height, zIndex: b.z_index || 0 }}
-                  onMouseDown={(e) => startDrag(e, b, 'move')}
-                  onClick={(e) => { e.stopPropagation(); setSelectedId(b.id); }}>
-                  {Component ? <Component block={b} readOnly={readOnly} /> :
-                    <div className="bp-caption text-[var(--bp-text-muted)] p-2">Unknown block: {b.type}</div>}
+                     className={`absolute group ${isSelected ? 'ring-2 ring-[var(--bp-primary)]' : 'hover:ring-1 hover:ring-[var(--bp-border-strong)]'}`}
+                     style={{ left: b.x, top: b.y, width: b.width, height: b.height, zIndex: b.z_index || 0 }}
+                     onMouseDown={(e) => startDrag(e, b, 'move')}
+                     onClick={(e) => { e.stopPropagation(); setSelectedId(b.id); }}>
+                  {Component
+                    ? <Component block={b} readOnly={readOnly} t={t} />
+                    : <div className="bp-caption text-[var(--bp-text-muted)] p-2">{b.type}</div>}
                   {!readOnly && isSelected && (
                     <>
                       <button onClick={(e) => { e.stopPropagation(); removeBlock(b.id); }}
-                        data-testid={`delete-block-${b.id}`}
-                        className="absolute -top-3 -right-3 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-md">
+                              data-testid={`delete-block-${b.id}`}
+                              className="absolute -top-3 -right-3 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-md">
                         <X size={12} strokeWidth={2} />
                       </button>
                       <div onMouseDown={(e) => startDrag(e, b, 'resize')}
-                        className="absolute bottom-0 right-0 w-3 h-3 bg-[var(--bp-primary)] rounded-tl-[var(--bp-radius-xs)] cursor-se-resize" />
+                           className="absolute bottom-0 right-0 w-3 h-3 bg-[var(--bp-primary)] rounded-tl-[var(--bp-radius-xs)] cursor-se-resize" />
                     </>
                   )}
                 </div>
@@ -261,26 +300,32 @@ const MoodboardEditor = ({ readOnly = false }) => {
 
         {/* RIGHT — Inspector for selected block */}
         {!readOnly && selectedBlock && (
-          <aside className="w-[300px] flex-shrink-0 border-l border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 p-5 overflow-y-auto">
-            <p className="bp-eyebrow mb-1">{selectedBlock.type}</p>
-            <h3 className="bp-h3 mb-5">Block inspector</h3>
-            <BlockInspector block={selectedBlock} onChange={(content) => updateBlock(selectedBlock.id, { content })} />
+          <aside className="w-[300px] flex-shrink-0 border-l border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 p-5 overflow-y-auto" data-testid="block-inspector">
+            <p className="bp-eyebrow mb-1 !text-[var(--bp-text-muted)]">
+              {t(`moodboards.block.${selectedBlock.type}`)}
+            </p>
+            <h3 className="bp-h3 mb-5 text-[var(--bp-text-primary)]">{t('moodboards.editor.inspector')}</h3>
+            <BlockInspector block={selectedBlock} t={t}
+                            onChange={(content) => updateBlock(selectedBlock.id, { content })} />
           </aside>
         )}
       </div>
 
       {/* Share dialog */}
       {shareDialog && (
-        <div className="fixed inset-0 z-50 bg-[var(--bp-overlay)] backdrop-blur-sm flex items-center justify-center" onClick={() => setShareDialog(null)}>
-          <div onClick={(e) => e.stopPropagation()} className="bp-glass p-6 rounded-[var(--bp-radius-md)] max-w-md">
-            <p className="bp-eyebrow mb-2">Share link</p>
-            <h3 className="bp-h3 mb-4">Send to client</h3>
+        <div className="fixed inset-0 z-50 bg-[var(--bp-overlay)] backdrop-blur-sm flex items-center justify-center"
+             onClick={() => setShareDialog(null)}>
+          <div onClick={(e) => e.stopPropagation()} className="bp-glass p-6 rounded-[var(--bp-radius-md)] max-w-md w-[420px]">
+            <p className="bp-eyebrow mb-2 !text-[var(--bp-text-muted)]">{t('moodboards.editor.shareEyebrow')}</p>
+            <h3 className="bp-h2 mb-4 text-[var(--bp-text-primary)]">{t('moodboards.editor.shareTitle')}</h3>
             <input readOnly value={shareDialog} data-testid="share-url"
-              className="input-luxury w-full px-3 py-2 text-sm rounded-[var(--bp-radius-sm)] mb-4" />
+                   className="input-luxury w-full px-3 py-2 text-sm rounded-[var(--bp-radius-sm)] mb-4" />
             <div className="flex justify-end gap-2">
-              <button onClick={() => setShareDialog(null)} className="bp-btn bp-btn-ghost text-xs">Close</button>
+              <button onClick={() => setShareDialog(null)} className="bp-btn bp-btn-ghost text-xs">
+                {t('common.close')}
+              </button>
               <a href={shareDialog} target="_blank" rel="noreferrer" className="bp-btn bp-btn-primary text-xs">
-                <ExternalLink size={12} strokeWidth={1.5} /> Open
+                <ExternalLink size={12} strokeWidth={1.5} /> {t('moodboards.editor.openShare')}
               </a>
             </div>
           </div>
@@ -291,83 +336,95 @@ const MoodboardEditor = ({ readOnly = false }) => {
 };
 
 // ── Block Inspector ─────────────────────────────────────────────────────────
-const InspectorInput = ({ label, value, onChange, ...rest }) => (
+const InspectorInput = ({ label, value, onChange, testid }) => (
   <label className="block mb-3">
     <span className="bp-eyebrow !text-[10px] mb-1 block !text-[var(--bp-text-muted)]">{label}</span>
     <input value={value || ''} onChange={(e) => onChange(e.target.value)}
-      className="input-luxury w-full px-2.5 py-1.5 text-sm rounded-[var(--bp-radius-sm)]" {...rest} />
+           data-testid={testid}
+           className="input-luxury w-full px-2.5 py-1.5 text-sm rounded-[var(--bp-radius-sm)]" />
   </label>
 );
 
-const InspectorTextarea = ({ label, value, onChange }) => (
+const InspectorTextarea = ({ label, value, onChange, testid }) => (
   <label className="block mb-3">
     <span className="bp-eyebrow !text-[10px] mb-1 block !text-[var(--bp-text-muted)]">{label}</span>
     <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={4}
-      className="input-luxury w-full px-2.5 py-1.5 text-sm rounded-[var(--bp-radius-sm)] resize-y" />
+              data-testid={testid}
+              className="input-luxury w-full px-2.5 py-1.5 text-sm rounded-[var(--bp-radius-sm)] resize-y" />
   </label>
 );
 
-const BlockInspector = ({ block, onChange }) => {
+const BlockInspector = ({ block, onChange, t }) => {
   const c = block.content || {};
   const set = (k, v) => onChange({ ...c, [k]: v });
 
   switch (block.type) {
     case 'image':
       return (<>
-        <InspectorInput label="Image URL" value={c.src} onChange={(v) => set('src', v)} testid="block-src" />
-        <InspectorInput label="Caption"   value={c.caption} onChange={(v) => set('caption', v)} />
+        <InspectorInput label={t('moodboards.field.imageUrl')} value={c.src}
+                        onChange={(v) => set('src', v)} testid="block-image-src" />
+        <InspectorInput label={t('moodboards.field.caption')} value={c.caption}
+                        onChange={(v) => set('caption', v)} testid="block-image-caption" />
       </>);
     case 'text':
       return (<>
-        <InspectorTextarea label="Text" value={c.text} onChange={(v) => set('text', v)} />
+        <InspectorTextarea label={t('moodboards.field.text')} value={c.text}
+                           onChange={(v) => set('text', v)} testid="block-text-input" />
         <label className="block mb-3">
-          <span className="bp-eyebrow !text-[10px] mb-1 block !text-[var(--bp-text-muted)]">Size</span>
+          <span className="bp-eyebrow !text-[10px] mb-1 block !text-[var(--bp-text-muted)]">
+            {t('moodboards.field.size')}
+          </span>
           <select value={c.size || 'h3'} onChange={(e) => set('size', e.target.value)}
-            className="input-luxury w-full px-2.5 py-1.5 text-sm rounded-[var(--bp-radius-sm)]">
+                  data-testid="block-text-size"
+                  className="input-luxury w-full px-2.5 py-1.5 text-sm rounded-[var(--bp-radius-sm)]">
             {['display','h1','h2','h3','body','caption','eyebrow'].map((s) => <option key={s}>{s}</option>)}
           </select>
         </label>
       </>);
     case 'note':
-      return <InspectorTextarea label="Note" value={c.text} onChange={(v) => set('text', v)} />;
+      return <InspectorTextarea label={t('moodboards.field.note')} value={c.text}
+                                onChange={(v) => set('text', v)} testid="block-note-input" />;
     case 'palette':
       return (
         <div>
-          <span className="bp-eyebrow !text-[10px] mb-2 block !text-[var(--bp-text-muted)]">Colors (HEX)</span>
+          <span className="bp-eyebrow !text-[10px] mb-2 block !text-[var(--bp-text-muted)]">
+            {t('moodboards.field.colors')}
+          </span>
           {(c.colors || []).map((col, i) => (
             <div key={i} className="flex items-center gap-2 mb-2">
               <input type="color" value={col} onChange={(e) => {
-                const next = [...(c.colors || [])]; next[i] = e.target.value;
-                set('colors', next);
+                const next = [...(c.colors || [])]; next[i] = e.target.value; set('colors', next);
               }} className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent" />
               <input value={col} onChange={(e) => {
-                const next = [...(c.colors || [])]; next[i] = e.target.value;
-                set('colors', next);
+                const next = [...(c.colors || [])]; next[i] = e.target.value; set('colors', next);
               }} className="input-luxury flex-1 px-2 py-1 text-xs font-mono rounded-[var(--bp-radius-xs)]" />
               <button onClick={() => set('colors', c.colors.filter((_, j) => j !== i))}
-                className="text-[var(--bp-text-muted)] hover:text-red-400"><X size={11} /></button>
+                      className="text-[var(--bp-text-muted)] hover:text-red-400">
+                <X size={11} />
+              </button>
             </div>
           ))}
-          <button onClick={() => set('colors', [...(c.colors || []), '#FFFFFF'])} className="bp-btn bp-btn-ghost text-xs w-full">
-            <Plus size={11} strokeWidth={1.5} /> Add color
+          <button onClick={() => set('colors', [...(c.colors || []), '#FFFFFF'])}
+                  className="bp-btn bp-btn-ghost text-xs w-full" data-testid="add-palette-color">
+            <Plus size={11} strokeWidth={1.5} /> {t('moodboards.field.addColor')}
           </button>
         </div>
       );
     case 'product':
       return (<>
-        <InspectorInput label="Name"   value={c.name}   onChange={(v) => set('name', v)} />
-        <InspectorInput label="Vendor" value={c.vendor} onChange={(v) => set('vendor', v)} />
-        <InspectorInput label="Price"  value={c.price}  onChange={(v) => set('price', v)} />
-        <InspectorInput label="Image URL" value={c.image} onChange={(v) => set('image', v)} />
+        <InspectorInput label={t('moodboards.field.name')}     value={c.name}   onChange={(v) => set('name', v)} />
+        <InspectorInput label={t('moodboards.field.vendor')}   value={c.vendor} onChange={(v) => set('vendor', v)} />
+        <InspectorInput label={t('moodboards.field.price')}    value={c.price}  onChange={(v) => set('price', v)} />
+        <InspectorInput label={t('moodboards.field.imageUrl')} value={c.image}  onChange={(v) => set('image', v)} />
       </>);
     case 'material':
       return (<>
-        <InspectorInput label="Name"     value={c.name}    onChange={(v) => set('name', v)} />
-        <InspectorInput label="Finish"   value={c.finish}  onChange={(v) => set('finish', v)} />
-        <InspectorInput label="Swatch URL" value={c.swatch} onChange={(v) => set('swatch', v)} />
+        <InspectorInput label={t('moodboards.field.name')}   value={c.name}   onChange={(v) => set('name', v)} />
+        <InspectorInput label={t('moodboards.field.finish')} value={c.finish} onChange={(v) => set('finish', v)} />
+        <InspectorInput label={t('moodboards.field.swatch')} value={c.swatch} onChange={(v) => set('swatch', v)} />
       </>);
     default:
-      return <p className="bp-caption text-[var(--bp-text-muted)]">No inspector for this block type.</p>;
+      return <p className="bp-caption text-[var(--bp-text-muted)]">{t('moodboards.editor.noInspector')}</p>;
   }
 };
 

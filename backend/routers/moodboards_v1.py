@@ -241,11 +241,15 @@ def batch_update_blocks(moodboard_id: str, body: BlocksBatchUpdate,
 
 
 # ── Approval workflow ───────────────────────────────────────────────────────
+# Aligned with Supabase `moodboard_status` enum:
+#   draft · sent · viewed · approved · revision_requested · rejected
 APPROVAL_TRANSITIONS = {
-    "draft":      {"in_review"},
-    "in_review":  {"approved", "rejected", "draft"},
-    "approved":   {"draft"},  # allow re-open
-    "rejected":   {"in_review", "draft"},
+    "draft":              {"sent"},
+    "sent":               {"viewed", "approved", "revision_requested", "rejected", "draft"},
+    "viewed":             {"approved", "revision_requested", "rejected", "sent"},
+    "approved":           {"draft"},  # allow re-open
+    "revision_requested": {"sent", "draft"},
+    "rejected":           {"sent", "draft"},
 }
 
 

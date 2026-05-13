@@ -242,23 +242,23 @@ def convert_lead_to_project(lead_id: str, ctx: dict = Depends(get_tenant_context
         "tenant_id": ctx['tenant_id'],
         "title": f"{lead.get('first_name') or ''} {lead.get('last_name') or ''}".strip() or "New project",
         "project_type": lead.get('project_type'),
-        "client_email": lead.get('email'),
-        "client_phone": lead.get('phone'),
         "lead_id":    lead_id,
         "status":     "new",
         "budget_range": lead.get('budget_range'),
         "timeline":   lead.get('timeline'),
-        "notes":      lead.get('notes'),
+        "description": lead.get('notes'),
+        "language":   lead.get('language'),
         "created_at": now,
         "updated_at": now,
     }
-    project = {k: v for k, v in project.items() if v is not None}
+    # Drop None values AND empty strings (postgres rejects '' for uuid/enum columns)
+    project = {k: v for k, v in project.items() if v not in (None, "")}
     inserted = client.table('projects').insert(project).execute().data
     project = inserted[0] if inserted else project
 
-    # Update lead status to qualified
+    # Update lead status to project_opened (DB enum: new/qualified/not_qualified/contacted/project_opened/archived)
     try:
-        client.table('leads').update({'status': 'converted', 'updated_at': now}).eq('id', lead_id).execute()
+        client.table('leads').update({'status': 'project_opened', 'updated_at': now}).eq('id', lead_id).execute()
     except Exception:
         pass
 
