@@ -1,0 +1,33 @@
+{
+  "summary": "F.2 PUBLIC PRESENTATION FIX retest — GREEN. Backend: GET /api/moodboards/_meta/presentation_transitions is now public (HTTP 200, 6 transitions) with no auth header. Other /_meta endpoints (page_presets, page_skeletons) still return 401 without bearer (regression OK). Frontend: anonymous visit to /presentation/ufULYt-cCGL0HyRCvjh8ewWgTKiCaxhF mounts data-testid='presentation-mode' (page counter 1/11, CONCEPT chapter, controls visible) with NO redirect to /auth/login. ArrowRight keeps the overlay mounted. Negative regression: anonymous visit to /dashboard still correctly redirects to /auth/login — interceptor public-surface whitelist works as designed.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_f2_presentation.py",
+    "/app/test_reports/pytest/iteration_15_f2.xml",
+    "/app/test_reports/pytest/iteration_15_regression.xml"
+  ],
+  "action_items": [
+    "OPTIONAL/MINOR: When anonymous visitor presses Esc in PresentationMode, the app navigates to '/' which is an authed surface and the route guard sends them to /auth/login. This is expected app-routing behavior (the F.2 fix is intact), but UX-wise a public visitor closing a share-link presentation lands on the login form. Consider routing Esc on public PublicPresentation to a 'thank you' / share landing page or simply window.close()/no-op for public surfaces. NOT a regression."
+  ],
+  "critical_code_review_comments": [
+    "Backend fix at /app/backend/routers/moodboards_v1.py line 263-264: GET /_meta/presentation_transitions correctly drops Depends(require_permission(...)) and is now anonymous-accessible — verified curl HTTP 200, exactly 6 transitions returned. Sibling /_meta/page_presets and /_meta/page_skeletons still require auth (curl HTTP 401), so the change is correctly scoped.",
+    "Frontend fix at /app/frontend/src/lib/api.js lines 29-44: interceptor now checks window.location.pathname against a whitelist (/presentation/*, /moodboard/share/*, /f/*, /form/*, /auth/login) and skips both the localStorage wipe AND the hard redirect to /auth/login when on a public surface. Verified: protected paths (/dashboard) still redirect, public path (/presentation/{token}) does not. Clean, minimal, and prevents future public surfaces from being torn out.",
+    "Public PresentationMode UI mounts with no auth — CONCEPT chapter label, page counter 1/11, Chapters button + close button render. ArrowRight keeps overlay mounted (advance worked). Esc handler still navigates to '/' which then 401-bounces, but that is route-level behavior outside the scope of this fix."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% — transitions endpoint public, page_presets/page_skeletons still auth-gated",
+    "frontend": "100% on the targeted fix — public /presentation/{token} mounts cleanly, no auth redirect"
+  },
+  "test_credentials": "designer@moodfordesign.com / Designer2024! · share token ufULYt-cCGL0HyRCvjh8ewWgTKiCaxhF for moodboard 85b93c6b-8de2-4b14-a977-a768ecc02309 (status=sent, 11 visible pages).",
+  "seed_data_creation": "None this iteration. Existing share token reused.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "F.2 PublicPresentation is fully working: backend presentation_transitions endpoint is public, axios interceptor in lib/api.js skips redirect on /presentation/*, /moodboard/share/*, /f/*, /form/* paths. Esc handler still routes back to '/' which 401-redirects for anonymous users — flagged as minor UX item, not a regression. Full backend regression (test_phase_f2_presentation.py) was already GREEN in iteration_15 (12/12 + 33/33) and the only backend change here is removing a Depends — re-running pytest is safe but not required.",
+  "rca of the issue": "FIXED. Original RCA: PublicPresentation.jsx fetched /_meta/presentation_transitions which required auth → 401 → global axios interceptor force-redirected to /auth/login. Resolution applied by main agent: (a) removed Depends(require_permission) from the transitions endpoint (it returns a purely static registry, no tenant data, no PII), (b) hardened the axios response interceptor in /app/frontend/src/lib/api.js to inspect window.location.pathname and skip the redirect/storage-wipe when the visitor is on a known public surface. Both layers of defense in place — even a future stray 401 from another auth-gated call on a public route will no longer punt the visitor out."
+}

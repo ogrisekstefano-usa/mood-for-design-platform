@@ -261,10 +261,13 @@ def get_page_presets(ctx: dict = Depends(require_permission(P_MOODBOARDS_READ)))
 # and renders them in the "Add page" picker. Coordinates are absolute against
 # each skeleton's aspect ratio canvas (1400x1866 editorial, 1920x1200 cover…).
 @router.get("/_meta/presentation_transitions")
-def get_presentation_transitions(ctx: dict = Depends(require_permission(P_MOODBOARDS_READ))):
+def get_presentation_transitions():
     """F.2 Presentation Engine — cinematic transition catalog. NEVER hardcoded
     in JSX. Frontend reads this once at presentation boot and emits inline
-    style keyframes for each page enter/exit."""
+    style keyframes for each page enter/exit.
+
+    Auth-free on purpose: the catalog is static, has no tenant data, and is
+    needed by the public client-safe /presentation/{token} surface."""
     return {"data": PRESENTATION_TRANSITIONS}
 
 
