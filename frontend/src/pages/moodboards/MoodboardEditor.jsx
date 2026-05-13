@@ -25,7 +25,9 @@ import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegist
 import StatusBadge from '../../components/common/StatusBadge';
 import LayersPanel, { sortLayersTopFirst } from '../../blueprint/moodboard/LayersPanel';
 import ImageUploader from '../../blueprint/moodboard/ImageUploader';
-import PagesNavigator from '../../blueprint/moodboard/PagesNavigator';
+import PagesFilmstrip from '../../blueprint/moodboard/PagesFilmstrip';
+import LibraryPanel from '../../blueprint/moodboard/LibraryPanel';
+import ActionToolbar from '../../blueprint/moodboard/ActionToolbar';
 import { computeSnap } from '../../blueprint/moodboard/useSnap';
 import SnapGuides from '../../blueprint/moodboard/SnapGuides';
 import useHistory from '../../blueprint/moodboard/useHistory';
@@ -570,79 +572,83 @@ const MoodboardEditor = ({ readOnly = false }) => {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[var(--bp-bg)]"
+    <div className="relative flex flex-col h-screen bg-[var(--bp-bg)]"
          data-testid={readOnly ? 'moodboard-public' : 'moodboard-editor'}>
-      {/* Topbar */}
-      <header className="flex items-center justify-between gap-4 px-6 h-14 border-b border-[var(--bp-border)] bg-[var(--bp-surface-1)]/60 backdrop-blur-sm flex-shrink-0">
+      {/* Topbar — MOOD for DESIGN brand + breadcrumb + actions */}
+      <header className="flex items-center justify-between gap-4 px-5 h-14 border-b border-[var(--bp-border)] bg-[var(--bp-surface-1)]/65 backdrop-blur-md flex-shrink-0">
         <div className="flex items-center gap-4 min-w-0">
           {!readOnly && (
-            <button onClick={() => navigate(-1)}
-                    className="bp-caption text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] flex items-center gap-1.5"
-                    data-testid="back-btn">
-              <ArrowLeft size={13} strokeWidth={1.5} /> {t('moodboards.editor.back')}
-            </button>
+            <>
+              {/* Brand mark — uses CSS variables so it auto-adapts to theme.
+                  Two-line lockup mirrors the reference (MOOD / for / DESIGN). */}
+              <div className="flex items-center gap-0 select-none" data-testid="brand-mark">
+                <span className="font-light tracking-[0.18em] text-[18px] leading-none text-[var(--bp-primary)]">
+                  MOOD
+                </span>
+                <span className="font-light tracking-[0.18em] text-[11px] leading-none text-[var(--bp-text-muted)] mx-1.5 mt-0.5">
+                  for
+                </span>
+                <span className="font-light tracking-[0.18em] text-[18px] leading-none text-[var(--bp-text-primary)]">
+                  DESIGN
+                </span>
+              </div>
+              <span className="w-px h-6 bg-[var(--bp-border)]" aria-hidden="true" />
+              <button onClick={() => navigate(-1)}
+                      className="bp-caption !text-[11px] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] flex items-center gap-1.5 transition-colors"
+                      data-testid="back-btn">
+                <ArrowLeft size={12} strokeWidth={1.5} /> {t('moodboards.editor.back')}
+              </button>
+              <span className="bp-caption !text-[11px] text-[var(--bp-text-subtle)] hidden md:flex items-center gap-1.5">
+                {mb.project_name && (<>
+                  <span className="truncate max-w-[180px]">{mb.project_name}</span>
+                  <span className="opacity-50">/</span>
+                </>)}
+                <span className="opacity-60">{t('moodboards.editor.eyebrow')}</span>
+                <span className="opacity-50">/</span>
+                <span className="!text-[var(--bp-text-secondary)] truncate max-w-[220px]">
+                  {mb.title || t('moodboards.untitled')}
+                </span>
+              </span>
+            </>
           )}
-          <h1 className="bp-h3 text-[var(--bp-text-primary)] truncate">
-            {mb.title || t('moodboards.untitled')}
-          </h1>
+          {readOnly && (
+            <h1 className="bp-h3 text-[var(--bp-text-primary)] truncate">
+              {mb.title || t('moodboards.untitled')}
+            </h1>
+          )}
           <StatusBadge status={mb.status} t={t} />
         </div>
         <div className="flex items-center gap-2">
           {!readOnly && (
-            <>
-              {saveState === 'saving' ? (
-                <span className="bp-caption text-[var(--bp-text-muted)] flex items-center gap-1" data-testid="status-saving">
-                  <span className="w-2 h-2 rounded-full bg-[var(--bp-primary)] animate-pulse" />
-                  {t('moodboards.editor.saving')}
-                </span>
-              ) : saveState === 'error' ? (
-                <button onClick={flushSave} className="bp-caption text-red-400 flex items-center gap-1 hover:text-red-300"
-                        data-testid="status-save-error" title={saveError || ''}>
-                  <AlertCircle size={12} strokeWidth={1.5} />
-                  {t('moodboards.editor.saveFailed')}
-                </button>
-              ) : Object.keys(dirtyMap).length > 0 ? (
-                <button onClick={flushSave}
-                        className="bp-caption text-[var(--bp-text-secondary)] flex items-center gap-1 hover:text-[var(--bp-text-primary)]"
-                        data-testid="status-unsaved">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--bp-text-secondary)]" />
-                  {t('moodboards.editor.unsaved')}
-                </button>
-              ) : savedAt ? (
-                <span className="bp-caption text-[var(--bp-text-muted)] flex items-center gap-1" data-testid="status-saved">
-                  <Check size={12} strokeWidth={1.5} /> {t('moodboards.editor.saved')}
-                </span>
-              ) : null}
-            </>
-          )}
-
-          <button onClick={() => setPresenting(true)} className="bp-btn bp-btn-ghost text-xs"
-                  data-testid="present-btn">
-            <Play size={12} strokeWidth={1.5} /> {t('moodboards.editor.present')}
-          </button>
-
-          {!readOnly && (
-            <div className="flex items-center gap-1 ml-1">
+            <div className="flex items-center gap-1 mr-2">
               <button onClick={onUndo} disabled={!history.canUndo}
                       title={t('moodboards.editor.undo')}
                       data-testid="undo-btn"
-                      className="bp-btn bp-btn-ghost !px-2 text-xs disabled:opacity-30">
-                <Undo2 size={13} strokeWidth={1.5} />
+                      className="p-1.5 rounded-[var(--bp-radius-xs)] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] hover:bg-[var(--bp-surface-2)]/60 disabled:opacity-25 transition-colors">
+                <Undo2 size={14} strokeWidth={1.5} />
               </button>
               <button onClick={onRedo} disabled={!history.canRedo}
                       title={t('moodboards.editor.redo')}
                       data-testid="redo-btn"
-                      className="bp-btn bp-btn-ghost !px-2 text-xs disabled:opacity-30">
-                <Redo2 size={13} strokeWidth={1.5} />
+                      className="p-1.5 rounded-[var(--bp-radius-xs)] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] hover:bg-[var(--bp-surface-2)]/60 disabled:opacity-25 transition-colors">
+                <Redo2 size={14} strokeWidth={1.5} />
               </button>
               <button onClick={() => setSnapEnabled((v) => !v)}
                       title={t('moodboards.editor.snap')}
                       data-testid="snap-toggle-btn"
-                      className={`bp-btn bp-btn-ghost !px-2 text-xs ${snapEnabled ? 'text-[var(--bp-primary)]' : ''}`}>
-                <Magnet size={13} strokeWidth={1.5} />
+                      className={`p-1.5 rounded-[var(--bp-radius-xs)] hover:bg-[var(--bp-surface-2)]/60 transition-colors
+                                  ${snapEnabled ? 'text-[var(--bp-primary)]' : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]'}`}>
+                <Magnet size={14} strokeWidth={1.5} />
               </button>
             </div>
           )}
+
+          <button onClick={() => setPresenting(true)}
+                  data-testid="present-btn"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[var(--bp-radius-sm)] bg-[var(--bp-primary)]/10 hover:bg-[var(--bp-primary)]/20 text-[var(--bp-primary)] transition-colors">
+            <Play size={11} strokeWidth={1.5} fill="currentColor" />
+            <span className="bp-caption !text-[11px] !text-[var(--bp-primary)]">{t('moodboards.editor.present')}</span>
+          </button>
 
           {!readOnly && (
             <>
@@ -658,64 +664,53 @@ const MoodboardEditor = ({ readOnly = false }) => {
                           className="bp-btn bp-btn-ghost text-xs" data-testid="revision-btn">
                     {t('moodboards.editor.requestRevision')}
                   </button>
-                  <button onClick={() => changeApproval('rejected')}
-                          className="bp-btn bp-btn-ghost text-xs" data-testid="reject-btn">
-                    {t('moodboards.editor.reject')}
-                  </button>
                   <button onClick={() => changeApproval('approved')}
                           className="bp-btn bp-btn-primary text-xs" data-testid="approve-btn">
                     <Check size={12} strokeWidth={1.5} /> {t('moodboards.editor.approve')}
                   </button>
                 </>
               )}
-              <button onClick={createShareToken} className="bp-btn bp-btn-ghost text-xs" data-testid="share-btn">
-                <Share2 size={12} strokeWidth={1.5} /> {t('moodboards.editor.share')}
+              <button onClick={createShareToken}
+                      data-testid="share-btn"
+                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[var(--bp-radius-sm)] border border-[var(--bp-border)] hover:border-[var(--bp-text-secondary)] text-[var(--bp-text-secondary)] hover:text-[var(--bp-text-primary)] transition-colors">
+                <Share2 size={11} strokeWidth={1.5} />
+                <span className="bp-caption !text-[11px]">{t('moodboards.editor.share')}</span>
               </button>
               <button onClick={saveAsTemplate} disabled={savingTemplate || !blocks.length}
-                      className="bp-btn bp-btn-ghost text-xs disabled:opacity-40"
+                      className="p-1.5 rounded-[var(--bp-radius-xs)] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] hover:bg-[var(--bp-surface-2)]/60 disabled:opacity-30 transition-colors"
                       data-testid="save-as-template-btn"
                       title={t('moodboards.templates.saveAs')}>
-                <BookmarkPlus size={12} strokeWidth={1.5} />
-                {templateSavedSlug
-                  ? t('moodboards.editor.saved')
-                  : templateSaveError
-                    ? t('moodboards.editor.saveFailed')
-                    : savingTemplate
-                      ? t('moodboards.editor.saving')
-                      : t('moodboards.templates.saveAs')}
+                <BookmarkPlus size={14} strokeWidth={1.5} />
               </button>
             </>
           )}
         </div>
       </header>
 
-      <div className="flex flex-1 min-h-0">
-        {/* LEFT-MOST — Pages navigator */}
-        <PagesNavigator
-          moodboardId={id}
-          pages={pages}
-          currentPageId={activePageId}
-          blocksByPage={blocksByPage}
-          onSelect={(pid) => { setSelectedId(null); setActivePageId(pid); }}
-          onChange={reloadPagesAndBlocks}
-          readOnly={readOnly}
-        />
+      {/* Action Toolbar — centered tool strip (Seleziona · Testo · Immagine …) */}
+      {!readOnly && (
+        <ActionToolbar
+          activeTool="select"
+          onToolChange={() => {}}
+          onAddBlock={addBlock}
+          onOpenSkeleton={(skid) => {
+            // Quick gallery insert — call the skeleton endpoint with the picked id
+            api.post(`/api/moodboards/${id}/pages/from_skeleton`, { skeleton_id: skid })
+              .then((r) => { setActivePageId(r.data.id); reloadPagesAndBlocks(); })
+              .catch(() => {});
+          }}
+          t={t} />
+      )}
 
-        {/* LEFT — Add blocks toolbar */}
+      <div className="flex flex-1 min-h-0">
+        {/* LEFT — Library (Blocchi · Contenuti · Salvati · Libreria personale) */}
         {!readOnly && (
-          <aside className="w-[200px] flex-shrink-0 border-r border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 p-4">
-            <p className="bp-eyebrow mb-4 !text-[var(--bp-text-muted)]">{t('moodboards.editor.addBlock')}</p>
-            <div className="space-y-2">
-              {BLOCK_TYPES.map((bt) => (
-                <button key={bt.type} onClick={() => addBlock(bt.type)}
-                        data-testid={`add-${bt.type}`}
-                        className="w-full px-3 py-2.5 bg-[var(--bp-surface-1)] hover:bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-sm)] text-left text-sm font-body text-[var(--bp-text-primary)] flex items-center gap-2 transition-colors">
-                  <Plus size={12} strokeWidth={1.5} className="text-[var(--bp-text-muted)]" />
-                  {t(`moodboards.block.${bt.type}`)}
-                </button>
-              ))}
-            </div>
-          </aside>
+          <LibraryPanel blockTypes={BLOCK_TYPES} onAddBlock={addBlock}
+                        onOpenSkeletons={(skid) => {
+                          api.post(`/api/moodboards/${id}/pages/from_skeleton`, { skeleton_id: skid })
+                            .then((r) => { setActivePageId(r.data.id); reloadPagesAndBlocks(); })
+                            .catch(() => {});
+                        }} t={t} />
         )}
 
         {/* CENTER — Canvas Viewport (drives responsive scale) */}
@@ -808,6 +803,47 @@ const MoodboardEditor = ({ readOnly = false }) => {
           </aside>
         )}
       </div>
+
+      {/* BOTTOM — Pages filmstrip + autosave indicator */}
+      {!readOnly && (
+        <PagesFilmstrip
+          moodboardId={id}
+          pages={pages}
+          currentPageId={activePageId}
+          blocksByPage={blocksByPage}
+          onSelect={(pid) => { setSelectedId(null); setActivePageId(pid); }}
+          onChange={reloadPagesAndBlocks}
+          readOnly={readOnly}
+        />
+      )}
+
+      {/* Autosave status — bottom-right teal dot */}
+      {!readOnly && (
+        <div className="absolute bottom-2 right-4 z-10 pointer-events-none">
+          {saveState === 'saving' ? (
+            <span className="bp-caption !text-[10px] text-[var(--bp-text-muted)] flex items-center gap-1.5" data-testid="status-saving">
+              <span className="w-2 h-2 rounded-full bg-[var(--bp-primary)] animate-pulse" />
+              {t('moodboards.editor.saving')}
+            </span>
+          ) : saveState === 'error' ? (
+            <button onClick={flushSave} data-testid="status-save-error" title={saveError || ''}
+                    className="bp-caption !text-[10px] text-red-400 flex items-center gap-1.5 hover:text-red-300 pointer-events-auto">
+              <AlertCircle size={10} strokeWidth={1.5} />
+              {t('moodboards.editor.saveFailed')}
+            </button>
+          ) : Object.keys(dirtyMap).length > 0 ? (
+            <span className="bp-caption !text-[10px] text-[var(--bp-text-secondary)] flex items-center gap-1.5" data-testid="status-unsaved">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--bp-text-secondary)]" />
+              {t('moodboards.editor.unsaved')}
+            </span>
+          ) : (
+            <span className="bp-caption !text-[10px] text-[var(--bp-text-muted)] flex items-center gap-1.5" data-testid="status-saved">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--bp-primary)] shadow-[0_0_6px_var(--bp-primary)]" />
+              {t('moodboards.editor.autosaveOn')}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Share dialog */}
       {shareDialog && (
