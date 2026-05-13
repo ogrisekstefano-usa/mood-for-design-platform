@@ -56,7 +56,8 @@ def get_moodboard(moodboard_id: str, current_user: dict = Depends(get_tenant_con
         raise HTTPException(404, "Not found")
     mb = r.data[0]
     els = client.table('moodboard_elements').select('*').eq('moodboard_id', moodboard_id).order('sort_order').execute()
-    mb['elements'] = els.data or []
+    from routers.moodboards_v1 import _normalize_block
+    mb['elements'] = [_normalize_block(b) for b in (els.data or [])]
     return mb
 
 

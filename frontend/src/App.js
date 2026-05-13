@@ -26,6 +26,7 @@ const FormBuilderPage = lazy(() => import('./pages/settings/FormBuilderPage'));
 const PublicTenantPage = lazy(() => import('./pages/public/PublicTenantPage'));
 const PublicFormPage = lazy(() => import('./pages/public/PublicFormPage'));
 const LeadFormPage = lazy(() => import('./pages/public/LeadFormPage'));
+const MoodboardEditor = lazy(() => import('./pages/moodboards/MoodboardEditor'));
 
 // Admin
 const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
@@ -67,6 +68,8 @@ const PublicRoute = ({ children }) => {
   return !user ? children : <Navigate to="/dashboard" replace />;
 };
 
+const PublicMoodboardWrapper = () => <MoodboardEditor readOnly={true} />;
+
 function App() {
   return (
     <div className="App">
@@ -88,6 +91,7 @@ function App() {
                   <Route path="/workspace/projects/:id" element={<ProjectDetailPage />} />
                   <Route path="/workspace/proposals" element={<ProposalsPage />} />
                   <Route path="/moodboards" element={<MoodboardsPage />} />
+                  <Route path="/moodboards/:id" element={<MoodboardEditor />} />
                   <Route path="/inspirations" element={<InspirationsPage />} />
                   <Route path="/insights" element={<InsightsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
@@ -107,6 +111,7 @@ function App() {
                 </Route>
 
                 {/* PUBLIC tenant routes — runtime composition via Blueprint engine */}
+                <Route path="/moodboard/share/:shareToken" element={<PublicMoodboardWrapper />} />
                 <Route path="/f/:tenantSlug/:formSlug" element={<PublicFormPage />} />
                 <Route path="/:tenantSlug" element={<PublicTenantPage />} />
                 <Route path="/:tenantSlug/:pageSlug" element={<PublicTenantPage />} />
