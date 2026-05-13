@@ -455,7 +455,15 @@ const MoodboardEditor = ({ readOnly = false }) => {
 
   useEffect(() => {
     if (!drag) return;
-    const onMove = (e) => {
+    // rAF-throttled mousemove: collapse multiple events fired between two
+    // frames into a single React state update. Eliminates the jitter that
+    // came from running `setBlocks` 200+ times/second on a fast trackpad.
+    let rafId = null;
+    let lastEvent = null;
+    const applyMove = () => {
+      rafId = null;
+      const e = lastEvent;
+      if (!e) return;
       // Compensate the visual canvas scaling so canvas-internal coordinates
       // remain pixel-precise regardless of the responsive transform.
       const scale = canvasScaleRef.current || 1;
@@ -497,7 +505,12 @@ const MoodboardEditor = ({ readOnly = false }) => {
       setSnapGuides(nextGuides);
       markDirty(drag.id);
     };
+    const onMove = (e) => {
+      lastEvent = e;
+      if (rafId === null) rafId = requestAnimationFrame(applyMove);
+    };
     const onUp = () => {
+      if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
       setDrag(null);
       setSnapGuides([]);
       // Snapshot AFTER the committed move/resize so undo restores pre-drag state
@@ -506,6 +519,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
     return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onUp);
     };
@@ -737,13 +751,24 @@ const MoodboardEditor = ({ readOnly = false }) => {
                 if (b.hidden && readOnly) return null;
                 const Component = resolveBlock(b.type);
                 const isSelected = selectedId === b.id;
+                const isDragging = drag && drag.id === b.id;
                 return (
                   <div key={b.id} data-testid={`block-${b.type}`}
-                       className={`absolute group ${isSelected ? 'ring-2 ring-[var(--bp-primary)]' : 'hover:ring-1 hover:ring-[var(--bp-border-strong)]'} ${b.hidden ? 'opacity-30' : ''} ${b.locked ? 'cursor-default' : 'cursor-move'}`}
+                       className={`absolute group transition-shadow duration-300
+                                   ${isSelected
+                                     ? 'ring-2 ring-[var(--bp-primary)] ring-offset-2 ring-offset-[var(--bp-bg)]'
+                                     : 'hover:ring-1 hover:ring-[var(--bp-primary)]/30'}
+                                   ${b.hidden ? 'opacity-30' : ''}
+                                   ${b.locked ? 'cursor-default' : 'cursor-move'}
+                                   ${isDragging ? 'shadow-[0_24px_64px_rgba(0,0,0,0.45)]' : ''}`}
                        style={{
                          left: b.x, top: b.y, width: b.width, height: b.height, zIndex: b.z_index || 0,
                          opacity: (b.opacity !== undefined ? b.opacity : 1) * (b.hidden ? 0.3 : 1),
                          transform: b.rotation ? `rotate(${b.rotation}deg)` : undefined,
+                         // GPU-accelerated layer promotion during drag so the
+                         // browser can move the element without repainting
+                         // surrounding content.
+                         willChange: isDragging ? 'transform, top, left' : 'auto',
                        }}
                        onMouseDown={(e) => startDrag(e, b, 'move')}
                        onClick={(e) => { e.stopPropagation(); setSelectedId(b.id); setRightTab('inspector'); }}>
@@ -752,7 +777,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
                       : <div className="bp-caption text-[var(--bp-text-muted)] p-2">{b.type}</div>}
                     {!readOnly && isSelected && !b.locked && (
                       <div onMouseDown={(e) => startDrag(e, b, 'resize')}
-                           className="absolute bottom-0 right-0 w-3 h-3 bg-[var(--bp-primary)] rounded-tl-[var(--bp-radius-xs)] cursor-se-resize" />
+                           className="absolute bottom-0 right-0 w-3 h-3 bg-[var(--bp-primary)] rounded-tl-[var(--bp-radius-xs)] cursor-se-resize shadow-[0_0_8px_var(--bp-primary)]" />
                     )}
                   </div>
                 );

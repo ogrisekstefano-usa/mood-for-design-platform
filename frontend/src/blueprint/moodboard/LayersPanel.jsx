@@ -71,14 +71,14 @@ const LayerRow = ({
           : 'hover:bg-[var(--bp-surface-2)]'
       } ${block.hidden ? 'opacity-50' : ''} ${dragging ? 'opacity-30' : ''}`}
     >
-      {/* Drop-indicator line — sub-pixel hairline in primary accent */}
+      {/* Drop-indicator line — sub-pixel hairline in primary accent with glow */}
       {showIndicatorTop && (
         <span data-testid="layer-drop-indicator-above"
-              className="absolute left-1 right-1 -top-px h-[2px] bg-[var(--bp-primary)] rounded-full pointer-events-none" />
+              className="absolute left-1 right-1 -top-px h-[2px] bg-[var(--bp-primary)] rounded-full pointer-events-none shadow-[0_0_8px_var(--bp-primary)]" />
       )}
       {showIndicatorBottom && (
         <span data-testid="layer-drop-indicator-below"
-              className="absolute left-1 right-1 -bottom-px h-[2px] bg-[var(--bp-primary)] rounded-full pointer-events-none" />
+              className="absolute left-1 right-1 -bottom-px h-[2px] bg-[var(--bp-primary)] rounded-full pointer-events-none shadow-[0_0_8px_var(--bp-primary)]" />
       )}
 
       <GripVertical

@@ -57,6 +57,7 @@ const ImageBlock = ({ block, readOnly, t }) => {
   // while leaving stored coordinates / src untouched.
   const [resolvedSrc, setResolvedSrc] = useState(src);
   const fallbackAttempted = useRef(false);
+  const loadTimeoutRef = useRef(null);
 
   // Reset state when src changes
   useEffect(() => {
@@ -64,7 +65,27 @@ const ImageBlock = ({ block, readOnly, t }) => {
     setErrored(false);
     setResolvedSrc(src);
     fallbackAttempted.current = false;
-  }, [src]);
+    // Safety net: if neither onLoad nor onError fires within 6s (CDN flake,
+    // ad-blocker, cancelled request), proactively attempt the signed-URL
+    // fallback so the canvas never silently stalls on an empty skeleton.
+    if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current);
+    if (src) {
+      loadTimeoutRef.current = setTimeout(() => {
+        if (!fallbackAttempted.current) {
+          fallbackAttempted.current = true;
+          const storagePath = block.metadata?.storage_path;
+          if (storagePath) {
+            api.get('/api/storage/signed-download', {
+              params: { bucket: 'moodboard-assets', path: storagePath },
+            }).then((r) => {
+              if (r.data?.url) setResolvedSrc(r.data.url);
+            }).catch(() => {});
+          }
+        }
+      }, 6000);
+    }
+    return () => { if (loadTimeoutRef.current) clearTimeout(loadTimeoutRef.current); };
+  }, [src, block.metadata?.storage_path]);
 
   const handleImgError = async () => {
     if (fallbackAttempted.current) { setErrored(true); return; }
@@ -133,6 +154,9 @@ const ImageBlock = ({ block, readOnly, t }) => {
         <img
           src={resolvedSrc || src}
           alt={caption || ''}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
           onLoad={() => setLoaded(true)}
           onError={handleImgError}
           className="w-full h-full bp-img-cinematic"
@@ -144,7 +168,10 @@ const ImageBlock = ({ block, readOnly, t }) => {
             transformOrigin: objectPosition,
             filter: buildFilter(adj),
             opacity: loaded && !errored ? 1 : 0,
-            transition: 'opacity 480ms cubic-bezier(0.22, 0.61, 0.36, 1), filter 220ms ease',
+            // Cinematic fade-in — premium 700ms cubic-bezier with a
+            // slight scale settle so images feel like they're landing.
+            transition: 'opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), filter 220ms ease',
+            willChange: loaded ? 'auto' : 'opacity',
           }}
         />
       )}
