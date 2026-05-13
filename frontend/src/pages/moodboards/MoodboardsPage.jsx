@@ -15,13 +15,25 @@ const CreateModal = ({ projects, onClose, onCreate, t }) => {
   const [projectId, setProjectId] = useState('');
   const [templateId, setTemplateId] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
 
   const submit = async (e) => {
     e.preventDefault();
-    if (!title.trim()) return;
+    setError(null);
+    if (!title.trim()) {
+      setError(t('moodboards.create.titleRequired'));
+      return;
+    }
     setSubmitting(true);
     try {
       await onCreate({ title: title.trim(), project_id: projectId || null, template_id: templateId });
+    } catch (err) {
+      // Surface backend / network failures instead of silently stopping the spinner.
+      const detail = err?.response?.data?.detail;
+      const msg = err?.code === 'ECONNABORTED'
+        ? t('moodboards.create.timeout')
+        : (typeof detail === 'string' ? detail : err?.message) || t('moodboards.create.failed');
+      setError(msg);
     } finally { setSubmitting(false); }
   };
 
@@ -44,10 +56,17 @@ const CreateModal = ({ projects, onClose, onCreate, t }) => {
           <div>
             <label className="block mb-4">
               <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] block mb-1.5">{t('moodboards.create.titleLabel')}</span>
-              <input autoFocus value={title} onChange={(e) => setTitle(e.target.value)}
+              <input autoFocus value={title}
+                     onChange={(e) => { setTitle(e.target.value); if (error) setError(null); }}
                      data-testid="moodboard-title-input"
                      placeholder={t('moodboards.create.titlePh')}
-                     className="input-luxury w-full px-3 py-2.5 text-sm rounded-[var(--bp-radius-sm)]" />
+                     className={`input-luxury w-full px-3 py-2.5 text-sm rounded-[var(--bp-radius-sm)] ${error && !title.trim() ? 'ring-1 ring-red-400/60' : ''}`} />
+              {error && (
+                <p data-testid="moodboard-create-error"
+                   className="bp-caption !text-[10px] !text-red-400 mt-1.5 leading-snug">
+                  {error}
+                </p>
+              )}
             </label>
             <label className="block">
               <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] block mb-1.5">{t('moodboards.create.projectLabel')}</span>
@@ -66,7 +85,7 @@ const CreateModal = ({ projects, onClose, onCreate, t }) => {
           <button type="button" onClick={onClose} className="bp-btn bp-btn-ghost text-xs">
             {t('common.cancel')}
           </button>
-          <button type="submit" disabled={!title.trim() || submitting}
+          <button type="submit" disabled={submitting}
                   data-testid="moodboard-create-submit"
                   className="bp-btn bp-btn-primary text-xs disabled:opacity-50">
             {submitting ? t('common.loading') : t('moodboards.create.submit')}
@@ -101,8 +120,11 @@ const MoodboardsPage = () => {
   useEffect(() => { load(); }, [load]);
 
   const handleCreate = async ({ title, project_id, template_id }) => {
+    // Template apply clones N pages + M blocks server-side and can blow past
+    // the 30s default axios timeout for rich templates. Use a 90s window for
+    // this specific call so the user never sees a phantom timeout.
     const r = template_id
-      ? await api.post(`/api/templates/${template_id}/apply`, { title, project_id })
+      ? await api.post(`/api/templates/${template_id}/apply`, { title, project_id }, { timeout: 90000 })
       : await api.post('/api/moodboards', { title, project_id });
     setShowCreate(false);
     navigate(`/moodboards/${r.data.id}`);

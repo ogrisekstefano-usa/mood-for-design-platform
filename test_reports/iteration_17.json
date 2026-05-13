@@ -1,0 +1,38 @@
+{
+  "summary": "Post-F.2 UX BUG SPRINT — ALL GREEN. (a) Backend apply_template batch insert verified: Luxury 8-page apply completes in ~1.0s end-to-end (was 30s+ timeout), Hospitality 6-page <2s. (b) Empty-title create shows inline red error via data-testid='moodboard-create-error' ('Please enter a title for the moodboard.'), input gets red ring, typing clears the error. (c) Valid title + structural template → navigates to /moodboards/{id} in 1.0s. (d) Right sidebar tabs are icon-only with empty inner text but proper title+aria-label (IT locale: 'Ispettore blocco' / 'Pagina' / 'Livelli'); tab-page → page-inspector, tab-layers → layers-panel, tab-inspector → block-inspector all swap correctly. (e) ImageQuickAdjust modal opens on file upload with all expected child testids (preview, fit-cover/contain/fill, focal-center, brightness/contrast/saturation, confirm, skip); clicking preview sets custom focal; Apply patches block.style and closes modal; Skip closes modal; legacy CropFocal/Adjustments/fit controls REMAIN in sidebar (shortcut, not lock-in). (f) Inject-into regression preserved.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "MoodboardEditor (initial load)", "issues": ["Console shows transient 503s on a couple of resource fetches during the heavy editor mount. Did not block any flow tested, but worth instrumenting (signed-URL retry or image asset). Not a regression."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_ux_bug_sprint_post_f2.py",
+    "/app/test_reports/pytest/iteration_17_ux.xml"
+  ],
+  "action_items": [
+    "OPTIONAL/MINOR: investigate the 503s observed during MoodboardEditor mount — likely image/asset fetches; defensive signed-URL fallback in ImageBlock should already cover this, but confirm there is no surfacing of broken thumbnails to end-users."
+  ],
+  "critical_code_review_comments": [
+    "/app/backend/routers/templates.py — apply_template now batch-inserts cloned pages in one INSERT and chunks moodboard_elements at 100/insert; verified Luxury (8 pages, 30 blocks) takes ~1.0s end-to-end and Hospitality (~6 pages) similarly fast. page_id_map is built deterministically before the batch insert and landing_page_id correctly maps to the FIRST cloned page → moodboards.current_page_id pointer matches GET /pages[0].id. Placeholder metadata is carried via metadata_json.placeholder and surfaces on the API as block.metadata.placeholder.",
+    "/app/frontend/src/pages/moodboards/MoodboardsPage.jsx CreateModal — inline error rendered via data-testid='moodboard-create-error', the submit button is no longer disabled which keeps it clickable so the validation message can fire (good UX). 90s axios timeout override on /apply correctly defends against any backend slow-down spike.",
+    "/app/frontend/src/pages/moodboards/MoodboardEditor.jsx — TabBtn rewritten icon-only, all 3 tabs have empty visible text + title + aria-label set (verified IT locale strings). Active tab uses an accent underline. Block-inspector data-testid only renders when a block is selected — that is correct behavior; clicking tab-inspector with no selection shows an empty-state hint (verified in screenshot).",
+    "/app/frontend/src/blueprint/moodboard/ImageQuickAdjust.jsx — full set of testids present (image-quick-adjust + preview, fit-{m}, focal-{p}, brightness/contrast/saturation, confirm, skip). Clicking preview pins a custom focal_point. Apply correctly patches block.style with {fit_mode, focal_point, adjustments}; Skip closes without applying.",
+    "Defensive signed-URL fallback in ImageBlock.jsx was code-read only (as instructed). Looks fine — single retry against /api/storage/signed-download using metadata.storage_path before giving up."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_ux_bug_sprint_post_f2.py (NEW)"
+  ],
+  "success_rate": {
+    "backend": "100% — 5/5 new perf+regression tests + 14/14 F.1 regression",
+    "frontend": "100% — empty-title error, error-clear on type, create perf, icon-only tabs (with i18n IT), tab-swap, ImageQuickAdjust open+apply+skip, legacy controls preserved"
+  },
+  "test_credentials": "designer@moodfordesign.com / Designer2024! · existing moodboard 85b93c6b-8de2-4b14-a977-a768ecc02309",
+  "seed_data_creation": "Created a handful of TEST_UX_* moodboards in the demo studio via apply/inject template flows for timing verification. They live under designer's tenant — main agent can clean them up via UI or a script if desired.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend apply_template is now batch-insert (single multi-row supabase insert for pages, 100-chunked inserts for blocks). The route was the user-reported 30s timeout root cause; current perf ~1.0s. Frontend: empty-title inline error uses data-testid='moodboard-create-error', icon-only sidebar tabs are data-testid='tab-inspector|tab-page|tab-layers' inside data-testid='right-tabs', ImageQuickAdjust is data-testid='image-quick-adjust' and ONLY opens for image blocks (product/material image fields still use ImageUploader but bypass the modal). Tested in IT locale; EN locale i18n keys are in place per i18n PR but not exercised end-to-end this run.",
+  "rca of the issue": "All four reported bugs RESOLVED. Bug #1 (silent empty-title): now inline red-ring + data-testid='moodboard-create-error' with localized text + immediate clear on input change. Bug #2 (Loading-30s timeout on apply_template): backend now batch-inserts pages and 100-chunks blocks; Luxury apply ~1.0s. Frontend also overrides axios timeout to 90s on /apply for safety. Bug #3 (uploaded image not rendering + broken sidebar + want quick-adjust dialog): ImageQuickAdjust modal opens immediately after upload with fit/focal/adjustments and applies block.style; sidebar still shows legacy fine controls (shortcut UX, not lock-in); signed-URL fallback added to ImageBlock for resilience. Bug #4 (illegible long tab labels): right sidebar now renders 3 icon-only buttons with tooltip+aria-label — IT strings render correctly (Ispettore blocco / Pagina / Livelli)."
+}

@@ -31,6 +31,7 @@ import SnapGuides from '../../blueprint/moodboard/SnapGuides';
 import useHistory from '../../blueprint/moodboard/useHistory';
 import PresentationMode from '../../blueprint/moodboard/PresentationMode';
 import PageInspector from '../../blueprint/moodboard/PageInspector';
+import ImageQuickAdjust from '../../blueprint/moodboard/ImageQuickAdjust';
 
 const CANVAS_W = 1400;
 const CANVAS_H = 2400;
@@ -770,11 +771,11 @@ const MoodboardEditor = ({ readOnly = false }) => {
           <aside className="w-[300px] flex-shrink-0 border-l border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 flex flex-col">
             <div className="flex border-b border-[var(--bp-border)]" data-testid="right-tabs">
               <TabBtn active={rightTab === 'inspector'} onClick={() => setRightTab('inspector')}
-                      icon={PanelRight} label={t('moodboards.editor.inspector')} testid="tab-inspector" />
+                      icon={PanelRight} title={t('moodboards.editor.inspector')} testid="tab-inspector" />
               <TabBtn active={rightTab === 'page'} onClick={() => setRightTab('page')}
-                      icon={FileText} label={t('moodboards.editor.page')} testid="tab-page" />
+                      icon={FileText} title={t('moodboards.editor.page')} testid="tab-page" />
               <TabBtn active={rightTab === 'layers'} onClick={() => setRightTab('layers')}
-                      icon={ListChecks} label={t('moodboards.editor.layers')} testid="tab-layers" />
+                      icon={ListChecks} title={t('moodboards.editor.layers')} testid="tab-layers" />
             </div>
             {rightTab === 'inspector' ? (
               selectedBlock ? (
@@ -833,14 +834,18 @@ const MoodboardEditor = ({ readOnly = false }) => {
 };
 
 // ── Tab Button ──────────────────────────────────────────────────────────────
-const TabBtn = ({ active, onClick, icon: Icon, label, testid }) => (
-  <button onClick={onClick} data-testid={testid}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 bp-caption transition-colors ${
-            active
-              ? 'text-[var(--bp-text-primary)] border-b-2 border-[var(--bp-primary)] bg-[var(--bp-surface-1)]'
-              : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-secondary)] border-b-2 border-transparent'
-          }`}>
-    <Icon size={11} strokeWidth={1.5} /> {label}
+// Icon-only by design — labels were unreadable on narrower sidebars (and on
+// non-translated locale fallbacks). Tooltip via native `title` keeps the
+// premium uncluttered feeling. An accent dot under the icon marks active.
+const TabBtn = ({ active, onClick, icon: Icon, title, testid }) => (
+  <button onClick={onClick} data-testid={testid} title={title} aria-label={title}
+          className={`flex-1 flex flex-col items-center justify-center gap-1 py-3 transition-colors
+                      ${active
+                        ? 'text-[var(--bp-text-primary)] bg-[var(--bp-surface-1)]'
+                        : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-secondary)]'}`}>
+    <Icon size={14} strokeWidth={1.5} />
+    <span className={`block h-[2px] w-5 rounded-full transition-colors
+                      ${active ? 'bg-[var(--bp-primary)]' : 'bg-transparent'}`} />
   </button>
 );
 
@@ -888,6 +893,11 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, t }) 
   const s = block.style || {};
   const setC = (k, v) => onChangeContent({ ...c, [k]: v });
   const setS = (k, v) => onChangeStyle({ ...s, [k]: v });
+
+  // Quick-adjust modal opens right after a successful image upload — first-pass
+  // preview with fit / focal / brightness / contrast / saturation, then the
+  // sidebar still owns the fine-grained controls afterwards.
+  const [quickAdjust, setQuickAdjust] = useState(null);
 
   // Crop/focal section reused for image blocks
   const CropFocalSection = () => (
@@ -1048,7 +1058,29 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, t }) 
                            content: { ...c, src: url },
                            metadata: { ...(block.metadata || {}), ...(meta || {}) },
                          });
+                         // Open the quick-adjust modal with the freshly uploaded
+                         // URL so the designer can frame the photo immediately.
+                         setQuickAdjust({ src: url });
                        }} />
+        {quickAdjust && (
+          <ImageQuickAdjust src={quickAdjust.src}
+                            defaults={{
+                              fit_mode: s.fit_mode || 'cover',
+                              focal_point: s.focal_point || 'center',
+                              adjustments: s.adjustments || {},
+                            }}
+                            onConfirm={(patch) => {
+                              onChangeStyle({
+                                ...s,
+                                fit_mode: patch.fit_mode,
+                                focal_point: patch.focal_point,
+                                adjustments: { ...(s.adjustments || {}), ...patch.adjustments },
+                              });
+                              setQuickAdjust(null);
+                            }}
+                            onSkip={() => setQuickAdjust(null)}
+                            t={t} />
+        )}
         <InspectorInput label={t('moodboards.field.imageUrl')} value={c.src}
                         onChange={(v) => setC('src', v)} testid="block-image-src" />
         <InspectorInput label={t('moodboards.field.caption')} value={c.caption}

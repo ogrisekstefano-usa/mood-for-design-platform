@@ -410,10 +410,14 @@ def apply_template(template_id: str, body: ApplyTemplate,
 
     page_id_map = {}  # template_page_id → new moodboard_page_id
     if tpl_pages:
+        # Batch insert all cloned pages in a single round-trip — multi-page
+        # templates with 8-12 pages used to chain N sequential inserts and
+        # could blow past the axios 30s timeout.
+        page_rows = []
         for tp in tpl_pages:
             new_pid = str(uuid.uuid4())
             page_id_map[tp["id"]] = new_pid
-            client.table("moodboard_pages").insert({
+            page_rows.append({
                 "id": new_pid,
                 "tenant_id": ctx["tenant_id"],
                 "moodboard_id": moodboard_id,
@@ -426,7 +430,8 @@ def apply_template(template_id: str, body: ApplyTemplate,
                 "settings": tp.get("settings") or {},
                 "sort_order": tp.get("sort_order") or 0,
                 "created_by": ctx["profile_id"],
-            }).execute()
+            })
+        client.table("moodboard_pages").insert(page_rows).execute()
         landing_page_id = page_id_map[tpl_pages[0]["id"]]
     else:
         landing_page_id = str(uuid.uuid4())
@@ -447,6 +452,7 @@ def apply_template(template_id: str, body: ApplyTemplate,
     # Clone template_blocks → moodboard_elements (attached to the cloned pages)
     tpl_blocks = client.table("template_blocks").select("*") \
         .eq("template_id", template_id).order("sort_order").execute().data or []
+    block_rows = []
     for tb in tpl_blocks:
         content = _parse_jsonish(tb.get("content"))
         pos = _parse_jsonish(tb.get("position_json"))
@@ -479,8 +485,12 @@ def apply_template(template_id: str, body: ApplyTemplate,
             img = tb.get("image_url") or content.get("src")
             if img:
                 row["image_url"] = img
-        row = {k: v for k, v in row.items() if v is not None}
-        client.table("moodboard_elements").insert(row).execute()
+        block_rows.append({k: v for k, v in row.items() if v is not None})
+    # Batch insert in chunks of 100 to stay well under PostgREST limits.
+    if block_rows:
+        CHUNK = 100
+        for i in range(0, len(block_rows), CHUNK):
+            client.table("moodboard_elements").insert(block_rows[i:i + CHUNK]).execute()
 
     audit_log(ctx["tenant_id"], ctx["profile_id"], "template.applied",
               resource_type="moodboard", resource_id=moodboard_id,

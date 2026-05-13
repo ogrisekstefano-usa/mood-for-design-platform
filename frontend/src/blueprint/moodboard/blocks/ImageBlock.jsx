@@ -8,8 +8,9 @@
  *  - CSS-filter-based image adjustments persisted in style.adjustments
  *      brightness · contrast · saturation · warmth · blur · grayscale · vignette
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ImageOff, ImagePlus } from 'lucide-react';
+import api from '../../../lib/api';
 
 const buildFilter = (a = {}) => {
   const parts = [];
@@ -50,12 +51,35 @@ const ImageBlock = ({ block, readOnly, t }) => {
 
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
+  // Defensive: if the public URL fails (private bucket, expired cache,
+  // network blip), fall back ONCE to a backend-issued signed URL derived
+  // from the upload's storage_path in metadata. Avoids the broken-link UX
+  // while leaving stored coordinates / src untouched.
+  const [resolvedSrc, setResolvedSrc] = useState(src);
+  const fallbackAttempted = useRef(false);
 
   // Reset state when src changes
   useEffect(() => {
     setLoaded(false);
     setErrored(false);
+    setResolvedSrc(src);
+    fallbackAttempted.current = false;
   }, [src]);
+
+  const handleImgError = async () => {
+    if (fallbackAttempted.current) { setErrored(true); return; }
+    fallbackAttempted.current = true;
+    const storagePath = block.metadata?.storage_path;
+    if (!storagePath) { setErrored(true); return; }
+    try {
+      const r = await api.get('/api/storage/signed-download', {
+        params: { bucket: 'moodboard-assets', path: storagePath },
+      });
+      const signed = r.data?.url;
+      if (signed) { setResolvedSrc(signed); setErrored(false); }
+      else setErrored(true);
+    } catch (_) { setErrored(true); }
+  };
 
   return (
     <div className="w-full h-full overflow-hidden bg-[var(--bp-surface-2)] relative group"
@@ -107,10 +131,10 @@ const ImageBlock = ({ block, readOnly, t }) => {
       {/* Actual image — kept mounted under skeleton so onLoad still fires */}
       {src && (
         <img
-          src={src}
+          src={resolvedSrc || src}
           alt={caption || ''}
           onLoad={() => setLoaded(true)}
-          onError={() => setErrored(true)}
+          onError={handleImgError}
           className="w-full h-full bp-img-cinematic"
           data-testid="image-block-img"
           style={{
