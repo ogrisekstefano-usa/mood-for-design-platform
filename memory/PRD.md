@@ -201,6 +201,40 @@ Pre-requisito esplicito utente prima della Fase F: "verificare bene tenant_id en
 - **90/90 backend pytest pass** + 5 skipped + 1 xpass = ZERO regressione su 6 fasi precedenti
 
 
+### ✅ Phase E.4 — Template Preview Gallery + micro Lineage (DONE — 13 Mag 2026)
+Trasformazione del picker da "lista nomi" a **editorial archive / design catalog**. Foundation per marketplace futuro.
+
+- **Server-side SVG preview** (`/app/backend/core/template_preview.py`)
+  - Pure-Python builder, dependency-free (~150 LOC), nessun raster, nessun asset esterno
+  - Genera SVG strutturali da `template_blocks.position_json` con tinte semantiche per type (image/text/palette/note/product/material)
+  - Palette blocks rivelano gli **swatch reali** nel preview (max 5 colori)
+  - Text blocks emettono "glyph rows" tipografici per size (display/h1/eyebrow/body…) — feeling magazine
+  - viewBox 220×360 + cinematic vignette radial
+  - Fallback su legacy `content.layout` se `position_json` assente
+- **Backend integration** (`routers/templates.py`)
+  - `GET /api/templates?with_preview=true` (default) → ogni template ha `preview_svg`, `palette`, `block_count`
+  - `with_preview=false` → perf-escape (campi assenti)
+  - Detail include sempre `preview_svg` + `palette` + `block_count` + `parent` (lookup leggero)
+- **Micro Template Versioning**
+  - `apply_template` → `moodboards.template_id` (colonna baseline) ora popolata con l'origine
+  - `save_as_template` → legge `src_mb.template_id` e setta `parent_id` sul nuovo template (fork lineage)
+  - Detail expandsl il `parent_id` in `{id, name, slug}` via `_attach_lineage`
+  - Chain `apply → save-as → detail` produce child.parent popolato (verificato live)
+- **Editorial gallery** (`TemplatePicker.jsx` riscritto)
+  - Adaptive aspect ratios per categoria (3/4 editoriale, 1/1 hospitality, 5/4 retail/ffe) — typographic rhythm
+  - SVG inline via `dangerouslySetInnerHTML` (sicuro — sorgente server-controlled, solo primitive geometriche + hex escape)
+  - Hover lift soft con `translateY(-0.5)` + `duration-[var(--bp-duration-cinematic)]` + `ease-emphasis`
+  - Palette swatch row (5 quadrati 12px con inset shadow soft)
+  - Lineage badge GitBranch "Derivato da un altro template" su fork
+  - Fallback "Preset dello studio" per template tenant senza categoria (nessun leak chiave i18n)
+  - Modal espanso a `max-w-4xl` con grid `280px_1fr` per dare respiro editoriale alla galleria
+- **i18n** — 3 nuove chiavi EN+IT: `templates.startBlank` (Open/Apri), `templates.tenantPreset` (Studio preset/Preset dello studio), `templates.derivedFrom` (Derived from another template/Derivato da un altro template)
+- **Tested ✅** (`iteration_9.json`)
+  - Backend: **9/9 new E.4** + **20/20 E.1+E.2 regression**
+  - Frontend: 10 cards renderizzate con 12 SVG inline visibili, lineage badge attivo su fork, palette swatches visibili, hover lift confermato (-2px), modal layout editorial verificato in screenshot
+  - Lineage chain E2E: `luxury-editorial → apply → save-as → child.parent.slug='luxury-editorial'` ✓
+
+
 ### ✅ Phase E.3 — Polish Sprint: Smart Snap + Undo/Redo + Theme Leak Cleanup (DONE — 13 Mag 2026)
 Triplo deliverable per chiudere la V1 weekend con feel premium uniforme.
 
