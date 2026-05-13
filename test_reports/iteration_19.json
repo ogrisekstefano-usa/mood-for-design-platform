@@ -1,0 +1,47 @@
+{
+  "summary": "Blueprint Inspirations™ Foundation backend — 32/32 pytest tests GREEN. Full CRUD validated for boards, items, activity, comments; tenant isolation strict (cross-tenant 404 on direct GET/PATCH and empty list); permission matrix correct (designer + client can READ/WRITE, no leakage); activity events emitted as specified (board_created/updated, item_added/moved/tagged/item_updated/removed, linked_to_*, comment_added); meta registry returns expected vocabularies; response hydration strips tenant_id and renames *_json columns to clean domain names. Legacy GET /api/inspirations (magazine) NOT shadowed; /api/moodboards and /api/templates smoke OK. One MINOR backend bug surfaced: PATCH /api/inspirations/boards/{id} with a non-existent project_id/lead_id/moodboard_id (UUID does not exist) returns 500 (Supabase FK violation) instead of a clean 400/422.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "PATCH /api/inspirations/boards/{id}",
+        "issue": "Posting a syntactically-valid but non-existent project_id (or lead_id / moodboard_id) bubbles the Supabase FK violation up as a 500 Internal Server Error. Should be caught and returned as 400 'Project not found' (or 422). Same risk exists on POST /api/inspirations/boards. Reproduction: PATCH a board with {\"project_id\": \"11111111-1111-1111-1111-111111111111\"} → 500. Recommend pre-validating linkage IDs against projects/leads/moodboards tables (scoped to tenant) before issuing the UPDATE, or catching APIError/PostgrestAPIError and re-raising HTTPException(400)."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_inspirations_boards.py",
+    "/app/test_reports/pytest/iteration_19_inspirations.xml"
+  ],
+  "action_items": [
+    "Pre-validate (or wrap-and-translate) FK-linked IDs (project_id / lead_id / moodboard_id) on POST and PATCH /api/inspirations/boards so a stale/bogus UUID returns 400 instead of 500."
+  ],
+  "critical_code_review_comments": [
+    "routers/inspirations_boards.py:354 — activity classification uses `patch.keys() == {\"position_json\", \"updated_at\"}` to detect a 'moved' event. That works, but note: a combined PATCH that also includes other fields will fall through to 'tagged' (if style_tags present) or 'item_updated'. Current design is fine, just brittle if more auto-mutated fields get added later (e.g., updated_by). Consider an explicit `_classify_item_activity()` helper.",
+    "routers/inspirations_boards.py:266-276 — DELETE board: audit_log entry is created, but no _push_activity('board_deleted') row before the cascade. Since the board row is gone, querying activity for it is moot, but if the future timeline page rolls activity at tenant-level rather than per-board, a board_deleted event would be valuable. Minor — VALID_ACTIVITY_TYPES currently doesn't include 'board_deleted' either.",
+    "routers/inspirations_boards.py:240-262 — board_updated activity fires with payload={\"fields\": list(patch.keys())}, which leaks the *_json column names (e.g. 'tags_json') instead of the public 'tags'. Cosmetic but the timeline UI will read those keys; consider mapping back to domain names before emitting.",
+    "routers/inspirations_boards.py:331-357 — PATCH item activity classification: when only `position` is sent the resulting patch keys are {'position_json','updated_at'} → 'moved'. Good. But the condition `patch.keys() == {...}` will return False on Python sets being compared to a set literal? Actually patch.keys() is a dict_keys view which compares set-equal — verified working in tests. Just noting subtlety.",
+    "routers/inspirations_boards.py:194-221 — POST /boards: no FK validation on project_id/lead_id/moodboard_id before INSERT — same 500 risk as PATCH. Symmetric fix needed.",
+    "routers/inspirations_boards.py:54 — router does not declare `prefix=\"/inspirations\"` itself; relies on server.py mounting it BEFORE the legacy inspirations router. Working correctly today (verified GET /api/inspirations still returns legacy magazine shape), but the ordering is load-bearing — worth a comment in server.py at line 54 to prevent regressions if the imports are reordered.",
+    "routers/inspirations_boards.py:264 — PATCH returns _hydrate_board(r.data[0] if r.data else None). If r.data is empty (e.g., RLS hides the row), this returns None silently → 200 with null body. Should re-fetch or 404 defensively.",
+    "Permissions matrix (core/permissions.py): designer now has P_INSPIRATIONS_READ/WRITE/PUBLISH ✅, client has READ/WRITE ✅ (verified by test). analyst has READ only — not directly tested with a logged-in analyst account because /app/memory/test_credentials.md does not seed one; recommend adding an analyst seed user for full matrix coverage in CI."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_inspirations_boards.py (new)"
+  ],
+  "success_rate": {
+    "backend": "100% (32/32 pytest)",
+    "frontend": "N/A — backend-only iteration per request"
+  },
+  "test_credentials": "designer@moodfordesign.com / Designer2024!; client@moodfordesign.com / Client2024!; studio2@moodfordesign.com / Studio2024! (used for cross-tenant isolation). NOTE: /app/backend/routers/auth.py /login returns token under `session.access_token`, NOT a top-level `token` — captured in the test helper.",
+  "seed_data_creation": "Tests create boards/items/comments with TEST_ prefix and self-cleanup via DELETE in fixtures/teardown. No persistent test data left in tenant.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Test file: /app/backend/tests/test_inspirations_boards.py. Run: REACT_APP_BACKEND_URL=<url> pytest tests/test_inspirations_boards.py -v. The single documented MINOR bug (FK 500 on bogus project_id) is exercised by test_patch_board_with_invalid_project_fk_returns_500_BUG which currently allows 500 — flip the assertion to {400,422} once main agent adds FK pre-validation. Login response token path is `session.access_token`. No analyst seed account exists; analyst-403 path is NOT covered by automated tests (manual sanity only). Legacy GET /api/inspirations was tested at root level only; the legacy /{post_id} routes were not explicitly hit but verified non-shadowed by the new /boards mount ordering.",
+  "rca of the issue": "PATCH/POST /api/inspirations/boards do not pre-validate project_id / lead_id / moodboard_id against existing rows. The Supabase client issues an UPDATE/INSERT that violates the FK constraint defined in migration 011, and the resulting PostgrestAPIError is not caught in inspirations_boards.py — it propagates to FastAPI which converts it to a generic 500. Mitigation: either (a) SELECT-then-validate inside the router (preferred — gives nice 400 with clear message), or (b) wrap the write in try/except PostgrestAPIError and translate code 23503 (foreign_key_violation) → HTTPException(400)."
+}

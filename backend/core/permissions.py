@@ -93,9 +93,16 @@ ROLE_PERMISSIONS: Dict[str, Set[str]] = {
         P_PROJECTS_READ,
         P_MOODBOARDS_READ, P_MOODBOARDS_WRITE,
         P_PROPOSALS_READ,
+        # Blueprint Inspirations™ — Creative Memory System™ is core to the
+        # designer's daily flow (save references / build mood archive).
+        P_INSPIRATIONS_READ, P_INSPIRATIONS_WRITE, P_INSPIRATIONS_PUBLISH,
         P_STORAGE_READ, P_STORAGE_WRITE,
     },
-    "client": {P_PROJECTS_READ, P_PROPOSALS_READ, P_PROPOSALS_APPROVE, P_MOODBOARDS_READ},
+    "client": {P_PROJECTS_READ, P_PROPOSALS_READ, P_PROPOSALS_APPROVE,
+               P_MOODBOARDS_READ,
+               # Future Mood Discovery™ — clients upload references onto
+               # project-linked boards before the moodboard is built.
+               P_INSPIRATIONS_READ, P_INSPIRATIONS_WRITE},
     "ad_partner": {P_PROJECTS_READ, P_MOODBOARDS_READ, P_INSPIRATIONS_READ},
 }
 
