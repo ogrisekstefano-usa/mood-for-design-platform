@@ -4,7 +4,10 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends, Query
 from models.schemas import ProjectCreate, ProjectUpdate
 from middleware.auth import get_current_user
-from core.tenant_context import get_tenant_context
+from core.tenant_context import get_tenant_context, require_permission
+from core.permissions import (
+    P_PROJECTS_READ, P_PROJECTS_WRITE, P_PROJECTS_DELETE,
+)
 from database import db
 
 router = APIRouter()
@@ -23,7 +26,7 @@ def list_projects(
     status: str = Query(None),
     limit: int = Query(50, le=200),
     offset: int = Query(0),
-    current_user: dict = Depends(get_tenant_context),
+    current_user: dict = Depends(require_permission(P_PROJECTS_READ)),
 ):
     client = db()
     q = client.table('projects').select('*').eq('tenant_id', current_user['tenant_id'])
@@ -34,7 +37,7 @@ def list_projects(
 
 
 @router.post("", status_code=201)
-def create_project(body: ProjectCreate, current_user: dict = Depends(get_tenant_context)):
+def create_project(body: ProjectCreate, current_user: dict = Depends(require_permission(P_PROJECTS_WRITE))):
     client = db()
     now = _now()
     payload = _scrub(body.model_dump())
@@ -51,7 +54,7 @@ def create_project(body: ProjectCreate, current_user: dict = Depends(get_tenant_
 
 
 @router.get("/{project_id}")
-def get_project(project_id: str, current_user: dict = Depends(get_tenant_context)):
+def get_project(project_id: str, current_user: dict = Depends(require_permission(P_PROJECTS_READ))):
     client = db()
     result = client.table('projects').select('*').eq('id', project_id).eq('tenant_id', current_user['tenant_id']).execute()
     if not result.data:
@@ -70,7 +73,7 @@ def get_project(project_id: str, current_user: dict = Depends(get_tenant_context
 
 
 @router.put("/{project_id}")
-def update_project(project_id: str, body: ProjectUpdate, current_user: dict = Depends(get_tenant_context)):
+def update_project(project_id: str, body: ProjectUpdate, current_user: dict = Depends(require_permission(P_PROJECTS_WRITE))):
     client = db()
     updates = _scrub(body.model_dump())
     if not updates:
@@ -104,7 +107,7 @@ def update_project(project_id: str, body: ProjectUpdate, current_user: dict = De
 
 
 @router.delete("/{project_id}")
-def delete_project(project_id: str, current_user: dict = Depends(get_tenant_context)):
+def delete_project(project_id: str, current_user: dict = Depends(require_permission(P_PROJECTS_DELETE))):
     client = db()
     client.table('projects').delete().eq('id', project_id).eq('tenant_id', current_user['tenant_id']).execute()
     return {"message": "Project deleted"}

@@ -184,6 +184,23 @@ Pre-requisito **non negoziabile** prima delle fasi F. Migrazione completa da JSO
   - Theme leak fix su 5 pagine legacy (Dashboard, Leads, Projects, Proposals, Admin Overview)
 
 
+### ✅ Demo seed + Permission hardening (DONE — 13 Mag 2026)
+Pre-requisito esplicito utente prima della Fase F: "verificare bene tenant_id enforcement, permission decorators, impersonation boundaries".
+
+- **Seed script idempotente**: `/app/backend/scripts/seed_demo_users.py`
+  - Re-runnable safely (skip if exists, sync role/tenant if drift, password reset on auth side)
+  - Crea: `designer@moodfordesign.com` (designer, Studio), `client@moodfordesign.com` (client, Studio), `studio2@moodfordesign.com` (tenant_admin, Showroom)
+  - Auto-crea il tenant `mood-demo` (Showroom) se mancante
+  - Aggiornato `test_credentials.md` con matrix completa per-ruolo
+- **Permission decorator gap CHIUSO** (issue critica scoperta durante test isolamento):
+  - Prima del fix: designer/client potevano leggere `/leads`, `/projects`, `/proposals`, `/moodboards`, `/insights` (decorator mancante)
+  - `core/tenant_context.require_permission()` ora wrappa `get_tenant_context` invece di `get_current_user` → permission gate + tenant scope in una sola Depends
+  - Applicato a 38 route in 7 router: `leads.py` (5), `projects.py` (5), `proposals.py` (6), `moodboards.py` (5), `moodboards_v1.py` (8), `workspace.py` (10), `insights.py` (2)
+- **Multi-tenant isolation verificata E2E**: studio2 (Showroom tenant_admin) prova a leggere moodboard di Studio → 404. Sua lista personale → 0 row. Nessun leak.
+- **Test regression**: `tests/test_isolation_permissions.py` (6 test, **6/6 pass**) — gating per role × endpoint + cross-tenant leak test
+- **90/90 backend pytest pass** + 5 skipped + 1 xpass = ZERO regressione su 6 fasi precedenti
+
+
 ### ✅ Phase E.1 — Moodboard Polish Sprint (DONE — 13 Mag 2026)
 Sopra la foundation stabile (Sprint Cleanup P0). Tutti i requisiti tecnici del documento utente rispettati: ZERO hardcoded, runtime-editable, theme-token-based, multi-tenant, i18n-ready, migration-safe.
 

@@ -70,11 +70,17 @@ def audit_log(tenant_id: Optional[str], user_id: Optional[str], action: str,
 
 
 def require_permission(*perms: str):
-    """FastAPI dependency that checks the user has every listed permission."""
-    def checker(current_user: dict = Depends(get_current_user)):
-        role = current_user.get("role")
+    """FastAPI dependency that checks the user has every listed permission.
+
+    Wraps `get_tenant_context` so the resulting dict has tenant scope (incl.
+    impersonation) AND permission gating in one shot. Use this on every
+    business-data route — never bare `Depends(get_tenant_context)` for
+    sensitive endpoints.
+    """
+    def checker(ctx: dict = Depends(get_tenant_context)):
+        role = ctx.get("role")
         for p in perms:
             if not has_permission(role, p):
                 raise HTTPException(403, f"Missing permission: {p}")
-        return current_user
+        return ctx
     return checker

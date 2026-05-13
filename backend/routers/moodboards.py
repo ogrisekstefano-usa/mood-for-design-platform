@@ -5,7 +5,10 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends, Query
 from models.schemas import MoodboardCreate, MoodboardUpdate
 from middleware.auth import get_current_user
-from core.tenant_context import get_tenant_context
+from core.tenant_context import get_tenant_context, require_permission
+from core.permissions import (
+    P_MOODBOARDS_READ, P_MOODBOARDS_WRITE, P_MOODBOARDS_DELETE,
+)
 from database import db
 
 router = APIRouter()
@@ -31,7 +34,7 @@ def _scrub(d: dict) -> dict:
 def list_moodboards(
     project_id: str = Query(None),
     status: str = Query(None),
-    current_user: dict = Depends(get_tenant_context),
+    current_user: dict = Depends(require_permission(P_MOODBOARDS_READ)),
 ):
     client = db()
     q = client.table('moodboards').select('*').eq('tenant_id', current_user['tenant_id'])
@@ -44,7 +47,7 @@ def list_moodboards(
 
 
 @router.post("", status_code=201)
-def create_moodboard(body: MoodboardCreate, current_user: dict = Depends(get_tenant_context)):
+def create_moodboard(body: MoodboardCreate, current_user: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
     client = db()
     now = _now()
     payload = _scrub(body.model_dump())
@@ -58,7 +61,7 @@ def create_moodboard(body: MoodboardCreate, current_user: dict = Depends(get_ten
 
 
 @router.get("/{moodboard_id}")
-def get_moodboard(moodboard_id: str, current_user: dict = Depends(get_tenant_context)):
+def get_moodboard(moodboard_id: str, current_user: dict = Depends(require_permission(P_MOODBOARDS_READ))):
     _require_uuid(moodboard_id)
     client = db()
     r = client.table('moodboards').select('*').eq('id', moodboard_id).eq('tenant_id', current_user['tenant_id']).execute()
@@ -72,7 +75,7 @@ def get_moodboard(moodboard_id: str, current_user: dict = Depends(get_tenant_con
 
 
 @router.put("/{moodboard_id}")
-def update_moodboard(moodboard_id: str, body: MoodboardUpdate, current_user: dict = Depends(get_tenant_context)):
+def update_moodboard(moodboard_id: str, body: MoodboardUpdate, current_user: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
     _require_uuid(moodboard_id)
     client = db()
     updates = _scrub(body.model_dump())
@@ -86,7 +89,7 @@ def update_moodboard(moodboard_id: str, body: MoodboardUpdate, current_user: dic
 
 
 @router.delete("/{moodboard_id}")
-def delete_moodboard(moodboard_id: str, current_user: dict = Depends(get_tenant_context)):
+def delete_moodboard(moodboard_id: str, current_user: dict = Depends(require_permission(P_MOODBOARDS_DELETE))):
     _require_uuid(moodboard_id)
     client = db()
     client.table('moodboards').delete().eq('id', moodboard_id).eq('tenant_id', current_user['tenant_id']).execute()

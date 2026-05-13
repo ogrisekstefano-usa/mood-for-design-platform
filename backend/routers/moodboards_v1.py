@@ -22,7 +22,10 @@ from typing import Optional, Dict, Any, List
 from fastapi import APIRouter, HTTPException, Depends, Body
 from pydantic import BaseModel
 
-from core.tenant_context import get_tenant_context, audit_log
+from core.tenant_context import get_tenant_context, require_permission, audit_log
+from core.permissions import (
+    P_MOODBOARDS_READ, P_MOODBOARDS_WRITE,
+)
 from database import db, db_available
 
 router = APIRouter()
@@ -167,7 +170,7 @@ def _build_position(x, y, w, h, z):
 
 # ── Block CRUD ───────────────────────────────────────────────────────────────
 @router.post("/{moodboard_id}/blocks", status_code=201)
-def create_block(moodboard_id: str, body: BlockCreate, ctx: dict = Depends(get_tenant_context)):
+def create_block(moodboard_id: str, body: BlockCreate, ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
     client = db()
     mb = _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
     if body.type not in SUPPORTED_BLOCK_TYPES:
@@ -198,7 +201,7 @@ def create_block(moodboard_id: str, body: BlockCreate, ctx: dict = Depends(get_t
 
 @router.put("/{moodboard_id}/blocks/{block_id}")
 def update_block(moodboard_id: str, block_id: str, body: BlockUpdate,
-                 ctx: dict = Depends(get_tenant_context)):
+                 ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
     cur = client.table("moodboard_elements").select("content, position_json, style_json, type") \
@@ -236,7 +239,7 @@ def update_block(moodboard_id: str, block_id: str, body: BlockUpdate,
 
 
 @router.delete("/{moodboard_id}/blocks/{block_id}")
-def delete_block(moodboard_id: str, block_id: str, ctx: dict = Depends(get_tenant_context)):
+def delete_block(moodboard_id: str, block_id: str, ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
     client.table("moodboard_elements").delete() \
@@ -246,7 +249,7 @@ def delete_block(moodboard_id: str, block_id: str, ctx: dict = Depends(get_tenan
 
 
 @router.post("/{moodboard_id}/blocks/{block_id}/duplicate", status_code=201)
-def duplicate_block(moodboard_id: str, block_id: str, ctx: dict = Depends(get_tenant_context)):
+def duplicate_block(moodboard_id: str, block_id: str, ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
     """Clone a block — same content/style/position offset by a small delta."""
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
@@ -284,7 +287,7 @@ def duplicate_block(moodboard_id: str, block_id: str, ctx: dict = Depends(get_te
 
 @router.patch("/{moodboard_id}/blocks/batch")
 def batch_update_blocks(moodboard_id: str, body: BlocksBatchUpdate,
-                        ctx: dict = Depends(get_tenant_context)):
+                        ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
     """Bulk patch used by autosave (positions/sizes/style after drag/resize/inspector)."""
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
@@ -337,7 +340,7 @@ APPROVAL_TRANSITIONS = {
 
 @router.post("/{moodboard_id}/approval")
 def change_approval(moodboard_id: str, body: ApprovalChange,
-                    ctx: dict = Depends(get_tenant_context)):
+                    ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
     client = db()
     mb = _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
     current = mb.get("status") or "draft"
@@ -357,7 +360,7 @@ def change_approval(moodboard_id: str, body: ApprovalChange,
 
 # ── Share token (read-only client review) — dedicated table ─────────────────
 @router.post("/{moodboard_id}/share")
-def create_share_token(moodboard_id: str, ctx: dict = Depends(get_tenant_context)):
+def create_share_token(moodboard_id: str, ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
     token = secrets.token_urlsafe(24)
@@ -376,7 +379,7 @@ def create_share_token(moodboard_id: str, ctx: dict = Depends(get_tenant_context
 
 
 @router.delete("/{moodboard_id}/share")
-def revoke_share_token(moodboard_id: str, ctx: dict = Depends(get_tenant_context)):
+def revoke_share_token(moodboard_id: str, ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
     client.table("moodboard_shares") \

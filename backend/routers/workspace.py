@@ -16,7 +16,10 @@ from typing import Optional, Dict, Any
 from fastapi import APIRouter, HTTPException, Depends, Query
 from pydantic import BaseModel
 
-from core.tenant_context import get_tenant_context, get_tenant_settings, audit_log
+from core.tenant_context import get_tenant_context, get_tenant_settings, audit_log, require_permission
+from core.permissions import (
+    P_PROJECTS_READ, P_PROJECTS_WRITE, P_LEADS_WRITE,
+)
 from database import db
 
 router = APIRouter()
@@ -83,7 +86,7 @@ class NoteUpdate(BaseModel):
 
 # ── Tasks ────────────────────────────────────────────────────────────────────
 @router.get("/projects/{project_id}/tasks")
-def list_tasks(project_id: str, ctx: dict = Depends(get_tenant_context)):
+def list_tasks(project_id: str, ctx: dict = Depends(require_permission(P_PROJECTS_READ))):
     client = db()
     _assert_project_in_tenant(client, project_id, ctx["tenant_id"])
     r = client.table("tasks").select("*") \
@@ -93,7 +96,7 @@ def list_tasks(project_id: str, ctx: dict = Depends(get_tenant_context)):
 
 
 @router.post("/projects/{project_id}/tasks", status_code=201)
-def create_task(project_id: str, body: TaskCreate, ctx: dict = Depends(get_tenant_context)):
+def create_task(project_id: str, body: TaskCreate, ctx: dict = Depends(require_permission(P_PROJECTS_WRITE))):
     client = db()
     _assert_project_in_tenant(client, project_id, ctx["tenant_id"])
     payload = {
@@ -113,7 +116,7 @@ def create_task(project_id: str, body: TaskCreate, ctx: dict = Depends(get_tenan
 
 @router.put("/projects/{project_id}/tasks/{task_id}")
 def update_task(project_id: str, task_id: str, body: TaskUpdate,
-                ctx: dict = Depends(get_tenant_context)):
+                ctx: dict = Depends(require_permission(P_PROJECTS_WRITE))):
     client = db()
     _assert_project_in_tenant(client, project_id, ctx["tenant_id"])
     cur = client.table("tasks").select("status,title,completed_at") \
@@ -140,7 +143,7 @@ def update_task(project_id: str, task_id: str, body: TaskUpdate,
 
 
 @router.delete("/projects/{project_id}/tasks/{task_id}")
-def delete_task(project_id: str, task_id: str, ctx: dict = Depends(get_tenant_context)):
+def delete_task(project_id: str, task_id: str, ctx: dict = Depends(require_permission(P_PROJECTS_WRITE))):
     client = db()
     _assert_project_in_tenant(client, project_id, ctx["tenant_id"])
     client.table("tasks").delete().eq("id", task_id).eq("project_id", project_id).execute()
@@ -149,7 +152,7 @@ def delete_task(project_id: str, task_id: str, ctx: dict = Depends(get_tenant_co
 
 # ── Notes ────────────────────────────────────────────────────────────────────
 @router.get("/projects/{project_id}/notes")
-def list_notes(project_id: str, ctx: dict = Depends(get_tenant_context)):
+def list_notes(project_id: str, ctx: dict = Depends(require_permission(P_PROJECTS_READ))):
     client = db()
     _assert_project_in_tenant(client, project_id, ctx["tenant_id"])
     r = client.table("project_notes").select("*") \
@@ -167,7 +170,7 @@ def list_notes(project_id: str, ctx: dict = Depends(get_tenant_context)):
 
 
 @router.post("/projects/{project_id}/notes", status_code=201)
-def create_note(project_id: str, body: NoteCreate, ctx: dict = Depends(get_tenant_context)):
+def create_note(project_id: str, body: NoteCreate, ctx: dict = Depends(require_permission(P_PROJECTS_WRITE))):
     client = db()
     _assert_project_in_tenant(client, project_id, ctx["tenant_id"])
     payload = {
@@ -187,7 +190,7 @@ def create_note(project_id: str, body: NoteCreate, ctx: dict = Depends(get_tenan
 
 @router.put("/projects/{project_id}/notes/{note_id}")
 def update_note(project_id: str, note_id: str, body: NoteUpdate,
-                ctx: dict = Depends(get_tenant_context)):
+                ctx: dict = Depends(require_permission(P_PROJECTS_WRITE))):
     client = db()
     _assert_project_in_tenant(client, project_id, ctx["tenant_id"])
     payload = body.model_dump(exclude_none=True)
@@ -200,7 +203,7 @@ def update_note(project_id: str, note_id: str, body: NoteUpdate,
 
 
 @router.delete("/projects/{project_id}/notes/{note_id}")
-def delete_note(project_id: str, note_id: str, ctx: dict = Depends(get_tenant_context)):
+def delete_note(project_id: str, note_id: str, ctx: dict = Depends(require_permission(P_PROJECTS_WRITE))):
     client = db()
     _assert_project_in_tenant(client, project_id, ctx["tenant_id"])
     client.table("project_notes").delete().eq("id", note_id).eq("project_id", project_id).execute()
@@ -211,7 +214,7 @@ def delete_note(project_id: str, note_id: str, ctx: dict = Depends(get_tenant_co
 @router.get("/projects/{project_id}/activity")
 def list_activity(project_id: str,
                   limit: int = Query(50, le=200),
-                  ctx: dict = Depends(get_tenant_context)):
+                  ctx: dict = Depends(require_permission(P_PROJECTS_READ))):
     client = db()
     _assert_project_in_tenant(client, project_id, ctx["tenant_id"])
     r = client.table("project_activity").select("*") \
@@ -230,7 +233,7 @@ def list_activity(project_id: str,
 
 # ── Lead → Project converter ────────────────────────────────────────────────
 @router.post("/leads/{lead_id}/convert", status_code=201)
-def convert_lead_to_project(lead_id: str, ctx: dict = Depends(get_tenant_context)):
+def convert_lead_to_project(lead_id: str, ctx: dict = Depends(require_permission(P_LEADS_WRITE))):
     client = db()
     lr = client.table("leads").select("*").eq("id", lead_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute()
     if not lr.data:

@@ -4,7 +4,10 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends, Query
 from models.schemas import ProposalCreate, ProposalUpdate, ProposalSignoff
 from middleware.auth import get_current_user
-from core.tenant_context import get_tenant_context
+from core.tenant_context import get_tenant_context, require_permission
+from core.permissions import (
+    P_PROPOSALS_READ, P_PROPOSALS_WRITE, P_PROPOSALS_APPROVE, P_PROPOSALS_DELETE,
+)
 from database import db
 
 router = APIRouter()
@@ -24,7 +27,7 @@ def list_proposals(
     status: str = Query(None),
     limit: int = Query(50, le=200),
     offset: int = Query(0),
-    current_user: dict = Depends(get_tenant_context),
+    current_user: dict = Depends(require_permission(P_PROPOSALS_READ)),
 ):
     client = db()
     q = client.table('proposals').select('*').eq('tenant_id', current_user['tenant_id'])
@@ -37,7 +40,7 @@ def list_proposals(
 
 
 @router.post("", status_code=201)
-def create_proposal(body: ProposalCreate, current_user: dict = Depends(get_tenant_context)):
+def create_proposal(body: ProposalCreate, current_user: dict = Depends(require_permission(P_PROPOSALS_WRITE))):
     client = db()
     # verify project belongs to tenant
     proj = client.table('projects').select('id').eq('id', body.project_id).eq('tenant_id', current_user['tenant_id']).limit(1).execute()
@@ -64,7 +67,7 @@ def create_proposal(body: ProposalCreate, current_user: dict = Depends(get_tenan
 
 
 @router.get("/{proposal_id}")
-def get_proposal(proposal_id: str, current_user: dict = Depends(get_tenant_context)):
+def get_proposal(proposal_id: str, current_user: dict = Depends(require_permission(P_PROPOSALS_READ))):
     client = db()
     r = client.table('proposals').select('*').eq('id', proposal_id).eq('tenant_id', current_user['tenant_id']).execute()
     if not r.data:
@@ -78,7 +81,7 @@ def get_proposal(proposal_id: str, current_user: dict = Depends(get_tenant_conte
 
 
 @router.put("/{proposal_id}")
-def update_proposal(proposal_id: str, body: ProposalUpdate, current_user: dict = Depends(get_tenant_context)):
+def update_proposal(proposal_id: str, body: ProposalUpdate, current_user: dict = Depends(require_permission(P_PROPOSALS_WRITE))):
     client = db()
     updates = _scrub(body.model_dump())
     if not updates:
@@ -91,14 +94,14 @@ def update_proposal(proposal_id: str, body: ProposalUpdate, current_user: dict =
 
 
 @router.delete("/{proposal_id}")
-def delete_proposal(proposal_id: str, current_user: dict = Depends(get_tenant_context)):
+def delete_proposal(proposal_id: str, current_user: dict = Depends(require_permission(P_PROPOSALS_DELETE))):
     client = db()
     client.table('proposals').delete().eq('id', proposal_id).eq('tenant_id', current_user['tenant_id']).execute()
     return {"message": "deleted"}
 
 
 @router.post("/{proposal_id}/signoff", status_code=201)
-def signoff(proposal_id: str, body: ProposalSignoff, current_user: dict = Depends(get_tenant_context)):
+def signoff(proposal_id: str, body: ProposalSignoff, current_user: dict = Depends(require_permission(P_PROPOSALS_APPROVE))):
     client = db()
     r = client.table('proposals').select('id, project_id').eq('id', proposal_id).eq('tenant_id', current_user['tenant_id']).limit(1).execute()
     if not r.data:
