@@ -62,6 +62,25 @@ def _parse_jsonish(v):
     return None
 
 
+def _validate_linkage_fks(client, *, tenant_id: str, project_id: Optional[str],
+                          lead_id: Optional[str], moodboard_id: Optional[str]) -> None:
+    """Pre-validate cross-entity FKs scoped to the tenant. Translates the
+    otherwise opaque Postgres FK-violation 500 into a clean 400 with a
+    domain-specific message. Each lookup is at most one row, all tenant-
+    scoped — cheap, and absolutely required UX-wise."""
+    for kind, fid, table in (
+        ("project", project_id, "projects"),
+        ("lead", lead_id, "leads"),
+        ("moodboard", moodboard_id, "moodboards"),
+    ):
+        if not fid:
+            continue
+        r = client.table(table).select("id").eq("id", fid) \
+            .eq("tenant_id", tenant_id).limit(1).execute()
+        if not r.data:
+            raise HTTPException(400, f"{kind}_id does not exist in this tenant")
+
+
 def _hydrate_board(row: dict) -> dict:
     if not row:
         return row
@@ -197,6 +216,9 @@ def create_board(body: BoardCreate,
     if body.visibility not in VALID_VISIBILITY:
         raise HTTPException(400, f"Invalid visibility: {body.visibility}")
     client = db()
+    _validate_linkage_fks(client, tenant_id=ctx["tenant_id"],
+                          project_id=body.project_id, lead_id=body.lead_id,
+                          moodboard_id=body.moodboard_id)
     board_id = str(uuid.uuid4())
     row = {
         "id": board_id,
@@ -244,6 +266,11 @@ def update_board(board_id: str, body: BoardUpdate,
     patch = body.model_dump(exclude_none=True)
     if "visibility" in patch and patch["visibility"] not in VALID_VISIBILITY:
         raise HTTPException(400, f"Invalid visibility: {patch['visibility']}")
+    # Pre-validate any FK linkage so a stale UUID returns 400, not 500.
+    _validate_linkage_fks(client, tenant_id=ctx["tenant_id"],
+                          project_id=patch.get("project_id"),
+                          lead_id=patch.get("lead_id"),
+                          moodboard_id=patch.get("moodboard_id"))
     if "tags" in patch:
         patch["tags_json"] = patch.pop("tags")
     patch["updated_at"] = _now()
@@ -257,10 +284,23 @@ def update_board(board_id: str, body: BoardUpdate,
                            actor_id=ctx["profile_id"],
                            activity_type=f"linked_to_{k.replace('_id', '')}",
                            payload={k: v})
+    # Map internal *_json columns back to domain field names before persisting
+    # them in the activity payload — the timeline UI should never see
+    # implementation details like "tags_json".
+    activity_fields = [
+        {"tags_json": "tags"}.get(k, k)
+        for k in patch.keys() if k != "updated_at"
+    ]
     _push_activity(client, tenant_id=ctx["tenant_id"], board_id=board_id,
                    actor_id=ctx["profile_id"], activity_type="board_updated",
-                   payload={"fields": list(patch.keys())})
-    return _hydrate_board(r.data[0] if r.data else None)
+                   payload={"fields": activity_fields})
+    # Defensive re-fetch — if the UPDATE was constrained out by RLS we'd
+    # otherwise return null. Always return the canonical, hydrated row.
+    if not r.data:
+        cur = client.table("inspirations_boards").select("*") \
+            .eq("id", board_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute()
+        return _hydrate_board(cur.data[0] if cur.data else None)
+    return _hydrate_board(r.data[0])
 
 
 @router.delete("/boards/{board_id}")

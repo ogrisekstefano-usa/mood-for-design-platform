@@ -51,6 +51,9 @@ api_router.include_router(moodboards.router, prefix="/moodboards", tags=["moodbo
 api_router.include_router(moodboards_v1.router, prefix="/moodboards", tags=["moodboards-blocks"])
 api_router.include_router(templates.router, prefix="/templates", tags=["templates"])
 api_router.include_router(workspace.router, prefix="/workspace", tags=["workspace"])
+# ORDER MATTERS: inspirations_boards (new Creative Memory System™) MUST be
+# included BEFORE the legacy `inspirations` magazine router, otherwise the
+# legacy `GET /{post_id}` catch-all shadows `/boards`, `/items/*`, etc.
 api_router.include_router(inspirations_boards.router, prefix="/inspirations", tags=["inspirations-boards"])
 api_router.include_router(inspirations.router, prefix="/inspirations", tags=["inspirations"])
 api_router.include_router(insights.router, prefix="/insights", tags=["insights"])
