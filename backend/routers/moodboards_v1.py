@@ -61,7 +61,8 @@ def _normalize_block(b: dict) -> dict:
     """Hydrate a row from `moodboard_elements` into the frontend-friendly shape.
 
     Frontend expects layout flat (x/y/width/height/z_index at top level) plus
-    `content` as a dict and `style` for visual props.
+    `content` as a dict, `style` for visual props, and `metadata` for upload
+    provenance / focal-point / origin tracking.
     """
     if not b:
         return b
@@ -70,6 +71,7 @@ def _normalize_block(b: dict) -> dict:
     pos = _parse_jsonish(out.get("position_json"))
     style = _parse_jsonish(out.get("style_json"))
     content = _parse_jsonish(out.get("content"))
+    metadata = _parse_jsonish(out.get("metadata_json"))
 
     # Backward-compat: legacy rows had layout inside content (pre-migration 002)
     if not pos and isinstance(content, dict) and "layout" in content:
@@ -82,9 +84,10 @@ def _normalize_block(b: dict) -> dict:
     out["height"]  = pos.get("height", 240)
     out["z_index"] = pos.get("z_index", 0)
 
-    out["style"]   = style or {}
-    out["content"] = content or {}
-    # Drop raw JSONB column dumps from the response (we re-expose them as `content`/`style`)
+    out["style"]    = style or {}
+    out["content"]  = content or {}
+    out["metadata"] = metadata or {}
+    # Drop raw JSONB column dumps from the response (we re-expose them above)
     out.pop("position_json", None)
     out.pop("style_json", None)
     out.pop("metadata_json", None)
@@ -143,6 +146,7 @@ class BlockUpdate(BaseModel):
     sort_order: Optional[int] = None
     content: Optional[Dict[str, Any]] = None
     style:   Optional[Dict[str, Any]] = None
+    metadata: Optional[Dict[str, Any]] = None
     locked:  Optional[bool] = None
     hidden:  Optional[bool] = None
     opacity: Optional[float] = None
@@ -204,7 +208,7 @@ def update_block(moodboard_id: str, block_id: str, body: BlockUpdate,
                  ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
-    cur = client.table("moodboard_elements").select("content, position_json, style_json, type") \
+    cur = client.table("moodboard_elements").select("content, position_json, style_json, metadata_json, type") \
         .eq("id", block_id).eq("moodboard_id", moodboard_id).limit(1).execute()
     if not cur.data:
         raise HTTPException(404, "Block not found")
@@ -212,6 +216,7 @@ def update_block(moodboard_id: str, block_id: str, body: BlockUpdate,
     pos = _parse_jsonish(row.get("position_json"))
     style = _parse_jsonish(row.get("style_json"))
     content = _parse_jsonish(row.get("content"))
+    metadata = _parse_jsonish(row.get("metadata_json"))
 
     body_d = body.model_dump(exclude_none=True)
     for k in ("x", "y", "width", "height", "z_index"):
@@ -221,8 +226,13 @@ def update_block(moodboard_id: str, block_id: str, body: BlockUpdate,
         content = {**content, **(body_d.pop("content") or {})}
     if "style" in body_d:
         style = {**style, **(body_d.pop("style") or {})}
+    if "metadata" in body_d:
+        metadata = {**metadata, **(body_d.pop("metadata") or {})}
 
-    payload = {"position_json": pos, "style_json": style, "content": json.dumps(content)}
+    payload = {
+        "position_json": pos, "style_json": style,
+        "metadata_json": metadata, "content": json.dumps(content),
+    }
     for k in ("sort_order", "locked", "hidden", "opacity", "rotation"):
         if k in body_d:
             payload[k] = body_d[k]
@@ -296,7 +306,7 @@ def batch_update_blocks(moodboard_id: str, body: BlocksBatchUpdate,
         bid = b.get("id")
         if not bid:
             continue
-        cur = client.table("moodboard_elements").select("content, position_json, style_json, type") \
+        cur = client.table("moodboard_elements").select("content, position_json, style_json, metadata_json, type") \
             .eq("id", bid).eq("moodboard_id", moodboard_id).limit(1).execute()
         if not cur.data:
             continue
@@ -304,6 +314,7 @@ def batch_update_blocks(moodboard_id: str, body: BlocksBatchUpdate,
         pos = _parse_jsonish(row.get("position_json"))
         style = _parse_jsonish(row.get("style_json"))
         content = _parse_jsonish(row.get("content"))
+        metadata = _parse_jsonish(row.get("metadata_json"))
         for k in ("x", "y", "width", "height", "z_index"):
             if k in b and b[k] is not None:
                 pos[k] = b[k]
@@ -311,7 +322,10 @@ def batch_update_blocks(moodboard_id: str, body: BlocksBatchUpdate,
             content = {**content, **b["content"]}
         if isinstance(b.get("style"), dict):
             style = {**style, **b["style"]}
-        upd = {"position_json": pos, "style_json": style, "content": json.dumps(content),
+        if isinstance(b.get("metadata"), dict):
+            metadata = {**metadata, **b["metadata"]}
+        upd = {"position_json": pos, "style_json": style,
+               "metadata_json": metadata, "content": json.dumps(content),
                "updated_at": _now()}
         for k in ("sort_order", "locked", "hidden", "opacity", "rotation"):
             if k in b and b[k] is not None:

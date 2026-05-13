@@ -26,6 +26,12 @@ const buildFilter = (a = {}) => {
   return parts.length ? parts.join(' ') : 'none';
 };
 
+const SHADOW_MAP = {
+  soft:     '0 4px 12px rgba(0,0,0,0.18)',
+  medium:   '0 8px 24px rgba(0,0,0,0.30)',
+  dramatic: '0 16px 48px rgba(0,0,0,0.45)',
+};
+
 const ImageBlock = ({ block, readOnly, t }) => {
   const { src, caption } = block.content || {};
   const style = block.style || {};
@@ -33,6 +39,8 @@ const ImageBlock = ({ block, readOnly, t }) => {
   const focal = style.focal_point || 'center';
   const zoom = Number(style.zoom) || 1;
   const adj = style.adjustments || {};
+  const borderRadius = style.border_radius !== undefined ? style.border_radius : 4;
+  const shadowPreset = style.shadow_preset || 'none';
   const objectPosition = focal === 'center' ? 'center'
     : focal === 'top' ? 'center top'
     : focal === 'bottom' ? 'center bottom'
@@ -50,7 +58,11 @@ const ImageBlock = ({ block, readOnly, t }) => {
   }, [src]);
 
   return (
-    <div className="w-full h-full overflow-hidden rounded-[var(--bp-radius-sm)] bg-[var(--bp-surface-2)] relative group">
+    <div className="w-full h-full overflow-hidden bg-[var(--bp-surface-2)] relative group"
+         style={{
+           borderRadius: `${borderRadius}px`,
+           boxShadow: SHADOW_MAP[shadowPreset] || 'none',
+         }}>
       {/* Empty / placeholder state */}
       {!src && (
         <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-[var(--bp-text-subtle)] bp-caption px-3 text-center"

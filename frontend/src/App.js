@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BlueprintProvider, useBlueprint } from './contexts/BlueprintContext';
+import { Toaster } from 'sonner';
 import './App.css';
 
 const DashboardLayout = lazy(() => import('./components/layout/DashboardLayout'));
@@ -120,6 +121,19 @@ function App() {
               </Routes>
             </Suspense>
           </BrowserRouter>
+          <Toaster
+            position="bottom-right"
+            theme="dark"
+            toastOptions={{
+              className: 'bp-toast',
+              style: {
+                background: 'var(--bp-surface-2)',
+                color: 'var(--bp-text-primary)',
+                border: '1px solid var(--bp-border)',
+                fontFamily: 'var(--bp-font-body)',
+              },
+            }}
+          />
         </BlueprintProvider>
       </AuthProvider>
     </div>

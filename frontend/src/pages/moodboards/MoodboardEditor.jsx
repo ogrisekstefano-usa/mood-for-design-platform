@@ -14,6 +14,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
+import { toast } from 'sonner';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
   ArrowLeft, Plus, Check, Share2, ExternalLink, Send, X, AlertCircle,
@@ -84,7 +85,8 @@ const MoodboardEditor = ({ readOnly = false }) => {
     const payload = blocksRef.current.filter((b) => ids.includes(b.id))
       .map((b) => ({
         id: b.id, x: b.x, y: b.y, width: b.width, height: b.height,
-        content: b.content, style: b.style, z_index: b.z_index,
+        content: b.content, style: b.style, metadata: b.metadata,
+        z_index: b.z_index,
         locked: b.locked, hidden: b.hidden,
         opacity: b.opacity, rotation: b.rotation,
       }));
@@ -110,9 +112,15 @@ const MoodboardEditor = ({ readOnly = false }) => {
       } else {
         setSaveState('error');
         setSaveError(err?.message || 'Network error');
+        toast.error(t('moodboards.editor.saveFailed'), {
+          description: t('moodboards.editor.saveFailedHint'),
+          action: { label: t('moodboards.editor.retry'),
+                    onClick: () => { retryCount.current = 0; flushSave(); } },
+          duration: 8000,
+        });
       }
     }
-  }, [id, readOnly]);
+  }, [id, readOnly, t]);
 
   useEffect(() => {
     if (readOnly) return;
@@ -134,7 +142,8 @@ const MoodboardEditor = ({ readOnly = false }) => {
         const payload = blocksRef.current.filter((b) => ids.includes(b.id))
           .map((b) => ({
             id: b.id, x: b.x, y: b.y, width: b.width, height: b.height,
-            content: b.content, style: b.style, z_index: b.z_index,
+            content: b.content, style: b.style, metadata: b.metadata,
+            z_index: b.z_index,
             locked: b.locked, hidden: b.hidden,
             opacity: b.opacity, rotation: b.rotation,
           }));
@@ -180,15 +189,14 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const updateBlock = (bid, patch) => {
     setBlocks((bs) => bs.map((b) => {
       if (b.id !== bid) return b;
-      // Deep-merge content + style so the latest committed state always wins
-      // even if the inspector callback fires with a stale closure.
       const merged = { ...b, ...patch };
-      if (patch.content && typeof patch.content === 'object') {
-        merged.content = { ...(b.content || {}), ...patch.content };
-      }
-      if (patch.style && typeof patch.style === 'object') {
-        merged.style = { ...(b.style || {}), ...patch.style };
-      }
+      // Deep-merge nested objects so partial patches (e.g. only `src`) never
+      // wipe siblings (e.g. caption). Applies to content / style / metadata.
+      ['content', 'style', 'metadata'].forEach((k) => {
+        if (patch[k] && typeof patch[k] === 'object') {
+          merged[k] = { ...(b[k] || {}), ...patch[k] };
+        }
+      });
       return merged;
     }));
     markDirty(bid);
@@ -608,7 +616,8 @@ const MoodboardEditor = ({ readOnly = false }) => {
                   </p>
                   <BlockInspector block={selectedBlock} t={t}
                                   onChangeContent={(content) => updateBlock(selectedBlock.id, { content })}
-                                  onChangeStyle={(style) => updateBlock(selectedBlock.id, { style })} />
+                                  onChangeStyle={(style) => updateBlock(selectedBlock.id, { style })}
+                                  onChange={(patch) => updateBlock(selectedBlock.id, patch)} />
                 </div>
               ) : (
                 <div className="p-5 flex-1 flex items-center justify-center">
@@ -741,7 +750,7 @@ const FOCAL_PRESETS = [
 ];
 
 // ── Block Inspector ─────────────────────────────────────────────────────────
-const BlockInspector = ({ block, onChangeContent, onChangeStyle, t }) => {
+const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, t }) => {
   const c = block.content || {};
   const s = block.style || {};
   const setC = (k, v) => onChangeContent({ ...c, [k]: v });
@@ -842,18 +851,54 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, t }) => {
     </div>
   );
 
+  const SHADOW_PRESETS = [
+    { id: 'none',     label: t('moodboards.shadow.none') },
+    { id: 'soft',     label: t('moodboards.shadow.soft') },
+    { id: 'medium',   label: t('moodboards.shadow.medium') },
+    { id: 'dramatic', label: t('moodboards.shadow.dramatic') },
+  ];
+
   const VisualPropsSection = () => (
     <div className="pt-3 mt-3 border-t border-[var(--bp-border)]">
+      <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] mb-3">
+        {t('moodboards.editor.visualProps')}
+      </p>
       <InspectorSlider label={t('moodboards.field.opacity')}
                        value={block.opacity !== undefined ? block.opacity : 1}
                        min={0} max={1} step={0.05}
-                       onChange={(v) => onChangeStyle({ ...s, opacity: v }) || null}
+                       onChange={(v) => onChange({ opacity: v })}
                        testid="block-opacity" formatValue={(v) => `${(v * 100).toFixed(0)}%`} />
       <InspectorSlider label={t('moodboards.field.rotation')}
                        value={block.rotation || 0}
                        min={-180} max={180} step={1}
-                       onChange={(v) => onChangeStyle({ ...s, rotation: v })}
+                       onChange={(v) => onChange({ rotation: v })}
                        testid="block-rotation" formatValue={(v) => `${v}°`} />
+      <InspectorSlider label={t('moodboards.field.borderRadius')}
+                       value={s.border_radius ?? 4}
+                       min={0} max={48} step={1}
+                       onChange={(v) => setS('border_radius', v)}
+                       testid="block-border-radius" formatValue={(v) => `${v}px`} />
+      <div className="mb-3">
+        <label className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] block mb-1.5">
+          {t('moodboards.field.shadow')}
+        </label>
+        <div className="grid grid-cols-4 gap-1" data-testid="block-shadow-presets">
+          {SHADOW_PRESETS.map((p) => {
+            const active = (s.shadow_preset || 'none') === p.id;
+            return (
+              <button key={p.id} type="button"
+                      onClick={() => setS('shadow_preset', p.id)}
+                      data-testid={`shadow-${p.id}`}
+                      className={`bp-caption !text-[10px] px-2 py-1.5 rounded-[var(--bp-radius-xs)] border transition-colors
+                        ${active
+                          ? 'border-[var(--bp-primary)] text-[var(--bp-text-primary)] bg-[var(--bp-surface-2)]'
+                          : 'border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:border-[var(--bp-border-strong)]'}`}>
+                {p.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 
@@ -861,7 +906,16 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, t }) => {
     case 'image':
       return (<>
         <ImageUploader currentUrl={c.src} t={t}
-                       onUploaded={(url) => setC('src', url)} />
+                       onUploaded={(url, meta) => {
+                         // Persist src + structured metadata in one atomic update so
+                         // autosave's batch PATCH carries both. metadata_json is the
+                         // canonical place for upload provenance (file_name,
+                         // original_dimensions, media_id, storage_path).
+                         onChange({
+                           content: { ...c, src: url },
+                           metadata: { ...(block.metadata || {}), ...(meta || {}) },
+                         });
+                       }} />
         <InspectorInput label={t('moodboards.field.imageUrl')} value={c.src}
                         onChange={(v) => setC('src', v)} testid="block-image-src" />
         <InspectorInput label={t('moodboards.field.caption')} value={c.caption}

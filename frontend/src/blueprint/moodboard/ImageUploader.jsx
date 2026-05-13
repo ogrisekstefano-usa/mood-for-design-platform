@@ -29,6 +29,19 @@ const ImageUploader = ({ currentUrl, onUploaded, t }) => {
     setError(null);
     setProgress(5);
     try {
+      // 0. Pre-extract original dimensions (best-effort) so they can be
+      //    persisted into metadata_json alongside the upload.
+      const dims = await new Promise((resolve) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          resolve({ width: img.naturalWidth, height: img.naturalHeight });
+        };
+        img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+        img.src = url;
+      });
+
       const ext = file.name.split('.').pop() || 'bin';
       const safeName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const path = `moodboards/${safeName}`;
@@ -43,7 +56,6 @@ const ImageUploader = ({ currentUrl, onUploaded, t }) => {
         method: 'PUT',
         headers: {
           'Content-Type': file.type,
-          // Supabase Storage uses the upload token via signed URL; no auth header needed
           'x-upsert': 'false',
           ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         },
@@ -61,7 +73,14 @@ const ImageUploader = ({ currentUrl, onUploaded, t }) => {
         category: 'moodboard',
       });
       setProgress(100);
-      onUploaded(reg.data.file_url);
+      onUploaded(reg.data.file_url, {
+        upload_source: 'user_upload',
+        original_dimensions: dims,
+        media_id: reg.data.id,
+        storage_path: serverPath,
+        file_name: file.name,
+        uploaded_at: new Date().toISOString(),
+      });
       setTimeout(() => setState('idle'), 300);
     } catch (e) {
       setState('error');
