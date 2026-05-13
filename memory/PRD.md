@@ -201,6 +201,35 @@ Pre-requisito esplicito utente prima della Fase F: "verificare bene tenant_id en
 - **90/90 backend pytest pass** + 5 skipped + 1 xpass = ZERO regressione su 6 fasi precedenti
 
 
+### ✅ Phase E.3 — Polish Sprint: Smart Snap + Undo/Redo + Theme Leak Cleanup (DONE — 13 Mag 2026)
+Triplo deliverable per chiudere la V1 weekend con feel premium uniforme.
+
+- **Smart Snap System** (`/app/frontend/src/blueprint/moodboard/useSnap.js` + `SnapGuides.jsx`)
+  - Threshold 6px, snap a edge/center di canvas + altri blocchi (left/center/right + top/middle/bottom)
+  - Modalità separate per `move` vs `resize` (resize snappa solo right+bottom)
+  - Guide SVG dashed teal (`var(--bp-primary)`, opacity 0.55, dasharray "2 3") visibili SOLO durante drag attivo, padding 12px oltre span — feeling Framer/Linear/Keynote, ZERO CAD lines
+  - Alt-key bypass (idioma Figma/Keynote) per disabilitare snap al volo
+  - Toggle button topbar (`data-testid=snap-toggle-btn`, icona Magnet) — default ON, icona teal quando attivo
+- **Undo / Redo locale** (`useHistory.js`)
+  - Stack JS puro, snapshot completo dei blocks (deep-clone via JSON), max 50 entries
+  - Cursor model con branching (pruna future entries quando si registra dopo un undo)
+  - Trigger snapshot: create/delete/duplicate/drag-end/resize-end
+  - Keyboard: `Cmd/Ctrl+Z` = undo, `Cmd/Ctrl+Shift+Z` e `Cmd/Ctrl+Y` = redo. Guardia su input/textarea/contentEditable
+  - Pulsanti topbar (`data-testid=undo-btn/redo-btn`, icone Undo2/Redo2), disabled-state derivato da `history.canUndo/canRedo`
+  - Restore: applica snapshot + marca tutti i blocchi dirty (autosave persiste lo stato ripristinato)
+- **Theme Leak Cleanup** — 10 pagine legacy
+  - Dashboard, Leads, Projects, Proposals, Admin (Overview/Tenants/TenantDetail/Modules/Audit), Insights, Inspirations
+  - Mapping bulk: `#0A0A0B → var(--bp-bg)`, `#141416 → surface-1`, `#1C1C1F → surface-2`, `#222226 → surface-3`, `#EFEBE4 → text-primary`, `#A19D98 → text-secondary`, `#6B6863 → text-muted`, `#4A4845/#3A3835 → text-subtle`, `#D4AF37 → primary`, `#0F0F11 → surface-1`
+  - White overlays: `white/[0.06|0.08|0.05] → var(--bp-border)`, `white/[0.1] → border-strong`, `white/[0.03|0.02|0.04] → surface-2 con alpha`
+  - Wrap automatico via Python script: 44 occorrenze di `var(--bp-*)` correttamente racchiuse in `[var(--bp-*)]` per Tailwind arbitrary-value syntax
+  - Tutti i pulsanti CTA legacy ora usano `var(--bp-primary)` invece del fallback `#D4AF37`
+- **i18n** — 3 nuove chiavi EN+IT: `moodboards.editor.{undo,redo,snap}` = `Annulla / Ripeti / Snap intelligente`
+- **Tested ✅** (`iteration_8.json`)
+  - Backend: **26/26 regression** (E.1 + E.2 + isolation/permissions)
+  - Frontend: tutti i testids E.3 verificati (undo-btn, redo-btn, snap-toggle-btn, initial-disabled-state, post-mutation-enabled-state), Ctrl+Z/Y/Shift+Z funzionanti con guardia su input
+  - Theme leak grep: **0 hex hardcoded** + **0 Tailwind class rotte** su tutte le 10 pagine target
+
+
 ### ✅ Phase E.2 — Templates V1 (DONE — 13 Mag 2026)
 Quick-start template system per i moodboard: 7 starter platform + creazione di template tenant-private da qualsiasi moodboard esistente.
 
