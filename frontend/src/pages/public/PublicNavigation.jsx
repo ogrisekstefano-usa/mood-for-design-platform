@@ -67,7 +67,7 @@ const PublicNavigation = ({ nav, brand, locales = [] }) => {
             <select value={locale} onChange={(e) => onSelectLocale(e.target.value)}
               data-testid="public-nav-locale"
               className="bg-transparent text-[var(--bp-text-secondary)] text-xs font-mono uppercase tracking-[0.18em] focus:outline-none cursor-pointer">
-              {locales.map((l) => <option key={l} value={l} className="bg-[var(--bp-surface-1)]">{l.split('-')[0]}</option>)}
+              {locales.map((l) => <option key={l} value={l} className="bg-[var(--bp-surface-1)]">{l}</option>)}
             </select>
           )}
           {cta?.label && (

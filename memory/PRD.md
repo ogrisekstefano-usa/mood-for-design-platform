@@ -169,6 +169,35 @@ Server-configurable rendering backbone reusable across: homepage · landing · p
 ✅ Impersonate tenant → banner amber visibile, queries con header
 ✅ Stop impersonation → banner removed
 
+### ✅ Phase C — Public Rendering Layer + Dynamic Navigation/Footer (DONE — 12 Mag 2026)
+The Section Engine now powers UNAUTHENTICATED public tenant routes. ZERO hardcoded React pages — runtime composition only.
+
+- **Backend** (`routers/public.py` + `routers/navigation.py`):
+  - `GET /api/public/tenants/{slug}` — public tenant config (theme, locales, navigation, footer); resolves by slug OR by custom domain (via `tenant_domains` table)
+  - `GET /api/public/tenants/{slug}/pages/{page_slug}` — serves only published pages (homepage gets a graceful default seed when no published version exists)
+  - `GET /api/public/navigation/defaults` — canonical seeds for the navigation editor
+  - Auth-gated CRUD under `/api/settings`: `GET/PUT/POST reset` for `navigation` and `footer` (key='public_navigation' / 'public_footer' in `tenant_settings`)
+  - Sensible default seeds: 4-item top nav with home/showcase/about/contact + CTA + locale switcher, 3-column footer with copyright template
+- **Frontend Public Rendering** (`/app/frontend/src/pages/public/`):
+  - `PublicTenantPage.jsx` — runtime composition: loads tenant config + page in parallel, applies theme to `:root`, renders `<PublicNavigation>` + `<BlueprintPageRenderer>` + `<PublicFooter>`. Reserved-slugs short-circuit to 404
+  - `PublicNavigation.jsx` — schema-driven luxury top bar: logo (asset OR text), items (link/mega-menu), CTA, locale switcher, mobile drawer, transparent-over-hero + glass-after-scroll behavior
+  - `PublicFooter.jsx` — multi-column footer, i18n labels, copyright with `{year}` and `{brand}` interpolation
+  - `publicLocale.js` — `PublicLocaleContext` + `resolveI18nLabel(label, locale, fallback)` helper used across the public layer
+- **Frontend Editor** (`/settings/navigation` → `NavigationEditorPage.jsx`):
+  - Two tabs (Navigation / Footer), per-locale i18n inputs ({_default, en-US, it, ...}), reorder via chevron, add/delete items, columns and links
+  - Toggles: sticky · transparent-on-hero · locale switcher
+  - Visit-public-site button opens `/{tenant-slug}` in a new tab
+  - Save dirty-state + Reset to default
+- **HomepageBuilder additions**: Publish toggle (draft/published) in topbar
+- **App.js public routes**: `/:tenantSlug` and `/:tenantSlug/:pageSlug` registered AFTER all specific routes, BEFORE catch-all
+- **Tested End-to-End** ✅
+  - 17/17 backend pytest pass (public config, published gating, custom-domain resolution, auth gating, i18n round-trip, defaults reset)
+  - Public route renders end-to-end with editorial cinematic hero (eyebrow + display + lead + CTAs), Italian CTA "Contattaci" via i18n label resolution
+  - Locale switcher updates labels live without reload (persists in localStorage)
+  - Critical bug found + fixed during testing: missing `<Route path="/settings/navigation">` in App.js (testing agent applied the fix)
+  - Cosmetic fixes: duplicate 'EN' in locale dropdown (now shows full locale codes), visit-public-site link robust to slug load timing
+
+
 ## File Map
 ```
 /app/backend/
@@ -208,13 +237,15 @@ Server-configurable rendering backbone reusable across: homepage · landing · p
 ### 🔜 Phase C — Homepage / Public Site Builder
 - ✅ Section Engine fondazionale (DONE in Phase B+)
 - ✅ Homepage Builder UI (DONE in Phase B+)
-- Public route for tenant homepage live su `/{tenant-slug}` o custom domain (renderer pubblico, no auth)
-- Dynamic Menu / Navigation / Footer configuration
-- **Public Tenant Showcase** opt-in (enterprise) — `/showcase/{tenant-slug}` directory pubblica per SEO
+- ✅ Public Route Renderer su `/{tenant-slug}` + `/{tenant-slug}/{page-slug}` (DONE in Phase C)
+- ✅ Dynamic Navigation/Footer schema-driven (DONE in Phase C)
+- ✅ Page publish/draft toggle (DONE in Phase C)
+- Remaining: custom-domain verification flow (DNS check), SEO meta tags per page, og_image preview
 
-### Phase D — Form Builder + Design Request Settings
-- Multi-step form builder con file upload
+### Phase D — Blueprint Dynamic Form Engine™ + Workspace
+- Multi-step form builder with file upload, conditional logic, AI-assisted copy
 - Design Request settings (types/styles/budgets/scoring/auto-assignment)
+- Blueprint Workspace™ extension (Timeline, Files, Proposals, Signoff, Client Portal, Tasks, Notes)
 
 ### Phase E — Blueprint Moodboards Editor
 - Block-based canvas (@dnd-kit/core + Zustand)

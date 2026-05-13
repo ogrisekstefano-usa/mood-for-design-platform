@@ -162,8 +162,8 @@ const NavigationEditorPage = () => {
   };
 
   const publicUrl = useMemo(() => {
-    if (!tenant?.slug) return null;
-    return `/${tenant.slug}`;
+    const slug = tenant?.slug;
+    return slug ? `/${slug}` : '#';
   }, [tenant]);
 
   if (!nav || !foot) {
@@ -184,7 +184,7 @@ const NavigationEditorPage = () => {
             All labels support multilingual content.
           </p>
         </div>
-        {publicUrl && (
+        {publicUrl !== '#' && (
           <a href={publicUrl} target="_blank" rel="noreferrer"
             className="bp-btn bp-btn-ghost text-xs" data-testid="visit-public-site">
             <ExternalLink size={12} strokeWidth={1.5} /> Visit
