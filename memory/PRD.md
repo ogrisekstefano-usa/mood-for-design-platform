@@ -153,7 +153,32 @@ Server-configurable rendering backbone reusable across: homepage · landing · p
   - Italian locale active in sidebar
 
 
-### Tested End-to-End ✅
+### ✅ Phase E (V1) — Blueprint Moodboards™ + Workspace Extended (DONE — 13 Mag 2026)
+End-to-end operational loop closed: **Lead → Project → Workspace → Moodboard → Approval → Share**. ZERO hardcoded copy, ZERO Figma/Canva clone — stable V1 dedicated to luxury interior-design workflow.
+
+- **Moodboards V1 backend** (`routers/moodboards_v1.py`):
+  - Block CRUD (`POST/PUT/DELETE /api/moodboards/{id}/blocks`) for 6 V1 types: `image · text · palette · note · product · material` + 4 future-stub types accepted server-side (`hotspot · video · vendor · product_grid`)
+  - **Autosave bulk patch** (`PATCH /blocks/batch`) — drag/resize positions persisted in `content.layout` (no schema migration)
+  - **Approval state machine** aligned to Supabase `moodboard_status` enum: `draft → sent → viewed/approved/revision_requested/rejected → …` with explicit invalid-transition 400
+  - **Share token** (`POST /share` + anonymous `GET /public/share/{token}`) — token→moodboard reverse lookup via `tenant_settings`, 403 on draft, full block list in response
+  - Pushes `moodboard.*` events into project activity stream
+- **Workspace Extended backend** (`routers/workspace.py`):
+  - Tasks, Notes (pinned-first sort), Activity stream — all per-project, stored in `tenant_settings` keys (`project.{id}.tasks|notes|activity`), schema-migration-free
+  - **Lead → Project converter** (`POST /api/workspace/leads/{lead_id}/convert`) — creates project, links `lead_id`, sets lead.status=`project_opened`, audit-logged, activity event pushed
+- **Block registry frontend** (`/blueprint/moodboard/BlockRegistry.js` + 6 block components) — token-driven, locale-aware, no hardcoded copy
+- **MoodboardEditor.jsx** — V1 canvas editor: drag-to-move, corner resize, debounced 800ms autosave with Saving/Saved indicator, left rail block toolbar, right rail inspector per-type (image src/caption · text/size · note · palette colors picker · product/material), workflow toolbar (Send for review → Approve/Reject/Request revision), Share dialog. ALL labels via `t()`
+- **MoodboardsPage.jsx** — luxury list: status-tone cards, 7 filters (Tutti/Bozze/Inviati/Visti/Approvati/Revisione/Rifiutati), create modal with optional project linker
+- **ProjectDetailPage.jsx** — 5-tab workspace (Panoramica/Attività/Note/Moodboard/Diario), all i18n-driven, luxury create-moodboard modal (replaced browser `prompt()`)
+- **LeadsPage.jsx** — added per-row "Converti in progetto" CTA that navigates to project detail
+- **ProjectsPage.jsx** — project cards now wrapped in `<Link>` (accessible, deep-linkable)
+- **i18n bundle** — 40+ new keys under `moodboards.*` and `workspace.*` in EN-US + IT, with status translations matching real DB enum values
+- **BlueprintContext locale fix** — pre-resolves tenant default locale before fetching messages (eliminates en-US flash on first paint)
+- **Tested End-to-End ✅**
+  - 25/25 backend pytest pass (full Phase E: moodboard CRUD, blocks for all 6 types, batch autosave, approval state machine, public share gate, tasks/notes/activity, lead.convert)
+  - Frontend e2e: moodboards list (3 cards), filter tabs, new-moodboard modal, editor canvas with drag/resize, inspector, send-review → approve, share dialog → public anonymous page (readOnly)
+  - IT locale verified across breadcrumb/sidebar/page/filter/badges from fresh browser state
+
+
 - Login → tema teal #26F5C9 caricato runtime
 - Brand Studio carica tutti i tab
 - Preset palette applicato → preview live aggiorna istantaneamente colors+shapes+fonts
@@ -280,8 +305,9 @@ Enterprise-grade schema-driven form engine. Reusable for: lead-gen · design req
 - Blueprint Workspace™ extension (Timeline, Files, Proposals, Signoff, Client Portal, Tasks, Notes)
 
 ### Phase E — Blueprint Moodboards Editor
-- Block-based canvas (@dnd-kit/core + Zustand)
-- Image positioning, hotspot, palette, typography, versioning, export PDF, share link
+- ✅ V1: block-based canvas (image/text/palette/note/product/material), drag+resize, debounced autosave, approval state machine, public share token (DONE in Phase E)
+- ✅ Lead→Project converter + Tasks/Notes/Activity (DONE in Phase E)
+- Future (V2): PDF export engine, hotspot system, AI material suggestions, presentation mode, version history UI
 
 ### Phase F — Inspirations CMS + Insights advanced + Concierge
 - Magazine builder (paragraph builder, hero video, SEO, related)

@@ -224,12 +224,14 @@ export const BlueprintProvider = ({ children }) => {
       if (cancelled) return;
       const [tRes, nRes, dRes, mRes, fRes, pRes] = results;
       let tData = null;
+      let resolvedLocale = locale;
       if (tRes.status === 'fulfilled') {
         tData = tRes.value.data;
         setTenant(tData);
         applyTheme(tData?.theme);
         if (!localStorage.getItem(LOCALE_KEY) && tData?.locales?.default) {
-          setLocaleState(tData.locales.default);
+          resolvedLocale = tData.locales.default;
+          setLocaleState(resolvedLocale);
         }
       }
       if (nRes.status === 'fulfilled') setNavigation(nRes.value.data);
@@ -240,7 +242,7 @@ export const BlueprintProvider = ({ children }) => {
         setPermissions(pRes.value.data.permissions || []);
         setIsSuperAdmin(!!pRes.value.data.is_super_admin);
       }
-      await loadMessages(locale, tData?.slug);
+      await loadMessages(resolvedLocale, tData?.slug);
       if (!cancelled) setLoading(false);
     }
     load();

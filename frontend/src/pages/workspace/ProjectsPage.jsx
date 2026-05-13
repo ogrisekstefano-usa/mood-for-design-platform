@@ -2,7 +2,7 @@
  * ProjectsPage — list + create.
  */
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import api, { formatError } from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { Plus, FolderOpen, MapPin } from 'lucide-react';
@@ -72,11 +72,12 @@ const NewProjectModal = ({ onClose, onSaved }) => {
   );
 };
 
-const ProjectCard = ({ project, onClick, index }) => {
+const ProjectCard = ({ project, index }) => {
   const { t } = useBlueprint();
   return (
-    <div data-testid={`project-card-${index}`} onClick={() => onClick(project.id)}
-      className="bg-[#141416] border border-white/[0.06] rounded-md p-5 cursor-pointer card-hover group">
+    <Link to={`/workspace/projects/${project.id}`}
+          data-testid={`project-card-${index}`}
+          className="block bg-[#141416] border border-white/[0.06] rounded-md p-5 cursor-pointer card-hover group hover:border-white/[0.12] transition-colors">
       <div className="flex items-start justify-between mb-3">
         <FolderOpen size={18} strokeWidth={1.5} className="text-[var(--bp-primary,#D4AF37)]" />
         <span className={`text-[10px] font-semibold font-body px-2 py-0.5 rounded-[3px] ${STATUS_TONES[project.status] || STATUS_TONES.new}`}>
@@ -90,7 +91,7 @@ const ProjectCard = ({ project, onClick, index }) => {
         {project.budget_range && <span>{project.budget_range}</span>}
         {project.timeline && <span className="flex items-center gap-1"><MapPin size={10} />{project.timeline}</span>}
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -152,7 +153,7 @@ const ProjectsPage = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {projects.map((p, i) => <ProjectCard key={p.id} project={p} index={i} onClick={(id) => navigate(`/workspace/projects/${id}`)} />)}
+          {projects.map((p, i) => <ProjectCard key={p.id} project={p} index={i} />)}
         </div>
       )}
     </div>
