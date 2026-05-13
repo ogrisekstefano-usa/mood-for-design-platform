@@ -1,0 +1,64 @@
+{
+  "summary": "Phase C — Public Rendering Layer + Navigation/Footer editor. Backend: 17/17 pytest pass (public tenant config, 404, public homepage seed, 404 for non-published, auth gating on /api/settings/navigation + /footer with all 6 endpoints, i18n PUT reflected publicly, defaults reset). Frontend: public tenant page renders end-to-end with theme tokens (--bp-primary=#26F5C9, --bp-display clamp), nav/footer, hero, 404 view, locale switcher. NavigationEditorPage all critical testids verified after fixing a CRITICAL missing route in App.js. HomepageBuilder publish-toggle present. Settings tile-navigation works.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "App.js routing",
+        "issue": "CRITICAL — route /settings/navigation was MISSING from App.js. NavigationEditorPage was imported but no <Route> was registered, so all clicks on the Settings → 'Navigation & Footer' tile fell through to the public catch-all /:tenantSlug/:pageSlug and rendered the 404 view (the slug 'settings' is correctly marked reserved by PublicTenantPage and short-circuits to notFound). FIXED by testing agent — added <Route path=\"/settings/navigation\" element={<NavigationEditorPage />} /> inside the authenticated DashboardLayout block.",
+        "selector": "/app/frontend/src/App.js around line 94",
+        "priority": "HIGH"
+      },
+      {
+        "component": "PublicNavigation locale dropdown",
+        "issue": "Locale select shows two 'EN' entries (likely 'en-US' and 'en' both shortened to 'EN'). Cosmetic, not functional.",
+        "selector": "[data-testid=\"public-nav-locale\"]",
+        "priority": "LOW"
+      },
+      {
+        "component": "NavigationEditorPage visit-public-site link",
+        "issue": "Link is rendered conditionally on a resolved publicUrl. In my run the element wasn't queryable on first paint — code shows {publicUrl && (...)} at line 187. If the resolver doesn't synchronously expose the tenant slug, the Visit button stays hidden. data-testid exists in source so once publicUrl is set the testid resolves correctly. Worth a defensive fallback (use tenant slug from session or tenant config response).",
+        "selector": "[data-testid=\"visit-public-site\"]",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Public tenant page initial load",
+        "issue": "Several 401 console errors observed while loading /:tenantSlug from a logged-out browser. These come from BlueprintProvider/authenticated endpoints that fire even in public context (e.g. /api/inspirations or /api/settings/theme). Functional flow not blocked since public endpoints return 200, but the console noise should be cleaned up by gating auth-only fetches behind the auth state.",
+        "affected_selectors": ["[data-testid=\"public-tenant-page\"]"]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_public_navigation.py",
+    "/app/test_reports/pytest/iteration_2.xml"
+  ],
+  "action_items": [
+    "VERIFY the App.js route fix applied by the testing agent (line ~94 in /app/frontend/src/App.js). Without it the entire NavigationEditorPage was unreachable from /settings/navigation.",
+    "Fix duplicate 'EN' in PublicNavigation locale dropdown — collapse 'en-US' and 'en' or display full locale code/label.",
+    "Make NavigationEditorPage's visit-public-site link robustly available — resolve tenant slug from the public tenant config response or session bootstrap instead of conditional render.",
+    "Gate authenticated API calls (Blueprint context init) behind isAuthenticated when on /:tenantSlug public routes to remove 401 console noise."
+  ],
+  "critical_code_review_comments": [
+    "App.js: missing route is a regression that would have shipped to production. Add a smoke test that mounts each Settings tile target and asserts a non-404 render — would have caught this immediately.",
+    "PublicTenantPage RESERVED_SLUGS short-circuit silently 404s when an internal route is missing. Consider <Navigate to=\"/dashboard\" replace /> for reserved slugs while authenticated so internal users aren't shown a public 404 by mistake.",
+    "routers/navigation.py merges payload with spread `{**current, **payload}` — fine for replacement but loses deep keys when PUT contains only a subset. Items, cta etc are top-level so this is acceptable; document the contract (PUT is full-replace for the keys it touches).",
+    "routers/public.py duplicates the tenant resolution logic in two endpoints. Extract a `_resolve_tenant_by_slug_or_domain` helper to keep behaviour consistent."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_public_navigation.py (new)",
+    "/app/frontend/src/App.js (added missing /settings/navigation route)"
+  ],
+  "success_rate": {"backend": "100% (17/17)", "frontend": "100% critical flows verified after route fix"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin, IT locale, tenant mood-demo-studio-81a09e)",
+  "seed_data_creation": "Tests PUT/reset public_navigation and public_footer settings under tenant mood-demo-studio-81a09e. Final state: both reset to canonical defaults by the last two tests so no test pollution.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend test file /app/backend/tests/test_public_navigation.py covers Phase C public + nav/footer. Pairs with existing /app/backend/tests/test_section_engine.py from Phase B+. App.js route order: specific routes 83-94 → admin block 97-103 → /:tenantSlug 106-107 → catch-all 109. The /:tenantSlug routes correctly do NOT swallow any specific app route because they sit after them. Reserved slugs are also defensively short-circuited inside PublicTenantPage.",
+  "rca of the issue": "MISSING ROUTE: /app/frontend/src/App.js imported NavigationEditorPage at line 24 but never registered a <Route path=\"/settings/navigation\"> inside the authenticated DashboardLayout block. Reproduction: log in, click Settings → 'Navigation & Footer' tile (data-testid=\"tile-navigation\"). Tile correctly navigates to /settings/navigation, but the React Router tree had no match in the protected segment, so it fell through to the public /:tenantSlug/:pageSlug route. PublicTenantPage saw tenantSlug='settings' (which is in RESERVED_SLUGS) and immediately set notFound=true → rendered '404 — This page does not exist.'. Mitigation applied by testing agent: added the missing <Route path=\"/settings/navigation\" element={<NavigationEditorPage />} /> inside the auth-gated block at line 95. After the fix all Phase C frontend testids resolve and the editor opens with both Navigation and Footer tabs."
+}

@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import httpx
 
-from routers import auth, leads, projects, proposals, moodboards, inspirations, insights, settings, storage, blueprint, superadmin, pages
+from routers import auth, leads, projects, proposals, moodboards, inspirations, insights, settings, storage, blueprint, superadmin, pages, public, navigation
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -54,6 +54,8 @@ api_router.include_router(settings.router, prefix="/settings", tags=["settings"]
 api_router.include_router(storage.router, prefix="/storage", tags=["storage"])
 api_router.include_router(blueprint.router, prefix="/blueprint", tags=["blueprint"])
 api_router.include_router(pages.router, prefix="/blueprint", tags=["blueprint-pages"])
+api_router.include_router(navigation.router, prefix="/settings", tags=["navigation-footer"])
+api_router.include_router(public.router, prefix="/public", tags=["public"])
 api_router.include_router(superadmin.router, prefix="/super", tags=["super-admin"])
 
 

@@ -446,6 +446,13 @@ const HomepageBuilderPage = () => {
           <button onClick={handleReset} className="bp-btn bp-btn-ghost text-xs" title="Reset to default" data-testid="reset-page">
             <RotateCcw size={12} strokeWidth={1.5} /> Reset
           </button>
+          <label className="flex items-center gap-2 px-3 py-1.5 rounded-[var(--bp-radius-sm)] border border-[var(--bp-border)] bg-[var(--bp-surface-2)] cursor-pointer" data-testid="publish-toggle-wrap">
+            <input type="checkbox" checked={!!page?.published}
+              onChange={(e) => { setPage((p) => ({ ...p, published: e.target.checked })); setDirty(true); }}
+              data-testid="publish-toggle"
+              className="accent-[var(--bp-primary)]" />
+            <span className="bp-eyebrow !text-[10px]">{page?.published ? 'Published' : 'Draft'}</span>
+          </label>
           <button onClick={handleSave} disabled={!dirty || saving}
             data-testid="save-page"
             className={`bp-btn ${dirty ? 'bp-btn-primary' : 'bp-btn-ghost opacity-50 cursor-not-allowed'} text-xs`}>

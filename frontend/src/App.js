@@ -21,6 +21,8 @@ const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'));
 const BrandStudioPage = lazy(() => import('./pages/settings/BrandStudioPage'));
 const DomainsPage = lazy(() => import('./pages/settings/DomainsPage'));
 const HomepageBuilderPage = lazy(() => import('./pages/settings/HomepageBuilderPage'));
+const NavigationEditorPage = lazy(() => import('./pages/settings/NavigationEditorPage'));
+const PublicTenantPage = lazy(() => import('./pages/public/PublicTenantPage'));
 const LeadFormPage = lazy(() => import('./pages/public/LeadFormPage'));
 
 // Admin
@@ -90,6 +92,7 @@ function App() {
                   <Route path="/settings/brand" element={<BrandStudioPage />} />
                   <Route path="/settings/pages" element={<HomepageBuilderPage />} />
                   <Route path="/settings/domains" element={<DomainsPage />} />
+                  <Route path="/settings/navigation" element={<NavigationEditorPage />} />
                 </Route>
 
                 <Route element={<SuperAdminRoute><AdminLayout /></SuperAdminRoute>}>
@@ -99,6 +102,10 @@ function App() {
                   <Route path="/admin/modules" element={<AdminModulesPage />} />
                   <Route path="/admin/audit" element={<AdminAuditPage />} />
                 </Route>
+
+                {/* PUBLIC tenant routes — runtime composition via Blueprint engine */}
+                <Route path="/:tenantSlug" element={<PublicTenantPage />} />
+                <Route path="/:tenantSlug/:pageSlug" element={<PublicTenantPage />} />
 
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
