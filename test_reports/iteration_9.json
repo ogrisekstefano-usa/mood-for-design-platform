@@ -1,0 +1,41 @@
+{
+  "summary": "Phase E.4 — Template Preview Gallery + micro Template Versioning — validated end-to-end. Backend: 9/9 new E.4 tests PASS (test_phase_e4_preview_lineage.py) covering list with/without preview, detail preview, apply→template_id lineage, full apply→save-as→child.parent populated chain, orphan templates correctly have no parent, IT+EN i18n keys for startBlank/tenantPreset/derivedFrom present. Regression on E.1+E.2 intact: 20 PASS / 5 SKIPPED (V2 scaffold pre-existing). Frontend: designer login → /moodboards → new-moodboard-btn opens modal with editorial template picker. Confirmed: 'AVVIO RAPIDO' eyebrow rendered (CSS uppercased from 'Avvio rapido' — page.content() shows lowercased source which is i18n-correct); 'Tela vuota' blank tile with data-testid=template-blank present and selectable (selected state applies border-[var(--bp-primary)] + visible check icon top-right); 10 template cards rendered (template-card-{slug}: luxury-editorial, hospitality, test-tenant-copy, lineage-child-1778673195, e2e-test-1778670521, ...); 12 inline SVG previews inside [data-testid=template-picker] svg confirming server-side SVG injection via dangerouslySetInnerHTML works; category eyebrow 'EDITORIALE DI LUSSO' visible on luxury-editorial-derived card; 'PRESET DELLO STUDIO' fallback rendered on cards with NULL category (Lineage child card) — no raw 'moodboards.templates.category.null' i18n key leak; lineage badge 'Derivato da un altro template' rendered on Lineage child card with GitBranch-style icon; palette swatches visible at card bottom (small yellow/neutral squares). Hover on card shifts bbox y by -2px (matches spec translateY(-0.5)). Modal visually wide with 280px-fixed title/project column + 1fr-flex gallery column — confirmed in screenshot. RCA: lineage chain works because moodboards.template_id is set on apply (verified via GET /api/moodboards/{id}.template_id), and save_as_template reads src_mb.template_id into the new template's parent_id, and get_template runs _attach_lineage to expand parent_id → {id,name,slug}.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_e4_preview_lineage.py",
+    "/app/backend/tests/test_phase_e2_templates.py",
+    "/app/backend/tests/test_phase_e1.py",
+    "/app/test_reports/pytest/iteration_9_e4.xml",
+    "/app/test_reports/pytest/iteration_9_regression.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "core/template_preview.py is pure-Python, dependency-free, ~150 LOC, escapes hex via html.escape, only emits geometric primitives (<rect>) inside a fixed viewBox — `dangerouslySetInnerHTML` on the frontend is safe given the controlled, narrow output surface. Good editorial choice of muted RGBA tints over a 0.35-alpha black backdrop yields the archive feel without raster assets.",
+    "_block_geometry handles both post-002 position_json and legacy content.layout fallback — correctly future-proofs the preview when older blocks exist. _extract_palette only counts palette-type blocks (max 5, dedup) which is the right semantic for editorial swatch rows.",
+    "routers/templates.py _attach_lineage swallows DB exceptions silently (try/except Exception: pass) — acceptable since lineage is non-critical decoration, but consider logger.warning so cross-tenant lookup failures (e.g. parent platform template unreadable) leave a trail. Currently parent platform templates ARE readable cross-tenant via _fetch_template's `owner is None` branch, which is the correct intent for fork lineage on platform starters.",
+    "apply_template correctly persists template_id on the new moodboard (line 359) and save_as_template correctly reads src_mb.template_id into parent_id (line 419). The 3-step chain apply→save-as→detail produces a fully-populated child.parent object — verified live with luxury-editorial → save-as → child.parent.slug == 'luxury-editorial'.",
+    "with_preview=False perf-escape is correctly implemented (gates only the _attach_preview call in list_templates) — verified preview_svg/palette/block_count are ALL three absent from the response when ?with_preview=false. Detail endpoint always includes preview (intentional, single-row cost is negligible).",
+    "Frontend lineage badge uses translated string 'Derivato da un altro template' from moodboards.templates.derivedFrom — IT bundle verified server-side. Fallback 'Preset dello studio' correctly hides the raw i18n key for NULL-category items."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase_e4_preview_lineage.py (NEW)"
+  ],
+  "success_rate": {
+    "backend": "100% (9/9 E.4 new + 20/20 E.1+E.2 regression; 5 V2 scaffold skipped pre-existing)",
+    "frontend": "100% on all E.4 testids/flows: template-picker, template-blank, 10 template-card-*, inline SVG (12), AVVIO RAPIDO eyebrow, EDITORIALE DI LUSSO category eyebrow, PRESET DELLO STUDIO fallback (no raw key leak), Derivato badge, palette swatches, hover translateY -2px, selected-state teal border + check, modal wide layout."
+  },
+  "test_credentials": "designer@moodfordesign.com / Designer2024! (primary, used for full E2E lineage); studio2@moodfordesign.com / Studio2024! (used in backend isolation regression).",
+  "seed_data_creation": "Pytest auto-cleans all TEST_E4_* moodboards and test_e4_* templates after each test (delete fixtures embedded in each test). One stray frontend session left no persistent data — the modal was closed without 'Crea'.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Phase E.4 (Template Preview Gallery + lineage) is GREEN end-to-end. NB: template card testids use the actual slug, NOT the literal placeholder 'content-hub-pro-22' shown in the review_request — e.g. 'template-card-luxury-editorial'. The 'AVVIO RAPIDO' eyebrow is rendered uppercase via CSS (text-transform); the underlying i18n string is 'Avvio rapido' so text-content selectors must search for the lowercase form. The TemplatePicker initially shows a loading spinner before the GET /api/templates?with_preview=true response arrives — always wait for [data-testid=template-blank] before asserting on cards. To verify lineage end-to-end live: pick luxury-editorial → Crea → reopen new-moodboard modal → save-as-template from that moodboard → reopen picker → child should appear with 'Derivato da un altro template' badge linking back to Luxury Editorial.",
+  "rca of the issue": "No bugs found this iteration. All E.4 deliverables (server-side SVG preview generation, palette extraction, block_count, with_preview perf-escape, fork-lineage parent expansion, editorial gallery UI with adaptive cards, lineage badge, fallback category label, modal width upgrade, IT+EN i18n keys) shipped cleanly. E.1+E.2+E.3 regression intact."
+}

@@ -30,6 +30,7 @@ from pydantic import BaseModel, Field
 
 from core.tenant_context import get_tenant_context, require_permission, audit_log
 from core.permissions import P_MOODBOARDS_READ, P_MOODBOARDS_WRITE
+from core.template_preview import build_preview
 from database import db
 
 router = APIRouter()
@@ -173,12 +174,47 @@ def _list_template_blocks(client, template_id: str) -> list:
     return [_normalize_template_block(b) for b in (r.data or [])]
 
 
+def _raw_template_blocks(client, template_id: str) -> list:
+    """Raw rows (no normalization) — used by preview builder which reads
+    position_json / content directly."""
+    r = client.table("template_blocks").select("type, content, position_json, sort_order") \
+        .eq("template_id", template_id).order("sort_order").execute()
+    return r.data or []
+
+
+def _attach_preview(client, tpl: dict) -> dict:
+    """Adds preview_svg + palette to a template dict (mutates a copy)."""
+    raw = _raw_template_blocks(client, tpl["id"])
+    pv = build_preview(raw)
+    tpl["preview_svg"] = pv["preview_svg"]
+    tpl["palette"] = pv["palette"]
+    tpl["block_count"] = len(raw)
+    return tpl
+
+
+def _attach_lineage(client, tpl: dict) -> dict:
+    """Looks up the parent template's name when parent_id is set."""
+    pid = tpl.get("parent_id")
+    if not pid:
+        return tpl
+    try:
+        r = client.table("moodboard_templates").select("id, name, slug") \
+            .eq("id", pid).limit(1).execute()
+        if r.data:
+            tpl["parent"] = {"id": r.data[0]["id"], "name": r.data[0]["name"],
+                             "slug": r.data[0]["slug"]}
+    except Exception:
+        pass
+    return tpl
+
+
 # ── LIST ────────────────────────────────────────────────────────────────────
 @router.get("")
 def list_templates(
     category: Optional[str] = Query(None),
     starter_only: bool = Query(False),
     locale: Optional[str] = Query(None),
+    with_preview: bool = Query(True),
     ctx: dict = Depends(require_permission(P_MOODBOARDS_READ)),
 ):
     client = db()
@@ -191,7 +227,14 @@ def list_templates(
         rows = [t for t in rows if t.get("category") == category]
     if starter_only:
         rows = [t for t in rows if t.get("is_starter")]
-    return {"data": [_expose(t, locale) for t in rows], "total": len(rows)}
+
+    out = []
+    for t in rows:
+        exposed = _expose(t, locale)
+        if with_preview:
+            _attach_preview(client, exposed)
+        out.append(exposed)
+    return {"data": out, "total": len(out)}
 
 
 # ── DETAIL ──────────────────────────────────────────────────────────────────
@@ -203,6 +246,8 @@ def get_template(template_id: str, locale: Optional[str] = Query(None),
     tpl = _fetch_template(client, template_id, ctx["tenant_id"])
     tpl_out = _expose(tpl, locale)
     tpl_out["blocks"] = _list_template_blocks(client, template_id)
+    _attach_preview(client, tpl_out)
+    _attach_lineage(client, tpl_out)
     return tpl_out
 
 
@@ -302,9 +347,8 @@ def apply_template(template_id: str, body: ApplyTemplate,
 
     moodboard_id = str(uuid.uuid4())
     now = _now()
-    # Note: `settings` is NOT a column on moodboards (lives only on templates as
-    # an authoring-time canvas hint). We keep separation of concerns: template
-    # is the preset; moodboard is the runtime instance.
+    # Lineage: persist origin so save-as-template can later set parent_id.
+    # `template_id` column on moodboards is already part of the baseline schema.
     mb = {
         "id": moodboard_id,
         "tenant_id": ctx["tenant_id"],
@@ -312,6 +356,7 @@ def apply_template(template_id: str, body: ApplyTemplate,
         "title": body.title,
         "status": "draft",
         "current_version": 1,
+        "template_id": template_id,
         "created_by": ctx["profile_id"],
         "created_at": now,
         "updated_at": now,
@@ -362,6 +407,7 @@ def save_as_template(moodboard_id: str, body: SaveAsTemplate,
         .eq("id", moodboard_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute()
     if not mb_q.data:
         raise HTTPException(404, "Moodboard not found")
+    src_mb = mb_q.data[0]
     visibility = body.visibility if body.visibility in ("tenant", "private") else "tenant"
 
     tid = str(uuid.uuid4())
@@ -370,6 +416,7 @@ def save_as_template(moodboard_id: str, body: SaveAsTemplate,
         client.table("moodboard_templates").insert({
             "id": tid,
             "tenant_id": ctx["tenant_id"],
+            "parent_id": src_mb.get("template_id"),  # lineage: fork tracking
             "slug": body.slug,
             "name": body.name,
             "description": body.description,

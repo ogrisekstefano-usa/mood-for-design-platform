@@ -29,7 +29,7 @@ const CreateModal = ({ projects, onClose, onCreate, t }) => {
     <div className="fixed inset-0 z-50 bg-[var(--bp-overlay)] backdrop-blur-sm flex items-center justify-center p-4"
          onClick={onClose} data-testid="moodboard-create-modal">
       <form onClick={(e) => e.stopPropagation()} onSubmit={submit}
-            className="bp-glass w-full max-w-2xl p-7 rounded-[var(--bp-radius-md)]">
+            className="bp-glass w-full max-w-4xl p-7 rounded-[var(--bp-radius-md)] max-h-[88vh] overflow-y-auto">
         <div className="flex items-start justify-between mb-6">
           <div>
             <p className="bp-eyebrow !text-[var(--bp-text-muted)] mb-1">{t('moodboards.tab.title')}</p>
@@ -40,7 +40,7 @@ const CreateModal = ({ projects, onClose, onCreate, t }) => {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-7 mb-6">
           <div>
             <label className="block mb-4">
               <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] block mb-1.5">{t('moodboards.create.titleLabel')}</span>
