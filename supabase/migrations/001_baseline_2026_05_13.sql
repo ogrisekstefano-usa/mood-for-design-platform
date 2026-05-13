@@ -1,0 +1,42 @@
+-- ===== 001: BASELINE 2026-05-13 =====
+-- Purpose: snapshot of existing schema. DOCUMENTATION-ONLY.
+-- This migration is skipped by apply.py (baseline already exists in DB).
+-- Generated from live introspection of Supabase Postgres.
+
+-- ── ENUMS ─────────────────────────────────────────────────────────
+-- CREATE TYPE domain_type AS ENUM ('platform_subdomain', 'custom_domain');
+-- CREATE TYPE lead_status AS ENUM ('new', 'qualified', 'not_qualified', 'contacted', 'project_opened', 'archived');
+-- CREATE TYPE lead_type AS ENUM ('private_client', 'ad_partner');
+-- CREATE TYPE moodboard_status AS ENUM ('draft', 'sent', 'viewed', 'approved', 'revision_requested', 'rejected');
+-- CREATE TYPE project_status AS ENUM ('new', 'in_review', 'brief_completed', 'proposal_in_progress', 'proposal_sent', 'revision_requested', 'approved', 'rejected', 'won', 'lost', 'archived');
+-- CREATE TYPE proposal_status AS ENUM ('draft', 'sent', 'viewed', 'approved', 'revision_requested', 'rejected', 'expired');
+-- CREATE TYPE tenant_status AS ENUM ('draft', 'active', 'suspended', 'archived');
+-- CREATE TYPE user_role AS ENUM ('super_admin', 'tenant_admin', 'editor', 'analyst', 'project_manager', 'designer', 'client', 'ad_partner');
+-- CREATE TYPE verification_status AS ENUM ('pending', 'verified', 'failed');
+
+-- ── TABLES (22) ───────────────────────────────────────────────────
+-- TABLE analytics_events
+-- TABLE audit_logs
+-- TABLE funnel_events
+-- TABLE leads
+-- TABLE magazine_paragraphs
+-- TABLE magazine_posts
+-- TABLE media_library
+-- TABLE moodboard_elements
+-- TABLE moodboards
+-- TABLE notifications
+-- TABLE project_comments
+-- TABLE project_files
+-- TABLE project_status_history
+-- TABLE projects
+-- TABLE proposal_items
+-- TABLE proposal_signoffs
+-- TABLE proposals
+-- TABLE tasks
+-- TABLE tenant_domains
+-- TABLE tenant_settings
+-- TABLE tenants
+-- TABLE users_profile
+
+-- Total: 22 tables. RLS DISABLED on all (multi-tenancy enforced server-side).
+-- Schema verified at 2026-05-13. Future changes go through new numbered migration files.

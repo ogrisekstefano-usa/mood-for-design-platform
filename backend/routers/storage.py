@@ -47,7 +47,22 @@ def register_media(body: MediaUploadComplete, current_user: dict = Depends(get_t
         raise HTTPException(400, "Invalid bucket")
     client = db()
     now = _now()
-    safe_path = body.storage_path if body.storage_path.startswith(current_user['tenant_id'] + '/') else f"{current_user['tenant_id']}/{body.storage_path}"
+    # SECURITY: always enforce tenant prefix on storage_path, regardless of what
+    # the client sends. Strip any leading tenant prefix and re-prepend ours.
+    tenant_prefix = current_user['tenant_id'] + '/'
+    raw_path = (body.storage_path or '').lstrip('/')
+    # If client provided a path with a different tenant_id prefix, reject it
+    if '/' in raw_path:
+        first_segment = raw_path.split('/', 1)[0]
+        if len(first_segment) == 36 and first_segment != current_user['tenant_id']:
+            raise HTTPException(403, "Path outside tenant scope")
+        # If first segment IS our tenant id, keep as-is
+        if first_segment == current_user['tenant_id']:
+            safe_path = raw_path
+        else:
+            safe_path = tenant_prefix + raw_path
+    else:
+        safe_path = tenant_prefix + raw_path
 
     # Public URL helper (works for public buckets; private uses signed URLs)
     public = client.storage.from_(body.bucket).get_public_url(safe_path)

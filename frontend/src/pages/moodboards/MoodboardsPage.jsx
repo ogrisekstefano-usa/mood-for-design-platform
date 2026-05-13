@@ -7,23 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { Plus, Layers, X } from 'lucide-react';
-
-const StatusBadge = ({ status, t }) => {
-  const tones = {
-    draft:              'bg-[var(--bp-surface-2)] text-[var(--bp-text-muted)]',
-    sent:               'bg-amber-500/10 text-amber-400',
-    viewed:             'bg-blue-500/10 text-blue-400',
-    approved:           'bg-emerald-500/10 text-emerald-400',
-    revision_requested: 'bg-orange-500/10 text-orange-400',
-    rejected:           'bg-red-500/10 text-red-400',
-  };
-  const key = status || 'draft';
-  return (
-    <span className={`bp-eyebrow !text-[10px] px-2 py-1 rounded-[var(--bp-radius-xs)] ${tones[key] || tones.draft}`}>
-      {t(`moodboards.status.${key}`)}
-    </span>
-  );
-};
+import StatusBadge from '../../components/common/StatusBadge';
 
 const CreateModal = ({ projects, onClose, onCreate, t }) => {
   const [title, setTitle] = useState('');

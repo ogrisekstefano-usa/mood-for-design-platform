@@ -17,29 +17,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
-  ArrowLeft, Plus, Check, Share2, ExternalLink, Send, X,
+  ArrowLeft, Plus, Check, Share2, ExternalLink, Send, X, AlertCircle,
 } from 'lucide-react';
 import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegistry';
+import StatusBadge from '../../components/common/StatusBadge';
 
 const CANVAS_W = 1400;
 const CANVAS_H = 2400;
-
-const StatusBadge = ({ status, t }) => {
-  const tones = {
-    draft:              'bg-[var(--bp-surface-2)] text-[var(--bp-text-muted)]',
-    sent:               'bg-amber-500/10 text-amber-400',
-    viewed:             'bg-blue-500/10 text-blue-400',
-    approved:           'bg-emerald-500/10 text-emerald-400',
-    revision_requested: 'bg-orange-500/10 text-orange-400',
-    rejected:           'bg-red-500/10 text-red-400',
-  };
-  const key = status || 'draft';
-  return (
-    <span className={`bp-eyebrow !text-[10px] px-2 py-1 rounded-[var(--bp-radius-xs)] ${tones[key] || tones.draft}`}>
-      {t(`moodboards.status.${key}`)}
-    </span>
-  );
-};
+const AUTOSAVE_DEBOUNCE_MS = 800;
+const AUTOSAVE_MAX_RETRIES = 3;
 
 const MoodboardEditor = ({ readOnly = false }) => {
   const { id, shareToken } = useParams();
@@ -50,12 +36,14 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [dirtyMap, setDirtyMap] = useState({});
   const [savedAt, setSavedAt] = useState(null);
-  const [saving, setSaving] = useState(false);
+  const [saveState, setSaveState] = useState('idle'); // idle | saving | error
+  const [saveError, setSaveError] = useState(null);
   const [drag, setDrag] = useState(null);
   const [shareDialog, setShareDialog] = useState(null);
 
   const canvasRef = useRef();
   const saveTimer = useRef();
+  const retryCount = useRef(0);
 
   // ── Load ──────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -68,30 +56,55 @@ const MoodboardEditor = ({ readOnly = false }) => {
     }).catch(() => { if (!readOnly) navigate('/moodboards'); });
   }, [id, shareToken, readOnly, navigate]);
 
-  // ── Autosave (debounced) ─────────────────────────────────────────────────
+  // ── Autosave with retry + error surfacing ────────────────────────────────
   const flushSave = useCallback(async () => {
     if (readOnly) return;
     const ids = Object.keys(dirtyMap);
     if (!ids.length) return;
     const payload = blocks.filter((b) => ids.includes(b.id))
       .map((b) => ({ id: b.id, x: b.x, y: b.y, width: b.width, height: b.height,
-                     content: b.content, z_index: b.z_index }));
-    setSaving(true);
+                     content: b.content, style: b.style, z_index: b.z_index,
+                     locked: b.locked, hidden: b.hidden }));
+    setSaveState('saving');
+    setSaveError(null);
     try {
       await api.patch(`/api/moodboards/${id}/blocks/batch`, { blocks: payload });
       setDirtyMap({});
       setSavedAt(Date.now());
-    } catch (_) { /* swallow */ }
-    finally { setSaving(false); }
+      setSaveState('idle');
+      retryCount.current = 0;
+    } catch (err) {
+      retryCount.current += 1;
+      if (retryCount.current < AUTOSAVE_MAX_RETRIES) {
+        setSaveState('saving');
+        // Exponential backoff retry
+        setTimeout(flushSave, 500 * retryCount.current);
+      } else {
+        setSaveState('error');
+        setSaveError(err?.message || 'Network error');
+      }
+    }
   }, [blocks, dirtyMap, id, readOnly]);
 
   useEffect(() => {
     if (readOnly) return;
     if (!Object.keys(dirtyMap).length) return;
     clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(flushSave, 800);
+    saveTimer.current = setTimeout(flushSave, AUTOSAVE_DEBOUNCE_MS);
     return () => clearTimeout(saveTimer.current);
   }, [dirtyMap, flushSave, readOnly]);
+
+  // Warn user before leaving with unsaved changes
+  useEffect(() => {
+    const handler = (e) => {
+      if (Object.keys(dirtyMap).length > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [dirtyMap]);
 
   const markDirty = (bid) => setDirtyMap((m) => ({ ...m, [bid]: true }));
 
@@ -203,12 +216,19 @@ const MoodboardEditor = ({ readOnly = false }) => {
         </div>
         {!readOnly && (
           <div className="flex items-center gap-2">
-            {saving ? (
+            {saveState === 'saving' ? (
               <span className="bp-caption text-[var(--bp-text-muted)] flex items-center gap-1"
                     data-testid="status-saving">
                 <span className="w-2 h-2 rounded-full bg-[var(--bp-primary)] animate-pulse" />
                 {t('moodboards.editor.saving')}
               </span>
+            ) : saveState === 'error' ? (
+              <button onClick={flushSave}
+                      className="bp-caption text-red-400 flex items-center gap-1 hover:text-red-300"
+                      data-testid="status-save-error" title={saveError || ''}>
+                <AlertCircle size={12} strokeWidth={1.5} />
+                {t('moodboards.editor.saveFailed')}
+              </button>
             ) : savedAt && Object.keys(dirtyMap).length === 0 ? (
               <span className="bp-caption text-[var(--bp-text-muted)] flex items-center gap-1"
                     data-testid="status-saved">

@@ -1,21 +1,20 @@
 """Blueprint Moodboards™ V1 — block-based editor backbone.
 
-Extends the existing /api/moodboards router with:
-  - Block (element) CRUD on `moodboard_elements`
-  - Block batch update (autosave bulk patch)
-  - Approval state transitions
-  - Public share token (read-only client review)
+Storage strategy (post-migration 002):
+  - position_json (JSONB): {x, y, width, height, z_index}
+  - style_json    (JSONB): {opacity, rotation, crop_x, crop_y, zoom, fit_mode, focal_point, …}
+  - content       (TEXT/JSON): semantic payload only (text body, palette colors,
+                   product/material attributes, image caption — NOT layout, NOT visual props)
+  - image_url, video_url, title: dedicated columns where applicable
+  - locked, hidden, opacity, rotation: structured columns (queryable)
 
-Block schema (moodboard_elements row):
-  id, moodboard_id, type, x, y, width, height, z_index, sort_order,
-  content (JSONB), created_at, updated_at
+Approval transitions are aligned to Supabase `moodboard_status` enum:
+  draft → sent → viewed/approved/revision_requested/rejected → …
 
-Block types supported in V1:
-  image · text · palette · note · product · material
-Future (stubs only, no UI yet):
-  hotspot · video · audio · vendor · product_grid
+Share tokens live in the dedicated `moodboard_shares` table (one row per share).
 """
 import uuid
+import json
 import logging
 import secrets
 from datetime import datetime, timezone
@@ -25,7 +24,6 @@ from pydantic import BaseModel
 
 from core.tenant_context import get_tenant_context, audit_log
 from database import db, db_available
-from routers.workspace import push_activity
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -42,55 +40,82 @@ def _now():
     return datetime.now(timezone.utc).isoformat()
 
 
-def _scrub(d: dict) -> dict:
-    return {k: v for k, v in d.items() if v is not None}
-
-
-def _parse_content(content):
-    """Content column may come back as a JSON string from Postgres — normalize to dict."""
-    import json as _json
-    if isinstance(content, str):
+def _parse_jsonish(v):
+    """A column declared JSONB may come back as dict OR as a JSON string from PostgREST."""
+    if v is None:
+        return {}
+    if isinstance(v, dict):
+        return v
+    if isinstance(v, str):
         try:
-            return _json.loads(content)
+            return json.loads(v)
         except Exception:
             return {}
-    return content or {}
+    return {}
 
 
 def _normalize_block(b: dict) -> dict:
-    """Flatten content.layout up to top-level x/y/width/height/z_index for the frontend."""
+    """Hydrate a row from `moodboard_elements` into the frontend-friendly shape.
+
+    Frontend expects layout flat (x/y/width/height/z_index at top level) plus
+    `content` as a dict and `style` for visual props.
+    """
     if not b:
         return b
     out = dict(b)
-    content = out.get('content') or {}
-    if isinstance(content, str):
-        try:
-            import json
-            content = json.loads(content)
-        except Exception:
-            content = {}
-        out['content'] = content
-    layout = (content or {}).get('layout') or {}
-    out["x"]       = layout.get('x', out.get('x', 40))
-    out["y"]       = layout.get('y', out.get('y', 40))
-    out["width"]   = layout.get('width', out.get('width', 320))
-    out["height"]  = layout.get('height', out.get('height', 240))
-    out["z_index"] = layout.get('z_index', out.get('z_index', 0))
+    # Hydrate JSONB columns into dicts (PostgREST may return strings)
+    pos = _parse_jsonish(out.get("position_json"))
+    style = _parse_jsonish(out.get("style_json"))
+    content = _parse_jsonish(out.get("content"))
+
+    # Backward-compat: legacy rows had layout inside content (pre-migration 002)
+    if not pos and isinstance(content, dict) and "layout" in content:
+        legacy = content.pop("layout") or {}
+        pos = {**legacy}
+
+    out["x"]       = pos.get("x", 40)
+    out["y"]       = pos.get("y", 40)
+    out["width"]   = pos.get("width", 320)
+    out["height"]  = pos.get("height", 240)
+    out["z_index"] = pos.get("z_index", 0)
+
+    out["style"]   = style or {}
+    out["content"] = content or {}
+    # Drop raw JSONB column dumps from the response (we re-expose them as `content`/`style`)
+    out.pop("position_json", None)
+    out.pop("style_json", None)
+    out.pop("metadata_json", None)
     return out
 
 
 def _assert_moodboard(client, moodboard_id: str, tenant_id: str) -> dict:
-    r = client.table('moodboards').select('id, project_id, status, current_version, title') \
-        .eq('id', moodboard_id).eq('tenant_id', tenant_id).limit(1).execute()
+    r = client.table("moodboards").select(
+        "id, project_id, status, current_version, title, tenant_id"
+    ).eq("id", moodboard_id).eq("tenant_id", tenant_id).limit(1).execute()
     if not r.data:
         raise HTTPException(404, "Moodboard not found")
     return r.data[0]
 
 
-def _get_share_token(client, tenant_id: str, moodboard_id: str) -> Optional[str]:
-    from core.tenant_context import get_tenant_settings
-    meta = get_tenant_settings(tenant_id, f"moodboard.{moodboard_id}.share", None)
-    return (meta or {}).get("token") if meta else None
+def _push_activity(tenant_id: str, project_id: Optional[str], actor_id: str,
+                   event_type: str, ref_id: Optional[str] = None,
+                   label: Optional[str] = None, payload: Optional[dict] = None):
+    """Append to the project_activity stream (dedicated table). Safe no-op when project_id is None."""
+    if not project_id:
+        return
+    try:
+        client = db()
+        client.table("project_activity").insert({
+            "tenant_id": tenant_id,
+            "project_id": project_id,
+            "actor_id": actor_id,
+            "event_type": event_type,
+            "ref_id": ref_id,
+            "label": label,
+            "payload": payload or {},
+        }).execute()
+    except Exception as e:
+        logger.warning(f"activity push failed: {e}")
 
 
 # ── Block schemas ────────────────────────────────────────────────────────────
@@ -103,6 +128,7 @@ class BlockCreate(BaseModel):
     z_index: Optional[int] = 0
     sort_order: Optional[int] = 0
     content: Optional[Dict[str, Any]] = None
+    style:   Optional[Dict[str, Any]] = None
 
 
 class BlockUpdate(BaseModel):
@@ -113,6 +139,11 @@ class BlockUpdate(BaseModel):
     z_index: Optional[int] = None
     sort_order: Optional[int] = None
     content: Optional[Dict[str, Any]] = None
+    style:   Optional[Dict[str, Any]] = None
+    locked:  Optional[bool] = None
+    hidden:  Optional[bool] = None
+    opacity: Optional[float] = None
+    rotation: Optional[float] = None
 
 
 class BlocksBatchUpdate(BaseModel):
@@ -120,8 +151,18 @@ class BlocksBatchUpdate(BaseModel):
 
 
 class ApprovalChange(BaseModel):
-    status: str  # draft | in_review | approved | rejected
+    status: str  # draft | sent | viewed | approved | revision_requested | rejected
     note:   Optional[str] = None
+
+
+def _build_position(x, y, w, h, z):
+    return {
+        "x": x if x is not None else 40,
+        "y": y if y is not None else 40,
+        "width":  w if w is not None else 320,
+        "height": h if h is not None else 240,
+        "z_index": z if z is not None else 0,
+    }
 
 
 # ── Block CRUD ───────────────────────────────────────────────────────────────
@@ -131,34 +172,28 @@ def create_block(moodboard_id: str, body: BlockCreate, ctx: dict = Depends(get_t
     mb = _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
     if body.type not in SUPPORTED_BLOCK_TYPES:
         raise HTTPException(400, f"Unsupported block type: {body.type}")
-    now = _now()
-    # Layout (x/y/width/height/z_index) is stored inside content.layout to avoid
-    # schema migration. Frontend reads it back the same way.
     content = body.content or {}
-    content["layout"] = {
-        "x":       body.x or 40,
-        "y":       body.y or 40,
-        "width":   body.width or 320,
-        "height":  body.height or 240,
-        "z_index": body.z_index or 0,
-    }
-    block = {
+    # For image blocks, mirror src into image_url so the column is actually used
+    image_url = content.get("src") if body.type == "image" else None
+    row = {
         "id": str(uuid.uuid4()),
         "tenant_id": ctx["tenant_id"],
         "moodboard_id": moodboard_id,
         "type": body.type,
         "sort_order": body.sort_order or 0,
-        "content": content,
+        "content": json.dumps(content),
+        "position_json": _build_position(body.x, body.y, body.width, body.height, body.z_index),
+        "style_json": body.style or {},
+        "title": content.get("caption") if body.type == "image" else None,
     }
-    r = client.table('moodboard_elements').insert(block).execute()
-    client.table('moodboards').update({'updated_at': now}).eq('id', moodboard_id).execute()
-    if mb.get("project_id"):
-        push_activity(ctx["tenant_id"], mb["project_id"],
-                      {"actor_id": ctx["profile_id"], "type": "moodboard.block_added",
-                       "ref_id": moodboard_id, "label": mb.get("title"),
-                       "block_type": body.type})
-    out = r.data[0] if r.data else block
-    return _normalize_block(out)
+    if image_url:
+        row["image_url"] = image_url
+    r = client.table("moodboard_elements").insert(row).execute()
+    client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
+    _push_activity(ctx["tenant_id"], mb.get("project_id"), ctx["profile_id"],
+                   "moodboard.block_added", moodboard_id, mb.get("title"),
+                   {"block_type": body.type})
+    return _normalize_block(r.data[0] if r.data else row)
 
 
 @router.put("/{moodboard_id}/blocks/{block_id}")
@@ -166,77 +201,87 @@ def update_block(moodboard_id: str, block_id: str, body: BlockUpdate,
                  ctx: dict = Depends(get_tenant_context)):
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
-    # Fetch current content to merge layout updates
-    cur = client.table('moodboard_elements').select('content').eq('id', block_id) \
-        .eq('moodboard_id', moodboard_id).limit(1).execute()
+    cur = client.table("moodboard_elements").select("content, position_json, style_json, type") \
+        .eq("id", block_id).eq("moodboard_id", moodboard_id).limit(1).execute()
     if not cur.data:
         raise HTTPException(404, "Block not found")
-    content = _parse_content(cur.data[0].get('content'))
-    layout = content.get('layout') or {}
+    row = cur.data[0]
+    pos = _parse_jsonish(row.get("position_json"))
+    style = _parse_jsonish(row.get("style_json"))
+    content = _parse_jsonish(row.get("content"))
+
     body_d = body.model_dump(exclude_none=True)
-    # Pull layout pieces
     for k in ("x", "y", "width", "height", "z_index"):
         if k in body_d:
-            layout[k] = body_d.pop(k)
-    if layout:
-        content["layout"] = layout
+            pos[k] = body_d.pop(k)
     if "content" in body_d:
         content = {**content, **(body_d.pop("content") or {})}
-        # Always preserve layout we merged above
-        content["layout"] = layout if layout else content.get("layout")
-    payload = {"content": content}
-    if "sort_order" in body_d:
-        payload["sort_order"] = body_d["sort_order"]
-    r = client.table('moodboard_elements').update(payload) \
-        .eq('id', block_id).eq('moodboard_id', moodboard_id).execute()
-    client.table('moodboards').update({'updated_at': _now()}).eq('id', moodboard_id).execute()
-    return _normalize_block(r.data[0] if r.data else payload)
+    if "style" in body_d:
+        style = {**style, **(body_d.pop("style") or {})}
+
+    payload = {"position_json": pos, "style_json": style, "content": json.dumps(content)}
+    for k in ("sort_order", "locked", "hidden", "opacity", "rotation"):
+        if k in body_d:
+            payload[k] = body_d[k]
+    # Mirror image url on update
+    if row.get("type") == "image" and "src" in content:
+        payload["image_url"] = content["src"]
+        payload["title"] = content.get("caption")
+    payload["updated_at"] = _now()
+
+    r = client.table("moodboard_elements").update(payload) \
+        .eq("id", block_id).eq("moodboard_id", moodboard_id).execute()
+    client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
+    return _normalize_block(r.data[0] if r.data else {**row, **payload})
 
 
 @router.delete("/{moodboard_id}/blocks/{block_id}")
 def delete_block(moodboard_id: str, block_id: str, ctx: dict = Depends(get_tenant_context)):
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
-    client.table('moodboard_elements').delete() \
-        .eq('id', block_id).eq('moodboard_id', moodboard_id).execute()
-    client.table('moodboards').update({'updated_at': _now()}).eq('id', moodboard_id).execute()
+    client.table("moodboard_elements").delete() \
+        .eq("id", block_id).eq("moodboard_id", moodboard_id).execute()
+    client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
     return {"message": "deleted"}
 
 
 @router.patch("/{moodboard_id}/blocks/batch")
 def batch_update_blocks(moodboard_id: str, body: BlocksBatchUpdate,
                         ctx: dict = Depends(get_tenant_context)):
-    """Bulk patch used by autosave (positions/sizes after drag/resize)."""
+    """Bulk patch used by autosave (positions/sizes/style after drag/resize/inspector)."""
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
-    now = _now()
     updated = 0
     for b in body.blocks:
         bid = b.get("id")
         if not bid:
             continue
-        # Fetch current content to merge
-        cur = client.table('moodboard_elements').select('content').eq('id', bid) \
-            .eq('moodboard_id', moodboard_id).limit(1).execute()
+        cur = client.table("moodboard_elements").select("content, position_json, style_json, type") \
+            .eq("id", bid).eq("moodboard_id", moodboard_id).limit(1).execute()
         if not cur.data:
             continue
-        content = _parse_content(cur.data[0].get('content'))
-        layout = content.get('layout') or {}
+        row = cur.data[0]
+        pos = _parse_jsonish(row.get("position_json"))
+        style = _parse_jsonish(row.get("style_json"))
+        content = _parse_jsonish(row.get("content"))
         for k in ("x", "y", "width", "height", "z_index"):
             if k in b and b[k] is not None:
-                layout[k] = b[k]
-        content["layout"] = layout
-        if "content" in b and isinstance(b["content"], dict):
-            new_c = {**content, **b["content"]}
-            new_c["layout"] = layout
-            content = new_c
-        upd = {"content": content}
-        if "sort_order" in b and b["sort_order"] is not None:
-            upd["sort_order"] = b["sort_order"]
-        client.table('moodboard_elements').update(upd) \
-            .eq('id', bid).eq('moodboard_id', moodboard_id).execute()
+                pos[k] = b[k]
+        if isinstance(b.get("content"), dict):
+            content = {**content, **b["content"]}
+        if isinstance(b.get("style"), dict):
+            style = {**style, **b["style"]}
+        upd = {"position_json": pos, "style_json": style, "content": json.dumps(content),
+               "updated_at": _now()}
+        for k in ("sort_order", "locked", "hidden", "opacity", "rotation"):
+            if k in b and b[k] is not None:
+                upd[k] = b[k]
+        if row.get("type") == "image" and "src" in content:
+            upd["image_url"] = content["src"]
+        client.table("moodboard_elements").update(upd) \
+            .eq("id", bid).eq("moodboard_id", moodboard_id).execute()
         updated += 1
-    client.table('moodboards').update({'updated_at': now}).eq('id', moodboard_id).execute()
+    client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
     return {"updated": updated}
 
 
@@ -247,7 +292,7 @@ APPROVAL_TRANSITIONS = {
     "draft":              {"sent"},
     "sent":               {"viewed", "approved", "revision_requested", "rejected", "draft"},
     "viewed":             {"approved", "revision_requested", "rejected", "sent"},
-    "approved":           {"draft"},  # allow re-open
+    "approved":           {"draft"},
     "revision_requested": {"sent", "draft"},
     "rejected":           {"sent", "draft"},
 }
@@ -263,35 +308,28 @@ def change_approval(moodboard_id: str, body: ApprovalChange,
         raise HTTPException(400, f"Invalid transition {current} → {body.status}")
     now = _now()
     upd = {"status": body.status, "updated_at": now}
-    r = client.table('moodboards').update(upd).eq('id', moodboard_id).execute()
+    r = client.table("moodboards").update(upd).eq("id", moodboard_id).execute()
     audit_log(ctx["tenant_id"], ctx["profile_id"], f"moodboard.{body.status}",
               resource_type="moodboard", resource_id=moodboard_id,
               metadata={"from": current, "to": body.status, "note": body.note})
-    if body.status == "approved":
-        # persist approval metadata as tenant_setting (no schema migration)
-        from core.tenant_context import upsert_tenant_setting
-        upsert_tenant_setting(ctx["tenant_id"], f"moodboard.{moodboard_id}.approval",
-                              {"approved_at": now, "approved_by": ctx["profile_id"], "note": body.note})
-    if mb.get("project_id"):
-        push_activity(ctx["tenant_id"], mb["project_id"],
-                      {"actor_id": ctx["profile_id"], "type": f"moodboard.{body.status}",
-                       "ref_id": moodboard_id, "label": mb.get("title"),
-                       "from": current, "to": body.status})
+    _push_activity(ctx["tenant_id"], mb.get("project_id"), ctx["profile_id"],
+                   f"moodboard.{body.status}", moodboard_id, mb.get("title"),
+                   {"from": current, "to": body.status, "note": body.note})
     return r.data[0] if r.data else upd
 
 
-# ── Share token (read-only client review) ───────────────────────────────────
+# ── Share token (read-only client review) — dedicated table ─────────────────
 @router.post("/{moodboard_id}/share")
 def create_share_token(moodboard_id: str, ctx: dict = Depends(get_tenant_context)):
-    from core.tenant_context import upsert_tenant_setting
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
     token = secrets.token_urlsafe(24)
-    # Store both directions: moodboard → token AND token → moodboard
-    upsert_tenant_setting(ctx["tenant_id"], f"moodboard.{moodboard_id}.share",
-                          {"token": token, "created_at": _now()})
-    upsert_tenant_setting(ctx["tenant_id"], f"moodboard_share.{token}",
-                          {"moodboard_id": moodboard_id, "tenant_id": ctx["tenant_id"], "created_at": _now()})
+    client.table("moodboard_shares").insert({
+        "tenant_id": ctx["tenant_id"],
+        "moodboard_id": moodboard_id,
+        "token": token,
+        "created_by": ctx["profile_id"],
+    }).execute()
     audit_log(ctx["tenant_id"], ctx["profile_id"], "moodboard.share_created",
               resource_type="moodboard", resource_id=moodboard_id)
     return {"share_token": token}
@@ -299,19 +337,13 @@ def create_share_token(moodboard_id: str, ctx: dict = Depends(get_tenant_context
 
 @router.delete("/{moodboard_id}/share")
 def revoke_share_token(moodboard_id: str, ctx: dict = Depends(get_tenant_context)):
-    from core.tenant_context import get_tenant_settings, upsert_tenant_setting
     client = db()
     _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
-    # Remove the reverse-lookup setting (token → moodboard) too
-    meta = get_tenant_settings(ctx["tenant_id"], f"moodboard.{moodboard_id}.share", None) or {}
-    if meta.get("token"):
-        try:
-            client.table('tenant_settings').delete() \
-                .eq('tenant_id', ctx["tenant_id"]) \
-                .eq('key', f"moodboard_share.{meta['token']}").execute()
-        except Exception:
-            pass
-    upsert_tenant_setting(ctx["tenant_id"], f"moodboard.{moodboard_id}.share", {"token": None})
+    client.table("moodboard_shares") \
+        .update({"revoked_at": _now()}) \
+        .eq("moodboard_id", moodboard_id) \
+        .is_("revoked_at", "null") \
+        .execute()
     return {"message": "revoked"}
 
 
@@ -321,22 +353,31 @@ def public_get_by_share(share_token: str):
     if not db_available():
         raise HTTPException(503, "Database not configured")
     client = db()
-    # Token→moodboard reverse lookup via tenant_settings
-    s = client.table('tenant_settings').select('tenant_id, value_json') \
-        .eq('key', f"moodboard_share.{share_token}").limit(1).execute()
+    s = client.table("moodboard_shares").select("*") \
+        .eq("token", share_token).is_("revoked_at", "null").limit(1).execute()
     if not s.data:
         raise HTTPException(404, "Not found")
-    record = s.data[0].get('value_json') or {}
-    mid = record.get('moodboard_id')
-    if not mid:
+    share = s.data[0]
+    # Track view (best-effort, never fails the response)
+    try:
+        upd = {
+            "view_count": (share.get("view_count") or 0) + 1,
+            "last_viewed_at": _now(),
+        }
+        if not share.get("first_viewed_at"):
+            upd["first_viewed_at"] = _now()
+        client.table("moodboard_shares").update(upd).eq("id", share["id"]).execute()
+    except Exception:
+        pass
+
+    mb_q = client.table("moodboards").select("*").eq("id", share["moodboard_id"]).limit(1).execute()
+    if not mb_q.data:
         raise HTTPException(404, "Not found")
-    r = client.table('moodboards').select('*').eq('id', mid).limit(1).execute()
-    if not r.data:
-        raise HTTPException(404, "Not found")
-    mb = r.data[0]
+    mb = mb_q.data[0]
     if mb.get("status") in (None, "draft"):
         raise HTTPException(403, "Not ready for review")
-    els = client.table('moodboard_elements').select('*').eq('moodboard_id', mb['id']).execute()
-    mb['elements'] = [_normalize_block(b) for b in (els.data or [])]
-    mb.pop('tenant_id', None)
+    els = client.table("moodboard_elements").select("*") \
+        .eq("moodboard_id", mb["id"]).order("sort_order").execute()
+    mb["elements"] = [_normalize_block(b) for b in (els.data or []) if not b.get("hidden")]
+    mb.pop("tenant_id", None)
     return mb

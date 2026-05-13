@@ -12,29 +12,7 @@ import {
   ArrowLeft, Plus, Trash2, Pin, PinOff, CheckCircle2, Circle, Layers,
   FileText, ListChecks, StickyNote, Activity, X,
 } from 'lucide-react';
-
-const StatusBadge = ({ status, t, kind = 'projects' }) => {
-  const tones = {
-    new:              'bg-blue-500/10 text-blue-400',
-    in_review:        'bg-purple-500/10 text-purple-400',
-    brief_completed:  'bg-cyan-500/10 text-cyan-400',
-    proposal_in_progress: 'bg-amber-500/10 text-amber-400',
-    proposal_sent:    'bg-[var(--bp-primary)]/10 text-[var(--bp-primary)]',
-    revision_requested: 'bg-orange-500/10 text-orange-400',
-    approved:         'bg-emerald-500/10 text-emerald-400',
-    rejected:         'bg-red-500/10 text-red-400',
-    won:              'bg-emerald-500/10 text-emerald-400',
-    lost:             'bg-red-500/10 text-red-400',
-    archived:         'bg-white/5 text-[var(--bp-text-muted)]',
-    draft:            'bg-[var(--bp-surface-2)] text-[var(--bp-text-muted)]',
-  };
-  const key = status || 'new';
-  return (
-    <span className={`bp-eyebrow !text-[10px] px-2 py-1 rounded-[var(--bp-radius-xs)] ${tones[key] || tones.new}`}>
-      {t(`${kind}.status.${key}`)}
-    </span>
-  );
-};
+import StatusBadge from '../../components/common/StatusBadge';
 
 // ── Tasks tab ────────────────────────────────────────────────────────────────
 const TasksTab = ({ projectId, t }) => {
