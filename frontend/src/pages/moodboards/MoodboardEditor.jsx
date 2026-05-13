@@ -18,12 +18,15 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
   ArrowLeft, Plus, Check, Share2, ExternalLink, Send, X, AlertCircle,
   Play, Maximize2, ChevronLeft, ChevronRight, PanelRight, ListChecks,
-  BookmarkPlus,
+  BookmarkPlus, Undo2, Redo2, Magnet,
 } from 'lucide-react';
 import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegistry';
 import StatusBadge from '../../components/common/StatusBadge';
 import LayersPanel from '../../blueprint/moodboard/LayersPanel';
 import ImageUploader from '../../blueprint/moodboard/ImageUploader';
+import { computeSnap } from '../../blueprint/moodboard/useSnap';
+import SnapGuides from '../../blueprint/moodboard/SnapGuides';
+import useHistory from '../../blueprint/moodboard/useHistory';
 
 const CANVAS_W = 1400;
 const CANVAS_H = 2400;
@@ -46,6 +49,9 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const [rightTab, setRightTab] = useState('inspector'); // inspector | layers
   const [presenting, setPresenting] = useState(false);
   const [presentIndex, setPresentIndex] = useState(0);
+  const [snapGuides, setSnapGuides] = useState([]);
+  const [snapEnabled, setSnapEnabled] = useState(true);
+  const history = useHistory();
 
   const canvasRef = useRef();
   const saveTimer = useRef();
@@ -59,6 +65,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
     api.get(url).then((r) => {
       setMb(r.data);
       setBlocks(r.data.elements || []);
+      history.reset(r.data.elements || []);
     }).catch(() => { if (!readOnly) navigate('/moodboards'); });
   }, [id, shareToken, readOnly, navigate]);
 
@@ -118,7 +125,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
     const meta = BLOCK_TYPES.find((b) => b.type === type);
     const payload = { type, x: 60, y: 60, ...meta.defaults };
     const r = await api.post(`/api/moodboards/${id}/blocks`, payload);
-    setBlocks((bs) => [...bs, r.data]);
+    setBlocks((bs) => { const next = [...bs, r.data]; history.record(next); return next; });
     setSelectedId(r.data.id);
     setRightTab('inspector');
   };
@@ -131,16 +138,51 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const removeBlock = async (bid) => {
     if (readOnly) return;
     await api.delete(`/api/moodboards/${id}/blocks/${bid}`);
-    setBlocks((bs) => bs.filter((b) => b.id !== bid));
+    setBlocks((bs) => { const next = bs.filter((b) => b.id !== bid); history.record(next); return next; });
     setSelectedId(null);
   };
 
   const duplicateBlock = async (bid) => {
     if (readOnly) return;
     const r = await api.post(`/api/moodboards/${id}/blocks/${bid}/duplicate`);
-    setBlocks((bs) => [...bs, r.data]);
+    setBlocks((bs) => { const next = [...bs, r.data]; history.record(next); return next; });
     setSelectedId(r.data.id);
   };
+
+  // ── Undo / Redo (local, session-scoped) ──────────────────────────────────
+  const applyHistoryRestore = useCallback((snapshot) => {
+    if (!snapshot) return;
+    setBlocks(snapshot);
+    // mark every block dirty so autosave persists the restored state
+    const m = {};
+    snapshot.forEach((b) => { m[b.id] = true; });
+    setDirtyMap((prev) => ({ ...prev, ...m }));
+  }, []);
+
+  const onUndo = useCallback(() => {
+    if (readOnly) return;
+    applyHistoryRestore(history.undo());
+  }, [readOnly, history, applyHistoryRestore]);
+
+  const onRedo = useCallback(() => {
+    if (readOnly) return;
+    applyHistoryRestore(history.redo());
+  }, [readOnly, history, applyHistoryRestore]);
+
+  useEffect(() => {
+    if (readOnly) return;
+    const handler = (e) => {
+      const meta = e.metaKey || e.ctrlKey;
+      if (!meta) return;
+      const target = e.target;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return;
+      const k = e.key.toLowerCase();
+      if (k === 'z' && !e.shiftKey) { e.preventDefault(); onUndo(); }
+      else if ((k === 'z' && e.shiftKey) || k === 'y') { e.preventDefault(); onRedo(); }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onUndo, onRedo, readOnly]);
 
   // ── Layer actions ─────────────────────────────────────────────────────────
   const handleLayerAction = (action, block) => {
@@ -201,20 +243,44 @@ const MoodboardEditor = ({ readOnly = false }) => {
     const onMove = (e) => {
       const dx = e.clientX - drag.startX;
       const dy = e.clientY - drag.startY;
+      let nextGuides = [];
       setBlocks((bs) => bs.map((b) => {
         if (b.id !== drag.id) return b;
+        let raw;
         if (drag.mode === 'move') {
-          return { ...b, x: Math.max(0, drag.origX + dx), y: Math.max(0, drag.origY + dy) };
+          raw = {
+            ...b,
+            x: Math.max(0, drag.origX + dx),
+            y: Math.max(0, drag.origY + dy),
+          };
+        } else {
+          raw = {
+            ...b,
+            width:  Math.max(80, drag.origW + dx),
+            height: Math.max(60, drag.origH + dy),
+          };
         }
-        return {
-          ...b,
-          width:  Math.max(80, drag.origW + dx),
-          height: Math.max(60, drag.origH + dy),
-        };
+        if (snapEnabled && !e.altKey) {
+          const snapped = computeSnap(
+            { id: b.id, x: raw.x, y: raw.y, width: raw.width, height: raw.height },
+            bs,
+            { width: CANVAS_W, height: CANVAS_H },
+            drag.mode,
+          );
+          nextGuides = snapped.guides;
+          return { ...raw, x: snapped.x, y: snapped.y, width: snapped.width, height: snapped.height };
+        }
+        return raw;
       }));
+      setSnapGuides(nextGuides);
       markDirty(drag.id);
     };
-    const onUp = () => setDrag(null);
+    const onUp = () => {
+      setDrag(null);
+      setSnapGuides([]);
+      // Snapshot AFTER the committed move/resize so undo restores pre-drag state
+      setBlocks((bs) => { history.record(bs); return bs; });
+    };
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
     return () => {
@@ -222,7 +288,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
       window.removeEventListener('mouseup', onUp);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [drag]);
+  }, [drag, snapEnabled]);
 
   // ── Approval ──────────────────────────────────────────────────────────────
   const changeApproval = async (status) => {
@@ -339,6 +405,29 @@ const MoodboardEditor = ({ readOnly = false }) => {
           </button>
 
           {!readOnly && (
+            <div className="flex items-center gap-1 ml-1">
+              <button onClick={onUndo} disabled={!history.canUndo}
+                      title={t('moodboards.editor.undo')}
+                      data-testid="undo-btn"
+                      className="bp-btn bp-btn-ghost !px-2 text-xs disabled:opacity-30">
+                <Undo2 size={13} strokeWidth={1.5} />
+              </button>
+              <button onClick={onRedo} disabled={!history.canRedo}
+                      title={t('moodboards.editor.redo')}
+                      data-testid="redo-btn"
+                      className="bp-btn bp-btn-ghost !px-2 text-xs disabled:opacity-30">
+                <Redo2 size={13} strokeWidth={1.5} />
+              </button>
+              <button onClick={() => setSnapEnabled((v) => !v)}
+                      title={t('moodboards.editor.snap')}
+                      data-testid="snap-toggle-btn"
+                      className={`bp-btn bp-btn-ghost !px-2 text-xs ${snapEnabled ? 'text-[var(--bp-primary)]' : ''}`}>
+                <Magnet size={13} strokeWidth={1.5} />
+              </button>
+            </div>
+          )}
+
+          {!readOnly && (
             <>
               {mb.status === 'draft' && (
                 <button onClick={() => changeApproval('sent')}
@@ -406,6 +495,9 @@ const MoodboardEditor = ({ readOnly = false }) => {
           <div ref={canvasRef} onClick={() => setSelectedId(null)} data-testid="moodboard-canvas"
                className="relative bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] mx-auto"
                style={{ width: CANVAS_W, height: CANVAS_H }}>
+            {!readOnly && drag && snapEnabled && (
+              <SnapGuides guides={snapGuides} canvasWidth={CANVAS_W} canvasHeight={CANVAS_H} />
+            )}
             {blocks.map((b) => {
               if (b.hidden && readOnly) return null;
               const Component = resolveBlock(b.type);

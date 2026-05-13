@@ -13,7 +13,7 @@ import api from '../../lib/api';
 const TONE_CLASSES = {
   blue: 'bg-blue-500/10 text-blue-400',
   purple: 'bg-purple-500/10 text-purple-400',
-  gold: 'bg-[var(--bp-primary,#D4AF37)]/10 text-[var(--bp-primary,#D4AF37)]',
+  gold: 'bg-[var(--bp-primary)]/10 text-[var(--bp-primary)]',
   emerald: 'bg-emerald-500/10 text-emerald-400',
 };
 
@@ -26,14 +26,14 @@ const KpiCard = ({ widget, dashboardData }) => {
   const { t } = useBlueprint();
   const value = getNested(dashboardData, widget.metric);
   return (
-    <div data-testid={`kpi-${widget.id}`} className="bg-[#141416] border border-white/[0.06] rounded-md p-5 card-hover animate-fadeIn">
+    <div data-testid={`kpi-${widget.id}`} className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-md p-5 card-hover animate-fadeIn">
       <div className="flex items-start justify-between mb-4">
         <div className={`w-9 h-9 rounded-[4px] flex items-center justify-center ${TONE_CLASSES[widget.tone] || TONE_CLASSES.gold}`}>
           <Icon size={16} strokeWidth={1.5} />
         </div>
       </div>
-      <p className="font-heading text-3xl font-light text-[#EFEBE4] mb-0.5">{value ?? '—'}</p>
-      <p className="text-[#6B6863] text-xs font-body font-medium uppercase tracking-[0.1em]">{t(widget.labelKey)}</p>
+      <p className="font-heading text-3xl font-light text-[var(--bp-text-primary)] mb-0.5">{value ?? '—'}</p>
+      <p className="text-[var(--bp-text-muted)] text-xs font-body font-medium uppercase tracking-[0.1em]">{t(widget.labelKey)}</p>
     </div>
   );
 };
@@ -46,29 +46,29 @@ const ActivityFeed = ({ widget }) => {
   }, [widget.source]);
 
   return (
-    <div data-testid={`widget-${widget.id}`} className="bg-[#141416] border border-white/[0.06] rounded-md p-5">
+    <div data-testid={`widget-${widget.id}`} className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-md p-5">
       <div className="flex items-center gap-2 mb-5">
-        <Icons.Activity size={14} strokeWidth={1.5} className="text-[var(--bp-primary,#D4AF37)]" />
-        <h3 className="text-[#EFEBE4] text-sm font-body font-semibold">{t(widget.labelKey)}</h3>
+        <Icons.Activity size={14} strokeWidth={1.5} className="text-[var(--bp-primary)]" />
+        <h3 className="text-[var(--bp-text-primary)] text-sm font-body font-semibold">{t(widget.labelKey)}</h3>
       </div>
       {events == null ? (
         <div className="space-y-2">{[1,2,3,4].map(i => <div key={i} className="h-8 skeleton rounded-[3px]" />)}</div>
       ) : events.length === 0 ? (
-        <p className="text-[#4A4845] text-sm font-body py-6 text-center">{t('dashboard.activity.empty')}</p>
+        <p className="text-[var(--bp-text-subtle)] text-sm font-body py-6 text-center">{t('dashboard.activity.empty')}</p>
       ) : (
         <div className="space-y-4">
           {events.map((e, i) => {
-            const dotMap = { blue: 'bg-blue-400', purple: 'bg-purple-400', gold: 'bg-[var(--bp-primary,#D4AF37)]', emerald: 'bg-emerald-400' };
+            const dotMap = { blue: 'bg-blue-400', purple: 'bg-purple-400', gold: 'bg-[var(--bp-primary)]', emerald: 'bg-emerald-400' };
             return (
               <div key={`${e.type}-${e.id || i}`} className="flex items-start gap-3" data-testid={`activity-${i}`}>
                 <span className={`mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0 ${dotMap[e.tone] || dotMap.gold}`} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[#A19D98] text-xs font-body leading-relaxed">
-                    <span className="text-[#6B6863] capitalize">[{t(`nav.${e.type === 'lead' ? 'leads' : e.type + 's'}`)}]</span>{' '}
+                  <p className="text-[var(--bp-text-secondary)] text-xs font-body leading-relaxed">
+                    <span className="text-[var(--bp-text-muted)] capitalize">[{t(`nav.${e.type === 'lead' ? 'leads' : e.type + 's'}`)}]</span>{' '}
                     {e.title || '—'}
                   </p>
                 </div>
-                <span className="text-[#3A3835] text-[10px] font-body flex-shrink-0 mt-0.5">
+                <span className="text-[var(--bp-text-subtle)] text-[10px] font-body flex-shrink-0 mt-0.5">
                   {e.created_at ? new Date(e.created_at).toLocaleDateString() : ''}
                 </span>
               </div>
@@ -84,22 +84,22 @@ const QuickActions = ({ widget }) => {
   const { t } = useBlueprint();
   const navigate = useNavigate();
   return (
-    <div data-testid={`widget-${widget.id}`} className="bg-[#141416] border border-white/[0.06] rounded-md p-5">
+    <div data-testid={`widget-${widget.id}`} className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-md p-5">
       <div className="flex items-center gap-2 mb-5">
-        <Icons.TrendingUp size={14} strokeWidth={1.5} className="text-[var(--bp-primary,#D4AF37)]" />
-        <h3 className="text-[#EFEBE4] text-sm font-body font-semibold">{t(widget.labelKey)}</h3>
+        <Icons.TrendingUp size={14} strokeWidth={1.5} className="text-[var(--bp-primary)]" />
+        <h3 className="text-[var(--bp-text-primary)] text-sm font-body font-semibold">{t(widget.labelKey)}</h3>
       </div>
       <div className="space-y-2">
         {widget.actions.map((a) => {
           const Icon = Icons[a.icon] || Icons.ArrowRight;
           return (
             <button key={a.labelKey} data-testid={`action-${a.labelKey}`} onClick={() => navigate(a.to)}
-              className="flex items-center gap-3 p-3 bg-[#1C1C1F] border border-white/[0.05] rounded-[4px] hover:border-white/[0.1] hover:bg-[#222226] transition-all text-left group w-full">
-              <div className="w-8 h-8 bg-[#0A0A0B] rounded-[3px] flex items-center justify-center flex-shrink-0">
-                <Icon size={14} strokeWidth={1.5} className="text-[var(--bp-primary,#D4AF37)]" />
+              className="flex items-center gap-3 p-3 bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[4px] hover:border-[var(--bp-border-strong)] hover:bg-[var(--bp-surface-3)] transition-all text-left group w-full">
+              <div className="w-8 h-8 bg-[var(--bp-bg)] rounded-[3px] flex items-center justify-center flex-shrink-0">
+                <Icon size={14} strokeWidth={1.5} className="text-[var(--bp-primary)]" />
               </div>
-              <span className="text-[#A19D98] text-xs font-body font-medium group-hover:text-[#EFEBE4] transition-colors">{t(a.labelKey)}</span>
-              <Icons.ArrowRight size={12} className="ml-auto text-[#3A3835] group-hover:text-[#6B6863] transition-colors" />
+              <span className="text-[var(--bp-text-secondary)] text-xs font-body font-medium group-hover:text-[var(--bp-text-primary)] transition-colors">{t(a.labelKey)}</span>
+              <Icons.ArrowRight size={12} className="ml-auto text-[var(--bp-text-subtle)] group-hover:text-[var(--bp-text-muted)] transition-colors" />
             </button>
           );
         })}
@@ -139,8 +139,8 @@ const DashboardPage = () => {
     <div className="p-8 max-w-7xl mx-auto animate-fadeIn" data-testid="dashboard-page">
       <div className="flex items-start justify-between mb-10">
         <div>
-          <p className="text-[#6B6863] text-xs font-body uppercase tracking-[0.15em] mb-1">{t('nav.section.workspace')}</p>
-          <h1 className="font-heading text-4xl font-light text-[#EFEBE4] leading-tight">
+          <p className="text-[var(--bp-text-muted)] text-xs font-body uppercase tracking-[0.15em] mb-1">{t('nav.section.workspace')}</p>
+          <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)] leading-tight">
             {t('dashboard.title')}, <em>{user?.first_name || user?.email?.split('@')[0]}</em>
           </h1>
         </div>

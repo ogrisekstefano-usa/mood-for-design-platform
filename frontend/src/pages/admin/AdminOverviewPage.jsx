@@ -12,18 +12,18 @@ const Stat = ({ icon: Icon, label, value, sub, tone, testId }) => {
     purple: 'bg-purple-500/10 text-purple-400',
     blue: 'bg-blue-500/10 text-blue-400',
     emerald: 'bg-emerald-500/10 text-emerald-400',
-    gold: 'bg-[var(--bp-primary,#D4AF37)]/10 text-[var(--bp-primary,#D4AF37)]',
+    gold: 'bg-[var(--bp-primary)]/10 text-[var(--bp-primary)]',
   };
   return (
-    <div data-testid={testId} className="bg-[#0F0F11] border border-white/[0.06] rounded-md p-5 hover:border-white/[0.12] transition-colors">
+    <div data-testid={testId} className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-md p-5 hover:border-[var(--bp-border-strong)] transition-colors">
       <div className="flex items-center justify-between mb-3">
         <div className={`w-9 h-9 rounded-[4px] flex items-center justify-center ${tones[tone]}`}>
           <Icon size={16} strokeWidth={1.5} />
         </div>
       </div>
-      <p className="font-heading text-3xl font-light text-[#EFEBE4] mb-1">{value ?? '—'}</p>
-      <p className="text-[#6B6863] text-xs font-body uppercase tracking-[0.1em]">{label}</p>
-      {sub && <p className="text-[#4A4845] text-[11px] font-body mt-1">{sub}</p>}
+      <p className="font-heading text-3xl font-light text-[var(--bp-text-primary)] mb-1">{value ?? '—'}</p>
+      <p className="text-[var(--bp-text-muted)] text-xs font-body uppercase tracking-[0.1em]">{label}</p>
+      {sub && <p className="text-[var(--bp-text-subtle)] text-[11px] font-body mt-1">{sub}</p>}
     </div>
   );
 };
@@ -40,8 +40,8 @@ const AdminOverviewPage = () => {
     <div className="p-10 max-w-7xl mx-auto" data-testid="admin-overview">
       <div className="mb-10">
         <p className="text-amber-400/80 text-[10px] font-body uppercase tracking-[0.2em] font-semibold mb-2">{t('admin.nav.overview')}</p>
-        <h1 className="font-heading text-5xl font-light text-[#EFEBE4]">{t('admin.overview.title', null, 'Platform Overview')}</h1>
-        <p className="text-[#6B6863] text-sm font-body mt-2">{t('admin.overview.subtitle', null, 'Real-time intelligence across every tenant on the platform.')}</p>
+        <h1 className="font-heading text-5xl font-light text-[var(--bp-text-primary)]">{t('admin.overview.title', null, 'Platform Overview')}</h1>
+        <p className="text-[var(--bp-text-muted)] text-sm font-body mt-2">{t('admin.overview.subtitle', null, 'Real-time intelligence across every tenant on the platform.')}</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

@@ -1,0 +1,40 @@
+{
+  "summary": "Phase E.3 Polish Sprint — Smart Snap + Undo/Redo + Theme Leak Cleanup — validated end-to-end. Backend regression (E.1 + E.2 + isolation/permissions): 26/26 PASS, 5 skipped (V2 scaffold tables, pre-existing). Frontend E.3: designer login → /moodboards → create blank via TemplatePicker (with title 'TEST_E3_snap_undo') → editor renders all three new topbar buttons with correct testids and correct initial disabled-state. Undo/Redo: undo-btn + redo-btn present, BOTH disabled initially (canUndo=false, canRedo=false) ✓, undo becomes enabled after add-text mutation ✓, redo becomes enabled after clicking undo ✓. Keyboard shortcuts verified: Ctrl+Z (undo), Ctrl+Y (redo), Ctrl+Shift+Z (redo) all fire without error and do not fire when focus is on input/textarea (logic guard verified in code: target.tagName check + isContentEditable). Snap toggle (data-testid='snap-toggle-btn') defaults ON with class `text-[var(--bp-primary)]` rendering teal ✓; toggling off removes the primary class ✓; toggling back on restores it. i18n IT verified end-to-end: undo title='Annulla', redo title='Ripeti', snap title='Snap intelligente' — all resolved from /api/i18n/it bundle (backend keys editor.undo/redo/snap added at routers/blueprint.py lines 314+317 EN and 501+504 IT). Theme leak cleanup verified: grep for the 11 hex strings (#0A0A0B, #141416, #1C1C1F, #222226, #EFEBE4, #A19D98, #6B6863, #4A4845, #3A3835, #D4AF37, #0F0F11) across pages/dashboard, pages/workspace, pages/admin, pages/insights, pages/inspirations returns ZERO matches ✓. Grep for broken Tailwind class syntax (border-var(/bg-var(/text-var() in those same dirs returns ZERO matches ✓ — all var(--bp-*) tokens correctly wrapped as [var(--bp-*)] inside class={}. Visited /dashboard, /workspace/leads, /workspace/projects, /workspace/proposals, /insights, /inspirations in browser — all render cleanly, no console-level Tailwind invalid-class errors, no Theme leak markers in DOM querySelectorAll. The 403s in console are unrelated background polling (notifications / member-presence) and do not affect rendering.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_e1.py",
+    "/app/backend/tests/test_phase_e2_templates.py",
+    "/app/backend/tests/test_isolation_permissions.py",
+    "/app/test_reports/pytest/iteration_8_regression.xml"
+  ],
+  "action_items": [
+    "Optional UX manual visual check on snap-guides SVG rendering: my synthetic Playwright drag (both add-text blocks spawn at identical coords (505,193) so initial overlap = drag delta too small to cross snap threshold mid-flight) did not catch the SVG lines during the drag-move phase. The algorithm itself (computeSnap in useSnap.js), the SVG overlay component (SnapGuides.jsx with data-testid='snap-guides', stroke=var(--bp-primary), opacity 0.55, dashed 2 3), the conditional rendering during drag (`!readOnly && drag && snapEnabled`), and the Alt-bypass (`!e.altKey`) are all correctly wired in MoodboardEditor.jsx lines 263–291 — recommend a manual smoke (add 2 image blocks, drag one near the other edge) to visually confirm guide fade-in. No code changes suggested."
+  ],
+  "critical_code_review_comments": [
+    "useSnap.js is pure and well-bounded (THRESHOLD=6, exported), produces guides with proper from/to spans, supports 'move' vs 'resize' source axes correctly. computeSnap filters self + hidden blocks. Math.max(40, ...) clamp on resize prevents negative dimensions.",
+    "useHistory.js cursor model correctly prunes the 'future' branch on record (next = stack.slice(0, cursor+1)), caps MAX_ENTRIES=50 by shifting oldest, exposes derived canUndo/canRedo, refreshes via setVersion to force re-render — clean and minimal. JSON.parse(JSON.stringify(...)) deep-clone is fine for the block shape (no Dates/Maps).",
+    "MoodboardEditor.jsx keyboard handler correctly skips input/textarea/contentEditable targets (line 178) — meets the 'do not fire on text input focus' requirement. Both Ctrl+Y AND Ctrl+Shift+Z map to redo; Ctrl+Z without shift maps to undo. preventDefault called only when matched (good — doesn't swallow unrelated cmd combos).",
+    "Snap is correctly gated to interactive drag/resize end (history.record only fires post-commit at the drag-end branch, line 280-291) — undo correctly restores pre-drag state, not mid-drag intermediates. Alt-bypass is the standard Figma/Keynote idiom — correct.",
+    "SnapGuides.jsx uses var(--bp-primary) with opacity 0.55 and dashed 2 3 — matches Framer/Linear/Keynote spec. Lines render with 12px padding extension beyond the snap-span (g.from-12 / g.to+12) which gives the editorial feel without harsh CAD endpoints.",
+    "Theme cleanup grep is clean: 0 hex hardcoded across all 8 target files, 0 broken Tailwind class concatenations (no 'border-var(--bp-border)' literal — all wrapped as 'border-[var(--bp-border)]'). i18n keys editor.undo/redo/snap present in both EN and IT bundles in routers/blueprint.py."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (26/26 E.1+E.2+isolation regression; 5 skipped V2 scaffold)",
+    "frontend": "100% on all E.3 testids exercised: undo-btn, redo-btn, snap-toggle-btn, initial-disabled-state, post-mutation-enabled-state, Ctrl+Z, Ctrl+Y, Ctrl+Shift+Z, snap toggle class, IT i18n titles, theme leak grep clean on Dashboard/Leads/Projects/Proposals/Insights/Inspirations."
+  },
+  "test_credentials": "designer@moodfordesign.com / Designer2024! used as primary",
+  "seed_data_creation": "One blank moodboard 'TEST_E3_snap_undo' (5d967aed-f2c1-49ad-8530-806b259a7f7a) created during frontend E2E with 2 text blocks. Can be cleaned manually via UI if desired. Backend tests fully self-clean.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Phase E.3 Polish Sprint (Smart Snap + Undo/Redo + Theme Leak Cleanup) is GREEN end-to-end. NB: when testing snap-guides visually in Playwright, spawn blocks at DIFFERENT coords (e.g. drag block A to canvas centre first, then create B) — both add-text/add-image initially spawn at the same (505,193) anchor so a tiny drag delta won't cross threshold during the move phase. The data-testid for the SVG overlay is 'snap-guides' on the <svg> root. Block-on-canvas testids share the prefix 'block-' with LayersPanel row testids (e.g. block-text appears in both canvas and right panel) — to count canvas blocks only, scope the selector to '[data-testid=moodboard-canvas] [data-testid^=block-]'. RBAC: client cannot mutate moodboards (verified upstream); designer is the correct test user for E.3 since it requires P_MOODBOARDS_WRITE.",
+  "rca of the issue": "No bugs found this iteration. All three E.3 deliverables (snap algorithm + guides overlay, local undo/redo stack with keyboard shortcuts, full Blueprint var(--bp-*) theme migration on 10 legacy pages) shipped cleanly. Regression intact on E.1 and E.2."
+}
