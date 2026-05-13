@@ -201,6 +201,38 @@ Pre-requisito esplicito utente prima della Fase F: "verificare bene tenant_id en
 - **90/90 backend pytest pass** + 5 skipped + 1 xpass = ZERO regressione su 6 fasi precedenti
 
 
+### ✅ Phase F.1 — Structural Multi-page Templates™ (DONE — 13 Mag 2026)
+Trasformazione architetturale del template system da single-page a multi-page editoriale. **Apre il vero Blueprint Presentation OS™**.
+
+- **PRE-fix CTA mancante** (PagesNavigator)
+  - Header del navigator ora ha `+` icon button (`add-page-btn`) sempre visibile
+  - Inline dashed tile "Aggiungi pagina" in fondo alla lista (`add-page-inline-btn`) — scrolla con le pagine, no troncamento
+  - Sticky-bottom overlay del picker (`absolute bottom-2`)
+- **Migration 009** — `template_pages` table + `template_blocks.template_page_id` + placeholder semantics (`is_placeholder`, `placeholder_label`, `placeholder_type`, `placeholder_required`). Backfill: ogni template esistente → 1 default page, blocks linkati
+- **Migration 010** — 3 structural template seed (UUID fissi idempotenti)
+  - **Luxury Residential Presentation** — 8 pages, 30 blocks (Cover landscape / Concept / Atmosphere / Material Palette / Furniture / Lighting / Room Gallery / Approval) — 26 placeholders
+  - **Hospitality Concept** — 6 pages, 14 blocks (Cover / Brand Narrative / Spatial Mood / Materials / Guest Experience / Approval) — 9 placeholders
+  - **Material Board** — 1 page square, 6 blocks (palette + 3 materials + 2 products)
+  - Locale_content IT/FR/DE/ES, editorial pacing positions/sizes precise
+- **Backend** (`templates.py`)
+  - `_attach_preview` ora emette `pages_preview` carousel (1 svg per page) per templates multi-page; `page_count` field sempre presente
+  - `apply_template` multi-page-aware: clona `template_pages → moodboard_pages` con `page_id_map`, blocks attaccati al `page_id` corretto, placeholder metadata propagata via `metadata_json.placeholder = {label,type,required}`
+  - `save_as_template` round-trip multi-page: snapshot `moodboard_pages → template_pages`, blocks attaccati con placeholder fields re-estratti
+  - Fallback elegante per legacy single-page templates (synth default page)
+- **Frontend** (`TemplatePicker.jsx`)
+  - `PreviewBox` switch dinamico: multi-page → 3-layer stacked SVG con offset+scale cinematic; single-page → SVG straight
+  - Page count badge editorial `'{count} pagine'` con icona Layers e color primary teal (`template-page-count-{slug}`)
+- **Frontend placeholder UX** (`ImageBlock.jsx`)
+  - Empty state ora mostra label placeholder (con ★ se required) + prompt localizzato "Sostituisci con immagine"
+- **i18n** — 7 nuove chiavi EN+IT: `templates.pageCount`, `placeholder.replaceImage/Text/Palette/Material/Product`
+- **Tested ✅** (`iteration_13.json`)
+  - Backend: **14/14 new F.1** + **19/19 regression** F.0 = **33/33 PASS**
+  - Frontend live: 13 cards picker, structural badges "8 pagine"/"6 pagine" visibili, multi-layer stack su Luxury, apply→editor con 8 page tiles + page types localizzati (Copertina/Citazione/Mood/...), placeholder ★ "HERO COVER IMAGE" rendered, '+' header + inline dashed tile entrambi presenti
+  - Cross-tenant: studio2 può leggere platform templates, apply scoped al proprio tenant (no leak)
+  - RBAC: client 403 su apply + from-moodboard
+  - i18n IT verificato completamente
+
+
 ### ✅ Phase F.0 — Multi-page Foundation per Blueprint Moodboard PRO™ (DONE — 13 Mag 2026)
 Trasformazione architetturale: da single-canvas a sistema multipagina. Backward-compatible 100% — i 37 moodboard esistenti continuano a funzionare.
 
