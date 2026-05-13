@@ -201,6 +201,39 @@ Pre-requisito esplicito utente prima della Fase F: "verificare bene tenant_id en
 - **90/90 backend pytest pass** + 5 skipped + 1 xpass = ZERO regressione su 6 fasi precedenti
 
 
+### ✅ Phase E.2 — Templates V1 (DONE — 13 Mag 2026)
+Quick-start template system per i moodboard: 7 starter platform + creazione di template tenant-private da qualsiasi moodboard esistente.
+
+- **Migration 007 — Templates seed** (`/app/supabase/migrations/007_templates_seed.sql`):
+  - 7 starter template platform (`tenant_id NULL`, `visibility='platform'`, `is_starter=TRUE`): `luxury-editorial`, `hospitality`, `residential`, `retail`, `materials-board`, `ff-and-e`, `concept`
+  - Idempotente (ON CONFLICT DO UPDATE), reversibile, structure-only (NO image URLs hardcoded — gli utenti riempiono con i propri asset via upload)
+  - `locale_content` JSONB con nome/descrizione tradotti per IT, EN-US, FR, DE, ES
+- **Backend** (`/app/backend/routers/templates.py`):
+  - `GET /api/templates` — list (platform + own tenant), filtri `category`/`starter_only`/`locale`
+  - `GET /api/templates/{id}` — detail con blocks normalizzati (x/y/width/height/z_index estratti da position_json)
+  - `POST /api/templates` — create (tenant-scoped, slug unico per tenant)
+  - `PUT /api/templates/{id}` — update (platform templates editabili solo da super_admin)
+  - `DELETE /api/templates/{id}` — soft archive (`archived_at`)
+  - `POST /api/templates/{id}/apply` — clone template_blocks → moodboard_elements creando nuovo moodboard `draft`; mirror `content.src → image_url` per parity con create_block
+  - `POST /api/templates/from-moodboard/{moodboard_id}` — snapshot moodboard come nuovo template (tenant-private)
+  - **P0 fix**: rimossa colonna `settings` inesistente dall'insert su `moodboards` (era 500). Separation of concerns: moodboard = runtime entity, template = preset/configuration source
+  - Tutte le route gated da `require_permission(P_MOODBOARDS_READ/WRITE)`
+- **Frontend Quick-start picker** (`/app/frontend/src/blueprint/moodboard/TemplatePicker.jsx`):
+  - Shared component riusato su `MoodboardsPage` CreateModal e `ProjectDetailPage` CreateMoodboardModal
+  - Tile "Tela vuota" (blank canvas) + 7 starter cards categorizzate
+  - 100% Blueprint-driven (zero copy hardcoded, locale forwarded all'API per nomi localizzati)
+  - data-testid: `template-picker`, `template-blank`, `template-card-{slug}`
+- **Frontend Save-as-template** (`MoodboardEditor.jsx`):
+  - Pulsante topbar "Salva come template" (data-testid=`save-as-template-btn`)
+  - Slug auto-generato dal titolo (slugify + random suffix), feedback inline stato (saving/saved/error)
+- **i18n** — chiavi già presenti in EN-US + IT (`moodboards.templates.{eyebrow,blank,blankDesc,applyBtn,saveAs,category.*}`)
+- **Tenant isolation verificata E2E**: studio2 (Showroom) vede solo 7 platform; designer (Studio) vede 7 platform + propri tenant-private. Cross-tenant template detail → 404
+- **RBAC verificata**: client → 403 su `apply` e `from-moodboard` (P_MOODBOARDS_WRITE required)
+- **Tested ✅** (`iteration_7.json`)
+  - Backend: **16/16 new test_phase_e2_templates.py** + 10/10 E.1 regression
+  - Frontend: tutti i critical testids verificati con locale IT (Avvio rapido, Tela vuota, Editoriale di Lusso, Ospitalità, Residenziale, Retail, Materiali, FF&E, Concept), apply → editor con blocchi clonati funzionante
+
+
 ### ✅ Phase E.1 — Moodboard Polish Sprint (DONE — 13 Mag 2026)
 Sopra la foundation stabile (Sprint Cleanup P0). Tutti i requisiti tecnici del documento utente rispettati: ZERO hardcoded, runtime-editable, theme-token-based, multi-tenant, i18n-ready, migration-safe.
 
