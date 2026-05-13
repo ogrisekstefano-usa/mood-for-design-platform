@@ -201,6 +201,51 @@ Pre-requisito esplicito utente prima della Fase F: "verificare bene tenant_id en
 - **90/90 backend pytest pass** + 5 skipped + 1 xpass = ZERO regressione su 6 fasi precedenti
 
 
+### ✅ Phase F.0 — Multi-page Foundation per Blueprint Moodboard PRO™ (DONE — 13 Mag 2026)
+Trasformazione architetturale: da single-canvas a sistema multipagina. Backward-compatible 100% — i 37 moodboard esistenti continuano a funzionare.
+
+- **Migration 008** (`008_moodboard_pages.sql`) — idempotente, reversibile
+  - ENUM `moodboard_page_type` (13 valori: cover/blank/mood/material_board/product_grid/palette/gallery/split_story/quote/technical_board/floorplan/proposal_summary/approval)
+  - TABLE `moodboard_pages` (id, tenant_id, moodboard_id FK CASCADE, title, page_type, aspect_ratio, width, height, background JSONB, settings JSONB, sort_order, hidden_in_presentation, created_by, timestamps)
+  - `moodboard_elements.page_id` nullable + FK CASCADE + index
+  - `moodboards.current_page_id` nullable
+  - **Backfill DO block**: ogni moodboard esistente → 1 default page con `title=moodboard.title` (o "Page 1" se null), `page_type='blank'`, `aspect_ratio='portrait_a4'`, tutti gli elements esistenti linkati alla nuova page, current_page_id puntato alla default
+  - RLS enabled + policy service_role all
+  - Indices: `(moodboard_id, sort_order)`, `(tenant_id)`, `(page_id)` su elements
+- **Backend** (`moodboards_v1.py`)
+  - `ASPECT_RATIO_PRESETS` registry (6 presets): portrait_a4 (1400×2400), landscape_16_9 (1920×1080), square_1_1 (1400×1400), editorial_3_4 (1400×1866), wide_2_1 (1920×960), cover_landscape (1920×1200)
+  - `PAGE_TYPES` registry (13 valori) — Blueprint-driven via `GET /api/moodboards/_meta/page_presets`
+  - 7 nuovi endpoint: `GET _meta/page_presets`, `GET pages`, `POST pages` (auto-append sort_order + width/height da preset), `PUT pages/{id}` (recompute dimensions on aspect_ratio change), `DELETE pages/{id}` (409 last-page guard + current_page_id fallback), `POST pages/{id}/duplicate` (clone page + tutti gli elements con nuovi uuid), `POST pages/reorder` (validazione set strict)
+  - `create_block` ora popola `page_id` da `body.page_id || moodboard.current_page_id || _ensure_default_page()` (safety net)
+  - RBAC `P_MOODBOARDS_READ/WRITE` su tutti gli endpoint
+  - `GET /api/moodboards/{id}` ora include `pages: [...]` array (sort_order ASC) + `elements` legacy
+- **Create + Apply flows** (`moodboards.py` + `templates.py`)
+  - `POST /api/moodboards` crea automaticamente default page con `title=mb.title` e setta `current_page_id`
+  - `apply_template` crea default page e attacha tutti i cloned blocks
+  - Bug fix (caught by testing agent): response del create overlay-ava current_page_id stale; risolto con re-overlay in-place
+- **Frontend** (`PagesNavigator.jsx` + `MoodboardEditor.jsx`)
+  - Sidebar 180px left of "Add Block" toolbar, eyebrow "PAGINE", mini canvas thumbnail per ogni page (rect colorati semantici, no SVG complesso — performance-friendly)
+  - Active page highlight (border `var(--bp-primary)`)
+  - Hover actions: duplicate, delete (con guard last-page lato UI)
+  - HTML5 drag-and-drop → POST reorder
+  - Add page picker: dropdown ratio + dropdown type, presets letti dal registry backend
+  - State editor: `pages`, `activePageId`, derived `pageBlocks`, `blocksByPage`, `activePage`, `canvasW/H` dinamici
+  - Canvas dimension **dinamica** dal preset (es. landscape_16_9 → 1920×1080)
+  - Snap page-scoped (no cross-page magnetism)
+  - LayersPanel scoped to current page
+  - `addBlock` invia `page_id=activePageId`
+- **i18n** — 25 nuove chiavi EN+IT
+  - `page.{add,duplicate,delete,rename,untitled,eyebrow}`
+  - `page.ratio.{portraitA4,landscape169,square,editorial,wide,coverLandscape}`
+  - `page.type.{cover,blank,mood,material_board,product_grid,palette,gallery,split_story,quote,technical_board,floorplan,proposal_summary,approval}`
+- **Tested ✅** (`iteration_12.json`)
+  - Backend: **19/19 new F.0** + **31/31 regression** (P0+E.5+E.2)
+  - Frontend live: PagesNavigator visible at x=220/180px, eyebrow 'Pagine', add-page-btn → picker funzionante, card count 2→3 dopo add, canvas resize verificato (landscape_16_9 → 1920×1080), IT i18n confermato
+  - Bug `current_page_id=None` su create_moodboard → fix applicato dal testing agent (overlay sul response dict)
+  - Cross-tenant: studio2 404 su pages designer ✓
+  - RBAC: client 403 su pages write ✓
+
+
 ### ✅ P0 Sprint — Moodboard Core Stabilization (DONE — 13 Mag 2026)
 Pre-foundation reliability + media completeness pass prima di aprire Moodboard PRO™.
 
