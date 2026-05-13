@@ -245,6 +245,43 @@ def delete_block(moodboard_id: str, block_id: str, ctx: dict = Depends(get_tenan
     return {"message": "deleted"}
 
 
+@router.post("/{moodboard_id}/blocks/{block_id}/duplicate", status_code=201)
+def duplicate_block(moodboard_id: str, block_id: str, ctx: dict = Depends(get_tenant_context)):
+    """Clone a block — same content/style/position offset by a small delta."""
+    client = db()
+    _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
+    cur = client.table("moodboard_elements").select("*") \
+        .eq("id", block_id).eq("moodboard_id", moodboard_id).limit(1).execute()
+    if not cur.data:
+        raise HTTPException(404, "Block not found")
+    src = cur.data[0]
+    pos = _parse_jsonish(src.get("position_json"))
+    pos["x"] = (pos.get("x") or 0) + 24
+    pos["y"] = (pos.get("y") or 0) + 24
+    pos["z_index"] = (pos.get("z_index") or 0) + 1
+    new_row = {
+        "id": str(uuid.uuid4()),
+        "tenant_id": ctx["tenant_id"],
+        "moodboard_id": moodboard_id,
+        "type": src.get("type"),
+        "title": src.get("title"),
+        "image_url": src.get("image_url"),
+        "video_url": src.get("video_url"),
+        "content": src.get("content"),
+        "position_json": pos,
+        "style_json": _parse_jsonish(src.get("style_json")),
+        "metadata_json": _parse_jsonish(src.get("metadata_json")),
+        "locked": False,
+        "hidden": src.get("hidden") or False,
+        "opacity": src.get("opacity") or 1.0,
+        "rotation": src.get("rotation") or 0,
+        "sort_order": (src.get("sort_order") or 0) + 1,
+    }
+    r = client.table("moodboard_elements").insert(new_row).execute()
+    client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
+    return _normalize_block(r.data[0] if r.data else new_row)
+
+
 @router.patch("/{moodboard_id}/blocks/batch")
 def batch_update_blocks(moodboard_id: str, body: BlocksBatchUpdate,
                         ctx: dict = Depends(get_tenant_context)):

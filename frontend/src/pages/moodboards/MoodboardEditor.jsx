@@ -1,16 +1,15 @@
 /**
- * MoodboardEditor — V1 canvas editor for Blueprint Moodboards™.
+ * MoodboardEditor — V1.1 Polish Sprint
  *
- * V1 scope (stable, not a Figma/Canva clone):
- *  - Canvas with absolute-positioned blocks (image · text · palette · note · product · material)
- *  - Drag (move) + corner resize with debounced autosave
- *  - Add-block left rail (block registry-driven)
- *  - Inline content edit panel (right rail) for selected block
- *  - Approval workflow (draft → in_review → approved/rejected)
- *  - Share token (read-only client review at /moodboard/share/:token)
+ * Adds on top of V1:
+ *  - LayersPanel (z-index/lock/hide/duplicate/delete) — right rail tab
+ *  - Real image upload via Supabase Storage (`moodboard-assets` bucket)
+ *  - Crop / focal-point / fit-mode / zoom / opacity / rotation in inspector
+ *  - Presentation mode (cinematic fullscreen, hides editor chrome)
+ *  - Block-level visual props (locked → not draggable, hidden → ghost render)
+ *  - Autosave with retry x3 + exponential backoff + visible error state (V1.0)
  *
- * Everything user-facing flows through Blueprint i18n (t()) — ZERO hardcoded copy.
- * Everything visual flows through Blueprint theme tokens (--bp-*) — ZERO hardcoded colors.
+ * All copy via t(), all colors via theme tokens. ZERO hardcoded.
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -18,9 +17,12 @@ import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
   ArrowLeft, Plus, Check, Share2, ExternalLink, Send, X, AlertCircle,
+  Play, Maximize2, ChevronLeft, ChevronRight, PanelRight, ListChecks,
 } from 'lucide-react';
 import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegistry';
 import StatusBadge from '../../components/common/StatusBadge';
+import LayersPanel from '../../blueprint/moodboard/LayersPanel';
+import ImageUploader from '../../blueprint/moodboard/ImageUploader';
 
 const CANVAS_W = 1400;
 const CANVAS_H = 2400;
@@ -36,10 +38,13 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [dirtyMap, setDirtyMap] = useState({});
   const [savedAt, setSavedAt] = useState(null);
-  const [saveState, setSaveState] = useState('idle'); // idle | saving | error
+  const [saveState, setSaveState] = useState('idle');
   const [saveError, setSaveError] = useState(null);
   const [drag, setDrag] = useState(null);
   const [shareDialog, setShareDialog] = useState(null);
+  const [rightTab, setRightTab] = useState('inspector'); // inspector | layers
+  const [presenting, setPresenting] = useState(false);
+  const [presentIndex, setPresentIndex] = useState(0);
 
   const canvasRef = useRef();
   const saveTimer = useRef();
@@ -62,9 +67,12 @@ const MoodboardEditor = ({ readOnly = false }) => {
     const ids = Object.keys(dirtyMap);
     if (!ids.length) return;
     const payload = blocks.filter((b) => ids.includes(b.id))
-      .map((b) => ({ id: b.id, x: b.x, y: b.y, width: b.width, height: b.height,
-                     content: b.content, style: b.style, z_index: b.z_index,
-                     locked: b.locked, hidden: b.hidden }));
+      .map((b) => ({
+        id: b.id, x: b.x, y: b.y, width: b.width, height: b.height,
+        content: b.content, style: b.style, z_index: b.z_index,
+        locked: b.locked, hidden: b.hidden,
+        opacity: b.opacity, rotation: b.rotation,
+      }));
     setSaveState('saving');
     setSaveError(null);
     try {
@@ -77,7 +85,6 @@ const MoodboardEditor = ({ readOnly = false }) => {
       retryCount.current += 1;
       if (retryCount.current < AUTOSAVE_MAX_RETRIES) {
         setSaveState('saving');
-        // Exponential backoff retry
         setTimeout(flushSave, 500 * retryCount.current);
       } else {
         setSaveState('error');
@@ -94,13 +101,9 @@ const MoodboardEditor = ({ readOnly = false }) => {
     return () => clearTimeout(saveTimer.current);
   }, [dirtyMap, flushSave, readOnly]);
 
-  // Warn user before leaving with unsaved changes
   useEffect(() => {
     const handler = (e) => {
-      if (Object.keys(dirtyMap).length > 0) {
-        e.preventDefault();
-        e.returnValue = '';
-      }
+      if (Object.keys(dirtyMap).length > 0) { e.preventDefault(); e.returnValue = ''; }
     };
     window.addEventListener('beforeunload', handler);
     return () => window.removeEventListener('beforeunload', handler);
@@ -116,6 +119,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
     const r = await api.post(`/api/moodboards/${id}/blocks`, payload);
     setBlocks((bs) => [...bs, r.data]);
     setSelectedId(r.data.id);
+    setRightTab('inspector');
   };
 
   const updateBlock = (bid, patch) => {
@@ -130,9 +134,55 @@ const MoodboardEditor = ({ readOnly = false }) => {
     setSelectedId(null);
   };
 
+  const duplicateBlock = async (bid) => {
+    if (readOnly) return;
+    const r = await api.post(`/api/moodboards/${id}/blocks/${bid}/duplicate`);
+    setBlocks((bs) => [...bs, r.data]);
+    setSelectedId(r.data.id);
+  };
+
+  // ── Layer actions ─────────────────────────────────────────────────────────
+  const handleLayerAction = (action, block) => {
+    if (!block) return;
+    switch (action) {
+      case 'toggleLock':
+        updateBlock(block.id, { locked: !block.locked });
+        break;
+      case 'toggleHidden':
+        updateBlock(block.id, { hidden: !block.hidden });
+        break;
+      case 'bringForward': {
+        const next = (block.z_index || 0) + 1;
+        updateBlock(block.id, { z_index: next });
+        break;
+      }
+      case 'sendBackward': {
+        const next = Math.max(0, (block.z_index || 0) - 1);
+        updateBlock(block.id, { z_index: next });
+        break;
+      }
+      case 'bringToFront': {
+        const maxZ = Math.max(0, ...blocks.map((b) => b.z_index || 0));
+        updateBlock(block.id, { z_index: maxZ + 1 });
+        break;
+      }
+      case 'sendToBack':
+        updateBlock(block.id, { z_index: 0 });
+        break;
+      case 'duplicate':
+        duplicateBlock(block.id);
+        break;
+      case 'delete':
+        removeBlock(block.id);
+        break;
+      default:
+        break;
+    }
+  };
+
   // ── Drag / resize ─────────────────────────────────────────────────────────
   const startDrag = (e, block, mode = 'move') => {
-    if (readOnly) return;
+    if (readOnly || block.locked) return;
     e.stopPropagation();
     const rect = canvasRef.current.getBoundingClientRect();
     setDrag({
@@ -181,12 +231,28 @@ const MoodboardEditor = ({ readOnly = false }) => {
 
   const createShareToken = async () => {
     const r = await api.post(`/api/moodboards/${id}/share`);
-    const url = `${window.location.origin}/moodboard/share/${r.data.share_token}`;
+    const url = `${window.location.origin}${r.data.share_path || `/moodboard/share/${r.data.share_token}`}`;
     setShareDialog(url);
     setMb((m) => ({ ...m, share_token: r.data.share_token }));
   };
 
+  // ── Presentation mode keyboard nav ────────────────────────────────────────
+  useEffect(() => {
+    if (!presenting) return;
+    const visibleBlocks = blocks.filter((b) => !b.hidden);
+    const handler = (e) => {
+      if (e.key === 'Escape') setPresenting(false);
+      if (e.key === 'ArrowRight' || e.key === ' ')
+        setPresentIndex((i) => Math.min(visibleBlocks.length - 1, i + 1));
+      if (e.key === 'ArrowLeft')
+        setPresentIndex((i) => Math.max(0, i - 1));
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [presenting, blocks]);
+
   const selectedBlock = useMemo(() => blocks.find((b) => b.id === selectedId), [blocks, selectedId]);
+  const visibleBlocks = useMemo(() => blocks.filter((b) => !b.hidden), [blocks]);
 
   if (!mb) {
     return (
@@ -194,6 +260,12 @@ const MoodboardEditor = ({ readOnly = false }) => {
         <div className="w-5 h-5 border-2 border-[var(--bp-primary)] border-t-transparent rounded-full animate-spin" />
       </div>
     );
+  }
+
+  // ── Presentation Mode ────────────────────────────────────────────────────
+  if (presenting) {
+    return <PresentationMode mb={mb} blocks={visibleBlocks} index={presentIndex}
+                             setIndex={setPresentIndex} onExit={() => setPresenting(false)} t={t} />;
   }
 
   return (
@@ -214,56 +286,63 @@ const MoodboardEditor = ({ readOnly = false }) => {
           </h1>
           <StatusBadge status={mb.status} t={t} />
         </div>
-        {!readOnly && (
-          <div className="flex items-center gap-2">
-            {saveState === 'saving' ? (
-              <span className="bp-caption text-[var(--bp-text-muted)] flex items-center gap-1"
-                    data-testid="status-saving">
-                <span className="w-2 h-2 rounded-full bg-[var(--bp-primary)] animate-pulse" />
-                {t('moodboards.editor.saving')}
-              </span>
-            ) : saveState === 'error' ? (
-              <button onClick={flushSave}
-                      className="bp-caption text-red-400 flex items-center gap-1 hover:text-red-300"
-                      data-testid="status-save-error" title={saveError || ''}>
-                <AlertCircle size={12} strokeWidth={1.5} />
-                {t('moodboards.editor.saveFailed')}
-              </button>
-            ) : savedAt && Object.keys(dirtyMap).length === 0 ? (
-              <span className="bp-caption text-[var(--bp-text-muted)] flex items-center gap-1"
-                    data-testid="status-saved">
-                <Check size={12} strokeWidth={1.5} /> {t('moodboards.editor.saved')}
-              </span>
-            ) : null}
+        <div className="flex items-center gap-2">
+          {!readOnly && (
+            <>
+              {saveState === 'saving' ? (
+                <span className="bp-caption text-[var(--bp-text-muted)] flex items-center gap-1" data-testid="status-saving">
+                  <span className="w-2 h-2 rounded-full bg-[var(--bp-primary)] animate-pulse" />
+                  {t('moodboards.editor.saving')}
+                </span>
+              ) : saveState === 'error' ? (
+                <button onClick={flushSave} className="bp-caption text-red-400 flex items-center gap-1 hover:text-red-300"
+                        data-testid="status-save-error" title={saveError || ''}>
+                  <AlertCircle size={12} strokeWidth={1.5} />
+                  {t('moodboards.editor.saveFailed')}
+                </button>
+              ) : savedAt && Object.keys(dirtyMap).length === 0 ? (
+                <span className="bp-caption text-[var(--bp-text-muted)] flex items-center gap-1" data-testid="status-saved">
+                  <Check size={12} strokeWidth={1.5} /> {t('moodboards.editor.saved')}
+                </span>
+              ) : null}
+            </>
+          )}
 
-            {mb.status === 'draft' && (
-              <button onClick={() => changeApproval('sent')}
-                      className="bp-btn bp-btn-ghost text-xs" data-testid="send-review-btn">
-                <Send size={12} strokeWidth={1.5} /> {t('moodboards.editor.sendReview')}
+          <button onClick={() => setPresenting(true)} className="bp-btn bp-btn-ghost text-xs"
+                  data-testid="present-btn">
+            <Play size={12} strokeWidth={1.5} /> {t('moodboards.editor.present')}
+          </button>
+
+          {!readOnly && (
+            <>
+              {mb.status === 'draft' && (
+                <button onClick={() => changeApproval('sent')}
+                        className="bp-btn bp-btn-ghost text-xs" data-testid="send-review-btn">
+                  <Send size={12} strokeWidth={1.5} /> {t('moodboards.editor.sendReview')}
+                </button>
+              )}
+              {(mb.status === 'sent' || mb.status === 'viewed') && (
+                <>
+                  <button onClick={() => changeApproval('revision_requested')}
+                          className="bp-btn bp-btn-ghost text-xs" data-testid="revision-btn">
+                    {t('moodboards.editor.requestRevision')}
+                  </button>
+                  <button onClick={() => changeApproval('rejected')}
+                          className="bp-btn bp-btn-ghost text-xs" data-testid="reject-btn">
+                    {t('moodboards.editor.reject')}
+                  </button>
+                  <button onClick={() => changeApproval('approved')}
+                          className="bp-btn bp-btn-primary text-xs" data-testid="approve-btn">
+                    <Check size={12} strokeWidth={1.5} /> {t('moodboards.editor.approve')}
+                  </button>
+                </>
+              )}
+              <button onClick={createShareToken} className="bp-btn bp-btn-ghost text-xs" data-testid="share-btn">
+                <Share2 size={12} strokeWidth={1.5} /> {t('moodboards.editor.share')}
               </button>
-            )}
-            {(mb.status === 'sent' || mb.status === 'viewed') && (
-              <>
-                <button onClick={() => changeApproval('revision_requested')}
-                        className="bp-btn bp-btn-ghost text-xs" data-testid="revision-btn">
-                  {t('moodboards.editor.requestRevision')}
-                </button>
-                <button onClick={() => changeApproval('rejected')}
-                        className="bp-btn bp-btn-ghost text-xs" data-testid="reject-btn">
-                  {t('moodboards.editor.reject')}
-                </button>
-                <button onClick={() => changeApproval('approved')}
-                        className="bp-btn bp-btn-primary text-xs" data-testid="approve-btn">
-                  <Check size={12} strokeWidth={1.5} /> {t('moodboards.editor.approve')}
-                </button>
-              </>
-            )}
-            <button onClick={createShareToken}
-                    className="bp-btn bp-btn-ghost text-xs" data-testid="share-btn">
-              <Share2 size={12} strokeWidth={1.5} /> {t('moodboards.editor.share')}
-            </button>
-          </div>
-        )}
+            </>
+          )}
+        </div>
       </header>
 
       <div className="flex flex-1 min-h-0">
@@ -290,27 +369,25 @@ const MoodboardEditor = ({ readOnly = false }) => {
                className="relative bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] mx-auto"
                style={{ width: CANVAS_W, height: CANVAS_H }}>
             {blocks.map((b) => {
+              if (b.hidden && readOnly) return null;
               const Component = resolveBlock(b.type);
               const isSelected = selectedId === b.id;
               return (
                 <div key={b.id} data-testid={`block-${b.type}`}
-                     className={`absolute group ${isSelected ? 'ring-2 ring-[var(--bp-primary)]' : 'hover:ring-1 hover:ring-[var(--bp-border-strong)]'}`}
-                     style={{ left: b.x, top: b.y, width: b.width, height: b.height, zIndex: b.z_index || 0 }}
+                     className={`absolute group ${isSelected ? 'ring-2 ring-[var(--bp-primary)]' : 'hover:ring-1 hover:ring-[var(--bp-border-strong)]'} ${b.hidden ? 'opacity-30' : ''} ${b.locked ? 'cursor-default' : 'cursor-move'}`}
+                     style={{
+                       left: b.x, top: b.y, width: b.width, height: b.height, zIndex: b.z_index || 0,
+                       opacity: (b.opacity !== undefined ? b.opacity : 1) * (b.hidden ? 0.3 : 1),
+                       transform: b.rotation ? `rotate(${b.rotation}deg)` : undefined,
+                     }}
                      onMouseDown={(e) => startDrag(e, b, 'move')}
-                     onClick={(e) => { e.stopPropagation(); setSelectedId(b.id); }}>
+                     onClick={(e) => { e.stopPropagation(); setSelectedId(b.id); setRightTab('inspector'); }}>
                   {Component
                     ? <Component block={b} readOnly={readOnly} t={t} />
                     : <div className="bp-caption text-[var(--bp-text-muted)] p-2">{b.type}</div>}
-                  {!readOnly && isSelected && (
-                    <>
-                      <button onClick={(e) => { e.stopPropagation(); removeBlock(b.id); }}
-                              data-testid={`delete-block-${b.id}`}
-                              className="absolute -top-3 -right-3 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-md">
-                        <X size={12} strokeWidth={2} />
-                      </button>
-                      <div onMouseDown={(e) => startDrag(e, b, 'resize')}
-                           className="absolute bottom-0 right-0 w-3 h-3 bg-[var(--bp-primary)] rounded-tl-[var(--bp-radius-xs)] cursor-se-resize" />
-                    </>
+                  {!readOnly && isSelected && !b.locked && (
+                    <div onMouseDown={(e) => startDrag(e, b, 'resize')}
+                         className="absolute bottom-0 right-0 w-3 h-3 bg-[var(--bp-primary)] rounded-tl-[var(--bp-radius-xs)] cursor-se-resize" />
                   )}
                 </div>
               );
@@ -318,15 +395,37 @@ const MoodboardEditor = ({ readOnly = false }) => {
           </div>
         </main>
 
-        {/* RIGHT — Inspector for selected block */}
-        {!readOnly && selectedBlock && (
-          <aside className="w-[300px] flex-shrink-0 border-l border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 p-5 overflow-y-auto" data-testid="block-inspector">
-            <p className="bp-eyebrow mb-1 !text-[var(--bp-text-muted)]">
-              {t(`moodboards.block.${selectedBlock.type}`)}
-            </p>
-            <h3 className="bp-h3 mb-5 text-[var(--bp-text-primary)]">{t('moodboards.editor.inspector')}</h3>
-            <BlockInspector block={selectedBlock} t={t}
-                            onChange={(content) => updateBlock(selectedBlock.id, { content })} />
+        {/* RIGHT — Tab switcher: Inspector | Layers */}
+        {!readOnly && (
+          <aside className="w-[300px] flex-shrink-0 border-l border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 flex flex-col">
+            <div className="flex border-b border-[var(--bp-border)]" data-testid="right-tabs">
+              <TabBtn active={rightTab === 'inspector'} onClick={() => setRightTab('inspector')}
+                      icon={PanelRight} label={t('moodboards.editor.inspector')} testid="tab-inspector" />
+              <TabBtn active={rightTab === 'layers'} onClick={() => setRightTab('layers')}
+                      icon={ListChecks} label={t('moodboards.editor.layers')} testid="tab-layers" />
+            </div>
+            {rightTab === 'inspector' ? (
+              selectedBlock ? (
+                <div className="p-5 overflow-y-auto flex-1" data-testid="block-inspector">
+                  <p className="bp-eyebrow mb-4 !text-[var(--bp-text-muted)]">
+                    {t(`moodboards.block.${selectedBlock.type}`)}
+                  </p>
+                  <BlockInspector block={selectedBlock} t={t}
+                                  onChangeContent={(content) => updateBlock(selectedBlock.id, { content })}
+                                  onChangeStyle={(style) => updateBlock(selectedBlock.id, { style })} />
+                </div>
+              ) : (
+                <div className="p-5 flex-1 flex items-center justify-center">
+                  <p className="bp-caption text-[var(--bp-text-subtle)] text-center">
+                    {t('moodboards.editor.noInspector')}
+                  </p>
+                </div>
+              )
+            ) : (
+              <LayersPanel blocks={blocks} selectedId={selectedId}
+                           onSelect={(bid) => { setSelectedId(bid); }}
+                           onAction={handleLayerAction} t={t} />
+            )}
           </aside>
         )}
       </div>
@@ -355,12 +454,63 @@ const MoodboardEditor = ({ readOnly = false }) => {
   );
 };
 
-// ── Block Inspector ─────────────────────────────────────────────────────────
+// ── Tab Button ──────────────────────────────────────────────────────────────
+const TabBtn = ({ active, onClick, icon: Icon, label, testid }) => (
+  <button onClick={onClick} data-testid={testid}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 bp-caption transition-colors ${
+            active
+              ? 'text-[var(--bp-text-primary)] border-b-2 border-[var(--bp-primary)] bg-[var(--bp-surface-1)]'
+              : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-secondary)] border-b-2 border-transparent'
+          }`}>
+    <Icon size={11} strokeWidth={1.5} /> {label}
+  </button>
+);
+
+// ── Presentation Mode ──────────────────────────────────────────────────────
+const PresentationMode = ({ mb, blocks, index, setIndex, onExit, t }) => {
+  const active = blocks[index];
+  return (
+    <div className="fixed inset-0 z-50 bg-[var(--bp-bg)] flex flex-col" data-testid="presentation-mode">
+      <header className="flex items-center justify-between px-8 py-5 flex-shrink-0">
+        <div>
+          <p className="bp-eyebrow !text-[var(--bp-text-muted)] mb-1">{t('moodboards.editor.present')}</p>
+          <h1 className="bp-h2 text-[var(--bp-text-primary)] font-light">{mb.title}</h1>
+        </div>
+        <button onClick={onExit} className="bp-btn bp-btn-ghost text-xs" data-testid="exit-present-btn">
+          <X size={12} strokeWidth={1.5} /> {t('moodboards.editor.exitPresent')}
+        </button>
+      </header>
+      <main className="flex-1 flex items-center justify-center px-12 pb-12">
+        {active ? (
+          <div key={active.id} className="relative animate-[fadeIn_0.6s_ease-out]"
+               style={{ width: Math.min(active.width * 1.5, 900), height: Math.min(active.height * 1.5, 700) }}>
+            {React.createElement(resolveBlock(active.type), { block: active, readOnly: true, t })}
+          </div>
+        ) : (
+          <p className="bp-h3 text-[var(--bp-text-muted)]">—</p>
+        )}
+      </main>
+      <footer className="flex items-center justify-between px-8 py-5 border-t border-[var(--bp-border)] flex-shrink-0">
+        <button onClick={() => setIndex(Math.max(0, index - 1))} disabled={index === 0}
+                className="bp-btn bp-btn-ghost text-xs disabled:opacity-30" data-testid="present-prev">
+          <ChevronLeft size={13} strokeWidth={1.5} />
+        </button>
+        <span className="bp-caption text-[var(--bp-text-muted)]">{index + 1} / {blocks.length}</span>
+        <button onClick={() => setIndex(Math.min(blocks.length - 1, index + 1))}
+                disabled={index >= blocks.length - 1}
+                className="bp-btn bp-btn-ghost text-xs disabled:opacity-30" data-testid="present-next">
+          <ChevronRight size={13} strokeWidth={1.5} />
+        </button>
+      </footer>
+    </div>
+  );
+};
+
+// ── Inspector primitives ────────────────────────────────────────────────────
 const InspectorInput = ({ label, value, onChange, testid }) => (
   <label className="block mb-3">
     <span className="bp-eyebrow !text-[10px] mb-1 block !text-[var(--bp-text-muted)]">{label}</span>
-    <input value={value || ''} onChange={(e) => onChange(e.target.value)}
-           data-testid={testid}
+    <input value={value || ''} onChange={(e) => onChange(e.target.value)} data-testid={testid}
            className="input-luxury w-full px-2.5 py-1.5 text-sm rounded-[var(--bp-radius-sm)]" />
   </label>
 );
@@ -368,42 +518,127 @@ const InspectorInput = ({ label, value, onChange, testid }) => (
 const InspectorTextarea = ({ label, value, onChange, testid }) => (
   <label className="block mb-3">
     <span className="bp-eyebrow !text-[10px] mb-1 block !text-[var(--bp-text-muted)]">{label}</span>
-    <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={4}
-              data-testid={testid}
+    <textarea value={value || ''} onChange={(e) => onChange(e.target.value)} rows={4} data-testid={testid}
               className="input-luxury w-full px-2.5 py-1.5 text-sm rounded-[var(--bp-radius-sm)] resize-y" />
   </label>
 );
 
-const BlockInspector = ({ block, onChange, t }) => {
+const InspectorSlider = ({ label, value, min, max, step, onChange, testid, formatValue }) => (
+  <label className="block mb-3">
+    <div className="flex items-center justify-between mb-1">
+      <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)]">{label}</span>
+      <span className="bp-caption !text-[10px] text-[var(--bp-text-secondary)] font-mono">
+        {formatValue ? formatValue(value) : value}
+      </span>
+    </div>
+    <input type="range" min={min} max={max} step={step} value={value}
+           data-testid={testid}
+           onChange={(e) => onChange(parseFloat(e.target.value))}
+           className="w-full accent-[var(--bp-primary)]" />
+  </label>
+);
+
+const FOCAL_PRESETS = [
+  ['top-left',    '15% 15%'], ['top',    'center 15%'], ['top-right',    '85% 15%'],
+  ['left',        '15% 50%'], ['center', 'center'],     ['right',        '85% 50%'],
+  ['bottom-left', '15% 85%'], ['bottom', 'center 85%'], ['bottom-right', '85% 85%'],
+];
+
+// ── Block Inspector ─────────────────────────────────────────────────────────
+const BlockInspector = ({ block, onChangeContent, onChangeStyle, t }) => {
   const c = block.content || {};
-  const set = (k, v) => onChange({ ...c, [k]: v });
+  const s = block.style || {};
+  const setC = (k, v) => onChangeContent({ ...c, [k]: v });
+  const setS = (k, v) => onChangeStyle({ ...s, [k]: v });
+
+  // Crop/focal section reused for image blocks
+  const CropFocalSection = () => (
+    <div className="pt-3 mt-3 border-t border-[var(--bp-border)]">
+      <p className="bp-eyebrow !text-[10px] mb-3 !text-[var(--bp-text-muted)]">
+        {t('moodboards.editor.crop')}
+      </p>
+      <label className="block mb-3">
+        <span className="bp-eyebrow !text-[10px] mb-1 block !text-[var(--bp-text-muted)]">
+          {t('moodboards.field.fitMode')}
+        </span>
+        <select value={s.fit_mode || 'cover'} onChange={(e) => setS('fit_mode', e.target.value)}
+                data-testid="block-image-fit"
+                className="input-luxury w-full px-2.5 py-1.5 text-sm rounded-[var(--bp-radius-sm)]">
+          <option value="cover">{t('moodboards.field.fitMode.cover')}</option>
+          <option value="contain">{t('moodboards.field.fitMode.contain')}</option>
+          <option value="fill">{t('moodboards.field.fitMode.fill')}</option>
+        </select>
+      </label>
+      <div className="mb-3">
+        <span className="bp-eyebrow !text-[10px] mb-2 block !text-[var(--bp-text-muted)]">
+          {t('moodboards.field.focalPoint')}
+        </span>
+        <div className="grid grid-cols-3 gap-1 max-w-[120px]">
+          {FOCAL_PRESETS.map(([key, val]) => (
+            <button key={key}
+                    data-testid={`focal-${key}`}
+                    onClick={() => setS('focal_point', val)}
+                    className={`aspect-square rounded-[var(--bp-radius-xs)] border transition-all ${
+                      (s.focal_point || 'center') === val
+                        ? 'border-[var(--bp-primary)] bg-[var(--bp-primary)]/20'
+                        : 'border-[var(--bp-border)] hover:border-[var(--bp-border-strong)]'
+                    }`} />
+          ))}
+        </div>
+      </div>
+      <InspectorSlider label={t('moodboards.field.zoom')} value={s.zoom || 1}
+                       min={1} max={3} step={0.05} onChange={(v) => setS('zoom', v)}
+                       testid="block-image-zoom" formatValue={(v) => `${(v * 100).toFixed(0)}%`} />
+    </div>
+  );
+
+  const VisualPropsSection = () => (
+    <div className="pt-3 mt-3 border-t border-[var(--bp-border)]">
+      <InspectorSlider label={t('moodboards.field.opacity')}
+                       value={block.opacity !== undefined ? block.opacity : 1}
+                       min={0} max={1} step={0.05}
+                       onChange={(v) => onChangeStyle({ ...s, opacity: v }) || null}
+                       testid="block-opacity" formatValue={(v) => `${(v * 100).toFixed(0)}%`} />
+      <InspectorSlider label={t('moodboards.field.rotation')}
+                       value={block.rotation || 0}
+                       min={-180} max={180} step={1}
+                       onChange={(v) => onChangeStyle({ ...s, rotation: v })}
+                       testid="block-rotation" formatValue={(v) => `${v}°`} />
+    </div>
+  );
 
   switch (block.type) {
     case 'image':
       return (<>
+        <ImageUploader currentUrl={c.src} t={t}
+                       onUploaded={(url) => setC('src', url)} />
         <InspectorInput label={t('moodboards.field.imageUrl')} value={c.src}
-                        onChange={(v) => set('src', v)} testid="block-image-src" />
+                        onChange={(v) => setC('src', v)} testid="block-image-src" />
         <InspectorInput label={t('moodboards.field.caption')} value={c.caption}
-                        onChange={(v) => set('caption', v)} testid="block-image-caption" />
+                        onChange={(v) => setC('caption', v)} testid="block-image-caption" />
+        <CropFocalSection />
       </>);
     case 'text':
       return (<>
         <InspectorTextarea label={t('moodboards.field.text')} value={c.text}
-                           onChange={(v) => set('text', v)} testid="block-text-input" />
+                           onChange={(v) => setC('text', v)} testid="block-text-input" />
         <label className="block mb-3">
           <span className="bp-eyebrow !text-[10px] mb-1 block !text-[var(--bp-text-muted)]">
             {t('moodboards.field.size')}
           </span>
-          <select value={c.size || 'h3'} onChange={(e) => set('size', e.target.value)}
+          <select value={c.size || 'h3'} onChange={(e) => setC('size', e.target.value)}
                   data-testid="block-text-size"
                   className="input-luxury w-full px-2.5 py-1.5 text-sm rounded-[var(--bp-radius-sm)]">
-            {['display','h1','h2','h3','body','caption','eyebrow'].map((s) => <option key={s}>{s}</option>)}
+            {['display','h1','h2','h3','body','caption','eyebrow'].map((sz) => <option key={sz}>{sz}</option>)}
           </select>
         </label>
+        <VisualPropsSection />
       </>);
     case 'note':
-      return <InspectorTextarea label={t('moodboards.field.note')} value={c.text}
-                                onChange={(v) => set('text', v)} testid="block-note-input" />;
+      return (<>
+        <InspectorTextarea label={t('moodboards.field.note')} value={c.text}
+                           onChange={(v) => setC('text', v)} testid="block-note-input" />
+      </>);
     case 'palette':
       return (
         <div>
@@ -413,18 +648,18 @@ const BlockInspector = ({ block, onChange, t }) => {
           {(c.colors || []).map((col, i) => (
             <div key={i} className="flex items-center gap-2 mb-2">
               <input type="color" value={col} onChange={(e) => {
-                const next = [...(c.colors || [])]; next[i] = e.target.value; set('colors', next);
+                const next = [...(c.colors || [])]; next[i] = e.target.value; setC('colors', next);
               }} className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent" />
               <input value={col} onChange={(e) => {
-                const next = [...(c.colors || [])]; next[i] = e.target.value; set('colors', next);
+                const next = [...(c.colors || [])]; next[i] = e.target.value; setC('colors', next);
               }} className="input-luxury flex-1 px-2 py-1 text-xs font-mono rounded-[var(--bp-radius-xs)]" />
-              <button onClick={() => set('colors', c.colors.filter((_, j) => j !== i))}
+              <button onClick={() => setC('colors', c.colors.filter((_, j) => j !== i))}
                       className="text-[var(--bp-text-muted)] hover:text-red-400">
                 <X size={11} />
               </button>
             </div>
           ))}
-          <button onClick={() => set('colors', [...(c.colors || []), '#FFFFFF'])}
+          <button onClick={() => setC('colors', [...(c.colors || []), '#FFFFFF'])}
                   className="bp-btn bp-btn-ghost text-xs w-full" data-testid="add-palette-color">
             <Plus size={11} strokeWidth={1.5} /> {t('moodboards.field.addColor')}
           </button>
@@ -432,16 +667,20 @@ const BlockInspector = ({ block, onChange, t }) => {
       );
     case 'product':
       return (<>
-        <InspectorInput label={t('moodboards.field.name')}     value={c.name}   onChange={(v) => set('name', v)} />
-        <InspectorInput label={t('moodboards.field.vendor')}   value={c.vendor} onChange={(v) => set('vendor', v)} />
-        <InspectorInput label={t('moodboards.field.price')}    value={c.price}  onChange={(v) => set('price', v)} />
-        <InspectorInput label={t('moodboards.field.imageUrl')} value={c.image}  onChange={(v) => set('image', v)} />
+        <ImageUploader currentUrl={c.image} t={t}
+                       onUploaded={(url) => setC('image', url)} />
+        <InspectorInput label={t('moodboards.field.name')}     value={c.name}   onChange={(v) => setC('name', v)} />
+        <InspectorInput label={t('moodboards.field.vendor')}   value={c.vendor} onChange={(v) => setC('vendor', v)} />
+        <InspectorInput label={t('moodboards.field.price')}    value={c.price}  onChange={(v) => setC('price', v)} />
+        <InspectorInput label={t('moodboards.field.imageUrl')} value={c.image}  onChange={(v) => setC('image', v)} />
       </>);
     case 'material':
       return (<>
-        <InspectorInput label={t('moodboards.field.name')}   value={c.name}   onChange={(v) => set('name', v)} />
-        <InspectorInput label={t('moodboards.field.finish')} value={c.finish} onChange={(v) => set('finish', v)} />
-        <InspectorInput label={t('moodboards.field.swatch')} value={c.swatch} onChange={(v) => set('swatch', v)} />
+        <ImageUploader currentUrl={c.swatch} t={t}
+                       onUploaded={(url) => setC('swatch', url)} />
+        <InspectorInput label={t('moodboards.field.name')}   value={c.name}   onChange={(v) => setC('name', v)} />
+        <InspectorInput label={t('moodboards.field.finish')} value={c.finish} onChange={(v) => setC('finish', v)} />
+        <InspectorInput label={t('moodboards.field.swatch')} value={c.swatch} onChange={(v) => setC('swatch', v)} />
       </>);
     default:
       return <p className="bp-caption text-[var(--bp-text-muted)]">{t('moodboards.editor.noInspector')}</p>;
