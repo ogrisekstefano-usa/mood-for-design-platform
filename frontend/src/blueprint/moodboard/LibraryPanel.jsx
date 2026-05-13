@@ -1,37 +1,28 @@
 /**
- * LibraryPanel — left "Aggiungi elementi" panel for Moodboard Builder PRO.
+ * LibraryPanel — left rail for Moodboard Builder PRO™ with collapse support.
  *
- * Two tabs:
- *   - BLOCCHI    structural skeletons grouped by family (struttura, layout, …)
- *                Clicking one opens the existing SkeletonPicker / triggers
- *                addBlock for primitive content blocks (image/text/palette…).
- *   - CONTENUTI  flat catalog of content primitives: Immagine, Prodotto,
- *                Materiale, Testo, Nota, Video, PDF, Icona, Hotspot.
- *                Future-ready entries (Video/PDF/Icona/Hotspot) render as
- *                elegant DISABLED tiles to keep the UX scaffolded.
+ * Collapsed mode: 56px width, primitive blocks rendered as a single-column
+ * icon strip — clicking adds the block. Tabs and footer CTA are hidden.
+ * Expanded mode: 240px width with full tabs (Blocchi · Contenuti),
+ * skeleton categories, saved-elements stub, and personal library CTA.
  *
- * Bottom slot:
- *   - "Elementi salvati"  → tenant assets stub (future Asset Library)
- *   - "Libreria personale" CTA → future-ready, disabled with tooltip
- *
- * Blueprint-driven: catalog comes from props (BLOCK_TYPES registry + the
- * server-side page skeletons), labels via t(), zero hardcoded copy.
+ * Collapse persists in localStorage via key `mfd_library_collapsed`.
  */
 import React, { useEffect, useState } from 'react';
 import api from '../../lib/api';
-import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
   Plus, Image as ImageIcon, Type, Palette, StickyNote, Package, Layers,
   Film, FileText, Star, Crosshair, BookOpen,
+  PanelLeftClose, PanelLeftOpen,
 } from 'lucide-react';
 
-// ── Map block type → icon ───────────────────────────────────────────────────
+const LS_KEY = 'mfd_library_collapsed';
+
 const BLOCK_ICON = {
   image: ImageIcon, text: Type, palette: Palette,
   note: StickyNote, product: Package, material: Layers,
 };
 
-// Content catalog — primitives + future-ready stubs (disabled).
 const CONTENT_CATALOG = [
   { key: 'image',    icon: ImageIcon,  disabled: false },
   { key: 'product',  icon: Package,    disabled: false },
@@ -44,7 +35,7 @@ const CONTENT_CATALOG = [
   { key: 'hotspot',  icon: Crosshair,  disabled: true  },
 ];
 
-// ── Sub-component: Tile ─────────────────────────────────────────────────────
+// ── Sub-component: Tile (expanded view) ─────────────────────────────────────
 const Tile = ({ icon: Icon, label, onClick, disabled, testid }) => (
   <button type="button"
           onClick={disabled ? undefined : onClick}
@@ -62,18 +53,40 @@ const Tile = ({ icon: Icon, label, onClick, disabled, testid }) => (
   </button>
 );
 
-// ── Sub-component: SectionTitle ─────────────────────────────────────────────
+// ── Sub-component: IconRail item (collapsed view) ───────────────────────────
+const RailItem = ({ icon: Icon, label, onClick, testid }) => (
+  <button type="button"
+          onClick={onClick}
+          data-testid={testid}
+          title={label}
+          aria-label={label}
+          className="w-10 h-10 flex items-center justify-center rounded-[var(--bp-radius-sm)]
+                     text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]
+                     hover:bg-[var(--bp-surface-2)]/60 transition-colors">
+    <Icon size={16} strokeWidth={1.5} />
+  </button>
+);
+
 const SectionTitle = ({ children }) => (
-  <p className="bp-eyebrow !text-[9px] !tracking-[0.18em] !text-[var(--bp-text-subtle)] mb-3 mt-5">
+  <p className="bp-eyebrow !text-[9px] !tracking-[0.18em] !text-[var(--bp-text-muted)] mb-3 mt-5">
     {children}
   </p>
 );
 
 const LibraryPanel = ({ blockTypes, onAddBlock, onOpenSkeletons, t }) => {
-  const [tab, setTab] = useState('blocks');  // 'blocks' | 'content'
+  const [tab, setTab] = useState('blocks');
+  const [collapsed, setCollapsed] = useState(
+    typeof window !== 'undefined' ? localStorage.getItem(LS_KEY) === '1' : false,
+  );
 
-  // Pull skeleton categories from the server registry so the structural tiles
-  // mirror exactly what the SkeletonPicker offers. NEVER hardcoded.
+  const toggleCollapsed = () => {
+    setCollapsed((c) => {
+      const next = !c;
+      localStorage.setItem(LS_KEY, next ? '1' : '0');
+      return next;
+    });
+  };
+
   const [skeletons, setSkeletons] = useState([]);
   useEffect(() => {
     api.get('/api/moodboards/_meta/page_skeletons')
@@ -81,21 +94,69 @@ const LibraryPanel = ({ blockTypes, onAddBlock, onOpenSkeletons, t }) => {
       .catch(() => setSkeletons([]));
   }, []);
 
-  // Group skeletons by category for the "Blocchi" tab section headers
   const skeletonsByCategory = skeletons.reduce((acc, sk) => {
     const k = sk.category_key || 'moodboards.skeleton.category.other';
     (acc[k] = acc[k] || []).push(sk);
     return acc;
   }, {});
 
+  // ── COLLAPSED VIEW ────────────────────────────────────────────────────────
+  if (collapsed) {
+    return (
+      <aside data-testid="library-panel"
+             style={{ width: 56 }}
+             className="flex-shrink-0 border-r border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 flex flex-col min-h-0 transition-[width] duration-200 ease-out">
+        <div className="px-2 pt-3 pb-2 border-b border-[var(--bp-border)] flex justify-center">
+          <button type="button"
+                  onClick={toggleCollapsed}
+                  data-testid="library-collapse-toggle"
+                  title={t('moodboards.library.expand', null, 'Espandi libreria')}
+                  className="w-10 h-10 flex items-center justify-center rounded-[var(--bp-radius-sm)]
+                             text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]
+                             hover:bg-[var(--bp-surface-2)]/60 transition-colors">
+            <PanelLeftOpen size={14} strokeWidth={1.5} />
+          </button>
+        </div>
+        <div className="flex-1 flex flex-col items-center gap-1 py-3 overflow-y-auto">
+          {blockTypes.map((bt) => (
+            <RailItem key={bt.type}
+                      icon={BLOCK_ICON[bt.type] || Plus}
+                      label={t(`moodboards.block.${bt.type}`)}
+                      onClick={() => onAddBlock(bt.type)}
+                      testid={`add-${bt.type}`} />
+          ))}
+          <div className="my-2 h-px w-8 bg-[var(--bp-border)]" />
+          {CONTENT_CATALOG.filter((c) => !c.disabled).map((c) => (
+            <RailItem key={c.key}
+                      icon={c.icon}
+                      label={t(`moodboards.content.${c.key}`)}
+                      onClick={() => onAddBlock(c.key)}
+                      testid={`rail-add-${c.key}`} />
+          ))}
+        </div>
+      </aside>
+    );
+  }
+
+  // ── EXPANDED VIEW ─────────────────────────────────────────────────────────
   return (
     <aside data-testid="library-panel"
-           className="w-[240px] flex-shrink-0 border-r border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 flex flex-col min-h-0">
+           style={{ width: 240 }}
+           className="flex-shrink-0 border-r border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 flex flex-col min-h-0 transition-[width] duration-200 ease-out">
       {/* Header */}
       <div className="px-5 pt-5 pb-3 flex-shrink-0">
-        <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] mb-3">
-          {t('moodboards.library.title')}
-        </p>
+        <div className="flex items-center justify-between mb-3">
+          <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)]">
+            {t('moodboards.library.title')}
+          </p>
+          <button type="button"
+                  onClick={toggleCollapsed}
+                  data-testid="library-collapse-toggle"
+                  title={t('moodboards.library.collapse', null, 'Riduci libreria')}
+                  className="p-1 rounded-[var(--bp-radius-xs)] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] hover:bg-[var(--bp-surface-2)]/60 transition-colors">
+            <PanelLeftClose size={13} strokeWidth={1.5} />
+          </button>
+        </div>
         <div className="flex gap-4 border-b border-[var(--bp-border)] -mx-1">
           <TabBtn active={tab === 'blocks'} onClick={() => setTab('blocks')}
                   label={t('moodboards.library.tab.blocks')} testid="library-tab-blocks" />
@@ -108,7 +169,6 @@ const LibraryPanel = ({ blockTypes, onAddBlock, onOpenSkeletons, t }) => {
       <div className="flex-1 overflow-y-auto px-5 pb-5 pt-1">
         {tab === 'blocks' ? (
           <>
-            {/* Primitive blocks first — quick add */}
             <SectionTitle>{t('moodboards.library.section.primitives')}</SectionTitle>
             <div className="grid grid-cols-3 gap-2">
               {blockTypes.map((bt) => (
@@ -119,8 +179,6 @@ const LibraryPanel = ({ blockTypes, onAddBlock, onOpenSkeletons, t }) => {
                       testid={`add-${bt.type}`} />
               ))}
             </div>
-
-            {/* Structural skeletons from server registry */}
             {Object.entries(skeletonsByCategory).map(([catKey, items]) => {
               const catLabel = t(catKey);
               const safe = catLabel && catLabel !== catKey ? catLabel : catKey.split('.').pop();
@@ -160,7 +218,6 @@ const LibraryPanel = ({ blockTypes, onAddBlock, onOpenSkeletons, t }) => {
           </>
         )}
 
-        {/* Saved elements — Asset Library stub */}
         <SectionTitle>{t('moodboards.library.section.saved')}</SectionTitle>
         <div className="grid grid-cols-3 gap-2">
           {[0, 1, 2, 3, 4, 5].map((i) => (
@@ -170,7 +227,6 @@ const LibraryPanel = ({ blockTypes, onAddBlock, onOpenSkeletons, t }) => {
         </div>
       </div>
 
-      {/* Footer CTA — Libreria personale (future) */}
       <div className="px-5 py-4 border-t border-[var(--bp-border)] flex-shrink-0">
         <button type="button" disabled
                 data-testid="library-personal-cta"
@@ -191,7 +247,7 @@ const TabBtn = ({ active, onClick, label, testid }) => (
           className={`pb-2 px-1 bp-eyebrow !text-[10px] !tracking-[0.18em] transition-colors relative
                       ${active
                         ? '!text-[var(--bp-text-primary)]'
-                        : '!text-[var(--bp-text-muted)] hover:!text-[var(--bp-text-secondary)]'}`}>
+                        : '!text-[var(--bp-text-secondary)] hover:!text-[var(--bp-text-primary)]'}`}>
     {label}
     {active && (
       <span className="absolute left-1 right-1 -bottom-px h-[2px] bg-[var(--bp-primary)] rounded-full" />

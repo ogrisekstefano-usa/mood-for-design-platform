@@ -35,6 +35,7 @@ import PresentationMode from '../../blueprint/moodboard/PresentationMode';
 import PageInspector from '../../blueprint/moodboard/PageInspector';
 import ImageQuickAdjust from '../../blueprint/moodboard/ImageQuickAdjust';
 import useWorkspaceMode from '../../blueprint/moodboard/useWorkspaceMode';
+import Brand from '../../components/common/Brand';
 
 const CANVAS_W = 1400;
 const CANVAS_H = 2400;
@@ -605,18 +606,9 @@ const MoodboardEditor = ({ readOnly = false }) => {
         <div className="flex items-center gap-4 min-w-0">
           {!readOnly && (
             <>
-              {/* Brand mark — uses CSS variables so it auto-adapts to theme.
-                  Two-line lockup mirrors the reference (MOOD / for / DESIGN). */}
-              <div className="flex items-center gap-0 select-none" data-testid="brand-mark">
-                <span className="font-light tracking-[0.18em] text-[18px] leading-none text-[var(--bp-primary)]">
-                  MOOD
-                </span>
-                <span className="font-light tracking-[0.18em] text-[11px] leading-none text-[var(--bp-text-muted)] mx-1.5 mt-0.5">
-                  for
-                </span>
-                <span className="font-light tracking-[0.18em] text-[18px] leading-none text-[var(--bp-text-primary)]">
-                  DESIGN
-                </span>
+              {/* Brand mark — auto-swaps logo PNG by workspace mode. */}
+              <div className="select-none" data-testid="brand-mark">
+                <Brand size="sm" />
               </div>
               <span className="w-px h-6 bg-[var(--bp-border)]" aria-hidden="true" />
               <button onClick={() => navigate(-1)}
@@ -995,17 +987,17 @@ const InspectorTextarea = ({ label, value, onChange, testid }) => (
 );
 
 const InspectorSlider = ({ label, value, min, max, step, onChange, testid, formatValue }) => (
-  <label className="block mb-3">
-    <div className="flex items-center justify-between mb-1">
-      <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)]">{label}</span>
-      <span className="bp-caption !text-[10px] text-[var(--bp-text-secondary)] font-mono">
+  <label className="block mb-4">
+    <div className="flex items-center justify-between mb-1.5">
+      <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)]">{label}</span>
+      <span className="bp-caption !text-[10px] text-[var(--bp-text-primary)] font-mono tabular-nums">
         {formatValue ? formatValue(value) : value}
       </span>
     </div>
     <input type="range" min={min} max={max} step={step} value={value}
            data-testid={testid}
            onChange={(e) => onChange(parseFloat(e.target.value))}
-           className="w-full accent-[var(--bp-primary)]" />
+           className="bp-slider" />
   </label>
 );
 
@@ -1022,14 +1014,31 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
   const setC = (k, v) => onChangeContent({ ...c, [k]: v });
   const setS = (k, v) => onChangeStyle({ ...s, [k]: v });
 
-  // Crop/focal section reused for image blocks
-  const CropFocalSection = () => (
-    <div className="pt-3 mt-3 border-t border-[var(--bp-border)]">
-      <p className="bp-eyebrow !text-[10px] mb-3 !text-[var(--bp-text-muted)]">
+  // Image adjustments — CSS-filter based, persisted in style.adjustments.
+  const adj = s.adjustments || {};
+  const setAdj = (k, v) => onChangeStyle({ ...s, adjustments: { ...adj, [k]: v } });
+
+  // ⚠️ CRITICAL: these MUST be JSX values (not nested components).
+  // Previously declared as `const X = () => (...)` they were re-created on
+  // every render, which made React see a new component type each tick and
+  // unmount/remount their children — destroying slider focus and producing
+  // the "sliders refresh while dragging" UX bug. Storing them as plain JSX
+  // makes them ordinary expressions that just re-render in-place.
+
+  const SHADOW_PRESETS = [
+    { id: 'none',     label: t('moodboards.shadow.none') },
+    { id: 'soft',     label: t('moodboards.shadow.soft') },
+    { id: 'medium',   label: t('moodboards.shadow.medium') },
+    { id: 'dramatic', label: t('moodboards.shadow.dramatic') },
+  ];
+
+  const cropFocalJsx = (
+    <div className="pt-5 mt-5 border-t border-[var(--bp-border)]">
+      <p className="bp-eyebrow !text-[10px] mb-4 !text-[var(--bp-text-secondary)]">
         {t('moodboards.editor.crop')}
       </p>
-      <label className="block mb-3">
-        <span className="bp-eyebrow !text-[10px] mb-1 block !text-[var(--bp-text-muted)]">
+      <label className="block mb-4">
+        <span className="bp-eyebrow !text-[10px] mb-1.5 block !text-[var(--bp-text-secondary)]">
           {t('moodboards.field.fitMode')}
         </span>
         <select value={s.fit_mode || 'cover'} onChange={(e) => setS('fit_mode', e.target.value)}
@@ -1040,8 +1049,8 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
           <option value="fill">{t('moodboards.field.fitMode.fill')}</option>
         </select>
       </label>
-      <div className="mb-3">
-        <span className="bp-eyebrow !text-[10px] mb-2 block !text-[var(--bp-text-muted)]">
+      <div className="mb-4">
+        <span className="bp-eyebrow !text-[10px] mb-2 block !text-[var(--bp-text-secondary)]">
           {t('moodboards.field.focalPoint')}
         </span>
         <div className="grid grid-cols-3 gap-1 max-w-[120px]">
@@ -1063,25 +1072,22 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
       <button type="button" onClick={() => onChangeStyle({
         ...s, fit_mode: 'cover', focal_point: 'center', zoom: 1,
       })}
-              className="bp-btn bp-btn-ghost text-xs w-full mt-2"
+              className="bp-btn bp-btn-ghost text-xs w-full mt-3"
               data-testid="reset-crop-btn">
         <RotateCcw size={11} strokeWidth={1.5} /> {t('moodboards.editor.resetCrop')}
       </button>
     </div>
   );
 
-  // Image adjustments — CSS-filter based, persisted in style.adjustments.
-  const adj = s.adjustments || {};
-  const setAdj = (k, v) => onChangeStyle({ ...s, adjustments: { ...adj, [k]: v } });
-  const AdjustmentsSection = () => (
-    <div className="pt-3 mt-3 border-t border-[var(--bp-border)]">
-      <div className="flex items-center justify-between mb-3">
-        <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)]">
+  const adjustmentsJsx = (
+    <div className="pt-5 mt-5 border-t border-[var(--bp-border)]">
+      <div className="flex items-center justify-between mb-4">
+        <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)]">
           {t('moodboards.editor.adjustments')}
         </p>
         <button type="button"
                 onClick={() => onChangeStyle({ ...s, adjustments: {} })}
-                className="bp-caption !text-[10px] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]"
+                className="bp-caption !text-[10px] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors"
                 data-testid="reset-adjustments-btn">
           {t('moodboards.editor.reset')}
         </button>
@@ -1117,16 +1123,9 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
     </div>
   );
 
-  const SHADOW_PRESETS = [
-    { id: 'none',     label: t('moodboards.shadow.none') },
-    { id: 'soft',     label: t('moodboards.shadow.soft') },
-    { id: 'medium',   label: t('moodboards.shadow.medium') },
-    { id: 'dramatic', label: t('moodboards.shadow.dramatic') },
-  ];
-
-  const VisualPropsSection = () => (
-    <div className="pt-3 mt-3 border-t border-[var(--bp-border)]">
-      <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] mb-3">
+  const visualPropsJsx = (
+    <div className="pt-5 mt-5 border-t border-[var(--bp-border)]">
+      <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-4">
         {t('moodboards.editor.visualProps')}
       </p>
       <InspectorSlider label={t('moodboards.field.opacity')}
@@ -1145,7 +1144,7 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
                        onChange={(v) => setS('border_radius', v)}
                        testid="block-border-radius" formatValue={(v) => `${v}px`} />
       <div className="mb-3">
-        <label className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] block mb-1.5">
+        <label className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] block mb-2">
           {t('moodboards.field.shadow')}
         </label>
         <div className="grid grid-cols-4 gap-1" data-testid="block-shadow-presets">
@@ -1174,9 +1173,7 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
         <ImageUploader currentUrl={c.src} t={t}
                        onUploaded={(url, meta) => {
                          // Persist src + structured metadata in one atomic update so
-                         // autosave's batch PATCH carries both. metadata_json is the
-                         // canonical place for upload provenance (file_name,
-                         // original_dimensions, media_id, storage_path).
+                         // autosave's batch PATCH carries both.
                          onChange({
                            content: { ...c, src: url },
                            metadata: { ...(block.metadata || {}), ...(meta || {}) },
@@ -1189,16 +1186,16 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
                         onChange={(v) => setC('src', v)} testid="block-image-src" />
         <InspectorInput label={t('moodboards.field.caption')} value={c.caption}
                         onChange={(v) => setC('caption', v)} testid="block-image-caption" />
-        <CropFocalSection />
-        <AdjustmentsSection />
-        <VisualPropsSection />
+        {cropFocalJsx}
+        {adjustmentsJsx}
+        {visualPropsJsx}
       </>);
     case 'text':
       return (<>
         <InspectorTextarea label={t('moodboards.field.text')} value={c.text}
                            onChange={(v) => setC('text', v)} testid="block-text-input" />
         <label className="block mb-3">
-          <span className="bp-eyebrow !text-[10px] mb-1 block !text-[var(--bp-text-muted)]">
+          <span className="bp-eyebrow !text-[10px] mb-1 block !text-[var(--bp-text-secondary)]">
             {t('moodboards.field.size')}
           </span>
           <select value={c.size || 'h3'} onChange={(e) => setC('size', e.target.value)}
@@ -1207,7 +1204,7 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
             {['display','h1','h2','h3','body','caption','eyebrow'].map((sz) => <option key={sz}>{sz}</option>)}
           </select>
         </label>
-        <VisualPropsSection />
+        {visualPropsJsx}
       </>);
     case 'note':
       return (<>

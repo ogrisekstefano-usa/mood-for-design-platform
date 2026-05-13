@@ -454,3 +454,78 @@ a, button, [role="button"] {
   100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--bp-primary) 0%, transparent); }
 }
 .bp-soft-confirm { animation: bpSoftConfirm 800ms ease-out; }
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Editorial range slider — Figma-grade smoothness. We style the native
+ * track + thumb across vendors so dragging feels precise and the visual
+ * matches Aesop/Linear-style minimal aesthetic.
+ * ────────────────────────────────────────────────────────────────────── */
+.bp-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  cursor: pointer;
+  /* Avoids touch scroll hijack on mobile */
+  touch-action: none;
+}
+.bp-slider:focus { outline: none; }
+
+/* Track (WebKit) */
+.bp-slider::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--bp-border-strong);
+  border-radius: 999px;
+}
+.bp-slider::-moz-range-track {
+  height: 2px;
+  background: var(--bp-border-strong);
+  border-radius: 999px;
+}
+
+/* Thumb (WebKit) */
+.bp-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--bp-text-primary);
+  border: 2px solid var(--bp-bg);
+  margin-top: -5px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 120ms ease;
+}
+.bp-slider::-webkit-slider-thumb:hover { transform: scale(1.15); background: var(--bp-primary); }
+.bp-slider:active::-webkit-slider-thumb { transform: scale(1.3); background: var(--bp-primary); }
+.bp-slider::-moz-range-thumb {
+  width: 12px; height: 12px; border-radius: 999px;
+  background: var(--bp-text-primary);
+  border: 2px solid var(--bp-bg);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 120ms ease;
+}
+.bp-slider::-moz-range-thumb:hover { transform: scale(1.15); background: var(--bp-primary); }
+
+/* ──────────────────────────────────────────────────────────────────────
+ * CINEMATIC CONTRAST BUMP — Brighter text hierarchy in dark mode for
+ * better readability without breaking the luxury restraint.
+ * ────────────────────────────────────────────────────────────────────── */
+:root:not([data-workspace-mode="light"]) {
+  --bp-text-primary:   #F5F2EC;
+  --bp-text-secondary: #C7C2BB;
+  --bp-text-muted:     #908B85;
+  --bp-text-subtle:    #5E5A55;
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Brand mark swap — CSS-only so the logo flips instantly when the user
+ * toggles Editorial Light™ ↔ Cinematic Dark™. No JS re-render needed.
+ * ────────────────────────────────────────────────────────────────────── */
+.brand-mark--light { opacity: 0; }
+.brand-mark--dark  { opacity: 1; }
+:root[data-workspace-mode="light"] .brand-mark--dark  { opacity: 0; }
+:root[data-workspace-mode="light"] .brand-mark--light { opacity: 1; }
+.brand-mark { transition: opacity 240ms cubic-bezier(0.22, 1, 0.36, 1); }

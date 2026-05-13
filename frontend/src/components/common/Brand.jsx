@@ -3,46 +3,48 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 
 /**
  * Tenant-aware Brand component.
- * Renders tenant logo if uploaded, otherwise typographic fallback.
+ *
+ * Order of precedence:
+ *   1. tenant.branding.assets.logo_{dark|light} (uploaded per-tenant)
+ *   2. fallback to bundled MOOD for DESIGN logo from /public/brand/
+ *      — mode swap handled in pure CSS via [data-workspace-mode="light"]
+ *        so no React state is needed when the user toggles the workspace mode.
+ *   3. typographic fallback if neither logo source resolves
  */
-const Brand = ({ size = 'md', variant = 'dark' }) => {
+const Brand = ({ size = 'md', collapsed = false }) => {
   const { tenant, t } = useBlueprint();
-  const logoUrl = variant === 'light'
-    ? tenant?.branding?.assets?.logo_light || tenant?.theme?.logo_url
-    : tenant?.branding?.assets?.logo_dark  || tenant?.theme?.logo_url;
 
-  const sizes = {
-    sm: { logo: 'h-7', text: 'text-[10px]', sub: 'text-[8px]' },
-    md: { logo: 'h-9', text: 'text-sm',     sub: 'text-[10px]' },
-    lg: { logo: 'h-12', text: 'text-base',  sub: 'text-[11px]' },
+  // Tenant-uploaded asset (if any) takes precedence over the bundled mark.
+  const tenantDark  = tenant?.branding?.assets?.logo_dark  || tenant?.theme?.logo_url;
+  const tenantLight = tenant?.branding?.assets?.logo_light || tenant?.theme?.logo_url;
+
+  const heightMap = {
+    sm: collapsed ? 28 : 32,
+    md: collapsed ? 32 : 40,
+    lg: collapsed ? 36 : 48,
   };
-  const s = sizes[size] || sizes.md;
+  const h = heightMap[size] || heightMap.md;
 
-  if (logoUrl) {
-    return (
-      <div className="flex items-center" data-testid="brand-logo">
-        <img src={logoUrl} alt={tenant?.name || 'Brand'} className={`${s.logo} w-auto object-contain`} />
-      </div>
-    );
-  }
+  // We render TWO <img> tags layered on top of each other and let CSS show
+  // the right one based on the workspace mode attribute. This avoids any
+  // React subscription and keeps the swap instant + flicker-free.
+  const containerCls = `relative flex items-center ${collapsed ? 'justify-center' : ''}`;
 
-  // Typographic fallback — uses tenant primary color as accent
   return (
-    <div className="flex items-center gap-2.5" data-testid="brand-text">
-      <div className="w-7 h-7 rounded-[var(--bp-radius-sm)] flex items-center justify-center flex-shrink-0"
-           style={{ backgroundColor: 'var(--bp-primary)' }}>
-        <span className="text-[var(--bp-bg)] font-bold font-body text-xs">
-          {(tenant?.name || 'M').charAt(0).toUpperCase()}
-        </span>
-      </div>
-      <div className="min-w-0">
-        <p className={`text-[var(--bp-text-primary)] ${s.text} font-semibold font-body tracking-[0.1em] uppercase leading-tight`}>
-          {tenant?.name || t('brand.name', null, 'MOOD for Design')}
-        </p>
-        <p className={`text-[var(--bp-text-subtle)] ${s.sub} font-body tracking-[0.2em] uppercase`}>
-          Blueprint OS™
-        </p>
-      </div>
+    <div className={containerCls} data-testid="brand-logo" style={{ height: h }}>
+      <img
+        src={tenantDark || '/brand/logo-dark.png'}
+        alt={tenant?.name || t('brand.name', null, 'MOOD for DESIGN')}
+        className="block w-auto h-full object-contain select-none pointer-events-none brand-mark brand-mark--dark"
+        draggable={false}
+      />
+      <img
+        src={tenantLight || '/brand/logo-light.png'}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-auto h-full object-contain select-none pointer-events-none brand-mark brand-mark--light"
+        draggable={false}
+      />
     </div>
   );
 };

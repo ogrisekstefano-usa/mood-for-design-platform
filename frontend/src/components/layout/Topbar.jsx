@@ -5,7 +5,12 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import { ChevronRight, Bell } from 'lucide-react';
 import LocaleSwitcher from '../common/LocaleSwitcher';
 
-// Path → label key resolver. Order matters (longest match wins).
+/**
+ * Topbar — section breadcrumb + locale + notifications + user chip.
+ *
+ * The user chip lives ONLY here (Sidebar no longer renders user info,
+ * to eliminate the previous bottom-left / top-right duplicate).
+ */
 const PATH_KEYS = [
   ['/workspace/leads', 'nav.leads', 'nav.section.workspace'],
   ['/workspace/projects', 'nav.projects', 'nav.section.workspace'],
@@ -32,33 +37,34 @@ const Topbar = () => {
   return (
     <header
       data-testid="topbar"
-      className="h-13 flex items-center justify-between px-6 border-b border-white/[0.05] bg-[#0A0A0B]/80 backdrop-blur-xl flex-shrink-0"
       style={{ height: '52px' }}
+      className="flex items-center justify-between px-6 border-b border-[var(--bp-border)] bg-[var(--bp-bg)]/85 backdrop-blur-xl flex-shrink-0"
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 min-w-0">
         {sectionKey && (
           <>
-            <span className="text-[#4A4845] text-xs font-body">{t(sectionKey)}</span>
-            <ChevronRight size={12} className="text-[#3A3835]" />
+            <span className="text-[var(--bp-text-muted)] text-xs font-body">{t(sectionKey)}</span>
+            <ChevronRight size={12} className="text-[var(--bp-text-subtle)]" />
           </>
         )}
-        <span className="text-[#EFEBE4] text-sm font-body font-medium">{t(labelKey)}</span>
+        <span className="text-[var(--bp-text-primary)] text-sm font-body font-medium truncate">{t(labelKey)}</span>
       </div>
 
       <div className="flex items-center gap-2">
         <LocaleSwitcher />
         <button
           data-testid="topbar-notifications-btn"
-          className="relative text-[#4A4845] hover:text-[#A19D98] transition-colors p-1.5 rounded-[3px] hover:bg-white/[0.04]"
+          className="relative text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors p-1.5 rounded-[3px] hover:bg-[var(--bp-surface-2)]/40"
         >
           <Bell size={15} strokeWidth={1.5} />
         </button>
 
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-[3px] bg-white/[0.03] border border-white/[0.06]">
-          <div className="w-5 h-5 rounded-full bg-[var(--bp-primary,#D4AF37)]/15 flex items-center justify-center">
-            <span className="text-[var(--bp-primary,#D4AF37)] text-[10px] font-semibold font-body">{userInitial}</span>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-[3px] bg-[var(--bp-surface-2)]/40 border border-[var(--bp-border)]"
+             data-testid="topbar-user-chip">
+          <div className="w-5 h-5 rounded-full bg-[var(--bp-primary)]/15 flex items-center justify-center">
+            <span className="text-[var(--bp-primary)] text-[10px] font-semibold font-body">{userInitial}</span>
           </div>
-          <span className="text-[#A19D98] text-xs font-body hidden sm:block">{userLabel}</span>
+          <span className="text-[var(--bp-text-secondary)] text-xs font-body hidden sm:block">{userLabel}</span>
         </div>
       </div>
     </header>
