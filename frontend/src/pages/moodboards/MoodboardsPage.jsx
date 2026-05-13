@@ -8,10 +8,12 @@ import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { Plus, Layers, X } from 'lucide-react';
 import StatusBadge from '../../components/common/StatusBadge';
+import TemplatePicker from '../../blueprint/moodboard/TemplatePicker';
 
 const CreateModal = ({ projects, onClose, onCreate, t }) => {
   const [title, setTitle] = useState('');
   const [projectId, setProjectId] = useState('');
+  const [templateId, setTemplateId] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   const submit = async (e) => {
@@ -19,7 +21,7 @@ const CreateModal = ({ projects, onClose, onCreate, t }) => {
     if (!title.trim()) return;
     setSubmitting(true);
     try {
-      await onCreate({ title: title.trim(), project_id: projectId || null });
+      await onCreate({ title: title.trim(), project_id: projectId || null, template_id: templateId });
     } finally { setSubmitting(false); }
   };
 
@@ -27,7 +29,7 @@ const CreateModal = ({ projects, onClose, onCreate, t }) => {
     <div className="fixed inset-0 z-50 bg-[var(--bp-overlay)] backdrop-blur-sm flex items-center justify-center p-4"
          onClick={onClose} data-testid="moodboard-create-modal">
       <form onClick={(e) => e.stopPropagation()} onSubmit={submit}
-            className="bp-glass w-full max-w-md p-7 rounded-[var(--bp-radius-md)]">
+            className="bp-glass w-full max-w-2xl p-7 rounded-[var(--bp-radius-md)]">
         <div className="flex items-start justify-between mb-6">
           <div>
             <p className="bp-eyebrow !text-[var(--bp-text-muted)] mb-1">{t('moodboards.tab.title')}</p>
@@ -37,22 +39,29 @@ const CreateModal = ({ projects, onClose, onCreate, t }) => {
             <X size={16} strokeWidth={1.5} />
           </button>
         </div>
-        <label className="block mb-4">
-          <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] block mb-1.5">{t('moodboards.create.titleLabel')}</span>
-          <input autoFocus value={title} onChange={(e) => setTitle(e.target.value)}
-                 data-testid="moodboard-title-input"
-                 placeholder={t('moodboards.create.titlePh')}
-                 className="input-luxury w-full px-3 py-2.5 text-sm rounded-[var(--bp-radius-sm)]" />
-        </label>
-        <label className="block mb-6">
-          <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] block mb-1.5">{t('moodboards.create.projectLabel')}</span>
-          <select value={projectId} onChange={(e) => setProjectId(e.target.value)}
-                  data-testid="moodboard-project-select"
-                  className="input-luxury w-full px-3 py-2.5 text-sm rounded-[var(--bp-radius-sm)]">
-            <option value="">{t('moodboards.create.projectPh')}</option>
-            {projects.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
-          </select>
-        </label>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+          <div>
+            <label className="block mb-4">
+              <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] block mb-1.5">{t('moodboards.create.titleLabel')}</span>
+              <input autoFocus value={title} onChange={(e) => setTitle(e.target.value)}
+                     data-testid="moodboard-title-input"
+                     placeholder={t('moodboards.create.titlePh')}
+                     className="input-luxury w-full px-3 py-2.5 text-sm rounded-[var(--bp-radius-sm)]" />
+            </label>
+            <label className="block">
+              <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] block mb-1.5">{t('moodboards.create.projectLabel')}</span>
+              <select value={projectId} onChange={(e) => setProjectId(e.target.value)}
+                      data-testid="moodboard-project-select"
+                      className="input-luxury w-full px-3 py-2.5 text-sm rounded-[var(--bp-radius-sm)]">
+                <option value="">{t('moodboards.create.projectPh')}</option>
+                {projects.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
+              </select>
+            </label>
+          </div>
+          <TemplatePicker value={templateId} onChange={setTemplateId} />
+        </div>
+
         <div className="flex justify-end gap-2">
           <button type="button" onClick={onClose} className="bp-btn bp-btn-ghost text-xs">
             {t('common.cancel')}
@@ -91,8 +100,10 @@ const MoodboardsPage = () => {
   }, []);
   useEffect(() => { load(); }, [load]);
 
-  const handleCreate = async (payload) => {
-    const r = await api.post('/api/moodboards', payload);
+  const handleCreate = async ({ title, project_id, template_id }) => {
+    const r = template_id
+      ? await api.post(`/api/templates/${template_id}/apply`, { title, project_id })
+      : await api.post('/api/moodboards', { title, project_id });
     setShowCreate(false);
     navigate(`/moodboards/${r.data.id}`);
   };

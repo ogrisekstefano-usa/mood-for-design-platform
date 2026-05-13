@@ -13,6 +13,7 @@ import {
   FileText, ListChecks, StickyNote, Activity, X,
 } from 'lucide-react';
 import StatusBadge from '../../components/common/StatusBadge';
+import TemplatePicker from '../../blueprint/moodboard/TemplatePicker';
 
 // ── Tasks tab ────────────────────────────────────────────────────────────────
 const TasksTab = ({ projectId, t }) => {
@@ -184,13 +185,16 @@ const ActivityTab = ({ projectId, t }) => {
 // ── Create-moodboard modal (luxury) ─────────────────────────────────────────
 const CreateMoodboardModal = ({ projectId, onClose, onCreated, t }) => {
   const [title, setTitle] = useState('');
+  const [templateId, setTemplateId] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const submit = async (e) => {
     e.preventDefault();
     if (!title.trim()) return;
     setSubmitting(true);
     try {
-      const r = await api.post('/api/moodboards', { title: title.trim(), project_id: projectId });
+      const r = templateId
+        ? await api.post(`/api/templates/${templateId}/apply`, { title: title.trim(), project_id: projectId })
+        : await api.post('/api/moodboards', { title: title.trim(), project_id: projectId });
       onCreated(r.data);
     } finally { setSubmitting(false); }
   };
@@ -198,7 +202,7 @@ const CreateMoodboardModal = ({ projectId, onClose, onCreated, t }) => {
     <div className="fixed inset-0 z-50 bg-[var(--bp-overlay)] backdrop-blur-sm flex items-center justify-center p-4"
          onClick={onClose} data-testid="project-moodboard-modal">
       <form onClick={(e) => e.stopPropagation()} onSubmit={submit}
-            className="bp-glass w-full max-w-md p-7 rounded-[var(--bp-radius-md)]">
+            className="bp-glass w-full max-w-2xl p-7 rounded-[var(--bp-radius-md)]">
         <div className="flex items-start justify-between mb-6">
           <div>
             <p className="bp-eyebrow !text-[var(--bp-text-muted)] mb-1">{t('moodboards.tab.title')}</p>
@@ -209,15 +213,18 @@ const CreateMoodboardModal = ({ projectId, onClose, onCreated, t }) => {
             <X size={16} strokeWidth={1.5} />
           </button>
         </div>
-        <label className="block mb-6">
-          <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] block mb-1.5">
-            {t('moodboards.create.titleLabel')}
-          </span>
-          <input autoFocus value={title} onChange={(e) => setTitle(e.target.value)}
-                 data-testid="project-moodboard-title"
-                 placeholder={t('moodboards.create.titlePh')}
-                 className="input-luxury w-full px-3 py-2.5 text-sm rounded-[var(--bp-radius-sm)]" />
-        </label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+          <label className="block">
+            <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] block mb-1.5">
+              {t('moodboards.create.titleLabel')}
+            </span>
+            <input autoFocus value={title} onChange={(e) => setTitle(e.target.value)}
+                   data-testid="project-moodboard-title"
+                   placeholder={t('moodboards.create.titlePh')}
+                   className="input-luxury w-full px-3 py-2.5 text-sm rounded-[var(--bp-radius-sm)]" />
+          </label>
+          <TemplatePicker value={templateId} onChange={setTemplateId} />
+        </div>
         <div className="flex justify-end gap-2">
           <button type="button" onClick={onClose} className="bp-btn bp-btn-ghost text-xs">
             {t('common.cancel')}

@@ -302,16 +302,19 @@ def apply_template(template_id: str, body: ApplyTemplate,
 
     moodboard_id = str(uuid.uuid4())
     now = _now()
+    # Note: `settings` is NOT a column on moodboards (lives only on templates as
+    # an authoring-time canvas hint). We keep separation of concerns: template
+    # is the preset; moodboard is the runtime instance.
     mb = {
         "id": moodboard_id,
         "tenant_id": ctx["tenant_id"],
         "project_id": body.project_id,
         "title": body.title,
         "status": "draft",
+        "current_version": 1,
         "created_by": ctx["profile_id"],
         "created_at": now,
         "updated_at": now,
-        "settings": tpl.get("settings") or {},
     }
     mb = {k: v for k, v in mb.items() if v is not None}
     client.table("moodboards").insert(mb).execute()
@@ -323,17 +326,24 @@ def apply_template(template_id: str, body: ApplyTemplate,
         content = _parse_jsonish(tb.get("content"))
         pos = _parse_jsonish(tb.get("position_json"))
         style = _parse_jsonish(tb.get("style_json"))
-        client.table("moodboard_elements").insert({
+        row = {
+            "id": str(uuid.uuid4()),
             "tenant_id": ctx["tenant_id"],
             "moodboard_id": moodboard_id,
             "type": tb["type"],
-            "title": tb.get("title"),
-            "image_url": tb.get("image_url"),
+            "title": tb.get("title") or (content.get("caption") if tb["type"] == "image" else None),
             "content": json.dumps(content),
             "position_json": pos,
             "style_json": style,
             "sort_order": tb.get("sort_order") or 0,
-        }).execute()
+        }
+        # Mirror src→image_url for image blocks (parity with regular create_block)
+        if tb["type"] == "image":
+            img = tb.get("image_url") or content.get("src")
+            if img:
+                row["image_url"] = img
+        row = {k: v for k, v in row.items() if v is not None}
+        client.table("moodboard_elements").insert(row).execute()
 
     audit_log(ctx["tenant_id"], ctx["profile_id"], "template.applied",
               resource_type="moodboard", resource_id=moodboard_id,
@@ -352,7 +362,6 @@ def save_as_template(moodboard_id: str, body: SaveAsTemplate,
         .eq("id", moodboard_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute()
     if not mb_q.data:
         raise HTTPException(404, "Moodboard not found")
-    mb = mb_q.data[0]
     visibility = body.visibility if body.visibility in ("tenant", "private") else "tenant"
 
     tid = str(uuid.uuid4())
@@ -367,7 +376,8 @@ def save_as_template(moodboard_id: str, body: SaveAsTemplate,
             "category": body.category,
             "tags": body.tags or [],
             "visibility": visibility,
-            "settings": mb.get("settings") or {},
+            "is_starter": False,
+            "settings": {},  # canvas hints reserved for V2 authoring tools
             "created_by": ctx["profile_id"],
             "created_at": now,
             "updated_at": now,
@@ -377,16 +387,19 @@ def save_as_template(moodboard_id: str, body: SaveAsTemplate,
             raise HTTPException(409, "A template with that slug already exists in this tenant")
         raise
 
-    # Snapshot all current elements
+    # Snapshot all current elements → template_blocks (structure only, no
+    # per-tenant URLs leak: image_url and content.src are intentionally kept
+    # because a tenant-saved template is private to that tenant by default).
     els = client.table("moodboard_elements").select("*") \
         .eq("moodboard_id", moodboard_id).order("sort_order").execute().data or []
     for el in els:
+        content = _parse_jsonish(el.get("content"))
         client.table("template_blocks").insert({
             "template_id": tid,
             "type": el["type"],
             "title": el.get("title"),
             "image_url": el.get("image_url"),
-            "content": el.get("content"),  # already JSON-string
+            "content": json.dumps(content),
             "position_json": _parse_jsonish(el.get("position_json")),
             "style_json": _parse_jsonish(el.get("style_json")),
             "sort_order": el.get("sort_order") or 0,

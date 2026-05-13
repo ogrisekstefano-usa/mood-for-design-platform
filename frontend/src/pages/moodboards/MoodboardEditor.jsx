@@ -18,6 +18,7 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
   ArrowLeft, Plus, Check, Share2, ExternalLink, Send, X, AlertCircle,
   Play, Maximize2, ChevronLeft, ChevronRight, PanelRight, ListChecks,
+  BookmarkPlus,
 } from 'lucide-react';
 import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegistry';
 import StatusBadge from '../../components/common/StatusBadge';
@@ -236,6 +237,30 @@ const MoodboardEditor = ({ readOnly = false }) => {
     setMb((m) => ({ ...m, share_token: r.data.share_token }));
   };
 
+  // ── Save current moodboard as a tenant template ──────────────────────────
+  const [savingTemplate, setSavingTemplate] = useState(false);
+  const [templateSavedSlug, setTemplateSavedSlug] = useState(null);
+  const [templateSaveError, setTemplateSaveError] = useState(null);
+  const saveAsTemplate = async () => {
+    const baseSlug = (mb.title || 'template')
+      .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 48) || 'template';
+    const slug = `${baseSlug}-${Math.random().toString(36).slice(2, 6)}`;
+    setSavingTemplate(true); setTemplateSaveError(null);
+    try {
+      await api.post(`/api/templates/from-moodboard/${id}`, {
+        slug, name: mb.title || t('moodboards.untitled'),
+      });
+      setTemplateSavedSlug(slug);
+      setTimeout(() => setTemplateSavedSlug(null), 2500);
+    } catch (err) {
+      setTemplateSaveError(err?.response?.data?.detail || 'error');
+      setTimeout(() => setTemplateSaveError(null), 3000);
+    } finally {
+      setSavingTemplate(false);
+    }
+  };
+
   // ── Presentation mode keyboard nav ────────────────────────────────────────
   useEffect(() => {
     if (!presenting) return;
@@ -339,6 +364,19 @@ const MoodboardEditor = ({ readOnly = false }) => {
               )}
               <button onClick={createShareToken} className="bp-btn bp-btn-ghost text-xs" data-testid="share-btn">
                 <Share2 size={12} strokeWidth={1.5} /> {t('moodboards.editor.share')}
+              </button>
+              <button onClick={saveAsTemplate} disabled={savingTemplate || !blocks.length}
+                      className="bp-btn bp-btn-ghost text-xs disabled:opacity-40"
+                      data-testid="save-as-template-btn"
+                      title={t('moodboards.templates.saveAs')}>
+                <BookmarkPlus size={12} strokeWidth={1.5} />
+                {templateSavedSlug
+                  ? t('moodboards.editor.saved')
+                  : templateSaveError
+                    ? t('moodboards.editor.saveFailed')
+                    : savingTemplate
+                      ? t('moodboards.editor.saving')
+                      : t('moodboards.templates.saveAs')}
               </button>
             </>
           )}
