@@ -241,7 +241,7 @@ a, button, [role="button"] {
   .bp-glow-accent { box-shadow: 0 0 0 1px var(--bp-primary), 0 0 48px color-mix(in srgb, var(--bp-primary) calc(var(--bp-glow-intensity) * 100%), transparent); }
 
   /* ── Image treatments ────────────────────────────────────────────── */
-  .bp-img-cinematic { filter: contrast(1.08) saturate(0.92) brightness(0.94); }
+  .bp-img-cinematic { filter: contrast(1.04) saturate(0.98) brightness(0.98); }
   .bp-img-desaturated { filter: saturate(0.4) contrast(1.05); }
   .bp-img-warm { filter: sepia(0.12) saturate(1.05); }
 
@@ -312,3 +312,145 @@ a, button, [role="button"] {
 /* ── Marquee (logo strip) ───────────────────────────────────────────── */
 @keyframes bpMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .bp-marquee-track { display: flex; gap: 3rem; width: max-content; animation: bpMarquee 32s linear infinite; }
+
+/* ──────────────────────────────────────────────────────────────────────
+ * EDITORIAL LIGHT MODE™
+ * ----------------------------------------------------------------------
+ * Activated by [data-workspace-mode="light"] on <html>. NOT a flat
+ * SaaS "light theme" — it's a warm editorial paper mode inspired by
+ * Kinfolk / Aesop / Apartamento. Palette is deliberately ivory + charcoal
+ * with sub-pixel paper grain, never pure #fff.
+ * ────────────────────────────────────────────────────────────────────── */
+:root[data-workspace-mode="light"] {
+  /* Paper palette */
+  --bp-bg:           #F5F1EB;      /* warm ivory */
+  --bp-surface-1:    #EFEAE3;      /* paper soft */
+  --bp-surface-2:    #E7E1D8;      /* paper deeper */
+  --bp-surface-3:    #DDD6CB;
+  --bp-overlay:      rgba(30,27,24,0.34);
+
+  /* Ink hierarchy — charcoal, never pure black */
+  --bp-text-primary:   #1E1B18;
+  --bp-text-secondary: #4A4642;
+  --bp-text-muted:     #7A736B;
+  --bp-text-subtle:    #A8A099;
+
+  /* Soft separators — almost invisible, like editorial rules */
+  --bp-border:         rgba(30,27,24,0.08);
+  --bp-border-strong:  rgba(30,27,24,0.16);
+
+  /* Accent kept on Blueprint teal but slightly deepened for paper contrast */
+  --bp-primary:        #15B89A;
+  --bp-accent:         #A87C5A;
+
+  --bp-selection-bg:   rgba(21,184,154,0.22);
+  --bp-selection-fg:   #1E1B18;
+
+  /* Soft elevations — editorial feels almost flat, never harsh */
+  --bp-shadow-sm:  0 1px 2px rgba(30,27,24,0.04);
+  --bp-shadow-md:  0 4px 18px rgba(30,27,24,0.06);
+  --bp-shadow-lg:  0 14px 40px rgba(30,27,24,0.08);
+  --bp-shadow-xl:  0 28px 80px rgba(30,27,24,0.12);
+  --bp-shadow-glow: 0 0 0 1px rgba(21,184,154,0.18), 0 0 26px rgba(21,184,154,0.12);
+  --bp-inset-soft: inset 0 1px 0 rgba(255,255,255,0.5);
+
+  /* Atmosphere: less vignette, lower glow */
+  --bp-grain-intensity: 0.08;
+  --bp-glow-intensity: 0.2;
+  --bp-vignette-intensity: 0.04;
+  --bp-glass-opacity: 0.78;
+  --bp-hero-gradient: linear-gradient(180deg, rgba(245,241,235,0) 0%, rgba(245,241,235,0.6) 60%, rgba(245,241,235,0.96) 100%);
+  --bp-section-divider: linear-gradient(90deg, transparent 0%, rgba(30,27,24,0.12) 50%, transparent 100%);
+
+  /* shadcn compatibility — light counterparts */
+  --background: 36 28% 94%;
+  --foreground: 24 12% 12%;
+  --card: 36 24% 91%;
+  --card-foreground: 24 12% 12%;
+  --popover: 36 24% 91%;
+  --popover-foreground: 24 12% 12%;
+  --primary: 169 75% 40%;
+  --primary-foreground: 36 28% 96%;
+  --secondary: 36 18% 88%;
+  --secondary-foreground: 24 12% 12%;
+  --muted: 36 18% 86%;
+  --muted-foreground: 30 6% 40%;
+  --accent: 36 18% 88%;
+  --accent-foreground: 24 12% 12%;
+  --destructive: 0 62% 48%;
+  --destructive-foreground: 36 28% 96%;
+  --border: 24 10% 80%;
+  --input: 36 24% 91%;
+  --ring: 169 75% 40%;
+}
+
+/* Subtle paper grain — only in light mode, masks the flatness of a single fill */
+:root[data-workspace-mode="light"] body::before {
+  content: "";
+  position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+  opacity: 0.04;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+/* Editorial light: skeleton uses warm paper tones */
+:root[data-workspace-mode="light"] .skeleton {
+  background: linear-gradient(90deg, var(--bp-surface-1) 25%, var(--bp-surface-2) 50%, var(--bp-surface-1) 75%);
+}
+
+/* Mode-aware scrollbars */
+:root[data-workspace-mode="light"] ::-webkit-scrollbar-thumb { background: rgba(30,27,24,0.12); }
+:root[data-workspace-mode="light"] ::-webkit-scrollbar-thumb:hover { background: rgba(30,27,24,0.22); }
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Premium image loading — softer, slower, more editorial than the
+ * default shimmer. Used by ImageBlock and any "loading" placeholder.
+ * ────────────────────────────────────────────────────────────────────── */
+@keyframes bpImgShimmer {
+  0%   { background-position: -150% 0; opacity: 0.6; }
+  50%  { opacity: 1; }
+  100% { background-position: 150% 0; opacity: 0.6; }
+}
+.bp-img-shimmer {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    color-mix(in srgb, var(--bp-text-primary) 6%, transparent) 38%,
+    color-mix(in srgb, var(--bp-text-primary) 12%, transparent) 50%,
+    color-mix(in srgb, var(--bp-text-primary) 6%, transparent) 62%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  animation: bpImgShimmer 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Cinematic image fade-in (used by ImageBlock once <img> fires onLoad) */
+@keyframes bpImgIn {
+  0%   { opacity: 0; transform: scale(1.012); filter: blur(8px); }
+  60%  { filter: blur(0); }
+  100% { opacity: 1; transform: scale(1);     filter: blur(0); }
+}
+.bp-img-in { animation: bpImgIn 720ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Autosave SOFT PULSE™ — silent reliability indicator. No text, just
+ * a 6px dot that breathes when saving, settles when idle.
+ * ────────────────────────────────────────────────────────────────────── */
+@keyframes bpSoftPulse {
+  0%   { transform: scale(0.85); opacity: 0.55; }
+  50%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.85); opacity: 0.55; }
+}
+.bp-soft-pulse { animation: bpSoftPulse 1.6s ease-in-out infinite; }
+
+/* Once a save succeeds we briefly glow the dot then settle.
+   Triggered by toggling class `.bp-soft-confirm` on the dot for 800ms. */
+@keyframes bpSoftConfirm {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--bp-primary) 50%, transparent); }
+  60%  { box-shadow: 0 0 0 8px color-mix(in srgb, var(--bp-primary) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--bp-primary) 0%, transparent); }
+}
+.bp-soft-confirm { animation: bpSoftConfirm 800ms ease-out; }

@@ -128,15 +128,11 @@ const ImageBlock = ({ block, readOnly, t }) => {
         </div>
       )}
 
-      {/* Loading skeleton (visible until <img onLoad>) */}
+      {/* Loading skeleton (visible until <img onLoad>) — editorial shimmer */}
       {src && !loaded && !errored && (
-        <div className="absolute inset-0 overflow-hidden bg-[var(--bp-surface-2)]"
+        <div className="absolute inset-0 overflow-hidden"
              data-testid="image-block-skeleton">
-          <div className="absolute inset-0 animate-[shimmer_1.6s_ease-in-out_infinite]"
-               style={{
-                 background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%)',
-                 backgroundSize: '200% 100%',
-               }} />
+          <div className="bp-img-shimmer" />
         </div>
       )}
 
@@ -159,7 +155,7 @@ const ImageBlock = ({ block, readOnly, t }) => {
           draggable={false}
           onLoad={() => setLoaded(true)}
           onError={handleImgError}
-          className="w-full h-full bp-img-cinematic"
+          className={`w-full h-full ${loaded && !errored ? 'bp-img-in' : ''}`}
           data-testid="image-block-img"
           style={{
             objectFit: fit,
@@ -168,10 +164,11 @@ const ImageBlock = ({ block, readOnly, t }) => {
             transformOrigin: objectPosition,
             filter: buildFilter(adj),
             opacity: loaded && !errored ? 1 : 0,
-            // Cinematic fade-in — premium 700ms cubic-bezier with a
-            // slight scale settle so images feel like they're landing.
-            transition: 'opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), filter 220ms ease',
-            willChange: loaded ? 'auto' : 'opacity',
+            // Cinematic fade-in handled by .bp-img-in (blur-up + scale settle).
+            // The opacity transition is the safety net for cached images that
+            // don't trigger the animation reliably.
+            transition: 'opacity 600ms cubic-bezier(0.22, 1, 0.36, 1), filter 220ms ease',
+            willChange: loaded ? 'auto' : 'opacity, filter, transform',
           }}
         />
       )}

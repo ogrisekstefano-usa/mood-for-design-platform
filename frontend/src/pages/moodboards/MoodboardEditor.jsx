@@ -19,7 +19,7 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
   ArrowLeft, Plus, Check, Share2, ExternalLink, Send, X, AlertCircle,
   Play, Maximize2, ChevronLeft, ChevronRight, PanelRight, ListChecks,
-  BookmarkPlus, Undo2, Redo2, Magnet, RotateCcw, FileText,
+  BookmarkPlus, Undo2, Redo2, Magnet, RotateCcw, FileText, Sun, Moon,
 } from 'lucide-react';
 import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegistry';
 import StatusBadge from '../../components/common/StatusBadge';
@@ -34,6 +34,7 @@ import useHistory from '../../blueprint/moodboard/useHistory';
 import PresentationMode from '../../blueprint/moodboard/PresentationMode';
 import PageInspector from '../../blueprint/moodboard/PageInspector';
 import ImageQuickAdjust from '../../blueprint/moodboard/ImageQuickAdjust';
+import useWorkspaceMode from '../../blueprint/moodboard/useWorkspaceMode';
 
 const CANVAS_W = 1400;
 const CANVAS_H = 2400;
@@ -62,6 +63,10 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const [activePageId, setActivePageId] = useState(null);
   const [transitions, setTransitions] = useState([]);
   const history = useHistory();
+  const { mode: workspaceMode, toggle: toggleWorkspaceMode, isLight } = useWorkspaceMode();
+  // Confirm pulse — a transient ring shown on the autosave dot the moment a
+  // save succeeds. Resets to "silent reliable" steady state after 800ms.
+  const [justSaved, setJustSaved] = useState(false);
 
   // Load transitions registry once
   useEffect(() => {
@@ -180,6 +185,9 @@ const MoodboardEditor = ({ readOnly = false }) => {
       setSavedAt(Date.now());
       setSaveState('idle');
       retryCount.current = 0;
+      // Quiet success pulse — 800ms then settles back to the steady dot.
+      setJustSaved(true);
+      setTimeout(() => setJustSaved(false), 800);
     } catch (err) {
       retryCount.current += 1;
       if (retryCount.current < AUTOSAVE_MAX_RETRIES) {
@@ -664,6 +672,19 @@ const MoodboardEditor = ({ readOnly = false }) => {
             <span className="bp-caption !text-[11px] !text-[var(--bp-primary)]">{t('moodboards.editor.present')}</span>
           </button>
 
+          {/* Workspace Mode toggle — Editorial Light ↔ Cinematic Dark */}
+          <button onClick={toggleWorkspaceMode}
+                  data-testid="workspace-mode-toggle"
+                  title={isLight
+                    ? t('moodboards.editor.modeDark', null, 'Cinematic Dark')
+                    : t('moodboards.editor.modeLight', null, 'Editorial Light')}
+                  aria-label="Toggle workspace mode"
+                  className="p-1.5 rounded-[var(--bp-radius-xs)] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] hover:bg-[var(--bp-surface-2)]/60 transition-colors">
+            {isLight
+              ? <Moon size={14} strokeWidth={1.5} />
+              : <Sun size={14} strokeWidth={1.5} />}
+          </button>
+
           {!readOnly && (
             <>
               {mb.status === 'draft' && (
@@ -842,30 +863,43 @@ const MoodboardEditor = ({ readOnly = false }) => {
         />
       )}
 
-      {/* Autosave status — bottom-right teal dot */}
+      {/* Autosave — SOFT PULSE™ indicator: silent dot, no text in steady state.
+          Pulses when saving, briefly rings on success, turns red on persistent error. */}
       {!readOnly && (
-        <div className="absolute bottom-2 right-4 z-10 pointer-events-none">
-          {saveState === 'saving' ? (
-            <span className="bp-caption !text-[10px] text-[var(--bp-text-muted)] flex items-center gap-1.5" data-testid="status-saving">
-              <span className="w-2 h-2 rounded-full bg-[var(--bp-primary)] animate-pulse" />
-              {t('moodboards.editor.saving')}
-            </span>
-          ) : saveState === 'error' ? (
-            <button onClick={flushSave} data-testid="status-save-error" title={saveError || ''}
-                    className="bp-caption !text-[10px] text-red-400 flex items-center gap-1.5 hover:text-red-300 pointer-events-auto">
-              <AlertCircle size={10} strokeWidth={1.5} />
-              {t('moodboards.editor.saveFailed')}
+        <div className="absolute bottom-3 right-5 z-10 pointer-events-none flex items-center gap-2">
+          {saveState === 'error' ? (
+            <button onClick={flushSave}
+                    data-testid="status-save-error"
+                    title={saveError || t('moodboards.editor.saveFailed')}
+                    className="pointer-events-auto flex items-center gap-1.5 text-[10px] tracking-wider text-red-400 hover:text-red-300 transition-colors">
+              <AlertCircle size={11} strokeWidth={1.5} />
+              <span>{t('moodboards.editor.retry')}</span>
             </button>
-          ) : Object.keys(dirtyMap).length > 0 ? (
-            <span className="bp-caption !text-[10px] text-[var(--bp-text-secondary)] flex items-center gap-1.5" data-testid="status-unsaved">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--bp-text-secondary)]" />
-              {t('moodboards.editor.unsaved')}
-            </span>
           ) : (
-            <span className="bp-caption !text-[10px] text-[var(--bp-text-muted)] flex items-center gap-1.5" data-testid="status-saved">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--bp-primary)] shadow-[0_0_6px_var(--bp-primary)]" />
-              {t('moodboards.editor.autosaveOn')}
-            </span>
+            <span
+              data-testid={
+                saveState === 'saving'
+                  ? 'status-saving'
+                  : Object.keys(dirtyMap).length > 0
+                    ? 'status-unsaved'
+                    : 'status-saved'
+              }
+              title={
+                saveState === 'saving'
+                  ? t('moodboards.editor.saving')
+                  : Object.keys(dirtyMap).length > 0
+                    ? t('moodboards.editor.unsaved')
+                    : t('moodboards.editor.autosaveOn')
+              }
+              className={`block w-1.5 h-1.5 rounded-full transition-colors duration-300
+                ${saveState === 'saving' ? 'bp-soft-pulse' : ''}
+                ${justSaved ? 'bp-soft-confirm' : ''}
+                ${saveState === 'saving' || justSaved
+                  ? 'bg-[var(--bp-primary)]'
+                  : Object.keys(dirtyMap).length > 0
+                    ? 'bg-[var(--bp-text-muted)]'
+                    : 'bg-[var(--bp-primary)]/55'}`}
+            />
           )}
         </div>
       )}
