@@ -323,10 +323,10 @@ a, button, [role="button"] {
  * ────────────────────────────────────────────────────────────────────── */
 :root[data-workspace-mode="light"] {
   /* Paper palette */
-  --bp-bg:           #F5F1EB;      /* warm ivory */
-  --bp-surface-1:    #EFEAE3;      /* paper soft */
-  --bp-surface-2:    #E7E1D8;      /* paper deeper */
-  --bp-surface-3:    #DDD6CB;
+  --bp-bg:           #F5F1EB;      /* warm ivory — paper base */
+  --bp-surface-1:    #EDE8DF;      /* paper soft */
+  --bp-surface-2:    #E4DDD2;      /* paper deeper */
+  --bp-surface-3:    #DAD2C5;
   --bp-overlay:      rgba(30,27,24,0.34);
 
   /* Ink hierarchy — charcoal, never pure black */

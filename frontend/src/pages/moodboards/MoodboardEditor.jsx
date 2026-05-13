@@ -62,6 +62,10 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const [pages, setPages] = useState([]);
   const [activePageId, setActivePageId] = useState(null);
   const [transitions, setTransitions] = useState([]);
+  // QuickAdjust modal — lifted to editor root so changing the active block
+  // doesn't unmount it mid-adjust. Holds { blockId, src }.
+  const [quickAdjust, setQuickAdjust] = useState(null);
+
   const history = useHistory();
   const { mode: workspaceMode, toggle: toggleWorkspaceMode, isLight } = useWorkspaceMode();
   // Confirm pulse — a transient ring shown on the autosave dot the moment a
@@ -827,7 +831,8 @@ const MoodboardEditor = ({ readOnly = false }) => {
                   <BlockInspector block={selectedBlock} t={t}
                                   onChangeContent={(content) => updateBlock(selectedBlock.id, { content })}
                                   onChangeStyle={(style) => updateBlock(selectedBlock.id, { style })}
-                                  onChange={(patch) => updateBlock(selectedBlock.id, patch)} />
+                                  onChange={(patch) => updateBlock(selectedBlock.id, patch)}
+                                  onOpenQuickAdjust={(src) => setQuickAdjust({ blockId: selectedBlock.id, src })} />
                 </div>
               ) : (
                 <div className="p-5 flex-1 flex items-center justify-center">
@@ -903,6 +908,34 @@ const MoodboardEditor = ({ readOnly = false }) => {
           )}
         </div>
       )}
+
+      {/* QuickAdjust modal — lifted to editor root so it survives block changes */}
+      {quickAdjust && (() => {
+        const targetBlock = blocks.find((b) => b.id === quickAdjust.blockId);
+        const ts = targetBlock?.style || {};
+        return (
+          <ImageQuickAdjust src={quickAdjust.src}
+                            defaults={{
+                              fit_mode: ts.fit_mode || 'cover',
+                              focal_point: ts.focal_point || 'center',
+                              adjustments: ts.adjustments || {},
+                            }}
+                            onConfirm={(patch) => {
+                              if (!targetBlock) { setQuickAdjust(null); return; }
+                              updateBlock(quickAdjust.blockId, {
+                                style: {
+                                  ...ts,
+                                  fit_mode: patch.fit_mode,
+                                  focal_point: patch.focal_point,
+                                  adjustments: { ...(ts.adjustments || {}), ...patch.adjustments },
+                                },
+                              });
+                              setQuickAdjust(null);
+                            }}
+                            onSkip={() => setQuickAdjust(null)}
+                            t={t} />
+        );
+      })()}
 
       {/* Share dialog */}
       {shareDialog && (
@@ -983,16 +1016,11 @@ const FOCAL_PRESETS = [
 ];
 
 // ── Block Inspector ─────────────────────────────────────────────────────────
-const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, t }) => {
+const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpenQuickAdjust, t }) => {
   const c = block.content || {};
   const s = block.style || {};
   const setC = (k, v) => onChangeContent({ ...c, [k]: v });
   const setS = (k, v) => onChangeStyle({ ...s, [k]: v });
-
-  // Quick-adjust modal opens right after a successful image upload — first-pass
-  // preview with fit / focal / brightness / contrast / saturation, then the
-  // sidebar still owns the fine-grained controls afterwards.
-  const [quickAdjust, setQuickAdjust] = useState(null);
 
   // Crop/focal section reused for image blocks
   const CropFocalSection = () => (
@@ -1153,29 +1181,10 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, t }) 
                            content: { ...c, src: url },
                            metadata: { ...(block.metadata || {}), ...(meta || {}) },
                          });
-                         // Open the quick-adjust modal with the freshly uploaded
-                         // URL so the designer can frame the photo immediately.
-                         setQuickAdjust({ src: url });
+                         // Open the lifted QuickAdjust modal at editor root so
+                         // selecting another block won't unmount it mid-adjust.
+                         onOpenQuickAdjust?.(url);
                        }} />
-        {quickAdjust && (
-          <ImageQuickAdjust src={quickAdjust.src}
-                            defaults={{
-                              fit_mode: s.fit_mode || 'cover',
-                              focal_point: s.focal_point || 'center',
-                              adjustments: s.adjustments || {},
-                            }}
-                            onConfirm={(patch) => {
-                              onChangeStyle({
-                                ...s,
-                                fit_mode: patch.fit_mode,
-                                focal_point: patch.focal_point,
-                                adjustments: { ...(s.adjustments || {}), ...patch.adjustments },
-                              });
-                              setQuickAdjust(null);
-                            }}
-                            onSkip={() => setQuickAdjust(null)}
-                            t={t} />
-        )}
         <InspectorInput label={t('moodboards.field.imageUrl')} value={c.src}
                         onChange={(v) => setC('src', v)} testid="block-image-src" />
         <InspectorInput label={t('moodboards.field.caption')} value={c.caption}

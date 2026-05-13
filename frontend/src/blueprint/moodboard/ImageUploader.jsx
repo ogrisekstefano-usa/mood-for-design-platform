@@ -108,7 +108,7 @@ const ImageUploader = ({ currentUrl, onUploaded, t }) => {
         accept="image/*"
         className="hidden"
         onChange={onFileSelect}
-        data-testid="image-uploader-input"
+        data-testid="inspector-image-file-input"
       />
       <button
         type="button"
