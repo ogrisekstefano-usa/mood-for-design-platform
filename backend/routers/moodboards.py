@@ -1,4 +1,5 @@
 """Moodboards CRUD — block-based editor backbone."""
+import re
 import uuid
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends, Query
@@ -8,6 +9,14 @@ from core.tenant_context import get_tenant_context
 from database import db
 
 router = APIRouter()
+
+_UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.I)
+
+
+def _require_uuid(s: str, name: str = "id") -> str:
+    if not _UUID_RE.match(s or ""):
+        raise HTTPException(404, "Not found")
+    return s
 
 
 def _now():
@@ -50,6 +59,7 @@ def create_moodboard(body: MoodboardCreate, current_user: dict = Depends(get_ten
 
 @router.get("/{moodboard_id}")
 def get_moodboard(moodboard_id: str, current_user: dict = Depends(get_tenant_context)):
+    _require_uuid(moodboard_id)
     client = db()
     r = client.table('moodboards').select('*').eq('id', moodboard_id).eq('tenant_id', current_user['tenant_id']).execute()
     if not r.data:
@@ -63,6 +73,7 @@ def get_moodboard(moodboard_id: str, current_user: dict = Depends(get_tenant_con
 
 @router.put("/{moodboard_id}")
 def update_moodboard(moodboard_id: str, body: MoodboardUpdate, current_user: dict = Depends(get_tenant_context)):
+    _require_uuid(moodboard_id)
     client = db()
     updates = _scrub(body.model_dump())
     if not updates:
@@ -76,6 +87,7 @@ def update_moodboard(moodboard_id: str, body: MoodboardUpdate, current_user: dic
 
 @router.delete("/{moodboard_id}")
 def delete_moodboard(moodboard_id: str, current_user: dict = Depends(get_tenant_context)):
+    _require_uuid(moodboard_id)
     client = db()
     client.table('moodboards').delete().eq('id', moodboard_id).eq('tenant_id', current_user['tenant_id']).execute()
     return {"message": "deleted"}

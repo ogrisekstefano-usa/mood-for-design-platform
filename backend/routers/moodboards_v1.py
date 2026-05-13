@@ -272,7 +272,7 @@ def duplicate_block(moodboard_id: str, block_id: str, ctx: dict = Depends(get_te
         "style_json": _parse_jsonish(src.get("style_json")),
         "metadata_json": _parse_jsonish(src.get("metadata_json")),
         "locked": False,
-        "hidden": src.get("hidden") or False,
+        "hidden": False,  # always start visible on duplicate
         "opacity": src.get("opacity") or 1.0,
         "rotation": src.get("rotation") or 0,
         "sort_order": (src.get("sort_order") or 0) + 1,

@@ -184,8 +184,46 @@ Pre-requisito **non negoziabile** prima delle fasi F. Migrazione completa da JSO
   - Theme leak fix su 5 pagine legacy (Dashboard, Leads, Projects, Proposals, Admin Overview)
 
 
+### ✅ Phase E.1 — Moodboard Polish Sprint (DONE — 13 Mag 2026)
+Sopra la foundation stabile (Sprint Cleanup P0). Tutti i requisiti tecnici del documento utente rispettati: ZERO hardcoded, runtime-editable, theme-token-based, multi-tenant, i18n-ready, migration-safe.
+
+- **Migration 006 — V2 Scaffold** (`/app/supabase/migrations/006_moodboard_v2_scaffold.sql`):
+  - 4 tabelle pronte per V2 (75 colonne tot., 12 indici, FK cascade corretti) — **NON esposte** alle API in V1 ma già queryable
+  - `moodboard_templates` (23 col): global+tenant, parent_id per fork, category/tags GIN, visibility (private/tenant/platform/marketplace), is_starter, locale_content i18n, ai_metadata, analytics_metadata
+  - `template_blocks` (15 col): stesso shape di `moodboard_elements`, indice `(template_id, sort_order)`
+  - `moodboard_versions` (16 col): snapshot completo JSONB, `kind` (autosave/named/presentation/rollback_restore/client_view_snapshot), `parent_version_id` per branching, `version_number` UNIQUE, hash, is_milestone
+  - `moodboard_comments` (21 col): block_id nullable (canvas-anchored via x/y), parent_comment_id per thread, author_role (designer/client/super_admin/anonymous_share), mentions UUID[], resolved bool con `resolved_by`, partial index `WHERE resolved=FALSE`
+- **Block Duplicate endpoint** (`POST /api/moodboards/{id}/blocks/{block_id}/duplicate`): clone con offset +24/+24/+z, locked/hidden resettati a false
+- **UUID path validation**: route `/api/moodboards/{id}` rifiuta non-UUID → 404 pulito (era 500)
+- **Layer Management UI** (`blueprint/moodboard/LayersPanel.jsx`):
+  - Lista layer ordinata per z-index discendente (top of stack first)
+  - Hover toggles per `lock` / `hidden` (persistiti come colonne strutturate)
+  - Toolbar contestuale 6-azioni: bring-to-front · bring-forward · send-backward · send-to-back · duplicate · delete
+  - Right rail con tab switcher Inspector / Layers (data-testid `tab-inspector`, `tab-layers`)
+- **Image Upload reale** (`blueprint/moodboard/ImageUploader.jsx`):
+  - Drag-and-drop + click to upload, progress bar, error state, IT/EN strings
+  - Flow: signed-upload → PUT direct to Supabase Storage `moodboard-assets` → register in `media_library`
+  - Disponibile in inspector di image/product/material blocks
+- **Crop + Focal Point UI**:
+  - Inspector image ha sezione "Ritaglio e focal point": select `fit_mode` (cover/contain/fill), grid 3x3 focal preset, slider zoom (100%-300%)
+  - Tutti i field persistiti in `style_json` JSONB (non più `content.layout`)
+  - `ImageBlock.jsx` ora renderizza con `object-fit` + `object-position` + `transform: scale()` correlati
+- **Opacity + Rotation**: slider per text/note blocks + struttura DB completa anche per altri tipi
+- **Presentation Mode** (`PresentationMode` component):
+  - Fullscreen cinematic (z-50, bg surface), hide editor chrome
+  - Sequential navigation con keyboard `←` `→` `Space` + footer prev/next
+  - Counter `i / N` (paginazione blocchi visibili)
+  - `Esc` exit
+- **Locked blocks**: non draggable, cursor-default, resize handle nascosto. Hidden blocks: opacity 0.3 in editor, esclusi dal canvas in readOnly + presentation
+- **i18n**: 23 nuove chiavi (`moodboards.editor.{layers,present,duplicate,lock,hide,upload,uploading,uploadFailed,crop,…}`, `moodboards.field.{fitMode,focalPoint,zoom,opacity,rotation}`) tradotte in EN-US e IT
+- **Tested ✅**
+  - Backend: **95/95 regression** + **9/9 nuovi E.1** (test_phase_e1.py) — 100%
+  - Frontend: editor IT integrale, tabs Inspector/Layers funzionanti, Presenta entra in fullscreen, Esc esce, exit-btn funziona, IT verificato su 23 nuove chiavi
+  - V2-scaffold tables: queryable via SQL, NOT exposed via REST (atteso)
+
+
 ### ✅ Phase E (V1) — Blueprint Moodboards™ + Workspace Extended (DONE — 13 Mag 2026)
-End-to-end operational loop closed: **Lead → Project → Workspace → Moodboard → Approval → Share**. ZERO hardcoded copy, ZERO Figma/Canva clone — stable V1 dedicated to luxury interior-design workflow.
+End-to-end operational loop closed: **Lead → Project → Workspace → Moodboard → Approval → Share**.
 
 - **Moodboards V1 backend** (`routers/moodboards_v1.py`):
   - Block CRUD (`POST/PUT/DELETE /api/moodboards/{id}/blocks`) for 6 V1 types: `image · text · palette · note · product · material` + 4 future-stub types accepted server-side (`hotspot · video · vendor · product_grid`)
