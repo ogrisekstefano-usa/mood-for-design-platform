@@ -18,7 +18,7 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
   ArrowLeft, Plus, Check, Share2, ExternalLink, Send, X, AlertCircle,
   Play, Maximize2, ChevronLeft, ChevronRight, PanelRight, ListChecks,
-  BookmarkPlus, Undo2, Redo2, Magnet,
+  BookmarkPlus, Undo2, Redo2, Magnet, RotateCcw,
 } from 'lucide-react';
 import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegistry';
 import StatusBadge from '../../components/common/StatusBadge';
@@ -70,11 +70,18 @@ const MoodboardEditor = ({ readOnly = false }) => {
   }, [id, shareToken, readOnly, navigate]);
 
   // ── Autosave with retry + error surfacing ────────────────────────────────
+  // We keep `blocks` and `dirtyMap` in refs so flushSave can always read the
+  // latest committed state (no stale closures across rapid mutations).
+  const blocksRef = useRef([]);
+  const dirtyRef = useRef({});
+  useEffect(() => { blocksRef.current = blocks; }, [blocks]);
+  useEffect(() => { dirtyRef.current = dirtyMap; }, [dirtyMap]);
+
   const flushSave = useCallback(async () => {
     if (readOnly) return;
-    const ids = Object.keys(dirtyMap);
+    const ids = Object.keys(dirtyRef.current);
     if (!ids.length) return;
-    const payload = blocks.filter((b) => ids.includes(b.id))
+    const payload = blocksRef.current.filter((b) => ids.includes(b.id))
       .map((b) => ({
         id: b.id, x: b.x, y: b.y, width: b.width, height: b.height,
         content: b.content, style: b.style, z_index: b.z_index,
@@ -85,7 +92,13 @@ const MoodboardEditor = ({ readOnly = false }) => {
     setSaveError(null);
     try {
       await api.patch(`/api/moodboards/${id}/blocks/batch`, { blocks: payload });
-      setDirtyMap({});
+      // Only clear the ids we just persisted; new dirty edits during the
+      // request should remain queued for the next flush.
+      setDirtyMap((m) => {
+        const next = { ...m };
+        ids.forEach((bid) => { delete next[bid]; });
+        return next;
+      });
       setSavedAt(Date.now());
       setSaveState('idle');
       retryCount.current = 0;
@@ -99,7 +112,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
         setSaveError(err?.message || 'Network error');
       }
     }
-  }, [blocks, dirtyMap, id, readOnly]);
+  }, [id, readOnly]);
 
   useEffect(() => {
     if (readOnly) return;
@@ -109,13 +122,47 @@ const MoodboardEditor = ({ readOnly = false }) => {
     return () => clearTimeout(saveTimer.current);
   }, [dirtyMap, flushSave, readOnly]);
 
+  // beforeunload — synchronous flush via sendBeacon (best-effort).
   useEffect(() => {
+    if (readOnly) return;
     const handler = (e) => {
-      if (Object.keys(dirtyMap).length > 0) { e.preventDefault(); e.returnValue = ''; }
+      const ids = Object.keys(dirtyRef.current);
+      if (!ids.length) return;
+      // Modern browsers ignore custom returnValue text but show their own dialog.
+      e.preventDefault(); e.returnValue = '';
+      try {
+        const payload = blocksRef.current.filter((b) => ids.includes(b.id))
+          .map((b) => ({
+            id: b.id, x: b.x, y: b.y, width: b.width, height: b.height,
+            content: b.content, style: b.style, z_index: b.z_index,
+            locked: b.locked, hidden: b.hidden,
+            opacity: b.opacity, rotation: b.rotation,
+          }));
+        const blob = new Blob([JSON.stringify({ blocks: payload })],
+                              { type: 'application/json' });
+        const url = `${process.env.REACT_APP_BACKEND_URL}/api/moodboards/${id}/blocks/batch`;
+        // sendBeacon doesn't carry Authorization headers; only effective if the
+        // backend tolerates an unauthenticated beacon. We still call the
+        // debounced flush as a fallback for in-page navigations.
+        navigator.sendBeacon?.(url, blob);
+      } catch (_) { /* swallow — debounced save remains the source of truth */ }
     };
     window.addEventListener('beforeunload', handler);
     return () => window.removeEventListener('beforeunload', handler);
-  }, [dirtyMap]);
+  }, [id, readOnly]);
+
+  // Forced flush on UNMOUNT (e.g. SPA navigation away from the editor).
+  // We use a ref to access the latest flushSave without re-binding the cleanup.
+  const flushRef = useRef(flushSave);
+  useEffect(() => { flushRef.current = flushSave; }, [flushSave]);
+  useEffect(() => {
+    return () => {
+      // Fire-and-forget; the timer is cleared by the debounce effect already.
+      if (Object.keys(dirtyRef.current).length) {
+        flushRef.current?.();
+      }
+    };
+  }, []);
 
   const markDirty = (bid) => setDirtyMap((m) => ({ ...m, [bid]: true }));
 
@@ -131,7 +178,19 @@ const MoodboardEditor = ({ readOnly = false }) => {
   };
 
   const updateBlock = (bid, patch) => {
-    setBlocks((bs) => bs.map((b) => b.id === bid ? { ...b, ...patch } : b));
+    setBlocks((bs) => bs.map((b) => {
+      if (b.id !== bid) return b;
+      // Deep-merge content + style so the latest committed state always wins
+      // even if the inspector callback fires with a stale closure.
+      const merged = { ...b, ...patch };
+      if (patch.content && typeof patch.content === 'object') {
+        merged.content = { ...(b.content || {}), ...patch.content };
+      }
+      if (patch.style && typeof patch.style === 'object') {
+        merged.style = { ...(b.style || {}), ...patch.style };
+      }
+      return merged;
+    }));
     markDirty(bid);
   };
 
@@ -391,7 +450,14 @@ const MoodboardEditor = ({ readOnly = false }) => {
                   <AlertCircle size={12} strokeWidth={1.5} />
                   {t('moodboards.editor.saveFailed')}
                 </button>
-              ) : savedAt && Object.keys(dirtyMap).length === 0 ? (
+              ) : Object.keys(dirtyMap).length > 0 ? (
+                <button onClick={flushSave}
+                        className="bp-caption text-[var(--bp-text-secondary)] flex items-center gap-1 hover:text-[var(--bp-text-primary)]"
+                        data-testid="status-unsaved">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--bp-text-secondary)]" />
+                  {t('moodboards.editor.unsaved')}
+                </button>
+              ) : savedAt ? (
                 <span className="bp-caption text-[var(--bp-text-muted)] flex items-center gap-1" data-testid="status-saved">
                   <Check size={12} strokeWidth={1.5} /> {t('moodboards.editor.saved')}
                 </span>
@@ -719,6 +785,60 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, t }) => {
       <InspectorSlider label={t('moodboards.field.zoom')} value={s.zoom || 1}
                        min={1} max={3} step={0.05} onChange={(v) => setS('zoom', v)}
                        testid="block-image-zoom" formatValue={(v) => `${(v * 100).toFixed(0)}%`} />
+      <button type="button" onClick={() => onChangeStyle({
+        ...s, fit_mode: 'cover', focal_point: 'center', zoom: 1,
+      })}
+              className="bp-btn bp-btn-ghost text-xs w-full mt-2"
+              data-testid="reset-crop-btn">
+        <RotateCcw size={11} strokeWidth={1.5} /> {t('moodboards.editor.resetCrop')}
+      </button>
+    </div>
+  );
+
+  // Image adjustments — CSS-filter based, persisted in style.adjustments.
+  const adj = s.adjustments || {};
+  const setAdj = (k, v) => onChangeStyle({ ...s, adjustments: { ...adj, [k]: v } });
+  const AdjustmentsSection = () => (
+    <div className="pt-3 mt-3 border-t border-[var(--bp-border)]">
+      <div className="flex items-center justify-between mb-3">
+        <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)]">
+          {t('moodboards.editor.adjustments')}
+        </p>
+        <button type="button"
+                onClick={() => onChangeStyle({ ...s, adjustments: {} })}
+                className="bp-caption !text-[10px] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]"
+                data-testid="reset-adjustments-btn">
+          {t('moodboards.editor.reset')}
+        </button>
+      </div>
+      <InspectorSlider label={t('moodboards.field.brightness')}
+                       value={adj.brightness ?? 1} min={0.5} max={1.5} step={0.02}
+                       onChange={(v) => setAdj('brightness', v)}
+                       testid="adj-brightness" formatValue={(v) => `${((v - 1) * 100).toFixed(0)}`} />
+      <InspectorSlider label={t('moodboards.field.contrast')}
+                       value={adj.contrast ?? 1} min={0.5} max={1.5} step={0.02}
+                       onChange={(v) => setAdj('contrast', v)}
+                       testid="adj-contrast" formatValue={(v) => `${((v - 1) * 100).toFixed(0)}`} />
+      <InspectorSlider label={t('moodboards.field.saturation')}
+                       value={adj.saturation ?? 1} min={0} max={2} step={0.05}
+                       onChange={(v) => setAdj('saturation', v)}
+                       testid="adj-saturation" formatValue={(v) => `${((v - 1) * 100).toFixed(0)}`} />
+      <InspectorSlider label={t('moodboards.field.warmth')}
+                       value={adj.warmth ?? 0} min={-1} max={1} step={0.05}
+                       onChange={(v) => setAdj('warmth', v)}
+                       testid="adj-warmth" formatValue={(v) => `${(v * 100).toFixed(0)}`} />
+      <InspectorSlider label={t('moodboards.field.grayscale')}
+                       value={adj.grayscale ?? 0} min={0} max={1} step={0.05}
+                       onChange={(v) => setAdj('grayscale', v)}
+                       testid="adj-grayscale" formatValue={(v) => `${(v * 100).toFixed(0)}%`} />
+      <InspectorSlider label={t('moodboards.field.blur')}
+                       value={adj.blur ?? 0} min={0} max={8} step={0.2}
+                       onChange={(v) => setAdj('blur', v)}
+                       testid="adj-blur" formatValue={(v) => `${v.toFixed(1)}px`} />
+      <InspectorSlider label={t('moodboards.field.vignette')}
+                       value={adj.vignette ?? 0} min={0} max={1} step={0.05}
+                       onChange={(v) => setAdj('vignette', v)}
+                       testid="adj-vignette" formatValue={(v) => `${(v * 100).toFixed(0)}%`} />
     </div>
   );
 
@@ -747,6 +867,8 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, t }) => {
         <InspectorInput label={t('moodboards.field.caption')} value={c.caption}
                         onChange={(v) => setC('caption', v)} testid="block-image-caption" />
         <CropFocalSection />
+        <AdjustmentsSection />
+        <VisualPropsSection />
       </>);
     case 'text':
       return (<>
