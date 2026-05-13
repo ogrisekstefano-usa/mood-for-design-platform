@@ -4,8 +4,9 @@ import { resolveI18n } from '../FieldRegistry';
 export const FieldShell = ({ field, locale, error, children, hideLabel }) => {
   const label = resolveI18n(field.label, locale);
   const description = resolveI18n(field.description, locale);
+  const key = field.key || field.id;
   return (
-    <div className="bp-stack-tight" data-testid={`field-${field.key || field.id}`}>
+    <div className="bp-stack-tight" data-testid={`field-${key}`}>
       {!hideLabel && (label || description) && (
         <div>
           {label && (
@@ -18,7 +19,7 @@ export const FieldShell = ({ field, locale, error, children, hideLabel }) => {
         </div>
       )}
       <div className="pt-4">{children}</div>
-      {error && <p className="bp-caption text-red-400 mt-2" role="alert">{error}</p>}
+      {error && <p className="bp-caption text-red-400 mt-2" role="alert" data-testid={`field-error-${key}`}>{error}</p>}
     </div>
   );
 };

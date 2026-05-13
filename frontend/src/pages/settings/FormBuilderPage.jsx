@@ -342,15 +342,23 @@ const FormEditView = ({ slug, onBack }) => {
                         <button onClick={() => setAddOpen(false)} className="text-[var(--bp-text-muted)]"><X size={16} /></button>
                       </div>
                       <div className="overflow-y-auto p-5 grid grid-cols-2 gap-3">
-                        {(registry.field_types || []).map((ft) => (
-                          <button key={ft.type} onClick={() => { addField(activeStepIdx, ft.type); setAddOpen(false); }}
-                            data-testid={`field-type-${ft.type}`}
-                            className="text-left p-4 border border-[var(--bp-border)] hover:border-[var(--bp-primary)]/40 rounded-[var(--bp-radius-sm)] bg-[var(--bp-surface-1)] transition-colors">
-                            <div className="bp-eyebrow !text-[var(--bp-text-muted)]">{ft.category}</div>
-                            <div className="bp-h3 text-[var(--bp-text-primary)] mt-1">{ft.label}</div>
-                            {ft.description && <p className="bp-caption text-[var(--bp-text-muted)] mt-2">{ft.description}</p>}
-                          </button>
-                        ))}
+                        {(registry.field_types || []).map((ft) => {
+                          const comingSoon = ft.coming_soon;
+                          return (
+                            <button key={ft.type} disabled={comingSoon}
+                              onClick={() => { if (!comingSoon) { addField(activeStepIdx, ft.type); setAddOpen(false); } }}
+                              data-testid={`field-type-${ft.type}`}
+                              className={`text-left p-4 border rounded-[var(--bp-radius-sm)] bg-[var(--bp-surface-1)] transition-colors ${
+                                comingSoon ? 'border-[var(--bp-border)] opacity-40 cursor-not-allowed' : 'border-[var(--bp-border)] hover:border-[var(--bp-primary)]/40'
+                              }`}>
+                              <div className="bp-eyebrow !text-[var(--bp-text-muted)]">
+                                {ft.category}{comingSoon && ' · coming soon'}
+                              </div>
+                              <div className="bp-h3 text-[var(--bp-text-primary)] mt-1">{ft.label}</div>
+                              {ft.description && <p className="bp-caption text-[var(--bp-text-muted)] mt-2">{ft.description}</p>}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>

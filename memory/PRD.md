@@ -198,6 +198,37 @@ The Section Engine now powers UNAUTHENTICATED public tenant routes. ZERO hardcod
   - Cosmetic fixes: duplicate 'EN' in locale dropdown (now shows full locale codes), visit-public-site link robust to slug load timing
 
 
+### ✅ Phase D — Blueprint Dynamic Form Engine™ (DONE — 13 Mag 2026)
+Enterprise-grade schema-driven form engine. Reusable for: lead-gen · design requests · onboarding · moodboard approvals · proposal approvals · concierge · surveys · feedback · vendor applications · sourcing requests.
+
+- **Backend** (`core/form_registry.py` + `routers/forms.py`):
+  - 18 field types: short_text, long_text, email, phone, country, single_choice, multi_choice, style_cards, mood_cards, image_choice, slider, budget_slider, timeline_picker, scale, file_upload, signature (coming-soon), consent, statement
+  - 10 form purposes with `writes_to` hints (lead → leads table · concierge → concierge_requests · etc.)
+  - 5 layouts × 5 atmospheres for cinematic UX variants
+  - Default seed `design_request` form: 4 steps, 10 fields, complete with style_cards + budget_slider + timeline_picker
+  - `evaluate_conditional()`: equals · not_equals · in · not_in · gt · lt · truthy (server + frontend mirror)
+  - `validate_submission()`: required + strict email regex
+  - Endpoints under `/api/forms`: GET registry, GET list, GET/PUT/DELETE slug, duplicate, reset, list submissions
+  - Public endpoints under `/api/forms/public/{tenant}/{form}`: GET form (status=published gated, internal fields ai/scoring/integrations STRIPPED), POST submit (validation + lead-row auto-insert for lead/design_request purposes)
+  - Forms stored in `tenant_settings` (`form.{slug}`); submissions in `tenant_settings` (`form_submission.{slug}.{uuid}`) — schema-migration-free
+- **Frontend Field Engine** (`/app/frontend/src/blueprint/forms/`):
+  - `FieldRegistry.js` → 14 components for 17 server types (image_choice→SingleChoice, mood_cards→StyleCards, country→ShortText) + `resolveI18n()` + `evaluateVisibility()`
+  - `FormRenderer.jsx` — cinematic multi-step renderer: sticky teal progress bar · per-step validation · conditional visibility · thank-you state with auto-redirect · sticky Back/Continue bar
+  - 14 field components, all theme-driven, locale-aware: editorial underline inputs, style_cards image grid with check overlay, budget_slider with currency display large, timeline pills, scale 1-5 circles, file_upload dashed dropzone, consent custom checkbox
+- **FormBuilderPage** (`/settings/forms`):
+  - List view: form catalog with status badge (draft/published), New/Edit/Duplicate/Delete
+  - Edit view: 280px left rail steps stack (reorder/delete) + center step editor with field property panels + add-field modal (18 cards categorized) + Preview mode toggle + Publish toggle + Visit-form link
+  - Locale switcher for editing translations (`_default · en-US · it · fr · de · es`)
+- **PublicFormPage** (`/f/:tenantSlug/:formSlug`):
+  - Unauthenticated · loads tenant theme + form schema · uses FormRenderer · submits to public endpoint
+- **Section Engine integration**: new `form_embed` section type (category=conversion, reusable_in=homepage/landing/showcase/client_portal) with `inline` and `modal_trigger` variants — links homepage CTAs to forms via `form_slug`, ZERO hardcoded URLs
+- **AI placeholders** ready for future iterations: `form.ai = {field_suggestions, question_generation, copy_enhancement, auto_localize, scoring}` — flags default to false
+- **Tested End-to-End** ✅
+  - 19/19 backend pytest pass (CRUD, publish gate, internal field stripping, validation, conditional primitives, reusability check: concierge purpose does NOT write to leads)
+  - All frontend critical flows verified
+  - Bugs fixed during testing: (1) lead row `budget` → `budget_range` column drift, (2) error data-testid for field validation, (3) email regex tightened, (4) signature marked coming-soon
+
+
 ## File Map
 ```
 /app/backend/
@@ -243,8 +274,9 @@ The Section Engine now powers UNAUTHENTICATED public tenant routes. ZERO hardcod
 - Remaining: custom-domain verification flow (DNS check), SEO meta tags per page, og_image preview
 
 ### Phase D — Blueprint Dynamic Form Engine™ + Workspace
-- Multi-step form builder with file upload, conditional logic, AI-assisted copy
-- Design Request settings (types/styles/budgets/scoring/auto-assignment)
+- ✅ Form Engine completo (DONE in Phase D)
+- ✅ Public form route /f/:tenantSlug/:formSlug (DONE)
+- ✅ Form embed section type in Section Engine (DONE)
 - Blueprint Workspace™ extension (Timeline, Files, Proposals, Signoff, Client Portal, Tasks, Notes)
 
 ### Phase E — Blueprint Moodboards Editor

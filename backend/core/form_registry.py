@@ -111,6 +111,7 @@ FIELD_TYPES: List[Dict[str, Any]] = [
         "type": "signature",        "kind": "string",
         "label": "Signature",       "category": "compliance",
         "supports": {"conditional": True, "required": True},
+        "coming_soon": True,
     },
     {
         "type": "consent",          "kind": "boolean",
@@ -308,6 +309,7 @@ def validate_submission(form: Dict[str, Any], answers: Dict[str, Any]) -> List[s
                 errors.append(f"Field '{label}' is required")
                 continue
             if ftype == "email" and value:
-                if "@" not in str(value):
+                import re
+                if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", str(value)):
                     errors.append(f"Invalid email: {value}")
     return errors
