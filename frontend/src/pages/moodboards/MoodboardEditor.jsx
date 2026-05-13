@@ -25,6 +25,7 @@ import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegist
 import StatusBadge from '../../components/common/StatusBadge';
 import LayersPanel from '../../blueprint/moodboard/LayersPanel';
 import ImageUploader from '../../blueprint/moodboard/ImageUploader';
+import PagesNavigator from '../../blueprint/moodboard/PagesNavigator';
 import { computeSnap } from '../../blueprint/moodboard/useSnap';
 import SnapGuides from '../../blueprint/moodboard/SnapGuides';
 import useHistory from '../../blueprint/moodboard/useHistory';
@@ -52,7 +53,29 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const [presentIndex, setPresentIndex] = useState(0);
   const [snapGuides, setSnapGuides] = useState([]);
   const [snapEnabled, setSnapEnabled] = useState(true);
+  const [pages, setPages] = useState([]);
+  const [activePageId, setActivePageId] = useState(null);
   const history = useHistory();
+
+  // Filter blocks to the active page (legacy elements without page_id stay
+  // visible on the first page for backward-compat). Memo not needed — list is small.
+  const firstPageId = pages[0]?.id || null;
+  const pageBlocks = blocks.filter((b) =>
+    (b.page_id || firstPageId) === activePageId
+  );
+
+  // Index for the PagesNavigator thumbnails — blocks grouped by page_id
+  const blocksByPage = blocks.reduce((acc, b) => {
+    const pid = b.page_id || firstPageId;
+    if (!pid) return acc;
+    (acc[pid] = acc[pid] || []).push(b);
+    return acc;
+  }, {});
+
+  // Active page object (used for canvas sizing)
+  const activePage = pages.find((p) => p.id === activePageId) || pages[0];
+  const canvasW = activePage?.width || CANVAS_W;
+  const canvasH = activePage?.height || CANVAS_H;
 
   const canvasRef = useRef();
   const saveTimer = useRef();
@@ -66,6 +89,13 @@ const MoodboardEditor = ({ readOnly = false }) => {
     api.get(url).then((r) => {
       setMb(r.data);
       setBlocks(r.data.elements || []);
+      const pageList = r.data.pages || [];
+      setPages(pageList);
+      // Land on moodboard.current_page_id, else the first page
+      const landing = r.data.current_page_id
+        || (pageList[0] && pageList[0].id)
+        || null;
+      setActivePageId(landing);
       history.reset(r.data.elements || []);
     }).catch(() => { if (!readOnly) navigate('/moodboards'); });
   }, [id, shareToken, readOnly, navigate]);
@@ -176,10 +206,20 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const markDirty = (bid) => setDirtyMap((m) => ({ ...m, [bid]: true }));
 
   // ── Block CRUD ────────────────────────────────────────────────────────────
+  const reloadPagesAndBlocks = useCallback(async () => {
+    const r = await api.get(`/api/moodboards/${id}`);
+    setMb(r.data);
+    setBlocks(r.data.elements || []);
+    setPages(r.data.pages || []);
+  }, [id]);
+
   const addBlock = async (type) => {
     if (readOnly) return;
     const meta = BLOCK_TYPES.find((b) => b.type === type);
-    const payload = { type, x: 60, y: 60, ...meta.defaults };
+    const payload = {
+      type, x: 60, y: 60, ...meta.defaults,
+      page_id: activePageId,  // F.0: scope new blocks to the active page
+    };
     const r = await api.post(`/api/moodboards/${id}/blocks`, payload);
     setBlocks((bs) => { const next = [...bs, r.data]; history.record(next); return next; });
     setSelectedId(r.data.id);
@@ -328,10 +368,14 @@ const MoodboardEditor = ({ readOnly = false }) => {
           };
         }
         if (snapEnabled && !e.altKey) {
+          // Snap only against blocks on the SAME page (no cross-page magnetism)
+          const samePageBlocks = bs.filter((x) =>
+            (x.page_id || firstPageId) === activePageId
+          );
           const snapped = computeSnap(
             { id: b.id, x: raw.x, y: raw.y, width: raw.width, height: raw.height },
-            bs,
-            { width: CANVAS_W, height: CANVAS_H },
+            samePageBlocks,
+            { width: canvasW, height: canvasH },
             drag.mode,
           );
           nextGuides = snapped.guides;
@@ -547,6 +591,17 @@ const MoodboardEditor = ({ readOnly = false }) => {
       </header>
 
       <div className="flex flex-1 min-h-0">
+        {/* LEFT-MOST — Pages navigator */}
+        <PagesNavigator
+          moodboardId={id}
+          pages={pages}
+          currentPageId={activePageId}
+          blocksByPage={blocksByPage}
+          onSelect={(pid) => { setSelectedId(null); setActivePageId(pid); }}
+          onChange={reloadPagesAndBlocks}
+          readOnly={readOnly}
+        />
+
         {/* LEFT — Add blocks toolbar */}
         {!readOnly && (
           <aside className="w-[200px] flex-shrink-0 border-r border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 p-4">
@@ -568,11 +623,11 @@ const MoodboardEditor = ({ readOnly = false }) => {
         <main className="flex-1 overflow-auto p-6">
           <div ref={canvasRef} onClick={() => setSelectedId(null)} data-testid="moodboard-canvas"
                className="relative bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] mx-auto"
-               style={{ width: CANVAS_W, height: CANVAS_H }}>
+               style={{ width: canvasW, height: canvasH }}>
             {!readOnly && drag && snapEnabled && (
-              <SnapGuides guides={snapGuides} canvasWidth={CANVAS_W} canvasHeight={CANVAS_H} />
+              <SnapGuides guides={snapGuides} canvasWidth={canvasW} canvasHeight={canvasH} />
             )}
-            {blocks.map((b) => {
+            {pageBlocks.map((b) => {
               if (b.hidden && readOnly) return null;
               const Component = resolveBlock(b.type);
               const isSelected = selectedId === b.id;
@@ -627,7 +682,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
                 </div>
               )
             ) : (
-              <LayersPanel blocks={blocks} selectedId={selectedId}
+              <LayersPanel blocks={pageBlocks} selectedId={selectedId}
                            onSelect={(bid) => { setSelectedId(bid); }}
                            onAction={handleLayerAction} t={t} />
             )}

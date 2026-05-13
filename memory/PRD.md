@@ -201,6 +201,25 @@ Pre-requisito esplicito utente prima della Fase F: "verificare bene tenant_id en
 - **90/90 backend pytest pass** + 5 skipped + 1 xpass = ZERO regressione su 6 fasi precedenti
 
 
+### ✅ P0 Sprint — Moodboard Core Stabilization (DONE — 13 Mag 2026)
+Pre-foundation reliability + media completeness pass prima di aprire Moodboard PRO™.
+
+- **Image upload provenance** (`ImageUploader.jsx`) — Pre-estrae `naturalWidth/Height` via `Image()` preload + `URL.revokeObjectURL` cleanup. `onUploaded(url, metadata)` propaga: `upload_source`, `original_dimensions`, `media_id`, `storage_path`, `file_name`, `uploaded_at`
+- **Atomic patch onChange prop** — `BlockInspector` accetta `onChange(patch)` per mutazioni multi-field; `updateBlock` deep-merge ora copre anche `metadata` (oltre a content/style già fatto in E.5)
+- **Fix opacity bug** — `block.opacity`/`block.rotation` sono colonne top-level: prima venivano scritte erroneamente in `style_json`. Ora `onChange({opacity:v})` / `onChange({rotation:v})` colpisce le colonne reali
+- **Border-radius slider** (`style.border_radius` 0-48px) — Inspector con feedback px live
+- **Shadow preset 4-button grid** (`style.shadow_preset` ∈ {none/soft/medium/dramatic}) — editorial restraint, NO valori custom shadow (intenzionale)
+- **Toast Sonner** integrato in `App.js` bottom-right, theme dark, className `bp-toast`. `flushSave` dopo max retries → `toast.error` con action "Riprova" che reset retryCount + ri-trigger flush
+- **Backend metadata pipeline** (`moodboards_v1.py`)
+  - `BlockUpdate.metadata` field aggiunto
+  - `update_block` + `batch_update_blocks` deep-merge `metadata_json` (no replace semantics)
+  - `_normalize_block` espone `metadata` nella response GET
+- **i18n** — 8 nuove chiavi EN+IT: `field.borderRadius/shadow`, `shadow.none/soft/medium/dramatic`, `editor.visualProps/saveFailedHint/retry`
+- **Tested ✅** (`iteration_11.json`)
+  - Backend: **9/9 new P0** + **31/31 regression** (E.2 + E.4 + E.5)
+  - Frontend E2E live: tutti 10 nuovi testids presenti, shadow-medium click → computed `boxShadow='rgba(0,0,0,0.3) 0px 8px 24px 0px'`, autosave raggiunge status-saved entro 3.5s, persistenza dopo reload verificata
+
+
 ### ✅ Phase E.5 — Moodboard Stability & Media Polish Pass (DONE — 13 Mag 2026)
 Chiusura blocker UX core dell'editor prima dell'apertura di Fase F. Reliability + media editor reale.
 

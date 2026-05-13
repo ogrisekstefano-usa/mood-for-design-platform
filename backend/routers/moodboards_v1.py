@@ -124,9 +124,70 @@ def _push_activity(tenant_id: str, project_id: Optional[str], actor_id: str,
         logger.warning(f"activity push failed: {e}")
 
 
+def _ensure_default_page(client, tenant_id: str, moodboard_id: str, title: Optional[str]) -> str:
+    """Idempotent helper: returns the moodboard's first page id, creating one
+    on demand. Used as a safety net for legacy code paths that didn't yet
+    populate `current_page_id` (the F.0 backfill should normally cover this)."""
+    existing = client.table("moodboard_pages").select("id").eq("moodboard_id", moodboard_id) \
+        .order("sort_order").limit(1).execute()
+    if existing.data:
+        return existing.data[0]["id"]
+    new_id = str(uuid.uuid4())
+    client.table("moodboard_pages").insert({
+        "id": new_id, "tenant_id": tenant_id, "moodboard_id": moodboard_id,
+        "title": title or "Page 1", "page_type": "blank",
+        "aspect_ratio": "portrait_a4", "width": 1400, "height": 2400,
+        "sort_order": 0,
+    }).execute()
+    client.table("moodboards").update({"current_page_id": new_id}).eq("id", moodboard_id).execute()
+    return new_id
+
+
+# ── Page schemas + presets ──────────────────────────────────────────────────
+# Aspect-ratio presets are Blueprint-driven: a fixed registry the frontend
+# can read via `GET /api/moodboards/_meta/page_presets`. NOT hardcoded UI.
+ASPECT_RATIO_PRESETS = {
+    "portrait_a4":     {"width": 1400, "height": 2400, "label_key": "moodboards.page.ratio.portraitA4"},
+    "landscape_16_9": {"width": 1920, "height": 1080, "label_key": "moodboards.page.ratio.landscape169"},
+    "square_1_1":      {"width": 1400, "height": 1400, "label_key": "moodboards.page.ratio.square"},
+    "editorial_3_4":   {"width": 1400, "height": 1866, "label_key": "moodboards.page.ratio.editorial"},
+    "wide_2_1":        {"width": 1920, "height":  960, "label_key": "moodboards.page.ratio.wide"},
+    "cover_landscape": {"width": 1920, "height": 1200, "label_key": "moodboards.page.ratio.coverLandscape"},
+}
+
+PAGE_TYPES = [
+    "cover", "blank", "mood", "material_board", "product_grid",
+    "palette", "gallery", "split_story", "quote", "technical_board",
+    "floorplan", "proposal_summary", "approval",
+]
+
+
+class PageCreate(BaseModel):
+    title: Optional[str] = None
+    page_type: Optional[str] = "blank"
+    aspect_ratio: Optional[str] = "portrait_a4"
+    sort_order: Optional[int] = None  # if absent → appended at the end
+    background: Optional[Dict[str, Any]] = None
+    settings: Optional[Dict[str, Any]] = None
+
+
+class PageUpdate(BaseModel):
+    title: Optional[str] = None
+    page_type: Optional[str] = None
+    aspect_ratio: Optional[str] = None
+    background: Optional[Dict[str, Any]] = None
+    settings: Optional[Dict[str, Any]] = None
+    hidden_in_presentation: Optional[bool] = None
+
+
+class PageReorder(BaseModel):
+    page_ids: List[str]  # in the desired order
+
+
 # ── Block schemas ────────────────────────────────────────────────────────────
 class BlockCreate(BaseModel):
     type: str
+    page_id: Optional[str] = None  # F.0: target page; if absent defaults to current_page_id
     x: Optional[float] = 40
     y: Optional[float] = 40
     width: Optional[float] = 320
@@ -172,6 +233,175 @@ def _build_position(x, y, w, h, z):
     }
 
 
+# ── Page meta (presets registry) ────────────────────────────────────────────
+@router.get("/_meta/page_presets")
+def get_page_presets(ctx: dict = Depends(require_permission(P_MOODBOARDS_READ))):
+    """Blueprint-driven registry the editor reads at boot to know which
+    aspect ratios + page types are available. NEVER hardcode in frontend."""
+    return {
+        "aspect_ratios": [
+            {"id": k, **v} for k, v in ASPECT_RATIO_PRESETS.items()
+        ],
+        "page_types": [
+            {"id": pt, "label_key": f"moodboards.page.type.{pt}"} for pt in PAGE_TYPES
+        ],
+    }
+
+
+# ── Page CRUD ───────────────────────────────────────────────────────────────
+@router.get("/{moodboard_id}/pages")
+def list_pages(moodboard_id: str, ctx: dict = Depends(require_permission(P_MOODBOARDS_READ))):
+    client = db()
+    _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
+    r = client.table("moodboard_pages").select("*") \
+        .eq("moodboard_id", moodboard_id).order("sort_order").execute()
+    return {"data": r.data or []}
+
+
+@router.post("/{moodboard_id}/pages", status_code=201)
+def create_page(moodboard_id: str, body: PageCreate,
+                ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
+    client = db()
+    mb = _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
+    if body.page_type and body.page_type not in PAGE_TYPES:
+        raise HTTPException(400, f"Invalid page_type: {body.page_type}")
+    if body.aspect_ratio and body.aspect_ratio not in ASPECT_RATIO_PRESETS:
+        raise HTTPException(400, f"Invalid aspect_ratio: {body.aspect_ratio}")
+
+    # Auto-append if sort_order absent
+    if body.sort_order is None:
+        max_q = client.table("moodboard_pages").select("sort_order") \
+            .eq("moodboard_id", moodboard_id).order("sort_order", desc=True).limit(1).execute()
+        sort_order = ((max_q.data[0]["sort_order"] if max_q.data else -1) + 1)
+    else:
+        sort_order = body.sort_order
+
+    preset = ASPECT_RATIO_PRESETS.get(body.aspect_ratio or "portrait_a4", ASPECT_RATIO_PRESETS["portrait_a4"])
+    row = {
+        "id": str(uuid.uuid4()),
+        "tenant_id": ctx["tenant_id"],
+        "moodboard_id": moodboard_id,
+        "title": body.title,
+        "page_type": body.page_type or "blank",
+        "aspect_ratio": body.aspect_ratio or "portrait_a4",
+        "width": preset["width"], "height": preset["height"],
+        "background": body.background or {},
+        "settings": body.settings or {},
+        "sort_order": sort_order,
+        "created_by": ctx["profile_id"],
+    }
+    r = client.table("moodboard_pages").insert(row).execute()
+    client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
+    _push_activity(ctx["tenant_id"], mb.get("project_id"), ctx["profile_id"],
+                   "moodboard.page_added", moodboard_id, mb.get("title"),
+                   {"page_id": row["id"]})
+    return r.data[0] if r.data else row
+
+
+@router.put("/{moodboard_id}/pages/{page_id}")
+def update_page(moodboard_id: str, page_id: str, body: PageUpdate,
+                ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
+    client = db()
+    _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
+    cur = client.table("moodboard_pages").select("*") \
+        .eq("id", page_id).eq("moodboard_id", moodboard_id).limit(1).execute()
+    if not cur.data:
+        raise HTTPException(404, "Page not found")
+    body_d = body.model_dump(exclude_none=True)
+    if "page_type" in body_d and body_d["page_type"] not in PAGE_TYPES:
+        raise HTTPException(400, f"Invalid page_type: {body_d['page_type']}")
+    if "aspect_ratio" in body_d:
+        if body_d["aspect_ratio"] not in ASPECT_RATIO_PRESETS:
+            raise HTTPException(400, f"Invalid aspect_ratio: {body_d['aspect_ratio']}")
+        preset = ASPECT_RATIO_PRESETS[body_d["aspect_ratio"]]
+        body_d["width"] = preset["width"]
+        body_d["height"] = preset["height"]
+    body_d["updated_at"] = _now()
+    r = client.table("moodboard_pages").update(body_d) \
+        .eq("id", page_id).eq("moodboard_id", moodboard_id).execute()
+    client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
+    return r.data[0] if r.data else {**cur.data[0], **body_d}
+
+
+@router.delete("/{moodboard_id}/pages/{page_id}")
+def delete_page(moodboard_id: str, page_id: str,
+                ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
+    client = db()
+    mb = _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
+    # Block deletion of the last page (every moodboard must have at least one)
+    all_pages = client.table("moodboard_pages").select("id") \
+        .eq("moodboard_id", moodboard_id).execute().data or []
+    if len(all_pages) <= 1:
+        raise HTTPException(409, "Cannot delete the last page of a moodboard")
+    client.table("moodboard_pages").delete() \
+        .eq("id", page_id).eq("moodboard_id", moodboard_id).execute()
+    # If the deleted page was the current_page_id, fallback to first remaining
+    if mb.get("current_page_id") == page_id:
+        remaining = client.table("moodboard_pages").select("id") \
+            .eq("moodboard_id", moodboard_id).order("sort_order").limit(1).execute()
+        new_current = remaining.data[0]["id"] if remaining.data else None
+        client.table("moodboards").update({"current_page_id": new_current, "updated_at": _now()}) \
+            .eq("id", moodboard_id).execute()
+    return {"deleted": page_id}
+
+
+@router.post("/{moodboard_id}/pages/{page_id}/duplicate", status_code=201)
+def duplicate_page(moodboard_id: str, page_id: str,
+                   ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
+    client = db()
+    _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
+    src = client.table("moodboard_pages").select("*") \
+        .eq("id", page_id).eq("moodboard_id", moodboard_id).limit(1).execute()
+    if not src.data:
+        raise HTTPException(404, "Page not found")
+    p = src.data[0]
+    new_id = str(uuid.uuid4())
+    new_page = {**p,
+                "id": new_id,
+                "title": (p.get("title") or "Page") + " (copy)",
+                "sort_order": (p.get("sort_order") or 0) + 1,
+                "created_at": _now(), "updated_at": _now()}
+    new_page.pop("created_by", None)
+    new_page["created_by"] = ctx["profile_id"]
+    # Push subsequent pages one slot down so the copy slots in right after src
+    later = client.table("moodboard_pages").select("id, sort_order") \
+        .eq("moodboard_id", moodboard_id).gt("sort_order", p["sort_order"]).execute()
+    for row in (later.data or []):
+        client.table("moodboard_pages").update({"sort_order": row["sort_order"] + 1}) \
+            .eq("id", row["id"]).execute()
+    client.table("moodboard_pages").insert(new_page).execute()
+
+    # Clone all elements of the source page into the new page (preserving layout)
+    src_els = client.table("moodboard_elements").select("*") \
+        .eq("page_id", page_id).execute().data or []
+    for el in src_els:
+        new_el = {**el,
+                  "id": str(uuid.uuid4()),
+                  "page_id": new_id,
+                  "created_at": _now(), "updated_at": _now()}
+        client.table("moodboard_elements").insert(new_el).execute()
+    client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
+    return new_page
+
+
+@router.post("/{moodboard_id}/pages/reorder")
+def reorder_pages(moodboard_id: str, body: PageReorder,
+                  ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
+    client = db()
+    _assert_moodboard(client, moodboard_id, ctx["tenant_id"])
+    # Validate: every id must belong to this moodboard
+    existing = client.table("moodboard_pages").select("id") \
+        .eq("moodboard_id", moodboard_id).execute().data or []
+    existing_ids = {p["id"] for p in existing}
+    if set(body.page_ids) != existing_ids:
+        raise HTTPException(400, "page_ids must match the full page set of this moodboard")
+    for idx, pid in enumerate(body.page_ids):
+        client.table("moodboard_pages").update({"sort_order": idx, "updated_at": _now()}) \
+            .eq("id", pid).execute()
+    client.table("moodboards").update({"updated_at": _now()}).eq("id", moodboard_id).execute()
+    return {"updated": len(body.page_ids)}
+
+
 # ── Block CRUD ───────────────────────────────────────────────────────────────
 @router.post("/{moodboard_id}/blocks", status_code=201)
 def create_block(moodboard_id: str, body: BlockCreate, ctx: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
@@ -180,12 +410,19 @@ def create_block(moodboard_id: str, body: BlockCreate, ctx: dict = Depends(requi
     if body.type not in SUPPORTED_BLOCK_TYPES:
         raise HTTPException(400, f"Unsupported block type: {body.type}")
     content = body.content or {}
+    # Determine target page: explicit body.page_id wins, else moodboard's current_page_id,
+    # else the first page (sort_order ASC). Auto-creates a default page if none exists
+    # (legacy safety net — F.0 backfill normally already created one).
+    page_id = body.page_id or mb.get("current_page_id")
+    if not page_id:
+        page_id = _ensure_default_page(client, ctx["tenant_id"], moodboard_id, mb.get("title"))
     # For image blocks, mirror src into image_url so the column is actually used
     image_url = content.get("src") if body.type == "image" else None
     row = {
         "id": str(uuid.uuid4()),
         "tenant_id": ctx["tenant_id"],
         "moodboard_id": moodboard_id,
+        "page_id": page_id,
         "type": body.type,
         "sort_order": body.sort_order or 0,
         "content": json.dumps(content),

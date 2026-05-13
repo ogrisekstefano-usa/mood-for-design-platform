@@ -57,7 +57,28 @@ def create_moodboard(body: MoodboardCreate, current_user: dict = Depends(require
         'created_at': now, 'updated_at': now, **payload,
     }
     r = client.table('moodboards').insert(moodboard).execute()
-    return r.data[0] if r.data else moodboard
+    # F.0: every new moodboard ships with a default "Page 1" page (title mirrors
+    # the moodboard's title per user spec) so the multi-page editor has a
+    # valid landing surface from the very first render.
+    default_page_id = str(uuid.uuid4())
+    client.table('moodboard_pages').insert({
+        'id': default_page_id,
+        'tenant_id': current_user['tenant_id'],
+        'moodboard_id': moodboard['id'],
+        'title': moodboard.get('title') or 'Page 1',
+        'page_type': 'blank',
+        'aspect_ratio': 'portrait_a4',
+        'width': 1400, 'height': 2400,
+        'sort_order': 0,
+        'created_by': current_user['profile_id'],
+    }).execute()
+    client.table('moodboards').update({'current_page_id': default_page_id}) \
+        .eq('id', moodboard['id']).execute()
+    # Always overlay current_page_id onto the response (the original insert
+    # response predates the update and would otherwise expose current_page_id=None).
+    out = dict(r.data[0]) if r.data else moodboard
+    out['current_page_id'] = default_page_id
+    return out
 
 
 @router.get("/{moodboard_id}")
@@ -68,6 +89,11 @@ def get_moodboard(moodboard_id: str, current_user: dict = Depends(require_permis
     if not r.data:
         raise HTTPException(404, "Not found")
     mb = r.data[0]
+    # F.0: include the moodboard's ordered pages alongside the legacy flat
+    # `elements` list (kept for backward compat with the current editor).
+    pages_q = client.table('moodboard_pages').select('*') \
+        .eq('moodboard_id', moodboard_id).order('sort_order').execute()
+    mb['pages'] = pages_q.data or []
     els = client.table('moodboard_elements').select('*').eq('moodboard_id', moodboard_id).order('sort_order').execute()
     from routers.moodboards_v1 import _normalize_block
     mb['elements'] = [_normalize_block(b) for b in (els.data or [])]

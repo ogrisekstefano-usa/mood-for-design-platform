@@ -364,7 +364,24 @@ def apply_template(template_id: str, body: ApplyTemplate,
     mb = {k: v for k, v in mb.items() if v is not None}
     client.table("moodboards").insert(mb).execute()
 
-    # Clone template_blocks → moodboard_elements
+    # F.0: every applied template materializes a single "Cover" page that
+    # holds all the cloned blocks. F.1 will extend this to multi-page templates.
+    default_page_id = str(uuid.uuid4())
+    client.table("moodboard_pages").insert({
+        "id": default_page_id,
+        "tenant_id": ctx["tenant_id"],
+        "moodboard_id": moodboard_id,
+        "title": body.title,
+        "page_type": "blank",
+        "aspect_ratio": "portrait_a4",
+        "width": 1400, "height": 2400,
+        "sort_order": 0,
+        "created_by": ctx["profile_id"],
+    }).execute()
+    client.table("moodboards").update({"current_page_id": default_page_id}) \
+        .eq("id", moodboard_id).execute()
+
+    # Clone template_blocks → moodboard_elements (attached to the default page)
     tpl_blocks = client.table("template_blocks").select("*") \
         .eq("template_id", template_id).order("sort_order").execute().data or []
     for tb in tpl_blocks:
@@ -375,6 +392,7 @@ def apply_template(template_id: str, body: ApplyTemplate,
             "id": str(uuid.uuid4()),
             "tenant_id": ctx["tenant_id"],
             "moodboard_id": moodboard_id,
+            "page_id": default_page_id,
             "type": tb["type"],
             "title": tb.get("title") or (content.get("caption") if tb["type"] == "image" else None),
             "content": json.dumps(content),
