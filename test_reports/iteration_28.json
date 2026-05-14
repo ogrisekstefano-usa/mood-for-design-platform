@@ -1,0 +1,49 @@
+{
+  "summary": "Iter 28 - Frontend-only validation of MOOD for DESIGN Premium Pre-built Templates. UI/visual layer is fully wired and renders correctly (premium section, 5 cards with curated editorial previews, PREMIUM chips, titles, descriptions, ESC/close-btn behavior, regression of legacy skeletons + critical testids). However a CRITICAL backend integration bug breaks the actual apply step: POST /api/moodboards/{id}/pages returns 400 on this moodboard for designer@moodfordesign.com, so the premium template helper aborts before posting any blocks (modal closes cleanly but 0 new pages + 0 new blocks). The SAME 400 also breaks the legacy `skeleton-card-blank` flow, so this is NOT specific to premium templates — it is a regression in the existing /pages endpoint payload or permissions.",
+  "validation_results": {
+    "T1_premium_section_header": { "result": "PASS", "evidence": "{eyebrow:true,subtitle:true} matched 'Premium pre-built templates' + 'A finished moodboard in one click — edit anything.'; Sparkles teal icon present (SkeletonPicker.jsx line 162)." },
+    "T2_five_premium_cards_testids": { "result": "PASS", "evidence": "All 5 testids found: luxury_hospitality, material_narrative, japandi_editorial, fashion_editorial, residential_moodboard." },
+    "T3_card_visual_identity": { "result": "PASS", "evidence": "Screenshot confirms 5 visually-distinct curated previews: Luxury=cinematic hero+overlay title+palette, Material=4-grid photos+italic serif title, Japandi=cream bg+asymmetric whitespace+minimal type, Fashion=black bg+oversized italic '04'+overlay imagery, Residential=AD-magazine hero+2-stack+materials row. Each card has PREMIUM chip with Sparkles, full title (e.g. 'Luxury Hospitality'), and description." },
+    "T4_premium_apply": { "result": "FAIL (CRITICAL)", "evidence": "Clicked [data-testid=premium-template-card-japandi_editorial]. Modal closed cleanly. BUT: page-count 0 -> 0, block-count 23 -> 23. Network log: 400 POST /api/moodboards/85b93c6b-8de2-4b14-a977-a768ecc02309/pages. The applyPremiumTemplate helper in premiumTemplates.js throws on missing pageId so the parallel block POSTs are never attempted. No new page tile appears in filmstrip." },
+    "T5_regular_skeletons_intact": { "result": "PASS (rendering) / FAIL (apply)", "evidence": "12 [data-testid^=skeleton-card-] rendered including 'blank'. BUT clicking skeleton-card-blank ALSO fails: pages 0 -> 0. This confirms the /pages POST 400 is a generic regression, not premium-specific." },
+    "T6_modal_close_behaviors": { "result": "PASS", "evidence": "ESC close: modal removed. [data-testid=skeleton-picker-close] click: modal removed. No console errors emitted by either action." },
+    "T7_critical_ui_intact": { "result": "PASS", "evidence": "All 7 testids present: topbar, topbar-theme-switcher, topbar-user-menu-trigger, editor-panel, editor-tab-insert, pages-filmstrip, add-page-btn." },
+    "T8_fallback_gradient_resilience": { "result": "PASS", "evidence": "Per-template inner wrappers verified via computed style: japandi_editorial=#F0EDE5 cream, fashion_editorial=#000 black (intended), material_narrative & residential_moodboard fall back to var(--bp-surface-1) (dark surface), luxury_hospitality outer is transparent but inner Photo wrapper carries the warm 135deg #3A2C20->#1F160F gradient (PremiumTemplatePreview.jsx line 25). Screenshot confirms NO empty/transparent cards even when one Unsplash photo failed (Luxury card hero image did not load — gradient warm fallback rendered correctly behind the title, exactly as required)." }
+  },
+  "backend_issues": {
+    "critical": [
+      { "endpoint": "POST /api/moodboards/{id}/pages", "issue": "Returns 400 Bad Request when the frontend POSTs {title, page_type, settings:{background_color}}. Affects BOTH the new premium-template apply AND the legacy `from blank skeleton` flow. Result: user clicks add-page → modal closes → nothing appears in the filmstrip.", "priority": "CRITICAL" }
+    ],
+    "minor": [
+      { "endpoint": "GET /api/blueprint/tenant/me", "issue": "Returns 503 intermittently on editor mount — pre-existing, not premium-related but worth tracking." }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      { "flow": "Premium template apply", "issue": "applyPremiumTemplate() swallows the 400 from /pages by throwing, so the user sees no feedback (no toast, no error). Consider surfacing an error toast OR pre-validating the payload shape against the legacy /pages/from_skeleton contract.", "affected_selectors": ["[data-testid^=premium-template-card-]"] }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "INVESTIGATE: Why POST /api/moodboards/{id}/pages returns 400 for designer@moodfordesign.com on moodboard 85b93c6b-... The premium helper sends {title, page_type, settings:{background_color:'#F0EDE5'}}. The legacy skeleton-card-blank flow (which historically worked) is now ALSO 400ing — likely a Pydantic/schema change OR a permissions regression on the pages endpoint. Tail backend logs while clicking add-page to capture the FastAPI 400 detail.",
+    "Add user-facing error toast in applyPremiumTemplate when pageRes.data?.id is missing, instead of silently throwing — otherwise users will think the picker is broken with no feedback.",
+    "Add data-testid=`page-tile-{id}` (or similar) to filmstrip page tiles so e2e tests can count pages reliably (currently the test had to fall back to indirect evidence)."
+  ],
+  "critical_code_review_comments": [
+    "premiumTemplates.js applyPremiumTemplate(): Promise.all(...catch(()=>null)) silently swallows individual block failures. Acceptable per the architecture brief, but no aggregate logging — if 8/8 blocks fail the user gets a 'success' apply with an empty page. Consider counting failures and surfacing a 'X of 8 blocks could not be created' toast.",
+    "PremiumTemplatePreview.jsx LuxuryHospitality: outer container is `absolute inset-0` with no background; the warm gradient lives only on the inner Photo wrapper. If the photo URL fails AND the lazy decoder hides the img, the gradient still shows — verified at runtime. OK.",
+    "SkeletonPicker.jsx: hard-coded fallback strings inside t(key, null, 'fallback') — good i18n pattern but the divider eyebrow says 'Or start from a blank skeleton' which clashes with the existing skeleton categories underneath that include non-blank options (Cover/Narrative/...). Consider 'Or start from a blank layout' for accuracy.",
+    "Critical: the /pages 400 is consistent across premium AND legacy flows — strongly suggests a backend regression unrelated to the premium feature. Main agent should NOT assume the architecture-lock made premium safe; the existing endpoint itself is broken for this user/moodboard.",
+    "premiumTemplates.js: PHOTOS constant reuses 3 Unsplash IDs for both `cinematic_chair`/`texture_wood` and `warm_lounge`/`texture_stone` — identical URLs at different widths. Browser will dedupe but the variable naming is misleading; if a designer expects 'travertine stone' they get a lounge photo."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "N/A (skip)", "frontend": "Visual/UI layer 100%, Integration apply 0% (blocked by /pages 400)" },
+  "test_credentials": "designer@moodfordesign.com / Designer2024!",
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Login redirects through /auth/login -> /dashboard -> goto /moodboards then click an existing card. Direct goto to /moodboards/85b93c6b-... right after login is sometimes redirected back to /moodboards (session race). To open the editor reliably: login -> goto /moodboards -> follow the first <a href='/moodboards/...'> link. The CRITICAL bug to retest after main-agent fix: click add-page-btn -> click [data-testid=premium-template-card-japandi_editorial] -> wait 6s -> verify a NEW page tile appears in [data-testid=pages-filmstrip] AND new [data-testid^=block-] elements render on the canvas. Currently both stay at 0 because POST /api/moodboards/{id}/pages returns 400.",
+  "rca_of_the_issue": "Root cause is in the BACKEND /pages endpoint (out of scope per architecture lock, but blocking the feature). POST /api/moodboards/85b93c6b-8de2-4b14-a977-a768ecc02309/pages returned 400 for the JSON body {title, page_type:'narrative', settings:{background_color:'#F0EDE5'}} sent by applyPremiumTemplate. Since the same 400 hits the legacy skeleton-blank pick (which uses /pages/from_skeleton from PagesFilmstrip), the regression is on the PAGES routes themselves — likely Pydantic schema change requiring an additional required field (e.g. moodboard_id in body, position, or skeleton_id), OR a permissions decorator change blocking the designer role. Mitigation 1: capture the FastAPI 400 detail from /var/log/supervisor/backend.*.log when the click happens. Mitigation 2: surface the error to the user via toast so designers know the click failed."
+}

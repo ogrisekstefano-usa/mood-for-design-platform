@@ -16,6 +16,7 @@ import { trackEvent } from '../../lib/telemetry';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { Plus, Copy, Trash2 } from 'lucide-react';
 import SkeletonPicker from './SkeletonPicker';
+import { applyPremiumTemplate } from './premiumTemplates';
 
 // Tiny wireframe preview that renders the page's block geometry at scale.
 const MiniPreview = ({ page, blocks }) => {
@@ -78,6 +79,21 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
       { entityType: 'moodboard', entityId: moodboardId });
     onSelect?.(r.data.id);
     onChange?.();
+  };
+
+  // Premium pre-built template — uses the same /pages + /blocks endpoints
+  // as a regular page+blocks flow, so the canvas autosave / history continue
+  // to work without any backend changes. See premiumTemplates.js.
+  const handlePremiumPick = async (templateId) => {
+    setSkeletonPickerOpen(false);
+    try {
+      const newPageId = await applyPremiumTemplate(api, moodboardId, templateId);
+      trackEvent('moodboard.premium_template_applied',
+        { template_id: templateId, moodboard_id: moodboardId },
+        { entityType: 'moodboard', entityId: moodboardId });
+      if (newPageId) onSelect?.(newPageId);
+      onChange?.();
+    } catch (_) { /* user can retry from the picker */ }
   };
 
   const handleDelete = async (e, pageId) => {
@@ -220,6 +236,7 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
         <SkeletonPicker
           skeletons={skeletons}
           onPick={handleSkeletonPick}
+          onPickPremium={handlePremiumPick}
           onClose={() => setSkeletonPickerOpen(false)}
         />
       )}

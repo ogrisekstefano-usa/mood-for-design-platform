@@ -12,9 +12,11 @@
  * all labels via t().
  */
 import React, { useEffect, useMemo, useRef } from 'react';
-import { X, LayoutGrid } from 'lucide-react';
+import { X, LayoutGrid, Sparkles } from 'lucide-react';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import EditorialSkeletonPreview from './EditorialSkeletonPreview';
+import PremiumTemplatePreview from './PremiumTemplatePreview';
+import { PREMIUM_TEMPLATE_IDS, getPremiumTemplate } from './premiumTemplates';
 
 // ── Mini editorial preview (curated per skeleton id) ────────────────────────
 // Each skeleton renders a small CURATED composition — real photography +
@@ -23,6 +25,39 @@ import EditorialSkeletonPreview from './EditorialSkeletonPreview';
 // materials / etc).
 const SkeletonPreview = ({ skeleton }) => (
   <EditorialSkeletonPreview skeleton={skeleton} />
+);
+
+// ── Premium pre-built template card (large, cinematic) ──────────────────────
+// Visually distinct from the regular skeleton cards: bigger, with the eyebrow
+// "PREMIUM" + a description below the preview. One-click apply via onPickPremium.
+const PremiumCard = ({ tpl, onPickPremium }) => (
+  <button type="button"
+          onClick={() => onPickPremium(tpl.id)}
+          data-testid={`premium-template-card-${tpl.id}`}
+          className="group text-left flex flex-col rounded-[var(--bp-radius-sm)] overflow-hidden
+                     border border-[var(--bp-border)] hover:border-[var(--bp-primary)]
+                     transition-all duration-[var(--bp-duration-cinematic)] ease-[var(--bp-ease-emphasis)]
+                     hover:-translate-y-1 hover:shadow-[var(--bp-elevation-lg)]
+                     bg-[var(--bp-surface-1)]">
+    <div className="relative w-full overflow-hidden" style={{ aspectRatio: '4 / 5' }}>
+      <PremiumTemplatePreview id={tpl.id} />
+      <span className="absolute top-2 left-2 px-2 py-[3px] rounded-full
+                       bg-black/55 backdrop-blur-sm text-white
+                       text-[8px] tracking-[0.28em] uppercase font-body
+                       flex items-center gap-1">
+        <Sparkles size={9} strokeWidth={1.6} />
+        Premium
+      </span>
+    </div>
+    <div className="px-4 py-3 border-t border-[var(--bp-border)]">
+      <p className="bp-caption !text-[12px] !text-[var(--bp-text-primary)] !font-medium mb-1">
+        {tpl.name}
+      </p>
+      <p className="bp-caption !text-[10px] !text-[var(--bp-text-muted)] leading-[1.45] line-clamp-2">
+        {tpl.description}
+      </p>
+    </div>
+  </button>
 );
 
 // ── Category-grouped picker grid ─────────────────────────────────────────────
@@ -62,7 +97,7 @@ const SkeletonCard = ({ sk, onPick, t }) => {
   );
 };
 
-const SkeletonPicker = ({ skeletons, onPick, onClose }) => {
+const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose }) => {
   const { t } = useBlueprint();
   const dialogRef = useRef(null);
 
@@ -117,6 +152,36 @@ const SkeletonPicker = ({ skeletons, onPick, onClose }) => {
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-8 py-6">
+          {/* PREMIUM PRE-BUILT TEMPLATES — top of the picker. These are
+              fully-composed moodboards (real imagery + palette + typography).
+              One click applies all blocks to a brand-new page. */}
+          {onPickPremium && (
+            <section className="mb-10">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Sparkles size={11} strokeWidth={1.5} className="text-[var(--bp-primary)]" />
+                  <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-primary)]">
+                    {t('moodboards.premium.eyebrow', null, 'Premium pre-built templates')}
+                  </p>
+                </div>
+                <p className="bp-caption !text-[10px] !text-[var(--bp-text-subtle)] hidden md:block">
+                  {t('moodboards.premium.subtitle', null, 'A finished moodboard in one click — edit anything.')}
+                </p>
+              </div>
+              <div className="grid gap-4"
+                   style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
+                {PREMIUM_TEMPLATE_IDS.map((tplId) => {
+                  const tpl = getPremiumTemplate(tplId);
+                  return tpl ? <PremiumCard key={tplId} tpl={tpl} onPickPremium={onPickPremium} /> : null;
+                })}
+              </div>
+              <div className="mt-8 mb-2 h-px bg-[var(--bp-section-divider)]" />
+              <p className="bp-eyebrow !text-[9.5px] !text-[var(--bp-text-muted)] mt-2">
+                {t('moodboards.skeleton.fromScratchEyebrow', null, 'Or start from a blank skeleton')}
+              </p>
+            </section>
+          )}
+
           {isLoading ? (
             <div className="py-16 flex justify-center">
               <div className="w-5 h-5 border-2 border-[var(--bp-primary)] border-t-transparent rounded-full animate-spin" />
