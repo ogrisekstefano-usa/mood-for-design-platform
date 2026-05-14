@@ -1,74 +1,61 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import { useBlueprint } from '../../contexts/BlueprintContext';
-import { ChevronRight, Bell } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import LocaleSwitcher from '../common/LocaleSwitcher';
+import ThemeSwitcher from '../common/ThemeSwitcher';
+import UserMenu from '../common/UserMenu';
+import NavigableBreadcrumb from '../common/NavigableBreadcrumb';
+import Brand from '../common/Brand';
 
 /**
- * Topbar — section breadcrumb + locale + notifications + user chip.
+ * Topbar — the editorial command bar.
  *
- * The user chip lives ONLY here (Sidebar no longer renders user info,
- * to eliminate the previous bottom-left / top-right duplicate).
+ *  LEFT   : brand wordmark (compact) + navigable breadcrumb
+ *  CENTER : reserved for context-aware editor tools (rendered by pages
+ *           themselves via the right cluster — kept clean here)
+ *  RIGHT  : notifications · theme · locale · avatar dropdown (logout lives
+ *           inside the avatar menu, not in the sidebar anymore)
+ *
+ * Visual density is deliberately lower than typical SaaS topbars: thin
+ * border, glass background, generous padding, no hard separators between
+ * right-side controls.
  */
-const PATH_KEYS = [
-  ['/workspace/leads', 'nav.leads', 'nav.section.workspace'],
-  ['/workspace/projects', 'nav.projects', 'nav.section.workspace'],
-  ['/workspace/proposals', 'nav.proposals', 'nav.section.workspace'],
-  ['/moodboards', 'nav.moodboards', 'nav.section.content'],
-  ['/inspirations', 'nav.inspirations', 'nav.section.content'],
-  ['/insights', 'nav.insights', 'nav.section.intelligence'],
-  ['/settings', 'nav.settings', 'nav.section.system'],
-  ['/dashboard', 'nav.dashboard', null],
-];
-
-const Topbar = () => {
-  const location = useLocation();
-  const { user } = useAuth();
-  const { t } = useBlueprint();
-
-  const match = PATH_KEYS.find(([p]) => location.pathname.startsWith(p)) || ['/', 'nav.dashboard', null];
-  const sectionKey = match[2];
-  const labelKey = match[1];
-
-  const userInitial = (user?.first_name?.[0] || user?.email?.[0] || 'U').toUpperCase();
-  const userLabel = (user?.first_name && `${user.first_name} ${user?.last_name || ''}`.trim()) || user?.email?.split('@')[0];
-
-  return (
-    <header
-      data-testid="topbar"
-      style={{ height: '52px' }}
-      className="flex items-center justify-between px-6 border-b border-[var(--bp-border)] bg-[var(--bp-bg)]/85 backdrop-blur-xl flex-shrink-0"
-    >
-      <div className="flex items-center gap-2 min-w-0">
-        {sectionKey && (
-          <>
-            <span className="text-[var(--bp-text-muted)] text-xs font-body">{t(sectionKey)}</span>
-            <ChevronRight size={12} className="text-[var(--bp-text-subtle)]" />
-          </>
-        )}
-        <span className="text-[var(--bp-text-primary)] text-sm font-body font-medium truncate">{t(labelKey)}</span>
+const Topbar = () => (
+  <header
+    data-testid="topbar"
+    style={{ height: '56px' }}
+    className="flex items-center justify-between gap-6 px-6 border-b border-[var(--bp-border)]
+               bg-[var(--bp-bg)]/85 backdrop-blur-xl flex-shrink-0"
+  >
+    {/* LEFT — brand + breadcrumb (sidebar carries only the mark, here the wordmark) */}
+    <div className="flex items-center gap-5 min-w-0">
+      <div className="flex-shrink-0 hidden md:block">
+        <Brand size="sm" />
       </div>
+      <div className="h-5 w-px bg-[var(--bp-border)] hidden md:block" />
+      <NavigableBreadcrumb />
+    </div>
 
-      <div className="flex items-center gap-2">
-        <LocaleSwitcher />
-        <button
-          data-testid="topbar-notifications-btn"
-          className="relative text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors p-1.5 rounded-[3px] hover:bg-[var(--bp-surface-2)]/40"
-        >
-          <Bell size={15} strokeWidth={1.5} />
-        </button>
+    {/* RIGHT — controls cluster, low-density, no harsh separators */}
+    <div className="flex items-center gap-2 flex-shrink-0">
+      <button
+        type="button"
+        data-testid="topbar-notifications-btn"
+        title="Notifications"
+        className="relative w-8 h-8 flex items-center justify-center rounded-full
+                   text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]
+                   hover:bg-[var(--bp-surface-2)]/40 transition-colors"
+      >
+        <Bell size={14} strokeWidth={1.6} />
+      </button>
 
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-[3px] bg-[var(--bp-surface-2)]/40 border border-[var(--bp-border)]"
-             data-testid="topbar-user-chip">
-          <div className="w-5 h-5 rounded-full bg-[var(--bp-primary)]/15 flex items-center justify-center">
-            <span className="text-[var(--bp-primary)] text-[10px] font-semibold font-body">{userInitial}</span>
-          </div>
-          <span className="text-[var(--bp-text-secondary)] text-xs font-body hidden sm:block">{userLabel}</span>
-        </div>
-      </div>
-    </header>
-  );
-};
+      <ThemeSwitcher />
+      <LocaleSwitcher />
+
+      <div className="w-px h-5 bg-[var(--bp-border)] mx-1" />
+
+      <UserMenu />
+    </div>
+  </header>
+);
 
 export default Topbar;

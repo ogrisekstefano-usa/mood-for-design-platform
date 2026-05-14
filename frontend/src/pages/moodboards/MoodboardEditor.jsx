@@ -19,7 +19,7 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
   ArrowLeft, Plus, Check, Share2, ExternalLink, Send, X, AlertCircle,
   Play, Maximize2, ChevronLeft, ChevronRight, PanelRight, ListChecks,
-  BookmarkPlus, Undo2, Redo2, Magnet, RotateCcw, FileText, Sun, Moon,
+  BookmarkPlus, Undo2, Redo2, Magnet, RotateCcw, FileText,
   Copy, Clipboard, MoveRight,
 } from 'lucide-react';
 import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegistry';
@@ -35,7 +35,7 @@ import useHistory from '../../blueprint/moodboard/useHistory';
 import PresentationMode from '../../blueprint/moodboard/PresentationMode';
 import PageInspector from '../../blueprint/moodboard/PageInspector';
 import ImageQuickAdjust from '../../blueprint/moodboard/ImageQuickAdjust';
-import useWorkspaceMode from '../../blueprint/moodboard/useWorkspaceMode';
+// Workspace mode is owned by the global Topbar; no local hook needed here.
 import Brand from '../../components/common/Brand';
 import { trackEvent } from '../../lib/telemetry';
 import { FONT_REGISTRY, FONT_CATEGORIES } from '../../blueprint/moodboard/fontRegistry';
@@ -72,7 +72,8 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const [quickAdjust, setQuickAdjust] = useState(null);
 
   const history = useHistory();
-  const { mode: workspaceMode, toggle: toggleWorkspaceMode, isLight } = useWorkspaceMode();
+  // Workspace mode is owned globally by the Topbar's ThemeSwitcher — the
+  // editor no longer needs to read or toggle it locally.
   // Confirm pulse — a transient ring shown on the autosave dot the moment a
   // save succeeds. Resets to "silent reliable" steady state after 800ms.
   const [justSaved, setJustSaved] = useState(false);
@@ -777,18 +778,9 @@ const MoodboardEditor = ({ readOnly = false }) => {
             </button>
           )}
 
-          {/* Workspace Mode toggle — Editorial Light ↔ Cinematic Dark */}
-          <button onClick={toggleWorkspaceMode}
-                  data-testid="workspace-mode-toggle"
-                  title={isLight
-                    ? t('moodboards.editor.modeDark', null, 'Cinematic Dark')
-                    : t('moodboards.editor.modeLight', null, 'Editorial Light')}
-                  aria-label="Toggle workspace mode"
-                  className="p-1.5 rounded-[var(--bp-radius-xs)] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] hover:bg-[var(--bp-surface-2)]/60 transition-colors">
-            {isLight
-              ? <Moon size={14} strokeWidth={1.5} />
-              : <Sun size={14} strokeWidth={1.5} />}
-          </button>
+          {/* Workspace Mode toggle has moved to the global Topbar — no longer
+              duplicated here so the editor toolbar stays focused on canvas
+              tools (present · review · share · approval). */}
 
           {!readOnly && (
             <>
@@ -1121,6 +1113,24 @@ const MoodboardEditor = ({ readOnly = false }) => {
     </div>
   );
 };
+
+// ── Row Toggle (label + switch) — used inline in inspectors ─────────────────
+const RowToggle = ({ label, hint, checked, onChange, testid }) => (
+  <label className="flex items-start gap-3 mb-3 cursor-pointer">
+    <button type="button"
+            onClick={() => onChange(!checked)}
+            data-testid={testid}
+            className={`mt-0.5 relative w-8 h-[18px] rounded-full transition-colors flex-shrink-0
+                        ${checked ? 'bg-[var(--bp-primary)]' : 'bg-[var(--bp-surface-2)]'}`}>
+      <span className={`absolute top-[2px] w-[14px] h-[14px] bg-white rounded-full transition-transform
+                        ${checked ? 'translate-x-[16px]' : 'translate-x-[2px]'}`} />
+    </button>
+    <div className="flex-1 min-w-0">
+      <p className="bp-caption !text-[11px] !text-[var(--bp-text-primary)]">{label}</p>
+      {hint && <p className="bp-caption !text-[10px] !text-[var(--bp-text-subtle)] mt-0.5">{hint}</p>}
+    </div>
+  </label>
+);
 
 // ── Tab Button ──────────────────────────────────────────────────────────────
 const TogglePill = ({ active, onClick, label, italic, underline, testid }) => (
@@ -1754,7 +1764,7 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
                          onChange={(v) => setS('thickness', v)}
                          testid="arrow-thickness" formatValue={(v) => `${v}px`} />
 
-        <Toggle label={t('moodboards.field.dashed', null, 'Dashed')}
+        <RowToggle label={t('moodboards.field.dashed', null, 'Dashed')}
                 checked={!!s.dashed}
                 onChange={(v) => setS('dashed', v)}
                 testid="arrow-dashed" />

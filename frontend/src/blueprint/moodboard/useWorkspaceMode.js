@@ -16,11 +16,14 @@ import { useCallback, useEffect, useState } from 'react';
 const STORAGE_KEY = 'mfd_workspace_mode';
 const ATTR = 'data-workspace-mode';
 
+// MOOD for DESIGN™ defaults to Cinematic Dark™ on first load — Editorial Light™
+// is an opt-in mode (set explicitly via the topbar segmented switch). We
+// intentionally ignore prefers-color-scheme so the product feels deliberately
+// authored, not "auto-styled" by the OS.
 const detectInitial = () => {
   if (typeof window === 'undefined') return 'dark';
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === 'light' || stored === 'dark') return stored;
-  if (window.matchMedia?.('(prefers-color-scheme: light)').matches) return 'light';
   return 'dark';
 };
 
@@ -35,14 +38,13 @@ export default function useWorkspaceMode() {
   useEffect(() => { applyMode(mode); }, [mode]);
 
   // Listen for OS-level changes ONLY when the user hasn't made an explicit choice.
+  // NOTE: we no longer auto-switch to light on prefers-color-scheme change because
+  // the product is dark-first by design. The listener is kept as a no-op anchor
+  // so future preference-aware features can be reintroduced without code churn.
   useEffect(() => {
     const mq = window.matchMedia?.('(prefers-color-scheme: light)');
     if (!mq) return undefined;
-    const handler = (e) => {
-      if (!localStorage.getItem(STORAGE_KEY)) {
-        setMode(e.matches ? 'light' : 'dark');
-      }
-    };
+    const handler = () => {};
     mq.addEventListener?.('change', handler);
     return () => mq.removeEventListener?.('change', handler);
   }, []);
