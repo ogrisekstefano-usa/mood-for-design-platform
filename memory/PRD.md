@@ -665,6 +665,76 @@ Enterprise-grade schema-driven form engine. Reusable for: lead-gen · design req
 - White-label custom domains
 - RTL/AR locale support
 
+
+### ✅ Sprint UI/UX — Creative Operating System Direction (14 Feb 2026)
+
+**P0 Fix — Editor crash:**
+- Risolto `ReferenceError: Toggle is not defined` in `MoodboardEditor.jsx`. Aggiunto componente locale `RowToggle` (label + switch) usato da `arrow-dashed` e dai toggle di visibilità del Page Inspector. (0 page errors verificati)
+
+**Topbar overhaul (Linear / Framer / Figma direction):**
+- Nuova gerarchia: LEFT brand wordmark + breadcrumb navigabile / RIGHT bell · theme switcher · locale · avatar
+- Nuovo componente `ThemeSwitcher` (sun/moon segmented capsule) — sostituisce il toggle nascosto nell'editor
+- Nuovo componente `UserMenu` (dropdown da avatar) con Profile · Workspace · Preferences · Theme · Notifications · Logout
+- Nuovo componente `NavigableBreadcrumb` (clickable trail con regex registry, supporta editor moodboard e settings deep links)
+
+**Sidebar cleanup:**
+- Sidebar mostra ora solo il monogramma "M" (variante `Brand variant="monogram"`) per non duplicare il wordmark del Topbar
+- Rimosso il pulsante `sidebar-logout-btn` (logout vive ora SOLO nell'avatar menu)
+- Edge collapse handle: pin verticale sul bordo destro della sidebar con hit-area generosa (16px), hover state cinematico
+
+**Editorial Light™ rework:**
+- Default DARK mode (rimosso auto-detect da `prefers-color-scheme`)
+- Contrast bump: ink #14110E (era #1E1B18) · paper #F4EFE7 (era #F5F1EB) · borders bumped 0.08→0.10 alpha
+- Palette Aesop / Kinfolk / Notion paper più calda e definita
+
+**Cinematic capsules:**
+- `StatusBadge` redesign: rounded-full + dot indicator + uppercase tracking (no più chip SaaS chunky)
+- Animated pulse sui status "alive" (sent, viewed, in_review, revision_requested)
+
+**Files cambiati:**
+- `src/components/layout/Topbar.jsx` (rewrite)
+- `src/components/layout/Sidebar.jsx` (rewrite)
+- `src/components/common/Brand.jsx` (add monogram variant)
+- `src/components/common/ThemeSwitcher.jsx` (new)
+- `src/components/common/UserMenu.jsx` (new)
+- `src/components/common/NavigableBreadcrumb.jsx` (new)
+- `src/components/common/StatusBadge.jsx` (rewrite editorial)
+- `src/blueprint/moodboard/useWorkspaceMode.js` (dark-first)
+- `src/pages/moodboards/MoodboardEditor.jsx` (RowToggle + cleanup)
+- `src/index.css` (light mode palette bump)
+
+**Test report:** `/app/test_reports/iteration_23.json` — 100% PASS (9/9 acceptance criteria, 0 page errors)
+
+## P0 / P1 Backlog (Next Session)
+
+### P1 — Editorial Finish Sprint (deferred bugs)
+- Shape border system: bordi non aggiornano in modo affidabile sui shape block
+- Slider remount/jitter (opacity, thickness, typography) — verificare se persistono dopo Topbar refactor
+- Image block stability: focal point crop non persiste, preview inconsistente, uploaded images talvolta invisibili
+- Page Background controls — verificare stabilità (color/image/overlay)
+
+### P1 — Editorial Polish
+- Verifica `ArrowBlock` rendering + interazione completa
+- Premium Drag Polish (guide più visibili, snap lines eleganti, soft scale during drag)
+- Right Inspector "editorial feel" (più whitespace, separatori soft, ridurre micro-borders)
+
+### P2 — Templates & Mockups
+- "Insert Editorial Template" CTA dentro l'editor (oltre al template picker già esistente al momento di creazione)
+- 5 template editoriali curati (hospitality, neutral luxury, material boards, residenziale, retail showroom) — frontend-driven blocks, NO seed SQL
+
+### Refactor (codice tecnico)
+- Split `MoodboardEditor.jsx` (>1700 lines) in: `inspectors/BlockInspector.jsx`, `inspectors/PageInspector.jsx`, `inspectors/ArrowInspector.jsx`, `editor/EditorCanvas.jsx`, `editor/EditorToolbar.jsx`
+- Lift `RowToggle` a `/components/common/RowToggle.jsx` per riuso
+- Gate dashboard API calls (`/api/leads`, `/api/insights`, `/api/super`) by role per evitare 403 in console
+
+### P3 — Future
+- Interaction & motion polish app-wide (hover states, soft easing, micro-interactions)
+- Phase F.3: Template Import / Rebuild Foundation (AI extraction of layout)
+- Phase F.4: Proposal Builder PRO™ (review workflow advanced)
+- Blueprint Insights™ Analytics UI
+- Global Project Styles (heading/body/accent font mapping)
+
+
 ## Demo Credentials (`/app/memory/test_credentials.md`)
 - Email: `demo@moodfordesign.com` · Password: `Blueprint2024!`
 - Role: `super_admin` (può accedere a `/admin/*` e impersonare tenants)
