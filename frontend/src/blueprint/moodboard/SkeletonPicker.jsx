@@ -42,10 +42,10 @@ const PremiumCard = ({ tpl, onPickPremium }) => (
                      bg-[var(--bp-surface-1)]">
     <div className="relative w-full overflow-hidden" style={{ aspectRatio: '4 / 5' }}>
       <PremiumTemplatePreview id={tpl.id} />
-      <span className="absolute top-2.5 left-2.5 px-2 py-[3px] rounded-full
+      <span className="absolute top-2.5 right-2.5 px-2 py-[3px] rounded-full
                        bg-black/55 backdrop-blur-sm text-white
                        text-[8px] tracking-[0.28em] uppercase font-body
-                       flex items-center gap-1">
+                       flex items-center gap-1 shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
         <Sparkles size={9} strokeWidth={1.6} />
         Premium
       </span>
@@ -162,42 +162,52 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose }) => {
               than a flat grid. Each category renders only if it has at least
               one template. */}
           {onPickPremium && (
-            <section className="mb-12">
-              <div className="flex items-center justify-between mb-2">
+            <section className="mb-14">
+              <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <Sparkles size={11} strokeWidth={1.5} className="text-[var(--bp-primary)]" />
-                  <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-primary)]">
-                    {t('moodboards.premium.eyebrow', null, 'Premium pre-built templates')}
+                  <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-primary)] !tracking-[0.32em]">
+                    {t('moodboards.premium.eyebrow', null, 'Premium curated archive')}
                   </p>
                 </div>
-                <p className="bp-caption !text-[10px] !text-[var(--bp-text-subtle)] hidden md:block">
+                <p className="bp-caption !text-[10px] !text-[var(--bp-text-subtle)] italic hidden md:block">
                   {t('moodboards.premium.subtitle', null,
-                     'A curated archive of finished moodboards — one click to start.')}
+                     'A library of finished moodboards — one click to start.')}
                 </p>
               </div>
               {/* Hero divider — sets the editorial rhythm */}
-              <div className="h-px bg-[var(--bp-section-divider)] mb-8" />
+              <div className="h-px bg-[var(--bp-section-divider)] mb-10" />
 
               {PREMIUM_CATEGORIES.map((cat, catIdx) => {
                 const templates = getTemplatesByCategory(cat.key);
                 if (templates.length === 0) return null;
+                const catNum = String(catIdx + 1).padStart(2, '0');
                 return (
                   <div key={cat.key}
                        data-testid={`premium-category-${cat.key}`}
-                       className={catIdx > 0 ? 'mt-12' : ''}>
-                    {/* Category header — editorial type + subtle rule */}
-                    <div className="flex items-baseline justify-between mb-1 gap-6">
-                      <h3 className="bp-h3 !text-[15px] !text-[var(--bp-text-primary)] font-light tracking-[0.04em]">
+                       className={catIdx > 0 ? 'mt-14' : ''}>
+                    {/* Category header — magazine-grade editorial type */}
+                    <div className="flex items-baseline gap-4 mb-2">
+                      <span className="font-mono text-[10px] tracking-[0.32em] text-[var(--bp-primary)] uppercase">
+                        {catNum}
+                      </span>
+                      <h3 className="bp-h3 !text-[20px] !text-[var(--bp-text-primary)] font-light tracking-[0.005em]
+                                     leading-none"
+                          style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
                         {t(`moodboards.premium.category.${cat.key}.title`, null, cat.title_fallback)}
                       </h3>
-                      <p className="bp-caption !text-[10px] !text-[var(--bp-text-muted)] hidden md:block flex-1 text-right">
-                        {t(`moodboards.premium.category.${cat.key}.subtitle`, null, cat.subtitle_fallback)}
-                      </p>
+                      <div className="flex-1 h-px bg-[var(--bp-border)] mt-1 self-center" />
+                      <span className="font-mono text-[9px] tracking-[0.28em] text-[var(--bp-text-subtle)] uppercase tabular-nums">
+                        {templates.length.toString().padStart(2, '0')} pieces
+                      </span>
                     </div>
-                    <div className="h-px bg-[var(--bp-border)] mb-5" />
+                    <p className="bp-caption !text-[11px] !text-[var(--bp-text-muted)] italic ml-[42px] mb-6 leading-[1.55]"
+                       style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
+                      {t(`moodboards.premium.category.${cat.key}.subtitle`, null, cat.subtitle_fallback)}
+                    </p>
                     {/* Cards row — auto-fill so the rhythm always feels filled */}
                     <div className="grid gap-5"
-                         style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+                         style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))' }}>
                       {templates.map((tpl) => (
                         <PremiumCard key={tpl.id} tpl={tpl} onPickPremium={onPickPremium} />
                       ))}
@@ -206,8 +216,8 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose }) => {
                 );
               })}
 
-              <div className="mt-12 mb-2 h-px bg-[var(--bp-section-divider)]" />
-              <p className="bp-eyebrow !text-[9.5px] !text-[var(--bp-text-muted)] mt-3">
+              <div className="mt-14 mb-2 h-px bg-[var(--bp-section-divider)]" />
+              <p className="bp-eyebrow !text-[9.5px] !text-[var(--bp-text-muted)] mt-4 !tracking-[0.32em]">
                 {t('moodboards.skeleton.fromScratchEyebrow', null, 'Or start from a blank skeleton')}
               </p>
             </section>

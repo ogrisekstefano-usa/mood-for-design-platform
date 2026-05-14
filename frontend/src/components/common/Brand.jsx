@@ -18,29 +18,30 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 const Brand = ({ size = 'md', collapsed = false, variant = 'wordmark' }) => {
   const { tenant, t } = useBlueprint();
 
-  // Monogram is rendered as styled type — no image asset needed. The letter
-  // adapts to mode via the same CSS variables that drive the rest of the UI.
+  // Monogram — the MOOD for DESIGN "OO" interlocking-rings mark.
+  // Rendered as a real image (svg/png) so the curatorial brand identity is
+  // preserved at every size. Falls back to the first letter of the tenant
+  // name if the asset fails to load (silent degradation).
   if (variant === 'monogram') {
     const sizeMap = { sm: 28, md: 34, lg: 40 };
     const dim = sizeMap[size] || sizeMap.md;
-    const monogramLetter = (tenant?.name?.[0] || 'M').toUpperCase();
     return (
       <div
         data-testid="brand-monogram"
-        className="relative flex items-center justify-center rounded-[6px] border border-[var(--bp-border)]
-                   bg-[var(--bp-surface-2)]/50 select-none"
+        className="relative flex items-center justify-center select-none"
         style={{ width: dim, height: dim }}
         title={tenant?.name || t('brand.name', null, 'MOOD for DESIGN')}
       >
-        <span
-          className="font-display leading-none text-[var(--bp-text-primary)]"
-          style={{ fontSize: dim * 0.55, fontWeight: 500, letterSpacing: '-0.02em' }}
-        >
-          {monogramLetter}
-        </span>
-        <span
-          aria-hidden="true"
-          className="absolute -bottom-[3px] right-[3px] w-[5px] h-[5px] rounded-full bg-[var(--bp-primary)]"
+        <img
+          src="/brand/logo-monogram.png"
+          alt={tenant?.name || 'MOOD for DESIGN'}
+          draggable={false}
+          className="w-full h-full object-contain pointer-events-none"
+          onError={(e) => {
+            // Silent fallback to typographic monogram if the asset is missing
+            const fallback = (tenant?.name?.[0] || 'M').toUpperCase();
+            e.currentTarget.outerHTML = `<span style="font-family:Playfair Display, serif; font-size:${dim * 0.6}px; line-height:1; color:var(--bp-primary); font-weight:500;">${fallback}</span>`;
+          }}
         />
       </div>
     );

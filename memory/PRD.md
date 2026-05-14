@@ -1056,6 +1056,42 @@ Rimangono dalla lista P0 originale dell'utente (Figma-Grade Stabilization):
 - Global Project Styles (heading/body/accent font mapping)
 
 
+### ✅ Premium Curated Archive + Filmstrip Editorial Polish (Feb 16 2026)
+Branding + Editorial UX sprint — Architecture freeze respected (frontend-only).
+- **Brand monogram replaced**: la "M" tipografica nella Sidebar diventa il logotipo "OO" interlocking-rings ufficiale (`/public/brand/logo-monogram.png`). Fallback silenzioso a glifo tipografico se l'asset non si carica. (`Brand.jsx`)
+- **Premium Templates expanded 8 → 15**: ogni categoria editoriale ora ha **almeno 3 cards** (= riga completa, mai categorie unfinished).
+  - Hospitality (3): Luxury Hospitality · Boutique Hotel · Lakeside Villa
+  - Material Narratives (3): Material Narrative · Stone Atelier · Mineral Study
+  - Residential Editorial (3): Residential Moodboard · Brera Apartment · Coastal Retreat
+  - Fashion · Art Direction (3): Fashion Editorial · Fashion Residential · Editorial Magazine
+  - Minimal · Japandi (3): Japandi Editorial · Scandinavian Nordic · Wabi-Sabi
+  - Pool fotografico Unsplash ampliato da 8 a 25 URL (lake_villa, bedroom_calm, marble_corridor, texture_concrete, texture_velvet, texture_terracotta, scandi_kitchen, scandi_chair, zen_room, wabi_vase, ecc.). Identità visive distinte per categoria (warm/cool/bleached/brutalist/wabi). (`premiumTemplates.js`, `PremiumTemplatePreview.jsx`)
+- **Template Picker → Curated archive luxury**:
+  - Header eyebrow: "PREMIUM CURATED ARCHIVE" (era "Premium pre-built templates")
+  - Categorie con numerazione monospace `01 · 02 · 03…` + titolo Playfair 20px + counter destro `03 PIECES` tabular-nums
+  - Subtitle italica editoriale ("Cinematic warmth for boutique hotels & resorts — Aman, Six Senses, Rosewood lineage."), allineata sotto il titolo a 42px di indent
+  - Sezione separator hairline + spacing aumentato 12px→14mt verticale tra categorie
+  - PREMIUM chip spostato `top-left` → `top-right` per evitare collisioni con caption editoriali su cover hero
+  - (`SkeletonPicker.jsx`)
+- **PagesFilmstrip → cinematic narrative sequence**:
+  - Mini preview thumbnail allargati 96px→112px, larger touch targets
+  - Active page: ring teal + glow soft (`0 14px 32px rgba(15,162,132,.22)` + `0 0 0 3px rgba(15,162,132,.10)`) + scale 1.045 + translate-y -0.5 + gradient overlay top edge teal
+  - Page-type chip **sempre visibile** (era hover-only) — color-coded per type (cover: amber, mood: sage, material: tan, gallery: clay, quote: slate, approval: teal…)
+  - 13 silhouette empty-state per page_type (cover/blank/mood/material_board/product_grid/palette/gallery/split_story/quote/technical_board/floorplan/proposal_summary/approval) per quando una pagina non ha ancora blocchi
+  - MiniPreview ora renderizza palette swatch reali se il blocco palette ha colori (no più rettangoli grigi)
+  - Block tinting semantico per type (image gradient warm, palette tan, material clay, product mauve, text ivory, note amber, shape= fill_color reale)
+  - +Aggiungi pagina: tile 112×150, plus-icon ring teal con scale 1.1 + glow on hover
+  - (`PagesFilmstrip.jsx`)
+
+**Verified** ✅
+- 5 premium-category sections rendered, 15 premium-template-card visible (3 per category)
+- Filmstrip active state cinematico verificato su moodboard con 6 pagine, chip COVER amber visibile, glow teal attivo
+- Console: 0 page errors, 2 minor 503 network warnings (non-blocking)
+- Responsive tablet (768px): 2-column premium grid funzionante
+- Hot-reload pulito, lint pulito su tutti i 5 file modificati
+
+
+
 ## Demo Credentials (`/app/memory/test_credentials.md`)
 - Email: `demo@moodfordesign.com` · Password: `Blueprint2024!`
 - Role: `super_admin` (può accedere a `/admin/*` e impersonare tenants)

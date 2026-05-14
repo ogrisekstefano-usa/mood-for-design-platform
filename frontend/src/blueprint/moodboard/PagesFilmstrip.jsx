@@ -19,20 +19,131 @@ import SkeletonPicker from './SkeletonPicker';
 import { applyPremiumTemplate } from './premiumTemplates';
 import { toast } from 'sonner';
 
-// Tiny wireframe preview that renders the page's block geometry at scale.
-const MiniPreview = ({ page, blocks }) => {
-  const w = 96;
+// ── Page-type visual language ──────────────────────────────────────────────
+// Each page-type gets its own semantic identity in the thumbnail so the
+// designer can read the narrative rhythm of the deck without zooming in.
+const PAGE_TYPE_VISUAL = {
+  cover:              { label: 'COVER',      tone: '#E0A458', glyph: 'C' },
+  blank:              { label: 'BLANK',      tone: '#6F6A65', glyph: '·' },
+  mood:               { label: 'MOOD',       tone: '#8FB3A8', glyph: 'M' },
+  material_board:     { label: 'MATERIAL',   tone: '#C9AE8C', glyph: 'm' },
+  product_grid:       { label: 'PRODUCTS',   tone: '#A6A3CC', glyph: 'P' },
+  palette:            { label: 'PALETTE',    tone: '#D6B79A', glyph: 'p' },
+  gallery:            { label: 'GALLERY',    tone: '#9B917F', glyph: 'G' },
+  split_story:        { label: 'STORY',      tone: '#B59A78', glyph: 'S' },
+  quote:              { label: 'QUOTE',      tone: '#7A8C9B', glyph: '"' },
+  technical_board:    { label: 'TECHNICAL',  tone: '#869099', glyph: 'T' },
+  floorplan:          { label: 'FLOORPLAN',  tone: '#7A6B58', glyph: 'F' },
+  proposal_summary:   { label: 'SUMMARY',    tone: '#A8B5B3', glyph: 'Σ' },
+  approval:           { label: 'APPROVAL',   tone: '#15AC8B', glyph: '✓' },
+};
+
+// Empty-state silhouette per page-type — drawn only when the page has no
+// blocks yet so an empty placeholder still hints at the chapter's intent.
+const TypeSilhouette = ({ type }) => {
+  const palette = '#3A332C';
+  switch (type) {
+    case 'cover': return (
+      <>
+        <div className="absolute inset-[8%] rounded-[1px] opacity-25" style={{ background: palette }} />
+        <div className="absolute left-[12%] right-[12%] bottom-[12%] h-[14%] rounded-[1px] opacity-40" style={{ background: palette }} />
+      </>);
+    case 'palette': return (
+      <div className="absolute inset-[14%] flex gap-[3px]">
+        {[0.15, 0.25, 0.35, 0.55, 0.75].map((o, i) => (
+          <div key={i} className="flex-1" style={{ background: palette, opacity: o, borderRadius: 1 }} />
+        ))}
+      </div>);
+    case 'material_board': return (
+      <div className="absolute inset-[10%] grid grid-cols-2 gap-[3px]">
+        {[0.18, 0.30, 0.24, 0.36].map((o, i) => (
+          <div key={i} style={{ background: palette, opacity: o, borderRadius: 1 }} />
+        ))}
+      </div>);
+    case 'gallery':
+    case 'product_grid': return (
+      <div className="absolute inset-[10%] grid grid-cols-3 grid-rows-2 gap-[2px]">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} style={{ background: palette, opacity: 0.18 + (i % 3) * 0.08, borderRadius: 1 }} />
+        ))}
+      </div>);
+    case 'quote': return (
+      <>
+        <div className="absolute left-[18%] top-[20%] text-[18px] leading-none opacity-30" style={{ color: palette, fontFamily: 'Playfair Display, serif' }}>"</div>
+        <div className="absolute left-[20%] right-[20%] top-[44%] h-[2px] opacity-25" style={{ background: palette }} />
+        <div className="absolute left-[24%] right-[28%] top-[52%] h-[2px] opacity-20" style={{ background: palette }} />
+        <div className="absolute left-[22%] right-[22%] top-[60%] h-[2px] opacity-15" style={{ background: palette }} />
+      </>);
+    case 'split_story': return (
+      <>
+        <div className="absolute left-[8%] top-[12%] w-[40%] bottom-[12%] rounded-[1px] opacity-28" style={{ background: palette }} />
+        <div className="absolute right-[10%] top-[18%] w-[32%] h-[6%] rounded-[1px] opacity-30" style={{ background: palette }} />
+        <div className="absolute right-[10%] top-[28%] w-[26%] h-[3%] rounded-[1px] opacity-20" style={{ background: palette }} />
+        <div className="absolute right-[10%] top-[36%] w-[32%] h-[44%] rounded-[1px] opacity-26" style={{ background: palette }} />
+      </>);
+    case 'mood': return (
+      <>
+        <div className="absolute left-[8%] top-[10%] w-[58%] h-[62%] rounded-[1px] opacity-30" style={{ background: palette }} />
+        <div className="absolute right-[8%] top-[12%] w-[26%] h-[30%] rounded-[1px] opacity-22" style={{ background: palette }} />
+        <div className="absolute right-[8%] top-[46%] w-[26%] h-[26%] rounded-[1px] opacity-18" style={{ background: palette }} />
+        <div className="absolute left-[8%] right-[8%] bottom-[8%] h-[8%] opacity-20" style={{ background: palette, borderRadius: 1 }} />
+      </>);
+    case 'approval': return (
+      <>
+        <div className="absolute left-[20%] right-[20%] top-[22%] h-[3%] opacity-25" style={{ background: palette, borderRadius: 1 }} />
+        <div className="absolute left-[20%] right-[30%] top-[30%] h-[2%] opacity-15" style={{ background: palette, borderRadius: 1 }} />
+        <div className="absolute left-[28%] right-[28%] bottom-[18%] h-[14%] rounded-[2px]" style={{ background: 'var(--bp-primary)', opacity: 0.55 }} />
+      </>);
+    default: return (
+      <div className="absolute inset-[14%] rounded-[1px] opacity-12" style={{ background: palette }} />
+    );
+  }
+};
+
+// Tiny preview that renders the page's block geometry at scale.
+// When the page has no blocks (just-created from skeleton), draw a typed
+// silhouette so the thumbnail communicates intent immediately.
+const MiniPreview = ({ page, blocks, active }) => {
+  const w = 112;
   const h = (page.height / page.width) * w;
   const scale = w / (page.width || 1400);
+  const visibleBlocks = (blocks || []).filter((b) => !b.hidden);
+  const hasBlocks = visibleBlocks.length > 0;
+  const bgColor = page?.settings?.background_color || page?.background?.color || 'var(--bp-bg)';
   return (
-    <div className="relative overflow-hidden rounded-[var(--bp-radius-xs)] bg-[var(--bp-bg)] border border-[var(--bp-border)]"
-         style={{ width: `${w}px`, height: `${h}px` }}>
-      {(blocks || []).filter((b) => !b.hidden).map((b) => {
-        const tint = b.type === 'image'    ? 'rgba(255,255,255,0.16)'
-                   : b.type === 'palette'  ? 'rgba(255,255,255,0.08)'
-                   : b.type === 'material' ? 'rgba(214,197,168,0.22)'
-                   : b.type === 'product'  ? 'rgba(255,255,255,0.12)'
-                   : 'rgba(255,255,255,0.06)';
+    <div className={`relative overflow-hidden rounded-[3px] transition-all duration-300
+                     ${active ? 'shadow-[0_8px_22px_rgba(15,162,132,0.22)]' : ''}`}
+         style={{ width: `${w}px`, height: `${h}px`, background: bgColor }}>
+      {/* Empty silhouette per page-type (only when no blocks placed) */}
+      {!hasBlocks && <TypeSilhouette type={page.page_type} />}
+      {/* Real block geometry */}
+      {visibleBlocks.map((b) => {
+        // Render real palette swatches if available
+        if (b.type === 'palette') {
+          const cols = b?.content?.colors || [];
+          if (cols.length) {
+            return (
+              <div key={b.id} className="absolute flex" style={{
+                left: (b.x ?? 40) * scale, top: (b.y ?? 40) * scale,
+                width: Math.max(4, (b.width ?? 320) * scale),
+                height: Math.max(2, (b.height ?? 60) * scale),
+                borderRadius: 1,
+              }}>
+                {cols.slice(0, 5).map((c, i) => (
+                  <span key={i} className="flex-1" style={{ background: c }} />
+                ))}
+              </div>
+            );
+          }
+        }
+        let tint = 'rgba(58,51,44,0.18)';
+        if (b.type === 'image')         tint = 'linear-gradient(135deg, rgba(58,46,32,0.55) 0%, rgba(28,20,14,0.40) 100%)';
+        else if (b.type === 'palette')  tint = 'rgba(214,197,168,0.30)';
+        else if (b.type === 'material') tint = 'rgba(214,197,168,0.30)';
+        else if (b.type === 'product')  tint = 'rgba(166,163,204,0.24)';
+        else if (b.type === 'text')     tint = 'rgba(245,242,236,0.32)';
+        else if (b.type === 'note')     tint = 'rgba(224,164,88,0.22)';
+        else if (b.type === 'shape')    tint = b?.style?.fill_color || 'rgba(120,120,120,0.20)';
         return (
           <div key={b.id} className="absolute"
                style={{
@@ -45,6 +156,11 @@ const MiniPreview = ({ page, blocks }) => {
                }} />
         );
       })}
+      {/* Cinematic active overlay — soft top edge highlight */}
+      {active && (
+        <div className="absolute inset-0 pointer-events-none"
+             style={{ background: 'linear-gradient(180deg, rgba(15,162,132,0.18) 0%, rgba(15,162,132,0) 35%)' }} />
+      )}
     </div>
   );
 };
@@ -144,10 +260,11 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
     <>
       <footer data-testid="pages-filmstrip"
               className="flex-shrink-0 border-t border-[var(--bp-border)] bg-[var(--bp-surface-1)]/55 backdrop-blur-sm">
-        <div className="overflow-x-auto overflow-y-hidden">
-          <ul className="flex items-end gap-3 px-6 py-3 min-w-fit">
+        <div className="overflow-x-auto overflow-y-hidden scroll-smooth">
+          <ul className="flex items-end gap-3.5 px-7 py-4 min-w-fit">
             {pages.map((p, i) => {
               const active = p.id === currentPageId;
+              const visual = PAGE_TYPE_VISUAL[p.page_type] || PAGE_TYPE_VISUAL.blank;
               return (
                 <li key={p.id}
                     draggable={!readOnly}
@@ -156,27 +273,26 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
                     onDrop={(e) => handleDrop(e, p.id)}
                     onClick={() => onSelect?.(p.id)}
                     data-testid={`page-card-${p.id}`}
-                    className="group flex flex-col items-center gap-1.5 cursor-pointer">
-                  <div className={`relative rounded-[var(--bp-radius-xs)] transition-all duration-300
+                    className="group flex flex-col items-center gap-2 cursor-pointer">
+                  <div className={`relative rounded-[4px] transition-all duration-[var(--bp-duration-cinematic)] ease-[var(--bp-ease-emphasis)]
                                    ${active
-                                     ? 'ring-1 ring-[var(--bp-primary)] shadow-[0_0_0_3px_rgba(15,162,132,0.12),0_8px_28px_rgba(15,162,132,0.18)]'
-                                     : 'opacity-60 hover:opacity-100 hover:ring-1 hover:ring-[var(--bp-border-strong)]'}`}>
-                    <MiniPreview page={p} blocks={blocksByPage?.[p.id] || []} />
-                    {/* Page-type indicator — a soft eyebrow chip in the corner so
-                        the user can read the narrative rhythm at a glance. */}
-                    {p.page_type && p.page_type !== 'cover' && (
-                      <span
-                        data-testid={`page-type-${p.id}`}
-                        className="absolute bottom-1 left-1 px-1.5 py-[1px] rounded-full
-                                   text-[7px] tracking-[0.18em] uppercase font-body
-                                   bg-black/45 text-white/85 backdrop-blur-sm
-                                   opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        {p.page_type.replace(/_/g, ' ')}
-                      </span>
-                    )}
-                    {/* Client decision badge — small colored dot in the corner.
-                        Shown only when collab data is available + status is set. */}
+                                     ? 'ring-1 ring-[var(--bp-primary)] scale-[1.045] -translate-y-0.5'
+                                     : 'opacity-65 hover:opacity-100 hover:-translate-y-0.5 hover:ring-1 hover:ring-[var(--bp-border-strong)]'}`}
+                       style={active
+                         ? { boxShadow: '0 0 0 3px rgba(15,162,132,0.10), 0 14px 32px rgba(15,162,132,0.22), 0 2px 6px rgba(0,0,0,0.35)' }
+                         : undefined}>
+                    <MiniPreview page={p} blocks={blocksByPage?.[p.id] || []} active={active} />
+                    {/* Page-type chip — ALWAYS visible, color-coded per type */}
+                    <span
+                      data-testid={`page-type-${p.id}`}
+                      className="absolute top-1.5 left-1.5 px-1.5 py-[1.5px] rounded-[2px]
+                                 text-[7.5px] tracking-[0.22em] uppercase font-body
+                                 bg-black/55 backdrop-blur-sm transition-colors duration-300"
+                      style={{ color: active ? visual.tone : 'rgba(255,255,255,0.75)' }}
+                    >
+                      {visual.label}
+                    </span>
+                    {/* Client decision badge — small colored dot in the corner. */}
                     {pageStatusById?.[p.id] && pageStatusById[p.id] !== 'pending_review' && (
                       <span
                         data-testid={`page-status-badge-${p.id}-${pageStatusById[p.id]}`}
@@ -187,10 +303,10 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
                             : pageStatusById[p.id] === 'revision_requested' ? '#E0A458'
                             : '#D86F6F',
                         }}
-                        className="absolute -top-1.5 -left-1.5 w-2.5 h-2.5 rounded-full ring-2 ring-[var(--bp-bg)]" />
+                        className="absolute -top-1.5 -right-1.5 w-2.5 h-2.5 rounded-full ring-2 ring-[var(--bp-bg)]" />
                     )}
                     {!readOnly && (
-                      <div className="absolute -top-1 -right-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="absolute -bottom-2 right-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button onClick={(e) => handleDuplicate(e, p.id)}
                                 data-testid={`page-duplicate-${p.id}`}
                                 title={t('moodboards.page.duplicate')}
@@ -208,9 +324,9 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
                       </div>
                     )}
                   </div>
-                  <p className={`bp-caption !text-[10px] tabular-nums whitespace-nowrap
-                                 ${active ? '!text-[var(--bp-primary)]' : '!text-[var(--bp-text-muted)]'}`}>
-                    <span className="font-mono opacity-60 mr-1">{String(i + 1).padStart(2, '0')}</span>
+                  <p className={`bp-caption !text-[10px] tabular-nums whitespace-nowrap max-w-[120px] truncate transition-colors
+                                 ${active ? '!text-[var(--bp-primary)] !font-medium' : '!text-[var(--bp-text-muted)]'}`}>
+                    <span className="font-mono opacity-55 mr-1.5">{String(i + 1).padStart(2, '0')}</span>
                     {p.title || t('moodboards.page.untitled')}
                   </p>
                 </li>
@@ -220,18 +336,19 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
               <li>
                 <button onClick={() => setSkeletonPickerOpen(true)}
                         data-testid="add-page-btn"
-                        className="group flex flex-col items-center gap-1.5 cursor-pointer">
-                  <div className="w-24 h-[136px] rounded-[var(--bp-radius-xs)]
-                                  bg-[var(--bp-surface-2)]/30 hover:bg-[var(--bp-surface-2)]/50
-                                  border border-[var(--bp-border)] hover:border-[var(--bp-primary)]/60
-                                  transition-all duration-200 flex flex-col items-center justify-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-[var(--bp-primary)]/12 border border-[var(--bp-primary)]/30
+                        className="group flex flex-col items-center gap-2 cursor-pointer">
+                  <div className="w-[112px] h-[150px] rounded-[4px]
+                                  bg-[var(--bp-surface-2)]/25 hover:bg-[var(--bp-surface-2)]/45
+                                  border border-dashed border-[var(--bp-border)] hover:border-[var(--bp-primary)]/65
+                                  transition-all duration-300 flex flex-col items-center justify-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-[var(--bp-primary)]/12 border border-[var(--bp-primary)]/35
                                     text-[var(--bp-primary)]
                                     group-hover:bg-[var(--bp-primary)]/22 group-hover:border-[var(--bp-primary)]/55
-                                    transition-colors flex items-center justify-center">
-                      <Plus size={13} strokeWidth={1.8} />
+                                    transition-all flex items-center justify-center
+                                    group-hover:scale-110 group-hover:shadow-[0_0_18px_rgba(15,162,132,0.35)]">
+                      <Plus size={14} strokeWidth={1.7} />
                     </div>
-                    <span className="text-[8px] tracking-[0.22em] uppercase text-[var(--bp-text-muted)]
+                    <span className="text-[8.5px] tracking-[0.24em] uppercase text-[var(--bp-text-muted)]
                                      group-hover:text-[var(--bp-text-primary)] transition-colors">
                       {t('moodboards.page.new', null, 'New page')}
                     </span>
