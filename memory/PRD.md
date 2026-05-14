@@ -808,6 +808,91 @@ Enterprise-grade schema-driven form engine. Reusable for: lead-gen · design req
 - Onboarding tour, AI integrations, advanced automation, analytics dashboards, proposal builder expansion → DEFERRED
 - Client Collaboration Layer™ refinement → SOLO dopo stabilization complete
 
+### ✅ Editor IA Refactor Sprint (14 Feb 2026, sera)
+
+**Architecture freeze rispettata** — zero modifiche backend, zero nuove integrazioni, zero auto-migration.
+
+**Command de-duplication completa:**
+- `ActionToolbar.jsx` riscritto: SOLO pointer/view/arrange tools (`select·deselect·move·resize·zoom·align`). Rimossi tutti i content blocks duplicati (text/image/gallery/product/material/palette/shape/line/hotspot/note)
+- Tutto l'inserimento ora vive in **UNA SOLA HOUSE**: `EditorPanel` (Insert tab)
+- `LibraryPanel.jsx` deprecated (lasciato in tree per ora; non più importato)
+
+**Nuovo `EditorPanel.jsx` (Secondary Contextual Panel) — 4 tabs:**
+- **Insert** (default): catalogo organizzato per categorie editoriali — `Basics · Visuals · Annotation · Materials & Products`. 10 testid `insert-*` (text/image/palette/shape/gallery/divider/note/arrow/material/product)
+- **Assets**: stub elegante con Uploaded grid + Saved Elements placeholder editoriale (no backend in scope)
+- **Pages**: Master Layouts grid + "This project" page list + helper line sul bottom filmstrip. Pulsante "Explore all layouts" apre lo SkeletonPicker via custom event `mfd:open-skeleton-picker`
+- **Mood** (Inspirations): placeholder editoriale "Coming soon · Inspirations Hub · Preview release"
+
+**Collapse premium:**
+- Panel state persistito in `mfd_library_collapsed` (continuità con vecchia chiave)
+- Expanded 264px / Collapsed 56px con icon rail di 8 quick-insert items
+
+**SkeletonPicker microcopy editoriale (con fallback):**
+- `t(key, null, fallback)` su title/subtitle/eyebrow per fallback inglesi editoriali ("Choose your narrative structure", "Each layout is a starting point for a chapter of your story")
+- IT keys esistenti già curate → l'utente vede l'italiano premium "Scegli un layout di pagina"
+- Categorie italiane: COPERTINA · NARRAZIONE · ATMOSFERA · MATERIALI · PRODOTTI · CHIUSURA · VUOTO
+
+**Right Inspector empty-state finale:**
+- ZERO occorrenze di "noInspector" o "No inspector for this block" in pagina o HTML
+- Placeholder editoriale con Layers icon + "Ispettore Blocco" eyebrow + hint contestuale
+
+**Architecture decision — single source of truth:**
+- Sidebar (global rail) = workspace navigation
+- ActionToolbar (top, centered) = canvas actions only
+- EditorPanel (left, contextual) = content insertion + assets + pages + inspirations
+- Right Inspector = selected element properties
+- Bottom Filmstrip = primary page navigation
+
+**Test report:** `/app/test_reports/iteration_25.json` — **100% PASS** (11/11 acceptance criteria, 0 page errors)
+
+**Files cambiati:**
+- `src/blueprint/moodboard/ActionToolbar.jsx` (rewrite — pointer only)
+- `src/blueprint/moodboard/EditorPanel.jsx` (NEW — 4 tabs Secondary Contextual Panel)
+- `src/blueprint/moodboard/PagesFilmstrip.jsx` (add custom event listener `mfd:open-skeleton-picker`)
+- `src/blueprint/moodboard/SkeletonPicker.jsx` (editorial fallback microcopy)
+- `src/pages/moodboards/MoodboardEditor.jsx` (LibraryPanel→EditorPanel, stripped ActionToolbar props, wired skeleton picker custom event)
+
+## P0 Stability Backlog (PRIORITY for next session)
+
+L'IA refactor è completa. Ora il prodotto è **chiaro cognitivamente** ma serve la stabilizzazione tecnica:
+
+### P0 — Editorial Finish Stability (definitive bug list)
+- Slider jitter (post-rAF refactor): verificare smoothness su shape borders / opacity / typography sliders
+- Border thickness/color reliability su shape & arrow blocks
+- Page background persistence (PUT settings.background_*)
+- Image focal point + crop persistence (round-trip Supabase)
+- Image block visibility: caricamenti talvolta invisibili dopo upload
+- Drag lag / cursor jumps
+- Snapping inconsistency
+- Layer reorder reliability + z-index correctness
+- Selection precision (multi-select, stacked blocks)
+
+### P1 — Canvas UX Perfection
+- Premium snapping guides eleganti
+- Spacing indicators durante drag
+- Magnetic alignment
+- Subtle scale easing (1.02x) durante drag
+- Premium resize handles
+
+### P2 — Italian i18n keys da aggiungere
+- `moodboards.tab.{insert,assets,pages,inspirations}`
+- `moodboards.insert.{text,image,palette,shape,gallery,divider,note,arrow,line,hotspot,material,product}`
+- `moodboards.insert.group.{basics,visuals,annotation,materials}`
+- `moodboards.assets.*`, `moodboards.pages.*`, `moodboards.inspirations.*`
+- `moodboards.editorPanel.title`, `moodboards.library.{collapse,expand}`
+- `moodboards.tool.{select,deselect,move,resize,zoom,align}`
+
+### P3 — 5 Premium Templates curati (luxury hospitality · warm residential · japandi · material · fashion editorial)
+- Frontend-driven blocks (no SQL seed)
+- "Insert Editorial Template" CTA dentro l'editor
+
+### Refactor tecnico (DOPO P0)
+- Split `MoodboardEditor.jsx` (>1700 righe) in inspectors/* + editor/*
+- Lift `RowToggle`, `InspectorSlider` a `/components/common/`
+- Eliminare `LibraryPanel.jsx` deprecated
+- Investigare 422/503 console errors durante editor load
+
+
 
 ## P0 / P1 Backlog (Next Session)
 

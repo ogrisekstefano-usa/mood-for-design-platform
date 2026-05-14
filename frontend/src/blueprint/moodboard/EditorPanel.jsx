@@ -177,7 +177,7 @@ const AssetsTab = ({ t }) => (
   </>
 );
 
-const PagesTab = ({ pages = [], skeletons = [], activePageId, onOpenSkeletons, t }) => (
+const PagesTab = ({ pages = [], skeletons = [], activePageId, onOpenSkeletons, onOpenSkeletonPicker, t }) => (
   <>
     <SectionTitle>{t('moodboards.pages.layouts', null, 'Master layouts')}</SectionTitle>
     <div className="grid grid-cols-2 gap-2">
@@ -193,7 +193,7 @@ const PagesTab = ({ pages = [], skeletons = [], activePageId, onOpenSkeletons, t
       })}
     </div>
     <button type="button"
-            onClick={() => onOpenSkeletons?.()}
+            onClick={() => onOpenSkeletonPicker?.()}
             data-testid="page-layouts-all"
             className="w-full mt-3 py-2 text-[10px] tracking-[0.22em] uppercase text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors flex items-center justify-center gap-1.5">
       {t('moodboards.pages.exploreAll', null, 'Explore all layouts')}
@@ -253,7 +253,7 @@ const InspirationsTab = ({ t }) => (
 
 // ── Main component ─────────────────────────────────────────────────────────
 const EditorPanel = ({
-  onAddBlock, onOpenSkeletons, t,
+  onAddBlock, onOpenSkeletons, onOpenSkeletonPicker, t,
   pages, activePageId,
 }) => {
   const [tab, setTab] = useState('insert');
@@ -346,7 +346,9 @@ const EditorPanel = ({
         {tab === 'assets'       && <AssetsTab        t={t} />}
         {tab === 'pages'        && <PagesTab         pages={pages || []} skeletons={skeletons}
                                                      activePageId={activePageId}
-                                                     onOpenSkeletons={onOpenSkeletons} t={t} />}
+                                                     onOpenSkeletons={onOpenSkeletons}
+                                                     onOpenSkeletonPicker={onOpenSkeletonPicker}
+                                                     t={t} />}
         {tab === 'inspirations' && <InspirationsTab  t={t} />}
       </div>
     </aside>

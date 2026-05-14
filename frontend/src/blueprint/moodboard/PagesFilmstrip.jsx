@@ -59,6 +59,16 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
       .catch(() => setSkeletons([]));
   }, []);
 
+  // External trigger — let other parts of the editor open the skeleton picker
+  // without prop-drilling. The Pages tab in EditorPanel dispatches this event
+  // when the user clicks "Explore all layouts".
+  useEffect(() => {
+    if (readOnly) return undefined;
+    const handler = () => setSkeletonPickerOpen(true);
+    window.addEventListener('mfd:open-skeleton-picker', handler);
+    return () => window.removeEventListener('mfd:open-skeleton-picker', handler);
+  }, [readOnly]);
+
   const handleSkeletonPick = async (skeletonId) => {
     setSkeletonPickerOpen(false);
     const r = await api.post(`/api/moodboards/${moodboardId}/pages/from_skeleton`,

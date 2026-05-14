@@ -821,6 +821,11 @@ const MoodboardEditor = ({ readOnly = false }) => {
                 .then((r) => { setActivePageId(r.data.id); reloadPagesAndBlocks(); })
                 .catch(() => {});
             }}
+            onOpenSkeletonPicker={() => {
+              // Hand off to the bottom filmstrip's SkeletonPicker — same modal,
+              // single source of truth, no duplicated state in two components.
+              window.dispatchEvent(new CustomEvent('mfd:open-skeleton-picker'));
+            }}
             pages={pages}
             activePageId={activePageId}
             t={t} />
