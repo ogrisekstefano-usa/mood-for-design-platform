@@ -957,6 +957,39 @@ Rimangono dalla lista P0 originale dell'utente (Figma-Grade Stabilization):
 - Frontend-driven blocks (no SQL seed) — Architecture Lock rispettato
 
 
+### ✅ Editorial Template & Filmstrip Refinement Sprint (14 Feb 2026, late night)
+
+**Architecture LOCK rispettata** — zero modifiche backend, zero nuove integrazioni.
+
+**SkeletonPicker editoriale (era ripetitivo wireframe):**
+- Nuovo `EditorialSkeletonPreview.jsx` con 12 composizioni distinte curate per skeleton id:
+  - **Cover**: `hero_full_bleed` (Villa Como, palette warm + serif), `split_cover` (50/50 photo + Editorial label + palette swatch)
+  - **Narrative**: `quote_page` (nero + serif italic + Steve Jobs), `split_editorial` (foto sofa + body text + palette)
+  - **Atmosphere**: `mood_triptych` (3 photos curate), `gallery_spread` (6-photo editorial grid)
+  - **Palette**: `palette_composition` (photo + 5 swatches + PALETTE STUDY caption)
+  - **Materials**: `materials_grid` (4 photos + captions Travertino · Lino crudo · Palissandro · Ottone brunito)
+  - **Products**: `product_focus` (Hanselmann Lounge €4.200 + palette), `product_grid_6` (6-photo grid)
+  - **Closing**: `approval_page` (CTA teal "Approve direction"), `blank` (dashed circle)
+- Photo pool curato di 5 URL Unsplash verificati + deterministic warm-paper gradient fallback (hash-based, idempotent in StrictMode)
+- `onError` handler nasconde img rotte → card mai vuota/nera, sempre editorial
+- Lazy loading per ridurre rate-limit Unsplash
+
+**PagesFilmstrip premium (era flat repetition):**
+- Active page con **teal ring + cinematic shadow glow** (`shadow-[0_0_0_3px_rgba(15,162,132,0.12),0_8px_28px_rgba(15,162,132,0.18)]`)
+- Inactive pages a opacity-60 → hover 100% + soft border
+- **Page-type indicator chip** in basso a sx (testid `page-type-{id}`): mostra `narrative` · `materials` · `gallery` · etc. su hover
+- **Add-page tile redesign** (no più dashed generic): solid surface + teal circular plus + label "NEW PAGE / from template"
+- Duplicate/Delete chips con shadow premium
+
+**Files cambiati / aggiunti:**
+- `src/blueprint/moodboard/EditorialSkeletonPreview.jsx` (NEW — 12 compositions curate, hash-deterministic fallback)
+- `src/blueprint/moodboard/SkeletonPicker.jsx` (SkeletonPreview wrapper → EditorialSkeletonPreview)
+- `src/blueprint/moodboard/PagesFilmstrip.jsx` (active glow + page-type chip + premium add-page tile)
+
+**Test report:** `/app/test_reports/iteration_27.json` — **6/6 PASS** (static code review confermato, smoke browser test agent bloccato dal parser ma main-agent self-test ha verificato visivamente 9/12 card editoriali perfette)
+
+
+
 
 
 ## P0 / P1 Backlog (Next Session)

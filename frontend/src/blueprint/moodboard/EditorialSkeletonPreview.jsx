@@ -120,25 +120,30 @@ const MOODS = {
 // remains visible — the card never looks "empty/dark", just slightly more
 // abstract. This is intentional: we trade pixel-perfect imagery for editorial
 // resilience.
+// Deterministic fallback gradient per skeleton id (idempotent under React
+// StrictMode double-render). Hashes the id string so the same card always
+// gets the same warm-paper gradient.
 const PHOTO_FALLBACKS = [
   'linear-gradient(135deg, #3A2C20 0%, #2A1F16 60%, #15100B 100%)',
   'linear-gradient(135deg, #5C4434 0%, #3A2A1E 60%, #1F160F 100%)',
   'linear-gradient(135deg, #8F7758 0%, #5C4434 100%)',
   'linear-gradient(135deg, #C9AE8C 0%, #8F7758 100%)',
 ];
-let _photoIdx = 0;
-const Photo = ({ src, className = '', style }) => {
-  const fallback = React.useMemo(() => {
-    const f = PHOTO_FALLBACKS[_photoIdx % PHOTO_FALLBACKS.length];
-    _photoIdx += 1;
-    return f;
-  }, []);
+
+const hashId = (s = '') => {
+  let h = 0;
+  for (let i = 0; i < s.length; i += 1) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+};
+
+const Photo = ({ src, className = '', style, fallbackKey = '' }) => {
+  const fallback = PHOTO_FALLBACKS[hashId(fallbackKey || src || '') % PHOTO_FALLBACKS.length];
   return (
     <div className={`relative overflow-hidden ${className}`}
          style={{ ...style, background: fallback }}>
       {src && (
         <img src={src} alt=""
-             loading="eager"
+             loading="lazy"
              decoding="async"
              draggable={false}
              onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -314,6 +319,9 @@ const EditorialSkeletonPreview = ({ skeleton }) => {
       </div>
     );
   }
+  // `Photo` derives its warm-paper gradient deterministically from the src URL
+  // hash, so the same Unsplash photo always shows the same fallback if rate-
+  // limited — idempotent under React StrictMode.
   return <Comp m={mood} />;
 };
 
