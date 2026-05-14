@@ -97,7 +97,7 @@ const TEMPLATES = {
     width: W,
     height: H,
     page_title: 'Material Study · Earth tones',
-    page_type: 'materials',
+    page_type: 'material_board',
     blocks: [
       // Chapter eyebrow
       text('CHAPTER 02', 100, 100, 400, 28, 5,
@@ -135,7 +135,7 @@ const TEMPLATES = {
     width: W,
     height: H,
     page_title: 'Japandi · A study in stillness',
-    page_type: 'narrative',
+    page_type: 'split_story',
     blocks: [
       // Tiny chapter
       text('01 / Stillness', 120, 120, 400, 24, 5,
@@ -251,7 +251,8 @@ export const getPremiumTemplate = (id) => TEMPLATES[id] || null;
  *
  * Creates a new page using the existing pages endpoint, then inserts all the
  * blocks via the existing blocks endpoint. No backend changes required.
- * Returns the new page id on success.
+ * Returns `{ pageId, blocksCreated, blocksTotal }` so the caller can surface
+ * a precise success/partial/failure toast to the designer.
  */
 export async function applyPremiumTemplate(api, moodboardId, templateId) {
   const tpl = TEMPLATES[templateId];
@@ -266,15 +267,16 @@ export async function applyPremiumTemplate(api, moodboardId, templateId) {
   const pageId = pageRes.data?.id;
   if (!pageId) throw new Error('Page creation failed');
 
-  // 2. Insert each block in parallel (preserves the declared z_index ordering
-  //    server-side). We tolerate partial failures so the user still gets a
-  //    useful page even if a single block 422s.
-  await Promise.all(tpl.blocks.map((b) => (
-    api.post(`/api/moodboards/${moodboardId}/blocks`, { ...b, page_id: pageId })
-      .catch(() => null)
-  )));
+  // 2. Insert each block in parallel. Settle on per-block outcome so partial
+  //    failures are visible to the caller. We tolerate individual 422s so the
+  //    designer still gets a usable page.
+  const results = await Promise.allSettled(
+    tpl.blocks.map((b) => api.post(`/api/moodboards/${moodboardId}/blocks`,
+                                   { ...b, page_id: pageId })),
+  );
+  const blocksCreated = results.filter((r) => r.status === 'fulfilled').length;
 
-  return pageId;
+  return { pageId, blocksCreated, blocksTotal: tpl.blocks.length };
 }
 
 export default TEMPLATES;

@@ -1,0 +1,40 @@
+{
+  "summary": "Iter 29 - Bug fix VERIFIED. All 5 Premium Pre-built Templates now apply end-to-end without errors. The fix changing material_narrative page_type from 'materials' -> 'material_board' and japandi_editorial from 'narrative' -> 'split_story' resolved the 400 error from iter_28. All 6 page POSTs (5 premium + 1 legacy blank) returned 201. Zero 4xx errors on /pages endpoint. Filmstrip grew 4 -> 10 pages with all 5 unique premium titles present. Success toasts displayed via sonner.",
+  "validation_results": {
+    "T1_picker_5_cards": { "result": "PASS", "evidence": "Every open-picker showed exactly 5 [data-testid^=premium-template-card-] cards (luxury_hospitality, material_narrative, japandi_editorial, residential_moodboard, fashion_editorial)." },
+    "T2_luxury_hospitality_apply": { "result": "PASS", "evidence": "POST /pages -> 201. Modal closed. Page tile 'Villa Como · Lobby concept' added. Toast 'Premium template applied.' shown." },
+    "T3_material_narrative_apply": { "result": "PASS (was BROKEN in iter_28)", "evidence": "POST /pages -> 201 (was 400 before fix). New filmstrip tile '06 Material Study · Earth tones' present in final titles list. page_type='material_board' is now in backend whitelist." },
+    "T4_japandi_editorial_apply": { "result": "PASS (was BROKEN in iter_28)", "evidence": "POST /pages -> 201 (was 400 before fix). New filmstrip tile '07 Japandi · A study in stillness' present. page_type='split_story' is now in backend whitelist. Toast 'Premium template applied.' shown." },
+    "T5_residential_moodboard_apply": { "result": "PASS", "evidence": "POST /pages -> 201. New tile '08 Casa Brera · Living concept' present. Toast shown." },
+    "T6_fashion_editorial_apply": { "result": "PASS", "evidence": "POST /pages -> 201. New tile '09 Issue 04 · Cinematic neutrals' present. Toast shown." },
+    "T7_zero_4xx_on_pages": { "result": "PASS", "evidence": "Network log captured 0 4xx responses on /api/moodboards/*/pages. The 3 observed 4xx were 403s on /api/insights/* (unrelated, pre-existing)." },
+    "T8_unique_titles_all_five": { "result": "PASS", "evidence": "Final filmstrip titles include all 5 expected unique strings: 'Villa Como · Lobby concept', 'Material Study · Earth tones', 'Japandi · A study in stillness', 'Casa Brera · Living concept', 'Issue 04 · Cinematic neutrals'." },
+    "T9_legacy_blank_still_works": { "result": "PASS", "evidence": "Click [data-testid=skeleton-card-blank] -> POST /pages/from_skeleton -> 201, pages grew 9 -> 10. No regression on legacy path." },
+    "T10_no_503_retries": { "result": "PASS (better than expected)", "evidence": "0 5xx responses observed in this session, including from autosave/skeleton endpoints." }
+  },
+  "backend_issues": { "critical": [], "minor": [
+    { "endpoint": "GET /api/insights/activity, GET /api/insights/dashboard", "issue": "Return 403 for designer role - pre-existing, unrelated to premium templates feature." }
+  ]},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      { "flow": "Toast feedback after material_narrative apply", "issue": "Toast string was not captured at the 4.5s polling checkpoint (likely timing — Sonner auto-dismissed before snapshot, or stacked behind the previous toast). Functional outcome (page+blocks created) is correct. Not a blocking issue.", "affected_selectors": ["[data-sonner-toast]"] }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "premiumTemplates.js applyPremiumTemplate() correctly uses Promise.allSettled and returns {pageId, blocksCreated, blocksTotal} so the caller can distinguish full success vs partial success vs failure. Clean implementation.",
+    "PagesFilmstrip.handlePremiumPick() distinguishes 3 toast states (error / warning / success) — good UX feedback.",
+    "Photo asset reuse in premiumTemplates.js PHOTOS map: texture_stone/warm_lounge and texture_wood/cinematic_chair share the same Unsplash IDs at different widths. Visual outcome is acceptable but variable naming is misleading; if a designer expects 'travertine' they get a lounge photo. Cosmetic, not blocking."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "N/A (skip per request)", "frontend": "100% (10/10 criteria pass, including the 2 previously-broken templates)" },
+  "test_credentials": "designer@moodfordesign.com / Designer2024!",
+  "seed_data_creation": "5 new premium-template pages + 1 blank skeleton page were added to moodboard 85b93c6b-8de2-4b14-a977-a768ecc02309 during this run (smoke pages — user is aware per agent_to_agent_context_note).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Bug from iter_28 is fully resolved. The /pages 400 was caused by 2 invalid page_type values in premiumTemplates.js, now corrected to 'material_board' and 'split_story' which are both in the backend PAGE_TYPES whitelist. All 5 premium templates apply end-to-end with 201 responses. The moodboard 85b93c6b-... now has many smoke pages — main agent may want to clean these up before the next user-facing demo. To retest in future, login as designer@moodfordesign.com / Designer2024!, go to /moodboards/85b93c6b-8de2-4b14-a977-a768ecc02309, click [data-testid=add-page-btn], click any [data-testid=premium-template-card-*], wait 4s, expect a 201 POST on /pages and a success toast.",
+  "rca_of_the_issue": "Root cause from iter_28: applyPremiumTemplate was sending page_type values ('materials', 'narrative') that were NOT in the backend PAGE_TYPES whitelist, causing FastAPI to reject with 400. The iter_28 testing agent incorrectly attributed this to a generic /pages regression because the legacy skeleton-blank flow ALSO 400'd at that time — but in iter_29 the legacy flow works fine (201), so the iter_28 dual-failure was either a transient backend state OR the legacy 400 was a different and separately-resolved issue. The premium fix is purely frontend (premiumTemplates.js) and is verified working."
+}

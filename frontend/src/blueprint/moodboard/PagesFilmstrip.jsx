@@ -17,6 +17,7 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import { Plus, Copy, Trash2 } from 'lucide-react';
 import SkeletonPicker from './SkeletonPicker';
 import { applyPremiumTemplate } from './premiumTemplates';
+import { toast } from 'sonner';
 
 // Tiny wireframe preview that renders the page's block geometry at scale.
 const MiniPreview = ({ page, blocks }) => {
@@ -87,13 +88,26 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
   const handlePremiumPick = async (templateId) => {
     setSkeletonPickerOpen(false);
     try {
-      const newPageId = await applyPremiumTemplate(api, moodboardId, templateId);
+      const result = await applyPremiumTemplate(api, moodboardId, templateId);
       trackEvent('moodboard.premium_template_applied',
-        { template_id: templateId, moodboard_id: moodboardId },
+        { template_id: templateId, moodboard_id: moodboardId,
+          blocks_created: result?.blocksCreated, blocks_total: result?.blocksTotal },
         { entityType: 'moodboard', entityId: moodboardId });
-      if (newPageId) onSelect?.(newPageId);
+      if (result?.pageId) onSelect?.(result.pageId);
       onChange?.();
-    } catch (_) { /* user can retry from the picker */ }
+      if (result?.blocksCreated === 0) {
+        toast.error(t('moodboards.premium.partialFail', null,
+          'Template applied but blocks could not be inserted. Please retry.'));
+      } else if (result?.blocksCreated < result?.blocksTotal) {
+        toast.warning(t('moodboards.premium.partialOk', null,
+          `${result.blocksCreated}/${result.blocksTotal} blocks inserted.`));
+      } else {
+        toast.success(t('moodboards.premium.applied', null, 'Premium template applied.'));
+      }
+    } catch (err) {
+      const detail = err?.response?.data?.detail || err?.message || 'unknown error';
+      toast.error(t('moodboards.premium.applyFailed', null, `Could not apply template: ${detail}`));
+    }
   };
 
   const handleDelete = async (e, pageId) => {
