@@ -33,7 +33,7 @@ const LocaleSwitcher = ({ align = 'right' }) => {
       {open && (
         <div
           data-testid="locale-switcher-menu"
-          className={`absolute ${align === 'right' ? 'right-0' : 'left-0'} mt-1 w-44 bg-[#141416] border border-white/[0.08] rounded-md shadow-lg py-1 z-50 animate-fadeIn`}
+          className={`absolute ${align === 'right' ? 'right-0' : 'left-0'} mt-1 w-44 bg-[#141416] border border-white/[0.08] rounded-md shadow-lg py-1 z-[1200] animate-fadeIn`}
         >
           {availableLocales.map((l) => (
             <button

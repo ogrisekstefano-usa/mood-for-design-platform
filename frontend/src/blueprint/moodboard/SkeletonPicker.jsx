@@ -177,8 +177,13 @@ const SkeletonCard = ({ sk, onPick, t }) => {
 };
 
 const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose, insertAfterPageTitle }) => {
-  const { t } = useBlueprint();
+  const { t, locale } = useBlueprint();
   const dialogRef = useRef(null);
+  const isIT = (locale || '').toLowerCase().startsWith('it');
+  // Locale-aware fallback helper: pick IT or EN copy depending on the active locale.
+  // We keep ALL copy here (no hardcoded English in JSX) so the picker reads
+  // naturally in both languages without requiring backend i18n changes.
+  const L = (it, en) => isIT ? it : en;
 
   // ESC closes the modal
   useEffect(() => {
@@ -217,16 +222,19 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose, insertAfter
           <div>
             <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] flex items-center gap-1.5 !tracking-[0.32em]">
               <LayoutGrid size={11} strokeWidth={1.5} />
-              {t('moodboards.picker.eyebrow', null, 'Editorial structure')}
+              {t('moodboards.picker.eyebrow', null,
+                L('Struttura editoriale', 'Editorial structure'))}
             </p>
             <h2 className="!text-[28px] !text-[var(--bp-text-primary)] mt-2 font-light tracking-[0.005em] leading-tight"
                 style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
-              {t('moodboards.picker.title', null, 'Choose an editorial structure')}
+              {t('moodboards.picker.title', null,
+                L('Scegli una struttura editoriale', 'Choose an editorial structure'))}
             </h2>
-            <p className="bp-caption !text-[12px] !text-[var(--bp-text-muted)] mt-2 max-w-[640px] italic leading-[1.55]"
+            <p className="bp-caption !text-[13px] !text-[var(--bp-text-secondary)] mt-2 max-w-[640px] italic leading-[1.55]"
                style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
-              {t('moodboards.picker.subtitle', null,
-                'Start from a complete multi-page presentation, or add a single empty page as a starting point.')}
+              {t('moodboards.picker.subtitle', null, L(
+                'Parti da una presentazione multipagina completa, oppure aggiungi una singola pagina vuota.',
+                'Start from a complete multi-page presentation, or add a single empty page as a starting point.'))}
             </p>
             {/* Insert-here pill — visible only when an insertion point is set */}
             {insertAfterPageTitle && (
@@ -235,7 +243,7 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose, insertAfter
                               bg-[var(--bp-primary)]/12 border border-[var(--bp-primary)]/35">
                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--bp-primary)] animate-pulse" />
                 <span className="font-mono text-[10px] tracking-[0.30em] uppercase text-[var(--bp-primary)]">
-                  {t('moodboards.picker.insertAfter', null, 'Inserting after')}
+                  {t('moodboards.picker.insertAfter', null, L('Inserisci dopo', 'Inserting after'))}
                 </span>
                 <span className="text-[12px] text-[var(--bp-text-primary)] italic"
                       style={{ fontFamily: 'Playfair Display, serif' }}>
@@ -269,14 +277,17 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose, insertAfter
                   </span>
                   <h2 className="!text-[26px] !text-[#F2EBD9] font-light tracking-[0.20em]"
                       style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
-                    PREMIUM CURATED ARCHIVE
+                    {t('moodboards.premium.archiveTitle', null, L(
+                      'ARCHIVIO PREMIUM CURATELA',
+                      'PREMIUM CURATED ARCHIVE'))}
                   </h2>
                 </div>
                 <p className="text-[11px] tracking-[0.18em] uppercase italic"
                    style={{ color: 'rgba(242, 235, 217, 0.55)',
                             fontFamily: 'Playfair Display, serif' }}>
-                  {t('moodboards.premium.intro.short', null,
-                    'Template multipagina completi · Pronti per presentazioni professionali')}
+                  {t('moodboards.premium.intro.short', null, L(
+                    'Template multipagina completi · Pronti per presentazioni professionali',
+                    'Complete multi-page templates · Ready for professional presentations'))}
                 </p>
               </div>
               <div className="h-px bg-[var(--bp-section-divider)] mb-12" />
@@ -302,12 +313,14 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose, insertAfter
                       <div className="flex-1 h-px bg-[var(--bp-border)] mt-1 self-center" />
                       <span className="font-mono text-[10px] tracking-[0.30em] text-[var(--bp-text-subtle)] uppercase tabular-nums">
                         {templates.length.toString().padStart(2, '0')}&nbsp;
-                        {t('moodboards.premium.completeTemplates.short', null, 'template completi')}
+                        {t('moodboards.premium.completeTemplates.short', null,
+                          L('template completi', 'complete templates'))}
                       </span>
                     </div>
-                    <p className="bp-caption !text-[12px] !text-[var(--bp-text-muted)] italic ml-[42px] mb-7 leading-[1.55]"
+                    <p className="bp-caption !text-[12px] !text-[var(--bp-text-secondary)] italic ml-[42px] mb-7 leading-[1.55]"
                        style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
-                      {t(`moodboards.premium.category.${cat.key}.subtitle`, null, cat.subtitle_fallback)}
+                      {t(`moodboards.premium.category.${cat.key}.subtitle`, null,
+                        isIT ? cat.subtitle_fallback : (cat.subtitle_en || cat.subtitle_fallback))}
                     </p>
                     {/* Cards row — 3-up minimum, auto-fill at larger viewports */}
                     <div className="grid gap-6"
@@ -329,20 +342,23 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose, insertAfter
               <div className="flex items-center gap-2.5">
                 <LayoutGrid size={13} strokeWidth={1.5} className="text-[var(--bp-text-muted)]" />
                 <p className="bp-eyebrow !text-[11px] !text-[var(--bp-text-primary)] !tracking-[0.36em] !font-medium">
-                  {t('moodboards.skeleton.section.eyebrow', null, 'Skeletons & starting points')}
+                  {t('moodboards.skeleton.section.eyebrow', null,
+                    L('Scheletri e punti di partenza', 'Skeletons & starting points'))}
                 </p>
               </div>
               {!isLoading && skeletons && (
                 <span className="font-mono text-[10px] tracking-[0.30em] text-[var(--bp-text-subtle)] uppercase tabular-nums">
                   {skeletons.length.toString().padStart(2, '0')}&nbsp;
-                  {t('moodboards.skeleton.singlePages', null, 'single layouts')}
+                  {t('moodboards.skeleton.singlePages', null,
+                    L('layout singoli', 'single layouts'))}
                 </span>
               )}
             </div>
-            <p className="bp-caption !text-[13px] !text-[var(--bp-text-muted)] italic mb-3 max-w-[760px] leading-[1.55]"
+            <p className="bp-caption !text-[13px] !text-[var(--bp-text-secondary)] italic mb-3 max-w-[760px] leading-[1.55]"
                style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
-              {t('moodboards.skeleton.section.intro', null,
-                'Single empty layouts to add as one new page to the current moodboard. Use them when you want to compose your own structure block by block.')}
+              {t('moodboards.skeleton.section.intro', null, L(
+                'Layout vuoti da aggiungere come singola pagina al moodboard corrente. Usali quando vuoi comporre la tua struttura blocco per blocco.',
+                'Single empty layouts to add as one new page to the current moodboard. Use them when you want to compose your own structure block by block.'))}
             </p>
             <div className="h-px bg-[var(--bp-section-divider)] mb-9" />
 

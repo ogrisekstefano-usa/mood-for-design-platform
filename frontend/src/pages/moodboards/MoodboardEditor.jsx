@@ -50,7 +50,7 @@ const AUTOSAVE_MAX_RETRIES = 3;
 const MoodboardEditor = ({ readOnly = false }) => {
   const { id, shareToken } = useParams();
   const navigate = useNavigate();
-  const { t } = useBlueprint();
+  const { t, locale } = useBlueprint();
   const [mb, setMb] = useState(null);
   const [blocks, setBlocks] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
@@ -727,11 +727,23 @@ const MoodboardEditor = ({ readOnly = false }) => {
                 <Redo2 size={14} strokeWidth={1.5} />
               </button>
               <button onClick={() => setSnapEnabled((v) => !v)}
-                      title={t('moodboards.editor.snap')}
+                      title={snapEnabled
+                        ? ((locale || '').toLowerCase().startsWith('it')
+                            ? 'Allineamento intelligente: ATTIVO. Le guide appaiono mentre trascini per allineare ad altri blocchi e ai bordi.'
+                            : 'Smart alignment: ON. Guides appear while you drag to align with other blocks and edges.')
+                        : ((locale || '').toLowerCase().startsWith('it')
+                            ? 'Allineamento intelligente: DISATTIVATO. Trascina liberamente senza guide.'
+                            : 'Smart alignment: OFF. Drag freely without snap guides.')}
                       data-testid="snap-toggle-btn"
-                      className={`p-1.5 rounded-[var(--bp-radius-xs)] hover:bg-[var(--bp-surface-2)]/60 transition-colors
+                      className={`relative p-1.5 rounded-[var(--bp-radius-xs)] hover:bg-[var(--bp-surface-2)]/60 transition-colors
                                   ${snapEnabled ? 'text-[var(--bp-primary)]' : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]'}`}>
                 <Magnet size={14} strokeWidth={1.5} />
+                {/* Tiny dot indicator: teal when ON, muted ring when OFF */}
+                <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full transition-all"
+                      style={{
+                        background: snapEnabled ? 'var(--bp-primary)' : 'transparent',
+                        boxShadow: snapEnabled ? '0 0 6px var(--bp-primary)' : 'inset 0 0 0 1px var(--bp-border)',
+                      }} />
               </button>
             </div>
           )}

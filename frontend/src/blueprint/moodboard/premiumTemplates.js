@@ -904,18 +904,25 @@ export const getPremiumTemplatePageCount = (id) => {
 
 /**
  * Premium template categories (locked order = editorial reading rhythm).
+ * subtitle_it / subtitle_en provided so the picker can render a locale-aware
+ * fallback without requiring backend i18n changes.
  */
 export const PREMIUM_CATEGORIES = [
   { key: 'hospitality', title_fallback: 'Luxury Hospitality',
-    subtitle_fallback: 'Cinematic warmth for boutique hotels & resorts — Aman, Six Senses, Rosewood lineage.' },
+    subtitle_fallback: 'Calore cinematografico per boutique hotel e resort — Aman, Six Senses, Rosewood.',
+    subtitle_en: 'Cinematic warmth for boutique hotels & resorts — Aman, Six Senses, Rosewood lineage.' },
   { key: 'materials',   title_fallback: 'Material Narratives',
-    subtitle_fallback: 'Tactile storytelling for stone, wood & textile — Salvatori, Margraf, Material Bank.' },
+    subtitle_fallback: 'Racconto tattile di pietra, legno e tessuto — Salvatori, Margraf, Material Bank.',
+    subtitle_en: 'Tactile storytelling for stone, wood & textile — Salvatori, Margraf, Material Bank.' },
   { key: 'residential', title_fallback: 'Residential Editorial',
-    subtitle_fallback: 'AD Magazine layouts for private residences — Italian, Mediterranean, Northern.' },
+    subtitle_fallback: 'Layout AD Magazine per residenze private — italiane, mediterranee, nordiche.',
+    subtitle_en: 'AD Magazine layouts for private residences — Italian, Mediterranean, Northern.' },
   { key: 'fashion',     title_fallback: 'Fashion · Art Direction',
-    subtitle_fallback: 'Magazine-cover energy & couture restraint — Vogue Living, The Row, Loewe Casa.' },
+    subtitle_fallback: 'Energia da copertina magazine e sobrietà couture — Vogue Living, The Row, Loewe Casa.',
+    subtitle_en: 'Magazine-cover energy & couture restraint — Vogue Living, The Row, Loewe Casa.' },
   { key: 'minimal',     title_fallback: 'Minimal · Japandi',
-    subtitle_fallback: 'Whitespace as material — Wabi-sabi, Nordic clarity, Japandi serenity.' },
+    subtitle_fallback: 'Vuoto come materiale — Wabi-sabi, chiarezza nordica, serenità Japandi.',
+    subtitle_en: 'Whitespace as material — Wabi-sabi, Nordic clarity, Japandi serenity.' },
 ];
 
 export const getTemplatesByCategory = (category) =>

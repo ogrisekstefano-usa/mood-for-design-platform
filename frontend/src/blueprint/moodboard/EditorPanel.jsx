@@ -24,6 +24,7 @@
  * as the legacy LibraryPanel so the user's previous choice carries over).
  */
 import React, { useEffect, useState } from 'react';
+import { useBlueprint } from '../../contexts/BlueprintContext';
 import api from '../../lib/api';
 import {
   Plus, Image as ImageIcon, Type, Palette, StickyNote, Package, Layers,
@@ -193,26 +194,49 @@ const InsertTab = ({ onAddBlock, skeletons = [], onOpenSkeletons, onOpenSkeleton
   </>
 );
 
-const AssetsTab = ({ t }) => (
+const AssetsTab = ({ t, locale }) => {
+  const isIT = (locale || '').toLowerCase().startsWith('it');
+  const L = (it, en) => isIT ? it : en;
+  return (
   <>
-    <SectionTitle>{t('moodboards.assets.uploaded', null, 'Uploaded')}</SectionTitle>
-    <div className="grid grid-cols-3 gap-2">
-      {[0, 1, 2, 3, 4, 5].map((i) => (
-        <div key={i}
-             className="aspect-square rounded-[var(--bp-radius-sm)] border border-[var(--bp-border)]/50 bg-[var(--bp-surface-1)]/30 opacity-40" />
-      ))}
+    {/* Intro / explainer — clarifies what the tab is for so it never reads as
+        "empty / unfinished" to the designer. */}
+    <div className="px-3 py-3 mb-2 rounded-[var(--bp-radius-sm)] bg-[var(--bp-surface-1)]/30 border border-[var(--bp-border)]">
+      <p className="text-[12px] text-[var(--bp-text-secondary)] italic leading-[1.55]"
+         style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
+        {t('moodboards.assets.intro', null, L(
+          'La tua libreria personale. Foto caricate, elementi salvati e composizioni riutilizzabili.',
+          'Your personal library. Uploaded photos, saved elements and reusable compositions.'))}
+      </p>
     </div>
 
-    <SectionTitle>{t('moodboards.assets.saved', null, 'Saved elements')}</SectionTitle>
+    <SectionTitle>
+      {t('moodboards.assets.uploaded', null, L('Foto caricate', 'Uploaded photos'))}
+    </SectionTitle>
+    <div className="px-3 py-6 text-center rounded-[var(--bp-radius-sm)] border border-dashed border-[var(--bp-border)] bg-[var(--bp-surface-1)]/30 mb-4">
+      <p className="text-[11.5px] !text-[var(--bp-text-secondary)] leading-[1.55] italic"
+         style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
+        {t('moodboards.assets.uploadedHint', null, L(
+          'Carica un\'immagine da un blocco foto sul canvas — apparirà qui per essere riutilizzata.',
+          'Upload an image from a photo block on the canvas — it will appear here to be reused.'))}
+      </p>
+    </div>
+
+    <SectionTitle>
+      {t('moodboards.assets.saved', null, L('Elementi salvati', 'Saved elements'))}
+    </SectionTitle>
     <div className="px-3 py-6 text-center rounded-[var(--bp-radius-sm)] border border-dashed border-[var(--bp-border)] bg-[var(--bp-surface-1)]/30">
       <Sparkles size={14} strokeWidth={1.3} className="mx-auto mb-2 text-[var(--bp-text-subtle)]" />
-      <p className="bp-caption !text-[10.5px] !text-[var(--bp-text-muted)] leading-relaxed">
-        {t('moodboards.assets.savedEmpty', null,
-          'Right-click any block on the canvas to save it as a reusable element.')}
+      <p className="text-[11.5px] !text-[var(--bp-text-secondary)] leading-[1.55] italic"
+         style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
+        {t('moodboards.assets.savedEmpty', null, L(
+          'Clicca col tasto destro su un blocco per salvarlo come elemento riutilizzabile.',
+          'Right-click any block on the canvas to save it as a reusable element.'))}
       </p>
     </div>
   </>
-);
+  );
+};
 
 const PagesTab = ({ pages = [], skeletons = [], activePageId, onOpenSkeletons, onOpenSkeletonPicker, t }) => (
   <>
@@ -294,6 +318,7 @@ const EditorPanel = ({
   pages, activePageId,
 }) => {
   const [tab, setTab] = useState('insert');
+  const { locale } = useBlueprint();
   const [collapsed, setCollapsed] = useState(
     typeof window !== 'undefined' ? localStorage.getItem(LS_KEY) === '1' : false,
   );
@@ -383,7 +408,7 @@ const EditorPanel = ({
                                                      onOpenSkeletons={onOpenSkeletons}
                                                      onOpenSkeletonPicker={onOpenSkeletonPicker}
                                                      t={t} />}
-        {tab === 'assets'       && <AssetsTab        t={t} />}
+        {tab === 'assets'       && <AssetsTab        t={t} locale={locale} />}
         {tab === 'pages'        && <PagesTab         pages={pages || []} skeletons={skeletons}
                                                      activePageId={activePageId}
                                                      onOpenSkeletons={onOpenSkeletons}

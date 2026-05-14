@@ -1256,3 +1256,24 @@ Trasforma il Right Inspector da "settings panel" a "calm editorial control surfa
 
 **Verified** ✅ — Empty state premium, 4 gruppi collapsibili con auto-open per type, localStorage persistence, header "ITEM · TESTO", 0 page errors, lint clean.
 
+
+
+### ✅ Editorial UX Polish — Translations + Filmstrip Real Thumbs + Snap UX + Inspector Contrast (Feb 16 2026)
+Bug-fix sprint mirato ai feedback utente. Architecture freeze rispettato.
+
+🌐 **i18n (NO hardcoded)** — picker tradotto interamente IT/EN: helper `L(it, en)` locale-aware in SkeletonPicker. Header IT: "STRUTTURA EDITORIALE · Scegli una struttura editoriale · Parti da una presentazione multipagina completa...". Premium: "ARCHIVIO PREMIUM CURATELA · TEMPLATE MULTIPAGINA COMPLETI · 03 TEMPLATE COMPLETI". Insert pill: "Inserisci dopo 'TEST_F1_lux'". Skeleton section: "Scheletri e punti di partenza". `PREMIUM_CATEGORIES` ora ha `subtitle_fallback` IT + `subtitle_en` EN.
+
+🖼️ **Filmstrip mostra IMMAGINI REALI**: MiniPreview ora renderizza `<img>` reali per image+material blocks (con `loading="lazy"` + onError silent) + palette swatch veri. Risultato: filmstrip "leggibile" come story-sequence invece di rettangoli colorati.
+
+🖼️ **LayersPanel thumbnails**: resolve da TUTTE le shape (`image_url || content.src || content.image || content.image_url || content.swatch_url`) + palette swatch. Size 6→7. Le foto caricate dall'utente ora hanno thumbnail.
+
+🧲 **Snap toggle UX**: tooltip locale-aware DETTAGLIATO ("Allineamento intelligente: ATTIVO. Le guide appaiono mentre trascini..."). Visual indicator: dot teal con glow quando ON, ring border quando OFF. ON/OFF a colpo d'occhio.
+
+🔝 **z-index language menu**: `z-50` → `z-[1200]` per stare sopra modal/overlay.
+
+📂 **Assets tab informativo**: intro card editoriale "La tua libreria personale. Foto caricate, elementi salvati e composizioni riutilizzabili.". Hint dashed per upload + saved.
+
+🎨 **Contrast +**: --bp-text-primary #EFEBE4→#F5F1EA, --bp-text-secondary #A19D98→#C8C4BD, --bp-text-muted #6B6863→#948F88. Body 1rem→1.0625rem, caption 0.8125→0.875rem, eyebrow 0.6875→0.75rem.
+
+**Verified** ✅ — Picker IT 100%, snap tooltip locale-aware, filmstrip real thumbs, 0 page errors.
+

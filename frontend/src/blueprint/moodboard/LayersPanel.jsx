@@ -104,13 +104,43 @@ const LayerRow = ({
         className="text-[var(--bp-text-subtle)] opacity-0 group-hover:opacity-100 transition-opacity cursor-grab flex-shrink-0"
       />
 
-      <div className="w-6 h-6 flex-shrink-0 rounded-[var(--bp-radius-xs)] bg-[var(--bp-surface-2)] flex items-center justify-center">
-        {block.image_url || block.content?.src
-          ? <img src={block.image_url || block.content?.src} alt=""
-                 className="w-full h-full object-cover rounded-[var(--bp-radius-xs)]" />
-          : <span className="bp-caption !text-[9px] text-[var(--bp-text-muted)] uppercase">
+      <div className="w-7 h-7 flex-shrink-0 rounded-[var(--bp-radius-xs)] bg-[var(--bp-surface-2)] flex items-center justify-center overflow-hidden">
+        {(() => {
+          // Resolve a thumbnail URL from every shape we use today: top-level
+          // image_url, content.src (images), content.image / content.image_url
+          // (materials + products). Falls back to the type initial when no
+          // src is available (e.g. just-uploaded blocks before autosave).
+          const thumb = block.image_url
+                     || block.content?.src
+                     || block.content?.image
+                     || block.content?.image_url
+                     || block.content?.swatch_url;
+          if (thumb) {
+            return (
+              <img src={thumb} alt="" loading="lazy" draggable={false}
+                   className="w-full h-full object-cover rounded-[var(--bp-radius-xs)]"
+                   onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+            );
+          }
+          // Palette thumb — render the actual colors
+          if (block.type === 'palette') {
+            const cols = block.content?.colors || [];
+            if (cols.length) {
+              return (
+                <div className="w-full h-full flex">
+                  {cols.slice(0, 5).map((c, i) => (
+                    <span key={i} className="flex-1" style={{ background: c }} />
+                  ))}
+                </div>
+              );
+            }
+          }
+          return (
+            <span className="bp-caption !text-[9px] text-[var(--bp-text-muted)] uppercase">
               {(BLOCK_ICON_MAP[block.type] || block.type)?.slice(0, 1)}
-            </span>}
+            </span>
+          );
+        })()}
       </div>
 
       {renaming ? (

@@ -137,6 +137,46 @@ const MiniPreview = ({ page, blocks, active }) => {
             );
           }
         }
+        // Render actual image thumbnails for image blocks — this is what
+        // makes the filmstrip read as a real preview of the deck (instead
+        // of a grid of colored rectangles).
+        if (b.type === 'image') {
+          const src = b?.content?.src || b?.image_url;
+          if (src) {
+            return (
+              <img key={b.id} src={src} alt=""
+                   loading="lazy" draggable={false}
+                   className="absolute object-cover pointer-events-none"
+                   style={{
+                     left: (b.x ?? 40) * scale,
+                     top: (b.y ?? 40) * scale,
+                     width: Math.max(2, (b.width ?? 320) * scale),
+                     height: Math.max(2, (b.height ?? 240) * scale),
+                     borderRadius: 1,
+                   }}
+                   onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+            );
+          }
+        }
+        // Render material thumb if available
+        if (b.type === 'material') {
+          const src = b?.content?.image || b?.content?.image_url;
+          if (src) {
+            return (
+              <img key={b.id} src={src} alt=""
+                   loading="lazy" draggable={false}
+                   className="absolute object-cover pointer-events-none"
+                   style={{
+                     left: (b.x ?? 40) * scale,
+                     top: (b.y ?? 40) * scale,
+                     width: Math.max(2, (b.width ?? 320) * scale),
+                     height: Math.max(2, (b.height ?? 240) * scale),
+                     borderRadius: 1, opacity: 0.85,
+                   }}
+                   onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+            );
+          }
+        }
         let tint = 'rgba(58,51,44,0.18)';
         if (b.type === 'image')         tint = 'linear-gradient(135deg, rgba(58,46,32,0.55) 0%, rgba(28,20,14,0.40) 100%)';
         else if (b.type === 'palette')  tint = 'rgba(214,197,168,0.30)';

@@ -16,10 +16,10 @@
     --bp-overlay: rgba(8,8,10,0.72);
     --bp-border: rgba(255,255,255,0.06);
     --bp-border-strong: rgba(255,255,255,0.12);
-    --bp-text-primary: #EFEBE4;
-    --bp-text-secondary: #A19D98;
-    --bp-text-muted: #6B6863;
-    --bp-text-subtle: #4A4845;
+    --bp-text-primary: #F5F1EA;
+    --bp-text-secondary: #C8C4BD;
+    --bp-text-muted: #948F88;
+    --bp-text-subtle: #6E6964;
     --bp-selection-bg: rgba(38,245,201,0.18);
     --bp-selection-fg: #EFEBE4;
 
@@ -38,9 +38,9 @@
     --bp-h2: clamp(1.75rem, 3.2vw, 2.5rem);
     --bp-h3: clamp(1.25rem, 2vw, 1.625rem);
     --bp-lead: clamp(1.05rem, 1.4vw, 1.25rem);
-    --bp-body: 1rem;
-    --bp-caption: 0.8125rem;
-    --bp-eyebrow: 0.6875rem;
+    --bp-body: 1.0625rem;
+    --bp-caption: 0.875rem;
+    --bp-eyebrow: 0.75rem;
     --bp-display-line: 0.95;
     --bp-heading-line: 1.08;
     --bp-body-line: 1.6;
