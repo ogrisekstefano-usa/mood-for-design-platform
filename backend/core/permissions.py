@@ -41,6 +41,11 @@ P_TENANT_MEMBERS_WRITE = "tenant:members:write"
 P_STORAGE_READ = "storage:read"
 P_STORAGE_WRITE = "storage:write"
 
+# Blueprint Client Collaboration Layer™ — shared infrastructure
+# reused by Moodboard Builder PRO™ AND (future) Proposal Builder PRO™.
+P_COLLAB_READ = "collab:read"
+P_COLLAB_WRITE = "collab:write"
+
 # Super-admin (cross-tenant)
 P_SUPER_TENANTS_READ = "super:tenants:read"
 P_SUPER_TENANTS_WRITE = "super:tenants:write"
@@ -62,6 +67,7 @@ _TENANT_FULL: Set[str] = {
     P_TENANT_BRANDING, P_TENANT_LOCALES, P_TENANT_SETTINGS,
     P_TENANT_MEMBERS_READ, P_TENANT_MEMBERS_WRITE,
     P_STORAGE_READ, P_STORAGE_WRITE,
+    P_COLLAB_READ, P_COLLAB_WRITE,
 }
 
 ROLE_PERMISSIONS: Dict[str, Set[str]] = {
@@ -77,6 +83,7 @@ ROLE_PERMISSIONS: Dict[str, Set[str]] = {
         P_MOODBOARDS_READ, P_MOODBOARDS_WRITE,
         P_INSPIRATIONS_READ, P_INSPIRATIONS_WRITE, P_INSPIRATIONS_PUBLISH,
         P_INSIGHTS_READ, P_STORAGE_READ, P_STORAGE_WRITE,
+        P_COLLAB_READ, P_COLLAB_WRITE,
     },
     "analyst": {
         P_LEADS_READ, P_PROJECTS_READ, P_PROPOSALS_READ,
@@ -88,6 +95,7 @@ ROLE_PERMISSIONS: Dict[str, Set[str]] = {
         P_PROPOSALS_READ, P_PROPOSALS_WRITE, P_PROPOSALS_APPROVE,
         P_MOODBOARDS_READ, P_INSIGHTS_READ,
         P_STORAGE_READ, P_STORAGE_WRITE,
+        P_COLLAB_READ, P_COLLAB_WRITE,
     },
     "designer": {
         P_PROJECTS_READ,
@@ -97,12 +105,18 @@ ROLE_PERMISSIONS: Dict[str, Set[str]] = {
         # designer's daily flow (save references / build mood archive).
         P_INSPIRATIONS_READ, P_INSPIRATIONS_WRITE, P_INSPIRATIONS_PUBLISH,
         P_STORAGE_READ, P_STORAGE_WRITE,
+        # Designers always have full collaboration access (moderate comments,
+        # approve / reject pages on behalf, resolve threads).
+        P_COLLAB_READ, P_COLLAB_WRITE,
     },
     "client": {P_PROJECTS_READ, P_PROPOSALS_READ, P_PROPOSALS_APPROVE,
                P_MOODBOARDS_READ,
                # Future Mood Discovery™ — clients upload references onto
                # project-linked boards before the moodboard is built.
-               P_INSPIRATIONS_READ, P_INSPIRATIONS_WRITE},
+               P_INSPIRATIONS_READ, P_INSPIRATIONS_WRITE,
+               # Authenticated clients (rare for MVP, but supported) can also
+               # use the collaboration layer.
+               P_COLLAB_READ, P_COLLAB_WRITE},
     "ad_partner": {P_PROJECTS_READ, P_MOODBOARDS_READ, P_INSPIRATIONS_READ},
 }
 

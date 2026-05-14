@@ -548,8 +548,53 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const createShareToken = async () => {
     const r = await api.post(`/api/moodboards/${id}/share`);
     const url = `${window.location.origin}${r.data.share_path || `/moodboard/share/${r.data.share_token}`}`;
-    setShareDialog(url);
+    setShareDialog({
+      shareUrl: url,
+      reviewUrl: `${window.location.origin}/review/${r.data.share_token}`,
+      presentUrl: `${window.location.origin}/presentation/${r.data.share_token}`,
+    });
     setMb((m) => ({ ...m, share_token: r.data.share_token }));
+  };
+
+  // ── Collaboration overview (page statuses + activity) ────────────────────
+  // Loaded lazily so the editor isn't slowed down by a non-critical request.
+  // Used by the topbar "Prepare Project Proposal" CTA gating (all pages
+  // must be approved before the handoff is offered).
+  const [collabStatuses, setCollabStatuses] = useState([]);
+  const refreshCollab = useCallback(() => {
+    if (!id || readOnly) return;
+    api.get('/api/collab/page-status', { params: { entity_type: 'moodboard', entity_id: id } })
+      .then((r) => setCollabStatuses(r.data?.data || []))
+      .catch(() => setCollabStatuses([]));
+  }, [id, readOnly]);
+  useEffect(() => { refreshCollab(); }, [refreshCollab]);
+  // Lightweight poll while the editor is open — picks up client decisions
+  // without requiring page reload. 25s is gentle on the backend and feels
+  // alive without being chatty.
+  useEffect(() => {
+    if (readOnly) return undefined;
+    const i = setInterval(refreshCollab, 25000);
+    return () => clearInterval(i);
+  }, [readOnly, refreshCollab]);
+
+  const allApproved = useMemo(() => {
+    if (!pages?.length) return false;
+    const byId = Object.fromEntries(collabStatuses.map((s) => [s.page_id, s.status]));
+    return pages.every((p) => byId[p.id] === 'approved');
+  }, [pages, collabStatuses]);
+
+  const [handoffSent, setHandoffSent] = useState(false);
+  const handoffToProposal = async () => {
+    try {
+      await api.post('/api/collab/handoff/prepare-proposal', {
+        entity_type: 'moodboard', entity_id: id,
+      });
+      setHandoffSent(true);
+      toast.success(t('collab.handoff.recorded', null, 'Handoff recorded'));
+      setTimeout(() => setHandoffSent(false), 4000);
+    } catch (_e) {
+      toast.error(t('collab.handoff.failed', null, 'Handoff failed'));
+    }
   };
 
   // ── Save current moodboard as a tenant template ──────────────────────────
@@ -667,6 +712,45 @@ const MoodboardEditor = ({ readOnly = false }) => {
             <Play size={11} strokeWidth={1.5} fill="currentColor" />
             <span className="bp-caption !text-[11px] !text-[var(--bp-primary)]">{t('moodboards.editor.present')}</span>
           </button>
+
+          {/* Open Client Review Mode — share-token required, prompts share dialog if missing */}
+          {!readOnly && (
+            <button
+              onClick={async () => {
+                let tok = mb.share_token;
+                if (!tok) {
+                  const r = await api.post(`/api/moodboards/${id}/share`);
+                  tok = r.data.share_token;
+                  setMb((m) => ({ ...m, share_token: tok }));
+                }
+                window.open(`/review/${tok}`, '_blank', 'noopener');
+              }}
+              data-testid="open-review-btn"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[var(--bp-radius-sm)]
+                         bg-[var(--bp-surface-2)]/60 hover:bg-[var(--bp-surface-2)]
+                         text-[var(--bp-text-primary)] transition-colors">
+              <ListChecks size={11} strokeWidth={1.5} />
+              <span className="bp-caption !text-[11px] !text-[var(--bp-text-primary)]">
+                {t('moodboards.editor.openReview', null, 'Client Review')}
+              </span>
+            </button>
+          )}
+
+          {/* Prepare Project Proposal — appears only when ALL pages are approved */}
+          {!readOnly && allApproved && (
+            <button onClick={handoffToProposal}
+                    data-testid="prepare-proposal-btn"
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[var(--bp-radius-sm)]
+                               bg-[var(--bp-primary)] text-black hover:brightness-110 transition-all
+                               animate-[bpSoftPulse_2.4s_ease-in-out_infinite]">
+              <Send size={11} strokeWidth={1.5} />
+              <span className="text-[11px] tracking-[0.18em] uppercase font-medium">
+                {handoffSent
+                  ? t('collab.handoff.recorded', null, 'Recorded')
+                  : t('collab.handoff.cta', null, 'Prepare Proposal')}
+              </span>
+            </button>
+          )}
 
           {/* Workspace Mode toggle — Editorial Light ↔ Cinematic Dark */}
           <button onClick={toggleWorkspaceMode}
@@ -857,6 +941,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
           onSelect={(pid) => { setSelectedId(null); setActivePageId(pid); }}
           onChange={reloadPagesAndBlocks}
           readOnly={readOnly}
+          pageStatusById={Object.fromEntries(collabStatuses.map((s) => [s.page_id, s.status]))}
         />
       )}
 
@@ -929,20 +1014,32 @@ const MoodboardEditor = ({ readOnly = false }) => {
         );
       })()}
 
-      {/* Share dialog */}
+      {/* Share dialog — now offers the read-only presentation link AND
+          the new Client Review link. Designers usually want both: presentation
+          for cinematic walkthrough, review for collaborative feedback. */}
       {shareDialog && (
         <div className="fixed inset-0 z-50 bg-[var(--bp-overlay)] backdrop-blur-sm flex items-center justify-center"
              onClick={() => setShareDialog(null)}>
-          <div onClick={(e) => e.stopPropagation()} className="bp-glass p-6 rounded-[var(--bp-radius-md)] max-w-md w-[420px]">
+          <div onClick={(e) => e.stopPropagation()} className="bp-glass p-6 rounded-[var(--bp-radius-md)] max-w-md w-[460px]">
             <p className="bp-eyebrow mb-2 !text-[var(--bp-text-muted)]">{t('moodboards.editor.shareEyebrow')}</p>
-            <h3 className="bp-h2 mb-4 text-[var(--bp-text-primary)]">{t('moodboards.editor.shareTitle')}</h3>
-            <input readOnly value={shareDialog} data-testid="share-url"
-                   className="input-luxury w-full px-3 py-2 text-sm rounded-[var(--bp-radius-sm)] mb-4" />
-            <div className="flex justify-end gap-2">
+            <h3 className="bp-h2 mb-5 text-[var(--bp-text-primary)]">{t('moodboards.editor.shareTitle')}</h3>
+
+            <ShareLinkRow label={t('moodboards.editor.shareReviewLabel', null, 'Client Review (collaborative)')}
+                          value={shareDialog.reviewUrl}
+                          testid="share-url-review" />
+            <ShareLinkRow label={t('moodboards.editor.sharePresentLabel', null, 'Presentation (cinematic)')}
+                          value={shareDialog.presentUrl}
+                          testid="share-url-present" />
+            <ShareLinkRow label={t('moodboards.editor.shareLegacyLabel', null, 'Legacy read-only')}
+                          value={shareDialog.shareUrl}
+                          testid="share-url"
+                          muted />
+
+            <div className="flex justify-end gap-2 mt-5">
               <button onClick={() => setShareDialog(null)} className="bp-btn bp-btn-ghost text-xs">
                 {t('common.close')}
               </button>
-              <a href={shareDialog} target="_blank" rel="noreferrer" className="bp-btn bp-btn-primary text-xs">
+              <a href={shareDialog.reviewUrl} target="_blank" rel="noreferrer" className="bp-btn bp-btn-primary text-xs">
                 <ExternalLink size={12} strokeWidth={1.5} /> {t('moodboards.editor.openShare')}
               </a>
             </div>
@@ -954,6 +1051,26 @@ const MoodboardEditor = ({ readOnly = false }) => {
 };
 
 // ── Tab Button ──────────────────────────────────────────────────────────────
+const ShareLinkRow = ({ label, value, testid, muted }) => (
+  <div className="mb-3" data-testid={`${testid}-row`}>
+    <p className={`text-[10px] tracking-[0.22em] uppercase mb-1.5
+                   ${muted ? 'text-[var(--bp-text-subtle)]' : 'text-[var(--bp-text-secondary)]'}`}>
+      {label}
+    </p>
+    <div className="flex items-center gap-2">
+      <input readOnly value={value || ''} data-testid={testid}
+             onFocus={(e) => e.target.select()}
+             className="input-luxury flex-1 px-3 py-2 text-xs rounded-[var(--bp-radius-sm)] font-mono" />
+      <button type="button"
+              onClick={() => navigator.clipboard?.writeText(value || '')}
+              className="bp-btn bp-btn-ghost text-[10px] !px-3 !py-2">
+        Copy
+      </button>
+    </div>
+  </div>
+);
+
+
 // Icon-only by design — labels were unreadable on narrower sidebars (and on
 // non-translated locale fallbacks). Tooltip via native `title` keeps the
 // premium uncluttered feeling. An accent dot under the icon marks active.

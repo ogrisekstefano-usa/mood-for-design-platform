@@ -35,6 +35,7 @@ api.interceptors.response.use(
         p === '/auth/login' ||
         p.startsWith('/presentation/') ||
         p.startsWith('/moodboard/share/') ||
+        p.startsWith('/review/') ||
         p.startsWith('/f/') ||
         p.startsWith('/form/');
       if (!isPublicSurface) {

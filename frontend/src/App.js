@@ -29,6 +29,7 @@ const PublicFormPage = lazy(() => import('./pages/public/PublicFormPage'));
 const LeadFormPage = lazy(() => import('./pages/public/LeadFormPage'));
 const MoodboardEditor = lazy(() => import('./pages/moodboards/MoodboardEditor'));
 const PublicPresentation = lazy(() => import('./pages/moodboards/PublicPresentation'));
+const ReviewMode = lazy(() => import('./pages/collab/ReviewMode'));
 
 // Admin
 const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
@@ -115,6 +116,7 @@ function App() {
                 {/* PUBLIC tenant routes — runtime composition via Blueprint engine */}
                 <Route path="/moodboard/share/:shareToken" element={<PublicMoodboardWrapper />} />
                 <Route path="/presentation/:shareToken" element={<PublicPresentation />} />
+                <Route path="/review/:shareToken" element={<ReviewMode />} />
                 <Route path="/f/:tenantSlug/:formSlug" element={<PublicFormPage />} />
                 <Route path="/:tenantSlug" element={<PublicTenantPage />} />
                 <Route path="/:tenantSlug/:pageSlug" element={<PublicTenantPage />} />

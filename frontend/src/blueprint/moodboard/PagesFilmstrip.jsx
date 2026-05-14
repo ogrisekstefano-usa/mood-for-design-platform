@@ -46,7 +46,7 @@ const MiniPreview = ({ page, blocks }) => {
   );
 };
 
-const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSelect, onChange, readOnly }) => {
+const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSelect, onChange, readOnly, pageStatusById }) => {
   const { t } = useBlueprint();
   const [skeletonPickerOpen, setSkeletonPickerOpen] = useState(false);
   const [skeletons, setSkeletons] = useState(null);
@@ -118,6 +118,20 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
                                      ? 'ring-2 ring-[var(--bp-primary)] ring-offset-2 ring-offset-[var(--bp-bg)]'
                                      : 'opacity-65 hover:opacity-100'}`}>
                     <MiniPreview page={p} blocks={blocksByPage?.[p.id] || []} />
+                    {/* Client decision badge — small colored dot in the corner.
+                        Shown only when collab data is available + status is set. */}
+                    {pageStatusById?.[p.id] && pageStatusById[p.id] !== 'pending_review' && (
+                      <span
+                        data-testid={`page-status-badge-${p.id}-${pageStatusById[p.id]}`}
+                        title={pageStatusById[p.id]}
+                        style={{
+                          backgroundColor:
+                            pageStatusById[p.id] === 'approved' ? 'var(--bp-primary)'
+                            : pageStatusById[p.id] === 'revision_requested' ? '#E0A458'
+                            : '#D86F6F',
+                        }}
+                        className="absolute -top-1.5 -left-1.5 w-2.5 h-2.5 rounded-full ring-2 ring-[var(--bp-bg)]" />
+                    )}
                     {!readOnly && (
                       <div className="absolute -top-1 -right-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button onClick={(e) => handleDuplicate(e, p.id)}
