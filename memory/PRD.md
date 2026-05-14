@@ -988,6 +988,40 @@ Rimangono dalla lista P0 originale dell'utente (Figma-Grade Stabilization):
 
 **Test report:** `/app/test_reports/iteration_27.json` — **6/6 PASS** (static code review confermato, smoke browser test agent bloccato dal parser ma main-agent self-test ha verificato visivamente 9/12 card editoriali perfette)
 
+### ✅ Premium Pre-built Templates (14 Feb 2026, sera tardi)
+
+**Feature ricca, ZERO modifiche backend** — Architecture LOCK rispettata.
+
+**5 Premium templates curati frontend-driven:**
+- **Luxury Hospitality** — Villa Como Lobby concept · 6 blocks · warm neutrals + serif + palette
+- **Material Narrative** — Material Study Earth tones · 8 blocks · close-up textures + 4-grid + annotations
+- **Japandi Editorial** — A study in stillness · 8 blocks · asymmetric whitespace + stone tones + minimal type
+- **Fashion · Art Direction** — Issue 04 · 6 blocks · oversized serif italic + layered cinematic
+- **Residential Moodboard** — Casa Brera · 14 blocks · AD Magazine layout: hero + materials row + Le Corbusier quote
+
+**Implementation:**
+- `premiumTemplates.js`: 5 template definitions (blocks completi con type/x/y/width/height/z_index/content/style), `applyPremiumTemplate()` helper che POST page + N blocks via endpoint esistenti
+- `PremiumTemplatePreview.jsx`: 5 anteprime cinematiche distinte (Luxury, Material, Japandi, Fashion, Residential) con foto reali Unsplash + palette + typography
+- `SkeletonPicker.jsx`: nuova sezione `PREMIUM PRE-BUILT TEMPLATES` in cima al modal con Sparkles teal icon
+- `PagesFilmstrip.jsx`: nuovo handler `handlePremiumPick` con toast feedback (success / partial / failure via sonner)
+
+**Bug-fix critico:**
+- Iter_28 ha trovato 400 su `POST /pages` perché `material_narrative` usava `page_type='materials'` (invalido) e `japandi_editorial` usava `'narrative'` (invalido)
+- Backend `PAGE_TYPES` whitelist: cover · blank · mood · material_board · product_grid · palette · gallery · split_story · quote · technical_board · floorplan · proposal_summary · approval
+- Fix: cambiati page_type a `'material_board'` e `'split_story'` rispettivamente → iter_29 verifica **10/10 PASS** end-to-end
+
+**Test reports:**
+- `iteration_28.json`: ha scoperto il bug (5/7)
+- `iteration_29.json`: bug fix VERIFIED **10/10 PASS** — 0 4xx errors, tutti e 5 i template applicati con 201 + success toast
+
+**Files cambiati / aggiunti:**
+- `src/blueprint/moodboard/premiumTemplates.js` (NEW — 5 template definitions + applyPremiumTemplate helper)
+- `src/blueprint/moodboard/PremiumTemplatePreview.jsx` (NEW — 5 anteprime cinematiche)
+- `src/blueprint/moodboard/SkeletonPicker.jsx` (+ sezione premium con Sparkles eyebrow)
+- `src/blueprint/moodboard/PagesFilmstrip.jsx` (handlePremiumPick + sonner toast feedback)
+
+
+
 
 
 
