@@ -1,76 +1,143 @@
 /**
- * SkeletonPicker — Master Layouts™ gallery for the "Add page" flow.
+ * SkeletonPicker — modal for picking the structural skeleton of a new page
+ * OR applying a full multi-page Premium Template.
  *
- * Editorial language:
- *  - Cinematic centered modal with cohesive dark surface
- *  - Category sections (cover · narrative · atmosphere · materials · …)
- *  - Wireframe-style previews that draw the skeleton geometry at scale
- *  - Hover lift + soft border accent — same easing as TemplatePicker
- *  - One-click pick → fires onPick(skeletonId)
+ * Two clearly separated sections:
+ *  1. PREMIUM CURATED ARCHIVE — complete 6-7 page presentations
+ *     Applies an entire sequence of pages when picked.
+ *  2. SKELETONS & STARTING POINTS — single empty page layouts
+ *     Applies a single page when picked.
  *
- * Pure Blueprint-driven: catalog comes from /api/moodboards/_meta/page_skeletons,
- * all labels via t().
+ * The distinction is editorial and visual:
+ *  - Premium cards are LARGE, with a hero preview, page-count badge and a
+ *    mini filmstrip strip that signals "complete project" at a glance.
+ *  - Skeleton cards are SMALL, compact starting-point tiles.
  */
 import React, { useEffect, useMemo, useRef } from 'react';
-import { X, LayoutGrid, Sparkles } from 'lucide-react';
+import { X, LayoutGrid, Sparkles, FileText, Layers } from 'lucide-react';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import EditorialSkeletonPreview from './EditorialSkeletonPreview';
 import PremiumTemplatePreview from './PremiumTemplatePreview';
-import { PREMIUM_CATEGORIES, getTemplatesByCategory } from './premiumTemplates';
+import {
+  PREMIUM_CATEGORIES, getTemplatesByCategory, getPremiumTemplatePageCount,
+} from './premiumTemplates';
 
-// ── Mini editorial preview (curated per skeleton id) ────────────────────────
-// Each skeleton renders a small CURATED composition — real photography +
-// real palette + real typography — instead of an abstract wireframe. See
-// EditorialSkeletonPreview for the per-id moods (hospitality / japandi /
-// materials / etc).
+// ── Page-type color tones for the mini-filmstrip inside premium cards.
+// Mirrored from PagesFilmstrip.jsx so cards read consistently with the editor.
+const PAGE_TONE = {
+  cover:            '#E0A458',
+  blank:            '#6F6A65',
+  mood:             '#8FB3A8',
+  material_board:   '#C9AE8C',
+  product_grid:     '#A6A3CC',
+  palette:          '#D6B79A',
+  gallery:          '#9B917F',
+  split_story:      '#B59A78',
+  quote:            '#7A8C9B',
+  technical_board:  '#869099',
+  floorplan:        '#7A6B58',
+  proposal_summary: '#A8B5B3',
+  approval:         '#15AC8B',
+};
+
+// ── Mini editorial preview for skeleton tiles ──────────────────────────────
 const SkeletonPreview = ({ skeleton }) => (
   <EditorialSkeletonPreview skeleton={skeleton} />
 );
 
-// ── Premium pre-built template card (cinematic, editorial) ─────────────────
-// One curated visual per template + a short editorial caption. Larger aspect
-// (4:5) than regular skeletons so each card reads as a portfolio piece, not
-// a UI tile. PREMIUM chip in the corner signals the curation tier.
-const PremiumCard = ({ tpl, onPickPremium }) => (
-  <button type="button"
-          onClick={() => onPickPremium(tpl.id)}
-          data-testid={`premium-template-card-${tpl.id}`}
-          className="group text-left flex flex-col rounded-[var(--bp-radius-sm)] overflow-hidden
-                     border border-[var(--bp-border)] hover:border-[var(--bp-primary)]
-                     transition-all duration-[var(--bp-duration-cinematic)] ease-[var(--bp-ease-emphasis)]
-                     hover:-translate-y-1 hover:shadow-[var(--bp-elevation-lg)]
-                     bg-[var(--bp-surface-1)]">
-    <div className="relative w-full overflow-hidden" style={{ aspectRatio: '4 / 5' }}>
-      <PremiumTemplatePreview id={tpl.id} />
-      <span className="absolute top-2.5 right-2.5 px-2 py-[3px] rounded-full
-                       bg-black/55 backdrop-blur-sm text-white
-                       text-[8px] tracking-[0.28em] uppercase font-body
-                       flex items-center gap-1 shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
-        <Sparkles size={9} strokeWidth={1.6} />
-        Premium
-      </span>
-      {/* hover-only soft vignette so the curated mood reads unobscured at rest */}
-      <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100
-                      transition-opacity duration-300"
-           style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.20) 100%)' }} />
-    </div>
-    <div className="px-5 py-4 border-t border-[var(--bp-border)]">
-      <p className="bp-caption !text-[12px] !text-[var(--bp-text-primary)] !font-medium mb-1.5 tracking-[0.01em]">
-        {tpl.name}
-      </p>
-      <p className="bp-caption !text-[10.5px] !text-[var(--bp-text-muted)] leading-[1.55] line-clamp-2">
-        {tpl.description}
-      </p>
-    </div>
-  </button>
-);
+// ── Premium pre-built template card — LARGE editorial composition ──────────
+// Layout (top→bottom): hero (4:5) · header (title + count) · mini filmstrip.
+const PremiumCard = ({ tpl, onPickPremium, t }) => {
+  const pageCount = getPremiumTemplatePageCount(tpl.id);
+  const pages = tpl.pages || [];
+  const pageCountLabel = pageCount === 1
+    ? t('moodboards.premium.pageCount.singular', null, 'page')
+    : t('moodboards.premium.pageCount.plural', null, 'pages');
+  return (
+    <button type="button"
+            onClick={() => onPickPremium(tpl.id)}
+            data-testid={`premium-template-card-${tpl.id}`}
+            className="group text-left flex flex-col rounded-[var(--bp-radius-sm)] overflow-hidden
+                       border border-[var(--bp-border)] hover:border-[var(--bp-primary)]
+                       transition-all duration-[var(--bp-duration-cinematic)] ease-[var(--bp-ease-emphasis)]
+                       hover:-translate-y-1 hover:shadow-[var(--bp-elevation-lg)]
+                       bg-[var(--bp-surface-1)]">
+      {/* Hero preview — 4:5 portrait of the cover page */}
+      <div className="relative w-full overflow-hidden" style={{ aspectRatio: '4 / 5' }}>
+        <PremiumTemplatePreview id={tpl.id} />
+        {/* PREMIUM chip */}
+        <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full
+                         bg-black/60 backdrop-blur-sm text-white
+                         text-[8.5px] tracking-[0.32em] uppercase font-body
+                         flex items-center gap-1.5 shadow-[0_2px_10px_rgba(0,0,0,0.35)]">
+          <Sparkles size={9.5} strokeWidth={1.6} />
+          Premium
+        </span>
+        {/* Page count badge — top-left, signals "complete project" */}
+        <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full
+                         bg-[var(--bp-primary)]/95 text-[var(--bp-bg)]
+                         text-[8.5px] tracking-[0.32em] uppercase font-body font-semibold
+                         flex items-center gap-1.5 shadow-[0_2px_10px_rgba(15,162,132,0.35)]
+                         tabular-nums"
+              data-testid={`premium-pagecount-${tpl.id}`}>
+          <Layers size={9.5} strokeWidth={1.8} />
+          {pageCount}&nbsp;{pageCountLabel}
+        </span>
+        {/* Hover-only soft vignette — kept silent at rest */}
+        <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100
+                        transition-opacity duration-300"
+             style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.20) 100%)' }} />
+      </div>
 
-// ── Category-grouped picker grid ─────────────────────────────────────────────
+      {/* Body — editorial header */}
+      <div className="px-5 pt-4 pb-3 border-t border-[var(--bp-border)]">
+        <p className="font-mono text-[8.5px] tracking-[0.32em] uppercase
+                      text-[var(--bp-text-subtle)] mb-1.5">
+          {t(`moodboards.premium.category.${tpl.category}.eyebrow`, null,
+            tpl.category.replace(/_/g, ' '))}
+        </p>
+        <h3 className="!text-[17px] !text-[var(--bp-text-primary)] font-light leading-tight tracking-[0.005em] mb-1.5"
+            style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
+          {tpl.name}
+        </h3>
+        <p className="bp-caption !text-[10.5px] !text-[var(--bp-text-muted)] italic leading-[1.5] line-clamp-2"
+           style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
+          {tpl.description}
+        </p>
+      </div>
+
+      {/* Mini-filmstrip — shows ALL pages of the template as colored chips */}
+      <div className="px-5 pb-4">
+        <div className="flex items-center gap-1.5" data-testid={`premium-filmstrip-${tpl.id}`}>
+          {pages.map((pg, i) => {
+            const tone = PAGE_TONE[pg.page_type] || PAGE_TONE.blank;
+            return (
+              <div key={i} className="flex-1 flex flex-col gap-1 items-center">
+                <span className="block w-full h-[26px] rounded-[2px] overflow-hidden relative"
+                      style={{
+                        background: i === 0
+                          ? `linear-gradient(135deg, ${tone}cc 0%, ${tone}88 100%)`
+                          : `${tone}40`,
+                        boxShadow: i === 0
+                          ? `0 0 0 1px ${tone}80, 0 2px 6px ${tone}33`
+                          : `0 0 0 1px ${tone}33`,
+                      }} />
+                <span className="text-[7.5px] font-mono tabular-nums text-[var(--bp-text-subtle)]">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </button>
+  );
+};
+
+// ── Skeleton (single-page starting point) — compact tile ───────────────────
 const SkeletonCard = ({ sk, onPick, t }) => {
-  // Editorial aspect ratio per skeleton's canvas (real proportions)
   const aspect = `${sk.width} / ${sk.height}`;
   const label = t(sk.label_key);
-  // Hide label if i18n key is missing — fallback to id-derived label
   const safeLabel = label && label !== sk.label_key
     ? label
     : sk.id.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
@@ -85,17 +152,24 @@ const SkeletonCard = ({ sk, onPick, t }) => {
       <div className="relative w-full overflow-hidden bg-[var(--bp-bg)]"
            style={{ aspectRatio: aspect }}>
         <SkeletonPreview skeleton={sk} />
-        {/* Hover-only soft vignette — kept silent so the curated mood reads
-            unobscured at rest. Only on hover do we add a subtle edge fade. */}
+        {/* Single-page badge — small, only on hover */}
+        <span className="absolute bottom-1.5 left-1.5 px-1.5 py-[2px] rounded-full
+                         bg-black/55 backdrop-blur-sm text-white/85
+                         text-[7px] tracking-[0.28em] uppercase font-body
+                         flex items-center gap-1 opacity-0 group-hover:opacity-100
+                         transition-opacity duration-300">
+          <FileText size={8} strokeWidth={1.5} />
+          1 {t('moodboards.premium.pageCount.singular', null, 'page')}
+        </span>
         <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
              style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,0.22) 100%)' }} />
       </div>
-      <div className="px-3 py-2.5">
-        <h4 className="bp-body !text-[12px] !font-medium text-[var(--bp-text-primary)] truncate">
+      <div className="px-2.5 py-2">
+        <h4 className="bp-body !text-[11px] !font-medium text-[var(--bp-text-primary)] truncate">
           {safeLabel}
         </h4>
-        <p className="bp-caption !text-[10px] !text-[var(--bp-text-subtle)] mt-0.5 truncate">
-          {t(`moodboards.page.type.${sk.page_type}`) || sk.page_type}
+        <p className="bp-caption !text-[9px] !text-[var(--bp-text-subtle)] mt-0.5 truncate uppercase tracking-[0.18em]">
+          {t(`moodboards.page.type.${sk.page_type}`) || sk.page_type.replace(/_/g, ' ')}
         </p>
       </div>
     </button>
@@ -106,14 +180,14 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose }) => {
   const { t } = useBlueprint();
   const dialogRef = useRef(null);
 
-  // ESC closes the modal — keyboard-first like the rest of the editor
+  // ESC closes the modal
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [onClose]);
 
-  // Group by category_key so the gallery has editorial sections
+  // Group skeletons by category_key for the lower section
   const grouped = useMemo(() => {
     const map = new Map();
     (skeletons || []).forEach((sk) => {
@@ -125,6 +199,10 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose }) => {
   }, [skeletons]);
 
   const isLoading = skeletons === null;
+  // Count premium templates (across categories) for the eyebrow counter
+  const premiumCount = PREMIUM_CATEGORIES.reduce(
+    (sum, cat) => sum + getTemplatesByCategory(cat.key).length, 0,
+  );
 
   return (
     <div className="fixed inset-0 z-50 bg-[var(--bp-overlay)] backdrop-blur-md flex items-center justify-center p-6"
@@ -132,21 +210,23 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose }) => {
          onClick={onClose}>
       <div ref={dialogRef}
            onClick={(e) => e.stopPropagation()}
-           className="bp-glass relative w-full max-w-[1100px] max-h-[88vh] flex flex-col
+           className="bp-glass relative w-full max-w-[1200px] max-h-[90vh] flex flex-col
                       rounded-[var(--bp-radius-md)] overflow-hidden">
-        {/* Header */}
-        <header className="flex items-start justify-between gap-6 px-8 pt-7 pb-5 border-b border-[var(--bp-border)]">
+        {/* Header — editorial title + clear distinction copy */}
+        <header className="flex items-start justify-between gap-6 px-9 pt-8 pb-6 border-b border-[var(--bp-border)]">
           <div>
-            <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] flex items-center gap-1.5">
+            <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] flex items-center gap-1.5 !tracking-[0.32em]">
               <LayoutGrid size={11} strokeWidth={1.5} />
-              {t('moodboards.skeleton.eyebrow', null, 'Add a page')}
+              {t('moodboards.picker.eyebrow', null, 'Editorial structure')}
             </p>
-            <h2 className="bp-h2 !text-[24px] text-[var(--bp-text-primary)] mt-1 font-light">
-              {t('moodboards.skeleton.title', null, 'Choose your narrative structure')}
+            <h2 className="!text-[28px] !text-[var(--bp-text-primary)] mt-2 font-light tracking-[0.005em] leading-tight"
+                style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
+              {t('moodboards.picker.title', null, 'Choose an editorial structure')}
             </h2>
-            <p className="bp-caption !text-[11px] !text-[var(--bp-text-subtle)] mt-1.5 max-w-[560px]">
-              {t('moodboards.skeleton.subtitle', null,
-                'Each layout is a starting point for a chapter of your story — covers, mood directions, material studies, atmospheres. Pick the rhythm, refine the details later.')}
+            <p className="bp-caption !text-[12px] !text-[var(--bp-text-muted)] mt-2 max-w-[640px] italic leading-[1.55]"
+               style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
+              {t('moodboards.picker.subtitle', null,
+                'Start from a complete multi-page presentation, or add a single empty page as a starting point.')}
             </p>
           </div>
           <button onClick={onClose} data-testid="skeleton-picker-close"
@@ -156,27 +236,29 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose }) => {
         </header>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto px-8 py-6">
-          {/* PREMIUM PRE-BUILT TEMPLATES — top of the picker, organised by
-              editorial family so the modal reads as a curated archive rather
-              than a flat grid. Each category renders only if it has at least
-              one template. */}
+        <div className="flex-1 overflow-y-auto px-9 py-7">
+          {/* ───────────── PREMIUM CURATED ARCHIVE ───────────── */}
           {onPickPremium && (
-            <section className="mb-14">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Sparkles size={11} strokeWidth={1.5} className="text-[var(--bp-primary)]" />
-                  <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-primary)] !tracking-[0.32em]">
+            <section className="mb-16" data-testid="premium-section">
+              {/* Section header — magazine-grade */}
+              <div className="flex items-baseline justify-between gap-6 mb-3">
+                <div className="flex items-center gap-2.5">
+                  <Sparkles size={13} strokeWidth={1.5} className="text-[var(--bp-primary)]" />
+                  <p className="bp-eyebrow !text-[11px] !text-[var(--bp-text-primary)] !tracking-[0.36em] !font-medium">
                     {t('moodboards.premium.eyebrow', null, 'Premium curated archive')}
                   </p>
                 </div>
-                <p className="bp-caption !text-[10px] !text-[var(--bp-text-subtle)] italic hidden md:block">
-                  {t('moodboards.premium.subtitle', null,
-                     'A library of finished moodboards — one click to start.')}
-                </p>
+                <span className="font-mono text-[10px] tracking-[0.30em] text-[var(--bp-text-subtle)] uppercase tabular-nums">
+                  {premiumCount.toString().padStart(2, '0')}&nbsp;
+                  {t('moodboards.premium.completeTemplates', null, 'complete templates')}
+                </span>
               </div>
-              {/* Hero divider — sets the editorial rhythm */}
-              <div className="h-px bg-[var(--bp-section-divider)] mb-10" />
+              <p className="bp-caption !text-[13px] !text-[var(--bp-text-muted)] italic mb-3 max-w-[760px] leading-[1.55]"
+                 style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
+                {t('moodboards.premium.intro', null,
+                  'Complete multi-page presentations — covers, atmospheres, material direction, furniture and approval pages, all in one click. Ready for professional moodboards.')}
+              </p>
+              <div className="h-px bg-[var(--bp-section-divider)] mb-12" />
 
               {PREMIUM_CATEGORIES.map((cat, catIdx) => {
                 const templates = getTemplatesByCategory(cat.key);
@@ -185,73 +267,95 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose }) => {
                 return (
                   <div key={cat.key}
                        data-testid={`premium-category-${cat.key}`}
-                       className={catIdx > 0 ? 'mt-14' : ''}>
-                    {/* Category header — magazine-grade editorial type */}
+                       className={catIdx > 0 ? 'mt-16' : ''}>
+                    {/* Category header */}
                     <div className="flex items-baseline gap-4 mb-2">
-                      <span className="font-mono text-[10px] tracking-[0.32em] text-[var(--bp-primary)] uppercase">
+                      <span className="font-mono text-[10px] tracking-[0.32em] text-[var(--bp-primary)] uppercase tabular-nums">
                         {catNum}
                       </span>
-                      <h3 className="bp-h3 !text-[20px] !text-[var(--bp-text-primary)] font-light tracking-[0.005em]
+                      <h3 className="!text-[22px] !text-[var(--bp-text-primary)] font-light tracking-[0.005em]
                                      leading-none"
                           style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
                         {t(`moodboards.premium.category.${cat.key}.title`, null, cat.title_fallback)}
                       </h3>
                       <div className="flex-1 h-px bg-[var(--bp-border)] mt-1 self-center" />
                       <span className="font-mono text-[9px] tracking-[0.28em] text-[var(--bp-text-subtle)] uppercase tabular-nums">
-                        {templates.length.toString().padStart(2, '0')} pieces
+                        {templates.length.toString().padStart(2, '0')}&nbsp;
+                        {t('moodboards.premium.completeTemplates.short', null, 'templates')}
                       </span>
                     </div>
-                    <p className="bp-caption !text-[11px] !text-[var(--bp-text-muted)] italic ml-[42px] mb-6 leading-[1.55]"
+                    <p className="bp-caption !text-[12px] !text-[var(--bp-text-muted)] italic ml-[42px] mb-7 leading-[1.55]"
                        style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
                       {t(`moodboards.premium.category.${cat.key}.subtitle`, null, cat.subtitle_fallback)}
                     </p>
-                    {/* Cards row — auto-fill so the rhythm always feels filled */}
-                    <div className="grid gap-5"
-                         style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))' }}>
+                    {/* Cards row — 3-up minimum, auto-fill at larger viewports */}
+                    <div className="grid gap-6"
+                         style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
                       {templates.map((tpl) => (
-                        <PremiumCard key={tpl.id} tpl={tpl} onPickPremium={onPickPremium} />
+                        <PremiumCard key={tpl.id} tpl={tpl} onPickPremium={onPickPremium} t={t} />
                       ))}
                     </div>
                   </div>
                 );
               })}
-
-              <div className="mt-14 mb-2 h-px bg-[var(--bp-section-divider)]" />
-              <p className="bp-eyebrow !text-[9.5px] !text-[var(--bp-text-muted)] mt-4 !tracking-[0.32em]">
-                {t('moodboards.skeleton.fromScratchEyebrow', null, 'Or start from a blank skeleton')}
-              </p>
             </section>
           )}
 
-          {isLoading ? (
-            <div className="py-16 flex justify-center">
-              <div className="w-5 h-5 border-2 border-[var(--bp-primary)] border-t-transparent rounded-full animate-spin" />
+          {/* ───────────── SKELETONS & STARTING POINTS ───────────── */}
+          <section data-testid="skeletons-section">
+            {/* Section header — clearly DIFFERENT from premium */}
+            <div className="flex items-baseline justify-between gap-6 mb-3">
+              <div className="flex items-center gap-2.5">
+                <LayoutGrid size={13} strokeWidth={1.5} className="text-[var(--bp-text-muted)]" />
+                <p className="bp-eyebrow !text-[11px] !text-[var(--bp-text-primary)] !tracking-[0.36em] !font-medium">
+                  {t('moodboards.skeleton.section.eyebrow', null, 'Skeletons & starting points')}
+                </p>
+              </div>
+              {!isLoading && skeletons && (
+                <span className="font-mono text-[10px] tracking-[0.30em] text-[var(--bp-text-subtle)] uppercase tabular-nums">
+                  {skeletons.length.toString().padStart(2, '0')}&nbsp;
+                  {t('moodboards.skeleton.singlePages', null, 'single layouts')}
+                </span>
+              )}
             </div>
-          ) : grouped.length === 0 ? (
-            <p className="bp-caption text-[var(--bp-text-muted)] py-12 text-center">—</p>
-          ) : (
-            <div className="space-y-9">
-              {grouped.map(([categoryKey, items]) => {
-                const catLabel = t(categoryKey);
-                const safeCat = catLabel && catLabel !== categoryKey
-                  ? catLabel
-                  : categoryKey.split('.').pop();
-                return (
-                  <section key={categoryKey}>
-                    <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] mb-3">
-                      {safeCat}
-                    </p>
-                    <div className="grid gap-3.5"
-                         style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))' }}>
-                      {items.map((sk) => (
-                        <SkeletonCard key={sk.id} sk={sk} onPick={onPick} t={t} />
-                      ))}
+            <p className="bp-caption !text-[13px] !text-[var(--bp-text-muted)] italic mb-3 max-w-[760px] leading-[1.55]"
+               style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
+              {t('moodboards.skeleton.section.intro', null,
+                'Single empty layouts to add as one new page to the current moodboard. Use them when you want to compose your own structure block by block.')}
+            </p>
+            <div className="h-px bg-[var(--bp-section-divider)] mb-9" />
+
+            {isLoading ? (
+              <div className="py-16 flex justify-center">
+                <div className="w-5 h-5 border-2 border-[var(--bp-primary)] border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : grouped.length === 0 ? (
+              <p className="bp-caption text-[var(--bp-text-muted)] py-12 text-center">—</p>
+            ) : (
+              <div className="space-y-8">
+                {grouped.map(([categoryKey, items]) => {
+                  const catLabel = t(categoryKey);
+                  const safeCat = catLabel && catLabel !== categoryKey
+                    ? catLabel
+                    : categoryKey.split('.').pop();
+                  return (
+                    <div key={categoryKey}>
+                      <p className="bp-eyebrow !text-[9.5px] !text-[var(--bp-text-muted)] mb-3.5 !tracking-[0.30em]">
+                        {safeCat}
+                      </p>
+                      {/* Smaller min width than premium → cards visually compact */}
+                      <div className="grid gap-3"
+                           style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))' }}>
+                        {items.map((sk) => (
+                          <SkeletonCard key={sk.id} sk={sk} onPick={onPick} t={t} />
+                        ))}
+                      </div>
                     </div>
-                  </section>
-                );
-              })}
-            </div>
-          )}
+                  );
+                })}
+              </div>
+            )}
+          </section>
         </div>
       </div>
     </div>

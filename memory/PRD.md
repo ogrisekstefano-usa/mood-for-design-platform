@@ -1123,3 +1123,58 @@ Architecture freeze respected. Focus assoluto: rendere l'editor INVISIBILE — i
 ## Demo Credentials (`/app/memory/test_credentials.md`)
 - Email: `demo@moodfordesign.com` · Password: `Blueprint2024!`
 - Role: `super_admin` (può accedere a `/admin/*` e impersonare tenants)
+
+
+### ✅ Template Picker Final Restructure — Premium = MULTI-PAGE (Feb 16 2026)
+Frontend-only refactor che separa concettualmente Premium Templates (presentazioni multipagina complete) da Skeletons (pagine singole). Zero backend changes.
+
+- **Premium templates → MULTI-PAGE complete projects** (`premiumTemplates.js` riscritto da zero):
+  - Ogni template ora ha `pages: [factory(...), factory(...), ...]` con 6-7 pagine editoriali complete
+  - 8 page-factories riusabili: `coverPage`, `conceptPage`, `moodPage`, `materialsPage`, `furniturePage`, `galleryPage`, `quotePage`, `approvalPage`
+  - 10 paletteKey condivise (`warm_earth`, `travertine`, `stone_cedar`, `monochrome`, `lake_mist`, `brera_velvet`, `coast_chalk`, `nordic_birch`, `wabi_patina`, `mineral`) per coerenza visiva tra le pagine di uno stesso template
+  - **Page count per template**: Luxury Hospitality (7), Brera Apartment (7), Material/Japandi/Fashion/Residential/Stone Atelier/Boutique Hotel/Lakeside Villa/Mineral Study/Coastal Retreat/Scandinavian/Wabi-Sabi/Editorial Magazine (6 each), Fashion Residential (6)
+  - **Total**: 95 pagine pre-curate distribuite su 15 template
+- **`applyPremiumTemplate` ora multi-page** (`premiumTemplates.js`):
+  - Itera su `template.pages`, crea ogni pagina via `POST /api/moodboards/{id}/pages`, poi inserisce i blocchi via `Promise.allSettled` per parallelismo intra-pagina
+  - Backward-compat con templates legacy (single-page) mantenuta
+  - Return shape: `{ pageId, pagesCreated, pagesTotal, blocksCreated, blocksTotal }`
+- **`getPremiumTemplatePageCount(id)` helper** esportato per il badge "6 PAGES" sulle cards
+- **PremiumCard ridisegnata** (`SkeletonPicker.jsx`):
+  - Card MOLTO più grande (min 280px width, era 260px)
+  - **PREMIUM chip** top-right (sparkles icon)
+  - **Page-count badge** top-left in teal `var(--bp-primary)` con icona Layers: "7 PAGES" / "6 PAGES"
+  - **Title** Playfair 17px (era 12px)
+  - **Subtitle italica** Playfair 10.5px
+  - **Mini-filmstrip** in basso: chip rettangolari colorati per page_type (cover amber, mood sage, material tan, story clay, quote slate, approval teal…) + numerazione "01 / 02 / ..." tabular-nums
+  - La prima pagina ha gradient più saturo + ring per indicare "cover dominante"
+- **SkeletonCard più compatta**:
+  - Min width 160px (era 190px) → visually subordinata ai premium
+  - Aggiunto "1 PAGE" chip hover su preview con FileText icon
+  - Typography compact 11px (era 12px)
+- **Hero copy del modal aggiornato** (chiavi i18n NUOVE per evitare backend override):
+  - Eyebrow: "EDITORIAL STRUCTURE" (era "MASTER LAYOUTS")
+  - Titolo H2 28px Playfair: "Choose an editorial structure"
+  - Subtitle italica Playfair: "Start from a complete multi-page presentation, or add a single empty page as a starting point."
+- **Premium section header rafforzato**:
+  - Counter "15 COMPLETE TEMPLATES" tabular-nums in alto a destra
+  - Subtitle Playfair italica 13px: "Complete multi-page presentations — covers, atmospheres, material direction, furniture and approval pages, all in one click. Ready for professional moodboards."
+  - Spacing categoria 16mt (era 14mt)
+- **Skeletons section header**:
+  - Eyebrow: "SKELETONS & STARTING POINTS"
+  - Counter "XX SINGLE LAYOUTS"
+  - Subtitle: "Single empty layouts to add as one new page to the current moodboard. Use them when you want to compose your own structure block by block."
+- **Toast distintivi**:
+  - Premium: loading "Applying multi-page template…" → success "Multi-page template applied: N pages added."
+  - Skeleton: success "Page added."
+  - Premium partial: warning "Multi-page template partially applied: N/N pages."
+- **`handleSkeletonPick` wrap try/catch** + toast success/error (era silent)
+- **0 modifiche backend / DB / migrations / AI** ✅
+
+**Verified** ✅
+- 15 premium cards renderizzano con page-count badge 7-PAGES (Luxury Hospitality) / 6-PAGES (altri)
+- 15 mini-filmstrip renderizzate con tonalità per page_type
+- Apply test end-to-end: japandi_editorial (6 pagine) → 6 nuove pagine create in ~35s, toast success "Multi-page template applied: 6 pages added.", filmstrip mostra nuove pagine "Concept statement", "Atmosphere", "Material direction", "Less, but better", "Stillness concept", "Palette & material" con chip COVER/STORY/MOOD/MATERIAL/APPROVAL color-coded
+- 0 page errors, 1 console warning 503 (Supabase signed-url, non-blocking)
+- Header copy verificato: "EDITORIAL STRUCTURE · Choose an editorial structure · Start from a complete multi-page presentation, or add a single empty page as a starting point."
+- Lint clean
+

@@ -189,38 +189,55 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
 
   const handleSkeletonPick = async (skeletonId) => {
     setSkeletonPickerOpen(false);
-    const r = await api.post(`/api/moodboards/${moodboardId}/pages/from_skeleton`,
-                             { skeleton_id: skeletonId });
-    trackEvent('moodboard.skeleton_applied',
-      { skeleton_id: skeletonId, moodboard_id: moodboardId },
-      { entityType: 'moodboard', entityId: moodboardId });
-    onSelect?.(r.data.id);
-    onChange?.();
+    try {
+      const r = await api.post(`/api/moodboards/${moodboardId}/pages/from_skeleton`,
+                               { skeleton_id: skeletonId });
+      trackEvent('moodboard.skeleton_applied',
+        { skeleton_id: skeletonId, moodboard_id: moodboardId },
+        { entityType: 'moodboard', entityId: moodboardId });
+      onSelect?.(r.data.id);
+      onChange?.();
+      toast.success(t('moodboards.skeleton.applied', null, 'Page added.'));
+    } catch (err) {
+      const detail = err?.response?.data?.detail || err?.message || 'unknown error';
+      toast.error(t('moodboards.skeleton.applyFailed', null, `Could not add page: ${detail}`));
+    }
   };
 
-  // Premium pre-built template — uses the same /pages + /blocks endpoints
-  // as a regular page+blocks flow, so the canvas autosave / history continue
-  // to work without any backend changes. See premiumTemplates.js.
+  // Premium pre-built template — multi-page presentation. Creates 6-7 pages
+  // sequentially using the same /pages + /blocks endpoints, so canvas
+  // autosave / history continue to work without any backend changes.
+  // See premiumTemplates.js for the multi-page structure.
   const handlePremiumPick = async (templateId) => {
     setSkeletonPickerOpen(false);
+    const loadingToastId = toast.loading(
+      t('moodboards.premium.applying', null, 'Applying multi-page template…'));
     try {
       const result = await applyPremiumTemplate(api, moodboardId, templateId);
       trackEvent('moodboard.premium_template_applied',
         { template_id: templateId, moodboard_id: moodboardId,
+          pages_created: result?.pagesCreated, pages_total: result?.pagesTotal,
           blocks_created: result?.blocksCreated, blocks_total: result?.blocksTotal },
         { entityType: 'moodboard', entityId: moodboardId });
       if (result?.pageId) onSelect?.(result.pageId);
       onChange?.();
-      if (result?.blocksCreated === 0) {
-        toast.error(t('moodboards.premium.partialFail', null,
-          'Template applied but blocks could not be inserted. Please retry.'));
-      } else if (result?.blocksCreated < result?.blocksTotal) {
-        toast.warning(t('moodboards.premium.partialOk', null,
-          `${result.blocksCreated}/${result.blocksTotal} blocks inserted.`));
+      toast.dismiss(loadingToastId);
+      if (result?.pagesCreated === 0) {
+        toast.error(t('moodboards.premium.failed', null,
+          'Template could not be applied. Please retry.'));
+      } else if (result?.pagesCreated < result?.pagesTotal) {
+        toast.warning(t('moodboards.premium.partialPages', null,
+          `Multi-page template partially applied: ${result.pagesCreated}/${result.pagesTotal} pages.`));
       } else {
-        toast.success(t('moodboards.premium.applied', null, 'Premium template applied.'));
+        const n = result.pagesCreated;
+        const word = n === 1
+          ? t('moodboards.premium.pageCount.singular', null, 'page')
+          : t('moodboards.premium.pageCount.plural', null, 'pages');
+        toast.success(t('moodboards.premium.appliedMulti', null,
+          `Multi-page template applied: ${n} ${word} added.`));
       }
     } catch (err) {
+      toast.dismiss(loadingToastId);
       const detail = err?.response?.data?.detail || err?.message || 'unknown error';
       toast.error(t('moodboards.premium.applyFailed', null, `Could not apply template: ${detail}`));
     }
