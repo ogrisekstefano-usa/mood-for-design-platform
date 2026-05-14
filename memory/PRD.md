@@ -1309,3 +1309,27 @@ Trasformazione della piattaforma da workspace privato a **global relational ecos
 
 **Constraint Shift recap**: La Architecture Freeze è stata rispettata — questa fase è FRONTEND ONLY. Nessuna nuova tabella DB. I content config sono **shaped exactly** come le future tabelle Supabase (`homepage_sections.content jsonb`, `projects.locale_content`, `site_navigation.config`) — migrazione futura sarà un copy-paste 1:1 + GET endpoint pubblico.
 
+
+
+### ✅ Phase H.1.b — Public Site Rewrite as DEMO STORE Landing (Porcia, PN) (DONE — 14 Feb 2026)
+Cambio strategico: la homepage pubblica NON promuove più la piattaforma MOOD for DESIGN™ in astratto, ma rappresenta la **DEMO landing di un ipotetico negozio di arredamento in provincia di Padova/Pordenone** che usa la piattaforma. Privati → form premium dedicato. Professionisti → form A&D dedicato.
+
+- **Logo MOOD for DESIGN™ (mark cyan teal + serif "for DESIGN")** bundlato come `/app/frontend/public/brand/mood-for-design-mark.png` (variant verticale completa) e `mood-mark-only.png` (solo MOOD)
+- **Hero ridisegnato** come da mockup utente:
+  - Titolo display serif uppercase "ARREDARE SPAZI. / COSTRUIRE RELAZIONI." centrato (clamp 2.4→5.2rem)
+  - Sub centrato "MOOD for DESIGN™ connette persone e progetti…"
+  - Divider brass 64px + eyebrow "DUE PERCORSI. UN UNICO OBIETTIVO:" + italic "trasformare la tua visione in realtà."
+- **Dual CTA orizzontale**:
+  - PRIVATO (card avorio `--site-paper`): kicker "SEI UN PRIVATO?", title serif "Inizia il tuo progetto", CTA scuro "INIZIA IL TUO PROGETTO →" → `/onboarding/private`
+  - PROFESSIONISTA (card scura): kicker "SEI UN PROFESSIONISTA?", title "Collabora con noi", CTA paper "ACCESSO PROFESSIONISTI →" → `/onboarding/pro`
+- **VALUE PROPS** su sfondo paper (warm ivory `#EFE6DA`): titolo "PERCHÉ SCEGLIERE MOOD for DESIGN™" + 5 icone Lucide brass (Gem · Users · Sparkles · Globe · ShieldCheck) — ECCELLENZA ITALIANA · RELAZIONE UMANA · PROGETTI SU MISURA · INTERNAZIONALE · QUALITÀ GARANTITA
+- **PROGETTI CHE ISPIRANO**: strip orizzontale 5 card aspect 4/5 con veil gradient bottom — RESIDENZIALE Venezia · RESORT Lago di Como · BOUTIQUE HOTEL Firenze · VILLA PRIVATA Val d'Orcia · PENTHOUSE Milano → linkano ai project detail esistenti
+- **Newsletter ISPIRAZIONE E NOVITÀ** su paper background, input email + button ISCRIVITI brass, decor image laterale (>1080px)
+- **Header riprogettato**: logo image 64px + tagline "ARREDARE SPAZI. / COSTRUIRE RELAZIONI." + 7 menu (CHI SIAMO · SERVIZI · MATERIALI · PROGETTI · JOURNAL · SHOWROOM · CONTATTI) + LocaleSwitcher + ACCEDI outline
+- **Footer riprogettato**: 6 colonne grid → Brand mark + Tagline + Socials | AZIENDA | SERVIZI | RISORSE | SUPPORTO | SHOWROOM (Via Della Manifattura 12, 33080 Porcia (PN), +39 0434 123456, info@moodfordesign.com + CTA "PRENOTA UNA VISITA"). Copyright editoriale
+- **i18n architecture DB-ready**: tutti i nuovi content config (`homepage.js`, `navigation.js`) sono **shaped esattamente come le future tabelle `cms_pages` / `cms_sections` / `cms_navigation`** — locale-keyed `{it,en,fr,de,es}`. Migrazione futura sarà copy/paste 1:1
+- **Tested ✅** (`iteration_31.json`): **17/17 scenari PASS** incluso hero IT/EN, dual CTA, value props (5 icone Lucide), 5 inspire cards, newsletter form, header logo + tagline + 7 nav, footer 6 colonne + showroom Porcia + 4 socials, copyright "© 2026 MOOD for DESIGN™", regressione /projects + /projects/:slug + /onboarding/* + /auth/login. Zero issues.
+
+**Next phase (H.2)**: Backend CMS table + AI translation engine + `/settings/cms` admin UI. Lo studio admin sceglie la lingua master (es. IT), edita ogni stringa via UI, e un button "Traduci tutte le lingue con AI" chiama Emergent LLM (Claude/Gemini) per popolare le altre lingue. Possibilità di aggiungere nuove lingue (es. PT, JA, AR) dal pannello — AI traduce tutto il content esistente. Schema: `cms_languages(tenant_id, code, label, native, enabled, is_master)`, `cms_content(tenant_id, page_key, section_key, field_key, locale, value, source, ai_translated_at)`. Frontend leggerà via GET `/api/cms/public/:tenant/page/:slug?locale=:locale`.
+
+
