@@ -705,6 +705,110 @@ Enterprise-grade schema-driven form engine. Reusable for: lead-gen · design req
 
 **Test report:** `/app/test_reports/iteration_23.json` — 100% PASS (9/9 acceptance criteria, 0 page errors)
 
+### ✅ Sprint 2 — UX Architecture Refactor + Sprint 2 partial (14 Feb 2026)
+
+**Strategic lock:** STOP nuove feature, focus su refinement + stability + IA.
+
+**Topbar — definitive structure (NO logo):**
+- Rimosso completamente il wordmark dal Topbar (decisione definitiva: branding silenzioso, solo monogram "M" nella left rail)
+- Nuovo `TopbarSlotsProvider` con context per page-injectable LEFT/CENTER/RIGHT slots (pattern simile a React Helmet ma per UI)
+- LEFT slot riservato al breadcrumb + status capsule (page-injected) / CENTER per canvas tools (page-injected) / RIGHT per global controls
+
+**Sidebar — Figma-style ultra-slim rail:**
+- Default state = COLLAPSED (60px icon-only) — pattern come Figma/Linear/Arc
+- Monogram "M" in cima funge da trigger expand/collapse (oltre alla edge handle laterale)
+- Persistente in localStorage (`mfd_sidebar_collapsed` con `'1'`=collapsed)
+- Width 60px collapsed / 212px expanded
+- NO hover-expand automatico (esplicitamente rifiutato dall'utente — crea jitter visivo)
+
+**NavigableBreadcrumb — deep & navigable:**
+- Path completi tipo `Contenuti / Moodboard / Villa Como / Kitchen Proposal`
+- Async title fetching per resource crumbs (moodboard, project) con cache window-scoped
+- Smart truncate: `max-w-[200px]` + `title` HTML attribute con full path su hover
+- Skeleton placeholder durante il fetch
+
+**UserMenu z-index fix:**
+- Dropdown ora a `z-[1000]` — sopra ogni panel, sidebar e canvas
+
+**Editor de-duplication:**
+- Rimosso dall'editor's internal header: `<Brand>`, back button, breadcrumb text (`project_name / eyebrow / title`)
+- Editor header ora carica SOLO: title + StatusBadge a sx, action buttons (undo/redo/snap/present/review/share/approval) a dx
+- Global Topbar sopra l'editor mostra il deep breadcrumb (es. "Contenuti / Moodboard / TEST_F1_UI_lux")
+
+**Empty-state inspector (no more "No inspector"):**
+- Quando nessun block è selezionato: placeholder editoriale con icona + "Inspector" eyebrow + hint italiano "Seleziona un elemento sul canvas per modificarne tipografia, crop, regolazioni..."
+- Quando un block type non ha inspector specifico: fallback contestuale + visual props sempre disponibili (no più stringhe tecniche)
+
+**Slider jitter fix (Sprint 2 start):**
+- `InspectorSlider` rewrite con local state + rAF throttling
+- Local `displayed value` decoupled from parent state → cursore segue il pointer 1:1
+- Upstream commit via `requestAnimationFrame` (max 1 per frame) — elimina re-render storm
+- Final commit garantito su `mouseup`/`touchend`/`blur` (no value loss)
+- `draggingRef` evita snap-back se parent lags durante il drag
+
+**Editorial Light deeper:**
+- Palette spinta ancora più Kinfolk/Aesop: paper `#F2ECE0` (era #F4EFE7) · ink `#0F0D0A` (era #14110E)
+- Borders bumped a 0.10 (border) / 0.24 (border-strong)
+- Primary teal deepened `#0D8A70` (era #0FA284) per contrast su paper
+- Surface-2 `#DCD2BE` più caldo (era #E0D8C9)
+
+**Files cambiati / aggiunti:**
+- `src/components/layout/Topbar.jsx` (rewrite: slots provider, NO logo)
+- `src/components/layout/Sidebar.jsx` (rewrite: icon-only default, monogram-trigger)
+- `src/components/layout/DashboardLayout.jsx` (wraps TopbarSlotsProvider)
+- `src/components/common/TopbarSlots.jsx` (new: page-side slot helper)
+- `src/components/common/NavigableBreadcrumb.jsx` (rewrite: deep + async titles)
+- `src/components/common/UserMenu.jsx` (z-[1000])
+- `src/hooks/useSidebarCollapsed.js` (default = collapsed)
+- `src/pages/moodboards/MoodboardEditor.jsx` (no Brand/back/breadcrumb, editorial empty-state, slider jitter fix)
+- `src/index.css` (light mode deeper paper)
+
+**Test report:** `/app/test_reports/iteration_24.json` — **100% PASS** (10/10 acceptance criteria, 0 console errors during slider drag)
+
+## P0 / P1 Backlog (Next Session)
+
+### P0 — Stability completion (Sprint 2 continuation)
+- Image focal point persistence — investigare se persiste dopo refresh / autosave round-trip
+- Image block visibility bugs — caricamenti non visibili a volte
+- Shape border color/thickness reliability — verificare stabilità slider su shape
+- Page background persistence — verificare PUT settings.background_*
+- Drag lag/jump issues + snapping inconsistency
+- Layer reorder reliability + z-index correctness
+- Selection precision (multi-select, drag through stacked blocks)
+
+### P1 — Canvas UX Perfection
+- Premium snapping guides (più visibili, soft elegant lines)
+- Spacing indicators durante drag
+- Magnetic alignment (auto-snap to peer edges)
+- Subtle scale easing during drag (1.02x)
+- Premium resize handles (cinematic)
+- Refined hover/selection states
+- Cleaner drag shadows
+- Better insertion indicators in layers panel
+
+### P2 — IA Refactor (Editor)
+- Secondary contextual panel con Tabs `[Pages] [Insert] [Assets] [Inspirations]`
+- Bottom filmstrip dedicato per Pages (no più mischiata con block insertion)
+- De-duplicate commands: Topbar = canvas tools, Sidebar = workspace nav (già fatto), Secondary panel = insert/assets
+- Inject editor toolbar nel Global Topbar via `TopbarSlots` (eliminare anche editor internal header)
+- Context-aware right inspector smaltimento "No inspector" residui
+
+### P3 — 5 Premium Templates curati
+- Luxury hospitality · Warm editorial residential · Minimal Japandi · Material-focused luxury · Fashion/art editorial
+- Frontend-driven blocks (no SQL seed)
+- Anche "Insert Editorial Template" CTA nell'editor
+
+### Refactor tecnico
+- Split `MoodboardEditor.jsx` (>1700 lines) in: `inspectors/BlockInspector.jsx`, `inspectors/PageInspector.jsx`, `inspectors/ArrowInspector.jsx`, `editor/EditorCanvas.jsx`, `editor/EditorToolbar.jsx`
+- Lift `RowToggle` a `/components/common/RowToggle.jsx`
+- Aggiungere alias `breadcrumb-page` come testid del leaf crumb (oltre a `breadcrumb-dynamic`) per stabilità test
+- Gate dashboard API calls by role per evitare 403 in console
+
+### NOT NOW (strategic priority lock dell'utente)
+- Onboarding tour, AI integrations, advanced automation, analytics dashboards, proposal builder expansion → DEFERRED
+- Client Collaboration Layer™ refinement → SOLO dopo stabilization complete
+
+
 ## P0 / P1 Backlog (Next Session)
 
 ### P1 — Editorial Finish Sprint (deferred bugs)
