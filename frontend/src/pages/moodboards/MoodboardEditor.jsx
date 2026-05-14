@@ -27,7 +27,7 @@ import StatusBadge from '../../components/common/StatusBadge';
 import LayersPanel, { sortLayersTopFirst } from '../../blueprint/moodboard/LayersPanel';
 import ImageUploader from '../../blueprint/moodboard/ImageUploader';
 import PagesFilmstrip from '../../blueprint/moodboard/PagesFilmstrip';
-import LibraryPanel from '../../blueprint/moodboard/LibraryPanel';
+import EditorPanel from '../../blueprint/moodboard/EditorPanel';
 import ActionToolbar from '../../blueprint/moodboard/ActionToolbar';
 import { computeSnap } from '../../blueprint/moodboard/useSnap';
 import SnapGuides from '../../blueprint/moodboard/SnapGuides';
@@ -802,30 +802,28 @@ const MoodboardEditor = ({ readOnly = false }) => {
         </div>
       </header>
 
-      {/* Action Toolbar — centered tool strip (Seleziona · Testo · Immagine …) */}
+      {/* Action Toolbar — pure canvas pointer/view/arrange actions (no content
+          insertion). Insert lives in the LEFT EditorPanel's Insert tab. */}
       {!readOnly && (
         <ActionToolbar
           activeTool="select"
           onToolChange={() => {}}
-          onAddBlock={addBlock}
-          onOpenSkeleton={(skid) => {
-            // Quick gallery insert — call the skeleton endpoint with the picked id
-            api.post(`/api/moodboards/${id}/pages/from_skeleton`, { skeleton_id: skid })
-              .then((r) => { setActivePageId(r.data.id); reloadPagesAndBlocks(); })
-              .catch(() => {});
-          }}
           t={t} />
       )}
 
       <div className="flex flex-1 min-h-0">
-        {/* LEFT — Library (Blocchi · Contenuti · Salvati · Libreria personale) */}
+        {/* LEFT — Secondary Contextual Panel (Insert · Assets · Pages · Mood) */}
         {!readOnly && (
-          <LibraryPanel blockTypes={BLOCK_TYPES} onAddBlock={addBlock}
-                        onOpenSkeletons={(skid) => {
-                          api.post(`/api/moodboards/${id}/pages/from_skeleton`, { skeleton_id: skid })
-                            .then((r) => { setActivePageId(r.data.id); reloadPagesAndBlocks(); })
-                            .catch(() => {});
-                        }} t={t} />
+          <EditorPanel
+            onAddBlock={addBlock}
+            onOpenSkeletons={(skid) => {
+              api.post(`/api/moodboards/${id}/pages/from_skeleton`, { skeleton_id: skid })
+                .then((r) => { setActivePageId(r.data.id); reloadPagesAndBlocks(); })
+                .catch(() => {});
+            }}
+            pages={pages}
+            activePageId={activePageId}
+            t={t} />
         )}
 
         {/* CENTER — Canvas Viewport (drives responsive scale) */}

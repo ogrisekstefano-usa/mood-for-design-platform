@@ -115,13 +115,14 @@ const SkeletonPicker = ({ skeletons, onPick, onClose }) => {
           <div>
             <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] flex items-center gap-1.5">
               <LayoutGrid size={11} strokeWidth={1.5} />
-              {t('moodboards.skeleton.eyebrow')}
+              {t('moodboards.skeleton.eyebrow', null, 'Add a page')}
             </p>
             <h2 className="bp-h2 !text-[24px] text-[var(--bp-text-primary)] mt-1 font-light">
-              {t('moodboards.skeleton.title')}
+              {t('moodboards.skeleton.title', null, 'Choose your narrative structure')}
             </h2>
-            <p className="bp-caption !text-[11px] !text-[var(--bp-text-subtle)] mt-1.5 max-w-[520px]">
-              {t('moodboards.skeleton.subtitle')}
+            <p className="bp-caption !text-[11px] !text-[var(--bp-text-subtle)] mt-1.5 max-w-[560px]">
+              {t('moodboards.skeleton.subtitle', null,
+                'Each layout is a starting point for a chapter of your story — covers, mood directions, material studies, atmospheres. Pick the rhythm, refine the details later.')}
             </p>
           </div>
           <button onClick={onClose} data-testid="skeleton-picker-close"

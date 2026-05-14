@@ -1,50 +1,41 @@
 /**
- * ActionToolbar — horizontal action toolbar above the canvas.
+ * ActionToolbar — centered CANVAS ACTION strip (Sprint: Editor IA Refactor).
  *
- * Mirror of the reference mockup's centered tool strip. Each tool is an
- * icon + label pair with a tooltip; spacing is intentionally generous so the
- * row reads as a single editorial element rather than a cluttered ribbon.
+ * Strict scope after the IA refactor (locked by the user):
+ *   ACTIONS ONLY · NEVER content insertion.
  *
- * Active state (currently only for the "select" pointer tool) shows a teal
- * underline + brighter foreground.
+ * Allowed groups:
+ *   • Pointer    : Select · Deselect · Move · Resize
+ *   • View       : Zoom (placeholder — coming soon)
+ *   • Arrange    : Align (placeholder — coming soon)
  *
- * Items grouped:
- *   • Pointer tools   : Seleziona · Deseleziona · Sposta · Ridimensiona
- *   • Insert tools    : Testo · Immagine · Galleria · Prodotto · Materiale
- *   • Decoration tools: Forma · Linea · Hotspot · Note
+ * Insert/decoration tools (text · image · gallery · product · material ·
+ * palette · shape · arrow · note · hotspot) used to live here too. They have
+ * been moved to the LEFT SECONDARY PANEL's Insert tab — single source of
+ * truth for content insertion. Do NOT re-add them here.
  *
- * Future-ready tools (Forma, Linea, Hotspot, Galleria) render as elegant
- * disabled icons until their primitives ship.
+ * Snap toggle, undo/redo, present, share/review live in the editor's slim
+ * action header just above this strip — they remain there because they are
+ * global canvas actions, not content actions.
  */
 import React from 'react';
-import {
-  MousePointer2, Square, Move, Scale, Type, Image as ImageIcon,
-  LayoutGrid, Package, Layers, Hexagon, Minus, Crosshair, StickyNote,
-} from 'lucide-react';
+import { MousePointer2, Square, Move, Scale, ZoomIn, AlignVerticalSpaceAround } from 'lucide-react';
 
 const TOOL_GROUPS = [
   // pointer tools — first group always active "select"
   [
-    { key: 'select',      icon: MousePointer2, kind: 'pointer' },
-    { key: 'deselect',    icon: Square,        kind: 'pointer' },
-    { key: 'move',        icon: Move,          kind: 'pointer' },
-    { key: 'resize',      icon: Scale,         kind: 'pointer' },
+    { key: 'select',   icon: MousePointer2, kind: 'pointer' },
+    { key: 'deselect', icon: Square,        kind: 'pointer' },
+    { key: 'move',     icon: Move,          kind: 'pointer' },
+    { key: 'resize',   icon: Scale,         kind: 'pointer' },
   ],
-  // insert tools — primary block creation
+  // view tools — placeholder until the zoom primitive ships
   [
-    { key: 'text',     icon: Type,        block: 'text' },
-    { key: 'image',    icon: ImageIcon,   block: 'image' },
-    { key: 'gallery',  icon: LayoutGrid,  skeleton: 'gallery_spread' },
-    { key: 'product',  icon: Package,     block: 'product' },
-    { key: 'material', icon: Layers,      block: 'material' },
+    { key: 'zoom',     icon: ZoomIn,                       disabled: true },
   ],
-  // decoration — palette / quote / note
+  // arrange tools — placeholder until align primitives ship
   [
-    { key: 'palette', icon: Hexagon, block: 'palette' },
-    { key: 'shape',   icon: Square,  disabled: true },
-    { key: 'line',    icon: Minus,   disabled: true },
-    { key: 'hotspot', icon: Crosshair, disabled: true },
-    { key: 'note',    icon: StickyNote, block: 'note' },
+    { key: 'align',    icon: AlignVerticalSpaceAround,     disabled: true },
   ],
 ];
 
@@ -75,15 +66,19 @@ const ToolBtn = ({ tool, active, onClick, label }) => {
   );
 };
 
-const ActionToolbar = ({ onAddBlock, onOpenSkeleton, activeTool = 'select', onToolChange, t }) => {
+// Editorial labels — kept short, never duplicating the Insert panel terminology.
+const LABEL_FALLBACK = {
+  select:   'Select',
+  deselect: 'Deselect',
+  move:     'Move',
+  resize:   'Resize',
+  zoom:     'Zoom',
+  align:    'Align',
+};
+
+const ActionToolbar = ({ activeTool = 'select', onToolChange, t }) => {
   const handleClick = (tool) => {
-    if (tool.kind === 'pointer') {
-      onToolChange?.(tool.key);
-    } else if (tool.block) {
-      onAddBlock?.(tool.block);
-    } else if (tool.skeleton) {
-      onOpenSkeleton?.(tool.skeleton);
-    }
+    if (tool.kind === 'pointer') onToolChange?.(tool.key);
   };
 
   return (
@@ -97,7 +92,7 @@ const ActionToolbar = ({ onAddBlock, onOpenSkeleton, activeTool = 'select', onTo
                 <ToolBtn key={tool.key} tool={tool}
                          active={tool.kind === 'pointer' && tool.key === activeTool}
                          onClick={() => handleClick(tool)}
-                         label={t(`moodboards.tool.${tool.key}`)} />
+                         label={t(`moodboards.tool.${tool.key}`, null, LABEL_FALLBACK[tool.key])} />
               ))}
             </div>
             {i < TOOL_GROUPS.length - 1 && (
