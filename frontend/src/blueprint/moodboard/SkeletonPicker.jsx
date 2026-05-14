@@ -176,7 +176,7 @@ const SkeletonCard = ({ sk, onPick, t }) => {
   );
 };
 
-const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose }) => {
+const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose, insertAfterPageTitle }) => {
   const { t } = useBlueprint();
   const dialogRef = useRef(null);
 
@@ -228,6 +228,21 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose }) => {
               {t('moodboards.picker.subtitle', null,
                 'Start from a complete multi-page presentation, or add a single empty page as a starting point.')}
             </p>
+            {/* Insert-here pill — visible only when an insertion point is set */}
+            {insertAfterPageTitle && (
+              <div data-testid="picker-insert-after-pill"
+                   className="inline-flex items-center gap-2 mt-3 px-3 py-1.5 rounded-full
+                              bg-[var(--bp-primary)]/12 border border-[var(--bp-primary)]/35">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--bp-primary)] animate-pulse" />
+                <span className="font-mono text-[10px] tracking-[0.30em] uppercase text-[var(--bp-primary)]">
+                  {t('moodboards.picker.insertAfter', null, 'Inserting after')}
+                </span>
+                <span className="text-[12px] text-[var(--bp-text-primary)] italic"
+                      style={{ fontFamily: 'Playfair Display, serif' }}>
+                  "{insertAfterPageTitle}"
+                </span>
+              </div>
+            )}
           </div>
           <button onClick={onClose} data-testid="skeleton-picker-close"
                   className="text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] p-1">

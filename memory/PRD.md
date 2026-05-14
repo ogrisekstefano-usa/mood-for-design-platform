@@ -1178,3 +1178,51 @@ Frontend-only refactor che separa concettualmente Premium Templates (presentazio
 - Header copy verificato: "EDITORIAL STRUCTURE · Choose an editorial structure · Start from a complete multi-page presentation, or add a single empty page as a starting point."
 - Lint clean
 
+
+### ✅ Story Flow & Performance Sprint (Feb 16 2026)
+Frontend-only sprint che trasforma l'applicazione di un Premium Template da "wait+toast" a "watching a presentation come alive". Architecture freeze rispettato (zero backend / DB / migrations).
+
+- **TemplateProgressOverlay.jsx** (NEW · 165 LOC) — overlay cinematico fullscreen:
+  - Dark glass backdrop (rgba(8,7,6,0.78) + 24px blur + saturate 120%)
+  - Eyebrow teal "PREMIUM TEMPLATE · APPLYING" + Sparkles icon
+  - Template name in 12px tracking-[.20em] uppercase (Inter)
+  - **Big chapter title** Playfair italic 32px che cambia per fase del progress (`stageCopy(i, total)`):
+    - 0-18% → "Creating editorial structure… · Laying the cover and opening voice."
+    - 18-42% → "Building mood narrative… · Composing the atmosphere of the project."
+    - 42-72% → "Composing material pages… · Stone, wood, textile and palette direction."
+    - 72-99% → "Finalizing presentation… · Furniture, gallery and the closing chapter."
+    - 100% → "Presentation ready. · Your editorial moodboard is composed."
+  - Soft-rise animation 420ms per ogni key-change del titolo
+  - Progress bar 2px solid teal con glow `0 0 12px rgba(15,162,132,.5)`, transition 600ms
+  - Counter "PAGE 02 / 06 · 33%" tabular-nums
+  - **Mini-filmstrip chips** color-coded per page_type (mirror di PAGE_TONE da PagesFilmstrip); le chip si accendono progressivamente da `rgba(245,242,236,0.06)` a `linear-gradient(${tone}E0 → ${tone}A0)` con shadow `${tone}44 4px 12px`; chip attivo ha translateY(-2px)
+  - Keyframes scoped inline (no global CSS pollution)
+- **`applyPremiumTemplate(api, mbId, tplId, opts)`** ora accetta:
+  - **`opts.onProgress({ stage, current, total, page, templateName, pages })`** — emette 3 stage: `start` (prima del loop), `page` (ogni pagina), `complete`. Permette al chiamante di guidare l'overlay.
+  - **`opts.insertAfterPageId`** — se settato, dopo aver creato tutte le pagine chiama `POST /pages/reorder` per inserirle SUBITO DOPO la pagina selezionata invece che alla fine. Best-effort (try/catch interno).
+- **PagesFilmstrip.jsx**:
+  - State `progress = { active, templateName, current, total, pages }` guidato dal callback `onProgress`
+  - State `insertAfterPageId` traccia la pagina target per l'insert
+  - `handlePremiumPick` aggiorna `progress` ad ogni callback + tiene la frame "complete" per 850ms prima di dismissare l'overlay → momento "presentation ready" theatrical
+  - `handleSkeletonPick` ora supporta anche `insertAfterPageId` (reorder post-creazione)
+  - **Insert-here button** tra ogni coppia di page-card filmstrip:
+    - `<li>` di 22px tra cards (era spacing flat di 14px)
+    - Visibile solo su `group/insert hover` (opacity 0 → 100, transition 200ms)
+    - Linea verticale teal 1.5px height-60% + pulsante circolare 24×24 con Plus icon + glow teal
+    - Click → set `insertAfterPageId` + apre picker
+  - Reset `insertAfterPageId` su picker close
+  - `+Aggiungi pagina` ora resetta esplicitamente `insertAfterPageId(null)` per append esplicito alla fine
+- **SkeletonPicker.jsx**:
+  - Nuova prop `insertAfterPageTitle` (string|null)
+  - Pill animata in header sotto la subtitle: bg teal 12% + ring teal 35% + dot pulsing + "INSERTING AFTER 'TEST_F2_legacy'" — comunica chiaramente all'utente che è in modalità insert
+  - `data-testid="picker-insert-after-pill"` per verifica
+- **0 backend / DB / migrations changes** ✅ — usa esclusivamente endpoints esistenti (`/pages`, `/blocks`, `/pages/reorder`, `/pages/from_skeleton`)
+
+**Verified** ✅
+- Insert-after button: hover sull'area tra le pagine → pill teal pulsing appare nell'header del picker
+- Progress overlay: catturati screenshot del flow completo wabi_sabi (6 pagine) → ogni stage visualmente diverso, mini-filmstrip si accende progressivamente, page counter 02/06 33% → 06/06 100%
+- "Presentation ready. Your editorial moodboard is composed." frame mostrata al 100% con tutte le chip color-coded brillanti
+- Reorder funziona: dopo apply le pagine wabi_sabi appaiono nella sequenza corretta nel filmstrip
+- 0 page errors, lint clean (5 file modificati / 1 nuovo)
+
+

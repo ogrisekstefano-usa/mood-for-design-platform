@@ -16,6 +16,7 @@ import { trackEvent } from '../../lib/telemetry';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { Plus, Copy, Trash2 } from 'lucide-react';
 import SkeletonPicker from './SkeletonPicker';
+import TemplateProgressOverlay from './TemplateProgressOverlay';
 import { applyPremiumTemplate } from './premiumTemplates';
 import { toast } from 'sonner';
 
@@ -169,6 +170,13 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
   const { t } = useBlueprint();
   const [skeletonPickerOpen, setSkeletonPickerOpen] = useState(false);
   const [skeletons, setSkeletons] = useState(null);
+  // When set, the next picker-template will be inserted RIGHT AFTER this page id.
+  // Null = append at the end (default).
+  const [insertAfterPageId, setInsertAfterPageId] = useState(null);
+  // Cinematic overlay state while a multi-page template is being applied
+  const [progress, setProgress] = useState({
+    active: false, templateName: null, current: 0, total: 0, pages: [],
+  });
   const dragId = useRef(null);
 
   useEffect(() => {
@@ -189,13 +197,35 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
 
   const handleSkeletonPick = async (skeletonId) => {
     setSkeletonPickerOpen(false);
+    const insertAfter = insertAfterPageId;
+    setInsertAfterPageId(null);
     try {
       const r = await api.post(`/api/moodboards/${moodboardId}/pages/from_skeleton`,
                                { skeleton_id: skeletonId });
+      const newId = r.data.id;
+      // Insert-here support — reorder so the new page sits after the chosen one
+      if (insertAfter && newId) {
+        try {
+          const listRes = await api.get(`/api/moodboards/${moodboardId}/pages`);
+          const all = (listRes.data || []).slice().sort(
+            (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+          const existingIds = all.map((p) => p.id).filter((id) => id !== newId);
+          const idx = existingIds.indexOf(insertAfter);
+          if (idx >= 0) {
+            const reordered = [
+              ...existingIds.slice(0, idx + 1), newId,
+              ...existingIds.slice(idx + 1),
+            ];
+            await api.post(`/api/moodboards/${moodboardId}/pages/reorder`,
+              { page_ids: reordered });
+          }
+        } catch (_) { /* best-effort */ }
+      }
       trackEvent('moodboard.skeleton_applied',
-        { skeleton_id: skeletonId, moodboard_id: moodboardId },
+        { skeleton_id: skeletonId, moodboard_id: moodboardId,
+          inserted_after: insertAfter || null },
         { entityType: 'moodboard', entityId: moodboardId });
-      onSelect?.(r.data.id);
+      onSelect?.(newId);
       onChange?.();
       toast.success(t('moodboards.skeleton.applied', null, 'Page added.'));
     } catch (err) {
@@ -210,18 +240,48 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
   // See premiumTemplates.js for the multi-page structure.
   const handlePremiumPick = async (templateId) => {
     setSkeletonPickerOpen(false);
-    const loadingToastId = toast.loading(
-      t('moodboards.premium.applying', null, 'Applying multi-page template…'));
+    // Snapshot the insertion point so a state update during apply doesn't
+    // affect this run (and reset the state right after picking).
+    const insertAfter = insertAfterPageId;
+    setInsertAfterPageId(null);
     try {
-      const result = await applyPremiumTemplate(api, moodboardId, templateId);
+      const result = await applyPremiumTemplate(api, moodboardId, templateId, {
+        insertAfterPageId: insertAfter,
+        onProgress: (ev) => {
+          if (ev.stage === 'start') {
+            setProgress({
+              active: true,
+              templateName: ev.templateName,
+              current: 0,
+              total: ev.total,
+              pages: ev.pages || [],
+            });
+          } else if (ev.stage === 'page') {
+            setProgress((s) => ({
+              ...s,
+              active: true,
+              current: ev.current,
+              total: ev.total,
+              templateName: ev.templateName,
+              pages: ev.pages || s.pages,
+            }));
+          } else if (ev.stage === 'complete') {
+            setProgress((s) => ({ ...s, current: ev.total, total: ev.total }));
+            // Hold the "complete" frame for a beat before fading the
+            // overlay — this is the moment the designer sees ALL chips
+            // glow teal. Dismiss after 850ms.
+            setTimeout(() => setProgress((s) => ({ ...s, active: false })), 850);
+          }
+        },
+      });
       trackEvent('moodboard.premium_template_applied',
         { template_id: templateId, moodboard_id: moodboardId,
           pages_created: result?.pagesCreated, pages_total: result?.pagesTotal,
-          blocks_created: result?.blocksCreated, blocks_total: result?.blocksTotal },
+          blocks_created: result?.blocksCreated, blocks_total: result?.blocksTotal,
+          inserted_after: insertAfter || null },
         { entityType: 'moodboard', entityId: moodboardId });
       if (result?.pageId) onSelect?.(result.pageId);
       onChange?.();
-      toast.dismiss(loadingToastId);
       if (result?.pagesCreated === 0) {
         toast.error(t('moodboards.premium.failed', null,
           'Template could not be applied. Please retry.'));
@@ -237,7 +297,7 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
           `Multi-page template applied: ${n} ${word} added.`));
       }
     } catch (err) {
-      toast.dismiss(loadingToastId);
+      setProgress((s) => ({ ...s, active: false }));
       const detail = err?.response?.data?.detail || err?.message || 'unknown error';
       toast.error(t('moodboards.premium.applyFailed', null, `Could not apply template: ${detail}`));
     }
@@ -278,19 +338,21 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
       <footer data-testid="pages-filmstrip"
               className="flex-shrink-0 border-t border-[var(--bp-border)] bg-[var(--bp-surface-1)]/55 backdrop-blur-sm">
         <div className="overflow-x-auto overflow-y-hidden scroll-smooth">
-          <ul className="flex items-end gap-3.5 px-7 py-4 min-w-fit">
+          <ul className="flex items-end gap-1 px-7 py-4 min-w-fit">
             {pages.map((p, i) => {
               const active = p.id === currentPageId;
               const visual = PAGE_TYPE_VISUAL[p.page_type] || PAGE_TYPE_VISUAL.blank;
+              const isLast = i === pages.length - 1;
               return (
-                <li key={p.id}
+                <React.Fragment key={p.id}>
+                <li
                     draggable={!readOnly}
                     onDragStart={() => handleDragStart(p.id)}
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={(e) => handleDrop(e, p.id)}
                     onClick={() => onSelect?.(p.id)}
                     data-testid={`page-card-${p.id}`}
-                    className="group flex flex-col items-center gap-2 cursor-pointer">
+                    className="group flex flex-col items-center gap-2 cursor-pointer ml-2.5">
                   <div className={`relative rounded-[4px] transition-all duration-[var(--bp-duration-cinematic)] ease-[var(--bp-ease-emphasis)]
                                    ${active
                                      ? 'ring-1 ring-[var(--bp-primary)] scale-[1.045] -translate-y-0.5'
@@ -347,11 +409,45 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
                     {p.title || t('moodboards.page.untitled')}
                   </p>
                 </li>
+                {/* "Insert template here" — between-page affordance.
+                    Hidden by default, fades in on hover of the spacer zone.
+                    Sets insertAfterPageId then opens the picker so the chosen
+                    template lands RIGHT AFTER this page instead of at the end. */}
+                {!readOnly && !isLast && (
+                  <li className="group/insert relative flex items-center self-stretch"
+                      data-testid={`insert-after-${p.id}`}
+                      style={{ width: 22 }}>
+                    <button type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setInsertAfterPageId(p.id);
+                              setSkeletonPickerOpen(true);
+                            }}
+                            data-testid={`insert-after-btn-${p.id}`}
+                            title={t('moodboards.page.insertHere', null, 'Insert template here')}
+                            className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[22px]
+                                       flex items-center justify-center
+                                       opacity-0 group-hover/insert:opacity-100
+                                       transition-opacity duration-200">
+                      <span className="block w-[1.5px] h-[60%] bg-[var(--bp-primary)]/40
+                                       group-hover/insert:bg-[var(--bp-primary)] transition-colors" />
+                      <span className="absolute w-6 h-6 rounded-full
+                                       bg-[var(--bp-primary)] text-[var(--bp-bg)]
+                                       flex items-center justify-center
+                                       shadow-[0_0_18px_rgba(15,162,132,0.55)]
+                                       scale-90 group-hover/insert:scale-100
+                                       transition-transform duration-200">
+                        <Plus size={12} strokeWidth={2.2} />
+                      </span>
+                    </button>
+                  </li>
+                )}
+                </React.Fragment>
               );
             })}
             {!readOnly && (
-              <li>
-                <button onClick={() => setSkeletonPickerOpen(true)}
+              <li className="ml-2.5">
+                <button onClick={() => { setInsertAfterPageId(null); setSkeletonPickerOpen(true); }}
                         data-testid="add-page-btn"
                         className="group flex flex-col items-center gap-2 cursor-pointer">
                   <div className="w-[112px] h-[150px] rounded-[4px]
@@ -385,9 +481,16 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
           skeletons={skeletons}
           onPick={handleSkeletonPick}
           onPickPremium={handlePremiumPick}
-          onClose={() => setSkeletonPickerOpen(false)}
+          onClose={() => { setSkeletonPickerOpen(false); setInsertAfterPageId(null); }}
+          insertAfterPageTitle={insertAfterPageId
+            ? (pages.find((p) => p.id === insertAfterPageId)?.title || null)
+            : null}
         />
       )}
+      {/* Cinematic progress overlay — shown while a multi-page premium
+          template is being applied. Owns its own backdrop so the editor
+          underneath stays untouched. */}
+      <TemplateProgressOverlay state={progress} />
     </>
   );
 };

@@ -900,12 +900,24 @@ export const getTemplatesByCategory = (category) =>
  * blocks via the existing endpoints. No backend changes required. Returns a
  * detailed breakdown so the caller can surface a precise toast.
  *
+ * @param api               axios client (auth header attached)
+ * @param moodboardId       target moodboard id
+ * @param templateId        premium template id
+ * @param opts.onProgress   ({ stage, current, total, page }) callback — fires
+ *                          BEFORE each page is created. Lets the caller drive
+ *                          a cinematic progress overlay.
+ * @param opts.insertAfterPageId  if set, new pages are inserted RIGHT AFTER
+ *                          this existing page (instead of appended at the end).
+ *                          The existing pages that come after are pushed down
+ *                          via the /pages/reorder endpoint.
+ *
  * Backward compatible: legacy single-page templates (no `pages` array) are
  * applied as a single page using the previous `blocks` field.
  */
-export async function applyPremiumTemplate(api, moodboardId, templateId) {
+export async function applyPremiumTemplate(api, moodboardId, templateId, opts = {}) {
   const tpl = TEMPLATES[templateId];
   if (!tpl) throw new Error(`Unknown premium template: ${templateId}`);
+  const { onProgress, insertAfterPageId } = opts;
 
   // Normalize to a `pages` array — legacy templates supported transparently.
   const pages = tpl.pages || [{
@@ -919,9 +931,26 @@ export async function applyPremiumTemplate(api, moodboardId, templateId) {
   const createdPageIds = [];
   let blocksCreated = 0;
   let blocksTotal = 0;
+  const total = pages.length;
 
-  for (const pg of pages) {
+  // Emit a "starting" progress signal so the overlay shows up immediately
+  // (without waiting for the first API call to return).
+  onProgress?.({
+    stage: 'start', current: 0, total,
+    templateName: tpl.name,
+    pages: pages.map((p) => ({ page_type: p.page_type, title: p.title })),
+  });
+
+  for (let i = 0; i < pages.length; i++) {
+    const pg = pages[i];
     blocksTotal += pg.blocks.length;
+    // Progress: about-to-create page i+1
+    onProgress?.({
+      stage: 'page', current: i + 1, total,
+      templateName: tpl.name, page: pg,
+      pages: pages.map((p) => ({ page_type: p.page_type, title: p.title })),
+    });
+
     let pageId = null;
     try {
       const pageRes = await api.post(`/api/moodboards/${moodboardId}/pages`, {
@@ -942,6 +971,37 @@ export async function applyPremiumTemplate(api, moodboardId, templateId) {
     );
     blocksCreated += results.filter((r) => r.status === 'fulfilled').length;
   }
+
+  // ── Insert-here support: reorder so the new pages sit RIGHT AFTER the
+  // chosen insertAfterPageId, instead of at the end of the deck.
+  // We list all current pages, compute the desired order, then call
+  // /pages/reorder (single request — no per-page DB churn).
+  if (insertAfterPageId && createdPageIds.length > 0) {
+    try {
+      const listRes = await api.get(`/api/moodboards/${moodboardId}/pages`);
+      const all = (listRes.data || []).slice().sort(
+        (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0),
+      );
+      const existingIds = all.map((p) => p.id).filter((id) => !createdPageIds.includes(id));
+      const idx = existingIds.indexOf(insertAfterPageId);
+      if (idx >= 0) {
+        const reordered = [
+          ...existingIds.slice(0, idx + 1),
+          ...createdPageIds,
+          ...existingIds.slice(idx + 1),
+        ];
+        await api.post(`/api/moodboards/${moodboardId}/pages/reorder`,
+          { page_ids: reordered });
+      }
+    } catch (_) { /* reorder is best-effort — pages already exist */ }
+  }
+
+  // Final progress signal — overlay parent decides when to dismiss.
+  onProgress?.({
+    stage: 'complete', current: total, total,
+    templateName: tpl.name,
+    pages: pages.map((p) => ({ page_type: p.page_type, title: p.title })),
+  });
 
   return {
     pageId: firstPageId,
