@@ -1226,3 +1226,19 @@ Frontend-only sprint che trasforma l'applicazione di un Premium Template da "wai
 - 0 page errors, lint clean (5 file modificati / 1 nuovo)
 
 
+
+
+### ✅ CRITICAL: Text/Block Shape Bug Fix + Performance + Picker Header Redesign (Feb 16 2026)
+
+🔴 **BUG CRITICO RISOLTO**: TextBlock legge `content.text` (non `content.value`) e `style.typography.{...}` (non flat style). Le mie factory usavano shape sbagliato → tutti i testi del template apparivano come placeholder "Scrivi il tuo testo..." e le pagine sembravano vuote. Fix: `text()` factory ora produce `content: { text, size }` + `style: { typography: {...} }`. Preset size auto-derivato dal font_size. `material()` fix `image+image_url+notes`. `img()` fix `style.fit_mode/focal_point`. approvalPage ora ha hero photo. **Verified**: "Casa Brera. The home of memory." Playfair italic 56px renderizza + foto Unsplash hero full-bleed visibili.
+
+🟠 **PERFORMANCE 4-5× speedup**: `applyPremiumTemplate` riscritto in 3 fasi:
+- Phase 1: `Promise.all` su POST /pages (parallelo)
+- Phase 2: tutti i blocchi flatten + `Promise.allSettled` (~60 chiamate in burst)
+- Phase 3: SEMPRE `POST /pages/reorder` per fissare ordine editoriale
+Da ~30-40s a ~5-10s stimato. Overlay cinematico ora "fast premiere".
+
+🟡 **PICKER HEADER mockup-match**: Crown SVG amber custom + titolo Playfair 26px tracking-[0.20em] **"PREMIUM CURATED ARCHIVE"** + subtitle italica destra "Template multipagina completi · Pronti per presentazioni professionali". Categorie: **"01 LUXURY HOSPITALITY"** Playfair 24px uppercase + counter italiano "03 TEMPLATE COMPLETI". Bg color `#F2EBD9` per titoli (più caldo).
+
+**Verified** ✅ — Text/image rendering corretto, picker header matcha mockup, 6 pages wabi_sabi con page-type chips differentiated, 0 page errors, lint clean.
+

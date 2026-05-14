@@ -255,24 +255,30 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose, insertAfter
           {/* ───────────── PREMIUM CURATED ARCHIVE ───────────── */}
           {onPickPremium && (
             <section className="mb-16" data-testid="premium-section">
-              {/* Section header — magazine-grade */}
+              {/* Section header — magazine-grade, mirrors the mockup */}
               <div className="flex items-baseline justify-between gap-6 mb-3">
-                <div className="flex items-center gap-2.5">
-                  <Sparkles size={13} strokeWidth={1.5} className="text-[var(--bp-primary)]" />
-                  <p className="bp-eyebrow !text-[11px] !text-[var(--bp-text-primary)] !tracking-[0.36em] !font-medium">
-                    {t('moodboards.premium.eyebrow', null, 'Premium curated archive')}
-                  </p>
+                <div className="flex items-center gap-3">
+                  {/* Crown / premium glyph — soft amber-gold to mark prestige */}
+                  <span aria-hidden="true" className="inline-flex items-center justify-center"
+                        style={{ width: 22, height: 22, color: '#E0C39A' }}>
+                    {/* simple crown SVG keeps the picker self-contained */}
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"
+                         style={{ filter: 'drop-shadow(0 0 4px rgba(224,195,154,0.45))' }}>
+                      <path d="M3 8l4 4 5-7 5 7 4-4-2 11H5L3 8zm2.7 9h12.6l.8-4.5-2.3 2.3-3.3-4.6-3.5 4.9-3.1-3.1.8 5z"/>
+                    </svg>
+                  </span>
+                  <h2 className="!text-[26px] !text-[#F2EBD9] font-light tracking-[0.20em]"
+                      style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
+                    PREMIUM CURATED ARCHIVE
+                  </h2>
                 </div>
-                <span className="font-mono text-[10px] tracking-[0.30em] text-[var(--bp-text-subtle)] uppercase tabular-nums">
-                  {premiumCount.toString().padStart(2, '0')}&nbsp;
-                  {t('moodboards.premium.completeTemplates', null, 'complete templates')}
-                </span>
+                <p className="text-[11px] tracking-[0.18em] uppercase italic"
+                   style={{ color: 'rgba(242, 235, 217, 0.55)',
+                            fontFamily: 'Playfair Display, serif' }}>
+                  {t('moodboards.premium.intro.short', null,
+                    'Template multipagina completi · Pronti per presentazioni professionali')}
+                </p>
               </div>
-              <p className="bp-caption !text-[13px] !text-[var(--bp-text-muted)] italic mb-3 max-w-[760px] leading-[1.55]"
-                 style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
-                {t('moodboards.premium.intro', null,
-                  'Complete multi-page presentations — covers, atmospheres, material direction, furniture and approval pages, all in one click. Ready for professional moodboards.')}
-              </p>
               <div className="h-px bg-[var(--bp-section-divider)] mb-12" />
 
               {PREMIUM_CATEGORIES.map((cat, catIdx) => {
@@ -288,15 +294,15 @@ const SkeletonPicker = ({ skeletons, onPick, onPickPremium, onClose, insertAfter
                       <span className="font-mono text-[10px] tracking-[0.32em] text-[var(--bp-primary)] uppercase tabular-nums">
                         {catNum}
                       </span>
-                      <h3 className="!text-[22px] !text-[var(--bp-text-primary)] font-light tracking-[0.005em]
+                      <h3 className="!text-[24px] !text-[#F2EBD9] font-light tracking-[0.16em] uppercase
                                      leading-none"
                           style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
                         {t(`moodboards.premium.category.${cat.key}.title`, null, cat.title_fallback)}
                       </h3>
                       <div className="flex-1 h-px bg-[var(--bp-border)] mt-1 self-center" />
-                      <span className="font-mono text-[9px] tracking-[0.28em] text-[var(--bp-text-subtle)] uppercase tabular-nums">
+                      <span className="font-mono text-[10px] tracking-[0.30em] text-[var(--bp-text-subtle)] uppercase tabular-nums">
                         {templates.length.toString().padStart(2, '0')}&nbsp;
-                        {t('moodboards.premium.completeTemplates.short', null, 'templates')}
+                        {t('moodboards.premium.completeTemplates.short', null, 'template completi')}
                       </span>
                     </div>
                     <p className="bp-caption !text-[12px] !text-[var(--bp-text-muted)] italic ml-[42px] mb-7 leading-[1.55]"

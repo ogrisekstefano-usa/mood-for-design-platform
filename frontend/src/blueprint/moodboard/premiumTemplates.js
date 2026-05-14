@@ -69,26 +69,51 @@ const PALETTES = {
 // ── Block factories ───────────────────────────────────────────────────────
 const img = (src, x, y, w, h, z = 1) => ({
   type: 'image', x, y, width: w, height: h, z_index: z,
-  content: { src, fit: 'cover', focal_x: 50, focal_y: 50 },
+  content: { src },
+  style: { fit_mode: 'cover', focal_point: 'center' },
 });
-const text = (value, x, y, w, h, z, style = {}) => ({
-  type: 'text', x, y, width: w, height: h, z_index: z,
-  content: { value },
-  style: {
-    font_family: 'Playfair Display', font_size: 32, font_weight: 400,
-    color: '#1A1410', align: 'left', italic: false, ...style,
-  },
-});
+const text = (value, x, y, w, h, z, style = {}) => {
+  // Choose a preset size class that's close to the requested font_size — the
+  // TextBlock renderer picks h1/h2/h3/body/caption/eyebrow heuristically.
+  const fs = style.font_size || 32;
+  const size = fs >= 64 ? 'display'
+             : fs >= 44 ? 'h1'
+             : fs >= 28 ? 'h2'
+             : fs >= 18 ? 'h3'
+             : fs >= 13 ? 'body'
+             : 'caption';
+  return {
+    type: 'text', x, y, width: w, height: h, z_index: z,
+    // TextBlock reads content.text — NOT content.value. Renderer also reads
+    // content.size as the preset key (h1/h2/h3/body/caption/eyebrow).
+    content: { text: value, size },
+    style: {
+      // Typography props go under style.typography (not flat) — matches the
+      // BlockInspector schema and the renderer's lookup path.
+      typography: {
+        font_family:    style.font_family || 'Playfair Display',
+        font_size:      style.font_size || 32,
+        font_weight:    style.font_weight || 400,
+        line_height:    style.line_height,
+        letter_spacing: style.letter_spacing,
+        italic:         style.italic || false,
+        align:          style.align || 'left',
+        color:          style.color || '#1A1410',
+      },
+    },
+  };
+};
 const palette = (colors, x, y, w, h, z = 5) => ({
   type: 'palette', x, y, width: w, height: h, z_index: z, content: { colors },
 });
 const material = (name, sub, src, x, y, w, h, z = 4) => ({
   type: 'material', x, y, width: w, height: h, z_index: z,
-  content: { name, subtitle: sub, image: src },
+  // MaterialBlock reads content.name/notes/image; mirror src+image_url shape.
+  content: { name, notes: sub, image: src, image_url: src },
 });
 const note = (value, x, y, w, h, z = 6, color = '#EBDDC2') => ({
   type: 'note', x, y, width: w, height: h, z_index: z,
-  content: { value }, style: { background_color: color },
+  content: { text: value }, style: { background_color: color },
 });
 
 // ── Page factories ────────────────────────────────────────────────────────
@@ -267,31 +292,34 @@ function quotePage({ quote, attribution, photo, paletteKey, eyebrow }) {
   };
 }
 
-// 8. Approval / closing — soft palette, sign-off block.
-function approvalPage({ title, eyebrow, brand, paletteKey, copy }) {
+// 8. Approval / closing — soft palette, sign-off block with hero photo.
+function approvalPage({ title, eyebrow, brand, paletteKey, copy, photo }) {
   const p = PALETTES[paletteKey] || PALETTES.warm_earth;
+  const heroPhoto = photo || PHOTOS.warm_lounge;
   return {
     title: title || 'For your approval', page_type: 'approval',
     settings: { background_color: '#F0EDE5' },
     blocks: [
-      text(eyebrow || 'CLOSING', 100, 120, 700, 28, 4,
+      // Hero closing photo — soft, contemplative
+      img(heroPhoto, 0, 0, W, 720, 1),
+      text(eyebrow || 'CLOSING', 100, 780, 700, 28, 4,
         { font_family: 'Inter', font_size: 12, color: '#7A6B58', letter_spacing: 6 }),
-      text(title || 'For your approval.', 100, 200, 1200, 200, 5,
+      text(title || 'For your approval.', 100, 830, 1200, 200, 5,
         { font_family: 'Playfair Display', font_size: 88, italic: true, color: '#1A1410', line_height: 0.95 }),
       text(copy || 'Thank you for your consideration. Please review the direction and let us know your thoughts.',
-        100, 480, 1100, 100, 6,
+        100, 1080, 1100, 100, 6,
         { font_family: 'Playfair Display', font_size: 22, italic: true, color: '#3A2F26', line_height: 1.5 }),
       // Signature line
-      text('___________________________', 100, 1200, 500, 30, 7,
+      text('___________________________', 100, 1400, 500, 30, 7,
         { font_family: 'Inter', font_size: 14, color: '#7A6B58' }),
-      text('CLIENT SIGNATURE', 100, 1240, 500, 22, 8,
+      text('CLIENT SIGNATURE', 100, 1440, 500, 22, 8,
         { font_family: 'Inter', font_size: 10, color: '#7A6B58', letter_spacing: 4 }),
-      text('___________________________', 750, 1200, 500, 30, 7,
+      text('___________________________', 750, 1400, 500, 30, 7,
         { font_family: 'Inter', font_size: 14, color: '#7A6B58' }),
-      text('DATE', 750, 1240, 500, 22, 8,
+      text('DATE', 750, 1440, 500, 22, 8,
         { font_family: 'Inter', font_size: 10, color: '#7A6B58', letter_spacing: 4 }),
-      palette(p, 100, 1500, 1200, 40, 7),
-      text(brand || 'STUDIO MOOD · MILANO · 2026', 100, 1700, 1200, 22, 9,
+      palette(p, 100, 1600, 1200, 40, 7),
+      text(brand || 'STUDIO MOOD · MILANO · 2026', 100, 1750, 1200, 22, 9,
         { font_family: 'Inter', font_size: 11, color: '#7A6B58', letter_spacing: 5 }),
     ],
   };
@@ -941,58 +969,87 @@ export async function applyPremiumTemplate(api, moodboardId, templateId, opts = 
     pages: pages.map((p) => ({ page_type: p.page_type, title: p.title })),
   });
 
-  for (let i = 0; i < pages.length; i++) {
-    const pg = pages[i];
-    blocksTotal += pg.blocks.length;
-    // Progress: about-to-create page i+1
-    onProgress?.({
-      stage: 'page', current: i + 1, total,
-      templateName: tpl.name, page: pg,
-      pages: pages.map((p) => ({ page_type: p.page_type, title: p.title })),
-    });
+  // Phase 1 — Create ALL pages IN PARALLEL.
+  // The backend auto-assigns sort_order (max+1) per page on a per-row basis,
+  // so parallel creates may race for sort_order — that's fine because we
+  // unconditionally call /pages/reorder right after to pin the exact sequence
+  // we want (either appended at the end or inserted after `insertAfterPageId`).
+  const pageCreatePromises = pages.map((pg) =>
+    api.post(`/api/moodboards/${moodboardId}/pages`, {
+      title: pg.title,
+      page_type: pg.page_type || 'blank',
+      settings: pg.settings || { background_color: '#F0EDE5' },
+    }).then((res) => ({ ok: true, id: res.data?.id, pg })).catch(() => ({ ok: false, pg }))
+  );
 
-    let pageId = null;
-    try {
-      const pageRes = await api.post(`/api/moodboards/${moodboardId}/pages`, {
-        title: pg.title,
-        page_type: pg.page_type || 'blank',
-        settings: pg.settings || { background_color: '#F0EDE5' },
+  // Progress: per resolved page, fire a `page` event so the overlay
+  // updates incrementally. We can't easily race the in-flight Promise.all
+  // and emit per-page, so we just emit predicted progress on settle.
+  let resolved = 0;
+  const settled = await Promise.all(
+    pageCreatePromises.map((p) => p.then((r) => {
+      resolved += 1;
+      onProgress?.({
+        stage: 'page', current: resolved, total,
+        templateName: tpl.name, page: r.pg,
+        pages: pages.map((q) => ({ page_type: q.page_type, title: q.title })),
       });
-      pageId = pageRes.data?.id;
-    } catch (_) { /* skip this page but keep going */ }
-    if (!pageId) continue;
-    if (!firstPageId) firstPageId = pageId;
-    createdPageIds.push(pageId);
+      return r;
+    })),
+  );
 
-    // Blocks within a page can be sent in parallel — fast.
-    const results = await Promise.allSettled(
-      pg.blocks.map((b) => api.post(`/api/moodboards/${moodboardId}/blocks`,
-        { ...b, page_id: pageId })),
-    );
-    blocksCreated += results.filter((r) => r.status === 'fulfilled').length;
-  }
+  // Map page-id back to its original pages[] index so we keep editorial order
+  // even though the API returned them in completion order.
+  const pageIdByIndex = new Array(pages.length).fill(null);
+  settled.forEach((r) => {
+    if (!r.ok || !r.id) return;
+    const idx = pages.indexOf(r.pg);
+    if (idx >= 0) pageIdByIndex[idx] = r.id;
+  });
+  pageIdByIndex.forEach((id) => {
+    if (!id) return;
+    if (!firstPageId) firstPageId = id;
+    createdPageIds.push(id);
+  });
 
-  // ── Insert-here support: reorder so the new pages sit RIGHT AFTER the
-  // chosen insertAfterPageId, instead of at the end of the deck.
-  // We list all current pages, compute the desired order, then call
-  // /pages/reorder (single request — no per-page DB churn).
-  if (insertAfterPageId && createdPageIds.length > 0) {
+  // Phase 2 — Create ALL blocks across ALL pages in a SINGLE flattened
+  // Promise.all. This collapses what used to be ~60 sequential HTTP calls
+  // into one round-trip burst → ~5-7s instead of ~30-40s.
+  const allBlockPromises = [];
+  pages.forEach((pg, idx) => {
+    blocksTotal += pg.blocks.length;
+    const pid = pageIdByIndex[idx];
+    if (!pid) return;
+    pg.blocks.forEach((b) => {
+      allBlockPromises.push(
+        api.post(`/api/moodboards/${moodboardId}/blocks`, { ...b, page_id: pid }),
+      );
+    });
+  });
+  const blockResults = await Promise.allSettled(allBlockPromises);
+  blocksCreated = blockResults.filter((r) => r.status === 'fulfilled').length;
+
+  // Phase 3 — Reorder so the new pages sit in editorial sequence.
+  // We always call /pages/reorder now (not just for insert-after) because
+  // the parallel create step may have produced any sort_order interleaving.
+  if (createdPageIds.length > 0) {
     try {
       const listRes = await api.get(`/api/moodboards/${moodboardId}/pages`);
       const all = (listRes.data || []).slice().sort(
         (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0),
       );
       const existingIds = all.map((p) => p.id).filter((id) => !createdPageIds.includes(id));
-      const idx = existingIds.indexOf(insertAfterPageId);
-      if (idx >= 0) {
-        const reordered = [
-          ...existingIds.slice(0, idx + 1),
-          ...createdPageIds,
-          ...existingIds.slice(idx + 1),
-        ];
-        await api.post(`/api/moodboards/${moodboardId}/pages/reorder`,
-          { page_ids: reordered });
+      let reordered;
+      if (insertAfterPageId) {
+        const idx = existingIds.indexOf(insertAfterPageId);
+        reordered = idx >= 0
+          ? [...existingIds.slice(0, idx + 1), ...createdPageIds, ...existingIds.slice(idx + 1)]
+          : [...existingIds, ...createdPageIds];
+      } else {
+        reordered = [...existingIds, ...createdPageIds];
       }
+      await api.post(`/api/moodboards/${moodboardId}/pages/reorder`,
+        { page_ids: reordered });
     } catch (_) { /* reorder is best-effort — pages already exist */ }
   }
 
