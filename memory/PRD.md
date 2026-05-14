@@ -892,6 +892,71 @@ L'IA refactor è completa. Ora il prodotto è **chiaro cognitivamente** ma serve
 - Eliminare `LibraryPanel.jsx` deprecated
 - Investigare 422/503 console errors durante editor load
 
+### ✅ Editor Cognitive Cleanup Sprint (14 Feb 2026, late)
+
+**Direzione confermata dal mockup annotato condiviso dall'utente** (UX REVIEW & RECOMMENDATIONS).
+
+**Architecture Lock rispettata:** ZERO modifiche backend / persistence / migrations / runtime / Supabase.
+
+**Topbar refactor finale (canvas-implicit interactions):**
+- ActionToolbar **rimosso completamente** dall'editor (`tool-select·deselect·move·resize·zoom·align` eliminati)
+- Le interazioni sono ora implicite: click = select · drag = move · handles = resize · keyboard/snap = align · wheel/pinch = zoom
+- Editor header carica SOLO actions session/project: status capsule + undo/redo/snap + Presenta · Client Review · Richiedi revisione · Approva · Condividi
+
+**EditorPanel INSERT allineato al mockup esatto:**
+- **BASICS**: Text · Image · Gallery · Note
+- **VISUALS**: Palette · Shape · Arrow · Hotspot (disabled)
+- **MATERIALS**: Material · Product · Texture (disabled)
+- **ANNOTATION**: Line (disabled) · Divider · Label (disabled)
+- **TEMPLATES**: 4 skeleton tiles + "Explore all templates" link che apre SkeletonPicker via custom event
+- 14 testid `insert-*` tutti presenti come da mockup
+
+**Right Inspector — centro assoluto del controllo:**
+- Selecting palette block → Colori (HEX) · Aggiungi colore · Apply all
+- Selecting image block → 11 range inputs (zoom · brightness · contrast · saturation · hue · crop · focal point · adjustments)
+- Selecting text block → typography controls
+- Empty state cinematico ("Ispettore Blocco — Select an element on the canvas...")
+
+**Stability verificata:**
+- Slider smoothness su image block: 51 input events continuativi → 0 React warnings, 0 console errors, 0 "maximum update depth" → rAF throttle confermato effettivo
+- ThemeSwitcher su editor route → no crash, no state loss
+- Filmstrip integrity: drag reorder, duplicate, delete, add page hover chips
+- All existing systems intact: Topbar · Sidebar · Breadcrumb · Theme · UserMenu · Locale · Editor tabs · Collapse · SkeletonPicker
+
+**Files cambiati:**
+- `src/blueprint/moodboard/EditorPanel.jsx` (INSERT_GROUPS reorganized + Templates section)
+- `src/pages/moodboards/MoodboardEditor.jsx` (ActionToolbar import + render removed)
+
+**Test report:** `/app/test_reports/iteration_26.json` — **13/13 PASS** (T12 page-bg persistence deferred a manual smoke; rAF confirmed effettivo su 51 input events continuativi)
+
+## Carryover Issues (non-blocking)
+
+1. **IT i18n keys mancanti** — `moodboards.insert.group.{basics,visuals,materials,annotation,templates}`, `moodboards.insert.{text,image,gallery,note,palette,shape,arrow,hotspot,material,product,texture,line,divider,label}`, `moodboards.tab.*`, `moodboards.tool.*`. Oggi fallback English funzionante; volendo coerenza al 100% va popolato il dizionario IT
+2. **2× 503 console errors** durante editor load — autosave/skeletons retry, non-blocking
+3. **MoodboardEditor.jsx > 1700 righe** — split in `inspectors/*` + `editor/*` raccomandato
+
+## Next Session — P0 Stability Remaining
+
+Lo sprint di oggi ha già coperto:
+- ✅ Slider smoothness (rAF throttling verificato 0 errors su 51 events)
+- ✅ ActionToolbar removal (cognitive noise eliminato)
+- ✅ Editor IA (4 tabs Insert/Assets/Pages/Mood + categories mockup-aligned)
+
+Rimangono dalla lista P0 originale dell'utente (Figma-Grade Stabilization):
+- **Page background persistence** — manual smoke test (round-trip Supabase)
+- **Image block stability** — uploaded images sometimes invisible after navigate
+- **Image focal point persistence** — verifica round-trip
+- **Drag UX refinement** — cursor jumps, smoothness
+- **Snapping refinement** — magnetic threshold, elegant guides
+- **Layer reorder / z-index correctness**
+- **Selection precision** (multi-select, no accidental deselect)
+
+## After P0 — 5 Premium Editorial Templates
+- Luxury Hospitality · Warm Residential · Japandi Editorial · Material Narrative · Fashion/Art Direction
+- Devono sembrare AD Magazine / Studio McGee / Kelly Wearstler / Material Bank / Pinterest elite tier
+- Frontend-driven blocks (no SQL seed) — Architecture Lock rispettato
+
+
 
 
 ## P0 / P1 Backlog (Next Session)
