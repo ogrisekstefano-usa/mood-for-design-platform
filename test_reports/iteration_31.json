@@ -1,0 +1,24 @@
+{
+  "summary": "Iteration 31 — frontend-only Playwright validation of MOOD for DESIGN™ DEMO STORE landing rewrite. All 17 review scenarios pass: hero IT headline + overline + italic line, dual CTA cards (Privato/Professionista) with correct kickers/CTAs/hrefs, 5 value props with Lucide icons, 5 inspire project cards linking to /projects/<slug>, newsletter form preventDefault, header (logo + tagline + 7 nav items), locale switcher (IT/EN/FR/DE/ES) with EN headline 'SHAPING SPACES.\\nBUILDING RELATIONSHIPS.', footer 6 columns, showroom address (Via Della Manifattura, 12 — 33080 Porcia (PN) — Italia — +39 0434 123456 — info@moodfordesign.com) + PRENOTA UNA VISITA CTA, 4 social icons (instagram/pinterest/linkedin/tiktok), copyright '© 2026 MOOD for DESIGN™ — Tutti i diritti riservati.', /projects (6 cards, 4 filters), /projects/casa-naviglio detail (h1 'CASA NAVIGLIO'), /onboarding/private + /onboarding/pro, /auth/login form intact.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Header tagline uses CSS text-transform:uppercase — when validating with inner_text in tests, content reads uppercase. Functionally correct; non-blocking.",
+    "Newsletter submit currently only calls preventDefault — no user feedback (toast/success state). Acceptable for DEMO but consider adding a confirmation message for UX.",
+    "/projects masonry returns 6 cards while spec lists 5 inspire items on home — ok because /projects is the full archive (separate config) and home inspire-strip is curated; verified both render distinct lists."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "N/A (skipped per request)", "frontend": "100%" },
+  "test_credentials": "N/A — public site only",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Use data-testid 'project-card-<slug>' (singular) on /projects, NOT 'projects-card-*'. Footer copyright text in source preserves casing 'MOOD for DESIGN' but rendered uppercase via CSS — assert case-insensitively or use textContent of '.mfd-footer__bottom span'. Locale persists in localStorage key 'mfd_site_locale' — clear it before validating default IT. Hero uses Unsplash bg image; rely on data-testid 'hero-headline' inner_text, never on pixels.",
+  "rca of the issue": "No bugs found."
+}

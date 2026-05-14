@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowRight, Gem, Users, Sparkles, Globe, ShieldCheck } from 'lucide-react';
 import { useSite } from '../../site/SiteContext';
 import { homepageContent } from '../../site/content/homepage';
-import { projects } from '../../site/content/projects';
-import { Reveal, SiteImage } from '../../site/components/Reveal';
+import { Reveal } from '../../site/components/Reveal';
+
+const ICONS = { gem: Gem, users: Users, sparkles: Sparkles, globe: Globe, 'shield-check': ShieldCheck };
 
 const HeroMedia = ({ src }) => {
   const [loaded, setLoaded] = useState(false);
   return (
     <>
       <div className="mfd-hero__media">
-        <img
-          src={src}
-          alt=""
-          className={loaded ? 'is-loaded' : ''}
-          onLoad={() => setLoaded(true)}
-        />
+        <img src={src} alt="" className={loaded ? 'is-loaded' : ''} onLoad={() => setLoaded(true)} onError={() => setLoaded(true)} />
       </div>
       <div className="mfd-hero__veil" />
     </>
@@ -26,11 +22,8 @@ const HeroMedia = ({ src }) => {
 const HomePage = () => {
   const { pick } = useSite();
   const c = homepageContent;
-  const featured = projects.slice(0, 6);
 
-  useEffect(() => {
-    document.title = pick(c.meta.title);
-  }, [pick, c.meta.title]);
+  useEffect(() => { document.title = pick(c.meta.title); }, [pick, c.meta.title]);
 
   return (
     <div data-testid="site-home">
@@ -38,134 +31,131 @@ const HomePage = () => {
       <section className="mfd-hero" data-testid="home-hero">
         <HeroMedia src={c.hero.backgroundImage} />
         <div className="mfd-hero__inner">
-          <Reveal as="span" className="mfd-eyebrow mfd-eyebrow--accent" data-testid="hero-eyebrow">
-            {pick(c.hero.eyebrow)}
-          </Reveal>
-          <Reveal as="h1" className="mfd-display" delay={2} data-testid="hero-headline">
-            {pick(c.hero.headline)}
-          </Reveal>
-          <Reveal as="p" className="mfd-lead" delay={3} data-testid="hero-sub">
+          <Reveal as="h1" className="mfd-display" data-testid="hero-headline">{pick(c.hero.headline)}</Reveal>
+          <Reveal as="p" className="mfd-lead" delay={2} data-testid="hero-sub" style={{ textAlign: 'center', whiteSpace: 'pre-line' }}>
             {pick(c.hero.sub)}
           </Reveal>
-          <Reveal className="mfd-hero__cta-row" delay={4}>
-            <Link to={c.hero.primaryCta.href} className="mfd-btn mfd-btn--accent" data-testid="hero-cta-private">
-              {pick(c.hero.primaryCta.label)} <ArrowUpRight size={14} />
-            </Link>
-            <Link to={c.hero.secondaryCta.href} className="mfd-btn" data-testid="hero-cta-pro">
-              {pick(c.hero.secondaryCta.label)} <ArrowUpRight size={14} />
-            </Link>
-          </Reveal>
+          <Reveal delay={3} className="mfd-hero__divider" />
+          <Reveal as="span" className="mfd-eyebrow" delay={3} data-testid="hero-overline">{pick(c.hero.overline)}</Reveal>
+          <Reveal as="p" className="mfd-italic-line" delay={4} data-testid="hero-overline-italic">{pick(c.hero.overlineItalic)}</Reveal>
         </div>
       </section>
 
       {/* DUAL CTA */}
-      <section className="mfd-section mfd-section--tight" data-testid="home-dual">
-        <div className="mfd-wrap" style={{ display: 'grid', gap: '2rem', marginBottom: '3rem' }}>
-          <Reveal as="span" className="mfd-eyebrow">{pick(c.dualPath.eyebrow)}</Reveal>
-          <Reveal as="h2" className="mfd-h1" delay={2}>{pick(c.dualPath.title)}</Reveal>
-        </div>
+      <section className="mfd-section" data-testid="home-dual">
         <div className="mfd-wrap">
           <div className="mfd-dual">
-            <Reveal className="mfd-dual__card" data-testid="dual-private">
-              <div className="mfd-dual__card-media">
-                <SiteImage src={c.dualPath.private.image} aspect="4/3" alt="" />
+            {/* PRIVATO — light card */}
+            <Reveal className="mfd-dual__card mfd-dual__card--light" data-testid="dual-private">
+              <div className="mfd-dual__media">
+                <img src={c.dualPath.private.image} alt="" loading="lazy" decoding="async" />
               </div>
-              <span className="mfd-eyebrow">{pick(c.dualPath.private.kicker)}</span>
-              <h3 className="mfd-h2">{pick(c.dualPath.private.title)}</h3>
-              <p className="mfd-body" style={{ maxWidth: '46ch' }}>{pick(c.dualPath.private.body)}</p>
-              <div>
-                <Link to={c.dualPath.private.href} className="mfd-btn mfd-btn--ghost" data-testid="dual-private-cta">
-                  {pick(c.dualPath.private.cta)} <ArrowUpRight size={14} />
-                </Link>
+              <div className="mfd-dual__body">
+                <div>
+                  <span className="mfd-eyebrow mfd-eyebrow--dark">{pick(c.dualPath.private.kicker)}</span>
+                  <h3 className="mfd-dual__title" style={{ marginTop: '0.6rem', color: 'var(--site-ink-dark)' }}>{pick(c.dualPath.private.title)}</h3>
+                  <p className="mfd-body mfd-body--dark" style={{ marginTop: '1.1rem', whiteSpace: 'pre-line' }}>{pick(c.dualPath.private.body)}</p>
+                </div>
+                <div className="mfd-dual__cta-row">
+                  <Link to={c.dualPath.private.href} className="mfd-btn mfd-btn--dark" data-testid="dual-private-cta">
+                    {pick(c.dualPath.private.cta)} <ArrowRight size={14} />
+                  </Link>
+                </div>
               </div>
             </Reveal>
-            <div className="mfd-dual__divider" />
-            <Reveal className="mfd-dual__card" delay={2} data-testid="dual-pro">
-              <div className="mfd-dual__card-media">
-                <SiteImage src={c.dualPath.pro.image} aspect="4/3" alt="" />
+
+            {/* PROFESSIONISTA — dark card */}
+            <Reveal className="mfd-dual__card mfd-dual__card--dark" delay={2} data-testid="dual-pro">
+              <div className="mfd-dual__body">
+                <div>
+                  <span className="mfd-eyebrow">{pick(c.dualPath.pro.kicker)}</span>
+                  <h3 className="mfd-dual__title" style={{ marginTop: '0.6rem', color: 'var(--site-ivory)' }}>{pick(c.dualPath.pro.title)}</h3>
+                  <p className="mfd-body" style={{ marginTop: '1.1rem', whiteSpace: 'pre-line' }}>{pick(c.dualPath.pro.body)}</p>
+                </div>
+                <div className="mfd-dual__cta-row">
+                  <Link to={c.dualPath.pro.href} className="mfd-btn mfd-btn--paper" data-testid="dual-pro-cta">
+                    {pick(c.dualPath.pro.cta)} <ArrowRight size={14} />
+                  </Link>
+                </div>
               </div>
-              <span className="mfd-eyebrow">{pick(c.dualPath.pro.kicker)}</span>
-              <h3 className="mfd-h2">{pick(c.dualPath.pro.title)}</h3>
-              <p className="mfd-body" style={{ maxWidth: '46ch' }}>{pick(c.dualPath.pro.body)}</p>
-              <div>
-                <Link to={c.dualPath.pro.href} className="mfd-btn mfd-btn--ghost" data-testid="dual-pro-cta">
-                  {pick(c.dualPath.pro.cta)} <ArrowUpRight size={14} />
-                </Link>
+              <div className="mfd-dual__media">
+                <img src={c.dualPath.pro.image} alt="" loading="lazy" decoding="async" />
               </div>
             </Reveal>
           </div>
         </div>
       </section>
 
-      {/* SELECTED PROJECTS */}
-      <section className="mfd-section" data-testid="home-projects">
-        <div className="mfd-wrap" style={{ display: 'grid', gap: '2rem', marginBottom: '3.5rem' }}>
-          <Reveal as="span" className="mfd-eyebrow">{pick(c.selectedProjects.eyebrow)}</Reveal>
-          <Reveal as="h2" className="mfd-h1" delay={2}>{pick(c.selectedProjects.title)}</Reveal>
+      {/* VALUE PROPS — paper background */}
+      <section className="mfd-section mfd-section--paper" data-testid="home-values" id="about">
+        <div className="mfd-wrap" style={{ display: 'grid', gap: '2.5rem' }}>
+          <Reveal as="h2" className="mfd-eyebrow" style={{ textAlign: 'center', color: 'var(--site-ink-dark)', fontSize: '12px' }}>
+            <span dangerouslySetInnerHTML={{ __html: pick(c.valueProps.title).replace('™', '<sup style="font-size:0.55em">\u2122</sup>') }} />
+          </Reveal>
+          <Reveal delay={2} style={{ width: '64px', height: '1px', background: 'var(--site-accent)', margin: '0 auto', opacity: 0.7 }} />
+          <Reveal delay={2}>
+            <div className="mfd-values">
+              {c.valueProps.items.map((item, i) => {
+                const Icon = ICONS[item.icon] || Gem;
+                return (
+                  <Reveal key={item.id} delay={(i % 4) + 1} className="mfd-value" data-testid={`home-value-${item.id}`}>
+                    <div className="mfd-value__icon"><Icon size={28} strokeWidth={1.2} /></div>
+                    <h3 className="mfd-value__title">{pick(item.title)}</h3>
+                    <p className="mfd-value__body">{pick(item.body)}</p>
+                  </Reveal>
+                );
+              })}
+            </div>
+          </Reveal>
         </div>
-        <div className="mfd-wrap">
-          <div className="mfd-strip">
-            {featured.map((p, i) => (
-              <Reveal key={p.slug} delay={(i % 3) + 1} className="mfd-strip__item">
-                <Link
-                  to={`/projects/${p.slug}`}
-                  className="mfd-strip__item"
-                  data-testid={`home-project-${p.slug}`}
-                  style={{ display: 'block' }}
-                >
-                  <div className="mfd-strip__media">
-                    <SiteImage src={p.cover} aspect={p.aspect} alt={pick(p.title)} />
-                  </div>
-                  <div className="mfd-strip__meta">
-                    <div className="mfd-strip__meta-row">
-                      <h3 className="mfd-strip__title">{pick(p.title)}</h3>
-                      <span className="mfd-strip__location">{pick(p.location)}</span>
+      </section>
+
+      {/* PROJECTS THAT INSPIRE */}
+      <section className="mfd-section" data-testid="home-projects" id="projects">
+        <div className="mfd-wrap" style={{ display: 'grid', gap: '2.5rem' }}>
+          <Reveal as="h2" className="mfd-eyebrow" style={{ textAlign: 'center', fontSize: '12px', color: 'var(--site-ink)' }} data-testid="projects-strip-title">
+            {pick(c.projectsInspire.title)}
+          </Reveal>
+          <Reveal delay={2} style={{ width: '64px', height: '1px', background: 'var(--site-accent)', margin: '0 auto', opacity: 0.7 }} />
+          <Reveal delay={2}>
+            <div className="mfd-inspire-strip">
+              {c.projectsInspire.items.map((p, i) => (
+                <Reveal key={p.id} delay={(i % 4) + 1} as="div">
+                  <Link to={`/projects/${p.slug}`} className="mfd-inspire" data-testid={`home-project-${p.id}`}>
+                    <img src={p.image} alt={pick(p.category)} loading="lazy" decoding="async" />
+                    <div className="mfd-inspire__veil" />
+                    <div className="mfd-inspire__caption">
+                      <span className="mfd-inspire__cat">{pick(p.category)}</span>
+                      <span className="mfd-inspire__loc">{pick(p.location)}</span>
                     </div>
-                    <p className="mfd-body" style={{ maxWidth: '56ch' }}>{pick(p.subtitle)}</p>
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
-          <div style={{ marginTop: '4rem', display: 'flex', justifyContent: 'flex-start' }}>
-            <Link to={c.selectedProjects.href} className="mfd-btn" data-testid="home-projects-all">
-              {pick(c.selectedProjects.cta)} <ArrowUpRight size={14} />
-            </Link>
-          </div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* EDITORIAL VALUES */}
-      <section className="mfd-section" data-testid="home-values" id="about">
-        <div className="mfd-wrap" style={{ display: 'grid', gap: '2rem', marginBottom: '3rem' }}>
-          <Reveal as="span" className="mfd-eyebrow">{pick(c.editorialValues.eyebrow)}</Reveal>
-          <Reveal as="h2" className="mfd-h1" delay={2}>{pick(c.editorialValues.title)}</Reveal>
-        </div>
-        <div className="mfd-wrap">
-          <div className="mfd-values">
-            {c.editorialValues.items.map((item, i) => (
-              <Reveal key={item.id} delay={(i % 4) + 1} className="mfd-values__item" data-testid={`home-value-${item.id}`}>
-                <span className="mfd-eyebrow mfd-eyebrow--accent">{pick(item.kicker)}</span>
-                <h3 className="mfd-h2">{pick(item.title)}</h3>
-                <p className="mfd-body">{pick(item.body)}</p>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FINAL CTA */}
-      <section data-testid="home-final-cta">
-        <div className="mfd-wrap mfd-final">
-          <Reveal as="span" className="mfd-eyebrow">{pick(c.finalCta.eyebrow)}</Reveal>
-          <Reveal as="h2" className="mfd-display" delay={2}>{pick(c.finalCta.title)}</Reveal>
-          <Reveal className="mfd-final__row" delay={3}>
-            <Link to={c.finalCta.primary.href} className="mfd-btn mfd-btn--accent" data-testid="final-cta-primary">
-              {pick(c.finalCta.primary.label)} <ArrowUpRight size={14} />
-            </Link>
-            <Link to={c.finalCta.secondary.href} className="mfd-btn" data-testid="final-cta-secondary">
-              {pick(c.finalCta.secondary.label)} <ArrowUpRight size={14} />
-            </Link>
+      {/* NEWSLETTER */}
+      <section data-testid="home-newsletter">
+        <div className="mfd-newsletter mfd-wrap" style={{ maxWidth: '1480px' }}>
+          <Reveal>
+            <div className="mfd-newsletter__title">{pick(c.newsletter.title)}</div>
+            <p className="mfd-body mfd-body--dark" style={{ whiteSpace: 'pre-line' }}>{pick(c.newsletter.body)}</p>
+          </Reveal>
+          <Reveal delay={2}>
+            <form className="mfd-newsletter__form" onSubmit={(e) => e.preventDefault()} data-testid="newsletter-form">
+              <input
+                type="email"
+                placeholder={pick(c.newsletter.placeholder)}
+                aria-label={pick(c.newsletter.placeholder)}
+                data-testid="newsletter-input"
+              />
+              <button type="submit" data-testid="newsletter-submit">{pick(c.newsletter.submit)}</button>
+            </form>
+          </Reveal>
+          <Reveal delay={3} className="mfd-newsletter__decor">
+            <img src={c.newsletter.decorImage} alt="" loading="lazy" decoding="async" />
           </Reveal>
         </div>
       </section>

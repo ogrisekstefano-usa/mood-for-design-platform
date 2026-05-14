@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSite } from '../SiteContext';
 import { navigationContent } from '../content/navigation';
-import { Globe } from 'lucide-react';
+import { Globe, ChevronDown } from 'lucide-react';
 
 const LocaleSwitcher = () => {
   const { locale, setLocale, locales } = useSite();
@@ -27,8 +27,7 @@ const LocaleSwitcher = () => {
         aria-expanded={open}
         data-testid="site-locale-btn"
       >
-        <Globe size={12} style={{ marginRight: 6, verticalAlign: '-1px' }} />
-        {current.label}
+        <Globe size={12} /> {current.label} <ChevronDown size={12} />
       </button>
       {open && (
         <div className="mfd-locale__menu" role="listbox" data-testid="site-locale-menu">
@@ -51,6 +50,8 @@ const LocaleSwitcher = () => {
   );
 };
 
+const isHashLink = (href) => href && href.startsWith('#');
+
 const SiteHeader = () => {
   const { pick } = useSite();
   const [scrolled, setScrolled] = useState(false);
@@ -63,7 +64,6 @@ const SiteHeader = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Force scrolled style off only on the homepage hero
   const isHome = pathname === '/' || pathname === '';
 
   return (
@@ -71,28 +71,32 @@ const SiteHeader = () => {
       className={`mfd-header ${scrolled || !isHome ? 'mfd-header--scrolled' : ''}`}
       data-testid="site-header"
     >
-      <Link to="/" className="mfd-header__brand" data-testid="site-brand">
-        <span>{navigationContent.brand.name}<sup>{navigationContent.brand.suffix}</sup></span>
-        <small>{pick(navigationContent.brand.tagline)}</small>
+      <Link to="/" className="mfd-header__brandgroup" data-testid="site-brand" style={{ textDecoration: 'none' }}>
+        <img src={navigationContent.brand.logoSrc} alt="MOOD for DESIGN" className="mfd-header__logo" />
+        <span className="mfd-header__tagline" data-testid="site-brand-tagline">
+          {pick(navigationContent.brand.tagline).split('\n').map((line, i) => (
+            <span key={i}>{line}</span>
+          ))}
+        </span>
       </Link>
+
       <nav className="mfd-header__nav" aria-label="Primary">
         {navigationContent.header.links.map((link) => (
-          <Link
-            key={link.id}
-            to={link.href}
-            data-testid={`site-nav-${link.id}`}
-          >
-            {pick(link.label)}
-          </Link>
+          isHashLink(link.href) ? (
+            <a key={link.id} href={link.href} data-testid={`site-nav-${link.id}`}>{pick(link.label)}</a>
+          ) : (
+            <Link key={link.id} to={link.href} data-testid={`site-nav-${link.id}`}>{pick(link.label)}</Link>
+          )
         ))}
       </nav>
+
       <div className="mfd-header__right">
         <LocaleSwitcher />
         <Link
           to={navigationContent.header.access.href}
-          className="mfd-btn mfd-btn--solid"
+          className="mfd-btn mfd-btn--outline-paper"
           data-testid="site-access-btn"
-          style={{ padding: '0.65rem 1.1rem', fontSize: 11 }}
+          style={{ padding: '0.7rem 1.3rem', fontSize: 11 }}
         >
           {pick(navigationContent.header.access.label)}
         </Link>
