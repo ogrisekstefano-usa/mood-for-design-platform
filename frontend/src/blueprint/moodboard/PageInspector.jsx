@@ -145,6 +145,64 @@ const PageInspector = ({ moodboardId, page, onSaved }) => {
                 onChange={(v) => commit({ hidden_in_presentation: v })}
                 testid="page-hidden-in-presentation" />
       </div>
+
+      {/* Page background — color + image + overlay opacity. Applies to
+          the editor canvas, presentation mode and review mode (renderers
+          read page.settings.{background_color, background_image_url,
+          background_overlay}). Light/Dark cinematic boards both supported. */}
+      <div className="pt-3 mt-3 border-t border-[var(--bp-border)]">
+        <p className="bp-eyebrow !text-[10px] mb-3 !text-[var(--bp-text-muted)]">
+          {t('moodboards.field.pageBackground', null, 'Page background')}
+        </p>
+
+        <label className="block mb-3">
+          <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+            {t('moodboards.field.bgColor', null, 'Background color')}
+          </span>
+          <div className="flex items-center gap-2">
+            <input type="color"
+                   value={(page.settings?.background_color || '#0A0A0B').startsWith('#') ? page.settings?.background_color || '#0A0A0B' : '#0A0A0B'}
+                   onChange={(e) => commit({ background_color: e.target.value })}
+                   data-testid="page-bg-color"
+                   className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent border border-[var(--bp-border)]" />
+            <input value={page.settings?.background_color || ''}
+                   onChange={(e) => setDraft((d) => ({ ...d, background_color: e.target.value }))}
+                   onBlur={(e) => commit({ background_color: e.target.value })}
+                   placeholder="inherit"
+                   className="input-luxury flex-1 px-2 py-1 text-xs font-mono rounded-[var(--bp-radius-xs)]" />
+          </div>
+        </label>
+
+        <label className="block mb-3">
+          <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+            {t('moodboards.field.bgImage', null, 'Background image URL')}
+          </span>
+          <input value={page.settings?.background_image_url || ''}
+                 onChange={(e) => setDraft((d) => ({ ...d, background_image_url: e.target.value }))}
+                 onBlur={(e) => commit({ background_image_url: e.target.value })}
+                 placeholder="https://…"
+                 data-testid="page-bg-image-url"
+                 className="input-luxury w-full px-2 py-1.5 text-xs rounded-[var(--bp-radius-xs)]" />
+        </label>
+
+        <label className="block mb-3">
+          <div className="flex items-center justify-between mb-1">
+            <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)]">
+              {t('moodboards.field.bgOverlay', null, 'Overlay')}
+            </span>
+            <span className="bp-caption !text-[10px] text-[var(--bp-text-primary)] font-mono tabular-nums">
+              {((page.settings?.background_overlay ?? 0) * 100).toFixed(0)}%
+            </span>
+          </div>
+          <input type="range" min={0} max={1} step={0.05}
+                 value={page.settings?.background_overlay ?? 0}
+                 onChange={(e) => setDraft((d) => ({ ...d, background_overlay: parseFloat(e.target.value) }))}
+                 onMouseUp={(e) => commit({ background_overlay: parseFloat(e.target.value) })}
+                 onTouchEnd={(e) => commit({ background_overlay: parseFloat(e.target.value) })}
+                 data-testid="page-bg-overlay"
+                 className="bp-slider" />
+        </label>
+      </div>
     </div>
   );
 };

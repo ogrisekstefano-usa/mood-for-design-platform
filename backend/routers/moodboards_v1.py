@@ -35,9 +35,9 @@ logger = logging.getLogger(__name__)
 
 
 SUPPORTED_BLOCK_TYPES = {
-    "image", "text", "palette", "note", "product", "material",
+    "image", "text", "palette", "note", "product", "material", "shape",
     # Future-ready stubs (accepted server-side, no UI yet)
-    "hotspot", "video", "vendor", "product_grid",
+    "hotspot", "video", "vendor", "product_grid", "arrow",
 }
 
 

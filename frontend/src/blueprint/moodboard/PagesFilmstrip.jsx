@@ -12,6 +12,7 @@
  */
 import React, { useEffect, useRef, useState } from 'react';
 import api from '../../lib/api';
+import { trackEvent } from '../../lib/telemetry';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { Plus, Copy, Trash2 } from 'lucide-react';
 import SkeletonPicker from './SkeletonPicker';
@@ -62,6 +63,9 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
     setSkeletonPickerOpen(false);
     const r = await api.post(`/api/moodboards/${moodboardId}/pages/from_skeleton`,
                              { skeleton_id: skeletonId });
+    trackEvent('moodboard.skeleton_applied',
+      { skeleton_id: skeletonId, moodboard_id: moodboardId },
+      { entityType: 'moodboard', entityId: moodboardId });
     onSelect?.(r.data.id);
     onChange?.();
   };

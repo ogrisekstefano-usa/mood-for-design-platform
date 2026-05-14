@@ -47,10 +47,27 @@ const LayerRow = ({
   dragging, dropTarget, dropPosition,
   onDragStart, onDragOver, onDrop, onDragEnd,
 }) => {
-  const label = block.content?.caption
+  const fallbackLabel = block.content?.caption
               || block.content?.text
               || block.content?.name
               || t(`moodboards.block.${block.type}`);
+  // Custom rename persisted in metadata.layer_label. Falls back to derived
+  // label so the LayersPanel keeps natural names for un-renamed blocks.
+  const customLabel = block.metadata?.layer_label;
+  const label = customLabel || fallbackLabel;
+
+  const [renaming, setRenaming] = React.useState(false);
+  const [draft, setDraft] = React.useState('');
+  const commitRename = () => {
+    const next = draft.trim();
+    setRenaming(false);
+    if (next && next !== customLabel) {
+      onAction('rename', block, { layer_label: next });
+    } else if (!next && customLabel) {
+      // Empty rename → clear the custom label, restore fallback
+      onAction('rename', block, { layer_label: null });
+    }
+  };
 
   const isDropTarget = dropTarget === block.id;
   const showIndicatorTop    = isDropTarget && dropPosition === 'above';
@@ -59,7 +76,7 @@ const LayerRow = ({
   return (
     <li
       data-testid={`layer-row-${block.id}`}
-      draggable
+      draggable={!renaming}
       onDragStart={(e) => onDragStart(e, block.id)}
       onDragOver={(e) => onDragOver(e, block.id)}
       onDrop={(e) => onDrop(e, block.id)}
@@ -96,9 +113,34 @@ const LayerRow = ({
             </span>}
       </div>
 
-      <span className={`flex-1 bp-caption truncate text-[var(--bp-text-${selected ? 'primary' : 'secondary'})]`}>
-        {label}
-      </span>
+      {renaming ? (
+        <input
+          autoFocus
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={commitRename}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') commitRename();
+            if (e.key === 'Escape') { setRenaming(false); }
+            e.stopPropagation();
+          }}
+          onClick={(e) => e.stopPropagation()}
+          data-testid={`layer-rename-input-${block.id}`}
+          className="flex-1 bg-transparent border-b border-[var(--bp-primary)]
+                     text-[var(--bp-text-primary)] text-[11px] py-0.5 focus:outline-none"
+        />
+      ) : (
+        <span
+          data-testid={`layer-label-${block.id}`}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+            setDraft(customLabel || '');
+            setRenaming(true);
+          }}
+          className={`flex-1 bp-caption truncate text-[var(--bp-text-${selected ? 'primary' : 'secondary'})]`}>
+          {label}
+        </span>
+      )}
 
       <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
         <button

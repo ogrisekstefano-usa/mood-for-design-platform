@@ -36,6 +36,7 @@ import PageInspector from '../../blueprint/moodboard/PageInspector';
 import ImageQuickAdjust from '../../blueprint/moodboard/ImageQuickAdjust';
 import useWorkspaceMode from '../../blueprint/moodboard/useWorkspaceMode';
 import Brand from '../../components/common/Brand';
+import { trackEvent } from '../../lib/telemetry';
 
 const CANVAS_W = 1400;
 const CANVAS_H = 2400;
@@ -290,6 +291,11 @@ const MoodboardEditor = ({ readOnly = false }) => {
     setBlocks((bs) => { const next = [...bs, r.data]; history.record(next); return next; });
     setSelectedId(r.data.id);
     setRightTab('inspector');
+    // Telemetry — used by the product team to learn which blocks are popular
+    // and which fall in disuse. Non-PII payload only.
+    trackEvent('moodboard.block_added',
+      { block_type: type, moodboard_id: id },
+      { entityType: 'moodboard', entityId: id });
   };
 
   const updateBlock = (bid, patch) => {
@@ -405,7 +411,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
     applyStackOrder(orderedIdsTopFirst);
   }, [applyStackOrder]);
 
-  const handleLayerAction = (action, block) => {
+  const handleLayerAction = (action, block, payload) => {
     if (!block) return;
     switch (action) {
       case 'toggleLock':
@@ -413,6 +419,16 @@ const MoodboardEditor = ({ readOnly = false }) => {
         break;
       case 'toggleHidden':
         updateBlock(block.id, { hidden: !block.hidden });
+        break;
+      case 'rename':
+        // Layer label persisted in metadata.layer_label — separate from the
+        // derived caption/text label so renames don't overwrite content.
+        updateBlock(block.id, {
+          metadata: {
+            ...(block.metadata || {}),
+            layer_label: payload?.layer_label ?? null,
+          },
+        });
         break;
       case 'bringForward':
         nudgeLayer(block, 'forward');
@@ -554,6 +570,9 @@ const MoodboardEditor = ({ readOnly = false }) => {
       presentUrl: `${window.location.origin}/presentation/${r.data.share_token}`,
     });
     setMb((m) => ({ ...m, share_token: r.data.share_token }));
+    trackEvent('moodboard.shared',
+      { moodboard_id: id },
+      { entityType: 'moodboard', entityId: id });
   };
 
   // ── Collaboration overview (page statuses + activity) ────────────────────
@@ -612,6 +631,9 @@ const MoodboardEditor = ({ readOnly = false }) => {
         slug, name: mb.title || t('moodboards.untitled'),
       });
       setTemplateSavedSlug(slug);
+      trackEvent('moodboard.template_saved',
+        { moodboard_id: id, slug },
+        { entityType: 'moodboard', entityId: id });
       setTimeout(() => setTemplateSavedSlug(null), 2500);
     } catch (err) {
       setTemplateSaveError(err?.response?.data?.detail || 'error');
@@ -839,12 +861,29 @@ const MoodboardEditor = ({ readOnly = false }) => {
                  flexShrink: 0,
                }}>
             <div ref={canvasRef} onClick={() => setSelectedId(null)} data-testid="moodboard-canvas"
-                 className="relative bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)]"
+                 className="relative bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] overflow-hidden"
                  style={{
                    width: canvasW, height: canvasH,
                    transform: `scale(${canvasScale})`,
                    transformOrigin: 'top left',
+                   backgroundColor: activePage?.settings?.background_color || undefined,
+                   backgroundImage: activePage?.settings?.background_image_url
+                     ? `url(${activePage.settings.background_image_url})` : undefined,
+                   backgroundSize: 'cover',
+                   backgroundPosition: 'center',
                  }}>
+              {/* Page-background overlay — sits below all blocks but above the
+                  background image, so it can darken/lighten a photo backdrop
+                  for legibility without affecting block colors. */}
+              {(activePage?.settings?.background_overlay ?? 0) > 0 && (
+                <div data-testid="page-bg-overlay-layer"
+                     className="absolute inset-0 pointer-events-none"
+                     style={{
+                       backgroundColor: activePage?.settings?.background_color || 'rgba(0,0,0,1)',
+                       opacity: activePage.settings.background_overlay,
+                       zIndex: 0,
+                     }} />
+              )}
               {!readOnly && drag && snapEnabled && (
                 <SnapGuides guides={snapGuides} canvasWidth={canvasW} canvasHeight={canvasH} />
               )}
@@ -1051,6 +1090,23 @@ const MoodboardEditor = ({ readOnly = false }) => {
 };
 
 // ── Tab Button ──────────────────────────────────────────────────────────────
+const TogglePill = ({ active, onClick, label, italic, underline, testid }) => (
+  <button type="button"
+          onClick={onClick}
+          data-testid={testid}
+          style={{
+            fontStyle: italic ? 'italic' : 'normal',
+            textDecoration: underline ? 'underline' : 'none',
+          }}
+          className={`flex-1 py-2 text-[12px] font-semibold rounded-[var(--bp-radius-xs)] border transition-colors
+            ${active
+              ? 'border-[var(--bp-primary)] text-[var(--bp-text-primary)] bg-[var(--bp-surface-2)]'
+              : 'border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:border-[var(--bp-border-strong)]'}`}>
+    {label}
+  </button>
+);
+
+
 const ShareLinkRow = ({ label, value, testid, muted }) => (
   <div className="mb-3" data-testid={`${testid}-row`}>
     <p className={`text-[10px] tracking-[0.22em] uppercase mb-1.5
@@ -1284,6 +1340,222 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
     </div>
   );
 
+  // Typography controls — fine-grained editorial controls applied via
+  // style.typography. Stored shape: { font_family, font_size, font_weight,
+  // line_height, letter_spacing, text_align, color, italic, underline,
+  // uppercase, vertical_align }. JSX (not component) to avoid the same
+  // remount issue we fixed earlier for adjustment sliders.
+  const tg = (s.typography) || {};
+  const setTg = (k, v) => onChangeStyle({ ...s, typography: { ...tg, [k]: v } });
+  const typographyJsx = (
+    <div className="pt-5 mt-5 border-t border-[var(--bp-border)]">
+      <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-4">
+        {t('moodboards.editor.typography', null, 'Typography')}
+      </p>
+
+      {/* Font family — three editorial families bound to CSS vars */}
+      <label className="block mb-4">
+        <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+          {t('moodboards.field.fontFamily', null, 'Font family')}
+        </span>
+        <div className="grid grid-cols-3 gap-1" data-testid="typo-font-family">
+          {[['heading', 'Display'], ['body', 'Body'], ['mono', 'Mono']].map(([id, label]) => {
+            const active = (tg.font_family || 'heading') === id;
+            return (
+              <button key={id} type="button"
+                      onClick={() => setTg('font_family', id)}
+                      data-testid={`typo-font-${id}`}
+                      style={{ fontFamily: `var(--bp-font-${id})` }}
+                      className={`text-[11px] py-2 rounded-[var(--bp-radius-xs)] border transition-colors
+                        ${active
+                          ? 'border-[var(--bp-primary)] text-[var(--bp-text-primary)] bg-[var(--bp-surface-2)]'
+                          : 'border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:border-[var(--bp-border-strong)]'}`}>
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </label>
+
+      <InspectorSlider label={t('moodboards.field.fontSize', null, 'Size')}
+                       value={tg.font_size ?? 16} min={10} max={120} step={1}
+                       onChange={(v) => setTg('font_size', v)}
+                       testid="typo-font-size" formatValue={(v) => `${v}px`} />
+
+      <InspectorSlider label={t('moodboards.field.fontWeight', null, 'Weight')}
+                       value={tg.font_weight ?? 400} min={100} max={900} step={100}
+                       onChange={(v) => setTg('font_weight', v)}
+                       testid="typo-font-weight" formatValue={(v) => String(v)} />
+
+      <InspectorSlider label={t('moodboards.field.lineHeight', null, 'Line height')}
+                       value={tg.line_height ?? 1.3} min={0.8} max={2.4} step={0.05}
+                       onChange={(v) => setTg('line_height', v)}
+                       testid="typo-line-height" formatValue={(v) => v.toFixed(2)} />
+
+      <InspectorSlider label={t('moodboards.field.letterSpacing', null, 'Tracking')}
+                       value={tg.letter_spacing ?? 0} min={-0.05} max={0.4} step={0.005}
+                       onChange={(v) => setTg('letter_spacing', v)}
+                       testid="typo-letter-spacing" formatValue={(v) => `${(v * 1000).toFixed(0)}`} />
+
+      {/* Text align */}
+      <div className="mb-4">
+        <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+          {t('moodboards.field.textAlign', null, 'Alignment')}
+        </span>
+        <div className="grid grid-cols-4 gap-1" data-testid="typo-text-align">
+          {['left', 'center', 'right', 'justify'].map((a) => {
+            const active = (tg.text_align || 'left') === a;
+            return (
+              <button key={a} type="button"
+                      onClick={() => setTg('text_align', a)}
+                      data-testid={`typo-align-${a}`}
+                      className={`text-[10px] tracking-wider uppercase py-1.5 rounded-[var(--bp-radius-xs)] border transition-colors
+                        ${active
+                          ? 'border-[var(--bp-primary)] text-[var(--bp-text-primary)] bg-[var(--bp-surface-2)]'
+                          : 'border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:border-[var(--bp-border-strong)]'}`}>
+                {a.slice(0, 1)}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Decoration toggles */}
+      <div className="mb-4">
+        <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+          {t('moodboards.field.decoration', null, 'Decoration')}
+        </span>
+        <div className="flex gap-1" data-testid="typo-decoration">
+          <TogglePill testid="typo-italic" active={!!tg.italic} onClick={() => setTg('italic', !tg.italic)} label="I" italic />
+          <TogglePill testid="typo-underline" active={!!tg.underline} onClick={() => setTg('underline', !tg.underline)} label="U" underline />
+          <TogglePill testid="typo-uppercase" active={!!tg.uppercase} onClick={() => setTg('uppercase', !tg.uppercase)} label="AA" />
+        </div>
+      </div>
+
+      {/* List style */}
+      <div className="mb-4">
+        <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+          {t('moodboards.field.listStyle', null, 'List')}
+        </span>
+        <div className="grid grid-cols-3 gap-1" data-testid="typo-list-style">
+          {[[null, 'None'], ['bullet', '• Bullet'], ['numbered', '1. Numbered']].map(([id, label]) => {
+            const active = (c.list_style || null) === id;
+            return (
+              <button key={String(id)} type="button"
+                      onClick={() => setC('list_style', id)}
+                      data-testid={`typo-list-${id || 'none'}`}
+                      className={`text-[10px] tracking-wider py-1.5 rounded-[var(--bp-radius-xs)] border transition-colors
+                        ${active
+                          ? 'border-[var(--bp-primary)] text-[var(--bp-text-primary)] bg-[var(--bp-surface-2)]'
+                          : 'border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:border-[var(--bp-border-strong)]'}`}>
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Color */}
+      <label className="block mb-2">
+        <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+          {t('moodboards.field.color', null, 'Color')}
+        </span>
+        <div className="flex items-center gap-2">
+          <input type="color" value={tg.color || '#F5F2EC'}
+                 onChange={(e) => setTg('color', e.target.value)}
+                 data-testid="typo-color"
+                 className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent border border-[var(--bp-border)]" />
+          <input value={tg.color || ''} onChange={(e) => setTg('color', e.target.value)}
+                 placeholder="inherit"
+                 className="input-luxury flex-1 px-2 py-1 text-xs font-mono rounded-[var(--bp-radius-xs)]" />
+        </div>
+      </label>
+    </div>
+  );
+
+  // Shape controls — fill, border, dashed, radius
+  const shapeJsx = (
+    <>
+      <label className="block mb-3">
+        <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+          {t('moodboards.field.shapeKind', null, 'Shape')}
+        </span>
+        <div className="grid grid-cols-3 gap-1" data-testid="shape-kind">
+          {[['rectangle', '▭'], ['ellipse', '◯'], ['line', '─']].map(([id, glyph]) => {
+            const active = (c.kind || 'rectangle') === id;
+            return (
+              <button key={id} type="button"
+                      onClick={() => setC('kind', id)}
+                      data-testid={`shape-kind-${id}`}
+                      className={`py-3 text-[14px] rounded-[var(--bp-radius-xs)] border transition-colors
+                        ${active
+                          ? 'border-[var(--bp-primary)] text-[var(--bp-text-primary)] bg-[var(--bp-surface-2)]'
+                          : 'border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:border-[var(--bp-border-strong)]'}`}>
+                {glyph}
+              </button>
+            );
+          })}
+        </div>
+      </label>
+
+      <label className="block mb-3">
+        <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+          {t('moodboards.field.fill', null, 'Fill')}
+        </span>
+        <div className="flex items-center gap-2">
+          <input type="color" value={s.fill && s.fill.startsWith('#') ? s.fill : '#FFFFFF'}
+                 onChange={(e) => setS('fill', e.target.value)}
+                 data-testid="shape-fill"
+                 className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent border border-[var(--bp-border)]" />
+          <input value={s.fill || ''} onChange={(e) => setS('fill', e.target.value)}
+                 placeholder="rgba(0,0,0,0) | none"
+                 className="input-luxury flex-1 px-2 py-1 text-xs font-mono rounded-[var(--bp-radius-xs)]" />
+        </div>
+      </label>
+
+      <label className="block mb-3">
+        <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+          {t('moodboards.field.borderColor', null, 'Border color')}
+        </span>
+        <div className="flex items-center gap-2">
+          <input type="color" value={s.border_color && s.border_color.startsWith('#') ? s.border_color : '#F5F2EC'}
+                 onChange={(e) => setS('border_color', e.target.value)}
+                 data-testid="shape-border-color"
+                 className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent border border-[var(--bp-border)]" />
+          <input value={s.border_color || ''} onChange={(e) => setS('border_color', e.target.value)}
+                 className="input-luxury flex-1 px-2 py-1 text-xs font-mono rounded-[var(--bp-radius-xs)]" />
+        </div>
+      </label>
+
+      <InspectorSlider label={t('moodboards.field.borderWidth', null, 'Border width')}
+                       value={s.border_width ?? 1} min={0} max={16} step={1}
+                       onChange={(v) => setS('border_width', v)}
+                       testid="shape-border-width" formatValue={(v) => `${v}px`} />
+
+      <div className="mb-4">
+        <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+          {t('moodboards.field.borderStyle', null, 'Border style')}
+        </span>
+        <div className="grid grid-cols-3 gap-1" data-testid="shape-border-style">
+          {['solid', 'dashed', 'dotted'].map((bs) => {
+            const active = (s.border_style || 'solid') === bs;
+            return (
+              <button key={bs} type="button"
+                      onClick={() => setS('border_style', bs)}
+                      data-testid={`shape-border-style-${bs}`}
+                      className={`text-[10px] tracking-wider uppercase py-1.5 rounded-[var(--bp-radius-xs)] border transition-colors
+                        ${active
+                          ? 'border-[var(--bp-primary)] text-[var(--bp-text-primary)] bg-[var(--bp-surface-2)]'
+                          : 'border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:border-[var(--bp-border-strong)]'}`}>
+                {bs}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+
   switch (block.type) {
     case 'image':
       return (<>
@@ -1321,6 +1593,12 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
             {['display','h1','h2','h3','body','caption','eyebrow'].map((sz) => <option key={sz}>{sz}</option>)}
           </select>
         </label>
+        {typographyJsx}
+        {visualPropsJsx}
+      </>);
+    case 'shape':
+      return (<>
+        {shapeJsx}
         {visualPropsJsx}
       </>);
     case 'note':

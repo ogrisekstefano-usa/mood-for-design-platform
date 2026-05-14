@@ -9,6 +9,7 @@ import PaletteBlock from './blocks/PaletteBlock';
 import NoteBlock from './blocks/NoteBlock';
 import ProductBlock from './blocks/ProductBlock';
 import MaterialBlock from './blocks/MaterialBlock';
+import ShapeBlock from './blocks/ShapeBlock';
 
 export const BLOCK_COMPONENTS = {
   image:    ImageBlock,
@@ -17,6 +18,7 @@ export const BLOCK_COMPONENTS = {
   note:     NoteBlock,
   product:  ProductBlock,
   material: MaterialBlock,
+  shape:    ShapeBlock,
 };
 
 export const BLOCK_TYPES = [
@@ -26,6 +28,9 @@ export const BLOCK_TYPES = [
   { type: 'note',     label: 'Note',     defaults: { width: 240, height: 200, content: { text: 'Add a note' } } },
   { type: 'product',  label: 'Product',  defaults: { width: 260, height: 320, content: { name: 'Product', vendor: '', price: '', image: '' } } },
   { type: 'material', label: 'Material', defaults: { width: 220, height: 220, content: { name: 'Material', finish: '', swatch: '' } } },
+  { type: 'shape',    label: 'Shape',    defaults: { width: 220, height: 220,
+    content: { kind: 'rectangle' },
+    style: { fill: 'rgba(255,255,255,0.06)', border_color: 'var(--bp-text-primary)', border_width: 1, border_style: 'solid', border_radius: 4 } } },
 ];
 
 export function resolveBlock(type) {

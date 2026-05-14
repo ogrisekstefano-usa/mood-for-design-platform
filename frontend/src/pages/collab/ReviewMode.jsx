@@ -328,7 +328,21 @@ const ReviewMode = () => {
             <div className="relative shadow-[0_30px_90px_rgba(0,0,0,0.45)] overflow-hidden
                             bg-[var(--bp-surface-1)] border border-[var(--bp-border)]"
                  data-testid={`review-page-${activePage.id}`}
-                 style={{ width: pw * scale, height: ph * scale }}>
+                 style={{
+                   width: pw * scale, height: ph * scale,
+                   backgroundColor: activePage.settings?.background_color || undefined,
+                   backgroundImage: activePage.settings?.background_image_url
+                     ? `url(${activePage.settings.background_image_url})` : undefined,
+                   backgroundSize: 'cover',
+                   backgroundPosition: 'center',
+                 }}>
+              {(activePage.settings?.background_overlay ?? 0) > 0 && (
+                <div className="absolute inset-0 pointer-events-none"
+                     style={{
+                       backgroundColor: activePage.settings.background_color || '#000',
+                       opacity: activePage.settings.background_overlay,
+                     }} />
+              )}
               {/* Scaled inner canvas (same scaling math as PresentationMode) */}
               <div className="absolute top-0 left-0"
                    style={{
