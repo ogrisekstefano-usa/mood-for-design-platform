@@ -472,6 +472,11 @@ const MoodboardEditor = ({ readOnly = false }) => {
   };
 
   // ── Drag / resize ─────────────────────────────────────────────────────────
+  // Drag is INTENT-driven: a pure click selects without moving the block.
+  // The actual move/resize is committed only once the pointer travels beyond
+  // a small threshold (DRAG_THRESHOLD px). This eliminates the "I just wanted
+  // to click and the block jumped" UX bug entirely.
+  const DRAG_THRESHOLD = 4;
   const startDrag = (e, block, mode = 'move') => {
     if (readOnly || block.locked) return;
     e.stopPropagation();
@@ -482,6 +487,9 @@ const MoodboardEditor = ({ readOnly = false }) => {
       origX: block.x, origY: block.y,
       origW: block.width, origH: block.height,
       canvasLeft: rect.left, canvasTop: rect.top,
+      // Activated only once the pointer crosses DRAG_THRESHOLD — a "pure
+      // click" (no movement) selects without moving the block.
+      active: mode === 'resize',  // resize is intent-explicit (handle)
     });
     setSelectedId(block.id);
   };
@@ -493,6 +501,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
     // came from running `setBlocks` 200+ times/second on a fast trackpad.
     let rafId = null;
     let lastEvent = null;
+    let isActive = drag.active;
     const applyMove = () => {
       rafId = null;
       const e = lastEvent;
@@ -502,6 +511,14 @@ const MoodboardEditor = ({ readOnly = false }) => {
       const scale = canvasScaleRef.current || 1;
       const dx = (e.clientX - drag.startX) / scale;
       const dy = (e.clientY - drag.startY) / scale;
+      // Intent gate — only commit movement once the pointer has clearly
+      // crossed the activation threshold (in screen pixels, not canvas px).
+      if (!isActive) {
+        const screenDx = e.clientX - drag.startX;
+        const screenDy = e.clientY - drag.startY;
+        if (Math.hypot(screenDx, screenDy) < DRAG_THRESHOLD) return;
+        isActive = true;
+      }
       let nextGuides = [];
       setBlocks((bs) => bs.map((b) => {
         if (b.id !== drag.id) return b;
@@ -546,8 +563,11 @@ const MoodboardEditor = ({ readOnly = false }) => {
       if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
       setDrag(null);
       setSnapGuides([]);
-      // Snapshot AFTER the committed move/resize so undo restores pre-drag state
-      setBlocks((bs) => { history.record(bs); return bs; });
+      // Snapshot ONLY if the move actually committed (isActive) — pure
+      // clicks must NOT push history entries (otherwise undo gets noisy).
+      if (isActive) {
+        setBlocks((bs) => { history.record(bs); return bs; });
+      }
     };
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
@@ -871,13 +891,13 @@ const MoodboardEditor = ({ readOnly = false }) => {
                 const isDragging = drag && drag.id === b.id;
                 return (
                   <div key={b.id} data-testid={`block-${b.type}`}
-                       className={`absolute group transition-shadow duration-300
+                       className={`absolute group transition-shadow duration-[240ms] ease-[var(--bp-ease-emphasis,cubic-bezier(0.22,0.61,0.36,1))]
                                    ${isSelected
-                                     ? 'ring-2 ring-[var(--bp-primary)] ring-offset-2 ring-offset-[var(--bp-bg)]'
-                                     : 'hover:ring-1 hover:ring-[var(--bp-primary)]/30'}
+                                     ? 'block-selected'
+                                     : 'block-idle'}
                                    ${b.hidden ? 'opacity-30' : ''}
                                    ${b.locked ? 'cursor-default' : 'cursor-move'}
-                                   ${isDragging ? 'shadow-[0_24px_64px_rgba(0,0,0,0.45)]' : ''}`}
+                                   ${isDragging ? 'block-dragging' : ''}`}
                        style={{
                          left: b.x, top: b.y, width: b.width, height: b.height, zIndex: b.z_index || 0,
                          opacity: (b.opacity !== undefined ? b.opacity : 1) * (b.hidden ? 0.3 : 1),
@@ -893,8 +913,18 @@ const MoodboardEditor = ({ readOnly = false }) => {
                       ? <Component block={b} readOnly={readOnly} t={t} />
                       : <div className="bp-caption text-[var(--bp-text-muted)] p-2">{b.type}</div>}
                     {!readOnly && isSelected && !b.locked && (
+                      // Resize handle — visible 10×10 teal nub with an
+                      // invisible 22×22 hit area so it's effortless to grab
+                      // without zooming in. (Same idiom as Figma corner handles.)
                       <div onMouseDown={(e) => startDrag(e, b, 'resize')}
-                           className="absolute bottom-0 right-0 w-3 h-3 bg-[var(--bp-primary)] rounded-tl-[var(--bp-radius-xs)] cursor-se-resize shadow-[0_0_8px_var(--bp-primary)]" />
+                           className="absolute -bottom-[11px] -right-[11px] w-[22px] h-[22px] cursor-se-resize z-10
+                                      flex items-end justify-end pr-[2px] pb-[2px]"
+                           data-testid={`block-resize-${b.id}`}>
+                        <span className="block w-[10px] h-[10px] rounded-[2px] bg-[var(--bp-primary)]
+                                         shadow-[0_0_0_2px_var(--bp-bg),0_0_10px_rgba(15,162,132,0.55)]
+                                         transition-transform duration-200
+                                         group-hover:scale-110" />
+                      </div>
                     )}
                   </div>
                 );

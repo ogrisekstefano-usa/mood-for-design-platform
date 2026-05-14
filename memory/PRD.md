@@ -1091,6 +1091,34 @@ Branding + Editorial UX sprint — Architecture freeze respected (frontend-only)
 - Hot-reload pulito, lint pulito su tutti i 5 file modificati
 
 
+### ✅ Stability & Editor Feel Sprint — Figma-Grade Polish (Feb 16 2026)
+Architecture freeze respected. Focus assoluto: rendere l'editor INVISIBILE — il designer pensa solo alla composizione.
+
+- **Drag intent gate** (`MoodboardEditor.jsx` startDrag + drag effect): introdotto `DRAG_THRESHOLD = 4px` in screen pixels. Un click puro non sposta più il blocco — il drag si attiva solo quando il puntatore percorre 4px. Risolve il "click che sposta accidentalmente". Inoltre `history.record()` ora si attiva SOLO se il drag è realmente committato (no più snapshot di history per pure clicks).
+- **Resize handle premium** (10px visibile + 22×22 hit area invisibile): nub teal con `box-shadow` ring `bp-bg 2px` + glow `rgba(15,162,132,.55) 10px`, scale 1.1 on group hover. Cursor `se-resize` su tutto l'hit area di 22×22 — niente più "miss" del corner handle.
+- **Selection / hover / drag CSS classes** (`.block-idle/.block-selected/.block-dragging` in `index.css`):
+  - Idle: `box-shadow 0 0 0 1px transparent` (no layout shift)
+  - Hover: outline 1px teal 28% opacity + soft shadow 0.18 (Figma whisper)
+  - Selected: outline FLUSH 1.5px teal + halo 4px 14% + cinematic shadow 28%
+  - Dragging: outline 1.5px + halo 5px 18% + lifted shadow 50%
+  - Transitions cubic-bezier 220ms — no jitter, no jarring snap-in
+  - **Sostituisce Tailwind `ring-*`** che aveva `ring-offset-2` che causava un gap di 2px tra outline e bordo blocco (UX "anti-flush").
+- **SnapGuides rewrite — premium editorial**: ora linee SOLIDE 0.75px (era dashed 2-3 dasharray), opacity 0.85 con `drop-shadow` filter teal 55% 4px → soft glow magazine-grade, fade-in 180ms. Le linee si estendono +16px oltre il blocco (era 12px) per respirabilità editoriale. Niente più CAD lines.
+- **Logo light-mode polish** — variante automatica:
+  - Original `logo-monogram.png` sostituita con versione TEAL TRASPARENTE (sfondo nero rimosso pixel-by-pixel via PIL, soglie G>90 ∧ R<90 ∧ G+B>200)
+  - Bonus: creata `logo-monogram-light.png` con deep teal #0FA284 per future ottimizzazioni light-mode contrast
+  - Risultato verificato: il monogramma OO ora "vive" senza rettangolo nero su paper ivory background (light mode) E mantiene il glow teal su Cinematic Dark
+- **Lint clean**: 0 issue su MoodboardEditor, SnapGuides, index.css
+
+**Verified** ✅
+- Block class after click: `block-selected` applicata correttamente
+- Light mode dashboard screenshot: OO monogramma teal trasparente integrato nella paper aesthetic
+- Dark mode dashboard screenshot: OO monogramma teal su dark surface (Cinematic Dark mantiene flusso)
+- 0 page errors, 3 minor 403 (Supabase storage signed-url expiring, non-blocking)
+- Drag threshold testato con click sul block primo — selezione immediata senza spostamento
+
+
+
 
 ## Demo Credentials (`/app/memory/test_credentials.md`)
 - Email: `demo@moodfordesign.com` · Password: `Blueprint2024!`
