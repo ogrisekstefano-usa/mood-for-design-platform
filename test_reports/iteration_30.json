@@ -1,0 +1,40 @@
+{
+  "summary": "Frontend-only testing of MOOD for DESIGN public site (homepage, /projects, /projects/:slug, /onboarding/:kind, header/locale switcher, footer). All 11 scenarios in the review request passed. No regressions on /auth/login. Zero console errors.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Homepage hero & Project detail hero", "issues": ["Unsplash background image takes time to load in the preview environment — hero area can briefly appear empty/dark before image arrives. Content text overlays fine; only a perception issue, no functional bug."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "i18n detectInitialSiteLocale() prefers navigator.language over DEFAULT_SITE_LOCALE='it'. With an EN browser and no localStorage, the homepage renders in EN — the PRD states default site locale is IT. If 'it' must be the true default until user changes it, set DEFAULT first then fall back to navigator only on explicit miss. Current behavior is internally consistent with the code, but may not match the 'Italian-by-default' brand intent.",
+    "Header isHome flag forces non-scrolled style only on '/'; consider that pathname can be normalized — currently fine.",
+    "Reveal component class 'mfd-reveal--prep' must reliably switch to 'is-in'; observed content visible within ~1s on all routes, no stuck-hidden states detected.",
+    "ProjectDetailPage correctly redirects unknown slugs to /projects (verified)."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "N/A (skipped per request)", "frontend": "100%" },
+  "test_credentials": "Not used — public site testing only.",
+  "seed_data_creation": "None — content is local React config (no API).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Site routes live under SiteLayout: /, /projects, /projects/:slug, /onboarding/:kind. Locale persists in localStorage 'mfd_site_locale'. Reset it before asserting default. data-testids used: site-home, home-hero, home-dual, home-projects, home-values, home-final-cta, site-header, site-footer, site-nav-{projects|private|pro|about}, site-access-btn, site-locale-btn, site-locale-{it|en|fr|de|es}, hero-headline/eyebrow/sub, hero-cta-private/pro, dual-private/pro(-cta), home-project-<slug>, home-projects-all, home-value-<id>, final-cta-primary/secondary, site-projects-index, projects-filter-<all|residential|hospitality|retail>, project-card-<slug>, projects-grid, projects-empty, site-project-detail, project-hero/overview/gallery/chapters/materials/final-cta/related/back, project-related-<slug>, site-onboarding-<kind>, onboarding-cta-primary/projects/home, footer-col-<platform|studio|contact>.",
+  "verified_scenarios": {
+    "home_loads_via_SiteLayout_with_all_sections": "PASS (hero, dual, projects strip, values, final CTA, footer all visible)",
+    "locale_switcher_IT_EN": "PASS (EN -> 'Where design becomes relationship.', IT -> 'Dove il design\\nincontra la relazione.', localStorage 'mfd_site_locale' updates, html lang attr updates)",
+    "header_nav_links_and_signin": "PASS (projects/private/pro/about visible; ACCEDI/Sign in routes to /auth/login)",
+    "projects_index_with_6_cards_and_filters": "PASS (6 cards rendered; filter buttons toggle aria-pressed: residential=true, all=false; residential filter shows 3 cards)",
+    "casa_naviglio_detail_loads": "PASS (hero, overview, gallery, materials, final-cta, related all rendered)",
+    "aman_residences_tokyo_loads": "PASS",
+    "invalid_slug_redirect": "PASS (/projects/invalid-slug-xyz -> /projects)",
+    "onboarding_private_and_pro": "PASS (both render with localized content and CTAs)",
+    "footer_3_columns_year_legal": "PASS (platform/studio/contact columns; year 2026 interpolated; privacy/terms/cookies legal links present)",
+    "hero_headline_IT_contains_Dove_il_design": "PASS (when locale=it)",
+    "regression_auth_login": "PASS (login page renders with email+password inputs)"
+  },
+  "console_errors": []
+}

@@ -31,6 +31,13 @@ const MoodboardEditor = lazy(() => import('./pages/moodboards/MoodboardEditor'))
 const PublicPresentation = lazy(() => import('./pages/moodboards/PublicPresentation'));
 const ReviewMode = lazy(() => import('./pages/collab/ReviewMode'));
 
+// Site (public marketing) — global brand surface
+const SiteLayout = lazy(() => import('./site/SiteLayout'));
+const HomePage = lazy(() => import('./pages/site/HomePage'));
+const ProjectsIndexPage = lazy(() => import('./pages/site/ProjectsIndexPage'));
+const SiteProjectDetailPage = lazy(() => import('./pages/site/ProjectDetailPage'));
+const OnboardingPlaceholderPage = lazy(() => import('./pages/site/OnboardingPlaceholderPage'));
+
 // Admin
 const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
 const AdminTenantsPage = lazy(() => import('./pages/admin/AdminTenantsPage'));
@@ -81,7 +88,14 @@ function App() {
           <BrowserRouter>
             <Suspense fallback={<Loading />}>
               <Routes>
-                <Route path="/" element={<Navigate to="/auth/login" replace />} />
+                {/* SITE (public marketing) — global brand surface */}
+                <Route element={<SiteLayout />}>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/projects" element={<ProjectsIndexPage />} />
+                  <Route path="/projects/:slug" element={<SiteProjectDetailPage />} />
+                  <Route path="/onboarding/:kind" element={<OnboardingPlaceholderPage />} />
+                </Route>
+
                 <Route path="/auth/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
                 <Route path="/auth/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
                 <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
