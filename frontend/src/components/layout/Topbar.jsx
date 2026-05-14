@@ -1,61 +1,104 @@
-import React from 'react';
+import React, { useContext, createContext, useState, useMemo } from 'react';
 import { Bell } from 'lucide-react';
 import LocaleSwitcher from '../common/LocaleSwitcher';
 import ThemeSwitcher from '../common/ThemeSwitcher';
 import UserMenu from '../common/UserMenu';
 import NavigableBreadcrumb from '../common/NavigableBreadcrumb';
-import Brand from '../common/Brand';
 
 /**
- * Topbar — the editorial command bar.
+ * TopbarSlotsContext — lets pages inject CENTER (canvas tools) and RIGHT
+ * (page-specific actions, e.g. undo/redo, present, share) content into the
+ * global Topbar without the Topbar having to know about every page.
  *
- *  LEFT   : brand wordmark (compact) + navigable breadcrumb
- *  CENTER : reserved for context-aware editor tools (rendered by pages
- *           themselves via the right cluster — kept clean here)
- *  RIGHT  : notifications · theme · locale · avatar dropdown (logout lives
- *           inside the avatar menu, not in the sidebar anymore)
- *
- * Visual density is deliberately lower than typical SaaS topbars: thin
- * border, glass background, generous padding, no hard separators between
- * right-side controls.
+ * This is the structural backbone of the "no duplicated commands" rule:
+ *   Sidebar   = workspace navigation only
+ *   Topbar    = breadcrumb + status + canvas tools + global actions
+ *   Editor    = registers its tools via TopbarSlots (see TopbarSlots.jsx)
  */
-const Topbar = () => (
-  <header
-    data-testid="topbar"
-    style={{ height: '56px' }}
-    className="flex items-center justify-between gap-6 px-6 border-b border-[var(--bp-border)]
-               bg-[var(--bp-bg)]/85 backdrop-blur-xl flex-shrink-0"
-  >
-    {/* LEFT — brand + breadcrumb (sidebar carries only the mark, here the wordmark) */}
-    <div className="flex items-center gap-5 min-w-0">
-      <div className="flex-shrink-0 hidden md:block">
-        <Brand size="sm" />
+const TopbarSlotsCtx = createContext({
+  slots: { left: null, center: null, right: null },
+  setSlots: () => {},
+});
+
+export const TopbarSlotsProvider = ({ children }) => {
+  const [slots, setSlots] = useState({ left: null, center: null, right: null });
+  const value = useMemo(() => ({ slots, setSlots }), [slots]);
+  return <TopbarSlotsCtx.Provider value={value}>{children}</TopbarSlotsCtx.Provider>;
+};
+
+export const useTopbarSlots = () => useContext(TopbarSlotsCtx);
+
+/**
+ * Topbar — the editorial command bar (definitive structure).
+ *
+ *   LEFT   : breadcrumb (deep, clickable, smart-truncated) + optional
+ *            page-injected LEFT slot (e.g. project name + status capsule)
+ *   CENTER : page-injected canvas tools (only present inside the editor;
+ *            invisible on dashboard / list pages)
+ *   RIGHT  : page-injected actions (undo/redo · present · share · review),
+ *            then GLOBAL: theme · locale · notifications · avatar
+ *
+ * NO logo lives here. The brand mark is in the left rail only. This is a
+ * deliberate, definitive choice — branding stays silent + premium, never
+ * onnipresente.
+ */
+const Topbar = () => {
+  const { slots } = useTopbarSlots();
+
+  return (
+    <header
+      data-testid="topbar"
+      style={{ height: '56px' }}
+      className="flex items-center justify-between gap-6 px-6 border-b border-[var(--bp-border)]
+                 bg-[var(--bp-bg)]/85 backdrop-blur-xl flex-shrink-0"
+    >
+      {/* LEFT — breadcrumb + page-injected left slot (project name / status) */}
+      <div className="flex items-center gap-4 min-w-0 flex-1">
+        <NavigableBreadcrumb />
+        {slots.left && (
+          <>
+            <div className="h-4 w-px bg-[var(--bp-border)] flex-shrink-0" />
+            <div className="flex items-center gap-3 min-w-0">{slots.left}</div>
+          </>
+        )}
       </div>
-      <div className="h-5 w-px bg-[var(--bp-border)] hidden md:block" />
-      <NavigableBreadcrumb />
-    </div>
 
-    {/* RIGHT — controls cluster, low-density, no harsh separators */}
-    <div className="flex items-center gap-2 flex-shrink-0">
-      <button
-        type="button"
-        data-testid="topbar-notifications-btn"
-        title="Notifications"
-        className="relative w-8 h-8 flex items-center justify-center rounded-full
-                   text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]
-                   hover:bg-[var(--bp-surface-2)]/40 transition-colors"
-      >
-        <Bell size={14} strokeWidth={1.6} />
-      </button>
+      {/* CENTER — page-injected canvas tools (empty outside editor) */}
+      {slots.center && (
+        <div data-testid="topbar-center" className="flex items-center gap-1 flex-shrink-0">
+          {slots.center}
+        </div>
+      )}
 
-      <ThemeSwitcher />
-      <LocaleSwitcher />
+      {/* RIGHT — page actions + global controls */}
+      <div className="flex items-center gap-2 flex-shrink-0 justify-end">
+        {slots.right && (
+          <>
+            <div className="flex items-center gap-1">{slots.right}</div>
+            <div className="w-px h-5 bg-[var(--bp-border)] mx-1" />
+          </>
+        )}
 
-      <div className="w-px h-5 bg-[var(--bp-border)] mx-1" />
+        <button
+          type="button"
+          data-testid="topbar-notifications-btn"
+          title="Notifications"
+          className="relative w-8 h-8 flex items-center justify-center rounded-full
+                     text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]
+                     hover:bg-[var(--bp-surface-2)]/40 transition-colors"
+        >
+          <Bell size={14} strokeWidth={1.6} />
+        </button>
 
-      <UserMenu />
-    </div>
-  </header>
-);
+        <ThemeSwitcher />
+        <LocaleSwitcher />
+
+        <div className="w-px h-5 bg-[var(--bp-border)] mx-1" />
+
+        <UserMenu />
+      </div>
+    </header>
+  );
+};
 
 export default Topbar;

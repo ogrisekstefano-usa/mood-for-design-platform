@@ -17,10 +17,10 @@ import api from '../../lib/api';
 import { toast } from 'sonner';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
-  ArrowLeft, Plus, Check, Share2, ExternalLink, Send, X, AlertCircle,
+  Plus, Check, Share2, ExternalLink, Send, X, AlertCircle,
   Play, Maximize2, ChevronLeft, ChevronRight, PanelRight, ListChecks,
   BookmarkPlus, Undo2, Redo2, Magnet, RotateCcw, FileText,
-  Copy, Clipboard, MoveRight,
+  Copy, Clipboard, MoveRight, Layers,
 } from 'lucide-react';
 import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegistry';
 import StatusBadge from '../../components/common/StatusBadge';
@@ -36,7 +36,7 @@ import PresentationMode from '../../blueprint/moodboard/PresentationMode';
 import PageInspector from '../../blueprint/moodboard/PageInspector';
 import ImageQuickAdjust from '../../blueprint/moodboard/ImageQuickAdjust';
 // Workspace mode is owned by the global Topbar; no local hook needed here.
-import Brand from '../../components/common/Brand';
+// Brand mark is rendered by the global Topbar / Sidebar — not imported here.
 import { trackEvent } from '../../lib/telemetry';
 import { FONT_REGISTRY, FONT_CATEGORIES } from '../../blueprint/moodboard/fontRegistry';
 import { copyStyle, pasteStyle, hasClipboardStyle, clipboardBlockType } from '../../blueprint/moodboard/styleClipboard';
@@ -672,38 +672,21 @@ const MoodboardEditor = ({ readOnly = false }) => {
   return (
     <div className="relative flex flex-col h-screen bg-[var(--bp-bg)]"
          data-testid={readOnly ? 'moodboard-public' : 'moodboard-editor'}>
-      {/* Topbar — MOOD for DESIGN brand + breadcrumb + actions */}
-      <header className="flex items-center justify-between gap-4 px-5 h-14 border-b border-[var(--bp-border)] bg-[var(--bp-surface-1)]/65 backdrop-blur-md flex-shrink-0">
-        <div className="flex items-center gap-4 min-w-0">
-          {!readOnly && (
-            <>
-              {/* Brand mark — auto-swaps logo PNG by workspace mode. */}
-              <div className="select-none" data-testid="brand-mark">
-                <Brand size="sm" />
-              </div>
-              <span className="w-px h-6 bg-[var(--bp-border)]" aria-hidden="true" />
-              <button onClick={() => navigate(-1)}
-                      className="bp-caption !text-[11px] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] flex items-center gap-1.5 transition-colors"
-                      data-testid="back-btn">
-                <ArrowLeft size={12} strokeWidth={1.5} /> {t('moodboards.editor.back')}
-              </button>
-              <span className="bp-caption !text-[11px] text-[var(--bp-text-subtle)] hidden md:flex items-center gap-1.5">
-                {mb.project_name && (<>
-                  <span className="truncate max-w-[180px]">{mb.project_name}</span>
-                  <span className="opacity-50">/</span>
-                </>)}
-                <span className="opacity-60">{t('moodboards.editor.eyebrow')}</span>
-                <span className="opacity-50">/</span>
-                <span className="!text-[var(--bp-text-secondary)] truncate max-w-[220px]">
-                  {mb.title || t('moodboards.untitled')}
-                </span>
-              </span>
-            </>
-          )}
+      {/* Editor toolbar — page-scoped actions only. Global breadcrumb / brand
+          / theme / locale / avatar live in the app Topbar (see DashboardLayout).
+          This bar carries: status capsule + canvas action buttons (undo, redo,
+          snap, present, review, share, approval). */}
+      <header className="flex items-center justify-between gap-4 px-5 h-12 border-b border-[var(--bp-border)] bg-[var(--bp-surface-1)]/65 backdrop-blur-md flex-shrink-0">
+        <div className="flex items-center gap-3 min-w-0">
           {readOnly && (
-            <h1 className="bp-h3 text-[var(--bp-text-primary)] truncate">
+            <h1 className="bp-h3 text-[var(--bp-text-primary)] truncate text-[15px]">
               {mb.title || t('moodboards.untitled')}
             </h1>
+          )}
+          {!readOnly && mb.title && (
+            <span className="bp-caption !text-[11px] text-[var(--bp-text-secondary)] truncate max-w-[280px]">
+              {mb.title}
+            </span>
           )}
           <StatusBadge status={mb.status} t={t} />
         </div>
@@ -961,9 +944,16 @@ const MoodboardEditor = ({ readOnly = false }) => {
                                   onOpenQuickAdjust={(src) => setQuickAdjust({ blockId: selectedBlock.id, src })} />
                 </div>
               ) : (
-                <div className="p-5 flex-1 flex items-center justify-center">
-                  <p className="bp-caption text-[var(--bp-text-subtle)] text-center">
-                    {t('moodboards.editor.noInspector')}
+                <div className="p-6 flex-1 flex flex-col items-center justify-center text-center">
+                  <div className="w-12 h-12 mb-4 rounded-full border border-[var(--bp-border)] flex items-center justify-center text-[var(--bp-text-subtle)]">
+                    <Layers size={16} strokeWidth={1.4} />
+                  </div>
+                  <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] mb-2">
+                    {t('moodboards.editor.inspector', null, 'Inspector')}
+                  </p>
+                  <p className="bp-caption !text-[12px] !text-[var(--bp-text-secondary)] leading-relaxed max-w-[200px]">
+                    {t('moodboards.editor.selectHint', null,
+                      'Select an element on the canvas to edit its appearance — typography, crop, tonal adjustments, borders, shadows.')}
                   </p>
                 </div>
               )
@@ -1202,20 +1192,76 @@ const InspectorTextarea = ({ label, value, onChange, testid }) => (
   </label>
 );
 
-const InspectorSlider = ({ label, value, min, max, step, onChange, testid, formatValue }) => (
-  <label className="block mb-4">
-    <div className="flex items-center justify-between mb-1.5">
-      <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)]">{label}</span>
-      <span className="bp-caption !text-[10px] text-[var(--bp-text-primary)] font-mono tabular-nums">
-        {formatValue ? formatValue(value) : value}
-      </span>
-    </div>
-    <input type="range" min={min} max={max} step={step} value={value}
-           data-testid={testid}
-           onChange={(e) => onChange(parseFloat(e.target.value))}
-           className="bp-slider" />
-  </label>
-);
+/**
+ * InspectorSlider — smooth, jitter-free range input.
+ *
+ * UX problem before: every "input" event from the native slider fired an
+ * onChange that bubbled to the editor state, which re-rendered every block
+ * on the canvas. On a busy moodboard the cumulative cost caused visible
+ * stutter, "remount feeling" and occasional cursor jumps.
+ *
+ * Fix:
+ *   1. Keep a local state for the *displayed* value so the thumb always
+ *      tracks the user's pointer in real time (decoupled from parent renders).
+ *   2. Coalesce upstream onChange via requestAnimationFrame — at most one
+ *      commit per frame (16ms). Final commit happens on `change` / mouseup
+ *      / touchend / blur so the parent never misses the last value.
+ *   3. Mirror the external `value` prop only when the user is NOT actively
+ *      dragging (avoids "snap-back" mid-drag if upstream lags).
+ */
+const InspectorSlider = ({ label, value, min, max, step, onChange, testid, formatValue }) => {
+  const [local, setLocal] = React.useState(value);
+  const draggingRef = React.useRef(false);
+  const rafRef = React.useRef(0);
+  const lastValRef = React.useRef(value);
+
+  // Sync downstream only when the user is not actively dragging.
+  React.useEffect(() => {
+    if (!draggingRef.current && value !== lastValRef.current) {
+      lastValRef.current = value;
+      setLocal(value);
+    }
+  }, [value]);
+
+  const commit = React.useCallback((v) => {
+    lastValRef.current = v;
+    onChange(v);
+  }, [onChange]);
+
+  const handleInput = (e) => {
+    const v = parseFloat(e.target.value);
+    setLocal(v);
+    // rAF-throttled upstream commit — at most one per frame.
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => commit(v));
+  };
+
+  const handleSettle = (e) => {
+    draggingRef.current = false;
+    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = 0; }
+    commit(parseFloat(e.target.value));
+  };
+
+  return (
+    <label className="block mb-4">
+      <div className="flex items-center justify-between mb-1.5">
+        <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)]">{label}</span>
+        <span className="bp-caption !text-[10px] text-[var(--bp-text-primary)] font-mono tabular-nums">
+          {formatValue ? formatValue(local) : local}
+        </span>
+      </div>
+      <input type="range" min={min} max={max} step={step} value={local}
+             data-testid={testid}
+             onPointerDown={() => { draggingRef.current = true; }}
+             onInput={handleInput}
+             onChange={handleInput}
+             onMouseUp={handleSettle}
+             onTouchEnd={handleSettle}
+             onBlur={handleSettle}
+             className="bp-slider" />
+    </label>
+  );
+};
 
 const FOCAL_PRESETS = [
   ['top-left',    '15% 15%'], ['top',    'center 15%'], ['top-right',    '85% 15%'],
@@ -1814,7 +1860,18 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
         <InspectorInput label={t('moodboards.field.swatch')} value={c.swatch} onChange={(v) => setC('swatch', v)} />
       </>);
     default:
-      return <p className="bp-caption text-[var(--bp-text-muted)]">{t('moodboards.editor.noInspector')}</p>;
+      // Editorial inspector placeholder — never an empty/technical message.
+      // Each block type that lands here gets a hint and the universal style
+      // section (visual props) is rendered below for continuity.
+      return (<>{inspectorHeader}
+        <div className="px-4 py-8 text-center">
+          <p className="bp-caption !text-[11px] !text-[var(--bp-text-secondary)] leading-relaxed">
+            {t('moodboards.editor.contextualHint', null,
+              'Select an image, a shape or a text block on the canvas to reveal its dedicated controls here.')}
+          </p>
+        </div>
+        {visualPropsJsx}
+      </>);
   }
 };
 

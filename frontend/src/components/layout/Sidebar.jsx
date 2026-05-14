@@ -6,19 +6,18 @@ import Brand from '../common/Brand';
 import useSidebarCollapsed from '../../hooks/useSidebarCollapsed';
 
 /**
- * Dynamic sidebar — composed from:
- * - Always: Dashboard
- * - For each enabled module: its routes (filtered by permission)
- * - Settings (if user has tenant:settings)
- * - Super Admin entry (if super_admin)
+ * Sidebar — workspace navigation ONLY.
  *
- * Visual rules (Editorial OS direction):
- *  - The wordmark lives ONLY in the Topbar — the sidebar shows the monogram
- *    "M" mark so we don't duplicate branding.
- *  - User profile + logout live ONLY in the Topbar avatar menu.
- *  - Collapse is driven by an oversized vertical handle pinned to the right
- *    edge of the sidebar (16px wide hit area). When collapsed, the sidebar
- *    shrinks to 64px and renders icon-only navigation.
+ * Strict scope (the user-locked information architecture):
+ *   - Dashboard · Leads · Projects · Moodboards · Inspirations · Insights · Settings
+ *   - NEVER: block insertion, page management, canvas tools, inspector
+ *
+ * Visual rules:
+ *   - Ultra-slim left rail (icon-only by default, like Figma)
+ *   - Monogram "M" lives at the very top, doubles as the expand/collapse trigger
+ *   - User profile + logout live in the Topbar avatar menu (NOT here)
+ *   - Edge collapse handle on the right border for users who prefer that pattern
+ *   - Default state: COLLAPSED (icon-only). User can pin it open; choice persists.
  */
 const NavItem = ({ to, icon, labelKey, collapsed }) => {
   const { t } = useBlueprint();
@@ -30,7 +29,8 @@ const NavItem = ({ to, icon, labelKey, collapsed }) => {
       data-testid={testid}
       title={collapsed ? t(labelKey) : undefined}
       className={({ isActive }) =>
-        `flex items-center ${collapsed ? 'justify-center' : 'gap-3'} px-3 py-2 text-sm rounded-[3px] relative group transition-all duration-150 ${
+        `flex items-center ${collapsed ? 'justify-center' : 'gap-3'} ${collapsed ? 'px-0 py-2.5' : 'px-3 py-2'}
+         text-sm rounded-[6px] relative group transition-all duration-150 ${
           isActive
             ? 'bg-[var(--bp-primary)]/10 text-[var(--bp-primary)]'
             : 'text-[var(--bp-text-secondary)] hover:text-[var(--bp-text-primary)] hover:bg-[var(--bp-surface-2)]/40'
@@ -40,9 +40,9 @@ const NavItem = ({ to, icon, labelKey, collapsed }) => {
       {({ isActive }) => (
         <>
           <span className={`absolute left-0 top-1 bottom-1 w-0.5 rounded-full transition-all ${isActive ? 'bg-[var(--bp-primary)]' : 'bg-transparent'}`} />
-          <Icon size={15} strokeWidth={1.5} />
+          <Icon size={16} strokeWidth={1.5} />
           {!collapsed && (
-            <span className="font-body font-medium tracking-wide truncate">{t(labelKey)}</span>
+            <span className="font-body font-medium tracking-wide truncate text-[13px]">{t(labelKey)}</span>
           )}
         </>
       )}
@@ -52,7 +52,7 @@ const NavItem = ({ to, icon, labelKey, collapsed }) => {
 
 const SectionLabel = ({ children, collapsed }) => {
   if (collapsed) {
-    return <div className="my-2 mx-3 h-px bg-[var(--bp-border)]" aria-hidden="true" />;
+    return <div className="my-2 mx-2 h-px bg-[var(--bp-border)]" aria-hidden="true" />;
   }
   return (
     <p className="px-3 mb-1.5 text-[9px] font-bold uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body">
@@ -76,7 +76,7 @@ const Sidebar = () => {
   const intelligenceRoutes = intelligenceModules.flatMap((m) => m.routes);
 
   const inAdmin = location.pathname.startsWith('/admin');
-  const width = collapsed ? 64 : 220;
+  const width = collapsed ? 60 : 212;
 
   return (
     <aside
@@ -85,25 +85,28 @@ const Sidebar = () => {
       className="relative flex-shrink-0 bg-[var(--bp-bg)] border-r border-[var(--bp-border)]
                  flex flex-col h-full transition-[width] duration-200 ease-out"
     >
-      {/* Brand area — only the monogram mark, the wordmark lives in the Topbar */}
-      <div className={`${collapsed ? 'px-2' : 'px-4'} pt-5 pb-4 border-b border-[var(--bp-border)] flex items-center ${collapsed ? 'justify-center' : 'gap-3'}`}>
+      {/* Monogram — pinned at the top, doubles as the expand/collapse trigger.
+          A single, silent brand mark. No subtitle, no tagline. */}
+      <button
+        type="button"
+        onClick={toggle}
+        data-testid="sidebar-brand-toggle"
+        title={collapsed ? t('common.expand', null, 'Espandi') : t('common.collapse', null, 'Riduci')}
+        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        className={`flex items-center ${collapsed ? 'justify-center px-2' : 'justify-start gap-3 px-4'}
+                    pt-5 pb-4 border-b border-[var(--bp-border)] hover:bg-[var(--bp-surface-2)]/30
+                    transition-colors group`}
+      >
         <Brand variant="monogram" size={collapsed ? 'sm' : 'md'} />
         {!collapsed && (
-          <div className="min-w-0">
-            <p className="text-[10px] tracking-[0.22em] uppercase text-[var(--bp-text-muted)] font-body leading-tight">
-              {t('brand.framework', null, 'Blueprint OS™')}
-            </p>
-            <p className="text-[11px] text-[var(--bp-text-secondary)] font-body truncate">
-              {t('brand.tagline', null, 'Creative workspace')}
-            </p>
-          </div>
+          <span className="text-[10px] tracking-[0.28em] uppercase text-[var(--bp-text-muted)] font-body opacity-0 group-hover:opacity-100 transition-opacity ml-auto">
+            <Icons.PanelLeftClose size={13} strokeWidth={1.5} />
+          </span>
         )}
         {impersonating && !inAdmin && !collapsed && (
-          <div className="absolute right-3 top-3 px-2 py-1 bg-amber-500/10 border border-amber-500/20 rounded-[3px]">
-            <p className="text-amber-400 text-[9px] font-body uppercase tracking-wider">Impersonating</p>
-          </div>
+          <span className="absolute right-3 top-3 w-1.5 h-1.5 rounded-full bg-amber-400" aria-label="Impersonating" />
         )}
-      </div>
+      </button>
 
       <nav className={`flex-1 ${collapsed ? 'px-1.5' : 'px-2'} py-4 space-y-5 overflow-y-auto overflow-x-hidden`}>
         <div>
@@ -156,10 +159,9 @@ const Sidebar = () => {
         )}
       </nav>
 
-      {/* Edge collapse handle — pinned to the right border of the sidebar. The
-          16px-wide hit area extends slightly past the visible aside so the
-          control feels generous, while the actual line is a subtle 2px rail
-          that brightens on hover. */}
+      {/* Edge collapse handle — pinned to the right border. Generous 16px
+          hit area, subtle 2px rail that brightens on hover. NOT hover-expand:
+          users must click to toggle. State is persisted. */}
       <button
         type="button"
         onClick={toggle}

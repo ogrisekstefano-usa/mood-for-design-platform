@@ -322,38 +322,39 @@ a, button, [role="button"] {
  * with sub-pixel paper grain, never pure #fff.
  * ────────────────────────────────────────────────────────────────────── */
 :root[data-workspace-mode="light"] {
-  /* Paper palette — Aesop / Kinfolk / Notion paper. Slightly warmer + a touch
-     more saturation than v1 so the surface reads as ivory paper, not grey. */
-  --bp-bg:           #F4EFE7;      /* warm ivory — paper base */
-  --bp-surface-1:    #EBE5DA;      /* paper soft */
-  --bp-surface-2:    #E0D8C9;      /* paper deeper */
-  --bp-surface-3:    #D2C7B4;
-  --bp-overlay:      rgba(20,17,14,0.36);
+  /* Paper palette — Editorial Paper Mode™. Not "light theme". A warm ivory
+     paper world inspired by Kinfolk, Aesop, Apartamento, Notion editorial.
+     Slightly desaturated yellow undertone, never bluish-grey. */
+  --bp-bg:           #F2ECE0;      /* warm cream — paper base */
+  --bp-surface-1:    #E8E0D0;      /* paper soft */
+  --bp-surface-2:    #DCD2BE;      /* paper deeper (cards, chips) */
+  --bp-surface-3:    #CCBFA8;
+  --bp-overlay:      rgba(20,17,14,0.40);
 
-  /* Ink hierarchy — true editorial charcoal, almost black. Bumped contrast
-     across all four tiers so headings feel printed, not "washed-out". */
-  --bp-text-primary:   #14110E;
-  --bp-text-secondary: #2E2A26;
-  --bp-text-muted:     #5A534B;
-  --bp-text-subtle:    #877F73;
+  /* Ink hierarchy — true editorial charcoal, very high contrast.
+     Avoids "admin grey" by keeping everything in warm sepia/charcoal range. */
+  --bp-text-primary:   #0F0D0A;
+  --bp-text-secondary: #2A2520;
+  --bp-text-muted:     #5A5147;
+  --bp-text-subtle:    #8A7F70;
 
-  /* Soft separators — editorial rules, just visible enough */
+  /* Soft separators — editorial rules, deliberately thinner than dark mode */
   --bp-border:         rgba(20,17,14,0.10);
-  --bp-border-strong:  rgba(20,17,14,0.22);
+  --bp-border-strong:  rgba(20,17,14,0.24);
 
-  /* Accent kept on Blueprint teal but slightly deepened for paper contrast */
-  --bp-primary:        #0FA284;
-  --bp-accent:         #8E6646;
+  /* Accent kept on Blueprint teal but deepened for paper contrast */
+  --bp-primary:        #0D8A70;
+  --bp-accent:         #7A5530;
 
-  --bp-selection-bg:   rgba(15,162,132,0.22);
-  --bp-selection-fg:   #14110E;
+  --bp-selection-bg:   rgba(13,138,112,0.22);
+  --bp-selection-fg:   #0F0D0A;
 
   /* Soft elevations — editorial feels almost flat, never harsh */
   --bp-shadow-sm:  0 1px 2px rgba(20,17,14,0.04);
   --bp-shadow-md:  0 4px 18px rgba(20,17,14,0.06);
   --bp-shadow-lg:  0 14px 40px rgba(20,17,14,0.08);
   --bp-shadow-xl:  0 28px 80px rgba(20,17,14,0.12);
-  --bp-shadow-glow: 0 0 0 1px rgba(15,162,132,0.20), 0 0 26px rgba(15,162,132,0.12);
+  --bp-shadow-glow: 0 0 0 1px rgba(13,138,112,0.20), 0 0 26px rgba(13,138,112,0.12);
   --bp-inset-soft: inset 0 1px 0 rgba(255,255,255,0.5);
 
   /* Atmosphere: less vignette, lower glow */
@@ -361,29 +362,29 @@ a, button, [role="button"] {
   --bp-glow-intensity: 0.2;
   --bp-vignette-intensity: 0.04;
   --bp-glass-opacity: 0.78;
-  --bp-hero-gradient: linear-gradient(180deg, rgba(244,239,231,0) 0%, rgba(244,239,231,0.6) 60%, rgba(244,239,231,0.96) 100%);
+  --bp-hero-gradient: linear-gradient(180deg, rgba(242,236,224,0) 0%, rgba(242,236,224,0.6) 60%, rgba(242,236,224,0.96) 100%);
   --bp-section-divider: linear-gradient(90deg, transparent 0%, rgba(20,17,14,0.14) 50%, transparent 100%);
 
   /* shadcn compatibility — light counterparts (warmer paper) */
-  --background: 36 30% 93%;
-  --foreground: 30 14% 8%;
-  --card: 36 26% 89%;
-  --card-foreground: 30 14% 8%;
-  --popover: 36 26% 89%;
-  --popover-foreground: 30 14% 8%;
-  --primary: 169 82% 35%;
-  --primary-foreground: 36 30% 96%;
-  --secondary: 36 22% 85%;
-  --secondary-foreground: 30 14% 8%;
-  --muted: 36 22% 84%;
-  --muted-foreground: 30 8% 32%;
-  --accent: 36 22% 85%;
-  --accent-foreground: 30 14% 8%;
-  --destructive: 0 62% 44%;
-  --destructive-foreground: 36 30% 96%;
-  --border: 24 12% 76%;
-  --input: 36 26% 89%;
-  --ring: 169 82% 35%;
+  --background: 38 33% 91%;
+  --foreground: 30 14% 5%;
+  --card: 38 28% 86%;
+  --card-foreground: 30 14% 5%;
+  --popover: 38 28% 86%;
+  --popover-foreground: 30 14% 5%;
+  --primary: 167 82% 30%;
+  --primary-foreground: 38 33% 96%;
+  --secondary: 38 24% 80%;
+  --secondary-foreground: 30 14% 5%;
+  --muted: 38 24% 78%;
+  --muted-foreground: 30 8% 30%;
+  --accent: 38 24% 80%;
+  --accent-foreground: 30 14% 5%;
+  --destructive: 0 62% 40%;
+  --destructive-foreground: 38 33% 96%;
+  --border: 24 14% 72%;
+  --input: 38 28% 86%;
+  --ring: 167 82% 30%;
 }
 
 /* Subtle paper grain — only in light mode, masks the flatness of a single fill */

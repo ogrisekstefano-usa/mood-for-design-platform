@@ -1,0 +1,107 @@
+{
+  "summary": "Iteration 24 frontend-only validation of the UX Architecture Refactor sprint (MOOD for DESIGN). ALL 10 acceptance criteria from the review request PASSED. Verified on https://content-hub-pro-22.preview.emergentagent.com with designer@moodfordesign.com. Zero pageerrors, zero console errors during slider interaction. Editor screenshot confirms no Brand/back-btn/breadcrumb duplication inside the editor — only the moodboard title + status capsule (left) and action toolbar (right), while the global Topbar above hosts the deep breadcrumb 'Contenuti / Moodboard / TEST_F1_UI_lux'.",
+  "validation_results": {
+    "T1_topbar_no_logo": {
+      "result": "PASS",
+      "topbar_total_imgs": 0,
+      "topbar_brand_imgs_matching_/brand/logo-": [],
+      "sidebar_brand_monogram_present": true,
+      "note": "[data-testid=topbar] contains zero <img> tags. Monogram 'M' lives only inside [data-testid=sidebar-brand-toggle] [data-testid=brand-monogram] as required."
+    },
+    "T2_sidebar_default_collapsed_and_toggles": {
+      "result": "PASS",
+      "after_storage_clear_initial_state": "collapsed",
+      "after_storage_clear_storage_value": null,
+      "initial_aside_width_px": 60,
+      "after_brand_toggle_click_state": "expanded",
+      "after_brand_toggle_click_width_px": 212,
+      "sidebar_collapse_toggle_present": true,
+      "persistence_state_before_reload": "expanded",
+      "persistence_state_after_reload": "expanded",
+      "persistence_match": true,
+      "note": "Default is COLLAPSED (icon-only, 60px) when localStorage key 'mfd_sidebar_collapsed' is missing. Both [data-testid=sidebar-brand-toggle] and [data-testid=sidebar-collapse-toggle] expand/collapse correctly. Choice persists across reload."
+    },
+    "T3_navigable_breadcrumb_deep": {
+      "result": "PASS",
+      "on_dashboard": {"page": "Dashboard", "section": null},
+      "on_moodboards_list": {"section": "Contenuti", "page": "Moodboard"},
+      "on_moodboard_editor": {
+        "crumbs_order": [
+          {"testid": "breadcrumb-section", "text": "Contenuti"},
+          {"testid": "breadcrumb-section", "text": "Moodboard"},
+          {"testid": "breadcrumb-dynamic", "text": "TEST_F1_UI_lux"}
+        ]
+      },
+      "note": "Deep breadcrumb confirmed on /moodboards/<id> with async-loaded title (TEST_F1_UI_lux) shown via [data-testid=breadcrumb-dynamic]. Italian locale labels rendered."
+    },
+    "T4_user_menu_zindex_1000": {
+      "result": "PASS",
+      "menu_item_visible": true,
+      "computed_z_chain": [{"tag": "DIV", "z": "1000", "cls": "absolute right-0 top-[calc(100%+8px)] w-[244px]"}],
+      "note": "UserMenu dropdown panel has z-index: 1000 exactly as spec required."
+    },
+    "T5_default_workspace_mode_dark": {
+      "result": "PASS",
+      "data_workspace_mode_on_first_load": "dark"
+    },
+    "T6_editor_no_duplicate_brand_or_breadcrumb": {
+      "result": "PASS",
+      "back_btn_count_in_dom": 0,
+      "brands_outside_topbar_count": 0,
+      "status_badge_inside_editor_present": true,
+      "screenshot_confirmation": "Editor internal header shows only 'TEST_F1_UI_lux | IN REVISIONE | undo/redo | Presenta | Client Review | Richiedi revisione | Approva | Condividi'. No brand, no back-btn, no breadcrumb text. Global Topbar above carries the deep breadcrumb."
+    },
+    "T7_no_no_inspector_text": {
+      "result": "PASS",
+      "page_contains_no_inspector_string": false,
+      "page_contains_noInspector_string": false,
+      "note": "When a block IS selected (current screenshot) the Immagine inspector renders properly; the legacy 'No inspector for this block' message is fully removed from the page text. (Empty-state placeholder element with explicit testid not yet exposed, but spec requirement of 'NOT showing No inspector / noInspector' is satisfied.)"
+    },
+    "T8_slider_jitter_smoke": {
+      "result": "PASS",
+      "block_clicked": true,
+      "slider_found": true,
+      "drag_simulated": true,
+      "console_errors_during_drag": 0,
+      "note": "No React 'maximum update depth' warnings; no errors emitted while dragging the slider thumb across its range. rAF throttling + local state in InspectorSlider behaves cleanly."
+    },
+    "T9_editorial_light_palette_deepened": {
+      "result": "PASS",
+      "after_light_click_data_workspace_mode": "light",
+      "body_background_rgb": "rgb(242, 236, 224)",
+      "css_var_bp_bg": "#F2ECE0",
+      "css_var_bp_text_primary": "#0F0D0A",
+      "back_to_dark_works": "dark",
+      "note": "Light palette matches spec exactly: --bp-bg=#F2ECE0 (warm cream), --bp-text-primary=#0F0D0A (almost-black ink), document body resolves to rgb(242,236,224)."
+    },
+    "T10_no_logout_in_sidebar": {
+      "result": "PASS",
+      "sidebar_logout_btn_present": false,
+      "note": "No [data-testid=sidebar-logout-btn] in DOM. Logout lives exclusively inside the UserMenu dropdown."
+    }
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "backend_issues": {"critical": [], "minor": []},
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Topbar correctly stripped of brand wordmark (totalImgs=0). Editor's internal header correctly stripped of <Brand>, [data-testid=back-btn] and any breadcrumb element. Clean separation between global chrome (Topbar) and editor canvas chrome.",
+    "Sidebar collapse logic in useSidebarCollapsed.js now defaults to COLLAPSED on first visit; persisted in localStorage as 'mfd_sidebar_collapsed' with '1' meaning collapsed. Width 60px (icon-only) / 212px (expanded) is consistent with Figma-like rail spec.",
+    "NavigableBreadcrumb uses [data-testid=breadcrumb-section] for clickable crumbs and [data-testid=breadcrumb-dynamic] for async-loaded titles. This is a clean contract; only minor naming nit — spec mentioned 'breadcrumb-page' as the leaf testid on the editor route but the implementation uses 'breadcrumb-dynamic'. Functional behavior is correct (async title fetch resolves to 'TEST_F1_UI_lux'); just align spec wording or alias the testid for consumers.",
+    "ThemeSwitcher exposes [data-testid=theme-switch-light] and [data-testid=theme-switch-dark] (note: '-switch-' not '-switcher-' as written in spec). Both work. Recommend syncing naming with spec or providing a stable alias.",
+    "UserMenu dropdown's z-index is exactly 1000 — sits above sidebar, content panels, and the editor canvas. Verified by computed-style walk.",
+    "Editorial Light Mode palette correctly deepened: --bp-bg=#F2ECE0, --bp-text-primary=#0F0D0A. High-contrast pair, editorial warm-cream feel achieved.",
+    "MoodboardEditor.jsx still > 1700 lines — same recommendation as iter_23: split InspectorSlider, inspector empty-state, page/block/arrow inspectors into /inspectors/* for maintainability."
+  ],
+  "updated_files": [],
+  "success_rate": {"frontend": "100%"},
+  "seed_data_creation": "None. Re-used moodboard TEST_F1_UI_lux (id 85b93c6b-8de2-4b14-a977-a768ecc02309).",
+  "test_credentials": "designer@moodfordesign.com / Designer2024! (from /app/memory/test_credentials.md)",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Login URL bounces to /auth/login (NOT /login). Use input.nth(0)/input.nth(1) selector pattern to avoid placeholder timing issues. Theme switcher testids are 'theme-switch-light' / 'theme-switch-dark' (not 'theme-switcher-*'). Editor's leaf breadcrumb testid is 'breadcrumb-dynamic' (not 'breadcrumb-page'). Sidebar default-collapsed test requires clearing localStorage 'mfd_sidebar_collapsed' before reload. Aside element width: 60px collapsed, 212px expanded."
+}
