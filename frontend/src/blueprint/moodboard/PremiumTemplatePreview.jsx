@@ -127,12 +127,105 @@ const ResidentialMoodboard = () => (
   </div>
 );
 
+// ── Stone Atelier — material storytelling (hero stone + 3 close-ups) ───────
+const StoneAtelier = () => (
+  <div className="absolute inset-0 flex flex-col bg-[var(--bp-surface-1)]">
+    {/* hero stone with overlay caption */}
+    <div className="relative flex-[1.4]">
+      <Photo src={P.warm_interior} className="absolute inset-0" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-black/0" />
+      <p className="absolute top-[7%] left-[5%] text-white text-[5.5px] tracking-[0.4em] uppercase opacity-90">Material focus</p>
+      <p className="absolute top-[14%] left-[5%] right-[5%] font-serif text-white text-[14px] leading-none">Calacatta Vagli</p>
+      <p className="absolute bottom-[6%] left-[5%] text-white/80 text-[5.5px] tracking-[0.3em] uppercase">Fig. 01 — Honed · 20mm</p>
+    </div>
+    {/* annotation strip */}
+    <p className="px-[5%] py-1.5 font-serif italic text-[7.5px] text-[var(--bp-text-primary)] leading-tight">
+      A pure white field traced by sand-coloured veins.
+    </p>
+    {/* 3 close-ups */}
+    <div className="grid grid-cols-3 gap-1 px-[5%] flex-1">
+      <Photo src={P.texture_stone || P.warm_interior} className="rounded-[2px]" />
+      <Photo src={P.texture_wood  || P.cinematic_chair} className="rounded-[2px]" />
+      <Photo src={P.texture_linen || P.white_armchair} className="rounded-[2px]" />
+    </div>
+    {/* palette */}
+    <div className="px-[5%] pb-[5%] pt-2">
+      <Palette colors={['#F5F0E6', '#D7CBB4', '#9E8A70', '#5C4A35', '#1F1610']}
+               className="h-1.5 w-full rounded-sm overflow-hidden" />
+      <p className="text-[5px] tracking-[0.4em] uppercase text-[var(--bp-text-muted)] mt-1.5">
+        Stone Atelier · Composition N° 014
+      </p>
+    </div>
+  </div>
+);
+
+// ── Boutique Hotel — cinematic hospitality (oversized hero + quote) ────────
+const BoutiqueHotel = () => (
+  <div className="absolute inset-0 flex flex-col">
+    <div className="relative flex-[1.55]">
+      <Photo src={P.warm_lounge} className="absolute inset-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/0 to-black/30" />
+      <p className="absolute top-[8%] left-[5%] text-white text-[5.5px] tracking-[0.4em] uppercase opacity-90">Rosewood · Concept 02</p>
+      <p className="absolute top-[14%] left-[5%] right-[5%] font-serif italic text-white text-[14px] leading-[0.95]">A retreat for the senses.</p>
+    </div>
+    <div className="flex-1 flex flex-col justify-center px-[5%] py-[4%]
+                    bg-[var(--bp-surface-1)]">
+      <p className="font-serif italic text-[8.5px] text-[var(--bp-text-primary)] leading-[1.35]">
+        "The luxury our guests remember is not what they saw, but how they felt."
+      </p>
+      <p className="text-[5px] tracking-[0.4em] uppercase text-[var(--bp-text-muted)] mt-1.5">— Studio MOOD</p>
+    </div>
+    {/* atmosphere strip */}
+    <div className="grid grid-cols-3 gap-1 px-[5%] h-[18%]">
+      <Photo src={P.cinematic_chair} className="rounded-[2px]" />
+      <Photo src={P.paper_decor}     className="rounded-[2px]" />
+      <Photo src={P.white_armchair}  className="rounded-[2px]" />
+    </div>
+    <div className="px-[5%] py-2">
+      <Palette colors={['#1A1410', '#3A2A1E', '#7A5530', '#A88562', '#EBDDC2']}
+               className="h-1.5 w-full rounded-sm overflow-hidden" />
+    </div>
+  </div>
+);
+
+// ── Fashion Residential — couture-residential moodboard (giant type) ───────
+const FashionResidential = () => (
+  <div className="absolute inset-0 overflow-hidden"
+       style={{ background: '#F8F4ED' }}>
+    <Photo src={P.white_armchair} className="absolute inset-0 opacity-30" />
+    {/* Brutal stacked title */}
+    <p className="absolute top-[7%] left-[4%] font-serif text-[36px] leading-[0.85] text-[#1A1410]">THE</p>
+    <p className="absolute top-[20%] left-[4%] font-serif italic text-[36px] leading-[0.85] text-[#1A1410]">ROOM</p>
+    <p className="absolute top-[36%] left-[4%] font-serif italic text-[7.5px] text-[#3A2F26]">A residence as a wardrobe.</p>
+    {/* Layered photo right */}
+    <div className="absolute top-[44%] right-[4%] w-[42%] aspect-[3/4] overflow-hidden rounded-[2px] shadow-2xl">
+      <Photo src={P.cinematic_chair} className="absolute inset-0" />
+    </div>
+    {/* Manifesto */}
+    <p className="absolute top-[46%] left-[4%] right-[50%] text-[#1A1410] text-[5.5px] leading-[1.5] font-sans">
+      We dress our walls the way we dress ourselves — with intention, restraint, and the textures of a life examined.
+    </p>
+    {/* Bottom palette + caption */}
+    <div className="absolute bottom-[6%] left-[4%] right-[4%]">
+      <Palette colors={['#F8F4ED', '#E6DBC6', '#A39078', '#4F4438', '#1A1410']}
+               className="h-1.5 w-full rounded-sm overflow-hidden" />
+      <div className="flex justify-between mt-1.5">
+        <span className="text-[5px] tracking-[0.4em] uppercase text-[#5A4D3F]">Palette 01 · Atelier</span>
+        <span className="text-[5px] tracking-[0.4em] uppercase text-[#5A4D3F]">Issue 01 · F/W 26</span>
+      </div>
+    </div>
+  </div>
+);
+
 const PREVIEWS = {
   luxury_hospitality:    LuxuryHospitality,
   material_narrative:    MaterialNarrative,
   japandi_editorial:     JapandiEditorial,
   fashion_editorial:     FashionEditorial,
   residential_moodboard: ResidentialMoodboard,
+  stone_atelier:         StoneAtelier,
+  boutique_hotel:        BoutiqueHotel,
+  fashion_residential:   FashionResidential,
 };
 
 const PremiumTemplatePreview = ({ id }) => {

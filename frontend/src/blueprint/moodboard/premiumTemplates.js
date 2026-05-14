@@ -62,6 +62,7 @@ const TEMPLATES = {
     id: 'luxury_hospitality',
     name: 'Luxury Hospitality',
     eyebrow: 'Premium template',
+    category: 'hospitality',
     description: 'Warm neutrals, cinematic photography, elegant serif typography. Ideal for boutique hotel projects.',
     width: W,
     height: H,
@@ -93,6 +94,7 @@ const TEMPLATES = {
     id: 'material_narrative',
     name: 'Material Narrative',
     eyebrow: 'Premium template',
+    category: 'materials',
     description: 'Close-up textures with editorial annotations and palette strips. Perfect for material studies.',
     width: W,
     height: H,
@@ -131,6 +133,7 @@ const TEMPLATES = {
     id: 'japandi_editorial',
     name: 'Japandi Editorial',
     eyebrow: 'Premium template',
+    category: 'minimal',
     description: 'Asymmetrical whitespace, stone tones, minimal typography. For serene residential spaces.',
     width: W,
     height: H,
@@ -166,6 +169,7 @@ const TEMPLATES = {
     id: 'fashion_editorial',
     name: 'Fashion · Art Direction',
     eyebrow: 'Premium template',
+    category: 'fashion',
     description: 'Oversized typography, layered imagery, experimental composition. Bold creative concepts.',
     width: W,
     height: H,
@@ -199,6 +203,7 @@ const TEMPLATES = {
     id: 'residential_moodboard',
     name: 'Residential Moodboard',
     eyebrow: 'Premium template',
+    category: 'residential',
     description: 'AD Magazine feeling. Furniture, materials, palette and mood, composed editorially.',
     width: W,
     height: H,
@@ -240,11 +245,156 @@ const TEMPLATES = {
            { font_family: 'Inter', font_size: 12, color: '#7A6B58', letter_spacing: 4 }),
     ],
   },
+
+  // 6. STONE ATELIER — high-end natural stone presentation ──────────────────
+  stone_atelier: {
+    id: 'stone_atelier',
+    name: 'Stone Atelier',
+    eyebrow: 'Premium template',
+    category: 'materials',
+    description: 'Salvatori-grade marble storytelling. Full-bleed stone imagery with tactile close-ups and elegant annotations.',
+    width: W,
+    height: H,
+    page_title: 'Stone Atelier · Calacatta Vagli',
+    page_type: 'material_board',
+    blocks: [
+      // Hero full-bleed stone slab
+      img(PHOTOS.texture_stone, 0, 0, W, 980, 1),
+      // Eyebrow over hero
+      text('MATERIAL FOCUS', 80, 80, 600, 28, 4,
+           { font_family: 'Inter', font_size: 11, color: '#FFFFFF', letter_spacing: 5 }),
+      // Annotated big title
+      text('Calacatta Vagli', 80, 120, 1200, 100, 5,
+           { font_family: 'Playfair Display', font_size: 56, color: '#FFFFFF', italic: false }),
+      // Annotation overlay caption
+      text('FIG. 01 — Honed finish · 20mm', 80, 920, 600, 24, 6,
+           { font_family: 'Inter', font_size: 10, color: '#FFFFFF', letter_spacing: 4 }),
+      // Editorial body block
+      text('A pure white field traced by sand-coloured veins. Quarried in the Apuan Alps; one slab unique to your project.',
+           80, 1040, 1100, 100, 7,
+           { font_family: 'Playfair Display', font_size: 22, italic: true, color: '#3A2F26' }),
+      // 3 tactile close-ups row
+      img(PHOTOS.texture_stone, 80, 1180, 380, 380, 3),
+      img(PHOTOS.texture_wood,  480, 1180, 380, 380, 3),
+      img(PHOTOS.texture_linen, 880, 1180, 380, 380, 3),
+      // Captions row
+      text('Calacatta', 80, 1580, 380, 24, 5,
+           { font_family: 'Inter', font_size: 11, color: '#5A4D3F', letter_spacing: 3 }),
+      text('Walnut', 480, 1580, 380, 24, 5,
+           { font_family: 'Inter', font_size: 11, color: '#5A4D3F', letter_spacing: 3 }),
+      text('Hemp linen', 880, 1580, 380, 24, 5,
+           { font_family: 'Inter', font_size: 11, color: '#5A4D3F', letter_spacing: 3 }),
+      // Palette strip
+      palette(['#F5F0E6', '#D7CBB4', '#9E8A70', '#5C4A35', '#1F1610'], 80, 1660, 1200, 50, 7),
+      // Closing caption
+      text('STONE ATELIER · COMPOSITION N° 014', 80, 1750, 1200, 24, 8,
+           { font_family: 'Inter', font_size: 10, color: '#7A6B58', letter_spacing: 5 }),
+    ],
+  },
+
+  // 7. BOUTIQUE HOTEL — cinematic hospitality pitch ─────────────────────────
+  boutique_hotel: {
+    id: 'boutique_hotel',
+    name: 'Boutique Hotel',
+    eyebrow: 'Premium template',
+    category: 'hospitality',
+    description: 'Aman-grade cinematic hospitality pitch. Warm interiors, soft shadows, premium serif typography.',
+    width: W,
+    height: H,
+    page_title: 'Boutique Hotel · Lake Como retreat',
+    page_type: 'cover',
+    blocks: [
+      // Oversized hero image
+      img(PHOTOS.warm_lounge, 0, 0, W, 1100, 1),
+      // Eyebrow + sub
+      text('ROSEWOOD GROUP · CONCEPT 02', 80, 120, 800, 28, 4,
+           { font_family: 'Inter', font_size: 11, color: '#FFFFFF', letter_spacing: 5 }),
+      // Title at top
+      text('A retreat for the senses.', 80, 170, 1100, 120, 5,
+           { font_family: 'Playfair Display', font_size: 56, italic: true, color: '#FFFFFF' }),
+      // Quote / editorial statement
+      text('"The luxury our guests remember is not what they saw,\nbut how they felt at home in a place they had never been."',
+           80, 1160, 1240, 160, 6,
+           { font_family: 'Playfair Display', font_size: 28, italic: true, color: '#1A1410' }),
+      text('— Studio MOOD, Direction notes', 80, 1340, 800, 22, 7,
+           { font_family: 'Inter', font_size: 11, color: '#7A6B58', letter_spacing: 3 }),
+      // Atmosphere strip — 3 micro photos
+      img(PHOTOS.cinematic_chair, 80, 1420, 400, 300, 3),
+      img(PHOTOS.paper_decor,    500, 1420, 400, 300, 3),
+      img(PHOTOS.white_armchair, 920, 1420, 400, 300, 3),
+      // Palette
+      palette(['#1A1410', '#3A2A1E', '#7A5530', '#A88562', '#EBDDC2'], 80, 1740, 760, 50, 7),
+      // Closing
+      text('LAKE COMO · ITALIA · SEASON 26', 880, 1750, 440, 28, 8,
+           { font_family: 'Inter', font_size: 11, color: '#5A4D3F', letter_spacing: 5 }),
+    ],
+  },
+
+  // 8. FASHION RESIDENTIAL — couture-residential moodboard ──────────────────
+  fashion_residential: {
+    id: 'fashion_residential',
+    name: 'Fashion Residential',
+    eyebrow: 'Premium template',
+    category: 'fashion',
+    description: 'Vogue Living × The Row. Oversized typography, brutal crops, muted monochrome — a creative director\'s moodboard.',
+    width: W,
+    height: H,
+    page_title: 'Fashion Residential · Atelier 01',
+    page_type: 'cover',
+    blocks: [
+      // Brutal background
+      img(PHOTOS.white_armchair, 0, 0, W, H, 1),
+      // Giant editorial title — split across two lines
+      text('THE', 60, 80, 800, 320, 6,
+           { font_family: 'Playfair Display', font_size: 280, color: '#1A1410',
+             italic: false, line_height: 0.85 }),
+      text('ROOM', 60, 380, 1240, 320, 7,
+           { font_family: 'Playfair Display', font_size: 280, italic: true, color: '#1A1410',
+             line_height: 0.85 }),
+      // Subtitle
+      text('A residence as a wardrobe.', 60, 720, 1240, 60, 8,
+           { font_family: 'Playfair Display', font_size: 32, italic: true, color: '#3A2F26' }),
+      // Editorial overlay photo — large rectangle on the right
+      img(PHOTOS.cinematic_chair, 720, 850, 620, 700, 9),
+      // Manifesto body left
+      text('We dress our walls the way we dress ourselves — with intention, restraint, and the textures of a life examined.',
+           60, 880, 600, 200, 10,
+           { font_family: 'Inter', font_size: 16, color: '#1A1410' }),
+      // Palette strip — muted monochrome
+      palette(['#F8F4ED', '#E6DBC6', '#A39078', '#4F4438', '#1A1410'], 60, 1620, 700, 60, 11),
+      text('PALETTE 01 · ATELIER', 60, 1700, 700, 24, 12,
+           { font_family: 'Inter', font_size: 11, color: '#5A4D3F', letter_spacing: 5 }),
+      // Bottom caption right
+      text('ISSUE 01 · F/W 26', 1000, 1700, 340, 24, 12,
+           { font_family: 'Inter', font_size: 11, color: '#5A4D3F', letter_spacing: 5 }),
+    ],
+  },
 };
 
 export const PREMIUM_TEMPLATE_IDS = Object.keys(TEMPLATES);
 
 export const getPremiumTemplate = (id) => TEMPLATES[id] || null;
+
+/**
+ * Premium template categories (locked order = editorial reading rhythm).
+ * Each category groups together templates that share the same creative
+ * intent so the picker reads as a curated archive, not a flat grid.
+ */
+export const PREMIUM_CATEGORIES = [
+  { key: 'hospitality', title_fallback: 'Luxury Hospitality',
+    subtitle_fallback: 'Cinematic warmth · Aman, Six Senses, Rosewood lineage.' },
+  { key: 'materials',   title_fallback: 'Material Narratives',
+    subtitle_fallback: 'Tactile storytelling · Salvatori, Margraf, Material Bank.' },
+  { key: 'residential', title_fallback: 'Residential Editorial',
+    subtitle_fallback: 'AD Magazine layouts for project communication.' },
+  { key: 'fashion',     title_fallback: 'Fashion · Art Direction',
+    subtitle_fallback: 'Vogue Living, The Row, Loewe Casa energy.' },
+  { key: 'minimal',     title_fallback: 'Minimal · Japandi',
+    subtitle_fallback: 'Asymmetric whitespace, stone tones, restrained type.' },
+];
+
+export const getTemplatesByCategory = (category) =>
+  Object.values(TEMPLATES).filter((t) => t.category === category);
 
 /**
  * Apply a premium template to a moodboard.
