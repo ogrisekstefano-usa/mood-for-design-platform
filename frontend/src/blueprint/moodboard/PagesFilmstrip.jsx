@@ -127,11 +127,24 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
                     onClick={() => onSelect?.(p.id)}
                     data-testid={`page-card-${p.id}`}
                     className="group flex flex-col items-center gap-1.5 cursor-pointer">
-                  <div className={`relative rounded-[var(--bp-radius-xs)] transition-all
+                  <div className={`relative rounded-[var(--bp-radius-xs)] transition-all duration-300
                                    ${active
-                                     ? 'ring-2 ring-[var(--bp-primary)] ring-offset-2 ring-offset-[var(--bp-bg)]'
-                                     : 'opacity-65 hover:opacity-100'}`}>
+                                     ? 'ring-1 ring-[var(--bp-primary)] shadow-[0_0_0_3px_rgba(15,162,132,0.12),0_8px_28px_rgba(15,162,132,0.18)]'
+                                     : 'opacity-60 hover:opacity-100 hover:ring-1 hover:ring-[var(--bp-border-strong)]'}`}>
                     <MiniPreview page={p} blocks={blocksByPage?.[p.id] || []} />
+                    {/* Page-type indicator — a soft eyebrow chip in the corner so
+                        the user can read the narrative rhythm at a glance. */}
+                    {p.page_type && p.page_type !== 'cover' && (
+                      <span
+                        data-testid={`page-type-${p.id}`}
+                        className="absolute bottom-1 left-1 px-1.5 py-[1px] rounded-full
+                                   text-[7px] tracking-[0.18em] uppercase font-body
+                                   bg-black/45 text-white/85 backdrop-blur-sm
+                                   opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        {p.page_type.replace(/_/g, ' ')}
+                      </span>
+                    )}
                     {/* Client decision badge — small colored dot in the corner.
                         Shown only when collab data is available + status is set. */}
                     {pageStatusById?.[p.id] && pageStatusById[p.id] !== 'pending_review' && (
@@ -151,14 +164,14 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
                         <button onClick={(e) => handleDuplicate(e, p.id)}
                                 data-testid={`page-duplicate-${p.id}`}
                                 title={t('moodboards.page.duplicate')}
-                                className="w-5 h-5 rounded-full bg-[var(--bp-surface-2)] hover:bg-[var(--bp-primary)] text-[var(--bp-text-muted)] hover:text-[var(--bp-bg)] flex items-center justify-center">
+                                className="w-5 h-5 rounded-full bg-[var(--bp-surface-2)] hover:bg-[var(--bp-primary)] text-[var(--bp-text-muted)] hover:text-[var(--bp-bg)] flex items-center justify-center shadow-[var(--bp-shadow-sm)]">
                           <Copy size={9} strokeWidth={1.5} />
                         </button>
                         {pages.length > 1 && (
                           <button onClick={(e) => handleDelete(e, p.id)}
                                   data-testid={`page-delete-${p.id}`}
                                   title={t('moodboards.page.delete')}
-                                  className="w-5 h-5 rounded-full bg-[var(--bp-surface-2)] hover:bg-red-500 text-[var(--bp-text-muted)] hover:text-white flex items-center justify-center">
+                                  className="w-5 h-5 rounded-full bg-[var(--bp-surface-2)] hover:bg-red-500 text-[var(--bp-text-muted)] hover:text-white flex items-center justify-center shadow-[var(--bp-shadow-sm)]">
                             <Trash2 size={9} strokeWidth={1.5} />
                           </button>
                         )}
@@ -178,13 +191,23 @@ const PagesFilmstrip = ({ moodboardId, pages, currentPageId, blocksByPage, onSel
                 <button onClick={() => setSkeletonPickerOpen(true)}
                         data-testid="add-page-btn"
                         className="group flex flex-col items-center gap-1.5 cursor-pointer">
-                  <div className="w-24 h-[136px] rounded-[var(--bp-radius-xs)] border border-dashed border-[var(--bp-border)] hover:border-[var(--bp-primary)] hover:bg-[var(--bp-surface-1)]/60 transition-all flex items-center justify-center">
-                    <div className="w-7 h-7 rounded-full border border-[var(--bp-border)] group-hover:border-[var(--bp-primary)] text-[var(--bp-text-muted)] group-hover:text-[var(--bp-primary)] transition-colors flex items-center justify-center">
-                      <Plus size={13} strokeWidth={1.5} />
+                  <div className="w-24 h-[136px] rounded-[var(--bp-radius-xs)]
+                                  bg-[var(--bp-surface-2)]/30 hover:bg-[var(--bp-surface-2)]/50
+                                  border border-[var(--bp-border)] hover:border-[var(--bp-primary)]/60
+                                  transition-all duration-200 flex flex-col items-center justify-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-[var(--bp-primary)]/12 border border-[var(--bp-primary)]/30
+                                    text-[var(--bp-primary)]
+                                    group-hover:bg-[var(--bp-primary)]/22 group-hover:border-[var(--bp-primary)]/55
+                                    transition-colors flex items-center justify-center">
+                      <Plus size={13} strokeWidth={1.8} />
                     </div>
+                    <span className="text-[8px] tracking-[0.22em] uppercase text-[var(--bp-text-muted)]
+                                     group-hover:text-[var(--bp-text-primary)] transition-colors">
+                      {t('moodboards.page.new', null, 'New page')}
+                    </span>
                   </div>
-                  <p className="bp-caption !text-[10px] !text-[var(--bp-text-muted)] whitespace-nowrap">
-                    + {t('moodboards.page.add')}
+                  <p className="bp-caption !text-[10px] !text-[var(--bp-text-subtle)] whitespace-nowrap">
+                    {t('moodboards.page.fromTemplate', null, 'from template')}
                   </p>
                 </button>
               </li>

@@ -14,34 +14,16 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { X, LayoutGrid } from 'lucide-react';
 import { useBlueprint } from '../../contexts/BlueprintContext';
+import EditorialSkeletonPreview from './EditorialSkeletonPreview';
 
-// ── Mini wireframe preview ───────────────────────────────────────────────────
-// Renders the skeleton blocks as solid tinted rectangles inside an SVG whose
-// viewBox matches the page's reference frame. Adapts perfectly to any
-// container size, no JS math needed.
-const SkeletonPreview = ({ skeleton }) => {
-  const w = skeleton.width || 1400;
-  const h = skeleton.height || 1866;
-  const blocks = skeleton.blocks_preview || [];
-  return (
-    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="xMidYMid meet"
-         className="block w-full h-full" role="img" aria-hidden="true">
-      <rect x="0" y="0" width={w} height={h} fill="var(--bp-bg)" />
-      {blocks.map((b, idx) => {
-        const tint = b.type === 'image'    ? 'rgba(255,255,255,0.14)'
-                   : b.type === 'palette'  ? 'rgba(255,255,255,0.08)'
-                   : b.type === 'material' ? 'rgba(214,197,168,0.20)'
-                   : b.type === 'product'  ? 'rgba(255,255,255,0.10)'
-                   : 'rgba(255,255,255,0.06)';
-        return (
-          <rect key={idx}
-                x={b.x} y={b.y} width={b.width} height={b.height}
-                fill={tint} stroke="rgba(255,255,255,0.08)" strokeWidth="2" rx="6" />
-        );
-      })}
-    </svg>
-  );
-};
+// ── Mini editorial preview (curated per skeleton id) ────────────────────────
+// Each skeleton renders a small CURATED composition — real photography +
+// real palette + real typography — instead of an abstract wireframe. See
+// EditorialSkeletonPreview for the per-id moods (hospitality / japandi /
+// materials / etc).
+const SkeletonPreview = ({ skeleton }) => (
+  <EditorialSkeletonPreview skeleton={skeleton} />
+);
 
 // ── Category-grouped picker grid ─────────────────────────────────────────────
 const SkeletonCard = ({ sk, onPick, t }) => {
@@ -63,8 +45,10 @@ const SkeletonCard = ({ sk, onPick, t }) => {
       <div className="relative w-full overflow-hidden bg-[var(--bp-bg)]"
            style={{ aspectRatio: aspect }}>
         <SkeletonPreview skeleton={sk} />
-        <div className="absolute inset-0 pointer-events-none"
-             style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.32) 100%)' }} />
+        {/* Hover-only soft vignette — kept silent so the curated mood reads
+            unobscured at rest. Only on hover do we add a subtle edge fade. */}
+        <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+             style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,0.22) 100%)' }} />
       </div>
       <div className="px-3 py-2.5">
         <h4 className="bp-body !text-[12px] !font-medium text-[var(--bp-text-primary)] truncate">
