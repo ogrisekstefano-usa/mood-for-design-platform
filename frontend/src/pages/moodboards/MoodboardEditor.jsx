@@ -28,7 +28,7 @@ import LayersPanel, { sortLayersTopFirst } from '../../blueprint/moodboard/Layer
 import ImageUploader from '../../blueprint/moodboard/ImageUploader';
 import PagesFilmstrip from '../../blueprint/moodboard/PagesFilmstrip';
 import EditorPanel from '../../blueprint/moodboard/EditorPanel';
-import ActionToolbar from '../../blueprint/moodboard/ActionToolbar';
+// ActionToolbar removed from the editor — canvas-implicit interactions only.
 import { computeSnap } from '../../blueprint/moodboard/useSnap';
 import SnapGuides from '../../blueprint/moodboard/SnapGuides';
 import useHistory from '../../blueprint/moodboard/useHistory';
@@ -802,14 +802,10 @@ const MoodboardEditor = ({ readOnly = false }) => {
         </div>
       </header>
 
-      {/* Action Toolbar — pure canvas pointer/view/arrange actions (no content
-          insertion). Insert lives in the LEFT EditorPanel's Insert tab. */}
-      {!readOnly && (
-        <ActionToolbar
-          activeTool="select"
-          onToolChange={() => {}}
-          t={t} />
-      )}
+      {/* Action Toolbar removed in the Figma-Grade Stabilization sprint.
+          Select / Deselect / Move / Resize / Align / Zoom are now canvas-
+          implicit interactions (click = select, drag = move, handles = resize,
+          wheel/pinch = zoom). The Topbar carries only session/project actions. */}
 
       <div className="flex flex-1 min-h-0">
         {/* LEFT — Secondary Contextual Panel (Insert · Assets · Pages · Mood) */}

@@ -36,9 +36,16 @@ const LS_KEY = 'mfd_library_collapsed';
 
 // ── Insert catalog ──────────────────────────────────────────────────────────
 //
-// Grouped editorially (Basics · Visuals · Annotation · Materials). Each entry
-// either adds a block via `onAddBlock(type)` or opens the master-layouts
-// gallery via `onOpenSkeletons(catalog_key)`.
+// Mirror of the editor UI revision mockup. Four editorial categories +
+// a Templates section that hands off to the SkeletonPicker.
+//   BASICS     · Text · Image · Gallery · Note
+//   VISUALS    · Palette · Shape · Arrow · Hotspot
+//   MATERIALS  · Material · Product · Texture
+//   ANNOTATION · Line · Divider · Label
+//
+// `block` = direct dispatch to onAddBlock(type). `disabled` items are reserved
+// for the next stability pass — they render as faded tiles to signal intent
+// without overpromising.
 const INSERT_GROUPS = [
   {
     key: 'basics',
@@ -46,34 +53,36 @@ const INSERT_GROUPS = [
     items: [
       { key: 'text',    icon: Type,        block: 'text' },
       { key: 'image',   icon: ImageIcon,   block: 'image' },
-      { key: 'palette', icon: Palette,     block: 'palette' },
-      { key: 'shape',   icon: SquareIcon,  block: 'shape' },
+      { key: 'gallery', icon: LayoutGrid,  openSkeletonsCategory: 'gallery' },
+      { key: 'note',    icon: StickyNote,  block: 'note' },
     ],
   },
   {
     key: 'visuals',
     fallbackTitle: 'Visuals',
     items: [
-      { key: 'gallery',  icon: LayoutGrid, openSkeletonsCategory: 'gallery' },
-      { key: 'divider',  icon: Hexagon,    block: 'divider' },
+      { key: 'palette', icon: Palette,     block: 'palette' },
+      { key: 'shape',   icon: SquareIcon,  block: 'shape' },
+      { key: 'arrow',   icon: MoveRight,   block: 'arrow' },
+      { key: 'hotspot', icon: Crosshair,   disabled: true },
+    ],
+  },
+  {
+    key: 'materials',
+    fallbackTitle: 'Materials',
+    items: [
+      { key: 'material', icon: Layers,  block: 'material' },
+      { key: 'product',  icon: Package, block: 'product' },
+      { key: 'texture',  icon: Hexagon, disabled: true },
     ],
   },
   {
     key: 'annotation',
     fallbackTitle: 'Annotation',
     items: [
-      { key: 'note',    icon: StickyNote, block: 'note' },
-      { key: 'arrow',   icon: MoveRight,  block: 'arrow' },
-      { key: 'line',    icon: Minus,      disabled: true },
-      { key: 'hotspot', icon: Crosshair,  disabled: true },
-    ],
-  },
-  {
-    key: 'materials',
-    fallbackTitle: 'Materials & Products',
-    items: [
-      { key: 'material', icon: Layers,  block: 'material' },
-      { key: 'product',  icon: Package, block: 'product' },
+      { key: 'line',    icon: Minus,        disabled: true },
+      { key: 'divider', icon: Hexagon,      block: 'divider' },
+      { key: 'label',   icon: FileText,     disabled: true },
     ],
   },
 ];
@@ -134,7 +143,7 @@ const TabBtn = ({ active, onClick, label, testid }) => (
 );
 
 // ── Tabs ────────────────────────────────────────────────────────────────────
-const InsertTab = ({ onAddBlock, t }) => (
+const InsertTab = ({ onAddBlock, skeletons = [], onOpenSkeletons, onOpenSkeletonPicker, t }) => (
   <>
     {INSERT_GROUPS.map((group) => (
       <React.Fragment key={group.key}>
@@ -153,6 +162,34 @@ const InsertTab = ({ onAddBlock, t }) => (
         </div>
       </React.Fragment>
     ))}
+
+    {/* Templates — quick row of master layouts so designers can chain a page
+        without leaving the Insert tab. Hand-off to the SkeletonPicker for the
+        full gallery. */}
+    {skeletons.length > 0 && (
+      <>
+        <SectionTitle>{t('moodboards.insert.group.templates', null, 'Templates')}</SectionTitle>
+        <div className="grid grid-cols-2 gap-2">
+          {skeletons.slice(0, 4).map((sk) => {
+            const label = t(sk.label_key);
+            return (
+              <Tile key={sk.id}
+                    icon={FilePlus}
+                    label={label && label !== sk.label_key ? label : sk.id.replace(/_/g, ' ')}
+                    onClick={() => onOpenSkeletons?.(sk.id)}
+                    testid={`insert-template-${sk.id}`} />
+            );
+          })}
+        </div>
+        <button type="button"
+                onClick={() => onOpenSkeletonPicker?.()}
+                data-testid="insert-templates-all"
+                className="w-full mt-3 py-2 text-[10px] tracking-[0.22em] uppercase text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors flex items-center justify-center gap-1.5">
+          {t('moodboards.insert.exploreTemplates', null, 'Explore all templates')}
+          <ArrowUpRight size={11} strokeWidth={1.5} />
+        </button>
+      </>
+    )}
   </>
 );
 
@@ -342,7 +379,10 @@ const EditorPanel = ({
 
       {/* Body */}
       <div className="flex-1 overflow-y-auto px-5 pb-5 pt-1">
-        {tab === 'insert'       && <InsertTab        onAddBlock={onAddBlock} t={t} />}
+        {tab === 'insert'       && <InsertTab        onAddBlock={onAddBlock} skeletons={skeletons}
+                                                     onOpenSkeletons={onOpenSkeletons}
+                                                     onOpenSkeletonPicker={onOpenSkeletonPicker}
+                                                     t={t} />}
         {tab === 'assets'       && <AssetsTab        t={t} />}
         {tab === 'pages'        && <PagesTab         pages={pages || []} skeletons={skeletons}
                                                      activePageId={activePageId}
