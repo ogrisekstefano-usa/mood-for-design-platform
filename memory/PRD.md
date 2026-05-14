@@ -1242,3 +1242,17 @@ Da ~30-40s a ~5-10s stimato. Overlay cinematico ora "fast premiere".
 
 **Verified** ✅ — Text/image rendering corretto, picker header matcha mockup, 6 pages wabi_sabi con page-type chips differentiated, 0 page errors, lint clean.
 
+
+
+### ✅ Right Inspector Editorial Refinement (Feb 16 2026)
+Trasforma il Right Inspector da "settings panel" a "calm editorial control surface". Architecture freeze rispettato.
+
+- **`InspectorGroup.jsx` (NEW · 110 LOC)**: collapsible section premium. Monospace eyebrow + Playfair subtitle, soft reveal via grid-rows 0fr↔1fr, chevron rotation -90°↔0°, hairline rule. State persisted in localStorage. `AUTO_OPEN_DEFAULTS` per block type (image → IMAGE+STYLE; text → TYPOGRAPHY+STYLE; ecc.)
+- **IA P0**: BlockInspector restructured con 4 gruppi: **TYPOGRAPHY · LAYOUT · STYLE · IMAGE · ADVANCED** (placeholder italico per future multi-select prep)
+- **Empty state P3**: concentric rings glyph (allude monogram OO) + "INSPECTOR" mono eyebrow + **"A quiet control surface."** Playfair italic + subtitle "Select an element to refine its composition, typography, materials or atmosphere."
+- **Selected-block header**: "ITEM · TESTO" mono uppercase teal
+- **Width panel 300→320px** per breathing room
+- **CSS neutralization**: regole in index.css per rimuovere double-rule quando i wrapper legacy "pt-5 mt-5 border-t" stanno dentro un gruppo
+
+**Verified** ✅ — Empty state premium, 4 gruppi collapsibili con auto-open per type, localStorage persistence, header "ITEM · TESTO", 0 page errors, lint clean.
+

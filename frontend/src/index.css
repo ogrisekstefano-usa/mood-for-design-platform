@@ -602,3 +602,22 @@ a, button, [role="button"] {
   to   { opacity: 1; }
 }
 
+/* ──────────────────────────────────────────────────────────────────────
+ * Inspector — editorial control surface.
+ *
+ * The Right Inspector reads like a quiet magazine — calm typography,
+ * generous spacing, collapsible groups. Two helpers below:
+ *  1. neutralize the "pt-5 mt-5 border-t" that the legacy JSX wrappers
+ *     baked into their first-child, so groups don't show a double rule
+ *     right beneath their own header.
+ *  2. nudge baseline rhythm on direct children of group bodies.
+ * ────────────────────────────────────────────────────────────────────── */
+.inspector-group > div > div > div > div:first-child.pt-5.mt-5,
+.inspector-group > div > div > div > div:first-child.border-t {
+  border-top-width: 0 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+.inspector-group + .inspector-group { margin-top: 0; }
+.inspector-group [data-testid^="block-"] { font-feature-settings: "tnum" 1; }
+

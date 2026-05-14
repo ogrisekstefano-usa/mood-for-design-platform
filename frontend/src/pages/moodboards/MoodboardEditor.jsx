@@ -34,6 +34,7 @@ import SnapGuides from '../../blueprint/moodboard/SnapGuides';
 import useHistory from '../../blueprint/moodboard/useHistory';
 import PresentationMode from '../../blueprint/moodboard/PresentationMode';
 import PageInspector from '../../blueprint/moodboard/PageInspector';
+import InspectorGroup from '../../blueprint/moodboard/InspectorGroup';
 import ImageQuickAdjust from '../../blueprint/moodboard/ImageQuickAdjust';
 // Workspace mode is owned by the global Topbar; no local hook needed here.
 // Brand mark is rendered by the global Topbar / Sidebar — not imported here.
@@ -935,7 +936,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
 
         {/* RIGHT — Tab switcher: Inspector | Layers */}
         {!readOnly && (
-          <aside className="w-[300px] flex-shrink-0 border-l border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 flex flex-col">
+          <aside className="w-[320px] flex-shrink-0 border-l border-[var(--bp-border)] bg-[var(--bp-surface-1)]/40 flex flex-col">
             <div className="flex border-b border-[var(--bp-border)]" data-testid="right-tabs">
               <TabBtn active={rightTab === 'inspector'} onClick={() => setRightTab('inspector')}
                       icon={PanelRight} title={t('moodboards.editor.inspector')} testid="tab-inspector" />
@@ -946,10 +947,18 @@ const MoodboardEditor = ({ readOnly = false }) => {
             </div>
             {rightTab === 'inspector' ? (
               selectedBlock ? (
-                <div className="p-5 overflow-y-auto flex-1" data-testid="block-inspector">
-                  <p className="bp-eyebrow mb-4 !text-[var(--bp-text-muted)]">
-                    {t(`moodboards.block.${selectedBlock.type}`)}
-                  </p>
+                <div className="px-6 py-5 overflow-y-auto flex-1" data-testid="block-inspector">
+                  {/* Selected-block header — editorial type meta + tactile divider.
+                      "ITEM · IMAGE" reads like a magazine caption. */}
+                  <div className="flex items-baseline gap-2 mb-5 pb-4 border-b border-[var(--bp-border)]/70">
+                    <span className="font-mono text-[10px] tracking-[0.32em] uppercase text-[var(--bp-text-subtle)]">
+                      {t('moodboards.inspector.selectedItem', null, 'Item')}
+                    </span>
+                    <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-[var(--bp-primary)]">
+                      · {t(`moodboards.block.${selectedBlock.type}`)}
+                    </span>
+                    <div className="flex-1" />
+                  </div>
                   <BlockInspector block={selectedBlock} t={t}
                                   onChangeContent={(content) => updateBlock(selectedBlock.id, { content })}
                                   onChangeStyle={(style) => updateBlock(selectedBlock.id, { style })}
@@ -973,16 +982,31 @@ const MoodboardEditor = ({ readOnly = false }) => {
                                   onOpenQuickAdjust={(src) => setQuickAdjust({ blockId: selectedBlock.id, src })} />
                 </div>
               ) : (
-                <div className="p-6 flex-1 flex flex-col items-center justify-center text-center">
-                  <div className="w-12 h-12 mb-4 rounded-full border border-[var(--bp-border)] flex items-center justify-center text-[var(--bp-text-subtle)]">
-                    <Layers size={16} strokeWidth={1.4} />
+                <div className="p-8 flex-1 flex flex-col items-center justify-center text-center"
+                     data-testid="inspector-empty-state">
+                  {/* Soft layered glyph — concentric rings allude to the OO
+                      monogram without repeating it literally, keeping the
+                      moment quiet rather than branded. */}
+                  <div className="relative mb-6"
+                       style={{ width: 64, height: 64 }}>
+                    <span className="absolute inset-0 rounded-full border border-[var(--bp-border)]" />
+                    <span className="absolute inset-[10px] rounded-full border border-[var(--bp-primary)]/30" />
+                    <span className="absolute inset-[22px] rounded-full bg-[var(--bp-primary)]/15
+                                     shadow-[0_0_18px_rgba(15,162,132,0.18)]" />
                   </div>
-                  <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] mb-2">
+                  <p className="font-mono text-[10px] tracking-[0.36em] uppercase
+                                text-[var(--bp-text-muted)] mb-4">
                     {t('moodboards.editor.inspector', null, 'Inspector')}
                   </p>
-                  <p className="bp-caption !text-[12px] !text-[var(--bp-text-secondary)] leading-relaxed max-w-[200px]">
-                    {t('moodboards.editor.selectHint', null,
-                      'Select an element on the canvas to edit its appearance — typography, crop, tonal adjustments, borders, shadows.')}
+                  <p className="!text-[17px] !text-[var(--bp-text-primary)] font-light italic leading-[1.35] mb-3 max-w-[240px]"
+                     style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
+                    {t('moodboards.inspector.empty.title', null,
+                      'A quiet control surface.')}
+                  </p>
+                  <p className="bp-caption !text-[12px] !text-[var(--bp-text-muted)] leading-[1.6] max-w-[240px] italic"
+                     style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
+                    {t('moodboards.inspector.empty.body', null,
+                      'Select an element to refine its composition, typography, materials or atmosphere.')}
                   </p>
                 </div>
               )
@@ -1724,28 +1748,97 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
     </div>
   );
 
+  // Layout controls — geometry & positioning. Tactile numeric inputs in
+  // pairs (W/H, X/Y) so the designer can dial in precision when needed.
+  const layoutJsx = (
+    <div>
+      <div className="grid grid-cols-2 gap-2 mb-3">
+        <label className="block">
+          <span className="bp-eyebrow !text-[9px] !text-[var(--bp-text-subtle)] mb-1 block">W</span>
+          <input type="number" value={Math.round(block.width || 0)}
+                 onChange={(e) => onChange({ width: Math.max(20, parseInt(e.target.value, 10) || 0) })}
+                 data-testid="block-width"
+                 className="input-luxury w-full px-2 py-1.5 text-xs font-mono rounded-[var(--bp-radius-xs)] tabular-nums" />
+        </label>
+        <label className="block">
+          <span className="bp-eyebrow !text-[9px] !text-[var(--bp-text-subtle)] mb-1 block">H</span>
+          <input type="number" value={Math.round(block.height || 0)}
+                 onChange={(e) => onChange({ height: Math.max(20, parseInt(e.target.value, 10) || 0) })}
+                 data-testid="block-height"
+                 className="input-luxury w-full px-2 py-1.5 text-xs font-mono rounded-[var(--bp-radius-xs)] tabular-nums" />
+        </label>
+      </div>
+      <div className="grid grid-cols-2 gap-2 mb-3">
+        <label className="block">
+          <span className="bp-eyebrow !text-[9px] !text-[var(--bp-text-subtle)] mb-1 block">X</span>
+          <input type="number" value={Math.round(block.x || 0)}
+                 onChange={(e) => onChange({ x: Math.max(0, parseInt(e.target.value, 10) || 0) })}
+                 data-testid="block-x"
+                 className="input-luxury w-full px-2 py-1.5 text-xs font-mono rounded-[var(--bp-radius-xs)] tabular-nums" />
+        </label>
+        <label className="block">
+          <span className="bp-eyebrow !text-[9px] !text-[var(--bp-text-subtle)] mb-1 block">Y</span>
+          <input type="number" value={Math.round(block.y || 0)}
+                 onChange={(e) => onChange({ y: Math.max(0, parseInt(e.target.value, 10) || 0) })}
+                 data-testid="block-y"
+                 className="input-luxury w-full px-2 py-1.5 text-xs font-mono rounded-[var(--bp-radius-xs)] tabular-nums" />
+        </label>
+      </div>
+      <InspectorSlider label={t('moodboards.field.rotation')}
+                       value={block.rotation || 0}
+                       min={-180} max={180} step={1}
+                       onChange={(v) => onChange({ rotation: v })}
+                       testid="block-rotation" formatValue={(v) => `${v}°`} />
+    </div>
+  );
+
+  // Future "Advanced" placeholder — kept intentionally minimal so the group
+  // exists in the IA but doesn't try to do anything yet. Multi-select &
+  // batch-edit will land here in a future sprint.
+  const advancedJsx = (
+    <div className="bp-caption !text-[11px] !text-[var(--bp-text-subtle)] italic leading-[1.55] py-2"
+         style={{ fontFamily: 'Playfair Display, serif' }}>
+      {t('moodboards.inspector.advancedSoon', null,
+        'Multi-select & batch refinement will land here.')}
+    </div>
+  );
+
   switch (block.type) {
     case 'image':
       return (<>{inspectorHeader}
         <ImageUploader currentUrl={c.src} t={t}
                        onUploaded={(url, meta) => {
-                         // Persist src + structured metadata in one atomic update so
-                         // autosave's batch PATCH carries both.
                          onChange({
                            content: { ...c, src: url },
                            metadata: { ...(block.metadata || {}), ...(meta || {}) },
                          });
-                         // Open the lifted QuickAdjust modal at editor root so
-                         // selecting another block won't unmount it mid-adjust.
                          onOpenQuickAdjust?.(url);
                        }} />
         <InspectorInput label={t('moodboards.field.imageUrl')} value={c.src}
                         onChange={(v) => setC('src', v)} testid="block-image-src" />
         <InspectorInput label={t('moodboards.field.caption')} value={c.caption}
                         onChange={(v) => setC('caption', v)} testid="block-image-caption" />
-        {cropFocalJsx}
-        {adjustmentsJsx}
-        {visualPropsJsx}
+        <div className="mt-2 space-y-0">
+          <InspectorGroup groupKey="LAYOUT" blockType="image"
+                          title={t('moodboards.inspector.group.layout', null, 'Layout')}>
+            {layoutJsx}
+          </InspectorGroup>
+          <InspectorGroup groupKey="IMAGE" blockType="image"
+                          title={t('moodboards.inspector.group.image', null, 'Image')}
+                          eyebrow={t('moodboards.inspector.group.image.eyebrow', null, 'crop & tonal')}>
+            {cropFocalJsx}
+            {adjustmentsJsx}
+          </InspectorGroup>
+          <InspectorGroup groupKey="STYLE" blockType="image"
+                          title={t('moodboards.inspector.group.style', null, 'Style')}
+                          eyebrow={t('moodboards.inspector.group.style.eyebrow', null, 'opacity · border · shadow')}>
+            {visualPropsJsx}
+          </InspectorGroup>
+          <InspectorGroup groupKey="ADVANCED" blockType="image"
+                          title={t('moodboards.inspector.group.advanced', null, 'Advanced')}>
+            {advancedJsx}
+          </InspectorGroup>
+        </div>
       </>);
     case 'text':
       return (<>{inspectorHeader}
@@ -1761,8 +1854,26 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
             {['display','h1','h2','h3','body','caption','eyebrow'].map((sz) => <option key={sz}>{sz}</option>)}
           </select>
         </label>
-        {typographyJsx}
-        {visualPropsJsx}
+        <div className="mt-2 space-y-0">
+          <InspectorGroup groupKey="TYPOGRAPHY" blockType="text"
+                          title={t('moodboards.inspector.group.typography', null, 'Typography')}
+                          eyebrow={t('moodboards.inspector.group.typography.eyebrow', null, 'font · weight · tracking')}>
+            {typographyJsx}
+          </InspectorGroup>
+          <InspectorGroup groupKey="LAYOUT" blockType="text"
+                          title={t('moodboards.inspector.group.layout', null, 'Layout')}>
+            {layoutJsx}
+          </InspectorGroup>
+          <InspectorGroup groupKey="STYLE" blockType="text"
+                          title={t('moodboards.inspector.group.style', null, 'Style')}
+                          eyebrow={t('moodboards.inspector.group.style.eyebrow', null, 'opacity · border · shadow')}>
+            {visualPropsJsx}
+          </InspectorGroup>
+          <InspectorGroup groupKey="ADVANCED" blockType="text"
+                          title={t('moodboards.inspector.group.advanced', null, 'Advanced')}>
+            {advancedJsx}
+          </InspectorGroup>
+        </div>
       </>);
     case 'shape':
       return (<>{inspectorHeader}
