@@ -29,10 +29,7 @@ export function detectInitialSiteLocale() {
   try {
     const stored = localStorage.getItem('mfd_site_locale');
     if (stored && SITE_LOCALES.some((l) => l.code === stored)) return stored;
-    if (typeof navigator !== 'undefined' && navigator.language) {
-      const short = navigator.language.toLowerCase().slice(0, 2);
-      if (SITE_LOCALES.some((l) => l.code === short)) return short;
-    }
   } catch (_) {}
+  // Italian-by-default brand intent. Users can switch via the locale switcher.
   return DEFAULT_SITE_LOCALE;
 }

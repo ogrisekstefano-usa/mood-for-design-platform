@@ -1277,3 +1277,35 @@ Bug-fix sprint mirato ai feedback utente. Architecture freeze rispettato.
 
 **Verified** ✅ — Picker IT 100%, snap tooltip locale-aware, filmstrip real thumbs, 0 page errors.
 
+
+
+### ✅ Phase H.1 — Public Site Foundation: Homepage + Project Showcase (DONE — 14 Feb 2026)
+Trasformazione della piattaforma da workspace privato a **global relational ecosystem**: prima superficie pubblica editoriale, multilingua, DB-ready.
+
+- **Routing pubblico nuovo** (`App.js`): `/` (HomePage), `/projects` (ProjectsIndexPage), `/projects/:slug` (SiteProjectDetailPage), `/onboarding/:kind` (placeholder Private/Pro) — tutti wrappati in `SiteLayout` separato dall'app autenticata. Prima `/` reindirizzava a `/auth/login`.
+- **Architettura content DB-ready** (`/app/frontend/src/site/content/`):
+  - `homepage.js` — Hero, Dual CTA (Private/Pro), Selected Projects, 4 Editorial Values, Final CTA — tutti localizzati come `{it,en,fr,de,es}` (mimicker tabella futura `homepage_sections`)
+  - `projects.js` — 6 progetti editoriali completi (Casa Naviglio, Aman Residences Tokyo, Galerie Saint-Honoré, Villa Cap Ferrat, Hotel Orient Istanbul, Penthouse Tribeca) con title/subtitle/summary/chapters/materials/tags localizzati + cover + gallery (Unsplash editorial stock)
+  - `navigation.js` — Header (4 link + CTA Accedi) + Footer (3 colonne + legal + copyright) localizzati
+- **Locale Engine** (`site/i18n.js` + `SiteContext.jsx`): `pick(value, locale, fallback)` helper, 5 locali (it/en/fr/de/es), persistenza `localStorage.mfd_site_locale`, default IT (brand intent), `<html lang>` aggiornato runtime
+- **Editorial Styles** (`site/site.css`): scoped sotto `.mfd-site`, CSS variables editoriali (warm ivory ink #F1ECE3, brass accent #C9A36E, Cormorant serif), grain subtle, hero cinematic veil, masonry rhythm, dual CTA divider, Aman/Kinfolk/AD Archive aesthetic
+- **Components**:
+  - `SiteHeader.jsx` — brand lockup MOOD for DESIGN™ con tagline, nav links con underline-on-hover, LocaleSwitcher dropdown con bandiere semantic, CTA Accedi sticky, glass-on-scroll
+  - `SiteFooter.jsx` — 3 colonne (Platform/Studio/Contact), copyright con interpolazione {year}{brand}, legal links
+  - `SiteLayout.jsx` — wrap con SiteProvider, ScrollToTopOnNav, Outlet
+  - `Reveal.jsx` — IntersectionObserver con safety-timeout 400ms (content visible by default + opt-in `--prep` per fade-in cinematic)
+  - `SiteImage` — skeleton shimmer + cinematic fade-in
+- **Pages**:
+  - `HomePage` — Hero full-screen con cover Unsplash + editorial veil, Dual CTA con immagini Private/Pro, Selected Projects strip con ritmo alternato (12-col asymmetric), Editorial Values 4-card border-grid, Final CTA editoriale
+  - `ProjectsIndexPage` — Masonry editoriale (column-count 1/2/3 responsive) con filtri categoria (All/Residential/Hospitality/Retail), counter aria-pressed
+  - `SiteProjectDetailPage` — Hero cinematografico 21:9, spec list editoriale, gallery rhythm (wide/narrow alternato), chapters narrativi, materials list, related projects (same-category), CTA finale
+  - `OnboardingPlaceholderPage` — Editorial holding page per Private (mailto) / Pro (link Workspace)
+- **i18n routing**: nessun hardcoded text — TUTTI i contenuti passano via `pick()` dal content config localizzato
+- **Tested ✅** (`iteration_30.json`)
+  - 11/11 scenari PASS (home sections, locale IT/EN switching, nav, 6 cards + filtri, casa-naviglio + aman-residences-tokyo detail, invalid-slug redirect, onboarding private+pro, footer year/legal, hero-headline IT contains "Dove il design", auth/login regression)
+  - 0 console errors
+  - Frontend success rate: 100%
+- **Future**: questo è solo Phase H.1 (Public Surface). Phasi successive (H.2 Private Intake emotivo / H.3 Lead Assignment / H.4 Designer Profiles / H.5 Messaging V1) richiedono backend (tabelle leads/profiles/conversations già anticipate in PRD).
+
+**Constraint Shift recap**: La Architecture Freeze è stata rispettata — questa fase è FRONTEND ONLY. Nessuna nuova tabella DB. I content config sono **shaped exactly** come le future tabelle Supabase (`homepage_sections.content jsonb`, `projects.locale_content`, `site_navigation.config`) — migrazione futura sarà un copy-paste 1:1 + GET endpoint pubblico.
+
