@@ -1,17 +1,16 @@
 import React from 'react';
+import { resolveFontFamily } from '../fontRegistry';
 
 /**
  * TextBlock — editorial text block.
  *
- *   Reads style.typography for fine-grained typographic control (font family,
- *   weight, size, line-height, letter-spacing, alignment, color, italic,
- *   underline). When typography is not set, falls back to the named preset
- *   in content.size (h1 / h2 / body / caption / eyebrow…) via the same
- *   typographic classes used across the platform.
+ *   Reads style.typography for fine-grained typographic control. Falls back
+ *   to the content.size preset (h1 / h2 / body / caption / eyebrow). Lists
+ *   are stored as content.list_style = 'bullet' | 'numbered'.
  *
- *   Lists (ul / ol) are stored as content.list_style = 'bullet' | 'numbered'.
- *   The block becomes a one-per-line list — keeps the data shape simple
- *   without introducing a rich-text editor for the MVP.
+ *   Font family is resolved through the central fontRegistry so any font
+ *   added there (Playfair, Cormorant, Manrope, Caveat, …) is instantly
+ *   available without touching this component.
  */
 const PRESET_CLASS = {
   display: 'bp-display',
@@ -21,25 +20,14 @@ const PRESET_CLASS = {
   eyebrow: 'bp-eyebrow',
 };
 
-const FONT_FAMILY_VAR = {
-  // Mirrors the design tokens in index.css. The frontend never hardcodes a
-  // raw font-family string — instead it points at a CSS variable so a future
-  // "Global Project Styles" page can swap the bound family per-tenant.
-  heading: 'var(--bp-font-heading)',
-  body:    'var(--bp-font-body)',
-  mono:    'var(--bp-font-mono)',
-};
-
 const TextBlock = ({ block, t }) => {
   const c = block.content || {};
   const tg = (block.style && block.style.typography) || {};
   const sizePreset = c.size || 'h3';
   const presetCls = PRESET_CLASS[sizePreset] || 'bp-h3';
 
-  // Compose inline style only when typography overrides are set so the
-  // preset CSS still drives the default look (less specificity creep).
   const inlineStyle = {};
-  if (tg.font_family) inlineStyle.fontFamily = FONT_FAMILY_VAR[tg.font_family] || tg.font_family;
+  if (tg.font_family) inlineStyle.fontFamily = resolveFontFamily(tg.font_family);
   if (tg.font_size)   inlineStyle.fontSize   = `${tg.font_size}px`;
   if (tg.font_weight) inlineStyle.fontWeight = tg.font_weight;
   if (tg.line_height) inlineStyle.lineHeight = tg.line_height;
@@ -52,8 +40,7 @@ const TextBlock = ({ block, t }) => {
 
   const text = c.text || (t ? t('moodboards.block.text.placeholder') : '');
   const lines = text.split('\n');
-  const listStyle = c.list_style; // 'bullet' | 'numbered' | undefined
-
+  const listStyle = c.list_style;
   const ListTag = listStyle === 'numbered' ? 'ol' : listStyle === 'bullet' ? 'ul' : null;
 
   return (

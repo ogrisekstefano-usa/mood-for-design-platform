@@ -20,6 +20,7 @@ import {
   ArrowLeft, Plus, Check, Share2, ExternalLink, Send, X, AlertCircle,
   Play, Maximize2, ChevronLeft, ChevronRight, PanelRight, ListChecks,
   BookmarkPlus, Undo2, Redo2, Magnet, RotateCcw, FileText, Sun, Moon,
+  Copy, Clipboard, MoveRight,
 } from 'lucide-react';
 import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegistry';
 import StatusBadge from '../../components/common/StatusBadge';
@@ -37,6 +38,8 @@ import ImageQuickAdjust from '../../blueprint/moodboard/ImageQuickAdjust';
 import useWorkspaceMode from '../../blueprint/moodboard/useWorkspaceMode';
 import Brand from '../../components/common/Brand';
 import { trackEvent } from '../../lib/telemetry';
+import { FONT_REGISTRY, FONT_CATEGORIES } from '../../blueprint/moodboard/fontRegistry';
+import { copyStyle, pasteStyle, hasClipboardStyle, clipboardBlockType } from '../../blueprint/moodboard/styleClipboard';
 
 const CANVAS_W = 1400;
 const CANVAS_H = 2400;
@@ -947,6 +950,22 @@ const MoodboardEditor = ({ readOnly = false }) => {
                                   onChangeContent={(content) => updateBlock(selectedBlock.id, { content })}
                                   onChangeStyle={(style) => updateBlock(selectedBlock.id, { style })}
                                   onChange={(patch) => updateBlock(selectedBlock.id, patch)}
+                                  onApplyStyleToAll={(src) => {
+                                    // Propagate style of the selected block to every other block
+                                    // of the same type on EVERY page. This is the minimal
+                                    // "Apply to all" feature — full Global Project Styles
+                                    // arrives in F.5.
+                                    const peers = blocks.filter((b) => b.type === src.type && b.id !== src.id);
+                                    peers.forEach((p) => {
+                                      updateBlock(p.id, {
+                                        style: { ...(p.style || {}), ...(src.style || {}) },
+                                        ...(src.type === 'text' && src.content?.size
+                                          ? { content: { ...(p.content || {}), size: src.content.size, list_style: src.content.list_style } }
+                                          : {}),
+                                      });
+                                    });
+                                    toast.success(t('moodboards.editor.applyAllDone', null, `${peers.length} blocks updated`));
+                                  }}
                                   onOpenQuickAdjust={(src) => setQuickAdjust({ blockId: selectedBlock.id, src })} />
                 </div>
               ) : (
@@ -959,7 +978,21 @@ const MoodboardEditor = ({ readOnly = false }) => {
             ) : rightTab === 'page' ? (
               <PageInspector moodboardId={id}
                              page={activePage}
-                             onSaved={reloadPagesAndBlocks} />
+                             onSaved={reloadPagesAndBlocks}
+                             onLocalUpdate={(pageId, patch) => {
+                               // Live preview: merge the page-inspector patch
+                               // directly into pages[] so the canvas reflects
+                               // edits BEFORE the debounced PUT lands.
+                               setPages((ps) => ps.map((p) => p.id === pageId
+                                 ? {
+                                     ...p,
+                                     ...(patch.title !== undefined ? { title: patch.title } : {}),
+                                     ...(patch.hidden_in_presentation !== undefined
+                                       ? { hidden_in_presentation: patch.hidden_in_presentation } : {}),
+                                     settings: { ...(p.settings || {}), ...patch },
+                                   }
+                                 : p));
+                             }} />
             ) : (
               <LayersPanel blocks={pageBlocks} selectedId={selectedId}
                            onSelect={(bid) => { setSelectedId(bid); }}
@@ -1181,11 +1214,25 @@ const FOCAL_PRESETS = [
 ];
 
 // ── Block Inspector ─────────────────────────────────────────────────────────
-const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpenQuickAdjust, t }) => {
+const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpenQuickAdjust, onApplyStyleToAll, t }) => {
   const c = block.content || {};
   const s = block.style || {};
   const setC = (k, v) => onChangeContent({ ...c, [k]: v });
   const setS = (k, v) => onChangeStyle({ ...s, [k]: v });
+
+  // Copy/Paste Style — clipboard is window-scoped (styleClipboard.js) so the
+  // user can pick up a style on one block and drop it on another in any
+  // moodboard during the same browser session.
+  const [, forceRerender] = React.useState(0);
+  const handleCopy = () => {
+    copyStyle(block);
+    forceRerender((n) => n + 1);
+  };
+  const handlePaste = () => {
+    const patch = pasteStyle(block);
+    if (patch) onChange(patch);
+  };
+  const canPaste = hasClipboardStyle() && clipboardBlockType() === block.type;
 
   // Image adjustments — CSS-filter based, persisted in style.adjustments.
   const adj = s.adjustments || {};
@@ -1353,28 +1400,28 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
         {t('moodboards.editor.typography', null, 'Typography')}
       </p>
 
-      {/* Font family — three editorial families bound to CSS vars */}
+      {/* Font family — full editorial registry. Grouped by category. */}
       <label className="block mb-4">
         <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
           {t('moodboards.field.fontFamily', null, 'Font family')}
         </span>
-        <div className="grid grid-cols-3 gap-1" data-testid="typo-font-family">
-          {[['heading', 'Display'], ['body', 'Body'], ['mono', 'Mono']].map(([id, label]) => {
-            const active = (tg.font_family || 'heading') === id;
+        <select value={tg.font_family || 'heading'}
+                onChange={(e) => setTg('font_family', e.target.value)}
+                data-testid="typo-font-family"
+                style={{ fontFamily: FONT_REGISTRY.find((f) => f.id === (tg.font_family || 'heading'))?.family }}
+                className="input-luxury w-full px-2.5 py-2 text-sm rounded-[var(--bp-radius-sm)]">
+          {FONT_CATEGORIES.map((cat) => {
+            const items = FONT_REGISTRY.filter((f) => f.category === cat.id);
+            if (!items.length) return null;
             return (
-              <button key={id} type="button"
-                      onClick={() => setTg('font_family', id)}
-                      data-testid={`typo-font-${id}`}
-                      style={{ fontFamily: `var(--bp-font-${id})` }}
-                      className={`text-[11px] py-2 rounded-[var(--bp-radius-xs)] border transition-colors
-                        ${active
-                          ? 'border-[var(--bp-primary)] text-[var(--bp-text-primary)] bg-[var(--bp-surface-2)]'
-                          : 'border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:border-[var(--bp-border-strong)]'}`}>
-                {label}
-              </button>
+              <optgroup key={cat.id} label={cat.label}>
+                {items.map((f) => (
+                  <option key={f.id} value={f.id}>{f.label}</option>
+                ))}
+              </optgroup>
             );
           })}
-        </div>
+        </select>
       </label>
 
       <InspectorSlider label={t('moodboards.field.fontSize', null, 'Size')}
@@ -1556,9 +1603,45 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
     </>
   );
 
+  // Header rendered above EVERY block-type-specific inspector with the
+  // Copy / Paste Style affordances and (optional) "Apply to all of this
+  // type on this page" propagation.
+  const inspectorHeader = (
+    <div className="mb-4 pb-3 border-b border-[var(--bp-border)] flex items-center gap-1">
+      <button type="button" onClick={handleCopy}
+              data-testid="copy-style-btn"
+              title={t('moodboards.editor.copyStyle', null, 'Copy style')}
+              className="p-1.5 rounded-[var(--bp-radius-xs)] text-[var(--bp-text-muted)]
+                         hover:text-[var(--bp-text-primary)] hover:bg-[var(--bp-surface-2)]/60
+                         transition-colors">
+        <Copy size={12} strokeWidth={1.5} />
+      </button>
+      <button type="button" onClick={handlePaste} disabled={!canPaste}
+              data-testid="paste-style-btn"
+              title={canPaste
+                ? t('moodboards.editor.pasteStyle', null, 'Paste style')
+                : t('moodboards.editor.pasteStyleEmpty', null, 'Nothing copied')}
+              className={`p-1.5 rounded-[var(--bp-radius-xs)] transition-colors
+                ${canPaste
+                  ? 'text-[var(--bp-primary)] hover:bg-[var(--bp-primary)]/12'
+                  : 'text-[var(--bp-text-subtle)] cursor-not-allowed'}`}>
+        <Clipboard size={12} strokeWidth={1.5} />
+      </button>
+      <div className="flex-1" />
+      <button type="button"
+              onClick={() => onApplyStyleToAll?.(block)}
+              data-testid="apply-style-all-pages-btn"
+              title={t('moodboards.editor.applyStyleAll', null, 'Apply style to similar blocks on all pages')}
+              className="text-[9px] tracking-[0.22em] uppercase text-[var(--bp-text-muted)]
+                         hover:text-[var(--bp-primary)] transition-colors">
+        {t('moodboards.editor.applyAll', null, 'Apply all')}
+      </button>
+    </div>
+  );
+
   switch (block.type) {
     case 'image':
-      return (<>
+      return (<>{inspectorHeader}
         <ImageUploader currentUrl={c.src} t={t}
                        onUploaded={(url, meta) => {
                          // Persist src + structured metadata in one atomic update so
@@ -1580,7 +1663,7 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
         {visualPropsJsx}
       </>);
     case 'text':
-      return (<>
+      return (<>{inspectorHeader}
         <InspectorTextarea label={t('moodboards.field.text')} value={c.text}
                            onChange={(v) => setC('text', v)} testid="block-text-input" />
         <label className="block mb-3">
@@ -1597,7 +1680,7 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
         {visualPropsJsx}
       </>);
     case 'shape':
-      return (<>
+      return (<>{inspectorHeader}
         {shapeJsx}
         {visualPropsJsx}
       </>);
@@ -1606,8 +1689,79 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
         <InspectorTextarea label={t('moodboards.field.note')} value={c.text}
                            onChange={(v) => setC('text', v)} testid="block-note-input" />
       </>);
+    case 'arrow':
+      return (<>{inspectorHeader}
+        <label className="block mb-3">
+          <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+            {t('moodboards.field.arrowKind', null, 'Arrow')}
+          </span>
+          <div className="grid grid-cols-3 gap-1" data-testid="arrow-kind">
+            {[['straight', '→'], ['curved', '⤴'], ['sketch', '〰']].map(([id, glyph]) => {
+              const active = (c.kind || 'straight') === id;
+              return (
+                <button key={id} type="button"
+                        onClick={() => setC('kind', id)}
+                        data-testid={`arrow-kind-${id}`}
+                        className={`py-3 text-[16px] rounded-[var(--bp-radius-xs)] border transition-colors
+                          ${active
+                            ? 'border-[var(--bp-primary)] text-[var(--bp-text-primary)] bg-[var(--bp-surface-2)]'
+                            : 'border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:border-[var(--bp-border-strong)]'}`}>
+                  {glyph}
+                </button>
+              );
+            })}
+          </div>
+        </label>
+
+        <label className="block mb-3">
+          <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+            {t('moodboards.field.arrowHead', null, 'Arrowhead')}
+          </span>
+          <div className="grid grid-cols-3 gap-1" data-testid="arrow-head">
+            {['triangle', 'open', 'none'].map((h) => {
+              const active = (c.head || 'triangle') === h;
+              return (
+                <button key={h} type="button"
+                        onClick={() => setC('head', h)}
+                        data-testid={`arrow-head-${h}`}
+                        className={`text-[10px] uppercase tracking-wider py-1.5 rounded-[var(--bp-radius-xs)] border transition-colors
+                          ${active
+                            ? 'border-[var(--bp-primary)] text-[var(--bp-text-primary)] bg-[var(--bp-surface-2)]'
+                            : 'border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:border-[var(--bp-border-strong)]'}`}>
+                  {h}
+                </button>
+              );
+            })}
+          </div>
+        </label>
+
+        <label className="block mb-3">
+          <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
+            {t('moodboards.field.color', null, 'Color')}
+          </span>
+          <div className="flex items-center gap-2">
+            <input type="color" value={(s.color || '#F5F2EC').startsWith('#') ? s.color : '#F5F2EC'}
+                   onChange={(e) => setS('color', e.target.value)}
+                   data-testid="arrow-color"
+                   className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent border border-[var(--bp-border)]" />
+            <input value={s.color || ''} onChange={(e) => setS('color', e.target.value)}
+                   className="input-luxury flex-1 px-2 py-1 text-xs font-mono rounded-[var(--bp-radius-xs)]" />
+          </div>
+        </label>
+
+        <InspectorSlider label={t('moodboards.field.thickness', null, 'Thickness')}
+                         value={s.thickness ?? 2} min={1} max={12} step={1}
+                         onChange={(v) => setS('thickness', v)}
+                         testid="arrow-thickness" formatValue={(v) => `${v}px`} />
+
+        <Toggle label={t('moodboards.field.dashed', null, 'Dashed')}
+                checked={!!s.dashed}
+                onChange={(v) => setS('dashed', v)}
+                testid="arrow-dashed" />
+        {visualPropsJsx}
+      </>);
     case 'palette':
-      return (
+      return (<>{inspectorHeader}
         <div>
           <span className="bp-eyebrow !text-[10px] mb-2 block !text-[var(--bp-text-muted)]">
             {t('moodboards.field.colors')}
@@ -1631,9 +1785,9 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
             <Plus size={11} strokeWidth={1.5} /> {t('moodboards.field.addColor')}
           </button>
         </div>
-      );
+      </>);
     case 'product':
-      return (<>
+      return (<>{inspectorHeader}
         <ImageUploader currentUrl={c.image} t={t}
                        onUploaded={(url) => setC('image', url)} />
         <InspectorInput label={t('moodboards.field.name')}     value={c.name}   onChange={(v) => setC('name', v)} />
@@ -1642,7 +1796,7 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
         <InspectorInput label={t('moodboards.field.imageUrl')} value={c.image}  onChange={(v) => setC('image', v)} />
       </>);
     case 'material':
-      return (<>
+      return (<>{inspectorHeader}
         <ImageUploader currentUrl={c.swatch} t={t}
                        onUploaded={(url) => setC('swatch', url)} />
         <InspectorInput label={t('moodboards.field.name')}   value={c.name}   onChange={(v) => setC('name', v)} />

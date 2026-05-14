@@ -11,11 +11,11 @@
  * Blueprint-driven: transitions registry comes from
  * /api/moodboards/_meta/presentation_transitions; all labels via t().
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 
-const PageInspector = ({ moodboardId, page, onSaved }) => {
+const PageInspector = ({ moodboardId, page, onSaved, onLocalUpdate }) => {
   const { t } = useBlueprint();
   const [transitions, setTransitions] = useState([]);
   const [draft, setDraft] = useState(() => ({
@@ -25,6 +25,9 @@ const PageInspector = ({ moodboardId, page, onSaved }) => {
     transition_duration: page?.settings?.transition_duration || 700,
     hidden_in_presentation: !!page?.hidden_in_presentation,
     hidden_from_client: !!page?.settings?.hidden_from_client,
+    background_color: page?.settings?.background_color || '',
+    background_image_url: page?.settings?.background_image_url || '',
+    background_overlay: page?.settings?.background_overlay ?? 0,
   }));
 
   // Sync draft when the active page changes
@@ -37,6 +40,9 @@ const PageInspector = ({ moodboardId, page, onSaved }) => {
       transition_duration: page.settings?.transition_duration || 700,
       hidden_in_presentation: !!page.hidden_in_presentation,
       hidden_from_client: !!page.settings?.hidden_from_client,
+      background_color: page.settings?.background_color || '',
+      background_image_url: page.settings?.background_image_url || '',
+      background_overlay: page.settings?.background_overlay ?? 0,
     });
   }, [page?.id]);  // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -46,14 +52,36 @@ const PageInspector = ({ moodboardId, page, onSaved }) => {
       .catch(() => setTransitions([]));
   }, []);
 
+  // Debounced server commit so live-drag sliders don't flood the network.
+  // Local state + parent-level page mutation happen IMMEDIATELY (via
+  // onLocalUpdate) so the canvas previews edits in real time; the PUT
+  // catches up 280ms after the user stops interacting.
+  // (Refs declared BEFORE the early return so React Hook order stays stable.)
+  const commitTimerRef = useRef(null);
+  const pendingPatchRef = useRef({});
+
   if (!page) return null;
 
-  const commit = async (patch) => {
-    setDraft((d) => ({ ...d, ...patch }));
+  const flushCommit = async () => {
+    if (commitTimerRef.current) {
+      clearTimeout(commitTimerRef.current);
+      commitTimerRef.current = null;
+    }
+    const patch = { ...pendingPatchRef.current };
+    pendingPatchRef.current = {};
+    if (Object.keys(patch).length === 0) return;
     try {
       await api.put(`/api/moodboards/${moodboardId}/pages/${page.id}`, patch);
       onSaved?.();
-    } catch (_) { /* surface via toast if needed */ }
+    } catch (_) { /* tolerated — autosave will retry on next change */ }
+  };
+
+  const commit = (patch, { live = true } = {}) => {
+    setDraft((d) => ({ ...d, ...patch }));
+    if (live) onLocalUpdate?.(page.id, patch);  // instant canvas preview
+    pendingPatchRef.current = { ...pendingPatchRef.current, ...patch };
+    if (commitTimerRef.current) clearTimeout(commitTimerRef.current);
+    commitTimerRef.current = setTimeout(flushCommit, 280);
   };
 
   return (
@@ -151,9 +179,33 @@ const PageInspector = ({ moodboardId, page, onSaved }) => {
           read page.settings.{background_color, background_image_url,
           background_overlay}). Light/Dark cinematic boards both supported. */}
       <div className="pt-3 mt-3 border-t border-[var(--bp-border)]">
-        <p className="bp-eyebrow !text-[10px] mb-3 !text-[var(--bp-text-muted)]">
-          {t('moodboards.field.pageBackground', null, 'Page background')}
-        </p>
+        <div className="flex items-center justify-between mb-3">
+          <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)]">
+            {t('moodboards.field.pageBackground', null, 'Page background')}
+          </p>
+          {/* Apply current background to every page — minimal "Global Project
+              Styles" preview. Uses the local PUT endpoint with the page-bg
+              fields only, fanned out over the moodboard's other pages. */}
+          <button type="button"
+                  data-testid="page-bg-apply-all"
+                  onClick={async () => {
+                    const r = await api.get(`/api/moodboards/${moodboardId}/pages`);
+                    const otherPages = (r.data?.data || r.data || []).filter((p) => p.id !== page.id);
+                    const patch = {
+                      background_color: draft.background_color || null,
+                      background_image_url: draft.background_image_url || null,
+                      background_overlay: draft.background_overlay ?? 0,
+                    };
+                    await Promise.all(otherPages.map((p) =>
+                      api.put(`/api/moodboards/${moodboardId}/pages/${p.id}`, patch),
+                    ));
+                    onSaved?.();
+                  }}
+                  className="text-[9px] tracking-[0.22em] uppercase text-[var(--bp-text-muted)]
+                             hover:text-[var(--bp-primary)] transition-colors">
+            {t('moodboards.editor.applyAllPages', null, 'Apply to all pages')}
+          </button>
+        </div>
 
         <label className="block mb-3">
           <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
@@ -161,11 +213,11 @@ const PageInspector = ({ moodboardId, page, onSaved }) => {
           </span>
           <div className="flex items-center gap-2">
             <input type="color"
-                   value={(page.settings?.background_color || '#0A0A0B').startsWith('#') ? page.settings?.background_color || '#0A0A0B' : '#0A0A0B'}
+                   value={(draft.background_color || '#0A0A0B').startsWith('#') ? draft.background_color || '#0A0A0B' : '#0A0A0B'}
                    onChange={(e) => commit({ background_color: e.target.value })}
                    data-testid="page-bg-color"
                    className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent border border-[var(--bp-border)]" />
-            <input value={page.settings?.background_color || ''}
+            <input value={draft.background_color || ''}
                    onChange={(e) => setDraft((d) => ({ ...d, background_color: e.target.value }))}
                    onBlur={(e) => commit({ background_color: e.target.value })}
                    placeholder="inherit"
@@ -177,7 +229,7 @@ const PageInspector = ({ moodboardId, page, onSaved }) => {
           <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
             {t('moodboards.field.bgImage', null, 'Background image URL')}
           </span>
-          <input value={page.settings?.background_image_url || ''}
+          <input value={draft.background_image_url || ''}
                  onChange={(e) => setDraft((d) => ({ ...d, background_image_url: e.target.value }))}
                  onBlur={(e) => commit({ background_image_url: e.target.value })}
                  placeholder="https://…"
@@ -191,14 +243,12 @@ const PageInspector = ({ moodboardId, page, onSaved }) => {
               {t('moodboards.field.bgOverlay', null, 'Overlay')}
             </span>
             <span className="bp-caption !text-[10px] text-[var(--bp-text-primary)] font-mono tabular-nums">
-              {((page.settings?.background_overlay ?? 0) * 100).toFixed(0)}%
+              {((draft.background_overlay ?? 0) * 100).toFixed(0)}%
             </span>
           </div>
-          <input type="range" min={0} max={1} step={0.05}
-                 value={page.settings?.background_overlay ?? 0}
-                 onChange={(e) => setDraft((d) => ({ ...d, background_overlay: parseFloat(e.target.value) }))}
-                 onMouseUp={(e) => commit({ background_overlay: parseFloat(e.target.value) })}
-                 onTouchEnd={(e) => commit({ background_overlay: parseFloat(e.target.value) })}
+          <input type="range" min={0} max={1} step={0.02}
+                 value={draft.background_overlay ?? 0}
+                 onChange={(e) => commit({ background_overlay: parseFloat(e.target.value) })}
                  data-testid="page-bg-overlay"
                  className="bp-slider" />
         </label>

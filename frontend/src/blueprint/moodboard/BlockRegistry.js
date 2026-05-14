@@ -10,6 +10,7 @@ import NoteBlock from './blocks/NoteBlock';
 import ProductBlock from './blocks/ProductBlock';
 import MaterialBlock from './blocks/MaterialBlock';
 import ShapeBlock from './blocks/ShapeBlock';
+import ArrowBlock from './blocks/ArrowBlock';
 
 export const BLOCK_COMPONENTS = {
   image:    ImageBlock,
@@ -19,6 +20,7 @@ export const BLOCK_COMPONENTS = {
   product:  ProductBlock,
   material: MaterialBlock,
   shape:    ShapeBlock,
+  arrow:    ArrowBlock,
 };
 
 export const BLOCK_TYPES = [
@@ -31,6 +33,9 @@ export const BLOCK_TYPES = [
   { type: 'shape',    label: 'Shape',    defaults: { width: 220, height: 220,
     content: { kind: 'rectangle' },
     style: { fill: 'rgba(255,255,255,0.06)', border_color: 'var(--bp-text-primary)', border_width: 1, border_style: 'solid', border_radius: 4 } } },
+  { type: 'arrow',    label: 'Arrow',    defaults: { width: 240, height: 60,
+    content: { kind: 'straight', head: 'triangle' },
+    style: { color: 'var(--bp-text-primary)', thickness: 2, dashed: false } } },
 ];
 
 export function resolveBlock(type) {
