@@ -1333,3 +1333,31 @@ Cambio strategico: la homepage pubblica NON promuove più la piattaforma MOOD fo
 **Next phase (H.2)**: Backend CMS table + AI translation engine + `/settings/cms` admin UI. Lo studio admin sceglie la lingua master (es. IT), edita ogni stringa via UI, e un button "Traduci tutte le lingue con AI" chiama Emergent LLM (Claude/Gemini) per popolare le altre lingue. Possibilità di aggiungere nuove lingue (es. PT, JA, AR) dal pannello — AI traduce tutto il content esistente. Schema: `cms_languages(tenant_id, code, label, native, enabled, is_master)`, `cms_content(tenant_id, page_key, section_key, field_key, locale, value, source, ai_translated_at)`. Frontend leggerà via GET `/api/cms/public/:tenant/page/:slug?locale=:locale`.
 
 
+
+
+### ✅ Phase H.1.c — CRITICAL ARCHITECTURE AUDIT & REMEDIATION (DONE — 14 Feb 2026)
+Audit completo del public-site + sistema multilingua per eliminare TUTTE le dipendenze hardcoded e unificare la locale architecture con Blueprint.
+
+**Audit findings (issues trovate e risolte)**
+1. ❌ → ✅ **Locale system disconnesso** — Blueprint usava `LOCALE_KEY='mfd_locale'` + codici BCP-47 misti (en-US, en-GB, it/fr/de/es). Site usava `'mfd_site_locale'` separato, solo 2-char, default diverso (`it` vs `en-US`). → **Unificato**: same storage key `'mfd_locale'`, same locale codes, cross-context sync via `CustomEvent('mfd:locale:change')`. Helper `normalizeLocale()` mappa BCP-47 → base 2-char per il lookup contenuti.
+2. ❌ → ✅ **Inline locale objects in JSX** — `ProjectDetailPage.jsx` aveva `labels`/`back` inline; `ProjectsIndexPage.jsx` aveva `titleByLocale`/`eyebrow`/`filterLabel`/empty/CTA inline; `OnboardingPlaceholderPage.jsx` aveva `COPY = {private, pro}` inline; `HomePage.jsx` aveva `dangerouslySetInnerHTML` con hardcoded ™ replace. → **Tutto estratto in `/app/frontend/src/site/content/ui.js`** (`uiContent.{back, archive, detail, onboarding, categories}`).
+3. ❌ → ✅ **Locale fallback silenzioso** — vecchio `pick()` ritornava la prima value non-vuota se la chiave mancava. → **Controlled fallback chain**: 1) locale esatto, 2) fallback ('en'), 3) `_default` se settato, 4) prima value, 5) dev warn `[i18n] Missing content: <path>` + safe placeholder. In prod: silent.
+4. ❌ → ✅ **`projectCategories` con labels inline** in `projects.js` — duplicava le stringhe di categoria. → Refactored a importare le labels da `uiContent.categories`.
+5. ❌ → ✅ **Bug rendering project detail hero** — `SiteImage` senza aspect-ratio collassava a 0 di altezza, immagine invisibile. → Fixed con `<img>` diretto + `position:absolute; inset:0` nel CSS della hero detail. Tutte e 6 le project detail (casa-naviglio · aman-tokyo · galerie-saint-honoré · villa-cap-ferrat · hotel-orient · penthouse-tribeca) ora caricano hero a 617px.
+
+**Architecture invariants enforced**
+- 🟢 Single source of truth per i locali: `PLATFORM_LOCALES` (6 BCP-47 entries) + `SITE_LOCALES` (5 base codes per switcher), entrambi in `/app/frontend/src/site/i18n.js`
+- 🟢 Shared `localStorage.mfd_locale` tra Blueprint app + public site + onboarding + (future) CMS + tenant settings
+- 🟢 ALL content via locale-keyed config — ZERO oggetti `{it,en,fr,de,es}` inline nei componenti JSX
+- 🟢 Cross-tab sync via `storage` event; same-tab sync via `CustomEvent('mfd:locale:change')`
+- 🟢 BlueprintContext `setLocale` ora dispatcha lo stesso `CustomEvent` → public site si aggiorna live
+- 🟢 Future-tenant ready: la struttura supporta enable/disable per locale, default per tenant, AI-translated locales aggiuntive
+- 🟢 Controlled fallback con dev observability — i contenuti mancanti vengono loggati in dev, silenti in prod
+
+**Tested ✅** (`iteration_32.json`): **12/12 scenari PASS** — zero inline locale objects, 6 project detail con hero rendering corretto, locale switching IT↔EN persistente sullo storage condiviso, cross-context sync via custom event, fallback chain corretto per codici invalidi, regression /auth/login intatta, zero console errors. Refactor production-ready.
+
+**Future-proofing notes**
+- Quando arriverà il backend CMS (Phase H.2), il content layer `uiContent` + `homepageContent` + `navigationContent` + `projects` rimarrà invariato come **fallback locale** se l'API non risponde. Le stesse strutture (locale-keyed `{it,en,...}`) sono già le shape esatte delle future tabelle `cms_translations`.
+- Quando un tenant aggiungerà una nuova lingua dal pannello admin (es. `pt`, `ja`), il sistema chiamerà AI translator per popolare tutte le chiavi esistenti → SITE_LOCALES sarà esteso runtime dalla API senza modifiche al codice frontend.
+
+
