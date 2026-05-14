@@ -213,6 +213,8 @@
   position: relative; min-height: 100vh; width: 100%;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden; isolation: isolate; text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 35%, #2A2522 0%, #15120F 50%, #0A0907 100%);
 }
 .mfd-hero__media { position: absolute; inset: 0; z-index: -1; }
 .mfd-hero__media img {
@@ -476,11 +478,16 @@
 /* Project detail hero (reused) */
 .mfd-detail-hero {
   position: relative; width: 100%; aspect-ratio: 21/9; min-height: 56vh; overflow: hidden;
+  background:
+    linear-gradient(180deg, #1B1815 0%, #0E0D0B 60%, #060605 100%),
+    #111;
 }
-.mfd-detail-hero img { width: 100%; height: 100%; object-fit: cover; }
+.mfd-detail-hero img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
 .mfd-detail-hero__veil {
   position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(17,17,17,0.45) 0%, rgba(17,17,17,0.05) 50%, rgba(17,17,17,0.85) 100%);
+  background: linear-gradient(180deg, rgba(17,17,17,0.35) 0%, rgba(17,17,17,0.05) 50%, rgba(17,17,17,0.75) 100%);
 }
 .mfd-detail-hero__caption {
   position: absolute; bottom: clamp(1.5rem, 4vw, 3rem);

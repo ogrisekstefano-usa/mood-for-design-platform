@@ -1,0 +1,27 @@
+{
+  "summary": "Iteration 32 — frontend-only Playwright validation of MOOD for DESIGN POST-AUDIT REFACTOR. All 12 review scenarios PASS. Verified centralized uiContent labels (zero inline locale objects), unified locale system with shared localStorage key 'mfd_locale', cross-context sync via 'mfd:locale:change' custom event, controlled fallback chain for invalid locales, and the regression fix for ProjectDetailPage hero (img now renders at 617px height instead of collapsing to 0). All 6 project detail slugs render their hero images correctly. Categories use unified uiContent labels in IT (Tutti/Residenziale/Ospitalità/Retail) and EN (All/Residential/Hospitality/Retail). LocaleSwitcher data-testids: site-locale-btn (toggle) and site-locale-{it|en|fr|de|es} (options) — clicking EN writes mfd_locale='en' and switches hero to 'SHAPING SPACES. BUILDING RELATIONSHIPS.'. No console errors, no i18n missing-key warnings. /auth/login regression intact.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "uiContent (/app/frontend/src/site/content/ui.js) is clean and exhaustive — covers back/archive/detail/onboarding/categories with all 5 locales. Future addition: consider grouping CTA strings (BEGIN YOUR PROJECT) used in multiple places under a single ctas namespace to avoid the duplicate ctaPrivate in archive and beginProject in detail.",
+    "pick() in i18n.js logs dev warnings on missing/empty content with optional path — good observability. Confirmed silent in production (NODE_ENV=production check at line 61).",
+    "Cross-context sync via CustomEvent('mfd:locale:change') only triggers in same-tab; storage events handle cross-tab. setLocale writes localStorage AND dispatches the event — verified correct order in SiteContext.jsx line 28-29.",
+    "ProjectDetailPage hero now uses a direct <img> tag with absolute positioning instead of SiteImage with aspect-ratio — fix works (heroH=617px, imgH=617px on all 6 slugs).",
+    "When dispatching 'mfd:locale:change' externally (e.g., from Blueprint app), the event listener in SiteContext only updates state (not localStorage). This is consistent because the originating side is expected to write storage itself; tests should not assert storage after dispatching a synthetic event.",
+    "CSS text-transform: uppercase is applied at multiple call sites; inner_text in Playwright returns rendered (uppercase) text — assertions should be case-insensitive when checking strings defined in mixed-case in uiContent (e.g., 'Scrivici intanto' → 'SCRIVICI INTANTO')."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "N/A (skipped per request)", "frontend": "100%" },
+  "test_credentials": "N/A — public site only",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "LocaleSwitcher: open via [data-testid=site-locale-btn], then click [data-testid=site-locale-{code}] where code in {it,en,fr,de,es}. Storage key is 'mfd_locale' (NEVER 'mfd_site_locale' anymore). After EN click: localStorage.mfd_locale='en' and hero headline = 'SHAPING SPACES.\\nBUILDING RELATIONSHIPS.'. Cross-context sync: dispatching window CustomEvent('mfd:locale:change',{detail:{locale:'fr'}}) updates state but DOES NOT write localStorage (expected — originator's responsibility). Detail spec labels (Studio/Designer/Luogo/Anno) render uppercased via CSS — use case-insensitive textContent checks. ProjectDetailPage hero uses direct <img>; expect heroH=617px on desktop 1440x900.",
+  "rca of the issue": "No bugs found. All previously-flagged audit items confirmed remediated: (1) inline locale objects fully extracted to uiContent, (2) localStorage key unified to 'mfd_locale', (3) ProjectDetailPage hero collapse-to-0 regression fixed via direct <img>+absolute positioning, (4) controlled fallback chain in pick() correctly handles invalid locales by returning DEFAULT_PLATFORM_LOCALE ('it')."
+}

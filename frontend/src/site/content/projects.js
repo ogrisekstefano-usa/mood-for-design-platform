@@ -1,12 +1,17 @@
 // MOOD for DESIGN™ — Projects Showcase Content
 // Mirrors future DB: tables `projects` + `project_chapters` + `project_materials`
 // Each project is a full editorial story — locale-keyed.
+//
+// `projectCategories` exposes ONLY ids; localized labels live in uiContent.categories
+// so the content layer remains free of inline UI strings.
+
+import { uiContent } from './ui';
 
 export const projectCategories = [
-  { id: 'all', label: { it: 'Tutti', en: 'All', fr: 'Tous', de: 'Alle', es: 'Todos' } },
-  { id: 'residential', label: { it: 'Residenziale', en: 'Residential', fr: 'Résidentiel', de: 'Wohnen', es: 'Residencial' } },
-  { id: 'hospitality', label: { it: 'Ospitalità', en: 'Hospitality', fr: 'Hospitalité', de: 'Hospitality', es: 'Hospitalidad' } },
-  { id: 'retail', label: { it: 'Retail', en: 'Retail', fr: 'Retail', de: 'Retail', es: 'Retail' } },
+  { id: 'all',          label: uiContent.categories.all },
+  { id: 'residential',  label: uiContent.categories.residential },
+  { id: 'hospitality',  label: uiContent.categories.hospitality },
+  { id: 'retail',       label: uiContent.categories.retail },
 ];
 
 const tag = (it, en, fr, de, es) => ({ it, en, fr, de, es });

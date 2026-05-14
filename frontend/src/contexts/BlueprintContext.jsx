@@ -255,6 +255,8 @@ export const BlueprintProvider = ({ children }) => {
   const setLocale = useCallback((newLocale) => {
     localStorage.setItem(LOCALE_KEY, newLocale);
     setLocaleState(newLocale);
+    // Notify public site & cross-tab listeners of locale change
+    try { window.dispatchEvent(new CustomEvent('mfd:locale:change', { detail: { locale: newLocale } })); } catch (_) {}
   }, []);
 
   const startImpersonation = useCallback((tenantId) => {

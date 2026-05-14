@@ -89,8 +89,8 @@ const HomePage = () => {
       {/* VALUE PROPS — paper background */}
       <section className="mfd-section mfd-section--paper" data-testid="home-values" id="about">
         <div className="mfd-wrap" style={{ display: 'grid', gap: '2.5rem' }}>
-          <Reveal as="h2" className="mfd-eyebrow" style={{ textAlign: 'center', color: 'var(--site-ink-dark)', fontSize: '12px' }}>
-            <span dangerouslySetInnerHTML={{ __html: pick(c.valueProps.title).replace('™', '<sup style="font-size:0.55em">\u2122</sup>') }} />
+          <Reveal as="h2" className="mfd-eyebrow" style={{ textAlign: 'center', color: 'var(--site-ink-dark)', fontSize: '12px' }} data-testid="values-title">
+            {pick(c.valueProps.title, 'home.valueProps.title')}
           </Reveal>
           <Reveal delay={2} style={{ width: '64px', height: '1px', background: 'var(--site-accent)', margin: '0 auto', opacity: 0.7 }} />
           <Reveal delay={2}>
