@@ -25,6 +25,7 @@ import { homepageContent } from '../../site/content/homepage';
 import { tenantConfig } from '../../site/content/tenant';
 import { useStorefrontContent, pickContent } from '../../site/useStorefrontContent';
 import { Reveal } from '../../site/components/Reveal';
+import TryPlatformCta from '../../components/demo/TryPlatformCta';
 
 const ICONS = {
   'pencil-ruler': PencilRuler,
@@ -258,6 +259,7 @@ const HomePage = () => {
       <ProjectsBlock    resolve={resolve} c={c} pick={pick} />
       <MagazineBlock    resolve={resolve} c={c} pick={pick} />
       <BrandLogosBlock  resolve={resolve} c={c} pick={pick} />
+      <TryPlatformCta />
     </main>
   );
 };

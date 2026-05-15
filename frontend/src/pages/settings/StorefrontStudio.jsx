@@ -23,6 +23,7 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import { storefrontApi } from '../../components/storefront/storefrontApi';
 import AssetPicker from '../../components/storefront/AssetPicker';
 import PublishDiffDrawer from '../../components/storefront/PublishDiffDrawer';
+import DemoOnboardingTour from '../../components/demo/DemoOnboardingTour';
 import { renderSection } from '../../components/storefront/SectionRenderers';
 import { publicLanguages } from '../../site/content/languages';
 
@@ -440,6 +441,8 @@ const StorefrontStudio = () => {
           await refreshDiffSummary(activeKey);
         }}
       />
+
+      <DemoOnboardingTour />
     </div>
   );
 };

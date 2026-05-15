@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import httpx
 
-from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router
+from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -74,6 +74,7 @@ async def transient_error_retry(request: Request, call_next):
 
 api_router = APIRouter(prefix="/api")
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
+api_router.include_router(demo.router, prefix="/demo", tags=["demo"])
 api_router.include_router(leads.router, prefix="/leads", tags=["leads"])
 api_router.include_router(projects.router, prefix="/projects", tags=["projects"])
 api_router.include_router(proposals.router, prefix="/proposals", tags=["proposals"])

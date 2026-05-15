@@ -2048,3 +2048,56 @@ client mockup, fully CMS-driven through the Phase J block system.
 - Studio inline editors for new block types (stats_band, magazine_grid, brand_logos)
 - Magazine route page (currently anchor only)
 - Localised seed mapping for 'ae' in homepage.js → LOCALE_MAP ('ae'→'ar')
+
+---
+
+### ✅ Phase M — "Try the Platform" Interactive Conversion Layer (DONE — 15 Feb 2026)
+Strategic goal: collapse the gap between "seeing the demo" and "touching the platform".
+The prospect should EXPERIENCE Draft vs Live + revision control within 30–60 seconds.
+
+**Backend**
+- `routers/demo.py` — `POST /api/demo/magic-link`
+  - Issues a fresh demo session for a server-configured demo user
+  - Rate-limit: 6 grants / IP / 10min (in-memory deque, single-pod adequate)
+  - Returns same shape as /api/auth/login + redirect target + tenant_slug
+- `.env`: DEMO_USER_EMAIL · DEMO_USER_PASSWORD · DEMO_TENANT_SLUG
+- Server.py: included demo router under /api/demo
+
+**Frontend**
+- `components/demo/TryPlatformCta.jsx` — floating cinematic pill
+  - Bottom-right (LTR) / bottom-left (RTL for AE)
+  - Appears after scroll past hero, hides on /settings|/dashboard
+  - Subtle 12s teal pulse, loading spinner, error toast
+  - Locale-aware copy (6 languages incl. AE)
+  - On click → mints session → stores under `mfd_session` (matches AuthContext key)
+    → full-page reload to `/settings/storefront?demo=1&step=intro`
+- `components/demo/DemoOnboardingTour.jsx` — guided 4-step tour
+  - Activates on `?demo=1` or `mfd_demo_mode=1` flag, with dismissal persistence
+  - Auto-tracking spotlight ring + glass card with cinematic shadows
+  - Steps: hero edit · diff drawer · publish · revisions
+  - Demo ribbon stays visible even after the tour is dismissed (until logout)
+- `components/demo/demo.css` — dedicated stylesheet (teal #2cc7b3 accent)
+
+**Bug fix**
+- Initial implementation stored token under `access_token` key; AuthContext
+  reads from `mfd_session` JSON. Updated to match the AuthContext shape so
+  the full-reload re-hydrates the session correctly.
+
+**Verified visually**
+- CTA appears bottom-right after scroll · click → magic-link → land in Studio
+- Demo ribbon visible · tour card cycles 1→2→3→4 steps
+- EXE INTERIOR storefront loaded in edit mode, hero block selected
+
+### Next Action Items (post-Phase M)
+1. Sandboxed `demo_editor` role (P1) — currently reuses super-admin demo user
+2. Inline Studio editors for stats_band / magazine_grid / brand_logos
+3. Magazine route page · Projects landing route page
+4. AI Editorial Assistant (scoped: topics/structure/images/SEO per market)
+5. Media Library page (search/filter/replace/tagging)
+
+### Future / Backlog
+- Cross-pod rate-limit via Redis · auto-expire demo tenant data nightly
+- "Demo session expires in N minutes" countdown pill in ribbon
+- Per-tour-step analytics (which step retains best)
+- Phase J.1: image diff overlay · scheduled publishing UI · AI assist in diff
+

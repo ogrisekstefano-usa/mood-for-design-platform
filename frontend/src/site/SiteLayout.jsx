@@ -5,6 +5,7 @@ import SiteFooter from './components/SiteFooter';
 import { SiteProvider } from './SiteContext';
 import './site.css';
 import './exe.css';
+import '../components/demo/demo.css';
 
 const ScrollToTopOnNav = () => {
   const { pathname } = useLocation();
