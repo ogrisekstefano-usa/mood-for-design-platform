@@ -1,9 +1,19 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, ArrowRight, Check, Plus, X, User, Palette, LayoutGrid, Images, FileText } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Plus, X, User, Palette, LayoutGrid, Images, FileText, Bookmark } from 'lucide-react';
 import { SiteProvider, useSite } from '../../site/SiteContext';
 import { onboardingContent } from '../../site/content/onboarding';
+import {
+  categoryFor,
+  visibleSteps,
+  indexOfStepId,
+  isStepRequiredMet,
+  progressPercent,
+  resolveStep2Content,
+  resolveStep6Content,
+  buildBriefingShape,
+} from '../../site/content/onboardingGraph';
 import { navigationContent } from '../../site/content/navigation';
 import { tenantConfig } from '../../site/content/tenant';
 import BlueprintGenesisOverlay from '../../site/components/BlueprintGenesisOverlay';
@@ -12,7 +22,6 @@ import '../../site/site.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const STORAGE_KEY = 'mfd_start_project_state';
 const SESSION_KEY = 'mfd_session';
-const TOTAL_STEPS = 7;
 
 const initialState = {
   step: 1,
@@ -41,25 +50,25 @@ const saveState = (s) => { try { localStorage.setItem(STORAGE_KEY, JSON.stringif
 // ──────────────────────────────────────────────────────────────────────
 // Wizard chrome
 // ──────────────────────────────────────────────────────────────────────
-const ProgressIndicator = ({ step, total }) => (
-  <div className="mfd-wiz__progress" data-testid="wiz-progress">
-    {Array.from({ length: total }).map((_, i) => (
+const ProgressIndicator = ({ percent, totalDots, currentDot }) => (
+  <div className="mfd-wiz__progress" data-testid="wiz-progress" aria-label={`${percent}%`}>
+    {Array.from({ length: totalDots }).map((_, i) => (
       <span
         key={i}
-        className={`mfd-wiz__progress-dot ${i + 1 === step ? 'is-active' : i + 1 < step ? 'is-done' : ''}`}
+        className={`mfd-wiz__progress-dot ${i + 1 === currentDot ? 'is-active' : i + 1 < currentDot ? 'is-done' : ''}`}
       />
     ))}
   </div>
 );
 
-const Chrome = ({ step, exitConfirmText, onExit, counterText }) => (
+const Chrome = ({ step, exitConfirmText, onExit, counterText, percent, totalDots, currentDot }) => (
   <div className="mfd-wiz__chrome" data-testid="wiz-chrome">
     <Link to="/" className="mfd-wiz__brand" data-testid="wiz-brand">
       <img src={navigationContent.brand.logoSrc} alt="MOOD for DESIGN" />
     </Link>
     <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
       <span className="mfd-wiz__step-counter" data-testid="wiz-step-counter">{counterText}</span>
-      {step <= TOTAL_STEPS && <ProgressIndicator step={step} total={TOTAL_STEPS} />}
+      {currentDot <= totalDots && <ProgressIndicator percent={percent} totalDots={totalDots} currentDot={currentDot} />}
     </div>
     <button
       type="button"
@@ -116,8 +125,8 @@ const Step1ProjectType = ({ value, onChange, pick }) => {
   );
 };
 
-const Step2Spaces = ({ value, onToggle, pick }) => {
-  const c = onboardingContent.step2;
+const Step2Spaces = ({ value, onToggle, pick, contentOverride }) => {
+  const c = contentOverride || onboardingContent.step2;
   return (
     <>
       <StepHeading eyebrow={pick(c.eyebrow, 'onboarding.step2.eyebrow')} title={pick(c.title, 'onboarding.step2.title')} body={pick(c.body, 'onboarding.step2.body')} />
@@ -297,8 +306,8 @@ const Step5Materials = ({ materials, colors, onToggleMaterial, onToggleColor, pi
   );
 };
 
-const Step6Lifestyle = ({ value, onChange, pick }) => {
-  const c = onboardingContent.step6;
+const Step6Lifestyle = ({ value, onChange, pick, contentOverride }) => {
+  const c = contentOverride || onboardingContent.step6;
   return (
     <>
       <StepHeading eyebrow={pick(c.eyebrow, 'onboarding.step6.eyebrow')} title={pick(c.title, 'onboarding.step6.title')} body={pick(c.body, 'onboarding.step6.body')} />
@@ -379,8 +388,28 @@ const Step7Budget = ({ value, onChange, pick }) => {
 
 const ICONS = { user: User, palette: Palette, layout: LayoutGrid, images: Images, 'file-text': FileText };
 
-const FinalReady = ({ pick, payload, onCreate }) => {
+const FinalReady = ({ pick, payload, onCreate, onBriefingReady }) => {
   const c = onboardingContent.final;
+  const [briefing, setBriefing] = useState(null);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const r = await axios.post(`${BACKEND_URL}/api/onboarding/briefing-summary`,
+          { payload, locale: payload.locale }, { timeout: 12000 });
+        if (alive && r.data?.briefing) {
+          setBriefing(r.data.briefing);
+          onBriefingReady?.(r.data.briefing);
+        }
+      } catch (_) {
+        // Silent — the wizard ships without the AI summary; backend has fallback.
+      }
+    })();
+    return () => { alive = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div data-testid="wiz-final">
       <StepHeading eyebrow={pick(c.eyebrow, 'onboarding.final.eyebrow')} title={pick(c.title, 'onboarding.final.title')} body={pick(c.body, 'onboarding.final.body')} />
@@ -409,6 +438,9 @@ const FinalReady = ({ pick, payload, onCreate }) => {
       <p style={{ marginTop: '1rem', fontSize: 12, color: 'var(--site-ink-3)', letterSpacing: '0.04em' }}>{pick(c.note, 'onboarding.final.note')}</p>
       {/* Hidden payload preview for testability — DB-ready shape */}
       <pre data-testid="wiz-final-payload" style={{ display: 'none' }}>{JSON.stringify(payload, null, 2)}</pre>
+      {briefing && (
+        <pre data-testid="wiz-final-briefing" style={{ display: 'none' }}>{JSON.stringify(briefing, null, 2)}</pre>
+      )}
     </div>
   );
 };
@@ -491,45 +523,69 @@ const StartProjectWizardInner = () => {
   const [submitError, setSubmitError] = useState('');
   const [genesis, setGenesis] = useState(null);
   const [genesisComplete, setGenesisComplete] = useState(false);
+  const [aiBriefing, setAiBriefing] = useState(null);
 
   useEffect(() => { document.title = pick(onboardingContent.meta.title, 'onboarding.meta.title'); }, [pick]);
   useEffect(() => { saveState(state); }, [state]);
 
+  // Adaptive flow: list of step nodes visible given current answers.
+  const flow = useMemo(() => visibleSteps(state), [state]);
+  const totalDots = flow.length;
+  const currentDot = Math.min(state.step, totalDots);
+  const currentNodeIdx = indexOfStepId(state, state.step);
+
   const update = useCallback((patch) => setState((s) => ({ ...s, ...patch })), []);
   const toggleArr = useCallback((key, id) => setState((s) => ({ ...s, [key]: s[key].includes(id) ? s[key].filter((x) => x !== id) : [...s[key], id] })), []);
 
+  // When the user changes project_type, drop any previously selected spaces
+  // that don't belong to the new category — guarantees an Office user never
+  // ships a "Bedroom" answer to the studio.
+  const setProjectType = useCallback((newType) => {
+    setState((s) => {
+      if (s.project_type === newType) return s;
+      const newCat = categoryFor(newType);
+      const oldCat = categoryFor(s.project_type);
+      if (newCat === oldCat && s.project_type != null) {
+        return { ...s, project_type: newType };
+      }
+      // Category changed — reset category-dependent answers (preserve everything else)
+      return { ...s, project_type: newType, spaces: [] };
+    });
+  }, []);
+
+  // Adaptive step-2 + step-6 content based on current category
+  const step2Content = useMemo(() => resolveStep2Content(state, locale), [state, locale]);
+  const step6Content = useMemo(() => resolveStep6Content(state, locale), [state, locale]);
+
   const counterText = useMemo(() => {
     const tpl = pick(onboardingContent.meta.eyebrow, 'onboarding.meta.eyebrow');
-    return tpl.replace('{n}', String(Math.min(state.step, TOTAL_STEPS))).replace('{total}', String(TOTAL_STEPS));
-  }, [state.step, pick]);
+    return tpl.replace('{n}', String(currentDot)).replace('{total}', String(totalDots));
+  }, [currentDot, totalDots, pick]);
 
-  const canContinue = useMemo(() => {
-    switch (state.step) {
-      case 1: return !!state.project_type;
-      case 2: return state.spaces.length > 0;
-      case 3: return state.moods.length > 0;
-      case 4: return true; // step 4 is optional
-      case 5: return state.materials.length + state.colors.length > 0;
-      case 6: return true; // optional textareas
-      case 7: return !!state.budget.timeline && !!state.budget.amount && !!state.budget.startDate;
-      default: return true;
-    }
-  }, [state]);
+  const canContinue = useMemo(
+    () => isStepRequiredMet(state, state.step),
+    [state],
+  );
 
   const handleNext = () => {
-    if (state.step < TOTAL_STEPS) {
-      update({ step: state.step + 1 });
+    const nextNode = flow[currentNodeIdx + 1];
+    if (nextNode) {
+      update({ step: nextNode.id });
     } else {
       // submit → mark final state
-      update({ step: TOTAL_STEPS + 1, created_at: new Date().toISOString(), locale });
+      update({ step: 9999, created_at: new Date().toISOString(), locale });
     }
   };
-  const handleBack = () => state.step > 1 && update({ step: state.step - 1 });
+  const handleBack = () => {
+    const prevNode = flow[currentNodeIdx - 1];
+    if (prevNode) update({ step: prevNode.id });
+  };
   const handleExit = () => navigate('/');
 
   // Build final payload (DB-ready shape)
   const payload = useMemo(() => ({
     project_type: state.project_type,
+    project_category: categoryFor(state.project_type),
     spaces: state.spaces,
     moods: state.moods,
     inspirations: {
@@ -547,6 +603,7 @@ const StartProjectWizardInner = () => {
     locale: state.locale || locale,
     tenant: null,
     created_at: state.created_at,
+    briefing_shape: buildBriefingShape(state, state.locale || locale),
   }), [state, locale]);
 
   const handleCreate = () => {
@@ -564,7 +621,7 @@ const StartProjectWizardInner = () => {
         email:      form.email,
         password:   form.password,
         locale:     state.locale || locale,
-        payload,
+        payload:    { ...payload, ai_briefing: aiBriefing || null },
       });
       const { session, user, genesis: g } = r.data || {};
       if (session?.access_token) {
@@ -622,18 +679,21 @@ const StartProjectWizardInner = () => {
     <div className="mfd-site mfd-wiz" data-testid="start-project-wizard">
       <Chrome
         step={state.step}
-        counterText={state.step <= TOTAL_STEPS ? counterText : pick(onboardingContent.final.eyebrow, 'onboarding.final.eyebrow')}
+        counterText={state.step <= 7 ? counterText : pick(onboardingContent.final.eyebrow, 'onboarding.final.eyebrow')}
         exitConfirmText={pick(onboardingContent.meta.exitConfirm, 'onboarding.meta.exitConfirm')}
         onExit={handleExit}
+        percent={progressPercent(state, state.step)}
+        totalDots={totalDots}
+        currentDot={currentDot}
       />
 
       <main className="mfd-wiz__body">
         <section className="mfd-wiz__step" key={state.step}>
           {state.step === 1 && (
-            <Step1ProjectType value={state.project_type} onChange={(v) => update({ project_type: v })} pick={pick} />
+            <Step1ProjectType value={state.project_type} onChange={setProjectType} pick={pick} />
           )}
           {state.step === 2 && (
-            <Step2Spaces value={state.spaces} onToggle={(id) => toggleArr('spaces', id)} pick={pick} />
+            <Step2Spaces value={state.spaces} onToggle={(id) => toggleArr('spaces', id)} pick={pick} contentOverride={step2Content} />
           )}
           {state.step === 3 && (
             <Step3Mood value={state.moods} onToggle={(id) => toggleArr('moods', id)} pick={pick} />
@@ -651,13 +711,13 @@ const StartProjectWizardInner = () => {
             />
           )}
           {state.step === 6 && (
-            <Step6Lifestyle value={state.lifestyle} onChange={(v) => update({ lifestyle: v })} pick={pick} />
+            <Step6Lifestyle value={state.lifestyle} onChange={(v) => update({ lifestyle: v })} pick={pick} contentOverride={step6Content} />
           )}
           {state.step === 7 && (
             <Step7Budget value={state.budget} onChange={(v) => update({ budget: v })} pick={pick} />
           )}
-          {state.step > TOTAL_STEPS && phase === 'wizard' && (
-            <FinalReady pick={pick} payload={payload} onCreate={handleCreate} />
+          {state.step > 7 && phase === 'wizard' && (
+            <FinalReady pick={pick} payload={payload} onCreate={handleCreate} onBriefingReady={setAiBriefing} />
           )}
           {phase === 'account' && (
             <AccountCreationStep
@@ -669,13 +729,28 @@ const StartProjectWizardInner = () => {
             />
           )}
 
-          {state.step <= TOTAL_STEPS && (
+          {state.step <= 7 && (
             <footer className="mfd-wiz__footer">
-              {state.step > 1 ? (
+              {currentNodeIdx > 0 ? (
                 <button type="button" className="mfd-wiz__back" onClick={handleBack} data-testid="wiz-back">
                   <ArrowLeft size={14} strokeWidth={1.6} /> {pick(onboardingContent.meta.backStep, 'onboarding.meta.backStep')}
                 </button>
               ) : <span />}
+
+              <span className="mfd-wiz__saved" data-testid="wiz-saved-hint" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '11px', letterSpacing: '0.18em', textTransform: 'uppercase', opacity: 0.55 }}>
+                <Bookmark size={11} strokeWidth={1.5} />
+                {pick(
+                  {
+                    it: 'Il tuo percorso è salvato',
+                    en: 'Your journey is saved',
+                    fr: 'Votre parcours est sauvegardé',
+                    de: 'Ihr Weg ist gespeichert',
+                    es: 'Tu camino está guardado',
+                  },
+                  'onboarding.meta.savedHint',
+                )}
+              </span>
+
               <button
                 type="button"
                 className="mfd-wiz__cta"
@@ -683,7 +758,7 @@ const StartProjectWizardInner = () => {
                 onClick={handleNext}
                 data-testid="wiz-continue"
               >
-                {state.step < TOTAL_STEPS
+                {currentNodeIdx < flow.length - 1
                   ? pick(onboardingContent.meta.continue, 'onboarding.meta.continue')
                   : pick(onboardingContent.meta.submit, 'onboarding.meta.submit')}
               </button>
