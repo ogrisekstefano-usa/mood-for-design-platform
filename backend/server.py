@@ -18,14 +18,44 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="MOOD for DESIGN™ API", version="1.0.0", docs_url="/api/docs")
 
-cors_origins_env = os.environ.get('CORS_ORIGINS', '*')
+cors_origins_env = os.environ.get('CORS_ORIGINS', '')
+
+# ── Always-allowed origins ─────────────────────────────────────────────────
+# Production custom domains, Emergent native host(s), Emergent preview host,
+# and local dev. These stay enabled even when CORS_ORIGINS is unset/empty,
+# so production auth/CMS/storefront always work with credentials=True.
+_default_origins = [
+    "https://blueprint.moodfordesign.com",
+    "https://moodfordesign.com",
+    "https://www.moodfordesign.com",
+    "https://content-hub-pro-22.emergent.host",
+    "https://content-hub-pro-22.preview.emergentagent.com",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
 if cors_origins_env == '*':
-    app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=False,
-                       allow_methods=["*"], allow_headers=["*"])
+    # Wildcard mode — used for purely public/no-cred environments. Browsers
+    # disallow credentials with "*", so we drop allow_credentials here.
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 else:
-    origins = [o.strip() for o in cors_origins_env.split(',')]
-    app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True,
-                       allow_methods=["*"], allow_headers=["*"])
+    # Merge env-provided origins with defaults (env wins on duplicates).
+    extra = [o.strip() for o in cors_origins_env.split(',') if o.strip()]
+    origins = list(dict.fromkeys(_default_origins + extra))
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["Content-Disposition"],
+    )
 
 
 @app.middleware("http")
