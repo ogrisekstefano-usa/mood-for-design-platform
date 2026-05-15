@@ -1,12 +1,12 @@
 import React from 'react';
 import { useReveal } from '../hooks/useReveal';
-import { TrendingUp, TrendingDown, Sparkles, Star } from 'lucide-react';
+import { TrendingUp, TrendingDown, Sparkles, Star, Settings, Clock, Heart, Trophy } from 'lucide-react';
 
 const ICON_BY_TONE = {
-  positive: TrendingUp,
-  negative: TrendingDown,
-  highlight: Sparkles,
-  rating: Star,
+  positive: Trophy,
+  negative: Settings,
+  highlight: Clock,
+  rating: Heart,
 };
 
 /**
@@ -50,28 +50,26 @@ const MetricsStrip = ({ content = {}, config = {} }) => {
                 }}
                 data-testid={`metric-${i}`}
               >
-                <div className="flex items-start justify-between mb-5">
+                <div className="flex items-start gap-4 mb-1">
                   <span
-                    className="inline-flex items-center justify-center w-9 h-9 rounded-full"
-                    style={{ background: 'rgba(61,218,208,0.10)', border: '1px solid rgba(61,218,208,0.4)' }}
+                    className="inline-flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0"
+                    style={{ background: 'transparent', border: '1px solid rgba(0,201,179,0.5)' }}
                   >
-                    <Icon size={15} strokeWidth={1.7} style={{ color: '#3DDAD0' }} />
+                    <Icon size={16} strokeWidth={1.6} style={{ color: '#00C9B3' }} />
                   </span>
+                  <div>
+                    {metric.eyebrow && (
+                      <p className="text-xs font-medium text-white/55 mb-1.5">{metric.eyebrow}</p>
+                    )}
+                    <p
+                      className="font-serif font-normal leading-none mb-1"
+                      style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', color: '#00C9B3' }}
+                    >
+                      {metric.value}
+                    </p>
+                    <p className="text-xs font-light text-white/55 mt-2">{metric.label}</p>
+                  </div>
                 </div>
-                <p
-                  className="font-serif font-normal text-white leading-none mb-3"
-                  style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)' }}
-                >
-                  {metric.value}
-                </p>
-                <p
-                  className="text-xs font-medium uppercase tracking-[0.15em] text-white/85 mb-1"
-                >
-                  {metric.label}
-                </p>
-                {metric.description && (
-                  <p className="text-xs font-light text-white/45 leading-relaxed">{metric.description}</p>
-                )}
               </div>
             );
           })}

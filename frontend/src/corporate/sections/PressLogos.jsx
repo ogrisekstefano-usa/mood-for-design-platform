@@ -14,7 +14,7 @@ const PressLogos = ({ content = {}, config = {} }) => {
   return (
     <section
       className="relative"
-      style={{ background: dark ? 'var(--mood-ink)' : '#F5F2EC', color: dark ? '#FFFFFF' : '#0A1320' }}
+      style={{ background: dark ? 'var(--mood-ink)' : '#F5F2EC', color: dark ? '#FFFFFF' : '#000000' }}
       data-testid="press-logos"
     >
       <div className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-14 py-20 lg:py-24">
@@ -26,25 +26,26 @@ const PressLogos = ({ content = {}, config = {} }) => {
             </h3>
           )}
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8 lg:gap-x-16">
+        <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 lg:gap-x-14">
           {logos.map((logo, i) => (
             <span
               key={i}
               className={`reveal ${visible ? 'visible' : ''}`}
               style={{
-                fontFamily: logo.serif === false ? 'Montserrat, sans-serif' : 'Playfair Display, serif',
-                fontWeight: logo.weight || 500,
+                fontFamily: logo.font === 'sans' ? 'Montserrat, sans-serif' : (logo.font === 'mono' ? 'monospace' : 'Playfair Display, serif'),
+                fontWeight: logo.weight || 600,
                 fontStyle: logo.italic ? 'italic' : 'normal',
-                fontSize: 'clamp(1rem, 1.5vw, 1.4rem)',
-                letterSpacing: logo.spacing || '0.02em',
-                color: dark ? 'rgba(255,255,255,0.7)' : 'rgba(10,19,32,0.7)',
+                fontSize: 'clamp(0.95rem, 1.4vw, 1.3rem)',
+                letterSpacing: logo.spacing || '0.04em',
+                color: dark ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.75)',
                 textTransform: logo.uppercase ? 'uppercase' : 'none',
                 transitionDelay: `${0.1 + i * 0.05}s`,
+                whiteSpace: 'nowrap',
               }}
               data-testid={`press-logo-${i}`}
             >
               {logo.name}
-              {logo.starred && <span style={{ color: '#3DDAD0' }}>*</span>}
+              {logo.starred && <span style={{ color: '#00C9B3', marginLeft: 2 }}>*</span>}
             </span>
           ))}
         </div>

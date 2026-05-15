@@ -25,7 +25,7 @@ const Timeline = ({ content = {}, config = {} }) => {
               data-testid={`timeline-item-${i}`}
             >
               <div className="col-span-3 md:col-span-2">
-                <span className="font-serif text-sm text-[#3DDAD0] font-medium">{item.year || item.step}</span>
+                <span className="font-serif text-sm text-[#00C9B3] font-medium">{item.year || item.step}</span>
               </div>
               <div className="col-span-9 md:col-span-10">
                 <h3 className="font-sans font-semibold text-base text-[#0A0A0A] mb-2">{item.title}</h3>

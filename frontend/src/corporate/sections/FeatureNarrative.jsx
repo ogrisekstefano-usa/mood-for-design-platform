@@ -26,7 +26,7 @@ const FeatureNarrative = ({ content = {}, config = {} }) => {
           {content.eyebrow && <p className="overline-teal mb-6">{content.eyebrow}</p>}
           {content.headline && (
             <h2
-              className={`font-serif font-normal leading-[1.05] tracking-tight ${dark ? 'text-white' : 'text-[#0A1320]'}`}
+              className={`font-serif font-normal leading-[1.05] tracking-tight ${dark ? 'text-white' : 'text-[#000000]'}`}
               style={{ fontSize: 'clamp(2rem, 3.6vw, 3.2rem)' }}
             >
               {content.headline}
@@ -64,15 +64,15 @@ const FeatureNarrative = ({ content = {}, config = {} }) => {
                 <span
                   className="inline-flex items-center justify-center w-10 h-10 rounded-full mb-6"
                   style={{
-                    background: dark ? 'rgba(61,218,208,0.10)' : 'rgba(61,218,208,0.10)',
-                    border: '1px solid rgba(61,218,208,0.45)',
+                    background: dark ? 'rgba(0,201,179,0.10)' : 'rgba(0,201,179,0.10)',
+                    border: '1px solid rgba(0,201,179,0.45)',
                   }}
                 >
-                  <Icon size={16} strokeWidth={1.6} style={{ color: '#3DDAD0' }} />
+                  <Icon size={16} strokeWidth={1.6} style={{ color: '#00C9B3' }} />
                 </span>
                 <h3
                   className="font-serif text-xl leading-tight mb-3"
-                  style={{ color: dark ? '#FFFFFF' : '#0A1320' }}
+                  style={{ color: dark ? '#FFFFFF' : '#000000' }}
                 >
                   {fc.title}
                 </h3>
@@ -86,9 +86,9 @@ const FeatureNarrative = ({ content = {}, config = {} }) => {
                   <a
                     href={feature.href}
                     className="text-xs font-semibold uppercase tracking-[0.18em] inline-flex items-center gap-1.5 transition-colors"
-                    style={{ color: dark ? 'rgba(255,255,255,0.8)' : '#0A1320' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#3DDAD0')}
-                    onMouseLeave={e => (e.currentTarget.style.color = dark ? 'rgba(255,255,255,0.8)' : '#0A1320')}
+                    style={{ color: dark ? 'rgba(255,255,255,0.8)' : '#000000' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = '#00C9B3')}
+                    onMouseLeave={e => (e.currentTarget.style.color = dark ? 'rgba(255,255,255,0.8)' : '#000000')}
                     data-testid={`feature-cta-${feature.id}`}
                   >
                     {fc.cta} →

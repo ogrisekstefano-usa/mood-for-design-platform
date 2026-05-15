@@ -29,7 +29,7 @@ const ContactPage = () => {
     <main data-testid="page-contact">
       {loading ? (
         <div className="min-h-[40vh] flex items-center justify-center">
-          <div className="w-6 h-6 border border-[#3DDAD0] border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border border-[#00C9B3] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
         sections.map(s => <SectionRenderer key={s.id} section={s} />)
@@ -46,7 +46,7 @@ const ContactPage = () => {
               <div className="space-y-6">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-widest text-[#0A0A0A] mb-1">Email</p>
-                  <a href="mailto:hello@moodfordesign.com" className="text-sm text-[#5A5A5A] hover:text-[#3DDAD0] transition-colors">
+                  <a href="mailto:hello@moodfordesign.com" className="text-sm text-[#5A5A5A] hover:text-[#00C9B3] transition-colors">
                     hello@moodfordesign.com
                   </a>
                 </div>
@@ -70,7 +70,7 @@ const ContactPage = () => {
                     type="text"
                     value={form.name}
                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                    className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#3DDAD0] transition-colors"
+                    className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#00C9B3] transition-colors"
                     data-testid="contact-name"
                     required
                   />
@@ -81,7 +81,7 @@ const ContactPage = () => {
                     type="email"
                     value={form.email}
                     onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                    className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#3DDAD0] transition-colors"
+                    className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#00C9B3] transition-colors"
                     data-testid="contact-email"
                     required
                   />
@@ -93,7 +93,7 @@ const ContactPage = () => {
                   type="text"
                   value={form.company}
                   onChange={e => setForm(f => ({ ...f, company: e.target.value }))}
-                  className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#3DDAD0] transition-colors"
+                  className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#00C9B3] transition-colors"
                   data-testid="contact-company"
                 />
               </div>
@@ -102,7 +102,7 @@ const ContactPage = () => {
                 <select
                   value={form.inquiry_type}
                   onChange={e => setForm(f => ({ ...f, inquiry_type: e.target.value }))}
-                  className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#3DDAD0] transition-colors"
+                  className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#00C9B3] transition-colors"
                   data-testid="contact-inquiry-type"
                 >
                   <option value="general">General Inquiry</option>
@@ -118,14 +118,14 @@ const ContactPage = () => {
                   rows={6}
                   value={form.message}
                   onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
-                  className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#3DDAD0] transition-colors resize-none"
+                  className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#00C9B3] transition-colors resize-none"
                   data-testid="contact-message"
                   required
                 />
               </div>
 
               {status === 'success' && (
-                <div className="bg-[#3DDAD0]/10 border border-[#3DDAD0] px-4 py-3" data-testid="contact-success">
+                <div className="bg-[#00C9B3]/10 border border-[#00C9B3] px-4 py-3" data-testid="contact-success">
                   <p className="text-sm text-[#0A0A0A]">Thank you. We'll be in touch within 24 hours.</p>
                 </div>
               )}

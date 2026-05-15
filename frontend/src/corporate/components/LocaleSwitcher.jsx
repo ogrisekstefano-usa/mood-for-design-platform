@@ -13,10 +13,10 @@ const LocaleSwitcher = ({ dark = true }) => {
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
-  const triggerColor = dark ? 'rgba(255,255,255,0.82)' : '#0A1320';
+  const triggerColor = dark ? 'rgba(255,255,255,0.82)' : '#000000';
   const menuBg       = dark ? 'rgba(10,19,32,0.95)' : '#FFFFFF';
   const menuBorder   = dark ? 'rgba(255,255,255,0.08)' : 'rgba(10,19,32,0.08)';
-  const itemColor    = dark ? '#FFFFFF' : '#0A1320';
+  const itemColor    = dark ? '#FFFFFF' : '#000000';
 
   return (
     <div className="relative" ref={ref} data-testid="locale-switcher">
@@ -64,7 +64,7 @@ const LocaleSwitcher = ({ dark = true }) => {
                 fontFamily: 'Montserrat, sans-serif',
                 fontSize: '0.74rem',
                 fontWeight: locale === loc.code ? 600 : 400,
-                color: locale === loc.code ? '#3DDAD0' : itemColor,
+                color: locale === loc.code ? '#00C9B3' : itemColor,
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',

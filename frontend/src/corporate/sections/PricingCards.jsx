@@ -38,7 +38,7 @@ const PricingCards = ({ content = {}, config = {} }) => {
                 <button
                   onClick={() => setIsYearly(y => !y)}
                   className="relative w-12 h-6 transition-colors duration-300"
-                  style={{ background: isYearly ? '#3DDAD0' : '#0A0A0A' }}
+                  style={{ background: isYearly ? '#00C9B3' : '#0A0A0A' }}
                   data-testid="yearly-toggle-btn"
                   aria-label="Toggle yearly billing"
                 >
@@ -52,7 +52,7 @@ const PricingCards = ({ content = {}, config = {} }) => {
                   style={{ color: isYearly ? '#0A0A0A' : '#5A5A5A' }}
                   onClick={() => setIsYearly(true)}
                 >
-                  Yearly <span className="text-[#3DDAD0]">–{discount}%</span>
+                  Yearly <span className="text-[#00C9B3]">–{discount}%</span>
                 </span>
               </div>
             )}
@@ -74,7 +74,7 @@ const PricingCards = ({ content = {}, config = {} }) => {
                 data-testid={`pricing-plan-${plan.slug}`}
               >
                 {plan.badge && (
-                  <span className="absolute top-6 right-6 text-[0.6rem] font-bold uppercase tracking-widest bg-[#3DDAD0] text-[#0A0A0A] px-2 py-1">
+                  <span className="absolute top-6 right-6 text-[0.6rem] font-bold uppercase tracking-widest bg-[#00C9B3] text-[#0A0A0A] px-2 py-1">
                     {plan.badge}
                   </span>
                 )}
@@ -111,7 +111,7 @@ const PricingCards = ({ content = {}, config = {} }) => {
                   <ul className="space-y-3">
                     {pc.features.map((f, j) => (
                       <li key={j} className="flex items-start gap-3">
-                        <Check size={14} className="text-[#3DDAD0] mt-0.5 flex-shrink-0" />
+                        <Check size={14} className="text-[#00C9B3] mt-0.5 flex-shrink-0" />
                         <span className="text-sm text-[#5A5A5A]">{f}</span>
                       </li>
                     ))}

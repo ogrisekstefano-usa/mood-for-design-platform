@@ -8,39 +8,20 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 /**
- * MOOD wordmark — editorial luxury
- * "M" + ⊙⊙ + "D" stacked over "for DESIGN"
+ * MOOD official logo — uses the brand asset PNG (no SVG reconstruction).
  */
-export const MoodLogo = ({ light = true, compact = false }) => {
-  const textColor = light ? '#FFFFFF' : '#0A1320';
-  const subColor  = light ? 'rgba(255,255,255,0.6)' : 'rgba(10,19,32,0.55)';
-  const sz = compact ? 18 : 20;
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_editorial-platform-4/artifacts/chlucgqo_Artboard%201.png";
+
+export const MoodLogo = ({ compact = false }) => {
+  const h = compact ? 44 : 56;
   return (
-    <Link to="/" className="inline-flex items-end" style={{ textDecoration: 'none' }} data-testid="corporate-nav-logo">
-      <div className="flex flex-col items-start leading-none">
-        <span className="flex items-center" style={{ gap: 0 }}>
-          <span style={{ fontFamily: 'Montserrat,sans-serif', fontWeight: 600, fontSize: compact ? '1rem' : '1.05rem', color: textColor, letterSpacing: '-0.01em', lineHeight: 1 }}>M</span>
-          <svg width={sz*2.1} height={sz} viewBox="0 0 42 20" fill="none" style={{ margin: '0 2px' }}>
-            <circle cx="10" cy="10" r="8.5" stroke="#3DDAD0" strokeWidth="1.5" fill="none" />
-            <circle cx="22" cy="10" r="8.5" stroke="#3DDAD0" strokeWidth="1.5" fill="none" />
-          </svg>
-          <span style={{ fontFamily: 'Montserrat,sans-serif', fontWeight: 600, fontSize: compact ? '1rem' : '1.05rem', color: textColor, letterSpacing: '-0.01em', lineHeight: 1 }}>D</span>
-        </span>
-        {!compact && (
-          <span style={{
-            fontFamily: 'Montserrat,sans-serif',
-            fontSize: '0.5rem',
-            letterSpacing: '0.38em',
-            fontWeight: 500,
-            color: subColor,
-            marginTop: 4,
-            paddingLeft: 1,
-          }}>
-            <span style={{ fontFamily: 'Playfair Display,serif', fontStyle: 'italic', textTransform: 'lowercase', letterSpacing: 'normal', marginRight: 4 }}>for</span>
-            DESIGN
-          </span>
-        )}
-      </div>
+    <Link to="/" className="inline-flex items-center" style={{ textDecoration: 'none' }} data-testid="corporate-nav-logo">
+      <img
+        src={LOGO_URL}
+        alt="MOOD for DESIGN — Inspiration. Design. Solutions."
+        style={{ height: h, width: 'auto', display: 'block' }}
+        draggable={false}
+      />
     </Link>
   );
 };
@@ -86,8 +67,8 @@ const CorporateNav = () => {
         }}
         data-testid="corporate-nav"
       >
-        <div className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-14 flex items-center h-[72px]">
-          <MoodLogo light />
+        <div className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-14 flex items-center h-[88px]">
+          <MoodLogo />
 
           {/* Center nav */}
           <div className="hidden lg:flex items-center gap-7 xl:gap-9 mx-auto">
@@ -103,10 +84,10 @@ const CorporateNav = () => {
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
                   textDecoration: 'none',
-                  color: location.pathname === item.href ? '#3DDAD0' : 'rgba(255,255,255,0.82)',
+                  color: location.pathname === item.href ? '#00C9B3' : 'rgba(255,255,255,0.82)',
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#3DDAD0')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = location.pathname === item.href ? '#3DDAD0' : 'rgba(255,255,255,0.82)')}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#00C9B3')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = location.pathname === item.href ? '#00C9B3' : 'rgba(255,255,255,0.82)')}
                 data-testid={`nav-link-${item.key}`}
               >
                 {item.label}

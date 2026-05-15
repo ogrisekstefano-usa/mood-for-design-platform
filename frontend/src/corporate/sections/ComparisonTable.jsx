@@ -38,7 +38,7 @@ const ComparisonTable = ({ content = {}, config = {} }) => {
                   return (
                     <td key={j} className="py-4 px-4 text-center">
                       {val === true ? (
-                        <Check size={16} className="mx-auto text-[#3DDAD0]" />
+                        <Check size={16} className="mx-auto text-[#00C9B3]" />
                       ) : val === false || val === undefined ? (
                         <Minus size={14} className="mx-auto text-[rgba(10,10,10,0.2)]" />
                       ) : (

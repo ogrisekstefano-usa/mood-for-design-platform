@@ -40,31 +40,34 @@ const ProcessSteps = ({ content = {}, config = {} }) => {
         </div>
 
         {/* Steps grid */}
-        <div className="mt-16 lg:mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-x-6 gap-y-12">
+        <div className="mt-16 lg:mt-20 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-12 relative">
+          {/* Connecting line behind step circles (desktop only) */}
+          <div className="hidden lg:block absolute" style={{ top: '23px', left: '4%', right: '4%', height: '1px', background: 'rgba(0,201,179,0.25)', zIndex: 0 }} />
+
           {steps.map((step, i) => (
             <div
               key={i}
               className={`relative reveal ${visible ? 'visible' : ''}`}
-              style={{ transitionDelay: `${0.1 + i * 0.06}s` }}
+              style={{ transitionDelay: `${0.1 + i * 0.06}s`, zIndex: 1 }}
               data-testid={`process-step-${i}`}
             >
               {/* Connecting arrow (hidden on last + mobile) */}
               {i < steps.length - 1 && (
-                <div className="hidden xl:block absolute" style={{ top: '24px', right: '-30px', color: 'rgba(61,218,208,0.4)' }}>
-                  <ArrowRight size={18} strokeWidth={1.4} />
+                <div className="hidden lg:block absolute" style={{ top: '16px', right: '-12px', color: 'rgba(0,201,179,0.5)' }}>
+                  <ArrowRight size={16} strokeWidth={1.4} />
                 </div>
               )}
 
-              <div className="step-circle mb-5">{String(i + 1).padStart(2, '0')}</div>
+              <div className="step-circle mb-5" style={{ background: dark ? 'var(--mood-black)' : '#FFFFFF' }}>{String(i + 1).padStart(2, '0')}</div>
               <h3
-                className="font-serif text-xl leading-tight mb-2"
-                style={{ color: dark ? '#FFFFFF' : 'var(--mood-ink)' }}
+                className="text-xs font-semibold uppercase tracking-[0.16em] leading-tight mb-2"
+                style={{ color: dark ? '#FFFFFF' : 'var(--mood-black)' }}
               >
                 {step.title}
               </h3>
               <p
                 className="text-sm font-light leading-relaxed"
-                style={{ color: dark ? 'rgba(255,255,255,0.55)' : 'rgba(10,19,32,0.55)' }}
+                style={{ color: dark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)' }}
               >
                 {step.description}
               </p>

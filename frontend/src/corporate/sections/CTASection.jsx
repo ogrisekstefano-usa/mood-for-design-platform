@@ -30,7 +30,7 @@ const CTASection = ({ content = {}, config = {} }) => {
         style={{
           background: bgImage
             ? `linear-gradient(180deg, rgba(5,11,20,${dim}) 0%, rgba(10,19,32,${Math.min(dim + 0.3, 0.95)}) 100%)`
-            : `radial-gradient(circle at 50% 0%, rgba(61,218,208,0.10) 0%, transparent 60%)`,
+            : `radial-gradient(circle at 50% 0%, rgba(0,201,179,0.10) 0%, transparent 60%)`,
         }}
       />
 

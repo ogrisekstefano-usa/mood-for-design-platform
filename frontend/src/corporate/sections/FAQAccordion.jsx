@@ -37,7 +37,7 @@ const FAQAccordion = ({ content = {}, config = {} }) => {
                 aria-expanded={openIndex === i}
                 data-testid={`faq-toggle-${i}`}
               >
-                <span className="font-sans font-medium text-base text-[#0A0A0A] pr-8 group-hover:text-[#3DDAD0] transition-colors">
+                <span className="font-sans font-medium text-base text-[#0A0A0A] pr-8 group-hover:text-[#00C9B3] transition-colors">
                   {item.q}
                 </span>
                 <span className="flex-shrink-0 text-[#0A0A0A] transition-transform duration-300" style={{ transform: openIndex === i ? 'rotate(0)' : '' }}>

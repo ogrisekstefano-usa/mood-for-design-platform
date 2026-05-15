@@ -57,7 +57,7 @@ const SplitStory = ({ content = {}, config = {} }) => {
             <ul className={`mt-8 space-y-3 max-w-md reveal ${visible ? 'visible' : ''}`} style={{ transitionDelay: '0.22s' }} data-testid="split-story-bullets">
               {content.bullets.map((b, i) => (
                 <li key={i} className="flex items-start gap-3" style={{ color: dark ? 'rgba(255,255,255,0.8)' : 'rgba(10,19,32,0.75)', fontSize: '0.86rem' }}>
-                  <span className="mt-1 inline-flex items-center justify-center w-5 h-5 rounded-full" style={{ background: 'rgba(61,218,208,0.14)', border: '1px solid rgba(61,218,208,0.45)', color: '#3DDAD0' }}>
+                  <span className="mt-1 inline-flex items-center justify-center w-5 h-5 rounded-full" style={{ background: 'rgba(0,201,179,0.14)', border: '1px solid rgba(0,201,179,0.45)', color: '#00C9B3' }}>
                     <Check size={11} strokeWidth={2.4} />
                   </span>
                   <span>{b}</span>

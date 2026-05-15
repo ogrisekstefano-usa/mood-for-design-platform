@@ -59,7 +59,7 @@ const StartStudioPage = () => {
               <ul className="space-y-4">
                 {STUDIO_FEATURES.map((f, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <Check size={15} className="text-[#3DDAD0] mt-0.5 flex-shrink-0" />
+                    <Check size={15} className="text-[#00C9B3] mt-0.5 flex-shrink-0" />
                     <span className="text-sm text-[#5A5A5A]">{f}</span>
                   </li>
                 ))}
@@ -67,7 +67,7 @@ const StartStudioPage = () => {
               <div className="mt-12 pt-8 border-t border-[rgba(10,10,10,0.1)]">
                 <p className="text-xs text-[#5A5A5A]">
                   Already have an account?{' '}
-                  <a href={process.env.REACT_APP_BLUEPRINT_URL || 'https://blueprint.moodfordesign.com'} className="text-[#3DDAD0] font-semibold hover:underline" data-testid="signin-link">
+                  <a href={process.env.REACT_APP_BLUEPRINT_URL || 'https://blueprint.moodfordesign.com'} className="text-[#00C9B3] font-semibold hover:underline" data-testid="signin-link">
                     Sign in →
                   </a>
                 </p>
@@ -76,7 +76,7 @@ const StartStudioPage = () => {
 
             {/* Right: form */}
             {status === 'success' && result ? (
-              <div className="lg:col-span-7 bg-white p-10 border border-[#3DDAD0]" data-testid="studio-success">
+              <div className="lg:col-span-7 bg-white p-10 border border-[#00C9B3]" data-testid="studio-success">
                 <p className="overline-teal mb-4">Studio Created</p>
                 <h3 className="font-serif text-3xl text-[#0A0A0A] mb-4">{result.studio?.name}</h3>
                 <p className="text-sm text-[#5A5A5A] mb-6">{result.message}</p>
@@ -84,7 +84,7 @@ const StartStudioPage = () => {
                   <p className="text-xs text-[#5A5A5A] mb-1">Your Blueprint workspace:</p>
                   <p className="text-sm font-semibold text-[#0A0A0A] font-mono">{result.studio?.subdomain}</p>
                 </div>
-                <p className="text-sm text-[#3DDAD0]">{result.next_step}</p>
+                <p className="text-sm text-[#00C9B3]">{result.next_step}</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="lg:col-span-7 bg-white p-10 space-y-6" data-testid="start-studio-form">
@@ -98,7 +98,7 @@ const StartStudioPage = () => {
                     value={form.studio_name}
                     onChange={e => setForm(f => ({ ...f, studio_name: e.target.value }))}
                     placeholder="Studio Rossi"
-                    className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#3DDAD0] transition-colors"
+                    className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#00C9B3] transition-colors"
                     data-testid="studio-name-input"
                     required
                   />
@@ -111,7 +111,7 @@ const StartStudioPage = () => {
                       type="text"
                       value={form.first_name}
                       onChange={e => setForm(f => ({ ...f, first_name: e.target.value }))}
-                      className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#3DDAD0] transition-colors"
+                      className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#00C9B3] transition-colors"
                       data-testid="first-name-input"
                       required
                     />
@@ -122,7 +122,7 @@ const StartStudioPage = () => {
                       type="text"
                       value={form.last_name}
                       onChange={e => setForm(f => ({ ...f, last_name: e.target.value }))}
-                      className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#3DDAD0] transition-colors"
+                      className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#00C9B3] transition-colors"
                       data-testid="last-name-input"
                       required
                     />
@@ -135,7 +135,7 @@ const StartStudioPage = () => {
                     type="email"
                     value={form.email}
                     onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                    className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#3DDAD0] transition-colors"
+                    className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#00C9B3] transition-colors"
                     data-testid="email-input"
                     required
                   />
@@ -146,7 +146,7 @@ const StartStudioPage = () => {
                   <select
                     value={form.role}
                     onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
-                    className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#3DDAD0] transition-colors"
+                    className="w-full border border-[rgba(10,10,10,0.2)] bg-transparent px-4 py-3 text-sm text-[#0A0A0A] focus:outline-none focus:border-[#00C9B3] transition-colors"
                     data-testid="role-select"
                   >
                     <option value="studio_owner">Studio Owner / Founder</option>
@@ -169,11 +169,11 @@ const StartStudioPage = () => {
                         key={plan.id}
                         type="button"
                         onClick={() => setForm(f => ({ ...f, plan: plan.id }))}
-                        className={`px-3 py-3 border text-xs font-semibold transition-colors ${form.plan === plan.id ? 'border-[#3DDAD0] bg-[#3DDAD0]/5 text-[#0A0A0A]' : 'border-[rgba(10,10,10,0.2)] text-[#5A5A5A] hover:border-[#0A0A0A]'}`}
+                        className={`px-3 py-3 border text-xs font-semibold transition-colors ${form.plan === plan.id ? 'border-[#00C9B3] bg-[#00C9B3]/5 text-[#0A0A0A]' : 'border-[rgba(10,10,10,0.2)] text-[#5A5A5A] hover:border-[#0A0A0A]'}`}
                         data-testid={`plan-select-${plan.id}`}
                       >
                         <span className="block uppercase tracking-wide">{plan.name}</span>
-                        <span className="block mt-1 font-normal" style={{ color: form.plan === plan.id ? '#3DDAD0' : '#5A5A5A' }}>{plan.price}</span>
+                        <span className="block mt-1 font-normal" style={{ color: form.plan === plan.id ? '#00C9B3' : '#5A5A5A' }}>{plan.price}</span>
                       </button>
                     ))}
                   </div>

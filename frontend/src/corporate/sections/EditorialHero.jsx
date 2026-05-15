@@ -46,7 +46,7 @@ const EditorialHero = ({ content = {}, config = {} }) => {
             {content.headline_1 && <span className="block">{content.headline_1}</span>}
             {content.headline_2 && <span className="block">{content.headline_2}</span>}
             {content.headline_3 && (
-              <span className="block italic" style={{ color: '#3DDAD0', fontFamily: 'Playfair Display, serif' }}>
+              <span className="block italic" style={{ color: '#00C9B3', fontFamily: 'Playfair Display, serif' }}>
                 {content.headline_3}
               </span>
             )}
@@ -86,7 +86,7 @@ const EditorialHero = ({ content = {}, config = {} }) => {
         aria-hidden
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 75% 30%, rgba(61,218,208,0.10) 0%, transparent 55%)',
+          background: 'radial-gradient(circle at 75% 30%, rgba(0,201,179,0.10) 0%, transparent 55%)',
         }}
       />
 
@@ -106,7 +106,7 @@ const EditorialHero = ({ content = {}, config = {} }) => {
             {content.headline_1 && <span className="block">{content.headline_1}</span>}
             {content.headline_2 && <span className="block">{content.headline_2}</span>}
             {content.headline_3 && (
-              <span className="block italic" style={{ color: '#3DDAD0', fontFamily: 'Playfair Display, serif' }}>
+              <span className="block italic" style={{ color: '#00C9B3', fontFamily: 'Playfair Display, serif' }}>
                 {content.headline_3}
               </span>
             )}
@@ -187,65 +187,111 @@ const FloatingProjectCard = ({ card, visible }) => {
     <div
       className={`hidden md:block absolute reveal ${visible ? 'visible' : ''}`}
       style={{
-        bottom: '-12px',
-        left: '-20px',
-        right: '20%',
+        top: '-8%',
+        right: '-4%',
+        width: 'min(420px, 90%)',
         transitionDelay: '0.35s',
       }}
       data-testid="hero-floating-card"
     >
       <div
-        className="card-ink p-5 rounded-xl"
+        className="p-6 rounded-xl"
         style={{
-          background: 'rgba(15,26,42,0.86)',
+          background: 'rgba(14,14,16,0.92)',
           backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255,255,255,0.07)',
-          boxShadow: '0 40px 80px -20px rgba(0,0,0,0.55), 0 0 0 1px rgba(61,218,208,0.05)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: '0 40px 80px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,201,179,0.06)',
         }}
       >
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-5">
           <p className="overline" style={{ fontSize: '0.55rem', letterSpacing: '0.32em' }}>Project Overview</p>
           {card.status && (
             <span
-              className="inline-flex items-center gap-1.5 text-[0.6rem] font-medium tracking-wider uppercase"
-              style={{ color: '#3DDAD0' }}
+              className="text-[0.62rem] font-medium tracking-wider uppercase px-3 py-1 rounded-full"
+              style={{ color: '#00C9B3', background: 'rgba(0,201,179,0.10)', border: '1px solid rgba(0,201,179,0.4)' }}
             >
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#3DDAD0', boxShadow: '0 0 8px #3DDAD0' }} />
               {card.status}
             </span>
           )}
         </div>
-        <h3 className="font-serif text-2xl text-white leading-tight mb-4">{card.project}</h3>
+        <h3 className="font-serif text-3xl text-white leading-tight mb-5">{card.project}</h3>
 
-        <div className="grid grid-cols-3 gap-3 mb-5">
-          {(card.lines || []).slice(0, 3).map((l, i) => (
-            <div key={i} className="border-l border-white/10 pl-3">
-              <p className="text-[0.58rem] tracking-wider uppercase text-white/45 mb-1">{l.label}</p>
-              <p className="text-xs text-white/90 font-medium">{l.value}</p>
-            </div>
-          ))}
-        </div>
+        {/* Client / Budget row */}
+        {(card.client || card.budget) && (
+          <div className="grid grid-cols-2 gap-4 mb-6 pb-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+            {card.client && (
+              <div>
+                <p className="text-[0.55rem] tracking-[0.22em] uppercase text-white/40 mb-1.5">Client</p>
+                <p className="text-sm text-white/90 font-medium">{card.client}</p>
+              </div>
+            )}
+            {card.budget && (
+              <div>
+                <p className="text-[0.55rem] tracking-[0.22em] uppercase text-white/40 mb-1.5">Budget</p>
+                <p className="text-sm text-white/90 font-medium">{card.budget}</p>
+              </div>
+            )}
+          </div>
+        )}
 
+        {/* Overall progress */}
         {card.progress != null && (
-          <div className="mb-4">
-            <div className="flex items-center justify-between mb-1.5">
-              <p className="text-[0.58rem] tracking-wider uppercase text-white/45">Progress</p>
-              <p className="text-[0.7rem] text-[#3DDAD0] font-medium">{card.progress}%</p>
+          <div className="mb-5">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[0.62rem] tracking-[0.18em] uppercase text-white/55">Overall Progress</p>
+              <p className="text-xs text-[#00C9B3] font-medium">{card.progress}%</p>
             </div>
-            <div className="h-1 bg-white/8 rounded-full overflow-hidden">
-              <div className="h-full rounded-full" style={{ width: `${card.progress}%`, background: 'linear-gradient(90deg, #3DDAD0, #2BB9B0)', boxShadow: '0 0 10px rgba(61,218,208,0.6)' }} />
+            <div className="h-1.5 bg-white/8 rounded-full overflow-hidden">
+              <div className="h-full rounded-full" style={{ width: `${card.progress}%`, background: '#00C9B3', boxShadow: '0 0 10px rgba(0,201,179,0.6)' }} />
             </div>
           </div>
         )}
 
-        {card.cta && (
-          <a href={card.cta.href || '#'} className="btn-pill-outline-teal" style={{ padding: '0.5rem 1.2rem', fontSize: '0.62rem' }}>
-            {card.cta.text}
-          </a>
+        {/* Phases — multi-line progress */}
+        {Array.isArray(card.phases) && card.phases.length > 0 && (
+          <div className="space-y-3">
+            {card.phases.map((p, i) => {
+              const Icon = p.done ? CheckIcon : (p.icon === 'eye' ? EyeIcon : (p.icon === 'check' ? CheckIcon : (p.icon === 'cart' ? CartIcon : (p.icon === 'tools' ? ToolsIcon : (p.icon === 'palette' ? PaletteIcon : DotIcon)))));
+              return (
+                <div key={i}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="flex items-center gap-2 text-xs text-white/75">
+                      <Icon size={12} />
+                      {p.label}
+                    </span>
+                    <span className="text-[0.7rem] text-white/55 font-medium">{p.value}%</span>
+                  </div>
+                  <div className="h-[3px] bg-white/8 rounded-full overflow-hidden">
+                    <div className="h-full rounded-full" style={{ width: `${p.value}%`, background: p.value === 0 ? 'rgba(0,201,179,0.25)' : '#00C9B3' }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
     </div>
   );
 };
+
+// Minimal inline icons for phases (no dep on lucide that gets tree-shaken away)
+const CheckIcon = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 16 16" fill="none"><path d="M3 8L7 12L13 5" stroke="#00C9B3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+);
+const EyeIcon = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 16 16" fill="none"><path d="M8 4C4 4 1.5 8 1.5 8C1.5 8 4 12 8 12C12 12 14.5 8 14.5 8C14.5 8 12 4 8 4Z" stroke="rgba(255,255,255,0.6)" strokeWidth="1.3"/><circle cx="8" cy="8" r="2" stroke="rgba(255,255,255,0.6)" strokeWidth="1.3"/></svg>
+);
+const PaletteIcon = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="rgba(255,255,255,0.6)" strokeWidth="1.3"/><circle cx="6" cy="6" r="0.8" fill="rgba(255,255,255,0.6)"/><circle cx="10" cy="7" r="0.8" fill="rgba(255,255,255,0.6)"/><circle cx="9" cy="10" r="0.8" fill="rgba(255,255,255,0.6)"/></svg>
+);
+const CartIcon = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 16 16" fill="none"><path d="M2 3H3.5L4.5 11H12.5L13.5 5H5" stroke="rgba(255,255,255,0.6)" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/><circle cx="6" cy="13.5" r="1" stroke="rgba(255,255,255,0.6)" strokeWidth="1.3"/><circle cx="11" cy="13.5" r="1" stroke="rgba(255,255,255,0.6)" strokeWidth="1.3"/></svg>
+);
+const ToolsIcon = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 16 16" fill="none"><path d="M6 10L2.5 13.5L3.5 14.5L7 11M11 5L13.5 2.5L14.5 3.5L12 6M7 11L10 8L9 7L6 10M8 8L5 5L4 6L7 9M11 5L9 7" stroke="rgba(255,255,255,0.6)" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+);
+const DotIcon = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" fill="rgba(255,255,255,0.4)"/></svg>
+);
 
 export default EditorialHero;

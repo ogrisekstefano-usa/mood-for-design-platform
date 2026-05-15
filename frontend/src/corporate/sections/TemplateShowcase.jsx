@@ -17,7 +17,7 @@ const TemplateShowcase = ({ content = {}, config = {} }) => {
               {content.headline}
             </h2>
             {content.cta && (
-              <a href={content.cta.href} className="text-xs font-semibold uppercase tracking-widest text-[#3DDAD0] inline-flex items-center gap-2">
+              <a href={content.cta.href} className="text-xs font-semibold uppercase tracking-widest text-[#00C9B3] inline-flex items-center gap-2">
                 {content.cta.text} <span>→</span>
               </a>
             )}

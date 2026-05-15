@@ -43,7 +43,7 @@ const LogosWall = ({ content = {}, config = {} }) => {
                 letterSpacing: '0.05em',
                 transitionDelay: `${i * 0.04}s`,
               }}
-              onMouseEnter={e => (e.target.style.color = dark ? '#FFFFFF' : '#0A1320')}
+              onMouseEnter={e => (e.target.style.color = dark ? '#FFFFFF' : '#000000')}
               onMouseLeave={e => (e.target.style.color = dark ? 'rgba(255,255,255,0.35)' : 'rgba(10,19,32,0.4)')}
               data-testid={`brand-${(brand || '').toString().toLowerCase().replace(/[\s&+*]/g, '-')}`}
             >

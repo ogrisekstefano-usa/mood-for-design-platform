@@ -13,7 +13,7 @@ export const CorporatePage = ({ slug }) => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F9F9F8]">
         <div className="space-y-3 text-center">
-          <div className="w-8 h-8 border border-[#3DDAD0] border-t-transparent rounded-full animate-spin mx-auto" />
+          <div className="w-8 h-8 border border-[#00C9B3] border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-xs uppercase tracking-widest text-[#5A5A5A]">Loading</p>
         </div>
       </div>

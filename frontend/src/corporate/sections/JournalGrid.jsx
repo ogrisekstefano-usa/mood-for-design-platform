@@ -68,7 +68,7 @@ const JournalGrid = ({ content = {}, config = {} }) => {
               </div>
               <div className="p-8">
                 {post.category && <span className="overline-teal block mb-3">{post.category}</span>}
-                <h3 className="font-serif text-xl text-[#0A0A0A] leading-tight mb-3 tracking-tight group-hover:text-[#3DDAD0] transition-colors">
+                <h3 className="font-serif text-xl text-[#0A0A0A] leading-tight mb-3 tracking-tight group-hover:text-[#00C9B3] transition-colors">
                   {post.title}
                 </h3>
                 <p className="text-sm text-[#5A5A5A] leading-relaxed mb-6 line-clamp-2">{post.excerpt}</p>

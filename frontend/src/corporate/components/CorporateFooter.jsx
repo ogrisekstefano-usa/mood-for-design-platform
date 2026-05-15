@@ -63,18 +63,12 @@ const CorporateFooter = () => {
 
           {/* Brand */}
           <div className="lg:col-span-3">
-            {/* MOOD logo */}
             <div className="flex items-center mb-5">
-              <span style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 700, fontSize: '1.3rem', color: '#FFFFFF', letterSpacing: '-0.01em' }}>M</span>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ margin: '0 1px' }}>
-                <circle cx="8" cy="12" r="7.5" stroke="#3DDAD0" strokeWidth="2" fill="none" />
-                <circle cx="16" cy="12" r="7.5" stroke="#3DDAD0" strokeWidth="2" fill="none" />
-              </svg>
-              <span style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 700, fontSize: '1.3rem', color: '#FFFFFF', letterSpacing: '-0.01em' }}>D</span>
-              <span style={{ marginLeft: '8px', display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
-                <span style={{ fontFamily: 'Playfair Display, serif', fontStyle: 'italic', fontSize: '0.5rem', color: 'rgba(255,255,255,0.4)' }}>for</span>
-                <span style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 700, fontSize: '0.5rem', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.7)' }}>DESIGN</span>
-              </span>
+              <img
+                src="https://customer-assets.emergentagent.com/job_editorial-platform-4/artifacts/chlucgqo_Artboard%201.png"
+                alt="MOOD for DESIGN — Inspiration. Design. Solutions."
+                style={{ height: 80, width: 'auto', display: 'block' }}
+              />
             </div>
             <p style={{ fontFamily: 'Playfair Display, serif', fontStyle: 'italic', fontSize: '0.82rem', color: 'rgba(255,255,255,0.35)', lineHeight: 1.5, marginBottom: '1.5rem', maxWidth: '180px' }}>
               Inspiration. Design. Solutions.
@@ -82,7 +76,7 @@ const CorporateFooter = () => {
             <div className="flex gap-4">
               {[Instagram, Linkedin, Twitter, Youtube].map((Icon, i) => (
                 <a key={i} href="#" style={{ color: 'rgba(255,255,255,0.3)', transition: 'color 0.2s' }}
-                   onMouseEnter={e => e.currentTarget.style.color = '#3DDAD0'}
+                   onMouseEnter={e => e.currentTarget.style.color = '#00C9B3'}
                    onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}
                    data-testid={`footer-social-${i}`}>
                   <Icon size={16} />
@@ -94,7 +88,7 @@ const CorporateFooter = () => {
           {/* Nav cols */}
           {Object.entries(FOOTER_COLS).map(([key, col]) => (
             <div key={key} className="lg:col-span-2">
-              <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#3DDAD0', marginBottom: '1.5rem' }}>
+              <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#00C9B3', marginBottom: '1.5rem' }}>
                 {L(col.heading, locale)}
               </p>
               <ul className="space-y-3">
@@ -117,14 +111,14 @@ const CorporateFooter = () => {
 
           {/* Newsletter */}
           <div className="lg:col-span-3">
-            <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#3DDAD0', marginBottom: '1.5rem' }}>
+            <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#00C9B3', marginBottom: '1.5rem' }}>
               Newsletter
             </p>
             <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
               {locale === 'it' ? 'Rimani ispirato. Aggiornamenti ed editoriali da MOOD.' : 'Stay inspired. News and editorial from MOOD.'}
             </p>
             {subscribed ? (
-              <p style={{ fontSize: '0.72rem', color: '#3DDAD0' }}>
+              <p style={{ fontSize: '0.72rem', color: '#00C9B3' }}>
                 {locale === 'it' ? 'Grazie! Sei nella lista.' : 'Thank you! You\'re on the list.'}
               </p>
             ) : (
@@ -135,16 +129,16 @@ const CorporateFooter = () => {
                   onChange={e => setEmail(e.target.value)}
                   placeholder={locale === 'it' ? 'La tua email' : 'Your email'}
                   style={{ flex: 1, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRight: 'none', padding: '0.75rem 1rem', fontSize: '0.72rem', color: '#FFFFFF', outline: 'none', fontFamily: 'Montserrat, sans-serif' }}
-                  onFocus={e => e.target.style.borderColor = '#3DDAD0'}
+                  onFocus={e => e.target.style.borderColor = '#00C9B3'}
                   onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
                   required
                   data-testid="newsletter-email-input"
                 />
                 <button
                   type="submit"
-                  style={{ background: '#3DDAD0', color: '#FFFFFF', padding: '0 1rem', border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, transition: 'background 0.2s' }}
-                  onMouseEnter={e => e.target.style.background = '#2BB9B0'}
-                  onMouseLeave={e => e.target.style.background = '#3DDAD0'}
+                  style={{ background: '#00C9B3', color: '#FFFFFF', padding: '0 1rem', border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, transition: 'background 0.2s' }}
+                  onMouseEnter={e => e.target.style.background = '#00A593'}
+                  onMouseLeave={e => e.target.style.background = '#00C9B3'}
                   data-testid="newsletter-submit"
                 >
                   →
