@@ -2,6 +2,129 @@
 
 ## Implementation Status
 
+### ✅ Phase S.1 — Human Layer Foundation + Tenant Onboarding (DONE — 15 Feb 2026)
+
+Phase S.1 introduces the **Human Layer** — the relational backbone that
+turns MOOD from "a SaaS" into "a relationship-orchestrated platform".
+Every client now has a real, tenant-aware human reference; every new
+studio gets a guided setup checklist that auto-detects progress from
+real data.
+
+**ABSOLUTE RULES respected:**
+- ZERO hardcoded users / fake support agents / "MOOD Support" personae.
+- ZERO cross-tenant assignment leakage.
+- ZERO demo preload — assignment derives from the actual users_profile
+  records of the active tenant.
+
+**Database (migration `022_human_layer.sql`)**
+- `human_assignments` — who-supports-whom (subject_type ∈ client / lead /
+  project / studio_onboarding) with reason, status, deferred UNIQUE on
+  (tenant, subject_type, subject_id, status='active').
+- `human_assignment_events` — append-only audit trail (assigned /
+  reassigned / viewed / contacted / completed).
+- `tenant_onboarding` — per-tenant checklist cache + dismissed_at.
+- `users_profile` extended with `short_bio`, `role_label`,
+  `response_time_label`, `contact_cta_label` for the public-safe
+  assignee profile.
+
+**Backend — Assignment Engine** (`/app/backend/core/human_assignment.py`)
+- Priority groups for client subjects:
+  `tenant_admin → project_manager → designer/editor → super_admin (fallback)`.
+- Priority for studio_onboarding:
+  `super_admin → tenant_admin → project_manager`.
+- Round-robin V1: lowest active-assignment count within the chosen
+  group wins; tie-break by `created_at ASC`. Deterministic, not random.
+- Empty tenant → records `status='active', reason='unassigned',
+  assignee=null` so the UI can show a calm hint, never an error.
+- `public_assignee_profile()` strips internal fields (role, email,
+  permissions, backend IDs) before exposing to client.
+
+**Backend — API** (`/api/human-assignment/*`)
+- `GET  /me` — current user's assignment (auto-ensures for clients).
+- `GET  /for-subject` — admin only, lookup arbitrary subject.
+- `POST /assign` — admin only, manual override.
+- `POST /reassign` — admin only, marks old as reassigned + creates new.
+- `GET  /candidates` — admin only, lists candidate pool.
+
+**Backend — Tenant Onboarding** (`/api/tenant-onboarding/*`)
+- 7-step checklist auto-detected from live signals (tenants.name +
+  primary_color, logo_url, project.project_type, ≥2 active members,
+  ≥1 project, ≥1 media_library row, ≥1 published storefront_page).
+- DB row is a CACHE: manual `mark-done` wins over auto False; auto True
+  wins over cached False (never unfollows itself).
+- `GET /status` → items + completed/total + progress% + all_done +
+  dismissed. 403 for role=client.
+- `POST /mark-done` — manual step confirmation.
+- `POST /dismiss` — tenant_admin / super_admin hide forever.
+
+**Frontend — Client Human Card** (`ClientHumanCard.jsx`)
+- Inserted into both zero-data and has-data flows of ClientOverviewPage.
+- 96px avatar (real image or gold-soft initials fallback), Playfair
+  "Ciao, sono {first_name}.", role_label uppercase, full short_bio,
+  response_time_label with clock icon, 3 CTAs (gold "Scrivi a {first_name}"
+  + ghost "Prenota una call" + link "Completa il briefing").
+- Unassigned fallback: "Il team dello studio sta assegnando il referente
+  più adatto al tuo progetto." — never an error.
+- Pure calm hospitality tone — NO "AI assistant", NO chatbot bubble,
+  NO support-agent chrome.
+
+**Frontend — Studio Onboarding Panel** (`StudioOnboardingPanel.jsx`)
+- Renders on `/dashboard` (Blueprint OS) when `all_done=false` AND
+  `dismissed=false`. Auto-hides when complete or dismissed.
+- Playfair "Configura il tuo workspace.", live progress bar with teal
+  fill, big tabular-nums "{completed}/{total}", X dismiss button.
+- 7 checklist rows in 2-col grid; each row has gold-teal check (done)
+  or numbered placeholder (todo), title, body, "Apri sezione →"
+  deep-link and "Segna fatto" override.
+
+**Seed enhancements**
+- Stefano (super_admin) — bio + role_label "Direzione studio · Lead
+  Designer" + response_time + contact_cta.
+- Giulia (designer) — bio + role_label "Senior Designer" + response_time
+  + contact_cta.
+
+**Security & isolation verification (15 Feb 2026)** ✅
+- Client `/api/human-assignment/me` → returns Giulia (real designer,
+  picked by round-robin since multiple designers in tenant).
+- Client `/api/tenant-onboarding/status` → 403.
+- Designer `/api/client/overview` → 403 (Phase R guard).
+- Public-safe assignee shape verified: only `id, name, first_name,
+  avatar_url, role_label, short_bio, response_time_label,
+  contact_cta_label`. No role, no email, no tenant_id.
+- Onboarding panel visible to super_admin, hides on dismiss,
+  re-appears on hard refresh until dismissed_at is set.
+- Zero React errors, zero unhandled rejections.
+
+**Files of reference (new in S.1)**
+- `/app/supabase/migrations/022_human_layer.sql`
+- `/app/backend/core/human_assignment.py`
+- `/app/backend/routers/human_assignment.py`
+- `/app/backend/routers/tenant_onboarding.py`
+- `/app/frontend/src/components/client/ClientHumanCard.jsx`
+- `/app/frontend/src/components/dashboard/StudioOnboardingPanel.jsx`
+
+**Out of scope (preserved for S.2 / future)**
+- Real "Scrivi al referente" message thread (currently triggers toast).
+- Functional "Prenota una call" calendar integration.
+- AI-driven candidate matching (currently strict round-robin V1).
+- Advanced assignee availability schedules.
+- Auto-assign hook on signup (currently `auto-ensure` triggers lazily
+  the first time `/api/human-assignment/me` is called — sufficient
+  for Phase S.1).
+- Lead Assignment auto-trigger (lead → designer routing).
+- Real new-tenant onboarding flow with welcome wizard (currently the
+  panel just renders when checklist is incomplete; tenant creation
+  flow itself remains untouched).
+- Role-aware empty states for designer / PM / analyst (currently only
+  client + studio admin get tailored experiences; the others still see
+  Blueprint OS default dashboards).
+
+
+
+
+
+## Implementation Status
+
 ### ✅ Phase R.1 + R.2 — Client Portal Foundation + Cinematic Zero-Data Experience (DONE — 15 Feb 2026)
 
 Phase R introduces the **third surface** of MOOD for DESIGN™ — a

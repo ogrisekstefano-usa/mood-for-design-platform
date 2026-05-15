@@ -20,6 +20,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import api from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
+import StudioOnboardingPanel from '../../components/dashboard/StudioOnboardingPanel';
 
 // ── tiny utils ────────────────────────────────────────────────────────
 const fmtRelative = (iso) => {
@@ -579,6 +580,9 @@ const DashboardPage = () => {
           <span className="capitalize">{today}</span>
         </div>
       </header>
+
+      {/* Studio onboarding panel (S.1) — auto-hides when complete/dismissed */}
+      <StudioOnboardingPanel />
 
       {/* KPIs + right rail */}
       <div className="grid gap-6" style={{ gridTemplateColumns: 'minmax(0, 1fr) 280px 280px' }}>

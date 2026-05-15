@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { ArrowUpRight, Sparkles } from 'lucide-react';
 import api from '../../lib/api';
 import ClientWelcomeHero from '../../components/client/ClientWelcomeHero';
+import ClientHumanCard from '../../components/client/ClientHumanCard';
 import HowItWorksSection from '../../components/client/HowItWorksSection';
 import WhatYouWillFindSection from '../../components/client/WhatYouWillFindSection';
 import ProjectProgressTracker from '../../components/client/ProjectProgressTracker';
@@ -76,6 +77,9 @@ const ZeroDataExperience = () => {
         onSecondary={handleCall}
         onTertiary={handleProc}
       />
+      <div className="mt-8">
+        <ClientHumanCard onBriefClick={handleBrief} />
+      </div>
       <HowItWorksSection />
       <WhatYouWillFindSection />
     </div>
@@ -157,6 +161,9 @@ const HasDataExperience = ({ data }) => {
           <ProjectProgressTracker pipeline={pipeline} currentLabel={currentLabel} variant="compact" />
         </aside>
       </section>
+
+      {/* HUMAN REFERENT CARD */}
+      <ClientHumanCard />
 
       {/* TIMELINE (full width) */}
       <section data-testid="client-timeline-card" className="cp-card px-10 py-10">
