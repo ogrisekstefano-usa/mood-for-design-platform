@@ -1,123 +1,174 @@
 /**
- * SettingsPage — hub linking to Brand Studio, Domains, Locales, Members,
- * Tenant Storefront and Corporate Pages.
+ * SettingsPage — Tenant Settings hub (Notion / Linear / Shopify-admin feel).
  *
- * SCOPE AUDIT (Phase H.5 SESSION A):
- *   • Tenant Storefront — public-facing pages of THIS tenant (homepage, projects,
- *     onboarding, professionals). What end-users (private clients & A&D pros) see.
- *   • Corporate Pages    — Blueprint Section Engine demo pages (sample showcase
- *     of Blueprint OS™ capabilities). Internal/legacy. NOT the tenant storefront.
+ * New IA (Session G):
+ *   • Workspace    — Team & Permissions · Billing & Plan · Domains · Brand Studio
+ *   • Website      — Storefront Pages · Forms & Onboarding · Journal Editoriale
+ *   • Account      — Profile · Notifications · Security
+ *
+ * Platform-level controls (Languages, Section Engine, Dev tools, Global Audit, …)
+ * have been moved out to `/superadmin/*` and are only visible to super_admin.
  */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Users, CreditCard, Globe, Palette,
+  Store, ClipboardList, Newspaper,
+  UserCircle, Bell, KeyRound, ShieldCheck,
+  ArrowRight,
+} from 'lucide-react';
 import { useBlueprint } from '../../contexts/BlueprintContext';
-import { Palette, Globe, Languages, Users, ArrowRight, Layers, Compass, ClipboardList, Store, Wrench } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 
-const SettingsTile = ({ icon: Icon, title, description, to, testid, accent }) => {
+const SettingsTile = ({ icon: Icon, title, description, to, testid, accent = 'default', soon }) => {
   const navigate = useNavigate();
+  const Tag = soon ? 'div' : 'button';
   return (
-    <button data-testid={testid} onClick={() => navigate(to)}
-      className="text-left bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] p-6 hover:border-[var(--bp-border-strong)] transition-colors group">
+    <Tag
+      data-testid={testid}
+      onClick={soon ? undefined : () => navigate(to)}
+      className={`text-left bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] p-6 transition-colors group relative
+        ${soon ? 'opacity-55 cursor-not-allowed' : 'hover:border-[var(--bp-border-strong)] hover:bg-[var(--bp-surface-1)]/80'}`}
+    >
       <div className="flex items-start gap-4">
-        <div className={`w-10 h-10 rounded-[var(--bp-radius-sm)] flex items-center justify-center flex-shrink-0 ${accent === 'tenant' ? 'bg-[#C9A36E]/15' : accent === 'corporate' ? 'bg-[var(--bp-text-muted)]/10' : 'bg-[var(--bp-primary)]/10'}`}>
-          <Icon size={18} className={accent === 'tenant' ? 'text-[#C9A36E]' : accent === 'corporate' ? 'text-[var(--bp-text-muted)]' : 'text-[var(--bp-primary)]'} strokeWidth={1.5} />
+        <div className={`w-10 h-10 rounded-[var(--bp-radius-sm)] flex items-center justify-center flex-shrink-0
+          ${accent === 'core' ? 'bg-[var(--bp-primary)]/12 text-[var(--bp-primary)]'
+            : accent === 'muted' ? 'bg-[var(--bp-text-muted)]/10 text-[var(--bp-text-muted)]'
+            : 'bg-[var(--bp-primary)]/8 text-[var(--bp-primary)]'}`}>
+          <Icon size={18} strokeWidth={1.5} />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-heading text-xl text-[var(--bp-text-primary)] leading-tight mb-1">{title}</h3>
-          <p className="text-[var(--bp-text-muted)] text-xs font-body">{description}</p>
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-heading text-xl text-[var(--bp-text-primary)] leading-tight">{title}</h3>
+            {soon && (
+              <span className="px-2 py-0.5 rounded-full bg-[var(--bp-surface-2)] text-[var(--bp-text-muted)] text-[9px] font-body uppercase tracking-[0.18em]">
+                Soon
+              </span>
+            )}
+          </div>
+          <p className="text-[var(--bp-text-muted)] text-xs font-body leading-relaxed">{description}</p>
         </div>
-        <ArrowRight size={14} className="text-[var(--bp-text-subtle)] group-hover:text-[var(--bp-text-secondary)] transition-colors mt-1" />
+        {!soon && (
+          <ArrowRight size={14} className="text-[var(--bp-text-subtle)] group-hover:text-[var(--bp-text-secondary)] transition-colors mt-1" />
+        )}
       </div>
-    </button>
+    </Tag>
   );
 };
 
 const SectionHeader = ({ kicker, title, body }) => (
   <div className="mb-5">
-    <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.2em] font-semibold mb-1">{kicker}</p>
+    <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.22em] font-semibold mb-1">{kicker}</p>
     <h2 className="font-heading text-2xl text-[var(--bp-text-primary)] leading-tight mb-1">{title}</h2>
-    <p className="text-[var(--bp-text-muted)] text-xs font-body max-w-2xl">{body}</p>
+    <p className="text-[var(--bp-text-muted)] text-xs font-body max-w-2xl leading-relaxed">{body}</p>
   </div>
 );
 
 const SettingsPage = () => {
   const { t } = useBlueprint();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const isSuper = user?.role === 'super_admin';
+
   return (
     <div className="p-10 max-w-5xl mx-auto" data-testid="settings-page">
-      <div className="mb-10">
-        <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.2em] font-semibold mb-1">
-          {t('nav.section.system')}
-        </p>
-        <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)]">
-          {t('settings.title')}
-        </h1>
+      {/* ── Header ────────────────────────────────────────────────────── */}
+      <div className="mb-10 flex items-start justify-between gap-6">
+        <div>
+          <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.22em] font-semibold mb-1">
+            {t('settings.kicker', null, 'Studio · Workspace')}
+          </p>
+          <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)]">
+            {t('settings.title')}
+          </h1>
+          <p className="text-[var(--bp-text-muted)] text-sm font-body mt-2 max-w-xl">
+            {t('settings.sub', null, 'Manage your studio — team, brand, website and account in one place.')}
+          </p>
+        </div>
+        {isSuper && (
+          <button onClick={() => navigate('/superadmin')}
+                  data-testid="goto-superadmin"
+                  className="flex items-center gap-2 px-4 py-2 rounded-[var(--bp-radius-sm)] border border-[var(--bp-border)] text-[var(--bp-text-secondary)] hover:text-[var(--bp-primary)] hover:border-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.2em] transition-colors">
+            <ShieldCheck size={12} strokeWidth={1.5} />
+            SuperAdmin
+          </button>
+        )}
       </div>
 
-      {/* Section 1 — TENANT STOREFRONT (the demo store / showroom homepage) */}
-      <section className="mb-10" data-testid="settings-tenant-section">
+      {/* ── WORKSPACE ─────────────────────────────────────────────────── */}
+      <section className="mb-12" data-testid="settings-workspace">
         <SectionHeader
-          kicker={t('settings.section.tenant', null, 'Tenant Storefront')}
-          title={t('settings.section.tenant.title', null, 'Your public storefront')}
-          body={t('settings.section.tenant.body', null, 'Pages your clients & professionals see — homepage, projects, onboarding flows, professionals gateway.')}
+          kicker={t('settings.workspace.kicker', null, 'Workspace')}
+          title={t('settings.workspace.title', null, 'Studio governance')}
+          body={t('settings.workspace.body', null, 'Who can do what, your plan and limits, the domains you publish on, and your brand identity.')}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <SettingsTile testid="tile-storefront" icon={Store} to="/settings/storefront" accent="tenant"
-            title={t('settings.storefront.title', null, 'Storefront Pages')}
-            description={t('settings.storefront.sub', null, 'Homepage, hero, projects, value props, footer — currently from frontend config; backend CMS in Session B.')}
+          <SettingsTile testid="tile-team" icon={Users} to="/settings/members" accent="core"
+            title={t('settings.team.title', null, 'Team & Permissions')}
+            description={t('settings.team.sub', null, 'Invite people, assign roles, suspend or remove members. Every action is audit-logged.')}
           />
-          <SettingsTile testid="tile-navigation" icon={Compass} to="/settings/navigation" accent="tenant"
-            title={t('settings.navigation.title', null, 'Navigation & Footer')}
-            description={t('settings.navigation.sub', null, 'Top bar links, footer columns, showroom address.')}
+          <SettingsTile testid="tile-plan" icon={CreditCard} to="/settings/plan" accent="core"
+            title={t('settings.plan.title', null, 'Billing & Plan')}
+            description={t('settings.plan.sub', null, 'Active plan, usage meters, seat limits, billing cycle.')}
           />
-          <SettingsTile testid="tile-forms" icon={ClipboardList} to="/settings/forms" accent="tenant"
-            title={t('settings.forms.title', null, 'Forms & Onboarding')}
-            description={t('settings.forms.sub', null, 'Private wizard, professional intake, lead forms.')}
-          />
-          <SettingsTile testid="tile-brand" icon={Palette} to="/settings/brand" accent="tenant"
-            title={t('settings.brand.title', null, 'Brand Studio')}
-            description={t('settings.brand.sub', null, 'Theme — palette, typography, shape, motion, brand assets.')}
-          />
-        </div>
-      </section>
-
-      {/* Section 2 — CORPORATE / INTERNAL */}
-      <section className="mb-10" data-testid="settings-corporate-section">
-        <SectionHeader
-          kicker={t('settings.section.corporate', null, 'Corporate Platform')}
-          title={t('settings.section.corporate.title', null, 'Blueprint OS™ internal pages')}
-          body={t('settings.section.corporate.body', null, 'Sample/demo pages built with Blueprint Section Engine. Useful as a Blueprint OS showcase, NOT as your storefront.')}
-        />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <SettingsTile testid="tile-pages" icon={Layers} to="/settings/pages" accent="corporate"
-            title={t('settings.pages.title', null, 'Section Engine Pages')}
-            description={t('settings.pages.sub', null, 'Block-based corporate/demo pages — Blueprint OS™ showcase. Default content: "Timeless elegance, engineered."')}
-          />
-        </div>
-      </section>
-
-      {/* Section 3 — PLATFORM SYSTEM */}
-      <section data-testid="settings-system-section">
-        <SectionHeader
-          kicker={t('settings.section.system', null, 'Platform System')}
-          title={t('settings.section.system.title', null, 'Cross-cutting configuration')}
-          body={t('settings.section.system.body', null, 'Global controls shared by tenant storefront and Blueprint workspace.')}
-        />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <SettingsTile testid="tile-domains" icon={Globe} to="/settings/domains"
             title={t('settings.domains.title', null, 'Domains')}
             description={t('settings.domains.sub', null, 'Connect custom domains and subdomains to your workspace.')}
           />
-          <SettingsTile testid="tile-locales" icon={Languages} to="/settings/languages"
-            title={t('settings.languages.title', null, 'Languages')}
-            description={t('settings.languages.sub', null, 'Global Language Registry — public site, Blueprint, fallback, RTL, AI translation.')}
+          <SettingsTile testid="tile-brand" icon={Palette} to="/settings/brand"
+            title={t('settings.brand.title', null, 'Brand Studio')}
+            description={t('settings.brand.sub', null, 'Logo, palette, typography and style preset for your tenant.')}
+            soon
           />
-          <SettingsTile testid="tile-team" icon={Users} to="/settings/team"
-            title={t('settings.team')}
-            description={t('settings.team.sub', null, 'Invite collaborators and manage roles & permissions.')}
+        </div>
+      </section>
+
+      {/* ── WEBSITE ───────────────────────────────────────────────────── */}
+      <section className="mb-12" data-testid="settings-website">
+        <SectionHeader
+          kicker={t('settings.website.kicker', null, 'Website')}
+          title={t('settings.website.title', null, 'Your public storefront')}
+          body={t('settings.website.body', null, 'The pages, forms and editorial content your clients and professionals see.')}
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <SettingsTile testid="tile-storefront" icon={Store} to="/settings/storefront"
+            title={t('settings.storefront.title', null, 'Storefront Pages')}
+            description={t('settings.storefront.sub', null, 'Homepage, hero, projects, value props — navigation & footer included.')}
           />
-          <SettingsTile testid="tile-tools" icon={Wrench} to="/settings/storefront#dev"
-            title={t('settings.tools.title', null, 'Dev tools')}
-            description={t('settings.tools.sub', null, 'i18n coverage, missing keys detector, content audit.')}
+          <SettingsTile testid="tile-forms" icon={ClipboardList} to="/settings/forms"
+            title={t('settings.forms.title', null, 'Forms & Onboarding')}
+            description={t('settings.forms.sub', null, 'Lead forms, client & professional intake wizards, automations.')}
+          />
+          <SettingsTile testid="tile-journal" icon={Newspaper} to="/settings/journal"
+            title={t('settings.journal.title', null, 'Journal')}
+            description={t('settings.journal.sub', null, 'Editorial posts, project stories, press features.')}
+            soon
+          />
+        </div>
+      </section>
+
+      {/* ── ACCOUNT ───────────────────────────────────────────────────── */}
+      <section data-testid="settings-account">
+        <SectionHeader
+          kicker={t('settings.account.kicker', null, 'Account')}
+          title={t('settings.account.title', null, 'Your personal preferences')}
+          body={t('settings.account.body', null, 'These settings apply only to your own user — not the rest of the studio.')}
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <SettingsTile testid="tile-profile" icon={UserCircle} to="/settings/profile"
+            title={t('settings.profile.title', null, 'Profile')}
+            description={t('settings.profile.sub', null, 'Name, avatar, signature.')}
+            soon
+          />
+          <SettingsTile testid="tile-notifications" icon={Bell} to="/settings/notifications"
+            title={t('settings.notifications.title', null, 'Notifications')}
+            description={t('settings.notifications.sub', null, 'How and when you want to be notified.')}
+            soon
+          />
+          <SettingsTile testid="tile-security" icon={KeyRound} to="/settings/security"
+            title={t('settings.security.title', null, 'Security')}
+            description={t('settings.security.sub', null, 'Password, sessions, two-factor.')}
+            soon
           />
         </div>
       </section>

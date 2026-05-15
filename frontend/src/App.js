@@ -43,6 +43,7 @@ const ProfessionalIntakePage = lazy(() => import('./pages/site/ProfessionalIntak
 const LanguagesPage = lazy(() => import('./pages/settings/LanguagesPage'));
 const StorefrontPage = lazy(() => import('./pages/settings/StorefrontStudio'));
 const MembersPage = lazy(() => import('./pages/settings/MembersPage'));
+const PlanPage = lazy(() => import('./pages/settings/PlanPage'));
 
 // Admin
 const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
@@ -125,12 +126,10 @@ function App() {
                   <Route path="/insights" element={<InsightsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="/settings/brand" element={<BrandStudioPage />} />
-                  <Route path="/settings/pages" element={<HomepageBuilderPage />} />
                   <Route path="/settings/domains" element={<DomainsPage />} />
-                  <Route path="/settings/navigation" element={<NavigationEditorPage />} />
                   <Route path="/settings/forms" element={<FormBuilderPage />} />
-                  <Route path="/settings/languages" element={<LanguagesPage />} />
                   <Route path="/settings/storefront" element={<StorefrontPage />} />
+                  <Route path="/settings/plan" element={<PlanPage />} />
                   <Route path="/settings/team" element={<MembersPage />} />
                   <Route path="/settings/members" element={<MembersPage />} />
                 </Route>
@@ -141,6 +140,17 @@ function App() {
                   <Route path="/admin/tenants/:id" element={<AdminTenantDetailPage />} />
                   <Route path="/admin/modules" element={<AdminModulesPage />} />
                   <Route path="/admin/audit" element={<AdminAuditPage />} />
+                  {/* New IA — superadmin-only platform internals */}
+                  <Route path="/admin/languages" element={<LanguagesPage />} />
+                  <Route path="/admin/pages" element={<HomepageBuilderPage />} />
+                  {/* /superadmin/* aliases per Session-G architecture */}
+                  <Route path="/superadmin" element={<AdminOverviewPage />} />
+                  <Route path="/superadmin/tenants" element={<AdminTenantsPage />} />
+                  <Route path="/superadmin/tenants/:id" element={<AdminTenantDetailPage />} />
+                  <Route path="/superadmin/modules" element={<AdminModulesPage />} />
+                  <Route path="/superadmin/audit" element={<AdminAuditPage />} />
+                  <Route path="/superadmin/languages" element={<LanguagesPage />} />
+                  <Route path="/superadmin/pages" element={<HomepageBuilderPage />} />
                 </Route>
 
                 {/* PUBLIC tenant routes — runtime composition via Blueprint engine */}

@@ -1764,3 +1764,84 @@ Dual delivery: (A) ingresso editoriale per professionisti A&D + intake 5-step. (
 - P2: Designer Profile & Human Header (Phase 6)
 - P3: Messaging V1 (Phase 7)
 - P4: Products / Catalogs (Phase 8)
+
+---
+
+## SESSION G — Tenant Settings IA refactor + Licensing Engine foundation (2026-05-15)
+
+### 1) Settings IA — new commercial-grade structure
+Old (chaotic): "Tenant Storefront" + "Corporate Platform" + "Platform System" + "Cross-cutting configuration".
+**New** (Notion/Linear/Shopify-admin feel):
+- **Workspace** → Team & Permissions · Billing & Plan · Domains · Brand Studio
+- **Website** → Storefront Pages · Forms & Onboarding · Journal
+- **Account** → Profile · Notifications · Security
+
+**Removed from tenant** (per spec):
+- ❌ Page Builder (`/settings/pages` route moved to `/admin/pages` and `/superadmin/pages` only)
+- ❌ Navigation & Footer as separate module — now integrated into Storefront Pages
+- ❌ Languages tile → moved to SuperAdmin
+
+**SuperAdmin link** is shown only to `role === 'super_admin'` in the Settings header. Routes aliased: `/superadmin`, `/superadmin/tenants`, `/superadmin/modules`, `/superadmin/audit`, `/superadmin/languages`, `/superadmin/pages` (all → `AdminLayout`).
+
+AdminLayout sidebar updated: Overview · Tenants · Modules · **Languages** · **Pages** · Audit.
+
+### 2) Licensing Engine (Mock-first, Stripe-ready)
+DB Migration **`017_licensing.sql`** (applied):
+- `active_plan`, `subscription_status` (active|past_due|canceled|suspended|trial), `billing_cycle`, `trial_ends_at`
+- `max_users`, `max_projects`, `max_storage_gb`, `max_domains`, `max_ai_credits` (all NULL = unlimited)
+- `enabled_modules` jsonb array
+- `stripe_customer_id`, `stripe_subscription_id` (nullable; Session H will wire them)
+- Demo tenants seeded to **enterprise** so existing 52 members don't trip the cap
+
+**Backend** `/app/backend/core/licensing.py`:
+- `PLANS` dict — Starter (3/10/5GB/1/500) · Studio (10/50/25/2/5000) · Enterprise (∞ across the board) · Custom
+- `get_tenant_license()` — merges DB row with plan defaults
+- `get_tenant_usage()` — live counts via Supabase
+- `assert_subscription_active()`, `assert_module_enabled()`, `assert_capacity(resource)` — raise 403 with stable error codes (`LICENSE_LIMIT_REACHED`, `MODULE_NOT_ENABLED`, `SUBSCRIPTION_INACTIVE`) and structured detail `{code, message, plan, current, limit, resource}` for the frontend
+
+**API** `routers/license.py`:
+- `GET  /api/license` — current tenant license + usage
+- `GET  /api/license/plans` — public catalog (Starter / Studio / Enterprise)
+- `POST /api/license/{tenant_id}/assign` — super_admin only
+
+**Enforcement** wired into `routers/members.py::invite_member()` — calls `assert_capacity(tenant_id, "users")` BEFORE Supabase Auth. Tested: switched demo to `starter` → invite returned `403 LICENSE_LIMIT_REACHED { current: 52, limit: 3, plan: "starter" }`. Restored to enterprise.
+
+### 3) Frontend
+- `/settings/plan` (`PlanPage.jsx`) — Linear/Vercel-style usage meters (Seats · Projects · Storage · Domains · AI), module pills, 3 PlanCards with "Current" badge; super_admin can re-assign with one click.
+- `MembersPage.jsx` — added seats chip + plan-aware Invite CTA: when `atSeatCap`, CTA flips to "Upgrade to invite" and routes to `/settings/plan` instead of opening the drawer. Invite errors decode `LICENSE_LIMIT_REACHED` into a friendly toast.
+- `SettingsPage.jsx` — fully rewritten with new IA, "Soon" badges on Brand/Journal/Profile/Notifications/Security (placeholders for Session H+).
+
+### Files touched
+- `supabase/migrations/017_licensing.sql` (new)
+- `backend/core/licensing.py` (new)
+- `backend/routers/license.py` (new)
+- `backend/routers/members.py` (capacity enforcement)
+- `backend/server.py` (router register)
+- `frontend/src/pages/settings/SettingsPage.jsx` (rewritten — new IA)
+- `frontend/src/pages/settings/PlanPage.jsx` (new)
+- `frontend/src/pages/settings/MembersPage.jsx` (seats chip + plan-aware CTA + 403 decode)
+- `frontend/src/App.js` (routes: +/settings/plan, +/superadmin/*, removed page-builder & navigation-editor as standalone tenant routes)
+- `frontend/src/components/layout/AdminLayout.jsx` (Languages + Pages sidebar items)
+
+### Tested
+- ✅ `GET /api/license` → enterprise with full usage
+- ✅ `GET /api/license/plans` → 3 plans returned
+- ✅ `POST /api/license/.../assign` → plan switch works
+- ✅ `POST /api/members/invite` → blocked by `LICENSE_LIMIT_REACHED` when usage ≥ limit
+- ✅ Settings page renders 10 tiles in 3 sections, SuperAdmin link visible for super_admin
+- ✅ Plan page renders 5 meters + 3 plans + 10 module pills
+- ✅ Lint clean on all 5 modified backend + 6 modified frontend files
+
+### Pending (priority order — for Session H)
+- **Brand Studio Override** (`/settings/brand` page) — logo/palette/typography/preset
+- **Runtime Theme Engine** with `data-tenant-theme` + per-tenant CSS vars
+- **Plan-aware UI everywhere**: extend the seat-chip pattern to projects (Moodboards/Projects pages)
+- **Stripe webhook stub** ready for `subscription.updated`
+- **Super_admin tenant management UI**: bulk plan reassign + per-tenant override limits
+- Domains: `/settings/domains` is currently a placeholder — wire `tenant_domains` CRUD
+- Push to GitHub + Redeploy
+- Supabase SMTP for magic-link invites
+
+### Notes
+- Stripe is intentionally mocked. `stripe_customer_id` and `stripe_subscription_id` columns exist but stay NULL until Session I.
+- `is_super_admin` flag in BlueprintContext was already wired and works against the new SuperAdminRoute.

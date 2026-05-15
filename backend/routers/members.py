@@ -29,6 +29,7 @@ from core.permissions import (
     P_TENANT_MEMBERS_READ, P_TENANT_MEMBERS_WRITE,
     is_super_admin, ROLE_PERMISSIONS,
 )
+from core.licensing import assert_capacity, get_tenant_license, get_tenant_usage
 from database import db, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
 router = APIRouter()
@@ -210,6 +211,11 @@ def invite_member(
     email = body.email.lower().strip()
     client = db()
     tenant_id = ctx["tenant_id"]
+
+    # ── License capacity gate — blocks BEFORE we hit Supabase Auth.
+    # Raises 403 LICENSE_LIMIT_REACHED with current/limit so the frontend
+    # can show "Upgrade plan" banner without an extra round-trip.
+    assert_capacity(tenant_id, "users")
 
     # Already in this tenant?
     existing_in_tenant = (

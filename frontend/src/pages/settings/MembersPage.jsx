@@ -295,20 +295,28 @@ const MembersPage = () => {
   const [search, setSearch] = useState('');
   const [drawer, setDrawer] = useState(false);
   const [confirm, setConfirm] = useState(null);
+  const [license, setLicense] = useState(null);
 
   const myProfileId = user?.id;
   const myRole = user?.role;
   const canManage = myRole === 'super_admin' || myRole === 'tenant_admin';
 
+  // Live seat budget — used to disable Invite CTA + show usage chip
+  const seatLimit = license?.limits?.max_users;          // null = unlimited
+  const seatUsage = license?.usage?.users || 0;
+  const atSeatCap = seatLimit != null && seatUsage >= seatLimit;
+
   const loadAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [m, r] = await Promise.all([
+      const [m, r, l] = await Promise.all([
         api.get('/api/members'),
         api.get('/api/members/roles'),
+        api.get('/api/license').catch(() => ({ data: null })),
       ]);
       setMembers(m.data || []);
       setRoles((r.data?.roles || []).filter((x) => x.key !== 'super_admin'));
+      setLicense(l.data);
     } catch (e) {
       const status = e?.response?.status;
       if (status === 403) {
@@ -331,7 +339,13 @@ const MembersPage = () => {
       toast.success('Invite sent — magic link delivered to ' + payload.email);
       await loadAll();
     } catch (e) {
-      toast.error(e?.response?.data?.detail || 'Invite failed');
+      const detail = e?.response?.data?.detail;
+      // License-aware error formatting
+      if (detail && typeof detail === 'object' && detail.code === 'LICENSE_LIMIT_REACHED') {
+        toast.error(`Seat limit reached (${detail.current}/${detail.limit}). Upgrade your ${detail.plan || ''} plan to invite more.`);
+      } else {
+        toast.error(typeof detail === 'string' ? detail : 'Invite failed');
+      }
       throw e;
     }
   };
@@ -404,12 +418,26 @@ const MembersPage = () => {
           </p>
         </div>
         {canManage && (
-          <button onClick={() => setDrawer(true)}
-                  data-testid="members-invite-cta"
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-[var(--bp-radius-sm)] bg-[var(--bp-primary)] text-black text-[11px] font-body uppercase tracking-[0.22em] hover:brightness-110 transition-all">
-            <UserPlus size={13} strokeWidth={1.8} />
-            Invite member
-          </button>
+          <div className="flex items-center gap-3">
+            {license && (
+              <span data-testid="seats-chip"
+                    className={`px-3 py-1.5 rounded-full text-[10px] font-body uppercase tracking-[0.2em] border
+                      ${atSeatCap
+                        ? 'border-rose-500/30 text-rose-300 bg-rose-500/8'
+                        : 'border-[var(--bp-border)] text-[var(--bp-text-muted)]'}`}>
+                Seats {seatUsage}/{seatLimit == null ? '∞' : seatLimit}
+              </span>
+            )}
+            <button onClick={() => atSeatCap ? navigate('/settings/plan') : setDrawer(true)}
+                    data-testid="members-invite-cta"
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-[var(--bp-radius-sm)] text-[11px] font-body uppercase tracking-[0.22em] transition-all
+                      ${atSeatCap
+                        ? 'bg-[var(--bp-surface-2)] border border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] hover:border-[var(--bp-border-strong)]'
+                        : 'bg-[var(--bp-primary)] text-black hover:brightness-110'}`}>
+              <UserPlus size={13} strokeWidth={1.8} />
+              {atSeatCap ? 'Upgrade to invite' : 'Invite member'}
+            </button>
+          </div>
         )}
       </div>
 
