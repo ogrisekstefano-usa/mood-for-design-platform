@@ -57,9 +57,10 @@ const MaterialDetailPage = lazy(() => import('./pages/library/MaterialDetailPage
 // Client Portal (Phase R) — surface-isolated experience for role=client
 const ClientDashboardLayout = lazy(() => import('./components/client/ClientDashboardLayout'));
 const ClientOverviewPage = lazy(() => import('./pages/client/ClientOverviewPage'));
+const ClientMessagesPage = lazy(() => import('./pages/client/ClientMessagesPage'));
 import {
   ClientProjectPage, ClientMoodboardsPage, ClientTimelinePage,
-  ClientApprovalsPage, ClientFilesPage, ClientMessagesPage,
+  ClientApprovalsPage, ClientFilesPage,
 } from './pages/client/ClientStubPages';
 
 // Coming-soon placeholders for sidebar routes not yet implemented

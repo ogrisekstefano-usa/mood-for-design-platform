@@ -17,9 +17,11 @@ import React, { useEffect, useState } from 'react';
 import { Mail, CalendarClock, FileText, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import MessageReferentModal from './MessageReferentModal';
 
 const ClientHumanCard = ({ onBriefClick }) => {
   const [state, setState] = useState({ loading: true, assignment: null });
+  const [msgOpen, setMsgOpen] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -99,7 +101,7 @@ const ClientHumanCard = ({ onBriefClick }) => {
           <button
             type="button"
             data-testid="client-human-card-message"
-            onClick={() => toast.success(`Il tuo messaggio raggiungerà ${greetFirstName} a breve.`)}
+            onClick={() => setMsgOpen(true)}
             className="cp-cta-gold inline-flex items-center gap-2 px-5 py-2.5 text-[11px] uppercase tracking-[0.18em]"
           >
             <Mail size={13} strokeWidth={1.8} />
@@ -128,6 +130,7 @@ const ClientHumanCard = ({ onBriefClick }) => {
           )}
         </div>
       </div>
+      <MessageReferentModal open={msgOpen} onClose={() => setMsgOpen(false)} assignee={a} />
     </article>
   );
 };

@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import httpx
 
-from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile
+from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -111,6 +111,7 @@ api_router.include_router(client_portal.router, prefix="/client", tags=["client-
 api_router.include_router(human_assignment.router, prefix="/human-assignment", tags=["human-layer"])
 api_router.include_router(tenant_onboarding.router, prefix="/tenant-onboarding", tags=["tenant-onboarding"])
 api_router.include_router(profile.router, prefix="/profile", tags=["profile"])
+api_router.include_router(client_messages.router, prefix="/client-messages", tags=["client-messages"])
 
 
 @api_router.get("/health")

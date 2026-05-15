@@ -2,6 +2,143 @@
 
 ## Implementation Status
 
+### ✅ Phase S.2 Extension — Avatar Crop/Zoom + Emergent Branding Removed + Human Workflow Layer (DONE — 15 Feb 2026)
+
+This iteration ships three critical pieces in one cohesive sprint:
+
+**1. Avatar Crop / Zoom / Position Tool (bug fix + feature)**
+
+The reported "Please fill out this field" tooltip on the avatar slot
+was caused by the absence of a `<form noValidate>` wrapper around the
+modal inputs. Fixed by wrapping the whole modal body in
+`<form noValidate onSubmit={...}>` and switching the primary CTA to
+`type="submit"` — native HTML5 validation is now fully neutralised.
+
+New two-step pipeline:
+- **STEP A — pick** a local image (JPG/PNG/WebP/GIF ≤ 4 MB).
+- **STEP B — position** inside a circular frame:
+  - 280×280 preview canvas with click-and-drag panning
+  - zoom slider (1.0× → 4.0×) with live preview
+  - "Ripristina" resets pan + zoom
+  - "Conferma foto" exports a 360×360 PNG via `canvas.toBlob`
+    and uploads it through the existing `/api/profile/me/avatar`
+    endpoint
+  - "Annulla" returns to the unedited preview state
+- No external dependencies — pure canvas + lucide icons.
+
+**2. Emergent Branding Removed (Pro licensed build)**
+
+`/app/frontend/public/index.html`:
+- Removed: `<meta description="A product of emergent.sh">`, the
+  `<script src="https://assets.emergent.sh/scripts/emergent-main.js">`,
+  the fixed `<a id="emergent-badge">` floating pill.
+- Page `<title>` → `MOOD for DESIGN™`.
+- Page description → product-aligned copy.
+
+**3. Phase S.2 — Human Workflow Layer + Real Contact Initiation**
+
+DB (migration `023_client_messages.sql`):
+- `client_messages` — tenant + project + client + assignee + sender +
+  recipient + body + message_type (4 values) + visibility (2 values)
+  + status (4 values) + read_at + metadata.
+- `human_assignments` extended with `first_contact_suggested_at`,
+  `first_contact_sent_at`, `first_contact_status` (pending / suggested
+  / sent / overdue).
+- Reused existing `notifications` table (no schema change).
+
+Notification provider abstraction — `/app/backend/core/notification_service.py`:
+- `notify(...)` is the only public surface. Adding email later is a
+  one-file change (provider `db` is active; `email_future` documented).
+- `list_for_user`, `mark_read` complete the minimal API.
+
+Router `/api/client-messages/*`:
+- `GET /thread` — auto-scopes to caller's profile_id for clients;
+  admins/assignees pass `?client_id=` and ownership is enforced
+  against `human_assignments`. Clients are FILTERED at the query
+  level (`visibility='client_visible'`) — internal-only rows + AI
+  suggestions are physically unreachable.
+- `POST /send` — auto-routes `client_message` vs `assignee_reply`,
+  notifies the other side via `notification_service`, marks
+  `first_contact_sent_at` on the active assignment.
+- `POST /{id}/read` — recipient-only mark-read.
+- `GET /assignee/queue` — per-assignee (or per-tenant for admins)
+  queue with first-contact status + 24h overdue auto-computation +
+  latest-message preview.
+- `POST /{client_id}/suggest-opening` — Claude Sonnet 4.5 generates a
+  premium first message (no marketing copy, ≤ 3-4 sentences in IT,
+  no signature). Output stored as `ai_suggestion` / `internal_only`
+  / `draft`. Calls update `first_contact_suggested_at`.
+
+Frontend — Client Portal:
+- `MessageReferentModal.jsx` — opens from the Human Card "Scrivi al
+  tuo referente" CTA. Calm hospitality form: assignee header with
+  avatar + role + response time, textarea (4000 char), gold "Invia
+  messaggio" CTA. On success: `toast.success("Messaggio inviato.
+  Stefano ti risponderà appena possibile.")` — never "ticket created".
+- `ClientMessagesPage.jsx` — replaces the stub. Three-zone layout:
+  header card (assignee identity), thread (alternating messages with
+  Tu / Stefano labels + ISO timestamps + gold left-border on
+  assignee replies), composer (sticky bottom, minimal).
+- Empty state: atelier copy ("Qui troverai le comunicazioni principali
+  con il tuo referente."). Auto-scroll to bottom on new message.
+
+Frontend — Blueprint OS:
+- `AssignedClientsPanel.jsx` — renders on the Dashboard. Shows clients
+  assigned to the current user + status pill (Da contattare /
+  Suggestion pronta / Primo contatto inviato / In ritardo) + latest
+  message preview. "Suggerisci primo messaggio" calls the AI endpoint,
+  surfaces an inline editable draft with Scarta / Rigenera / Invia
+  primo messaggio actions. Auto-hides when queue is empty.
+
+End-to-end verification (15 Feb 2026) ✅
+- Client sends "Salve Stefano, vorrei aggiornamenti sulle prime
+  moodboard. Grazie!" → toast "Stefano ti risponderà appena possibile."
+- Thread re-renders with 2 client messages ordered by time.
+- Admin queue endpoint returns Marco Bianchi assignment with status
+  `suggested` and the AI-generated draft visible in the studio thread
+  (`message_type=ai_suggestion`, `visibility=internal_only`).
+- Client thread re-fetch: 2 messages, **zero AI suggestions leaked**.
+- Studio thread re-fetch: 3 rows (client message + AI suggestion).
+- 24h overdue calculation verified on >24h old `pending` assignments.
+- Dashboard shows "Human Follow-ups · I clienti a te assegnati ·
+  1 attivo" with the Marco row + status pill + message preview.
+- Emergent badge count = 0 on both surfaces.
+- Avatar modal: file < 256B rejected, valid PNG cropped + zoomed +
+  positioned + exported + uploaded successfully.
+- Zero React errors, zero unhandled rejections.
+
+**Files of reference (new in S.2 ext)**
+- `/app/supabase/migrations/023_client_messages.sql`
+- `/app/backend/core/notification_service.py`
+- `/app/backend/routers/client_messages.py`
+- `/app/frontend/src/components/client/MessageReferentModal.jsx`
+- `/app/frontend/src/pages/client/ClientMessagesPage.jsx`
+- `/app/frontend/src/components/dashboard/AssignedClientsPanel.jsx`
+- modified: `OwnerIntroductionModal.jsx` (form noValidate + crop tool),
+  `ClientHumanCard.jsx` (wire MessageReferentModal), `App.js`
+  (real ClientMessagesPage), `DashboardPage.jsx` (mount panel),
+  `index.html` (strip Emergent branding), `server.py`.
+
+**Out of scope (preserved for S.3)**
+- Email provider integration (SendGrid / Resend) — abstraction ready.
+- "Apri suggestion bozza" button when status='suggested' (the AI draft
+  is stored but currently only re-creatable via "Suggerisci" button).
+  Today, opening the existing draft requires a fresh AI call; ideally
+  the row should expose the persisted suggestion for inline edit.
+- Read receipts surfaced on the client side (server stores `read_at`,
+  UI does not render).
+- Studio side "Apri thread" full conversation view (the panel today
+  only handles the FIRST message workflow; client/studio further
+  back-and-forth happens via client's `/messages` page on the client
+  side, with assignee replies coming via the `assignee_reply`
+  message_type but no studio-side composer beyond the suggestion).
+
+
+
+
+
+## Implementation Status
+
 ### ✅ Phase S.2 — Human-First Tenant Model (DONE — 15 Feb 2026)
 
 Phase S.2 makes the **human visible everywhere** — every tenant owner

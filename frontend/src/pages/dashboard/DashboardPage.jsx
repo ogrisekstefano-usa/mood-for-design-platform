@@ -21,6 +21,7 @@ import * as Icons from 'lucide-react';
 import api from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
 import StudioOnboardingPanel from '../../components/dashboard/StudioOnboardingPanel';
+import AssignedClientsPanel from '../../components/dashboard/AssignedClientsPanel';
 
 // ── tiny utils ────────────────────────────────────────────────────────
 const fmtRelative = (iso) => {
@@ -583,6 +584,9 @@ const DashboardPage = () => {
 
       {/* Studio onboarding panel (S.1) — auto-hides when complete/dismissed */}
       <StudioOnboardingPanel />
+
+      {/* Assigned clients follow-up (S.2) — auto-hides when no assignments */}
+      <AssignedClientsPanel />
 
       {/* KPIs + right rail */}
       <div className="grid gap-6" style={{ gridTemplateColumns: 'minmax(0, 1fr) 280px 280px' }}>
