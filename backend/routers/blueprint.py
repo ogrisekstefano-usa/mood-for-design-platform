@@ -109,6 +109,10 @@ def get_modules(ctx: dict = Depends(get_tenant_context)):
     client = db()
     enabled_ids = _get_setting(client, ctx['tenant_id'], 'modules.enabled', None) or default_enabled_modules()
     enabled_set = set(enabled_ids)
+    # Core modules (default_enabled=True) are ALWAYS included even if they were
+    # added to the registry after the tenant first saved their module list —
+    # otherwise newly-shipped platform features stay invisible to existing tenants.
+    enabled_set.update(default_enabled_modules())
     user_perms = set(get_role_permissions(ctx.get('role')))
 
     modules = []
