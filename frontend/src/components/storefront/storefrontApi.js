@@ -50,7 +50,7 @@ export const storefrontApi = {
     axios.get(`${API}/admin/assets`, { headers: authHeaders() }).then((r) => r.data),
 
   signedUpload: (fileName) =>
-    axios.post(`${API}/admin/assets/signed-upload`, { file_name: fileName, bucket: 'tenant-assets' },
+    axios.post(`${API}/admin/assets/signed-upload`, { file_name: fileName, bucket: 'storefront-public' },
       { headers: authHeaders() }).then((r) => r.data),
 
   registerAsset: (body) =>

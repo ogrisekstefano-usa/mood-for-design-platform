@@ -142,6 +142,13 @@ const NavigationRenderer = ({ section, locale, updateContent, updateSettings, op
         .mfd-nav-editor__add:hover { background: rgba(201,163,110,0.12); }
         .mfd-nav-editor__logo-edit {
           position: relative; display: inline-block; cursor: pointer;
+          background-image:
+            linear-gradient(45deg, rgba(255,255,255,0.06) 25%, transparent 25%),
+            linear-gradient(-45deg, rgba(255,255,255,0.06) 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.06) 75%),
+            linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.06) 75%);
+          background-size: 12px 12px;
+          background-position: 0 0, 0 6px, 6px -6px, -6px 0;
         }
         .mfd-nav-editor__logo-edit::after {
           content: 'Replace'; position: absolute; inset: 0;

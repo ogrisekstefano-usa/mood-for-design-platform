@@ -32,7 +32,13 @@ router = APIRouter()
 
 _NOW = lambda: datetime.now(timezone.utc).isoformat()  # noqa: E731
 
-ALLOWED_BUCKETS = {'tenant-assets'}
+# `tenant-assets` is a private bucket → public URLs return 404 (Bucket not found).
+# We use a dedicated public bucket for Storefront Studio assets (logos, hero
+# images, project covers, footer media) so the public site can render them
+# directly via the CDN URL with no signed-URL renewal needed.
+PUBLIC_BUCKET = 'storefront-public'
+LEGACY_PRIVATE_BUCKET = 'tenant-assets'  # kept for backward compatibility on already-registered assets
+ALLOWED_BUCKETS = {PUBLIC_BUCKET, LEGACY_PRIVATE_BUCKET}
 
 
 # ─── Schemas ───────────────────────────────────────────────────────────────
@@ -326,11 +332,16 @@ def list_assets(limit: int = Query(60, ge=1, le=200),
 @router.post("/admin/assets/signed-upload")
 def signed_upload(body: Dict[str, Any] = Body(...),
                   ctx: dict = Depends(require_permission(P_STORAGE_WRITE))):
-    """Generate a signed URL for direct upload to Supabase Storage."""
+    """Generate a signed URL for direct upload to Supabase Storage.
+    Always writes to the PUBLIC bucket so the resulting URL is reachable
+    by the public site without signed-URL renewal."""
     file_name = body.get('file_name') or f"{uuid.uuid4()}.bin"
-    bucket = body.get('bucket') or 'tenant-assets'
+    bucket = body.get('bucket') or PUBLIC_BUCKET
     if bucket not in ALLOWED_BUCKETS:
         raise HTTPException(400, f"Bucket not allowed: {bucket}")
+    # Force the public bucket for new uploads. Legacy private bucket only kept
+    # as fallback to read pre-existing assets, but no new writes go there.
+    bucket = PUBLIC_BUCKET
     safe_path = f"{ctx['tenant_id']}/storefront/{uuid.uuid4()}-{file_name}"
     client = db()
     try:
@@ -356,19 +367,25 @@ def register_asset(body: AssetRegister, ctx: dict = Depends(require_permission(P
             raise HTTPException(403, "Path outside tenant scope")
     if not raw_path.startswith(tenant_prefix):
         raw_path = tenant_prefix + raw_path
-    # Public URL — if not provided, try to derive
+    # Force public bucket for new asset registrations (signed-upload also forces it)
+    bucket = body.storage_bucket if body.storage_bucket in ALLOWED_BUCKETS else PUBLIC_BUCKET
+    # Always compute the public URL deterministically — never store an empty string.
+    client = db()
     public_url = body.public_url
     if not public_url:
-        client = db()
         try:
-            public_url = client.storage.from_(body.storage_bucket).get_public_url(raw_path)
+            res = client.storage.from_(bucket).get_public_url(raw_path)
+            # supabase-py may return a string or dict depending on version
+            public_url = res if isinstance(res, str) else (res.get('publicUrl') or res.get('public_url') or '')
         except Exception:
             public_url = ''
+    if not public_url:
+        raise HTTPException(500, "Could not compute public URL for asset")
     new = {
         'id': str(uuid.uuid4()),
         'tenant_id': ctx['tenant_id'],
         'source': 'upload',
-        'storage_bucket': body.storage_bucket,
+        'storage_bucket': bucket,
         'storage_path': raw_path,
         'public_url': public_url,
         'alt_text': body.alt_text,
@@ -380,7 +397,6 @@ def register_asset(body: AssetRegister, ctx: dict = Depends(require_permission(P
         'created_at': _NOW(),
         'updated_at': _NOW(),
     }
-    client = db()
     ins = client.table('cms_assets').insert(new).execute()
     out = ins.data[0] if ins.data else new
     out.pop('_id', None)
