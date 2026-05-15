@@ -76,6 +76,25 @@ app.include_router(api_router)
 from routers.corporate import router as corporate_router
 app.include_router(corporate_router, prefix="/api")
 
+# Include media library + journal + CMS admin + AI editorial
+from routers.media import router as media_router
+from routers.journal import router as journal_router
+from routers.cms_admin import router as cms_admin_router
+from routers.ai_editorial import router as ai_editorial_router
+app.include_router(media_router,        prefix="/api")
+app.include_router(journal_router,      prefix="/api")
+app.include_router(cms_admin_router,    prefix="/api")
+app.include_router(ai_editorial_router, prefix="/api")
+
+# Ensure Supabase Storage buckets exist on startup (idempotent)
+from services.storage import ensure_buckets
+@app.on_event("startup")
+async def _ensure_buckets():
+    try:
+        await ensure_buckets()
+    except Exception as e:
+        logging.getLogger(__name__).warning("ensure_buckets failed at startup: %s", e)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,

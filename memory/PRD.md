@@ -1,136 +1,114 @@
-# MOOD for DESIGN — Corporate Website PRD
+# MOOD for DESIGN — Platform PRD
 
 ## Project Overview
-Corporate website for www.moodfordesign.com built as a tenant inside the Blueprint ecosystem.
-**ONE platform → MULTIPLE frontends → ONE database** architecture.
+Multi-tenant editorial SaaS for interior design, architecture firms, showrooms and luxury retailers.
+**ONE platform → MULTIPLE frontends → ONE database** architecture, shared Blueprint CMS engine.
 
-**Tenant slug:** `mood-corporate`
-**Tenant UUID:** `51f9ab4d-1aaf-5b8b-b7a9-8a4c8f942a50` (deterministic UUIDv5)
+**Live tenant:** `mood-corporate` (uuid `51f9ab4d-1aaf-5b8b-b7a9-8a4c8f942a50`)
 **Domain:** `www.moodfordesign.com` (mapped via `tenant_domains`)
-**Stack:** React + FastAPI + Supabase PostgreSQL (existing Blueprint schema)
+**Stack:** React + FastAPI + Supabase PostgreSQL + Supabase Storage + Anthropic Claude (AI editorial)
 
 ---
 
-## Architecture Decisions
-
-### ONE Platform, ONE Database
-- `www.moodfordesign.com` → CorporateApp (mood-corporate tenant)
-- `blueprint.moodfordesign.com` → Blueprint SaaS (same backend, same DB)
-- `*.moodfordesign.com` → future tenant storefronts (same DB)
-- All share: same backend, **same Blueprint CMS engine** (`cms_pages` + `cms_sections`), same i18n, same auth layer
-- NO duplicate CMS, NO duplicate admin
-
-### Database — Supabase PostgreSQL (LIVE)
-- Connection: Transaction Pooler (port 6543) for runtime, Session Pooler (port 5432) for DDL/migrations
-- `statement_cache_size=0` REQUIRED for PgBouncer transaction mode
-- DDL is owned by Blueprint migrations — corporate routes only read/write rows
-- Multi-tenant isolation via `tenant_id` FK on every table
-- PgEnum types used via `create_type=False` (tenant_status, cms_page_status, domain_type)
-
-### Tables in Use (existing Blueprint schema)
-- `tenants` (27 cols, uuid id, enum status, JSONB enabled_modules, theme cols)
-- `tenant_domains` (host → tenant_id resolver source)
-- `tenant_memberships`, `users_profile` (auth/RBAC, ready for P1)
-- `cms_pages` (page_key, locale_meta JSONB, page_content JSONB, status enum)
-- `cms_sections` (section_type, sort_order, visible, locale_content JSONB, settings JSONB, asset_refs uuid[])
-- `cms_assets`, `media_library` (asset system, ready for journal/storefront)
-- `magazine_posts`, `magazine_paragraphs` (journal engine, P1)
-
-### Tables Added (corporate-only auxiliary, NOT part of Blueprint)
-- `contact_submissions` (form persistence per tenant)
-- `newsletter_subscribers` (unique by tenant_id+email, UPSERT-safe)
-- `studio_registrations` (onboarding intake before tenant provisioning)
-
-### Section Registry (15 types, shared across tenants)
-`editorial_hero`, `split_story`, `cinematic_quote`, `logos_wall`, `feature_narrative`,
-`metrics_strip`, `pricing_cards`, `cta_section`, `journal_grid`, `faq_accordion`,
-`comparison_table`, `timeline`, `template_showcase`, `case_study_preview`, `navigation`
-
-### Multilingual
-Supported locales: `it`, `en-us`, `en-uk`, `fr`, `de`, `es`
-- Backend resolves locale content before sending (chain: requested → en-us → first available)
-- Each section row stores `locale_content` as `{locale: {...}}` JSONB
-- Navigation persisted as a dedicated `navigation` section type on the home page
-
-### Caching
-- In-process TTL cache (`/app/backend/cache.py`), default 60s for pages, 120s for nav/list
-- Swap to Redis later — public interface unchanged (`get_or_set(key, loader, ttl)`)
-- `POST /api/corporate/cache/invalidate` flushes by prefix or all
-
-### Draft/Published Architecture (ready)
-- `cms_pages.status` enum: `draft | published | scheduled | archived`
-- `cms_pages.scheduled_publish_at`, `cms_pages.published_at`
-- Repository filters `status = 'published'` for public reads
-- Future Blueprint admin will write `draft_*` and publish later
+## Architecture
+- ONE Supabase project (16 + custom migrations applied)
+- Tenant isolation: `tenant_id` FK on every business table
+- Locale chain: requested → `en-us` → first available
+- Cache: in-process TTL (Redis-ready)
+- Draft/Published architecture on `cms_pages` + `journal_articles` (`draft_json`, `published_json`, `content_revisions`)
+- AI service is **provider-abstracted** (`services/ai_editorial.py`) — swap provider via `.env`
 
 ---
 
-## What's Been Implemented
+## Sessions completed
 
-### P0 — Supabase Persistence (May 2026) ✅ DONE
-- Real Supabase project connected (eu-west-1, project ref `ytctctmvgdkmyjrbgmqs`)
-- 5 env vars in `/app/backend/.env`: `DATABASE_URL`, `SESSION_POOLER_URL`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
-- Async SQLAlchemy engine via `asyncpg` with PgBouncer-safe config
-- Models mapped to existing Blueprint tables (no `create_all`, no duplication)
-- Tenant resolver (`tenant_resolver.py`) by host header + slug fallback
-- Idempotent seed migration (`db/seed_migration.py`) — UUIDv5 deterministic keys
-- Repository pattern (`db/repository.py`) — zero `seed_data` runtime dependency
-- 8 corporate pages + 26 content sections + 1 navigation row in `cms_sections`
-- Form persistence: contact + newsletter (UPSERT) + studio registrations
-- 15-type section registry endpoint
-- In-process content cache with invalidation API
-- 29/29 backend tests pass (`/app/backend/tests/test_corporate.py`)
+### Session 0 (P0): Corporate CMS Persistence (May 2026) ✅
+- Backend connected to real Supabase via Transaction Pooler
+- Tenant resolver + cache + repository pattern
+- 8 corporate `cms_pages` + 26 `cms_sections` + navigation row seeded
+- Forms persisted (`contact_submissions`, `newsletter_subscribers`, `studio_registrations`)
+- Zero runtime dependency on `seed_data.py`
 
-### Backend (FastAPI) endpoints
-- `GET /api/corporate/pages/{slug}?locale=` — DB-driven page renderer
-- `GET /api/corporate/pages` — sitemap (slug + published)
-- `GET /api/corporate/navigation?locale=` — multilingual nav (main + cta + footer)
-- `GET /api/corporate/locales` — 6 locales
-- `GET /api/corporate/tenant` — tenant config from DB
-- `GET /api/corporate/sections/registry` — 15 section types
-- `POST /api/corporate/contact` — persists in `contact_submissions`
-- `POST /api/corporate/newsletter` — persists in `newsletter_subscribers` (idempotent)
-- `POST /api/corporate/studio/register` — persists in `studio_registrations`
-- `POST /api/corporate/cache/invalidate` — cache flush
+### Session I: Journal/Media Engine + Draft/Published + AI Foundation (May 2026) ✅
+**Migration 019** registered in `schema_migrations`.
 
-### Frontend (React)
-- CorporateApp tenant-aware routing wrapper, sticky glassmorphism nav, dark editorial footer
-- LocaleSwitcher, SectionRenderer dispatcher, LocaleContext
-- 8 pages CMS-driven: Home, Platform, Blueprint, Pricing, About, Journal, Contact, Start Studio
-- Brand: Playfair Display (heading), Montserrat (body), Teal `#00C9B3`
+**New tables:**
+- `journal_articles` (status + draft_json/published_json + AI metadata + hero asset + soft delete + audit)
+- `article_localizations` (per-locale slug/title/excerpt/SEO + UNIQUE (locale, slug))
+- `journal_article_blocks` (section-based builder: hero_cinematic, paragraph, gallery_masonry, quote, video, cta, designer_bio, product_hotspot_image, related_articles, divider, spacer, two_columns, full_image)
+- `article_hotspots` (shoppable/storytelling hotspots on images)
+- `journal_categories` + `article_category_map`
+- `journal_tags` + `article_tag_map` (groups: material/style/designer/country/year/other)
+- `content_revisions` (generic audit trail: autosave/publish/revert/archive)
+- `ai_assist_logs` (provider/model/tokens/latency/cost observability)
+
+**Extended tables:**
+- `cms_assets` — added: `caption`, `photographer`, `copyright`, `dominant_color`, `palette`, `aspect_ratio`, `mime_type`, `file_size_bytes`, `hotspots`, `variants`, `folder_path`, `locale`, `deleted_at`, audit
+- `cms_pages` — added: `draft_json`, `published_json`, `approval_stage`, `deleted_at`
+- `cms_sections` — added: `deleted_at`
+
+**Enums created:** `journal_article_type`, `journal_article_status`, `revision_action`, `ai_assist_action`
+**Triggers:** `mood_touch_updated_at()` on 7 tables
+
+**Supabase Storage buckets created (public read, 50MB limit):**
+- `cms-assets` — CMS images for corporate + tenant sites
+- `journal-media` — Journal articles media
+- `tenant-branding` — Logos / favicons / brand kits
+
+**Services layer (provider-abstracted, tenant-aware):**
+- `services/storage.py` — Supabase Storage REST client (ensure_buckets, upload, public URL, delete)
+- `services/media_library.py` — upload + Pillow metadata extraction + hotspot CRUD + soft delete
+- `services/journal_service.py` — articles CRUD + blocks + draft/publish/revert + revisions
+- `services/cms_writer.py` — page autosave/publish/revert + section reorder/patch/delete
+- `services/ai_editorial.py` — Claude Sonnet 4.5 (Emergent LLM Key) with full observability logging
+
+**New API endpoints (35 routes):**
+- Media (5): upload, list, patch, delete, hotspots
+- Journal public (4): articles list, article detail (slug+locale), categories, tags
+- Journal admin (9): article CRUD, block add/reorder, draft autosave, publish, revert, revisions, category+tag upsert
+- CMS admin (10): list pages, get page, autosave draft, publish, revert, section CRUD/patch/reorder/delete, revisions
+- AI editorial (8): topics, outline, seo, excerpt, copy, translate, categorize, photo-direction
+
+**Tests:** 30/30 end-to-end smoke at `/app/backend/tests/test_session_i_e2e.py` — all green.
 
 ---
 
 ## Prioritized Backlog
 
 ### P1 — Next session
-- [ ] CMS Bindings: Blueprint admin must edit `mood-corporate` cms_pages/cms_sections
-- [ ] Multilingual URL routing on frontend (`/it/`, `/fr/` etc.) reading entirely from DB
-- [ ] Brand / Licensing system (commercial onboarding-ready, before Stripe)
-- [ ] Auth + Supabase memberships wiring for studio registration
+- [ ] **Blueprint admin UI** — page/section/article editor bindings (admin lives in separate Blueprint codebase; consumes our new APIs)
+- [ ] **Auth + RBAC**: wire `_auth.py` placeholder to Supabase Auth + `tenant_memberships` (replace `require_admin_tenant` with real JWT)
+- [ ] **Multilingual URL routing on frontend** (`/it/`, `/fr/` etc. reading entirely from DB)
+- [ ] **Brand / Licensing system** — commercial onboarding-ready, before Stripe
+- [ ] **Replace hardcoded corporate image URLs** with `cms_assets` rows + `cms_sections.asset_refs`
+- [ ] **Public journal page** (masonry layout, filters chips, featured article) at `/journal`
 
 ### P2 — Backlog
-- [ ] Journal/Editorial engine: rich articles with hero, gallery, hotspots JSONB, AI metadata (use `magazine_posts` + `magazine_paragraphs` from Blueprint)
-- [ ] Tenant self-registration → auto provisioning of `{slug}.blueprint.moodfordesign.com`
-- [ ] Stripe Subscriptions (pricing → checkout → webhook)
-- [ ] Dynamic SEO + Schema.org per page+locale
-- [ ] Email service (Resend / SendGrid) for contact + newsletter
-- [ ] Redis cache (drop-in replacement for in-process TTL)
-- [ ] Admin-gated `/cache/invalidate`
+- [ ] **Email service** (Resend / SendGrid) for contact + newsletter (currently persist only, NO email dispatch)
+- [ ] **Stripe Subscriptions** + webhook → pricing → checkout
+- [ ] **Tenant self-registration** → auto-provisioning `{slug}.blueprint.moodfordesign.com`
+- [ ] **AI image generation** via Nano Banana / GPT Image 1 (`ai_assist_logs.action = 'image_prompt'` already prepared)
+- [ ] **Dynamic SEO + Schema.org** per page+locale
+- [ ] **Redis** drop-in replacement for in-process TTL
+- [ ] **Image optimization pipeline**: webp/avif variants, blur placeholders, focal-point crops
+- [ ] **CDN** in front of Supabase Storage
+- [ ] **Audit log integration** with `content_revisions` UI (diff view, restore)
 
-### Tech debt / hardening
-- [ ] EmailStr validation on Pydantic forms
+### Tech debt
+- [ ] Pydantic `EmailStr` validation on forms
 - [ ] Studio slug uniqueness suffix (collision-safe)
 - [ ] Env-driven cache TTL
-- [ ] Audit log integration for form submissions
+- [ ] `ADMIN_API_KEY` set in prod (currently no-op in dev)
+- [ ] Rename Pydantic field `register` in `TranslateRequest` (shadows BaseModel attr)
 
 ---
 
 ## Test Status
 - Iteration 1 (mocked): 100% (20/20)
-- Iteration 2 (Supabase): 100% (29/29) — May 2026
+- Iteration 2 (Supabase migration): 100% (29/29)
+- Iteration 3 (Session I — Journal/Media/AI): 30/30 E2E green
 
-## Mocked / Non-prod items
-- Contact form submissions persist to DB but NO email is dispatched (P2)
-- Newsletter subscribers persist to DB but NO email list integration (P2)
-- Studio registration persists intake but NO tenant auto-provisioning yet (P2)
+## Mocked / Non-prod
+- Contact form & newsletter persist to DB but NO email sent
+- Studio registration persists intake but NO tenant auto-provisioning
+- Admin routes use placeholder header auth (`X-Admin-Key` + `X-Tenant-Slug`) — to be replaced by Supabase JWT
