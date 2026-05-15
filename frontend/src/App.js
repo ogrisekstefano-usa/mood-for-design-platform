@@ -128,6 +128,19 @@ const SuperAdminRoute = ({ children }) => {
   return isSuperAdmin ? children : <Navigate to="/dashboard" replace />;
 };
 
+// Studio config routes (storefront editor, branding, domains, forms, plan, etc.)
+// are restricted to tenant_admin / super_admin. Other roles bounce back to
+// /dashboard before the page shell mounts — no half-loaded error states.
+const StudioAdminRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return <Loading />;
+  if (!user) return <Navigate to="/auth/login" replace />;
+  const role = (user.role || '').toLowerCase();
+  if (role === 'tenant_admin' || role === 'super_admin') return children;
+  if (role === 'client') return <Navigate to="/client" replace />;
+  return <Navigate to="/dashboard" replace />;
+};
+
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <Loading />;
@@ -198,7 +211,7 @@ function App() {
                   <Route path="/settings/brand" element={<BrandStudioPage />} />
                   <Route path="/settings/domains" element={<DomainsPage />} />
                   <Route path="/settings/forms" element={<FormBuilderPage />} />
-                  <Route path="/settings/storefront" element={<StorefrontPage />} />
+                  <Route path="/settings/storefront" element={<StudioAdminRoute><StorefrontPage /></StudioAdminRoute>} />
                   <Route path="/settings/plan" element={<PlanPage />} />
                   <Route path="/settings/team" element={<MembersPage />} />
                   <Route path="/settings/members" element={<MembersPage />} />

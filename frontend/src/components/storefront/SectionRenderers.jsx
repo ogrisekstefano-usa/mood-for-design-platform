@@ -1082,6 +1082,33 @@ const BrandLogos = ({ section, locale, draft, updateContent, updateSettings, ope
 // Cinematic editorial introduction of the studio's real reference.
 // HUMAN-FIRST RULE: advisors come from the live /team-leaders endpoint —
 // no fake users, no stock avatars. Editor exposes editorial copy + presentation.
+const LeaderAvatar = ({ leader, zoom = 100, className = '', testid }) => {
+  const [broken, setBroken] = useState(false);
+  const initials = (leader.display_name || '?')
+    .split(/\s+/).filter(Boolean).slice(0, 2)
+    .map((s) => s[0]).join('').toUpperCase() || '·';
+  if (!leader.avatar_url || broken) {
+    return (
+      <div
+        className={`flex items-center justify-center bg-gradient-to-br from-[#E8DFCF] to-[#C9A36E]/70 text-[#1E1E22] ${className}`}
+        data-testid={testid}
+      >
+        <span className="font-heading text-[3.5rem] tracking-[0.05em] opacity-80">{initials}</span>
+      </div>
+    );
+  }
+  return (
+    <img
+      src={leader.avatar_url}
+      alt={leader.display_name}
+      onError={() => setBroken(true)}
+      style={{ transform: `scale(${zoom / 100})`, transformOrigin: 'center 30%' }}
+      className={`object-cover transition-transform duration-700 ${className}`}
+      data-testid={testid}
+    />
+  );
+};
+
 const TeamIdentityCard = ({ section, locale, draft, updateContent, updateSettings, tenantSlug }) => {
   const s = section.settings || {};
   const variant     = s.variant || 'warm';                       // 'warm' | 'dark'
@@ -1181,12 +1208,11 @@ const TeamIdentityCard = ({ section, locale, draft, updateContent, updateSetting
             <div className={`grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14 items-center ${portraitLeft ? '' : 'md:[direction:rtl]'}`}>
               <figure className={`md:col-span-5 ${portraitLeft ? '' : 'md:[direction:ltr]'}`}>
                 <div className="aspect-[4/5] overflow-hidden bg-black/10 relative">
-                  <img
-                    src={leader.avatar_url}
-                    alt={leader.display_name}
-                    style={{ transform: `scale(${portraitZoom / 100})`, transformOrigin: 'center 30%' }}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700"
-                    data-testid={`team-portrait-${section.id}`}
+                  <LeaderAvatar
+                    leader={leader}
+                    zoom={portraitZoom}
+                    className="absolute inset-0 w-full h-full"
+                    testid={`team-portrait-${section.id}`}
                   />
                 </div>
                 <figcaption className="mt-4">
@@ -1292,12 +1318,7 @@ const TeamIdentityCard = ({ section, locale, draft, updateContent, updateSetting
               {visibleLeaders.map((l) => (
                 <article key={l.id} className="text-center" data-testid={`team-leader-${l.id}`}>
                   <div className="aspect-square overflow-hidden bg-black/10 max-w-[280px] mx-auto mb-4">
-                    <img
-                      src={l.avatar_url}
-                      alt={l.display_name}
-                      style={{ transform: `scale(${portraitZoom / 100})`, transformOrigin: 'center 30%' }}
-                      className="w-full h-full object-cover"
-                    />
+                    <LeaderAvatar leader={l} zoom={portraitZoom} className="w-full h-full" testid={`team-leader-portrait-${l.id}`} />
                   </div>
                   <p className="font-heading text-xl">{l.display_name}</p>
                   <p className={`text-[10px] font-body uppercase tracking-[0.25em] mt-1 mb-3 ${eyebrowColor}`}>{l.role_label}</p>

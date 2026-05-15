@@ -1,5 +1,115 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
+
+### ✅ Phase U — Inline CMS Editors (Visual-First, Framer-like) (DONE — 15 Feb 2026)
+
+The 4 new homepage blocks (`stats_band`, `magazine_grid`, `brand_logos`,
+`team_identity_card`) shipped in Phase T were renderable but editable only via
+raw JSON. Phase U makes them feel like a luxury editorial publishing tool:
+inline values, contextual hover toolbars, live preview, drag-style reorder,
+Framer/Webflow-grade direct manipulation — never an admin form panel.
+
+**Editor surface — `[data-surface="os"]` Storefront Studio**
+
+- All 4 new renderers live in `/app/frontend/src/components/storefront/SectionRenderers.jsx`
+  next to the existing Phase B renderers (`StoreHero`, `DualCta`, `ValueProps`,
+  `ProjectsPreview`, `Newsletter`). Registered in the `RENDERERS` map so the
+  Studio resolves them automatically when a section is added.
+- Shared primitives: `BlockToolbar` (floating glassmorphism pill, top-center,
+  hover-revealed) · `ToolbarSegment` · `ToolbarChip` — calm dark, no enterprise
+  CRUD feeling.
+- `StorefrontStudio.jsx` patched to pass `tenantSlug` down to `renderSection`
+  so `team_identity_card` can resolve real advisor data from
+  `/api/storefront/public/{slug}/team-leaders`.
+
+**1. `stats_band` editor**
+- Hover toolbar: `Accent (gold | teal | mono)` · `Align (left | center)`.
+- Each stat: click value → inline edit (4xl Playfair tabular-nums);
+  click label → inline edit (uppercase tracking).
+- Hover row → chevron-left / chevron-right reorder + X remove.
+- `Add stat` dashed tile with `+` icon.
+
+**2. `magazine_grid` editor**
+- Hover toolbar: `Density (tight | comfortable | spacious)` ·
+  `Featured highlight (on | off)`.
+- Cards: cover → "Replace cover" overlay calls AssetPicker; category, title,
+  slug all inline-editable; star pin marks featured; reorder + remove on hover.
+- Section header: kicker + headline + CTA all inline; CTA renders as a pill
+  preview (the actual button on storefront).
+- `Add article` tile (max 9).
+
+**3. `brand_logos` editor**
+- Hover toolbar: `Theme (auto | dark | light)` · `Grayscale (on | off)` ·
+  `Density (tight | comfortable | spacious)`.
+- Logo cells: hover shows tiny floating toolbar (upload image, star featured,
+  reorder, remove) + a "link URL" pill below for href. Wordmark text is
+  inline-editable when no image is set.
+- Theme=dark renders the band on `#0F0F12`; theme=light on `#F7F4EE`.
+
+**4. `team_identity_card` editor — MOST CRITICAL (Human-First rule)**
+- Hover toolbar: `Variant (warm | dark)` · `Portrait (Left | Right)` ·
+  `Show (1 leader | 2 leaders)` · `Signature (on | off)` ·
+  `Zoom (80–140%)` slider.
+- Variant=warm renders ivory `#F8F4EC` + dark text; variant=dark renders
+  `#0F0F12` + ivory text.
+- Inline-editable: eyebrow, headline, subheadline, CTA label, CTA href.
+- Visible advisor data is fetched from the live public endpoint — **no fake
+  users, no stock avatars**. The block falls back gracefully to a calm
+  "No referent introduced" message when the tenant hasn't completed Phase S.2.
+- `LeaderAvatar` component: graceful fallback chip with the advisor's
+  initials (Playfair) and a warm gold gradient when `avatar_url` is missing
+  or fails to load — never a broken image frame.
+- Bottom badge: `"N real reference(s) from this studio · public-safe"` to
+  reassure the editor that no fabrication is happening.
+
+**Route guard — `StudioAdminRoute`**
+- New guard in `App.js` restricts `/settings/storefront` to
+  `tenant_admin | super_admin`. Designers, editors, and other roles are
+  redirected BEFORE the shell mounts → no half-loaded "Failed to load
+  storefront pages" error state.
+
+**Preserved invariants (zero regression)**
+- CMS architecture, revision engine, publish flow, storefront rendering,
+  block registry logic — all unchanged. Phase U is editor-UX-only.
+- Existing autosave debounce (700ms) + draft delta + diff drawer + revisions
+  pipeline work transparently for the new editors.
+- Public storefront (`/`) still renders via legacy HomePage components with
+  CMS overrides resolved — no editor chrome leaks.
+- Strict surface isolation respected: all UI under `[data-surface="os"]`.
+
+**Tested end-to-end (15 Feb 2026)** ✅
+- 150 Phase U data-testids verified by testing_agent_v3_fork (iteration 43).
+- 4 hover toolbars discoverable on each new section.
+- Variant warm↔dark flip verified visually.
+- Real advisor "Stefano Ogrisek · DIREZIONE STUDIO · LEAD DESIGNER" rendered
+  in the team_identity_card preview from the live API.
+- Autosave pill cycles idle → saving → saved within ~2.5s after an inline edit.
+- RBAC: `client@` redirected to `/client` (no studio access);
+  `designer@` redirected to `/dashboard` (post-fix); cross-tenant `studio2@`
+  shows its own home with no Demo Studio leak.
+- Public `/` rendering: 0 editor toolbars leaking, 850/Stefano/legacy stats
+  + magazine + brands all render correctly anonymously.
+
+**Files of reference (new/modified in Phase U)**
+- `/app/frontend/src/components/storefront/SectionRenderers.jsx`
+  (+ ~800 LOC: StatsBand, MagazineGrid, BrandLogos, TeamIdentityCard,
+  LeaderAvatar, BlockToolbar primitives)
+- `/app/frontend/src/pages/settings/StorefrontStudio.jsx` (passes `tenantSlug`)
+- `/app/frontend/src/App.js` (`StudioAdminRoute` guard for
+  `/settings/storefront`)
+
+**Out of scope (kept for Phase U.2 / next pass)**
+- True drag-and-drop ordering (current chevron-based reorder is functional
+  and accessible; HTML5 DnD can be layered later via `react-dnd`).
+- Picking journal articles from an actual `magazine_articles` table (today
+  the magazine grid is fully self-contained — articles are inline items).
+- Brand logos library / asset registry (logos are uploaded via the existing
+  AssetPicker; future iteration can introduce a "brand registry" entity).
+- Inline editor file-size refactor: `SectionRenderers.jsx` is now ~1430 LOC.
+  Recommended split into `components/storefront/renderers/` per-block files
+  when the next phase touches this surface.
+
+
 ## Implementation Status
 
 ### ✅ Phase S.2 Extension — Avatar Crop/Zoom + Emergent Branding Removed + Human Workflow Layer (DONE — 15 Feb 2026)
