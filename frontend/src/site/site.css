@@ -803,3 +803,72 @@
   font-family: var(--site-sans); font-size: 13px; line-height: 1.5;
   color: var(--site-ink-3); margin: 0.2rem 0 0 0;
 }
+
+/* ════════════════════════════════════════════════════════════════
+   PROFESSIONAL GATEWAY (Phase H.4)
+   ════════════════════════════════════════════════════════════════ */
+.mfd-pro-hero {
+  position: relative; min-height: 92vh; width: 100%;
+  display: flex; align-items: flex-end; overflow: hidden; isolation: isolate;
+  background: radial-gradient(ellipse at 50% 30%, #2A2522 0%, #15120F 50%, #0A0907 100%);
+}
+.mfd-pro-hero__media { position: absolute; inset: 0; z-index: -1; }
+.mfd-pro-hero__media img { width: 100%; height: 100%; object-fit: cover; opacity: 0.55; }
+.mfd-pro-hero__veil {
+  position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(11,9,7,0.30) 0%, rgba(11,9,7,0.10) 50%, rgba(11,9,7,0.85) 100%);
+}
+.mfd-pro-hero__inner {
+  width: 100%;
+  padding: clamp(7rem, 12vw, 12rem) clamp(1.25rem, 4vw, 3.5rem) clamp(3rem, 6vw, 5rem);
+  display: grid; gap: clamp(1.25rem, 2vw, 2rem); max-width: 1480px; margin: 0 auto;
+}
+
+/* 3 CTA grid */
+.mfd-pro-ctas {
+  display: grid; grid-template-columns: 1fr; gap: 1px;
+  background: var(--site-line);
+  border-top: 1px solid var(--site-line);
+  border-bottom: 1px solid var(--site-line);
+}
+@media (min-width: 880px) { .mfd-pro-ctas { grid-template-columns: 1fr 1fr 1fr; } }
+.mfd-pro-cta {
+  position: relative; padding: clamp(2rem, 3.5vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
+  background: #0F0D0B; display: grid; gap: 1.1rem; align-content: space-between;
+  text-decoration: none; color: inherit; min-height: 280px;
+  transition: background-color 480ms ease;
+}
+.mfd-pro-cta:hover { background: #14110E; }
+.mfd-pro-cta__kicker {
+  font-family: var(--site-sans); font-size: 11px; letter-spacing: 0.32em;
+  text-transform: uppercase; color: var(--site-accent);
+}
+.mfd-pro-cta__title {
+  font-family: var(--site-serif); font-weight: 400; font-size: clamp(1.35rem, 2vw, 1.85rem);
+  line-height: 1.1; color: var(--site-ink); letter-spacing: -0.005em;
+}
+.mfd-pro-cta__body {
+  font-family: var(--site-sans); font-size: 0.92rem; line-height: 1.6;
+  color: var(--site-ink-2); font-weight: 300; max-width: 36ch;
+}
+.mfd-pro-cta__action {
+  font-family: var(--site-sans); font-size: 11.5px; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--site-ivory); padding-top: 1rem;
+  border-top: 1px solid var(--site-line);
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  transition: color 320ms ease;
+}
+.mfd-pro-cta:hover .mfd-pro-cta__action { color: var(--site-accent); }
+
+/* Settings/languages admin grid (Blueprint app) */
+.mfd-langs-table { width: 100%; border-collapse: collapse; }
+.mfd-langs-table th, .mfd-langs-table td {
+  padding: 0.85rem 0.75rem; border-bottom: 1px solid rgba(0,0,0,0.08);
+  text-align: left; font-size: 13px;
+}
+.mfd-langs-table th {
+  font-family: var(--site-sans); font-size: 11px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: #6B6760;
+}
+.mfd-langs-row[data-rtl="true"] td:first-child { padding-left: 1.2rem; border-left: 2px solid #C9A36E; }

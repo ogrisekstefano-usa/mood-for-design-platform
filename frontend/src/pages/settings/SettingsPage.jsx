@@ -59,9 +59,9 @@ const SettingsPage = () => {
           title={t('settings.domains.title', null, 'Domains')}
           description={t('settings.domains.sub', null, 'Connect custom domains and subdomains to your workspace.')}
         />
-        <SettingsTile testid="tile-locales" icon={Languages} to="/settings/locales"
-          title={t('settings.locale')}
-          description={t('settings.locales.sub', null, 'Manage default language and active locales for your studio.')}
+        <SettingsTile testid="tile-locales" icon={Languages} to="/settings/languages"
+          title={t('settings.languages.title', null, 'Languages')}
+          description={t('settings.languages.sub', null, 'Global Language Registry — public site, Blueprint, fallback, RTL, AI translation.')}
         />
         <SettingsTile testid="tile-team" icon={Users} to="/settings/team"
           title={t('settings.team')}

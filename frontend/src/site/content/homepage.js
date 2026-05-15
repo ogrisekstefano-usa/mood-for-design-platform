@@ -111,7 +111,7 @@ export const homepageContent = {
         de: 'PROFI-ZUGANG',
         es: 'ACCESO PROFESIONAL',
       },
-      href: '/onboarding/pro',
+      href: '/professionals',
       image: 'https://images.unsplash.com/photo-1615875221691-c63d6a4a83a7?auto=format&fit=crop&w=1400&q=85',
       variant: 'dark',
     },

@@ -8,30 +8,26 @@ import React, { createContext, useContext, useEffect, useState, useCallback, use
 import axios from 'axios';
 import api from '../lib/api';
 import { useAuth } from './AuthContext';
+import { blueprintLanguages, getDefaultLocale, resolveLanguage } from '../site/content/languages';
 
 const BlueprintContext = createContext(null);
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 const LOCALE_KEY = 'mfd_locale';
 const IMPERSONATE_KEY = 'mfd_impersonate_tenant';
-const DEFAULT_LOCALE = 'en-US';
+const DEFAULT_LOCALE = getDefaultLocale();
 
-const FALLBACK_LOCALES = [
-  { code: 'en-US', label: 'English (US)', native: 'English (US)' },
-  { code: 'en-GB', label: 'English (UK)', native: 'English (UK)' },
-  { code: 'it', label: 'Italian', native: 'Italiano' },
-  { code: 'fr', label: 'French', native: 'Français' },
-  { code: 'de', label: 'German', native: 'Deutsch' },
-  { code: 'es', label: 'Spanish', native: 'Español' },
-];
+// FALLBACK_LOCALES is now sourced from the GLOBAL LANGUAGE REGISTRY.
+// Public site & Blueprint both read from /site/content/languages.js.
+function getFallbackLocales() {
+  return blueprintLanguages().map((l) => ({ code: l.code, label: l.name, native: l.native_name }));
+}
+const FALLBACK_LOCALES = getFallbackLocales();
 
 function detectInitialLocale() {
   const stored = localStorage.getItem(LOCALE_KEY);
-  if (stored) return stored;
-  if (typeof navigator !== 'undefined' && navigator.language) {
-    const nl = navigator.language;
-    if (FALLBACK_LOCALES.find((l) => l.code === nl)) return nl;
-    const base = nl.split('-')[0];
-    if (FALLBACK_LOCALES.find((l) => l.code === base)) return base;
+  if (stored) {
+    const lang = resolveLanguage(stored);
+    if (lang.enabled && lang.blueprint_enabled) return lang.code;
   }
   return DEFAULT_LOCALE;
 }

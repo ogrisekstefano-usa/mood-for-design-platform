@@ -38,6 +38,9 @@ const ProjectsIndexPage = lazy(() => import('./pages/site/ProjectsIndexPage'));
 const SiteProjectDetailPage = lazy(() => import('./pages/site/ProjectDetailPage'));
 const OnboardingPlaceholderPage = lazy(() => import('./pages/site/OnboardingPlaceholderPage'));
 const StartProjectWizard = lazy(() => import('./pages/site/StartProjectWizard'));
+const ProfessionalsGatewayPage = lazy(() => import('./pages/site/ProfessionalsGatewayPage'));
+const ProfessionalIntakePage = lazy(() => import('./pages/site/ProfessionalIntakePage'));
+const LanguagesPage = lazy(() => import('./pages/settings/LanguagesPage'));
 
 // Admin
 const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
@@ -95,10 +98,13 @@ function App() {
                   <Route path="/projects" element={<ProjectsIndexPage />} />
                   <Route path="/projects/:slug" element={<SiteProjectDetailPage />} />
                   <Route path="/onboarding/:kind" element={<OnboardingPlaceholderPage />} />
+                  <Route path="/professionals" element={<ProfessionalsGatewayPage />} />
                 </Route>
 
                 {/* Private onboarding wizard — full-screen, no SiteLayout chrome */}
                 <Route path="/start-project" element={<StartProjectWizard />} />
+                {/* Professional intake wizard — full-screen */}
+                <Route path="/professionals/intake" element={<ProfessionalIntakePage />} />
 
                 <Route path="/auth/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
                 <Route path="/auth/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
@@ -121,6 +127,7 @@ function App() {
                   <Route path="/settings/domains" element={<DomainsPage />} />
                   <Route path="/settings/navigation" element={<NavigationEditorPage />} />
                   <Route path="/settings/forms" element={<FormBuilderPage />} />
+                  <Route path="/settings/languages" element={<LanguagesPage />} />
                 </Route>
 
                 <Route element={<SuperAdminRoute><AdminLayout /></SuperAdminRoute>}>

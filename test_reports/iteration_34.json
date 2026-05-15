@@ -1,0 +1,28 @@
+{
+  "summary": "Phase H.4 dual delivery — Professional Gateway (/professionals) + 5-step Professional Intake (/professionals/intake) + Global Language Registry admin (/settings/languages). Frontend-only test as requested. 32/33 checks PASS (~97%). The single FAIL is a cosmetic non-issue: the eyebrow/kicker text is rendered in title case in the DOM but displayed UPPERCASE via CSS text-transform — visually correct, but if E1 wants the raw string also uppercase it can be normalized in professionals.js content. All functional flows, autosave, payload generation, locale unification, and language admin CRUD work as specified. ZERO inline locale objects in ProfessionalsGatewayPage.jsx and ProfessionalIntakePage.jsx (grep verified — content sourced from professionalsContent + publicLanguages registry). Regression on /, /projects, /onboarding/:kind, /auth/login passes. No console errors observed.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/professionals gateway", "issues": ["Eyebrow text 'Per i professionisti' and CTA kickers ('01 — Visita lo studio' etc.) are uppercased only via CSS text-transform. The raw textContent is title case. Visually correct; only flag if you want raw uppercase strings in professionals.js content."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ProfessionalIntakePage.jsx (332 lines) is approaching the file-size threshold. As more steps/content are added consider splitting Step1Intent/Step2Project/Step3References/Step4ProDetails/Step5Confirmation into separate files under /pages/site/professional/steps/.",
+    "Step 3 references uploads use URL.createObjectURL(file) — these object URLs are not revoked on remove or component unmount; minor memory leak that compounds over a long session. Consider URL.revokeObjectURL(u.url) inside removeUpload and on unmount.",
+    "professional intake payload stores only file.name (no actual file blob/base64) in localStorage — confirmed working, but downstream Phase H.5 backend will need to upload files separately (multipart) before POST /api/leads. Document this expectation in the H.5 contract.",
+    "Step 5 hidden payload <pre data-testid='pro-final-payload' style='display:none'> is convenient for testing but ships JSON to all users in DOM. Consider moving to a window.__mfdProPayload for testing or stripping in prod. Low priority.",
+    "Languages admin allows enabling Arabic (rtl:true) but there is no document.dir='rtl' wiring yet — when AR is selected as locale the page direction won't flip. Acceptable for H.4 (foundation only) but needs follow-up in H.5 alongside the AI translation engine."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (skipped per request)", "frontend": "97% (32/33)" },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin) used for /settings/languages",
+  "seed_data_creation": "None — all state in localStorage; cleaned before each run",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 34 PASS. /professionals is inside SiteLayout (public chrome), /professionals/intake is full-screen (no SiteLayout). Always clear localStorage keys 'mfd_professional_intake_state', 'mfd_pending_pro_payload', 'mfd_language_registry_override', 'mfd_locale' before tests. Lazy chunks need 6-7s after navigation. Eyebrow/kicker text in DOM is title case but visually uppercase via CSS — assert via getComputedStyle or be locale-tolerant. Languages admin route /settings/languages requires login (DashboardLayout-protected). The 'mfd:languages:change' event fires on save; SiteContext listens and rebuilds switcher. Default locale is 'it'; Arabic/Chinese/Japanese disabled by default. Locale unification via 'mfd_locale' verified — setting en-US in storage makes homepage title render 'Shaping spaces. Building relationships.'",
+  "rca_of_the_issue": "n/a — no defects found"
+}

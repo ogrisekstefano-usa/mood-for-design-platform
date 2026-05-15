@@ -3,7 +3,7 @@ import {
   detectInitialSiteLocale,
   pick as pickValue,
   normalizeLocale,
-  SITE_LOCALES,
+  getSiteLocales,
   LOCALE_STORAGE_KEY,
   DEFAULT_PLATFORM_LOCALE,
 } from './i18n';
@@ -12,15 +12,14 @@ const SiteContext = createContext({
   locale: DEFAULT_PLATFORM_LOCALE,
   setLocale: () => {},
   pick: (v) => (typeof v === 'string' ? v : ''),
-  locales: SITE_LOCALES,
+  locales: getSiteLocales(),
 });
 
 export const useSite = () => useContext(SiteContext);
 
-// Cross-tab + cross-app sync: when Blueprint app changes locale (or vice versa),
-// both surfaces update because they share the same localStorage key.
 export const SiteProvider = ({ children }) => {
   const [locale, setLocaleState] = useState(() => detectInitialSiteLocale());
+  const [locales, setLocales] = useState(() => getSiteLocales());
 
   const setLocale = useCallback((next) => {
     const normalized = normalizeLocale(next);
@@ -29,36 +28,34 @@ export const SiteProvider = ({ children }) => {
     try { window.dispatchEvent(new CustomEvent('mfd:locale:change', { detail: { locale: normalized } })); } catch (_) {}
   }, []);
 
-  // Listen for Blueprint app locale changes (storage events fire cross-tab; custom event fires same-tab)
   useEffect(() => {
     const onStorage = (e) => {
-      if (e.key === LOCALE_STORAGE_KEY && e.newValue) {
-        const normalized = normalizeLocale(e.newValue);
-        setLocaleState(normalized);
-      }
+      if (e.key === LOCALE_STORAGE_KEY && e.newValue) setLocaleState(normalizeLocale(e.newValue));
     };
-    const onCustom = (e) => {
-      if (e.detail?.locale) setLocaleState(normalizeLocale(e.detail.locale));
-    };
+    const onCustomLocale = (e) => { if (e.detail?.locale) setLocaleState(normalizeLocale(e.detail.locale)); };
+    const onCustomLanguages = () => setLocales(getSiteLocales());
     window.addEventListener('storage', onStorage);
-    window.addEventListener('mfd:locale:change', onCustom);
+    window.addEventListener('mfd:locale:change', onCustomLocale);
+    window.addEventListener('mfd:languages:change', onCustomLanguages);
     return () => {
       window.removeEventListener('storage', onStorage);
-      window.removeEventListener('mfd:locale:change', onCustom);
+      window.removeEventListener('mfd:locale:change', onCustomLocale);
+      window.removeEventListener('mfd:languages:change', onCustomLanguages);
     };
   }, []);
 
   useEffect(() => {
     try { document.documentElement.setAttribute('lang', locale); } catch (_) {}
-  }, [locale]);
+    const lang = locales.find((l) => l.base === locale);
+    try { document.documentElement.setAttribute('dir', lang?.rtl ? 'rtl' : 'ltr'); } catch (_) {}
+  }, [locale, locales]);
 
   const value = useMemo(() => ({
     locale,
     setLocale,
-    // pick(value, [path]) — controlled fallback with optional path for dev warnings
     pick: (v, path) => pickValue(v, locale, { path }),
-    locales: SITE_LOCALES,
-  }), [locale, setLocale]);
+    locales,
+  }), [locale, setLocale, locales]);
 
   return <SiteContext.Provider value={value}>{children}</SiteContext.Provider>;
 };
