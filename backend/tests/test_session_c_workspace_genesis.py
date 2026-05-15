@@ -239,3 +239,52 @@ def test_round_robin_cycles_three_personas(session_client):
     assert len(set(first_three)) == 3, f"expected 3 distinct, got {first_three}"
     # Fourth equals first (cycle)
     assert designers[3] == designers[0], f"round-robin did not cycle: {designers}"
+
+
+
+# ---- Iteration 37 re-tests -----------------------------------------------
+# Verifies action items from iteration_36: (1) project_type fallback in
+# derive_project_title; (2) workspace.followed_by i18n keys in IT + EN.
+
+def test_project_type_synonym_produces_humane_title(session_client):
+    """When wizard sends payload.project_type='villa' (no space_type), title
+    should still resolve to 'Villa · ... — First' (action item #1)."""
+    email = _uniq_email("ptype")
+    body = {
+        "first_name": "Camilla",
+        "last_name": "Rossi",
+        "email": email,
+        "password": "Blueprint2024!",
+        "locale": "it",
+        "payload": {
+            # Only project_type, NOT space_type/typology
+            "project_type": "villa",
+            "mood": "editorial luxury",
+            "city": "Roma",
+        },
+    }
+    r = session_client.post(f"{BASE_URL}/api/onboarding/private/submit", json=body, timeout=45)
+    assert r.status_code == 201, r.text
+    title = (r.json().get("genesis") or {}).get("project_title") or ""
+    assert "Villa" in title, f"expected 'Villa' segment in title, got: {title!r}"
+    assert "Camilla" in title, f"expected client first name in title, got: {title!r}"
+    # Sanity: not the fallback
+    assert title != "Nuovo progetto \u2014 Camilla", f"still fallback title: {title!r}"
+
+
+def test_i18n_workspace_followed_by_it(session_client):
+    """IT bundle exposes workspace.followed_by = 'Seguito da' (action item #2)."""
+    r = session_client.get(f"{BASE_URL}/api/blueprint/i18n/it", timeout=15)
+    assert r.status_code == 200, r.text
+    msgs = r.json().get("messages") or {}
+    assert msgs.get("workspace.followed_by") == "Seguito da", \
+        f"got: {msgs.get('workspace.followed_by')!r}"
+
+
+def test_i18n_workspace_followed_by_en(session_client):
+    """EN default bundle exposes workspace.followed_by = 'Followed by' (action item #2)."""
+    r = session_client.get(f"{BASE_URL}/api/blueprint/i18n/en", timeout=15)
+    assert r.status_code == 200, r.text
+    msgs = r.json().get("messages") or {}
+    assert msgs.get("workspace.followed_by") == "Followed by", \
+        f"got: {msgs.get('workspace.followed_by')!r}"

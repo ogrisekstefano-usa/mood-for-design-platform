@@ -129,7 +129,7 @@ def round_robin_designer(tenant_id: str) -> Optional[Dict[str, Any]]:
 
 def derive_project_title(payload: Dict[str, Any], locale: str) -> str:
     """Build a humane project title from the payload (not 'Project #421')."""
-    space = payload.get("space_type") or payload.get("typology") or ""
+    space = payload.get("space_type") or payload.get("typology") or payload.get("project_type") or ""
     mood  = payload.get("mood") or payload.get("style") or ""
     city  = payload.get("city") or payload.get("location") or ""
     first = payload.get("first_name") or ""
@@ -261,7 +261,7 @@ def generate(
         "language":   (locale.split("-")[0] if locale else "en"),
         "country":    payload.get("country"),
         "city":       payload.get("city"),
-        "project_type":     payload.get("space_type") or payload.get("typology"),
+        "project_type":     payload.get("space_type") or payload.get("typology") or payload.get("project_type"),
         "budget_range":     payload.get("budget"),
         "timeline":         payload.get("timeline"),
         "style_preference": payload.get("style") or payload.get("mood"),
@@ -295,7 +295,7 @@ def generate(
         "tenant_id": tenant_id,
         "title":       project_title,
         "description": payload.get("notes") or None,
-        "project_type": payload.get("space_type") or payload.get("typology"),
+        "project_type": payload.get("space_type") or payload.get("typology") or payload.get("project_type"),
         "priority": "normal",
         "status": "new",
         "budget_range": payload.get("budget"),

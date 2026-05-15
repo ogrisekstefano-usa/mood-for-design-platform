@@ -1,0 +1,39 @@
+{
+  "summary": "Session C re-test of iteration_36 action items — BOTH FIXES VERIFIED. Backend 17/17 pytest pass (added 3 new tests pinning the two regressions). Frontend Playwright confirms humane title 'Villa · Editorial luxury · Roma — Camilla' AND assigned-designer-card kicker resolves to 'Seguito da' (IT) and 'Followed by' (EN). Round-robin regression check with 4 fresh emails cycles Sofia → Elizabeth → Diego → Sofia (3 distinct in first 3, 4th repeats 1st).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_session_c_workspace_genesis.py",
+    "/app/test_reports/pytest/iteration_37_session_c.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "workspace_genesis.derive_project_title now correctly reads project_type as third synonym (line 132) — fix verified end-to-end via wizard payload contract.",
+    "blueprint.py: workspace.followed_by present in EN default (line 524) and IT override (line 864). Remaining locales (fr/de/es) do NOT define this key; they will fall back to the EN default via the _flatten merge — confirm intent or add per-locale translations for completeness.",
+    "Round-robin is still count-based (a.count modulo 3 over ALL lead_assignments). The new test passes on fresh state but the previous review note still stands: consider per-persona counts or a tenant cursor for production-grade fairness.",
+    "ProjectDetailPage.jsx line 358 still uses `t('workspace.followed_by') || 'Followed by'` — the OR fallback is now redundant since the key exists in EN+IT and t() returns the key string (truthy) on miss anyway. Harmless but dead code."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_session_c_workspace_genesis.py"
+  ],
+  "success_rate": {
+    "backend": "100% (17/17 pytest, including 3 new iteration-37 tests)",
+    "frontend": "100% (humane title + IT kicker + EN kicker + round-robin all verified)"
+  },
+  "test_credentials": "Per-test unique TEST_*@example.com / Blueprint2024! via POST /api/onboarding/private/submit. No login required for the verified flows.",
+  "seed_data_creation": "Created ~10 throwaway TEST_ users this iteration; same accumulation behaviour as iteration_36 (no cleanup job).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend regression file: /app/backend/tests/test_session_c_workspace_genesis.py (17 tests, ~34s). The 3 new tests are: test_project_type_synonym_produces_humane_title, test_i18n_workspace_followed_by_it, test_i18n_workspace_followed_by_en. Frontend flow: programmatically POST /api/onboarding/private/submit (with project_type INSIDE payload object, NOT top-level!), inject the returned session.access_token into localStorage under key 'mfd_session', then visit /workspace/projects/{project_id}. Kicker DOM textContent is 'Seguito da'/'Followed by' (CSS class .uppercase visually transforms it on screen).",
+  "rca of the issue": {
+    "iteration_36_action_item_1": "RESOLVED — derive_project_title (workspace_genesis.py:132) now reads `payload.project_type` as the third synonym after `space_type` and `typology`. Wizard submits {payload:{project_type:'villa', ...}} and resulting title is 'Villa · Editorial luxury · Roma — Camilla'.",
+    "iteration_36_action_item_2": "RESOLVED — workspace.followed_by added to EN default registry (blueprint.py:524) and IT override (blueprint.py:864). Backend flattens nested workspace.{} to dotted keys so frontend t('workspace.followed_by') resolves correctly. Verified for both IT ('Seguito da') and EN ('Followed by') via /api/blueprint/i18n/{locale}."
+  }
+}
