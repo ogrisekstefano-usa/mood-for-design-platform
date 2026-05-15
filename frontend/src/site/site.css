@@ -2,24 +2,30 @@
    Dark luxury · Aman · Kinfolk · AD Archive · matches the mockup. */
 
 .mfd-site {
-  --site-bg: #111111;
-  --site-bg-2: #161616;
-  --site-bg-3: #1B1B1B;
-  --site-ivory: #F1ECE3;
-  --site-paper: #EFE6DA;
-  --site-ink: #F1ECE3;
-  --site-ink-2: #C9C3B8;
-  --site-ink-3: #8A857C;
-  --site-ink-dark: #1A1714;
-  --site-ink-dark-2: #4B4843;
-  --site-line: rgba(241, 236, 227, 0.10);
-  --site-line-strong: rgba(241, 236, 227, 0.22);
-  --site-line-paper: rgba(26, 23, 20, 0.14);
-  --site-accent: #C9A36E; /* brass */
-  --site-accent-soft: rgba(201, 163, 110, 0.18);
-  --site-cta-paper: #E7CFB0; /* warm paper CTA */
-  --site-serif: 'Cormorant Garamond', 'Playfair Display', 'Bodoni Moda', Georgia, serif;
-  --site-sans: 'Inter Tight', 'Manrope', 'Tenor Sans', system-ui, sans-serif;
+  /* ── MOOD for DESIGN — Brand palette (2026) ────────────────────────────
+     #00C9B3 primary  · #33DCC6 primary-light · #7EE6DA primary-soft
+     #6B6E71 graphite · #1A1A1A ink            · #FFFFFF snow
+     Typography: Playfair Display (display) + Montserrat (sans).        */
+  --site-bg: #0F0F10;            /* deep neutral, near-ink */
+  --site-bg-2: #16171A;
+  --site-bg-3: #1B1D20;
+  --site-ivory: #F4F5F7;
+  --site-paper: #EDEEF0;
+  --site-ink: #F4F5F7;
+  --site-ink-2: #C8CACE;
+  --site-ink-3: #8B8E92;
+  --site-ink-dark: #1A1A1A;
+  --site-ink-dark-2: #6B6E71;
+  --site-line: rgba(244, 245, 247, 0.10);
+  --site-line-strong: rgba(244, 245, 247, 0.22);
+  --site-line-paper: rgba(26, 26, 26, 0.14);
+  --site-accent: #00C9B3;        /* brand primary teal */
+  --site-accent-2: #33DCC6;      /* brand primary-light */
+  --site-accent-3: #7EE6DA;      /* brand primary-soft / mint */
+  --site-accent-soft: rgba(0, 201, 179, 0.16);
+  --site-cta-paper: #FFFFFF;     /* CTAs on dark = snow */
+  --site-serif: 'Playfair Display', 'Cormorant Garamond', 'Bodoni Moda', Georgia, serif;
+  --site-sans:  'Montserrat', 'Inter Tight', 'Manrope', system-ui, sans-serif;
 
   background: var(--site-bg);
   color: var(--site-ink);
@@ -172,6 +178,58 @@
 }
 .mfd-header__nav a:hover::after { right: 0; }
 .mfd-header__right { display: flex; align-items: center; gap: 0.85rem; }
+/* Hide the desktop access button on small screens — burger replaces it */
+.mfd-header__access { display: none; }
+@media (min-width: 760px) { .mfd-header__access { display: inline-flex; } }
+/* Burger */
+.mfd-header__burger {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; padding: 0;
+  background: transparent; border: 1px solid var(--site-line);
+  color: var(--site-ink-2); cursor: pointer;
+  transition: color 200ms ease, border-color 200ms ease;
+}
+.mfd-header__burger:hover { color: var(--site-ink); border-color: var(--site-line-strong); }
+@media (min-width: 1180px) { .mfd-header__burger { display: none; } }
+
+/* Mobile menu — full-screen panel slides down from header */
+.mfd-mobile-menu {
+  position: fixed; inset: 64px 0 0 0; z-index: 55;
+  background: rgba(15,15,15,0.96);
+  backdrop-filter: saturate(150%) blur(20px);
+  -webkit-backdrop-filter: saturate(150%) blur(20px);
+  border-top: 1px solid var(--site-line);
+  overflow-y: auto;
+  animation: mfdMobileMenuIn 280ms cubic-bezier(.22,.7,.22,1);
+}
+@keyframes mfdMobileMenuIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.mfd-mobile-menu__nav {
+  display: flex; flex-direction: column; gap: 0;
+  padding: clamp(1.5rem, 6vw, 3rem) clamp(1.5rem, 5vw, 3rem) 3rem;
+}
+.mfd-mobile-menu__link {
+  display: block;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--site-line);
+  font-family: var(--site-sans);
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--site-ink);
+  text-decoration: none;
+  transition: color 240ms ease, padding-left 240ms ease;
+}
+.mfd-mobile-menu__link:hover { color: var(--site-accent); padding-left: 0.35rem; }
+.mfd-mobile-menu__cta {
+  margin-top: 1.5rem;
+  align-self: flex-start;
+  padding: 0.95rem 1.7rem !important;
+  font-size: 12px !important;
+}
+@media (min-width: 1180px) { .mfd-mobile-menu { display: none; } }
 
 /* Locale switcher */
 .mfd-locale { position: relative; }
@@ -425,6 +483,49 @@
   color: var(--site-ink-3); transition: color 240ms ease; display: inline-flex;
 }
 .mfd-socials a:hover { color: var(--site-ink); }
+
+/* ── Footer locale switcher (moved from header) */
+.mfd-footer__locale { position: relative; }
+.mfd-footer__locale-btn {
+  background: transparent;
+  border: 1px solid var(--site-line);
+  color: var(--site-ink-2);
+  padding: 0.55rem 0.9rem;
+  font-family: var(--site-sans);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  transition: color 200ms ease, border-color 200ms ease;
+}
+.mfd-footer__locale-btn:hover { color: var(--site-ink); border-color: var(--site-line-strong); }
+.mfd-footer__locale-btn .is-open { transform: rotate(180deg); transition: transform 200ms ease; }
+.mfd-footer__locale-menu {
+  position: absolute; bottom: calc(100% + 8px); right: 0;
+  min-width: 200px;
+  background: var(--site-bg-2);
+  border: 1px solid var(--site-line);
+  padding: 0.4rem 0;
+  z-index: 80;
+  box-shadow: 0 -16px 36px rgba(0,0,0,0.45);
+}
+.mfd-footer__locale-item {
+  display: flex; justify-content: space-between; align-items: center; width: 100%;
+  background: transparent; border: 0; color: var(--site-ink-2);
+  padding: 0.6rem 1rem;
+  font-family: var(--site-sans); font-size: 12px; letter-spacing: 0.12em;
+  text-transform: uppercase; cursor: pointer; text-align: left;
+  transition: color 200ms ease, background-color 200ms ease;
+}
+.mfd-footer__locale-item small {
+  font-family: var(--site-sans);
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--site-ink-3);
+}
+.mfd-footer__locale-item:hover { color: var(--site-ink); background-color: rgba(255,255,255,0.04); }
+.mfd-footer__locale-item[aria-current="true"] { color: var(--site-accent); }
 
 /* ── Reveal */
 .mfd-reveal { opacity: 1; transform: none; }

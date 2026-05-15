@@ -16,8 +16,14 @@ const SiteContext = createContext({
 
 export const useSite = () => useContext(SiteContext);
 
-// Detect initial canonical locale (preserve EN-US ≠ EN-UK distinction)
+// Detect initial canonical locale.
+// Priority chain:
+//   1. localStorage (user previously chose) — wins over everything
+//   2. navigator.language(s) — browser preference, match against publicly enabled locales
+//   3. en-GB explicit fallback (per product spec — UK English over US English)
+//   4. registry default locale
 function detectInitialCanonicalLocale() {
+  // 1. Persisted choice
   try {
     const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
     if (stored) {
@@ -25,6 +31,34 @@ function detectInitialCanonicalLocale() {
       if (lang.enabled && lang.public_enabled) return lang.code;
     }
   } catch (_) {}
+
+  // 2. Browser-preferred languages (in order)
+  try {
+    const reg = getSiteLocales().filter((l) => l.public_enabled !== false);
+    const browserPrefs = (typeof navigator !== 'undefined' && Array.isArray(navigator.languages) && navigator.languages.length)
+      ? navigator.languages
+      : (typeof navigator !== 'undefined' && navigator.language ? [navigator.language] : []);
+    for (const raw of browserPrefs) {
+      const norm = String(raw || '').trim();
+      if (!norm) continue;
+      // Exact match (e.g. 'en-GB' === 'en-GB')
+      const exact = reg.find((l) => l.code.toLowerCase() === norm.toLowerCase());
+      if (exact) return exact.code;
+      // Base match (e.g. 'it-CH' → 'it')
+      const base = norm.split('-')[0].toLowerCase();
+      const baseHit = reg.find((l) => (l.base || l.code.split('-')[0]).toLowerCase() === base);
+      if (baseHit) return baseHit.code;
+    }
+  } catch (_) {}
+
+  // 3. en-GB hard fallback (spec)
+  try {
+    const reg = getSiteLocales().filter((l) => l.public_enabled !== false);
+    const enGB = reg.find((l) => l.code === 'en-GB' || l.code === 'en-UK');
+    if (enGB) return enGB.code;
+  } catch (_) {}
+
+  // 4. Registry default
   return getDefaultLocale();
 }
 

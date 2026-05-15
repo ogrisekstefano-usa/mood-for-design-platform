@@ -132,13 +132,13 @@ const SectionTitle = ({ children }) => (
 
 const TabBtn = ({ active, onClick, label, testid }) => (
   <button onClick={onClick} data-testid={testid}
-          className={`pb-2 px-1 bp-eyebrow !text-[10px] !tracking-[0.18em] transition-colors relative
+          className={`pb-2 px-0 bp-eyebrow !text-[10px] !tracking-[0.14em] whitespace-nowrap transition-colors relative
                       ${active
                         ? '!text-[var(--bp-text-primary)]'
                         : '!text-[var(--bp-text-secondary)] hover:!text-[var(--bp-text-primary)]'}`}>
     {label}
     {active && (
-      <span className="absolute left-1 right-1 -bottom-px h-[2px] bg-[var(--bp-primary)] rounded-full" />
+      <span className="absolute left-0 right-0 -bottom-px h-[2px] bg-[var(--bp-primary)] rounded-full" />
     )}
   </button>
 );
@@ -394,7 +394,7 @@ const EditorPanel = ({
             <PanelLeftClose size={13} strokeWidth={1.5} />
           </button>
         </div>
-        <div className="flex gap-4 border-b border-[var(--bp-border)]">
+        <div className="flex gap-3 border-b border-[var(--bp-border)] pr-2">
           <TabBtn active={tab === 'insert'}        onClick={() => setTab('insert')}        label={t('moodboards.tab.insert',        null, 'Insert')}       testid="editor-tab-insert" />
           <TabBtn active={tab === 'assets'}        onClick={() => setTab('assets')}        label={t('moodboards.tab.assets',        null, 'Assets')}       testid="editor-tab-assets" />
           <TabBtn active={tab === 'pages'}         onClick={() => setTab('pages')}         label={t('moodboards.tab.pages',         null, 'Pages')}        testid="editor-tab-pages" />

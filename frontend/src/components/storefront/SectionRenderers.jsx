@@ -14,6 +14,7 @@ import {
   Image as ImageIcon, Plus, X, Gem, Users, Sparkles, Globe, ShieldCheck,
   Sliders, AlignLeft, AlignCenter, AlignVerticalJustifyStart,
   AlignVerticalJustifyCenter, AlignVerticalJustifyEnd,
+  ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import InlineText from './InlineText';
 import NavigationRenderer from './NavigationRenderer';
@@ -436,8 +437,35 @@ const ValueProps = ({ section, locale, draft, updateContent, updateSettings }) =
 };
 
 // ─── PROJECTS_PREVIEW ───────────────────────────────────────────────────────
-const ProjectsPreview = ({ section, locale, draft, updateContent }) => {
+const ProjectsPreview = ({ section, locale, draft, updateContent, updateSettings, openAssetPicker }) => {
   const items = getSetting(section, 'items') || [];
+
+  const writeItems = (next) => updateSettings('items', next);
+  const patchItem = (idx, patcher) => writeItems(items.map((p, i) => (i === idx ? patcher(p) : p)));
+  const setLocalized = (idx, field, value) => patchItem(idx, (p) => {
+    const bag = (p[field] && typeof p[field] === 'object') ? p[field] : {};
+    return { ...p, [field]: { ...bag, [locale]: value } };
+  });
+  const setSlug = (idx, slug) => patchItem(idx, (p) => ({ ...p, slug }));
+  const move = (idx, dir) => {
+    const j = idx + dir;
+    if (j < 0 || j >= items.length) return;
+    const next = items.slice();
+    [next[idx], next[j]] = [next[j], next[idx]];
+    writeItems(next);
+  };
+  const remove = (idx) => writeItems(items.filter((_, i) => i !== idx));
+  const addItem = () => {
+    const id = `proj_${Date.now().toString(36)}`;
+    writeItems([...items, {
+      id,
+      slug: id,
+      image_url: '',
+      category: { [locale]: '' },
+      location: { [locale]: '' },
+    }]);
+  };
+
   return (
     <div className="bg-[var(--bp-surface-1)] py-16 px-12" data-testid={`section-${section.id}`}>
       <div className="max-w-6xl mx-auto">
@@ -447,28 +475,87 @@ const ProjectsPreview = ({ section, locale, draft, updateContent }) => {
           placeholder="PROJECTS THAT INSPIRE"
           as="h2"
           className="text-[var(--bp-text-primary)] text-2xl font-body uppercase tracking-[0.18em] text-center mb-10"
+          testid={`projects-section-title-${section.id}`}
         />
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-          {items.slice(0, 5).map((it) => (
-            <div key={it.id || it.slug} className="aspect-[4/5] relative overflow-hidden bg-black group" data-testid={`proj-${it.slug}`}>
-              {it.image_url && <img src={it.image_url} alt="" className="absolute inset-0 w-full h-full object-cover" />}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-              <div className="absolute bottom-3 left-3 right-3">
-                <p className="text-white/70 text-[10px] font-body uppercase tracking-[0.18em]">
-                  {pickLocale(it.category, locale, FALLBACK_CHAIN)}
-                </p>
-                <p className="text-white font-heading text-sm">
-                  {pickLocale(it.location, locale, FALLBACK_CHAIN)}
-                </p>
+          {items.slice(0, 5).map((it, i) => (
+            <div key={it.id || it.slug || i}
+                 data-testid={`proj-${it.slug || i}`}
+                 className="aspect-[4/5] relative overflow-hidden bg-black group">
+              <EditableImage
+                url={it.image_url}
+                openAssetPicker={openAssetPicker}
+                onPick={(a) => patchItem(i, (p) => ({ ...p, image_url: a.public_url }))}
+                aspect="absolute inset-0 h-full"
+                testid={`proj-${it.slug || i}-img`}
+                label="Replace cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent pointer-events-none" />
+              <div className="absolute bottom-3 left-3 right-3 z-10 space-y-1">
+                <InlineText
+                  value={pickLocale(it.category, locale, FALLBACK_CHAIN)}
+                  onChange={(v) => setLocalized(i, 'category', v)}
+                  placeholder="CATEGORY"
+                  as="p"
+                  className="text-white/80 text-[10px] font-body uppercase tracking-[0.18em]"
+                  testid={`proj-${it.slug || i}-category`}
+                />
+                <InlineText
+                  value={pickLocale(it.location, locale, FALLBACK_CHAIN)}
+                  onChange={(v) => setLocalized(i, 'location', v)}
+                  placeholder="Location"
+                  as="p"
+                  className="text-white font-heading text-sm leading-tight"
+                  testid={`proj-${it.slug || i}-location`}
+                />
+              </div>
+              {/* Slug editor — tiny inspector top-left */}
+              <div className="absolute top-2 left-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                <input
+                  type="text"
+                  value={it.slug || ''}
+                  onChange={(e) => setSlug(i, e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, '-').slice(0, 60))}
+                  placeholder="slug"
+                  data-testid={`proj-${it.slug || i}-slug`}
+                  className="w-24 px-2 py-1 bg-black/70 backdrop-blur-md border border-white/15 rounded-[2px] text-white/85 text-[10px] font-mono outline-none focus:border-white/45"
+                />
+              </div>
+              {/* Reorder + remove */}
+              <div className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button type="button" onClick={() => move(i, -1)} title="Move left"
+                        data-testid={`proj-${it.slug || i}-left`}
+                        className="w-6 h-6 flex items-center justify-center rounded-[2px] bg-black/60 border border-white/15 text-white/85 hover:text-white">
+                  <ChevronLeft size={12} strokeWidth={1.5} />
+                </button>
+                <button type="button" onClick={() => move(i, +1)} title="Move right"
+                        data-testid={`proj-${it.slug || i}-right`}
+                        className="w-6 h-6 flex items-center justify-center rounded-[2px] bg-black/60 border border-white/15 text-white/85 hover:text-white">
+                  <ChevronRight size={12} strokeWidth={1.5} />
+                </button>
+                <button type="button" onClick={() => remove(i)} title="Remove"
+                        data-testid={`proj-${it.slug || i}-remove`}
+                        className="w-6 h-6 flex items-center justify-center rounded-[2px] bg-black/60 border border-white/15 text-white/85 hover:text-rose-300">
+                  <X size={12} strokeWidth={1.5} />
+                </button>
               </div>
             </div>
           ))}
-          {items.length === 0 && (
-            <p className="col-span-full text-[var(--bp-text-muted)] text-xs font-body italic text-center py-10">
-              No featured projects yet.
-            </p>
+          {items.length < 5 && (
+            <button
+              type="button"
+              onClick={addItem}
+              data-testid={`proj-add-${section.id}`}
+              className="aspect-[4/5] flex flex-col items-center justify-center border border-dashed border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:text-[var(--bp-primary)] hover:border-[var(--bp-primary)] transition-colors">
+              <Plus size={20} strokeWidth={1.4} />
+              <span className="text-[10px] font-body uppercase tracking-[0.2em] mt-2">Add project</span>
+            </button>
           )}
         </div>
+        {items.length === 0 && (
+          <p className="text-[var(--bp-text-muted)] text-xs font-body italic text-center pt-8">
+            Add up to 5 curated projects above.
+          </p>
+        )}
       </div>
     </div>
   );

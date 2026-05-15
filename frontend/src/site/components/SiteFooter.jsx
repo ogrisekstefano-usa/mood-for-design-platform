@@ -1,10 +1,60 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Linkedin } from 'lucide-react';
+import { Instagram, Linkedin, Globe, ChevronDown } from 'lucide-react';
 import { useSite } from '../SiteContext';
 import { navigationContent } from '../content/navigation';
 import { tenantConfig } from '../content/tenant';
 import { useStorefrontContent, pickContent } from '../useStorefrontContent';
+
+// ── Footer locale switcher (moved from header) ─────────────────────────────
+const FooterLocaleSwitcher = () => {
+  const { locale, setLocale, locales } = useSite();
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const onDoc = (e) => { if (!ref.current?.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, []);
+
+  const current = locales.find((l) => l.code === locale) || locales[0];
+  if (!current) return null;
+
+  return (
+    <div className="mfd-footer__locale" ref={ref} data-testid="footer-locale">
+      <button
+        type="button"
+        className="mfd-footer__locale-btn"
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        data-testid="footer-locale-btn"
+      >
+        <Globe size={12} strokeWidth={1.5} />
+        <span>{current.label}</span>
+        <ChevronDown size={11} strokeWidth={1.5} className={open ? 'is-open' : ''} />
+      </button>
+      {open && (
+        <div className="mfd-footer__locale-menu" role="listbox" data-testid="footer-locale-menu">
+          {locales.map((l) => (
+            <button
+              key={l.code}
+              type="button"
+              className="mfd-footer__locale-item"
+              aria-current={l.code === locale}
+              onClick={() => { setLocale(l.code); setOpen(false); }}
+              data-testid={`footer-locale-${l.code}`}
+            >
+              <span>{l.label}</span>
+              <small>{l.native}</small>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const SocialIcon = ({ id }) => {
   switch (id) {
@@ -136,7 +186,8 @@ const SiteFooter = () => {
       </div>
 
       <div className="mfd-footer__bottom">
-        <span>{copy}</span>
+        <span data-testid="footer-copyright">{copy}</span>
+        <FooterLocaleSwitcher />
       </div>
     </footer>
   );

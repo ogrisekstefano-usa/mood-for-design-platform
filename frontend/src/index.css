@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=Kalam:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=Kalam:wght@300;400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,26 +6,30 @@
 
 @layer base {
   :root {
-    /* ── Palette ─────────────────────────────────────────────────────── */
-    --bp-bg: #0A0A0B;
-    --bp-primary: #26F5C9;
-    --bp-accent: #B8977A;
-    --bp-surface-1: #141416;
-    --bp-surface-2: #1C1C1F;
-    --bp-surface-3: #222226;
-    --bp-overlay: rgba(8,8,10,0.72);
-    --bp-border: rgba(255,255,255,0.06);
-    --bp-border-strong: rgba(255,255,255,0.12);
-    --bp-text-primary: #F5F1EA;
-    --bp-text-secondary: #C8C4BD;
-    --bp-text-muted: #948F88;
-    --bp-text-subtle: #6E6964;
-    --bp-selection-bg: rgba(38,245,201,0.18);
-    --bp-selection-fg: #EFEBE4;
+    /* ── MOOD for DESIGN — Brand palette (2026) ──────────────────────
+       #00C9B3 primary  · #33DCC6 primary-light · #7EE6DA primary-soft
+       #6B6E71 graphite · #1A1A1A ink            · #FFFFFF snow         */
+    --bp-bg: #0F0F10;
+    --bp-primary: #00C9B3;
+    --bp-primary-2: #33DCC6;
+    --bp-primary-3: #7EE6DA;
+    --bp-accent: #7EE6DA;             /* mint — kept for richer hover/focus blends */
+    --bp-surface-1: #16171A;
+    --bp-surface-2: #1B1D20;
+    --bp-surface-3: #22252A;
+    --bp-overlay: rgba(10,10,11,0.72);
+    --bp-border: rgba(255,255,255,0.07);
+    --bp-border-strong: rgba(255,255,255,0.14);
+    --bp-text-primary: #F4F5F7;
+    --bp-text-secondary: #C8CACE;
+    --bp-text-muted: #8B8E92;
+    --bp-text-subtle: #6B6E71;
+    --bp-selection-bg: rgba(0, 201, 179, 0.20);
+    --bp-selection-fg: #F4F5F7;
 
     /* ── Typography ──────────────────────────────────────────────────── */
-    --bp-font-heading: 'Cormorant Garamond', Georgia, serif;
-    --bp-font-body: 'Manrope', system-ui, sans-serif;
+    --bp-font-heading: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    --bp-font-body: 'Montserrat', 'Manrope', system-ui, sans-serif;
     --bp-font-mono: 'JetBrains Mono', ui-monospace, monospace;
     --bp-font-size-base: 14px;
     --bp-line-height: 1.55;

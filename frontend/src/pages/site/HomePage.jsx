@@ -87,9 +87,19 @@ const mergeHomepage = (legacy, content) => {
     };
   }
   if (pi) {
+    const dbItems = Array.isArray(pi._settings?.items) ? pi._settings.items : null;
     out.projectsInspire = {
       ...legacy.projectsInspire,
       title: buildLocaleBag(pi, legacy.projectsInspire.title, 'section_title'),
+      items: (dbItems && dbItems.length > 0)
+        ? dbItems.slice(0, 5).map((p, i) => ({
+            id:       p.id || `proj_${i}`,
+            slug:     p.slug || p.id || `proj_${i}`,
+            image:    p.image_url || '',
+            category: (p.category && typeof p.category === 'object') ? p.category : { _default: p.category || '' },
+            location: (p.location && typeof p.location === 'object') ? p.location : { _default: p.location || '' },
+          }))
+        : legacy.projectsInspire.items,
     };
   }
   if (nl) {

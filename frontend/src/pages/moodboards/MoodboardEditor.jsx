@@ -21,6 +21,7 @@ import {
   Play, Maximize2, ChevronLeft, ChevronRight, PanelRight, ListChecks,
   BookmarkPlus, Undo2, Redo2, Magnet, RotateCcw, FileText,
   Copy, Clipboard, MoveRight, Layers,
+  MoveHorizontal, MoveVertical, Square as SquareIcon,
 } from 'lucide-react';
 import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegistry';
 import StatusBadge from '../../components/common/StatusBadge';
@@ -121,6 +122,11 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const [canvasScale, setCanvasScale] = useState(1);
   const canvasScaleRef = useRef(1);  // drag handlers read this without re-binding
   useEffect(() => { canvasScaleRef.current = canvasScale; }, [canvasScale]);
+  // Fit mode controls the auto-scale strategy:
+  //   'width'  → scale to fit container width (default)
+  //   'height' → scale to fit container height
+  //   'actual' → no auto-scale, pinned at 100% (allows horizontal scroll)
+  const [fitMode, setFitMode] = useState('width');
 
   // ── Responsive canvas scale ──────────────────────────────────────────────
   // Visual-only transform: divides the canvas to fit its column without
@@ -131,17 +137,24 @@ const MoodboardEditor = ({ readOnly = false }) => {
     const el = canvasViewportRef.current;
     if (!el) return undefined;
     const compute = () => {
+      if (fitMode === 'actual') {
+        setCanvasScale((prev) => (Math.abs(prev - 1) > 0.005 ? 1 : prev));
+        return;
+      }
       const rect = el.getBoundingClientRect();
-      // 48px of breathing room on each side; never scale above 1 (no upscale)
+      // 48px breathing room on each side; never upscale above 1.
       const targetW = Math.max(160, rect.width - 48);
-      const next = Math.min(1, targetW / (canvasW || 1));
+      const targetH = Math.max(160, rect.height - 48);
+      const next = fitMode === 'height'
+        ? Math.min(1, targetH / (canvasH || 1))
+        : Math.min(1, targetW / (canvasW || 1));
       setCanvasScale((prev) => (Math.abs(prev - next) > 0.005 ? next : prev));
     };
     compute();
     const ro = new ResizeObserver(compute);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [canvasW]);
+  }, [canvasW, canvasH, fitMode]);
 
   // ── Load ──────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -748,6 +761,35 @@ const MoodboardEditor = ({ readOnly = false }) => {
                         boxShadow: snapEnabled ? '0 0 6px var(--bp-primary)' : 'inset 0 0 0 1px var(--bp-border)',
                       }} />
               </button>
+
+              {/* Fit Width · Fit Height · Actual Size — visual-only scale */}
+              <span className="mx-1 w-px h-4 bg-[var(--bp-border)] self-center" aria-hidden="true" />
+              <button onClick={() => setFitMode('width')}
+                      title={t('moodboards.editor.fitWidth', null, 'Fit width')}
+                      data-testid="fit-width-btn"
+                      className={`p-1.5 rounded-[var(--bp-radius-xs)] hover:bg-[var(--bp-surface-2)]/60 transition-colors
+                                  ${fitMode === 'width' ? 'text-[var(--bp-primary)]' : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]'}`}>
+                <MoveHorizontal size={14} strokeWidth={1.5} />
+              </button>
+              <button onClick={() => setFitMode('height')}
+                      title={t('moodboards.editor.fitHeight', null, 'Fit height')}
+                      data-testid="fit-height-btn"
+                      className={`p-1.5 rounded-[var(--bp-radius-xs)] hover:bg-[var(--bp-surface-2)]/60 transition-colors
+                                  ${fitMode === 'height' ? 'text-[var(--bp-primary)]' : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]'}`}>
+                <MoveVertical size={14} strokeWidth={1.5} />
+              </button>
+              <button onClick={() => setFitMode('actual')}
+                      title={t('moodboards.editor.actualSize', null, 'Actual size (100%)')}
+                      data-testid="fit-actual-btn"
+                      className={`p-1.5 rounded-[var(--bp-radius-xs)] hover:bg-[var(--bp-surface-2)]/60 transition-colors
+                                  ${fitMode === 'actual' ? 'text-[var(--bp-primary)]' : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]'}`}>
+                <SquareIcon size={14} strokeWidth={1.5} />
+              </button>
+              {/* Live scale readout — tabular-num so it doesn't jitter */}
+              <span data-testid="canvas-scale-readout"
+                    className="ml-1 text-[10px] font-mono tabular-nums text-[var(--bp-text-muted)] min-w-[34px] text-center select-none">
+                {Math.round(canvasScale * 100)}%
+              </span>
             </div>
           )}
 

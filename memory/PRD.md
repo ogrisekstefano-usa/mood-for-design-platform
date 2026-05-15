@@ -1628,3 +1628,139 @@ Dual delivery: (A) ingresso editoriale per professionisti A&D + intake 5-step. (
 - P3: Messaging System V1 (Phase 7)
 - P4: Products / Catalogs (Phase 8)
 - Backlog: PRD.md split into CHANGELOG.md + ROADMAP.md (file is now ~1620 lines)
+
+---
+
+## SESSION E — P0 polish + Member Management RBAC + Magic-Link Invites (2026-05-15)
+
+### P0 (preview verified)
+- **EditorPanel tab strip padding** — `INSERT · ASSETS · PAGES · MOOD` no longer truncates on the right edge of the 280px side panel. Reduced gap, removed per-tab left/right padding, added right padding to the strip.
+- **Moodboard Fit controls** — added Fit Width / Fit Height / Actual Size (100%) buttons + live `%` readout in the editor topbar. Refactored `useEffect` for canvas scale to read from `fitMode` state. Visual-only scale; drag handlers already compensate via `canvasScaleRef`.
+
+### P1 — Member Management System ✅
+- **DB Migration `016_members_management.sql` (applied)**:
+  - Extended `users_profile` with `first_name`, `last_name`, `avatar_url`, `phone`, `last_login_at`, `invited_by`, `invited_at`, `accepted_at`, `suspended_at`, `suspended_by`, `suspended_reason`
+  - New `tenant_memberships` table (multi-tenant future-proof; one user can belong to many tenants). Backfilled 53 rows from existing `users_profile`.
+  - New `member_invites` table for audit trail of magic-link invites.
+- **Backend** `/api/members` router (`backend/routers/members.py`):
+  - `GET /api/members` — list members of effective tenant (filterable by status)
+  - `GET /api/members/roles` — returns assignable roles + their permission set (no hardcoded roles in frontend)
+  - `POST /api/members/invite` — invite via Supabase Admin API `/auth/v1/admin/invite` (magic link). Fallback to silent admin create if SMTP not configured.
+  - `POST /api/members/{id}/resend-invite` — resend magic link, increments `member_invites.resend_count`
+  - `PATCH /api/members/{id}` — change role or status (active/suspended). Self-edit blocked, can't demote last `tenant_admin`, can't touch `super_admin` unless you are one.
+  - `DELETE /api/members/{id}` — remove from tenant (keeps auth.user for future multi-tenant flows)
+  - All actions audit-logged via `audit_log()`
+- **Frontend** `/settings/members` (`pages/settings/MembersPage.jsx`):
+  - Linear/Notion-style table (avatar, name, email, role pill, status badge, last-login)
+  - Filter pills (All / Active / Invited / Suspended) with live counts
+  - Search by name/email
+  - "Invite member" right-side drawer with role grid (permission count per role)
+  - Per-row action menu: Resend invite · Suspend · Reactivate · Change role · Remove
+  - Confirm dialogs for suspend / remove
+  - Permission-driven: role list comes from `/api/members/roles`, no hardcoded names in UI
+- **Routing**: `/settings/team` AND `/settings/members` → MembersPage (legacy compat).
+- **RBAC reach**: `super_admin` cross-tenant, `tenant_admin` own tenant only. Designer/Client → 403 on GET.
+
+### Files touched
+- `supabase/migrations/016_members_management.sql` (new)
+- `backend/routers/members.py` (new, 380 lines)
+- `backend/server.py` (router registration)
+- `frontend/src/pages/settings/MembersPage.jsx` (new, ~470 lines)
+- `frontend/src/App.js` (routes)
+- `frontend/src/blueprint/moodboard/EditorPanel.jsx` (tab padding fix)
+- `frontend/src/pages/moodboards/MoodboardEditor.jsx` (fit controls)
+
+### Tested
+- ✅ List members (52 rows render)
+- ✅ Invite flow end-to-end (creates auth user + profile + membership + invite log)
+- ✅ Change role + status PATCH
+- ✅ Resend invite endpoint
+- ✅ Delete with last-admin guard
+- ✅ Designer gets 403 on /members
+- ✅ Drawer renders 7 assignable roles with permission counts
+- ✅ Editor tabs fit; Fit controls render with live % readout
+
+### Notes
+- **Supabase SMTP**: if not configured, the invite endpoint falls back to silent admin create. The recipient won't receive an email — they'd use /forgot-password. Recommend confirming SMTP is enabled in Supabase Auth → Email settings before going live.
+- The role list (`TENANT_ASSIGNABLE_ROLES`) already includes future personas (`editor`, `project_manager`, `analyst`, `ad_partner`). To unlock them, just map their permissions in `core/permissions.py:ROLE_PERMISSIONS`.
+
+### Pending (priority order)
+- P1: Supabase SMTP verification + redirect URL `https://blueprint.moodfordesign.com/**`
+- P1: Phase H.5 — Lead Assignment refinement (round-robin + manual override)
+- P2: Designer Profile & Human Header (Phase 6)
+- P3: Messaging V1 (Phase 7)
+- P4: Products / Catalogs (Phase 8)
+- Refactor: split PRD.md into CHANGELOG.md + ROADMAP.md (now ~1700 lines)
+
+---
+
+## SESSION F — Brand palette + Projects CMS + Mobile burger + Footer locale + Browser auto-detect (2026-05-15)
+
+### 1) Brand palette MOOD for DESIGN applied
+- **Site (`site/site.css`)** — new CSS vars from the official brand palette:
+  - `--site-accent: #00C9B3` (primary teal) · `--site-accent-2: #33DCC6` · `--site-accent-3: #7EE6DA`
+  - `--site-ink: #F4F5F7` (snow) · `--site-ink-dark: #1A1A1A` · `--site-ink-dark-2: #6B6E71` (graphite)
+  - `--site-bg: #0F0F10` (deep neutral)
+  - `--site-serif: 'Playfair Display'` · `--site-sans: 'Montserrat'`
+- **Blueprint workspace (`index.css`)** — aligned to same palette:
+  - `--bp-primary: #00C9B3` (was `#26F5C9`) · `--bp-primary-2: #33DCC6` · `--bp-primary-3: #7EE6DA`
+  - `--bp-bg: #0F0F10` · `--bp-surface-*` neutralized to graphite tones
+  - `--bp-font-heading: 'Playfair Display'` (was Cormorant) · `--bp-font-body: 'Montserrat'`
+- Added Montserrat to the Google Fonts import (Playfair Display was already loaded).
+
+### 2) CMS Projects management (ProjectsPreview)
+- Made the `projects_preview` section fully editable in StorefrontStudio:
+  - Per-card EditableImage with asset picker
+  - Inline category + location (per locale)
+  - Slug editor (top-left, hover-revealed) for routing/SEO
+  - Reorder (←/→) and remove (×) on hover
+  - "+ ADD PROJECT" tile up to max 5
+- HomePage `mergeHomepage()` now picks `_settings.items` from the DB and overrides the legacy `projectsInspire.items`, so the live site reflects CMS edits.
+
+### 3) Mobile responsive + burger menu
+- **SiteHeader.jsx** rewritten:
+  - Removed inline `LocaleSwitcher` (moved to footer)
+  - New burger button (visible <1180px), full-screen overlay menu
+  - Body scroll lock when menu is open
+  - Menu auto-closes on route change
+  - Respects `show_on_mobile` flag from CMS nav links
+- **site.css** — added:
+  - `.mfd-header__burger` (hidden ≥1180px)
+  - `.mfd-header__access` (visible ≥760px)
+  - `.mfd-mobile-menu` (slide-down full-screen panel, blurred backdrop)
+  - `.mfd-mobile-menu__link` (large-tap underlines with hover indent)
+- Verified at 390×844 viewport: burger visible, desktop nav hidden, mobile menu opens, all 5 routes tappable.
+
+### 4) Footer locale switcher + browser auto-detect + EN-GB fallback
+- **SiteContext.jsx** — `detectInitialCanonicalLocale()` now:
+  1. localStorage (user previously chose) — wins
+  2. `navigator.languages[]` → exact code match → base match (`it-CH` → `it`)
+  3. **EN-GB / EN-UK explicit fallback** (per spec)
+  4. Registry default
+- **SiteFooter.jsx** — new inline `FooterLocaleSwitcher` (Globe icon + opens upward, replaces the header switcher). Anchored bottom-right of the footer bottom bar.
+- **site.css** — added `.mfd-footer__locale*` styles matching the editorial dark theme.
+
+### Files touched
+- `frontend/src/site/site.css` (palette vars + burger + mobile menu + footer locale)
+- `frontend/src/index.css` (palette vars + Montserrat font)
+- `frontend/src/site/SiteContext.jsx` (browser locale auto-detect)
+- `frontend/src/site/components/SiteHeader.jsx` (burger + mobile menu)
+- `frontend/src/site/components/SiteFooter.jsx` (footer locale switcher)
+- `frontend/src/pages/site/HomePage.jsx` (projects mergeHomepage)
+- `frontend/src/components/storefront/SectionRenderers.jsx` (full ProjectsPreview editor)
+
+### Tested
+- ✅ Desktop hero shows MOOD teal logo, Playfair heading, Montserrat body
+- ✅ Mobile 390px viewport: burger visible (computed `display: flex`), nav hidden, mobile menu opens with all routes
+- ✅ Footer locale dropdown opens upward with 6 languages (IT default + EN-US + EN-UK + FR + DE + ES)
+- ✅ CMS projects: 5 editable cards with image picker, slug, reorder, remove
+- ✅ Blueprint workspace palette aligned (teal accents, no more mint-green clash)
+- ✅ Lint clean on all 7 modified files
+
+### Pending (priority order)
+- P1: Supabase SMTP + redirect URL for `https://blueprint.moodfordesign.com/**`
+- P1: Push to GitHub + Redeploy Emergent native to propagate palette + CORS + members + brand changes to production
+- P1: Phase H.5 — Lead Assignment refinement (round-robin + manual override)
+- P2: Designer Profile & Human Header (Phase 6)
+- P3: Messaging V1 (Phase 7)
+- P4: Products / Catalogs (Phase 8)
