@@ -4,6 +4,8 @@ Tenant: mood-corporate (resolved via tenant_resolver).
 Source of truth: Supabase PostgreSQL — NOT seed_data.py.
 """
 from typing import Optional
+import os
+import uuid
 from fastapi import APIRouter, HTTPException, Query, Depends, Request
 from pydantic import BaseModel
 from sqlalchemy import select, text
@@ -13,7 +15,6 @@ from database import get_db, AsyncSessionLocal
 from db.repository import repository
 from tenant_resolver import get_corporate_tenant
 from cache import content_cache
-import uuid
 
 router = APIRouter(prefix="/corporate", tags=["corporate"])
 
@@ -172,6 +173,8 @@ class StudioSignup(BaseModel):
 async def register_studio(data: StudioSignup, db: AsyncSession = Depends(get_db)):
     import re
     slug = re.sub(r'-+', '-', re.sub(r'[^a-z0-9]', '-', data.studio_name.lower())).strip('-')
+    blueprint_root = os.environ.get('BLUEPRINT_DOMAIN', 'blueprint.moodfordesign.com')
+    subdomain = f"{slug}.{blueprint_root}"
     await db.execute(
         text("""
             INSERT INTO studio_registrations
@@ -190,7 +193,7 @@ async def register_studio(data: StudioSignup, db: AsyncSession = Depends(get_db)
         "success": True,
         "studio": {
             "name": data.studio_name, "slug": slug,
-            "subdomain": f"{slug}.blueprint.moodfordesign.com",
+            "subdomain": subdomain,
             "plan": data.plan, "status": "provisioning",
         },
         "message": "Studio registered. Your Blueprint workspace will be ready shortly.",

@@ -67,7 +67,7 @@ const StartStudioPage = () => {
               <div className="mt-12 pt-8 border-t border-[rgba(10,10,10,0.1)]">
                 <p className="text-xs text-[#5A5A5A]">
                   Already have an account?{' '}
-                  <a href="https://blueprint.moodfordesign.com" className="text-[#3DDAD0] font-semibold hover:underline" data-testid="signin-link">
+                  <a href={process.env.REACT_APP_BLUEPRINT_URL || 'https://blueprint.moodfordesign.com'} className="text-[#3DDAD0] font-semibold hover:underline" data-testid="signin-link">
                     Sign in →
                   </a>
                 </p>
