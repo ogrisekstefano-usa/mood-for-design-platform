@@ -19,13 +19,14 @@ import useSidebarCollapsed from '../../hooks/useSidebarCollapsed';
  *   - Edge collapse handle on the right border for users who prefer that pattern
  *   - Default state: COLLAPSED (icon-only). User can pin it open; choice persists.
  */
-const NavItem = ({ to, icon, labelKey, collapsed }) => {
+const NavItem = ({ to, icon, labelKey, collapsed, end }) => {
   const { t } = useBlueprint();
   const Icon = Icons[icon] || Icons.Square;
   const testid = `sidebar-nav-${labelKey.replace(/\./g, '-')}`;
   return (
     <NavLink
       to={to}
+      end={end}
       data-testid={testid}
       title={collapsed ? t(labelKey) : undefined}
       className={({ isActive }) =>
@@ -150,7 +151,7 @@ const Sidebar = () => {
 
       <nav className={`flex-1 ${collapsed ? 'px-1.5' : 'px-2.5'} py-5 space-y-6 overflow-y-auto overflow-x-hidden`}>
         <div>
-          <NavItem to="/dashboard" icon="LayoutDashboard" labelKey="nav.dashboard" collapsed={collapsed} />
+          <NavItem to="/dashboard" icon="LayoutDashboard" labelKey="nav.dashboard" end collapsed={collapsed} />
         </div>
 
         {wsRoutes.length > 0 && (
@@ -168,7 +169,9 @@ const Sidebar = () => {
           <div>
             <SectionLabel collapsed={collapsed}>{t('nav.section.content')}</SectionLabel>
             <div className="space-y-0.5">
-              {contentRoutes.filter((r) => r.to !== '/moodboards').map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
+              {contentRoutes.filter((r) => r.to !== '/moodboards').map((r) => (
+                <NavItem key={r.to} {...r} end={r.to === '/library'} collapsed={collapsed} />
+              ))}
               <NavItem to="/library/collections" icon="FolderHeart" labelKey="nav.collections" collapsed={collapsed} />
             </div>
           </div>
@@ -198,7 +201,7 @@ const Sidebar = () => {
           <div>
             <SectionLabel collapsed={collapsed}>{t('nav.section.system')}</SectionLabel>
             <div className="space-y-0.5">
-              <NavItem to="/settings" icon="Settings" labelKey="nav.settings" collapsed={collapsed} />
+              <NavItem to="/settings" icon="Settings" labelKey="nav.settings" end collapsed={collapsed} />
               <NavItem to="/settings/plan" icon="Receipt" labelKey="nav.billing" collapsed={collapsed} />
               <NavItem to="/settings/integrations" icon="Plug" labelKey="nav.integrations" collapsed={collapsed} />
             </div>
