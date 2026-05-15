@@ -2,6 +2,103 @@
 
 ## Implementation Status
 
+### ✅ Phase S.2 — Human-First Tenant Model (DONE — 15 Feb 2026)
+
+Phase S.2 makes the **human visible everywhere** — every tenant owner
+is required to introduce themselves with a real photo, role and bio
+before the platform considers their workspace complete. Clients now
+see "Ciao, sono Stefano" with a real face, not an anonymous workspace.
+
+**Backend additions**
+- New router `/api/profile/*`:
+  - `GET  /me` — returns full self-profile with computed `is_introduced` flag.
+  - `PATCH /me` — updates editorial fields (first_name, last_name,
+    role_label, short_bio, response_time_label, contact_cta_label,
+    avatar_url) with length validation (bio ≤ 240 chars).
+  - `POST /me/avatar` — multipart upload (JPG/PNG/WebP/GIF ≤ 4 MB)
+    server-side to Supabase Storage bucket `tenant-assets`, path
+    `avatars/{tenant_id}/{profile_id}-{cachebust}.{ext}`. Public URL
+    persisted on `users_profile.avatar_url`.
+- `tenant_onboarding` extended with `owner_introduced` boolean.
+  Auto-detection compares the tenant owner's avatar+bio+role_label
+  presence. Checklist re-ordered to put "Presentati ai tuoi clienti"
+  RIGHT AFTER "Completa il profilo studio" — before branding/services,
+  because human presence must precede operational setup.
+- Migration: `ALTER TABLE tenant_onboarding ADD COLUMN
+  owner_introduced boolean NOT NULL DEFAULT false;` (applied live).
+
+**Frontend additions**
+- `OwnerIntroductionModal.jsx` — cinematic enterprise modal:
+  - Big circular avatar slot (112px) with camera-overlay on hover,
+    Loader2 spinner while uploading.
+  - Required: avatar + role_label + short_bio. Save button stays
+    disabled until ALL three are present.
+  - Bio textarea with live `0/240` counter, amber when ≤20 remaining.
+  - Optional collapsible: response_time_label + contact_cta_label.
+  - Auto-prefill from `/api/profile/me` so existing bios aren't lost.
+  - Footer: `Più tardi` (per-session defer) + gold `Salva e pubblica`.
+- `OwnerIntroductionGate.jsx` — mounted in `DashboardLayout`. On every
+  dashboard load:
+  - If role ∈ {tenant_admin, super_admin} AND `is_introduced=false`
+    AND not deferred this session → auto-opens the modal.
+  - Listens for the global `mfd:open-owner-introduction` event so other
+    UI (the StudioOnboardingPanel) can pop it on demand without imports.
+  - sessionStorage key `mfd.owner_intro.deferred` honours "Più tardi"
+    so users aren't nagged on every navigation, but the gate triggers
+    again on hard refresh / next session.
+- `StudioOnboardingPanel` — the `owner_introduced` row now renders
+  "Presentati ora →" instead of `Apri sezione`; the button fires the
+  global event and the modal pops without leaving the dashboard.
+
+**End-to-end verification (15 Feb 2026)** ✅
+- Stefano (super_admin) logs in → modal auto-opens (no avatar yet).
+- Tiny file < 256 bytes → backend rejects (413/400 with Italian copy).
+- 64×64 solid PNG (179 B) → rejected.
+- 256×256 PNG (761 B) → accepted, uploaded to Supabase Storage,
+  public URL returned, `users_profile.avatar_url` persisted.
+- `/api/profile/me` immediately returns `is_introduced: true`.
+- Manual reassign Stefano → client sees Human Card transition
+  from "Ciao, sono Giulia" to "Ciao, sono Stefano" with avatar img.
+- Onboarding checklist: 5/8 → 6/8 (75%) once Stefano completes the
+  presentation. Step labelled "Presentati ai tuoi clienti" checked ✓.
+- Modal does NOT re-open after successful save (gate sees `is_introduced=true`).
+- Modal DOES re-open on next session if save was aborted (gate flushes
+  defer state only on full completion).
+- Zero React errors, zero unhandled rejections, zero security regressions.
+
+**Public-safe exposure preserved**
+- Client sees only the public-safe assignee shape from S.1 — name,
+  first_name, avatar_url, role_label, short_bio, response_time_label,
+  contact_cta_label. NO email, role, tenant_id, permissions leakage.
+
+**Files of reference (new in S.2)**
+- `/app/backend/routers/profile.py`
+- `/app/frontend/src/components/onboarding/OwnerIntroductionModal.jsx`
+- `/app/frontend/src/components/onboarding/OwnerIntroductionGate.jsx`
+- modified: `/app/backend/routers/tenant_onboarding.py`,
+  `/app/frontend/src/components/dashboard/StudioOnboardingPanel.jsx`,
+  `/app/frontend/src/components/layout/DashboardLayout.jsx`,
+  `/app/backend/server.py`
+
+**Out of scope (preserved for S.3+)**
+- Multiple advisors per tenant (architecture supports it via
+  `human_assignments`; the modal currently configures the owner only).
+- Specialisations / tags on profiles (designer · pm · ad-partner).
+- Availability schedules + timezone matching.
+- Language matching between client and advisor.
+- AI-driven candidate routing.
+- "Forced complete" mode (`forceComplete` flag exists on the modal but
+  is NOT currently wired — users can defer once per session. The
+  product can flip this when the studio onboarding flow is hardened).
+- Avatar cropping / image-processing UI (currently the uploaded image
+  is stored as-is and CSS object-cover handles framing).
+
+
+
+
+
+## Implementation Status
+
 ### ✅ Phase S.1 — Human Layer Foundation + Tenant Onboarding (DONE — 15 Feb 2026)
 
 Phase S.1 introduces the **Human Layer** — the relational backbone that

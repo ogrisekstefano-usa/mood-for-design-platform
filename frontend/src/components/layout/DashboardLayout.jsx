@@ -5,6 +5,7 @@ import Topbar, { TopbarSlotsProvider } from './Topbar';
 import ImpersonationBanner from '../common/ImpersonationBanner';
 import PlatformFooterBar from '../common/PlatformFooterBar';
 import BlueprintThemeProvider from '../../design-system/os/BlueprintThemeProvider';
+import OwnerIntroductionGate from '../onboarding/OwnerIntroductionGate';
 
 /**
  * DashboardLayout — Blueprint OS shell.
@@ -28,6 +29,8 @@ const DashboardLayout = () => (
           <PlatformFooterBar surface="os" />
         </div>
       </div>
+      {/* S.2 — human-first tenant: nudge owners to introduce themselves */}
+      <OwnerIntroductionGate />
     </TopbarSlotsProvider>
   </BlueprintThemeProvider>
 );

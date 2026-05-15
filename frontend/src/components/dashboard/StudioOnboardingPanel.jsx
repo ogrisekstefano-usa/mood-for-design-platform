@@ -109,51 +109,69 @@ const StudioOnboardingPanel = () => {
   );
 };
 
-const ChecklistRow = ({ index, key: _k, title, body, link, done, onComplete }) => (
-  <li
-    data-testid={`onboarding-step-${_k || index}`}
-    className={`group flex items-start gap-3 rounded-[12px] p-4 border transition-colors
-                ${done
-                  ? 'border-[var(--bp-primary)]/25 bg-[var(--bp-primary)]/[0.04]'
-                  : 'border-[var(--bp-border)] hover:border-[var(--bp-border-strong)] bg-[var(--bp-surface-2)]/30'}`}
-  >
-    <span
-      aria-hidden
-      className={`w-6 h-6 rounded-full shrink-0 flex items-center justify-center mt-0.5
+const ChecklistRow = ({ index, key: _k, title, body, link, done, onComplete }) => {
+  const isOwnerIntro = _k === 'owner_introduced';
+  const openIntroModal = () => {
+    window.dispatchEvent(new CustomEvent('mfd:open-owner-introduction'));
+  };
+  return (
+    <li
+      data-testid={`onboarding-step-${_k || index}`}
+      className={`group flex items-start gap-3 rounded-[12px] p-4 border transition-colors
                   ${done
-                    ? 'bg-[var(--bp-primary)] text-black'
-                    : 'border border-[var(--bp-border-strong)] text-[var(--bp-text-muted)] font-mono text-[10px]'}`}
+                    ? 'border-[var(--bp-primary)]/25 bg-[var(--bp-primary)]/[0.04]'
+                    : 'border-[var(--bp-border)] hover:border-[var(--bp-border-strong)] bg-[var(--bp-surface-2)]/30'}`}
     >
-      {done ? <Check size={12} strokeWidth={2.4} /> : String(index).padStart(2, '0')}
-    </span>
-    <div className="flex-1 min-w-0">
-      <p className={`text-[13px] font-body leading-tight mb-1 ${
-        done ? 'text-[var(--bp-text-secondary)]' : 'text-[var(--bp-text-primary)]'
-      }`}>
-        {title}
-      </p>
-      <p className="text-[11px] text-[var(--bp-text-muted)] font-body leading-relaxed">
-        {body}
-      </p>
-      {!done && link && (
-        <div className="mt-3 flex items-center gap-3">
-          <a
-            href={link}
-            className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] text-[var(--bp-primary)] hover:opacity-80 transition-opacity"
-          >
-            Apri sezione <ArrowUpRight size={11} strokeWidth={1.8} />
-          </a>
-          <button
-            type="button"
-            onClick={onComplete}
-            className="text-[10px] uppercase tracking-[0.18em] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors"
-          >
-            Segna fatto
-          </button>
-        </div>
-      )}
-    </div>
-  </li>
-);
+      <span
+        aria-hidden
+        className={`w-6 h-6 rounded-full shrink-0 flex items-center justify-center mt-0.5
+                    ${done
+                      ? 'bg-[var(--bp-primary)] text-black'
+                      : 'border border-[var(--bp-border-strong)] text-[var(--bp-text-muted)] font-mono text-[10px]'}`}
+      >
+        {done ? <Check size={12} strokeWidth={2.4} /> : String(index).padStart(2, '0')}
+      </span>
+      <div className="flex-1 min-w-0">
+        <p className={`text-[13px] font-body leading-tight mb-1 ${
+          done ? 'text-[var(--bp-text-secondary)]' : 'text-[var(--bp-text-primary)]'
+        }`}>
+          {title}
+        </p>
+        <p className="text-[11px] text-[var(--bp-text-muted)] font-body leading-relaxed">
+          {body}
+        </p>
+        {!done && (
+          <div className="mt-3 flex items-center gap-3">
+            {isOwnerIntro ? (
+              <button
+                type="button"
+                onClick={openIntroModal}
+                className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] text-[var(--bp-primary)] hover:opacity-80 transition-opacity"
+              >
+                Presentati ora <ArrowUpRight size={11} strokeWidth={1.8} />
+              </button>
+            ) : link ? (
+              <a
+                href={link}
+                className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] text-[var(--bp-primary)] hover:opacity-80 transition-opacity"
+              >
+                Apri sezione <ArrowUpRight size={11} strokeWidth={1.8} />
+              </a>
+            ) : null}
+            {!isOwnerIntro && (
+              <button
+                type="button"
+                onClick={onComplete}
+                className="text-[10px] uppercase tracking-[0.18em] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors"
+              >
+                Segna fatto
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    </li>
+  );
+};
 
 export default StudioOnboardingPanel;

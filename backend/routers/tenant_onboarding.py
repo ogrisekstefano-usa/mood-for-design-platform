@@ -41,10 +41,27 @@ def _ensure_row(tenant_id: str) -> dict:
     return r.data[0] if r.data else row
 
 
+def _tenant_owner_id(tenant_id: str) -> Optional[str]:
+    """Return the profile_id of the tenant owner (first super_admin or
+    tenant_admin of the tenant, ordered by created_at). Used to know
+    whose introduction matters for the onboarding step."""
+    c = db()
+    for role in ("super_admin", "tenant_admin"):
+        r = (
+            c.table("users_profile").select("id,created_at")
+            .eq("tenant_id", tenant_id).eq("role", role)
+            .order("created_at").limit(1).execute()
+        )
+        if r.data:
+            return r.data[0]["id"]
+    return None
+
+
 def _auto_detect(tenant_id: str) -> dict:
     c = db()
     out = {
         "profile_completed": False,
+        "owner_introduced": False,
         "branding_completed": False,
         "service_completed": False,
         "team_invited": False,
@@ -58,6 +75,17 @@ def _auto_detect(tenant_id: str) -> dict:
         td = t.data[0]
         out["profile_completed"] = bool(td.get("name") and td.get("primary_color"))
         out["branding_completed"] = bool(td.get("logo_url"))
+    # Owner introduction — avatar + bio + role_label must ALL be present
+    owner_id = _tenant_owner_id(tenant_id)
+    if owner_id:
+        op = c.table("users_profile").select("avatar_url,short_bio,role_label").eq("id", owner_id).limit(1).execute()
+        if op.data:
+            od = op.data[0]
+            out["owner_introduced"] = bool(
+                (od.get("avatar_url") or "").strip()
+                and (od.get("short_bio") or "").strip()
+                and (od.get("role_label") or "").strip()
+            )
     # Team members
     m = c.table("users_profile").select("id", count="exact").eq("tenant_id", tenant_id).eq("status", "active").limit(1).execute()
     out["team_invited"] = (m.count or 0) >= 2
@@ -82,9 +110,13 @@ def _auto_detect(tenant_id: str) -> dict:
 
 
 def _checklist(state: dict) -> list:
-    """Frozen step catalogue rendered by the frontend. Order matters."""
+    """Frozen step catalogue rendered by the frontend. Order matters:
+    the human introduction comes immediately after the studio profile —
+    BEFORE branding, services and the rest. Clients should feel
+    accompanied as soon as the studio finishes its self-introduction."""
     items = [
         ("profile_completed",    "Completa il profilo studio", "Nome studio, descrizione e contatti.", "/settings"),
+        ("owner_introduced",     "Presentati ai tuoi clienti", "Foto, ruolo e bio breve — visibili a ogni cliente.", "/settings/profile"),
         ("branding_completed",   "Carica logo e palette",      "Identità visiva coerente per ogni surface.", "/settings/brand"),
         ("service_completed",    "Configura il primo servizio","Tipologie di progetto, durate, tariffe.", "/workspace/projects"),
         ("team_invited",         "Invita il primo membro del team","Designer, project manager o editor.", "/settings/members"),
@@ -145,7 +177,7 @@ def mark_done(body: StepReq, ctx: dict = Depends(get_tenant_context)):
         raise HTTPException(403, "Onboarding is for studio members.")
     valid = {"profile_completed", "branding_completed", "service_completed",
              "team_invited", "project_created", "materials_uploaded",
-             "storefront_published"}
+             "storefront_published", "owner_introduced"}
     if body.key not in valid:
         raise HTTPException(400, "Invalid step key.")
     tenant_id = ctx["tenant_id"]
