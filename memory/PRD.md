@@ -1,5 +1,115 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
+## Implementation Status
+
+### ✅ Phase R.1 + R.2 — Client Portal Foundation + Cinematic Zero-Data Experience (DONE — 15 Feb 2026)
+
+Phase R introduces the **third surface** of MOOD for DESIGN™ — a
+quiet, warm hospitality space dedicated to clients. The Blueprint OS™
+remains hidden; the client only sees the elegant edge of the workflow.
+
+**Surface architecture — `[data-surface="client"]`**
+- New design-system root: `/app/frontend/src/design-system/client/tokens.css`
+- New theme wrapper: `ClientThemeProvider` (mirrors `BlueprintThemeProvider`
+  pattern, identical strictness).
+- **Three surfaces now coexist with zero token leakage:**
+   - `[data-surface="os"]`        → Blueprint OS Workspace (graphite + teal)
+   - `[data-surface="storefront"]` → Tenant public storefront (cream + Cormorant)
+   - `[data-surface="client"]`    → Client Portal (warm graphite + ivory + muted gold)
+
+**Visual direction — Apple + Linear + luxury hospitality**
+- Palette: `#0A0A0B` bg, surfaces `#111114` → `#1B1B22`, warm ivory text,
+  muted gold accent `#C8A977`, teal restricted to status pulses only.
+- Typography: Playfair Display ONLY on titles, Inter on UI body.
+- Density: ~40% looser than Blueprint OS (`--cp-space-*` ladder).
+- Shadows: warm, soft, no glow. No gradients-of-AI.
+
+**Layout — `ClientDashboardLayout`**
+- 260px quiet sidebar + main area with topbar greeting + page outlet.
+- Topbar shows `Benvenuto, {first_name}` (Playfair 28px) + bell + initials avatar.
+
+**Sidebar — `ClientSidebar` (LOCKED structure)**
+- 7 entries exactly: Panoramica · Il mio progetto · Moodboard · Timeline ·
+  Approvazioni · File condivisi · Messaggi.
+- Wordmark "MOOD / for DESIGN" with gold subtitle.
+- Active item: 2px gold left bar + ivory text, no fill, no glow.
+- Bottom helper card "Hai bisogno di aiuto?" → "Contatta lo studio" CTA.
+- **No** enterprise items. Blueprint OS is invisible from this surface.
+
+**Cinematic zero-data experience**
+- `ClientWelcomeHero` — Playfair "Benvenuto nel tuo spazio progetto.",
+  editorial interior image with soft fade, three CTAs (gold "Completa il
+  briefing" + ghost "Prenota una call" + link "Scopri il processo →").
+- `HowItWorksSection` — 4 numbered cards (Brief · Moodboard · Revisione ·
+  Consegna) in 4-col grid with Playfair titles + lucide icons.
+- `WhatYouWillFindSection` — 6 mini cards (Timeline · Materiali · File ·
+  Appuntamenti · Moodboard · Comunicazioni) with circular gold-bg icons.
+- All copy in Italian, atelier register — never "no data available".
+
+**Has-data experience (when project exists)**
+- Hero project card with title, type, location, "Vai al progetto" gold CTA
+  and inset "Stato attuale" side panel with compact tracker.
+- Full-width Timeline card with horizontal `ProjectProgressTracker`.
+- Moodboards card (3-thumb grid) + Approvals card (proposal rows).
+- Premium empty hints ("Le prime proposte stanno arrivando.") when data is
+  empty but project exists.
+
+**`ProjectProgressTracker` — heart of the portal**
+- 6 stages: Brief · Moodboard · Materiali · Progettazione · Revisione · Consegna.
+- Variants: `horizontal` (cinematic rail) + `compact` (vertical w/ progress bar).
+- Dot states: filled gold+check (done), gold ring (current), faint dot (upcoming).
+
+**Stub pages for the other 6 sidebar entries**
+- Premium "in arrivo" cards with italic editorial copy, gold eyebrow + Playfair
+  title + Sparkles icon. NEVER generic "404 / coming soon".
+
+**Routing + role-based redirect (App.js)**
+- `ClientRoute` — redirects non-client roles AWAY from `/client/*` → `/dashboard`.
+- `StudioRoute` — redirects role=client AWAY from `/dashboard/*` → `/client`.
+- `PublicRoute` extended: logged-in client lands on `/client`, others on `/dashboard`.
+
+**Backend — `/api/client/*` ownership-scoped router**
+- All endpoints double-scoped: `tenant_id == ctx['tenant_id']` AND
+  `projects.client_user_id == ctx['profile_id']`. Moodboards / proposals
+  derived from owned projects only. NEVER tenant-wide fallback or demo preload.
+- `_require_client()` allows roles `client`, `tenant_admin`, `super_admin`. All
+  others → HTTP 403.
+- `GET /api/client/overview` → project + pipeline + counts + moodboards + approvals.
+  `zero_data: true` when no project owned.
+- `GET /api/client/projects|moodboards|approvals` → all ownership-scoped.
+- `_stage_index_for(status)` tolerantly maps `projects.status` to one of the 6
+  pipeline stages. Unknown → `brief`.
+
+**Security verification (15 Feb 2026)** ✅
+- Client login → lands at `/client`, never sees OS (`data-surface="os"` = 0).
+- Client manual `/dashboard` → bounces back to `/client`.
+- Designer login → lands at `/dashboard`. Manual `/client` → bounces to `/dashboard`,
+  client surface count = 0.
+- Backend `/api/client/overview` → 403 for designer.
+- Client demo user has 0 projects → renders cinematic zero-data experience.
+- Zero React errors, zero unhandled rejections.
+
+**Files of reference (new in R)**
+- `/app/backend/routers/client_portal.py` (4 endpoints + 6-stage mapping)
+- `/app/frontend/src/design-system/client/tokens.css`
+- `/app/frontend/src/design-system/client/ClientThemeProvider.jsx`
+- `/app/frontend/src/components/client/{ClientSidebar,ClientDashboardLayout,
+  ClientWelcomeHero,HowItWorksSection,WhatYouWillFindSection,
+  ProjectProgressTracker}.jsx`
+- `/app/frontend/src/pages/client/{ClientOverviewPage,ClientStubPages}.jsx`
+- `/app/frontend/src/App.js` (ClientRoute + StudioRoute + routing)
+- `/app/backend/server.py` (router include)
+
+**Out of scope (preserved for R.3)**
+- Real project_files / appointments / messages tables (currently stubs).
+- Has-data flows for the 6 secondary nav pages (all are calm "in arrivo" stubs).
+- ProjectProgressTracker per-stage milestones / sub-tasks.
+- Functional "Contatta lo studio" helper (static button, no handler yet).
+
+
+
+
+
 ## Original Problem Statement
 Multi-tenant SaaS platform per interior designer e architetti, costruita come Blueprint OS™ — operating system configurabile multi-tenant. Stack: React + FastAPI + Supabase. Tutto Blueprint-driven (zero hardcoded UI), multi-locale, tenant-themed, permission-aware.
 

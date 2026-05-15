@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import httpx
 
-from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial
+from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -107,6 +107,7 @@ api_router.include_router(onboarding.router, prefix="/onboarding", tags=["onboar
 api_router.include_router(media.router, prefix="/media", tags=["media-library"])
 api_router.include_router(dashboard.router, prefix="/dashboard", tags=["dashboard"])
 api_router.include_router(ai_editorial.router, prefix="/ai", tags=["ai-editorial"])
+api_router.include_router(client_portal.router, prefix="/client", tags=["client-portal"])
 
 
 @api_router.get("/health")

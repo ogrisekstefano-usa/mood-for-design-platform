@@ -54,6 +54,14 @@ const MediaLibraryPage = lazy(() => import('./pages/library/MediaLibraryPage'));
 const MaterialsPage = lazy(() => import('./pages/library/MaterialsPage'));
 const MaterialDetailPage = lazy(() => import('./pages/library/MaterialDetailPage'));
 
+// Client Portal (Phase R) — surface-isolated experience for role=client
+const ClientDashboardLayout = lazy(() => import('./components/client/ClientDashboardLayout'));
+const ClientOverviewPage = lazy(() => import('./pages/client/ClientOverviewPage'));
+import {
+  ClientProjectPage, ClientMoodboardsPage, ClientTimelinePage,
+  ClientApprovalsPage, ClientFilesPage, ClientMessagesPage,
+} from './pages/client/ClientStubPages';
+
 // Coming-soon placeholders for sidebar routes not yet implemented
 import {
   CalendarComingSoon, ActivityComingSoon, TeamComingSoon, ClientsComingSoon,
@@ -86,6 +94,31 @@ const ProtectedRoute = ({ children }) => {
   return user ? children : <Navigate to="/auth/login" replace />;
 };
 
+// Client portal gate. Auto-redirects role=client to /client and blocks
+// other roles from accessing the client portal.
+const ClientRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return <Loading />;
+  if (!user) return <Navigate to="/auth/login" replace />;
+  if ((user.role || '').toLowerCase() !== 'client') {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return children;
+};
+
+// Wraps the OS DashboardLayout but kicks role=client out to /client.
+// This prevents a logged-in client from landing on the Blueprint OS
+// dashboard even if they manually navigate to /dashboard.
+const StudioRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return <Loading />;
+  if (!user) return <Navigate to="/auth/login" replace />;
+  if ((user.role || '').toLowerCase() === 'client') {
+    return <Navigate to="/client" replace />;
+  }
+  return children;
+};
+
 const SuperAdminRoute = ({ children }) => {
   const { user, loading } = useAuth();
   const { isSuperAdmin, loading: bpLoading } = useBlueprint();
@@ -97,7 +130,10 @@ const SuperAdminRoute = ({ children }) => {
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <Loading />;
-  return !user ? children : <Navigate to="/dashboard" replace />;
+  if (!user) return children;
+  // Logged-in users: route client to /client, all others to /dashboard
+  const role = (user.role || '').toLowerCase();
+  return <Navigate to={role === 'client' ? '/client' : '/dashboard'} replace />;
 };
 
 import BlueprintThemeProvider from './design-system/os/BlueprintThemeProvider';
@@ -136,7 +172,7 @@ function App() {
                 <Route path="/auth/forgot-password" element={<OSWrap><ForgotPasswordPage /></OSWrap>} />
                 <Route path="/form/:slug" element={<LeadFormPage />} />
 
-                <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+                <Route element={<ProtectedRoute><StudioRoute><DashboardLayout /></StudioRoute></ProtectedRoute>}>
                   <Route path="/dashboard" element={<DashboardPage />} />
                   <Route path="/workspace/leads" element={<LeadsPage />} />
                   <Route path="/workspace/projects" element={<ProjectsPage />} />
@@ -167,8 +203,18 @@ function App() {
                   <Route path="/settings/members" element={<MembersPage />} />
                 </Route>
 
-                <Route element={<SuperAdminRoute><AdminLayout /></SuperAdminRoute>}>
-                  <Route path="/admin" element={<AdminOverviewPage />} />
+                {/* CLIENT PORTAL (Phase R) — surface-isolated, role=client only */}
+                <Route element={<ClientRoute><ClientDashboardLayout /></ClientRoute>}>
+                  <Route path="/client" element={<ClientOverviewPage />} />
+                  <Route path="/client/project" element={<ClientProjectPage />} />
+                  <Route path="/client/moodboards" element={<ClientMoodboardsPage />} />
+                  <Route path="/client/timeline" element={<ClientTimelinePage />} />
+                  <Route path="/client/approvals" element={<ClientApprovalsPage />} />
+                  <Route path="/client/files" element={<ClientFilesPage />} />
+                  <Route path="/client/messages" element={<ClientMessagesPage />} />
+                </Route>
+
+                <Route element={<SuperAdminRoute><AdminLayout /></SuperAdminRoute>}>                  <Route path="/admin" element={<AdminOverviewPage />} />
                   <Route path="/admin/tenants" element={<AdminTenantsPage />} />
                   <Route path="/admin/tenants/:id" element={<AdminTenantDetailPage />} />
                   <Route path="/admin/modules" element={<AdminModulesPage />} />

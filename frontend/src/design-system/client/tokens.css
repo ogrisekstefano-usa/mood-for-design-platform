@@ -1,0 +1,186 @@
+/* ─────────────────────────────────────────────────────────────────
+ * MOOD for DESIGN™ — Client Portal design tokens
+ *
+ * Phase R direction: warm luxury hospitality.
+ * Apple + Linear + a quiet six-star hotel concierge.
+ *
+ * STRICT SURFACE ISOLATION
+ * ────────────────────────
+ *   - ALL tokens are scoped to [data-surface="client"] only.
+ *   - Never to :root, never global, never reused from OS tokens.
+ *   - Storefront / Blueprint OS / Corporate site remain untouched.
+ *
+ * Aesthetic principles:
+ *   - graphite + warm black backgrounds (never pure #000)
+ *   - warm ivory text (never pure #FFF)
+ *   - muted gold accent #C8A977 — confidence, not glitz
+ *   - teal limited to status hints only (≤8% surface)
+ *   - serif (Playfair Display) only on hero/section titles
+ *   - generous spacing (40% less density than Blueprint OS)
+ * ─────────────────────────────────────────────────────────── */
+
+[data-surface="client"] {
+  /* ── Backgrounds — warm graphite, never neutral cold ───────── */
+  --cp-bg:           #0A0A0B;   /* page background — warm-near-black */
+  --cp-surface-1:    #111114;   /* primary panels */
+  --cp-surface-2:    #15151A;   /* elevated cards */
+  --cp-surface-3:    #1B1B22;   /* hover / interactive elevation */
+
+  /* Gradient applied behind cards for soft luminosity */
+  --cp-card-gradient: linear-gradient(180deg,
+                       rgba(255, 250, 240, 0.022) 0%,
+                       rgba(255, 250, 240, 0.006) 100%);
+
+  /* ── Borders — barely visible, warm-tinted ─────────────────── */
+  --cp-border:        rgba(255, 250, 240, 0.06);
+  --cp-border-strong: rgba(255, 250, 240, 0.12);
+  --cp-border-hover:  rgba(200, 169, 119, 0.32);   /* gold-tinted hover */
+  --cp-border-active: rgba(200, 169, 119, 0.55);
+
+  /* ── Text — warm ivory, alpha-graded ───────────────────────── */
+  --cp-text-primary:   rgba(255, 250, 240, 0.94);
+  --cp-text-secondary: rgba(255, 250, 240, 0.74);
+  --cp-text-muted:     rgba(255, 250, 240, 0.54);
+  --cp-text-faint:     rgba(255, 250, 240, 0.34);
+  --cp-text-subtle:    rgba(255, 250, 240, 0.22);
+  --cp-text-on-gold:   #1A1410;
+
+  /* ── Accent — muted gold (hospitality / atelier) ───────────── */
+  --cp-gold:        #C8A977;     /* primary accent */
+  --cp-gold-soft:   #D9C194;     /* secondary highlight */
+  --cp-gold-deep:   #A88A5C;     /* hover / pressed */
+  --cp-gold-bg:     rgba(200, 169, 119, 0.10);
+  --cp-gold-bg-strong: rgba(200, 169, 119, 0.18);
+
+  /* Teal — used VERY sparingly (status pulses only) */
+  --cp-teal:        rgba(0, 201, 179, 0.55);
+  --cp-teal-soft:   rgba(0, 201, 179, 0.15);
+
+  /* Status colours — restrained */
+  --cp-success:     #7BBB7E;
+  --cp-warning:     #D6A756;
+  --cp-danger:      #C77B7B;
+
+  /* ── Typography ────────────────────────────────────────────── */
+  --cp-font-heading: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  --cp-font-body:    "Inter", "Suisse Intl", system-ui, -apple-system, sans-serif;
+  --cp-font-mono:    "JetBrains Mono", "SF Mono", Menlo, monospace;
+
+  /* ── Radii — generous, cinematic ───────────────────────────── */
+  --cp-radius-xs:   8px;
+  --cp-radius-sm:   12px;
+  --cp-radius-md:   18px;
+  --cp-radius-lg:   22px;
+  --cp-radius-xl:   28px;
+
+  /* ── Spacing rhythm — 40% looser than Blueprint OS ─────────── */
+  --cp-space-1: 6px;
+  --cp-space-2: 12px;
+  --cp-space-3: 20px;
+  --cp-space-4: 32px;
+  --cp-space-5: 48px;
+  --cp-space-6: 64px;
+
+  /* ── Shadows — soft, warm ──────────────────────────────────── */
+  --cp-shadow-soft: 0 6px 28px rgba(0, 0, 0, 0.32);
+  --cp-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.42);
+
+  /* ── Base render ───────────────────────────────────────────── */
+  background-color: var(--cp-bg);
+  color: var(--cp-text-primary);
+  font-family: var(--cp-font-body);
+  font-feature-settings: "ss01", "ss02", "cv01", "cv03";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Heading utility — Playfair via Tailwind `font-heading` inside client */
+[data-surface="client"] .font-heading {
+  font-family: var(--cp-font-heading);
+  font-weight: 400;
+  letter-spacing: -0.012em;
+}
+
+[data-surface="client"] .font-body {
+  font-family: var(--cp-font-body);
+  letter-spacing: 0.005em;
+}
+
+/* ── Card pattern — soft luminous panels ─────────────────────── */
+[data-surface="client"] .cp-card {
+  position: relative;
+  background-color: var(--cp-surface-1);
+  background-image: var(--cp-card-gradient);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius-lg);
+  transition: background-color 240ms ease,
+              border-color 240ms ease,
+              transform 240ms cubic-bezier(.2,.7,.2,1);
+}
+
+[data-surface="client"] .cp-card:hover {
+  border-color: var(--cp-border-hover);
+}
+
+[data-surface="client"] .cp-card-elevated {
+  background-color: var(--cp-surface-2);
+}
+
+/* Gold CTA — primary action style */
+[data-surface="client"] .cp-cta-gold {
+  background-color: var(--cp-gold);
+  color: var(--cp-text-on-gold);
+  border: 1px solid transparent;
+  border-radius: var(--cp-radius-sm);
+  font-family: var(--cp-font-body);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: background-color 200ms ease, transform 200ms ease;
+}
+
+[data-surface="client"] .cp-cta-gold:hover {
+  background-color: var(--cp-gold-soft);
+}
+
+[data-surface="client"] .cp-cta-gold:active {
+  background-color: var(--cp-gold-deep);
+}
+
+/* Quiet ghost button — secondary action */
+[data-surface="client"] .cp-cta-ghost {
+  background-color: transparent;
+  color: var(--cp-text-secondary);
+  border: 1px solid var(--cp-border-strong);
+  border-radius: var(--cp-radius-sm);
+  font-family: var(--cp-font-body);
+  letter-spacing: 0.04em;
+  transition: color 200ms ease, border-color 200ms ease, background-color 200ms ease;
+}
+
+[data-surface="client"] .cp-cta-ghost:hover {
+  color: var(--cp-text-primary);
+  border-color: var(--cp-border-hover);
+  background-color: var(--cp-gold-bg);
+}
+
+/* Selection colour — warm gold tint */
+[data-surface="client"] ::selection {
+  background-color: rgba(200, 169, 119, 0.32);
+  color: var(--cp-text-primary);
+}
+
+/* Scrollbar — minimal, warm */
+[data-surface="client"] *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+[data-surface="client"] *::-webkit-scrollbar-track {
+  background: transparent;
+}
+[data-surface="client"] *::-webkit-scrollbar-thumb {
+  background: rgba(255, 250, 240, 0.08);
+  border-radius: 4px;
+}
+[data-surface="client"] *::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 250, 240, 0.16);
+}
