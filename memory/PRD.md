@@ -29,6 +29,83 @@ Multi-tenant SaaS platform per interior designer e architetti, costruita come Bl
 
 ## Implementation Status
 
+### ✅ Phase O — Blueprint OS Visual System Stabilization (DONE — 15 Feb 2026)
+
+Phase O = visual-only refinement, surface-scoped, **zero logic changes** to
+backend / APIs / routing / licensing / CMS / revisions / auth / DB. Pure
+cinematic uplift of the Blueprint OS surface.
+
+**New deep cinematic palette** (`tokens.css`)
+- Background: `#070707` (near-black, never pure)
+- Surfaces: `#0D0F12` / `#111318` / `#151922`
+- Elevated cards: `#181C24`
+- Borders: `rgba(255,255,255,0.06)` · hover `rgba(0,201,179,0.28)` teal-tinted
+- Text: 0.96 / 0.78 / 0.62 / 0.38 / 0.22 alpha (never pure white)
+- Primary: `#00C9B3` · Soft accent `#7EE6DA` · Success `#00C27F` · Warning `#D6A756`
+- Selection: teal 20% alpha
+
+**Typography direction shift — Playfair Display for OS headlines**
+- `--bp-font-heading` = `Playfair Display, Cormorant Garamond, Georgia, serif`
+- `--bp-font-body` = `Inter, Suisse Intl, system-ui, sans-serif`
+- Tailwind `font-heading` overridden to Playfair via `[data-surface="os"] .font-heading`
+- Used sparingly on titles, KPI numbers, and welcome headline — NOT body copy
+- Storefront `data-surface="storefront"` continues to use Cormorant Garamond (unchanged)
+- Tracking refined: `-0.018em` heading, caps `0.22em` → `0.28em` on section labels
+
+**Phase O `bp-card` utility** — architectural surface pattern (CSS)
+- `background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.008))` over surface
+- `border: 1px solid var(--bp-border)`
+- `border-radius: 18px` (primary) / `24px` (hero)
+- Hover: `translateY(-1px)` + teal-tinted border + lighter gradient
+- Variant: `bp-card-elevated` for highest-level surfaces
+- Reusable across DashboardPage / Library / Materials / Settings / Drawers
+
+**Spacing rhythm — 24/32/40 system**
+- Dashboard outer padding: `py-8` → `py-10`
+- Card padding: `p-5/p-6` → `p-6/p-8`
+- Section gaps: `gap-5` → `gap-6` · `space-y-6` → `space-y-8`
+- Welcome eyebrow → headline gap: `mb-1.5` → `mb-3`
+
+**Dashboard refinement** — KEEP logic, REFINE visuals
+- All cards switched to `bp-card` class (gradient + hover transform)
+- Welcome headline now Playfair `34px` with italic first name accent
+- KPI numbers in Playfair `34px` tabular-nums (editorial + technical)
+- Section titles upgraded to `15-18px` Playfair (no more `14px medium tracking-tight`)
+- "Bentornato, [nome]" reads like a luxury OS, not an admin panel
+- Featured Projects card promoted to `p-8` + radius `18px` + gradient
+
+**Sidebar refinement** — luxury OS, not admin template
+- Nav items: smaller icons (`16px` → `15px`), tighter padding, no background fill on hover (only color shift), thinner active accent bar (`0.5` → `2px`)
+- Section labels: `text-[9px] tracking-[0.28em]` very faint (`--bp-text-faint`)
+- More vertical breathing: `space-y-5` → `space-y-6`, `py-4` → `py-5`
+- Workspace selector retained, palette adapted
+
+**Strict surface isolation verified** ✅
+- `[data-surface="os"]` scope ONLY — never `:root`, never global
+- Storefront EXE Interior (`/`): screenshot-verified cream + Cormorant unchanged
+- Corporate `site.css` untouched
+- BlueprintThemeProvider remains the only emitter of `data-surface="os"`
+- StorefrontThemeProvider remains the only emitter of `data-surface="storefront"`
+
+**Out of scope (intentionally untouched per Phase O brief)**
+- Backend routers, licensing engine, CMS revisions, AI flows, APIs
+- Routing, auth, database, business logic
+- Tailwind config (fontFamily defaults preserved for non-OS surfaces)
+- Storefront tokens, tenant brand engine, corporate site
+
+**Files of reference**
+- `/app/frontend/src/design-system/os/tokens.css` (rewritten — Phase O palette + bp-card)
+- `/app/frontend/src/pages/dashboard/DashboardPage.jsx` (visual class refactor only)
+- `/app/frontend/src/components/layout/Sidebar.jsx` (NavItem + SectionLabel typography)
+
+**Next iteration target**
+Media Library visual refactor — "cinematic operational archive" direction
+(Inspector tabs Details/Usage/Versions/Revisions, FiltersAccordion left rail,
+GridToolbar with view switcher + sort + select, refined tile metadata,
+Used-in cards with project avatars + arrow, large Replace asset CTA).
+
+
+
 ### ✅ Phase N++ — Cinematic Dashboard Rebuild + Extended IA (DONE — 15 Feb 2026)
 
 Dashboard ricostruita completamente seguendo il mockup "Cinematic Enterprise

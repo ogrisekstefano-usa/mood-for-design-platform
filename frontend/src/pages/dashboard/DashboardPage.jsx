@@ -70,8 +70,7 @@ const KpiCard = ({ kpi, label }) => {
   return (
     <div
       data-testid={`kpi-${kpi.id}`}
-      className="rounded-[12px] border border-[var(--bp-border)] bg-[var(--bp-surface-1)]
-                 p-5 transition-colors hover:border-[var(--bp-border-strong)] flex flex-col"
+      className="bp-card p-6 flex flex-col"
     >
       <div className="flex items-start justify-between">
         <p className="text-[10px] tracking-[0.22em] uppercase text-[var(--bp-text-muted)] font-body">
@@ -81,7 +80,7 @@ const KpiCard = ({ kpi, label }) => {
           <Icon size={14} strokeWidth={1.5} />
         </div>
       </div>
-      <p className="mt-4 text-[36px] tabular-nums font-medium text-[var(--bp-text-primary)] tracking-tight leading-none">
+      <p className="mt-5 text-[34px] tabular-nums font-heading text-[var(--bp-text-primary)] tracking-tight leading-none">
         {kpi.value}{kpi.format === 'hours' ? <span className="text-[20px] text-[var(--bp-text-muted)]">h</span> : ''}
       </p>
       <div className="mt-2 flex items-center gap-1.5">
@@ -109,8 +108,8 @@ const QUICK_ACTIONS = [
 ];
 
 const QuickActions = () => (
-  <div data-testid="quick-actions" className="rounded-[12px] border border-[var(--bp-border)] bg-[var(--bp-surface-1)] p-5">
-    <h3 className="text-[14px] font-medium text-[var(--bp-text-primary)] mb-4 tracking-tight">Azioni rapide</h3>
+  <div data-testid="quick-actions" className="bp-card p-6">
+    <h3 className="text-[15px] font-heading text-[var(--bp-text-primary)] mb-5">Azioni rapide</h3>
     <div className="space-y-1">
       {QUICK_ACTIONS.map((a) => {
         const Icon = Icons[a.icon] || Icons.Square;
@@ -138,9 +137,9 @@ const QuickActions = () => (
 
 // ── Tasks panel ──────────────────────────────────────────────────────
 const TasksPanel = ({ tasks }) => (
-  <div data-testid="tasks-panel" className="rounded-[12px] border border-[var(--bp-border)] bg-[var(--bp-surface-1)] p-5">
-    <div className="flex items-center justify-between mb-4">
-      <h3 className="text-[14px] font-medium text-[var(--bp-text-primary)] tracking-tight">Attività da completare</h3>
+  <div data-testid="tasks-panel" className="bp-card p-6">
+    <div className="flex items-center justify-between mb-5">
+      <h3 className="text-[15px] font-heading text-[var(--bp-text-primary)]">Attività da completare</h3>
       {tasks.length > 0 && (
         <span className="px-1.5 py-0.5 rounded-[4px] bg-[var(--bp-primary-soft)] text-[var(--bp-primary)] text-[10px] font-mono tabular-nums">
           {tasks.length}
@@ -194,9 +193,9 @@ const TasksPanel = ({ tasks }) => (
 
 // ── Featured projects ────────────────────────────────────────────────
 const FeaturedProjects = ({ projects }) => (
-  <section data-testid="featured-projects" className="rounded-[14px] border border-[var(--bp-border)] bg-[var(--bp-surface-1)] p-6">
-    <div className="flex items-center justify-between mb-5">
-      <h3 className="text-[15px] font-medium text-[var(--bp-text-primary)] tracking-tight">Progetti in evidenza</h3>
+  <section data-testid="featured-projects" className="bp-card p-8">
+    <div className="flex items-center justify-between mb-6">
+      <h3 className="text-[18px] font-heading text-[var(--bp-text-primary)]">Progetti in evidenza</h3>
       <Link
         to="/workspace/projects"
         data-testid="see-all-projects-btn"
@@ -269,8 +268,8 @@ const ACTIVITY_ICON = {
 };
 
 const RecentActivity = ({ events }) => (
-  <div data-testid="recent-activity" className="rounded-[12px] border border-[var(--bp-border)] bg-[var(--bp-surface-1)] p-5">
-    <h3 className="text-[14px] font-medium text-[var(--bp-text-primary)] mb-4 tracking-tight">Attività recenti</h3>
+  <div data-testid="recent-activity" className="bp-card p-6">
+    <h3 className="text-[15px] font-heading text-[var(--bp-text-primary)] mb-5">Attività recenti</h3>
     {events.length === 0 ? (
       <p className="text-[12px] text-[var(--bp-text-muted)] italic py-6 text-center">Nessuna attività recente</p>
     ) : (
@@ -303,9 +302,9 @@ const RecentActivity = ({ events }) => (
 
 // ── Media library preview ────────────────────────────────────────────
 const MediaPreview = ({ assets }) => (
-  <div data-testid="media-preview" className="rounded-[12px] border border-[var(--bp-border)] bg-[var(--bp-surface-1)] p-5">
-    <div className="flex items-center justify-between mb-4">
-      <h3 className="text-[14px] font-medium text-[var(--bp-text-primary)] tracking-tight">Media Library</h3>
+  <div data-testid="media-preview" className="bp-card p-6">
+    <div className="flex items-center justify-between mb-5">
+      <h3 className="text-[15px] font-heading text-[var(--bp-text-primary)]">Media Library</h3>
       <Link to="/library" className="text-[11px] text-[var(--bp-primary)] hover:underline font-body" data-testid="media-see-all-btn">
         Vedi tutto
       </Link>
@@ -342,9 +341,9 @@ const MediaPreview = ({ assets }) => (
 
 // ── Top materials ────────────────────────────────────────────────────
 const TopMaterials = ({ materials }) => (
-  <div data-testid="top-materials" className="rounded-[12px] border border-[var(--bp-border)] bg-[var(--bp-surface-1)] p-5">
-    <div className="flex items-center justify-between mb-4">
-      <h3 className="text-[14px] font-medium text-[var(--bp-text-primary)] tracking-tight">Materiali più utilizzati</h3>
+  <div data-testid="top-materials" className="bp-card p-6">
+    <div className="flex items-center justify-between mb-5">
+      <h3 className="text-[15px] font-heading text-[var(--bp-text-primary)]">Materiali più utilizzati</h3>
     </div>
     {materials.length === 0 ? (
       <p className="text-[12px] text-[var(--bp-text-muted)] italic py-6 text-center">Nessun materiale registrato</p>
@@ -389,8 +388,8 @@ const TopMaterials = ({ materials }) => (
 
 // ── Team activity ────────────────────────────────────────────────────
 const TeamActivity = ({ members }) => (
-  <div data-testid="team-activity" className="rounded-[12px] border border-[var(--bp-border)] bg-[var(--bp-surface-1)] p-5">
-    <h3 className="text-[14px] font-medium text-[var(--bp-text-primary)] mb-4 tracking-tight">Attività del team</h3>
+  <div data-testid="team-activity" className="bp-card p-6">
+    <h3 className="text-[15px] font-heading text-[var(--bp-text-primary)] mb-5">Attività del team</h3>
     {members.length === 0 ? (
       <p className="text-[12px] text-[var(--bp-text-muted)] italic py-6 text-center">Nessun membro attivo</p>
     ) : (
@@ -437,9 +436,9 @@ const Timeline = ({ events }) => {
   }, [events]);
 
   return (
-    <section data-testid="dashboard-timeline" className="rounded-[14px] border border-[var(--bp-border)] bg-[var(--bp-surface-1)] p-6">
-      <div className="flex items-center justify-between mb-5">
-        <h3 className="text-[15px] font-medium text-[var(--bp-text-primary)] tracking-tight">Timeline progetti</h3>
+    <section data-testid="dashboard-timeline" className="bp-card p-8">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-[18px] font-heading text-[var(--bp-text-primary)]">Timeline progetti</h3>
         <Link to="/workspace/calendar" className="text-[11px] text-[var(--bp-primary)] hover:underline font-body">
           Vedi calendario
         </Link>
@@ -561,17 +560,17 @@ const DashboardPage = () => {
   if (!data) return null;
 
   return (
-    <div data-testid="dashboard-page" className="px-10 py-8 max-w-[1600px] mx-auto space-y-6">
+    <div data-testid="dashboard-page" className="px-10 py-10 max-w-[1600px] mx-auto space-y-8">
       {/* Welcome */}
       <header className="flex items-end justify-between gap-6 flex-wrap mb-2">
         <div>
-          <p className="text-[10px] tracking-[0.28em] uppercase text-[var(--bp-text-muted)] font-body mb-1.5">
+          <p className="text-[10px] tracking-[0.28em] uppercase text-[var(--bp-text-muted)] font-body mb-3">
             Blueprint Workspace
           </p>
-          <h1 className="text-[28px] text-[var(--bp-text-primary)] font-medium tracking-tight leading-none">
+          <h1 className="text-[34px] text-[var(--bp-text-primary)] font-heading leading-[1.05]">
             Bentornato, <span className="text-[var(--bp-text-secondary)] italic">{firstName}</span>
           </h1>
-          <p className="mt-2.5 text-[13px] text-[var(--bp-text-muted)] font-body">
+          <p className="mt-3 text-[13px] text-[var(--bp-text-muted)] font-body">
             Ecco cosa sta succedendo nel tuo workspace oggi.
           </p>
         </div>
@@ -582,7 +581,7 @@ const DashboardPage = () => {
       </header>
 
       {/* KPIs + right rail */}
-      <div className="grid gap-5" style={{ gridTemplateColumns: 'minmax(0, 1fr) 280px 280px' }}>
+      <div className="grid gap-6" style={{ gridTemplateColumns: 'minmax(0, 1fr) 280px 280px' }}>
         <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
           {data.kpis.map((k) => (
             <KpiCard key={k.id} kpi={k} label={KPI_LABELS[k.id] || k.id} />
@@ -596,7 +595,7 @@ const DashboardPage = () => {
       <FeaturedProjects projects={data.featured_projects || []} />
 
       {/* 4-column operational grid */}
-      <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}>
+      <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}>
         <RecentActivity events={data.recent_activity || []} />
         <MediaPreview assets={data.media_preview || []} />
         <TopMaterials materials={data.top_materials || []} />

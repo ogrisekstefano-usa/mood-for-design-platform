@@ -1,104 +1,111 @@
 /* ============================================================ */
-/* Blueprint OS — Frozen Design Tokens                            */
+/* Blueprint OS™ — Phase O Visual System                          */
 /*                                                                  */
-/*  Architectural Workflow Operating System.                       */
-/*  Inspiration: Linear · Vercel · Notion · Framer — with an        */
-/*  interior-design sensibility (warm graphite, calm density).      */
+/*  Cinematic Enterprise Workflow OS                               */
+/*  Linear · Vercel · Notion · Framer + architectural rigour       */
 /*                                                                  */
-/*  CRITICAL — These tokens drive every Blueprint OS surface:       */
-/*  Dashboard · Storefront Studio chrome · Settings · Workspace ·  */
-/*  Library · Diff Drawer · Revisions · Members · Licensing ·      */
-/*  Admin · Auth.                                                  */
-/*                                                                  */
-/*  Tenant branding NEVER reaches this surface — it is scoped to    */
-/*  `[data-surface="storefront"]` (see TenantThemeContext).        */
-/*  Corporate marketing visuals live under `data-surface="site"`. */
-/*                                                                  */
-/*  Modify only with an explicit OS design-system change order.    */
+/*  CRITICAL — surface-scoped tokens. NEVER leak globally.         */
+/*  Storefront: [data-surface="storefront"] (StorefrontTheme)     */
+/*  Corporate:  [data-surface="site"]       (site.css)            */
 /* ============================================================ */
 
 [data-surface="os"] {
-  /* ── Colour — warm graphite, calm tech ───────────────────── */
-  --bp-bg:              #141414;   /* warm graphite */
-  --bp-bg-deep:         #0E0E0E;   /* deepest valley for shadows / overlays */
-  --bp-surface-1:       #1B1B1B;   /* primary surface (cards, sidebar) */
-  --bp-surface-2:       #202020;   /* secondary surface (panels) */
-  --bp-surface-3:       #242424;   /* highest surface (modals, inspector) */
-  --bp-surface-hover:   #2A2A2A;   /* hover state */
-  --bp-overlay:         rgba(10, 10, 10, 0.72);
+  /* ── Palette — deep cinematic dark ───────────────────────── */
+  --bp-bg:              #070707;                    /* near-black, never #000 */
+  --bp-bg-deep:         #050505;                    /* deepest void for overlays */
+  --bp-surface-1:       #0D0F12;                    /* primary surface */
+  --bp-surface-2:       #111318;                    /* secondary surface */
+  --bp-surface-3:       #151922;                    /* tertiary surface */
+  --bp-surface-elevated:#181C24;                    /* elevated cards */
+  --bp-surface-hover:   #1C2129;                    /* hover state */
+  --bp-overlay:         rgba(5, 5, 5, 0.78);
 
   --bp-border:          rgba(255, 255, 255, 0.06);
   --bp-border-strong:   rgba(255, 255, 255, 0.10);
+  --bp-border-hover:    rgba(0, 201, 179, 0.28);    /* teal-tinted hover */
   --bp-border-active:   rgba(0, 201, 179, 0.40);
 
-  --bp-text-primary:    #F5F3EE;   /* warm bone */
-  --bp-text-secondary:  #B7B1A7;   /* warm muted */
-  --bp-text-muted:      #8A857C;   /* tertiary labels */
-  --bp-text-subtle:     #5E5A53;   /* watermark / disabled */
+  --bp-text-primary:    rgba(255, 255, 255, 0.96);  /* near-white, never pure */
+  --bp-text-secondary:  rgba(255, 255, 255, 0.78);
+  --bp-text-muted:      rgba(255, 255, 255, 0.62);
+  --bp-text-subtle:     rgba(255, 255, 255, 0.38);
+  --bp-text-faint:      rgba(255, 255, 255, 0.22);
 
-  --bp-primary:         #00C9B3;   /* teal — accents only */
+  --bp-primary:         #00C9B3;                    /* operational accent */
   --bp-primary-soft:    rgba(0, 201, 179, 0.12);
+  --bp-primary-glow:    rgba(0, 201, 179, 0.18);
   --bp-primary-hover:   #00B8A3;
-  --bp-primary-2:       #1FD9C4;
-  --bp-primary-3:       #5EE3D2;
+  --bp-primary-2:       #7EE6DA;                    /* soft accent */
   --bp-accent:          #00C9B3;
 
-  --bp-selection-bg:    rgba(0, 201, 179, 0.18);
-  --bp-selection-fg:    #F5F3EE;
+  --bp-selection-bg:    rgba(0, 201, 179, 0.20);
+  --bp-selection-fg:    rgba(255, 255, 255, 0.96);
 
-  --bp-success:         #4DC99B;
-  --bp-warning:         #E2B765;
-  --bp-danger:          #DB7373;
+  --bp-success:         #00C27F;
+  --bp-warning:         #D6A756;
+  --bp-danger:          #E07474;
 
-  /* ── Typography — Inter unified, OS-clean ────────────────── */
-  /* No editorial serif on Blueprint OS — this is an operating system,
-     not a landing page. Editorial serifs live ONLY on storefront
-     and corporate surfaces. */
-  --bp-font-heading:    'Inter', 'Suisse Intl', 'Neue Haas Grotesk', system-ui, sans-serif;
+  /* ── Typography — Phase O direction: editorial headings ──── */
+  /* Playfair Display for headlines (architectural · editorial) +
+     Inter for UI/body (technical · rigorous). NOT a landing page
+     serif — used sparingly on titles and KPI numbers only. */
+  --bp-font-heading:    'Playfair Display', 'Cormorant Garamond', Georgia, serif;
   --bp-font-body:       'Inter', 'Suisse Intl', system-ui, sans-serif;
   --bp-font-mono:       'JetBrains Mono', ui-monospace, monospace;
+
   --bp-font-size-base:  13px;
   --bp-line-height:     1.55;
-  --bp-tracking-heading:-0.012em;
-  --bp-tracking-tight:  -0.018em;
-  --bp-tracking-caps:    0.16em;
+  --bp-tracking-heading:-0.018em;
+  --bp-tracking-tight:  -0.012em;
+  --bp-tracking-caps:    0.22em;
 
-  /* ── Type scale — measured, OS-friendly ──────────────────── */
-  --bp-display:         32px;      /* big numeric KPI */
-  --bp-h1:              22px;      /* page headers */
-  --bp-h2:              17px;      /* section headers */
-  --bp-h3:              14px;      /* card / panel headers */
+  /* ── Type scale ──────────────────────────────────────────── */
+  --bp-display:         34px;
+  --bp-h1:              24px;
+  --bp-h2:              18px;
+  --bp-h3:              15px;
   --bp-lead:            14px;
   --bp-body:            13px;
   --bp-caption:         12px;
   --bp-micro:           11px;
 
-  /* ── Radius — moderate, never bubble-y ───────────────────── */
-  --bp-radius-xs:       4px;
-  --bp-radius-sm:       6px;
-  --bp-radius-md:       10px;
-  --bp-radius-lg:       14px;
-  --bp-radius-xl:       18px;
+  /* ── Radius — Phase O: more architectural ───────────────── */
+  --bp-radius-xs:       6px;
+  --bp-radius-sm:       8px;
+  --bp-radius-md:       12px;
+  --bp-radius-lg:       18px;                       /* primary card radius */
+  --bp-radius-xl:       24px;                       /* hero / featured */
   --bp-radius-pill:     999px;
 
-  /* ── Motion — calm, controlled ───────────────────────────── */
+  /* ── Motion — calm, controlled ──────────────────────────── */
   --bp-ease:            cubic-bezier(.2,.7,.2,1);
   --bp-ease-emphasis:   cubic-bezier(.22,.61,.36,1);
   --bp-duration-fast:   140ms;
   --bp-duration:        220ms;
-  --bp-duration-slow:   380ms;
+  --bp-duration-slow:   420ms;
 
-  /* ── Shadow — soft depth, never aggressive ───────────────── */
-  --bp-shadow-xs:       0 1px 2px rgba(0, 0, 0, 0.25);
-  --bp-shadow-sm:       0 2px 8px -4px rgba(0, 0, 0, 0.40);
-  --bp-shadow-md:       0 8px 24px -12px rgba(0, 0, 0, 0.50);
-  --bp-shadow-lg:       0 24px 48px -24px rgba(0, 0, 0, 0.60);
-  --bp-shadow-glow:     0 0 0 1px rgba(0, 201, 179, 0.20), 0 4px 16px rgba(0, 201, 179, 0.08);
+  /* ── Shadow — soft depth, never aggressive ──────────────── */
+  --bp-shadow-xs:       0 1px 2px rgba(0, 0, 0, 0.35);
+  --bp-shadow-sm:       0 2px 10px -4px rgba(0, 0, 0, 0.50);
+  --bp-shadow-md:       0 10px 28px -14px rgba(0, 0, 0, 0.65);
+  --bp-shadow-lg:       0 28px 56px -28px rgba(0, 0, 0, 0.75);
+  --bp-shadow-glow:     0 0 0 1px rgba(0, 201, 179, 0.22),
+                        0 6px 22px rgba(0, 201, 179, 0.10);
 
-  /* ── Hard isolation guard ────────────────────────────────── *
-   * Inside the OS subtree, any accidental --brand-* leakage from a
-   * shared component falls back to the OS primary, NEVER to the
-   * tenant brand colour. */
+  /* ── Card gradient — Phase O signature surface ───────────── */
+  --bp-card-gradient:   linear-gradient(180deg,
+                          rgba(255, 255, 255, 0.025),
+                          rgba(255, 255, 255, 0.008));
+  --bp-card-gradient-hover: linear-gradient(180deg,
+                          rgba(255, 255, 255, 0.040),
+                          rgba(255, 255, 255, 0.012));
+
+  /* ── Spacing rhythm (informational — Tailwind drives the rest) ── */
+  --bp-space-md:        24px;
+  --bp-space-lg:        32px;
+  --bp-space-xl:        40px;
+
+  /* ── Hard isolation guard ────────────────────────────────── */
   --brand-primary:      var(--bp-primary);
   --brand-accent:       var(--bp-accent);
   --brand-bg:           var(--bp-bg);
@@ -107,16 +114,13 @@
   --brand-text-muted:   var(--bp-text-muted);
   --brand-font-display: var(--bp-font-heading);
   --brand-font-body:    var(--bp-font-body);
-  --brand-radius:       var(--bp-radius-sm);
+  --brand-radius:       var(--bp-radius-md);
   --brand-density:      1;
   --brand-shadow:       var(--bp-shadow-md);
 }
 
 /* ────────────────────────────────────────────────────────────────
- * Surface-scoped base — applied ONLY inside data-surface="os".
- * Sets the body-like baseline so every nested element inherits the
- * OS typographic baseline. The selector is intentionally scoped so
- * the storefront / corporate surfaces remain untouched.
+ * Surface-scoped base — sets typographic baseline inside OS subtree
  * ──────────────────────────────────────────────────────────────── */
 [data-surface="os"] {
   background: var(--bp-bg);
@@ -135,23 +139,47 @@
 }
 
 /* ────────────────────────────────────────────────────────────────
- * Tailwind `font-*` utility override — scoped to OS only.
- *
- * Globally, `font-heading` maps to Cormorant Garamond (serif) via
- * tailwind.config.js — kept that way for storefront/corporate
- * surfaces. Inside Blueprint OS we override to Inter so the editorial
- * serif never reaches the operating system chrome. The selector
- * `[data-surface="os"] .font-heading` has higher specificity than
- * the Tailwind utility, and the !important on font-family ensures
- * it wins against future utility precedence shifts.
+ * Tailwind font-* override — Playfair Display for headings INSIDE OS.
+ * Globally, `font-heading` maps to Cormorant Garamond — kept for
+ * storefront/corporate surfaces. Override only inside OS scope.
  * ──────────────────────────────────────────────────────────────── */
 [data-surface="os"] .font-heading {
   font-family: var(--bp-font-heading) !important;
   letter-spacing: var(--bp-tracking-heading);
+  font-weight: 500;
 }
 [data-surface="os"] .font-body {
   font-family: var(--bp-font-body) !important;
 }
 [data-surface="os"] .font-mono {
   font-family: var(--bp-font-mono) !important;
+}
+
+/* ────────────────────────────────────────────────────────────────
+ * Phase O card pattern — architectural surface utility.
+ * Reusable across DashboardPage / Library / Materials / Settings.
+ * Pair with `bp-card-elevated` for highest level.
+ * ──────────────────────────────────────────────────────────────── */
+[data-surface="os"] .bp-card {
+  background: var(--bp-card-gradient), var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-lg);
+  transition:
+    transform var(--bp-duration) var(--bp-ease),
+    border-color var(--bp-duration) var(--bp-ease),
+    background var(--bp-duration) var(--bp-ease);
+}
+[data-surface="os"] .bp-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--bp-border-hover);
+  background: var(--bp-card-gradient-hover), var(--bp-surface-1);
+}
+[data-surface="os"] .bp-card-elevated {
+  background: var(--bp-card-gradient), var(--bp-surface-elevated);
+}
+
+/* Quiet sidebar hover — Phase O luxury feel */
+[data-surface="os"] .bp-nav-item-active {
+  background: var(--bp-primary-soft);
+  color: var(--bp-primary) !important;
 }

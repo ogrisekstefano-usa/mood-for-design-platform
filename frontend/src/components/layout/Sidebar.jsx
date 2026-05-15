@@ -29,20 +29,20 @@ const NavItem = ({ to, icon, labelKey, collapsed }) => {
       data-testid={testid}
       title={collapsed ? t(labelKey) : undefined}
       className={({ isActive }) =>
-        `flex items-center ${collapsed ? 'justify-center' : 'gap-3'} ${collapsed ? 'px-0 py-2.5' : 'px-3 py-2'}
-         text-sm rounded-[6px] relative group transition-all duration-150 ${
+        `flex items-center ${collapsed ? 'justify-center' : 'gap-3'} ${collapsed ? 'px-0 py-2.5' : 'px-2.5 py-1.5'}
+         rounded-[7px] relative group transition-colors duration-150 ${
           isActive
-            ? 'bg-[var(--bp-primary)]/10 text-[var(--bp-primary)]'
-            : 'text-[var(--bp-text-secondary)] hover:text-[var(--bp-text-primary)] hover:bg-[var(--bp-surface-2)]/40'
+            ? 'text-[var(--bp-primary)]'
+            : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]'
         }`
       }
     >
       {({ isActive }) => (
         <>
-          <span className={`absolute left-0 top-1 bottom-1 w-0.5 rounded-full transition-all ${isActive ? 'bg-[var(--bp-primary)]' : 'bg-transparent'}`} />
-          <Icon size={16} strokeWidth={1.5} />
+          <span className={`absolute left-0 top-1 bottom-1 w-[2px] rounded-full transition-all duration-200 ${isActive ? 'bg-[var(--bp-primary)]' : 'bg-transparent'}`} />
+          <Icon size={15} strokeWidth={1.5} />
           {!collapsed && (
-            <span className="font-body font-medium tracking-wide truncate text-[13px]">{t(labelKey)}</span>
+            <span className="font-body tracking-[0.005em] truncate text-[12.5px]">{t(labelKey)}</span>
           )}
         </>
       )}
@@ -55,7 +55,7 @@ const SectionLabel = ({ children, collapsed }) => {
     return <div className="my-2 mx-2 h-px bg-[var(--bp-border)]" aria-hidden="true" />;
   }
   return (
-    <p className="px-3 mb-1.5 text-[9px] font-bold uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body">
+    <p className="px-2.5 mb-2 text-[9px] uppercase tracking-[0.28em] text-[var(--bp-text-faint)] font-body font-medium">
       {children}
     </p>
   );
@@ -148,7 +148,7 @@ const Sidebar = () => {
         )}
       </button>
 
-      <nav className={`flex-1 ${collapsed ? 'px-1.5' : 'px-2'} py-4 space-y-5 overflow-y-auto overflow-x-hidden`}>
+      <nav className={`flex-1 ${collapsed ? 'px-1.5' : 'px-2.5'} py-5 space-y-6 overflow-y-auto overflow-x-hidden`}>
         <div>
           <NavItem to="/dashboard" icon="LayoutDashboard" labelKey="nav.dashboard" collapsed={collapsed} />
         </div>
