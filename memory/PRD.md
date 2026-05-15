@@ -1,134 +1,136 @@
 # MOOD for DESIGN — Corporate Website PRD
 
 ## Project Overview
-Corporate website for www.moodfordesign.com built as a tenant/layer inside the Blueprint ecosystem.
-ONE platform → MULTIPLE frontends architecture.
+Corporate website for www.moodfordesign.com built as a tenant inside the Blueprint ecosystem.
+**ONE platform → MULTIPLE frontends → ONE database** architecture.
 
-**Created:** May 2025  
-**Architecture:** React + FastAPI + MongoDB (Supabase-ready)  
 **Tenant slug:** `mood-corporate`
+**Tenant UUID:** `51f9ab4d-1aaf-5b8b-b7a9-8a4c8f942a50` (deterministic UUIDv5)
+**Domain:** `www.moodfordesign.com` (mapped via `tenant_domains`)
+**Stack:** React + FastAPI + Supabase PostgreSQL (existing Blueprint schema)
 
 ---
 
 ## Architecture Decisions
 
-### ONE Platform Philosophy
+### ONE Platform, ONE Database
 - `www.moodfordesign.com` → CorporateApp (mood-corporate tenant)
-- `blueprint.moodfordesign.com` → Blueprint SaaS (same backend)
-- Both share: same backend, same section registry, same i18n, same auth layer
+- `blueprint.moodfordesign.com` → Blueprint SaaS (same backend, same DB)
+- `*.moodfordesign.com` → future tenant storefronts (same DB)
+- All share: same backend, **same Blueprint CMS engine** (`cms_pages` + `cms_sections`), same i18n, same auth layer
+- NO duplicate CMS, NO duplicate admin
 
-### Database Strategy
-- Currently: In-memory seed data (`/app/backend/db/seed_data.py`)
-- Future: Supabase PostgreSQL (schema-ready, adapter pattern)
-- SQL-friendly entity structure: tenants → pages → sections → section_content (multilingual)
+### Database — Supabase PostgreSQL (LIVE)
+- Connection: Transaction Pooler (port 6543) for runtime, Session Pooler (port 5432) for DDL/migrations
+- `statement_cache_size=0` REQUIRED for PgBouncer transaction mode
+- DDL is owned by Blueprint migrations — corporate routes only read/write rows
+- Multi-tenant isolation via `tenant_id` FK on every table
+- PgEnum types used via `create_type=False` (tenant_status, cms_page_status, domain_type)
 
-### Section Registry
-Shared section types across all tenants:
-- `editorial_hero`, `split_story`, `cinematic_quote`, `logos_wall`
-- `feature_narrative`, `metrics_strip`, `pricing_cards`, `cta_section`
-- `journal_grid`, `faq_accordion`, `comparison_table`, `timeline`, `template_showcase`
+### Tables in Use (existing Blueprint schema)
+- `tenants` (27 cols, uuid id, enum status, JSONB enabled_modules, theme cols)
+- `tenant_domains` (host → tenant_id resolver source)
+- `tenant_memberships`, `users_profile` (auth/RBAC, ready for P1)
+- `cms_pages` (page_key, locale_meta JSONB, page_content JSONB, status enum)
+- `cms_sections` (section_type, sort_order, visible, locale_content JSONB, settings JSONB, asset_refs uuid[])
+- `cms_assets`, `media_library` (asset system, ready for journal/storefront)
+- `magazine_posts`, `magazine_paragraphs` (journal engine, P1)
+
+### Tables Added (corporate-only auxiliary, NOT part of Blueprint)
+- `contact_submissions` (form persistence per tenant)
+- `newsletter_subscribers` (unique by tenant_id+email, UPSERT-safe)
+- `studio_registrations` (onboarding intake before tenant provisioning)
+
+### Section Registry (15 types, shared across tenants)
+`editorial_hero`, `split_story`, `cinematic_quote`, `logos_wall`, `feature_narrative`,
+`metrics_strip`, `pricing_cards`, `cta_section`, `journal_grid`, `faq_accordion`,
+`comparison_table`, `timeline`, `template_showcase`, `case_study_preview`, `navigation`
 
 ### Multilingual
-Supported locales: IT, EN-US, EN-UK, FR, DE, ES
-- Backend resolves locale content before sending (no frontend locale resolution needed)
-- Fallback chain: requested locale → en-us → first available
-- Runtime locale switching via LocaleContext + localStorage
+Supported locales: `it`, `en-us`, `en-uk`, `fr`, `de`, `es`
+- Backend resolves locale content before sending (chain: requested → en-us → first available)
+- Each section row stores `locale_content` as `{locale: {...}}` JSONB
+- Navigation persisted as a dedicated `navigation` section type on the home page
+
+### Caching
+- In-process TTL cache (`/app/backend/cache.py`), default 60s for pages, 120s for nav/list
+- Swap to Redis later — public interface unchanged (`get_or_set(key, loader, ttl)`)
+- `POST /api/corporate/cache/invalidate` flushes by prefix or all
+
+### Draft/Published Architecture (ready)
+- `cms_pages.status` enum: `draft | published | scheduled | archived`
+- `cms_pages.scheduled_publish_at`, `cms_pages.published_at`
+- Repository filters `status = 'published'` for public reads
+- Future Blueprint admin will write `draft_*` and publish later
 
 ---
 
 ## What's Been Implemented
 
-### Backend (FastAPI)
-- `/api/corporate/pages/{slug}?locale=` — CMS page renderer with locale resolution
-- `/api/corporate/navigation?locale=` — Multilingual nav items
-- `/api/corporate/locales` — Available locales
-- `/api/corporate/tenant` — Tenant config
-- `/api/corporate/sections/registry` — Section type registry
-- `/api/corporate/contact` — Contact form submission
-- `/api/corporate/newsletter` — Newsletter subscription
-- `/api/corporate/studio/register` — Studio onboarding (Phase 1)
-- Full seed data for all pages in 6 locales
+### P0 — Supabase Persistence (May 2026) ✅ DONE
+- Real Supabase project connected (eu-west-1, project ref `ytctctmvgdkmyjrbgmqs`)
+- 5 env vars in `/app/backend/.env`: `DATABASE_URL`, `SESSION_POOLER_URL`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- Async SQLAlchemy engine via `asyncpg` with PgBouncer-safe config
+- Models mapped to existing Blueprint tables (no `create_all`, no duplication)
+- Tenant resolver (`tenant_resolver.py`) by host header + slug fallback
+- Idempotent seed migration (`db/seed_migration.py`) — UUIDv5 deterministic keys
+- Repository pattern (`db/repository.py`) — zero `seed_data` runtime dependency
+- 8 corporate pages + 26 content sections + 1 navigation row in `cms_sections`
+- Form persistence: contact + newsletter (UPSERT) + studio registrations
+- 15-type section registry endpoint
+- In-process content cache with invalidation API
+- 29/29 backend tests pass (`/app/backend/tests/test_corporate.py`)
+
+### Backend (FastAPI) endpoints
+- `GET /api/corporate/pages/{slug}?locale=` — DB-driven page renderer
+- `GET /api/corporate/pages` — sitemap (slug + published)
+- `GET /api/corporate/navigation?locale=` — multilingual nav (main + cta + footer)
+- `GET /api/corporate/locales` — 6 locales
+- `GET /api/corporate/tenant` — tenant config from DB
+- `GET /api/corporate/sections/registry` — 15 section types
+- `POST /api/corporate/contact` — persists in `contact_submissions`
+- `POST /api/corporate/newsletter` — persists in `newsletter_subscribers` (idempotent)
+- `POST /api/corporate/studio/register` — persists in `studio_registrations`
+- `POST /api/corporate/cache/invalidate` — cache flush
 
 ### Frontend (React)
-- **CorporateApp** — Tenant-aware routing wrapper
-- **CorporateNav** — Sticky glassmorphism nav with locale switcher
-- **CorporateFooter** — Dark editorial footer with newsletter
-- **LocaleSwitcher** — Dropdown locale selector
-- **SectionRenderer** — Central registry dispatcher
-- **LocaleContext** — Global locale state
-
-### Pages (CMS-driven, all multilingual)
-1. **Home** — EditorialHero + LogosWall + SplitStory + FeatureNarrative + CinematicQuote + CTA
-2. **Platform** — Hero + MetricsStrip + SplitStory + CTA
-3. **Blueprint** — Dark hero + SplitStory + CTA
-4. **Pricing** — Hero + PricingCards (with yearly toggle) + FAQAccordion + CTA
-5. **About** — Hero + MetricsStrip + SplitStory + CinematicQuote
-6. **Journal** — Hero + JournalGrid (6 articles)
-7. **Contact** — Hero + Contact form (with inquiry type selector)
-8. **Start Your Studio** — Dark hero + Registration form (studio signup + plan selector)
-
-### Section Components (14 types)
-All components: DB-driven content, multilingual, scroll-reveal animations, responsive
-
----
-
-## Technical Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18, React Router, TailwindCSS, Lucide icons |
-| Backend | FastAPI, Python, Pydantic |
-| Database | MongoDB (temp) → Supabase PostgreSQL (ready) |
-| Design tokens | Cormorant Garamond (serif), Manrope (sans), Teal #3DDAD0 |
-| Animations | CSS IntersectionObserver-based reveal |
-
----
-
-## Content Status
-- **MOCKED** — All content served from `/app/backend/db/seed_data.py`
-- Contact form: MOCKED (no email service)
-- Newsletter: MOCKED (no email list)
-- Studio registration: MOCKED (no tenant provisioning)
+- CorporateApp tenant-aware routing wrapper, sticky glassmorphism nav, dark editorial footer
+- LocaleSwitcher, SectionRenderer dispatcher, LocaleContext
+- 8 pages CMS-driven: Home, Platform, Blueprint, Pricing, About, Journal, Contact, Start Studio
+- Brand: Playfair Display (heading), Montserrat (body), Teal `#00C9B3`
 
 ---
 
 ## Prioritized Backlog
 
-### P0 — Critical (Next Session)
-- [ ] Connect Supabase PostgreSQL (needs user credentials)
-- [ ] CMS admin integration (Blueprint editor for section editing)
-- [ ] Email service for contact/newsletter (SendGrid/Resend)
-- [ ] Auth system for studio registration
+### P1 — Next session
+- [ ] CMS Bindings: Blueprint admin must edit `mood-corporate` cms_pages/cms_sections
+- [ ] Multilingual URL routing on frontend (`/it/`, `/fr/` etc.) reading entirely from DB
+- [ ] Brand / Licensing system (commercial onboarding-ready, before Stripe)
+- [ ] Auth + Supabase memberships wiring for studio registration
 
-### P1 — High Priority
-- [ ] For Studios page (full page with dedicated content)
-- [ ] For Retailers page
-- [ ] Templates gallery page
-- [ ] Case Studies page
-- [ ] SEO metadata + OG images per page
-- [ ] Schema.org structured data
+### P2 — Backlog
+- [ ] Journal/Editorial engine: rich articles with hero, gallery, hotspots JSONB, AI metadata (use `magazine_posts` + `magazine_paragraphs` from Blueprint)
+- [ ] Tenant self-registration → auto provisioning of `{slug}.blueprint.moodfordesign.com`
+- [ ] Stripe Subscriptions (pricing → checkout → webhook)
+- [ ] Dynamic SEO + Schema.org per page+locale
+- [ ] Email service (Resend / SendGrid) for contact + newsletter
+- [ ] Redis cache (drop-in replacement for in-process TTL)
+- [ ] Admin-gated `/cache/invalidate`
 
-### P2 — Medium Priority
-- [ ] Stripe integration for subscription payments
-- [ ] Auto tenant provisioning on studio registration
-- [ ] Blueprint workspace at `{slug}.blueprint.moodfordesign.com`
-- [ ] Journal article detail pages
-- [ ] Multilingual URL routing (`/it/`, `/fr/`, etc.)
-- [ ] CMS inline editing mode
-
-### Backlog / Phase 3
-- [ ] Comparison table populated with real feature data
-- [ ] Template showcase with real template images
-- [ ] Case study preview section
-- [ ] Timeline section on About page
-- [ ] Analytics dashboard for tenant admins
-- [ ] API rate limiting and caching
+### Tech debt / hardening
+- [ ] EmailStr validation on Pydantic forms
+- [ ] Studio slug uniqueness suffix (collision-safe)
+- [ ] Env-driven cache TTL
+- [ ] Audit log integration for form submissions
 
 ---
 
-## Test Results (Iteration 1)
-- Backend: 100% (20/20 tests passed)
-- Frontend: 95% (minor animation timing in automation)
-- All pages rendering correctly
-- Locale switching functional
-- Studio registration flow working
+## Test Status
+- Iteration 1 (mocked): 100% (20/20)
+- Iteration 2 (Supabase): 100% (29/29) — May 2026
+
+## Mocked / Non-prod items
+- Contact form submissions persist to DB but NO email is dispatched (P2)
+- Newsletter subscribers persist to DB but NO email list integration (P2)
+- Studio registration persists intake but NO tenant auto-provisioning yet (P2)
