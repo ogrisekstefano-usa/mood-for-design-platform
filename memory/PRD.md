@@ -29,6 +29,81 @@ Multi-tenant SaaS platform per interior designer e architetti, costruita come Bl
 
 ## Implementation Status
 
+### ✅ Phase Q.1 — AI Editorial Assistant Stabilization (DONE — 15 Feb 2026)
+
+Phase Q.1 closes the AI Editorial Assistant inside the Diff Drawer with a
+**stabilization pass** — production-grade UX, zero layout regression,
+graceful clipboard fallback, and full keyboard support. The Assistant
+remains an *invisible editorial co-pilot* — no chatbots, no glow, no
+gimmicks.
+
+**Visual / layout stabilization**
+- `AISuggestionPanel.jsx` split into `AISuggestionTrigger` + `AISuggestionPanelBody`
+  so the trigger pill lives in the field-header flex row while the panel
+  body renders BELOW the inline/side-by-side diff content — eliminates the
+  flex-squeeze layout bug that caused the drawer width to "jump".
+- `PublishDiffDrawer.jsx` enforces single-open invariant via `aiOpenKey`
+  state lifted to `ChangesView` — only one editorial panel can be active
+  at a time across page meta + every locale + every section.
+- Drawer width verified stable at 640px before/after AI open
+  (Playwright bbox compare).
+- Min-height 72px on suggestion body avoids loader→content flicker.
+
+**Context propagation**
+- `aiContext` derived once per diff load (`pageKey`, `page_title`,
+  `tenant_name`, `default_locale`) and passed down to every `FieldRow`
+  with the locale-specific override merged in for per-locale text changes.
+- Backend `editorial-suggest` already accepts the full context shape.
+
+**Interaction polish**
+- ESC always closes the active panel (window listener, scoped via
+  single-open invariant — no focus-trap headaches).
+- `Apply` writes to clipboard with graceful promise-rejection fallback:
+  if the browser denies clipboard write (insecure context, sandbox, etc.)
+  the toast quietly shifts to "Suggestion ready — copy it manually"
+  instead of triggering an uncaught rejection and the dev React overlay.
+- Trigger pill gains an `active` visual state (teal-tinted border + soft
+  background) while its panel is open — calm feedback, no glow.
+- `auto-run` on mount guarded by `ranOnceRef` to neutralise React 18
+  StrictMode double-invocation.
+
+**Editorial actions** (unchanged from Q.1 baseline)
+- 11 single-shot actions: improve · premium · concise · readability ·
+  storytelling · seo · audience_us · audience_luxury · improve_cta ·
+  rewrite_headline · alternative_titles
+- Claude Sonnet 4.5 via `emergentintegrations` LlmChat + Emergent LLM key
+- 2.5–3.0s typical latency, output preserves source language (Italian
+  stays Italian) and format (headline stays headline)
+- "Banned phrase" guard list prevents AI-slop language
+
+**Smoke test verified** ✅ (15 Feb 2026)
+- Login → Storefront Studio → Open Diff Drawer → Inline mode → Open AI
+  panel on `it/headline` → suggestion arrives in ~3s → Discard clears
+  text but keeps panel → switch action to "premium" → new suggestion →
+  ESC → panel closes → re-open → Apply → toast + panel closes →
+  Side-by-side mode → AI works equally → Revisions tab → no crash →
+  back to Changes → drawer close → re-open → fresh state. Zero React
+  errors. Drawer width stable throughout.
+
+**Files of reference**
+- `/app/backend/routers/ai_editorial.py` (unchanged from Q.1 implementation)
+- `/app/frontend/src/components/ai/AISuggestionPanel.jsx` (split + ESC + StrictMode guard)
+- `/app/frontend/src/components/storefront/PublishDiffDrawer.jsx`
+  (FieldRow refactor, single-open state, aiContext propagation,
+  clipboard-rejection-safe `onAccept`)
+
+**Out of scope (preserved for Q.2)**
+- AI Journal assistant
+- Headline generator surface outside Diff Drawer
+- Locale auto-translation suggestions
+- Material storytelling generator
+- SEO suggestion engine
+- Project storytelling generator
+
+
+
+## Implementation Status (older)
+
 ### ✅ Phase P — Media Library Cinematic Enterprise Refactor (DONE — 15 Feb 2026)
 
 Operational Asset System completamente ridisegnato secondo brief. **Visual +

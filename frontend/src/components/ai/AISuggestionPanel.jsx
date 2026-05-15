@@ -1,20 +1,24 @@
 /**
  * AI Editorial Assistant — client + inline suggestion panel.
  *
- * Phase Q.1: invoked from the Diff Drawer FieldRow's sparkle icon.
+ * Phase Q.1: invoked from the Diff Drawer FieldRow's sparkle trigger.
  * NOT a chatbot. Single-shot rewrite with accept / reject / regenerate.
  *
  * Visual rules:
  *   - subtle, integrated, calm
  *   - NO glowing AI effects, NO neon, NO animated gradients
  *   - Uses Phase O cinematic palette + Inter
+ *
+ * Two render modes:
+ *   1. <AISuggestionPanel ... />  — self-contained (trigger + panel)
+ *   2. <AISuggestionTrigger /> + <AISuggestionPanelBody />  — split mode
+ *      Used inside FieldRow to avoid layout squashing (trigger lives in
+ *      the flex header row, panel renders below the diff content).
  */
-import React, { useState, useCallback } from 'react';
-import { Sparkles, Check, X, RotateCcw, Loader2, ChevronDown } from 'lucide-react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { Sparkles, Check, X, RotateCcw, Loader2 } from 'lucide-react';
 import api from '../../lib/api';
 import { toast } from 'sonner';
-
-// Action catalogue is duplicated here to avoid a round-trip just for labels.
 // Source of truth = backend ACTIONS dict in /app/backend/routers/ai_editorial.py
 export const AI_ACTIONS = [
   { id: 'improve',            label: 'Improve copy',           desc: 'Editorial polish' },
@@ -38,28 +42,48 @@ export const useEditorialSuggest = () => {
   return { call };
 };
 
-/**
- * Compact inline assistant.
- *
- * Props:
- *   text             — current (changed) text the editor wants AI to improve
- *   originalText     — pre-change text (gives the model the delta)
- *   context          — { locale, audience, page_type, section_type, page_title, tenant_name, tone_hint }
- *   onAccept(text)   — called when user accepts the suggestion
- *   defaultAction    — initial action id (default: 'improve')
- *
- * The panel is non-modal: it expands inline below the field row.
- */
-export const AISuggestionPanel = ({
-  text, originalText, context = {}, onAccept, defaultAction = 'improve', testIdPrefix = 'ai',
+/* ── Trigger (chip) ─────────────────────────────────────────────── */
+
+export const AISuggestionTrigger = ({ active, onClick, testIdPrefix = 'ai' }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    data-testid={`${testIdPrefix}-trigger`}
+    aria-pressed={!!active}
+    aria-label="Open editorial AI"
+    className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-[6px]
+                text-[10px] uppercase tracking-[0.16em] font-body
+                border transition-colors
+                ${active
+                  ? 'text-[var(--bp-primary)] border-[var(--bp-border-active)] bg-[var(--bp-primary-soft)]'
+                  : 'text-[var(--bp-text-muted)] border-transparent hover:text-[var(--bp-primary)] hover:bg-[var(--bp-primary-soft)] hover:border-[var(--bp-border-active)]'}`}
+    title="Suggest improvements with editorial AI"
+  >
+    <Sparkles size={11} strokeWidth={1.5} />
+    Improve
+  </button>
+);
+
+/* ── Panel body (no trigger) ────────────────────────────────────── */
+
+export const AISuggestionPanelBody = ({
+  text,
+  originalText,
+  context = {},
+  onAccept,
+  onClose,
+  defaultAction = 'improve',
+  testIdPrefix = 'ai',
+  autoRun = true,
 }) => {
-  const [open, setOpen] = useState(false);
   const [action, setAction] = useState(defaultAction);
   const [suggestion, setSuggestion] = useState(null);
   const [reasoning, setReasoning] = useState('');
   const [latency, setLatency] = useState(null);
   const [loading, setLoading] = useState(false);
   const { call } = useEditorialSuggest();
+  const ranOnceRef = useRef(false);
+  const rootRef = useRef(null);
 
   const run = useCallback(async (nextAction) => {
     const a = nextAction || action;
@@ -83,11 +107,31 @@ export const AISuggestionPanel = ({
     }
   }, [action, text, originalText, context, call]);
 
+  // Auto-run once on mount (panel just opened) — avoids stealing focus.
+  useEffect(() => {
+    if (autoRun && !ranOnceRef.current) {
+      ranOnceRef.current = true;
+      run();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ESC closes the panel — global while mounted. Only one panel can be
+  // open at a time (parent owns single-open invariant) so this is safe.
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== 'Escape') return;
+      e.stopPropagation();
+      onClose?.();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
   const accept = () => {
     if (!suggestion) return;
     onAccept?.(suggestion);
-    setOpen(false);
-    setSuggestion(null);
+    onClose?.();
     toast.success('Suggestion applied');
   };
 
@@ -98,31 +142,15 @@ export const AISuggestionPanel = ({
 
   const onActionChange = (id) => {
     setAction(id);
-    if (open) run(id);
+    run(id);
   };
-
-  if (!open) {
-    return (
-      <button
-        type="button"
-        onClick={() => { setOpen(true); run(); }}
-        data-testid={`${testIdPrefix}-trigger`}
-        className="inline-flex items-center gap-1.5 px-2 py-1 rounded-[6px]
-                   text-[10px] uppercase tracking-[0.16em] font-body
-                   text-[var(--bp-text-muted)] hover:text-[var(--bp-primary)]
-                   hover:bg-[var(--bp-primary-soft)] border border-transparent
-                   hover:border-[var(--bp-border-active)] transition-colors"
-        title="Suggest improvements with editorial AI"
-      >
-        <Sparkles size={11} strokeWidth={1.5} />
-        Improve
-      </button>
-    );
-  }
 
   return (
     <div
+      ref={rootRef}
       data-testid={`${testIdPrefix}-panel`}
+      role="region"
+      aria-label="Editorial AI suggestion"
       className="mt-2 rounded-[10px] border border-[var(--bp-border-active)]
                  bg-[var(--bp-surface-2)] overflow-hidden"
     >
@@ -136,8 +164,9 @@ export const AISuggestionPanel = ({
         </div>
         <button
           type="button"
-          onClick={() => { setOpen(false); setSuggestion(null); }}
+          onClick={onClose}
           data-testid={`${testIdPrefix}-close`}
+          aria-label="Close editorial AI"
           className="text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors"
         >
           <X size={12} strokeWidth={1.5} />
@@ -172,8 +201,8 @@ export const AISuggestionPanel = ({
         </button>
       </div>
 
-      {/* Suggestion body */}
-      <div className="px-3 py-3 min-h-[64px]">
+      {/* Suggestion body — fixed min-height to avoid layout jump */}
+      <div className="px-3 py-3 min-h-[72px]">
         {loading ? (
           <div className="flex items-center gap-2 text-[11px] text-[var(--bp-text-muted)] font-body">
             <Loader2 size={11} className="animate-spin" />
@@ -237,6 +266,28 @@ export const AISuggestionPanel = ({
         </div>
       )}
     </div>
+  );
+};
+
+/* ── Self-contained combined panel (backwards compat) ───────────── */
+
+export const AISuggestionPanel = ({
+  text, originalText, context = {}, onAccept, defaultAction = 'improve', testIdPrefix = 'ai',
+}) => {
+  const [open, setOpen] = useState(false);
+  if (!open) {
+    return <AISuggestionTrigger active={false} onClick={() => setOpen(true)} testIdPrefix={testIdPrefix} />;
+  }
+  return (
+    <AISuggestionPanelBody
+      text={text}
+      originalText={originalText}
+      context={context}
+      onAccept={onAccept}
+      defaultAction={defaultAction}
+      testIdPrefix={testIdPrefix}
+      onClose={() => setOpen(false)}
+    />
   );
 };
 
