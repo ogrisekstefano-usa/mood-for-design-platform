@@ -1,0 +1,46 @@
+{
+  "summary": "Phase N — Media Library + Material Registry tested end-to-end. Backend: 28/28 pytest cases PASS (100%) covering list/stats/filters, collections CRUD + attach/detach + filter narrowing, material CRUD + by-slug + attach-asset mirror-to-media_links + detach removes mirror, media PATCH + archive/restore cycle, RBAC (client 403 on writes), and tenant isolation (studio2 sees 404/empty on Studio entities). Replace soft-versioning flow was NOT directly tested because the existing backend test path requires an already-uploaded second asset via real Supabase signed-upload pipeline (out of pytest scope) — code-reviewed and looks correct, recommend main agent self-test via UI. Frontend: /library, /library/materials, /library/materials/taj-mahal-quartzite all render under Blueprint OS (data-surface='os' confirmed on all 3 pages), no JS errors. Sidebar Type/Usage/Collections + Material Registry pinned item all present. Materials page shows hero copy, search, 10 category chips (ALL/STONE/WOOD/FABRIC/METAL/GLASS/CERAMIC/LEATHER/PAINT/OTHER), Register material button, seeded Taj Mahal Quartzite card. Detail page shows hero (name + supplier/finish/thickness/origin strip), SLAB role section with 1 attachment, 9 Attach buttons across role rows, editable sidebar with supplier/sku/finish/thickness fields.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/media/{id}/replace", "issue": "Not exercised by pytest — requires a second registered media_library row from a real Supabase signed-upload. Backend code path looks correct (sets replaced_by_id/replaces_id/version_number, migrates media_links with dedupe). Recommend main agent verify the chain via UI replace flow."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "MediaLibraryPage grid thumbnails", "issue": "Asset cards in /library render only the filename as broken-image alt text — no thumbnail actually displayed. Likely the file_url returned by media_library is not publicly resolvable (private bucket needs signed URLs). Check uploadMediaFile/file_url handling or add a signed-download fallback for private buckets.", "selector": ".grid img", "priority": "MEDIUM"},
+      {"component": "MaterialDetailPage hero", "issue": "Hero background image area renders empty (only diamond placeholder) on Taj Mahal Quartzite even though it has a SLAB attachment. Same root cause likely as grid thumbnails (file_url not loadable in <img>).", "selector": "header.hero", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/library", "issues": ["Confirmed Blueprint OS dark theme: data-surface=os, neutral neutrals, mint accent on Upload + active filters. Looks aligned with brand."]},
+      {"screen": "/library/materials", "issues": ["Editorial hero typography (serif) renders correctly; category chips legible."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_media_library_phase_n.py",
+    "/app/test_reports/pytest/iteration_41_media.xml"
+  ],
+  "action_items": [
+    "Investigate why media_library.file_url does not render images in /library grid and /library/materials/{slug} hero — likely Supabase public bucket URL vs private bucket signed URL mismatch. If buckets are private, surface signed download URLs via /api/storage/signed-download or update register_media to store a signed URL with long TTL.",
+    "Manually verify replace-flow soft versioning via UI (upload two images, click Replace on inspector, then GET old asset and confirm versions[] chain includes both)."
+  ],
+  "critical_code_review_comments": [
+    "media.py list_media uses 'media_with_usage' view + Python post-filtering for collection_id/entity_type/used/q — fine for current volume but consider pushing collection_id filter to SQL once libraries grow >1000 assets to avoid pulling full page first.",
+    "replace_asset() walks media_links one-by-one in a Python loop with N round-trips per link — acceptable for typical 1–20 links per asset; if asset has 100+ links this becomes slow. Future: batch into a single SQL update.",
+    "get_media() version chain walks DB row by row (replaces_id / replaced_by_id) — fine for shallow chains (<5) but a 50-version chain would mean 50 round-trips. Consider a recursive CTE if chains grow.",
+    "attach_material_asset() wraps the mirror media_links insert in bare try/except — catches ALL exceptions silently; recommend catching only the unique-constraint violation by inspecting the error code, so true insert failures (e.g., FK errors) are not swallowed.",
+    "Auth route /api/auth/login → multiple non-blocking 401 console errors observed on dashboard (likely refresh probes). Not blocking but worth investigating for log hygiene.",
+    "media.py is 857 lines — borderline. As more features land (bulk ops, presets) it should split into media_core.py + media_collections.py + materials.py."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_media_library_phase_n.py (new)"
+  ],
+  "success_rate": {"backend": "100% (28/28)", "frontend": "~85% (all surfaces render under Blueprint OS, all key controls visible, but image rendering broken)"},
+  "test_credentials": "Per /app/memory/test_credentials.md — demo@moodfordesign.com / Blueprint2024! used.",
+  "seed_data_creation": "Tests create transient TEST_* collections/materials and clean them up via archive at end of each class. One mirror-link verification cycle exercises /attach-asset + /detach, leaving no residual rows.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend is solid (100%). The remaining open thread is image rendering: media_library rows store file_url that does not load in the browser (broken alt-only thumbnails in /library and empty hero in /library/materials/{slug}). Investigate Supabase bucket privacy + URL generation in routers/storage.py:register_media (line ~88 client.storage.from_(bucket).get_public_url). If bucket is private, the public URL will 400. Also: replace flow soft versioning was not exercised — UI test required.",
+  "rca of the issue": "Image rendering: probable RCA = register_media() stores `get_public_url()` result for a private bucket like 'tenant-assets' which returns a URL that 400s without a token. Fix: either flip the bucket to public, or store storage_path only and have the frontend request a signed download URL on demand. Reproduction: open /library as super_admin → grid shows filenames as broken-image text. Mitigation: short-term — add fallback in MediaLibraryPage to request signed URL when <img onerror> fires; long-term — normalise URL strategy across all buckets."
+}

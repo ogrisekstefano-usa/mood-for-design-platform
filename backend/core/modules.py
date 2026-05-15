@@ -7,7 +7,7 @@ from typing import Dict, List, Optional
 from core.permissions import (
     P_LEADS_READ, P_PROJECTS_READ, P_PROPOSALS_READ, P_MOODBOARDS_READ,
     P_INSPIRATIONS_READ, P_INSIGHTS_READ, P_TENANT_SETTINGS,
-    P_SUPER_TENANTS_READ,
+    P_SUPER_TENANTS_READ, P_STORAGE_READ,
 )
 
 
@@ -45,6 +45,19 @@ MODULES: List[dict] = [
         "enterprise_only": False,
         "requires_permissions": [P_INSPIRATIONS_READ],
         "routes": [{"to": "/inspirations", "icon": "BookOpen", "labelKey": "nav.inspirations", "requires": [P_INSPIRATIONS_READ]}],
+    },
+    {
+        "id": "library",
+        "labelKey": "module.library",
+        "icon": "Archive",
+        "description": "Media Library + Material Registry — operational asset layer.",
+        "default_enabled": True,
+        "enterprise_only": False,
+        "requires_permissions": [P_STORAGE_READ],
+        "routes": [
+            {"to": "/library", "icon": "Archive", "labelKey": "nav.library", "requires": [P_STORAGE_READ]},
+            {"to": "/library/materials", "icon": "Gem", "labelKey": "nav.materials", "requires": [P_STORAGE_READ]},
+        ],
     },
     {
         "id": "insights",

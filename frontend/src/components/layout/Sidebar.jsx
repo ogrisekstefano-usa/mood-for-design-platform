@@ -68,7 +68,7 @@ const Sidebar = () => {
 
   const moduleList = modules?.modules || [];
   const workspaceModules = moduleList.filter((m) => m.id === 'workspace');
-  const contentModules = moduleList.filter((m) => ['moodboards', 'inspirations'].includes(m.id));
+  const contentModules = moduleList.filter((m) => ['library', 'moodboards', 'inspirations'].includes(m.id));
   const intelligenceModules = moduleList.filter((m) => m.id === 'insights');
 
   const wsRoutes = workspaceModules.flatMap((m) => m.routes);

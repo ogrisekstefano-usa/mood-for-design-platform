@@ -49,6 +49,11 @@ const StorefrontPage = lazy(() => import('./pages/settings/StorefrontStudio'));
 const MembersPage = lazy(() => import('./pages/settings/MembersPage'));
 const PlanPage = lazy(() => import('./pages/settings/PlanPage'));
 
+// Library — operational asset layer (Phase N)
+const MediaLibraryPage = lazy(() => import('./pages/library/MediaLibraryPage'));
+const MaterialsPage = lazy(() => import('./pages/library/MaterialsPage'));
+const MaterialDetailPage = lazy(() => import('./pages/library/MaterialDetailPage'));
+
 // Admin
 const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
 const AdminTenantsPage = lazy(() => import('./pages/admin/AdminTenantsPage'));
@@ -127,6 +132,9 @@ function App() {
                   <Route path="/workspace/proposals" element={<ProposalsPage />} />
                   <Route path="/moodboards" element={<MoodboardsPage />} />
                   <Route path="/moodboards/:id" element={<MoodboardEditor />} />
+                  <Route path="/library" element={<MediaLibraryPage />} />
+                  <Route path="/library/materials" element={<MaterialsPage />} />
+                  <Route path="/library/materials/:slug" element={<MaterialDetailPage />} />
                   <Route path="/inspirations" element={<InspirationsPage />} />
                   <Route path="/insights" element={<InsightsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
