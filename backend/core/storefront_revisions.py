@@ -27,9 +27,11 @@ SECTION_FIELDS_TO_FREEZE = (
     "id", "section_type", "sort_order", "visible",
     "locale_content", "settings", "asset_refs",
 )
+# NOTE: `status` and `scheduled_publish_at` are intentionally excluded —
+# they are workflow flags, not content. Including them would emit a
+# phantom "status: draft → published" diff after every revert→publish.
 PAGE_FIELDS_TO_FREEZE = (
     "title", "locale_meta", "page_content",
-    "status", "scheduled_publish_at",
 )
 
 

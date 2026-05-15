@@ -1903,3 +1903,62 @@ mirrors the server limits with Linear/Vercel-style usage chips + disabled CTAs.
 - `assert_capacity(additional=N)` formula uses `usage + max(0, additional-1) >= limit`;
   callers in this session all use additional=1. Future multi-slot reservations should
   switch to `usage + additional > limit`.
+
+
+---
+
+### ✅ Phase J — Storefront Draft vs Live Visual Diff + Publishing Workflow (DONE — 15 Feb 2026)
+Foundation of the enterprise-grade publishing system. Drafts edit live, but the public
+site is served from immutable frozen revisions — Notion / Vercel / Webflow CMS style.
+
+**Migration 020 — `cms_page_revisions`**
+- Append-only snapshot table {snapshot JSONB, label, kind, change_summary, created_by}
+- `cms_pages.published_revision_id` → points at the snapshot the public storefront renders
+- `cms_pages.draft_updated_at` (bumped via Postgres trigger on every section mutation)
+- `cms_pages.last_published_at` (timestamp telemetry)
+- Triggers: `cms_sections_bump_page_draft` (AFTER ins/upd/del) + `cms_pages_bump_self_draft`
+
+**Backend — `core/storefront_revisions.py`**
+- `snapshot_page(tenant, page_id)` — freezes (page meta + ordered sections + asset_index)
+- `publish_page(tenant, page_key, profile, label)` — creates revision, updates pointer + status
+- `list_revisions / get_revision`
+- `diff_against_published(tenant, page_id)` — structured diff with:
+  - `summary`: sections_added/removed/modified/reordered + field_changes + has_changes
+  - `page.changed/added/removed`
+  - `sections.modified[].changes.locale_content[locale].{added,removed,changed}` + settings + visibility + section_type
+- `diff_between_revisions(a, b)` — historical comparison
+- `revert_to_revision(tenant, page_id, rev_id)` — wipes sections + restores from snapshot
+- Status field intentionally excluded from frozen snapshot — workflow flag, not content.
+
+**Backend — `routers/storefront.py` new endpoints**
+- `POST /admin/pages/{key}/publish` body `{label?}` → creates a revision
+- `GET  /admin/pages/{key}/revisions?limit=30`
+- `GET  /admin/revisions/{id}`
+- `GET  /admin/pages/{key}/diff?vs=published|<rev_id>&against=<rev_id>`
+- `POST /admin/pages/{key}/revert/{revision_id}`
+- `GET  /public/{tenant_slug}/pages/{key}` now reads from `published_revision_id`
+  (served_from='revision'); falls back for legacy pages (served_from='legacy_live');
+  `?preview=1` serves draft (served_from='draft')
+
+**Frontend**
+- `components/storefront/PublishDiffDrawer.jsx` — cinematic right-side drawer 640px wide
+  - Tabs: Changes / Revisions
+  - Inline word diff (LCS-based) + side-by-side toggle
+  - Page-meta diff block + per-section change blocks
+  - Footer with optional label input + Publish-now button
+  - Revisions timeline with Live chip + Revert action
+- `components/storefront/storefrontApi.js` extended: listRevisions, getRevision, pageDiff, revertPage
+- `pages/settings/StorefrontStudio.jsx`
+  - Publish button → "Review & publish" opens the diff drawer
+  - Live dirty badge with change count, refreshed on autosave
+  - New GitCompare icon button for quick access to revisions timeline
+
+**Tested (iteration 40)**
+- Backend 9/9 after status-snapshot bug fix
+- Frontend 100%: drawer tabs · view-mode toggle · empty state · revisions list · revert · publish
+
+**Deferred (P2 — Phase J.1)**
+- Image diff hotspots / overlay before/after slider
+- AI-assisted revisions, scheduled publishing UI, collaborative cursors
+- Transactional revert (Postgres function) for scale
+- Revision pruning policy + UI
