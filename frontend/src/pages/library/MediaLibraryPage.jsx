@@ -57,9 +57,9 @@ const AssetTile = ({ asset, selected, onSelect, onOpen }) => {
                     : 'border-[var(--bp-border)] hover:border-[var(--bp-border-strong)]'}`}
       style={{ aspectRatio: '1 / 1' }}
     >
-      {isImage && asset.file_url && (
+      {isImage && (asset.display_url || asset.file_url) && (
         <img
-          src={asset.file_url}
+          src={asset.display_url || asset.file_url}
           alt={asset.alt_text || asset.file_name}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           loading="lazy"
@@ -397,7 +397,7 @@ const Inspector = ({ assetId, onClose, onChanged, onReplaceStart }) => {
           <div className="p-5">
             {(detail.asset.file_type || '').startsWith('image/') ? (
               <img
-                src={detail.asset.file_url}
+                src={detail.asset.display_url || detail.asset.file_url}
                 alt={detail.asset.alt_text || ''}
                 className="w-full rounded-md border border-[var(--bp-border)]"
               />
@@ -418,7 +418,7 @@ const Inspector = ({ assetId, onClose, onChanged, onReplaceStart }) => {
             <div className="mt-3 flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => window.open(detail.asset.file_url, '_blank')}
+                onClick={() => window.open(detail.asset.display_url || detail.asset.file_url, '_blank')}
                 data-testid="inspector-open-original-btn"
                 className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[4px]
                            border border-[var(--bp-border)] text-[11px] text-[var(--bp-text-secondary)]
@@ -740,7 +740,7 @@ const ReplaceModal = ({ asset, onClose, onDone }) => {
 
         <div className="flex items-center gap-3 p-3 rounded-[5px] border border-[var(--bp-border)] bg-[var(--bp-surface-2)]/40">
           <img
-            src={asset.file_url}
+            src={asset.display_url || asset.file_url}
             alt=""
             className="w-14 h-14 object-cover rounded-[3px] border border-[var(--bp-border)]"
           />

@@ -166,9 +166,9 @@ const MaterialCard = ({ material }) => (
                hover:border-[var(--bp-border-strong)] transition-colors overflow-hidden"
   >
     <div className="aspect-[4/5] bg-[var(--bp-surface-2)] relative overflow-hidden">
-      {material.primary_asset?.file_url ? (
+      {material.primary_asset?.file_url || material.primary_asset?.display_url ? (
         <img
-          src={material.primary_asset.file_url}
+          src={material.primary_asset.display_url || material.primary_asset.file_url}
           alt={material.primary_asset.alt_text || material.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
           loading="lazy"

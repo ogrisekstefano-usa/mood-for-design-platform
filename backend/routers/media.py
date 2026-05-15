@@ -27,6 +27,42 @@ def _now():
     return datetime.now(timezone.utc).isoformat()
 
 
+SIGNED_URL_TTL = 60 * 60 * 6  # 6 hours — long enough for a working session
+
+
+def _batch_signed_urls(client, rows):
+    """Mutate rows in place: add `display_url` = signed URL.
+
+    Groups paths by bucket and asks supabase for a batch of signed URLs.
+    Falls back to the stored file_url if the API call fails (public buckets).
+    """
+    if not rows:
+        return rows
+    # Group by bucket
+    by_bucket = {}
+    for r in rows:
+        b = r.get("bucket")
+        p = r.get("storage_path")
+        if not b or not p:
+            r["display_url"] = r.get("file_url")
+            continue
+        by_bucket.setdefault(b, []).append((r, p))
+
+    for bucket, items in by_bucket.items():
+        paths = [p for (_r, p) in items]
+        try:
+            signed_list = client.storage.from_(bucket).create_signed_urls(paths, SIGNED_URL_TTL)
+            # supabase-py returns list aligned with input order
+            for (row, _p), s in zip(items, signed_list or []):
+                row["display_url"] = (s.get("signed_url") or s.get("signedUrl")
+                                      or s.get("signedURL") or row.get("file_url"))
+        except Exception:
+            for row, _p in items:
+                row["display_url"] = row.get("file_url")
+    return rows
+
+
+
 def _slugify(value: str) -> str:
     import re
     s = (value or "").strip().lower()
@@ -218,6 +254,7 @@ def list_media(
             or needle in (r.get("description") or "").lower()
         ]
 
+    _batch_signed_urls(client, rows)
     return {"data": rows, "count": len(rows)}
 
 
@@ -303,6 +340,9 @@ def get_media(asset_id: str, ctx: dict = Depends(require_permission(P_STORAGE_RE
     # Material attachments
     mat_links = client.table("material_assets").select("material_id, role, caption")\
         .eq("asset_id", asset_id).eq("tenant_id", ctx["tenant_id"]).execute().data or []
+
+    # Inject display_url (signed) into asset + every version
+    _batch_signed_urls(client, [asset, *versions])
 
     return {
         "asset": asset,
@@ -507,6 +547,7 @@ def get_collection(cid: str, ctx: dict = Depends(require_permission(P_STORAGE_RE
     if asset_ids:
         rows = client.table("media_library").select("*")\
             .in_("id", asset_ids).eq("tenant_id", ctx["tenant_id"]).execute().data or []
+        _batch_signed_urls(client, rows)
         assets_by_id = {a["id"]: a for a in rows}
     for it in items:
         it["asset"] = assets_by_id.get(it["asset_id"])
@@ -656,8 +697,9 @@ def list_materials(ctx: dict = Depends(require_permission(P_STORAGE_READ)),
     aids = [m["primary_asset_id"] for m in rows if m.get("primary_asset_id")]
     by_id = {}
     if aids:
-        ar = client.table("media_library").select("id, file_url, file_name, alt_text, width, height")\
+        ar = client.table("media_library").select("id, file_url, file_name, alt_text, width, height, bucket, storage_path")\
             .in_("id", aids).eq("tenant_id", ctx["tenant_id"]).execute().data or []
+        _batch_signed_urls(client, ar)
         by_id = {a["id"]: a for a in ar}
     for m in rows:
         m["primary_asset"] = by_id.get(m.get("primary_asset_id"))
@@ -740,6 +782,7 @@ def _hydrate_material(client, mat, ctx):
     if asset_ids:
         rows = client.table("media_library").select("*").in_("id", asset_ids)\
             .eq("tenant_id", tid).execute().data or []
+        _batch_signed_urls(client, rows)
         assets_by_id = {a["id"]: a for a in rows}
     for a in atts:
         a["asset"] = assets_by_id.get(a["asset_id"])

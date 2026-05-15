@@ -73,7 +73,7 @@ const RoleSection = ({ role, items, onAttach, onDetach, onSetPrimary }) => (
             data-testid={`attached-${role.id}-${a.id}`}
           >
             {a.asset?.file_type?.startsWith('image/') ? (
-              <img src={a.asset.file_url} alt={a.caption || ''} className="absolute inset-0 w-full h-full object-cover" />
+              <img src={a.asset.display_url || a.asset.file_url} alt={a.caption || ''} className="absolute inset-0 w-full h-full object-cover" />
             ) : a.asset?.file_type === 'application/pdf' ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-[var(--bp-surface-2)]">
                 <FileText size={28} className="text-[var(--bp-text-muted)] mb-2" strokeWidth={1.3} />
@@ -253,7 +253,7 @@ const AttachAssetModal = ({ materialId, role, onClose, onAttached }) => {
                              hover:border-[var(--bp-primary)] transition-colors group relative"
                 >
                   {a.file_type?.startsWith('image/') ? (
-                    <img src={a.file_url} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                    <img src={a.display_url || a.file_url} alt="" className="absolute inset-0 w-full h-full object-cover" />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-[var(--bp-surface-2)]">
                       <FileText size={20} className="text-[var(--bp-text-muted)]" />
@@ -401,9 +401,9 @@ const MaterialDetailPage = () => {
       {/* Hero */}
       <div className="relative">
         <div className="aspect-[21/9] w-full bg-[var(--bp-surface-2)] overflow-hidden">
-          {mat.primary_asset?.file_url ? (
+          {mat.primary_asset?.file_url || mat.primary_asset?.display_url ? (
             <img
-              src={mat.primary_asset.file_url}
+              src={mat.primary_asset.display_url || mat.primary_asset.file_url}
               alt={mat.name}
               className="w-full h-full object-cover"
             />

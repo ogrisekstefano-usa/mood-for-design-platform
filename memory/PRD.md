@@ -29,6 +29,117 @@ Multi-tenant SaaS platform per interior designer e architetti, costruita come Bl
 
 ## Implementation Status
 
+### ✅ Phase N — Media Library + Material Registry (DONE — 15 Feb 2026)
+**Operational Asset Layer** — the media library is no longer a passive upload registry.
+It is now the studio's archive backbone: searchable, taggable, linkable, with soft
+versioning and a first-class material entity. Strategic gravity for interior design.
+
+**N.1 — Foundation (backend + DB)**
+- Migration `021_media_library_v2.sql`:
+  - `media_library` extended: `width`, `height`, `duration_seconds`, `mime_type`,
+    `checksum_sha256`, `description`, `dominant_color`, `focal_point` JSONB,
+    `archived_at`, `replaces_id`, `replaced_by_id`, `version_number`, `updated_at`
+  - New `media_collections` + `media_collection_items` — curated sets
+    ("Marmi Calacatta 2026", "Renderings Villa Roma")
+  - New `media_links` — single table mapping asset → entity
+    (project/moodboard/cms_page/cms_section/article/material/proposal/...).
+    Powers the usage map without forcing every entity to know media schema.
+  - New `material_registry` — first-class material entity with name/category/
+    subcategory/supplier/finish/thickness/origin/description/technical_notes/
+    primary_asset/dominant_color/status
+  - New `material_assets` — M2M with `role` enum (slab/finish/render/catalog/
+    spec/detail/application/swatch)
+  - View `media_with_usage` for fast usage_count read
+  - Triggers `media_library_bump_updated_at` + `material_registry_bump_updated_at`
+
+**N.1 — Backend router `/api/media/*`** (~720 LOC):
+- `GET /api/media` — list with `q`, `type`, `category`, `tag`, `collection_id`,
+  `entity_type/entity_id`, `used`, `include_archived`, `include_versions`,
+  `sort` (recent/name/size/usage). Returns `display_url` (signed, 6h TTL) so
+  private-bucket assets render correctly.
+- `GET /api/media/stats` — totals + by_kind + total_bytes + unused + collections + materials counts
+- `GET /api/media/{id}` — detail with `links`, `collections`, `versions` chain
+  (walks `replaces_id` / `replaced_by_id`), `material_attachments`, `is_head`
+- `PATCH /api/media/{id}` — update alt_text/description/tags/width/height/dominant_color
+- `DELETE /api/media/{id}` + `POST /restore` — soft archive cycle
+- `POST /api/media/{id}/replace` — **soft versioning**: new asset becomes head
+  (`replaces_id` = old, `version_number` += 1, `archived_at` = null), old is
+  archived (kept accessible), `media_links` migrate from old to new with dedupe
+- `GET /api/media/collections/list` + `POST` + `GET {id}` + `PATCH` + `DELETE` +
+  `POST /attach` (bulk) + `DELETE /items/{asset_id}`
+- `POST /api/media/{id}/links` + `DELETE /api/media/links/{id}` — explicit usage map writes
+- `GET /api/media/materials/list` (with `q` / `category` filter + asset_count + primary_asset hydration)
+- `POST /api/media/materials` (auto slug) + `GET /by-slug/{slug}` + `GET /{id}` + `PATCH` + `DELETE` archive
+- `POST /api/media/materials/{mid}/attach-asset` — wires `material_assets` AND
+  mirrors a row in `media_links` so the asset's usage map shows the material
+- `DELETE /api/media/materials/{mid}/attachments/{att_id}` — removes both rows
+
+Permissions: `P_STORAGE_READ` / `P_STORAGE_WRITE` gate all endpoints
+(designer + tenant_admin + super_admin can write, client/ad_partner are 403).
+
+**N.2 — Media Library UI** (`/library`):
+- Cinematic 3-panel layout: filter sidebar | grid main | inspector right rail
+- Filter sidebar: Type chips (All/Images/Video/PDF with counts), Usage (Linked/Unused),
+  Collections list with item counts, "Material registry" pinned footer
+- Topbar: search (debounced 250ms), bulk selection bar with "Add to collection" picker, Upload CTA
+- Grid: masonry-style square tiles with hover overlay (file name + usage badge),
+  shift/cmd-click to select, broken/archived/replaced badges
+- Inspector: full preview, file metadata, click-to-edit alt_text/description/tags,
+  Save, Replace, Open original, Archive/Restore, **usage map** (linked entities,
+  collections, material attachments), **version history** chain
+- Replace modal: file picker → uploadMediaFile → soft-replace POST → version chain wired,
+  links migrated, "version_number +1" badge
+- Drag & drop upload globally
+- 100% Blueprint OS surface (`data-surface=os`), strict dark cinematic theme
+
+**N.3 — Material Registry UI** (`/library/materials` + `/library/materials/:slug`):
+- List page: editorial hero (luxury serif "Materials" + copy), search + 9 category
+  filter chips (Stone/Wood/Fabric/Metal/Glass/Ceramic/Leather/Paint/Other),
+  Register material modal with all technical fields (name/category/subcategory/
+  supplier/sku/finish/thickness/origin/description), card grid showing primary asset +
+  supplier + finish + attachment count badge
+- Detail page: ultra-cinematic hero (21:9 image + name + supplier/finish/thickness/
+  origin strip), 8 role sections (Slab/Finish/Render/Application/Detail/Swatch/
+  Catalog/Spec) with attach-modal (Upload new / From library tabs),
+  editable sidebar (click-to-edit supplier/sku/finish/thickness/origin/description/
+  technical_notes), Linked entities (projects/moodboards from usage map),
+  Archive material CTA
+
+**Sidebar nav integration** (`core/modules.py`):
+- New `library` module with two routes: `/library` (Archive) + `/library/materials` (Gem)
+- Default-enabled, gated by `P_STORAGE_READ`
+- i18n: nav.library/nav.materials/module.library in EN ("Library", "Materials")
+  and IT ("Archivio", "Materiali")
+
+**End-to-end verified** ✅
+- Backend: 28/28 pytest cases PASS — list/stats/filters, collections CRUD+attach
+  +narrow-by-collection filter, material CRUD+by-slug+attach-asset mirror-to-media_links
+  +detach removes mirror, media PATCH+archive/restore, RBAC (client 403 on writes),
+  tenant isolation (studio2 sees 404/empty on Studio entities)
+- Frontend: `/library`, `/library/materials`, `/library/materials/taj-mahal-quartzite`
+  all render under `data-surface=os` (Blueprint OS dark cinematic). Sidebar Type/Usage/
+  Collections + Material Registry shortcut all present. Detail page shows hero +
+  metadata strip + Slab role section + editable sidebar
+- Signed URLs (6h TTL) injected via `display_url` so private-bucket images render correctly
+
+**Files of reference**
+- `/app/supabase/migrations/021_media_library_v2.sql`
+- `/app/backend/routers/media.py`
+- `/app/frontend/src/lib/mediaApi.js`
+- `/app/frontend/src/pages/library/MediaLibraryPage.jsx`
+- `/app/frontend/src/pages/library/MaterialsPage.jsx`
+- `/app/frontend/src/pages/library/MaterialDetailPage.jsx`
+- `/app/backend/tests/test_media_library_phase_n.py` (28 cases)
+
+**Strategic positioning**
+This is NOT a "Pinterest clone" nor a "Dropbox grezzo". It is the operational
+asset layer — Milan design archive feel, enterprise rigor, cinematic restraint.
+Materials are first-class entities (not tags). The replace flow is non-destructive
+(soft versioning) so history is preserved. Asset relationships are the foundation
+for the AI Editorial Assistant (Phase O) and future material-aware features.
+
+
+
 ### ✅ Phase H.5 — Session A: Page Scope Audit & Locale Runtime Consolidation (DONE — 15 Feb 2026)
 Critical Refactor Sprint started. Architectural separation enforced between Corporate / Tenant Storefront / Blueprint Workspace.
 
