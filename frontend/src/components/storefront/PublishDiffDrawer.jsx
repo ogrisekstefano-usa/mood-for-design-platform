@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { storefrontApi } from './storefrontApi';
+import AISuggestionPanel from '../ai/AISuggestionPanel';
 
 // ── Helpers ─────────────────────────────────────────────────────────
 const fmtDate = (iso) => {
@@ -88,15 +89,39 @@ const SideBySide = ({ from, to }) => (
 );
 
 // ── Field row ──────────────────────────────────────────────────────
-const FieldRow = ({ field, change, viewMode }) => {
+const FieldRow = ({ field, change, viewMode, aiContext, locale }) => {
   // `change` shape: {from, to} or just a value (for added/removed)
   const from = change?.from;
   const to   = change?.to;
   const isText = typeof from === 'string' || typeof to === 'string';
+  // AI is offered only for textual field changes with a non-empty draft value
+  // and only on fields that are editorial-friendly (skip ids, slugs, urls).
+  const aiSkipFields = new Set([
+    'id', 'slug', 'image_url', 'url', 'href', 'image', 'icon', 'asset_id',
+    'created_at', 'updated_at', 'version',
+  ]);
+  const isEditorial = isText && typeof to === 'string' && to.trim().length >= 3
+    && !aiSkipFields.has(field) && !field.endsWith('_url') && !field.endsWith('_id');
   return (
     <div className="py-2.5 border-b border-[var(--bp-border)]/40 last:border-b-0">
       <div className="flex items-center gap-2 mb-1.5">
-        <span className="text-[10px] font-body uppercase tracking-[0.18em] text-[var(--bp-text-muted)]">{field}</span>
+        <span className="text-[10px] font-body uppercase tracking-[0.18em] text-[var(--bp-text-muted)] flex-1">{field}</span>
+        {isEditorial && (
+          <AISuggestionPanel
+            text={to}
+            originalText={typeof from === 'string' ? from : null}
+            context={{ ...(aiContext || {}), locale: locale || aiContext?.locale }}
+            onAccept={(t) => {
+              try {
+                navigator.clipboard?.writeText(t);
+                toast.success('Suggestion copied to clipboard');
+              } catch {
+                toast.success('Suggestion ready — copy it manually');
+              }
+            }}
+            testIdPrefix={`ai-${field}`}
+          />
+        )}
       </div>
       {viewMode === 'inline' && isText
         ? <InlineTextDiff from={from} to={to} />
@@ -118,7 +143,7 @@ const SimpleField = ({ field, value, tone = 'add' }) => (
 );
 
 // ── Section block ─────────────────────────────────────────────────
-const SectionBlock = ({ section, kind, viewMode }) => {
+const SectionBlock = ({ section, kind, viewMode, aiContext }) => {
   // kind: 'added' | 'removed' | 'modified'
   const tone = kind === 'added' ? 'border-emerald-400/30 bg-emerald-400/[0.04]'
              : kind === 'removed' ? 'border-rose-500/30 bg-rose-500/[0.04]'
@@ -158,26 +183,33 @@ const SectionBlock = ({ section, kind, viewMode }) => {
             </div>
           )}
           {/* Locale-keyed field changes */}
-          {section.changes.locale_content && Object.entries(section.changes.locale_content).map(([locale, ld]) => (
-            <div key={locale} className="mb-3">
-              <p className="text-[9px] font-body uppercase tracking-[0.22em] text-[var(--bp-primary)] mb-1.5">{locale}</p>
-              {Object.entries(ld.changed || {}).map(([f, c]) => (
-                <FieldRow key={`c-${f}`} field={f} change={c} viewMode={viewMode} />
-              ))}
-              {Object.entries(ld.added || {}).map(([f, v]) => (
-                <SimpleField key={`a-${f}`} field={f} value={v} tone="add" />
-              ))}
-              {Object.entries(ld.removed || {}).map(([f, v]) => (
-                <SimpleField key={`r-${f}`} field={f} value={v} tone="del" />
-              ))}
-            </div>
-          ))}
+          {section.changes.locale_content && Object.entries(section.changes.locale_content).map(([locale, ld]) => {
+            const sectionAiCtx = {
+              ...(aiContext || {}),
+              section_type: section.section_type,
+              locale,
+            };
+            return (
+              <div key={locale} className="mb-3">
+                <p className="text-[9px] font-body uppercase tracking-[0.22em] text-[var(--bp-primary)] mb-1.5">{locale}</p>
+                {Object.entries(ld.changed || {}).map(([f, c]) => (
+                  <FieldRow key={`c-${f}`} field={f} change={c} viewMode={viewMode} aiContext={sectionAiCtx} locale={locale} />
+                ))}
+                {Object.entries(ld.added || {}).map(([f, v]) => (
+                  <SimpleField key={`a-${f}`} field={f} value={v} tone="add" />
+                ))}
+                {Object.entries(ld.removed || {}).map(([f, v]) => (
+                  <SimpleField key={`r-${f}`} field={f} value={v} tone="del" />
+                ))}
+              </div>
+            );
+          })}
           {/* settings diff */}
           {section.changes.settings && (
             <div className="mt-2 pt-2 border-t border-[var(--bp-border)]/40">
               <p className="text-[9px] font-body uppercase tracking-[0.22em] text-[var(--bp-text-muted)] mb-1.5">settings</p>
               {Object.entries(section.changes.settings.changed || {}).map(([f, c]) => (
-                <FieldRow key={`s-${f}`} field={f} change={c} viewMode={viewMode} />
+                <FieldRow key={`s-${f}`} field={f} change={c} viewMode={viewMode} aiContext={aiContext} />
               ))}
             </div>
           )}
@@ -367,7 +399,7 @@ const NoChangesState = () => (
 );
 
 // ── Changes view ──────────────────────────────────────────────────
-const ChangesView = ({ diff, viewMode }) => {
+const ChangesView = ({ diff, viewMode, aiContext }) => {
   const sectionsAdded = diff?.sections?.added || [];
   const sectionsRemoved = diff?.sections?.removed || [];
   const sectionsModified = diff?.sections?.modified || [];
@@ -381,7 +413,8 @@ const ChangesView = ({ diff, viewMode }) => {
           <p className="text-[10px] font-body uppercase tracking-[0.22em] text-[var(--bp-text-muted)] mb-2.5">Page meta</p>
           <div className="border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] p-4 bg-[var(--bp-surface-2)]/30">
             {pageChangedKeys.map((k) => (
-              <FieldRow key={k} field={k} change={pageDiff.changed[k]} viewMode={viewMode} />
+              <FieldRow key={k} field={k} change={pageDiff.changed[k]} viewMode={viewMode}
+                aiContext={{ ...(aiContext || {}), section_type: 'page_meta' }} />
             ))}
             {Object.entries(pageDiff.added || {}).map(([k, v]) => (
               <SimpleField key={`a-${k}`} field={k} value={v} tone="add" />
@@ -399,9 +432,9 @@ const ChangesView = ({ diff, viewMode }) => {
         </div>
       )}
 
-      {sectionsAdded.map((s) => <SectionBlock key={`a-${s.id}`} section={s} kind="added" viewMode={viewMode} />)}
-      {sectionsModified.map((s) => <SectionBlock key={`m-${s.id}`} section={s} kind="modified" viewMode={viewMode} />)}
-      {sectionsRemoved.map((s) => <SectionBlock key={`r-${s.id}`} section={s} kind="removed" viewMode={viewMode} />)}
+      {sectionsAdded.map((s) => <SectionBlock key={`a-${s.id}`} section={s} kind="added" viewMode={viewMode} aiContext={aiContext} />)}
+      {sectionsModified.map((s) => <SectionBlock key={`m-${s.id}`} section={s} kind="modified" viewMode={viewMode} aiContext={aiContext} />)}
+      {sectionsRemoved.map((s) => <SectionBlock key={`r-${s.id}`} section={s} kind="removed" viewMode={viewMode} aiContext={aiContext} />)}
     </>
   );
 };
