@@ -358,24 +358,32 @@ async def list_public_articles(db: AsyncSession, *, tenant_id: str, locale: str 
         params['q'] = f"%{search}%"
 
     join_sql = " ".join(joins)
+    # Optimized: LEFT JOIN to fetch hero asset + locale rows in a single pass
+    # (was N+1 with correlated subqueries; now bounded by LIMIT).
     sql = f"""
         WITH filtered AS (
-          SELECT DISTINCT a.id
+          SELECT DISTINCT a.id, a.published_at
           FROM journal_articles a
           {join_sql}
           WHERE {' AND '.join(where)}
+          ORDER BY a.published_at DESC NULLS LAST
+          LIMIT :lim OFFSET :off
         )
-        SELECT a.id::text, a.article_type::text, a.published_at, a.hero_asset_id::text,
-               a.author_display_name, a.reading_time_minutes,
-               (SELECT public_url FROM cms_assets WHERE id = a.hero_asset_id) AS hero_url,
-               (SELECT row_to_json(al) FROM article_localizations al
-                  WHERE al.article_id = a.id AND al.locale_code = :loc) AS loc,
-               (SELECT row_to_json(al2) FROM article_localizations al2
-                  WHERE al2.article_id = a.id AND al2.locale_code = a.canonical_locale) AS loc_canon
+        SELECT a.id::text,
+               a.article_type::text,
+               a.published_at,
+               a.hero_asset_id::text,
+               a.author_display_name,
+               a.reading_time_minutes,
+               hero.public_url AS hero_url,
+               row_to_json(al)      AS loc,
+               row_to_json(al2)     AS loc_canon
         FROM journal_articles a
-        JOIN filtered f ON f.id = a.id
+        JOIN filtered f                              ON f.id = a.id
+        LEFT JOIN cms_assets hero                    ON hero.id = a.hero_asset_id
+        LEFT JOIN article_localizations al           ON al.article_id  = a.id AND al.locale_code = :loc
+        LEFT JOIN article_localizations al2          ON al2.article_id = a.id AND al2.locale_code = a.canonical_locale
         ORDER BY a.published_at DESC NULLS LAST
-        LIMIT :lim OFFSET :off
     """
     rows = (await db.execute(text(sql), params)).mappings().all()
     items = []
