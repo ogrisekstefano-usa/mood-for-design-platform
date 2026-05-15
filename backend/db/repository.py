@@ -1,170 +1,138 @@
 """
-MOOD for DESIGN — Corporate Repository
-Abstraction layer between API and database.
-
-Architecture:
-- If DATABASE_URL is configured → use Supabase PostgreSQL via SQLAlchemy
-- If not configured → fall back to in-memory seed_data.py (dev/bootstrap mode)
-
-This pattern allows:
-1. Development without credentials (seed data)
-2. Seamless activation when Supabase URL is provided
-3. Same API surface regardless of data source
+Corporate Repository — reads from Blueprint CMS tables (cms_pages, cms_sections).
+Tenant-aware via tenant_resolver. Cached for 60s per page+locale.
 """
-import logging
-import os
+from __future__ import annotations
 from typing import Optional
-from database import is_db_configured, AsyncSessionLocal
-from db.seed_data import get_page as seed_get_page, get_navigation as seed_get_navigation, get_tenant as seed_get_tenant, LOCALES
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
-logger = logging.getLogger(__name__)
+from database import AsyncSessionLocal
+from models import CmsPage, CmsSection, Tenant, TenantDomain
+from cache import content_cache
+from tenant_resolver import get_corporate_tenant
 
-# Only import ORM models if DB is configured
-if is_db_configured():
-    from sqlalchemy import select
-    from sqlalchemy.orm import selectinload
-    from models import Tenant, Page, Section, SectionContent, NavigationItem, NavigationContent
+FALLBACK_LOCALE = 'en-us'
+
+
+def _resolve_locale(content_map: dict, locale: str) -> dict:
+    """Resolve multilingual content with chain: requested → en-us → first available."""
+    if not isinstance(content_map, dict):
+        return {}
+    return (
+        content_map.get(locale)
+        or content_map.get(FALLBACK_LOCALE)
+        or next(iter(content_map.values()), {})
+    )
 
 
 class CorporateRepository:
-    """
-    Repository for mood-corporate tenant.
-    Reads from Supabase if configured, falls back to seed data.
-    """
 
-    TENANT_SLUG = 'mood-corporate'
-    FALLBACK_LOCALE = 'en-us'
+    async def get_tenant(self) -> dict:
+        return await get_corporate_tenant()
 
-    def _resolve_content(self, content_items, locale: str) -> dict:
-        """Resolve multilingual content with fallback chain."""
-        content_map = {c.locale_code: c.content for c in content_items}
-        return (
-            content_map.get(locale)
-            or content_map.get(self.FALLBACK_LOCALE)
-            or next(iter(content_map.values()), {})
+    # ── Pages ─────────────────────────────────────────────────────────────────
+
+    async def get_page(self, slug: str, locale: str = FALLBACK_LOCALE) -> Optional[dict]:
+        tenant = await self.get_tenant()
+        cache_key = f'page:{tenant["id"]}:{slug}:{locale}'
+        return await content_cache.get_or_set(
+            cache_key,
+            lambda: self._fetch_page(tenant['id'], slug, locale),
+            ttl=60,
         )
 
-    # ── Pages ──────────────────────────────────────────────────────────────────
-
-    async def get_page(self, slug: str, locale: str = 'en-us') -> Optional[dict]:
-        if is_db_configured():
-            try:
-                return await self._get_page_db(slug, locale)
-            except Exception as e:
-                logger.warning(f"[Repo] DB error for page '{slug}', using seed fallback: {e}")
-        return seed_get_page(slug, locale)
-
-    async def _get_page_db(self, slug: str, locale: str) -> Optional[dict]:
+    async def _fetch_page(self, tenant_id: str, slug: str, locale: str) -> Optional[dict]:
         async with AsyncSessionLocal() as session:
             result = await session.execute(
-                select(Page)
-                .options(
-                    selectinload(Page.sections).selectinload(Section.content_items)
-                )
-                .join(Page.tenant)
-                .where(
-                    Tenant.slug == self.TENANT_SLUG,
-                    Page.slug == slug,
-                    Page.is_published == True,
-                    Tenant.is_active == True,
-                )
+                select(CmsPage)
+                .options(selectinload(CmsPage.sections))
+                .where(CmsPage.tenant_id == tenant_id)
+                .where(CmsPage.page_key == slug)
+                .where(CmsPage.status == 'published')
             )
             page = result.scalar_one_or_none()
             if not page:
                 return None
 
-            sections = []
-            for section in sorted(page.sections, key=lambda s: s.display_order):
-                if not section.is_enabled:
+            sections_out = []
+            for section in page.sections:
+                if not section.visible:
                     continue
-                resolved_content = self._resolve_content(section.content_items, locale)
-                sections.append({
-                    'id': section.id,
-                    'type': section.type,
-                    'display_order': section.display_order,
-                    'config': section.config,
-                    'content': resolved_content,
+                if section.section_type == 'navigation':
+                    # navigation is served via /api/corporate/navigation
+                    continue
+                resolved = _resolve_locale(section.locale_content or {}, locale)
+                sections_out.append({
+                    'id': str(section.id),
+                    'type': section.section_type,
+                    'display_order': section.sort_order,
+                    'config': section.settings or {},
+                    'content': resolved,
+                    'asset_refs': [str(a) for a in (section.asset_refs or [])],
                 })
 
-            seo_map = page.seo or {}
-            seo = seo_map.get(locale) or seo_map.get(self.FALLBACK_LOCALE) or {}
+            seo_map = page.locale_meta or {}
+            seo = seo_map.get(locale) or seo_map.get(FALLBACK_LOCALE) or {}
 
             return {
                 'page': {
-                    'id': page.id,
-                    'slug': page.slug,
-                    'title': seo.get('title', page.slug.replace('-', ' ').title()),
+                    'id': str(page.id),
+                    'slug': page.page_key,
+                    'title': seo.get('title', page.title or page.page_key.replace('-', ' ').title()),
                     'meta_description': seo.get('description', ''),
+                    'seo': seo,
+                    'template': (page.page_content or {}).get('template', 'corporate-default'),
                 },
-                'sections': sections,
+                'sections': sections_out,
             }
 
-    # ── Navigation ─────────────────────────────────────────────────────────────
+    async def list_pages(self) -> list[dict]:
+        tenant = await self.get_tenant()
+        cache_key = f'pages_list:{tenant["id"]}'
 
-    async def get_navigation(self, locale: str = 'en-us') -> dict:
-        if is_db_configured():
-            try:
-                return await self._get_navigation_db(locale)
-            except Exception as e:
-                logger.warning(f"[Repo] DB error for navigation, using seed: {e}")
-        return seed_get_navigation(locale)
-
-    async def _get_navigation_db(self, locale: str) -> dict:
-        async with AsyncSessionLocal() as session:
-            result = await session.execute(
-                select(NavigationItem)
-                .options(selectinload(NavigationItem.labels))
-                .join(NavigationItem.tenant)
-                .where(
-                    Tenant.slug == self.TENANT_SLUG,
-                    NavigationItem.is_active == True,
+        async def loader():
+            async with AsyncSessionLocal() as session:
+                result = await session.execute(
+                    select(CmsPage.page_key, CmsPage.status)
+                    .where(CmsPage.tenant_id == tenant['id'])
                 )
-                .order_by(NavigationItem.display_order)
-            )
-            items = result.scalars().all()
+                return [
+                    {'slug': r[0], 'published': r[1] == 'published'}
+                    for r in result.all()
+                ]
+        return await content_cache.get_or_set(cache_key, loader, ttl=120)
 
-            def resolve_label(item):
-                label_map = {c.locale_code: c.label for c in item.labels}
-                return label_map.get(locale) or label_map.get(self.FALLBACK_LOCALE) or item.key
+    # ── Navigation (stored as a dedicated cms_section type: 'navigation') ─────
 
-            main_items = [
-                {'id': i.id, 'key': i.key, 'href': i.href, 'label': resolve_label(i)}
-                for i in items if i.nav_group == 'main'
-            ]
-            cta_items = [i for i in items if i.nav_group == 'cta']
-            cta = None
-            if cta_items:
-                c = cta_items[0]
-                cta = {'id': c.id, 'key': c.key, 'href': c.href, 'label': resolve_label(c)}
+    async def get_navigation(self, locale: str = FALLBACK_LOCALE) -> dict:
+        tenant = await self.get_tenant()
+        cache_key = f'nav:{tenant["id"]}:{locale}'
 
-            return {'main': main_items, 'cta': cta}
+        async def loader():
+            async with AsyncSessionLocal() as session:
+                # navigation lives on the 'home' page as a section of type 'navigation'
+                result = await session.execute(
+                    select(CmsSection)
+                    .join(CmsPage, CmsSection.page_id == CmsPage.id)
+                    .where(CmsPage.tenant_id == tenant['id'])
+                    .where(CmsSection.section_type == 'navigation')
+                    .order_by(CmsSection.sort_order)
+                )
+                sections = result.scalars().all()
+                if not sections:
+                    return {'main': [], 'cta': None, 'footer': {}}
 
-    # ── Locales ─────────────────────────────────────────────────────────────────
+                # Aggregate all navigation rows into a single resolved structure.
+                resolved = _resolve_locale(sections[0].locale_content or {}, locale)
+                settings = sections[0].settings or {}
+                return {
+                    'main': resolved.get('main', settings.get('main', [])),
+                    'cta': resolved.get('cta', settings.get('cta')),
+                    'footer': resolved.get('footer', settings.get('footer', {})),
+                }
 
-    async def get_locales(self) -> list:
-        # Locales are global — seed data is source of truth for now
-        return [l for l in LOCALES if l.get('is_active', True)]
-
-    # ── Tenant Config ───────────────────────────────────────────────────────────
-
-    async def get_tenant(self) -> Optional[dict]:
-        if is_db_configured():
-            try:
-                async with AsyncSessionLocal() as session:
-                    result = await session.execute(
-                        select(Tenant).where(Tenant.slug == self.TENANT_SLUG)
-                    )
-                    tenant = result.scalar_one_or_none()
-                    if tenant:
-                        return {
-                            'id': tenant.id, 'slug': tenant.slug,
-                            'name': tenant.name, 'domain': tenant.domain,
-                            'config': tenant.config, 'is_active': tenant.is_active,
-                        }
-            except Exception as e:
-                logger.warning(f"[Repo] DB error for tenant, using seed: {e}")
-        return seed_get_tenant('mood-corporate')
+        return await content_cache.get_or_set(cache_key, loader, ttl=120)
 
 
-# Singleton instance
 repository = CorporateRepository()

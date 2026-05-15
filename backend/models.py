@@ -1,25 +1,40 @@
 """
-MOOD for DESIGN — SQLAlchemy ORM Models
-Multi-tenant schema: Tenants → Pages → Sections → SectionContent
-Supabase-ready. All tables support multilingual content via _content sibling tables.
+MOOD for DESIGN — SQLAlchemy ORM Models mapped to existing Blueprint schema.
+
+NOTE: This module declares ORM mappings against tables that ALREADY exist
+in Supabase (Blueprint engine). DO NOT create_all() — DDL is owned by
+Blueprint migrations. We only read/write rows.
+
+Tables mapped (subset relevant to corporate site):
+- tenants
+- tenant_domains
+- tenant_memberships
+- cms_pages
+- cms_sections
+- cms_assets
+- magazine_posts
+- magazine_paragraphs
 """
-import uuid
-from datetime import datetime, timezone
-from decimal import Decimal
+from datetime import datetime
 from typing import Optional, List
 from sqlalchemy import (
-    String, Boolean, Integer, Text, DateTime, Numeric,
-    ForeignKey, JSON, UniqueConstraint, Index
+    String, Boolean, Integer, Text, DateTime, Numeric, Enum,
+    ForeignKey, JSON, UniqueConstraint
 )
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from database import Base
+from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY, ENUM as PgEnum
+
+# Existing Postgres ENUM types (do NOT create — already in DB)
+TenantStatusEnum    = PgEnum('draft', 'active', 'suspended', 'archived',
+                              name='tenant_status', create_type=False)
+DomainTypeEnum      = PgEnum('platform_subdomain', 'custom_domain',
+                              name='domain_type', create_type=False)
+CmsPageStatusEnum   = PgEnum('draft', 'published', 'scheduled', 'archived',
+                              name='cms_page_status', create_type=False)
+from sqlalchemy.orm import Mapped, mapped_column, relationship, DeclarativeBase
 
 
-def gen_uuid() -> str:
-    return str(uuid.uuid4())
-
-def now_utc():
-    return datetime.now(timezone.utc)
+class Base(DeclarativeBase):
+    pass
 
 
 # ── Tenants ───────────────────────────────────────────────────────────────────
@@ -27,190 +42,98 @@ def now_utc():
 class Tenant(Base):
     __tablename__ = 'tenants'
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=gen_uuid)
-    slug: Mapped[str] = mapped_column(String(100), unique=True, nullable=False, index=True)
-    name: Mapped[str] = mapped_column(String(255), nullable=False)
-    domain: Mapped[Optional[str]] = mapped_column(String(255))
-    config: Mapped[dict] = mapped_column(JSON, default=dict)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True)
+    slug: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[str] = mapped_column(TenantStatusEnum, nullable=False)  # tenant_status enum
+    logo_url: Mapped[Optional[str]] = mapped_column(Text)
+    primary_color: Mapped[Optional[str]] = mapped_column(Text)
+    secondary_color: Mapped[Optional[str]] = mapped_column(Text)
+    font_heading: Mapped[Optional[str]] = mapped_column(Text)
+    font_body: Mapped[Optional[str]] = mapped_column(Text)
+    default_language: Mapped[Optional[str]] = mapped_column(Text)
+    active_languages: Mapped[Optional[list]] = mapped_column(ARRAY(Text))
+    active_plan: Mapped[str] = mapped_column(Text, nullable=False)
+    enabled_modules: Mapped[list] = mapped_column(JSONB, nullable=False)
+    max_users: Mapped[Optional[int]] = mapped_column(Integer)
+    max_projects: Mapped[Optional[int]] = mapped_column(Integer)
+    max_storage_gb: Mapped[Optional[float]] = mapped_column(Numeric)
+    subscription_status: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
 
-    pages: Mapped[List['Page']] = relationship('Page', back_populates='tenant', cascade='all, delete-orphan')
-    navigation_items: Mapped[List['NavigationItem']] = relationship('NavigationItem', back_populates='tenant', cascade='all, delete-orphan')
-    pricing_plans: Mapped[List['PricingPlan']] = relationship('PricingPlan', back_populates='tenant', cascade='all, delete-orphan')
-    journal_posts: Mapped[List['JournalPost']] = relationship('JournalPost', back_populates='tenant', cascade='all, delete-orphan')
+    domains: Mapped[List['TenantDomain']] = relationship('TenantDomain', back_populates='tenant')
+    pages: Mapped[List['CmsPage']] = relationship('CmsPage', back_populates='tenant')
 
 
-# ── Pages ─────────────────────────────────────────────────────────────────────
+class TenantDomain(Base):
+    __tablename__ = 'tenant_domains'
 
-class Page(Base):
-    __tablename__ = 'pages'
-    __table_args__ = (UniqueConstraint('tenant_id', 'slug', name='uq_page_tenant_slug'),)
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(UUID(as_uuid=False), ForeignKey('tenants.id', ondelete='CASCADE'))
+    domain: Mapped[str] = mapped_column(Text, nullable=False)
+    type: Mapped[str] = mapped_column(DomainTypeEnum, nullable=False)  # domain_type enum
+    is_primary: Mapped[Optional[bool]] = mapped_column(Boolean)
+    verification_status: Mapped[Optional[str]] = mapped_column(Text)
+    created_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=gen_uuid)
-    tenant_id: Mapped[str] = mapped_column(String(36), ForeignKey('tenants.id', ondelete='CASCADE'), index=True)
-    slug: Mapped[str] = mapped_column(String(200), nullable=False)
-    template: Mapped[str] = mapped_column(String(100), default='corporate-default')
-    is_published: Mapped[bool] = mapped_column(Boolean, default=True)
-    seo: Mapped[dict] = mapped_column(JSON, default=dict)  # {locale: {title, description, og_title...}}
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
+    tenant: Mapped['Tenant'] = relationship('Tenant', back_populates='domains')
+
+
+# ── CMS Pages / Sections ──────────────────────────────────────────────────────
+
+class CmsPage(Base):
+    """
+    Blueprint CMS page.
+    page_key      → 'home', 'pricing', etc. (corporate slug)
+    locale_meta   → {locale: {title, description, og_title, ...}}
+    page_content  → page-level config (template, layout flags)
+    status        → cms_page_status enum
+    """
+    __tablename__ = 'cms_pages'
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(UUID(as_uuid=False), ForeignKey('tenants.id', ondelete='CASCADE'))
+    page_key: Mapped[str] = mapped_column(Text, nullable=False)
+    title: Mapped[Optional[str]] = mapped_column(Text)
+    locale_meta: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
+    page_content: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
+    status: Mapped[str] = mapped_column(CmsPageStatusEnum, nullable=False)  # cms_page_status enum
+    scheduled_publish_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+    published_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+    ai_translated_locales: Mapped[list] = mapped_column(ARRAY(Text), nullable=False, default=list)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
     tenant: Mapped['Tenant'] = relationship('Tenant', back_populates='pages')
-    sections: Mapped[List['Section']] = relationship(
-        'Section', back_populates='page',
-        order_by='Section.display_order',
-        cascade='all, delete-orphan'
+    sections: Mapped[List['CmsSection']] = relationship(
+        'CmsSection',
+        back_populates='page',
+        order_by='CmsSection.sort_order',
+        cascade='all, delete-orphan',
     )
 
 
-# ── Sections ──────────────────────────────────────────────────────────────────
+class CmsSection(Base):
+    """
+    Blueprint CMS section. ONE record = ONE section on a page.
+    section_type   → editorial_hero, split_story, cinematic_quote, etc.
+    locale_content → {locale: {headline, body, cta, ...}}
+    settings       → {layout, image_url, background, ...}
+    asset_refs     → uuid[] referencing cms_assets
+    """
+    __tablename__ = 'cms_sections'
 
-class Section(Base):
-    __tablename__ = 'sections'
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True)
+    tenant_id: Mapped[str] = mapped_column(UUID(as_uuid=False), ForeignKey('tenants.id', ondelete='CASCADE'))
+    page_id: Mapped[str] = mapped_column(UUID(as_uuid=False), ForeignKey('cms_pages.id', ondelete='CASCADE'))
+    section_type: Mapped[str] = mapped_column(Text, nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    visible: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    locale_content: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
+    settings: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
+    asset_refs: Mapped[list] = mapped_column(ARRAY(UUID(as_uuid=False)), nullable=False, default=list)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=gen_uuid)
-    page_id: Mapped[str] = mapped_column(String(36), ForeignKey('pages.id', ondelete='CASCADE'), index=True)
-    tenant_id: Mapped[str] = mapped_column(String(36), ForeignKey('tenants.id', ondelete='CASCADE'), index=True)
-    type: Mapped[str] = mapped_column(String(100), nullable=False)  # from section registry
-    config: Mapped[dict] = mapped_column(JSON, default=dict)         # layout, image_url, etc.
-    display_order: Mapped[int] = mapped_column(Integer, default=0)
-    is_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
-
-    page: Mapped['Page'] = relationship('Page', back_populates='sections')
-    content_items: Mapped[List['SectionContent']] = relationship(
-        'SectionContent', back_populates='section', cascade='all, delete-orphan'
-    )
-
-
-class SectionContent(Base):
-    """Multilingual content for a section (one row per locale)."""
-    __tablename__ = 'section_content'
-    __table_args__ = (UniqueConstraint('section_id', 'locale_code', name='uq_section_content_locale'),)
-
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=gen_uuid)
-    section_id: Mapped[str] = mapped_column(String(36), ForeignKey('sections.id', ondelete='CASCADE'), index=True)
-    locale_code: Mapped[str] = mapped_column(String(20), nullable=False)  # 'it', 'en-us', etc.
-    content: Mapped[dict] = mapped_column(JSON, default=dict)  # headline, body, cta, etc.
-
-    section: Mapped['Section'] = relationship('Section', back_populates='content_items')
-
-
-# ── Navigation ────────────────────────────────────────────────────────────────
-
-class NavigationItem(Base):
-    __tablename__ = 'navigation_items'
-
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=gen_uuid)
-    tenant_id: Mapped[str] = mapped_column(String(36), ForeignKey('tenants.id', ondelete='CASCADE'), index=True)
-    nav_group: Mapped[str] = mapped_column(String(50), default='main')  # 'main', 'footer', 'cta'
-    key: Mapped[str] = mapped_column(String(100), nullable=False)
-    href: Mapped[str] = mapped_column(String(500), nullable=False)
-    display_order: Mapped[int] = mapped_column(Integer, default=0)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-
-    tenant: Mapped['Tenant'] = relationship('Tenant', back_populates='navigation_items')
-    labels: Mapped[List['NavigationContent']] = relationship(
-        'NavigationContent', back_populates='nav_item', cascade='all, delete-orphan'
-    )
-
-
-class NavigationContent(Base):
-    """Multilingual labels for navigation items."""
-    __tablename__ = 'navigation_content'
-    __table_args__ = (UniqueConstraint('nav_item_id', 'locale_code', name='uq_nav_content_locale'),)
-
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=gen_uuid)
-    nav_item_id: Mapped[str] = mapped_column(String(36), ForeignKey('navigation_items.id', ondelete='CASCADE'), index=True)
-    locale_code: Mapped[str] = mapped_column(String(20), nullable=False)
-    label: Mapped[str] = mapped_column(String(500), nullable=False)
-
-    nav_item: Mapped['NavigationItem'] = relationship('NavigationItem', back_populates='labels')
-
-
-# ── Pricing ───────────────────────────────────────────────────────────────────
-
-class PricingPlan(Base):
-    __tablename__ = 'pricing_plans'
-
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=gen_uuid)
-    tenant_id: Mapped[str] = mapped_column(String(36), ForeignKey('tenants.id', ondelete='CASCADE'), index=True)
-    slug: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
-    price_monthly: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2))
-    price_yearly: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 2))
-    currency: Mapped[str] = mapped_column(String(10), default='EUR')
-    is_featured: Mapped[bool] = mapped_column(Boolean, default=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    display_order: Mapped[int] = mapped_column(Integer, default=0)
-    badge: Mapped[Optional[str]] = mapped_column(String(100))
-    stripe_price_id_monthly: Mapped[Optional[str]] = mapped_column(String(255))
-    stripe_price_id_yearly: Mapped[Optional[str]] = mapped_column(String(255))
-
-    tenant: Mapped['Tenant'] = relationship('Tenant', back_populates='pricing_plans')
-    content_items: Mapped[List['PricingPlanContent']] = relationship(
-        'PricingPlanContent', back_populates='plan', cascade='all, delete-orphan'
-    )
-
-
-class PricingPlanContent(Base):
-    """Multilingual content for pricing plans."""
-    __tablename__ = 'pricing_plan_content'
-    __table_args__ = (UniqueConstraint('plan_id', 'locale_code', name='uq_pricing_content_locale'),)
-
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=gen_uuid)
-    plan_id: Mapped[str] = mapped_column(String(36), ForeignKey('pricing_plans.id', ondelete='CASCADE'), index=True)
-    locale_code: Mapped[str] = mapped_column(String(20), nullable=False)
-    name: Mapped[str] = mapped_column(String(255), nullable=False)
-    description: Mapped[Optional[str]] = mapped_column(Text)
-    cta_text: Mapped[Optional[str]] = mapped_column(String(100), default='Get Started')
-    features: Mapped[list] = mapped_column(JSON, default=list)
-
-    plan: Mapped['PricingPlan'] = relationship('PricingPlan', back_populates='content_items')
-
-
-# ── Journal Posts ─────────────────────────────────────────────────────────────
-
-class JournalPost(Base):
-    __tablename__ = 'journal_posts'
-    __table_args__ = (UniqueConstraint('tenant_id', 'slug', name='uq_journal_tenant_slug'),)
-
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=gen_uuid)
-    tenant_id: Mapped[str] = mapped_column(String(36), ForeignKey('tenants.id', ondelete='CASCADE'), index=True)
-    slug: Mapped[str] = mapped_column(String(300), nullable=False)
-    featured_image: Mapped[Optional[str]] = mapped_column(String(1000))
-    category: Mapped[Optional[str]] = mapped_column(String(100))
-    author_name: Mapped[Optional[str]] = mapped_column(String(255))
-    published_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
-    is_published: Mapped[bool] = mapped_column(Boolean, default=False)
-
-    tenant: Mapped['Tenant'] = relationship('Tenant', back_populates='journal_posts')
-    content_items: Mapped[List['JournalPostContent']] = relationship(
-        'JournalPostContent', back_populates='post', cascade='all, delete-orphan'
-    )
-
-
-class JournalPostContent(Base):
-    """Multilingual content for journal posts."""
-    __tablename__ = 'journal_post_content'
-    __table_args__ = (UniqueConstraint('post_id', 'locale_code', name='uq_journal_content_locale'),)
-
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=gen_uuid)
-    post_id: Mapped[str] = mapped_column(String(36), ForeignKey('journal_posts.id', ondelete='CASCADE'), index=True)
-    locale_code: Mapped[str] = mapped_column(String(20), nullable=False)
-    title: Mapped[str] = mapped_column(String(500), nullable=False)
-    excerpt: Mapped[Optional[str]] = mapped_column(Text)
-    body: Mapped[Optional[str]] = mapped_column(Text)
-
-    post: Mapped['JournalPost'] = relationship('JournalPost', back_populates='content_items')
-
-
-# ── Locales ───────────────────────────────────────────────────────────────────
-
-class Locale(Base):
-    __tablename__ = 'locales'
-
-    code: Mapped[str] = mapped_column(String(20), primary_key=True)  # 'it', 'en-us', 'fr', etc.
-    name: Mapped[str] = mapped_column(String(100), nullable=False)
-    flag: Mapped[Optional[str]] = mapped_column(String(10))
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    is_default: Mapped[bool] = mapped_column(Boolean, default=False)
+    page: Mapped['CmsPage'] = relationship('CmsPage', back_populates='sections')
