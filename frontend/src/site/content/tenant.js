@@ -16,6 +16,10 @@ export const tenantConfig = {
     suffix: '\u2122',
     logoSrc: '/brand/mood-for-design-mark.png',
   },
+  // Tenant slug — single source of truth for the CMS public endpoints.
+  // For the demo store this is the MOOD Demo Studio tenant.
+  // In multi-tenant production this will be derived from the URL or domain.
+  slug: 'mood-demo-studio-81a09e',
   // Project category overrides (tenant may hide categories)
   enabledProjectCategories: ['all', 'residential', 'hospitality', 'retail'],
   // Email contact for fallback CTAs

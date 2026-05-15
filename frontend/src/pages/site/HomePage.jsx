@@ -1,11 +1,99 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Gem, Users, Sparkles, Globe, ShieldCheck } from 'lucide-react';
 import { useSite } from '../../site/SiteContext';
 import { homepageContent } from '../../site/content/homepage';
+import { tenantConfig } from '../../site/content/tenant';
+import { useStorefrontContent } from '../../site/useStorefrontContent';
 import { Reveal } from '../../site/components/Reveal';
 
 const ICONS = { gem: Gem, users: Users, sparkles: Sparkles, globe: Globe, 'shield-check': ShieldCheck };
+
+// Merge DB CMS content over the legacy JS config so the JSX below stays
+// unchanged. Per locale key (`it`, `en-US`, ...), DB values win; per non-locale
+// field (e.g. image URLs in settings), DB settings win.
+const buildLocaleBag = (db, legacy, field) => {
+  // legacy is { it, en, fr, de, es } — preserve as the base
+  const merged = { ...(legacy || {}) };
+  if (db && typeof db === 'object') {
+    for (const code of Object.keys(db)) {
+      if (code.startsWith('_')) continue;
+      const v = db[code]?.[field];
+      if (v != null && v !== '') {
+        // Map en-US → en for legacy resolver compatibility
+        const legacyCode = code === 'en-US' ? 'en' : code === 'en-GB' ? 'en' : code;
+        merged[legacyCode] = v;
+      }
+    }
+    if (db._default?.[field] != null && db._default[field] !== '') {
+      merged._default = db._default[field];
+    }
+  }
+  return merged;
+};
+
+const mergeHomepage = (legacy, content) => {
+  if (!content || Object.keys(content).length === 0) return legacy;
+  const hero = content.store_hero;
+  const dual = content.dual_cta;
+  const vp = content.value_props;
+  const pi = content.projects_preview;
+  const nl = content.newsletter;
+  const out = { ...legacy };
+  if (hero) {
+    out.hero = {
+      ...legacy.hero,
+      backgroundImage: hero._settings?.background_image_url || legacy.hero.backgroundImage,
+      headline:        buildLocaleBag(hero, legacy.hero.headline,        'headline'),
+      sub:             buildLocaleBag(hero, legacy.hero.sub,             'sub'),
+      overline:        buildLocaleBag(hero, legacy.hero.overline,        'overline'),
+      overlineItalic:  buildLocaleBag(hero, legacy.hero.overlineItalic,  'overline_italic'),
+    };
+  }
+  if (dual) {
+    out.dualPath = {
+      private: {
+        ...legacy.dualPath.private,
+        image:  dual._settings?.client_image_url || legacy.dualPath.private.image,
+        kicker: buildLocaleBag(dual, legacy.dualPath.private.kicker, 'client_kicker'),
+        title:  buildLocaleBag(dual, legacy.dualPath.private.title,  'client_title'),
+        body:   buildLocaleBag(dual, legacy.dualPath.private.body,   'client_body'),
+        cta:    buildLocaleBag(dual, legacy.dualPath.private.cta,    'client_cta_label'),
+      },
+      pro: {
+        ...legacy.dualPath.pro,
+        image:  dual._settings?.pro_image_url || legacy.dualPath.pro.image,
+        kicker: buildLocaleBag(dual, legacy.dualPath.pro.kicker, 'pro_kicker'),
+        title:  buildLocaleBag(dual, legacy.dualPath.pro.title,  'pro_title'),
+        body:   buildLocaleBag(dual, legacy.dualPath.pro.body,   'pro_body'),
+        cta:    buildLocaleBag(dual, legacy.dualPath.pro.cta,    'pro_cta_label'),
+      },
+    };
+  }
+  if (vp) {
+    out.valueProps = {
+      ...legacy.valueProps,
+      title: buildLocaleBag(vp, legacy.valueProps.title, 'section_title'),
+    };
+  }
+  if (pi) {
+    out.projectsInspire = {
+      ...legacy.projectsInspire,
+      title: buildLocaleBag(pi, legacy.projectsInspire.title, 'section_title'),
+    };
+  }
+  if (nl) {
+    out.newsletter = {
+      ...legacy.newsletter,
+      decorImage: nl._settings?.decor_image_url || legacy.newsletter.decorImage,
+      title:       buildLocaleBag(nl, legacy.newsletter.title,       'title'),
+      body:        buildLocaleBag(nl, legacy.newsletter.body,        'body'),
+      placeholder: buildLocaleBag(nl, legacy.newsletter.placeholder, 'placeholder'),
+      submit:      buildLocaleBag(nl, legacy.newsletter.submit,      'cta_label'),
+    };
+  }
+  return out;
+};
 
 const HeroMedia = ({ src }) => {
   const [loaded, setLoaded] = useState(false);
@@ -21,7 +109,11 @@ const HeroMedia = ({ src }) => {
 
 const HomePage = () => {
   const { pick } = useSite();
-  const c = homepageContent;
+  const { content: cmsContent, hasDbContent } = useStorefrontContent(tenantConfig.slug, 'home', homepageContent);
+  const c = useMemo(
+    () => (hasDbContent ? mergeHomepage(homepageContent, cmsContent) : homepageContent),
+    [hasDbContent, cmsContent]
+  );
 
   useEffect(() => { document.title = pick(c.meta.title); }, [pick, c.meta.title]);
 

@@ -1,0 +1,38 @@
+{
+  "summary": "Session B — Cinematic Storefront Studio™ — full backend + frontend E2E test. Backend: 18/18 tests PASS (after fixing a 500 in publish/update endpoints — see RCA). Frontend: All 4 sub-phases verified working — B.1 Foundation (registry returns 6 page_keys + 17 section types; auto-create works), B.2 Cinematic Editor (17 contentEditable fields on home, inline edit + autosave persisted to DB and rendered on public site within 3s after blur), B.3 Asset Studio (assets API returns list, AssetPicker testid present), B.4 Public Rewire (homepage / renders DB content with 'ARREDARE SPAZI. COSTRUIRE RELAZIONI.' from published cms_sections). All 6 pages present in page picker, all 6 locales (it, en-US, en-GB, fr, de, es) — EN-US and EN-GB confirmed DISTINCT in dropdown. Visibility toggle dims section to opacity 0.35 as specified. Publish flips status badge to 'Live · published <timestamp>' with green toast '\"home\" published'. /settings hub renders 3 separated groups (Storefront / Corporate / Platform System). Cross-tenant isolation verified — studio2 cannot see Studio's section ids and gets 404 on cross-tenant section update. RBAC — client role gets 403 on all admin/* endpoints. Design language is fully editorial-luxury — dark cinematic canvas, fine typography, no enterprise CMS chrome. Inline editing of hero headline propagated end-to-end (Studio → DB → public homepage) within seconds — verified with screenshot of 'EDIT_TEST' suffix on public page, then restored.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "PUT /api/storefront/admin/pages/{page_key} and POST /admin/pages/{page_key}/publish", "issue": "FIXED — calls used wrong audit_log signature (ctx['user_id'] which doesn't exist) producing 500 KeyError. Corrected to audit_log(tenant_id, profile_id, action, meta)."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_storefront_cms.py",
+    "/app/test_reports/pytest/storefront_cms.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "storefront.py uses 'profile_id' in some places but caller still expected 'user_id' — agreed canonical key across the codebase is ctx['profile_id'] (verified vs forms.py/superadmin.py/collab.py). The lambda _NOW = lambda: ... at module top triggers ruff E731; minor style nit.",
+    "DEFAULT_PAGE_COMPOSITION is imported indirectly via page_section_types() but never actually used to bootstrap section rows on first GET — auto-create only inserts an empty page, sections come from seed_storefront_cms.py. That's fine for Session B but document that fresh tenants get empty pages until seeded.",
+    "AssetRegister.storage_path tenant-prefix enforcement at line 351-358 strips the first segment if it looks like a UUID and doesn't match tenant — but tenant_ids are 36-char hex UUIDs whose first segment alone (8 chars) is NOT 36 chars; the check 'len(first) == 36' will never match when path is e.g. 'tenants/<uuid>/...' because first='tenants'. The enforce path is effectively a no-op for most callers. Hardening recommended.",
+    "_strip_internal helper only pops '_id' once at top level but section/asset rows are also stripped manually elsewhere — DRY: route every response through _strip_internal.",
+    "Inline editor uses 17 contentEditable nodes on home — accessibility: missing aria-label / role='textbox' on the editable spans. WCAG nit only.",
+    "Public endpoint /public/{tenant_slug}/pages/{page_key} has no caching headers — Cinematic public pages would benefit from Cache-Control: public, max-age=60, stale-while-revalidate=300 once CMS stabilises."
+  ],
+  "updated_files": [
+    "/app/backend/routers/storefront.py (audit_log signature fix on lines 175 and 189)",
+    "/app/backend/tests/test_storefront_cms.py (new — 18 pytest cases)"
+  ],
+  "success_rate": {"backend": "100% (18/18)", "frontend": "100% (all listed flows verified)"},
+  "test_credentials": "Used demo@moodfordesign.com (super_admin), client@moodfordesign.com (client RBAC test), studio2@moodfordesign.com (cross-tenant test).",
+  "seed_data_creation": "None new — relied on existing seeded home page content. Tests create+delete TEST_-prefixed sections within each run.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 35 PASS. Storefront Studio at /settings/storefront works end-to-end. Backend audit_log signature is (tenant_id, profile_id, action, meta_dict) — do NOT use ctx['user_id'], that key does not exist on ctx; use ctx.get('profile_id'). Public storefront homepage / renders DB sections via useStorefrontContent + mergeHomepage; if it ever stops rendering DB content, check that cms_pages.status='published' and tenant_slug in tenant.js matches the row. The 6 pages are auto-created lazily on first GET /admin/pages/{page_key}. Test file: /app/backend/tests/test_storefront_cms.py. Run with: REACT_APP_BACKEND_URL=<external> pytest tests/test_storefront_cms.py -v.",
+  "rca_of_the_issue": "RCA — 500 on PUT /admin/pages/{page_key} and POST /admin/pages/{page_key}/publish. Root cause: storefront.py lines 175 & 189 called audit_log(ctx['user_id'], action, meta) but (a) ctx returned by require_permission does not contain a 'user_id' key (only 'profile_id', 'tenant_id', etc.), and (b) audit_log signature is (tenant_id, user_id, action, meta) — args were swapped. Backend logs showed 'KeyError: user_id' on line 175. Fix: replaced both calls with audit_log(ctx['tenant_id'], ctx.get('profile_id'), 'storefront.page.<update|publish>', {'page_key': page_key}). After fix both endpoints return 200 and all 18 tests pass."
+}

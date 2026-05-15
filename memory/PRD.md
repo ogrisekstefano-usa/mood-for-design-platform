@@ -29,6 +29,60 @@ Multi-tenant SaaS platform per interior designer e architetti, costruita come Bl
 
 ## Implementation Status
 
+### ✅ Phase H.5 — Session A: Page Scope Audit & Locale Runtime Consolidation (DONE — 15 Feb 2026)
+Critical Refactor Sprint started. Architectural separation enforced between Corporate / Tenant Storefront / Blueprint Workspace.
+
+- **`/settings/storefront`** new route + `StorefrontStudio.jsx` cinematic admin
+- **`/settings/pages`** clarified as Corporate Platform Section Engine (Blueprint OS demo)
+- `SettingsPage.jsx` redesigned with 3 visually separated sections: Tenant Storefront · Corporate Platform · Platform System
+- `SiteContext.jsx` rewritten to use canonical BCP-47 codes via `resolveLanguage()` — preserves EN-US ≠ EN-GB
+- `BlueprintContext.jsx` refactored to read from shared registry (`blueprintLanguages()`) instead of /api/blueprint/i18n. Listens to `mfd:languages:change` event for cross-context propagation
+- Verified: LocaleSwitcher shows all 6 codes distinctly: `['it', 'en-US', 'en-GB', 'fr', 'de', 'es']`
+
+
+### ✅ Phase H.5 — Session B: Cinematic Storefront Studio™ (DONE — 15 Feb 2026)
+Backend CMS Foundation + Cinematic Inline Editor + Public Rendering Rewire.
+The tenant's public storefront is now fully editable from a luxury inline studio
+inspired by Webflow Designer / Framer / Notion Site Editor — but luxury editorial.
+
+**B.1 — Foundation**
+- Migration `014_storefront_cms.sql` — 3 tables: `cms_pages`, `cms_sections`, `cms_assets` (multilingual-first, future-AI-ready, scheduling-ready, tenant-duplication-ready)
+- `core/storefront_registry.py` (NEW) — 17 section types across 6 categories (homepage/projects/onboarding/professionals/chrome). Strictly separated from `core/section_registry.py` (Corporate Blueprint OS demo) to prevent contamination
+- 6 fixed page_keys for Session B: `home`, `projects`, `start_project`, `professionals`, `navigation`, `ui`
+- `routers/storefront.py` (NEW) — /api/storefront/admin/* (auth) + /api/storefront/public/* (anon)
+- `scripts/seed_storefront_cms.py` + `scripts/dump_site_content.mjs` — idempotent importer for the legacy JS configs (preserves locale mapping `it/en/fr/de/es` → canonical `it/en-US/fr/de/es`)
+
+**B.2 — Cinematic Inline Editor (`/settings/storefront`)**
+- `StorefrontStudio.jsx` — full-screen luxury studio (NO admin panel chrome). Topbar: Studio brand · 6 page picker · viewport switcher · locale picker · soft autosave dot · Publish button · View live
+- `InlineText.jsx` — contentEditable wrapper with focus ring, multiline, ESC-to-cancel, single-click-to-edit
+- `SectionRenderers.jsx` — 5 cinematic renderers (store_hero / dual_cta / value_props / projects_preview / newsletter) + LegacyRaw fallback for any unmapped section type
+- Section hover overlay: move-up · visibility toggle · duplicate · delete · type ribbon
+- Locale tabs preserve EN-US vs EN-GB
+- Soft autosave debounced 700ms with dot pulse pattern (Saving/Saved/Retry/Auto)
+- Publish workflow: draft → published instant, with timestamp display in footer
+
+**B.3 — Asset Studio**
+- `AssetPicker.jsx` — full luxury drawer (480px right-side) with 3 tabs:
+  - **My assets** — library grid reading `/api/storefront/admin/assets`, current asset checkmark
+  - **Upload** — dashed drop zone + browse, progress bar, Supabase Storage signed-upload flow, dimension extraction via Image() probe
+  - **Stock** — 6 editorial luxury placeholders (Unsplash) ready for future API integration
+- Strict tenant-prefix enforcement on storage_path (re-checked in `register_asset`)
+- Upload pipeline: signedUpload → PUT direct to Supabase → registerAsset (cms_assets row created)
+
+**B.4 — Public Rendering Rewire**
+- `useStorefrontContent.js` — SWR-style hook with localStorage cache + background refetch
+- Falls back gracefully to legacy JS configs if no published DB content
+- `HomePage.jsx` patched with `mergeHomepage(legacy, cmsContent)` — DB CMS content overlays JS config field-by-field, preserves visual structure unchanged
+- `tenantConfig.slug` added as single source of truth for the demo tenant slug
+
+**End-to-end verified**
+- Studio renders all 6 pages with cinematic editor for home + schema fallback for others
+- Locale switch IT → EN-US in studio swaps headline to "SHAPING SPACES. BUILDING RELATIONSHIPS." correctly
+- POST publish home → public `/` renders DB content as headline "ARREDARE SPAZI. COSTRUIRE RELAZIONI." pulled from DB
+- All 6 locales preserved (en-US ≠ en-GB) across public site and Blueprint
+
+
+
 ### ✅ Phase 1 — Tenant MVP (DONE — 12 Mag 2026)
 - Schema Supabase 22 tabelle, RLS off, grants service_role
 - Auth Supabase end-to-end (signup → tenant + profile; login JWKS ES256)

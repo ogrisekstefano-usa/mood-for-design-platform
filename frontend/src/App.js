@@ -41,7 +41,7 @@ const StartProjectWizard = lazy(() => import('./pages/site/StartProjectWizard'))
 const ProfessionalsGatewayPage = lazy(() => import('./pages/site/ProfessionalsGatewayPage'));
 const ProfessionalIntakePage = lazy(() => import('./pages/site/ProfessionalIntakePage'));
 const LanguagesPage = lazy(() => import('./pages/settings/LanguagesPage'));
-const StorefrontPage = lazy(() => import('./pages/settings/StorefrontPage'));
+const StorefrontPage = lazy(() => import('./pages/settings/StorefrontStudio'));
 
 // Admin
 const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
