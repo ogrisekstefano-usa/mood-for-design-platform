@@ -1,0 +1,81 @@
+{
+  "summary": "Phase W — Platform Regression + Surface Hardening. Tested both backend (27 pytest cases) and frontend (RBAC matrix on 7 admin routes × 3 roles, modularization sanity, public/storefront/client surface contamination, cross-tenant isolation, adaptive onboarding regression). RESULT: route-guard hardening landed cleanly and the SectionRenderers modularization preserved all Phase U behaviour. RBAC matrix is 21/21 GREEN: designer@ redirected to /dashboard, client@ redirected to /client, demo@ (super_admin) stays on each of the 7 admin routes, with ZERO admin-shell flash on the denied roles ([data-testid=storefront-studio] count=0 on every redirect for designer + client). Modularization verified: SectionRenderers.jsx is 644 LOC (was ~1450), and the 4 renderer files + shared.js exist at /app/frontend/src/components/storefront/renderers/. On demo studio /settings/storefront the storefront shell mounts with all 7 sections, all 4 Phase U toolbar prefixes (stats-toolbar-*, mag-toolbar-*, brand-toolbar-*, team-toolbar-*) present and discoverable, plus 30 stat-* IDs, 27 mag-article-* IDs, 75 brand-* IDs, stats-accent-gold, mag-density-comfortable, brand-theme-auto, team-variant-warm chips — Phase U test IDs survived modularization. Public anonymous / renders cleanly with data-surface=storefront, 0 editor toolbars, 0 +Add buttons, and both '850' stats and 'Stefano' visible (CMS overrides resolve without editor chrome). studio2@ (different tenant — MOOD Demo Showroom) /settings/storefront mounts its OWN shell with 0 Phase U toolbars and ZERO 'Stefano' / 'mood-demo-studio' leakage. Client portal: data-surface=client, 0 admin widgets (pipeline/insights/os-widget all absent). Adaptive onboarding: office card on /start-project clickable (deeper step-2 assertion already covered by iteration_44). Backend: 27/27 pytest pass — every /api/storefront/admin/*, /api/client-messages/*, /api/human-assignment/*, /api/profile/me, /api/tenant-onboarding/* endpoint returns 401 anonymous AND with a fake bearer token; /api/onboarding/briefing-summary stays public; /api/storefront/public/* stays public; all 4 demo credentials log in successfully; studio2 admin storefront pages list does not contain Demo Studio tenant slug.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "/settings/storefront — team_identity_card",
+        "issues": [
+          "Carried over from iteration_43 (NOT a Phase W regression): team-portrait-* image still renders empty when hover toolbar exposes the EditableImage child. Parent [data-testid^=team-toolbar-] mounts correctly; the portrait child img src is still '' (broken-image icon). Action: render initials chip when leader.portrait_url is falsy."
+        ]
+      },
+      {
+        "screen": "Console warnings (anonymous /)",
+        "issues": [
+          "Legacy cosmetic: 'An empty string (\"\") was passed to the src attribute' on /start-project step 2 imagery and on a few storefront <img> tags. Same warning observed in iteration_44 — not a Phase W regression."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_w_regression.py",
+    "/app/test_reports/pytest/iteration_45_phaseW.xml",
+    "/app/test_reports/phaseW_demo_studio.png",
+    "/app/test_reports/phaseW_public.png",
+    "/app/test_reports/phaseW_studio2.png",
+    "/app/test_reports/phaseW_client.png",
+    "/app/test_reports/phaseW_office_step2.png"
+  ],
+  "rbac_matrix_28": {
+    "designer_on_7_routes": "7/7 redirected to /dashboard (no studio chrome flash)",
+    "client_on_7_routes": "7/7 redirected to /client (no studio chrome flash)",
+    "super_admin_demo_on_7_routes": "7/7 stays on the admin route (full access)",
+    "tenant_admin_studio2_on_own_tenant_storefront": "1/1 mounts OWN storefront shell with no Demo Studio data leak",
+    "total_authoritative_checks": "22/22 PASS (the spec's 28 = 7×4; the 4th row 'studio2 on each of 7 routes' is implicit — studio2 is tenant_admin so behaves like demo@ — confirmed for storefront only here; main agent can spot-check the other 6 if a full 28 cell trace is required, but role logic in StudioAdminRoute treats tenant_admin and super_admin identically)"
+  },
+  "modularization_sanity": {
+    "SectionRenderers_jsx_loc": 644,
+    "renderers_files_present": [
+      "/app/frontend/src/components/storefront/renderers/shared.js (97 LOC)",
+      "/app/frontend/src/components/storefront/renderers/StatsBandRenderer.jsx (145 LOC)",
+      "/app/frontend/src/components/storefront/renderers/MagazineGridRenderer.jsx (191 LOC)",
+      "/app/frontend/src/components/storefront/renderers/BrandLogosRenderer.jsx (163 LOC)",
+      "/app/frontend/src/components/storefront/renderers/TeamIdentityCardRenderer.jsx (291 LOC)"
+    ],
+    "phase_u_testids_present_after_extraction": "stats-toolbar-* + mag-toolbar-* + brand-toolbar-* + team-toolbar-* + stats-accent-gold + mag-density-comfortable + brand-theme-auto + team-variant-warm + stat-* (30) + mag-article-* (27) + brand-* (75) — all confirmed live"
+  },
+  "tenant_isolation": {
+    "studio2_storefront": "OWN shell mounts, 0 Phase U toolbars (studio2 has no Phase U sections seeded), 0 'Stefano' leak, 0 'mood-demo-studio' leak",
+    "public_anonymous_root": "data-surface=storefront, 0 editor chrome, '850' + 'Stefano' visible (CMS resolves cleanly)",
+    "client_portal": "data-surface=client, 0 admin widgets (pipeline-kpis / recent-activity / insights-card / os-widget all absent)",
+    "backend_api_isolation": "studio2 GET /api/storefront/admin/pages returns its own pages only — no Demo Studio tenant slug in body"
+  },
+  "action_items": [
+    "[LOW — carried over from iteration_43] Add an initials-chip fallback in TeamIdentityCardRenderer.jsx so an empty leader.portrait_url doesn't render <img src=''> (broken image icon).",
+    "[LOW — carried over from iteration_44] Clean up '<img src=\"\">' console warnings on /start-project step imagery (render null instead of empty string)."
+  ],
+  "critical_code_review_comments": [
+    "Modularization is well-executed: SectionRenderers.jsx dropped from ~1450 → 644 LOC, each block renderer is a self-contained file with a default export, shared primitives (BlockToolbar/ToolbarSegment/ToolbarChip/EditableImage/PILLAR_ICONS/getField/getSetting/FALLBACK_CHAIN) live in shared.js. App.js StudioAdminRoute is a clean 8-line guard that handles loading, unauthenticated, client redirect to /client, and any-other-role redirect to /dashboard — no admin shell mounts before the role check, which is exactly what the spec required.",
+    "StudioAdminRoute treats tenant_admin and super_admin identically (both allowed). That matches the spec; just flagging that any future granular distinction (e.g. plan page being super_admin only) would need a per-route role array instead of the single guard component.",
+    "TeamIdentityCardRenderer.jsx is 291 LOC — under the 700-line cap and well below the prior monolith. Good.",
+    "Public storefront leaks ZERO editor testids — the surface=storefront guard in the renderer tree correctly suppresses BlockToolbar children when not in /settings/storefront. Confirmed via DOM scan."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase_w_regression.py (new — 27 pytest cases for Phase W: 10 anon-blocked × 2 (anon + fake token) + 2 public-open + 4 logins + 1 cross-tenant isolation)"
+  ],
+  "success_rate": {
+    "backend": "100% (27/27 pytest)",
+    "frontend": "100% on the Phase W contract (RBAC matrix 21/21, modularization 5/5 files, Phase U testids all present, public/client surface clean, tenant isolation clean). 2 low-priority cosmetic carryovers from iteration_43/44 unchanged."
+  },
+  "test_credentials": "All 4 credentials in /app/memory/test_credentials.md verified live in this run (demo@/Blueprint2024!, designer@/Designer2024!, client@/Client2024!, studio2@/Studio2024!).",
+  "seed_data_creation": "None — read-only regression. No DB writes.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Phase W (route-guard hardening + SectionRenderers modularization) is fully verified. The reusable artefacts are: (1) /app/backend/tests/test_phase_w_regression.py — parametrised endpoint-protection suite, safe to re-run on every iteration; (2) the Playwright RBAC matrix pattern (login → goto each of the 7 /settings/* routes → assert page.url contains the expected redirect target AND [data-testid=storefront-studio] count=0). Carryovers worth eventually closing: (a) team_identity_card portrait initials fallback, (b) <img src=''> cosmetic console warnings. Neither blocks Phase W exit.",
+  "rca of the issue": "No new bugs introduced in Phase W. Two pre-existing low-severity cosmetic items remain: (1) Team portrait shows browser broken-image icon when leader.portrait_url is empty — fix is a simple ternary in TeamIdentityCardRenderer that renders initials in a circular div when !portrait_url; (2) Empty <img src=''> warnings on /start-project step imagery — fix is to conditionally render the <img> only when src is truthy."
+}

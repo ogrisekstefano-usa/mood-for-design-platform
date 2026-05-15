@@ -208,13 +208,13 @@ function App() {
                   <Route path="/inspirations" element={<InspirationsPage />} />
                   <Route path="/insights" element={<InsightsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
-                  <Route path="/settings/brand" element={<BrandStudioPage />} />
-                  <Route path="/settings/domains" element={<DomainsPage />} />
-                  <Route path="/settings/forms" element={<FormBuilderPage />} />
+                  <Route path="/settings/brand" element={<StudioAdminRoute><BrandStudioPage /></StudioAdminRoute>} />
+                  <Route path="/settings/domains" element={<StudioAdminRoute><DomainsPage /></StudioAdminRoute>} />
+                  <Route path="/settings/forms" element={<StudioAdminRoute><FormBuilderPage /></StudioAdminRoute>} />
                   <Route path="/settings/storefront" element={<StudioAdminRoute><StorefrontPage /></StudioAdminRoute>} />
-                  <Route path="/settings/plan" element={<PlanPage />} />
-                  <Route path="/settings/team" element={<MembersPage />} />
-                  <Route path="/settings/members" element={<MembersPage />} />
+                  <Route path="/settings/plan" element={<StudioAdminRoute><PlanPage /></StudioAdminRoute>} />
+                  <Route path="/settings/team" element={<StudioAdminRoute><MembersPage /></StudioAdminRoute>} />
+                  <Route path="/settings/members" element={<StudioAdminRoute><MembersPage /></StudioAdminRoute>} />
                 </Route>
 
                 {/* CLIENT PORTAL (Phase R) — surface-isolated, role=client only */}
