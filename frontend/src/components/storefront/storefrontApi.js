@@ -27,8 +27,28 @@ export const storefrontApi = {
   updatePage: (pageKey, body) =>
     axios.put(`${API}/admin/pages/${pageKey}`, body, { headers: authHeaders() }).then((r) => r.data),
 
-  publishPage: (pageKey) =>
-    axios.post(`${API}/admin/pages/${pageKey}/publish`, {}, { headers: authHeaders() }).then((r) => r.data),
+  publishPage: (pageKey, label = null) =>
+    axios.post(`${API}/admin/pages/${pageKey}/publish`,
+      label ? { label } : {}, { headers: authHeaders() }).then((r) => r.data),
+
+  listRevisions: (pageKey, limit = 30) =>
+    axios.get(`${API}/admin/pages/${pageKey}/revisions?limit=${limit}`,
+      { headers: authHeaders() }).then((r) => r.data),
+
+  getRevision: (revisionId) =>
+    axios.get(`${API}/admin/revisions/${revisionId}`,
+      { headers: authHeaders() }).then((r) => r.data),
+
+  pageDiff: (pageKey, vs = 'published', against = null) => {
+    const qs = new URLSearchParams({ vs });
+    if (against) qs.set('against', against);
+    return axios.get(`${API}/admin/pages/${pageKey}/diff?${qs.toString()}`,
+      { headers: authHeaders() }).then((r) => r.data);
+  },
+
+  revertPage: (pageKey, revisionId) =>
+    axios.post(`${API}/admin/pages/${pageKey}/revert/${revisionId}`, {},
+      { headers: authHeaders() }).then((r) => r.data),
 
   createSection: (pageKey, body) =>
     axios.post(`${API}/admin/pages/${pageKey}/sections`, body, { headers: authHeaders() }).then((r) => r.data),

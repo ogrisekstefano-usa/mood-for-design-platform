@@ -17,11 +17,12 @@
  */
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Monitor, Tablet, Smartphone, Eye, EyeOff, Copy, Trash2, GripVertical, Plus, Globe, Send, ChevronDown, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Monitor, Tablet, Smartphone, Eye, EyeOff, Copy, Trash2, GripVertical, Plus, Globe, Send, ChevronDown, ExternalLink, GitCompare } from 'lucide-react';
 import { toast } from 'sonner';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { storefrontApi } from '../../components/storefront/storefrontApi';
 import AssetPicker from '../../components/storefront/AssetPicker';
+import PublishDiffDrawer from '../../components/storefront/PublishDiffDrawer';
 import { renderSection } from '../../components/storefront/SectionRenderers';
 import { publicLanguages } from '../../site/content/languages';
 
@@ -46,8 +47,21 @@ const StorefrontStudio = () => {
   const dirtyRef = useRef({});            // { [sectionId]: { locale_content, settings } }
   const saveTimerRef = useRef(null);
   const supportedLocales = publicLanguages().map((l) => l.code);
+  const [diffDrawer, setDiffDrawer] = useState(false);
+  const [diffSummary, setDiffSummary] = useState(null);   // { has_changes, ... }
 
   const activePage = pages.find((p) => p.page_key === activeKey);
+
+  // ── Refresh dirty badge for the active page ──────────────────────────
+  const refreshDiffSummary = useCallback(async (key = activeKey) => {
+    if (!key) return;
+    try {
+      const d = await storefrontApi.pageDiff(key, 'published');
+      setDiffSummary(d?.summary || null);
+    } catch { /* silent */ }
+  }, [activeKey]);
+
+  useEffect(() => { refreshDiffSummary(activeKey); }, [activeKey, refreshDiffSummary]);
 
   // ── Load all pages on mount ───────────────────────────────────────────────
   const loadAll = useCallback(async () => {
@@ -77,12 +91,15 @@ const StorefrontStudio = () => {
       }
       setSaveStatus('saved');
       setTimeout(() => setSaveStatus('idle'), 1500);
+      // After a successful autosave, refresh the dirty-badge counter so the
+      // Publish button reflects pending changes in real time.
+      refreshDiffSummary(activeKey);
     } catch (e) {
       console.error('Autosave failed', e);
       setSaveStatus('error');
       toast.error('Save failed. Retry?');
     }
-  }, []);
+  }, [activeKey, refreshDiffSummary]);
 
   const scheduleSave = useCallback(() => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
@@ -191,12 +208,11 @@ const StorefrontStudio = () => {
 
   const publishPage = async () => {
     if (!activePage) return;
-    try {
-      await flushSave();
-      const updated = await storefrontApi.publishPage(activeKey);
-      setPages((prev) => prev.map((p) => p.page_key !== activeKey ? p : { ...p, ...updated }));
-      toast.success(`"${activeKey}" published`);
-    } catch (e) { toast.error('Publish failed'); }
+    // Flush pending edits so the diff drawer shows the latest state, then
+    // hand off to the Publish Diff drawer for review-then-publish.
+    await flushSave();
+    await refreshDiffSummary(activeKey);
+    setDiffDrawer(true);
   };
 
   const openAssetPicker = (onPick) => {
@@ -302,10 +318,26 @@ const StorefrontStudio = () => {
             <button
               onClick={publishPage}
               data-testid="studio-publish-btn"
-              className="flex items-center gap-2 px-4 py-2 bg-[var(--bp-primary)] text-black text-[10px] font-body uppercase tracking-[0.2em] hover:opacity-90 transition-opacity"
+              className="relative flex items-center gap-2 px-4 py-2 bg-[var(--bp-primary)] text-black text-[10px] font-body uppercase tracking-[0.2em] hover:opacity-90 transition-opacity"
             >
               <Send size={11} strokeWidth={1.8} />
-              {activePage?.status === 'published' ? 'Republish' : 'Publish'}
+              {activePage?.status === 'published' ? 'Review & republish' : 'Review & publish'}
+              {diffSummary?.has_changes && (
+                <span data-testid="studio-dirty-badge"
+                      className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-amber-300 text-black text-[9px] font-mono font-semibold flex items-center justify-center">
+                  {((diffSummary.sections_added || 0) + (diffSummary.sections_removed || 0) + (diffSummary.sections_modified || 0)) || '•'}
+                </span>
+              )}
+            </button>
+
+            {/* Revisions / diff quick button */}
+            <button
+              onClick={async () => { await flushSave(); setDiffDrawer(true); }}
+              data-testid="studio-revisions-btn"
+              title="Diff & revisions"
+              className="text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]"
+            >
+              <GitCompare size={13} strokeWidth={1.5} />
             </button>
 
             {/* View live */}
@@ -393,6 +425,20 @@ const StorefrontStudio = () => {
         open={!!assetPicker}
         onClose={() => setAssetPicker(null)}
         onPick={assetPicker?.onPick}
+      />
+
+      <PublishDiffDrawer
+        open={diffDrawer}
+        pageKey={activeKey}
+        onClose={() => setDiffDrawer(false)}
+        onPublished={async () => {
+          await loadAll();
+          await refreshDiffSummary(activeKey);
+        }}
+        onReverted={async () => {
+          await loadAll();
+          await refreshDiffSummary(activeKey);
+        }}
       />
     </div>
   );

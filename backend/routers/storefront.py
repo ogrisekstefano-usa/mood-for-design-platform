@@ -26,6 +26,13 @@ from core.storefront_registry import (
     storefront_section_defaults, is_known_storefront_section,
     PAGE_KEYS, page_section_types,
 )
+from core.storefront_revisions import (
+    publish_page as revisions_publish,
+    list_revisions as revisions_list,
+    get_revision as revisions_get,
+    diff_against_published, diff_between_revisions,
+    revert_to_revision,
+)
 from database import db
 
 router = APIRouter()
@@ -185,17 +192,79 @@ def update_page(page_key: str, body: PageUpdate,
 
 
 @router.post("/admin/pages/{page_key}/publish")
-def publish_page(page_key: str, ctx: dict = Depends(require_permission(P_TENANT_SETTINGS))):
+def publish_page(page_key: str,
+                 body: Optional[Dict[str, Any]] = Body(default=None),
+                 ctx: dict = Depends(require_permission(P_TENANT_SETTINGS))):
+    """Freeze current draft state into a new revision and mark as published."""
+    _ensure_page(ctx['tenant_id'], page_key)
+    label = (body or {}).get('label') if isinstance(body, dict) else None
+    result = revisions_publish(ctx['tenant_id'], page_key, ctx.get('profile_id'), label=label)
+    audit_log(ctx['tenant_id'], ctx.get('profile_id'), 'storefront.page.publish',
+              {'page_key': page_key, 'revision_id': result['revision_id'],
+               'change_summary': result.get('change_summary') or {}})
+    return result
+
+
+# ─── ADMIN — Revisions / Diff / Revert ─────────────────────────────────────
+@router.get("/admin/pages/{page_key}/revisions")
+def list_page_revisions(page_key: str, limit: int = Query(30, ge=1, le=100),
+                        ctx: dict = Depends(require_permission(P_TENANT_SETTINGS))):
     page = _ensure_page(ctx['tenant_id'], page_key)
-    client = db()
-    r = client.table('cms_pages').update({
-        'status': 'published', 'published_at': _NOW(),
-        'updated_at': _NOW(), 'updated_by': ctx.get('profile_id'),
-    }).eq('id', page['id']).execute()
-    audit_log(ctx['tenant_id'], ctx.get('profile_id'), 'storefront.page.publish', {'page_key': page_key})
-    out = r.data[0] if r.data else {**page, 'status': 'published'}
-    out.pop('_id', None)
-    return out
+    revs = revisions_list(ctx['tenant_id'], page['id'], limit=limit)
+    return {
+        "page_id": page['id'],
+        "page_key": page_key,
+        "published_revision_id": page.get('published_revision_id'),
+        "draft_updated_at": page.get('draft_updated_at'),
+        "last_published_at": page.get('last_published_at'),
+        "revisions": revs,
+    }
+
+
+@router.get("/admin/revisions/{revision_id}")
+def get_revision_endpoint(revision_id: str,
+                          ctx: dict = Depends(require_permission(P_TENANT_SETTINGS))):
+    rev = revisions_get(ctx['tenant_id'], revision_id)
+    rev.pop('_id', None)
+    return rev
+
+
+@router.get("/admin/pages/{page_key}/diff")
+def page_diff(page_key: str,
+              vs: str = Query("published", description="published | <revision_id>"),
+              against: Optional[str] = Query(None, description="When vs is a revision_id, "
+                                             "compare it to this other revision_id"),
+              ctx: dict = Depends(require_permission(P_TENANT_SETTINGS))):
+    """Diff the live draft against either the currently published revision
+    (vs=published) or any historical revision (vs=<id>). When `against` is
+    set, returns a revision-to-revision diff with no live data involved.
+    """
+    page = _ensure_page(ctx['tenant_id'], page_key)
+    if vs == "published":
+        return diff_against_published(ctx['tenant_id'], page['id'])
+    if against:
+        return diff_between_revisions(ctx['tenant_id'], page['id'], vs, against)
+    # vs is a revision id, compare it to the live draft (use it as the BASE)
+    rev = revisions_get(ctx['tenant_id'], vs)
+    from core.storefront_revisions import diff_payload, _fetch_sections  # local import
+    sections = _fetch_sections(ctx['tenant_id'], page['id'])
+    return {
+        "has_published": True,
+        "published_revision_id": vs,
+        "published_at": rev.get("created_at"),
+        "draft_updated_at": page.get("draft_updated_at"),
+        **diff_payload(rev["snapshot"], page, sections),
+    }
+
+
+@router.post("/admin/pages/{page_key}/revert/{revision_id}")
+def revert_page(page_key: str, revision_id: str,
+                ctx: dict = Depends(require_permission(P_TENANT_SETTINGS))):
+    page = _ensure_page(ctx['tenant_id'], page_key)
+    result = revert_to_revision(ctx['tenant_id'], page['id'], revision_id, ctx.get('profile_id'))
+    audit_log(ctx['tenant_id'], ctx.get('profile_id'), 'storefront.page.revert',
+              {'page_key': page_key, 'revision_id': revision_id})
+    return result
 
 
 # ─── ADMIN — Sections ──────────────────────────────────────────────────────
@@ -434,7 +503,16 @@ def delete_asset(asset_id: str, ctx: dict = Depends(require_permission(P_STORAGE
 # ─── PUBLIC (anonymous) — Read-only published content ──────────────────────
 @router.get("/public/{tenant_slug}/pages/{page_key}")
 def public_page(tenant_slug: str, page_key: str,
-                preview: int = Query(0, description="If 1, returns draft content too (admin preview)")):
+                preview: int = Query(0, description="If 1, returns the live DRAFT (admin preview)")):
+    """Render LIVE content for the public storefront.
+
+    Behaviour:
+      • preview=0 (default) — serve the frozen published_revision snapshot.
+        Falls back gracefully to live data if the page was published
+        before the revision engine landed (legacy compatibility).
+      • preview=1            — serve the live draft + invisible sections too
+        (used by the Studio's in-iframe preview).
+    """
     if page_key not in PAGE_KEYS:
         raise HTTPException(404, "Unknown page")
     client = db()
@@ -445,17 +523,46 @@ def public_page(tenant_slug: str, page_key: str,
     p = client.table('cms_pages').select('*') \
         .eq('tenant_id', tenant_id).eq('page_key', page_key).limit(1).execute()
     if not p.data:
-        # No CMS content yet — frontend will fall back to JS seed
         return {"page": None, "tenant_id": tenant_id, "status": "no_content"}
     page = p.data[0]
-    if page['status'] != 'published' and not preview:
+
+    # Preview mode — bypass the revision and serve live draft (incl. hidden sections)
+    if preview:
+        page['sections'] = _list_sections(tenant_id, page['id'])
+        page.pop('_id', None)
+        return {"page": page, "tenant_id": tenant_id, "status": "ok", "served_from": "draft"}
+
+    # Public mode — read frozen snapshot from the revision pointer
+    rev_id = page.get('published_revision_id')
+    if rev_id:
+        rev = client.table('cms_page_revisions').select('snapshot') \
+            .eq('id', rev_id).eq('tenant_id', tenant_id).limit(1).execute()
+        if rev.data:
+            snap = rev.data[0]['snapshot'] or {}
+            snap_page = snap.get('page') or {}
+            sections = [s for s in (snap.get('sections') or []) if s.get('visible', True)]
+            return {
+                "page": {
+                    **{k: snap_page.get(k) for k in snap_page.keys()},
+                    "id": page['id'],
+                    "tenant_id": tenant_id,
+                    "page_key": page_key,
+                    "sections": sections,
+                    "asset_index": snap.get('asset_index') or {},
+                    "published_at": page.get('last_published_at') or page.get('published_at'),
+                },
+                "tenant_id": tenant_id,
+                "status": "ok",
+                "served_from": "revision",
+                "revision_id": rev_id,
+            }
+
+    # Legacy compatibility — page was published before the revision engine
+    if page['status'] != 'published':
         return {"page": None, "tenant_id": tenant_id, "status": "not_published"}
-    page['sections'] = _list_sections(tenant_id, page['id'])
-    # Filter visible sections in public mode (preview keeps everything)
-    if not preview:
-        page['sections'] = [s for s in page['sections'] if s.get('visible', True)]
+    page['sections'] = [s for s in _list_sections(tenant_id, page['id']) if s.get('visible', True)]
     page.pop('_id', None)
-    return {"page": page, "tenant_id": tenant_id, "status": "ok"}
+    return {"page": page, "tenant_id": tenant_id, "status": "ok", "served_from": "legacy_live"}
 
 
 @router.get("/public/{tenant_slug}/assets/{asset_id}")

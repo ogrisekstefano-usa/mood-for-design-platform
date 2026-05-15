@@ -1,0 +1,47 @@
+{
+  "summary": "Phase J — Storefront Draft vs Live Visual Diff + Publishing workflow. Tested publish → list revisions → diff → revert → re-publish cycle (backend) and the PublishDiffDrawer (frontend). 8/9 backend tests pass; 1 reveals a real edge-case bug where snapshot freezes status='draft' before the publish updates the page to 'published', causing diff to report a phantom status change after a revert→publish sequence. Frontend drawer fully functional: tabs, view-mode toggle, empty-state, revisions list with Live chip + Revert buttons, label input, disabled Publish-now when no changes.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "POST /api/storefront/admin/pages/{page_key}/publish",
+        "issue": "Snapshot is taken BEFORE the cms_pages.status is flipped to 'published'. If the page was in 'draft' (e.g. just after a revert), the frozen snapshot stores status='draft' while the live page becomes status='published'. Subsequent GET /diff?vs=published reports a phantom page.changed.status={from:'draft',to:'published'} and summary.has_changes=true, which will incorrectly light up the Studio dirty badge with 0 field changes. Repro: revert to any rev → publish → diff. Mitigation: either (a) move the snapshot AFTER the cms_pages.update in publish_page() in /app/backend/core/storefront_revisions.py, or (b) drop 'status' from PAGE_FIELDS_TO_FREEZE since it's a workflow field, not content, or (c) set snap['page']['status']='published' before insert."
+      },
+      {
+        "endpoint": "GET /api/storefront/admin/pages/{not_a_real_key}/diff",
+        "issue": "Returns 400 instead of 404 for an unknown page_key (consistent with the validator but a 404 would be more REST-friendly)."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_storefront_revisions.py",
+    "/app/test_reports/pytest/iteration_40_phaseJ.xml"
+  ],
+  "action_items": [
+    "Fix snapshot-status timing bug in /app/backend/core/storefront_revisions.py::publish_page so a fresh publish does not leave the page diff reporting a phantom status change.",
+    "Optional: return 404 instead of 400 for unknown page_key on the diff endpoint.",
+    "Cleanup: the demo tenant 'home' page now has ~9+ revisions including TEST_* labels from past iterations; consider periodic pruning."
+  ],
+  "critical_code_review_comments": [
+    "core/storefront_revisions.py snapshot_page captures status which is a workflow flag — diffing it produces noise (see bug above).",
+    "publish_page's prev-snapshot diff for change_summary uses the LIVE page, not the new snapshot, which is fine but means change_summary may also include the same phantom status change.",
+    "revert_to_revision performs DELETE-then-INSERT of cms_sections without a transaction — a failure mid-flight would leave the page section-less. Consider wrapping in a Postgres function or supabase RPC for atomicity.",
+    "Public endpoint correctly serves from frozen snapshot (served_from='revision') and preview=1 returns served_from='draft' — verified."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_storefront_revisions.py (new)",
+    "/app/test_reports/pytest/iteration_40_phaseJ.xml (generated)"
+  ],
+  "success_rate": {"backend": "89% (8/9)", "frontend": "100%"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin) — tenant mood-demo-studio-81a09e",
+  "seed_data_creation": "No new seed data. Demo 'home' page left in CLEAN baseline state — final revision label 'clean-baseline-iter40' is the live revision and diff vs published shows has_changes=false.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend test file at /app/backend/tests/test_storefront_revisions.py covers publish/list/diff/modify-section/public-serve/revert/republish. Login response uses session.access_token (Supabase shape). The test_republish_cleanup test will fail until the snapshot-status timing bug is fixed (it asserts has_changes=false after a revert+publish sequence). Home page baseline is currently 'clean-baseline-iter40'.",
+  "rca of the issue": "publish_page() in core/storefront_revisions.py runs snapshot_page BEFORE updating cms_pages.status to 'published'. The snapshot therefore freezes whatever status the page had at the moment of publish (e.g. 'draft' after a revert). Then publish bumps live page status to 'published'. Diff comparing live (published) to snapshot (draft) reports a status change that never reflects an actual content edit. Fix options: reorder (snapshot AFTER update), or remove 'status' from PAGE_FIELDS_TO_FREEZE, or patch snap['page']['status']='published' before persisting the revision."
+}
