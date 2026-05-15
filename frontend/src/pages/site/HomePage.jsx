@@ -48,6 +48,7 @@ const mergeHomepage = (legacy, content) => {
       sub:             buildLocaleBag(hero, legacy.hero.sub,             'sub'),
       overline:        buildLocaleBag(hero, legacy.hero.overline,        'overline'),
       overlineItalic:  buildLocaleBag(hero, legacy.hero.overlineItalic,  'overline_italic'),
+      _settings:       hero._settings || {},
     };
   }
   if (dual) {
@@ -116,6 +117,54 @@ const HeroMedia = ({ src }) => {
   );
 };
 
+// Compute the CSS for the configurable veil from CMS settings.
+const heroVeilCss = (style, opacity) => {
+  const o = Math.max(0, Math.min(100, opacity != null ? opacity : 60)) / 100;
+  if (style === 'none') return 'transparent';
+  if (style === 'soft')   return `rgba(0,0,0,${(o * 0.55).toFixed(3)})`;
+  if (style === 'strong') return `rgba(0,0,0,${(o * 0.85).toFixed(3)})`;
+  if (style === 'gradient-top') {
+    return `linear-gradient(to bottom, rgba(0,0,0,${o.toFixed(3)}) 0%, rgba(0,0,0,0) 100%)`;
+  }
+  // default gradient-bottom
+  return `linear-gradient(to top, rgba(0,0,0,${o.toFixed(3)}) 0%, rgba(0,0,0,0) 100%)`;
+};
+
+const HomeHero = ({ c, pick }) => {
+  const s = c.hero._settings || {};
+  const textAlign = s.text_align || 'center';
+  const vAnchor   = s.vertical_anchor || 'middle';
+  const hAnchor   = s.horizontal_anchor || 'center';
+  const showItalic = s.show_italic !== false; // default ON for live (legacy)
+  const veilBg = heroVeilCss(s.veil_style || 'gradient-bottom', s.veil_opacity);
+
+  return (
+    <section
+      className="mfd-hero"
+      data-testid="home-hero"
+      data-text-align={textAlign}
+      data-v-anchor={vAnchor}
+      data-h-anchor={hAnchor}
+      style={{ '--hero-veil': veilBg }}
+    >
+      <HeroMedia src={c.hero.backgroundImage} />
+      <div className="mfd-hero__inner">
+        <Reveal as="span" className="mfd-eyebrow" data-testid="hero-overline">{pick(c.hero.overline)}</Reveal>
+        <Reveal as="h1" className="mfd-display" delay={1} data-testid="hero-headline">{pick(c.hero.headline)}</Reveal>
+        <Reveal as="p" className="mfd-lead" delay={2} data-testid="hero-sub" style={{ whiteSpace: 'pre-line' }}>
+          {pick(c.hero.sub)}
+        </Reveal>
+        {showItalic && pick(c.hero.overlineItalic) && (
+          <>
+            <Reveal delay={3} className="mfd-hero__divider" />
+            <Reveal as="p" className="mfd-italic-line" delay={4} data-testid="hero-overline-italic">{pick(c.hero.overlineItalic)}</Reveal>
+          </>
+        )}
+      </div>
+    </section>
+  );
+};
+
 const HomePage = () => {
   const { pick } = useSite();
   const { content: cmsContent, hasDbContent } = useStorefrontContent(tenantConfig.slug, 'home', homepageContent);
@@ -129,18 +178,7 @@ const HomePage = () => {
   return (
     <div data-testid="site-home">
       {/* HERO */}
-      <section className="mfd-hero" data-testid="home-hero">
-        <HeroMedia src={c.hero.backgroundImage} />
-        <div className="mfd-hero__inner">
-          <Reveal as="h1" className="mfd-display" data-testid="hero-headline">{pick(c.hero.headline)}</Reveal>
-          <Reveal as="p" className="mfd-lead" delay={2} data-testid="hero-sub" style={{ textAlign: 'center', whiteSpace: 'pre-line' }}>
-            {pick(c.hero.sub)}
-          </Reveal>
-          <Reveal delay={3} className="mfd-hero__divider" />
-          <Reveal as="span" className="mfd-eyebrow" delay={3} data-testid="hero-overline">{pick(c.hero.overline)}</Reveal>
-          <Reveal as="p" className="mfd-italic-line" delay={4} data-testid="hero-overline-italic">{pick(c.hero.overlineItalic)}</Reveal>
-        </div>
-      </section>
+      <HomeHero c={c} pick={pick} />
 
       {/* DUAL CTA */}
       <section className="mfd-section" data-testid="home-dual">

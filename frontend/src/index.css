@@ -621,3 +621,37 @@ a, button, [role="button"] {
 .inspector-group + .inspector-group { margin-top: 0; }
 .inspector-group [data-testid^="block-"] { font-feature-settings: "tnum" 1; }
 
+
+
+/* ── Cinematic inline editor (StorefrontStudio) ──────────────────────────── */
+.storefront-inline-text {
+  min-height: 1em;
+  cursor: text;
+  position: relative;
+  transition: background-color 180ms ease, box-shadow 180ms ease;
+  border-radius: 2px;
+}
+.storefront-inline-text:hover {
+  background-color: rgba(38,245,201,0.04);
+  box-shadow: inset 0 0 0 1px rgba(38,245,201,0.18);
+}
+.storefront-inline-text.is-focused {
+  background-color: rgba(38,245,201,0.06);
+  box-shadow: inset 0 0 0 1px rgba(38,245,201,0.55);
+}
+.storefront-inline-text.is-empty::before {
+  content: attr(data-placeholder);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  color: rgba(255,255,255,0.30);
+  font-style: italic;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+.storefront-inline-text.is-empty.is-focused::before { opacity: 0.5; }

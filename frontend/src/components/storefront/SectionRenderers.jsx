@@ -9,8 +9,12 @@
  *   - updateSettings(key, value)                 — patches settings + queues autosave
  *   - openAssetPicker(onPick)                    — opens drawer with callback
  */
-import React from 'react';
-import { Image as ImageIcon, Plus, X, Gem, Users, Sparkles, Globe, ShieldCheck } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  Image as ImageIcon, Plus, X, Gem, Users, Sparkles, Globe, ShieldCheck,
+  Sliders, AlignLeft, AlignCenter, AlignVerticalJustifyStart,
+  AlignVerticalJustifyCenter, AlignVerticalJustifyEnd,
+} from 'lucide-react';
 import InlineText from './InlineText';
 import NavigationRenderer from './NavigationRenderer';
 import FooterColumnsRenderer from './FooterColumnsRenderer';
@@ -62,9 +66,165 @@ const EditableImage = ({ url, openAssetPicker, onPick, label = 'Replace image', 
   </button>
 );
 
+// ─── HERO SETTINGS POPOVER ──────────────────────────────────────────────────
+const HeroSettingsPopover = ({ section, updateSettings }) => {
+  const [open, setOpen] = useState(false);
+  const s = section.settings || {};
+  const textAlign = s.text_align || 'center';
+  const vAnchor = s.vertical_anchor || 'middle';
+  const hAnchor = s.horizontal_anchor || 'center';
+  const veilStyle = s.veil_style || 'gradient-bottom';
+  const veilOpacity = s.veil_opacity != null ? s.veil_opacity : 60;
+  const showItalic = s.show_italic !== false;
+
+  const Btn = ({ active, onClick, label, testid, children }) => (
+    <button
+      type="button"
+      onClick={onClick}
+      title={label}
+      data-testid={testid}
+      className={`flex-1 flex items-center justify-center px-2 py-1.5 rounded-[2px] border text-[10px] uppercase tracking-[0.15em] transition-colors
+        ${active
+          ? 'border-[var(--bp-primary)] text-[var(--bp-primary)] bg-[var(--bp-primary)]/10'
+          : 'border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] hover:border-[var(--bp-text-secondary)]'}`}
+    >
+      {children}
+    </button>
+  );
+
+  return (
+    <div className="absolute top-3 left-3 z-20">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        data-testid={`hero-settings-toggle-${section.id}`}
+        title="Hero settings"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[2px] bg-black/60 backdrop-blur-md border border-white/15 text-white/85 hover:text-white hover:border-white/35 transition-colors text-[10px] uppercase tracking-[0.2em]"
+      >
+        <Sliders size={11} strokeWidth={1.5} /> Hero
+      </button>
+      {open && (
+        <div
+          className="absolute top-full left-0 mt-2 w-[280px] p-4 rounded-[2px] bg-black/85 backdrop-blur-xl border border-white/15 text-white space-y-4 shadow-2xl"
+          data-testid={`hero-settings-panel-${section.id}`}
+        >
+          {/* Text alignment */}
+          <div>
+            <p className="text-white/55 text-[9px] uppercase tracking-[0.25em] mb-2">Text alignment</p>
+            <div className="flex gap-1.5">
+              <Btn active={textAlign === 'left'} onClick={() => updateSettings('text_align', 'left')} label="Left" testid={`hero-align-left-${section.id}`}>
+                <AlignLeft size={12} strokeWidth={1.5} />
+              </Btn>
+              <Btn active={textAlign === 'center'} onClick={() => updateSettings('text_align', 'center')} label="Center" testid={`hero-align-center-${section.id}`}>
+                <AlignCenter size={12} strokeWidth={1.5} />
+              </Btn>
+            </div>
+          </div>
+
+          {/* Vertical anchor */}
+          <div>
+            <p className="text-white/55 text-[9px] uppercase tracking-[0.25em] mb-2">Vertical position</p>
+            <div className="flex gap-1.5">
+              <Btn active={vAnchor === 'top'} onClick={() => updateSettings('vertical_anchor', 'top')} label="Top" testid={`hero-v-top-${section.id}`}>
+                <AlignVerticalJustifyStart size={12} strokeWidth={1.5} />
+              </Btn>
+              <Btn active={vAnchor === 'middle'} onClick={() => updateSettings('vertical_anchor', 'middle')} label="Middle" testid={`hero-v-mid-${section.id}`}>
+                <AlignVerticalJustifyCenter size={12} strokeWidth={1.5} />
+              </Btn>
+              <Btn active={vAnchor === 'bottom'} onClick={() => updateSettings('vertical_anchor', 'bottom')} label="Bottom" testid={`hero-v-bot-${section.id}`}>
+                <AlignVerticalJustifyEnd size={12} strokeWidth={1.5} />
+              </Btn>
+            </div>
+          </div>
+
+          {/* Horizontal anchor */}
+          <div>
+            <p className="text-white/55 text-[9px] uppercase tracking-[0.25em] mb-2">Horizontal position</p>
+            <div className="flex gap-1.5">
+              <Btn active={hAnchor === 'start'} onClick={() => updateSettings('horizontal_anchor', 'start')} label="Start" testid={`hero-h-start-${section.id}`}>Start</Btn>
+              <Btn active={hAnchor === 'center'} onClick={() => updateSettings('horizontal_anchor', 'center')} label="Center" testid={`hero-h-center-${section.id}`}>Center</Btn>
+              <Btn active={hAnchor === 'end'} onClick={() => updateSettings('horizontal_anchor', 'end')} label="End" testid={`hero-h-end-${section.id}`}>End</Btn>
+            </div>
+          </div>
+
+          {/* Veil style */}
+          <div>
+            <p className="text-white/55 text-[9px] uppercase tracking-[0.25em] mb-2">Veil style</p>
+            <div className="grid grid-cols-2 gap-1.5">
+              {[
+                { k: 'none',            l: 'None' },
+                { k: 'soft',            l: 'Soft' },
+                { k: 'gradient-bottom', l: 'Bottom' },
+                { k: 'gradient-top',    l: 'Top' },
+                { k: 'strong',          l: 'Strong' },
+              ].map(({ k, l }) => (
+                <Btn key={k} active={veilStyle === k} onClick={() => updateSettings('veil_style', k)} label={l} testid={`hero-veil-${k}-${section.id}`}>{l}</Btn>
+              ))}
+            </div>
+          </div>
+
+          {/* Veil opacity */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-white/55 text-[9px] uppercase tracking-[0.25em]">Veil opacity</p>
+              <span className="text-white/85 text-[10px] tabular-nums">{veilOpacity}%</span>
+            </div>
+            <input
+              type="range" min="0" max="100" step="5"
+              value={veilOpacity}
+              data-testid={`hero-veil-opacity-${section.id}`}
+              onChange={(e) => updateSettings('veil_opacity', parseInt(e.target.value, 10))}
+              className="w-full accent-[var(--bp-primary)]"
+            />
+          </div>
+
+          {/* Italic line toggle */}
+          <div className="flex items-center justify-between pt-1 border-t border-white/10">
+            <p className="text-white/85 text-[10px]">Italic accent line</p>
+            <button
+              type="button"
+              onClick={() => updateSettings('show_italic', !showItalic)}
+              data-testid={`hero-italic-toggle-${section.id}`}
+              className={`w-9 h-[18px] rounded-full transition-colors relative
+                ${showItalic ? 'bg-[var(--bp-primary)]' : 'bg-white/15'}`}
+            >
+              <span className={`absolute top-[2px] w-[14px] h-[14px] bg-white rounded-full transition-transform
+                ${showItalic ? 'translate-x-[18px]' : 'translate-x-[2px]'}`} />
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Compute veil className from style + opacity
+const veilFor = (style, opacity) => {
+  const o = Math.max(0, Math.min(100, opacity)) / 100;
+  if (style === 'none') return null;
+  if (style === 'soft') return { background: `rgba(0,0,0,${(o * 0.55).toFixed(3)})` };
+  if (style === 'strong') return { background: `rgba(0,0,0,${(o * 0.85).toFixed(3)})` };
+  if (style === 'gradient-top') {
+    return { background: `linear-gradient(to bottom, rgba(0,0,0,${o.toFixed(3)}) 0%, rgba(0,0,0,0) 100%)` };
+  }
+  // default: gradient-bottom
+  return { background: `linear-gradient(to top, rgba(0,0,0,${o.toFixed(3)}) 0%, rgba(0,0,0,0) 100%)` };
+};
+
 // ─── STORE_HERO ─────────────────────────────────────────────────────────────
 const StoreHero = ({ section, locale, draft, updateContent, updateSettings, openAssetPicker }) => {
   const bgUrl = getSetting(section, 'background_image_url') || getField(section, draft, '_default', 'background_image_url');
+  const s = section.settings || {};
+  const textAlign = s.text_align || 'center';
+  const vAnchor = s.vertical_anchor || 'middle';
+  const hAnchor = s.horizontal_anchor || 'center';
+  const showItalic = s.show_italic !== false;
+
+  const justifyCls = vAnchor === 'top' ? 'justify-start' : vAnchor === 'bottom' ? 'justify-end' : 'justify-center';
+  const itemsCls   = hAnchor === 'start' ? 'items-start' : hAnchor === 'end' ? 'items-end' : 'items-center';
+  const textCls    = textAlign === 'left' ? 'text-left' : 'text-center';
+  const veilStyle  = veilFor(s.veil_style || 'gradient-bottom', s.veil_opacity != null ? s.veil_opacity : 60);
+
   return (
     <div className="relative bg-black text-white overflow-hidden" data-testid={`section-${section.id}`}>
       <div className="relative h-[560px]">
@@ -76,16 +236,27 @@ const StoreHero = ({ section, locale, draft, updateContent, updateSettings, open
           testid={`hero-bg-${section.id}`}
           label="Replace hero background"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70 pointer-events-none" />
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-16 pointer-events-none">
-          <div className="max-w-3xl pointer-events-auto">
+        {veilStyle && <div className="absolute inset-0 pointer-events-none" style={veilStyle} />}
+
+        <HeroSettingsPopover section={section} updateSettings={updateSettings} />
+
+        <div className={`absolute inset-0 flex flex-col p-10 lg:p-16 pointer-events-none ${justifyCls} ${itemsCls} ${textCls}`}>
+          <div className="max-w-3xl pointer-events-auto w-full">
+            <InlineText
+              value={getField(section, draft, locale, 'overline')}
+              onChange={(v) => updateContent(locale, 'overline', v)}
+              placeholder="OVERLINE"
+              as="p"
+              className="text-white/70 text-[10px] font-body uppercase tracking-[0.3em] mb-4"
+              testid={`hero-overline-${section.id}`}
+            />
             <InlineText
               value={getField(section, draft, locale, 'headline')}
               onChange={(v) => updateContent(locale, 'headline', v)}
               placeholder="Editorial headline"
               multiline
               as="h1"
-              className="font-heading text-5xl lg:text-6xl font-light leading-tight mb-4 whitespace-pre-line"
+              className="font-heading text-[clamp(2.25rem,6vw,4rem)] font-light leading-[1.05] mb-4 whitespace-pre-line"
               testid={`hero-headline-${section.id}`}
             />
             <InlineText
@@ -94,26 +265,19 @@ const StoreHero = ({ section, locale, draft, updateContent, updateSettings, open
               placeholder="Sub-headline lead text"
               multiline
               as="p"
-              className="text-white/80 text-base font-body leading-relaxed whitespace-pre-line mx-auto mb-6"
+              className={`text-white/80 text-[clamp(0.875rem,1.4vw,1rem)] font-body leading-relaxed whitespace-pre-line ${textAlign === 'center' ? 'mx-auto' : ''}`}
               testid={`hero-sub-${section.id}`}
             />
-            <div className="w-12 h-px bg-white/40 mx-auto mb-4" aria-hidden="true" />
-            <InlineText
-              value={getField(section, draft, locale, 'overline')}
-              onChange={(v) => updateContent(locale, 'overline', v)}
-              placeholder="OVERLINE"
-              as="p"
-              className="text-white/70 text-[10px] font-body uppercase tracking-[0.3em] mb-3"
-              testid={`hero-overline-${section.id}`}
-            />
-            <InlineText
-              value={getField(section, draft, locale, 'overline_italic')}
-              onChange={(v) => updateContent(locale, 'overline_italic', v)}
-              placeholder="Italic accent line"
-              as="p"
-              className="font-heading italic text-white/85 text-lg"
-              testid={`hero-overline-italic-${section.id}`}
-            />
+            {showItalic && (
+              <InlineText
+                value={getField(section, draft, locale, 'overline_italic')}
+                onChange={(v) => updateContent(locale, 'overline_italic', v)}
+                placeholder="Italic accent line"
+                as="p"
+                className="font-heading italic text-white/85 text-[clamp(1rem,1.6vw,1.25rem)] mt-5"
+                testid={`hero-overline-italic-${section.id}`}
+              />
+            )}
           </div>
         </div>
       </div>

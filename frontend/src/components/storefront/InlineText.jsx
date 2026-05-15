@@ -8,6 +8,10 @@
  */
 import React, { useEffect, useRef, useState } from 'react';
 
+// Treat strings that contain only whitespace / newlines as effectively empty
+// so the placeholder shows and saves don't pollute the DB with '\n'.
+const isBlank = (s) => !s || !String(s).trim();
+
 const InlineText = ({
   value = '',
   onChange,
@@ -20,20 +24,21 @@ const InlineText = ({
 }) => {
   const ref = useRef(null);
   const [focused, setFocused] = useState(false);
-  const [empty, setEmpty] = useState(!value);
+  const [empty, setEmpty] = useState(isBlank(value));
 
   // Sync value -> DOM only when not focused (avoid caret jumps during typing)
   useEffect(() => {
     if (ref.current && !focused) {
-      const incoming = value || '';
+      const incoming = isBlank(value) ? '' : value;
       if (ref.current.innerText !== incoming) ref.current.innerText = incoming;
-      setEmpty(!incoming);
+      setEmpty(isBlank(incoming));
     }
   }, [value, focused]);
 
   const commit = () => {
-    const next = ref.current?.innerText || '';
-    setEmpty(!next);
+    const raw = ref.current?.innerText || '';
+    const next = isBlank(raw) ? '' : raw;
+    setEmpty(isBlank(next));
     if (next !== (value || '')) onChange?.(next);
   };
 
@@ -62,7 +67,7 @@ const InlineText = ({
       onFocus={() => setFocused(true)}
       onBlur={() => { setFocused(false); commit(); }}
       onKeyDown={onKeyDown}
-      onInput={() => setEmpty(!ref.current?.innerText)}
+      onInput={() => setEmpty(isBlank(ref.current?.innerText))}
       className={`storefront-inline-text ${focused ? 'is-focused' : ''} ${empty ? 'is-empty' : ''} ${className}`}
       style={{ outline: 'none', whiteSpace: multiline ? 'pre-wrap' : 'normal', ...style }}
     />

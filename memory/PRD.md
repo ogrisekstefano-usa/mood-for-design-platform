@@ -1581,3 +1581,50 @@ Dual delivery: (A) ingresso editoriale per professionisti A&D + intake 5-step. (
 **MOCKED**: lead persistence (private + pro) e language override sono in localStorage. Phase H.5 wirerà tabelle backend `platform_languages`, `leads`, `professionals`.
 
 
+
+---
+
+## SESSION D — CMS Hero Editor + Value-Props Pillar Editor + InlineText Hardening (2026-05-15)
+
+### Implemented
+- **Value Props (`Why choose MOOD`) pillar editor** in StorefrontStudio:
+  - Each pillar: inline-editable title + body per locale
+  - Cyclable icon (gem → users → sparkles → globe → shield-check)
+  - Remove pillar (× on hover)
+  - "+ ADD PILLAR" tile
+  - `HomePage.jsx mergeHomepage()` now reads `value_props._settings.pillars` and overrides legacy items, so changes propagate to the live site
+- **Cinematic Hero Editor (Storefront Studio)**:
+  - New `HeroSettingsPopover` component (top-left of hero section)
+  - Controls: Text alignment (left/center) · Vertical anchor (top/middle/bottom) · Horizontal anchor (start/center/end) · Veil style (none/soft/bottom/top/strong) · Veil opacity slider · Italic-line toggle
+  - All settings persist via `updateSettings()` → `cms_sections.settings`
+  - Hero text now uses responsive clamp() fonts
+- **Live site Hero matches CMS** (canonical order: overline → headline → sub → optional italic):
+  - Extracted `HomeHero` component in `HomePage.jsx` reading `hero._settings` → applies `data-text-align/data-v-anchor/data-h-anchor` + CSS variable `--hero-veil`
+  - `site.css` updated with data-attribute selectors and configurable veil var
+- **InlineText hardening**:
+  - Treats whitespace-only strings (`'\n'`, spaces) as empty — fixes case where contentEditable's `<br>` got persisted as `'\n'` and hid the placeholder
+  - Both `useState` initial and `commit()` now normalize blank values to `''`
+- **Inline placeholder CSS** added in `index.css` (`.storefront-inline-text.is-empty::before { content: attr(data-placeholder) }`) — empty fields now show italic faded placeholder
+- **Save-as-Template (Moodboard editor)** — added `toast.success/error` feedback (previously silent)
+- **Data fix**: restored `cms_sections.locale_content.it.overline_italic` to `"trasformare la tua visione in realtà."` (had been corrupted to `'\n'` by an earlier blur on empty contentEditable)
+
+### Files touched
+- `frontend/src/components/storefront/SectionRenderers.jsx` (StoreHero rewrite + HeroSettingsPopover + ValueProps editor)
+- `frontend/src/components/storefront/InlineText.jsx` (blank normalization)
+- `frontend/src/pages/site/HomePage.jsx` (HomeHero component + pillars merge)
+- `frontend/src/site/site.css` (.mfd-hero data-attribute variants + --hero-veil)
+- `frontend/src/index.css` (storefront-inline-text placeholder CSS)
+- `frontend/src/pages/moodboards/MoodboardEditor.jsx` (saveAsTemplate toast)
+
+### Tested
+- Screenshot smoke tests: CMS shows full hero editor + editable italic; live site matches CMS exactly.
+- Lint: clean on all 5 modified files.
+- Editor reload-persistence verified for both Hero and Value-Props.
+
+### Pending (priority order)
+- P1: Lead Assignment refinement (Phase H.5)
+- P2: Workspace Moodboard Fit-to-Screen toggles (zoom presets)
+- P2: Designer Profile & Human Header (Phase 6)
+- P3: Messaging System V1 (Phase 7)
+- P4: Products / Catalogs (Phase 8)
+- Backlog: PRD.md split into CHANGELOG.md + ROADMAP.md (file is now ~1620 lines)

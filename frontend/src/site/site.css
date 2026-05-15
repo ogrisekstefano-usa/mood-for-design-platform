@@ -200,11 +200,24 @@
 /* ── HERO */
 .mfd-hero {
   position: relative; min-height: 100vh; width: 100%;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden; isolation: isolate; text-align: center;
+  display: flex; overflow: hidden; isolation: isolate;
   background:
     radial-gradient(ellipse at 50% 35%, #2A2522 0%, #15120F 50%, #0A0907 100%);
+  /* defaults — overridden by data-* attrs from CMS settings */
+  align-items: center; justify-content: center; text-align: center;
 }
+/* Vertical anchor (top / middle / bottom) */
+.mfd-hero[data-v-anchor="top"]    { align-items: flex-start; }
+.mfd-hero[data-v-anchor="middle"] { align-items: center; }
+.mfd-hero[data-v-anchor="bottom"] { align-items: flex-end; }
+/* Horizontal anchor (start / center / end) — affects the inner block placement */
+.mfd-hero[data-h-anchor="start"]  { justify-content: flex-start; }
+.mfd-hero[data-h-anchor="center"] { justify-content: center; }
+.mfd-hero[data-h-anchor="end"]    { justify-content: flex-end; }
+/* Text alignment */
+.mfd-hero[data-text-align="left"]   { text-align: left; }
+.mfd-hero[data-text-align="center"] { text-align: center; }
+
 .mfd-hero__media { position: absolute; inset: 0; z-index: -1; }
 .mfd-hero__media img {
   width: 100%; height: 100%; object-fit: cover;
@@ -214,16 +227,21 @@
 .mfd-hero__media img.is-loaded { opacity: 1; transform: scale(1.0); }
 .mfd-hero__veil {
   position: absolute; inset: 0; z-index: -1;
-  background:
-    linear-gradient(180deg, rgba(17,17,17,0.40) 0%, rgba(17,17,17,0.18) 45%, rgba(17,17,17,0.62) 100%);
+  background: var(--hero-veil,
+    linear-gradient(180deg, rgba(17,17,17,0.40) 0%, rgba(17,17,17,0.18) 45%, rgba(17,17,17,0.62) 100%)
+  );
 }
 .mfd-hero__inner {
   width: 100%;
   padding: clamp(7rem, 12vw, 12rem) clamp(1.25rem, 4vw, 3.5rem) clamp(4rem, 8vw, 6rem);
-  display: grid; justify-items: center;
-  gap: clamp(1.25rem, 2vw, 1.8rem);
+  display: grid; gap: clamp(1.25rem, 2vw, 1.8rem);
   max-width: 1280px; margin: 0 auto;
+  justify-items: center;
 }
+/* When text aligns left, the inner grid items also align left */
+.mfd-hero[data-text-align="left"] .mfd-hero__inner { justify-items: start; max-width: 1280px; }
+.mfd-hero[data-h-anchor="start"]  .mfd-hero__inner { margin-left: 0; }
+.mfd-hero[data-h-anchor="end"]    .mfd-hero__inner { margin-right: 0; }
 .mfd-hero__divider {
   width: 64px; height: 1px; background: var(--site-accent); opacity: 0.6;
   margin-top: 0.5rem;
