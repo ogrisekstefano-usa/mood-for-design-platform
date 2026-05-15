@@ -29,6 +29,102 @@ Multi-tenant SaaS platform per interior designer e architetti, costruita come Bl
 
 ## Implementation Status
 
+### ✅ Phase N++ — Cinematic Dashboard Rebuild + Extended IA (DONE — 15 Feb 2026)
+
+Dashboard ricostruita completamente seguendo il mockup "Cinematic Enterprise
+Workflow OS". Backend aggregato + frontend full layout + sidebar IA estesa
++ coming-soon stubs per le route non ancora implementate.
+
+**Backend — `/api/dashboard/summary`** (`/app/backend/routers/dashboard.py`)
+- Single-call aggregator: kpis (active projects · pending proposals ·
+  completed tasks · hours logged) + 14-day sparkline buckets + trend cap ±99%
+- Featured projects with cover hydration (moodboard.cover_metadata → media_links → signed URL fallback)
+- Recent activity synthesised from latest creates of moodboards/proposals/projects/leads (no events table needed)
+- Tasks pipeline (open + project_title hydration)
+- Media preview (latest 6 active assets with signed URLs)
+- Top materials sorted by asset_count
+- Team activity from users_profile (last_login fallback)
+- 8-day timeline (proposals sent + tasks due)
+- **RBAC hardened**: client/ad_partner roles get HTTP 403 — dashboard is
+  studio-only (clients use their own portal). Confirmed via curl.
+
+**Frontend — `/dashboard`** (`/app/frontend/src/pages/dashboard/DashboardPage.jsx` rewritten, ~430 LOC)
+- Welcome strip: BLUEPRINT WORKSPACE eyebrow + "Bentornato, [firstName]"
+  + subtitle + date badge with Calendar icon
+- 4 KPI cards with: uppercase label · large tabular number · trend arrow with capped ±99%
+  · SVG sparkline (no chart library, gradient fill)
+- Quick Actions panel (Nuovo Lead/Progetto/Proposta/Moodboard/Carica file)
+  with icon + label + chevron
+- Tasks Panel (data-testid="tasks-panel") with count badge, project_title,
+  due date, elegant empty state
+- Featured Projects horizontal grid with cover or fallback icon, project_type
+  eyebrow, progress bar (teal), "+ Nuovo progetto" tile
+- 4-column operational grid: Recent Activity · Media Preview · Top Materials · Team Activity
+- 8-day Timeline with day columns, today highlighted teal, event chips
+- **Error state**: 503/cold-start handled with retry button (no more permanent spinner)
+- **403 state**: graceful "Accesso limitato" message when client role tries
+
+**Sidebar IA extended** (`Sidebar.jsx`)
+- 5 sections: BLUEPRINT WORKSPACE (Dashboard / Lead / Progetti / Proposte / Moodboard / Calendario),
+  CONTENUTI (Ispirazioni / Archivio / Materiali / Collezioni),
+  COLLABORAZIONE (Attività / Team / Clienti / Messaggi),
+  INTELLIGENZA (Analytics / Report),
+  SISTEMA (Impostazioni / Billing / Integrazioni)
+- **`WorkspaceSelector`** component pinned at the bottom — tenant monogram + name
+  + "WORKSPACE" label, future hook for tenant switching
+- i18n EN+IT extended: nav.calendar, nav.collections, nav.activity, nav.team,
+  nav.clients, nav.messages, nav.reports, nav.billing, nav.integrations,
+  nav.section.collaboration
+
+**ComingSoonPage** (`/app/frontend/src/pages/common/ComingSoonPage.jsx`)
+Elegant OS-surface placeholder for 8 not-yet-built routes:
+- /workspace/calendar · /workspace/activity · /workspace/team · /workspace/clients
+- /workspace/messages · /workspace/reports
+- /library/collections · /settings/integrations
+
+Each preset has a custom title/subtitle/hint plus a `← Torna alla dashboard` CTA.
+NOT 404s — looks like an OS surface in graceful waiting state.
+
+**Architectural fix — strict surface scoping**
+- `<div className="App" data-surface="os">` in `App.js` REMOVED — was leaking
+  the OS scope across the storefront tree (architecturally wrong even though
+  CSS-isolated via nested storefront provider)
+- New `<OSWrap>` HOC introduced to wrap standalone OS routes outside
+  `DashboardLayout`: `/auth/login`, `/auth/signup`, `/auth/forgot-password`,
+  `/start-project`, `/professionals/intake`
+- BlueprintThemeProvider + StorefrontThemeProvider are now the ONLY emitters
+  of `data-surface="*"` in the app
+
+**Verified end-to-end** ✅
+- super_admin → HTTP 200 with full payload
+- designer → HTTP 200
+- client → HTTP 403 "Dashboard is restricted to studio members."
+- studio2 tenant → only studio2 data (isolation preserved)
+- Dashboard cold-load → retry button surfaces if 503; no permanent spinner
+- Storefront `/` → cream + Cormorant editorial serif UNTOUCHED (verified via screenshot)
+- Sidebar collapsed → all section icons render
+- Sidebar expanded → 5 section labels + WorkspaceSelector at the bottom
+
+**Files of reference**
+- `/app/backend/routers/dashboard.py` (new, ~270 LOC)
+- `/app/backend/server.py` (router mounted at `/api/dashboard`)
+- `/app/frontend/src/pages/dashboard/DashboardPage.jsx` (rewritten)
+- `/app/frontend/src/components/layout/Sidebar.jsx` (+WorkspaceSelector)
+- `/app/frontend/src/pages/common/ComingSoonPage.jsx` (new)
+- `/app/frontend/src/App.js` (+OSWrap, +8 coming-soon routes, –root data-surface)
+- `/app/backend/routers/blueprint.py` (i18n extensions IT+EN)
+
+**Known sub-optimal (LOW priority, tracked for future iteration)**
+- Featured project covers fall back to folder icon for Studio seed (no
+  cover_metadata or media_links yet); will populate naturally once the
+  studio creates moodboards with covers
+- N+1 query on top_materials asset_count (≤10 materials → acceptable today;
+  refactor to GROUP BY when registry grows beyond 50 entries)
+- Signed-URL generation per featured project happens in a Python loop;
+  batch via `create_signed_urls` when project volume warrants
+
+
+
 ### ✅ Phase N+ — Blueprint OS Visual Refinement + Platform Footer (DONE — 15 Feb 2026)
 **Architectural Workflow Operating System** — visual refinement of the Blueprint
 OS surface. Linear · Vercel · Notion · Framer mood with interior-design

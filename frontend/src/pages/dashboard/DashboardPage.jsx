@@ -495,26 +495,70 @@ const DashboardPage = () => {
   const { user } = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let alive = true;
+    setLoading(true);
+    setError(null);
     api.get('/api/dashboard/summary')
       .then((r) => { if (alive) setData(r.data); })
-      .catch(() => {})
+      .catch((e) => {
+        if (!alive) return;
+        const status = e?.response?.status;
+        setError({
+          status,
+          message: status === 403
+            ? 'Questa dashboard è riservata ai membri dello studio.'
+            : 'Impossibile caricare la dashboard in questo momento.',
+        });
+      })
       .finally(() => { if (alive) setLoading(false); });
     return () => { alive = false; };
-  }, []);
+  }, [reloadKey]);
 
   const firstName = user?.first_name || (user?.email || '').split('@')[0];
   const today = new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
 
-  if (loading || !data) {
+  if (loading && !data) {
     return (
       <div className="h-full flex items-center justify-center bg-[var(--bp-bg)]">
         <Icons.Loader2 size={20} className="animate-spin text-[var(--bp-text-muted)]" />
       </div>
     );
   }
+
+  if (error && !data) {
+    return (
+      <div data-testid="dashboard-error" className="h-full flex flex-col items-center justify-center bg-[var(--bp-bg)] px-10 py-16 text-center">
+        <div className="w-14 h-14 rounded-[12px] border border-[var(--bp-border)] bg-[var(--bp-surface-1)] flex items-center justify-center mb-6">
+          <Icons.AlertCircle size={20} strokeWidth={1.3} className="text-[var(--bp-text-muted)]" />
+        </div>
+        <p className="text-[10px] tracking-[0.28em] uppercase text-[var(--bp-text-muted)] font-body mb-2">
+          {error.status === 403 ? 'Accesso limitato' : 'Errore'}
+        </p>
+        <h1 className="text-[22px] font-medium tracking-tight text-[var(--bp-text-primary)] mb-2 max-w-md leading-tight">
+          {error.message}
+        </h1>
+        {error.status !== 403 && (
+          <button
+            type="button"
+            onClick={() => setReloadKey((k) => k + 1)}
+            data-testid="dashboard-retry-btn"
+            className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-[8px] border border-[var(--bp-border)]
+                       text-[12px] text-[var(--bp-text-secondary)] hover:text-[var(--bp-text-primary)]
+                       hover:border-[var(--bp-border-strong)] font-body transition-colors"
+          >
+            <Icons.RotateCcw size={12} />
+            Riprova
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  if (!data) return null;
 
   return (
     <div data-testid="dashboard-page" className="px-10 py-8 max-w-[1600px] mx-auto space-y-6">

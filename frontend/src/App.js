@@ -100,11 +100,17 @@ const PublicRoute = ({ children }) => {
   return !user ? children : <Navigate to="/dashboard" replace />;
 };
 
+import BlueprintThemeProvider from './design-system/os/BlueprintThemeProvider';
+
+const OSWrap = ({ children }) => (
+  <BlueprintThemeProvider className="min-h-screen">{children}</BlueprintThemeProvider>
+);
+
 const PublicMoodboardWrapper = () => <MoodboardEditor readOnly={true} />;
 
 function App() {
   return (
-    <div className="App" data-surface="os">
+    <div className="App">
       <AuthProvider>
         <BlueprintProvider>
           <TenantThemeProvider>
@@ -121,13 +127,13 @@ function App() {
                 </Route>
 
                 {/* Private onboarding wizard — full-screen, no SiteLayout chrome */}
-                <Route path="/start-project" element={<StartProjectWizard />} />
+                <Route path="/start-project" element={<OSWrap><StartProjectWizard /></OSWrap>} />
                 {/* Professional intake wizard — full-screen */}
-                <Route path="/professionals/intake" element={<ProfessionalIntakePage />} />
+                <Route path="/professionals/intake" element={<OSWrap><ProfessionalIntakePage /></OSWrap>} />
 
-                <Route path="/auth/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
-                <Route path="/auth/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
-                <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/auth/login" element={<OSWrap><PublicRoute><LoginPage /></PublicRoute></OSWrap>} />
+                <Route path="/auth/signup" element={<OSWrap><PublicRoute><SignupPage /></PublicRoute></OSWrap>} />
+                <Route path="/auth/forgot-password" element={<OSWrap><ForgotPasswordPage /></OSWrap>} />
                 <Route path="/form/:slug" element={<LeadFormPage />} />
 
                 <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>

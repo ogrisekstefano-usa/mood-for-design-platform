@@ -73,7 +73,17 @@ def _trend_pct(buckets: List[int]) -> int:
 
 @router.get("/summary")
 def dashboard_summary(ctx: dict = Depends(require_permission(P_PROJECTS_READ))):
-    """Operational pulse for Blueprint OS Dashboard."""
+    """Operational pulse for Blueprint OS Dashboard.
+
+    The dashboard is a STUDIO operational tool — clients have their own
+    portal and must not see studio internals (team, materials, all projects,
+    pending leads). Block client/ad_partner roles explicitly even though
+    they happen to carry P_PROJECTS_READ for their own visible projects.
+    """
+    role = (ctx.get("role") or "").lower()
+    if role in {"client", "ad_partner"}:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=403, detail="Dashboard is restricted to studio members.")
     client = db()
     tid = ctx["tenant_id"]
 
