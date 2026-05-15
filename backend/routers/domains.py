@@ -36,6 +36,7 @@ class DomainOut(BaseModel):
     tenant_id: str
     hostname: str
     kind: str
+    domain_type: str = "custom"   # subdomain | custom — billing-grade flag
     is_primary: bool
     verification_token: str
     verification_status: str
@@ -63,6 +64,13 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _classify_domain(hostname: str) -> str:
+    """subdomain when the host belongs to the platform apex (free, doesn't
+    count against the plan's max_domains), else custom (billed)."""
+    h = (hostname or "").lower().rstrip(".")
+    return "subdomain" if h.endswith(f".{PLATFORM_APEX}") else "custom"
+
+
 def _instructions_for(domain: dict) -> List[dict]:
     host = domain["hostname"]
     token = domain["verification_token"]
@@ -83,7 +91,11 @@ def _instructions_for(domain: dict) -> List[dict]:
 
 
 def _row_to_out(row: dict) -> DomainOut:
+    row = dict(row)
     row["dns_records"] = _instructions_for(row)
+    # Resilient fallback when `domain_type` column missing on legacy rows
+    if not row.get("domain_type"):
+        row["domain_type"] = _classify_domain(row.get("hostname", ""))
     row.pop("deleted_at", None)
     row.pop("created_by", None)
     row.pop("updated_at", None)
@@ -128,12 +140,17 @@ def create_domain(
     body: DomainCreate,
     ctx: dict = Depends(require_permission(P_TENANT_SETTINGS)),
 ):
-    # License capacity gate — blocks before any DB writes
-    assert_capacity(ctx["tenant_id"], "domains")
-
     host = body.hostname.strip().lower()
     if not HOSTNAME_RE.match(host):
         raise HTTPException(400, "Invalid hostname")
+
+    # Auto-classify: subdomains of the platform apex are FREE (not billed)
+    domain_type = _classify_domain(host)
+
+    # License capacity gate — only CUSTOM domains count against quota.
+    # Subdomains under moodfordesign.com are always free for the tenant.
+    if domain_type == "custom":
+        assert_capacity(ctx["tenant_id"], "domains")
 
     client = db()
     # Duplicate check (across all tenants — hostnames are globally unique)
@@ -146,10 +163,13 @@ def create_domain(
     existing_count = client.table("tenant_domains").select("id", count="exact") \
         .eq("tenant_id", ctx["tenant_id"]).is_("deleted_at", None).execute().count or 0
 
+    # `kind` keeps the caller's user-facing intent (apex | subdomain | custom),
+    # `domain_type` is the billing-grade flag derived from the hostname suffix.
     payload = {
         "tenant_id": ctx["tenant_id"],
         "hostname": host,
-        "kind": body.kind or "custom",
+        "kind": body.kind or domain_type,
+        "domain_type": domain_type,
         "is_primary": existing_count == 0,
         "verification_status": "pending",
         "ssl_status": "pending",
@@ -160,7 +180,7 @@ def create_domain(
     row = r.data[0]
     audit_log(ctx["tenant_id"], ctx["profile_id"], "domain.created",
               resource_type="domain", resource_id=row["id"],
-              metadata={"hostname": host})
+              metadata={"hostname": host, "domain_type": domain_type})
     return _row_to_out(row)
 
 

@@ -8,6 +8,7 @@ from core.tenant_context import get_tenant_context, require_permission
 from core.permissions import (
     P_PROJECTS_READ, P_PROJECTS_WRITE, P_PROJECTS_DELETE,
 )
+from core.licensing import assert_capacity
 from database import db
 
 router = APIRouter()
@@ -38,6 +39,8 @@ def list_projects(
 
 @router.post("", status_code=201)
 def create_project(body: ProjectCreate, current_user: dict = Depends(require_permission(P_PROJECTS_WRITE))):
+    # License capacity gate — blocks before any DB writes
+    assert_capacity(current_user['tenant_id'], "projects")
     client = db()
     now = _now()
     payload = _scrub(body.model_dump())

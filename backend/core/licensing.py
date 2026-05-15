@@ -9,6 +9,7 @@ Design notes
   overrides).
 • Every check raises HTTPException 403 with a STABLE error code that the
   frontend can switch on (e.g. `LICENSE_LIMIT_REACHED`).
+• Usage queries are SERVER-FIRST and exclude soft-deleted rows.
 """
 from typing import Optional, List, Dict
 from fastapi import HTTPException
@@ -20,13 +21,16 @@ SUBSCRIPTION_INACTIVE_CODE = "SUBSCRIPTION_INACTIVE"
 
 
 # ── Default plans (overridable via super_admin per-tenant)──────────────
+# Feb 2026 pricing — confirmed by product owner.
+# All numeric limits are nullable elsewhere: NULL = unlimited.
 PLANS: Dict[str, dict] = {
     "starter": {
         "key": "starter",
         "label": "Starter",
-        "description": "Solo studio · 3 seats · 10 projects",
+        "description": "Solo studio · 3 seats · 5 projects · 15 moodboards",
         "max_users": 3,
-        "max_projects": 10,
+        "max_projects": 5,
+        "max_moodboards": 15,
         "max_storage_gb": 5.0,
         "max_domains": 1,
         "max_ai_credits": 500,
@@ -35,11 +39,12 @@ PLANS: Dict[str, dict] = {
     "studio": {
         "key": "studio",
         "label": "Studio",
-        "description": "Growing studio · 10 seats · 50 projects",
+        "description": "Growing studio · 10 seats · 25 projects · 100 moodboards",
         "max_users": 10,
-        "max_projects": 50,
-        "max_storage_gb": 25.0,
-        "max_domains": 2,
+        "max_projects": 25,
+        "max_moodboards": 100,
+        "max_storage_gb": 50.0,
+        "max_domains": 3,
         "max_ai_credits": 5000,
         "enabled_modules": ["leads", "projects", "proposals", "moodboards", "inspirations",
                             "members", "storefront", "forms"],
@@ -50,6 +55,7 @@ PLANS: Dict[str, dict] = {
         "description": "Multi-studio · unlimited",
         "max_users": None,
         "max_projects": None,
+        "max_moodboards": None,
         "max_storage_gb": None,
         "max_domains": None,
         "max_ai_credits": None,
@@ -60,13 +66,17 @@ PLANS: Dict[str, dict] = {
         "key": "custom",
         "label": "Custom",
         "description": "Bespoke plan assigned by super-admin",
-        "max_users": None, "max_projects": None, "max_storage_gb": None,
-        "max_domains": None, "max_ai_credits": None,
+        "max_users": None, "max_projects": None, "max_moodboards": None,
+        "max_storage_gb": None, "max_domains": None, "max_ai_credits": None,
         "enabled_modules": [],
     },
 }
 
 PUBLIC_PLAN_KEYS = ["starter", "studio", "enterprise"]
+
+# Conversion constant for storage math — kept here so both usage calc
+# and capacity check use the exact same denominator.
+BYTES_PER_GB = 1024 ** 3
 
 
 # ── Tenant license accessor ───────────────────────────────────────────
@@ -76,7 +86,7 @@ def get_tenant_license(tenant_id: str) -> dict:
     client = db()
     r = client.table("tenants").select(
         "id, slug, active_plan, subscription_status, max_users, max_projects, "
-        "max_storage_gb, max_domains, max_ai_credits, enabled_modules, "
+        "max_moodboards, max_storage_gb, max_domains, max_ai_credits, enabled_modules, "
         "trial_ends_at, billing_cycle, stripe_customer_id, stripe_subscription_id, plan_assigned_at"
     ).eq("id", tenant_id).limit(1).execute()
     if not r.data:
@@ -104,6 +114,7 @@ def get_tenant_license(tenant_id: str) -> dict:
         "limits": {
             "max_users":      _coalesce("max_users"),
             "max_projects":   _coalesce("max_projects"),
+            "max_moodboards": _coalesce("max_moodboards"),
             "max_storage_gb": _coalesce("max_storage_gb"),
             "max_domains":    _coalesce("max_domains"),
             "max_ai_credits": _coalesce("max_ai_credits"),
@@ -112,22 +123,65 @@ def get_tenant_license(tenant_id: str) -> dict:
     }
 
 
-# ── Usage accessor ────────────────────────────────────────────────────
+# ── Usage accessors (real, server-first) ──────────────────────────────
+def _count(client, table: str, tenant_id: str, *, soft_delete_col: Optional[str] = None,
+           archived_col: Optional[str] = None, extra_filter: Optional[Dict] = None) -> int:
+    """Count rows for a tenant, excluding soft-deleted/archived if applicable.
+    Falls back to 0 if the table or column doesn't exist yet (resilient
+    against partial-migration dev environments)."""
+    try:
+        q = client.table(table).select("id", count="exact").eq("tenant_id", tenant_id)
+        if soft_delete_col:
+            q = q.is_(soft_delete_col, None)
+        if archived_col:
+            q = q.is_(archived_col, None)
+        if extra_filter:
+            for k, v in extra_filter.items():
+                q = q.eq(k, v)
+        return q.execute().count or 0
+    except Exception:
+        return 0
+
+
+def _storage_bytes(client, tenant_id: str) -> int:
+    """Sum file_size across media_library for the tenant.
+    Future: replace with materialized aggregate or Supabase Storage metadata
+    once the platform grows past ~50k assets per tenant."""
+    try:
+        # supabase-py has no SUM aggregate — pull file_size in pages.
+        # For tenants under ~10k assets this is fast (single round-trip).
+        r = client.table("media_library").select("file_size") \
+            .eq("tenant_id", tenant_id).limit(50000).execute()
+        return sum(int(row.get("file_size") or 0) for row in (r.data or []))
+    except Exception:
+        return 0
+
+
 def get_tenant_usage(tenant_id: str) -> dict:
-    """Compute live usage counts. Lightweight — single COUNT queries."""
+    """Compute live usage counts. Lightweight — single COUNT queries.
+    Returns the exact shape the frontend's UsageMeter expects."""
     client = db()
-    users = client.table("users_profile").select("id", count="exact") \
-        .eq("tenant_id", tenant_id).neq("status", "suspended").execute()
-    projects = client.table("projects").select("id", count="exact") \
-        .eq("tenant_id", tenant_id).execute()
+    # Users — only ACTIVE/INVITED count toward seats (suspended don't bill)
+    try:
+        users = client.table("users_profile").select("id", count="exact") \
+            .eq("tenant_id", tenant_id).neq("status", "suspended").execute().count or 0
+    except Exception:
+        users = 0
+    projects   = _count(client, "projects", tenant_id)
+    moodboards = _count(client, "moodboards", tenant_id, soft_delete_col="deleted_at")
+    storage_b  = _storage_bytes(client, tenant_id)
+    # Domains usage = ONLY custom domains (subdomains are free)
+    domains    = _count(client, "tenant_domains", tenant_id,
+                        soft_delete_col="deleted_at",
+                        extra_filter={"domain_type": "custom"})
     return {
-        "users":    users.count or 0,
-        "projects": projects.count or 0,
-        # Storage + ai_credits will be wired when those metrics exist;
-        # exposing 0 keeps the API shape stable for the frontend.
-        "storage_gb": 0.0,
+        "users":          users,
+        "projects":       projects,
+        "moodboards":     moodboards,
+        "storage_gb":     round(storage_b / BYTES_PER_GB, 3),
+        "storage_bytes":  storage_b,
         "ai_credits_used": 0,
-        "domains": 0,
+        "domains":        domains,
     }
 
 
@@ -155,21 +209,49 @@ def assert_module_enabled(tenant_id: str, module_key: str) -> dict:
     return lic
 
 
-def assert_capacity(tenant_id: str, resource: str) -> dict:
-    """resource ∈ {'users','projects','domains'}.
-    Raises 403 LICENSE_LIMIT_REACHED if usage[resource] >= limit (non-NULL)."""
+def assert_capacity(tenant_id: str, resource: str, *, additional: int = 1) -> dict:
+    """Generic capacity gate.
+
+    resource ∈ {'users', 'projects', 'moodboards', 'domains'} — counted with COUNT.
+    Raises 403 LICENSE_LIMIT_REACHED if `(usage + additional) > limit` (limit not NULL).
+    Pre-flight checks pass `additional=N` to reserve N slots in one shot.
+    """
     lic = assert_subscription_active(tenant_id)
     limit_key = f"max_{resource}"
     limit = lic["limits"].get(limit_key)
     if limit is None:  # unlimited
         return lic
     usage = get_tenant_usage(tenant_id).get(resource, 0)
-    if usage >= limit:
+    if usage + max(0, additional - 1) >= limit:
         _raise(LICENSE_LIMIT_REACHED_CODE,
                f"Your {lic['plan_label']} plan allows up to {limit} {resource}. "
                f"Upgrade to add more.",
                plan=lic["plan_key"], resource=resource,
                current=usage, limit=limit)
+    return lic
+
+
+def assert_storage_capacity(tenant_id: str, additional_bytes: int = 0) -> dict:
+    """Storage-specific gate.
+
+    Pass `additional_bytes` for the file the user is about to upload — the
+    check raises if (current + new) would exceed `max_storage_gb`. When
+    `additional_bytes=0` it behaves like a soft "are we already over?" check.
+    """
+    lic = assert_subscription_active(tenant_id)
+    limit_gb = lic["limits"].get("max_storage_gb")
+    if limit_gb is None:
+        return lic
+    usage = get_tenant_usage(tenant_id)
+    new_bytes = (usage.get("storage_bytes") or 0) + max(0, int(additional_bytes or 0))
+    new_gb = new_bytes / BYTES_PER_GB
+    if new_gb > float(limit_gb):
+        _raise(LICENSE_LIMIT_REACHED_CODE,
+               f"Your {lic['plan_label']} plan includes up to {limit_gb} GB of storage. "
+               f"This upload would put you at {new_gb:.2f} GB. Upgrade to continue.",
+               plan=lic["plan_key"], resource="storage_gb",
+               current=round(new_bytes / BYTES_PER_GB, 3),
+               limit=float(limit_gb))
     return lic
 
 
@@ -189,9 +271,9 @@ def assign_plan(tenant_id: str, plan_key: str, assigned_by: Optional[str] = None
     plan = PLANS[plan_key]
     update = {
         "active_plan":     plan_key,
-        "plan_assigned_at": "now()",
         "max_users":       plan.get("max_users"),
         "max_projects":    plan.get("max_projects"),
+        "max_moodboards":  plan.get("max_moodboards"),
         "max_storage_gb":  plan.get("max_storage_gb"),
         "max_domains":     plan.get("max_domains"),
         "max_ai_credits":  plan.get("max_ai_credits"),
@@ -204,9 +286,6 @@ def assign_plan(tenant_id: str, plan_key: str, assigned_by: Optional[str] = None
         for k, v in override_limits.items():
             if k in update:
                 update[k] = v
-    # Strip the postgres function placeholder if present (supabase-py doesn't
-    # interpret "now()" — let the DB default-trigger column refresh externally).
-    update.pop("plan_assigned_at", None)
     client = db()
     client.table("tenants").update(update).eq("id", tenant_id).execute()
     return get_tenant_license(tenant_id)

@@ -1,12 +1,15 @@
 /**
- * MoodboardsPage — luxury list of all moodboards across projects.
+ * MoodboardsPage — luxury list of all moodboards across projects. Plan-aware.
  * Pure Blueprint-driven (i18n via t(), tokens via CSS vars).
  */
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
-import { Plus, Layers, X } from 'lucide-react';
+import { useLicense, refreshLicense } from '../../hooks/useLicense';
+import UsageChip from '../../components/common/UsageChip';
+import { toast } from 'sonner';
+import { Plus, Layers, X, Lock } from 'lucide-react';
 import StatusBadge from '../../components/common/StatusBadge';
 import TemplatePicker from '../../blueprint/moodboard/TemplatePicker';
 
@@ -99,11 +102,14 @@ const CreateModal = ({ projects, onClose, onCreate, t }) => {
 const MoodboardsPage = () => {
   const { t } = useBlueprint();
   const navigate = useNavigate();
+  const { capacityFor, license } = useLicense();
   const [items, setItems] = useState([]);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [filter, setFilter] = useState('');
+
+  const cap = capacityFor('moodboards');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -120,14 +126,31 @@ const MoodboardsPage = () => {
   useEffect(() => { load(); }, [load]);
 
   const handleCreate = async ({ title, project_id, template_id }) => {
-    // Template apply clones N pages + M blocks server-side and can blow past
-    // the 30s default axios timeout for rich templates. Use a 90s window for
-    // this specific call so the user never sees a phantom timeout.
-    const r = template_id
-      ? await api.post(`/api/templates/${template_id}/apply`, { title, project_id }, { timeout: 90000 })
-      : await api.post('/api/moodboards', { title, project_id });
-    setShowCreate(false);
-    navigate(`/moodboards/${r.data.id}`);
+    try {
+      // Template apply clones N pages + M blocks server-side and can blow past
+      // the 30s default axios timeout for rich templates. Use a 90s window for
+      // this specific call so the user never sees a phantom timeout.
+      const r = template_id
+        ? await api.post(`/api/templates/${template_id}/apply`, { title, project_id }, { timeout: 90000 })
+        : await api.post('/api/moodboards', { title, project_id });
+      refreshLicense();
+      setShowCreate(false);
+      navigate(`/moodboards/${r.data.id}`);
+    } catch (err) {
+      const detail = err?.response?.data?.detail;
+      if (detail && typeof detail === 'object' && detail.code === 'LICENSE_LIMIT_REACHED') {
+        toast.error(`Moodboard limit reached (${detail.current}/${detail.limit}). Upgrade your ${detail.plan} plan.`);
+        setShowCreate(false);
+        navigate('/settings/plan');
+        return;
+      }
+      throw err;
+    }
+  };
+
+  const onCta = () => {
+    if (cap.atCap) navigate('/settings/plan');
+    else setShowCreate(true);
   };
 
   const filtered = filter ? items.filter((m) => (m.status || 'draft') === filter) : items;
@@ -141,9 +164,23 @@ const MoodboardsPage = () => {
           <h1 className="bp-h1 text-[var(--bp-text-primary)] font-light">{t('moodboards.title')}</h1>
           <p className="bp-body !text-sm text-[var(--bp-text-muted)] mt-2 max-w-md">{t('moodboards.subtitle')}</p>
         </div>
-        <button onClick={() => setShowCreate(true)} className="bp-btn bp-btn-primary" data-testid="new-moodboard-btn">
-          <Plus size={13} strokeWidth={1.5} /> {t('moodboards.new')}
-        </button>
+        <div className="flex items-center gap-3">
+          {license && (
+            <UsageChip label="Moodboards" current={cap.current} limit={cap.limit}
+                       unlimited={cap.unlimited} atCap={cap.atCap} nearCap={cap.nearCap}
+                       testid="moodboards-usage-chip" />
+          )}
+          <button onClick={onCta}
+                  data-testid="new-moodboard-btn"
+                  className={`flex items-center gap-2 px-4 py-2.5 text-xs font-body uppercase tracking-[0.18em] rounded-[var(--bp-radius-sm)] transition-all
+                    ${cap.atCap
+                      ? 'bg-[var(--bp-surface-2)] border border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] hover:border-[var(--bp-border-strong)]'
+                      : 'bp-btn bp-btn-primary !uppercase !tracking-[0.18em]'}`}>
+            {cap.atCap
+              ? (<><Lock size={11} strokeWidth={1.8} /> Upgrade to create more</>)
+              : (<><Plus size={13} strokeWidth={1.5} /> {t('moodboards.new')}</>)}
+          </button>
+        </div>
       </div>
 
       <div className="flex gap-1 bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-sm)] p-1 mb-8 w-fit">
@@ -168,8 +205,10 @@ const MoodboardsPage = () => {
         <div className="text-center py-24" data-testid="moodboards-empty">
           <Layers size={36} className="text-[var(--bp-text-subtle)] mx-auto mb-5" strokeWidth={1} />
           <p className="bp-body text-[var(--bp-text-muted)] mb-4">{t('moodboards.empty')}</p>
-          <button onClick={() => setShowCreate(true)} className="bp-btn bp-btn-ghost text-xs">
-            <Plus size={12} strokeWidth={1.5} /> {t('moodboards.emptyCta')}
+          <button onClick={onCta} className="bp-btn bp-btn-ghost text-xs">
+            {cap.atCap
+              ? (<><Lock size={11} strokeWidth={1.5} /> Upgrade plan to create moodboards</>)
+              : (<><Plus size={12} strokeWidth={1.5} /> {t('moodboards.emptyCta')}</>)}
           </button>
         </div>
       ) : (

@@ -46,8 +46,10 @@ const ImageUploader = ({ currentUrl, onUploaded, t }) => {
       const safeName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const path = `moodboards/${safeName}`;
 
-      // 1. Get signed upload URL
-      const sign = await api.post('/api/storage/signed-upload', { bucket: BUCKET, path });
+      // 1. Get signed upload URL — file_size enables pre-flight storage quota
+      const sign = await api.post('/api/storage/signed-upload', {
+        bucket: BUCKET, path, file_size: file.size, content_type: file.type,
+      });
       const { signed_url, token, path: serverPath } = sign.data;
       setProgress(20);
 
@@ -84,7 +86,13 @@ const ImageUploader = ({ currentUrl, onUploaded, t }) => {
       setTimeout(() => setState('idle'), 300);
     } catch (e) {
       setState('error');
-      setError(e?.response?.data?.detail || e?.message || 'Upload failed');
+      const detail = e?.response?.data?.detail;
+      // License-aware error formatting for storage quota
+      if (detail && typeof detail === 'object' && detail.code === 'LICENSE_LIMIT_REACHED') {
+        setError(`Storage limit reached (${detail.current}/${detail.limit} GB). Upgrade your ${detail.plan} plan.`);
+      } else {
+        setError(typeof detail === 'string' ? detail : (e?.message || 'Upload failed'));
+      }
     }
   }, [onUploaded]);
 

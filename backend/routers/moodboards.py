@@ -9,6 +9,7 @@ from core.tenant_context import get_tenant_context, require_permission
 from core.permissions import (
     P_MOODBOARDS_READ, P_MOODBOARDS_WRITE, P_MOODBOARDS_DELETE,
 )
+from core.licensing import assert_capacity
 from database import db
 
 router = APIRouter()
@@ -38,6 +39,9 @@ def list_moodboards(
 ):
     client = db()
     q = client.table('moodboards').select('*').eq('tenant_id', current_user['tenant_id'])
+    # Always exclude soft-deleted from the list view (archived stays visible
+    # so the user can restore from the UI).
+    q = q.is_('deleted_at', None)
     if project_id:
         q = q.eq('project_id', project_id)
     if status:
@@ -48,6 +52,8 @@ def list_moodboards(
 
 @router.post("", status_code=201)
 def create_moodboard(body: MoodboardCreate, current_user: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
+    # License capacity gate — blocks before any DB writes
+    assert_capacity(current_user['tenant_id'], "moodboards")
     client = db()
     now = _now()
     payload = _scrub(body.model_dump())
@@ -85,7 +91,8 @@ def create_moodboard(body: MoodboardCreate, current_user: dict = Depends(require
 def get_moodboard(moodboard_id: str, current_user: dict = Depends(require_permission(P_MOODBOARDS_READ))):
     _require_uuid(moodboard_id)
     client = db()
-    r = client.table('moodboards').select('*').eq('id', moodboard_id).eq('tenant_id', current_user['tenant_id']).execute()
+    r = client.table('moodboards').select('*').eq('id', moodboard_id) \
+        .eq('tenant_id', current_user['tenant_id']).is_('deleted_at', None).execute()
     if not r.data:
         raise HTTPException(404, "Not found")
     mb = r.data[0]
@@ -118,5 +125,34 @@ def update_moodboard(moodboard_id: str, body: MoodboardUpdate, current_user: dic
 def delete_moodboard(moodboard_id: str, current_user: dict = Depends(require_permission(P_MOODBOARDS_DELETE))):
     _require_uuid(moodboard_id)
     client = db()
-    client.table('moodboards').delete().eq('id', moodboard_id).eq('tenant_id', current_user['tenant_id']).execute()
+    # Soft delete — preserves history + frees a quota slot
+    r = client.table('moodboards').update({'deleted_at': _now(), 'updated_at': _now()}) \
+        .eq('id', moodboard_id).eq('tenant_id', current_user['tenant_id']).execute()
+    if not r.data:
+        raise HTTPException(404, "Not found")
     return {"message": "deleted"}
+
+
+@router.post("/{moodboard_id}/archive")
+def archive_moodboard(moodboard_id: str, current_user: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
+    _require_uuid(moodboard_id)
+    client = db()
+    r = client.table('moodboards').update({'archived_at': _now(), 'updated_at': _now()}) \
+        .eq('id', moodboard_id).eq('tenant_id', current_user['tenant_id']).execute()
+    if not r.data:
+        raise HTTPException(404, "Not found")
+    return {"message": "archived"}
+
+
+@router.post("/{moodboard_id}/restore")
+def restore_moodboard(moodboard_id: str, current_user: dict = Depends(require_permission(P_MOODBOARDS_WRITE))):
+    _require_uuid(moodboard_id)
+    # Restoring takes a quota slot back — gate before flipping the flag
+    assert_capacity(current_user['tenant_id'], "moodboards")
+    client = db()
+    r = client.table('moodboards').update({
+        'archived_at': None, 'deleted_at': None, 'updated_at': _now()
+    }).eq('id', moodboard_id).eq('tenant_id', current_user['tenant_id']).execute()
+    if not r.data:
+        raise HTTPException(404, "Not found")
+    return r.data[0]

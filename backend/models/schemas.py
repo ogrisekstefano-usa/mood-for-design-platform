@@ -160,6 +160,7 @@ class SignedUploadRequest(BaseModel):
     bucket: str
     path: str
     content_type: Optional[str] = None
+    file_size: Optional[int] = None   # Pre-flight quota check (bytes)
 
 
 class MediaUploadComplete(BaseModel):

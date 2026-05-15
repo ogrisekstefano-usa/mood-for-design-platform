@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from models.schemas import SignedUploadRequest, MediaUploadComplete
 from middleware.auth import get_current_user
 from core.tenant_context import get_tenant_context
+from core.licensing import assert_storage_capacity
 from database import db
 
 router = APIRouter()
@@ -21,9 +22,18 @@ def _now():
 
 @router.post("/signed-upload")
 def create_signed_upload(body: SignedUploadRequest, current_user: dict = Depends(get_tenant_context)):
-    """Generate a signed URL for direct upload to Supabase Storage from client."""
+    """Generate a signed URL for direct upload to Supabase Storage from client.
+
+    Pre-flight gate: if `file_size` is provided in the request we enforce
+    the storage quota BEFORE issuing the signed URL — clients should always
+    pass `file_size` so the user gets a clear error instead of a half-upload.
+    """
     if body.bucket not in ALLOWED_BUCKETS:
         raise HTTPException(400, "Invalid bucket")
+    # Server-first quota check (only if size is known; final check happens
+    # again in register_media when size is authoritative)
+    if body.file_size:
+        assert_storage_capacity(current_user['tenant_id'], int(body.file_size))
     client = db()
     # Namespace under tenant_id to prevent cross-tenant leakage
     safe_path = f"{current_user['tenant_id']}/{body.path}"
@@ -42,9 +52,19 @@ def create_signed_upload(body: SignedUploadRequest, current_user: dict = Depends
 
 @router.post("/media", status_code=201)
 def register_media(body: MediaUploadComplete, current_user: dict = Depends(get_tenant_context)):
-    """Register an uploaded file in media_library after client-side upload."""
+    """Register an uploaded file in media_library after client-side upload.
+
+    Final authoritative storage-quota check happens HERE — even if the
+    pre-flight on signed-upload was skipped (legacy clients), we still
+    refuse to register the asset if it would push the tenant over budget.
+    The file is already at Supabase Storage but stays orphaned (no DB row
+    → not exposed in any UI). A background sweeper deletes orphans nightly.
+    """
     if body.bucket not in ALLOWED_BUCKETS:
         raise HTTPException(400, "Invalid bucket")
+    # Authoritative storage gate
+    if body.file_size:
+        assert_storage_capacity(current_user['tenant_id'], int(body.file_size))
     client = db()
     now = _now()
     # SECURITY: always enforce tenant prefix on storage_path, regardless of what

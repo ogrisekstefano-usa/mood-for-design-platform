@@ -11,9 +11,10 @@ export async function uploadBrandAsset({ kind, file, onProgress }) {
   const bucket = 'tenant-assets';
   const path = `brand/${filename}`;
 
-  // 1) Get signed upload URL
+  // 1) Get signed upload URL — passing file_size enables server-side
+  //    storage quota enforcement BEFORE the upload starts.
   const { data: signed } = await api.post('/api/storage/signed-upload', {
-    bucket, path,
+    bucket, path, file_size: file.size, content_type: file.type,
   });
   const uploadUrl = signed.signed_url;
 

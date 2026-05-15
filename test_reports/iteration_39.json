@@ -1,0 +1,51 @@
+{
+  "summary": "Phase-3 Plan-Aware Server-First License Enforcement (Projects, Moodboards, Storage, Domains) tested end-to-end. Backend: 10/10 pytest cases pass. Frontend: all chips, CTAs, and meters render and update correctly. Tenant restored to 'enterprise' after testing (verified via final HTTP 200).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_licensing_enforcement.py",
+    "/app/test_reports/pytest/iteration_39_licensing.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "core/licensing.py assert_capacity uses `usage + max(0, additional-1) >= limit` — works for default additional=1 but the formula is slightly off for multi-slot reservations (additional=3 should require usage+3 <= limit, not usage+2 < limit). Currently every caller uses additional=1 so it is correct in practice — flag as a future-proofing concern.",
+    "core/licensing.py _storage_bytes pages up to 50000 rows in a single round-trip (select file_size). Acceptable for the demo tenant (<200 media rows) but should become a materialized aggregate or a tenant-level counter row once any tenant exceeds ~10k assets — already documented in the docstring.",
+    "routers/license.py — GET /api/license takes ~3s on cold hit because get_tenant_usage runs 5 COUNT queries + 1 SELECT-all-file_sizes per request. Frontend mitigates with module-level cache but server-side cache (Redis TTL ~30s) would help when many users land on the dashboard simultaneously.",
+    "routers/domains.py — duplicate-hostname check (line 157-160) ignores soft-deleted rows but does NOT prevent two tenants from claiming the same hostname concurrently; race window is small but a UNIQUE constraint on hostname WHERE deleted_at IS NULL at DB level would harden this."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_licensing_enforcement.py (new)"
+  ],
+  "success_rate": {
+    "backend": "100% (10/10 pytest)",
+    "frontend": "100% (chips + CTAs + 6 meters + live update + restore)"
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin) — from /app/memory/test_credentials.md",
+  "seed_data_creation": "Test creates and cleans up: 1 enterprise project (TEST_ent_proj_*), 1 moodboard for archive/restore (TEST_archive_*), 1-2 transient custom test domains (test-cap-*, test-custom-*) and 1 transient subdomain (test-sub-*.moodfordesign.com) — all deleted in-test. No persistent test data left behind. Tenant restored to enterprise (autouse session fixture).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend test file at /app/backend/tests/test_licensing_enforcement.py is reusable as regression: flips plan starter→enterprise via super_admin POST /api/license/{tenant}/assign. ALWAYS run with the session fixture `restore_enterprise` so the demo tenant is never left on starter. Verified testids: projects-usage-chip, moodboards-usage-chip, domains-usage-chip, new-project-btn, new-moodboard-btn, domain-upgrade-cta, meter-users/projects/moodboards/storage/domains/ai. domain-upgrade-cta only shows when current>=limit (gate is correct; with 0 custom domains it stays hidden).",
+  "verified_behaviors": [
+    "GET /api/license returns plan_key, limits.max_moodboards, usage.storage_bytes (REAL bytes, not fake), usage.domains (custom only)",
+    "POST /api/projects on starter → 403 {code:LICENSE_LIMIT_REACHED, resource:projects, current:56, limit:5, plan:starter}",
+    "POST /api/moodboards on starter → 403 LICENSE_LIMIT_REACHED resource:moodboards limit:15",
+    "POST /api/domains second custom domain on starter (cap=1) → 403 LICENSE_LIMIT_REACHED resource:domains",
+    "POST /api/domains for *.moodfordesign.com → 201 with domain_type='subdomain' (bypasses cap)",
+    "POST /api/storage/signed-upload file_size=100GB on starter (5GB) → 403 LICENSE_LIMIT_REACHED resource:storage_gb",
+    "POST /api/moodboards/{id}/archive then /restore → both 200, restored row has archived_at=null & deleted_at=null",
+    "POST /api/license/{tenant}/assign body {plan_key:enterprise} → all limits NULL (unlimited)",
+    "POST /api/license/{tenant}/assign body {plan_key:nonexistent} → 400",
+    "Frontend on starter: projects-usage-chip='Projects 56/5', new-project-btn label='Upgrade to create more', click navigates to /settings/plan",
+    "Frontend on starter: moodboards-usage-chip='Moodboards 156/15', new-moodboard-btn label='Upgrade to create more'",
+    "Frontend on starter: domains-usage-chip='Custom domains 0/1' (custom domains only counted)",
+    "Frontend /settings/plan renders all 6 meters with proper values and 'Limit reached — upgrade to add more' badge where applicable",
+    "After super_admin plan-flip to enterprise, meter-projects re-renders as 'Projects Unlimited 56 / ∞' (live cache refresh works)"
+  ]
+}

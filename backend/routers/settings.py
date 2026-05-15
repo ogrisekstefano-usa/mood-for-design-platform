@@ -17,6 +17,7 @@ from core.tenant_context import (
     audit_log, require_permission,
 )
 from core.theme_engine import resolve_theme, DEFAULT_THEME, GOOGLE_FONTS_CATALOG
+from core.licensing import assert_storage_capacity
 from database import db
 
 router = APIRouter()
@@ -237,6 +238,11 @@ def register_brand_asset(
     path = body.get("storage_path")
     if not path:
         raise HTTPException(400, "storage_path required")
+
+    # Storage quota gate — refuse if upload would push tenant over budget.
+    file_size = body.get("file_size")
+    if file_size:
+        assert_storage_capacity(ctx["tenant_id"], int(file_size))
 
     client = db()
     safe_path = path if path.startswith(ctx["tenant_id"] + "/") else f"{ctx['tenant_id']}/{path}"

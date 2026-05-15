@@ -8,12 +8,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  ArrowLeft, CreditCard, Users, Briefcase, HardDrive, Sparkles, Globe,
+  ArrowLeft, CreditCard, Users, Briefcase, HardDrive, Sparkles, Globe, Layers,
   CheckCircle2, AlertCircle, Loader2, Lock,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { refreshLicense } from '../../hooks/useLicense';
 import api from '../../lib/api';
 
 const fmt = (n) => (n == null ? '∞' : new Intl.NumberFormat().format(n));
@@ -82,6 +83,9 @@ const PlanCard = ({ plan, isCurrent, isSuper, onAssign }) => (
         <CheckCircle2 size={11} className="text-[var(--bp-primary)]" strokeWidth={1.8} /> {fmt(plan.max_projects)} projects
       </li>
       <li className="flex items-center gap-2 text-[12px] font-body text-[var(--bp-text-secondary)]">
+        <CheckCircle2 size={11} className="text-[var(--bp-primary)]" strokeWidth={1.8} /> {fmt(plan.max_moodboards)} moodboards
+      </li>
+      <li className="flex items-center gap-2 text-[12px] font-body text-[var(--bp-text-secondary)]">
         <CheckCircle2 size={11} className="text-[var(--bp-primary)]" strokeWidth={1.8} /> {fmt(plan.max_storage_gb)} GB storage
       </li>
       <li className="flex items-center gap-2 text-[12px] font-body text-[var(--bp-text-secondary)]">
@@ -139,6 +143,7 @@ const PlanPage = () => {
     try {
       await api.post(`/api/license/${license.tenant_id}/assign`, { plan_key: planKey });
       toast.success(`Plan changed to ${planKey}`);
+      refreshLicense();
       await load();
     } catch (e) {
       toast.error(e?.response?.data?.detail || 'Could not change plan');
@@ -180,6 +185,7 @@ const PlanPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
         <UsageMeter icon={Users}     label="Seats"     current={use.users}      limit={lim.max_users}      testid="meter-users" />
         <UsageMeter icon={Briefcase} label="Projects"  current={use.projects}   limit={lim.max_projects}   testid="meter-projects" />
+        <UsageMeter icon={Layers}    label="Moodboards" current={use.moodboards} limit={lim.max_moodboards} testid="meter-moodboards" />
         <UsageMeter icon={HardDrive} label="Storage"   current={use.storage_gb} limit={lim.max_storage_gb} unit=" GB" testid="meter-storage" />
         <UsageMeter icon={Globe}     label="Domains"   current={use.domains}    limit={lim.max_domains}    testid="meter-domains" />
         <UsageMeter icon={Sparkles}  label="AI credits" current={use.ai_credits_used} limit={lim.max_ai_credits} testid="meter-ai" />

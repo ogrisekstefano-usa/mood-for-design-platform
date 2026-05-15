@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { refreshLicense } from '../../hooks/useLicense';
 import api from '../../lib/api';
 
 const STATUS_STYLES = {
@@ -337,6 +338,7 @@ const MembersPage = () => {
     try {
       await api.post('/api/members/invite', payload);
       toast.success('Invite sent — magic link delivered to ' + payload.email);
+      refreshLicense();
       await loadAll();
     } catch (e) {
       const detail = e?.response?.data?.detail;

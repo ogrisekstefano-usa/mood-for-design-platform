@@ -15,6 +15,8 @@ import { toast } from 'sonner';
 import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLicense, refreshLicense } from '../../hooks/useLicense';
+import UsageChip from '../../components/common/UsageChip';
 
 const STATUS_PILL = {
   pending:  { label: 'Pending',  cls: 'text-amber-300 bg-amber-300/10 border-amber-300/25' },
@@ -171,8 +173,8 @@ const DomainsPage = () => {
   const navigate = useNavigate();
   const { t } = useBlueprint();
   const { user } = useAuth();
+  const { license, capacityFor, refresh: refreshLic } = useLicense();
   const [domains, setDomains] = useState([]);
-  const [license, setLicense] = useState(null);
   const [loading, setLoading] = useState(true);
   const [drawer, setDrawer] = useState(null);
 
@@ -181,12 +183,8 @@ const DomainsPage = () => {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [d, l] = await Promise.all([
-        api.get('/api/domains'),
-        api.get('/api/license').catch(() => ({ data: null })),
-      ]);
+      const d = await api.get('/api/domains');
       setDomains(d.data || []);
-      setLicense(l.data);
     } catch (e) {
       toast.error('Could not load domains');
     } finally { setLoading(false); }
@@ -197,7 +195,9 @@ const DomainsPage = () => {
     try {
       await api.post('/api/domains', { hostname: host });
       toast.success('Domain added — configure DNS to verify');
+      refreshLicense();
       await load();
+      refreshLic();
     } catch (e) {
       const detail = e?.response?.data?.detail;
       if (detail && typeof detail === 'object' && detail.code === 'LICENSE_LIMIT_REACHED') {
@@ -221,7 +221,9 @@ const DomainsPage = () => {
     try {
       await api.delete(`/api/domains/${domain.id}`);
       toast.success('Domain removed');
+      refreshLicense();
       await load();
+      refreshLic();
     } catch (e) { toast.error('Could not remove'); }
   };
   const setPrimary = async (domain) => {
@@ -232,9 +234,10 @@ const DomainsPage = () => {
     } catch (e) { toast.error('Could not update'); }
   };
 
-  const limit = license?.limits?.max_domains;
-  const usage = domains.length;
-  const atCap = limit != null && usage >= limit;
+  // Only CUSTOM domains count toward the plan limit — subdomains under
+  // *.moodfordesign.com are free for the tenant.
+  const cap = capacityFor('domains');
+  const atCap = cap.atCap;
 
   return (
     <div className="p-10 max-w-5xl mx-auto" data-testid="domains-page">
@@ -256,13 +259,9 @@ const DomainsPage = () => {
           </p>
         </div>
         {license && (
-          <span data-testid="domains-usage-chip"
-                className={`px-3 py-1.5 rounded-full text-[10px] font-body uppercase tracking-[0.2em] border
-                  ${atCap
-                    ? 'border-rose-500/30 text-rose-300 bg-rose-500/8'
-                    : 'border-[var(--bp-border)] text-[var(--bp-text-muted)]'}`}>
-            Domains {usage}/{limit == null ? '∞' : limit}
-          </span>
+          <UsageChip label="Custom domains" current={cap.current} limit={cap.limit}
+                     unlimited={cap.unlimited} atCap={cap.atCap} nearCap={cap.nearCap}
+                     testid="domains-usage-chip" />
         )}
       </div>
 
