@@ -54,6 +54,12 @@ const MediaLibraryPage = lazy(() => import('./pages/library/MediaLibraryPage'));
 const MaterialsPage = lazy(() => import('./pages/library/MaterialsPage'));
 const MaterialDetailPage = lazy(() => import('./pages/library/MaterialDetailPage'));
 
+// Coming-soon placeholders for sidebar routes not yet implemented
+import {
+  CalendarComingSoon, ActivityComingSoon, TeamComingSoon, ClientsComingSoon,
+  MessagesComingSoon, ReportsComingSoon, IntegrationsComingSoon, CollectionsComingSoon,
+} from './pages/common/ComingSoonPage';
+
 // Admin
 const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
 const AdminTenantsPage = lazy(() => import('./pages/admin/AdminTenantsPage'));
@@ -135,6 +141,14 @@ function App() {
                   <Route path="/library" element={<MediaLibraryPage />} />
                   <Route path="/library/materials" element={<MaterialsPage />} />
                   <Route path="/library/materials/:slug" element={<MaterialDetailPage />} />
+                  <Route path="/library/collections" element={<CollectionsComingSoon />} />
+                  <Route path="/workspace/calendar" element={<CalendarComingSoon />} />
+                  <Route path="/workspace/activity" element={<ActivityComingSoon />} />
+                  <Route path="/workspace/team" element={<TeamComingSoon />} />
+                  <Route path="/workspace/clients" element={<ClientsComingSoon />} />
+                  <Route path="/workspace/messages" element={<MessagesComingSoon />} />
+                  <Route path="/workspace/reports" element={<ReportsComingSoon />} />
+                  <Route path="/settings/integrations" element={<IntegrationsComingSoon />} />
                   <Route path="/inspirations" element={<InspirationsPage />} />
                   <Route path="/insights" element={<InsightsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />

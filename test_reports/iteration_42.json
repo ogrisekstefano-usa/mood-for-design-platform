@@ -1,0 +1,53 @@
+{
+  "summary": "Phase N+ Dashboard rebuild — backend 13/14 pass (92%), frontend renders fully with all 14 expected data-testids (dashboard-page, 4 KPI cards, quick-actions, tasks-panel, featured-projects, recent-activity, media-preview, top-materials, team-activity, dashboard-timeline, workspace-selector, new-project-tile). Welcome strip, sparklines, trend cap (±99 verified — shows '↑ 99%'), quick actions, tasks panel with project_title hydration, featured projects grid + 'Nuovo progetto' tile, 4-column operational grid, and 8-day timeline ALL render correctly under [data-surface=os] dark warm graphite. All 8 coming-soon stubs (/workspace/calendar, /activity, /team, /clients, /messages, /reports, /library/collections, /settings/integrations) load under OS surface with no 404. Storefront / EXE Interior visually unchanged (cream + serif). Two CRITICAL issues found.",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "GET /api/dashboard/summary", "issue": "Client role is NOT blocked — gets HTTP 200 with full Studio data (56 active projects, team activity, etc). Expected 403 per spec but P_PROJECTS_READ is granted to 'client' role in core/permissions.py:112, so the gate at dashboard.py:75 passes. Tenant member data + KPIs leak to clients. Recommend changing the gate to a tighter permission (e.g., P_INSIGHTS_READ or P_PROJECTS_WRITE) or introducing a dashboard-specific permission.", "priority": "CRITICAL"}
+    ],
+    "minor": [
+      {"endpoint": "GET /api/dashboard/summary", "issue": "Cold-start returns 503 'Upstream temporarily unavailable' on first call after idle period (Supabase warm-up). Second call within seconds returns 200. Consider a 1× retry on the server side or warmup tasks."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "DashboardPage", "issue": "fetch error is silently swallowed (.catch(() => {})). When /api/dashboard/summary returns 503 on cold start, the spinner spins forever because `data` stays null and there is no error state nor retry. Reproduced: on first /dashboard load the screen showed only the loader; after a hard reload it rendered correctly.", "selector": "[data-testid=\"dashboard-page\"]", "priority": "HIGH"},
+      {"component": "Storefront root /", "issue": "Probe found a [data-surface=\"os\"] element somewhere in the DOM on the public storefront root (cream EXE Interior page). Visually the page is unchanged (cream + Cormorant serif) but the leakage suggests a root layout wrapper is adding the attribute outside the protected OS zone. Investigate App.js / AppLayout to ensure data-surface=os is scoped to /workspace, /library, /dashboard, /settings and NOT mounted on the storefront tree.", "selector": "[data-surface=\"os\"]", "priority": "MEDIUM"},
+      {"component": "FeaturedProjects covers", "issue": "All 4 featured project covers fall back to folder icon (cover_url=null returned by backend). Backend lookup walks moodboards.cover_metadata then media_links; current Studio seed data has no usable cover image source, so visually the grid is monotone. Either seed cover images or extend the cover hydration to also peek at the first inspiration_board image for the project.", "selector": "[data-testid=\"featured-projects\"] img", "priority": "LOW"}
+    ],
+    "integration_issues": [
+      {"flow": "Dashboard cold load", "issue": "503 from /api/dashboard/summary not retried, leaves UI in permanent loading state", "affected_selectors": ["[data-testid=\"dashboard-page\"]"]}
+    ],
+    "design_issues": [
+      {"screen": "/dashboard", "issues": ["Layout matches mockup: welcome strip, 4 KPI cards + quick-actions + tasks panel in top row, featured projects grid, 4-column operational grid, 8-day timeline. Teal #00C9B3 used only as accent on sparklines/progress/active states. Inter typography active. Surface warm graphite. Looks correct."]},
+      {"screen": "Sidebar", "issues": ["Sidebar is collapsed by default showing only icons; expansion (hover/click) is required to see the 5 IA section labels (Blueprint Workspace / Contenuti / Collaborazione / Intelligenza / Sistema). Labels exist in DOM (Calendario href=/workspace/calendar resolved) but innerText probe in collapsed state returned empty — confirm tooltips reveal labels correctly on hover. Workspace selector visible at bottom."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_dashboard_summary.py",
+    "/app/test_reports/pytest/iteration_42_dashboard.xml"
+  ],
+  "action_items": [
+    "[CRITICAL] Tighten /api/dashboard/summary permission gate — client role currently sees full studio KPIs, tasks, team activity, projects. Replace P_PROJECTS_READ with a stricter gate (e.g. P_INSIGHTS_READ) or add explicit role exclusion for 'client'.",
+    "[HIGH] Add error state + 1× retry in DashboardPage useEffect — replace `.catch(() => {})` with state-aware error handling so a transient 503 does not leave UI in a permanent spinner.",
+    "[MEDIUM] Audit data-surface=os scope — storefront / has the attribute somewhere in DOM; ensure it is only emitted under workspace/library/settings/dashboard layouts to avoid cross-pollution risk.",
+    "[LOW] Seed cover_url for featured projects or extend backend hydration to include inspiration_board first image so featured cards show real artwork."
+  ],
+  "critical_code_review_comments": [
+    "DashboardPage.jsx:503 — useEffect catches error silently. Always surface a Retry / error banner; otherwise transient 503s (very real here) brick the dashboard.",
+    "dashboard.py:75 — require_permission(P_PROJECTS_READ) is too lax: 'client' role inherits this permission in core/permissions.py:112. Dashboard exposes full studio internals (team, materials, all projects). Use a permission that clients don't have.",
+    "dashboard.py:297 — N+1 query: for each material, an exact-count query is issued. With ≤10 materials it's fine, but as material registry grows this becomes 10–50 round-trips. Consider a single GROUP BY query against material_assets.",
+    "dashboard.py — for each featured project, signed_url is generated per asset inside Python loop (up to 50 link rows). Acceptable today, but worth a single batched call once volume grows.",
+    "Storefront leakage: confirm AppLayout / RootLayout does not unconditionally render <div data-surface='os'> outside protected routes — minor, but the spec explicitly forbids OS surface on the storefront.",
+    "Sidebar IA: expansion behaviour relies on hover/click; consider an explicit 'collapsed' indicator or persisting an expanded preference so the 5-section IA the spec calls for is discoverable without hover."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_dashboard_summary.py (new)"
+  ],
+  "success_rate": {"backend": "92% (13/14 — 1 RBAC failure)", "frontend": "~90% (all sections render, all testids present; cold-load spinner trap + storefront surface leak open)"},
+  "test_credentials": "Per /app/memory/test_credentials.md — demo@moodfordesign.com / Blueprint2024!, designer@moodfordesign.com / Designer2024!, client@moodfordesign.com / Client2024!, studio2@moodfordesign.com / Studio2024! all verified.",
+  "seed_data_creation": "None. Tests are read-only against existing tenant data.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Dashboard backend + frontend mostly green. Main agent needs to (1) tighten the dashboard permission gate so client role 403s, (2) add error state to DashboardPage so 503 doesn't trap users. After fixes, re-run /app/backend/tests/test_dashboard_summary.py — the test_client_role_blocked test will then pass. Tenant isolation is good (studio2 sees zero overlap with Studio Demo). Trend cap ±99 verified end-to-end (KPI active_projects shows '↑ 99%').",
+  "rca of the issue": "RBAC leak: dashboard.py:75 declares Depends(require_permission(P_PROJECTS_READ)). Looking at core/permissions.py:112, 'client' role explicitly has {P_PROJECTS_READ, P_PROPOSALS_READ, P_PROPOSALS_APPROVE, ...}. So the gate is satisfied and the entire studio dashboard payload (team_activity, top_materials, all featured projects, leads-derived activity) is served to clients. Fix: either change the gate (e.g., P_INSIGHTS_READ — designer also lacks this, but admin/super_admin have it) OR add an explicit role check at the top of dashboard_summary that returns 403 when ctx['role']=='client'. Spinner trap: DashboardPage.jsx fetches once, swallows errors. On 503 the component never re-renders past loader because loading turns false but data stays null, and the early-return uses (loading || !data). Add a third state or call setError + render a Retry button."
+}

@@ -61,6 +61,46 @@ const SectionLabel = ({ children, collapsed }) => {
   );
 };
 
+const WorkspaceSelector = ({ collapsed }) => {
+  const { tenant } = useBlueprint();
+  const tenantName = tenant?.name || tenant?.slug || 'Workspace';
+  const monogram = tenantName.charAt(0).toUpperCase();
+  if (collapsed) {
+    return (
+      <div
+        data-testid="workspace-selector"
+        title={tenantName}
+        className="m-2 mb-3 flex items-center justify-center w-9 h-9 rounded-[7px]
+                   border border-[var(--bp-border)] bg-[var(--bp-surface-1)]
+                   text-[11px] font-mono text-[var(--bp-text-secondary)]"
+      >
+        {monogram}
+      </div>
+    );
+  }
+  return (
+    <div
+      data-testid="workspace-selector"
+      className="mx-2 mb-3 px-2.5 py-2 rounded-[8px] border border-[var(--bp-border)]
+                 bg-[var(--bp-surface-1)] flex items-center gap-2.5 transition-colors
+                 hover:border-[var(--bp-border-strong)] cursor-pointer"
+    >
+      <span className="w-7 h-7 rounded-[5px] bg-[var(--bp-surface-2)] flex items-center justify-center text-[11px] font-mono text-[var(--bp-text-secondary)]">
+        {monogram}
+      </span>
+      <div className="flex-1 min-w-0">
+        <p className="text-[11.5px] text-[var(--bp-text-primary)] font-medium truncate font-body">
+          {tenantName}
+        </p>
+        <p className="text-[9px] uppercase tracking-[0.18em] text-[var(--bp-text-muted)] font-body">
+          Workspace
+        </p>
+      </div>
+      <Icons.ChevronsUpDown size={11} className="text-[var(--bp-text-muted)] flex-shrink-0" />
+    </div>
+  );
+};
+
 const Sidebar = () => {
   const { t, modules, isSuperAdmin, can, impersonating } = useBlueprint();
   const { collapsed, toggle } = useSidebarCollapsed();
@@ -118,6 +158,8 @@ const Sidebar = () => {
             <SectionLabel collapsed={collapsed}>{t('nav.section.workspace')}</SectionLabel>
             <div className="space-y-0.5">
               {wsRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
+              <NavItem to="/moodboards" icon="Layers" labelKey="nav.moodboards" collapsed={collapsed} />
+              <NavItem to="/workspace/calendar" icon="Calendar" labelKey="nav.calendar" collapsed={collapsed} />
             </div>
           </div>
         )}
@@ -126,16 +168,28 @@ const Sidebar = () => {
           <div>
             <SectionLabel collapsed={collapsed}>{t('nav.section.content')}</SectionLabel>
             <div className="space-y-0.5">
-              {contentRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
+              {contentRoutes.filter((r) => r.to !== '/moodboards').map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
+              <NavItem to="/library/collections" icon="FolderHeart" labelKey="nav.collections" collapsed={collapsed} />
             </div>
           </div>
         )}
+
+        <div>
+          <SectionLabel collapsed={collapsed}>{t('nav.section.collaboration', null, 'Collaborazione')}</SectionLabel>
+          <div className="space-y-0.5">
+            <NavItem to="/workspace/activity" icon="Activity" labelKey="nav.activity" collapsed={collapsed} />
+            <NavItem to="/workspace/team" icon="Users" labelKey="nav.team" collapsed={collapsed} />
+            <NavItem to="/workspace/clients" icon="UserCircle" labelKey="nav.clients" collapsed={collapsed} />
+            <NavItem to="/workspace/messages" icon="MessageSquare" labelKey="nav.messages" collapsed={collapsed} />
+          </div>
+        </div>
 
         {intelligenceRoutes.length > 0 && (
           <div>
             <SectionLabel collapsed={collapsed}>{t('nav.section.intelligence')}</SectionLabel>
             <div className="space-y-0.5">
               {intelligenceRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
+              <NavItem to="/workspace/reports" icon="FileBarChart" labelKey="nav.reports" collapsed={collapsed} />
             </div>
           </div>
         )}
@@ -145,6 +199,8 @@ const Sidebar = () => {
             <SectionLabel collapsed={collapsed}>{t('nav.section.system')}</SectionLabel>
             <div className="space-y-0.5">
               <NavItem to="/settings" icon="Settings" labelKey="nav.settings" collapsed={collapsed} />
+              <NavItem to="/settings/plan" icon="Receipt" labelKey="nav.billing" collapsed={collapsed} />
+              <NavItem to="/settings/integrations" icon="Plug" labelKey="nav.integrations" collapsed={collapsed} />
             </div>
           </div>
         )}
@@ -158,6 +214,12 @@ const Sidebar = () => {
           </div>
         )}
       </nav>
+
+      {/* Workspace selector — pinned at the bottom. Shows the current tenant
+          and acts as a future entry point for tenant switching / workspace
+          management. */}
+      <WorkspaceSelector collapsed={collapsed} />
+
 
       {/* Edge collapse handle — pinned to the right border. Generous 16px
           hit area, subtle 2px rail that brightens on hover. NOT hover-expand:
