@@ -312,6 +312,41 @@ def get_media(asset_id: str, ctx: dict = Depends(require_permission(P_STORAGE_RE
     # Links / usage
     links = client.table("media_links").select("*").eq("asset_id", asset_id)\
         .eq("tenant_id", ctx["tenant_id"]).order("created_at").execute().data or []
+
+    # Hydrate entity titles for the Usage tab (presentation-layer enrichment).
+    # Group links by entity_type, fetch titles in one batch per type, attach.
+    if links:
+        by_type = {}
+        for l in links:
+            if l.get("entity_id"):
+                by_type.setdefault(l["entity_type"], set()).add(l["entity_id"])
+        # Map entity_type → (table, title_col)
+        title_map = {
+            "project":       ("projects",          "title"),
+            "moodboard":     ("moodboards",        "title"),
+            "proposal":      ("proposals",         "title"),
+            "lead":          ("leads",             "first_name"),
+            "magazine_article": ("magazine_articles", "title"),
+            "cms_page":      ("cms_pages",         "title"),
+            "material":      ("material_registry", "name"),
+            "storefront_page": ("cms_pages",       "title"),
+        }
+        titles_by_type = {}
+        for etype, ids in by_type.items():
+            tbl, col = title_map.get(etype, (None, None))
+            if not tbl or not ids:
+                continue
+            try:
+                rows = (client.table(tbl).select(f"id, {col}")
+                        .in_("id", list(ids)).eq("tenant_id", ctx["tenant_id"])
+                        .execute().data or [])
+                titles_by_type[etype] = {r["id"]: r.get(col) for r in rows}
+            except Exception:
+                titles_by_type[etype] = {}
+        for l in links:
+            t = titles_by_type.get(l["entity_type"], {}).get(l.get("entity_id"))
+            l["entity_title"] = t
+
     # Collections membership
     cols = client.table("media_collection_items").select("collection_id, sort_order, note")\
         .eq("asset_id", asset_id).eq("tenant_id", ctx["tenant_id"]).execute().data or []

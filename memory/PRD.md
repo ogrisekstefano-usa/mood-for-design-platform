@@ -29,6 +29,85 @@ Multi-tenant SaaS platform per interior designer e architetti, costruita come Bl
 
 ## Implementation Status
 
+### ✅ Phase P — Media Library Cinematic Enterprise Refactor (DONE — 15 Feb 2026)
+
+Operational Asset System completamente ridisegnato secondo brief. **Visual +
+UX + IA only** — zero modifiche a business logic, routing, API, licensing,
+revisions, auth, CMS, storefront.
+
+**3-zone layout**
+- LEFT RAIL (280px): Collections + Filters accordion (Asset Type · Used In ·
+  Materials · Tags · Projects · Orientation · Date · Status). "Coming soon"
+  disabled states for filters senza backend data — never broken UI.
+- CENTER: Header (eyebrow "Operational Asset System" + Playfair "Media Library"
+  + subtitle + big ⌘K search + Upload + New Collection) → Grid Toolbar
+  (count + view switcher Grid/Compact/List + sort + bulk-select bar) → Asset
+  Grid with viewport-aware density.
+- RIGHT INSPECTOR (400px): 4 tabs (Details · Usage · Versions · Revisions) +
+  sticky "Replace asset · keeps all relationships" cinematic CTA + Archive.
+
+**Asset tiles redesigned** — editorial, operational
+- Filename BELOW image (no overlay-heavy)
+- Metadata strip below: type icon + size + dimensions + N links
+- Hover: `translateY(-1px)` + teal-tinted border
+- Selection: teal ring + checkbox top-left
+- Type chip top-right on hover
+- Three view modes: Grid (200px), Compact (140px), List (avatar + meta row)
+
+**Inspector tabs**
+- **Details**: 280px preview · 4-cell facts grid (Type · Size · Dimensions ·
+  Uploaded) · File name mono · Alt text · Description (textarea) · Tags
+  (chips removable) · Materials chips when attached · Save metadata CTA
+- **Usage**: relationship intelligence — grouped by entity_type, each
+  rendered as card (avatar icon + entity label + role + title + ↗ link).
+  Empty state "Orphan asset" with icon
+- **Versions**: full timeline of replacement chain (vertical rail + dots),
+  current version teal-highlighted, version_number + relative timestamp.
+  Empty: "Single version · use Replace to evolve"
+- **Revisions**: tied to Phase J revision engine — shows CMS pages /
+  storefront pages / magazine articles where the asset is published, plus
+  copy "Replacing this asset triggers a new revision on every linked CMS page"
+
+**Replace Asset flow** — preserved + visual upgrade
+- Cinematic modal "Safe operational replacement"
+- Current version preview + filename + size
+- Drop-zone CTA + progress
+- Soft versioning preserved (replaces_id / replaced_by_id wired)
+- Toast "Asset replaced — version chain updated"
+
+**Search experience — Linear/Raycast quality**
+- ⌘K / Ctrl+K global focus
+- 220ms debounce
+- Search across asset name, alt_text, description
+- Wide centered field, teal-tinted focus
+
+**Material Registry feel**
+- Materials section in left rail shows top 5 + ↗ link to /library/materials
+- Inspector Usage tab surfaces materials prominently with Gem icon
+
+**Backend — minimal presentation-only enrichment**
+- `/api/media/{id}` detail endpoint now hydrates `entity_title` on each link
+  by batching lookups per entity_type (projects/moodboards/proposals/leads/
+  magazine_articles/cms_pages/materials). PURE read enrichment for UI —
+  no business logic, no schema change.
+
+**Strict surface isolation verified** ✅
+- All visual work inside `[data-surface="os"]` scope (DashboardLayout wraps)
+- Storefront `/` (cream + Cormorant) untouched
+- bp-card utility + Phase O palette used throughout
+
+**Files of reference**
+- `/app/frontend/src/pages/library/MediaLibraryPage.jsx` (rewritten, ~1000 LOC, modular sub-components in single file)
+- `/app/backend/routers/media.py` (entity_title hydration in get_media)
+
+**Out of scope (per brief)**
+- Backend business logic / routing / APIs / licensing / revisions / auth / CMS / storefront
+- Full Material Registry logic (only visual scaffolding here)
+- Tag editing CRUD (frontend chips display only; chip-remove not wired to backend tag-mutate endpoint — left for next iteration)
+- AI suggestions / dependency graph visualization
+
+
+
 ### ✅ Phase O — Blueprint OS Visual System Stabilization (DONE — 15 Feb 2026)
 
 Phase O = visual-only refinement, surface-scoped, **zero logic changes** to
