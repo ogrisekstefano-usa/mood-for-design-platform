@@ -1,0 +1,25 @@
+{
+  "summary": "Phase H.3 Private Onboarding Wizard at /start-project — full E2E frontend test of 7-step wizard + final state. All 17/17 features PASS. Wizard loads in full-screen layout (no SiteLayout chrome), step gating works correctly, multi-select chips/cards persist with aria-pressed/data-on, autosave to localStorage 'mfd_start_project_state' restores state on reload, locale switching IT→EN works (title 'Cosa stiamo progettando?' → 'What are we designing?'), final 'Crea il tuo account' stores 'mfd_pending_lead_payload' and routes to /auth/login. Homepage CTA dual-private-cta correctly links to /start-project. Regression on /, /projects, /onboarding/:kind, /auth/login all OK. Verified ZERO inline locale objects in StartProjectWizard.jsx (grep clean). No console errors.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "StartProjectWizard.jsx is 557 lines — under 700 threshold but consider splitting steps into separate files (Step1ProjectType.jsx etc.) as future steps grow.",
+    "Inspirations 'board' tab combines uploads+pinterest+links but the URL detection regex on line 239 is brittle (only renders <img> if URL matches image-extension/CDN pattern, else falls back to text). Pinterest collection links typically don't match — they show as text fallback. Acceptable as MVP; revisit when real Pinterest oEmbed integration arrives in H.5.",
+    "Final payload uses budget.amount as 'budget' field at top-level — confirm this naming aligns with future POST /api/leads contract in H.5.",
+    "Lead persistence is currently localStorage-only (MOCKED). Future backend work in Phase H.5 must POST 'mfd_pending_lead_payload' to /api/leads on /auth/login completion."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (skipped per request)", "frontend": "100% (17/17)" },
+  "test_credentials": "n/a — public route",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 33 PASS. Wizard route /start-project is full-screen (NOT inside SiteLayout). Always clear localStorage keys 'mfd_start_project_state' and 'mfd_pending_lead_payload' before each test run. Locale persists via shared 'mfd_locale' key. Lazy chunks need ~5s after navigation. Step 7 CTA label changes to 'Invia il progetto' on submit. Final state has data-testid='wiz-final-payload' (display:none) containing JSON with project_type, spaces[], moods[], inspirations{}, materials[], colors[], lifestyle_answers{}, budget, timeline, start_date, notes, locale, tenant, created_at — this is the DB-ready shape for Phase H.5 POST /api/leads.",
+  "rca_of_the_issue": "n/a — no defects found"
+}

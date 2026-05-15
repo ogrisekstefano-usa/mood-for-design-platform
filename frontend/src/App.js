@@ -37,6 +37,7 @@ const HomePage = lazy(() => import('./pages/site/HomePage'));
 const ProjectsIndexPage = lazy(() => import('./pages/site/ProjectsIndexPage'));
 const SiteProjectDetailPage = lazy(() => import('./pages/site/ProjectDetailPage'));
 const OnboardingPlaceholderPage = lazy(() => import('./pages/site/OnboardingPlaceholderPage'));
+const StartProjectWizard = lazy(() => import('./pages/site/StartProjectWizard'));
 
 // Admin
 const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
@@ -95,6 +96,9 @@ function App() {
                   <Route path="/projects/:slug" element={<SiteProjectDetailPage />} />
                   <Route path="/onboarding/:kind" element={<OnboardingPlaceholderPage />} />
                 </Route>
+
+                {/* Private onboarding wizard — full-screen, no SiteLayout chrome */}
+                <Route path="/start-project" element={<StartProjectWizard />} />
 
                 <Route path="/auth/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
                 <Route path="/auth/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />

@@ -78,7 +78,7 @@ export const homepageContent = {
         de: 'PROJEKT BEGINNEN',
         es: 'COMIENZA TU PROYECTO',
       },
-      href: '/onboarding/private',
+      href: '/start-project',
       image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=85',
       variant: 'light',
     },
