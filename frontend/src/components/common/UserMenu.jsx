@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User as UserIcon, Building2, Settings as SettingsIcon, Bell, LogOut } from 'lucide-react';
+import { User as UserIcon, Building2, Settings as SettingsIcon, Bell, LogOut, Globe } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import ThemeSwitcher from './ThemeSwitcher';
@@ -29,7 +29,7 @@ const MenuItem = ({ icon: Icon, label, onClick, testid, danger = false }) => (
 
 const UserMenu = () => {
   const { user, signOut } = useAuth();
-  const { t, tenant } = useBlueprint();
+  const { t, tenant, locale, setLocale, availableLocales } = useBlueprint();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const wrapRef = useRef(null);
@@ -106,6 +106,28 @@ const UserMenu = () => {
             </span>
             <ThemeSwitcher />
           </div>
+
+          {/* Language — compact native select; saves to localStorage + propagates */}
+          {availableLocales && availableLocales.length > 1 && (
+            <div className="px-3 py-2 flex items-center justify-between border-t border-[var(--bp-border)]">
+              <span className="text-[10.5px] tracking-[0.20em] uppercase text-[var(--bp-text-muted)] font-body flex items-center gap-1.5">
+                <Globe size={11} strokeWidth={1.5} />
+                {t('user.language', null, 'Language')}
+              </span>
+              <select
+                value={locale}
+                onChange={(e) => setLocale(e.target.value)}
+                data-testid="user-menu-locale-select"
+                className="bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[3px]
+                           text-[11px] font-body text-[var(--bp-text-primary)]
+                           px-2 py-1 outline-none focus:border-[var(--bp-primary)] cursor-pointer"
+              >
+                {availableLocales.map((l) => (
+                  <option key={l.code} value={l.code}>{l.code}</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className="border-t border-[var(--bp-border)] mt-1 pt-1">
             <MenuItem icon={LogOut} label={t('nav.logout', null, 'Logout')} onClick={handleLogout} testid="user-menu-logout" danger />

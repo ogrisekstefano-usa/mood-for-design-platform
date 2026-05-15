@@ -1,6 +1,5 @@
 import React, { useContext, createContext, useState, useMemo } from 'react';
 import { Bell } from 'lucide-react';
-import LocaleSwitcher from '../common/LocaleSwitcher';
 import ThemeSwitcher from '../common/ThemeSwitcher';
 import UserMenu from '../common/UserMenu';
 import NavigableBreadcrumb from '../common/NavigableBreadcrumb';
@@ -91,7 +90,6 @@ const Topbar = () => {
         </button>
 
         <ThemeSwitcher />
-        <LocaleSwitcher />
 
         <div className="w-px h-5 bg-[var(--bp-border)] mx-1" />
 

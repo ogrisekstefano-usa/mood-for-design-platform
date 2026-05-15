@@ -7,7 +7,6 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { Shield, Building2, ToggleRight, Activity, ScrollText, ArrowLeft, LogOut, Languages, Layers } from 'lucide-react';
-import LocaleSwitcher from '../common/LocaleSwitcher';
 
 const AdminNavItem = ({ to, icon: Icon, labelKey, end }) => {
   const { t } = useBlueprint();
@@ -77,7 +76,6 @@ const AdminLayout = () => {
             <span className="text-amber-400/80 text-[10px] font-body uppercase tracking-[0.2em] font-semibold">Super Admin</span>
           </div>
           <div className="flex items-center gap-3">
-            <LocaleSwitcher />
             <span className="text-[#A19D98] text-xs font-body">{user?.email}</span>
           </div>
         </header>
