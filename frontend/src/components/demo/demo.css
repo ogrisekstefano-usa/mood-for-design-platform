@@ -1,9 +1,14 @@
 /* ============================================================ */
 /* MOOD for DESIGN™ — Interactive Demo Layer (Phase M)            */
 /* Floating CTA + Onboarding Tour spotlight + Demo ribbon         */
+/*                                                                  */
+/* SURFACE: cross-surface (storefront CTA + OS Studio ribbon).    */
+/* Variables are scoped to `[data-surface]` (both 'os' and        */
+/* 'storefront') so unrelated subtrees never inherit them.        */
 /* ============================================================ */
 
-:root {
+[data-surface="os"],
+[data-surface="storefront"] {
   --mfd-demo-teal:        #1f9d8e;
   --mfd-demo-teal-soft:   rgba(31,157,142,0.30);
   --mfd-demo-teal-bright: #2cc7b3;

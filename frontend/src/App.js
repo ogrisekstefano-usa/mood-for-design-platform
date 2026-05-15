@@ -5,6 +5,9 @@ import { BlueprintProvider, useBlueprint } from './contexts/BlueprintContext';
 import { TenantThemeProvider } from './contexts/TenantThemeContext';
 import { Toaster } from 'sonner';
 import './App.css';
+// Frozen Blueprint OS tokens — declared under [data-surface="os"] only,
+// so importing this file is side-effect free for the storefront subtree.
+import './design-system/os/tokens.css';
 
 const DashboardLayout = lazy(() => import('./components/layout/DashboardLayout'));
 const AdminLayout = lazy(() => import('./components/layout/AdminLayout'));
@@ -90,7 +93,7 @@ const PublicMoodboardWrapper = () => <MoodboardEditor readOnly={true} />;
 
 function App() {
   return (
-    <div className="App">
+    <div className="App" data-surface="os">
       <AuthProvider>
         <BlueprintProvider>
           <TenantThemeProvider>

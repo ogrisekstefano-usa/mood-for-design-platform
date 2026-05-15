@@ -7,6 +7,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { Shield, Building2, ToggleRight, Activity, ScrollText, ArrowLeft, LogOut, Languages, Layers } from 'lucide-react';
+import BlueprintThemeProvider from '../../design-system/os/BlueprintThemeProvider';
 
 const AdminNavItem = ({ to, icon: Icon, labelKey, end }) => {
   const { t } = useBlueprint();
@@ -35,6 +36,7 @@ const AdminLayout = () => {
   const navigate = useNavigate();
 
   return (
+    <BlueprintThemeProvider className="h-screen">
     <div className="h-screen flex bg-[#08080A] text-[#EFEBE4]">
       <aside data-testid="admin-sidebar" className="w-[240px] flex-shrink-0 bg-[#0A0A0B] border-r border-white/[0.05] flex flex-col">
         <div className="px-4 pt-5 pb-4 border-b border-white/[0.05]">
@@ -84,6 +86,7 @@ const AdminLayout = () => {
         </main>
       </div>
     </div>
+    </BlueprintThemeProvider>
   );
 };
 

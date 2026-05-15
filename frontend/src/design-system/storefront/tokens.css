@@ -1,0 +1,34 @@
+/* ============================================================ */
+/* Storefront — Default Brand Tokens                               */
+/*                                                                  */
+/* These are the BASELINE storefront variables. Tenants can         */
+/* override them at runtime via TenantThemeContext, which emits a   */
+/* dedicated <style id="mfd-storefront-runtime-theme"> tag with the */
+/* same scope `[data-surface="storefront"]`.                       */
+/*                                                                  */
+/* Anything declared here is implicitly opt-out from the OS surface */
+/* because `[data-surface="os"]` lives in its own namespace.       */
+/* ============================================================ */
+
+[data-surface="storefront"] {
+  /* Tenant-overridable brand tokens (defaults match the EXE Interior demo) */
+  --brand-primary:      #c6a45c;            /* gold accent */
+  --brand-primary-2:    #b48f4a;
+  --brand-accent:       #1f9d8e;            /* teal sub-accent */
+  --brand-bg:           #fbf7ef;            /* cream paper */
+  --brand-bg-deep:      #f6efe3;
+  --brand-surface:      #ede2cd;
+  --brand-ink:          #1c1815;
+  --brand-ink-soft:     #4a423b;
+  --brand-ink-muted:    #8a8278;
+  --brand-line:         #d8ccb3;
+  --brand-text:         var(--brand-ink);
+  --brand-text-muted:   var(--brand-ink-muted);
+
+  --brand-font-display: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --brand-font-body:    'Montserrat', 'Inter', system-ui, sans-serif;
+
+  --brand-radius:       0px;
+  --brand-density:      1;
+  --brand-shadow:       0 30px 60px -28px rgba(28,24,21,0.40);
+}

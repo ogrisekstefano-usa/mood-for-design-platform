@@ -1,0 +1,75 @@
+/* ============================================================ */
+/* Blueprint OS — Frozen Design Tokens                            */
+/*                                                                  */
+/*  CRITICAL — These tokens drive every MOOD OS surface             */
+/*  (Dashboard · Storefront Studio chrome · Settings · Workspace · */
+/*   Diff Drawer · Revisions · Members · Licensing · Admin).      */
+/*                                                                  */
+/*  Tenant branding NEVER reaches this surface — it is scoped to    */
+/*  `[data-surface="storefront"]` (see TenantThemeContext).        */
+/*                                                                  */
+/*  Modify only with an explicit OS design-system change order.     */
+/* ============================================================ */
+
+[data-surface="os"] {
+  /* ── Colour ──────────────────────────────────────────────── */
+  --bp-bg:              #0F0F10;
+  --bp-primary:         #00C9B3;
+  --bp-primary-2:       #33DCC6;
+  --bp-primary-3:       #7EE6DA;
+  --bp-accent:          #7EE6DA;
+  --bp-surface-1:       #16171A;
+  --bp-surface-2:       #1B1D20;
+  --bp-surface-3:       #22252A;
+  --bp-overlay:         rgba(10, 10, 11, 0.72);
+  --bp-border:          rgba(255, 255, 255, 0.07);
+  --bp-border-strong:   rgba(255, 255, 255, 0.14);
+  --bp-text-primary:    #F4F5F7;
+  --bp-text-secondary:  #C8CACE;
+  --bp-text-muted:      #8B8E92;
+  --bp-text-subtle:     #6B6E71;
+  --bp-selection-bg:    rgba(0, 201, 179, 0.20);
+  --bp-selection-fg:    #F4F5F7;
+
+  /* ── Type ────────────────────────────────────────────────── */
+  --bp-font-heading:    'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --bp-font-body:       'Montserrat', 'Manrope', system-ui, sans-serif;
+  --bp-font-mono:       'JetBrains Mono', ui-monospace, monospace;
+  --bp-font-size-base:  14px;
+  --bp-line-height:     1.55;
+  --bp-tracking-heading:-0.01em;
+  --bp-tracking-caps:    0.18em;
+
+  /* ── Type scale ──────────────────────────────────────────── */
+  --bp-display:         clamp(3.5rem, 7vw, 6.5rem);
+  --bp-h1:              clamp(2.5rem, 5vw, 4.25rem);
+  --bp-h2:              clamp(1.75rem, 3.2vw, 2.5rem);
+  --bp-h3:              clamp(1.25rem, 2vw, 1.625rem);
+  --bp-lead:            clamp(1.05rem, 1.4vw, 1.25rem);
+  --bp-body:            1.0625rem;
+
+  /* ── Radius / motion / shadow ────────────────────────────── */
+  --bp-radius-xs:       2px;
+  --bp-radius-sm:       3px;
+  --bp-radius-md:       6px;
+  --bp-radius-lg:       10px;
+  --bp-ease:            cubic-bezier(.2,.7,.2,1);
+  --bp-shadow-sm:       0 4px 14px -8px rgba(0,0,0,0.45);
+  --bp-shadow-lg:       0 30px 60px -28px rgba(0,0,0,0.55);
+
+  /* ── Hard isolation guard ────────────────────────────────── *
+   * Inside the OS subtree, ANY accidental --brand-* leakage is
+   * neutralised. If a downstream component reads --brand-primary
+   * it falls back to the OS primary, never the tenant colour. */
+  --brand-primary:      var(--bp-primary);
+  --brand-accent:       var(--bp-accent);
+  --brand-bg:           var(--bp-bg);
+  --brand-surface:      var(--bp-surface-1);
+  --brand-text:         var(--bp-text-primary);
+  --brand-text-muted:   var(--bp-text-muted);
+  --brand-font-display: var(--bp-font-heading);
+  --brand-font-body:    var(--bp-font-body);
+  --brand-radius:       var(--bp-radius-sm);
+  --brand-density:      1;
+  --brand-shadow:       var(--bp-shadow-lg);
+}

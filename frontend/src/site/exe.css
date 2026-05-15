@@ -2,9 +2,12 @@
 /* EXE INTERIOR — Cinematic Demo Storefront — dedicated stylesheet */
 /* All classes prefixed `exe-*` to avoid collisions with mfd-*.   */
 /* Imported AFTER site.css so it can override luxury defaults.     */
+/*                                                                  */
+/* SURFACE: storefront ONLY. Variables are scoped to               */
+/* `[data-surface="storefront"]` so Blueprint OS never inherits.   */
 /* ============================================================ */
 
-:root {
+[data-surface="storefront"] {
   --exe-ink:        #1c1815;
   --exe-ink-soft:   #4a423b;
   --exe-ink-muted:  #8a8278;

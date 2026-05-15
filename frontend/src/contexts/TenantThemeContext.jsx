@@ -51,27 +51,48 @@ const fontFamilyFor = (name) => {
   return /\s/.test(name) ? `'${name}', serif` : `${name}, sans-serif`;
 };
 
+// ── Surface-scoped runtime stylesheet ────────────────────────────────
+//   CRITICAL: tenant branding may NEVER leak into Blueprint OS surfaces.
+//   We mount a single <style> tag and emit a CSS rule scoped to
+//   `[data-surface="storefront"]`. The storefront subtree (and ONLY the
+//   storefront subtree) reads these variables. The OS subtree, which
+//   carries `data-surface="os"`, is unaffected by design.
+const RUNTIME_STYLE_ID = 'mfd-storefront-runtime-theme';
+
+function _runtimeStyleEl() {
+  if (typeof document === 'undefined') return null;
+  let el = document.getElementById(RUNTIME_STYLE_ID);
+  if (!el) {
+    el = document.createElement('style');
+    el.id = RUNTIME_STYLE_ID;
+    el.setAttribute('data-mfd-scope', 'storefront');
+    document.head.appendChild(el);
+  }
+  return el;
+}
+
 export function applyThemeVarsToRoot(theme) {
   if (typeof document === 'undefined') return;
-  const root = document.documentElement;
+  const styleEl = _runtimeStyleEl();
+  if (!styleEl) return;
   if (!theme) {
-    // Clear previously injected brand vars
-    Object.values(VAR_MAP).forEach((v) => root.style.removeProperty(v));
-    root.removeAttribute('data-tenant-theme');
+    styleEl.textContent = '';
+    document.documentElement.removeAttribute('data-tenant-theme');
     return;
   }
+  const decls = [];
   Object.entries(VAR_MAP).forEach(([path, cssVar]) => {
     let value = dig(theme, path);
     if (cssVar === '--brand-font-display' || cssVar === '--brand-font-body') {
       value = fontFamilyFor(value);
     }
-    if (value == null || value === '') {
-      root.style.removeProperty(cssVar);
-    } else {
-      root.style.setProperty(cssVar, String(value));
+    if (value != null && value !== '') {
+      decls.push(`${cssVar}: ${String(value)};`);
     }
   });
-  if (theme.preset_key) root.setAttribute('data-tenant-theme', theme.preset_key);
+  // Single CSS rule, scoped to the storefront surface ONLY.
+  styleEl.textContent = `[data-surface="storefront"] {\n  ${decls.join('\n  ')}\n}`;
+  if (theme.preset_key) document.documentElement.setAttribute('data-tenant-theme', theme.preset_key);
 }
 
 export const TenantThemeProvider = ({ children }) => {

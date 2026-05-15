@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
 import { SiteProvider } from './SiteContext';
+import StorefrontThemeProvider from '../design-system/storefront/StorefrontThemeProvider';
 import './site.css';
 import './exe.css';
 import '../components/demo/demo.css';
@@ -15,17 +16,28 @@ const ScrollToTopOnNav = () => {
   return null;
 };
 
+/**
+ * SiteLayout — Storefront (tenant-branded public site) shell.
+ *
+ * CRITICAL: wrapped in StorefrontThemeProvider so the subtree carries
+ * `data-surface="storefront"`. The runtime tenant theme variables
+ * (`--brand-*`) emitted by TenantThemeContext apply here — and ONLY
+ * here. Blueprint OS surfaces (DashboardLayout, AdminLayout) cannot
+ * inherit storefront branding by design.
+ */
 const SiteLayout = ({ children }) => {
   return (
     <SiteProvider>
-      <div className="mfd-site" data-testid="mfd-site-root">
-        <ScrollToTopOnNav />
-        <SiteHeader />
-        <main className="mfd-site__container">
-          {children || <Outlet />}
-        </main>
-        <SiteFooter />
-      </div>
+      <StorefrontThemeProvider>
+        <div className="mfd-site" data-testid="mfd-site-root">
+          <ScrollToTopOnNav />
+          <SiteHeader />
+          <main className="mfd-site__container">
+            {children || <Outlet />}
+          </main>
+          <SiteFooter />
+        </div>
+      </StorefrontThemeProvider>
     </SiteProvider>
   );
 };
