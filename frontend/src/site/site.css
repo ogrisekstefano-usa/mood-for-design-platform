@@ -153,23 +153,11 @@
 }
 .mfd-header__brandgroup { display: flex; align-items: center; gap: 1rem; min-width: 0; }
 .mfd-header__logo {
-  width: 64px; height: 64px;
+  width: 104px; height: 104px;
   display: block; flex-shrink: 0;
   object-fit: contain;
 }
-.mfd-header__tagline {
-  display: none;
-  flex-direction: column;
-  font-family: var(--site-sans);
-  font-size: 10px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--site-ink-2);
-  line-height: 1.3;
-  border-left: 1px solid var(--site-line);
-  padding-left: 1rem;
-}
-@media (min-width: 760px) { .mfd-header__tagline { display: flex; } }
+.mfd-header__tagline { display: none !important; }
 .mfd-header__nav { display: none; gap: clamp(1.1rem, 2vw, 1.8rem); }
 @media (min-width: 1180px) { .mfd-header__nav { display: flex; } }
 .mfd-header__nav a {
