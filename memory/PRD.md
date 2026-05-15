@@ -29,6 +29,89 @@ Multi-tenant SaaS platform per interior designer e architetti, costruita come Bl
 
 ## Implementation Status
 
+### ✅ Phase N+ — Blueprint OS Visual Refinement + Platform Footer (DONE — 15 Feb 2026)
+**Architectural Workflow Operating System** — visual refinement of the Blueprint
+OS surface. Linear · Vercel · Notion · Framer mood with interior-design
+sensibility. Zero contamination of storefront / corporate / tenant surfaces.
+
+**Strict isolation enforced**
+- All changes scoped to `[data-surface="os"]`
+- Tailwind `font-heading` / `font-body` / `font-mono` utility classes
+  overridden ONLY inside the OS subtree (via `[data-surface="os"] .font-*`)
+- The legacy `:root` in `index.css` left untouched — no global drift
+- Storefront EXE Interior and tenant themes verified visually unchanged
+
+**Palette refinement** (`/app/frontend/src/design-system/os/tokens.css` rewritten)
+- Warm graphite background: `#141414` (was `#0F0F10`)
+- Surfaces: `#1B1B1B` / `#202020` / `#242424` / hover `#2A2A2A`
+- Borders: `rgba(255,255,255,0.06)` (softer) + `0.10` strong + teal-active
+- Text: `#F5F3EE` (warm bone) / `#B7B1A7` (warm muted) / `#8A857C` / `#5E5A53`
+- Accent: `#00C9B3` teal — operational only (active state · progress · CTA · focus · selection)
+- Tokens added: success/warning/danger, primary-soft/hover, shadow-glow, surface-hover
+
+**Typography refinement**
+- `--bp-font-heading` and `--bp-font-body` BOTH set to **Inter** (was Playfair / Montserrat)
+- Editorial serifs REMOVED from Blueprint OS — they belong to storefront/corporate only
+- Type scale measured for OS: display 32px, h1 22px, h2 17px, h3 14px, body 13px, caption 12px, micro 11px
+- Tracking tightened (`-0.012em` headings, `-0.018em` tight)
+- Inter font features enabled: `cv11`, `ss01`, `ss03`
+
+**Radius / motion / shadow refinement**
+- Radius: 4 / 6 / 10 / 14 / 18 + pill (moderate, never bubble-y)
+- Motion: fast 140ms · default 220ms · slow 380ms with calm easing
+- Shadows: xs/sm/md/lg/glow — soft depth, never aggressive
+- Selection: scoped to `[data-surface="os"] ::selection`
+
+**PlatformFooterBar component** (`/app/frontend/src/components/common/PlatformFooterBar.jsx`)
+Global Blueprint OS™ branding bar — 40px height, three surface variants:
+- `os`         → dark, subtle divider, low-contrast text
+- `storefront` → adaptive to tenant theme bg, restrained
+- `corporate`  → near-black `#0E0E0E`, warm text
+
+Layout (per platform spec):
+- LEFT   `© {year} Blueprint OS™`
+- CENTER `POWERED BY MOOD FOR DESIGN™` (desktop only, uppercase tracking)
+- RIGHT  `Privacy · Terms` → links to moodfordesign.com legal pages
+
+Auto-current-year. Auto-hidden in fullscreen via `fullscreenchange` listener
+(presentation mode / kiosk safe). Tenant-safe + locale-safe + responsive.
+
+**Layout integration**
+- `DashboardLayout` (Blueprint OS shell) → `<PlatformFooterBar surface="os" />`
+- `AdminLayout` (super-admin control center) → `<PlatformFooterBar surface="os" />`
+- `SiteLayout` (tenant storefront + corporate) → `<PlatformFooterBar surface="storefront" />`
+- Auth pages, presentation, share/public links → no footer (intentional)
+
+**Verified visually** ✅
+- Dashboard: warm graphite, Inter, footer present, "Benvenuto, Stefano" headline calm Inter
+- Library: warm graphite, calm density, teal accent only on Upload CTA + active filter
+- Materials list: editorial typography Inter, category chips calm pill borders
+- Projects + Moodboards: cards with soft borders, "Nuovo" status tag teal-subtle, tabs minimal
+- Storefront `/`: 100% unchanged — cream + Cormorant + editorial serif preserved
+- Storefront EXE hero, Italian Design tailored for Visionaries unchanged
+
+**Architectural rule documented** for next agents
+- Blueprint visual edits MUST be scoped to `[data-surface="os"]`
+- Storefront edits MUST be scoped to `[data-surface="storefront"]`
+- NEVER touch tailwind.config.js fontFamily defaults (cross-surface impact)
+- NEVER add `:root` CSS custom properties (use surface-scoped only)
+- Editorial serifs (Cormorant/Playfair) belong to storefront/corporate ONLY
+
+**Files of reference**
+- `/app/frontend/src/design-system/os/tokens.css` (rewritten — warm graphite + Inter)
+- `/app/frontend/src/components/common/PlatformFooterBar.jsx` (new)
+- `/app/frontend/src/components/layout/DashboardLayout.jsx`
+- `/app/frontend/src/components/layout/AdminLayout.jsx`
+- `/app/frontend/src/site/SiteLayout.jsx`
+- `/app/architecture/ARCHITECTURE_ISOLATION.md` (still authoritative)
+
+**Out of scope (intentionally not touched)**
+- Backend routing, licensing engine, CMS revisions, AI flows, APIs
+- Storefront theme engine, tenant brand tokens
+- Tailwind config (fontFamily defaults preserved for non-OS surfaces)
+
+
+
 ### ✅ Phase N — Media Library + Material Registry (DONE — 15 Feb 2026)
 **Operational Asset Layer** — the media library is no longer a passive upload registry.
 It is now the studio's archive backbone: searchable, taggable, linkable, with soft

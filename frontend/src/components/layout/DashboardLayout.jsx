@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Topbar, { TopbarSlotsProvider } from './Topbar';
 import ImpersonationBanner from '../common/ImpersonationBanner';
+import PlatformFooterBar from '../common/PlatformFooterBar';
 import BlueprintThemeProvider from '../../design-system/os/BlueprintThemeProvider';
 
 /**
@@ -24,6 +25,7 @@ const DashboardLayout = () => (
           <main className="flex-1 overflow-y-auto overflow-x-hidden">
             <Outlet />
           </main>
+          <PlatformFooterBar surface="os" />
         </div>
       </div>
     </TopbarSlotsProvider>

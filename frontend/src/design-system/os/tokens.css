@@ -1,66 +1,104 @@
 /* ============================================================ */
 /* Blueprint OS — Frozen Design Tokens                            */
 /*                                                                  */
-/*  CRITICAL — These tokens drive every MOOD OS surface             */
-/*  (Dashboard · Storefront Studio chrome · Settings · Workspace · */
-/*   Diff Drawer · Revisions · Members · Licensing · Admin).      */
+/*  Architectural Workflow Operating System.                       */
+/*  Inspiration: Linear · Vercel · Notion · Framer — with an        */
+/*  interior-design sensibility (warm graphite, calm density).      */
+/*                                                                  */
+/*  CRITICAL — These tokens drive every Blueprint OS surface:       */
+/*  Dashboard · Storefront Studio chrome · Settings · Workspace ·  */
+/*  Library · Diff Drawer · Revisions · Members · Licensing ·      */
+/*  Admin · Auth.                                                  */
 /*                                                                  */
 /*  Tenant branding NEVER reaches this surface — it is scoped to    */
 /*  `[data-surface="storefront"]` (see TenantThemeContext).        */
+/*  Corporate marketing visuals live under `data-surface="site"`. */
 /*                                                                  */
-/*  Modify only with an explicit OS design-system change order.     */
+/*  Modify only with an explicit OS design-system change order.    */
 /* ============================================================ */
 
 [data-surface="os"] {
-  /* ── Colour ──────────────────────────────────────────────── */
-  --bp-bg:              #0F0F10;
-  --bp-primary:         #00C9B3;
-  --bp-primary-2:       #33DCC6;
-  --bp-primary-3:       #7EE6DA;
-  --bp-accent:          #7EE6DA;
-  --bp-surface-1:       #16171A;
-  --bp-surface-2:       #1B1D20;
-  --bp-surface-3:       #22252A;
-  --bp-overlay:         rgba(10, 10, 11, 0.72);
-  --bp-border:          rgba(255, 255, 255, 0.07);
-  --bp-border-strong:   rgba(255, 255, 255, 0.14);
-  --bp-text-primary:    #F4F5F7;
-  --bp-text-secondary:  #C8CACE;
-  --bp-text-muted:      #8B8E92;
-  --bp-text-subtle:     #6B6E71;
-  --bp-selection-bg:    rgba(0, 201, 179, 0.20);
-  --bp-selection-fg:    #F4F5F7;
+  /* ── Colour — warm graphite, calm tech ───────────────────── */
+  --bp-bg:              #141414;   /* warm graphite */
+  --bp-bg-deep:         #0E0E0E;   /* deepest valley for shadows / overlays */
+  --bp-surface-1:       #1B1B1B;   /* primary surface (cards, sidebar) */
+  --bp-surface-2:       #202020;   /* secondary surface (panels) */
+  --bp-surface-3:       #242424;   /* highest surface (modals, inspector) */
+  --bp-surface-hover:   #2A2A2A;   /* hover state */
+  --bp-overlay:         rgba(10, 10, 10, 0.72);
 
-  /* ── Type ────────────────────────────────────────────────── */
-  --bp-font-heading:    'Playfair Display', 'Cormorant Garamond', Georgia, serif;
-  --bp-font-body:       'Montserrat', 'Manrope', system-ui, sans-serif;
+  --bp-border:          rgba(255, 255, 255, 0.06);
+  --bp-border-strong:   rgba(255, 255, 255, 0.10);
+  --bp-border-active:   rgba(0, 201, 179, 0.40);
+
+  --bp-text-primary:    #F5F3EE;   /* warm bone */
+  --bp-text-secondary:  #B7B1A7;   /* warm muted */
+  --bp-text-muted:      #8A857C;   /* tertiary labels */
+  --bp-text-subtle:     #5E5A53;   /* watermark / disabled */
+
+  --bp-primary:         #00C9B3;   /* teal — accents only */
+  --bp-primary-soft:    rgba(0, 201, 179, 0.12);
+  --bp-primary-hover:   #00B8A3;
+  --bp-primary-2:       #1FD9C4;
+  --bp-primary-3:       #5EE3D2;
+  --bp-accent:          #00C9B3;
+
+  --bp-selection-bg:    rgba(0, 201, 179, 0.18);
+  --bp-selection-fg:    #F5F3EE;
+
+  --bp-success:         #4DC99B;
+  --bp-warning:         #E2B765;
+  --bp-danger:          #DB7373;
+
+  /* ── Typography — Inter unified, OS-clean ────────────────── */
+  /* No editorial serif on Blueprint OS — this is an operating system,
+     not a landing page. Editorial serifs live ONLY on storefront
+     and corporate surfaces. */
+  --bp-font-heading:    'Inter', 'Suisse Intl', 'Neue Haas Grotesk', system-ui, sans-serif;
+  --bp-font-body:       'Inter', 'Suisse Intl', system-ui, sans-serif;
   --bp-font-mono:       'JetBrains Mono', ui-monospace, monospace;
-  --bp-font-size-base:  14px;
+  --bp-font-size-base:  13px;
   --bp-line-height:     1.55;
-  --bp-tracking-heading:-0.01em;
-  --bp-tracking-caps:    0.18em;
+  --bp-tracking-heading:-0.012em;
+  --bp-tracking-tight:  -0.018em;
+  --bp-tracking-caps:    0.16em;
 
-  /* ── Type scale ──────────────────────────────────────────── */
-  --bp-display:         clamp(3.5rem, 7vw, 6.5rem);
-  --bp-h1:              clamp(2.5rem, 5vw, 4.25rem);
-  --bp-h2:              clamp(1.75rem, 3.2vw, 2.5rem);
-  --bp-h3:              clamp(1.25rem, 2vw, 1.625rem);
-  --bp-lead:            clamp(1.05rem, 1.4vw, 1.25rem);
-  --bp-body:            1.0625rem;
+  /* ── Type scale — measured, OS-friendly ──────────────────── */
+  --bp-display:         32px;      /* big numeric KPI */
+  --bp-h1:              22px;      /* page headers */
+  --bp-h2:              17px;      /* section headers */
+  --bp-h3:              14px;      /* card / panel headers */
+  --bp-lead:            14px;
+  --bp-body:            13px;
+  --bp-caption:         12px;
+  --bp-micro:           11px;
 
-  /* ── Radius / motion / shadow ────────────────────────────── */
-  --bp-radius-xs:       2px;
-  --bp-radius-sm:       3px;
-  --bp-radius-md:       6px;
-  --bp-radius-lg:       10px;
+  /* ── Radius — moderate, never bubble-y ───────────────────── */
+  --bp-radius-xs:       4px;
+  --bp-radius-sm:       6px;
+  --bp-radius-md:       10px;
+  --bp-radius-lg:       14px;
+  --bp-radius-xl:       18px;
+  --bp-radius-pill:     999px;
+
+  /* ── Motion — calm, controlled ───────────────────────────── */
   --bp-ease:            cubic-bezier(.2,.7,.2,1);
-  --bp-shadow-sm:       0 4px 14px -8px rgba(0,0,0,0.45);
-  --bp-shadow-lg:       0 30px 60px -28px rgba(0,0,0,0.55);
+  --bp-ease-emphasis:   cubic-bezier(.22,.61,.36,1);
+  --bp-duration-fast:   140ms;
+  --bp-duration:        220ms;
+  --bp-duration-slow:   380ms;
+
+  /* ── Shadow — soft depth, never aggressive ───────────────── */
+  --bp-shadow-xs:       0 1px 2px rgba(0, 0, 0, 0.25);
+  --bp-shadow-sm:       0 2px 8px -4px rgba(0, 0, 0, 0.40);
+  --bp-shadow-md:       0 8px 24px -12px rgba(0, 0, 0, 0.50);
+  --bp-shadow-lg:       0 24px 48px -24px rgba(0, 0, 0, 0.60);
+  --bp-shadow-glow:     0 0 0 1px rgba(0, 201, 179, 0.20), 0 4px 16px rgba(0, 201, 179, 0.08);
 
   /* ── Hard isolation guard ────────────────────────────────── *
-   * Inside the OS subtree, ANY accidental --brand-* leakage is
-   * neutralised. If a downstream component reads --brand-primary
-   * it falls back to the OS primary, never the tenant colour. */
+   * Inside the OS subtree, any accidental --brand-* leakage from a
+   * shared component falls back to the OS primary, NEVER to the
+   * tenant brand colour. */
   --brand-primary:      var(--bp-primary);
   --brand-accent:       var(--bp-accent);
   --brand-bg:           var(--bp-bg);
@@ -71,5 +109,49 @@
   --brand-font-body:    var(--bp-font-body);
   --brand-radius:       var(--bp-radius-sm);
   --brand-density:      1;
-  --brand-shadow:       var(--bp-shadow-lg);
+  --brand-shadow:       var(--bp-shadow-md);
+}
+
+/* ────────────────────────────────────────────────────────────────
+ * Surface-scoped base — applied ONLY inside data-surface="os".
+ * Sets the body-like baseline so every nested element inherits the
+ * OS typographic baseline. The selector is intentionally scoped so
+ * the storefront / corporate surfaces remain untouched.
+ * ──────────────────────────────────────────────────────────────── */
+[data-surface="os"] {
+  background: var(--bp-bg);
+  color: var(--bp-text-primary);
+  font-family: var(--bp-font-body);
+  font-size: var(--bp-font-size-base);
+  line-height: var(--bp-line-height);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+}
+
+[data-surface="os"] ::selection {
+  background: var(--bp-selection-bg);
+  color: var(--bp-selection-fg);
+}
+
+/* ────────────────────────────────────────────────────────────────
+ * Tailwind `font-*` utility override — scoped to OS only.
+ *
+ * Globally, `font-heading` maps to Cormorant Garamond (serif) via
+ * tailwind.config.js — kept that way for storefront/corporate
+ * surfaces. Inside Blueprint OS we override to Inter so the editorial
+ * serif never reaches the operating system chrome. The selector
+ * `[data-surface="os"] .font-heading` has higher specificity than
+ * the Tailwind utility, and the !important on font-family ensures
+ * it wins against future utility precedence shifts.
+ * ──────────────────────────────────────────────────────────────── */
+[data-surface="os"] .font-heading {
+  font-family: var(--bp-font-heading) !important;
+  letter-spacing: var(--bp-tracking-heading);
+}
+[data-surface="os"] .font-body {
+  font-family: var(--bp-font-body) !important;
+}
+[data-surface="os"] .font-mono {
+  font-family: var(--bp-font-mono) !important;
 }

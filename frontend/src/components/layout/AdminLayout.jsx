@@ -8,6 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { Shield, Building2, ToggleRight, Activity, ScrollText, ArrowLeft, LogOut, Languages, Layers } from 'lucide-react';
 import BlueprintThemeProvider from '../../design-system/os/BlueprintThemeProvider';
+import PlatformFooterBar from '../common/PlatformFooterBar';
 
 const AdminNavItem = ({ to, icon: Icon, labelKey, end }) => {
   const { t } = useBlueprint();
@@ -84,6 +85,7 @@ const AdminLayout = () => {
         <main className="flex-1 overflow-y-auto">
           <Outlet />
         </main>
+        <PlatformFooterBar surface="os" />
       </div>
     </div>
     </BlueprintThemeProvider>

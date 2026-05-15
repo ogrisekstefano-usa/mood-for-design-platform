@@ -4,6 +4,7 @@ import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
 import { SiteProvider } from './SiteContext';
 import StorefrontThemeProvider from '../design-system/storefront/StorefrontThemeProvider';
+import PlatformFooterBar from '../components/common/PlatformFooterBar';
 import './site.css';
 import './exe.css';
 import '../components/demo/demo.css';
@@ -36,6 +37,7 @@ const SiteLayout = ({ children }) => {
             {children || <Outlet />}
           </main>
           <SiteFooter />
+          <PlatformFooterBar surface="storefront" />
         </div>
       </StorefrontThemeProvider>
     </SiteProvider>
