@@ -1,124 +1,120 @@
-// MOOD for DESIGN™ — Corporate Platform Navigation
-// Information architecture: Platform · Workflow · Moodboards · Projects · Journal · Pricing · About
-// Mirrors future DB: `cms_navigation` { tenant_id, scope:'header'|'footer', config jsonb }
+// EXE INTERIOR — Demo Storefront Navigation
+// Mirrors the mockup: top utility row (lang + Magazine/PMS/Area Riservata/CTA),
+// centered serif brand wordmark, main nav row beneath the brand.
+
+const T = (it, en, fr, de, es, ae) => ({ it, en, fr, de, es, ae });
 
 export const navigationContent = {
   brand: {
-    name: 'MOOD for DESIGN',
-    suffix: '\u2122',
-    logoSrc: '/brand/mood-for-design-mark.png',
-    tagline: {
-      it: 'Dal lead al progetto. Alla consegna.',
-      en: 'From lead to project. To delivery.',
-      fr: 'Du prospect au projet. À la livraison.',
-      de: 'Vom Lead zum Projekt. Zur Übergabe.',
-      es: 'Del lead al proyecto. A la entrega.',
-    },
+    name: 'EXE INTERIOR',
+    suffix: '',
+    logoSrc: '',                                  // wordmark only — no logo image
+    tagline: T(
+      'Italian Design Excellence',
+      'Italian Design Excellence',
+      'L’excellence du design italien',
+      'Italienische Designexzellenz',
+      'Excelencia del diseño italiano',
+      'تميّز التصميم الإيطالي',
+    ),
   },
   header: {
-    // Top-level IA for the corporate platform site.
-    // Order matters — Platform comes first (the OS itself), then the
-    // capability surfaces, then resources & commercial pages.
+    // Main horizontal nav (under the brand block).
     links: [
-      { id: 'platform',   href: '/platform',   label: { it: 'PLATFORM',    en: 'PLATFORM',    fr: 'PLATEFORME',  de: 'PLATTFORM',    es: 'PLATAFORMA' } },
-      { id: 'workflow',   href: '#workflow',   label: { it: 'WORKFLOW',    en: 'WORKFLOW',    fr: 'WORKFLOW',    de: 'WORKFLOW',     es: 'WORKFLOW' } },
-      { id: 'moodboards', href: '#moodboards', label: { it: 'MOODBOARD',   en: 'MOODBOARDS',  fr: 'MOODBOARDS',  de: 'MOODBOARDS',   es: 'MOODBOARDS' } },
-      { id: 'projects',   href: '/projects',   label: { it: 'PROGETTI',    en: 'PROJECTS',    fr: 'PROJETS',     de: 'PROJEKTE',     es: 'PROYECTOS' } },
-      { id: 'journal',    href: '#journal',    label: { it: 'JOURNAL',     en: 'JOURNAL',     fr: 'JOURNAL',     de: 'JOURNAL',      es: 'JOURNAL' } },
-      { id: 'pricing',    href: '#pricing',    label: { it: 'PIANI',       en: 'PRICING',     fr: 'TARIFS',      de: 'PREISE',       es: 'PRECIOS' } },
-      { id: 'about',      href: '#about',      label: { it: 'AZIENDA',     en: 'ABOUT',       fr: 'À PROPOS',    de: 'ÜBER UNS',     es: 'NOSOTROS' } },
+      { id: 'home',         href: '/',              label: T('Home',           'Home',          'Accueil',           'Start',         'Inicio',           'الرئيسية') },
+      { id: 'servizi',      href: '#services',      label: T('Servizi',        'Services',      'Services',          'Leistungen',    'Servicios',        'الخدمات') },
+      { id: 'progetti',     href: '/projects',      label: T('Progetti',       'Projects',      'Projets',           'Projekte',      'Proyectos',        'المشاريع') },
+      { id: 'partnership',  href: '#ad-partnership',label: T('A&D Partnership','A&D Partnership','A&D Partnership',  'A&D Partnership','A&D Partnership','شراكة A&D') },
+      { id: 'magazine',     href: '/magazine',      label: T('Magazine',       'Magazine',      'Magazine',          'Magazin',       'Revista',          'المجلة') },
+      { id: 'chi-siamo',    href: '#about',         label: T('Chi Siamo',      'About',         'À Propos',          'Über Uns',      'Nosotros',         'من نحن') },
+      { id: 'contatti',     href: '#contact',       label: T('Contatti',       'Contact',       'Contact',           'Kontakt',       'Contacto',         'تواصل معنا') },
     ],
     access: {
-      label: { it: 'ACCEDI', en: 'SIGN IN', fr: 'CONNEXION', de: 'ANMELDEN', es: 'ACCEDER' },
+      label: T('Area Riservata', 'Members Area', 'Espace Privé', 'Mitgliederbereich', 'Área Privada', 'منطقة خاصة'),
       href: '/auth/login',
     },
     cta: {
-      label: { it: 'PRENOTA UNA DEMO', en: 'BOOK A DEMO', fr: 'RÉSERVER UNE DÉMO', de: 'DEMO BUCHEN', es: 'RESERVAR DEMO' },
-      href: '/professionals',
+      label: T('Richiedi Progetto', 'Request Project', 'Demander un Projet', 'Projekt Anfragen', 'Solicitar Proyecto', 'اطلب مشروعاً'),
+      href: '/start-project',
     },
+    // Utility links shown in the top row, between the language switcher and the CTA.
+    utility: [
+      { id: 'magazine', href: '/magazine',   label: T('Magazine',        'Magazine',     'Magazine',     'Magazin',      'Revista',      'المجلة') },
+      { id: 'pms',      href: '#pms',        label: T('PMS',             'PMS',          'PMS',          'PMS',          'PMS',          'PMS') },
+      { id: 'area',     href: '/auth/login', label: T('Area Riservata',  'Members Area', 'Espace Privé', 'Mitglieder',   'Área Privada', 'منطقة خاصة') },
+    ],
   },
   footer: {
-    tagline: {
-      it: 'Il workflow OS per studi di interior design e showroom.\nDal lead al progetto, alla consegna.',
-      en: 'The workflow OS for interior design studios and showrooms.\nFrom lead to project, to delivery.',
-      fr: 'Le workflow OS pour studios d’interior design et showrooms.\nDu prospect au projet, à la livraison.',
-      de: 'Das Workflow-OS für Interior-Design-Studios und Showrooms.\nVom Lead zum Projekt, zur Übergabe.',
-      es: 'El workflow OS para estudios de interior design y showrooms.\nDel lead al proyecto, a la entrega.',
-    },
+    tagline: T(
+      'EXE Interior\nItalian Design Excellence',
+      'EXE Interior\nItalian Design Excellence',
+      'EXE Interior\nL’excellence du design italien',
+      'EXE Interior\nItalienische Designexzellenz',
+      'EXE Interior\nExcelencia del diseño italiano',
+      'EXE Interior\nتميّز التصميم الإيطالي',
+    ),
     columns: [
       {
-        id: 'platform',
-        title: { it: 'PIATTAFORMA', en: 'PLATFORM', fr: 'PLATEFORME', de: 'PLATTFORM', es: 'PLATAFORMA' },
+        id: 'company', title: T('EXE Interior', 'EXE Interior', 'EXE Interior', 'EXE Interior', 'EXE Interior', 'EXE Interior'),
         links: [
-          { href: '/platform',           label: { it: 'Panoramica',       en: 'Overview',        fr: 'Aperçu',          de: 'Überblick',       es: 'Resumen' } },
-          { href: '#workflow',           label: { it: 'Workflow',         en: 'Workflow',        fr: 'Workflow',        de: 'Workflow',        es: 'Workflow' } },
-          { href: '#moodboards',         label: { it: 'Moodboard',        en: 'Moodboards',      fr: 'Moodboards',      de: 'Moodboards',      es: 'Moodboards' } },
-          { href: '#draft-live',         label: { it: 'Draft vs Live',    en: 'Draft vs Live',   fr: 'Draft vs Live',   de: 'Draft vs Live',   es: 'Draft vs Live' } },
+          { href: '#about',    label: T('Chi siamo',           'About us',          'À propos',                     'Über uns',          'Nosotros',                   'من نحن') },
+          { href: '#showroom', label: T('Showroom',            'Showroom',          'Showroom',                     'Showroom',          'Showroom',                   'صالة العرض') },
+          { href: '#press',    label: T('Press',               'Press',             'Presse',                       'Presse',            'Prensa',                     'الصحافة') },
+          { href: '#careers',  label: T('Lavora con noi',      'Careers',           'Rejoindre',                    'Karriere',          'Únete',                      'وظائف') },
         ],
       },
       {
-        id: 'use_cases',
-        title: { it: 'CASI D’USO', en: 'USE CASES', fr: 'CAS D’USAGE', de: 'ANWENDUNGEN', es: 'CASOS DE USO' },
+        id: 'services', title: T('Servizi', 'Services', 'Services', 'Leistungen', 'Servicios', 'الخدمات'),
         links: [
-          { href: '#studios',            label: { it: 'Studi di design',  en: 'Design studios',  fr: 'Studios de design', de: 'Design-Studios', es: 'Estudios de diseño' } },
-          { href: '#showrooms',          label: { it: 'Showroom',         en: 'Showrooms',       fr: 'Showrooms',         de: 'Showrooms',      es: 'Showrooms' } },
-          { href: '#architects',         label: { it: 'Architetti',       en: 'Architects',      fr: 'Architectes',       de: 'Architekten',    es: 'Arquitectos' } },
-          { href: '#contract',           label: { it: 'Contract',         en: 'Contract',        fr: 'Contract',          de: 'Contract',       es: 'Contract' } },
+          { href: '#services/progettazione',       label: T('Progettazione su misura', 'Bespoke design',         'Conception sur mesure',         'Maßgeschneiderte Planung',  'Diseño a medida',              'تصميم مخصص') },
+          { href: '#services/arredi',              label: T('Arredi Made in Italy',    'Made in Italy furniture','Mobilier Made in Italy',        'Möbel Made in Italy',       'Mobiliario Made in Italy',     'أثاث صنع في إيطاليا') },
+          { href: '#services/moodboard',           label: T('Moodboard & Concept',     'Moodboards & concept',   'Moodboards & concept',          'Moodboards & Konzept',      'Moodboards y concepto',        'لوحات إلهام وكونسبت') },
+          { href: '#services/project-management',  label: T('Project Management',      'Project management',     'Gestion de projet',             'Projektmanagement',         'Gestión de proyecto',          'إدارة المشاريع') },
+          { href: '#services/ad-partnership',      label: T('A&D Partnership',         'A&D Partnership',        'Partenariat A&D',               'A&D Partnerschaft',         'Partnership A&D',              'شراكة A&D') },
         ],
       },
       {
-        id: 'resources',
-        title: { it: 'RISORSE', en: 'RESOURCES', fr: 'RESSOURCES', de: 'RESSOURCEN', es: 'RECURSOS' },
+        id: 'resources', title: T('Risorse', 'Resources', 'Ressources', 'Ressourcen', 'Recursos', 'مصادر'),
         links: [
-          { href: '#journal',  label: { it: 'Journal',   en: 'Journal',   fr: 'Journal',   de: 'Journal',     es: 'Journal' } },
-          { href: '#cases',    label: { it: 'Case study', en: 'Case studies', fr: 'Études de cas', de: 'Fallstudien', es: 'Casos de estudio' } },
-          { href: '#guides',   label: { it: 'Guide',     en: 'Guides',    fr: 'Guides',    de: 'Guides',      es: 'Guías' } },
-          { href: '#faq',      label: { it: 'FAQ',       en: 'FAQ',       fr: 'FAQ',       de: 'FAQ',         es: 'FAQ' } },
+          { href: '/magazine', label: T('Magazine',  'Magazine',  'Magazine',  'Magazin',  'Revista',  'المجلة') },
+          { href: '/projects', label: T('Progetti',  'Projects',  'Projets',   'Projekte', 'Proyectos','المشاريع') },
+          { href: '#brands',   label: T('Brand',     'Brands',    'Marques',   'Marken',   'Marcas',   'العلامات') },
         ],
       },
       {
-        id: 'company',
-        title: { it: 'AZIENDA', en: 'COMPANY', fr: 'ENTREPRISE', de: 'UNTERNEHMEN', es: 'EMPRESA' },
+        id: 'legal', title: T('Legal', 'Legal', 'Légal', 'Rechtliches', 'Legal', 'قانوني'),
         links: [
-          { href: '#about',    label: { it: 'Chi siamo',     en: 'About us',    fr: 'À propos',     de: 'Über uns',    es: 'Nosotros' } },
-          { href: '#pricing',  label: { it: 'Piani',          en: 'Pricing',    fr: 'Tarifs',       de: 'Preise',      es: 'Precios' } },
-          { href: '#careers',  label: { it: 'Lavora con noi', en: 'Careers',    fr: 'Rejoindre',    de: 'Karriere',    es: 'Únete' } },
-          { href: '#contact',  label: { it: 'Contatti',       en: 'Contact',    fr: 'Contact',      de: 'Kontakt',     es: 'Contacto' } },
-        ],
-      },
-      {
-        id: 'legal',
-        title: { it: 'LEGAL', en: 'LEGAL', fr: 'LÉGAL', de: 'RECHTLICH', es: 'LEGAL' },
-        links: [
-          { href: '#privacy',  label: { it: 'Privacy Policy',          en: 'Privacy Policy',          fr: 'Politique de confidentialité', de: 'Datenschutz',          es: 'Política de privacidad' } },
-          { href: '#cookies',  label: { it: 'Cookie Policy',           en: 'Cookie Policy',           fr: 'Politique cookies',           de: 'Cookie-Richtlinie',    es: 'Política de cookies' } },
-          { href: '#terms',    label: { it: 'Termini e Condizioni',    en: 'Terms & Conditions',     fr: 'CGU',                          de: 'AGB',                  es: 'Términos y Condiciones' } },
-          { href: '#security', label: { it: 'Sicurezza & DPA',         en: 'Security & DPA',         fr: 'Sécurité & DPA',              de: 'Sicherheit & DPA',     es: 'Seguridad y DPA' } },
+          { href: '#privacy', label: T('Privacy Policy',           'Privacy Policy',     'Confidentialité', 'Datenschutz',          'Privacidad',          'سياسة الخصوصية') },
+          { href: '#cookies', label: T('Cookie Policy',            'Cookie Policy',      'Politique cookies','Cookie-Richtlinie',   'Política de cookies', 'سياسة الكوكيز') },
+          { href: '#terms',   label: T('Termini e Condizioni',     'Terms & Conditions', 'CGU',             'AGB',                  'Términos',            'الشروط والأحكام') },
         ],
       },
     ],
-    // Showroom block becomes a "Get a demo" CTA instead of a physical address.
     showroom: {
-      title: { it: 'PRENOTA UNA DEMO', en: 'BOOK A DEMO', fr: 'RÉSERVER UNE DÉMO', de: 'DEMO BUCHEN', es: 'RESERVAR UNA DEMO' },
+      title: T('Showroom', 'Showroom', 'Showroom', 'Showroom', 'Showroom', 'صالة العرض'),
       addressLines: [
-        'hello@moodfordesign.com',
-        'Milano · Porcia · Remote-first',
+        'Via della Manifattura 12',
+        '33080 Porcia (PN) — Italia',
+        '+39 0434 123456',
+        'info@exeinterior.com',
       ],
       bookCta: {
-        label: { it: 'PRENOTA UNA DEMO', en: 'BOOK A DEMO', fr: 'RÉSERVER UNE DÉMO', de: 'DEMO BUCHEN', es: 'RESERVAR UNA DEMO' },
-        href: '/professionals',
+        label: T('Prenota una visita', 'Book a visit', 'Réserver une visite', 'Besuch buchen', 'Reservar una visita', 'احجز زيارة'),
+        href: '#book',
       },
     },
     socials: [
-      { id: 'linkedin',  href: 'https://linkedin.com/',  label: 'LinkedIn',  icon: 'linkedin' },
       { id: 'instagram', href: 'https://instagram.com/', label: 'Instagram', icon: 'instagram' },
+      { id: 'pinterest', href: 'https://pinterest.com/', label: 'Pinterest', icon: 'pinterest' },
+      { id: 'linkedin',  href: 'https://linkedin.com/',  label: 'LinkedIn',  icon: 'linkedin' },
     ],
-    copyright: {
-      it: '© {year} MOOD for DESIGN\u2122 — Tutti i diritti riservati.',
-      en: '© {year} MOOD for DESIGN\u2122 — All rights reserved.',
-      fr: '© {year} MOOD for DESIGN\u2122 — Tous droits réservés.',
-      de: '© {year} MOOD for DESIGN\u2122 — Alle Rechte vorbehalten.',
-      es: '© {year} MOOD for DESIGN\u2122 — Todos los derechos reservados.',
-    },
+    copyright: T(
+      '© {year} EXE Interior — Tutti i diritti riservati. Powered by MOOD for DESIGN\u2122.',
+      '© {year} EXE Interior — All rights reserved. Powered by MOOD for DESIGN\u2122.',
+      '© {year} EXE Interior — Tous droits réservés. Powered by MOOD for DESIGN\u2122.',
+      '© {year} EXE Interior — Alle Rechte vorbehalten. Powered by MOOD for DESIGN\u2122.',
+      '© {year} EXE Interior — Todos los derechos reservados. Powered by MOOD for DESIGN\u2122.',
+      '© {year} EXE Interior — جميع الحقوق محفوظة. مدعوم من MOOD for DESIGN\u2122.',
+    ),
   },
 };

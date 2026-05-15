@@ -1,309 +1,223 @@
-// MOOD for DESIGN™ — Corporate Platform Homepage Content
-// Positioning: Design Workflow Operating System for interior design studios + showrooms.
-// NOT: portfolio builder, moodboard tool, inspiration platform, social network.
-// Voice: cinematic outside / rigorous inside. Premium SaaS. Teal accent. Editorial tone.
-// EVERY string is locale-keyed { it, en, fr, de, es } — ZERO hardcoded.
+// EXE INTERIOR — Cinematic Demo Storefront Content
+// Demo of an Italian luxury interior design studio running on MOOD for DESIGN™.
+// Strategy: the prospect visiting this homepage feels they ALREADY OWN a licence —
+// the storefront is theirs, ready to be edited via the Studio.
+// EVERY string is locale-keyed { it, en, fr, de, es, ae } — ZERO hardcoded.
+
+const T = (it, en, fr, de, es, ae) => ({ it, en, fr, de, es, ae });
 
 export const homepageContent = {
   meta: {
-    title: {
-      it: 'MOOD for DESIGN™ — Il workflow OS per studi di interior design',
-      en: 'MOOD for DESIGN™ — The workflow OS for interior design studios',
-      fr: 'MOOD for DESIGN™ — Le workflow OS pour les studios d’interior design',
-      de: 'MOOD for DESIGN™ — Das Workflow-OS für Interior-Design-Studios',
-      es: 'MOOD for DESIGN™ — El workflow OS para estudios de interior design',
-    },
+    title: T(
+      'EXE Interior — Italian Design. Tailored for Visionaries.',
+      'EXE Interior — Italian Design. Tailored for Visionaries.',
+      'EXE Interior — Design italien sur mesure pour visionnaires.',
+      'EXE Interior — Italienisches Design für Visionäre.',
+      'EXE Interior — Diseño italiano para visionarios.',
+      'إكزي إنتيريور — تصميم إيطالي للرؤيويين.',
+    ),
   },
 
+  // ── HERO ─────────────────────────────────────────────────────────────
   hero: {
     backgroundImage: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=2400&q=85',
-    headline: {
-      it: 'DAL LEAD AL PROGETTO.\nALLA CONSEGNA.',
-      en: 'FROM LEAD TO PROJECT.\nTO DELIVERY.',
-      fr: 'DU PROSPECT AU PROJET.\nÀ LA LIVRAISON.',
-      de: 'VOM LEAD ZUM PROJEKT.\nZUR ÜBERGABE.',
-      es: 'DEL LEAD AL PROYECTO.\nA LA ENTREGA.',
+    eyebrow: T(
+      'ARREDI SU MISURA. PROGETTI SENZA TEMPO.',
+      'BESPOKE INTERIORS. TIMELESS PROJECTS.',
+      'INTÉRIEURS SUR MESURE. PROJETS INTEMPORELS.',
+      'MASSGESCHNEIDERTE INTERIEURS. ZEITLOSE PROJEKTE.',
+      'INTERIORES A MEDIDA. PROYECTOS ATEMPORALES.',
+      'تصاميم داخلية مخصصة. مشاريع خالدة.',
+    ),
+    headline: T(
+      'Italian Design.\nTailored for Visionaries.',
+      'Italian Design.\nTailored for Visionaries.',
+      'Italian Design.\nTailored for Visionaries.',
+      'Italian Design.\nTailored for Visionaries.',
+      'Italian Design.\nTailored for Visionaries.',
+      'تصميم إيطالي.\nصُمِّم للرؤيويين.',
+    ),
+    sub: T(
+      'Progettiamo ambienti unici e collezioni su misura\nper Clienti privati e Professionisti A&D in tutto il mondo.',
+      'We design one-of-a-kind spaces and bespoke collections\nfor private clients and A&D professionals worldwide.',
+      'Nous concevons des espaces uniques et des collections sur mesure\npour clients privés et professionnels A&D dans le monde entier.',
+      'Wir gestalten einzigartige Räume und maßgeschneiderte Kollektionen\nfür Privatkunden und A&D-Fachleute weltweit.',
+      'Diseñamos espacios únicos y colecciones a medida\npara clientes privados y profesionales A&D en todo el mundo.',
+      'نصمم مساحات فريدة ومجموعات مخصصة لعملاء القطاع الخاص والمحترفين في جميع أنحاء العالم.',
+    ),
+    ctaPrimary: {
+      label: T('RICHIEDI IL TUO PROGETTO', 'REQUEST YOUR PROJECT', 'DEMANDER VOTRE PROJET', 'PROJEKT ANFRAGEN', 'SOLICITA TU PROYECTO', 'اطلب مشروعك'),
+      href: '/start-project',
     },
-    sub: {
-      it: 'MOOD for DESIGN™ è il workflow operativo per studi di interior design e showroom.\nGestisci ogni cliente, ogni moodboard, ogni approvazione e ogni progetto\nin un unico workspace cinematografico.',
-      en: 'MOOD for DESIGN™ is the workflow operating system for interior design studios and showrooms.\nManage every client, every moodboard, every approval and every project\nin one cinematic workspace.',
-      fr: 'MOOD for DESIGN™ est le système d’exploitation workflow pour studios d’interior design et showrooms.\nGérez chaque client, chaque moodboard, chaque approbation et chaque projet\ndans un seul workspace cinématographique.',
-      de: 'MOOD for DESIGN™ ist das Workflow-Betriebssystem für Interior-Design-Studios und Showrooms.\nVerwalten Sie jeden Kunden, jedes Moodboard, jede Freigabe und jedes Projekt\nin einem einzigen cinematischen Workspace.',
-      es: 'MOOD for DESIGN™ es el sistema operativo de workflow para estudios de interior design y showrooms.\nGestiona cada cliente, cada moodboard, cada aprobación y cada proyecto\nen un único workspace cinematográfico.',
+    ctaSecondary: {
+      label: T('SCOPRI I SERVIZI', 'DISCOVER OUR SERVICES', 'DÉCOUVRIR LES SERVICES', 'LEISTUNGEN ENTDECKEN', 'DESCUBRE LOS SERVICIOS', 'اكتشف الخدمات'),
+      href: '#services',
     },
-    overline: {
-      it: 'IL WORKFLOW OS PER L’INTERIOR DESIGN',
-      en: 'THE WORKFLOW OS FOR INTERIOR DESIGN',
-      fr: 'LE WORKFLOW OS POUR L’INTERIOR DESIGN',
-      de: 'DAS WORKFLOW-OS FÜR INTERIOR DESIGN',
-      es: 'EL WORKFLOW OS PARA EL INTERIOR DESIGN',
+    videoLabel: {
+      kicker: T('Guarda il video', 'Watch the video', 'Voir la vidéo', 'Video ansehen', 'Ver el vídeo', 'شاهد الفيديو'),
+      title:  T('EXE Interior World', 'EXE Interior World', 'EXE Interior World', 'EXE Interior World', 'EXE Interior World', 'عالم EXE'),
+      href: '#video',
     },
-    overlineItalic: {
-      it: 'ogni cliente, ogni revisione, ogni approvazione — in un solo flusso.',
-      en: 'every client, every revision, every approval — in one workflow.',
-      fr: 'chaque client, chaque révision, chaque approbation — dans un seul flux.',
-      de: 'jeder Kunde, jede Revision, jede Freigabe — in einem Workflow.',
-      es: 'cada cliente, cada revisión, cada aprobación — en un solo flujo.',
-    },
+    scrollLabel: T('SCROLL', 'SCROLL', 'SCROLL', 'SCROLL', 'SCROLL', 'SCROLL'),
   },
 
-  // Two B2B segments — both lead to the SaaS conversion funnel.
-  // NOT private client vs designer. NOT showroom vs end-user.
-  // STUDIOS = interior designers, architects, freelancers.
-  // SHOWROOMS = furniture retailers, contract dealers, agencies.
-  dualPath: {
-    private: {
-      kicker: {
-        it: 'PER GLI STUDI',
-        en: 'FOR STUDIOS',
-        fr: 'POUR LES STUDIOS',
-        de: 'FÜR STUDIOS',
-        es: 'PARA ESTUDIOS',
-      },
-      title: {
-        it: 'Da progettista a operatore',
-        en: 'From designer to operator',
-        fr: 'Du designer à l’opérateur',
-        de: 'Vom Designer zum Operator',
-        es: 'Del diseñador al operador',
-      },
-      body: {
-        it: 'Centralizza brief, moodboard, revisioni e approvazioni.\nGuida ogni cliente dalla prima richiesta\nfino alla consegna finale — senza WhatsApp e PDF sparsi.',
-        en: 'Centralise briefs, moodboards, revisions and approvals.\nGuide every client from first inquiry\nto final delivery — no more scattered WhatsApp and PDFs.',
-        fr: 'Centralisez briefs, moodboards, révisions et approbations.\nGuidez chaque client du premier contact\nà la livraison finale — sans WhatsApp dispersés et PDF.',
-        de: 'Bündeln Sie Briefings, Moodboards, Revisionen und Freigaben.\nFühren Sie jeden Kunden von der ersten Anfrage\nbis zur finalen Übergabe — kein verteiltes WhatsApp und PDF mehr.',
-        es: 'Centraliza briefs, moodboards, revisiones y aprobaciones.\nGuía a cada cliente desde la primera consulta\nhasta la entrega final — sin WhatsApp dispersos ni PDFs.',
-      },
-      cta: {
-        it: 'PRENOTA UNA DEMO',
-        en: 'BOOK A DEMO',
-        fr: 'RÉSERVER UNE DÉMO',
-        de: 'DEMO BUCHEN',
-        es: 'RESERVAR UNA DEMO',
-      },
-      href: '/professionals',
-      image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=85',
-      variant: 'light',
-    },
-    pro: {
-      kicker: {
-        it: 'PER GLI SHOWROOM',
-        en: 'FOR SHOWROOMS',
-        fr: 'POUR LES SHOWROOMS',
-        de: 'FÜR SHOWROOMS',
-        es: 'PARA SHOWROOMS',
-      },
-      title: {
-        it: 'Da vetrina a piattaforma',
-        en: 'From storefront to platform',
-        fr: 'De la vitrine à la plateforme',
-        de: 'Vom Schaufenster zur Plattform',
-        es: 'Del escaparate a la plataforma',
-      },
-      body: {
-        it: 'Trasforma il tuo showroom in un workspace digitale.\nTraccia ogni richiesta, ogni progetto e ogni cliente —\ncon il rigore di un sistema operativo enterprise.',
-        en: 'Turn your showroom into a digital workspace.\nTrack every inquiry, every project and every client —\nwith the rigour of an enterprise operating system.',
-        fr: 'Transformez votre showroom en workspace numérique.\nSuivez chaque demande, chaque projet et chaque client —\navec la rigueur d’un système d’exploitation enterprise.',
-        de: 'Verwandeln Sie Ihren Showroom in einen digitalen Workspace.\nVerfolgen Sie jede Anfrage, jedes Projekt und jeden Kunden —\nmit der Strenge eines Enterprise-Betriebssystems.',
-        es: 'Convierte tu showroom en un workspace digital.\nRastrea cada consulta, cada proyecto y cada cliente —\ncon el rigor de un sistema operativo enterprise.',
-      },
-      cta: {
-        it: 'ESPLORA IL WORKFLOW',
-        en: 'EXPLORE THE WORKFLOW',
-        fr: 'EXPLORER LE WORKFLOW',
-        de: 'WORKFLOW ENTDECKEN',
-        es: 'EXPLORA EL WORKFLOW',
-      },
-      href: '/professionals',
-      image: 'https://images.unsplash.com/photo-1615875221691-c63d6a4a83a7?auto=format&fit=crop&w=1400&q=85',
-      variant: 'dark',
-    },
-  },
-
-  // 5 core modules — picked to fit the existing icon set (gem · users · sparkles · globe · shield-check).
-  // These are the visible pillars; the full 10-module roadmap lives on /platform.
-  valueProps: {
-    title: {
-      it: 'IL TUO WORKFLOW. UN SOLO POSTO.',
-      en: 'YOUR WORKFLOW. ONE PLACE.',
-      fr: 'VOTRE WORKFLOW. UN SEUL ENDROIT.',
-      de: 'IHR WORKFLOW. EIN ORT.',
-      es: 'TU WORKFLOW. UN SOLO LUGAR.',
-    },
+  // ── SERVICES (5 cards · light bg) ───────────────────────────────────
+  services: {
+    kicker: T('COSA POSSIAMO FARE PER TE', 'WHAT WE CAN DO FOR YOU', 'CE QUE NOUS POUVONS FAIRE', 'WAS WIR FÜR SIE TUN', 'LO QUE PODEMOS HACER', 'ما يمكننا تقديمه'),
+    title:  T('Soluzioni di design su misura', 'Bespoke design solutions', 'Solutions de design sur mesure', 'Maßgeschneiderte Designlösungen', 'Soluciones de diseño a medida', 'حلول تصميم مخصصة'),
+    moreLabel: T('SCOPRI DI PIÙ', 'LEARN MORE', 'EN SAVOIR PLUS', 'MEHR ERFAHREN', 'DESCUBRIR MÁS', 'اعرف المزيد'),
     items: [
       {
-        id: 'lead_intake',
-        icon: 'gem',
-        title: {
-          it: 'LEAD INTAKE',
-          en: 'LEAD INTAKE',
-          fr: 'LEAD INTAKE',
-          de: 'LEAD-INTAKE',
-          es: 'LEAD INTAKE',
-        },
-        body: {
-          it: 'Cattura e qualifica le nuove richieste\ncon form multilingua eleganti.',
-          en: 'Capture and qualify new project requests\nwith elegant multilingual forms.',
-          fr: 'Captez et qualifiez les nouvelles demandes\navec des formulaires multilingues élégants.',
-          de: 'Erfassen und qualifizieren Sie neue Anfragen\nmit eleganten mehrsprachigen Formularen.',
-          es: 'Capta y califica nuevas solicitudes\ncon formularios multilingües elegantes.',
-        },
+        id: 'progettazione', icon: 'pencil-ruler', href: '/services/progettazione',
+        title: T('Progettazione\nSu Misura', 'Bespoke\nDesign', 'Conception\nSur Mesure', 'Maßgeschneiderte\nPlanung', 'Diseño\nA Medida', 'تصميم\nمخصص'),
+        body:  T('Soluzioni personalizzate per interni residenziali e commerciali.',
+                 'Bespoke solutions for residential and commercial interiors.',
+                 'Solutions sur mesure pour intérieurs résidentiels et commerciaux.',
+                 'Maßgeschneiderte Lösungen für Wohn- und Geschäftsräume.',
+                 'Soluciones a medida para interiores residenciales y comerciales.',
+                 'حلول مخصصة للداخليات السكنية والتجارية.'),
       },
       {
-        id: 'client_onboarding',
-        icon: 'users',
-        title: {
-          it: 'CLIENT ONBOARDING',
-          en: 'CLIENT ONBOARDING',
-          fr: 'CLIENT ONBOARDING',
-          de: 'CLIENT-ONBOARDING',
-          es: 'CLIENT ONBOARDING',
-        },
-        body: {
-          it: 'Raccogli brief, preferenze e budget\nin un flusso strutturato e professionale.',
-          en: 'Collect briefs, preferences and budgets\nin a structured, professional flow.',
-          fr: 'Collectez briefs, préférences et budgets\ndans un parcours structuré et professionnel.',
-          de: 'Erfassen Sie Briefings, Präferenzen und Budgets\nin einem strukturierten, professionellen Ablauf.',
-          es: 'Recoge briefs, preferencias y presupuestos\nen un flujo estructurado y profesional.',
-        },
+        id: 'arredi', icon: 'armchair', href: '/services/arredi',
+        title: T('Arredi\nMade in Italy', 'Made in Italy\nFurniture', 'Mobilier\nMade in Italy', 'Möbel\nMade in Italy', 'Mobiliario\nMade in Italy', 'أثاث\nصنع في إيطاليا'),
+        body:  T('Selezione esclusiva dei migliori brand e manifatture italiane di design.',
+                 'Exclusive selection of Italy’s finest design brands and ateliers.',
+                 'Sélection exclusive des meilleures marques et manufactures italiennes.',
+                 'Exklusive Auswahl der besten italienischen Marken und Manufakturen.',
+                 'Selección exclusiva de las mejores marcas y manufacturas italianas.',
+                 'مجموعة حصرية من أفضل العلامات والمصانع الإيطالية.'),
       },
       {
-        id: 'moodboards_projects',
-        icon: 'sparkles',
-        title: {
-          it: 'MOODBOARD & PROGETTI',
-          en: 'MOODBOARDS & PROJECTS',
-          fr: 'MOODBOARDS & PROJETS',
-          de: 'MOODBOARDS & PROJEKTE',
-          es: 'MOODBOARDS Y PROYECTOS',
-        },
-        body: {
-          it: 'Presenta concept cinematografici\nche aiutano il cliente a capire e approvare.',
-          en: 'Present cinematic concepts that help\nclients understand and approve a direction.',
-          fr: 'Présentez des concepts cinématographiques\nqui aident le client à comprendre et approuver.',
-          de: 'Präsentieren Sie cinematische Konzepte,\ndie Kunden verstehen und freigeben können.',
-          es: 'Presenta conceptos cinematográficos\nque ayudan al cliente a comprender y aprobar.',
-        },
+        id: 'moodboard', icon: 'layout-grid', href: '/services/moodboard',
+        title: T('Moodboard\n& Concept', 'Moodboards\n& Concept', 'Moodboards\n& Concept', 'Moodboards\n& Konzept', 'Moodboards\ny Concepto', 'لوحات إلهام\nوكونسبت'),
+        body:  T('Idee, materiali e atmosfere in moodboard dinamiche e interattive.',
+                 'Ideas, materials and atmospheres in interactive moodboards.',
+                 'Idées, matériaux et atmosphères en moodboards interactifs.',
+                 'Ideen, Materialien und Atmosphären in interaktiven Moodboards.',
+                 'Ideas, materiales y atmósferas en moodboards interactivos.',
+                 'أفكار ومواد وأجواء في لوحات إلهام تفاعلية.'),
       },
       {
-        id: 'draft_vs_live',
-        icon: 'shield-check',
-        title: {
-          it: 'DRAFT vs LIVE',
-          en: 'DRAFT vs LIVE',
-          fr: 'DRAFT vs LIVE',
-          de: 'DRAFT vs LIVE',
-          es: 'DRAFT vs LIVE',
-        },
-        body: {
-          it: 'Controlla cosa è in lavorazione e cosa è\nufficialmente pubblicato — versioni, diff, revert.',
-          en: 'Control what is in progress and what is\nofficially live — versions, diff, revert.',
-          fr: 'Contrôlez ce qui est en cours et ce qui est\nofficiellement publié — versions, diff, revert.',
-          de: 'Steuern Sie, was in Arbeit und was\noffiziell live ist — Versionen, Diff, Revert.',
-          es: 'Controla qué está en curso y qué está\noficialmente publicado — versiones, diff, revert.',
-        },
+        id: 'project_management', icon: 'file-text', href: '/services/project-management',
+        title: T('Project\nManagement', 'Project\nManagement', 'Gestion de\nProjet', 'Projekt-\nManagement', 'Gestión de\nProyecto', 'إدارة\nالمشاريع'),
+        body:  T('Gestione completa del progetto: dal concept alla realizzazione, senza pensieri.',
+                 'End-to-end project management: from concept to delivery, hassle-free.',
+                 'Gestion de A à Z : du concept à la livraison, sans souci.',
+                 'Vollumfängliches Management: vom Konzept bis zur Übergabe.',
+                 'Gestión integral: del concepto a la entrega, sin preocupaciones.',
+                 'إدارة شاملة للمشروع: من الفكرة إلى التنفيذ.'),
       },
       {
-        id: 'client_portal',
-        icon: 'globe',
-        title: {
-          it: 'CLIENT PORTAL',
-          en: 'CLIENT PORTAL',
-          fr: 'CLIENT PORTAL',
-          de: 'CLIENT-PORTAL',
-          es: 'CLIENT PORTAL',
-        },
-        body: {
-          it: 'Un unico spazio polished dove il cliente\nrivede, approva e segue il progetto.',
-          en: 'One polished place where clients\nreview, approve and follow the project.',
-          fr: 'Un seul espace poli où le client\nrévise, approuve et suit le projet.',
-          de: 'Ein eleganter Ort, an dem Kunden\nprüfen, freigeben und das Projekt verfolgen.',
-          es: 'Un único espacio elegante donde el cliente\nrevisa, aprueba y sigue el proyecto.',
-        },
+        id: 'ad_partnership', icon: 'handshake', href: '/services/ad-partnership',
+        title: T('A&D\nPartnership', 'A&D\nPartnership', 'Partenariat\nA&D', 'A&D\nPartnerschaft', 'Partnership\nA&D', 'شراكة\nA&D'),
+        body:  T('Collaborazioni su misura per Architetti, Designer e Contract.',
+                 'Tailored partnerships for architects, designers and contract.',
+                 'Partenariats sur mesure pour architectes, designers et contract.',
+                 'Maßgeschneiderte Partnerschaften für Architekten und Designer.',
+                 'Colaboraciones a medida para arquitectos, diseñadores y contract.',
+                 'شراكات مخصصة للمعماريين والمصممين وقطاع المقاولات.'),
       },
     ],
   },
 
-  // Real interior projects — visual proof that MOOD powers premium studios.
-  // Repositioned title: studios in motion (workflow), not "projects that inspire".
+  // ── STATS BAND (dark with gold accents) ──────────────────────────────
+  stats: {
+    kicker: T('FIDUCIA, ESPERIENZA, ECCELLENZA', 'TRUST · EXPERIENCE · EXCELLENCE', 'CONFIANCE · EXPÉRIENCE · EXCELLENCE', 'VERTRAUEN · ERFAHRUNG · EXZELLENZ', 'CONFIANZA · EXPERIENCIA · EXCELENCIA', 'ثقة · خبرة · تميز'),
+    title:  T('Numeri che raccontano il nostro impegno',
+              'Numbers that tell our commitment',
+              'Les chiffres qui racontent notre engagement',
+              'Zahlen, die unser Engagement erzählen',
+              'Cifras que cuentan nuestro compromiso',
+              'أرقام تروي التزامنا'),
+    items: [
+      { id: 'projects',  value: '850+', label: T('Progetti completati',     'Projects completed',     'Projets réalisés',           'Abgeschlossene Projekte',     'Proyectos completados',     'مشاريع منجزة') },
+      { id: 'countries', value: '45+',  label: T('Paesi serviti',            'Countries served',       'Pays servis',                'Belieferte Länder',           'Países atendidos',          'دول مخدومة') },
+      { id: 'brands',    value: '120+', label: T('Brand partner',            'Partner brands',         'Marques partenaires',        'Partnermarken',               'Marcas asociadas',          'علامات شريكة') },
+      { id: 'csat',      value: '98%',  label: T('Clienti soddisfatti',      'Satisfied clients',      'Clients satisfaits',         'Zufriedene Kunden',           'Clientes satisfechos',      'عملاء راضون') },
+      { id: 'years',     value: '15',   label: T('Anni di esperienza',       'Years of experience',    'Années d’expérience',        'Jahre Erfahrung',             'Años de experiencia',       'سنوات من الخبرة') },
+    ],
+  },
+
+  // ── FEATURED PROJECTS ───────────────────────────────────────────────
   projectsInspire: {
-    title: {
-      it: 'STUDI IN MOVIMENTO',
-      en: 'STUDIOS IN MOTION',
-      fr: 'STUDIOS EN MOUVEMENT',
-      de: 'STUDIOS IN BEWEGUNG',
-      es: 'ESTUDIOS EN MOVIMIENTO',
-    },
+    kicker: T('PROGETTI IN EVIDENZA', 'FEATURED PROJECTS', 'PROJETS EN VEDETTE', 'AUSGEWÄHLTE PROJEKTE', 'PROYECTOS DESTACADOS', 'مشاريع مميزة'),
+    title:  T('Ambienti unici.\nStorie straordinarie.',
+              'Unique spaces.\nExtraordinary stories.',
+              'Espaces uniques.\nHistoires extraordinaires.',
+              'Einzigartige Räume.\nAußergewöhnliche Geschichten.',
+              'Espacios únicos.\nHistorias extraordinarias.',
+              'فضاءات فريدة.\nقصص استثنائية.'),
+    ctaLabel: T('VEDI TUTTI I PROGETTI', 'VIEW ALL PROJECTS', 'VOIR TOUS LES PROJETS', 'ALLE PROJEKTE ANZEIGEN', 'VER TODOS LOS PROYECTOS', 'عرض جميع المشاريع'),
+    ctaHref:  '/projects',
+    moreLabel: T('SCOPRI DI PIÙ', 'DISCOVER', 'DÉCOUVRIR', 'ENTDECKEN', 'DESCUBRIR', 'اكتشف'),
     items: [
       {
-        id: 'residenziale-venezia',
-        slug: 'casa-naviglio',
+        id: 'villa-contemporanea', slug: 'villa-contemporanea',
         image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85',
-        category: { it: 'RESIDENZIALE', en: 'RESIDENTIAL', fr: 'RÉSIDENTIEL', de: 'WOHNEN', es: 'RESIDENCIAL' },
-        location: { it: 'Venezia', en: 'Venice', fr: 'Venise', de: 'Venedig', es: 'Venecia' },
+        category: T('Villa Contemporanea', 'Contemporary Villa', 'Villa Contemporaine', 'Zeitgenössische Villa', 'Villa Contemporánea', 'فيلا معاصرة'),
+        location: T('Lago di Como, Italia', 'Lake Como, Italy', 'Lac de Côme, Italie', 'Comer See, Italien', 'Lago di Como, Italia', 'بحيرة كومو، إيطاليا'),
       },
       {
-        id: 'resort-como',
-        slug: 'villa-cap-ferrat',
+        id: 'residenza-privata-dubai', slug: 'residenza-privata-dubai',
         image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1600&q=85',
-        category: { it: 'RESORT', en: 'RESORT', fr: 'RESORT', de: 'RESORT', es: 'RESORT' },
-        location: { it: 'Lago di Como', en: 'Lake Como', fr: 'Lac de Côme', de: 'Comer See', es: 'Lago de Como' },
+        category: T('Residenza Privata', 'Private Residence', 'Résidence Privée', 'Privatresidenz', 'Residencia Privada', 'إقامة خاصة'),
+        location: T('Dubai, UAE', 'Dubai, UAE', 'Dubaï, EAU', 'Dubai, VAE', 'Dubái, EAU', 'دبي، الإمارات'),
       },
       {
-        id: 'boutique-firenze',
-        slug: 'galerie-saint-honore',
+        id: 'boutique-hotel-nyc', slug: 'boutique-hotel-nyc',
         image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1600&q=85',
-        category: { it: 'BOUTIQUE HOTEL', en: 'BOUTIQUE HOTEL', fr: 'BOUTIQUE HÔTEL', de: 'BOUTIQUE HOTEL', es: 'BOUTIQUE HOTEL' },
-        location: { it: 'Firenze', en: 'Florence', fr: 'Florence', de: 'Florenz', es: 'Florencia' },
-      },
-      {
-        id: 'villa-valdorcia',
-        slug: 'aman-residences-tokyo',
-        image: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1600&q=85',
-        category: { it: 'VILLA PRIVATA', en: 'PRIVATE VILLA', fr: 'VILLA PRIVÉE', de: 'PRIVATE VILLA', es: 'VILLA PRIVADA' },
-        location: { it: 'Val d\u2019Orcia', en: 'Val d\u2019Orcia', fr: 'Val d\u2019Orcia', de: 'Val d\u2019Orcia', es: 'Val d\u2019Orcia' },
-      },
-      {
-        id: 'penthouse-milano',
-        slug: 'penthouse-tribeca',
-        image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1600&q=85',
-        category: { it: 'PENTHOUSE', en: 'PENTHOUSE', fr: 'PENTHOUSE', de: 'PENTHOUSE', es: 'ÁTICO' },
-        location: { it: 'Milano', en: 'Milan', fr: 'Milan', de: 'Mailand', es: 'Milán' },
+        category: T('Boutique Hotel Project', 'Boutique Hotel Project', 'Boutique Hôtel', 'Boutique-Hotel Projekt', 'Boutique Hotel', 'مشروع فندق بوتيك'),
+        location: T('New York, USA', 'New York, USA', 'New York, USA', 'New York, USA', 'Nueva York, EE.UU.', 'نيويورك، الولايات المتحدة'),
       },
     ],
   },
 
-  // Repositioned: workflow insights, not "inspiration & news".
-  // The newsletter feeds the Journal which doubles as SEO + lead gen.
-  newsletter: {
-    title: {
-      it: 'WORKFLOW INSIGHTS',
-      en: 'WORKFLOW INSIGHTS',
-      fr: 'WORKFLOW INSIGHTS',
-      de: 'WORKFLOW INSIGHTS',
-      es: 'WORKFLOW INSIGHTS',
-    },
-    body: {
-      it: 'Ricevi pratiche, casi studio e novità di prodotto\npensate per studi di interior design e showroom.\nNiente fluff. Solo workflow.',
-      en: 'Get practices, case studies and product updates\ncrafted for interior design studios and showrooms.\nNo fluff. Just workflow.',
-      fr: 'Recevez pratiques, études de cas et nouveautés produit\npensées pour studios d’interior design et showrooms.\nPas de bla-bla. Juste du workflow.',
-      de: 'Erhalten Sie Praktiken, Fallstudien und Produkt-Updates\nfür Interior-Design-Studios und Showrooms.\nKein Geschwätz. Nur Workflow.',
-      es: 'Recibe prácticas, casos de estudio y novedades de producto\npensados para estudios de interior design y showrooms.\nSin fluff. Solo workflow.',
-    },
-    placeholder: {
-      it: 'La tua email professionale',
-      en: 'Your work email',
-      fr: 'Votre e-mail professionnel',
-      de: 'Ihre geschäftliche E-Mail',
-      es: 'Tu email profesional',
-    },
-    submit: {
-      it: 'ISCRIVITI',
-      en: 'SUBSCRIBE',
-      fr: 'S\u2019INSCRIRE',
-      de: 'ABONNIEREN',
-      es: 'SUSCRIBIRSE',
-    },
-    decorImage: 'https://images.unsplash.com/photo-1567016376408-0226e4d0c1ea?auto=format&fit=crop&w=1200&q=85',
+  // ── MAGAZINE GRID ───────────────────────────────────────────────────
+  magazine: {
+    kicker: T('DAL MAGAZINE', 'FROM THE MAGAZINE', 'DEPUIS LE MAGAZINE', 'AUS DEM MAGAZIN', 'DESDE LA REVISTA', 'من المجلة'),
+    title:  T('Ispirazione e cultura del design',
+              'Design inspiration and culture',
+              'Inspiration et culture du design',
+              'Designinspiration und Kultur',
+              'Inspiración y cultura del diseño',
+              'إلهام وثقافة التصميم'),
+    ctaLabel: T('VAI AL MAGAZINE', 'GO TO THE MAGAZINE', 'ALLER AU MAGAZINE', 'ZUM MAGAZIN', 'IR A LA REVISTA', 'إلى المجلة'),
+    ctaHref:  '/magazine',
+    readLabel: T('Leggi l’articolo', 'Read the article', 'Lire l’article', 'Artikel lesen', 'Leer el artículo', 'اقرأ المقال'),
+    items: [
+      {
+        id: 'minimalismo', slug: 'minimalismo-italiano',
+        image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=85',
+        category: T('DESIGN', 'DESIGN', 'DESIGN', 'DESIGN', 'DESIGN', 'تصميم'),
+        title:    T('Il nuovo minimalismo italiano', 'The new Italian minimalism', 'Le nouveau minimalisme italien', 'Der neue italienische Minimalismus', 'El nuevo minimalismo italiano', 'البساطة الإيطالية الجديدة'),
+      },
+      {
+        id: 'colori-materiali-2024', slug: 'colori-materiali-2024',
+        image: 'https://images.unsplash.com/photo-1615875221691-c63d6a4a83a7?auto=format&fit=crop&w=1400&q=85',
+        category: T('TENDENZE', 'TRENDS', 'TENDANCES', 'TRENDS', 'TENDENCIAS', 'الاتجاهات'),
+        title:    T('Colori e materiali 2024', 'Colours and materials 2024', 'Couleurs et matériaux 2024', 'Farben und Materialien 2024', 'Colores y materiales 2024', 'الألوان والمواد 2024'),
+      },
+      {
+        id: 'luce-naturale', slug: 'luce-naturale-benessere',
+        image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1400&q=85',
+        category: T('ISPIRAZIONI', 'INSPIRATIONS', 'INSPIRATIONS', 'INSPIRATIONEN', 'INSPIRACIONES', 'إلهامات'),
+        title:    T('Luce naturale e benessere', 'Natural light and wellbeing', 'Lumière naturelle et bien-être', 'Natürliches Licht und Wohlbefinden', 'Luz natural y bienestar', 'الضوء الطبيعي والرفاهية'),
+      },
+    ],
+  },
+
+  // ── BRAND PARTNERS ──────────────────────────────────────────────────
+  brandLogos: {
+    kicker: T('PARTNER & BRAND', 'PARTNERS & BRANDS', 'PARTENAIRES & MARQUES', 'PARTNER & MARKEN', 'SOCIOS Y MARCAS', 'الشركاء والعلامات'),
+    items: [
+      { id: 'minotti',       wordmark: 'Minotti',        href: '#brand' },
+      { id: 'poliform',      wordmark: 'Poliform',       href: '#brand' },
+      { id: 'bb-italia',     wordmark: 'B&B Italia',     href: '#brand' },
+      { id: 'flexform',      wordmark: 'Flexform',       href: '#brand' },
+      { id: 'molteni',       wordmark: 'Molteni & C',    href: '#brand' },
+      { id: 'porada',        wordmark: 'porada',         href: '#brand' },
+      { id: 'flos',          wordmark: 'FLOS',           href: '#brand' },
+      { id: 'antonio-lupi',  wordmark: 'Antonio Lupi',   href: '#brand' },
+    ],
   },
 };

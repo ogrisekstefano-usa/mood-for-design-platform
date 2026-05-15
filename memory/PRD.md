@@ -2019,3 +2019,32 @@ change, not inspiration. Removes all economic/payment language (only `client bud
    storytelling, locale-specific tone, SEO, CTAs. NOT a generic AI writer (P1)
 5. **AI "Suggest improvements" in Diff Drawer** — leverages the existing diff payload
    so the AI sees only the delta in context (P2)
+
+
+---
+
+### ✅ Phase L — EXE INTERIOR Demo Storefront (DONE — 15 Feb 2026)
+Strategic pivot: the corporate platform homepage now showcases a **demo shop** ("EXE Interior")
+running on MOOD — the prospect feels they already own a licence. Pixel-close replica of the
+client mockup, fully CMS-driven through the Phase J block system.
+
+**Backend**
+- 3 new section types in `core/storefront_registry.py`: stats_band, magazine_grid, brand_logos
+- DEFAULT_PAGE_COMPOSITION.home updated:
+  `store_hero · value_props · stats_band · projects_preview · magazine_grid · brand_logos`
+- `scripts/seed_storefront_cms.py` build_home_sections() rewritten for new structure +
+  6 locales (it · en-US · fr · de · es · ar/AE)
+
+**Frontend**
+- `homepage.js` + `navigation.js` full EXE Interior content (6 locales)
+- `SiteHeader.jsx` 3-row layout matching mockup (lang | brand | utility+CTA above main nav)
+- `HomePage.jsx` rebuilt with 6 sections, DB-first / JS-fallback content resolution
+- `exe.css` dedicated stylesheet (cream/beige + dark/gold + serif/sans, RTL-aware)
+- `languages.js` 'ar' enabled with short='AE'
+
+**Pipeline**: dump → seed → Phase J revision publish. Public served from frozen snapshot.
+
+### Next Action Items
+- Studio inline editors for new block types (stats_band, magazine_grid, brand_logos)
+- Magazine route page (currently anchor only)
+- Localised seed mapping for 'ae' in homepage.js → LOCALE_MAP ('ae'→'ar')

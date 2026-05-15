@@ -124,6 +124,67 @@ STOREFRONT_SECTION_TYPES: List[Dict[str, Any]] = [
         },
         "defaults": {},
     },
+    {
+        "type": "stats_band",
+        "category": "homepage",
+        "label": "Stats Band",
+        "description": "Dark editorial band with key numbers (projects, countries, brands, satisfaction, years).",
+        "icon": "BarChart3",
+        "reusable_in": ["home"],
+        "schema": {
+            "section_kicker": {"type": "string", "i18n": True},
+            "section_title":  {"type": "string", "i18n": True},
+            "stats": {"type": "array", "item": {
+                "value": {"type": "string"},                       # e.g. "850+", "98%"
+                "label": {"type": "string", "i18n": True},
+                "id":    {"type": "string"},
+            }},
+        },
+        "defaults": {"stats": []},
+    },
+    {
+        "type": "magazine_grid",
+        "category": "homepage",
+        "label": "Magazine Grid",
+        "description": "Latest journal/magazine articles in a 3-up editorial grid.",
+        "icon": "BookOpen",
+        "reusable_in": ["home"],
+        "schema": {
+            "section_kicker": {"type": "string", "i18n": True},
+            "section_title":  {"type": "string", "i18n": True},
+            "cta_label":      {"type": "string", "i18n": True},
+            "cta_href":       {"type": "string"},
+            "articles": {"type": "array", "item": {
+                "id":         {"type": "string"},
+                "slug":       {"type": "string"},
+                "category":   {"type": "string", "i18n": True},
+                "title":      {"type": "string", "i18n": True},
+                "read_label": {"type": "string", "i18n": True},
+                "image_url":  {"type": "string"},
+                "asset_id":   {"type": "asset_ref"},
+            }},
+        },
+        "defaults": {"cta_href": "/magazine", "articles": []},
+    },
+    {
+        "type": "brand_logos",
+        "category": "homepage",
+        "label": "Brand Partners",
+        "description": "Row of partner brand logos / wordmarks.",
+        "icon": "Award",
+        "reusable_in": ["home"],
+        "schema": {
+            "section_kicker": {"type": "string", "i18n": True},
+            "logos": {"type": "array", "item": {
+                "id":        {"type": "string"},
+                "name":      {"type": "string"},
+                "wordmark":  {"type": "string"},            # text fallback when no image
+                "image_url": {"type": "string"},
+                "href":      {"type": "string"},
+            }},
+        },
+        "defaults": {"logos": []},
+    },
 
     # ── PROJECTS archive ───────────────────────────────────────────────────
     {
@@ -353,7 +414,7 @@ def is_known_storefront_section(section_type: str) -> bool:
 
 # ── Default page composition (used on first seed) ─────────────────────────
 DEFAULT_PAGE_COMPOSITION: Dict[str, List[str]] = {
-    "home": ["store_hero", "dual_cta", "value_props", "projects_preview", "newsletter"],
+    "home": ["store_hero", "value_props", "stats_band", "projects_preview", "magazine_grid", "brand_logos"],
     "projects": ["projects_hero", "projects_filters", "projects_collection"],
     "start_project": ["wizard_intro", "wizard_step", "wizard_completion"],
     "professionals": ["pro_hero", "pro_benefits", "pro_intake_step"],

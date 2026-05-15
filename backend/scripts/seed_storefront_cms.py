@@ -39,6 +39,7 @@ LOCALE_MAP = {
     'fr': 'fr',
     'de': 'de',
     'es': 'es',
+    'ae': 'ar',     # 'ae' (UAE market label) → canonical 'ar' (Arabic)
 }
 
 
@@ -116,9 +117,15 @@ def _create_section(client, tenant_id, page_id, section_type, sort_order, locale
 
 # ─── Page builders ─────────────────────────────────────────────────────────
 def build_home_sections(home):
-    """Map homepage.js → cms_sections rows for page_key='home'."""
+    """Map homepage.js → cms_sections rows for page_key='home'.
+
+    Layout: store_hero · value_props (services) · stats_band ·
+    projects_preview · magazine_grid · brand_logos.
+    """
+    LOCALES = ['it', 'en', 'fr', 'de', 'es', 'ae']
     sections = []
-    # 1. store_hero
+
+    # ── 1. store_hero ────────────────────────────────────────────
     hero = home.get('hero') or {}
     sections.append((
         'store_hero',
@@ -126,109 +133,150 @@ def build_home_sections(home):
             '_default': {
                 'background_image_url': hero.get('backgroundImage'),
                 'atmosphere': 'cinematic',
+                'cta_primary_href':   (hero.get('ctaPrimary')   or {}).get('href'),
+                'cta_secondary_href': (hero.get('ctaSecondary') or {}).get('href'),
+                'video_href':         (hero.get('videoLabel')   or {}).get('href'),
             },
             **{LOCALE_MAP.get(k, k): {
-                'headline':        hero.get('headline', {}).get(k),
-                'sub':             hero.get('sub', {}).get(k),
-                'overline':        hero.get('overline', {}).get(k),
-                'overline_italic': hero.get('overlineItalic', {}).get(k),
-            } for k in ['it', 'en', 'fr', 'de', 'es']},
-        },
-        {'background_image_url': hero.get('backgroundImage')},
-    ))
-    # 2. dual_cta
-    dp = home.get('dualPath') or {}
-    priv, pro = dp.get('private') or {}, dp.get('pro') or {}
-    sections.append((
-        'dual_cta',
-        {
-            '_default': {
-                'client_cta_href': priv.get('href') or '/start-project',
-                'pro_cta_href':    pro.get('href') or '/professionals',
-                'client_image_url': priv.get('image'),
-                'pro_image_url':    pro.get('image'),
-            },
-            **{LOCALE_MAP.get(k, k): {
-                'client_kicker':  priv.get('kicker', {}).get(k),
-                'client_title':   priv.get('title', {}).get(k),
-                'client_body':    priv.get('body', {}).get(k),
-                'client_cta_label': priv.get('cta', {}).get(k),
-                'pro_kicker':     pro.get('kicker', {}).get(k),
-                'pro_title':      pro.get('title', {}).get(k),
-                'pro_body':       pro.get('body', {}).get(k),
-                'pro_cta_label':  pro.get('cta', {}).get(k),
-            } for k in ['it', 'en', 'fr', 'de', 'es']},
+                'eyebrow':       (hero.get('eyebrow')  or {}).get(k),
+                'headline':      (hero.get('headline') or {}).get(k),
+                'sub':           (hero.get('sub')      or {}).get(k),
+                'cta_primary':   ((hero.get('ctaPrimary')   or {}).get('label') or {}).get(k),
+                'cta_secondary': ((hero.get('ctaSecondary') or {}).get('label') or {}).get(k),
+                'video_kicker':  ((hero.get('videoLabel') or {}).get('kicker') or {}).get(k),
+                'video_title':   ((hero.get('videoLabel') or {}).get('title')  or {}).get(k),
+                'scroll_label':  (hero.get('scrollLabel') or {}).get(k),
+            } for k in LOCALES},
         },
         {
-            'client_image_url': priv.get('image'),
-            'pro_image_url':    pro.get('image'),
+            'background_image_url': hero.get('backgroundImage'),
+            'cta_primary_href':     (hero.get('ctaPrimary')   or {}).get('href'),
+            'cta_secondary_href':   (hero.get('ctaSecondary') or {}).get('href'),
         },
     ))
-    # 3. value_props
-    vp = home.get('valueProps') or {}
-    pillars_normalized = []
-    for it in (vp.get('items') or []):
-        pillars_normalized.append({
-            'id':    it.get('id'),
-            'icon':  it.get('icon'),
-            'title': _locale_bag(it.get('title') or {}),
-            'body':  _locale_bag(it.get('body') or {}),
-        })
+
+    # ── 2. value_props (Services) ────────────────────────────────
+    svc = home.get('services') or {}
+    pillars = [{
+        'id': it.get('id'), 'icon': it.get('icon'), 'href': it.get('href'),
+        'title': _locale_bag(it.get('title') or {}),
+        'body':  _locale_bag(it.get('body')  or {}),
+    } for it in (svc.get('items') or [])]
     sections.append((
         'value_props',
         {
             '_default': {
-                'section_title': vp.get('title', {}).get('it'),
-                'pillars': pillars_normalized,
+                'section_kicker': (svc.get('kicker') or {}).get('it'),
+                'section_title':  (svc.get('title')  or {}).get('it'),
+                'more_label':     (svc.get('moreLabel') or {}).get('it'),
+                'pillars': pillars,
             },
             **{LOCALE_MAP.get(k, k): {
-                'section_title': vp.get('title', {}).get(k),
-            } for k in ['it', 'en', 'fr', 'de', 'es']},
+                'section_kicker': (svc.get('kicker')    or {}).get(k),
+                'section_title':  (svc.get('title')     or {}).get(k),
+                'more_label':     (svc.get('moreLabel') or {}).get(k),
+            } for k in LOCALES},
         },
-        {'pillars': pillars_normalized},
+        {'pillars': pillars},
     ))
-    # 4. projects_preview
+
+    # ── 3. stats_band ────────────────────────────────────────────
+    st = home.get('stats') or {}
+    stats_items = [{
+        'id': it.get('id'), 'value': it.get('value'),
+        'label': _locale_bag(it.get('label') or {}),
+    } for it in (st.get('items') or [])]
+    sections.append((
+        'stats_band',
+        {
+            '_default': {
+                'section_kicker': (st.get('kicker') or {}).get('it'),
+                'section_title':  (st.get('title')  or {}).get('it'),
+                'stats': stats_items,
+            },
+            **{LOCALE_MAP.get(k, k): {
+                'section_kicker': (st.get('kicker') or {}).get(k),
+                'section_title':  (st.get('title')  or {}).get(k),
+            } for k in LOCALES},
+        },
+        {'stats': stats_items},
+    ))
+
+    # ── 4. projects_preview ──────────────────────────────────────
     pi = home.get('projectsInspire') or {}
-    items_normalized = []
-    for it in (pi.get('items') or []):
-        items_normalized.append({
-            'id':       it.get('id'),
-            'slug':     it.get('slug'),
-            'image_url':it.get('image'),
-            'category': _locale_bag(it.get('category') or {}),
-            'location': _locale_bag(it.get('location') or {}),
-        })
+    proj_items = [{
+        'id': it.get('id'), 'slug': it.get('slug'), 'image_url': it.get('image'),
+        'category': _locale_bag(it.get('category') or {}),
+        'location': _locale_bag(it.get('location') or {}),
+    } for it in (pi.get('items') or [])]
     sections.append((
         'projects_preview',
         {
             '_default': {
-                'section_title':  pi.get('title', {}).get('it'),
-                'cta_href':       '/projects',
-                'items':          items_normalized,
+                'section_kicker': (pi.get('kicker') or {}).get('it'),
+                'section_title':  (pi.get('title')  or {}).get('it'),
+                'cta_label':      (pi.get('ctaLabel') or {}).get('it'),
+                'cta_href':       pi.get('ctaHref') or '/projects',
+                'more_label':     (pi.get('moreLabel') or {}).get('it'),
+                'items': proj_items,
             },
             **{LOCALE_MAP.get(k, k): {
-                'section_title': pi.get('title', {}).get(k),
-            } for k in ['it', 'en', 'fr', 'de', 'es']},
+                'section_kicker': (pi.get('kicker')    or {}).get(k),
+                'section_title':  (pi.get('title')     or {}).get(k),
+                'cta_label':      (pi.get('ctaLabel')  or {}).get(k),
+                'more_label':     (pi.get('moreLabel') or {}).get(k),
+            } for k in LOCALES},
         },
-        {'items': items_normalized},
+        {'items': proj_items, 'cta_href': pi.get('ctaHref') or '/projects'},
     ))
-    # 5. newsletter
-    nl = home.get('newsletter') or {}
+
+    # ── 5. magazine_grid ─────────────────────────────────────────
+    mg = home.get('magazine') or {}
+    mag_items = [{
+        'id': it.get('id'), 'slug': it.get('slug'), 'image_url': it.get('image'),
+        'category': _locale_bag(it.get('category') or {}),
+        'title':    _locale_bag(it.get('title')    or {}),
+    } for it in (mg.get('items') or [])]
     sections.append((
-        'newsletter',
+        'magazine_grid',
         {
             '_default': {
-                'decor_image_url': nl.get('decorImage'),
+                'section_kicker': (mg.get('kicker')   or {}).get('it'),
+                'section_title':  (mg.get('title')    or {}).get('it'),
+                'cta_label':      (mg.get('ctaLabel') or {}).get('it'),
+                'cta_href':       mg.get('ctaHref') or '/magazine',
+                'read_label':     (mg.get('readLabel') or {}).get('it'),
+                'articles': mag_items,
             },
             **{LOCALE_MAP.get(k, k): {
-                'title':       nl.get('title', {}).get(k),
-                'body':        nl.get('body', {}).get(k),
-                'placeholder': nl.get('placeholder', {}).get(k),
-                'cta_label':   nl.get('submit', {}).get(k),
-            } for k in ['it', 'en', 'fr', 'de', 'es']},
+                'section_kicker': (mg.get('kicker')    or {}).get(k),
+                'section_title':  (mg.get('title')     or {}).get(k),
+                'cta_label':      (mg.get('ctaLabel')  or {}).get(k),
+                'read_label':     (mg.get('readLabel') or {}).get(k),
+            } for k in LOCALES},
         },
-        {'decor_image_url': nl.get('decorImage')},
+        {'articles': mag_items, 'cta_href': mg.get('ctaHref') or '/magazine'},
     ))
+
+    # ── 6. brand_logos ───────────────────────────────────────────
+    bl = home.get('brandLogos') or {}
+    logos = [{
+        'id': it.get('id'), 'wordmark': it.get('wordmark'), 'href': it.get('href'),
+    } for it in (bl.get('items') or [])]
+    sections.append((
+        'brand_logos',
+        {
+            '_default': {
+                'section_kicker': (bl.get('kicker') or {}).get('it'),
+                'logos': logos,
+            },
+            **{LOCALE_MAP.get(k, k): {
+                'section_kicker': (bl.get('kicker') or {}).get(k),
+            } for k in LOCALES},
+        },
+        {'logos': logos},
+    ))
+
     return sections
 
 
