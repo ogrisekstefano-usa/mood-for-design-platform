@@ -41,6 +41,7 @@ const StartProjectWizard = lazy(() => import('./pages/site/StartProjectWizard'))
 const ProfessionalsGatewayPage = lazy(() => import('./pages/site/ProfessionalsGatewayPage'));
 const ProfessionalIntakePage = lazy(() => import('./pages/site/ProfessionalIntakePage'));
 const LanguagesPage = lazy(() => import('./pages/settings/LanguagesPage'));
+const StorefrontPage = lazy(() => import('./pages/settings/StorefrontPage'));
 
 // Admin
 const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
@@ -128,6 +129,7 @@ function App() {
                   <Route path="/settings/navigation" element={<NavigationEditorPage />} />
                   <Route path="/settings/forms" element={<FormBuilderPage />} />
                   <Route path="/settings/languages" element={<LanguagesPage />} />
+                  <Route path="/settings/storefront" element={<StorefrontPage />} />
                 </Route>
 
                 <Route element={<SuperAdminRoute><AdminLayout /></SuperAdminRoute>}>

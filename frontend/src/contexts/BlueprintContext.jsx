@@ -184,10 +184,16 @@ export const BlueprintProvider = ({ children }) => {
   const [availableLocales, setAvailableLocales] = useState(FALLBACK_LOCALES);
   const [loading, setLoading] = useState(true);
 
+  // Single source of truth for available locales = local registry (shared with public site).
+  // Listen to runtime registry changes (toggles in /settings/languages) so Blueprint
+  // switcher reflects them instantly without a page reload.
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/api/blueprint/i18n`)
-      .then((r) => setAvailableLocales(r.data.locales || FALLBACK_LOCALES))
-      .catch(() => {});
+    const refresh = () => setAvailableLocales(
+      blueprintLanguages().map((l) => ({ code: l.code, label: l.name, native: l.native_name }))
+    );
+    refresh();
+    window.addEventListener('mfd:languages:change', refresh);
+    return () => window.removeEventListener('mfd:languages:change', refresh);
   }, []);
 
   const loadMessages = useCallback(async (loc, slug) => {
@@ -248,11 +254,32 @@ export const BlueprintProvider = ({ children }) => {
 
   useEffect(() => { loadMessages(locale, tenant?.slug); }, [locale, tenant?.slug, loadMessages]);
 
+  // Listen for cross-context locale changes (public site → Blueprint propagation)
+  useEffect(() => {
+    const onCrossContext = (e) => {
+      const next = e?.detail?.locale;
+      if (next && next !== locale) setLocaleState(next);
+    };
+    const onStorage = (e) => {
+      if (e.key === LOCALE_KEY && e.newValue && e.newValue !== locale) {
+        setLocaleState(e.newValue);
+      }
+    };
+    window.addEventListener('mfd:locale:change', onCrossContext);
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.removeEventListener('mfd:locale:change', onCrossContext);
+      window.removeEventListener('storage', onStorage);
+    };
+  }, [locale]);
+
   const setLocale = useCallback((newLocale) => {
-    localStorage.setItem(LOCALE_KEY, newLocale);
-    setLocaleState(newLocale);
+    // Resolve to canonical code via shared registry (preserves EN-US ≠ EN-GB)
+    const canonical = resolveLanguage(newLocale).code;
+    localStorage.setItem(LOCALE_KEY, canonical);
+    setLocaleState(canonical);
     // Notify public site & cross-tab listeners of locale change
-    try { window.dispatchEvent(new CustomEvent('mfd:locale:change', { detail: { locale: newLocale } })); } catch (_) {}
+    try { window.dispatchEvent(new CustomEvent('mfd:locale:change', { detail: { locale: canonical } })); } catch (_) {}
   }, []);
 
   const startImpersonation = useCallback((tenantId) => {
