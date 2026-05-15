@@ -3,54 +3,54 @@ import { useReveal } from '../hooks/useReveal';
 
 /**
  * CTASection — Call to action banner.
- * Backgrounds: "teal" | "dark" | "light"
+ * brand guide: teal bg = dark btn | dark bg = teal btn | white bg = teal btn
  */
 const CTASection = ({ content = {}, config = {} }) => {
   const [ref, visible] = useReveal({ threshold: 0.2 });
-  const bg = config.background === 'teal'
-    ? '#3DDAD0'
-    : config.background === 'dark'
-    ? '#0A0A0A'
-    : '#FFFFFF';
 
-  const textColor = config.background === 'teal' ? '#0A0A0A' : config.background === 'dark' ? '#F9F9F8' : '#0A0A0A';
-  const subColor = config.background === 'teal' ? 'rgba(10,10,10,0.65)' : config.background === 'dark' ? 'rgba(249,249,248,0.55)' : '#5A5A5A';
-  const btnClass = config.background === 'teal'
-    ? 'bg-[#0A0A0A] text-white hover:bg-white hover:text-[#0A0A0A]'
-    : config.background === 'dark'
-    ? 'bg-[#3DDAD0] text-[#0A0A0A] hover:bg-white'
-    : 'btn-primary';
+  const bgMap = {
+    teal: '#00C9B3',
+    dark: '#1A1A1A',
+    light: '#FFFFFF',
+    white: '#FFFFFF',
+  };
+  const bg = bgMap[config.background] || '#FFFFFF';
+  const isTeal = config.background === 'teal';
+  const isDark = config.background === 'dark';
+
+  const textColor = isTeal ? '#1A1A1A' : isDark ? '#FFFFFF' : '#1A1A1A';
+  const subColor = isTeal ? 'rgba(26,26,26,0.65)' : isDark ? 'rgba(255,255,255,0.5)' : '#6B6E71';
+
+  // Button style: on teal bg → dark btn; on dark bg → teal btn; on white → teal btn
+  const primaryBtnClass = isTeal ? 'btn-dark' : 'btn-primary';
 
   return (
-    <section
-      className="py-24 md:py-32"
-      style={{ background: bg }}
-      data-testid="cta-section"
-    >
+    <section className="py-24 md:py-32" style={{ background: bg }} data-testid="cta-section">
       <div className="max-w-7xl mx-auto px-8 md:px-16">
         <div
           ref={ref}
           className="grid grid-cols-1 lg:grid-cols-12 items-center gap-12"
         >
-          {/* Logo icon + text */}
+          {/* Text block */}
           <div className="lg:col-span-7">
+            {/* MOOD circles logo mark */}
             {config.show_logo && (
-              <div className="mb-8 opacity-30">
-                <div className="flex gap-1">
-                  <div className="w-8 h-8 rounded-full border-2 border-current" style={{ color: textColor }} />
-                  <div className="w-8 h-8 rounded-full border-2 border-current -ml-3" style={{ color: textColor }} />
-                </div>
+              <div className="mb-10 opacity-20">
+                <svg width="56" height="30" viewBox="0 0 56 30" fill="none">
+                  <circle cx="15" cy="15" r="14" stroke={textColor} strokeWidth="2" fill="none" />
+                  <circle cx="41" cy="15" r="14" stroke={textColor} strokeWidth="2" fill="none" />
+                </svg>
               </div>
             )}
             <h2
-              className={`font-serif font-light tracking-tighter reveal ${visible ? 'visible' : ''}`}
+              className={`font-serif font-normal tracking-tight reveal ${visible ? 'visible' : ''}`}
               style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', color: textColor, lineHeight: '1.1', transitionDelay: '0.1s' }}
             >
               {content.headline}
             </h2>
             {content.subheading && (
               <p
-                className={`mt-4 text-base max-w-lg reveal ${visible ? 'visible' : ''}`}
+                className={`mt-4 text-sm font-light max-w-lg reveal ${visible ? 'visible' : ''}`}
                 style={{ color: subColor, transitionDelay: '0.2s' }}
               >
                 {content.subheading}
@@ -59,25 +59,23 @@ const CTASection = ({ content = {}, config = {} }) => {
           </div>
 
           {/* CTA buttons */}
-          <div className={`lg:col-span-5 flex flex-col sm:flex-row gap-4 justify-start lg:justify-end reveal ${visible ? 'visible' : ''}`}
-               style={{ transitionDelay: '0.3s' }}>
+          <div
+            className={`lg:col-span-5 flex flex-col sm:flex-row gap-4 justify-start lg:justify-end reveal ${visible ? 'visible' : ''}`}
+            style={{ transitionDelay: '0.3s' }}
+          >
             {content.cta_primary && (
-              <a
-                href={content.cta_primary.href}
-                className={`inline-flex items-center gap-2 px-8 py-4 text-xs font-bold uppercase tracking-widest transition-colors duration-200 ${btnClass}`}
-                data-testid="cta-primary-btn"
-              >
-                {content.cta_primary.text} <span>↗</span>
+              <a href={content.cta_primary.href} className={primaryBtnClass} data-testid="cta-primary-btn">
+                {content.cta_primary.text} ↗
               </a>
             )}
             {content.cta_secondary && (
               <a
                 href={content.cta_secondary.href}
-                className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest transition-colors duration-200"
+                className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider transition-colors duration-200"
                 style={{ color: textColor }}
                 data-testid="cta-secondary-btn"
               >
-                {content.cta_secondary.text} <span>→</span>
+                {content.cta_secondary.text} →
               </a>
             )}
           </div>

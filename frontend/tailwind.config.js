@@ -9,13 +9,14 @@ module.exports = {
     extend: {
       colors: {
         mood: {
-          teal: '#3DDAD0',
-          black: '#0A0A0A',
-          bone: '#F9F9F8',
+          teal: '#00C9B3',
+          'teal-mid': '#33DCC6',
+          'teal-pale': '#7EECDA',
+          black: '#1A1A1A',
+          gray: '#6B6E71',
+          bone: '#F8F8F8',
           white: '#FFFFFF',
-          tertiary: '#F2F2F0',
-          stone: '#5A5A5A',
-          border: 'rgba(10,10,10,0.1)',
+          border: 'rgba(26,26,26,0.1)',
         },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -52,8 +53,8 @@ module.exports = {
         ring: 'hsl(var(--ring))',
       },
       fontFamily: {
-        serif: ['Cormorant Garamond', 'serif'],
-        sans: ['Manrope', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
+        sans: ['Montserrat', 'sans-serif'],
       },
       borderRadius: {
         lg: 'var(--radius)',

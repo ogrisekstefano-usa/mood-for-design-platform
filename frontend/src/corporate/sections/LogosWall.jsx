@@ -3,7 +3,7 @@ import { useReveal } from '../hooks/useReveal';
 
 /**
  * LogosWall — Brand trust strip.
- * Clean text-based brand names with subtle opacity on hover.
+ * Brand guide: Montserrat for brand names, subtle opacity.
  */
 const LogosWall = ({ content = {}, config = {} }) => {
   const [ref, visible] = useReveal({ threshold: 0.2 });
@@ -11,28 +11,33 @@ const LogosWall = ({ content = {}, config = {} }) => {
 
   return (
     <section
-      className="py-12 border-y"
-      style={{ borderColor: 'rgba(10,10,10,0.1)', background: '#F9F9F8' }}
+      className="py-14"
+      style={{ borderTop: '1px solid rgba(26,26,26,0.08)', borderBottom: '1px solid rgba(26,26,26,0.08)', background: '#F8F8F8' }}
       data-testid="logos-wall"
     >
       <div className="max-w-7xl mx-auto px-8 md:px-16">
         {content.eyebrow && (
-          <p className="text-center mb-10" style={{ fontSize: '0.68rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: '#5A5A5A', fontFamily: 'Manrope, sans-serif', fontWeight: 600 }}>
+          <p className="text-center mb-10 overline" style={{ color: '#6B6E71' }}>
             {content.eyebrow}
           </p>
         )}
         <div
           ref={ref}
-          className={`flex flex-wrap justify-center gap-8 md:gap-12 lg:gap-16 items-center reveal ${visible ? 'visible' : ''}`}
+          className={`flex flex-wrap justify-center items-center gap-x-10 md:gap-x-16 gap-y-6 reveal ${visible ? 'visible' : ''}`}
         >
           {brands.map((brand, i) => (
             <span
               key={i}
-              className="font-serif text-base md:text-lg transition-colors duration-300"
-              style={{ color: 'rgba(10,10,10,0.35)', transitionDelay: `${i * 0.05}s` }}
-              onMouseEnter={e => e.target.style.color = '#0A0A0A'}
-              onMouseLeave={e => e.target.style.color = 'rgba(10,10,10,0.35)'}
-              data-testid={`brand-${brand.toLowerCase().replace(/[\s&]/g, '-')}`}
+              className="font-serif transition-all duration-400 cursor-default select-none"
+              style={{
+                fontSize: '1.05rem',
+                color: 'rgba(26,26,26,0.3)',
+                letterSpacing: '0.05em',
+                transitionDelay: `${i * 0.04}s`,
+              }}
+              onMouseEnter={e => e.target.style.color = '#1A1A1A'}
+              onMouseLeave={e => e.target.style.color = 'rgba(26,26,26,0.3)'}
+              data-testid={`brand-${brand.toLowerCase().replace(/[\s&+]/g, '-')}`}
             >
               {brand}
             </span>

@@ -367,7 +367,8 @@ PAGES = {
                 "content": {
                     "it": {
                         "overline": "Progettato per come lavori",
-                        "headline": "Progettato per\ncome lavori.",
+                        "headline": "Progettato per",
+                        "headline_accent": "come lavori.",
                         "body": "MOOD riunisce i tuoi progetti, prodotti, contatti e ispirazione in un unico spazio di lavoro intelligente.",
                         "features": ["Progetti & Moodboard", "Libreria Prodotti & Materiali", "Collaborazione Clienti e Team", "Task, Timeline & Calendario"],
                         "quote": "MOOD ha trasformato il modo in cui il nostro studio gestisce progetti e presenta le idee. È semplicemente essenziale.",
@@ -376,7 +377,8 @@ PAGES = {
                     },
                     "en-us": {
                         "overline": "Designed for how you work",
-                        "headline": "Designed for\nhow you work.",
+                        "headline": "Designed for",
+                        "headline_accent": "how you work.",
                         "body": "MOOD brings together your projects, products, contacts and inspiration in one beautiful, intelligent workspace.",
                         "features": ["Projects & Moodboards", "Product & Material Library", "Client & Team Collaboration", "Tasks, Timeline & Calendar"],
                         "quote": "MOOD has transformed the way our studio manages projects and presents ideas. It's simply essential.",
@@ -385,7 +387,8 @@ PAGES = {
                     },
                     "en-uk": {
                         "overline": "Designed for how you work",
-                        "headline": "Designed for\nhow you work.",
+                        "headline": "Designed for",
+                        "headline_accent": "how you work.",
                         "body": "MOOD brings together your projects, products, contacts and inspiration in one beautiful, intelligent workspace.",
                         "features": ["Projects & Moodboards", "Product & Material Library", "Client & Team Collaboration", "Tasks, Timeline & Calendar"],
                         "quote": "MOOD has transformed the way our studio manages projects and presents ideas. It's simply essential.",
@@ -394,7 +397,8 @@ PAGES = {
                     },
                     "fr": {
                         "overline": "Conçu pour votre façon de travailler",
-                        "headline": "Conçu pour\nvotre façon de travailler.",
+                        "headline": "Conçu pour",
+                        "headline_accent": "votre façon de travailler.",
                         "body": "MOOD rassemble vos projets, produits, contacts et inspirations dans un espace de travail magnifique.",
                         "features": ["Projets & Moodboards", "Bibliothèque Produits & Matériaux", "Collaboration Clients & Équipe", "Tâches, Timeline & Calendrier"],
                         "quote": "MOOD a transformé la façon dont notre studio gère les projets et présente les idées.",
@@ -403,7 +407,8 @@ PAGES = {
                     },
                     "de": {
                         "overline": "Designed für Ihre Arbeitsweise",
-                        "headline": "Designed für\nIhre Arbeitsweise.",
+                        "headline": "Designed für",
+                        "headline_accent": "Ihre Arbeitsweise.",
                         "body": "MOOD bringt Ihre Projekte, Produkte, Kontakte und Inspiration in einem intelligenten Arbeitsbereich zusammen.",
                         "features": ["Projekte & Moodboards", "Produkt- & Materialbibliothek", "Kunden- & Teamzusammenarbeit", "Aufgaben, Timeline & Kalender"],
                         "quote": "MOOD hat die Art und Weise, wie unser Studio Projekte verwaltet, grundlegend verändert.",
@@ -412,7 +417,8 @@ PAGES = {
                     },
                     "es": {
                         "overline": "Diseñado para tu forma de trabajar",
-                        "headline": "Diseñado para\ntu forma de trabajar.",
+                        "headline": "Diseñado para",
+                        "headline_accent": "tu forma de trabajar.",
                         "body": "MOOD reúne tus proyectos, productos, contactos e inspiración en un hermoso espacio de trabajo inteligente.",
                         "features": ["Proyectos & Moodboards", "Biblioteca de Productos y Materiales", "Colaboración con Clientes y Equipo", "Tareas, Timeline y Calendario"],
                         "quote": "MOOD ha transformado la forma en que nuestro estudio gestiona proyectos. Es simplemente esencial.",

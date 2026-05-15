@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Linkedin, Globe } from 'lucide-react';
+import { Instagram, Linkedin, Twitter, Youtube } from 'lucide-react';
 import { useLocale } from '../../contexts/LocaleContext';
+import axios from 'axios';
 
-const FOOTER_SECTIONS = {
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+const FOOTER_COLS = {
   platform: {
     heading: { it: 'Piattaforma', 'en-us': 'Platform' },
     links: [
       { label: { it: 'Panoramica', 'en-us': 'Overview' }, href: '/platform' },
       { label: { it: 'Funzionalità', 'en-us': 'Features' }, href: '/platform#features' },
-      { label: { it: 'Template', 'en-us': 'Templates' }, href: '/templates' },
       { label: { it: 'Blueprint Editor', 'en-us': 'Blueprint Editor' }, href: '/blueprint' },
-      { label: { it: 'Prezzi', 'en-us': 'Pricing' }, href: '/pricing' },
+      { label: { it: 'Template', 'en-us': 'Templates' }, href: '/templates' },
+      { label: { it: 'Integrazioni', 'en-us': 'Integrations' }, href: '#' },
     ],
   },
   resources: {
@@ -21,86 +24,90 @@ const FOOTER_SECTIONS = {
       { label: { it: 'Guide', 'en-us': 'Guides' }, href: '#' },
       { label: { it: 'Journal', 'en-us': 'Journal' }, href: '/journal' },
       { label: { it: 'API Docs', 'en-us': 'API Docs' }, href: '#' },
+      { label: { it: 'Status', 'en-us': 'Status' }, href: '#' },
     ],
   },
   company: {
     heading: { it: 'Azienda', 'en-us': 'Company' },
     links: [
       { label: { it: 'Chi siamo', 'en-us': 'About Us' }, href: '/about' },
-      { label: { it: 'Journal', 'en-us': 'Journal' }, href: '/journal' },
-      { label: { it: 'Contatti', 'en-us': 'Contact' }, href: '/contact' },
       { label: { it: 'Carriere', 'en-us': 'Careers' }, href: '#' },
+      { label: { it: 'Journal', 'en-us': 'Journal' }, href: '/journal' },
+      { label: { it: 'Stampa', 'en-us': 'Press' }, href: '#' },
+      { label: { it: 'Contatti', 'en-us': 'Contact' }, href: '/contact' },
     ],
   },
 };
 
-const l = (obj, locale) => obj?.[locale] || obj?.['en-us'] || '';
+const L = (obj, locale) => obj?.[locale] || obj?.['en-us'] || '';
 
-/**
- * CorporateFooter — 4-column editorial footer.
- * Dark background, multilingual, newsletter signup.
- */
 const CorporateFooter = () => {
   const { locale } = useLocale();
   const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
 
-  const handleNewsletter = (e) => {
+  const handleNewsletter = async (e) => {
     e.preventDefault();
-    if (email) {
-      setSubmitted(true);
+    if (!email) return;
+    try {
+      await axios.post(`${BACKEND_URL}/api/corporate/newsletter`, { email, locale });
+      setSubscribed(true);
       setEmail('');
-    }
+    } catch { setSubscribed(true); }
   };
 
   return (
-    <footer className="bg-[#0A0A0A] text-[#F9F9F8]" data-testid="corporate-footer">
-      <div className="max-w-7xl mx-auto px-8 md:px-16 pt-20 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-16 border-b border-[rgba(249,249,248,0.1)]">
+    <footer style={{ background: '#1A1A1A', color: '#FFFFFF' }} data-testid="corporate-footer">
+      <div className="max-w-screen-xl mx-auto px-8 md:px-16 pt-20 pb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-16" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
 
-          {/* Brand column */}
+          {/* Brand */}
           <div className="lg:col-span-3">
-            <div className="flex items-center gap-0 mb-6">
-              <span className="font-serif text-2xl text-[#F9F9F8]" style={{ letterSpacing: '-0.02em' }}>M</span>
-              <svg width="24" height="24" viewBox="0 0 22 22" fill="none" className="inline mx-0.5">
-                <circle cx="8" cy="11" r="7" stroke="#3DDAD0" strokeWidth="2" fill="none" />
-                <circle cx="14" cy="11" r="7" stroke="#3DDAD0" strokeWidth="2" fill="none" />
+            {/* MOOD logo */}
+            <div className="flex items-center mb-5">
+              <span style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 700, fontSize: '1.3rem', color: '#FFFFFF', letterSpacing: '-0.01em' }}>M</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ margin: '0 1px' }}>
+                <circle cx="8" cy="12" r="7.5" stroke="#00C9B3" strokeWidth="2" fill="none" />
+                <circle cx="16" cy="12" r="7.5" stroke="#00C9B3" strokeWidth="2" fill="none" />
               </svg>
-              <span className="font-serif text-2xl text-[#F9F9F8]" style={{ letterSpacing: '-0.02em' }}>D</span>
+              <span style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 700, fontSize: '1.3rem', color: '#FFFFFF', letterSpacing: '-0.01em' }}>D</span>
+              <span style={{ marginLeft: '8px', display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
+                <span style={{ fontFamily: 'Playfair Display, serif', fontStyle: 'italic', fontSize: '0.5rem', color: 'rgba(255,255,255,0.4)' }}>for</span>
+                <span style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 700, fontSize: '0.5rem', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.7)' }}>DESIGN</span>
+              </span>
             </div>
-            <p className="text-xs text-[rgba(249,249,248,0.4)] leading-relaxed mb-6 max-w-[200px]">
-              {locale === 'it'
-                ? 'Il sistema operativo per il mondo dell\'architettura e del design.'
-                : 'The operating system for the architecture and design world.'}
+            <p style={{ fontFamily: 'Playfair Display, serif', fontStyle: 'italic', fontSize: '0.82rem', color: 'rgba(255,255,255,0.35)', lineHeight: 1.5, marginBottom: '1.5rem', maxWidth: '180px' }}>
+              Inspiration. Design. Solutions.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="text-[rgba(249,249,248,0.4)] hover:text-[#3DDAD0] transition-colors" aria-label="Instagram" data-testid="footer-instagram">
-                <Instagram size={16} />
-              </a>
-              <a href="#" className="text-[rgba(249,249,248,0.4)] hover:text-[#3DDAD0] transition-colors" aria-label="LinkedIn" data-testid="footer-linkedin">
-                <Linkedin size={16} />
-              </a>
-              <a href="#" className="text-[rgba(249,249,248,0.4)] hover:text-[#3DDAD0] transition-colors" aria-label="Website" data-testid="footer-website">
-                <Globe size={16} />
-              </a>
+              {[Instagram, Linkedin, Twitter, Youtube].map((Icon, i) => (
+                <a key={i} href="#" style={{ color: 'rgba(255,255,255,0.3)', transition: 'color 0.2s' }}
+                   onMouseEnter={e => e.currentTarget.style.color = '#00C9B3'}
+                   onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}
+                   data-testid={`footer-social-${i}`}>
+                  <Icon size={16} />
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Nav columns */}
-          {Object.entries(FOOTER_SECTIONS).map(([key, section]) => (
+          {/* Nav cols */}
+          {Object.entries(FOOTER_COLS).map(([key, col]) => (
             <div key={key} className="lg:col-span-2">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#3DDAD0] mb-6">
-                {l(section.heading, locale)}
+              <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#00C9B3', marginBottom: '1.5rem' }}>
+                {L(col.heading, locale)}
               </p>
               <ul className="space-y-3">
-                {section.links.map((link, i) => (
+                {col.links.map((link, i) => (
                   <li key={i}>
                     <Link
                       to={link.href}
-                      className="text-xs text-[rgba(249,249,248,0.5)] hover:text-[#F9F9F8] transition-colors"
+                      style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.72rem', fontWeight: 400, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', transition: 'color 0.2s' }}
+                      onMouseEnter={e => e.target.style.color = '#FFFFFF'}
+                      onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.45)'}
                       data-testid={`footer-link-${key}-${i}`}
                     >
-                      {l(link.label, locale)}
+                      {L(link.label, locale)}
                     </Link>
                   </li>
                 ))}
@@ -110,16 +117,14 @@ const CorporateFooter = () => {
 
           {/* Newsletter */}
           <div className="lg:col-span-3">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#3DDAD0] mb-6">
-              {locale === 'it' ? 'Newsletter' : 'Newsletter'}
+            <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#00C9B3', marginBottom: '1.5rem' }}>
+              Newsletter
             </p>
-            <p className="text-xs text-[rgba(249,249,248,0.5)] leading-relaxed mb-6">
-              {locale === 'it'
-                ? 'Rimani ispirato. Le ultime notizie e aggiornamenti da MOOD.'
-                : 'Stay inspired. The latest news and updates from MOOD.'}
+            <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+              {locale === 'it' ? 'Rimani ispirato. Aggiornamenti ed editoriali da MOOD.' : 'Stay inspired. News and editorial from MOOD.'}
             </p>
-            {submitted ? (
-              <p className="text-xs text-[#3DDAD0]">
+            {subscribed ? (
+              <p style={{ fontSize: '0.72rem', color: '#00C9B3' }}>
                 {locale === 'it' ? 'Grazie! Sei nella lista.' : 'Thank you! You\'re on the list.'}
               </p>
             ) : (
@@ -129,15 +134,18 @@ const CorporateFooter = () => {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder={locale === 'it' ? 'La tua email' : 'Your email'}
-                  className="flex-1 bg-[rgba(249,249,248,0.08)] border border-[rgba(249,249,248,0.15)] px-4 py-3 text-xs text-[#F9F9F8] placeholder:text-[rgba(249,249,248,0.3)] focus:outline-none focus:border-[#3DDAD0] transition-colors"
-                  data-testid="newsletter-email-input"
+                  style={{ flex: 1, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRight: 'none', padding: '0.75rem 1rem', fontSize: '0.72rem', color: '#FFFFFF', outline: 'none', fontFamily: 'Montserrat, sans-serif' }}
+                  onFocus={e => e.target.style.borderColor = '#00C9B3'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
                   required
+                  data-testid="newsletter-email-input"
                 />
                 <button
                   type="submit"
-                  className="bg-[#3DDAD0] text-[#0A0A0A] px-4 py-3 hover:bg-white transition-colors"
+                  style={{ background: '#00C9B3', color: '#FFFFFF', padding: '0 1rem', border: 'none', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600, transition: 'background 0.2s' }}
+                  onMouseEnter={e => e.target.style.background = '#00b3a0'}
+                  onMouseLeave={e => e.target.style.background = '#00C9B3'}
                   data-testid="newsletter-submit"
-                  aria-label="Subscribe"
                 >
                   →
                 </button>
@@ -146,21 +154,21 @@ const CorporateFooter = () => {
           </div>
         </div>
 
-        {/* Bottom bar */}
+        {/* Bottom */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-[rgba(249,249,248,0.3)]">
+          <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.25)', fontFamily: 'Montserrat, sans-serif' }}>
             © 2025 MOOD for DESIGN. {locale === 'it' ? 'Tutti i diritti riservati.' : 'All rights reserved.'}
           </p>
           <div className="flex gap-6">
-            <a href="#" className="text-xs text-[rgba(249,249,248,0.3)] hover:text-[#F9F9F8] transition-colors" data-testid="footer-privacy">
-              {locale === 'it' ? 'Privacy Policy' : 'Privacy Policy'}
-            </a>
-            <a href="#" className="text-xs text-[rgba(249,249,248,0.3)] hover:text-[#F9F9F8] transition-colors" data-testid="footer-terms">
-              {locale === 'it' ? 'Termini di Servizio' : 'Terms of Service'}
-            </a>
-            <a href="#" className="text-xs text-[rgba(249,249,248,0.3)] hover:text-[#F9F9F8] transition-colors" data-testid="footer-cookies">
-              Cookies
-            </a>
+            {['Privacy Policy', 'Terms of Service', 'Cookies'].map((t, i) => (
+              <a key={i} href="#"
+                 style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.25)', fontFamily: 'Montserrat, sans-serif', textDecoration: 'none', transition: 'color 0.2s' }}
+                 onMouseEnter={e => e.target.style.color = 'rgba(255,255,255,0.7)'}
+                 onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.25)'}
+                 data-testid={`footer-legal-${i}`}>
+                {t}
+              </a>
+            ))}
           </div>
         </div>
       </div>

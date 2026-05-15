@@ -1,38 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X, Globe, ChevronDown } from 'lucide-react';
 import { useLocale } from '../../contexts/LocaleContext';
 import LocaleSwitcher from './LocaleSwitcher';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-const MoodLogo = ({ inverted = false }) => (
-  <Link to="/" className="flex items-center gap-0" data-testid="corporate-nav-logo">
-    <span
-      className="font-serif tracking-tight"
-      style={{ fontSize: '1.4rem', color: inverted ? '#F9F9F8' : '#0A0A0A', letterSpacing: '-0.02em' }}
-    >
+/**
+ * MOOD Logo — brand-accurate wordmark.
+ * M + teal OO circles + D with "for DESIGN" subtitle
+ */
+const MoodLogo = ({ compact = false }) => (
+  <Link to="/" className="flex items-center" style={{ textDecoration: 'none', gap: '0px' }} data-testid="corporate-nav-logo">
+    <span style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 700, fontSize: compact ? '1.15rem' : '1.25rem', color: '#1A1A1A', letterSpacing: '-0.01em' }}>
       M
     </span>
-    <span style={{ display: 'inline-flex', alignItems: 'center', margin: '0 1px' }}>
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" style={{ display: 'inline' }}>
-        <circle cx="8" cy="11" r="7" stroke="#3DDAD0" strokeWidth="2" fill="none" />
-        <circle cx="14" cy="11" r="7" stroke="#3DDAD0" strokeWidth="2" fill="none" />
-      </svg>
-    </span>
-    <span
-      className="font-serif tracking-tight"
-      style={{ fontSize: '1.4rem', color: inverted ? '#F9F9F8' : '#0A0A0A', letterSpacing: '-0.02em' }}
-    >
+    <svg width={compact ? 20 : 24} height={compact ? 20 : 24} viewBox="0 0 24 24" fill="none" style={{ margin: '0 1px', display: 'inline-block', verticalAlign: 'middle' }}>
+      <circle cx="8" cy="12" r="7.5" stroke="#00C9B3" strokeWidth="2" fill="none" />
+      <circle cx="16" cy="12" r="7.5" stroke="#00C9B3" strokeWidth="2" fill="none" />
+    </svg>
+    <span style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 700, fontSize: compact ? '1.15rem' : '1.25rem', color: '#1A1A1A', letterSpacing: '-0.01em' }}>
       D
     </span>
+    {!compact && (
+      <span style={{ marginLeft: '8px', display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: 1.1 }}>
+        <span style={{ fontFamily: 'Playfair Display, serif', fontStyle: 'italic', fontSize: '0.52rem', color: '#6B6E71', lineHeight: 1 }}>for</span>
+        <span style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 700, fontSize: '0.52rem', letterSpacing: '0.12em', color: '#1A1A1A', lineHeight: 1 }}>DESIGN</span>
+      </span>
+    )}
   </Link>
 );
 
 /**
- * CorporateNav — Minimal sticky header for www.moodfordesign.com
- * Glassmorphism on scroll. Locale switcher. CTA button.
+ * CorporateNav — Minimal editorial nav for www.moodfordesign.com
+ * Transparent on hero, glassmorphism on scroll.
+ * Locale switcher, teal-outlined CTA.
  */
 const CorporateNav = () => {
   const location = useLocation();
@@ -43,14 +46,12 @@ const CorporateNav = () => {
   const [ctaItem, setCtaItem] = useState({ label: 'Start Your Studio', href: '/start-studio' });
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [location.pathname]);
+  useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
   useEffect(() => {
     axios.get(`${BACKEND_URL}/api/corporate/navigation?locale=${locale}`)
@@ -62,37 +63,39 @@ const CorporateNav = () => {
   }, [locale]);
 
   const isOnHero = location.pathname === '/';
-  const navBg = scrolled || mobileOpen
-    ? 'rgba(249,249,248,0.92)'
-    : isOnHero ? 'transparent' : 'rgba(249,249,248,0.92)';
-  const borderColor = scrolled ? 'rgba(10,10,10,0.1)' : 'transparent';
+  const showSolid = scrolled || mobileOpen || !isOnHero;
 
   return (
     <>
       <nav
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
         style={{
-          background: navBg,
-          backdropFilter: scrolled || !isOnHero ? 'blur(20px)' : 'none',
-          borderBottom: `1px solid ${borderColor}`,
+          background: showSolid ? 'rgba(255,255,255,0.96)' : 'transparent',
+          backdropFilter: showSolid ? 'blur(24px)' : 'none',
+          borderBottom: showSolid ? '1px solid rgba(26,26,26,0.08)' : '1px solid transparent',
         }}
         data-testid="corporate-nav"
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-16">
+        <div className="max-w-screen-xl mx-auto px-6 md:px-10 lg:px-16 flex items-center h-[68px]">
 
           {/* Logo */}
           <MoodLogo />
 
-          {/* Desktop nav */}
-          <div className="hidden lg:flex items-center gap-8">
+          {/* Desktop nav — centered */}
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8 mx-auto">
             {navItems.map(item => (
               <Link
                 key={item.key}
                 to={item.href}
-                className="text-xs font-semibold uppercase tracking-widest transition-colors duration-200"
+                className="transition-colors duration-200"
                 style={{
-                  color: location.pathname === item.href ? '#3DDAD0' : '#0A0A0A',
-                  fontFamily: 'Manrope, sans-serif',
+                  fontFamily: 'Montserrat, sans-serif',
+                  fontSize: '0.7rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  textDecoration: 'none',
+                  color: location.pathname === item.href ? '#00C9B3' : '#1A1A1A',
                 }}
                 data-testid={`nav-link-${item.key}`}
               >
@@ -102,11 +105,12 @@ const CorporateNav = () => {
           </div>
 
           {/* Right: locale + CTA */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-5 ml-auto">
             <LocaleSwitcher />
             <Link
               to={ctaItem.href || '/start-studio'}
-              className="btn-secondary text-xs"
+              className="btn-secondary"
+              style={{ padding: '0.6rem 1.4rem', fontSize: '0.68rem' }}
               data-testid="corporate-nav-cta"
             >
               {ctaItem.label || 'Start Your Studio'}
@@ -115,9 +119,10 @@ const CorporateNav = () => {
 
           {/* Mobile hamburger */}
           <button
-            className="lg:hidden p-2 text-[#0A0A0A]"
+            className="lg:hidden ml-auto p-2"
+            style={{ color: '#1A1A1A' }}
             onClick={() => setMobileOpen(o => !o)}
-            aria-label="Toggle navigation"
+            aria-label="Toggle menu"
             data-testid="mobile-menu-toggle"
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
@@ -126,20 +131,23 @@ const CorporateNav = () => {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="lg:hidden bg-[#F9F9F8] border-t border-[rgba(10,10,10,0.1)] px-6 py-8 space-y-6">
+          <div
+            className="lg:hidden px-6 py-8 space-y-5 border-t"
+            style={{ background: '#FFFFFF', borderColor: 'rgba(26,26,26,0.08)' }}
+          >
             {navItems.map(item => (
               <Link
                 key={item.key}
                 to={item.href}
-                className="block text-sm font-semibold uppercase tracking-widest text-[#0A0A0A]"
+                style={{ display: 'block', fontFamily: 'Montserrat, sans-serif', fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#1A1A1A', textDecoration: 'none' }}
                 data-testid={`mobile-nav-${item.key}`}
               >
                 {item.label}
               </Link>
             ))}
-            <div className="pt-4 border-t border-[rgba(10,10,10,0.1)] flex items-center justify-between">
+            <div className="pt-4 border-t flex items-center justify-between" style={{ borderColor: 'rgba(26,26,26,0.08)' }}>
               <LocaleSwitcher />
-              <Link to="/start-studio" className="btn-primary text-xs" data-testid="mobile-nav-cta">
+              <Link to="/start-studio" className="btn-primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.68rem' }} data-testid="mobile-nav-cta">
                 {ctaItem.label || 'Start Your Studio'}
               </Link>
             </div>
@@ -147,7 +155,7 @@ const CorporateNav = () => {
         )}
       </nav>
       {/* Spacer for non-hero pages */}
-      {!isOnHero && <div className="h-16" />}
+      {!isOnHero && <div style={{ height: '68px' }} />}
     </>
   );
 };

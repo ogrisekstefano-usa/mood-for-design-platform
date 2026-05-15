@@ -1,24 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --mood-teal: #3DDAD0;
-  --mood-black: #0A0A0A;
-  --mood-bone: #F9F9F8;
-  --mood-stone: #5A5A5A;
-  --mood-border: rgba(10,10,10,0.1);
+  --mood-teal: #00C9B3;
+  --mood-teal-mid: #33DCC6;
+  --mood-teal-pale: #7EECDA;
+  --mood-black: #1A1A1A;
+  --mood-gray: #6B6E71;
+  --mood-bone: #F8F8F8;
+  --mood-border: rgba(26,26,26,0.1);
 
   --background: 0 0% 100%;
-  --foreground: 0 0% 3.9%;
+  --foreground: 0 0% 10%;
   --card: 0 0% 100%;
-  --card-foreground: 0 0% 3.9%;
+  --card-foreground: 0 0% 10%;
   --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 3.9%;
-  --primary: 0 0% 9%;
-  --primary-foreground: 0 0% 98%;
+  --popover-foreground: 0 0% 10%;
+  --primary: 173 100% 39%;
+  --primary-foreground: 0 0% 100%;
   --secondary: 0 0% 96.1%;
   --secondary-foreground: 0 0% 9%;
   --muted: 0 0% 96.1%;
@@ -29,7 +31,7 @@
   --destructive-foreground: 0 0% 98%;
   --border: 0 0% 89.8%;
   --input: 0 0% 89.8%;
-  --ring: 0 0% 3.9%;
+  --ring: 173 100% 39%;
   --radius: 0rem;
 }
 
@@ -39,16 +41,16 @@ html {
 
 body {
   margin: 0;
-  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #F9F9F8;
-  color: #0A0A0A;
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #FFFFFF;
+  color: #1A1A1A;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* MOOD Typography */
-.font-serif { font-family: 'Cormorant Garamond', serif; }
-.font-sans { font-family: 'Manrope', sans-serif; }
+.font-serif { font-family: 'Playfair Display', serif; }
+.font-sans { font-family: 'Montserrat', sans-serif; }
 
 /* Reveal animations */
 .reveal {
@@ -73,12 +75,12 @@ body {
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 2rem;
-  background: #0A0A0A;
-  color: #F9F9F8;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.75rem;
+  background: #00C9B3;
+  color: #FFFFFF;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   border: none;
   cursor: pointer;
@@ -86,8 +88,8 @@ body {
   text-decoration: none;
 }
 .btn-primary:hover {
-  background: #3DDAD0;
-  color: #0A0A0A;
+  background: #00b3a0;
+  color: #FFFFFF;
 }
 
 .btn-secondary {
@@ -96,54 +98,75 @@ body {
   gap: 0.5rem;
   padding: 0.875rem 2rem;
   background: transparent;
-  color: #0A0A0A;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.75rem;
+  color: #00C9B3;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  border: 1px solid #0A0A0A;
+  border: 1px solid #00C9B3;
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
   text-decoration: none;
 }
 .btn-secondary:hover {
-  background: #0A0A0A;
-  color: #F9F9F8;
+  background: #00C9B3;
+  color: #FFFFFF;
+}
+
+.btn-dark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background: #1A1A1A;
+  color: #FFFFFF;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-decoration: none;
+}
+.btn-dark:hover {
+  background: #000000;
 }
 
 .btn-ghost {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.75rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #0A0A0A;
+  color: #1A1A1A;
   text-decoration: none;
   transition: color 0.2s ease;
 }
-.btn-ghost:hover { color: #3DDAD0; }
+.btn-ghost:hover { color: #00C9B3; }
 
 /* Overline text */
 .overline {
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.7rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #0A0A0A;
+  color: #1A1A1A;
 }
 
 .overline-teal {
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.7rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #3DDAD0;
+  color: #00C9B3;
 }
 
 /* Section spacing */
