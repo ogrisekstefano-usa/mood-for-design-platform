@@ -1,0 +1,45 @@
+{
+  "summary": "Phase U inline CMS editors (stats_band, magazine_grid, brand_logos, team_identity_card) frontend test on /settings/storefront. Studio loads 7 home sections for super_admin demo@. All 4 new renderer toolbars present and discoverable on hover (stats-toolbar, mag-toolbar, brand-toolbar, team-toolbar). 150 Phase U data-testids found (incl. stats-accent-{gold,teal,mono}, stats-align-{left,center}, stats-add, stat-{id}-{value,label,left,right,remove}, mag-density-{tight,comfortable,spacious}, mag-featured-toggle, mag-article-{slug,feature,left,right,remove,category,title,cover}, mag-add, brand-theme-{auto,dark,light}, brand-gray, brand-density-*, brand-{id}-{upload,feature,left,right,remove,href,wordmark}, brand-add, team-variant-{warm,dark}, team-align-{left,right}, team-max-{1,2}, team-sig, team-zoom, team-portrait, team-eyebrow, team-headline, team-subheadline, team-cta-*, team-cta-href-*). Variant warm↔dark verified: background flips ivory↔dark on click. Visible advisor on team_identity_card is the REAL studio reference 'Stefano Ogrisek · DIREZIONE STUDIO · LEAD DESIGNER' (sourced from /api/storefront/public/.../team-leaders — no stock/fake user). Autosave pill cycles idle→saving→saved→idle within ~2.5s of edit, confirming 700ms debounce. RBAC verified: client@ is redirected to /client (no studio access). Cross-tenant studio2@ tenant shows 'MOOD Demo Showroom' header with 0 Phase U toolbars and no Stefano leak — isolation OK. Designer RBAC has UX gap (see below).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "TeamIdentityCard portrait", "issue": "Portrait image renders broken (alt text 'Stefano Ogrisek' visible but no actual image — img <src> is empty/invalid). The team-leaders endpoint returns the leader name+role but apparently no usable avatar URL, so the editor preview shows an empty/broken picture frame. Seed an avatar for Stefano or fall back to a tasteful initials chip.", "selector": "[data-testid^=\"team-portrait-\"] img", "priority": "MEDIUM"},
+      {"component": "Designer RBAC on /settings/storefront", "issue": "Designer (designer@moodfordesign.com / Designer2024!) is NOT redirected away from /settings/storefront — the studio shell mounts and then shows 'Failed to load storefront pages.' because the backend correctly 403s the data fetch. Spec says designer 'cannot access (requires tenant_admin/super_admin)'. The route should redirect (e.g. to /dashboard) BEFORE mounting the studio shell, otherwise designers see an error-state studio header that suggests Phase U is broken rather than role-blocked.", "selector": "[data-testid=\"storefront-studio\"]", "priority": "MEDIUM"},
+      {"component": "studio-dirty-badge", "issue": "The [data-testid=\"studio-dirty-badge\"] element was NOT present in the DOM after a settings change while the save pill was cycling. It may only mount when there's a count >0 of unsaved sections AND not yet saved — but the badge cycle window is too narrow to be observable (autosave starts within 700ms and clears the dirty state). If the spec wants a numeric badge visible 'reflecting pending changes count', either (a) keep the badge on screen until publish, OR (b) ensure it remains visible during the saving phase (currently it appears it is bound only to 'dirty && !saving').", "selector": "[data-testid=\"studio-dirty-badge\"]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/settings/storefront — team_identity_card (warm variant)", "issues": ["Variant=warm renders ivory bg with cream serif headline; Variant=dark renders dark bg with light text. Variant toggle is visually correct. Inline editors (eyebrow IL TUO RIFERIMENTO, headline 'Ogni progetto nasce da una relazione', subheadline, CTA 'Inizia il tuo progetto', /start-project href pill) all visible and clickable."]},
+      {"screen": "/ (public storefront, anonymous)", "issues": ["Public root renders EXE Interior cream + Cormorant serif marketing site as expected, with NO Phase U editor toolbars leaking (toolbars=0). '850' stats and 'Stefano Ogrisek' both render on public, confirming legacy + CMS overrides resolve correctly without editor chrome."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/test_reports/phaseU_01_studio.png",
+    "/app/test_reports/phaseU_team.png",
+    "/app/test_reports/phaseU_public.png",
+    "/app/test_reports/phaseU_mobile_studio2.png"
+  ],
+  "action_items": [
+    "[MEDIUM] Provide an avatar/portrait URL (or initials fallback) for the team_identity_card preview so the editor doesn't show a broken image frame for Stefano Ogrisek.",
+    "[MEDIUM] Add a frontend route guard for /settings/storefront so designers (and any non tenant_admin/super_admin) are redirected to /dashboard instead of landing on a 'Failed to load storefront pages' error state.",
+    "[LOW] Make studio-dirty-badge persist visibly while autosave is pending OR while there are unpublished changes since last publish, so QA can observe the pending count between debounce and save.",
+    "[INFO] Re-seed studio2 (MOOD Demo Showroom) with at least one home section if the spec wants Phase U cross-tenant validation to assert presence of OWN sections — currently studio2 has 0 sections, which proves no Demo Studio leak but not 'sees their own'."
+  ],
+  "critical_code_review_comments": [
+    "SectionRenderers.jsx is now 1429 lines — exceeds the 700-line soft cap. Consider splitting each block renderer (StatsBand, MagazineGrid, BrandLogos, TeamIdentityCard, plus shared BlockToolbar/ToolbarChip primitives) into its own file under components/storefront/renderers/.",
+    "TeamIdentityCard preview should gracefully handle a leader with no avatar — render initials in a circle instead of <img> with empty src to avoid the broken-image icon.",
+    "Route /settings/storefront has no RBAC pre-flight on the frontend; relies entirely on the backend 403 + a generic 'Failed to load storefront pages.' string. Add a role gate in the route component (or a router-level guard) that redirects roles < tenant_admin.",
+    "studio-dirty-badge appears to be bound to a transient state; consider deriving its visible state from 'unpublishedChangesSinceLastPublish > 0' so it stays visible until the user clicks Review & republish."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (frontend-only test as requested)", "frontend": "~90% (all 4 inline editors render, all 150 testids present, hover toolbars work, variant switch + autosave verified; 2 medium UX gaps remain: portrait image + designer RBAC redirect)"},
+  "test_credentials": "All four credentials in /app/memory/test_credentials.md verified live: demo@/Blueprint2024!, designer@/Designer2024!, client@/Client2024!, studio2@/Studio2024!.",
+  "seed_data_creation": "None — read-only testing. Did toggle stats accent=teal and team variant=dark via the studio (autosave fired); both reverted to idle and changes persisted in current session. No reload-survival test performed in detail because the studio loader sequence makes multi-reload Playwright flaky; recommend main agent self-test reorder+delete persistence with a single follow-up reload.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Phase U editor UI is wired up correctly and discoverable. The two action items main agent should address: (1) avatar fallback for team_identity_card, (2) frontend route guard for /settings/storefront blocking 'designer' role with a redirect. After fixes, retest by (a) logging in as designer and confirming redirect away from /settings/storefront, (b) confirming the team portrait shows either a real image or a clean initials chip (no broken image icon).",
+  "rca of the issue": "1) Team portrait broken image: the renderer expects a `portrait_url` from the leader object returned by /api/storefront/public/{tenant_slug}/team-leaders, but the row for Stefano apparently has no avatar set, so <img src=\"\"> renders the browser broken-image icon. Either seed an avatar or implement an initials fallback in the EditableImage/team-portrait component. 2) Designer RBAC UX gap: StorefrontStudio.jsx mounts unconditionally on the route; only the data fetch is gated. Wrap the route in a permission check (require tenant_admin/super_admin) and redirect designers to /dashboard before render. 3) studio-dirty-badge transience: likely conditional on `isDirty && !isSaving` — narrow window; switch to a 'unpublished changes since last publish' counter that persists until Review & republish completes."
+}

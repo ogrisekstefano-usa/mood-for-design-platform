@@ -407,6 +407,7 @@ const StorefrontStudio = () => {
                 updateContent: (loc, f, v) => updateContent(section.id, loc, f, v),
                 updateSettings: (k, v) => updateSettings(section.id, k, v),
                 openAssetPicker,
+                tenantSlug: tenant?.slug,
               })}
             </div>
           ))}
