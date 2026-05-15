@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSite } from '../SiteContext';
 import { navigationContent } from '../content/navigation';
+import { tenantConfig } from '../content/tenant';
+import { useStorefrontContent, pickContent } from '../useStorefrontContent';
 import { Globe, ChevronDown } from 'lucide-react';
 
 const LocaleSwitcher = () => {
@@ -53,9 +55,51 @@ const LocaleSwitcher = () => {
 const isHashLink = (href) => href && href.startsWith('#');
 
 const SiteHeader = () => {
-  const { pick } = useSite();
+  const { pick, locale } = useSite();
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
+
+  // CMS-driven content (with JS-config fallback)
+  const { content: cmsContent, hasDbContent } = useStorefrontContent(
+    tenantConfig.slug, 'navigation', navigationContent,
+  );
+
+  // Resolve nav_top — DB-first, then legacy fallback
+  const navTop = hasDbContent ? cmsContent.nav_top : null;
+  const settings = navTop?._settings || {};
+  const logoSrc = settings.logo_src || navigationContent.brand.logoSrc;
+  const logoSize = settings.logo_size || 104;
+  const linksFromDb = Array.isArray(settings.links) ? settings.links : null;
+  const accessHrefFromDb = settings.access_href;
+
+  const links = useMemo(() => {
+    if (linksFromDb) {
+      // DB shape: { id, href, label: locale_bag, visible, show_on_desktop, show_on_mobile, is_cta, open_in_new_tab }
+      return linksFromDb
+        .filter((l) => l.visible !== false && l.show_on_desktop !== false)
+        .map((l) => ({
+          id: l.id || l.href,
+          href: l.href,
+          open_in_new_tab: !!l.open_in_new_tab,
+          is_cta: !!l.is_cta,
+          label: pickContent(l.label, locale) || '',
+        }));
+    }
+    // Legacy fallback (navigation.js)
+    return navigationContent.header.links.map((l) => ({
+      id: l.id, href: l.href,
+      open_in_new_tab: false, is_cta: false,
+      label: pick(l.label),
+    }));
+  }, [linksFromDb, locale, pick]);
+
+  const accessLabel = navTop
+    ? (pickContent(
+        Object.fromEntries(Object.entries(navTop).filter(([k, v]) => !k.startsWith('_') && v && typeof v === 'object' && 'access_label' in v).map(([k, v]) => [k, v.access_label])),
+        locale,
+      ) || pick(navigationContent.header.access.label))
+    : pick(navigationContent.header.access.label);
+  const accessHref = accessHrefFromDb || navigationContent.header.access.href;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -72,33 +116,49 @@ const SiteHeader = () => {
       data-testid="site-header"
     >
       <Link to="/" className="mfd-header__brandgroup" data-testid="site-brand" style={{ textDecoration: 'none' }}>
-        <img src={navigationContent.brand.logoSrc} alt="MOOD for DESIGN" className="mfd-header__logo" />
-        <span className="mfd-header__tagline" data-testid="site-brand-tagline">
-          {pick(navigationContent.brand.tagline).split('\n').map((line, i) => (
-            <span key={i}>{line}</span>
-          ))}
-        </span>
+        <img
+          src={logoSrc}
+          alt="MOOD for DESIGN"
+          className="mfd-header__logo"
+          style={{ width: logoSize, height: logoSize }}
+        />
       </Link>
 
       <nav className="mfd-header__nav" aria-label="Primary">
-        {navigationContent.header.links.map((link) => (
-          isHashLink(link.href) ? (
-            <a key={link.id} href={link.href} data-testid={`site-nav-${link.id}`}>{pick(link.label)}</a>
-          ) : (
-            <Link key={link.id} to={link.href} data-testid={`site-nav-${link.id}`}>{pick(link.label)}</Link>
-          )
-        ))}
+        {links.map((link) => {
+          const className = link.is_cta ? 'mfd-btn mfd-btn--solid-paper mfd-header__cta' : undefined;
+          const props = link.open_in_new_tab ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+          if (isHashLink(link.href)) {
+            return (
+              <a key={link.id} href={link.href} className={className} data-testid={`site-nav-${link.id}`} {...props}>
+                {link.label}
+              </a>
+            );
+          }
+          if (link.open_in_new_tab) {
+            return (
+              <a key={link.id} href={link.href} className={className} data-testid={`site-nav-${link.id}`} {...props}>
+                {link.label}
+              </a>
+            );
+          }
+          return (
+            <Link key={link.id} to={link.href} className={className} data-testid={`site-nav-${link.id}`}>
+              {link.label}
+            </Link>
+          );
+        })}
       </nav>
 
       <div className="mfd-header__right">
         <LocaleSwitcher />
         <Link
-          to={navigationContent.header.access.href}
+          to={accessHref}
           className="mfd-btn mfd-btn--outline-paper"
           data-testid="site-access-btn"
           style={{ padding: '0.7rem 1.3rem', fontSize: 11 }}
         >
-          {pick(navigationContent.header.access.label)}
+          {accessLabel}
         </Link>
       </div>
     </header>

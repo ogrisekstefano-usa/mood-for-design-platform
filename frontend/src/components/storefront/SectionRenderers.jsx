@@ -12,6 +12,8 @@
 import React from 'react';
 import { Image as ImageIcon, Plus } from 'lucide-react';
 import InlineText from './InlineText';
+import NavigationRenderer from './NavigationRenderer';
+import FooterColumnsRenderer from './FooterColumnsRenderer';
 import { pickLocale } from './storefrontApi';
 
 const FALLBACK_CHAIN = ['it', 'en-US', 'en-GB', 'fr', 'de', 'es'];
@@ -331,6 +333,8 @@ export const RENDERERS = {
   value_props:       ValueProps,
   projects_preview:  ProjectsPreview,
   newsletter:        Newsletter,
+  nav_top:           NavigationRenderer,
+  footer_columns:    FooterColumnsRenderer,
 };
 
 export const renderSection = (section, props) => {

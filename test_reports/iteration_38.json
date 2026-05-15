@@ -1,0 +1,44 @@
+{
+  "summary": "Session D — Cinematic CMS renderers for navigation (nav_top + footer_columns) validated end-to-end. Backend 6/6 pytest pass against /api/storefront/public/mood-demo-studio-81a09e/pages/navigation. Frontend StorefrontStudio shows the cinematic NavigationRenderer and FooterColumnsRenderer (NOT schema fallback) with 7 editable link pills, logo+size input, ACCEDI CTA, 4 footer columns (AZIENDA/SERVIZI/RISORSE/SUPPORTO), socials, showroom address, copyright. Public / page header now reads from DB (7 links + ACCEDI + IT locale switcher) and old tagline column is gone. Public footer renders 4 columns + socials + showroom + © 2026 copyright.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Public / (home) header",
+        "issues": [
+          "Logo <img> bounding box reports 200×200 on the public site even though navigation page settings.logo_size=104 and the CSS reference notes 'logo bumped to 104×104'. Visual rendering looks acceptable (logo + nav + ACCEDI line up well), but the logo_size DB value does not appear to drive the rendered size on the public SiteHeader. Worth a one-line CSS/inline-style audit to confirm settings.logo_size is honoured (currently looks hard-coded or unconstrained)."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_38_navigation_cms.py",
+    "/app/test_reports/pytest/iteration_38_nav_cms.xml"
+  ],
+  "action_items": [
+    "(MINOR) Confirm public SiteHeader honours settings.logo_size (DB=104) on the rendered <img>. Currently the image renders at intrinsic 200×200; the cinematic editor (CMS) reflects size input correctly, but the public site appears to ignore it."
+  ],
+  "critical_code_review_comments": [
+    "Locale selector in the cinematic NavigationRenderer toolbar is implemented as a hidden native <select> behind a styled IT button — Playwright cannot click the <option> directly (element not visible). For testability, consider exposing data-testid='locale-switcher' on the styled wrapper and forwarding clicks programmatically, or use a shadcn Select that pops a visible menu. Functional logic for locale switching works (verified via backend i18n payload and public site IT rendering), but this hurts automated coverage.",
+    "Seed/CMS data is consistent: nav_top has logo_size=104 but editor input visually showed 114/200 transiently — could be a controlled-input rounding or AssetPicker-related state. Not blocking.",
+    "Drag-drop reorder not tested in Playwright (per request guidance — non-blocking). Recommend a follow-up jest-dom test for the HTML5 dragstart/dragover/drop handlers."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_38_navigation_cms.py"
+  ],
+  "success_rate": {
+    "backend": "100% (6/6 pytest)",
+    "frontend": "95% (editor renderer + public header/footer verified; drag-drop and inline locale-toggle click skipped due to native-select visibility and per-request guidance)"
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super admin) for /settings/storefront. Tenant slug: mood-demo-studio-81a09e.",
+  "seed_data_creation": "None this iteration — navigation page was already published in DB.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Regression file: /app/backend/tests/test_iteration_38_navigation_cms.py (6 tests, ~1.2s). Validates: 2-section page (nav_top + footer_columns), 7 nav links with i18n labels + per-locale access_label, 4 footer columns (company/services/resources/support), 4 socials, showroom_address_lines, locale_content with tagline/showroom_title/book_cta_label/copyright, IT 'AZIENDA' vs EN 'COMPANY'. To test the cinematic editor in UI: login → /settings/storefront → click 'navigation' tab; renderers mount automatically (NavigationRenderer + FooterColumnsRenderer). The locale dropdown is a hidden native <select> — Playwright must use selectOption() on the underlying <select> rather than clicking the option.",
+  "rca of the issue": "No critical issues observed. Only minor: public SiteHeader logo does not appear to honour DB settings.logo_size — likely needs a style={{ width: size, height: size }} on the <img> in /app/frontend/src/site/components/SiteHeader.jsx (reference file from review_request). Visual impact is low because the current rendered size still looks balanced."
+}

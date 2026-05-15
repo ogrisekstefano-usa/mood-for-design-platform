@@ -290,14 +290,12 @@ def build_projects_sections(proj):
 
 
 def build_simple_page_sections(page_key, content):
-    """For start_project, professionals, navigation, ui — store the legacy
-    config as a single all-encompassing section (`page_content` in settings)
-    so the editor can iteratively decompose it later.
+    """For start_project, professionals, ui — store the legacy config as a single
+    all-encompassing section so the editor can iteratively decompose it later.
     """
     type_map = {
         'start_project': 'wizard_intro',
         'professionals': 'pro_hero',
-        'navigation':    'nav_top',
         'ui':            'shared_ui_labels',
     }
     section_type = type_map.get(page_key, 'shared_ui_labels')
@@ -309,12 +307,116 @@ def build_simple_page_sections(page_key, content):
     )]
 
 
+def build_navigation_sections(nav):
+    """Build dedicated nav_top + footer_columns sections from navigation.js."""
+    sections = []
+
+    # ── nav_top — header
+    brand = nav.get('brand') or {}
+    header = nav.get('header') or {}
+    header_links_normalized = []
+    for it in (header.get('links') or []):
+        if not isinstance(it, dict): continue
+        header_links_normalized.append({
+            'id':         it.get('id'),
+            'href':       it.get('href'),
+            'label':      _locale_bag(it.get('label') or {}),
+            'open_in_new_tab': bool(it.get('open_in_new_tab', False)),
+            'visible':    True,
+            'show_on_mobile': True,
+            'show_on_desktop': True,
+            'is_cta':     False,
+        })
+    access = header.get('access') or {}
+    sections.append((
+        'nav_top',
+        {
+            '_default': {
+                'logo_src':    brand.get('logoSrc') or '/brand/mood-for-design-mark.png',
+                'logo_size':   104,
+                'links':       header_links_normalized,
+                'access_href': access.get('href') or '/auth/login',
+            },
+            **{LOCALE_MAP.get(k, k): {
+                'access_label': access.get('label', {}).get(k),
+            } for k in ['it', 'en', 'fr', 'de', 'es']},
+        },
+        {
+            'logo_src':    brand.get('logoSrc') or '/brand/mood-for-design-mark.png',
+            'logo_size':   104,
+            'links':       header_links_normalized,
+            'access_href': access.get('href') or '/auth/login',
+        },
+    ))
+
+    # ── footer_columns — footer
+    footer = nav.get('footer') or {}
+    columns_normalized = []
+    for col in (footer.get('columns') or []):
+        if not isinstance(col, dict): continue
+        col_links = []
+        for ln in (col.get('links') or []):
+            if not isinstance(ln, dict): continue
+            col_links.append({
+                'href':  ln.get('href'),
+                'label': _locale_bag(ln.get('label') or {}),
+                'open_in_new_tab': bool(ln.get('open_in_new_tab', False)),
+                'visible': True,
+            })
+        columns_normalized.append({
+            'id':      col.get('id'),
+            'title':   _locale_bag(col.get('title') or {}),
+            'links':   col_links,
+            'visible': True,
+        })
+
+    socials_normalized = []
+    for s in (footer.get('socials') or []):
+        if not isinstance(s, dict): continue
+        socials_normalized.append({
+            'id':    s.get('id'),
+            'href':  s.get('href'),
+            'icon':  s.get('icon'),
+            'label': s.get('label'),
+            'visible': True,
+        })
+
+    showroom = footer.get('showroom') or {}
+    book_cta = showroom.get('bookCta') or {}
+
+    sections.append((
+        'footer_columns',
+        {
+            '_default': {
+                'columns':           columns_normalized,
+                'socials':           socials_normalized,
+                'showroom_address_lines': showroom.get('addressLines') or [],
+                'book_cta_href':     book_cta.get('href'),
+            },
+            **{LOCALE_MAP.get(k, k): {
+                'tagline':           footer.get('tagline', {}).get(k),
+                'showroom_title':    showroom.get('title', {}).get(k),
+                'book_cta_label':    book_cta.get('label', {}).get(k),
+                'copyright':         footer.get('copyright', {}).get(k),
+            } for k in ['it', 'en', 'fr', 'de', 'es']},
+        },
+        {
+            'columns':           columns_normalized,
+            'socials':           socials_normalized,
+            'showroom_address_lines': showroom.get('addressLines') or [],
+            'book_cta_href':     book_cta.get('href'),
+        },
+    ))
+
+    return sections
+
+
 PAGE_BUILDERS = {
     'home':           build_home_sections,
     'projects':       build_projects_sections,
     'start_project':  lambda c: build_simple_page_sections('start_project', c),
     'professionals':  lambda c: build_simple_page_sections('professionals', c),
-    'navigation':     lambda c: build_simple_page_sections('navigation', c),
+    'navigation':     build_navigation_sections,
     'ui':             lambda c: build_simple_page_sections('ui', c),
 }
 
