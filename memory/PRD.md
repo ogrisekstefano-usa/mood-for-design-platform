@@ -128,6 +128,33 @@ the user directly in their living project — not on an empty dashboard.
 - Project page shows assigned designer card (Diego Marín / Architetto Senior / available status) and the 6 moodboard pages ready to browse
 
 
+### ✅ Phase H.5 — Navigation CMS Renderers (DONE — 15 Feb 2026)
+The `navigation` page in the Storefront Studio is no longer a fallback schema bag. Two dedicated cinematic renderers replaced it AND the public site now reads directly from the database.
+
+**Cinematic editors**
+- `components/storefront/NavigationRenderer.jsx` — live preview of the actual header. Logo with size knob (40–200px) + Replace action, draggable link pills with hover toolbar (drag, visibility, open-in-new-tab, desktop, mobile, CTA promote, delete), inline label + href edit, Add link dashed button, locale switcher mock, editable Access CTA label/href
+- `components/storefront/FooterColumnsRenderer.jsx` — dark luxury footer canvas. Editable tagline, draggable multi-column manager (4 default columns), per-column add/visibility/delete, per-link visibility/delete + inline label+href, Showroom address (multiline textarea), Book CTA label+href, Social rail with visibility toggle + href per social, copyright template per locale
+
+**Seed importer**
+- `scripts/seed_storefront_cms.py` → `build_navigation_sections()` produces two distinct cms_sections rows: `nav_top` and `footer_columns` with locale-normalized labels (`it`, `en-US`, `en-GB`/copy of en, `fr`, `de`, `es`)
+
+**Public rewire**
+- `site/components/SiteHeader.jsx` — now consumes `useStorefrontContent('navigation')` with fallback to `navigation.js`. Logo size honored from `settings.logo_size`. Tagline definitively removed (logo bumped to 104×104 per Stefano's request)
+- `site/components/SiteFooter.jsx` — same pattern. Columns + socials + showroom + copyright all CMS-driven
+- `navigation.js` is now **seed-only** (deprecation comment added) — used only as fallback if DB is unreachable
+
+**Schema additions** (no migration needed — fields live in existing JSONB)
+- Per-link: `visible`, `open_in_new_tab`, `show_on_desktop`, `show_on_mobile`, `is_cta`
+- Per-column: `visible`
+- Per-social: `visible`
+
+**End-to-end verified** (testing agent iteration_38 — backend 100% / frontend 95%)
+- DB navigation page has 2 sections (nav_top + footer_columns)
+- Public endpoint returns sections with all settings + locale_content
+- Studio renders the cinematic editors (not schema fallback) when opening navigation page
+- Public site / shows logo 104px, no old tagline, links from DB working
+
+
 
 ### ✅ Phase 1 — Tenant MVP (DONE — 12 Mag 2026)
 - Schema Supabase 22 tabelle, RLS off, grants service_role

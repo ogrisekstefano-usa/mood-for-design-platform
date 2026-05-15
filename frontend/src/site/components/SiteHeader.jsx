@@ -68,7 +68,7 @@ const SiteHeader = () => {
   const navTop = hasDbContent ? cmsContent.nav_top : null;
   const settings = navTop?._settings || {};
   const logoSrc = settings.logo_src || navigationContent.brand.logoSrc;
-  const logoSize = settings.logo_size || 104;
+  const logoSize = Number(settings.logo_size) || 104;
   const linksFromDb = Array.isArray(settings.links) ? settings.links : null;
   const accessHrefFromDb = settings.access_href;
 
