@@ -1,0 +1,121 @@
+{
+  "project_name": "MOOD for DESIGN",
+  "theme": "LIGHT",
+  "archetype": "Archetype 4 (Swiss & High-Contrast) + Archetype 5 (Jewel & Luxury)",
+  "vibe": "Architectural Luxury Light. Editorial, cinematic, pristine, deeply structured yet spacious. It blends the authority and clarity of Swiss typography with the moody, expensive feel of high-end editorial magazines.",
+  "colors": {
+    "background_primary": "#F9F9F8",
+    "background_secondary": "#FFFFFF",
+    "background_tertiary": "#F2F2F0",
+    "text_primary": "#0A0A0A",
+    "text_secondary": "#5A5A5A",
+    "brand_teal": "#3DDAD0",
+    "border_subtle": "rgba(10, 10, 10, 0.1)",
+    "border_strong": "rgba(10, 10, 10, 1)",
+    "rules": [
+      "No full-screen teal gradients. Teal is an accent, a kinetic trigger used strictly for CTAs and hover states.",
+      "Always use pure charcoal (#0A0A0A) for headings, never soft grey.",
+      "Background must be #F9F9F8 (Off-White/Bone) for structural sections to provide warmth and avoid sterile tech feels."
+    ]
+  },
+  "typography": {
+    "heading_font": "Cormorant Garamond, serif",
+    "body_font": "Manrope, sans-serif",
+    "scales": {
+      "H1": "text-5xl sm:text-6xl lg:text-[5rem] tracking-tighter leading-none font-light",
+      "H2": "text-4xl sm:text-5xl tracking-tight leading-none font-normal",
+      "H3": "text-2xl sm:text-3xl tracking-tight leading-snug font-normal",
+      "H4": "text-xl font-medium tracking-tight",
+      "Body": "text-base leading-relaxed tracking-normal text-[#5A5A5A]",
+      "Overline": "text-xs tracking-[0.2em] uppercase font-bold text-[#0A0A0A]"
+    },
+    "rules": [
+      "Headings must strictly use Cormorant Garamond to enforce the editorial aesthetic.",
+      "Overlines and small interactive labels use Manrope with wide tracking.",
+      "Do NOT use Inter or standard geometric fonts for any primary heading.",
+      "Do not center-align everything. Use explicit left/right alignments to create visual tension."
+    ]
+  },
+  "grids_and_layouts": {
+    "spacing_scale": "p-4, p-8, p-12, p-24, p-32",
+    "marketing_grid": "MODE A: Tetris Grid. grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12",
+    "rules": [
+      "Generous Spacing Philosophy: Use 2-3x more spacing than typical SaaS designs. p-24 and p-32 are standard for section paddings.",
+      "Tension over Symmetry: Avoid standard 3-column Bootstrap layouts. Use bento-style spans like col-span-8 and col-span-4.",
+      "Optical Alignment: Never perfectly center elements if it looks visually heavy on one side. Balance negative space.",
+      "Cardless Architecture: Do not wrap content in floating white boxes with drop shadows. Use 1px borders or subtle background shifts (#F9F9F8 to #FFFFFF)."
+    ]
+  },
+  "visual_enhancers": {
+    "surfaces": [
+      "Solid Backgrounds: Flat colors with hard 1px borders.",
+      "Glassmorphism (for sticky nav): backdrop-blur-xl bg-[#F9F9F8]/70 border-b border-black/10.",
+      "No rounded corners. Use rounded-none or rounded-sm (max 4px) to retain architectural crispness."
+    ],
+    "shadows": [
+      "Avoid heavy drop shadows.",
+      "Use diffuse ambient shadows (shadow-[0_8px_32px_rgba(0,0,0,0.04)]) strictly for overlapping editorial images."
+    ]
+  },
+  "components": {
+    "buttons": "Flat, sharp edges (rounded-none). Primary is #0A0A0A with #FFFFFF text. Hover state switches to #3DDAD0 with #0A0A0A text. Secondary button is border border-[#0A0A0A] bg-transparent text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-[#FFFFFF].",
+    "navigation": "Minimal sticky header. Glassmorphism effect. Logo on left, navigation centered, Locale Switcher + CTA right. Must be z-50.",
+    "footer": "4-column grid. py-32 bg-[#0A0A0A] text-[#F9F9F8]. Massive logo typographic treatment.",
+    "forms_and_inputs": "Shadcn based. Stripped of all rounding. border-b only or sharp 1px borders.",
+    "sections": {
+      "EditorialHero": "Massive serif H1, cinematic image right or bottom. Strict asymmetrical grid.",
+      "SplitStory": "50/50 image and text layout. Image spans full height, text centered vertically in its column.",
+      "PricingCards": "Not SaaS cards. Editorial price lists. Clean tables, 1px horizontal dividers. Subtle teal highlights.",
+      "CinematicQuote": "Massive serif quote (text-4xl to 6xl), heavily indented, generous top/bottom padding."
+    }
+  },
+  "motion": {
+    "scrolling": "Lenis smooth scroll is MANDATORY for premium momentum feel.",
+    "animations": "Framer Motion for staggered fade-ups (opacity 0 to 1, y: 20 to 0). Duration 0.8s, ease: [0.16, 1, 0.3, 1].",
+    "interactions": "Hover states must be instantaneous but visually impactful (e.g., color inversion or sharp scale)."
+  },
+  "accessibility": {
+    "contrast": "Ensure pure black or charcoal (#0A0A0A) on off-white (#F9F9F8) for body text. Teal (#3DDAD0) must only be used on dark backgrounds or as hover states where contrast is maintained.",
+    "testing": "All interactive and key informational elements MUST include data-testid attribute (e.g., data-testid='corporate-nav-cta')."
+  },
+  "media_urls": {
+    "hero_architectural_cinematic": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/8710080e-5188-4ec5-bd65-70ec654c95f9/images/47b99628f6050f1aa60c175bf389e79b1bfe0f2d1ce288c4f1f637d3b0df271b.png",
+      "description": "Wide landscape format, ultra-minimalist luxury interior. Use for the main EditorialHero section."
+    },
+    "editorial_moodboard_materials": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/8710080e-5188-4ec5-bd65-70ec654c95f9/images/a1a0631e310012f11b40f292a4e5d0ad766e9bacca39cc796c3853b19daa65ed.png",
+      "description": "Editorial collage of material swatches. Use for SplitStory or FeatureNarrative sections."
+    },
+    "unsplash_living_room_1": {
+      "url": "https://images.unsplash.com/photo-1682184805271-11671b7ecf4c",
+      "description": "Modern minimalist living room window view. Great for CaseStudyPreview or JournalGrid."
+    },
+    "unsplash_living_room_2": {
+      "url": "https://images.unsplash.com/photo-1700474568247-2bf81611b293",
+      "description": "Living room with architectural speakers and couch. Use for Platform features."
+    },
+    "unsplash_sofa": {
+      "url": "https://images.unsplash.com/photo-1567016376408-0226e4d0c1ea",
+      "description": "Black and brown leather padded tub sofa. Use for product/feature visual."
+    },
+    "unsplash_studio_1": {
+      "url": "https://images.unsplash.com/photo-1598367815092-a2c0cbc1ea3d",
+      "description": "Creative architect sitting at a table. Use for AboutPage or Team sections."
+    },
+    "unsplash_studio_2": {
+      "url": "https://images.unsplash.com/photo-1742440711413-da7afb0f4930",
+      "description": "Two men in a studio shelving unit. Use for Start Your Studio or About sections."
+    }
+  },
+  "instructions_to_main_agent": [
+    "DO NOT use standard SaaS marketing templates. This is an architectural luxury site. Build with raw HTML, Tailwind grids, and immense negative space.",
+    "Implement Lenis for smooth scrolling at the root of the corporate layout.",
+    "Add 'Cormorant Garamond' and 'Manrope' via Google Fonts.",
+    "Use Shadcn UI components ONLY for complex interactive parts (Forms, Dialogs, Select), but OVERRIDE their default styles to be sharp (rounded-none), cardless, and border-heavy.",
+    "When applying overlays on images (like the Hero), use max bg-black/30 or gradient-to-t. Do not kill the imagery with heavy black filters.",
+    "Ensure the locale switcher in CorporateNav is perfectly integrated without bloating the header.",
+    "All components must be visually distinct but share the same underlying CMS section registry.",
+    "Add data-testid to every interactive button, link, and form element to comply with E1 constraints."
+  ]
+}
