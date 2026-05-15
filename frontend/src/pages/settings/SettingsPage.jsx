@@ -118,7 +118,6 @@ const SettingsPage = () => {
           <SettingsTile testid="tile-brand" icon={Palette} to="/settings/brand"
             title={t('settings.brand.title', null, 'Brand Studio')}
             description={t('settings.brand.sub', null, 'Logo, palette, typography and style preset for your tenant.')}
-            soon
           />
         </div>
       </section>

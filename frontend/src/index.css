@@ -121,6 +121,23 @@
     --radius: 0.375rem;
   }
 
+  /* ── Tenant Brand Override Bridge ────────────────────────────────────
+     When the TenantThemeProvider sets --brand-* on documentElement, these
+     declarations map them back into the platform palette so the entire
+     workspace + storefront re-themes without code changes.
+     The `var(--brand-…, …)` chain keeps existing defaults if no brand is set. */
+  :root {
+    --bp-primary:        var(--brand-primary,        var(--bp-primary,        #00C9B3));
+    --bp-accent:         var(--brand-accent,         var(--bp-accent,         #7EE6DA));
+    --bp-bg:             var(--brand-bg,             var(--bp-bg,             #0F0F10));
+    --bp-surface-1:      var(--brand-surface,        var(--bp-surface-1,      #16171A));
+    --bp-text-primary:   var(--brand-text,           var(--bp-text-primary,   #F4F5F7));
+    --bp-text-secondary: var(--brand-text-2,         var(--bp-text-secondary, #C8CACE));
+    --bp-border:         var(--brand-border,         var(--bp-border,         rgba(255,255,255,0.07)));
+    --bp-font-heading:   var(--brand-font-display,   'Playfair Display', Georgia, serif);
+    --bp-font-body:      var(--brand-font-body,      'Montserrat', system-ui, sans-serif);
+  }
+
   * { @apply border-border; }
 
   html { height: 100%; }

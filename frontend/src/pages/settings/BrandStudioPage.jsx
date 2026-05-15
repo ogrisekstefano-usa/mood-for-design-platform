@@ -1,420 +1,411 @@
 /**
- * BrandStudioPage — premium tenant theme editor (Linear/Stripe/Vercel inspired).
+ * BrandStudioPage — Tenant Brand Override (`/settings/brand`).
  *
- * Tabs: Palette · Typography · Shape & Spacing · Elevation & Motion · Assets
- * Live preview pane on the right with desktop/tablet/mobile toggle.
+ * Split layout:
+ *   • LEFT  — controls: identity / palette / typography / radius+shadow / preset cards
+ *   • RIGHT — sticky live preview using the same CSS vars that drive the platform.
+ *
+ * Live preview is INSTANT and SAFE:
+ *   - User edits → `applyDraft(theme)` writes vars to documentElement
+ *   - "Save" → PUT /api/branding → refresh() picks the persisted theme
+ *   - "Discard" → clearDraft() restores the saved theme
+ *
+ * No SSR concerns: this page is client-only. The same `--brand-*` vars are
+ * mounted at boot for all tenants, so visiting `/dashboard` immediately after
+ * saving will already show the new theme.
  */
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import api, { formatError } from '../../lib/api';
-import { uploadBrandAsset } from '../../lib/assetUpload';
-import { useBlueprint, applyTheme } from '../../contexts/BlueprintContext';
-import { Palette, Type, Square, Sparkles, Image as ImageIcon, Monitor, Tablet, Smartphone, RotateCcw, Check } from 'lucide-react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  ArrowLeft, Palette, Type, Save, RotateCcw, Loader2, CheckCircle2,
+  Image as ImageIcon, Layers, Sparkles, Square, Circle,
+} from 'lucide-react';
+import { toast } from 'sonner';
+import api from '../../lib/api';
+import { useBlueprint } from '../../contexts/BlueprintContext';
+import { useTenantTheme } from '../../contexts/TenantThemeContext';
+import { useAuth } from '../../contexts/AuthContext';
 
-const PRESETS = [
-  { id: 'mood',    name: 'MOOD Teal',     primary: '#26F5C9', accent: '#B8977A', bg: '#0A0A0B' },
-  { id: 'gold',    name: 'Editorial Gold', primary: '#D4AF37', accent: '#B8977A', bg: '#0A0A0B' },
-  { id: 'noir',    name: 'Pure Noir',     primary: '#FFFFFF', accent: '#A19D98', bg: '#000000' },
-  { id: 'editorial-noir', name: 'Editorial Noir', primary: '#C8A687', accent: '#7A6553', bg: '#08070A',
-    extra: { surface_1: '#11100F', surface_2: '#1A1816', text_primary: '#F1EAE1', text_secondary: '#A89C8C' },
-    atmosphere: { grain_intensity: 0.06, vignette_intensity: 0.35 } },
-  { id: 'linear-mist', name: 'Linear Mist', primary: '#8B7CFF', accent: '#0063D4', bg: '#080808',
-    extra: { surface_1: '#0F0F11', surface_2: '#16161A', text_primary: '#E1E1E7', text_secondary: '#9A9AA8' },
-    atmosphere: { grain_intensity: 0.02, vignette_intensity: 0.15, glass_opacity: 0.7 } },
-  { id: 'rose',    name: 'Rose Quartz',   primary: '#E8B4B8', accent: '#9B7B7E', bg: '#0E0A0B' },
-  { id: 'forest',  name: 'Deep Forest',   primary: '#7AA489', accent: '#B89C7A', bg: '#0A0E0B' },
-  { id: 'ocean',   name: 'Midnight Sea',  primary: '#5B8FB8', accent: '#B8977A', bg: '#070B11' },
-];
+const DISPLAY_FONTS = ['Playfair Display', 'Cormorant Garamond', 'DM Serif Display', 'Bodoni Moda', 'Fraunces', 'Inter Tight'];
+const BODY_FONTS    = ['Inter', 'Montserrat', 'Manrope', 'Plus Jakarta Sans', 'Space Grotesk', 'Inter Tight'];
+const RADIUS_OPTS   = ['0px', '2px', '4px', '8px', '12px'];
+const DENSITY_OPTS  = ['compact', 'comfortable', 'spacious'];
+const SHADOW_OPTS   = ['none', 'soft', 'medium', 'strong'];
 
-const TabBtn = ({ active, onClick, icon: Icon, label, testid }) => (
-  <button data-testid={testid} onClick={onClick}
-    className={`flex items-center gap-2 px-3 py-2 text-xs font-body rounded-[var(--bp-radius-sm)] transition-colors ${
-      active ? 'bg-white/[0.05] text-[var(--bp-text-primary)]' : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-secondary)]'
-    }`}>
-    <Icon size={13} strokeWidth={1.5} /> {label}
-  </button>
+const DEFAULT_PALETTE = {
+  primary: '#00C9B3', secondary: '#33DCC6', accent: '#7EE6DA',
+  background: '#0F0F10', surface: '#16171A',
+  text_primary: '#F4F5F7', text_secondary: '#C8CACE',
+  border: 'rgba(244,245,247,0.10)',
+  success: '#22C55E', warning: '#F59E0B', danger: '#EF4444',
+};
+
+const Section = ({ kicker, title, children, testid }) => (
+  <section className="mb-9" data-testid={testid}>
+    <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body mb-1">{kicker}</p>
+    <h2 className="font-heading text-xl text-[var(--bp-text-primary)] mb-4">{title}</h2>
+    {children}
+  </section>
 );
 
-const Label = ({ children }) => (
-  <label className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--bp-text-muted)] font-body mb-1.5">
+const Field = ({ label, children }) => (
+  <label className="block mb-3">
+    <span className="block text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body mb-1.5">{label}</span>
     {children}
   </label>
 );
 
-const ColorField = ({ label, value, onChange, testid }) => (
-  <div>
-    <Label>{label}</Label>
-    <div className="flex items-center gap-2">
-      <input type="color" value={value || '#000000'} onChange={(e) => onChange(e.target.value)}
-        className="w-9 h-9 rounded-[var(--bp-radius-sm)] cursor-pointer border border-[var(--bp-border)] bg-transparent" />
-      <input data-testid={testid} type="text" value={value || ''} onChange={(e) => onChange(e.target.value)}
-        className="input-luxury flex-1 px-3 py-2 text-xs font-mono rounded-[var(--bp-radius-sm)]" />
+const TextInput = ({ value, onChange, placeholder, testid }) => (
+  <input value={value || ''} onChange={(e) => onChange(e.target.value)}
+         placeholder={placeholder} data-testid={testid}
+         className="w-full px-3 py-2 bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-xs)] text-[var(--bp-text-primary)] text-[12px] font-body outline-none focus:border-[var(--bp-primary)] transition-colors" />
+);
+
+const ColorPicker = ({ value, onChange, label, testid }) => (
+  <div className="flex items-center gap-2.5 mb-2">
+    <input type="color"
+           value={(value || '#000000').startsWith('#') ? value : '#000000'}
+           onChange={(e) => onChange(e.target.value)}
+           data-testid={`${testid}-picker`}
+           className="w-9 h-9 rounded-[var(--bp-radius-xs)] border border-[var(--bp-border)] bg-transparent cursor-pointer" />
+    <div className="flex-1">
+      <p className="text-[9px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body mb-1">{label}</p>
+      <input value={value || ''} onChange={(e) => onChange(e.target.value)}
+             data-testid={testid}
+             className="w-full px-2 py-1 bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-xs)] text-[var(--bp-text-primary)] text-[11px] font-mono outline-none focus:border-[var(--bp-primary)] transition-colors" />
     </div>
   </div>
 );
 
-const Select = ({ label, value, onChange, options, testid }) => (
-  <div>
-    <Label>{label}</Label>
-    <select data-testid={testid} value={value || ''} onChange={(e) => onChange(e.target.value)}
-      className="input-luxury w-full px-3 py-2 text-sm font-body rounded-[var(--bp-radius-sm)]">
-      {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-    </select>
+const SelectChips = ({ options, value, onChange, testid }) => (
+  <div className="flex flex-wrap gap-1.5">
+    {options.map((o) => {
+      const active = value === o;
+      return (
+        <button type="button" key={o} onClick={() => onChange(o)} data-testid={`${testid}-${o}`}
+                className={`px-3 py-1.5 rounded-[var(--bp-radius-xs)] text-[10px] font-body uppercase tracking-[0.18em] border transition-colors
+                  ${active ? 'border-[var(--bp-primary)] text-[var(--bp-primary)] bg-[var(--bp-primary)]/8'
+                           : 'border-[var(--bp-border)] text-[var(--bp-text-secondary)] hover:border-[var(--bp-border-strong)] hover:text-[var(--bp-text-primary)]'}`}>
+          {o}
+        </button>
+      );
+    })}
   </div>
 );
 
-const Slider = ({ label, value, onChange, min, max, step = 1, suffix = '', testid }) => (
-  <div>
-    <div className="flex items-center justify-between mb-1.5">
-      <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--bp-text-muted)] font-body">{label}</span>
-      <span className="text-[11px] text-[var(--bp-text-secondary)] font-mono">{value}{suffix}</span>
-    </div>
-    <input data-testid={testid} type="range" min={min} max={max} step={step} value={value}
-      onChange={(e) => onChange(parseFloat(e.target.value))} className="w-full accent-[var(--bp-primary)]" />
-  </div>
-);
-
-const AssetUploader = ({ kind, label, currentUrl, onUploaded }) => {
-  const fileRef = useRef();
-  const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleFile = async (e) => {
-    const file = e.target.files?.[0]; if (!file) return;
-    setUploading(true); setError('');
-    try {
-      const r = await uploadBrandAsset({ kind, file });
-      onUploaded(r.url);
-    } catch (err) { setError(err.message || formatError(err)); }
-    finally { setUploading(false); }
-  };
-
+const PresetCard = ({ preset, current, onPick, testid }) => {
+  const p = preset.theme?.palette || {};
   return (
-    <div className="bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] p-4">
-      <Label>{label}</Label>
-      <input ref={fileRef} type="file" accept="image/*,.svg,.ico" onChange={handleFile} className="hidden" data-testid={`asset-input-${kind}`} />
-      {currentUrl ? (
-        <div className="flex items-center gap-3">
-          <div className="w-14 h-14 rounded-[var(--bp-radius-sm)] bg-[var(--bp-surface-3)] flex items-center justify-center overflow-hidden border border-[var(--bp-border)]">
-            <img src={currentUrl} alt={kind} className="max-w-full max-h-full object-contain" />
-          </div>
-          <button onClick={() => fileRef.current?.click()} disabled={uploading} data-testid={`asset-replace-${kind}`}
-            className="text-xs text-[var(--bp-primary)] hover:opacity-80 font-body">
-            {uploading ? 'Uploading…' : 'Replace'}
+    <button type="button" onClick={() => onPick(preset)}
+            data-testid={testid}
+            className={`text-left rounded-[var(--bp-radius-sm)] p-3 border transition-colors group
+              ${current ? 'border-[var(--bp-primary)] bg-[var(--bp-primary)]/5'
+                        : 'border-[var(--bp-border)] hover:border-[var(--bp-border-strong)]'}`}>
+      <div className="aspect-[5/2] rounded-[3px] mb-2 overflow-hidden border border-[var(--bp-border)]"
+           style={{ background: p.background || '#111' }}>
+        <div className="h-full flex items-center px-3 gap-1.5">
+          <span className="w-2 h-2 rounded-full" style={{ background: p.primary }} />
+          <span className="w-2 h-2 rounded-full" style={{ background: p.secondary }} />
+          <span className="w-2 h-2 rounded-full" style={{ background: p.accent }} />
+          <span className="ml-auto font-heading text-[11px]" style={{ color: p.text_primary, fontFamily: preset.theme?.typography?.display }}>
+            {preset.label}
+          </span>
+        </div>
+      </div>
+      <p className="text-[11px] font-body text-[var(--bp-text-primary)]">{preset.label}</p>
+      <p className="text-[9px] font-body text-[var(--bp-text-muted)] line-clamp-1 mt-0.5">{preset.description}</p>
+      {current && <CheckCircle2 size={12} strokeWidth={2} className="absolute mt-[-90px] ml-auto text-[var(--bp-primary)]" />}
+    </button>
+  );
+};
+
+// ── Live Preview surface ───────────────────────────────────────────
+const LivePreview = ({ branding, theme }) => {
+  const palette = theme?.palette || DEFAULT_PALETTE;
+  const typo = theme?.typography || {};
+  const radius = theme?.radius || '2px';
+  return (
+    <div className="rounded-[var(--bp-radius-md)] border border-[var(--bp-border)] overflow-hidden sticky top-6"
+         data-testid="brand-preview"
+         style={{
+           background: palette.background,
+           color: palette.text_primary,
+           fontFamily: typo.body ? `${typo.body}, sans-serif` : 'inherit',
+         }}>
+      {/* Navbar */}
+      <div className="flex items-center justify-between px-5 py-3 border-b" style={{ borderColor: palette.border }}>
+        <div className="font-heading text-lg" style={{ fontFamily: typo.display ? `${typo.display}, serif` : 'inherit' }}>
+          {branding?.public_brand_name || 'Your Studio'}
+        </div>
+        <button className="px-3 py-1.5 text-[10px] uppercase tracking-[0.18em]"
+                style={{ background: palette.primary, color: palette.background, borderRadius: radius }}>
+          Sign in
+        </button>
+      </div>
+      {/* Hero */}
+      <div className="p-8" style={{ background: palette.surface }}>
+        <p className="text-[10px] uppercase tracking-[0.22em] mb-2" style={{ color: palette.primary }}>
+          {branding?.tagline || 'Premium interior design'}
+        </p>
+        <h1 className="font-heading leading-tight mb-2 text-3xl"
+            style={{ fontFamily: typo.display ? `${typo.display}, serif` : 'inherit' }}>
+          Spaces that tell stories.
+        </h1>
+        <p className="text-[12px] mb-4 max-w-md" style={{ color: palette.text_secondary }}>
+          {branding?.short_description || 'A live preview of how your tenant looks. Edit on the left — changes appear here in real time.'}
+        </p>
+        <div className="flex gap-2">
+          <button className="px-4 py-2 text-[10px] uppercase tracking-[0.2em]"
+                  style={{ background: palette.primary, color: palette.background, borderRadius: radius }}>
+            Begin
+          </button>
+          <button className="px-4 py-2 text-[10px] uppercase tracking-[0.2em] border"
+                  style={{ borderColor: palette.border, color: palette.text_primary, borderRadius: radius }}>
+            Catalogue
           </button>
         </div>
-      ) : (
-        <button onClick={() => fileRef.current?.click()} disabled={uploading} data-testid={`asset-upload-${kind}`}
-          className="w-full px-4 py-3 border border-dashed border-[var(--bp-border-strong)] text-xs text-[var(--bp-text-secondary)] font-body rounded-[var(--bp-radius-sm)] hover:border-[var(--bp-primary)]/40 hover:text-[var(--bp-text-primary)] transition-colors">
-          {uploading ? 'Uploading…' : `+ Upload ${label}`}
-        </button>
-      )}
-      {error && <p className="text-red-400 text-[10px] font-body mt-1.5">{error}</p>}
+      </div>
+      {/* Cards */}
+      <div className="grid grid-cols-3 gap-2 p-4" style={{ background: palette.background }}>
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="p-3 border"
+               style={{ borderColor: palette.border, borderRadius: radius, background: palette.surface }}>
+            <div className="aspect-square mb-2" style={{ background: i === 2 ? palette.accent : palette.secondary, borderRadius: radius }} />
+            <p className="text-[10px] uppercase tracking-[0.18em]" style={{ color: palette.text_secondary }}>Project</p>
+            <p className="font-heading text-[12px]" style={{ fontFamily: typo.display ? `${typo.display}, serif` : 'inherit' }}>Villa #{i}</p>
+          </div>
+        ))}
+      </div>
+      {/* Buttons strip */}
+      <div className="flex gap-2 px-4 pb-4" style={{ background: palette.background }}>
+        <span className="px-2 py-1 text-[10px]" style={{ background: palette.success, color: palette.background, borderRadius: radius }}>Success</span>
+        <span className="px-2 py-1 text-[10px]" style={{ background: palette.warning, color: palette.background, borderRadius: radius }}>Warning</span>
+        <span className="px-2 py-1 text-[10px]" style={{ background: palette.danger, color: palette.background, borderRadius: radius }}>Danger</span>
+      </div>
     </div>
   );
 };
 
-// ── Live preview surface ─────────────────────────────────────────────────────
-const PreviewFrame = ({ theme, viewport }) => {
-  const widths = { desktop: '100%', tablet: '768px', mobile: '375px' };
-  const p = theme.palette || {};
-  const t = theme.typography || {};
-
-  const inner = (
-    <div style={{
-      background: p.background, color: p.text_primary, fontFamily: t.font_body,
-      minHeight: '100%', padding: '32px',
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
-        <div style={{ width: 28, height: 28, background: p.primary, borderRadius: theme.shape?.radius_sm }} />
-        <span style={{ fontFamily: t.font_heading, fontSize: 16, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-          Studio Brand
-        </span>
-      </div>
-      <h1 style={{
-        fontFamily: t.font_heading, fontWeight: 300, fontSize: viewport === 'mobile' ? 32 : 48,
-        color: p.text_primary, letterSpacing: t.letter_spacing_heading || '-0.01em', marginBottom: 12,
-      }}>
-        Timeless elegance.
-      </h1>
-      <p style={{ color: p.text_secondary, fontSize: 14, marginBottom: 28, maxWidth: 480 }}>
-        A preview of your tenant brand. Typography, colors, and motion all update live as you edit.
-      </p>
-      <div style={{ display: 'flex', gap: 10, marginBottom: 28 }}>
-        <button style={{
-          background: p.primary, color: p.background, padding: '10px 20px',
-          borderRadius: theme.components?.button_style === 'pill' ? '9999px' : theme.shape?.radius_sm,
-          fontSize: 12, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', border: 'none',
-        }}>Get started</button>
-        <button style={{
-          background: 'transparent', color: p.text_primary, padding: '10px 20px',
-          borderRadius: theme.components?.button_style === 'pill' ? '9999px' : theme.shape?.radius_sm,
-          fontSize: 12, fontWeight: 500, letterSpacing: '0.05em', border: `1px solid ${p.border_strong}`,
-        }}>Learn more</button>
-      </div>
-      <div style={{
-        background: p.surface_1, border: `1px solid ${p.border}`,
-        borderRadius: theme.shape?.radius_md, padding: 20, boxShadow: theme.elevation?.md,
-      }}>
-        <p style={{ color: p.text_muted, fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 4 }}>
-          Active leads
-        </p>
-        <p style={{ fontFamily: t.font_heading, fontWeight: 300, fontSize: 32, color: p.text_primary }}>247</p>
-      </div>
-    </div>
-  );
-
-  return (
-    <div className="flex justify-center items-start h-full overflow-auto bg-black/30 p-6">
-      <div style={{
-        width: widths[viewport], maxWidth: '100%', height: '100%', minHeight: 500,
-        background: p.background, borderRadius: theme.shape?.radius_lg, overflow: 'hidden',
-        boxShadow: theme.elevation?.lg, border: `1px solid ${p.border}`,
-        transition: 'width 240ms cubic-bezier(0.16, 1, 0.3, 1)',
-      }}>{inner}</div>
-    </div>
-  );
-};
-
-
+// ── Page ───────────────────────────────────────────────────────────
 const BrandStudioPage = () => {
+  const navigate = useNavigate();
   const { t } = useBlueprint();
-  const [theme, setTheme] = useState(null);
-  const [defaultTheme, setDefaultTheme] = useState(null);
-  const [fonts, setFonts] = useState([]);
-  const [tab, setTab] = useState('palette');
-  const [viewport, setViewport] = useState('desktop');
-  const [saving, setSaving] = useState(false);
-  const [savedAt, setSavedAt] = useState(0);
-  const [dirty, setDirty] = useState(false);
+  const { user } = useAuth();
+  const { theme: savedTheme, branding: savedBranding, refresh, applyDraft, clearDraft } = useTenantTheme();
 
-  const load = useCallback(async () => {
-    const results = await Promise.allSettled([
-      api.get('/api/settings/theme'),
-      api.get('/api/settings/fonts/catalog'),
-    ]);
-    if (results[0].status === 'fulfilled') {
-      setTheme(results[0].value.data.effective);
-      setDefaultTheme(results[0].value.data.default);
-    } else {
-      // retry once
-      try {
-        const r = await api.get('/api/settings/theme');
-        setTheme(r.data.effective);
-        setDefaultTheme(r.data.default);
-      } catch (e) { console.warn('theme load failed', e); }
-    }
-    if (results[1].status === 'fulfilled') {
-      setFonts(results[1].value.data.fonts || []);
-    } else {
-      try { const r = await api.get('/api/settings/fonts/catalog'); setFonts(r.data.fonts || []); } catch (_) {}
-    }
+  // Local working copy
+  const [branding, setBranding] = useState(savedBranding || {});
+  const [theme, setTheme] = useState(savedTheme || { palette: DEFAULT_PALETTE, typography: {}, radius: '2px', density: 'comfortable', shadow: 'soft' });
+  const [presets, setPresets] = useState([]);
+  const [saving, setSaving] = useState(false);
+
+  const canManage = user?.role === 'super_admin' || user?.role === 'tenant_admin';
+
+  // Load presets once
+  useEffect(() => {
+    api.get('/api/branding/presets').then((r) => setPresets(r.data?.presets || []))
+       .catch(() => {});
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  // When saved theme/branding arrive (or refresh), copy them into local state.
+  useEffect(() => {
+    if (savedBranding) setBranding(savedBranding);
+    if (savedTheme) setTheme({ ...savedTheme, palette: { ...DEFAULT_PALETTE, ...(savedTheme.palette || {}) } });
+  }, [savedTheme, savedBranding]);
 
-  const setPath = (path, value) => {
-    setDirty(true);
-    setTheme((prev) => {
-      const next = JSON.parse(JSON.stringify(prev));
-      const keys = path.split('.');
-      let obj = next; for (let i = 0; i < keys.length - 1; i++) obj = obj[keys[i]] = obj[keys[i]] || {};
-      obj[keys[keys.length - 1]] = value;
-      // Apply locally for live preview
-      applyTheme(next);
-      return next;
-    });
-  };
+  // Push live preview to root vars whenever theme changes locally
+  useEffect(() => { applyDraft(theme); }, [theme, applyDraft]);
 
-  const save = async () => {
-    if (!theme) return;
+  const dirty = useMemo(() =>
+    JSON.stringify(branding) !== JSON.stringify(savedBranding || {}) ||
+    JSON.stringify(theme)    !== JSON.stringify(savedTheme || {}),
+    [branding, theme, savedBranding, savedTheme]);
+
+  const setPalette = (k, v) => setTheme((prev) => ({ ...prev, palette: { ...(prev.palette || {}), [k]: v } }));
+  const setTypo    = (k, v) => setTheme((prev) => ({ ...prev, typography: { ...(prev.typography || {}), [k]: v } }));
+
+  const save = useCallback(async () => {
     setSaving(true);
     try {
-      await api.put('/api/settings/theme', theme);
-      setSavedAt(Date.now());
-      setDirty(false);
-    } catch (e) { alert(formatError(e)); }
-    finally { setSaving(false); }
-  };
-
-  const reset = async () => {
-    if (!window.confirm('Reset theme to default?')) return;
-    await api.post('/api/settings/theme/reset');
-    await load();
-    applyTheme(defaultTheme);
-    setDirty(false);
-  };
-
-  const applyPreset = (preset) => {
-    setPath('palette.primary', preset.primary);
-    setPath('palette.accent', preset.accent);
-    setPath('palette.background', preset.bg);
-    if (preset.extra) {
-      Object.entries(preset.extra).forEach(([k, v]) => setPath(`palette.${k}`, v));
+      await api.put('/api/branding', { branding, theme });
+      toast.success('Brand saved');
+      await refresh();
+      clearDraft();
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || 'Save failed');
+    } finally {
+      setSaving(false);
     }
-    if (preset.atmosphere) {
-      Object.entries(preset.atmosphere).forEach(([k, v]) => setPath(`atmosphere.${k}`, v));
+  }, [branding, theme, refresh, clearDraft]);
+
+  const discard = () => {
+    setBranding(savedBranding || {});
+    setTheme(savedTheme || { palette: DEFAULT_PALETTE, typography: {}, radius: '2px', density: 'comfortable', shadow: 'soft' });
+    clearDraft();
+    toast.message('Reverted to saved state');
+  };
+
+  const applyPreset = async (preset) => {
+    try {
+      const r = await api.post('/api/branding/apply-preset', { preset_key: preset.key });
+      const next = r.data?.theme || preset.theme || {};
+      setTheme({ ...next, palette: { ...DEFAULT_PALETTE, ...(next.palette || {}) } });
+      await refresh();
+      toast.success(`Preset "${preset.label}" applied`);
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || 'Could not apply preset');
     }
   };
 
-  if (!theme) return <div className="p-10 text-[var(--bp-text-muted)]">{t('common.loading')}…</div>;
+  if (!canManage) {
+    return (
+      <div className="p-10 text-[var(--bp-text-muted)] text-center" data-testid="brand-page-denied">
+        You do not have permission to edit brand settings.
+      </div>
+    );
+  }
+
+  const palette = theme.palette || {};
 
   return (
-    <div className="h-full flex bg-[var(--bp-bg)]" data-testid="brand-studio-page">
-      {/* Left: Editor */}
-      <div className="w-[440px] flex-shrink-0 border-r border-[var(--bp-border)] flex flex-col h-full overflow-hidden">
-        <div className="px-6 pt-6 pb-4 border-b border-[var(--bp-border)]">
-          <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.2em] font-semibold mb-1">
-            {t('brandStudio.header', null, 'Tenant · Brand Studio')}
-          </p>
-          <h1 className="font-heading text-3xl font-light text-[var(--bp-text-primary)]">
-            {t('brandStudio.title', null, 'Theme Engine')}
-          </h1>
-        </div>
-
-        {/* Tabs */}
-        <div className="px-3 py-2 border-b border-[var(--bp-border)] flex items-center gap-1 flex-wrap">
-          <TabBtn testid="tab-palette" active={tab === 'palette'} onClick={() => setTab('palette')} icon={Palette} label={t('brandStudio.tab.palette', null, 'Palette')} />
-          <TabBtn testid="tab-typography" active={tab === 'typography'} onClick={() => setTab('typography')} icon={Type} label={t('brandStudio.tab.typography', null, 'Typography')} />
-          <TabBtn testid="tab-shape" active={tab === 'shape'} onClick={() => setTab('shape')} icon={Square} label={t('brandStudio.tab.shape', null, 'Shape')} />
-          <TabBtn testid="tab-motion" active={tab === 'motion'} onClick={() => setTab('motion')} icon={Sparkles} label={t('brandStudio.tab.motion', null, 'Motion')} />
-          <TabBtn testid="tab-assets" active={tab === 'assets'} onClick={() => setTab('assets')} icon={ImageIcon} label={t('brandStudio.tab.assets', null, 'Assets')} />
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
-          {tab === 'palette' && (
-            <>
-              <div>
-                <Label>{t('brandStudio.presets', null, 'Presets')}</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {PRESETS.map((p) => (
-                    <button key={p.id} data-testid={`preset-${p.id}`} onClick={() => applyPreset(p)}
-                      className="group flex items-center gap-2 p-2 border border-[var(--bp-border)] rounded-[var(--bp-radius-sm)] hover:border-[var(--bp-border-strong)] transition-colors text-left">
-                      <div className="w-7 h-7 rounded-[2px] flex-shrink-0" style={{ background: p.primary }} />
-                      <span className="text-[10px] font-body text-[var(--bp-text-secondary)] group-hover:text-[var(--bp-text-primary)]">{p.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <ColorField testid="color-primary" label="Primary" value={theme.palette.primary} onChange={(v) => setPath('palette.primary', v)} />
-                <ColorField testid="color-accent" label="Accent" value={theme.palette.accent} onChange={(v) => setPath('palette.accent', v)} />
-                <ColorField label="Background" value={theme.palette.background} onChange={(v) => setPath('palette.background', v)} />
-                <ColorField label="Surface 1" value={theme.palette.surface_1} onChange={(v) => setPath('palette.surface_1', v)} />
-                <ColorField label="Surface 2" value={theme.palette.surface_2} onChange={(v) => setPath('palette.surface_2', v)} />
-                <ColorField label="Surface 3" value={theme.palette.surface_3} onChange={(v) => setPath('palette.surface_3', v)} />
-                <ColorField label="Text Primary" value={theme.palette.text_primary} onChange={(v) => setPath('palette.text_primary', v)} />
-                <ColorField label="Text Secondary" value={theme.palette.text_secondary} onChange={(v) => setPath('palette.text_secondary', v)} />
-              </div>
-            </>
-          )}
-
-          {tab === 'typography' && (
-            <>
-              <Select testid="font-heading" label="Heading font" value={theme.typography.font_heading}
-                options={fonts.filter(f => f.category === 'serif' || f.category === 'sans-serif').map(f => ({
-                  value: `'${f.family}', ${f.category}`,
-                  label: `${f.family} · ${f.category}`,
-                }))}
-                onChange={(v) => setPath('typography.font_heading', v)} />
-              <Select testid="font-body" label="Body font" value={theme.typography.font_body}
-                options={fonts.filter(f => f.category === 'sans-serif' || f.category === 'serif').map(f => ({
-                  value: `'${f.family}', ${f.category}`,
-                  label: `${f.family} · ${f.category}`,
-                }))}
-                onChange={(v) => setPath('typography.font_body', v)} />
-              <Slider testid="font-size" label="Base font size" value={theme.typography.font_size_base} onChange={(v) => setPath('typography.font_size_base', v)} min={12} max={18} step={1} suffix="px" />
-              <Slider label="Line height" value={theme.typography.line_height_base} onChange={(v) => setPath('typography.line_height_base', v)} min={1.2} max={1.8} step={0.05} />
-            </>
-          )}
-
-          {tab === 'shape' && (
-            <>
-              <Slider testid="radius-sm" label="Radius sm" value={parseInt(theme.shape.radius_sm)} onChange={(v) => setPath('shape.radius_sm', `${v}px`)} min={0} max={20} suffix="px" />
-              <Slider label="Radius md" value={parseInt(theme.shape.radius_md)} onChange={(v) => setPath('shape.radius_md', `${v}px`)} min={0} max={28} suffix="px" />
-              <Slider label="Radius lg" value={parseInt(theme.shape.radius_lg)} onChange={(v) => setPath('shape.radius_lg', `${v}px`)} min={0} max={40} suffix="px" />
-              <Select testid="button-style" label="Button style" value={theme.components.button_style}
-                options={[{ value: 'sharp', label: 'Sharp · editorial' }, { value: 'pill', label: 'Pill · soft' }, { value: 'ghost', label: 'Ghost · minimal' }]}
-                onChange={(v) => setPath('components.button_style', v)} />
-              <Select testid="density" label="UI density" value={theme.spacing.scale}
-                options={[{ value: 'compact', label: 'Compact' }, { value: 'comfortable', label: 'Comfortable' }, { value: 'spacious', label: 'Spacious' }]}
-                onChange={(v) => setPath('spacing.scale', v)} />
-            </>
-          )}
-
-          {tab === 'motion' && (
-            <>
-              <Select testid="motion-preset" label="Motion preset" value={theme.motion.preset}
-                options={[{ value: 'subtle', label: 'Subtle' }, { value: 'standard', label: 'Standard' }, { value: 'expressive', label: 'Expressive' }]}
-                onChange={(v) => {
-                  setPath('motion.preset', v);
-                  const presets = {
-                    subtle:     { duration_fast: '80ms',  duration_normal: '140ms', duration_slow: '220ms' },
-                    standard:   { duration_fast: '120ms', duration_normal: '180ms', duration_slow: '280ms' },
-                    expressive: { duration_fast: '180ms', duration_normal: '260ms', duration_slow: '420ms' },
-                  };
-                  Object.entries(presets[v] || {}).forEach(([k, val]) => setPath(`motion.${k}`, val));
-                }} />
-              <div>
-                <Label>Shadow · sm</Label>
-                <input value={theme.elevation.sm} onChange={(e) => setPath('elevation.sm', e.target.value)} className="input-luxury w-full px-3 py-2 text-xs font-mono rounded-[var(--bp-radius-sm)]" />
-              </div>
-              <div>
-                <Label>Shadow · md</Label>
-                <input value={theme.elevation.md} onChange={(e) => setPath('elevation.md', e.target.value)} className="input-luxury w-full px-3 py-2 text-xs font-mono rounded-[var(--bp-radius-sm)]" />
-              </div>
-              <div>
-                <Label>Shadow · lg</Label>
-                <input value={theme.elevation.lg} onChange={(e) => setPath('elevation.lg', e.target.value)} className="input-luxury w-full px-3 py-2 text-xs font-mono rounded-[var(--bp-radius-sm)]" />
-              </div>
-            </>
-          )}
-
-          {tab === 'assets' && (
-            <div className="space-y-3">
-              <AssetUploader kind="logo_dark"  label="Logo (dark bg)"  currentUrl={theme.assets?.logo_dark} onUploaded={(url) => { setPath('assets.logo_dark', url); }} />
-              <AssetUploader kind="logo_light" label="Logo (light bg)" currentUrl={theme.assets?.logo_light} onUploaded={(url) => setPath('assets.logo_light', url)} />
-              <AssetUploader kind="logo_mobile" label="Logo (mobile)"  currentUrl={theme.assets?.logo_mobile} onUploaded={(url) => setPath('assets.logo_mobile', url)} />
-              <AssetUploader kind="favicon"    label="Favicon"         currentUrl={theme.assets?.favicon} onUploaded={(url) => setPath('assets.favicon', url)} />
-              <AssetUploader kind="og_image"   label="OG image"        currentUrl={theme.assets?.og_image} onUploaded={(url) => setPath('assets.og_image', url)} />
-            </div>
-          )}
-        </div>
-
-        {/* Save bar */}
-        <div className="border-t border-[var(--bp-border)] px-6 py-4 flex items-center justify-between gap-3 bg-[var(--bp-surface-1)]">
-          <button onClick={reset} data-testid="reset-theme-btn"
-            className="text-xs text-[var(--bp-text-muted)] hover:text-[var(--bp-text-secondary)] flex items-center gap-1.5 font-body">
-            <RotateCcw size={12} /> Reset
+    <div className="p-8 max-w-[1500px] mx-auto" data-testid="brand-page">
+      {/* Header */}
+      <div className="flex items-start justify-between mb-7">
+        <div>
+          <button onClick={() => navigate('/settings')}
+                  data-testid="brand-back"
+                  className="flex items-center gap-1.5 text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] text-[10px] font-body uppercase tracking-[0.22em] mb-3">
+            <ArrowLeft size={11} strokeWidth={1.5} /> {t('common.back', null, 'Back')}
           </button>
-          <div className="flex items-center gap-3">
-            {savedAt > 0 && Date.now() - savedAt < 3000 && !dirty && (
-              <span className="text-xs text-emerald-400 flex items-center gap-1 font-body" data-testid="saved-indicator"><Check size={12} /> Saved</span>
-            )}
-            <button onClick={save} disabled={saving || !dirty} data-testid="save-theme-btn"
-              className="px-5 py-2 bg-[var(--bp-primary)] hover:opacity-90 text-[var(--bp-bg)] font-semibold text-xs font-body rounded-[var(--bp-radius-sm)] disabled:opacity-40 disabled:cursor-not-allowed">
-              {saving ? 'Saving…' : (dirty ? 'Save changes' : 'Saved')}
+          <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.22em] font-semibold mb-1">
+            Workspace · Brand Studio
+          </p>
+          <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)] leading-none">
+            Identity & Theme
+          </h1>
+          <p className="text-[var(--bp-text-muted)] text-[13px] font-body mt-2 max-w-xl">
+            Define how your tenant looks across the storefront and workspace. Changes preview live.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {dirty && (
+            <button onClick={discard} data-testid="brand-discard"
+                    className="px-4 py-2.5 rounded-[var(--bp-radius-sm)] border border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] text-[10px] font-body uppercase tracking-[0.22em] flex items-center gap-1.5 transition-colors">
+              <RotateCcw size={11} strokeWidth={1.5} /> Discard
             </button>
-          </div>
+          )}
+          <button onClick={save} disabled={!dirty || saving}
+                  data-testid="brand-save"
+                  className={`px-5 py-2.5 rounded-[var(--bp-radius-sm)] text-[10px] font-body uppercase tracking-[0.22em] flex items-center gap-2 transition-all
+                    ${dirty && !saving
+                      ? 'bg-[var(--bp-primary)] text-black hover:brightness-110'
+                      : 'bg-[var(--bp-surface-2)] text-[var(--bp-text-muted)] cursor-not-allowed'}`}>
+            {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} strokeWidth={1.5} />}
+            Save changes
+          </button>
         </div>
       </div>
 
-      {/* Right: Preview */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <div className="h-12 border-b border-[var(--bp-border)] flex items-center justify-between px-6 flex-shrink-0">
-          <span className="text-[10px] text-[var(--bp-text-muted)] font-body uppercase tracking-[0.2em] font-semibold">
-            {t('brandStudio.preview', null, 'Live Preview')}
-          </span>
-          <div className="flex items-center gap-1 bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-sm)] p-0.5">
-            {[['desktop', Monitor], ['tablet', Tablet], ['mobile', Smartphone]].map(([v, Icon]) => (
-              <button key={v} data-testid={`viewport-${v}`} onClick={() => setViewport(v)}
-                className={`p-1.5 rounded-[2px] transition-colors ${viewport === v ? 'bg-[var(--bp-surface-3)] text-[var(--bp-text-primary)]' : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-secondary)]'}`}>
-                <Icon size={13} strokeWidth={1.5} />
-              </button>
-            ))}
-          </div>
+      {/* Split layout */}
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_540px] gap-10">
+        {/* Controls */}
+        <div>
+          <Section kicker="A · Identity" title="Brand identity" testid="section-identity">
+            <Field label="Public brand name">
+              <TextInput value={branding.public_brand_name}
+                         onChange={(v) => setBranding({ ...branding, public_brand_name: v })}
+                         placeholder="MOOD for DESIGN"
+                         testid="brand-public-name" />
+            </Field>
+            <Field label="Tagline">
+              <TextInput value={branding.tagline} onChange={(v) => setBranding({ ...branding, tagline: v })}
+                         placeholder="Spaces that tell stories"
+                         testid="brand-tagline" />
+            </Field>
+            <Field label="Short description">
+              <TextInput value={branding.short_description} onChange={(v) => setBranding({ ...branding, short_description: v })}
+                         placeholder="A boutique studio crafting bespoke interiors."
+                         testid="brand-short-desc" />
+            </Field>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Support email">
+                <TextInput value={branding.support_email} onChange={(v) => setBranding({ ...branding, support_email: v })}
+                           placeholder="hello@studio.com" testid="brand-support-email" />
+              </Field>
+              <Field label="Phone">
+                <TextInput value={branding.phone} onChange={(v) => setBranding({ ...branding, phone: v })}
+                           placeholder="+39 02 0000 0000" testid="brand-phone" />
+              </Field>
+            </div>
+            <Field label="Website URL">
+              <TextInput value={branding.website_url} onChange={(v) => setBranding({ ...branding, website_url: v })}
+                         placeholder="https://studio.com" testid="brand-website" />
+            </Field>
+            <Field label="Primary logo URL">
+              <TextInput value={branding.primary_logo_url} onChange={(v) => setBranding({ ...branding, primary_logo_url: v })}
+                         placeholder="https://…/logo.svg" testid="brand-logo-url" />
+            </Field>
+          </Section>
+
+          <Section kicker="B · Palette" title="Colours" testid="section-palette">
+            <div className="grid grid-cols-2 gap-x-5 gap-y-1">
+              {[
+                ['primary',        'Primary'],
+                ['secondary',      'Secondary'],
+                ['accent',         'Accent'],
+                ['background',     'Background'],
+                ['surface',        'Surface'],
+                ['text_primary',   'Text primary'],
+                ['text_secondary', 'Text secondary'],
+                ['border',         'Border'],
+                ['success',        'Success'],
+                ['warning',        'Warning'],
+                ['danger',         'Danger'],
+              ].map(([k, label]) => (
+                <ColorPicker key={k} label={label} value={palette[k] || ''} onChange={(v) => setPalette(k, v)} testid={`palette-${k}`} />
+              ))}
+            </div>
+          </Section>
+
+          <Section kicker="C · Typography" title="Fonts" testid="section-typography">
+            <Field label="Display (headlines)">
+              <SelectChips options={DISPLAY_FONTS} value={theme.typography?.display} onChange={(v) => setTypo('display', v)} testid="font-display" />
+            </Field>
+            <Field label="Body">
+              <SelectChips options={BODY_FONTS} value={theme.typography?.body} onChange={(v) => setTypo('body', v)} testid="font-body" />
+            </Field>
+          </Section>
+
+          <Section kicker="D · Surface" title="Radius · Density · Shadow" testid="section-surface">
+            <Field label="Border radius">
+              <SelectChips options={RADIUS_OPTS} value={theme.radius} onChange={(v) => setTheme({ ...theme, radius: v })} testid="radius" />
+            </Field>
+            <Field label="Density">
+              <SelectChips options={DENSITY_OPTS} value={theme.density} onChange={(v) => setTheme({ ...theme, density: v })} testid="density" />
+            </Field>
+            <Field label="Shadow softness">
+              <SelectChips options={SHADOW_OPTS} value={theme.shadow} onChange={(v) => setTheme({ ...theme, shadow: v })} testid="shadow" />
+            </Field>
+          </Section>
+
+          <Section kicker="E · Presets" title="Curated themes" testid="section-presets">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+              {presets.map((p) => (
+                <PresetCard key={p.key} preset={p}
+                            current={theme.preset_key === p.key}
+                            onPick={applyPreset}
+                            testid={`preset-${p.key}`} />
+              ))}
+            </div>
+          </Section>
         </div>
-        <div className="flex-1 overflow-hidden">
-          <PreviewFrame theme={theme} viewport={viewport} />
+
+        {/* Live preview */}
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body mb-3 flex items-center gap-2">
+            <Sparkles size={11} strokeWidth={1.5} /> Live preview
+          </p>
+          <LivePreview branding={branding} theme={theme} />
         </div>
       </div>
     </div>

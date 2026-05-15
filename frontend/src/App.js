@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BlueprintProvider, useBlueprint } from './contexts/BlueprintContext';
+import { TenantThemeProvider } from './contexts/TenantThemeContext';
 import { Toaster } from 'sonner';
 import './App.css';
 
@@ -92,6 +93,7 @@ function App() {
     <div className="App">
       <AuthProvider>
         <BlueprintProvider>
+          <TenantThemeProvider>
           <BrowserRouter>
             <Suspense fallback={<Loading />}>
               <Routes>
@@ -178,6 +180,7 @@ function App() {
               },
             }}
           />
+          </TenantThemeProvider>
         </BlueprintProvider>
       </AuthProvider>
     </div>
