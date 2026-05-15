@@ -55,6 +55,16 @@ let webpackConfig = {
       if (config.enableHealthCheck && healthPluginInstance) {
         webpackConfig.plugins.push(healthPluginInstance);
       }
+
+      // Remove ForkTsCheckerWebpackPlugin to avoid the legacy schema-utils + ajv-keywords
+      // chain that breaks the CRA5 build on Node 18/20 (Vercel) with
+      // "Cannot find module 'ajv/dist/compile/codegen'" / "Unknown keyword formatMinimum".
+      // The project is JavaScript-only — TypeScript type checking is not needed.
+      // CRA still performs ESLint linting inline via the eslint-webpack-plugin.
+      webpackConfig.plugins = webpackConfig.plugins.filter(
+        (p) => p && p.constructor && p.constructor.name !== "ForkTsCheckerWebpackPlugin"
+      );
+
       return webpackConfig;
     },
   },
