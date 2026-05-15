@@ -286,12 +286,20 @@ export const buildBriefingShape = (state, locale) => {
 // ─── 7. RESOLVED CONTENT HELPERS ────────────────────────────────────────
 // Sugar accessors used by the wizard renderer.
 
+const IMG_BY_CATEGORY = {
+  residential: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1200&q=85',
+  hospitality: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=85',
+  commercial:  'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=85',
+  other:       'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1200&q=85',
+};
+
 export const resolveStep2Content = (state, locale) => {
   const base = onboardingContent.step2;
+  const cat = categoryFor(state.project_type);
   return {
     ...stepCopyFor('step2', state.project_type, locale, base),
     options: relevantSpacesFor(state.project_type),
-    image: base.image,
+    image: IMG_BY_CATEGORY[cat] || base.image,
   };
 };
 

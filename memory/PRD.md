@@ -1,6 +1,141 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase V — Adaptive Onboarding Engine (Contextual Project Discovery) (DONE — 15 Feb 2026)
+
+The 7-step Start Project wizard at `/start-project` was static: a user
+who picked **Office** would still see **Bedroom**, **Kitchen** and
+**Walk-in closet** in Step 2. This broke trust, intelligence perception
+and the premium feel of the entire onboarding experience.
+
+Phase V replaces the linear question array with a **question graph engine**
+that adapts every downstream step to the project category. The wizard now
+behaves like a **guided design discovery**, not a CRM survey.
+
+**Core architectural shift**
+
+- New module `/app/frontend/src/site/content/onboardingGraph.js`:
+  - `PROJECT_CATEGORY` map → 9 project types collapsed into 4 categories:
+    `residential` (apartment, villa, penthouse) ·
+    `hospitality` (boutique_hotel, restaurant, wellness) ·
+    `commercial` (retail, office) ·
+    `other`.
+  - `SPACES_BY_CATEGORY` → strictly disjoint space palettes per category.
+    Residential → living, kitchen, dining, master, bedroom, bathroom, study,
+    walk-in, outdoor, entrance. Hospitality → suites, lobby, restaurant,
+    bar, spa, pool, event, outdoor_hosp, kitchen_hosp. Commercial →
+    reception, open_space, meeting, executive, lounge_corp, showroom,
+    sales_floor, fitting, storage. **ZERO crossover.**
+  - `STEP_COPY_BY_CATEGORY` → conversational, locale-aware headlines and
+    field labels per category. Residential Step 2 reads
+    *"Which rooms would you like to transform?"*; Hospitality reads
+    *"Which spaces will your guests experience?"*; Commercial reads
+    *"Which workspaces would you like to rethink?"*. Step 6 lifestyle
+    labels adapt the same way (e.g. residential asks "How do you want to
+    feel when you walk in?", commercial asks "What should your people feel?").
+  - `STEP_GRAPH` (dynamic step list) + helpers: `visibleSteps`,
+    `indexOfStepId`, `isStepRequiredMet`, `progressPercent`. Linear `case`
+    blocks are gone — flow length and step required-rules derive from
+    the graph.
+  - `buildBriefingShape(state, locale)` → deterministic operational
+    briefing seed (project_intent, category, spaces, mood, materials,
+    palette, emotional_tone, complexity_hint).
+
+**Frontend refactor — `StartProjectWizard.jsx`**
+
+- `setProjectType()` is now a category-aware setter: switching from
+  `office` to `apartment` **clears `spaces: []`** so an Office user can
+  never accidentally ship a Bedroom answer to the studio.
+- Step 2 (spaces) and Step 6 (lifestyle) now accept a `contentOverride`
+  prop. `resolveStep2Content` and `resolveStep6Content` merge category
+  copy + filtered options + category-specific imagery (residential →
+  bedroom photo, hospitality → boutique hotel photo, commercial →
+  workspace photo).
+- `Chrome` topbar uses adaptive `currentDot/totalDots` dots + `percent`
+  so progress matches the visible flow (today 7 / 7 across all
+  categories; ready for future category-specific step counts).
+- Footer adds the calm **"Your journey is saved"** hint with a Bookmark
+  icon, locale-aware in 5 languages.
+- Payload now carries `project_category`, `briefing_shape` and (after
+  the FinalReady prefetch) `ai_briefing`.
+
+**Backend foundation — AI briefing summarizer**
+
+- New endpoint `POST /api/onboarding/briefing-summary` in
+  `/app/backend/routers/onboarding.py`. Anonymous; reads the adaptive
+  payload + locale; calls Claude Sonnet 4.5 via the Emergent LLM key
+  with a senior-studio-principal system prompt; returns a structured
+  JSON briefing (`project_intent`, `project_category`,
+  `stylistic_direction`, `priorities[]`, `emotional_tone`,
+  `complexity_hint`, `briefing_summary`).
+- Deterministic fallback path: when the AI key is missing or the call
+  fails, returns the `briefing_shape` as the briefing payload with
+  `source='fallback'`. Studio always has a usable starting point.
+- `FinalReady` step prefetches the briefing in the background — the
+  client never sees raw AI text. The briefing rides along inside the
+  `/private/submit` payload (`ai_briefing` field) so the genesis flow
+  can persist it to the project's `metadata_json`.
+
+**Human language rewrite**
+
+- All Step 2 / Step 6 / final headlines rewritten in conversational
+  register per the brief:
+  - ❌ "What services are you interested in?" → ✅ "Which spaces would
+    you like to transform?"
+  - ❌ "What is your estimated budget?" → preserved as "Budget & timeline"
+    with body "The final pieces to plan your project properly."
+  - "Your journey is saved" hint replaces "Form abandoned" / silent autosave.
+
+**End-to-end verification (15 Feb 2026)** ✅
+
+Iteration_44 test report — testing_agent_v3_fork:
+- Backend `/api/onboarding/briefing-summary`: 4/4 pytest tests PASS
+  (anonymous access · residential category · commercial category ·
+  hospitality category · empty-payload fallback).
+- Frontend: Step 2 strictly category-scoped — confirmed via
+  Playwright that selecting `office` yields `bedroom/master/kitchen/
+  walkin = false` while `meeting/executive/open_space = true`.
+  `apartment` yields the inverse. `boutique_hotel` yields
+  `suites/lobby/spa = true` and `bedroom = false`.
+- Project_type change clears spaces (no stale Office answer surviving
+  into a Residential flow).
+- Locale switching preserves answers (project_type/spaces/moods all
+  survive in localStorage round-trip).
+- Save state hint visible on every step.
+- Adaptive STEP X OF Y counter accurate.
+
+**Files of reference (new/modified in Phase V)**
+
+- `/app/frontend/src/site/content/onboardingGraph.js` (NEW, ~210 LOC)
+- `/app/frontend/src/pages/site/StartProjectWizard.jsx` (refactor —
+  visibleSteps, setProjectType reset, contentOverride props,
+  FinalReady prefetch, payload carries category + briefing_shape +
+  ai_briefing)
+- `/app/backend/routers/onboarding.py` (+ new `briefing-summary` endpoint
+  ~95 LOC, Claude Sonnet 4.5 + deterministic fallback)
+
+**Out of scope (kept for Phase V.2 / next iteration)**
+
+- LOW: Locale chip inside the wizard preserves answers but did not
+  visibly re-translate copy in the Playwright test run — likely a
+  SiteContext binding gap, not a Phase V regression.
+- LOW: `<img src="">` console warnings on step 4 inspirations grid —
+  cosmetic, pre-existing since Phase H.5.
+- True conversational AI guidance during the wizard (today AI runs
+  only at the end). Phase V deliberately keeps AI as an **internal
+  co-pilot**, never replacing the wizard, per Human-First rule.
+- Industry-specific verticals beyond the 4 base categories
+  (luxury-villa subcategory, healthcare commercial, etc.) — the graph
+  schema supports this via more entries in `SPACES_BY_CATEGORY`.
+- Per-step branching (skip Step 5 materials for clients who picked a
+  fully-furnished hospitality project, etc.) — the engine supports
+  `visible_when()` predicates; we just haven't activated them yet.
+- `wiz-final-briefing` panel is hidden today (operational use only);
+  Phase V.2 can surface a "How your studio understood you" cinematic
+  recap card on the FinalReady screen, drawing from `briefing_summary`.
+
+
+
 ### ✅ Phase U — Inline CMS Editors (Visual-First, Framer-like) (DONE — 15 Feb 2026)
 
 The 4 new homepage blocks (`stats_band`, `magazine_grid`, `brand_logos`,
