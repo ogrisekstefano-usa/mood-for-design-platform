@@ -71,9 +71,18 @@ const mergeHomepage = (legacy, content) => {
     };
   }
   if (vp) {
+    const dbPillars = Array.isArray(vp._settings?.pillars) ? vp._settings.pillars : null;
     out.valueProps = {
       ...legacy.valueProps,
       title: buildLocaleBag(vp, legacy.valueProps.title, 'section_title'),
+      items: (dbPillars && dbPillars.length > 0)
+        ? dbPillars.map((p, i) => ({
+            id:    p.id || `pillar_${i}`,
+            icon:  p.icon || 'gem',
+            title: (p.title && typeof p.title === 'object') ? p.title : { _default: p.title || '' },
+            body:  (p.body  && typeof p.body  === 'object') ? p.body  : { _default: p.body  || '' },
+          }))
+        : legacy.valueProps.items,
     };
   }
   if (pi) {

@@ -10,13 +10,22 @@
  *   - openAssetPicker(onPick)                    — opens drawer with callback
  */
 import React from 'react';
-import { Image as ImageIcon, Plus } from 'lucide-react';
+import { Image as ImageIcon, Plus, X, Gem, Users, Sparkles, Globe, ShieldCheck } from 'lucide-react';
 import InlineText from './InlineText';
 import NavigationRenderer from './NavigationRenderer';
 import FooterColumnsRenderer from './FooterColumnsRenderer';
 import { pickLocale } from './storefrontApi';
 
 const FALLBACK_CHAIN = ['it', 'en-US', 'en-GB', 'fr', 'de', 'es'];
+
+const PILLAR_ICONS = [
+  { key: 'gem',          Icon: Gem },
+  { key: 'users',        Icon: Users },
+  { key: 'sparkles',     Icon: Sparkles },
+  { key: 'globe',        Icon: Globe },
+  { key: 'shield-check', Icon: ShieldCheck },
+];
+const ICON_MAP = Object.fromEntries(PILLAR_ICONS.map(({ key, Icon }) => [key, Icon]));
 
 const getField = (section, draft, locale, field) => {
   const bag = draft || section.locale_content || {};
@@ -160,8 +169,26 @@ const DualCta = ({ section, locale, draft, updateContent, updateSettings, openAs
 };
 
 // ─── VALUE_PROPS ────────────────────────────────────────────────────────────
-const ValueProps = ({ section, locale, draft, updateContent }) => {
+const ValueProps = ({ section, locale, draft, updateContent, updateSettings }) => {
   const pillars = getSetting(section, 'pillars') || [];
+
+  const writePillars = (next) => updateSettings('pillars', next);
+  const patchPillar = (idx, patcher) => writePillars(pillars.map((p, i) => (i === idx ? patcher(p) : p)));
+  const setLocalized = (idx, field, value) => patchPillar(idx, (p) => {
+    const bag = (p[field] && typeof p[field] === 'object') ? p[field] : {};
+    return { ...p, [field]: { ...bag, [locale]: value } };
+  });
+  const removePillar = (idx) => writePillars(pillars.filter((_, i) => i !== idx));
+  const cycleIcon = (idx) => patchPillar(idx, (p) => {
+    const keys = PILLAR_ICONS.map((x) => x.key);
+    const cur = Math.max(0, keys.indexOf(p.icon || 'gem'));
+    return { ...p, icon: keys[(cur + 1) % keys.length] };
+  });
+  const addPillar = () => {
+    const id = `pillar_${Date.now().toString(36)}`;
+    writePillars([...pillars, { id, icon: 'gem', title: { [locale]: '' }, body: { [locale]: '' } }]);
+  };
+
   return (
     <div className="bg-[var(--bp-bg)] py-16 px-12" data-testid={`section-${section.id}`}>
       <div className="max-w-6xl mx-auto">
@@ -171,23 +198,64 @@ const ValueProps = ({ section, locale, draft, updateContent }) => {
           placeholder="SECTION TITLE"
           as="h2"
           className="text-[var(--bp-text-primary)] text-2xl font-body uppercase tracking-[0.18em] text-center mb-10"
+          testid={`vp-section-title-${section.id}`}
         />
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {pillars.map((p) => (
-            <div key={p.id} className="text-center" data-testid={`pillar-${p.id}`}>
-              <p className="font-heading text-base text-[var(--bp-text-primary)] uppercase tracking-[0.1em] mb-2">
-                {pickLocale(p.title, locale, FALLBACK_CHAIN)}
-              </p>
-              <p className="text-[var(--bp-text-muted)] text-xs font-body leading-relaxed whitespace-pre-line">
-                {pickLocale(p.body, locale, FALLBACK_CHAIN)}
-              </p>
-            </div>
-          ))}
-          {pillars.length === 0 && (
-            <p className="col-span-full text-[var(--bp-text-muted)] text-xs font-body italic text-center py-10">
-              No pillars yet. (Pillar editor coming in next iteration.)
-            </p>
-          )}
+          {pillars.map((p, i) => {
+            const Icon = ICON_MAP[p.icon] || Gem;
+            return (
+              <div
+                key={p.id || i}
+                className="relative text-center group px-3 py-4 hover:bg-[var(--bp-surface-2)]/40 transition-colors"
+                data-testid={`pillar-${p.id || i}`}
+              >
+                <button
+                  type="button"
+                  onClick={() => cycleIcon(i)}
+                  title="Cycle icon"
+                  data-testid={`pillar-${p.id || i}-icon`}
+                  className="mx-auto mb-3 flex items-center justify-center w-10 h-10 text-[var(--bp-text-primary)] hover:text-[var(--bp-primary)] transition-colors"
+                >
+                  <Icon size={26} strokeWidth={1.2} />
+                </button>
+                <InlineText
+                  value={pickLocale(p.title, locale, FALLBACK_CHAIN)}
+                  onChange={(v) => setLocalized(i, 'title', v)}
+                  placeholder="PILLAR TITLE"
+                  as="p"
+                  className="font-heading text-base text-[var(--bp-text-primary)] uppercase tracking-[0.1em] mb-2"
+                  testid={`pillar-${p.id || i}-title`}
+                />
+                <InlineText
+                  value={pickLocale(p.body, locale, FALLBACK_CHAIN)}
+                  onChange={(v) => setLocalized(i, 'body', v)}
+                  placeholder="Short description"
+                  multiline
+                  as="p"
+                  className="text-[var(--bp-text-muted)] text-xs font-body leading-relaxed whitespace-pre-line"
+                  testid={`pillar-${p.id || i}-body`}
+                />
+                <button
+                  type="button"
+                  onClick={() => removePillar(i)}
+                  title="Remove pillar"
+                  data-testid={`pillar-${p.id || i}-remove`}
+                  className="absolute top-1 right-1 w-6 h-6 flex items-center justify-center text-[var(--bp-text-muted)] hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <X size={14} strokeWidth={1.5} />
+                </button>
+              </div>
+            );
+          })}
+          <button
+            type="button"
+            onClick={addPillar}
+            data-testid={`pillar-add-${section.id}`}
+            className="flex flex-col items-center justify-center min-h-[140px] border border-dashed border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:text-[var(--bp-primary)] hover:border-[var(--bp-primary)] transition-colors"
+          >
+            <Plus size={20} strokeWidth={1.4} />
+            <span className="text-[10px] font-body uppercase tracking-[0.2em] mt-2">Add pillar</span>
+          </button>
         </div>
       </div>
     </div>

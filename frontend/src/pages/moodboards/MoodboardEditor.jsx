@@ -656,12 +656,15 @@ const MoodboardEditor = ({ readOnly = false }) => {
         slug, name: mb.title || t('moodboards.untitled'),
       });
       setTemplateSavedSlug(slug);
+      toast.success(t('moodboards.templates.saved', null, 'Template saved'));
       trackEvent('moodboard.template_saved',
         { moodboard_id: id, slug },
         { entityType: 'moodboard', entityId: id });
       setTimeout(() => setTemplateSavedSlug(null), 2500);
     } catch (err) {
-      setTemplateSaveError(err?.response?.data?.detail || 'error');
+      const msg = err?.response?.data?.detail || 'error';
+      setTemplateSaveError(msg);
+      toast.error(t('moodboards.templates.saveFailed', null, 'Could not save template') + (msg && msg !== 'error' ? `: ${msg}` : ''));
       setTimeout(() => setTemplateSaveError(null), 3000);
     } finally {
       setSavingTemplate(false);
