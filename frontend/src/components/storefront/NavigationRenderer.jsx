@@ -177,9 +177,9 @@ const NavigationRenderer = ({ section, locale, updateContent, updateSettings, op
             className="mfd-nav-editor__logo-edit"
             onClick={() => openAssetPicker((asset) => updateSettings('logo_src', asset.public_url))}
             data-testid={`nav-logo-${section.id}`}
-            style={{ width: logoSize, height: logoSize }}
+            style={{ width: logoSize, height: 'auto', lineHeight: 0 }}
           >
-            <img src={logoSrc} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <img src={logoSrc} alt="logo" style={{ width: '100%', height: 'auto', display: 'block' }} />
           </div>
           <label className="mfd-nav-editor__size">
             <span>Size</span>

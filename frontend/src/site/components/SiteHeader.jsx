@@ -120,7 +120,7 @@ const SiteHeader = () => {
           src={logoSrc}
           alt="MOOD for DESIGN"
           className="mfd-header__logo"
-          style={{ width: logoSize, height: logoSize }}
+          style={{ width: logoSize, height: 'auto' }}
         />
       </Link>
 

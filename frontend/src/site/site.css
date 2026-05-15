@@ -153,7 +153,8 @@
 }
 .mfd-header__brandgroup { display: flex; align-items: center; gap: 1rem; min-width: 0; }
 .mfd-header__logo {
-  width: 104px; height: 104px;
+  width: 104px;
+  height: auto;
   display: block; flex-shrink: 0;
   object-fit: contain;
 }
