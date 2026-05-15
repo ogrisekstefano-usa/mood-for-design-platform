@@ -1845,3 +1845,61 @@ DB Migration **`017_licensing.sql`** (applied):
 ### Notes
 - Stripe is intentionally mocked. `stripe_customer_id` and `stripe_subscription_id` columns exist but stay NULL until Session I.
 - `is_super_admin` flag in BlueprintContext was already wired and works against the new SuperAdminRoute.
+
+
+---
+
+### ✅ Phase H.5 — Session I: Plan-Aware Enforcement Everywhere (DONE — 15 Feb 2026)
+Goal: extend Server-First Licensing to the rest of the platform (Projects, Moodboards,
+Storage, Domains) so every billable resource has a single source of truth and the UI
+mirrors the server limits with Linear/Vercel-style usage chips + disabled CTAs.
+
+**Backend**
+- `019_licensing_extensions.sql` — adds `tenants.max_moodboards`, `moodboards.archived_at`/`deleted_at`,
+  `tenant_domains.domain_type` (subdomain | custom). Backfills Starter (3/5/15/5GB/1) and Studio
+  (10/25/100/50GB/3) defaults per Feb 2026 pricing.
+- `core/licensing.py` rewritten:
+  - PLANS dict includes `max_moodboards`
+  - `get_tenant_usage` now returns REAL usage: users, projects, moodboards (excludes soft-deleted),
+    `storage_gb` + `storage_bytes` (SUM of media_library.file_size), domains (custom only)
+  - `assert_capacity(tenant_id, resource)` covers users/projects/moodboards/domains
+  - new `assert_storage_capacity(tenant_id, additional_bytes)` pre-flight gate for uploads
+- Routers wired:
+  - `routers/projects.py` create → `assert_capacity(_, "projects")`
+  - `routers/moodboards.py` create → `assert_capacity(_, "moodboards")`, soft-delete on DELETE,
+    new `/archive` and `/restore` endpoints, list endpoint excludes `deleted_at IS NOT NULL`
+  - `routers/storage.py` `/signed-upload` and `/media` → `assert_storage_capacity` (file_size pre-flight)
+  - `routers/settings.py` `/assets/register` → `assert_storage_capacity`
+  - `routers/domains.py` auto-detects subdomain vs custom from hostname suffix
+    (`*.moodfordesign.com` → `domain_type='subdomain'`, FREE — does NOT count against `max_domains`)
+- Error payload contract (frontend switches on `code`):
+  `{ code:'LICENSE_LIMIT_REACHED', message, plan, resource, current, limit }`
+
+**Frontend**
+- `hooks/useLicense.js` — shared license cache (module-level) + `capacityFor(resource)` helper
+  + `refreshLicense()` cross-page event sync
+- `components/common/UsageChip.jsx` — Linear-style pill with safe/warn/danger tones
+- `pages/workspace/ProjectsPage.jsx` — usage chip + plan-aware "Upgrade to create more" CTA,
+  empty-state CTA mirrors the gate, License-aware toast on 403
+- `pages/moodboards/MoodboardsPage.jsx` — same treatment; auto-redirect to /settings/plan
+  on quota error from template-apply too
+- `pages/settings/DomainsPage.jsx` — migrated to shared hook + UsageChip, label clarifies
+  "Custom domains" (subdomains don't count)
+- `pages/settings/PlanPage.jsx` — added Moodboards meter (6 total), plan catalog shows
+  moodboards row, refreshLicense() after plan assign
+- `pages/settings/MembersPage.jsx` — refreshLicense() after invite for cross-page sync
+- `lib/assetUpload.js` + `blueprint/moodboard/ImageUploader.jsx` — send `file_size` on
+  signed-upload to enable server pre-flight; LICENSE_LIMIT_REACHED toast formatting
+
+**Tested**
+- Backend pytest 10/10 (`/app/backend/tests/test_licensing_enforcement.py`)
+- E2E frontend chips + CTAs + 6 meters verified by testing agent (iteration 39)
+- Subdomain bypass confirmed: `freesub.moodfordesign.com` accepted even on Starter at cap
+
+**Notes**
+- License GET is ~3s on cold hit (5 COUNTs + 1 SELECT-all-file_sizes). Frontend caches at
+  module level so subsequent navigations are instant. Server-side Redis cache is a future
+  optimisation (P2).
+- `assert_capacity(additional=N)` formula uses `usage + max(0, additional-1) >= limit`;
+  callers in this session all use additional=1. Future multi-slot reservations should
+  switch to `usage + additional > limit`.
