@@ -80,14 +80,6 @@ const StoreHero = ({ section, locale, draft, updateContent, updateSettings, open
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-16 pointer-events-none">
           <div className="max-w-3xl pointer-events-auto">
             <InlineText
-              value={getField(section, draft, locale, 'overline')}
-              onChange={(v) => updateContent(locale, 'overline', v)}
-              placeholder="OVERLINE"
-              as="p"
-              className="text-white/70 text-[10px] font-body uppercase tracking-[0.3em] mb-4"
-              testid={`hero-overline-${section.id}`}
-            />
-            <InlineText
               value={getField(section, draft, locale, 'headline')}
               onChange={(v) => updateContent(locale, 'headline', v)}
               placeholder="Editorial headline"
@@ -102,8 +94,25 @@ const StoreHero = ({ section, locale, draft, updateContent, updateSettings, open
               placeholder="Sub-headline lead text"
               multiline
               as="p"
-              className="text-white/80 text-base font-body leading-relaxed whitespace-pre-line mx-auto"
+              className="text-white/80 text-base font-body leading-relaxed whitespace-pre-line mx-auto mb-6"
               testid={`hero-sub-${section.id}`}
+            />
+            <div className="w-12 h-px bg-white/40 mx-auto mb-4" aria-hidden="true" />
+            <InlineText
+              value={getField(section, draft, locale, 'overline')}
+              onChange={(v) => updateContent(locale, 'overline', v)}
+              placeholder="OVERLINE"
+              as="p"
+              className="text-white/70 text-[10px] font-body uppercase tracking-[0.3em] mb-3"
+              testid={`hero-overline-${section.id}`}
+            />
+            <InlineText
+              value={getField(section, draft, locale, 'overline_italic')}
+              onChange={(v) => updateContent(locale, 'overline_italic', v)}
+              placeholder="Italic accent line"
+              as="p"
+              className="font-heading italic text-white/85 text-lg"
+              testid={`hero-overline-italic-${section.id}`}
             />
           </div>
         </div>
