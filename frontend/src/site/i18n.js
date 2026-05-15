@@ -12,20 +12,17 @@ import {
 
 export const LOCALE_STORAGE_KEY = 'mfd_locale';
 
-// Public switcher view — auto-deduplicated keys for compact UI (one entry per base).
+// Public switcher view — exposes ALL public_enabled languages distinctly,
+// including BCP-47 variants (EN-US ≠ EN-UK). The previous dedupe-by-base hid
+// regional variants from the user, breaking platform consistency.
 export function getSiteLocales() {
-  const langs = publicLanguages();
-  // De-dup by base — a public switcher exposes ONE entry per language family
-  // (the first enabled variant by sort_order). Tenants can choose en-US or en-GB
-  // via the SuperAdmin /settings/languages panel.
-  const seen = new Set();
-  const out = [];
-  langs.forEach((l) => {
-    if (seen.has(l.base)) return;
-    seen.add(l.base);
-    out.push({ code: l.code, base: l.base, label: l.short, native: l.native_name, rtl: l.rtl });
-  });
-  return out;
+  return publicLanguages().map((l) => ({
+    code: l.code,
+    base: l.base,
+    label: l.short,
+    native: l.native_name,
+    rtl: l.rtl,
+  }));
 }
 
 // Backwards-compat exports (used across the codebase)
