@@ -1361,3 +1361,43 @@ Audit completo del public-site + sistema multilingua per eliminare TUTTE le dipe
 - Quando un tenant aggiungerà una nuova lingua dal pannello admin (es. `pt`, `ja`), il sistema chiamerà AI translator per popolare tutte le chiavi esistenti → SITE_LOCALES sarà esteso runtime dalla API senza modifiche al codice frontend.
 
 
+
+
+### ✅ Phase H.3 — Private Client Onboarding Wizard `/start-project` (DONE — 14 Feb 2026)
+Esperienza editoriale cinematografica 7-step + Final Ready state per trasformare un visitatore privato in lead qualificato. NON è un form CRM — è un guided design experience stile Aman/Kinfolk/Studio KO/Dimorestudio.
+
+**Routing & layout**
+- Nuova route pubblica `/start-project` — full-screen wizard, **NON wrappato in SiteLayout** (no header/footer/menu)
+- Chrome editorial: logo MOOD + counter "STEP X DI 7" + progress dots (brass active, dim done) + Exit button con confirm dialog
+- Animazioni: `mfd-wiz-fade` su step change (700ms cubic-bezier), `transform scale 1.04` su card hover
+- Auto-save su `localStorage.mfd_start_project_state` ad ogni cambio di stato → reload preserva tutto
+
+**7 Step + Final**
+- **Step 1 Project Type** — 9 image card grid (apartment, villa, penthouse, boutique_hotel, restaurant, retail, office, wellness, other) con check brass animato
+- **Step 2 Spaces** — split layout (atmospheric image left + 9 checks right) multi-select
+- **Step 3 Mood & Atmosphere** — 6 image card multi-select (warm_minimal, quiet_luxury, mediterranean_calm, sculptural_contemporary, natural_modernism, dark_editorial)
+- **Step 4 Inspirations** — 4 tabs (Upload/Pinterest/Link/Board), upload locale via `URL.createObjectURL`, link/Pinterest paste-and-add con renderizzazione board, remove on hover. **Architettura DB-ready** per futura Supabase Storage integration
+- **Step 5 Materials & Colors** — 6 material chips + 6 color chips con swatches circolari (Travertine/Walnut/Linen/Brushed Metal/Bronze/Glass + Warm White/Sand/Greige/Earth/Olive/Charcoal)
+- **Step 6 Lifestyle** — 3 large editorial textarea con serif font (feel/inspires/atmosphere)
+- **Step 7 Budget & Timeline** — 3 select luxury hospitality (timeline/amount/startDate) + notes textarea
+- **Final Ready** — 5 summary cards (Lead profile · Mood direction · Project structure · Moodboard suggestions · Proposal sections) + 2 CTA (Crea account / Accedi al Blueprint) + payload JSON nascosto per testing
+
+**Architecture invariants**
+- 🟢 ZERO hardcoded — tutto in `/app/frontend/src/site/content/onboarding.js` (288 righe, locale-keyed `{it,en,fr,de,es}`)
+- 🟢 Step gating intelligente: `canContinue` calcolato per ogni step (1: required, 2/3/5: ≥1 selection, 4/6: optional, 7: tutti i 3 select required)
+- 🟢 Cinematic transition: ogni step ha `key={state.step}` → React monta nuovo + animation entry
+- 🟢 Locale architecture **stessa di Blueprint** (shared `mfd_locale`, cross-context sync via custom event)
+- 🟢 Final payload **DB-ready shape** — JSON con `{project_type, spaces[], moods[], inspirations{uploads,pinterest,links}, materials[], colors[], lifestyle_answers{feel,inspires,atmosphere}, budget, timeline, start_date, notes, locale, tenant, created_at}`. Persistito in `localStorage.mfd_pending_lead_payload` come bridge fino a Phase H.5 (POST /api/leads)
+- 🟢 Homepage CTA "INIZIA IL TUO PROGETTO" ora linka `/start-project` (era `/onboarding/private`)
+
+**Visual palette (luxury hospitality)**
+- Background: `radial-gradient(#1F1B16 → #15110D → #0A0807)` — warm charcoal
+- Accent: `#C9A36E` (brass)
+- CTA: `#E7CFB0` (warm paper) hover → brass
+- Typography: Cormorant Garamond serif headlines + Inter Tight sans UI
+
+**Tested ✅** (`iteration_33.json`): **17/17 PASS** — wizard load, all 7 steps + gating, multi-select persistence, autosave/restore, locale IT→EN switch, back navigation, Exit confirm, homepage CTA link update, final payload shape, regression / + /projects + /onboarding/:kind + /auth/login. Zero console errors.
+
+**MOCKED**: persistenza lead via `localStorage` (no backend). Phase H.5 wirerà POST `/api/leads` con questo payload come body.
+
+
