@@ -1,4 +1,5 @@
-// MOOD for DESIGN™ — DEMO STORE Navigation Content
+// MOOD for DESIGN™ — Corporate Platform Navigation
+// Information architecture: Platform · Workflow · Moodboards · Projects · Journal · Pricing · About
 // Mirrors future DB: `cms_navigation` { tenant_id, scope:'header'|'footer', config jsonb }
 
 export const navigationContent = {
@@ -7,96 +8,110 @@ export const navigationContent = {
     suffix: '\u2122',
     logoSrc: '/brand/mood-for-design-mark.png',
     tagline: {
-      it: 'Arredare spazi.\nCostruire relazioni.',
-      en: 'Shaping spaces.\nBuilding relationships.',
-      fr: 'Aménager des espaces.\nBâtir des relations.',
-      de: 'Räume gestalten.\nBeziehungen aufbauen.',
-      es: 'Diseñar espacios.\nConstruir relaciones.',
+      it: 'Dal lead al progetto. Alla consegna.',
+      en: 'From lead to project. To delivery.',
+      fr: 'Du prospect au projet. À la livraison.',
+      de: 'Vom Lead zum Projekt. Zur Übergabe.',
+      es: 'Del lead al proyecto. A la entrega.',
     },
   },
   header: {
+    // Top-level IA for the corporate platform site.
+    // Order matters — Platform comes first (the OS itself), then the
+    // capability surfaces, then resources & commercial pages.
     links: [
-      { id: 'about',     href: '#about',      label: { it: 'CHI SIAMO',  en: 'ABOUT',      fr: 'À PROPOS',   de: 'ÜBER UNS',     es: 'NOSOTROS' } },
-      { id: 'services',  href: '#services',   label: { it: 'SERVIZI',    en: 'SERVICES',   fr: 'SERVICES',   de: 'LEISTUNGEN',   es: 'SERVICIOS' } },
-      { id: 'materials', href: '#materials',  label: { it: 'MATERIALI',  en: 'MATERIALS',  fr: 'MATÉRIAUX', de: 'MATERIALIEN',  es: 'MATERIALES' } },
-      { id: 'projects',  href: '/projects',   label: { it: 'PROGETTI',   en: 'PROJECTS',   fr: 'PROJETS',   de: 'PROJEKTE',     es: 'PROYECTOS' } },
-      { id: 'journal',   href: '#journal',    label: { it: 'JOURNAL',    en: 'JOURNAL',    fr: 'JOURNAL',   de: 'JOURNAL',      es: 'JOURNAL' } },
-      { id: 'showroom',  href: '#showroom',   label: { it: 'SHOWROOM',   en: 'SHOWROOM',   fr: 'SHOWROOM',  de: 'SHOWROOM',     es: 'SHOWROOM' } },
-      { id: 'contact',   href: '#contact',    label: { it: 'CONTATTI',   en: 'CONTACT',    fr: 'CONTACT',   de: 'KONTAKT',      es: 'CONTACTO' } },
+      { id: 'platform',   href: '/platform',   label: { it: 'PLATFORM',    en: 'PLATFORM',    fr: 'PLATEFORME',  de: 'PLATTFORM',    es: 'PLATAFORMA' } },
+      { id: 'workflow',   href: '#workflow',   label: { it: 'WORKFLOW',    en: 'WORKFLOW',    fr: 'WORKFLOW',    de: 'WORKFLOW',     es: 'WORKFLOW' } },
+      { id: 'moodboards', href: '#moodboards', label: { it: 'MOODBOARD',   en: 'MOODBOARDS',  fr: 'MOODBOARDS',  de: 'MOODBOARDS',   es: 'MOODBOARDS' } },
+      { id: 'projects',   href: '/projects',   label: { it: 'PROGETTI',    en: 'PROJECTS',    fr: 'PROJETS',     de: 'PROJEKTE',     es: 'PROYECTOS' } },
+      { id: 'journal',    href: '#journal',    label: { it: 'JOURNAL',     en: 'JOURNAL',     fr: 'JOURNAL',     de: 'JOURNAL',      es: 'JOURNAL' } },
+      { id: 'pricing',    href: '#pricing',    label: { it: 'PIANI',       en: 'PRICING',     fr: 'TARIFS',      de: 'PREISE',       es: 'PRECIOS' } },
+      { id: 'about',      href: '#about',      label: { it: 'AZIENDA',     en: 'ABOUT',       fr: 'À PROPOS',    de: 'ÜBER UNS',     es: 'NOSOTROS' } },
     ],
     access: {
       label: { it: 'ACCEDI', en: 'SIGN IN', fr: 'CONNEXION', de: 'ANMELDEN', es: 'ACCEDER' },
       href: '/auth/login',
     },
+    cta: {
+      label: { it: 'PRENOTA UNA DEMO', en: 'BOOK A DEMO', fr: 'RÉSERVER UNE DÉMO', de: 'DEMO BUCHEN', es: 'RESERVAR DEMO' },
+      href: '/professionals',
+    },
   },
   footer: {
     tagline: {
-      it: 'Arredare spazi.\nCostruire relazioni.',
-      en: 'Shaping spaces.\nBuilding relationships.',
-      fr: 'Aménager des espaces.\nBâtir des relations.',
-      de: 'Räume gestalten.\nBeziehungen aufbauen.',
-      es: 'Diseñar espacios.\nConstruir relaciones.',
+      it: 'Il workflow OS per studi di interior design e showroom.\nDal lead al progetto, alla consegna.',
+      en: 'The workflow OS for interior design studios and showrooms.\nFrom lead to project, to delivery.',
+      fr: 'Le workflow OS pour studios d’interior design et showrooms.\nDu prospect au projet, à la livraison.',
+      de: 'Das Workflow-OS für Interior-Design-Studios und Showrooms.\nVom Lead zum Projekt, zur Übergabe.',
+      es: 'El workflow OS para estudios de interior design y showrooms.\nDel lead al proyecto, a la entrega.',
     },
     columns: [
       {
-        id: 'company',
-        title: { it: 'AZIENDA', en: 'COMPANY', fr: 'ENTREPRISE', de: 'UNTERNEHMEN', es: 'EMPRESA' },
+        id: 'platform',
+        title: { it: 'PIATTAFORMA', en: 'PLATFORM', fr: 'PLATEFORME', de: 'PLATTFORM', es: 'PLATAFORMA' },
         links: [
-          { href: '#about',    label: { it: 'Chi siamo',     en: 'About us',    fr: 'À propos',     de: 'Über uns',    es: 'Nosotros' } },
-          { href: '#showroom', label: { it: 'Showroom',      en: 'Showroom',    fr: 'Showroom',     de: 'Showroom',    es: 'Showroom' } },
-          { href: '#careers',  label: { it: 'Lavora con noi', en: 'Careers',    fr: 'Rejoindre',    de: 'Karriere',    es: 'Únete' } },
-          { href: '#press',    label: { it: 'Press',          en: 'Press',      fr: 'Presse',       de: 'Presse',      es: 'Prensa' } },
+          { href: '/platform',           label: { it: 'Panoramica',       en: 'Overview',        fr: 'Aperçu',          de: 'Überblick',       es: 'Resumen' } },
+          { href: '#workflow',           label: { it: 'Workflow',         en: 'Workflow',        fr: 'Workflow',        de: 'Workflow',        es: 'Workflow' } },
+          { href: '#moodboards',         label: { it: 'Moodboard',        en: 'Moodboards',      fr: 'Moodboards',      de: 'Moodboards',      es: 'Moodboards' } },
+          { href: '#draft-live',         label: { it: 'Draft vs Live',    en: 'Draft vs Live',   fr: 'Draft vs Live',   de: 'Draft vs Live',   es: 'Draft vs Live' } },
         ],
       },
       {
-        id: 'services',
-        title: { it: 'SERVIZI', en: 'SERVICES', fr: 'SERVICES', de: 'LEISTUNGEN', es: 'SERVICIOS' },
+        id: 'use_cases',
+        title: { it: 'CASI D’USO', en: 'USE CASES', fr: 'CAS D’USAGE', de: 'ANWENDUNGEN', es: 'CASOS DE USO' },
         links: [
-          { href: '#progettazione', label: { it: 'Progettazione',  en: 'Design service',  fr: 'Conception',    de: 'Planung',          es: 'Proyecto' } },
-          { href: '#consulenza',    label: { it: 'Consulenza',     en: 'Consulting',      fr: 'Conseil',       de: 'Beratung',         es: 'Consultoría' } },
-          { href: '#styling',       label: { it: 'Interior Styling', en: 'Interior styling', fr: 'Styling intérieur', de: 'Interior Styling', es: 'Interior styling' } },
-          { href: '#contract',      label: { it: 'Contract',       en: 'Contract',        fr: 'Contract',      de: 'Contract',         es: 'Contract' } },
+          { href: '#studios',            label: { it: 'Studi di design',  en: 'Design studios',  fr: 'Studios de design', de: 'Design-Studios', es: 'Estudios de diseño' } },
+          { href: '#showrooms',          label: { it: 'Showroom',         en: 'Showrooms',       fr: 'Showrooms',         de: 'Showrooms',      es: 'Showrooms' } },
+          { href: '#architects',         label: { it: 'Architetti',       en: 'Architects',      fr: 'Architectes',       de: 'Architekten',    es: 'Arquitectos' } },
+          { href: '#contract',           label: { it: 'Contract',         en: 'Contract',        fr: 'Contract',          de: 'Contract',       es: 'Contract' } },
         ],
       },
       {
         id: 'resources',
         title: { it: 'RISORSE', en: 'RESOURCES', fr: 'RESSOURCES', de: 'RESSOURCEN', es: 'RECURSOS' },
         links: [
-          { href: '#materials', label: { it: 'Materiali', en: 'Materials', fr: 'Matériaux', de: 'Materialien', es: 'Materiales' } },
-          { href: '#brand',     label: { it: 'Brand',     en: 'Brands',    fr: 'Marques',   de: 'Marken',      es: 'Marcas' } },
-          { href: '#journal',   label: { it: 'Journal',   en: 'Journal',   fr: 'Journal',   de: 'Journal',     es: 'Journal' } },
-          { href: '#faq',       label: { it: 'FAQ',       en: 'FAQ',       fr: 'FAQ',       de: 'FAQ',         es: 'FAQ' } },
+          { href: '#journal',  label: { it: 'Journal',   en: 'Journal',   fr: 'Journal',   de: 'Journal',     es: 'Journal' } },
+          { href: '#cases',    label: { it: 'Case study', en: 'Case studies', fr: 'Études de cas', de: 'Fallstudien', es: 'Casos de estudio' } },
+          { href: '#guides',   label: { it: 'Guide',     en: 'Guides',    fr: 'Guides',    de: 'Guides',      es: 'Guías' } },
+          { href: '#faq',      label: { it: 'FAQ',       en: 'FAQ',       fr: 'FAQ',       de: 'FAQ',         es: 'FAQ' } },
         ],
       },
       {
-        id: 'support',
-        title: { it: 'SUPPORTO', en: 'SUPPORT', fr: 'SUPPORT', de: 'SUPPORT', es: 'SOPORTE' },
+        id: 'company',
+        title: { it: 'AZIENDA', en: 'COMPANY', fr: 'ENTREPRISE', de: 'UNTERNEHMEN', es: 'EMPRESA' },
         links: [
-          { href: '#contact',  label: { it: 'Contatti',   en: 'Contact',         fr: 'Contact',         de: 'Kontakt',          es: 'Contacto' } },
-          { href: '#privacy',  label: { it: 'Privacy Policy', en: 'Privacy Policy', fr: 'Politique de confidentialité', de: 'Datenschutz', es: 'Política de privacidad' } },
-          { href: '#cookies',  label: { it: 'Cookie Policy',  en: 'Cookie Policy',  fr: 'Politique cookies',           de: 'Cookie-Richtlinie', es: 'Política de cookies' } },
-          { href: '#terms',    label: { it: 'Termini e Condizioni', en: 'Terms & Conditions', fr: 'CGU', de: 'AGB', es: 'Términos y Condiciones' } },
+          { href: '#about',    label: { it: 'Chi siamo',     en: 'About us',    fr: 'À propos',     de: 'Über uns',    es: 'Nosotros' } },
+          { href: '#pricing',  label: { it: 'Piani',          en: 'Pricing',    fr: 'Tarifs',       de: 'Preise',      es: 'Precios' } },
+          { href: '#careers',  label: { it: 'Lavora con noi', en: 'Careers',    fr: 'Rejoindre',    de: 'Karriere',    es: 'Únete' } },
+          { href: '#contact',  label: { it: 'Contatti',       en: 'Contact',    fr: 'Contact',      de: 'Kontakt',     es: 'Contacto' } },
+        ],
+      },
+      {
+        id: 'legal',
+        title: { it: 'LEGAL', en: 'LEGAL', fr: 'LÉGAL', de: 'RECHTLICH', es: 'LEGAL' },
+        links: [
+          { href: '#privacy',  label: { it: 'Privacy Policy',          en: 'Privacy Policy',          fr: 'Politique de confidentialité', de: 'Datenschutz',          es: 'Política de privacidad' } },
+          { href: '#cookies',  label: { it: 'Cookie Policy',           en: 'Cookie Policy',           fr: 'Politique cookies',           de: 'Cookie-Richtlinie',    es: 'Política de cookies' } },
+          { href: '#terms',    label: { it: 'Termini e Condizioni',    en: 'Terms & Conditions',     fr: 'CGU',                          de: 'AGB',                  es: 'Términos y Condiciones' } },
+          { href: '#security', label: { it: 'Sicurezza & DPA',         en: 'Security & DPA',         fr: 'Sécurité & DPA',              de: 'Sicherheit & DPA',     es: 'Seguridad y DPA' } },
         ],
       },
     ],
+    // Showroom block becomes a "Get a demo" CTA instead of a physical address.
     showroom: {
-      title: { it: 'SHOWROOM', en: 'SHOWROOM', fr: 'SHOWROOM', de: 'SHOWROOM', es: 'SHOWROOM' },
+      title: { it: 'PRENOTA UNA DEMO', en: 'BOOK A DEMO', fr: 'RÉSERVER UNE DÉMO', de: 'DEMO BUCHEN', es: 'RESERVAR UNA DEMO' },
       addressLines: [
-        'Via Della Manifattura, 12',
-        '33080 Porcia (PN) — Italia',
-        '+39 0434 123456',
-        'info@moodfordesign.com',
+        'hello@moodfordesign.com',
+        'Milano · Porcia · Remote-first',
       ],
       bookCta: {
-        label: { it: 'PRENOTA UNA VISITA', en: 'BOOK A VISIT', fr: 'PRENDRE RENDEZ-VOUS', de: 'BESUCH BUCHEN', es: 'RESERVAR UNA VISITA' },
-        href: '#book',
+        label: { it: 'PRENOTA UNA DEMO', en: 'BOOK A DEMO', fr: 'RÉSERVER UNE DÉMO', de: 'DEMO BUCHEN', es: 'RESERVAR UNA DEMO' },
+        href: '/professionals',
       },
     },
     socials: [
-      { id: 'instagram', href: 'https://instagram.com/', label: 'Instagram', icon: 'instagram' },
-      { id: 'pinterest', href: 'https://pinterest.com/', label: 'Pinterest', icon: 'pinterest' },
       { id: 'linkedin',  href: 'https://linkedin.com/',  label: 'LinkedIn',  icon: 'linkedin' },
-      { id: 'tiktok',    href: 'https://tiktok.com/',    label: 'TikTok',    icon: 'tiktok' },
+      { id: 'instagram', href: 'https://instagram.com/', label: 'Instagram', icon: 'instagram' },
     ],
     copyright: {
       it: '© {year} MOOD for DESIGN\u2122 — Tutti i diritti riservati.',

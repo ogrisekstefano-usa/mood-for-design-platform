@@ -1962,3 +1962,60 @@ site is served from immutable frozen revisions — Notion / Vercel / Webflow CMS
 - AI-assisted revisions, scheduled publishing UI, collaborative cursors
 - Transactional revert (Postgres function) for scale
 - Revision pruning policy + UI
+
+
+---
+
+### ✅ Phase K — Workflow OS Repositioning (DONE — 15 Feb 2026)
+Strategic repositioning from "design inspiration / curated community" → **"Design Workflow
+Operating System for interior design studios & showrooms."** Core value is now control of
+change, not inspiration. Removes all economic/payment language (only `client budget` allowed).
+
+**Content updates**
+- `frontend/src/site/content/homepage.js` — full rewrite (5 locales):
+  - Hero: "FROM LEAD TO PROJECT. TO DELIVERY." + Workflow OS overline
+  - Dual cards: B2B segments (Studios → "Book a demo" · Showrooms → "Explore the workflow")
+  - Value props "YOUR WORKFLOW. ONE PLACE." with 5 pillars:
+    Lead Intake · Client Onboarding · Moodboards & Projects · Draft vs Live · Client Portal
+  - Studios in Motion (renamed from Projects that Inspire)
+  - Workflow Insights newsletter (no fluff, just workflow)
+- `frontend/src/site/content/navigation.js` — new IA:
+  - Header: Platform · Workflow · Moodboards · Projects · Journal · Pricing · About
+  - Footer columns: Platform · Use Cases · Resources · Company · Legal
+  - Showroom CTA reframed as "Book a Demo" (no physical address)
+
+**Pipeline**
+- Re-dumped JS → JSON via `dump.mjs`
+- Re-seeded demo tenant cms_pages/cms_sections via `seed_storefront_cms.py`
+- Published via Phase J revision system (label: "Workflow OS repositioning (final)")
+- Public storefront now serves the new revision (served_from='revision')
+
+**Pre-existing bug fixed in the process**
+- `frontend/src/lib/api.js`: 401 interceptor was redirecting public marketing pages
+  (`/`, `/projects`, `/professionals`, etc.) to `/auth/login` whenever a stale
+  localStorage token caused `/api/auth/me` to 401. Added these paths to the
+  public-surface allowlist so visitors never get bounced.
+
+**Avoided language**
+- portfolio builder · moodboard platform · social/community · inspiration platform
+- invoices · revenue · payment tracking · financial KPIs · billing dashboard
+- "global community" · "creative network"
+
+**Allowed economic field**
+- client budget · project budget range · budget awareness only
+
+**Visual verified**
+- Hero · Dual cards · Value props · Studios in Motion · Workflow Insights · Footer
+  all rendering correctly in EN-US (and IT via locale switch)
+
+### Next Action Items (post-Phase K — confirmed roadmap)
+1. **Complete CMS Bindings** — verify every storefront section reads via `useStorefrontContent`
+   from the published revision (P0)
+2. **Media Library** dedicated page (search · filters · replace flow · tagging) — critical for
+   interior design (images, materials, renderings, textures, catalogs) (P0)
+3. **Journal System** — corporate journal (moodfordesign.com) + per-tenant journals,
+   shared engine, separate SEO strategy (P1)
+4. **AI Editorial Assistant** scoped for interior design: topics, structure, images,
+   storytelling, locale-specific tone, SEO, CTAs. NOT a generic AI writer (P1)
+5. **AI "Suggest improvements" in Diff Drawer** — leverages the existing diff payload
+   so the AI sees only the delta in context (P2)

@@ -32,7 +32,15 @@ api.interceptors.response.use(
       // the read-only client experience.
       const p = window.location.pathname || '';
       const isPublicSurface =
+        p === '/' ||
         p === '/auth/login' ||
+        p.startsWith('/auth/') ||
+        p === '/projects' ||
+        p.startsWith('/projects/') ||
+        p === '/professionals' ||
+        p === '/platform' ||
+        p === '/start-project' ||
+        p.startsWith('/onboarding/') ||
         p.startsWith('/presentation/') ||
         p.startsWith('/moodboard/share/') ||
         p.startsWith('/review/') ||
