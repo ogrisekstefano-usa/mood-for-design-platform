@@ -1401,3 +1401,56 @@ Esperienza editoriale cinematografica 7-step + Final Ready state per trasformare
 **MOCKED**: persistenza lead via `localStorage` (no backend). Phase H.5 wirerà POST `/api/leads` con questo payload come body.
 
 
+
+
+### ✅ Phase H.4 — Professional Gateway + GLOBAL LANGUAGE REGISTRY (DONE — 14 Feb 2026)
+Dual delivery: (A) ingresso editoriale per professionisti A&D + intake 5-step. (B) Foundation architettonica per il language management enterprise.
+
+**Part A — Professional Gateway `/professionals` + Intake `/professionals/intake`**
+- Hero editoriale cinematografico (`mfd-pro-hero`) con immagine luxury hospitality + dark layered gradient
+- 3 CTA grid editoriale (`mfd-pro-ctas`) con kicker brass accent + serif title + body + chevron action:
+  - **01 — VISITA LO STUDIO** → URL configurabile per tenant (`tenantConfig.studioExternal.url`, default `/projects`, supporta `target=_blank` per URL esterno)
+  - **02 — AVVIA UN PROGETTO** → `/professionals/intake` (5-step wizard)
+  - **03 — ACCEDI AL WORKSPACE** → `/auth/login`
+- Tono: **collaborazione + opportunità + partnership** (NON emotional come il flow privato)
+- Intake 5-step: Intent (9 multi-select) · Project Info (5 fields) · Design Direction (upload+link tabs) · Pro Details (8 fields incl. preferred language pulled da publicLanguages) · Confirmation (summary 4 sezioni + 3 next-steps + 2 CTA → /auth/login con payload in `localStorage.mfd_pending_pro_payload`)
+- Autosave su `localStorage.mfd_professional_intake_state`
+- Step counter "STEP X DI 5" + progress dots brass
+
+**Part B — GLOBAL LANGUAGE REGISTRY**
+- File: `/app/frontend/src/site/content/languages.js` — **single source of truth** per ALL locale logic
+- Schema completo: `{code, name, native_name, enabled, public_enabled, blueprint_enabled, default_locale, rtl, fallback_locale, sort_order, ai_translation_enabled, short, base}`
+- 9 lingue pre-configurate: IT (default) · EN-US · EN-UK · FR · DE · ES + AR/ZH/JA disabled-by-default
+- API:
+  - `getLanguageRegistry()` — registry corrente (override localStorage o default)
+  - `setLanguageRegistry(next)` — persiste override + dispatcha `mfd:languages:change`
+  - `publicLanguages()` / `blueprintLanguages()` / `enabledLanguages()` — viste filtrate
+  - `resolveLanguage(code)` — risolve BCP-47 o 2-char in entry registry
+  - `buildFallbackChain(code)` — catena di fallback per controlled `pick()`
+- **i18n.js refactored**: `pick()` ora usa `buildFallbackChain()` dal registry → `[locale, base, fallback_locale, fallback_base, 'en']`
+- **SiteContext**: dynamic `SITE_LOCALES` rebuild on `mfd:languages:change`, plus `document.dir='rtl'` quando lingua selezionata è RTL
+- **BlueprintContext**: ora legge `FALLBACK_LOCALES` da `blueprintLanguages()` invece di array hardcoded → public site + Blueprint condividono il **registry stesso**
+
+**Admin UI `/settings/languages`** (Phase H.4 foundation)
+- Tabella con tutte le 9 lingue: code, name, native, Enabled checkbox, Public site, Blueprint, Default radio, RTL badge, Fallback, AI Translate
+- Save persiste override su `localStorage.mfd_language_registry_override` + dispatcha event → site + Blueprint si aggiornano LIVE
+- Reset to defaults
+- Architecture note in fondo che spiega il flow
+
+**Architecture invariants reinforced**
+- 🟢 ZERO duplicate locale arrays — public site + Blueprint leggono dal registry
+- 🟢 RTL-ready: `document.documentElement.dir` flippa runtime
+- 🟢 Tenant-ready: studio external URL configurabile per tenant via `tenantConfig.studioExternal.url`
+- 🟢 Future-ready: AI Translation toggle già nel registry (per Phase H.5)
+- 🟢 SuperAdmin-ready: tutta la gestione concentrata in `/settings/languages`
+
+**Tested ✅** (`iteration_34.json`): **32/33 PASS (97%)** — gateway 3 CTAs, intake 5 step + autosave, step gating, language admin enable/disable/save/reset, locale unification cross-context, regression intatta. L'unico fail è cosmetic (uppercase via CSS only — non un bug).
+
+**Code review notes per Phase H.5**:
+- Memory: `URL.revokeObjectURL` in remove/unmount per gli upload references
+- Backend H.5 dovrà gestire upload separati (multipart) prima di POST /api/leads
+- Splittare `ProfessionalIntakePage.jsx` (332 lines) se cresce ancora
+
+**MOCKED**: lead persistence (private + pro) e language override sono in localStorage. Phase H.5 wirerà tabelle backend `platform_languages`, `leads`, `professionals`.
+
+
