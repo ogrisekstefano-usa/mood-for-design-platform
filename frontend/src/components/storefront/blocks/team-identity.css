@@ -1,0 +1,284 @@
+/* ─────────────────────────────────────────────────────────────────
+   TeamIdentityBlock — boutique hospitality + editorial luxury.
+   Lives in the storefront surface only (`data-surface="storefront"`)
+   and intentionally never reuses Blueprint OS tokens.
+   ───────────────────────────────────────────────────────────── */
+
+.ti-section {
+  --ti-ivory:    #F7F1E5;
+  --ti-cream:    #EFE6D2;
+  --ti-graphite: #1B1916;
+  --ti-text:     #2A2622;
+  --ti-text-soft: rgba(42, 38, 34, 0.72);
+  --ti-text-muted: rgba(42, 38, 34, 0.52);
+  --ti-gold:     #B68B4A;
+  --ti-gold-soft: #C8A977;
+  --ti-rule:     rgba(42, 38, 34, 0.14);
+
+  background-color: var(--ti-ivory);
+  color: var(--ti-text);
+  padding: clamp(72px, 9vw, 132px) clamp(24px, 6vw, 96px);
+  font-family: 'Inter', 'Manrope', system-ui, sans-serif;
+}
+
+.ti-section[data-variant="dark"] {
+  background-color: var(--ti-graphite);
+  color: var(--ti-ivory);
+  --ti-text: var(--ti-ivory);
+  --ti-text-soft: rgba(247, 241, 229, 0.78);
+  --ti-text-muted: rgba(247, 241, 229, 0.5);
+  --ti-rule: rgba(247, 241, 229, 0.14);
+}
+
+.ti-wrap {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(0, 1.15fr);
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+}
+
+.ti-wrap--right {
+  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 1fr);
+}
+
+.ti-wrap--right .ti-portrait { order: 2; }
+
+/* ── Portrait ─────────────────────────────────────────────── */
+.ti-portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  max-width: 520px;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow:
+    0 1px 0 var(--ti-rule),
+    0 24px 60px -28px rgba(0, 0, 0, 0.32);
+}
+
+.ti-portrait__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.94) contrast(1.02);
+  transition: transform 1.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.ti-portrait:hover .ti-portrait__img {
+  transform: scale(1.018);
+}
+
+.ti-portrait__caption {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding: 22px 26px;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.5) 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ti-portrait__name {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: clamp(20px, 1.7vw, 26px);
+  letter-spacing: 0.005em;
+  font-weight: 500;
+}
+
+.ti-portrait__role {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+/* ── Copy ─────────────────────────────────────────────────── */
+.ti-copy { max-width: 56ch; }
+
+.ti-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ti-gold);
+  margin: 0 0 28px 0;
+  font-weight: 500;
+}
+
+.ti-headline {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: clamp(32px, 4vw, 54px);
+  line-height: 1.06;
+  letter-spacing: -0.012em;
+  margin: 0;
+  color: var(--ti-text);
+  font-weight: 400;
+}
+
+.ti-quote {
+  position: relative;
+  margin: 32px 0 0 0;
+  padding: 0 0 0 28px;
+  border-left: 1px solid var(--ti-gold-soft);
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: clamp(18px, 1.6vw, 22px);
+  line-height: 1.55;
+  font-style: italic;
+  color: var(--ti-text-soft);
+}
+
+.ti-quote__mark {
+  position: absolute;
+  left: 4px;
+  top: -10px;
+  font-size: 44px;
+  line-height: 1;
+  color: var(--ti-gold);
+  opacity: 0.55;
+  font-style: normal;
+}
+
+.ti-subheadline {
+  margin: 28px 0 0 0;
+  font-size: 15.5px;
+  line-height: 1.72;
+  color: var(--ti-text-soft);
+  max-width: 50ch;
+}
+
+/* ── CTA ──────────────────────────────────────────────────── */
+.ti-actions {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 28px;
+}
+
+.ti-actions--center {
+  margin-top: 56px;
+  justify-content: center;
+}
+
+.ti-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 30px;
+  border: 1px solid var(--ti-text);
+  border-radius: 999px;
+  color: var(--ti-text);
+  background: transparent;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 240ms ease, color 240ms ease, transform 240ms ease;
+}
+
+.ti-cta:hover {
+  background: var(--ti-text);
+  color: var(--ti-ivory);
+  transform: translateY(-1px);
+}
+
+.ti-section[data-variant="dark"] .ti-cta:hover {
+  color: var(--ti-graphite);
+}
+
+.ti-cta__arrow {
+  font-size: 14px;
+  transition: transform 240ms ease;
+}
+
+.ti-cta:hover .ti-cta__arrow { transform: translateX(3px); }
+
+.ti-meta {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ti-text-muted);
+  margin: 0;
+}
+
+/* ── Paired layout ────────────────────────────────────────── */
+.ti-section--paired .ti-header {
+  max-width: 760px;
+  margin: 0 auto 64px auto;
+  text-align: center;
+}
+
+.ti-section--paired .ti-header .ti-subheadline { margin-left: auto; margin-right: auto; }
+
+.ti-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(28px, 4vw, 56px);
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.ti-pair__card {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.ti-pair__img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 4px;
+  filter: saturate(0.94) contrast(1.02);
+}
+
+.ti-pair__name {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-size: clamp(22px, 1.9vw, 28px);
+  margin: 0;
+  color: var(--ti-text);
+  font-weight: 500;
+}
+
+.ti-pair__role {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ti-gold);
+  margin: 0;
+}
+
+.ti-pair__bio {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ti-text-soft);
+  margin: 0;
+  max-width: 38ch;
+}
+
+/* ── Fallback ─────────────────────────────────────────────── */
+.ti-section--neutral .ti-neutral {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.ti-section--neutral .ti-actions { justify-content: center; margin-top: 44px; }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 880px) {
+  .ti-wrap, .ti-wrap--right {
+    grid-template-columns: 1fr;
+    gap: 44px;
+  }
+  .ti-wrap--right .ti-portrait { order: 0; }
+  .ti-pair { grid-template-columns: 1fr; }
+  .ti-actions { flex-direction: column; align-items: flex-start; gap: 18px; }
+  .ti-actions--center { align-items: center; }
+}

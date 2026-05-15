@@ -576,3 +576,83 @@ def public_asset(tenant_slug: str, asset_id: str):
     if not a.data:
         raise HTTPException(404, "Asset not found")
     return a.data[0]
+
+
+# ── Phase T.1 — Public team identity ──────────────────────────────────
+#
+# Returns up to N (default 2) public-safe studio leader profiles for
+# the given tenant slug. Used by the cinematic `team_identity_card`
+# CMS block on the storefront. NEVER exposes email, role, tenant ids,
+# or any private metadata; only profiles with a complete introduction
+# (avatar + bio + role_label) are eligible — half-finished profiles
+# are simply hidden so the storefront never reads as "broken".
+ROLE_PRIORITY = ["tenant_admin", "project_manager", "designer", "editor", "super_admin"]
+
+
+@router.get("/public/{tenant_slug}/team-leaders")
+def public_team_leaders(tenant_slug: str, max_leaders: int = 2):
+    """Public, anonymous endpoint. Mirrors the `public_assignee_profile`
+    shape used inside the Client Portal so the SAME face the visitor
+    sees here is the SAME face they'll meet inside their portal."""
+    client = db()
+    t = client.table('tenants').select('id,name').eq('slug', tenant_slug).limit(1).execute()
+    if not t.data:
+        raise HTTPException(404, "Tenant not found")
+    tenant_id = t.data[0]['id']
+    tenant_name = t.data[0].get('name')
+
+    # Cap at 2 — by spec we never render a corporate team grid.
+    cap = max(1, min(int(max_leaders or 1), 2))
+
+    # Pull every active profile in the tenant once, then pick the top by
+    # role priority + introduction completeness.
+    r = (
+        client.table('users_profile')
+        .select('id,first_name,last_name,role,avatar_url,short_bio,role_label,response_time_label,contact_cta_label,created_at')
+        .eq('tenant_id', tenant_id).eq('status', 'active').execute()
+    )
+    all_profiles = r.data or []
+
+    def _introduced(p):
+        return bool(
+            (p.get('avatar_url') or '').strip()
+            and (p.get('short_bio') or '').strip()
+            and (p.get('role_label') or '').strip()
+        )
+
+    eligible = [p for p in all_profiles if _introduced(p)]
+    if not eligible:
+        return {"tenant_name": tenant_name, "leaders": []}
+
+    role_rank = {r: i for i, r in enumerate(ROLE_PRIORITY)}
+
+    def _key(p):
+        rk = role_rank.get((p.get('role') or '').lower(), 999)
+        return (rk, p.get('created_at') or '')
+
+    eligible.sort(key=_key)
+
+    def _name(p):
+        fn = (p.get('first_name') or '').strip()
+        ln = (p.get('last_name') or '').strip()
+        full = (fn + ' ' + ln).strip()
+        return {
+            'first_name': fn or None,
+            'display_name': full or fn or 'Studio',
+        }
+
+    leaders = []
+    for p in eligible[:cap]:
+        n = _name(p)
+        leaders.append({
+            'id': p['id'],                            # opaque uuid — no email/role
+            'first_name': n['first_name'],
+            'display_name': n['display_name'],
+            'avatar_url': p.get('avatar_url'),
+            'role_label': p.get('role_label'),
+            'short_bio': p.get('short_bio'),
+            'response_time_label': p.get('response_time_label') or 'Risponde in giornata',
+            'contact_cta_label': p.get('contact_cta_label') or 'Parla con noi',
+        })
+    return {"tenant_name": tenant_name, "leaders": leaders}
+

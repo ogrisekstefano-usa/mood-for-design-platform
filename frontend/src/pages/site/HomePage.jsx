@@ -26,6 +26,19 @@ import { tenantConfig } from '../../site/content/tenant';
 import { useStorefrontContent, pickContent } from '../../site/useStorefrontContent';
 import { Reveal } from '../../site/components/Reveal';
 import TryPlatformCta from '../../components/demo/TryPlatformCta';
+import TeamIdentityBlock from '../../components/storefront/blocks/TeamIdentityBlock';
+
+// Phase T.1 — defaults consumed by TeamIdentityBlock when the
+// `team_identity_card` CMS row hasn't been customised yet.
+const TEAM_IDENTITY_DEFAULTS = {
+  eyebrow: 'Il tuo riferimento',
+  headline: 'Ogni progetto nasce<br/>da una relazione.',
+  subheadline: 'Sarò il tuo punto di contatto durante le prime fasi: ascolto, raccolgo il tuo brief e ti accompagno passo dopo passo, senza scorciatoie.',
+  cta_label: 'Inizia il tuo progetto',
+  cta_href: '/start-project',
+  variant: 'warm',
+  alignment: 'portrait_left',
+};
 
 const ICONS = {
   'pencil-ruler': PencilRuler,
@@ -259,6 +272,11 @@ const HomePage = () => {
       <ProjectsBlock    resolve={resolve} c={c} pick={pick} />
       <MagazineBlock    resolve={resolve} c={c} pick={pick} />
       <BrandLogosBlock  resolve={resolve} c={c} pick={pick} />
+      <TeamIdentityBlock
+        resolve={resolve}
+        slug={tenantConfig.slug}
+        defaults={TEAM_IDENTITY_DEFAULTS}
+      />
       <TryPlatformCta />
     </main>
   );

@@ -186,6 +186,39 @@ STOREFRONT_SECTION_TYPES: List[Dict[str, Any]] = [
         "defaults": {"logos": []},
     },
 
+    # ── TEAM IDENTITY — Phase T.1 ─────────────────────────────────────────
+    # Public-safe "Your Reference" block. Renders 1-2 real studio leaders
+    # using data from /api/storefront/{slug}/team-leaders. Never a corporate
+    # team grid; never an AI / chatbot.
+    {
+        "type": "team_identity_card",
+        "category": "homepage",
+        "label": "Your Reference",
+        "description": "Cinematic introduction of the studio's primary human reference.",
+        "icon": "UserCircle",
+        "reusable_in": ["home", "professionals"],
+        "schema": {
+            "eyebrow":      {"type": "string", "i18n": True},
+            "headline":     {"type": "richtext", "i18n": True},
+            "subheadline":  {"type": "richtext", "i18n": True},
+            "cta_label":    {"type": "string", "i18n": True},
+            "cta_href":     {"type": "string"},
+            "variant":      {"type": "string"},   # 'warm' | 'dark'
+            "alignment":    {"type": "string"},   # 'portrait_left' | 'portrait_right'
+            "max_leaders":  {"type": "number"},   # 1 or 2 — UI caps at 2
+        },
+        "defaults": {
+            "eyebrow":     "Il tuo riferimento",
+            "headline":    "Ogni progetto nasce da una relazione.",
+            "subheadline": "Sarò il tuo punto di contatto durante le prime fasi: ascolto, raccolgo il tuo brief e ti accompagno passo dopo passo.",
+            "cta_label":   "Inizia il tuo progetto",
+            "cta_href":    "/start-project",
+            "variant":     "warm",
+            "alignment":   "portrait_left",
+            "max_leaders": 1,
+        },
+    },
+
     # ── PROJECTS archive ───────────────────────────────────────────────────
     {
         "type": "projects_hero",
