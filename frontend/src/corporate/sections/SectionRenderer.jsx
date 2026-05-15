@@ -12,6 +12,9 @@ import FAQAccordion from './FAQAccordion';
 import ComparisonTable from './ComparisonTable';
 import Timeline from './Timeline';
 import TemplateShowcase from './TemplateShowcase';
+import ProcessSteps from './ProcessSteps';
+import ProjectShowcase from './ProjectShowcase';
+import PressLogos from './PressLogos';
 
 /**
  * MOOD Section Registry
@@ -33,6 +36,9 @@ export const SECTION_REGISTRY = {
   comparison_table: ComparisonTable,
   timeline: Timeline,
   template_showcase: TemplateShowcase,
+  process_steps: ProcessSteps,
+  project_showcase: ProjectShowcase,
+  press_logos: PressLogos,
 };
 
 /**

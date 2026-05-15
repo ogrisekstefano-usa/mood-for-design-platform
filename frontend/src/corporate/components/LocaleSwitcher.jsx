@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Globe } from 'lucide-react';
 import { useLocale } from '../../contexts/LocaleContext';
 
-const LocaleSwitcher = () => {
+const LocaleSwitcher = ({ dark = true }) => {
   const { locale, setLocale, locales, localeLabel } = useLocale();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -13,23 +13,44 @@ const LocaleSwitcher = () => {
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
+  const triggerColor = dark ? 'rgba(255,255,255,0.82)' : '#0A1320';
+  const menuBg       = dark ? 'rgba(10,19,32,0.95)' : '#FFFFFF';
+  const menuBorder   = dark ? 'rgba(255,255,255,0.08)' : 'rgba(10,19,32,0.08)';
+  const itemColor    = dark ? '#FFFFFF' : '#0A1320';
+
   return (
     <div className="relative" ref={ref} data-testid="locale-switcher">
       <button
         onClick={() => setOpen(o => !o)}
-        className="flex items-center gap-1"
-        style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#1A1A1A', background: 'none', border: 'none', cursor: 'pointer' }}
+        className="flex items-center gap-1.5"
+        style={{
+          fontFamily: 'Montserrat, sans-serif',
+          fontSize: '0.7rem',
+          fontWeight: 500,
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+          color: triggerColor,
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+        }}
         data-testid="locale-switcher-trigger"
       >
-        <span style={{ fontSize: '0.75rem', opacity: 0.5 }}>🌐</span>
+        <Globe size={13} strokeWidth={1.5} />
         {localeLabel}
         <ChevronDown size={11} style={{ transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }} />
       </button>
 
       {open && (
         <div
-          className="absolute right-0 top-full mt-2 z-50"
-          style={{ background: '#FFFFFF', border: '1px solid rgba(26,26,26,0.1)', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', minWidth: '150px' }}
+          className="absolute right-0 top-full mt-3 z-50 rounded-lg overflow-hidden"
+          style={{
+            background: menuBg,
+            backdropFilter: 'blur(18px)',
+            border: `1px solid ${menuBorder}`,
+            boxShadow: '0 24px 48px rgba(0,0,0,0.35)',
+            minWidth: '170px',
+          }}
           role="listbox"
           data-testid="locale-dropdown"
         >
@@ -39,18 +60,18 @@ const LocaleSwitcher = () => {
               onClick={() => { setLocale(loc.code); setOpen(false); }}
               className="w-full text-left transition-colors duration-150"
               style={{
-                padding: '0.75rem 1rem',
+                padding: '0.7rem 1rem',
                 fontFamily: 'Montserrat, sans-serif',
-                fontSize: '0.72rem',
+                fontSize: '0.74rem',
                 fontWeight: locale === loc.code ? 600 : 400,
-                color: locale === loc.code ? '#00C9B3' : '#1A1A1A',
+                color: locale === loc.code ? '#3DDAD0' : itemColor,
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
                 display: 'block',
               }}
-              onMouseEnter={e => { if (locale !== loc.code) e.target.style.background = '#F8F8F8'; }}
-              onMouseLeave={e => e.target.style.background = 'none'}
+              onMouseEnter={e => { if (locale !== loc.code) e.target.style.background = dark ? 'rgba(255,255,255,0.05)' : 'rgba(10,19,32,0.04)'; }}
+              onMouseLeave={e => (e.target.style.background = 'none')}
               data-testid={`locale-option-${loc.code}`}
             >
               {loc.name}

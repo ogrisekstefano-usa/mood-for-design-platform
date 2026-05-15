@@ -22,6 +22,24 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ## Sessions completed
 
+### Session II: Dark Editorial Redesign (May 2026) ✅
+- Complete frontend palette overhaul: dark `#0A1320` ink, brand teal `#3DDAD0`, warm bone `#F5F2EC`
+- New design tokens in `index.css`: pill buttons, feature chips, step circles, glow halos, grain texture, ink/light surface helpers
+- Rewrote `CorporateNav` (dark, glass-on-scroll, new MoodLogo wordmark with teal ⊙⊙ + stacked "for DESIGN")
+- Rewrote `LocaleSwitcher` (dark dropdown)
+- Rewrote `EditorialHero` with floating "Project Overview" card (Villa Riviera + progress bar), feature chips strip, italic Playfair accent line
+- Rewrote `MetricsStrip` (cinematic dark, 4 big serif numbers with teal icon bubbles)
+- Rewrote `SplitStory` (dark editorial, optional bullets, dashboard mockup support)
+- Rewrote `FeatureNarrative` (dark grid, hairline dividers, teal icon bubbles)
+- Rewrote `CTASection` (cinematic dark, optional background image + gradient overlay)
+- Rewrote `LogosWall` (supports dark + light press strip)
+- **3 new section types**: `ProcessSteps` (6-step Client Journey), `ProjectShowcase` (light bone, project cards), `PressLogos` (Used and loved by …)
+- Updated `CorporateFooter` colors to new palette
+- `SectionRenderer` registry extended with the 3 new types
+- New seed `db/reseed_home_v2.py` — idempotent, multilingual (it/en-us/en-uk/fr/de/es), repopulates home with the new section sequence:
+  hero → metrics → split flow → process journey → project showcase → press logos → CTA
+- All content multilingual & DB-driven. SEO meta updated.
+
 ### Session 0 (P0): Corporate CMS Persistence (May 2026) ✅
 - Backend connected to real Supabase via Transaction Pooler
 - Tenant resolver + cache + repository pattern

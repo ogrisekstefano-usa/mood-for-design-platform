@@ -10,8 +10,8 @@ import { useReveal } from '../hooks/useReveal';
 const CinematicQuote = ({ content = {}, config = {} }) => {
   const [ref, visible] = useReveal({ threshold: 0.06 });
   const isDark = config.background !== 'light';
-  const bg = isDark ? '#1A1A1A' : '#F8F8F8';
-  const textPrimary = isDark ? '#FFFFFF' : '#1A1A1A';
+  const bg = isDark ? '#0A1320' : '#F8F8F8';
+  const textPrimary = isDark ? '#FFFFFF' : '#0A1320';
   const textSecondary = isDark ? 'rgba(255,255,255,0.5)' : '#6B6E71';
 
   return (
@@ -49,7 +49,7 @@ const CinematicQuote = ({ content = {}, config = {} }) => {
                 <span className="block">{content.headline}</span>
               )}
               {content.headline_accent && (
-                <span className="block" style={{ color: '#00C9B3' }}>{content.headline_accent}</span>
+                <span className="block" style={{ color: '#3DDAD0' }}>{content.headline_accent}</span>
               )}
               {/* Legacy: if single headline with \n */}
               {!content.headline_accent && content.headline && !content.headline.includes('\n') && null}
@@ -68,7 +68,7 @@ const CinematicQuote = ({ content = {}, config = {} }) => {
               <ul className={`mt-8 space-y-3 reveal ${visible ? 'visible' : ''}`} style={{ transitionDelay: '0.3s' }}>
                 {content.features.map((f, i) => (
                   <li key={i} className="flex items-center gap-3">
-                    <CheckCircle size={15} className="flex-shrink-0" style={{ color: '#00C9B3' }} />
+                    <CheckCircle size={15} className="flex-shrink-0" style={{ color: '#3DDAD0' }} />
                     <span className="text-sm font-light" style={{ color: textSecondary }}>{f}</span>
                   </li>
                 ))}
@@ -101,7 +101,7 @@ const CinematicQuote = ({ content = {}, config = {} }) => {
                 <div data-testid="testimonial-quote">
                   <span
                     className="font-serif block mb-3"
-                    style={{ fontSize: '5rem', lineHeight: '1', color: '#00C9B3', fontStyle: 'italic' }}
+                    style={{ fontSize: '5rem', lineHeight: '1', color: '#3DDAD0', fontStyle: 'italic' }}
                   >
                     "
                   </span>
@@ -129,7 +129,7 @@ const CinematicQuote = ({ content = {}, config = {} }) => {
                       <div
                         key={i}
                         className="h-0.5 transition-all duration-300"
-                        style={{ width: i === 0 ? '24px' : '8px', background: i === 0 ? '#00C9B3' : 'rgba(255,255,255,0.2)' }}
+                        style={{ width: i === 0 ? '24px' : '8px', background: i === 0 ? '#3DDAD0' : 'rgba(255,255,255,0.2)' }}
                       />
                     ))}
                   </div>

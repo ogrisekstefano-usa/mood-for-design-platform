@@ -5,134 +5,146 @@
 @tailwind utilities;
 
 :root {
-  --mood-teal: #00C9B3;
-  --mood-teal-mid: #33DCC6;
-  --mood-teal-pale: #7EECDA;
-  --mood-black: #1A1A1A;
-  --mood-gray: #6B6E71;
-  --mood-bone: #F8F8F8;
-  --mood-border: rgba(26,26,26,0.1);
+  /* MOOD palette — dark editorial luxury */
+  --mood-ink:        #0A1320;   /* primary dark surface */
+  --mood-onyx:       #050B14;   /* deepest surface */
+  --mood-ink-2:      #0F1A2A;   /* elevated card surface */
+  --mood-line:       rgba(255,255,255,0.08);
+  --mood-line-soft:  rgba(255,255,255,0.05);
 
-  --background: 0 0% 100%;
-  --foreground: 0 0% 10%;
-  --card: 0 0% 100%;
-  --card-foreground: 0 0% 10%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 10%;
-  --primary: 173 100% 39%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 0 0% 96.1%;
-  --secondary-foreground: 0 0% 9%;
-  --muted: 0 0% 96.1%;
-  --muted-foreground: 0 0% 45.1%;
-  --accent: 0 0% 96.1%;
-  --accent-foreground: 0 0% 9%;
+  --mood-teal:       #3DDAD0;   /* primary brand accent */
+  --mood-teal-deep:  #2BB9B0;
+  --mood-teal-glow:  rgba(61,218,208,0.18);
+
+  --mood-bone:       #F5F2EC;   /* warm light bg */
+  --mood-paper:      #EFEAE0;
+  --mood-black:      #0A1320;
+  --mood-gray:       #8C99A8;
+
+  /* legacy aliases (kept for back-compat) */
+  --mood-teal-mid:   #3DDAD0;
+  --mood-teal-pale:  #7EECDA;
+  --mood-border:     rgba(255,255,255,0.08);
+
+  --background: 215 33% 8%;
+  --foreground: 0 0% 98%;
+  --card: 215 33% 8%;
+  --card-foreground: 0 0% 98%;
+  --popover: 215 33% 8%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 174 65% 55%;
+  --primary-foreground: 215 33% 8%;
+  --secondary: 215 26% 14%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 215 26% 14%;
+  --muted-foreground: 215 14% 55%;
+  --accent: 215 26% 14%;
+  --accent-foreground: 0 0% 98%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 89.8%;
-  --input: 0 0% 89.8%;
-  --ring: 173 100% 39%;
-  --radius: 0rem;
+  --border: 215 25% 18%;
+  --input: 215 25% 18%;
+  --ring: 174 65% 55%;
+  --radius: 0.5rem;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
   font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #FFFFFF;
-  color: #1A1A1A;
+  background-color: var(--mood-ink);
+  color: #FFFFFF;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* MOOD Typography */
-.font-serif { font-family: 'Playfair Display', serif; }
-.font-sans { font-family: 'Montserrat', sans-serif; }
+::selection { background: var(--mood-teal); color: var(--mood-ink); }
 
-/* Reveal animations */
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-.reveal-delay-4 { transition-delay: 0.4s; }
-.reveal-delay-5 { transition-delay: 0.5s; }
+/* Typography */
+.font-serif { font-family: 'Playfair Display', serif; font-feature-settings: "ss01"; }
+.font-sans  { font-family: 'Montserrat', sans-serif; }
 
-/* MOOD Buttons */
-.btn-primary {
+/* Light surface helper */
+.surface-light { background: var(--mood-bone); color: var(--mood-ink); }
+.surface-dark  { background: var(--mood-ink);  color: #FFFFFF; }
+.surface-ink2  { background: var(--mood-ink-2); color: #FFFFFF; }
+
+/* ── Buttons (pill / outline / ghost) ─────────────────────────────────────── */
+.btn-primary,
+.btn-pill-teal {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.875rem 2rem;
-  background: #00C9B3;
-  color: #FFFFFF;
+  padding: 0.95rem 1.85rem;
+  background: var(--mood-teal);
+  color: var(--mood-ink);
   font-family: 'Montserrat', sans-serif;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  border: none;
+  border: 1px solid var(--mood-teal);
+  border-radius: 9999px;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 200ms ease, transform 200ms ease, box-shadow 250ms ease;
   text-decoration: none;
 }
-.btn-primary:hover {
-  background: #00b3a0;
-  color: #FFFFFF;
+.btn-primary:hover,
+.btn-pill-teal:hover {
+  background: var(--mood-teal-deep);
+  border-color: var(--mood-teal-deep);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 30px var(--mood-teal-glow);
 }
 
-.btn-secondary {
+.btn-secondary,
+.btn-pill-outline {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.875rem 2rem;
+  padding: 0.95rem 1.85rem;
   background: transparent;
-  color: #00C9B3;
+  color: #FFFFFF;
   font-family: 'Montserrat', sans-serif;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  border: 1px solid #00C9B3;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 9999px;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: border-color 200ms ease, color 200ms ease, background 200ms ease;
   text-decoration: none;
 }
-.btn-secondary:hover {
-  background: #00C9B3;
-  color: #FFFFFF;
+.btn-secondary:hover,
+.btn-pill-outline:hover {
+  border-color: var(--mood-teal);
+  color: var(--mood-teal);
+  background: rgba(61,218,208,0.06);
 }
 
-.btn-dark {
+.btn-pill-outline-teal {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.875rem 2rem;
-  background: #1A1A1A;
-  color: #FFFFFF;
+  padding: 0.7rem 1.6rem;
+  background: transparent;
+  color: var(--mood-teal);
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  border: none;
+  border: 1px solid var(--mood-teal);
+  border-radius: 9999px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 200ms ease, color 200ms ease;
   text-decoration: none;
 }
-.btn-dark:hover {
-  background: #000000;
+.btn-pill-outline-teal:hover {
+  background: var(--mood-teal);
+  color: var(--mood-ink);
 }
 
 .btn-ghost {
@@ -144,48 +156,122 @@ body {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #1A1A1A;
+  color: rgba(255,255,255,0.7);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color 200ms ease;
 }
-.btn-ghost:hover { color: #00C9B3; }
+.btn-ghost:hover { color: var(--mood-teal); }
 
-/* Overline text */
-.overline {
+.btn-dark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background: var(--mood-ink);
+  color: #FFFFFF;
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #1A1A1A;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: background 200ms ease;
+}
+.btn-dark:hover { background: var(--mood-onyx); }
+
+/* ── Overlines / chips ────────────────────────────────────────────────────── */
+.overline       { font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+.overline-teal  { font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--mood-teal); }
+.overline-ink   { font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; color: var(--mood-ink); }
+
+.feature-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1.15rem 0.55rem 0.55rem;
+  border: 1px solid rgba(61,218,208,0.4);
+  border-radius: 9999px;
+  background: rgba(61,218,208,0.04);
+  color: #FFFFFF;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: background 200ms ease, border-color 200ms ease;
+}
+.feature-chip:hover { background: rgba(61,218,208,0.10); border-color: var(--mood-teal); }
+.feature-chip .icon-bubble {
+  width: 28px; height: 28px;
+  border-radius: 9999px;
+  background: rgba(61,218,208,0.18);
+  border: 1px solid rgba(61,218,208,0.45);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--mood-teal);
 }
 
-.overline-teal {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: #00C9B3;
-}
+/* Soft glow halo for cards/photos */
+.glow-teal { box-shadow: 0 30px 80px -30px var(--mood-teal-glow), 0 0 60px -20px var(--mood-teal-glow); }
 
 /* Section spacing */
 .section-xl { padding-top: 8rem; padding-bottom: 8rem; }
 .section-lg { padding-top: 6rem; padding-bottom: 6rem; }
 .section-md { padding-top: 4rem; padding-bottom: 4rem; }
 
+/* Editorial card (dashboard mockup, project card, etc.) */
+.card-ink {
+  background: var(--mood-ink-2);
+  border: 1px solid var(--mood-line);
+  border-radius: 14px;
+}
+.card-light {
+  background: #FFFFFF;
+  border: 1px solid rgba(10,19,32,0.08);
+  border-radius: 14px;
+}
+
+/* Step line — for ClientJourney */
+.step-line {
+  background: linear-gradient(90deg, transparent 0%, rgba(61,218,208,0.4) 20%, rgba(61,218,208,0.4) 80%, transparent 100%);
+  height: 1px;
+}
+.step-circle {
+  width: 48px; height: 48px; border-radius: 9999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--mood-teal); color: var(--mood-teal);
+  font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.8rem;
+  background: rgba(61,218,208,0.06);
+}
+
+/* Reveal animations */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* Subtle grain / texture for dark surfaces */
+.grain::after {
+  content: '';
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+}
+
 @layer base {
-  [data-debug-wrapper="true"] {
-    display: contents !important;
-  }
+  [data-debug-wrapper="true"] { display: contents !important; }
   [data-debug-wrapper="true"] > * {
     margin-left: inherit; margin-right: inherit;
     margin-top: inherit; margin-bottom: inherit;
     padding-left: inherit; padding-right: inherit;
     padding-top: inherit; padding-bottom: inherit;
-    gap: inherit; border-left-width: inherit;
-    border-right-width: inherit; border-top-width: inherit;
-    border-bottom-width: inherit;
+    gap: inherit;
+    border-left-width: inherit; border-right-width: inherit;
+    border-top-width: inherit; border-bottom-width: inherit;
   }
   * { @apply border-border; }
   body { @apply bg-background text-foreground; }

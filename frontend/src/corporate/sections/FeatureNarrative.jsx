@@ -1,71 +1,97 @@
 import React from 'react';
-import { Building2, Store, LayoutTemplate, BarChart3, Layers, Users, Globe, Zap, Shield, Star } from 'lucide-react';
+import { Building2, Store, LayoutTemplate, BarChart3, Layers, Users, Globe, Zap, Shield, Star, Sparkles, Briefcase, UserCircle } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
 
-const ICONS = { Building2, Store, LayoutTemplate, BarChart3, Layers, Users, Globe, Zap, Shield, Star };
+const ICONS = { Building2, Store, LayoutTemplate, BarChart3, Layers, Users, Globe, Zap, Shield, Star, Sparkles, Briefcase, UserCircle };
 
 /**
- * FeatureNarrative — Grid of feature cards with thin border dividers.
- * Brand guide: clean architectural grid, no cards/shadows.
+ * FeatureNarrative — dark editorial grid of feature cards.
+ * config: { features:[{icon, content:{locale:{title,description,cta}}, href}], layout:'2-columns'|'3-columns'|'4-columns', dark:true (default) }
  */
 const FeatureNarrative = ({ content = {}, config = {} }) => {
   const [ref, visible] = useReveal({ threshold: 0.08 });
-  const features = config.features || [];
+  const features = config.features || content.features || [];
   const cols = config.layout === '3-columns' ? 3 : config.layout === '2-columns' ? 2 : 4;
   const gridCols = { 4: 'lg:grid-cols-4', 3: 'lg:grid-cols-3', 2: 'lg:grid-cols-2' };
+  const dark = config.dark !== false;
 
   return (
-    <section className="py-20" style={{ background: '#FFFFFF' }} data-testid="feature-narrative">
-      <div className="max-w-7xl mx-auto px-8 md:px-16">
-        {content.headline && (
-          <h2 className="font-serif font-normal text-4xl md:text-5xl text-[#1A1A1A] mb-14 tracking-tight">
-            {content.headline}
-          </h2>
-        )}
+    <section
+      className={`relative ${dark ? 'grain' : ''}`}
+      style={{ background: dark ? 'var(--mood-ink)' : '#FFFFFF' }}
+      data-testid="feature-narrative"
+    >
+      <div className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-14 py-24 lg:py-28">
+        <div ref={ref} className={`max-w-3xl mb-14 reveal ${visible ? 'visible' : ''}`}>
+          {content.eyebrow && <p className="overline-teal mb-6">{content.eyebrow}</p>}
+          {content.headline && (
+            <h2
+              className={`font-serif font-normal leading-[1.05] tracking-tight ${dark ? 'text-white' : 'text-[#0A1320]'}`}
+              style={{ fontSize: 'clamp(2rem, 3.6vw, 3.2rem)' }}
+            >
+              {content.headline}
+            </h2>
+          )}
+          {content.body && (
+            <p
+              className="mt-5 text-base font-light leading-relaxed max-w-2xl"
+              style={{ color: dark ? 'rgba(255,255,255,0.6)' : 'rgba(10,19,32,0.6)' }}
+            >
+              {content.body}
+            </p>
+          )}
+        </div>
+
         <div
-          ref={ref}
-          className={`grid grid-cols-1 sm:grid-cols-2 ${gridCols[cols] || 'lg:grid-cols-4'}`}
-          style={{ borderTop: '1px solid rgba(26,26,26,0.1)', borderLeft: '1px solid rgba(26,26,26,0.1)' }}
+          className={`grid grid-cols-1 sm:grid-cols-2 ${gridCols[cols] || 'lg:grid-cols-4'} gap-px`}
+          style={{ background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(10,19,32,0.08)' }}
         >
           {features.map((feature, i) => {
-            const IconComponent = ICONS[feature.icon] || Layers;
-            const featureContent = feature.content?.['en-us'] || feature.content?.it || feature.content || {};
+            const Icon = ICONS[feature.icon] || Layers;
+            const fc = feature.content?.['en-us'] || feature.content?.it || feature.content || {};
             return (
               <div
                 key={feature.id || i}
-                className={`group px-8 py-10 reveal ${visible ? 'visible' : ''}`}
+                className={`group p-8 lg:p-10 transition-all duration-300 reveal ${visible ? 'visible' : ''}`}
                 style={{
-                  transitionDelay: `${i * 0.06}s`,
-                  borderRight: '1px solid rgba(26,26,26,0.1)',
-                  borderBottom: '1px solid rgba(26,26,26,0.1)',
-                  transition: 'background 0.25s ease',
-                  background: 'transparent',
+                  transitionDelay: `${i * 0.05}s`,
+                  background: dark ? 'var(--mood-ink)' : '#FFFFFF',
                 }}
-                onMouseEnter={e => e.currentTarget.style.background = '#F8F8F8'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                onMouseEnter={e => (e.currentTarget.style.background = dark ? 'var(--mood-ink-2)' : '#F5F2EC')}
+                onMouseLeave={e => (e.currentTarget.style.background = dark ? 'var(--mood-ink)' : '#FFFFFF')}
                 data-testid={`feature-card-${feature.id || i}`}
               >
-                <div className="mb-7">
-                  <IconComponent
-                    size={20}
-                    strokeWidth={1.5}
-                    style={{ color: '#1A1A1A', transition: 'color 0.25s' }}
-                    className="group-hover:!text-[#00C9B3]"
-                  />
-                </div>
-                <h3 className="font-sans font-600 text-sm text-[#1A1A1A] mb-3 font-semibold">
-                  {featureContent.title}
+                <span
+                  className="inline-flex items-center justify-center w-10 h-10 rounded-full mb-6"
+                  style={{
+                    background: dark ? 'rgba(61,218,208,0.10)' : 'rgba(61,218,208,0.10)',
+                    border: '1px solid rgba(61,218,208,0.45)',
+                  }}
+                >
+                  <Icon size={16} strokeWidth={1.6} style={{ color: '#3DDAD0' }} />
+                </span>
+                <h3
+                  className="font-serif text-xl leading-tight mb-3"
+                  style={{ color: dark ? '#FFFFFF' : '#0A1320' }}
+                >
+                  {fc.title}
                 </h3>
-                <p className="text-xs font-light text-[#6B6E71] leading-relaxed mb-6">
-                  {featureContent.description}
+                <p
+                  className="text-sm font-light leading-relaxed mb-5"
+                  style={{ color: dark ? 'rgba(255,255,255,0.55)' : 'rgba(10,19,32,0.55)' }}
+                >
+                  {fc.description}
                 </p>
-                {featureContent.cta && feature.href && (
+                {fc.cta && feature.href && (
                   <a
                     href={feature.href}
-                    className="text-xs font-semibold uppercase tracking-wider text-[#1A1A1A] inline-flex items-center gap-1.5 group-hover:text-[#00C9B3] transition-colors"
+                    className="text-xs font-semibold uppercase tracking-[0.18em] inline-flex items-center gap-1.5 transition-colors"
+                    style={{ color: dark ? 'rgba(255,255,255,0.8)' : '#0A1320' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = '#3DDAD0')}
+                    onMouseLeave={e => (e.currentTarget.style.color = dark ? 'rgba(255,255,255,0.8)' : '#0A1320')}
                     data-testid={`feature-cta-${feature.id}`}
                   >
-                    {featureContent.cta} →
+                    {fc.cta} →
                   </a>
                 )}
               </div>
