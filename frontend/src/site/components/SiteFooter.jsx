@@ -100,15 +100,23 @@ const SiteFooter = () => {
           <div className="mfd-footer__col" key={col.id} data-testid={`footer-col-${col.id}`}>
             <h6>{col.title}</h6>
             <ul>
-              {col.links.map((l) => (
-                <li key={l.key}>
-                  {l.href?.startsWith('http') || l.href?.startsWith('mailto:') || l.href?.startsWith('#') ? (
-                    <a href={l.href} target={l.target}>{l.label}</a>
-                  ) : (
-                    <Link to={l.href || '#'}>{l.label}</Link>
-                  )}
-                </li>
-              ))}
+              {col.links.map((l) => {
+                const props = l.target === '_blank' ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+                return (
+                  <li key={l.key}>
+                    {(
+                      l.target === '_blank' ||
+                      l.href?.startsWith('http') ||
+                      l.href?.startsWith('mailto:') ||
+                      l.href?.startsWith('#')
+                    ) ? (
+                      <a href={l.href} {...props}>{l.label}</a>
+                    ) : (
+                      <Link to={l.href || '#'}>{l.label}</Link>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         ))}

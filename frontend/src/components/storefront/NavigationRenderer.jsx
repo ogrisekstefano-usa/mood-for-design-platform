@@ -270,6 +270,20 @@ const NavigationRenderer = ({ section, locale, updateContent, updateSettings, op
                 as="span"
               />
 
+              {/* Persistent indicator for open-in-new-tab */}
+              {lk.open_in_new_tab && (
+                <span
+                  title="Opens in new tab"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    marginLeft: 4, color: '#C9A36E', opacity: 0.85,
+                  }}
+                  data-testid={`nav-link-${idx}-newtab-indicator`}
+                >
+                  <ExternalLink size={9} strokeWidth={2} />
+                </span>
+              )}
+
               {/* Href (mini editor under label, only on hover) */}
               <span className="mfd-nav-editor__href-row" onClick={(e) => e.stopPropagation()}>
                 <span style={{ color: 'rgba(255,255,255,0.35)' }}>→</span>

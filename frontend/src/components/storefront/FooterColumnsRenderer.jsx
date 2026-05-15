@@ -15,7 +15,7 @@
  * showroom title, book CTA label, copyright) lives in `locale_content`.
  */
 import React, { useRef, useState } from 'react';
-import { Plus, Trash2, GripVertical, Eye, EyeOff, Instagram, Linkedin } from 'lucide-react';
+import { Plus, Trash2, GripVertical, Eye, EyeOff, ExternalLink, Instagram, Linkedin } from 'lucide-react';
 import InlineText from './InlineText';
 import { pickLocale } from './storefrontApi';
 
@@ -202,13 +202,24 @@ const FooterColumnsRenderer = ({ section, locale, updateContent, updateSettings 
             {(col.links || []).map((lk, li) => (
               <div className="mfd-foot-editor__link-row" key={li} style={{ opacity: lk.visible === false ? 0.4 : 1 }} data-testid={`footer-link-${ci}-${li}`}>
                 <span style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <InlineText
-                    value={pickLocale(lk.label, locale, FALLBACK_CHAIN) || ''}
-                    onChange={(v) => patchLinkLabel(ci, li, v)}
-                    placeholder="Link label"
-                    as="span"
-                    style={{ fontSize: 13, color: '#EFEBE4', fontFamily: 'Georgia, serif' }}
-                  />
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <InlineText
+                      value={pickLocale(lk.label, locale, FALLBACK_CHAIN) || ''}
+                      onChange={(v) => patchLinkLabel(ci, li, v)}
+                      placeholder="Link label"
+                      as="span"
+                      style={{ fontSize: 13, color: '#EFEBE4', fontFamily: 'Georgia, serif' }}
+                    />
+                    {lk.open_in_new_tab && (
+                      <span
+                        title="Opens in new tab"
+                        style={{ display: 'inline-flex', color: '#C9A36E', opacity: 0.85 }}
+                        data-testid={`footer-link-${ci}-${li}-newtab-indicator`}
+                      >
+                        <ExternalLink size={9} strokeWidth={2} />
+                      </span>
+                    )}
+                  </span>
                   <input
                     type="text"
                     className="mfd-foot-editor__href-input"
@@ -219,6 +230,14 @@ const FooterColumnsRenderer = ({ section, locale, updateContent, updateSettings 
                   />
                 </span>
                 <span className="tools">
+                  <button
+                    title="Open in new tab"
+                    onClick={() => patchLink(ci, li, { open_in_new_tab: !lk.open_in_new_tab })}
+                    style={{ color: lk.open_in_new_tab ? '#C9A36E' : undefined }}
+                    data-testid={`footer-link-${ci}-${li}-newtab`}
+                  >
+                    <ExternalLink size={10} strokeWidth={1.6} />
+                  </button>
                   <button
                     title={lk.visible === false ? 'Show' : 'Hide'}
                     onClick={() => patchLink(ci, li, { visible: lk.visible === false })}
