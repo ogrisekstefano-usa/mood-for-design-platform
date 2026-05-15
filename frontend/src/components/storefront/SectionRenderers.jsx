@@ -68,7 +68,7 @@ const StoreHero = ({ section, locale, draft, updateContent, updateSettings, open
           label="Replace hero background"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70 pointer-events-none" />
-        <div className="absolute inset-0 flex flex-col justify-end p-16 pointer-events-none">
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-16 pointer-events-none">
           <div className="max-w-3xl pointer-events-auto">
             <InlineText
               value={getField(section, draft, locale, 'overline')}
@@ -93,7 +93,7 @@ const StoreHero = ({ section, locale, draft, updateContent, updateSettings, open
               placeholder="Sub-headline lead text"
               multiline
               as="p"
-              className="text-white/80 text-base font-body leading-relaxed whitespace-pre-line max-w-xl"
+              className="text-white/80 text-base font-body leading-relaxed whitespace-pre-line mx-auto"
               testid={`hero-sub-${section.id}`}
             />
           </div>
