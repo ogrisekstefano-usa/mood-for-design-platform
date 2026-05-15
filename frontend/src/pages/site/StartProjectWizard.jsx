@@ -1,12 +1,17 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { ArrowLeft, ArrowRight, Check, Plus, X, User, Palette, LayoutGrid, Images, FileText } from 'lucide-react';
 import { SiteProvider, useSite } from '../../site/SiteContext';
 import { onboardingContent } from '../../site/content/onboarding';
 import { navigationContent } from '../../site/content/navigation';
+import { tenantConfig } from '../../site/content/tenant';
+import BlueprintGenesisOverlay from '../../site/components/BlueprintGenesisOverlay';
 import '../../site/site.css';
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const STORAGE_KEY = 'mfd_start_project_state';
+const SESSION_KEY = 'mfd_session';
 const TOTAL_STEPS = 7;
 
 const initialState = {
@@ -408,6 +413,70 @@ const FinalReady = ({ pick, payload, onCreate }) => {
   );
 };
 
+// ─── Account Creation step — last gate before cinematic Genesis ───────────
+const AccountCreationStep = ({ pick, defaultEmail = '', onSubmit, submitting, error }) => {
+  const c = onboardingContent.account;
+  const [form, setForm] = useState({ first_name: '', last_name: '', email: defaultEmail, password: '' });
+  const [localError, setLocalError] = useState('');
+
+  const set = (k) => (e) => setForm((p) => ({ ...p, [k]: e.target.value }));
+  const submit = (e) => {
+    e?.preventDefault?.();
+    setLocalError('');
+    if (!form.first_name.trim()) return setLocalError(pick(c.fields.firstName));
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return setLocalError(pick(c.errorEmail));
+    if (form.password.length < 8) return setLocalError(pick(c.errorPasswordShort));
+    onSubmit(form);
+  };
+
+  return (
+    <form data-testid="wiz-account" onSubmit={submit}>
+      <StepHeading
+        eyebrow={pick(c.eyebrow, 'onboarding.account.eyebrow')}
+        title={pick(c.title, 'onboarding.account.title')}
+        body={pick(c.body, 'onboarding.account.body')}
+      />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem', marginTop: '1.5rem', maxWidth: '32rem' }}>
+        <label style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+          <span style={{ fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--site-ink-2)' }}>{pick(c.fields.firstName)}</span>
+          <input value={form.first_name} onChange={set('first_name')} autoFocus
+                 className="mfd-wiz-input" data-testid="wiz-account-firstname" required
+                 style={{ padding: '0.7rem 0', borderBottom: '1px solid var(--site-line)', background: 'transparent', border: 'none', borderBottom: '1px solid var(--site-line)', fontSize: '1rem', color: 'var(--site-ink-1)', outline: 'none' }} />
+        </label>
+        <label style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+          <span style={{ fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--site-ink-2)' }}>{pick(c.fields.lastName)}</span>
+          <input value={form.last_name} onChange={set('last_name')}
+                 className="mfd-wiz-input" data-testid="wiz-account-lastname"
+                 style={{ padding: '0.7rem 0', borderBottom: '1px solid var(--site-line)', background: 'transparent', border: 'none', borderBottom: '1px solid var(--site-line)', fontSize: '1rem', color: 'var(--site-ink-1)', outline: 'none' }} />
+        </label>
+        <label style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', gridColumn: 'span 2' }}>
+          <span style={{ fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--site-ink-2)' }}>{pick(c.fields.email)}</span>
+          <input type="email" value={form.email} onChange={set('email')}
+                 className="mfd-wiz-input" data-testid="wiz-account-email" required
+                 style={{ padding: '0.7rem 0', borderBottom: '1px solid var(--site-line)', background: 'transparent', border: 'none', borderBottom: '1px solid var(--site-line)', fontSize: '1rem', color: 'var(--site-ink-1)', outline: 'none' }} />
+        </label>
+        <label style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', gridColumn: 'span 2' }}>
+          <span style={{ fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--site-ink-2)' }}>{pick(c.fields.password)}</span>
+          <input type="password" value={form.password} onChange={set('password')}
+                 className="mfd-wiz-input" data-testid="wiz-account-password" required minLength={8}
+                 style={{ padding: '0.7rem 0', borderBottom: '1px solid var(--site-line)', background: 'transparent', border: 'none', borderBottom: '1px solid var(--site-line)', fontSize: '1rem', color: 'var(--site-ink-1)', outline: 'none' }} />
+        </label>
+      </div>
+      {(localError || error) && (
+        <p data-testid="wiz-account-error" style={{ marginTop: '1rem', color: '#A33', fontSize: 13 }}>{localError || error}</p>
+      )}
+      <p style={{ marginTop: '1rem', fontSize: 11, color: 'var(--site-ink-3)', letterSpacing: '0.04em', maxWidth: '32rem' }}>{pick(c.consent)}</p>
+      <button type="submit" disabled={submitting} className="mfd-wiz__cta"
+              style={{ marginTop: '1.5rem' }}
+              data-testid="wiz-account-submit">
+        {submitting
+          ? '…'
+          : (<>{pick(c.submit)} <ArrowRight size={14} style={{ marginLeft: 8, verticalAlign: -2 }} /></>)}
+      </button>
+    </form>
+  );
+};
+
 // ──────────────────────────────────────────────────────────────────────
 // Main wizard
 // ──────────────────────────────────────────────────────────────────────
@@ -415,6 +484,13 @@ const StartProjectWizardInner = () => {
   const { pick, locale } = useSite();
   const navigate = useNavigate();
   const [state, setState] = useState(loadState);
+
+  // Cinematic transition state
+  const [phase, setPhase] = useState('wizard'); // 'wizard' | 'account' | 'genesis'
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [genesis, setGenesis] = useState(null);
+  const [genesisComplete, setGenesisComplete] = useState(false);
 
   useEffect(() => { document.title = pick(onboardingContent.meta.title, 'onboarding.meta.title'); }, [pick]);
   useEffect(() => { saveState(state); }, [state]);
@@ -474,10 +550,73 @@ const StartProjectWizardInner = () => {
   }), [state, locale]);
 
   const handleCreate = () => {
-    // For now: route to login. Future: persist payload via /api/leads
-    try { localStorage.setItem('mfd_pending_lead_payload', JSON.stringify(payload)); } catch (_) {}
-    navigate('/auth/login');
+    // Move from FinalReady summary → AccountCreationStep (still inside the wizard chrome)
+    setPhase('account');
   };
+
+  const submitOnboarding = async (form) => {
+    setSubmitError('');
+    setSubmitting(true);
+    try {
+      const r = await axios.post(`${BACKEND_URL}/api/onboarding/private/submit`, {
+        first_name: form.first_name,
+        last_name:  form.last_name || null,
+        email:      form.email,
+        password:   form.password,
+        locale:     state.locale || locale,
+        payload,
+      });
+      const { session, user, genesis: g } = r.data || {};
+      if (session?.access_token) {
+        // Persist session so the redirected page is authenticated
+        const sessionStore = {
+          access_token: session.access_token,
+          refresh_token: session.refresh_token,
+          expires_at: session.expires_at,
+          token_type: 'bearer',
+        };
+        try { localStorage.setItem(SESSION_KEY, JSON.stringify(sessionStore)); } catch (_) {}
+      }
+      setGenesis(g);
+      setPhase('genesis');
+      // Clear local wizard state on success
+      try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+      // After the cinematic narrative cycles through its messages, mark complete
+      const narrativeCount = (g?.narrative?.length || 4);
+      // Each message stays ~1.6s; let it cycle through then show the final pulse
+      setTimeout(() => setGenesisComplete(true), Math.max(1600 * (narrativeCount - 1), 2400));
+    } catch (e) {
+      const detail = e?.response?.data?.detail;
+      if (e?.response?.status === 409) {
+        setSubmitError(pick(onboardingContent.account.errorEmailExists));
+      } else {
+        setSubmitError(detail || pick(onboardingContent.account.errorGeneric));
+      }
+      setSubmitting(false);
+    }
+  };
+
+  const enterWorkspace = () => {
+    const projectId = genesis?.project_id;
+    if (projectId) {
+      // Authenticated workspace route — NOT the public /projects/:slug
+      window.location.assign(`/workspace/projects/${projectId}`);
+    } else {
+      window.location.assign('/workspace/projects');
+    }
+  };
+
+  // ── Cinematic Genesis phase ───────────────────────────────────────────────
+  if (phase === 'genesis') {
+    return (
+      <BlueprintGenesisOverlay
+        narrative={genesis?.narrative || ['Building your Blueprint…', 'Your Blueprint is ready.']}
+        complete={genesisComplete}
+        finalLabel={genesis?.narrative?.[(genesis?.narrative?.length || 1) - 1]}
+        onContinue={enterWorkspace}
+      />
+    );
+  }
 
   return (
     <div className="mfd-site mfd-wiz" data-testid="start-project-wizard">
@@ -517,8 +656,17 @@ const StartProjectWizardInner = () => {
           {state.step === 7 && (
             <Step7Budget value={state.budget} onChange={(v) => update({ budget: v })} pick={pick} />
           )}
-          {state.step > TOTAL_STEPS && (
+          {state.step > TOTAL_STEPS && phase === 'wizard' && (
             <FinalReady pick={pick} payload={payload} onCreate={handleCreate} />
+          )}
+          {phase === 'account' && (
+            <AccountCreationStep
+              pick={pick}
+              defaultEmail=""
+              onSubmit={submitOnboarding}
+              submitting={submitting}
+              error={submitError}
+            />
           )}
 
           {state.step <= TOTAL_STEPS && (

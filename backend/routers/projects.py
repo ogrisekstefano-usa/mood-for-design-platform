@@ -69,6 +69,28 @@ def get_project(project_id: str, current_user: dict = Depends(require_permission
     project['proposals'] = proposals.data or []
     project['moodboards'] = moodboards.data or []
     project['files_count'] = len(files.data or [])
+
+    # Enrich with the assigned designer (Human Relationship Layer).
+    # If assigned_to is set, expose a compact profile bag so the workspace can
+    # render "Your project is followed by ..." without an extra round-trip.
+    if project.get('assigned_to'):
+        prof = client.table('users_profile').select(
+            'id, first_name, last_name, email, avatar_url, metadata_json'
+        ).eq('id', project['assigned_to']).limit(1).execute()
+        if prof.data:
+            p = prof.data[0]
+            meta = p.get('metadata_json') or {}
+            project['assigned_designer'] = {
+                'id': p['id'],
+                'first_name': p.get('first_name'),
+                'last_name': p.get('last_name'),
+                'email': p.get('email'),
+                'avatar_url': p.get('avatar_url'),
+                'role_label': meta.get('role_label'),
+                'bio_short': meta.get('bio_short'),
+                'languages': meta.get('languages', []),
+                'online_status': meta.get('online_status', 'available'),
+            }
     return project
 
 

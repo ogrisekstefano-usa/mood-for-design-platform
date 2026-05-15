@@ -341,6 +341,47 @@ const ProjectDetailPage = () => {
           <h1 className="bp-h1 text-[var(--bp-text-primary)] font-light">{project.title}</h1>
           {project.client_email && <p className="bp-body text-[var(--bp-text-muted)] mt-3">{project.client_email}</p>}
         </div>
+
+        {/* Human Relationship Layer — assigned designer card */}
+        {project.assigned_designer && (
+          <div data-testid="assigned-designer-card"
+               className="flex items-center gap-4 bg-[var(--bp-surface-1)] border border-[var(--bp-border)] px-5 py-4 min-w-[280px]">
+            {project.assigned_designer.avatar_url && (
+              <img
+                src={project.assigned_designer.avatar_url}
+                alt={project.assigned_designer.first_name}
+                className="w-12 h-12 rounded-full object-cover"
+              />
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-primary)] font-body font-semibold mb-0.5">
+                {t('workspace.followed_by') || 'Followed by'}
+              </p>
+              <p className="font-heading text-[var(--bp-text-primary)] text-base truncate">
+                {project.assigned_designer.first_name} {project.assigned_designer.last_name || ''}
+              </p>
+              {project.assigned_designer.role_label && (
+                <p className="text-[var(--bp-text-muted)] text-xs font-body truncate">
+                  {typeof project.assigned_designer.role_label === 'string'
+                    ? project.assigned_designer.role_label
+                    : (project.assigned_designer.role_label._default || '')}
+                </p>
+              )}
+              <div className="flex items-center gap-1.5 mt-1.5">
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    project.assigned_designer.online_status === 'available' ? 'bg-emerald-500' :
+                    project.assigned_designer.online_status === 'away'      ? 'bg-amber-500'   :
+                    'bg-zinc-500'
+                  }`}
+                />
+                <span className="text-[10px] font-body uppercase tracking-[0.15em] text-[var(--bp-text-subtle)]">
+                  {project.assigned_designer.online_status || 'offline'}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="border-b border-[var(--bp-border)] mb-8">

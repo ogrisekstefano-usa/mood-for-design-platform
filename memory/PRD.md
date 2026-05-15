@@ -82,6 +82,52 @@ inspired by Webflow Designer / Framer / Notion Site Editor — but luxury editor
 - All 6 locales preserved (en-US ≠ en-GB) across public site and Blueprint
 
 
+### ✅ Phase H.5 — Session C: Workspace Genesis™ · The Magic Moment (DONE — 15 Feb 2026)
+End-to-end emotional onboarding sprint. After a private client (or professional) completes
+the public wizard, the system creates the account, generates a populated workspace, and lands
+the user directly in their living project — not on an empty dashboard.
+
+**C.1 — Lead Engine**
+- Migration `015_session_c_workspace_genesis.sql`:
+  - `leads.assigned_to` (FK to users_profile)
+  - `users_profile.metadata_json` (JSONB bag for persona, role label, bio, languages, online_status, roundrobin_slot)
+  - `lead_assignments` table (append-only log: lead_id × profile_id × assigned_at × kind)
+  - 3 demo designer personas inserted: Elizabeth Whitcomb · Diego Marín · Sofia Rinaldi (auth_user_id=NULL — they're personas only)
+
+**C.2 — Account Creation Flow**
+- `core/workspace_genesis.py` — orchestrator service (~340 lines) building lead → assignment → project → moodboard → 6 pages → seed blocks (welcome note + style headline + mood tags + palette) on the Mood Direction page
+- `routers/onboarding.py`:
+  - `POST /api/onboarding/private/submit` — anonymous; creates auth user + profile (role=client) + runs genesis + returns session token
+  - `POST /api/onboarding/professional/submit` — same for ad_partner role
+  - `GET /api/onboarding/team/:tenant_slug` — public list of designer personas
+- Email verification SKIPPED for now (`email_confirm=True` on admin.create_user) — coerent with the magic moment direction
+- Password grant performed server-side immediately after profile creation → session token returned to frontend
+
+**C.3 — Workspace Seeding**
+- Project shell: humane title derived from payload (`"Villa · Editorial luxury · Roma — Camilla"` — never "Project #421")
+- 1 moodboard with 6 curated pages (multilingual titles): Project Vision · Mood Direction · Materials · Inspirations · Space Planning · Proposal Draft
+- 4 seed blocks on Mood Direction page: welcome note (locale-aware), style keyword headline, mood tags row, seed palette (up to 6 colors)
+- All seeded rows tagged with `metadata_json.seeded:true` for analytics/cleanup
+
+**C.4 — Human Relationship Layer**
+- Round-robin assignment via `metadata_json.roundrobin_slot` + count of existing lead_assignments
+- `GET /api/projects/:id` enriched with `assigned_designer` bag (name, role_label, bio, avatar, languages, online_status)
+- `ProjectDetailPage.jsx` shows the "Followed by" card with avatar, name, role label, online status dot — cinematic, NOT a CRM widget
+- Verified round-robin: 3 consecutive submissions assigned Elizabeth → Diego → Sofia → Elizabeth
+
+**C.5 — Cinematic Redirect**
+- `BlueprintGenesisOverlay.jsx` — full-screen dark overlay with breathing vertical line + crossfade narrative messages (locale-aware narrative from backend: 4 messages in IT/EN/FR/DE/ES)
+- `StartProjectWizard.jsx` extended with `AccountCreationStep` (first_name, last_name, email, password with inline validation) + `phase` state machine (wizard → account → genesis)
+- On success: `window.location.assign('/workspace/projects/{id}')` — lands on the alive project, NOT a generic dashboard
+
+**End-to-end magic moment verified**
+- Public wizard completed → account form filled → "Apri il mio Blueprint" submitted
+- Backend genesis: 1.2s avg (lead + assignment + project + moodboard + 6 pages + 4 blocks)
+- Cinematic narrative cycles 4 messages in IT: "Preparo l'atmosfera del tuo progetto…" → "Organizzo le ispirazioni…" → "Costruisco la tua prima direzione mood…" → "Il tuo Blueprint è pronto."
+- Auto-redirect to `/workspace/projects/{uuid}` with new user logged in, Italian locale active
+- Project page shows assigned designer card (Diego Marín / Architetto Senior / available status) and the 6 moodboard pages ready to browse
+
+
 
 ### ✅ Phase 1 — Tenant MVP (DONE — 12 Mag 2026)
 - Schema Supabase 22 tabelle, RLS off, grants service_role

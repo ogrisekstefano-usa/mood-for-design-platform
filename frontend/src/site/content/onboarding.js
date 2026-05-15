@@ -199,6 +199,43 @@ export const onboardingContent = {
     },
   },
 
+  // ACCOUNT — Quick creation step before the cinematic Genesis transition
+  account: {
+    eyebrow: t('Crea il tuo accesso', 'Create your access', 'Créez votre accès', 'Erstelle deinen Zugang', 'Crea tu acceso'),
+    title: t(
+      'Un ultimo passaggio prima del tuo Blueprint.',
+      'One last step before your Blueprint.',
+      'Une dernière étape avant votre Blueprint.',
+      'Ein letzter Schritt vor deinem Blueprint.',
+      'Un último paso antes de tu Blueprint.',
+    ),
+    body: t(
+      'Servono solo due dettagli per portarti dentro al tuo spazio.',
+      'Just two details to bring you into your space.',
+      'Seulement deux détails pour entrer dans votre espace.',
+      'Nur zwei Angaben, um in deinen Raum zu gelangen.',
+      'Solo dos datos para entrar en tu espacio.',
+    ),
+    fields: {
+      firstName: t('Nome', 'First name', 'Prénom', 'Vorname', 'Nombre'),
+      lastName:  t('Cognome', 'Last name', 'Nom', 'Nachname', 'Apellido'),
+      email:     t('Email', 'Email', 'E-mail', 'E-Mail', 'Correo'),
+      password:  t('Crea una password (min. 8 caratteri)', 'Create a password (min. 8 characters)', 'Créez un mot de passe (min. 8)', 'Erstelle ein Passwort (mind. 8)', 'Crea una contraseña (mín. 8)'),
+    },
+    submit: t('Apri il mio Blueprint', 'Open my Blueprint', 'Ouvrir mon Blueprint', 'Mein Blueprint öffnen', 'Abrir mi Blueprint'),
+    consent: t(
+      'Procedendo accetti i Termini di servizio e la Privacy Policy.',
+      'By proceeding you accept the Terms and Privacy Policy.',
+      'En continuant vous acceptez les Conditions et la Politique.',
+      'Mit dem Fortfahren akzeptierst du AGB und Datenschutz.',
+      'Al continuar aceptas los Términos y la Política.',
+    ),
+    errorEmail: t('Email non valida', 'Invalid email', 'E-mail invalide', 'Ungültige E-Mail', 'Correo no válido'),
+    errorPasswordShort: t('Almeno 8 caratteri', 'At least 8 characters', 'Au moins 8 caractères', 'Mindestens 8 Zeichen', 'Al menos 8 caracteres'),
+    errorEmailExists: t('Email già registrata', 'Email already registered', 'E-mail déjà enregistré', 'E-Mail bereits registriert', 'Correo ya registrado'),
+    errorGeneric: t('Qualcosa è andato storto. Riprova.', 'Something went wrong. Try again.', 'Une erreur est survenue. Réessayez.', 'Etwas ist schief gelaufen. Erneut versuchen.', 'Algo salió mal. Inténtalo de nuevo.'),
+  },
+
   // FINAL — Project ready
   final: {
     eyebrow: t('Il tuo progetto', 'Your project', 'Votre projet', 'Ihr Projekt', 'Tu proyecto'),

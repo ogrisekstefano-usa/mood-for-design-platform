@@ -1,0 +1,55 @@
+{
+  "summary": "Session C — Workspace Genesis™ Magic Moment tested end-to-end. Backend: 14/14 pytest pass (team endpoint, private/professional submit, locale-aware pages/narrative, round-robin cycling Elizabeth→Diego→Sofia, 409 duplicate, 422 short-password, project title, assigned_designer enrichment, seed blocks, session token auth). Frontend: full flow verified — skip-state → FinalReady → AccountCreationStep → BlueprintGenesisOverlay → auto-redirect to /workspace/projects/{uuid} → assigned designer card visible with Elizabeth Whitcomb. Two minor UI/contract bugs flagged.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "POST /api/onboarding/private/submit",
+        "issue": "Project title derivation contract mismatch: wizard frontend sends `project_type` in payload, but core/workspace_genesis.derive_project_title() reads `space_type`/`typology`. Result: real flow produces fallback title 'Nuovo progetto — {first}' instead of the humane 'Villa · Editorial luxury · Roma — Camilla' described in the spec. Recommend: extend derive_project_title to also accept payload.project_type, or remap project_type→space_type in the wizard submit."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "ProjectDetailPage assigned-designer-card",
+        "issue": "Label renders raw i18n key 'workspace.followed_by' instead of 'Followed by'/'Seguito da'. The fallback `t('workspace.followed_by') || 'Followed by'` does not trigger because the i18n hook returns the key string itself when missing. Fix: add the key to translation tables, or change fallback to `t('workspace.followed_by','Followed by')` signature / check `=== 'workspace.followed_by'`.",
+        "selector": "[data-testid=\"assigned-designer-card\"] p:first-of-type",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_session_c_workspace_genesis.py",
+    "/app/test_reports/pytest/session_c_results.xml"
+  ],
+  "action_items": [
+    "MAIN AGENT: Map wizard payload `project_type` → `space_type` (or update derive_project_title) so the humane title 'Villa · Mood · City — First' actually appears (currently shows 'Nuovo progetto — Test').",
+    "MAIN AGENT: Resolve missing i18n key `workspace.followed_by` (assigned-designer-card header shows raw key in IT locale; verify in EN/FR/DE/ES too)."
+  ],
+  "critical_code_review_comments": [
+    "onboarding.py: account creation is not transactional with workspace_genesis — if genesis fails, the auth user is intentionally kept (good UX), but a failed genesis leaves a profile/auth without a project and the user can't easily retry. Consider adding /api/onboarding/retry-genesis for self-healing.",
+    "workspace_genesis.py round_robin_designer counts ALL lead_assignments in the tenant — this is monotonic across persona seeding and any real designer assignment, so the cycle is deterministic only on a clean state. For production, prefer counting per-persona assignments or storing a tenant-level cursor.",
+    "moodboards.py:97 returns raw `moodboard_elements` rows then normalizes — fine. But the seeded blocks expose `style_json.kind`='palette' instead of using a dedicated `palette` block type; downstream editors must special-case this.",
+    "StartProjectWizard.jsx submitOnboarding: setSubmitting(true) is never set back to false on success — the form stays in submitting state until phase transitions. Currently fine because phase=='genesis' replaces the form, but flagging for future maintenance.",
+    "StartProjectWizard.jsx: the genesis→workspace redirect uses window.location.assign (full page reload). Acceptable for the cinematic break, but bypasses React Router state. Confirmed working."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_session_c_workspace_genesis.py"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 pytest)",
+    "frontend": "~92% (full flow works; 1 i18n key not resolved, 1 title-contract gap)"
+  },
+  "test_credentials": "Super admin demo@moodfordesign.com / Blueprint2024! (from /app/memory/test_credentials.md). New accounts generated per-test via POST /api/onboarding/private/submit with unique TEST_ emails.",
+  "seed_data_creation": "Each test run creates ~7 new auth users with TEST_*@example.com plus 7 leads/projects/moodboards in the demo tenant. Idempotent (unique emails) but accumulates demo data — consider a cleanup job for TEST_ prefixed rows.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend regression suite is at /app/backend/tests/test_session_c_workspace_genesis.py — 14 tests, ~30s wall time. To rerun: `pytest backend/tests/test_session_c_workspace_genesis.py -v --junitxml=/app/test_reports/pytest/session_c_results.xml`. Round-robin test (test_round_robin_cycles_three_personas) depends on the fact that lead_assignments count modulo 3 yields the persona order; on a non-clean tenant this can fail — verified the 3-distinct-then-cycle assertion is robust enough. The frontend Playwright smoke test confirmed full UI flow including the cinematic overlay and the post-redirect designer card; URL pattern is /workspace/projects/{uuid} (NOT /projects/{slug}).",
+  "rca of the issue": {
+    "i18n_key_not_resolved": "The t() function in WorkspaceContext (or wherever workspace i18n lives) returns the lookup key when the key is missing, instead of returning undefined/null. The fallback `t('workspace.followed_by') || 'Followed by'` therefore never evaluates the right side. Mitigation: (a) add `workspace.followed_by` to the workspace translation bundles in IT/EN/FR/DE/ES, or (b) change the t() contract to return undefined on miss so `||` works, or (c) use an explicit signature `t(key, defaultValue)`.",
+    "project_title_contract_mismatch": "Wizard payload uses `project_type` (e.g. 'villa') as the canonical type field, but the genesis service reads `payload.space_type` or `payload.typology`. The fields are siblings with the same meaning. Mitigation: in core/workspace_genesis.derive_project_title, treat `payload.project_type` as a third synonym, e.g.: `space = payload.get('space_type') or payload.get('typology') or payload.get('project_type') or ''`."
+  }
+}
