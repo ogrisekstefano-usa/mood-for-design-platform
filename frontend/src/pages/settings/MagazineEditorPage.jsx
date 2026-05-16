@@ -55,11 +55,10 @@ const MagazineEditorPage = () => {
     let alive = true;
     (async () => {
       try {
-        const arts = await api.get('/api/magazine/admin/articles');
-        const found = (arts.data?.articles || []).find((a) => a.id === id);
-        if (alive && found) {
-          setArticle(found);
-          setHotspots(found.hotspots || []);
+        const r = await api.get(`/api/magazine/admin/articles/${id}`);
+        if (alive && r.data) {
+          setArticle(r.data);
+          setHotspots(r.data.hotspots || []);
         }
       } finally {
         if (alive) setLoading(false);

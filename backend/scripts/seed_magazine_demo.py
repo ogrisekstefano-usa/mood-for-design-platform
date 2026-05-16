@@ -121,25 +121,31 @@ def main():
     # Upsert article
     existing = (c.table("magazine_articles").select("id")
                 .eq("tenant_id", tid).eq("slug", SLUG).limit(1).execute())
+    article_record = {
+        "locale_content": locale_content, "body_blocks": body_blocks,
+        "cover_url": COVER, "hero_url": HERO, "status": "published",
+        "category_slug": "residential", "subcategory": "private-villa",
+        "project_vertical": "residential",
+        "editorial_tone": "warm-minimalism",
+        "locale_market": "IT",
+        "tags": ["liguria", "warm-minimal", "sea-view", "mediterranean",
+                 "travertine", "natural-oak"],
+        "featured_materials": ["travertine", "walnut", "calacatta-marble",
+                               "linen", "brushed-brass"],
+        "atmosphere_keywords": ["mediterranean", "sea-light", "warm-minimal",
+                                "convivial", "evening"],
+        "default_locale": "it", "reading_minutes": 4,
+        "scope": "tenant",
+    }
     if existing.data:
         aid = existing.data[0]["id"]
         # Clear old hotspots before re-seeding
         c.table("article_hotspots").delete().eq("article_id", aid).execute()
-        c.table("magazine_articles").update({
-            "locale_content": locale_content, "body_blocks": body_blocks,
-            "cover_url": COVER, "hero_url": HERO, "status": "published",
-            "category_slug": "residential", "tags": ["liguria", "warm-minimal", "sea-view"],
-            "default_locale": "it", "reading_minutes": 4,
-            "scope": "tenant", "published_at": "now()",
-        }).eq("id", aid).execute()
+        c.table("magazine_articles").update({**article_record, "published_at": "now()"}).eq("id", aid).execute()
     else:
         aid = str(uuid.uuid4())
         c.table("magazine_articles").insert({
-            "id": aid, "tenant_id": tid, "slug": SLUG, "status": "published",
-            "cover_url": COVER, "hero_url": HERO,
-            "locale_content": locale_content, "body_blocks": body_blocks,
-            "category_slug": "residential", "tags": ["liguria", "warm-minimal", "sea-view"],
-            "default_locale": "it", "reading_minutes": 4, "scope": "tenant",
+            "id": aid, "tenant_id": tid, "slug": SLUG, **article_record,
         }).execute()
     print(f"article: {aid} ({SLUG})")
 

@@ -399,3 +399,116 @@
   from { transform: translate(-50%, 12px); opacity: 0; }
   to   { transform: translate(-50%, 0);    opacity: 1; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FILTER BAR (Phase Y.1 EXT) — editorial discovery chips
+   Sticky, breathable, never dropdown-hell.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.mfd-magazine__filters {
+  position: sticky; top: 0; z-index: 20;
+  background: rgba(251, 248, 242, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--mag-line);
+  padding: 1rem clamp(1.5rem, 5vw, 4rem);
+}
+.mfd-magazine__filters-row {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 0.55rem 0.75rem;
+  margin-bottom: 0.45rem;
+}
+.mfd-magazine__filters-row:last-child { margin-bottom: 0; }
+.mfd-magazine__filters-label {
+  font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--mag-ink-3); margin-right: 0.4rem; flex-shrink: 0;
+}
+.mfd-magazine__chip {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.45rem 0.95rem;
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--mag-ink-2);
+  background: transparent;
+  border: 1px solid var(--mag-line);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
+}
+.mfd-magazine__chip:hover {
+  color: var(--mag-ink-1); border-color: var(--mag-ink-2);
+}
+.mfd-magazine__chip.is-active {
+  background: var(--mag-ink-1); color: #FBF8F2; border-color: var(--mag-ink-1);
+}
+.mfd-magazine__chip-count {
+  font-size: 9px; opacity: 0.55; margin-left: 0.1rem;
+}
+.mfd-magazine__chip.is-active .mfd-magazine__chip-count { opacity: 0.7; }
+.mfd-magazine__chip-clear {
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  background: none; border: 0; color: var(--mag-accent); cursor: pointer;
+  padding: 0.45rem 0.5rem; font-family: inherit;
+}
+.mfd-magazine__chip-clear:hover { text-decoration: underline; }
+
+.mfd-magazine__results-count {
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--mag-ink-3); padding: 1.25rem clamp(1.5rem, 5vw, 4rem) 0;
+}
+
+/* Card meta row: reading time + category */
+.mfd-magazine__card-meta {
+  display: flex; align-items: center; gap: 0.6rem;
+  margin-top: 0.55rem;
+  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--mag-ink-3);
+}
+.mfd-magazine__card-meta-dot {
+  width: 3px; height: 3px; border-radius: 50%;
+  background: var(--mag-ink-3); display: inline-block;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RELATED ARTICLES (Phase Y.1 EXT)
+   ═══════════════════════════════════════════════════════════════════════ */
+.mfd-article__related {
+  max-width: 64rem; margin: 0 auto;
+  padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3rem) 2rem;
+}
+.mfd-article__related-eyebrow {
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--mag-accent); margin-bottom: 0.75rem;
+}
+.mfd-article__related-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2.1rem); font-weight: 300; line-height: 1.15;
+  margin-bottom: 2.5rem; max-width: 32rem;
+}
+.mfd-article__related-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: clamp(1.25rem, 2.5vw, 2.25rem);
+}
+.mfd-article__related-card {
+  text-decoration: none; color: inherit; display: block;
+}
+.mfd-article__related-card-media {
+  aspect-ratio: 4/5; overflow: hidden; background: var(--mag-bg-card);
+}
+.mfd-article__related-card-media img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.7s ease;
+}
+.mfd-article__related-card:hover .mfd-article__related-card-media img {
+  transform: scale(1.04);
+}
+.mfd-article__related-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem; font-weight: 300; line-height: 1.25;
+  margin-top: 0.85rem; color: var(--mag-ink-1);
+}
+.mfd-article__related-card-meta {
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--mag-ink-3); margin-top: 0.5rem;
+}
+

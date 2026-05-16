@@ -16,8 +16,8 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const SESSION_KEY = 'mfd_session';
 
 const T = {
-  it: { back: 'Magazine', references: 'DESIGN REFERENCES', share: 'Salva questa atmosfera', loading: 'Caricamento…', notFound: 'Articolo non disponibile.', readMin: 'min di lettura', saveCta: 'Salva nel mio progetto', sendCta: 'Parla con il mio referente', mbCta: 'Aggiungi alla moodboard', exploreCta: 'Esplora la palette', soft_title: 'Crea il tuo spazio progetto', soft_body: 'Per salvare questo riferimento ti chiediamo solo nome ed email — ti accompagneremo poi nella scoperta del progetto.', soft_email: 'La tua email', soft_first: 'Nome', soft_project: 'Tipo di progetto (es. residenza)', soft_save: 'Salva e continua', soft_cancel: 'Annulla', toast_anon: 'Riferimento salvato · ti accompagniamo nell\'onboarding', toast_advisor: 'Riferimento condiviso con', toast_default: 'Riferimento salvato nel tuo progetto.' },
-  en: { back: 'Magazine', references: 'DESIGN REFERENCES', share: 'Save this atmosphere', loading: 'Loading…', notFound: 'Article unavailable.', readMin: 'min read', saveCta: 'Save to my project', sendCta: 'Discuss with my advisor', mbCta: 'Add to my moodboard', exploreCta: 'Explore the palette', soft_title: 'Create your project space', soft_body: 'To save this reference we only need your name and email — we\'ll then guide you through the project discovery.', soft_email: 'Your email', soft_first: 'First name', soft_project: 'Project type (e.g. residential)', soft_save: 'Save & continue', soft_cancel: 'Cancel', toast_anon: 'Reference saved · we\'ll guide you through onboarding', toast_advisor: 'Reference shared with', toast_default: 'Reference saved to your project.' },
+  it: { back: 'Magazine', references: 'DESIGN REFERENCES', share: 'Salva questa atmosfera', loading: 'Caricamento…', notFound: 'Articolo non disponibile.', readMin: 'min di lettura', saveCta: 'Salva nel mio progetto', sendCta: 'Parla con il mio referente', mbCta: 'Aggiungi alla moodboard', exploreCta: 'Esplora la palette', soft_title: 'Crea il tuo spazio progetto', soft_body: 'Per salvare questo riferimento ti chiediamo solo nome ed email — ti accompagneremo poi nella scoperta del progetto.', soft_email: 'La tua email', soft_first: 'Nome', soft_project: 'Tipo di progetto (es. residenza)', soft_save: 'Salva e continua', soft_cancel: 'Annulla', toast_anon: 'Riferimento salvato · ti accompagniamo nell\'onboarding', toast_advisor: 'Riferimento condiviso con', toast_default: 'Riferimento salvato nel tuo progetto.', related_eyebrow: 'CONTINUA LA SCOPERTA', related_title: 'Altre storie editoriali curate dallo studio.' },
+  en: { back: 'Magazine', references: 'DESIGN REFERENCES', share: 'Save this atmosphere', loading: 'Loading…', notFound: 'Article unavailable.', readMin: 'min read', saveCta: 'Save to my project', sendCta: 'Discuss with my advisor', mbCta: 'Add to my moodboard', exploreCta: 'Explore the palette', soft_title: 'Create your project space', soft_body: 'To save this reference we only need your name and email — we\'ll then guide you through the project discovery.', soft_email: 'Your email', soft_first: 'First name', soft_project: 'Project type (e.g. residential)', soft_save: 'Save & continue', soft_cancel: 'Cancel', toast_anon: 'Reference saved · we\'ll guide you through onboarding', toast_advisor: 'Reference shared with', toast_default: 'Reference saved to your project.', related_eyebrow: 'CONTINUE THE DISCOVERY', related_title: 'More editorial stories curated by the studio.' },
 };
 
 const ctaCopy = (action, locale) => {
@@ -256,6 +256,7 @@ const MagazineArticleInner = () => {
   const tenantSlug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
   const t = T[locale] || T.it;
   const [state, setState] = useState({ loading: true, article: null });
+  const [related, setRelated] = useState([]);
   const [softLead, setSoftLead] = useState({ visible: false, hotspot: null, articleId: null });
   const [toast, setToast] = useState(null);
 
@@ -268,6 +269,10 @@ const MagazineArticleInner = () => {
       } catch (_) {
         if (alive) setState({ loading: false, article: null });
       }
+      try {
+        const rr = await axios.get(`${BACKEND_URL}/api/magazine/public/${encodeURIComponent(tenantSlug)}/articles/${encodeURIComponent(slug)}/related`);
+        if (alive) setRelated(rr.data?.articles || []);
+      } catch (_) { if (alive) setRelated([]); }
     })();
     return () => { alive = false; };
   }, [tenantSlug, slug]);
@@ -340,6 +345,30 @@ const MagazineArticleInner = () => {
         <p className="mfd-article__refs-eyebrow">{t.references}</p>
         <p className="mfd-article__refs-count">{(a.hotspots || []).length} curated</p>
       </section>
+
+      {related.length > 0 && (
+        <section className="mfd-article__related" data-testid="article-related">
+          <p className="mfd-article__related-eyebrow">{t.related_eyebrow}</p>
+          <h2 className="mfd-article__related-title">{t.related_title}</h2>
+          <div className="mfd-article__related-grid">
+            {related.map((r) => {
+              const rl = r.locale_content?.[locale] || r.locale_content?.it || {};
+              return (
+                <Link key={r.id} to={`/magazine/${r.slug}`}
+                      className="mfd-article__related-card" data-testid={`article-related-${r.slug}`}>
+                  <div className="mfd-article__related-card-media">
+                    <img src={r.cover_url || r.hero_url} alt="" loading="lazy" />
+                  </div>
+                  <h3 className="mfd-article__related-card-title">{rl.title}</h3>
+                  <p className="mfd-article__related-card-meta">
+                    {r.reading_minutes || 4} {t.readMin}
+                  </p>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <SoftLeadModal
         visible={softLead.visible}

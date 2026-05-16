@@ -1,0 +1,33 @@
+{
+  "summary": "Phase Y.1 EXT + Y.2 regression. Backend 15/15 pytest passed: P0 'articles:0' bug fixed (admin_list_articles returns 2 articles), admin_get_article returns hotspots[], PATCH body_blocks auto-recomputes reading_minutes, hotspot CRUD full cycle, publish endpoint, tenant isolation (Showroom admin cannot see/get Demo Studio articles), public list + filters (category=hospitality → 1, tag=puglia → 1, reading_max=4 → only residential), public taxonomy returns categories/verticals/tags/materials/atmospheres, public related-articles surfaces residential from hospitality seed, public detail of casa-vista-mare-ligure includes 4 hotspots, public save-reference soft-lead works on hospitality hotspot. Frontend smoke tests confirm public /magazine renders filter chips (VERTICALI: TUTTO/HOSPITALITY/RESIDENZA + <3MIN/3-6MIN/6+MIN + TAGS row + '2 RISULTATI' count), HOSPITALITY chip filters to 1 card, hospitality article shows hero + related-articles section + hotspot pins on image blocks. Admin /settings/magazine now shows 2 editorial cards (P0 bug fully resolved). Editor opens with title input prefilled and all editorial blocks rendered + PUBLISH button visible.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Public magazine / editor pages", "issues": ["A few <img src=''> empty-string warnings in console (cosmetic) — likely a placeholder image block before URL resolves"]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_y_magazine.py",
+    "/app/test_reports/pytest/iteration_46_phaseY.xml"
+  ],
+  "action_items": [
+    "(Optional/cosmetic) Render <img> only when src is non-empty in MagazineArticlePage / MagazineEditorPage to silence the React empty-src warning."
+  ],
+  "critical_code_review_comments": [
+    "magazine.py is 649 lines — still readable but approaching split-threshold; consider splitting public vs admin routers when adding more endpoints.",
+    "_serialize_article hotspot subquery runs sequentially per row in admin_list_articles via _serialize_article(x) without with_hotspots=True (good, no N+1 there). admin_get_article uses with_hotspots=True (one extra query, fine).",
+    "public_articles select list is now correctly using new taxonomy columns from migration 025; ordering by published_at desc with limit is correct.",
+    "view_count increment on public detail is best-effort but is a non-atomic read-modify-write — acceptable for analytics tier; flag for future Postgres counter / RPC if traffic increases.",
+    "public_save_reference does not de-dupe by email — same email + same article will create N anonymous lead rows. Consider upsert on (tenant_id, email, source_article_id) to keep magazine_anonymous_leads clean."
+  ],
+  "updated_files": ["/app/backend/tests/test_phase_y_magazine.py"],
+  "success_rate": {"backend": "100% (15/15)", "frontend": "100% on tested flows"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin Demo Studio); studio2@moodfordesign.com / Studio2024! (other tenant for isolation check)",
+  "seed_data_creation": "Tests rely on existing seeded articles (casa-vista-mare-ligure + mediterranean-boutique-hospitality-puglia). The hotspot CRUD test creates+deletes a TEST hotspot inline; the reading_minutes test restores original body_blocks. One anonymous lead row + one moodboard_candidate are created per save-reference run (TEST_anon_*@example.com prefix — easy to identify and clean up later).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Phase Y.1 EXT + Y.2 fully validated end-to-end. Backend pytest at /app/backend/tests/test_phase_y_magazine.py is a clean regression suite for the magazine engine — reuse it whenever magazine.py changes. For frontend, hotspot pin selectors on the editor canvas were not located via [class*='hotspot']/[data-testid*='hotspot'] — main agent may want to add data-testid='magazine-hotspot-pin' to the pin component for future automated drag tests; this is a testability nit, not a functional bug (editor visually loads the article with title prefilled, editorial blocks, and PUBLISH/REPUBLISH button).",
+  "rca of the issue": "Previous P0 'articles: 0' bug was caused by magazine.py treating ctx (returned by get_tenant_context) as an object — using ctx.role / ctx.tenant_id / ctx.user_id — when get_tenant_context returns a DICT. This raised AttributeError on any admin route → FastAPI surfaced 500, and the frontend list rendered 0. Main agent already replaced all 34 occurrences with ctx['role'] / ctx['tenant_id'] / ctx['profile_id']. Regression test test_admin_list_articles_returns_two now locks this in (asserts ≥2 articles and both expected slugs)."
+}
