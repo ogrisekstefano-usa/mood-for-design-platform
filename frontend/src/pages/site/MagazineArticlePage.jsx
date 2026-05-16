@@ -228,7 +228,7 @@ const ArticleBody = ({ blocks, hotspots, locale, articleId, openSoftLead, onSent
           return (
             <figure key={b.id || i} className="mfd-article__figure" data-testid={`block-${b.id}`}>
               <div className="mfd-article__figure-media">
-                <img src={b.image_url} alt={b.alt || ''} loading="lazy" />
+                {b.image_url && <img src={b.image_url} alt={b.alt || ''} loading="lazy" />}
                 {bhots.map((h) => (
                   <Hotspot key={h.id}
                            hotspot={{ ...h, image_url: b.image_url }}
@@ -321,7 +321,9 @@ const MagazineArticleInner = () => {
       </header>
 
       <section className="mfd-article__hero" data-testid="article-hero">
-        <img src={a.hero_url || a.cover_url} alt={lc.title || ''} loading="eager" />
+        {(a.hero_url || a.cover_url) && (
+          <img src={a.hero_url || a.cover_url} alt={lc.title || ''} loading="eager" />
+        )}
         <div className="mfd-article__hero-overlay">
           <p className="mfd-article__kicker">{lc.kicker}</p>
           <h1 className="mfd-article__h1">{lc.title}</h1>
@@ -357,7 +359,9 @@ const MagazineArticleInner = () => {
                 <Link key={r.id} to={`/magazine/${r.slug}`}
                       className="mfd-article__related-card" data-testid={`article-related-${r.slug}`}>
                   <div className="mfd-article__related-card-media">
-                    <img src={r.cover_url || r.hero_url} alt="" loading="lazy" />
+                    {(r.cover_url || r.hero_url) && (
+                      <img src={r.cover_url || r.hero_url} alt="" loading="lazy" />
+                    )}
                   </div>
                   <h3 className="mfd-article__related-card-title">{rl.title}</h3>
                   <p className="mfd-article__related-card-meta">

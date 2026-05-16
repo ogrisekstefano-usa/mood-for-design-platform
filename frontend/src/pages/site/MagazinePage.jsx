@@ -192,7 +192,9 @@ const MagazineListInner = () => {
         <article className="mfd-magazine__featured" data-testid="magazine-featured">
           <Link to={`/magazine/${featured.slug}`} className="mfd-magazine__featured-link" data-testid={`magazine-featured-${featured.slug}`}>
             <div className="mfd-magazine__featured-media">
-              <img src={featured.hero_url || featured.cover_url} alt="" loading="lazy" />
+              {(featured.hero_url || featured.cover_url) && (
+                <img src={featured.hero_url || featured.cover_url} alt="" loading="lazy" />
+              )}
             </div>
             <div className="mfd-magazine__featured-copy">
               <p className="mfd-magazine__kicker">{featured.locale_content?.[locale]?.kicker || featured.locale_content?.it?.kicker}</p>
@@ -211,7 +213,9 @@ const MagazineListInner = () => {
           {rest.map((a) => (
             <Link key={a.id} to={`/magazine/${a.slug}`} className="mfd-magazine__card" data-testid={`magazine-card-${a.slug}`}>
               <div className="mfd-magazine__card-media">
-                <img src={a.cover_url || a.hero_url} alt="" loading="lazy" />
+                {(a.cover_url || a.hero_url) && (
+                  <img src={a.cover_url || a.hero_url} alt="" loading="lazy" />
+                )}
               </div>
               <div className="mfd-magazine__card-copy">
                 <p className="mfd-magazine__kicker">{a.locale_content?.[locale]?.kicker || a.locale_content?.it?.kicker}</p>

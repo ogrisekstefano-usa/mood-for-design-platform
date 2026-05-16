@@ -1,6 +1,38 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase Y.2 + Y.1 EXT — Visual Hotspot Editor Stabilization + Hospitality Discovery Layer (DONE — 16 Feb 2026)
+
+**Phase Y.2 — Visual Hotspot CMS Editor Stabilization (P0 ABSOLUTE)**
+- ROOT-CAUSE FIX of `articles: 0` bug. `magazine.py` used `ctx.role`/`ctx.tenant_id`/`ctx.user_id` (attribute access) but `get_tenant_context` returns a **dict** — every admin endpoint was 500-ing. Replaced 34 occurrences with `ctx["role"]` / `ctx["tenant_id"]` / `ctx["profile_id"]`.
+- New endpoint `GET /api/magazine/admin/articles/{id}` returns single article + hotspots (the editor now loads cleanly instead of filtering the whole list).
+- Visual editor (`MagazineEditorPage.jsx`) validated end-to-end: drag-and-drop pin creation on image canvas, % coords (responsive-safe), dark-glass inline popover with reference_type/cta_action/locale content, publish flow, locale switcher.
+
+**Phase Y.1 EXT — Hospitality Editorial Seed + Magazine Discovery Layer**
+
+- **Migration 025** extends `magazine_articles` with: `subcategory`, `editorial_tone`, `project_vertical`, `locale_market`, `featured_materials[]`, `atmosphere_keywords[]` + GIN indexes on tags/materials/atmospheres. Already applied to live Supabase.
+- **Second seed**: `mediterranean-boutique-hospitality-puglia` — fully cinematic hospitality article (Aman / Six Senses tone) with 4 hospitality-oriented Design References™ (lobby travertine, suite linen, restaurant alabaster lighting, spa atmosphere). Existing residential article enriched with the same taxonomy fields.
+- **New public endpoints**
+  - `GET /public/{tenant}/articles` now supports `category` · `tag` · `vertical` · `reading_min` · `reading_max`.
+  - `GET /public/{tenant}/taxonomy` returns the LIVE taxonomy (categories, verticals, tags, materials, atmospheres) — chip universe is data-driven, never hardcoded.
+  - `GET /public/{tenant}/articles/{slug}/related` returns top-N related editorial stories via transparent score (vertical+4, category+3, shared tag/material/atmosphere+2 each).
+- **Auto reading-time** computed from `body_blocks` word count (~220 wpm) on `POST` and on every `PATCH` that touches `body_blocks` (unless caller overrides).
+- **Public Magazine UI** — sticky filter chip bar (Verticali + reading-time + Tags), results count, reading-time on each card. Active state, hover, and "Reset" handled cleanly. Cinematic warm-graphite-on-cream styling, never dropdown-hell.
+- **Article detail** — new "Continua la scoperta" related-articles section with cinematic 4/5 portrait cards.
+- **Empty-src image hardening** — every magazine `<img>` is now conditionally rendered to silence React warnings before image URL resolves.
+
+**Testing**
+- Backend pytest suite at `/app/backend/tests/test_phase_y_magazine.py` — 15/15 passing (admin CRUD, tenant isolation, taxonomy/filter/related/auto-reading-time, anonymous save-reference).
+- Frontend smoke + E2E covered hospitality filter chip → 1 result, related section visible, admin shows 2 cards (P0 fixed), editor opens with hotspots preserved.
+
+**Commercial demo impact**
+- Magazine now demonstrates **two verticals** (residential + hospitality) — proves MOOD adapts to a prospect's sector, not "one beautiful article".
+- Authoring flow is stable; showroom owners can curate editorial-grade projects without raw JSON.
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase Y.1 + Y.3 lite — Editorial Lead Generation Engine (DONE — 16 Feb 2026)
 
 > Strategic objective per brief: **"trasformare contenuti fotografici
