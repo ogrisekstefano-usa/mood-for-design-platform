@@ -6,9 +6,10 @@
 // ──────────────────────────────────────────────────────────────────────
 import React, { useEffect, useRef, useState } from 'react';
 import { HexColorPicker } from 'react-colorful';
+import { useStudioPalette } from '../../contexts/StudioPaletteContext';
 import './BlueprintColorPicker.css';
 
-const RECENT_KEY = 'bp:recent-colors';
+const RECENT_KEY = 'bp:recent-colors'; // local fallback only — superseded by Studio Palette Memory™
 
 const DEFAULT_BRAND_SWATCHES = [
   '#1B1B1F', '#2A2A2E', '#4E4D52', '#8A8788', '#D8B47A',
@@ -68,6 +69,11 @@ const BlueprintColorPicker = ({
   const [hexText, setHexText] = useState(safe);
   const [recent, setRecent] = useState(loadRecent);
   const wrapRef = useRef(null);
+  // Phase AA.1 — Studio Palette Memory™ (tenant-shared, team-synced)
+  const studio = useStudioPalette();
+  // Track whether the user actually applied a new color while the panel
+  // was open, so we only push to Studio Palette Memory on meaningful use.
+  const dirtyHexRef = useRef(null);
 
   useEffect(() => { setHexText(safe); }, [safe]);
 
@@ -76,18 +82,37 @@ const BlueprintColorPicker = ({
     if (!open) return;
     const onDocClick = (e) => {
       if (wrapRef.current && !wrapRef.current.contains(e.target)) {
-        setOpen(false);
-        pushRecent(safe);
-        setRecent(loadRecent());
+        finalize();
       }
     };
     document.addEventListener('mousedown', onDocClick);
     return () => document.removeEventListener('mousedown', onDocClick);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, safe]);
+
+  const isBrandColor = (hex) => (swatches || []).some(
+    (s) => normalizeHex(s) === normalizeHex(hex),
+  );
+
+  const finalize = () => {
+    setOpen(false);
+    // Local fallback memory
+    pushRecent(safe);
+    setRecent(loadRecent());
+    // Push to Studio Palette Memory™ — but only when the user committed a
+    // meaningful change and it isn't already in the Brand palette. The
+    // brand palette is curated; auto-pushing it would create noise.
+    const finalHex = dirtyHexRef.current || safe;
+    if (dirtyHexRef.current && !isBrandColor(finalHex)) {
+      studio.touch(finalHex);
+    }
+    dirtyHexRef.current = null;
+  };
 
   const apply = (hex) => {
     const next = normalizeHex(hex);
     setHexText(next);
+    dirtyHexRef.current = next;
     onChange?.(next);
   };
 
@@ -99,11 +124,7 @@ const BlueprintColorPicker = ({
     }
   };
 
-  const close = () => {
-    setOpen(false);
-    pushRecent(safe);
-    setRecent(loadRecent());
-  };
+  const close = () => { finalize(); };
 
   return (
     <div ref={wrapRef} className={`bp-color ${compact ? 'is-compact' : ''}`} data-testid={`${testid}-wrap`}>
@@ -152,6 +173,32 @@ const BlueprintColorPicker = ({
             <span className="bp-color__hash">#</span>
           </div>
 
+          {studio.entries?.length > 0 && (
+            <div className="bp-color__group">
+              <p className="bp-color__group-label">
+                Studio Palette Memory<sup className="bp-color__tm">™</sup>
+              </p>
+              <div className="bp-color__swatches" data-testid={`${testid}-swatches-studio`}>
+                {studio.entries.slice(0, 20).map((e) => {
+                  const h = (e.hex || '').toLowerCase();
+                  return (
+                    <button
+                      key={h}
+                      type="button"
+                      onClick={() => apply(h)}
+                      onContextMenu={(ev) => { ev.preventDefault(); studio.remove(h); }}
+                      title={e.name ? `${e.name} · right-click to remove` : 'Right-click to remove'}
+                      className={`bp-color__swatch-pick ${normalizeHex(h) === safe ? 'is-active' : ''}`}
+                      style={{ background: h }}
+                      data-testid={`${testid}-studio-${h.replace('#', '')}`}
+                      aria-label={e.name || h}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {swatches?.length > 0 && (
             <div className="bp-color__group">
               <p className="bp-color__group-label">Brand palette</p>
@@ -168,7 +215,7 @@ const BlueprintColorPicker = ({
             </div>
           )}
 
-          {recent?.length > 0 && (
+          {!studio.entries?.length && recent?.length > 0 && (
             <div className="bp-color__group">
               <p className="bp-color__group-label">Recent</p>
               <div className="bp-color__swatches" data-testid={`${testid}-swatches-recent`}>

@@ -125,6 +125,12 @@
   font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase;
   color: rgba(255, 255, 255, 0.4);
 }
+.bp-color__tm {
+  font-size: 7px; vertical-align: super;
+  letter-spacing: 0.05em;
+  margin-left: 1px;
+  color: var(--bp-primary, #D8B47A);
+}
 .bp-color__swatches {
   display: grid;
   grid-template-columns: repeat(10, 1fr);

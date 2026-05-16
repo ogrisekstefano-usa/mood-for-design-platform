@@ -174,3 +174,156 @@ def apply_preset(
         "branding": t.get("branding_settings") or {},
         "theme":    t.get("theme_settings") or {},
     }
+
+
+
+# ─────────────────────────────────────────────────────────────────────
+# AA.1 — Studio Palette Memory™
+#
+# Tenant-scoped, team-shared "studio_palette" of recently used colours.
+# Stored INSIDE theme_settings.studio_palette as a list of:
+#   { hex, name?, mood?, created_by, last_used_at }
+# Cap at MAX_STUDIO_PALETTE entries to avoid explosion. On overflow we
+# drop the oldest entry by last_used_at.
+# ─────────────────────────────────────────────────────────────────────
+
+MAX_STUDIO_PALETTE = 24
+
+
+def _normalize_hex(raw: str) -> str:
+    s = (raw or "").strip()
+    if not s:
+        return ""
+    if not s.startswith("#"):
+        s = "#" + s
+    if len(s) == 4 and all(c in "0123456789abcdefABCDEF" for c in s[1:]):
+        s = "#" + "".join(c * 2 for c in s[1:])
+    if len(s) != 7 or not all(c in "0123456789abcdefABCDEF" for c in s[1:]):
+        return ""
+    return s.lower()
+
+
+def _read_studio_palette(theme: Dict[str, Any] | None) -> List[Dict[str, Any]]:
+    pal = (theme or {}).get("studio_palette") or []
+    # Defensive: filter malformed entries
+    return [p for p in pal if isinstance(p, dict) and p.get("hex")]
+
+
+def _write_studio_palette(client, tenant_id: str, palette: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Persist a fresh studio_palette back to the tenant — never overwrites
+    other theme keys."""
+    fresh = _get_tenant(client, tenant_id)
+    theme = fresh.get("theme_settings") or {}
+    theme["studio_palette"] = palette[:MAX_STUDIO_PALETTE]
+    client.table("tenants").update({"theme_settings": theme}).eq("id", tenant_id).execute()
+    return theme["studio_palette"]
+
+
+class StudioPaletteEntryIn(BaseModel):
+    hex:   str = Field(..., min_length=4, max_length=9)
+    name:  Optional[str] = Field(None, max_length=60)
+    mood:  Optional[str] = Field(None, max_length=60)
+
+
+class StudioPaletteReorderIn(BaseModel):
+    order: List[str] = Field(..., description="hex codes in desired order")
+
+
+@router.get("/studio-palette")
+def get_studio_palette(ctx: dict = Depends(require_permission(P_TENANT_BRANDING))):
+    """Return the team-shared Studio Palette Memory, newest-used first."""
+    client = db()
+    t = _get_tenant(client, ctx["tenant_id"])
+    palette = _read_studio_palette(t.get("theme_settings"))
+    # Defensive sort: most recently used first
+    palette.sort(key=lambda p: p.get("last_used_at") or "", reverse=True)
+    return {"palette": palette, "max": MAX_STUDIO_PALETTE}
+
+
+@router.post("/studio-palette")
+def add_to_studio_palette(
+    body: StudioPaletteEntryIn,
+    ctx: dict = Depends(require_permission(P_TENANT_BRANDING)),
+):
+    """Add (or refresh `last_used_at` of) a color in the Studio Palette.
+    Idempotent on hex — repeated uses just bump the timestamp."""
+    hex_norm = _normalize_hex(body.hex)
+    if not hex_norm:
+        raise HTTPException(400, "Invalid hex color.")
+
+    client = db()
+    t = _get_tenant(client, ctx["tenant_id"])
+    palette = _read_studio_palette(t.get("theme_settings"))
+
+    now = _now_iso()
+    # Look up existing
+    existing_idx = next((i for i, p in enumerate(palette)
+                        if (p.get("hex") or "").lower() == hex_norm), None)
+    if existing_idx is not None:
+        # Refresh metadata in place
+        e = palette[existing_idx]
+        e["last_used_at"] = now
+        if body.name is not None:  e["name"] = body.name.strip() or None
+        if body.mood is not None:  e["mood"] = body.mood.strip() or None
+    else:
+        palette.append({
+            "hex": hex_norm,
+            "name": (body.name or "").strip() or None,
+            "mood": (body.mood or "").strip() or None,
+            "created_by": ctx["profile_id"],
+            "last_used_at": now,
+        })
+
+    # Enforce cap: keep newest MAX
+    palette.sort(key=lambda p: p.get("last_used_at") or "", reverse=True)
+    saved = _write_studio_palette(client, ctx["tenant_id"], palette)
+    audit_log(ctx["tenant_id"], ctx["profile_id"], "studio_palette.touched",
+              resource_type="tenant", resource_id=ctx["tenant_id"],
+              metadata={"hex": hex_norm})
+    return {"palette": saved, "max": MAX_STUDIO_PALETTE}
+
+
+@router.delete("/studio-palette/{hex_code}")
+def remove_from_studio_palette(
+    hex_code: str,
+    ctx: dict = Depends(require_permission(P_TENANT_BRANDING)),
+):
+    """Remove a single color from the team palette."""
+    hex_norm = _normalize_hex(hex_code if hex_code.startswith("#") else "#" + hex_code)
+    if not hex_norm:
+        raise HTTPException(400, "Invalid hex color.")
+    client = db()
+    t = _get_tenant(client, ctx["tenant_id"])
+    palette = [p for p in _read_studio_palette(t.get("theme_settings"))
+               if (p.get("hex") or "").lower() != hex_norm]
+    saved = _write_studio_palette(client, ctx["tenant_id"], palette)
+    audit_log(ctx["tenant_id"], ctx["profile_id"], "studio_palette.removed",
+              resource_type="tenant", resource_id=ctx["tenant_id"],
+              metadata={"hex": hex_norm})
+    return {"palette": saved, "max": MAX_STUDIO_PALETTE}
+
+
+@router.patch("/studio-palette/reorder")
+def reorder_studio_palette(
+    body: StudioPaletteReorderIn,
+    ctx: dict = Depends(require_permission(P_TENANT_BRANDING)),
+):
+    """Reorder the Studio Palette by an explicit hex sequence. Missing
+    entries are kept at the end in their previous relative order."""
+    desired = [_normalize_hex(h) for h in (body.order or [])]
+    desired = [h for h in desired if h]
+    client = db()
+    t = _get_tenant(client, ctx["tenant_id"])
+    current = _read_studio_palette(t.get("theme_settings"))
+    by_hex = {(p.get("hex") or "").lower(): p for p in current}
+    ordered: List[Dict[str, Any]] = []
+    seen = set()
+    for h in desired:
+        if h in by_hex and h not in seen:
+            ordered.append(by_hex[h]); seen.add(h)
+    for p in current:
+        h = (p.get("hex") or "").lower()
+        if h not in seen:
+            ordered.append(p); seen.add(h)
+    saved = _write_studio_palette(client, ctx["tenant_id"], ordered)
+    return {"palette": saved, "max": MAX_STUDIO_PALETTE}

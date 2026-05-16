@@ -1,6 +1,38 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase AA.1 — Studio Palette Memory™ (DONE — 16 Feb 2026)
+
+> Trasforma "recent colors" del browser in **memoria visiva condivisa dello studio**.
+> Tenant-scoped, sincronizzato cross-device, accessibile da qualsiasi membro del team.
+
+**Backend** (`/app/backend/routers/branding.py`)
+- 4 nuovi endpoint operano direttamente su `tenants.theme_settings.studio_palette[]` (no migration richiesta — JSONB esistente):
+  - `GET    /api/branding/studio-palette` — ritorna lista ordinata per `last_used_at` desc
+  - `POST   /api/branding/studio-palette` — add/touch idempotente per hex (refresh timestamp + opzionali `name` + `mood`)
+  - `DELETE /api/branding/studio-palette/{hex}` — rimuove un colore
+  - `PATCH  /api/branding/studio-palette/reorder` — ordina secondo sequenza hex esplicita
+- Cap a **24 entries** (overflow elimina il più vecchio per `last_used_at`)
+- Hex normalization centralized (#fff → #ffffff, case-insensitive); audit_log su ogni touch/remove
+
+**Frontend**
+- Nuovo `/app/frontend/src/contexts/StudioPaletteContext.jsx` — provider lazy-loaded al primo mount autenticato, espone `{entries, touch, remove, reorder, loaded}`; aggiornamenti **ottimistici** + reconciliation server-side
+- Montato in `App.js` sopra `BrowserRouter` (dopo `TenantThemeProvider`)
+- `BlueprintColorPicker` integra la nuova sezione **"Studio Palette Memory™"** sopra "Brand palette":
+  - Swatches cliccabili = riapplicazione
+  - Right-click su uno swatch = rimozione dalla memoria
+  - **Auto-push** intelligente: alla chiusura del picker, se l'utente ha applicato un colore **non-brand**, viene aggiunto/aggiornato in Studio Palette (i colori del brand restano curati e non rumorosi)
+  - Sezione "Recent" localStorage rimane come fallback se la palette tenant è vuota
+
+**Smoke test live** ✅
+- Backend: GET vuoto → POST `#D8B47A`+name=Warm Brass → POST `#22C55E` x2 (dedup → 1 entry) → DELETE `#D8B47A` (rimossa) → tutti gli scenari OK
+- Frontend: typing `#6B8E23` → close picker → riapertura → swatch presente in Studio Palette → click re-applica `#6B8E23` → live preview aggiornato
+- Cross-tenant: lo storage è scoped su `tenant_id` (audit log + write helper rilegge tenant prima di scrivere)
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Unified Color Picker — Blueprint OS-wide UX upgrade (DONE — 16 Feb 2026)
 
 > **User feedback addressed**: "dovunque si possa scegliere un colore deve essere disponibile il color picker e non l'input per digitare a mano il codice che nessuno sa".

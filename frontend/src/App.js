@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BlueprintProvider, useBlueprint } from './contexts/BlueprintContext';
 import { TenantThemeProvider } from './contexts/TenantThemeContext';
+import { StudioPaletteProvider } from './contexts/StudioPaletteContext';
 import { Toaster } from 'sonner';
 import './App.css';
 // Frozen Blueprint OS tokens — declared under [data-surface="os"] only,
@@ -168,6 +169,7 @@ function App() {
       <AuthProvider>
         <BlueprintProvider>
           <TenantThemeProvider>
+          <StudioPaletteProvider>
           <BrowserRouter>
             <Suspense fallback={<Loading />}>
               <Routes>
@@ -280,6 +282,7 @@ function App() {
               },
             }}
           />
+          </StudioPaletteProvider>
           </TenantThemeProvider>
         </BlueprintProvider>
       </AuthProvider>
