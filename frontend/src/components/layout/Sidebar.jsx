@@ -20,16 +20,17 @@ import useSidebarCollapsed from '../../hooks/useSidebarCollapsed';
  *   - Edge collapse handle on the right border for users who prefer that pattern
  *   - Default state: COLLAPSED (icon-only). User can pin it open; choice persists.
  */
-const NavItem = ({ to, icon, labelKey, collapsed, end }) => {
+const NavItem = ({ to, icon, labelKey, fallback, collapsed, end }) => {
   const { t } = useBlueprint();
   const Icon = Icons[icon] || Icons.Square;
   const testid = `sidebar-nav-${labelKey.replace(/\./g, '-')}`;
+  const label = t(labelKey, null, fallback);
   return (
     <NavLink
       to={to}
       end={end}
       data-testid={testid}
-      title={collapsed ? t(labelKey) : undefined}
+      title={collapsed ? label : undefined}
       className={({ isActive }) =>
         `flex items-center ${collapsed ? 'justify-center' : 'gap-3'} ${collapsed ? 'px-0 py-2.5' : 'px-2.5 py-1.5'}
          rounded-[7px] relative group transition-colors duration-150 ${
@@ -44,7 +45,7 @@ const NavItem = ({ to, icon, labelKey, collapsed, end }) => {
           <span className={`absolute left-0 top-1 bottom-1 w-[2px] rounded-full transition-all duration-200 ${isActive ? 'bg-[var(--bp-primary)]' : 'bg-transparent'}`} />
           <Icon size={15} strokeWidth={1.5} />
           {!collapsed && (
-            <span className="font-body tracking-[0.005em] truncate text-[12.5px]">{t(labelKey)}</span>
+            <span className="font-body tracking-[0.005em] truncate text-[12.5px]">{label}</span>
           )}
         </>
       )}
@@ -190,6 +191,16 @@ const Sidebar = () => {
             {intelligenceRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
           </div>
         </div>
+
+        {/* ── EDITORIAL (review inbox) ──────────────────────────── */}
+        {can('tenant:settings') && (
+          <div>
+            <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.editorial')}</SectionLabel>
+            <div className="space-y-0.5">
+              <NavItem to="/editorial/inbox" icon="Inbox" labelKey="nav.editorialInbox" fallback="Editorial review" collapsed={collapsed} />
+            </div>
+          </div>
+        )}
 
         {/* ── SETTINGS (admin only) ─────────────────────────────── */}
         {can('tenant:settings') && (

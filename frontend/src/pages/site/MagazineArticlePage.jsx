@@ -5,8 +5,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, ArrowUpRight, BookOpen, Plus, X, Check, Send } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, BookOpen, Plus, X, Check, Send, Globe } from 'lucide-react';
 import { SiteProvider, useSite } from '../../site/SiteContext';
+import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
 import { navigationContent } from '../../site/content/navigation';
 import { tenantConfig } from '../../site/content/tenant';
 import '../../site/site.css';
@@ -253,6 +254,7 @@ const MagazineArticleInner = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { locale } = useSite();
+  const runtime = useLocaleRuntime();
   const tenantSlug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
   const t = T[locale] || T.it;
   const [state, setState] = useState({ loading: true, article: null });
@@ -264,7 +266,13 @@ const MagazineArticleInner = () => {
     let alive = true;
     (async () => {
       try {
-        const r = await axios.get(`${BACKEND_URL}/api/magazine/public/${encodeURIComponent(tenantSlug)}/articles/${encodeURIComponent(slug)}`);
+        // Phase P0.2.D — pass the runtime locale to the public endpoint so
+        // it serves the approved cultural variant for this perspective.
+        const params = runtime?.localeCode ? { locale_code: runtime.localeCode } : {};
+        const r = await axios.get(
+          `${BACKEND_URL}/api/magazine/public/${encodeURIComponent(tenantSlug)}/articles/${encodeURIComponent(slug)}`,
+          { params }
+        );
         if (alive) setState({ loading: false, article: r.data?.article || null });
       } catch (_) {
         if (alive) setState({ loading: false, article: null });
@@ -275,12 +283,14 @@ const MagazineArticleInner = () => {
       } catch (_) { if (alive) setRelated([]); }
     })();
     return () => { alive = false; };
-  }, [tenantSlug, slug]);
+  }, [tenantSlug, slug, runtime?.localeCode]);
 
   useEffect(() => {
     if (state.article) {
-      const lc = state.article.locale_content?.[locale] || state.article.locale_content?.it || {};
-      document.title = `${lc.title || 'Article'} · MOOD for DESIGN`;
+      const a = state.article;
+      const lc = a.locale_content?.[locale] || a.locale_content?.it || {};
+      const titleForTab = a.title || lc.title || 'Article';
+      document.title = `${titleForTab} · MOOD for DESIGN`;
     }
   }, [state.article, locale]);
 
@@ -308,9 +318,20 @@ const MagazineArticleInner = () => {
 
   const a = state.article;
   const lc = a.locale_content?.[locale] || a.locale_content?.it || {};
+  // Phase P0.2.D — overlay culturally-native fields from the approved
+  // variant (when the public endpoint surfaced them). Falls back to the
+  // legacy locale_content block to keep historical articles renderable.
+  const displayTitle    = a.title    || lc.title;
+  const displaySubtitle = a.subtitle || lc.summary;
+  const displayIntro    = a.intro    || lc.summary;
+  const cultural        = a._locale || null;
+  const localeServed    = cultural?.served || null;
+  const isFallback      = !!cultural?.fallback;
 
   return (
-    <div className="mfd-site mfd-magazine mfd-article" data-surface="storefront" data-testid="article-page">
+    <div className="mfd-site mfd-magazine mfd-article" data-surface="storefront"
+         data-testid="article-page"
+         data-locale-served={localeServed || undefined}>
       <header className="mfd-magazine__nav">
         <Link to="/" className="mfd-magazine__brand">
           <img src={navigationContent.brand.logoSrc} alt="MOOD for DESIGN" />
@@ -322,12 +343,34 @@ const MagazineArticleInner = () => {
 
       <section className="mfd-article__hero" data-testid="article-hero">
         {(a.hero_url || a.cover_url) && (
-          <img src={a.hero_url || a.cover_url} alt={lc.title || ''} loading="eager" />
+          <img src={a.hero_url || a.cover_url} alt={displayTitle || ''} loading="eager" />
         )}
         <div className="mfd-article__hero-overlay">
+          {localeServed && (
+            <p className="mfd-article__perspective"
+               data-testid="article-perspective-badge"
+               style={{
+                 display: 'inline-flex', alignItems: 'center', gap: 6,
+                 padding: '0.35rem 0.7rem', marginBottom: '0.75rem',
+                 fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase',
+                 color: 'rgba(255,255,255,0.78)',
+                 border: '1px solid rgba(216,180,122,0.45)',
+                 borderRadius: 999,
+                 background: 'rgba(0,0,0,0.25)',
+                 backdropFilter: 'blur(6px)',
+               }}>
+              <Globe size={10} strokeWidth={1.6} />
+              <span>{localeServed} Perspective</span>
+              {isFallback && (
+                <span style={{ opacity: 0.6, textTransform: 'none', letterSpacing: 'normal', fontSize: 10 }}>
+                  · closest cultural register
+                </span>
+              )}
+            </p>
+          )}
           <p className="mfd-article__kicker">{lc.kicker}</p>
-          <h1 className="mfd-article__h1">{lc.title}</h1>
-          <p className="mfd-article__summary">{lc.summary}</p>
+          <h1 className="mfd-article__h1">{displayTitle}</h1>
+          <p className="mfd-article__summary">{displaySubtitle}</p>
           <p className="mfd-article__meta">
             <BookOpen size={11} strokeWidth={1.5} /> {a.reading_minutes || 4} {t.readMin}
           </p>

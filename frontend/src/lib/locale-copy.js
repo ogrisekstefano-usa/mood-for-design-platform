@@ -326,16 +326,17 @@ const REGISTRY = {
   },
 
   // ═════════════════════════════════════════════════════════════════
-  // GLOBAL states
+  // GLOBAL states — calm editorial copy. NO "loading...", NO "500 Internal
+  // Server Error". Errors feel human; empty states feel intentional.
   // ═════════════════════════════════════════════════════════════════
   'global.loading': {
-    IT_IT: 'Caricamento…',
-    EN_US: 'Loading…',
-    EN_GB: 'Loading…',
-    EN_AE: 'Loading…',
-    DE_DE: 'Wird geladen…',
-    FR_FR: 'Chargement…',
-    ES_ES: 'Cargando…',
+    IT_IT: 'Sto componendo…',
+    EN_US: 'Composing the moment…',
+    EN_GB: 'Composing quietly…',
+    EN_AE: 'Curating the moment…',
+    DE_DE: 'Wird komponiert…',
+    FR_FR: 'Composition en cours…',
+    ES_ES: 'Componiendo…',
   },
   'global.loading.generating': {
     IT_IT: 'Sto componendo la direzione…',
@@ -347,13 +348,13 @@ const REGISTRY = {
     ES_ES: 'Componiendo la dirección sensorial…',
   },
   'global.error': {
-    IT_IT: 'Qualcosa non ha funzionato. Riprova fra un istante.',
-    EN_US: 'Something didn\'t go through. Please try again.',
-    EN_GB: 'Something didn\'t go through. Do try again.',
-    EN_AE: 'A moment of disruption — please try again.',
-    DE_DE: 'Etwas hat nicht funktioniert. Bitte erneut versuchen.',
-    FR_FR: 'Quelque chose s\'est interrompu. Réessayez dans un instant.',
-    ES_ES: 'Algo se interrumpió. Inténtalo de nuevo.',
+    IT_IT: 'Non siamo riusciti a completare questa azione editoriale. Riprova fra un istante.',
+    EN_US: 'We couldn\'t complete this editorial action right now. Please try again.',
+    EN_GB: 'We couldn\'t complete this editorial action just now. Do try again.',
+    EN_AE: 'A moment of disruption — please try this again in a moment.',
+    DE_DE: 'Diese redaktionelle Handlung konnte nicht abgeschlossen werden. Bitte erneut versuchen.',
+    FR_FR: 'Nous n\'avons pas pu compléter cette action éditoriale. Réessayez dans un instant.',
+    ES_ES: 'No pudimos completar esta acción editorial. Inténtalo de nuevo en un momento.',
   },
   'global.retry': {
     IT_IT: 'Riprova',

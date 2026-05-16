@@ -1,6 +1,16 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase POST-P0.2.D — Final Hardening Pass (DONE — 16 Feb 2026)
+- **Variant Approval Inbox UI** (`/editorial/inbox`) — pagina cinematica "Editorial Review" che consuma `/api/magazine/variant-approval-inbox` + endpoint approvazione. Tabs (Tutte / Articoli / Riferimenti) con conteggi live, card differenziate per articoli vs hotspot, ribbon "EDITORIAL PENDING", badge culturale con register label ("Italia · Editorial craftsmanship", "UAE · Sensorial prestige"), framing/atmosphere isolati, CTA "Publish perspective" vs "Set aside". Linguaggio 100% editoriale, mai "AI", mai "generate". Loading skeleton calmo, error state "Non siamo riusciti a completare questa azione editoriale". Empty state "Editorial calm · Nessuna prospettiva in attesa".
+- **Sidebar entry**: nuova sezione "Editoriale" con NavItem `nav.editorialInbox` (fallback "Editorial review") visibile solo a chi ha `tenant:settings`. Tooltip funzionante.
+- **Public article perspective badge**: il `MagazineArticlePage` ora passa `?locale_code=` al public endpoint, riceve `_locale.{served, fallback, source}`, mostra un badge "🌐 EN_AE PERSPECTIVE · closest cultural register" sopra il titolo dell'hero. Titolo / sottotitolo / intro vengono overlaid dalla variante approvata (fallback gracieux su `locale_content` legacy se non c'è variante).
+- **Editorial language polish** (registry `global.*`): "Caricamento…" → "Sto componendo…" / "Loading…" → "Composing the moment…"; "Qualcosa non ha funzionato" → "Non siamo riusciti a completare questa azione editoriale". Nessuno spinner generico, nessun "Internal Server Error".
+- **Sidebar NavItem `fallback` prop**: aggiunta proprietà di fallback testuale a `NavItem` così le nuove voci sidebar rendono in modo immediato anche prima che il blueprint i18n table le registri.
+- **Smoke test passato**: login → click sidebar "Editorial review" → pagina si apre con 5 pending variants → card mostrano Travertino IT_IT vs Roman Travertine EN_GB ("considered threshold, not a division") vs Roman Travertine EN_AE ("cinematic material gravity, layered welcome") — registri culturalmente distinti, non traduzioni.
+
+
+
 ### ✅ Phase P0.2.D — Cultural Intelligence Surfaces™ (DONE — 16 Feb 2026)
 - **Public article serving runtime**: `GET /api/magazine/public/{tenant_slug}/articles/{slug}` now auto-resolves the visitor locale via the public chain (explicit > saved > browser weak > tenant default > IT_IT), then serves the matching APPROVED cultural variant on top of the source article. Surfaces `_locale.{requested, served, source, fallback}` so the frontend can render the active perspective badge.
 - **Market-intent-preserving variant fallback**: requesting EN_GB when only EN_AE is approved → serves EN_AE, NOT translated to IT_IT. Requesting FR_FR with no FR variant → falls back to EN_GB → EN_AE chain, preserving market intent. Unapproved variants NEVER reach public visitors (safety guarantee against unreviewed AI content).
