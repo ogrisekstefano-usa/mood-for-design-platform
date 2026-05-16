@@ -31,7 +31,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
 from core.tenant_context import get_tenant_context
@@ -191,7 +191,22 @@ def public_related_articles(tenant_slug: str, slug: str,
 
 
 @router.get("/public/{tenant_slug}/articles/{slug}")
-def public_article_detail(tenant_slug: str, slug: str):
+def public_article_detail(tenant_slug: str, slug: str,
+                          request: Request,
+                          locale_code: Optional[str] = None,
+                          saved_locale: Optional[str] = None):
+    """Public article detail — auto-serves the culturally-native variant.
+
+    Phase P0.2.D — consumes the public LocalizationRuntime™:
+      • Resolves the visitor's locale via the public chain
+        (explicit > saved > browser weak > tenant default > IT_IT).
+      • If the article has an approved cultural variant matching that
+        locale (or its market-intent-preserving fallback chain),
+        applies the variant's title / subtitle / intro / CTA / SEO
+        on top of the source article.
+      • Surfaces `_locale.{requested, served, source, fallback}` so the
+        frontend can show the active perspective badge.
+    """
     tid = _tenant_id_from_slug(tenant_slug)
     if not tid:
         raise HTTPException(404, "tenant not found")
@@ -202,6 +217,87 @@ def public_article_detail(tenant_slug: str, slug: str):
     if not r.data:
         raise HTTPException(404, "article not found")
     article = _serialize_article(r.data[0], with_hotspots=True)
+
+    # ── Resolve the visitor's locale via the public runtime ────────
+    from core.locale_runtime import (
+        SUPPORTED_LOCALES, FALLBACK_CHAIN, SYSTEM_FALLBACK,
+        _parse_accept_language,
+    )
+    candidates = {
+        "explicit": (locale_code or "").upper().strip() or None,
+        "saved":    (saved_locale or "").upper().strip() or None,
+        "browser":  _parse_accept_language(request.headers.get("accept-language")),
+        "tenant":   None,
+    }
+    if candidates["explicit"] and candidates["explicit"] not in SUPPORTED_LOCALES:
+        candidates["explicit"] = None
+    if candidates["saved"] and candidates["saved"] not in SUPPORTED_LOCALES:
+        candidates["saved"] = None
+    try:
+        tt = (c.table("tenants").select("default_locale_code")
+              .eq("id", tid).limit(1).execute().data or [])
+        if tt and tt[0].get("default_locale_code"):
+            candidates["tenant"] = tt[0]["default_locale_code"].upper()
+    except Exception:
+        pass
+    requested = None
+    source = "system"
+    for key in ("explicit", "saved", "browser", "tenant"):
+        if candidates.get(key):
+            requested = candidates[key]
+            source = key
+            break
+    if not requested:
+        requested = SYSTEM_FALLBACK
+
+    # ── Pick the variant: requested first, then the market-intent
+    #    fallback chain. Only APPROVED variants are served publicly to
+    #    prevent unreviewed AI content from leaking to visitors.
+    lc = article.get("locale_content") or {}
+    served_locale = None
+    variant = None
+    chain = [requested] + FALLBACK_CHAIN.get(requested, [])
+    for code in chain:
+        v = lc.get(code)
+        if isinstance(v, dict) and v.get("approved_at"):
+            served_locale = code
+            variant = v
+            break
+    # Fallback: any approved variant; otherwise the legacy source
+    # locale_content block (it/en).
+    if not variant:
+        for code in SUPPORTED_LOCALES:
+            v = lc.get(code)
+            if isinstance(v, dict) and v.get("approved_at"):
+                served_locale = code
+                variant = v
+                break
+
+    # If a cultural variant was selected, apply it over the article
+    # surface fields so the frontend renders the native register.
+    if variant:
+        # Preserve the source content under `_source` for editorial
+        # debugging / side-by-side previews.
+        article["_source"] = {
+            "title":           article.get("locale_content") or None,
+        }
+        article["title"]            = variant.get("title") or article.get("slug")
+        article["subtitle"]         = variant.get("subtitle")
+        article["intro"]            = variant.get("intro")
+        article["cta_copy"]         = variant.get("cta_copy")
+        article["seo_title"]        = variant.get("seo_title")
+        article["seo_description"]  = variant.get("seo_description")
+        article["storytelling"]     = variant.get("storytelling_summary")
+        article["emotional"]        = variant.get("emotional_direction")
+
+    article["_locale"] = {
+        "requested": requested,
+        "served":    served_locale or requested,
+        "source":    source,
+        "fallback":  bool(variant and served_locale and served_locale != requested),
+        "candidates": candidates,
+    }
+
     # Best-effort view counter
     try:
         c.table("magazine_articles").update(

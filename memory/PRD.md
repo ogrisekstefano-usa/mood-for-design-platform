@@ -1,6 +1,20 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.2.D — Cultural Intelligence Surfaces™ (DONE — 16 Feb 2026)
+- **Public article serving runtime**: `GET /api/magazine/public/{tenant_slug}/articles/{slug}` now auto-resolves the visitor locale via the public chain (explicit > saved > browser weak > tenant default > IT_IT), then serves the matching APPROVED cultural variant on top of the source article. Surfaces `_locale.{requested, served, source, fallback}` so the frontend can render the active perspective badge.
+- **Market-intent-preserving variant fallback**: requesting EN_GB when only EN_AE is approved → serves EN_AE, NOT translated to IT_IT. Requesting FR_FR with no FR variant → falls back to EN_GB → EN_AE chain, preserving market intent. Unapproved variants NEVER reach public visitors (safety guarantee against unreviewed AI content).
+- **Variant Approval Inbox**: `GET /api/magazine/variant-approval-inbox` returns a single ordered list of all pending AI-generated variants across articles + hotspots for the active tenant. Editor sees: kind, locale_code, title/narrative preview, generated_at, generated_by. Foundation for the "newsroom assistant" UX — AI proposes, editor approves.
+- **Advisor Message Suggestions™**: new `POST /api/advisor/suggestions/draft` endpoint with 5 surfaces (`first_reply`, `proposal_intro`, `moodboard_commentary`, `inspiration_response`, `follow_up`). Consumes `with_runtime_prompt()`. Locale priority: explicit > lead > project > proposal > user > tenant > IT_IT. Returns `{draft, register, locale_code, model}`. Verified on Hamptons scenario:
+   - EN_US: "kitchen designed for summer gatherings, living areas that flow seamlessly between indoor and outdoor" (aspirazionale lifestyle)
+   - EN_GB: "understanding how a house should feel across seasons — not just how it photographs in high summer" (restraint editoriale, critica garbata del gesto)
+   - DE_DE Berlin penthouse: "konstruktive Logik und Ausführungsqualität… disziplinierte Antwort auf räumliche Anforderungen" (precisione architettonica)
+- **5 pending variants surfaced** in approval inbox during smoke test (3 hotspot + 2 article variants across 4 locales).
+- **Tenant isolation enforced** end-to-end (404 cross-tenant on all variant/hotspot/advisor surfaces).
+- **Deferred to next session**: Magazine editor admin UI (Market Perspective pills + side-by-side variant preview + approval cards), Pinterest cultural summaries (Pinterest integration not yet implemented in codebase), storefront hero locale-aware, client portal hero, lead qualification AI extension.
+
+
+
 ### ✅ Phase P0.2.C — Editorial + Public Cultural Runtime (DONE — 16 Feb 2026)
 - **Public locale runtime endpoint**: `GET /api/locale-runtime/resolve/public` — anonymous-friendly resolver with priority chain `explicit > saved_locale > browser(weak) > tenant default (via slug) > IT_IT`. No auth required. Browser locale remains a WEAK signal — never forces generic English over saved/tenant defaults.
 - **Anonymous LocaleRuntimeProvider path**: `LocaleRuntimeContext` now auto-routes to the public endpoint when `user` is null and persists anonymous preferences in `localStorage['mfd_public_locale']`. Hot-switch works for anonymous flows.

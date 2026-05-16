@@ -439,3 +439,78 @@ def approve_hotspot_variant(hotspot_id: str, locale_code: str,
     if not r.data:
         raise HTTPException(404, "variant not found")
     return {"ok": True, "approved": body.approved}
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# Variant Approval Inbox — Phase P0.2.D
+#
+# Editorial cruscotto: tutte le varianti `ai_generated=true,
+# approved_at=null` in attesa di revisione, attraverso articoli e
+# hotspot. L'editor in capo le approva (o le rifiuta) da una vista
+# unica. AI come "newsroom assistant", non come generatore incontrollato.
+# ═══════════════════════════════════════════════════════════════════════
+
+@router.get("/variant-approval-inbox")
+def variant_approval_inbox(ctx=Depends(get_tenant_context)):
+    """List every cultural variant pending editorial approval — across
+    articles and hotspots — for the active tenant. Returns a single
+    flat list ordered by `generated_at` desc, so the most recent AI
+    output surfaces first."""
+    c = db()
+    tid = ctx["tenant_id"]
+
+    # ── Article variants in locale_content JSONB ─────────────────────
+    articles = (c.table("magazine_articles").select(
+        "id, slug, locale_content, default_locale, "
+        "status, updated_at"
+    ).eq("tenant_id", tid).execute().data or [])
+
+    pending: list = []
+    for a in articles:
+        lc = a.get("locale_content") or {}
+        for code, v in lc.items():
+            if not isinstance(v, dict):
+                continue
+            if not v.get("ai_generated"):
+                continue
+            if v.get("approved_at"):
+                continue
+            pending.append({
+                "kind":         "article",
+                "article_id":   a["id"],
+                "article_slug": a.get("slug"),
+                "locale_code":  code,
+                "title":        v.get("title"),
+                "subtitle":     v.get("subtitle"),
+                "intro":        (v.get("intro") or "")[:280],
+                "cta_copy":     v.get("cta_copy"),
+                "generated_at": v.get("generated_at"),
+                "generated_by": v.get("generated_by"),
+                "approved_at":  None,
+            })
+
+    # ── Hotspot variants in dedicated table ─────────────────────────
+    hot = (c.table("hotspot_locale_variants").select(
+        "id, hotspot_id, locale_code, title, narrative, cta_copy, "
+        "emotional_framing, atmosphere, generated_at, generated_by"
+    ).eq("tenant_id", tid).is_("approved_at", "null").execute().data or [])
+
+    for v in hot:
+        pending.append({
+            "kind":         "hotspot",
+            "variant_id":   v["id"],
+            "hotspot_id":   v["hotspot_id"],
+            "locale_code":  v.get("locale_code"),
+            "title":        v.get("title"),
+            "narrative":    v.get("narrative"),
+            "cta_copy":     v.get("cta_copy"),
+            "emotional_framing": v.get("emotional_framing"),
+            "atmosphere":   v.get("atmosphere"),
+            "generated_at": v.get("generated_at"),
+            "generated_by": v.get("generated_by"),
+            "approved_at":  None,
+        })
+
+    # Sort by generated_at desc (None last).
+    pending.sort(key=lambda x: x.get("generated_at") or "", reverse=True)
+    return {"pending": pending, "total": len(pending)}
