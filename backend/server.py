@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import httpx
 
-from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine
+from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine, ai_studio_brief
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -77,6 +77,7 @@ api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(demo.router, prefix="/demo", tags=["demo"])
 api_router.include_router(leads.router, prefix="/leads", tags=["leads"])
 api_router.include_router(projects.router, prefix="/projects", tags=["projects"])
+api_router.include_router(ai_studio_brief.router, tags=["ai-studio-brief"])
 api_router.include_router(proposals.router, prefix="/proposals", tags=["proposals"])
 api_router.include_router(moodboards.router, prefix="/moodboards", tags=["moodboards"])
 api_router.include_router(moodboards_v1.router, prefix="/moodboards", tags=["moodboards-blocks"])

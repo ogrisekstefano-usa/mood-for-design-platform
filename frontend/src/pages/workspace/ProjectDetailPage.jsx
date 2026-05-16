@@ -283,13 +283,216 @@ const MoodboardsTab = ({ project, t }) => {
   );
 };
 
+// ── Tab components (P0.6 — 8 tabs spec) ─────────────────────────────────────
+
+// Cinematic empty/stub state used by tabs that wrap existing or future workflows
+const TabStub = ({ icon: Icon = FileText, eyebrow, title, body, ctaLabel, ctaTo, testid }) => (
+  <div data-testid={testid || 'tab-stub'} className="py-16 px-8 text-center">
+    <div className="w-12 h-12 rounded-[3px] mx-auto mb-5 flex items-center justify-center
+                    border border-[var(--bp-border)] bg-[var(--bp-surface-1)]">
+      <Icon size={18} strokeWidth={1.2} className="text-[var(--bp-text-muted)]" />
+    </div>
+    {eyebrow && (
+      <p className="text-[10px] tracking-[0.28em] uppercase text-[var(--bp-primary)] font-body mb-3">{eyebrow}</p>
+    )}
+    <h3 className="font-heading text-[22px] font-light text-[var(--bp-text-primary)] mb-3 max-w-md mx-auto leading-tight">
+      {title}
+    </h3>
+    <p className="text-[13px] text-[var(--bp-text-secondary)] font-body max-w-lg mx-auto leading-relaxed">
+      {body}
+    </p>
+    {ctaTo && ctaLabel && (
+      <Link to={ctaTo} className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 bg-[var(--bp-primary)]
+                                  text-[var(--bp-primary-foreground,#0F0F10)] text-[10.5px] uppercase tracking-[0.22em]">
+        {ctaLabel}
+      </Link>
+    )}
+  </div>
+);
+
+const MARKETS = [
+  { code: 'IT', label: 'Italia' },
+  { code: 'US', label: 'Stati Uniti' },
+  { code: 'FR', label: 'Francia' },
+  { code: 'DE', label: 'Germania' },
+  { code: 'UK', label: 'Regno Unito' },
+  { code: 'UAE', label: 'Emirati Arabi' },
+  { code: 'ES', label: 'Spagna' },
+];
+
+// ── AI Studio Brief™ tab (THE P0.6 differentiator) ──────────────────────────
+const AIStudioBriefTab = ({ projectId, project, t }) => {
+  const [brief, setBrief] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [market, setMarket] = useState((project?.metadata_json?.country || 'IT').toUpperCase());
+  const [error, setError] = useState(null);
+
+  const load = useCallback(async () => {
+    setLoading(true); setError(null);
+    try {
+      const r = await api.get(`/api/projects/${projectId}/ai-brief`);
+      setBrief(r.data?.brief || null);
+    } catch (e) { setError('Caricamento brief non riuscito.'); }
+    finally { setLoading(false); }
+  }, [projectId]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const generate = async () => {
+    setGenerating(true); setError(null);
+    try {
+      const r = await api.post(`/api/projects/${projectId}/ai-brief/generate`, { market, locale: 'it' });
+      setBrief(r.data?.brief || null);
+    } catch (e) {
+      setError('Generazione brief non riuscita. Riprova fra qualche istante.');
+    } finally { setGenerating(false); }
+  };
+
+  if (loading) {
+    return (
+      <div data-testid="ai-brief-loading" className="space-y-4">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="bp-card p-7 animate-pulse">
+            <div className="h-3 w-32 bg-[var(--bp-surface-2)] mb-4" />
+            <div className="h-4 w-3/4 bg-[var(--bp-surface-2)] mb-2" />
+            <div className="h-4 w-2/3 bg-[var(--bp-surface-2)]" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (!brief) {
+    return (
+      <div data-testid="ai-brief-empty" className="bp-card p-12 text-center">
+        <p className="text-[10px] tracking-[0.3em] uppercase text-[var(--bp-primary)] font-body mb-4">
+          AI Studio Brief™
+        </p>
+        <h3 className="font-heading text-[28px] font-light text-[var(--bp-text-primary)] mb-3 max-w-lg mx-auto leading-tight">
+          Un memo strategico di direzione progettuale.
+        </h3>
+        <p className="text-[13.5px] text-[var(--bp-text-secondary)] font-body max-w-xl mx-auto leading-relaxed mb-8">
+          L'AI legge il contesto reale del progetto — cliente, mercato, ispirazioni salvate, materiali,
+          identità dell'advisor — e scrive una direzione editoriale in sei sezioni. Non è una chat: è un
+          documento di posizionamento curato.
+        </p>
+        <div className="flex items-center justify-center gap-3 flex-wrap mb-2">
+          <label className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body">
+            Mercato
+          </label>
+          <select value={market} onChange={(e) => setMarket(e.target.value)}
+                  data-testid="ai-brief-market-select"
+                  className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] text-[12px] px-3 py-2
+                             text-[var(--bp-text-primary)] font-body">
+            {MARKETS.map((m) => <option key={m.code} value={m.code}>{m.label}</option>)}
+          </select>
+          <button onClick={generate} disabled={generating}
+                  data-testid="ai-brief-generate-btn"
+                  className="bp-btn bp-btn-primary text-[10.5px] uppercase tracking-[0.22em]">
+            {generating ? 'Genero brief…' : 'Genera brief'}
+          </button>
+        </div>
+        {error && <p className="text-[12px] text-red-400 mt-3">{error}</p>}
+      </div>
+    );
+  }
+
+  const s = brief.sections || {};
+  const sectionDef = [
+    { key: 'direction',              title: 'Direzione progettuale',     eye: '01 — DIREZIONE' },
+    { key: 'material_language',      title: 'Linguaggio materico',       eye: '02 — MATERIA' },
+    { key: 'emotional_positioning',  title: 'Posizionamento emotivo',    eye: '03 — EMOZIONE' },
+    { key: 'market_adaptation',      title: 'Adattamento al mercato',    eye: '04 — MERCATO' },
+    { key: 'design_risks',           title: 'Tensioni e rischi',         eye: '05 — TENSIONI' },
+  ];
+
+  return (
+    <div data-testid="ai-brief-content" className="space-y-6">
+      {/* Brief headline + meta */}
+      <header className="bp-card p-7">
+        <div className="flex items-start justify-between gap-6 flex-wrap">
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] tracking-[0.3em] uppercase text-[var(--bp-primary)] font-body mb-3">
+              AI Studio Brief™ · Mercato {brief.market || 'IT'}
+            </p>
+            <h2 className="font-heading text-[28px] font-light text-[var(--bp-text-primary)] leading-[1.1]">
+              {s.headline || 'Direzione progettuale'}
+            </h2>
+            <p className="mt-3 text-[11px] text-[var(--bp-text-muted)] font-body">
+              Generato {fmtRelative(brief.created_at)} · {brief.model === 'fallback' ? 'modalità manuale' : 'Claude Sonnet 4.5'}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <select value={market} onChange={(e) => setMarket(e.target.value)}
+                    className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] text-[11px] px-3 py-2 text-[var(--bp-text-secondary)] font-body">
+              {MARKETS.map((m) => <option key={m.code} value={m.code}>{m.label}</option>)}
+            </select>
+            <button onClick={generate} disabled={generating}
+                    data-testid="ai-brief-regenerate"
+                    className="bp-btn bp-btn-ghost text-[10px] uppercase tracking-[0.22em] inline-flex items-center gap-1.5">
+              <Icons.RefreshCw size={11} strokeWidth={1.6}
+                className={generating ? 'animate-spin' : ''} />
+              {generating ? 'In corso…' : 'Aggiorna brief'}
+            </button>
+          </div>
+        </div>
+        {error && <p className="text-[12px] text-red-400 mt-3">{error}</p>}
+      </header>
+
+      {/* 5 long-form sections */}
+      {sectionDef.map(({ key, title, eye }) => (
+        <article key={key} data-testid={`ai-brief-section-${key}`} className="bp-card p-7">
+          <p className="text-[10px] tracking-[0.32em] uppercase text-[var(--bp-text-muted)] font-body mb-3">
+            {eye}
+          </p>
+          <h3 className="font-heading text-[20px] font-light text-[var(--bp-text-primary)] mb-4 leading-tight">
+            {title}
+          </h3>
+          <p className="text-[14.5px] text-[var(--bp-text-secondary)] font-body leading-[1.7] whitespace-pre-line">
+            {s[key] || '—'}
+          </p>
+        </article>
+      ))}
+
+      {/* Next moves — actionable list */}
+      {(s.next_moves || []).length > 0 && (
+        <article data-testid="ai-brief-section-next_moves" className="bp-card p-7">
+          <p className="text-[10px] tracking-[0.32em] uppercase text-[var(--bp-text-muted)] font-body mb-3">
+            06 — PROSSIME MOSSE
+          </p>
+          <h3 className="font-heading text-[20px] font-light text-[var(--bp-text-primary)] mb-5 leading-tight">
+            Prossimi passi suggeriti
+          </h3>
+          <ul className="space-y-3">
+            {s.next_moves.map((mv, i) => (
+              <li key={i} className="flex gap-4 items-start">
+                <span className="shrink-0 w-7 h-7 rounded-[2px] bg-[var(--bp-primary-soft)] text-[var(--bp-primary)]
+                                 text-[11px] font-medium flex items-center justify-center tabular-nums">
+                  {i + 1}
+                </span>
+                <p className="text-[14px] text-[var(--bp-text-primary)] font-body leading-[1.65] pt-0.5">
+                  {mv}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </article>
+      )}
+    </div>
+  );
+};
+
 // ── Main page ────────────────────────────────────────────────────────────────
 const TABS = [
-  { id: 'overview',   icon: FileText },
-  { id: 'tasks',      icon: ListChecks },
-  { id: 'notes',      icon: StickyNote },
-  { id: 'moodboards', icon: Layers },
-  { id: 'activity',   icon: Activity },
+  { id: 'overview',      icon: FileText,    label: 'Overview' },
+  { id: 'inspirations',  icon: Bookmark,    label: 'Ispirazioni' },
+  { id: 'moodboards',    icon: Layers,      label: 'Moodboard' },
+  { id: 'materials',     icon: Boxes,       label: 'Materiali' },
+  { id: 'proposals',     icon: FileText,    label: 'Proposte' },
+  { id: 'conversations', icon: MessageSquare, label: 'Conversazioni' },
+  { id: 'timeline',      icon: Activity,    label: 'Timeline' },
+  { id: 'ai_brief',      icon: Sparkles,    label: 'AI Studio Brief™' },
 ];
 
 const Stat = ({ label, value }) => (
