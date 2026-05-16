@@ -731,7 +731,8 @@ const StrategicDirectionCard = ({ projectId, project }) => {
   const generate = async () => {
     setGenerating(true); setError(null); setActionMsg(null);
     try {
-      const r = await api.post(`/api/projects/${projectId}/ai-brief/generate`, { market, locale: 'it' });
+      // Locale auto-derived server-side from `market` — native composition.
+      const r = await api.post(`/api/projects/${projectId}/ai-brief/generate`, { market });
       setBrief(r.data?.brief || null);
       await loadHistory();
     } catch (e) {

@@ -1,6 +1,43 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.6.E — Native Multilingual Composition (DONE — 16 Feb 2026)
+
+> **Bug critico corretto**: Strategic Direction™ e Compose Proposal™ erano
+> hardcoded in italiano (Pydantic `locale: str = Field("it")`). Adesso il sistema
+> compone **nativamente nella lingua del mercato**, non traduce.
+
+**Mappatura mercato → locale nativo** (singola fonte di verità su backend + frontend):
+- IT → `it` · US/UK/UAE → `en` · FR → `fr` · DE → `de` · ES → `es`
+
+**Backend** — entrambi i router
+- `ComposeIn.locale` e `GenerateBriefIn.locale` ora **Optional[None]**. Se assente, derivato server-side da `market` via `LOCALE_FROM_MARKET`.
+- System prompts LLM aggiornati: *"You write NATIVELY in the locale's language — NEVER translate from another language"* + lingua specifica per locale (Italian/English/French/German/Spanish con registro editoriale nativo).
+- User message LLM ora inizia con `OUTPUT LANGUAGE: <native description>` per forzare il modello.
+- `_fallback_sections` localizzate per i 5 locali (no più fallback monolingua italiana).
+- Il locale viene **persistito** dentro `sections._locale` di ogni proposta/snapshot così l'editor sa in quale lingua mostrare la chrome.
+
+**Frontend** — `ProposalComposerPage.jsx`
+- Rimossi hardcoded italiani: `SECTION_DEF`, `STYLE_LABEL`, `TONE_LABEL`, `TIER_LABEL`, "Modifica", "Salva", "Curato da", "Torna al progetto", "Export PDF · disponibili a breve", "Moodboard collegati", "Materiali integrati", "Stile/Tono/Tier/Mercato".
+- **Tutto localizzato per 5 lingue native**: `SECTION_DEF_BY_LOCALE` (eyebrows + titoli sezioni), `META_LABELS`, `STYLE_LABEL_I18N`, `TONE_LABEL_I18N`, `TIER_LABEL_I18N`, `STRIP_LABELS`.
+- `resolveLocale()` legge `proposal.sections._locale` (con fallback a `LOCALE_FROM_MARKET[proposal.market]`).
+- Attributo HTML `lang={locale}` sulla pagina.
+- `localized(value, preferLocale)` ora rispetta il locale di output della proposta per `role_label` / `bio_short` multilingua dell'advisor.
+
+**Frontend** — `ComposeProposalWizard.jsx` e `ProjectDetailPage.StrategicDirectionCard`
+- Rimosso hardcoded `locale: 'it'` da entrambi gli invii API. Il backend deriva il locale dal `market` selezionato dall'utente.
+
+**Test e2e multilingue confermati** (mercato → output)
+- **US** → *"Editorial proposal for Apartment — Stefano · This apartment seeks a particular calibration..."*
+- **FR** → *"Proposition éditoriale pour Apartment — Stefano · Ce projet résidentiel cherche un équilibre..."*
+- **DE** → *"Editoriale Proposal für Apartment — Stefano · Dieses Projekt versteht sich als architektonische Übersetzung..."*
+- Chrome (eyebrow, meta strip, disclosure, signature footer) interamente nella lingua nativa, senza fallback.
+- pytest backend regression **23/23 OK**.
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase P0.6.D — Compose Proposal™ (DONE — 16 Feb 2026)
 
 > Trasforma la pipeline **Strategic Direction™ → Proposta** da bottone amministrativo

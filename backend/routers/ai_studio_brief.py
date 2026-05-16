@@ -150,6 +150,20 @@ def _gather_context(c, project: Dict[str, Any], tid: str) -> Dict[str, Any]:
 
 # ─── LLM prompt ──────────────────────────────────────────────────────────
 
+# Native locale derivation — Strategic Direction™ is composed NATIVELY in the
+# market's language. NEVER translate. NEVER default to Italian.
+_LOCALE_FROM_MARKET = {
+    "IT": "it", "US": "en", "UK": "en", "FR": "fr",
+    "DE": "de", "ES": "es", "UAE": "en",
+}
+_LANGUAGE_LABEL = {
+    "it": "Italian (Italian-native, no anglicisms)",
+    "en": "English (international English, refined editorial register)",
+    "fr": "French (français soutenu, ton éditorial)",
+    "de": "German (gehobenes Deutsch, redaktioneller Ton)",
+    "es": "Spanish (español culto, registro editorial)",
+}
+
 _BRIEF_SYSTEM = """You are an editorial design strategist writing a cinematic
 project briefing for an international interior design studio operating
 in the luxury / hospitality / residential space.
@@ -157,9 +171,13 @@ in the luxury / hospitality / residential space.
 You are NOT a chatbot. You write calm, precise, editorial design memos —
 the kind a creative director would publish in a print magazine.
 
-Tone: editorial, strategic, premium. Italian as default unless `locale` says otherwise.
+You write NATIVELY in the locale's language — NEVER translate from another
+language. Italian for it, English for en, French for fr, German for de,
+Spanish for es. Use the editorial register native to that culture.
+
+Tone: editorial, strategic, premium.
 Length: each section 2–4 sentences. NO bullet points except in `next_moves`.
-NO emojis. NO generic AI phrasing ("I think", "as an AI", etc.).
+NO emojis. NO generic AI phrasing.
 Adapt the strategic register to the `market` provided:
   · US   → aspirational luxury, lifestyle-driven
   · DE   → precision, material honesty, restraint
@@ -167,6 +185,7 @@ Adapt the strategic register to the `market` provided:
   · UAE  → statement luxury, sensorial layering
   · IT   → quiet craft, contemporary heritage
   · UK   → refined understatement
+  · ES   → Mediterranean warmth, poetic gesture
 Return ONLY valid JSON (no markdown, no preamble) shaped exactly as:
 {
   "direction":           "...",
@@ -175,29 +194,56 @@ Return ONLY valid JSON (no markdown, no preamble) shaped exactly as:
   "market_adaptation":   "...",
   "design_risks":        "...",
   "next_moves":          ["...", "...", "..."],
-  "headline":            "short editorial line, max 12 words"
+  "headline":            "short editorial line, max 12 words, in the locale language"
 }"""
 
 
 def _build_user_msg(ctx: Dict[str, Any], market: str, locale: str) -> str:
+    lang_label = _LANGUAGE_LABEL.get(locale, _LANGUAGE_LABEL["en"])
     return (
+        f"OUTPUT LANGUAGE: {lang_label}\n"
         f"locale: {locale}\nmarket: {market}\n\n"
         f"=== PROJECT CONTEXT (verbatim — use only what's relevant) ===\n"
         f"{json.dumps(ctx, ensure_ascii=False, indent=2, default=str)[:6000]}\n\n"
-        f"Write the 6-section Strategic Direction memo now. Output JSON only."
+        f"Write the 6-section Strategic Direction memo NATIVELY in {lang_label}. "
+        f"Output JSON only."
     )
 
 
-def _fallback_sections(market: str) -> Dict[str, Any]:
+_FALLBACK_DIRECTION = {
+    "it": "Direzione strategica non ancora elaborata. Apri il progetto, salva le prime ispirazioni dal Magazine o collega materiali: la direzione si comporrà sui segnali reali del cliente, del mercato e dell'advisor.",
+    "en": "Strategic direction not yet composed. Open the project, save the first inspirations from the Magazine or link materials: the direction will compose itself from the real signals of client, market and advisor.",
+    "fr": "Direction stratégique non encore composée. Ouvrez le projet, enregistrez les premières inspirations du Magazine ou liez des matériaux : la direction se composera à partir des signaux réels du client, du marché et du conseiller.",
+    "de": "Strategische Ausrichtung noch nicht komponiert. Öffnen Sie das Projekt, speichern Sie die ersten Inspirationen aus dem Magazine oder verknüpfen Sie Materialien.",
+    "es": "Dirección estratégica aún no compuesta. Abre el proyecto, guarda las primeras inspiraciones del Magazine o vincula materiales.",
+}
+_FALLBACK_HEADLINE = {
+    "it": "Direzione in attesa di elaborazione",
+    "en": "Direction awaiting composition",
+    "fr": "Direction en attente de composition",
+    "de": "Ausrichtung wartet auf Komposition",
+    "es": "Dirección a la espera de composición",
+}
+_FALLBACK_MARKET_ADAPTATION = {
+    "it": "Mercato di riferimento rilevato: {m}.",
+    "en": "Target market detected: {m}.",
+    "fr": "Marché cible détecté : {m}.",
+    "de": "Erkannter Zielmarkt: {m}.",
+    "es": "Mercado objetivo detectado: {m}.",
+}
+
+
+def _fallback_sections(market: str, locale: str = "it") -> Dict[str, Any]:
+    L = locale if locale in _FALLBACK_DIRECTION else "en"
     return {
-        "direction": "Direzione strategica non ancora elaborata. Apri il progetto, salva le prime ispirazioni dal Magazine o collega materiali: la direzione si comporrà sui segnali reali del cliente, del mercato e dell'advisor.",
-        "material_language": "—",
+        "direction":             _FALLBACK_DIRECTION[L],
+        "material_language":     "—",
         "emotional_positioning": "—",
-        "market_adaptation": f"Mercato di riferimento rilevato: {market or 'non specificato'}.",
-        "design_risks": "—",
-        "next_moves": [],
-        "headline": "Direzione in attesa di elaborazione",
-        "source": "fallback",
+        "market_adaptation":     _FALLBACK_MARKET_ADAPTATION[L].format(m=market or "—"),
+        "design_risks":          "—",
+        "next_moves":            [],
+        "headline":              _FALLBACK_HEADLINE[L],
+        "source":                "fallback",
     }
 
 
@@ -205,7 +251,7 @@ def _fallback_sections(market: str) -> Dict[str, Any]:
 
 class GenerateBriefIn(BaseModel):
     market: Optional[str] = Field(None, description="Target market (US, DE, FR, UAE, IT, UK…)")
-    locale: str = Field("it")
+    locale: Optional[str] = Field(None, description="None → derived from market (native lang)")
 
 
 # ─── Endpoints ───────────────────────────────────────────────────────────
@@ -229,7 +275,6 @@ async def generate_brief(project_id: str, body: GenerateBriefIn,
     c = db()
     project = _get_project(c, project_id, ctx["tenant_id"])
     market = (body.market or "").strip().upper() or None
-    locale = (body.locale or "it").lower()
 
     gathered = _gather_context(c, project, ctx["tenant_id"])
     if not market:
@@ -240,7 +285,12 @@ async def generate_brief(project_id: str, body: GenerateBriefIn,
         elif (gathered.get("advisor") or {}).get("markets"):
             market = gathered["advisor"]["markets"][0].upper()
 
-    sections = _fallback_sections(market or "IT")
+    # Locale derivation — Strategic Direction is composed NATIVELY in the
+    # market's language. If the caller explicitly passes a locale, that wins.
+    locale = (body.locale or "").lower().strip() or _LOCALE_FROM_MARKET.get(
+        (market or "IT"), "en")
+
+    sections = _fallback_sections(market or "IT", locale=locale)
     model_used = "fallback"
     key = os.environ.get("EMERGENT_LLM_KEY")
     if key:

@@ -74,6 +74,22 @@ MARKET_REPOSITIONING = {
     "ES":  "calore mediterraneo, gesto poetico, equilibrio luminoso",
 }
 
+# Native locale derivation — drives the OUTPUT LANGUAGE of the LLM.
+# Compose Proposal™ is multilingual by design: each market is addressed
+# in its native language with native voice, NEVER translated from Italian.
+LOCALE_FROM_MARKET = {
+    "IT": "it", "US": "en", "UK": "en", "FR": "fr",
+    "DE": "de", "ES": "es", "UAE": "en",
+}
+
+LANGUAGE_LABEL = {
+    "it": "Italian (Italian-native, no anglicisms)",
+    "en": "English (international English, refined editorial register)",
+    "fr": "French (français soutenu, ton éditorial)",
+    "de": "German (gehobenes Deutsch, redaktioneller Ton)",
+    "es": "Spanish (español culto, registro editorial)",
+}
+
 
 # ─── Helpers ─────────────────────────────────────────────────────────────
 
@@ -208,7 +224,10 @@ international luxury interior design studio. You compose project
 proposals that read like editorial design memos — never as
 construction estimates or CRM exports.
 
-You write in Italian (unless `locale` says otherwise).
+You write NATIVELY in the locale's language — never translate from
+another language. Italian for it, English for en, French for fr,
+German for de, Spanish for es. Use the editorial register native
+to that culture (not a generic "international" tone).
 Tone: calm, premium, strategic, evocative.
 NO emojis. NO AI phrasing. NO bullet lists unless explicitly asked.
 Each section: 2–4 sentences of warm editorial prose.
@@ -216,7 +235,7 @@ Each section: 2–4 sentences of warm editorial prose.
 Your output is a SINGLE valid JSON object — no markdown, no preamble —
 shaped exactly as:
 {
-  "headline":           "evocative project line, max 14 words",
+  "headline":           "evocative project line, max 14 words, in the locale language",
   "opening":            "...",
   "strategic_direction":"...",
   "visual_inspirations":"...",
@@ -242,7 +261,9 @@ def _build_user_msg(ctx: Dict[str, Any], *, style: str, tone: str,
     tier_label = INVESTMENT_TIERS.get(investment_tier, "Essential Direction")
     tone_hint = TONE_HINTS.get(tone, "")
     market_hint = MARKET_REPOSITIONING.get(market.upper(), "")
+    lang_label = LANGUAGE_LABEL.get(locale, LANGUAGE_LABEL["en"])
     return (
+        f"OUTPUT LANGUAGE: {lang_label}\n"
         f"locale: {locale}\n"
         f"market: {market}  ({market_hint})\n"
         f"project_style: {style}\n"
@@ -251,21 +272,47 @@ def _build_user_msg(ctx: Dict[str, Any], *, style: str, tone: str,
         f"sections_required: {json.dumps(sections_included)}\n\n"
         f"=== PROJECT CONTEXT (verbatim) ===\n"
         f"{json.dumps(ctx, ensure_ascii=False, indent=2, default=str)[:7500]}\n\n"
-        f"Compose the editorial proposal now. Output JSON ONLY."
+        f"Compose the editorial proposal NATIVELY in {lang_label}. Output JSON ONLY."
     )
 
 
-def _fallback_sections(*, market: str, tier: str, project_title: str) -> Dict[str, Any]:
+# Locale-aware fallback (used only when LLM is unreachable)
+_FALLBACK_OPENING = {
+    "it": "Bozza di proposta in attesa di composizione. Genera la direzione strategica e collega moodboard, materiali e ispirazioni per ottenere una proposta editoriale coerente.",
+    "en": "Proposal draft awaiting composition. Generate the strategic direction and link moodboards, materials and inspirations to obtain a coherent editorial proposal.",
+    "fr": "Brouillon de proposition en attente de composition. Générez la direction stratégique et reliez moodboards, matériaux et inspirations pour obtenir une proposition éditoriale cohérente.",
+    "de": "Vorschlagsentwurf wartet auf die Komposition. Erzeugen Sie die strategische Ausrichtung und verknüpfen Sie Moodboards, Materialien und Inspirationen.",
+    "es": "Borrador de propuesta a la espera de composición. Genera la dirección estratégica y vincula moodboards, materiales e inspiraciones.",
+}
+_FALLBACK_HEADLINE = {
+    "it": "Proposta editoriale per {p}",
+    "en": "Editorial proposal for {p}",
+    "fr": "Proposition éditoriale pour {p}",
+    "de": "Editoriale Proposal für {p}",
+    "es": "Propuesta editorial para {p}",
+}
+_FALLBACK_INVESTMENT = {
+    "it": "Posizionamento d'investimento: {t}. Mercato di riferimento {m}.",
+    "en": "Investment positioning: {t}. Target market {m}.",
+    "fr": "Positionnement d'investissement : {t}. Marché cible {m}.",
+    "de": "Investitionspositionierung: {t}. Zielmarkt {m}.",
+    "es": "Posicionamiento de inversión: {t}. Mercado objetivo {m}.",
+}
+
+
+def _fallback_sections(*, market: str, tier: str, project_title: str,
+                       locale: str = "it") -> Dict[str, Any]:
     tier_label = INVESTMENT_TIERS.get(tier, "Essential Direction")
+    L = locale if locale in _FALLBACK_OPENING else "en"
     return {
-        "headline":            f"Proposta editoriale per {project_title or 'progetto'}",
-        "opening":             "Bozza di proposta in attesa di composizione. Genera la direzione strategica e collega moodboard, materiali e ispirazioni per ottenere una proposta editoriale coerente.",
+        "headline":            _FALLBACK_HEADLINE[L].format(p=project_title or "—"),
+        "opening":             _FALLBACK_OPENING[L],
         "strategic_direction": "—",
         "visual_inspirations": "—",
         "material_language":   "—",
         "project_vision":      "—",
         "suggested_scope":     "—",
-        "investment":          f"Posizionamento d'investimento: {tier_label}. Mercato di riferimento {market or 'IT'}.",
+        "investment":          _FALLBACK_INVESTMENT[L].format(t=tier_label, m=market or "IT"),
         "timeline":            "—",
         "signature":           "—",
     }
@@ -277,7 +324,7 @@ class ComposeIn(BaseModel):
     style:                Optional[str] = Field(None)
     narrative_tone:       Optional[str] = Field(None)
     market:               Optional[str] = Field(None)
-    locale:               str           = Field("it")
+    locale:               Optional[str] = Field(None)  # None → derived from market
     investment_tier:      Optional[str] = Field(None)
     show_numeric_pricing: bool          = Field(False)
     sections_included:    Optional[List[str]] = Field(None)
@@ -305,7 +352,6 @@ async def compose_proposal(project_id: str, body: ComposeIn,
     style = (body.style or "residential").lower()
     tone  = (body.narrative_tone or "minimal_editorial").lower()
     tier  = (body.investment_tier or "essential_direction").lower()
-    locale = (body.locale or "it").lower()
 
     gathered = _gather_context(c, project, ctx["tenant_id"])
     market = (body.market or "").strip().upper() or None
@@ -316,11 +362,16 @@ async def compose_proposal(project_id: str, body: ComposeIn,
                   or ((gathered.get("advisor") or {}).get("markets") or [None])[0]
                   or "IT").upper()
 
+    # Locale derivation — proposal is composed NATIVELY in the market's language.
+    # If the caller explicitly passes a locale, that wins; otherwise we infer.
+    locale = (body.locale or "").lower().strip() or LOCALE_FROM_MARKET.get(market, "en")
+
     sections_included = body.sections_included or ALL_SECTIONS
     sections_included = [s for s in sections_included if s in ALL_SECTIONS] or ALL_SECTIONS
 
     headline = None
-    composed = _fallback_sections(market=market, tier=tier, project_title=project.get("title"))
+    composed = _fallback_sections(market=market, tier=tier,
+                                  project_title=project.get("title"), locale=locale)
     key = os.environ.get("EMERGENT_LLM_KEY")
     if key:
         try:
@@ -385,6 +436,9 @@ async def compose_proposal(project_id: str, body: ComposeIn,
         "created_at":  _iso(),
         "updated_at":  _iso(),
     }
+    # Persist locale only if the column exists in the deployed schema —
+    # otherwise the value lives implicitly inside the `sections` JSON.
+    payload["sections"] = {**composed, "_locale": locale}
     try:
         c.table("proposals").insert(payload).execute()
         c.table("project_activity").insert({

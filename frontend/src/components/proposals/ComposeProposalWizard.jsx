@@ -86,9 +86,11 @@ export const ComposeProposalWizard = ({ projectId, defaultMarket = 'IT', onClose
   const compose = async () => {
     setComposing(true); setError(null);
     try {
+      // Locale is auto-derived server-side from `market` —
+      // each market is composed natively in its language.
       const r = await api.post(`/api/projects/${projectId}/compose-proposal`, {
         style, narrative_tone: tone, investment_tier: tier,
-        market, locale: 'it', show_numeric_pricing: showNumeric,
+        market, show_numeric_pricing: showNumeric,
       });
       const proposalId = r.data?.proposal?.id;
       if (proposalId) {
