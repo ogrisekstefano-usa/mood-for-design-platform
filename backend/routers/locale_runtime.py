@@ -75,6 +75,8 @@ def set_user_preference(body: PreferenceIn,
                         ctx=Depends(get_tenant_context)):
     """Persist the user's preferred locale_code. Wins over project, lead,
     tenant and browser signals on every subsequent resolve call."""
+    if not ctx.get("profile_id"):
+        raise HTTPException(401, "authenticated profile required")
     code = body.locale_code.upper().strip()
     if code not in SUPPORTED_LOCALES:
         raise HTTPException(400, f"unsupported locale: {code}")
@@ -89,9 +91,9 @@ def set_user_preference(body: PreferenceIn,
 def set_tenant_default(body: TenantDefaultIn,
                        ctx=Depends(get_tenant_context)):
     """Persist the tenant default locale_code. Only studio owners /
-    super-admins should call this — enforced via the role check below."""
+    super-admins should call this."""
     role = (ctx.get("role") or "").lower()
-    if role not in ("super_admin", "studio_owner", "owner", "admin"):
+    if role not in ("super_admin", "studio_owner", "owner"):
         raise HTTPException(403, "only studio owners can set the tenant default locale")
     code = body.locale_code.upper().strip()
     if code not in SUPPORTED_LOCALES:

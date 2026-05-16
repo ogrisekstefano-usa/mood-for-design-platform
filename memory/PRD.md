@@ -1,6 +1,17 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.2.A — LocalizationRuntime™ Foundation (DONE — 16 Feb 2026)
+- **Centralized Cultural Runtime Engine** (`/app/backend/core/locale_runtime.py`): single source of truth resolving the active `locale_profile` per request via the priority chain `explicit > user > project > lead > tenant > browser(weak) > IT_IT system fallback`. Market-intent-preserving fallback chain (EN_AE → EN_GB → EN_US, never blind IT_IT).
+- **Endpoints** (`/app/backend/routers/locale_runtime.py`): `GET /api/locale-runtime/resolve`, `PUT /api/locale-runtime/preference` (user pref), `PUT /api/locale-runtime/tenant-default` (RBAC: super_admin/studio_owner/owner only).
+- **Migration `031_locale_runtime.sql`**: adds `tenants.default_locale_code`, `users_profile.preferred_locale_code`, `leads.locale_code`, `projects.locale_code` with backfill from country.
+- **AI architecture rule enforced**: all 3 existing AI engines (Compose Proposal™, Strategic Direction™, Market Perspective™) now consume the centralized `with_runtime_prompt(profile)` helper. Removed ~250 lines of duplicated prompt templates. Verified locale-native output preserved (EN_AE "sculptural presence/material gravitas", EN_GB "domestic restraint/chromatic warmth", DE_DE "konstruktive Disziplin/keine Lifestyle-Inszenierung").
+- **Frontend**: `LocaleRuntimeProvider` mounted in `App.js`, `useLocaleRuntime()` hook exposes `localeCode, profile, source, copy(token), setLocale(code)`. Semantic copy registry at `/app/frontend/src/lib/locale-copy.js` — NOT translation; culturally repositioned per locale.
+- **PoC surfaces operational**: Dashboard `OperationalHero` (eyebrow + welcome strings switch culturally — "OPERAZIONI DI STUDIO" → "ATELIER OPERATIONS" → "Studio direction"). Projects empty state title/subtitle/CTA culturally repositioned (EN_AE: "Shape a new signature commission", EN_US: "Start your next design journey", IT_IT: "Apri un nuovo percorso progettuale").
+- **Testing**: backend pytest 22/22 PASS (`/app/backend/tests/test_locale_runtime.py`), frontend Playwright 100% on tested flows (IT_IT default, EN_AE switch, EN_GB switch, hard-reload persistence, all 7 explicit locales). No P0/P1 issues. Tenant isolation verified — cross-tenant `project_id`/`lead_id` ignored.
+
+
+
 ### ✅ Phase P0.6.G — Locale Architecture Validation (DONE — 16 Feb 2026)
 - **Validated end-to-end**: 7 `locale_profiles` (IT_IT, EN_US, EN_GB, EN_AE, DE_DE, FR_FR, ES_ES) drive the entire Compose Proposal™, Market Perspective™ switch and Strategic Direction™ engines.
 - **Strategic Direction™ refactored** (`ai_studio_brief.py`): now consumes `locale_profiles` instead of generic language codes. Accepts `locale_code` (composite). Stores `locale_code` in `project_ai_briefs` (migration `030_strategic_direction_locale.sql`). Backward-compat with `market` shortcut preserved.
