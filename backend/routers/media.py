@@ -263,11 +263,14 @@ def media_stats(ctx: dict = Depends(require_permission(P_STORAGE_READ))):
     """Aggregate counts for sidebar chips."""
     client = db()
     tid = ctx["tenant_id"]
-    base = client.table("media_library").select("id, file_type, file_size, archived_at, replaced_by_id")\
-        .eq("tenant_id", tid).execute().data or []
+    base = client.table("media_library").select(
+        "id, file_type, file_size, category, tags, archived_at, replaced_by_id"
+    ).eq("tenant_id", tid).execute().data or []
 
     active = [a for a in base if not a.get("archived_at") and not a.get("replaced_by_id")]
     by_kind = {"image": 0, "video": 0, "pdf": 0, "other": 0}
+    categories: dict = {}
+    tags: dict = {}
     total_bytes = 0
     for a in active:
         total_bytes += int(a.get("file_size") or 0)
@@ -280,6 +283,13 @@ def media_stats(ctx: dict = Depends(require_permission(P_STORAGE_READ))):
             by_kind["pdf"] += 1
         else:
             by_kind["other"] += 1
+        cat = a.get("category")
+        if cat:
+            categories[cat] = categories.get(cat, 0) + 1
+        for t in (a.get("tags") or []):
+            if not t:
+                continue
+            tags[t] = tags.get(t, 0) + 1
 
     # Orphans
     used_ids = {row["asset_id"] for row in (
@@ -292,6 +302,8 @@ def media_stats(ctx: dict = Depends(require_permission(P_STORAGE_READ))):
         "by_kind": by_kind,
         "total_bytes": total_bytes,
         "unused": unused,
+        "categories": categories,
+        "tags": tags,
         "collections": (client.table("media_collections").select("id", count="exact")
                         .eq("tenant_id", tid).is_("archived_at", "null").execute().count or 0),
         "materials": (client.table("material_registry").select("id", count="exact")

@@ -1,6 +1,32 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase Y.3.A — Editorial Asset Picker + Upload (DONE — 16 Feb 2026)
+
+> Bridge cinematico tra Magazine Editor e Media Library v2.
+> "Adding atmosphere to a story" — non "uploading files".
+
+**What ships**
+- New `/app/frontend/src/pages/settings/AssetPickerModal.jsx` + `asset-picker.css` — dark-glass modal con 2 tab:
+  - **Library**: search input, dynamic category chips (sourced from `/api/media/stats`), top-tag chips (oggi popolati), grid 16:10 cinematic preview cards, click → gold check overlay → "Usa nel racconto" auto-link.
+  - **Upload**: drop zone editorial, file picker, multi-upload queue sequenziale con per-row progress, stati success / duplicate / error, quick category + quick tag chips applicati a tutto il batch.
+- **Session-level dedupe** via SHA-256 checksum (Web Crypto) — re-upload dello stesso file in una stessa sessione riusa l'asset esistente con etichetta "duplicate (auto-resolved)".
+- **MagazineEditorPage integration**: hero URL textbox raw → bottone "Sfoglia libreria" + preview con hover "Replace"; ogni image-block URL textbox raw → bottone "Sfoglia / Cambia"; canvas immagini empty/popolato accetta **drag&drop file diretto** → upload + auto-assign (no modal flow).
+- **Auto-link** ogni asset → article via `POST /api/media/{asset_id}/links` con `entity_type='magazine_article'`, `role='hero'|'body'` (idempotente sull'UNIQUE constraint).
+- Backend: esteso `GET /api/media/stats` per restituire `categories: {<slug>: <count>}` + `tags: {<tag>: <count>}` aggregates → chip universe veramente data-driven.
+
+**Testing (iteration_47)**
+- Backend pytest **9/9** (dopo fix stats). Tenant scope + cross-tenant prefix safety + signed-upload + bucket whitelist + media_links idempotency + article hero_url persistence tutti PASS.
+- Frontend smoke: picker apre, 11 asset cards renderizzati, search + filter chips + quick-tags lavorano, end-to-end hero replacement testato (Unsplash URL → Supabase signed URL).
+
+**Commercial demo impact**
+- Showroom owner non vede più una URL textbox: vede un archivio editoriale. Pubblicare un articolo non richiede più "tecnico" — è curare un'atmosfera.
+- Foundation per Y.3.B (image editor) + Y.3.C (semantic tagging) già presente: ogni asset uploadato porta con sé categoria + tag + auto-link al journal article.
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase Y.2 + Y.1 EXT — Visual Hotspot Editor Stabilization + Hospitality Discovery Layer (DONE — 16 Feb 2026)
 
 **Phase Y.2 — Visual Hotspot CMS Editor Stabilization (P0 ABSOLUTE)**
