@@ -216,13 +216,17 @@
   transform: translate(-50%, -50%);
   z-index: 5;
 }
+
+/* PIN — dual-tone for guaranteed contrast on every background.
+   Outer ring keeps a soft halo; inner dark dot reads on light photos. */
 .mfd-hotspot__pin {
-  width: 22px; height: 22px;
+  width: 24px; height: 24px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.85);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  background: #FFFFFF;
+  border: 2px solid #1B1B1F;
+  box-shadow:
+    0 4px 14px rgba(0,0,0,0.35),
+    0 0 0 4px rgba(0,0,0,0.18);
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   padding: 0;
@@ -230,72 +234,92 @@
   position: relative;
   animation: mfd-hotspot-pulse 2.5s ease-in-out infinite;
 }
-.mfd-hotspot__pin::before {
-  content: '';
-  position: absolute; inset: -6px;
-  border-radius: 50%; border: 1px solid rgba(255,255,255,0.5);
-  opacity: 0.6;
-}
 .mfd-hotspot__pin-inner {
-  width: 6px; height: 6px; border-radius: 50%;
+  width: 7px; height: 7px; border-radius: 50%;
   background: #9B6B2B;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
 }
 .mfd-hotspot__pin:hover,
 .mfd-hotspot__pin.is-open {
-  transform: scale(1.15); background: rgba(255,255,255,1);
+  transform: scale(1.18);
+  background: #FFF;
   animation: none;
 }
 
 @keyframes mfd-hotspot-pulse {
-  0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.25), 0 0 0 0 rgba(155, 107, 43, 0.35); }
-  50%      { box-shadow: 0 4px 20px rgba(0,0,0,0.25), 0 0 0 10px rgba(155, 107, 43, 0); }
+  0%, 100% { box-shadow: 0 4px 14px rgba(0,0,0,0.35), 0 0 0 4px rgba(0,0,0,0.18), 0 0 0 0    rgba(155, 107, 43, 0.55); }
+  50%      { box-shadow: 0 4px 14px rgba(0,0,0,0.35), 0 0 0 4px rgba(0,0,0,0.18), 0 0 0 12px rgba(155, 107, 43, 0); }
 }
 
+/* ─── PANEL ── adaptive positioning + dark glass for readability ─────── */
 .mfd-hotspot__panel {
   position: absolute;
-  top: 30px; left: 50%;
-  transform: translateX(-50%);
-  width: 280px;
-  background: #FFF;
-  padding: 1.25rem 1.25rem 1rem;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-  border-radius: 2px;
-  color: var(--mag-ink-1);
+  width: 260px;
+  background: rgba(20, 18, 16, 0.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  padding: 1.1rem 1.15rem 1rem;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+  border-radius: 3px;
+  color: #F4EFE6;
   z-index: 10;
+  animation: mfd-hotspot-panel-in 0.22s ease;
 }
-.mfd-hotspot__panel::before {
-  content: '';
-  position: absolute; top: -6px; left: 50%; transform: translateX(-50%) rotate(45deg);
-  width: 12px; height: 12px; background: #FFF;
+
+@keyframes mfd-hotspot-panel-in {
+  from { opacity: 0; transform: translateY(4px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+/* Vertical: open below (default) or above the pin */
+.mfd-hotspot__panel--v-below {
+  top: 28px;
+}
+.mfd-hotspot__panel--v-above {
+  bottom: 28px;
+}
+/* Horizontal: anchor center / left / right so the panel stays inside the figure */
+.mfd-hotspot__panel--h-center  { left: 50%;  transform: translateX(-50%); }
+.mfd-hotspot__panel--h-left    { left: -10px; }
+.mfd-hotspot__panel--h-right   { right: -10px; }
+
+/* When both transforms are needed (above + center), compose them. */
+.mfd-hotspot__panel--v-above.mfd-hotspot__panel--h-center { animation-name: mfd-hotspot-panel-in-up; }
+@keyframes mfd-hotspot-panel-in-up {
+  from { opacity: 0; transform: translateX(-50%) translateY(-4px) scale(0.98); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
 .mfd-hotspot__panel-close {
-  position: absolute; top: 8px; right: 8px;
-  background: none; border: none; color: var(--mag-ink-3); cursor: pointer;
-  padding: 4px;
+  position: absolute; top: 6px; right: 6px;
+  background: none; border: none; color: rgba(244, 239, 230, 0.55);
+  cursor: pointer; padding: 4px;
 }
-.mfd-hotspot__panel-close:hover { color: var(--mag-ink-1); }
+.mfd-hotspot__panel-close:hover { color: #FFF; }
 .mfd-hotspot__type {
   font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--mag-accent); margin-bottom: 0.6rem;
+  color: #D8B47A; margin-bottom: 0.55rem;
 }
 .mfd-hotspot__label {
   font-family: 'Playfair Display', serif;
-  font-size: 1.1rem; font-weight: 400; line-height: 1.2;
+  font-size: 1.05rem; font-weight: 400; line-height: 1.2;
   margin-bottom: 0.5rem; padding-right: 18px;
+  color: #FFFFFF;
 }
 .mfd-hotspot__description {
-  font-size: 12.5px; color: var(--mag-ink-2); line-height: 1.5;
-  margin-bottom: 1rem;
+  font-size: 12.5px; color: rgba(244, 239, 230, 0.82); line-height: 1.5;
+  margin-bottom: 0.95rem;
 }
 .mfd-hotspot__cta {
   display: inline-flex; align-items: center; gap: 0.4rem;
   font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
-  background: #1B1B1F; color: #FFF;
+  background: #D8B47A; color: #1B1B1F;
   border: none; padding: 0.7rem 0.9rem;
-  cursor: pointer; transition: background 0.2s ease;
+  cursor: pointer; transition: background 0.2s ease, color 0.2s ease;
   width: 100%; justify-content: center;
+  font-weight: 500;
 }
-.mfd-hotspot__cta:hover { background: var(--mag-accent); }
+.mfd-hotspot__cta:hover { background: #FFFFFF; color: #1B1B1F; }
 .mfd-hotspot__cta:disabled { opacity: 0.6; cursor: wait; }
 
 /* ═══════════════════════════════════════════════════════════════════════

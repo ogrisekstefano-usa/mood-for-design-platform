@@ -46,6 +46,18 @@ const Hotspot = ({ hotspot, articleId, locale, onSave, onSent, openSoftLead }) =
   const description = lc.description;
   const ctaLabel = lc.cta_label || ctaCopy(hotspot.cta_action, locale);
 
+  // Smart positioning so the popover never escapes the figure frame.
+  // - vertical: open above when the pin is in the bottom half
+  // - horizontal: anchor left/center/right depending on x_pct
+  const pos = useMemo(() => {
+    const x = Number(hotspot.x_pct) || 50;
+    const y = Number(hotspot.y_pct) || 50;
+    return {
+      vertical: y > 55 ? 'above' : 'below',
+      horizontal: x < 22 ? 'left' : x > 78 ? 'right' : 'center',
+    };
+  }, [hotspot.x_pct, hotspot.y_pct]);
+
   const handleSave = async () => {
     const session = (() => { try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (_) { return null; } })();
     setSending(true);
@@ -88,7 +100,10 @@ const Hotspot = ({ hotspot, articleId, locale, onSave, onSent, openSoftLead }) =
         <span className="mfd-hotspot__pin-inner" />
       </button>
       {open && (
-        <div className="mfd-hotspot__panel" data-testid={`hotspot-panel-${hotspot.id}`}>
+        <div
+          className={`mfd-hotspot__panel mfd-hotspot__panel--v-${pos.vertical} mfd-hotspot__panel--h-${pos.horizontal}`}
+          data-testid={`hotspot-panel-${hotspot.id}`}
+        >
           <button
             type="button"
             className="mfd-hotspot__panel-close"
