@@ -10,7 +10,7 @@ import { Shield, Building2, ToggleRight, Activity, ScrollText, ArrowLeft, LogOut
 import BlueprintThemeProvider from '../../design-system/os/BlueprintThemeProvider';
 import PlatformFooterBar from '../common/PlatformFooterBar';
 
-const AdminNavItem = ({ to, icon: Icon, labelKey, end }) => {
+const AdminNavItem = ({ to, icon: Icon, labelKey, fallback, end }) => {
   const { t } = useBlueprint();
   return (
     <NavLink
@@ -26,7 +26,7 @@ const AdminNavItem = ({ to, icon: Icon, labelKey, end }) => {
       }
     >
       <Icon size={14} strokeWidth={1.5} />
-      <span className="font-body font-medium tracking-wide">{t(labelKey)}</span>
+      <span className="font-body font-medium tracking-wide">{t(labelKey, null, fallback)}</span>
     </NavLink>
   );
 };
@@ -53,12 +53,12 @@ const AdminLayout = () => {
         </div>
 
         <nav className="flex-1 px-2 py-4 space-y-0.5">
-          <AdminNavItem to="/admin" end icon={Activity} labelKey="admin.nav.overview" />
-          <AdminNavItem to="/admin/tenants" icon={Building2} labelKey="admin.nav.tenants" />
-          <AdminNavItem to="/admin/modules" icon={ToggleRight} labelKey="admin.nav.modules" />
-          <AdminNavItem to="/admin/languages" icon={Languages} labelKey="admin.nav.languages" />
-          <AdminNavItem to="/admin/pages" icon={Layers} labelKey="admin.nav.pages" />
-          <AdminNavItem to="/admin/audit" icon={ScrollText} labelKey="admin.nav.audit" />
+          <AdminNavItem to="/admin" end icon={Activity} labelKey="admin.nav.overview" fallback="Panoramica" />
+          <AdminNavItem to="/admin/tenants" icon={Building2} labelKey="admin.nav.tenants" fallback="Studi" />
+          <AdminNavItem to="/admin/modules" icon={ToggleRight} labelKey="admin.nav.modules" fallback="Moduli" />
+          <AdminNavItem to="/admin/languages" icon={Languages} labelKey="admin.nav.languages" fallback="Lingue" />
+          <AdminNavItem to="/admin/pages" icon={Layers} labelKey="admin.nav.pages" fallback="Pagine" />
+          <AdminNavItem to="/admin/audit" icon={ScrollText} labelKey="admin.nav.audit" fallback="Audit log" />
         </nav>
 
         <div className="border-t border-white/[0.05] p-3 space-y-2">

@@ -68,11 +68,13 @@ import {
   ClientApprovalsPage, ClientFilesPage,
 } from './pages/client/ClientStubPages';
 
-// Coming-soon placeholders for sidebar routes not yet implemented
+// MVP-lite operational hubs replacing the previous "Coming soon" placeholders.
+// Workflow-aware: each redirects/links to the real feature that already
+// covers the user need today, instead of a dead-end roadmap page.
 import {
-  CalendarComingSoon, ActivityComingSoon, TeamComingSoon, ClientsComingSoon,
-  MessagesComingSoon, ReportsComingSoon, IntegrationsComingSoon, CollectionsComingSoon,
-} from './pages/common/ComingSoonPage';
+  ClientsHub, MessagesHub, CalendarHub, ActivityHub,
+  ReportsHub, IntegrationsHub, CollectionsHub,
+} from './pages/common/MvpLitePage';
 
 // Admin
 const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
@@ -206,14 +208,15 @@ function App() {
                   <Route path="/library" element={<MediaLibraryPage />} />
                   <Route path="/library/materials" element={<MaterialsPage />} />
                   <Route path="/library/materials/:slug" element={<MaterialDetailPage />} />
-                  <Route path="/library/collections" element={<CollectionsComingSoon />} />
-                  <Route path="/workspace/calendar" element={<CalendarComingSoon />} />
-                  <Route path="/workspace/activity" element={<ActivityComingSoon />} />
-                  <Route path="/workspace/team" element={<TeamComingSoon />} />
-                  <Route path="/workspace/clients" element={<ClientsComingSoon />} />
-                  <Route path="/workspace/messages" element={<MessagesComingSoon />} />
-                  <Route path="/workspace/reports" element={<ReportsComingSoon />} />
-                  <Route path="/settings/integrations" element={<IntegrationsComingSoon />} />
+                  <Route path="/library/collections" element={<CollectionsHub />} />
+                  <Route path="/workspace/calendar" element={<CalendarHub />} />
+                  <Route path="/workspace/activity" element={<ActivityHub />} />
+                  {/* /workspace/team → operational redirect to /settings/members (real feature). */}
+                  <Route path="/workspace/team" element={<Navigate to="/settings/members" replace />} />
+                  <Route path="/workspace/clients" element={<ClientsHub />} />
+                  <Route path="/workspace/messages" element={<MessagesHub />} />
+                  <Route path="/workspace/reports" element={<ReportsHub />} />
+                  <Route path="/settings/integrations" element={<IntegrationsHub />} />
                   <Route path="/inspirations" element={<InspirationsPage />} />
                   <Route path="/insights" element={<InsightsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />

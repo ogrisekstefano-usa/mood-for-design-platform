@@ -150,66 +150,57 @@ const Sidebar = () => {
       </button>
 
       <nav className={`flex-1 ${collapsed ? 'px-1.5' : 'px-2.5'} py-5 space-y-6 overflow-y-auto overflow-x-hidden`}>
+        {/* ── DASHBOARD ─────────────────────────────────────────── */}
         <div>
           <NavItem to="/dashboard" icon="LayoutDashboard" labelKey="nav.dashboard" end collapsed={collapsed} />
         </div>
 
+        {/* ── WORKSPACE ─────────────────────────────────────────── */}
         {wsRoutes.length > 0 && (
           <div>
-            <SectionLabel collapsed={collapsed}>{t('nav.section.workspace')}</SectionLabel>
+            <SectionLabel collapsed={collapsed}>{t('nav.section.workspace', null, 'Workspace')}</SectionLabel>
             <div className="space-y-0.5">
               {wsRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
               <NavItem to="/moodboards" icon="Layers" labelKey="nav.moodboards" collapsed={collapsed} />
-              <NavItem to="/workspace/calendar" icon="Calendar" labelKey="nav.calendar" collapsed={collapsed} />
             </div>
           </div>
         )}
 
+        {/* ── EDITORIAL ─────────────────────────────────────────── */}
         {contentRoutes.length > 0 && (
           <div>
-            <SectionLabel collapsed={collapsed}>{t('nav.section.content')}</SectionLabel>
+            <SectionLabel collapsed={collapsed}>{t('nav.section.editorial', null, 'Editorial')}</SectionLabel>
             <div className="space-y-0.5">
               {contentRoutes.filter((r) => r.to !== '/moodboards').map((r) => (
                 <NavItem key={r.to} {...r} end={r.to === '/library'} collapsed={collapsed} />
               ))}
-              <NavItem to="/library/collections" icon="FolderHeart" labelKey="nav.collections" collapsed={collapsed} />
             </div>
           </div>
         )}
 
+        {/* ── STUDIO ────────────────────────────────────────────── */}
         <div>
-          <SectionLabel collapsed={collapsed}>{t('nav.section.collaboration', null, 'Collaborazione')}</SectionLabel>
+          <SectionLabel collapsed={collapsed}>{t('nav.section.studio', null, 'Studio')}</SectionLabel>
           <div className="space-y-0.5">
-            <NavItem to="/workspace/activity" icon="Activity" labelKey="nav.activity" collapsed={collapsed} />
-            <NavItem to="/workspace/team" icon="Users" labelKey="nav.team" collapsed={collapsed} />
-            <NavItem to="/workspace/clients" icon="UserCircle" labelKey="nav.clients" collapsed={collapsed} />
-            <NavItem to="/workspace/messages" icon="MessageSquare" labelKey="nav.messages" collapsed={collapsed} />
+            {/* Team → routes directly to the real Members management
+                (no /workspace/team dead-end). */}
+            <NavItem to="/settings/members" icon="Users" labelKey="nav.team" collapsed={collapsed} />
+            {intelligenceRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
           </div>
         </div>
 
-        {intelligenceRoutes.length > 0 && (
-          <div>
-            <SectionLabel collapsed={collapsed}>{t('nav.section.intelligence')}</SectionLabel>
-            <div className="space-y-0.5">
-              {intelligenceRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
-              <NavItem to="/workspace/reports" icon="FileBarChart" labelKey="nav.reports" collapsed={collapsed} />
-            </div>
-          </div>
-        )}
-
+        {/* ── SETTINGS (admin only) ─────────────────────────────── */}
         {can('tenant:settings') && (
           <div>
-            <SectionLabel collapsed={collapsed}>{t('nav.section.system')}</SectionLabel>
+            <SectionLabel collapsed={collapsed}>{t('nav.section.settings', null, 'Settings')}</SectionLabel>
             <div className="space-y-0.5">
               <NavItem to="/settings" icon="Settings" labelKey="nav.settings" end collapsed={collapsed} />
-              <NavItem to="/settings/storefront" icon="LayoutGrid" labelKey="nav.storefront" collapsed={collapsed} />
-              <NavItem to="/settings/magazine" icon="BookOpen" labelKey="nav.magazine" collapsed={collapsed} />
               <NavItem to="/settings/plan" icon="Receipt" labelKey="nav.billing" collapsed={collapsed} />
-              <NavItem to="/settings/integrations" icon="Plug" labelKey="nav.integrations" collapsed={collapsed} />
             </div>
           </div>
         )}
 
+        {/* ── PLATFORM (super admin only) ───────────────────────── */}
         {isSuperAdmin && (
           <div>
             <SectionLabel collapsed={collapsed}>{t('nav.section.platform', null, 'Platform')}</SectionLabel>

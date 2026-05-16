@@ -1,6 +1,43 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.0 + P0.10 — Dead Page Elimination + Dev Language Removal (DONE — 16 Feb 2026)
+
+> Prima micro-fase del piano di **Platform Stabilization** richiesto dall'utente.
+> Trasforma il prototipo in un **alpha operativo testabile**.
+
+**P0.0 — Dead Page Elimination**
+- Nuovo componente `MvpLitePage` (`/app/frontend/src/pages/common/MvpLitePage.jsx`) sostituisce il pattern "Coming Soon / Roadmap" con copy operazionale onesto + CTA al workflow connesso reale.
+- 8 route ex-`ComingSoon` ricollegate:
+  - `/workspace/team` → **redirect** `/settings/members` (feature reale esistente — `MembersPage`)
+  - `/workspace/clients` → `ClientsHub` "I tuoi clienti emergono dai Lead" + CTA `APRI LEAD`/`PROGETTI ATTIVI`
+  - `/workspace/messages` → `MessagesHub` "Le conversazioni vivono sul progetto" + CTA `Vai ai progetti`
+  - `/workspace/calendar` → `CalendarHub` "Le scadenze sono sul progetto" + CTA `Apri progetti`
+  - `/workspace/activity` → `ActivityHub` "Il feed attività vive nella dashboard" + CTA `Apri dashboard`
+  - `/workspace/reports` → `ReportsHub` "I tuoi insight sono in Analytics" + CTA `Apri Analytics`
+  - `/settings/integrations` → `IntegrationsHub` con disclosure roadmap onesta (Stripe/ElevenLabs/Resend) + CTA torna Settings
+  - `/library/collections` → `CollectionsHub` "Le collezioni vivono nell'archivio" + CTA `Apri Media Library`
+
+**P0.1 — Sidebar IA Restructure**
+- `Sidebar.jsx` riorganizzato nei 4 gruppi richiesti: **Dashboard · Workspace · Editorial · Studio · Settings · Platform** (superadmin).
+- Rimossi dalla nav: `nav.storefront` + `nav.magazine` (consolidati sotto Settings, accessibili via /settings) — niente più voci editor avanzato in nav primaria.
+- Rimossi dalla nav: `/workspace/calendar`, `/workspace/activity`, `/workspace/clients`, `/workspace/messages`, `/workspace/reports`, `/library/collections` (restano raggiungibili da URL diretto se serve, ma non occupano slot).
+- "Team" punta direttamente a `/settings/members` (no più dead-end intermedio).
+- Fallback su tutte le `nav.section.*` keys per evitare leak di chiavi grezze.
+
+**P0.10 — Dev Language Removal**
+- `AdminLayout.jsx` — `AdminNavItem` ora accetta `fallback` prop esplicito → `admin.nav.overview` → "Panoramica", `admin.nav.tenants` → "Studi", `admin.nav.modules` → "Moduli", `admin.nav.languages` → "Lingue", `admin.nav.pages` → "Pagine", `admin.nav.audit` → "Audit log". Niente più chiavi tecniche leakate nella UI super-admin.
+- Aggiunte traduzioni IT: `nav.section.editorial`, `nav.section.studio`, `nav.section.settings`.
+
+**Smoke test live** ✅
+- `/workspace/team` → redirige a `/settings/members` (verified)
+- `/workspace/clients` → `ClientsHub` con MvpLite editoriale (verified, screenshot OK)
+- Sidebar Dashboard pulita con 12 icon-only nav items + nessuna voce dead-end
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase AA.1 — Studio Palette Memory™ (DONE — 16 Feb 2026)
 
 > Trasforma "recent colors" del browser in **memoria visiva condivisa dello studio**.
