@@ -98,26 +98,42 @@ def _gather_context(c, project: Dict[str, Any], tid: str) -> Dict[str, Any]:
     # Saved inspirations (moodboard_candidates) — connect to articles + hotspots
     try:
         cands = (c.table("moodboard_candidates")
-                 .select("source_type, source_id, snapshot, created_at, status")
+                 .select("source_type, source_article_id, source_hotspot_id, "
+                         "title, description, image_url, reference_type, "
+                         "created_at, status, advisor_note")
                  .eq("tenant_id", tid).eq("project_id", pid)
                  .order("created_at", desc=True).limit(20).execute().data or [])
         ctx["inspirations"] = []
         for cc in cands:
             ctx["inspirations"].append({
                 "type":      cc.get("source_type"),
-                "snapshot":  cc.get("snapshot") or {},
+                "reference": cc.get("reference_type"),
+                "title":     cc.get("title"),
+                "summary":   cc.get("description"),
                 "saved_at":  cc.get("created_at"),
                 "status":    cc.get("status"),
+                "advisor_note": cc.get("advisor_note"),
             })
     except Exception:
         ctx["inspirations"] = []
 
-    # Materials linked to project
+    # Materials linked to project (soft link in metadata_json.linked_project_ids)
     try:
-        mats = (c.table("material_registry").select(
-            "id, name, category, dominant_colors, atmosphere_tags, status"
-        ).eq("tenant_id", tid).contains("linked_project_ids", [pid]).limit(20).execute().data or [])
-        ctx["materials"] = _strip_id(mats)
+        rows = (c.table("material_registry")
+                .select("id, name, category, finish, dominant_color, tags, metadata_json")
+                .eq("tenant_id", tid).eq("status", "active").limit(500).execute().data or [])
+        linked = []
+        for r in rows:
+            meta = r.get("metadata_json") or {}
+            if pid in (meta.get("linked_project_ids") or []):
+                linked.append({
+                    "name":     r.get("name"),
+                    "category": r.get("category"),
+                    "finish":   r.get("finish"),
+                    "color":    r.get("dominant_color"),
+                    "tags":     r.get("tags") or [],
+                })
+        ctx["materials"] = linked
     except Exception:
         ctx["materials"] = []
 

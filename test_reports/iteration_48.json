@@ -1,0 +1,38 @@
+{
+  "summary": "Phase P0.6.A + P0.6.B validated end-to-end. Backend pytest 23/23 (100%) on /app/backend/tests/test_p06_project_workspace.py covers 3 seeded projects × 5 new endpoints (inspirations, timeline, materials, proposals, conversations) + ai-brief read + cross-tenant isolation (showroom→studio returns 404) + unknown-project 404. Frontend Playwright on /workspace/projects/adea95da... confirms: all 8 tabs render with correct data-testid (tab-overview/inspirations/moodboards/materials/proposals/conversations/timeline/ai_brief); clicking each tab updates URL with ?tab=<id> (overview clears the param); deep-link reload to ?tab=timeline restores the active tab and renders timeline-tab content; browser back/forward toggles the tab state correctly (back from ?tab=ai_brief → no param/overview, forward restores ai_brief); empty states render cinematically with eyebrow + Italian title (inspirations-empty, materials-empty, proposals-empty) and NO 'coming soon' / lorem language; populated tabs render moodboards-tab, conversations-tab (real messages with participant strip), timeline-tab (events with kind-colored dots, descending), and ai-brief-content with the seeded brief; assigned-designer-card renders with name + role + availability dot.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Direct deep-link reload to ?tab=ai_brief (cold load)", "issue": "Intermittent 503 on /api/projects/{id} and /api/projects/{id}/ai-brief during cold-load — second navigation in same session succeeded; first cold load left ai-brief-content unmounted. Could be a downstream Supabase / edge transient — surface a single ErrorRetry instead of staying blank.", "affected_selectors": ["[data-testid=\"ai-brief-content\"]"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_p06_project_workspace.py",
+    "/app/test_reports/pytest/iteration_48_p06.xml"
+  ],
+  "action_items": [
+    "(Optional) Surface ErrorRetry when /api/projects/{id} itself returns non-2xx during cold load — today the page silently navigates back to /workspace/projects (line 876 .catch(() => navigate(...))) which hides transient 503s from the user.",
+    "(Optional) Add data-testid to AI Brief headline (currently h2 inside ai-brief-content) for finer-grained test targeting."
+  ],
+  "critical_code_review_comments": [
+    "ProjectDetailPage.jsx 989 lines — well over the 700-line soft cap. Each tab is implemented inline; split into /pages/workspace/project_tabs/{Inspirations,Materials,Proposals,Conversations,Timeline,AIBrief}.jsx to improve maintainability and code-split the AI Brief bundle (Claude Sonnet schema constants pulled even when user never opens that tab).",
+    "InspirationsTab/MaterialsTab/ProposalsTab/ConversationsTab/TimelineTab/AIStudioBriefTab share IDENTICAL loading/error/load() boilerplate — 6 copies of the same useCallback+useEffect pattern. Extract a `useProjectResource(projectId, path)` hook returning {data, loading, error, reload} (DRY rule, ≥10-line duplicate block × 6).",
+    "project_workspace_v2.py materials endpoint fetches up to 500 material_registry rows then filters by `project_id in metadata_json.linked_project_ids` in Python — will not scale past a few thousand materials per tenant. Add a Postgres `metadata_json @> '{\"linked_project_ids\": [\"<id>\"]}'` filter (PostgREST `metadata_json=cs.{...}`) and an index when material count grows.",
+    "project_timeline merges 4 sources sequentially in Python with no per-source pagination cursor. Acceptable today but should be reworked into a SQL UNION ALL view (timeline_events_v) once event volume grows — current code makes 4 separate Supabase round trips per request.",
+    "AIStudioBriefTab.generate() does not disable the tab nav while generating — a user can click another tab during generation, dropping the in-flight POST and orphaning the LLM cost. Either disable tabs or store the in-flight promise in a ref so it can update the cache when it resolves.",
+    "InspirationCard link target uses `item.article.slug ? `/magazine/${slug}` : '#'` — '#' anchor falls back to scrolling to top; use a span when slug is missing.",
+    "MoodboardsTab still pulls `project.moodboards` from the parent project payload (server-side join) rather than calling /api/projects/{id}/moodboards — inconsistent with the other 5 tabs that fetch on demand. Either align by adding a dedicated endpoint or document the inline-projection contract."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_p06_project_workspace.py"
+  ],
+  "success_rate": {"backend": "100% (23/23)", "frontend": "100% on tested flows (8 tabs render + switch + deep-link + reload + back/forward + empty/populated states + AI Brief seeded sections + mobile viewport)"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (Demo Studio super_admin); studio2@moodfordesign.com / Studio2024! (Demo Showroom tenant_admin for isolation check)",
+  "seed_data_creation": "None. Tests are read-only against the 3 seeded project IDs (adea95da..., 48c02e6b..., d7833e2f...). AI Brief generation was NOT invoked to avoid LLM token spend — existing seeded brief on Apartment Stefano was read and verified.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "P0.6 (.A + .B) is functionally green. The new pytest suite at /app/backend/tests/test_p06_project_workspace.py is parameterized across the 3 seeded project IDs and is a clean regression for the 5 workspace-v2 endpoints + AI Brief read + tenant isolation. Reuse it whenever project_workspace_v2.py or ai_studio_brief.py changes. The login response shape is {session:{access_token}} (Supabase wrapper) — used in the helper. Frontend tabs use data-testid `tab-<id>` and content panels `<id>-tab` or `<id>-empty` (e.g. inspirations-tab vs inspirations-empty); ai_brief variants are `ai-brief-content`, `ai-brief-empty`, `ai-brief-generate-btn`, `ai-brief-regenerate`, `ai-brief-section-<key>`. Italian wording is correct throughout — no AI slop. The only real-world issue worth retesting is the cold-load 503 transient; main agent may want a guard ErrorRetry on the top-level project fetch.",
+  "rca of the issue": "No P0/P1 bugs found in scope. The cold-load 503 was transient (second navigation succeeded). Root cause is likely a Supabase edge cold start, not application code. Mitigation suggestion: replace the silent navigate('/workspace/projects') in ProjectDetailPage.jsx top-level useEffect catch (line 876) with a setError state + ErrorRetry block so users see 'Riprova' instead of being kicked back to the list."
+}
