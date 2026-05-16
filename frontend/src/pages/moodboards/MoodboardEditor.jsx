@@ -27,6 +27,7 @@ import { resolveBlock, BLOCK_TYPES } from '../../blueprint/moodboard/BlockRegist
 import StatusBadge from '../../components/common/StatusBadge';
 import LayersPanel, { sortLayersTopFirst } from '../../blueprint/moodboard/LayersPanel';
 import ImageUploader from '../../blueprint/moodboard/ImageUploader';
+import BlueprintColorPicker from '../../components/common/BlueprintColorPicker';
 import PagesFilmstrip from '../../blueprint/moodboard/PagesFilmstrip';
 import EditorPanel from '../../blueprint/moodboard/EditorPanel';
 // ActionToolbar removed from the editor — canvas-implicit interactions only.
@@ -1673,15 +1674,12 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
         <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
           {t('moodboards.field.color', null, 'Color')}
         </span>
-        <div className="flex items-center gap-2">
-          <input type="color" value={tg.color || '#F5F2EC'}
-                 onChange={(e) => setTg('color', e.target.value)}
-                 data-testid="typo-color"
-                 className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent border border-[var(--bp-border)]" />
-          <input value={tg.color || ''} onChange={(e) => setTg('color', e.target.value)}
-                 placeholder="inherit"
-                 className="input-luxury flex-1 px-2 py-1 text-xs font-mono rounded-[var(--bp-radius-xs)]" />
-        </div>
+        <BlueprintColorPicker
+          value={tg.color || '#F5F2EC'}
+          onChange={(v) => setTg('color', v)}
+          testid="typo-color"
+          align="right"
+        />
       </label>
     </div>
   );
@@ -1715,29 +1713,24 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
         <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
           {t('moodboards.field.fill', null, 'Fill')}
         </span>
-        <div className="flex items-center gap-2">
-          <input type="color" value={s.fill && s.fill.startsWith('#') ? s.fill : '#FFFFFF'}
-                 onChange={(e) => setS('fill', e.target.value)}
-                 data-testid="shape-fill"
-                 className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent border border-[var(--bp-border)]" />
-          <input value={s.fill || ''} onChange={(e) => setS('fill', e.target.value)}
-                 placeholder="rgba(0,0,0,0) | none"
-                 className="input-luxury flex-1 px-2 py-1 text-xs font-mono rounded-[var(--bp-radius-xs)]" />
-        </div>
+        <BlueprintColorPicker
+          value={s.fill && s.fill.startsWith('#') ? s.fill : '#FFFFFF'}
+          onChange={(v) => setS('fill', v)}
+          testid="shape-fill"
+          align="right"
+        />
       </label>
 
       <label className="block mb-3">
         <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
           {t('moodboards.field.borderColor', null, 'Border color')}
         </span>
-        <div className="flex items-center gap-2">
-          <input type="color" value={s.border_color && s.border_color.startsWith('#') ? s.border_color : '#F5F2EC'}
-                 onChange={(e) => setS('border_color', e.target.value)}
-                 data-testid="shape-border-color"
-                 className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent border border-[var(--bp-border)]" />
-          <input value={s.border_color || ''} onChange={(e) => setS('border_color', e.target.value)}
-                 className="input-luxury flex-1 px-2 py-1 text-xs font-mono rounded-[var(--bp-radius-xs)]" />
-        </div>
+        <BlueprintColorPicker
+          value={s.border_color && s.border_color.startsWith('#') ? s.border_color : '#F5F2EC'}
+          onChange={(v) => setS('border_color', v)}
+          testid="shape-border-color"
+          align="right"
+        />
       </label>
 
       <InspectorSlider label={t('moodboards.field.borderWidth', null, 'Border width')}
@@ -1992,14 +1985,12 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
           <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
             {t('moodboards.field.color', null, 'Color')}
           </span>
-          <div className="flex items-center gap-2">
-            <input type="color" value={(s.color || '#F5F2EC').startsWith('#') ? s.color : '#F5F2EC'}
-                   onChange={(e) => setS('color', e.target.value)}
-                   data-testid="arrow-color"
-                   className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent border border-[var(--bp-border)]" />
-            <input value={s.color || ''} onChange={(e) => setS('color', e.target.value)}
-                   className="input-luxury flex-1 px-2 py-1 text-xs font-mono rounded-[var(--bp-radius-xs)]" />
-          </div>
+          <BlueprintColorPicker
+            value={(s.color || '#F5F2EC').startsWith('#') ? s.color : '#F5F2EC'}
+            onChange={(v) => setS('color', v)}
+            testid="arrow-color"
+            align="right"
+          />
         </label>
 
         <InspectorSlider label={t('moodboards.field.thickness', null, 'Thickness')}
@@ -2021,14 +2012,16 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
           </span>
           {(c.colors || []).map((col, i) => (
             <div key={i} className="flex items-center gap-2 mb-2">
-              <input type="color" value={col} onChange={(e) => {
-                const next = [...(c.colors || [])]; next[i] = e.target.value; setC('colors', next);
-              }} className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent" />
-              <input value={col} onChange={(e) => {
-                const next = [...(c.colors || [])]; next[i] = e.target.value; setC('colors', next);
-              }} className="input-luxury flex-1 px-2 py-1 text-xs font-mono rounded-[var(--bp-radius-xs)]" />
+              <BlueprintColorPicker
+                value={col}
+                onChange={(v) => {
+                  const next = [...(c.colors || [])]; next[i] = v; setC('colors', next);
+                }}
+                testid={`palette-color-${i}`}
+                align="right"
+              />
               <button onClick={() => setC('colors', c.colors.filter((_, j) => j !== i))}
-                      className="text-[var(--bp-text-muted)] hover:text-red-400">
+                      className="text-[var(--bp-text-muted)] hover:text-red-400 ml-auto">
                 <X size={11} />
               </button>
             </div>

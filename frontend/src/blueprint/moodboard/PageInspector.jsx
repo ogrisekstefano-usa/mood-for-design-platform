@@ -14,6 +14,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
+import BlueprintColorPicker from '../../components/common/BlueprintColorPicker';
 
 const PageInspector = ({ moodboardId, page, onSaved, onLocalUpdate }) => {
   const { t } = useBlueprint();
@@ -211,18 +212,12 @@ const PageInspector = ({ moodboardId, page, onSaved, onLocalUpdate }) => {
           <span className="bp-eyebrow !text-[10px] !text-[var(--bp-text-secondary)] mb-1.5 block">
             {t('moodboards.field.bgColor', null, 'Background color')}
           </span>
-          <div className="flex items-center gap-2">
-            <input type="color"
-                   value={(draft.background_color || '#0A0A0B').startsWith('#') ? draft.background_color || '#0A0A0B' : '#0A0A0B'}
-                   onChange={(e) => commit({ background_color: e.target.value })}
-                   data-testid="page-bg-color"
-                   className="w-8 h-8 rounded-[var(--bp-radius-xs)] cursor-pointer bg-transparent border border-[var(--bp-border)]" />
-            <input value={draft.background_color || ''}
-                   onChange={(e) => setDraft((d) => ({ ...d, background_color: e.target.value }))}
-                   onBlur={(e) => commit({ background_color: e.target.value })}
-                   placeholder="inherit"
-                   className="input-luxury flex-1 px-2 py-1 text-xs font-mono rounded-[var(--bp-radius-xs)]" />
-          </div>
+          <BlueprintColorPicker
+            value={(draft.background_color || '#0A0A0B').startsWith('#') ? draft.background_color || '#0A0A0B' : '#0A0A0B'}
+            onChange={(v) => commit({ background_color: v })}
+            testid="page-bg-color"
+            align="right"
+          />
         </label>
 
         <label className="block mb-3">

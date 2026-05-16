@@ -1,6 +1,28 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Unified Color Picker — Blueprint OS-wide UX upgrade (DONE — 16 Feb 2026)
+
+> **User feedback addressed**: "dovunque si possa scegliere un colore deve essere disponibile il color picker e non l'input per digitare a mano il codice che nessuno sa".
+
+**What ships**
+- New `/app/frontend/src/components/common/BlueprintColorPicker.jsx` + `.css` — cinematic dark-glass color popover (built on top of `react-colorful` for the saturation pad + hue slider).
+- Replaces every legacy `<input type="color">` + manual hex textbox across the platform with a single visual control: **trigger** (color swatch + label + monospace hex) → **popover** with sat/light pad + hue slider + **brand palette swatches** + **recent colors** (persisted via `localStorage`) + hex-only input for power users.
+- **Replaced occurrences**:
+  - `BrandStudioPage` — 10 palette pickers (primary / secondary / accent / background / surface / text_primary / text_secondary / border / success / warning / danger)
+  - `MoodboardEditor` — 5 inspector pickers (typography color, shape fill, shape border, arrow color, palette swatches)
+  - `PageInspector` — moodboard page background color picker
+- All triggers preserve their original `data-testid` (now `${testid}-trigger`, `${testid}-panel`, `${testid}-swatch-<hex>`, `${testid}-hex-input`, `${testid}-done`).
+- New dependency: `react-colorful@5.7.0` (~3 kB gzip, tree-shakeable, no peer-conflicts).
+
+**Smoke test (live)**
+- `palette-primary-trigger` → panel opens → brand swatch `#D8B47A` applied → hex input typed `22c55e` → reflected as `#22C55E` → Done closes panel. ✅
+- All 10 BrandStudio triggers render as cinematic swatch+label rows (replacing the old square+textbox layout).
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase Y.3.A — Editorial Asset Picker + Upload (DONE — 16 Feb 2026)
 
 > Bridge cinematico tra Magazine Editor e Media Library v2.

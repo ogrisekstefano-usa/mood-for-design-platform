@@ -25,6 +25,7 @@ import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { useTenantTheme } from '../../contexts/TenantThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
+import BlueprintColorPicker from '../../components/common/BlueprintColorPicker';
 
 const DISPLAY_FONTS = ['Playfair Display', 'Cormorant Garamond', 'DM Serif Display', 'Bodoni Moda', 'Fraunces', 'Inter Tight'];
 const BODY_FONTS    = ['Inter', 'Montserrat', 'Manrope', 'Plus Jakarta Sans', 'Space Grotesk', 'Inter Tight'];
@@ -62,18 +63,8 @@ const TextInput = ({ value, onChange, placeholder, testid }) => (
 );
 
 const ColorPicker = ({ value, onChange, label, testid }) => (
-  <div className="flex items-center gap-2.5 mb-2">
-    <input type="color"
-           value={(value || '#000000').startsWith('#') ? value : '#000000'}
-           onChange={(e) => onChange(e.target.value)}
-           data-testid={`${testid}-picker`}
-           className="w-9 h-9 rounded-[var(--bp-radius-xs)] border border-[var(--bp-border)] bg-transparent cursor-pointer" />
-    <div className="flex-1">
-      <p className="text-[9px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body mb-1">{label}</p>
-      <input value={value || ''} onChange={(e) => onChange(e.target.value)}
-             data-testid={testid}
-             className="w-full px-2 py-1 bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-xs)] text-[var(--bp-text-primary)] text-[11px] font-mono outline-none focus:border-[var(--bp-primary)] transition-colors" />
-    </div>
+  <div className="mb-2">
+    <BlueprintColorPicker value={value} onChange={onChange} label={label} testid={testid} />
   </div>
 );
 
