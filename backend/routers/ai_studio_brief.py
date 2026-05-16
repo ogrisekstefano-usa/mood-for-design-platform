@@ -184,19 +184,19 @@ def _build_user_msg(ctx: Dict[str, Any], market: str, locale: str) -> str:
         f"locale: {locale}\nmarket: {market}\n\n"
         f"=== PROJECT CONTEXT (verbatim — use only what's relevant) ===\n"
         f"{json.dumps(ctx, ensure_ascii=False, indent=2, default=str)[:6000]}\n\n"
-        f"Write the 6-section AI Studio Brief now. Output JSON only."
+        f"Write the 6-section Strategic Direction memo now. Output JSON only."
     )
 
 
 def _fallback_sections(market: str) -> Dict[str, Any]:
     return {
-        "direction": "Briefing strategico non ancora disponibile. Genera il primo brief quando l'inserto editoriale, i materiali o le ispirazioni del cliente saranno pronti — l'AI userà quei segnali reali per costruire la direzione progettuale.",
+        "direction": "Direzione strategica non ancora elaborata. Apri il progetto, salva le prime ispirazioni dal Magazine o collega materiali: la direzione si comporrà sui segnali reali del cliente, del mercato e dell'advisor.",
         "material_language": "—",
         "emotional_positioning": "—",
         "market_adaptation": f"Mercato di riferimento rilevato: {market or 'non specificato'}.",
         "design_risks": "—",
         "next_moves": [],
-        "headline": "Brief in attesa di generazione",
+        "headline": "Direzione in attesa di elaborazione",
         "source": "fallback",
     }
 
@@ -298,3 +298,189 @@ async def generate_brief(project_id: str, body: GenerateBriefIn,
             "created_at": _iso(),
         },
     }
+
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# Strategic Direction™ extensions (history · memo · promote-to-proposal)
+# ═══════════════════════════════════════════════════════════════════════
+
+@router.get("/{project_id}/strategic-direction/history")
+def list_direction_history(project_id: str, ctx=Depends(get_tenant_context)):
+    """Timestamped snapshots of strategic direction (one row per regeneration).
+    Each row carries headline + market + locale + creator so the timeline can
+    render an evolution rail ('Mediterranean warmth → Quiet luxury shift')."""
+    c = db()
+    _get_project(c, project_id, ctx["tenant_id"])
+    rows = (c.table("project_ai_briefs").select(
+        "id, market, locale, model, created_at, created_by, sections"
+    ).eq("project_id", project_id).eq("tenant_id", ctx["tenant_id"])
+       .order("created_at", desc=True).limit(40).execute().data or [])
+
+    creator_ids = list({r.get("created_by") for r in rows if r.get("created_by")})
+    creators: Dict[str, Dict[str, Any]] = {}
+    if creator_ids:
+        try:
+            pr = (c.table("users_profile").select("id, first_name, last_name, avatar_url")
+                  .in_("id", creator_ids).execute().data or [])
+            creators = {p["id"]: p for p in pr}
+        except Exception:
+            pass
+
+    out = []
+    for r in rows:
+        s = r.get("sections") or {}
+        cr = creators.get(r.get("created_by")) or {}
+        out.append({
+            "id":         r["id"],
+            "market":     r.get("market"),
+            "locale":     r.get("locale"),
+            "headline":   s.get("headline") or "Direzione",
+            "created_at": r.get("created_at"),
+            "created_by": {
+                "id":         cr.get("id"),
+                "name":       f"{cr.get('first_name') or ''} {cr.get('last_name') or ''}".strip() or "Studio",
+                "avatar_url": cr.get("avatar_url"),
+            } if cr else None,
+        })
+    return {"snapshots": out, "total": len(out)}
+
+
+@router.get("/{project_id}/strategic-direction/snapshot/{snapshot_id}")
+def get_direction_snapshot(project_id: str, snapshot_id: str,
+                           ctx=Depends(get_tenant_context)):
+    c = db()
+    _get_project(c, project_id, ctx["tenant_id"])
+    r = (c.table("project_ai_briefs").select(
+        "id, market, locale, model, created_at, sections"
+    ).eq("id", snapshot_id).eq("project_id", project_id)
+       .eq("tenant_id", ctx["tenant_id"]).limit(1).execute())
+    if not r.data:
+        raise HTTPException(404, "snapshot not found")
+    return {"brief": r.data[0]}
+
+
+class MemoIn(BaseModel):
+    snapshot_id: Optional[str] = None
+
+
+def _compose_memo_body(sections: Dict[str, Any], market: Optional[str]) -> str:
+    s = sections or {}
+    headline = (s.get("headline") or "Direzione strategica").strip()
+    blocks = [
+        f"DIREZIONE — {headline}",
+        f"Mercato di riferimento: {market or 'IT'}",
+        "",
+        f"POSIZIONAMENTO\n{s.get('direction') or '—'}",
+        f"DIREZIONE EMOTIVA\n{s.get('emotional_positioning') or '—'}",
+        f"LINGUAGGIO MATERICO\n{s.get('material_language') or '—'}",
+        f"ADATTAMENTO MERCATO\n{s.get('market_adaptation') or '—'}",
+        f"RISCHI\n{s.get('design_risks') or '—'}",
+    ]
+    nm = s.get("next_moves") or []
+    if nm:
+        blocks.append("MOSSE STRATEGICHE\n" + "\n".join(f"• {m}" for m in nm))
+    return "\n\n".join(blocks)
+
+
+@router.post("/{project_id}/strategic-direction/send-memo")
+def send_direction_as_memo(project_id: str, body: MemoIn,
+                           ctx=Depends(get_tenant_context)):
+    """Push the current Strategic Direction into the project's timeline as
+    an internal memo event. Visible to the studio team in the Timeline tab —
+    NEVER exposed to the client. Aligned with the 'memory of project' model."""
+    c = db()
+    _get_project(c, project_id, ctx["tenant_id"])
+    q = (c.table("project_ai_briefs").select(
+        "id, sections, market, locale, created_at"
+    ).eq("project_id", project_id).eq("tenant_id", ctx["tenant_id"]))
+    if body.snapshot_id:
+        q = q.eq("id", body.snapshot_id)
+    else:
+        q = q.order("created_at", desc=True).limit(1)
+    r = q.execute()
+    if not r.data:
+        raise HTTPException(404, "no direction available — generate one first")
+    brief = r.data[0]
+    s = brief.get("sections") or {}
+    headline = (s.get("headline") or "Direzione strategica").strip()
+    activity_id = str(uuid.uuid4())
+    try:
+        c.table("project_activity").insert({
+            "id":         activity_id,
+            "tenant_id":  ctx["tenant_id"],
+            "project_id": project_id,
+            "actor_id":   ctx["profile_id"],
+            "event_type": "direction.shared_with_team",
+            "label":      headline,
+            "ref_id":     brief["id"],
+            "payload":    {
+                "market":    brief.get("market"),
+                "memo_body": _compose_memo_body(s, brief.get("market"))[:2000],
+            },
+        }).execute()
+    except Exception as e:
+        logger.warning(f"memo send failed: {e}")
+        raise HTTPException(500, "memo non inviato")
+    return {"ok": True, "activity_id": activity_id}
+
+
+@router.post("/{project_id}/strategic-direction/promote-to-proposal")
+def promote_direction_to_proposal(project_id: str, body: MemoIn,
+                                  ctx=Depends(get_tenant_context)):
+    """Create a DRAFT proposal pre-populated with the Strategic Direction
+    headline as title and the positioning sections as description intro."""
+    c = db()
+    project = _get_project(c, project_id, ctx["tenant_id"])
+    q = (c.table("project_ai_briefs").select(
+        "id, sections, market, created_at"
+    ).eq("project_id", project_id).eq("tenant_id", ctx["tenant_id"]))
+    if body.snapshot_id:
+        q = q.eq("id", body.snapshot_id)
+    else:
+        q = q.order("created_at", desc=True).limit(1)
+    r = q.execute()
+    if not r.data:
+        raise HTTPException(404, "no direction available — generate one first")
+    brief = r.data[0]
+    s = brief.get("sections") or {}
+    title = (s.get("headline") or project.get("title") or "Proposta progetto").strip()[:160]
+    intro_blocks = [
+        s.get("direction") or "",
+        s.get("emotional_positioning") or "",
+        s.get("market_adaptation") or "",
+    ]
+    description = "\n\n".join([b for b in intro_blocks if b and b != "—"])
+
+    pid = str(uuid.uuid4())
+    proposal = {
+        "id":          pid,
+        "tenant_id":   ctx["tenant_id"],
+        "project_id":  project_id,
+        "created_by":  ctx["profile_id"],
+        "title":       title,
+        "description": description,
+        "status":      "draft",
+        "version":     1,
+        "currency":    "EUR",
+        "created_at":  _iso(),
+        "updated_at":  _iso(),
+    }
+    try:
+        c.table("proposals").insert(proposal).execute()
+        # Trace the originating direction in the activity log (since proposals
+        # table has no metadata_json column to embed the source link).
+        c.table("project_activity").insert({
+            "id":         str(uuid.uuid4()),
+            "tenant_id":  ctx["tenant_id"],
+            "project_id": project_id,
+            "actor_id":   ctx["profile_id"],
+            "event_type": "proposal.created_from_direction",
+            "label":      title,
+            "ref_id":     pid,
+            "payload":    {"direction_id": brief["id"], "market": brief.get("market")},
+        }).execute()
+    except Exception as e:
+        logger.warning(f"promote to proposal failed: {e}")
+        raise HTTPException(500, "creazione proposta non riuscita")
+    return {"ok": True, "proposal_id": pid}

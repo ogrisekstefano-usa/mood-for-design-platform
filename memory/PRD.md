@@ -1,6 +1,52 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.6.C — Strategic Direction™ Refactor (DONE — 16 Feb 2026)
+
+> Repositioning: **rimuove** la feature dal tab "AI Studio Brief™" e la **trasforma in Strategic Direction™**, una sezione contestuale dentro Project Overview. Niente più AI-centrism gimmick: è la **memoria strategica del progetto**, scritta come memo editoriale di un creative director internazionale.
+
+**Repositioning UX**
+- Tab `ai_brief` ELIMINATO dalla tab bar. Le tab ora sono 7: Overview · Ispirazioni · Moodboard · Materiali · Proposte · Conversazioni · Timeline.
+- `<StrategicDirectionCard />` montata in Overview **sotto l'advisor identity + project header**, sopra la grid "Sintesi operativa".
+- Eyebrow: `STRATEGIC DIRECTION™ · MERCATO <market>` (non più "AI Studio Brief™").
+- Meta: `Aggiornata X · N versioni salvate` (rimosso `Claude Sonnet 4.5`, `Generato dall'AI`, `Powered by`).
+- Sezioni rinumerate ITA: `01 POSIZIONAMENTO · 02 DIREZIONE EMOTIVA · 03 LINGUAGGIO MATERICO · 04 ADATTAMENTO MERCATO · 05 RISCHI · 06 MOSSE STRATEGICHE`.
+
+**Workflow-native actions** (action bar dentro la card)
+- **Rigenera** — POST `/ai-brief/generate` salva automaticamente un nuovo snapshot.
+- **Storico** — modal con timeline cronologica di tutti gli snapshot (headline + market + autore + tempo relativo); click su una versione la carica nella card.
+- **Condividi con il team** — POST `/strategic-direction/send-memo` → push nell'`project_activity` come evento `direction.shared_with_team`. Appare nella Timeline tab come "Direzione condivisa con il team · <headline>". Non è una chat, è un evento di workflow.
+- **Avvia proposta** — POST `/strategic-direction/promote-to-proposal` → crea una **bozza di proposta** pre-popolata con headline come `title` e direction+emotional+market come `description`. Loggata in timeline come "Bozza di proposta avviata dalla direzione".
+- **Export PDF** — disclosure inline "Export PDF · disponibile a breve" (no bottone-stub).
+
+**Backend** — `ai_studio_brief.py` esteso con 4 nuovi endpoint:
+- `GET  /api/projects/{id}/strategic-direction/history` — snapshot list con autore hydrated.
+- `GET  /api/projects/{id}/strategic-direction/snapshot/{sid}` — load di una versione precedente.
+- `POST /api/projects/{id}/strategic-direction/send-memo` — push nell'activity log.
+- `POST /api/projects/{id}/strategic-direction/promote-to-proposal` — crea bozza proposta.
+- Endpoint legacy `/ai-brief` e `/ai-brief/generate` MANTENUTI per retro-compat con pytest suite e per consumers esterni.
+
+**Sistema evolutivo**: la direzione cambia coerentemente con il progetto. Ogni regenerazione salva uno snapshot timestamped — possibilità di confrontare evoluzioni del tipo *"Mediterranean warmth → Quiet luxury shift"*. La timeline del progetto traccia ogni evoluzione strategica con linguaggio umano.
+
+**Localization editoriale per mercato**: selector inline IT/US/FR/DE/UK/UAE/ES → rigenera la narrativa in tono nativo del mercato (non traduzione: re-posizionamento). System prompt LLM già configurato con stili "quiet craft IT", "aspirational US", "sensorial UAE", "rigorous DE", "editorial FR", "refined UK".
+
+**Cleanup linguistico** — rimossi tutti i riferimenti a:
+- ~~"AI Studio Brief™"~~ → Strategic Direction™
+- ~~"AI generated" / "Claude Sonnet 4.5" / "Genera brief" / "modalità manuale"~~
+- ~~"Generato 17 min fa"~~ → "Aggiornata 17 min fa"
+
+**Smoke test live** ✅
+- `tab-ai_brief` count = 0 (tab eliminato).
+- `strategic-direction-content` renderizzato in Overview con headline italiana, 5 sezioni + Mosse Strategiche, action bar completa.
+- Storico modal apre con 2 versioni salvate ("Materia calibrata..." attuale + "Contemporaneità silenziosa..." precedente), entrambe curate da Stefano Ogrisek.
+- Send-memo crea evento timeline `direction.shared_with_team`.
+- Promote-to-proposal crea bozza proposta + logga `proposal.created_from_direction` in timeline.
+- pytest backend regression **23/23 OK**.
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase P0.6.A + P0.6.B — Project Experience Hardening & Deep Integrations (DONE — 16 Feb 2026)
 
 > Trasforma ProjectDetailPage da contenitore statico in **ecosistema operativo vivente**.

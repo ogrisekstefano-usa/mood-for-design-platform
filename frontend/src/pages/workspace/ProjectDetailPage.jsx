@@ -1,12 +1,14 @@
 /**
  * ProjectDetailPage — Blueprint Workspace™ operational hub.
  *
- * 8-tab architecture (P0.6.A + P0.6.B):
+ * 7-tab architecture (P0.6.A + P0.6.B + Strategic Direction™ refactor):
  *   Overview · Inspirations · Moodboards · Materials · Proposals ·
- *   Conversations · Timeline · AI Studio Brief™
+ *   Conversations · Timeline
  *
- * Tab state is persisted via `?tab=` query param for deep-linking +
- * reload safety. All tabs are real, hydrated, and tenant-isolated.
+ * Strategic Direction™ lives INSIDE Overview as a contextual section —
+ * not a standalone tab. It is the strategic brain of the project,
+ * positioned right below the advisor identity. Tab state persisted via
+ * `?tab=` query param. All tabs are real, hydrated, tenant-isolated.
  */
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
@@ -14,7 +16,8 @@ import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import {
   ArrowLeft, Plus, Layers, FileText, Activity, X, Bookmark, Boxes,
-  MessageSquare, Sparkles, RefreshCw, ExternalLink, Quote, ChevronRight,
+  MessageSquare, RefreshCw, ExternalLink, Quote, ChevronRight,
+  History, FileSignature, Share2,
 } from 'lucide-react';
 import StatusBadge from '../../components/common/StatusBadge';
 import TemplatePicker from '../../blueprint/moodboard/TemplatePicker';
@@ -674,7 +677,7 @@ const TimelineTab = ({ projectId }) => {
   );
 };
 
-// ── Tab: AI Studio Brief™ (P0.6.B.6) ────────────────────────────────────────
+// ── Strategic Direction™ — contextual intelligence card (Overview-embedded) ─
 const MARKETS = [
   { code: 'IT',  label: 'Italia' },
   { code: 'US',  label: 'Stati Uniti' },
@@ -685,114 +688,211 @@ const MARKETS = [
   { code: 'ES',  label: 'Spagna' },
 ];
 
-const AIStudioBriefTab = ({ projectId, project }) => {
+const SECTION_DEF = [
+  { key: 'direction',             title: 'Posizionamento progettuale', eye: '01 — POSIZIONAMENTO' },
+  { key: 'emotional_positioning', title: 'Direzione emotiva',          eye: '02 — DIREZIONE EMOTIVA' },
+  { key: 'material_language',     title: 'Linguaggio materico',        eye: '03 — LINGUAGGIO MATERICO' },
+  { key: 'market_adaptation',     title: 'Adattamento al mercato',     eye: '04 — ADATTAMENTO MERCATO' },
+  { key: 'design_risks',          title: 'Rischi progettuali',         eye: '05 — RISCHI' },
+];
+
+const StrategicDirectionCard = ({ projectId, project }) => {
   const [brief, setBrief] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [busyAction, setBusyAction] = useState(null);
+  const [actionMsg, setActionMsg] = useState(null);
   const [market, setMarket] = useState((project?.metadata_json?.country || 'IT').toUpperCase());
   const [error, setError] = useState(null);
 
-  const load = useCallback(async () => {
+  const loadLatest = useCallback(async () => {
     setLoading(true); setError(null);
     try {
       const r = await api.get(`/api/projects/${projectId}/ai-brief`);
       setBrief(r.data?.brief || null);
-    } catch (e) { setError('Caricamento brief non riuscito.'); }
-    finally { setLoading(false); }
+    } catch (e) {
+      setError('Caricamento direzione non riuscito.');
+    } finally { setLoading(false); }
   }, [projectId]);
 
-  useEffect(() => { load(); }, [load]);
+  const loadHistory = useCallback(async () => {
+    try {
+      const r = await api.get(`/api/projects/${projectId}/strategic-direction/history`);
+      setHistory(r.data?.snapshots || []);
+    } catch (e) { /* silent */ }
+  }, [projectId]);
+
+  useEffect(() => { loadLatest(); loadHistory(); }, [loadLatest, loadHistory]);
 
   const generate = async () => {
-    setGenerating(true); setError(null);
+    setGenerating(true); setError(null); setActionMsg(null);
     try {
       const r = await api.post(`/api/projects/${projectId}/ai-brief/generate`, { market, locale: 'it' });
       setBrief(r.data?.brief || null);
+      await loadHistory();
     } catch (e) {
-      setError('Generazione brief non riuscita. Riprova fra qualche istante.');
+      setError('Aggiornamento direzione non riuscito. Riprova fra qualche istante.');
     } finally { setGenerating(false); }
   };
 
-  if (loading) return <Skeleton rows={3} />;
+  const loadSnapshot = async (snapId) => {
+    setBusyAction('snapshot'); setActionMsg(null);
+    try {
+      const r = await api.get(`/api/projects/${projectId}/strategic-direction/snapshot/${snapId}`);
+      setBrief(r.data?.brief || null);
+      setShowHistory(false);
+    } catch (e) { setError('Snapshot non disponibile.'); }
+    finally { setBusyAction(null); }
+  };
 
-  if (!brief) {
+  const sendAsMemo = async () => {
+    setBusyAction('memo'); setActionMsg(null);
+    try {
+      await api.post(`/api/projects/${projectId}/strategic-direction/send-memo`, {});
+      setActionMsg('Memo inviato al team come nota interna.');
+    } catch (e) { setActionMsg('Invio memo non riuscito.'); }
+    finally { setBusyAction(null); setTimeout(() => setActionMsg(null), 4000); }
+  };
+
+  const promoteToProposal = async () => {
+    setBusyAction('proposal'); setActionMsg(null);
+    try {
+      const r = await api.post(`/api/projects/${projectId}/strategic-direction/promote-to-proposal`, {});
+      setActionMsg(`Bozza di proposta creata. Apri "Proposte" per rifinire.`);
+      void r;
+    } catch (e) { setActionMsg('Creazione proposta non riuscita.'); }
+    finally { setBusyAction(null); setTimeout(() => setActionMsg(null), 5000); }
+  };
+
+  // ── Empty / first-use state ───────────────────────────────────────
+  if (loading) {
     return (
-      <div data-testid="ai-brief-empty" className="bp-card p-12 text-center">
-        <p className="text-[10px] tracking-[0.3em] uppercase text-[var(--bp-primary)] font-body mb-4">
-          AI Studio Brief™
-        </p>
-        <h3 className="font-heading text-[28px] font-light text-[var(--bp-text-primary)] mb-3 max-w-lg mx-auto leading-tight">
-          Un memo strategico di direzione progettuale.
-        </h3>
-        <p className="text-[13.5px] text-[var(--bp-text-secondary)] font-body max-w-xl mx-auto leading-relaxed mb-8">
-          L'AI legge il contesto reale del progetto — cliente, mercato, ispirazioni salvate, materiali,
-          identità dell'advisor — e scrive una direzione editoriale in sei sezioni. Non è una chat: è un
-          documento di posizionamento curato.
-        </p>
-        <div className="flex items-center justify-center gap-3 flex-wrap mb-2">
-          <label className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body">
-            Mercato
-          </label>
-          <select value={market} onChange={(e) => setMarket(e.target.value)}
-                  data-testid="ai-brief-market-select"
-                  className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] text-[12px] px-3 py-2
-                             text-[var(--bp-text-primary)] font-body">
-            {MARKETS.map((m) => <option key={m.code} value={m.code}>{m.label}</option>)}
-          </select>
-          <button onClick={generate} disabled={generating}
-                  data-testid="ai-brief-generate-btn"
-                  className="bp-btn bp-btn-primary text-[10.5px] uppercase tracking-[0.22em]">
-            {generating ? 'Genero brief…' : 'Genera brief'}
-          </button>
-        </div>
-        {error && <p className="text-[12px] text-red-300 mt-3">{error}</p>}
+      <div className="bp-card p-7 animate-pulse" data-testid="strategic-direction-loading">
+        <div className="h-3 w-40 bg-[var(--bp-surface-2)] mb-4" />
+        <div className="h-6 w-2/3 bg-[var(--bp-surface-2)] mb-3" />
+        <div className="h-3 w-1/2 bg-[var(--bp-surface-2)]" />
       </div>
     );
   }
 
-  const s = brief.sections || {};
-  const sectionDef = [
-    { key: 'direction',             title: 'Direzione progettuale',  eye: '01 — DIREZIONE' },
-    { key: 'material_language',     title: 'Linguaggio materico',    eye: '02 — MATERIA' },
-    { key: 'emotional_positioning', title: 'Posizionamento emotivo', eye: '03 — EMOZIONE' },
-    { key: 'market_adaptation',     title: 'Adattamento al mercato', eye: '04 — MERCATO' },
-    { key: 'design_risks',          title: 'Tensioni e rischi',      eye: '05 — TENSIONI' },
-  ];
+  if (!brief) {
+    return (
+      <section className="bp-card p-9" data-testid="strategic-direction-empty">
+        <div className="flex items-start gap-6 flex-wrap">
+          <div className="flex-1 min-w-[280px]">
+            <p className="text-[10px] tracking-[0.32em] uppercase text-[var(--bp-primary)] font-body mb-3">
+              Strategic Direction™
+            </p>
+            <h2 className="font-heading text-[26px] font-light text-[var(--bp-text-primary)] leading-[1.15] max-w-xl">
+              L'identità strategica di questo progetto, scritta come un memo editoriale.
+            </h2>
+            <p className="mt-4 text-[13.5px] text-[var(--bp-text-secondary)] font-body leading-relaxed max-w-2xl">
+              Legge il contesto reale — cliente, mercato, ispirazioni salvate, materiali collegati,
+              identità dell'advisor — e compone una direzione progettuale in sei sezioni. Si aggiorna
+              man mano che il progetto evolve: ogni cambio di rotta crea uno snapshot storico.
+            </p>
+            <div className="flex items-center gap-3 flex-wrap mt-7">
+              <label className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body">
+                Mercato
+              </label>
+              <select value={market} onChange={(e) => setMarket(e.target.value)}
+                      data-testid="strategic-direction-market-select"
+                      className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] text-[12px] px-3 py-2
+                                 text-[var(--bp-text-primary)] font-body">
+                {MARKETS.map((m) => <option key={m.code} value={m.code}>{m.label}</option>)}
+              </select>
+              <button onClick={generate} disabled={generating}
+                      data-testid="strategic-direction-generate-btn"
+                      className="bp-btn bp-btn-primary text-[10.5px] uppercase tracking-[0.22em]">
+                {generating ? 'In elaborazione…' : 'Componi direzione'}
+              </button>
+            </div>
+            {error && <p className="text-[12px] text-red-300 mt-3">{error}</p>}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
+  // ── Populated card ────────────────────────────────────────────────
+  const s = brief.sections || {};
   return (
-    <div data-testid="ai-brief-content" className="space-y-6">
+    <section className="space-y-5" data-testid="strategic-direction-content">
+      {/* Header — headline + market selector + action menu */}
       <header className="bp-card p-7">
         <div className="flex items-start justify-between gap-6 flex-wrap">
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-[var(--bp-primary)] font-body mb-3">
-              AI Studio Brief™ · Mercato {brief.market || 'IT'}
+            <p className="text-[10px] tracking-[0.32em] uppercase text-[var(--bp-primary)] font-body mb-3">
+              Strategic Direction™ · Mercato {brief.market || 'IT'}
             </p>
-            <h2 data-testid="ai-brief-headline" className="font-heading text-[28px] font-light text-[var(--bp-text-primary)] leading-[1.1]">
+            <h2 data-testid="strategic-direction-headline"
+                className="font-heading text-[28px] font-light text-[var(--bp-text-primary)] leading-[1.1]">
               {s.headline || 'Direzione progettuale'}
             </h2>
             <p className="mt-3 text-[11px] text-[var(--bp-text-muted)] font-body">
-              Generato {fmtRelative(brief.created_at)} · {brief.model === 'fallback' ? 'modalità manuale' : 'Claude Sonnet 4.5'}
+              Aggiornata {fmtRelative(brief.created_at)}
+              {history.length > 1 && (
+                <>{' · '}<button onClick={() => setShowHistory(true)}
+                                 className="underline-offset-2 hover:underline text-[var(--bp-text-secondary)]">
+                  {history.length} version{history.length === 1 ? 'e' : 'i'} salvate
+                </button></>
+              )}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <select value={market} onChange={(e) => setMarket(e.target.value)}
+                    data-testid="strategic-direction-market-selector"
                     className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] text-[11px] px-3 py-2 text-[var(--bp-text-secondary)] font-body">
               {MARKETS.map((m) => <option key={m.code} value={m.code}>{m.label}</option>)}
             </select>
             <button onClick={generate} disabled={generating}
-                    data-testid="ai-brief-regenerate"
+                    data-testid="strategic-direction-regenerate"
+                    title="Rigenera la direzione con il contesto attuale"
                     className="bp-btn bp-btn-ghost text-[10px] uppercase tracking-[0.22em] inline-flex items-center gap-1.5">
-              <RefreshCw size={11} strokeWidth={1.6}
-                         className={generating ? 'animate-spin' : ''} />
-              {generating ? 'In corso…' : 'Aggiorna brief'}
+              <RefreshCw size={11} strokeWidth={1.6} className={generating ? 'animate-spin' : ''} />
+              {generating ? 'In corso…' : 'Rigenera'}
             </button>
           </div>
         </div>
+
+        {/* Action bar — workflow-native, not gimmicks */}
+        <div className="flex items-center gap-2 flex-wrap mt-6 pt-5 border-t border-[var(--bp-border)]">
+          <button onClick={() => setShowHistory(true)}
+                  data-testid="strategic-direction-history-btn"
+                  className="bp-btn bp-btn-ghost text-[10px] uppercase tracking-[0.22em] inline-flex items-center gap-1.5">
+            <History size={11} strokeWidth={1.6} /> Storico
+          </button>
+          <button onClick={sendAsMemo} disabled={busyAction === 'memo'}
+                  data-testid="strategic-direction-send-memo"
+                  title="Condividi nel thread interno del team"
+                  className="bp-btn bp-btn-ghost text-[10px] uppercase tracking-[0.22em] inline-flex items-center gap-1.5">
+            <Share2 size={11} strokeWidth={1.6} />
+            {busyAction === 'memo' ? 'Invio…' : 'Condividi con il team'}
+          </button>
+          <button onClick={promoteToProposal} disabled={busyAction === 'proposal'}
+                  data-testid="strategic-direction-to-proposal"
+                  title="Crea una bozza di proposta con questa direzione"
+                  className="bp-btn bp-btn-ghost text-[10px] uppercase tracking-[0.22em] inline-flex items-center gap-1.5">
+            <FileSignature size={11} strokeWidth={1.6} />
+            {busyAction === 'proposal' ? 'Creo bozza…' : 'Avvia proposta'}
+          </button>
+          <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--bp-text-subtle)] font-body ml-1">
+            Export PDF · disponibile a breve
+          </span>
+        </div>
+
+        {actionMsg && (
+          <p data-testid="strategic-direction-action-msg"
+             className="text-[12px] text-[var(--bp-primary)] font-body mt-3">{actionMsg}</p>
+        )}
         {error && <p className="text-[12px] text-red-300 mt-3">{error}</p>}
       </header>
 
-      {sectionDef.map(({ key, title, eye }) => (
-        <article key={key} data-testid={`ai-brief-section-${key}`} className="bp-card p-7">
+      {/* 5 long-form sections */}
+      {SECTION_DEF.map(({ key, title, eye }) => (
+        <article key={key} data-testid={`strategic-direction-section-${key}`} className="bp-card p-7">
           <p className="text-[10px] tracking-[0.32em] uppercase text-[var(--bp-text-muted)] font-body mb-3">
             {eye}
           </p>
@@ -805,10 +905,11 @@ const AIStudioBriefTab = ({ projectId, project }) => {
         </article>
       ))}
 
+      {/* Next moves */}
       {(s.next_moves || []).length > 0 && (
-        <article data-testid="ai-brief-section-next_moves" className="bp-card p-7">
+        <article data-testid="strategic-direction-section-next_moves" className="bp-card p-7">
           <p className="text-[10px] tracking-[0.32em] uppercase text-[var(--bp-text-muted)] font-body mb-3">
-            06 — PROSSIME MOSSE
+            06 — MOSSE STRATEGICHE
           </p>
           <h3 className="font-heading text-[20px] font-light text-[var(--bp-text-primary)] mb-5 leading-tight">
             Prossimi passi suggeriti
@@ -828,7 +929,71 @@ const AIStudioBriefTab = ({ projectId, project }) => {
           </ul>
         </article>
       )}
-    </div>
+
+      {/* Snapshot history drawer */}
+      {showHistory && (
+        <div onClick={() => setShowHistory(false)}
+             data-testid="strategic-direction-history-modal"
+             className="fixed inset-0 z-50 bg-[var(--bp-overlay,rgba(0,0,0,0.6))] backdrop-blur-sm flex items-center justify-center p-4">
+          <div onClick={(e) => e.stopPropagation()}
+               className="bp-glass w-full max-w-3xl max-h-[80vh] overflow-y-auto p-7 rounded-[var(--bp-radius-md)]">
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <p className="text-[10px] tracking-[0.32em] uppercase text-[var(--bp-primary)] font-body mb-2">
+                  Evoluzione strategica
+                </p>
+                <h3 className="font-heading text-[22px] font-light text-[var(--bp-text-primary)]">
+                  Versioni precedenti della direzione
+                </h3>
+                <p className="text-[12px] text-[var(--bp-text-muted)] font-body mt-1.5">
+                  Ogni rigenerazione viene salvata come snapshot — apri una versione precedente per confrontare.
+                </p>
+              </div>
+              <button onClick={() => setShowHistory(false)}
+                      className="text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]">
+                <X size={16} strokeWidth={1.5} />
+              </button>
+            </div>
+            <ul className="space-y-3" data-testid="strategic-direction-history-list">
+              {history.map((h) => {
+                const isCurrent = brief?.id === h.id;
+                return (
+                  <li key={h.id} data-testid={`history-snapshot-${h.id}`}>
+                    <button onClick={() => loadSnapshot(h.id)} disabled={busyAction === 'snapshot'}
+                            className={`w-full text-left p-4 border transition-colors
+                                       ${isCurrent
+                                         ? 'border-[var(--bp-primary)] bg-[var(--bp-primary-soft,rgba(196,164,107,0.08))]'
+                                         : 'border-[var(--bp-border)] hover:border-[var(--bp-border-strong)] bg-[var(--bp-surface-1)]'}`}>
+                      <div className="flex items-baseline justify-between gap-3 mb-1">
+                        <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-primary)] font-body">
+                          Mercato {h.market || 'IT'}{isCurrent ? ' · attuale' : ''}
+                        </p>
+                        <p className="text-[10.5px] uppercase tracking-[0.18em] text-[var(--bp-text-subtle)] font-body">
+                          {fmtRelative(h.created_at)}
+                        </p>
+                      </div>
+                      <p className="font-heading text-[16px] font-light text-[var(--bp-text-primary)] leading-tight">
+                        {h.headline}
+                      </p>
+                      {h.created_by?.name && (
+                        <p className="text-[11px] text-[var(--bp-text-muted)] font-body mt-1.5">
+                          Curata da {h.created_by.name}
+                        </p>
+                      )}
+                    </button>
+                  </li>
+                );
+              })}
+              {history.length === 0 && (
+                <p className="text-[12px] text-[var(--bp-text-muted)] font-body italic">
+                  Nessuna versione salvata ancora.
+                </p>
+              )}
+            </ul>
+          </div>
+        </div>
+      )}
+    </section>
   );
 };
 
@@ -841,7 +1006,6 @@ const TABS = [
   { id: 'proposals',     icon: FileText,      label: 'Proposte' },
   { id: 'conversations', icon: MessageSquare, label: 'Conversazioni' },
   { id: 'timeline',      icon: Activity,      label: 'Timeline' },
-  { id: 'ai_brief',      icon: Sparkles,      label: 'AI Studio Brief™' },
 ];
 
 const Stat = ({ label, value }) => (
@@ -981,13 +1145,21 @@ const ProjectDetailPage = () => {
 
       <div data-testid="tab-content">
         {tab === 'overview' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6" data-testid="overview-tab">
-            <Stat label={t('workspace.stat.budget')}     value={project.budget_range || '—'} />
-            <Stat label={t('workspace.stat.timeline')}   value={project.timeline || '—'} />
-            <Stat label={t('workspace.stat.proposals')}  value={(project.proposals || []).length} />
-            <Stat label={t('workspace.stat.moodboards')} value={(project.moodboards || []).length} />
-            <Stat label={t('workspace.stat.files')}      value={project.files_count || 0} />
-            <Stat label={t('workspace.stat.status')}     value={t(`projects.status.${project.status || 'new'}`)} />
+          <div className="space-y-10" data-testid="overview-tab">
+            <StrategicDirectionCard projectId={id} project={project} />
+            <div>
+              <p className="text-[10px] tracking-[0.32em] uppercase text-[var(--bp-text-muted)] font-body mb-4">
+                Sintesi operativa
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Stat label={t('workspace.stat.budget')}     value={project.budget_range || '—'} />
+                <Stat label={t('workspace.stat.timeline')}   value={project.timeline || '—'} />
+                <Stat label={t('workspace.stat.proposals')}  value={(project.proposals || []).length} />
+                <Stat label={t('workspace.stat.moodboards')} value={(project.moodboards || []).length} />
+                <Stat label={t('workspace.stat.files')}      value={project.files_count || 0} />
+                <Stat label={t('workspace.stat.status')}     value={t(`projects.status.${project.status || 'new'}`)} />
+              </div>
+            </div>
           </div>
         )}
         {tab === 'inspirations'  && <InspirationsTab projectId={id} />}
@@ -996,7 +1168,6 @@ const ProjectDetailPage = () => {
         {tab === 'proposals'     && <ProposalsTab projectId={id} />}
         {tab === 'conversations' && <ConversationsTab projectId={id} project={project} />}
         {tab === 'timeline'      && <TimelineTab projectId={id} />}
-        {tab === 'ai_brief'      && <AIStudioBriefTab projectId={id} project={project} />}
       </div>
     </div>
   );
