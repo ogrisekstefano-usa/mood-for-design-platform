@@ -1,5 +1,5 @@
 /**
- * LocaleRuntimeContext — Phase P0.2.A frontend foundation.
+ * LocaleRuntimeContext — Phase P0.2.A foundation, extended P0.2.C.
  *
  * Single source of truth for cultural positioning in the UI shell.
  *
@@ -11,13 +11,13 @@
  *   • setLocale(code)  — persist the user preference (server + local context)
  *   • copy(token, ctx) — semantic copy accessor (runtime-aware, NOT translation)
  *
- * The provider:
- *   1. waits for auth, then calls /api/locale-runtime/resolve once
- *   2. exposes a stable context value
- *   3. re-resolves when `setLocale` succeeds
+ * Resolution paths:
+ *   • Authenticated user      → /api/locale-runtime/resolve
+ *   • Anonymous (P0.2.C)      → /api/locale-runtime/resolve/public
  *
- * DO NOT use this for generic i18n. Use the `copy()` accessor which returns
- * culturally repositioned strings per locale_profile.
+ * Anonymous flows (StartProjectWizard, public storefront, magazine
+ * articles) get cultural runtime BEFORE login. Their preference is
+ * stored locally (mfd_public_locale) until they sign up.
  */
 import React, {
   createContext, useCallback, useContext, useEffect, useMemo, useState,
@@ -27,6 +27,8 @@ import { useAuth } from './AuthContext';
 import { resolveCopy } from '../lib/locale-copy';
 
 const LocaleRuntimeContext = createContext(null);
+
+const PUBLIC_LOCALE_STORAGE_KEY = 'mfd_public_locale';
 
 const SYSTEM_FALLBACK_PROFILE = {
   locale_code: 'IT_IT',
@@ -45,18 +47,38 @@ export const LocaleRuntimeProvider = ({ children }) => {
     supported:  ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES'],
     loading:    true,
     error:      null,
+    anonymous:  !user,
   });
 
   const fetchRuntime = useCallback(async () => {
-    // Anonymous / pre-login: keep the system fallback. The browser locale
-    // signal is still attached to the request by the browser itself — when
-    // the user logs in we re-resolve immediately.
-    if (!user) {
-      setState((s) => ({ ...s, loading: false }));
+    if (user) {
+      // Authenticated path — full priority chain (user > project > lead > tenant > browser).
+      try {
+        const r = await api.get('/api/locale-runtime/resolve');
+        const d = r.data || {};
+        setState({
+          localeCode: d.locale_code || 'IT_IT',
+          profile:    d.profile || SYSTEM_FALLBACK_PROFILE,
+          source:     d.source || 'system',
+          supported:  d.supported || ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES'],
+          loading:    false,
+          error:      null,
+          anonymous:  false,
+        });
+      } catch (e) {
+        setState((s) => ({ ...s, loading: false, error: 'runtime_unreachable' }));
+      }
       return;
     }
+    // Anonymous path — public resolver. Reads any saved preference and
+    // sends it as a hint so the resolver chain honours it.
+    let saved = null;
     try {
-      const r = await api.get('/api/locale-runtime/resolve');
+      saved = localStorage.getItem(PUBLIC_LOCALE_STORAGE_KEY);
+    } catch (_) { /* ignore */ }
+    try {
+      const params = saved ? { saved_locale: saved } : {};
+      const r = await api.get('/api/locale-runtime/resolve/public', { params });
       const d = r.data || {};
       setState({
         localeCode: d.locale_code || 'IT_IT',
@@ -65,9 +87,10 @@ export const LocaleRuntimeProvider = ({ children }) => {
         supported:  d.supported || ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES'],
         loading:    false,
         error:      null,
+        anonymous:  true,
       });
     } catch (e) {
-      setState((s) => ({ ...s, loading: false, error: 'runtime_unreachable' }));
+      setState((s) => ({ ...s, loading: false, error: 'runtime_unreachable', anonymous: true }));
     }
   }, [user]);
 
@@ -75,17 +98,41 @@ export const LocaleRuntimeProvider = ({ children }) => {
 
   const setLocale = useCallback(async (code) => {
     if (!code) return;
+    // Anonymous flow: persist locally, re-resolve via public endpoint.
+    if (!user) {
+      try {
+        localStorage.setItem(PUBLIC_LOCALE_STORAGE_KEY, code);
+      } catch (_) { /* ignore */ }
+      // Re-resolve immediately with the saved hint.
+      try {
+        const r = await api.get('/api/locale-runtime/resolve/public', {
+          params: { saved_locale: code },
+        });
+        const d = r.data || {};
+        setState({
+          localeCode: d.locale_code || 'IT_IT',
+          profile:    d.profile || SYSTEM_FALLBACK_PROFILE,
+          source:     d.source || 'system',
+          supported:  d.supported || ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES'],
+          loading:    false,
+          error:      null,
+          anonymous:  true,
+        });
+      } catch (e) {
+        setState((s) => ({ ...s, error: 'preference_save_failed' }));
+      }
+      return;
+    }
+    // Authenticated flow: persist server-side, then re-resolve.
     try {
       await api.put('/api/locale-runtime/preference', { locale_code: code });
       await fetchRuntime();
     } catch (e) {
       setState((s) => ({ ...s, error: 'preference_save_failed' }));
     }
-  }, [fetchRuntime]);
+  }, [user, fetchRuntime]);
 
   // Semantic copy accessor — culturally repositioned, NOT translated.
-  // The registry lives in /app/frontend/src/lib/locale-copy.js — that's
-  // also the surface future AI systems will regenerate dynamically.
   const copy = useCallback((token, extra = {}) => {
     return resolveCopy(token, state.localeCode, extra);
   }, [state.localeCode]);
@@ -97,6 +144,7 @@ export const LocaleRuntimeProvider = ({ children }) => {
     supported:  state.supported,
     loading:    state.loading,
     error:      state.error,
+    anonymous:  state.anonymous,
     setLocale,
     copy,
     refresh:    fetchRuntime,
@@ -120,6 +168,7 @@ export const useLocaleRuntime = () => {
       supported:  ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES'],
       loading:    false,
       error:      null,
+      anonymous:  true,
       setLocale:  () => Promise.resolve(),
       copy:       (token) => `[${token}]`,
       refresh:    () => Promise.resolve(),

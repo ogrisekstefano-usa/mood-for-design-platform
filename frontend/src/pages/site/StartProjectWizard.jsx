@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, ArrowRight, Check, Plus, X, User, Palette, LayoutGrid, Images, FileText, Bookmark } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Plus, X, User, Palette, LayoutGrid, Images, FileText, Bookmark, Globe } from 'lucide-react';
 import { SiteProvider, useSite } from '../../site/SiteContext';
 import { onboardingContent } from '../../site/content/onboarding';
+import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
 import {
   categoryFor,
   visibleSteps,
@@ -61,6 +62,74 @@ const ProgressIndicator = ({ percent, totalDots, currentDot }) => (
   </div>
 );
 
+const WIZARD_LOCALE_OPTIONS = [
+  { code: 'IT_IT', label: 'Italia',         register: 'Editorial craftsmanship' },
+  { code: 'EN_US', label: 'United States',  register: 'Aspirational lifestyle' },
+  { code: 'EN_GB', label: 'United Kingdom', register: 'Editorial restraint' },
+  { code: 'EN_AE', label: 'UAE',            register: 'Sensorial prestige' },
+  { code: 'DE_DE', label: 'Deutschland',    register: 'Architectural precision' },
+  { code: 'FR_FR', label: 'France',         register: 'Editorial sophistication' },
+  { code: 'ES_ES', label: 'España',         register: 'Warm Mediterranean' },
+];
+
+const WizardCulturalIndicator = () => {
+  const runtime = useLocaleRuntime();
+  const [open, setOpen] = useState(false);
+  const active = WIZARD_LOCALE_OPTIONS.find((o) => o.code === runtime.localeCode)
+              || WIZARD_LOCALE_OPTIONS[0];
+  return (
+    <div style={{ position: 'relative' }} data-testid="wiz-cultural-indicator">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        data-testid="wiz-cultural-indicator-btn"
+        style={{
+          display: 'inline-flex', alignItems: 'center', gap: '0.45rem',
+          padding: '0.4rem 0.7rem', border: '1px solid rgba(255,255,255,0.18)',
+          borderRadius: '999px', background: 'transparent', cursor: 'pointer',
+          color: 'currentColor', fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase',
+        }}>
+        <Globe size={11} strokeWidth={1.6} />
+        <span>{active.code}</span>
+        <span style={{ opacity: 0.55, textTransform: 'none', letterSpacing: 'normal', fontSize: '11px' }}>· {active.register}</span>
+      </button>
+      {open && (
+        <div data-testid="wiz-cultural-indicator-menu"
+             style={{
+               position: 'absolute', right: 0, top: 'calc(100% + 6px)',
+               minWidth: 280, padding: 6, borderRadius: 6,
+               background: 'rgba(20,20,20,0.96)',
+               border: '1px solid rgba(255,255,255,0.10)',
+               boxShadow: '0 12px 36px rgba(0,0,0,0.45)',
+               zIndex: 50,
+             }}>
+          {WIZARD_LOCALE_OPTIONS.map((o) => {
+            const isActive = o.code === runtime.localeCode;
+            return (
+              <button key={o.code} type="button"
+                      onClick={() => { runtime.setLocale(o.code); setOpen(false); }}
+                      data-testid={`wiz-cultural-option-${o.code}`}
+                      style={{
+                        display: 'flex', width: '100%', alignItems: 'baseline', gap: 8,
+                        padding: '0.5rem 0.75rem', border: 'none',
+                        background: isActive ? 'rgba(196,164,107,0.08)' : 'transparent',
+                        color: 'currentColor', cursor: isActive ? 'default' : 'pointer',
+                        textAlign: 'left', borderRadius: 4,
+                      }}>
+                <span style={{ fontSize: 10, letterSpacing: '0.14em', color: '#C4A46B', textTransform: 'uppercase', minWidth: 50 }}>
+                  {o.code}
+                </span>
+                <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.9)' }}>{o.label}</span>
+                <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginLeft: 'auto' }}>{o.register}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Chrome = ({ step, exitConfirmText, onExit, counterText, percent, totalDots, currentDot }) => (
   <div className="mfd-wiz__chrome" data-testid="wiz-chrome">
     <Link to="/" className="mfd-wiz__brand" data-testid="wiz-brand">
@@ -70,30 +139,48 @@ const Chrome = ({ step, exitConfirmText, onExit, counterText, percent, totalDots
       <span className="mfd-wiz__step-counter" data-testid="wiz-step-counter">{counterText}</span>
       {currentDot <= totalDots && <ProgressIndicator percent={percent} totalDots={totalDots} currentDot={currentDot} />}
     </div>
-    <button
-      type="button"
-      className="mfd-wiz__exit"
-      data-testid="wiz-exit"
-      onClick={() => {
-        if (window.confirm(exitConfirmText)) onExit();
-      }}
-    >
-      <X size={12} style={{ marginRight: 4, verticalAlign: -1 }} />
-      Exit
-    </button>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+      <WizardCulturalIndicator />
+      <button
+        type="button"
+        className="mfd-wiz__exit"
+        data-testid="wiz-exit"
+        onClick={() => {
+          if (window.confirm(exitConfirmText)) onExit();
+        }}
+      >
+        <X size={12} style={{ marginRight: 4, verticalAlign: -1 }} />
+        Exit
+      </button>
+    </div>
   </div>
 );
 
 // ──────────────────────────────────────────────────────────────────────
 // Steps
 // ──────────────────────────────────────────────────────────────────────
-const StepHeading = ({ eyebrow, title, body }) => (
-  <header className="mfd-wiz__heading">
-    <span className="mfd-eyebrow mfd-eyebrow--accent">{eyebrow}</span>
-    <h1 className="mfd-wiz__title">{title}</h1>
-    {body && <p className="mfd-wiz__sub">{body}</p>}
-  </header>
-);
+// StepHeading — optionally overrides body via the LocalizationRuntime when
+// a matching semantic token exists. The eyebrow/title come from the CMS so
+// taxonomy stays consistent; the BODY adapts culturally per locale.
+const StepHeading = ({ eyebrow, title, body, runtimeToken }) => {
+  const runtime = useLocaleRuntime();
+  let resolvedBody = body;
+  if (runtimeToken) {
+    const culturalBody = runtime.copy(runtimeToken);
+    // Only use the runtime copy when the registry has a real entry
+    // (resolveCopy returns `[token]` placeholders for missing entries).
+    if (culturalBody && !culturalBody.startsWith('[')) {
+      resolvedBody = culturalBody;
+    }
+  }
+  return (
+    <header className="mfd-wiz__heading" data-locale-code={runtime.localeCode}>
+      <span className="mfd-eyebrow mfd-eyebrow--accent">{eyebrow}</span>
+      <h1 className="mfd-wiz__title">{title}</h1>
+      {resolvedBody && <p className="mfd-wiz__sub" data-testid="wiz-step-body">{resolvedBody}</p>}
+    </header>
+  );
+};
 
 const Step1ProjectType = ({ value, onChange, pick }) => {
   const c = onboardingContent.step1;
@@ -103,6 +190,7 @@ const Step1ProjectType = ({ value, onChange, pick }) => {
         eyebrow={pick(c.eyebrow, 'onboarding.step1.eyebrow')}
         title={pick(c.title, 'onboarding.step1.title')}
         body={pick(c.body, 'onboarding.step1.body')}
+        runtimeToken="onboarding.intro.body"
       />
       <div className="mfd-wiz-cards" data-testid="wiz-step1-cards">
         {c.options.map((opt) => (
@@ -129,7 +217,7 @@ const Step2Spaces = ({ value, onToggle, pick, contentOverride }) => {
   const c = contentOverride || onboardingContent.step2;
   return (
     <>
-      <StepHeading eyebrow={pick(c.eyebrow, 'onboarding.step2.eyebrow')} title={pick(c.title, 'onboarding.step2.title')} body={pick(c.body, 'onboarding.step2.body')} />
+      <StepHeading eyebrow={pick(c.eyebrow, 'onboarding.step2.eyebrow')} title={pick(c.title, 'onboarding.step2.title')} body={pick(c.body, 'onboarding.step2.body')} runtimeToken="onboarding.space_intro.body" />
       <div className="mfd-wiz-split">
         <div className="mfd-wiz-split__media">
           <img src={c.image} alt="" loading="lazy" />
@@ -161,7 +249,7 @@ const Step3Mood = ({ value, onToggle, pick }) => {
   const c = onboardingContent.step3;
   return (
     <>
-      <StepHeading eyebrow={pick(c.eyebrow, 'onboarding.step3.eyebrow')} title={pick(c.title, 'onboarding.step3.title')} body={pick(c.body, 'onboarding.step3.body')} />
+      <StepHeading eyebrow={pick(c.eyebrow, 'onboarding.step3.eyebrow')} title={pick(c.title, 'onboarding.step3.title')} body={pick(c.body, 'onboarding.step3.body')} runtimeToken="onboarding.style_intro.body" />
       <div className="mfd-wiz-cards" data-testid="wiz-step3-cards">
         {c.options.map((opt) => (
           <button
@@ -279,7 +367,7 @@ const Step5Materials = ({ materials, colors, onToggleMaterial, onToggleColor, pi
   const c = onboardingContent.step5;
   return (
     <>
-      <StepHeading eyebrow={pick(c.eyebrow, 'onboarding.step5.eyebrow')} title={pick(c.title, 'onboarding.step5.title')} body={pick(c.body, 'onboarding.step5.body')} />
+      <StepHeading eyebrow={pick(c.eyebrow, 'onboarding.step5.eyebrow')} title={pick(c.title, 'onboarding.step5.title')} body={pick(c.body, 'onboarding.step5.body')} runtimeToken="onboarding.material_intro.body" />
       <div className="mfd-wiz-chips-section">
         <h3>{pick(c.materialsTitle, 'onboarding.step5.materialsTitle')}</h3>
         <div className="mfd-wiz-chips" data-testid="wiz-step5-materials">
@@ -310,7 +398,7 @@ const Step6Lifestyle = ({ value, onChange, pick, contentOverride }) => {
   const c = contentOverride || onboardingContent.step6;
   return (
     <>
-      <StepHeading eyebrow={pick(c.eyebrow, 'onboarding.step6.eyebrow')} title={pick(c.title, 'onboarding.step6.title')} body={pick(c.body, 'onboarding.step6.body')} />
+      <StepHeading eyebrow={pick(c.eyebrow, 'onboarding.step6.eyebrow')} title={pick(c.title, 'onboarding.step6.title')} body={pick(c.body, 'onboarding.step6.body')} runtimeToken="onboarding.lifestyle_intro.body" />
       <div className="mfd-wiz-split" style={{ alignItems: 'start' }}>
         <div className="mfd-wiz-split__media" style={{ minHeight: 480, position: 'relative' }}>
           <img src={c.image} alt="" loading="lazy" />
@@ -412,7 +500,7 @@ const FinalReady = ({ pick, payload, onCreate, onBriefingReady }) => {
 
   return (
     <div data-testid="wiz-final">
-      <StepHeading eyebrow={pick(c.eyebrow, 'onboarding.final.eyebrow')} title={pick(c.title, 'onboarding.final.title')} body={pick(c.body, 'onboarding.final.body')} />
+      <StepHeading eyebrow={pick(c.eyebrow, 'onboarding.final.eyebrow')} title={pick(c.title, 'onboarding.final.title')} body={pick(c.body, 'onboarding.final.body')} runtimeToken="onboarding.review_intro.body" />
       <div className="mfd-wiz-summary" data-testid="wiz-final-summary">
         {c.items.map((it) => {
           const Icon = ICONS[it.icon] || User;

@@ -7,6 +7,7 @@ Single source of truth used by:
 
 Endpoints:
   GET    /api/locale-runtime/resolve         active profile for this request
+  GET    /api/locale-runtime/resolve/public  anonymous-friendly resolver
   PUT    /api/locale-runtime/preference      persist user preferred locale
   PUT    /api/locale-runtime/tenant-default  persist tenant default (admin only)
 """
@@ -19,8 +20,11 @@ from pydantic import BaseModel, Field
 from database import db
 from core.tenant_context import get_tenant_context
 from core.locale_runtime import (
-    resolve_from_request,
     SUPPORTED_LOCALES,
+    SYSTEM_FALLBACK,
+    resolve_profile,
+    resolve_from_request,
+    _parse_accept_language,
 )
 
 logger = logging.getLogger(__name__)
@@ -103,3 +107,80 @@ def set_tenant_default(body: TenantDefaultIn,
         {"default_locale_code": code}
     ).eq("id", ctx["tenant_id"]).execute()
     return {"ok": True, "locale_code": code, "source": "tenant"}
+
+
+# ─── Public (anonymous) resolver — Phase P0.2.C ─────────────────────────
+#
+# Onboarding wizards, storefront pages, and magazine articles all need the
+# cultural runtime BEFORE the visitor authenticates. This endpoint
+# enforces NO auth and uses a relaxed priority chain:
+#
+#   explicit > saved onboarding > browser (weak) > tenant default > IT_IT
+#
+# `tenant_slug` is optional — provided, we look up tenant default; without
+# it, we skip the tenant step. Browser locale remains a WEAK signal:
+# never overrides an explicit query param.
+
+@router.get("/locale-runtime/resolve/public")
+def resolve_runtime_public(
+    request: Request,
+    tenant_slug: Optional[str] = None,
+    locale_code: Optional[str] = None,
+    saved_locale: Optional[str] = None,  # client-stored onboarding pref
+):
+    """Anonymous-friendly locale resolution for public surfaces."""
+    c = db()
+    requested = (locale_code or "").upper().strip() or None
+    saved = (saved_locale or "").upper().strip() or None
+    if requested and requested not in SUPPORTED_LOCALES:
+        requested = None  # ignore invalid explicit
+    if saved and saved not in SUPPORTED_LOCALES:
+        saved = None
+
+    candidates = {
+        "explicit": requested,
+        "saved":    saved,
+        "browser":  _parse_accept_language(request.headers.get("accept-language")),
+        "tenant":   None,
+        "system":   SYSTEM_FALLBACK,
+    }
+
+    # Resolve tenant default (if a tenant slug is provided).
+    if tenant_slug:
+        try:
+            tt = (c.table("tenants").select("default_locale_code")
+                  .eq("slug", tenant_slug).limit(1).execute().data or [])
+            if tt and tt[0].get("default_locale_code"):
+                candidates["tenant"] = tt[0]["default_locale_code"].upper()
+        except Exception as e:
+            logger.warning(f"public resolve: tenant lookup failed: {e}")
+
+    # Priority chain: explicit > saved onboarding > browser > tenant > system
+    # Note: order differs from authenticated resolve — user/project/lead
+    # signals are not available in public flows.
+    source = "system"
+    code = SYSTEM_FALLBACK
+    for key in ("explicit", "saved", "browser", "tenant", "system"):
+        v = candidates.get(key)
+        if v:
+            code = v
+            source = key
+            break
+
+    profile = resolve_profile(c, code)
+    if profile and profile["locale_code"] != code:
+        source = f"{source}:fallback"
+    if profile is None:
+        profile = {
+            "locale_code": SYSTEM_FALLBACK, "language": "it", "market": "IT",
+            "display_name": "Italia",
+        }
+
+    return {
+        "locale_code": profile["locale_code"],
+        "requested":   code,
+        "source":      source,
+        "candidates":  candidates,
+        "profile":     profile,
+        "supported":   SUPPORTED_LOCALES,
+    }
