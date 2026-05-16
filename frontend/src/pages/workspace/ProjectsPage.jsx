@@ -5,6 +5,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api, { formatError } from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
+import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
 import { useLicense, refreshLicense } from '../../hooks/useLicense';
 import UsageChip from '../../components/common/UsageChip';
 import { toast } from 'sonner';
@@ -108,6 +109,7 @@ const ProjectCard = ({ project, index }) => {
 
 const ProjectsPage = () => {
   const { t } = useBlueprint();
+  const runtime = useLocaleRuntime();
   const navigate = useNavigate();
   const { capacityFor, license } = useLicense();
   const [projects, setProjects] = useState([]);
@@ -177,11 +179,22 @@ const ProjectsPage = () => {
           {[1,2,3].map(i => <div key={i} className="h-44 skeleton rounded-md" />)}
         </div>
       ) : projects.length === 0 ? (
-        <div className="text-center py-20">
+        <div className="text-center py-20" data-testid="projects-empty"
+             data-locale-code={runtime.localeCode}>
           <FolderOpen size={36} className="text-[var(--bp-text-subtle)] mx-auto mb-4" strokeWidth={1} />
-          <p className="text-[var(--bp-text-muted)] font-body mb-2">{t('projects.empty')}</p>
-          <button onClick={onCta} className="text-[var(--bp-primary)] text-sm font-body hover:opacity-80">
-            {cap.atCap ? 'Upgrade plan to create projects' : `+ ${t('projects.emptyCta')}`}
+          <h3 className="font-heading text-[20px] font-light text-[var(--bp-text-primary)] mb-2"
+              data-testid="projects-empty-title">
+            {runtime.copy('projects.empty.title')}
+          </h3>
+          <p className="text-[var(--bp-text-muted)] font-body mb-5 max-w-md mx-auto leading-relaxed"
+             data-testid="projects-empty-subtitle">
+            {runtime.copy('projects.empty.subtitle')}
+          </p>
+          <button onClick={onCta}
+                  data-testid="projects-empty-cta"
+                  className="text-[var(--bp-primary)] text-sm font-body hover:opacity-80
+                             inline-flex items-center gap-1.5">
+            {cap.atCap ? 'Upgrade plan to create projects' : `+ ${runtime.copy('projects.empty.cta')}`}
           </button>
         </div>
       ) : (

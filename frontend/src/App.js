@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BlueprintProvider, useBlueprint } from './contexts/BlueprintContext';
 import { TenantThemeProvider } from './contexts/TenantThemeContext';
 import { StudioPaletteProvider } from './contexts/StudioPaletteContext';
+import { LocaleRuntimeProvider } from './contexts/LocaleRuntimeContext';
 import { Toaster } from 'sonner';
 import './App.css';
 // Frozen Blueprint OS tokens — declared under [data-surface="os"] only,
@@ -173,6 +174,7 @@ function App() {
         <BlueprintProvider>
           <TenantThemeProvider>
           <StudioPaletteProvider>
+          <LocaleRuntimeProvider>
           <BrowserRouter>
             <Suspense fallback={<Loading />}>
               <Routes>
@@ -287,6 +289,7 @@ function App() {
               },
             }}
           />
+          </LocaleRuntimeProvider>
           </StudioPaletteProvider>
           </TenantThemeProvider>
         </BlueprintProvider>

@@ -20,6 +20,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import api from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
 import StudioOnboardingPanel from '../../components/dashboard/StudioOnboardingPanel';
 import AssignedClientsPanel from '../../components/dashboard/AssignedClientsPanel';
 
@@ -492,12 +493,15 @@ const KPI_LABELS = {
   hours_logged: 'Ore di lavoro',
 };
 
-// ── Operational Hero (P0.5 §1) ───────────────────────────────────────
+// ── Operational Hero (P0.5 §1 · P0.2.A locale-runtime aware) ────────
 const OperationalHero = ({ firstName, summary }) => {
   const hour = new Date().getHours();
   const greeting = hour < 6 ? 'Buona notte' : hour < 13 ? 'Buongiorno' : hour < 19 ? 'Buon pomeriggio' : 'Buonasera';
+  const runtime = useLocaleRuntime();
   return (
-    <section data-testid="dashboard-operational-hero" className="bp-card relative overflow-hidden px-9 py-9">
+    <section data-testid="dashboard-operational-hero"
+             data-locale-code={runtime.localeCode}
+             className="bp-card relative overflow-hidden px-9 py-9">
       <div
         className="absolute inset-0 opacity-[0.35] pointer-events-none"
         style={{
@@ -505,12 +509,18 @@ const OperationalHero = ({ firstName, summary }) => {
             'radial-gradient(60% 80% at 0% 0%, var(--bp-primary-soft, rgba(216,180,122,0.06)) 0%, transparent 70%)',
         }}
       />
-      <p className="relative text-[10px] tracking-[0.3em] uppercase text-[var(--bp-primary)] font-body mb-3">
-        Studio operations
+      <p className="relative text-[10px] tracking-[0.3em] uppercase text-[var(--bp-primary)] font-body mb-3"
+         data-testid="dashboard-hero-eyebrow">
+        {runtime.copy('dashboard.hero.eyebrow')}
       </p>
-      <h1 className="relative text-[36px] font-heading text-[var(--bp-text-primary)] leading-[1.02] tracking-tight">
+      <h1 className="relative text-[36px] font-heading text-[var(--bp-text-primary)] leading-[1.02] tracking-tight"
+          data-testid="dashboard-hero-greeting">
         {greeting}, <span className="italic text-[var(--bp-text-secondary)]">{firstName}.</span>
       </h1>
+      <p className="relative mt-2 text-[14.5px] font-body text-[var(--bp-text-secondary)] max-w-2xl leading-relaxed italic"
+         data-testid="dashboard-hero-welcome">
+        {runtime.copy('dashboard.hero.welcome')}
+      </p>
       {summary?.length > 0 ? (
         <ul className="relative mt-5 space-y-2 max-w-2xl" data-testid="hero-summary">
           {summary.map((s, idx) => {
@@ -530,8 +540,9 @@ const OperationalHero = ({ firstName, summary }) => {
           })}
         </ul>
       ) : (
-        <p className="relative mt-5 text-[13.5px] text-[var(--bp-text-muted)] font-body max-w-xl">
-          Nessuna azione critica oggi. Lo studio gira sereno.
+        <p className="relative mt-5 text-[13.5px] text-[var(--bp-text-muted)] font-body max-w-xl"
+           data-testid="dashboard-hero-empty">
+          {runtime.copy('dashboard.hero.empty')}
         </p>
       )}
     </section>
