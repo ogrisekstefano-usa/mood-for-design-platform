@@ -36,6 +36,34 @@ def _load_profile(c, locale_code: str) -> Optional[Dict[str, Any]]:
     return r.data[0] if r.data else None
 
 
+# Market-intent-preserving fallback chain — never collapse EN_AE prestige
+# into IT_IT craftsmanship etc.
+_FALLBACK_CHAIN: Dict[str, List[str]] = {
+    "EN_AE": ["EN_GB", "EN_US"],
+    "EN_GB": ["EN_US"],
+    "EN_US": ["EN_GB"],
+    "FR_FR": ["IT_IT", "EN_GB"],
+    "DE_DE": ["EN_GB"],
+    "ES_ES": ["IT_IT", "EN_GB"],
+    "IT_IT": ["EN_GB"],
+}
+
+
+def _resolve_profile(c, locale_code: str) -> Optional[Dict[str, Any]]:
+    p = _load_profile(c, locale_code)
+    if p:
+        return p
+    for alt in _FALLBACK_CHAIN.get(locale_code, []):
+        alt_p = _load_profile(c, alt)
+        if alt_p:
+            logger.warning(
+                f"perspective locale fallback {locale_code} → {alt} "
+                f"(closest cultural register)"
+            )
+            return alt_p
+    return None
+
+
 def _load_all_profiles(c) -> List[Dict[str, Any]]:
     r = (c.table("locale_profiles")
          .select("locale_code, language, market, display_name, "
@@ -235,10 +263,12 @@ async def switch_perspective(proposal_id: str, body: SwitchPerspectiveIn,
         raise HTTPException(404, "proposal not found")
     proposal = pr.data[0]
 
-    # Load target locale profile
-    profile = _load_profile(c, locale_code)
+    # Load target locale profile (with market-intent-preserving fallback)
+    profile = _resolve_profile(c, locale_code)
     if not profile:
         raise HTTPException(404, f"locale profile {locale_code} not found")
+    # If a fallback kicked in, the effective locale is the profile we got.
+    locale_code = profile["locale_code"]
 
     language = profile["language"]
     market   = profile["market"]

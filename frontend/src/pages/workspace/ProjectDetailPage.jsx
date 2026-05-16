@@ -679,15 +679,26 @@ const TimelineTab = ({ projectId }) => {
 };
 
 // ── Strategic Direction™ — contextual intelligence card (Overview-embedded) ─
-const MARKETS = [
-  { code: 'IT',  label: 'Italia' },
-  { code: 'US',  label: 'Stati Uniti' },
-  { code: 'FR',  label: 'Francia' },
-  { code: 'DE',  label: 'Germania' },
-  { code: 'UK',  label: 'Regno Unito' },
-  { code: 'UAE', label: 'Emirati Arabi' },
-  { code: 'ES',  label: 'Spagna' },
+//
+// NOTE: locale_profiles are loaded dynamically from /api/locale-profiles.
+// This static list is only used as a last-resort fallback before the API
+// resolves (and as a deterministic order for the dropdown).
+const LOCALE_FALLBACK = [
+  { locale_code: 'IT_IT', display_name: 'Italia',          market: 'IT' },
+  { locale_code: 'EN_US', display_name: 'United States',   market: 'US' },
+  { locale_code: 'EN_GB', display_name: 'United Kingdom',  market: 'GB' },
+  { locale_code: 'EN_AE', display_name: 'UAE',             market: 'AE' },
+  { locale_code: 'DE_DE', display_name: 'Deutschland',     market: 'DE' },
+  { locale_code: 'FR_FR', display_name: 'France',          market: 'FR' },
+  { locale_code: 'ES_ES', display_name: 'España',          market: 'ES' },
 ];
+
+// Legacy market shortcut (IT, US, UK, UAE, …) → composite locale_code.
+const MARKET_TO_LOCALE_CODE = {
+  IT: 'IT_IT', US: 'EN_US', UK: 'EN_GB', GB: 'EN_GB',
+  AE: 'EN_AE', UAE: 'EN_AE',
+  DE: 'DE_DE', FR: 'FR_FR', ES: 'ES_ES',
+};
 
 const SECTION_DEF = [
   { key: 'direction',             title: 'Posizionamento progettuale', eye: '01 — POSIZIONAMENTO' },
@@ -706,14 +717,37 @@ const StrategicDirectionCard = ({ projectId, project }) => {
   const [busyAction, setBusyAction] = useState(null);
   const [actionMsg, setActionMsg] = useState(null);
   const [showComposer, setShowComposer] = useState(false);
-  const [market, setMarket] = useState((project?.metadata_json?.country || 'IT').toUpperCase());
+  // Locale state — composite code (IT_IT, EN_US, EN_GB, EN_AE, …).
+  // Derived from the project's seeded country / metadata; user-switchable.
+  const seededMarket = (project?.metadata_json?.country || 'IT').toUpperCase();
+  const [localeCode, setLocaleCode] = useState(
+    MARKET_TO_LOCALE_CODE[seededMarket] || 'IT_IT'
+  );
+  const [profiles, setProfiles] = useState(LOCALE_FALLBACK);
   const [error, setError] = useState(null);
+
+  // Fetch live locale profiles (replaces the static fallback list).
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const r = await api.get('/api/locale-profiles');
+        if (cancelled) return;
+        const list = r.data?.profiles || [];
+        if (list.length) setProfiles(list);
+      } catch (e) { /* keep fallback */ }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const loadLatest = useCallback(async () => {
     setLoading(true); setError(null);
     try {
       const r = await api.get(`/api/projects/${projectId}/ai-brief`);
-      setBrief(r.data?.brief || null);
+      const b = r.data?.brief || null;
+      setBrief(b);
+      // Sync the selected localeCode with the latest persisted brief (if any).
+      if (b?.locale_code) setLocaleCode(b.locale_code);
     } catch (e) {
       setError('Caricamento direzione non riuscito.');
     } finally { setLoading(false); }
@@ -731,9 +765,14 @@ const StrategicDirectionCard = ({ projectId, project }) => {
   const generate = async () => {
     setGenerating(true); setError(null); setActionMsg(null);
     try {
-      // Locale auto-derived server-side from `market` — native composition.
-      const r = await api.post(`/api/projects/${projectId}/ai-brief/generate`, { market });
-      setBrief(r.data?.brief || null);
+      // Strategic Direction is composed NATIVELY for the locale profile —
+      // never translated. Backend loads the matching locale_profiles row.
+      const r = await api.post(`/api/projects/${projectId}/ai-brief/generate`, {
+        locale_code: localeCode,
+      });
+      const b = r.data?.brief || null;
+      setBrief(b);
+      if (b?.locale_code) setLocaleCode(b.locale_code);
       await loadHistory();
     } catch (e) {
       setError('Aggiornamento direzione non riuscito. Riprova fra qualche istante.');
@@ -794,11 +833,15 @@ const StrategicDirectionCard = ({ projectId, project }) => {
               <label className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body">
                 Mercato
               </label>
-              <select value={market} onChange={(e) => setMarket(e.target.value)}
-                      data-testid="strategic-direction-market-select"
+              <select value={localeCode} onChange={(e) => setLocaleCode(e.target.value)}
+                      data-testid="strategic-direction-locale-select"
                       className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] text-[12px] px-3 py-2
                                  text-[var(--bp-text-primary)] font-body">
-                {MARKETS.map((m) => <option key={m.code} value={m.code}>{m.label}</option>)}
+                {profiles.map((p) => (
+                  <option key={p.locale_code} value={p.locale_code}>
+                    {p.display_name} · {p.locale_code}
+                  </option>
+                ))}
               </select>
               <button onClick={generate} disabled={generating}
                       data-testid="strategic-direction-generate-btn"
@@ -822,7 +865,7 @@ const StrategicDirectionCard = ({ projectId, project }) => {
         <div className="flex items-start justify-between gap-6 flex-wrap">
           <div className="min-w-0 flex-1">
             <p className="text-[10px] tracking-[0.32em] uppercase text-[var(--bp-primary)] font-body mb-3">
-              Strategic Direction™ · Mercato {brief.market || 'IT'}
+              Strategic Direction™ · {brief.locale_code || brief.market || 'IT_IT'}
             </p>
             <h2 data-testid="strategic-direction-headline"
                 className="font-heading text-[28px] font-light text-[var(--bp-text-primary)] leading-[1.1]">
@@ -839,10 +882,14 @@ const StrategicDirectionCard = ({ projectId, project }) => {
             </p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            <select value={market} onChange={(e) => setMarket(e.target.value)}
-                    data-testid="strategic-direction-market-selector"
+            <select value={localeCode} onChange={(e) => setLocaleCode(e.target.value)}
+                    data-testid="strategic-direction-locale-selector"
                     className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] text-[11px] px-3 py-2 text-[var(--bp-text-secondary)] font-body">
-              {MARKETS.map((m) => <option key={m.code} value={m.code}>{m.label}</option>)}
+              {profiles.map((p) => (
+                <option key={p.locale_code} value={p.locale_code}>
+                  {p.display_name} · {p.locale_code}
+                </option>
+              ))}
             </select>
             <button onClick={generate} disabled={generating}
                     data-testid="strategic-direction-regenerate"
@@ -963,7 +1010,7 @@ const StrategicDirectionCard = ({ projectId, project }) => {
                                          : 'border-[var(--bp-border)] hover:border-[var(--bp-border-strong)] bg-[var(--bp-surface-1)]'}`}>
                       <div className="flex items-baseline justify-between gap-3 mb-1">
                         <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-primary)] font-body">
-                          Mercato {h.market || 'IT'}{isCurrent ? ' · attuale' : ''}
+                          {h.locale_code || h.market || 'IT_IT'}{isCurrent ? ' · attuale' : ''}
                         </p>
                         <p className="text-[10.5px] uppercase tracking-[0.18em] text-[var(--bp-text-subtle)] font-body">
                           {fmtRelative(h.created_at)}

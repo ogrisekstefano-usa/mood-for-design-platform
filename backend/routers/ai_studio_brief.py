@@ -1,12 +1,19 @@
-"""AI Studio Brief™ — strategic, market-aware design intelligence brief.
+"""Strategic Direction™ — locale-native design intelligence memo.
 
-NOT a chatbot. NOT a GPT summary. A cinematic 6-section design memo
-generated from real project context (client, advisor, saved
-inspirations, materials, market) and stored as immutable snapshots.
+NOT a chatbot. NOT a GPT summary. NOT a translator.
+
+A cinematic 6-section editorial memo composed NATIVELY in the target
+locale's culture using the matching `locale_profiles` row. The same project
+produces fundamentally different narratives between EN_US / EN_GB / EN_AE —
+they share English but are three distinct cultural positionings.
 
 Endpoints:
-  GET  /api/projects/{pid}/ai-brief           latest snapshot
-  POST /api/projects/{pid}/ai-brief/generate  create a new snapshot
+  GET  /api/projects/{pid}/ai-brief                       latest snapshot
+  POST /api/projects/{pid}/ai-brief/generate              create snapshot
+  GET  /api/projects/{pid}/strategic-direction/history    snapshots rail
+  GET  /api/projects/{pid}/strategic-direction/snapshot/{sid}
+  POST /api/projects/{pid}/strategic-direction/send-memo
+  POST /api/projects/{pid}/strategic-direction/promote-to-proposal
 """
 import os
 import re
@@ -26,14 +33,65 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/projects", tags=["ai-studio-brief"])
 
 
+# ─── Locale resolution ───────────────────────────────────────────────────
+
+# Map: legacy `market` shortcut → composite locale_code.
+MARKET_TO_LOCALE_CODE = {
+    "IT":  "IT_IT",
+    "US":  "EN_US",
+    "UK":  "EN_GB", "GB": "EN_GB",
+    "AE":  "EN_AE", "UAE": "EN_AE",
+    "DE":  "DE_DE",
+    "FR":  "FR_FR",
+    "ES":  "ES_ES",
+}
+
+# Market-intent-preserving fallback chain. The previous architecture blindly
+# fell back to IT_IT, which collapsed EN_AE prestige positioning into Italian
+# craftsmanship — destroying the entire premise of the Locale Architecture.
+# Each chain preserves the closest cultural register.
+LOCALE_FALLBACK_CHAIN: Dict[str, List[str]] = {
+    "EN_AE": ["EN_GB", "EN_US"],   # prestige → restrained UK editorial, then US
+    "EN_GB": ["EN_US"],
+    "EN_US": ["EN_GB"],
+    "FR_FR": ["IT_IT", "EN_GB"],   # Mediterranean editorial neighbour, then UK
+    "DE_DE": ["EN_GB"],            # rigor → UK restraint
+    "ES_ES": ["IT_IT", "EN_GB"],   # Mediterranean neighbour, then UK
+    "IT_IT": ["EN_GB"],
+}
+
+
+def _load_locale_profile(c, locale_code: str) -> Optional[Dict[str, Any]]:
+    r = (c.table("locale_profiles").select("*")
+         .eq("locale_code", locale_code.upper()).limit(1).execute())
+    return r.data[0] if r.data else None
+
+
+def _resolve_profile(c, locale_code: str) -> Dict[str, Any]:
+    """Load the locale profile with market-intent-preserving fallback."""
+    p = _load_locale_profile(c, locale_code)
+    if p:
+        return p
+    for alt in LOCALE_FALLBACK_CHAIN.get(locale_code, []):
+        alt_p = _load_locale_profile(c, alt)
+        if alt_p:
+            logger.warning(
+                f"locale fallback {locale_code} → {alt} "
+                f"(closest cultural register, NOT a blind default)"
+            )
+            return alt_p
+    # last-resort: any seeded profile (should never happen in practice)
+    any_p = (c.table("locale_profiles").select("*").limit(1).execute().data or [])
+    if not any_p:
+        raise HTTPException(500, "no locale_profiles seeded — run seed_locale_profiles.py")
+    logger.error(f"locale exhaust-fallback {locale_code} → {any_p[0]['locale_code']}")
+    return any_p[0]
+
+
 # ─── Helpers ─────────────────────────────────────────────────────────────
 
 def _iso() -> str:
     return datetime.now(timezone.utc).isoformat()
-
-
-def _strip_id(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    return [{k: v for k, v in r.items() if k != "_id"} for r in (rows or [])]
 
 
 def _get_project(c, pid: str, tid: str) -> Dict[str, Any]:
@@ -81,10 +139,10 @@ def _gather_context(c, project: Dict[str, Any], tid: str) -> Dict[str, Any]:
     # Client (lead) signals
     lead_id = (project.get("metadata_json") or {}).get("lead_id")
     if lead_id:
-        l = (c.table("leads").select("country,language,project_type,budget_range,score,source,metadata_json")
+        lq = (c.table("leads").select("country,language,project_type,budget_range,score,source,metadata_json")
              .eq("id", lead_id).eq("tenant_id", tid).limit(1).execute())
-        if l.data:
-            ld = l.data[0]
+        if lq.data:
+            ld = lq.data[0]
             ctx["client"] = {
                 "country":  ld.get("country"),
                 "language": ld.get("language"),
@@ -95,7 +153,7 @@ def _gather_context(c, project: Dict[str, Any], tid: str) -> Dict[str, Any]:
                 "answers":  (ld.get("metadata_json") or {}).get("answers"),
             }
 
-    # Saved inspirations (moodboard_candidates) — connect to articles + hotspots
+    # Saved inspirations (moodboard_candidates)
     try:
         cands = (c.table("moodboard_candidates")
                  .select("source_type, source_article_id, source_hotspot_id, "
@@ -103,21 +161,19 @@ def _gather_context(c, project: Dict[str, Any], tid: str) -> Dict[str, Any]:
                          "created_at, status, advisor_note")
                  .eq("tenant_id", tid).eq("project_id", pid)
                  .order("created_at", desc=True).limit(20).execute().data or [])
-        ctx["inspirations"] = []
-        for cc in cands:
-            ctx["inspirations"].append({
-                "type":      cc.get("source_type"),
-                "reference": cc.get("reference_type"),
-                "title":     cc.get("title"),
-                "summary":   cc.get("description"),
-                "saved_at":  cc.get("created_at"),
-                "status":    cc.get("status"),
-                "advisor_note": cc.get("advisor_note"),
-            })
+        ctx["inspirations"] = [{
+            "type":         cc.get("source_type"),
+            "reference":    cc.get("reference_type"),
+            "title":        cc.get("title"),
+            "summary":      cc.get("description"),
+            "saved_at":     cc.get("created_at"),
+            "status":       cc.get("status"),
+            "advisor_note": cc.get("advisor_note"),
+        } for cc in cands]
     except Exception:
         ctx["inspirations"] = []
 
-    # Materials linked to project (soft link in metadata_json.linked_project_ids)
+    # Materials linked to project
     try:
         rows = (c.table("material_registry")
                 .select("id, name, category, finish, dominant_color, tags, metadata_json")
@@ -148,67 +204,93 @@ def _gather_context(c, project: Dict[str, Any], tid: str) -> Dict[str, Any]:
     return ctx
 
 
-# ─── LLM prompt ──────────────────────────────────────────────────────────
+# ─── LLM prompt (locale-profile driven) ──────────────────────────────────
 
-# Native locale derivation — Strategic Direction™ is composed NATIVELY in the
-# market's language. NEVER translate. NEVER default to Italian.
-_LOCALE_FROM_MARKET = {
-    "IT": "it", "US": "en", "UK": "en", "FR": "fr",
-    "DE": "de", "ES": "es", "UAE": "en",
-}
-_LANGUAGE_LABEL = {
-    "it": "Italian (Italian-native, no anglicisms)",
-    "en": "English (international English, refined editorial register)",
-    "fr": "French (français soutenu, ton éditorial)",
-    "de": "German (gehobenes Deutsch, redaktioneller Ton)",
-    "es": "Spanish (español culto, registro editorial)",
-}
+_BRIEF_SYSTEM_TEMPLATE = """You are an editorial design strategist composing a
+cinematic Strategic Direction™ memo for an international luxury interior
+design studio. You are NOT a chatbot. You write calm, precise, editorial
+design memos — the kind a creative director would publish in a print
+magazine.
 
-_BRIEF_SYSTEM = """You are an editorial design strategist writing a cinematic
-project briefing for an international interior design studio operating
-in the luxury / hospitality / residential space.
+You REPOSITION. You DO NOT translate. EN_US, EN_GB and EN_AE share English
+but are fundamentally different cultural positionings — never share
+vocabulary across them.
 
-You are NOT a chatbot. You write calm, precise, editorial design memos —
-the kind a creative director would publish in a print magazine.
+═══ LOCALE PROFILE ({locale_code}) ═══
+{system_brief}
 
-You write NATIVELY in the locale's language — NEVER translate from another
-language. Italian for it, English for en, French for fr, German for de,
-Spanish for es. Use the editorial register native to that culture.
+EMOTIONAL STYLE:      {emotional_style}
+LUXURY STYLE:         {luxury_style}
+HOSPITALITY STYLE:    {hospitality_style}
+EDITORIAL TONE:       {editorial_tone}
+CTA STYLE:            {cta_style}
+INVESTMENT LANGUAGE:  {investment_language}
+ATMOSPHERE LANGUAGE:  {atmosphere_language}
 
-Tone: editorial, strategic, premium.
-Length: each section 2–4 sentences. NO bullet points except in `next_moves`.
-NO emojis. NO generic AI phrasing.
-Adapt the strategic register to the `market` provided:
-  · US   → aspirational luxury, lifestyle-driven
-  · DE   → precision, material honesty, restraint
-  · FR   → editorial atmosphere, cultural reference
-  · UAE  → statement luxury, sensorial layering
-  · IT   → quiet craft, contemporary heritage
-  · UK   → refined understatement
-  · ES   → Mediterranean warmth, poetic gesture
-Return ONLY valid JSON (no markdown, no preamble) shaped exactly as:
-{
-  "direction":           "...",
-  "material_language":   "...",
-  "emotional_positioning":"...",
-  "market_adaptation":   "...",
-  "design_risks":        "...",
-  "next_moves":          ["...", "...", "..."],
-  "headline":            "short editorial line, max 12 words, in the locale language"
-}"""
+FOCUS AREAS (conceptual backbone):
+  {focus}
+
+VOCABULARY (prefer these terms; never use generic alternatives):
+  {vocabulary}
+
+FORBIDDEN PATTERNS (never use):
+  {forbidden}
+
+POSITIONING EXAMPLES (tonal register we want):
+  {examples}
+
+═══ RULES ═══
+• Reposition, do NOT translate. Even if a previous brief exists, REWRITE
+  natively for this locale.
+• Write in this locale's language ({language}).
+• Tone: editorial, strategic, premium.
+• Each section: 2–4 sentences. NO bullet points except in `next_moves`.
+• NO emojis. NEVER mention AI, GPT, "generated by".
+
+Return ONLY a single valid JSON object — no markdown, no preamble — shaped:
+{{
+  "direction":             "...",
+  "material_language":     "...",
+  "emotional_positioning": "...",
+  "market_adaptation":     "...",
+  "design_risks":          "...",
+  "next_moves":            ["...", "...", "..."],
+  "headline":              "short editorial line, max 12 words, in this locale's language"
+}}"""
 
 
-def _build_user_msg(ctx: Dict[str, Any], market: str, locale: str) -> str:
-    lang_label = _LANGUAGE_LABEL.get(locale, _LANGUAGE_LABEL["en"])
-    return (
-        f"OUTPUT LANGUAGE: {lang_label}\n"
-        f"locale: {locale}\nmarket: {market}\n\n"
-        f"=== PROJECT CONTEXT (verbatim — use only what's relevant) ===\n"
-        f"{json.dumps(ctx, ensure_ascii=False, indent=2, default=str)[:6000]}\n\n"
-        f"Write the 6-section Strategic Direction memo NATIVELY in {lang_label}. "
-        f"Output JSON only."
+def _build_system_prompt(profile: Dict[str, Any]) -> str:
+    return _BRIEF_SYSTEM_TEMPLATE.format(
+        locale_code=profile.get("locale_code", ""),
+        system_brief=profile.get("system_brief", ""),
+        emotional_style=profile.get("emotional_style", ""),
+        luxury_style=profile.get("luxury_style", ""),
+        hospitality_style=profile.get("hospitality_style", ""),
+        editorial_tone=profile.get("editorial_tone", ""),
+        cta_style=profile.get("cta_style", ""),
+        investment_language=profile.get("investment_language", ""),
+        atmosphere_language=profile.get("atmosphere_language", ""),
+        focus=", ".join(profile.get("focus") or []),
+        vocabulary=", ".join(profile.get("vocabulary_rules") or []),
+        forbidden=", ".join(profile.get("forbidden_patterns") or []),
+        examples="\n  ".join(profile.get("positioning_examples") or []),
+        language=profile.get("language", "en"),
     )
 
+
+def _build_user_msg(ctx: Dict[str, Any], profile: Dict[str, Any]) -> str:
+    return (
+        f"locale_code: {profile['locale_code']}\n"
+        f"market:      {profile['market']}\n"
+        f"language:    {profile['language']}\n\n"
+        f"=== PROJECT CONTEXT (verbatim — use only what's relevant) ===\n"
+        f"{json.dumps(ctx, ensure_ascii=False, indent=2, default=str)[:6000]}\n\n"
+        f"Compose the 6-section Strategic Direction memo NATIVELY for this "
+        f"locale profile. Output JSON only."
+    )
+
+
+# ─── Locale-aware fallback (used only when LLM is unreachable) ───────────
 
 _FALLBACK_DIRECTION = {
     "it": "Direzione strategica non ancora elaborata. Apri il progetto, salva le prime ispirazioni dal Magazine o collega materiali: la direzione si comporrà sui segnali reali del cliente, del mercato e dell'advisor.",
@@ -225,21 +307,22 @@ _FALLBACK_HEADLINE = {
     "es": "Dirección a la espera de composición",
 }
 _FALLBACK_MARKET_ADAPTATION = {
-    "it": "Mercato di riferimento rilevato: {m}.",
-    "en": "Target market detected: {m}.",
-    "fr": "Marché cible détecté : {m}.",
-    "de": "Erkannter Zielmarkt: {m}.",
-    "es": "Mercado objetivo detectado: {m}.",
+    "it": "Locale di riferimento rilevato: {l}.",
+    "en": "Target locale detected: {l}.",
+    "fr": "Locale cible détectée : {l}.",
+    "de": "Erkanntes Ziel-Locale: {l}.",
+    "es": "Locale objetivo detectado: {l}.",
 }
 
 
-def _fallback_sections(market: str, locale: str = "it") -> Dict[str, Any]:
-    L = locale if locale in _FALLBACK_DIRECTION else "en"
+def _fallback_sections(profile: Dict[str, Any]) -> Dict[str, Any]:
+    L = profile.get("language", "en")
+    L = L if L in _FALLBACK_DIRECTION else "en"
     return {
         "direction":             _FALLBACK_DIRECTION[L],
         "material_language":     "—",
         "emotional_positioning": "—",
-        "market_adaptation":     _FALLBACK_MARKET_ADAPTATION[L].format(m=market or "—"),
+        "market_adaptation":     _FALLBACK_MARKET_ADAPTATION[L].format(l=profile.get("locale_code") or "—"),
         "design_risks":          "—",
         "next_moves":            [],
         "headline":              _FALLBACK_HEADLINE[L],
@@ -250,8 +333,9 @@ def _fallback_sections(market: str, locale: str = "it") -> Dict[str, Any]:
 # ─── Models ──────────────────────────────────────────────────────────────
 
 class GenerateBriefIn(BaseModel):
-    market: Optional[str] = Field(None, description="Target market (US, DE, FR, UAE, IT, UK…)")
-    locale: Optional[str] = Field(None, description="None → derived from market (native lang)")
+    locale_code: Optional[str] = Field(None, description="Composite locale (IT_IT, EN_US, EN_GB, EN_AE, DE_DE, FR_FR, ES_ES)")
+    market:      Optional[str] = Field(None, description="Legacy 2-letter market shortcut — locale_code wins if both provided")
+    locale:      Optional[str] = Field(None, description="Deprecated — language-only. Use locale_code.")
 
 
 # ─── Endpoints ───────────────────────────────────────────────────────────
@@ -261,7 +345,7 @@ def get_latest_brief(project_id: str, ctx=Depends(get_tenant_context)):
     c = db()
     _get_project(c, project_id, ctx["tenant_id"])  # tenant scope check
     r = (c.table("project_ai_briefs").select(
-        "id, sections, market, locale, model, created_at"
+        "id, sections, market, locale, locale_code, model, created_at"
     ).eq("project_id", project_id).eq("tenant_id", ctx["tenant_id"])
        .order("created_at", desc=True).limit(1).execute())
     if not r.data:
@@ -274,23 +358,33 @@ async def generate_brief(project_id: str, body: GenerateBriefIn,
                          ctx=Depends(get_tenant_context)):
     c = db()
     project = _get_project(c, project_id, ctx["tenant_id"])
-    market = (body.market or "").strip().upper() or None
-
     gathered = _gather_context(c, project, ctx["tenant_id"])
-    if not market:
-        # Infer from client country or advisor primary market
-        country = (gathered.get("client") or {}).get("country")
-        if country:
-            market = country.upper()
-        elif (gathered.get("advisor") or {}).get("markets"):
-            market = gathered["advisor"]["markets"][0].upper()
 
-    # Locale derivation — Strategic Direction is composed NATIVELY in the
-    # market's language. If the caller explicitly passes a locale, that wins.
-    locale = (body.locale or "").lower().strip() or _LOCALE_FROM_MARKET.get(
-        (market or "IT"), "en")
+    # ── Locale resolution priority ──────────────────────────────────
+    #   1. body.locale_code (explicit composite code)
+    #   2. body.market → MARKET_TO_LOCALE_CODE
+    #   3. client country → MARKET_TO_LOCALE_CODE
+    #   4. advisor primary market → MARKET_TO_LOCALE_CODE
+    #   5. default IT_IT
+    locale_code = (body.locale_code or "").upper().strip() or None
+    if not locale_code:
+        market = (body.market or "").strip().upper() or None
+        if not market:
+            country = (gathered.get("client") or {}).get("country")
+            if country:
+                market = country.upper()
+            elif (gathered.get("advisor") or {}).get("markets"):
+                market = (gathered["advisor"]["markets"][0] or "").upper()
+        locale_code = MARKET_TO_LOCALE_CODE.get((market or "IT").upper(), "IT_IT")
 
-    sections = _fallback_sections(market or "IT", locale=locale)
+    profile = _resolve_profile(c, locale_code)
+    # If fallback kicked in we keep the requested locale_code in the response
+    # but compose using the closest cultural register profile.
+    effective_locale = profile["locale_code"]
+    market_label = profile["market"]
+    language = profile["language"]
+
+    sections = _fallback_sections(profile)
     model_used = "fallback"
     key = os.environ.get("EMERGENT_LLM_KEY")
     if key:
@@ -300,17 +394,18 @@ async def generate_brief(project_id: str, body: GenerateBriefIn,
                 LlmChat(
                     api_key=key,
                     session_id=f"brief-{project_id}-{uuid.uuid4().hex[:8]}",
-                    system_message=_BRIEF_SYSTEM,
+                    system_message=_build_system_prompt(profile),
                 )
                 .with_model("anthropic", "claude-sonnet-4-5-20250929")
                 .with_params(max_tokens=900)
             )
-            raw = await chat.send_message(UserMessage(text=_build_user_msg(gathered, market or "IT", locale)))
+            raw = await chat.send_message(UserMessage(
+                text=_build_user_msg(gathered, profile),
+            ))
             text = raw if isinstance(raw, str) else getattr(raw, "text", str(raw))
             m = re.search(r"\{[\s\S]*\}", text)
             if m:
                 parsed = json.loads(m.group(0))
-                # Whitelist keys to avoid hallucinated fields
                 sections = {
                     "direction":              parsed.get("direction") or "—",
                     "material_language":      parsed.get("material_language") or "—",
@@ -323,7 +418,7 @@ async def generate_brief(project_id: str, body: GenerateBriefIn,
                 }
                 model_used = "claude-sonnet-4-5-20250929"
         except Exception as e:
-            logger.warning(f"ai-brief LLM fallback: {e}")
+            logger.warning(f"ai-brief LLM fallback for {effective_locale}: {e}")
 
     bid = str(uuid.uuid4())
     c.table("project_ai_briefs").insert({
@@ -332,23 +427,24 @@ async def generate_brief(project_id: str, body: GenerateBriefIn,
         "project_id":      project_id,
         "sections":        sections,
         "context_payload": gathered,
-        "market":          market,
-        "locale":          locale,
+        "market":          market_label,     # legacy column
+        "locale":          language,         # legacy column
+        "locale_code":     effective_locale, # NEW — composite locale
         "model":           model_used,
         "created_by":      ctx["profile_id"],
     }).execute()
 
     return {
         "brief": {
-            "id":         bid,
-            "sections":   sections,
-            "market":     market,
-            "locale":     locale,
-            "model":      model_used,
-            "created_at": _iso(),
+            "id":          bid,
+            "sections":    sections,
+            "market":      market_label,
+            "locale":      language,
+            "locale_code": effective_locale,
+            "model":       model_used,
+            "created_at":  _iso(),
         },
     }
-
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -358,12 +454,12 @@ async def generate_brief(project_id: str, body: GenerateBriefIn,
 @router.get("/{project_id}/strategic-direction/history")
 def list_direction_history(project_id: str, ctx=Depends(get_tenant_context)):
     """Timestamped snapshots of strategic direction (one row per regeneration).
-    Each row carries headline + market + locale + creator so the timeline can
-    render an evolution rail ('Mediterranean warmth → Quiet luxury shift')."""
+    Each row carries headline + market + locale_code + creator so the timeline
+    can render an evolution rail ('Mediterranean warmth → Quiet luxury shift')."""
     c = db()
     _get_project(c, project_id, ctx["tenant_id"])
     rows = (c.table("project_ai_briefs").select(
-        "id, market, locale, model, created_at, created_by, sections"
+        "id, market, locale, locale_code, model, created_at, created_by, sections"
     ).eq("project_id", project_id).eq("tenant_id", ctx["tenant_id"])
        .order("created_at", desc=True).limit(40).execute().data or [])
 
@@ -382,11 +478,12 @@ def list_direction_history(project_id: str, ctx=Depends(get_tenant_context)):
         s = r.get("sections") or {}
         cr = creators.get(r.get("created_by")) or {}
         out.append({
-            "id":         r["id"],
-            "market":     r.get("market"),
-            "locale":     r.get("locale"),
-            "headline":   s.get("headline") or "Direzione",
-            "created_at": r.get("created_at"),
+            "id":          r["id"],
+            "market":      r.get("market"),
+            "locale":      r.get("locale"),
+            "locale_code": r.get("locale_code"),
+            "headline":    s.get("headline") or "Direzione",
+            "created_at":  r.get("created_at"),
             "created_by": {
                 "id":         cr.get("id"),
                 "name":       f"{cr.get('first_name') or ''} {cr.get('last_name') or ''}".strip() or "Studio",
@@ -402,7 +499,7 @@ def get_direction_snapshot(project_id: str, snapshot_id: str,
     c = db()
     _get_project(c, project_id, ctx["tenant_id"])
     r = (c.table("project_ai_briefs").select(
-        "id, market, locale, model, created_at, sections"
+        "id, market, locale, locale_code, model, created_at, sections"
     ).eq("id", snapshot_id).eq("project_id", project_id)
        .eq("tenant_id", ctx["tenant_id"]).limit(1).execute())
     if not r.data:
@@ -414,12 +511,14 @@ class MemoIn(BaseModel):
     snapshot_id: Optional[str] = None
 
 
-def _compose_memo_body(sections: Dict[str, Any], market: Optional[str]) -> str:
+def _compose_memo_body(sections: Dict[str, Any], locale_code: Optional[str],
+                      market: Optional[str]) -> str:
     s = sections or {}
     headline = (s.get("headline") or "Direzione strategica").strip()
+    locale_label = locale_code or market or "IT_IT"
     blocks = [
         f"DIREZIONE — {headline}",
-        f"Mercato di riferimento: {market or 'IT'}",
+        f"Locale di riferimento: {locale_label}",
         "",
         f"POSIZIONAMENTO\n{s.get('direction') or '—'}",
         f"DIREZIONE EMOTIVA\n{s.get('emotional_positioning') or '—'}",
@@ -438,11 +537,11 @@ def send_direction_as_memo(project_id: str, body: MemoIn,
                            ctx=Depends(get_tenant_context)):
     """Push the current Strategic Direction into the project's timeline as
     an internal memo event. Visible to the studio team in the Timeline tab —
-    NEVER exposed to the client. Aligned with the 'memory of project' model."""
+    NEVER exposed to the client."""
     c = db()
     _get_project(c, project_id, ctx["tenant_id"])
     q = (c.table("project_ai_briefs").select(
-        "id, sections, market, locale, created_at"
+        "id, sections, market, locale, locale_code, created_at"
     ).eq("project_id", project_id).eq("tenant_id", ctx["tenant_id"]))
     if body.snapshot_id:
         q = q.eq("id", body.snapshot_id)
@@ -465,8 +564,9 @@ def send_direction_as_memo(project_id: str, body: MemoIn,
             "label":      headline,
             "ref_id":     brief["id"],
             "payload":    {
-                "market":    brief.get("market"),
-                "memo_body": _compose_memo_body(s, brief.get("market"))[:2000],
+                "market":      brief.get("market"),
+                "locale_code": brief.get("locale_code"),
+                "memo_body":   _compose_memo_body(s, brief.get("locale_code"), brief.get("market"))[:2000],
             },
         }).execute()
     except Exception as e:
@@ -483,7 +583,7 @@ def promote_direction_to_proposal(project_id: str, body: MemoIn,
     c = db()
     project = _get_project(c, project_id, ctx["tenant_id"])
     q = (c.table("project_ai_briefs").select(
-        "id, sections, market, created_at"
+        "id, sections, market, locale_code, created_at"
     ).eq("project_id", project_id).eq("tenant_id", ctx["tenant_id"]))
     if body.snapshot_id:
         q = q.eq("id", body.snapshot_id)
@@ -513,13 +613,13 @@ def promote_direction_to_proposal(project_id: str, body: MemoIn,
         "status":      "draft",
         "version":     1,
         "currency":    "EUR",
+        "market":      brief.get("market"),
+        "locale_code": brief.get("locale_code"),
         "created_at":  _iso(),
         "updated_at":  _iso(),
     }
     try:
         c.table("proposals").insert(proposal).execute()
-        # Trace the originating direction in the activity log (since proposals
-        # table has no metadata_json column to embed the source link).
         c.table("project_activity").insert({
             "id":         str(uuid.uuid4()),
             "tenant_id":  ctx["tenant_id"],
@@ -528,7 +628,11 @@ def promote_direction_to_proposal(project_id: str, body: MemoIn,
             "event_type": "proposal.created_from_direction",
             "label":      title,
             "ref_id":     pid,
-            "payload":    {"direction_id": brief["id"], "market": brief.get("market")},
+            "payload":    {
+                "direction_id": brief["id"],
+                "market":       brief.get("market"),
+                "locale_code":  brief.get("locale_code"),
+            },
         }).execute()
     except Exception as e:
         logger.warning(f"promote to proposal failed: {e}")

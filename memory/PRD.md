@@ -1,6 +1,17 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.6.G — Locale Architecture Validation (DONE — 16 Feb 2026)
+- **Validated end-to-end**: 7 `locale_profiles` (IT_IT, EN_US, EN_GB, EN_AE, DE_DE, FR_FR, ES_ES) drive the entire Compose Proposal™, Market Perspective™ switch and Strategic Direction™ engines.
+- **Strategic Direction™ refactored** (`ai_studio_brief.py`): now consumes `locale_profiles` instead of generic language codes. Accepts `locale_code` (composite). Stores `locale_code` in `project_ai_briefs` (migration `030_strategic_direction_locale.sql`). Backward-compat with `market` shortcut preserved.
+- **Market-intent-preserving fallback chain** introduced in `proposal_composer.py`, `market_perspectives.py`, `ai_studio_brief.py`. Prevents EN_AE prestige collapsing into IT_IT craftsmanship.
+- **Dead code removed**: legacy `MARKET_REPOSITIONING` dict from `proposal_composer.py`.
+- **Frontend** (`ProjectDetailPage.jsx`): `StrategicDirectionCard` fetches `/api/locale-profiles` and sends `locale_code` (not generic `market`). Header now reads `Strategic Direction™ · IT_IT` instead of `Mercato IT`.
+- **Cultural differentiation proven**: same project, three English locales produced fundamentally different prose — EN_US "elevated lifestyle destination" / EN_GB "editorial restraint, layered sophistication" / EN_AE "prestige signature, architectural presence". Zero translation behavior.
+- **Audit clean**: no remaining hardcoded market strings, no "translate" prompts, no `MARKETS`/`MARKET_REPOSITIONING` references in active code paths.
+
+
+
 ### ✅ Phase P0.6.F — Market Perspective™ (Cultural Design Intelligence™) (DONE — 16 Feb 2026)
 
 > **NON è localizzazione.** È riposizionamento culturale: lo stesso progetto

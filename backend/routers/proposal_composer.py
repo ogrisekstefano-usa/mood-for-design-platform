@@ -64,16 +64,6 @@ TONE_HINTS = {
     "collector_level":     "collezionismo, opere d'arte, dialogo con l'autore",
 }
 
-MARKET_REPOSITIONING = {
-    "US":  "aspirational lifestyle, lifestyle-driven, esperienza emozionale aspirazionale",
-    "IT":  "artigianato calmo, materia onesta, contemporaneità senza enfasi",
-    "FR":  "atmosfera editoriale, riferimento culturale, eleganza riservata",
-    "DE":  "rigore architettonico, materia precisa, restrizione progettuale",
-    "UK":  "understatement raffinato, eleganza calmata, eredità misurata",
-    "UAE": "lusso sensoriale, stratificazione tattile, presenza scenografica",
-    "ES":  "calore mediterraneo, gesto poetico, equilibrio luminoso",
-}
-
 # Native locale derivation — proposal is composed NATIVELY in the locale's
 # culture. The default locale_code maps from the user's market selection.
 MARKET_TO_LOCALE_CODE = {
@@ -82,11 +72,39 @@ MARKET_TO_LOCALE_CODE = {
     "DE": "DE_DE", "FR": "FR_FR", "ES": "ES_ES",
 }
 
+# Market-intent-preserving fallback chain — NEVER fall back to a culturally
+# unrelated locale (EN_AE prestige must NOT collapse into IT_IT craftsmanship).
+LOCALE_FALLBACK_CHAIN: Dict[str, List[str]] = {
+    "EN_AE": ["EN_GB", "EN_US"],
+    "EN_GB": ["EN_US"],
+    "EN_US": ["EN_GB"],
+    "FR_FR": ["IT_IT", "EN_GB"],
+    "DE_DE": ["EN_GB"],
+    "ES_ES": ["IT_IT", "EN_GB"],
+    "IT_IT": ["EN_GB"],
+}
+
 
 def _load_locale_profile(c, locale_code: str) -> Optional[Dict[str, Any]]:
     r = (c.table("locale_profiles").select("*")
          .eq("locale_code", locale_code.upper()).limit(1).execute())
     return r.data[0] if r.data else None
+
+
+def _resolve_profile(c, locale_code: str) -> Optional[Dict[str, Any]]:
+    """Load profile, falling back along the market-intent-preserving chain."""
+    p = _load_locale_profile(c, locale_code)
+    if p:
+        return p
+    for alt in LOCALE_FALLBACK_CHAIN.get(locale_code, []):
+        alt_p = _load_locale_profile(c, alt)
+        if alt_p:
+            logger.warning(
+                f"compose locale fallback {locale_code} → {alt} "
+                f"(closest cultural register)"
+            )
+            return alt_p
+    return None
 
 
 # ─── Helpers ─────────────────────────────────────────────────────────────
@@ -409,13 +427,12 @@ async def compose_proposal(project_id: str, body: ComposeIn,
                       or "IT").upper()
         locale_code = MARKET_TO_LOCALE_CODE.get(market, "IT_IT")
 
-    profile = _load_locale_profile(c, locale_code)
+    profile = _resolve_profile(c, locale_code)
     if not profile:
-        # last-resort hard fallback
-        locale_code = "IT_IT"
-        profile = _load_locale_profile(c, locale_code)
-    if not profile:
+        # exhausted fallback chain — every seeded profile is broken / missing
         raise HTTPException(500, "no locale profile available — seed required")
+    # If a fallback kicked in, the effective locale is the profile we got.
+    locale_code = profile["locale_code"]
 
     language = profile["language"]
     market_label = profile["market"]
