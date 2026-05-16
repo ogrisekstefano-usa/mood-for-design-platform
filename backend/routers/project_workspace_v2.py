@@ -199,6 +199,7 @@ _EVENT_LABEL_IT = {
     "ai_brief.generated":           "Direzione strategica aggiornata",
     "direction.shared_with_team":   "Direzione condivisa con il team",
     "proposal.created_from_direction": "Bozza di proposta avviata dalla direzione",
+    "proposal.composed":            "Proposta editoriale composta",
     "task.created":                 "Nuovo task creato",
     "task.completed":               "Task completato",
     "note.added":                   "Nota aggiunta",

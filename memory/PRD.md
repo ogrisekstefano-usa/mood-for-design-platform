@@ -1,6 +1,57 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.6.D — Compose Proposal™ (DONE — 16 Feb 2026)
+
+> Trasforma la pipeline **Strategic Direction™ → Proposta** da bottone amministrativo
+> a **vero motore di composizione editoriale** di livello luxury private consultancy.
+> Target: inspiration → client-ready proposal in <15 minuti.
+
+**Repositioning**
+- ~~"Avvia proposta"~~ → **"Componi proposta"** (apre il wizard).
+- Modulo: `Compose Proposal™` (eyebrow editoriale, non gimmick AI).
+- Pipeline operativa: Strategic Direction™ → Compose Proposal™ → Client Presentation → Feedback → Revisione → Approvazione → Project Activation.
+
+**Wizard 3-step** (`components/proposals/ComposeProposalWizard.jsx`)
+- **Step 1 — Stile progetto**: Residenziale · Ospitalità · Retail · Sviluppatore · Investitore · Cliente privato.
+- **Step 2 — Tono narrativo**: Minimale editoriale · Caldo mediterraneo · Lusso silenzioso · Architettonico · Ospitalità d'autore · Livello collezionismo.
+- **Step 3 — Posizionamento d'investimento** + mercato + toggle "Mostra range numerico" (default off — la proposta mostra il *posizionamento*, non un listino).
+- Footer azioni con `Continua` / `Indietro` / `Componi proposta`.
+
+**Editor cinematic** (`pages/workspace/ProposalComposerPage.jsx` su `/workspace/proposals/:id/compose`)
+- Hero full-bleed con cover hero estratta dalla prima ispirazione del progetto + opacità 18% + gradient cinematic.
+- Headline oversize cinematic (`text-[42px]` font-heading) generato dall'LLM.
+- Meta strip: Stile · Tono · Tier · Mercato.
+- Disclosure inline: *"Export PDF · Link condivisibile · Versione client portal — disponibili a breve"* (NO bottoni-stub).
+- **9 sezioni** rendered come articoli editoriali separati:
+  - 01 APERTURA · 02 DIREZIONE · 03 ISPIRAZIONI · 04 MATERIA · 05 VISIONE · 06 AMBITO · 07 INVESTIMENTO · 08 TEMPISTICA · 09 FIRMA.
+- **Inline edit**: hover su una sezione mostra "Modifica" → textarea → "Salva" → PATCH idempotente.
+- **Moodboard strip integrata** subito dopo `03 ISPIRAZIONI` (live, hydrated, click → moodboard).
+- **Material cards integrate** subito dopo `04 MATERIA` (live, hydrated, palette dominante).
+- **Footer firma**: avatar + nome + role_label + bio_short dell'advisor (helper `localized()` per multilingua).
+- Localizer multilingua aggiunto: tollera `role_label` / `bio_short` come oggetto `{it, en, _default}` o stringa.
+
+**Backend** (`/app/backend/routers/proposal_composer.py` + migration `027_proposal_composer.sql`)
+- Migration applicata via psycopg: `proposals` esteso con `sections JSONB`, `style`, `narrative_tone`, `investment_tier`, `market`, `cover_image_url`, `source_direction_id`, `show_numeric_pricing`, `sections_included`. Indici su `(tenant_id, style)` e `source_direction_id`.
+- `POST /api/projects/{pid}/compose-proposal` — LLM compose (Claude Sonnet 4.5 via emergentintegrations) usando contesto reale:
+  - project · strategic_direction snapshot · moodboards · inspirations · materials linkati · advisor identity · client/lead · studio identity.
+  - System prompt internazionale + market repositioning (NON traduzione) per IT/US/FR/DE/UK/UAE/ES.
+  - Fallback editoriale italiano se la chiave LLM non è disponibile.
+  - Salva proposta come `draft` + traccia `proposal.composed` in `project_activity`.
+- `GET /api/proposals/{id}/composer` — proposal hydrated con moodboards + materiali + advisor + project header.
+- `PATCH /api/proposals/{id}/sections` — patch idempotente di sezioni testuali + metadati editoriali.
+- Cleanup linguistico: timeline event `proposal.composed` → "Proposta editoriale composta".
+
+**E2E test live** ✅
+- Wizard 3-step navigato dalla Strategic Direction card → genera proposta in ~37s (Claude Sonnet) → auto-navigate a `/workspace/proposals/{id}/compose`.
+- Editor renderizza hero cinematic + 9 sezioni con contenuto reale italiano (testo lungo di Stefano sull'appartamento).
+- Inline edit + save funzionano via PATCH.
+- pytest backend regression **23/23 OK**.
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase P0.6.C — Strategic Direction™ Refactor (DONE — 16 Feb 2026)
 
 > Repositioning: **rimuove** la feature dal tab "AI Studio Brief™" e la **trasforma in Strategic Direction™**, una sezione contestuale dentro Project Overview. Niente più AI-centrism gimmick: è la **memoria strategica del progetto**, scritta come memo editoriale di un creative director internazionale.

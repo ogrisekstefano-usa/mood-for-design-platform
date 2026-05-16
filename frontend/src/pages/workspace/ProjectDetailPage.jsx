@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import StatusBadge from '../../components/common/StatusBadge';
 import TemplatePicker from '../../blueprint/moodboard/TemplatePicker';
+import { ComposeProposalWizard } from '../../components/proposals/ComposeProposalWizard';
 
 // ── Time util ────────────────────────────────────────────────────────────────
 const fmtRelative = (iso) => {
@@ -704,6 +705,7 @@ const StrategicDirectionCard = ({ projectId, project }) => {
   const [generating, setGenerating] = useState(false);
   const [busyAction, setBusyAction] = useState(null);
   const [actionMsg, setActionMsg] = useState(null);
+  const [showComposer, setShowComposer] = useState(false);
   const [market, setMarket] = useState((project?.metadata_json?.country || 'IT').toUpperCase());
   const [error, setError] = useState(null);
 
@@ -756,14 +758,8 @@ const StrategicDirectionCard = ({ projectId, project }) => {
     finally { setBusyAction(null); setTimeout(() => setActionMsg(null), 4000); }
   };
 
-  const promoteToProposal = async () => {
-    setBusyAction('proposal'); setActionMsg(null);
-    try {
-      const r = await api.post(`/api/projects/${projectId}/strategic-direction/promote-to-proposal`, {});
-      setActionMsg(`Bozza di proposta creata. Apri "Proposte" per rifinire.`);
-      void r;
-    } catch (e) { setActionMsg('Creazione proposta non riuscita.'); }
-    finally { setBusyAction(null); setTimeout(() => setActionMsg(null), 5000); }
+  const promoteToProposal = () => {
+    setShowComposer(true);
   };
 
   // ── Empty / first-use state ───────────────────────────────────────
@@ -873,10 +869,10 @@ const StrategicDirectionCard = ({ projectId, project }) => {
           </button>
           <button onClick={promoteToProposal} disabled={busyAction === 'proposal'}
                   data-testid="strategic-direction-to-proposal"
-                  title="Crea una bozza di proposta con questa direzione"
+                  title="Componi una proposta editoriale dal contesto del progetto"
                   className="bp-btn bp-btn-ghost text-[10px] uppercase tracking-[0.22em] inline-flex items-center gap-1.5">
             <FileSignature size={11} strokeWidth={1.6} />
-            {busyAction === 'proposal' ? 'Creo bozza…' : 'Avvia proposta'}
+            Componi proposta
           </button>
           <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--bp-text-subtle)] font-body ml-1">
             Export PDF · disponibile a breve
@@ -992,6 +988,10 @@ const StrategicDirectionCard = ({ projectId, project }) => {
             </ul>
           </div>
         </div>
+      )}
+      {showComposer && (
+        <ComposeProposalWizard projectId={projectId} defaultMarket={brief?.market || market}
+                               onClose={() => setShowComposer(false)} />
       )}
     </section>
   );
