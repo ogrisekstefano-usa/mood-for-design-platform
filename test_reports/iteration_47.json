@@ -1,0 +1,39 @@
+{
+  "summary": "Phase Y.3.A — Editorial Asset Picker validated end-to-end. Backend pytest 8/9 (89%): media list + tenant scope + showroom isolation + signed-upload (magazine-media) + bucket whitelist + cross-tenant prefix safety + media_links idempotency + article hero_url persistence all PASS. One failure documents an integration gap: /api/media/stats returns {total, by_kind, total_bytes, unused, collections, materials} but AssetPickerModal expects body.categories + body.tags — so the dynamic tag chip row in Library tab is empty (0 tag chips rendered live). Frontend smoke confirmed: /settings/magazine → article card → editor loads, [editor-hero-pick] opens the cinematic modal with 'EDITORIAL ARCHIVE' + 'Aggiungi atmosfera al racconto', Library/Upload tabs both render, 11 asset cards rendered (data-testid^=picker-asset-), search input present, selecting a card enables 'Usa nel racconto', Upload tab shows drop zone + 8 quick category chips + 9 quick tag chips, per-block 'Sfoglia / Cambia' button present.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/media/stats", "issue": "Returns {total,by_kind,total_bytes,unused,collections,materials} but AssetPickerModal.jsx reads s.categories and s.tags → dynamic tag chip universe is always empty (Library tab tag row shows 0 chips). Category chips still render via CATEGORY_PRESETS fallback (8 chips), so this degrades curation UX rather than breaks it."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Library tab top-tag chips", "issue": "0 tag chips rendered because /api/media/stats does not include a tags histogram. Root cause is backend shape, not frontend.", "affected_selectors": ["[data-testid^=asset-picker-tag-]"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_y3a_asset_picker.py",
+    "/app/test_reports/pytest/iteration_47_phaseY3A.xml"
+  ],
+  "action_items": [
+    "Extend /api/media/stats to include `categories: {<slug>: <count>}` and `tags: {<tag>: <count>}` aggregates so AssetPickerModal can render dynamic chips (currently returns only kind/volume counters). Alternatively, change AssetPickerModal to call a dedicated /api/media/taxonomy endpoint."
+  ],
+  "critical_code_review_comments": [
+    "AssetPickerModal links.create is best-effort (try/catch swallow). For 'hero' role this is fine; consider surfacing a non-blocking toast if the auto-link 409s on duplicate so editors aren't confused when re-picking the same hero.",
+    "uploadMediaFile uses display_url || file_url — display_url is a signed URL with ~6h TTL; storing it on article.hero_url means after 6h the public reader will 403 on the image. Persist file_url (public-bucket URL) and resolve signed URL on read, OR re-issue signed URL server-side via a /api/magazine/.../signed-hero endpoint.",
+    "handleDirectDrop swallows all errors silently (`catch (_) {}`); a failed drop on the canvas gives the user no feedback. Consider surfacing a toast or revealing the modal in upload tab to retry.",
+    "Storage register_media is correctly forcing tenant prefix on storage_path (verified: a payload starting with 'tenants/<other-tenant>/...' is nested under the caller's tenant_id, so no cross-tenant write is possible). Good.",
+    "AssetPickerModal SHA-256 dedupe is intra-session only (in-memory Map). Cross-session dedupe should use server-side checksum_sha256 column (already exists in media_library). Today the API does NOT 409 on duplicate checksum — silent insert creates orphan rows.",
+    "MagazineEditorPage 638 lines — approaching split threshold; consider splitting BlockEditor + HotspotCanvas + EditorPin into separate files for maintainability."
+  ],
+  "updated_files": ["/app/backend/tests/test_phase_y3a_asset_picker.py"],
+  "success_rate": {"backend": "89% (8/9)", "frontend": "100% on tested flows"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (Demo Studio super_admin); studio2@moodfordesign.com / Studio2024! (Demo Showroom tenant_admin for isolation check)",
+  "seed_data_creation": "Tests create one TEST_Y3A magazine article via POST /api/magazine/admin/articles and DELETE it at end of test. media_links rows created against existing seeded asset+article are NOT cleaned up (idempotent — re-running tests does not create duplicates). One register_media row with storage_path '<demo-tenant>/tenants/00000000.../foreign.jpg' was created as part of the cross-tenant-prefix safety test — orphan, can be cleaned via DELETE /api/media/{id} if needed.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Phase Y.3.A picker is functional end-to-end. The only outstanding issue is the /api/media/stats response shape: it must include categories+tags histograms for the dynamic chip universe in the Library tab. Frontend code path (mediaApi.js + AssetPickerModal.jsx) is solid. New pytest at /app/backend/tests/test_phase_y3a_asset_picker.py covers: media list, stats shape, tenant isolation (demo vs showroom), signed-upload bucket whitelist, storage register tenant prefix safety, media_links idempotency, article hero_url persistence. Re-run with REACT_APP_BACKEND_URL=<preview-url> python -m pytest backend/tests/test_phase_y3a_asset_picker.py -v.",
+  "rca of the issue": "Library tag chip row empty: AssetPickerModal.jsx L151-152 calls media.stats() and expects response.categories + response.tags. backend/routers/media.py stats endpoint currently aggregates only kind counters and total bytes. Frontend falls back to CATEGORY_PRESETS so category chips still appear (8 fixed presets), but topTags = Object.entries(stats.tags).sort()... evaluates to [] → no chips. Fix is server-side: add SELECT category, COUNT(*) GROUP BY category and same for tags (unnest) in the stats response."
+}

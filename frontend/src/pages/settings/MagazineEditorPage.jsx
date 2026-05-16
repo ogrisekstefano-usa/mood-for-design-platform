@@ -1,14 +1,17 @@
 // ──────────────────────────────────────────────────────────────────────
-// MOOD for DESIGN™ — Visual Hotspot Editor (Phase Y.2)
+// MOOD for DESIGN™ — Visual Hotspot Editor (Phase Y.2 + Y.3.A)
 // "I'm curating a project narrative" — NOT "I'm configuring metadata"
 // ──────────────────────────────────────────────────────────────────────
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft, Globe, ExternalLink, Save as SaveIcon, Plus, X,
   Trash2, GripVertical, Send, EyeOff, Eye, Image as ImageIcon,
+  FolderOpen, Upload,
 } from 'lucide-react';
 import api from '../../lib/api';
+import { uploadMediaFile, links as mediaLinks } from '../../lib/mediaApi';
+import AssetPickerModal from './AssetPickerModal';
 import './magazine-editor.css';
 
 const LOCALES = [
@@ -49,6 +52,8 @@ const MagazineEditorPage = () => {
   const [savingId, setSavingId] = useState(null);
   const [activeHotspot, setActiveHotspot] = useState(null);
   const [publishing, setPublishing] = useState(false);
+  // Asset picker state — drives both hero + per-block image picking
+  const [picker, setPicker] = useState({ open: false, target: null });
 
   // Load
   useEffect(() => {
@@ -142,6 +147,48 @@ const MagazineEditorPage = () => {
     }
   };
 
+  // ─── Asset picker handlers ────────────────────────────────────────────
+  const openHeroPicker  = () => setPicker({ open: true, target: { kind: 'hero' } });
+  const openBlockPicker = (blockId) => setPicker({ open: true, target: { kind: 'block', blockId } });
+
+  const handlePickedAsset = ({ asset }) => {
+    const url = asset.display_url || asset.file_url;
+    if (!url) return;
+    const target = picker.target;
+    if (target?.kind === 'hero') {
+      const next = { hero_url: url, cover_url: article.cover_url || url };
+      setArticle((a) => ({ ...a, ...next }));
+      patchArticle(next);
+    } else if (target?.kind === 'block' && target.blockId) {
+      const blocks = (article.body_blocks || []).map((b) =>
+        b.id === target.blockId ? { ...b, image_url: url, alt: b.alt || asset.alt_text || '' } : b
+      );
+      setArticle((a) => ({ ...a, body_blocks: blocks }));
+      patchArticle({ body_blocks: blocks });
+    }
+  };
+
+  // Direct file-drop on a block canvas: upload, link, assign — no modal flow
+  const handleDirectDrop = useCallback(async (blockId, file) => {
+    if (!file || !file.type?.startsWith('image/')) return;
+    try {
+      const asset = await uploadMediaFile({
+        file, bucket: 'magazine-media', folder: `magazine/${id}`,
+        category: article?.category_slug || null, tags: article?.tags || [],
+      });
+      if (id) {
+        try { await mediaLinks.create(asset.id, { entity_type: 'magazine_article', entity_id: id, role: 'body' }); }
+        catch (_) { /* best-effort */ }
+      }
+      const url = asset.display_url || asset.file_url;
+      const blocks = (article.body_blocks || []).map((b) =>
+        b.id === blockId ? { ...b, image_url: url } : b
+      );
+      setArticle((a) => ({ ...a, body_blocks: blocks }));
+      patchArticle({ body_blocks: blocks });
+    } catch (_) { /* swallow — picker tab in modal is the retry surface */ }
+  }, [id, article]);
+
   // ─── Render ──────────────────────────────────────────────────────────
   if (loading) return <div className="p-12 text-[var(--bp-text-muted)] italic">Caricamento…</div>;
   if (!article) return (
@@ -216,16 +263,22 @@ const MagazineEditorPage = () => {
       <section className="mb-8" data-testid="editor-hero-section">
         <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] mb-2">HERO IMAGE</p>
         <div className="flex items-center gap-3">
-          <input type="text" value={article.hero_url || ''} onChange={(e) => setArticle((a) => ({ ...a, hero_url: e.target.value }))}
-                 onBlur={() => patchArticle({ hero_url: article.hero_url, cover_url: article.cover_url || article.hero_url })}
-                 placeholder="https://… image URL"
-                 className="flex-1 px-3 py-2 bg-[var(--bp-surface)] border border-[var(--bp-border)] text-[var(--bp-text-primary)] outline-none focus:border-[var(--bp-primary)] text-sm font-mono"
-                 data-testid="editor-hero-url" />
-          {article.hero_url && (
-            <div className="w-24 h-14 bg-[var(--bp-surface-2)] overflow-hidden border border-[var(--bp-border)]">
+          {article.hero_url ? (
+            <div className="relative w-40 h-24 bg-[var(--bp-surface-2)] overflow-hidden border border-[var(--bp-border)] group flex-shrink-0">
               <img src={article.hero_url} alt="" className="w-full h-full object-cover" />
+              <button type="button" onClick={openHeroPicker}
+                      className="absolute inset-0 flex items-center justify-center gap-1.5 bg-black/0 hover:bg-black/55 transition-colors text-white text-[9px] uppercase tracking-[0.22em] opacity-0 group-hover:opacity-100"
+                      data-testid="editor-hero-replace">
+                <FolderOpen size={11} strokeWidth={1.6} /> Replace
+              </button>
             </div>
-          )}
+          ) : null}
+          <button type="button" onClick={openHeroPicker}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 border border-[var(--bp-border)] bg-[var(--bp-surface)] hover:border-[var(--bp-primary)] text-[var(--bp-text-primary)] text-[10px] uppercase tracking-[0.22em] transition-colors"
+                  data-testid="editor-hero-pick">
+            <FolderOpen size={11} strokeWidth={1.6} />
+            {article.hero_url ? 'Cambia immagine' : 'Scegli dalla libreria'}
+          </button>
         </div>
       </section>
 
@@ -247,6 +300,8 @@ const MagazineEditorPage = () => {
             onUpdateHotspot={updateHotspot}
             onDeleteHotspot={deleteHotspot}
             onActivateHotspot={(hid) => setActiveHotspot(hid)}
+            onOpenPicker={() => openBlockPicker(b.id)}
+            onDirectDrop={(file) => handleDirectDrop(b.id, file)}
           />
         ))}
       </section>
@@ -256,6 +311,14 @@ const MagazineEditorPage = () => {
           {hotspots.length} {hotspots.length === 1 ? 'Design Reference™ curated' : 'Design References™ curated'} · {locale.toUpperCase()}
         </p>
       </footer>
+
+      <AssetPickerModal
+        open={picker.open}
+        onClose={() => setPicker({ open: false, target: null })}
+        onSelect={handlePickedAsset}
+        articleId={id}
+        role={picker.target?.kind === 'hero' ? 'hero' : 'body'}
+      />
     </div>
   );
 };
@@ -265,6 +328,7 @@ const BlockEditor = ({
   block, locale, hotspots, activeHotspot, savingId,
   onSetField, onSetLocaleField, onCommitBlocks,
   onCreateHotspot, onUpdateHotspot, onDeleteHotspot, onActivateHotspot,
+  onOpenPicker, onDirectDrop,
 }) => {
   const blc = block.locale_content?.[locale] || {};
   const isImage = block.type === 'image' || block.type === 'gallery' || block.type === 'hero';
@@ -300,14 +364,16 @@ const BlockEditor = ({
   if (isImage) {
     return (
       <div data-testid={`block-${block.id}-image-wrap`}>
-        <p className="text-[9px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] mb-2">
-          {block.type === 'hero' ? 'HERO IMAGE' : 'EDITORIAL IMAGE'} · click anywhere to add a Design Reference™
-        </p>
-        <div className="flex items-center gap-2 mb-3">
-          <input type="text" value={block.image_url || ''} onChange={(e) => onSetField('image_url', e.target.value)} onBlur={onCommitBlocks}
-                 placeholder="Image URL"
-                 className="flex-1 px-2 py-1.5 bg-[var(--bp-surface)] border border-[var(--bp-border)] text-[var(--bp-text-primary)] outline-none focus:border-[var(--bp-primary)] text-xs font-mono"
-                 data-testid={`block-${block.id}-url`} />
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-[9px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)]">
+            {block.type === 'hero' ? 'HERO IMAGE' : 'EDITORIAL IMAGE'} · click anywhere to add a Design Reference™
+          </p>
+          <button type="button" onClick={onOpenPicker}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 border border-[var(--bp-border)] hover:border-[var(--bp-primary)] text-[var(--bp-text-secondary)] hover:text-[var(--bp-text-primary)] text-[9px] uppercase tracking-[0.22em] transition-colors"
+                  data-testid={`block-${block.id}-pick`}>
+            <FolderOpen size={10} strokeWidth={1.6} />
+            {block.image_url ? 'Cambia' : 'Sfoglia libreria'}
+          </button>
         </div>
         <HotspotCanvas
           block={block}
@@ -319,6 +385,8 @@ const BlockEditor = ({
           onUpdateHotspot={onUpdateHotspot}
           onDeleteHotspot={onDeleteHotspot}
           onActivateHotspot={onActivateHotspot}
+          onOpenPicker={onOpenPicker}
+          onDirectDrop={onDirectDrop}
         />
         <input type="text" value={blc.caption || ''} onChange={(e) => onSetLocaleField('caption', e.target.value)} onBlur={onCommitBlocks}
                placeholder="Caption opzionale"
@@ -334,10 +402,12 @@ const BlockEditor = ({
 const HotspotCanvas = ({
   block, locale, hotspots, activeHotspot, savingId,
   onCreateHotspot, onUpdateHotspot, onDeleteHotspot, onActivateHotspot,
+  onOpenPicker, onDirectDrop,
 }) => {
   const canvasRef = useRef(null);
   const [dragging, setDragging] = useState(null); // { id, offsetX, offsetY }
   const [showAddHint, setShowAddHint] = useState(false);
+  const [isFileOver, setIsFileOver] = useState(false);
 
   useEffect(() => {
     if (!dragging) return;
@@ -376,12 +446,39 @@ const HotspotCanvas = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dragging]);
 
+  const handleFileDrop = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    setIsFileOver(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file && file.type?.startsWith('image/') && onDirectDrop) {
+      onDirectDrop(file);
+    }
+  };
+  const handleFileDragOver = (e) => {
+    if (Array.from(e.dataTransfer.types || []).includes('Files')) {
+      e.preventDefault(); e.stopPropagation();
+      setIsFileOver(true);
+    }
+  };
+  const handleFileDragLeave = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    setIsFileOver(false);
+  };
+
   if (!block.image_url) {
     return (
-      <div className="aspect-[16/10] bg-[var(--bp-surface-2)] border border-dashed border-[var(--bp-border)] flex flex-col items-center justify-center"
-           data-testid={`canvas-${block.id}-empty`}>
-        <ImageIcon size={32} strokeWidth={1} className="text-[var(--bp-text-muted)] opacity-50 mb-2" />
-        <p className="text-[var(--bp-text-muted)] text-xs">Inserisci una URL immagine per iniziare a curare hotspot.</p>
+      <div
+        onDragOver={handleFileDragOver}
+        onDragLeave={handleFileDragLeave}
+        onDrop={handleFileDrop}
+        onClick={onOpenPicker}
+        className={`aspect-[16/10] bg-[var(--bp-surface-2)] border border-dashed flex flex-col items-center justify-center gap-2 cursor-pointer transition-colors ${isFileOver ? 'border-[var(--bp-primary)] bg-[var(--bp-primary)]/5' : 'border-[var(--bp-border)] hover:border-[var(--bp-primary)]'}`}
+        data-testid={`canvas-${block.id}-empty`}
+      >
+        <ImageIcon size={32} strokeWidth={1} className="text-[var(--bp-text-muted)] opacity-50" />
+        <p className="text-[var(--bp-text-muted)] text-xs">
+          {isFileOver ? 'Rilascia per caricare e curare hotspot.' : 'Trascina un\'immagine qui o sfoglia la libreria.'}
+        </p>
       </div>
     );
   }
@@ -409,12 +506,23 @@ const HotspotCanvas = ({
       onClick={handleCanvasClick}
       onMouseEnter={() => setShowAddHint(true)}
       onMouseLeave={() => setShowAddHint(false)}
-      className="relative aspect-[16/10] overflow-hidden bg-[var(--bp-surface-2)] cursor-crosshair select-none"
+      onDragOver={handleFileDragOver}
+      onDragLeave={handleFileDragLeave}
+      onDrop={handleFileDrop}
+      className={`relative aspect-[16/10] overflow-hidden bg-[var(--bp-surface-2)] cursor-crosshair select-none ${isFileOver ? 'ring-2 ring-[var(--bp-primary)]' : ''}`}
       data-testid={`canvas-${block.id}`}
     >
       <img src={block.image_url} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
 
-      {showAddHint && (
+      {isFileOver && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/55 backdrop-blur-sm text-white pointer-events-none">
+          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.28em]">
+            <Upload size={16} strokeWidth={1.4} /> Rilascia per sostituire
+          </div>
+        </div>
+      )}
+
+      {showAddHint && !isFileOver && (
         <div className="absolute bottom-3 left-3 z-10 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[2px] bg-black/75 backdrop-blur-md text-white text-[9px] uppercase tracking-[0.22em] pointer-events-none">
           <Plus size={10} strokeWidth={1.6} /> Click anywhere to add a Design Reference™
         </div>
