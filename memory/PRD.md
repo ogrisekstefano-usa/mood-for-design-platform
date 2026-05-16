@@ -1,6 +1,49 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.3.A — Cultural Design Intelligence™ FOUNDATION (DONE — 16 Feb 2026)
+
+> External design references are NOT media uploads or social pins. They are
+> contextualized design signals that pass through an editorial AI interpretation
+> pipeline BEFORE becoming visible. This is the DB + backend foundation —
+> no UI, no Pinterest OAuth, no scraping, no social actions yet.
+
+**Migration `033_design_references.sql`** — 4 new tables:
+- `design_references` — core intelligence entity. Status defaults to `processing_editorial_reading`; only flips to `ready` once an interpretation lands. Future-prepared nullable fields: `design_intent`, `emotional_direction`, `project_relevance`, `advisor_notes`, `material_affinity`.
+- `reference_locale_interpretations` — the cultural intelligence engine. UNIQUE (reference_id, locale). Stores `atmosphere`, `material_language`, `hospitality_level`, `architectural_tone`, `emotional_positioning`, `market_fit_score` (0..100), and the marquee `editorial_reading` (4–6 sentence senior-curator memo, NEVER AI-labelled).
+- `reference_collections` — curated editorial directions (NOT folders, NOT boards): `title`, `subtitle`, `atmosphere_direction`, `project_vertical`, `market_focus`, `advisor_id`.
+- `reference_collection_items` — soft membership join.
+
+**Backend** — new router `/app/backend/routers/reference_intelligence.py`:
+- `POST /api/references` — ingest with `editorial_status='processing_editorial_reading'`. Immediately calls `with_runtime_prompt(locale_profile)` via `claude-sonnet-4-5-20250929`. On success: flip to `ready`, persist interpretation, emit timeline event. On LLM failure: stay processing, no interpretation row, NEVER listed in default GET (fail-closed honors NO RAW IMPORTS).
+- `GET /api/references` — returns only `editorial_status='ready'` by default; supports `?status=processing_editorial_reading|archived|rejected`. Bulk-hydrates interpretations.
+- `GET /api/references/{id}` and `GET /api/references/{id}/interpretations`.
+- `POST /api/references/{id}/interpretations` — regenerate per locale (EN_US/EN_GB/EN_AE/IT_IT/DE_DE/FR_FR/ES_ES). Promotes still-processing references to ready on first successful interpretation.
+- `POST/GET /api/reference-collections`, `GET /api/reference-collections/{cid}`, `POST .../items` (idempotent), `DELETE .../items/{rid}`. Refuses adding references that are still processing (409 conflict).
+
+**Timeline integration** — when a reference is project-linked, emits human-language events under `project_activity`:
+- `reference.added` → `"Stefano ha aggiunto Statement hospitality through monumental material presence …"`
+- `reference.interpretation_updated` → `"Editorial reading updated for DE_DE market"`
+- `reference.added_to_direction` → `"Reference linked to a curated direction"`
+NO technical / developer / AI language anywhere. No "generated", no model name, no "AI". `_humanize()` falls through cleanly when no event-type prefix exists, so the full curator sentence renders as-is.
+
+**Cultural distinctness verified end-to-end**:
+- Same Mediterranean estate image, EN_AE: *"villa architecture as material testimony … majlis-level welcome … high-rise luxury counterpoint … prestige refuge"* (UAE prestige register, market_fit_score 82).
+- Same image, DE_DE: *"konstruktive Disziplin … über Ausführung spricht, nicht über Lifestyle … erdgebundene Materialwahrheit"* (German architectural rigor, market_fit_score 72).
+- Token-Jaccard overlap EN_AE vs DE_DE = 0.13 (translation threshold 0.35) — these are RE-INTERPRETATIONS, never translations.
+
+**Testing**: backend regression `/app/backend/tests/test_phase_p03_reference_intelligence.py` 19/19 PASS + testing agent deep validation 23/23 PASS (`/app/test_reports/iteration_50.json`). Covers ingest pipeline, list filtering, locale regeneration, collection CRUD, idempotency, tenant isolation (cross-tenant probes → 404), AI-invisibility lint on timeline output, fail-closed under LLM failure.
+
+**Out of scope (P0.3.B onward)**:
+- Cultural Reading Engine deeper extraction (hospitality scoring, material affinity, atmosphere semantics).
+- Curated Collections UI (`/workspace/references` route, cinematic cards, NO masonry).
+- Pinterest OAuth connector.
+- Strategic Direction™ consumption of references (deferred to P0.3.B once Reading Engine matures).
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase POST-P0.2.D — Final Hardening Pass (DONE — 16 Feb 2026)
 - **Variant Approval Inbox UI** (`/editorial/inbox`) — pagina cinematica "Editorial Review" che consuma `/api/magazine/variant-approval-inbox` + endpoint approvazione. Tabs (Tutte / Articoli / Riferimenti) con conteggi live, card differenziate per articoli vs hotspot, ribbon "EDITORIAL PENDING", badge culturale con register label ("Italia · Editorial craftsmanship", "UAE · Sensorial prestige"), framing/atmosphere isolati, CTA "Publish perspective" vs "Set aside". Linguaggio 100% editoriale, mai "AI", mai "generate". Loading skeleton calmo, error state "Non siamo riusciti a completare questa azione editoriale". Empty state "Editorial calm · Nessuna prospettiva in attesa".
 - **Sidebar entry**: nuova sezione "Editoriale" con NavItem `nav.editorialInbox` (fallback "Editorial review") visibile solo a chi ha `tenant:settings`. Tooltip funzionante.
