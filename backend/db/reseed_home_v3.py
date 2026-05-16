@@ -17,19 +17,19 @@ CORP_SLUG = 'mood-corporate'
 LOCALES = ['it', 'en-us', 'en-uk', 'fr', 'de', 'es']
 
 # Editorial luxury interior — warm ambient lit room (matches mockup vibe)
-HERO_IMG  = "https://images.unsplash.com/photo-1618219740772-0c45e9b3a06e?w=1600&q=85"
-DASH_IMG  = "https://images.unsplash.com/photo-1551434678-e076c223a692?w=1800&q=85"
-CTA_BG    = "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1800&q=80"
+HERO_IMG  = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=85&auto=format&fit=crop"
+DASH_IMG  = "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1800&q=85&auto=format&fit=crop"
+CTA_BG    = "https://images.unsplash.com/photo-1618219944342-824e40a13285?w=1800&q=80&auto=format&fit=crop"
 
 PROJECTS = [
-    {"title": "Milano Penthouse",   "studio": "Studio Lumen",       "status": "In Progress", "style": "Residential",
-     "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=85"},
-    {"title": "Hotel Esplanade Trivat","studio": "OPLA Studio",     "status": "Concept",     "style": "Hospitality",
-     "image": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=900&q=85"},
-    {"title": "London Townhouse",   "studio": "House of Vasari",    "status": "Completed",   "style": "Residential",
-     "image": "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=900&q=85"},
-    {"title": "Miami Beach Villa",  "studio": "Coastal & Co.",      "status": "In Progress", "style": "Residential",
-     "image": "https://images.unsplash.com/photo-1571508601891-ca5e7a713859?w=900&q=85"},
+    {"title": "Milano Penthouse",       "studio": "Studio Lumen",      "status": "In Progress", "style": "Residential",
+     "image": "https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=900&q=85&auto=format&fit=crop"},
+    {"title": "Hotel Esplanade Trivat", "studio": "OPLA Studio",       "status": "Concept",     "style": "Hospitality",
+     "image": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=900&q=85&auto=format&fit=crop"},
+    {"title": "London Townhouse",       "studio": "House of Vasari",   "status": "Completed",   "style": "Residential",
+     "image": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=900&q=85&auto=format&fit=crop"},
+    {"title": "Miami Beach Villa",      "studio": "Coastal & Co.",     "status": "In Progress", "style": "Residential",
+     "image": "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=900&q=85&auto=format&fit=crop"},
 ]
 
 
