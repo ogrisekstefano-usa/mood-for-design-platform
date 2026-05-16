@@ -1,0 +1,73 @@
+/* Phase Y.2 — Visual Hotspot Editor styles */
+
+/* Pin nel canvas editor — più visibile del public pin, con stato active distinto */
+.mfd-edit-pin {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #FFF; border: 2px solid #1B1B1F;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4), 0 0 0 4px rgba(0,0,0,0.18);
+  cursor: grab; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s ease;
+  position: relative;
+  animation: mfd-edit-pin-pulse 2.5s ease-in-out infinite;
+}
+.mfd-edit-pin span {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #9B6B2B;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45);
+}
+.mfd-edit-pin:hover { transform: scale(1.12); }
+.mfd-edit-pin:active { cursor: grabbing; }
+.mfd-edit-pin.is-active {
+  background: #D8B47A; border-color: #1B1B1F;
+  transform: scale(1.18);
+  animation: none;
+}
+.mfd-edit-pin.is-active span { background: #1B1B1F; }
+.mfd-edit-pin.is-saving {
+  animation: mfd-edit-pin-saving 1s ease-in-out infinite;
+}
+
+@keyframes mfd-edit-pin-pulse {
+  0%, 100% { box-shadow: 0 4px 14px rgba(0,0,0,0.4), 0 0 0 4px rgba(0,0,0,0.18), 0 0 0 0    rgba(155, 107, 43, 0.55); }
+  50%      { box-shadow: 0 4px 14px rgba(0,0,0,0.4), 0 0 0 4px rgba(0,0,0,0.18), 0 0 0 14px rgba(155, 107, 43, 0); }
+}
+@keyframes mfd-edit-pin-saving {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+
+/* Inline editor popover */
+.mfd-edit-pin__panel {
+  position: absolute;
+  width: 320px;
+  background: rgba(20, 18, 16, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 0.9rem 1rem 0.9rem;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(216, 180, 122, 0.18);
+  border-radius: 3px;
+  color: #F4EFE6;
+  z-index: 40;
+  animation: mfd-edit-panel-in 0.22s ease;
+}
+.mfd-edit-pin__panel--v-below { top: 30px; }
+.mfd-edit-pin__panel--v-above { bottom: 30px; }
+.mfd-edit-pin__panel--h-center  { left: 50%;  transform: translateX(-50%); }
+.mfd-edit-pin__panel--h-left    { left: -10px; }
+.mfd-edit-pin__panel--h-right   { right: -10px; }
+
+@keyframes mfd-edit-panel-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.mfd-edit-pin__panel--h-center.mfd-edit-pin__panel--v-below { animation-name: mfd-edit-panel-in-c-b; }
+.mfd-edit-pin__panel--h-center.mfd-edit-pin__panel--v-above { animation-name: mfd-edit-panel-in-c-a; }
+@keyframes mfd-edit-panel-in-c-b {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes mfd-edit-panel-in-c-a {
+  from { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}

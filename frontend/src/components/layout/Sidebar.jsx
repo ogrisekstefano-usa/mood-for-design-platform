@@ -202,6 +202,8 @@ const Sidebar = () => {
             <SectionLabel collapsed={collapsed}>{t('nav.section.system')}</SectionLabel>
             <div className="space-y-0.5">
               <NavItem to="/settings" icon="Settings" labelKey="nav.settings" end collapsed={collapsed} />
+              <NavItem to="/settings/storefront" icon="LayoutGrid" labelKey="nav.storefront" collapsed={collapsed} />
+              <NavItem to="/settings/magazine" icon="BookOpen" labelKey="nav.magazine" collapsed={collapsed} />
               <NavItem to="/settings/plan" icon="Receipt" labelKey="nav.billing" collapsed={collapsed} />
               <NavItem to="/settings/integrations" icon="Plug" labelKey="nav.integrations" collapsed={collapsed} />
             </div>

@@ -44,6 +44,8 @@ const OnboardingPlaceholderPage = lazy(() => import('./pages/site/OnboardingPlac
 const StartProjectWizard = lazy(() => import('./pages/site/StartProjectWizard'));
 import MagazinePage from './pages/site/MagazinePage';
 import MagazineArticlePage from './pages/site/MagazineArticlePage';
+const MagazineAdminPage = lazy(() => import('./pages/settings/MagazineAdminPage'));
+const MagazineEditorPage = lazy(() => import('./pages/settings/MagazineEditorPage'));
 const ProfessionalsGatewayPage = lazy(() => import('./pages/site/ProfessionalsGatewayPage'));
 const ProfessionalIntakePage = lazy(() => import('./pages/site/ProfessionalIntakePage'));
 const LanguagesPage = lazy(() => import('./pages/settings/LanguagesPage'));
@@ -217,6 +219,8 @@ function App() {
                   <Route path="/settings/domains" element={<StudioAdminRoute><DomainsPage /></StudioAdminRoute>} />
                   <Route path="/settings/forms" element={<StudioAdminRoute><FormBuilderPage /></StudioAdminRoute>} />
                   <Route path="/settings/storefront" element={<StudioAdminRoute><StorefrontPage /></StudioAdminRoute>} />
+                  <Route path="/settings/magazine" element={<StudioAdminRoute><MagazineAdminPage /></StudioAdminRoute>} />
+                  <Route path="/settings/magazine/:id" element={<StudioAdminRoute><MagazineEditorPage /></StudioAdminRoute>} />
                   <Route path="/settings/plan" element={<StudioAdminRoute><PlanPage /></StudioAdminRoute>} />
                   <Route path="/settings/team" element={<StudioAdminRoute><MembersPage /></StudioAdminRoute>} />
                   <Route path="/settings/members" element={<StudioAdminRoute><MembersPage /></StudioAdminRoute>} />
