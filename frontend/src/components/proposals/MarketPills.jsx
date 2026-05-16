@@ -1,21 +1,31 @@
 /**
- * MarketPills — cinematic market perspective switcher.
+ * MarketPills — cinematic Market Perspective™ rail.
  *
- * NOT a language dropdown. A cultural repositioning rail.
+ * NOT a language switcher. A cultural repositioning rail.
  *
- * Each pill represents a target market. Clicking re-composes the proposal
- * narrative for that audience (different positioning, vocabulary, framing —
- * the same project, repositioned).
- *
- * Badges next to each pill indicate which perspectives have already been
- * generated for this proposal.
+ * Phase 1 locale codes: IT_IT, EN_US, EN_GB, EN_AE, DE_DE, FR_FR, ES_ES.
+ * EN_US ≠ EN_GB ≠ EN_AE — they share English but each is a fundamentally
+ * different cultural positioning with its own vocabulary, focus areas,
+ * forbidden patterns and CTA style.
  */
 import React, { useEffect, useState, useCallback } from 'react';
 import { Globe, Check, Loader2 } from 'lucide-react';
 import api from '../../lib/api';
 
+// Map: locale_code → market display label shown on the pill
+const LOCALE_DISPLAY = {
+  IT_IT: 'IT',
+  EN_US: 'US',
+  EN_GB: 'UK',
+  EN_AE: 'UAE',
+  DE_DE: 'DE',
+  FR_FR: 'FR',
+  ES_ES: 'ES',
+};
+
 export const MarketPills = ({
   proposalId,
+  activeLocaleCode,
   activeMarket,
   onSwitched,
   testid = 'market-pills',
@@ -28,7 +38,7 @@ export const MarketPills = ({
   const refresh = useCallback(async () => {
     try {
       const [a, b] = await Promise.all([
-        api.get('/api/market-perspectives/profiles'),
+        api.get('/api/locale-profiles'),
         api.get(`/api/proposals/${proposalId}/perspectives`),
       ]);
       setProfiles(a.data?.profiles || []);
@@ -38,14 +48,14 @@ export const MarketPills = ({
 
   useEffect(() => { refresh(); }, [refresh]);
 
-  const existingMarkets = new Set(versions.map((v) => v.market_code));
+  const existingLocales = new Set(versions.map((v) => v.locale_code));
 
   const switchTo = async (code) => {
     if (switching) return;
     setSwitching(code); setError(null);
     try {
       await api.post(`/api/proposals/${proposalId}/perspective`, {
-        market_code: code, set_active: true,
+        locale_code: code, set_active: true,
       });
       await refresh();
       onSwitched?.(code);
@@ -67,20 +77,24 @@ export const MarketPills = ({
         </p>
       </div>
       <p className="text-[12.5px] text-[var(--bp-text-secondary)] font-body leading-relaxed mb-5 max-w-2xl">
-        Riposizionamento culturale, non traduzione. Ogni mercato riceve una
-        narrativa nativa con vocabolario, tono e framing d'investimento dedicati.
+        Riposizionamento culturale, non traduzione. UAE, UK e US condividono
+        l'inglese ma sono tre posizionamenti culturali distinti — ciascuno con
+        vocabolario, tono e framing d'investimento dedicati.
       </p>
       <div className="flex flex-wrap gap-2" data-testid={`${testid}-rail`}>
         {profiles.map((p) => {
-          const isActive    = activeMarket === p.market_code;
-          const isSwitching = switching === p.market_code;
-          const hasVersion  = existingMarkets.has(p.market_code);
+          const code = p.locale_code;
+          const isActive    = activeLocaleCode === code
+            || (!activeLocaleCode && activeMarket === p.market);
+          const isSwitching = switching === code;
+          const hasVersion  = existingLocales.has(code);
+          const display     = LOCALE_DISPLAY[code] || p.market;
           return (
-            <button key={p.market_code}
-                    onClick={() => switchTo(p.market_code)}
+            <button key={code}
+                    onClick={() => switchTo(code)}
                     disabled={!!switching || isActive}
-                    data-testid={`${testid}-${p.market_code}`}
-                    title={p.emotional_tone}
+                    data-testid={`${testid}-${code}`}
+                    title={`${p.display_name} — ${p.emotional_style}`}
                     className={`group relative inline-flex items-center gap-2 px-4 py-2.5
                                 border transition-all text-left disabled:cursor-not-allowed
                                 ${isActive
@@ -89,10 +103,10 @@ export const MarketPills = ({
                                     ? 'border-[var(--bp-border-strong)] bg-[var(--bp-surface-1)] hover:border-[var(--bp-primary)]'
                                     : 'border-[var(--bp-border)] bg-[var(--bp-surface-1)] hover:border-[var(--bp-border-strong)]'}`}>
               <span className="font-heading text-[12.5px] font-light tracking-[0.12em] text-[var(--bp-text-primary)]">
-                {p.market_code}
+                {display} Perspective
               </span>
               <span className="text-[10.5px] uppercase tracking-[0.18em] text-[var(--bp-text-muted)] font-body">
-                {p.emotional_tone}
+                {p.emotional_style}
               </span>
               {isSwitching ? (
                 <Loader2 size={11} strokeWidth={1.6}
@@ -110,7 +124,7 @@ export const MarketPills = ({
       {error && <p className="text-[12px] text-red-300 font-body mt-3">{error}</p>}
       {switching && (
         <p className="text-[12px] text-[var(--bp-text-muted)] font-body italic mt-3">
-          Riposiziono la narrativa per il mercato {switching}…
+          Riposiziono la narrativa per {LOCALE_DISPLAY[switching] || switching}…
         </p>
       )}
     </section>
