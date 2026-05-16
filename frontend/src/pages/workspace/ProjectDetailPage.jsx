@@ -767,7 +767,7 @@ const AIStudioBriefTab = ({ projectId, project }) => {
             <p className="text-[10px] tracking-[0.3em] uppercase text-[var(--bp-primary)] font-body mb-3">
               AI Studio Brief™ · Mercato {brief.market || 'IT'}
             </p>
-            <h2 className="font-heading text-[28px] font-light text-[var(--bp-text-primary)] leading-[1.1]">
+            <h2 data-testid="ai-brief-headline" className="font-heading text-[28px] font-light text-[var(--bp-text-primary)] leading-[1.1]">
               {s.headline || 'Direzione progettuale'}
             </h2>
             <p className="mt-3 text-[11px] text-[var(--bp-text-muted)] font-body">
@@ -858,6 +858,7 @@ const ProjectDetailPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
 
   const tab = useMemo(() => {
     const q = (searchParams.get('tab') || 'overview').toLowerCase();
@@ -871,15 +872,31 @@ const ProjectDetailPage = () => {
     setSearchParams(next, { replace: true });
   }, [searchParams, setSearchParams]);
 
-  useEffect(() => {
-    api.get(`/api/projects/${id}`).then((r) => setProject(r.data))
-      .catch(() => navigate('/workspace/projects')).finally(() => setLoading(false));
+  const loadProject = useCallback(() => {
+    setLoading(true); setLoadError(null);
+    api.get(`/api/projects/${id}`)
+      .then((r) => setProject(r.data))
+      .catch((e) => {
+        const status = e?.response?.status;
+        if (status === 404) navigate('/workspace/projects');
+        else setLoadError('Caricamento progetto non riuscito. Verifica la connessione e riprova.');
+      })
+      .finally(() => setLoading(false));
   }, [id, navigate]);
+
+  useEffect(() => { loadProject(); }, [loadProject]);
 
   if (loading) {
     return (
       <div className="p-10 flex items-center justify-center">
         <div className="w-6 h-6 border-2 border-[var(--bp-primary)] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+  if (loadError) {
+    return (
+      <div className="p-10 max-w-2xl mx-auto" data-testid="project-load-error">
+        <ErrorRetry message={loadError} onRetry={loadProject} />
       </div>
     );
   }

@@ -1,6 +1,44 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.6.A + P0.6.B — Project Experience Hardening & Deep Integrations (DONE — 16 Feb 2026)
+
+> Trasforma ProjectDetailPage da contenitore statico in **ecosistema operativo vivente**.
+> 8 tab interconnessi, deep-linking via `?tab=`, AI Studio Brief™ reale (Claude Sonnet 4.5).
+
+**Backend** — nuovo router `project_workspace_v2.py` (5 endpoint, mounted under `/api/projects`):
+- `GET /api/projects/{id}/inspirations` — moodboard_candidates hydrated con article + hotspot localizzato + clustering per `reference_type` (Atmosfera/Materia/Tessuto/Luce/Arredo/Finitura/Palette/Prodotto).
+- `GET /api/projects/{id}/timeline` — unified memory: merge di project_activity + moodboard_candidates + project_ai_briefs + client_messages, etichette ITA umane (`AI Studio Brief™ generato`, `Nuovo task creato`, `Ispirazione salvata` …) e color dot per `kind`.
+- `GET /api/projects/{id}/materials` — material_registry filtrato via `metadata_json.linked_project_ids` (soft link), con hydration cover via `media_library.primary_asset_id`.
+- `GET /api/projects/{id}/proposals` — proposte filtrate per progetto + continuity counts (`moodboards_in_project`, `inspirations_in_project`).
+- `GET /api/projects/{id}/conversations` — feed messaggi project-scoped + participant strip (Cliente / Advisor) hydrated da `users_profile`.
+- Tutti gli endpoint enforce tenant isolation (404 cross-tenant verified).
+- Allineato allo schema REALE Supabase (`moodboard_candidates.title/image_url/reference_type`, `article_hotspots.locale_content` localizzato IT/EN, `material_registry.dominant_color` singolare).
+- `ai_studio_brief.py` corretto: contesto LLM ora legge campi reali di `moodboard_candidates` (title/description/reference_type) e `material_registry` (linked_project_ids in metadata_json).
+
+**Frontend** — `ProjectDetailPage.jsx` riscritto end-to-end:
+- 8 tab cinematic: Overview · Ispirazioni · Moodboard · Materiali · Proposte · Conversazioni · Timeline · AI Studio Brief™.
+- `useSearchParams` per persistenza tab (`?tab=timeline` deep-link + reload-safe + back/forward navigation).
+- 4 primitive cinematic riusabili: `Skeleton`, `EmptyState`, `ErrorRetry`, advisor card.
+- Empty state editoriali con CTA contestuale (Apri Magazine, Apri archivio materiali, Hub messaggi…).
+- Loading skeleton (3 card animate) per ogni tab; nessun flash di white area.
+- Tab bar overflow-x-auto su mobile, no clipping.
+- `ConversationsTab` con bubble bidirezionali (advisor sx · cliente dx), participant strip con avatar.
+- `TimelineTab` con linea verticale + dot color-coded per kind (workflow oro, ispirazione bronzo, AI Brief viola, conversazione verde).
+- `InspirationCard` con cover + overlay hotspot label + reference_type chip + advisor note in italic.
+- `MaterialCard` con cover, swatch `dominant_color`, atmosphere chips, tactile descriptors, supplier badge.
+- `AIStudioBriefTab` con headline + 5 sezioni numerate (DIREZIONE · MATERIA · EMOZIONE · MERCATO · TENSIONI) + PROSSIME MOSSE list. Generate/refresh inline con market selector (IT/US/FR/DE/UK/UAE/ES).
+- ErrorRetry sul cold-load del progetto (no silent redirect su transient 503).
+
+**Test coverage** ✅
+- pytest `/app/backend/tests/test_p06_project_workspace.py` → **23/23** (5 endpoint × 3 progetti seedati + ai-brief read + cross-tenant isolation + 404 unknown-project).
+- Playwright frontend (testing_agent_v3_fork iteration_48): 8 tab render + switch + ?tab= persistence + reload + back/forward + empty/populated states + AI Brief seeded sections + responsive mobile viewport.
+- Smoke screenshot live: Overview, Ispirazioni (empty cinematic), Timeline (2 eventi reali), AI Studio Brief™ (seeded brief italiano · Claude Sonnet 4.5).
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase P0.5 — Real Dashboard Experience (DONE — 16 Feb 2026)
 
 > Trasforma la dashboard da "welcome page" generica in **cuore operativo dello studio**.
