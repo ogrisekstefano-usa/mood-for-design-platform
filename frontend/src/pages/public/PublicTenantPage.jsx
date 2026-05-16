@@ -25,6 +25,9 @@ const RESERVED_SLUGS = new Set([
   'auth', 'dashboard', 'admin', 'workspace', 'moodboards', 'inspirations',
   'insights', 'settings', 'form', 'public', 'api', 'static', 'assets',
   'login', 'signup', 'logout',
+  // Public storefront routes (Phase Y onwards)
+  'magazine', 'start-project', 'professionals', 'onboarding', 'projects',
+  'review', 'presentation', 'moodboard', 'client', 'f',
 ]);
 
 const PublicTenantPage = () => {

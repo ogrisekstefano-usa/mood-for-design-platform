@@ -1,0 +1,353 @@
+// ──────────────────────────────────────────────────────────────────────
+// MOOD for DESIGN™ — Article detail (Phase Y.1 + Y.3 lite)
+// Cinematic editorial reader with Design References™ hotspots.
+// ──────────────────────────────────────────────────────────────────────
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
+import { ArrowLeft, ArrowUpRight, BookOpen, Plus, X, Check, Send } from 'lucide-react';
+import { SiteProvider, useSite } from '../../site/SiteContext';
+import { navigationContent } from '../../site/content/navigation';
+import { tenantConfig } from '../../site/content/tenant';
+import '../../site/site.css';
+import './magazine.css';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const SESSION_KEY = 'mfd_session';
+
+const T = {
+  it: { back: 'Magazine', references: 'DESIGN REFERENCES', share: 'Salva questa atmosfera', loading: 'Caricamento…', notFound: 'Articolo non disponibile.', readMin: 'min di lettura', saveCta: 'Salva nel mio progetto', sendCta: 'Parla con il mio referente', mbCta: 'Aggiungi alla moodboard', exploreCta: 'Esplora la palette', soft_title: 'Crea il tuo spazio progetto', soft_body: 'Per salvare questo riferimento ti chiediamo solo nome ed email — ti accompagneremo poi nella scoperta del progetto.', soft_email: 'La tua email', soft_first: 'Nome', soft_project: 'Tipo di progetto (es. residenza)', soft_save: 'Salva e continua', soft_cancel: 'Annulla', toast_anon: 'Riferimento salvato · ti accompagniamo nell\'onboarding', toast_advisor: 'Riferimento condiviso con', toast_default: 'Riferimento salvato nel tuo progetto.' },
+  en: { back: 'Magazine', references: 'DESIGN REFERENCES', share: 'Save this atmosphere', loading: 'Loading…', notFound: 'Article unavailable.', readMin: 'min read', saveCta: 'Save to my project', sendCta: 'Discuss with my advisor', mbCta: 'Add to my moodboard', exploreCta: 'Explore the palette', soft_title: 'Create your project space', soft_body: 'To save this reference we only need your name and email — we\'ll then guide you through the project discovery.', soft_email: 'Your email', soft_first: 'First name', soft_project: 'Project type (e.g. residential)', soft_save: 'Save & continue', soft_cancel: 'Cancel', toast_anon: 'Reference saved · we\'ll guide you through onboarding', toast_advisor: 'Reference shared with', toast_default: 'Reference saved to your project.' },
+};
+
+const ctaCopy = (action, locale) => {
+  const t = T[locale] || T.it;
+  switch (action) {
+    case 'send_to_advisor':
+    case 'discuss_with_advisor':  return t.sendCta;
+    case 'add_to_moodboard':      return t.mbCta;
+    case 'explore_material':      return t.exploreCta;
+    default:                       return t.saveCta;
+  }
+};
+
+const TYPE_LABEL = {
+  material: 'Material', fabric: 'Fabric', lighting: 'Lighting', furniture: 'Furniture',
+  finish: 'Finish', atmosphere: 'Atmosphere', color_palette: 'Color palette',
+  product: 'Product', custom: 'Reference',
+};
+
+// ─── Hotspot pin + popover ──────────────────────────────────────────────
+const Hotspot = ({ hotspot, articleId, locale, onSave, onSent, openSoftLead }) => {
+  const [open, setOpen] = useState(false);
+  const [sending, setSending] = useState(false);
+  const lc = hotspot.locale_content?.[locale] || hotspot.locale_content?.it || {};
+  const label = lc.label || 'Design reference';
+  const description = lc.description;
+  const ctaLabel = lc.cta_label || ctaCopy(hotspot.cta_action, locale);
+
+  const handleSave = async () => {
+    const session = (() => { try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (_) { return null; } })();
+    setSending(true);
+    try {
+      if (session?.access_token) {
+        const r = await axios.post(`${BACKEND_URL}/api/magazine/client/save-reference`, {
+          article_id: articleId,
+          hotspot_id: hotspot.id,
+          locale,
+          title: label, description, image_url: hotspot.image_url,
+          reference_type: hotspot.reference_type,
+          action: hotspot.cta_action,
+        }, { headers: { Authorization: `Bearer ${session.access_token}` } });
+        onSent?.(r.data);
+      } else {
+        // Anonymous: open soft lead capture
+        openSoftLead({ hotspot, articleId });
+      }
+    } catch (e) {
+      // Silent fail for now — toast pre-existing
+    } finally {
+      setSending(false);
+      setOpen(false);
+    }
+  };
+
+  return (
+    <div
+      className="mfd-hotspot"
+      style={{ left: `${hotspot.x_pct}%`, top: `${hotspot.y_pct}%` }}
+      data-testid={`hotspot-${hotspot.id}`}
+    >
+      <button
+        type="button"
+        className={`mfd-hotspot__pin ${open ? 'is-open' : ''}`}
+        onClick={() => setOpen((v) => !v)}
+        aria-label={label}
+        data-testid={`hotspot-pin-${hotspot.id}`}
+      >
+        <span className="mfd-hotspot__pin-inner" />
+      </button>
+      {open && (
+        <div className="mfd-hotspot__panel" data-testid={`hotspot-panel-${hotspot.id}`}>
+          <button
+            type="button"
+            className="mfd-hotspot__panel-close"
+            onClick={() => setOpen(false)}
+            aria-label="Close"
+            data-testid={`hotspot-close-${hotspot.id}`}
+          >
+            <X size={11} strokeWidth={1.6} />
+          </button>
+          <p className="mfd-hotspot__type">{TYPE_LABEL[hotspot.reference_type] || 'Reference'}</p>
+          <p className="mfd-hotspot__label">{label}</p>
+          {description && <p className="mfd-hotspot__description">{description}</p>}
+          <button
+            type="button"
+            className="mfd-hotspot__cta"
+            onClick={handleSave}
+            disabled={sending}
+            data-testid={`hotspot-cta-${hotspot.id}`}
+          >
+            {sending ? '…' : ctaLabel}
+            <ArrowUpRight size={11} strokeWidth={1.6} />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ─── Soft lead capture modal (anonymous flow) ───────────────────────────
+const SoftLeadModal = ({ visible, onClose, articleId, hotspot, locale, onCaptured }) => {
+  const t = T[locale] || T.it;
+  const [form, setForm] = useState({ email: '', first_name: '', project_type: '' });
+  const [busy, setBusy] = useState(false);
+
+  if (!visible) return null;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.email || !form.first_name) return;
+    setBusy(true);
+    try {
+      const tenantSlug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
+      const lc = hotspot?.locale_content?.[locale] || hotspot?.locale_content?.it || {};
+      const r = await axios.post(
+        `${BACKEND_URL}/api/magazine/public/${encodeURIComponent(tenantSlug)}/save-reference`,
+        {
+          article_id: articleId,
+          hotspot_id: hotspot?.id,
+          locale,
+          title: lc.label, description: lc.description, image_url: hotspot?.image_url,
+          reference_type: hotspot?.reference_type,
+          email: form.email, first_name: form.first_name, project_type: form.project_type || null,
+          referrer: typeof document !== 'undefined' ? document.referrer : null,
+        }
+      );
+      onCaptured?.(r.data);
+    } catch (_) {
+      // ignore
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="mfd-soft-lead" data-testid="soft-lead-modal" role="dialog" aria-modal="true">
+      <div className="mfd-soft-lead__panel">
+        <button type="button" className="mfd-soft-lead__close" onClick={onClose} aria-label="Close" data-testid="soft-lead-close">
+          <X size={14} strokeWidth={1.5} />
+        </button>
+        <p className="mfd-soft-lead__eyebrow">DESIGN REFERENCES</p>
+        <h3 className="mfd-soft-lead__title">{t.soft_title}</h3>
+        <p className="mfd-soft-lead__body">{t.soft_body}</p>
+        <form onSubmit={handleSubmit} className="mfd-soft-lead__form">
+          <input type="text" placeholder={t.soft_first} value={form.first_name}
+                 onChange={(e) => setForm({ ...form, first_name: e.target.value })}
+                 required data-testid="soft-lead-first-name" />
+          <input type="email" placeholder={t.soft_email} value={form.email}
+                 onChange={(e) => setForm({ ...form, email: e.target.value })}
+                 required data-testid="soft-lead-email" />
+          <input type="text" placeholder={t.soft_project} value={form.project_type}
+                 onChange={(e) => setForm({ ...form, project_type: e.target.value })}
+                 data-testid="soft-lead-project-type" />
+          <button type="submit" disabled={busy} data-testid="soft-lead-submit">
+            {busy ? '…' : t.soft_save} <ArrowUpRight size={13} strokeWidth={1.6} />
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+// ─── Article body renderer ──────────────────────────────────────────────
+const ArticleBody = ({ blocks, hotspots, locale, articleId, openSoftLead, onSentRef }) => {
+  const hotspotsByBlock = useMemo(() => {
+    const map = {};
+    for (const h of hotspots || []) {
+      (map[h.block_id] ||= []).push(h);
+    }
+    return map;
+  }, [hotspots]);
+
+  return (
+    <div className="mfd-article__body" data-testid="article-body">
+      {(blocks || []).map((b, i) => {
+        const lc = b.locale_content?.[locale] || b.locale_content?.it || {};
+        const bhots = hotspotsByBlock[b.id] || [];
+        if (b.type === 'hero') return null; // hero is rendered as the page hero
+        if (b.type === 'paragraph') {
+          return (
+            <p key={b.id || i} className="mfd-article__para" data-testid={`block-${b.id}`}>{lc.text}</p>
+          );
+        }
+        if (b.type === 'quote') {
+          return (
+            <blockquote key={b.id || i} className="mfd-article__quote" data-testid={`block-${b.id}`}>
+              <p>{lc.text}</p>
+              {lc.author && <cite>— {lc.author}</cite>}
+            </blockquote>
+          );
+        }
+        if (b.type === 'image' || b.type === 'gallery') {
+          return (
+            <figure key={b.id || i} className="mfd-article__figure" data-testid={`block-${b.id}`}>
+              <div className="mfd-article__figure-media">
+                <img src={b.image_url} alt={b.alt || ''} loading="lazy" />
+                {bhots.map((h) => (
+                  <Hotspot key={h.id}
+                           hotspot={{ ...h, image_url: b.image_url }}
+                           articleId={articleId}
+                           locale={locale}
+                           openSoftLead={openSoftLead}
+                           onSent={onSentRef} />
+                ))}
+              </div>
+              {lc.caption && <figcaption>{lc.caption}</figcaption>}
+            </figure>
+          );
+        }
+        return null;
+      })}
+    </div>
+  );
+};
+
+// ─── Page ───────────────────────────────────────────────────────────────
+const MagazineArticleInner = () => {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  const { locale } = useSite();
+  const tenantSlug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
+  const t = T[locale] || T.it;
+  const [state, setState] = useState({ loading: true, article: null });
+  const [softLead, setSoftLead] = useState({ visible: false, hotspot: null, articleId: null });
+  const [toast, setToast] = useState(null);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const r = await axios.get(`${BACKEND_URL}/api/magazine/public/${encodeURIComponent(tenantSlug)}/articles/${encodeURIComponent(slug)}`);
+        if (alive) setState({ loading: false, article: r.data?.article || null });
+      } catch (_) {
+        if (alive) setState({ loading: false, article: null });
+      }
+    })();
+    return () => { alive = false; };
+  }, [tenantSlug, slug]);
+
+  useEffect(() => {
+    if (state.article) {
+      const lc = state.article.locale_content?.[locale] || state.article.locale_content?.it || {};
+      document.title = `${lc.title || 'Article'} · MOOD for DESIGN`;
+    }
+  }, [state.article, locale]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const id = setTimeout(() => setToast(null), 3800);
+    return () => clearTimeout(id);
+  }, [toast]);
+
+  const handleSentRef = (data) => {
+    const msg = data?.advisor_name
+      ? `${t.toast_advisor} ${data.advisor_name}.`
+      : (data?.toast || t.toast_default);
+    setToast({ kind: 'success', text: msg });
+  };
+
+  const handleSoftLeadCaptured = (data) => {
+    setSoftLead({ visible: false, hotspot: null, articleId: null });
+    setToast({ kind: 'success', text: t.toast_anon });
+    setTimeout(() => navigate(data?.onboarding_url || '/start-project'), 1800);
+  };
+
+  if (state.loading) return <div className="mfd-magazine__empty" data-testid="article-loading">{t.loading}</div>;
+  if (!state.article) return <div className="mfd-magazine__empty" data-testid="article-not-found">{t.notFound}</div>;
+
+  const a = state.article;
+  const lc = a.locale_content?.[locale] || a.locale_content?.it || {};
+
+  return (
+    <div className="mfd-site mfd-magazine mfd-article" data-surface="storefront" data-testid="article-page">
+      <header className="mfd-magazine__nav">
+        <Link to="/" className="mfd-magazine__brand">
+          <img src={navigationContent.brand.logoSrc} alt="MOOD for DESIGN" />
+        </Link>
+        <Link to="/magazine" className="mfd-magazine__back" data-testid="article-back">
+          <ArrowLeft size={12} strokeWidth={1.5} /> {t.back}
+        </Link>
+      </header>
+
+      <section className="mfd-article__hero" data-testid="article-hero">
+        <img src={a.hero_url || a.cover_url} alt={lc.title || ''} loading="eager" />
+        <div className="mfd-article__hero-overlay">
+          <p className="mfd-article__kicker">{lc.kicker}</p>
+          <h1 className="mfd-article__h1">{lc.title}</h1>
+          <p className="mfd-article__summary">{lc.summary}</p>
+          <p className="mfd-article__meta">
+            <BookOpen size={11} strokeWidth={1.5} /> {a.reading_minutes || 4} {t.readMin}
+          </p>
+        </div>
+      </section>
+
+      <ArticleBody
+        blocks={a.body_blocks}
+        hotspots={a.hotspots}
+        locale={locale}
+        articleId={a.id}
+        openSoftLead={(payload) => setSoftLead({ visible: true, ...payload })}
+        onSentRef={handleSentRef}
+      />
+
+      <section className="mfd-article__footer">
+        <p className="mfd-article__refs-eyebrow">{t.references}</p>
+        <p className="mfd-article__refs-count">{(a.hotspots || []).length} curated</p>
+      </section>
+
+      <SoftLeadModal
+        visible={softLead.visible}
+        hotspot={softLead.hotspot}
+        articleId={softLead.articleId}
+        locale={locale}
+        onClose={() => setSoftLead({ visible: false, hotspot: null, articleId: null })}
+        onCaptured={handleSoftLeadCaptured}
+      />
+
+      {toast && (
+        <div className="mfd-toast" data-testid="article-toast" role="status">
+          <Check size={12} strokeWidth={1.6} /> {toast.text}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const MagazineArticlePage = () => (
+  <SiteProvider>
+    <MagazineArticleInner />
+  </SiteProvider>
+);
+
+export default MagazineArticlePage;

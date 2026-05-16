@@ -1,6 +1,167 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase Y.1 + Y.3 lite — Editorial Lead Generation Engine (DONE — 16 Feb 2026)
+
+> Strategic objective per brief: **"trasformare contenuti fotografici
+> editoriali in richieste progetto qualificate"**.
+> This is the real commercial wedge of MOOD for DESIGN™ — the engine
+> that turns SEO traffic into qualified project intent, attributed to
+> a real human advisor.
+
+**Promise delivered**
+
+`/magazine` (cinematic editorial masonry) →
+`/magazine/:slug` (immersive article) →
+**Design References™ hotspots** (NEVER ecommerce pins — calm gold pulse
++ editorial side panel) →
+**Save flow** (anonymous = soft lead capture / logged client = "Reference
+shared with Stefano." toast) →
+`moodboard_candidates` row attributed to the advisor → advisor queue
+endpoint ready for the Y.4 UI.
+
+**Database — 4 new tables (migration 024)**
+
+- `magazine_articles` — tenant-scoped editorial entity with i18n
+  `locale_content`, ordered `body_blocks` JSONB (hero/paragraph/quote/
+  image/gallery), category, tags, status (draft|published|archived),
+  scope (tenant | corporate journal), `view_count` + `save_count`
+  counters.
+- `article_hotspots` — Design References™. Coordinates normalized to
+  `x_pct/y_pct` (0–100%) so the hotspot tracks across responsive
+  renders. `reference_type` (material/fabric/lighting/furniture/finish/
+  atmosphere/color_palette/product/custom), `cta_action`
+  (save_to_project | discuss_with_advisor | add_to_moodboard |
+  explore_material | request_similar), localized panel content,
+  optional linked_material_id / linked_asset_id / linked_article_id.
+- `moodboard_candidates` — references SHORTLISTED by the client while
+  reading. NOT yet the moodboard. Tenant + client_user_id +
+  assignee_user_id + project_id + status (saved | sent_to_advisor |
+  added_to_moodboard | dismissed) + advisor_note + source attribution
+  (article_id, hotspot_id, locale, referrer, utm).
+- `magazine_anonymous_leads` — soft-lead capture for anonymous visitors
+  who click "Save this reference" before signing up. Reconciled to a
+  real `users_profile` row when the visitor later completes adaptive
+  onboarding (Phase V).
+
+**Backend — `/api/magazine/*`**
+
+PUBLIC (anonymous-friendly, NO auth):
+- `GET /api/magazine/public/{tenant_slug}/articles` → published articles list
+- `GET /api/magazine/public/{tenant_slug}/articles/{slug}` → article + hotspots
+- `POST /api/magazine/public/{tenant_slug}/save-reference` → soft lead +
+  candidate, returns `next_step='complete_onboarding'` so the wizard
+  picks the relationship up
+
+CLIENT (logged-in client):
+- `POST /api/magazine/client/save-reference` → tenant + client + advisor
+  resolved + candidate row + `toast: "Reference shared with {advisor}."`
+
+ADMIN (tenant_admin / super_admin):
+- `GET/POST/PATCH/DELETE /api/magazine/admin/articles[/:id]`
+- `POST /api/magazine/admin/articles/:id/publish`
+- `POST/PATCH/DELETE /api/magazine/admin/articles/:id/hotspots`
+- `GET /api/magazine/admin/references-queue` (advisor sees only
+  candidates assigned to them; admins see everything)
+- `PATCH /api/magazine/admin/references-queue/:id` (status / note)
+
+**Frontend — public storefront, data-surface="storefront"**
+
+- `/app/frontend/src/pages/site/MagazinePage.jsx` — editorial masonry
+  list with featured + 4/up grid, locale-aware (it/en/fr/de/es),
+  AD/Dezeen/Mohd-style cinematic typography (Playfair Display + Inter).
+- `/app/frontend/src/pages/site/MagazineArticlePage.jsx` — full
+  reader: full-bleed 21:9 hero with title overlay, paragraph + quote +
+  image blocks, Design References™ hotspots over every image block.
+- `Hotspot` component — gold pulsing pin (`@keyframes
+  mfd-hotspot-pulse`), click opens a 280px editorial side panel with
+  reference type, label, description, single project-action CTA. NO
+  price, NO SKU, NO add-to-cart semantics.
+- `SoftLeadModal` — premium overlay for anonymous visitors. 3 fields
+  (first name, email, project type). Captures the lead AND the
+  candidate in a single backend call, then redirects to
+  `/start-project` so the visitor enters the adaptive onboarding flow
+  with full attribution preserved.
+- `mfd-toast` — premium bottom toast for the logged-client path:
+  "Reference shared with Stefano."
+- `magazine.css` — cinematic palette (`#FBF8F2` ivory, `#9B6B2B`
+  warm gold accent), Playfair display 4xl titles, generous spacing.
+
+**Seed**
+
+`/app/backend/scripts/seed_magazine_demo.py` — one cinematic article
+for the MOOD Demo Studio tenant: **"Casa vista mare ligure"**, 4
+editorial body blocks (hero · paragraph · living image · quote · kitchen
+image · paragraph · master bedroom image) + **4 Design References™
+hotspots**:
+1. Living · `fabric` · "Lino sabbia · texture morbida" → explore_material
+2. Living · `material` · "Travertino classico" → save_to_project
+3. Kitchen · `finish` · "Noce massello + Calacatta" → discuss_with_advisor
+4. Bedroom · `atmosphere` · "Atmosfera notturna serale" → add_to_moodboard
+
+**Routing hardening**
+
+- Added `magazine`, `start-project`, `professionals`, `onboarding`,
+  `projects`, `review`, `presentation`, `moodboard`, `client`, `f` to
+  `PublicTenantPage.RESERVED_SLUGS` so the `/:tenantSlug` catch-all
+  never shadows public storefront paths.
+- Extended `lib/api.js` 401-interceptor public-surface allowlist with
+  `/magazine` and `/magazine/*` so anonymous visitors are never bounced
+  to `/auth/login` by a transient backend 401 (the same fix Phase H.5
+  applied for `/start-project`).
+- Magazine pages eager-imported (NOT lazy) in `App.js` to bypass
+  Cloudflare chunk-fetch edge cases — matches the proven pattern used
+  by `StartProjectWizard`.
+
+**Verified end-to-end (16 Feb 2026)** — Playwright self-test:
+
+- `/magazine` loads → featured + grid render in IT locale
+- Click featured → `/magazine/casa-vista-mare-ligure` loads with 21:9
+  hero + Playfair H1 + summary + reading time
+- 4 hotspot pins visible at correct coordinates (verified
+  `hotspot-pin-*` data-testids)
+- Click pin → panel opens with `FABRIC / Lino sabbia · texture morbida /
+  Tessuto in lino lavato 100% naturale...` + CTA "Esplora la palette materica"
+- Click CTA as anonymous → SoftLeadModal opens with all 3 inputs +
+  "SALVA E CONTINUA" CTA → form submits to
+  `POST /api/magazine/public/.../save-reference` (verified 201)
+- Anonymous flow returns `next_step: complete_onboarding` so the
+  visitor lands on `/start-project` with lead attribution preserved
+
+**What's intentionally OUT of scope (Phase Y.2-Y.6 backlog)**
+
+- **Visual CMS hotspot editor** (Y.2 full) — today hotspots are
+  created via admin API or seed. The drag-and-drop placement UI is the
+  natural next iteration.
+- **Advisor Design References Queue UI** in the Blueprint OS (Y.4) —
+  the data + endpoints are live; rendering them as a calm pre-PM panel
+  is the next iteration.
+- **AI editorial assistant** for hotspots / headlines / SEO (Y.5) —
+  the `ai_editorial` plumbing from Phase Q.1 is ready to be reused.
+- **SEO infrastructure** (sitemap, hreflang, JSON-LD, OpenGraph
+  images) — articles already carry `meta_title` + `meta_description`
+  + locale variants; rendering them in the HTML head is the trivial
+  next step.
+- **Conversion analytics** (Y.6) — `view_count` + `save_count` are
+  incremented per article; a "Which articles generate project intent?"
+  dashboard is the natural Phase Y.6.
+- **Lead reconciliation** on signup (anonymous → profile rebinding) —
+  schema and lead_id are in place, reconciliation logic ships with Y.4.
+
+**Files of reference (new in Phase Y.1)**
+
+- `/app/supabase/migrations/024_magazine_engine.sql` (4 tables)
+- `/app/backend/routers/magazine.py` (550 LOC)
+- `/app/backend/scripts/seed_magazine_demo.py`
+- `/app/frontend/src/pages/site/MagazinePage.jsx`
+- `/app/frontend/src/pages/site/MagazineArticlePage.jsx`
+- `/app/frontend/src/pages/site/magazine.css`
+- `/app/frontend/src/pages/public/PublicTenantPage.jsx` (RESERVED_SLUGS)
+- `/app/frontend/src/lib/api.js` (public surface allowlist)
+- `/app/frontend/src/App.js` (2 routes + eager imports)
+
+
+
 ### ✅ Phase W — Platform Regression + Surface Hardening (DONE — 15 Feb 2026)
 
 After the cumulative feature push (R / S / S.2 / S.2-ext / T.1 / U / V),

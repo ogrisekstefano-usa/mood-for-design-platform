@@ -42,6 +42,8 @@ const ProjectsIndexPage = lazy(() => import('./pages/site/ProjectsIndexPage'));
 const SiteProjectDetailPage = lazy(() => import('./pages/site/ProjectDetailPage'));
 const OnboardingPlaceholderPage = lazy(() => import('./pages/site/OnboardingPlaceholderPage'));
 const StartProjectWizard = lazy(() => import('./pages/site/StartProjectWizard'));
+import MagazinePage from './pages/site/MagazinePage';
+import MagazineArticlePage from './pages/site/MagazineArticlePage';
 const ProfessionalsGatewayPage = lazy(() => import('./pages/site/ProfessionalsGatewayPage'));
 const ProfessionalIntakePage = lazy(() => import('./pages/site/ProfessionalIntakePage'));
 const LanguagesPage = lazy(() => import('./pages/settings/LanguagesPage'));
@@ -178,6 +180,9 @@ function App() {
 
                 {/* Private onboarding wizard — full-screen, no SiteLayout chrome */}
                 <Route path="/start-project" element={<OSWrap><StartProjectWizard /></OSWrap>} />
+                {/* Magazine — public editorial lead-generation engine (Phase Y) */}
+                <Route path="/magazine" element={<OSWrap><MagazinePage /></OSWrap>} />
+                <Route path="/magazine/:slug" element={<OSWrap><MagazineArticlePage /></OSWrap>} />
                 {/* Professional intake wizard — full-screen */}
                 <Route path="/professionals/intake" element={<OSWrap><ProfessionalIntakePage /></OSWrap>} />
 
