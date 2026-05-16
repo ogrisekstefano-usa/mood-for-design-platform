@@ -11,6 +11,7 @@ import {
   ArrowLeft, RefreshCw, Save, Edit3, Check, Sparkles,
 } from 'lucide-react';
 import api from '../../lib/api';
+import { MarketPills } from '../../components/proposals/MarketPills';
 
 // Section labels localized per market/language. The proposal is composed
 // natively in the market's language — the eyebrow + title chrome adapts too,
@@ -405,6 +406,15 @@ const ProposalComposerPage = () => {
           </div>
         </div>
       </header>
+
+      {/* Market Perspective™ pills — cultural repositioning rail */}
+      <div className="mb-8">
+        <MarketPills
+          proposalId={proposal.id}
+          activeMarket={proposal.market}
+          onSwitched={() => load()}
+        />
+      </div>
 
       {/* Sections */}
       <div className="space-y-5" data-testid="composer-sections">

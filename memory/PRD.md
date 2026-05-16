@@ -1,6 +1,43 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.6.F — Market Perspective™ (Cultural Design Intelligence™) (DONE — 16 Feb 2026)
+
+> **NON è localizzazione.** È riposizionamento culturale: lo stesso progetto
+> produce narrative emotive, vocabolari, framing d'investimento differenti
+> per ciascun mercato. Il progetto resta stabile (moodboards, materiali,
+> ispirazioni); cambia la *comunicazione*.
+
+**DB layer** — `028_market_perspectives.sql`
+- `market_positioning_profiles`: il profilo culturale per mercato — `market_code`, `locale`, `display_name`, `emotional_tone`, `hospitality_style`, `luxury_style`, `investment_framing`, `focus` (JSONB), `vocabulary` (JSONB), `forbidden_patterns` (JSONB), `narrative_examples` (JSONB), `system_brief` (TEXT injected verbatim into the LLM system prompt).
+- `proposal_market_versions`: snapshot timestamped per ogni perspective generata (`proposal_id × market_code` unique), con `is_active` per la versione live.
+- Seed `seed_market_perspectives.py` con **7 profili Phase 1**: IT (editorial craftsmanship · vocabulary `equilibrio · materia · artigianalità · continuità · luce naturale · misura`), US (aspirational lifestyle · `elevated lifestyle · curated living · statement kitchen · entertaining flow`), UAE (sensorial prestige · `iconic presence · immersive luxury · sensorial atmosphere · prestige execution`), UK (restrained editorial luxury · `understated · timeless composition · layered materiality`), FR (editorial sophistication · `raffinement · élégance discrète · lumière douce · tenue`), DE (architectural precision · `material precision · execution quality · disciplined atmosphere`), ES (warm Mediterranean · `calidez · convivencia · luz natural · gesto poético`).
+- Ciascun profilo include **forbidden_patterns** specifici (es. UAE non può usare "quiet luxury"; FR non può usare "lifestyle aspirationnel"; DE non può usare frasi senza sostanza).
+
+**Backend** — `routers/market_perspectives.py`
+- `GET /api/market-perspectives/profiles` — tutti i profili Phase 1 disponibili.
+- `GET /api/proposals/{id}/perspectives` — versioni generate per una proposta (con `active_market` flag).
+- `POST /api/proposals/{id}/perspective` — ricompone la narrativa della proposta usando il profilo del mercato target. Crea/aggiorna snapshot in `proposal_market_versions`. Se `set_active=true` (default), aggiorna live la proposta.
+- LLM system prompt **profile-driven**: inietta verbatim `system_brief`, `emotional_tone`, vocabolario, forbidden patterns e narrative examples. Il modello non riceve più hint string ma il profilo culturale completo. User prompt include il contesto stabile del progetto + le sezioni precedenti come *seme da riposizionare, mai da tradurre*.
+- L'LLM è istruito esplicitamente a NON tradurre ma a **rewrite NATIVELY**.
+
+**Frontend** — `components/proposals/MarketPills.jsx`
+- Cinematic rail dei 7 mercati con eyebrow `Globe · MARKET PERSPECTIVE™`.
+- Tagline editoriale: *"Riposizionamento culturale, non traduzione."*.
+- Ogni pill mostra: codice mercato (font heading) + `emotional_tone` (uppercase tracking) + status icon (`Check` se attivo · `dot` bronzo se versione disponibile · vuoto altrimenti).
+- Click → POST `/perspective` → spinner inline → refresh automatico → versions count aggiornato.
+- Embedded nel `ProposalComposerPage` subito sotto l'hero. Quando l'utente clicca un mercato, l'editor intero (eyebrows sezioni, meta strip, footer, chrome) si re-localizza automaticamente al locale del mercato target.
+
+**E2E test live confermato** (stesso progetto `Apartment — Stefano`):
+- IT compose → **UAE switch** → *"A Mediterranean residence composed through material gravity and sensorial precision"* (vocabolario UAE attivo: "material gravity", "sensorial precision", "atmospheric depth", "orchestrated interplay") → **FR switch** → *"Un appartement qui se découvre par la matière et la lumière douce"* (vocabolario FR attivo: "tenue", "écriture spatiale", "se découvre", "lumière douce").
+- Forbidden patterns rispettati: nessun "quiet luxury" nella versione UAE; nessun "lifestyle aspirationnel" nella versione FR.
+- Snapshot persistenti: 2 versioni salvate, switch tra perspective istantaneo dopo prima generazione.
+- pytest backend regression **23/23 OK**.
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase P0.6.E — Native Multilingual Composition (DONE — 16 Feb 2026)
 
 > **Bug critico corretto**: Strategic Direction™ e Compose Proposal™ erano
