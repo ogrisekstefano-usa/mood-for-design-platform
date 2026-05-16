@@ -492,6 +492,257 @@ const KPI_LABELS = {
   hours_logged: 'Ore di lavoro',
 };
 
+// ── Operational Hero (P0.5 §1) ───────────────────────────────────────
+const OperationalHero = ({ firstName, summary }) => {
+  const hour = new Date().getHours();
+  const greeting = hour < 6 ? 'Buona notte' : hour < 13 ? 'Buongiorno' : hour < 19 ? 'Buon pomeriggio' : 'Buonasera';
+  return (
+    <section data-testid="dashboard-operational-hero" className="bp-card relative overflow-hidden px-9 py-9">
+      <div
+        className="absolute inset-0 opacity-[0.35] pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(60% 80% at 0% 0%, var(--bp-primary-soft, rgba(216,180,122,0.06)) 0%, transparent 70%)',
+        }}
+      />
+      <p className="relative text-[10px] tracking-[0.3em] uppercase text-[var(--bp-primary)] font-body mb-3">
+        Studio operations
+      </p>
+      <h1 className="relative text-[36px] font-heading text-[var(--bp-text-primary)] leading-[1.02] tracking-tight">
+        {greeting}, <span className="italic text-[var(--bp-text-secondary)]">{firstName}.</span>
+      </h1>
+      {summary?.length > 0 ? (
+        <ul className="relative mt-5 space-y-2 max-w-2xl" data-testid="hero-summary">
+          {summary.map((s, idx) => {
+            const Icon = Icons[s.icon] || Icons.ChevronRight;
+            return (
+              <li key={idx}>
+                <Link to={s.to} className="group inline-flex items-center gap-3 py-1
+                                           text-[14.5px] text-[var(--bp-text-secondary)]
+                                           hover:text-[var(--bp-text-primary)] transition-colors font-body">
+                  <Icon size={13} strokeWidth={1.5} className="text-[var(--bp-primary)] opacity-80" />
+                  <span>{s.text}</span>
+                  <Icons.ArrowUpRight size={11} strokeWidth={1.5}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="relative mt-5 text-[13.5px] text-[var(--bp-text-muted)] font-body max-w-xl">
+          Nessuna azione critica oggi. Lo studio gira sereno.
+        </p>
+      )}
+    </section>
+  );
+};
+
+// ── Recent Design Requests (P0.5 §2) ─────────────────────────────────
+const LeadCard = ({ lead }) => {
+  const scoreLevel = lead.score >= 70 ? 'high' : lead.score >= 40 ? 'medium' : 'low';
+  return (
+    <Link
+      to={`/workspace/leads/${lead.id}`}
+      data-testid={`lead-card-${lead.id}`}
+      className="bp-card p-5 hover:border-[var(--bp-border-strong)] transition-all group flex flex-col gap-3"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[10px] tracking-[0.18em] uppercase text-[var(--bp-text-muted)] font-body mb-1">
+            {lead.country || 'Senza paese'} · {lead.language?.toUpperCase() || '—'}
+          </p>
+          <h4 className="text-[15.5px] font-medium text-[var(--bp-text-primary)] truncate font-body">
+            {lead.name}
+          </h4>
+        </div>
+        <span className={`shrink-0 px-2 py-0.5 text-[9.5px] tracking-[0.16em] uppercase font-body rounded-[2px] ${
+          scoreLevel === 'high' ? 'bg-[var(--bp-primary-soft)] text-[var(--bp-primary)]'
+          : scoreLevel === 'medium' ? 'bg-[var(--bp-surface-3)] text-[var(--bp-text-secondary)]'
+          : 'bg-[var(--bp-surface-2)] text-[var(--bp-text-muted)]'
+        }`}>
+          {lead.score || 0}/100
+        </span>
+      </div>
+      <div className="text-[12px] text-[var(--bp-text-secondary)] font-body space-y-0.5">
+        {lead.project_type && <p>· {lead.project_type.replace(/_/g, ' ')}</p>}
+        {lead.budget_range && <p>· budget {lead.budget_range}</p>}
+      </div>
+      <div className="mt-auto pt-3 border-t border-[var(--bp-border)] flex items-center justify-between text-[10px] text-[var(--bp-text-muted)] font-body">
+        <span className="truncate">
+          {lead.assignee?.name ? `Curato da ${lead.assignee.name}` : 'Non assegnato'}
+        </span>
+        <span className="shrink-0">{fmtRelative(lead.created_at)}</span>
+      </div>
+    </Link>
+  );
+};
+
+const RecentDesignRequests = ({ leads }) => (
+  <section data-testid="dashboard-recent-leads" className="bp-card p-8">
+    <div className="flex items-end justify-between mb-6">
+      <div>
+        <p className="text-[10px] tracking-[0.28em] uppercase text-[var(--bp-primary)] font-body mb-2">
+          Studio · Recent Design Requests
+        </p>
+        <h3 className="text-[20px] font-heading text-[var(--bp-text-primary)] leading-tight">
+          Richieste progetto recenti
+        </h3>
+      </div>
+      <Link to="/workspace/leads" className="text-[11px] text-[var(--bp-text-secondary)] hover:text-[var(--bp-primary)] font-body">
+        Vedi tutte →
+      </Link>
+    </div>
+    {leads.length === 0 ? (
+      <div className="py-10 text-center">
+        <Icons.Sparkles size={20} strokeWidth={1.2} className="text-[var(--bp-text-muted)] mx-auto mb-3 opacity-50" />
+        <p className="text-[13px] text-[var(--bp-text-secondary)] font-body max-w-md mx-auto">
+          Le richieste qualificate dai contenuti editoriali e dall'onboarding pubblico
+          appariranno qui in tempo reale.
+        </p>
+      </div>
+    ) : (
+      <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))' }}>
+        {leads.slice(0, 4).map((l) => <LeadCard key={l.id} lead={l} />)}
+      </div>
+    )}
+  </section>
+);
+
+// ── Projects Requiring Attention (P0.5 §3) ───────────────────────────
+const ProjectAttentionCard = ({ project, stale }) => {
+  const Icon = Icons.FolderOpen;
+  return (
+    <Link
+      to={`/workspace/projects/${project.id}`}
+      data-testid={`project-card-${project.id}`}
+      className={`relative bp-card p-5 hover:border-[var(--bp-border-strong)] transition-all group block ${
+        stale ? 'ring-1 ring-[var(--bp-primary)]/30' : ''
+      }`}
+    >
+      {stale && (
+        <span className="absolute top-3 right-3 inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.2em]
+                         text-[var(--bp-primary)] font-body">
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--bp-primary)] animate-pulse" />
+          Da riprendere
+        </span>
+      )}
+      <div className="aspect-[16/10] mb-4 overflow-hidden bg-[var(--bp-surface-2)] rounded-[3px]">
+        {project.cover_url ? (
+          <img src={project.cover_url} alt="" className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <Icon size={22} strokeWidth={1.2} className="text-[var(--bp-text-muted)] opacity-40" />
+          </div>
+        )}
+      </div>
+      <h4 className="text-[14.5px] font-medium text-[var(--bp-text-primary)] truncate font-body mb-1">
+        {project.title}
+      </h4>
+      <p className="text-[11px] uppercase tracking-[0.16em] text-[var(--bp-text-muted)] font-body mb-3">
+        {project.project_type || project.status || 'progetto'}
+      </p>
+      {/* Progress */}
+      <div className="flex items-center gap-2">
+        <div className="flex-1 h-[2px] bg-[var(--bp-surface-2)] overflow-hidden">
+          <div className="h-full bg-[var(--bp-primary)]" style={{ width: `${project.progress || 0}%` }} />
+        </div>
+        <span className="text-[10px] text-[var(--bp-text-muted)] font-body tabular-nums">
+          {project.progress || 0}%
+        </span>
+      </div>
+    </Link>
+  );
+};
+
+const ProjectsRequiringAttention = ({ projects, staleIds }) => {
+  const staleSet = new Set(staleIds || []);
+  return (
+    <section data-testid="dashboard-projects-attention" className="bp-card p-8">
+      <div className="flex items-end justify-between mb-6">
+        <div>
+          <p className="text-[10px] tracking-[0.28em] uppercase text-[var(--bp-primary)] font-body mb-2">
+            Studio · Projects requiring attention
+          </p>
+          <h3 className="text-[20px] font-heading text-[var(--bp-text-primary)] leading-tight">
+            Progetti che chiedono la tua attenzione
+          </h3>
+        </div>
+        <Link to="/workspace/projects" className="text-[11px] text-[var(--bp-text-secondary)] hover:text-[var(--bp-primary)] font-body">
+          Vedi tutti →
+        </Link>
+      </div>
+      {projects.length === 0 ? (
+        <div className="py-10 text-center">
+          <Icons.FolderOpen size={20} strokeWidth={1.2} className="text-[var(--bp-text-muted)] mx-auto mb-3 opacity-50" />
+          <p className="text-[13px] text-[var(--bp-text-secondary)] font-body max-w-md mx-auto">
+            I progetti in corso e quelli da curare emergeranno qui non appena un lead viene convertito.
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
+          {projects.slice(0, 4).map((p) =>
+            <ProjectAttentionCard key={p.id} project={p} stale={staleSet.has(p.id)} />)}
+        </div>
+      )}
+    </section>
+  );
+};
+
+// ── Design References Stream (P0.5 §4) ───────────────────────────────
+const DesignReferencesStream = ({ refs }) => (
+  <section data-testid="dashboard-design-refs" className="bp-card p-8">
+    <div className="flex items-end justify-between mb-6">
+      <div>
+        <p className="text-[10px] tracking-[0.28em] uppercase text-[var(--bp-primary)] font-body mb-2">
+          Editorial · Design References
+        </p>
+        <h3 className="text-[20px] font-heading text-[var(--bp-text-primary)] leading-tight">
+          Riferimenti salvati dai visitatori
+        </h3>
+      </div>
+      <Link to="/magazine" className="text-[11px] text-[var(--bp-text-secondary)] hover:text-[var(--bp-primary)] font-body">
+        Magazine →
+      </Link>
+    </div>
+    {refs.length === 0 ? (
+      <div className="py-10 text-center">
+        <Icons.Bookmark size={20} strokeWidth={1.2} className="text-[var(--bp-text-muted)] mx-auto mb-3 opacity-50" />
+        <p className="text-[13px] text-[var(--bp-text-secondary)] font-body max-w-md mx-auto">
+          Quando i visitatori salveranno un'atmosfera o un materiale dagli articoli editoriali,
+          la troverai qui — pronta per essere portata in un progetto.
+        </p>
+      </div>
+    ) : (
+      <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
+        {refs.slice(0, 5).map((r) => (
+          <Link
+            key={r.id}
+            to={r.article_slug ? `/magazine/${r.article_slug}` : '/workspace/leads'}
+            data-testid={`design-ref-${r.id}`}
+            className="bp-card overflow-hidden hover:border-[var(--bp-border-strong)] transition-all"
+          >
+            <div className="aspect-[4/3] bg-[var(--bp-surface-2)] overflow-hidden">
+              {r.image_url && <img src={r.image_url} alt="" className="w-full h-full object-cover" />}
+            </div>
+            <div className="p-3">
+              <p className="text-[11px] uppercase tracking-[0.16em] text-[var(--bp-primary)] font-body mb-1">
+                {r.vertical || 'Editorial'}
+              </p>
+              <h4 className="text-[13px] font-medium text-[var(--bp-text-primary)] line-clamp-2 font-body leading-snug">
+                {r.label}
+              </h4>
+              <p className="text-[10px] text-[var(--bp-text-muted)] mt-2 font-body">
+                {r.client_name} · {fmtRelative(r.created_at)}
+              </p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    )}
+  </section>
+);
+
 const DashboardPage = () => {
   const { user } = useAuth();
   const [data, setData] = useState(null);
@@ -563,24 +814,8 @@ const DashboardPage = () => {
 
   return (
     <div data-testid="dashboard-page" className="px-10 py-10 max-w-[1600px] mx-auto space-y-8">
-      {/* Welcome */}
-      <header className="flex items-end justify-between gap-6 flex-wrap mb-2">
-        <div>
-          <p className="text-[10px] tracking-[0.28em] uppercase text-[var(--bp-text-muted)] font-body mb-3">
-            Blueprint Workspace
-          </p>
-          <h1 className="text-[34px] text-[var(--bp-text-primary)] font-heading leading-[1.05]">
-            Bentornato, <span className="text-[var(--bp-text-secondary)] italic">{firstName}</span>
-          </h1>
-          <p className="mt-3 text-[13px] text-[var(--bp-text-muted)] font-body">
-            Ecco cosa sta succedendo nel tuo workspace oggi.
-          </p>
-        </div>
-        <div className="px-3 py-1.5 rounded-[8px] border border-[var(--bp-border)] bg-[var(--bp-surface-1)] flex items-center gap-2 text-[12px] text-[var(--bp-text-secondary)] font-body">
-          <Icons.Calendar size={12} className="text-[var(--bp-text-muted)]" />
-          <span className="capitalize">{today}</span>
-        </div>
-      </header>
+      {/* P0.5 §1 — Operational Hero replaces the generic welcome */}
+      <OperationalHero firstName={firstName} summary={data.operational_summary || []} />
 
       {/* Studio onboarding panel (S.1) — auto-hides when complete/dismissed */}
       <StudioOnboardingPanel />
@@ -588,7 +823,7 @@ const DashboardPage = () => {
       {/* Assigned clients follow-up (S.2) — auto-hides when no assignments */}
       <AssignedClientsPanel />
 
-      {/* KPIs + right rail */}
+      {/* KPIs + right rail — KPIs are real (sourced from real DB counts) */}
       <div className="grid gap-6" style={{ gridTemplateColumns: 'minmax(0, 1fr) 280px 280px' }}>
         <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
           {data.kpis.map((k) => (
@@ -599,10 +834,19 @@ const DashboardPage = () => {
         <TasksPanel tasks={data.tasks || []} />
       </div>
 
-      {/* Featured projects */}
-      <FeaturedProjects projects={data.featured_projects || []} />
+      {/* P0.5 §2 — Recent Design Requests */}
+      <RecentDesignRequests leads={data.recent_leads || []} />
 
-      {/* 4-column operational grid */}
+      {/* P0.5 §3 — Projects Requiring Attention */}
+      <ProjectsRequiringAttention
+        projects={data.featured_projects || []}
+        staleIds={data.stale_project_ids || []}
+      />
+
+      {/* P0.5 §4 — Design References Stream */}
+      <DesignReferencesStream refs={data.design_references || []} />
+
+      {/* P0.5 §5 — Studio Activity Feed (existing operational stream) */}
       <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}>
         <RecentActivity events={data.recent_activity || []} />
         <MediaPreview assets={data.media_preview || []} />

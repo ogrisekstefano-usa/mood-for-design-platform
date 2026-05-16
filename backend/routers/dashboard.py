@@ -351,6 +351,143 @@ def dashboard_summary(ctx: dict = Depends(require_permission(P_PROJECTS_READ))):
                                    "title": t.get("title"), "kind": "task"})
     timeline = sorted(upcoming_proposals + upcoming_tasks, key=lambda x: x["date"])[:8]
 
+    # ── Recent leads enriched for cinematic cards ─────────────────────────
+    recent_leads_full = (client.table("leads").select(
+        "id, first_name, last_name, email, country, city, language, project_type, "
+        "budget_range, score, status, source, assigned_to, created_at, metadata_json"
+    ).eq("tenant_id", tid).order("created_at", desc=True).limit(6).execute().data or [])
+    # Hydrate assignee names
+    assignee_ids = [l["assigned_to"] for l in recent_leads_full if l.get("assigned_to")]
+    assignee_map = {}
+    if assignee_ids:
+        ar = (client.table("users_profile").select("id, first_name, last_name, avatar_url")
+              .in_("id", assignee_ids).eq("tenant_id", tid).execute().data or [])
+        for u in ar:
+            nm = f"{u.get('first_name') or ''} {u.get('last_name') or ''}".strip() or "Advisor"
+            assignee_map[u["id"]] = {"name": nm, "avatar_url": u.get("avatar_url")}
+    recent_leads = []
+    for l in recent_leads_full:
+        full = f"{l.get('first_name') or ''} {l.get('last_name') or ''}".strip() or (l.get("email") or "Senza nome")
+        recent_leads.append({
+            "id": l["id"], "name": full, "country": l.get("country"),
+            "language": l.get("language"), "project_type": l.get("project_type"),
+            "budget_range": l.get("budget_range"), "score": l.get("score"),
+            "status": l.get("status"), "source": l.get("source"),
+            "created_at": l.get("created_at"),
+            "assignee": assignee_map.get(l.get("assigned_to")),
+        })
+
+    # ── Stale projects (no update in 7+ days, still active) ───────────────
+    seven_days_ago = _now_utc() - timedelta(days=7)
+    stale_project_ids = []
+    for p in active_projects:
+        upd = _parse(p.get("updated_at") or p.get("created_at"))
+        if upd and upd.tzinfo is None:
+            upd = upd.replace(tzinfo=timezone.utc)
+        if upd and upd < seven_days_ago:
+            stale_project_ids.append(p["id"])
+
+    # ── Design References Stream — moodboard_candidates from clients ──────
+    design_refs = []
+    try:
+        cand_rows = (client.table("moodboard_candidates").select(
+            "id, tenant_id, client_user_id, source_type, source_id, status, "
+            "snapshot, created_at, assignee_user_id"
+        ).eq("tenant_id", tid).order("created_at", desc=True).limit(6).execute().data or [])
+        # Hydrate originating articles (when source_type='magazine_hotspot') in one query
+        article_ids = []
+        hotspot_ids = []
+        for c in cand_rows:
+            st = (c.get("source_type") or "").lower()
+            sid = c.get("source_id")
+            if st == "magazine_hotspot" and sid:
+                hotspot_ids.append(sid)
+            elif st == "magazine_article" and sid:
+                article_ids.append(sid)
+        # Hotspots → article reverse
+        hotspots_map = {}
+        if hotspot_ids:
+            hs = (client.table("article_hotspots").select("id, article_id, locale_content")
+                  .in_("id", hotspot_ids).eq("tenant_id", tid).execute().data or [])
+            hotspots_map = {h["id"]: h for h in hs}
+            article_ids.extend([h["article_id"] for h in hs if h.get("article_id")])
+        articles_map = {}
+        if article_ids:
+            ar = (client.table("magazine_articles").select(
+                "id, slug, cover_url, hero_url, locale_content, project_vertical"
+            ).in_("id", list(set(article_ids))).eq("tenant_id", tid).execute().data or [])
+            articles_map = {a["id"]: a for a in ar}
+        # Client names
+        client_ids = [c.get("client_user_id") for c in cand_rows if c.get("client_user_id")]
+        clients_map = {}
+        if client_ids:
+            cr = (client.table("users_profile").select("id, first_name, last_name")
+                  .in_("id", list(set(client_ids))).eq("tenant_id", tid).execute().data or [])
+            for u in cr:
+                nm = f"{u.get('first_name') or ''} {u.get('last_name') or ''}".strip() or "Cliente"
+                clients_map[u["id"]] = nm
+        for c in cand_rows:
+            st = (c.get("source_type") or "").lower()
+            sid = c.get("source_id")
+            article = None; hotspot_label = None
+            if st == "magazine_hotspot" and sid:
+                h = hotspots_map.get(sid) or {}
+                lc = (h.get("locale_content") or {}).get("it") or {}
+                hotspot_label = lc.get("label")
+                article = articles_map.get(h.get("article_id"))
+            elif st == "magazine_article" and sid:
+                article = articles_map.get(sid)
+            art_lc = ((article or {}).get("locale_content") or {}).get("it") or {}
+            design_refs.append({
+                "id": c["id"],
+                "label": hotspot_label or art_lc.get("title") or "Riferimento salvato",
+                "image_url": (article or {}).get("cover_url") or (article or {}).get("hero_url"),
+                "article_slug": (article or {}).get("slug"),
+                "article_title": art_lc.get("title"),
+                "vertical": (article or {}).get("project_vertical"),
+                "client_name": clients_map.get(c.get("client_user_id"), "Visitatore"),
+                "status": c.get("status"),
+                "created_at": c.get("created_at"),
+            })
+    except Exception:
+        design_refs = []  # table may not exist in older DBs
+
+    # ── Operational summary (human-language hero sentences) ───────────────
+    operational_summary = []
+    if pending_proposals:
+        operational_summary.append({
+            "icon": "FileText",
+            "text": f"{len(pending_proposals)} {'proposta è in attesa' if len(pending_proposals) == 1 else 'proposte sono in attesa'} di feedback cliente.",
+            "to": "/workspace/proposals",
+        })
+    if stale_project_ids:
+        operational_summary.append({
+            "icon": "Clock",
+            "text": f"{len(stale_project_ids)} {'progetto è fermo' if len(stale_project_ids) == 1 else 'progetti sono fermi'} da oltre 7 giorni.",
+            "to": "/workspace/projects",
+        })
+    if design_refs:
+        recent_refs = [r for r in design_refs
+                       if r.get("created_at") and
+                       _parse(r["created_at"]) and
+                       (_parse(r["created_at"]).replace(tzinfo=timezone.utc)
+                        if _parse(r["created_at"]).tzinfo is None
+                        else _parse(r["created_at"])) > (_now_utc() - timedelta(days=7))]
+        if recent_refs:
+            operational_summary.append({
+                "icon": "Bookmark",
+                "text": f"{len(recent_refs)} {'riferimento è stato salvato' if len(recent_refs) == 1 else 'riferimenti sono stati salvati'} dai visitatori questa settimana.",
+                "to": "/workspace/leads",
+            })
+    new_leads_count = sum(1 for l in leads if l.get("status") in (None, "new", "qualified"))
+    if new_leads_count:
+        operational_summary.append({
+            "icon": "Sparkles",
+            "text": f"{new_leads_count} {'nuova richiesta progetto' if new_leads_count == 1 else 'nuove richieste progetto'} da qualificare.",
+            "to": "/workspace/leads",
+        })
+    operational_summary = operational_summary[:3]
+
     return {
         "kpis": kpis,
         "featured_projects": featured_projects,
@@ -360,5 +497,9 @@ def dashboard_summary(ctx: dict = Depends(require_permission(P_PROJECTS_READ))):
         "top_materials": top_materials,
         "team_activity": team_activity,
         "timeline": timeline,
+        "recent_leads": recent_leads,
+        "stale_project_ids": stale_project_ids,
+        "design_references": design_refs,
+        "operational_summary": operational_summary,
         "generated_at": _iso(_now_utc()),
     }

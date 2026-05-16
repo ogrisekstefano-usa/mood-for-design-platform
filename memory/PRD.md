@@ -1,6 +1,39 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.5 — Real Dashboard Experience (DONE — 16 Feb 2026)
+
+> Trasforma la dashboard da "welcome page" generica in **cuore operativo dello studio**.
+
+**Backend** (`/api/dashboard/summary`)
+- 4 nuovi aggregati operativi nel response:
+  - `operational_summary[]` — hero sentences human-language ITA ("1 proposta è in attesa di feedback cliente", "X riferimenti salvati questa settimana", "N progetti fermi da oltre 7 giorni", "M nuove richieste progetto da qualificare") — ogni sentence ha `to` per click-through al workflow
+  - `recent_leads[]` — top 6 leads arricchiti con `country`, `language`, `project_type`, `budget_range`, `score`, `source`, `assignee.name`+`avatar_url` (hydrated da `users_profile`)
+  - `stale_project_ids[]` — progetti senza update da 7+ giorni (warm glow flag, non rosso)
+  - `design_references[]` — top 6 `moodboard_candidates` con hydration: hotspot label, articolo originante (slug + title + cover_url + vertical), client name
+- Nessuna LLM call, tutto sourced da query DB reali con tenant isolation.
+
+**Frontend** (`/app/frontend/src/pages/dashboard/DashboardPage.jsx`)
+- 4 nuovi widget componenti cinematic editorial (warm graphite + gold accent + radial gradient overlay):
+  1. **OperationalHero** — greeting time-aware ("Buongiorno/Buon pomeriggio/Buonasera/Buona notte"), operational summary cliccabile, micro-arrow on hover.
+  2. **RecentDesignRequests** — 4 lead cards: paese·lingua, nome, score badge dinamico (high/medium/low), project_type, budget, "Curato da {advisor.name}", tempo relativo. Empty state editoriale onesto.
+  3. **ProjectsRequiringAttention** — 4 project cards con cover_url 16:10, progress bar, label "Da riprendere" con dot pulsante per stale_project_ids. Empty state operativo.
+  4. **DesignReferencesStream** — 5 reference cards cinematic 4:3 con label hotspot, vertical chip, "Cliente · tempo relativo". Empty state esplicativo.
+- Rimosso `Welcome` generico in favore dell'Operational Hero.
+- KPI cards mantenuti perché basati su DB counts reali.
+- 100% data-driven, zero placeholder.
+
+**Smoke test live** ✅
+- Hero render con 2 summary items dinamici cliccabili
+- 4 lead cards reali con score/advisor/budget visibili
+- 4 project cards (Apartment, Penthouse, Villa×2) renderizzati
+- Empty state Design References cinematic (zero candidates in DB attuale)
+- Backend response include tutti i 4 nuovi field aggregati
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase P0.0 + P0.10 — Dead Page Elimination + Dev Language Removal (DONE — 16 Feb 2026)
 
 > Prima micro-fase del piano di **Platform Stabilization** richiesto dall'utente.
