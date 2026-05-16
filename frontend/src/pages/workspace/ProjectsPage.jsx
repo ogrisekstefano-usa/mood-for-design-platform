@@ -143,8 +143,14 @@ const ProjectsPage = () => {
       {showModal && <NewProjectModal onClose={() => setShowModal(false)} onSaved={() => { setShowModal(false); load(); }} />}
       <div className="flex items-start justify-between mb-8 gap-6">
         <div>
-          <p className="text-[var(--bp-text-muted)] text-[10px] font-body uppercase tracking-[0.2em] mb-1">{t('nav.section.workspace')}</p>
-          <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)]">{t('projects.title')}</h1>
+          <p className="text-[var(--bp-text-muted)] text-[10px] font-body uppercase tracking-[0.2em] mb-1"
+             data-testid="projects-page-eyebrow">
+            {runtime.copy('projects.page.eyebrow')}
+          </p>
+          <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)]"
+              data-testid="projects-page-title">
+            {runtime.copy('projects.page.title')}
+          </h1>
           <p className="text-[var(--bp-text-subtle)] text-sm font-body mt-1">{t('projects.count', { n: projects.length })}</p>
         </div>
         <div className="flex items-center gap-3">
@@ -160,7 +166,7 @@ const ProjectsPage = () => {
                 : 'bg-[var(--bp-primary)] hover:opacity-90 text-[var(--bp-bg)]'}`}>
             {cap.atCap
               ? (<><Lock size={12} strokeWidth={1.8} /> Upgrade to create more</>)
-              : (<><Plus size={14} /> {t('projects.newProject')}</>)}
+              : (<><Plus size={14} /> {runtime.copy('projects.new.cta')}</>)}
           </button>
         </div>
       </div>

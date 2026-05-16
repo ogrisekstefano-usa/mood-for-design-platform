@@ -1,6 +1,17 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.2.B — UI Shell + Cultural Perspective Panel (DONE — 16 Feb 2026)
+- **Registry expansion** (`/app/frontend/src/lib/locale-copy.js`): from ~10 to **30+ semantic tokens** × 7 locales. Sections: sidebar (5 tokens), dashboard (3), projects (5), onboarding (12), settings (4), global states (4). Each entry culturally repositioned — NOT translated (e.g. `sidebar.section.workspace` = `Atelier` for EN_AE, `Studio` for EN_GB, `Workspace` for EN_US, `Studio` for IT_IT).
+- **Cultural Perspective Panel** (`/app/frontend/src/components/settings/CulturalPerspectivePanel.jsx`) mounted into `/settings`. Labeled "Prospettiva culturale" (NOT "Language"). Shows 7 locales as cards with display name, market, register and 1-sentence cultural example. Active locale highlighted with primary border. Switching is instant — `runtime.setLocale()` calls PUT `/api/locale-runtime/preference` then re-resolves.
+- **Sidebar section labels** (`Sidebar.jsx`) now read from `runtime.copy('sidebar.section.*')` — Studio/Editorial/Team/Settings/Platform hot-swap on locale change.
+- **Projects page header** (`ProjectsPage.jsx`) eyebrow / H1 / new-project CTA all consume `runtime.copy()`. Confirmed: IT_IT shows "STUDIO · Progetti · Nuovo progetto"; EN_AE shows "ATELIER · Active commissions · New commission".
+- **Hot reload without page refresh** verified end-to-end: clicking a locale card in Settings rewrites the panel title, sidebar labels, projects page header within ~1s. No reload required.
+- **Smoke test**: Settings panel renders 7 options, IT_IT default, click EN_AE → title rewrites to "How your atelier speaks to its audience." (UAE register, never says "studio"), navigate to /workspace/projects → "ATELIER · Active commissions · New commission". Switch back to IT_IT → "STUDIO · Progetti · Nuovo progetto". Cultural distinctness verified.
+- **Onboarding tokens registered but wiring deferred**: `onboarding.{intro,space_intro,style_intro,material_intro,lifestyle_intro,review_intro}` × 7 locales seeded in registry. `StartProjectWizard` is the public anonymous flow — wiring requires a public locale-resolve endpoint (deferred to P0.2.C alongside the editorial surfaces work).
+
+
+
 ### ✅ Phase P0.2.A — LocalizationRuntime™ Foundation (DONE — 16 Feb 2026)
 - **Centralized Cultural Runtime Engine** (`/app/backend/core/locale_runtime.py`): single source of truth resolving the active `locale_profile` per request via the priority chain `explicit > user > project > lead > tenant > browser(weak) > IT_IT system fallback`. Market-intent-preserving fallback chain (EN_AE → EN_GB → EN_US, never blind IT_IT).
 - **Endpoints** (`/app/backend/routers/locale_runtime.py`): `GET /api/locale-runtime/resolve`, `PUT /api/locale-runtime/preference` (user pref), `PUT /api/locale-runtime/tenant-default` (RBAC: super_admin/studio_owner/owner only).

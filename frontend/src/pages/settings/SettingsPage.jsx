@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { useAuth } from '../../contexts/AuthContext';
+import CulturalPerspectivePanel from '../../components/settings/CulturalPerspectivePanel';
 
 const SettingsTile = ({ icon: Icon, title, description, to, testid, accent = 'default', soon }) => {
   const navigate = useNavigate();
@@ -171,6 +172,12 @@ const SettingsPage = () => {
           />
         </div>
       </section>
+
+      {/* ── CULTURAL PERSPECTIVE (P0.2.B) ─────────────────────────────── */}
+      {/* Not a language switcher — a runtime cultural repositioning.
+          Lives in Account because it's a personal preference; tenant-level
+          default lives separately under Studio governance. */}
+      <CulturalPerspectivePanel />
     </div>
   );
 };

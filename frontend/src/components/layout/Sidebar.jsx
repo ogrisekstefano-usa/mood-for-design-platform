@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import { useBlueprint } from '../../contexts/BlueprintContext';
+import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
 import Brand from '../common/Brand';
 import useSidebarCollapsed from '../../hooks/useSidebarCollapsed';
 
@@ -104,6 +105,7 @@ const WorkspaceSelector = ({ collapsed }) => {
 
 const Sidebar = () => {
   const { t, modules, isSuperAdmin, can, impersonating } = useBlueprint();
+  const runtime = useLocaleRuntime();
   const { collapsed, toggle } = useSidebarCollapsed();
   const location = useLocation();
 
@@ -158,7 +160,7 @@ const Sidebar = () => {
         {/* ── WORKSPACE ─────────────────────────────────────────── */}
         {wsRoutes.length > 0 && (
           <div>
-            <SectionLabel collapsed={collapsed}>{t('nav.section.workspace', null, 'Workspace')}</SectionLabel>
+            <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.workspace')}</SectionLabel>
             <div className="space-y-0.5">
               {wsRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
               <NavItem to="/moodboards" icon="Layers" labelKey="nav.moodboards" collapsed={collapsed} />
@@ -169,7 +171,7 @@ const Sidebar = () => {
         {/* ── EDITORIAL ─────────────────────────────────────────── */}
         {contentRoutes.length > 0 && (
           <div>
-            <SectionLabel collapsed={collapsed}>{t('nav.section.editorial', null, 'Editorial')}</SectionLabel>
+            <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.editorial')}</SectionLabel>
             <div className="space-y-0.5">
               {contentRoutes.filter((r) => r.to !== '/moodboards').map((r) => (
                 <NavItem key={r.to} {...r} end={r.to === '/library'} collapsed={collapsed} />
@@ -180,7 +182,7 @@ const Sidebar = () => {
 
         {/* ── STUDIO ────────────────────────────────────────────── */}
         <div>
-          <SectionLabel collapsed={collapsed}>{t('nav.section.studio', null, 'Studio')}</SectionLabel>
+          <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.studio')}</SectionLabel>
           <div className="space-y-0.5">
             {/* Team → routes directly to the real Members management
                 (no /workspace/team dead-end). */}
@@ -192,7 +194,7 @@ const Sidebar = () => {
         {/* ── SETTINGS (admin only) ─────────────────────────────── */}
         {can('tenant:settings') && (
           <div>
-            <SectionLabel collapsed={collapsed}>{t('nav.section.settings', null, 'Settings')}</SectionLabel>
+            <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.settings')}</SectionLabel>
             <div className="space-y-0.5">
               <NavItem to="/settings" icon="Settings" labelKey="nav.settings" end collapsed={collapsed} />
               <NavItem to="/settings/plan" icon="Receipt" labelKey="nav.billing" collapsed={collapsed} />
@@ -203,7 +205,7 @@ const Sidebar = () => {
         {/* ── PLATFORM (super admin only) ───────────────────────── */}
         {isSuperAdmin && (
           <div>
-            <SectionLabel collapsed={collapsed}>{t('nav.section.platform', null, 'Platform')}</SectionLabel>
+            <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.platform')}</SectionLabel>
             <div className="space-y-0.5">
               <NavItem to="/admin" icon="Shield" labelKey="nav.superAdmin" collapsed={collapsed} />
             </div>
