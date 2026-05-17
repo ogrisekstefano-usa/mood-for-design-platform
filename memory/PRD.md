@@ -1,6 +1,44 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase R-MARKET-1B — Locale-aware Frontend Architecture (Prompt 1) (DONE — 17 May 2026)
+
+> **FINISHING MODE — Prompt 1 di 3.** Wiring completo dell'architettura di routing locale per il public storefront. URL subpath BCP-47 (`/it-IT`, `/en-US`, `/en-GB`, `/es-ES`, `/fr-FR`, `/de-DE`) accanto alle route legacy senza prefisso. SEO international-grade su tutto lo storefront, ZERO leak dell'`internal_translation` editor-only.
+
+**Componenti nuovi (frontend)**
+- `frontend/src/site/LocaleRoute.jsx` — Wrap per route con prefisso locale. Sincronizza `LocaleRuntimeContext` (formato composito `IT_IT`) e setta `<html lang>`.
+- `frontend/src/site/LocaleHead.jsx` — Globale sotto `<BrowserRouter>`. Emette `<link rel=canonical>`, `<link rel=alternate hreflang>`, `<meta og:locale>`, `<meta og:locale:alternate>`. Filtra hreflang attraverso `SUPPORTED_LOCALES` per defendere da drift backend/frontend (es. `gcc_luxury`/`en-AE` seedato server-side ma senza route frontend → escluso dagli hreflang). Saltato su superfici non-storefront (auth/dashboard/admin/workspace/settings/client).
+- `frontend/src/site/SiteLocaleBridge.jsx` — Vive dentro `SiteLayout`. Bridge URL → `SiteContext` per hot-swap della copia storefront quando l'utente apre `/it-IT` vs `/en-US`.
+- `frontend/src/site/components/CountryLanguageSelector.jsx` — Modal luxury per market picker. Lista mercati attivi dal backend con macro-region grouping. Persistenza locale via SiteContext + LocaleRuntime. testid contract: `country-language-modal`, `country-language-search`, `country-language-pick-{code}`, `country-language-close`.
+- `frontend/src/site/components/SiteFooter.jsx` — Aggiunto bottone "Country · Language" (testid `footer-country-language`) che apre il selector.
+
+**Componenti modificati**
+- `frontend/src/App.js` — 6 route locale-prefixed per home/projects/professionals + 6 magazine variants. LocaleHead montata globalmente sotto BrowserRouter.
+- `frontend/src/site/SiteLayout.jsx` — Monta `SiteLocaleBridge` (rimosso LocaleHead da qui per evitare double-mount).
+- `frontend/src/lib/api.js` — `isPublicSurface` ora include il prefisso BCP-47 (`/^\/[a-z]{2}-[A-Z]{2}(\/|$)/`). Senza questa fix, un 401 transient su `/api/branding` dirottava `/it-IT` → `/auth/login`.
+
+**Database**
+- Demo tenant `mood-demo-studio-81a09e`: attivato `spanish_latam` (es-ES) come tenant_market (sort_order=100). Ora 7 mercati attivi: italy/dach/france_fr_europe/uk_ireland/usa_national/gcc_luxury/spanish_latam.
+
+**SEO guardrails**
+- **NO leak** di `internal_translation` → mai esposta come URL, mai nei hreflang.
+- **Unsupported locale segments** (`/en-AE`, `/pt-BR`, `/ja-JP`) → fall-through a 404 PublicTenantPage + ZERO SEO tag emesso.
+- **Auth surfaces** (`/auth/login`) → ZERO SEO tag.
+- **Legacy `/`** → canonical → `/it-IT` (default market del tenant), NON la sticky session locale.
+- **Locale-prefixed pages** → canonical = stesso URL; 6 hreflang BCP-47 supportati + 1 x-default.
+
+**Test verificati**
+- `/app/backend/tests/test_phase_r_market_1b_locale_wiring.py` (nuovo) — markets endpoint + locale runtime resolve.
+- 29/29 backend tests PASS (test_phase_r_market_1a + test_phase_r_market_1b + test_phase_e_1b_studio).
+- E2E playwright: canonical / hreflang / og / html-lang verificati su tutti i 6 locales + legacy / + paths unsupported + auth.
+
+**Design polish backlog (non-blocking, non in Prompt 1 scope)**
+- Header `Sobre nosotros` (es-ES) si sovrappone al logo a 1280px. Spacing rule.
+- Hero `/es-ES` ha copia mista IT/EN/ES. Da rimandare al traduttore editoriale.
+
+---
+
+
 ### ✅ Phase E-1B — Editorial Studio™ (composition surface) (DONE — 17 Feb 2026)
 
 > **NON è un AI writer · NON è un GPT wrapper.** È la **Composition Room** dell'Editorial Intelligence Studio di MOOD: una macchina di reinterpretazione culturale market-native. Mai una traduzione, sempre una RESTAGING del Master Direction. Linguaggio editoriale assoluto: l'AI è invisibile.
