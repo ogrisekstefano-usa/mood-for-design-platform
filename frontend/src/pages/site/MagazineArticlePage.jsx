@@ -3,13 +3,15 @@
 // Cinematic editorial reader with Design References™ hotspots.
 // ──────────────────────────────────────────────────────────────────────
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, ArrowUpRight, BookOpen, Plus, X, Check, Send, Globe } from 'lucide-react';
 import { SiteProvider, useSite } from '../../site/SiteContext';
 import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
 import { navigationContent } from '../../site/content/navigation';
 import { tenantConfig } from '../../site/content/tenant';
+import ArticleHead from './ArticleHead';
+import PreviewBanner from './PreviewBanner';
 import '../../site/site.css';
 import './magazine.css';
 
@@ -255,6 +257,8 @@ const MagazineArticleInner = () => {
   const navigate = useNavigate();
   const { locale } = useSite();
   const runtime = useLocaleRuntime();
+  const [searchParams] = useSearchParams();
+  const isPreview = searchParams.get('preview') === '1';
   const tenantSlug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
   const t = T[locale] || T.it;
   const [state, setState] = useState({ loading: true, article: null });
@@ -273,10 +277,17 @@ const MagazineArticleInner = () => {
         // Convert composite IT_IT → BCP-47 it-IT for the editorial lookup.
         const bcp = (runtime?.localeCode || '').toLowerCase().replace('_', '-');
         let served = null;
+        const sessionToken = (() => {
+          try {
+            const s = JSON.parse(localStorage.getItem('mfd_session') || 'null');
+            return s?.access_token || null;
+          } catch { return null; }
+        })();
         try {
+          const headers = isPreview && sessionToken ? { Authorization: `Bearer ${sessionToken}` } : {};
           const re = await axios.get(
             `${BACKEND_URL}/api/magazine/public/${encodeURIComponent(tenantSlug)}/editorial/${encodeURIComponent(slug)}`,
-            { params: bcp ? { locale_code: bcp } : {} },
+            { params: { ...(bcp ? { locale_code: bcp } : {}), ...(isPreview ? { preview: 1 } : {}) }, headers },
           );
           if (re.data?.article) served = re.data.article;
         } catch (_) { /* fall through to legacy */ }
@@ -297,7 +308,7 @@ const MagazineArticleInner = () => {
       } catch (_) { if (alive) setRelated([]); }
     })();
     return () => { alive = false; };
-  }, [tenantSlug, slug, runtime?.localeCode]);
+  }, [tenantSlug, slug, runtime?.localeCode, isPreview]);
 
   useEffect(() => {
     if (state.article) {
@@ -346,6 +357,8 @@ const MagazineArticleInner = () => {
     <div className="mfd-site mfd-magazine mfd-article" data-surface="storefront"
          data-testid="article-page"
          data-locale-served={localeServed || undefined}>
+      <ArticleHead article={a} locale={localeServed || locale} isPreview={isPreview} />
+      {isPreview && <PreviewBanner />}
       <header className="mfd-magazine__nav">
         <Link to="/" className="mfd-magazine__brand">
           <img src={navigationContent.brand.logoSrc} alt="MOOD for DESIGN" />

@@ -19,11 +19,12 @@
  * Auth surfaces (login, dashboard, admin) are excluded — they are not
  * public storefront pages and we don't want to leak canonicals for them.
  */
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { PLATFORM_DEFAULT_LOCALE, SUPPORTED_LOCALES, toBcp47 } from '../i18n';
 import { useT } from '../i18n';
 import { tenantConfig } from './content/tenant';
+import { navigationContent } from './content/navigation';
 import api from '../lib/api';
 
 const LOCALE_RE = /^\/([a-z]{2}-[A-Z]{2})(?=\/|$)/;
@@ -32,7 +33,13 @@ const LOCALE_RE = /^\/([a-z]{2}-[A-Z]{2})(?=\/|$)/;
 // admin, workspace, settings, client) is skipped entirely — those are not
 // indexable storefront URLs.
 const STOREFRONT_PREFIXES = ['/projects', '/professionals', '/magazine', '/onboarding'];
+// Article-detail pages own their <head> via ArticleHead (per-article
+// slug_map hreflang, JSON-LD, canonical-to-served-locale). LocaleHead
+// MUST NOT emit on those URLs to avoid duplicate / contradicting tags.
+const ARTICLE_DETAIL_RE = /^(\/[a-z]{2}-[A-Z]{2})?\/magazine\/[^/]+\/?$/;
+function isArticleDetail(p) { return ARTICLE_DETAIL_RE.test(p); }
 function isStorefrontPath(p) {
+  if (isArticleDetail(p)) return false;       // owned by ArticleHead
   const m = p.match(LOCALE_RE);
   if (m && SUPPORTED_LOCALES.includes(m[1])) return true;  // /it-IT, /en-US, …
   if (p === '/') return true;
@@ -72,6 +79,22 @@ export const LocaleHead = ({ pageMeta }) => {
   const { locale: i18nLocale } = useT();
   const location = useLocation();
   const slug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
+  const [cmsSeo, setCmsSeo] = useState(null);
+
+  // CMS-driven homepage SEO. We pull the storefront "navigation" block
+  // ONCE — it carries per-locale brand.tagline + name that drive the
+  // homepage <title> and <meta description> in the absence of a more
+  // specific page-level seo block.
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const r = await api.get(`/api/storefront/public/${slug}/pages/navigation`);
+        if (alive) setCmsSeo(r.data?.content || null);
+      } catch { /* fall back to navigationContent module */ }
+    })();
+    return () => { alive = false; };
+  }, [slug]);
 
   useEffect(() => {
     // Skip non-storefront surfaces entirely — strip any leftover tags.
@@ -170,6 +193,25 @@ export const LocaleHead = ({ pageMeta }) => {
       try { document.documentElement.setAttribute('lang', canonicalLocale); } catch { /* noop */ }
 
       if (pageMeta?.title) document.title = pageMeta.title;
+      else {
+        // Homepage SEO from storefront CMS (locale-aware tagline → title).
+        const cms = cmsSeo || navigationContent || {};
+        const brandName = cms.brand?.name || tenantConfig?.brand?.name || 'MOOD for DESIGN';
+        const langKey = canonicalLocale.slice(0, 2);     // 'it', 'en', 'de', …
+        const taglineMap = cms.brand?.tagline || {};
+        const tagline = taglineMap[langKey] || taglineMap.it || taglineMap.en || '';
+        // Tab title format: "{brand} · {tagline}"
+        document.title = tagline ? `${brandName} · ${tagline}` : brandName;
+        // <meta description> = tagline (calm editorial register)
+        if (tagline) {
+          const md = setOrCreate('meta[name="description"]', () => {
+            const el = document.createElement('meta');
+            el.setAttribute('name', 'description');
+            return el;
+          });
+          md.setAttribute('content', tagline);
+        }
+      }
       if (pageMeta?.description) {
         const md = setOrCreate('meta[name="description"]', () => {
           const el = document.createElement('meta'); el.setAttribute('name', 'description'); return el;
@@ -178,7 +220,7 @@ export const LocaleHead = ({ pageMeta }) => {
       }
     });
     return () => { cancelled = true; };
-  }, [i18nLocale, location.pathname, slug, pageMeta?.title, pageMeta?.description]);
+  }, [i18nLocale, location.pathname, slug, pageMeta?.title, pageMeta?.description, cmsSeo]);
 
   return null;
 };

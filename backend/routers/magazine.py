@@ -48,6 +48,31 @@ def _is_admin(role: str) -> bool:
     return (role or "").lower() in {"tenant_admin", "super_admin"}
 
 
+def _request_has_tenant_session(request: Request, tenant_id: str) -> bool:
+    """Best-effort auth check for `?preview=1` access.
+
+    The Phase E-2 preview surface is editor-only. We accept any valid
+    Supabase session that resolves to a user whose `tenant_id` matches
+    the article's tenant. Anonymous requests get FALSE (and therefore
+    only published variants).
+    """
+    try:
+        from middleware.auth import _extract_token, decode_supabase_token  # noqa
+        token = _extract_token(request)
+        if not token:
+            return False
+        payload = decode_supabase_token(token)
+        auth_uid = payload.get('sub')
+        if not auth_uid:
+            return False
+        c = db()
+        r = (c.table('users_profile').select('tenant_id')
+             .eq('auth_user_id', auth_uid).limit(1).execute().data or [])
+        return bool(r and r[0].get('tenant_id') == tenant_id)
+    except Exception:
+        return False
+
+
 # ─── helpers ────────────────────────────────────────────────────────────
 
 def _tenant_id_from_slug(slug: str) -> Optional[str]:
@@ -232,17 +257,25 @@ def public_editorial_variant(
     variant_slug: str,
     request: Request,
     locale_code: Optional[str] = None,
+    preview: Optional[int] = 0,
 ):
     """Phase E-2 — public reader for `editorial_variants`.
 
     Resolution order:
       1. Exact (variant_slug, target_locale) for the tenant, where
-         `is_published = TRUE`.
+         `is_published = TRUE` (or any status when `?preview=1` AND the
+         request carries a valid authenticated session for the tenant).
       2. Same variant_slug, ANY published market variant (so a French
          visitor still sees the Italian-published version while the
          French variant is still in review).
       3. Fallback to the legacy `magazine_articles` path (frontend
          handles this by re-calling `/articles/{slug}`).
+
+    SEO localization (Phase E-3 / Prompt 3):
+      • `slug_map_by_locale` is emitted alongside the article so the
+        frontend can publish hreflang links to the LOCALIZED slug per
+        market (NOT just locale-prefix the same slug).
+      • Master-level `slug_map` covers every PUBLISHED sibling variant.
 
     Internal Translation safety: `internal_translation` is stripped
     server-side before serialisation. Never indexable, never reachable.
@@ -252,43 +285,71 @@ def public_editorial_variant(
         raise HTTPException(404, "tenant not found")
     c = db()
     requested_bcp = (locale_code or "").strip()
-    # Step 1 — exact (slug, locale) published match.
+    is_preview = bool(preview) and _request_has_tenant_session(request, tid)
+
+    # Step 1 — exact (slug, locale) match.
     variant = None
+    served_locale = None
     if requested_bcp:
-        rows = (c.table("editorial_variants").select("*")
-                .eq("tenant_id", tid).eq("variant_slug", variant_slug)
-                .eq("target_locale", requested_bcp).eq("is_published", True)
-                .order("published_at", desc=True).limit(1).execute().data or [])
+        qb = (c.table("editorial_variants").select("*")
+              .eq("tenant_id", tid).eq("variant_slug", variant_slug)
+              .eq("target_locale", requested_bcp))
+        if not is_preview:
+            qb = qb.eq("is_published", True)
+        rows = (qb.order("updated_at", desc=True).limit(1).execute().data or [])
         if rows:
             variant = rows[0]
             served_locale = requested_bcp
-    # Step 2 — fallback to any published variant under the same slug.
+    # Step 2 — fallback to any (published unless preview) variant under slug.
     if not variant:
-        rows = (c.table("editorial_variants").select("*")
-                .eq("tenant_id", tid).eq("variant_slug", variant_slug)
-                .eq("is_published", True)
-                .order("published_at", desc=True).limit(1).execute().data or [])
+        qb = (c.table("editorial_variants").select("*")
+              .eq("tenant_id", tid).eq("variant_slug", variant_slug))
+        if not is_preview:
+            qb = qb.eq("is_published", True)
+        rows = (qb.order("updated_at", desc=True).limit(1).execute().data or [])
         if rows:
             variant = rows[0]
             served_locale = variant.get("target_locale")
     if not variant:
         raise HTTPException(404, "editorial variant not published")
     article = _shape_variant_as_article(variant)
+
+    # ── slug_map_by_locale — every PUBLISHED sibling variant of the same
+    # master, indexed by BCP-47 target_locale. This is what the frontend
+    # uses to emit per-article hreflang to the LOCALIZED slug.
+    siblings = (c.table("editorial_variants")
+                .select("variant_slug,target_locale,is_published,status")
+                .eq("tenant_id", tid)
+                .eq("master_id", variant["master_id"])
+                .execute().data or [])
+    slug_map: Dict[str, str] = {}
+    for s in siblings:
+        if not s.get("is_published"):
+            continue
+        loc = s.get("target_locale")
+        if loc and loc not in slug_map:
+            slug_map[loc] = s.get("variant_slug")
+    # The current variant is always in the map (even when preview=draft).
+    slug_map[served_locale] = variant.get("variant_slug")
+    article["slug_map_by_locale"] = slug_map
+
     article["_locale"] = {
         "requested": requested_bcp or served_locale,
         "served":    served_locale,
         "source":    "editorial_variant",
         "fallback":  bool(requested_bcp and requested_bcp != served_locale),
+        "preview":   is_preview and not variant.get("is_published"),
     }
     # Best-effort signal — no aggressive tracking, just an editorial counter.
-    try:
-        sig = variant.get("performance_signals") or {}
-        sig["public_views"] = (sig.get("public_views") or 0) + 1
-        c.table("editorial_variants").update(
-            {"performance_signals": sig, "updated_at": _now()},
-        ).eq("id", variant["id"]).execute()
-    except Exception:
-        pass
+    if not is_preview:
+        try:
+            sig = variant.get("performance_signals") or {}
+            sig["public_views"] = (sig.get("public_views") or 0) + 1
+            c.table("editorial_variants").update(
+                {"performance_signals": sig, "updated_at": _now()},
+            ).eq("id", variant["id"]).execute()
+        except Exception:
+            pass
     return {"article": article}
 
 

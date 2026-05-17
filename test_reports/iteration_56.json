@@ -1,0 +1,43 @@
+{
+  "summary": "Phase R-MARKET-1B / E-2 / E-3 FINAL INTEGRATED TEST — FULL PASS. Backend: 58/58 existing tests still green (test_phase_r_market_1a, test_phase_r_market_1b_locale_wiring, test_phase_e_1a_editorial, test_phase_e_1b_studio, test_phase_e2_p2_editorial_public — NO regression from Prompt 3). New Prompt 3 suite (test_phase_e3_p3_seo_locale.py, 6 tests, 4 passed + 2 conditionally skipped on calendar coverage): public editorial endpoint emits article.slug_map_by_locale dict (loc→variant_slug) for all PUBLISHED sibling variants, _source=editorial_variant, _locale.source=editorial_variant, _locale.preview=false for anonymous even with ?preview=1, internal_translation never serialised (key absent + raw-text leak negative), unknown slug 404 with ?preview=1 (anonymous cannot unlock drafts), GET /api/editorial/variants/{id}/internal-translation → 401 anon. Frontend: /it-IT/magazine/warm-italian-gcc-luxury → ArticleHead emits exactly 1 canonical (data-mfd-head=canonical, owned by ArticleHead, NOT LocaleHead — confirms LocaleHead.isArticleDetail() correctly defers), canonical points to /<served_locale>/magazine/<localized-slug> = /en-AE/magazine/warm-italian-gcc-luxury (served falls back to en-AE since only en-AE variant is published — correct behaviour), hreflang per slug_map entry pointing to localized URLs, x-default → canonical, og:type=article, og:locale=en_AE, og:url/title/description/image, twitter:card=summary_large_image, JSON-LD schema.org/Article with headline+description+inLanguage+mainEntityOfPage+image+datePublished+dateModified+author+publisher, robots='index, follow' on normal request. On ?preview=1: ed-preview-banner sticky bar renders at top with Italian copy 'PREVIEW · INTERNAL · NON INDICIZZATA' + 'ESCI DALLA PREVIEW' exit link (target href drops ?preview=1, uses replace), meta robots flips to 'noindex, nofollow'. All Prompt 1 (locale routing/hreflang allow-list/x-default/legacy canonical/og:locale per supported locale + no SEO on /en-AE,/pt-BR,/auth) and Prompt 2 (Editorial Studio split-pane, tabs strict semantics, autosave PATCH, toolbar verbs) regressions remain green per backend pytest suite.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Article hero on /it-IT/magazine/<slug> when served variant is en-AE",
+        "issues": [
+          "Console warning: 'An empty string (\"\") was passed to the src attribute' — Hotspot pin or hero image renders an <img src=\"\"> when image_url is empty. Cosmetic, non-blocking. Recommend conditional render: src ? <img src={src}/> : null."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_e3_p3_seo_locale.py",
+    "/app/test_reports/pytest/iteration_56_full.xml",
+    "/app/test_reports/pytest/iteration_56_p3.xml"
+  ],
+  "action_items": [
+    "(Optional, non-blocking) Guard <img src> against empty string in MagazineArticlePage hero/related to silence React DOM warning."
+  ],
+  "critical_code_review_comments": [
+    "magazine.py public_editorial_variant: slug_map_by_locale is correctly built from PUBLISHED sibling variants only, served_locale is always present in the map, internal_translation stripped at _shape_variant_as_article — defense-in-depth is solid.",
+    "_request_has_tenant_session is a clean best-effort auth check that fails closed (returns False on any exception) — anonymous CANNOT unlock drafts via ?preview=1, verified.",
+    "ArticleHead.jsx uses data-mfd-head namespace to own canonical/hreflang/og/twitter/robots/jsonld separately from LocaleHead's data-mfd-locale — no double-emit, only 1 canonical confirmed.",
+    "LocaleHead.isArticleDetail() correctly bails on /<locale>/magazine/<slug>/?, delegating to ArticleHead. Verified in DOM.",
+    "PreviewBanner uses <Link to={location.pathname} replace> which correctly drops query string — verified exit_href='/it-IT/magazine/<slug>' with no ?preview=1.",
+    "JSON-LD includes the full extended schema.org/Article surface (headline, description, inLanguage, mainEntityOfPage, image, datePublished, dateModified, author/Organization, publisher/Organization with logo, articleSection, keywords, about, articleBody preview). Good."
+  ],
+  "updated_files": ["/app/backend/tests/test_phase_e3_p3_seo_locale.py (NEW — Prompt 3 regression suite)"],
+  "success_rate": {
+    "backend": "100% (58/58 existing + 4/4 new Prompt 3 tests pass; 2 Prompt 3 tests skipped because /api/editorial/calendar didn't expose a published-variant slug to the anonymous probe — coverage handled by direct-slug test which DID pass with warm-italian-gcc-luxury)",
+    "frontend": "100% on Prompt 3 article-detail SEO scope. ArticleHead canonical/hreflang/og/twitter/JSON-LD/robots all verified. PreviewBanner + noindex on ?preview=1 verified. LocaleHead delegation to ArticleHead verified (only 1 canonical on article URL)."
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (SuperAdmin) — not required for these anonymous SEO probes; the auth-only preview unlock path was verified by the 401 negative test.",
+  "seed_data_creation": "None — used the existing seeded EN-AE variant warm-italian-gcc-luxury.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Prompts 1+2+3 are GREEN end-to-end. The Prompt 3 regression guardrail is /app/backend/tests/test_phase_e3_p3_seo_locale.py — requires REACT_APP_BACKEND_URL. The seeded test article is `warm-italian-gcc-luxury` (en-AE published variant, no sibling locales yet) so slug_map_by_locale currently has only 1 entry; if QA adds a published IT/EN-US sibling, hreflang on /it-IT/magazine/warm-italian-gcc-luxury should grow to 2+ entries and canonical should switch to the locale-native variant. ArticleHead owns the head via data-mfd-head; LocaleHead owns it via data-mfd-locale and correctly defers on article URLs (isArticleDetail()).",
+  "rca_of_the_issue": "N/A — no regressions. One cosmetic React DOM warning on empty <img src> attribute is pre-existing and not specific to Prompt 3."
+}
