@@ -1,6 +1,52 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Public Storefront Header — Tenant-Driven Lean Chrome (DONE — 16 Feb 2026)
+
+User feedback: *"Frontend, scelta lingua in header va levato. Logo EXE Interior va messo a sinistra e non hardcoded. Il logo viene caricato dinamico dal blueprint. Levate le altre voci di menu Magazine, PMS, Members Area e messa un'icona per login e una per registrati."*
+
+**Changes**
+- **Backend**: new `GET /api/storefront/public/{tenant_slug}/brand` — anonymous, returns `{brand: {name, tagline, primary_logo_url, monochrome_logo_url}, nav: {main_links, show_login, show_register, login_href, register_href}}`. Reads from `tenants.branding_settings` so the tenant admin can edit logo + nav copy + login flags from Brand Studio without a deploy. Sensible default nav: Home · Servizi · Progetti · Contatti.
+- **Frontend**: rewrote `SiteHeader.jsx` to a single-row lean layout. New hook `usePublicBrand(tenantSlug)` with SWR caching. `BrandMark` renders `<img>` when `primary_logo_url` is set, typographic fallback otherwise — **NEVER hardcoded**.
+- **Header layout** (left → right): brand · main nav · access icons (LogIn + UserPlus from lucide-react) · burger (mobile only).
+- **Removed** the language switcher, the utility row (Magazine / PMS / Area Riservata), the "Richiedi Progetto" pill, and the second nav row beneath the brand.
+- **Seeded** demo tenant `branding_settings`: `public_brand_name='EXE INTERIOR'`, `tagline='Italian Design Excellence'`, `primary_logo_url=<EXE SVG>` so the live preview now renders an EXE-branded header end-to-end without code changes.
+
+**Verified live**:
+- `language buttons: 0` ✓
+- `login icon: True · register icon: True` ✓ (data-testids `header-icon-login`, `header-icon-register`)
+- `brand logo img: True` ✓ — pulled from `https://exeinterior.com/.../exe-interior-logo-white.svg` via the backend endpoint
+- `main nav links: 4` ✓ — Home · Services · Projects · Contact, *no Magazine / PMS / Area*
+- Mobile burger present, mobile menu includes Sign in + Register icon links
+
+**Tests**: 3/3 PASS (`/app/backend/tests/test_public_brand.py`):
+- returns brand + 4 default editorial nav links (no Magazine/PMS/Area)
+- 404 on unknown tenant
+- anonymous (no Authorization header required)
+
+**Tenant-admin extensibility (no UI changes needed today)** — the endpoint already reads `branding_settings.public_nav` if the admin sets it. So if a tenant later writes:
+
+```json
+"branding_settings": {
+  "public_brand_name": "Studio Visconti",
+  "primary_logo_url": "...",
+  "public_nav": {
+    "main_links": [
+      { "id": "home", "href": "/", "label": {"it": "Home"} },
+      { "id": "atelier", "href": "/atelier", "label": {"it": "Atelier"} },
+      { "id": "stories", "href": "/stories", "label": {"it": "Stories"} }
+    ],
+    "show_register": false
+  }
+}
+```
+
+…the public storefront immediately re-skins itself with those values, including hiding the register icon. The home/internal pages themselves are already managed through `cms_pages` (existing storefront CMS, page_keys `home / projects / start_project / professionals / navigation / ui`).
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase P0.3.C — Curated Collections UI · Cinematic Vertical Market Perspective™ (DONE — 16 Feb 2026)
 
 > First visible manifestation of Cultural Design Intelligence™.

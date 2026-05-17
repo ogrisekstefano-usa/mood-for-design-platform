@@ -240,6 +240,103 @@
   .exe-header__burger { display: inline-flex; }
 }
 
+/* ── LEAN HEADER (tenant-driven, single-row) ─────────────────── */
+.exe-header--lean { padding: 0; }
+.exe-header--lean .exe-header__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 18px 5vw;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+.exe-header__brand--left {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-decoration: none;
+  color: inherit;
+  line-height: 1;
+}
+.exe-header__brand--left .exe-header__wordmark {
+  text-indent: 0;
+  letter-spacing: 0.36em;
+  font-size: clamp(18px, 1.4vw, 22px);
+}
+.exe-header__brand-logo {
+  height: 32px;
+  width: auto;
+  max-width: 220px;
+  display: block;
+  /* Brand SVG is white-on-transparent on the source domain — invert so it
+     reads on the paper background. Tenant can override by uploading their
+     own monochrome logo. */
+  filter: invert(1);
+}
+.exe-header__brand-tagline {
+  font-family: var(--exe-sans);
+  font-size: 9.5px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--exe-ink-muted);
+}
+.exe-header--lean .exe-header__nav {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1 1 auto;
+  gap: 32px;
+  padding: 0;
+  border-top: none;
+  max-width: none;
+  margin: 0;
+}
+.exe-header__access {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 1px solid var(--exe-line-soft);
+  padding-left: 18px;
+  margin-left: 4px;
+}
+.exe-header__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  color: var(--exe-ink-soft);
+  text-decoration: none;
+  transition: color .2s, background .2s;
+}
+.exe-header__icon-btn:hover {
+  color: var(--exe-ink);
+  background: var(--exe-line-soft);
+}
+
+.exe-mobile-menu__access {
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  margin-top: 28px;
+  padding-top: 28px;
+  border-top: 1px solid var(--exe-line-soft);
+}
+.exe-mobile-menu__access .exe-mobile-menu__link {
+  font-family: var(--exe-sans);
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 960px) {
+  .exe-header--lean .exe-header__nav { display: none; }
+  .exe-header--lean .exe-header__access { display: none; }
+  .exe-header--lean .exe-header__row { padding: 14px 5vw; }
+}
+
 /* ── HERO ─────────────────────────────────────────────────── */
 .exe-hero {
   position: relative;

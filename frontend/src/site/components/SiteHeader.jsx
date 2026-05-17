@@ -1,28 +1,117 @@
 /**
- * SiteHeader — EXE INTERIOR demo storefront header.
+ * SiteHeader — tenant-driven public storefront header.
  *
- * Layout (mockup-exact):
- *   ┌────────────────────────────────────────────────────────────────┐
- *   │ [IT EN DE FR ES AE]   EXE INTERIOR   [Magazine | PMS | Area] [CTA]
- *   │                       Italian Design Excellence
- *   ├────────────────────────────────────────────────────────────────┤
- *   │   Home · Servizi · Progetti · A&D Partnership · Magazine · …
- *   └────────────────────────────────────────────────────────────────┘
+ * Layout (single row, left-aligned brand):
  *
- * Fully CMS-driven through navigationContent (locale-keyed). Top utility row,
- * centered serif wordmark, then horizontal main-nav row below.
+ *   ┌─────────────────────────────────────────────────────────────────┐
+ *   │  [LOGO]   Home · Servizi · Progetti · Contatti      [↪]  [+]    │
+ *   └─────────────────────────────────────────────────────────────────┘
+ *
+ *  • Logo on the LEFT — dynamic from /api/storefront/public/{slug}/brand
+ *    (image when `primary_logo_url` is set, typographic wordmark otherwise).
+ *    NEVER hardcoded.
+ *  • Main nav comes from `branding_settings.public_nav.main_links` so the
+ *    tenant admin can edit it from Brand Studio. Sensible default:
+ *    Home · Servizi · Progetti · Contatti.
+ *  • RIGHT — two minimal icons: Sign-in (LogIn) + Register (UserPlus).
+ *    Toggleable per tenant via `show_login` / `show_register`.
+ *  • NO language switcher. NO Magazine / PMS / Members Area chrome.
  */
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, LogIn, UserPlus } from 'lucide-react';
 import { useSite } from '../SiteContext';
-import { navigationContent } from '../content/navigation';
-import { publicLanguages } from '../content/languages';
-import { Menu, X } from 'lucide-react';
+import { usePublicBrand } from '../usePublicBrand';
+import { tenantConfig } from '../content/tenant';
 
 const isHash = (href) => href && href.startsWith('#');
 
+// Locale-aware label resolver — works whether labels come back as plain
+// strings or as `{ it, en-US, ... }` bags from the brand endpoint.
+const pickLabel = (label, locale) => {
+  if (label == null) return '';
+  if (typeof label === 'string') return label;
+  if (typeof label !== 'object') return String(label);
+  const chain = [locale, 'it', 'en-US', 'en-GB', 'fr', 'de', 'es'];
+  for (const code of chain) if (label[code]) return label[code];
+  return Object.values(label)[0] || '';
+};
+
+
+const BrandMark = ({ brand }) => {
+  const hasLogo = !!brand?.primary_logo_url;
+  if (hasLogo) {
+    return (
+      <Link
+        to="/"
+        className="exe-header__brand exe-header__brand--left"
+        data-testid="site-brand"
+        aria-label={brand?.name || 'Studio'}
+      >
+        <img
+          src={brand.primary_logo_url}
+          alt={brand?.name || ''}
+          className="exe-header__brand-logo"
+          data-testid="site-brand-logo"
+        />
+        {brand?.tagline && (
+          <span className="exe-header__brand-tagline" data-testid="site-brand-tagline">
+            {brand.tagline}
+          </span>
+        )}
+      </Link>
+    );
+  }
+  return (
+    <Link
+      to="/"
+      className="exe-header__brand exe-header__brand--left"
+      data-testid="site-brand"
+    >
+      <span className="exe-header__wordmark" data-testid="site-brand-name">
+        {brand?.name || 'Studio'}
+      </span>
+      {brand?.tagline && (
+        <span className="exe-header__brand-tagline" data-testid="site-brand-tagline">
+          {brand.tagline}
+        </span>
+      )}
+    </Link>
+  );
+};
+
+
+const AccessIcons = ({ nav }) => (
+  <div className="exe-header__access" role="group" aria-label="Account">
+    {nav?.show_login !== false && (
+      <Link
+        to={nav?.login_href || '/auth/login'}
+        className="exe-header__icon-btn"
+        aria-label="Sign in"
+        title="Sign in"
+        data-testid="header-icon-login"
+      >
+        <LogIn size={18} strokeWidth={1.6} aria-hidden />
+      </Link>
+    )}
+    {nav?.show_register !== false && (
+      <Link
+        to={nav?.register_href || '/auth/register'}
+        className="exe-header__icon-btn"
+        aria-label="Register"
+        title="Register"
+        data-testid="header-icon-register"
+      >
+        <UserPlus size={18} strokeWidth={1.6} aria-hidden />
+      </Link>
+    )}
+  </div>
+);
+
+
 const SiteHeader = () => {
-  const { pick, locale, setLocale } = useSite();
+  const { locale } = useSite();
+  const { brand, nav } = usePublicBrand(tenantConfig.slug);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
@@ -41,58 +130,36 @@ const SiteHeader = () => {
     return () => { document.body.style.overflow = prev || ''; };
   }, [mobileOpen]);
 
-  const brand = navigationContent.brand;
-  const langs = publicLanguages();
-  const utility = navigationContent.header.utility || [];
-  const links = navigationContent.header.links;
-  const access = navigationContent.header.access;
-  const cta = navigationContent.header.cta;
+  const mainLinks = (nav?.main_links || []);
 
-  const renderLink = (link, isCta = false) => {
-    const cls = isCta ? 'exe-header__cta' : 'exe-header__navlink';
-    const label = pick(link.label);
+  const renderLink = (link, opts = {}) => {
+    const label = pickLabel(link.label, locale);
+    const cls = opts.mobile ? 'exe-mobile-menu__link' : 'exe-header__navlink';
+    const testid = opts.mobile ? `site-mobile-nav-${link.id}` : `site-nav-${link.id}`;
     if (isHash(link.href)) {
-      return <a key={link.id} href={link.href} className={cls} data-testid={`site-nav-${link.id}`}>{label}</a>;
+      return <a key={link.id} href={link.href} className={cls} data-testid={testid}>{label}</a>;
     }
-    return <Link key={link.id} to={link.href} className={cls} data-testid={`site-nav-${link.id}`}>{label}</Link>;
+    return <Link key={link.id} to={link.href} className={cls} data-testid={testid}>{label}</Link>;
   };
 
   return (
-    <header className={`exe-header ${scrolled ? 'exe-header--scrolled' : ''}`} data-testid="site-header">
-      {/* ── TOP UTILITY ROW ─────────────────────────────────────── */}
-      <div className="exe-header__top">
-        <div className="exe-header__lang" role="group" aria-label="Language">
-          {langs.map((l) => (
-            <button
-              key={l.code}
-              type="button"
-              className={`exe-header__lang-btn ${l.code === locale ? 'is-active' : ''}`}
-              onClick={() => setLocale(l.code)}
-              data-testid={`lang-${l.short.toLowerCase()}`}
-              aria-pressed={l.code === locale}
-            >
-              {l.short}
-            </button>
-          ))}
-        </div>
+    <header
+      className={`exe-header exe-header--lean ${scrolled ? 'exe-header--scrolled' : ''}`}
+      data-testid="site-header"
+    >
+      <div className="exe-header__row">
+        {/* LEFT — brand */}
+        <BrandMark brand={brand} />
 
-        <Link to="/" className="exe-header__brand" data-testid="site-brand">
-          <div className="exe-header__wordmark">{brand.name}{brand.suffix}</div>
-          <div className="exe-header__tagline">{pick(brand.tagline)}</div>
-        </Link>
+        {/* CENTER/RIGHT — main nav */}
+        <nav className="exe-header__nav" aria-label="Primary">
+          {mainLinks.map((l) => renderLink(l))}
+        </nav>
 
-        <div className="exe-header__util">
-          {utility.map((u) => (
-            isHash(u.href)
-              ? <a   key={u.id} href={u.href} className="exe-header__util-link" data-testid={`util-${u.id}`}>{pick(u.label)}</a>
-              : <Link key={u.id} to={u.href} className="exe-header__util-link" data-testid={`util-${u.id}`}>{pick(u.label)}</Link>
-          ))}
-          <span className="exe-header__util-sep" aria-hidden="true" />
-          {isHash(cta.href)
-            ? <a   href={cta.href} className="exe-header__cta-pill" data-testid="header-cta">{pick(cta.label)}</a>
-            : <Link to={cta.href} className="exe-header__cta-pill" data-testid="header-cta">{pick(cta.label)}</Link>}
-        </div>
+        {/* FAR RIGHT — access icons */}
+        <AccessIcons nav={nav} />
 
+        {/* Mobile burger */}
         <button
           type="button"
           className="exe-header__burger"
@@ -105,31 +172,31 @@ const SiteHeader = () => {
         </button>
       </div>
 
-      {/* ── MAIN NAV ROW ───────────────────────────────────────── */}
-      <nav className="exe-header__nav" aria-label="Primary">
-        {links.map((l) => renderLink(l))}
-      </nav>
-
-      {/* ── MOBILE MENU ───────────────────────────────────────── */}
+      {/* Mobile menu */}
       {mobileOpen && (
         <div className="exe-mobile-menu" role="dialog" aria-modal="true" data-testid="site-mobile-menu">
           <nav className="exe-mobile-menu__nav" aria-label="Mobile primary">
-            {links.map((l) => (
-              isHash(l.href)
-                ? <a   key={l.id} href={l.href} className="exe-mobile-menu__link" data-testid={`site-mobile-nav-${l.id}`}>{pick(l.label)}</a>
-                : <Link key={l.id} to={l.href} className="exe-mobile-menu__link" data-testid={`site-mobile-nav-${l.id}`}>{pick(l.label)}</Link>
-            ))}
-            <div className="exe-mobile-menu__util">
-              {utility.map((u) => (
-                isHash(u.href)
-                  ? <a   key={u.id} href={u.href} className="exe-mobile-menu__util">{pick(u.label)}</a>
-                  : <Link key={u.id} to={u.href} className="exe-mobile-menu__util">{pick(u.label)}</Link>
-              ))}
+            {mainLinks.map((l) => renderLink(l, { mobile: true }))}
+            <div className="exe-mobile-menu__access">
+              {nav?.show_login !== false && (
+                <Link
+                  to={nav?.login_href || '/auth/login'}
+                  className="exe-mobile-menu__link"
+                  data-testid="site-mobile-icon-login"
+                >
+                  <LogIn size={16} strokeWidth={1.6} aria-hidden /> Sign in
+                </Link>
+              )}
+              {nav?.show_register !== false && (
+                <Link
+                  to={nav?.register_href || '/auth/register'}
+                  className="exe-mobile-menu__link"
+                  data-testid="site-mobile-icon-register"
+                >
+                  <UserPlus size={16} strokeWidth={1.6} aria-hidden /> Register
+                </Link>
+              )}
             </div>
-            {isHash(cta.href)
-              ? <a   href={cta.href} className="exe-mobile-menu__cta" data-testid="site-mobile-cta">{pick(cta.label)}</a>
-              : <Link to={cta.href} className="exe-mobile-menu__cta" data-testid="site-mobile-cta">{pick(cta.label)}</Link>}
-            <Link to={access.href} className="exe-mobile-menu__util" data-testid="site-mobile-access-btn">{pick(access.label)}</Link>
           </nav>
         </div>
       )}

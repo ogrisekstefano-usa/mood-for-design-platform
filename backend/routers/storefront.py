@@ -656,3 +656,61 @@ def public_team_leaders(tenant_slug: str, max_leaders: int = 2):
         })
     return {"tenant_name": tenant_name, "leaders": leaders}
 
+
+
+# ── Public storefront brand (logo + nav config) ───────────────────────
+#
+# Anonymous endpoint consumed by the public site shell (SiteHeader).
+# Returns:
+#   • brand  — public_brand_name, tagline, logo URLs (driven by Brand Studio)
+#   • nav    — main_links + show_login / show_register flags (tenant-editable
+#              via branding_settings.public_nav so an admin can rewrite the
+#              header copy without a deploy)
+#
+# Notes:
+#   • Falls back to `tenants.name` when the studio hasn't filled in their
+#     public_brand_name yet.
+#   • Default nav is intentionally minimal: Home · Servizi · Progetti ·
+#     Contatti — matches the user's editorial guidance.
+@router.get("/public/{tenant_slug}/brand")
+def public_brand(tenant_slug: str):
+    client = db()
+    t = (client.table('tenants').select('id, name, branding_settings, theme_settings')
+         .eq('slug', tenant_slug).limit(1).execute())
+    if not t.data:
+        raise HTTPException(404, "Tenant not found")
+    tenant = t.data[0]
+    b = tenant.get('branding_settings') or {}
+
+    brand = {
+        "name":                b.get('public_brand_name') or tenant.get('name') or 'Studio',
+        "tagline":             b.get('tagline'),
+        "primary_logo_url":    b.get('primary_logo_url'),
+        "monochrome_logo_url": b.get('monochrome_logo_url'),
+        "favicon_url":         b.get('favicon_url'),
+    }
+
+    DEFAULT_LINKS = [
+        {"id": "home",       "href": "/",         "label": {"it": "Home",      "en-US": "Home",      "en-GB": "Home",      "fr": "Accueil",  "de": "Start",      "es": "Inicio",     "ae": "الرئيسية"}},
+        {"id": "servizi",    "href": "/services", "label": {"it": "Servizi",   "en-US": "Services",  "en-GB": "Services",  "fr": "Services", "de": "Leistungen", "es": "Servicios",  "ae": "الخدمات"}},
+        {"id": "progetti",   "href": "/projects", "label": {"it": "Progetti",  "en-US": "Projects",  "en-GB": "Projects",  "fr": "Projets",  "de": "Projekte",   "es": "Proyectos",  "ae": "المشاريع"}},
+        {"id": "contatti",   "href": "/contact",  "label": {"it": "Contatti",  "en-US": "Contact",   "en-GB": "Contact",   "fr": "Contact",  "de": "Kontakt",    "es": "Contacto",   "ae": "تواصل معنا"}},
+    ]
+    nav_cfg = b.get('public_nav') or {}
+    main_links = nav_cfg.get('main_links') if isinstance(nav_cfg.get('main_links'), list) else None
+
+    nav = {
+        "main_links":    main_links if main_links else DEFAULT_LINKS,
+        "show_login":    bool(nav_cfg.get('show_login',    True)),
+        "show_register": bool(nav_cfg.get('show_register', True)),
+        "login_href":    nav_cfg.get('login_href')    or '/auth/login',
+        "register_href": nav_cfg.get('register_href') or '/auth/register',
+    }
+
+    return {
+        "tenant_slug": tenant_slug,
+        "tenant_name": tenant.get('name'),
+        "brand":       brand,
+        "nav":         nav,
+    }
+
