@@ -23,6 +23,7 @@ const ProjectDetailPage = lazy(() => import('./pages/workspace/ProjectDetailPage
 const ProposalsPage = lazy(() => import('./pages/workspace/ProposalsPage'));
 const ProposalComposerPage = lazy(() => import('./pages/workspace/ProposalComposerPage'));
 const ReferencesPage = lazy(() => import('./pages/workspace/ReferencesPage'));
+const RelationshipsPage = lazy(() => import('./pages/workspace/RelationshipsPage'));
 const VariantApprovalInboxPage = lazy(() => import('./pages/editorial/VariantApprovalInboxPage'));
 const MoodboardsPage = lazy(() => import('./pages/moodboards/MoodboardsPage'));
 const InspirationsPage = lazy(() => import('./pages/inspirations/InspirationsPage'));
@@ -210,6 +211,7 @@ function App() {
                   <Route path="/workspace/proposals" element={<ProposalsPage />} />
                   <Route path="/workspace/proposals/:id/compose" element={<ProposalComposerPage />} />
                   <Route path="/workspace/references" element={<ReferencesPage />} />
+                  <Route path="/workspace/relationships" element={<RelationshipsPage />} />
                   <Route path="/moodboards" element={<MoodboardsPage />} />
                   <Route path="/moodboards/:id" element={<MoodboardEditor />} />
                   <Route path="/library" element={<MediaLibraryPage />} />

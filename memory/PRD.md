@@ -1,6 +1,62 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase R-CRM-1 — Relationship CRM Foundation (DONE — 17 Feb 2026)
+
+> **NON è un sales CRM. NON è enterprise.** È una **shared relationship memory** per studi di interior design, showroom di arredo e studi A&D — pensata per chi oggi lavora con email, WhatsApp e memoria personale.
+
+**DB (migration `034_relationship_crm.sql`)** — 6 tabelle + 1 catalog:
+- `accounts` (private_client | studio | developer | partner_ad | …) con `lifecycle_stage`, `source`, `primary_owner_id`, `relationship_health`, `legacy_lead_id` per tracciare la provenienza dalla legacy `leads` table.
+- `contacts` — N contatti per account, con `primary_contact` flag, `role`, `department_or_area`, `communication_preference`.
+- `interactions` — timeline completa: call / email / whatsapp / showroom_visit / business_meeting / discovery_interview / moodboard_sent | viewed / proposal_* / post_visit_report / internal_note / voice_note / ai_summary / web_lead_generation / stage_change. Campo `report_payload` JSONB per post-visit reports estendibili.
+- `relationship_actions` — prossimi passi / reminders (NON tasks): `call_back / send_email / send_moodboard / follow_up / schedule_meeting / material_deadline / proposal_feedback / send_quote / no_activity_alert / engagement_alert`. Auto-creazione quando un'interazione ha `next_step` + `next_follow_up_date`.
+- `account_style_profile` — Style DNA (preferred styles/materials/colors/rooms/atmosphere + budget + timing + AI tags + designer validated).
+- `account_team_members` — collaborators per-account con `role_in_account` (primary_owner | contributor | previous_owner | invited_colleague) e `visibility_level` (full | crm_only | moodboards_only | projects_only | commercial_only | read_only).
+- `relationship_lookups` — **Blueprint Command Center catalog**: 14 group_keys (lifecycle_stage, account_type, source, interaction_type, action_type, priority, budget_range, timing_range, style, material, atmosphere, visibility_level, relationship_health). Etichette per-locale (it/en/…), riordinabili, attivabili/disattivabili — **NO HARDCODED VALUES**.
+
+**Backend** — router `/api/relationships/*` con 20+ endpoints:
+- `GET/POST /api/relationships/accounts` (filtri stage, type, owner, source, q), `GET /{id}` (account + contacts + style + team + counts), `PATCH /{id}`, `POST /{id}/stage` (emette `stage_change` interaction), `DELETE /{id}` (soft-archive).
+- Contacts: add / patch / delete con `primary_contact` mutex automatico.
+- Interactions: list, add (auto-crea `relationship_actions` follow-up se `next_step` + date), patch, delete. Aggiorna `last_activity_at` su account.
+- Actions: list (filtro `?status=`), create, patch (mark done → `completed_at`).
+- Style DNA: get / put upsert.
+- Lookups: `GET /api/relationships/lookups?group=...` raggruppato per Command Center.
+
+**Script di migrazione** `/app/backend/scripts/migrate_leads_to_relationships.py` — idempotent, ha migrato i **59 leads legacy** in account+contact+inception interaction. Preservato: nome, email, telefono, type, budget, status, created date, notes, locale. `accounts.legacy_lead_id` traccia la provenienza così re-run del migration salta i già migrati.
+
+**Seed lookups** `/app/backend/scripts/seed_relationship_lookups.py` — 13 group_keys, ~120 valori it/en per il demo tenant.
+
+**Frontend** — nuova route `/workspace/relationships` (`RelationshipsPage.jsx`):
+- **Topbar**: eyebrow *"Relationship OS"* + H1 *"Relazioni"* + subtitle italic + search · view toggle (Tabella / Kanban) · gold CTA **+ Nuova relazione**.
+- **Sidebar editoriale** con 9 filtri smart (Tutte le relazioni / Nuove / Non assegnate / Da seguire / High intent / Internazionali / Progetti attivi / Clienti / Archiviate) con contatori live.
+- **Tabella**: avatar circolare iniziali + nome account + città/country, tipo, **stage chip cromatico** (palette mockup-aligned), contatto primario, ultima attività italica relativa, badge azioni aperte (icon AlertTriangle gold), owner.
+- **Kanban**: 7 colonne pipeline (Nuova richiesta → Lead → Discovery → Prospect → Progetto attivo → Cliente → Archiviato) con card editoriali compatte.
+- **Account Detail Drawer** (slide-in 760px, right): header con stage chip + tipo + nome serif 28px + città · ultima attività. 4 tab MVP:
+  - **Overview**: dati account (email/phone/città), sorgente, salute · pulsanti **Cambia stage** (clic su qualsiasi stage chip esegue `POST /stage`) · contatori (interazioni, prossimi passi aperti).
+  - **Contatti**: card per contatto con avatar + ruolo + email/phone + badge "Primario".
+  - **Timeline**: ordine cronologico desc, dot dorato + eyebrow uppercase tipo interazione + titolo serif + summary + prossimo passo italic.
+  - **Prossimi passi**: checklist toggleable (Circle ↔ CheckCircle2), priority + due date + notes.
+- **Modal "Nuova relazione"**: form lean (account name + type + source + città + nome/cognome/email/phone + note) → crea account + primary contact in una transazione.
+- **Sidebar nav app**: nuova voce **"Relazioni"** (icona Users) montata sotto References nel workspace.
+
+**Stage cromatici** (palette stone-inspired, no gold gradients da CRM):
+- Nuova richiesta cream · Lead caramel · Discovery violet · Prospect sage · Progetto attivo green · Cliente blue-grey · Partner blush · Archiviato stone.
+
+**Verifica live** (demo@moodfordesign.com):
+- 59 accounts migrati dai legacy leads · 9 sidebar filters con count corretti · pipeline Kanban con 7 colonne · drawer overview/contacts/timeline/actions tutti funzionanti · cambio stage via chip click esegue API e refresh.
+
+**Phase R-CRM-2 (prossima)**:
+- Quick Create dropdown (Add Contact / Add Interaction / Voice Note / Create Alert / Start Project for Existing Client)
+- Guided New Lead Procedure (6 step wizard: Origin → Account/Contact → Project Interest → Style/Inspiration → Next Step → Review)
+- Integrazione frontend form pubblico → `POST /api/public/leads` che crea Account + Contact + Interaction `web_lead_generation` + alert "Review new inquiry"
+- Duplicate prevention (email/phone/name match → "Possible existing relationship")
+- Tabs rimanenti del drawer: Style DNA · Moodboards · Projects · Files · Team & Permissions
+- Blueprint Command Center UI per editing dei lookups (`/settings/relationships/catalog`)
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase R — Cinematic Storefront Redesign (DONE — 16 Feb 2026)
 
 User feedback (with mockup): *"Lavora come un senior web designer e rifai completamente la grafica storefront seguendo la grafica allegata. Anche le sezioni interne che presentano dettaglio progetti, lista magazine con filtro e dettaglio articolo devono essere un linea con nuovo layout. TUTTO COORDINATO, NO HARDCODED ma gestito da Blueprint con editor pagine presente in settings."*
