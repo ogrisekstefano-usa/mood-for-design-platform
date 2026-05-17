@@ -1,6 +1,54 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase E-1A — Editorial Intelligence Operating System™ — Foundation (DONE — 17 Feb 2026)
+
+> **NON è un CMS, NON è un AI article generator. È il CULTURAL EDITORIAL ENGINE di MOOD**: ogni variant pubblicata è una reinterpretazione market-native di una direzione editoriale centrale (Editorial Master™), MAI una traduzione piatta. Foundation pura — AI generation (Claude Sonnet) e UI Blueprint Editor / Editorial Calendar arrivano in E-1B/E-1C.
+
+**Migration `036_editorial_intelligence_os.sql` — 4 tabelle**
+- **`editorial_masters`** — la *direzione culturale centrale* (memoria editoriale). NON è un articolo. Contiene: `code` (unique per tenant), `title`, `canonical_locale`, `conceptual_direction`, `emotional_objective`, `target_psychology`, `architectural_tone`, `hospitality_positioning`, `material_language`, `cta_intent`, `seo_intent`, `baseline_imagery`, `canonical_article_seed`, `taxonomy`, `master_status`.
+- **`editorial_variants`** — reinterpretazioni market-native (multiple per master × market: stagionalità, edizioni, A-B narrative). UNIQUE su (master_id, market_id, edition, season, slug). Carica SIA il `title/body_blocks` published-locale SIA il `internal_translation` per la review Blueprint (mai indicizzato, mai pubblico, mai restituito dal calendar/public endpoint). Campi cultural-aware: `cultural_angle`, `tone_label`, `pacing_label`, `cta_set` (multi-tier), `performance_signals` (light intelligence — no GA-style aggressive analytics).
+- **`editorial_revisions`** — append-only history. Memoria strutturata: `revision_options[]` (chiavi da lookup platform), `notes`, `scope` (full/title_only/body_only/cta_only/seo_only/imagery_only), `before_snapshot`/`after_snapshot`, `ai_response_meta` (popolato in E-1B), `status` (pending/applied/rejected/superseded).
+- **`editorial_cta_clicks`** — feed diretto al Relationship CRM. Cattura `cta_tier`, `cta_intent`, `atmosphere_context`, `time_on_article_sec`, `hotspots_opened`, `materials_viewed`, `references_saved`, `resulting_lifecycle_stage`, `resulting_intent_label`, FK opzionali a `accounts/contacts/interactions`.
+
+**Seed `seed_editorial_lookups.py` — 49 valori platform-level su 7 nuovi gruppi**
+- `article_status` (9) — pipeline raffinata: `draft → direction_defined → ai_composing → ready_for_editorial_review → revision_requested → approved → scheduled → published → archived` (chip colors metadata).
+- `revision_option` (10) — **editorial-grade**: NO "rewrite/fix grammar/shorten". SI "Increase hospitality resonance" · "Reduce luxury intensity" · "Strengthen material storytelling" · "More architectural authority" · "More emotional pacing" · "Improve wellness atmosphere" · "Reduce editorial density" · "Stronger CTA transition" · "More collectible design tone" · "More international buyer appeal".
+- `cta_tier` (3) — soft / medium / strong, ciascuno con `metadata.resulting_lifecycle_stage` + `resulting_intent_label_key` (cablaggio CTA → CRM).
+- `cta_intent` (11) — Soft (6) · Medium (3) · Strong (2) per le 11 CTA esatte richieste (Contact the Studio / Ask About Materials / Book a Showroom Visit / Request More Information / Speak With Our Team / Discover Collections / Share Your Inspiration / Send Your Floor Plan / Request Design Advice / Start Your Project / Book a Discovery Session).
+- `editorial_tone` (8) — *cultural tension* labels: progettuale_italian / aspirational_lifestyle / prestige_restraint / execution_discipline / ceremonial_materiality / experiential_living / savoir_faire / plain_spoken_restraint.
+- `editorial_pacing` (5) — slow_editorial / measured / aspirational / ceremonial / precise.
+- `editorial_lead_intent` (3) — `inspiration_interest` → new_inquiry · `qualified_editorial_lead` → lead · `discovery_request` → discovery. **Tutti i CTA tier producono Account+Contact** ma con `lifecycle_stage` mappato dal `cta_tier` metadata.
+
+**Backend router `/api/editorial/*`**
+- Masters CRUD (`GET/POST/GET/PATCH/DELETE`) — codici unique per tenant
+- Variants CRUD + `POST /variants/{id}/transition` (graph allowed_transitions: blocca jumps illegali → 409) + `POST /schedule` (gate: solo da approved/scheduled) + `POST /publish`
+- Revisions append-only `POST /variants/{id}/revisions` — valida `revision_options` contro lookup platform, salva before-snapshot, bumpa contatore, sposta status a `revision_requested`. `PATCH /revisions/{id}/apply` per applicazione manuale (E-1B sostituirà con AI).
+- `GET /editorial/calendar?from=&to=&market_id=` — vista scheduled, **strip internal_translation** prima della risposta
+- **`POST /api/public/editorial/cta-click`** (anonymous) — cuore del cablaggio editorial → CRM:
+  - SOFT senza identità → solo traccia il click + bump performance_signals
+  - SOFT con identità / MEDIUM / STRONG → crea **Account** (lifecycle_stage mappato dal tier metadata) + **Contact** + **Interaction** `web_lead_generation` con `report_payload` che preserva variant_id, market_id, cultural_angle, tone_label, hotspots_opened, materials_viewed, atmosphere_context, editorial_lead_intent
+  - L'`accounts.metadata_json` riceve `origin_variant_id` · `origin_market_id` · `origin_locale` · `cultural_angle` · `tone_label` · `editorial_lead_intent` — **trasformando MOOD anche in motore di intelligence commerciale culturale** (richiesta esplicita)
+
+**Verifica live + pytest**
+- ✅ **42/42 pytest pass** complessivi (18 Phase E-1A + 13 Phase R-MARKET-1A + 11 Phase R-CRM-2A). Zero regressioni.
+- Test end-to-end manuale: creato master "Warm Italian Living" → variant `gcc_winter_2026` per GCC market → 6 transizioni stato (draft → published) → STRONG CTA click con visitor Faisal Al Mansoori → Account creato in CRM con `lifecycle_stage='discovery'`, `editorial_lead_intent='discovery_request'`, `cultural_angle='Italian quiet luxury meets Gulf hospitality theatre'`, Contact + Interaction `web_lead_generation` con report_payload completo.
+- Invarianti chiave verificate: cta_tier→CRM mapping (soft/medium/strong → new_inquiry/lead/discovery), revision_option editorial-grade (forbidden tech terms test passa), multiple variants per master×market consentiti, internal_translation MAI esposto da calendar/public/list endpoints.
+
+**Phase E-1B (prossima)** — AI Generation + Internal Translation:
+- Service `editorial_ai.py` con Claude Sonnet via Emergent LLM Key
+- `generate_variant(master_id, market_id)`: legge `markets.cultural_profile + tone_of_voice + cta_style + seo_intent` + master direction → scrive variant *culturally adapted*
+- `generate_internal_translation(variant_id, blueprint_locale)` per la review interna
+- `regenerate_with_revisions(variant_id, options[], notes)` → AI applica feedback strutturato
+
+**Phase E-1C** — Blueprint Editor UI + Editorial Calendar (calendar/list views) — già definito a livello UX nel prompt utente.
+
+**Phase E-1D** — Public Storefront rendering market-adapted + hreflang generation + CTA tracking client-side (già backend-pronto via `/api/public/editorial/cta-click`).
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase R-MARKET-1A — Blueprint vs Market Locale Separation (DONE — 17 Feb 2026)
 
 > **Tre strati di locale, finalmente separati**:
