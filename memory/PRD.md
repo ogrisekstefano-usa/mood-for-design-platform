@@ -1,6 +1,53 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase R-CRM-2A — Locale-Aware Foundation (DONE — 17 Feb 2026)
+
+> **NO hardcoded business values. NO hardcoded UI labels.** Tutta la struttura del CRM è ora **locale-aware + config-driven**: ogni dropdown, chip, etichetta filtro, formato data e colore stage proviene dal Blueprint Command Center catalog (DB) o dai dizionari i18n. Pronta per l'espansione a nuovi tenant/lingue/personalizzazioni senza modifiche al codice.
+
+**Architettura locale-aware (BCP-47)**
+- 6 locale strict BCP-47 supportati: **it-IT** (platform default), **en-US**, **en-GB**, **es-ES**, **fr-FR**, **de-DE**.
+- `en-US ≠ en-GB`: terminologia luxury differenziata (`lead`→"Lead" us, "Opportunity" uk · `prospect`→"Qualified Opportunity" uk · `active_project`→"Live Project" uk · `web_form`→"Web enquiry" uk · …).
+- Pronta per espansione: `en-AE`, `ar-AE`, `pt-BR`, `es-MX` (architettura già fallback-chain ready).
+- Fallback chain per locale richiesto: `target → same-family siblings → tenant_default → platform_default (it-IT) → en-US (universal)`.
+
+**Backend**
+- **`relationship_lookups` rebooted** — 122 valori, 14 group_keys, ogni valore con `label` JSONB chiavi BCP-47 (es. `"it-IT": "Lead", "en-GB": "Opportunity"`) + `metadata` JSONB per `color {bg, ink}` (per stage/priority/health) e `icon`/`permission_key` opzionali. **Nessuna chiave legacy `it`/`en` lingua-only** sopravvive.
+- **`tenants.default_language` + `active_languages`** normalizzati a BCP-47 (`it-IT` default, 6 active per demo tenant).
+- **Endpoint** `GET /api/relationships/lookups` invariato (already locale-aware: ritorna `label` JSONB grezza, la risoluzione locale avviene client-side via fallback chain).
+- **Pytest suite** `/app/backend/tests/test_relationship_lookups_locale.py` — 11 invarianti: 6 locali presenti su lifecycle_stage / account_type / source, color metadata su stage/priority/health, divergenza en-US/en-GB su `lead`, nessuna chiave language-only, filtraggio `?group=`, auth gating.
+- **Pytest regression** `/app/backend/tests/test_phase_r_crm_2a_regression.py` — 7 test: account CRUD + stage transition + ObjectId leak guard (creato dal testing agent in iteration 52).
+
+**Frontend i18n engine — `/app/frontend/src/i18n/`**
+- `engine.js`: `toBcp47()` (IT_IT→it-IT, it→it-IT, en→en-US, normalizes casing) · `buildFallbackChain(locale, tenantDefault?)` · `pickLocaleValue(jsonbLabel, locale)` (per lookups) · `pickString(key, locale, params?)` (per dizionari UI).
+- `formatters.js`: `fmtDate / fmtRelative / fmtNumber / fmtCurrency` tutti via `Intl.*` con BCP-47 locale + currency hint per locale (EUR/USD/GBP/AED/BRL/MXN).
+- `useT.jsx`: `<BlueprintI18nProvider>` montato in `App.js` sotto `LocaleRuntimeProvider`. Hook `useT()` restituisce `{ locale, t, pickLabel, fmtDate, fmtRelative, fmtNumber, fmtCurrency, chain, tenantDefaultLocale, currency }`. Hook `useLookups(group)` con cache in-memory + invalidazione via custom event `mfd:lookups:invalidate`, restituisce `{ items, byValue, labelOf, colorOf, loading }`.
+- 6 dizionari `strings/{it-IT,en-US,en-GB,es-ES,fr-FR,de-DE}.json` per la sezione Relationships + chiavi comuni `common.*` riutilizzabili.
+
+**Refactor `RelationshipsPage.jsx` — ZERO hardcoded business strings**
+- Rimossi: `STAGE_PALETTE`, `ACCOUNT_TYPE_LABEL`, `PIPELINE_ORDER` (sostituito dall'ordine dei lookup) e tutte le label hardcoded dei `SIDEBAR_GROUPS` (rimangono SOLO i predicate boolean — value_keys stabili). Tutte le stringhe via `t('relationships.…')`. Stage chip colour via `colorOf(value)` da lookup metadata. Date relative via `fmtRelative(iso)`. Modal dropdown `account_type` e `source` alimentati da `useLookups('account_type')` / `useLookups('source')`.
+
+**Verifica live (testing agent — iteration 52)**
+- 18/18 backend pytest (11 locale + 7 regression) · 100% in-scope frontend
+- Stage chip color invariant **provato**: computed CSS `rgb(245,236,219)` ↔ backend `metadata.color.bg = #F5ECDB` per `new_inquiry`; `rgb(222,233,224)` ↔ `#DEE9E0` per `prospect`. Nessuna palette JS lato frontend.
+- Modal "Nuova relazione" dropdown alimentati da lookups (Cliente privato / Studio di architettura / Form sito / Visita showroom · zero raw value_keys nel DOM)
+- Drawer 4-tab labels da dizionario (`OVERVIEW · CONTATTI · TIMELINE · PROSSIMI PASSI`), subheader "ultima attività 2 min fa" via Intl.RelativeTimeFormat IT
+- 9 colonne Kanban da lookups (sort_order based, non più hardcoded `PIPELINE_ORDER`)
+- Stage POST rifiuta value sconosciuti con 400/422 — nessun MongoDB `_id` leak
+
+**Note UX (non bloccante)**
+- Kanban 1920×: visibili 5 di 9 colonne, le restanti richiedono scroll orizzontale (design intenzionale). Eventuale chip-density toggle valutabile in Phase 3 Grid Mood View.
+
+**Phase R-CRM-2B/C/D (prossime)**
+- 2B: Blueprint Command Center UI `/workspace/settings/catalog` per editing lookups (CRUD, drag-reorder, traduzioni per locale, attiva/disattiva, tenant-specific override) · permission key `crm.catalog.manage` predisposta in metadata
+- 2C: Quick Create dropdown + Guided New Lead Wizard (6 step) con dropdown 100% da lookups + duplicate prevention
+- 2D: Endpoint anonimo `POST /api/public/leads` (web_lead_generation interaction + alert auto) + collegamento storefront form → CRM
+- 2E: Drawer tabs rimanenti (Style DNA · Moodboards · Projects · Files · Team & Permissions)
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase R-CRM-1 — Relationship CRM Foundation (DONE — 17 Feb 2026)
 
 > **NON è un sales CRM. NON è enterprise.** È una **shared relationship memory** per studi di interior design, showroom di arredo e studi A&D — pensata per chi oggi lavora con email, WhatsApp e memoria personale.
