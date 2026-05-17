@@ -109,12 +109,12 @@ export const navigationContent = {
       { id: 'linkedin',  href: 'https://linkedin.com/',  label: 'LinkedIn',  icon: 'linkedin' },
     ],
     copyright: T(
-      '© {year} EXE Interior — Tutti i diritti riservati. Powered by MOOD for DESIGN\u2122.',
-      '© {year} EXE Interior — All rights reserved. Powered by MOOD for DESIGN\u2122.',
-      '© {year} EXE Interior — Tous droits réservés. Powered by MOOD for DESIGN\u2122.',
-      '© {year} EXE Interior — Alle Rechte vorbehalten. Powered by MOOD for DESIGN\u2122.',
-      '© {year} EXE Interior — Todos los derechos reservados. Powered by MOOD for DESIGN\u2122.',
-      '© {year} EXE Interior — جميع الحقوق محفوظة. مدعوم من MOOD for DESIGN\u2122.',
+      '© {year} MOOD for DESIGN™ — Tutti i diritti riservati.',
+      '© {year} MOOD for DESIGN™ — All rights reserved.',
+      '© {year} MOOD for DESIGN™ — Tous droits réservés.',
+      '© {year} MOOD for DESIGN™ — Alle Rechte vorbehalten.',
+      '© {year} MOOD for DESIGN™ — Todos los derechos reservados.',
+      '© {year} MOOD for DESIGN™ — جميع الحقوق محفوظة.',
     ),
   },
 };

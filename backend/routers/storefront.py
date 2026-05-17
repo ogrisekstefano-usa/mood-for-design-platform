@@ -684,6 +684,7 @@ def public_brand(tenant_slug: str):
 
     brand = {
         "name":                b.get('public_brand_name') or tenant.get('name') or 'Studio',
+        "suffix":              b.get('brand_suffix') or '',
         "tagline":             b.get('tagline'),
         "primary_logo_url":    b.get('primary_logo_url'),
         "monochrome_logo_url": b.get('monochrome_logo_url'),
@@ -700,11 +701,13 @@ def public_brand(tenant_slug: str):
     main_links = nav_cfg.get('main_links') if isinstance(nav_cfg.get('main_links'), list) else None
 
     nav = {
-        "main_links":    main_links if main_links else DEFAULT_LINKS,
-        "show_login":    bool(nav_cfg.get('show_login',    True)),
-        "show_register": bool(nav_cfg.get('show_register', True)),
-        "login_href":    nav_cfg.get('login_href')    or '/auth/login',
-        "register_href": nav_cfg.get('register_href') or '/auth/register',
+        "main_links":         main_links if main_links else DEFAULT_LINKS,
+        "show_login":         bool(nav_cfg.get('show_login',         True)),
+        "show_register":      bool(nav_cfg.get('show_register',      True)),
+        "show_lang_switcher": bool(nav_cfg.get('show_lang_switcher', True)),
+        "login_label":        nav_cfg.get('login_label') or {"it": "Accedi", "en": "Sign in", "fr": "Accéder", "de": "Anmelden", "es": "Acceder"},
+        "login_href":         nav_cfg.get('login_href')    or '/auth/login',
+        "register_href":      nav_cfg.get('register_href') or '/auth/register',
     }
 
     return {
@@ -712,5 +715,6 @@ def public_brand(tenant_slug: str):
         "tenant_name": tenant.get('name'),
         "brand":       brand,
         "nav":         nav,
+        "showroom":    b.get('showroom') or {},
     }
 

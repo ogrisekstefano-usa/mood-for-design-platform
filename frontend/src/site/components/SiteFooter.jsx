@@ -1,74 +1,49 @@
-import React, { useEffect, useRef, useState } from 'react';
+/**
+ * SiteFooter — MOOD for DESIGN™ cinematic dark footer.
+ *
+ * 6-column layout (mockup-aligned):
+ *   • Brand block (wordmark + tagline + socials)
+ *   • AZIENDA
+ *   • SERVIZI
+ *   • RISORSE
+ *   • SUPPORTO
+ *   • SHOWROOM (address + phone + email + book-visit button)
+ *
+ * Driven by:
+ *   • /api/storefront/public/{slug}/brand    → wordmark + tagline + showroom
+ *   • useStorefrontContent('navigation')     → column copy (CMS-editable)
+ *   • navigationContent fallback             → ships with the app
+ */
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Linkedin, Globe, ChevronDown } from 'lucide-react';
+import { Instagram, Linkedin, Mail, Phone } from 'lucide-react';
 import { useSite } from '../SiteContext';
-import { navigationContent } from '../content/navigation';
+import { usePublicBrand } from '../usePublicBrand';
 import { tenantConfig } from '../content/tenant';
 import { useStorefrontContent, pickContent } from '../useStorefrontContent';
+import { navigationContent } from '../content/navigation';
 
-// ── Footer locale switcher (moved from header) ─────────────────────────────
-const FooterLocaleSwitcher = () => {
-  const { locale, setLocale, locales } = useSite();
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const onDoc = (e) => { if (!ref.current?.contains(e.target)) setOpen(false); };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, []);
-
-  const current = locales.find((l) => l.code === locale) || locales[0];
-  if (!current) return null;
-
-  return (
-    <div className="mfd-footer__locale" ref={ref} data-testid="footer-locale">
-      <button
-        type="button"
-        className="mfd-footer__locale-btn"
-        onClick={() => setOpen((v) => !v)}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        data-testid="footer-locale-btn"
-      >
-        <Globe size={12} strokeWidth={1.5} />
-        <span>{current.label}</span>
-        <ChevronDown size={11} strokeWidth={1.5} className={open ? 'is-open' : ''} />
-      </button>
-      {open && (
-        <div className="mfd-footer__locale-menu" role="listbox" data-testid="footer-locale-menu">
-          {locales.map((l) => (
-            <button
-              key={l.code}
-              type="button"
-              className="mfd-footer__locale-item"
-              aria-current={l.code === locale}
-              onClick={() => { setLocale(l.code); setOpen(false); }}
-              data-testid={`footer-locale-${l.code}`}
-            >
-              <span>{l.label}</span>
-              <small>{l.native}</small>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+const pickLocale = (bag, locale) => {
+  if (bag == null) return '';
+  if (typeof bag === 'string') return bag;
+  const chain = [locale, locale?.split('-')[0], 'it', 'en-US', 'en', 'fr', 'de', 'es'];
+  for (const c of chain) if (c && bag[c]) return bag[c];
+  return Object.values(bag)[0] || '';
 };
 
 const SocialIcon = ({ id }) => {
   switch (id) {
-    case 'instagram': return <Instagram size={16} />;
-    case 'linkedin':  return <Linkedin size={16} />;
+    case 'instagram': return <Instagram size={16} strokeWidth={1.5} aria-hidden />;
+    case 'linkedin':  return <Linkedin size={16} strokeWidth={1.5} aria-hidden />;
     case 'pinterest':
       return (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M12 2a10 10 0 0 0-3.6 19.32c-.05-.78-.1-2 0-2.85.1-.76 1.2-4.84 1.2-4.84s-.3-.62-.3-1.53c0-1.43.83-2.5 1.87-2.5.88 0 1.31.66 1.31 1.45 0 .88-.56 2.21-.85 3.44-.24 1.03.52 1.87 1.55 1.87 1.86 0 3.29-1.96 3.29-4.79 0-2.5-1.8-4.25-4.37-4.25-2.98 0-4.73 2.24-4.73 4.55 0 .9.35 1.86.78 2.39.1.1.1.2.07.31-.08.32-.27 1.03-.31 1.18-.05.2-.17.24-.4.15-1.47-.68-2.39-2.83-2.39-4.55 0-3.7 2.69-7.1 7.76-7.1 4.07 0 7.24 2.91 7.24 6.79 0 4.05-2.55 7.31-6.1 7.31-1.19 0-2.31-.62-2.69-1.36l-.73 2.79c-.27 1.03-1 2.32-1.48 3.11A10 10 0 1 0 12 2Z"/>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+          <path d="M12 2C6.5 2 2 6.5 2 12c0 4.1 2.5 7.6 6 9.2-.1-.8-.2-2 0-2.9.2-.8 1.2-5.2 1.2-5.2s-.3-.6-.3-1.5c0-1.4.8-2.5 1.9-2.5.9 0 1.3.7 1.3 1.5 0 .9-.6 2.2-.9 3.5-.2 1 .5 1.9 1.6 1.9 1.9 0 3.3-2 3.3-4.8 0-2.5-1.8-4.3-4.5-4.3-3 0-4.8 2.3-4.8 4.6 0 .9.3 1.9.8 2.4.1.1.1.2.1.3l-.3 1.3c0 .2-.2.2-.4.1-1.3-.6-2.1-2.6-2.1-4.1 0-3.4 2.4-6.4 7-6.4 3.7 0 6.5 2.6 6.5 6.2 0 3.7-2.3 6.7-5.5 6.7-1.1 0-2.1-.6-2.4-1.2 0 0-.5 2-.7 2.5-.2.9-.9 2-1.3 2.7.9.3 1.9.4 2.9.4 5.5 0 10-4.5 10-10S17.5 2 12 2z"/>
         </svg>
       );
     case 'tiktok':
       return (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
           <path d="M19 8.3c-1.7 0-3.2-.7-4.3-1.8v9.1c0 3.6-2.9 6.5-6.5 6.5S1.7 19.2 1.7 15.6 4.6 9.1 8.2 9.1c.5 0 1 .1 1.5.2v3.4c-.5-.2-1-.3-1.5-.3-1.7 0-3.1 1.4-3.1 3.1s1.4 3.1 3.1 3.1 3.1-1.4 3.1-3.1V1.5h3.4c0 2.5 2 4.5 4.5 4.5V8.3Z"/>
         </svg>
       );
@@ -76,119 +51,151 @@ const SocialIcon = ({ id }) => {
   }
 };
 
+// Default 4 footer columns matching the mockup. The tenant admin can override
+// each one via the CMS `navigation` page → `footer_columns` section.
+const DEFAULT_COLUMNS = [
+  { id: 'azienda', title: { it: 'Azienda', en: 'Company' }, links: [
+    { href: '#about',    label: { it: 'Chi siamo',      en: 'About us' } },
+    { href: '#showroom', label: { it: 'Showroom',        en: 'Showroom' } },
+    { href: '#careers',  label: { it: 'Lavora con noi', en: 'Careers' } },
+    { href: '#press',    label: { it: 'Press',           en: 'Press' } },
+  ]},
+  { id: 'servizi', title: { it: 'Servizi', en: 'Services' }, links: [
+    { href: '#design',       label: { it: 'Progettazione',     en: 'Design' } },
+    { href: '#consultancy',  label: { it: 'Consulenza',         en: 'Consultancy' } },
+    { href: '#styling',      label: { it: 'Interior Styling',   en: 'Interior Styling' } },
+    { href: '#contract',     label: { it: 'Contract',           en: 'Contract' } },
+  ]},
+  { id: 'risorse', title: { it: 'Risorse', en: 'Resources' }, links: [
+    { href: '#materials', label: { it: 'Materiali', en: 'Materials' } },
+    { href: '#brand',     label: { it: 'Brand',     en: 'Brands' } },
+    { href: '/magazine',  label: { it: 'Journal',   en: 'Journal' } },
+    { href: '#faq',       label: { it: 'FAQ',       en: 'FAQ' } },
+  ]},
+  { id: 'supporto', title: { it: 'Supporto', en: 'Support' }, links: [
+    { href: '#contact', label: { it: 'Contatti',             en: 'Contact' } },
+    { href: '#privacy', label: { it: 'Privacy Policy',       en: 'Privacy Policy' } },
+    { href: '#cookies', label: { it: 'Cookie Policy',        en: 'Cookie Policy' } },
+    { href: '#terms',   label: { it: 'Termini e Condizioni', en: 'Terms & Conditions' } },
+  ]},
+];
+
+const DEFAULT_SOCIALS = [
+  { id: 'instagram', href: 'https://instagram.com/' },
+  { id: 'pinterest', href: 'https://pinterest.com/' },
+  { id: 'linkedin',  href: 'https://linkedin.com/'  },
+  { id: 'tiktok',    href: 'https://tiktok.com/'    },
+];
+
+const renderLink = (link, locale, key) => {
+  const label = pickLocale(link.label, locale);
+  if (link.href && link.href.startsWith('/')) {
+    return <Link to={link.href} key={key}>{label}</Link>;
+  }
+  return <a href={link.href || '#'} key={key}>{label}</a>;
+};
+
+
 const SiteFooter = () => {
-  const { pick, locale } = useSite();
-  const year = new Date().getFullYear();
-  const { content: cmsContent, hasDbContent } = useStorefrontContent(
-    tenantConfig.slug, 'navigation', navigationContent,
-  );
+  const { locale } = useSite();
+  const slug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
+  const { brand, showroom } = usePublicBrand(slug);
+  const { content: cms, hasDbContent } = useStorefrontContent(slug, 'navigation', navigationContent);
 
-  const footerCms = hasDbContent ? cmsContent.footer_columns : null;
-  const settings = footerCms?._settings || {};
+  // Footer columns — CMS overrides, else defaults.
+  const cmsCols = (cms?.footer_columns?._settings?.columns) || null;
+  const columns = (Array.isArray(cmsCols) && cmsCols.length ? cmsCols : DEFAULT_COLUMNS)
+    .filter((c) => c.visible !== false);
 
-  // Resolve per-locale strings from CMS bag with fallback to legacy
-  const fromCms = (field) => {
-    if (!footerCms) return null;
-    const local = footerCms[locale]?.[field];
-    if (local) return local;
-    for (const code of ['_default', 'it', 'en-US', 'en-GB', 'fr', 'de', 'es']) {
-      if (footerCms[code]?.[field]) return footerCms[code][field];
-    }
-    return null;
+  // Showroom — branding settings own this; legacy CMS bag is a fallback.
+  const cmsShowroom = (cms?.footer_columns?._settings?.showroom) || (hasDbContent ? null : navigationContent.footer.showroom);
+  const showroomBlock = {
+    title:         pickLocale(cmsShowroom?.title, locale) || (locale?.startsWith('it') ? 'Showroom' : 'Showroom'),
+    address_lines: showroom?.address_lines || cmsShowroom?.addressLines || navigationContent.footer.showroom.addressLines,
+    phone:         showroom?.phone || null,
+    email:         showroom?.email || null,
+    book_visit:    pickLocale(showroom?.book_visit_label, locale) || pickLocale(cmsShowroom?.bookCta?.label, locale) || (locale?.startsWith('it') ? 'Prenota una visita' : 'Book a visit'),
+    book_href:     cmsShowroom?.bookCta?.href || '#book',
   };
 
-  const columns = Array.isArray(settings.columns) && settings.columns.length
-    ? settings.columns.filter((c) => c.visible !== false).map((c) => ({
-        id: c.id || c.title,
-        title: pickContent(c.title, locale),
-        links: (c.links || []).filter((l) => l.visible !== false).map((l, i) => ({
-          key: `${c.id}-${i}`,
-          href: l.href,
-          label: pickContent(l.label, locale),
-          target: l.open_in_new_tab ? '_blank' : undefined,
-        })),
-      }))
-    : navigationContent.footer.columns.map((c) => ({
-        id: c.id,
-        title: pick(c.title),
-        links: c.links.map((l, i) => ({ key: `${c.id}-${i}`, href: l.href, label: pick(l.label) })),
-      }));
+  const socials = (cms?.footer_columns?._settings?.socials) || DEFAULT_SOCIALS;
 
-  const socials = Array.isArray(settings.socials) && settings.socials.length
-    ? settings.socials.filter((s) => s.visible !== false)
-    : navigationContent.footer.socials;
-
-  const addrLines = Array.isArray(settings.showroom_address_lines) && settings.showroom_address_lines.length
-    ? settings.showroom_address_lines
-    : navigationContent.footer.showroom.addressLines;
-
-  const showroomTitle  = fromCms('showroom_title')  || pick(navigationContent.footer.showroom.title);
-  const bookCtaLabel   = fromCms('book_cta_label')  || pick(navigationContent.footer.showroom.bookCta.label);
-  const bookCtaHref    = settings.book_cta_href     || navigationContent.footer.showroom.bookCta.href;
-  const tagline        = fromCms('tagline')         || pick(navigationContent.footer.tagline);
-  const copyrightTpl   = fromCms('copyright')       || pick(navigationContent.footer.copyright);
-  const copy           = copyrightTpl.replace('{year}', year).replace('{brand}', navigationContent.brand.name);
+  const year = new Date().getFullYear();
+  const brandName = brand?.name || 'Studio';
+  const brandSuffix = brand?.suffix || '';
+  const parts = brandName.split(/\s+/);
+  const stacked = parts.length >= 3;
+  const copyrightRaw = pickLocale(navigationContent.footer.copyright, locale).replace('{year}', String(year));
 
   return (
-    <footer className="mfd-footer" data-testid="site-footer" id="showroom">
-      <div className="mfd-footer__grid">
-        {/* Brand */}
-        <div className="mfd-footer__col" data-testid="footer-brand">
-          <img src={navigationContent.brand.logoSrc} alt="MOOD for DESIGN" className="mfd-footer__brand-mark" />
-          <div className="mfd-footer__tagline">{tagline}</div>
-          <div className="mfd-socials" style={{ marginTop: '1.5rem' }} data-testid="footer-socials">
+    <footer className="mfd-footer" data-testid="site-footer" data-surface="storefront">
+      <div className="mfd-footer__cols">
+        {/* Brand block */}
+        <div className="mfd-footer__brand-block">
+          <Link to="/" data-testid="footer-brand">
+            <span className="mfd-footer__brand-wordmark">
+              {stacked ? (
+                <>
+                  <span>{parts[0]}</span>
+                  <span className="mid">{parts[1]}</span>
+                  <span>{parts.slice(2).join(' ')}{brandSuffix}</span>
+                </>
+              ) : <span>{brandName}{brandSuffix}</span>}
+            </span>
+          </Link>
+          {brand?.tagline && (
+            <p className="mfd-footer__tagline" data-testid="footer-tagline">{brand.tagline}</p>
+          )}
+          <div className="mfd-footer__socials" data-testid="footer-socials">
             {socials.map((s) => (
-              <a key={s.id} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label || s.id} data-testid={`footer-social-${s.id}`}>
-                <SocialIcon id={s.icon || s.id} />
+              <a key={s.id} href={s.href} aria-label={s.id} target="_blank" rel="noopener noreferrer">
+                <SocialIcon id={s.id} />
               </a>
             ))}
           </div>
         </div>
 
-        {/* Columns */}
+        {/* Column groups */}
         {columns.map((col) => (
-          <div className="mfd-footer__col" key={col.id} data-testid={`footer-col-${col.id}`}>
-            <h6>{col.title}</h6>
+          <div key={col.id} className="mfd-footer__col" data-testid={`footer-col-${col.id}`}>
+            <h4 className="mfd-footer__col-title">{pickLocale(col.title, locale) || col.id}</h4>
             <ul>
-              {col.links.map((l) => {
-                const props = l.target === '_blank' ? { target: '_blank', rel: 'noopener noreferrer' } : {};
-                return (
-                  <li key={l.key}>
-                    {(
-                      l.target === '_blank' ||
-                      l.href?.startsWith('http') ||
-                      l.href?.startsWith('mailto:') ||
-                      l.href?.startsWith('#')
-                    ) ? (
-                      <a href={l.href} {...props}>{l.label}</a>
-                    ) : (
-                      <Link to={l.href || '#'}>{l.label}</Link>
-                    )}
-                  </li>
-                );
-              })}
+              {(col.links || []).filter((l) => l.visible !== false).map((l, i) => (
+                <li key={`${col.id}-${i}`}>{renderLink(l, locale, `${col.id}-${i}`)}</li>
+              ))}
             </ul>
           </div>
         ))}
 
-        {/* Showroom */}
-        <div className="mfd-footer__col mfd-footer__showroom" data-testid="footer-showroom">
-          <h6>{showroomTitle}</h6>
-          <address>
-            {addrLines.map((line, i) => (
-              <div key={i}>{line}</div>
+        {/* Showroom column */}
+        <div className="mfd-footer__col" data-testid="footer-col-showroom">
+          <h4 className="mfd-footer__col-title mfd-footer__showroom-title">{showroomBlock.title}</h4>
+          <div>
+            {(showroomBlock.address_lines || []).map((ln, i) => (
+              <p className="mfd-footer__showroom-line" key={i}>{ln}</p>
             ))}
-          </address>
-          <a href={bookCtaHref} className="mfd-btn mfd-btn--outline-paper" style={{ padding: '0.85rem 1.2rem', fontSize: 11 }} data-testid="footer-book-visit">
-            {bookCtaLabel}
+            {showroomBlock.phone && (
+              <p className="mfd-footer__showroom-line">
+                <Phone size={12} strokeWidth={1.6} style={{ verticalAlign: '-2px', marginRight: 6, opacity: .65 }} aria-hidden />
+                <a href={`tel:${showroomBlock.phone.replace(/\s+/g, '')}`}>{showroomBlock.phone}</a>
+              </p>
+            )}
+            {showroomBlock.email && (
+              <p className="mfd-footer__showroom-line">
+                <Mail size={12} strokeWidth={1.6} style={{ verticalAlign: '-2px', marginRight: 6, opacity: .65 }} aria-hidden />
+                <a href={`mailto:${showroomBlock.email}`}>{showroomBlock.email}</a>
+              </p>
+            )}
+          </div>
+          <a href={showroomBlock.book_href} className="mfd-footer__book" data-testid="footer-book-visit">
+            {showroomBlock.book_visit}
           </a>
         </div>
       </div>
 
-      <div className="mfd-footer__bottom">
-        <span data-testid="footer-copyright">{copy}</span>
-        <FooterLocaleSwitcher />
-      </div>
+      <p className="mfd-footer__copyright" data-testid="footer-copyright">
+        {copyrightRaw}
+      </p>
     </footer>
   );
 };

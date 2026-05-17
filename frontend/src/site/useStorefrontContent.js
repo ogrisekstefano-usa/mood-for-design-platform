@@ -22,7 +22,7 @@ import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const CACHE_PREFIX = 'mfd_storefront_cache_';
+const CACHE_PREFIX = 'mfd_storefront_cache_v2_';
 
 const sectionsByType = (sections = []) => {
   const out = {};

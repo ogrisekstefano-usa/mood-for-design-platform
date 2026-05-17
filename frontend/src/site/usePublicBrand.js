@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const CACHE_PREFIX = 'mfd_public_brand_';
+const CACHE_PREFIX = 'mfd_public_brand_v2_';
 
 export function usePublicBrand(tenantSlug) {
   const [state, setState] = useState({ loading: true, brand: null, nav: null });

@@ -164,7 +164,7 @@
   display: block; flex-shrink: 0;
   object-fit: contain;
 }
-.mfd-header__tagline { display: none !important; }
+.mfd-header__tagline { /* sized & visible by mood.css */ }
 .mfd-header__nav { display: none; gap: clamp(1.1rem, 2vw, 1.8rem); }
 @media (min-width: 1180px) { .mfd-header__nav { display: flex; } }
 .mfd-header__nav a {

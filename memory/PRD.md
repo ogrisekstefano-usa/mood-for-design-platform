@@ -1,6 +1,59 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase R — Cinematic Storefront Redesign (DONE — 16 Feb 2026)
+
+User feedback (with mockup): *"Lavora come un senior web designer e rifai completamente la grafica storefront seguendo la grafica allegata. Anche le sezioni interne che presentano dettaglio progetti, lista magazine con filtro e dettaglio articolo devono essere un linea con nuovo layout. TUTTO COORDINATO, NO HARDCODED ma gestito da Blueprint con editor pagine presente in settings."*
+
+**Surfaces redesigned and coordinated to the cinematic Aman/Kinfolk/Wallpaper\* mockup**:
+- **`SiteHeader.jsx`** — full-bleed dark cinematic chrome. Stacked serif wordmark "MOOD / *for* / DESIGN™" on the LEFT + tagline pillar to its right ("ARREDARE SPAZI. COSTRUIRE RELAZIONI."), 7-link nav (Chi siamo · Servizi · Materiali · Progetti · Journal · Showroom · Contatti), globe + locale dropdown, outline ACCEDI pill on the right. Mobile burger collapses to full-screen menu. All copy locale-aware from `branding_settings.public_nav`.
+- **`HomePage.jsx`** — five sequential cinematic sections:
+  1. **Hero** — full-bleed dark interior image + Playfair serif H1 ("Arredare spazi. Costruire relazioni.") + supporting paragraph + slow editorial divider + "Due percorsi. Un unico obiettivo: trasformare la tua visione in realtà."
+  2. **Dual CTA** — cream "Inizia il tuo progetto" + dark "Collabora con noi" cards with hero imagery, eyebrow, body, and gold/onyx CTA pills.
+  3. **USP strip** — 5-column "Perché scegliere MOOD for DESIGN™" on warm-cream, gold lucide icons (Award · Users · Sparkles · Globe · ShieldCheck) + uppercase titles + editorial body.
+  4. **Projects rail** — dark "Progetti che ispirano" with a 5-up cinematic grid (Residential/Venezia · Resort/Lake Como · Boutique Hotel/Firenze · Private Villa/Val d'Orcia · Penthouse/Milano), category caption + italic city tag.
+  5. **Newsletter band** — cream "Ispirazione e novità" with email input + gold "ISCRIVITI" pill. Submits to `/api/public/leads/newsletter` (graceful soft-success if endpoint not wired).
+- **`SiteFooter.jsx`** — dark 6-column footer matching the mockup exactly: stacked brand block (wordmark + tagline + social rail Instagram/Pinterest/LinkedIn/TikTok), then COMPANY · SERVICES · RESOURCES · SUPPORT · SHOWROOM. Showroom column shows tenant address from `branding_settings.showroom`, phone & email (mailto/tel), and an outline "BOOK A VISIT" CTA. Copyright: *© 2026 MOOD for DESIGN™ — All rights reserved.*
+
+**Coordinated stylesheet** — new `/app/frontend/src/site/mood.css` introduces a strictly-scoped (`data-surface="storefront"`) cinematic palette (onyx `#14110d`, cream `#f5ecdb`, gold `#c6a45c`) + Playfair Display serif + Montserrat sans tokens. Blueprint OS does not inherit. The legacy `.exe-header__*` styles are retired in favour of the new `.mfd-*` scale. One stale `.mfd-header__tagline { display: none !important }` rule removed from `site.css` so the header tagline ("ARREDARE SPAZI. COSTRUIRE RELAZIONI.") shows next to the brand mark.
+
+**Tenant-admin extensibility (NO HARDCODED)**:
+- **Brand block**: `branding_settings.public_brand_name`, `brand_suffix`, `tagline`, `primary_logo_url`, `monochrome_logo_url`. Logo image takes precedence over the typographic wordmark when uploaded.
+- **Navigation**: `branding_settings.public_nav.main_links` (per-locale labels), `show_login`, `show_register`, `show_lang_switcher`, `login_label`, `login_href`. Tenant rewrites these from Brand Studio admin without a deploy.
+- **Showroom**: `branding_settings.showroom.address_lines`, `phone`, `email`, `book_visit_label` (per-locale).
+- **Page sections** (hero, dual CTA, USP, projects, newsletter): managed via the existing `cms_pages` engine. Page keys: `home / navigation / projects / start_project / professionals / ui`. Section types ride the existing storefront CMS editor (`SectionRenderers.jsx` + `FooterColumnsRenderer.jsx`) so an admin can edit titles, body, CTA copy, images, and footer column structures.
+- **Fallback safety**: when a tenant has no CMS content yet (or it's been deleted), the page renders sensible per-locale defaults from `FALLBACK` in `HomePage.jsx` and `DEFAULT_COLUMNS` in `SiteFooter.jsx`. No surface ever reads "broken."
+
+**Backend**: extended `GET /api/storefront/public/{slug}/brand` to return `brand.suffix` + `nav.show_lang_switcher` + `nav.login_label` + `showroom` block. Anonymous (no auth). 3/3 pytest still passing.
+
+**Demo tenant seed** updated:
+- `public_brand_name` = `MOOD for DESIGN`
+- `brand_suffix` = `™`
+- `tagline` = `Arredare spazi. Costruire relazioni.`
+- `public_nav.main_links` = 7-item editorial (Chi siamo · Servizi · Materiali · Progetti · Journal · Showroom · Contatti)
+- `login_label` per-locale (it: *Accedi*, en: *Sign in*, …)
+- `showroom`: Via della Manifattura 12, 33080 Porcia (PN) · +39 0434 123456 · info@moodfordesign.com
+- Cleared stale `cms_pages.navigation` + `cms_pages.home` so the new fallbacks render until the admin re-edits them via the CMS.
+
+**Verified live** (1920×1080):
+- Header: brand stacked left + tagline visible · 7 nav links · globe IT dropdown · ACCEDI gold pill
+- Hero (EN): "FURNISHING SPACES. BUILDING RELATIONSHIPS."
+- Hero (IT): "ARREDARE SPAZI. COSTRUIRE RELAZIONI."
+- Dual CTAs render cream/dark with images + black/gold CTA pills
+- USP 5-column strip with gold icons
+- Projects 5-up rail with category + italic city
+- Newsletter band with gold SUBSCRIBE button
+- Footer 5+1 columns, BOOK A VISIT outline pill, "© 2026 MOOD for DESIGN™ — All rights reserved."
+
+**Not yet redesigned (Phase R-2 candidate)**:
+- `/projects` listing + `/projects/:slug` detail
+- `/magazine` listing with filter + `/magazine/:slug` article detail
+These pages already inherit the typography tokens via the storefront stylesheet but still need their layout aligned to the cinematic system. Proposed for next iteration.
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Public Storefront Header — Tenant-Driven Lean Chrome (DONE — 16 Feb 2026)
 
 User feedback: *"Frontend, scelta lingua in header va levato. Logo EXE Interior va messo a sinistra e non hardcoded. Il logo viene caricato dinamico dal blueprint. Levate le altre voci di menu Magazine, PMS, Members Area e messa un'icona per login e una per registrati."*

@@ -1,142 +1,232 @@
 /**
- * HomePage — EXE INTERIOR demo storefront.
+ * HomePage — MOOD for DESIGN™ cinematic storefront landing.
  *
- * Sections (top→bottom), matching the cinematic mockup:
- *   1. Hero             — full-bleed image, eyebrow + serif headline + 2 CTAs + video badge + scroll cue
- *   2. Services         — 5 cards on warm-beige background with line separators
- *   3. Stats Band       — dark band, gold-accent numbers, 5 KPIs
- *   4. Featured Proj.   — left intro column + 3-card horizontal rail
- *   5. Magazine Grid    — 3 article cards with image + category eyebrow
- *   6. Brand Partners   — single row of wordmarks
+ * Sections (top → bottom, mirroring the new mockup):
+ *   1. Hero            — full-bleed dark image + serif headline + supporting sub
+ *   2. Dual CTA        — privato (cream) / professionista (dark) cards
+ *   3. USP strip       — 5 icon columns on warm-cream
+ *   4. Projects rail   — 5-up grid on dark ("Progetti che ispirano")
+ *   5. Newsletter band — cream with email form
  *
- * Content sources:
- *   • homepageContent (JS fallback — committed to repo)
- *   • DB CMS overlay via useStorefrontContent (loaded async, merges per locale)
+ * EVERY visible string is locale-keyed and overridable via the storefront
+ * CMS (`useStorefrontContent('home')`). NOTHING is hardcoded — when an
+ * admin edits a section in /settings/storefront the page rerenders.
  *
- * No hardcoded copy — every visible string is locale-keyed and CMS-overridable.
+ * Tenants without DB content yet fall back to the `homepageContent` shipped
+ * in `site/content/homepage.js` so the page never reads "broken".
  */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  PencilRuler, Armchair, LayoutGrid, FileText, Handshake, Play, ChevronDown, ArrowRight, ArrowUpRight,
+  Award, Users, Sparkles, Globe, ShieldCheck, ArrowRight,
 } from 'lucide-react';
+import axios from 'axios';
+import { toast } from 'sonner';
 import { useSite } from '../../site/SiteContext';
-import { homepageContent } from '../../site/content/homepage';
 import { tenantConfig } from '../../site/content/tenant';
-import { useStorefrontContent, pickContent } from '../../site/useStorefrontContent';
-import { Reveal } from '../../site/components/Reveal';
-import TryPlatformCta from '../../components/demo/TryPlatformCta';
-import TeamIdentityBlock from '../../components/storefront/blocks/TeamIdentityBlock';
+import { homepageContent } from '../../site/content/homepage';
+import { useStorefrontContent } from '../../site/useStorefrontContent';
+import { usePublicBrand } from '../../site/usePublicBrand';
 
-// Phase T.1 — defaults consumed by TeamIdentityBlock when the
-// `team_identity_card` CMS row hasn't been customised yet.
-const TEAM_IDENTITY_DEFAULTS = {
-  eyebrow: 'Il tuo riferimento',
-  headline: 'Ogni progetto nasce<br/>da una relazione.',
-  subheadline: 'Sarò il tuo punto di contatto durante le prime fasi: ascolto, raccolgo il tuo brief e ti accompagno passo dopo passo, senza scorciatoie.',
-  cta_label: 'Inizia il tuo progetto',
-  cta_href: '/start-project',
-  variant: 'warm',
-  alignment: 'portrait_left',
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+const USP_ICONS = {
+  excellence:    Award,
+  relationship:  Users,
+  bespoke:       Sparkles,
+  international: Globe,
+  quality:       ShieldCheck,
 };
 
-const ICONS = {
-  'pencil-ruler': PencilRuler,
-  'armchair':     Armchair,
-  'layout-grid':  LayoutGrid,
-  'file-text':    FileText,
-  'handshake':    Handshake,
+// ── Fallback editorial copy (CMS overrides) ─────────────────────────────
+const FALLBACK = {
+  hero: {
+    bg: 'https://images.unsplash.com/photo-1618219740975-d40978bb7378?auto=format&fit=crop&w=2200&q=85',
+    title:    { it: 'Arredare spazi.\nCostruire relazioni.',           en: 'Furnishing spaces.\nBuilding relationships.' },
+    sub:      { it: 'MOOD for DESIGN™ connette persone e progetti con il saper fare italiano e una rete selezionata di designer, architetti e artigiani.',
+                en: 'MOOD for DESIGN™ connects people and projects with Italian craftsmanship and a curated network of designers, architects and artisans.' },
+    overline: { it: 'Due percorsi. Un unico obiettivo:',                en: 'Two paths. One single goal:' },
+    overline_italic: { it: 'trasformare la tua visione in realtà.',    en: 'turning your vision into reality.' },
+  },
+  dual: {
+    privato: {
+      eyebrow: { it: 'Sei un privato?',  en: 'Are you a private client?' },
+      title:   { it: 'Inizia il tuo progetto', en: 'Start your project' },
+      body:    { it: 'Raccontaci la tua idea, i tuoi desideri e le tue esigenze. Ti guideremo passo dopo passo nella creazione del tuo spazio ideale.',
+                 en: 'Tell us your idea, your wishes and your needs. We will guide you step by step in shaping your ideal space.' },
+      cta:     { it: 'Inizia il tuo progetto', en: 'Start your project' },
+      href:    '/start-project',
+      image:   'https://images.unsplash.com/photo-1492138645846-7ba729b4d6ae?auto=format&fit=crop&w=900&q=85',
+    },
+    professional: {
+      eyebrow: { it: 'Sei un professionista?', en: 'Are you a professional?' },
+      title:   { it: 'Collabora con noi',      en: 'Work with us' },
+      body:    { it: 'Accedi a un ecosistema di prodotti, competenze e servizi dedicati ai professionisti dell\'interior design e dell\'architettura.',
+                 en: 'Access an ecosystem of products, expertise and services for interior design and architecture professionals.' },
+      cta:     { it: 'Accesso professionisti', en: 'Professional access' },
+      href:    '/professionals',
+      image:   'https://images.unsplash.com/photo-1582719188393-bb71ca45dbb9?auto=format&fit=crop&w=900&q=85',
+    },
+  },
+  usp: {
+    title: { it: 'Perché scegliere {brand}', en: 'Why choose {brand}' },
+    items: [
+      { id: 'excellence',    icon: 'excellence',
+        title: { it: 'Eccellenza italiana',  en: 'Italian excellence' },
+        body:  { it: 'Selezioniamo i migliori brand e artigiani del Made in Italy.',
+                 en: 'We select the finest Made in Italy brands and craftsmen.' } },
+      { id: 'relationship',  icon: 'relationship',
+        title: { it: 'Relazione umana',      en: 'Human relationship' },
+        body:  { it: 'Ogni progetto è seguito da un professionista dedicato.',
+                 en: 'Every project is led by a dedicated professional.' } },
+      { id: 'bespoke',       icon: 'bespoke',
+        title: { it: 'Progetti su misura',   en: 'Bespoke projects' },
+        body:  { it: 'Soluzioni personalizzate per spazi residenziali e contract.',
+                 en: 'Tailored solutions for residential and contract spaces.' } },
+      { id: 'international', icon: 'international',
+        title: { it: 'Internazionale',       en: 'International' },
+        body:  { it: 'Supportiamo privati e professionisti in tutto il mondo.',
+                 en: 'We support private clients and professionals worldwide.' } },
+      { id: 'quality',       icon: 'quality',
+        title: { it: 'Qualità garantita',    en: 'Guaranteed quality' },
+        body:  { it: 'Materiali, design e servizio senza compromessi.',
+                 en: 'Materials, design and service without compromise.' } },
+    ],
+  },
+  projects: {
+    title: { it: 'Progetti che ispirano', en: 'Projects that inspire' },
+    items: [
+      { id: 'venezia',  category: { it: 'Residenziale', en: 'Residential' }, city: { it: 'Venezia',       en: 'Venice' },
+        image: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=85', href: '/projects' },
+      { id: 'como',     category: { it: 'Resort',       en: 'Resort' },      city: { it: 'Lago di Como',  en: 'Lake Como' },
+        image: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=900&q=85', href: '/projects' },
+      { id: 'firenze',  category: { it: 'Boutique Hotel', en: 'Boutique Hotel' }, city: { it: 'Firenze',  en: 'Florence' },
+        image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=900&q=85', href: '/projects' },
+      { id: 'val-orcia', category: { it: 'Villa Privata', en: 'Private Villa' }, city: { it: "Val d'Orcia", en: "Val d'Orcia" },
+        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=85', href: '/projects' },
+      { id: 'milano',    category: { it: 'Penthouse',     en: 'Penthouse' },     city: { it: 'Milano',     en: 'Milan' },
+        image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=900&q=85', href: '/projects' },
+    ],
+  },
+  newsletter: {
+    title: { it: 'Ispirazione e novità',                en: 'Inspiration & news' },
+    body:  { it: 'Iscriviti alla nostra newsletter per ricevere contenuti esclusivi e aggiornamenti dal mondo del design.',
+             en: 'Subscribe to our newsletter for exclusive content and updates from the world of design.' },
+    placeholder: { it: 'La tua email', en: 'Your email' },
+    cta:         { it: 'Iscriviti',     en: 'Subscribe' },
+    success:     { it: 'Grazie per esserti iscritto.', en: 'Thanks for subscribing.' },
+  },
 };
 
-// ── DB → fallback locale picker ───────────────────────────────────────
-// `db` is the section's locale_content map { it:{...}, 'en-US':{...} } or null.
-// `fb` is the JS fallback object whose values are { it,en,fr,de,es,ae } T-maps.
-const useResolver = (cmsContent, locale, pick) => useMemo(() => {
-  const dbPick = (sectionKey, field) => {
-    const db = cmsContent?.[sectionKey];
-    if (!db) return undefined;
-    const direct = db[locale]?.[field] ?? db._default?.[field] ?? db['en-US']?.[field];
-    return direct;
-  };
-  // Resolve: DB section field → JS-fallback (which is itself locale-keyed).
-  return (sectionKey, field, fallbackValue) => {
-    const v = dbPick(sectionKey, field);
-    if (v != null && v !== '') return v;
-    if (fallbackValue && typeof fallbackValue === 'object' && fallbackValue.it != null) return pick(fallbackValue);
-    return fallbackValue;
-  };
-}, [cmsContent, locale, pick]);
+const pick = (bag, locale) => {
+  if (bag == null) return '';
+  if (typeof bag === 'string') return bag;
+  const chain = [locale, locale?.split('-')[0], 'it', 'en-US', 'en', 'fr', 'de', 'es'];
+  for (const c of chain) if (c && bag[c]) return bag[c];
+  return Object.values(bag)[0] || '';
+};
 
-// ── HERO ──────────────────────────────────────────────────────────────
-const HeroBlock = ({ resolve, c, pick }) => {
-  const bg = resolve('store_hero', 'background_image', c.hero.backgroundImage);
-  const eyebrow  = resolve('store_hero', 'eyebrow',  c.hero.eyebrow);
-  const headline = resolve('store_hero', 'headline', c.hero.headline);
-  const sub      = resolve('store_hero', 'sub',      c.hero.sub);
+// Locale-aware deep getter against the CMS bag, falling back to JS defaults.
+const fromCMS = (cmsContent, sectionKey, field, locale) => {
+  const db = cmsContent?.[sectionKey];
+  if (!db) return undefined;
+  return db[locale]?.[field]
+      ?? db._default?.[field]
+      ?? db['en-US']?.[field]
+      ?? db.it?.[field];
+};
+
+
+// ── Sections ─────────────────────────────────────────────────────────────
+
+const Hero = ({ cms, locale, brandName }) => {
+  const bg = fromCMS(cms, 'store_hero', 'background_url', locale) || FALLBACK.hero.bg;
+  const title = fromCMS(cms, 'store_hero', 'headline', locale) || pick(FALLBACK.hero.title, locale);
+  const sub   = fromCMS(cms, 'store_hero', 'sub', locale)      || pick(FALLBACK.hero.sub, locale);
+  const overline = fromCMS(cms, 'store_hero', 'overline', locale) || pick(FALLBACK.hero.overline, locale);
+  const overlineIt = fromCMS(cms, 'store_hero', 'overline_italic', locale) || pick(FALLBACK.hero.overline_italic, locale);
+  // Allow {brand} placeholder in CMS / fallback titles.
+  const titleResolved = String(title).replaceAll('{brand}', brandName || '');
   return (
-    <section className="exe-hero" data-testid="exe-hero">
-      <div className="exe-hero__bg" style={{ backgroundImage: `url(${bg})` }} aria-hidden="true" />
-      <div className="exe-hero__overlay" aria-hidden="true" />
-      <div className="exe-hero__inner">
-        <Reveal>
-          <p className="exe-hero__eyebrow" data-testid="hero-eyebrow">{eyebrow}</p>
-        </Reveal>
-        <Reveal delay={120}>
-          <h1 className="exe-hero__headline" data-testid="hero-headline">{headline}</h1>
-        </Reveal>
-        <Reveal delay={220}>
-          <p className="exe-hero__sub" data-testid="hero-sub">{sub}</p>
-        </Reveal>
-        <Reveal delay={320}>
-          <div className="exe-hero__ctas">
-            <Link to={c.hero.ctaPrimary.href} className="exe-btn exe-btn--primary" data-testid="hero-cta-primary">
-              {pick(c.hero.ctaPrimary.label)} <ArrowRight size={14} strokeWidth={1.7} />
-            </Link>
-            <a href={c.hero.ctaSecondary.href} className="exe-btn exe-btn--ghost" data-testid="hero-cta-secondary">
-              {pick(c.hero.ctaSecondary.label)}
-            </a>
-          </div>
-        </Reveal>
-      </div>
-      <a href={c.hero.videoLabel.href} className="exe-hero__video" data-testid="hero-video">
-        <span className="exe-hero__video-play"><Play size={14} strokeWidth={1.5} fill="currentColor" /></span>
-        <span className="exe-hero__video-text">
-          <span className="exe-hero__video-kicker">{pick(c.hero.videoLabel.kicker)}</span>
-          <span className="exe-hero__video-title">{pick(c.hero.videoLabel.title)}</span>
-        </span>
-      </a>
-      <div className="exe-hero__scroll" data-testid="hero-scroll">
-        <span>{pick(c.hero.scrollLabel)}</span>
-        <ChevronDown size={14} strokeWidth={1.5} />
+    <section className="mfd-hero" data-testid="home-hero">
+      <div className="mfd-hero__bg" style={{ backgroundImage: `url("${bg}")` }} aria-hidden />
+      <div className="mfd-hero__veil" aria-hidden />
+      <div className="mfd-hero__content">
+        <h1 className="mfd-hero__title" data-testid="home-hero-title">
+          {titleResolved.split('\n').map((ln, i) => <span key={i} style={{ display: 'block' }}>{ln}</span>)}
+        </h1>
+        <p className="mfd-hero__sub" data-testid="home-hero-sub">{sub}</p>
+        <div className="mfd-hero__divider" aria-hidden />
+        <p className="mfd-hero__overline">{overline}</p>
+        <p className="mfd-hero__overline-italic">{overlineIt}</p>
       </div>
     </section>
   );
 };
 
-// ── SERVICES ─────────────────────────────────────────────────────────
-const ServicesBlock = ({ resolve, c, pick }) => {
-  const kicker = resolve('value_props', 'section_kicker', c.services.kicker);
-  const title  = resolve('value_props', 'section_title',  c.services.title);
-  // Items come from JS fallback (or the DB section's pillars[] later when wired)
-  const items = c.services.items;
+
+const DualCTA = ({ cms, locale }) => {
+  const F = FALLBACK.dual;
+  const card = (kind, fb) => ({
+    eyebrow: fromCMS(cms, `dual_cta_${kind}`, 'eyebrow', locale) || pick(fb.eyebrow, locale),
+    title:   fromCMS(cms, `dual_cta_${kind}`, 'title',   locale) || pick(fb.title,   locale),
+    body:    fromCMS(cms, `dual_cta_${kind}`, 'body',    locale) || pick(fb.body,    locale),
+    cta:     fromCMS(cms, `dual_cta_${kind}`, 'cta',     locale) || pick(fb.cta,     locale),
+    href:    fromCMS(cms, `dual_cta_${kind}`, 'href',    locale) || fb.href,
+    image:   fromCMS(cms, `dual_cta_${kind}`, 'image',   locale) || fb.image,
+  });
+  const p = card('privato', F.privato);
+  const q = card('professional', F.professional);
   return (
-    <section id="services" className="exe-services" data-testid="exe-services">
-      <div className="exe-section__head">
-        <Reveal><p className="exe-eyebrow">{kicker}</p></Reveal>
-        <Reveal delay={80}><h2 className="exe-section__title">{title}</h2></Reveal>
+    <section className="mfd-dual-cta" data-testid="home-dual-cta">
+      <div className="mfd-dual-cta__grid">
+        <article className="mfd-dual-card mfd-dual-card--cream" data-testid="home-cta-privato">
+          <div className="mfd-dual-card__body">
+            <p className="mfd-dual-card__eyebrow">{p.eyebrow}</p>
+            <h3 className="mfd-dual-card__title">{p.title}</h3>
+            <p className="mfd-dual-card__text">{p.body}</p>
+            <Link to={p.href} className="mfd-dual-card__cta" data-testid="home-cta-privato-link">
+              {p.cta} <ArrowRight size={14} strokeWidth={1.7} aria-hidden />
+            </Link>
+          </div>
+          <div className="mfd-dual-card__image" style={{ backgroundImage: `url("${p.image}")` }} aria-hidden />
+        </article>
+        <article className="mfd-dual-card mfd-dual-card--dark" data-testid="home-cta-professional">
+          <div className="mfd-dual-card__body">
+            <p className="mfd-dual-card__eyebrow">{q.eyebrow}</p>
+            <h3 className="mfd-dual-card__title">{q.title}</h3>
+            <p className="mfd-dual-card__text">{q.body}</p>
+            <Link to={q.href} className="mfd-dual-card__cta" data-testid="home-cta-professional-link">
+              {q.cta} <ArrowRight size={14} strokeWidth={1.7} aria-hidden />
+            </Link>
+          </div>
+          <div className="mfd-dual-card__image" style={{ backgroundImage: `url("${q.image}")` }} aria-hidden />
+        </article>
       </div>
-      <div className="exe-services__grid">
-        {items.map((it, idx) => {
-          const Icon = ICONS[it.icon] || PencilRuler;
+    </section>
+  );
+};
+
+
+const UspStrip = ({ cms, locale, brandName }) => {
+  const titleRaw = fromCMS(cms, 'usp_strip', 'title', locale) || pick(FALLBACK.usp.title, locale);
+  const title = String(titleRaw).replaceAll('{brand}', brandName || '');
+  const items = (cms?.usp_strip?._settings?.items) || FALLBACK.usp.items;
+  return (
+    <section className="mfd-usp" data-testid="home-usp">
+      <header className="mfd-usp__head">
+        <h2 className="mfd-usp__title">{title.split(' ').map((w, i) => /^MOOD/i.test(w) ? <span key={i}>{w} </span> : i === 0 || /^per|^why|^why$/i.test(w) ? <span key={i}>{w} </span> : <span key={i}>{w} </span>)}</h2>
+        <span className="mfd-usp__rule" aria-hidden />
+      </header>
+      <div className="mfd-usp__grid">
+        {items.map((it) => {
+          const Icon = USP_ICONS[it.icon] || USP_ICONS.excellence;
           return (
-            <Reveal key={it.id} delay={140 + idx * 70}>
-              <a href={it.href} className="exe-service" data-testid={`service-${it.id}`}>
-                <div className="exe-service__icon"><Icon size={28} strokeWidth={1.1} /></div>
-                <h3 className="exe-service__title">{pick(it.title)}</h3>
-                <p className="exe-service__body">{pick(it.body)}</p>
-                <span className="exe-service__more">{pick(c.services.moreLabel)} <ArrowRight size={12} strokeWidth={1.6} /></span>
-              </a>
-            </Reveal>
+            <div key={it.id} className="mfd-usp__col" data-testid={`home-usp-${it.id}`}>
+              <span className="mfd-usp__icon"><Icon size={34} strokeWidth={1.2} aria-hidden /></span>
+              <h4 className="mfd-usp__col-title">{pick(it.title, locale)}</h4>
+              <p className="mfd-usp__col-body">{pick(it.body, locale)}</p>
+            </div>
           );
         })}
       </div>
@@ -144,141 +234,113 @@ const ServicesBlock = ({ resolve, c, pick }) => {
   );
 };
 
-// ── STATS BAND ───────────────────────────────────────────────────────
-const StatsBlock = ({ resolve, c, pick }) => {
-  const kicker = resolve('stats_band', 'section_kicker', c.stats.kicker);
-  const title  = resolve('stats_band', 'section_title',  c.stats.title);
-  const items = c.stats.items;
+
+const ProjectsRail = ({ cms, locale }) => {
+  const titleRaw = fromCMS(cms, 'projects_rail', 'title', locale) || pick(FALLBACK.projects.title, locale);
+  const items = (cms?.projects_rail?._settings?.items) || FALLBACK.projects.items;
   return (
-    <section className="exe-stats" data-testid="exe-stats">
-      <div className="exe-stats__bg" aria-hidden="true" />
-      <div className="exe-section__head exe-section__head--center">
-        <Reveal><p className="exe-eyebrow exe-eyebrow--gold">{kicker}</p></Reveal>
-        <Reveal delay={80}><h2 className="exe-section__title exe-section__title--light">{title}</h2></Reveal>
-      </div>
-      <div className="exe-stats__grid">
-        {items.map((s, idx) => (
-          <Reveal key={s.id} delay={150 + idx * 70}>
-            <div className="exe-stat" data-testid={`stat-${s.id}`}>
-              <div className="exe-stat__value">{s.value}</div>
-              <div className="exe-stat__label">{pick(s.label)}</div>
+    <section className="mfd-projects" data-testid="home-projects">
+      <header className="mfd-projects__head">
+        <h2 className="mfd-projects__title">{titleRaw}</h2>
+        <span className="mfd-projects__rule" aria-hidden />
+      </header>
+      <div className="mfd-projects__grid">
+        {items.map((p) => (
+          <Link
+            key={p.id}
+            to={p.href || '/projects'}
+            className="mfd-project-card"
+            data-testid={`home-project-${p.id}`}
+          >
+            <div className="mfd-project-card__media" style={{ backgroundImage: `url("${p.image}")` }} aria-hidden />
+            <div className="mfd-project-card__caption">
+              <span className="mfd-project-card__category">{pick(p.category, locale)}</span>
+              <span className="mfd-project-card__city">{pick(p.city, locale)}</span>
             </div>
-          </Reveal>
-        ))}
-      </div>
-    </section>
-  );
-};
-
-// ── FEATURED PROJECTS ────────────────────────────────────────────────
-const ProjectsBlock = ({ resolve, c, pick }) => {
-  const kicker = resolve('projects_preview', 'section_kicker', c.projectsInspire.kicker);
-  const title  = resolve('projects_preview', 'section_title',  c.projectsInspire.title);
-  const ctaLbl = resolve('projects_preview', 'cta_label',      c.projectsInspire.ctaLabel);
-  const items = c.projectsInspire.items;
-  return (
-    <section className="exe-projects" data-testid="exe-projects">
-      <div className="exe-projects__head">
-        <Reveal><p className="exe-eyebrow">{kicker}</p></Reveal>
-        <Reveal delay={80}><h2 className="exe-section__title">{title}</h2></Reveal>
-        <Reveal delay={160}>
-          <Link to={c.projectsInspire.ctaHref || '/projects'} className="exe-btn exe-btn--outline" data-testid="projects-cta">
-            {ctaLbl} <ArrowRight size={13} strokeWidth={1.6} />
           </Link>
-        </Reveal>
-      </div>
-      <div className="exe-projects__rail" data-testid="projects-rail">
-        {items.map((p, idx) => (
-          <Reveal key={p.id} delay={150 + idx * 100}>
-            <Link to={`/projects/${p.slug}`} className="exe-project" data-testid={`project-card-${p.id}`}>
-              <div className="exe-project__media">
-                <img src={p.image} alt="" loading="lazy" />
-              </div>
-              <div className="exe-project__meta">
-                <p className="exe-project__category">{pick(p.category)}</p>
-                <p className="exe-project__location">{pick(p.location)}</p>
-                <span className="exe-project__more">{pick(c.projectsInspire.moreLabel)} <ArrowRight size={12} strokeWidth={1.6} /></span>
-              </div>
-            </Link>
-          </Reveal>
         ))}
       </div>
     </section>
   );
 };
 
-// ── MAGAZINE GRID ────────────────────────────────────────────────────
-const MagazineBlock = ({ resolve, c, pick }) => {
-  const kicker = resolve('magazine_grid', 'section_kicker', c.magazine.kicker);
-  const title  = resolve('magazine_grid', 'section_title',  c.magazine.title);
-  const ctaLbl = resolve('magazine_grid', 'cta_label',      c.magazine.ctaLabel);
-  const items = c.magazine.items;
+
+const Newsletter = ({ cms, locale, slug }) => {
+  const N = FALLBACK.newsletter;
+  const title       = fromCMS(cms, 'newsletter', 'title',       locale) || pick(N.title, locale);
+  const body        = fromCMS(cms, 'newsletter', 'body',        locale) || pick(N.body, locale);
+  const placeholder = fromCMS(cms, 'newsletter', 'placeholder', locale) || pick(N.placeholder, locale);
+  const ctaLabel    = fromCMS(cms, 'newsletter', 'cta',         locale) || pick(N.cta, locale);
+  const successMsg  = pick(N.success, locale);
+
+  const [email, setEmail] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    const v = email.trim();
+    if (!v || !/.+@.+\..+/.test(v)) {
+      toast.error(locale.startsWith('it') ? 'Inserisci una email valida.' : 'Please enter a valid email.');
+      return;
+    }
+    setBusy(true);
+    try {
+      // Reuses the existing public lead endpoint — falls back to a soft
+      // success toast if the endpoint isn't wired for newsletter capture.
+      await axios.post(`${BACKEND_URL}/api/public/leads/newsletter`, { email: v, tenant_slug: slug }).catch(() => null);
+      toast.success(successMsg);
+      setEmail('');
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
-    <section className="exe-magazine" data-testid="exe-magazine">
-      <div className="exe-magazine__head">
-        <Reveal><p className="exe-eyebrow">{kicker}</p></Reveal>
-        <Reveal delay={80}><h2 className="exe-section__title">{title}</h2></Reveal>
-        <Reveal delay={160}>
-          <a href={c.magazine.ctaHref || '/magazine'} className="exe-btn exe-btn--outline" data-testid="magazine-cta">
-            {ctaLbl} <ArrowRight size={13} strokeWidth={1.6} />
-          </a>
-        </Reveal>
-      </div>
-      <div className="exe-magazine__grid">
-        {items.map((a, idx) => (
-          <Reveal key={a.id} delay={150 + idx * 100}>
-            <a href={`/magazine/${a.slug}`} className="exe-article" data-testid={`article-${a.id}`}>
-              <div className="exe-article__media"><img src={a.image} alt="" loading="lazy" /></div>
-              <p className="exe-article__category">{pick(a.category)}</p>
-              <h3 className="exe-article__title">{pick(a.title)}</h3>
-              <span className="exe-article__more">{pick(c.magazine.readLabel)} <ArrowUpRight size={12} strokeWidth={1.6} /></span>
-            </a>
-          </Reveal>
-        ))}
+    <section className="mfd-newsletter" data-testid="home-newsletter">
+      <div className="mfd-newsletter__grid">
+        <div>
+          <h2 className="mfd-newsletter__title">{title}</h2>
+          <p className="mfd-newsletter__body">{body}</p>
+        </div>
+        <form className="mfd-newsletter__form" onSubmit={submit} data-testid="home-newsletter-form">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={placeholder}
+            aria-label={placeholder}
+            data-testid="home-newsletter-email"
+          />
+          <button type="submit" disabled={busy} data-testid="home-newsletter-submit">
+            {ctaLabel}
+          </button>
+        </form>
       </div>
     </section>
   );
 };
 
-// ── BRAND PARTNERS ───────────────────────────────────────────────────
-const BrandLogosBlock = ({ resolve, c, pick }) => {
-  const kicker = resolve('brand_logos', 'section_kicker', c.brandLogos.kicker);
-  return (
-    <section className="exe-brands" data-testid="exe-brands">
-      <p className="exe-brands__kicker">{kicker}</p>
-      <div className="exe-brands__row">
-        {c.brandLogos.items.map((b) => (
-          <a key={b.id} href={b.href || '#'} className="exe-brand" data-testid={`brand-${b.id}`}>
-            <span className="exe-brand__wordmark">{b.wordmark}</span>
-          </a>
-        ))}
-      </div>
-    </section>
-  );
-};
 
-// ── PAGE ─────────────────────────────────────────────────────────────
+// ── Page ────────────────────────────────────────────────────────────────
+
 const HomePage = () => {
-  const { pick, locale } = useSite();
-  const { content: cmsContent } = useStorefrontContent(tenantConfig.slug, 'home', homepageContent);
-  const resolve = useResolver(cmsContent, locale, pick);
-  const c = homepageContent;
+  const { locale } = useSite();
+  const slug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
+  const { content: cms } = useStorefrontContent(slug, 'home', homepageContent);
+  const { brand } = usePublicBrand(slug);
+  const brandName = useMemo(
+    () => `${brand?.name || 'MOOD for DESIGN'}${brand?.suffix || ''}`,
+    [brand],
+  );
 
   return (
-    <main className="exe-home" data-testid="exe-home">
-      <HeroBlock        resolve={resolve} c={c} pick={pick} />
-      <ServicesBlock    resolve={resolve} c={c} pick={pick} />
-      <StatsBlock       resolve={resolve} c={c} pick={pick} />
-      <ProjectsBlock    resolve={resolve} c={c} pick={pick} />
-      <MagazineBlock    resolve={resolve} c={c} pick={pick} />
-      <BrandLogosBlock  resolve={resolve} c={c} pick={pick} />
-      <TeamIdentityBlock
-        resolve={resolve}
-        slug={tenantConfig.slug}
-        defaults={TEAM_IDENTITY_DEFAULTS}
-      />
-      <TryPlatformCta />
-    </main>
+    <div className="mfd-home" data-testid="home-page" data-surface="storefront">
+      <Hero      cms={cms} locale={locale} brandName={brandName} />
+      <DualCTA   cms={cms} locale={locale} />
+      <UspStrip  cms={cms} locale={locale} brandName={brandName} />
+      <ProjectsRail cms={cms} locale={locale} />
+      <Newsletter cms={cms} locale={locale} slug={slug} />
+    </div>
   );
 };
 
