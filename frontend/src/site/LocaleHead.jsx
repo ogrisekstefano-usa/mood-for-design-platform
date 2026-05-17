@@ -21,7 +21,7 @@
  */
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { PLATFORM_DEFAULT_LOCALE, toBcp47 } from '../i18n';
+import { PLATFORM_DEFAULT_LOCALE, SUPPORTED_LOCALES, toBcp47 } from '../i18n';
 import { useT } from '../i18n';
 import { tenantConfig } from './content/tenant';
 import api from '../lib/api';
@@ -33,7 +33,8 @@ const LOCALE_RE = /^\/([a-z]{2}-[A-Z]{2})(?=\/|$)/;
 // indexable storefront URLs.
 const STOREFRONT_PREFIXES = ['/projects', '/professionals', '/magazine', '/onboarding'];
 function isStorefrontPath(p) {
-  if (LOCALE_RE.test(p)) return true;       // /it-IT, /en-US, …
+  const m = p.match(LOCALE_RE);
+  if (m && SUPPORTED_LOCALES.includes(m[1])) return true;  // /it-IT, /en-US, …
   if (p === '/') return true;
   return STOREFRONT_PREFIXES.some((pre) => p === pre || p.startsWith(`${pre}/`));
 }
@@ -82,17 +83,41 @@ export const LocaleHead = ({ pageMeta }) => {
     let cancelled = false;
     const effectiveLocale = (() => {
       const m = location.pathname.match(LOCALE_RE);
-      return m ? m[1] : toBcp47(i18nLocale || PLATFORM_DEFAULT_LOCALE);
+      const seg = m ? m[1] : null;
+      if (seg && SUPPORTED_LOCALES.includes(seg)) return seg;
+      return toBcp47(i18nLocale || PLATFORM_DEFAULT_LOCALE);
     })();
 
-    fetchMarkets(slug).then((markets) => {
+    fetchMarkets(slug).then((rawMarkets) => {
       if (cancelled) return;
+      // Defend against backend/frontend drift: ONLY emit hreflang for
+      // markets whose locale has a frontend route registered. Backend
+      // catalog ⊋ frontend routes (e.g. gcc_luxury / en-AE seeded server
+      // side but not in the supported subpath list) — without this filter
+      // we would publish hreflang links that 404 on crawl.
+      const markets = (rawMarkets || []).filter(
+        (m) => m.primary_locale && SUPPORTED_LOCALES.includes(m.primary_locale),
+      );
       clearSeoHead();
       const baseUrl = (typeof window !== 'undefined' ? window.location.origin : '');
-      const cleanPath = location.pathname.replace(LOCALE_RE, '');
-      // Normalise: root path with no remaining segment becomes empty so
-      // canonical reads `/{locale}` (no trailing slash).
+      // Strip the leading locale segment ONLY if it's a supported BCP-47
+      // code. An unsupported one (e.g. /en-AE) should not be carried over.
+      const leadMatch = location.pathname.match(LOCALE_RE);
+      const stripLead = leadMatch && SUPPORTED_LOCALES.includes(leadMatch[1]);
+      const cleanPath = stripLead
+        ? location.pathname.replace(LOCALE_RE, '')
+        : location.pathname;
       const tail = (cleanPath === '/' || cleanPath === '') ? '' : cleanPath;
+
+      // When the URL has no /<supported-locale> prefix (legacy root or an
+      // unsupported segment like /en-AE), the canonical MUST point to the
+      // tenant default market — not the user's sticky session locale.
+      const matched = location.pathname.match(LOCALE_RE);
+      const isLegacy = !matched || !SUPPORTED_LOCALES.includes(matched[1]);
+      const defaultMarket = markets.find((m) => m.is_default) || markets[0];
+      const canonicalLocale = isLegacy && defaultMarket
+        ? defaultMarket.primary_locale
+        : effectiveLocale;
 
       // canonical → /{locale}{cleanPath}
       const canonical = setOrCreate('link[rel="canonical"][data-mfd-seo]', () => {
@@ -101,7 +126,7 @@ export const LocaleHead = ({ pageMeta }) => {
         el.setAttribute('data-mfd-seo', '1');
         return el;
       });
-      canonical.setAttribute('href', `${baseUrl}/${effectiveLocale}${tail}`);
+      canonical.setAttribute('href', `${baseUrl}/${canonicalLocale}${tail}`);
 
       // hreflang per market — ONLY public markets, never internal translation.
       const seen = new Set();
@@ -116,12 +141,11 @@ export const LocaleHead = ({ pageMeta }) => {
         link.setAttribute('data-mfd-hreflang', m.code);
         document.head.appendChild(link);
       });
-      // x-default → tenant default market
-      const def = markets.find((m) => m.is_default) || markets[0];
-      if (def) {
+      // x-default → tenant default market (already filtered & resolved above)
+      if (defaultMarket) {
         const xd = document.createElement('link');
         xd.setAttribute('rel', 'alternate'); xd.setAttribute('hreflang', 'x-default');
-        xd.setAttribute('href', `${baseUrl}/${def.primary_locale}${tail}`);
+        xd.setAttribute('href', `${baseUrl}/${defaultMarket.primary_locale}${tail}`);
         xd.setAttribute('data-mfd-hreflang', 'x-default');
         document.head.appendChild(xd);
       }
@@ -133,9 +157,9 @@ export const LocaleHead = ({ pageMeta }) => {
         el.setAttribute('data-mfd-seo', '1');
         return el;
       });
-      og.setAttribute('content', effectiveLocale.replace('-', '_'));
+      og.setAttribute('content', canonicalLocale.replace('-', '_'));
 
-      Array.from(seen).filter((bcp) => bcp !== effectiveLocale).forEach((bcp) => {
+      Array.from(seen).filter((bcp) => bcp !== canonicalLocale).forEach((bcp) => {
         const meta = document.createElement('meta');
         meta.setAttribute('property', 'og:locale:alternate');
         meta.setAttribute('content', bcp.replace('-', '_'));
@@ -143,7 +167,7 @@ export const LocaleHead = ({ pageMeta }) => {
       });
 
       // <html lang>
-      try { document.documentElement.setAttribute('lang', effectiveLocale); } catch { /* noop */ }
+      try { document.documentElement.setAttribute('lang', canonicalLocale); } catch { /* noop */ }
 
       if (pageMeta?.title) document.title = pageMeta.title;
       if (pageMeta?.description) {

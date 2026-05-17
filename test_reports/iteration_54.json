@@ -1,0 +1,48 @@
+{
+  "summary": "RETEST of Phase R-MARKET-1B (locale-aware frontend) after the 3 fixes from iteration_53. ALL 3 fixes verified PASS: (1) /api/storefront/public/mood-demo-studio-81a09e/markets now returns 7 active markets including spanish_latam(es-ES) and gcc_luxury(en-AE); (2) LocaleHead filters hreflang to SUPPORTED_LOCALES only — gcc_luxury(en-AE) is excluded from hreflang lists; (3) legacy `/` canonical now correctly points to /it-IT (tenant default) instead of sticky session locale. Backend: 29/29 tests PASS (test_phase_r_market_1a.py + test_phase_r_market_1b_locale_wiring.py + test_phase_e_1b_studio.py). Frontend: every supported locale subpath emits canonical + 7 hreflangs {it-IT, de-DE, fr-FR, en-GB, en-US, es-ES, x-default} + correct og:locale + correct <html lang>. Unsupported segments (/en-AE, /pt-BR, /ja-JP) and /auth/login correctly emit NO canonical, NO hreflang, NO og:locale. Footer Country·Language modal lists all 7 markets, picking spanish_latam navigates to /es-ES and persists on reload. Locale-aware storefront copy switches correctly: IT (Chi siamo/Servizi), EN-US (About/Services), DE-DE (Über uns/Leistungen), ES-ES (Sobre nosotros/Servicios).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "/es-ES storefront header",
+        "issues": [
+          "Spanish nav label 'Sobre nosotros' is wide enough that it visually overlaps the MOODforDESIGN™ logo at 1280px viewport. Needs spacing/wrap rule for long-locale labels.",
+          "Hero copy is partially un-translated on /es-ES: main heading reads 'ITALIAN DESIGN. TAILORED FOR VISIONARIES.' (English) while body paragraph is Spanish, and the closing tagline 'DUE PERCORSI. UN UNICO OBIETTIVO — trasformare la tua visione in realtà' is Italian. Out of scope for Prompt 1 (locale wiring), but should be flagged for the editorial team / translation backlog."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_r_market_1b_locale_wiring.py",
+    "/app/backend/tests/test_phase_r_market_1a.py",
+    "/app/backend/tests/test_phase_e_1b_studio.py",
+    "/app/test_reports/pytest/iteration_54_retest.xml"
+  ],
+  "action_items": [
+    "(Optional, non-blocking) Tighten header spacing in storefront layout so longer locale labels (es-ES 'Sobre nosotros', de-DE 'Über uns') don't overlap the brand logo at <=1280px.",
+    "(Backlog) Complete editorial copy translation for /es-ES hero — currently mixed English/Spanish/Italian. Not in locale-wiring scope."
+  ],
+  "critical_code_review_comments": [
+    "LocaleHead.jsx now correctly double-filters hreflang via SUPPORTED_LOCALES — defends against future backend/frontend drift. Good defensive design.",
+    "isLegacy branch in LocaleHead.jsx forces canonical to defaultMarket.primary_locale when URL has no /<supported-locale> prefix — correctly handles both legacy `/` and unsupported segments like /en-AE.",
+    "isStorefrontPath() bails out early for unsupported locale segments → no SEO leak on /en-AE, /pt-BR, /ja-JP, /auth/login. Verified empty <head>.",
+    "Initial async cache load can produce a small window (~1-2s) where SEO tags aren't yet present on the very first navigation; subsequent navigations are instant due to module-scope CACHED_MARKETS. Acceptable for SSR-less SPA; crawlers running JS will hit the populated state.",
+    "Footer testid contract honored: footer-country-language, country-language-modal, country-language-pick-{code} (all 7 codes present)."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (29/29 tests pass across test_phase_r_market_1a, test_phase_r_market_1b_locale_wiring, test_phase_e_1b_studio)",
+    "frontend": "100% on locale wiring scope (Prompt 1). All 3 previously-flagged issues resolved. Two pre-existing copy/layout polish items noted as non-blocking design observations."
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (not needed for this anonymous-storefront phase)",
+  "seed_data_creation": "None — spanish_latam was already activated on the demo tenant per the fix.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Phase R-MARKET-1B locale wiring is now CLEAN. Public markets contract: 7 active markets on mood-demo-studio-81a09e (italy/dach/france_fr_europe/uk_ireland/usa_national/gcc_luxury/spanish_latam). SUPPORTED_LOCALES in /app/frontend/src/i18n/engine.js drives the hreflang allow-list. gcc_luxury(en-AE) is intentionally seeded but EXCLUDED from hreflang because no /en-AE Route exists. If a new locale is added, update SUPPORTED_LOCALES AND add a Route in App.js AND ensure the market is active server-side — all three must align. Tests in /app/backend/tests/test_phase_r_market_1b_locale_wiring.py are the regression guardrail.",
+  "rca_of_the_issue": "All 3 issues from iteration_53 have been resolved: (1) Backend now exposes 7 markets — fix: spanish_latam activated on demo tenant. (2) LocaleHead.jsx now intersects raw markets with SUPPORTED_LOCALES before emitting hreflang — fix at lines 98-100. (3) When location.pathname has no supported-locale prefix, canonical is forced to defaultMarket.primary_locale instead of i18nLocale — fix at lines 115-120. Verified by visiting / on a fresh session and confirming canonical=https://.../it-IT regardless of any sticky locale state."
+}
