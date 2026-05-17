@@ -1,6 +1,37 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.3.C PREP — Curated Demo Intelligence Set (DONE — 16 Feb 2026)
+
+> Before building the `/workspace/references` UI, the platform must already
+> *feel* alive, editorial, and culturally intelligent. This phase seeds the
+> foundational editorial archive: 6 design references grouped into 3 curated
+> editorial collections, each interpreted natively across 5 markets.
+
+**Seed script** — `/app/backend/scripts/seed_p03_demo_intelligence.py`
+- Idempotent (re-runnable): cleans prior seed by title + source_url markers, then re-inserts. Supports `--locales IT_IT,EN_AE` for partial runs and `--skip-llm` for structure-only seeding.
+- Inserts **6 design references** with rich design metadata (NOT technical metadata): `design_intent`, `advisor_notes`, `locale_origin`, `curator_name`, `imported_image_url`. Advisor notes are HUMAN (e.g. "This atmosphere could evolve the hospitality direction for UAE clients — restrained Mediterranean welcome without the cliché.").
+- Generates **30 cultural interpretations** (6 × 5 locales) via `_interpret_and_store()` → `with_runtime_prompt(locale_profile)` → `claude-sonnet-4-5-20250929`. Skips already-present (ref, locale) pairs on re-run.
+- Assembles **3 curated collections** with intentional soft-membership (puglian_guesthouse shared between Collection 01 and 02):
+  - **Mediterranean Quiet Luxury™** (residential + hospitality · 2 refs) — atmosphere: "Travertine, raw linen, brass — warmth engineered through restraint, never through ornament."
+  - **Architectural Hospitality Signals™** (hospitality + retail + executive workspace · 3 refs) — atmosphere: "Hospitality codes applied beyond hotels: into retail, into executive environments."
+  - **Collectible Material Atmospheres™** (wellness + collector residence · 2 refs) — atmosphere: "Onyx, walnut, raw silk, water reflection — atmosphere read as a primary material, never as a finish."
+- Emits **human timeline events** for project-linked references: *"Stefano added Lumière méditerranéenne filtrée…"*, *"Diego added Tenue architecturale d'un espace de travail traité comme bibliothèque privée…"* — NEVER "AI generated", NEVER technical metadata.
+
+**Cultural distinctness · same hammam image, 5 markets:**
+- **IT_IT** (94 score): "Penombra calibrata su acqua e onice — un equilibrio tra presenza materica e silenzio."
+- **EN_AE** (92 score): *"Hammam logic reimagined as material theatre — onyx wall as protagonist, backlit to reveal its geological narrative … prestige through restraint, not volume."*
+- **DE_DE** (71 score): *"Konstruktive Sequenz von Schwelle, Material und Licht. Onyx trägt hier doppelte Verantwortung — thermische Funktion und räumliche Grenze."*
+- **FR_FR**: *"Seuil de bien-être où la lumière traverse l'onyx en contre-jour, suspendant l'espace."*
+- **EN_US**: *"Sanctuary-grade quietude where light, stone, and water compose the experience."*
+
+These are **5 native re-interpretations**, never translations. EN_AE and DE_DE share zero vocabulary; FR uses *"contre-jour"* and *"tenue"* idiomatic to French editorial discourse; IT_IT reads as Italian material culture; EN_US reaches for "sanctuary-grade" aspirational language. The platform is now ready to *feel* like a private international design intelligence archive the moment a showroom owner opens `/workspace/references`.
+
+**Final state**: 6 references (all `editorial_status='ready'`) · 30 interpretations · 3 collections · 2 timeline events on Villa Toscana project. Verified via API.
+
+────────────────────────────────────────────────────────────────────────
+
+
 ### ✅ Phase P0.3.A — Cultural Design Intelligence™ FOUNDATION (DONE — 16 Feb 2026)
 
 > External design references are NOT media uploads or social pins. They are
