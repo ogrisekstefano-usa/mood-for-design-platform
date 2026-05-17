@@ -5,6 +5,7 @@ import { BlueprintProvider, useBlueprint } from './contexts/BlueprintContext';
 import { TenantThemeProvider } from './contexts/TenantThemeContext';
 import { StudioPaletteProvider } from './contexts/StudioPaletteContext';
 import { LocaleRuntimeProvider } from './contexts/LocaleRuntimeContext';
+import { BlueprintI18nProvider } from './i18n';
 import { Toaster } from 'sonner';
 import './App.css';
 // Frozen Blueprint OS tokens — declared under [data-surface="os"] only,
@@ -178,6 +179,7 @@ function App() {
           <TenantThemeProvider>
           <StudioPaletteProvider>
           <LocaleRuntimeProvider>
+          <BlueprintI18nProvider>
           <BrowserRouter>
             <Suspense fallback={<Loading />}>
               <Routes>
@@ -297,6 +299,7 @@ function App() {
               },
             }}
           />
+          </BlueprintI18nProvider>
           </LocaleRuntimeProvider>
           </StudioPaletteProvider>
           </TenantThemeProvider>

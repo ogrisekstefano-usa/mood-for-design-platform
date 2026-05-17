@@ -1,0 +1,102 @@
+{
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "search": "Suchen",
+    "loading": "Lädt…",
+    "empty": "Keine Einträge",
+    "yes": "Ja",
+    "no": "Nein",
+    "all": "Alle",
+    "back": "Zurück",
+    "next": "Weiter",
+    "close": "Schließen",
+    "saving": "Speichern…",
+    "creating": "Wird erstellt…",
+    "primary": "Primär",
+    "none": "—",
+    "assigned": "zugewiesen",
+    "unassigned": "nicht zugewiesen"
+  },
+  "relationships": {
+    "eyebrow": "Relationship OS",
+    "title": "Beziehungen",
+    "subtitle": "Das geteilte Gedächtnis des Studios — Accounts, Kontakte, Gespräche, nächste Schritte.",
+    "searchPlaceholder": "Nach Name, E-Mail, Stadt suchen…",
+    "viewTable": "Tabelle",
+    "viewKanban": "Kanban",
+    "ctaNew": "Neue Beziehung",
+    "sidebarTitle": "Beziehungen",
+    "filters": {
+      "all":           "Alle Beziehungen",
+      "new":           "Neu",
+      "unassigned":    "Nicht zugewiesen",
+      "follow_up":     "Nachzuverfolgen",
+      "high_intent":   "Hohes Interesse",
+      "international": "International",
+      "active":        "Aktive Projekte",
+      "clients":       "Kunden",
+      "archived":      "Archiviert"
+    },
+    "table": {
+      "account":   "Account",
+      "type":      "Typ",
+      "stage":     "Phase",
+      "contact":   "Hauptkontakt",
+      "lastActivity": "Letzte Aktivität",
+      "open":      "Offen",
+      "owner":     "Verantwortlich",
+      "emptyFiltered": "Keine Beziehungen in diesem Filter."
+    },
+    "kanban": {
+      "emptyColumn": "Leer"
+    },
+    "drawer": {
+      "tabs": {
+        "overview": "Übersicht",
+        "contacts": "Kontakte",
+        "timeline": "Verlauf",
+        "actions":  "Nächste Schritte"
+      },
+      "lastActivityPrefix": "letzte Aktivität",
+      "accountData":   "Account-Daten",
+      "changeStage":   "Phase ändern",
+      "counters":      "Zähler",
+      "interactions":  "Interaktionen",
+      "openActions":   "Offen",
+      "source":        "Quelle",
+      "health":        "Gesundheit",
+      "emptyContacts": "Keine Kontakte registriert.",
+      "emptyTimeline": "Keine Interaktionen.",
+      "emptyActions":  "Keine offenen Schritte.",
+      "nextStep":      "Nächster Schritt:",
+      "due":           "fällig",
+      "stageChanged":  "Phase aktualisiert",
+      "stageError":    "Phase kann nicht geändert werden.",
+      "actionError":   "Fehler beim Aktualisieren.",
+      "loadingRelation":"Beziehung wird geladen…",
+      "markDone":      "Als erledigt markieren",
+      "reopen":        "Wieder öffnen"
+    },
+    "newModal": {
+      "eyebrow":      "Neue Beziehung",
+      "title":        "Neue Beziehung eröffnen",
+      "accountName":  "Account- / Familien- / Studio-Name",
+      "accountType":  "Account-Typ",
+      "source":       "Quelle",
+      "city":         "Stadt",
+      "firstName":    "Kontakt-Vorname",
+      "lastName":     "Kontakt-Nachname",
+      "email":        "E-Mail",
+      "phone":        "Telefon",
+      "notes":        "Erste Notizen (optional)",
+      "submit":       "Beziehung erstellen",
+      "successCreated":"Beziehung erstellt.",
+      "errorCreate":  "Beziehung kann nicht erstellt werden.",
+      "errorNameRequired": "Bitte einen Account-Namen eingeben."
+    },
+    "loadingAccounts": "Studio-Gedächtnis wird gelesen…"
+  }
+}

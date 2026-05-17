@@ -1,0 +1,102 @@
+{
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "search": "Rechercher",
+    "loading": "Chargement…",
+    "empty": "Aucun élément",
+    "yes": "Oui",
+    "no": "Non",
+    "all": "Tous",
+    "back": "Retour",
+    "next": "Suivant",
+    "close": "Fermer",
+    "saving": "Enregistrement…",
+    "creating": "Création…",
+    "primary": "Principal",
+    "none": "—",
+    "assigned": "assignée",
+    "unassigned": "non assignée"
+  },
+  "relationships": {
+    "eyebrow": "Relationship OS",
+    "title": "Relations",
+    "subtitle": "La mémoire partagée du studio — comptes, contacts, conversations, prochaines étapes.",
+    "searchPlaceholder": "Rechercher par nom, email, ville…",
+    "viewTable": "Tableau",
+    "viewKanban": "Kanban",
+    "ctaNew": "Nouvelle relation",
+    "sidebarTitle": "Relations",
+    "filters": {
+      "all":           "Toutes les relations",
+      "new":           "Nouvelles",
+      "unassigned":    "Non assignées",
+      "follow_up":     "À suivre",
+      "high_intent":   "Fort intérêt",
+      "international": "Internationales",
+      "active":        "Projets actifs",
+      "clients":       "Clients",
+      "archived":      "Archivées"
+    },
+    "table": {
+      "account":   "Compte",
+      "type":      "Type",
+      "stage":     "Étape",
+      "contact":   "Contact principal",
+      "lastActivity": "Dernière activité",
+      "open":      "Ouverts",
+      "owner":     "Responsable",
+      "emptyFiltered": "Aucune relation dans ce filtre."
+    },
+    "kanban": {
+      "emptyColumn": "Vide"
+    },
+    "drawer": {
+      "tabs": {
+        "overview": "Vue d'ensemble",
+        "contacts": "Contacts",
+        "timeline": "Chronologie",
+        "actions":  "Prochaines étapes"
+      },
+      "lastActivityPrefix": "dernière activité",
+      "accountData":   "Données du compte",
+      "changeStage":   "Changer d'étape",
+      "counters":      "Compteurs",
+      "interactions":  "Interactions",
+      "openActions":   "Ouverts",
+      "source":        "Source",
+      "health":        "Santé",
+      "emptyContacts": "Aucun contact enregistré.",
+      "emptyTimeline": "Aucune interaction enregistrée.",
+      "emptyActions":  "Aucune étape ouverte.",
+      "nextStep":      "Prochaine étape :",
+      "due":           "échéance",
+      "stageChanged":  "Étape mise à jour",
+      "stageError":    "Impossible de changer d'étape.",
+      "actionError":   "Erreur lors de la mise à jour.",
+      "loadingRelation":"Chargement de la relation…",
+      "markDone":      "Marquer comme fait",
+      "reopen":        "Rouvrir"
+    },
+    "newModal": {
+      "eyebrow":      "Nouvelle relation",
+      "title":        "Ouvrir une nouvelle relation",
+      "accountName":  "Nom compte / famille / studio",
+      "accountType":  "Type de compte",
+      "source":       "Source",
+      "city":         "Ville",
+      "firstName":    "Prénom du contact",
+      "lastName":     "Nom du contact",
+      "email":        "Email",
+      "phone":        "Téléphone",
+      "notes":        "Notes initiales (facultatif)",
+      "submit":       "Créer la relation",
+      "successCreated":"Relation créée.",
+      "errorCreate":  "Impossible de créer la relation.",
+      "errorNameRequired": "Veuillez saisir un nom de compte."
+    },
+    "loadingAccounts": "Lecture de la mémoire du studio…"
+  }
+}

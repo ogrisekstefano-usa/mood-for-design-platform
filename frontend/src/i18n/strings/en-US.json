@@ -1,0 +1,102 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "loading": "Loading…",
+    "empty": "No items",
+    "yes": "Yes",
+    "no": "No",
+    "all": "All",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "saving": "Saving…",
+    "creating": "Creating…",
+    "primary": "Primary",
+    "none": "—",
+    "assigned": "assigned",
+    "unassigned": "unassigned"
+  },
+  "relationships": {
+    "eyebrow": "Relationship OS",
+    "title": "Relationships",
+    "subtitle": "The studio's shared memory — accounts, contacts, conversations, next steps.",
+    "searchPlaceholder": "Search by name, email, city…",
+    "viewTable": "Table",
+    "viewKanban": "Kanban",
+    "ctaNew": "New relationship",
+    "sidebarTitle": "Relationships",
+    "filters": {
+      "all":           "All relationships",
+      "new":           "New",
+      "unassigned":    "Unassigned",
+      "follow_up":     "Needs follow-up",
+      "high_intent":   "High intent",
+      "international": "International",
+      "active":        "Active projects",
+      "clients":       "Clients",
+      "archived":      "Archived"
+    },
+    "table": {
+      "account":   "Account",
+      "type":      "Type",
+      "stage":     "Stage",
+      "contact":   "Primary contact",
+      "lastActivity": "Last activity",
+      "open":      "Open",
+      "owner":     "Owner",
+      "emptyFiltered": "No relationships in this filter."
+    },
+    "kanban": {
+      "emptyColumn": "Empty"
+    },
+    "drawer": {
+      "tabs": {
+        "overview": "Overview",
+        "contacts": "Contacts",
+        "timeline": "Timeline",
+        "actions":  "Next steps"
+      },
+      "lastActivityPrefix": "last activity",
+      "accountData":   "Account data",
+      "changeStage":   "Change stage",
+      "counters":      "Counters",
+      "interactions":  "Interactions",
+      "openActions":   "Open",
+      "source":        "Source",
+      "health":        "Health",
+      "emptyContacts": "No contacts registered.",
+      "emptyTimeline": "No interactions yet.",
+      "emptyActions":  "No open next step.",
+      "nextStep":      "Next step:",
+      "due":           "due",
+      "stageChanged":  "Stage updated",
+      "stageError":    "Unable to change stage.",
+      "actionError":   "Error updating action.",
+      "loadingRelation":"Loading relationship…",
+      "markDone":      "Mark as done",
+      "reopen":        "Reopen"
+    },
+    "newModal": {
+      "eyebrow":      "New relationship",
+      "title":        "Open a new relationship",
+      "accountName":  "Account / family / studio name",
+      "accountType":  "Account type",
+      "source":       "Source",
+      "city":         "City",
+      "firstName":    "Contact first name",
+      "lastName":     "Contact last name",
+      "email":        "Email",
+      "phone":        "Phone",
+      "notes":        "Initial notes (optional)",
+      "submit":       "Create relationship",
+      "successCreated":"Relationship created.",
+      "errorCreate":  "Unable to create the relationship.",
+      "errorNameRequired": "Please enter an account name."
+    },
+    "loadingAccounts": "Reading the studio's memory…"
+  }
+}
