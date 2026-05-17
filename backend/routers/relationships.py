@@ -561,17 +561,59 @@ def upsert_style(account_id: str, body: StyleIn,
 
 
 # ─── Lookups (Command Center catalog) ──────────────────────────────────
+#
+# Two-layer resolution:
+#   • PLATFORM rows (scope='platform', tenant_id IS NULL) carry the
+#     canonical MOOD CRM terminology. The 9 CRM-core groups
+#     (lifecycle_stage, account_type, source, interaction_type,
+#     action_type, priority, visibility_level, relationship_health,
+#     communication_preference) live ONLY at this layer.
+#   • TENANT rows (scope='tenant', tenant_id NOT NULL) hold each
+#     showroom/studio's stylistic vocabulary (style, material,
+#     atmosphere, budget_range, timing_range, room_type, project_category).
+#
+# The endpoint returns the UNION. If a tenant ever creates a value with the
+# same (group_key, value_key) as a platform row (stylistic groups only),
+# the tenant row wins (override). The 9 CRM-core groups are protected by
+# the API: write attempts on them are rejected (defence in depth — the
+# DB schema permits the row but the UI / API never produces it).
+
+CRM_CORE_GROUPS = {
+    "lifecycle_stage", "account_type", "source", "interaction_type",
+    "action_type", "priority", "visibility_level", "relationship_health",
+    "communication_preference",
+}
+
 
 @router.get("/lookups")
 def list_lookups(group: Optional[str] = None, ctx=Depends(get_tenant_context)):
+    """List active lookups for the current tenant: platform values + tenant
+    stylistic values. Tenant rows override platform rows on the same
+    (group_key, value_key) when stylistic.
+    """
     c = db()
     tid = ctx["tenant_id"]
-    qb = c.table("relationship_lookups").select("*")\
-         .eq("tenant_id", tid).eq("active", True)
+
+    # Platform rows (canonical CRM terminology).
+    qb_p = c.table("relationship_lookups").select("*").eq("active", True).eq("scope", "platform").is_("tenant_id", "null")
     if group:
-        qb = qb.eq("group_key", group)
-    rows = qb.order("group_key").order("sort_order").execute().data or []
+        qb_p = qb_p.eq("group_key", group)
+    platform_rows = qb_p.order("group_key").order("sort_order").execute().data or []
+
+    # Tenant stylistic rows.
+    qb_t = c.table("relationship_lookups").select("*").eq("active", True).eq("scope", "tenant").eq("tenant_id", tid)
+    if group:
+        qb_t = qb_t.eq("group_key", group)
+    tenant_rows = qb_t.order("group_key").order("sort_order").execute().data or []
+
+    # Index for override-on-key collision.
+    by_key = {(r["group_key"], r["value_key"]): r for r in platform_rows}
+    for r in tenant_rows:
+        by_key[(r["group_key"], r["value_key"])] = r
+
+    rows = sorted(by_key.values(), key=lambda r: (r["group_key"], r.get("sort_order") or 0))
     grouped: Dict[str, List[Dict[str, Any]]] = {}
     for r in rows:
         grouped.setdefault(r["group_key"], []).append(r)
     return {"lookups": grouped, "total": len(rows)}
+

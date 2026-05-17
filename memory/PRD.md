@@ -1,6 +1,63 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase R-MARKET-1A — Blueprint vs Market Locale Separation (DONE — 17 Feb 2026)
+
+> **Tre strati di locale, finalmente separati**:
+> 1. **Blueprint UI Locales** — l'interfaccia interna del CRM (canonica, MOOD-managed, traducibile per locale ma NON personalizzabile per tenant).
+> 2. **Frontend Market Locales** — i mercati editoriali (Italy, DACH, France/FR-EU, UK & Ireland, USA National, USA East/South/West, GCC, Central America, Spanish LatAm, Brazil, Scandinavia). Ogni Market = locale + cultural_profile + tone_of_voice + cta_style + currency + units + SEO intent + sub-regions. **Market ≠ Language**.
+> 3. **Editorial Market Localization** — il `LocaleRuntime` + `reference_locale_interpretations` esistenti continueranno a guidare il riposizionamento culturale; verranno collegati ai Market nella Phase 1B.
+
+**Migration `035_blueprint_vs_market_locale_split.sql`**
+- `relationship_lookups` reso bi-scoped: aggiunta colonna `scope TEXT CHECK ('platform'|'tenant')`, `tenant_id` ora NULLABLE per le righe platform.
+- Sostituito il `UNIQUE (tenant_id, group_key, value_key)` con DUE partial unique index per gestire correttamente i NULL (platform vs tenant).
+- Nuova tabella **`markets`** (15 colonne: `code`, `display_name JSONB` per-locale, `macro_region`, `countries[]`, `primary_locale`, `fallback_locale`, `currency`, `measurement_system`, `cultural_profile`/`tone_of_voice`/`cta_style`/`seo_intent` JSONB, `sub_regions JSONB`, `active`, `sort_order`).
+- Nuova tabella **`tenant_markets`** N:N: `is_active`, `is_default` (mutex via partial unique index), `sort_order`, `custom_settings JSONB`.
+
+**Migration script `migrate_lookups_to_platform.py`** — idempotente:
+- 84 valori CRM-core spostati a platform-level (`tenant_id IS NULL`): `lifecycle_stage` (9) · `account_type` (9) · `source` (11) · `interaction_type` (23) · `action_type` (13) · `priority` (4) · `visibility_level` (6) · `relationship_health` (5) · `communication_preference` (4).
+- 84 duplicati tenant-scope rimossi.
+- 38 valori stylistic rimasti tenant-scope: `style` (8) · `material` (11) · `atmosphere` (8) · `budget_range` (6) · `timing_range` (5).
+
+**Seed `seed_markets.py`** — 13 mercati canonici:
+| Code | Locale primario | Currency | Sub-regions |
+|---|---|---|---|
+| italy | it-IT | EUR | — (default demo) |
+| dach | de-DE | EUR | — |
+| france_fr_europe | fr-FR | EUR | — |
+| uk_ireland | en-GB | GBP | — |
+| usa_national | en-US | USD | **6 sub-regions seedate** |
+| usa_east_coast | en-US | USD | — |
+| usa_south_florida | en-US | USD | — |
+| usa_west_coast | en-US | USD | — |
+| gcc_luxury | en-AE | AED | — (ar-AE futuro) |
+| central_america | es-ES | USD | — (es-MX/CR futuri) |
+| spanish_latam | es-ES | USD | — (es-AR/CO futuri) |
+| brazil | en-US (fallback) | BRL | — (pt-BR futuro) |
+| scandinavia | en-GB | EUR | — |
+
+USA National sub-regions (DATA ONLY, no geo routing): `miami_south_florida` · `new_york_tri_state` · `los_angeles_california` · `chicago_midwest` · `texas` · `aspen_mountain_luxury` — ciascuno con `cities_anchor` + `cultural_profile` + `aesthetic_pillars`.
+
+**Backend** — nuovo router `/app/backend/routers/markets.py`:
+- **Storefront public (anonymous)** `GET /api/storefront/public/{slug}/markets` — solo i markets attivi del tenant + `default_market`. Ritorna i fields contract necessari al futuro Country/Language selector (display_name multi-locale, locale, countries, currency, measurement_system, macro_region, sub_regions stub).
+- **Tenant-owner** `GET /api/tenants/me/markets` (lista di tutti i 13 con flag `is_active`/`is_default`/`tenant_sort`/`custom_settings`) · `PATCH /api/tenants/me/markets/{market_id}` (toggle active/order/default · mutex single-default enforced).
+- **Super-admin only** `GET/POST/PATCH/DELETE /api/markets` (gestione catalog platform-level). Anonymous 401, non-super-admin 403.
+- **`/api/relationships/lookups` aggiornato**: ritorna UNION platform-rows + tenant-stylistic-rows, con override tenant solo per i gruppi non-core. CRM-core groups protetti via `CRM_CORE_GROUPS` set (defence in depth).
+
+**Verifica (pytest)**:
+- **24/24** test passing — `test_phase_r_market_1a.py` (13 nuovi) + `test_relationship_lookups_locale.py` (11 pre-esistenti, zero regressioni).
+- Invarianti: 13 markets seedati · USA sub-regions === {miami, NYC, LA, Chicago, Texas, Aspen} · default=Italy · public endpoint anonymous · CRM-core platform-scoped · stylistic tenant-scoped · 6 BCP-47 locali ancora presenti dopo lo split · toggle round-trip.
+
+**Frontend** — nessuna modifica al CRM page necessaria. Lo split è trasparente: `useLookups()` riceve la UNION dall'endpoint, le label/colori chip continuano a funzionare identici. **Verificato live**: 59 accounts · 59 stage chips colorati · modal "Nuova relazione" con 9 account_type + 11 source options popolati dai lookups platform.
+
+**Phase R-MARKET-1B (prossima)** — Footer Country/Language selector Apple-style (modal/mega-menu con macro-regions, countries, languages, search, design premium). Footer `<MarketSwitcher>` + locale resolution chain (browser/OS → saved → tenant default → IP geo futura). hreflang generation per SEO internazionale.
+
+**Phase R-MARKET-1C (future)** — Editorial wiring: collegare ogni Market al `LocaleRuntime` + AI editorial engine → market-adapted content (non solo traduzioni: tono, CTA, narrative culturali).
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase R-CRM-2A — Locale-Aware Foundation (DONE — 17 Feb 2026)
 
 > **NO hardcoded business values. NO hardcoded UI labels.** Tutta la struttura del CRM è ora **locale-aware + config-driven**: ogni dropdown, chip, etichetta filtro, formato data e colore stage proviene dal Blueprint Command Center catalog (DB) o dai dizionari i18n. Pronta per l'espansione a nuovi tenant/lingue/personalizzazioni senza modifiche al codice.
