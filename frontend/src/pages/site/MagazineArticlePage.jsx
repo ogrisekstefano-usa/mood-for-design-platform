@@ -370,7 +370,9 @@ const MagazineArticleInner = () => {
 
       <section className="mfd-article__hero" data-testid="article-hero">
         {(a.hero_url || a.cover_url) && (
-          <img src={a.hero_url || a.cover_url} alt={displayTitle || ''} loading="eager" />
+          {(a.hero_url || a.cover_url) && (
+            <img src={a.hero_url || a.cover_url} alt={displayTitle || ''} loading="eager" />
+          )}
         )}
         <div className="mfd-article__hero-overlay">
           {localeServed && (
@@ -430,7 +432,9 @@ const MagazineArticleInner = () => {
                       className="mfd-article__related-card" data-testid={`article-related-${r.slug}`}>
                   <div className="mfd-article__related-card-media">
                     {(r.cover_url || r.hero_url) && (
-                      <img src={r.cover_url || r.hero_url} alt="" loading="lazy" />
+                      {(r.cover_url || r.hero_url) && (
+                        <img src={r.cover_url || r.hero_url} alt="" loading="lazy" />
+                      )}
                     )}
                   </div>
                   <h3 className="mfd-article__related-card-title">{rl.title}</h3>

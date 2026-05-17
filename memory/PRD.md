@@ -98,6 +98,53 @@
 
 
 | Modulo | Cosa fa |
+
+### ✅ Phase E-3 — SEO Localization Layer (Prompt 3) (DONE — 17 May 2026)
+
+> **FINISHING MODE — Prompt 3 di 3 COMPLETO.** SEO international-grade end-to-end. Per-article hreflang con slug localizzati (NON solo prefix), canonical sul target_locale del variant servito, JSON-LD Article schema esteso, ?preview=1 noindex+banner auth-only, homepage SEO CMS-driven locale-aware. ZERO leak `internal_translation`. ZERO duplicate content. ZERO mixed-locale metadata.
+
+**Backend**
+- `magazine.py public_editorial_variant` (`/api/magazine/public/{tenant}/editorial/{slug}`):
+  - Costruisce `slug_map_by_locale` dai PUBLISHED sibling variants dello stesso master (no draft leakage).
+  - `?preview=1` + auth tenant_admin/super_admin → serve anche draft con `_locale.preview=true`.
+  - Anonimo + `?preview=1` → SOLO published (`_request_has_tenant_session` fails closed).
+  - `internal_translation` STRIPPATA in `_shape_variant_as_article` (defense-in-depth).
+
+**Frontend (nuovi)**
+- `pages/site/ArticleHead.jsx` — Per-article head emission con namespace `data-mfd-head`:
+  - canonical → `/<served_locale>/magazine/<localized-slug>`
+  - hreflang per ogni `slug_map_by_locale` entry (LOCALIZED slug, NON prefix-replaced)
+  - x-default → canonical
+  - og:type=article, og:title/description/locale/image/url
+  - twitter:card (summary_large_image se cover)
+  - JSON-LD `schema.org/Article` esteso: headline + description + inLanguage + mainEntityOfPage + image + datePublished + dateModified + author/Organization + publisher/Organization + logo + articleSection + keywords + about + articleBody preview (≤400 chars, NO full body dup)
+  - robots: `index, follow` (live) | `noindex, nofollow` (preview/draft)
+- `pages/site/PreviewBanner.jsx` — Sticky bar top "Preview · Internal · Non indicizzata" + "Esci dalla preview" link che droppa `?preview=1` via `<Link replace>`.
+
+**Frontend (modificati)**
+- `pages/site/MagazineArticlePage.jsx` — useSearchParams legge `?preview=1`; invia Authorization header dal session token quando preview attivo; renderizza `<ArticleHead>` + `<PreviewBanner>`; guard `<img src="">` per warning React.
+- `site/LocaleHead.jsx`:
+  - `isArticleDetail()` esclude `/<locale>?/magazine/<slug>/?` → ArticleHead owns those URLs (NO double canonical).
+  - Homepage SEO CMS-driven: title = `{brand} · {tagline locale-aware}`, meta description = tagline. Sorgente: storefront `/api/storefront/public/{slug}/pages/navigation` → fallback `navigationContent.brand.tagline[langKey]`.
+
+**Test verificati (iteration_56.json — FINAL INTEGRATED)**
+- `/app/backend/tests/test_phase_e3_p3_seo_locale.py` (nuovo, 6 test): slug_map_by_locale, _source, internal_translation absence, preview anon negative, internal-translation 401 anon.
+- **58/58 backend tests** esistenti continuano a passare (NO regression).
+- **4/4 nuovi Prompt 3 backend test** passano.
+- **Frontend E2E**: ArticleHead emette esattamente 1 canonical sul detail (LocaleHead correttamente delega); JSON-LD presente; preview banner + noindex su `?preview=1`; homepage title/desc CMS locale-aware verificati per /it-IT, /en-US, /de-DE.
+- **Cosmetic fix**: guard su `<img src="">` per warning React DOM.
+
+**Test integrato FINAL — Prompt 1 + 2 + 3 GREEN end-to-end ✅**
+
+**FINISHING MODE wrap-up**
+- Nessuna feature speculativa aggiunta.
+- Backend: 62/62 tests green (58 esistenti + 4 nuovi).
+- Frontend: 100% sui 3 prompt completi.
+- Architettura SEO i18n production-ready.
+
+---
+
+
 |---|---|
 | `master_direction` | Surfacce l'intent editoriale centrale dal Master come *direzione*, non da paraphrasare |
 | `market_lens` | Adotta cultural_profile + tone_of_voice + cta_style + seo_intent del market (e del sub_region se presente) |
