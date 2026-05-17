@@ -5,7 +5,7 @@
 // `projectCategories` exposes ONLY ids; localized labels live in uiContent.categories
 // so the content layer remains free of inline UI strings.
 
-import { uiContent } from './ui';
+import { uiContent } from './ui.js';
 
 export const projectCategories = [
   { id: 'all',          label: uiContent.categories.all },
