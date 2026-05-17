@@ -34,6 +34,16 @@ Endpoints in this phase (Foundation only — AI generation lands in E-1B):
   CTA tracking (public — feeds the Relationship CRM):
     POST   /api/public/editorial/cta-click
     (also GET /api/editorial/cta-clicks?variant_id=)
+
+Phase E-1B adds the Editorial Studio composition surface (NEVER referred
+to as "AI" in user-facing strings):
+
+    POST   /api/editorial/variants/{id}/compose              (Compose Direction)
+    POST   /api/editorial/variants/{id}/refine-angle         (Refine Editorial Angle)
+    POST   /api/editorial/variants/{id}/rebalance-tone       (Rebalance Hospitality Tone)
+    POST   /api/editorial/variants/{id}/internal-translation (Blueprint understanding)
+    POST   /api/editorial/markets/{id}/recompute-learnings   (Cultural Calibration)
+    GET    /api/editorial/markets/{id}/learnings             (Market Learning preview)
 """
 from __future__ import annotations
 
@@ -722,3 +732,132 @@ def public_cta_click(payload: CtaClickIn, request: Request):
         'resulting_lifecycle_stage': resulting_stage,
         'resulting_intent_label':    resulting_intent,
     }
+
+# ─── PHASE E-1B — Editorial Studio (composition surface) ─────────────────
+#
+# These endpoints NEVER use the words "AI", "GPT", or "Claude" in their
+# names, payloads, or response fields. The composition runtime is opaque.
+
+from services import editorial_ai  # noqa: E402
+from services.editorial_memory import recompute_market_learnings  # noqa: E402
+
+
+class RefineAngleBody(BaseModel):
+    revision_options: List[str] = Field(default_factory=list)
+    notes:            Optional[str] = None
+
+
+class RebalanceToneBody(BaseModel):
+    adjustments: Dict[str, Any] = Field(default_factory=dict)
+
+
+class InternalTranslationBody(BaseModel):
+    blueprint_locale: str = 'it-IT'
+
+
+@router.post("/editorial/variants/{vid}/compose")
+async def compose_direction(vid: str, ctx=Depends(get_tenant_context)):
+    """Compose Direction — produces the first market-native variant from
+    its Editorial Master. Calls back synchronously (no streaming) and
+    updates the variant to ready_for_editorial_review on success."""
+    r = await editorial_ai.compose_variant(
+        tenant_id=ctx['tenant_id'], variant_id=vid,
+        requested_by_user_id=ctx.get('user_id'),
+    )
+    if not r.get('ok'):
+        raise HTTPException(502, r.get('error') or 'Composition failed')
+    return {'ok': True, 'duration_ms': r.get('duration_ms')}
+
+
+@router.post("/editorial/variants/{vid}/refine-angle")
+async def refine_angle(vid: str, body: RefineAngleBody, ctx=Depends(get_tenant_context)):
+    """Refine Editorial Angle — applies structured editor revisions."""
+    # Validate revision_options against the platform lookup.
+    c = db()
+    for opt in body.revision_options:
+        if not _platform_value_exists(c, 'revision_option', opt):
+            raise HTTPException(400, f"Unknown revision_option '{opt}'")
+    r = await editorial_ai.refine_editorial_angle(
+        tenant_id=ctx['tenant_id'], variant_id=vid,
+        revision_options=body.revision_options, notes=body.notes,
+        requested_by_user_id=ctx.get('user_id'),
+    )
+    if not r.get('ok'):
+        raise HTTPException(502, r.get('error') or 'Refinement failed')
+    return {'ok': True}
+
+
+@router.post("/editorial/variants/{vid}/rebalance-tone")
+async def rebalance_tone(vid: str, body: RebalanceToneBody, ctx=Depends(get_tenant_context)):
+    """Rebalance Hospitality Tone — adjusts pacing/luxury intensity/CTA framing."""
+    r = await editorial_ai.rebalance_hospitality_tone(
+        tenant_id=ctx['tenant_id'], variant_id=vid,
+        adjustments=body.adjustments,
+        requested_by_user_id=ctx.get('user_id'),
+    )
+    if not r.get('ok'):
+        raise HTTPException(502, r.get('error') or 'Rebalance failed')
+    return {'ok': True}
+
+
+@router.post("/editorial/variants/{vid}/internal-translation")
+async def internal_translation(vid: str, body: InternalTranslationBody, ctx=Depends(get_tenant_context)):
+    """Produce the internal understanding translation. NEVER public,
+    NEVER indexed, NEVER served by storefront endpoints."""
+    r = await editorial_ai.compose_internal_translation(
+        tenant_id=ctx['tenant_id'], variant_id=vid,
+        blueprint_locale=body.blueprint_locale,
+        requested_by_user_id=ctx.get('user_id'),
+    )
+    if not r.get('ok'):
+        raise HTTPException(502, r.get('error') or 'Internal translation failed')
+    return {'ok': True, 'skipped_mirror': r.get('skipped_mirror', False)}
+
+
+@router.get("/editorial/variants/{vid}/internal-translation")
+def get_internal_translation(vid: str, ctx=Depends(get_tenant_context)):
+    """Return the variant's internal_translation. Blueprint-only by design
+    (this endpoint requires authenticated tenant context — no public route
+    exposes internal_translation)."""
+    c = db()
+    rows = (c.table('editorial_variants').select('id,internal_translation,target_locale,blueprint_review_locale')
+            .eq('id', vid).eq('tenant_id', ctx['tenant_id']).limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, 'Variant not found')
+    return rows[0]
+
+
+@router.post("/editorial/markets/{market_id}/recompute-learnings")
+def recompute_learnings(market_id: str, ctx=Depends(get_tenant_context)):
+    """Cultural Calibration — recompute the Market Learning patterns for
+    this market. Idempotent. UI label: 'Recalibrating market resonance…'."""
+    return recompute_market_learnings(tenant_id=ctx['tenant_id'], market_id=market_id)
+
+
+@router.get("/editorial/markets/{market_id}/learnings")
+def get_market_learnings(market_id: str, ctx=Depends(get_tenant_context)):
+    """Surface the current Market Learning patterns. UI labels presented to
+    the user use editorial language ('Market Learning', 'Cultural
+    Calibration') — never 'AI/ML predictions'."""
+    c = db()
+    rows = (c.table('editorial_market_learnings').select('*')
+            .eq('tenant_id', ctx['tenant_id']).eq('market_id', market_id)
+            .order('confidence', desc=True).execute().data or [])
+    return {'market_id': market_id, 'patterns': rows, 'total': len(rows)}
+
+
+@router.get("/editorial/variants/{vid}/composition-log")
+def variant_composition_log(vid: str, limit: int = 20, ctx=Depends(get_tenant_context)):
+    """Audit trail of every composition operation on this variant. The
+    composition_trace exposes which editorial modules contributed (useful
+    for trust transparency) but never reveals model/provider names to UI
+    by default — the Blueprint surface should consume only the
+    user_facing_label + duration_ms + outcome fields."""
+    c = db()
+    if not (c.table('editorial_variants').select('id')
+            .eq('id', vid).eq('tenant_id', ctx['tenant_id']).limit(1).execute().data):
+        raise HTTPException(404, 'Variant not found')
+    rows = (c.table('editorial_composition_log').select('*')
+            .eq('variant_id', vid).order('created_at', desc=True)
+            .limit(min(limit, 100)).execute().data or [])
+    return {'entries': rows, 'total': len(rows)}

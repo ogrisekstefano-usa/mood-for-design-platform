@@ -1,6 +1,78 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase E-1B — Editorial Studio™ (composition surface) (DONE — 17 Feb 2026)
+
+> **NON è un AI writer · NON è un GPT wrapper.** È la **Composition Room** dell'Editorial Intelligence Studio di MOOD: una macchina di reinterpretazione culturale market-native. Mai una traduzione, sempre una RESTAGING del Master Direction. Linguaggio editoriale assoluto: l'AI è invisibile.
+
+**Migration `037_editorial_memory.sql` — 2 tabelle**
+- `editorial_market_learnings` — Market Learning patterns aggregati (pattern_key / signal_payload / confidence / sample_size) per `(tenant, market)`. Cold-start friendly: confidence < 0.55 viene calcolata ma non iniettata nel composer.
+- `editorial_composition_log` — audit trail di ogni composizione: `composition_trace` (lista dei moduli che hanno contribuito), `duration_ms`, `outcome`, `user_facing_label` (linguaggio editoriale, MAI provider names visibili nel UI).
+
+**Modular Prompt Composer — `/app/backend/services/editorial_prompt_composer/`**
+10 moduli, ciascuno restituisce un *prompt fragment* strutturato. La composer cuce un singolo brief culturalmente ricco. **NESSUN prompt generico.**
+
+| Modulo | Cosa fa |
+|---|---|
+| `master_direction` | Surfacce l'intent editoriale centrale dal Master come *direzione*, non da paraphrasare |
+| `market_lens` | Adotta cultural_profile + tone_of_voice + cta_style + seo_intent del market (e del sub_region se presente) |
+| `hospitality_logic` | Welcome codes specifici per market (Italian maestro · DACH precision · GCC ceremonial arrival · Aspen fire-lit warmth · Scandi plain-spoken · …) — opening_gesture, closing_gesture, what_to_avoid |
+| `luxury_perception` | Cosa conta come luxury QUI ≠ ovunque. `signal` da usare, `anti_signal` come allergia lessicale |
+| `material_vocabulary` | Palette materiali per market (travertino romano vs Jura limestone vs onyx vs talavera…) + lexicon prefer/avoid |
+| `sensory_atmosphere` | **Il modulo critico**: light, tactility, spatial_feeling, lighting_vocab, emotional_pacing, sensuality — per market e per sub_region (Miami luminous-tropical · Aspen fire-lit-intimate · Dubai ceremonial-reflective · …). Senza questo, l'AI scivola in "warm light, natural materials" ovunque |
+| `cta_psychology` | Preferred_tiers + preferred_intents + framing_paragraph per market. Le CTA sono **transizioni editoriali**, non bottoni |
+| `seo_intent` | SEO editorial-grade: seo_title come headline pubblicabile, meta_description narrativa ≤ 155 char, hreflang BCP-47. **MAI keyword spam** |
+| `memory_injector` | Inietta `editorial_market_learnings` con confidence ≥ 0.55 come ADVISORY |
+| `editorial_runtime` | Orchestratore: SYSTEM_INSTRUCTIONS (8 regole non-negoziabili) + OUTPUT_CONTRACT JSON strict |
+
+**Service `services/editorial_ai.py` (composition runtime)** — 4 verbi editoriali, MAI "AI":
+
+| Verbo (UI) | Function | Behaviour |
+|---|---|---|
+| **Compose Direction** | `compose_variant()` | Status → `ai_composing` → output → `ready_for_editorial_review`. Crea title/body/CTA/SEO market-native |
+| **Refine Editorial Angle** | `refine_editorial_angle()` | Editor seleziona `revision_options` (editorial-grade) + notes → restage. Valida options contro lookup platform (defence in depth) |
+| **Rebalance Hospitality Tone** | `rebalance_hospitality_tone()` | Aggiusta pacing / luxury intensity / CTA framing senza riscrivere |
+| **Internal Translation** | `compose_internal_translation()` | Mirror nella `blueprint_review_locale` per la review editor. Salvato in `internal_translation` JSONB, **MAI public/indexed/served** |
+
+Integrazione via `emergentintegrations.LlmChat` + Emergent LLM Key con Claude Sonnet 4.5. JSON output enforced (strip code fences + retry trailing-comma). Audit log per ogni call.
+
+**Service `services/editorial_memory.py` — Cultural Calibration**
+Aggrega segnali da `editorial_cta_clicks` + variants `performance_signals` in 6 pattern keys: `cta_tier_conversion`, `cta_intent_resonance`, `atmosphere_signal_density`, `material_curiosity`, `preferred_pacing`, `preferred_tone`. Confidence basata su sample size + signal dominance (logistic-ish smoother).
+
+**Backend endpoints** (in `routers/editorial.py`):
+- `POST /editorial/variants/{id}/compose` (Compose Direction)
+- `POST /editorial/variants/{id}/refine-angle` (Refine Editorial Angle)
+- `POST /editorial/variants/{id}/rebalance-tone` (Rebalance Hospitality Tone)
+- `POST /editorial/variants/{id}/internal-translation` (Drafting internal understanding)
+- `GET  /editorial/variants/{id}/internal-translation` (Blueprint-only)
+- `POST /editorial/markets/{id}/recompute-learnings` (Cultural Calibration)
+- `GET  /editorial/markets/{id}/learnings`
+- `GET  /editorial/variants/{id}/composition-log` (modular trace)
+
+**Verifica live (production-grade test su GCC)**
+- Master "Warm Italian Living" + variant GCC `e1b_test` → Compose Direction → **47.6s** durata:
+  - Title: *"The Travertine House: Italian Materiality Restaged for the Gulf"* — culturalmente nativo (MAI traduzione)
+  - Excerpt: *"Where Mediterranean light meets the ceremonial grace of the majlis — a dialogue between walnut, travertine, and polished stone that honours two traditions of welcome."* — esatto match con hospitality_logic GCC + material_vocabulary palette + sensory_atmosphere ceremonial
+  - tone_label: `prestige_restraint` ✓ · pacing_label: `ceremonial` ✓ (corretto match con sensory_atmosphere GCC)
+  - 17 body_blocks · 2 CTA dai preferred_tiers GCC ([soft] *Speak with Our Team* + [strong] *Arrange a Private Consultation*)
+  - SEO editoriale (NON keyword spam) · meta 129 chars · hreflang en-AE
+- Internal Translation it-IT (50.6s) → *"The Travertine House: Materialità Italiana Reinterpretata per il Golfo"* — fedele, `_notice: For Blueprint review only — not published` ✓
+- Calendar leak test: ✓ `internal_translation` MAI esposto
+- Composition log: 9 moduli registrati per `compose`, label `"Composing editorial direction…"`, durata tracciata
+
+**Pytest — 49/49 pass complessivi** (7 E-1B smoke + 18 E-1A + 13 R-MARKET-1A + 11 R-CRM-2A). Zero regressioni. Smoke E-1B verifica: endpoint auth-gated · internal_translation MAI in calendar · public storefront non menziona mai "gpt/claude/openai/anthropic/ai generated" · revision_option validati · composition_log esponse trace + user_facing_label editoriale.
+
+**UX language commitments (per Phase E-1C)**:
+- **MAI**: Generate · Regenerate · Rewrite · GPT · Claude · AI · Prompt
+- **SEMPRE**: Compose Direction · Refine Editorial Angle · Rebalance Hospitality Tone · Editorial Studio · Composition Room · Market Perspective · Publication Flow · Editorial Review · Cultural Calibration · Market Learning
+- Loading: *"Composing editorial direction…"* / *"Drawing market resonance…"* / *"Balancing hospitality tone…"* / *"Drafting internal understanding…"* / *"Recalibrating market resonance…"* — MAI spinner generici o progress bar AI-style.
+
+**Phase E-1C (prossima)** — Blueprint UI: Composition Room visiva, Approval Salon, Editorial Calendar luxury, Cultural Calibration panel — sospesa fino a quando il motore non "sembra scritto da un editorial director locale". Già verificato sull'output GCC.
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase E-1A — Editorial Intelligence Operating System™ — Foundation (DONE — 17 Feb 2026)
 
 > **NON è un CMS, NON è un AI article generator. È il CULTURAL EDITORIAL ENGINE di MOOD**: ogni variant pubblicata è una reinterpretazione market-native di una direzione editoriale centrale (Editorial Master™), MAI una traduzione piatta. Foundation pura — AI generation (Claude Sonnet) e UI Blueprint Editor / Editorial Calendar arrivano in E-1B/E-1C.
