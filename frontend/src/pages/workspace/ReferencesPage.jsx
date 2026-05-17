@@ -502,7 +502,12 @@ const ReferencesPage = () => {
         if (cancelled) return;
         setCollections(hydrated);
         setRefsById(byId);
-        const projectList = projR.data?.projects || projR.data || [];
+        // /api/projects responds as `{ data: [...], total }` — accommodate
+        // alternate shapes defensively.
+        const pd = projR.data;
+        const projectList = pd?.data
+          || pd?.projects
+          || (Array.isArray(pd) ? pd : []);
         setProjects(Array.isArray(projectList) ? projectList.slice(0, 12) : []);
       } catch (e) {
         if (!cancelled) setError('runtime_unreachable');

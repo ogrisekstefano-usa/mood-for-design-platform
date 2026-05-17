@@ -1,6 +1,48 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase P0.3.C — Curated Collections UI · Cinematic Vertical Market Perspective™ (DONE — 16 Feb 2026)
+
+> First visible manifestation of Cultural Design Intelligence™.
+> Route `/workspace/references`. A private international design intelligence
+> archive — NOT inspiration browsing, NOT a media gallery.
+
+**Frontend** — `/app/frontend/src/pages/workspace/ReferencesPage.jsx` (~570 LOC, single editorial page):
+- **Editorial Hero** (page open): eyebrow "Cultural Design Intelligence™" + oversized headline *"Curated references read through cultural lenses."* + italic editorial subtitle. Calm, slow, typography-led.
+- **3 Curated Collection sections** rendered in vertical sequence — *Collectible Material Atmospheres™ · Architectural Hospitality Signals™ · Mediterranean Quiet Luxury™*. Each section: project_vertical eyebrow, oversized 44px collection title, italic subtitle, atmosphere_direction paragraph.
+- **Reference cards** — full-width 12-col grid, alternating image-left / image-right cadence. **Atmosphere FIRST, image SECOND**: oversized 34px atmosphere heading drives the card, the 4:5 portrait image *supports* the reading. Each card includes: atmosphere · editorial_reading · material annotations (chips) · architectural_tone + hospitality_signal columns · advisor_notes (italic, signed) · vertical perspective selector · advisor action bar.
+- **Cinematic Vertical Market Perspective™** — perspective selector lives INSIDE the card narrative (right column, vertical typography). Labels are minimal market codes: `IT · US · UAE · DE · FR`. **NO FLAGS**. Active perspective renders 20px primary-gold with a gold underline; inactive perspectives 15px muted. Click → 380ms editorial fade-out → reading swaps → fade-in (image gets a subtle 1100ms zoom-shift + ambient overlay opacity bump). The card *transforms*, never refreshes.
+- **Advisor Action Bar** — primary CTA *Add to Design Direction* (gold pill) opens an inline project picker; secondary actions *Discuss with Advisor · Use in Moodboard · Reference for Material Study* render as uppercase typography links. All four wire to `POST /api/references/{id}/actions` and render sonner toasts in human voice ("Connected to Apartment — Stefano.", "Reference shared with the advisor.", "Noted for the moodboard composition.", "Flagged for the material study.").
+- **Default perspective** = user's runtime locale (`useLocaleRuntime`), with graceful fallback through the PERSPECTIVE_ORDER set.
+- **Sidebar** — new nav entry "References" mounted under Workspace with `Compass` icon (data-testid `sidebar-nav-nav-references`).
+
+**Backend** — new endpoint `POST /api/references/{id}/actions` (router `reference_intelligence.py`):
+- 4 actions: `link_project` (mutates `design_references.project_id` + emits `reference.added_to_direction` timeline event), `discuss`, `moodboard`, `material_study` (lightweight events only).
+- Validations: 400 unknown action · 400 missing project_id for link_project · 404 cross-tenant project_id · 409 if reference status is still `processing_editorial_reading`.
+- Every action emits a human-readable `project_activity` event with `payload: {action, note}`.
+
+**Cultural distinctness verified live in the UI** — same `collector_library_residence` card:
+- **IT**: *"Presenza calma e raccolta, costruita per sottrazione — la luce calibrata sul gesto del leggere, la materia scura che assorbe il rumore visivo."*
+- **UAE**: *"A scholar's sanctuary of concentrated presence — dark walnut architecture frames a single art moment, raw silk diffuses light into intimate focus, creating a private realm of intellectual gravitas."*
+- **DE**: *"Disziplinierte Bibliotheksatmosphäre — Zurückhaltung als architektonische Haltung, nicht als dekorative Absicht."*
+Same image. Three radically different cultural re-readings. The card morphs in place; the user feels another international creative director re-reading the atmosphere.
+
+**Testing** — `testing_agent_v3_fork` iteration_51:
+- Backend: **10/10 PASS** (new pytest suite `/app/backend/tests/test_phase_p03c_actions.py` covering all 4 actions + tenant isolation + status gating).
+- Frontend: structural + linguistic + cinematic checks PASS. NO AI wording / NO social wording / NO flags / NO masonry / NO raw locale codes verified. Tenant isolation verified (studio2 sees the editorial empty state). One MEDIUM bug found and fixed in-session: `/api/projects` response-shape mismatch caused the project picker to render empty — patched to read `{data: [...]}` envelope correctly. Re-test verified end-to-end Add-to-Design-Direction click flow now toasts *"Connected to Apartment — Stefano."*
+
+**Lint compliance** (from PRD guardrails):
+- ❌ NO masonry / ❌ NO infinite scroll / ❌ NO feed pacing
+- ❌ NO flags / ❌ NO "AI generated" / ❌ NO developer wording
+- ✅ Atmosphere FIRST, image SECOND
+- ✅ Vertical Market Perspective™ INSIDE the card
+- ✅ Slow editorial fade transformation (not refresh)
+- ✅ Advisor remains central — every action emits a timeline event in the advisor's voice
+
+────────────────────────────────────────────────────────────────────────
+
+
+
 ### ✅ Phase P0.3.C PREP — Curated Demo Intelligence Set (DONE — 16 Feb 2026)
 
 > Before building the `/workspace/references` UI, the platform must already
