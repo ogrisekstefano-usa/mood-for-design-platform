@@ -1,0 +1,46 @@
+{
+  "summary": "Phase E-2 / Prompt 2 (Composition Room & Editorial Workflow UI) — FULL PASS. Backend: 58/58 tests green (47 existing + 11 new in test_phase_e2_p2_editorial_public.py covering public editorial variant endpoint, internal_translation isolation, PATCH autosave, schedule, toolbar surface). Frontend split-pane verified end-to-end with the SuperAdmin account: sidebar 'Editorial Studio' link present, /blueprint/editorial renders ed-rail + ed-pane-empty, 71 masters + 60 variants listed with status dots + market codes + locales, 8 market filter chips + 6 status filter chips (all 5 spine statuses ed-filter-status-{draft, ai_composing, ready_for_editorial_review, scheduled, published} present), Italian status copy used (Bozza · In composizione · Pronto per revisione · Programmata · Pubblicata). Clicking a variant opens ed-pane with both tabs (ed-tab-published, ed-tab-internal), ed-field-title + ed-field-excerpt editable on Published Locale, Preview link href='/en-AE/magazine/<slug>?preview=1' target=_blank exactly as required. Toolbar shows the 3 mandated editorial verbs (Compose Direction · Refine Editorial Angle · Rebalance Hospitality Tone). Forbidden words 'Generate', 'AI', 'GPT', 'Claude' are NOT present anywhere in the editor pane. Internal Understanding tab renders the read-only banner 'REVIEW TRANSLATION — INTERNAL USE ONLY' with ZERO editable inputs/textareas/contenteditable elements (read-only invariant holds). Public endpoint contract verified: GET /api/magazine/public/{tenant}/editorial/{slug} returns 404 when unpublished, returns article-shaped payload when published with _source='editorial_variant' and _locale.source='editorial_variant' + _locale.served=target_locale, and NEVER includes 'internal_translation' (key absence + raw-text leak both checked). Calendar response also stripped. Internal-translation endpoint requires auth (401 anonymous, 200/404 authenticated).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Editorial Studio · Internal Understanding tab",
+        "issues": [
+          "The data-testid 'ed-internal-content' is NOT present in the DOM when the variant has no stored internal_translation (the empty-state with the 'Nessuna comprensione editoriale disponibile' message renders, but without the testid wrapper). The banner ('ed-internal-banner') IS present and the read-only invariant holds (zero editable inputs), so this is a testability gap rather than a functional bug. Recommend always rendering ed-internal-content as the wrapper around either the article body or the empty-state copy."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_e2_p2_editorial_public.py",
+    "/app/test_reports/pytest/iteration_55_smoke.xml",
+    "/app/test_reports/pytest/iteration_55_e2p2.xml"
+  ],
+  "action_items": [
+    "(Optional, non-blocking) Render `data-testid=ed-internal-content` even in the empty-state of the Internal Understanding tab, so automated regression can assert read-only invariant unconditionally."
+  ],
+  "critical_code_review_comments": [
+    "magazine.py public_editorial_variant: clean two-step resolution (exact locale → any published variant) with internal_translation stripped at _shape_variant_as_article — good defense-in-depth. The performance_signals.public_views increment is wrapped in try/except, won't break a read on write failure. Good.",
+    "Frontend toolbar verbs are hard-coded English strings ('Compose Direction', etc.) — intentional per spec (editorial language). Confirmed no leaking of 'Generate/AI/GPT/Claude' across the pane.",
+    "Preview URL shape verified at component level: `/<locale>/magazine/<slug>?preview=1` matches the spec exactly; target=_blank is honored.",
+    "Status filter chips render the 5 spine statuses as editorial dots (color from STATUS_META.dot) — not Tailwind badges. Confirmed visually."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase_e2_p2_editorial_public.py (new)"
+  ],
+  "success_rate": {
+    "backend": "100% (58/58 tests pass across test_phase_e_1a_editorial, test_phase_e_1b_studio, test_phase_r_market_1a, test_phase_r_market_1b_locale_wiring, test_phase_e2_p2_editorial_public)",
+    "frontend": "100% on Prompt 2 scope. All testids honored, split-pane, tabs, toolbar verbs, preview URL, status filters, market filters, read-only Internal tab — all verified."
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (SuperAdmin) — confirmed working.",
+  "seed_data_creation": "Test created ~10 throwaway editorial masters + variants on the demo tenant during PATCH/transition/schedule pytest runs (prefixed 'e2p2-'). They are visible in the rail (71 masters total now). Safe to leave or purge.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Phase E-2 Prompt 2 is GREEN. The regression suite for this scope is /app/backend/tests/test_phase_e2_p2_editorial_public.py — it requires REACT_APP_BACKEND_URL env var. Note: timeouts inside tests are 30-60s because compose/refine/rebalance LLM-bound POSTs can take 30s+. The frontend split-pane lives at /blueprint/editorial and is gated by tenant:settings permission (visible to tenant_admin + super_admin only). Public reader endpoint chain: MagazineArticlePage tries /api/magazine/public/{tenant}/editorial/{slug} first, then falls back to legacy /api/magazine/public/{tenant}/articles/{slug}. internal_translation is never publicly served — backend strips it in _shape_variant_as_article and also in calendar serialization.",
+  "rca_of_the_issue": "N/A — no regressions. Only a minor testability gap in the Internal Understanding empty-state (ed-internal-content testid missing when no internal_translation row exists); functional invariant (read-only, no editable inputs) is preserved."
+}

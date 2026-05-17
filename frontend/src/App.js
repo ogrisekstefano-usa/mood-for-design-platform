@@ -28,6 +28,7 @@ const ProposalComposerPage = lazy(() => import('./pages/workspace/ProposalCompos
 const ReferencesPage = lazy(() => import('./pages/workspace/ReferencesPage'));
 const RelationshipsPage = lazy(() => import('./pages/workspace/RelationshipsPage'));
 const VariantApprovalInboxPage = lazy(() => import('./pages/editorial/VariantApprovalInboxPage'));
+const EditorialStudioPage = lazy(() => import('./pages/editorial/EditorialStudioPage'));
 const MoodboardsPage = lazy(() => import('./pages/moodboards/MoodboardsPage'));
 const InspirationsPage = lazy(() => import('./pages/inspirations/InspirationsPage'));
 const InsightsPage = lazy(() => import('./pages/insights/InsightsPage'));
@@ -316,6 +317,9 @@ function App() {
 
                   {/* Editorial Review — variant approval inbox (P0.2.D hardening). */}
                   <Route path="/editorial/inbox" element={<StudioAdminRoute><VariantApprovalInboxPage /></StudioAdminRoute>} />
+
+                  {/* Editorial Studio — Composition Room (Phase E-2 Prompt 2). */}
+                  <Route path="/blueprint/editorial" element={<StudioAdminRoute><EditorialStudioPage /></StudioAdminRoute>} />
                 </Route>
 
                 {/* CLIENT PORTAL (Phase R) — surface-isolated, role=client only */}

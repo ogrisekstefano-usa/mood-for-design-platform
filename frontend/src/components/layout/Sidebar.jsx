@@ -199,6 +199,7 @@ const Sidebar = () => {
           <div>
             <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.editorial')}</SectionLabel>
             <div className="space-y-0.5">
+              <NavItem to="/blueprint/editorial" icon="BookOpen" labelKey="nav.editorialStudio" fallback="Editorial Studio" collapsed={collapsed} />
               <NavItem to="/editorial/inbox" icon="Inbox" labelKey="nav.editorialInbox" fallback="Editorial review" collapsed={collapsed} />
             </div>
           </div>

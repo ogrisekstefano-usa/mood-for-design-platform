@@ -189,6 +189,111 @@ def public_related_articles(tenant_slug: str, slug: str,
     return {"articles": [_strip_internal(x) for _, x in ranked[:limit]]}
 
 
+# ─── EDITORIAL VARIANT (Phase E-1A+) PUBLIC LOOKUP ──────────────────────
+def _shape_variant_as_article(v: Dict[str, Any]) -> Dict[str, Any]:
+    """Cast an `editorial_variants` row into the shape the public Magazine
+    reader expects (so a single frontend renderer covers both legacy
+    `magazine_articles` and the new Editorial Studio variants).
+
+    Strictly strips `internal_translation` — never publicly served, never
+    indexed. The CMS-side editor surface uses a separate authenticated
+    endpoint to read it.
+    """
+    out = dict(v)
+    out.pop("internal_translation", None)
+    out.pop("_id", None)
+    # Surface the editor-friendly fields onto the legacy frontend names.
+    out["slug"]                 = v.get("variant_slug")
+    out["cover_url"]            = v.get("hero_image_url")
+    out["hero_url"]             = v.get("hero_image_url")
+    out["subtitle"]             = v.get("cultural_angle")
+    out["intro"]                = v.get("excerpt")
+    out["body_blocks"]          = v.get("body_blocks") or []
+    seo                          = v.get("seo") or {}
+    out["seo_title"]            = seo.get("seo_title")
+    out["seo_description"]      = seo.get("meta_description")
+    # Convert cta_set → primary CTA copy/action for the legacy single-CTA
+    # frontend; the new reader (Phase E-2) consumes the full set.
+    cta_set                      = v.get("cta_set") or []
+    if cta_set:
+        primary                  = cta_set[0]
+        out["cta_copy"]         = primary.get("label")
+        out["cta_action"]       = primary.get("action")
+    out["reading_minutes"]      = max(
+        1, round(sum(len((b.get("text") or "").split()) for b in (v.get("body_blocks") or [])) / 220),
+    )
+    out["_source"]              = "editorial_variant"
+    return out
+
+
+@router.get("/public/{tenant_slug}/editorial/{variant_slug}")
+def public_editorial_variant(
+    tenant_slug: str,
+    variant_slug: str,
+    request: Request,
+    locale_code: Optional[str] = None,
+):
+    """Phase E-2 — public reader for `editorial_variants`.
+
+    Resolution order:
+      1. Exact (variant_slug, target_locale) for the tenant, where
+         `is_published = TRUE`.
+      2. Same variant_slug, ANY published market variant (so a French
+         visitor still sees the Italian-published version while the
+         French variant is still in review).
+      3. Fallback to the legacy `magazine_articles` path (frontend
+         handles this by re-calling `/articles/{slug}`).
+
+    Internal Translation safety: `internal_translation` is stripped
+    server-side before serialisation. Never indexable, never reachable.
+    """
+    tid = _tenant_id_from_slug(tenant_slug)
+    if not tid:
+        raise HTTPException(404, "tenant not found")
+    c = db()
+    requested_bcp = (locale_code or "").strip()
+    # Step 1 — exact (slug, locale) published match.
+    variant = None
+    if requested_bcp:
+        rows = (c.table("editorial_variants").select("*")
+                .eq("tenant_id", tid).eq("variant_slug", variant_slug)
+                .eq("target_locale", requested_bcp).eq("is_published", True)
+                .order("published_at", desc=True).limit(1).execute().data or [])
+        if rows:
+            variant = rows[0]
+            served_locale = requested_bcp
+    # Step 2 — fallback to any published variant under the same slug.
+    if not variant:
+        rows = (c.table("editorial_variants").select("*")
+                .eq("tenant_id", tid).eq("variant_slug", variant_slug)
+                .eq("is_published", True)
+                .order("published_at", desc=True).limit(1).execute().data or [])
+        if rows:
+            variant = rows[0]
+            served_locale = variant.get("target_locale")
+    if not variant:
+        raise HTTPException(404, "editorial variant not published")
+    article = _shape_variant_as_article(variant)
+    article["_locale"] = {
+        "requested": requested_bcp or served_locale,
+        "served":    served_locale,
+        "source":    "editorial_variant",
+        "fallback":  bool(requested_bcp and requested_bcp != served_locale),
+    }
+    # Best-effort signal — no aggressive tracking, just an editorial counter.
+    try:
+        sig = variant.get("performance_signals") or {}
+        sig["public_views"] = (sig.get("public_views") or 0) + 1
+        c.table("editorial_variants").update(
+            {"performance_signals": sig, "updated_at": _now()},
+        ).eq("id", variant["id"]).execute()
+    except Exception:
+        pass
+    return {"article": article}
+
+
+
+
 
 @router.get("/public/{tenant_slug}/articles/{slug}")
 def public_article_detail(tenant_slug: str, slug: str,

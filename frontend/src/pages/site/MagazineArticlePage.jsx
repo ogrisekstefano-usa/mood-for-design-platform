@@ -266,14 +266,28 @@ const MagazineArticleInner = () => {
     let alive = true;
     (async () => {
       try {
-        // Phase P0.2.D — pass the runtime locale to the public endpoint so
-        // it serves the approved cultural variant for this perspective.
+        // Phase E-2 — try the Editorial Studio variant FIRST (master ×
+        // market architecture). Fallback to the legacy magazine_articles
+        // path if the slug doesn't correspond to a published variant.
         const params = runtime?.localeCode ? { locale_code: runtime.localeCode } : {};
-        const r = await axios.get(
-          `${BACKEND_URL}/api/magazine/public/${encodeURIComponent(tenantSlug)}/articles/${encodeURIComponent(slug)}`,
-          { params }
-        );
-        if (alive) setState({ loading: false, article: r.data?.article || null });
+        // Convert composite IT_IT → BCP-47 it-IT for the editorial lookup.
+        const bcp = (runtime?.localeCode || '').toLowerCase().replace('_', '-');
+        let served = null;
+        try {
+          const re = await axios.get(
+            `${BACKEND_URL}/api/magazine/public/${encodeURIComponent(tenantSlug)}/editorial/${encodeURIComponent(slug)}`,
+            { params: bcp ? { locale_code: bcp } : {} },
+          );
+          if (re.data?.article) served = re.data.article;
+        } catch (_) { /* fall through to legacy */ }
+        if (!served) {
+          const r = await axios.get(
+            `${BACKEND_URL}/api/magazine/public/${encodeURIComponent(tenantSlug)}/articles/${encodeURIComponent(slug)}`,
+            { params }
+          );
+          served = r.data?.article || null;
+        }
+        if (alive) setState({ loading: false, article: served });
       } catch (_) {
         if (alive) setState({ loading: false, article: null });
       }
