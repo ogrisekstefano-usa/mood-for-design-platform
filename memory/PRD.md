@@ -50,6 +50,53 @@
 **Modular Prompt Composer — `/app/backend/services/editorial_prompt_composer/`**
 10 moduli, ciascuno restituisce un *prompt fragment* strutturato. La composer cuce un singolo brief culturalmente ricco. **NESSUN prompt generico.**
 
+
+### ✅ Phase E-2 — Composition Room & Editorial Workflow UI (Prompt 2) (DONE — 17 May 2026)
+
+> **FINISHING MODE — Prompt 2 di 3.** International editorial desk completo. Entry point top-level `/blueprint/editorial` con sidebar label "Editorial Studio". Split-pane operativo (calendar a sinistra · article editor a destra). Toolbar verbi editoriali (NO AI/GPT). Tab semantica strict: Internal Understanding REVIEW-ONLY · Published Locale EDITABLE+PUBLISHABLE. Preview reale via new tab. Schedule MVP via `publish_at` datetime. Tutti i 5 spine status visibili come dots editorial. `/magazine/:slug` repurposed → legge prima editorial_variants.
+
+**Componenti frontend (nuovi)**
+- `frontend/src/pages/editorial/EditorialStudioPage.jsx` — Split-pane root al route `/blueprint/editorial`. Carica `/editorial/variants/{id}` quando una variante è selezionata.
+- `frontend/src/pages/editorial/CompositionRoomRail.jsx` — Sinistra: filtri market + 5 spine status chips, lista Masters → variants con dot+market+locale+schedule.
+- `frontend/src/pages/editorial/ArticleEditorPanel.jsx` — Destra: toolbar verbi `Compose Direction · Refine Editorial Angle · Rebalance Hospitality Tone · Preview · Programma · Pubblica ora`. 2 tab strict:
+  - **Internal Understanding** (review-only) — banner spiega che NON è pubblicabile/indicizzata; rendering read-only del `internal_translation`.
+  - **Published Locale** (editable) — title (display serif), excerpt, body blocks, cta_set (tier+label+action), SEO (seo_title, meta_description, focus_intent). Debounced autosave via PATCH `/editorial/variants/{id}`.
+- `frontend/src/pages/editorial/editorialStatus.js` — STATUS_META con dot colors + SPINE_STATUSES (draft, ai_composing, ready_for_editorial_review, scheduled, published).
+- `frontend/src/pages/editorial/editorial.css` — Aesthetic cream/ink, NO badge enterprise, schedule modal calmo.
+
+**Componenti modificati**
+- `frontend/src/components/layout/Sidebar.jsx` — Aggiunta voce `Editorial Studio` (BookOpen icon) sotto `can('tenant:settings')`.
+- `frontend/src/App.js` — Route `/blueprint/editorial` registrata sotto `StudioAdminRoute`.
+- `frontend/src/pages/site/MagazineArticlePage.jsx` — Prima tenta `/api/magazine/public/{tenant}/editorial/{slug}?locale_code=<bcp47>`, fallback legacy `/articles/{slug}`.
+
+**Backend (nuovo endpoint)**
+- `GET /api/magazine/public/{tenant_slug}/editorial/{variant_slug}` (`backend/routers/magazine.py`):
+  1. Match esatto (variant_slug, target_locale, is_published=true)
+  2. Fallback: qualsiasi variant pubblicata con quello slug
+  3. **`_shape_variant_as_article`** rimuove `internal_translation` server-side. Mai pubblico, mai indicizzato.
+  4. Best-effort increment `performance_signals.public_views`.
+
+**Database**
+- Test seed: ~10 master/variant `e2p2-*` creati durante pytest. Demo tenant ora ha 71 master + 60 variants.
+
+**Editorial safety invariants (verificati)**
+- `internal_translation` MAI in: calendar response, editorial/variants list, editorial/{slug} public read.
+- GET `/editorial/variants/{id}/internal-translation` richiede auth (401 anonymous).
+- Internal Understanding tab è strutturalmente read-only: ZERO `<input>` / `<textarea>` / `contenteditable` dentro `ed-internal-content`.
+- Toolbar UI usa SOLO i 3 verbi editoriali. Forbidden words `Generate / AI / GPT / Claude` ASSENTI dal pane.
+- Preview URL shape: `/<locale>/magazine/<slug>?preview=1` con `target=_blank`.
+
+**Test verificati (iteration_55.json)**
+- `/app/backend/tests/test_phase_e2_p2_editorial_public.py` (nuovo, 11 test): public editorial endpoint, internal_translation isolation, PATCH autosave, schedule, toolbar surface.
+- 58/58 backend tests PASS totale.
+- Frontend split-pane verified end-to-end via SuperAdmin login: 71 masters + 60 variants, 8 market chips + 6 status chips, tabs operativi, Preview href corretto, banner internal, ZERO editable input nel review tab.
+
+**Backlog post-Prompt-2 (non-blocking)**
+- Nessun bug aperto. Solo refactor stylistici opzionali.
+
+---
+
+
 | Modulo | Cosa fa |
 |---|---|
 | `master_direction` | Surfacce l'intent editoriale centrale dal Master come *direzione*, non da paraphrasare |

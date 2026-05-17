@@ -342,7 +342,9 @@ const InternalReviewView = ({ internal }) => {
         </div>
       </div>
       {!has && (
-        <p className="ed-internal-empty">Nessuna comprensione editoriale disponibile per questa variante.</p>
+        <article className="ed-internal-readonly ed-internal-empty" data-testid="ed-internal-content">
+          Nessuna comprensione editoriale disponibile per questa variante.
+        </article>
       )}
       {has && (
         <article className="ed-internal-readonly" data-testid="ed-internal-content">
