@@ -14,14 +14,15 @@
  *   • useStorefrontContent('navigation')     → column copy (CMS-editable)
  *   • navigationContent fallback             → ships with the app
  */
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Instagram, Linkedin, Mail, Phone } from 'lucide-react';
+import { Instagram, Linkedin, Mail, Phone, Globe } from 'lucide-react';
 import { useSite } from '../SiteContext';
 import { usePublicBrand } from '../usePublicBrand';
 import { tenantConfig } from '../content/tenant';
 import { useStorefrontContent, pickContent } from '../useStorefrontContent';
 import { navigationContent } from '../content/navigation';
+import CountryLanguageSelector from './CountryLanguageSelector';
 
 const pickLocale = (bag, locale) => {
   if (bag == null) return '';
@@ -101,6 +102,7 @@ const SiteFooter = () => {
   const slug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
   const { brand, showroom } = usePublicBrand(slug);
   const { content: cms, hasDbContent } = useStorefrontContent(slug, 'navigation', navigationContent);
+  const [selectorOpen, setSelectorOpen] = useState(false);
 
   // Footer columns — CMS overrides, else defaults.
   const cmsCols = (cms?.footer_columns?._settings?.columns) || null;
@@ -196,6 +198,26 @@ const SiteFooter = () => {
       <p className="mfd-footer__copyright" data-testid="footer-copyright">
         {copyrightRaw}
       </p>
+
+      <div className="mfd-footer__locale-row" data-testid="footer-locale-row">
+        <button
+          type="button"
+          className="mfd-footer__locale-button"
+          data-testid="footer-country-language"
+          onClick={() => setSelectorOpen(true)}
+          aria-label="Country and language"
+        >
+          <Globe size={13} strokeWidth={1.5} aria-hidden />
+          <span>{locale === 'it-IT' ? 'Italia · Italiano' : `${locale}`}</span>
+          <span className="mfd-footer__locale-divider">·</span>
+          <span>Country &amp; Language</span>
+        </button>
+      </div>
+
+      <CountryLanguageSelector
+        open={selectorOpen}
+        onClose={() => setSelectorOpen(false)}
+      />
     </footer>
   );
 };

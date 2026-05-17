@@ -31,7 +31,10 @@ api.interceptors.response.use(
       // tenant public pages) so a transient 401 never tears a visitor out of
       // the read-only client experience.
       const p = window.location.pathname || '';
+      // Locale-prefixed public storefront (Phase R-MARKET-1B): /it-IT, /en-US, …
+      const localePrefix = /^\/[a-z]{2}-[A-Z]{2}(\/|$)/.test(p);
       const isPublicSurface =
+        localePrefix ||
         p === '/' ||
         p === '/auth/login' ||
         p.startsWith('/auth/') ||

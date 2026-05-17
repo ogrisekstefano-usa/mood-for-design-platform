@@ -5,6 +5,7 @@ import SiteFooter from './components/SiteFooter';
 import { SiteProvider } from './SiteContext';
 import StorefrontThemeProvider from '../design-system/storefront/StorefrontThemeProvider';
 import PlatformFooterBar from '../components/common/PlatformFooterBar';
+import SiteLocaleBridge from './SiteLocaleBridge';
 import './site.css';
 import './exe.css';
 import './mood.css';
@@ -32,6 +33,7 @@ const SiteLayout = ({ children }) => {
     <SiteProvider>
       <StorefrontThemeProvider>
         <div className="mfd-site" data-testid="mfd-site-root">
+          <SiteLocaleBridge />
           <ScrollToTopOnNav />
           <SiteHeader />
           <main className="mfd-site__container">

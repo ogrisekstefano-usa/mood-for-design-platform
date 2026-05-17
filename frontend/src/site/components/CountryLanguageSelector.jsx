@@ -13,6 +13,7 @@ import api from '../../lib/api';
 import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
 import { toBcp47 } from '../../i18n';
 import { useSite } from '../SiteContext';
+import { tenantConfig } from '../content/tenant';
 
 const REGION_ORDER = ['europe', 'north_america', 'mena', 'latam', 'asia_pacific'];
 const REGION_LABELS = {
@@ -29,8 +30,8 @@ export const CountryLanguageSelector = ({ open, onClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const runtime = useLocaleRuntime();
-  const { tenant } = useSite() || {};
-  const slug = tenant?.slug || 'mood-demo-studio-81a09e';
+  const site = useSite() || {};
+  const slug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
 
   useEffect(() => {
     if (!open) return;
@@ -53,7 +54,9 @@ export const CountryLanguageSelector = ({ open, onClose }) => {
   if (!open) return null;
   const onPick = (m) => {
     const locale = toBcp47(m.primary_locale);
-    try { runtime?.setLocale?.(locale); } catch { /* noop */ }
+    // Persist composite in LocaleRuntime; BCP-47 in SiteContext (storefront copy).
+    try { runtime?.setLocale?.(locale.replace('-', '_').toUpperCase()); } catch { /* noop */ }
+    try { site?.setLocale?.(locale); } catch { /* noop */ }
     // Replace first path segment if it's a locale-shaped token, else prepend.
     const path = location.pathname.replace(/^\/[a-z]{2}-[A-Z]{2}(?=\/|$)/, '') || '/';
     navigate(`/${locale}${path === '/' ? '' : path}`);

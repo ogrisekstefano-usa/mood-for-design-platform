@@ -1,40 +1,48 @@
 /**
  * LocaleRoute — public locale subpath wrapper.
  *
- * Wraps any public route so URLs become `/:locale/...` where `:locale` is a
- * strict BCP-47 supported code. The component:
- *   1. Validates the URL `:locale` segment against SUPPORTED_LOCALES.
- *   2. Synchronises LocaleRuntimeContext with the URL on every navigation.
- *   3. Redirects unsupported locales to the tenant default (or it-IT).
+ * Wraps any public route so URLs become `/<bcp47-locale>/...`. The locale
+ * segment is registered statically per supported code (it-IT, en-US,
+ * en-GB, es-ES, fr-FR, de-DE) — unknown segments fall through to the
+ * legacy `/:tenantSlug` catch-all. No regex matching here.
  *
- * Legacy URLs without locale prefix (`/`, `/magazine`, …) still work and
- * use the LocaleRuntime's resolved locale (browser → cookie → tenant
- * default → it-IT). Phase R-MARKET-1B keeps both forms operational.
+ * Responsibilities:
+ *   • Bridge URL locale → LocaleRuntimeContext (composite IT_IT format)
+ *   • Bridge URL locale → SiteContext (BCP-47 format) when available
+ *   • Set <html lang> + <html dir>
+ *
+ * Internal Translation:
+ *   The URL space NEVER exposes `internal_translation`. This component
+ *   is ONLY concerned with the published locale subpath.
  */
 import React, { useEffect } from 'react';
-import { Navigate, useParams, useLocation } from 'react-router-dom';
-import { SUPPORTED_LOCALES, PLATFORM_DEFAULT_LOCALE, toBcp47 } from '../i18n';
+import { useLocation } from 'react-router-dom';
 import { useLocaleRuntime } from '../contexts/LocaleRuntimeContext';
 
-export const LocaleRoute = ({ children }) => {
-  const { locale: urlLocale } = useParams();
+const bcp47ToComposite = (code) => String(code || '').replace('-', '_').toUpperCase();
+
+export const LocaleRoute = ({ locale, children }) => {
   const location = useLocation();
   const runtime = useLocaleRuntime();
-  const normalised = toBcp47(urlLocale);
-  const supported = SUPPORTED_LOCALES.includes(normalised);
+  const composite = bcp47ToComposite(locale);
 
+  // Sync LocaleRuntime (composite codes). Avoid loops by only updating when different.
   useEffect(() => {
-    if (supported && runtime?.setLocale && runtime.localeCode !== normalised.replace('-', '_').toUpperCase()) {
-      // LocaleRuntime stores composite (IT_IT) — bridge from BCP-47.
-      try { runtime.setLocale(normalised); } catch { /* noop */ }
+    if (!locale || !runtime?.setLocale) return;
+    if (runtime.localeCode !== composite) {
+      try { runtime.setLocale(composite); } catch { /* noop */ }
     }
-  }, [supported, normalised, runtime]);
+  }, [locale, composite, runtime?.localeCode]);
 
-  if (!supported) {
-    const fallback = PLATFORM_DEFAULT_LOCALE;
-    const rest = location.pathname.replace(/^\/[^/]+/, '');
-    return <Navigate to={`/${fallback}${rest}${location.search}`} replace />;
-  }
+  // <html lang> + dir for accessibility + SEO crawlers.
+  useEffect(() => {
+    if (!locale) return;
+    try {
+      document.documentElement.setAttribute('lang', locale);
+      document.documentElement.setAttribute('dir', 'ltr');
+    } catch { /* noop */ }
+  }, [locale, location.pathname]);
+
   return children;
 };
 

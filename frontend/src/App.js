@@ -6,6 +6,8 @@ import { TenantThemeProvider } from './contexts/TenantThemeContext';
 import { StudioPaletteProvider } from './contexts/StudioPaletteContext';
 import { LocaleRuntimeProvider } from './contexts/LocaleRuntimeContext';
 import { BlueprintI18nProvider } from './i18n';
+import LocaleRoute from './site/LocaleRoute';
+import LocaleHead from './site/LocaleHead';
 import { Toaster } from 'sonner';
 import './App.css';
 // Frozen Blueprint OS tokens — declared under [data-surface="os"] only,
@@ -182,6 +184,7 @@ function App() {
           <BlueprintI18nProvider>
           <BrowserRouter>
             <Suspense fallback={<Loading />}>
+              <LocaleHead />
               <Routes>
                 {/* SITE (public marketing) — global brand surface */}
                 <Route element={<SiteLayout />}>
@@ -192,11 +195,81 @@ function App() {
                   <Route path="/professionals" element={<ProfessionalsGatewayPage />} />
                 </Route>
 
+                {/* Locale-prefixed mirrors — strict BCP-47 segments only.
+                    Unknown segments fall through to legacy /:tenantSlug. */}
+                <Route
+                  path="/it-IT"
+                  element={<LocaleRoute locale="it-IT"><SiteLayout /></LocaleRoute>}
+                >
+                  <Route index element={<HomePage />} />
+                  <Route path="projects" element={<ProjectsIndexPage />} />
+                  <Route path="projects/:slug" element={<SiteProjectDetailPage />} />
+                  <Route path="professionals" element={<ProfessionalsGatewayPage />} />
+                </Route>
+                <Route
+                  path="/en-US"
+                  element={<LocaleRoute locale="en-US"><SiteLayout /></LocaleRoute>}
+                >
+                  <Route index element={<HomePage />} />
+                  <Route path="projects" element={<ProjectsIndexPage />} />
+                  <Route path="projects/:slug" element={<SiteProjectDetailPage />} />
+                  <Route path="professionals" element={<ProfessionalsGatewayPage />} />
+                </Route>
+                <Route
+                  path="/en-GB"
+                  element={<LocaleRoute locale="en-GB"><SiteLayout /></LocaleRoute>}
+                >
+                  <Route index element={<HomePage />} />
+                  <Route path="projects" element={<ProjectsIndexPage />} />
+                  <Route path="projects/:slug" element={<SiteProjectDetailPage />} />
+                  <Route path="professionals" element={<ProfessionalsGatewayPage />} />
+                </Route>
+                <Route
+                  path="/es-ES"
+                  element={<LocaleRoute locale="es-ES"><SiteLayout /></LocaleRoute>}
+                >
+                  <Route index element={<HomePage />} />
+                  <Route path="projects" element={<ProjectsIndexPage />} />
+                  <Route path="projects/:slug" element={<SiteProjectDetailPage />} />
+                  <Route path="professionals" element={<ProfessionalsGatewayPage />} />
+                </Route>
+                <Route
+                  path="/fr-FR"
+                  element={<LocaleRoute locale="fr-FR"><SiteLayout /></LocaleRoute>}
+                >
+                  <Route index element={<HomePage />} />
+                  <Route path="projects" element={<ProjectsIndexPage />} />
+                  <Route path="projects/:slug" element={<SiteProjectDetailPage />} />
+                  <Route path="professionals" element={<ProfessionalsGatewayPage />} />
+                </Route>
+                <Route
+                  path="/de-DE"
+                  element={<LocaleRoute locale="de-DE"><SiteLayout /></LocaleRoute>}
+                >
+                  <Route index element={<HomePage />} />
+                  <Route path="projects" element={<ProjectsIndexPage />} />
+                  <Route path="projects/:slug" element={<SiteProjectDetailPage />} />
+                  <Route path="professionals" element={<ProfessionalsGatewayPage />} />
+                </Route>
+
                 {/* Private onboarding wizard — full-screen, no SiteLayout chrome */}
                 <Route path="/start-project" element={<OSWrap><StartProjectWizard /></OSWrap>} />
                 {/* Magazine — public editorial lead-generation engine (Phase Y) */}
                 <Route path="/magazine" element={<OSWrap><MagazinePage /></OSWrap>} />
                 <Route path="/magazine/:slug" element={<OSWrap><MagazineArticlePage /></OSWrap>} />
+                {/* Locale-prefixed magazine — same renderers, market-aware via runtime sync. */}
+                <Route path="/it-IT/magazine" element={<LocaleRoute locale="it-IT"><OSWrap><MagazinePage /></OSWrap></LocaleRoute>} />
+                <Route path="/it-IT/magazine/:slug" element={<LocaleRoute locale="it-IT"><OSWrap><MagazineArticlePage /></OSWrap></LocaleRoute>} />
+                <Route path="/en-US/magazine" element={<LocaleRoute locale="en-US"><OSWrap><MagazinePage /></OSWrap></LocaleRoute>} />
+                <Route path="/en-US/magazine/:slug" element={<LocaleRoute locale="en-US"><OSWrap><MagazineArticlePage /></OSWrap></LocaleRoute>} />
+                <Route path="/en-GB/magazine" element={<LocaleRoute locale="en-GB"><OSWrap><MagazinePage /></OSWrap></LocaleRoute>} />
+                <Route path="/en-GB/magazine/:slug" element={<LocaleRoute locale="en-GB"><OSWrap><MagazineArticlePage /></OSWrap></LocaleRoute>} />
+                <Route path="/es-ES/magazine" element={<LocaleRoute locale="es-ES"><OSWrap><MagazinePage /></OSWrap></LocaleRoute>} />
+                <Route path="/es-ES/magazine/:slug" element={<LocaleRoute locale="es-ES"><OSWrap><MagazineArticlePage /></OSWrap></LocaleRoute>} />
+                <Route path="/fr-FR/magazine" element={<LocaleRoute locale="fr-FR"><OSWrap><MagazinePage /></OSWrap></LocaleRoute>} />
+                <Route path="/fr-FR/magazine/:slug" element={<LocaleRoute locale="fr-FR"><OSWrap><MagazineArticlePage /></OSWrap></LocaleRoute>} />
+                <Route path="/de-DE/magazine" element={<LocaleRoute locale="de-DE"><OSWrap><MagazinePage /></OSWrap></LocaleRoute>} />
+                <Route path="/de-DE/magazine/:slug" element={<LocaleRoute locale="de-DE"><OSWrap><MagazineArticlePage /></OSWrap></LocaleRoute>} />
                 {/* Professional intake wizard — full-screen */}
                 <Route path="/professionals/intake" element={<OSWrap><ProfessionalIntakePage /></OSWrap>} />
 

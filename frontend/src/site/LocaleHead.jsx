@@ -1,27 +1,52 @@
 /**
  * LocaleHead — emits hreflang + canonical + OG locale tags into <head>.
  *
+ * Mounted GLOBALLY inside <BrowserRouter> so it covers every public
+ * surface — storefront, magazine, professionals — without needing
+ * SiteProvider context.
+ *
  *   • Reads the public market list (active for the tenant) once.
  *   • Generates <link rel="alternate" hreflang="…"> for every active market.
  *   • Sets <link rel="canonical"> to the current `/{locale}/path` URL.
- *   • Sets <meta property="og:locale"> and og:locale:alternate.
+ *   • Sets <meta property="og:locale"> + og:locale:alternate.
+ *   • x-default points to the tenant default market.
  *
- * Uses react-helmet-async if present, falls back to a direct DOM patch
- * (the project does not currently have helmet — we patch <head> directly).
+ * Internal Translation safety:
+ *   We ONLY emit hreflang for public markets. Internal translation
+ *   locales NEVER live in `/api/storefront/public/{slug}/markets`, so
+ *   they can never be tagged here.
+ *
+ * Auth surfaces (login, dashboard, admin) are excluded — they are not
+ * public storefront pages and we don't want to leak canonicals for them.
  */
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { PLATFORM_DEFAULT_LOCALE, toBcp47 } from '../i18n';
 import { useT } from '../i18n';
-import { useSite } from './SiteContext';
+import { tenantConfig } from './content/tenant';
 import api from '../lib/api';
 
+const LOCALE_RE = /^\/([a-z]{2}-[A-Z]{2})(?=\/|$)/;
+
+// Surfaces that SHOULD receive SEO head tags. Anything else (auth, dashboard,
+// admin, workspace, settings, client) is skipped entirely — those are not
+// indexable storefront URLs.
+const STOREFRONT_PREFIXES = ['/projects', '/professionals', '/magazine', '/onboarding'];
+function isStorefrontPath(p) {
+  if (LOCALE_RE.test(p)) return true;       // /it-IT, /en-US, …
+  if (p === '/') return true;
+  return STOREFRONT_PREFIXES.some((pre) => p === pre || p.startsWith(`${pre}/`));
+}
+
 let CACHED_MARKETS = null;
+let CACHED_SLUG = null;
 async function fetchMarkets(slug) {
-  if (CACHED_MARKETS) return CACHED_MARKETS;
+  if (CACHED_MARKETS && CACHED_SLUG === slug) return CACHED_MARKETS;
   try {
     const r = await api.get(`/api/storefront/public/${slug}/markets`);
     CACHED_MARKETS = r.data?.markets || [];
-  } catch { CACHED_MARKETS = []; }
+    CACHED_SLUG = slug;
+  } catch { CACHED_MARKETS = []; CACHED_SLUG = slug; }
   return CACHED_MARKETS;
 }
 
@@ -35,59 +60,90 @@ function clearAllHreflang() {
   document.head.querySelectorAll('link[rel="alternate"][data-mfd-hreflang]').forEach((n) => n.remove());
 }
 
+function clearSeoHead() {
+  clearAllHreflang();
+  document.head.querySelectorAll('link[rel="canonical"][data-mfd-seo]').forEach((n) => n.remove());
+  document.head.querySelectorAll('meta[property="og:locale"][data-mfd-seo]').forEach((n) => n.remove());
+  document.head.querySelectorAll('meta[property="og:locale:alternate"]').forEach((n) => n.remove());
+}
+
 export const LocaleHead = ({ pageMeta }) => {
-  const { locale } = useT();
+  const { locale: i18nLocale } = useT();
   const location = useLocation();
-  const { tenant } = useSite() || {};
-  const slug = tenant?.slug || 'mood-demo-studio-81a09e';
+  const slug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
 
   useEffect(() => {
+    // Skip non-storefront surfaces entirely — strip any leftover tags.
+    if (!isStorefrontPath(location.pathname)) {
+      clearSeoHead();
+      return undefined;
+    }
+
     let cancelled = false;
+    const effectiveLocale = (() => {
+      const m = location.pathname.match(LOCALE_RE);
+      return m ? m[1] : toBcp47(i18nLocale || PLATFORM_DEFAULT_LOCALE);
+    })();
+
     fetchMarkets(slug).then((markets) => {
       if (cancelled) return;
-      clearAllHreflang();
+      clearSeoHead();
       const baseUrl = (typeof window !== 'undefined' ? window.location.origin : '');
-      // Strip leading locale segment from current path for hreflang composition.
-      const cleanPath = location.pathname.replace(/^\/[a-z]{2}-[A-Z]{2}(?=\/|$)/, '');
+      const cleanPath = location.pathname.replace(LOCALE_RE, '');
+      // Normalise: root path with no remaining segment becomes empty so
+      // canonical reads `/{locale}` (no trailing slash).
+      const tail = (cleanPath === '/' || cleanPath === '') ? '' : cleanPath;
 
-      // canonical → current /{locale}{cleanPath}
-      const canonical = setOrCreate('link[rel="canonical"]', () => {
-        const el = document.createElement('link'); el.setAttribute('rel', 'canonical'); return el;
+      // canonical → /{locale}{cleanPath}
+      const canonical = setOrCreate('link[rel="canonical"][data-mfd-seo]', () => {
+        const el = document.createElement('link');
+        el.setAttribute('rel', 'canonical');
+        el.setAttribute('data-mfd-seo', '1');
+        return el;
       });
-      canonical.setAttribute('href', `${baseUrl}/${locale}${cleanPath || ''}`);
+      canonical.setAttribute('href', `${baseUrl}/${effectiveLocale}${tail}`);
 
-      // hreflang per market
+      // hreflang per market — ONLY public markets, never internal translation.
+      const seen = new Set();
       markets.forEach((m) => {
+        const bcp = m.primary_locale;
+        if (!bcp || seen.has(bcp)) return;
+        seen.add(bcp);
         const link = document.createElement('link');
         link.setAttribute('rel', 'alternate');
-        link.setAttribute('hreflang', m.primary_locale);
-        link.setAttribute('href', `${baseUrl}/${m.primary_locale}${cleanPath || ''}`);
+        link.setAttribute('hreflang', bcp);
+        link.setAttribute('href', `${baseUrl}/${bcp}${tail}`);
         link.setAttribute('data-mfd-hreflang', m.code);
         document.head.appendChild(link);
       });
-      // x-default to the tenant default market
+      // x-default → tenant default market
       const def = markets.find((m) => m.is_default) || markets[0];
       if (def) {
         const xd = document.createElement('link');
         xd.setAttribute('rel', 'alternate'); xd.setAttribute('hreflang', 'x-default');
-        xd.setAttribute('href', `${baseUrl}/${def.primary_locale}${cleanPath || ''}`);
+        xd.setAttribute('href', `${baseUrl}/${def.primary_locale}${tail}`);
         xd.setAttribute('data-mfd-hreflang', 'x-default');
         document.head.appendChild(xd);
       }
 
-      // OG locale
-      const og = setOrCreate('meta[property="og:locale"]', () => {
-        const el = document.createElement('meta'); el.setAttribute('property', 'og:locale'); return el;
+      // OG locale (replace - with _ for OG spec)
+      const og = setOrCreate('meta[property="og:locale"][data-mfd-seo]', () => {
+        const el = document.createElement('meta');
+        el.setAttribute('property', 'og:locale');
+        el.setAttribute('data-mfd-seo', '1');
+        return el;
       });
-      og.setAttribute('content', locale.replace('-', '_'));
+      og.setAttribute('content', effectiveLocale.replace('-', '_'));
 
-      document.head.querySelectorAll('meta[property="og:locale:alternate"]').forEach((n) => n.remove());
-      markets.filter((m) => m.primary_locale !== locale).forEach((m) => {
+      Array.from(seen).filter((bcp) => bcp !== effectiveLocale).forEach((bcp) => {
         const meta = document.createElement('meta');
         meta.setAttribute('property', 'og:locale:alternate');
-        meta.setAttribute('content', m.primary_locale.replace('-', '_'));
+        meta.setAttribute('content', bcp.replace('-', '_'));
         document.head.appendChild(meta);
       });
+
+      // <html lang>
+      try { document.documentElement.setAttribute('lang', effectiveLocale); } catch { /* noop */ }
 
       if (pageMeta?.title) document.title = pageMeta.title;
       if (pageMeta?.description) {
@@ -98,7 +154,7 @@ export const LocaleHead = ({ pageMeta }) => {
       }
     });
     return () => { cancelled = true; };
-  }, [locale, location.pathname, slug, pageMeta?.title, pageMeta?.description]);
+  }, [i18nLocale, location.pathname, slug, pageMeta?.title, pageMeta?.description]);
 
   return null;
 };

@@ -1,0 +1,57 @@
+{
+  "summary": "Phase R-MARKET-1B (locale-aware frontend architecture) tested end-to-end. Backend: 9/9 invariants pass (anonymous /api/storefront/public/mood-demo-studio-81a09e/markets, locale-runtime resolve public, internal_translation auth guard). Frontend: ALL 6 locale subpaths (it-IT, en-US, en-GB, es-ES, fr-FR, de-DE) render with market-aware copy (CHI SIAMO/ABOUT/À PROPOS/SOBRE NOSOTROS/ÜBER UNS, etc.), canonical correct, og:locale correct, <html lang> correct, footer Country·Language picker opens modal, navigates AND persists on reload, hot-swap works without full reload, /pt-BR & /auth/login correctly excluded from SEO. THREE wiring inconsistencies found (see below).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/storefront/public/mood-demo-studio-81a09e/markets", "issue": "Returns 6 active markets, but review expects 7. Spain (es-ES) market is MISSING from active list. Frontend has /es-ES routes wired in App.js but backend doesn't expose a market for it — so /es-ES route renders Spanish copy from i18n dictionary BUT has NO hreflang entry pointing to /es-ES and NO og:locale:alternate=es_ES. Search engines cannot discover the Spanish surface via hreflang."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "LocaleHead.jsx / market wiring",
+        "issue": "Backend public markets returns gcc_luxury with primary_locale=en-AE, so LocaleHead emits <link rel=alternate hreflang=en-AE href=.../en-AE>. BUT App.js has NO /en-AE Route registered → visiting /en-AE renders '404 This page does not exist.' (the SPA NotFound). Crawlers following the hreflang link hit a 404. Either (a) remove gcc_luxury from public markets, (b) add an /en-AE route in App.js, or (c) filter LocaleHead to only emit hreflang for locales with a frontend route. Review request explicitly lists only 6 supported locales: it-IT, en-US, en-GB, es-ES, fr-FR, de-DE — en-AE was NOT in scope.",
+        "selector": "link[rel=alternate][hreflang=en-AE]",
+        "priority": "HIGH"
+      },
+      {
+        "component": "LocaleHead.jsx / root canonical",
+        "issue": "Root `/` (legacy) canonical was observed as `/de-DE` instead of `/it-IT` (the tenant default market). Root canonical uses `toBcp47(i18nLocale || PLATFORM_DEFAULT_LOCALE)` which echoes whatever locale the user last visited (sticky from useT()). Review request states: 'Root / (legacy) → canonical /it-IT (no trailing slash)'. Fix: when location.pathname === '/', force canonical to the markets default (`def.primary_locale`) instead of i18nLocale. Same applies to x-default which IS already correct, so the source of truth exists — just isn't used for canonical on root.",
+        "selector": "link[rel=canonical][data-mfd-seo]",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_r_market_1b_locale_wiring.py",
+    "/app/test_reports/pytest/iteration_53_market_1b.xml"
+  ],
+  "action_items": [
+    "ALIGN markets contract: review says 7 markets, backend returns 6. Decide whether to (a) seed Spain market and remove gcc_luxury from public surface (matches review's 6-locale list — recommended), or (b) add /en-AE frontend route. Currently: /es-ES route exists with no backend market (SEO-orphaned), /en-AE backend market exists with no frontend route (hreflang → 404).",
+    "Fix LocaleHead.jsx so canonical on `/` legacy path uses the markets-default primary_locale (not the sticky i18nLocale). The x-default link already does this correctly — same source can be reused for canonical when the URL has no /<locale> prefix.",
+    "Consider double-filter in LocaleHead.fetchMarkets → only emit hreflang for locales whose route is actually registered in App.js to defend against future backend/frontend drift."
+  ],
+  "critical_code_review_comments": [
+    "LocaleHead.jsx is tight and well-isolated (~160 lines). Caching markets via module-scope CACHED_MARKETS is reasonable for a session.",
+    "Routes registration in App.js is verbose (one block per locale × magazine/storefront). Consider a `LOCALES.map((loc) => <Route path={`/${loc}`}…/>)` factory to prevent the next locale addition from diverging — exactly the kind of drift that produced the en-AE / es-ES mismatch.",
+    "isStorefrontPath() correctly excludes /auth, /workspace, /admin — verified empty canonical+hreflang on /auth/login.",
+    "Footer modal interaction is clean: data-testid contract honored (footer-country-language, country-language-modal, country-language-pick-<code>). Navigation + persistence verified via reload.",
+    "Hot-swap (it-IT → en-GB via picker) re-renders storefront copy without a full page reload — confirms SiteLocaleBridge wiring is reactive.",
+    "Unknown locale segments (/pt-BR) correctly fall through to NotFound, NOT to /auth/login — the isPublicSurface regex in lib/api.js is doing its job."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase_r_market_1b_locale_wiring.py (NEW — 9 backend invariants)"
+  ],
+  "success_rate": {
+    "backend": "100% (9/9 invariants)",
+    "frontend": "~85% — all 6 locale routes render correct market-aware copy, canonical/og/html-lang correct, footer flow + persistence + hot-swap all work; failing on (a) en-AE hreflang → 404 page, (b) /es-ES has no hreflang, (c) root `/` canonical sticky to last locale instead of tenant default."
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (not needed for this anonymous-storefront phase)",
+  "seed_data_creation": "None — relied on existing markets seed.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend invariants live in /app/backend/tests/test_phase_r_market_1b_locale_wiring.py — re-run after any markets seed or routing change. After fixes, retest by visiting /en-AE (should render storefront, NOT 404) AND /es-ES (hreflang list should include es-ES) AND root `/` (canonical should be /it-IT regardless of browser session). Verified working: footer picker testids (footer-country-language, country-language-modal, country-language-pick-italy|usa_national|dach|france_fr_europe|uk_ireland|gcc_luxury), locale subpaths render market copy, hot-swap reactive, /auth/login excluded from SEO, /pt-BR doesn't redirect to /auth/login.",
+  "rca_of_the_issue": "Backend public markets list and frontend route registry are NOT a single source of truth — they're maintained independently. Backend exposes gcc_luxury (en-AE) which has no frontend route; frontend has /es-ES route but no es-ES market in backend. LocaleHead trusts backend's market list 100% for hreflang emission, which is correct in principle but produces a broken hreflang link to /en-AE (renders 404). Recommended canonical fix: in App.js, derive routes from the same markets list (or at minimum, lint them against each other in CI)."
+}
