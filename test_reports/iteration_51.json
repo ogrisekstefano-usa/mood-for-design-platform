@@ -1,0 +1,48 @@
+{
+  "summary": "Phase P0.3.C — Curated Collections UI (CINEMATIC VERTICAL MARKET PERSPECTIVE) thoroughly tested. Backend POST /api/references/{id}/actions endpoint + tenant isolation verified via 10 new pytest cases (all PASS). Frontend /workspace/references tested end-to-end as super_admin and studio2 (tenant isolation). All structural, linguistic, and CTA requirements met. ONE minor bug: project picker shows empty list because frontend mis-reads /api/projects response shape — link_project CTA cannot complete from UI (backend itself works fine).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "ReferencesPage / project picker",
+        "issue": "Project picker always shows 'No active projects available. Open a project from the Workspace first.' even when tenant has projects. Root cause: in ReferencesPage.jsx line ~505, `projR.data?.projects || projR.data` returns the full response object `{data:[...], total:N}` (an object, not array) because /api/projects returns `{data: [...], total: N}`. Then Array.isArray() is false, so projects state stays []. Need to use `projR.data?.data || projR.data?.projects || []` instead.",
+        "selector": "[data-testid='project-picker-*']",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Add to Design Direction CTA",
+        "issue": "Primary CTA opens the picker, but since project list is empty due to the shape bug above, the user cannot pick a project and trigger link_project. Backend endpoint itself works (validated by pytest test_link_project_ok).",
+        "affected_selectors": ["[data-testid='project-picker-*']", "[data-testid^='project-pick-']"]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_p03c_actions.py",
+    "/app/test_reports/pytest/iteration_51_p03c.xml"
+  ],
+  "action_items": [
+    "Fix /app/frontend/src/pages/workspace/ReferencesPage.jsx line ~505 projects shape unpack: replace `const projectList = projR.data?.projects || projR.data || []` with `const projectList = projR.data?.data || projR.data?.projects || (Array.isArray(projR.data) ? projR.data : [])` so the picker renders the tenant's projects and the Add-to-Design-Direction CTA completes the link_project round trip + 'Connected to …' toast."
+  ],
+  "critical_code_review_comments": [
+    "ReferencesPage.jsx is ~560 lines, single-file — borderline but acceptable given editorial cohesion; consider extracting PerspectiveSelector + AdvisorActionBar to /components/references/ if it grows.",
+    "Cinematic transition relies on setTimeout chains; works but consider useTransition / CSS view transitions for buttery feel.",
+    "Backend reference_action() correctly returns 404 on cross-tenant project_id via _row_or_404, 400 on missing project_id, 409 on processing status, 400 on unknown action — all verified.",
+    "Sonner toast.error path is wired for failures but the only end-to-end failure visible to users today is the project-picker empty state (a frontend data shape bug, no error toast)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase_p03c_actions.py (NEW)"
+  ],
+  "success_rate": {"backend": "100% (10/10 new tests pass)", "frontend": "~95% (only project-picker empty-list bug; all linguistic / structural / cinematic checks pass)"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin, MOOD Demo Studio — has seed data) · studio2@moodfordesign.com / Studio2024! (tenant_admin, MOOD Demo Showroom — isolation tested)",
+  "seed_data_creation": "None — relied on existing P0.3.A seed (6 references, 3 collections, 30 interpretations across IT_IT/EN_US/EN_AE/DE_DE/FR_FR).",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend regression file /app/backend/tests/test_phase_p03c_actions.py covers actions endpoint + tenant isolation. After the picker shape fix, the only thing left to retest is the end-to-end Add-to-Design-Direction click flow (project-pick → 'Connected to <title>' toast). All other UI flows already validated: 3 collections, 7 card instances / 6 unique refs, 5 perspective buttons with clean labels, cinematic IT→UAE→DE transformation works natively per market without image swap, all 3 lightweight CTAs (discuss/moodboard/material_study) emit correct human toasts, NO AI wording / NO social wording / NO flags / NO masonry / NO raw locale codes, tenant isolation verified (studio2 sees empty state with 'research room is being assembled').",
+  "rca_of_the_issue": "Project picker empty: /api/projects in this codebase returns `{data: [...], total: N}`, but ReferencesPage hydration does `projR.data?.projects || projR.data || []` which yields the whole envelope object → Array.isArray() === false → projects state stays []. The picker renders the empty-state copy, blocking the link_project UI flow. Backend is healthy; the patch is a one-line front-end fix."
+}

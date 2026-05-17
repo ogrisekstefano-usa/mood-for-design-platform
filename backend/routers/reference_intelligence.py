@@ -336,6 +336,12 @@ class CollectionItemIn(BaseModel):
     reference_id: str = Field(..., min_length=1)
 
 
+class ReferenceActionIn(BaseModel):
+    action:      str = Field(..., description="link_project | discuss | moodboard | material_study")
+    project_id:  Optional[str] = None
+    note:        Optional[str] = None
+
+
 # ─── Reference endpoints ─────────────────────────────────────────────────
 
 @router.post("/references", status_code=201)
@@ -536,6 +542,76 @@ async def regenerate_interpretation(reference_id: str, body: InterpretationIn,
     )
 
     return {"ok": True, "interpretation": _interpretation_to_public(interpretation)}
+
+
+# ─── Advisor context actions (CTAs from /workspace/references) ───────────
+
+_ACTION_EVENT_TYPE = {
+    "link_project":   "reference.added_to_direction",
+    "discuss":        "reference.discuss_requested",
+    "moodboard":      "reference.added_to_moodboard_intent",
+    "material_study": "reference.material_study_flagged",
+}
+
+_ACTION_LABEL_TEMPLATE = {
+    "link_project":   "Reference connected to the project direction",
+    "discuss":        "Reference shared with the advisor for discussion",
+    "moodboard":      "Reference noted for the moodboard composition",
+    "material_study": "Reference flagged for the material study",
+}
+
+
+@router.post("/references/{reference_id}/actions")
+def reference_action(reference_id: str, body: ReferenceActionIn,
+                     ctx=Depends(get_tenant_context)):
+    """Lightweight CTA dispatcher from `/workspace/references`.
+
+    Four actions:
+      • link_project    — attach reference to a project (must also be in
+                          the same tenant) and flag in timeline.
+      • discuss         — emit an advisor-context event.
+      • moodboard       — record intent (UI hands off to moodboard editor later).
+      • material_study  — flag for the material study workflow.
+    """
+    action = (body.action or "").lower().strip()
+    if action not in _ACTION_EVENT_TYPE:
+        raise HTTPException(400, f"unknown action: {action}")
+
+    c = db()
+    tid = ctx["tenant_id"]
+    ref = _row_or_404(c, "design_references", reference_id, tid)
+    if ref.get("editorial_status") != "ready":
+        raise HTTPException(409,
+            "this reference is still being read editorially — try again shortly")
+
+    project_id = body.project_id or ref.get("project_id")
+
+    # link_project actually mutates the reference. Otherwise just emit an event.
+    if action == "link_project":
+        if not body.project_id:
+            raise HTTPException(400, "project_id required for link_project")
+        _row_or_404(c, "projects", body.project_id, tid)
+        c.table("design_references").update({
+            "project_id": body.project_id,
+            "updated_at": _iso(),
+        }).eq("id", reference_id).eq("tenant_id", tid).execute()
+        project_id = body.project_id
+
+    _push_activity(c,
+        tenant_id=tid,
+        project_id=project_id,
+        actor_id=ctx.get("profile_id"),
+        event_type=_ACTION_EVENT_TYPE[action],
+        label=_ACTION_LABEL_TEMPLATE[action],
+        ref_id=reference_id,
+        payload={"action": action, "note": body.note},
+    )
+
+    audit_log(tid, ctx.get("profile_id"),
+              f"reference.action.{action}", "design_reference", reference_id,
+              {"project_id": project_id})
+
+    return {"ok": True, "action": action, "project_id": project_id}
 
 
 # ─── Collection endpoints ────────────────────────────────────────────────

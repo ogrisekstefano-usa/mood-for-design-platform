@@ -165,6 +165,7 @@ const Sidebar = () => {
             <div className="space-y-0.5">
               {wsRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
               <NavItem to="/moodboards" icon="Layers" labelKey="nav.moodboards" collapsed={collapsed} />
+              <NavItem to="/workspace/references" icon="Compass" labelKey="nav.references" fallback="References" collapsed={collapsed} />
             </div>
           </div>
         )}
