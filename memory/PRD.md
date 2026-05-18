@@ -1,6 +1,28 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Editorial Studio™ Palette Re-alignment to Blueprint Dark (DONE — 18 May 2026)
+
+> Risposta a feedback utente: *"/blueprint/editorial deve essere allineato al brand studio. Il frontend continua a non essere allineato a blueprint!"*
+
+**Problema**: `editorial.css` usava una palette HARDCODED (cream `#f7f3ec`, ink `#1c1814`, `Cormorant Garamond`, `Inter`) — **0 occorrenze di `--bp-*`**. Risultava visivamente staccata da Storefront Studio + Projects Studio + Brand Studio (Blueprint dark).
+
+**Fix**: Riscritto interamente `pages/editorial/editorial.css` con i token Blueprint:
+- `--bp-bg` · `--bp-surface-1/2/3` · `--bp-border` · `--bp-border-strong`
+- `--bp-text-primary/secondary/muted/subtle`
+- `--bp-primary` (mint) per attivi, focus border, status dot, eyebrow internal-banner
+- `--bp-font-heading` (Playfair) display/H · `--bp-font-body` (Montserrat) body · `--bp-font-mono` locale-code
+- Toolbar `64px → 56px` allineato al workspace topbar.
+- Internal banner ora con bordo-left mint per segnalare natura "Blueprint-only".
+- Schedule modal: backdrop blur + dark surface, allineato a Projects Studio.
+
+**Verifica**: `.ed-studio` computed bg = `rgb(7,7,7)` ✓ — matches Storefront/Projects Studio. 29/29 backend test PASS (Editorial public + SEO locale + Storefront Studio + Projects Studio regression). ZERO JS modificato.
+
+**Pending P0**: Frontend Runtime Binding™ (Step 4) — il public storefront legge ancora da `navigationContent.js` / `projects.js` hardcoded.
+
+---
+
+
 ### ✅ Phase S-CONNECT Step 3 — Projects Studio™ (DONE — 18 May 2026)
 
 > **Portfolio Cultural Adaptation Studio.** NOT un project manager · NON un CRM · NON un task board · NON un Gantt. Una sala editoriale dove un progetto viene **riposizionato culturalmente** per ogni mercato, mai tradotto.
