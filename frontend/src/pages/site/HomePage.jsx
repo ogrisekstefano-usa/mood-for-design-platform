@@ -128,23 +128,38 @@ const pick = (bag, locale) => {
 };
 
 // Locale-aware deep getter against the CMS bag, falling back to JS defaults.
+// Tries multiple keys: bcp47 (`it-IT`), compact (`it`), then default chain.
 const fromCMS = (cmsContent, sectionKey, field, locale) => {
   const db = cmsContent?.[sectionKey];
   if (!db) return undefined;
-  return db[locale]?.[field]
+  const bcp = toBcp47Storefront(locale);
+  return db[bcp]?.[field]
+      ?? db[locale]?.[field]
       ?? db._default?.[field]
       ?? db['en-US']?.[field]
-      ?? db.it?.[field];
+      ?? db.it?.[field]
+      ?? db['it-IT']?.[field];
 };
 
 
 // ── Sections ─────────────────────────────────────────────────────────────
 
 const Hero = ({ cms, locale, brandName }) => {
-  const bg = fromCMS(cms, 'store_hero', 'background_url', locale) || FALLBACK.hero.bg;
-  const title = fromCMS(cms, 'store_hero', 'headline', locale) || pick(FALLBACK.hero.title, locale);
-  const sub   = fromCMS(cms, 'store_hero', 'sub', locale)      || pick(FALLBACK.hero.sub, locale);
-  const overline = fromCMS(cms, 'store_hero', 'overline', locale) || pick(FALLBACK.hero.overline, locale);
+  // Phase S-CONNECT Step 4 — bind to Storefront Studio actual schema.
+  // DB section_type: `store_hero` · fields: title · eyebrow · settings.background_image_url
+  const heroSettings = cms?.store_hero?._settings || {};
+  const bg = heroSettings.background_image_url
+          || fromCMS(cms, 'store_hero', 'background_url', locale)
+          || FALLBACK.hero.bg;
+  const title = fromCMS(cms, 'store_hero', 'title', locale)
+             || fromCMS(cms, 'store_hero', 'headline', locale)
+             || pick(FALLBACK.hero.title, locale);
+  const sub   = fromCMS(cms, 'store_hero', 'subtitle', locale)
+             || fromCMS(cms, 'store_hero', 'sub', locale)
+             || pick(FALLBACK.hero.sub, locale);
+  const overline = fromCMS(cms, 'store_hero', 'eyebrow', locale)
+                || fromCMS(cms, 'store_hero', 'overline', locale)
+                || pick(FALLBACK.hero.overline, locale);
   const overlineIt = fromCMS(cms, 'store_hero', 'overline_italic', locale) || pick(FALLBACK.hero.overline_italic, locale);
   // Allow {brand} placeholder in CMS / fallback titles.
   const titleResolved = String(title).replaceAll('{brand}', brandName || '');
@@ -210,9 +225,15 @@ const DualCTA = ({ cms, locale }) => {
 
 
 const UspStrip = ({ cms, locale, brandName }) => {
-  const titleRaw = fromCMS(cms, 'usp_strip', 'title', locale) || pick(FALLBACK.usp.title, locale);
+  // Phase S-CONNECT Step 4 — bind to Storefront Studio `value_props` section.
+  // DB fields: section_title (per locale) · section_kicker · settings.pillars
+  const titleRaw = fromCMS(cms, 'value_props', 'section_title', locale)
+                || fromCMS(cms, 'usp_strip', 'title', locale)
+                || pick(FALLBACK.usp.title, locale);
   const title = String(titleRaw).replaceAll('{brand}', brandName || '');
-  const items = (cms?.usp_strip?._settings?.items) || FALLBACK.usp.items;
+  const items = (cms?.value_props?._settings?.pillars)
+             || (cms?.usp_strip?._settings?.items)
+             || FALLBACK.usp.items;
   return (
     <section className="mfd-usp" data-testid="home-usp">
       <header className="mfd-usp__head">
@@ -237,8 +258,14 @@ const UspStrip = ({ cms, locale, brandName }) => {
 
 
 const ProjectsRail = ({ cms, locale }) => {
-  const titleRaw = fromCMS(cms, 'projects_rail', 'title', locale) || pick(FALLBACK.projects.title, locale);
-  const cmsItems = (cms?.projects_rail?._settings?.items) || FALLBACK.projects.items;
+  // Phase S-CONNECT Step 4 — bind to Storefront Studio `projects_preview`
+  // (section title) + runtime portfolio public endpoint (project cards).
+  const titleRaw = fromCMS(cms, 'projects_preview', 'section_title', locale)
+                || fromCMS(cms, 'projects_rail', 'title', locale)
+                || pick(FALLBACK.projects.title, locale);
+  const cmsItems = (cms?.projects_preview?._settings?.items)
+                || (cms?.projects_rail?._settings?.items)
+                || FALLBACK.projects.items;
   const [runtimeItems, setRuntimeItems] = useState(null);
 
   // Phase S-CONNECT Step 4 — runtime binding to portfolio public endpoint.

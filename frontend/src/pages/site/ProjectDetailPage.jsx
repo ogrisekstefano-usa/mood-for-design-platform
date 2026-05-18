@@ -19,7 +19,7 @@ import axios from 'axios';
 import { useSite } from '../../site/SiteContext';
 import { tenantConfig } from '../../site/content/tenant';
 import { toBcp47Storefront } from '../../site/localeBcp47';
-import { findProjectBySlug, projects } from '../../site/content/projects';
+import { findProjectBySlug } from '../../site/content/projects';
 import { uiContent } from '../../site/content/ui';
 import { Reveal, SiteImage } from '../../site/components/Reveal';
 
@@ -132,8 +132,6 @@ const ProjectDetailPage = () => {
   const marketCode     = isRuntime ? (p.market_code || p.target_locale) : null;
   const chapters       = isRuntime ? null : (p.chapters || []);
   const materials      = isRuntime ? null : (p.materials || []);
-
-  const relatedSeed = projects.filter((rp) => rp.slug !== slug).slice(0, 3);
 
   return (
     <div data-testid="site-project-detail" data-source={isRuntime ? 'runtime' : 'fallback'}>
@@ -391,37 +389,68 @@ const ProjectDetailPage = () => {
         </div>
       </section>
 
-      {/* RELATED — keeps legacy seed for now */}
-      {relatedSeed.length > 0 && (
-        <section className="mfd-section" data-testid="project-related">
-          <div className="mfd-wrap" style={{ display: 'grid', gap: '2rem' }}>
-            <Reveal as="span" className="mfd-eyebrow">{pick(ui.related, 'ui.detail.related')}</Reveal>
-            <Reveal delay={2}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
-                {relatedSeed.map((rp) => (
-                  <Link
-                    key={rp.slug}
-                    to={`/projects/${rp.slug}`}
-                    style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}
-                    data-testid={`project-related-${rp.slug}`}
-                  >
-                    <div className="mfd-strip__media">
-                      <SiteImage src={rp.cover} aspect={rp.aspect} alt={pick(rp.title, `projects.${rp.slug}.title`)} />
-                    </div>
-                    <div className="mfd-strip__meta">
-                      <div className="mfd-strip__meta-row">
-                        <h4 className="mfd-strip__title" style={{ fontSize: 'clamp(1.1rem, 1.6vw, 1.5rem)' }}>{pick(rp.title, `projects.${rp.slug}.title`)}</h4>
-                        <span className="mfd-strip__location">{pick(rp.location, `projects.${rp.slug}.location`)}</span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-        </section>
+      {/* RELATED — runtime-bound: other published variants in this locale. */}
+      {isRuntime && (
+        <RelatedRuntimeProjects currentSlug={slug} locale={locale} pickUiRelated={pick(ui.related, 'ui.detail.related')} />
       )}
     </div>
+  );
+};
+
+/**
+ * RelatedRuntimeProjects — fetches up to 3 other published variants for the
+ * current market and links to them. Replaces the hardcoded `projects.js` seed.
+ */
+const RelatedRuntimeProjects = ({ currentSlug, locale, pickUiRelated }) => {
+  const [items, setItems] = useState([]);
+  useEffect(() => {
+    let alive = true;
+    const bcp = toBcp47Storefront(locale);
+    axios.get(`${BACKEND_URL}/api/portfolio/public/${tenantConfig.slug}/projects?locale_code=${encodeURIComponent(bcp)}`)
+      .then((r) => {
+        if (!alive) return;
+        const list = (r.data?.projects || []).filter((p) => p.slug !== currentSlug).slice(0, 3);
+        setItems(list);
+      })
+      .catch(() => { if (alive) setItems([]); });
+    return () => { alive = false; };
+  }, [currentSlug, locale]);
+
+  if (items.length === 0) return null;
+
+  return (
+    <section className="mfd-section" data-testid="project-related" data-source="runtime">
+      <div className="mfd-wrap" style={{ display: 'grid', gap: '2rem' }}>
+        <Reveal as="span" className="mfd-eyebrow">{pickUiRelated}</Reveal>
+        <Reveal delay={2}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+            {items.map((rp) => (
+              <Link
+                key={rp.slug}
+                to={`/projects/${rp.slug}`}
+                style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}
+                data-testid={`project-related-${rp.slug}`}
+              >
+                <div className="mfd-strip__media">
+                  {rp.cover_image_url
+                    ? <SiteImage src={rp.cover_image_url} aspect={3/4} alt={rp.title} />
+                    : <div style={{ aspectRatio: '3/4', background: 'var(--site-line, rgba(28,24,20,0.05))' }} />}
+                </div>
+                <div className="mfd-strip__meta">
+                  <div className="mfd-strip__meta-row">
+                    <h4 className="mfd-strip__title" style={{ fontSize: 'clamp(1.1rem, 1.6vw, 1.5rem)' }}>{rp.title}</h4>
+                    {rp.location && <span className="mfd-strip__location">{rp.location}</span>}
+                  </div>
+                  {rp.cultural_angle && (
+                    <p className="mfd-body" style={{ fontFamily: 'var(--site-serif, "Playfair Display", Georgia, serif)', fontStyle: 'italic', marginTop: '0.5rem' }}>{rp.cultural_angle}</p>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    </section>
   );
 };
 
