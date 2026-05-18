@@ -726,7 +726,7 @@ def log_engagement_signal(aid: str, payload: EngagementSignalIn, ctx=Depends(get
     })
     # Best-effort: also bump account.last_activity_at.
     c.table("relationship_engagement_signals").insert(row).execute()
-    c.table("accounts").update({"last_activity_at": row["occurred_at"]}).eq("id", aid).execute()
+    c.table("accounts").update({"last_activity_at": row["occurred_at"]}).eq("id", aid).eq("tenant_id", ctx["tenant_id"]).execute()
     return {"signal": row}
 
 
@@ -878,9 +878,9 @@ def link_project(aid: str, payload: ProjectLinkIn, ctx=Depends(get_tenant_contex
     })
     try:
         c.table("relationship_projects").insert(row).execute()
-    except Exception as e:
+    except Exception:
         # Idempotent for (account_id, project_id, role)
-        raise HTTPException(409, f"Already linked: {e}")
+        raise HTTPException(409, "Project already linked with this role")
     return {"link": row}
 
 
@@ -988,12 +988,30 @@ def upsert_account_market(aid: str, payload: AccountMarketIn, ctx=Depends(get_te
     })
     # If marking as primary, demote others first.
     if row.get("is_primary"):
-        c.table("account_markets").update({"is_primary": False}).eq("account_id", aid).execute()
+        c.table("account_markets").update({"is_primary": False}).eq("account_id", aid).eq("tenant_id", ctx["tenant_id"]).execute()
         # And also reflect on the accounts.market_id pointer for fast joins.
-        c.table("accounts").update({"market_id": row["market_id"]}).eq("id", aid).execute()
+        c.table("accounts").update({"market_id": row["market_id"]}).eq("id", aid).eq("tenant_id", ctx["tenant_id"]).execute()
     # Upsert
     c.table("account_markets").upsert(row, on_conflict="account_id,market_id").execute()
     return {"link": row}
+
+
+@router.delete("/accounts/{aid}/markets/{mid}", status_code=204)
+def unlink_account_market(aid: str, mid: str, ctx=Depends(get_tenant_context)):
+    """Remove a market linkage. Parity with projects/inspirations DELETE."""
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    # If this was the primary, also clear the fast-pointer on accounts.
+    cur = (
+        c.table("account_markets").select("is_primary")
+         .eq("account_id", aid).eq("market_id", mid)
+         .maybe_single().execute()
+    )
+    was_primary = bool(cur and cur.data and cur.data.get("is_primary"))
+    c.table("account_markets").delete().eq("account_id", aid).eq("market_id", mid).eq("tenant_id", ctx["tenant_id"]).execute()
+    if was_primary:
+        c.table("accounts").update({"market_id": None}).eq("id", aid).eq("tenant_id", ctx["tenant_id"]).execute()
+    return None
 
 
 # ─── Intelligence dashboard view ─────────────────────────────────────

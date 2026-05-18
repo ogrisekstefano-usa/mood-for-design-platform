@@ -53,6 +53,59 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase R-CRM-2 (Feb 18, 2026 — iteration 63) — Editorial Relationship CRM™ architecture
+**Architecture-only sprint. NO UI per direttiva utente. 17/17 pytest GREEN.**
+
+Sostituisce il vocabolario CRM generico con un editorial-native relationship orchestration layer.
+
+#### Migration `041_editorial_relationship_crm.sql` (applicata su dev)
+- **`accounts` esteso** con 7 nuove colonne editorial-native: `market_id`, `cultural_profile` JSONB, `hospitality_positioning`, `editorial_register_affinity`, `design_intent_summary`, `luxury_perception_axis`, `relationship_journey_stage`.
+- **5 nuove tabelle**:
+  - `account_markets` — relazione N:N account ↔ markets con `is_primary` e `engagement_strength`.
+  - `relationship_engagement_signals` — ogni segnale editoriale (viewed_article, viewed_market_edition, clicked_cta, requested_sample, scrolled_long_form, …) con cultural overlay denormalizzato (market_id, locale_code, editorial_register, atmosphere_tags, material_tags, cta_intent, signal_weight, dwell_seconds, scroll_depth_pct).
+  - `relationship_affinities` — snapshot 1:1 di Relationship Intelligence™ (preferred_atmosphere, preferred_materials, preferred_cta_intent, preferred_editorial_register, 5 score 0-100: hospitality_orientation, specification_orientation, long_form_engagement, editorial_cadence, luxury_perception_alignment).
+  - `relationship_projects` — junction con `role` (client/architect/specifier/observer/referral_source) e `collaboration_stage` snapshot al momento del link.
+  - `relationship_inspirations` — junction account ↔ design_references con `source` (saved_by_account/shared_by_advisor/inferred_from_engagement).
+  - `relationship_material_affinities` — material attraction tracking con `attraction_score` 0-100, `sample_requested`, `specified`.
+- **View `relationship_intelligence_v`** — aggrega counts (signal_count_total/30d/7d, linked_project_count, linked_inspiration_count, material_affinity_count, market_count) + ultimo snapshot affinities.
+- **Seed 10 Editorial Journey™ stages canoniche** in `relationship_lookups.lifecycle_stage` con `metadata.canonical=true` + `metadata.editorial_journey=true` (non-breaking: stages legacy convivono).
+
+Canonical journey stages (ordinati): discovery → inspiration → editorial_engagement → project_conversation → material_exploration → strategic_direction → specification → proposal → active_collaboration → long_term_relationship.
+
+#### Backend router (`/app/backend/routers/relationships.py` — 14 nuovi endpoint)
+- `POST/GET /accounts/{aid}/engagement` — log/list signal con cultural overlay completo.
+- `GET /accounts/{aid}/affinities` · `POST /accounts/{aid}/affinities/recompute` — snapshot intelligence (heuristic deterministico via `collections.Counter` su signal_weight + atmosphere/material/cta/register/market aggregations + score normalizzati 0-100).
+- `GET/POST/DELETE /accounts/{aid}/projects[/{pid}]` — project linkage CRUD.
+- `GET/POST/DELETE /accounts/{aid}/inspirations[/{ref_id}]` — design_references linkage CRUD.
+- `GET/POST /accounts/{aid}/material-affinities` — material attraction upsert.
+- `GET/POST/DELETE /accounts/{aid}/markets[/{mid}]` — multi-market linkage + primary demotion logic + accounts.market_id pointer sync.
+- `GET /intelligence` — dashboard view reading `relationship_intelligence_v` con filtri `?journey_stage=` e `?market_id=`.
+
+#### Architecture documentation
+- `/app/architecture/EDITORIAL_RELATIONSHIP_CRM.md` — 12 sezioni: design principle, vocabulary rename map, entity model, journey stages (con tone), engagement signal taxonomy, intelligence model, project linkage roles, market integration, moodboard/inspiration linkage, material affinity, endpoint catalog, UX principles per il futuro sprint UI.
+
+#### Frontend types stub (no UI yet)
+- `/app/frontend/src/lib/relationshipTypes.js` — JSDoc + 7 exported constants (EDITORIAL_JOURNEY_STAGES, SIGNAL_TYPES, PROJECT_LINK_ROLES, CTA_INTENTS, ENGAGEMENT_SURFACES, EDITORIAL_REGISTERS, HOSPITALITY_POSITIONINGS, LUXURY_PERCEPTION_AXES).
+
+#### Test & validazione
+- Backend pytest **17/17 GREEN in 30s** (`/app/backend/tests/test_iteration_63_editorial_relationship_crm.py`): migration sanity (5 tabelle + view); 10 canonical journey stages presenti con metadata flags; engagement signal POST/GET con filtro; affinities recompute deterministico (preferred_atmosphere=mediterranean, preferred_cta_intent=private_consultation, preferred_editorial_register=Ceremonial Hospitality verificati); project/inspiration link round-trip POST→GET→DELETE; material affinity upsert idempotente; account_markets primary demotion + accounts.market_id sync; intelligence view 9 campi + filtri; regressione R-CRM-1 (zero breaking changes).
+- Curl smoke verificato live: POST/DELETE markets endpoint funziona (201/204).
+- Lint Python clean.
+
+#### Quick fixes applicati post-testing-agent
+- DELETE `/accounts/{aid}/markets/{mid}` endpoint aggiunto (parity con projects/inspirations).
+- Sanitizzato 409 error message su project re-link (rimosso DB exception leak).
+- Defence-in-depth: aggiunto `tenant_id` filter sulle UPDATE writes su accounts + account_markets.
+
+#### Cosa NON è incluso
+- **NO UI** — esplicito per direttiva utente ("Architecture first").
+- **NO AI affinity worker** — heuristic deterministico sufficiente per v1; AI overlay scriverà in `relationship_affinities.intelligence_payload`.
+- **NO web pixel SDK pubblico** — i signal vengono loggati via API interna da renderer magazine/storefront in un workstream separato.
+- **NO permission decorators** sui nuovi endpoint — gated solo via `_assert_account_owned` (tenant-scoped). Aggiungere `require_permission` matrix in iteration successiva.
+- Code-review: `relationships.py` è ora 1054 righe — split in `relationships_core.py` + `relationships_editorial.py` consigliato in sprint cleanup futuro.
+
+
+
 ### Fase EDITORIAL-GOVERNANCE v1 (Feb 18, 2026 — iteration 62) — Context Rail + Adaptation Status + Market Matrix
 **P1 directive eseguita: 4 fasi, testing agent 6/6 backend + 100% frontend GREEN.**
 
