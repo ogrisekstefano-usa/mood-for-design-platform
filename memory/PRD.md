@@ -53,6 +53,71 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase GLOBAL-MEDIA-DAM v1 (Feb 18, 2026 — current) — `<EditorialMediaField />` + Pinterest Research Add Flow
+**P0 GLOBAL MEDIA INPUT REFACTOR™ — Foundation of MOOD's editorial DAM.**
+
+#### Nuovo componente globale: `<EditorialMediaField />`
+File: `/app/frontend/src/components/common/EditorialMediaField.jsx` + `editorial-media-field.css`.
+
+Sostituisce TUTTI gli input URL grezzi nel Blueprint admin. Supporta:
+- **Upload locale** (drag & drop o file picker) → `/api/storage/signed-upload` → `/api/storage/media` (Supabase Storage, tenant-prefisso enforced).
+- **Media Library picker** (riusa `AssetPickerModal`, generalizzato per accettare `entityType`/`entityId`/`bucket`/`folder`).
+- **URL esterno fallback** (esplicito, mostrato come chip "EXTERNAL").
+- **Preset crop responsive** via `aspect-ratio` CSS: `logo` (3:1), `hero` (16:9), `gallery` (4:3), `square` (1:1), `portrait` (4:5), `story` (9:16), `thumbnail` (1:1).
+- **Visual states espliciti**: `empty` (dashed border + CTA), `uploading` (loader + progress bar), `ready` (preview + actions on hover), `library`/`external`/`multi` (chip badge differenziati).
+- **Metadata inline**: alt_text + Image Intent enum (Editorial Atmosphere · Product Detail · Hospitality Emotion · Material Texture · …).
+- **Usage Relationships chip**: legge `media.detail(asset_id)` → `links.length` → mostra "Usato in N luoghi" o "asset orfano".
+- **Auto-link** alla `entityType/entityId/role` passati come prop (registra `media_links` row).
+- **Focal point**: applicato come `object-position` CSS (preview-only — controls UI in v2).
+
+Contratto value (backwards compat):
+```jsx
+<EditorialMediaField value="https://…" onChange={(url) => …} />  // legacy URL string
+<EditorialMediaField value={{url, asset_id, alt_text, image_intent, focal_point}}
+                     onChange={(obj) => …} valueShape="object" />
+```
+
+#### Sostituzioni effettuate (Fase 1)
+- **Brand Studio** `/settings/brand`: `primary_logo_url` raw input → EMF preset=logo, entity=`branding_asset`.
+- **Experience Studio** `/blueprint/experience`:
+  - Hero `cover_url` → EMF preset=hero, entity=`cms_section`.
+  - `brand_logos.logo_url` (per item) → EMF preset=logo, role=`brand_logo_<idx>`.
+  - `dual_cta.<kind>_image` (private + professional) → EMF preset=hero, role=`dual_cta_<kind>_image`.
+
+#### Pinterest Research™ Add Flow
+File: `/app/frontend/src/pages/workspace/AddReferenceModal.jsx` + integrato in `ReferencesPage.jsx`.
+
+- Pulsante CTA `+ Aggiungi riferimento` (top-right dell'EditorialHero + emptystate CTA).
+- Modal sticky (header + footer fissi, body scrollabile) con 3 source tabs:
+  - **Upload manuale** — drag & drop su zona 16:9 → POST `/api/storage/*` → POST `/api/references` (source_type='upload').
+  - **URL Pinterest** — input URL pin → POST `/api/references` (source_type='pinterest', source_url + imported_image_url=pinUrl). NO scraping (rimandato a P2 con Pinterest API).
+  - **Media Library** — apre `AssetPickerModal` per scegliere un asset esistente → POST `/api/references` (source_type='media_library').
+- Metadata: curator_name, project_id (dropdown progetti), design_intent, tag tematici (#mood, #material, #hospitality, #mediterranean, …), note.
+- Submit → POST `/api/references` → backend `_interpret_and_store` (Cultural Design Intelligence pipeline via Claude Sonnet) → reference appare nella research room una volta `editorial_status='ready'`.
+
+#### Backend (no schema change)
+Riutilizzo dello stack esistente (Phase N/P già completo):
+- `/api/storage/signed-upload` (tenant prefix enforced).
+- `/api/storage/media` (register row in `media_library`).
+- `/api/media/*` (list, stats, detail con `media_with_usage` view, links).
+- `/api/references` (ingest + cultural interpretation).
+
+#### Test & validazione
+- `pytest /app/backend/tests/test_iteration_60_media_field.py` — **7/7 GREEN**: signed-upload contract, media stats shape, media list, references list, reference-collections, POST happy path + 422 validation.
+- Playwright (1440x900): Brand Studio EMF empty + external URL flow; AddReferenceModal CTA + 3 tabs + submit enable + tag toggle + close (post-stickyfication); Experience Studio store_hero/dual_cta/brand_logos tutti renderizzano EMF.
+- Lint JS clean su 7 file modificati.
+
+#### Cosa NON è incluso (rimandato)
+- Crop UI interattivo (gli aspect-ratio preset sono visual hints, non crop tools veri).
+- Filtri immagine (luminosità, contrasto, color grade) — placeholder per P1.
+- Atmosphere keywords, photographer, copyright fields — rimangono in `metadata_json` ma senza UI dedicata (P1).
+- Pinterest API scraping — P2.
+- Auto-translation UI status indicators — P0 prossima sessione.
+- Market Editions Operability batch (sticky CTAs, onboarding strip, empty states) — P0 prossima sessione.
+- Responsive Rebuild Editorial Studio — P0 prossima sessione.
+
+
+
 ### Fase LIGHT-MODE-FIX (Feb 18, 2026 — current) — Editorial Paper Mode™ Restored
 **P0 BLOCKER RISOLTO**: il toggle light/dark (`[data-testid="theme-switch-light"]`) ora funziona su TUTTI gli admin surface.
 

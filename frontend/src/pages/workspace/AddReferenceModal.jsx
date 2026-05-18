@@ -150,10 +150,10 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-2xl bg-[var(--bp-surface-elevated)] border border-[var(--bp-border)] rounded-[16px] shadow-2xl my-8"
+        className="w-full max-w-2xl bg-[var(--bp-surface-elevated)] border border-[var(--bp-border)] rounded-[16px] shadow-2xl my-8 flex flex-col max-h-[calc(100vh-4rem)]"
       >
-        {/* Header */}
-        <header className="flex items-start justify-between px-7 pt-7 pb-5 border-b border-[var(--bp-border)]">
+        {/* Header (sticky) */}
+        <header className="flex items-start justify-between px-7 pt-7 pb-5 border-b border-[var(--bp-border)] flex-shrink-0 bg-[var(--bp-surface-elevated)] rounded-t-[16px]">
           <div>
             <p className="text-[10px] uppercase tracking-[0.28em] text-[var(--bp-primary)] font-body font-medium mb-1.5">
               Pinterest Research™
@@ -176,7 +176,7 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
         </header>
 
         {/* Source tabs */}
-        <div className="px-7 pt-5">
+        <div className="px-7 pt-5 flex-shrink-0">
           <div className="flex gap-1 p-1 rounded-[10px] bg-[var(--bp-surface-1)] border border-[var(--bp-border)]">
             {[
               ['upload', 'Upload manuale', Upload],
@@ -204,6 +204,8 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
           </div>
         </div>
 
+        {/* Scrollable body wrapper */}
+        <div className="flex-1 overflow-y-auto">
         {/* Source body */}
         <div className="px-7 py-6">
           {source === 'upload' && (
@@ -396,9 +398,10 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
             </p>
           )}
         </div>
+        </div>{/* /scrollable body wrapper */}
 
-        {/* Footer */}
-        <footer className="flex items-center justify-between px-7 py-5 border-t border-[var(--bp-border)] bg-[var(--bp-surface-1)] rounded-b-[16px]">
+        {/* Footer (sticky) */}
+        <footer className="flex items-center justify-between px-7 py-5 border-t border-[var(--bp-border)] bg-[var(--bp-surface-1)] rounded-b-[16px] flex-shrink-0">
           <div className="text-[11px] text-[var(--bp-text-faint)] font-body flex items-center gap-1.5 italic">
             <Sparkles size={11} className="text-[var(--bp-primary)]" />
             Cultural reading generata automaticamente
