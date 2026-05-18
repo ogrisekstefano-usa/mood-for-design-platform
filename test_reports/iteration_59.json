@@ -1,0 +1,56 @@
+{
+  "summary": "Phase S-CONNECT Step 3 — Projects Studio™ end-to-end testing. Backend: 13/13 PASS (8 baseline test_phase_s_connect_step3.py + 5 new test_phase_s_connect_step3_e2e.py covering REAL Claude compose + variant patch/publish + public locale-shaped detail + cross-tenant isolation read/patch/delete). Found & fixed 1 critical backend bug in /app/backend/services/project_market_composer.py: `chat.with_max_tokens(2400)` does not exist on LlmChat → emergentintegrations only exposes `with_params(**kwargs)`. Replaced with `.with_params(max_tokens=2400)`. After fix REAL Claude Sonnet compose for the demo tenant's Italian (it-IT) market completed in ~21s, persisted a variant with cultural_angle/hospitality_tone/material_language/story_body all populated, NOT a literal translation (verified master_text not contained in variant_text). Variant patch + publish flips is_published=true and public list /api/portfolio/public/{slug}/projects returns the variant-shaped project; public detail with locale_code=it-IT returns cultural_angle + story_body + target_locale=it-IT. Cross-tenant isolation: studio2_admin gets 404 on demo's master read/patch and delete is a no-op (demo's master survives). All 23 prior regression tests still GREEN (Phase S-CONNECT Step 2, Phase S-IDENTITY Step 1). Frontend /blueprint/projects-studio loads with ps-root, '+ Apri un nuovo progetto' button, master archive cards on left rail, split-pane editor with Master Story (default) + Market Editions tabs, readout explainer, 8 market sub-tabs (it-IT/de-DE/fr-FR/en-US/en-AE/en-GB/es-ES + 1) for empty-variant state, Compose Market Edition button rendering, Pubblica progetto master publish button, Blueprint dark palette intact. Forbidden-word audit on rendered DOM: 0 hits for Translate/AI/Generate/GPT/Claude/Rewrite/Auto-rewrite. Editorial labels in source: 'Compose Market Edition' ✓, 'Adapt for Market' ✓, 'Publish International Edition' ✓; 'Refine Material Narrative' is the only canon verb NOT yet wired in the variant editor (currently labels are 'Vocabolario materico' + 'Aspirational narrative').",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Projects Studio variant editor", "issues": ["Missing canon editorial verb 'Refine Material Narrative' — spec lists 4 verbs (Compose / Adapt / Refine / Publish), 3 are wired. Recommend renaming the material_language block heading or save-CTA to 'Refine Material Narrative' so the canon vocabulary is complete."]}
+    ]
+  },
+  "fixed_during_testing": [
+    {
+      "file": "/app/backend/services/project_market_composer.py",
+      "line": 194,
+      "issue": "Endpoint POST /api/portfolio/admin/projects/{id}/compose returned 500 (instead of 200 on success or 502 on composer failure). RCA: `chat.with_max_tokens(2400)` raised AttributeError — emergentintegrations.LlmChat exposes `with_model()`, `with_params(**)` but no `with_max_tokens`. Exception was not caught by composer's try/except (it wrapped only `chat.send_message`), so it bubbled up as 500.",
+      "fix": "Replaced `.with_max_tokens(2400)` with `.with_params(max_tokens=2400)`. REAL Claude compose then succeeded in ~21s for the demo tenant's Italian market, persisted a culturally-adapted variant (target_locale=it-IT, cultural_angle/hospitality_tone/material_language/story_body all non-empty, not a literal translation)."
+    }
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_phase_s_connect_step3.py (8 baseline tests — UNCHANGED)",
+    "/app/backend/tests/test_phase_s_connect_step3_e2e.py (5 NEW e2e tests — REAL Claude + isolation)",
+    "/app/test_reports/pytest/iteration_59_baseline.xml",
+    "/app/test_reports/pytest/iteration_59_e2e.xml"
+  ],
+  "action_items": [
+    "(Editorial polish, LOW) Wire 'Refine Material Narrative' as the heading/CTA for the variant material_language section so all 4 canon verbs are present in the UI.",
+    "(Hardening, LOW) Move the `chat = chat.with_model(...).with_params(...)` block inside the try/except in compose_market_edition so any future emergentintegrations API drift produces a clean 502 ok:false instead of bubbling 500.",
+    "(Optional) The composer test `test_compose_requires_valid_market` asserts 502 on an invalid market_id — still passes, but pre-fix it was masking the real with_max_tokens AttributeError. Consider adding a unit test that exercises the happy path on a mock market to catch composer-init regressions without an LLM call."
+  ],
+  "critical_code_review_comments": [
+    "project_market_composer.py compose_market_edition() wraps ONLY `chat.send_message` in try/except — `chat.with_model().with_params()` is outside. Any chat-API drift will turn into a hard 500 rather than the documented 502 ok:false contract. Move the chat-init into the try block.",
+    "portfolio.py compose_variant endpoint: raises HTTPException(502, ...) when res['ok'] is False. Good. But composer-level uncaught AttributeError bypasses this — confirmed in this iteration. Consider a top-level try/except in the endpoint that converts unexpected exceptions into 502 with the same shape.",
+    "ProjectsStudioPage.jsx: 904 lines — borderline. As the variant editor grows (material_language sub-blocks, SEO, CTA editors) this should be split into ProjectsStudioPage.jsx + MasterEditor.jsx + VariantEditor.jsx + MarketsRail.jsx.",
+    "ProjectsStudioPage.jsx editor uses inline `setSelected({...selected, ...r.data})` on save — same dirty-flag pattern flagged in iteration_58 for StorefrontStudioPage. Same recommendation: keep dirty=true on PATCH failure so user sees their unsaved edits.",
+    "Public list endpoint /api/portfolio/public/{tenant_slug}/projects returns 0 if no variant is published — correct per spec (master_only fallback is only on slug-detail). But the OpenAPI/docstring should make this explicit so storefront consumers don't infer empty=tenant-missing.",
+    "router.py uses `body.model_dump(exclude_none=True)` on PATCH — clients cannot intentionally null a field. Acceptable for v1; document or add explicit `set_null` flag if needed later.",
+    "Sidebar nav uses fallback='Projects Studio' but I18n key 'nav.projectsStudio' — ensure the key is added to the it/en/de/fr/es dictionaries to avoid mixed-locale chrome for tenant_admins."
+  ],
+  "updated_files": [
+    "/app/backend/services/project_market_composer.py (FIXED line 194 — with_max_tokens → with_params(max_tokens=…))",
+    "/app/backend/tests/test_phase_s_connect_step3_e2e.py (NEW — 5 e2e tests, ~180 lines)"
+  ],
+  "success_rate": {
+    "backend": "100% (13/13 — 8 baseline + 5 new e2e; +23/23 prior regression GREEN)",
+    "frontend": "95% (Page loads, all required testids present, master rail + split-pane + tabs + market sub-tabs + readout + compose button + master publish button working; only the canon verb 'Refine Material Narrative' missing from variant editor)"
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin, tenant mood-demo-studio-81a09e) and studio2@moodfordesign.com / Studio2024! (tenant_admin, tenant mood-demo) — both work.",
+  "seed_data_creation": "Each e2e test creates and tears down its own master (slug prefixed `e2e-compose-` or `e2e-villa-`). The compose test consumed 1 real Claude Sonnet call (~21s, ~2400 tokens). No persistent seed left behind.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Projects Studio™ backend + frontend GREEN after fixing project_market_composer.py with_max_tokens bug. Backend e2e regression: `pytest backend/tests/test_phase_s_connect_step3.py backend/tests/test_phase_s_connect_step3_e2e.py` — 13/13 in ~40s. The compose test calls REAL Claude (~21s, costs tokens) — skip with `-k 'not real_claude'` for fast iteration. The Italian market_id is resolved at runtime from /api/tenants/me/markets. Public list endpoint is correctly variant-required (master_only fallback only on slug-detail). Cross-tenant isolation verified end-to-end.",
+  "rca_of_the_issue": "Compose 500 bug RCA: emergentintegrations.LlmChat does NOT expose `with_max_tokens(n)` — only `with_model(provider, model)` and `with_params(**kwargs)`. The composer was calling `chat.with_model(*DEFAULT_MODEL).with_max_tokens(2400)` which raised AttributeError BEFORE the try/except that wraps `chat.send_message`. FastAPI bubbled it to a generic 500. Reproduction: POST /api/portfolio/admin/projects/{id}/compose with any valid market_id → 500 Internal Server Error in <1s (no LLM call ever fired). Backend log: `AttributeError: 'LlmChat' object has no attribute 'with_max_tokens'` at project_market_composer.py:194. Fix: one-line change `.with_max_tokens(2400)` → `.with_params(max_tokens=2400)`. Post-fix verified: real Claude returned a culturally-adapted Italian variant in 21s, status 200 + ok:true + variant_id."
+}

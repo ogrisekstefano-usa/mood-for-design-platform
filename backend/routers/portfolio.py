@@ -34,7 +34,7 @@ from pydantic import BaseModel, Field
 from database import db
 from middleware.auth import get_current_user
 
-router = APIRouter(prefix="/api/portfolio", tags=["portfolio"])
+router = APIRouter(tags=["portfolio"])
 
 
 def _iso() -> str:

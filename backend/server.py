@@ -88,6 +88,8 @@ api_router.include_router(reference_intelligence.router, tags=["reference-intell
 api_router.include_router(relationships.router, tags=["relationships"])
 api_router.include_router(markets.router, tags=["markets"])
 api_router.include_router(editorial.router, tags=["editorial"])
+from routers import portfolio
+api_router.include_router(portfolio.router, prefix="/portfolio", tags=["portfolio"])
 api_router.include_router(proposals.router, prefix="/proposals", tags=["proposals"])
 api_router.include_router(moodboards.router, prefix="/moodboards", tags=["moodboards"])
 api_router.include_router(moodboards_v1.router, prefix="/moodboards", tags=["moodboards-blocks"])
