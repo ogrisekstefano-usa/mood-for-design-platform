@@ -182,16 +182,22 @@ const Hero = ({ cms, locale, brandName }) => {
 
 
 const DualCTA = ({ cms, locale }) => {
+  // Phase S-CONNECT Step 4 — bind to Storefront Studio `dual_cta` section
+  // (single section_type with private_* and professional_* fields per locale).
   const F = FALLBACK.dual;
+  const dual = cms?.dual_cta;
+  const fromDual = (key) =>
+    dual?.[locale]?.[key] ?? dual?.[toBcp47Storefront(locale)]?.[key] ?? dual?._default?.[key] ?? dual?.['en-US']?.[key] ?? dual?.['it-IT']?.[key];
+
   const card = (kind, fb) => ({
-    eyebrow: fromCMS(cms, `dual_cta_${kind}`, 'eyebrow', locale) || pick(fb.eyebrow, locale),
-    title:   fromCMS(cms, `dual_cta_${kind}`, 'title',   locale) || pick(fb.title,   locale),
-    body:    fromCMS(cms, `dual_cta_${kind}`, 'body',    locale) || pick(fb.body,    locale),
-    cta:     fromCMS(cms, `dual_cta_${kind}`, 'cta',     locale) || pick(fb.cta,     locale),
-    href:    fromCMS(cms, `dual_cta_${kind}`, 'href',    locale) || fb.href,
-    image:   fromCMS(cms, `dual_cta_${kind}`, 'image',   locale) || fb.image,
+    eyebrow: fromDual(`${kind}_eyebrow`) || fromCMS(cms, `dual_cta_${kind}`, 'eyebrow', locale) || pick(fb.eyebrow, locale),
+    title:   fromDual(`${kind}_title`)   || fromCMS(cms, `dual_cta_${kind}`, 'title',   locale) || pick(fb.title,   locale),
+    body:    fromDual(`${kind}_body`)    || fromCMS(cms, `dual_cta_${kind}`, 'body',    locale) || pick(fb.body,    locale),
+    cta:     fromDual(`${kind}_cta`)     || fromCMS(cms, `dual_cta_${kind}`, 'cta',     locale) || pick(fb.cta,     locale),
+    href:    fromDual(`${kind}_href`)    || fromCMS(cms, `dual_cta_${kind}`, 'href',    locale) || fb.href,
+    image:   fromDual(`${kind}_image`)   || fromCMS(cms, `dual_cta_${kind}`, 'image',   locale) || fb.image,
   });
-  const p = card('privato', F.privato);
+  const p = card('private', F.privato);
   const q = card('professional', F.professional);
   return (
     <section className="mfd-dual-cta" data-testid="home-dual-cta">
@@ -328,7 +334,7 @@ const Newsletter = ({ cms, locale, slug }) => {
   const body        = fromCMS(cms, 'newsletter', 'body',        locale) || pick(N.body, locale);
   const placeholder = fromCMS(cms, 'newsletter', 'placeholder', locale) || pick(N.placeholder, locale);
   const ctaLabel    = fromCMS(cms, 'newsletter', 'cta',         locale) || pick(N.cta, locale);
-  const successMsg  = pick(N.success, locale);
+  const successMsg  = fromCMS(cms, 'newsletter', 'success',     locale) || pick(N.success, locale);
 
   const [email, setEmail] = useState('');
   const [busy, setBusy] = useState(false);
@@ -378,6 +384,138 @@ const Newsletter = ({ cms, locale, slug }) => {
 };
 
 
+// ── New cinematic bands bound to DB sections via Experience Studio ────
+
+const StatsBand = ({ cms, locale }) => {
+  const section = cms?.stats_band;
+  if (!section) return null;
+  const eyebrow = fromCMS(cms, 'stats_band', 'eyebrow', locale);
+  const title   = fromCMS(cms, 'stats_band', 'title',   locale);
+  const body    = fromCMS(cms, 'stats_band', 'body',    locale);
+  const items   = Array.isArray(section._settings?.stats) ? section._settings.stats : [];
+  if (items.length === 0 && !title) return null;
+  return (
+    <section className="mfd-stats" data-testid="home-stats-band">
+      <div className="mfd-stats__head">
+        {eyebrow && <p className="mfd-stats__eyebrow">{eyebrow}</p>}
+        {title && <h2 className="mfd-stats__title">{title}</h2>}
+        {body && <p className="mfd-stats__body">{body}</p>}
+      </div>
+      <div className="mfd-stats__grid">
+        {items.map((it, i) => (
+          <div className="mfd-stats__cell" key={i} data-testid={`home-stats-cell-${i}`}>
+            <span className="mfd-stats__value">{it.value}</span>
+            <span className="mfd-stats__label">{pick(it.label_i18n, locale) || ''}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+const BrandLogosStrip = ({ cms, locale }) => {
+  const section = cms?.brand_logos;
+  if (!section) return null;
+  const eyebrow = fromCMS(cms, 'brand_logos', 'eyebrow', locale);
+  const title   = fromCMS(cms, 'brand_logos', 'title',   locale);
+  const items   = Array.isArray(section._settings?.logos) ? section._settings.logos : [];
+  if (items.length === 0) return null;
+  return (
+    <section className="mfd-logos" data-testid="home-brand-logos">
+      {(eyebrow || title) && (
+        <div className="mfd-logos__head">
+          {eyebrow && <p className="mfd-logos__eyebrow">{eyebrow}</p>}
+          {title && <h2 className="mfd-logos__title">{title}</h2>}
+        </div>
+      )}
+      <div className="mfd-logos__strip">
+        {items.map((it, i) => {
+          const inner = it.logo_url
+            ? <img src={it.logo_url} alt={it.name || ''} className="mfd-logos__img" />
+            : <span className="mfd-logos__name">{it.name}</span>;
+          return it.href
+            ? <a key={i} href={it.href} className="mfd-logos__cell" data-testid={`home-logo-${i}`} target="_blank" rel="noopener noreferrer">{inner}</a>
+            : <div key={i} className="mfd-logos__cell" data-testid={`home-logo-${i}`}>{inner}</div>;
+        })}
+      </div>
+    </section>
+  );
+};
+
+const MagazineGrid = ({ cms, locale, slug }) => {
+  const section = cms?.magazine_grid;
+  const [articles, setArticles] = useState(null);
+  const limit = section?._settings?.limit ?? 3;
+  const mode  = section?._settings?.mode  || 'auto';
+  const slugs = section?._settings?.slugs || [];
+
+  useEffect(() => {
+    if (!section) return;
+    const bcp = toBcp47Storefront(locale);
+    axios.get(`${BACKEND_URL}/api/magazine/public/${slug}/articles?locale_code=${encodeURIComponent(bcp)}&limit=${limit}`)
+      .then((r) => setArticles(r.data?.articles || []))
+      .catch(() => setArticles([]));
+  }, [section, locale, slug, limit]);
+
+  if (!section) return null;
+  const eyebrow = fromCMS(cms, 'magazine_grid', 'eyebrow', locale);
+  const title   = fromCMS(cms, 'magazine_grid', 'title',   locale);
+  const body    = fromCMS(cms, 'magazine_grid', 'body',    locale);
+  const ctaLabel = fromCMS(cms, 'magazine_grid', 'cta_label', locale);
+  const ctaHref  = fromCMS(cms, 'magazine_grid', 'cta_href',  locale) || '/magazine';
+
+  let items = articles;
+  if (mode === 'manual' && Array.isArray(slugs) && slugs.length > 0 && Array.isArray(articles)) {
+    items = articles.filter((a) => slugs.includes(a.slug));
+  }
+  // Editorial empty state — no silent fallback.
+  if (Array.isArray(items) && items.length === 0) {
+    if (!title) return null;
+    return (
+      <section className="mfd-mag" data-testid="home-magazine-grid">
+        <div className="mfd-mag__head">
+          {eyebrow && <p className="mfd-mag__eyebrow">{eyebrow}</p>}
+          <h2 className="mfd-mag__title">{title}</h2>
+        </div>
+        <p className="mfd-mag__empty">
+          {locale?.startsWith('it') ? 'Nuovi articoli editoriali in arrivo.' : 'New editorial stories coming soon.'}
+        </p>
+      </section>
+    );
+  }
+  if (!Array.isArray(items)) return null;
+
+  return (
+    <section className="mfd-mag" data-testid="home-magazine-grid">
+      <div className="mfd-mag__head">
+        {eyebrow && <p className="mfd-mag__eyebrow">{eyebrow}</p>}
+        {title && <h2 className="mfd-mag__title">{title}</h2>}
+        {body && <p className="mfd-mag__body">{body}</p>}
+      </div>
+      <div className="mfd-mag__grid">
+        {items.slice(0, limit).map((a) => (
+          <Link to={`/magazine/${a.slug}`} key={a.slug} className="mfd-mag__card" data-testid={`home-mag-${a.slug}`}>
+            <div className="mfd-mag__media" style={{ backgroundImage: a.cover_image_url ? `url("${a.cover_image_url}")` : undefined }} aria-hidden />
+            <div className="mfd-mag__caption">
+              {a.category && <span className="mfd-mag__category">{a.category}</span>}
+              <h3 className="mfd-mag__h3">{a.title}</h3>
+              {a.excerpt && <p className="mfd-mag__excerpt">{a.excerpt}</p>}
+            </div>
+          </Link>
+        ))}
+      </div>
+      {ctaLabel && (
+        <div className="mfd-mag__cta-row">
+          <Link to={ctaHref} className="mfd-mag__cta" data-testid="home-mag-cta">
+            {ctaLabel} <ArrowRight size={14} strokeWidth={1.7} aria-hidden />
+          </Link>
+        </div>
+      )}
+    </section>
+  );
+};
+
+
 // ── Page ────────────────────────────────────────────────────────────────
 
 const HomePage = () => {
@@ -392,10 +530,13 @@ const HomePage = () => {
 
   return (
     <div className="mfd-home" data-testid="home-page" data-surface="storefront">
-      <Hero      cms={cms} locale={locale} brandName={brandName} />
-      <DualCTA   cms={cms} locale={locale} />
-      <UspStrip  cms={cms} locale={locale} brandName={brandName} />
+      <Hero       cms={cms} locale={locale} brandName={brandName} />
+      <DualCTA    cms={cms} locale={locale} />
+      <UspStrip   cms={cms} locale={locale} brandName={brandName} />
+      <StatsBand  cms={cms} locale={locale} />
       <ProjectsRail cms={cms} locale={locale} />
+      <MagazineGrid cms={cms} locale={locale} slug={slug} />
+      <BrandLogosStrip cms={cms} locale={locale} />
       <Newsletter cms={cms} locale={locale} slug={slug} />
     </div>
   );

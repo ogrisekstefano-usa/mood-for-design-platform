@@ -62,7 +62,6 @@ const MagazineEditorPage = lazy(() => import('./pages/settings/MagazineEditorPag
 const ProfessionalsGatewayPage = lazy(() => import('./pages/site/ProfessionalsGatewayPage'));
 const ProfessionalIntakePage = lazy(() => import('./pages/site/ProfessionalIntakePage'));
 const LanguagesPage = lazy(() => import('./pages/settings/LanguagesPage'));
-const StorefrontPage = lazy(() => import('./pages/settings/StorefrontStudio'));
 const MembersPage = lazy(() => import('./pages/settings/MembersPage'));
 const PlanPage = lazy(() => import('./pages/settings/PlanPage'));
 
@@ -311,7 +310,8 @@ function App() {
                   <Route path="/settings/brand" element={<StudioAdminRoute><BrandStudioPage /></StudioAdminRoute>} />
                   <Route path="/settings/domains" element={<StudioAdminRoute><DomainsPage /></StudioAdminRoute>} />
                   <Route path="/settings/forms" element={<StudioAdminRoute><FormBuilderPage /></StudioAdminRoute>} />
-                  <Route path="/settings/storefront" element={<StudioAdminRoute><StorefrontPage /></StudioAdminRoute>} />
+                  {/* Legacy storefront route → redirect to canonical Experience Studio (Fase 0). */}
+                  <Route path="/settings/storefront" element={<Navigate to="/blueprint/experience" replace />} />
                   <Route path="/settings/magazine" element={<StudioAdminRoute><MagazineAdminPage /></StudioAdminRoute>} />
                   <Route path="/settings/magazine/:id" element={<StudioAdminRoute><MagazineEditorPage /></StudioAdminRoute>} />
                   <Route path="/settings/plan" element={<StudioAdminRoute><PlanPage /></StudioAdminRoute>} />
@@ -327,8 +327,13 @@ function App() {
                   {/* International Presence™ — Phase S-IDENTITY Step 1. */}
                   <Route path="/settings/international-presence" element={<StudioAdminRoute><InternationalPresencePage /></StudioAdminRoute>} />
 
-                  {/* Storefront Studio™ — Phase S-CONNECT Step 2. */}
-                  <Route path="/blueprint/storefront" element={<StudioAdminRoute><StorefrontStudioPage /></StudioAdminRoute>} />
+                  {/* Storefront Studio™ — Phase S-CONNECT Step 2.
+                      Legacy alias `/blueprint/storefront` → canonical `/blueprint/experience`. */}
+                  <Route path="/blueprint/storefront" element={<Navigate to="/blueprint/experience" replace />} />
+                  <Route path="/blueprint/experience" element={<StudioAdminRoute><StorefrontStudioPage /></StudioAdminRoute>} />
+
+                  {/* Forms & Journeys™ — Luxury Lead Architecture (Fase 0). */}
+                  <Route path="/blueprint/forms-journeys" element={<StudioAdminRoute><FormBuilderPage /></StudioAdminRoute>} />
 
                   {/* Projects Studio™ — Phase S-CONNECT Step 3 (Portfolio Cultural Adaptation). */}
                   <Route path="/blueprint/projects-studio" element={<StudioAdminRoute><ProjectsStudioPage /></StudioAdminRoute>} />

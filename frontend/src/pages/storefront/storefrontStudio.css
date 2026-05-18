@@ -307,3 +307,134 @@
   .ss-band { grid-template-columns: 28px 1fr; }
   .ss-band__actions { grid-column: 2; }
 }
+
+/* ── TRACEABILITY CHIP — "Controls public experience: X" ─────── */
+.ss-trace {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 14px; padding: 6px 12px;
+  background: var(--bp-surface-2);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-sm, 4px);
+  font-size: 10px; letter-spacing: 0.08em;
+}
+.ss-trace__dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--bp-primary);
+}
+.ss-trace__label {
+  color: var(--bp-text-muted); text-transform: uppercase;
+  font-weight: 500; letter-spacing: 0.24em; font-size: 9px;
+}
+.ss-trace__surface {
+  color: var(--bp-text-primary);
+  font-family: var(--bp-font-heading); font-style: italic;
+  font-size: 11.5px;
+}
+
+/* ── TABULAR / LIST RENDERER ─────────────────────────────────── */
+.ss-table { display: flex; flex-direction: column; gap: 8px; }
+.ss-table__head {
+  display: flex; gap: 10px; align-items: center;
+  padding: 10px 8px; border-bottom: 1px solid var(--bp-border);
+  font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--bp-text-subtle); font-weight: 500;
+}
+.ss-table__row {
+  display: flex; gap: 10px; align-items: center;
+  padding: 8px 0;
+}
+.ss-table__row--inset {
+  padding: 6px 0 6px 12px;
+  border-left: 1px solid var(--bp-border);
+}
+.ss-table__order {
+  font-family: var(--bp-font-mono);
+  font-size: 10px; color: var(--bp-text-subtle);
+}
+.ss-table__empty {
+  padding: 24px 12px;
+  color: var(--bp-text-muted);
+  font-family: var(--bp-font-heading); font-style: italic;
+  font-size: 13px;
+}
+.ss-table__actions { display: flex; gap: 4px; }
+
+.ss-input--sm { padding: 6px 10px; font-size: 12px; }
+
+.ss-icon-btn {
+  background: transparent; border: 1px solid var(--bp-border-strong);
+  color: var(--bp-text-muted);
+  width: 26px; height: 26px; border-radius: var(--bp-radius-sm, 4px);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: color .2s, border-color .2s;
+}
+.ss-icon-btn:hover { color: var(--bp-primary); border-color: var(--bp-primary); }
+.ss-icon-btn--danger:hover { color: #d96a6a; border-color: #d96a6a; }
+
+.ss-btn--ghost {
+  background: transparent; color: var(--bp-text-muted);
+  display: inline-flex; align-items: center; gap: 6px;
+  align-self: flex-start;
+  border-style: dashed;
+}
+.ss-btn--ghost:hover { color: var(--bp-primary); border-color: var(--bp-primary); }
+.ss-btn--sm { padding: 6px 12px; font-size: 9.5px; letter-spacing: 0.18em; }
+
+.ss-chip--inline {
+  height: 28px; padding: 0 12px;
+  font-size: 9.5px; letter-spacing: 0.18em;
+}
+
+.ss-subhead {
+  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--bp-text-secondary); font-weight: 500;
+  margin: 18px 0 12px;
+}
+
+/* ── FOOTER COLUMNS CARDS ─────────────────────────────────────── */
+.ss-footer-col-card {
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-sm, 4px);
+  padding: 14px 14px 16px;
+  background: var(--bp-surface-2);
+  margin-bottom: 10px;
+}
+.ss-footer-col-card__head {
+  display: flex; gap: 8px; align-items: center;
+  margin-bottom: 12px;
+}
+.ss-footer-col-card__links {
+  display: flex; flex-direction: column; gap: 4px;
+  margin-left: 6px;
+}
+
+/* ── LOGO ROW (brand_logos) ───────────────────────────────────── */
+.ss-logo-row {
+  display: flex; gap: 12px; align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--bp-border);
+}
+.ss-logo-row__preview {
+  width: 64px; height: 40px;
+  background: var(--bp-bg);
+  border: 1px solid var(--bp-border-strong);
+  border-radius: var(--bp-radius-sm, 4px);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--bp-text-subtle); font-size: 18px;
+}
+.ss-logo-row__preview img {
+  max-width: 100%; max-height: 100%; object-fit: contain;
+  filter: brightness(0.95);
+}
+.ss-logo-row__fields {
+  flex: 1; display: flex; flex-direction: column; gap: 6px;
+}
+
+/* ── DUAL CTA BLOCK ───────────────────────────────────────────── */
+.ss-dual-card-block {
+  padding: 14px;
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-sm, 4px);
+  background: var(--bp-surface-2);
+}

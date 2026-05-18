@@ -166,3 +166,33 @@ Three options, user picks one:
 3. **`ui.js` UI strings**: keep as code i18n OR migrate to DB tenant-editable (e.g. "Discover the projects" button label)?
 4. **Magazine variant approval workflow**: completi UI ora oppure prima fai BATCH 1?
 5. **Legacy `/pages/settings/StorefrontPage.jsx`**: ok eliminare?
+
+---
+
+## 9 · Cleanup Delta — Fase 0 + Fase 1 (18 Feb 2026)
+
+### ✅ Done
+- **Storefront Studio → Experience Studio™** (label + canonical route `/blueprint/experience`, `/blueprint/storefront` redirect)
+- Sidebar IA refactored into 9 canonical sections per user directive
+- `/blueprint/forms-journeys` route added → FormBuilderPage (initial wrapper; full Luxury Lead Architecture in Fase 3)
+- DELETED: `/pages/settings/StorefrontPage.jsx`
+- DELETED: `/pages/settings/StorefrontStudio.jsx`
+- `/settings/storefront` → redirect to canonical
+- Hybrid renderer module: `/app/frontend/src/pages/storefront/bandEditors.jsx`
+  - Tabular: `NavTopEditor`, `FooterColumnsEditor`
+  - Cinematic: `StatsBandEditor`, `BrandLogosEditor`, `MagazineGridEditor`, `NewsletterEditor`, `DualCtaEditor`
+- Traceability chip "● CONTROLS PUBLIC EXPERIENCE: X" on every editor
+- Seed script `/app/backend/scripts/seed_storefront_home_bands.py` (idempotent, dedupes duplicates, merges without overwriting)
+- Public HomePage renderers: `StatsBand`, `BrandLogosStrip`, `MagazineGrid` with editorial empty-state (no silent fallback when DB empty)
+- `DualCTA` rebound to canonical `dual_cta` section schema
+- Newsletter `success` now CMS-sourced
+
+### 🟡 Deferred to Fase 6 (Polish)
+- Remove `homepage.js` + `navigation.js` legacy fallbacks (kept as last-resort safety net while empty-state UX is validated; will be deleted once Fase 5 ui_overrides_i18n lands)
+- ESLint rule blocking `site/content/*` imports in new code
+- Magazine locale routes collapse into `SiteLayout`
+- "Controls public experience" labels on the rest of Blueprint admins (Brand Studio, Editorial, Forms, International)
+
+### 🔴 Still required (Fase 2 / 3)
+- Magazine pipeline parity (Fase 2) — Editorial Studio variant publish workflow + public bind
+- Forms & Journeys™ = Luxury Lead Architecture™ (Fase 3) — schema extension + new `/start-project/{private,professional}` + `/contact` DB-driven + delete onboarding wreckage

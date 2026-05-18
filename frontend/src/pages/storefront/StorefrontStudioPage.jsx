@@ -29,6 +29,7 @@ import api from '../../lib/api';
 import { GripVertical, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import './storefrontStudio.css';
+import { renderBandEditor, TraceabilityChip } from './bandEditors';
 
 // Editorial labels for the storefront bands. Keep the section_type as the
 // stable key (matches DB), but show editorial titles to the user.
@@ -38,7 +39,7 @@ const BAND_META = {
   value_props:          { title: 'Services',              intro: 'I pilastri editoriali dello studio.' },
   services:             { title: 'Services',              intro: 'I pilastri editoriali dello studio.' },
   materials:            { title: 'Materials',             intro: 'Le materie scelte e il vocabolario tattile.' },
-  stats_band:           { title: 'Hospitality Narrative', intro: 'L\'esperienza ospitale del progetto.' },
+  stats_band:           { title: 'Stats Band',            intro: 'L\'esperienza dello studio in numeri.' },
   hospitality:          { title: 'Hospitality Narrative', intro: 'L\'esperienza ospitale del progetto.' },
   projects_preview:     { title: 'Projects Band',         intro: 'La selezione editoriale di progetti.' },
   projects:             { title: 'Projects Band',         intro: 'La selezione editoriale di progetti.' },
@@ -47,6 +48,12 @@ const BAND_META = {
   brand_logos:          { title: 'Trusted Logos',         intro: 'I segnali di credibilità.' },
   proposal_cta:         { title: 'Proposal CTA',          intro: 'L\'invito alla consultazione privata.' },
   footer_narrative:     { title: 'Footer Narrative',      intro: 'Il chiudere editoriale.' },
+  nav_top:              { title: 'Navigation · Header',   intro: 'Le voci di menu del sito pubblico.' },
+  main_links:           { title: 'Navigation · Header',   intro: 'Le voci di menu del sito pubblico.' },
+  navigation_main:      { title: 'Navigation · Header',   intro: 'Le voci di menu del sito pubblico.' },
+  footer_columns:       { title: 'Footer Columns',        intro: 'Colonne, social e showroom block del footer.' },
+  newsletter:           { title: 'Newsletter Band',       intro: 'L\'invito all\'iscrizione editoriale.' },
+  dual_cta:             { title: 'Dual CTA · Privato / Professional', intro: 'I due percorsi di acquisizione.' },
 };
 const bandMeta = (st) => BAND_META[st] || { title: st, intro: 'Custom storefront band.' };
 
@@ -188,12 +195,12 @@ const StorefrontStudioPage = () => {
     <div className="ss-root" data-no-edit={!selected} data-testid="ss-root">
       <div className="ss-stage">
         <header className="ss-head">
-          <p className="ss-head__eyebrow">Blueprint · Storefront Orchestration</p>
-          <h1 className="ss-head__title">Storefront Studio<sup>™</sup></h1>
+          <p className="ss-head__eyebrow">Blueprint · Experience Orchestration</p>
+          <h1 className="ss-head__title">Experience Studio<sup>™</sup></h1>
           <p className="ss-head__intro">
-            La sala editoriale di orchestrazione delle fasce pubbliche. Ogni fascia
+            L'orchestrazione cinematica della presenza pubblica. Ogni fascia
             è una superficie narrativa che adatta tono, ritmo e CTA al mercato che la guarda.
-            Le modifiche qui sostituiscono i moduli statici del frontend pubblico.
+            Tutto ciò che vedi qui è il sito pubblico — niente di nascosto, niente di hardcoded.
           </p>
         </header>
 
@@ -341,6 +348,7 @@ const BandEditor = ({ section, markets, activeLocales, dirty, saving, onPatch, o
       <header className="ss-editor__head">
         <p className="ss-editor__eyebrow">{meta.title} · {section.section_type}</p>
         <h2 className="ss-editor__title">{meta.intro}</h2>
+        <TraceabilityChip section_type={section.section_type} />
       </header>
 
       <div className="ss-locale-tabs" data-testid="ss-locale-tabs">
@@ -355,59 +363,71 @@ const BandEditor = ({ section, markets, activeLocales, dirty, saving, onPatch, o
         ))}
       </div>
 
-      <div className="ss-section">
-        <p className="ss-section__label">Eyebrow / kicker</p>
-        <input className="ss-input" data-testid="ss-field-eyebrow"
-          value={localeData.eyebrow || ''}
-          onChange={(e) => patchLocale('eyebrow', e.target.value)}
-          placeholder="Sopra-titolo editoriale" />
-      </div>
-      <div className="ss-section">
-        <p className="ss-section__label">Title</p>
-        <textarea className="ss-textarea ss-input--display"
-          data-testid="ss-field-title"
-          rows={2}
-          value={localeData.title || ''}
-          onChange={(e) => patchLocale('title', e.target.value)}
-          placeholder="Titolo cinematico" />
-      </div>
-      <div className="ss-section">
-        <p className="ss-section__label">Subtitle</p>
-        <textarea className="ss-textarea"
-          data-testid="ss-field-subtitle"
-          rows={2}
-          value={localeData.subtitle || ''}
-          onChange={(e) => patchLocale('subtitle', e.target.value)} />
-      </div>
-      <div className="ss-section">
-        <p className="ss-section__label">Body</p>
-        <textarea className="ss-textarea"
-          data-testid="ss-field-body"
-          rows={4}
-          value={localeData.body || ''}
-          onChange={(e) => patchLocale('body', e.target.value)} />
-      </div>
+      {/* Specialized editors for hybrid renderers (nav_top, footer_columns,
+          stats_band, brand_logos, magazine_grid, newsletter, dual_cta). */}
+      {renderBandEditor({
+        section,
+        localeTab,
+        activeLocales,
+        onPatchLocale: patchLocale,
+        onPatchSetting: patchSetting,
+      }) || (
+        <>
+          <div className="ss-section">
+            <p className="ss-section__label">Eyebrow / kicker</p>
+            <input className="ss-input" data-testid="ss-field-eyebrow"
+              value={localeData.eyebrow || ''}
+              onChange={(e) => patchLocale('eyebrow', e.target.value)}
+              placeholder="Sopra-titolo editoriale" />
+          </div>
+          <div className="ss-section">
+            <p className="ss-section__label">Title</p>
+            <textarea className="ss-textarea ss-input--display"
+              data-testid="ss-field-title"
+              rows={2}
+              value={localeData.title || ''}
+              onChange={(e) => patchLocale('title', e.target.value)}
+              placeholder="Titolo cinematico" />
+          </div>
+          <div className="ss-section">
+            <p className="ss-section__label">Subtitle</p>
+            <textarea className="ss-textarea"
+              data-testid="ss-field-subtitle"
+              rows={2}
+              value={localeData.subtitle || ''}
+              onChange={(e) => patchLocale('subtitle', e.target.value)} />
+          </div>
+          <div className="ss-section">
+            <p className="ss-section__label">Body</p>
+            <textarea className="ss-textarea"
+              data-testid="ss-field-body"
+              rows={4}
+              value={localeData.body || ''}
+              onChange={(e) => patchLocale('body', e.target.value)} />
+          </div>
 
-      <div className="ss-section">
-        <p className="ss-section__label">CTA · label · destination</p>
-        <input className="ss-input" data-testid="ss-field-cta-label"
-          value={localeData.cta_label || ''}
-          onChange={(e) => patchLocale('cta_label', e.target.value)}
-          placeholder="Es. Prenota un appuntamento" />
-        <input className="ss-input" data-testid="ss-field-cta-href"
-          style={{ marginTop: 8 }}
-          value={localeData.cta_href || ''}
-          onChange={(e) => patchLocale('cta_href', e.target.value)}
-          placeholder="/start-project · /magazine · …" />
-      </div>
+          <div className="ss-section">
+            <p className="ss-section__label">CTA · label · destination</p>
+            <input className="ss-input" data-testid="ss-field-cta-label"
+              value={localeData.cta_label || ''}
+              onChange={(e) => patchLocale('cta_label', e.target.value)}
+              placeholder="Es. Prenota un appuntamento" />
+            <input className="ss-input" data-testid="ss-field-cta-href"
+              style={{ marginTop: 8 }}
+              value={localeData.cta_href || ''}
+              onChange={(e) => patchLocale('cta_href', e.target.value)}
+              placeholder="/start-project · /magazine · …" />
+          </div>
 
-      <div className="ss-section">
-        <p className="ss-section__label">Cover image · URL</p>
-        <input className="ss-input" data-testid="ss-field-cover"
-          value={localeData.cover_url || settings.background_image_url || ''}
-          onChange={(e) => patchLocale('cover_url', e.target.value)}
-          placeholder="https://…" />
-      </div>
+          <div className="ss-section">
+            <p className="ss-section__label">Cover image · URL</p>
+            <input className="ss-input" data-testid="ss-field-cover"
+              value={localeData.cover_url || settings.background_image_url || ''}
+              onChange={(e) => patchLocale('cover_url', e.target.value)}
+              placeholder="https://…" />
+          </div>
+        </>
+      )}
 
       <div className="ss-section">
         <p className="ss-section__label">Market visibility</p>

@@ -617,3 +617,128 @@
 @media (max-width: 1100px) {
   .mfd-footer__cols { grid-template-columns: 1fr 1fr; }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   STATS BAND · BRAND LOGOS · MAGAZINE GRID (Fase 1 — DB-driven)
+   ─────────────────────────────────────────────────────────── */
+.mfd-stats {
+  background: #f5f1ea;
+  color: #2c2820;
+  padding: 96px 8vw 88px;
+  text-align: left;
+}
+.mfd-stats__head { max-width: 760px; margin-bottom: 48px; }
+.mfd-stats__eyebrow {
+  font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: #8B6F3D; margin-bottom: 14px; font-weight: 500;
+}
+.mfd-stats__title {
+  font-family: var(--mfd-font-serif, 'Cormorant Garamond', 'Playfair Display', serif);
+  font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+  line-height: 1.15; font-weight: 300; margin: 0 0 14px;
+}
+.mfd-stats__body { font-size: 15px; line-height: 1.7; color: #5a544a; max-width: 580px; }
+.mfd-stats__grid {
+  display: grid; gap: 56px 48px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  border-top: 1px solid rgba(0,0,0,0.12);
+  padding-top: 56px;
+}
+.mfd-stats__cell { display: flex; flex-direction: column; gap: 8px; }
+.mfd-stats__value {
+  font-family: var(--mfd-font-serif, 'Cormorant Garamond', serif);
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  line-height: 1; font-weight: 300; color: #2c2820;
+  letter-spacing: -0.01em;
+}
+.mfd-stats__label {
+  font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: #5a544a; font-weight: 500;
+}
+
+.mfd-logos {
+  background: #ffffff; padding: 72px 8vw;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.mfd-logos__head { text-align: center; margin-bottom: 48px; }
+.mfd-logos__eyebrow {
+  font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: #8B6F3D; margin-bottom: 8px;
+}
+.mfd-logos__title {
+  font-family: var(--mfd-font-serif, 'Cormorant Garamond', serif);
+  font-size: clamp(1.5rem, 2.8vw, 2rem); font-weight: 300; margin: 0;
+  color: #2c2820;
+}
+.mfd-logos__strip {
+  display: flex; flex-wrap: wrap; gap: 56px 64px;
+  align-items: center; justify-content: center;
+}
+.mfd-logos__cell {
+  height: 56px;
+  display: flex; align-items: center; justify-content: center;
+  filter: grayscale(1) opacity(0.55);
+  transition: filter .35s;
+}
+.mfd-logos__cell:hover { filter: grayscale(0.2) opacity(1); }
+.mfd-logos__img { max-height: 36px; max-width: 160px; object-fit: contain; }
+.mfd-logos__name {
+  font-family: var(--mfd-font-serif, 'Cormorant Garamond', serif);
+  font-size: 22px; font-weight: 300; color: #2c2820;
+  letter-spacing: 0.02em;
+}
+
+.mfd-mag {
+  background: #0E0E0E; color: #f5f1ea;
+  padding: 112px 8vw 96px;
+}
+.mfd-mag__head { max-width: 760px; margin-bottom: 56px; }
+.mfd-mag__eyebrow {
+  font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--brand-primary, #C9A36E); margin-bottom: 14px;
+}
+.mfd-mag__title {
+  font-family: var(--mfd-font-serif, 'Cormorant Garamond', serif);
+  font-size: clamp(2rem, 4.4vw, 3rem);
+  line-height: 1.1; font-weight: 300; margin: 0 0 14px;
+}
+.mfd-mag__body { font-size: 15px; line-height: 1.7; color: #ada79a; max-width: 580px; }
+.mfd-mag__empty {
+  padding: 64px 0; font-style: italic; color: #6e685c;
+  font-family: var(--mfd-font-serif, 'Cormorant Garamond', serif);
+  font-size: 17px;
+}
+.mfd-mag__grid {
+  display: grid; gap: 36px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+.mfd-mag__card {
+  display: block; color: inherit; text-decoration: none;
+  transition: transform .4s ease-out;
+}
+.mfd-mag__card:hover { transform: translateY(-4px); }
+.mfd-mag__media {
+  width: 100%; aspect-ratio: 4 / 5;
+  background-size: cover; background-position: center;
+  background-color: #1a1a1a;
+}
+.mfd-mag__caption { padding: 18px 0 0; }
+.mfd-mag__category {
+  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--brand-primary, #C9A36E); display: block; margin-bottom: 8px;
+}
+.mfd-mag__h3 {
+  font-family: var(--mfd-font-serif, 'Cormorant Garamond', serif);
+  font-size: 21px; font-weight: 400; line-height: 1.25;
+  margin: 0 0 8px;
+}
+.mfd-mag__excerpt { font-size: 13px; line-height: 1.6; color: #908a7d; }
+.mfd-mag__cta-row { margin-top: 48px; }
+.mfd-mag__cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--brand-primary, #C9A36E); font-weight: 500;
+  padding-bottom: 4px; border-bottom: 1px solid var(--brand-primary, #C9A36E);
+}
+.mfd-mag__cta:hover { color: #f5f1ea; border-color: #f5f1ea; }

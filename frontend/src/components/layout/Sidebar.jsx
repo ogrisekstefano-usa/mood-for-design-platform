@@ -172,11 +172,22 @@ const Sidebar = () => {
           </div>
         )}
 
-        {/* ── EDITORIAL ─────────────────────────────────────────── */}
-        {contentRoutes.length > 0 && (
+        {/* ── EXPERIENCE ────────────────────────────────────────── */}
+        {can('tenant:settings') && (
           <div>
-            <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.editorial')}</SectionLabel>
+            <SectionLabel collapsed={collapsed}>Experience</SectionLabel>
             <div className="space-y-0.5">
+              <NavItem to="/blueprint/experience" icon="LayoutGrid" labelKey="nav.experienceStudio" fallback="Experience Studio" collapsed={collapsed} />
+            </div>
+          </div>
+        )}
+
+        {/* ── PROJECTS ──────────────────────────────────────────── */}
+        {can('tenant:settings') && (
+          <div>
+            <SectionLabel collapsed={collapsed}>Projects</SectionLabel>
+            <div className="space-y-0.5">
+              <NavItem to="/blueprint/projects-studio" icon="Frame" labelKey="nav.projectsStudio" fallback="Projects Studio" collapsed={collapsed} />
               {contentRoutes.filter((r) => r.to !== '/moodboards').map((r) => (
                 <NavItem key={r.to} {...r} end={r.to === '/library'} collapsed={collapsed} />
               ))}
@@ -184,29 +195,45 @@ const Sidebar = () => {
           </div>
         )}
 
-        {/* ── STUDIO ────────────────────────────────────────────── */}
-        <div>
-          <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.studio')}</SectionLabel>
-          <div className="space-y-0.5">
-            {/* Team → routes directly to the real Members management
-                (no /workspace/team dead-end). */}
-            <NavItem to="/settings/members" icon="Users" labelKey="nav.team" collapsed={collapsed} />
-            {intelligenceRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
-          </div>
-        </div>
-
-        {/* ── EDITORIAL (review inbox) ──────────────────────────── */}
+        {/* ── EDITORIAL ─────────────────────────────────────────── */}
         {can('tenant:settings') && (
           <div>
             <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.editorial')}</SectionLabel>
             <div className="space-y-0.5">
-              <NavItem to="/blueprint/storefront" icon="LayoutGrid" labelKey="nav.storefrontStudio" fallback="Storefront Studio" collapsed={collapsed} />
-              <NavItem to="/blueprint/projects-studio" icon="Frame" labelKey="nav.projectsStudio" fallback="Projects Studio" collapsed={collapsed} />
               <NavItem to="/blueprint/editorial" icon="BookOpen" labelKey="nav.editorialStudio" fallback="Editorial Studio" collapsed={collapsed} />
-              <NavItem to="/editorial/inbox" icon="Inbox" labelKey="nav.editorialInbox" fallback="Editorial review" collapsed={collapsed} />
+              <NavItem to="/editorial/inbox" icon="Inbox" labelKey="nav.editorialInbox" fallback="Editorial Review" collapsed={collapsed} />
             </div>
           </div>
         )}
+
+        {/* ── FORMS & JOURNEYS ──────────────────────────────────── */}
+        {can('tenant:settings') && (
+          <div>
+            <SectionLabel collapsed={collapsed}>Forms & Journeys</SectionLabel>
+            <div className="space-y-0.5">
+              <NavItem to="/blueprint/forms-journeys" icon="Workflow" labelKey="nav.formsJourneys" fallback="Forms & Journeys" collapsed={collapsed} />
+            </div>
+          </div>
+        )}
+
+        {/* ── INTERNATIONAL ─────────────────────────────────────── */}
+        {can('tenant:settings') && (
+          <div>
+            <SectionLabel collapsed={collapsed}>International</SectionLabel>
+            <div className="space-y-0.5">
+              <NavItem to="/settings/international-presence" icon="Map" labelKey="nav.internationalPresence" fallback="International Presence" collapsed={collapsed} />
+            </div>
+          </div>
+        )}
+
+        {/* ── TEAM & INTELLIGENCE ───────────────────────────────── */}
+        <div>
+          <SectionLabel collapsed={collapsed}>Team</SectionLabel>
+          <div className="space-y-0.5">
+            <NavItem to="/settings/members" icon="Users" labelKey="nav.team" collapsed={collapsed} />
+            {intelligenceRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
+          </div>
+        </div>
 
         {/* ── SETTINGS (admin only) ─────────────────────────────── */}
         {can('tenant:settings') && (
@@ -214,8 +241,9 @@ const Sidebar = () => {
             <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.settings')}</SectionLabel>
             <div className="space-y-0.5">
               <NavItem to="/settings" icon="Settings" labelKey="nav.settings" end collapsed={collapsed} />
-              <NavItem to="/settings/international-presence" icon="Map" labelKey="nav.internationalPresence" fallback="International Presence" collapsed={collapsed} />
+              <NavItem to="/settings/brand" icon="Palette" labelKey="nav.brand" fallback="Brand Studio" collapsed={collapsed} />
               <NavItem to="/settings/plan" icon="Receipt" labelKey="nav.billing" collapsed={collapsed} />
+              <NavItem to="/settings/integrations" icon="Plug" labelKey="nav.integrations" fallback="Integrations" collapsed={collapsed} />
             </div>
           </div>
         )}
