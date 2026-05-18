@@ -1,6 +1,43 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase S-IDENTITY Step 1B — International Presence™ Positioning Modes (DONE — 18 May 2026)
+
+> Direttiva utente: trasformare International Presence™ da settings page a **market positioning strategy room**, con distinzione netta tra **Target Market** (lingua/SEO/timezone/CTA) e **Editorial Cultural Lens™** (l'identità con cui lo studio comunica — indipendente dalla geografia). Lo studio italiano può comunicare al GCC mantenendo lente *Italian Material Culture*; lo studio US può rivolgersi al mercato US con lente *Italian Material Culture*. **MAI** *"se scegli Italy diventi italiano"*.
+
+**Backend / DB (migration `040_positioning_modes.sql` applicata via psycopg2)**
+- `markets.market_behavior` JSONB seeded per Italy / USA (national+regional) / UK / France / DACH / GCC / Spanish-LatAm — 8 fields: `decision_speed`, `relationship_weight`, `specification_depth`, `hospitality_relevance`, `emotional_pacing`, `material_sensitivity`, `trust_requirement`, `preferred_cta_style`.
+- `markets.cta_style_default` (text) + `markets.luxury_perception` (text) seeded.
+- 2 nuovi mercati nel catalogo platform: **`spain_iberian`** (es-ES, Europa Mediterranea) + **`spanish_mexico`** (es-MX, Americas residenziale lusso). Spanish-LatAm storico preservato. Architettura ready per future sub-segmentazioni (Colombia · Argentina · Caribbean) senza ricostruire l'engine.
+- Studio-level positioning salvato in `tenant_markets.custom_settings.positioning` JSONB (NO DDL su tenant_markets — backward-compatible).
+
+**Frontend `InternationalPresencePage.jsx`**
+- **`PositioningDrawer`** inline expansion (cinematic fade-in, NO modal) sotto ogni market card attiva.
+- 4 gruppi di scelte studio-level + 1 read-only intelligence panel:
+  1. **Positioning Mode** (1 di 7): *Domestic Luxury Authority · International Editorial Positioning · Hospitality Contract Specialist · Luxury Residential Advisory · Material Consultancy · A&D Specification Partner · Collectible Design & Bespoke*.
+  2. **Editorial Cultural Lens™** (1 di 9, INDIPENDENTE dal mercato): *Italian Material Culture · Iberian Mediterranean · French Savoir-Faire · DACH Architectural Precision · British Heritage Quiet · GCC Ceremonial Hospitality · US Aspirational Lifestyle · LatAm Hospitality Warmth · Collectible Authorial*. Con copy esplicito *"può differire dal mercato: uno studio di New York può rivolgersi al mercato americano usando una Italian Material Culture come lente editoriale"*.
+  3. **Positioning Emphasis**: *Domestic · International · Hybrid (domestic core + selective international)*. Guardrail: MOOD NON assume mai espansione internazionale.
+  4. **Business Intent** multi-select (9 opzioni): *Domestic lead gen · Intl lead gen · A&D specification · Hospitality contract · Retail showroom growth · Private acquisition · Material advisory · Brand awareness · Partner showroom*.
+  5. **Primary Audience** multi-select (9 opzioni): *Private clients · Architects · Interior designers · Developers · Hospitality groups · Retail buyers · Procurement · Showroom visitors · Intl homeowners*.
+- **`Market Behavior™`** read-only intelligence panel (8 fields dal DB) + `cta_style_default` (italic quote) + `luxury_perception` (editorial reading) — *"queste euristiche guidano lo storefront, il CTA e l'editorial composer"*.
+- **Strategy pills** in alto sulla card quando attivo: positioning_mode (mint highlight) + lens (con eyebrow italic `· editorial lens`) + emphasis. Visuali sintetiche, non form admin.
+- Macro-region `latam` aggiunto al `MACRO_ORDER` per ospitare la nuova famiglia spagnola.
+
+**Save / Dirty / Persistence**
+- `dirty` esteso a JSON-diff su `custom_settings.positioning`. Save invia `custom_settings: {...}` come parte del PATCH `/api/tenants/me/markets/{id}`. Backend già accettava jsonb arbitrario tramite `TenantMarketPatch.custom_settings`. ZERO DDL backend.
+- **Verifica live**: Italia salvato con `positioning_mode=luxury_residential_advisory`, `cultural_editorial_lens=italian_material_culture`, `positioning_emphasis=hybrid`, `business_intent=[international_lead_gen]`, `primary_audience=[architects]` → reload pagina → tutti i campi correttamente ripresi dal DB ✓.
+
+**Test regression**: 17/17 backend test PASS (Step 1 base + Step 3). 15 mercati visibili (vs 13 precedenti — +Spain Iberian + Spanish Mexico). Default Italy preservato. Save ordering mutex preserved.
+
+**NON FATTO in questa iterazione (next steps)**
+- Storefront/CTA orchestration realmente influenzata dai positioning modes (B Phase 3 — consumare custom_settings.positioning lato pubblico per riadattare hero/CTA).
+- Editorial composer prompting basato su Market Behavior + Lens (next Phase Editorial Intelligence).
+- Lead qualification + advisor assignment dipendenti da Business Intent (future Phase Visual CRM).
+- Asia (Singapore · HK · Japan) — architettura ready, seed da fare quando attivati.
+
+---
+
+
 ### 🟡 Phase S-CONNECT Step 4 — Frontend Runtime Binding™ (Phase 1 · Portfolio surfaces DONE — 18 May 2026)
 
 > Risposta a directive: *"trasformare il frontend pubblico da struttura hardcoded a piattaforma editoriale internazionale runtime-driven · NO CMS feeling · NO admin vibes · public experience engine, NOT db binding"*.

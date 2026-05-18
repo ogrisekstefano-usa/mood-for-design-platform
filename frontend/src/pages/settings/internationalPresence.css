@@ -296,3 +296,194 @@
   .ip-card__attrs { grid-template-columns: 1fr; }
   .ip-savebar { margin: 60px -24px -100px; padding: 14px 24px; flex-direction: column; gap: 12px; }
 }
+
+/* ───────────────────────────────────────────────────────────────
+ * Phase S-IDENTITY Step 1B — Positioning Drawer
+ * Strategic positioning surface, cinematic and editorial.
+ * ─────────────────────────────────────────────────────────────── */
+
+.ip-card__strategy {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 14px;
+}
+.ip-card__strategy-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10px; letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border: 1px solid var(--bp-border-strong);
+  border-radius: 999px;
+  color: var(--bp-text-secondary);
+  background: transparent;
+}
+.ip-card__strategy-pill[data-kind="mode"] {
+  border-color: var(--bp-primary);
+  color: var(--bp-primary);
+  font-weight: 500;
+}
+.ip-card__strategy-pill[data-kind="lens"] em {
+  font-style: italic; opacity: 0.6; margin-left: 4px;
+}
+.ip-card__strategy-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--bp-primary);
+}
+
+.ip-card__strategy-toggle {
+  margin-top: 16px;
+  background: transparent; border: none; cursor: pointer;
+  padding: 6px 0;
+  font: inherit;
+  font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--bp-text-muted);
+  border-bottom: 1px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.ip-card__strategy-toggle:hover {
+  color: var(--bp-primary);
+  border-bottom-color: var(--bp-primary);
+}
+
+.ip-drawer {
+  margin-top: 24px;
+  padding: 28px 0 12px;
+  border-top: 1px solid var(--bp-border);
+  display: flex; flex-direction: column; gap: 32px;
+  animation: ip-drawer-fade 0.35s ease;
+}
+@keyframes ip-drawer-fade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.ip-drawer__intro {
+  font-family: var(--bp-font-heading);
+  font-style: italic;
+  font-size: 13px; line-height: 1.65;
+  color: var(--bp-text-secondary);
+  max-width: 70ch;
+  padding: 14px 18px;
+  border-left: 2px solid var(--bp-primary);
+  background: var(--bp-surface-1);
+  border-radius: 0 4px 4px 0;
+}
+.ip-drawer__intro em { color: var(--bp-primary); font-style: normal; letter-spacing: 0.02em; }
+
+.ip-drawer__group {
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.ip-drawer__label {
+  font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--bp-text-primary);
+  font-weight: 500; margin: 0;
+}
+.ip-drawer__label sup { color: var(--bp-primary); font-size: 9px; margin-left: 2px; }
+.ip-drawer__hint {
+  font-size: 12.5px; line-height: 1.55;
+  color: var(--bp-text-muted);
+  font-family: var(--bp-font-heading); font-style: italic;
+  max-width: 68ch; margin: 0;
+}
+.ip-drawer__hint em { color: var(--bp-primary); font-style: normal; letter-spacing: 0.02em; }
+
+.ip-drawer__radios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px;
+}
+.ip-drawer__radios--compact {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.ip-drawer__radio {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 14px 16px;
+  background: transparent;
+  border: 1px solid var(--bp-border-strong);
+  border-radius: var(--bp-radius-sm, 4px);
+  cursor: pointer; text-align: left;
+  transition: border-color .2s, background-color .2s, color .2s;
+  font: inherit; color: var(--bp-text-primary);
+}
+.ip-drawer__radio:hover { border-color: var(--bp-text-muted); background: var(--bp-surface-2); }
+.ip-drawer__radio[data-selected="true"] {
+  border-color: var(--bp-primary);
+  background: var(--bp-surface-2);
+  box-shadow: 0 0 0 1px var(--bp-primary) inset;
+}
+.ip-drawer__radio-title {
+  font-family: var(--bp-font-heading);
+  font-size: 15px; font-weight: 400;
+  letter-spacing: 0.02em;
+}
+.ip-drawer__radio[data-selected="true"] .ip-drawer__radio-title { color: var(--bp-primary); }
+.ip-drawer__radio-hint {
+  font-size: 12px; line-height: 1.45;
+  color: var(--bp-text-muted);
+  font-style: italic;
+  font-family: var(--bp-font-heading);
+}
+
+.ip-drawer__chips {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.ip-drawer__chip {
+  padding: 7px 14px;
+  background: transparent;
+  border: 1px solid var(--bp-border-strong);
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit; font-size: 11.5px; letter-spacing: 0.02em;
+  color: var(--bp-text-secondary);
+  transition: border-color .2s, color .2s, background-color .2s;
+}
+.ip-drawer__chip:hover { color: var(--bp-text-primary); border-color: var(--bp-text-muted); }
+.ip-drawer__chip[data-selected="true"] {
+  background: var(--bp-primary);
+  color: var(--bp-bg);
+  border-color: var(--bp-primary);
+}
+
+.ip-drawer__behavior {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px 24px;
+  padding: 14px 18px;
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-sm, 4px);
+}
+.ip-drawer__behavior-row {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 6px 0;
+  border-bottom: 1px dotted var(--bp-border);
+}
+.ip-drawer__behavior-row:last-child { border-bottom: none; }
+.ip-drawer__behavior-key {
+  font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--bp-text-subtle);
+  font-weight: 500;
+}
+.ip-drawer__behavior-value {
+  font-family: var(--bp-font-heading);
+  font-size: 13px; color: var(--bp-text-primary);
+  text-transform: capitalize;
+}
+
+.ip-drawer__readout {
+  margin-top: 12px;
+  padding: 14px 18px;
+  border: 1px solid var(--bp-border);
+  border-left: 2px solid var(--bp-primary);
+  background: var(--bp-surface-1);
+  border-radius: 0 var(--bp-radius-sm, 4px) var(--bp-radius-sm, 4px) 0;
+  font-size: 12.5px; line-height: 1.6;
+  color: var(--bp-text-secondary);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.ip-drawer__readout strong {
+  font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  font-weight: 500; color: var(--bp-primary);
+  display: inline-block; margin-right: 6px;
+}
+.ip-drawer__readout em { color: var(--bp-text-primary); font-style: italic; }
+

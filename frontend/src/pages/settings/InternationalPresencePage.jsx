@@ -21,23 +21,105 @@ import { ArrowLeft, GripVertical, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 import './internationalPresence.css';
 
-const MACRO_ORDER = ['italy', 'europe', 'americas', 'gcc', 'apac', 'other'];
+const MACRO_ORDER = ['italy', 'europe', 'americas', 'gcc', 'apac', 'latam', 'other'];
 const MACRO_LABEL = {
   italy:    { idx: '01', title: 'Italia',   intro: 'L\'identità di partenza, la cultura materica.' },
   europe:   { idx: '02', title: 'Europe',   intro: 'Una rete editoriale di studi vicini.' },
   americas: { idx: '03', title: 'Americas', intro: 'Le geografie aspirazionali oltre Atlantico.' },
   gcc:      { idx: '04', title: 'GCC',      intro: 'Le atmosfere private del Golfo.' },
   apac:     { idx: '05', title: 'APAC',     intro: 'Le geografie luxury dell\'Asia.' },
-  other:    { idx: '06', title: 'Other',    intro: 'Mercati editoriali emergenti.' },
+  latam:    { idx: '06', title: 'LatAm',    intro: 'Le geografie spagnole oltre l\'Atlantico.' },
+  other:    { idx: '07', title: 'Other',    intro: 'Mercati editoriali emergenti.' },
 };
+
+// ── Phase S-IDENTITY Step 1B — Positioning Modes™ ─────────────────────
+//
+// Studio-level strategic choices saved under tenant_markets.custom_settings.
+// Values are stable keys; UI labels are localised below.
+const POSITIONING_MODES = [
+  { v: 'domestic_luxury_authority',     label: 'Domestic Luxury Authority',     hint: 'Autorità locale, fiducia, advisor umano.' },
+  { v: 'international_editorial',       label: 'International Editorial Positioning', hint: 'Prestigio culturale, storytelling internazionale.' },
+  { v: 'hospitality_contract',          label: 'Hospitality Contract Specialist', hint: 'Hotel, ristoranti, retail, developer.' },
+  { v: 'luxury_residential_advisory',   label: 'Luxury Residential Advisory',   hint: 'Clienti privati, ville, attici, residenziale alto.' },
+  { v: 'material_consultancy',          label: 'Material Consultancy',          hint: 'Materiali, finiture, superfici, atelier.' },
+  { v: 'ad_specification_partner',      label: 'A&D Specification Partner',     hint: 'Architetti, interior designer, specifiers.' },
+  { v: 'collectible_bespoke',           label: 'Collectible Design & Bespoke',  hint: 'Pezzi su misura, autorialità, artigianato.' },
+];
+
+const BUSINESS_INTENTS = [
+  { v: 'domestic_lead_gen',       label: 'Domestic lead generation' },
+  { v: 'international_lead_gen',  label: 'International lead generation' },
+  { v: 'ad_specification',        label: 'A&D specification' },
+  { v: 'hospitality_contract',    label: 'Hospitality contract' },
+  { v: 'retail_showroom',         label: 'Retail showroom growth' },
+  { v: 'private_acquisition',     label: 'Private client acquisition' },
+  { v: 'material_advisory',       label: 'Material advisory' },
+  { v: 'brand_awareness',         label: 'Brand awareness' },
+  { v: 'partner_showroom',        label: 'Partner showroom strategy' },
+];
+
+const PRIMARY_AUDIENCES = [
+  { v: 'private_clients',     label: 'Private clients' },
+  { v: 'architects',          label: 'Architects' },
+  { v: 'interior_designers',  label: 'Interior designers' },
+  { v: 'developers',          label: 'Developers' },
+  { v: 'hospitality_groups',  label: 'Hospitality groups' },
+  { v: 'retail_buyers',       label: 'Retail buyers' },
+  { v: 'procurement',         label: 'Procurement teams' },
+  { v: 'showroom_visitors',   label: 'Showroom visitors' },
+  { v: 'intl_homeowners',     label: 'International homeowners' },
+];
+
+// Editorial Cultural Lens™ — INDIPENDENTE dal mercato target.
+// "Lo studio comunica attraverso questa lente culturale".
+// Esempio: USA studio · USA market · ITALIAN editorial lens (cultura materica).
+const CULTURAL_LENSES = [
+  { v: 'italian_material_culture',   label: 'Italian Material Culture',     hint: 'Continuità materica, cultura del fatto, rituale lento.' },
+  { v: 'iberian_mediterranean',      label: 'Iberian Mediterranean',        hint: 'Conviviale, architettonico, luce-driven.' },
+  { v: 'french_savoir_faire',        label: 'French Savoir-Faire',          hint: 'Couture editorial, intimità di salotto.' },
+  { v: 'dach_architectural',         label: 'DACH Architectural Precision', hint: 'Onestà materica, ingegneria visibile.' },
+  { v: 'british_heritage_quiet',     label: 'British Heritage Quiet',       hint: 'Modernismo restrained, autorità editoriale silenziosa.' },
+  { v: 'gcc_ceremonial',             label: 'GCC Ceremonial Hospitality',   hint: 'Materialità cerimoniale, ospitalità privata.' },
+  { v: 'us_aspirational_lifestyle',  label: 'US Aspirational Lifestyle',    hint: 'Lifestyle aspirazionale, processo trasparente.' },
+  { v: 'latam_hospitality_warmth',   label: 'LatAm Hospitality Warmth',     hint: 'Calore sociale, narrativa familiare aspirazionale.' },
+  { v: 'collectible_authorial',      label: 'Collectible Authorial',        hint: 'Rarità, autorialità, artigianato firmato.' },
+];
+
+const POSITIONING_EMPHASIS = [
+  { v: 'domestic',      label: 'Domestic emphasis' },
+  { v: 'international', label: 'International emphasis' },
+  { v: 'hybrid',        label: 'Hybrid (domestic core + selective international)' },
+];
+
+// Default settings shape stored under custom_settings.positioning
+const POSITIONING_DEFAULTS = {
+  positioning_mode:        null,
+  positioning_emphasis:    null,
+  cultural_editorial_lens: null,
+  business_intent:         [],
+  primary_audience:        [],
+};
+
+const MARKET_BEHAVIOR_LABELS = {
+  decision_speed:        'Decision speed',
+  relationship_weight:   'Relationship weight',
+  specification_depth:   'Specification depth',
+  hospitality_relevance: 'Hospitality relevance',
+  emotional_pacing:      'Emotional pacing',
+  material_sensitivity:  'Material sensitivity',
+  trust_requirement:     'Trust requirement',
+  preferred_cta_style:   'Preferred CTA style',
+};
+const humaniseBehaviorValue = (v) => (v || '').toString().replaceAll('_', ' ');
 
 const normaliseMacro = (m) => {
   // Special case: Italy gets its own group even though its DB macro_region is 'europe'.
   if (m?.code === 'italy') return 'italy';
   const code = (m?.macro_region || '').toLowerCase();
   if (code.includes('italy'))    return 'italy';
+  if (code.includes('latam'))    return 'latam';
   if (code.includes('europe'))   return 'europe';
-  if (code.includes('americ') || code.includes('north_america') || code.includes('latam')) return 'americas';
+  if (code.includes('americ') || code.includes('north_america')) return 'americas';
   if (code.includes('gcc') || code.includes('mena') || code.includes('middle')) return 'gcc';
   if (code.includes('apac') || code.includes('asia'))  return 'apac';
   return 'other';
@@ -93,18 +175,21 @@ const InternationalPresencePage = () => {
   }, [markets]);
 
   const dirty = useMemo(() => {
-    return JSON.stringify(markets.map((m) => ({
+    const norm = (list) => list.map((m) => ({
       id: m.id, is_active: m.is_active, is_default: m.is_default, _sort: m._sort,
-    }))) !== JSON.stringify(original.map((m) => ({
-      id: m.id, is_active: m.is_active, is_default: m.is_default, _sort: m._sort,
-    })));
+      positioning: (m.custom_settings || {}).positioning || POSITIONING_DEFAULTS,
+    }));
+    return JSON.stringify(norm(markets)) !== JSON.stringify(norm(original));
   }, [markets, original]);
 
   const dirtyCount = useMemo(() => {
     return markets.filter((m) => {
       const o = original.find((x) => x.id === m.id);
       if (!o) return false;
-      return o.is_active !== m.is_active || o.is_default !== m.is_default || o._sort !== m._sort;
+      if (o.is_active !== m.is_active || o.is_default !== m.is_default || o._sort !== m._sort) return true;
+      const pa = JSON.stringify((m.custom_settings || {}).positioning || POSITIONING_DEFAULTS);
+      const pb = JSON.stringify((o.custom_settings || {}).positioning || POSITIONING_DEFAULTS);
+      return pa !== pb;
     }).length;
   }, [markets, original]);
 
@@ -117,6 +202,17 @@ const InternationalPresencePage = () => {
       is_default: m.id === id,
       is_active:  m.id === id ? true : m.is_active,
     })));
+  };
+
+  // Phase 1B — Positioning Mode™ patch helper (writes to custom_settings.positioning)
+  const updatePositioning = (id, patch) => {
+    setMarkets((list) => list.map((m) => {
+      if (m.id !== id) return m;
+      const cs = { ...(m.custom_settings || {}) };
+      const cur = { ...POSITIONING_DEFAULTS, ...(cs.positioning || {}) };
+      cs.positioning = { ...cur, ...patch };
+      return { ...m, custom_settings: cs };
+    }));
   };
 
   // Drag reorder within the same macro-region (HTML5 drag, calm).
@@ -164,6 +260,9 @@ const InternationalPresencePage = () => {
         if (!o || o.is_active  !== m.is_active)  patch.is_active  = m.is_active;
         if (!o || o.is_default !== m.is_default) patch.is_default = m.is_default;
         if (!o || o._sort      !== m._sort)      patch.sort_order = m._sort;
+        const pa = JSON.stringify((m.custom_settings || {}).positioning || POSITIONING_DEFAULTS);
+        const pb = JSON.stringify((o?.custom_settings || {}).positioning || POSITIONING_DEFAULTS);
+        if (pa !== pb) patch.custom_settings = m.custom_settings || {};
         if (Object.keys(patch).length > 0) ops.push({ id: m.id, patch });
       });
       for (const { id, patch } of ops) {
@@ -235,6 +334,7 @@ const InternationalPresencePage = () => {
               onDrop={() => onDrop(m.id)}
               onToggle={() => togglePresence(m.id)}
               onSetDefault={() => setAsDefault(m.id)}
+              onPositioningChange={(patch) => updatePositioning(m.id, patch)}
             />
           ))}
         </section>
@@ -269,7 +369,13 @@ const InternationalPresencePage = () => {
   );
 };
 
-const MarketCard = ({ market: m, dragging, onDragStart, onDragEnd, onDragOver, onDrop, onToggle, onSetDefault }) => {
+const MarketCard = ({ market: m, dragging, onDragStart, onDragEnd, onDragOver, onDrop, onToggle, onSetDefault, onPositioningChange }) => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const pos = (m.custom_settings || {}).positioning || POSITIONING_DEFAULTS;
+  const behavior = m.market_behavior || {};
+  const posLabel = POSITIONING_MODES.find((p) => p.v === pos.positioning_mode)?.label;
+  const lensLabel = CULTURAL_LENSES.find((l) => l.v === pos.cultural_editorial_lens)?.label;
+  const emphasisLabel = POSITIONING_EMPHASIS.find((e) => e.v === pos.positioning_emphasis)?.label;
   return (
     <article
       className="ip-card"
@@ -278,6 +384,7 @@ const MarketCard = ({ market: m, dragging, onDragStart, onDragEnd, onDragOver, o
       data-default={m.is_default}
       data-inactive={!m.is_active}
       data-dragging={dragging}
+      data-expanded={drawerOpen}
       draggable
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
@@ -299,6 +406,26 @@ const MarketCard = ({ market: m, dragging, onDragStart, onDragEnd, onDragOver, o
           <MapPin size={10} strokeWidth={1.5} style={{ display: 'inline', marginRight: 4, verticalAlign: -1 }} />
           {m.primary_locale}{m.currency ? ` · ${m.currency}` : ''}
         </span>
+
+        {/* Strategic positioning summary (Step 1B). Visible only when active. */}
+        {m.is_active && (posLabel || lensLabel || emphasisLabel) && (
+          <div className="ip-card__strategy" data-testid={`ip-strategy-${m.code}`}>
+            {posLabel && (
+              <span className="ip-card__strategy-pill" data-kind="mode">
+                <span className="ip-card__strategy-dot" />
+                {posLabel}
+              </span>
+            )}
+            {lensLabel && (
+              <span className="ip-card__strategy-pill" data-kind="lens">
+                {lensLabel} <em>· editorial lens</em>
+              </span>
+            )}
+            {emphasisLabel && (
+              <span className="ip-card__strategy-pill" data-kind="emphasis">{emphasisLabel}</span>
+            )}
+          </div>
+        )}
 
         <div className="ip-card__attrs">
           {m.editorial_tone && (
@@ -326,6 +453,29 @@ const MarketCard = ({ market: m, dragging, onDragStart, onDragEnd, onDragOver, o
             </div>
           )}
         </div>
+
+        {m.is_active && (
+          <button
+            type="button"
+            className="ip-card__strategy-toggle"
+            data-testid={`ip-strategy-toggle-${m.code}`}
+            onClick={() => setDrawerOpen((v) => !v)}
+            aria-expanded={drawerOpen}
+          >
+            {drawerOpen ? 'Chiudi posizionamento' : 'Affina posizionamento strategico'} →
+          </button>
+        )}
+
+        {drawerOpen && m.is_active && (
+          <PositioningDrawer
+            marketCode={m.code}
+            pos={pos}
+            behavior={behavior}
+            ctaDefault={m.cta_style_default}
+            luxuryPerception={m.luxury_perception}
+            onChange={onPositioningChange}
+          />
+        )}
       </div>
 
       <div className="ip-card__actions">
@@ -351,6 +501,153 @@ const MarketCard = ({ market: m, dragging, onDragStart, onDragEnd, onDragOver, o
         </button>
       </div>
     </article>
+  );
+};
+
+// ── Positioning Drawer ─────────────────────────────────────────────────
+const PositioningDrawer = ({ marketCode, pos, behavior, ctaDefault, luxuryPerception, onChange }) => {
+  const toggleArray = (key, value) => {
+    const cur = Array.isArray(pos[key]) ? pos[key] : [];
+    onChange({ [key]: cur.includes(value) ? cur.filter((v) => v !== value) : [...cur, value] });
+  };
+  return (
+    <div className="ip-drawer" data-testid={`ip-drawer-${marketCode}`}>
+      <p className="ip-drawer__intro">
+        Definisci <em>come</em> lo studio vuole essere percepito in questo mercato.
+        Il <em>mercato target</em> stabilisce lingua, geografia SEO, fuso editoriale e psicologia
+        del CTA. La <em>lente culturale</em> è invece l'identità con cui parli — può differire dal mercato:
+        <br />uno studio di New York può rivolgersi al mercato americano usando una <em>Italian Material Culture</em> come lente editoriale.
+      </p>
+
+      {/* Positioning Mode */}
+      <div className="ip-drawer__group">
+        <p className="ip-drawer__label">Positioning Mode</p>
+        <p className="ip-drawer__hint">L'asse strategico di posizionamento commerciale per questo mercato.</p>
+        <div className="ip-drawer__radios" role="radiogroup">
+          {POSITIONING_MODES.map((p) => (
+            <button
+              type="button"
+              key={p.v}
+              role="radio"
+              aria-checked={pos.positioning_mode === p.v}
+              className="ip-drawer__radio"
+              data-testid={`ip-pos-${marketCode}-${p.v}`}
+              data-selected={pos.positioning_mode === p.v}
+              onClick={() => onChange({ positioning_mode: pos.positioning_mode === p.v ? null : p.v })}
+            >
+              <span className="ip-drawer__radio-title">{p.label}</span>
+              <span className="ip-drawer__radio-hint">{p.hint}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Cultural Editorial Lens — INDEPENDENT from positioning_mode */}
+      <div className="ip-drawer__group">
+        <p className="ip-drawer__label">Editorial Cultural Lens<sup>™</sup></p>
+        <p className="ip-drawer__hint">
+          La cultura editoriale con cui comunichi al mercato. <em>Indipendente</em> dalla geografia: lo
+          studio mantiene la propria identità.
+        </p>
+        <div className="ip-drawer__radios ip-drawer__radios--compact" role="radiogroup">
+          {CULTURAL_LENSES.map((l) => (
+            <button
+              type="button"
+              key={l.v}
+              role="radio"
+              aria-checked={pos.cultural_editorial_lens === l.v}
+              className="ip-drawer__radio"
+              data-testid={`ip-lens-${marketCode}-${l.v}`}
+              data-selected={pos.cultural_editorial_lens === l.v}
+              onClick={() => onChange({ cultural_editorial_lens: pos.cultural_editorial_lens === l.v ? null : l.v })}
+            >
+              <span className="ip-drawer__radio-title">{l.label}</span>
+              <span className="ip-drawer__radio-hint">{l.hint}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Positioning Emphasis (Domestic/International/Hybrid) */}
+      <div className="ip-drawer__group">
+        <p className="ip-drawer__label">Positioning Emphasis</p>
+        <p className="ip-drawer__hint">
+          Domestico, internazionale o ibrido. MOOD non assume mai che ogni studio voglia espandersi all'estero.
+        </p>
+        <div className="ip-drawer__chips">
+          {POSITIONING_EMPHASIS.map((e) => (
+            <button
+              type="button"
+              key={e.v}
+              className="ip-drawer__chip"
+              data-testid={`ip-emphasis-${marketCode}-${e.v}`}
+              data-selected={pos.positioning_emphasis === e.v}
+              onClick={() => onChange({ positioning_emphasis: pos.positioning_emphasis === e.v ? null : e.v })}
+            >{e.label}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Business Intent — multi */}
+      <div className="ip-drawer__group">
+        <p className="ip-drawer__label">Business Intent</p>
+        <p className="ip-drawer__hint">Cosa vuoi ottenere strategicamente da questo mercato.</p>
+        <div className="ip-drawer__chips">
+          {BUSINESS_INTENTS.map((b) => (
+            <button
+              type="button"
+              key={b.v}
+              className="ip-drawer__chip"
+              data-testid={`ip-intent-${marketCode}-${b.v}`}
+              data-selected={(pos.business_intent || []).includes(b.v)}
+              onClick={() => toggleArray('business_intent', b.v)}
+            >{b.label}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Primary Audience — multi */}
+      <div className="ip-drawer__group">
+        <p className="ip-drawer__label">Primary Audience</p>
+        <p className="ip-drawer__hint">A chi parli prevalentemente in questo mercato.</p>
+        <div className="ip-drawer__chips">
+          {PRIMARY_AUDIENCES.map((a) => (
+            <button
+              type="button"
+              key={a.v}
+              className="ip-drawer__chip"
+              data-testid={`ip-audience-${marketCode}-${a.v}`}
+              data-selected={(pos.primary_audience || []).includes(a.v)}
+              onClick={() => toggleArray('primary_audience', a.v)}
+            >{a.label}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Market Behavior preview (read-only) */}
+      {Object.keys(behavior).length > 0 && (
+        <div className="ip-drawer__group">
+          <p className="ip-drawer__label">Market Behavior<sup>™</sup> <em style={{ opacity: 0.5, fontStyle: 'italic' }}>· read-only intelligence</em></p>
+          <p className="ip-drawer__hint">Come gli interlocutori in questo mercato tipicamente decidono. Queste euristiche guidano lo storefront, il CTA e l'editorial composer.</p>
+          <div className="ip-drawer__behavior">
+            {Object.entries(MARKET_BEHAVIOR_LABELS).map(([k, label]) => (
+              behavior[k] ? (
+                <div key={k} className="ip-drawer__behavior-row">
+                  <span className="ip-drawer__behavior-key">{label}</span>
+                  <span className="ip-drawer__behavior-value">{humaniseBehaviorValue(behavior[k])}</span>
+                </div>
+              ) : null
+            ))}
+          </div>
+          {(ctaDefault || luxuryPerception) && (
+            <div className="ip-drawer__readout">
+              {luxuryPerception && <p><strong>Luxury reading.</strong> {luxuryPerception}</p>}
+              {ctaDefault && <p><strong>CTA voice.</strong> <em>"{ctaDefault}"</em></p>}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 
