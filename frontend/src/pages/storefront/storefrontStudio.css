@@ -438,3 +438,13 @@
   border-radius: var(--bp-radius-sm, 4px);
   background: var(--bp-surface-2);
 }
+
+/* Back link to Experience Overview (orchestration command center) */
+.ss-head__back {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--bp-text-muted); text-decoration: none;
+  font-weight: 500; margin-bottom: 16px;
+  transition: color .2s;
+}
+.ss-head__back:hover { color: var(--bp-primary); }

@@ -53,7 +53,21 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
-### Fase 0.5 (Feb 18, 2026 — current) — HEADER UNIFICATION + Multi-locale fix + i18n cleanup
+### Fase 0.6 (Feb 18, 2026 — current) — Experience Overview™ Command Center
+- **NEW**: `/blueprint/experience` ora è la **command center di orchestrazione** (Experience Overview™), non più l'editor diretto.
+- **NEW**: `/blueprint/experience/editor` → Storefront Studio editor (deep-link via `?page={page_key}`).
+- KPI bar: Public surfaces · Live · Drafts · Sections orchestrated · Locales attive · Mercati
+- Card grid: una card per ogni surface (Homepage, Projects, Magazine, Navigation, Footer, About, Contact, Start a project, Professionals, UI labels) con:
+  - Status badge cromatico (LIVE / DRAFT / SCHEDULED / ARCHIVED)
+  - Visible sections / total sections
+  - Locale chips (prime 6 + "+N")
+  - Last updated (italian locale formatted)
+  - Page key (mono)
+  - EDIT (deep-link) + PREVIEW (apre il sito pubblico in tab)
+- Header con "← Experience Overview" link nello Studio editor per tornare al hub.
+- Filosofia footnote: chiarezza dei confini (Brand Studio = identità · Experience = orchestrazione · International = mercati · Editorial = magazine · Forms & Journeys = acquisizione).
+
+### Fase 0.5 (Feb 18, 2026) — HEADER UNIFICATION + Multi-locale fix + i18n cleanup
 - **HEADER P0 BLOCKER RESOLVED**: backend `/api/storefront/public/{slug}/brand` ora legge la nav UNICAMENTE da `cms_sections.nav_top` (Experience Studio).
   - **DEFAULT_LINKS hardcoded ELIMINATO** dal backend.
   - **branding_settings.public_nav.main_links** stripped (migration `migrate_unify_nav_source.py`).

@@ -31,6 +31,7 @@ const VariantApprovalInboxPage = lazy(() => import('./pages/editorial/VariantApp
 const EditorialStudioPage = lazy(() => import('./pages/editorial/EditorialStudioPage'));
 const InternationalPresencePage = lazy(() => import('./pages/settings/InternationalPresencePage'));
 const StorefrontStudioPage = lazy(() => import('./pages/storefront/StorefrontStudioPage'));
+const ExperienceOverviewPage = lazy(() => import('./pages/storefront/ExperienceOverviewPage'));
 const ProjectsStudioPage = lazy(() => import('./pages/projects/ProjectsStudioPage'));
 const MoodboardsPage = lazy(() => import('./pages/moodboards/MoodboardsPage'));
 const InspirationsPage = lazy(() => import('./pages/inspirations/InspirationsPage'));
@@ -327,10 +328,13 @@ function App() {
                   {/* International Presence™ — Phase S-IDENTITY Step 1. */}
                   <Route path="/settings/international-presence" element={<StudioAdminRoute><InternationalPresencePage /></StudioAdminRoute>} />
 
-                  {/* Storefront Studio™ — Phase S-CONNECT Step 2.
-                      Legacy alias `/blueprint/storefront` → canonical `/blueprint/experience`. */}
+                  {/* Experience Studio™ — Phase S-CONNECT Step 2.
+                      Legacy alias `/blueprint/storefront` → canonical `/blueprint/experience`.
+                      `/blueprint/experience` is the orchestration command center (overview).
+                      `/blueprint/experience/editor` is the per-page editor (Storefront Studio). */}
                   <Route path="/blueprint/storefront" element={<Navigate to="/blueprint/experience" replace />} />
-                  <Route path="/blueprint/experience" element={<StudioAdminRoute><StorefrontStudioPage /></StudioAdminRoute>} />
+                  <Route path="/blueprint/experience" element={<StudioAdminRoute><ExperienceOverviewPage /></StudioAdminRoute>} />
+                  <Route path="/blueprint/experience/editor" element={<StudioAdminRoute><StorefrontStudioPage /></StudioAdminRoute>} />
 
                   {/* Forms & Journeys™ — Luxury Lead Architecture (Fase 0). */}
                   <Route path="/blueprint/forms-journeys" element={<StudioAdminRoute><FormBuilderPage /></StudioAdminRoute>} />

@@ -25,8 +25,9 @@
  * palette only (--bp-* tokens).
  */
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import api from '../../lib/api';
-import { GripVertical, Eye, EyeOff } from 'lucide-react';
+import { GripVertical, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import './storefrontStudio.css';
 import { renderBandEditor, TraceabilityChip } from './bandEditors';
@@ -84,7 +85,17 @@ const PAGE_TABS = [
 ];
 
 const StorefrontStudioPage = () => {
-  const [activePage, setActivePage] = useState('home');
+  // Read ?page= from the URL so the Experience Overview can deep-link into
+  // a specific surface (Home / Projects / Navigation / Start project).
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPage = searchParams.get('page') || 'home';
+  const [activePage, setActivePage] = useState(initialPage);
+  const setActivePageWithUrl = (key) => {
+    setActivePage(key);
+    const sp = new URLSearchParams(searchParams);
+    sp.set('page', key);
+    setSearchParams(sp, { replace: true });
+  };
   const [page, setPage]           = useState(null);
   const [sections, setSections]   = useState([]);
   const [markets, setMarkets]     = useState([]);
@@ -195,6 +206,9 @@ const StorefrontStudioPage = () => {
     <div className="ss-root" data-no-edit={!selected} data-testid="ss-root">
       <div className="ss-stage">
         <header className="ss-head">
+          <Link to="/blueprint/experience" className="ss-head__back" data-testid="ss-back-overview">
+            <ArrowLeft size={11} strokeWidth={1.7} /> Experience Overview
+          </Link>
           <p className="ss-head__eyebrow">Blueprint · Experience Orchestration</p>
           <h1 className="ss-head__title">Experience Studio<sup>™</sup></h1>
           <p className="ss-head__intro">
@@ -210,7 +224,7 @@ const StorefrontStudioPage = () => {
               className="ss-page-tab"
               data-active={activePage === t.key}
               data-testid={`ss-tab-${t.key}`}
-              onClick={() => setActivePage(t.key)}>
+              onClick={() => setActivePageWithUrl(t.key)}>
               {t.label}
             </button>
           ))}
