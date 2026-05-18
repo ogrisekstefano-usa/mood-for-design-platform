@@ -100,7 +100,7 @@ const renderLink = (link, locale, key) => {
 const SiteFooter = () => {
   const { locale } = useSite();
   const slug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
-  const { brand, showroom } = usePublicBrand(slug);
+  const { brand, showroom } = usePublicBrand(slug, locale);
   const { content: cms, hasDbContent } = useStorefrontContent(slug, 'navigation', navigationContent);
   const [selectorOpen, setSelectorOpen] = useState(false);
 

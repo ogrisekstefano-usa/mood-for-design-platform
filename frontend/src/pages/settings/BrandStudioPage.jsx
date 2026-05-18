@@ -62,6 +62,87 @@ const TextInput = ({ value, onChange, placeholder, testid }) => (
          className="w-full px-3 py-2 bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-xs)] text-[var(--bp-text-primary)] text-[12px] font-body outline-none focus:border-[var(--bp-primary)] transition-colors" />
 );
 
+// ── Brand Studio multilingue group (Step B Phase 4) ──────────────────
+//
+// Public brand name, tagline and short description support per-locale values
+// stored under `branding.{field}_i18n = { 'it-IT': '...', 'en-US': '...' }`.
+// The legacy single-string `branding.{field}` remains a backward-compatible
+// fallback used by `public/brand` until the i18n bag is populated.
+const I18N_LOCALES = [
+  { code: 'it-IT', flag: '🇮🇹', label: 'Italiano' },
+  { code: 'en-US', flag: '🇺🇸', label: 'English' },
+  { code: 'en-GB', flag: '🇬🇧', label: 'English UK' },
+  { code: 'fr-FR', flag: '🇫🇷', label: 'Français' },
+  { code: 'de-DE', flag: '🇩🇪', label: 'Deutsch' },
+  { code: 'es-ES', flag: '🇪🇸', label: 'Español' },
+  { code: 'es-MX', flag: '🇲🇽', label: 'Español MX' },
+  { code: 'ar-AE', flag: '🇦🇪', label: 'العربية' },
+];
+
+const IdentityI18nGroup = ({ branding, setBranding }) => {
+  const [activeLocale, setActiveLocale] = useState('it-IT');
+  const getI18n = (field) => {
+    const bag = branding[`${field}_i18n`] || {};
+    // Seed the active locale with the legacy single string on first edit.
+    if (!bag[activeLocale] && branding[field] && activeLocale === 'it-IT') return branding[field];
+    return bag[activeLocale] || '';
+  };
+  const setI18n = (field, v) => {
+    const bag = { ...(branding[`${field}_i18n`] || {}), [activeLocale]: v };
+    // Keep the legacy single string mirror in sync with the default locale
+    // so the unauth `/brand` endpoint always has a sensible fallback even
+    // before its locale_code param resolution kicks in.
+    const next = { ...branding, [`${field}_i18n`]: bag };
+    if (activeLocale === 'it-IT') next[field] = v;
+    setBranding(next);
+  };
+  return (
+    <div data-testid="brand-i18n-group" className="mb-2">
+      {/* Locale switcher */}
+      <div className="flex flex-wrap gap-1 mb-3" role="tablist" aria-label="Edit per locale">
+        {I18N_LOCALES.map((l) => (
+          <button
+            key={l.code}
+            type="button"
+            role="tab"
+            aria-selected={activeLocale === l.code}
+            onClick={() => setActiveLocale(l.code)}
+            data-testid={`brand-i18n-tab-${l.code}`}
+            className={`px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] font-body rounded-[3px] border transition-colors ${
+              activeLocale === l.code
+                ? 'bg-[var(--bp-primary)] text-[var(--bp-bg)] border-[var(--bp-primary)]'
+                : 'bg-transparent text-[var(--bp-text-muted)] border-[var(--bp-border)] hover:text-[var(--bp-text-primary)]'
+            }`}
+          >
+            <span style={{ marginRight: 5 }}>{l.flag}</span>{l.code}
+          </button>
+        ))}
+      </div>
+      <p className="text-[10.5px] italic text-[var(--bp-text-muted)] font-body mb-3" style={{ lineHeight: 1.5 }}>
+        Stai modificando i valori per <strong style={{ color: 'var(--bp-primary)', fontStyle: 'normal' }}>{activeLocale}</strong>.
+        Il sito pubblico mostra il valore del locale visitato — un visitatore tedesco vede la versione <em>de-DE</em>.
+      </p>
+
+      <Field label={`Public brand name · ${activeLocale}`}>
+        <TextInput value={getI18n('public_brand_name')}
+                   onChange={(v) => setI18n('public_brand_name', v)}
+                   placeholder="MOOD for DESIGN"
+                   testid="brand-public-name" />
+      </Field>
+      <Field label={`Tagline · ${activeLocale}`}>
+        <TextInput value={getI18n('tagline')} onChange={(v) => setI18n('tagline', v)}
+                   placeholder="Spaces that tell stories"
+                   testid="brand-tagline" />
+      </Field>
+      <Field label={`Short description · ${activeLocale}`}>
+        <TextInput value={getI18n('short_description')} onChange={(v) => setI18n('short_description', v)}
+                   placeholder="A boutique studio crafting bespoke interiors."
+                   testid="brand-short-desc" />
+      </Field>
+    </div>
+  );
+};
+
 const ColorPicker = ({ value, onChange, label, testid }) => (
   <div className="mb-2">
     <BlueprintColorPicker value={value} onChange={onChange} label={label} testid={testid} />
@@ -115,6 +196,10 @@ const LivePreview = ({ branding, theme }) => {
   const palette = theme?.palette || DEFAULT_PALETTE;
   const typo = theme?.typography || {};
   const radius = theme?.radius || '2px';
+  // Preview always shows the it-IT entry of the i18n bag (or legacy single string).
+  const previewName    = (branding?.public_brand_name_i18n || {})['it-IT'] || branding?.public_brand_name || 'Your Studio';
+  const previewTagline = (branding?.tagline_i18n || {})['it-IT']            || branding?.tagline            || 'Premium interior design';
+  const previewDesc    = (branding?.short_description_i18n || {})['it-IT'] || branding?.short_description || 'A live preview of how your tenant looks. Edit on the left — changes appear here in real time.';
   return (
     <div className="rounded-[var(--bp-radius-md)] border border-[var(--bp-border)] overflow-hidden sticky top-6"
          data-testid="brand-preview"
@@ -126,7 +211,7 @@ const LivePreview = ({ branding, theme }) => {
       {/* Navbar */}
       <div className="flex items-center justify-between px-5 py-3 border-b" style={{ borderColor: palette.border }}>
         <div className="font-heading text-lg" style={{ fontFamily: typo.display ? `${typo.display}, serif` : 'inherit' }}>
-          {branding?.public_brand_name || 'Your Studio'}
+          {previewName}
         </div>
         <button className="px-3 py-1.5 text-[10px] uppercase tracking-[0.18em]"
                 style={{ background: palette.primary, color: palette.background, borderRadius: radius }}>
@@ -136,14 +221,14 @@ const LivePreview = ({ branding, theme }) => {
       {/* Hero */}
       <div className="p-8" style={{ background: palette.surface }}>
         <p className="text-[10px] uppercase tracking-[0.22em] mb-2" style={{ color: palette.primary }}>
-          {branding?.tagline || 'Premium interior design'}
+          {previewTagline}
         </p>
         <h1 className="font-heading leading-tight mb-2 text-3xl"
             style={{ fontFamily: typo.display ? `${typo.display}, serif` : 'inherit' }}>
           Spaces that tell stories.
         </h1>
         <p className="text-[12px] mb-4 max-w-md" style={{ color: palette.text_secondary }}>
-          {branding?.short_description || 'A live preview of how your tenant looks. Edit on the left — changes appear here in real time.'}
+          {previewDesc}
         </p>
         <div className="flex gap-2">
           <button className="px-4 py-2 text-[10px] uppercase tracking-[0.2em]"
@@ -302,22 +387,7 @@ const BrandStudioPage = () => {
         {/* Controls */}
         <div>
           <Section kicker="A · Identity" title="Brand identity" testid="section-identity">
-            <Field label="Public brand name">
-              <TextInput value={branding.public_brand_name}
-                         onChange={(v) => setBranding({ ...branding, public_brand_name: v })}
-                         placeholder="MOOD for DESIGN"
-                         testid="brand-public-name" />
-            </Field>
-            <Field label="Tagline">
-              <TextInput value={branding.tagline} onChange={(v) => setBranding({ ...branding, tagline: v })}
-                         placeholder="Spaces that tell stories"
-                         testid="brand-tagline" />
-            </Field>
-            <Field label="Short description">
-              <TextInput value={branding.short_description} onChange={(v) => setBranding({ ...branding, short_description: v })}
-                         placeholder="A boutique studio crafting bespoke interiors."
-                         testid="brand-short-desc" />
-            </Field>
+            <IdentityI18nGroup branding={branding} setBranding={setBranding} />
             <div className="grid grid-cols-2 gap-4">
               <Field label="Support email">
                 <TextInput value={branding.support_email} onChange={(v) => setBranding({ ...branding, support_email: v })}

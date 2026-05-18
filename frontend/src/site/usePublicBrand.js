@@ -1,58 +1,38 @@
 /**
  * usePublicBrand — anonymous hook fetching tenant brand + nav for the
- * public storefront shell. Single call, SWR-cached in memory + localStorage
- * so the header doesn't flash on every nav.
+ * public storefront shell. Locale-aware so Brand Studio multilingue values
+ * resolve server-side for the active market.
  *
- * Endpoint: GET /api/storefront/public/{slug}/brand
- *
- * Returns:
- *   {
- *     loading,
- *     brand:  { name, tagline, primary_logo_url, monochrome_logo_url },
- *     nav:    { main_links: [...], show_login, show_register, login_href, register_href },
- *   }
+ * Endpoint: GET /api/storefront/public/{slug}/brand?locale_code=<bcp47>
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { toBcp47Storefront } from './localeBcp47';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const CACHE_PREFIX = 'mfd_public_brand_v2_';
 
-export function usePublicBrand(tenantSlug) {
+export function usePublicBrand(tenantSlug, locale = 'it-IT') {
   const [state, setState] = useState({ loading: true, brand: null, nav: null });
-  const mounted = useRef(true);
-
-  useEffect(() => {
-    mounted.current = true;
-    return () => { mounted.current = false; };
-  }, []);
 
   useEffect(() => {
     if (!tenantSlug) {
       setState({ loading: false, brand: null, nav: null });
       return;
     }
-    const cacheKey = `${CACHE_PREFIX}${tenantSlug}`;
-    // 1. Serve from cache first (stale-while-revalidate)
-    try {
-      const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
-      if (cached?.brand) {
-        setState({ loading: false, brand: cached.brand, nav: cached.nav });
-      }
-    } catch (_) {}
-    // 2. Refetch in background
-    axios.get(`${BACKEND_URL}/api/storefront/public/${tenantSlug}/brand`)
+    let alive = true;
+    const bcp = toBcp47Storefront(locale);
+    axios.get(`${BACKEND_URL}/api/storefront/public/${tenantSlug}/brand?locale_code=${encodeURIComponent(bcp)}`)
       .then((r) => {
-        if (!mounted.current) return;
+        if (!alive) return;
         const { brand, nav } = r.data || {};
-        try { localStorage.setItem(cacheKey, JSON.stringify({ brand, nav })); } catch (_) {}
         setState({ loading: false, brand, nav });
       })
       .catch(() => {
-        if (!mounted.current) return;
+        if (!alive) return;
         setState((s) => ({ ...s, loading: false }));
       });
-  }, [tenantSlug]);
+    return () => { alive = false; };
+  }, [tenantSlug, locale]);
 
   return state;
 }

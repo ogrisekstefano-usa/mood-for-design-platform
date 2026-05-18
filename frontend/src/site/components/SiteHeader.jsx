@@ -132,7 +132,7 @@ const LanguageSwitcher = () => {
 
 const SiteHeader = () => {
   const { locale } = useSite();
-  const { brand, nav } = usePublicBrand(tenantConfig.slug);
+  const { brand, nav } = usePublicBrand(tenantConfig.slug, locale);
   const { positioning } = usePositioning(locale);
   const projectsNavOverride = resolveProjectsNavLabel(positioning, locale);
   const [scrolled, setScrolled] = useState(false);

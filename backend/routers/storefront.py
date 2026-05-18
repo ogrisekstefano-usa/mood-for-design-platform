@@ -673,7 +673,29 @@ def public_team_leaders(tenant_slug: str, max_leaders: int = 2):
 #   • Default nav is intentionally minimal: Home · Servizi · Progetti ·
 #     Contatti — matches the user's editorial guidance.
 @router.get("/public/{tenant_slug}/brand")
-def public_brand(tenant_slug: str):
+def public_brand(tenant_slug: str, locale_code: str = Query(default="it-IT")):
+    """Public brand surface (logo + nav + showroom).
+
+    Step B Phase 4 — Brand Studio multilingue.
+    Accepts `?locale_code=<bcp47>` and resolves any i18n bag stored under:
+      • `public_brand_name_i18n`  (jsonb { 'it-IT': '...', 'en-US': '...' })
+      • `tagline_i18n`
+      • `short_description_i18n`
+    Falls back gracefully to single-string `public_brand_name` / `tagline`.
+    """
+    def _i18n(bag, fallback=None):
+        """Resolve a {locale: str} bag against the requested locale_code.
+        Tries bcp47, then 2-letter prefix, then en-US, then any value, then fallback."""
+        if not isinstance(bag, dict) or not bag:
+            return fallback
+        if bag.get(locale_code):                return bag[locale_code]
+        prefix = (locale_code or '').split('-')[0]
+        if bag.get(prefix):                     return bag[prefix]
+        if bag.get('en-US'):                    return bag['en-US']
+        for v in bag.values():
+            if v:                               return v
+        return fallback
+
     client = db()
     t = (client.table('tenants').select('id, name, branding_settings, theme_settings')
          .eq('slug', tenant_slug).limit(1).execute())
@@ -683,9 +705,10 @@ def public_brand(tenant_slug: str):
     b = tenant.get('branding_settings') or {}
 
     brand = {
-        "name":                b.get('public_brand_name') or tenant.get('name') or 'Studio',
+        "name":                _i18n(b.get('public_brand_name_i18n'),  b.get('public_brand_name') or tenant.get('name') or 'Studio'),
         "suffix":              b.get('brand_suffix') or '',
-        "tagline":             b.get('tagline'),
+        "tagline":             _i18n(b.get('tagline_i18n'),            b.get('tagline')),
+        "short_description":   _i18n(b.get('short_description_i18n'),  b.get('short_description')),
         "primary_logo_url":    b.get('primary_logo_url'),
         "monochrome_logo_url": b.get('monochrome_logo_url'),
         "favicon_url":         b.get('favicon_url'),

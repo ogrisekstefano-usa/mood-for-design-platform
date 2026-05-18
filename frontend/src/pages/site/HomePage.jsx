@@ -384,7 +384,7 @@ const HomePage = () => {
   const { locale } = useSite();
   const slug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
   const { content: cms } = useStorefrontContent(slug, 'home', homepageContent);
-  const { brand } = usePublicBrand(slug);
+  const { brand } = usePublicBrand(slug, locale);
   const brandName = useMemo(
     () => `${brand?.name || 'MOOD for DESIGN'}${brand?.suffix || ''}`,
     [brand],
