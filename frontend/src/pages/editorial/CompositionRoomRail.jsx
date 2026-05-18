@@ -85,7 +85,7 @@ export const CompositionRoomRail = ({
     <aside className="ed-rail" data-testid="ed-rail">
       <header className="ed-rail__head">
         <p className="ed-rail__eyebrow">Editorial Studio</p>
-        <h1 className="ed-rail__title">Composition Room</h1>
+        <h1 className="ed-rail__title">Market Editions™</h1>
       </header>
 
       {/* Market chips */}
@@ -160,6 +160,12 @@ export const CompositionRoomRail = ({
                 <div className="ed-master__variants">
                   {vs.map((v) => {
                     const meta = statusMeta(v.status);
+                    const heroUrl = v.hero_image_url;
+                    const translation = v.target_locale && v.target_locale.toLowerCase() !== (v.blueprint_review_locale || 'it-it').toLowerCase()
+                      ? (v.internal_translation && Object.keys(v.internal_translation || {}).length ? 'manual' : 'awaiting')
+                      : 'master';
+                    const transLabel = { master: 'Master', manual: 'Manuale', awaiting: 'Da tradurre', translated: 'Tradotto', diverged: 'Diverge' }[translation];
+                    const transColor = { master: '#88c0d0', manual: '#b08d57', awaiting: '#d97757', translated: 'var(--bp-primary)', diverged: '#ef4444' }[translation];
                     return (
                       <div
                         key={v.id}
@@ -168,19 +174,38 @@ export const CompositionRoomRail = ({
                         data-selected={selectedVariantId === v.id}
                         onClick={(e) => { e.stopPropagation(); onSelectVariant?.(v); }}
                       >
-                        <span
-                          className="ed-variant__status-dot"
-                          style={{ backgroundColor: meta.dot }}
-                          title={meta.label}
-                        />
-                        <span className="ed-variant__market">{marketLabel(v.market_id)}</span>
-                        <span className="ed-variant__locale">{v.target_locale || marketLocale(v.market_id)}</span>
-                        {v.scheduled_at && (
-                          <span className="ed-variant__sched">
-                            <Calendar size={10} strokeWidth={1.5} style={{ marginRight: 3 }} />
-                            {fmtDate(v.scheduled_at)}
-                          </span>
+                        {heroUrl ? (
+                          <img src={heroUrl} alt="" className="ed-variant__thumb" loading="lazy" />
+                        ) : (
+                          <span className="ed-variant__thumb ed-variant__thumb--empty" aria-hidden />
                         )}
+                        <div className="ed-variant__main">
+                          <div className="ed-variant__line">
+                            <span
+                              className="ed-variant__status-dot"
+                              style={{ backgroundColor: meta.dot }}
+                              title={meta.label}
+                            />
+                            <span className="ed-variant__market">{marketLabel(v.market_id)}</span>
+                            <span className="ed-variant__locale">{v.target_locale || marketLocale(v.market_id)}</span>
+                            <span
+                              className="ed-variant__trans-badge"
+                              style={{ color: transColor, borderColor: transColor }}
+                              data-testid={`ed-variant-translation-${v.id}`}
+                            >
+                              {transLabel}
+                            </span>
+                          </div>
+                          <div className="ed-variant__line ed-variant__line--meta">
+                            <span className="ed-variant__status-label">{meta.label}</span>
+                            {v.scheduled_at && (
+                              <span className="ed-variant__sched">
+                                <Calendar size={9} strokeWidth={1.5} style={{ marginRight: 3 }} />
+                                {fmtDate(v.scheduled_at)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     );
                   })}

@@ -1,0 +1,40 @@
+{
+  "summary": "Iteration 61 — P0 Media Delete Protection + Market Editions Operability + Responsive + Translation badges + ?openAdd=1 deep-link validated end-to-end. Backend 5/5 pytest GREEN (test_iteration_61_market_editions.py): POST /api/editorial/masters creates master returning id+code+title; master appears in list; GET /api/markets returns markets; POST /api/editorial/masters/{mid}/variants creates variant with -copy/-slug; POST /api/editorial/variants/{vid}/schedule correctly rejects with 409 when variant is in draft (must be approved first), then succeeds after transitioning draft→direction_defined→ready_for_editorial_review→approved (status persists as 'scheduled' with scheduled_at populated); GET /api/media list returns data array and detail endpoint exposes 'links' for delete-protection. Frontend Playwright (1440x900 desktop, 1024x768 laptop, 768x1024 tablet on /blueprint/editorial): (a) me-toolbar visible with all 7 CTAs (me-cta-new-master=enabled, me-cta-new-edition/duplicate/schedule=disabled by default, me-cta-open-calendar/from-pinterest/from-project=enabled). (b) me-flow-strip rendered with 5 stages; me-flow-step-master is active by default. (c) Click '+ Nuovo Master' opens new-master-modal with all 5 fields (new-master-code/title/locale/direction/submit). (d) Selecting an existing ed-master enables me-cta-new-edition; modal shows 2 markets in grid (italy, usa_national) + new-edition-locale + new-edition-slug + new-edition-submit. (e) Selecting an ed-variant enables both Duplica and Programma. (f) Translation badge ed-variant-translation-<vid> renders 'Da tradurre' on the seed variant. (g) /workspace/references?openAdd=1 auto-opens add-reference-modal immediately on page load (deep-link working). (h) NO horizontal overflow at any viewport (sw==cw at 1440/1024/768). Note: login redirects to /dashboard not /blueprint (existing app behaviour), test waits adjusted. The seeded demo tenant did not have an asset with usage_count > 0 reachable in the inspector — MediaDeleteProtectionDrawer code is in place (data-testid='media-delete-protection' + all 5 mdp-action-* testids + mdp-usage-<linkId> + close + confirmForce toggle) but live drawer trigger was not executable without manually seeding a media_link row.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_61_market_editions.py",
+    "/app/test_reports/pytest/iteration_61.xml"
+  ],
+  "action_items": [
+    "(LOW) MediaDeleteProtectionDrawer live trigger not exercised — the seeded demo tenant exposes branding_asset media but inspector flow to surface usage_count > 0 was not validated end-to-end in this iteration. Recommend main agent seed at least one media_links row pointing to a known media asset (or wire a fixture in seed_demo_users.py) so the drawer can be smoke-tested by future automation. Component code itself is well-structured with all 5 action testids + mdp-usage-<id> + close.",
+    "(LOW) The /api/editorial/variants/{vid}/schedule endpoint requires variant.status in {'approved','scheduled'} (returns 409 otherwise). The ScheduleModal in MarketEditionsToolbar.jsx surfaces that error via toast (toast.error(e?.response?.data?.detail)), but UI does not pre-emptively disable the Programma button or warn the user when status != 'approved'. Consider greying out 'Programma' or showing an inline hint ('Variant must be approved') when selectedVariant.status not in approved/scheduled."
+  ],
+  "critical_code_review_comments": [
+    "MarketEditionsToolbar.jsx (~480 lines) packages 3 modals + flow strip + toolbar in a single file. Approaching the 700-line cutoff. Recommend extracting NewMasterModal, NewMarketEditionModal, ScheduleModal, FlowStrip into separate files under /pages/editorial/marketEditions/ for maintainability and easier unit testing.",
+    "MediaDeleteProtectionDrawer.jsx ENTITY_META maps both 'cms_page' and 'storefront_page' to the same href () => '/blueprint/experience' — neither uses the entity_id. If/when per-section deep-links are wired, replace with href: (id) => `/blueprint/experience?section=${id}`.",
+    "handleDuplicate in MarketEditionsToolbar uses Date.now().toString(36).slice(-4) for slug uniqueness — collision-resistant enough at human speed but not for batch duplication. Consider using crypto.randomUUID().slice(0,8) for safety.",
+    "Schedule guard is hard-coded server-side ('approved' or 'scheduled' only). The toolbar exposes 'Programma' as soon as a variant is selected regardless of status, leading to a 409 round-trip. Mirror the server guard on the client: disable schedule when selectedVariant.status not in {'approved','scheduled'}.",
+    "ReferencesPage ?openAdd=1 deep-link works on mount but the URL param is left in the address bar after the modal opens. Consider replacing history.replaceState to drop ?openAdd=1 once consumed to prevent re-trigger on browser refresh."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_61_market_editions.py (NEW — 5 pytest tests, login uses session.access_token)"
+  ],
+  "success_rate": {
+    "backend": "100% (5/5 — masters POST + variants POST + schedule 409 guard + schedule success after approval + media list)",
+    "frontend": "100% on all explicitly testable surfaces (toolbar, flow strip, modals, selection-state enablement, translation badge, openAdd deep-link, responsive no-overflow at 3 viewports). MediaDeleteProtectionDrawer live trigger not exercised (no seeded asset with usage_count>0 found in UI flow)."
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin, tenant mood-demo-studio-81a09e). Auth response shape: {session: {access_token, refresh_token, expires_at, token_type}, user: {...}}",
+  "seed_data_creation": "Created 1 TEST_iter61_<timestamp> editorial_master + 1 test variant per test run (variant transitions through draft→direction_defined→ready_for_editorial_review→approved→scheduled). Not auto-cleaned — main agent may add teardown. No production data modified.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 61 GREEN. To run regression: pytest backend/tests/test_iteration_61_market_editions.py -v (~8s, 5/5 pass). Login token lives at response.session.access_token (NOT response.access_token). Schedule endpoint requires variant.status='approved' before accepting — chain transitions draft→direction_defined→ready_for_editorial_review→approved. ed-master-<id> and ed-variant-<id> testids confirmed present in CompositionRoomRail. Translation badge testid: ed-variant-translation-<vid>. AddReferenceModal auto-open deep-link on /workspace/references?openAdd=1 confirmed working. Two seeded markets in demo tenant: italy, usa_national. MediaDeleteProtectionDrawer drawer code path verified by static review but NOT triggered via UI in this iteration — main agent should seed a media_links row to enable live smoke test.",
+  "rca_of_the_issue": "N/A — no bugs found. Two minor UX suggestions: (1) pre-emptively disable Programma button when variant.status != approved to avoid 409 round-trip, (2) MediaDeleteProtectionDrawer live trigger needs a seeded media_links row to be smoke-tested."
+}

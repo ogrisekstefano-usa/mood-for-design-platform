@@ -21,6 +21,7 @@
  *   ✅ Perspective change TRANSFORMS the reading (slow fade), never refreshes
  */
 import React, { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
@@ -498,6 +499,7 @@ const LoadingState = () => (
 
 const ReferencesPage = () => {
   const runtime = useLocaleRuntime();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [collections, setCollections] = useState([]);
   const [refsById, setRefsById] = useState({});
   const [projects, setProjects] = useState([]);
@@ -505,6 +507,16 @@ const ReferencesPage = () => {
   const [error, setError] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
+
+  // Auto-open the AddReferenceModal if ?openAdd=1 (deep-link from Editorial Studio)
+  useEffect(() => {
+    if (searchParams.get('openAdd') === '1') {
+      setShowAdd(true);
+      const next = new URLSearchParams(searchParams);
+      next.delete('openAdd');
+      setSearchParams(next, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     let cancelled = false;

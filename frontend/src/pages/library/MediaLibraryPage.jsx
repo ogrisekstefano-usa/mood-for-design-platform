@@ -27,6 +27,7 @@ import {
   media, collections as collectionsApi, materials as matApi, uploadMediaFile,
 } from '../../lib/mediaApi';
 import { toast } from 'sonner';
+import MediaDeleteProtectionDrawer from '../../components/common/MediaDeleteProtectionDrawer';
 
 // ── utils ─────────────────────────────────────────────────────────────
 const fmtBytes = (n) => {
@@ -665,6 +666,7 @@ const Inspector = ({ assetId, onClose, onReload, onReplaceStart }) => {
   const [tab, setTab] = useState('details');
   const [editing, setEditing] = useState({ alt_text: '', description: '', tags: '' });
   const [saving, setSaving] = useState(false);
+  const [protectionOpen, setProtectionOpen] = useState(false);
 
   const load = useCallback(async () => {
     if (!assetId) return;
@@ -697,11 +699,29 @@ const Inspector = ({ assetId, onClose, onReload, onReplaceStart }) => {
     finally { setSaving(false); }
   };
 
+  // P0 DAM safety: intercept archive when usage_count > 0
   const archive = async () => {
-    if (!confirm('Archive this asset?')) return;
+    const usage = (detail?.links || []).length;
+    if (usage > 0) {
+      setProtectionOpen(true);
+      return;
+    }
+    if (!confirm('Archivia questo asset?')) return;
     await media.archive(assetId);
-    toast.success('Archived');
+    toast.success('Archiviato');
     onReload?.(); onClose();
+  };
+
+  const handleProtectionClose = (opts) => {
+    setProtectionOpen(false);
+    if (opts?.jumpToUsage) {
+      setTab('usage');
+    }
+  };
+
+  const handleProtectionCompleted = () => {
+    onReload?.();
+    onClose();
   };
 
   if (!assetId) return null;
@@ -769,9 +789,20 @@ const Inspector = ({ assetId, onClose, onReload, onReplaceStart }) => {
                        font-body transition-colors"
           >
             <Icons.Archive size={11} strokeWidth={1.5} />
-            Archive asset
+            {((detail?.links || []).length > 0)
+              ? `Archivia (${(detail?.links || []).length} ${(detail?.links || []).length === 1 ? 'relazione' : 'relazioni'} attive)`
+              : 'Archive asset'}
           </button>
         </div>
+      )}
+
+      {protectionOpen && detail && (
+        <MediaDeleteProtectionDrawer
+          asset={detail.asset}
+          links={detail.links || []}
+          onClose={handleProtectionClose}
+          onCompleted={handleProtectionCompleted}
+        />
       )}
     </aside>
   );
