@@ -31,6 +31,7 @@ const VariantApprovalInboxPage = lazy(() => import('./pages/editorial/VariantApp
 const EditorialStudioPage = lazy(() => import('./pages/editorial/EditorialStudioPage'));
 const InternationalPresencePage = lazy(() => import('./pages/settings/InternationalPresencePage'));
 const StorefrontStudioPage = lazy(() => import('./pages/storefront/StorefrontStudioPage'));
+const EditorialCalendarPage = lazy(() => import('./pages/editorial/EditorialCalendarPage'));
 const ProjectsStudioPage = lazy(() => import('./pages/projects/ProjectsStudioPage'));
 const MoodboardsPage = lazy(() => import('./pages/moodboards/MoodboardsPage'));
 const InspirationsPage = lazy(() => import('./pages/inspirations/InspirationsPage'));
@@ -322,6 +323,9 @@ function App() {
 
                   {/* International Presence™ — Phase S-IDENTITY Step 1. */}
                   <Route path="/settings/international-presence" element={<StudioAdminRoute><InternationalPresencePage /></StudioAdminRoute>} />
+
+                  {/* Editorial Calendar™ — International Editorial Operations™ heart */}
+                  <Route path="/blueprint/editorial-calendar" element={<StudioAdminRoute><EditorialCalendarPage /></StudioAdminRoute>} />
 
                   {/* Experience Studio™ — single canonical route.
                       `/blueprint/storefront` and `/settings/storefront`

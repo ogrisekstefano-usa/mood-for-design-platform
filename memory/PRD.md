@@ -53,7 +53,27 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
-### Fase EMERGENCY-STABILIZATION (Feb 18, 2026 — current) — Route Collapse + Single Render Pipeline
+### Fase OPERATIONS-CORE (Feb 18, 2026 — current) — Editorial Calendar™ + Renames
+**Nuovo cuore operativo della piattaforma**: international editorial operations system, no AI experimentation, no metaphor.
+
+#### Editorial Calendar™ — `/blueprint/editorial-calendar`
+- **Backend**: nuovo `/api/blueprint/calendar` aggrega in unico stream `magazine_articles` + `portfolio_projects` + `cms_pages` con datetime, locale, country flag, status, CTA target, SEO goal, approval state.
+- **Frontend**: pagina monthly grid (42 celle) + Today's International Presence (tabella per mercato con today/scheduled/published) + stream operativo prossimi 7 giorni.
+- Event pill = type-aware deep link verso editor specifico (Magazine, Projects Studio, Experience Studio).
+- Filtri: all | article | project | page. Nav mese: prev/today/next.
+- Test live PASSATO: tenant demo mostra 9 eventi · 2 mercati (Global + Italia) · 6 live.
+
+#### Renames per direttiva
+- "Editorial Review" → **Publishing Queue™** (sidebar `nav.publishingQueue`)
+- "Composition Room" → **Market Editions™** (label sidebar `Magazine · Market Editions`)
+- "Archivio" / "Library" → **Media Library™** (sidebar `nav.mediaLibrary`)
+- "Ispirazioni" / "References" → **Pinterest Research Feed™** (`nav.pinterestResearch`)
+- Section header "Editorial" → **Editorial Operations** (promoted to top after Dashboard)
+
+#### Sidebar IA refactored
+Nuovo ordine: Dashboard → **Editorial Operations** (Calendar · Magazine · Publishing Queue) → Workspace → Experience → Projects (+ Media Library) → Forms & Journeys → International → Team → Settings → Platform.
+
+### Fase EMERGENCY-STABILIZATION (Feb 18, 2026) — Route Collapse + Single Render Pipeline
 **P0 stabilization mode**: rollback architectural complexity. ONE frontend, ONE runtime, ONE render pipeline, ONE source of truth.
 
 #### Route Forensics findings

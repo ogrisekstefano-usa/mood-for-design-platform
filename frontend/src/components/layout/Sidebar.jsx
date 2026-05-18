@@ -159,6 +159,18 @@ const Sidebar = () => {
           <NavItem to="/dashboard" icon="LayoutDashboard" labelKey="nav.dashboard" end collapsed={collapsed} />
         </div>
 
+        {/* ── EDITORIAL OPERATIONS — operational heart of the platform ─ */}
+        {can('tenant:settings') && (
+          <div>
+            <SectionLabel collapsed={collapsed}>Editorial Operations</SectionLabel>
+            <div className="space-y-0.5">
+              <NavItem to="/blueprint/editorial-calendar" icon="CalendarDays" labelKey="nav.editorialCalendar" fallback="Editorial Calendar" collapsed={collapsed} />
+              <NavItem to="/blueprint/editorial" icon="BookOpen" labelKey="nav.editorialStudio" fallback="Magazine · Market Editions" collapsed={collapsed} />
+              <NavItem to="/editorial/inbox" icon="Inbox" labelKey="nav.publishingQueue" fallback="Publishing Queue" collapsed={collapsed} />
+            </div>
+          </div>
+        )}
+
         {/* ── WORKSPACE ─────────────────────────────────────────── */}
         {wsRoutes.length > 0 && (
           <div>
@@ -166,7 +178,7 @@ const Sidebar = () => {
             <div className="space-y-0.5">
               {wsRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
               <NavItem to="/moodboards" icon="Layers" labelKey="nav.moodboards" collapsed={collapsed} />
-              <NavItem to="/workspace/references" icon="Compass" labelKey="nav.references" fallback="References" collapsed={collapsed} />
+              <NavItem to="/workspace/references" icon="Compass" labelKey="nav.pinterestResearch" fallback="Pinterest Research" collapsed={collapsed} />
               <NavItem to="/workspace/relationships" icon="Users" labelKey="nav.relationships" fallback="Relazioni" collapsed={collapsed} />
             </div>
           </div>
@@ -188,20 +200,10 @@ const Sidebar = () => {
             <SectionLabel collapsed={collapsed}>Projects</SectionLabel>
             <div className="space-y-0.5">
               <NavItem to="/blueprint/projects-studio" icon="Frame" labelKey="nav.projectsStudio" fallback="Projects Studio" collapsed={collapsed} />
-              {contentRoutes.filter((r) => r.to !== '/moodboards').map((r) => (
-                <NavItem key={r.to} {...r} end={r.to === '/library'} collapsed={collapsed} />
+              {contentRoutes.filter((r) => r.to !== '/moodboards' && r.to !== '/library').map((r) => (
+                <NavItem key={r.to} {...r} collapsed={collapsed} />
               ))}
-            </div>
-          </div>
-        )}
-
-        {/* ── EDITORIAL ─────────────────────────────────────────── */}
-        {can('tenant:settings') && (
-          <div>
-            <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.editorial')}</SectionLabel>
-            <div className="space-y-0.5">
-              <NavItem to="/blueprint/editorial" icon="BookOpen" labelKey="nav.editorialStudio" fallback="Editorial Studio" collapsed={collapsed} />
-              <NavItem to="/editorial/inbox" icon="Inbox" labelKey="nav.editorialInbox" fallback="Editorial Review" collapsed={collapsed} />
+              <NavItem to="/library" icon="FolderOpen" labelKey="nav.mediaLibrary" fallback="Media Library" end collapsed={collapsed} />
             </div>
           </div>
         )}
