@@ -144,18 +144,31 @@ const InternationalPresencePage = () => {
   const save = async () => {
     setSaving(true);
     try {
+      // Build the diff list. We run sequential awaits (NOT Promise.all)
+      // so a 500 on one PATCH halts the batch — partial saves are worse
+      // than a halted save we can retry. The mutex on is_default also
+      // benefits from a deterministic order: set-default FIRST, then the
+      // rest, so any subsequent toggles don't accidentally race the
+      // single-default constraint.
       const ops = [];
-      markets.forEach((m) => {
+      const becomingDefault = markets.find((m) => {
+        const o = original.find((x) => x.id === m.id);
+        return m.is_default && (!o || !o.is_default);
+      });
+      const orderedMarkets = becomingDefault
+        ? [becomingDefault, ...markets.filter((m) => m.id !== becomingDefault.id)]
+        : markets;
+      orderedMarkets.forEach((m) => {
         const o = original.find((x) => x.id === m.id);
         const patch = {};
         if (!o || o.is_active  !== m.is_active)  patch.is_active  = m.is_active;
         if (!o || o.is_default !== m.is_default) patch.is_default = m.is_default;
         if (!o || o._sort      !== m._sort)      patch.sort_order = m._sort;
-        if (Object.keys(patch).length > 0) {
-          ops.push(api.patch(`/api/tenants/me/markets/${m.id}`, patch));
-        }
+        if (Object.keys(patch).length > 0) ops.push({ id: m.id, patch });
       });
-      await Promise.all(ops);
+      for (const { id, patch } of ops) {
+        await api.patch(`/api/tenants/me/markets/${id}`, patch);
+      }
       setOriginal(JSON.parse(JSON.stringify(markets)));
       toast.success('Presenza internazionale aggiornata');
     } catch (e) {

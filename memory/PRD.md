@@ -151,6 +151,44 @@
 | `hospitality_logic` | Welcome codes specifici per market (Italian maestro · DACH precision · GCC ceremonial arrival · Aspen fire-lit warmth · Scandi plain-spoken · …) — opening_gesture, closing_gesture, what_to_avoid |
 | `luxury_perception` | Cosa conta come luxury QUI ≠ ovunque. `signal` da usare, `anti_signal` come allergia lessicale |
 | `material_vocabulary` | Palette materiali per market (travertino romano vs Jura limestone vs onyx vs talavera…) + lexicon prefer/avoid |
+
+### ✅ Phase S-IDENTITY Step 1 — International Presence™ (DONE — 17 May 2026)
+
+> Pannello editoriale cinematico per il posizionamento internazionale del tenant. NON un'admin table — un'esperienza editoriale di market positioning.
+
+**Backend**
+- `supabase/migrations/038_market_positioning.sql` — Nuove colonne `editorial_tone`, `luxury_positioning`, `hospitality_profile`, `storefront_behavior` su `markets`. Seed editorial per 7 mercati canonici (italy, dach, france_fr_europe, uk_ireland, usa_national, spanish_latam, gcc_luxury).
+- `routers/markets.py patch_my_tenant_market` — **CRITICAL FIX**: spostato il blocco di mutex `is_default=false su tutti gli altri` PRIMA dell'upsert. Risolveva un 500 da `uq_tenant_markets_default` constraint che bloccava il flow `Set as default` end-to-end.
+
+**Frontend (nuovi)**
+- `pages/settings/InternationalPresencePage.jsx` (~310 righe) — Pagina cinematica al route `/settings/international-presence`:
+  - Eyebrow `Workspace · Identity` + serif title `International Presence™` (Cormorant 56px).
+  - 4 macro-region grouped sections (Italy · Europe · Americas · GCC · APAC · Other) con index editoriale `01–06`, titolo serif, intro narrativa.
+  - Cinematic card per mercato: eyebrow gold per default | "In presence" | "Available"; serif name (display_name i18n dict → resolved); locale + currency; 4 attributi positioning (Editorial Tone / Luxury Positioning / Hospitality Profile / Storefront Behavior).
+  - Soft activation toggle (linea calma, non SaaS).
+  - "Set as default" link con accento gold; data-default attribute + box-shadow gold sulla card.
+  - Drag-reorder intra-macro (HTML5 native, swap _sort).
+  - Sticky savebar inferiore (slide-up) con dirty count + Annulla / Conferma presenza.
+  - Salvataggio sequenziale (non Promise.all) con set-default-first ordering per evitare race del mutex DB.
+- `pages/settings/internationalPresence.css` — Cream/ink palette, animazioni cinematiche (staggered fade-in 50ms/region), toggle pill-shaped, savebar backdrop-blur.
+
+**Frontend (modificati)**
+- `App.js` — Route `/settings/international-presence` sotto `StudioAdminRoute`.
+- `components/layout/Sidebar.jsx` — NavItem `International Presence` (icon Map) sotto Settings + aria-label esplicito per accessibilità in collapsed mode.
+- `pages/settings/SettingsPage.jsx` — Tile `tile-international-presence` con accent core, link al pannello.
+
+**Visual guardrails rispettati**
+- ❌ NO admin dashboard feeling · ❌ NO enterprise toggles · ❌ NO localization panel feeling
+- ✅ Editorial calm · ✅ Cinematic rhythm · ✅ Luxury positioning · ✅ Calm spacing · ✅ Drag handle minimale
+
+**Test verificati (iteration_57.json)**
+- `/app/backend/tests/test_phase_s_identity_step1.py` (nuovo, 9 test): 8 PASS iniziali + 1 fix critico applicato → 9/9 dopo fix mutex.
+- 62/62 backend test esistenti continuano a passare (ZERO regression).
+- Frontend E2E: 13 markets · 4 macro-region groups · Italy default · 7 cards con attributi editoriali · savebar visible on dirty · save/discard flows operative · mutex set-as-default risolto.
+
+---
+
+
 | `sensory_atmosphere` | **Il modulo critico**: light, tactility, spatial_feeling, lighting_vocab, emotional_pacing, sensuality — per market e per sub_region (Miami luminous-tropical · Aspen fire-lit-intimate · Dubai ceremonial-reflective · …). Senza questo, l'AI scivola in "warm light, natural materials" ovunque |
 | `cta_psychology` | Preferred_tiers + preferred_intents + framing_paragraph per market. Le CTA sono **transizioni editoriali**, non bottoni |
 | `seo_intent` | SEO editorial-grade: seo_title come headline pubblicabile, meta_description narrativa ≤ 155 char, hreflang BCP-47. **MAI keyword spam** |

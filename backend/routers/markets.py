@@ -188,6 +188,13 @@ def patch_my_tenant_market(market_id: str, patch: TenantMarketPatch, ctx=Depends
 
     body["updated_at"] = _iso()
 
+    # Enforce single-default-per-tenant FIRST (before upsert) so the
+    # unique constraint `uq_tenant_markets_default` doesn't fire when we
+    # claim is_default on the target row.
+    if body.get("is_default"):
+        c.table("tenant_markets").update({"is_default": False, "updated_at": _iso()}) \
+         .eq("tenant_id", tid).neq("market_id", market_id).execute()
+
     # Find existing link.
     existing = (c.table("tenant_markets").select("id")
                 .eq("tenant_id", tid).eq("market_id", market_id)
@@ -207,11 +214,6 @@ def patch_my_tenant_market(market_id: str, patch: TenantMarketPatch, ctx=Depends
             "updated_at":  _iso(),
         }
         c.table("tenant_markets").insert(row).execute()
-
-    # Enforce single-default-per-tenant.
-    if body.get("is_default"):
-        c.table("tenant_markets").update({"is_default": False, "updated_at": _iso()}) \
-         .eq("tenant_id", tid).neq("market_id", market_id).execute()
 
     return {"ok": True}
 

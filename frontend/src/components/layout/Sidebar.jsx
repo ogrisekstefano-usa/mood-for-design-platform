@@ -30,6 +30,7 @@ const NavItem = ({ to, icon, labelKey, fallback, collapsed, end }) => {
       to={to}
       end={end}
       data-testid={testid}
+      aria-label={label}
       title={collapsed ? label : undefined}
       className={({ isActive }) =>
         `flex items-center ${collapsed ? 'justify-center' : 'gap-3'} ${collapsed ? 'px-0 py-2.5' : 'px-2.5 py-1.5'}
@@ -211,7 +212,7 @@ const Sidebar = () => {
             <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.settings')}</SectionLabel>
             <div className="space-y-0.5">
               <NavItem to="/settings" icon="Settings" labelKey="nav.settings" end collapsed={collapsed} />
-              <NavItem to="/settings/international-presence" icon="Globe" labelKey="nav.internationalPresence" fallback="International Presence" collapsed={collapsed} />
+              <NavItem to="/settings/international-presence" icon="Map" labelKey="nav.internationalPresence" fallback="International Presence" collapsed={collapsed} />
               <NavItem to="/settings/plan" icon="Receipt" labelKey="nav.billing" collapsed={collapsed} />
             </div>
           </div>
