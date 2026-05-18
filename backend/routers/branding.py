@@ -34,6 +34,14 @@ class Branding(BaseModel):
     monochrome_logo_url: Optional[str] = None
     favicon_url: Optional[str] = None
     social_og_logo_url: Optional[str] = None
+    # ── Multi-locale identity bags (Fase 0.5 — multi-locale audit fix) ──
+    # Each key is a BCP-47 locale ('it-IT', 'en-US', 'en-GB', 'fr-FR',
+    # 'de-DE', 'es-ES', 'es-MX', 'ar-AE', …). Values are simple strings.
+    # The single-string columns above remain the canonical default locale
+    # mirror for legacy / unauth public endpoints.
+    public_brand_name_i18n: Optional[Dict[str, str]] = None
+    tagline_i18n: Optional[Dict[str, str]] = None
+    short_description_i18n: Optional[Dict[str, str]] = None
 
 
 class ThemePalette(BaseModel):

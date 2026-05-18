@@ -155,6 +155,7 @@ const SiteHeader = () => {
 
   const mainLinks = nav?.main_links || [];
   const accediLabel = pickLabel(nav?.login_label, locale) || 'Accedi';
+  const navEmpty = mainLinks.length === 0;
 
   const renderLink = (link, opts = {}) => {
     let label = pickLabel(link.label, locale);
@@ -179,7 +180,12 @@ const SiteHeader = () => {
         <BrandMark brand={brand} />
 
         <nav className="mfd-header__nav" aria-label="Primary">
-          {mainLinks.map((l) => renderLink(l))}
+          {navEmpty ? (
+            <span className="mfd-header__nav-empty" data-testid="site-nav-empty" title="Configure navigation in Experience Studio">
+              {/* Intentional empty-state — zero hardcoded fallback. */}
+              &nbsp;
+            </span>
+          ) : mainLinks.map((l) => renderLink(l))}
         </nav>
 
         <div className="mfd-header__right">

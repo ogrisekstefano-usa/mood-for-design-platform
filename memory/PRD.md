@@ -53,7 +53,18 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
-### Fase 0 + Fase 1 (Feb 18, 2026 — current)
+### Fase 0.5 (Feb 18, 2026 — current) — HEADER UNIFICATION + Multi-locale fix + i18n cleanup
+- **HEADER P0 BLOCKER RESOLVED**: backend `/api/storefront/public/{slug}/brand` ora legge la nav UNICAMENTE da `cms_sections.nav_top` (Experience Studio).
+  - **DEFAULT_LINKS hardcoded ELIMINATO** dal backend.
+  - **branding_settings.public_nav.main_links** stripped (migration `migrate_unify_nav_source.py`).
+  - **Empty nav → empty array** sul frontend (intentional empty-state, niente silent fallback).
+  - **Test end-to-end PASSED**: edit `cms_sections.nav_top.settings.links` → `/brand` endpoint reflects immediately → `SiteHeader` rende il nuovo link nel public storefront.
+- **Multi-locale Brand identity FIX**: i campi `public_brand_name_i18n`, `tagline_i18n`, `short_description_i18n` aggiunti al modello Pydantic `Branding` (prima venivano scartati silenziosamente — causa per cui EN-GB, ES-MX, AR-AE non venivano persistiti).
+- **Brand Studio scope LOCK**: copy aggiornato — Brand Studio controlla SOLO identità · palette · tipografia · logo · contatti · showroom. Nav/footer/sezioni vivono solo in Experience Studio.
+- **Traceability chip "● Controls public storefront theme · NOT Blueprint admin"** aggiunto a Palette + Presets in Brand Studio.
+- **i18n cleanup Blueprint admin** (sezione brand): nuove chiavi `brand.*` aggiunte a `DEFAULT_I18N["it"]` + `["en-US"]` (title, intro, controls, section.identityKicker, section.identity, section.paletteKicker, section.paletteTitle, section.typographyKicker, section.typographyTitle, field.public_name, field.tagline, field.short_desc, field.support_email, field.phone, field.website, field.primary_logo, field.display, field.body, i18nHint, save, discard, livePreview, paletteTrace, presetsTrace). Tutti gli hardcoded inglesi sostituiti da `t('brand.…', null, '…italiano fallback…')`.
+
+### Fase 0 + Fase 1 (Feb 18, 2026)
 - Renamed `Storefront Studio` → **Experience Studio™** (label + canonical route `/blueprint/experience`)
 - Legacy `/blueprint/storefront` → automatic redirect (preserves bookmarks)
 - Sidebar IA refactored into 9 canonical sections (Workspace · Experience · Projects · Editorial · Forms & Journeys · International · Team · Settings · Platform)

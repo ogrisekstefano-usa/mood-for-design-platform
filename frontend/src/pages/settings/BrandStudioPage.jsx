@@ -41,10 +41,17 @@ const DEFAULT_PALETTE = {
   success: '#22C55E', warning: '#F59E0B', danger: '#EF4444',
 };
 
-const Section = ({ kicker, title, children, testid }) => (
+const Section = ({ kicker, title, children, testid, trace }) => (
   <section className="mb-9" data-testid={testid}>
     <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body mb-1">{kicker}</p>
-    <h2 className="font-heading text-xl text-[var(--bp-text-primary)] mb-4">{title}</h2>
+    <h2 className="font-heading text-xl text-[var(--bp-text-primary)] mb-2">{title}</h2>
+    {trace && (
+      <div className="mb-4 inline-flex items-center gap-2 px-2.5 py-1 bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-xs)]"
+           data-testid={`${testid}-trace`}>
+        <span className="w-1 h-1 rounded-full bg-[var(--bp-primary)]" aria-hidden />
+        <span className="text-[9px] uppercase tracking-[0.20em] text-[var(--bp-text-muted)] font-body">{trace}</span>
+      </div>
+    )}
     {children}
   </section>
 );
@@ -79,8 +86,9 @@ const I18N_LOCALES = [
   { code: 'ar-AE', flag: '🇦🇪', label: 'العربية' },
 ];
 
-const IdentityI18nGroup = ({ branding, setBranding }) => {
+const IdentityI18nGroup = ({ branding, setBranding, t }) => {
   const [activeLocale, setActiveLocale] = useState('it-IT');
+  const tr = t || ((_, __, fb) => fb);
   const getI18n = (field) => {
     const bag = branding[`${field}_i18n`] || {};
     // Seed the active locale with the legacy single string on first edit.
@@ -119,22 +127,21 @@ const IdentityI18nGroup = ({ branding, setBranding }) => {
         ))}
       </div>
       <p className="text-[10.5px] italic text-[var(--bp-text-muted)] font-body mb-3" style={{ lineHeight: 1.5 }}>
-        Stai modificando i valori per <strong style={{ color: 'var(--bp-primary)', fontStyle: 'normal' }}>{activeLocale}</strong>.
-        Il sito pubblico mostra il valore del locale visitato — un visitatore tedesco vede la versione <em>de-DE</em>.
+        {tr('brand.i18nHint', { locale: activeLocale }, `Stai modificando i valori per ${activeLocale}. Il sito pubblico mostra il valore del locale visitato — un visitatore tedesco vede la versione de-DE.`)}
       </p>
 
-      <Field label={`Public brand name · ${activeLocale}`}>
+      <Field label={`${tr('brand.field.public_name', null, 'Nome pubblico del brand')} · ${activeLocale}`}>
         <TextInput value={getI18n('public_brand_name')}
                    onChange={(v) => setI18n('public_brand_name', v)}
                    placeholder="MOOD for DESIGN"
                    testid="brand-public-name" />
       </Field>
-      <Field label={`Tagline · ${activeLocale}`}>
+      <Field label={`${tr('brand.field.tagline', null, 'Tagline')} · ${activeLocale}`}>
         <TextInput value={getI18n('tagline')} onChange={(v) => setI18n('tagline', v)}
                    placeholder="Spaces that tell stories"
                    testid="brand-tagline" />
       </Field>
-      <Field label={`Short description · ${activeLocale}`}>
+      <Field label={`${tr('brand.field.short_desc', null, 'Descrizione breve')} · ${activeLocale}`}>
         <TextInput value={getI18n('short_description')} onChange={(v) => setI18n('short_description', v)}
                    placeholder="A boutique studio crafting bespoke interiors."
                    testid="brand-short-desc" />
@@ -357,17 +364,29 @@ const BrandStudioPage = () => {
             Workspace · Brand Studio
           </p>
           <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)] leading-none">
-            Identity & Theme
+            {t('brand.title', null, 'Identità & Tema')}
           </h1>
           <p className="text-[var(--bp-text-muted)] text-[13px] font-body mt-2 max-w-xl">
-            Define how your tenant looks across the storefront and workspace. Changes preview live.
+            {t('brand.intro', null, "Brand Studio controlla SOLO l'identità visiva del tuo storefront pubblico: logo, palette, tipografia, tagline, contatti. Per modificare navigazione, footer, sezioni o journey → vai su Experience Studio.")}
           </p>
+          {/* Scope traceability — Brand Studio controls IDENTITY only.
+              Navigation / footer / sections live in Experience Studio. */}
+          <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-sm)]"
+               data-testid="brand-scope-trace">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--bp-primary)]" aria-hidden />
+            <span className="text-[9px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body font-medium">
+              {t('brand.controlsLabel', null, 'Controlla lo storefront pubblico:')}
+            </span>
+            <span className="text-[11px] font-heading italic text-[var(--bp-text-primary)]">
+              {t('brand.controls', null, 'Identità · Palette · Tipografia · Logo · Showroom')}
+            </span>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {dirty && (
             <button onClick={discard} data-testid="brand-discard"
                     className="px-4 py-2.5 rounded-[var(--bp-radius-sm)] border border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] text-[10px] font-body uppercase tracking-[0.22em] flex items-center gap-1.5 transition-colors">
-              <RotateCcw size={11} strokeWidth={1.5} /> Discard
+              <RotateCcw size={11} strokeWidth={1.5} /> {t('brand.discard', null, 'Annulla')}
             </button>
           )}
           <button onClick={save} disabled={!dirty || saving}
@@ -377,7 +396,7 @@ const BrandStudioPage = () => {
                       ? 'bg-[var(--bp-primary)] text-black hover:brightness-110'
                       : 'bg-[var(--bp-surface-2)] text-[var(--bp-text-muted)] cursor-not-allowed'}`}>
             {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} strokeWidth={1.5} />}
-            Save changes
+            {t('brand.save', null, 'Salva modifiche')}
           </button>
         </div>
       </div>
@@ -386,29 +405,30 @@ const BrandStudioPage = () => {
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_540px] gap-10">
         {/* Controls */}
         <div>
-          <Section kicker="A · Identity" title="Brand identity" testid="section-identity">
-            <IdentityI18nGroup branding={branding} setBranding={setBranding} />
+          <Section kicker={t('brand.section.identityKicker', null, 'A · Identità')} title={t('brand.section.identity', null, 'Identità del brand')} testid="section-identity">
+            <IdentityI18nGroup branding={branding} setBranding={setBranding} t={t} />
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Support email">
+              <Field label={t('brand.field.support_email', null, 'Email di supporto')}>
                 <TextInput value={branding.support_email} onChange={(v) => setBranding({ ...branding, support_email: v })}
                            placeholder="hello@studio.com" testid="brand-support-email" />
               </Field>
-              <Field label="Phone">
+              <Field label={t('brand.field.phone', null, 'Telefono')}>
                 <TextInput value={branding.phone} onChange={(v) => setBranding({ ...branding, phone: v })}
                            placeholder="+39 02 0000 0000" testid="brand-phone" />
               </Field>
             </div>
-            <Field label="Website URL">
+            <Field label={t('brand.field.website', null, 'Sito web')}>
               <TextInput value={branding.website_url} onChange={(v) => setBranding({ ...branding, website_url: v })}
                          placeholder="https://studio.com" testid="brand-website" />
             </Field>
-            <Field label="Primary logo URL">
+            <Field label={t('brand.field.primary_logo', null, 'URL logo principale')}>
               <TextInput value={branding.primary_logo_url} onChange={(v) => setBranding({ ...branding, primary_logo_url: v })}
                          placeholder="https://…/logo.svg" testid="brand-logo-url" />
             </Field>
           </Section>
 
-          <Section kicker="B · Palette" title="Colours" testid="section-palette">
+          <Section kicker={t('brand.section.paletteKicker', null, 'B · Palette')} title={t('brand.section.paletteTitle', null, 'Colori')} testid="section-palette"
+                   trace={t('brand.paletteTrace', null, 'Controls public storefront theme · NOT Blueprint admin')}>
             <div className="grid grid-cols-2 gap-x-5 gap-y-1">
               {[
                 ['primary',        'Primary'],
@@ -428,28 +448,29 @@ const BrandStudioPage = () => {
             </div>
           </Section>
 
-          <Section kicker="C · Typography" title="Fonts" testid="section-typography">
-            <Field label="Display (headlines)">
+          <Section kicker={t('brand.section.typographyKicker', null, 'C · Tipografia')} title={t('brand.section.typographyTitle', null, 'Caratteri')} testid="section-typography">
+            <Field label={t('brand.field.display', null, 'Display (Titoli)')}>
               <SelectChips options={DISPLAY_FONTS} value={theme.typography?.display} onChange={(v) => setTypo('display', v)} testid="font-display" />
             </Field>
-            <Field label="Body">
+            <Field label={t('brand.field.body', null, 'Body (Interfaccia)')}>
               <SelectChips options={BODY_FONTS} value={theme.typography?.body} onChange={(v) => setTypo('body', v)} testid="font-body" />
             </Field>
           </Section>
 
-          <Section kicker="D · Surface" title="Radius · Density · Shadow" testid="section-surface">
-            <Field label="Border radius">
+          <Section kicker="D · Surface" title={t('brand.section.surfaceTitle', null, 'Raggio · Densità · Ombre')} testid="section-surface">
+            <Field label={t('brand.field.radius', null, 'Border radius')}>
               <SelectChips options={RADIUS_OPTS} value={theme.radius} onChange={(v) => setTheme({ ...theme, radius: v })} testid="radius" />
             </Field>
-            <Field label="Density">
+            <Field label={t('brand.field.density', null, 'Densità')}>
               <SelectChips options={DENSITY_OPTS} value={theme.density} onChange={(v) => setTheme({ ...theme, density: v })} testid="density" />
             </Field>
-            <Field label="Shadow softness">
+            <Field label={t('brand.field.shadow', null, 'Morbidezza ombre')}>
               <SelectChips options={SHADOW_OPTS} value={theme.shadow} onChange={(v) => setTheme({ ...theme, shadow: v })} testid="shadow" />
             </Field>
           </Section>
 
-          <Section kicker="E · Presets" title="Curated themes" testid="section-presets">
+          <Section kicker="E · Presets" title={t('brand.section.presetsTitle', null, 'Temi curati')} testid="section-presets"
+                   trace={t('brand.presetsTrace', null, 'Controls public storefront theme')}>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
               {presets.map((p) => (
                 <PresetCard key={p.key} preset={p}
@@ -464,7 +485,7 @@ const BrandStudioPage = () => {
         {/* Live preview */}
         <div>
           <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body mb-3 flex items-center gap-2">
-            <Sparkles size={11} strokeWidth={1.5} /> Live preview
+            <Sparkles size={11} strokeWidth={1.5} /> {t('brand.livePreview', null, 'Anteprima live')}
           </p>
           <LivePreview branding={branding} theme={theme} />
         </div>

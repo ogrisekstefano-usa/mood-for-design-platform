@@ -714,17 +714,37 @@ def public_brand(tenant_slug: str, locale_code: str = Query(default="it-IT")):
         "favicon_url":         b.get('favicon_url'),
     }
 
-    DEFAULT_LINKS = [
-        {"id": "home",       "href": "/",         "label": {"it": "Home",      "en-US": "Home",      "en-GB": "Home",      "fr": "Accueil",  "de": "Start",      "es": "Inicio",     "ae": "الرئيسية"}},
-        {"id": "servizi",    "href": "/services", "label": {"it": "Servizi",   "en-US": "Services",  "en-GB": "Services",  "fr": "Services", "de": "Leistungen", "es": "Servicios",  "ae": "الخدمات"}},
-        {"id": "progetti",   "href": "/projects", "label": {"it": "Progetti",  "en-US": "Projects",  "en-GB": "Projects",  "fr": "Projets",  "de": "Projekte",   "es": "Proyectos",  "ae": "المشاريع"}},
-        {"id": "contatti",   "href": "/contact",  "label": {"it": "Contatti",  "en-US": "Contact",   "en-GB": "Contact",   "fr": "Contact",  "de": "Kontakt",    "es": "Contacto",   "ae": "تواصل معنا"}},
-    ]
-    nav_cfg = b.get('public_nav') or {}
-    main_links = nav_cfg.get('main_links') if isinstance(nav_cfg.get('main_links'), list) else None
+    # ── NAV: single source of truth = Experience Studio (cms_sections.nav_top) ──
+    # Zero hardcoded policy enforcement (Fase 0.5):
+    #   • Reads ONLY from cms_sections.nav_top on the 'navigation' page.
+    #   • No DEFAULT_LINKS, no fallback to branding_settings.public_nav.main_links.
+    #   • Empty result → empty array (frontend renders intentional empty-state).
+    main_links: list = []
+    nav_page = (client.table('cms_pages').select('id')
+                .eq('tenant_id', tenant['id']).eq('page_key', 'navigation').limit(1).execute())
+    if nav_page.data:
+        nav_sec = (client.table('cms_sections').select('settings, visible')
+                   .eq('tenant_id', tenant['id']).eq('page_id', nav_page.data[0]['id'])
+                   .eq('section_type', 'nav_top').limit(1).execute())
+        if nav_sec.data and nav_sec.data[0].get('visible', True):
+            cms_links = (nav_sec.data[0].get('settings') or {}).get('links') or []
+            for lk in cms_links:
+                if lk.get('visible', True) is False:
+                    continue
+                # Normalise label keys so the frontend picker resolves cleanly.
+                label = lk.get('label_i18n') or lk.get('label') or {}
+                if isinstance(label, str):
+                    label = {'en-US': label}
+                main_links.append({
+                    'id':     lk.get('id') or (lk.get('href') or '').strip('/') or 'link',
+                    'href':   lk.get('href') or '/',
+                    'label':  label,
+                    'target': lk.get('target') or '_self',
+                })
 
+    nav_cfg = b.get('public_nav') or {}
     nav = {
-        "main_links":         main_links if main_links else DEFAULT_LINKS,
+        "main_links":         main_links,  # canonical from Experience Studio (may be empty)
         "show_login":         bool(nav_cfg.get('show_login',         True)),
         "show_register":      bool(nav_cfg.get('show_register',      True)),
         "show_lang_switcher": bool(nav_cfg.get('show_lang_switcher', True)),
