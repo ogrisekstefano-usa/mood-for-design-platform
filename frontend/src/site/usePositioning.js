@@ -17,7 +17,7 @@
  *
  * Endpoint: GET /api/storefront/public/{tenant_slug}/positioning?locale_code=…
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { tenantConfig } from './content/tenant';
 import { toBcp47Storefront } from './localeBcp47';
@@ -27,38 +27,24 @@ const CACHE_PREFIX = 'mfd_positioning_v1_';
 
 export function usePositioning(locale) {
   const [state, setState] = useState({ loading: true, positioning: null, resolution: null });
-  const mounted = useRef(true);
 
   useEffect(() => {
-    mounted.current = true;
-    return () => { mounted.current = false; };
-  }, []);
-
-  useEffect(() => {
+    let alive = true;
     const slug = tenantConfig.slug;
     const bcp = toBcp47Storefront(locale);
-    const cacheKey = `${CACHE_PREFIX}${slug}_${bcp}`;
-
-    // SWR — try cache first to avoid flash on locale change.
-    try {
-      const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
-      if (cached?.positioning) {
-        setState({ loading: false, positioning: cached.positioning, resolution: cached.resolution });
-      }
-    } catch (_) {}
 
     axios.get(`${BACKEND_URL}/api/storefront/public/${slug}/positioning?locale_code=${encodeURIComponent(bcp)}`)
       .then((r) => {
-        if (!mounted.current) return;
+        if (!alive) return;
         const positioning = r.data?.positioning || {};
         const resolution  = r.data?.resolution || null;
-        try { localStorage.setItem(cacheKey, JSON.stringify({ positioning, resolution })); } catch (_) {}
         setState({ loading: false, positioning, resolution });
       })
       .catch(() => {
-        if (!mounted.current) return;
+        if (!alive) return;
         setState((s) => ({ ...s, loading: false }));
       });
+    return () => { alive = false; };
   }, [locale]);
 
   return state;

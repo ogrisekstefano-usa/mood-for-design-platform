@@ -45,6 +45,8 @@ const EDITORIAL_EMPTY = {
 
 const ProjectsIndexPage = () => {
   const { pick, locale } = useSite();
+  const { positioning } = usePositioning(locale);
+  const positioningCtas = resolveCtaLabels(positioning, locale);
   const [filter, setFilter] = useState('all');
   const [items, setItems] = useState(null);    // null = loading; [] = empty; [...] = ready
   const [usingFallback, setUsingFallback] = useState(false);
