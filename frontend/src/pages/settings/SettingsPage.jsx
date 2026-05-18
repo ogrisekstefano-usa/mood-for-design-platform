@@ -135,11 +135,11 @@ const SettingsPage = () => {
           body={t('settings.website.body', null, 'The pages, forms and editorial content your clients and professionals see.')}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <SettingsTile testid="tile-storefront" icon={Store} to="/settings/storefront"
-            title={t('settings.storefront.title', null, 'Storefront Pages')}
+          <SettingsTile testid="tile-storefront" icon={Store} to="/blueprint/experience"
+            title={t('settings.storefront.title', null, 'Experience Studio')}
             description={t('settings.storefront.sub', null, 'Homepage, hero, projects, value props — navigation & footer included.')}
           />
-          <SettingsTile testid="tile-forms" icon={ClipboardList} to="/settings/forms"
+          <SettingsTile testid="tile-forms" icon={ClipboardList} to="/blueprint/forms-journeys"
             title={t('settings.forms.title', null, 'Forms & Onboarding')}
             description={t('settings.forms.sub', null, 'Lead forms, client & professional intake wizards, automations.')}
           />

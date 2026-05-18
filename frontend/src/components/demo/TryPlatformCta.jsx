@@ -86,7 +86,7 @@ const TryPlatformCta = () => {
       localStorage.setItem('mfd_demo_mode', '1');                  // surfaces the demo ribbon
       // Full reload (not SPA navigate) so AuthProvider re-hydrates with the
       // freshly-minted token and ProtectedRoute lets us into /settings/*.
-      window.location.href = data.redirect || '/settings/storefront?demo=1&step=intro';
+      window.location.href = data.redirect || '/blueprint/experience?demo=1&step=intro';
     } catch (e) {
       setError(pick(COPY.error));
       setLoading(false);

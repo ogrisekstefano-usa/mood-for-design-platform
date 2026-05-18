@@ -1,7 +1,7 @@
 /**
  * DemoOnboardingTour — guided 4-step micro-tour for the EXE interactive demo.
  *
- * Activation: presence of `?demo=1` in the URL on /settings/storefront.
+ * Activation: presence of `?demo=1` in the URL on /blueprint/experience.
  * Persistence: dismissal is stored in localStorage so a refresh respects it.
  *
  * Steps (designed to be self-paced, not pushy)

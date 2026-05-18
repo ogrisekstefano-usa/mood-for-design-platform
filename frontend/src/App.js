@@ -31,7 +31,6 @@ const VariantApprovalInboxPage = lazy(() => import('./pages/editorial/VariantApp
 const EditorialStudioPage = lazy(() => import('./pages/editorial/EditorialStudioPage'));
 const InternationalPresencePage = lazy(() => import('./pages/settings/InternationalPresencePage'));
 const StorefrontStudioPage = lazy(() => import('./pages/storefront/StorefrontStudioPage'));
-const ExperienceOverviewPage = lazy(() => import('./pages/storefront/ExperienceOverviewPage'));
 const ProjectsStudioPage = lazy(() => import('./pages/projects/ProjectsStudioPage'));
 const MoodboardsPage = lazy(() => import('./pages/moodboards/MoodboardsPage'));
 const InspirationsPage = lazy(() => import('./pages/inspirations/InspirationsPage'));
@@ -190,17 +189,23 @@ function App() {
             <Suspense fallback={<Loading />}>
               <LocaleHead />
               <Routes>
-                {/* SITE (public marketing) — global brand surface */}
+                {/* SITE (public marketing) — global brand surface.
+                    Magazine + Start Project now share the same SiteLayout
+                    (P0 stabilization: ONE renderer, ONE runtime, ONE source of truth). */}
                 <Route element={<SiteLayout />}>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/projects" element={<ProjectsIndexPage />} />
                   <Route path="/projects/:slug" element={<SiteProjectDetailPage />} />
+                  <Route path="/magazine" element={<MagazinePage />} />
+                  <Route path="/magazine/:slug" element={<MagazineArticlePage />} />
+                  <Route path="/start-project" element={<StartProjectWizard />} />
                   <Route path="/onboarding/:kind" element={<OnboardingPlaceholderPage />} />
                   <Route path="/professionals" element={<ProfessionalsGatewayPage />} />
+                  <Route path="/professionals/intake" element={<ProfessionalIntakePage />} />
                 </Route>
 
                 {/* Locale-prefixed mirrors — strict BCP-47 segments only.
-                    Unknown segments fall through to legacy /:tenantSlug. */}
+                    All public routes inherit SiteLayout. */}
                 <Route
                   path="/it-IT"
                   element={<LocaleRoute locale="it-IT"><SiteLayout /></LocaleRoute>}
@@ -209,6 +214,8 @@ function App() {
                   <Route path="projects" element={<ProjectsIndexPage />} />
                   <Route path="projects/:slug" element={<SiteProjectDetailPage />} />
                   <Route path="professionals" element={<ProfessionalsGatewayPage />} />
+                  <Route path="magazine" element={<MagazinePage />} />
+                  <Route path="magazine/:slug" element={<MagazineArticlePage />} />
                 </Route>
                 <Route
                   path="/en-US"
@@ -218,6 +225,8 @@ function App() {
                   <Route path="projects" element={<ProjectsIndexPage />} />
                   <Route path="projects/:slug" element={<SiteProjectDetailPage />} />
                   <Route path="professionals" element={<ProfessionalsGatewayPage />} />
+                  <Route path="magazine" element={<MagazinePage />} />
+                  <Route path="magazine/:slug" element={<MagazineArticlePage />} />
                 </Route>
                 <Route
                   path="/en-GB"
@@ -227,6 +236,8 @@ function App() {
                   <Route path="projects" element={<ProjectsIndexPage />} />
                   <Route path="projects/:slug" element={<SiteProjectDetailPage />} />
                   <Route path="professionals" element={<ProfessionalsGatewayPage />} />
+                  <Route path="magazine" element={<MagazinePage />} />
+                  <Route path="magazine/:slug" element={<MagazineArticlePage />} />
                 </Route>
                 <Route
                   path="/es-ES"
@@ -236,6 +247,8 @@ function App() {
                   <Route path="projects" element={<ProjectsIndexPage />} />
                   <Route path="projects/:slug" element={<SiteProjectDetailPage />} />
                   <Route path="professionals" element={<ProfessionalsGatewayPage />} />
+                  <Route path="magazine" element={<MagazinePage />} />
+                  <Route path="magazine/:slug" element={<MagazineArticlePage />} />
                 </Route>
                 <Route
                   path="/fr-FR"
@@ -245,6 +258,8 @@ function App() {
                   <Route path="projects" element={<ProjectsIndexPage />} />
                   <Route path="projects/:slug" element={<SiteProjectDetailPage />} />
                   <Route path="professionals" element={<ProfessionalsGatewayPage />} />
+                  <Route path="magazine" element={<MagazinePage />} />
+                  <Route path="magazine/:slug" element={<MagazineArticlePage />} />
                 </Route>
                 <Route
                   path="/de-DE"
@@ -254,29 +269,11 @@ function App() {
                   <Route path="projects" element={<ProjectsIndexPage />} />
                   <Route path="projects/:slug" element={<SiteProjectDetailPage />} />
                   <Route path="professionals" element={<ProfessionalsGatewayPage />} />
+                  <Route path="magazine" element={<MagazinePage />} />
+                  <Route path="magazine/:slug" element={<MagazineArticlePage />} />
                 </Route>
 
-                {/* Private onboarding wizard — full-screen, no SiteLayout chrome */}
-                <Route path="/start-project" element={<OSWrap><StartProjectWizard /></OSWrap>} />
-                {/* Magazine — public editorial lead-generation engine (Phase Y) */}
-                <Route path="/magazine" element={<OSWrap><MagazinePage /></OSWrap>} />
-                <Route path="/magazine/:slug" element={<OSWrap><MagazineArticlePage /></OSWrap>} />
-                {/* Locale-prefixed magazine — same renderers, market-aware via runtime sync. */}
-                <Route path="/it-IT/magazine" element={<LocaleRoute locale="it-IT"><OSWrap><MagazinePage /></OSWrap></LocaleRoute>} />
-                <Route path="/it-IT/magazine/:slug" element={<LocaleRoute locale="it-IT"><OSWrap><MagazineArticlePage /></OSWrap></LocaleRoute>} />
-                <Route path="/en-US/magazine" element={<LocaleRoute locale="en-US"><OSWrap><MagazinePage /></OSWrap></LocaleRoute>} />
-                <Route path="/en-US/magazine/:slug" element={<LocaleRoute locale="en-US"><OSWrap><MagazineArticlePage /></OSWrap></LocaleRoute>} />
-                <Route path="/en-GB/magazine" element={<LocaleRoute locale="en-GB"><OSWrap><MagazinePage /></OSWrap></LocaleRoute>} />
-                <Route path="/en-GB/magazine/:slug" element={<LocaleRoute locale="en-GB"><OSWrap><MagazineArticlePage /></OSWrap></LocaleRoute>} />
-                <Route path="/es-ES/magazine" element={<LocaleRoute locale="es-ES"><OSWrap><MagazinePage /></OSWrap></LocaleRoute>} />
-                <Route path="/es-ES/magazine/:slug" element={<LocaleRoute locale="es-ES"><OSWrap><MagazineArticlePage /></OSWrap></LocaleRoute>} />
-                <Route path="/fr-FR/magazine" element={<LocaleRoute locale="fr-FR"><OSWrap><MagazinePage /></OSWrap></LocaleRoute>} />
-                <Route path="/fr-FR/magazine/:slug" element={<LocaleRoute locale="fr-FR"><OSWrap><MagazineArticlePage /></OSWrap></LocaleRoute>} />
-                <Route path="/de-DE/magazine" element={<LocaleRoute locale="de-DE"><OSWrap><MagazinePage /></OSWrap></LocaleRoute>} />
-                <Route path="/de-DE/magazine/:slug" element={<LocaleRoute locale="de-DE"><OSWrap><MagazineArticlePage /></OSWrap></LocaleRoute>} />
-                {/* Professional intake wizard — full-screen */}
-                <Route path="/professionals/intake" element={<OSWrap><ProfessionalIntakePage /></OSWrap>} />
-
+                {/* Auth routes — Blueprint OS theme (admin-style chrome) */}
                 <Route path="/auth/login" element={<OSWrap><PublicRoute><LoginPage /></PublicRoute></OSWrap>} />
                 <Route path="/auth/signup" element={<OSWrap><PublicRoute><SignupPage /></PublicRoute></OSWrap>} />
                 <Route path="/auth/forgot-password" element={<OSWrap><ForgotPasswordPage /></OSWrap>} />
@@ -311,8 +308,6 @@ function App() {
                   <Route path="/settings/brand" element={<StudioAdminRoute><BrandStudioPage /></StudioAdminRoute>} />
                   <Route path="/settings/domains" element={<StudioAdminRoute><DomainsPage /></StudioAdminRoute>} />
                   <Route path="/settings/forms" element={<StudioAdminRoute><FormBuilderPage /></StudioAdminRoute>} />
-                  {/* Legacy storefront route → redirect to canonical Experience Studio (Fase 0). */}
-                  <Route path="/settings/storefront" element={<Navigate to="/blueprint/experience" replace />} />
                   <Route path="/settings/magazine" element={<StudioAdminRoute><MagazineAdminPage /></StudioAdminRoute>} />
                   <Route path="/settings/magazine/:id" element={<StudioAdminRoute><MagazineEditorPage /></StudioAdminRoute>} />
                   <Route path="/settings/plan" element={<StudioAdminRoute><PlanPage /></StudioAdminRoute>} />
@@ -328,13 +323,10 @@ function App() {
                   {/* International Presence™ — Phase S-IDENTITY Step 1. */}
                   <Route path="/settings/international-presence" element={<StudioAdminRoute><InternationalPresencePage /></StudioAdminRoute>} />
 
-                  {/* Experience Studio™ — Phase S-CONNECT Step 2.
-                      Legacy alias `/blueprint/storefront` → canonical `/blueprint/experience`.
-                      `/blueprint/experience` is the orchestration command center (overview).
-                      `/blueprint/experience/editor` is the per-page editor (Storefront Studio). */}
-                  <Route path="/blueprint/storefront" element={<Navigate to="/blueprint/experience" replace />} />
-                  <Route path="/blueprint/experience" element={<StudioAdminRoute><ExperienceOverviewPage /></StudioAdminRoute>} />
-                  <Route path="/blueprint/experience/editor" element={<StudioAdminRoute><StorefrontStudioPage /></StudioAdminRoute>} />
+                  {/* Experience Studio™ — single canonical route.
+                      `/blueprint/storefront` and `/settings/storefront`
+                      have been DELETED (P0 stabilization: route collapse). */}
+                  <Route path="/blueprint/experience" element={<StudioAdminRoute><StorefrontStudioPage /></StudioAdminRoute>} />
 
                   {/* Forms & Journeys™ — Luxury Lead Architecture (Fase 0). */}
                   <Route path="/blueprint/forms-journeys" element={<StudioAdminRoute><FormBuilderPage /></StudioAdminRoute>} />

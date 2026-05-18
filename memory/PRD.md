@@ -53,7 +53,40 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
-### Fase 0.6 (Feb 18, 2026 — current) — Experience Overview™ Command Center
+### Fase EMERGENCY-STABILIZATION (Feb 18, 2026 — current) — Route Collapse + Single Render Pipeline
+**P0 stabilization mode**: rollback architectural complexity. ONE frontend, ONE runtime, ONE render pipeline, ONE source of truth.
+
+#### Route Forensics findings
+- `OSWrap` (BlueprintThemeProvider) era applicato a `/magazine`, `/magazine/:slug`, 12 magazine locale-prefix routes, `/start-project`, `/professionals/intake`, `/auth/*` — questo causava il "two frontends mentally coexisting" segnalato.
+- 6 blocchi locale-prefix con SiteLayout duplicavano `projects`, `projects/:slug`, `professionals` (corretto perché annidato, ma il magazine era esterno con OSWrap).
+- `/blueprint/storefront` redirect + `/settings/storefront` redirect = dead aliases.
+- `/blueprint/experience` aveva un sub-route `/editor` introdotto col command center.
+- `ExperienceOverviewPage` era una nuova abstraction non richiesta.
+
+#### Rollback eseguito
+- **DELETED** `ExperienceOverviewPage.jsx` + `experienceOverview.css`.
+- `/blueprint/experience` → torna a essere lo Storefront Studio editor direttamente.
+- **DELETED** route `/blueprint/storefront` (redirect).
+- **DELETED** route `/settings/storefront` (redirect).
+- **DELETED** route `/blueprint/experience/editor`.
+- **UNIFIED** Magazine sotto `<SiteLayout>` (rimosso OSWrap dalle 14 route magazine: 2 base + 12 locale).
+- **UNIFIED** `/start-project`, `/professionals`, `/professionals/intake`, `/onboarding/:kind` sotto SiteLayout block (prima erano sparpagliati con OSWrap o duplicati).
+- **ADDED** sub-route magazine ai 6 locale blocks (it-IT, en-US, en-GB, es-ES, fr-FR, de-DE) sotto stesso SiteLayout — un solo renderer.
+- `OSWrap` rimane SOLO per `/auth/login`, `/auth/signup`, `/auth/forgot-password` (corretto — admin theme).
+
+#### Broken deep-link fix
+- `pages/settings/SettingsPage.jsx`: tile `tile-storefront` → `/blueprint/experience` (label "Experience Studio").
+- `pages/settings/SettingsPage.jsx`: tile `tile-forms` → `/blueprint/forms-journeys`.
+- `components/demo/TryPlatformCta.jsx`: redirect default → `/blueprint/experience?demo=1&step=intro`.
+- `components/demo/DemoOnboardingTour.jsx`: comment updated.
+
+#### Test PASSED end-to-end
+- `/magazine` ora ha `.mfd-header` + `.mfd-footer` (SiteLayout pubblico) ✓
+- `/blueprint/experience` renderizza Studio editor con 8 bande ✓
+- ESLint 0 issues ✓
+- Niente 404 sui main entry points (Home, Magazine, Brand Studio, Experience, Settings) ✓
+
+### Fase 0.6 (Feb 18, 2026) — Experience Overview™ (REVERTED in stabilization)
 - **NEW**: `/blueprint/experience` ora è la **command center di orchestrazione** (Experience Overview™), non più l'editor diretto.
 - **NEW**: `/blueprint/experience/editor` → Storefront Studio editor (deep-link via `?page={page_key}`).
 - KPI bar: Public surfaces · Live · Drafts · Sections orchestrated · Locales attive · Mercati

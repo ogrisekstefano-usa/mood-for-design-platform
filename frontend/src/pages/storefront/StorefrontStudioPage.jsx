@@ -25,9 +25,9 @@
  * palette only (--bp-* tokens).
  */
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import api from '../../lib/api';
-import { GripVertical, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { GripVertical, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import './storefrontStudio.css';
 import { renderBandEditor, TraceabilityChip } from './bandEditors';
@@ -206,9 +206,6 @@ const StorefrontStudioPage = () => {
     <div className="ss-root" data-no-edit={!selected} data-testid="ss-root">
       <div className="ss-stage">
         <header className="ss-head">
-          <Link to="/blueprint/experience" className="ss-head__back" data-testid="ss-back-overview">
-            <ArrowLeft size={11} strokeWidth={1.7} /> Experience Overview
-          </Link>
           <p className="ss-head__eyebrow">Blueprint · Experience Orchestration</p>
           <h1 className="ss-head__title">Experience Studio<sup>™</sup></h1>
           <p className="ss-head__intro">
