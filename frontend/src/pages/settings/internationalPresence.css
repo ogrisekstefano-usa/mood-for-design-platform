@@ -1,23 +1,29 @@
 /* MOOD for DESIGN™ — International Presence™
-   Cinematic market positioning surface. NO admin dashboard feeling. */
+   Cinematic market positioning surface — Blueprint-native palette.
+
+   COORDINATED with Blueprint tokens (--bp-*) so the admin chrome and
+   this page share a single visual system. The cream/ivory feel lives
+   on the STOREFRONT side; INSIDE Blueprint we use the dark ink palette
+   with mint-teal accents that ALL admin pages share. */
 
 .ip-root {
   min-height: 100vh;
-  background: #f7f3ec;
-  color: #1c1814;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bp-bg);
+  color: var(--bp-text-primary);
+  font-family: var(--bp-font-body);
   padding: 56px 64px 120px;
 }
 
 .ip-back {
   display: inline-flex; gap: 8px; align-items: center;
-  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
-  color: rgba(28,24,20,0.45);
+  font-size: 10px; letter-spacing: var(--bp-tracking-caps); text-transform: uppercase;
+  color: var(--bp-text-subtle);
   background: transparent; border: none; cursor: pointer;
   margin-bottom: 32px;
   transition: color .2s;
+  font-family: inherit;
 }
-.ip-back:hover { color: #1c1814; }
+.ip-back:hover { color: var(--bp-text-primary); }
 
 .ip-head {
   margin-bottom: 80px;
@@ -25,22 +31,25 @@
 }
 .ip-head__eyebrow {
   font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
-  color: rgba(28,24,20,0.5);
+  color: var(--bp-text-muted);
   margin-bottom: 14px;
+  font-weight: 500;
 }
 .ip-head__title {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 56px; line-height: 1.05; letter-spacing: -0.015em;
+  font-family: var(--bp-font-heading);
+  font-size: clamp(2.5rem, 5vw, 3.5rem); line-height: 1.05;
+  letter-spacing: var(--bp-tracking-heading);
   font-weight: 300;
   margin: 0 0 22px;
-  color: #1c1814;
+  color: var(--bp-text-primary);
 }
 .ip-head__title sup {
   font-size: 14px; opacity: 0.5; vertical-align: super; margin-left: 2px;
+  color: var(--bp-primary);
 }
 .ip-head__intro {
   font-size: 14.5px; line-height: 1.7;
-  color: rgba(28,24,20,0.62);
+  color: var(--bp-text-secondary);
   font-weight: 300;
   max-width: 580px;
 }
@@ -62,25 +71,25 @@
 
 .ip-region__head {
   display: flex; align-items: baseline; gap: 22px;
-  border-bottom: 1px solid rgba(28,24,20,0.1);
+  border-bottom: 1px solid var(--bp-border);
   padding-bottom: 18px;
   margin-bottom: 36px;
 }
 .ip-region__index {
   font-size: 10px; letter-spacing: 0.32em;
-  color: rgba(28,24,20,0.35); text-transform: uppercase;
+  color: var(--bp-text-subtle); text-transform: uppercase;
   font-feature-settings: 'tnum';
 }
 .ip-region__title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--bp-font-heading);
   font-size: 28px; font-weight: 400;
-  color: #1c1814; margin: 0;
+  color: var(--bp-text-primary); margin: 0;
   letter-spacing: -0.005em;
 }
 .ip-region__count {
   margin-left: auto;
   font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: rgba(28,24,20,0.4);
+  color: var(--bp-text-muted);
 }
 
 .ip-card {
@@ -90,34 +99,34 @@
   gap: 26px;
   padding: 24px 28px;
   margin-bottom: 14px;
-  background: #faf6ef;
-  border: 1px solid rgba(28,24,20,0.06);
-  border-radius: 2px;
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-md, 6px);
   transition: border-color .35s, background-color .35s, transform .35s;
   position: relative;
 }
 .ip-card[data-active="true"] {
-  border-color: rgba(28,24,20,0.2);
-  background: #ffffff;
+  border-color: var(--bp-border-strong);
+  background: var(--bp-surface-2);
 }
 .ip-card[data-default="true"] {
-  border-color: #c8a572;
-  box-shadow: 0 0 0 1px #c8a572 inset;
+  border-color: var(--bp-primary);
+  box-shadow: 0 0 0 1px var(--bp-primary) inset;
 }
 .ip-card[data-inactive="true"] {
   opacity: 0.55;
 }
 .ip-card:hover {
-  border-color: rgba(28,24,20,0.18);
+  border-color: var(--bp-border-strong);
 }
 
 .ip-card__drag {
   cursor: grab; opacity: 0.25;
   display: flex; align-items: center; justify-content: center;
-  transition: opacity .2s;
+  transition: opacity .2s; color: var(--bp-text-muted);
   user-select: none;
 }
-.ip-card__drag:hover { opacity: 0.7; }
+.ip-card__drag:hover { opacity: 0.8; }
 .ip-card__drag:active { cursor: grabbing; }
 .ip-card[data-dragging="true"] { opacity: 0.45; transform: scale(0.985); }
 
@@ -126,23 +135,24 @@
 }
 .ip-card__eyebrow {
   font-size: 9.5px; letter-spacing: 0.32em; text-transform: uppercase;
-  color: #c8a572; margin-bottom: 4px;
+  color: var(--bp-primary); margin-bottom: 4px;
   font-weight: 500;
 }
 .ip-card__eyebrow--mute {
-  color: rgba(28,24,20,0.4);
+  color: var(--bp-text-muted);
 }
 .ip-card__name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 26px; line-height: 1.15; letter-spacing: -0.01em;
-  color: #1c1814;
+  font-family: var(--bp-font-heading);
+  font-size: 26px; line-height: 1.15;
+  letter-spacing: var(--bp-tracking-heading);
+  color: var(--bp-text-primary);
   font-weight: 400;
   margin: 0 0 4px;
 }
 .ip-card__locale {
   display: inline-block;
   font-size: 10px; letter-spacing: 0.18em;
-  color: rgba(28,24,20,0.45);
+  color: var(--bp-text-muted);
   margin-bottom: 12px;
   text-transform: uppercase;
 }
@@ -152,21 +162,18 @@
   gap: 12px 36px;
   margin-top: 12px;
 }
-.ip-card__attr {
-  min-width: 0;
-}
 .ip-card__attr-label {
   font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase;
-  color: rgba(28,24,20,0.42);
+  color: var(--bp-text-subtle);
   margin-bottom: 3px;
   font-weight: 500;
 }
 .ip-card__attr-value {
   font-size: 13px;
-  color: rgba(28,24,20,0.85);
+  color: var(--bp-text-secondary);
   font-weight: 400;
   line-height: 1.4;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--bp-font-heading);
   font-style: italic;
 }
 
@@ -186,37 +193,37 @@
 }
 .ip-toggle__track {
   position: absolute; inset: 0;
-  background: rgba(28,24,20,0.12);
+  background: var(--bp-surface-3);
   border-radius: 999px;
   transition: background-color .3s;
 }
 .ip-toggle__dot {
   position: absolute; top: 2px; left: 2px;
   width: 14px; height: 14px;
-  background: #faf6ef;
+  background: var(--bp-text-muted);
   border-radius: 50%;
   transition: left .3s cubic-bezier(0.22,0.61,0.36,1), background-color .3s;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 .ip-toggle input:checked + .ip-toggle__track {
-  background: #1c1814;
+  background: rgba(0, 201, 179, 0.15);
 }
 .ip-toggle input:checked + .ip-toggle__track + .ip-toggle__dot {
   left: 28px;
-  background: #c8a572;
+  background: var(--bp-primary);
+  box-shadow: 0 0 12px rgba(0, 201, 179, 0.4);
 }
 
 .ip-default-link {
   background: transparent; border: none;
   cursor: pointer; padding: 0;
   font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: rgba(28,24,20,0.48);
+  color: var(--bp-text-muted);
   transition: color .2s;
   font-family: inherit;
 }
-.ip-default-link:hover { color: #c8a572; }
+.ip-default-link:hover { color: var(--bp-primary); }
 .ip-default-link[data-is-default="true"] {
-  color: #c8a572; font-weight: 500;
+  color: var(--bp-primary); font-weight: 500;
   cursor: default;
 }
 .ip-default-link[data-is-default="true"]::before {
@@ -224,14 +231,14 @@
   margin-right: 2px;
 }
 
-/* Sticky save bar */
+/* Sticky save bar — same chrome as workspace topbar */
 .ip-savebar {
   position: sticky; bottom: 0;
   margin: 80px -64px -120px;
   padding: 18px 64px;
-  background: rgba(28,24,20,0.98);
-  color: #f7f3ec;
-  border-top: 1px solid rgba(245,236,219,0.1);
+  background: var(--bp-surface-1);
+  color: var(--bp-text-primary);
+  border-top: 1px solid var(--bp-border-strong);
   display: flex; align-items: center; justify-content: space-between;
   z-index: 30;
   backdrop-filter: blur(12px);
@@ -245,33 +252,33 @@
 }
 .ip-savebar__count {
   font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: rgba(245,236,219,0.7);
+  color: var(--bp-text-secondary);
 }
-.ip-savebar__count strong { color: #c8a572; font-weight: 500; }
+.ip-savebar__count strong { color: var(--bp-primary); font-weight: 500; }
 .ip-savebar__actions { display: flex; gap: 10px; }
 
 .ip-btn {
-  padding: 10px 22px; border-radius: 2px;
+  padding: 10px 22px; border-radius: var(--bp-radius-sm, 4px);
   font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase;
   font-weight: 500;
-  border: 1px solid rgba(245,236,219,0.2);
-  background: transparent; color: #f7f3ec;
-  cursor: pointer; transition: border-color .2s, background-color .2s;
+  border: 1px solid var(--bp-border-strong);
+  background: transparent; color: var(--bp-text-primary);
+  cursor: pointer; transition: border-color .2s, background-color .2s, color .2s;
   font-family: inherit;
 }
-.ip-btn:hover { border-color: rgba(245,236,219,0.5); }
+.ip-btn:hover { border-color: var(--bp-text-muted); }
 .ip-btn--primary {
-  background: #c8a572; border-color: #c8a572;
-  color: #1c1814;
+  background: var(--bp-primary); border-color: var(--bp-primary);
+  color: var(--bp-bg);
 }
-.ip-btn--primary:hover { background: #d1ae7b; }
+.ip-btn--primary:hover { background: var(--bp-primary-2); border-color: var(--bp-primary-2); }
 .ip-btn[disabled] { opacity: 0.4; cursor: not-allowed; }
 
 .ip-loading,
 .ip-empty {
   text-align: center; padding: 80px 0;
-  color: rgba(28,24,20,0.5); font-style: italic;
-  font-family: 'Cormorant Garamond', serif; font-size: 18px;
+  color: var(--bp-text-muted); font-style: italic;
+  font-family: var(--bp-font-heading); font-size: 18px;
 }
 
 @media (max-width: 900px) {
