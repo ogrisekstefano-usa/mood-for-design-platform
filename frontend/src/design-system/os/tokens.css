@@ -120,6 +120,66 @@
 }
 
 /* ────────────────────────────────────────────────────────────────
+ * Editorial Paper Mode™ — light surface override for the OS subtree.
+ *
+ * Activated by [data-workspace-mode="light"] on <html>. Restores the
+ * paper palette that the surface-scoped block above intentionally
+ * froze. Without this override, the OS chrome stays locked in dark
+ * mode even when the user toggles the workspace switch — which is
+ * exactly the regression reported by the user ("ora funziona solo
+ * la dark").
+ *
+ * Selector specificity beats `[data-surface="os"]` (2 attribute
+ * selectors > 1), so the dark defaults above are overridden cleanly
+ * without resorting to `!important`.
+ * ──────────────────────────────────────────────────────────────── */
+:root[data-workspace-mode="light"] [data-surface="os"] {
+  --bp-bg:              #F2ECE0;
+  --bp-bg-deep:         #E8E0D0;
+  --bp-surface-1:       #E8E0D0;
+  --bp-surface-2:       #DCD2BE;
+  --bp-surface-3:       #CCBFA8;
+  --bp-surface-elevated:#E8E0D0;
+  --bp-surface-hover:   #D5CAB4;
+  --bp-overlay:         rgba(20, 17, 14, 0.40);
+
+  --bp-border:          rgba(20, 17, 14, 0.10);
+  --bp-border-strong:   rgba(20, 17, 14, 0.24);
+  --bp-border-hover:    rgba(13, 138, 112, 0.32);
+  --bp-border-active:   rgba(13, 138, 112, 0.48);
+
+  --bp-text-primary:    #0F0D0A;
+  --bp-text-secondary:  #2A2520;
+  --bp-text-muted:      #5A5147;
+  --bp-text-subtle:     #8A7F70;
+  --bp-text-faint:      rgba(20, 17, 14, 0.22);
+
+  --bp-primary:         #0D8A70;
+  --bp-primary-soft:    rgba(13, 138, 112, 0.10);
+  --bp-primary-glow:    rgba(13, 138, 112, 0.18);
+  --bp-primary-hover:   #0A7560;
+  --bp-primary-2:       #4FB39D;
+  --bp-accent:          #7A5530;
+
+  --bp-selection-bg:    rgba(13, 138, 112, 0.22);
+  --bp-selection-fg:    #0F0D0A;
+
+  --bp-shadow-xs:       0 1px 2px rgba(20, 17, 14, 0.04);
+  --bp-shadow-sm:       0 2px 10px -4px rgba(20, 17, 14, 0.08);
+  --bp-shadow-md:       0 10px 28px -14px rgba(20, 17, 14, 0.10);
+  --bp-shadow-lg:       0 28px 56px -28px rgba(20, 17, 14, 0.12);
+  --bp-shadow-glow:     0 0 0 1px rgba(13, 138, 112, 0.22),
+                        0 6px 22px rgba(13, 138, 112, 0.10);
+
+  --bp-card-gradient:   linear-gradient(180deg,
+                          rgba(20, 17, 14, 0.020),
+                          rgba(20, 17, 14, 0.006));
+  --bp-card-gradient-hover: linear-gradient(180deg,
+                          rgba(20, 17, 14, 0.036),
+                          rgba(20, 17, 14, 0.012));
+}
+
+/* ────────────────────────────────────────────────────────────────
  * Surface-scoped base — sets typographic baseline inside OS subtree
  * ──────────────────────────────────────────────────────────────── */
 [data-surface="os"] {

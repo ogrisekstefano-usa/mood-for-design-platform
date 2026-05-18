@@ -53,7 +53,21 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
-### Fase OPERATIONS-CORE v3 (Feb 18, 2026 — current) — Public Preview Drawer + Zero Confusion
+### Fase LIGHT-MODE-FIX (Feb 18, 2026 — current) — Editorial Paper Mode™ Restored
+**P0 BLOCKER RISOLTO**: il toggle light/dark (`[data-testid="theme-switch-light"]`) ora funziona su TUTTI gli admin surface.
+
+#### Root cause
+`/design-system/os/tokens.css` definiva `[data-surface="os"] { --bp-bg: #070707; … }` con specificity più alta del `:root[data-workspace-mode="light"]` di `index.css`. Il toggle modificava `<html data-workspace-mode="light">` correttamente, ma le CSS variables venivano sovrascritte dal blocco surface-scoped.
+
+#### Fix
+Aggiunto override `:root[data-workspace-mode="light"] [data-surface="os"]` in `tokens.css` (2 attribute selectors > 1, vince specificity senza `!important`). Mantiene il pattern surface-scoped intatto, attiva Editorial Paper Mode™ (ivory `#F2ECE0`, ink `#0F0D0A`, accent verde scuro `#0D8A70`, paper grain) su tutta la chrome OS quando il toggle è light.
+
+#### Test live PASSATO (3 screenshot)
+- DARK default ✓
+- LIGHT toggled — sidebar bg `rgb(242, 236, 224)`, topbar paper, cards Today's International Presence, calendar grid, Operations Intelligence sidebar tutti in modalità paper ✓
+- Back to DARK ✓
+
+### Fase OPERATIONS-CORE v3 (Feb 18, 2026) — Public Preview Drawer + Zero Confusion
 **P0 UX refactor**: clicking a calendar event ora apre un drawer con la **superficie pubblica**, non il Blueprint admin.
 
 #### Public Preview Drawer™
