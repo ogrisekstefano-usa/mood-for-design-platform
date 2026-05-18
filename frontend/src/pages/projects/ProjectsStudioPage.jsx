@@ -22,6 +22,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import api from '../../lib/api';
 import { toast } from 'sonner';
+import EditorialMediaField from '../../components/common/EditorialMediaField';
+import ProjectGalleryEditor from '../../components/storytelling/ProjectGalleryEditor';
+import StorySectionsEditor from '../../components/storytelling/StorySectionsEditor';
 import './projectsStudio.css';
 
 const TABS = [
@@ -525,12 +528,6 @@ const ProjectsStudioPage = () => {
 // ── Master Story Editor (subcomponent) ────────────────────────
 const MasterStoryEditor = ({ master, onChange, onPaletteAdd, onPaletteRemove, onSave, dirty, saving }) => {
   const [paletteInput, setPaletteInput] = useState('');
-  const storyText = (master.story_body || []).map((b) => b.text || '').join('\n\n');
-  const setStoryText = (txt) => {
-    const blocks = (txt || '').split(/\n\n+/).map((t) => ({ type: 'paragraph', text: t.trim() })).filter((b) => b.text);
-    onChange({ story_body: blocks });
-  };
-
   return (
     <section data-testid="ps-master-tab">
       <div className="ps-grid-2">
@@ -616,14 +613,39 @@ const MasterStoryEditor = ({ master, onChange, onPaletteAdd, onPaletteRemove, on
       </div>
 
       <div className="ps-section">
-        <p className="ps-section__label">Immagine di copertina (URL)</p>
-        <input
-          className="ps-input"
-          value={master.cover_image_url || ''}
-          onChange={(e) => onChange({ cover_image_url: e.target.value })}
-          placeholder="https://…"
+        <p className="ps-section__label">Cover hero · l'apertura visiva del progetto</p>
+        <EditorialMediaField
+          valueShape="object"
+          value={{
+            url: master.cover_image_url || '',
+            asset_id: master.cover_asset_id || null,
+            alt_text: master.cover_alt_text || '',
+            caption: master.cover_caption || '',
+          }}
+          onChange={(v) => onChange({
+            cover_image_url: v.url || '',
+            cover_asset_id: v.asset_id || null,
+            cover_alt_text: v.alt_text || '',
+            cover_caption: v.caption || '',
+          })}
+          preset="hero"
+          entityType="portfolio_project"
+          entityId={master.id}
+          role="cover"
+          testId="ps-cover-media"
+          helperText="L'immagine che apre la case history e diventa la cover di archive."
         />
       </div>
+
+      <ProjectGalleryEditor
+        gallery={master.gallery || []}
+        coverUrl={master.cover_image_url || ''}
+        onChange={(next) => onChange({ gallery: next })}
+        onSetCover={(url) => onChange({ cover_image_url: url })}
+        entityType="portfolio_project"
+        entityId={master.id}
+        testId="ps-project-gallery"
+      />
 
       <div className="ps-section">
         <p className="ps-section__label">Vocabolario materico</p>
@@ -647,15 +669,14 @@ const MasterStoryEditor = ({ master, onChange, onPaletteAdd, onPaletteRemove, on
         </div>
       </div>
 
-      <div className="ps-section">
-        <p className="ps-section__label">Narrativa master · blocchi separati da riga vuota</p>
-        <textarea
-          className="ps-textarea"
-          style={{ minHeight: 200 }}
-          value={storyText}
-          onChange={(e) => setStoryText(e.target.value)}
-        />
-      </div>
+      <StorySectionsEditor
+        blocks={master.story_body || []}
+        onChange={(next) => onChange({ story_body: next })}
+        hotspotMode="memory"
+        entityType="portfolio_project"
+        entityId={master.id}
+        testId="ps-master-story"
+      />
 
       <div className="ps-section" style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
         <button
@@ -673,17 +694,6 @@ const MasterStoryEditor = ({ master, onChange, onPaletteAdd, onPaletteRemove, on
 // ── Market Edition Editor (subcomponent) ──────────────────────
 const MarketEditionEditor = ({ master, market, variant, onChange, onSave, onPublish, onCompose, dirty, saving }) => {
   const v = variant || {};
-  const storyText = (v.story_body || []).map((b) => b.text || '').join('\n\n');
-  const setStoryText = (txt) => {
-    const blocks = (txt || '').split(/\n\n+/).map((t) => {
-      const trimmed = t.trim();
-      if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
-        return { type: 'pull_quote', text: trimmed.slice(1, -1) };
-      }
-      return { type: 'paragraph', text: trimmed };
-    }).filter((b) => b.text);
-    onChange({ story_body: blocks });
-  };
   const ml = v.material_language || {};
   const seo = v.seo || {};
   const ctaSet = v.cta_set || [];
@@ -801,12 +811,14 @@ const MarketEditionEditor = ({ master, market, variant, onChange, onSave, onPubl
       </div>
 
       <div className="ps-section">
-        <p className="ps-section__label">Story body adattata · blocchi separati da riga vuota · "…" = pull quote</p>
-        <textarea
-          className="ps-textarea"
-          style={{ minHeight: 220 }}
-          value={storyText}
-          onChange={(e) => setStoryText(e.target.value)}
+        <p className="ps-section__label">Story body adattata · blocchi narrativi modulari</p>
+        <StorySectionsEditor
+          blocks={v.story_body || []}
+          onChange={(next) => onChange({ story_body: next })}
+          hotspotMode="memory"
+          entityType="portfolio_variant"
+          entityId={v.id}
+          testId="ps-variant-story"
         />
       </div>
 

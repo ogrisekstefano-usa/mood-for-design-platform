@@ -1,0 +1,51 @@
+{
+  "summary": "Iteration 65 — MOOD for DESIGN Visual Storytelling Sprint regression. BACKEND GREEN (4/4 pass + 1 skipped): portfolio master GET returns gallery + story_body fields; PATCH accepts new gallery items with embedded hotspots[] and persists via roundtrip; PATCH accepts the 6-block story_body schema (paragraph/pull_quote/image/gallery/hotspot_image/cta) and persists; magazine REMOTE hotspot endpoint exists (regression preserved). FRONTEND Projects Studio GREEN: ps-cover-media / ps-project-gallery / ps-master-story all rendered for Villa Travertino; ss-add-trigger opens ss-add-menu with all 6 block options; ss-add-paragraph adds a new ss-block-1 with ss-text-1 textarea whose focus is STABLE after typing (focused testid='ss-text-1' confirmed); pg-add-btn opens pg-add-panel with EditorialMediaField; pg-card-0 visible with legacy 'Villa Travertino' Living Room image migrated correctly; pg-hotspots-0 opens hotspot-overlay with hotspot-editor inside; ps-save-master → POST 200 + 'Master story salvata' toast confirmed visually. FRONTEND Editorial Studio: BLOCKED — navigating to /blueprint/editorial produces multiple 503s and SESSION IS LOST (redirect to /auth/login), preventing verification of ed-section-hero / ed-hero-media / ed-body-blocks. CRM /crm/accounts + public /it/projects/villa-travertino subsequently also redirected to /auth/login due to lost auth cookies. No JS pageerror exceptions were captured by the runtime.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/editorial/admin/masters", "issue": "Returned non-success or empty payload — test_patch_variant_with_block_based_body was SKIPPED. Verify the editorial admin masters endpoint path/auth on demo tenant."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "/blueprint/editorial route", "issue": "Multiple 503 responses from backend during page mount cause auth session to drop and user is bounced to /auth/login. Could not verify ed-section-hero / ed-hero-media / ed-body-blocks UI rewire. Likely triggered by GET /api/markets/editions returning 500 (carried over from iter_64) — the editorial page does not gracefully tolerate that 503/500 and treats it as an auth failure.", "selector": "[data-testid='ed-section-hero']", "priority": "HIGH"},
+      {"component": "Public site routing", "issue": "After session loss, /it/projects/villa-travertino also redirected to /auth/login. Public project detail page should be accessible without auth (no gate expected for storefront URL).", "selector": "[data-testid='project-story']", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [
+      {"flow": "Master Story save", "issue": "PASSES — ps-save-master returns 200 and 'Master story salvata' toast appears. Story body migration + persistence working.", "affected_selectors": ["[data-testid='ps-save-master']"]},
+      {"flow": "Project Gallery hotspot overlay", "issue": "PASSES — pg-hotspots-0 opens hotspot-overlay + hotspot-editor in MEMORY mode (no remote round-trip).", "affected_selectors": ["[data-testid='pg-hotspots-0']", "[data-testid='hotspot-overlay']", "[data-testid='hotspot-editor']"]}
+    ],
+    "design_issues": [
+      {"screen": "Projects Studio Master Story @1440x900", "issues": ["Editorial layout reads as a publication — no horizontal overflow detected. Italian copy throughout. Cover hero + gallery + story sections all render cleanly. Save toast contrast OK."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_65_visual_storytelling.py",
+    "/app/test_reports/pytest/iteration_65.xml"
+  ],
+  "action_items": [
+    "[HIGH] Investigate why /blueprint/editorial mount triggers 503s + drops the auth session. Suspect: GET /api/markets/editions 500 (iter_64 carry-over) causes EditorialStudio to call /api/auth/refresh which then 401s and the SPA logs the user out. Fix: 1) repair the underlying /api/markets/editions 500 on demo tenant, 2) make the editorial page tolerate non-2xx from market-editions without logout. Until fixed, ed-section-hero / ed-hero-media / ed-body-blocks cannot be verified by automated tests OR by users.",
+    "[MEDIUM] Public route /it/projects/villa-travertino should not bounce unauthenticated visitors to /auth/login — verify the SPA route guard whitelists /:locale/projects/* paths. (Could be a side effect of the same logout cascade above; retest after fixing #1.)",
+    "[LOW] Editorial admin masters endpoint path / shape — backend test could not discover masters via GET /api/editorial/admin/masters. Confirm path and add a stable list endpoint with `{masters:[{id,title}],total}` envelope so regression tests can drill into variants."
+  ],
+  "critical_code_review_comments": [
+    "StorySectionsEditor.jsx legacy-block id backfill is correct: uses React.useMemo with a stable dependency derived from (length + joined ids) AND a one-shot useEffect that calls onChange?.(safeBlocks) only when at least one block lacks an id. This is the right pattern to avoid input focus loss on legacy data — confirmed empirically: typing in ss-text-1 keeps document.activeElement === ss-text-1.",
+    "ProjectGalleryEditor.jsx applies the same backfill pattern for gallery items — also confirmed visually (Villa Travertino legacy 'Living room' rendered as pg-card-0 without flicker).",
+    "Both editors use Math.random() in the legacy-id fallback. If the parent re-renders with a different array reference but same content, useMemo dependency `blocks.length + joined ids` masks it, but a more robust approach would be a content hash or `legacy_${i}` only (idempotent across renders). Current implementation works but is one re-render-trick away from regressing.",
+    "Editorial Studio route silently logs the user out on backend 5xx — UX antipattern. A 5xx on a secondary fetch should surface as an error toast, not destroy the session.",
+    "StorySectionsEditor uses native confirm() for delete (line 80) — disruptive UX, prefer a sonner confirm or inline two-step. Mentioned for design polish, not a blocker."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_65_visual_storytelling.py (NEW — 5 pytest tests; 4 pass + 1 skipped)"
+  ],
+  "success_rate": {
+    "backend": "100% (4/4 executed pass, 1 skipped due to missing editorial masters list endpoint)",
+    "frontend": "~70% — Projects Studio (the biggest surface) fully GREEN incl. master-save toast, hotspot overlay, focus stability. Editorial Studio + CRM regression + public-site rendering BLOCKED by session-drop cascade triggered by 503s on /blueprint/editorial mount."
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin on mood-demo-studio-81a09e). Supabase auth — token is at response.session.access_token (NOT response.token / access_token at top level).",
+  "seed_data_creation": "Backend test creates 1 ephemeral gallery item id starting with TEST_gal_<uuid> and an ephemeral hotspot id TEST_hs_<uuid> on the Villa Travertino master, then restores the original gallery in teardown. Story_body roundtrip also restores original story_body. No persistent residue expected.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Run: cd /app && export $(grep -v '^#' /app/frontend/.env | xargs) && python -m pytest backend/tests/test_iteration_65_visual_storytelling.py -v (4 pass + 1 skip ~6s). The Supabase login response shape is {session:{access_token,...}, user:{...}} — see fixture in iteration_65 test. For frontend, the Projects Studio flow is fully verifiable end-to-end via [data-testid='ps-cover-media' | ps-project-gallery | ps-master-story | ss-add-trigger | ss-add-menu | ss-add-paragraph | ss-block-N | ss-text-N | pg-add-btn | pg-card-0 | pg-hotspots-0 | hotspot-overlay | hotspot-editor | ps-save-master]. The Editorial Studio is currently broken — fix the /api/markets/editions 500 + the SPA's logout-on-5xx behaviour before retesting ed-* testids. Public /it/projects/villa-travertino retest after auth fix to confirm public renderer for paragraph/pull_quote/image/gallery/hotspot_image/cta blocks AND phs-pin / phs-tip on gallery items with hotspots[].",
+  "rca_of_the_issue": "Root cause of Editorial Studio failure: a chain of 503s from the editorial page mount (suspected /api/markets/editions which has been failing since iteration_64) is interpreted by the SPA's global error handler as an auth failure, clearing the access token cookie and redirecting to /auth/login. This is a TWO-layer fix: (a) repair the upstream 500 on /api/markets/editions for the demo tenant, (b) make the SPA's fetch interceptor treat 5xx differently from 401 — do NOT log out on 5xx, surface an error banner instead. The same cascade then knocks subsequent navigations (CRM accounts, public project page) onto /auth/login because cookies are already cleared. Reproduction: login → navigate to /blueprint/projects-studio (works) → navigate to /blueprint/editorial (URL becomes /auth/login within 3.5s). Workaround for QA: test routes independently from a fresh login each time."
+}

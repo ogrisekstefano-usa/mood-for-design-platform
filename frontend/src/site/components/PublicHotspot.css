@@ -1,0 +1,111 @@
+/* ─────────────────────────────────────────────────────────────────
+   Public Hotspot Image — read-only editorial detail points
+   Used by ProjectDetailPage + MagazineArticlePage (site/public).
+   ─────────────────────────────────────────────────────────────── */
+.phs-wrap {
+  width: 100%;
+}
+
+.phs-canvas {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--site-paper, #f3ede4);
+}
+
+.phs-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.phs-pin {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 2;
+}
+
+.phs-pin__dot {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--site-paper, #f6efe4);
+  border: 2px solid var(--site-ink, #1c1814);
+  z-index: 2;
+  transition: transform .2s ease;
+}
+
+.phs-pin__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--site-ink, #1c1814);
+  opacity: 0.5;
+  animation: phsRingPulse 2.6s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes phsRingPulse {
+  0%   { transform: scale(0.8); opacity: 0.55; }
+  60%  { transform: scale(1.55); opacity: 0; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+
+.phs-pin:hover .phs-pin__dot {
+  transform: scale(1.15);
+}
+
+.phs-pin.is-active .phs-pin__dot {
+  background: var(--site-ink, #1c1814);
+  border-color: var(--site-paper, #f3ede4);
+  transform: scale(1.15);
+}
+.phs-pin.is-active .phs-pin__ring {
+  border-color: var(--site-accent, #c8a572);
+  opacity: 1;
+  animation: none;
+}
+
+.phs-tip {
+  position: absolute;
+  max-width: 280px;
+  background: var(--site-ink, #1c1814);
+  color: var(--site-paper, #f3ede4);
+  padding: 14px 18px;
+  border-radius: 2px;
+  z-index: 5;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  font-family: var(--site-serif, "Playfair Display", Georgia, serif);
+  pointer-events: none;
+}
+
+.phs-tip__title {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  margin: 0 0 4px;
+  line-height: 1.3;
+}
+
+.phs-tip__desc {
+  font-size: 12px;
+  font-style: italic;
+  margin: 0;
+  opacity: 0.85;
+  line-height: 1.45;
+}
+
+@media (max-width: 720px) {
+  .phs-tip { max-width: 60vw; font-size: 11.5px; }
+}

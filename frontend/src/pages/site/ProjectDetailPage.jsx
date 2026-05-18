@@ -23,6 +23,7 @@ import { usePositioning, resolveCtaLabels } from '../../site/usePositioning';
 import { findProjectBySlug } from '../../site/content/projects';
 import { uiContent } from '../../site/content/ui';
 import { Reveal, SiteImage } from '../../site/components/Reveal';
+import '../../site/components/PublicHotspot.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -224,7 +225,7 @@ const ProjectDetailPage = () => {
             {storyBody.map((b, i) => {
               if (b.type === 'pull_quote') {
                 return (
-                  <Reveal key={i} delay={(i % 3) + 1}>
+                  <Reveal key={b.id || i} delay={(i % 3) + 1}>
                     <blockquote
                       style={{
                         fontFamily: 'var(--site-serif, "Playfair Display", Georgia, serif)',
@@ -235,12 +236,73 @@ const ProjectDetailPage = () => {
                         padding: '0 1rem',
                         borderLeft: '2px solid var(--site-accent, #c8a572)',
                       }}
-                    >"{b.text}"</blockquote>
+                    >"{b.text}"
+                    {b.attribution && <footer style={{ fontSize: '0.85rem', marginTop: '0.5rem', opacity: 0.7, fontStyle: 'normal' }}>— {b.attribution}</footer>}
+                    </blockquote>
                   </Reveal>
                 );
               }
+              if (b.type === 'image' && b.url) {
+                return (
+                  <Reveal key={b.id || i} delay={(i % 3) + 1} style={{ maxWidth: 'none', margin: '0 calc(-1 * clamp(0px, 6vw, 80px))' }}>
+                    <SiteImage src={b.url} aspect="16/9" alt={b.alt_text || b.caption || ''} />
+                    {b.caption && (
+                      <p style={{
+                        marginTop: '0.5rem', fontSize: '0.85rem',
+                        fontFamily: 'var(--site-serif, "Playfair Display", Georgia, serif)',
+                        fontStyle: 'italic',
+                        color: 'var(--site-ink-muted, rgba(28,24,20,0.6))',
+                        textAlign: 'center',
+                      }}>{b.caption}</p>
+                    )}
+                  </Reveal>
+                );
+              }
+              if (b.type === 'gallery' && (b.items || []).length > 0) {
+                return (
+                  <Reveal key={b.id || i} delay={(i % 3) + 1} style={{ maxWidth: 'none', margin: '0 calc(-1 * clamp(0px, 6vw, 80px))' }}>
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: `repeat(${Math.min(b.items.length, 3)}, 1fr)`,
+                      gap: '0.8rem',
+                    }}>
+                      {b.items.map((g, gi) => (
+                        <div key={g.id || gi}>
+                          <SiteImage src={g.url} aspect="4/5" alt={g.alt_text || g.caption || ''} />
+                          {g.caption && (
+                            <p style={{
+                              marginTop: '0.4rem', fontSize: '0.8rem',
+                              fontFamily: 'var(--site-serif, "Playfair Display", Georgia, serif)',
+                              fontStyle: 'italic',
+                              color: 'var(--site-ink-muted, rgba(28,24,20,0.55))',
+                            }}>{g.caption}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </Reveal>
+                );
+              }
+              if (b.type === 'hotspot_image' && b.url) {
+                return (
+                  <Reveal key={b.id || i} delay={(i % 3) + 1} style={{ maxWidth: 'none', margin: '0 calc(-1 * clamp(0px, 6vw, 80px))' }}>
+                    <PublicHotspotImage url={b.url} caption={b.caption} hotspots={b.hotspots || []} alt={b.alt_text} />
+                  </Reveal>
+                );
+              }
+              if (b.type === 'cta' && b.label) {
+                return (
+                  <Reveal key={b.id || i} delay={(i % 3) + 1} style={{ textAlign: 'center', padding: '1rem 0' }}>
+                    <Link to="/start-project" className="mfd-btn mfd-btn--paper" data-testid={`project-story-cta-${i}`}>
+                      {b.label} <ArrowUpRight size={14} />
+                    </Link>
+                  </Reveal>
+                );
+              }
+              // default: paragraph or unknown → fallback to text
+              if (!b.text) return null;
               return (
-                <Reveal key={i} delay={(i % 3) + 1}>
+                <Reveal key={b.id || i} delay={(i % 3) + 1}>
                   <p className="mfd-lead" style={{ lineHeight: 1.7 }}>{b.text}</p>
                 </Reveal>
               );
@@ -288,19 +350,26 @@ const ProjectDetailPage = () => {
             <div className="mfd-gallery">
               {gallery.map((g, i) => {
                 const wide = i === 0 || (i % 3 === 0 && i !== 0);
+                const hsList = g.hotspots || [];
                 return (
-                  <Reveal key={i} delay={(i % 3) + 1} className={wide ? 'mfd-gallery__wide' : ''}>
-                    <SiteImage src={g.url} aspect={wide ? '16/9' : '4/5'} alt={g.caption || ''} />
-                    {g.caption && (
-                      <p
-                        style={{
-                          marginTop: '0.5rem',
-                          fontSize: '0.85rem',
-                          fontFamily: 'var(--site-serif, "Playfair Display", Georgia, serif)',
-                          fontStyle: 'italic',
-                          color: 'var(--site-ink-muted, rgba(28,24,20,0.6))',
-                        }}
-                      >{g.caption}</p>
+                  <Reveal key={g.id || i} delay={(i % 3) + 1} className={wide ? 'mfd-gallery__wide' : ''}>
+                    {hsList.length > 0 ? (
+                      <PublicHotspotImage url={g.url} caption={g.caption} hotspots={hsList} alt={g.alt_text || g.caption || ''} aspect={wide ? '16/9' : '4/5'} />
+                    ) : (
+                      <>
+                        <SiteImage src={g.url} aspect={wide ? '16/9' : '4/5'} alt={g.alt_text || g.caption || ''} />
+                        {g.caption && (
+                          <p
+                            style={{
+                              marginTop: '0.5rem',
+                              fontSize: '0.85rem',
+                              fontFamily: 'var(--site-serif, "Playfair Display", Georgia, serif)',
+                              fontStyle: 'italic',
+                              color: 'var(--site-ink-muted, rgba(28,24,20,0.6))',
+                            }}
+                          >{g.caption}</p>
+                        )}
+                      </>
                     )}
                   </Reveal>
                 );
@@ -458,3 +527,54 @@ const RelatedRuntimeProjects = ({ currentSlug, locale, pickUiRelated }) => {
 };
 
 export default ProjectDetailPage;
+
+// ─── PublicHotspotImage — read-only editorial detail points ──────
+const PublicHotspotImage = ({ url, caption, hotspots = [], alt, aspect = '16/9' }) => {
+  const [activeId, setActiveId] = React.useState(null);
+  const active = hotspots.find((h) => h.id === activeId);
+  return (
+    <div className="phs-wrap" data-testid="public-hotspot-image">
+      <div className="phs-canvas" style={{ aspectRatio: aspect }}>
+        <img src={url} alt={alt || caption || ''} className="phs-img" />
+        {hotspots.map((h) => (
+          <button
+            key={h.id}
+            type="button"
+            className={`phs-pin ${activeId === h.id ? 'is-active' : ''}`}
+            style={{ left: `${h.x_pct}%`, top: `${h.y_pct}%` }}
+            onClick={() => setActiveId(activeId === h.id ? null : h.id)}
+            aria-label={h.title || 'Detail Point'}
+            data-testid={`phs-pin-${h.id}`}
+          >
+            <span className="phs-pin__dot" />
+            <span className="phs-pin__ring" />
+          </button>
+        ))}
+        {active && (
+          <div
+            className="phs-tip"
+            style={{
+              left: `${active.x_pct}%`,
+              top: `${active.y_pct}%`,
+              transform: active.x_pct > 60
+                ? 'translate(calc(-100% - 22px), -50%)'
+                : 'translate(22px, -50%)',
+            }}
+          >
+            {active.title && <p className="phs-tip__title">{active.title}</p>}
+            {active.description && <p className="phs-tip__desc">{active.description}</p>}
+          </div>
+        )}
+      </div>
+      {caption && (
+        <p style={{
+          marginTop: '0.5rem', fontSize: '0.85rem',
+          fontFamily: 'var(--site-serif, "Playfair Display", Georgia, serif)',
+          fontStyle: 'italic',
+          color: 'var(--site-ink-muted, rgba(28,24,20,0.6))',
+          textAlign: 'center',
+        }}>{caption}</p>
+      )}
+    </div>
+  );
+};

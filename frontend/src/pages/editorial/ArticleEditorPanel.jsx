@@ -19,6 +19,8 @@ import api from '../../lib/api';
 import { statusMeta } from './editorialStatus';
 import { Eye, Send, Wand2, Compass, Sparkles, Calendar, BookOpen, ExternalLink, Save } from 'lucide-react';
 import { toast } from 'sonner';
+import EditorialMediaField from '../../components/common/EditorialMediaField';
+import StorySectionsEditor from '../../components/storytelling/StorySectionsEditor';
 
 const debounce = (fn, ms = 600) => {
   let t = null;
@@ -376,6 +378,30 @@ const PublishedEditorView = ({ variant, patchField, patchSeo, patchCta, addCta, 
         />
       </div>
 
+      <div className="ed-section" data-testid="ed-section-hero">
+        <p className="ed-section__label">Hero image · l'apertura visiva dell'articolo</p>
+        <EditorialMediaField
+          valueShape="object"
+          value={{
+            url: variant.hero_image_url || '',
+            asset_id: variant.hero_asset_id || null,
+            alt_text: variant.hero_alt_text || '',
+            caption: variant.hero_caption || '',
+          }}
+          onChange={(v) => {
+            patchField('hero_image_url', v.url || '');
+            if ('asset_id' in v) patchField('hero_asset_id', v.asset_id);
+            if ('alt_text' in v) patchField('hero_alt_text', v.alt_text);
+            if ('caption' in v) patchField('hero_caption', v.caption);
+          }}
+          preset="hero"
+          entityType="editorial_variant"
+          entityId={variant.id}
+          role="hero"
+          testId="ed-hero-media"
+        />
+      </div>
+
       <div className="ed-section">
         <p className="ed-section__label">Excerpt · cultural angle</p>
         <textarea
@@ -388,25 +414,16 @@ const PublishedEditorView = ({ variant, patchField, patchSeo, patchCta, addCta, 
         />
       </div>
 
-      <div className="ed-section">
-        <p className="ed-section__label">Body</p>
-        {(variant.body_blocks || []).map((b, i) => (
-          <div key={i} className="ed-block" data-testid={`ed-block-${i}`}>
-            <p className="ed-block__type">{b.type || 'paragraph'}</p>
-            <textarea
-              className="ed-textarea"
-              rows={3}
-              data-testid={`ed-block-${i}-text`}
-              value={b.text || ''}
-              onChange={(e) => patchBlock(i, e.target.value)}
-            />
-            <button className="ed-block__remove" data-testid={`ed-block-${i}-remove`}
-              onClick={() => removeBlock(i)} title="Rimuovi blocco">×</button>
-          </div>
-        ))}
-        <button type="button" className="ed-btn" data-testid="ed-add-block" onClick={addBlock}>
-          + Aggiungi paragrafo
-        </button>
+      <div className="ed-section" data-testid="ed-section-body">
+        <p className="ed-section__label">Body · blocchi editoriali composabili</p>
+        <StorySectionsEditor
+          blocks={variant.body_blocks || []}
+          onChange={(next) => patchField('body_blocks', next)}
+          hotspotMode="memory"
+          entityType="editorial_variant"
+          entityId={variant.id}
+          testId="ed-body-blocks"
+        />
       </div>
 
       <div className="ed-section" data-testid="ed-section-cta">

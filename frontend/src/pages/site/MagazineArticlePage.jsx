@@ -208,41 +208,123 @@ const ArticleBody = ({ blocks, hotspots, locale, articleId, openSoftLead, onSent
     return map;
   }, [hotspots]);
 
+  // Normalize a block hotspot (embedded in b.hotspots[], new schema)
+  // to the legacy `Hotspot` component shape (which expects locale_content).
+  const normalizeEmbeddedHotspots = (raw) => (raw || []).map((h) => {
+    // Already in legacy shape (has locale_content) → pass through.
+    if (h.locale_content) return h;
+    return {
+      id: h.id,
+      x_pct: h.x_pct,
+      y_pct: h.y_pct,
+      reference_type: h.kind || h.reference_type || 'atmosphere',
+      cta_action: h.cta_action || 'save_reference',
+      locale_content: {
+        it: { label: h.title || '', description: h.description || '' },
+        en: { label: h.title || '', description: h.description || '' },
+      },
+    };
+  });
+
+  // Extract textual content from a block — supports legacy
+  // locale_content envelope AND new flat shape.
+  const textOf = (b, key = 'text') => {
+    if (b.locale_content) {
+      const lc = b.locale_content[locale] || b.locale_content.it || {};
+      return lc[key] || '';
+    }
+    return b[key] || '';
+  };
+
   return (
     <div className="mfd-article__body" data-testid="article-body">
       {(blocks || []).map((b, i) => {
         const lc = b.locale_content?.[locale] || b.locale_content?.it || {};
-        const bhots = hotspotsByBlock[b.id] || [];
-        if (b.type === 'hero') return null; // hero is rendered as the page hero
+        const blockKey = b.id || `b-${i}`;
+        // Block hotspots — prefer embedded (new schema), fall back to
+        // hotspotsByBlock[block_id] (legacy magazine_articles schema).
+        const embeddedHs = b.hotspots && b.hotspots.length > 0
+          ? normalizeEmbeddedHotspots(b.hotspots)
+          : (hotspotsByBlock[b.id] || []);
+
+        if (b.type === 'hero') return null;
+
         if (b.type === 'paragraph') {
+          const txt = textOf(b);
+          if (!txt) return null;
           return (
-            <p key={b.id || i} className="mfd-article__para" data-testid={`block-${b.id}`}>{lc.text}</p>
+            <p key={blockKey} className="mfd-article__para" data-testid={`block-${blockKey}`}>{txt}</p>
           );
         }
-        if (b.type === 'quote') {
+        if (b.type === 'quote' || b.type === 'pull_quote') {
+          const txt = textOf(b);
+          const author = textOf(b, 'author') || b.attribution || '';
+          if (!txt) return null;
           return (
-            <blockquote key={b.id || i} className="mfd-article__quote" data-testid={`block-${b.id}`}>
-              <p>{lc.text}</p>
-              {lc.author && <cite>— {lc.author}</cite>}
+            <blockquote key={blockKey} className="mfd-article__quote" data-testid={`block-${blockKey}`}>
+              <p>{txt}</p>
+              {author && <cite>— {author}</cite>}
             </blockquote>
           );
         }
-        if (b.type === 'image' || b.type === 'gallery') {
+        if (b.type === 'image' || b.type === 'hotspot_image' || (b.type === 'gallery' && b.image_url && !(b.items?.length))) {
+          // Single image or hotspot_image (new) or single-image legacy gallery.
+          const url = b.url || b.image_url;
+          const caption = b.caption || lc.caption || '';
+          if (!url) return null;
           return (
-            <figure key={b.id || i} className="mfd-article__figure" data-testid={`block-${b.id}`}>
+            <figure key={blockKey} className="mfd-article__figure" data-testid={`block-${blockKey}`}>
               <div className="mfd-article__figure-media">
-                {b.image_url && <img src={b.image_url} alt={b.alt || ''} loading="lazy" />}
-                {bhots.map((h) => (
+                <img src={url} alt={b.alt_text || lc.alt || ''} loading="lazy" />
+                {embeddedHs.map((h) => (
                   <Hotspot key={h.id}
-                           hotspot={{ ...h, image_url: b.image_url }}
+                           hotspot={{ ...h, image_url: url }}
                            articleId={articleId}
                            locale={locale}
                            openSoftLead={openSoftLead}
                            onSent={onSentRef} />
                 ))}
               </div>
-              {lc.caption && <figcaption>{lc.caption}</figcaption>}
+              {caption && <figcaption>{caption}</figcaption>}
             </figure>
+          );
+        }
+        if (b.type === 'gallery' && (b.items || []).length > 0) {
+          // Mini gallery block (new schema)
+          return (
+            <div key={blockKey} className="mfd-article__minigallery" data-testid={`block-${blockKey}`}
+                 style={{
+                   display: 'grid',
+                   gridTemplateColumns: `repeat(${Math.min(b.items.length, 3)}, 1fr)`,
+                   gap: '0.8rem',
+                   margin: '2rem 0',
+                 }}>
+              {b.items.map((g, gi) => (
+                <figure key={g.id || gi} className="mfd-article__minigallery-item" style={{ margin: 0 }}>
+                  <img src={g.url} alt={g.alt_text || g.caption || ''} loading="lazy"
+                       style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', display: 'block' }} />
+                  {g.caption && (
+                    <figcaption style={{
+                      fontSize: '0.8rem', marginTop: '0.35rem',
+                      fontFamily: 'var(--site-serif, "Playfair Display", Georgia, serif)',
+                      fontStyle: 'italic',
+                      color: 'var(--site-ink-muted, rgba(28,24,20,0.6))',
+                    }}>{g.caption}</figcaption>
+                  )}
+                </figure>
+              ))}
+            </div>
+          );
+        }
+        if (b.type === 'cta') {
+          if (!b.label) return null;
+          return (
+            <div key={blockKey} className="mfd-article__cta" data-testid={`block-${blockKey}`}
+                 style={{ textAlign: 'center', padding: '1.5rem 0' }}>
+              <Link to="/start-project" className="mfd-btn mfd-btn--paper" data-testid={`article-cta-${i}`}>
+                {b.label} <ArrowUpRight size={14} />
+              </Link>
+            </div>
           );
         }
         return null;
