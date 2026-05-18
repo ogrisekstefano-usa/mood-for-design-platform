@@ -53,6 +53,66 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase EDITORIAL-GOVERNANCE v1 (Feb 18, 2026 — iteration 62) — Context Rail + Adaptation Status + Market Matrix
+**P1 directive eseguita: 4 fasi, testing agent 6/6 backend + 100% frontend GREEN.**
+
+#### FASE A — `<EditorialContextRail />` (replace breadcrumb)
+File: `/app/frontend/src/pages/editorial/EditorialContextRail.jsx` + styles in `editorial.css`.
+
+Persistent rail tra MarketEditionsToolbar e studio grid. **9 campi** (mostra cosa stai orchestrando, non dove sei):
+- Editorial Master · Market · **Adaptation Status** (palette: stone gray draft / amber awaiting / blue steel scheduled / soft gold publishing today / emerald published / muted rose diverged) · Next Step · Schedule · CTA · SEO Goal · Editorial Register · Public State
+
+**Next Step Intelligence™** (euristico, NON generativo): advisory bar amber con `AlertTriangle` + "Risolvi →" CTA, visibile solo quando lo stato richiede un'azione. Esempi: "Crea un Editorial Master", "Componi i body blocks o sincronizza dal master", "Aggiungi adattamenti per altri mercati".
+
+**Responsive**: XL=tutti i 9 campi · Laptop (1024-1439) = 5 campi essenziali · Tablet (640-1023) = 3 campi + schedule nascosta · Mobile <640 = grid collapsed sotto un chip cliccabile (`ectx-mobile-chip`).
+
+#### FASE B — Editorial Adaptation Status™ (rename + 8 states + 7 actions)
+- **Rinominato globalmente** "Translation Status" → "Adaptation Status" (sia UI che testid: `ed-variant-adaptation-<vid>` rimpiazza `ed-variant-translation-<vid>` — vecchio testid completamente rimosso).
+- **8 stati canonici** mappati su Variant.status + `internal_translation` + body_blocks:
+  - Synced With Master (cyan), Adapted (primary), Manually Curated (gold), Diverged (rose), Requires Review (amber), Awaiting Composition (gray), Scheduled (steel), Published (emerald).
+- **`<AdaptationOperationsPanel />`** sotto il context rail (visibile solo con variant selezionato). 7 azioni:
+  1. **Compose From Master** → POST `/api/editorial/variants/{vid}/compose` (canonical endpoint che esisteva già — chiama `editorial_ai.compose_variant()` server-side, rigenera body_blocks dalla `conceptual_direction` del master)
+  2. **Re-sync** → POST `/api/editorial/variants/{vid}/transition` to_status='rebalancing'
+  3. **Compare Against Master** — coming soon chip (rimandato P2)
+  4. **Preserve Manual** → PATCH variant.metadata_json.preserve_manual=true
+  5. **Restore Composition** (danger) → reset preserve_manual + ricompone
+  6. **Lock Manual Version** → PATCH variant.metadata_json.manual_locked=true
+  7. **Open Public Preview** → naviga a `/magazine/<locale>/<slug>?preview=1`
+
+#### FASE C — Market Matrix™ Language Governance (nuova pagina `/blueprint/markets`)
+File: `/app/frontend/src/pages/governance/MarketMatrixPage.jsx` + `market-matrix.css`. Lazy route + Sidebar nav entry "Market Matrix · Governance" sotto Editorial Operations.
+
+Tabella governance separa esplicitamente **LANGUAGE ≠ MARKET ≠ EDITORIAL REGISTER**. 9 colonne:
+- Market (code + locale anchor) · Language (derivato da primary_locale) · Macro Region · Editorial Register · Hospitality Profile · CTA Psychology · SEO Behavior · Publishing Windows · Luxury Perception
+
+**Inline-editable cells** (click → input → blur/Enter): PATCH `/api/markets/{id}` su 4 JSONB:
+- `cultural_profile.editorial_register/hospitality_profile/publishing_windows/luxury_perception_model`
+- `cta_style.psychology`
+- `seo_intent.behavior`
+
+Verificato dal testing agent: italy market patch + revert idempotente. Funziona su 15+ mercati visibili.
+
+#### FASE D — Stop Silent Fallbacks (partial)
+- Variant cards mostrano "Da comporre" (gray) quando body_blocks è vuoto e locale ≠ canonical (`awaiting_composition` state esplicito invece di silent fallback).
+- Editorial Context Rail mostra "No master selected" dimmed esplicito invece di nascondere il campo.
+- Field `register` ha `Define register` placeholder quando vuoto invece di mostrare il locale del master.
+
+#### Tech: bug fix master hydration
+`EditorialStudioPage.onSelectVariant` ora chiama `GET /api/editorial/masters/{mid}` lazy per popolare il context rail con title+code del master invece di solo `{id}`.
+
+#### Test & validazione
+- Backend pytest **6/6 GREEN** (`/app/backend/tests/test_iteration_62_editorial_governance.py`): markets list+patch x2 (editorial_register + cta.psychology) con revert, master detail, variants list, compose endpoint non-500.
+- Frontend Playwright **100% PASS** ai 3 viewport (1440x900 desktop XL, 1024x768 laptop, 600x800 mobile + 768 per Market Matrix): all 9 context rail fields visible at 1440; exactly 5 at 1024; mobile chip expand at <640; advisory bar amber-only; variant hydration master/market/status/CTA/SEO/register/public-state populated; adaptation panel 7 actions con compare disabled+'soon'+danger styling su restore; `ed-variant-adaptation-<vid>` confermato (translation testid completamente rimosso, 0 matches); Market Matrix 9 columns + 15 rows + inline edit triggers PATCH + persists + revert; sidebar nav entry; `?openAdd=1` regression OK; ZERO horizontal overflow.
+- Lint JS clean su tutti i 6 file modificati.
+- **Live curl verification**: `POST /api/editorial/variants/{vid}/compose` → 200 OK in 43s con Claude Sonnet 4 reasoning.
+
+#### Cosa NON è incluso (rimandato a P2)
+- **Compare Against Master** — UI placeholder con "soon" chip. Richiede side-by-side diff view (Master conceptual_direction vs Variant body_blocks).
+- **Real-time "Diverged" detection** — attualmente inferito da `metadata_json.diverged=true`. Andrebbe calcolato server-side comparando hash di master+variant editorial_state.
+- **Editorial Register history** — Market Matrix non mostra ancora la timeline delle modifiche al register. Audit log da abilitare in `markets.governance_json.changelog`.
+
+
+
 ### Fase EDITORIAL-OPS-WORKBENCH v1 (Feb 18, 2026 — current iteration 61) — Delete Protection + Market Editions Operability + Responsive + Translation Badges
 **P0 directive eseguita: 4 fasi sequenziali, tutte verdi al testing agent (5/5 backend + 100% frontend).**
 

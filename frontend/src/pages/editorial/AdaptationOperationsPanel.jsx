@@ -48,18 +48,15 @@ const AdaptationOperationsPanel = ({ variant, master, onChanged, onOpenPreview }
     if (!confirm('Sostituire i body blocks attuali con la composizione dal master? Le modifiche manuali andranno perse.')) return;
     setBusy('compose');
     try {
-      await api.post(`/api/editorial/variants/${variant.id}/compose-from-master`, {});
-      toast.success('Composizione rigenerata dal master');
+      // Canonical endpoint: POST /api/editorial/variants/{vid}/compose
+      // Calls editorial_ai.compose_variant() server-side, regenerates body_blocks
+      // from the master's conceptual_direction, sets status to ready_for_editorial_review.
+      const r = await api.post(`/api/editorial/variants/${variant.id}/compose`, {});
+      const ms = r.data?.duration_ms;
+      toast.success(`Composizione rigenerata dal master${ms ? ` · ${(ms / 1000).toFixed(1)}s` : ''}`);
       onChanged?.();
     } catch (e) {
-      // Fallback: many tenants expose /generate-composition instead
-      try {
-        await api.post(`/api/editorial/variants/${variant.id}/generate-composition`, {});
-        toast.success('Composizione rigenerata dal master');
-        onChanged?.();
-      } catch (e2) {
-        toast.error(e2?.response?.data?.detail || e?.response?.data?.detail || 'Composizione fallita');
-      }
+      toast.error(e?.response?.data?.detail || e?.response?.data?.error || 'Composizione fallita');
     } finally { setBusy(null); }
   };
 
