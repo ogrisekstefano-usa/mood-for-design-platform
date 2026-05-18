@@ -198,6 +198,40 @@
 **Service `services/editorial_ai.py` (composition runtime)** — 4 verbi editoriali, MAI "AI":
 
 | Verbo (UI) | Function | Behaviour |
+
+### ✅ Phase S-CONNECT Step 2 — Storefront Studio™ (DONE — 17 May 2026)
+
+> **Blueprint comanda ora le fasce pubbliche del frontend.** Sala editoriale di orchestrazione delle storefront bands. Non un CMS, non un page builder — una redazione editoriale.
+
+**Frontend (nuovi)**
+- `pages/storefront/StorefrontStudioPage.jsx` (~430 righe) — Editorial orchestration room al route `/blueprint/storefront`:
+  - 4 page tabs (Home · Projects · Navigation · Start project)
+  - 6 fasce home renderate come `ss-band-{section_type}`: store_hero, value_props, stats_band, projects_preview, magazine_grid, brand_logos
+  - Drag reorder con persistenza `PATCH /admin/pages/{pk}/sections/reorder`
+  - Eye toggle visibility per fascia
+  - Pubblica pagina button + status dot (mint live, gold dirty)
+  - Right pane `BandEditor`: 7 locale tabs (active tenant markets), 10 campi (eyebrow/title/subtitle/body/cta-label/cta-href/cover), market_visibility chips, positioning_mode select (7 modes), hero_variant select (6 modi, solo per hero)
+- `pages/storefront/storefrontStudio.css` — Blueprint dark palette coordinata (bg `rgb(7,7,7)`, mint accents, Cormorant headings)
+
+**Visual guardrails rispettati**
+- ❌ NO page builder · ❌ NO Webflow clone · ❌ NO enterprise admin
+- ✅ Editorial orchestration · ✅ Dark luxury · ✅ Slow transitions · ✅ Sequencing emphasis
+
+**Wiring**
+- `App.js` — Route `/blueprint/storefront` sotto `StudioAdminRoute`
+- `Sidebar.jsx` — Nav item `Storefront Studio` (LayoutGrid icon) sotto Editorial section
+
+**Test verificati (iteration_58.json)**
+- `/app/backend/tests/test_phase_s_connect_step2.py` (nuovo, 6 test backend)
+- 15/15 backend test (6 nuovi + 9 Phase S-IDENTITY regression) PASS
+- Frontend 100% E2E verificato
+- 1 fix critico applicato dal testing agent: response shape `setPage(pageR.data)` flat invece di `setPage(pageR.data.page)` (status dot non si aggiornava dopo publish)
+
+**NB importante**: Step 2 espone l'admin orchestration room ma il PUBLIC frontend NON legge ancora da CMS — quello è Step 4 (Frontend Runtime Binding). Per ora le bands sono editabili e persistono nel DB, ma il storefront `/it-IT`, `/en-US` ecc. continua a usare `navigationContent` hardcoded.
+
+---
+
+
 |---|---|---|
 | **Compose Direction** | `compose_variant()` | Status → `ai_composing` → output → `ready_for_editorial_review`. Crea title/body/CTA/SEO market-native |
 | **Refine Editorial Angle** | `refine_editorial_angle()` | Editor seleziona `revision_options` (editorial-grade) + notes → restage. Valida options contro lookup platform (defence in depth) |
