@@ -775,28 +775,26 @@ const MarketEditionEditor = ({ master, market, variant, onChange, onSave, onPubl
         />
       </div>
 
-      <div className="ps-grid-3">
-        <div className="ps-section">
-          <p className="ps-section__label">Materia primaria</p>
+      <div className="ps-section">
+        <p className="ps-section__label">Refine Material Narrative · materia primaria · secondaria · tattilità</p>
+        <div className="ps-grid-3">
           <input
             className="ps-input"
+            data-testid="ps-material-primary"
             value={ml.primary || ''}
+            placeholder="Materia primaria"
             onChange={(e) => onChange({ material_language: { ...ml, primary: e.target.value } })}
           />
-        </div>
-        <div className="ps-section">
-          <p className="ps-section__label">Materia secondaria</p>
           <input
             className="ps-input"
             value={ml.secondary || ''}
+            placeholder="Materia secondaria"
             onChange={(e) => onChange({ material_language: { ...ml, secondary: e.target.value } })}
           />
-        </div>
-        <div className="ps-section">
-          <p className="ps-section__label">Tattilità</p>
           <input
             className="ps-input"
             value={ml.tactile || ''}
+            placeholder="Tattilità"
             onChange={(e) => onChange({ material_language: { ...ml, tactile: e.target.value } })}
           />
         </div>

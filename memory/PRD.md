@@ -1,6 +1,43 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase S-CONNECT Step 3 — Projects Studio™ (DONE — 18 May 2026)
+
+> **Portfolio Cultural Adaptation Studio.** NOT un project manager · NON un CRM · NON un task board · NON un Gantt. Una sala editoriale dove un progetto viene **riposizionato culturalmente** per ogni mercato, mai tradotto.
+
+**Backend (registered + composer)**
+- `routers/portfolio.py` — registrato in `server.py` con prefix `/portfolio` (full path `/api/portfolio/*`). 13 endpoints:
+  - Admin: list / create / read / patch / delete / publish master, patch / publish variant, **compose market edition** (Claude Sonnet via Emergent LLM Key).
+  - Public: list (variant-required, locale-filtered) + slug detail (variant-preferred, master fallback).
+- `services/project_market_composer.py` — pipeline AI dedicata (NO reuse di `editorial_prompt_composer`). Output JSON strict: variant_title · cultural_angle · material_language {primary, secondary, tactile} · hospitality_tone · aspirational_narrative · luxury_perception · story_body[] · gallery_overrides · cta_set[] · seo.
+- Migration `039_portfolio_projects.sql` — hybrid: `portfolio_projects` (master) + `portfolio_project_variants` (UNIQUE master×locale).
+
+**Critical fix (testing agent — iteration_59)**
+- `project_market_composer.py:194` — `chat.with_max_tokens(2400)` non esiste sull'API `LlmChat` di `emergentintegrations`. Sostituito con `.with_params(max_tokens=2400)`. Post-fix: compose REAL Claude Sonnet (it-IT) completata in ~21s producendo variant culturalmente adattato (non traduzione letterale). Chat init spostata DENTRO il try/except per produrre 502 ok:false invece di 500 in caso di drift dell'API.
+
+**Frontend**
+- `pages/projects/ProjectsStudioPage.jsx` (~600 righe) — split-pane cinematic al route `/blueprint/projects-studio`:
+  - **LEFT rail**: master archive con cinematic card (cover image, eyebrow categoria, titolo serif, sottotitolo italic, dot status pubblicazione, conteggio edizioni). + Modal "Apri un nuovo progetto".
+  - **RIGHT stage**: 2 tab — **Master Story** (titolo · sottotitolo · categoria · cliente · località · anno · cover · vocabolario materico chip-based · narrativa) e **Market Editions** (sub-tab per locale del tenant + readout esplicativo).
+  - **Market Edition editor**: variant_title · cultural_angle · hospitality_tone · luxury_perception · aspirational_narrative · **Refine Material Narrative** (3 input materia primaria/secondaria/tattilità) · story_body · cta_set market-native (tier/label/action) · SEO.
+  - **Compose state takeover**: overlay full-screen con eyebrow "Compose Market Edition" e linee editoriali rotanti ("Reinterpreting the project for this market…", "Calibrating material vocabulary…").
+- `pages/projects/projectsStudio.css` — Blueprint dark palette (`--bp-*`), cinematic spacing, dot status per locale tab (mint live, gold ready, dorato pulsante composing, dashed missing).
+- Route `/blueprint/projects-studio` sotto `StudioAdminRoute` + sidebar nav "Projects Studio" (icon `Frame`).
+
+**Editorial language commitments (verificati)**
+- ✅ Compose Market Edition · Adapt for Market · Refine Material Narrative · Publish International Edition
+- ❌ NESSUNA occorrenza di Translate / AI / Generate / GPT / Claude / Rewrite / Auto rewrite nel DOM o nei testid
+
+**Test verificati (iteration_59.json)**
+- **13/13 backend test PASS** (8 baseline `test_phase_s_connect_step3.py` + 5 e2e `test_phase_s_connect_step3_e2e.py` — real Claude compose, variant patch/publish, public locale-shaped detail, cross-tenant isolation read/patch/delete).
+- **23/23 regression** Phase S-CONNECT Step 2 + Phase S-IDENTITY Step 1 GREEN.
+- **Frontend 95%**: page load, master archive, split-pane, market sub-tabs, readout, compose button, master publish, status pills, Blueprint palette intact. Action item "Refine Material Narrative" canon verb APPLICATO post-test.
+
+**Step 4 (prossimo, P0) — Frontend Runtime Binding™**: lo storefront pubblico legge ancora da `navigationContent.js` / `projects.js` hardcoded. Da rifattorizzare per leggere `storefront_content` + `portfolio_project_variants` dal DB (UNA SOLA volta, coerentemente, per evitare partial binding).
+
+---
+
+
 ### ✅ Phase R-MARKET-1B — Locale-aware Frontend Architecture (Prompt 1) (DONE — 17 May 2026)
 
 > **FINISHING MODE — Prompt 1 di 3.** Wiring completo dell'architettura di routing locale per il public storefront. URL subpath BCP-47 (`/it-IT`, `/en-US`, `/en-GB`, `/es-ES`, `/fr-FR`, `/de-DE`) accanto alle route legacy senza prefisso. SEO international-grade su tutto lo storefront, ZERO leak dell'`internal_translation` editor-only.

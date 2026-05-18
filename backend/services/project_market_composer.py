@@ -189,10 +189,10 @@ async def compose_market_edition(master_id: str, market_id: str, tenant_id: str)
 
     # Build prompt + call Claude.
     started = time.time()
-    chat = LlmChat(api_key=_emergent_key(), session_id=f"portfolio-{master_id}-{market_id}",
-                   system_message="You compose market-native portfolio editions for an international interior design studio.")
-    chat = chat.with_model(*DEFAULT_MODEL).with_params(max_tokens=2400)
     try:
+        chat = LlmChat(api_key=_emergent_key(), session_id=f"portfolio-{master_id}-{market_id}",
+                       system_message="You compose market-native portfolio editions for an international interior design studio.")
+        chat = chat.with_model(*DEFAULT_MODEL).with_params(max_tokens=2400)
         reply = await chat.send_message(UserMessage(text=_build_compose_prompt(master, market)))
     except Exception as e:
         logger.exception("portfolio composer failed")
