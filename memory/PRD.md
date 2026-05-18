@@ -1,6 +1,49 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### 🟡 Phase S-CONNECT Step 4 — Frontend Runtime Binding™ (Phase 1 · Portfolio surfaces DONE — 18 May 2026)
+
+> Risposta a directive: *"trasformare il frontend pubblico da struttura hardcoded a piattaforma editoriale internazionale runtime-driven · NO CMS feeling · NO admin vibes · public experience engine, NOT db binding"*.
+
+**Phase 1 — Portfolio surfaces (DONE)**: tre superfici pubbliche bind-ate al DB attraverso `/api/portfolio/public/*` con cadenza editoriale e ZERO sensazione SaaS.
+
+**Surfaces wired**
+1. **`HomePage` `<ProjectsRail>`** — legge `/api/portfolio/public/{slug}/projects?locale_code={bcp47}` e, se almeno una variant pubblicata per il mercato, rimpiazza i CMS fallback items. `data-source="runtime|cms"` per debug.
+2. **`ProjectsIndexPage` `/projects`** — riscritta interamente. Atmosphere-first cinematic strip cards: cover, eyebrow categoria, titolo serif (variant_title), italic cultural_angle (NON subtitle traduzione), material_palette chips. Editorial loading line italica market-aware: *"Componendo l'atmosfera editoriale…"* / *"Composing the editorial atmosphere…"* / *"Composition de l'atmosphère éditoriale…"* / *"Die editoriale Atmosphäre wird komponiert…"* / *"Componiendo la atmósfera editorial…"*. Fallback graceful a `site/content/projects.js` solo se il tenant non ha ancora pubblicato variants.
+3. **`ProjectDetailPage` `/projects/{slug}`** — riscritta. Cinematic editorial reading:
+   - Hero atmosphere-first: eyebrow `category · year · MARKET_CODE` · serif display title · italic cultural_angle as lead.
+   - Overview con `material_palette` chips + aspirational_narrative + italic hospitality_tone.
+   - **Story body cinematica** con `pull_quote` types renderizzati come blockquote serif italic 24-32px e mfd-accent border-left.
+   - **Material vocabulary** dedicata (Refine Material Narrative — primary/secondary/tactile).
+   - Gallery con caption italic serif.
+   - **Luxury perception** come pull-line centrata serif italic.
+   - **CTA market-native** dai `cta_set` (Book a Consultation · Speak With Our Team · Begin the Dialogue · …) — NON un "Contact us" hardcoded.
+4. **Locale BCP-47 normalisation** — nuovo `site/localeBcp47.js` mappa i compact codes del SiteContext (`it` · `fr` · `de` · `es` · `ar`) al formato BCP-47 dello storefront DB (`it-IT` · `fr-FR` · `de-DE` · `es-ES` · `ar-AE`). Fix critico per il binding: senza questo, `it` → 404 contro variant pubblicate come `it-IT`.
+
+**Verifica live** (`/it-IT/projects` con Villa Travertino it-IT pubblicato)
+- `data-source="runtime"` ✓ — il frontend pubblico legge dal DB.
+- Cover image · titolo serif "Villa Travertino" · italic cultural angle Italian *"Un restauro che ragiona per sottrazioni: la pietra come memoria costruttiva, il progetto come gesto di continuità con il territorio romano."*
+- Project detail page: `data-source="runtime"` · hero · story_body 2 paragraphs · material-language section · gallery con caption italic.
+- HomePage projects band: `data-source="runtime"` con la Villa che sostituisce i fallback items.
+
+**Phase 2 (prossima sub-task di Step B)**
+- `SiteHeader` / `SiteFooter` — eliminare l'override hardcoded di `navigationContent.js` come fonte primaria; quando il tenant ha pubblicato Storefront Studio navigation, prevale il DB.
+- `HomePage` Hero / Dual CTA / USP / Newsletter già consumano `cms_pages` via `useStorefrontContent` ma con strong fallback. Verificare che ogni fascia abbia un publish completo lato Storefront Studio per emergere come `data-source="runtime"`.
+- `MagazinePage` listing — bind a editorial variants endpoint (già esiste `/api/magazine/public/{tenant_slug}/editorial/{slug}`).
+- `ProjectsIndexPage` filter category: in modalità runtime, popolare i filtri dinamicamente dalle category effettive dei variants pubblicati invece che da `projectCategories` hardcoded.
+
+**Editorial loading copy** (italic, calm, market-aware)
+- `it-IT`: *Componendo l'atmosfera editoriale… · Componendo la lettura editoriale del progetto…*
+- `en-US`: *Composing the editorial atmosphere… · Composing the editorial reading of the project…*
+- `fr-FR`: *Composition de l'atmosphère éditoriale…*
+- `de-DE`: *Die editoriale Atmosphäre wird komponiert…*
+- `es-ES`: *Componiendo la atmósfera editorial…*
+
+**Test regression**: 14/14 backend pytest (Storefront Studio + Projects Studio) PASS, ZERO regressioni.
+
+---
+
+
 ### ✅ Editorial Studio™ Palette Re-alignment to Blueprint Dark (DONE — 18 May 2026)
 
 > Risposta a feedback utente: *"/blueprint/editorial deve essere allineato al brand studio. Il frontend continua a non essere allineato a blueprint!"*

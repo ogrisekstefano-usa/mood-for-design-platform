@@ -15,7 +15,7 @@
  * Tenants without DB content yet fall back to the `homepageContent` shipped
  * in `site/content/homepage.js` so the page never reads "broken".
  */
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Award, Users, Sparkles, Globe, ShieldCheck, ArrowRight,
@@ -27,6 +27,7 @@ import { tenantConfig } from '../../site/content/tenant';
 import { homepageContent } from '../../site/content/homepage';
 import { useStorefrontContent } from '../../site/useStorefrontContent';
 import { usePublicBrand } from '../../site/usePublicBrand';
+import { toBcp47Storefront } from '../../site/localeBcp47';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -237,28 +238,57 @@ const UspStrip = ({ cms, locale, brandName }) => {
 
 const ProjectsRail = ({ cms, locale }) => {
   const titleRaw = fromCMS(cms, 'projects_rail', 'title', locale) || pick(FALLBACK.projects.title, locale);
-  const items = (cms?.projects_rail?._settings?.items) || FALLBACK.projects.items;
+  const cmsItems = (cms?.projects_rail?._settings?.items) || FALLBACK.projects.items;
+  const [runtimeItems, setRuntimeItems] = useState(null);
+
+  // Phase S-CONNECT Step 4 — runtime binding to portfolio public endpoint.
+  useEffect(() => {
+    let alive = true;
+    const slug = tenantConfig.slug;
+    const bcp = toBcp47Storefront(locale);
+    axios.get(`${BACKEND_URL}/api/portfolio/public/${slug}/projects?locale_code=${encodeURIComponent(bcp)}`)
+      .then((r) => {
+        if (!alive) return;
+        const list = r.data?.projects || [];
+        setRuntimeItems(list.length > 0 ? list.slice(0, 5) : []);
+      })
+      .catch(() => { if (alive) setRuntimeItems([]); });
+    return () => { alive = false; };
+  }, [locale]);
+
+  // If we have published variants for this market, use them — else CMS items.
+  const usingRuntime = Array.isArray(runtimeItems) && runtimeItems.length > 0;
+  const items = usingRuntime ? runtimeItems : cmsItems;
+
   return (
-    <section className="mfd-projects" data-testid="home-projects">
+    <section className="mfd-projects" data-testid="home-projects" data-source={usingRuntime ? 'runtime' : 'cms'}>
       <header className="mfd-projects__head">
         <h2 className="mfd-projects__title">{titleRaw}</h2>
         <span className="mfd-projects__rule" aria-hidden />
       </header>
       <div className="mfd-projects__grid">
-        {items.map((p) => (
-          <Link
-            key={p.id}
-            to={p.href || '/projects'}
-            className="mfd-project-card"
-            data-testid={`home-project-${p.id}`}
-          >
-            <div className="mfd-project-card__media" style={{ backgroundImage: `url("${p.image}")` }} aria-hidden />
-            <div className="mfd-project-card__caption">
-              <span className="mfd-project-card__category">{pick(p.category, locale)}</span>
-              <span className="mfd-project-card__city">{pick(p.city, locale)}</span>
-            </div>
-          </Link>
-        ))}
+        {items.map((p) => {
+          const id   = usingRuntime ? p.id     : p.id;
+          const slug = usingRuntime ? p.slug   : null;
+          const href = usingRuntime ? (slug ? `/projects/${slug}` : '/projects') : (p.href || '/projects');
+          const image= usingRuntime ? (p.cover_image_url || '') : p.image;
+          const cat  = usingRuntime ? (p.category || '') : pick(p.category, locale);
+          const city = usingRuntime ? (p.location || '') : pick(p.city, locale);
+          return (
+            <Link
+              key={id || slug}
+              to={href}
+              className="mfd-project-card"
+              data-testid={`home-project-${id || slug}`}
+            >
+              <div className="mfd-project-card__media" style={{ backgroundImage: image ? `url("${image}")` : undefined }} aria-hidden />
+              <div className="mfd-project-card__caption">
+                <span className="mfd-project-card__category">{cat}</span>
+                <span className="mfd-project-card__city">{city}</span>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );
