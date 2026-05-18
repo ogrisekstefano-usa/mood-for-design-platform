@@ -1,0 +1,291 @@
+/* MOOD for DESIGN™ — International Presence™
+   Cinematic market positioning surface. NO admin dashboard feeling. */
+
+.ip-root {
+  min-height: 100vh;
+  background: #f7f3ec;
+  color: #1c1814;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: 56px 64px 120px;
+}
+
+.ip-back {
+  display: inline-flex; gap: 8px; align-items: center;
+  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: rgba(28,24,20,0.45);
+  background: transparent; border: none; cursor: pointer;
+  margin-bottom: 32px;
+  transition: color .2s;
+}
+.ip-back:hover { color: #1c1814; }
+
+.ip-head {
+  margin-bottom: 80px;
+  max-width: 720px;
+}
+.ip-head__eyebrow {
+  font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: rgba(28,24,20,0.5);
+  margin-bottom: 14px;
+}
+.ip-head__title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 56px; line-height: 1.05; letter-spacing: -0.015em;
+  font-weight: 300;
+  margin: 0 0 22px;
+  color: #1c1814;
+}
+.ip-head__title sup {
+  font-size: 14px; opacity: 0.5; vertical-align: super; margin-left: 2px;
+}
+.ip-head__intro {
+  font-size: 14.5px; line-height: 1.7;
+  color: rgba(28,24,20,0.62);
+  font-weight: 300;
+  max-width: 580px;
+}
+
+.ip-region {
+  margin-bottom: 88px;
+  animation: ip-fade-in 0.8s cubic-bezier(0.22,0.61,0.36,1) both;
+}
+.ip-region:nth-child(2) { animation-delay: 0.05s; }
+.ip-region:nth-child(3) { animation-delay: 0.1s; }
+.ip-region:nth-child(4) { animation-delay: 0.15s; }
+.ip-region:nth-child(5) { animation-delay: 0.2s; }
+.ip-region:nth-child(6) { animation-delay: 0.25s; }
+
+@keyframes ip-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ip-region__head {
+  display: flex; align-items: baseline; gap: 22px;
+  border-bottom: 1px solid rgba(28,24,20,0.1);
+  padding-bottom: 18px;
+  margin-bottom: 36px;
+}
+.ip-region__index {
+  font-size: 10px; letter-spacing: 0.32em;
+  color: rgba(28,24,20,0.35); text-transform: uppercase;
+  font-feature-settings: 'tnum';
+}
+.ip-region__title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 400;
+  color: #1c1814; margin: 0;
+  letter-spacing: -0.005em;
+}
+.ip-region__count {
+  margin-left: auto;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(28,24,20,0.4);
+}
+
+.ip-card {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 26px;
+  padding: 24px 28px;
+  margin-bottom: 14px;
+  background: #faf6ef;
+  border: 1px solid rgba(28,24,20,0.06);
+  border-radius: 2px;
+  transition: border-color .35s, background-color .35s, transform .35s;
+  position: relative;
+}
+.ip-card[data-active="true"] {
+  border-color: rgba(28,24,20,0.2);
+  background: #ffffff;
+}
+.ip-card[data-default="true"] {
+  border-color: #c8a572;
+  box-shadow: 0 0 0 1px #c8a572 inset;
+}
+.ip-card[data-inactive="true"] {
+  opacity: 0.55;
+}
+.ip-card:hover {
+  border-color: rgba(28,24,20,0.18);
+}
+
+.ip-card__drag {
+  cursor: grab; opacity: 0.25;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity .2s;
+  user-select: none;
+}
+.ip-card__drag:hover { opacity: 0.7; }
+.ip-card__drag:active { cursor: grabbing; }
+.ip-card[data-dragging="true"] { opacity: 0.45; transform: scale(0.985); }
+
+.ip-card__body {
+  min-width: 0;
+}
+.ip-card__eyebrow {
+  font-size: 9.5px; letter-spacing: 0.32em; text-transform: uppercase;
+  color: #c8a572; margin-bottom: 4px;
+  font-weight: 500;
+}
+.ip-card__eyebrow--mute {
+  color: rgba(28,24,20,0.4);
+}
+.ip-card__name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; line-height: 1.15; letter-spacing: -0.01em;
+  color: #1c1814;
+  font-weight: 400;
+  margin: 0 0 4px;
+}
+.ip-card__locale {
+  display: inline-block;
+  font-size: 10px; letter-spacing: 0.18em;
+  color: rgba(28,24,20,0.45);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.ip-card__attrs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px 36px;
+  margin-top: 12px;
+}
+.ip-card__attr {
+  min-width: 0;
+}
+.ip-card__attr-label {
+  font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: rgba(28,24,20,0.42);
+  margin-bottom: 3px;
+  font-weight: 500;
+}
+.ip-card__attr-value {
+  font-size: 13px;
+  color: rgba(28,24,20,0.85);
+  font-weight: 400;
+  line-height: 1.4;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+}
+
+.ip-card__actions {
+  display: flex; flex-direction: column; gap: 10px; align-items: flex-end;
+  min-width: 180px;
+}
+
+.ip-toggle {
+  position: relative; cursor: pointer;
+  width: 44px; height: 18px;
+  display: inline-block;
+}
+.ip-toggle input {
+  position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0;
+  cursor: pointer; z-index: 2;
+}
+.ip-toggle__track {
+  position: absolute; inset: 0;
+  background: rgba(28,24,20,0.12);
+  border-radius: 999px;
+  transition: background-color .3s;
+}
+.ip-toggle__dot {
+  position: absolute; top: 2px; left: 2px;
+  width: 14px; height: 14px;
+  background: #faf6ef;
+  border-radius: 50%;
+  transition: left .3s cubic-bezier(0.22,0.61,0.36,1), background-color .3s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+.ip-toggle input:checked + .ip-toggle__track {
+  background: #1c1814;
+}
+.ip-toggle input:checked + .ip-toggle__track + .ip-toggle__dot {
+  left: 28px;
+  background: #c8a572;
+}
+
+.ip-default-link {
+  background: transparent; border: none;
+  cursor: pointer; padding: 0;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(28,24,20,0.48);
+  transition: color .2s;
+  font-family: inherit;
+}
+.ip-default-link:hover { color: #c8a572; }
+.ip-default-link[data-is-default="true"] {
+  color: #c8a572; font-weight: 500;
+  cursor: default;
+}
+.ip-default-link[data-is-default="true"]::before {
+  content: '◆ ';
+  margin-right: 2px;
+}
+
+/* Sticky save bar */
+.ip-savebar {
+  position: sticky; bottom: 0;
+  margin: 80px -64px -120px;
+  padding: 18px 64px;
+  background: rgba(28,24,20,0.98);
+  color: #f7f3ec;
+  border-top: 1px solid rgba(245,236,219,0.1);
+  display: flex; align-items: center; justify-content: space-between;
+  z-index: 30;
+  backdrop-filter: blur(12px);
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform .45s cubic-bezier(0.22,0.61,0.36,1), opacity .35s;
+}
+.ip-savebar[data-visible="true"] {
+  transform: translateY(0);
+  opacity: 1;
+}
+.ip-savebar__count {
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(245,236,219,0.7);
+}
+.ip-savebar__count strong { color: #c8a572; font-weight: 500; }
+.ip-savebar__actions { display: flex; gap: 10px; }
+
+.ip-btn {
+  padding: 10px 22px; border-radius: 2px;
+  font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase;
+  font-weight: 500;
+  border: 1px solid rgba(245,236,219,0.2);
+  background: transparent; color: #f7f3ec;
+  cursor: pointer; transition: border-color .2s, background-color .2s;
+  font-family: inherit;
+}
+.ip-btn:hover { border-color: rgba(245,236,219,0.5); }
+.ip-btn--primary {
+  background: #c8a572; border-color: #c8a572;
+  color: #1c1814;
+}
+.ip-btn--primary:hover { background: #d1ae7b; }
+.ip-btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+.ip-loading,
+.ip-empty {
+  text-align: center; padding: 80px 0;
+  color: rgba(28,24,20,0.5); font-style: italic;
+  font-family: 'Cormorant Garamond', serif; font-size: 18px;
+}
+
+@media (max-width: 900px) {
+  .ip-root { padding: 32px 24px 100px; }
+  .ip-head__title { font-size: 38px; }
+  .ip-card {
+    grid-template-columns: 24px 1fr;
+    grid-template-rows: auto auto;
+  }
+  .ip-card__actions {
+    grid-column: 2;
+    flex-direction: row; align-items: center; justify-content: space-between;
+    min-width: 0; width: 100%;
+  }
+  .ip-card__attrs { grid-template-columns: 1fr; }
+  .ip-savebar { margin: 60px -24px -100px; padding: 14px 24px; flex-direction: column; gap: 12px; }
+}

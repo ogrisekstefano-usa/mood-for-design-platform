@@ -120,6 +120,10 @@ const SettingsPage = () => {
             title={t('settings.brand.title', null, 'Brand Studio')}
             description={t('settings.brand.sub', null, 'Logo, palette, typography and style preset for your tenant.')}
           />
+          <SettingsTile testid="tile-international-presence" icon={Globe} to="/settings/international-presence" accent="core"
+            title={t('settings.internationalPresence.title', null, 'International Presence™')}
+            description={t('settings.internationalPresence.sub', null, 'The editorial map of markets where the studio positions itself. Activates locale-native storefronts.')}
+          />
         </div>
       </section>
 

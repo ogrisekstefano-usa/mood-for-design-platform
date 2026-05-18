@@ -29,6 +29,7 @@ const ReferencesPage = lazy(() => import('./pages/workspace/ReferencesPage'));
 const RelationshipsPage = lazy(() => import('./pages/workspace/RelationshipsPage'));
 const VariantApprovalInboxPage = lazy(() => import('./pages/editorial/VariantApprovalInboxPage'));
 const EditorialStudioPage = lazy(() => import('./pages/editorial/EditorialStudioPage'));
+const InternationalPresencePage = lazy(() => import('./pages/settings/InternationalPresencePage'));
 const MoodboardsPage = lazy(() => import('./pages/moodboards/MoodboardsPage'));
 const InspirationsPage = lazy(() => import('./pages/inspirations/InspirationsPage'));
 const InsightsPage = lazy(() => import('./pages/insights/InsightsPage'));
@@ -320,6 +321,9 @@ function App() {
 
                   {/* Editorial Studio — Composition Room (Phase E-2 Prompt 2). */}
                   <Route path="/blueprint/editorial" element={<StudioAdminRoute><EditorialStudioPage /></StudioAdminRoute>} />
+
+                  {/* International Presence™ — Phase S-IDENTITY Step 1. */}
+                  <Route path="/settings/international-presence" element={<StudioAdminRoute><InternationalPresencePage /></StudioAdminRoute>} />
                 </Route>
 
                 {/* CLIENT PORTAL (Phase R) — surface-isolated, role=client only */}

@@ -1,0 +1,57 @@
+{
+  "summary": "Phase S-IDENTITY Step 1 — International Presence™ end-to-end testing. Backend: 8/9 new pytest tests PASS for /api/tenants/me/markets GET + PATCH, including positioning fields populated for all 7 canonical markets (italy, dach, france_fr_europe, uk_ireland, usa_national, spanish_latam, gcc_luxury), italy is_default=true, single-PATCH is_active/sort_order/empty/404 negative all green. 1 CRITICAL bug: PATCH with is_default=true returns 500 from Postgres unique constraint 'uq_tenant_markets_default' because mutex enforcement is performed AFTER the upsert instead of BEFORE — when Italy is already default and we try to set USA as default, the upsert hits the constraint before the subsequent UPDATE clears Italy. Frontend: page loads at /settings/international-presence (StudioAdminRoute pass), eyebrow 'Workspace · Identity' + serif title 'International Presence™' + intro paragraph render, all 4 macro-region buckets (italy/europe/americas/gcc) render, all 7 canonical ip-card-{code} cards render, italy has data-default=true with 'DEFAULT MARKET' eyebrow + 4 positioning labels (Editorial Tone/Luxury Positioning/Hospitality Profile/Storefront Behavior). ip-savebar toggles data-visible=true on toggle and false on save/discard. Settings index tile-international-presence visible and routes correctly. Regression: 62/62 existing tests (r-market-1a, r-market-1b, e_1a, e_1b, e2_p2, e3_p3) still green — NO regression from Step 1. Critical backend mutex bug BLOCKS the 'Set as default' E2E flow when a default already exists.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "PATCH /api/tenants/me/markets/{id}",
+        "issue": "Setting is_default=true on a non-default market returns 500 Internal Server Error from Postgres unique constraint 'uq_tenant_markets_default' (Key (tenant_id) already exists). Root cause in /app/backend/routers/markets.py patch_my_tenant_market: lines 195-209 upsert the target row FIRST (with is_default=true), THEN at lines 211-214 clear other tenants_markets defaults. The upsert hits the unique constraint before the clear-others runs. Fix: clear-others BEFORE the upsert (move the 'enforce mutex' block to run before insert/update), OR wrap both ops in a transaction and clear first.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Set as default → Save",
+        "issue": "End-to-end Set-as-default + Save flow fails silently from the user's POV because the underlying PATCH /tenants/me/markets/{usa_id} {is_default:true} returns 500. The frontend shows 'Salvataggio fallito' (Save failed) toast. UI logic is correct — bug is the backend mutex order.",
+        "affected_selectors": ["[data-testid='ip-default-usa_national']", "[data-testid='ip-save']"]
+      }
+    ],
+    "design_issues": [
+      {
+        "screen": "Sidebar",
+        "issues": ["Sidebar is rendered in icon-only/collapsed mode by default and the InternationalPresence NavItem icon (Globe) is among many other Globe icons in the chrome — verify accessible name (title attr) / aria-label is set on the icon link so the user can identify it without hover. Also a[href='/settings/international-presence'] was not found in the dashboard DOM in one probe — main agent should verify NavItem actually mounts when the sidebar is collapsed for tenant_admin/super_admin (can('tenant:settings'))."]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_phase_s_identity_step1.py",
+    "/app/test_reports/pytest/iteration_57_s_identity.xml"
+  ],
+  "action_items": [
+    "FIX CRITICAL: /app/backend/routers/markets.py patch_my_tenant_market — move the single-default-per-tenant mutex UPDATE (lines 211-214) BEFORE the upsert (lines 195-209) so other tenant_markets rows lose is_default=true BEFORE the new row claims it. This unblocks the 'Set as default' E2E flow.",
+    "Verify sidebar NavItem for /settings/international-presence actually mounts in the collapsed sidebar for tenant_admin (a[href] selector returned null in one probe; could be a router/permission gating issue or simply that the icon-only sidebar doesn't expose href on the anchor)."
+  ],
+  "critical_code_review_comments": [
+    "markets.py patch_my_tenant_market mutex order is WRONG — the unique constraint uq_tenant_markets_default fires on upsert before the clear-others step runs. Re-order: clear others first, then upsert target.",
+    "InternationalPresencePage.jsx Promise.all for batched PATCHes will partially apply on first failure — recommend either sequential awaits or backend bulk endpoint so partial save state is avoided when one PATCH 500s.",
+    "Migration 038 only seeds 7 canonical markets — france_fr (legacy code) is included in the UPDATE clause; ensure that if a france_fr row doesn't exist this is a no-op (it is, COALESCE+WHERE).",
+    "displayName helper falls back to en-US → it-IT → first value → code, robust for i18n dict.",
+    "Drag reorder swaps _sort values between two cards but does not propagate to other cards in the macro — works for adjacent swaps but a real reorder (drop on non-adjacent) creates _sort collisions. Acceptable for v1 since save_order uses the raw values; if duplicates collide on save, sort_order updates are independent per market_id so collision is benign at DB level."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase_s_identity_step1.py (NEW — Phase S-IDENTITY Step 1 backend regression suite, 9 tests)"
+  ],
+  "success_rate": {
+    "backend": "89% (8/9 new tests pass; 1 CRITICAL fail on is_default mutex 500. 62/62 prior regression tests still pass — no regression.)",
+    "frontend": "85% (page loads, editorial chrome correct, macro grouping correct, all 7 canonical cards render, positioning attrs render, default eyebrow correct, toggle/savebar/discard/save flows work. The Set-as-default flow is blocked end-to-end by the backend 500 above. Sidebar NavItem presence under collapsed icon-only sidebar needs visual QA.)"
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (SuperAdmin) — works.",
+  "seed_data_creation": "None. Used existing seed (Italy default, 7 canonical markets activated for mood-demo-studio-81a09e).",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Critical: the mutex bug in /app/backend/routers/markets.py:174 patch_my_tenant_market must be fixed by reordering the 'enforce single default' block BEFORE the upsert. Once fixed, re-run test_phase_s_identity_step1.py — test_patch_is_default_mutex should turn green. The displayName i18n dict resolution is solid; macro-region normalisation special-cases code='italy' so Italy gets its own bucket even though DB macro_region='europe'. Demo seed: 7 markets active in mood-demo-studio-81a09e tenant, italy is_default=true.",
+  "rca_of_the_issue": "Postgres unique constraint uq_tenant_markets_default(tenant_id) WHERE is_default=true exists to enforce single default. The patch endpoint upserts the target row with is_default=true FIRST (line 196 update / line 209 insert), which violates the constraint because the previous default (Italy) is still is_default=true at that moment. The intended mutex clear at lines 212-214 runs AFTER and is unreachable when the constraint fires. Reproduction: PATCH /api/tenants/me/markets/{usa_id} {is_default:true,is_active:true} → 500. Mitigation: re-order — clear others first, then upsert. Better: wrap in a transaction or use a single SQL CTE / RPC."
+}
