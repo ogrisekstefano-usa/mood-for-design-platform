@@ -53,6 +53,114 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase REVIEW-STABILIZATION v1 (Feb 18, 2026 — iteration 65b) — CRM editorial refactor + Locale fix + Audit
+**Sprint review/stabilization no-new-features. Direttiva utente: "make the system coherent, premium, stable and truly usable". Eseguite Fase A (CRM UX refactor), Fase B (Route/locale fix), Mobile review profondo.**
+
+#### Filosofia applicata
+- NO enterprise complexity, NO Salesforce-style workflows, NO new feature speculation.
+- CRM deve sentirsi: editoriale · relationship-oriented · visivo · memorabile · hospitality-oriented.
+- NON deve sentirsi: amministrativo · table-first · management software.
+
+#### Fase A — CRM UX Refactor
+- **Avatar initials editoriali** (`crm-avatar` su list, `adr__avatar` su drawer) con colore HSL deterministico dal nome (relationship memory anchor). Cerchio 38px list / 52px drawer / 44px mobile.
+- **Stage pill editoriale** (`crm-stage-pill` + `adr__stage-pill`) — sostituisce il vecchio lowercase mono "discovery". Border colorato per stage + dot + label uppercase letterspaced.
+- **Account card refactor**: heading tipografico 17px (era 15px sans), padding 22px (era 16px), border-radius 6px (era 12px troppo "app"), hover senza translateY (più calmo), foot con border dashed (no più "torn box" feeling), label uppercase letterspaced.
+- **Relationship pulse strip** (`crm-pulse`): 3 metriche subtle inline (N account · N relazioni attive · N follow-up aperti) — NON dashboard enterprise, semplicemente memoria della massa.
+- **Empty state editoriale**: eyebrow "Sala delle relazioni" + heading 22px + hint italic + CTA pill "Apri il primo Account" (era una sola linea piatta).
+- **AccountDetailDrawer header refresh**:
+  - Avatar 52px + heading 24px + type label uppercase letterspaced.
+  - **Quick facts row** sempre visibile sotto l'header: Stage pill · Owner · Ultima attività · Next step (con bottone underline che salta al tab Follow-ups se ce ne sono aperti).
+  - Close button ora pill bordered (era nudo).
+
+#### Fase B — Route/Locale Consistency
+- **ShortLocaleRedirect component** in App.js: `/it/*` → `/it-IT/*`, `/en/*` → `/en-US/*`, `/es/*` → `/es-ES/*`, `/fr/*` → `/fr-FR/*`, `/de/*` → `/de-DE/*`, `/gb/*` → `/en-GB/*`. Mantiene query string + hash. `<Navigate replace>` evita duplicate-content SEO.
+- **Verifica live**: `/it/projects` → reindirizza correttamente a `/it-IT/projects` mostrando archivio editoriale italiano (HOME tradotta).
+
+#### Mobile Review (Critical)
+- **CRM list a 390×844**: zero overflow, cards a colonna singola, pulse strip wrap a 3 righe verticali, tabs flex-wrap touch-friendly, padding ridotto a 16px laterali.
+- **CRM drawer a 390×844**: full-screen overlay (no border-left), header compact (avatar 44px, title 20px), quick facts row 2x2, tabs min-height 36px touch.
+- **Tipografia mobile-adapted**: hero title 26px, stage pill letterspacing ridotto, hint testo 13.5px.
+
+#### File changes
+- `/app/frontend/src/pages/crm/CrmAccountsPage.jsx` — Avatar initials helper, StagePill component, AccountCard refactor, pulse strip, empty state editorial.
+- `/app/frontend/src/pages/crm/AccountDetailDrawer.jsx` — header con avatar + quick facts row.
+- `/app/frontend/src/pages/crm/crm.css` — completo ridisegno card/pulse/avatar/empty/drawer/mobile (passato da 254 → 320 lines).
+- `/app/frontend/src/App.js` — `ShortLocaleRedirect` + 6 nuove route bridge.
+
+#### Lint & test
+- Lint JS clean su tutti i file modificati.
+- Smoke test desktop + mobile confermato visualmente (71 accounts caricati con avatar/pill/pulse/cards funzionanti).
+- Locale redirect verificato live.
+
+---
+
+## AUDIT REPORT — Stato sistema (post iteration 65b)
+
+### 1. Stable & production-ready ✅
+- **Auth + multi-tenant**: stabile, demo credentials funzionanti.
+- **Editorial Studio + Magazine pipeline**: full E2E (compose · adapt · publish via editorial_variants).
+- **Projects Studio + Multi-image gallery + Hotspots**: completato in iter_65, testing 100%.
+- **CRM Accounts UI + 9-tab drawer**: ora editorial-feeling, 71 accounts seed renderizzati senza errori.
+- **Locale short-prefix redirects**: funzionanti per 6 mercati.
+
+### 2. UX inconsistencies residue 🟡
+- **Locale dropdown nella site header** mostra "IT" ma a volte non si allinea con `/it-IT/` URL. Verificare LocaleSelector → useSite sync.
+- **Login redirect post-success** porta a `/dashboard` indipendentemente dal ruolo. I client dovrebbero atterrare in `/client`. `ClientRoute` gestisce il blocco ma il post-login navigate è generic.
+- **EditorialMediaField caption/seo_title metadata** salvati a livello asset globale, ma `hero_alt_text`/`hero_caption` su editorial_variants tripassano la PATCH (Pydantic li ignora silenziosamente). Decisione: deferred ad iter dedicato `editorial_variants.hero_meta` jsonb.
+
+### 3. Mobile issues residue 🟡
+- **Editorial Studio mobile**: il `MarketEditionsToolbar` sticky bar può occupare 25% viewport mobile. Considerare auto-collapse su scroll.
+- **HotspotEditor su mobile**: tap-to-add vs tap-to-select richiede long-press distinction; oggi il primo tap crea sempre un hotspot draft. Migliorabile.
+- **ProjectsStudioPage rail mobile**: il rail laterale collassa OK ma il toolbar superiore può overflow su 320px. Acceptable per ora.
+
+### 4. CRM weaknesses residue (post iter_65b) 🟢
+- **Contacts vs Accounts clarity**: ora helper persistente sotto i tab. Il tab `Contacts` però mostra ancora l'elenco account (filtro `__contacts__` non implementato fully — pianificato per backend). Marker: il helper text dice esplicitamente che i Contacts vivono dentro gli Account.
+- **Team vs External Contacts**: la separazione è solo testuale (helper) — non c'è una sezione Team visiva nel CRM. Voluto: Team appartiene a `/settings/team`.
+- **Timeline pane**: solo cards lineari, non visual relationship-memory timeline. Acceptable v1.
+- **Style & Interests pane**: stub minimale. Decisione: questo modulo è P2.
+
+### 5. Route/Locale ✅
+- **Fixed**: `/it/...` → `/it-IT/...` redirect.
+- **Hreflang continuity**: `<LocaleHead>` esiste ma non è stato verificato su tutte le 6 lingue. P1 audit.
+- **OG locale consistency**: backend serve `og_locale` dal variant ma il sito potrebbe non leggerlo per le pagine non-magazine. P1 audit.
+- **Slug consistency**: master slug + variant-locale slug separati nel backend; UI editoriale lo gestisce. OK.
+
+### 6. Media continuity 🟡
+- **Upload + Library + Reuse**: funzionante via EditorialMediaField globale (post iter_61).
+- **Crop**: solo aspect-ratio crop disponibile. Brightness/contrast/saturation/rotate **NON** implementati (rimandati esplicitamente da utente come P1).
+- **Focal point**: campo dati esiste in media_library ma UI non lo espone. P1.
+- **Responsive scaling**: tutte le immagini usano `object-fit: cover` con aspect-ratio. Performance OK.
+- **Gallery behaviour**: ora drag-reorder + cover toggle (iter_65). Le immagini con hotspots[] renderano `<PublicHotspotImage>` read-only sul sito.
+
+### 7. Hotspot UX 🟡
+- **Editor admin**: HotspotEditor con canvas + side panel funzionante.
+- **Public read-only**: PublicHotspotImage con pin ring pulsante + tooltip on click.
+- **Animazione ring**: 2.6s ease-in-out infinite. Possibilmente troppo "aggressivo" per il feeling editoriale calmato — refinement opzionale.
+- **Mobile interaction**: tap = toggle tooltip, OK. Touch target 24px (sotto la regola 44px iOS). **P0 fix** in prossimo sprint hotspot.
+- **Density/overlap**: nessun guard rail se l'utente piazza 20 hotspot sovrapposti. Acceptable per v1.
+
+### 8. Legacy feeling 🟢
+- **Workspace Projects/Leads**: alcune pagine `/workspace/*` mostrano ancora UI vecchio-stile (vedi `LeadsPage`, `ReferencesPage`). Decisione: CRM è ormai la sede canonica per leads → considerare deprecazione `/workspace/leads`.
+- **Admin Dashboard** (`/admin/*`): hub super_admin, intenzionalmente "tools UI" non editorial.
+
+### 9. Performance 🟢
+- Frontend bundles via React lazy loading, OK.
+- Backend: il GET `/api/relationships/accounts?limit=200` su 71 account è veloce (<300ms).
+- Public site SSR-shaped (PublicHotspotImage img loading=lazy, SiteImage native).
+
+### 10. Real blockers before production use 🔴
+**Nessun blocker hard.** La piattaforma è già usabile end-to-end per: showroom · designer · project manager · sales relationship manager.
+
+Le issue elencate (1-9) sono **refinement/polish**, non blocker.
+
+#### Tasks aperti per i prossimi sprint
+- 🟠 **P1**: Advanced Image Filters lightweight (brightness/contrast/saturation/rotate + focal balance) come richiesto.
+- 🟠 **P1**: Media Library "where used" view.
+- 🟡 **P1**: Hotspot mobile touch ergonomy (44px target + long-press to add).
+- 🟡 **P1**: Hreflang + OG locale full audit.
+- 🟢 **P2**: Forms & Journeys™ luxury lead architecture.
+- 🟢 **P2**: Contacts tab dedicated query (filter `__contacts__` not yet implemented).
+
 ### Fase VISUAL-STORYTELLING v1 (Feb 18, 2026 — iteration 65) — Projects gallery + Magazine blocks + Hotspot wiring
 **Sprint storytelling visivo: 3 deliverables P0 deferred dall'iter_64 finishing-mode. Projects Studio 100% GREEN, Editorial Studio rewire verificato manualmente (testing agent ha avuto un falso positivo su logout cascade che NON si è riprodotto in verifica live).**
 

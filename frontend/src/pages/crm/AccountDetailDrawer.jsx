@@ -27,6 +27,46 @@ const TABS = [
   { id: 'style',     label: 'Style',     icon: Palette },
 ];
 
+// ─── Helpers per la testata editoriale ─────────────────────────────
+const STAGE_LABEL = {
+  discovery: 'Discovery', inspiration: 'Inspiration',
+  editorial_engagement: 'Editorial', project_conversation: 'In conversazione',
+  material_exploration: 'Materiali', strategic_direction: 'Direzione',
+  specification: 'Specifica', proposal: 'Proposta',
+  active_collaboration: 'Attivo', long_term_relationship: 'Long-term',
+  archived: 'Archivio',
+};
+const STAGE_COLOR = {
+  discovery: '#9CA3AF', inspiration: '#88c0d0', editorial_engagement: '#88c0d0',
+  project_conversation: '#5B7CA0', material_exploration: '#b08d57',
+  strategic_direction: '#b08d57', specification: '#F59E0B',
+  proposal: '#D4AF37', active_collaboration: '#10B981',
+  long_term_relationship: '#10B981', archived: '#6B7280',
+};
+const initialsOf = (name) => {
+  if (!name) return '··';
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+const avatarHueOf = (seed) => {
+  if (!seed) return 220;
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
+  return Math.abs(h) % 360;
+};
+const relativeTime = (iso) => {
+  if (!iso) return '—';
+  try {
+    const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+    if (diff < 60) return 'ora';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m fa`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h fa`;
+    if (diff < 604800) return `${Math.floor(diff / 86400)}g fa`;
+    return new Date(iso).toLocaleDateString('it-IT', { day: '2-digit', month: 'short' });
+  } catch { return '—'; }
+};
+
 const Field = ({ label, value, mono }) => (
   <div className="adr-field">
     <p className="adr-field__label">{label}</p>
@@ -255,6 +295,15 @@ const AccountDetailDrawer = ({ account, onClose, onChanged }) => {
   }, [account?.id]);
 
   if (!account) return null;
+  const displayName = full?.account_name || account.account_name;
+  const stage = full?.lifecycle_stage || account.lifecycle_stage;
+  const stageLbl = STAGE_LABEL[stage] || stage || '—';
+  const stageCol = STAGE_COLOR[stage] || '#9CA3AF';
+  const hue = avatarHueOf(displayName);
+  const owner = full?.primary_owner_email || full?.primary_owner_id || account.primary_owner_id;
+  const openCount = full?.open_actions_count || account.open_actions_count || 0;
+  const nextDue = full?.next_followup_due_at || account.next_followup_due_at;
+  const lastAct = full?.last_activity_at || account.last_activity_at;
 
   return (
     <div className="adr-bg"
@@ -262,15 +311,55 @@ const AccountDetailDrawer = ({ account, onClose, onChanged }) => {
          data-testid="account-detail-drawer">
       <aside className="adr" onClick={(e) => e.stopPropagation()}>
         <header className="adr__head">
-          <div>
-            <p className="adr__eyebrow">CRM · Account</p>
-            <h2 className="adr__title">{full?.account_name || account.account_name}</h2>
-            <p className="adr__sub">
-              {full?.account_type || account.account_type || '—'} · {full?.lifecycle_stage || '—'}
-            </p>
+          <div className="adr__head-main">
+            <span className="adr__avatar"
+                  style={{ background: `hsl(${hue} 30% 22%)`, color: `hsl(${hue} 58% 78%)`, borderColor: `hsl(${hue} 34% 30%)` }}
+                  aria-hidden>{initialsOf(displayName)}</span>
+            <div className="adr__head-text">
+              <p className="adr__eyebrow">CRM · Account</p>
+              <h2 className="adr__title">{displayName}</h2>
+              <p className="adr__sub">{full?.account_type || account.account_type || '—'}</p>
+            </div>
           </div>
-          <button type="button" onClick={onClose} data-testid="adr-close"><X size={17} /></button>
+          <button type="button" onClick={onClose} className="adr__close" data-testid="adr-close" aria-label="Chiudi">
+            <X size={17} />
+          </button>
         </header>
+
+        {/* Quick facts row — sempre visibile */}
+        <div className="adr__facts" data-testid="adr-quick-facts">
+          <div className="adr__fact">
+            <span className="adr__fact-lbl">Stage</span>
+            <span className="adr__fact-val">
+              <span className="adr__stage-pill" style={{ borderColor: stageCol }}>
+                <span className="adr__stage-pill-dot" style={{ backgroundColor: stageCol }} />
+                {stageLbl}
+              </span>
+            </span>
+          </div>
+          <div className="adr__fact">
+            <span className="adr__fact-lbl">Owner</span>
+            <span className="adr__fact-val">{owner || <em className="adr-empty">non assegnato</em>}</span>
+          </div>
+          <div className="adr__fact">
+            <span className="adr__fact-lbl">Ultima attività</span>
+            <span className="adr__fact-val">{relativeTime(lastAct)}</span>
+          </div>
+          <div className="adr__fact">
+            <span className="adr__fact-lbl">Next step</span>
+            <span className="adr__fact-val">
+              {openCount > 0 ? (
+                <button type="button" className="adr__fact-action"
+                        data-testid="adr-jump-followups"
+                        onClick={() => setTab('followups')}>
+                  {openCount} follow-up{openCount === 1 ? '' : ''} {nextDue ? `· ${new Date(nextDue).toLocaleDateString('it-IT', { day: '2-digit', month: 'short' })}` : ''}
+                </button>
+              ) : (
+                <em className="adr-empty">nessun follow-up</em>
+              )}
+            </span>
+          </div>
+        </div>
 
         <nav className="adr__tabs" role="tablist">
           {TABS.map((t) => {

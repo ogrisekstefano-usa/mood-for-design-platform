@@ -55,21 +55,48 @@ const ACCOUNT_TYPE_LABEL = {
 
 // ─── Sub-components ─────────────────────────────────────────────────
 
+const STAGE_META = {
+  discovery:               { c: '#9CA3AF', label: 'Discovery' },
+  inspiration:             { c: '#88c0d0', label: 'Inspiration' },
+  editorial_engagement:    { c: '#88c0d0', label: 'Editorial' },
+  project_conversation:    { c: '#5B7CA0', label: 'In conversazione' },
+  material_exploration:    { c: '#b08d57', label: 'Materiali' },
+  strategic_direction:     { c: '#b08d57', label: 'Direzione' },
+  specification:           { c: '#F59E0B', label: 'Specifica' },
+  proposal:                { c: '#D4AF37', label: 'Proposta' },
+  active_collaboration:    { c: '#10B981', label: 'Attivo' },
+  long_term_relationship:  { c: '#10B981', label: 'Long-term' },
+  archived:                { c: '#6B7280', label: 'Archivio' },
+};
+
 const StageDot = ({ stage }) => {
-  const c = ({
-    discovery:               '#9CA3AF',
-    inspiration:             '#88c0d0',
-    editorial_engagement:    '#88c0d0',
-    project_conversation:    '#5B7CA0',
-    material_exploration:    '#b08d57',
-    strategic_direction:     '#b08d57',
-    specification:           '#F59E0B',
-    proposal:                '#D4AF37',
-    active_collaboration:    '#10B981',
-    long_term_relationship:  '#10B981',
-    archived:                '#6B7280',
-  })[stage] || '#9CA3AF';
-  return <span className="crm-stage-dot" style={{ backgroundColor: c }} aria-hidden />;
+  const meta = STAGE_META[stage] || { c: '#9CA3AF' };
+  return <span className="crm-stage-dot" style={{ backgroundColor: meta.c }} aria-hidden />;
+};
+
+const StagePill = ({ stage }) => {
+  const meta = STAGE_META[stage] || { c: '#9CA3AF', label: stage || '—' };
+  return (
+    <span className="crm-stage-pill" style={{ borderColor: meta.c }}>
+      <span className="crm-stage-pill__dot" style={{ backgroundColor: meta.c }} />
+      <span className="crm-stage-pill__label">{meta.label}</span>
+    </span>
+  );
+};
+
+const initialsOf = (name) => {
+  if (!name) return '··';
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
+// Deterministic editorial color from string — relationship memory anchor.
+const avatarHueOf = (seed) => {
+  if (!seed) return 220;
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
+  return Math.abs(h) % 360;
 };
 
 const formatRelativeTime = (iso) => {
@@ -105,10 +132,7 @@ const AccountRow = ({ account, onOpen }) => {
         ) : <span className="crm-empty">—</span>}
       </td>
       <td className="crm-td">
-        <span className="crm-stage">
-          <StageDot stage={account.lifecycle_stage} />
-          <span>{account.lifecycle_stage || '—'}</span>
-        </span>
+        <StagePill stage={account.lifecycle_stage} />
       </td>
       <td className="crm-td crm-td--mono">{account.source || '—'}</td>
       <td className="crm-td">{formatRelativeTime(account.last_activity_at)}</td>
@@ -124,28 +148,35 @@ const AccountRow = ({ account, onOpen }) => {
 // ─── Account card (card view) ──────────────────────────────────────
 const AccountCard = ({ account, onOpen }) => {
   const primary = account.primary_contact;
+  const initials = initialsOf(account.account_name);
+  const hue = avatarHueOf(account.account_name);
+  const primaryName = primary ? (primary.full_name || `${primary.first_name || ''} ${primary.last_name || ''}`.trim()) : '';
   return (
     <button type="button"
             onClick={() => onOpen(account)}
             data-testid={`crm-account-card-${account.id}`}
             className="crm-card">
       <div className="crm-card__head">
-        <div>
+        <span className="crm-avatar"
+              style={{ background: `hsl(${hue} 28% 22%)`, color: `hsl(${hue} 56% 78%)`, borderColor: `hsl(${hue} 32% 28%)` }}
+              aria-hidden>
+          {initials}
+        </span>
+        <div className="crm-card__head-text">
           <p className="crm-card__name">{account.account_name}</p>
           <p className="crm-card__type">{ACCOUNT_TYPE_LABEL[account.account_type] || account.account_type || '—'}</p>
         </div>
-        <span className="crm-stage">
-          <StageDot stage={account.lifecycle_stage} />
-          <span className="crm-stage__label">{account.lifecycle_stage || '—'}</span>
-        </span>
+        <StagePill stage={account.lifecycle_stage} />
       </div>
-      {primary && (
+      {primary ? (
         <div className="crm-card__contact">
           <UserCircle size={11} className="crm-card__contact-icon" />
-          <span className="crm-card__contact-name">
-            {primary.full_name || `${primary.first_name || ''} ${primary.last_name || ''}`.trim()}
-          </span>
-          <span className="crm-card__contact-email">{primary.email || ''}</span>
+          <span className="crm-card__contact-name">{primaryName}</span>
+          {primary.email && <span className="crm-card__contact-email">· {primary.email}</span>}
+        </div>
+      ) : (
+        <div className="crm-card__contact crm-card__contact--empty">
+          <span>Nessun contatto primario · aggiungi al drawer</span>
         </div>
       )}
       <div className="crm-card__foot">
@@ -335,6 +366,24 @@ const CrmAccountsPage = () => {
       </nav>
       <p className="crm-tab-helper">{activeTab.helper}</p>
 
+      {/* ── Relationship pulse (subtle KPI strip, NOT enterprise) ── */}
+      {!loading && activeTab.filter !== '__followups__' && filtered.length > 0 && (
+        <div className="crm-pulse" data-testid="crm-pulse">
+          <div className="crm-pulse__cell">
+            <span className="crm-pulse__num">{filtered.length}</span>
+            <span className="crm-pulse__lbl">{activeTab.id === 'accounts' ? 'Account in archivio' : `${activeTab.label} in vista`}</span>
+          </div>
+          <div className="crm-pulse__cell">
+            <span className="crm-pulse__num">{filtered.filter((a) => a.lifecycle_stage === 'active_collaboration' || a.lifecycle_stage === 'long_term_relationship').length}</span>
+            <span className="crm-pulse__lbl">Relazioni attive</span>
+          </div>
+          <div className="crm-pulse__cell">
+            <span className="crm-pulse__num">{filtered.reduce((acc, a) => acc + (a.open_actions_count || 0), 0)}</span>
+            <span className="crm-pulse__lbl">Follow-up aperti</span>
+          </div>
+        </div>
+      )}
+
       {/* ── Toolbar ── */}
       <div className="crm-toolbar" data-testid="crm-toolbar">
         <div className="crm-toolbar__search">
@@ -384,10 +433,22 @@ const CrmAccountsPage = () => {
 
       {!loading && activeTab.filter !== '__followups__' && filtered.length === 0 && (
         <div className="crm-empty-state" data-testid="crm-empty-state">
-          <p className="crm-empty-state__lead">Nessun Account in questa vista.</p>
-          <p className="crm-empty-state__hint">
-            Inizia con <button type="button" className="crm-empty-state__cta" onClick={() => setShowNew(true)}>+ Nuovo Account</button> oppure cambia tab.
+          <p className="crm-empty-state__eyebrow">Sala delle relazioni</p>
+          <p className="crm-empty-state__lead">
+            {activeTab.id === 'accounts'
+              ? 'Nessun Account ancora. Inizia a costruire la memoria delle tue relazioni.'
+              : `Nessun ${activeTab.label.toLowerCase()} in questa vista.`}
           </p>
+          <p className="crm-empty-state__hint">
+            {activeTab.id === 'accounts'
+              ? 'Un Account è una relazione — un cliente, uno studio, una famiglia. I Contact sono le persone dentro quella relazione.'
+              : 'Prova a cambiare tab o crea un nuovo Account per iniziare.'}
+          </p>
+          <button type="button" className="crm-empty-state__cta-btn"
+                  data-testid="crm-empty-state-cta"
+                  onClick={() => setShowNew(true)}>
+            <Plus size={12} /> Apri il primo Account
+          </button>
         </div>
       )}
 

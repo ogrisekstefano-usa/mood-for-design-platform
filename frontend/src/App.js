@@ -115,6 +115,18 @@ const ProtectedRoute = ({ children }) => {
   return user ? children : <Navigate to="/auth/login" replace />;
 };
 
+/**
+ * ShortLocaleRedirect — bridges convenience short prefixes (e.g. `/it`,
+ * `/en`) to canonical BCP-47 paths (`/it-IT`, `/en-US`). Mounted as a
+ * splat route so it captures the entire remaining segment.
+ */
+const ShortLocaleRedirect = ({ to }) => {
+  const { pathname, search, hash } = window.location;
+  // pathname starts with /<short>/...  → keep everything after
+  const rest = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, '');
+  return <Navigate to={`/${to}${rest}${search}${hash}`} replace />;
+};
+
 // Client portal gate. Auto-redirects role=client to /client and blocks
 // other roles from accessing the client portal.
 const ClientRoute = ({ children }) => {
@@ -274,6 +286,17 @@ function App() {
                   <Route path="magazine" element={<MagazinePage />} />
                   <Route path="magazine/:slug" element={<MagazineArticlePage />} />
                 </Route>
+
+                {/* Short-locale prefixes (e.g. /it, /en, /es) → canonical BCP-47.
+                    Keeps inbound links and convenience URLs working without
+                    leaking duplicate content; uses HTTP 302-equivalent client
+                    Navigate replace so canonical SEO URL is the only crawled one. */}
+                <Route path="/it/*" element={<ShortLocaleRedirect to="it-IT" />} />
+                <Route path="/en/*" element={<ShortLocaleRedirect to="en-US" />} />
+                <Route path="/es/*" element={<ShortLocaleRedirect to="es-ES" />} />
+                <Route path="/fr/*" element={<ShortLocaleRedirect to="fr-FR" />} />
+                <Route path="/de/*" element={<ShortLocaleRedirect to="de-DE" />} />
+                <Route path="/gb/*" element={<ShortLocaleRedirect to="en-GB" />} />
 
                 {/* Auth routes — Blueprint OS theme (admin-style chrome) */}
                 <Route path="/auth/login" element={<OSWrap><PublicRoute><LoginPage /></PublicRoute></OSWrap>} />
