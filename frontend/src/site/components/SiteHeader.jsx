@@ -23,6 +23,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Globe, ChevronDown } from 'lucide-react';
 import { useSite } from '../SiteContext';
 import { usePublicBrand } from '../usePublicBrand';
+import { usePositioning, resolveProjectsNavLabel } from '../usePositioning';
 import { publicLanguages } from '../content/languages';
 import { tenantConfig } from '../content/tenant';
 
@@ -132,6 +133,8 @@ const LanguageSwitcher = () => {
 const SiteHeader = () => {
   const { locale } = useSite();
   const { brand, nav } = usePublicBrand(tenantConfig.slug);
+  const { positioning } = usePositioning(locale);
+  const projectsNavOverride = resolveProjectsNavLabel(positioning, locale);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
@@ -154,7 +157,11 @@ const SiteHeader = () => {
   const accediLabel = pickLabel(nav?.login_label, locale) || 'Accedi';
 
   const renderLink = (link, opts = {}) => {
-    const label = pickLabel(link.label, locale);
+    let label = pickLabel(link.label, locale);
+    // Step B Phase 3: subtle positioning-driven nav nuance for the Projects link.
+    if (projectsNavOverride && (link.id === 'progetti' || link.id === 'projects' || (link.href || '').includes('/projects'))) {
+      label = projectsNavOverride;
+    }
     const cls = opts.mobile ? 'mfd-header__mobile-link' : 'mfd-header__navlink';
     const testid = opts.mobile ? `site-mobile-nav-${link.id}` : `site-nav-${link.id}`;
     if (isHash(link.href)) {

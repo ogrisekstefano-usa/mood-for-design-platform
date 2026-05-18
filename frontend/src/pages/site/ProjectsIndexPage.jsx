@@ -18,6 +18,7 @@ import axios from 'axios';
 import { useSite } from '../../site/SiteContext';
 import { tenantConfig } from '../../site/content/tenant';
 import { toBcp47Storefront } from '../../site/localeBcp47';
+import { usePositioning, resolveCtaLabels } from '../../site/usePositioning';
 import { projects as fallbackProjects, projectCategories } from '../../site/content/projects';
 import { uiContent } from '../../site/content/ui';
 import { Reveal, SiteImage } from '../../site/components/Reveal';
@@ -158,15 +159,15 @@ const ProjectsIndexPage = () => {
         </div>
       </section>
 
-      <section className="mfd-section" data-testid="projects-final-cta">
+      <section className="mfd-section" data-testid="projects-final-cta" data-positioning-mode={positioningCtas.mode || ''} data-editorial-lens={positioningCtas.lens || ''}>
         <div className="mfd-wrap" style={{ display: 'grid', gap: '2rem' }}>
           <Reveal as="h2" className="mfd-h1">{pick(ui.finalTitle, 'ui.archive.finalTitle')}</Reveal>
           <Reveal style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }} delay={2}>
             <Link to="/onboarding/private" className="mfd-btn mfd-btn--paper" data-testid="projects-cta-private">
-              {pick(ui.ctaPrivate, 'ui.archive.ctaPrivate')} <ArrowUpRight size={14} />
+              {positioningCtas.primary || pick(ui.ctaPrivate, 'ui.archive.ctaPrivate')} <ArrowUpRight size={14} />
             </Link>
             <Link to="/onboarding/pro" className="mfd-btn" data-testid="projects-cta-pro">
-              {pick(ui.ctaPro, 'ui.archive.ctaPro')} <ArrowUpRight size={14} />
+              {positioningCtas.secondary || pick(ui.ctaPro, 'ui.archive.ctaPro')} <ArrowUpRight size={14} />
             </Link>
           </Reveal>
         </div>

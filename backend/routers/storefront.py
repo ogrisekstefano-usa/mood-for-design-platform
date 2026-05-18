@@ -718,3 +718,75 @@ def public_brand(tenant_slug: str):
         "showroom":    b.get('showroom') or {},
     }
 
+
+
+# ─── Public positioning runtime — Phase S-CONNECT Step B Phase 3 ──────
+#
+# Returns the normalised Positioning Runtime™ for a public locale request.
+#
+#   GET /api/storefront/public/{tenant_slug}/positioning?locale_code=it-IT
+#
+# Resolution:
+#   1. Find the tenant by slug.
+#   2. Resolve the active market matching the requested BCP-47 locale.
+#      Falls back to the tenant's default market when no exact match.
+#   3. Merge `markets.market_behavior` + `markets.cta_style_default` +
+#      `markets.luxury_perception` + `tenant_markets.custom_settings.positioning`.
+@router.get("/public/{tenant_slug}/positioning")
+def public_positioning(tenant_slug: str, locale_code: str = Query(default="it-IT")):
+    client = db()
+    t = (client.table('tenants').select('id, name').eq('slug', tenant_slug).limit(1).execute())
+    if not t.data:
+        raise HTTPException(404, "Tenant not found")
+    tid = t.data[0]['id']
+
+    rows = (client.table('tenant_markets').select(
+        'is_active,is_default,custom_settings,'
+        'markets(code,primary_locale,market_behavior,cta_style_default,'
+        'luxury_perception,editorial_tone,luxury_positioning,hospitality_profile,storefront_behavior)'
+    ).eq('tenant_id', tid).eq('is_active', True).execute().data or [])
+
+    matched = None
+    for r in rows:
+        m = r.get('markets') or {}
+        if (m.get('primary_locale') or '').lower() == (locale_code or '').lower():
+            matched = r
+            break
+    if not matched:
+        for r in rows:
+            if r.get('is_default'):
+                matched = r
+                break
+    if not matched:
+        return {
+            "tenant_slug": tenant_slug,
+            "locale_code": locale_code,
+            "resolution":  "no_active_market",
+            "positioning": {},
+        }
+
+    market = matched.get('markets') or {}
+    studio = (matched.get('custom_settings') or {}).get('positioning') or {}
+
+    runtime = {
+        "editorial_lens":        studio.get('cultural_editorial_lens'),
+        "positioning_mode":      studio.get('positioning_mode'),
+        "positioning_emphasis":  studio.get('positioning_emphasis'),
+        "business_intents":      studio.get('business_intent') or [],
+        "primary_audiences":     studio.get('primary_audience') or [],
+        "market_behavior":       market.get('market_behavior') or {},
+        "luxury_perception":     market.get('luxury_perception'),
+        "cta_style_default":     market.get('cta_style_default'),
+        "market_code":           market.get('code'),
+        "market_locale":         market.get('primary_locale'),
+        "editorial_tone":        market.get('editorial_tone'),
+        "luxury_positioning":    market.get('luxury_positioning'),
+        "hospitality_profile":   market.get('hospitality_profile'),
+        "storefront_behavior":   market.get('storefront_behavior'),
+    }
+    return {
+        "tenant_slug": tenant_slug,
+        "locale_code": locale_code,
+        "resolution":  "exact" if (market.get('primary_locale','').lower() == locale_code.lower()) else "default_market",
+        "positioning": runtime,
+    }

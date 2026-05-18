@@ -19,6 +19,7 @@ import axios from 'axios';
 import { useSite } from '../../site/SiteContext';
 import { tenantConfig } from '../../site/content/tenant';
 import { toBcp47Storefront } from '../../site/localeBcp47';
+import { usePositioning, resolveCtaLabels } from '../../site/usePositioning';
 import { findProjectBySlug } from '../../site/content/projects';
 import { uiContent } from '../../site/content/ui';
 import { Reveal, SiteImage } from '../../site/components/Reveal';
@@ -47,6 +48,8 @@ const labelsFor = (loc) => DETAIL_LABELS[loc] || DETAIL_LABELS['en-US'];
 const ProjectDetailPage = () => {
   const { slug } = useParams();
   const { pick, locale } = useSite();
+  const { positioning } = usePositioning(locale);
+  const positioningCtas = resolveCtaLabels(positioning, locale);
   const ui = uiContent.detail;
   const labels = labelsFor(locale);
 
@@ -357,8 +360,8 @@ const ProjectDetailPage = () => {
         </section>
       )}
 
-      {/* MARKET-NATIVE CTA */}
-      <section className="mfd-section" data-testid="project-final-cta">
+      {/* MARKET-NATIVE CTA — Step B Phase 3: positioning-driven copy. */}
+      <section className="mfd-section" data-testid="project-final-cta" data-positioning-mode={positioningCtas.mode || ''} data-editorial-lens={positioningCtas.lens || ''}>
         <div className="mfd-wrap" style={{ display: 'grid', gap: '2rem' }}>
           <Reveal as="h2" className="mfd-display" style={{ fontSize: 'clamp(2.2rem, 4.6vw, 4rem)' }}>
             {pick(ui.cta, 'ui.detail.cta')}
@@ -372,16 +375,16 @@ const ProjectDetailPage = () => {
                     className={i === 0 ? 'mfd-btn mfd-btn--paper' : 'mfd-btn'}
                     data-testid={`project-cta-${c.action || i}`}
                   >
-                    {c.label || labels.beginCta} <ArrowUpRight size={14} />
+                    {c.label || positioningCtas.primary || labels.beginCta} <ArrowUpRight size={14} />
                   </Link>
                 ))
               : (
                 <>
                   <Link to="/onboarding/private" className="mfd-btn mfd-btn--paper" data-testid="project-cta-begin">
-                    {labels.beginCta} <ArrowUpRight size={14} />
+                    {positioningCtas.primary || labels.beginCta} <ArrowUpRight size={14} />
                   </Link>
                   <Link to="/projects" className="mfd-btn" data-testid="project-cta-explore">
-                    {pick(ui.explore, 'ui.detail.explore')} <ArrowUpRight size={14} />
+                    {positioningCtas.secondary || pick(ui.explore, 'ui.detail.explore')} <ArrowUpRight size={14} />
                   </Link>
                 </>
               )}

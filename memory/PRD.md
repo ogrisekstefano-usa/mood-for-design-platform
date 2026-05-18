@@ -1,6 +1,40 @@
 # MOOD for DESIGN™ — Product Requirements Document
 
 
+### ✅ Phase S-CONNECT Step B Phase 3 — Public Positioning Consumption™ (DONE — 18 May 2026)
+
+> Direttiva: il pubblico deve **esprimere** la strategia salvata in Step 1B (positioning modes, lens, audiences, business intents). Guardrail: la **Editorial Cultural Lens™** NON è una traduzione/sostituzione di nazionalità — è la sensibilità editoriale con cui lo studio comunica al mercato target.
+
+**Backend**
+- Nuovo endpoint `GET /api/storefront/public/{tenant_slug}/positioning?locale_code={bcp47}` in `storefront.py`. Risolve:
+  1. exact locale match su `tenant_markets` attivi → 2. fallback default market → 3. fallback graceful `{}`.
+- Ritorna il **Positioning Runtime™**: `editorial_lens`, `positioning_mode`, `positioning_emphasis`, `business_intents[]`, `primary_audiences[]`, `market_behavior{8 fields}`, `luxury_perception`, `cta_style_default`, `market_code`, `editorial_tone`, `storefront_behavior`, `hospitality_profile`, ecc.
+
+**Frontend**
+- **`site/usePositioning.js`** — hook SWR (localStorage cache) che legge il runtime per il `locale` attivo. Espone:
+  - `resolveCtaLabels(positioning, locale)` → `{ primary, secondary, mode, lens, audiences }` con tabella verbi market-native per 7 positioning modes × 8 locali (it-IT, en-US, en-GB, fr-FR, de-DE, es-ES, es-MX, ar-AE).
+  - `resolveProjectsNavLabel(positioning, locale)` → subtle nav nuance: `luxury_residential_advisory` → "Residenze Private" · `hospitality_contract` → "Spazi & Hospitality" · `international_editorial` → "Narrazioni Residenziali" · `collectible_bespoke` → "Pezzi d'Autore". Domestic positioning lascia "Progetti".
+- **`SiteHeader`** consuma `resolveProjectsNavLabel` — nav label si adatta al positioning_mode senza svuotare la palette del navigation studio.
+- **`ProjectsIndexPage`** final CTA section ora ha `data-positioning-mode` + `data-editorial-lens` attrs e usa `positioningCtas.primary/secondary` quando disponibili.
+- **`ProjectDetailPage`** final CTA fallback (quando il variant non ha `cta_set` esplicito) usa il positioning runtime. Quando il variant HA `cta_set` AI-composed, vince il variant.
+
+**Verifica live** (Italia · `positioning_mode=luxury_residential_advisory` · `lens=italian_material_culture` · `emphasis=hybrid`)
+- Header italiano: `PROGETTI → RESIDENZE PRIVATE` ✓
+- Project detail page data-attrs: `data-positioning-mode="luxury_residential_advisory"` `data-editorial-lens="italian_material_culture"` ✓
+- CTA fallback verbs: "Prenota una consulenza privata" + "Esplora le residenze" (NESSUN "Contact us")
+- Variant-level CTAs (AI-composed) vincono sui fallback per Villa Travertino: "Salva il progetto" · "Richiedi documentazione tecnica" · "Prenota un appuntamento in studio".
+
+**Test regression**: **23/23 backend PASS** (Step 1 + Step 2 + Step 3). ZERO regressioni.
+
+**NON FATTO in questa iterazione (next sub-steps di B Phase 3)**
+- Hero pacing / emotional density dipendenti dal `market_behavior.emotional_pacing` (oggi solo il CTA del project page è bound).
+- Magazine listing CTA placement orchestrated by positioning.
+- Material narration vocabulary swap (Italian "continuità materica" vs DACH "tactile honesty" vs GCC "ceremonial materiality") nella project detail.
+- Project paragraph rhythm (1 pull-quote ogni N paragrafi a seconda del `material_sensitivity`/`emotional_pacing`).
+
+---
+
+
 ### ✅ Phase S-IDENTITY Step 1B — International Presence™ Positioning Modes (DONE — 18 May 2026)
 
 > Direttiva utente: trasformare International Presence™ da settings page a **market positioning strategy room**, con distinzione netta tra **Target Market** (lingua/SEO/timezone/CTA) e **Editorial Cultural Lens™** (l'identità con cui lo studio comunica — indipendente dalla geografia). Lo studio italiano può comunicare al GCC mantenendo lente *Italian Material Culture*; lo studio US può rivolgersi al mercato US con lente *Italian Material Culture*. **MAI** *"se scegli Italy diventi italiano"*.
