@@ -1,0 +1,47 @@
+{
+  "summary": "Iteration 63 — Editorial Relationship CRM™ (Phase R-CRM-2) backend validated 100% GREEN (17/17 pytest, ~30s). Migration 041 fully applied — all 5 new tables (relationship_engagement_signals, relationship_affinities, relationship_projects, relationship_inspirations, relationship_material_affinities, account_markets) and the relationship_intelligence_v view are reachable via API. Verified: (1) GET /api/relationships/lookups returns the 10 canonical Editorial Journey stages (discovery, inspiration, editorial_engagement, project_conversation, material_exploration, strategic_direction, specification, proposal, active_collaboration, long_term_relationship) with metadata.canonical=true AND metadata.editorial_journey=true (legacy stages coexist as designed — non-breaking). (2) POST /api/relationships/accounts/{aid}/engagement with signal_type='viewed_article', editorial_register='Ceremonial Hospitality', atmosphere_tags=['mediterranean','stone'], cta_intent='private_consultation', signal_weight=1.5 returns 201 with full signal envelope (id, account_id, occurred_at). (3) GET engagement lists newest-first and ?signal_type=viewed_article filter works. (4) POST .../affinities/recompute aggregates the heuristic into preferred_atmosphere='mediterranean', preferred_cta_intent='private_consultation', preferred_editorial_register='Ceremonial Hospitality', signal_count_total>0, computed_at populated — deterministic. (5) GET .../affinities returns the same snapshot (idempotent read). (6) Project link POST 201 → GET lists → DELETE 204 → GET no longer contains. (7) Inspiration link POST 201 → GET lists → DELETE 204 round-trip. (8) Material-affinities upsert idempotent on (account_id,material_id) — re-POST with different score UPDATES (not duplicates) the row. (9) Account ↔ market: first POST {is_primary:true} marks primary AND updates accounts.market_id pointer; second POST with different market_id and is_primary:true demotes the first to is_primary=false. (10) GET /api/relationships/intelligence returns rows with all 9 documented fields (account_id, account_name, signal_count_total, signal_count_30d, signal_count_7d, linked_project_count, linked_inspiration_count, material_affinity_count, market_count); ?journey_stage and ?market_id filters accepted. (11) Regression R-CRM-1 endpoints (GET /accounts, GET /accounts/{id}, POST /accounts/{id}/stage) still functional, no Mongo _id leak, no breaking changes.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/relationships/accounts/{aid}/markets", "issue": "No DELETE endpoint exposed for account_markets rows — once a market is linked, callers cannot unlink it via API (only demote by linking another market as primary). Consider adding DELETE /api/relationships/accounts/{aid}/markets/{mid}."},
+      {"endpoint": "POST /api/relationships/accounts/{aid}/engagement", "issue": "No DELETE endpoint for individual engagement signals. Test signals will accumulate over time on the demo account. Consider adding DELETE for tenancy hygiene OR a tenant-scoped purge."},
+      {"endpoint": "POST /api/relationships/accounts/{aid}/projects", "issue": "On unique-violation (re-linking same project_id+role) the code raises HTTPException(409, f'Already linked: {e}') — leaks the raw DB exception string into the API response. Sanitize to a stable message."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_63_editorial_relationship_crm.py",
+    "/app/test_reports/pytest/iteration_63.xml"
+  ],
+  "action_items": [
+    "(LOW) Add DELETE /api/relationships/accounts/{aid}/markets/{mid} so the inverse of the link operation is reachable via API (parity with projects/inspirations endpoints).",
+    "(LOW) Consider exposing DELETE for engagement signals (or a bulk admin purge) so test data and demo state can be reset without DB access.",
+    "(NITPICK) routers/relationships.py:881 `raise HTTPException(409, f'Already linked: {e}')` — strip the embedded exception text from the user-facing message to avoid leaking PostgREST error envelopes."
+  ],
+  "critical_code_review_comments": [
+    "routers/relationships.py is now 1027 lines — exceeds the 700-line guideline. Recommend splitting into relationships_core.py (R-CRM-1: accounts/contacts/interactions/actions/style/lookups) and relationships_editorial.py (R-CRM-2: engagement/affinities/projects/inspirations/material/markets/intelligence). The Pydantic models for R-CRM-2 are clustered at line 654-699 so the seam is natural.",
+    "All R-CRM-2 endpoints are synchronous (def, not async def) while doing network I/O to Supabase. This is consistent with the rest of the file but blocks the event loop. Either convert the whole router to async with httpx, or run handlers in a thread pool — currently every request blocks a worker.",
+    "recompute_affinities() loads up to 2000 signals per account in a single sync call and recomputes a Counter — fine for now but at scale move to a materialized table refresh or background worker. The endpoint should also be guarded by P_RELATIONSHIPS_WRITE (currently unguarded — anyone with a valid session can trigger recompute on any account in their tenant).",
+    "Permission decorators (require_permission) are NOT applied to any of the 13 new R-CRM-2 endpoints. Per /app/memory/test_credentials.md, business-data routes should be permission-guarded. A `designer` role currently can POST engagement signals and recompute affinities — review whether this matches the intended editorial role matrix.",
+    "log_engagement_signal() updates accounts.last_activity_at without filtering on tenant_id in the UPDATE clause (line 729: `.eq('id', aid)`). Although _assert_account_owned() already checked ownership, defence-in-depth says always include tenant_id on writes — same pattern as _touch_account() above which DOES include `.eq('tenant_id', tid)`.",
+    "upsert_account_market() promotes a market to primary by first running `update({'is_primary': False}).eq('account_id', aid)` — this is missing `.eq('tenant_id', tid)` (line 991). Low risk because account_id is already tenant-scoped, but inconsistent with the rest of the codebase.",
+    "Inspiration / project link POST endpoints catch broad `Exception` and rewrap as 409 — masks any real DB error (constraint failure vs network blip vs schema drift). Narrow to PostgrestAPIError or check the error code before raising 409."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_63_editorial_relationship_crm.py (NEW — 17 pytest tests covering all 13 new R-CRM-2 endpoints + lookups canonical stages + migration sanity + R-CRM-1 regression)"
+  ],
+  "success_rate": {
+    "backend": "100% (17/17 in 30.58s)",
+    "frontend": "N/A (backend-only iteration per directive)"
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin, tenant mood-demo-studio-81a09e). Token at response.session.access_token.",
+  "seed_data_creation": "Test created: 1 engagement signal (viewed_article, mediterranean+stone, Ceremonial Hospitality, private_consultation) — NOT cleaned up (no DELETE endpoint). 1 affinities snapshot (upserted, will be overwritten on next recompute). 2 account_markets rows (random uuids — left in place, no DELETE endpoint). Project links / inspiration links / material affinity were created and deleted in-test (clean). Test account is the first account returned by GET /api/relationships/accounts in tenant mood-demo-studio-81a09e.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 63 GREEN. Regression command: cd /app && REACT_APP_BACKEND_URL=$(grep REACT_APP_BACKEND_URL frontend/.env | cut -d= -f2) python -m pytest backend/tests/test_iteration_63_editorial_relationship_crm.py -v (17/17 ~30s). All 13 new endpoints under /api/relationships and the relationship_intelligence_v view work. relationship_lookups now contains BOTH legacy stages AND the 10 canonical Editorial Journey stages (non-breaking by design). The first account returned by GET /api/relationships/accounts is used as the test subject — DO NOT recreate it. Engagement signals accumulate (no DELETE endpoint); recompute is idempotent so re-running is safe. account_markets test leaves 2 random-uuid market links on the test account — harmless but visible in /api/relationships/accounts/{aid}/markets.",
+  "rca_of_the_issue": "No bug — architecture sprint validated end-to-end. The minor issues are missing DELETE endpoints (markets, engagement signals) and a 409 error-message leak when re-linking a project — all LOW priority. Code-review comments flag (a) file size (1027 lines, split recommended), (b) missing permission decorators on new endpoints, (c) tenant_id missing on some UPDATE writes (defence-in-depth, not a current vulnerability since _assert_account_owned gates the path), and (d) blocking sync handlers doing network I/O."
+}

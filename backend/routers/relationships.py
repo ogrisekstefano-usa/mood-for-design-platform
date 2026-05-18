@@ -617,3 +617,410 @@ def list_lookups(group: Optional[str] = None, ctx=Depends(get_tenant_context)):
         grouped.setdefault(r["group_key"], []).append(r)
     return {"lookups": grouped, "total": len(rows)}
 
+
+# ═════════════════════════════════════════════════════════════════════
+# Phase R-CRM-2 — Editorial Relationship CRM™ extensions
+# ═════════════════════════════════════════════════════════════════════
+#
+# Editorial-native endpoints (architecture first — UI follows in the next
+# sprint). All endpoints assume the migration 041 tables exist.
+#
+#   POST /api/relationships/accounts/{aid}/engagement         log signal
+#   GET  /api/relationships/accounts/{aid}/engagement         list signals
+#   GET  /api/relationships/accounts/{aid}/affinities         intelligence snapshot
+#   POST /api/relationships/accounts/{aid}/affinities/recompute  recompute snapshot
+#
+#   GET    /api/relationships/accounts/{aid}/projects         list project links
+#   POST   /api/relationships/accounts/{aid}/projects         link a project
+#   DELETE /api/relationships/accounts/{aid}/projects/{pid}   unlink a project
+#
+#   GET    /api/relationships/accounts/{aid}/inspirations     list inspiration links
+#   POST   /api/relationships/accounts/{aid}/inspirations     link a design_reference
+#   DELETE /api/relationships/accounts/{aid}/inspirations/{ref_id}
+#
+#   GET    /api/relationships/accounts/{aid}/material-affinities
+#   POST   /api/relationships/accounts/{aid}/material-affinities
+#
+#   GET    /api/relationships/accounts/{aid}/markets          list linked markets
+#   POST   /api/relationships/accounts/{aid}/markets          link/upsert
+#
+#   GET    /api/relationships/intelligence                    dashboard view
+#                                                              (relationship_intelligence_v)
+# ═════════════════════════════════════════════════════════════════════
+
+
+# ─── Pydantic models ─────────────────────────────────────────────────
+
+class EngagementSignalIn(BaseModel):
+    signal_type:        str
+    entity_type:        Optional[str] = None
+    entity_id:          Optional[str] = None
+    market_id:          Optional[str] = None
+    locale_code:        Optional[str] = None
+    surface:            Optional[str] = None
+    editorial_register: Optional[str] = None
+    atmosphere_tags:    List[str] = Field(default_factory=list)
+    material_tags:      List[str] = Field(default_factory=list)
+    cta_label:          Optional[str] = None
+    cta_intent:         Optional[str] = None
+    signal_weight:      float = 1.0
+    dwell_seconds:      Optional[int] = None
+    scroll_depth_pct:   Optional[int] = None
+    session_id:         Optional[str] = None
+    metadata:           Dict[str, Any] = Field(default_factory=dict)
+
+
+class ProjectLinkIn(BaseModel):
+    project_id:           str
+    role:                 str = 'client'
+    collaboration_stage:  Optional[str] = None
+    notes:                Optional[str] = None
+
+
+class InspirationLinkIn(BaseModel):
+    reference_id:    str
+    source:          str = 'saved_by_account'
+    resonance_note:  Optional[str] = None
+
+
+class MaterialAffinityIn(BaseModel):
+    material_id:       str
+    attraction_score:  Optional[float] = None
+    sample_requested:  Optional[bool] = None
+    specified:         Optional[bool] = None
+    notes:             Optional[str] = None
+
+
+class AccountMarketIn(BaseModel):
+    market_id:           str
+    is_primary:          bool = False
+    engagement_strength: Optional[float] = None
+    notes:               Optional[str] = None
+
+
+# ─── Helper: assert account belongs to tenant ────────────────────────
+
+def _assert_account_owned(c, account_id: str, tenant_id: str) -> None:
+    r = c.table("accounts").select("id").eq("id", account_id).eq("tenant_id", tenant_id).maybe_single().execute()
+    if not (r and r.data):
+        raise HTTPException(404, "Account not found")
+
+
+# ─── Engagement signals ──────────────────────────────────────────────
+
+@router.post("/accounts/{aid}/engagement", status_code=201)
+def log_engagement_signal(aid: str, payload: EngagementSignalIn, ctx=Depends(get_tenant_context)):
+    """Log a Relationship Intelligence™ signal.
+
+    NOT a generic event log — every signal feeds the affinity engine
+    (preferred_atmosphere, hospitality_orientation_score, etc.).
+    """
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    row = payload.model_dump()
+    row.update({
+        "id": str(uuid.uuid4()),
+        "tenant_id": ctx["tenant_id"],
+        "account_id": aid,
+        "occurred_at": datetime.now(timezone.utc).isoformat(),
+    })
+    # Best-effort: also bump account.last_activity_at.
+    c.table("relationship_engagement_signals").insert(row).execute()
+    c.table("accounts").update({"last_activity_at": row["occurred_at"]}).eq("id", aid).execute()
+    return {"signal": row}
+
+
+@router.get("/accounts/{aid}/engagement")
+def list_engagement_signals(
+    aid: str,
+    signal_type: Optional[str] = Query(None),
+    limit: int = Query(100, ge=1, le=500),
+    ctx=Depends(get_tenant_context),
+):
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    qb = (
+        c.table("relationship_engagement_signals")
+         .select("*")
+         .eq("tenant_id", ctx["tenant_id"])
+         .eq("account_id", aid)
+         .order("occurred_at", desc=True)
+         .limit(limit)
+    )
+    if signal_type:
+        qb = qb.eq("signal_type", signal_type)
+    return {"signals": qb.execute().data or []}
+
+
+# ─── Affinities — Relationship Intelligence™ snapshot ────────────────
+
+@router.get("/accounts/{aid}/affinities")
+def get_affinities(aid: str, ctx=Depends(get_tenant_context)):
+    """Read the computed Relationship Intelligence™ snapshot."""
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    r = (
+        c.table("relationship_affinities").select("*")
+         .eq("tenant_id", ctx["tenant_id"]).eq("account_id", aid)
+         .maybe_single().execute()
+    )
+    return {"affinities": (r.data if r else None)}
+
+
+@router.post("/accounts/{aid}/affinities/recompute")
+def recompute_affinities(aid: str, ctx=Depends(get_tenant_context)):
+    """Recompute affinity scores from engagement signal history.
+
+    Heuristic-first (deterministic) — the AI overlay can attach richer
+    `intelligence_payload` JSON via a separate worker.
+    """
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    sigs = (
+        c.table("relationship_engagement_signals").select("*")
+         .eq("tenant_id", ctx["tenant_id"]).eq("account_id", aid)
+         .order("occurred_at", desc=True)
+         .limit(2000)
+         .execute().data or []
+    )
+
+    # Tally counters
+    from collections import Counter
+    register_w  = Counter()
+    atmo_w      = Counter()
+    mat_w       = Counter()
+    cta_w       = Counter()
+    market_w    = Counter()
+    hosp_score  = 0.0
+    spec_score  = 0.0
+    long_form_w = 0.0
+    cadence_buckets = set()
+
+    for s in sigs:
+        w = float(s.get("signal_weight") or 1.0)
+        st = s.get("signal_type") or ''
+        if s.get("editorial_register"):
+            register_w[s["editorial_register"]] += w
+        for tag in s.get("atmosphere_tags") or []:
+            atmo_w[tag] += w
+        for tag in s.get("material_tags") or []:
+            mat_w[tag] += w
+        if s.get("cta_intent"):
+            cta_w[s["cta_intent"]] += w
+        if s.get("market_id"):
+            market_w[s["market_id"]] += w
+        # Behavioural orientation heuristics
+        if st in ("viewed_project", "viewed_material", "requested_sample",
+                  "specified_product", "quoted_material"):
+            spec_score += w * 1.0
+        if st in ("requested_consultation", "requested_showroom_visit",
+                  "downloaded_proposal", "viewed_moodboard"):
+            hosp_score += w * 1.0
+        if st in ("scrolled_long_form", "watched_video"):
+            long_form_w += w
+        ts = s.get("occurred_at")
+        if ts:
+            cadence_buckets.add(ts[:7])  # YYYY-MM bucket
+
+    # Normalise to 0-100
+    total = float(len(sigs)) or 1.0
+    def _scale(x):
+        return float(min(100.0, max(0.0, (x / total) * 100.0)))
+
+    payload = {
+        "tenant_id":                       ctx["tenant_id"],
+        "account_id":                      aid,
+        "most_engaged_market_edition_id":  None,  # to be enriched by AI worker
+        "preferred_atmosphere":            (atmo_w.most_common(1)[0][0] if atmo_w else None),
+        "preferred_atmosphere_tags":       [t for t, _ in atmo_w.most_common(8)],
+        "preferred_materials":             [t for t, _ in mat_w.most_common(8)],
+        "preferred_cta_intent":            (cta_w.most_common(1)[0][0] if cta_w else None),
+        "preferred_editorial_register":    (register_w.most_common(1)[0][0] if register_w else None),
+        "hospitality_orientation_score":   round(_scale(hosp_score), 2),
+        "specification_orientation_score": round(_scale(spec_score), 2),
+        "long_form_engagement_score":      round(_scale(long_form_w), 2),
+        "editorial_cadence_score":         round(min(100.0, len(cadence_buckets) * 8.0), 2),
+        "luxury_perception_alignment":     None,  # to be enriched by AI worker
+        "signal_count_total":              int(total) if sigs else 0,
+        "last_signal_at":                  sigs[0]["occurred_at"] if sigs else None,
+        "computed_at":                     datetime.now(timezone.utc).isoformat(),
+        "intelligence_payload":            {},
+    }
+    c.table("relationship_affinities").upsert(payload, on_conflict="account_id").execute()
+    return {"affinities": payload}
+
+
+# ─── Project linkage ─────────────────────────────────────────────────
+
+@router.get("/accounts/{aid}/projects")
+def list_project_links(aid: str, ctx=Depends(get_tenant_context)):
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    rows = (
+        c.table("relationship_projects").select("*")
+         .eq("account_id", aid).order("linked_at", desc=True)
+         .execute().data or []
+    )
+    return {"links": rows}
+
+
+@router.post("/accounts/{aid}/projects", status_code=201)
+def link_project(aid: str, payload: ProjectLinkIn, ctx=Depends(get_tenant_context)):
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    row = payload.model_dump()
+    row.update({
+        "id": str(uuid.uuid4()),
+        "tenant_id": ctx["tenant_id"],
+        "account_id": aid,
+        "linked_by": ctx.get("user_id"),
+        "linked_at": datetime.now(timezone.utc).isoformat(),
+    })
+    try:
+        c.table("relationship_projects").insert(row).execute()
+    except Exception as e:
+        # Idempotent for (account_id, project_id, role)
+        raise HTTPException(409, f"Already linked: {e}")
+    return {"link": row}
+
+
+@router.delete("/accounts/{aid}/projects/{pid}", status_code=204)
+def unlink_project(aid: str, pid: str, role: Optional[str] = Query(None), ctx=Depends(get_tenant_context)):
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    qb = c.table("relationship_projects").delete().eq("account_id", aid).eq("project_id", pid)
+    if role:
+        qb = qb.eq("role", role)
+    qb.execute()
+    return None
+
+
+# ─── Inspiration linkage (design_references) ────────────────────────
+
+@router.get("/accounts/{aid}/inspirations")
+def list_inspirations(aid: str, ctx=Depends(get_tenant_context)):
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    rows = (
+        c.table("relationship_inspirations").select("*")
+         .eq("account_id", aid).order("saved_at", desc=True)
+         .execute().data or []
+    )
+    return {"inspirations": rows}
+
+
+@router.post("/accounts/{aid}/inspirations", status_code=201)
+def link_inspiration(aid: str, payload: InspirationLinkIn, ctx=Depends(get_tenant_context)):
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    row = payload.model_dump()
+    row.update({
+        "id": str(uuid.uuid4()),
+        "tenant_id": ctx["tenant_id"],
+        "account_id": aid,
+        "saved_at": datetime.now(timezone.utc).isoformat(),
+    })
+    try:
+        c.table("relationship_inspirations").insert(row).execute()
+    except Exception:
+        raise HTTPException(409, "Already linked")
+    return {"link": row}
+
+
+@router.delete("/accounts/{aid}/inspirations/{ref_id}", status_code=204)
+def unlink_inspiration(aid: str, ref_id: str, ctx=Depends(get_tenant_context)):
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    c.table("relationship_inspirations").delete().eq("account_id", aid).eq("reference_id", ref_id).execute()
+    return None
+
+
+# ─── Material affinities ─────────────────────────────────────────────
+
+@router.get("/accounts/{aid}/material-affinities")
+def list_material_affinities(aid: str, ctx=Depends(get_tenant_context)):
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    rows = (
+        c.table("relationship_material_affinities").select("*")
+         .eq("account_id", aid).order("attraction_score", desc=True)
+         .execute().data or []
+    )
+    return {"affinities": rows}
+
+
+@router.post("/accounts/{aid}/material-affinities")
+def upsert_material_affinity(aid: str, payload: MaterialAffinityIn, ctx=Depends(get_tenant_context)):
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    row = {k: v for k, v in payload.model_dump().items() if v is not None}
+    row.update({
+        "tenant_id": ctx["tenant_id"],
+        "account_id": aid,
+        "last_engaged_at": datetime.now(timezone.utc).isoformat(),
+    })
+    c.table("relationship_material_affinities").upsert(row, on_conflict="account_id,material_id").execute()
+    return {"affinity": row}
+
+
+# ─── Account ↔ market linkage ────────────────────────────────────────
+
+@router.get("/accounts/{aid}/markets")
+def list_account_markets(aid: str, ctx=Depends(get_tenant_context)):
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    rows = (
+        c.table("account_markets").select("*")
+         .eq("account_id", aid)
+         .execute().data or []
+    )
+    return {"markets": rows}
+
+
+@router.post("/accounts/{aid}/markets", status_code=201)
+def upsert_account_market(aid: str, payload: AccountMarketIn, ctx=Depends(get_tenant_context)):
+    c = db()
+    _assert_account_owned(c, aid, ctx["tenant_id"])
+    row = payload.model_dump()
+    row.update({
+        "tenant_id": ctx["tenant_id"],
+        "account_id": aid,
+    })
+    # If marking as primary, demote others first.
+    if row.get("is_primary"):
+        c.table("account_markets").update({"is_primary": False}).eq("account_id", aid).execute()
+        # And also reflect on the accounts.market_id pointer for fast joins.
+        c.table("accounts").update({"market_id": row["market_id"]}).eq("id", aid).execute()
+    # Upsert
+    c.table("account_markets").upsert(row, on_conflict="account_id,market_id").execute()
+    return {"link": row}
+
+
+# ─── Intelligence dashboard view ─────────────────────────────────────
+
+@router.get("/intelligence")
+def list_relationship_intelligence(
+    journey_stage: Optional[str] = Query(None),
+    market_id: Optional[str] = Query(None),
+    limit: int = Query(100, ge=1, le=500),
+    ctx=Depends(get_tenant_context),
+):
+    """Dashboard read — surfaces aggregated Relationship Intelligence™.
+
+    Reads from the `relationship_intelligence_v` PostgreSQL view which
+    joins accounts + signal counters + affinity snapshots + link counts.
+    """
+    c = db()
+    qb = (
+        c.table("relationship_intelligence_v")
+         .select("*")
+         .eq("tenant_id", ctx["tenant_id"])
+         .order("last_signal_at", desc=True, nullsfirst=False)
+         .limit(limit)
+    )
+    if journey_stage:
+        qb = qb.eq("relationship_journey_stage", journey_stage)
+    if market_id:
+        qb = qb.eq("market_id", market_id)
+    return {"relationships": qb.execute().data or []}
+
