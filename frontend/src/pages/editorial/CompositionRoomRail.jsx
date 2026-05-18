@@ -161,11 +161,30 @@ export const CompositionRoomRail = ({
                   {vs.map((v) => {
                     const meta = statusMeta(v.status);
                     const heroUrl = v.hero_image_url;
-                    const translation = v.target_locale && v.target_locale.toLowerCase() !== (v.blueprint_review_locale || 'it-it').toLowerCase()
-                      ? (v.internal_translation && Object.keys(v.internal_translation || {}).length ? 'manual' : 'awaiting')
-                      : 'master';
-                    const transLabel = { master: 'Master', manual: 'Manuale', awaiting: 'Da tradurre', translated: 'Tradotto', diverged: 'Diverge' }[translation];
-                    const transColor = { master: '#88c0d0', manual: '#b08d57', awaiting: '#d97757', translated: 'var(--bp-primary)', diverged: '#ef4444' }[translation];
+                    // Editorial Adaptation Status™ — 8 canonical states
+                    const isCanonical = !v.target_locale
+                      || v.target_locale.toLowerCase() === (v.blueprint_review_locale || 'it-it').toLowerCase();
+                    const hasManual = v.internal_translation && Object.keys(v.internal_translation || {}).length > 0;
+                    const hasBody = (v.body_blocks || []).length > 0;
+                    let adaptation;
+                    if (['published', 'live'].includes(v.status)) adaptation = 'published';
+                    else if (v.status === 'scheduled') adaptation = 'scheduled';
+                    else if (['awaiting_review', 'in_review', 'ready_for_editorial_review'].includes(v.status)) adaptation = 'requires_review';
+                    else if (isCanonical) adaptation = 'synced_with_master';
+                    else if (!hasBody) adaptation = 'awaiting_composition';
+                    else if (hasManual && v.metadata_json?.diverged === true) adaptation = 'diverged';
+                    else if (hasManual) adaptation = 'manually_curated';
+                    else adaptation = 'adapted';
+                    const adaptationMeta = {
+                      synced_with_master:    { label: 'Synced',    color: '#88c0d0' },
+                      adapted:               { label: 'Adapted',   color: 'var(--bp-primary)' },
+                      manually_curated:      { label: 'Manuale',   color: '#b08d57' },
+                      diverged:              { label: 'Diverge',   color: '#C77B7B' },
+                      requires_review:       { label: 'Review',    color: '#F59E0B' },
+                      awaiting_composition:  { label: 'Da comporre', color: '#9CA3AF' },
+                      scheduled:             { label: 'Schedule',  color: '#5B7CA0' },
+                      published:             { label: 'Live',      color: '#10B981' },
+                    }[adaptation];
                     return (
                       <div
                         key={v.id}
@@ -190,10 +209,12 @@ export const CompositionRoomRail = ({
                             <span className="ed-variant__locale">{v.target_locale || marketLocale(v.market_id)}</span>
                             <span
                               className="ed-variant__trans-badge"
-                              style={{ color: transColor, borderColor: transColor }}
-                              data-testid={`ed-variant-translation-${v.id}`}
+                              style={{ color: adaptationMeta.color, borderColor: adaptationMeta.color }}
+                              data-testid={`ed-variant-adaptation-${v.id}`}
+                              data-adaptation={adaptation}
+                              title={`Adaptation Status: ${adaptationMeta.label}`}
                             >
-                              {transLabel}
+                              {adaptationMeta.label}
                             </span>
                           </div>
                           <div className="ed-variant__line ed-variant__line--meta">

@@ -1,0 +1,187 @@
+/* Market Matrix™ Governance Page */
+
+.mxm-page {
+  min-height: 100%;
+  background: var(--bp-bg);
+  color: var(--bp-text-primary);
+  font-family: var(--bp-font-body);
+  padding-bottom: 80px;
+}
+
+.mxm-hero {
+  padding: 64px 48px 40px;
+  border-bottom: 1px solid var(--bp-border);
+}
+.mxm-hero__eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--bp-primary);
+  margin: 0 0 18px;
+  font-weight: 500;
+}
+.mxm-hero__title {
+  font-family: var(--bp-font-heading);
+  font-weight: 300;
+  font-size: 52px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--bp-text-primary);
+  margin: 0 0 18px;
+}
+.mxm-hero__lead {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--bp-text-secondary);
+  font-style: italic;
+  max-width: 64ch;
+  margin: 0;
+}
+.mxm-hero__lead strong {
+  color: var(--bp-text-primary);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.mxm-loading {
+  padding: 64px 48px;
+  font-style: italic;
+  color: var(--bp-text-muted);
+}
+
+.mxm-table-wrap {
+  margin: 32px 48px 0;
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--bp-border);
+  background: var(--bp-surface-1);
+}
+
+.mxm-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1200px;
+}
+
+.mxm-th {
+  padding: 14px 14px 10px;
+  text-align: left;
+  vertical-align: bottom;
+  border-bottom: 1px solid var(--bp-border);
+  background: var(--bp-surface-2);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.mxm-th__inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.mxm-td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--bp-border);
+  border-right: 1px solid var(--bp-border);
+  font-size: 13px;
+  color: var(--bp-text-secondary);
+  vertical-align: top;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  min-width: 140px;
+  max-width: 220px;
+  word-break: break-word;
+}
+.mxm-td:last-child { border-right: none; }
+.mxm-td:hover:not(.is-anchor) { background: var(--bp-surface-2); }
+.mxm-td.is-anchor {
+  cursor: default;
+  background: var(--bp-surface-2);
+  position: relative;
+}
+.mxm-td.is-mono {
+  font-family: var(--bp-font-mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--bp-text-muted);
+}
+.mxm-td.is-empty {
+  color: var(--bp-text-faint);
+  font-style: italic;
+}
+.mxm-td.is-editing { background: var(--bp-primary-soft); padding: 0; }
+
+.mxm-td__code {
+  font-family: var(--bp-font-mono, monospace);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--bp-text-primary);
+  margin: 0;
+}
+.mxm-td__locale {
+  font-family: var(--bp-font-mono, monospace);
+  font-size: 10px;
+  color: var(--bp-text-muted);
+  margin: 2px 0 0;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.mxm-td__saving {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: var(--bp-primary);
+}
+.mxm-td__placeholder {
+  color: var(--bp-text-faint);
+  font-style: italic;
+}
+.mxm-td__input {
+  width: 100%;
+  padding: 12px 14px;
+  background: transparent;
+  border: 0;
+  outline: none;
+  font: inherit;
+  color: var(--bp-text-primary);
+  font-size: 13px;
+}
+.mxm-td__input.is-mono {
+  font-family: var(--bp-font-mono, monospace);
+}
+
+.mxm-footer {
+  padding: 24px 48px 0;
+}
+.mxm-footer__hint {
+  font-size: 12px;
+  color: var(--bp-text-faint);
+  font-style: italic;
+  margin: 0;
+  line-height: 1.7;
+  max-width: 64ch;
+}
+.mxm-footer__hint strong {
+  color: var(--bp-text-secondary);
+  font-style: normal;
+}
+
+@media (max-width: 1023px) {
+  .mxm-hero { padding: 48px 24px 32px; }
+  .mxm-hero__title { font-size: 38px; }
+  .mxm-table-wrap { margin: 24px 24px 0; }
+  .mxm-footer { padding: 24px 24px 0; }
+}
+@media (max-width: 639px) {
+  .mxm-hero { padding: 32px 16px 24px; }
+  .mxm-hero__title { font-size: 30px; }
+  .mxm-hero__lead { font-size: 14px; }
+  .mxm-table-wrap { margin: 16px 0 0; border-radius: 0; border-left: none; border-right: none; }
+  .mxm-footer { padding: 24px 16px 0; }
+}

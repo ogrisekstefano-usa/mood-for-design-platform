@@ -166,6 +166,7 @@ const Sidebar = () => {
             <div className="space-y-0.5">
               <NavItem to="/blueprint/editorial-calendar" icon="CalendarDays" labelKey="nav.editorialCalendar" fallback="Editorial Calendar" collapsed={collapsed} />
               <NavItem to="/blueprint/editorial" icon="BookOpen" labelKey="nav.editorialStudio" fallback="Magazine · Market Editions" collapsed={collapsed} />
+              <NavItem to="/blueprint/markets" icon="Globe2" labelKey="nav.marketMatrix" fallback="Market Matrix · Governance" collapsed={collapsed} />
               <NavItem to="/editorial/inbox" icon="Inbox" labelKey="nav.publishingQueue" fallback="Publishing Queue" collapsed={collapsed} />
             </div>
           </div>
