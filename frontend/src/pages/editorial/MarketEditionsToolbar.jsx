@@ -422,8 +422,14 @@ const MarketEditionsToolbar = ({
                   className="me-btn"
                   data-testid="me-cta-schedule"
                   onClick={() => setShowSchedule(true)}
-                  disabled={!selectedVariant?.id}
-                  title={!selectedVariant?.id ? 'Seleziona una Market Edition' : ''}>
+                  disabled={!selectedVariant?.id || !['approved', 'scheduled'].includes(selectedVariant?.status)}
+                  title={
+                    !selectedVariant?.id
+                      ? 'Seleziona una Market Edition'
+                      : !['approved', 'scheduled'].includes(selectedVariant?.status)
+                        ? 'La Market Edition deve essere approvata prima della programmazione'
+                        : ''
+                  }>
             <CalendarClock size={12} strokeWidth={1.6} />
             <span>Programma</span>
           </button>

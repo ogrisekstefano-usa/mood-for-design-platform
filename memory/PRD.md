@@ -53,6 +53,74 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase EDITORIAL-OPS-WORKBENCH v1 (Feb 18, 2026 — current iteration 61) — Delete Protection + Market Editions Operability + Responsive + Translation Badges
+**P0 directive eseguita: 4 fasi sequenziali, tutte verdi al testing agent (5/5 backend + 100% frontend).**
+
+#### FASE 0 — `<MediaDeleteProtectionDrawer />` (P0 DAM safety net)
+File: `/app/frontend/src/components/common/MediaDeleteProtectionDrawer.jsx` + wire in `MediaLibraryPage.jsx` Inspector.
+
+- Intercetta `archive()` quando `detail.links.length > 0` invece di triggerare `confirm()`.
+- Drawer right-aligned (max-width 680px) con:
+  - Header sticky "⚠ Questo asset è utilizzato in N luoghi" (amber-icon)
+  - Editorial Relationships Graph: usage list raggruppata per `entity_type`, ogni riga con thumbnail mini + entity label + role + locale chip + click-to-open deeplink (Link `react-router-dom` quando `ENTITY_META[type].href` è definito per project/moodboard/magazine/branding/storefront/reference).
+  - 5 azioni: **Sostituisci ovunque** (upload nuovo file → `media.replace(id, {new_asset_id, migrate_links:true})`), Sostituisci selettivamente (Coming Soon disabled), **Archivia mantenendo i collegamenti**, **Rimuovi forzatamente** (two-step confirm), **Apri le superfici interessate** (chiude drawer + jump to usage tab).
+- Footer sticky con philosophy reminder: "Il DAM ragiona come un editorial relationships graph, non come un file system".
+
+#### FASE 1 — `<MarketEditionsToolbar />` (Operability in `/blueprint/editorial`)
+File: `/app/frontend/src/pages/editorial/MarketEditionsToolbar.jsx`.
+
+**Sticky top action bar** con 7 CTA:
+1. `+ Nuovo Master` (primary verde) → apre `NewMasterModal` → POST `/api/editorial/masters` (code + title + canonical_locale + conceptual_direction)
+2. `+ Nuova Market Edition` (disabled finché non c'è master) → apre `NewMarketEditionModal` con market grid + locale + slug → POST `/api/editorial/masters/{mid}/variants`
+3. `Duplica` (disabled finché non c'è variant) → GET variant → POST stesso payload con slug `-copy-<id>`
+4. `Programma` (disabled finché variant.status non è in `['approved','scheduled']`) → apre `ScheduleModal` (datetime-local) → POST `/api/editorial/variants/{vid}/schedule`
+5. `Apri Calendario` → navigate `/blueprint/editorial-calendar`
+6. `Da Pinterest` → navigate `/workspace/references?openAdd=1` (auto-opens AddReferenceModal on landing)
+7. `Da Progetto` → navigate `/blueprint/projects-studio`
+
+**Flow Strip permanente** sotto la toolbar: 5 stage canonical (1. Master → 2. Market Editions → 3. Review → 4. Schedule → 5. Publish). Stage attivo derivato da `selectedVariant.status` via `STAGE_FOR_STATUS()` mapping. Stage passati con opacity ridotta.
+
+#### FASE 2 — Responsive Rebuild Editorial Studio (`editorial.css`)
+- Wrapper `.ed-studio-wrap` flex column con toolbar sticky + studio grid.
+- Breakpoints precisi:
+  - **Desktop XL ≥1440**: `grid-template-columns: 380px 1fr` (rail full + composition)
+  - **Laptop 1024–1439**: `grid-template-columns: 320px 1fr` (rail narrower)
+  - **Tablet/Mobile <1024**: `grid-template-columns: 1fr` con rail stacked (`max-height: 320px`, border-bottom invece di border-right)
+  - **Mobile <640**: toolbar buttons icon-only (`.me-btn span { display: none }`), flow strip horizontal-scroll
+- Zero overflow orizzontale verificato dal testing agent ai 3 viewport (1440/1024/768).
+
+#### FASE 3 — Translation Status Badges (groundwork)
+Modifiche a `CompositionRoomRail.jsx`:
+- Card variant arricchita: thumbnail (img da `hero_image_url` oppure placeholder dashed) + status dot + market + locale + status label + **translation badge** + scheduled date.
+- Translation badge testid `ed-variant-translation-<vid>`. Inferenza:
+  - `Master` (cyan) → variant nel locale canonico
+  - `Manuale` (gold) → variant ha `internal_translation` data
+  - `Da tradurre` (orange) → variant ha target_locale ≠ canonical ma nessuna traduzione registrata
+  - `Tradotto` (primary) → riservato per stato pieno
+  - `Diverge` (red) → riservato per master-divergence detection
+- Header rail rinominato "Composition Room" → "Market Editions™" (utente l'aveva richiesto esplicitamente).
+
+#### Backend
+**Nessuna nuova endpoint**. Riutilizzo totale dello stack esistente:
+- `POST /api/editorial/masters`
+- `POST /api/editorial/masters/{mid}/variants`
+- `POST /api/editorial/variants/{vid}/schedule` (richiede status='approved')
+- `media.replace`, `media.archive`, `media.detail` (links hydration)
+
+#### Test & validazione
+- Backend pytest **5/5 GREEN** (`/app/backend/tests/test_iteration_61_market_editions.py`): masters POST + variants POST + schedule 409 guard + schedule success after approval chain + media list/detail.
+- Frontend Playwright **100% PASS** su 3 viewport (1440x900, 1024x768, 768x1024): toolbar + 7 CTA + selection-state enablement; flow strip 5 stage; tutte e 3 le modal aperte e validate; translation badge renderizzato; deep-link `?openAdd=1` auto-apre AddReferenceModal; ZERO horizontal overflow.
+- Lint JS clean su tutti i file modificati.
+
+#### Cosa NON è incluso (rimandato a P1)
+- **MediaDeleteProtectionDrawer live trigger** — codice in place ma testing agent non ha potuto smoke-testare perché il demo seed non ha asset con `usage_count > 0` raggiungibili dall'Inspector. Seed fixture necessaria.
+- **Full Translation Status System** — i badge sono inferiti client-side; manca endpoint `GET /api/editorial/{master_id}/translation-status` che ritorni stato per locale + history. Manca anche pannello action (Traduci dal master / Re-sync / Compare / Lock manual / Restore AI / Show divergence).
+- **Language Governance™ separazione esplicita LANGUAGE ≠ MARKET** — UI ancora mostra locale + market come due chip ma non c'è enforcement esplicito (EN-US ≠ EN-GB ≠ EN-AE).
+- **Replace Selectively** — disabled placeholder con "Coming Soon" nel drawer. Richiede UI per per-link replace.
+- **3rd column Operations Sidebar** a XL — riservata in CSS ma non popolata ancora.
+
+
+
 ### Fase GLOBAL-MEDIA-DAM v1 (Feb 18, 2026 — current) — `<EditorialMediaField />` + Pinterest Research Add Flow
 **P0 GLOBAL MEDIA INPUT REFACTOR™ — Foundation of MOOD's editorial DAM.**
 

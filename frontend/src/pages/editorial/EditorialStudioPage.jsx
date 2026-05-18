@@ -58,7 +58,7 @@ export const EditorialStudioPage = () => {
     <div className="ed-studio-wrap" data-testid="ed-studio-wrap">
       <MarketEditionsToolbar
         selectedMaster={selectedMaster}
-        selectedVariant={selectedVariant}
+        selectedVariant={fullVariant || selectedVariant}
         markets={markets}
         onReload={handleReload}
       />
