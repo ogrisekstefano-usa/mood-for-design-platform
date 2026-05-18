@@ -58,8 +58,10 @@ const ContactsPane = ({ accountId }) => {
   const [form, setForm] = useState({ first_name: '', last_name: '', email: '', phone: '', role_title: '' });
 
   const load = async () => {
+    setLoading(true);
     try {
-      const r = await api.get(`/api/relationships/accounts/${accountId}/contacts`);
+      // Contacts are embedded in GET /accounts/{id} — no dedicated GET endpoint exists.
+      const r = await api.get(`/api/relationships/accounts/${accountId}`);
       setContacts(r.data?.contacts || []);
     } catch {
       setContacts([]);
@@ -255,7 +257,9 @@ const AccountDetailDrawer = ({ account, onClose, onChanged }) => {
   if (!account) return null;
 
   return (
-    <div className="adr-bg" onClick={onClose} data-testid="account-detail-drawer">
+    <div className="adr-bg"
+         onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+         data-testid="account-detail-drawer">
       <aside className="adr" onClick={(e) => e.stopPropagation()}>
         <header className="adr__head">
           <div>

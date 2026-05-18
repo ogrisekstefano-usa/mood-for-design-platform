@@ -53,6 +53,73 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase FINISHING-CRM v1 (Feb 18, 2026 — iteration 64) — CRM page + Hotspot foundation + Media metadata
+**Finishing-mode sprint: 4 deliverables ad alto impatto. Testing agent 16/16 backend GREEN + frontend regression PASS, 3 bug critici post-test risolti e verificati live.**
+
+#### FASE 1 — Sidebar CRM rename + 7 sub-nav
+- Sidebar section rinominato a **"CRM"** (era "Workspace · Relazioni" come singola entry).
+- 7 NavItem sub-nav: Accounts · Contacts · Leads · Prospects · Clients · Follow-ups · Archived.
+- Vecchia route `/workspace/relationships` ora redirect a `/crm/accounts` (legacy non-breaking).
+
+#### FASE 2 — CRM Accounts Page (`/crm/:tab/:accountId?`)
+File: `/app/frontend/src/pages/crm/CrmAccountsPage.jsx` + `AccountDetailDrawer.jsx` + `crm.css`.
+
+- **Hero** in italiano: "Le relazioni della tua casa di design" + lead esplicita Account-centered + Team-non-mischiati.
+- **7 tabs** con helper text dinamico (lifecycle_stage filter NON hardcoded — driven da relationship_lookups).
+- **Toolbar**: search per account_name/email, view toggle (cards ↔ table), "+ Nuovo Account" CTA.
+- **Card view**: account_name + 10 tipi tradotti (Cliente privato/Famiglia/Azienda/Studio architettura/Studio interior/Developer/Hospitality group/Contractor/Partner/Showroom), stage dot+label, primary contact name+email, last activity relative time, open follow-ups chip.
+- **Table view**: 6 colonne (Account, Primary contact, Stage, Source, Last activity, Open follow-ups).
+- **AccountDetailDrawer** right-aligned max 880px, 9-tab:
+  - Overview (10 fields)
+  - Contacts (lista embedded da GET /accounts/{id}.contacts + helper "I Contact sono persone esterne…Team appartiene a Team" + add form POST /accounts/{id}/contacts)
+  - Timeline (GET /interactions)
+  - Projects (GET /accounts/{id}/projects)
+  - Moodboards (placeholder P1)
+  - Files (placeholder P1)
+  - Follow-ups (GET /accounts/{id}/actions)
+  - Notes (placeholder P1)
+  - Style (GET /accounts/{id}/style)
+- **NewAccountModal** con account_type (10 enum) + lifecycle_stage iniziale.
+
+#### FASE 3 — Reusable HotspotEditor™
+File: `/app/frontend/src/components/common/HotspotEditor.jsx` + `hotspot-editor.css`.
+
+- **Visual canvas**: click-to-add hotspot (x_pct/y_pct percentuali → survives responsive), drag-to-reposition, 5 editorial kind (Detail Point/Material Note/Design Note/Discover Detail/Editorial Hotspot — NOT ecommerce pins).
+- **Side panel**: titolo + descrizione + kind picker + coordinate display, auto-save on edit.
+- **Pin design**: dot + ring pulsante editorial (no price tag aesthetic).
+- **Desktop/Mobile preview toggle**.
+- Riusabile in: project gallery, magazine article images, moodboard images (wiring nei renderer = P1).
+
+Backend già pronto: `POST /api/magazine/admin/articles/{aid}/hotspots`, `PATCH/DELETE /api/magazine/admin/hotspots/{hid}` (testato GREEN in regression).
+
+#### FASE 4 — EditorialMediaField metadata extension
+- Aggiunte 2 nuove proprietà al value object: `caption` + `seo_title`.
+- 2 nuovi input nel footer del component: Caption (didascalia visibile) + SEO title (title attribute SEO).
+- Persistenza: `media.update(asset_id, { description: caption, title: seo_title })` su media_library.
+- Backward compatible: il legacy `valueShape="url"` continua a funzionare.
+
+#### Bug fix critici post-testing
+- **GET /accounts/{id}/contacts 405 → fix**: AccountDetailDrawer.ContactsPane ora usa `r.data.contacts` embedded nella response di GET `/accounts/{id}` (endpoint dedicato non esiste — non era necessario).
+- **NewAccountModal non si apriva → fix**: backdrop onClose ora controlla `e.target === e.currentTarget` (era catturato dal bubbling di click su input/elementi interni che chiudeva il modal/drawer al primo evento).
+- **AccountDetailDrawer auto-closes su tab click → fix**: stessa root cause, applicato identico target===currentTarget pattern al backdrop adr-bg.
+- **Duplicate ReferencesPage import in App.js → fix**: rimosso lazy import duplicato di RelationshipsPage che era stato erroneamente lasciato dopo il rename, ora ReferencesPage importata una sola volta.
+
+Verifica live post-fix (Playwright @1440x900): Modal opens=True, Drawer opens=True, Drawer stays open after tab click=True, Contacts pane visible=True.
+
+#### Test & validazione
+- Backend pytest 16/16 GREEN: lookup + accounts list/detail/CRUD + contacts POST + interactions/actions/style + accounts editorial extensions (markets/projects/inspirations/material-affinities/intelligence) + magazine hotspot endpoints regression.
+- Frontend Playwright 100% PASS dopo fix: sidebar rinominata + 7 nav items + CRM page hero + tabs + cards + table view toggle + drawer 9 tabs + new account modal + legacy redirect + EditorialMediaField caption/seo_title fields + Brand Studio/Magazine/Editorial regression.
+
+#### Cosa NON è incluso (DEFERRED per scope budget — annotato chiaramente)
+- **Image filters** (brightness/contrast/saturation) e **rotate** — pipeline canvas/CSS filter significativa, refactor a sé.
+- **Projects multi-image gallery** — richiede audit schema portfolio_projects + cover/gallery array + reorder UI + caption per image. Sprint dedicato.
+- **Magazine block editor refactor** — ArticleEditorPanel oggi supporta hotspot_data ma manca UI per text-block/image-block/gallery-block/hotspot-block come blocchi composabili. Sprint dedicato.
+- **HotspotEditor wiring nei renderer** — componente standalone pronto ma non integrato in project/article/moodboard editor surfaces. Sprint dedicato (1-2 ore per integrazione).
+- **Media Library "where used"** — i dati già ci sono (media_links table + media.detail returns links[]), manca UI dedicata per "Used in: Project X, Magazine Y, Moodboard Z" come vista esplicita. Sprint dedicato.
+- **Account avatars / Contact avatars** via EditorialMediaField — pattern facile da abilitare, non incluso per scope.
+
+
+
 ### Fase R-CRM-2 (Feb 18, 2026 — iteration 63) — Editorial Relationship CRM™ architecture
 **Architecture-only sprint. NO UI per direttiva utente. 17/17 pytest GREEN.**
 

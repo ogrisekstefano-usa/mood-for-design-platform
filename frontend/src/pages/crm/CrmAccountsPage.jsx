@@ -184,7 +184,9 @@ const NewAccountModal = ({ open, onClose, onCreated }) => {
   };
 
   return (
-    <div className="crm-modal-bg" onClick={onClose} data-testid="crm-new-account-modal">
+    <div className="crm-modal-bg"
+         onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+         data-testid="crm-new-account-modal">
       <div className="crm-modal" onClick={(e) => e.stopPropagation()}>
         <header className="crm-modal__head">
           <div>
