@@ -94,10 +94,21 @@ const AssetPickerModal = ({
   open,
   onClose,
   onSelect,             // ({asset}) => void
-  articleId,            // string — auto-links picked/uploaded asset to this article
-  role = 'body',        // 'hero' | 'body' | 'gallery' — stored on media_links row
+  articleId,            // string — auto-links picked/uploaded asset to this article (legacy)
+  entityType,           // 'magazine_article' | 'branding_asset' | 'cms_section' | 'cms_page' | …
+  entityId,             // generic entity id (alternative to articleId)
+  role = 'body',        // 'hero' | 'body' | 'gallery' | 'logo' | … — stored on media_links
+  bucket,               // override bucket (default magazine-media for legacy, tenant-assets otherwise)
+  folder,               // override folder (default magazine/<id>)
   defaultTab = 'library',
+  title,                // optional custom modal title
+  eyebrow,              // optional custom modal eyebrow
 }) => {
+  // Resolve effective entity reference (new generic > legacy articleId).
+  const eType = entityType || (articleId ? 'magazine_article' : null);
+  const eId = entityId || articleId || null;
+  const uploadBucket = bucket || (eType === 'magazine_article' ? 'magazine-media' : 'tenant-assets');
+  const uploadFolder = folder || (eType ? `${eType}/${eId || 'orphan'}` : 'library');
   const [tab, setTab] = useState(defaultTab);
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -169,18 +180,18 @@ const AssetPickerModal = ({
 
   // ─── Link helper ──────────────────────────────────────────────────────
   const linkAndReturn = useCallback(async (asset) => {
-    if (articleId) {
+    if (eType && eId) {
       try {
         await links.create(asset.id, {
-          entity_type: 'magazine_article',
-          entity_id: articleId,
+          entity_type: eType,
+          entity_id: eId,
           role,
         });
       } catch (_) { /* link is best-effort — picker still resolves */ }
     }
     onSelect?.({ asset });
     onClose?.();
-  }, [articleId, role, onSelect, onClose]);
+  }, [eType, eId, role, onSelect, onClose]);
 
   // ─── Drop handlers ────────────────────────────────────────────────────
   const handleFiles = useCallback(async (fileList) => {
@@ -212,8 +223,8 @@ const AssetPickerModal = ({
       try {
         const asset = await uploadMediaFile({
           file: item.file,
-          bucket: 'magazine-media',
-          folder: `magazine/${articleId || 'orphan'}`,
+          bucket: uploadBucket,
+          folder: uploadFolder,
           category: quickCategory,
           tags: quickTags,
           alt_text: null,
@@ -222,8 +233,8 @@ const AssetPickerModal = ({
         });
         if (item.checksum) checksumRef.current.set(item.checksum, asset);
         // Best-effort auto-link
-        if (articleId) {
-          try { await links.create(asset.id, { entity_type: 'magazine_article', entity_id: articleId, role }); }
+        if (eType && eId) {
+          try { await links.create(asset.id, { entity_type: eType, entity_id: eId, role }); }
           catch (_) {}
         }
         setQueue((q) => q.map((x) => x.id === item.id ? { ...x, status: 'done', progress: 100, asset } : x));
@@ -232,7 +243,7 @@ const AssetPickerModal = ({
           ? { ...x, status: 'error', error: err.message || 'upload failed' } : x));
       }
     }
-  }, [articleId, role, quickCategory, quickTags]);
+  }, [eType, eId, role, quickCategory, quickTags, uploadBucket, uploadFolder]);
 
   const onDragOver = (e) => { e.preventDefault(); e.stopPropagation(); dropRef.current?.classList.add('is-over'); };
   const onDragLeave = (e) => { e.preventDefault(); e.stopPropagation(); dropRef.current?.classList.remove('is-over'); };
@@ -255,8 +266,8 @@ const AssetPickerModal = ({
       <div className="mfd-picker__panel" onClick={(e) => e.stopPropagation()}>
         <header className="mfd-picker__header">
           <div>
-            <p className="mfd-picker__eyebrow">EDITORIAL ARCHIVE</p>
-            <h2 className="mfd-picker__title">Aggiungi atmosfera al racconto</h2>
+            <p className="mfd-picker__eyebrow">{eyebrow || 'EDITORIAL ARCHIVE'}</p>
+            <h2 className="mfd-picker__title">{title || 'Aggiungi atmosfera al racconto'}</h2>
           </div>
           <button type="button" onClick={onClose} className="mfd-picker__close"
                   data-testid="asset-picker-close" aria-label="Close">

@@ -21,9 +21,11 @@
  *   ✅ Perspective change TRANSFORMS the reading (slow fade), never refreshes
  */
 import React, { useEffect, useMemo, useState } from 'react';
+import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
 import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
+import AddReferenceModal from './AddReferenceModal';
 
 // Market codes derived from locale_codes. Five-market Phase 1 set.
 // NO FLAGS — labels are intentionally minimal typography.
@@ -38,10 +40,10 @@ const MARKET_LABEL = {
 
 // ─── Primitive components ────────────────────────────────────────────────
 
-const EditorialHero = () => (
+const EditorialHero = ({ onAdd }) => (
   <section
     data-testid="references-editorial-hero"
-    className="px-12 pt-20 pb-24 border-b border-[var(--bp-border)]"
+    className="px-12 pt-20 pb-24 border-b border-[var(--bp-border)] relative"
   >
     <p className="text-[10px] uppercase tracking-[0.34em] text-[var(--bp-primary)] font-body mb-6">
       Cultural Design Intelligence™
@@ -54,6 +56,19 @@ const EditorialHero = () => (
       is repositioned through the perspective of the market it must speak to —
       so the studio enters a client conversation already fluent in the right cultural register.
     </p>
+    {onAdd && (
+      <button
+        type="button"
+        onClick={onAdd}
+        data-testid="add-reference-cta"
+        className="absolute top-12 right-12 inline-flex items-center gap-2 px-5 py-3 rounded-[10px]
+                   bg-[var(--bp-primary)] text-black hover:opacity-90 transition-opacity
+                   text-[12.5px] font-body font-medium tracking-wide shadow-lg shadow-black/20"
+      >
+        <Plus size={14} strokeWidth={2} />
+        Aggiungi riferimento
+      </button>
+    )}
   </section>
 );
 
@@ -437,7 +452,7 @@ const CollectionSection = ({ collection, references, projects, runtimeLocale, la
 );
 
 
-const EmptyState = () => (
+const EmptyState = ({ onAdd }) => (
   <section
     data-testid="references-empty-state"
     className="px-12 py-28 max-w-[60ch]"
@@ -448,11 +463,24 @@ const EmptyState = () => (
     <h2 className="font-heading font-light text-[32px] text-[var(--bp-text-primary)] leading-[1.15] mb-5">
       The research room is being assembled.
     </h2>
-    <p className="font-body text-[15.5px] text-[var(--bp-text-secondary)] leading-[1.8] italic">
+    <p className="font-body text-[15.5px] text-[var(--bp-text-secondary)] leading-[1.8] italic mb-7">
       Curated editorial collections appear here once the studio's advisors begin
       compiling design references. Each reference is read through the cultural lens
       of the target market — never translated, always reinterpreted.
     </p>
+    {onAdd && (
+      <button
+        type="button"
+        onClick={onAdd}
+        data-testid="empty-add-reference-cta"
+        className="inline-flex items-center gap-2 px-5 py-3 rounded-[10px]
+                   bg-[var(--bp-primary)] text-black hover:opacity-90 transition-opacity
+                   text-[12.5px] font-body font-medium tracking-wide"
+      >
+        <Plus size={14} strokeWidth={2} />
+        Aggiungi il primo riferimento
+      </button>
+    )}
   </section>
 );
 
@@ -475,6 +503,8 @@ const ReferencesPage = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showAdd, setShowAdd] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -516,12 +546,17 @@ const ReferencesPage = () => {
       }
     })();
     return () => { cancelled = true; };
-  }, []);
+  }, [reloadKey]);
 
   const meaningfulCollections = useMemo(
     () => collections.filter((c) => (c.references || []).length > 0),
     [collections],
   );
+
+  const handleCreated = () => {
+    toast.success("Riferimento aggiunto · l'interpretazione editoriale è in corso");
+    setReloadKey((k) => k + 1);
+  };
 
   return (
     <div
@@ -529,7 +564,7 @@ const ReferencesPage = () => {
       data-surface="os"
       className="min-h-full bg-[var(--bp-bg)]"
     >
-      <EditorialHero />
+      <EditorialHero onAdd={() => setShowAdd(true)} />
 
       {loading && <LoadingState />}
 
@@ -541,7 +576,9 @@ const ReferencesPage = () => {
         </section>
       )}
 
-      {!loading && !error && meaningfulCollections.length === 0 && <EmptyState />}
+      {!loading && !error && meaningfulCollections.length === 0 && (
+        <EmptyState onAdd={() => setShowAdd(true)} />
+      )}
 
       {!loading && !error && meaningfulCollections.map((col, idx) => (
         <CollectionSection
@@ -556,6 +593,13 @@ const ReferencesPage = () => {
 
       {/* Closing breath — calm whitespace, no footer chrome */}
       <div className="h-32" aria-hidden />
+
+      <AddReferenceModal
+        open={showAdd}
+        onClose={() => setShowAdd(false)}
+        onCreated={handleCreated}
+        projects={projects}
+      />
     </div>
   );
 };

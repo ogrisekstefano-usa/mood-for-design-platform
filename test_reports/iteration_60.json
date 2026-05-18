@@ -1,0 +1,41 @@
+{
+  "summary": "Iteration 60 — P0 Global Media Input Refactor + Pinterest Research Add Flow validated end-to-end. Backend: 7/7 pytest GREEN in test_iteration_60_media_field.py covering POST /api/storage/signed-upload (returns signed_url+token+tenant-prefixed path), GET /api/media/stats (12 assets, expected shape), GET /api/media (data array), GET /api/references (12+ seeded refs), GET /api/reference-collections (3 collections), POST /api/references happy path (creates pinterest ref + verified in list), POST /api/references 422 on missing imported_image_url. Frontend Playwright (1440x900): (a) Brand Studio /settings/brand renders EditorialMediaField for Logo principale with status 'Vuoto' (empty), CTAs '+ Aggiungi media' / 'Scegli dalla Library' / 'Carica file' / 'URL esterno' all present; external URL flow accepts https URL, click 'Conferma' → status transitions to 'URL esterno' with EXTERNAL chip on meta strip. (b) /workspace/references shows add-reference-cta in EditorialHero; click opens add-reference-modal with 3 source tabs (upload/pinterest/library); switching tabs swaps body sections correctly; Pinterest URL https://pinterest.com/pin/123456 enables add-reference-submit (was disabled before); tag-mood toggles active visual state; close button works (after scroll). (c) Experience Studio /blueprint/experience: 8 bands enumerated (store_hero, value_props, dual_cta, stats_band, projects_preview, magazine_grid, brand_logos, newsletter). Entering store_hero edit mode reveals ss-field-cover-field (hero preset, status Vuoto). dual_cta band shows ss-dual-private-image-field + ss-dual-professional-image-field. brand_logos band shows ss-logo-media-0 (already populated). All EMF surfaces have data-preset attribute. No JS console errors related to EMF/modal on any of the 3 pages tested (only pre-existing 401s during auth bootstrap and one 503 unrelated to refactor). NOTE: the request mentioned 'ss-band-hero' but actual section_type is 'store_hero' → testid is 'ss-band-store_hero'. This is consistent with existing data model and not a bug.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_60_media_field.py",
+    "/app/test_reports/pytest/iteration_60.xml"
+  ],
+  "action_items": [
+    "(Editorial polish, LOW) The empty-state badge reads 'Vuoto' (full word) — request spec says 'VUOTO' (uppercase). Currently EMF renders with title-case Italian labels (Vuoto/Caricamento/Pronto/Da library/URL esterno/Errore). If the canon vocabulary is uppercase, update EMPTY_STATES mapping in EditorialMediaField.jsx accordingly. Cosmetic only.",
+    "(Documentation, LOW) Review request references `data-testid='ss-band-hero'` but actual section_type is 'store_hero' (testid: ss-band-store_hero). Update spec doc or rename section_type for clarity — not blocking."
+  ],
+  "critical_code_review_comments": [
+    "EditorialMediaField.jsx is 520 lines — manageable but trending toward split. As locale-aware crop preset hints (logo/hero/gallery/square/portrait/story/thumbnail) grow, consider extracting EMFEmptyState / EMFReadyState / EMFExternalInput sub-components.",
+    "AddReferenceModal.jsx submit handler swallows the editorial-interpretation latency silently — only shows generic toast 'Riferimento aggiunto · interpretazione editoriale in corso'. Consider surfacing editorial_status=queued/interpreting in the references list with a spinner so curators understand the async pipeline.",
+    "POST /api/references requires imported_image_url even when source_type='pinterest' (modal works around this by reusing pinUrl). When real Pinterest scraping is wired, ensure the contract accepts source_url-only for pinterest type and lets the backend resolve imported_image_url asynchronously.",
+    "EditorialMediaField applies tenant-prefix via /api/storage/signed-upload (verified: path becomes <tenant_uuid>/brand/logo/test.png). Good. No path-traversal sanitization visible in storage.py — verify backend strips leading '/' or '..' segments to prevent escaping tenant prefix.",
+    "ReferencesPage.jsx uses primaryRef for action button testid (cta-${act.replace('_', '-')}-${reference.id}) — for IDs containing hyphens this becomes ambiguous. Prefer cta-<verb>__<id>.",
+    "Modal close button is below the fold at 1440x900 with full metadata form — element 'outside viewport' caused a Playwright click failure. Add sticky header/footer to the modal so close + submit are always reachable without scrolling."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_60_media_field.py (NEW — 7 tests, ~140 lines)"
+  ],
+  "success_rate": {
+    "backend": "100% (7/7 — signed-upload + media/stats + media list + references CRUD)",
+    "frontend": "100% (Brand Studio EMF empty + external URL flow; AddReferenceModal CTA + 3 tabs + submit enable + tag toggle; Experience Studio store_hero/dual_cta/brand_logos all wired with EMF)"
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin, tenant mood-demo-studio-81a09e). Login verified via UI + API.",
+  "seed_data_creation": "Created 1 test reference via POST /api/references (curator_name='TEST_Curator_iter60', source_url='https://pinterest.com/pin/TEST_iter60'). NOT auto-cleaned — main agent may want to add teardown to the test class. No real file PUT executed to Supabase (only signed-upload contract verified per request).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "P0 Global Media Input Refactor + Pinterest Research Add Flow: ALL GREEN. EditorialMediaField is correctly wired in 4 places: BrandStudioPage (primary_logo_url), StorefrontStudioPage (hero cover_url), bandEditors DualCtaEditor (private+professional images), bandEditors BrandLogosEditor (per-item logo_url). AddReferenceModal at /workspace/references is fully functional. Experience Studio band testids are 'ss-band-<section_type>' where section_types are: store_hero, value_props, dual_cta, stats_band, projects_preview, magazine_grid, brand_logos, newsletter. Backend signed-upload returns tenant-prefixed path correctly. POST /api/references requires imported_image_url (modal sends pinUrl as fallback for pinterest source). Run regression: pytest backend/tests/test_iteration_60_media_field.py — 7/7 in ~17s.",
+  "rca_of_the_issue": "N/A — no bugs found in this iteration. The refactor was implemented cleanly. Two LOW-priority items noted: (1) badge label casing 'Vuoto' vs canon 'VUOTO' — cosmetic; (2) ss-band-hero spec mismatch with actual ss-band-store_hero — documentation/spec drift only."
+}

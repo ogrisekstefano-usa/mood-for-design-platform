@@ -26,6 +26,7 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import { useTenantTheme } from '../../contexts/TenantThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import BlueprintColorPicker from '../../components/common/BlueprintColorPicker';
+import EditorialMediaField from '../../components/common/EditorialMediaField';
 
 const DISPLAY_FONTS = ['Playfair Display', 'Cormorant Garamond', 'DM Serif Display', 'Bodoni Moda', 'Fraunces', 'Inter Tight'];
 const BODY_FONTS    = ['Inter', 'Montserrat', 'Manrope', 'Plus Jakarta Sans', 'Space Grotesk', 'Inter Tight'];
@@ -421,9 +422,19 @@ const BrandStudioPage = () => {
               <TextInput value={branding.website_url} onChange={(v) => setBranding({ ...branding, website_url: v })}
                          placeholder="https://studio.com" testid="brand-website" />
             </Field>
-            <Field label={t('brand.field.primary_logo', null, 'URL logo principale')}>
-              <TextInput value={branding.primary_logo_url} onChange={(v) => setBranding({ ...branding, primary_logo_url: v })}
-                         placeholder="https://…/logo.svg" testid="brand-logo-url" />
+            <Field label={t('brand.field.primary_logo', null, 'Logo principale')}>
+              <EditorialMediaField
+                value={branding.primary_logo_url}
+                onChange={(v) => setBranding({ ...branding, primary_logo_url: v })}
+                preset="logo"
+                bucket="tenant-assets"
+                folder="brand/logo"
+                entityType="branding_asset"
+                entityId={user?.tenant_id}
+                role="primary_logo"
+                helperText={t('brand.field.primary_logo_helper', null, 'Mostrato in header pubblico, email transazionali, footer. Sfondo trasparente raccomandato (PNG/SVG).')}
+                testId="brand-logo-field"
+              />
             </Field>
           </Section>
 

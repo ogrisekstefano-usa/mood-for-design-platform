@@ -31,6 +31,7 @@ import { GripVertical, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import './storefrontStudio.css';
 import { renderBandEditor, TraceabilityChip } from './bandEditors';
+import EditorialMediaField from '../../components/common/EditorialMediaField';
 
 // Editorial labels for the storefront bands. Keep the section_type as the
 // stable key (matches DB), but show editorial titles to the user.
@@ -431,11 +432,18 @@ const BandEditor = ({ section, markets, activeLocales, dirty, saving, onPatch, o
           </div>
 
           <div className="ss-section">
-            <p className="ss-section__label">Cover image · URL</p>
-            <input className="ss-input" data-testid="ss-field-cover"
+            <p className="ss-section__label">Cover image</p>
+            <EditorialMediaField
               value={localeData.cover_url || settings.background_image_url || ''}
-              onChange={(e) => patchLocale('cover_url', e.target.value)}
-              placeholder="https://…" />
+              onChange={(v) => patchLocale('cover_url', v)}
+              preset="hero"
+              bucket="tenant-assets"
+              folder="storefront/hero"
+              entityType="cms_section"
+              entityId={section.id}
+              role={`cover_${localeTab}`}
+              testId="ss-field-cover-field"
+            />
           </div>
         </>
       )}

@@ -16,6 +16,7 @@
  */
 import React from 'react';
 import { Plus, Trash2, ArrowUp, ArrowDown, ExternalLink } from 'lucide-react';
+import EditorialMediaField from '../../components/common/EditorialMediaField';
 
 // ───────────────────────────────────────────────────────────────────────
 // Traceability metadata — which public surface each section type controls.
@@ -356,21 +357,27 @@ export const BrandLogosEditor = ({ section, localeTab, onPatchLocale, onPatchSet
       <div className="ss-section">
         <p className="ss-section__label">Logos ({items.length})</p>
         {items.map((it, idx) => (
-          <div className="ss-logo-row" key={idx}>
-            <div className="ss-logo-row__preview">
-              {it.logo_url ? <img src={it.logo_url} alt={it.name || ''} /> : <span>—</span>}
-            </div>
-            <div className="ss-logo-row__fields">
+          <div className="ss-logo-row ss-logo-row--field" key={idx} style={{ flexDirection: 'column', alignItems: 'stretch', gap: 10 }}>
+            <div className="ss-logo-row__fields" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 8 }}>
               <input className="ss-input ss-input--sm"
                 data-testid={`ss-logo-name-${idx}`}
                 value={it.name || ''} onChange={(e) => patch(idx, 'name', e.target.value)} placeholder="Nome brand" />
               <input className="ss-input ss-input--sm"
-                data-testid={`ss-logo-url-${idx}`}
-                value={it.logo_url || ''} onChange={(e) => patch(idx, 'logo_url', e.target.value)} placeholder="https://…/logo.svg" />
-              <input className="ss-input ss-input--sm"
                 value={it.href || ''} onChange={(e) => patch(idx, 'href', e.target.value)} placeholder="https://brand.com (opzionale)" />
+              <button type="button" className="ss-icon-btn ss-icon-btn--danger" onClick={() => remove(idx)}><Trash2 size={12} /></button>
             </div>
-            <button type="button" className="ss-icon-btn ss-icon-btn--danger" onClick={() => remove(idx)}><Trash2 size={12} /></button>
+            <EditorialMediaField
+              value={it.logo_url || ''}
+              onChange={(v) => patch(idx, 'logo_url', v)}
+              preset="logo"
+              label={`Logo ${idx + 1}${it.name ? ` · ${it.name}` : ''}`}
+              bucket="tenant-assets"
+              folder="storefront/brand-logos"
+              entityType="cms_section"
+              entityId={section.id}
+              role={`brand_logo_${idx}`}
+              testId={`ss-logo-media-${idx}`}
+            />
           </div>
         ))}
         <button type="button" className="ss-btn ss-btn--ghost ss-btn--sm" onClick={addLogo} data-testid="ss-logo-add">
@@ -480,10 +487,18 @@ export const DualCtaEditor = ({ section, localeTab, onPatchLocale }) => {
         onChange={(v) => onPatchLocale(`${kind}_href`, v)}
         testid={`ss-dual-${kind}-href`}
         placeholder={kind === 'private' ? '/start-project/private' : '/start-project/professional'} />
-      <TextField label="Image URL" value={localeData[`${kind}_image`]}
+      <EditorialMediaField
+        value={localeData[`${kind}_image`] || ''}
         onChange={(v) => onPatchLocale(`${kind}_image`, v)}
-        testid={`ss-dual-${kind}-image`}
-        placeholder="https://…" />
+        preset="hero"
+        label="Immagine card"
+        bucket="tenant-assets"
+        folder={`storefront/dual-cta/${kind}`}
+        entityType="cms_section"
+        entityId={section.id}
+        role={`dual_cta_${kind}_image`}
+        testId={`ss-dual-${kind}-image-field`}
+      />
     </div>
   );
 
