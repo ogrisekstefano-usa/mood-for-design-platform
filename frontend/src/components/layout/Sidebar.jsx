@@ -180,10 +180,23 @@ const Sidebar = () => {
               {wsRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
               <NavItem to="/moodboards" icon="Layers" labelKey="nav.moodboards" collapsed={collapsed} />
               <NavItem to="/workspace/references" icon="Compass" labelKey="nav.pinterestResearch" fallback="Pinterest Research" collapsed={collapsed} />
-              <NavItem to="/workspace/relationships" icon="Users" labelKey="nav.relationships" fallback="Relazioni" collapsed={collapsed} />
             </div>
           </div>
         )}
+
+        {/* ── CRM ───────────────────────────────────────────────── */}
+        <div>
+          <SectionLabel collapsed={collapsed}>CRM</SectionLabel>
+          <div className="space-y-0.5">
+            <NavItem to="/crm/accounts"    icon="Users"      labelKey="nav.crmAccounts"   fallback="Accounts"    collapsed={collapsed} />
+            <NavItem to="/crm/contacts"    icon="UserCircle" labelKey="nav.crmContacts"   fallback="Contacts"    collapsed={collapsed} />
+            <NavItem to="/crm/leads"       icon="Sparkles"   labelKey="nav.crmLeads"      fallback="Leads"       collapsed={collapsed} />
+            <NavItem to="/crm/prospects"   icon="Search"     labelKey="nav.crmProspects"  fallback="Prospects"   collapsed={collapsed} />
+            <NavItem to="/crm/clients"     icon="Crown"      labelKey="nav.crmClients"    fallback="Clients"     collapsed={collapsed} />
+            <NavItem to="/crm/follow-ups"  icon="BellRing"   labelKey="nav.crmFollowUps"  fallback="Follow-ups"  collapsed={collapsed} />
+            <NavItem to="/crm/archived"    icon="Archive"    labelKey="nav.crmArchived"   fallback="Archived"    collapsed={collapsed} />
+          </div>
+        </div>
 
         {/* ── EXPERIENCE ────────────────────────────────────────── */}
         {can('tenant:settings') && (

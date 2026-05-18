@@ -1,0 +1,55 @@
+{
+  "summary": "Iteration 64 — CRM Foundation (sidebar rename + CRM Accounts page + 9-tab AccountDetailDrawer + reusable HotspotEditor + EditorialMediaField caption/seo_title). Backend regression GREEN: 14/15 pytest passed, 1 skipped. Frontend: /crm/accounts loads cleanly with all 11 expected data-testids, hero+tabs+toolbar+71 account cards render, drawer opens with correct URL deep-link (/crm/accounts/<id>), all 9 drawer tabs present, tab navigation works, view toggle (cards↔table) works. FOUND 3 REAL BUGS: (1) AccountDetailDrawer fetches GET /api/relationships/accounts/{id}/contacts — that endpoint returns 405 (not implemented; only POST exists). Drawer silently shows 'Nessun contact ancora' even on accounts with contacts. (2) Legacy redirect /workspace/relationships → /crm/accounts is DEAD CODE in App.js: line 293 registers /workspace/relationships → RelationshipsPage BEFORE the redirect Route at line 332; in React Router v6 the first match wins, so the redirect never fires. Worse: visiting /workspace/relationships now triggers a 503 from a missing /relationships API (RelationshipsPage throws). (3) Clicking crm-new-account-btn did NOT open the modal (data-testid='crm-new-account-modal' never became visible) within 5s — likely state/event handler regression — needs main agent verification.",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "GET /api/relationships/accounts/{id}/contacts", "issue": "Endpoint NOT implemented (returns 405 Method Not Allowed) but frontend AccountDetailDrawer.jsx line 62 calls it on Contacts tab open. Only POST is defined in routers/relationships.py. Either implement GET to return contacts list, or change the frontend to consume the embedded `contacts` array from GET /accounts/{id}.", "priority": "CRITICAL"}
+    ],
+    "minor": [
+      {"endpoint": "GET /api/markets/editions", "issue": "Returns 500 on demo tenant — separate market editions regression (not gated by this sprint but visible in regression run)."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "App.js routes", "issue": "Duplicate route registration for /workspace/relationships — line 293 (RelationshipsPage) shadows line 332 (Navigate to /crm/accounts). The legacy redirect specified in the iteration spec is dead code. Remove line 293 to enable the redirect.", "selector": "Route path='/workspace/relationships'", "priority": "HIGH"},
+      {"component": "CrmAccountsPage NewAccountModal", "issue": "Clicking [data-testid='crm-new-account-btn'] did not surface [data-testid='crm-new-account-modal'] within 5s in automated test. State handler may not be firing OR modal may be unmounted by parent re-render after tab change. Needs manual verification.", "selector": "[data-testid='crm-new-account-modal']", "priority": "HIGH"},
+      {"component": "AccountDetailDrawer Contacts tab", "issue": "Always displays 'Nessun contact ancora' because the GET /contacts endpoint returns 405 — the fetch in line 62 silently fails (catch swallows error). Existing contacts on the account are NOT shown.", "selector": "[data-testid='adr-tab-contacts']", "priority": "CRITICAL"}
+    ],
+    "integration_issues": [
+      {"flow": "AccountDetailDrawer → Contacts tab", "issue": "GET /api/relationships/accounts/{id}/contacts → 405; drawer.contacts always empty. POST works (test_create_contact passes) but new contact won't appear in list until the GET endpoint is added.", "affected_selectors": ["[data-testid='adr-tab-contacts']", "[data-testid='adr-contact-add']"]},
+      {"flow": "/workspace/relationships legacy redirect", "issue": "Route is shadowed; users following old bookmarks land on a broken RelationshipsPage emitting a 503 from the API instead of being redirected to /crm/accounts."}
+    ],
+    "design_issues": [
+      {"screen": "/crm/accounts (1440x900 + 1024x768)", "issues": ["Hero copy + 7 tabs + toolbar render correctly in IT-IT, contrast and spacing look clean. Card layout reflows to 4-col @1440 and 4-col @1024."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_64_crm_foundation.py",
+    "/app/test_reports/pytest/iteration_64.xml"
+  ],
+  "action_items": [
+    "[CRITICAL] Add GET /api/relationships/accounts/{aid}/contacts handler in /app/backend/routers/relationships.py (parallel to existing GET /interactions and GET /actions) OR change AccountDetailDrawer.jsx line 62 to consume the `contacts` array embedded in GET /accounts/{id}. Without one of these, the entire Contacts tab is non-functional even though the API has the data.",
+    "[HIGH] Remove the legacy Route line 293 in /app/frontend/src/App.js: `<Route path=\"/workspace/relationships\" element={<RelationshipsPage />} />`. React Router v6 picks the first matching route, so the Navigate redirect at line 332 never executes. Old RelationshipsPage now also crashes with a 503 on the demo tenant.",
+    "[HIGH] Debug crm-new-account-modal: clicking crm-new-account-btn did not display the modal in automated test. Verify the state setter is wired, and that no parent component is intercepting the click. The modal element IS rendered in source (line 187 of CrmAccountsPage.jsx with the correct testid).",
+    "[LOW] Skipped magazine hotspot CRUD round-trip — endpoint exists (POST returns 422 missing block_id when called without it) but I could not discover a block_id via GET /api/magazine/admin/articles/{id} for the demo article (no `blocks` key in response shape). Add `blocks` to the article detail response or expose a separate /blocks endpoint so admins can build hotspots via the API."
+  ],
+  "critical_code_review_comments": [
+    "App.js has two routes registered for `/workspace/relationships` (line 293 and line 332). The second one is unreachable — silent dead code. Lint rule for duplicate route paths recommended.",
+    "AccountDetailDrawer.jsx fetches /contacts on a non-existent endpoint and silently swallows the 405 in a try/catch — UX shows 'no contacts' even when there are some. Prefer using the embedded `contacts` array from GET /accounts/{id} (already returned by routers/relationships.py:get_account) to avoid an extra round-trip AND eliminate the broken endpoint.",
+    "EditorialMediaField now persists caption→media_library.description and seo_title→media_library.title — semantic mismatch may confuse users. The Media Library admin shows the same row's `title` and `description` columns; users editing in either surface will see fields swap. Consider native caption/seo_title columns on media_library.",
+    "CRM section in Sidebar.jsx (line 187-199) is rendered unconditionally — no permission gate. Compare to Editorial Operations (line 163: `can('tenant:settings')`) and Projects (line 212). If a future role should not see CRM, this needs a permission check.",
+    "CrmAccountsPage.jsx is 456 lines and combines: page shell + 7-tab nav + card view + table view + new account modal. Approaching the 700-line guideline; consider extracting NewAccountModal (lines ~180-240) to its own file."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_64_crm_foundation.py (NEW — 15 pytest tests, 14 pass + 1 skipped for magazine block discovery)"
+  ],
+  "success_rate": {
+    "backend": "93% (14/15 — 1 skipped for missing magazine block discovery)",
+    "frontend": "~70% — CRM page + drawer + tab nav + view toggle + sidebar all GREEN; Contacts tab broken (405); New Account modal didn't open; legacy redirect dead-code"
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin, tenant mood-demo-studio-81a09e)",
+  "seed_data_creation": "Backend test created: 3 accounts named TEST_acct_* (account_type=private_client, stage=discovery) on the demo tenant; 1 contact named TEST <random> on the first account. These accumulate — clean up via DELETE /api/relationships/accounts/{id} or filter by name LIKE 'TEST_%'.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Run: cd /app && python -m pytest backend/tests/test_iteration_64_crm_foundation.py -v (14/15 ~11s). The shape of GET /api/relationships/accounts is `{accounts:[...], total:N}` — NOT a bare list. GET /accounts/{id} returns `{account, contacts, style_profile, team, counts}` envelope — contacts come embedded. /interactions returns `{interactions, total}`, /actions returns `{actions, total}`, /projects returns `{links:[]}`. Account create requires `account_name` + `account_type`, not `name` + `type`. After main agent fixes the 3 critical bugs above, re-run this file PLUS the playwright flow targeting [data-testid='adr-tab-contacts'] and [data-testid='crm-new-account-modal'].",
+  "rca_of_the_issue": "Three independent regressions: (1) Drawer-to-API contract mismatch: backend exposes contacts only as an embedded field on GET /accounts/{id}, but the new drawer fetches a dedicated /contacts GET that was never implemented (only POST). (2) Legacy redirect ordering: developer added the Navigate route AFTER the existing concrete route in App.js — Router v6 matches the first one and never reaches the redirect. (3) New Account modal regression suspected: testid exists in source but doesn't appear after click in automated run; likely a useState wire-up issue or parent re-render unmount."
+}

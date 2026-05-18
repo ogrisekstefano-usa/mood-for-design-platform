@@ -49,14 +49,16 @@ const IMAGE_INTENTS = [
   { value: 'storytelling_detail',    label: 'Storytelling Detail' },
 ];
 
-// Normalize incoming value: string URL OR {url, asset_id, ...}
+  // Normalize incoming value: string URL OR {url, asset_id, ...}
 const normalize = (raw) => {
-  if (!raw) return { url: '', asset_id: null, alt_text: '', image_intent: '', focal_point: null };
-  if (typeof raw === 'string') return { url: raw, asset_id: null, alt_text: '', image_intent: '', focal_point: null };
+  if (!raw) return { url: '', asset_id: null, alt_text: '', caption: '', seo_title: '', image_intent: '', focal_point: null };
+  if (typeof raw === 'string') return { url: raw, asset_id: null, alt_text: '', caption: '', seo_title: '', image_intent: '', focal_point: null };
   return {
     url: raw.url || raw.file_url || '',
     asset_id: raw.asset_id || raw.id || null,
     alt_text: raw.alt_text || '',
+    caption: raw.caption || '',
+    seo_title: raw.seo_title || raw.title || '',
     image_intent: raw.image_intent || '',
     focal_point: raw.focal_point || null,
   };
@@ -182,7 +184,7 @@ const EditorialMediaField = ({
     toast.success('Asset collegato dalla Library');
   }, [emit, normalized.alt_text, normalized.image_intent, normalized.focal_point]);
 
-  // ── Patch metadata only (alt / image_intent) — without changing the asset
+  // ── Patch metadata only (alt / image_intent / caption / seo_title) — without changing the asset
   const patchMeta = useCallback((patch) => {
     const next = { ...normalized, ...patch };
     emit(next);
@@ -190,6 +192,8 @@ const EditorialMediaField = ({
     if (normalized.asset_id) {
       const payload = {};
       if ('alt_text' in patch) payload.alt_text = patch.alt_text;
+      if ('caption' in patch) payload.description = patch.caption;
+      if ('seo_title' in patch) payload.title = patch.seo_title;
       if ('focal_point' in patch) payload.focal_point = patch.focal_point;
       // image_intent goes into category for now (denormalized into media_library)
       if ('image_intent' in patch) payload.category = patch.image_intent || null;
@@ -448,7 +452,7 @@ const EditorialMediaField = ({
       {/* Helper text */}
       {helperText && <p className="emf-helper">{helperText}</p>}
 
-      {/* Metadata footer — alt + image_intent */}
+      {/* Metadata footer — alt + image_intent + caption + seo_title */}
       {hasValue && state !== 'uploading' && (
         <>
           <div className="emf-footer">
@@ -475,6 +479,28 @@ const EditorialMediaField = ({
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
               </select>
+            </div>
+            <div className="emf-footer__col">
+              <label className="emf-footer__label">Caption (opzionale)</label>
+              <input
+                type="text"
+                value={normalized.caption}
+                onChange={(e) => patchMeta({ caption: e.target.value })}
+                placeholder="Didascalia visibile sotto l'immagine"
+                className="emf-input"
+                data-testid={`${testId}-caption`}
+              />
+            </div>
+            <div className="emf-footer__col">
+              <label className="emf-footer__label">SEO title (opzionale)</label>
+              <input
+                type="text"
+                value={normalized.seo_title}
+                onChange={(e) => patchMeta({ seo_title: e.target.value })}
+                placeholder="Titolo immagine per ricerca"
+                className="emf-input"
+                data-testid={`${testId}-seo-title`}
+              />
             </div>
           </div>
 

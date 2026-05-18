@@ -30,6 +30,7 @@ const RelationshipsPage = lazy(() => import('./pages/workspace/RelationshipsPage
 const VariantApprovalInboxPage = lazy(() => import('./pages/editorial/VariantApprovalInboxPage'));
 const EditorialStudioPage = lazy(() => import('./pages/editorial/EditorialStudioPage'));
 const MarketMatrixPage = lazy(() => import('./pages/governance/MarketMatrixPage'));
+const CrmAccountsPage = lazy(() => import('./pages/crm/CrmAccountsPage'));
 const InternationalPresencePage = lazy(() => import('./pages/settings/InternationalPresencePage'));
 const StorefrontStudioPage = lazy(() => import('./pages/storefront/StorefrontStudioPage'));
 const EditorialCalendarPage = lazy(() => import('./pages/editorial/EditorialCalendarPage'));
@@ -322,6 +323,13 @@ function App() {
                   {/* Editorial Studio — Composition Room (Phase E-2 Prompt 2). */}
                   <Route path="/blueprint/editorial" element={<StudioAdminRoute><EditorialStudioPage /></StudioAdminRoute>} />
                   <Route path="/blueprint/markets" element={<StudioAdminRoute><MarketMatrixPage /></StudioAdminRoute>} />
+
+                  {/* CRM routes (tab + optional account_id deep-link) */}
+                  <Route path="/crm" element={<Navigate to="/crm/accounts" replace />} />
+                  <Route path="/crm/:tab" element={<CrmAccountsPage />} />
+                  <Route path="/crm/:tab/:accountId" element={<CrmAccountsPage />} />
+                  {/* Legacy redirect — old /workspace/relationships → /crm/accounts */}
+                  <Route path="/workspace/relationships" element={<Navigate to="/crm/accounts" replace />} />
 
                   {/* International Presence™ — Phase S-IDENTITY Step 1. */}
                   <Route path="/settings/international-presence" element={<StudioAdminRoute><InternationalPresencePage /></StudioAdminRoute>} />
