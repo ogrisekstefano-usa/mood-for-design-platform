@@ -209,3 +209,199 @@ def get_editorial_calendar(
             "markets": len(by_market),
         },
     }
+
+
+# ────────────────────────────────────────────────────────────────────────
+# SCHEDULING — drag&drop endpoint
+# ────────────────────────────────────────────────────────────────────────
+from pydantic import BaseModel
+
+
+class RescheduleBody(BaseModel):
+    datetime: str  # ISO 8601
+
+
+@router.patch("/{event_id}/schedule")
+def reschedule_event(event_id: str, body: RescheduleBody, ctx=Depends(get_tenant_context)):
+    """Update the scheduled_publish_at / published_at of an event by dragging it
+    onto another date in the calendar. event_id format: `{type}-{uuid}`.
+
+    • article → magazine_articles.published_at + status='scheduled' (kept 'published' if already)
+    • project → portfolio_projects.published_at + status='scheduled' (kept 'published' if already)
+    • page    → cms_pages.scheduled_publish_at (status moves to 'scheduled' if currently draft)
+    """
+    if not _is_admin(ctx["role"]):
+        raise HTTPException(403, "admin required")
+    if "-" not in event_id:
+        raise HTTPException(400, "invalid event_id")
+    etype, eid = event_id.split("-", 1)
+    try:
+        new_dt = datetime.fromisoformat(body.datetime.replace("Z", "+00:00"))
+    except Exception:
+        raise HTTPException(400, "invalid datetime")
+    iso = new_dt.isoformat()
+    c = db()
+    table, payload = None, {}
+    if etype == "article":
+        table = "magazine_articles"
+        cur = (c.table(table).select("status").eq("id", eid).eq("tenant_id", ctx["tenant_id"]).limit(1).execute())
+        if not cur.data:
+            raise HTTPException(404)
+        status = cur.data[0].get("status") or "draft"
+        payload = {"published_at": iso, "status": "scheduled" if status != "published" else "published"}
+    elif etype == "project":
+        table = "portfolio_projects"
+        cur = (c.table(table).select("status").eq("id", eid).eq("tenant_id", ctx["tenant_id"]).limit(1).execute())
+        if not cur.data:
+            raise HTTPException(404)
+        status = cur.data[0].get("status") or "draft"
+        payload = {"published_at": iso, "status": "scheduled" if status != "published" else "published"}
+    elif etype == "page":
+        table = "cms_pages"
+        cur = (c.table(table).select("status").eq("id", eid).eq("tenant_id", ctx["tenant_id"]).limit(1).execute())
+        if not cur.data:
+            raise HTTPException(404)
+        status = cur.data[0].get("status") or "draft"
+        payload = {"scheduled_publish_at": iso, "status": "scheduled" if status == "draft" else status}
+    else:
+        raise HTTPException(400, "unknown event type")
+    c.table(table).update(payload).eq("id", eid).eq("tenant_id", ctx["tenant_id"]).execute()
+    return {"ok": True, "event_id": event_id, "datetime": iso, "type": etype}
+
+
+# ────────────────────────────────────────────────────────────────────────
+# OPERATIONS INTELLIGENCE — rule-based market/CTA/SEO suggestions
+# ────────────────────────────────────────────────────────────────────────
+@router.get("/intelligence")
+def operations_intelligence(ctx=Depends(get_tenant_context)):
+    if not _is_admin(ctx["role"]):
+        raise HTTPException(403, "admin required")
+    tenant_id = ctx["tenant_id"]
+    c = db()
+    now = datetime.now(timezone.utc)
+    window_start = now - timedelta(days=30)
+
+    arts = (c.table("magazine_articles")
+              .select("id,locale_market,default_locale,published_at,status,category_slug")
+              .eq("tenant_id", tenant_id).execute()).data or []
+    pjs = (c.table("portfolio_projects")
+             .select("id,default_locale,published_at,status,category")
+             .eq("tenant_id", tenant_id).execute()).data or []
+    # Active markets via tenant_markets→markets join
+    tm = (c.table("tenant_markets").select("market_id,is_active,is_default").eq("tenant_id", tenant_id).eq("is_active", True).execute()).data or []
+    market_ids = [m["market_id"] for m in tm if m.get("market_id")]
+    markets = []
+    if market_ids:
+        mrows = (c.table("markets").select("id,code,primary_locale").in_("id", market_ids).execute()).data or []
+        id2m = {m["id"]: m for m in mrows}
+        for t in tm:
+            m = id2m.get(t.get("market_id"))
+            if not m:
+                continue
+            markets.append({
+                "locale_code": m.get("primary_locale") or m.get("code") or "",
+                "is_primary": bool(t.get("is_default")),
+                "is_published": bool(t.get("is_active")),
+            })
+
+    # Aggregate by market locale
+    by_locale: Dict[str, Dict[str, int]] = {}
+    for a in arts:
+        loc = (a.get("default_locale") or a.get("locale_market") or "—").split("-")[-1].upper()
+        bucket = by_locale.setdefault(loc, {"articles_total": 0, "articles_30d": 0, "projects_total": 0, "projects_30d": 0})
+        bucket["articles_total"] += 1
+        dt = a.get("published_at")
+        if dt:
+            try:
+                d = datetime.fromisoformat(dt.replace("Z", "+00:00"))
+                if d >= window_start:
+                    bucket["articles_30d"] += 1
+            except Exception:
+                pass
+    for p in pjs:
+        loc = (p.get("default_locale") or "—").split("-")[-1].upper()
+        bucket = by_locale.setdefault(loc, {"articles_total": 0, "articles_30d": 0, "projects_total": 0, "projects_30d": 0})
+        bucket["projects_total"] += 1
+        dt = p.get("published_at")
+        if dt:
+            try:
+                d = datetime.fromisoformat(dt.replace("Z", "+00:00"))
+                if d >= window_start:
+                    bucket["projects_30d"] += 1
+            except Exception:
+                pass
+
+    suggestions: List[Dict[str, Any]] = []
+    active_markets = [m["locale_code"] for m in markets if m.get("is_published") or m.get("is_primary")]
+
+    # ── Rule 1: Markets activated but with no publications in 30 days ──
+    for code in active_markets:
+        region = code.split("-")[-1].upper()
+        b = by_locale.get(region, {"articles_30d": 0, "projects_30d": 0})
+        if b["articles_30d"] + b["projects_30d"] == 0:
+            suggestions.append({
+                "severity": "high",
+                "kind": "under-published",
+                "title": f"Mercato {region} senza pubblicazioni",
+                "body": f"Nessuna uscita negli ultimi 30 giorni per {region}. Pianifica almeno un articolo magazine o un progetto per mantenere la saturazione SEO.",
+                "cta_label": "Pianifica contenuto",
+                "cta_href": "/blueprint/editorial",
+            })
+
+    # ── Rule 2: Article-to-project imbalance (last 30d) ──
+    total_30 = sum(b["articles_30d"] + b["projects_30d"] for b in by_locale.values())
+    if total_30 > 0:
+        arts_30 = sum(b["articles_30d"] for b in by_locale.values())
+        ratio = arts_30 / total_30
+        if ratio < 0.3:
+            suggestions.append({
+                "severity": "medium",
+                "kind": "seo-pressure",
+                "title": "SEO pressure bassa",
+                "body": "Negli ultimi 30 giorni hai pubblicato molti progetti ma pochi articoli editoriali. Gli articoli generano discoverability internazionale.",
+                "cta_label": "Apri Magazine Studio",
+                "cta_href": "/blueprint/editorial",
+            })
+        elif ratio > 0.8 and len([p for p in pjs if p.get("status") == "published"]) < 6:
+            suggestions.append({
+                "severity": "medium",
+                "kind": "authority-gap",
+                "title": "Authority gap progetti",
+                "body": "Forte ritmo editoriale ma pochi progetti pubblicati. Pubblicare 2-3 case study aumenta authority e conversione professional.",
+                "cta_label": "Apri Projects Studio",
+                "cta_href": "/blueprint/projects-studio",
+            })
+
+    # ── Rule 3: Empty calendar going forward ──
+    future_count = sum(1 for a in arts if a.get("published_at") and datetime.fromisoformat(a["published_at"].replace("Z","+00:00")) > now)
+    future_count += sum(1 for p in pjs if p.get("published_at") and datetime.fromisoformat(p["published_at"].replace("Z","+00:00")) > now)
+    if future_count == 0:
+        suggestions.append({
+            "severity": "high",
+            "kind": "empty-pipeline",
+            "title": "Pipeline editoriale vuota",
+            "body": "Nessuna pubblicazione programmata nel futuro. La presenza internazionale richiede continuità: pianifica almeno 4 uscite nelle prossime 4 settimane.",
+            "cta_label": "Apri Editorial Calendar",
+            "cta_href": "/blueprint/editorial-calendar",
+        })
+
+    # ── Rule 4: Primary market under-served ──
+    primary = next((m for m in markets if m.get("is_primary")), None)
+    if primary:
+        region = (primary.get("locale_code") or "").split("-")[-1].upper()
+        b = by_locale.get(region, {"articles_30d": 0, "projects_30d": 0})
+        if b["articles_30d"] + b["projects_30d"] < 2:
+            suggestions.append({
+                "severity": "medium",
+                "kind": "primary-cadence",
+                "title": f"Cadenza bassa nel mercato primario ({region})",
+                "body": "Il mercato primario richiede un ritmo minimo di 2-3 uscite/mese per consolidare authority.",
+                "cta_label": "Pianifica nel mercato primario",
+                "cta_href": "/blueprint/editorial-calendar",
+            })
+
+    return {
+        "suggestions": suggestions,
+        "by_locale": by_locale,
+        "window_days": 30,
+    }

@@ -13,7 +13,7 @@
  */
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, ChevronLeft, ChevronRight, Filter, RefreshCw } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, Filter, RefreshCw, AlertTriangle, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
 import './editorialCalendar.css';
@@ -85,14 +85,16 @@ const PresenceTable = ({ byMarket }) => {
 };
 
 // ───────────────────────────────────────────────────────────────────────
-// EVENT PILL (inside calendar cell)
+// EVENT PILL (inside calendar cell) — DRAGGABLE
 // ───────────────────────────────────────────────────────────────────────
-const EventPill = ({ event }) => {
+const EventPill = ({ event, onDragStart }) => {
   const tone = STATUS_TONE[event.status] || 'draft';
   return (
     <Link to={event.edit_href || '#'} className="ec-pill" data-tone={tone}
+          draggable
+          onDragStart={(e) => onDragStart(e, event)}
           data-testid={`ec-pill-${event.id}`}
-          title={`${TYPE_LABEL[event.type]} · ${event.title}\n${event.country.country} · ${event.locale}\n${event.cta_target}`}>
+          title={`${TYPE_LABEL[event.type]} · ${event.title}\n${event.country.country} · ${event.locale}\n${event.cta_target}\n(Drag to reschedule)`}>
       <span className="ec-pill__flag" aria-hidden>{event.country.flag}</span>
       <span className="ec-pill__time">{fmtTime(new Date(event.datetime))}</span>
       <span className="ec-pill__title">{event.title}</span>
@@ -101,18 +103,111 @@ const EventPill = ({ event }) => {
 };
 
 // ───────────────────────────────────────────────────────────────────────
+// OPERATIONS INTELLIGENCE — rule-based AI suggestions sidebar
+// ───────────────────────────────────────────────────────────────────────
+const OperationsIntelligence = ({ data }) => {
+  if (!data || !data.suggestions) return null;
+  const sugs = data.suggestions;
+  return (
+    <aside className="ec-intel" data-testid="ec-intelligence">
+      <header className="ec-intel__head">
+        <Sparkles size={12} strokeWidth={1.8} />
+        <span>Operations Intelligence</span>
+      </header>
+      {sugs.length === 0 ? (
+        <div className="ec-intel__empty">
+          <p>Nessun segnale operativo critico. Il ritmo editoriale è in equilibrio sui mercati attivi.</p>
+        </div>
+      ) : (
+        <div className="ec-intel__list">
+          {sugs.map((s, i) => (
+            <div key={i} className="ec-intel__card" data-severity={s.severity} data-testid={`ec-intel-${s.kind}`}>
+              <div className="ec-intel__row">
+                <AlertTriangle size={11} strokeWidth={2}
+                  className={s.severity === 'high' ? 'ec-intel__icon--high' : 'ec-intel__icon--med'} />
+                <span className="ec-intel__kind">{s.kind}</span>
+              </div>
+              <h4 className="ec-intel__title">{s.title}</h4>
+              <p className="ec-intel__body">{s.body}</p>
+              {s.cta_href && (
+                <Link to={s.cta_href} className="ec-intel__cta" data-testid={`ec-intel-cta-${s.kind}`}>
+                  {s.cta_label || 'Apri'} →
+                </Link>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+      <footer className="ec-intel__foot">
+        <small>Ultimi 30 giorni · rule-based · evolves into AI operations layer</small>
+      </footer>
+    </aside>
+  );
+};
+
+// ───────────────────────────────────────────────────────────────────────
+// WEEKLY VIEW — 7 columns aligned on the week of `cursor`
+// ───────────────────────────────────────────────────────────────────────
+const startOfWeek = (date) => {
+  const d = new Date(date);
+  const offset = (d.getDay() + 6) % 7; // Monday-start
+  d.setDate(d.getDate() - offset);
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
+
+const WeekView = ({ cursor, eventsByDay, onDragStart, onDragOver, onDragLeave, onDrop, dragOverKey }) => {
+  const start = startOfWeek(cursor);
+  const days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(start); d.setDate(start.getDate() + i); return d;
+  });
+  const today = new Date();
+  return (
+    <div className="ec-week" data-testid="ec-week-view">
+      {days.map((day) => {
+        const key = `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`;
+        const evts = (eventsByDay.get(key) || []).slice().sort((a, b) => a.datetime.localeCompare(b.datetime));
+        const isToday = day.toDateString() === today.toDateString();
+        return (
+          <div key={key} className="ec-week__col"
+               data-today={isToday}
+               data-drag-over={dragOverKey === key}
+               onDragOver={(e) => onDragOver(e, key)}
+               onDragLeave={onDragLeave}
+               onDrop={(e) => onDrop(e, day)}
+               data-testid={`ec-week-col-${key}`}>
+            <div className="ec-week__head">
+              <span className="ec-week__weekday">{day.toLocaleDateString('it-IT', { weekday: 'short' })}</span>
+              <span className="ec-week__date">{day.getDate()}</span>
+              {isToday && <span className="ec-cell__today-chip">OGGI</span>}
+            </div>
+            <div className="ec-week__events">
+              {evts.length === 0 && <span className="ec-week__empty">—</span>}
+              {evts.map((ev) => <EventPill key={ev.id} event={ev} onDragStart={onDragStart} />)}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+
+// ───────────────────────────────────────────────────────────────────────
 // PAGE
 // ───────────────────────────────────────────────────────────────────────
 const EditorialCalendarPage = () => {
   const [cursor, setCursor] = useState(() => new Date());
+  const [view, setView]     = useState('month'); // month | week
   const [feed, setFeed]     = useState({ events: [], by_market: [], totals: {} });
+  const [intel, setIntel]   = useState(null);
   const [loading, setLoading] = useState(true);
   const [typeFilter, setTypeFilter] = useState('all');
+  const [dragOverKey, setDragOverKey] = useState(null);
 
   const load = async () => {
     setLoading(true);
     try {
-      // Window: first day of cursor month -14 → last day of month +14
       const monthStart = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
       const monthEnd   = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0);
       const start = new Date(monthStart); start.setDate(start.getDate() - 7);
@@ -122,8 +217,12 @@ const EditorialCalendarPage = () => {
         end:   end.toISOString(),
       });
       if (typeFilter !== 'all') params.set('type_filter', typeFilter);
-      const { data } = await api.get(`/api/blueprint/calendar?${params}`);
-      setFeed(data);
+      const [feedRes, intelRes] = await Promise.allSettled([
+        api.get(`/api/blueprint/calendar?${params}`),
+        api.get('/api/blueprint/calendar/intelligence'),
+      ]);
+      if (feedRes.status === 'fulfilled') setFeed(feedRes.value.data);
+      if (intelRes.status === 'fulfilled') setIntel(intelRes.value.data);
     } catch (e) {
       toast.error("Errore nel caricamento dell'agenda editoriale");
     } finally {
@@ -132,6 +231,46 @@ const EditorialCalendarPage = () => {
   };
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [cursor, typeFilter]);
+
+  // ── Drag & drop handlers ─────────────────────────────────────────────
+  const onPillDragStart = (e, event) => {
+    e.dataTransfer.setData('application/x-mood-event', JSON.stringify({
+      id: event.id, datetime: event.datetime,
+    }));
+    e.dataTransfer.effectAllowed = 'move';
+  };
+  const onCellDragOver = (e, key) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverKey(key);
+  };
+  const onCellDragLeave = () => setDragOverKey(null);
+  const onCellDrop = async (e, dropDate) => {
+    e.preventDefault();
+    setDragOverKey(null);
+    let payload;
+    try {
+      payload = JSON.parse(e.dataTransfer.getData('application/x-mood-event') || '{}');
+    } catch (_) { return; }
+    if (!payload.id || !payload.datetime) return;
+    // Preserve the original time-of-day; only swap the calendar day.
+    const original = new Date(payload.datetime);
+    const next = new Date(dropDate);
+    next.setHours(original.getHours(), original.getMinutes(), 0, 0);
+    if (next.toDateString() === original.toDateString()) return;
+    // Optimistic update
+    setFeed((prev) => ({
+      ...prev,
+      events: prev.events.map((ev) => ev.id === payload.id ? { ...ev, datetime: next.toISOString() } : ev),
+    }));
+    try {
+      await api.patch(`/api/blueprint/calendar/${payload.id}/schedule`, { datetime: next.toISOString() });
+      toast.success(`Riprogrammato → ${next.toLocaleDateString('it-IT', { dateStyle: 'medium' })}`);
+    } catch (err) {
+      toast.error('Riprogrammazione fallita');
+      load();
+    }
+  };
 
   const grid = useMemo(() => buildMonthGrid(cursor), [cursor]);
   const eventsByDay = useMemo(() => {
@@ -171,20 +310,34 @@ const EditorialCalendarPage = () => {
         <PresenceTable byMarket={feed.by_market} />
       </section>
 
-      {/* Filters + Month nav */}
+      {/* Filters + View nav */}
       <section className="ec-section ec-section--calendar">
         <div className="ec-toolbar">
           <div className="ec-toolbar__nav">
             <button type="button" className="ec-icon-btn"
-                    onClick={() => setCursor(new Date(cursor.getFullYear(), monthIdx - 1, 1))}
+                    onClick={() => setCursor(view === 'month'
+                      ? new Date(cursor.getFullYear(), monthIdx - 1, 1)
+                      : new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() - 7))}
                     data-testid="ec-prev"><ChevronLeft size={14} /></button>
             <button type="button" className="ec-month" onClick={() => setCursor(new Date())}
                     data-testid="ec-today">
-              <Calendar size={12} strokeWidth={1.7} /> {fmtMonth(cursor)}
+              <Calendar size={12} strokeWidth={1.7} /> {view === 'week' ? fmtDay(cursor) : fmtMonth(cursor)}
             </button>
             <button type="button" className="ec-icon-btn"
-                    onClick={() => setCursor(new Date(cursor.getFullYear(), monthIdx + 1, 1))}
+                    onClick={() => setCursor(view === 'month'
+                      ? new Date(cursor.getFullYear(), monthIdx + 1, 1)
+                      : new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 7))}
                     data-testid="ec-next"><ChevronRight size={14} /></button>
+            <div className="ec-view-switch">
+              {['month', 'week'].map((v) => (
+                <button key={v} type="button" className="ec-chip"
+                        data-active={view === v}
+                        data-testid={`ec-view-${v}`}
+                        onClick={() => setView(v)}>
+                  {v === 'month' ? 'Mese' : 'Settimana'}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="ec-toolbar__filters">
             <Filter size={11} strokeWidth={1.7} />
@@ -209,36 +362,56 @@ const EditorialCalendarPage = () => {
           </div>
         </div>
 
-        {/* Month grid */}
-        <div className="ec-grid">
-          <div className="ec-grid__head">
-            {weekHeader.map((d) => <span key={d}>{d}</span>)}
-          </div>
-          <div className="ec-grid__body">
-            {grid.map((day) => {
-              const key = `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`;
-              const evts = eventsByDay.get(key) || [];
-              const inMonth = day.getMonth() === monthIdx;
-              const isToday = day.toDateString() === today.toDateString();
-              return (
-                <div key={key} className="ec-cell"
-                     data-out={!inMonth}
-                     data-today={isToday}
-                     data-testid={`ec-cell-${key}`}>
-                  <div className="ec-cell__date">
-                    <span className="ec-cell__day">{day.getDate()}</span>
-                    {isToday && <span className="ec-cell__today-chip">OGGI</span>}
-                  </div>
-                  <div className="ec-cell__events">
-                    {evts.slice(0, 3).map((ev) => <EventPill key={ev.id} event={ev} />)}
-                    {evts.length > 3 && (
-                      <span className="ec-cell__more">+{evts.length - 3} altri</span>
-                    )}
-                  </div>
+        {/* Split layout: calendar + intelligence sidebar */}
+        <div className="ec-split">
+          <div className="ec-split__main">
+            {view === 'month' ? (
+              <div className="ec-grid">
+                <div className="ec-grid__head">
+                  {weekHeader.map((d) => <span key={d}>{d}</span>)}
                 </div>
-              );
-            })}
+                <div className="ec-grid__body">
+                  {grid.map((day) => {
+                    const key = `${day.getFullYear()}-${day.getMonth()}-${day.getDate()}`;
+                    const evts = eventsByDay.get(key) || [];
+                    const inMonth = day.getMonth() === monthIdx;
+                    const isToday = day.toDateString() === today.toDateString();
+                    const saturation = Math.min(evts.length, 5);
+                    return (
+                      <div key={key} className="ec-cell"
+                           data-out={!inMonth}
+                           data-today={isToday}
+                           data-saturation={saturation}
+                           data-drag-over={dragOverKey === key}
+                           data-testid={`ec-cell-${key}`}
+                           onDragOver={(e) => onCellDragOver(e, key)}
+                           onDragLeave={onCellDragLeave}
+                           onDrop={(e) => onCellDrop(e, day)}>
+                        <div className="ec-cell__date">
+                          <span className="ec-cell__day">{day.getDate()}</span>
+                          {isToday && <span className="ec-cell__today-chip">OGGI</span>}
+                        </div>
+                        <div className="ec-cell__events">
+                          {evts.slice(0, 3).map((ev) => <EventPill key={ev.id} event={ev} onDragStart={onPillDragStart} />)}
+                          {evts.length > 3 && (
+                            <span className="ec-cell__more">+{evts.length - 3} altri</span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <WeekView cursor={cursor} eventsByDay={eventsByDay}
+                        onDragStart={onPillDragStart}
+                        onDragOver={onCellDragOver}
+                        onDragLeave={onCellDragLeave}
+                        onDrop={onCellDrop}
+                        dragOverKey={dragOverKey} />
+            )}
           </div>
+          <OperationsIntelligence data={intel} />
         </div>
       </section>
 

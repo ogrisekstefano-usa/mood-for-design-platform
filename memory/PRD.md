@@ -53,7 +53,24 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
-### Fase OPERATIONS-CORE (Feb 18, 2026 — current) — Editorial Calendar™ + Renames
+### Fase OPERATIONS-CORE v2 (Feb 18, 2026 — current) — Drag&Drop + Intelligence
+- **Drag & drop scheduling**: ogni event pill è `draggable`. Si trascina sulla cella di un altro giorno (mese o settimana) → `PATCH /api/blueprint/calendar/{event_id}/schedule` aggiorna:
+  - `magazine_articles.published_at` + `status='scheduled'` (se non già `published`)
+  - `portfolio_projects.published_at` + `status='scheduled'`
+  - `cms_pages.scheduled_publish_at` + `status='scheduled'`
+  Optimistic UI + toast conferma; preserva l'ora del giorno originale, cambia solo la data.
+- **Weekly view**: switcher Mese/Settimana. 7 colonne lun-dom con eventi ordinati per ora. OGGI evidenziato. Drag target on column. Prev/Next salta una settimana invece di un mese.
+- **Operations Intelligence sidebar** (`/api/blueprint/calendar/intelligence`):
+  - Rule 1: mercato attivo senza pubblicazioni 30gg → `under-published` HIGH
+  - Rule 2: SEO pressure bassa (articoli < 30% del totale) → `seo-pressure` MEDIUM
+  - Rule 3: pipeline futura vuota → `empty-pipeline` HIGH
+  - Rule 4: mercato primario con cadenza < 2/mese → `primary-cadence` MEDIUM
+  - Rule 5: rapporto authority gap progetti pubblicati pochi → `authority-gap`
+  Ogni suggestion ha severity + body + CTA deep-link verso editor appropriato. Footer indica "rule-based · evolves into AI operations layer" (Sora 2 / GPT-5.2 future integration).
+- **Saturation heatmap**: celle del mese mostrano densità eventi via opacity progressiva del colore primary (1→5 eventi = scaling background).
+- Test live PASSATO: month + week view + intelligence + drag&drop API verificato via curl.
+
+### Fase OPERATIONS-CORE (Feb 18, 2026) — Editorial Calendar™ + Renames
 **Nuovo cuore operativo della piattaforma**: international editorial operations system, no AI experimentation, no metaphor.
 
 #### Editorial Calendar™ — `/blueprint/editorial-calendar`
