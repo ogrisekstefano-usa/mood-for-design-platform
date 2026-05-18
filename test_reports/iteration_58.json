@@ -1,0 +1,45 @@
+{
+  "summary": "Phase S-CONNECT Step 2 — Storefront Studio™ end-to-end testing. Backend: 6/6 new pytest tests PASS (GET /admin/pages/home returns page + 6 seeded sections store_hero/value_props/stats_band/projects_preview/magazine_grid/brand_logos; PUT /admin/sections/{id} persists locale_content + settings.positioning_mode/market_visibility/hero_variant; PATCH /admin/pages/home/sections/reorder persists new order; POST /admin/pages/home/publish creates revision_id+published_at; public /api/storefront/public/{slug}/pages/home returns published snapshot served_from revision; /api/tenants/me/markets returns active markets for editor locale tabs). Prior Phase S-IDENTITY Step 1 regression: 9/9 still GREEN (mutex bug fixed). Frontend: /blueprint/storefront loads under StudioAdminRoute, ss-root background rgb(7,7,7) Blueprint dark palette ✓, serif title 'Storefront Studio™' + eyebrow 'BLUEPRINT · STOREFRONT ORCHESTRATION' ✓, all 4 page tabs (home/projects/navigation/start_project) ✓, all 6 home bands render with order 01..06 + meta chips (positioning, hero variant, markets count, locales count) ✓, editor opens with 10 fields (eyebrow/title/subtitle/body/cta-label/cta-href/cover/positioning-mode/hero-variant/ss-market-all) ✓, 7 locale tabs populated from active tenant markets ✓, Save button correctly disabled on initial load and enables on dirty ✓, Publish flow shows 'Pagina pubblicata' toast and ss-page-status dot flips to 'Live · pubblicata' ✓, sidebar nav 'Storefront Studio' (LayoutGrid icon) visible under Editorial section for super_admin ✓. Fixed 1 frontend bug.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "fixed_during_testing": [
+    {
+      "file": "/app/frontend/src/pages/storefront/StorefrontStudioPage.jsx",
+      "issue": "After Publish, ss-page-status dot never flipped from 'Bozza · non pubblicata' to 'Live · pubblicata' because the code did setPage(pageR.data?.page) but backend GET /admin/pages/{page_key} returns the page object FLAT (not wrapped in {page: {...}, sections: [...]}). Result: page state was always null and status dot fell back to 'draft' regardless of actual published state.",
+      "fix": "Replaced setPage(pageR.data?.page || null) with setPage(pageR.data || null) at both initial load and publish refresh. Verified post-fix: status dot now shows 'Live · pubblicata' with mint dot after successful publish."
+    }
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_phase_s_connect_step2.py",
+    "/app/test_reports/pytest/iteration_58_s_connect2.xml"
+  ],
+  "action_items": [
+    "(Optional) Verify the same flat-vs-wrapped response shape isn't assumed elsewhere — confirmed only StorefrontStudioPage.jsx had the bug; other consumers of /admin/pages/{key} read sections only.",
+    "(Optional design polish) On the home page, when no positioning_mode is set on a section, the meta chip row falls back to just 'Global presence' + locale count — acceptable but a 'No positioning' muted chip would communicate intent better."
+  ],
+  "critical_code_review_comments": [
+    "StorefrontStudioPage.jsx ~line 100: dual response shape assumption (`pageR.data?.page` AND `pageR.data?.sections`). Fixed to read flat. Recommend adding a typescript-style API contract comment near api.get call so future devs don't reintroduce the wrapper assumption.",
+    "Frontend persistReorder fires PATCH immediately on drop with no optimistic-rollback if the server rejects — acceptable for v1 since tenant_admin owns full state, but a 400 from /sections/reorder (strict set mismatch) would leave the UI inconsistent with the DB. Consider re-fetching on PATCH failure.",
+    "toggleVisible spreads server response into the existing section — server-side update_section returns the full updated row which is correct, but it relies on the same locale_content/settings being echoed back; safe today.",
+    "Editor save uses `setSelected({ ...selected, ...r.data })` which is fine but the dirty flag is reset only on success — no rollback path on partial failure (e.g., 422 from a malformed settings JSON). Add a try/catch keep-dirty path.",
+    "BAND_META hard-codes Italian labels — when locale-runtime supports admin-side i18n, these strings should move to the BlueprintI18n dictionary."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_phase_s_connect_step2.py (NEW — 6 backend regression tests)",
+    "/app/frontend/src/pages/storefront/StorefrontStudioPage.jsx (FIXED — setPage flat response shape, lines ~100 + ~181)"
+  ],
+  "success_rate": {
+    "backend": "100% (6/6 new + 9/9 prior Phase S-IDENTITY regression = 15/15)",
+    "frontend": "100% (page loads on Blueprint dark palette, all bands render, editor opens with all fields + 7 locale tabs + market chips + positioning/hero selects, publish flow works incl. status dot after fix, sidebar nav present, save dirty/clean transitions correct, no console errors)"
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (SuperAdmin) — works.",
+  "seed_data_creation": "None. Used existing seed (mood-demo-studio-81a09e tenant with 6 home sections + 7 active markets).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Phase S-CONNECT Step 2 GREEN. /blueprint/storefront route + StorefrontStudioPage + Blueprint dark palette + 4-tab page nav + drag-reorderable bands + per-locale BandEditor + publish/status dot all working end-to-end. Backend tests file: test_phase_s_connect_step2.py. Run all storefront regression with: REACT_APP_BACKEND_URL=https://content-hub-pro-22.preview.emergentagent.com pytest backend/tests/test_phase_s_connect_step2.py backend/tests/test_storefront_cms.py backend/tests/test_phase_s_identity_step1.py. Step 4 (public frontend runtime binding from CMS) is NOT YET wired — verify when implemented.",
+  "rca_of_the_issue": "The publish-status-not-updating UI bug: backend GET /api/storefront/admin/pages/{page_key} returns the page DTO at top-level of response (id, page_key, status, sections, ...). The frontend was reading `response.data.page` expecting an envelope. The selector resolved to undefined, setPage(null) ran, and `page?.status` always evaluated to falsy → ss-publish-bar__dot[data-status='draft'] + label 'Bozza · non pubblicata' regardless of actual server state. Fix: read response.data directly. Reproduction pre-fix: login → /blueprint/storefront → click Pubblica pagina → toast confirms success → status dot still shows draft. Post-fix verified: dot turns mint + label 'Live · pubblicata'."
+}

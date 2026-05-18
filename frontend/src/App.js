@@ -30,6 +30,7 @@ const RelationshipsPage = lazy(() => import('./pages/workspace/RelationshipsPage
 const VariantApprovalInboxPage = lazy(() => import('./pages/editorial/VariantApprovalInboxPage'));
 const EditorialStudioPage = lazy(() => import('./pages/editorial/EditorialStudioPage'));
 const InternationalPresencePage = lazy(() => import('./pages/settings/InternationalPresencePage'));
+const StorefrontStudioPage = lazy(() => import('./pages/storefront/StorefrontStudioPage'));
 const MoodboardsPage = lazy(() => import('./pages/moodboards/MoodboardsPage'));
 const InspirationsPage = lazy(() => import('./pages/inspirations/InspirationsPage'));
 const InsightsPage = lazy(() => import('./pages/insights/InsightsPage'));
@@ -324,6 +325,9 @@ function App() {
 
                   {/* International Presence™ — Phase S-IDENTITY Step 1. */}
                   <Route path="/settings/international-presence" element={<StudioAdminRoute><InternationalPresencePage /></StudioAdminRoute>} />
+
+                  {/* Storefront Studio™ — Phase S-CONNECT Step 2. */}
+                  <Route path="/blueprint/storefront" element={<StudioAdminRoute><StorefrontStudioPage /></StudioAdminRoute>} />
                 </Route>
 
                 {/* CLIENT PORTAL (Phase R) — surface-isolated, role=client only */}
