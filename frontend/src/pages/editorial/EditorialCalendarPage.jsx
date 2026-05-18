@@ -13,9 +13,10 @@
  */
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, ChevronLeft, ChevronRight, Filter, RefreshCw, AlertTriangle, Sparkles } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, Filter, RefreshCw, AlertTriangle, Sparkles, Plus, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import PublicPreviewDrawer from './PublicPreviewDrawer';
 import './editorialCalendar.css';
 
 const TYPE_LABEL = {
@@ -85,20 +86,21 @@ const PresenceTable = ({ byMarket }) => {
 };
 
 // ───────────────────────────────────────────────────────────────────────
-// EVENT PILL (inside calendar cell) — DRAGGABLE
+// EVENT PILL (inside calendar cell) — DRAGGABLE + opens public drawer
 // ───────────────────────────────────────────────────────────────────────
-const EventPill = ({ event, onDragStart }) => {
+const EventPill = ({ event, onDragStart, onSelect }) => {
   const tone = STATUS_TONE[event.status] || 'draft';
   return (
-    <Link to={event.edit_href || '#'} className="ec-pill" data-tone={tone}
-          draggable
-          onDragStart={(e) => onDragStart(e, event)}
-          data-testid={`ec-pill-${event.id}`}
-          title={`${TYPE_LABEL[event.type]} · ${event.title}\n${event.country.country} · ${event.locale}\n${event.cta_target}\n(Drag to reschedule)`}>
+    <button type="button" className="ec-pill" data-tone={tone}
+            draggable
+            onDragStart={(e) => onDragStart(e, event)}
+            onClick={() => onSelect(event)}
+            data-testid={`ec-pill-${event.id}`}
+            title={`${TYPE_LABEL[event.type]} · ${event.title}\n${event.country.country} · ${event.locale}\n(click → preview · drag → reschedule)`}>
       <span className="ec-pill__flag" aria-hidden>{event.country.flag}</span>
       <span className="ec-pill__time">{fmtTime(new Date(event.datetime))}</span>
       <span className="ec-pill__title">{event.title}</span>
-    </Link>
+    </button>
   );
 };
 
@@ -156,7 +158,7 @@ const startOfWeek = (date) => {
   return d;
 };
 
-const WeekView = ({ cursor, eventsByDay, onDragStart, onDragOver, onDragLeave, onDrop, dragOverKey }) => {
+const WeekView = ({ cursor, eventsByDay, onDragStart, onDragOver, onDragLeave, onDrop, dragOverKey, onSelect }) => {
   const start = startOfWeek(cursor);
   const days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(start); d.setDate(start.getDate() + i); return d;
@@ -183,7 +185,7 @@ const WeekView = ({ cursor, eventsByDay, onDragStart, onDragOver, onDragLeave, o
             </div>
             <div className="ec-week__events">
               {evts.length === 0 && <span className="ec-week__empty">—</span>}
-              {evts.map((ev) => <EventPill key={ev.id} event={ev} onDragStart={onDragStart} />)}
+              {evts.map((ev) => <EventPill key={ev.id} event={ev} onDragStart={onDragStart} onSelect={onSelect} />)}
             </div>
           </div>
         );
@@ -204,6 +206,7 @@ const EditorialCalendarPage = () => {
   const [loading, setLoading] = useState(true);
   const [typeFilter, setTypeFilter] = useState('all');
   const [dragOverKey, setDragOverKey] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const load = async () => {
     setLoading(true);
@@ -297,10 +300,26 @@ const EditorialCalendarPage = () => {
         <p className="ec-head__eyebrow">Blueprint · International Editorial Operations</p>
         <h1 className="ec-head__title">Editorial Calendar<sup>™</sup></h1>
         <p className="ec-head__intro">
-          La regia operativa internazionale dello studio. Cosa esce, dove, quando, in quale lingua,
-          con quale CTA — in un unico stream. Niente AI experimentation, niente metaforiche editoriali:
-          solo la regia editoriale che pubblica per i mercati.
+          Organizza pubblicazioni internazionali su tutti i mercati e le lingue.
+          Trascina gli eventi per riprogrammare, clicca per aprire l'anteprima pubblica.
         </p>
+        <div className="ec-head-actions">
+          <Link to="/blueprint/editorial?new=master" className="ec-action ec-action--primary"
+                data-testid="ec-action-new-master">
+            <Plus size={11} strokeWidth={1.8} /> Nuovo Editorial Master
+          </Link>
+          <Link to="/blueprint/editorial?new=variant" className="ec-action ec-action--ghost"
+                data-testid="ec-action-new-variant">
+            <Plus size={11} strokeWidth={1.8} /> Nuova Market Edition
+          </Link>
+          <Link to="/blueprint/projects-studio?new=1" className="ec-action ec-action--ghost"
+                data-testid="ec-action-new-project">
+            <Plus size={11} strokeWidth={1.8} /> Nuovo progetto
+          </Link>
+          <span className="ec-action ec-action--hint">
+            <Globe size={10} strokeWidth={1.7} /> Trascina sul giorno per programmare
+          </span>
+        </div>
       </header>
 
       {/* Today's International Presence */}
@@ -392,7 +411,7 @@ const EditorialCalendarPage = () => {
                           {isToday && <span className="ec-cell__today-chip">OGGI</span>}
                         </div>
                         <div className="ec-cell__events">
-                          {evts.slice(0, 3).map((ev) => <EventPill key={ev.id} event={ev} onDragStart={onPillDragStart} />)}
+                          {evts.slice(0, 3).map((ev) => <EventPill key={ev.id} event={ev} onDragStart={onPillDragStart} onSelect={setSelectedEvent} />)}
                           {evts.length > 3 && (
                             <span className="ec-cell__more">+{evts.length - 3} altri</span>
                           )}
@@ -408,7 +427,8 @@ const EditorialCalendarPage = () => {
                         onDragOver={onCellDragOver}
                         onDragLeave={onCellDragLeave}
                         onDrop={onCellDrop}
-                        dragOverKey={dragOverKey} />
+                        dragOverKey={dragOverKey}
+                        onSelect={setSelectedEvent} />
             )}
           </div>
           <OperationsIntelligence data={intel} />
@@ -459,6 +479,24 @@ const EditorialCalendarPage = () => {
           )}
         </div>
       </section>
+
+      <PublicPreviewDrawer
+        event={selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+        onPublishNow={async (ev) => {
+          try {
+            // Publishing now = scheduling to now() — backend bumps status to scheduled
+            // unless already published. For published events this is a no-op.
+            const nowIso = new Date().toISOString();
+            await api.patch(`/api/blueprint/calendar/${ev.id}/schedule`, { datetime: nowIso });
+            toast.success('Pubblicazione avviata');
+            setSelectedEvent(null);
+            load();
+          } catch (e) {
+            toast.error('Pubblicazione fallita');
+          }
+        }}
+      />
     </div>
   );
 };

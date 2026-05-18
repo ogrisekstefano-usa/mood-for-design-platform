@@ -53,7 +53,33 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
-### Fase OPERATIONS-CORE v2 (Feb 18, 2026 — current) — Drag&Drop + Intelligence
+### Fase OPERATIONS-CORE v3 (Feb 18, 2026 — current) — Public Preview Drawer + Zero Confusion
+**P0 UX refactor**: clicking a calendar event ora apre un drawer con la **superficie pubblica**, non il Blueprint admin.
+
+#### Public Preview Drawer™
+- Componente `PublicPreviewDrawer.jsx` accessibile da ogni event pill (sia month sia week view).
+- Mostra: cover image, EDIZIONE · COUNTRY · LOCALE kicker, status chip cromatico (PUBBLICATO/PROGRAMMATO/BOZZA), titolo, excerpt, meta strutturata (pianificazione · mercato editoriale · CTA · SEO goal · approval state · URL pubblico).
+- Azioni: **APRI SUL SITO PUBBLICO** (target=_blank verso `/magazine/{slug}` o `/projects/{slug}` o `/{page_key}`), **MODIFICA MARKET EDITION** (→ Editorial Studio), **RIPROGRAMMA (drag&drop)** hint, **DUPLICA PER ALTRO MERCATO**, **PUBBLICA ORA** (CTA verde solo se status≠published).
+- Footer: hint "Anteprima della superficie pubblica. Tutte le azioni qui sopra rispettano la separazione UI admin · contenuto editoriale."
+
+#### Header CTAs visibili (Zero Confusion)
+- `+ NUOVO EDITORIAL MASTER` (primary) → `/blueprint/editorial?new=master`
+- `+ NUOVA MARKET EDITION` (ghost) → `/blueprint/editorial?new=variant`
+- `+ NUOVO PROGETTO` (ghost) → `/blueprint/projects-studio?new=1`
+- Hint "Trascina sul giorno per programmare" allineato a destra.
+
+#### Backend enrichment per drawer
+- Event payload ora include `cover_url`, `excerpt`, `public_url` (separato da `edit_href`).
+- Magazine: cover dal record `cover_url`, excerpt da `locale_content[locale].excerpt`.
+- Project: cover da `cover_image_url`, excerpt da `location`.
+- Page: cover null, public_url = `/` per home altrimenti `/{page_key}`.
+
+#### Renames operativi
+- **Editorial Review** → **Publication Review™** (Publication Review · in Italian: "Publication Review™" + subtitle "Approva i contenuti prima del rilascio pubblico").
+- **Composition Room** → **Market Editions™** (Editorial Studio empty-state ora ha kicker "Editorial Operations · Magazine", titolo "Market Editions™", body "Crea versioni culturalmente native di un'unica direzione editoriale").
+- Helper subtitle: "Crea versioni culturalmente native di un'unica direzione editoriale."
+
+### Fase OPERATIONS-CORE v2 (Feb 18, 2026) — Drag&Drop + Intelligence
 - **Drag & drop scheduling**: ogni event pill è `draggable`. Si trascina sulla cella di un altro giorno (mese o settimana) → `PATCH /api/blueprint/calendar/{event_id}/schedule` aggiorna:
   - `magazine_articles.published_at` + `status='scheduled'` (se non già `published`)
   - `portfolio_projects.published_at` + `status='scheduled'`

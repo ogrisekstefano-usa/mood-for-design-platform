@@ -222,16 +222,16 @@ const VariantApprovalInboxPage = () => {
          data-locale-code={runtime.localeCode}>
       <header className="mb-10">
         <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.24em] font-semibold mb-2">
-          Editorial review
+          Editorial Operations · Publication Review
         </p>
         <h1 className="font-heading text-4xl text-[var(--bp-text-primary)] leading-tight mb-2"
             data-testid="inbox-title">
-          Prospettive in attesa di pubblicazione
+          Publication Review<sup>™</sup>
         </h1>
         <p className="text-[var(--bp-text-muted)] text-[14px] font-body max-w-2xl leading-relaxed">
-          Ogni prospettiva culturale è composta nel registro nativo del mercato di destinazione.
-          Una volta approvata, raggiunge i lettori pubblici del Magazine. Senza la tua revisione,
-          resta privata.
+          Approva i contenuti prima del rilascio pubblico. Ogni Market Edition culturale viene
+          composta nel registro nativo del mercato di destinazione. Una volta approvata, raggiunge
+          i lettori pubblici del Magazine. Senza la tua revisione, resta privata.
         </p>
       </header>
 

@@ -49,11 +49,16 @@ export const EditorialStudioPage = () => {
       />
       {!fullVariant && (
         <section className="ed-pane ed-pane__empty" data-testid="ed-pane-empty">
-          <h2>Seleziona una variante per aprire la Composition Room.</h2>
+          <p className="ed-pane__kicker">Editorial Operations · Magazine</p>
+          <h2>Market Editions<sup>™</sup></h2>
           <p>
-            Lo studio editoriale internazionale di MOOD. Ogni master ha varianti dedicate
-            per mercato e locale — qui le componi, ne raffini l'angolo, le programmi e
-            le pubblichi senza mai uscire dalla redazione.
+            Crea versioni culturalmente native di un'unica direzione editoriale.
+            Ogni Editorial Master ha le sue Market Edition — qui ne componi tono,
+            CTA e ritmo per ciascun mercato, le programmi e le pubblichi senza mai
+            uscire dalla redazione.
+          </p>
+          <p className="ed-pane__hint">
+            ← Seleziona un Editorial Master o una Market Edition dalla colonna a sinistra.
           </p>
         </section>
       )}

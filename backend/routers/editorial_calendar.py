@@ -82,7 +82,7 @@ def get_editorial_calendar(
     # ── Magazine articles ─────────────────────────────────────────────
     if not type_filter or type_filter == "article":
         r = (c.table("magazine_articles")
-             .select("id,slug,status,locale_content,default_locale,locale_market,published_at,updated_at,category_slug,editorial_tone")
+             .select("id,slug,status,locale_content,default_locale,locale_market,published_at,updated_at,category_slug,editorial_tone,cover_url")
              .eq("tenant_id", tenant_id).execute())
         for a in (r.data or []):
             dt = a.get("published_at") or a.get("updated_at")
@@ -96,11 +96,21 @@ def get_editorial_calendar(
                 continue
             loc = a.get("default_locale") or a.get("locale_market") or "en-US"
             country = _locale_to_country(loc)
+            # Pull excerpt from locale_content
+            lc = a.get("locale_content") or {}
+            excerpt = ""
+            for k in (loc, "it-IT", "en-US"):
+                v = lc.get(k) if isinstance(lc.get(k), dict) else None
+                if v and v.get("excerpt"):
+                    excerpt = v["excerpt"]
+                    break
             events.append({
                 "id": f"article-{a['id']}",
                 "type": "article",
                 "title": _pick_title(a.get("locale_content"), loc, a.get("slug", "—")),
+                "excerpt": excerpt,
                 "slug": a.get("slug"),
+                "cover_url": a.get("cover_url"),
                 "datetime": d.isoformat(),
                 "locale": loc,
                 "country": country,
@@ -111,12 +121,13 @@ def get_editorial_calendar(
                 "category": a.get("category_slug"),
                 "tone": a.get("editorial_tone"),
                 "edit_href": f"/blueprint/editorial?article={a['id']}",
+                "public_url": f"/magazine/{a.get('slug')}",
             })
 
     # ── Portfolio projects ───────────────────────────────────────────
     if not type_filter or type_filter == "project":
         r = (c.table("portfolio_projects")
-             .select("id,slug,title,status,published_at,updated_at,default_locale,category,location,year")
+             .select("id,slug,title,status,published_at,updated_at,default_locale,category,location,year,cover_image_url")
              .eq("tenant_id", tenant_id).execute())
         for p in (r.data or []):
             dt = p.get("published_at") or p.get("updated_at")
@@ -134,7 +145,9 @@ def get_editorial_calendar(
                 "id": f"project-{p['id']}",
                 "type": "project",
                 "title": p.get("title") or p.get("slug", "—"),
+                "excerpt": p.get("location") or "",
                 "slug": p.get("slug"),
+                "cover_url": p.get("cover_image_url"),
                 "datetime": d.isoformat(),
                 "locale": loc,
                 "country": country,
@@ -145,6 +158,7 @@ def get_editorial_calendar(
                 "category": p.get("category"),
                 "location": p.get("location"),
                 "edit_href": f"/blueprint/projects-studio?project={p['id']}",
+                "public_url": f"/projects/{p.get('slug')}",
             })
 
     # ── Storefront pages ─────────────────────────────────────────────
@@ -166,7 +180,9 @@ def get_editorial_calendar(
                 "id": f"page-{pg['id']}",
                 "type": "page",
                 "title": pg.get("title") or pg.get("page_key") or "—",
+                "excerpt": "",
                 "slug": pg.get("page_key"),
+                "cover_url": None,
                 "datetime": d.isoformat(),
                 "locale": "—",
                 "country": {"code": "—", "flag": "🌐", "country": "Global"},
@@ -175,6 +191,7 @@ def get_editorial_calendar(
                 "seo_goal": "Public surface",
                 "approval_state": "approved" if pg.get("status") == "published" else "pending",
                 "edit_href": f"/blueprint/experience?page={pg.get('page_key')}",
+                "public_url": "/" if pg.get("page_key") == "home" else f"/{pg.get('page_key')}",
             })
 
     events.sort(key=lambda e: e["datetime"])
