@@ -53,6 +53,63 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase BRAND-PROPAGATION v1 (Feb 18, 2026 — iteration 66) — Tiered Theme Propagation + 9 Curated Presets
+**Sprint Brand Studio review/stabilization. Direttiva utente: "Brand Studio è una FONDAZIONE — theme changes must propagate consistently everywhere across Frontend, Blueprint, Editorial, CRM, Projects, Magazine, Moodboards". Implementata propagation tiered SAFE per non rompere usability admin.**
+
+#### Decisione architettonica chiave: Tiered Propagation
+Lo state pre-existing isolava completamente il tenant theme dal Blueprint OS (`data-surface="os"`). Riapertura controllata:
+
+| Surface | Cosa propaga |
+|---|---|
+| **Storefront** (`data-surface="storefront"`) | FULL theme — primary, secondary, accent, bg, surface, text, border, status colors, fonts, radius, density, shadow. |
+| **Blueprint OS** (`data-surface="os"`) | **SAFE SUBSET** — accent (`--bp-primary`/`--bp-accent`) + heading/body fonts. Background/surface/border restano OS-controlled per usabilità. Tinte derivate: `--bp-primary-soft`, `--bp-primary-glow`, `--bp-border-hover`, `--bp-border-active`, `--bp-selection-bg` ricalcolate dal primary in rgba(). |
+
+**Razionale**: anche con palette acid-pink scelta dal designer, l'editor resta usabile. Ma l'identità (accent CTA color + heading typeface) viene riflessa nella chrome operativa, rendendo l'esperienza coerente.
+
+#### File modificati
+- `/app/frontend/src/contexts/TenantThemeContext.jsx` — `applyThemeVarsToRoot` ora emette DUE regole CSS scoped (`[data-surface="storefront"]` + `[data-surface="os"]`). Derivazione automatica delle 5 tinte rgba dal primary hex.
+- `/app/backend/routers/branding.py` — Aggiunto `mode: "light"|"dark"` al Pydantic `Theme` model. Persisted e ritornato via GET/PUT.
+- `/app/frontend/src/pages/settings/BrandStudioPage.jsx`:
+  - Aggiunto `brand-mode-toggle` con `brand-mode-dark` + `brand-mode-light` testids
+  - Updated intro per riflettere la nuova propagation tiered
+  - Updated scope trace nelle Section palette + presets
+- `/app/backend/scripts/seed_theme_presets.py` — Seed di 9 preset curati editoriali.
+
+#### 9 Preset Curati Seedati
+| Key | Label | Mode | Vibe |
+|---|---|---|---|
+| `editorial` | Editorial (DEFAULT) | dark | magazine contrast · Playfair × Montserrat |
+| `luxury` | Warm Italian Luxury | dark | brass on charcoal · Cormorant × Manrope |
+| `warm` | Warm Cream | light | terracotta on cream · Fraunces × Inter |
+| `monochrome` | Monochrome Atelier | light | black & white · DM Serif × Plus Jakarta |
+| `minimal` | Architectural Minimal | light | quiet luxury · Inter Tight |
+| `scandinavian` | Nordic Editorial | light | pale linen · DM Serif × Plus Jakarta |
+| `gallery` | Modern Gallery | dark | art-gallery · Playfair × Space Grotesk |
+| `stone` | Dark Stone | dark | warm graphite · Cormorant × Manrope |
+| `hospitality` | Soft Hospitality | light | cream & sage · Fraunces × Manrope |
+
+#### Validazione live E2E
+- Backend GET `/api/branding/presets` → 9 presets returned ✓
+- Backend PUT `/api/branding` con `theme.mode='light'` → persisted ✓
+- Backend POST `/api/branding/apply-preset` con `preset_key='luxury'` → returns mode=dark ✓
+- Frontend `/settings/brand`: 9 preset card visibili, mode toggle funzionante, live preview riflette palette
+- Apply preset **luxury** → DOM verification:
+  - `getComputedStyle([data-surface="os"]).--bp-primary` = `#C9A36E` (era `#00C9B3`) ✓
+  - `getComputedStyle([data-surface="os"]).--bp-font-heading` = `'Cormorant Garamond', serif` (era Playfair) ✓
+- Navigation a `/crm/accounts` con luxury theme attivo → avatar/stage-pill/CTA-button visivamente brass-tinted ✓
+- Restore preset **editorial** → tenant tornato a teal turqoise ✓
+
+#### Lint
+- JS clean su `TenantThemeContext`, `BrandStudioPage`
+- Python branding.py: 4 errori pre-esistenti E701/E702 NON correlati allo sprint (multi-line statements legacy)
+
+#### Cosa NON è incluso (deferred a iter futuri)
+- **Hotspot accent override**: oggi `PublicHotspot.css` usa `--site-ink` e `--site-accent` (storefront vars). Già coperto via propagation storefront. Verificare manualmente dopo seed di tenant con palette warm.
+- **CTA tier color overrides**: `cta_set[].tier` ha tier=soft/medium/strong ma colora-render usa solo `--bp-primary`. Acceptable v1.
+- **Brand Studio "Per-locale palette"**: oggi un solo palette per tenant. Multi-locale palette è scope futuro.
+- **Custom font upload**: solo Google Fonts dalla lista hardcoded. Acceptable.
+- **Preset preview thumbnail**: oggi solo color chips + label. Real screenshot preset preview è UX-nice ma scope futuro.
+
 ### Fase REVIEW-STABILIZATION v1 (Feb 18, 2026 — iteration 65b) — CRM editorial refactor + Locale fix + Audit
 **Sprint review/stabilization no-new-features. Direttiva utente: "make the system coherent, premium, stable and truly usable". Eseguite Fase A (CRM UX refactor), Fase B (Route/locale fix), Mobile review profondo.**
 

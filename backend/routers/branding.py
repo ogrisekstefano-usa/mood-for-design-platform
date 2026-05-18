@@ -65,6 +65,7 @@ class ThemeTypography(BaseModel):
 
 class Theme(BaseModel):
     preset_key: Optional[str] = None
+    mode: Optional[str] = None             # "light" | "dark"  — base canvas mode
     palette: Optional[ThemePalette] = None
     typography: Optional[ThemeTypography] = None
     radius: Optional[str] = None           # "0px" | "2px" | "4px" | "8px" | "12px"

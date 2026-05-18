@@ -52,12 +52,21 @@ const fontFamilyFor = (name) => {
 };
 
 // ── Surface-scoped runtime stylesheet ────────────────────────────────
-//   CRITICAL: tenant branding may NEVER leak into Blueprint OS surfaces.
-//   We mount a single <style> tag and emit a CSS rule scoped to
-//   `[data-surface="storefront"]`. The storefront subtree (and ONLY the
-//   storefront subtree) reads these variables. The OS subtree, which
-//   carries `data-surface="os"`, is unaffected by design.
-const RUNTIME_STYLE_ID = 'mfd-storefront-runtime-theme';
+//   TIERED THEME PROPAGATION:
+//
+//   STOREFRONT  (data-surface="storefront"):
+//     Full theme — primary, secondary, accent, bg, surface, text, border,
+//     status colors, fonts, radius, density, shadow.
+//
+//   BLUEPRINT OS  (data-surface="os"):
+//     SAFE SUBSET only — accent color + heading/body fonts override the
+//     OS chrome. Backgrounds, surfaces, borders remain OS-controlled so
+//     even an acid-pink tenant palette keeps the editor usable. The
+//     designer still SEES their identity in the chrome (heading typeface,
+//     accent CTA color) without compromising operational legibility.
+//
+//   Both rules live in a single <style> tag.
+const RUNTIME_STYLE_ID = 'mfd-tenant-runtime-theme';
 
 function _runtimeStyleEl() {
   if (typeof document === 'undefined') return null;
@@ -65,11 +74,21 @@ function _runtimeStyleEl() {
   if (!el) {
     el = document.createElement('style');
     el.id = RUNTIME_STYLE_ID;
-    el.setAttribute('data-mfd-scope', 'storefront');
+    el.setAttribute('data-mfd-scope', 'tenant-runtime');
     document.head.appendChild(el);
   }
   return el;
 }
+
+// Subset of tokens that propagate to the OS surface. These tokens are
+// usability-safe: tinting the accent and fonts does not break editor
+// readability (unlike overriding background/surface/border).
+const OS_SAFE_VAR_MAP = {
+  'palette.primary':        '--bp-primary',
+  'palette.accent':         '--bp-accent',
+  'typography.display':     '--bp-font-heading',
+  'typography.body':        '--bp-font-body',
+};
 
 export function applyThemeVarsToRoot(theme) {
   if (typeof document === 'undefined') return;
@@ -78,21 +97,51 @@ export function applyThemeVarsToRoot(theme) {
   if (!theme) {
     styleEl.textContent = '';
     document.documentElement.removeAttribute('data-tenant-theme');
+    document.documentElement.removeAttribute('data-tenant-mode');
     return;
   }
-  const decls = [];
+
+  // ── Storefront (full theme) ────────────────────────────────────
+  const storefrontDecls = [];
   Object.entries(VAR_MAP).forEach(([path, cssVar]) => {
     let value = dig(theme, path);
     if (cssVar === '--brand-font-display' || cssVar === '--brand-font-body') {
       value = fontFamilyFor(value);
     }
     if (value != null && value !== '') {
-      decls.push(`${cssVar}: ${String(value)};`);
+      storefrontDecls.push(`${cssVar}: ${String(value)};`);
     }
   });
-  // Single CSS rule, scoped to the storefront surface ONLY.
-  styleEl.textContent = `[data-surface="storefront"] {\n  ${decls.join('\n  ')}\n}`;
+
+  // ── Blueprint OS (safe subset only) ─────────────────────────────
+  const osDecls = [];
+  Object.entries(OS_SAFE_VAR_MAP).forEach(([path, cssVar]) => {
+    let value = dig(theme, path);
+    if (cssVar === '--bp-font-heading' || cssVar === '--bp-font-body') {
+      value = fontFamilyFor(value);
+    }
+    if (value != null && value !== '') {
+      osDecls.push(`${cssVar}: ${String(value)};`);
+    }
+  });
+  // Derive primary-soft and primary-glow tints from the tenant primary
+  // so hover/active states feel cohesive across the editor chrome.
+  const p = dig(theme, 'palette.primary');
+  if (typeof p === 'string' && /^#[0-9a-f]{6}$/i.test(p)) {
+    const r = parseInt(p.slice(1, 3), 16);
+    const g = parseInt(p.slice(3, 5), 16);
+    const b = parseInt(p.slice(5, 7), 16);
+    osDecls.push(`--bp-primary-soft: rgba(${r}, ${g}, ${b}, 0.12);`);
+    osDecls.push(`--bp-primary-glow: rgba(${r}, ${g}, ${b}, 0.18);`);
+    osDecls.push(`--bp-border-hover: rgba(${r}, ${g}, ${b}, 0.28);`);
+    osDecls.push(`--bp-border-active: rgba(${r}, ${g}, ${b}, 0.40);`);
+    osDecls.push(`--bp-selection-bg: rgba(${r}, ${g}, ${b}, 0.20);`);
+  }
+
+  styleEl.textContent = `[data-surface="storefront"] {\n  ${storefrontDecls.join('\n  ')}\n}\n[data-surface="os"] {\n  ${osDecls.join('\n  ')}\n}`;
+
   if (theme.preset_key) document.documentElement.setAttribute('data-tenant-theme', theme.preset_key);
+  if (theme.mode)       document.documentElement.setAttribute('data-tenant-mode', theme.mode);
 }
 
 export const TenantThemeProvider = ({ children }) => {

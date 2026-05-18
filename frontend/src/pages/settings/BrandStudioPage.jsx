@@ -368,7 +368,7 @@ const BrandStudioPage = () => {
             {t('brand.title', null, 'Identità & Tema')}
           </h1>
           <p className="text-[var(--bp-text-muted)] text-[13px] font-body mt-2 max-w-xl">
-            {t('brand.intro', null, "Brand Studio controlla SOLO l'identità visiva del tuo storefront pubblico: logo, palette, tipografia, tagline, contatti. Per modificare navigazione, footer, sezioni o journey → vai su Experience Studio.")}
+            {t('brand.intro', null, "Brand Studio è il sistema di identità visiva del tuo studio: palette, tipografia, presets. La tua identità propaga al sito pubblico (completa) e al Blueprint editor (solo accent + tipografia, per non compromettere l'usabilità operativa).")}
           </p>
           {/* Scope traceability — Brand Studio controls IDENTITY only.
               Navigation / footer / sections live in Experience Studio. */}
@@ -439,7 +439,25 @@ const BrandStudioPage = () => {
           </Section>
 
           <Section kicker={t('brand.section.paletteKicker', null, 'B · Palette')} title={t('brand.section.paletteTitle', null, 'Colori')} testid="section-palette"
-                   trace={t('brand.paletteTrace', null, 'Controls public storefront theme · NOT Blueprint admin')}>
+                   trace={t('brand.paletteTrace', null, 'Storefront pubblico (palette completa) · Blueprint editor (solo accent + font come identità sottile)')}>
+            <div className="mb-4 flex items-center gap-2" data-testid="brand-mode-toggle">
+              <span className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body mr-2">Modalità base</span>
+              {['dark', 'light'].map((m) => (
+                <button key={m}
+                        type="button"
+                        data-testid={`brand-mode-${m}`}
+                        onClick={() => setTheme({ ...theme, mode: m })}
+                        className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] border rounded-[var(--bp-radius-xs)] transition-colors
+                          ${(theme.mode || 'dark') === m
+                            ? 'bg-[var(--bp-primary-soft)] text-[var(--bp-primary)] border-[var(--bp-border-active)]'
+                            : 'bg-transparent text-[var(--bp-text-muted)] border-[var(--bp-border)] hover:text-[var(--bp-text-primary)]'}`}>
+                  {m === 'dark' ? 'Dark base' : 'Light base'}
+                </button>
+              ))}
+              <span className="ml-2 text-[10px] italic text-[var(--bp-text-faint)]">
+                Il preset sceglie la modalità automaticamente · puoi sovrascriverla
+              </span>
+            </div>
             <div className="grid grid-cols-2 gap-x-5 gap-y-1">
               {[
                 ['primary',        'Primary'],
@@ -481,7 +499,7 @@ const BrandStudioPage = () => {
           </Section>
 
           <Section kicker="E · Presets" title={t('brand.section.presetsTitle', null, 'Temi curati')} testid="section-presets"
-                   trace={t('brand.presetsTrace', null, 'Controls public storefront theme')}>
+                   trace={t('brand.presetsTrace', null, 'Identità visiva completa · 9 preset editoriali curati')}>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
               {presets.map((p) => (
                 <PresetCard key={p.key} preset={p}
