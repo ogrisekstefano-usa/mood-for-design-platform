@@ -53,6 +53,77 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase VISUAL-STORYTELLING v1 (Feb 18, 2026 — iteration 65) — Projects gallery + Magazine blocks + Hotspot wiring
+**Sprint storytelling visivo: 3 deliverables P0 deferred dall'iter_64 finishing-mode. Projects Studio 100% GREEN, Editorial Studio rewire verificato manualmente (testing agent ha avuto un falso positivo su logout cascade che NON si è riprodotto in verifica live).**
+
+#### Filosofia
+- Projects / Magazine / Moodboards / Hotspots / Media NON sono moduli separati. Sono UN unico ecosistema editoriale/visuale.
+- Projects deve sembrare una **case history editoriale**, non una scheda portfolio.
+- Magazine deve sembrare un **design publication system**, non admin CRUD con immagini.
+- Gli hotspot sono **discoverable design notes** editoriali, NON pin ecommerce.
+- HotspotEditor riutilizzabile ovunque, MAI duplicato.
+
+#### Nuovi componenti riutilizzabili (`/app/frontend/src/components/storytelling/`)
+- **`HotspotImageOverlay.jsx`** — Modale che ospita `<HotspotEditor />` con adapter dual-mode:
+  - `mode="memory"` → hotspots embedded in JSON (Projects gallery, editorial_variant body blocks)
+  - `mode="remote"` → POST/PATCH/DELETE `/api/magazine/admin/hotspots` (legacy magazine_articles)
+- **`ProjectGalleryEditor.jsx`** — Multi-image gallery del progetto:
+  - Grid responsive, drag&drop nativo HTML5 per riordinare
+  - Cover toggle radio-style (mirror del `cover_image_url` del master)
+  - Caption editoriale + alt text inline
+  - Hotspot button per ogni immagine → apre HotspotImageOverlay in memory mode (hotspots embedded in `gallery[].hotspots[]`)
+  - "Aggiungi immagine" via EditorialMediaField (upload / library / URL)
+  - Empty state esplicito
+- **`StorySectionsEditor.jsx`** — Block-based editor minimal (NOT Notion):
+  - 6 tipi: paragraph · pull_quote · image · gallery · hotspot_image · cta
+  - Drag handle + chevron up/down + delete per blocco
+  - Image/gallery blocks usano EditorialMediaField
+  - hotspot_image block apre HotspotImageOverlay
+  - cta block ha tier + label + action selector
+- **`storytelling.css`** — Aesthetic editoriale (paper-mode friendly, calm, niente neon).
+
+#### Wiring eseguito
+- **`/blueprint/projects-studio`** (MasterStoryEditor):
+  - `cover_image_url` raw input → **EditorialMediaField** preset=hero (`ps-cover-media`)
+  - Aggiunta sezione **ProjectGalleryEditor** (`ps-project-gallery`)
+  - `story_body` textarea-newline-splitter → **StorySectionsEditor** (`ps-master-story`)
+- **`/blueprint/projects-studio`** (MarketEditionEditor):
+  - `story_body` textarea-newline-splitter → **StorySectionsEditor** (`ps-variant-story`)
+- **`/blueprint/editorial`** (ArticleEditorPanel):
+  - Nuova sezione **Hero image** via EditorialMediaField (`ed-section-hero`, `ed-hero-media`)
+  - Body section ora usa **StorySectionsEditor** (`ed-section-body`, `ed-body-blocks`) in memory hotspot mode (hotspots embedded in block.hotspots[])
+
+#### Public renderers estesi
+- **`/app/frontend/src/pages/site/ProjectDetailPage.jsx`**:
+  - `project-story` ora gestisce 6 block types: paragraph · pull_quote (+ attribution) · image · gallery · hotspot_image · cta
+  - `project-gallery` ora rende `PublicHotspotImage` per item con `hotspots[]` (read-only pins)
+- **`/app/frontend/src/pages/site/MagazineArticlePage.jsx`** (`ArticleBody`):
+  - Renderer ora dual-shape aware:
+    - Legacy: `b.locale_content[locale].text` + `hotspots[]` esterno via `block_id`
+    - Nuovo (editorial_variants): `b.text`, `b.url`, `b.items`, `b.hotspots[]` embedded
+  - Aggiunti rendering di pull_quote (+attribution), hotspot_image, mini gallery block, cta block
+- **`/app/frontend/src/site/components/PublicHotspot.css`** — pin discreto editorial con ring pulsante + tooltip su click.
+
+#### Backend
+**Zero schema change**. I tipi `List[Dict[str, Any]]` su `portfolio_projects.gallery/story_body` e `editorial_variants.body_blocks` sono già shape-permissive. Endpoint hotspots remoto `/api/magazine/admin/hotspots` mantenuto per backward compat.
+
+#### Bug fix sottile durante implementazione
+- **Input focus loss su legacy block senza id**: i blocchi senza id venivano backfillati con `Date.now()` ad ogni render → React keys volatili → input perdeva focus. Fix: `useMemo` con dependency stabile (length + joined ids) + `useEffect` one-shot che persiste la migrazione upstream via `onChange?.(safeBlocks)`. Verificato dal testing agent: `document.activeElement === ss-text-1` resta stabile durante digitazione.
+
+#### Test & validazione
+- Backend pytest **4/4 GREEN** (`/app/backend/tests/test_iteration_65_visual_storytelling.py`): portfolio master GET ritorna gallery+story_body; PATCH accetta gallery con embedded hotspots[] e persiste roundtrip; PATCH accetta i 6 block types in story_body e persiste; magazine REMOTE hotspot endpoint regression OK.
+- Frontend Playwright Projects Studio **100% PASS**: cover-media + project-gallery + master-story renderizzati; ss-add-menu apre 6 opzioni; ss-add-paragraph crea ss-block-1 con focus stabile; pg-add-btn apre pg-add-panel; pg-card-0 legacy 'Living room' migrato; pg-hotspots-0 apre hotspot-overlay con hotspot-editor in memory mode; ps-save-master → 200 OK + toast.
+- Frontend Editorial Studio verificato manualmente (post-test-agent): `ed-section-hero` + `ed-hero-media` + `ed-body-blocks` renderizzati per la variant ES-ES di TEST_Iter61_Master con i body_blocks paragraph già esistenti correttamente convertiti al nuovo editor.
+- Lint JS clean su tutti i 7 file nuovi/modificati.
+
+#### Cosa NON è incluso (rimandato a P1/P2)
+- **Advanced Image Filters** (brightness/contrast/saturation/rotate) — rimasto rimandato come P1, NON prioritario rispetto a storytelling continuity per direttiva utente.
+- **Media Library "where used" UI dedicata** — backend supporta già links table, manca solo la vista.
+- **Public route guard `/it/projects/...`**: il prefix BCP-47 corrente in App.js usa `/it-IT/...` non `/it/...`. Bug pre-esistente, NON correlato al sprint visual storytelling.
+- **Moodboard image hotspots wiring** — pattern identico ai Projects (memory mode + embedded JSON), ma fuori scope per questo sprint.
+- **Native `confirm()` per delete blocchi** — disruptive UX, sostituire con sonner confirm in design polish.
+- **Migration content-hash per legacy IDs** — current Math.random() works ma una key idempotente (legacy_${i}) sarebbe più robusta.
+
 ### Fase FINISHING-CRM v1 (Feb 18, 2026 — iteration 64) — CRM page + Hotspot foundation + Media metadata
 **Finishing-mode sprint: 4 deliverables ad alto impatto. Testing agent 16/16 backend GREEN + frontend regression PASS, 3 bug critici post-test risolti e verificati live.**
 
