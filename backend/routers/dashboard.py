@@ -557,8 +557,8 @@ def dashboard_summary(ctx: dict = Depends(require_permission(P_PROJECTS_READ))):
             "id":        f"lead-{lead['id']}",
             "kind":      "lead_followup",
             "headline":  f"{name} ha avviato un dialogo.",
-            "reason":    "Una risposta editoriale rapida raddoppia il tasso di conversazione.",
-            "cta_label": "Apri il lead",
+            "reason":    "Una risposta editoriale rapida rafforza la relazione fin dal primo gesto.",
+            "cta_label": "Apri la richiesta",
             "cta_to":    f"/workspace/leads/{lead['id']}",
         })
 

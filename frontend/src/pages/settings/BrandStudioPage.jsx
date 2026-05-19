@@ -653,23 +653,11 @@ const BrandStudioPage = () => {
             </Field>
           </Section>
 
-          <Section kicker="E · Temi curati" title={t('brand.section.curatedTitle', null, 'Temi curati')} testid="section-curated-palettes"
-                   trace={t('brand.curatedTrace', null, `${LIGHT_PALETTES.length + DARK_PALETTES.length} palette ordinate per famiglia · click per applicare · poi premi Salva`)}>
-            <div className="mb-2 mt-1 text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body flex items-center gap-2">
-              <Sparkles size={10} strokeWidth={1.7} /> Chiari & colorati · {LIGHT_PALETTES.length}
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-5" data-testid="brand-curated-light-grid">
-              {LIGHT_PALETTES.map((p) => (
-                <CuratedPaletteCard key={p.id} palette={p}
-                                    current={theme.preset_key === `curated_${p.id}`}
-                                    onPick={applyCuratedPalette}
-                                    testid={`brand-curated-${p.id}`} />
-              ))}
-            </div>
-            <div className="mb-2 text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body flex items-center gap-2">
-              <span className="inline-block w-2 h-2 rounded-full bg-[var(--bp-text-primary)]" /> Scuri · {DARK_PALETTES.length}
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3" data-testid="brand-curated-dark-grid">
+          <Section kicker="E · Preset editoriali"
+                   title={t('brand.section.presetsTitle', null, 'Preset editoriali')}
+                   testid="section-curated-palettes"
+                   trace={t('brand.presetsTrace', null, `${DARK_PALETTES.length} atmosfere scure · click per applicare · poi premi Salva`)}>
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3" data-testid="brand-editorial-presets-grid">
               {DARK_PALETTES.map((p) => (
                 <CuratedPaletteCard key={p.id} palette={p}
                                     current={theme.preset_key === `curated_${p.id}`}
@@ -678,20 +666,6 @@ const BrandStudioPage = () => {
               ))}
             </div>
           </Section>
-
-          {presets.length > 0 && (
-            <Section kicker="F · Editorial presets" title={t('brand.section.presetsTitle', null, 'Preset editoriali')} testid="section-presets"
-                     trace={t('brand.presetsTrace', null, 'Identità complete · ordinate per famiglia cromatica · server-side · sovrascrivono anche tipografia e radius')}>
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-                {sortPresetsByHue(presets).map((p) => (
-                  <PresetCard key={p.key} preset={p}
-                              current={theme.preset_key === p.key}
-                              onPick={applyPreset}
-                              testid={`preset-${p.key}`} />
-                ))}
-              </div>
-            </Section>
-          )}
         </div>
 
         {/* Live preview */}

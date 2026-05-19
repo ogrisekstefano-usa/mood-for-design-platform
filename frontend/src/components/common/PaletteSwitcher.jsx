@@ -121,7 +121,7 @@ const PaletteSwitcher = () => {
           <header className="palsw-popover__head">
             <div>
               <p className="palsw-popover__eyebrow">Atelier dei temi</p>
-              <h3 className="palsw-popover__title">Temi curati</h3>
+              <h3 className="palsw-popover__title">Preset editoriali</h3>
             </div>
             <button type="button" className="palsw-popover__close"
                     onClick={() => setOpen(false)} aria-label="Chiudi"
@@ -130,20 +130,9 @@ const PaletteSwitcher = () => {
             </button>
           </header>
 
-          <section className="palsw-section" data-testid="palette-section-light">
-            <p className="palsw-section__label">
-              <Sparkles size={10} strokeWidth={1.8} /> Chiari & colorati · {LIGHT_PALETTES.length}
-            </p>
-            <div className="palsw-grid">
-              {LIGHT_PALETTES.map((p) => (
-                <Swatch key={p.id} palette={p} active={current === p.id} onPick={pick} />
-              ))}
-            </div>
-          </section>
-
           <section className="palsw-section" data-testid="palette-section-dark">
             <p className="palsw-section__label">
-              <span className="palsw-section__moon" aria-hidden /> Scuri · {DARK_PALETTES.length}
+              <span className="palsw-section__moon" aria-hidden /> {DARK_PALETTES.length} atmosfere scure
             </p>
             <div className="palsw-grid">
               {DARK_PALETTES.map((p) => (
@@ -156,10 +145,10 @@ const PaletteSwitcher = () => {
             <Link to="/settings/brand#section-curated-palettes" onClick={() => setOpen(false)}
                   data-testid="palette-switcher-brand-studio"
                   className="palsw-foot__link">
-              Apri Brand Studio · Temi curati <ExternalLink size={11} strokeWidth={1.7} />
+              Apri Brand Studio · personalizza <ExternalLink size={11} strokeWidth={1.7} />
             </Link>
             <p className="palsw-foot__hint">
-              Sfoglia tutti i 24 temi e imposta colori, font, micro-copy del tuo studio.
+              Imposta colori, font e micro-copy editoriale del tuo studio.
             </p>
           </footer>
         </div>,
