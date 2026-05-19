@@ -1,0 +1,303 @@
+/**
+ * inline-regia.css — Inline Editorial Regia™ popover styling.
+ *
+ * Anchored to image blocks. Cinematic / atelier / Lightroom-editorial.
+ * NON deve mai sembrare un "image editor": glass + warm shadow + thin border.
+ */
+
+.ir-popover {
+  position: fixed;
+  width: 340px;
+  max-height: calc(100vh - 24px);
+  overflow-y: auto;
+  background: var(--bp-surface-0, #0d0d0e);
+  border: 1px solid color-mix(in srgb, var(--bp-text-primary) 10%, transparent);
+  border-radius: 10px;
+  z-index: 9050;
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--bp-text-primary) 8%, transparent) inset,
+    0 8px 24px rgba(0, 0, 0, 0.30),
+    0 28px 60px rgba(0, 0, 0, 0.40);
+  backdrop-filter: blur(18px);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* Cinematic entrance — soft fade + lift, not a snappy popover */
+  animation: ir-in 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--bp-border) transparent;
+}
+.ir-popover::-webkit-scrollbar { width: 4px; }
+.ir-popover::-webkit-scrollbar-thumb { background: var(--bp-border); border-radius: 2px; }
+
+@keyframes ir-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);     }
+}
+
+.ir-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--bp-border);
+}
+.ir-eyebrow {
+  font-size: 8.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--bp-primary);
+  display: block;
+  margin-bottom: 2px;
+}
+.ir-title {
+  font-family: 'Playfair Display', var(--bp-font-heading), serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--bp-text-primary);
+  margin: 0;
+}
+.ir-close {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  color: var(--bp-text-muted);
+  cursor: pointer;
+  transition: border-color .18s ease, color .18s ease;
+}
+.ir-close:hover { color: var(--bp-text-primary); border-color: var(--bp-text-secondary); }
+
+.ir-section { display: flex; flex-direction: column; gap: 7px; }
+.ir-section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted);
+  margin: 0;
+}
+
+/* ── Focal point stage ────────────────────────────────────────── */
+.ir-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--bp-surface-2);
+  cursor: crosshair;
+  user-select: none;
+}
+.ir-stage img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  transition: filter .25s ease;
+}
+.ir-focal {
+  position: absolute;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--bp-primary);
+  border: 2px solid #fff;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--bp-primary) 22%, transparent),
+    0 0 14px color-mix(in srgb, var(--bp-primary) 40%, transparent);
+  animation: ir-pulse 1.6s ease-in-out infinite;
+}
+@keyframes ir-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--bp-primary) 18%, transparent), 0 0 12px color-mix(in srgb, var(--bp-primary) 32%, transparent); }
+  50%      { box-shadow: 0 0 0 7px color-mix(in srgb, var(--bp-primary) 12%, transparent), 0 0 18px color-mix(in srgb, var(--bp-primary) 50%, transparent); }
+}
+
+/* ── Zoom slider ──────────────────────────────────────────────── */
+.ir-zoom {
+  display: flex; align-items: center; gap: 8px;
+  color: var(--bp-text-muted);
+  font-size: 10px;
+}
+.ir-zoom input[type="range"] {
+  flex: 1;
+  accent-color: var(--bp-primary);
+  height: 4px;
+}
+.ir-zoom__val {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--bp-text-secondary);
+  min-width: 38px;
+  text-align: right;
+  font-size: 10px;
+}
+
+/* ── Filter strip (Lightroom-style) ───────────────────────────── */
+.ir-filter-strip {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.ir-filter-strip::-webkit-scrollbar { display: none; }
+.ir-filter {
+  flex: 0 0 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  align-items: center;
+}
+.ir-filter__thumb {
+  width: 64px;
+  height: 44px;
+  border-radius: 4px;
+  border: 1.5px solid transparent;
+  background-size: cover;
+  background-position: center;
+  transition: border-color .2s ease, transform .25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ir-filter:hover .ir-filter__thumb {
+  transform: translateY(-1px);
+  border-color: var(--bp-text-muted);
+}
+.ir-filter.is-on .ir-filter__thumb {
+  border-color: var(--bp-primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--bp-primary) 22%, transparent);
+}
+.ir-filter__lbl {
+  font-size: 8.5px;
+  letter-spacing: 0.04em;
+  color: var(--bp-text-muted);
+  text-align: center;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 64px;
+}
+.ir-filter.is-on .ir-filter__lbl { color: var(--bp-text-primary); }
+
+/* ── Safe area preview ────────────────────────────────────────── */
+.ir-safe-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.ir-safe-pill {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-secondary);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all .18s ease;
+}
+.ir-safe-pill:hover { color: var(--bp-text-primary); border-color: var(--bp-text-secondary); }
+.ir-safe-pill.is-on {
+  border-color: var(--bp-primary);
+  color: var(--bp-primary);
+  background: color-mix(in srgb, var(--bp-primary) 10%, transparent);
+}
+.ir-safe-preview {
+  margin-top: 6px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--bp-surface-2);
+  border: 1px solid var(--bp-border);
+}
+.ir-safe-preview img {
+  width: 100%; height: 100%; display: block;
+}
+
+/* ── Footer ───────────────────────────────────────────────────── */
+.ir-foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--bp-border);
+}
+.ir-foot__spacer { flex: 1; }
+
+.ir-btn-soft,
+.ir-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 6px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all .18s ease;
+  border: 1px solid transparent;
+}
+.ir-btn-soft {
+  background: transparent;
+  border-color: var(--bp-border);
+  color: var(--bp-text-secondary);
+}
+.ir-btn-soft:hover {
+  border-color: var(--bp-text-secondary);
+  color: var(--bp-text-primary);
+}
+.ir-btn {
+  background: var(--bp-primary);
+  color: var(--bp-surface-0, #0a0a0a);
+  border-color: var(--bp-primary);
+  font-weight: 500;
+}
+.ir-btn:hover { filter: brightness(1.08); }
+
+/* ── Hover trigger on image block ─────────────────────────────── */
+.block-regia-trigger {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(10, 10, 12, 0.72);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity .18s ease, transform .22s cubic-bezier(0.22, 1, 0.36, 1), background .2s ease;
+}
+.block-regia-trigger:hover {
+  background: rgba(10, 10, 12, 0.88);
+  transform: translateY(0);
+}
+.group:hover .block-regia-trigger,
+.block-regia-trigger:focus-visible,
+.block-regia-trigger.is-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.block-regia-trigger.is-active {
+  background: var(--bp-primary);
+  color: var(--bp-surface-0, #0a0a0a);
+  border-color: var(--bp-primary);
+}

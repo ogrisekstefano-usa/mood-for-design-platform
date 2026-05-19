@@ -30,6 +30,7 @@ import ImageUploader from '../../blueprint/moodboard/ImageUploader';
 import BlueprintColorPicker from '../../components/common/BlueprintColorPicker';
 import PagesFilmstrip from '../../blueprint/moodboard/PagesFilmstrip';
 import EditorPanel from '../../blueprint/moodboard/EditorPanel';
+import InlineEditorialRegia from '../../blueprint/moodboard/InlineEditorialRegia';
 // ActionToolbar removed from the editor — canvas-implicit interactions only.
 import { computeSnap } from '../../blueprint/moodboard/useSnap';
 import SnapGuides from '../../blueprint/moodboard/SnapGuides';
@@ -69,6 +70,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const [snapEnabled, setSnapEnabled] = useState(true);
   const [pages, setPages] = useState([]);
   const [activePageId, setActivePageId] = useState(null);
+  const [regia, setRegia] = useState(null);  // { blockId, anchorRect } — Inline Editorial Regia™ popover
   const [transitions, setTransitions] = useState([]);
   // QuickAdjust modal — lifted to editor root so changing the active block
   // doesn't unmount it mid-adjust. Holds { blockId, src }.
@@ -1069,6 +1071,26 @@ const MoodboardEditor = ({ readOnly = false }) => {
                     {Component
                       ? <Component block={b} readOnly={readOnly} t={t} />
                       : <div className="bp-caption text-[var(--bp-text-muted)] p-2">{b.type}</div>}
+                    {/* Inline Regia™ trigger — appears on hover for image
+                        blocks. Click anchors the contextual popover to the
+                        block so the user can re-direct focal point + filter
+                        without leaving the moodboard flow. */}
+                    {!readOnly && b.type === 'image' && b.content?.src && (
+                      <button
+                        type="button"
+                        data-testid={`regia-trigger-${b.id}`}
+                        onMouseDown={(e) => { e.stopPropagation(); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const rect = e.currentTarget.closest('.group').getBoundingClientRect();
+                          setRegia({ blockId: b.id, anchorRect: rect });
+                          setSelectedId(b.id);
+                        }}
+                        className={`block-regia-trigger ${regia?.blockId === b.id ? 'is-active' : ''}`}>
+                        <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'currentColor', display: 'inline-block' }} />
+                        Regia
+                      </button>
+                    )}
                     {!readOnly && isSelected && !b.locked && (
                       // Resize handle — visible 10×10 teal nub with an
                       // invisible 22×22 hit area so it's effortless to grab
@@ -1274,6 +1296,23 @@ const MoodboardEditor = ({ readOnly = false }) => {
                             }}
                             onSkip={() => setQuickAdjust(null)}
                             t={t} />
+        );
+      })()}
+
+      {/* Inline Editorial Regia™ — contextual mini popover anchored to
+          the image block. Live updates style.focal_point, style.zoom and
+          metadata.{editorial_filter, display_meta}; persists to the
+          Inspirations™ archive too when block.metadata.inspiration_id. */}
+      {regia && (() => {
+        const targetBlock = blocks.find((bb) => bb.id === regia.blockId);
+        if (!targetBlock) return null;
+        return (
+          <InlineEditorialRegia
+            block={targetBlock}
+            anchorRect={regia.anchorRect}
+            onChange={(patch) => updateBlock(regia.blockId, patch)}
+            onClose={() => setRegia(null)}
+          />
         );
       })()}
 
