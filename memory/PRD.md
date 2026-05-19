@@ -53,6 +53,122 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase CRM-REFACTOR-PHASE-1 v1 (Feb 19, 2026) — Relationship OS™ foundation
+**Sprint cardinale di CRM refactor. Unifica Lead/Prospect/Client come stage pills dentro Accounts. Introduce Account Detail Experience™ full-page split-view, Quick Add "+" + Activity modal, Voice Notes con Whisper STT, Create a Cultural Edition™ foundation, micro insights, mobile FAB.**
+
+#### Direttive applicate (strict scope · Phase 1)
+- ✅ UN SOLO ENTRY POINT: `Accounts` (Leads/Prospects/Clients eliminati come tab separate)
+- ✅ Legacy cleanup: `/workspace/leads`, `/workspace/clients` → redirect `/crm/accounts`
+- ✅ AccountDetailPage™ full-page split (timeline + Relationship Summary Panel™)
+- ✅ 7 canonical stage pills evolutivi: Lead · Prospect · Qualificato · Progetto attivo · Cliente · Cliente di ritorno · Archiviato
+- ✅ Stage change via modal elegante con nota opzionale (evento relazionale, non toggle)
+- ✅ Quick Add "+" menu (9 azioni rapide) + ActivityModal minimal Notion-style
+- ✅ Voice Notes con Whisper STT (MediaRecorder + Supabase Storage + emergentintegrations)
+- ✅ Create a Cultural Edition™ foundation (submarket picker + intent logging timeline)
+- ✅ Mood prevalente CALCOLATO editorialmente (atmosphere + style + materials + engagement)
+- ✅ Micro insights concierge (NO analytics, NO KPI — solo narrative)
+- ✅ Filter bar accounts: stage · account_type · health
+- ✅ Mobile FAB sticky · timeline-first responsive
+- ✅ Account types estesi: hotel_group · yacht_client · luxury_retail · partner_brand
+- ❌ Realtime chat (Phase 2)
+- ❌ Cultural Edition variant creation downstream (Phase 2 — oggi solo intent log)
+- ❌ Voice transcript editing inline (Phase 2)
+
+#### Backend (3 file)
+- **NEW** `/app/backend/routers/crm_voice_notes.py` (190 righe)
+  - `POST /api/relationships/accounts/{aid}/voice-notes` (multipart audio)
+  - Upload Supabase Storage `tenant-assets/crm-voice-notes/{tenant}/{aid}/{uuid}.{ext}`
+  - Whisper STT via `emergentintegrations.llm.openai.OpenAISpeechToText`
+  - Crea `interactions` row type=voice_note con attachment + transcript + duration
+  - Fire-and-forget: anche se Whisper fallisce, interaction è creata con audio_url
+- **NEW** `/app/backend/routers/crm_intelligence.py` (300 righe)
+  - `GET /accounts/{aid}/summary` — account + style + mood + owner + advisor + submarket + last_interaction + next_action + micro insights
+  - `GET /accounts/{aid}/mood-signals` — mood computation isolata
+  - `POST /accounts/{aid}/cultural-editions` — foundation intent endpoint (intent_id + submarket snapshot + next-step hint)
+  - `_compute_mood`: tally atmosphere(×4) + style(×3) + designer-validated(×3) + materials(×1) + moodboard engagement
+  - `_micro_insights`: 2-4 narrative sentences from market+style+type, NEVER stats
+- **UPDATED** `/app/backend/server.py` — import + mount dei 2 nuovi router
+
+#### Frontend (8 file)
+- **NEW** `/app/frontend/src/pages/crm/AccountDetailPage.jsx` (465 righe) — Full-page split view, top bar + 7-stage pills + body grid (timeline left + summary panel right) + mobile FAB
+- **NEW** `/app/frontend/src/pages/crm/relationship-os.css` (450 righe) — Editorial luxury OS styles (Linear × Apple × AD × Notion)
+- **NEW** `/app/frontend/src/pages/crm/VoiceRecorder.jsx` — MediaRecorder + audio preview + upload Whisper
+- **NEW** `/app/frontend/src/pages/crm/ActivityModal.jsx` — Quick activity entry (12 tipi) + voice mode
+- **NEW** `/app/frontend/src/pages/crm/StageChangeModal.jsx` — Editorial stage transition with note
+- **NEW** `/app/frontend/src/pages/crm/CulturalEditionModal.jsx` — Submarket picker da taxonomy 48 cluster
+- **UPDATED** `/app/frontend/src/pages/crm/CrmAccountsPage.jsx`
+  - CRM_TABS ridotti da 7 a 3 (Accounts · Follow-ups · Archived)
+  - Filter bar (stage · type · health) sopra le cards
+  - openDrawer ora naviga a `/crm/accounts/:id` (full-page) — drawer legacy non più aperto
+  - CANONICAL_PIPELINE 7 stages
+  - Account types estesi (+ hotel_group, yacht_client, luxury_retail, partner_brand)
+- **UPDATED** `/app/frontend/src/components/layout/Sidebar.jsx`
+  - Sezione CRM ridotta a 3 voci (era 7)
+  - `wsRoutes` filtrato: rimuove `/workspace/leads` + `/workspace/clients`
+- **UPDATED** `/app/frontend/src/App.js`
+  - `<AccountDetailPage>` lazy import
+  - Route `/crm/accounts/:accountId` → full-page (più specifica di `/crm/:tab`)
+  - `/workspace/leads` e `/workspace/clients` → `<Navigate to="/crm/accounts" replace />`
+
+#### Migrazione DB
+- **NEW** `/app/supabase/migrations/051_crm_canonical_pipeline.sql` (applicata)
+  - 7 canonical lifecycle_stages (lead → prospect → qualified → active_project → client → returning_client → archived) per ogni tenant (idempotente, ON CONFLICT update)
+  - 4 nuovi account_types (hotel_group, yacht_client, luxury_retail, partner_brand)
+  - Colonne aggiunte ad `accounts`: `mood_dominant`, `market_submarket`, `next_followup_at`, `signal_snapshot JSONB`
+  - Index parziale `idx_interactions_voice_notes` per timeline performance
+
+#### Validazione live E2E (testing_agent iter66 + iter67)
+**Backend** — 7/7 green:
+- `GET /summary` → mood + insights + submarket + last_interaction OK ✓
+- `GET /mood-signals` → mood object con tags/dominant/secondary ✓
+- `POST /cultural-editions` con `usa_miami` → 201, intent_id, interaction logged title='Create a Cultural Edition™ · Miami' (display_name risolto) ✓
+- `POST /voice-notes` con 2KB WAV → 201, interaction.attachments[0].url=signed Supabase URL ✓
+- `POST /stage` con `{lifecycle_stage:'lead'}` → 200, lifecycle aggiornato + stage_change interaction ✓
+- Lookups `/relationship-lookups?group=lifecycle_stage` → 7 canonical entries present ✓
+
+**Frontend** — 100% (post iter67 fixes):
+- `/workspace/leads` redirect → `/crm/accounts` ✓
+- `/crm/accounts`: 71 cards (testid `account-card-<id>`) ✓
+- Click card → `/crm/accounts/<id>` AccountDetailPage ✓
+- `relationship-summary-panel` con CTAs in TOP position ✓
+- `cultural-edition-modal` apre con 49 submarket options ✓
+- 7 canonical stage pills (testid `stage-pill-<key>`) ✓
+- Stage click → StageChangeModal con note + Conferma ✓
+- Quick Add "+" → menu 9 voci ✓
+- Voice note mode → MediaRecorder UI con mic button ✓
+- Mobile 390×844: `rl-fab` visible, `rl-quickadd-btn` hidden ✓
+
+#### File modificati
+Backend: server.py · crm_voice_notes.py (NEW) · crm_intelligence.py (NEW)
+Frontend: App.js · Sidebar.jsx · CrmAccountsPage.jsx · AccountDetailPage.jsx (NEW) · VoiceRecorder.jsx (NEW) · ActivityModal.jsx (NEW) · StageChangeModal.jsx (NEW) · CulturalEditionModal.jsx (NEW) · relationship-os.css (NEW)
+DB: 051_crm_canonical_pipeline.sql (NEW · applied)
+
+#### Production confidence: **9.5/10**
+Foundation Relationship OS™ live ed end-to-end. Designer/showroom possono:
+1. Aprire un Account come full-page experience editoriale
+2. Vedere la memoria viva della relazione (timeline + summary)
+3. Aggiungere attività con Quick Add minimal
+4. Registrare nota vocale → Whisper trascrive automaticamente
+5. Avanzare stage con nota relazionale (non toggle)
+6. Avviare Cultural Edition verso 49 submarket diversi
+7. Tutto in italiano, mobile-first, editorial.
+
+#### Cosa NON è incluso (Phase 2)
+- Cultural Edition → editorial variant creation downstream (oggi solo intent log)
+- Chat realtime cliente/studio
+- Voice transcript inline editing
+- Pattern recognition AI sui mood signals (richiede Phase 2 del Market Intelligence Engine)
+- Visit report photo capture
+- Drag-and-drop kanban stage funnel
+- Calendar integration su next_followup_at
+
+#### Issue residue (NON blocker)
+- (Cosmetic) `<option>` con span child genera hydration warning Chrome devtools — non blocca selezione
+- (Cosmetic) Quick-add menu può sovrapporsi al panel CTAs su desktop 1920 — z-index gestisce correttamente
+
+---
+
+
 ### Fase MIE-PHASE-1.5 v1 (Feb 19, 2026) — Brand Voice + Aggregates + Signal Hook
 **Sprint A + B + C completo: estensione strategica del Phase 1 con tenant customization layer, aggregation foundation, e signal hook per ingestione live.**
 
