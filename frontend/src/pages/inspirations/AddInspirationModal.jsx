@@ -61,7 +61,7 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
       onImported?.(r.data);
       reset();
     } catch (e) {
-      toast.error(e?.response?.data?.detail || 'Non è stato possibile salvare il riferimento');
+      toast.error(asErrorString(e, 'Non è stato possibile salvare il riferimento'));
     } finally { setSubmitting(false); }
   };
 
@@ -107,7 +107,7 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
       reset();
     } catch (e) {
       console.error(e);
-      toast.error(e?.response?.data?.detail || 'Upload fallito');
+      toast.error(asErrorString(e, 'Upload fallito'));
     } finally { setSubmitting(false); }
   };
 

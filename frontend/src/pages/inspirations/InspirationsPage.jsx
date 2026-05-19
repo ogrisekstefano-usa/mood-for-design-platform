@@ -18,6 +18,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { asErrorString } from '../../lib/asErrorString';
 import AddInspirationModal from './AddInspirationModal';
 import InspirationDetailDrawer from './InspirationDetailDrawer';
 import './inspirations.css';
@@ -42,7 +43,7 @@ const InspirationsPage = () => {
     if (search) qs.set('q', search);
     api.get(`/api/inspirations/archive?${qs.toString()}`)
       .then((r) => setItems(r.data?.items || []))
-      .catch((e) => setError(e?.response?.data?.detail || 'Errore nel caricamento'));
+      .catch((e) => setError(asErrorString(e, 'Errore nel caricamento')));
   };
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [filters.market, filters.atmosphere, filters.material, filters.luxury, filters.profile]);
 
@@ -191,30 +192,32 @@ const FilterBar = ({ config, value, onChange }) => {
 
 // ── InspirationCard ───────────────────────────────────────────────────
 const InspirationCard = ({ item, onOpen }) => {
+  const [failed, setFailed] = useState(false);
   const atmos = (item.atmosphere_tags || []).slice(0, 2);
   const mats  = (item.material_tags || []).slice(0, 2);
+  const showImage = !!item.image_url && !failed;
   return (
     <button type="button" className="ins-card"
             onClick={onOpen}
             data-testid={`inspiration-card-${item.id}`}>
       <div className="ins-card__media">
-        {item.image_url && item.image_url.match(/\.(jpe?g|png|webp|gif|avif)(\?|$)/i) ? (
+        {showImage ? (
           <img
             src={item.image_url}
             alt={item.title || ''}
             loading="lazy"
-            onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex'; }}
+            onError={() => setFailed(true)}
           />
-        ) : null}
-        <div className="ins-card__media-placeholder"
-             style={{ display: item.image_url && item.image_url.match(/\.(jpe?g|png|webp|gif|avif)(\?|$)/i) ? 'none' : 'flex' }}>
-          <Icons.ImageOff size={28} strokeWidth={1.2} />
-          <span className="ins-card__media-fallback">
-            {item.source_kind === 'pinterest' ? 'Reference Pinterest · copertina in attesa' :
-             item.source_kind === 'instagram' ? 'Reference Instagram · copertina in attesa' :
-             'Copertina in attesa'}
-          </span>
-        </div>
+        ) : (
+          <div className="ins-card__media-placeholder">
+            <Icons.ImageOff size={24} strokeWidth={1.2} />
+            <span className="ins-card__media-fallback">
+              {item.source_kind === 'pinterest' ? 'Pinterest · copertina in attesa' :
+               item.source_kind === 'instagram' ? 'Instagram · copertina in attesa' :
+               'Copertina in attesa'}
+            </span>
+          </div>
+        )}
         <div className="ins-card__overlay">
           <div className="ins-card__chips">
             {atmos.map((a, i) => <span key={`a-${i}`} className="ins-chip ins-chip--atmos">{a.replace(/_/g, ' ')}</span>)}

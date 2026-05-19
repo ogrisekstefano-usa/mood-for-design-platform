@@ -12,6 +12,7 @@ import React, { useEffect, useState } from 'react';
 import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { asErrorString } from '../../lib/asErrorString';
 
 const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemoved }) => {
   const [data, setData] = useState(null);
@@ -40,7 +41,7 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
         setTitle(r.data.title || '');
         setDescription(r.data.description || '');
       })
-      .catch((e) => setError(e?.response?.data?.detail || 'Errore'));
+      .catch((e) => setError(asErrorString(e, 'Errore')));
   }, [open, id]);
 
   const toggle = (arr, setArr, v) => {
@@ -67,7 +68,7 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
       onChanged?.(fresh.data);
       toast.success('Riferimento aggiornato');
     } catch (e) {
-      toast.error(e?.response?.data?.detail || 'Aggiornamento fallito');
+      toast.error(asErrorString(e, 'Aggiornamento fallito'));
     } finally { setSaving(false); }
   };
 
