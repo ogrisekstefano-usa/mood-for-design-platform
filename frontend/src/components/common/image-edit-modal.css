@@ -1,0 +1,207 @@
+/* ──────────────────────────────────────────────────────────────────
+   ImageEditModal · MOOD for DESIGN™
+   Modal di edit immagine — crop + filtri base. Riusa i token --bp-*
+   così segue la palette corrente.
+   ────────────────────────────────────────────────────────────────── */
+
+.iem-backdrop {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(0,0,0,0.68);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  animation: iem-fade 160ms ease;
+}
+@keyframes iem-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.iem-modal {
+  width: min(960px, 100%);
+  max-height: 90vh;
+  display: flex; flex-direction: column;
+  background: var(--bp-surface, #16171A);
+  color: var(--bp-text-primary, #EFEBE4);
+  border: 1px solid var(--bp-border);
+  border-radius: 6px;
+  box-shadow: 0 32px 64px rgba(0,0,0,0.55);
+  overflow: hidden;
+  animation: iem-pop 200ms cubic-bezier(.2,.7,.2,1);
+}
+@keyframes iem-pop {
+  from { opacity: 0; transform: translateY(-4px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.iem-modal__head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--bp-border);
+}
+.iem-modal__eyebrow {
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--bp-text-faint, var(--bp-text-muted));
+}
+.iem-modal__title {
+  font-family: var(--bp-font-heading, 'Playfair Display', Georgia, serif);
+  font-size: 18px; font-weight: 500; letter-spacing: -0.005em;
+  margin-top: 2px;
+}
+.iem-modal__close {
+  background: transparent; border: none; cursor: pointer; padding: 6px;
+  color: var(--bp-text-muted);
+  transition: color 140ms ease;
+}
+.iem-modal__close:hover { color: var(--bp-text-primary); }
+
+.iem-tabs {
+  display: flex; gap: 4px;
+  padding: 8px 18px 0;
+  border-bottom: 1px solid var(--bp-border);
+}
+.iem-tab {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--bp-text-muted);
+  padding: 8px 14px;
+  font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color 140ms ease, border-color 140ms ease;
+}
+.iem-tab:hover { color: var(--bp-text-primary); }
+.iem-tab.is-active { color: var(--bp-primary); border-bottom-color: var(--bp-primary); }
+
+.iem-body {
+  display: grid; grid-template-columns: 1fr 280px;
+  flex: 1; min-height: 380px;
+}
+
+.iem-stage {
+  position: relative;
+  background: #000;
+  overflow: hidden;
+  min-height: 380px;
+}
+.iem-filters-preview {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.iem-filters-preview img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.iem-panel {
+  background: var(--bp-bg);
+  border-left: 1px solid var(--bp-border);
+  padding: 18px 18px 20px;
+  overflow-y: auto;
+}
+.iem-panel__label {
+  font-size: 10px; letter-spacing: 0.20em; text-transform: uppercase;
+  color: var(--bp-text-muted);
+  margin: 12px 0 6px;
+}
+.iem-panel__label:first-child { margin-top: 0; }
+.iem-panel__hint {
+  font-size: 10.5px; color: var(--bp-text-faint, var(--bp-text-muted));
+  margin-top: 8px; line-height: 1.4; font-style: italic;
+}
+
+/* Aspect ratio chips */
+.iem-aspects { display: flex; flex-wrap: wrap; gap: 5px; }
+.iem-aspect {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-muted);
+  padding: 5px 10px;
+  font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+.iem-aspect:hover {
+  border-color: var(--bp-border-strong); color: var(--bp-text-primary);
+}
+.iem-aspect.is-active {
+  border-color: var(--bp-primary); color: var(--bp-primary); background: var(--bp-primary-soft);
+}
+
+/* Zoom slider */
+.iem-panel input[type="range"] {
+  width: 100%;
+  accent-color: var(--bp-primary);
+}
+
+/* Filter rows */
+.iem-flt { margin-bottom: 14px; }
+.iem-flt__head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 4px;
+}
+.iem-flt__label {
+  flex: 1;
+  font-size: 11px; letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--bp-text-muted); font-weight: 600;
+}
+.iem-flt__val {
+  font-size: 11px; font-family: monospace;
+  color: var(--bp-text-primary);
+}
+.iem-flt input[type="range"] { width: 100%; }
+
+.iem-icon-btn {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  padding: 4px 6px; border-radius: 4px;
+  color: var(--bp-text-muted);
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+.iem-icon-btn:hover { border-color: var(--bp-primary); color: var(--bp-primary); }
+
+.iem-reset {
+  width: 100%; margin-top: 10px;
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-muted);
+  padding: 8px 12px;
+  font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+.iem-reset:hover { border-color: var(--bp-border-strong); color: var(--bp-text-primary); }
+
+/* Footer */
+.iem-foot {
+  display: flex; justify-content: flex-end; align-items: center; gap: 8px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--bp-border);
+}
+.iem-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px;
+  font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 1px solid;
+  transition: all 140ms ease;
+}
+.iem-btn--ghost { background: transparent; border-color: var(--bp-border); color: var(--bp-text-muted); }
+.iem-btn--ghost:hover { border-color: var(--bp-border-strong); color: var(--bp-text-primary); }
+.iem-btn--primary {
+  background: var(--bp-primary);
+  border-color: var(--bp-primary);
+  color: #0F0D0A;
+}
+.iem-btn--primary:hover { filter: brightness(1.06); }
+.iem-btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+/* Mobile */
+@media (max-width: 720px) {
+  .iem-body { grid-template-columns: 1fr; }
+  .iem-stage { min-height: 260px; }
+  .iem-panel { border-left: none; border-top: 1px solid var(--bp-border); }
+}

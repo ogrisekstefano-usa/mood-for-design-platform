@@ -178,6 +178,47 @@
   background: #D8B47A; color: #161313;
   display: flex; align-items: center; justify-content: center;
 }
+/* Pen-edit overlay button (top-left of each card) */
+.mfd-picker__card-edit {
+  position: absolute; top: 8px; left: 8px;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(0,0,0,0.65);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  opacity: 0; transform: translateY(-2px);
+  transition: opacity 160ms ease, transform 160ms ease, background 140ms ease;
+  z-index: 2;
+}
+.mfd-picker__card:hover .mfd-picker__card-edit,
+.mfd-picker__card:focus-within .mfd-picker__card-edit {
+  opacity: 1; transform: translateY(0);
+}
+.mfd-picker__card-edit:hover {
+  background: var(--bp-primary, #D8B47A);
+  color: #0F0D0A;
+  border-color: var(--bp-primary, #D8B47A);
+}
+
+/* URL tab inputs (Phase Y.3.B) */
+.mfd-picker__label {
+  display: block;
+  font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 6px;
+}
+.mfd-picker__input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 4px;
+  color: #fff;
+  padding: 10px 12px;
+  font-size: 13px;
+  transition: border-color 140ms ease;
+}
+.mfd-picker__input:focus { outline: none; border-color: #D8B47A; }
 .mfd-picker__card-meta {
   padding: 0.6rem 0.7rem;
   display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;

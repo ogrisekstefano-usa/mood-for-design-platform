@@ -211,11 +211,20 @@ const Sidebar = () => {
           <div>
             <SectionLabel collapsed={collapsed}>Projects</SectionLabel>
             <div className="space-y-0.5">
-              <NavItem to="/blueprint/projects-studio" icon="Frame" labelKey="nav.projectsStudio" fallback="Projects Studio" collapsed={collapsed} />
               {contentRoutes.filter((r) => r.to !== '/moodboards' && r.to !== '/library').map((r) => (
                 <NavItem key={r.to} {...r} collapsed={collapsed} />
               ))}
               <NavItem to="/library" icon="FolderOpen" labelKey="nav.mediaLibrary" fallback="Media Library" end collapsed={collapsed} />
+            </div>
+          </div>
+        )}
+
+        {/* ── SITO WEB — public-facing website surfaces ─────────── */}
+        {can('tenant:settings') && (
+          <div>
+            <SectionLabel collapsed={collapsed}>Sito Web</SectionLabel>
+            <div className="space-y-0.5">
+              <NavItem to="/blueprint/projects-studio" icon="Frame" labelKey="nav.projectsStudio" fallback="Projects Studio" collapsed={collapsed} />
             </div>
           </div>
         )}

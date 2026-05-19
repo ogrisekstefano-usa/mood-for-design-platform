@@ -303,7 +303,7 @@ export const applyPalette = (id) => {
     '--brand-surface':      p.surface,
     '--brand-text':         p.text,
   };
-  Object.entries(tokens).forEach(([k, v]) => r.style.setProperty(k, v));
+  Object.entries(tokens).forEach(([k, v]) => r.style.setProperty(k, v, 'important'));
 
   // ALSO override the [data-surface="os"] scope so the palette wins over
   // tenant theme variables emitted by TenantThemeContext. The user-picked
@@ -315,8 +315,8 @@ export const applyPalette = (id) => {
     styleEl.id = STYLE_ID;
     document.head.appendChild(styleEl);
   }
-  const decls = Object.entries(tokens).map(([k, v]) => `  ${k}: ${v};`).join('\n');
-  styleEl.textContent = `[data-surface="os"] {\n${decls}\n}`;
+  const decls = Object.entries(tokens).map(([k, v]) => `  ${k}: ${v} !important;`).join('\n');
+  styleEl.textContent = `html[data-palette] [data-surface="os"],\nhtml[data-palette] [data-surface="storefront"] {\n${decls}\n}`;
 };
 
 const STORAGE_KEY = 'mfd_curated_palette';

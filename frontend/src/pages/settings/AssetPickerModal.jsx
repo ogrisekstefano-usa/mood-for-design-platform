@@ -6,9 +6,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   X, Search, Upload, Image as ImageIcon, Check, AlertCircle,
-  Loader2, FolderOpen, Sparkles, RefreshCw,
+  Loader2, FolderOpen, Sparkles, RefreshCw, Edit2, Link2,
 } from 'lucide-react';
 import { media, links, uploadMediaFile } from '../../lib/mediaApi';
+import ImageEditModal from '../../components/common/ImageEditModal';
+import { toast } from 'sonner';
 import './asset-picker.css';
 
 // Default editorial taxonomy hints for quick-tagging during upload.
@@ -35,7 +37,7 @@ const fileChecksum = async (file) => {
 };
 
 // ─── Asset card ────────────────────────────────────────────────────────
-const AssetCard = ({ asset, selected, onClick }) => (
+const AssetCard = ({ asset, selected, onClick, onEdit }) => (
   <button
     type="button"
     onClick={onClick}
@@ -50,6 +52,14 @@ const AssetCard = ({ asset, selected, onClick }) => (
       {selected && (
         <div className="mfd-picker__card-check"><Check size={14} strokeWidth={2} /></div>
       )}
+      <button type="button"
+              onClick={(e) => { e.stopPropagation(); onEdit?.(asset); }}
+              className="mfd-picker__card-edit"
+              title="Modifica · crop & filtri"
+              aria-label={`Modifica ${asset.file_name}`}
+              data-testid={`picker-asset-edit-${asset.id}`}>
+        <Edit2 size={12} strokeWidth={1.8} />
+      </button>
     </div>
     <div className="mfd-picker__card-meta">
       <p className="mfd-picker__card-name">{asset.file_name}</p>
@@ -123,6 +133,14 @@ const AssetPickerModal = ({
   const fileInputRef = useRef(null);
   const dropRef = useRef(null);
   const checksumRef = useRef(new Map()); // local dedupe within session
+
+  // URL tab state — external image linking
+  const [urlInput, setUrlInput] = useState('');
+  const [urlAlt, setUrlAlt] = useState('');
+  const [urlLoading, setUrlLoading] = useState(false);
+
+  // Edit modal state — opens when user clicks the pen icon on a card
+  const [editingAsset, setEditingAsset] = useState(null);
 
   // Reset on open
   useEffect(() => {
@@ -288,6 +306,12 @@ const AssetPickerModal = ({
                   data-testid="asset-picker-tab-upload">
             <Upload size={12} strokeWidth={1.6} /> Upload
           </button>
+          <button type="button"
+                  className={`mfd-picker__tab ${tab === 'url' ? 'is-active' : ''}`}
+                  onClick={() => setTab('url')}
+                  data-testid="asset-picker-tab-url">
+            <Link2 size={12} strokeWidth={1.6} /> URL
+          </button>
         </div>
 
         {tab === 'library' && (
@@ -349,7 +373,8 @@ const AssetPickerModal = ({
               <div className="mfd-picker__grid" data-testid="asset-picker-grid">
                 {assets.map((a) => (
                   <AssetCard key={a.id} asset={a} selected={selectedId === a.id}
-                             onClick={() => setSelectedId(a.id)} />
+                             onClick={() => setSelectedId(a.id)}
+                             onEdit={(asset) => setEditingAsset(asset)} />
                 ))}
               </div>
             )}
@@ -369,7 +394,7 @@ const AssetPickerModal = ({
                         }}
                         className="mfd-picker__btn mfd-picker__btn--gold"
                         data-testid="asset-picker-use">
-                  Usa nel racconto
+                  Usa
                 </button>
               </div>
             </footer>
@@ -434,11 +459,95 @@ const AssetPickerModal = ({
                         onClick={() => completedAsset && linkAndReturn(completedAsset)}
                         className="mfd-picker__btn mfd-picker__btn--gold"
                         data-testid="asset-picker-use-uploaded">
-                  Usa nel racconto
+                  Usa
                 </button>
               </div>
             </footer>
           </div>
+        )}
+
+        {tab === 'url' && (
+          <div className="mfd-picker__body" data-testid="asset-picker-url">
+            <div className="mfd-picker__url" style={{ padding: '28px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <p style={{ fontSize: 12.5, color: 'var(--bp-text-muted)', lineHeight: 1.55 }}>
+                Incolla un URL pubblico (https://…) di un'immagine. Verrà collegata come asset esterno —
+                non occupa spazio nella tua Library.
+              </p>
+              <div>
+                <label className="mfd-picker__label">URL immagine</label>
+                <input type="url" value={urlInput}
+                       onChange={(e) => setUrlInput(e.target.value)}
+                       placeholder="https://images.example.com/photo.jpg"
+                       className="mfd-picker__input"
+                       data-testid="asset-picker-url-input"
+                       autoFocus />
+              </div>
+              <div>
+                <label className="mfd-picker__label">Alt text (accessibilità)</label>
+                <input type="text" value={urlAlt}
+                       onChange={(e) => setUrlAlt(e.target.value)}
+                       placeholder="Descrizione breve per screen reader"
+                       className="mfd-picker__input"
+                       data-testid="asset-picker-url-alt" />
+              </div>
+              {urlInput && (
+                <div className="mfd-picker__url-preview"
+                     style={{ marginTop: 8, padding: 12, border: '1px solid var(--bp-border)', borderRadius: 4, background: 'var(--bp-surface)' }}>
+                  <img src={urlInput} alt={urlAlt || 'preview'}
+                       style={{ maxWidth: '100%', maxHeight: 280, display: 'block', margin: '0 auto', objectFit: 'contain' }}
+                       onError={(e) => { e.target.style.display = 'none'; }}
+                       data-testid="asset-picker-url-preview" />
+                </div>
+              )}
+            </div>
+            <footer className="mfd-picker__footer">
+              <p className="mfd-picker__footer-meta">Link esterno</p>
+              <div className="mfd-picker__footer-actions">
+                <button type="button" onClick={onClose} className="mfd-picker__btn mfd-picker__btn--ghost">
+                  Annulla
+                </button>
+                <button type="button"
+                        disabled={!urlInput || urlLoading}
+                        onClick={async () => {
+                          if (!urlInput) return;
+                          setUrlLoading(true);
+                          try {
+                            const pseudo = {
+                              id: null,
+                              file_url:    urlInput,
+                              display_url: urlInput,
+                              file_name:   urlInput.split('/').pop() || 'external',
+                              alt_text:    urlAlt,
+                              category:    'external_url',
+                              external:    true,
+                            };
+                            onSelect?.({ asset: pseudo });
+                            onClose?.();
+                          } catch (e) {
+                            toast.error('URL non valido');
+                          } finally { setUrlLoading(false); }
+                        }}
+                        className="mfd-picker__btn mfd-picker__btn--gold"
+                        data-testid="asset-picker-url-use">
+                  {urlLoading ? '…' : 'Usa URL'}
+                </button>
+              </div>
+            </footer>
+          </div>
+        )}
+
+        {/* Image edit modal — pen icon → crop + filters */}
+        {editingAsset && (
+          <ImageEditModal
+            open
+            asset={editingAsset}
+            onClose={() => setEditingAsset(null)}
+            onSaved={(saved) => {
+              setEditingAsset(null);
+              // Refresh the asset in the local list
+              setAssets((prev) => prev.map((a) => a.id === saved.id ? { ...a, ...saved } : a));
+            }}
+          />
         )}
       </div>
     </div>

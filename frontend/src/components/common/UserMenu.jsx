@@ -82,7 +82,7 @@ const UserMenu = () => {
           role="menu"
           data-testid="topbar-user-menu"
           className="absolute right-0 top-[calc(100%+8px)] w-[244px] rounded-[6px] border border-[var(--bp-border)]
-                     bg-[var(--bp-bg)]/95 backdrop-blur-xl shadow-[var(--bp-shadow-lg)] py-1.5 z-[1000]"
+                     bg-[var(--bp-bg)] shadow-[var(--bp-shadow-lg)] py-1.5 z-[1000]"
         >
           <div className="px-3 pb-2 pt-1 border-b border-[var(--bp-border)] mb-1">
             <p className="text-[12px] font-body font-medium text-[var(--bp-text-primary)] truncate">{fullName}</p>
