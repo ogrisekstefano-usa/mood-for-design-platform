@@ -204,6 +204,7 @@ class BlockCreate(BaseModel):
     sort_order: Optional[int] = 0
     content: Optional[Dict[str, Any]] = None
     style:   Optional[Dict[str, Any]] = None
+    metadata: Optional[Dict[str, Any]] = None
 
 
 class BlockUpdate(BaseModel):
@@ -572,6 +573,7 @@ def create_block(moodboard_id: str, body: BlockCreate, ctx: dict = Depends(requi
         "content": json.dumps(content),
         "position_json": _build_position(body.x, body.y, body.width, body.height, body.z_index),
         "style_json": body.style or {},
+        "metadata_json": body.metadata or {},
         "title": content.get("caption") if body.type == "image" else None,
     }
     if image_url:

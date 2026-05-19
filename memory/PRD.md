@@ -53,6 +53,83 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint MOODBOARD-INSPIRATIONS-FLOW · Phase B/C (Feb 19, 2026 · iter83)
+**Universal Editorial Cropper™ (Slice 1) + Moodboards Inspirations Flow™ MoodPanel + Quick Add™ (Slice 2) — chiude la trilogia STRUCTURED-CURATORIAL-DATA.**
+
+Trasforma il Moodboard editor da "Coming soon Inspirations Hub" a tavolo curatoriale digitale: 4 sotto-tab (Inspirations™ · Prodotti · Recenti · Collezioni Studio) con Quick Add™ istantaneo che droppa il riferimento sul canvas con regia editoriale (focal point + filtro + zoom) ereditata dall'Universal Cropper, provenance completa (brand · inspiration_id · catalog_id · market_context) e emissione `product_usage_events` per i Product Inspirations.
+
+#### Backend (2-line schema fix · root cause analysis testing agent iter83)
+- **FIX** `routers/moodboards_v1.py`:
+  - `BlockCreate` Pydantic schema ora accetta `metadata: Optional[Dict[str, Any]]` (era asimmetrico — BlockUpdate già lo aveva, BlockCreate no → metadata silenziosamente droppato su Quick Add)
+  - `create_block()` persiste `metadata_json: body.metadata or {}` nell'insert row (era omesso — incoerente con duplicate/batch_update paths che già lo scrivevano)
+- **NEW endpoint** (Slice 1 · già live da iter82.5) `PATCH /api/inspirations/archive/{media_id}/display-meta` — persiste `focal_x/focal_y/editorial_filter/crop_ratio/zoom` su `media_library.metadata_json.display_meta` senza modificare il raster originale
+
+#### Frontend — Universal Editorial Cropper™ (Slice 1)
+- **NEW** `/app/frontend/src/components/media/UniversalEditorialCropper.jsx` (290 righe) + `universal-cropper.css`:
+  - "Regia immagine" non distruttiva: focal point drag, 7 filtri editoriali (Editorial Neutral · Warm Residential · Hospitality Glow · AD Contrast · Soft Natural · Material Focus · Cinematic Dark), 5 anteprime safe-area (Hero · Moodboard · Card · Mobile · Cinematic), zoom 1×–3×, 6 proporzioni preferite
+  - Output → `display_meta` JSONB · NESSUNA modifica raster
+  - Esportato `filterCssFor()` come single source-of-truth dei filtri CSS — riusato da ImageBlock + MoodPanel tile preview
+  - **FIX hook order**: `useMemo` ora chiamato PRIMA dell'early return `if (!open) return null` (compliance react-hooks/rules-of-hooks)
+
+#### Frontend — MoodPanel + Quick Add™ (Slice 2 · this iteration)
+- **NEW** `/app/frontend/src/blueprint/moodboard/MoodPanel.jsx` (340 righe) + `mood-panel.css` (320 righe):
+  - 4 sotto-tab editoriali: **Inspirations™** (riferimenti culturali) · **Prodotti** (Product Inspirations dal Brand Registry) · **Recenti** (ultimi usati) · **Collezioni Studio** (cataloghi raggruppati per brand)
+  - Search field + brand filter (solo tab Prodotti) + chip editoriali a 3 dimensioni: Atmosfera (8 chip) · Materia (8 chip) · Destinazione (6 chip: Residenziale/Hospitality/Contract/Retail/Workspace/Outdoor)
+  - **Curatorial tile**: aspect 4/5, soft luminous shadow (`box-shadow: 0 1px 2px + 0 4px 14px`), hover cinematico (`translateY(-2px) + brightness(1.05) + scale(1.04) on img`), overlay gradient con CTA pill "Aggiungi", badge "Prodotto" per i Product Inspirations, micro-movement on click
+  - Preview tile applica già il `display_meta` (focal point + editorial filter + zoom) dell'asset originale
+  - Empty states editoriali (Playfair italic + ring icon)
+  - Collezioni Studio raggruppate per brand con eyebrow dashed + card cliccabili che pre-filtrano la tab Prodotti
+- **NEW** `MoodboardEditor.addInspirationBlock(item, ctx)` callback (118 righe):
+  - Calcola aspect ratio (preferenza crop_ratio > intrinsic ratio dell'immagine)
+  - Stagger placement (+24px per ogni N-esimo block sulla pagina)
+  - POST `/api/moodboards/{id}/blocks` con payload completo:
+    ```
+    style: { focal_point, zoom, fit_mode, border_radius }
+    metadata: { inspiration_id, source_type, source_tab, brand, collection,
+                product_name, product_category, designer, rights_status,
+                supplier_catalog_id, display_meta, editorial_filter,
+                market_context }
+    ```
+  - Per Product Inspirations → POST `/api/inspirations/registry/usage-events` con `usage_type='added_to_moodboard'` + `moodboard_id` (foundation Brand Intelligence™ · best-effort)
+  - Toast italiano: `{brand} aggiunto alla selezione.` o `Riferimento aggiunto.`
+- **UPDATED** `EditorPanel.jsx`:
+  - Rimosso placeholder "Coming soon · Inspirations Hub" → ora renderizza `<MoodPanel onAddInspiration={addInspirationBlock} moodboardId={id} />`
+  - Body wrapper switcha a `overflow-hidden + flex flex-col` quando la tab inspirations è attiva (MoodPanel gestisce internamente lo scroll su `.mp-body` per mantenere sticky tabs + filtri)
+- **UPDATED** `blocks/ImageBlock.jsx`:
+  - Nuova `composeFilter(adj, editorialKey)` compone i CSS filter del per-block adjustment con il filtro editoriale persistito su `block.metadata.editorial_filter` (regia segue l'asset ovunque venga riusato)
+
+#### Linguaggio compliance (strict)
+UI: "Riferimenti", "Prodotti", "Recenti", "Collezioni Studio™", "Atmosfera", "Materia", "Destinazione", "Aggiungi al moodboard", "Selezione", "Aggiungi", "Riferimento aggiunto", "{brand} aggiunto alla selezione".
+ZERO occorrenze verificate: `asset picker`, `library browser`, `DAM`, `insert image`, `media browser`, `search panel`, `AI`, `algorithm`.
+
+#### Test results (testing_agent_v3_fork iter83 + self-test post-fix)
+- **Backend pre-fix**: 6/7 (CRITICAL: BlockCreate dropped metadata silently)
+- **Backend post-fix**: **7/7 PASS · 100%** (`tests/test_iteration_83_mood_panel.py`):
+  - `test_editorial_filter` ✓ (archive con inspiration_type=editorial)
+  - `test_product_filter` ✓ (5+ Bonaldo product inspirations)
+  - `test_brand_filter_bonaldo` ✓ (case-insensitive brand filter)
+  - `test_catalogs` ✓ (Studio Collections list)
+  - `test_patch_display_meta` ✓ (Cropper persistence)
+  - `test_create_image_block_with_inspiration_meta` ✓ (metadata roundtrip Quick Add)
+  - `test_emit_added_to_moodboard` ✓ (product_usage_events)
+- **Self-test E2E curl roundtrip**: POST /blocks con metadata.{brand:'Bonaldo', display_meta:{editorial_filter:'warm_residential', focal_x:0.45, focal_y:0.6, zoom:1.1}, inspiration_id, market_context:['miami']} + style.focal_point:'45.0% 60.0%' → GET ritorna tutti i campi preservati. POST /usage-events 201 con event_id.
+- **Frontend (testing agent)**: MoodPanel render OK, 4 tabs visibili, vecchio placeholder rimosso, Products tab mostra 80 tiles con badge "Prodotto", brand-input visibile solo su Products, atmosphere chip toggles is-on, Collezioni tab raggruppa per brand, ZERO jargon vietato nel DOM.
+
+#### Test report: `/app/test_reports/iteration_83.json`
+
+#### Production confidence: **9.7/10**
+
+#### Cosa NON è incluso (deferred Phase D)
+- Drag & drop magnetico per asset Moodboard (P1)
+- Media Library editorial modes — Grid · Filmstrip · Brand Mode · Material Mode · Project References (P1)
+- Fullscreen Presentation Mode polish (P1)
+- Smart recommendations basate su `product_usage_events` aggregati (P3 · foundation ora live)
+- Seed di Editorial Inspirations (non-product) per popolare la tab Inspirations™ del demo tenant (oggi mostra empty state editoriale italiano corretto)
+- Inline cropper trigger sul block image (oggi si edita via Inspirations drawer · il roundtrip è completo)
+
+---
+
+
 ### Sprint STRUCTURED-CURATORIAL-DATA · Phase A (Feb 19, 2026 · iter82)
 **Brand Registry™ + Collections Registry™ + Tag Registry™ + Product Usage Events™ + Supplier Catalog Import™ entity-picker refactor + Studio Collections™ page.**
 
