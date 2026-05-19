@@ -53,6 +53,46 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint PALETTE-PORTAL + CRM-ARCHITECTURE v1 (Feb 19, 2026)
+**Due interventi paralleli: (A) fix definitivo popover palette via React Portal; (B) documento di architettura Editorial Relationship CRM™ per Phase 2.**
+
+#### A · PaletteSwitcher Portal refactor (CRITICAL fix)
+- ✅ Popover ora renderizzato via `createPortal` direttamente in `document.body`
+- ✅ `position: fixed` con coordinate dinamiche calcolate da `triggerRef.getBoundingClientRect()` su open
+- ✅ Escape DEFINITIVO da qualsiasi parent stacking context (topbar, layout shell, ecc.)
+- ✅ Testing iter73: **100% green su 7/7 criteri** — popover parentElement = document.body verified, posizionamento esatto (0.0px diff), tutti i 24 swatch visibili, click-outside/Escape/scroll/Brand Studio link/localStorage tutto funzionante
+
+#### B · Editorial Relationship CRM™ Architecture Document
+**Documento strategico di 600+ righe** in `/app/memory/EDITORIAL_RELATIONSHIP_CRM_ARCHITECTURE.md` che definisce:
+1. Linguaggio editoriale rifiutato vs adottato (Contact→Relationship, Lead→Discovery, Pipeline→Relationship Journey™, Deal→Collaboration…)
+2. Entity model esteso (accounts + nuove tabelle: editorial_engagement, relationship_linkages, material_affinity)
+3. 10 Relationship Journey™ stages con trigger editoriali (Discovery → Long-Term Relationship + Dormant/Archived/Editorial Ambassador)
+4. Editorial Engagement Tracking — 12 signal types (view, dwell_long, open_hotspot, save, share, cta_click, sample_request, consultation_req, showroom_interest, proposal_open, material_zoom, …)
+5. Project Linkage System (graph layer many-to-many con weight + linkage_kind)
+6. Market Intelligence integration per-relationship
+7. Moodboard linkage automatica con regole weight
+8. Material Affinity tracking con formula di score
+9. International Market Behavior Mapping (footprint + cross-market suggestions)
+10. Relationship Profile™ UI Phase 2 spec
+11. Data flow architecture diagram
+12. **5 phase implementation roadmap** (Phase 2A foundation → Phase 2E filtering)
+13. Tone & micro-copy guidelines + esempi
+14. Non-goals espliciti (no SLA, no funnel, no won/lost, no sales velocity)
+15. Validation criteria (10 punti compliance Editorial Relationship CRM™)
+
+#### File modificati
+- `/app/frontend/src/components/common/PaletteSwitcher.jsx` (createPortal + triggerRef + dynamic coords)
+- `/app/frontend/src/components/common/palette-switcher.css` (position fixed con top/right inline)
+
+#### File creato
+- `/app/memory/EDITORIAL_RELATIONSHIP_CRM_ARCHITECTURE.md` (architecture spec completa, status APPROVED for Phase 2)
+
+#### Production confidence: **10/10**
+Il palette switcher è risolto in modo architettonicamente robusto (Portal). Il CRM Phase 2 ora ha una direzione editoriale chiara e implementabile in 5 sprint.
+
+---
+
+
 ### Sprint SUPERADMIN-REFACTOR + ADVISOR-NETWORK-P0 v1 (Feb 19, 2026)
 **Trasformazione completa del SuperAdmin in un International Editorial Operating Layer + operativizzazione finale dell'Advisor Network. Sprint cardinale di identità di piattaforma.**
 
