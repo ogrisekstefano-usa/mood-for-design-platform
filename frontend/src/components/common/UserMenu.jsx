@@ -60,7 +60,7 @@ const UserMenu = () => {
   const go = (to) => { setOpen(false); navigate(to); };
 
   return (
-    <div ref={wrapRef} className="relative">
+    <div ref={wrapRef} className="relative" style={{ zIndex: 10005 }}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -81,8 +81,9 @@ const UserMenu = () => {
         <div
           role="menu"
           data-testid="topbar-user-menu"
+          style={{ zIndex: 10006 }}
           className="absolute right-0 top-[calc(100%+8px)] w-[244px] rounded-[6px] border border-[var(--bp-border)]
-                     bg-[var(--bp-bg)] shadow-[var(--bp-shadow-lg)] py-1.5 z-[1000]"
+                     bg-[var(--bp-bg)] shadow-[var(--bp-shadow-lg)] py-1.5"
         >
           <div className="px-3 pb-2 pt-1 border-b border-[var(--bp-border)] mb-1">
             <p className="text-[12px] font-body font-medium text-[var(--bp-text-primary)] truncate">{fullName}</p>

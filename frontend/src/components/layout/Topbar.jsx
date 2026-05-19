@@ -47,7 +47,7 @@ const Topbar = () => {
   return (
     <header
       data-testid="topbar"
-      style={{ height: '56px' }}
+      style={{ height: '56px', position: 'relative', zIndex: 50 }}
       className="flex items-center justify-between gap-6 px-6 border-b border-[var(--bp-border)]
                  bg-[var(--bp-bg)]/85 backdrop-blur-xl flex-shrink-0"
     >

@@ -655,14 +655,14 @@ const BrandStudioPage = () => {
 
           <Section kicker="E · Preset editoriali"
                    title={t('brand.section.presetsTitle', null, 'Preset editoriali')}
-                   testid="section-curated-palettes"
-                   trace={t('brand.presetsTrace', null, `${DARK_PALETTES.length} atmosfere scure · click per applicare · poi premi Salva`)}>
+                   testid="section-presets"
+                   trace={t('brand.presetsTrace', null, `${presets.length} identità complete · ordinate per famiglia cromatica · sovrascrivono palette + tipografia + radius`)}>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3" data-testid="brand-editorial-presets-grid">
-              {DARK_PALETTES.map((p) => (
-                <CuratedPaletteCard key={p.id} palette={p}
-                                    current={theme.preset_key === `curated_${p.id}`}
-                                    onPick={applyCuratedPalette}
-                                    testid={`brand-curated-${p.id}`} />
+              {sortPresetsByHue(presets).map((p) => (
+                <PresetCard key={p.key} preset={p}
+                            current={theme.preset_key === p.key}
+                            onPick={applyPreset}
+                            testid={`preset-${p.key}`} />
               ))}
             </div>
           </Section>
