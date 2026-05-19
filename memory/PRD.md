@@ -53,6 +53,38 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint THEME-PALETTE v3 (Feb 19, 2026) — Brand Studio integration
+**3 fix puntuali post-feedback sullo sprint Palette v2.**
+
+#### Direttive applicate
+1. ✅ **Brand Studio · 24 temi curati come mega menu** — nuova sezione `E · Temi curati` con grid identico al popover topbar: 15 chiari (CHIARI & COLORATI) + 9 scuri (SCURI). Stesso ordine, stesso set di palette
+2. ✅ **Click in Brand Studio applica davvero** — handler `applyCuratedPalette()` chiama (a) `applyPalette()` curatedPalettes per override CSS root immediato, (b) `setTheme()` per propagare al server al Save, (c) toast "Tema X applicato — premi Salva". Salva persiste `preset_key='curated_<id>'` su `/api/branding`
+3. ✅ **z-index palette popover 10010** (era 9000) — ora batte anche overlay sticky di Brand Studio Anteprima
+
+#### File modificati
+- `/app/frontend/src/pages/settings/BrandStudioPage.jsx`
+  - Nuovo componente `CuratedPaletteCard` (chip cromatico bg/surface/primary/accent + check overlay)
+  - Nuovo handler `applyCuratedPalette` (immediate + state-dirty + Save sync)
+  - Sezione `E · Temi curati` con grid 15 chiari + 9 scuri (ordinati come megamenu)
+  - Sezione legacy `F · Editorial presets` mantenuta sotto (sovrascrive anche tipografia/radius)
+- `/app/frontend/src/lib/curatedPalettes.js` — aggiunta `clearPalette()` per cleanup quando Brand Studio prende il controllo
+- `/app/frontend/src/components/common/palette-switcher.css` — z-index 10010
+
+#### Validazione (testing_agent iter70 — 100% green)
+- 6/6 fix runtime-verified
+- Brand Studio renderizza 24 cards nell'ordine corretto ✓
+- Click cobalt → `--bp-bg='#080D1F'`, `--bp-primary='#5A8FE5'`, `data-palette='cobalt'`, LivePreview turns dark cinematic blue ✓
+- Save → PUT /api/branding 200 con `theme.preset_key='curated_cobalt'` ✓
+- Persistenza localStorage attraverso reload ✓
+- z-index popover computed=10010 ✓
+- Editorial presets server-side ancora funzionanti (POST /api/branding/apply-preset 200) ✓
+
+#### Production confidence: **10/10**
+Il designer ha ora due punti di accesso identici al sistema di temi: la tavolozza nel topbar (preferenza personale rapida) e Brand Studio (identità definitiva dello studio). Stessi 24 temi, stesso ordine, stessa esperienza visiva.
+
+---
+
+
 ### Sprint THEME-PALETTE v2 (Feb 19, 2026) — 8 fix post-feedback
 **Round di rifiniture su feedback diretto dell'utente dopo lo sprint palette v1. 8 task in batch single-turn.**
 
