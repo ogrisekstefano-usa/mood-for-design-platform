@@ -208,6 +208,12 @@ export const BlueprintProvider = ({ children }) => {
   useEffect(() => {
     let cancelled = false;
     async function load() {
+      // CRITICAL: reset loading at start of every effect run so guards
+      // (SuperAdminRoute, RequireAuth, etc.) re-enter Loading state on
+      // user transition (null → super_admin). Without this, isSuperAdmin
+      // and permissions are stale-false for one render cycle and Navigate
+      // fires to /dashboard before /me/permissions resolves.
+      setLoading(true);
       if (!user) {
         setTenant(null); setNavigation(null); setDashboardConfig(null);
         setModules(null); setFeatureFlags(null); setPermissions([]); setIsSuperAdmin(false);

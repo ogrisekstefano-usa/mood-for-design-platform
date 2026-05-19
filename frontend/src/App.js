@@ -163,7 +163,14 @@ const SuperAdminRoute = ({ children }) => {
   const { isSuperAdmin, loading: bpLoading } = useBlueprint();
   if (loading || bpLoading) return <Loading />;
   if (!user) return <Navigate to="/auth/login" replace />;
-  return isSuperAdmin ? children : <Navigate to="/dashboard" replace />;
+  // Belt-and-suspenders: accept synchronous user.role as a fallback so a
+  // race in BlueprintContext can't redirect a legitimate super_admin.
+  const synchronousSuperAdmin =
+    (user.role || '').toLowerCase() === 'super_admin' ||
+    !!user.is_super_admin;
+  return (isSuperAdmin || synchronousSuperAdmin)
+    ? children
+    : <Navigate to="/dashboard" replace />;
 };
 
 // Studio config routes (storefront editor, branding, domains, forms, plan, etc.)
@@ -411,7 +418,7 @@ function App() {
                   <Route path="/superadmin/modules" element={<AdminModulesPage />} />
                   <Route path="/superadmin/audit" element={<AdminAuditPage />} />
                   <Route path="/superadmin/languages" element={<LanguagesPage />} />
-                  <Route path="/superadmin/pages" element={<HomepageBuilderPage />} />
+                  {/* /superadmin/pages REMOVED — legacy "Pagine" architecture deprecated */}
                 </Route>
 
                 {/* PUBLIC tenant routes — runtime composition via Blueprint engine */}

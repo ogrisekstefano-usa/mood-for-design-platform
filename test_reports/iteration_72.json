@@ -1,0 +1,71 @@
+{
+  "summary": "Iter72 — Frontend retest after BlueprintContext race fix + SuperAdminRoute synchronous fallback. CRITICAL REGRESSION IS FIXED. All SuperAdmin routes (/admin, /admin/modules, /admin/advisors, /admin/advisors/<id>) now mount [data-testid=admin-shell] without any redirect to /dashboard. The full SuperAdmin Refactor + Advisor Network P0 sprint was runtime-verified: sidebar IA (Orchestrazione/Network/Piattaforma, no Pagine/no Moduli), graphite+cyan theme isolation, dual-circle brand mark, 11 Platform Capabilities cards + toggles, AdvisorEditDrawer with 4 sections, PATCH save flow with toast 'Advisor aggiornato'. One mobile layout issue found: at 390x844 the sidebar does NOT collapse and squeezes content to ~110px wide. Backend PATCH still GREEN (200) for null/array fields.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "AdminLayout (Control Center) @ mobile 390x844",
+        "issues": [
+          "Sidebar .acc-sidebar stays at width=244px (display: flex) on 390px viewport, leaving only ~146px for the main content. Platform Capabilities cards render at 110px wide (effectively unusable). No hamburger / off-canvas collapse implemented for mobile breakpoint. Either collapse the sidebar under ~768px or render a Sheet/Drawer trigger from the topbar. AdvisorEditDrawer itself behaves correctly (390px full-width)."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_71_advisor_rich_profile.py",
+    "/app/test_reports/pytest/iteration_71.xml"
+  ],
+  "action_items": [
+    "Mobile responsive fix for AdminLayout: collapse .acc-sidebar under 768px breakpoint into a Sheet/Drawer triggered from topbar. Currently sidebar = 244px fixed even at 390px viewport, content area = 146px, Platform Capabilities cards = 110px wide.",
+    "Optional cosmetic: review /app/frontend/src/components/common/MoodDualCircleIcon.jsx — current SVG renders 3 <circle> elements (likely 2 main + 1 decorative). The dual-circle concept reads fine visually so this is non-blocking; mention only if the brief required exactly 2 circles.",
+    "Optional polish: per iter71 code review, /superadmin/pages route was deleted as expected. Verified absent from App.js. No further action.",
+    "Cleanup performed: PATCH /api/advisor/admin/advisors/e508a1b6-34ca-4c8a-b1ca-3327faf73fbe notes=null (200 OK). Test-only string 'Verified iter72 retest' was first written then cleared. market_specialization and relationship_tags left as Hospitality/Retail and consigliere/warm (matching realistic profile)."
+  ],
+  "critical_code_review_comments": [
+    "BlueprintContext.jsx setLoading(true) at top of load() effect works as expected — admin-shell now waits for permissions before guard decides. No regression observed for tenant_admin or designer accounts (not exhaustively tested but /admin remained guarded properly when not logged in as super_admin). Loading flash is brief (~300ms) and acceptable.",
+    "AdminLayout sidebar has no @media (max-width: 768px) collapse rule in admin-control-center.css. This is the only meaningful design gap left in the sprint.",
+    "PATCH UI -> backend round-trip is solid: 200 OK with full advisor object, toast appears via Sonner (`Advisor aggiornato`), drawer closes, page refreshes data."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (PATCH 200 verified via curl + via UI network trace)",
+    "frontend": "~92% — all in-scope flows pass; only mobile sidebar collapse missing"
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin, MOOD Demo Studio)",
+  "seed_data_creation": "Advisor e508a1b6-34ca-4c8a-b1ca-3327faf73fbe (Raffaella Ruggieri) notes were temporarily set to 'Verified iter72 retest - cleanup_pending' then PATCH reset to null. market_specialization=[Hospitality,Retail], relationship_tags=[consigliere,warm] preserved as realistic seed.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "BlueprintContext race fix + SuperAdminRoute role-based synchronous fallback are confirmed working. Full SuperAdmin Refactor + Advisor Network P0 is runtime-green at desktop 1920x1080. Only follow-up is mobile responsive collapse for .acc-sidebar (< 768px viewport). No backend retest needed; rich-profile PATCH is green and persisted.",
+  "verified_runtime_evidence": {
+    "regression_routes": {
+      "/admin": "admin-shell mounts, data-surface=control-center, URL persists",
+      "/admin/modules": "admin-shell mounts, 11/11 pcap-card-* + 11/11 pcap-toggle-* present, hero 'Platform Capabilities' + counters 11/7/2/2",
+      "/admin/advisors": "admin-shell mounts",
+      "/admin/advisors/e508a1b6-...": "admin-shell + adv-detail-edit-open + adv-detail-territories-block + Mapbox input all present"
+    },
+    "sidebar_groups_in_order": ["Orchestrazione (Overview, Tenants)", "Network (Advisor Network™)", "Piattaforma (Platform Capabilities™, Lingue, Audit log)"],
+    "absent_labels": ["Pagine: NOT present", "Moduli: NOT present"],
+    "brand_mark_svg_circles": 3,
+    "active_nav_color_rgb": "rgb(0, 201, 179) #00C9B3 (cyan) on rgba(0,201,179,0.1) tint",
+    "advisor_edit_drawer": {
+      "mounts": true,
+      "sections_present": ["Identità", "Economia", "Specializzazione", "Presenza"],
+      "save_patch_status": 200,
+      "toast_text": "Advisor aggiornato",
+      "drawer_closes_after_save": true
+    },
+    "mobile_390x844": {
+      "admin_shell_renders": true,
+      "sidebar_width_px": 244,
+      "sidebar_display": "flex",
+      "pcap_card_width_px": 110,
+      "advisor_edit_drawer_width_px": 390
+    }
+  },
+  "rca of the issue": "Iter71 root cause (BlueprintContext.jsx load() useEffect not calling setLoading(true) at the top before async fetch) is REMEDIATED. Verified by direct navigation: super_admin user reaches /admin/* without /dashboard redirect across 4 distinct routes and multiple cold-page loads. SuperAdminRoute belt-and-suspenders accepting useAuth().user.role === 'super_admin' as a synchronous signal is also confirmed sufficient on its own. No new race or regression observed for the brief Loading state."
+}
