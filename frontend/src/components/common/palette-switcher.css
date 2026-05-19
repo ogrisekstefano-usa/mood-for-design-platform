@@ -41,16 +41,26 @@
        free from any parent stacking context / overflow constraints) ── */
 .palsw-popover {
   position: fixed;
-  width: 360px;
-  background: var(--bp-surface);
+  width: 380px;
+  /* Background completamente opaco · indipendente dal theme dello sfondo
+     (così resta leggibile sia su atmosfere chiare che scure) */
+  background: var(--bp-bg, #0F0F10);
+  background-color: var(--bp-bg, #0F0F10);
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
   color: var(--bp-text-primary);
-  border: 1px solid var(--bp-border);
-  border-radius: 8px;
-  box-shadow: 0 24px 56px rgba(0,0,0,0.32), 0 1px 0 rgba(255,255,255,0.04) inset;
-  z-index: 10010;
-  padding: 14px 14px 10px;
+  border: 1px solid var(--bp-border-strong, var(--bp-border));
+  border-radius: 10px;
+  box-shadow:
+    0 32px 64px -20px rgba(0,0,0,0.45),
+    0 6px 18px -8px rgba(0,0,0,0.35),
+    0 0 0 1px rgba(255,255,255,0.04) inset;
+  z-index: 10020;
+  padding: 16px 14px 12px;
   max-height: calc(100vh - 88px);
   overflow-y: auto;
+  /* opacity esplicita 1 — alcuni reset Tailwind potrebbero ereditare valori bassi */
+  opacity: 1;
 }
 .palsw-popover::-webkit-scrollbar { width: 4px; }
 .palsw-popover::-webkit-scrollbar-thumb { background: var(--bp-border-strong); border-radius: 4px; }
@@ -96,7 +106,7 @@
 }
 
 .palsw-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
 }
 
 /* Loading state · pre-fetch presets */
@@ -112,43 +122,48 @@
 .palsw-swatch {
   position: relative;
   display: flex; flex-direction: column; align-items: stretch;
-  gap: 5px;
-  padding: 6px;
-  background: var(--bp-bg);
+  gap: 6px;
+  padding: 8px 8px 7px;
+  background: var(--bp-surface, var(--bp-bg));
   border: 1px solid var(--bp-border);
   border-radius: 6px;
   cursor: pointer;
   transition: border-color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
   min-width: 0;
+  outline: none;
 }
 .palsw-swatch:hover {
-  border-color: var(--bp-border-strong);
+  border-color: var(--bp-primary, var(--bp-border-strong));
   transform: translateY(-1px);
+  box-shadow: 0 6px 14px -8px rgba(0,0,0,0.4);
 }
 .palsw-swatch--active {
   border-color: var(--bp-primary) !important;
-  box-shadow: 0 0 0 1px var(--bp-primary);
+  box-shadow: 0 0 0 1.5px var(--bp-primary);
 }
 
 .palsw-swatch__chip {
-  display: flex; height: 26px; border-radius: 4px; overflow: hidden;
+  display: flex; height: 30px; border-radius: 4px; overflow: hidden;
   border: 1px solid var(--bp-border);
 }
 .palsw-swatch__chip span { flex: 1; }
 
 .palsw-swatch__name {
-  font-size: 10px; line-height: 1.1;
+  font-size: 10.5px; line-height: 1.2;
   color: var(--bp-text-primary);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
+  font-weight: 500;
   text-align: center;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-family: var(--bp-font-body, 'Inter', sans-serif);
 }
 
 .palsw-swatch__check {
-  position: absolute; top: 4px; right: 4px;
-  color: var(--bp-primary);
-  background: var(--bp-bg);
-  border-radius: 50%; padding: 1px;
+  position: absolute; top: 5px; right: 5px;
+  color: var(--bp-on-primary, #fff);
+  background: var(--bp-primary);
+  border-radius: 50%; padding: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
 /* ── Footer ───────────────────────────────────────────────────── */
