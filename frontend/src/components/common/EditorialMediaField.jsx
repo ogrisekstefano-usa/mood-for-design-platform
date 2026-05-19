@@ -27,11 +27,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ImagePlus, RefreshCw, Trash2, Link2, FolderOpen, Loader2, AlertCircle,
-  ExternalLink, Library,
+  ExternalLink, Library, SlidersHorizontal, RotateCw,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { media, links, uploadMediaFile } from '../../lib/mediaApi';
 import AssetPickerModal from '../../pages/settings/AssetPickerModal';
+import { DEFAULT_FILTERS, cssFilterOf } from '../../lib/imageFilters';
 import './editorial-media-field.css';
 
 const IMAGE_INTENTS = [
@@ -99,6 +100,8 @@ const EditorialMediaField = ({
   const [externalUrl, setExternalUrl] = useState('');
   const [resolvedAsset, setResolvedAsset] = useState(null); // hydrated from asset_id
   const [usageCount, setUsageCount] = useState(null);
+  const [filterPanel, setFilterPanel] = useState(false);
+  const [filtersDraft, setFiltersDraft] = useState({ ...DEFAULT_FILTERS });
   const fileInputRef = useRef(null);
 
   // ── Hydrate resolved asset for usage relationships
@@ -112,6 +115,9 @@ const EditorialMediaField = ({
         if (!alive) return;
         setResolvedAsset(detail.asset);
         setUsageCount((detail.links || []).length);
+        // Sync filtersDraft from the asset (so opening the panel later
+        // shows the persisted state, not defaults).
+        setFiltersDraft({ ...DEFAULT_FILTERS, ...(detail.asset.filters || {}) });
       } catch {
         if (alive) { setResolvedAsset(null); setUsageCount(null); }
       }
@@ -288,10 +294,24 @@ const EditorialMediaField = ({
             src={normalized.url}
             alt={normalized.alt_text || ''}
             className={`emf-image ${preset === 'logo' ? 'emf-image--logo' : ''}`}
-            style={normalized.focal_point ? {
-              objectPosition: `${(normalized.focal_point.x || 0.5) * 100}% ${(normalized.focal_point.y || 0.5) * 100}%`,
-            } : undefined}
+            style={{
+              ...(normalized.focal_point ? {
+                objectPosition: `${(normalized.focal_point.x || 0.5) * 100}% ${(normalized.focal_point.y || 0.5) * 100}%`,
+              } : {}),
+              // Live preview filters (in-panel) override the persisted ones
+              // when the panel is open; otherwise we honor the asset's saved filters.
+              ...(filterPanel
+                ? {
+                    filter: cssFilterOf(filtersDraft),
+                    transform: filtersDraft.rotate ? `rotate(${filtersDraft.rotate}deg)` : undefined,
+                  }
+                : (resolvedAsset?.filters ? {
+                    filter: cssFilterOf(resolvedAsset.filters),
+                    transform: resolvedAsset.filters.rotate ? `rotate(${resolvedAsset.filters.rotate}deg)` : undefined,
+                  } : {})),
+            }}
             onError={() => setError('Immagine non disponibile')}
+            data-testid={`${testId}-preview-img`}
           />
         )}
 
@@ -355,6 +375,17 @@ const EditorialMediaField = ({
             >
               <RefreshCw size={13} strokeWidth={1.6} />
             </button>
+            {isLibrary && (
+              <button
+                type="button"
+                className={`emf-action ${filterPanel ? 'emf-action--active' : ''}`}
+                title="Filtri immagine (luminosità · contrasto · saturazione · rotazione)"
+                data-testid={`${testId}-filters-toggle`}
+                onClick={(e) => { e.stopPropagation(); setFilterPanel((v) => !v); }}
+              >
+                <SlidersHorizontal size={13} strokeWidth={1.6} />
+              </button>
+            )}
             <button
               type="button"
               className="emf-action emf-action--danger"
@@ -381,6 +412,25 @@ const EditorialMediaField = ({
           data-testid={`${testId}-file-input`}
         />
       </div>
+
+      {/* ── Lightweight image filters panel ── */}
+      {filterPanel && isLibrary && (
+        <ImageFiltersPanel
+          assetId={normalized.asset_id}
+          filters={filtersDraft}
+          onChange={setFiltersDraft}
+          onSaved={(saved) => {
+            setResolvedAsset((prev) => prev ? { ...prev, filters: saved } : prev);
+            setFilterPanel(false);
+            toast.success('Filtri salvati');
+          }}
+          onCancel={() => {
+            setFiltersDraft({ ...DEFAULT_FILTERS, ...(resolvedAsset?.filters || {}) });
+            setFilterPanel(false);
+          }}
+          testId={testId}
+        />
+      )}
 
       {/* Empty state explicit action buttons (below surface) */}
       {surfaceState === 'empty' && !disabled && (
@@ -543,3 +593,90 @@ const EditorialMediaField = ({
 };
 
 export default EditorialMediaField;
+
+// ─── ImageFiltersPanel — lightweight refinement (in-component) ──────
+//   Sliders for brightness/contrast/saturation/rotate.
+//   Live preview is bound by the parent (filtersDraft → preview img style).
+//   Persists to media_library.filters via PATCH on Save.
+const ImageFiltersPanel = ({ assetId, filters, onChange, onSaved, onCancel, testId }) => {
+  const [saving, setSaving] = React.useState(false);
+
+  const setKey = (k, v) => onChange({ ...filters, [k]: v });
+  const reset = () => onChange({ ...DEFAULT_FILTERS });
+  const isDirty = (
+    filters.brightness !== DEFAULT_FILTERS.brightness ||
+    filters.contrast   !== DEFAULT_FILTERS.contrast   ||
+    filters.saturation !== DEFAULT_FILTERS.saturation ||
+    filters.rotate     !== DEFAULT_FILTERS.rotate
+  );
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      await media.update(assetId, { filters });
+      onSaved?.(filters);
+    } catch (e) {
+      toast.error('Salvataggio filtri fallito');
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="emf-filters" data-testid={`${testId}-filters-panel`}>
+      <div className="emf-filters__head">
+        <span className="emf-filters__eyebrow">Refinement</span>
+        <p className="emf-filters__title">Filtri immagine</p>
+        <span className="emf-filters__hint">Subtle adjustments · saved across all surfaces</span>
+      </div>
+      <FilterSlider label="Luminosità"  testid={`${testId}-flt-brightness`}
+                    value={filters.brightness} min={0.5} max={1.5} step={0.05}
+                    onChange={(v) => setKey('brightness', v)} format={(v) => `${Math.round(v * 100)}%`} />
+      <FilterSlider label="Contrasto"   testid={`${testId}-flt-contrast`}
+                    value={filters.contrast} min={0.5} max={1.5} step={0.05}
+                    onChange={(v) => setKey('contrast', v)} format={(v) => `${Math.round(v * 100)}%`} />
+      <FilterSlider label="Saturazione" testid={`${testId}-flt-saturation`}
+                    value={filters.saturation} min={0} max={2} step={0.05}
+                    onChange={(v) => setKey('saturation', v)} format={(v) => `${Math.round(v * 100)}%`} />
+      <FilterSlider label="Rotazione"   testid={`${testId}-flt-rotate`}
+                    value={filters.rotate} min={-180} max={180} step={1}
+                    onChange={(v) => setKey('rotate', v)} format={(v) => `${v}°`}
+                    iconBtn={<button type="button" className="emf-filters__icon-btn"
+                                     title="Ruota di 90°" data-testid={`${testId}-flt-rotate-90`}
+                                     onClick={() => setKey('rotate', ((filters.rotate || 0) + 90) % 360 - (((filters.rotate || 0) + 90) >= 180 ? 360 : 0))}>
+                              <RotateCw size={11} />
+                            </button>} />
+      <div className="emf-filters__foot">
+        <button type="button" className="emf-filters__reset"
+                data-testid={`${testId}-flt-reset`}
+                onClick={reset} disabled={!isDirty || saving}>
+          Reset
+        </button>
+        <div style={{ flex: 1 }} />
+        <button type="button" className="emf-filters__btn emf-filters__btn--ghost"
+                data-testid={`${testId}-flt-cancel`}
+                onClick={onCancel} disabled={saving}>
+          Annulla
+        </button>
+        <button type="button" className="emf-filters__btn emf-filters__btn--primary"
+                data-testid={`${testId}-flt-save`}
+                onClick={save} disabled={saving}>
+          {saving ? '…' : 'Salva filtri'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const FilterSlider = ({ label, value, min, max, step, onChange, format, testid, iconBtn }) => (
+  <div className="emf-flt-row" data-testid={testid}>
+    <div className="emf-flt-row__head">
+      <span className="emf-flt-row__label">{label}</span>
+      <span className="emf-flt-row__val">{format ? format(value) : value}</span>
+      {iconBtn}
+    </div>
+    <input type="range"
+           className="emf-flt-row__slider"
+           min={min} max={max} step={step}
+           value={value}
+           onChange={(e) => onChange(parseFloat(e.target.value))} />
+  </div>
+);

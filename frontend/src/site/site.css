@@ -3,9 +3,9 @@
 
 .mfd-site {
   /* ── MOOD for DESIGN — Brand palette (2026) ────────────────────────────
-     #00C9B3 primary  · #33DCC6 primary-light · #7EE6DA primary-soft
-     #6B6E71 graphite · #1A1A1A ink            · #FFFFFF snow
-     Typography: Playfair Display (display) + Montserrat (sans).        */
+     Tokens default to Editorial preset values; OVERRIDDEN at runtime by
+     TenantThemeContext writing --brand-* on [data-surface="storefront"].
+     See `--site-*: var(--brand-*, fallback)` mappings at end of block. */
   --site-bg: #0F0F10;            /* deep neutral, near-ink */
   --site-bg-2: #16171A;
   --site-bg-3: #1B1D20;
@@ -26,6 +26,22 @@
   --site-cta-paper: #FFFFFF;     /* CTAs on dark = snow */
   --site-serif: 'Playfair Display', 'Cormorant Garamond', 'Bodoni Moda', Georgia, serif;
   --site-sans:  'Montserrat', 'Inter Tight', 'Manrope', system-ui, sans-serif;
+
+  /* ── Tenant theme bridge ─────────────────────────────────────────────
+     When `applyThemeVarsToRoot` writes --brand-* on the storefront
+     surface, the next 8 lines pick them up and re-expose them as
+     --site-*. Fallback chain preserves the editorial defaults so we
+     never render an empty value if a key is missing. */
+  --site-accent:  var(--brand-primary, #00C9B3);
+  --site-accent-2: var(--brand-secondary, #33DCC6);
+  --site-accent-3: var(--brand-accent, #7EE6DA);
+  --site-bg:      var(--brand-bg, #0F0F10);
+  --site-bg-2:    var(--brand-surface, #16171A);
+  --site-ink:     var(--brand-text, #F4F5F7);
+  --site-ink-2:   var(--brand-text-2, #C8CACE);
+  --site-line:    var(--brand-border, rgba(244, 245, 247, 0.10));
+  --site-serif:   var(--brand-font-display, 'Playfair Display', 'Cormorant Garamond', Georgia, serif);
+  --site-sans:    var(--brand-font-body, 'Montserrat', 'Inter Tight', system-ui, sans-serif);
 
   background: var(--site-bg);
   color: var(--site-ink);

@@ -532,6 +532,14 @@ export default ProjectDetailPage;
 const PublicHotspotImage = ({ url, caption, hotspots = [], alt, aspect = '16/9' }) => {
   const [activeId, setActiveId] = React.useState(null);
   const active = hotspots.find((h) => h.id === activeId);
+  // Anti-overflow placement: flip horizontally past 60%, vertically
+  // past 70% so the tooltip never lands off-canvas on mobile.
+  const tipTransform = (h) => {
+    if (!h) return '';
+    const hx = h.x_pct > 60 ? 'calc(-100% - 22px)' : '22px';
+    const vy = h.y_pct > 70 ? '-100%' : (h.y_pct < 30 ? '0%' : '-50%');
+    return `translate(${hx}, ${vy})`;
+  };
   return (
     <div className="phs-wrap" data-testid="public-hotspot-image">
       <div className="phs-canvas" style={{ aspectRatio: aspect }}>
@@ -556,9 +564,7 @@ const PublicHotspotImage = ({ url, caption, hotspots = [], alt, aspect = '16/9' 
             style={{
               left: `${active.x_pct}%`,
               top: `${active.y_pct}%`,
-              transform: active.x_pct > 60
-                ? 'translate(calc(-100% - 22px), -50%)'
-                : 'translate(22px, -50%)',
+              transform: tipTransform(active),
             }}
           >
             {active.title && <p className="phs-tip__title">{active.title}</p>}

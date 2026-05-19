@@ -79,6 +79,7 @@ class MediaUpdate(BaseModel):
     category: Optional[str] = None
     dominant_color: Optional[str] = None
     focal_point: Optional[dict] = None
+    filters: Optional[dict] = None        # { brightness, contrast, saturation, rotate }
     width: Optional[int] = None
     height: Optional[int] = None
 
