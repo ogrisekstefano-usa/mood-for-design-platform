@@ -15,7 +15,7 @@
  * saving will already show the new theme.
  */
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   ArrowLeft, Palette, Type, Save, RotateCcw, Loader2, CheckCircle2,
   Image as ImageIcon, Layers, Sparkles, Square, Circle,
@@ -58,6 +58,56 @@ const DEFAULT_PALETTE = {
   text_primary: '#F4F5F7', text_secondary: '#C8CACE',
   border: 'rgba(244,245,247,0.10)',
   success: '#22C55E', warning: '#F59E0B', danger: '#EF4444',
+};
+
+// ── Color science helper — converte un hex/rgba in HSL hue (0-360) +
+// lightness e saturation per ordinare le palette per famiglia cromatica.
+// Restituisce { h, s, l } o null se non parsabile.
+const parseColor = (input) => {
+  if (!input || typeof input !== 'string') return null;
+  const s = input.trim();
+  let r, g, b;
+  const hex = s.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (hex) {
+    const h = hex[1].length === 3 ? hex[1].split('').map((c) => c + c).join('') : hex[1];
+    r = parseInt(h.slice(0, 2), 16);
+    g = parseInt(h.slice(2, 4), 16);
+    b = parseInt(h.slice(4, 6), 16);
+  } else {
+    const rgba = s.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+    if (!rgba) return null;
+    r = parseInt(rgba[1], 10); g = parseInt(rgba[2], 10); b = parseInt(rgba[3], 10);
+  }
+  const rn = r / 255, gn = g / 255, bn = b / 255;
+  const max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn);
+  const l = (max + min) / 2;
+  const d = max - min;
+  let h = 0;
+  let sat = 0;
+  if (d !== 0) {
+    sat = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if (max === rn)      h = ((gn - bn) / d + (gn < bn ? 6 : 0));
+    else if (max === gn) h = ((bn - rn) / d + 2);
+    else                 h = ((rn - gn) / d + 4);
+    h *= 60;
+  }
+  return { h, s: sat, l };
+};
+
+// Ordina i preset per famiglia cromatica usando primary color come anchor.
+// I grayscale (saturation < 0.12) finiscono in coda; il resto è ordinato
+// per hue 0→360 (rosso → arancio → giallo → verde → ciano → blu → viola → rosa).
+const sortPresetsByHue = (presets) => {
+  if (!Array.isArray(presets)) return [];
+  return [...presets].sort((a, b) => {
+    const ca = parseColor(a?.theme?.palette?.primary) || { h: 0, s: 0, l: 0 };
+    const cb = parseColor(b?.theme?.palette?.primary) || { h: 0, s: 0, l: 0 };
+    const greyA = ca.s < 0.12 ? 1 : 0;
+    const greyB = cb.s < 0.12 ? 1 : 0;
+    if (greyA !== greyB) return greyA - greyB; // i grigi in fondo
+    if (greyA === 1) return ca.l - cb.l;       // tra grigi, dal chiaro allo scuro
+    return ca.h - cb.h;                         // famiglie cromatiche per hue
+  });
 };
 
 const Section = ({ kicker, title, children, testid, trace }) => (
@@ -236,7 +286,9 @@ const CuratedPaletteCard = ({ palette, current, onPick, testid }) => (
       <span className="flex-1" style={{ background: palette.bg }} />
       <span className="flex-1" style={{ background: palette.surfaceElev }} />
       <span className="flex-1" style={{ background: palette.primary }} />
-      <span className="flex-1" style={{ background: palette.accent }} />
+      <span className="flex-1" style={{
+        background: `linear-gradient(135deg, ${palette.accent} 0%, ${palette.primary} 55%, ${palette.surfaceElev} 100%)`,
+      }} />
     </div>
     <p className="text-[11px] font-body text-[var(--bp-text-primary)]">{palette.name}</p>
     <p className="text-[9px] font-body text-[var(--bp-text-muted)] line-clamp-1 mt-0.5">{palette.description}</p>
@@ -322,6 +374,7 @@ const LivePreview = ({ branding, theme }) => {
 // ── Page ───────────────────────────────────────────────────────────
 const BrandStudioPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useBlueprint();
   const { user } = useAuth();
   const { theme: savedTheme, branding: savedBranding, refresh, applyDraft, clearDraft } = useTenantTheme();
@@ -348,6 +401,25 @@ const BrandStudioPage = () => {
 
   // Push live preview to root vars whenever theme changes locally
   useEffect(() => { applyDraft(theme); }, [theme, applyDraft]);
+
+  // Scroll-to-section quando entriamo con un hash (es. /settings/brand#section-curated-palettes
+  // dal PaletteSwitcher topbar). Diamo un frame perché la pagina monta progressive.
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = location.hash.replace(/^#/, '');
+    let cancelled = false;
+    const tryScroll = (attempt = 0) => {
+      if (cancelled) return;
+      const el = document.querySelector(`[data-testid="${id}"]`) || document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      if (attempt < 20) setTimeout(() => tryScroll(attempt + 1), 120);
+    };
+    tryScroll();
+    return () => { cancelled = true; };
+  }, [location.hash, savedTheme]);
 
   const dirty = useMemo(() =>
     JSON.stringify(branding) !== JSON.stringify(savedBranding || {}) ||
@@ -609,9 +681,9 @@ const BrandStudioPage = () => {
 
           {presets.length > 0 && (
             <Section kicker="F · Editorial presets" title={t('brand.section.presetsTitle', null, 'Preset editoriali')} testid="section-presets"
-                     trace={t('brand.presetsTrace', null, 'Identità complete · server-side · sovrascrivono anche tipografia e radius')}>
+                     trace={t('brand.presetsTrace', null, 'Identità complete · ordinate per famiglia cromatica · server-side · sovrascrivono anche tipografia e radius')}>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-                {presets.map((p) => (
+                {sortPresetsByHue(presets).map((p) => (
                   <PresetCard key={p.key} preset={p}
                               current={theme.preset_key === p.key}
                               onPick={applyPreset}

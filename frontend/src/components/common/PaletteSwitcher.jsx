@@ -40,7 +40,9 @@ const Swatch = ({ palette, active, onPick }) => (
     <span className="palsw-swatch__chip" aria-hidden>
       <span style={{ background: palette.bg }} />
       <span style={{ background: palette.surfaceElev }} />
-      <span style={{ background: palette.primary }} />
+      <span style={{
+        background: `linear-gradient(135deg, ${palette.primary} 0%, ${palette.accent || palette.primary} 100%)`,
+      }} />
     </span>
     <span className="palsw-swatch__name">{palette.name}</span>
     {active && <Check size={11} className="palsw-swatch__check" strokeWidth={2.4} />}
@@ -151,13 +153,13 @@ const PaletteSwitcher = () => {
           </section>
 
           <footer className="palsw-popover__foot">
-            <Link to="/settings/brand-studio" onClick={() => setOpen(false)}
+            <Link to="/settings/brand#section-curated-palettes" onClick={() => setOpen(false)}
                   data-testid="palette-switcher-brand-studio"
                   className="palsw-foot__link">
-              Apri Brand Studio · personalizzazione completa <ExternalLink size={11} strokeWidth={1.7} />
+              Apri Brand Studio · Temi curati <ExternalLink size={11} strokeWidth={1.7} />
             </Link>
             <p className="palsw-foot__hint">
-              Imposta colori, font, micro-copy e logotipo del tuo studio.
+              Sfoglia tutti i 24 temi e imposta colori, font, micro-copy del tuo studio.
             </p>
           </footer>
         </div>,
