@@ -19,6 +19,47 @@ import {
   getLanguageRegistry,
   setLanguageRegistry,
 } from '../../site/content/languages';
+import '../admin/platform-capabilities.css'; // reuse .pcap-toggle styles
+
+// Stessa estetica del toggle in /admin/modules — pill cyan con thumb che scorre.
+const Toggle = ({ checked, onChange, disabled, label, testid }) => (
+  <label
+    className={`pcap-toggle ${disabled ? 'is-disabled' : ''}`}
+    title={label}
+    style={{ display: 'inline-block', opacity: disabled ? 0.35 : 1, cursor: disabled ? 'not-allowed' : 'pointer' }}
+  >
+    <input
+      type="checkbox"
+      checked={!!checked}
+      disabled={disabled}
+      onChange={(e) => !disabled && onChange?.(e.target.checked)}
+      data-testid={testid}
+    />
+    <span className="pcap-toggle__slider" />
+  </label>
+);
+
+// Default-locale selector — single-choice (radio semantics) ma stessa
+// estetica del toggle per coerenza visiva con il resto della pagina.
+const DefaultPin = ({ active, disabled, onSelect, testid, label }) => (
+  <button
+    type="button"
+    onClick={() => !disabled && !active && onSelect?.()}
+    disabled={disabled}
+    title={label}
+    data-testid={testid}
+    aria-pressed={!!active}
+    className="pcap-toggle"
+    style={{
+      border: 'none', padding: 0, background: 'transparent',
+      opacity: disabled ? 0.35 : 1,
+      cursor: disabled ? 'not-allowed' : (active ? 'default' : 'pointer'),
+    }}
+  >
+    <input type="checkbox" checked={!!active} readOnly disabled={disabled} tabIndex={-1} aria-hidden />
+    <span className="pcap-toggle__slider" />
+  </button>
+);
 
 const LanguagesPage = () => {
   const navigate = useNavigate();
@@ -92,21 +133,39 @@ const LanguagesPage = () => {
                 <td>{l.name}</td>
                 <td>{l.native_name}</td>
                 <td style={{ textAlign: 'center' }}>
-                  <input type="checkbox" checked={l.enabled} onChange={(e) => update(l.code, { enabled: e.target.checked })} data-testid={`lang-enabled-${l.code}`} />
+                  <Toggle checked={l.enabled}
+                          onChange={(v) => update(l.code, { enabled: v })}
+                          label={l.enabled ? 'Disattiva lingua' : 'Attiva lingua'}
+                          testid={`lang-enabled-${l.code}`} />
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  <input type="checkbox" checked={l.public_enabled} disabled={!l.enabled} onChange={(e) => update(l.code, { public_enabled: e.target.checked })} data-testid={`lang-public-${l.code}`} />
+                  <Toggle checked={l.public_enabled}
+                          disabled={!l.enabled}
+                          onChange={(v) => update(l.code, { public_enabled: v })}
+                          label={l.public_enabled ? 'Nascondi dal sito pubblico' : 'Mostra sul sito pubblico'}
+                          testid={`lang-public-${l.code}`} />
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  <input type="checkbox" checked={l.blueprint_enabled} disabled={!l.enabled} onChange={(e) => update(l.code, { blueprint_enabled: e.target.checked })} data-testid={`lang-blueprint-${l.code}`} />
+                  <Toggle checked={l.blueprint_enabled}
+                          disabled={!l.enabled}
+                          onChange={(v) => update(l.code, { blueprint_enabled: v })}
+                          label={l.blueprint_enabled ? 'Nascondi da Blueprint' : 'Mostra in Blueprint'}
+                          testid={`lang-blueprint-${l.code}`} />
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  <input type="radio" name="default-locale" checked={l.default_locale} disabled={!l.enabled} onChange={() => setDefault(l.code)} data-testid={`lang-default-${l.code}`} />
+                  <DefaultPin active={l.default_locale}
+                              disabled={!l.enabled}
+                              onSelect={() => setDefault(l.code)}
+                              label={l.default_locale ? 'Lingua predefinita attuale' : 'Imposta come predefinita'}
+                              testid={`lang-default-${l.code}`} />
                 </td>
                 <td style={{ textAlign: 'center', color: l.rtl ? '#C9A36E' : 'inherit', fontWeight: l.rtl ? 600 : 400 }}>{l.rtl ? 'RTL' : '\u2014'}</td>
                 <td><code style={{ fontSize: 12 }}>{l.fallback_locale}</code></td>
                 <td style={{ textAlign: 'center' }}>
-                  <input type="checkbox" checked={l.ai_translation_enabled} onChange={(e) => update(l.code, { ai_translation_enabled: e.target.checked })} data-testid={`lang-ai-${l.code}`} />
+                  <Toggle checked={l.ai_translation_enabled}
+                          onChange={(v) => update(l.code, { ai_translation_enabled: v })}
+                          label={l.ai_translation_enabled ? 'Disattiva traduzione AI' : 'Abilita traduzione AI'}
+                          testid={`lang-ai-${l.code}`} />
                 </td>
               </tr>
             ))}
