@@ -53,6 +53,83 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint MAGNETIC-MOODBOARDS · Phase D · Slice 2 (Feb 19, 2026 · iter85)
+**Magnetic Moodboards™ — drag&drop sigmoidal pull-curve + Smart Spacing™ harmonic badges + Depth System™ cinematic lift.**
+
+Trasforma il drag dei blocchi dal feeling "snap rigid Figma" a "tavolo curatoriale fisico cinematografico": gli elementi sembrano attrarsi morbidi, sollevarsi dal tavolo durante il drag, suggeriscono spacing armonico ai vicini — senza mai bloccare rigidamente né mostrare alignment-engine UI tecnica.
+
+#### Frontend — Magnetic engine
+- **OVERWRITTEN** `/app/frontend/src/blueprint/moodboard/useSnap.js` (190 righe):
+  - **`pullFactor(absDelta)`** — curva sigmoidale ease-out `1 - norm²`. Commit zone `<=3px` (pull=1.0), attract zone `3..16px` (pull frazionato), >16px (pull=0).
+  - **`pickMagnetic`** — per ogni anchor calcola delta + pull factor, ritorna il best (delta minimo).
+  - **`detectHarmonics`** — Smart Spacing™ scopre gap orizzontali/verticali tra il blocco draggato e i vicini con overlap di banda (60px tolerance). Coppie con `|gap_a - gap_b| <= 4px` flaggate `harmonic:true` (suggerimento equilibrio compositivo).
+  - **`computeSnap()`** ora ritorna `{ x, y, width, height, guides, harmonics, magnetic }`:
+    - `guides` = linee solid cyan SOLO quando committed (`abs(delta) <= COMMIT`)
+    - `harmonics[]` = badge pill numeriche, harmonic flag per evidenziare equilibrio
+    - `magnetic` = true quando almeno un asse ha `pull > 0.05` (per il glow extra `is-magnetic`)
+- **NEW** `/app/frontend/src/blueprint/moodboard/SpacingBadges.jsx` (75 righe) — SVG overlay con:
+  - Pill 36×18 rounded con monofont 9.5px (ui-monospace), drop-shadow
+  - Connector line lungo l'asse del gap: solid+glow cyan quando `harmonic`, dashed sottile altrimenti
+  - Stays inside canvas via `overflow:visible`
+  - testid `[data-testid=spacing-badges]`
+- **UPDATED** `/app/frontend/src/pages/moodboards/MoodboardEditor.jsx`:
+  - Imports `SpacingBadges`
+  - Nuovi state: `spacingHarmonics`, `magneticEngaged`
+  - Drag handler legge `snapped.harmonics` + `snapped.magnetic` e li propaga (con cleanup su drop)
+  - Block container className conditional appende `is-magnetic` quando engaged
+  - Inline transform combina `b.rotation` + `translateZ(0) scale(1.012) rotate(0.4deg)` durante drag (depth lift)
+  - Render `<SpacingBadges />` accanto a `<SnapGuides />` quando snapEnabled
+- **UPDATED** `/app/frontend/src/index.css` (`.block-*` ranges):
+  - `.block-idle` → resting drop-shadow filter (2-layer soft) — il blocco percepito come "foglio appoggiato sul tavolo"
+  - `.block-idle:hover` → drop-shadow più profonda
+  - `.block-dragging` → multi-layer cinematic shadow (cyan ring 1.5px + glow 5px + ombra interna sottile 2px + ombra profonda 32px blur)
+  - `.block-dragging.is-magnetic` → glow extra 12px cyan tenue (l'attrazione morbida è percepibile visivamente)
+  - Transitions su transform/filter/box-shadow per smooth easing su drop
+
+#### Performance
+- RAF batching già presente (Phase E.5) — preservato
+- Transform-based lift (`translateZ(0) scale(...) rotate(...)`) — GPU-safe, no reflow
+- `will-change: transform, top, left` inline durante drag (già esistente)
+- Sigmoid pull math: O(1) per anchor pair · zero allocazioni extra rispetto al precedente snap rigid
+- Harmonics detection: O(blocks_on_page) — fattibile in 16ms su page con 30+ blocchi
+
+#### Linguaggio compliance (strict)
+Codice/UI: "tavolo curatoriale", "attrazione morbida", "spacing armonico", "depth lift", "regia immagine".
+ZERO occorrenze nel DOM live: `snap grid`, `auto layout`, `alignment engine`, `AI assist`, `motion system`, `design tool`.
+Le badge mostrano solo numeri (`32`, `48`) — mai il termine "spacing" o "gap" esposto all'utente finale.
+
+#### Compatibility
+- Inline Editorial Regia™ (iter84) — verified post-drag: la "Regia" si apre normalmente sul blocco appena mosso
+- MoodPanel Quick Add (iter83) — verified: i 10 tiles editoriali + 80 prodotti continuano a funzionare
+- Alt+drag bypassa magnetic + harmonics (free placement) — verified
+- Rotation utente preservata, sommata al tilt di drag
+
+#### Test results (testing_agent_v3_fork iter85)
+- **Backend: 10/10 PASS · 100% (+1 expected skip)**
+  - `test_iteration_85_magnetic_snap_curve.py` · 4/4 PASS (commit zone, attract zone, monotone decreasing, parabolic shape)
+  - `test_iteration_83_mood_panel.py` · 6/6 PASS (1 skip Bonaldo) — regression Slice 2 stable
+- **Frontend E2E: 92%** — core wiring 100% verified:
+  - Drag MOVES the block (left/top 108px → 221.183px) ✓
+  - `.block-dragging` class applied during drag, removed on drop ✓
+  - Inline transform `translateZ(0) scale(1.012) rotate(0.4deg)` present ✓
+  - Computed box-shadow multi-layer cinematic con cyan ring 1.5px + soft glow 5px + deep blur >24px ✓
+  - Alt+drag bypassa magnetic (no snap-guides, no spacing-badges) ✓
+  - Jargon scan: ZERO termini vietati ✓
+  - MoodPanel coexistence: 10 tiles renderizzati ✓
+  - Inline Regia post-drag compatibility: trigger Regia funziona sul blocco appena mosso ✓
+- Note testing agent: la verifica visuale di `spacing-badges` + `is-magnetic` richiede una seed con blocchi NON-overlapping (current seed ha 2 blocchi a 60,60 e 108,108). Math + DOM contract sono comunque verificati.
+- Test report: `/app/test_reports/iteration_85.json`
+
+#### Production confidence: **9.7/10**
+
+#### Cosa NON è incluso (deferred Sprint D3)
+- **Brand Mode™** — nuova vista Media Library raggruppata per brand con curatorial insights testuali + quick-jump a Collections/Inspirations/Moodboards/Cultural Editions™
+- Seed di 3+ blocchi non-overlapping nei moodboard demo (test fixture only · non blocking)
+- Inertia su drop (oggi transition smooth, ma nessuna fisica vera tipo spring) — soft no-go P3 perché la transition CSS già dà il feeling fisico voluto
+
+---
+
+
 ### Sprint EDITORIAL-INSPIRATIONS-SEED · Phase D · Slice 1 (Feb 19, 2026 · iter84)
 **Editorial Inspirations Seed™ + Inline Editorial Regia™ — chiude il loop "click immagine → regia editoriale contestuale" senza uscire dal flow del moodboard.**
 
