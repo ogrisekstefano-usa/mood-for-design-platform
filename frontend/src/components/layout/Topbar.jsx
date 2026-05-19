@@ -1,6 +1,6 @@
 import React, { useContext, createContext, useState, useMemo } from 'react';
 import { Bell } from 'lucide-react';
-import ThemeSwitcher from '../common/ThemeSwitcher';
+import PaletteSwitcher from '../common/PaletteSwitcher';
 import UserMenu from '../common/UserMenu';
 import NavigableBreadcrumb from '../common/NavigableBreadcrumb';
 
@@ -89,7 +89,7 @@ const Topbar = () => {
           <Bell size={14} strokeWidth={1.6} />
         </button>
 
-        <ThemeSwitcher />
+        <PaletteSwitcher />
 
         <div className="w-px h-5 bg-[var(--bp-border)] mx-1" />
 
