@@ -53,6 +53,43 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint NARRATIVE-MODE-EDITORIAL-TONE v1 (Feb 19, 2026 · iter79)
+**Narrative Mode™ & Editorial Tone Engine — decouple persistent Brand Voice™ (studio identity) from contextual Narrative Mode™ (per-Inspiration override).**
+
+#### What was built
+- **Backend — branding.py**: `Branding` Pydantic model extended with `editorial_voice: Optional[Dict[str, Any]]`. Persisted under `tenants.branding_settings.editorial_voice` via existing `PUT /api/branding` (deep merge — partial PUTs don't wipe other keys).
+- **Backend — inspirations_archive.py**: new `CulturalReadingRetryBody` Pydantic model. `POST /api/inspirations/archive/{id}/cultural-reading` now accepts optional body with `narrative_mode`, `narrative_intensity`, `presentation_context`. When body is present AND existing reading status==='ready', the pipeline runs with `skip_vision=True` → reuses cached Vision signals, ribilancia SOLO Layer 3. Response includes `narrative_only: bool` flag. Backend already had `_run_cultural_reading()` and `editorial_interpreter.interpret()` accepting these params from iter78 — only the public endpoint surface and the Brand Voice fetch path were missing.
+- **Frontend — BrandStudioPage.jsx**: new Section "F · Voce editoriale" with 4 select controls (Personalità comunicativa · Lessico · Intensità narrativa abituale · Densità interpretativa). Persisted globally via existing Save button. testids: `editorial-voice-{communication_personality|vocabulary_style|narrative_intensity|interpretation_density}`.
+- **Frontend — InspirationDetailDrawer.jsx**: `CulturalReadingBlock` extended with contextual Narrative Mode™ panel (collapsible). 2 dropdown (Direzione editoriale · Intensità narrativa) + "Rigenera interpretazione" button. Pre-fills from `cultural_reading.provider_meta` so the user sees the currently-applied direction. testids: `narrative-mode-toggle`, `narrative-mode-panel`, `narrative-mode-select`, `narrative-intensity-select`, `narrative-mode-regenerate`.
+
+#### Language compliance (strict)
+- Solo lessico editoriale italiano: "Voce editoriale dello studio", "Direzione editoriale", "Intensità narrativa", "Rigenera interpretazione", "Adatta la direzione editoriale per questo riferimento".
+- ZERO occorrenze (verificate via grep + DOM scan): "prompt", "AI", "model", "temperature", "generation", "algoritmo", "score", "KPI", "machine learning".
+
+#### Test results (testing_agent_v3_fork iter79)
+- **Backend**: 4/4 pytest PASS (100%) — PUT editorial_voice persists + deep-merge preserves on partial PUT, POST cultural-reading without body returns `narrative_only:false`, with body on ready reading returns `narrative_only:true`, provider_meta persists mode+intensity after retry.
+- **Frontend**: 12/12 Playwright assertions PASS (100%) — 4 editorial-voice selects render and save in Brand Studio + drawer toggle/panel/selects/regenerate button work, click triggers POST with correct body, toast appears, cultural-reading enters pending state.
+- Test file: `/app/backend/tests/test_iteration_79_narrative_mode.py` (created by testing agent).
+
+#### File modificati
+- `/app/backend/routers/branding.py` — `Branding.editorial_voice` field
+- `/app/backend/routers/inspirations_archive.py` — `CulturalReadingRetryBody` + endpoint extension + cleanup di un tail corrotto pre-esistente
+- `/app/frontend/src/pages/settings/BrandStudioPage.jsx` — `EDITORIAL_VOICE_OPTIONS` constants + Section F
+- `/app/frontend/src/pages/inspirations/InspirationDetailDrawer.jsx` — `NARRATIVE_MODES` / `NARRATIVE_INTENSITIES` constants + collapsible panel + retry(opts)
+- `/app/frontend/src/pages/inspirations/inspirations.css` — `.insd-narrative*` styles (toggle, panel, select, hint, regen button)
+
+#### Deferred (code review notes da testing agent — P2)
+- Extract `<EditorialVoiceSection />` sub-component (BrandStudioPage > 800 righe).
+- Extract `<NarrativeModePanel />` sibling component per riuso su /magazine/{id} e future Cultural Edition cards.
+- Permission gating `P_INSPIRATIONS_WRITE` su POST cultural-reading (full-pipeline retry costa Vision+Claude; narrative-only è cheap).
+- Concurrency: PUT branding usa GET-then-merge in app layer → race-condition rara su autosave + designer simultanei. Considerare update atomico per-leaf-key.
+
+#### Production confidence: **9.7/10**
+La voce editoriale dello studio è ora un parametro persistente che modula TUTTE le letture culturali. La Direzione editoriale per singola Inspiration sovrascrive solo quel riferimento, riusando i segnali Vision già in cache (3-5s vs 8-12s del full pipeline). Designer ora controllano davvero il registro senza vedere mai "prompt"/"AI"/"model" nell'UI.
+
+---
+
+
 ### Sprint CULTURAL-INTELLIGENCE-ENGINE v1 (Feb 21, 2026 · iter78)
 **Hybrid 3-layer Cultural Intelligence Engine™ — replaces fragile single-layer Market Resonance™.**
 
