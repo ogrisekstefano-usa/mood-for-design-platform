@@ -26,6 +26,24 @@ const STEPS = [
   { key: 'review',       label: 'Revisione' },
 ];
 
+// Fallback costanti editoriali (visibili immediatamente, non attendono il fetch)
+const SOURCE_TYPES_FALLBACK = [
+  { key: 'project',            label: 'Progetto' },
+  { key: 'moodboard',          label: 'Moodboard' },
+  { key: 'showcase',           label: 'Showcase' },
+  { key: 'material_selection', label: 'Selezione materiali' },
+];
+
+const ADAPTATION_SCOPES_FALLBACK = [
+  { key: 'tone',             label: 'Tono editoriale' },
+  { key: 'cta',              label: 'Call to action' },
+  { key: 'material_palette', label: 'Palette materica' },
+  { key: 'imagery',          label: 'Riferimenti visivi' },
+  { key: 'cultural_refs',    label: 'Riferimenti culturali' },
+  { key: 'headlines',        label: 'Titoli e cappelli' },
+  { key: 'atmosphere',       label: 'Atmosfera narrativa' },
+];
+
 const CulturalEditionWizard = ({ open, onClose, onCreated,
                                  initialSourceType = null, initialSourceId = null,
                                  initialSourceTitle = null }) => {
@@ -53,13 +71,16 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
     setSourceTitle(initialSourceTitle || '');
     setMarket('');
     setLocale('');
-    setScope([]);
     setNote('');
+    // Default scope = tutti gli ambiti (immediatamente disponibile dai fallback)
+    setScope(ADAPTATION_SCOPES_FALLBACK.map((s) => s.key));
     api.get('/api/cultural-editions/markets')
       .then((r) => {
         setConfig(r.data);
-        // default scope = tutti gli ambiti (suggestion editoriale)
-        setScope((r.data?.adaptation_scopes || []).map((s) => s.key));
+        // Override con set dal server se più completo
+        if (r.data?.adaptation_scopes) {
+          setScope(r.data.adaptation_scopes.map((s) => s.key));
+        }
       })
       .catch(() => setConfig(null));
   }, [open, initialSourceType, initialSourceId, initialSourceTitle]);
@@ -173,7 +194,7 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
             <div className="cew-step-panel" data-testid="cew-panel-source-type">
               <p className="cew-question">Da quale contenuto vuoi partire?</p>
               <div className="cew-grid-2">
-                {(config?.source_types || []).map((t) => (
+                {(config?.source_types || SOURCE_TYPES_FALLBACK).map((t) => (
                   <button key={t.key} type="button"
                           onClick={() => { setSourceType(t.key); setSourceId(''); }}
                           className={`cew-card ${sourceType === t.key ? 'cew-card--selected' : ''}`}
@@ -290,7 +311,7 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
                 Puoi selezionare uno o più ambiti. La redazione di MOOD lavorerà solo su questi.
               </p>
               <div className="cew-scope-list">
-                {(config?.adaptation_scopes || []).map((s) => {
+                {(config?.adaptation_scopes || ADAPTATION_SCOPES_FALLBACK).map((s) => {
                   const on = scope.includes(s.key);
                   return (
                     <button key={s.key} type="button"
@@ -341,7 +362,7 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
                 <div className="cew-review__row">
                   <span className="cew-review__lbl">Ambiti di adattamento</span>
                   <span className="cew-review__val">
-                    {scope.map((k) => (config?.adaptation_scopes || []).find((s) => s.key === k)?.label).filter(Boolean).join(' · ')}
+                    {scope.map((k) => (config?.adaptation_scopes || ADAPTATION_SCOPES_FALLBACK).find((s) => s.key === k)?.label).filter(Boolean).join(' · ')}
                   </span>
                 </div>
                 {note && (
@@ -383,6 +404,6 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
 };
 
 const labelForSourceType = (config, key) =>
-  (config?.source_types || []).find((t) => t.key === key)?.label || key;
+  (config?.source_types || SOURCE_TYPES_FALLBACK).find((t) => t.key === key)?.label || key;
 
 export default CulturalEditionWizard;

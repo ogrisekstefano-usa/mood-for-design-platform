@@ -20,10 +20,15 @@
   border: 1px solid var(--bp-border);
   border-radius: 8px;
   padding: 42px 44px 38px;
+  padding-right: 620px;  /* riserva spazio per il logo grande a destra */
+  min-height: 280px;
   overflow: hidden;
   opacity: 0;
   transform: translateY(8px);
   animation: cck-rise 460ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@media (max-width: 1100px) {
+  .cck-hero { padding-right: 44px; padding-top: 250px; min-height: auto; }
 }
 
 /* Studio logo (top-right) — primary_logo_url o iniziali in frame editoriale */
@@ -35,49 +40,51 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 12px;
+  padding: 10px 14px;
   border: 1px solid var(--bp-border);
-  border-radius: 4px;
+  border-radius: 6px;
   background: var(--bp-bg, rgba(0,0,0,0.18));
   backdrop-filter: blur(8px);
-  max-width: 220px;
+  max-width: 580px;
   transition: border-color 220ms ease;
 }
 .cck-hero__studio:hover { border-color: var(--bp-primary, #00C9B3); }
 .cck-hero__studio img {
-  max-height: 28px;
-  max-width: 150px;
+  max-height: 200px;
+  max-width: 550px;
   width: auto;
+  height: auto;
   object-fit: contain;
   display: block;
 }
 .cck-hero__studio--text {
-  padding: 6px 14px;
+  padding: 8px 16px;
+  max-width: 320px;
 }
 .cck-hero__studio-initials {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 4px;
+  width: 38px;
+  height: 38px;
+  border-radius: 5px;
   background: var(--bp-primary-soft, rgba(0,201,179,0.10));
   color: var(--bp-primary, #00C9B3);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.05em;
   font-family: var(--bp-font-body, 'Inter', sans-serif);
 }
 .cck-hero__studio-name {
-  font-size: 11px;
-  letter-spacing: 0.18em;
+  font-size: 12px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--bp-text-secondary);
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 130px;
+  max-width: 200px;
 }
 .cck-hero__glow {
   position: absolute;
@@ -810,9 +817,9 @@
 /* ── MOBILE ──────────────────────────────────────────────────────── */
 @media (max-width: 720px) {
   .cck-page { padding: 20px 18px 24px; gap: 20px; }
-  .cck-hero { padding: 64px 22px 24px; }
-  .cck-hero__studio { top: 14px; right: 14px; padding: 6px 10px; max-width: 160px; }
-  .cck-hero__studio img { max-height: 22px; max-width: 110px; }
+  .cck-hero { padding: 200px 22px 24px; padding-right: 22px; min-height: auto; }
+  .cck-hero__studio { top: 14px; right: 14px; left: 14px; padding: 8px 12px; max-width: none; justify-content: center; }
+  .cck-hero__studio img { max-height: 140px; max-width: 100%; }
   .cck-hero__studio-name { display: none; }
   .cck-hero__greeting { font-size: 26px; }
   .cck-hero__sentence { font-size: 13px; }
