@@ -357,12 +357,27 @@ def _compute_resonance(meta: Dict[str, Any]) -> List[Dict[str, Any]]:
 
 
 # ─── Cultural Intelligence Engine™ — 3-layer orchestration ────────────
-async def _run_cultural_reading(media_id: str, tenant_id: str, image_url: str) -> Dict[str, Any]:
-    """Run the full hybrid 3-layer pipeline for one media item.
+def _fetch_brand_voice(tenant_id: str) -> Optional[Dict[str, Any]]:
+    """Read the persistent Brand Voice™ from tenant.branding_settings.editorial_voice."""
+    try:
+        rows = (db().table("tenants").select("branding_settings")
+                .eq("id", tenant_id).limit(1).execute().data or [])
+        if not rows:
+            return None
+        bs = rows[0].get("branding_settings") or {}
+        ev = bs.get("editorial_voice")
+        return ev if isinstance(ev, dict) and ev else None
+    except Exception:
+        return None
 
-    Persists final result into media_library.cultural_reading regardless
-    of partial failures (graceful degradation).
-    """
+
+async def _run_cultural_reading(media_id: str, tenant_id: str, image_url: str,
+                                 narrative_mode: Optional[str] = None,
+                                 narrative_intensity: Optional[str] = None,
+                                 presentation_context: Optional[str] = None,
+                                 skip_vision: bool = False) -> Dict[str, Any]:
+    """Run the full hybrid pipeline. If skip_vision=True and a previous reading
+    exists, only re-run Layer 3 (Narrative Mode adaptation)."""
     started = _now()
     result: Dict[str, Any] = {
         "status":            "in_progress",
@@ -373,46 +388,69 @@ async def _run_cultural_reading(media_id: str, tenant_id: str, image_url: str) -
         "provider_meta":     {},
         "generated_at":      started,
     }
+    brand_voice = _fetch_brand_voice(tenant_id)
     try:
-        # Layer 1
-        vision = await vision_provider_adapter.analyze_image(image_url)
-        result["provider_meta"] = {
-            "vision_provider": vision.get("provider"),
-            "vision_model":    vision.get("model"),
-            "vision_latency_ms": vision.get("latency_ms"),
-            "vision_error":    vision.get("error"),
-        }
-        signals = vision.get("signals") or {}
-        result["raw_vision_signals"] = signals
-        if not signals:
-            result["status"] = "failed"
-            _save_cultural_reading(media_id, tenant_id, result)
-            return result
+        if skip_vision:
+            # Reuse previous vision signals + descriptors, only re-render narrative.
+            prev = (db().table("media_library").select("cultural_reading")
+                    .eq("id", media_id).eq("tenant_id", tenant_id).limit(1).execute().data or [])
+            cached = (prev[0].get("cultural_reading") if prev else None) or {}
+            if cached.get("status") != "ready":
+                skip_vision = False  # fall through to full pipeline
+            else:
+                result["raw_vision_signals"] = cached.get("raw_vision_signals")
+                result["mapped_cultural_descriptors"] = cached.get("mapped_cultural_descriptors")
+                result["market_resonance"] = cached.get("market_resonance")
+                result["provider_meta"] = {**(cached.get("provider_meta") or {}),
+                                            "narrative_only_refresh": True}
 
-        # Layer 2 (proprietary, deterministic)
-        mapping = descriptor_mapper.map_signals_to_culture(signals)
-        result["mapped_cultural_descriptors"] = {
-            "activated": mapping.get("activated_descriptors", []),
-            "by_category": mapping.get("descriptors_by_category", {}),
-        }
-        result["market_resonance"] = mapping.get("market_resonance", [])
+        if not skip_vision:
+            vision = await vision_provider_adapter.analyze_image(image_url)
+            result["provider_meta"] = {
+                "vision_provider": vision.get("provider"),
+                "vision_model":    vision.get("model"),
+                "vision_latency_ms": vision.get("latency_ms"),
+                "vision_error":    vision.get("error"),
+            }
+            signals = vision.get("signals") or {}
+            result["raw_vision_signals"] = signals
+            if not signals:
+                result["status"] = "failed"
+                _save_cultural_reading(media_id, tenant_id, result)
+                return result
+            mapping = descriptor_mapper.map_signals_to_culture(signals)
+            result["mapped_cultural_descriptors"] = {
+                "activated": mapping.get("activated_descriptors", []),
+                "by_category": mapping.get("descriptors_by_category", {}),
+            }
+            result["market_resonance"] = mapping.get("market_resonance", [])
 
-        # Layer 3 — Editorial interpretation
+        # Layer 3+4 — Editorial interpretation modulata da Brand Voice + Narrative Mode
+        activated_list = (result["mapped_cultural_descriptors"] or {}).get("activated", []) \
+            if result.get("mapped_cultural_descriptors") else []
         editorial = await editorial_interpreter.interpret(
-            signals,
-            mapping.get("activated_descriptors", []),
-            mapping.get("market_resonance", []),
+            result["raw_vision_signals"] or {},
+            activated_list,
+            result["market_resonance"] or [],
+            brand_voice=brand_voice,
+            narrative_mode=narrative_mode,
+            narrative_intensity=narrative_intensity,
+            presentation_context=presentation_context,
         )
         result["editorial_interpretation"] = editorial
-        result["provider_meta"]["editorial_provider"] = editorial.get("provider")
-        result["provider_meta"]["editorial_model"]    = editorial.get("model")
-        result["provider_meta"]["editorial_fallback"] = editorial.get("fallback")
+        pm = result.setdefault("provider_meta", {})
+        pm["editorial_provider"] = editorial.get("provider")
+        pm["editorial_model"]    = editorial.get("model")
+        pm["editorial_fallback"] = editorial.get("fallback")
+        pm["narrative_mode"]     = narrative_mode
+        pm["narrative_intensity"] = narrative_intensity
+        pm["presentation_context"] = presentation_context
 
         result["status"] = "ready"
     except Exception as e:
         logger.exception(f"cultural reading pipeline failed for {media_id}: {e}")
         result["status"] = "failed"
-        result["provider_meta"]["pipeline_error"] = str(e)[:300]
+        result["provider_meta"].setdefault("pipeline_error", str(e)[:300])
 
     _save_cultural_reading(media_id, tenant_id, result)
     return result
@@ -451,16 +489,31 @@ def _mark_cultural_reading_pending(media_id: str, tenant_id: str) -> None:
 
 
 import asyncio
-def _kick_off_cultural_reading(media_id: str, tenant_id: str, image_url: str) -> None:
+def _kick_off_cultural_reading(media_id: str, tenant_id: str, image_url: str,
+                                narrative_mode: Optional[str] = None,
+                                narrative_intensity: Optional[str] = None,
+                                presentation_context: Optional[str] = None,
+                                skip_vision: bool = False) -> None:
     """Fire-and-forget background runner usable from sync FastAPI BackgroundTasks."""
     if not image_url:
         return
     _mark_cultural_reading_pending(media_id, tenant_id)
     try:
-        asyncio.create_task(_run_cultural_reading(media_id, tenant_id, image_url))
+        asyncio.create_task(_run_cultural_reading(
+            media_id, tenant_id, image_url,
+            narrative_mode=narrative_mode,
+            narrative_intensity=narrative_intensity,
+            presentation_context=presentation_context,
+            skip_vision=skip_vision,
+        ))
     except RuntimeError:
-        # No running loop — run synchronously as fallback
-        asyncio.run(_run_cultural_reading(media_id, tenant_id, image_url))
+        asyncio.run(_run_cultural_reading(
+            media_id, tenant_id, image_url,
+            narrative_mode=narrative_mode,
+            narrative_intensity=narrative_intensity,
+            presentation_context=presentation_context,
+            skip_vision=skip_vision,
+        ))
 
 
 # ─── Endpoints ────────────────────────────────────────────────────────
@@ -726,6 +779,16 @@ def list_links(media_id: str, ctx=Depends(get_tenant_context)):
     c = db()
     rows = (c.table("inspiration_links").select("*")
             .eq("media_id", media_id).eq("tenant_id", ctx["tenant_id"]).execute().data or [])
+    return {"items": [_slim(r) for r in rows]}
+
+
+@router.delete("/archive/links/{link_id}", status_code=204)
+def delete_link(link_id: str, ctx=Depends(get_tenant_context)):
+    c = db()
+    (c.table("inspiration_links").delete()
+     .eq("id", link_id).eq("tenant_id", ctx["tenant_id"]).execute())
+    return None
+["tenant_id"]).execute().data or [])
     return {"items": [_slim(r) for r in rows]}
 
 
