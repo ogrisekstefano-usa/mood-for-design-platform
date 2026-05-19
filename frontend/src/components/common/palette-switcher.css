@@ -42,19 +42,15 @@
 .palsw-popover {
   position: fixed;
   width: 320px;
-  /* Background ADATTIVO al theme corrente — chiaro su palette chiare,
-     scuro su palette scure. Opaco e leggibile in entrambi i casi. */
-  background: var(--bp-surface, var(--bp-bg, #0F0F10));
-  background-color: var(--bp-surface, var(--bp-bg, #0F0F10));
-  backdrop-filter: blur(20px) saturate(1.1);
-  -webkit-backdrop-filter: blur(20px) saturate(1.1);
-  color: var(--bp-text-primary);
-  border: 1px solid var(--bp-border-strong, var(--bp-border));
+  /* Le var --pop-* sono settate inline dal componente in base al theme
+     attivo (chiaro/scuro). Il popover è quindi indipendente dal :root */
+  background: var(--pop-bg, #0F0F10);
+  color: var(--pop-text, #F0EFEC);
+  border: 1px solid var(--pop-border-strong, rgba(255,255,255,0.18));
   border-radius: 8px;
   box-shadow:
     0 24px 48px -16px rgba(0,0,0,0.30),
-    0 4px 12px -6px rgba(0,0,0,0.20),
-    0 0 0 1px rgba(255,255,255,0.04) inset;
+    0 4px 12px -6px rgba(0,0,0,0.20);
   z-index: 10020;
   padding: 12px 12px 10px;
   max-height: calc(100vh - 88px);
@@ -75,27 +71,27 @@
 }
 .palsw-popover__eyebrow {
   font-size: 8.5px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--bp-text-faint, var(--bp-text-muted));
+  color: var(--pop-text-faint, rgba(255,255,255,0.40));
   margin-bottom: 2px;
 }
 .palsw-popover__title {
   font-family: var(--bp-font-heading, 'Playfair Display', Georgia, serif);
   font-size: 14px; font-weight: 500; letter-spacing: -0.005em; line-height: 1.1;
-  color: var(--bp-text-primary);
+  color: var(--pop-text, #F0EFEC);
 }
 .palsw-popover__close {
   background: transparent; border: none; cursor: pointer; padding: 3px;
-  color: var(--bp-text-faint, var(--bp-text-muted));
+  color: var(--pop-text-faint, rgba(255,255,255,0.40));
   transition: color 140ms ease;
 }
-.palsw-popover__close:hover { color: var(--bp-text-primary); }
+.palsw-popover__close:hover { color: var(--pop-text, #F0EFEC); }
 
 /* ── Section ───────────────────────────────────────────────────── */
 .palsw-section { margin-bottom: 10px; }
 .palsw-section__label {
   display: flex; align-items: center; gap: 5px;
   font-size: 8.5px; letter-spacing: 0.20em; text-transform: uppercase;
-  color: var(--bp-text-muted);
+  color: var(--pop-text-muted, #A19D98);
   font-weight: 600;
   margin-bottom: 5px;
 }
@@ -124,8 +120,8 @@
   display: flex; flex-direction: column; align-items: stretch;
   gap: 4px;
   padding: 5px 5px 4px;
-  background: var(--bp-bg, transparent);
-  border: 1px solid var(--bp-border);
+  background: var(--pop-surface, transparent);
+  border: 1px solid var(--pop-border, rgba(255,255,255,0.10));
   border-radius: 5px;
   cursor: pointer;
   transition: all 140ms ease;
@@ -134,24 +130,24 @@
   font-family: var(--bp-font-body, 'Inter', sans-serif);
 }
 .palsw-swatch:hover {
-  border-color: var(--bp-primary, var(--bp-border-strong));
+  border-color: var(--pop-primary, #00C9B3);
   transform: translateY(-1px);
   box-shadow: 0 4px 10px -6px rgba(0,0,0,0.3);
 }
 .palsw-swatch--active {
-  border-color: var(--bp-primary) !important;
-  box-shadow: 0 0 0 1.5px var(--bp-primary);
+  border-color: var(--pop-primary, #00C9B3) !important;
+  box-shadow: 0 0 0 1.5px var(--pop-primary, #00C9B3);
 }
 
 .palsw-swatch__chip {
   display: flex; height: 22px; border-radius: 3px; overflow: hidden;
-  border: 1px solid var(--bp-border);
+  border: 1px solid var(--pop-border, rgba(255,255,255,0.10));
 }
 .palsw-swatch__chip span { flex: 1; }
 
 .palsw-swatch__name {
   font-size: 9.5px; line-height: 1.15;
-  color: var(--bp-text-primary);
+  color: var(--pop-text, #F0EFEC);
   letter-spacing: 0.01em;
   font-weight: 500;
   text-align: center;
@@ -160,8 +156,8 @@
 
 .palsw-swatch__check {
   position: absolute; top: 3px; right: 3px;
-  color: var(--bp-on-primary, #fff);
-  background: var(--bp-primary);
+  color: var(--pop-on-primary, #fff);
+  background: var(--pop-primary, #00C9B3);
   border-radius: 50%; padding: 1.5px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
@@ -169,18 +165,18 @@
 /* ── Footer ───────────────────────────────────────────────────── */
 .palsw-popover__foot {
   margin-top: 8px; padding-top: 8px;
-  border-top: 1px solid var(--bp-border);
+  border-top: 1px solid var(--pop-border, rgba(255,255,255,0.10));
 }
 .palsw-foot__link {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 10.5px; letter-spacing: 0.02em;
-  color: var(--bp-primary); font-weight: 600;
+  color: var(--pop-primary, #00C9B3); font-weight: 600;
   text-decoration: none;
   transition: filter 140ms ease;
 }
 .palsw-foot__link:hover { filter: brightness(1.10); }
 .palsw-foot__hint {
-  font-size: 9.5px; color: var(--bp-text-faint, var(--bp-text-muted));
+  font-size: 9.5px; color: var(--pop-text-faint, rgba(255,255,255,0.40));
   margin-top: 3px; line-height: 1.4;
 }
 

@@ -1,23 +1,13 @@
 /**
- * PaletteSwitcher — Topbar trigger che apre l'Atelier dei temi con i 28
- * preset editoriali DB (16 chiari + 12 scuri).
+ * PaletteSwitcher — Topbar trigger che apre l'Atelier dei temi con i preset
+ * editoriali DB (15 chiari + 18 scuri).
  *
- *   ┌──────────────────────────────────────┐
- *   │  ATELIER DEI TEMI               [×]  │
- *   │                                      │
- *   │  ☀ Chiari (16)                       │
- *   │   ⬜ Florence  ⬜ Warm   ⬜ Tokyo …  │
- *   │                                      │
- *   │  ☾ Scuri (12)                        │
- *   │   ⬛ Graphite  ⬛ Obsidian ⬛ ...     │
- *   │                                      │
- *   │  Apri Brand Studio · personalizza    │
- *   └──────────────────────────────────────┘
- *
- * Click → applica il preset completo (palette + tipografia + radius) via
- * POST /api/branding/apply-preset. Visibilmente cambia tutto subito.
+ * Strategia "applica subito + sync server":
+ *   1. Click → applico DIRETTAMENTE le CSS vars sul :root (visible 0ms)
+ *   2. In parallelo POST /api/branding/apply-preset (server sync)
+ *   3. Popover bg si adatta al theme corrente (light/dark) via inline style
  */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Palette, Check, Sun, Moon, ExternalLink, X, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -26,6 +16,39 @@ import { clearPalette } from '../../lib/curatedPalettes';
 import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import './palette-switcher.css';
+
+// ── Apply theme vars DIRECTLY to :root (instant visual feedback) ─────
+const applyThemeToRoot = (theme) => {
+  if (!theme) return;
+  const p = theme.palette || {};
+  const r = document.documentElement;
+  const isDark = (theme.mode || '').toLowerCase() === 'dark';
+
+  r.setAttribute('data-theme-mode', isDark ? 'dark' : 'light');
+  r.setAttribute('data-workspace-mode', isDark ? 'dark' : 'light');
+  r.setAttribute('data-palette-mode', isDark ? 'dark' : 'light');
+
+  const tokens = {
+    '--bp-bg':              p.background,
+    '--bp-surface':         p.surface,
+    '--bp-surface-1':       p.surface,
+    '--bp-surface-2':       p.surface,
+    '--bp-surface-3':       p.surface,
+    '--bp-surface-elev':    p.surface,
+    '--bp-border':          p.border,
+    '--bp-text':            p.text_primary,
+    '--bp-text-primary':    p.text_primary,
+    '--bp-text-secondary':  p.text_secondary,
+    '--bp-text-muted':      p.text_secondary,
+    '--bp-primary':         p.primary,
+    '--bp-accent':          p.accent,
+    '--brand-primary':      p.primary,
+    '--brand-bg':           p.background,
+    '--brand-surface':      p.surface,
+    '--brand-text':         p.text_primary,
+  };
+  Object.entries(tokens).forEach(([k, v]) => v && r.style.setProperty(k, v, 'important'));
+};
 
 // ── Mini-swatch · 3 stop (bg · surface · primary→accent gradient) ─────
 const Swatch = ({ preset, active, onPick }) => {
@@ -82,7 +105,6 @@ const PaletteSwitcher = () => {
     return () => { cancelled = true; };
   }, []);
 
-  // Position popover under trigger
   useEffect(() => {
     if (!open || !triggerRef.current) return;
     const r = triggerRef.current.getBoundingClientRect();
@@ -108,14 +130,16 @@ const PaletteSwitcher = () => {
 
   const pick = async (preset) => {
     if (!preset?.key) return;
-    // Optimistic feedback istantaneo + chiusura popover subito
+    // 1. UI optimistic: pulisci override curated, applica subito le var CSS
+    clearPalette();
+    applyThemeToRoot(preset.theme);
     setCurrentKey(preset.key);
     setOpen(false);
+    // 2. Server sync in parallelo
     try {
-      // Pulisce gli override !important del curated PaletteSwitcher
-      // (necessario per applicare un preset chiaro su top di un theme scuro)
-      clearPalette();
-      await api.post('/api/branding/apply-preset', { preset_key: preset.key });
+      const r = await api.post('/api/branding/apply-preset', { preset_key: preset.key });
+      // Riapplico con il theme dal server (potrebbe avere merge defaults)
+      if (r.data?.theme) applyThemeToRoot(r.data.theme);
       try { await refresh(); } catch { /* tolerable */ }
       toast.success(`Tema "${preset.label}" applicato`);
     } catch (e) {
@@ -124,11 +148,42 @@ const PaletteSwitcher = () => {
     }
   };
 
+  // ── Adattivo: il popover prende sfondo/testo dal mode del theme corrente ──
+  const activePreset = useMemo(
+    () => presets.find((p) => p.key === currentKey),
+    [presets, currentKey],
+  );
+  const isDarkTheme = (activePreset?.theme?.mode || '').toLowerCase() === 'dark';
+  const ap = activePreset?.theme?.palette || {};
+
+  // Tokens calcolati per il popover (override locale, indipendente dal :root)
+  const popoverTheme = isDarkTheme
+    ? {
+        bg:           ap.background || '#0F0F10',
+        surface:      ap.surface || '#16171A',
+        text:         ap.text_primary || '#F0EFEC',
+        textMuted:    ap.text_secondary || '#A19D98',
+        textFaint:    'rgba(255,255,255,0.40)',
+        border:       'rgba(255,255,255,0.10)',
+        borderStrong: 'rgba(255,255,255,0.18)',
+        primary:      ap.primary || '#00C9B3',
+        onPrimary:    '#FFFFFF',
+      }
+    : {
+        bg:           '#FFFFFF',
+        surface:      ap.surface || '#FAF4E8',
+        text:         ap.text_primary || '#1F1F22',
+        textMuted:    ap.text_secondary || '#5A5A60',
+        textFaint:    'rgba(0,0,0,0.45)',
+        border:       'rgba(0,0,0,0.10)',
+        borderStrong: 'rgba(0,0,0,0.18)',
+        primary:      ap.primary || '#C9A36E',
+        onPrimary:    '#FFFFFF',
+      };
+
   // Split presets in light / dark
   const lights = presets.filter((p) => (p.theme?.mode || '').toLowerCase() !== 'dark');
   const darks  = presets.filter((p) => (p.theme?.mode || '').toLowerCase() === 'dark');
-  const active = presets.find((p) => p.key === currentKey);
-  const activePalette = active?.theme?.palette || {};
 
   return (
     <div className="palsw-root" data-testid="palette-switcher-root">
@@ -137,14 +192,14 @@ const PaletteSwitcher = () => {
         type="button"
         onClick={() => setOpen((v) => !v)}
         data-testid="palette-switcher-trigger"
-        title={`Tema · ${active?.label || 'Default'}`}
+        title={`Tema · ${activePreset?.label || 'Default'}`}
         aria-expanded={open}
         className="palsw-trigger"
       >
         <Palette size={13} strokeWidth={1.7} />
         <span className="palsw-trigger__chip" aria-hidden>
-          <span style={{ background: activePalette.background || '#1a1a1a' }} />
-          <span style={{ background: activePalette.primary || '#00C9B3' }} />
+          <span style={{ background: ap.background || '#1a1a1a' }} />
+          <span style={{ background: ap.primary || '#00C9B3' }} />
         </span>
       </button>
 
@@ -152,7 +207,24 @@ const PaletteSwitcher = () => {
         <div className="palsw-popover" role="dialog" aria-label="Preset editoriali"
              data-testid="palette-switcher-popover"
              ref={ref}
-             style={{ top: coords.top, right: coords.right }}>
+             data-mode={isDarkTheme ? 'dark' : 'light'}
+             style={{
+               top: coords.top,
+               right: coords.right,
+               // CSS variables locali — il popover usa SOLO queste
+               '--pop-bg': popoverTheme.bg,
+               '--pop-surface': popoverTheme.surface,
+               '--pop-text': popoverTheme.text,
+               '--pop-text-muted': popoverTheme.textMuted,
+               '--pop-text-faint': popoverTheme.textFaint,
+               '--pop-border': popoverTheme.border,
+               '--pop-border-strong': popoverTheme.borderStrong,
+               '--pop-primary': popoverTheme.primary,
+               '--pop-on-primary': popoverTheme.onPrimary,
+               background: popoverTheme.bg,
+               color: popoverTheme.text,
+               borderColor: popoverTheme.borderStrong,
+             }}>
           <header className="palsw-popover__head">
             <div>
               <p className="palsw-popover__eyebrow">Atelier dei temi</p>
