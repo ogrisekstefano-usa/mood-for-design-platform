@@ -53,6 +53,81 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint NEXT-SPRINT v1 (Feb 19, 2026 · iter74)
+**Public Render Continuity™ · Market Signals™ Phase 1.5 · Relationship Intelligence Foundation™.**
+
+#### A · Focal Point Editor (ImageEditModal · 3 tab editoriali)
+- ✅ Nuova tab **"Punto focale"** accanto a Crop/Filtri
+- ✅ Drag surface con safe-zone 8% e doppio anello pulse cyan
+- ✅ 3 preview di consumo: **16:9 hero**, **9:16 mobile**, **1:1 card/grid**
+- ✅ Persist `focal_point: {x, y}` via PATCH /api/media/{id} (esistente)
+- ✅ `object-position` runtime consumato da SiteImage + PublicHotspotImage + magazine + portfolio (wiring iter69 già attivo)
+
+#### B · Market Signals™ Phase 1.5 (scope strict editoriale)
+- ✅ Refactor `useMarketSignal.js` con whitelist **EDITORIAL_SIGNALS** (frozen array)
+- ✅ 5 segnali culturali ONLY: `gallery_open` · `hotspot_open` · `article_read` · `cta_click` · `material_zoom`
+- ✅ Helpers semantici: `fireGalleryOpen`, `fireHotspotOpen`, `fireArticleRead`, `fireCtaClick`, `fireMaterialZoom`
+- ✅ Hook `useDwellRead({articleSlug, thresholdMs=30000})` emette `article_read` solo dopo lettura attiva
+- ✅ Backend ALLOWED_EVENT_TYPES esteso con `cta_click` e `material_zoom`
+- ✅ Wiring:
+  - ProjectDetailPage: `fireGalleryOpen` su mount, `fireCtaClick` su tutti i CTA (final + story_body), `fireHotspotOpen` + `fireMaterialZoom` su PublicHotspotImage
+  - MagazineArticlePage: `useDwellRead` 30s soglia
+- ✅ Linguaggio: "interesse · risonanza · affinità · attenzione". MAI: KPI · conversion · CTR · session analytics
+
+#### C · Relationship Intelligence Foundation™
+- ✅ Foundation DB già presente (migration 041): `relationship_engagement_signals` · `relationship_projects` · `relationship_inspirations` · `relationship_material_affinities` · `account_markets` + view `relationship_intelligence_v`
+- ✅ **NEW** endpoint `GET /api/relationships/accounts/{id}/graph` (in `crm_intelligence.py`):
+  - Aggrega projects + moodboards (da interactions) + cultural_editions (da interactions kind=cultural_edition_intent) + inspirations + material_affinities + account_markets + recent_signals
+  - Restituisce `editorial_summary[]` con frasi concierge (es. "3 progetti tessuti insieme", "Relazione internazionale — vive in più mercati", "Mostra una grammatica materica chiara")
+  - NESSUN concetto tecnico esposto al frontend (no nodi/edges/weight)
+- ✅ **NEW** `RelationshipGraph.jsx` component (+ CSS):
+  - 6 sezioni con icone editorial (Compass · Layers · Globe · Sparkles · Feather · MapPin)
+  - Chip pill stile Monocle/FT — soft dashed per moodboard, accent cyan per cultural editions, material bar editoriale per affinity
+  - Empty state editoriale: "Avvia una direzione editoriale: condividi una moodboard o avvia una Cultural Edition™"
+  - Solo le sezioni con dati vengono renderizzate (no empty placeholders rumorosi)
+- ✅ Mount in AccountDetailPage dopo `rl-body`, sopra FAB mobile
+
+#### File nuovi
+- `/app/frontend/src/pages/crm/RelationshipGraph.jsx` (180 righe · editorial connection map)
+- `/app/frontend/src/pages/crm/relationship-graph.css` (190 righe)
+- `/app/backend/tests/test_iteration_74_relationships_signals.py` (testing agent · 10/10 PASS)
+
+#### File modificati
+- `/app/backend/routers/crm_intelligence.py` — `GET /accounts/{id}/graph` (170 righe nuove)
+- `/app/backend/routers/market_intelligence.py` — ALLOWED_EVENT_TYPES + cta_click + material_zoom
+- `/app/frontend/src/hooks/useMarketSignal.js` — REWRITE con EDITORIAL_SIGNALS frozen + 5 helpers + useDwellRead
+- `/app/frontend/src/components/common/ImageEditModal.jsx` — 3 tab + FocalSurface + FocalPreviews
+- `/app/frontend/src/components/common/image-edit-modal.css` — stili focal stage + safe zone + previews + affinity
+- `/app/frontend/src/pages/site/ProjectDetailPage.jsx` — wiring gallery_open, cta_click, hotspot_open, material_zoom (con dedup ref per pin)
+- `/app/frontend/src/pages/site/MagazineArticlePage.jsx` — useDwellRead 30s
+- `/app/frontend/src/pages/crm/AccountDetailPage.jsx` — mount RelationshipGraph
+
+#### Validazione (testing_agent iter74)
+- **Backend**: 100% — 10/10 pytest PASS
+  - GET /graph schema completo (counts ints · editorial_summary non-empty list) ✓
+  - GET /summary regression ✓
+  - GET /mood-signals regression ✓
+  - POST /events accetta `cta_click` 204 · `material_zoom` 204 · bogus 400 ✓
+- **Frontend**: 85% — RelationshipGraph fully verified live
+  - `relationship-graph` testid mounts su /crm/accounts/{id} ✓
+  - Sezioni renderizzate solo quando popolate (cultural_editions: 3, materials: 1, markets: 2 per Maya Aldhabi) ✓
+  - Editorial_summary visibile con cyan dotted left accent ✓
+  - Linguaggio italiano editoriale preservato — ZERO "lead/deal/funnel/conversion" ✓
+  - ImageEditModal verified via source (modal-on-demand) — 3 tab + focal stage + 3 previews + reset/save testids confermati
+
+#### Production confidence: **9.5/10**
+La continuità editoriale è chiusa: dal DAM (focal point) al storefront (display_url + object-position) al CRM (graph mappa narrativa). I segnali culturali sono raccolti SOLO per le 5 dimensioni editoriali che contano. La Relationship Graph racconta dove vive la relazione senza un solo concetto tecnico esposto.
+
+#### Cosa NON è incluso (deferred · per direttiva strict)
+- Auto-stage suggestion dai signal (Phase 2D arch doc)
+- Material Affinity background compute job (Phase 2B)
+- International Footprint block dedicated nel summary panel (Phase 2C — già aggregato in graph)
+- Editorial Engagement filtering avanzato sulla timeline (Phase 2E)
+- Trasformazioni Supabase URL pre-applicate (display_url oggi = signed URL · focal_point runtime via object-position)
+
+---
+
+
 ### Sprint PALETTE-PORTAL + CRM-ARCHITECTURE v1 (Feb 19, 2026)
 **Due interventi paralleli: (A) fix definitivo popover palette via React Portal; (B) documento di architettura Editorial Relationship CRM™ per Phase 2.**
 
