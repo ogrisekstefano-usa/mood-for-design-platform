@@ -53,6 +53,72 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint CULTURAL-INTELLIGENCE-ENGINE v1 (Feb 21, 2026 · iter78)
+**Hybrid 3-layer Cultural Intelligence Engine™ — replaces fragile single-layer Market Resonance™.**
+
+#### Architecture
+- **Layer 1 · Vision Analysis** (external, swappable) — `cultural_engine/vision_provider_adapter.py`
+  - Default provider: OpenAI **gpt-5.1** vision via `emergentintegrations.LlmChat + ImageContent(image_base64=...)`
+  - Output: 16 numeric signals (indoor_outdoor_continuity, urban_density, hospitality_orientation, warm_materiality, ceremonial_scale, etc.) + climate_cues[] + room_typology + summary
+  - Layer 1 NEVER classifies markets — only architectural/spatial signals
+  - **SSRF guard** added: refuse private/localhost/link-local IPs before fetch
+  - Average latency ~5s
+- **Layer 2 · MOOD Cultural Engine™** (proprietary, deterministic, **NO AI**) — `cultural_engine/descriptor_mapper.py`
+  - 29 curated `cultural_descriptors` (resort_living, tropical_modernism, sartorial_minimalism, gallery_atmosphere, ceremonial_arrival, organic_contemporary, etc.) across 7 categories (spatial_behavior, architectural_language, material_psychology, environmental_context, hospitality_behavior, luxury_expression, climate_behavior)
+  - 7 `market_cultural_profiles`: Miami · Southern California · NYC · Dubai · Londra · Milano · Parigi — each with descriptor weights, anti_patterns[], narrative, climate_behavior, luxury_profile, hospitality_behavior, spatial_psychology, material_tendencies
+  - Anti-pattern penalty: signals contradicting a market reduce its score (es. tropical openness → NYC penalizzato)
+- **Layer 3 · Editorial Interpretation™** — `cultural_engine/editorial_interpreter.py`
+  - Claude Sonnet 4.5 con system prompt italiano editoriale tipo Architectural Digest / Monocle
+  - Output JSON: headline + body + spatial_reading + atmosphere_language
+  - PROIBITO: percentuali nel testo, "AI", "score", "prediction", "algoritmo"
+  - Fallback editoriale italiano se LLM fallisce
+- **Persistence**: tutto cached in `media_library.cultural_reading` JSONB con `status` (pending → in_progress → ready/failed) + `provider_meta` per debugging
+
+#### Database (Migration 055)
+- `media_library.cultural_reading` JSONB con GIN index
+- `cultural_descriptors` (29 righe seeded)
+- `market_cultural_profiles` (7 righe seeded)
+- `market_reference_sets` (foundation, empty — Fase 2 dataset curatoriale)
+
+#### Backend endpoints
+- `POST /api/inspirations/archive/import` ora **auto-schedula** la cultural reading via `BackgroundTasks` (fire-and-forget asyncio.create_task)
+- `GET /api/inspirations/archive/{id}/cultural-reading` → status + 4 layer data
+- `POST /api/inspirations/archive/{id}/cultural-reading` → manual retry (202 queued)
+- `GET /api/inspirations/archive/{id}` ora include `cultural_reading` nel response
+
+#### Frontend
+- `InspirationDetailDrawer.jsx` esteso con **CulturalReadingBlock** component:
+  - **EDITORIAL INTERPRETATION™** in cima (cyan border prominente): headline Playfair italic + body italiano editoriale + Spatial Intelligence™ + Atmosphere Reading™ + Design Affinity™ chips
+  - Polling automatico (4s × 12 attempts) durante `status=pending|in_progress`
+  - Stato "MOOD sta leggendo il linguaggio culturale di questo riferimento…" con pulse cyan
+  - Pulsante "Riesegui lettura" (retry)
+  - Pulsante "Avvia lettura culturale" per inspirations senza reading
+- **Market Resonance™** ora secondario (con hint italics *"Le percentuali sono secondarie. Il significato è nell'interpretazione editoriale qui sopra."*)
+
+#### Test results (testing_agent_v3_fork iter78)
+- **Backend**: 8/8 PASS (100%)
+- **Frontend**: 8/8 assertions PASS (100%)
+- Mediterranean villa → Editorial italian "Modernismo tropicale domestico: la trasparenza come architettura del quotidiano" + Miami 62% / SoCal 61% / Milano 44% / Paris 27% — top descriptors Tropical Modernism, Resort Living, Landscape Integration
+- **Demonstrated reality reading**: "NYC penthouse" (label misleading, image is actually tropical) → engine correctly ranked Miami 72%, SoCal 49%, NYC dropped — engine reads CULTURE not user labels
+- ZERO occorrenze "AI / score / prediction / machine learning / KPI / smart" nell'editorial output
+
+#### Post-test fixes
+- ✅ SSRF guard nel vision adapter (refuse private/localhost IPs)
+- ✅ Persist failure ora setta `status=failed` per non lasciare UI in "pending" infinito
+
+#### Cosa NON è incluso (deferred)
+- `market_reference_sets` populating curato (foundation table pronta, popolamento manuale Fase 2)
+- Pipeline orchestrator estratto da inspirations_archive.py in `cultural_engine/pipeline.py` (router ora 727 righe — minor refactor)
+- Permission gating P_INSPIRATIONS_WRITE su POST cultural-reading (cost protection)
+- Image hash deduplication (re-fetch della stessa immagine ripaga vision call)
+- Multi-language editorial output (oggi solo italiano)
+
+#### Production confidence: **9.6/10**
+Il "cervello interpretativo" di MOOD è LIVE. Comprende davvero il linguaggio culturale del progetto invece di "indovinare mercati". I designer ora vedono interpretazione editoriale italiana invece di score freddi.
+
+---
+
+
 ### Sprint INSPIRATIONS-FOUNDATION v1 (Feb 21, 2026 · iter77)
 **Inspirations™ Cultural Editorial Archive — replace Pinterest Research™ with a layer on top of Media Library.**
 

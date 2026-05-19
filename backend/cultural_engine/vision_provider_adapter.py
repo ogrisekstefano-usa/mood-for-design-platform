@@ -77,8 +77,42 @@ SYSTEM_PROMPT = (
 
 # ── Image fetch & encode ─────────────────────────────────────────────
 async def _fetch_image_b64(url: str, max_bytes: int = 4_000_000) -> Optional[Dict[str, str]]:
-    """Download an image URL and return base64 + mime, or None on failure."""
+    """Download an image URL and return base64 + mime, or None on failure.
+
+    SSRF guard: refuse private/localhost addresses BEFORE following redirects.
+    """
+    import ipaddress
+    import socket
+    from urllib.parse import urlparse
+
     try:
+        parsed = urlparse(url)
+        if parsed.scheme not in ("http", "https"):
+            logger.warning(f"vision: blocked non-http(s) scheme {url}")
+            return None
+        host = parsed.hostname or ""
+        # Reject obvious internal hostnames
+        if host in {"localhost", "0.0.0.0"} or host.endswith(".internal") or host.endswith(".local"):
+            logger.warning(f"vision: blocked internal hostname {host}")
+            return None
+        # Reject private IPs explicitly
+        try:
+            ip = ipaddress.ip_address(host)
+            if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+                logger.warning(f"vision: blocked private ip {host}")
+                return None
+        except ValueError:
+            # Not an IP literal — resolve to verify it's not private
+            try:
+                resolved = socket.gethostbyname(host)
+                ip = ipaddress.ip_address(resolved)
+                if ip.is_private or ip.is_loopback or ip.is_link_local:
+                    logger.warning(f"vision: blocked resolved private ip {host}->{resolved}")
+                    return None
+            except (socket.gaierror, ValueError):
+                # DNS resolution failed — let httpx attempt with timeout
+                pass
+
         async with httpx.AsyncClient(follow_redirects=True, timeout=15.0,
                                      headers={"User-Agent": "MOOD/CulturalEngine"}) as c:
             r = await c.get(url)
@@ -87,13 +121,11 @@ async def _fetch_image_b64(url: str, max_bytes: int = 4_000_000) -> Optional[Dic
                 return None
             content_type = r.headers.get("content-type", "image/jpeg").split(";")[0].strip()
             if content_type not in ("image/jpeg", "image/jpg", "image/png", "image/webp"):
-                # Try to detect from URL extension as fallback
                 ext = url.lower().split("?")[0].rsplit(".", 1)[-1]
                 content_type = {"jpg": "image/jpeg", "jpeg": "image/jpeg",
                                 "png": "image/png", "webp": "image/webp"}.get(ext, "image/jpeg")
             if len(r.content) > max_bytes:
                 logger.warning(f"vision: image {url} too large ({len(r.content)} bytes)")
-                # Best effort: send anyway up to limit (OpenAI handles large images server-side)
             return {"b64": base64.b64encode(r.content).decode("ascii"), "mime": content_type}
     except Exception as e:
         logger.warning(f"vision: image fetch error {url}: {e}")

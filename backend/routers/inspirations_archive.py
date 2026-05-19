@@ -420,12 +420,23 @@ async def _run_cultural_reading(media_id: str, tenant_id: str, image_url: str) -
 
 def _save_cultural_reading(media_id: str, tenant_id: str, payload: Dict[str, Any]) -> None:
     try:
-        db().table("media_library").update({
+        res = db().table("media_library").update({
             "cultural_reading": payload,
             "updated_at":       _now(),
         }).eq("id", media_id).eq("tenant_id", tenant_id).execute()
+        if not res.data:
+            logger.warning(f"cultural reading persist returned no rows for {media_id}")
     except Exception as e:
-        logger.warning(f"cultural reading persist failed: {e}")
+        logger.error(f"cultural reading persist FAILED for {media_id}: {e}")
+        # Surface failure as a minimal flag inside cultural_reading so the
+        # UI doesn't get stuck on 'pending' forever.
+        try:
+            db().table("media_library").update({
+                "cultural_reading": {"status": "failed", "persist_error": str(e)[:200]},
+                "updated_at": _now(),
+            }).eq("id", media_id).eq("tenant_id", tenant_id).execute()
+        except Exception:
+            pass
 
 
 def _mark_cultural_reading_pending(media_id: str, tenant_id: str) -> None:
