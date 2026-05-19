@@ -93,6 +93,7 @@ api_router.include_router(editorial.router, tags=["editorial"])
 from routers import portfolio
 from routers import editorial_calendar
 from routers import market_intelligence
+from routers import cultural_editions
 api_router.include_router(portfolio.router, prefix="/portfolio", tags=["portfolio"])
 api_router.include_router(proposals.router, prefix="/proposals", tags=["proposals"])
 api_router.include_router(moodboards.router, prefix="/moodboards", tags=["moodboards"])
@@ -133,6 +134,7 @@ api_router.include_router(magazine.router, prefix="/magazine", tags=["magazine"]
 api_router.include_router(editorial_calendar.router, prefix="/blueprint/calendar", tags=["editorial-calendar"])
 api_router.include_router(advisor_network.router, tags=["advisor-network"])
 api_router.include_router(market_intelligence.router, tags=["market-intelligence"])
+api_router.include_router(cultural_editions.router, tags=["cultural-editions"])
 
 
 @api_router.get("/health")

@@ -1,0 +1,392 @@
+/* ────────────────────────────────────────────────────────────────────
+   Cultural Editions™ · List + Review pages
+   Bound to Blueprint OS tokens (--bp-*) for theme adaptability.
+   ──────────────────────────────────────────────────────────────────── */
+
+.ce-page {
+  padding: 36px 40px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+@media (max-width: 720px) {
+  .ce-page { padding: 20px 18px 32px; gap: 20px; }
+}
+
+/* ── Common typography ───────────────────────────────────────────── */
+.ce-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: var(--bp-primary, #00C9B3);
+  font-weight: 600;
+  margin: 0 0 12px;
+  font-family: var(--bp-font-body, 'Inter', sans-serif);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.ce-title {
+  font-family: var(--bp-font-heading, 'Playfair Display', Georgia, serif);
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 400;
+  letter-spacing: -0.012em;
+  line-height: 1.15;
+  color: var(--bp-text-primary);
+  margin: 0 0 14px;
+  max-width: 880px;
+}
+.ce-title .ce-arrow {
+  color: var(--bp-primary, #00C9B3);
+  font-style: normal;
+  padding: 0 6px;
+}
+.ce-lede {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--bp-text-secondary);
+  max-width: 720px;
+  margin: 0;
+}
+
+/* ── List page head ──────────────────────────────────────────────── */
+.ce-page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────── */
+.ce-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--bp-border);
+  background: transparent;
+  color: var(--bp-text-secondary);
+  font-size: 12.5px;
+  font-family: var(--bp-font-body, 'Inter', sans-serif);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 180ms ease;
+  letter-spacing: 0.02em;
+}
+.ce-btn:hover:not(:disabled) {
+  border-color: var(--bp-primary, #00C9B3);
+  color: var(--bp-primary, #00C9B3);
+}
+.ce-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.ce-btn--primary {
+  background: var(--bp-primary, #00C9B3);
+  color: var(--bp-on-primary, #0A0B0D);
+  border-color: var(--bp-primary, #00C9B3);
+  font-weight: 600;
+}
+.ce-btn--primary:hover:not(:disabled) {
+  background: transparent;
+  color: var(--bp-primary, #00C9B3);
+}
+.ce-btn--ghost { color: var(--bp-text-muted); }
+
+/* ── List rows ────────────────────────────────────────────────────── */
+.ce-list { display: flex; flex-direction: column; gap: 8px; }
+.ce-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border: 1px solid var(--bp-border);
+  border-radius: 6px;
+  background: var(--bp-surface-1, #16171A);
+  text-decoration: none;
+  color: inherit;
+  transition: all 180ms ease;
+}
+.ce-row:hover {
+  border-color: var(--bp-primary, #00C9B3);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 40px -22px var(--bp-primary, #00C9B3);
+}
+.ce-row__icon {
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+  background: var(--bp-primary-soft, rgba(0,201,179,0.08));
+  border: 1px solid var(--bp-primary, #00C9B3);
+  color: var(--bp-primary, #00C9B3);
+  flex-shrink: 0;
+}
+.ce-row__body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ce-row__title {
+  font-family: var(--bp-font-heading, 'Playfair Display', Georgia, serif);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--bp-text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ce-row__title em {
+  font-style: italic;
+  color: var(--bp-text-secondary);
+}
+.ce-row__sub {
+  font-size: 12px;
+  color: var(--bp-text-muted);
+  line-height: 1.4;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-style: italic;
+}
+.ce-row__meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.ce-row__date {
+  font-size: 11px;
+  color: var(--bp-text-muted);
+  letter-spacing: 0.04em;
+}
+.ce-row__arrow {
+  color: var(--bp-text-muted);
+  flex-shrink: 0;
+  transition: transform 180ms ease;
+}
+.ce-row:hover .ce-row__arrow {
+  color: var(--bp-primary, #00C9B3);
+  transform: translateX(2px) translateY(-2px);
+}
+.ce-row--skel { background: var(--bp-surface-2); border-color: var(--bp-border); }
+
+/* Status pill */
+.ce-status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-muted);
+}
+.ce-status--draft     { color: var(--bp-text-secondary); }
+.ce-status--in_review { color: var(--bp-warning, #D2A359); border-color: var(--bp-warning, #D2A359); }
+.ce-status--approved  { color: var(--bp-primary, #00C9B3); border-color: var(--bp-primary, #00C9B3); background: var(--bp-primary-soft, rgba(0,201,179,0.08)); }
+.ce-status--archived  { color: var(--bp-text-muted); opacity: 0.7; }
+
+/* ── Empty state ──────────────────────────────────────────────────── */
+.ce-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 64px 24px 56px;
+  border: 1px dashed var(--bp-border);
+  border-radius: 8px;
+  background: var(--bp-bg);
+  text-align: center;
+  color: var(--bp-text-muted);
+}
+.ce-empty__title {
+  font-family: var(--bp-font-heading, 'Playfair Display', Georgia, serif);
+  font-size: 18px;
+  color: var(--bp-text-secondary);
+  margin: 8px 0 4px;
+  font-style: italic;
+}
+.ce-empty__hint {
+  font-size: 13px;
+  line-height: 1.55;
+  max-width: 480px;
+  color: var(--bp-text-muted);
+  margin: 0 0 18px;
+}
+
+.ce-skel { background: var(--bp-surface-2); height: 14px; border-radius: 3px; }
+.ce-skel--w50 { width: 50%; }
+.ce-skel--w30 { width: 30%; }
+.ce-skel-block { padding: 56px 24px; text-align: center; color: var(--bp-text-muted); font-style: italic; }
+
+/* ── Review page ──────────────────────────────────────────────────── */
+.ce-review-head { display: flex; flex-direction: column; gap: 4px; }
+.ce-review-head__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.ce-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 160ms ease;
+}
+.ce-back:hover { color: var(--bp-primary, #00C9B3); }
+
+.ce-note-banner {
+  margin-top: 14px;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px dashed var(--bp-border);
+  border-radius: 4px;
+  background: var(--bp-bg);
+  color: var(--bp-text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Grid review */
+.ce-review-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+@media (max-width: 900px) {
+  .ce-review-grid { grid-template-columns: 1fr; }
+}
+
+.ce-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px 28px 30px;
+  border: 1px solid var(--bp-border);
+  border-radius: 8px;
+  background: var(--bp-surface-1, #16171A);
+}
+.ce-pane--market {
+  background: var(--bp-bg);
+  border-color: var(--bp-primary, #00C9B3);
+  box-shadow: 0 20px 60px -30px var(--bp-primary, #00C9B3);
+}
+
+.ce-pane__head { display: flex; flex-direction: column; gap: 6px; padding-bottom: 16px; border-bottom: 1px solid var(--bp-border); }
+.ce-pane__eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted);
+  font-weight: 600;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.ce-pane--market .ce-pane__eyebrow {
+  color: var(--bp-primary, #00C9B3);
+}
+.ce-pane__title {
+  font-family: var(--bp-font-heading, 'Playfair Display', Georgia, serif);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--bp-text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin: 0;
+}
+.ce-pane__title--editorial {
+  font-size: 26px;
+  font-weight: 400;
+}
+.ce-pane__sub {
+  font-size: 11px;
+  color: var(--bp-text-muted);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  margin: 4px 0 0;
+}
+.ce-pane__lede {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--bp-text-secondary);
+  font-style: italic;
+  margin: 8px 0 0;
+}
+.ce-pane__cover {
+  border-radius: 6px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  background: var(--bp-surface-2);
+}
+.ce-pane__cover img { width: 100%; height: 100%; object-fit: cover; }
+
+.ce-pane__block { display: flex; flex-direction: column; gap: 6px; }
+.ce-block-label {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted);
+  font-weight: 600;
+  margin: 0;
+}
+.ce-block-body {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--bp-text-primary);
+  margin: 0;
+}
+.ce-block-body--narrative {
+  font-family: var(--bp-font-heading, 'Playfair Display', Georgia, serif);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--bp-text-primary);
+}
+.ce-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.ce-chips span {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: var(--bp-text-secondary);
+  background: var(--bp-surface-2);
+  border-radius: 999px;
+}
+
+.ce-cta-card {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 18px;
+  border: 1px solid var(--bp-primary, #00C9B3);
+  border-radius: 6px;
+  background: var(--bp-primary-soft, rgba(0,201,179,0.08));
+}
+.ce-cta-card__label {
+  font-family: var(--bp-font-heading, 'Playfair Display', Georgia, serif);
+  font-size: 17px;
+  color: var(--bp-primary, #00C9B3);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.ce-cta-card__sub {
+  font-size: 12px;
+  color: var(--bp-text-secondary);
+  font-style: italic;
+}
+
+/* Foot */
+.ce-review-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 22px;
+  border: 1px solid var(--bp-border);
+  border-radius: 6px;
+  background: var(--bp-surface-1, #16171A);
+  flex-wrap: wrap;
+}
+.ce-review-foot__meta {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--bp-text-muted);
+  letter-spacing: 0.06em;
+}
+.ce-review-foot__actions { display: flex; gap: 8px; flex-wrap: wrap; }

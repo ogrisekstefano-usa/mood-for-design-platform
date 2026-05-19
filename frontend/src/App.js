@@ -33,6 +33,8 @@ const MarketInsightsPage = lazy(() => import('./pages/governance/MarketInsightsP
 const BrandVoiceAdaptersPage = lazy(() => import('./pages/governance/BrandVoiceAdaptersPage'));
 const CrmAccountsPage = lazy(() => import('./pages/crm/CrmAccountsPage'));
 const AccountDetailPage = lazy(() => import('./pages/crm/AccountDetailPage'));
+const CulturalEditionsListPage = lazy(() => import('./pages/cultural/CulturalEditionsListPage'));
+const CulturalEditionReviewPage = lazy(() => import('./pages/cultural/CulturalEditionReviewPage'));
 const InternationalPresencePage = lazy(() => import('./pages/settings/InternationalPresencePage'));
 const StorefrontStudioPage = lazy(() => import('./pages/storefront/StorefrontStudioPage'));
 const EditorialCalendarPage = lazy(() => import('./pages/editorial/EditorialCalendarPage'));
@@ -367,6 +369,10 @@ function App() {
                   <Route path="/crm/:tab/:accountId" element={<CrmAccountsPage />} />
                   {/* Legacy redirect — old /workspace/relationships → /crm/accounts */}
                   <Route path="/workspace/relationships" element={<Navigate to="/crm/accounts" replace />} />
+
+                  {/* Cultural Edition™ — versioni mercato dei contenuti dello studio */}
+                  <Route path="/workspace/cultural-editions" element={<CulturalEditionsListPage />} />
+                  <Route path="/workspace/cultural-editions/:id" element={<CulturalEditionReviewPage />} />
 
                   {/* International Presence™ — Phase S-IDENTITY Step 1. */}
                   <Route path="/settings/international-presence" element={<StudioAdminRoute><InternationalPresencePage /></StudioAdminRoute>} />

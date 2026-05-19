@@ -25,6 +25,8 @@ import * as Icons from 'lucide-react';
 import api from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
+import { useTenantTheme } from '../../contexts/TenantThemeContext';
+import CulturalEditionWizard from '../../components/cultural/CulturalEditionWizard';
 import './dashboard-cockpit.css';
 
 // Lazy below-the-fold sections — ridotti dal bundle iniziale.
@@ -79,7 +81,27 @@ const writeCache = (data) => {
 // ═══════════════════════════════════════════════════════════════════════
 // 1 · DAILY STUDIO STATUS™ — Hero operativo
 // ═══════════════════════════════════════════════════════════════════════
-const DailyStudioStatus = ({ firstName, summary, suggested, attentionCount, relCount, loading }) => {
+const StudioLogo = ({ logoUrl, name }) => {
+  const [errored, setErrored] = useState(false);
+  const initials = (name || 'MOOD')
+    .split(' ').map((p) => p[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
+  if (logoUrl && !errored) {
+    return (
+      <span className="cck-hero__studio" data-testid="cockpit-hero-studio-logo">
+        <img src={logoUrl} alt={name || 'studio'} loading="lazy" onError={() => setErrored(true)} />
+      </span>
+    );
+  }
+  return (
+    <span className="cck-hero__studio cck-hero__studio--text" data-testid="cockpit-hero-studio-initials">
+      <span className="cck-hero__studio-initials">{initials}</span>
+      {name && <span className="cck-hero__studio-name">{name}</span>}
+    </span>
+  );
+};
+
+const DailyStudioStatus = ({ firstName, summary, suggested, attentionCount, relCount, loading,
+                             logoUrl, studioName, onOpenCulturalWizard }) => {
   const runtime = useLocaleRuntime();
   const greeting = greetingFor();
 
@@ -104,6 +126,9 @@ const DailyStudioStatus = ({ firstName, summary, suggested, attentionCount, relC
   return (
     <section className="cck-hero" data-testid="cockpit-hero">
       <div className="cck-hero__glow" />
+
+      <StudioLogo logoUrl={logoUrl} name={studioName} />
+
       <p className="cck-hero__eyebrow" data-testid="cockpit-hero-eyebrow">
         Daily Studio Status™ · {new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long' })}
       </p>
@@ -149,9 +174,10 @@ const DailyStudioStatus = ({ firstName, summary, suggested, attentionCount, relC
         <Link to="/crm/accounts?new=1" className="cck-cta" data-testid="cck-hero-cta-account">
           <Icons.UserPlus size={12} /> Nuovo account
         </Link>
-        <Link to="/workspace/cultural-editions?new=1" className="cck-cta cck-cta--accent" data-testid="cck-hero-cta-edition">
+        <button type="button" onClick={onOpenCulturalWizard}
+                className="cck-cta cck-cta--accent" data-testid="cck-hero-cta-edition">
           <Icons.Globe size={12} /> Cultural Edition™
-        </Link>
+        </button>
       </div>
     </section>
   );
@@ -261,7 +287,7 @@ const QUICK_CLUSTERS = [
   },
 ];
 
-const QuickActions = () => (
+const QuickActions = ({ onOpenCulturalWizard }) => (
   <section className="cck-block" data-testid="cockpit-quick-actions">
     <header className="cck-block__head">
       <div>
@@ -281,6 +307,17 @@ const QuickActions = () => (
             <div className="cck-quick-cluster__items">
               {c.items.map((it, i) => {
                 const Icon = Icons[it.icon] || Icons.Circle;
+                const isCultural = it.to === '/workspace/cultural-editions?new=1';
+                if (isCultural) {
+                  return (
+                    <button key={i} type="button" onClick={onOpenCulturalWizard}
+                            className="cck-quick-item" data-testid={`cockpit-quick-${c.id}-${i}`}>
+                      <span className="cck-quick-item__icon"><Icon size={12} strokeWidth={1.6} /></span>
+                      <span className="cck-quick-item__label">{it.label}</span>
+                      <Icons.ArrowUpRight size={10} className="cck-quick-item__arrow" />
+                    </button>
+                  );
+                }
                 return (
                   <Link key={i} to={it.to} className="cck-quick-item"
                         data-testid={`cockpit-quick-${c.id}-${i}`}>
@@ -453,13 +490,27 @@ const RelationshipEngine = ({ rows, loading }) => {
 // ═══════════════════════════════════════════════════════════════════════
 const DashboardPage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const { branding } = useTenantTheme() || {};
   const firstName = user?.first_name || (user?.email || '').split('@')[0];
+
+  // Studio identity per il box "Buongiorno" — logo + nome visibile
+  const studioLogoUrl = branding?.primary_logo_url || null;
+  const studioName    = branding?.public_brand_name || null;
 
   // Cache stale-while-revalidate — dati istantanei al mount se presenti
   const [data, setData] = useState(() => readCache());
   const [loading, setLoading] = useState(!data);
   const [error, setError] = useState(null);
+  const [wizardOpen, setWizardOpen] = useState(false);
   const reloadRef = useRef(0);
+
+  // Apertura wizard via deep-link (?new=1 sulla dashboard o redirect da Quick Actions)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.search.includes('cultural-edition=new')) {
+      setWizardOpen(true);
+    }
+  }, []);
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -518,6 +569,9 @@ const DashboardPage = () => {
         attentionCount={(d.stale_project_ids || []).length}
         relCount={(d.relationship_engine || []).length}
         loading={loading}
+        logoUrl={studioLogoUrl}
+        studioName={studioName}
+        onOpenCulturalWizard={() => setWizardOpen(true)}
       />
 
       {/* Studio onboarding (lazy) — auto-hide */}
@@ -532,7 +586,7 @@ const DashboardPage = () => {
       <SuggestedNextActions suggestions={d.suggested_actions} loading={loading} />
 
       {/* 3 · Quick Actions™ */}
-      <QuickActions />
+      <QuickActions onOpenCulturalWizard={() => setWizardOpen(true)} />
 
       {/* 4 · Studio Attention™ */}
       <StudioAttention
@@ -545,9 +599,19 @@ const DashboardPage = () => {
       <RelationshipEngine rows={d.relationship_engine} loading={loading} />
 
       {/* 6 · Timeline operativa migliorata (lazy) */}
-      <Suspense fallback={<div className="cck-block cck-block--skel" style={{ height: 220 }} />}>
+      <Suspense fallback={null}>
         <CockpitTimeline events={d.timeline} activity={d.recent_activity} />
       </Suspense>
+
+      {/* Cultural Edition™ Wizard — apertura in-page, no dead route */}
+      <CulturalEditionWizard
+        open={wizardOpen}
+        onClose={() => setWizardOpen(false)}
+        onCreated={(draft) => {
+          setWizardOpen(false);
+          if (draft?.id) navigate(`/workspace/cultural-editions/${draft.id}`);
+        }}
+      />
     </div>
   );
 };

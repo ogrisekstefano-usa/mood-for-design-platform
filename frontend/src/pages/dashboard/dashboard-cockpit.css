@@ -5,7 +5,7 @@
    ────────────────────────────────────────────────────────────────── */
 
 .cck-page {
-  padding: 36px 40px 56px;
+  padding: 36px 40px 24px;
   max-width: 1600px;
   margin: 0 auto;
   display: flex;
@@ -24,6 +24,60 @@
   opacity: 0;
   transform: translateY(8px);
   animation: cck-rise 460ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Studio logo (top-right) — primary_logo_url o iniziali in frame editoriale */
+.cck-hero__studio {
+  position: absolute;
+  top: 22px;
+  right: 26px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  background: var(--bp-bg, rgba(0,0,0,0.18));
+  backdrop-filter: blur(8px);
+  max-width: 220px;
+  transition: border-color 220ms ease;
+}
+.cck-hero__studio:hover { border-color: var(--bp-primary, #00C9B3); }
+.cck-hero__studio img {
+  max-height: 28px;
+  max-width: 150px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+.cck-hero__studio--text {
+  padding: 6px 14px;
+}
+.cck-hero__studio-initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  background: var(--bp-primary-soft, rgba(0,201,179,0.10));
+  color: var(--bp-primary, #00C9B3);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  font-family: var(--bp-font-body, 'Inter', sans-serif);
+}
+.cck-hero__studio-name {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bp-text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 130px;
 }
 .cck-hero__glow {
   position: absolute;
@@ -333,6 +387,13 @@
   color: var(--bp-text-secondary);
   font-size: 13px;
   transition: all 160ms ease;
+  /* support both <Link> and <button> */
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
 }
 .cck-quick-item:hover {
   background: var(--bp-primary-soft, rgba(0,201,179,0.06));
@@ -748,8 +809,11 @@
 
 /* ── MOBILE ──────────────────────────────────────────────────────── */
 @media (max-width: 720px) {
-  .cck-page { padding: 20px 18px 48px; gap: 20px; }
-  .cck-hero { padding: 28px 22px 24px; }
+  .cck-page { padding: 20px 18px 24px; gap: 20px; }
+  .cck-hero { padding: 64px 22px 24px; }
+  .cck-hero__studio { top: 14px; right: 14px; padding: 6px 10px; max-width: 160px; }
+  .cck-hero__studio img { max-height: 22px; max-width: 110px; }
+  .cck-hero__studio-name { display: none; }
   .cck-hero__greeting { font-size: 26px; }
   .cck-hero__sentence { font-size: 13px; }
   .cck-hero__ctas { gap: 6px; }
