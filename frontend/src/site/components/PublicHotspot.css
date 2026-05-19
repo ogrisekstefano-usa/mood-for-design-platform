@@ -33,6 +33,21 @@
   z-index: 2;
 }
 
+/* ── Touch ergonomics — enlarge the HIT AREA only, not the visual dot.
+   Achieved via ::before pseudo-element on touch-capable devices.
+   Desktop appearance stays identical (24x24 visual pin); touch tap
+   area becomes a virtual 44x44 around it. */
+.phs-pin::before {
+  content: '';
+  position: absolute;
+  inset: -10px;   /* expands hit area 20px each side → 44x44 */
+  display: block;
+  pointer-events: none;
+}
+@media (pointer: coarse) {
+  .phs-pin::before { pointer-events: auto; }
+}
+
 .phs-pin__dot {
   position: absolute;
   inset: 0;

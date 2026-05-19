@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { avatarPalette, initialsOf } from '../../lib/avatarHue';
 import AccountDetailDrawer from './AccountDetailDrawer';
 import './crm.css';
 
@@ -84,20 +85,7 @@ const StagePill = ({ stage }) => {
   );
 };
 
-const initialsOf = (name) => {
-  if (!name) return '··';
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-};
-
-// Deterministic editorial color from string — relationship memory anchor.
-const avatarHueOf = (seed) => {
-  if (!seed) return 220;
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
-  return Math.abs(h) % 360;
-};
+// Avatar helpers (initialsOf, avatarPalette) imported above from /lib/avatarHue.
 
 const formatRelativeTime = (iso) => {
   if (!iso) return '—';
@@ -148,8 +136,7 @@ const AccountRow = ({ account, onOpen }) => {
 // ─── Account card (card view) ──────────────────────────────────────
 const AccountCard = ({ account, onOpen }) => {
   const primary = account.primary_contact;
-  const initials = initialsOf(account.account_name);
-  const hue = avatarHueOf(account.account_name);
+  const pal = avatarPalette(account.account_name);
   const primaryName = primary ? (primary.full_name || `${primary.first_name || ''} ${primary.last_name || ''}`.trim()) : '';
   return (
     <button type="button"
@@ -158,9 +145,9 @@ const AccountCard = ({ account, onOpen }) => {
             className="crm-card">
       <div className="crm-card__head">
         <span className="crm-avatar"
-              style={{ background: `hsl(${hue} 28% 22%)`, color: `hsl(${hue} 56% 78%)`, borderColor: `hsl(${hue} 32% 28%)` }}
+              style={{ background: pal.bg, color: pal.fg, borderColor: pal.border }}
               aria-hidden>
-          {initials}
+          {initialsOf(account.account_name)}
         </span>
         <div className="crm-card__head-text">
           <p className="crm-card__name">{account.account_name}</p>

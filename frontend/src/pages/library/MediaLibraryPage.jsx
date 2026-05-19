@@ -921,32 +921,55 @@ const DetailsTab = ({ detail, editing, setEditing, saving, onSave }) => {
 };
 
 const UsageTab = ({ detail }) => {
+  const asset = detail.asset || {};
   const links = detail.links || [];
+  const url = asset.display_url || asset.file_url;
   if (links.length === 0) {
     return (
-      <div className="p-8 text-center">
-        <div className="w-12 h-12 rounded-full bg-[var(--bp-surface-2)] border border-[var(--bp-border)] flex items-center justify-center mx-auto mb-4">
-          <Icons.Link2 size={16} className="text-[var(--bp-text-muted)]" strokeWidth={1.5} />
-        </div>
-        <p className="text-[9px] uppercase tracking-[0.28em] text-[var(--bp-text-faint)] font-body mb-2">Orphan asset</p>
-        <p className="text-[13px] text-[var(--bp-text-muted)] font-body max-w-[260px] mx-auto leading-relaxed">
-          This asset is not yet linked to any project, moodboard, or page.
+      <div className="p-8 text-center" data-testid="usage-tab-empty">
+        {url && (
+          <div className="w-28 h-28 mx-auto mb-5 rounded-[8px] overflow-hidden border border-[var(--bp-border)]
+                          bg-[var(--bp-surface-2)] grayscale opacity-70">
+            <img src={url} alt="" className="w-full h-full object-cover" loading="lazy" />
+          </div>
+        )}
+        <p className="text-[9px] uppercase tracking-[0.32em] text-[var(--bp-primary)] font-body mb-3 font-medium">Asset orfano</p>
+        <p className="font-heading text-[18px] text-[var(--bp-text-primary)] font-light leading-snug mb-2">
+          Questa immagine non vive ancora<br/>in nessuna storia.
+        </p>
+        <p className="text-[12.5px] text-[var(--bp-text-muted)] font-body italic max-w-[300px] mx-auto leading-relaxed">
+          Collegala a un progetto, un articolo o una moodboard per iniziare la sua relazione editoriale.
         </p>
       </div>
     );
   }
-  // Group by entity_type
+  // Group by entity_type (preserve insertion order)
   const byType = links.reduce((acc, l) => {
     (acc[l.entity_type] = acc[l.entity_type] || []).push(l);
     return acc;
   }, {});
   return (
-    <div className="p-5 space-y-6">
-      <p className="text-[12px] text-[var(--bp-text-muted)] font-body">
-        This asset is used in <span className="text-[var(--bp-text-primary)] font-medium">{links.length}</span> place{links.length > 1 ? 's' : ''}.
-      </p>
+    <div className="p-5 space-y-7" data-testid="usage-tab">
+      {/* Hero asset preview — "this is the image we're tracing" */}
+      {url && (
+        <div className="flex gap-4 pb-5 border-b border-[var(--bp-border)]">
+          <div className="w-24 h-24 rounded-[6px] overflow-hidden bg-[var(--bp-surface-2)] flex-shrink-0
+                          border border-[var(--bp-border)]">
+            <img src={url} alt="" className="w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[9.5px] uppercase tracking-[0.32em] text-[var(--bp-primary)] font-body mb-2 font-medium">Continuity</p>
+            <p className="font-heading text-[19px] text-[var(--bp-text-primary)] font-light leading-tight mb-1.5">
+              Quest'immagine vive in <span className="text-[var(--bp-primary)]">{links.length}</span> {links.length === 1 ? 'punto' : 'punti'} della tua storia editoriale.
+            </p>
+            <p className="text-[11.5px] text-[var(--bp-text-muted)] font-body italic">
+              Tracciata in {Object.keys(byType).length} {Object.keys(byType).length === 1 ? 'superficie' : 'superfici'} diverse · {asset.file_name || 'asset'}
+            </p>
+          </div>
+        </div>
+      )}
       {Object.entries(byType).map(([et, list]) => (
-        <Section key={et} label={`${ENTITY_LABELS[et] || et}s · ${list.length}`}>
+        <Section key={et} label={`${ENTITY_LABELS[et] || et}${list.length === 1 ? '' : 's'} · ${list.length}`}>
           <div className="space-y-2">
             {list.map((l) => <RelationshipCard key={l.id} link={l} />)}
           </div>

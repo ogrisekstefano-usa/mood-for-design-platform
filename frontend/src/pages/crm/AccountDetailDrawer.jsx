@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { avatarPalette, initialsOf } from '../../lib/avatarHue';
 
 const TABS = [
   { id: 'overview',  label: 'Overview',  icon: FileText },
@@ -43,18 +44,7 @@ const STAGE_COLOR = {
   proposal: '#D4AF37', active_collaboration: '#10B981',
   long_term_relationship: '#10B981', archived: '#6B7280',
 };
-const initialsOf = (name) => {
-  if (!name) return '··';
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-};
-const avatarHueOf = (seed) => {
-  if (!seed) return 220;
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
-  return Math.abs(h) % 360;
-};
+const initialsOfLocal = (name) => initialsOf(name);  // re-export reference
 const relativeTime = (iso) => {
   if (!iso) return '—';
   try {
@@ -299,7 +289,7 @@ const AccountDetailDrawer = ({ account, onClose, onChanged }) => {
   const stage = full?.lifecycle_stage || account.lifecycle_stage;
   const stageLbl = STAGE_LABEL[stage] || stage || '—';
   const stageCol = STAGE_COLOR[stage] || '#9CA3AF';
-  const hue = avatarHueOf(displayName);
+  const pal = avatarPalette(displayName);
   const owner = full?.primary_owner_email || full?.primary_owner_id || account.primary_owner_id;
   const openCount = full?.open_actions_count || account.open_actions_count || 0;
   const nextDue = full?.next_followup_due_at || account.next_followup_due_at;
@@ -313,7 +303,7 @@ const AccountDetailDrawer = ({ account, onClose, onChanged }) => {
         <header className="adr__head">
           <div className="adr__head-main">
             <span className="adr__avatar"
-                  style={{ background: `hsl(${hue} 30% 22%)`, color: `hsl(${hue} 58% 78%)`, borderColor: `hsl(${hue} 34% 30%)` }}
+                  style={{ background: pal.bg, color: pal.fg, borderColor: pal.border }}
                   aria-hidden>{initialsOf(displayName)}</span>
             <div className="adr__head-text">
               <p className="adr__eyebrow">CRM · Account</p>

@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { Plus, Layers, X, Lock } from 'lucide-react';
 import StatusBadge from '../../components/common/StatusBadge';
 import TemplatePicker from '../../blueprint/moodboard/TemplatePicker';
+import { avatarPalette } from '../../lib/avatarHue';
 
 const CreateModal = ({ projects, onClose, onCreate, t }) => {
   const [title, setTitle] = useState('');
@@ -215,10 +216,18 @@ const MoodboardsPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filtered.map((m) => {
             const project = projects.find((p) => p.id === m.project_id);
+            // Relationship hue — same color as the linked Account/Project
+            // would carry across the platform. Stays subtle (top edge bar
+            // + caption dot), never dominant.
+            const pal = project?.title ? avatarPalette(project.title) : null;
             return (
               <Link key={m.id} to={`/moodboards/${m.id}`}
                     data-testid={`moodboard-card-${m.id}`}
                     className="group block bg-[var(--bp-surface-1)] border border-[var(--bp-border)] hover:border-[var(--bp-border-strong)] rounded-[var(--bp-radius-md)] overflow-hidden transition-colors">
+                {pal && (
+                  <div className="h-[3px] w-full" style={{ background: pal.border }} aria-hidden
+                       data-testid={`moodboard-hue-${m.id}`} />
+                )}
                 <div className="aspect-[4/3] bg-[var(--bp-surface-2)] relative overflow-hidden">
                   <div className="absolute inset-0 bg-[var(--bp-hero-gradient)] opacity-60" />
                   <Layers size={42} strokeWidth={0.75}
@@ -232,7 +241,8 @@ const MoodboardsPage = () => {
                     {m.title || t('moodboards.untitled')}
                   </h3>
                   {project && (
-                    <p className="bp-caption text-[var(--bp-text-muted)] mt-1.5 truncate">
+                    <p className="bp-caption text-[var(--bp-text-muted)] mt-1.5 truncate flex items-center gap-1.5">
+                      {pal && <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: pal.border }} aria-hidden />}
                       {project.title}
                     </p>
                   )}

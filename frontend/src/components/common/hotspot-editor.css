@@ -56,6 +56,20 @@
   z-index: 2;
 }
 .hot-pin:active { cursor: grabbing; }
+
+/* Touch hit-area expander — keep visual pin 22px on desktop, but make
+   the tap target a virtual 44x44 on touch devices. Achieved via
+   ::before pseudo-element so the visible dot/ring never shifts. */
+.hot-pin::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  display: block;
+  pointer-events: none;
+}
+@media (pointer: coarse) {
+  .hot-pin::before { pointer-events: auto; }
+}
 .hot-pin__dot {
   position: relative; z-index: 2;
   width: 22px; height: 22px; border-radius: 50%;
