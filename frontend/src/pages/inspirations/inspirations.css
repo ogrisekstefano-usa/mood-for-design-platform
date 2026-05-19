@@ -668,6 +668,75 @@
 }
 .insd-cultural__refresh:hover { color: var(--bp-primary, #00C9B3); }
 
+/* ── Narrative Mode™ override (contextual editorial direction) ───── */
+.insd-narrative {
+  margin: 14px 0 4px;
+  padding: 12px 14px;
+  background: var(--bp-surface-2, rgba(255,255,255,0.025));
+  border: 1px dashed var(--bp-border, rgba(255,255,255,0.08));
+  border-radius: var(--bp-radius-sm, 4px);
+}
+.insd-narrative__toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; border: 0;
+  font-family: inherit; cursor: pointer;
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--bp-text-muted, rgba(255,255,255,0.6));
+  padding: 0;
+}
+.insd-narrative__toggle:hover { color: var(--bp-text-primary, #fff); }
+.insd-narrative__panel {
+  margin-top: 12px;
+  display: flex; flex-direction: column; gap: 10px;
+  animation: insd-narr-in 180ms ease;
+}
+@keyframes insd-narr-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.insd-narrative__row {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.insd-narrative__select {
+  width: 100%;
+  padding: 8px 10px;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--bp-text-primary, #fff);
+  background: var(--bp-bg, #0A0B0E);
+  border: 1px solid var(--bp-border, rgba(255,255,255,0.1));
+  border-radius: var(--bp-radius-xs, 3px);
+  outline: none;
+  transition: border-color 140ms ease;
+}
+.insd-narrative__select:focus {
+  border-color: var(--bp-primary, #00C9B3);
+}
+.insd-narrative__hint {
+  font-size: 11px;
+  color: var(--bp-text-muted, rgba(255,255,255,0.55));
+  font-style: italic;
+  line-height: 1.45;
+  margin: 2px 0 0;
+}
+.insd-narrative__regen {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px;
+  background: var(--bp-primary, #00C9B3);
+  color: #0A0B0E;
+  border: 0;
+  border-radius: var(--bp-radius-xs, 3px);
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 140ms ease;
+}
+.insd-narrative__regen:hover { filter: brightness(1.08); }
+
 .insd-hint {
   font-size: 11.5px;
   color: var(--bp-text-muted);

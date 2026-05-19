@@ -43,6 +43,46 @@ const RADIUS_OPTS   = ['0px', '2px', '4px', '8px', '12px'];
 const DENSITY_OPTS  = ['compact', 'comfortable', 'spacious'];
 const SHADOW_OPTS   = ['none', 'soft', 'medium', 'strong'];
 
+// ── Voce editoriale dello studio (Brand Voice™ persistente) ────────
+// Le keys sono allineate a /backend/cultural_engine/editorial_interpreter.py.
+// Nessun jargon: "prompt", "AI", "model", "generation" sono BANDITI dal lessico UI.
+const EDITORIAL_VOICE_OPTIONS = {
+  communication_personality: [
+    { key: '',                     label: 'Da definire' },
+    { key: 'strategic',            label: 'Strategica · orientata a decisioni progettuali' },
+    { key: 'technical',            label: 'Tecnica · architettonica, zero metafore' },
+    { key: 'editorial',            label: 'Editoriale · registro magazine' },
+    { key: 'hospitality',          label: 'Ospitalità · calore esperienziale' },
+    { key: 'commercial_soft',      label: 'Commerciale morbida · rassicurante' },
+    { key: 'luxury',               label: 'Luxury · registro raffinato' },
+    { key: 'minimal_executive',    label: 'Minimal executive · una frase essenziale' },
+    { key: 'cultural_consultant',  label: 'Consulenza culturale internazionale' },
+  ],
+  vocabulary_style: [
+    { key: '',                            label: 'Da definire' },
+    { key: 'architecture_studio',         label: 'Studio di architettura' },
+    { key: 'interior_design',             label: 'Interior design' },
+    { key: 'luxury_hospitality',          label: 'Luxury hospitality' },
+    { key: 'executive',                   label: 'Executive · concise' },
+    { key: 'editorial_magazine',          label: 'Editoriale magazine' },
+    { key: 'retail_showroom',             label: 'Retail showroom' },
+    { key: 'international_consultancy',   label: 'Consulenza internazionale' },
+  ],
+  narrative_intensity: [
+    { key: '',          label: 'Da definire' },
+    { key: 'minimal',   label: 'Minimal · essenziale (1 frase)' },
+    { key: 'balanced',  label: 'Bilanciata · 1-2 frasi dense' },
+    { key: 'editorial', label: 'Editoriale · 2-3 frasi' },
+    { key: 'cinematic', label: 'Cinematica · 3-4 frasi narrative' },
+  ],
+  interpretation_density: [
+    { key: '',                label: 'Da definire' },
+    { key: 'concise',         label: 'Concisa · zero ridondanze' },
+    { key: 'standard',        label: 'Standard · densa ma non lunga' },
+    { key: 'deep_analysis',   label: 'Approfondita · analitica' },
+  ],
+};
+
 // Font kind hint — same catalog as TenantThemeContext, used to render
 // each font option in its OWN typeface so the user sees what they're choosing.
 const FONT_KIND = {
@@ -705,6 +745,61 @@ const BrandStudioPage = () => {
                 </>
               );
             })()}
+          </Section>
+
+          {/* ── F · Voce editoriale dello studio (Brand Voice™ persistente) ── */}
+          <Section kicker="F · Voce editoriale"
+                   title="Voce editoriale dello studio"
+                   testid="section-editorial-voice"
+                   trace="Modula tutte le interpretazioni culturali e le Cultural Edition™ generate per questo studio · sovrascrivibile contestualmente per ogni singolo riferimento">
+            <p className="text-[12px] text-[var(--bp-text-muted)] font-body leading-relaxed mb-5 italic max-w-2xl">
+              Definisci come parla normalmente lo studio. Queste preferenze guidano
+              il registro di ogni lettura culturale, evitando una voce generica e
+              poetica per tutti. Puoi sempre adattare un singolo riferimento
+              direttamente dalla sua scheda Inspiration.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                ['communication_personality', 'Personalità comunicativa'],
+                ['vocabulary_style',          'Lessico dello studio'],
+                ['narrative_intensity',       'Intensità narrativa abituale'],
+                ['interpretation_density',    'Densità interpretativa'],
+              ].map(([key, label]) => {
+                const current = (branding.editorial_voice || {})[key] || '';
+                return (
+                  <Field key={key} label={label}>
+                    <select
+                      value={current}
+                      data-testid={`editorial-voice-${key}`}
+                      onChange={(e) => setBranding({
+                        ...branding,
+                        editorial_voice: {
+                          ...(branding.editorial_voice || {}),
+                          [key]: e.target.value || undefined,
+                        },
+                      })}
+                      className="w-full px-3 py-2.5 text-[12px] font-body
+                                 bg-[var(--bp-bg)] text-[var(--bp-text-primary)]
+                                 border border-[var(--bp-border)]
+                                 rounded-[var(--bp-radius-xs)]
+                                 focus:outline-none focus:border-[var(--bp-primary)]
+                                 transition-colors">
+                      {EDITORIAL_VOICE_OPTIONS[key].map((opt) => (
+                        <option key={opt.key || 'default'} value={opt.key}>{opt.label}</option>
+                      ))}
+                    </select>
+                  </Field>
+                );
+              })}
+            </div>
+            <div className="mt-5 inline-flex items-start gap-2 px-3 py-2 bg-[var(--bp-primary-soft)] border border-[var(--bp-border-active)] rounded-[var(--bp-radius-xs)]">
+              <Sparkles size={11} strokeWidth={1.8} className="mt-0.5 text-[var(--bp-primary)]" />
+              <span className="text-[10.5px] text-[var(--bp-text-muted)] font-body leading-relaxed italic max-w-md">
+                La voce dello studio resta persistente. La Direzione editoriale e
+                l'Intensità narrativa di una singola Inspiration sovrascrivono
+                solo quella lettura, senza alterare le altre.
+              </span>
+            </div>
           </Section>
         </div>
 

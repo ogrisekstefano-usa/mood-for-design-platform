@@ -275,6 +275,30 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
   );
 };
 
+// ── Narrative Mode™ taxonomy (shared frontend constants) ─────────────
+// Stesse keys del backend (cultural_engine/editorial_interpreter.py).
+// I label sono editoriali italiani, MAI tecnici (no "prompt"/"AI"/"model").
+const NARRATIVE_MODES = [
+  { key: '',                  label: 'Voce dello studio (default)' },
+  { key: 'strategic',         label: 'Strategica · sintetica e progettuale' },
+  { key: 'technical',         label: 'Tecnica · architettonica, zero metafore' },
+  { key: 'emotional',         label: 'Emozionale · misurata, sensoriale' },
+  { key: 'cinematic',         label: 'Cinematografica · immersiva' },
+  { key: 'hospitality',       label: 'Ospitale · esperienziale' },
+  { key: 'luxury_editorial',  label: 'Editorial luxury · magazine alta gamma' },
+  { key: 'commercial_soft',   label: 'Commerciale morbida · rassicurante' },
+  { key: 'cultural_analyst',  label: 'Consulenziale · culturale internazionale' },
+  { key: 'minimal_executive', label: 'Minimal executive · una frase essenziale' },
+];
+
+const NARRATIVE_INTENSITIES = [
+  { key: '',          label: 'Intensità abituale dello studio' },
+  { key: 'minimal',   label: 'Minimal · essenziale' },
+  { key: 'balanced',  label: 'Bilanciata · misurata' },
+  { key: 'editorial', label: 'Editoriale · densa' },
+  { key: 'cinematic', label: 'Cinematica · narrativa' },
+];
+
 // ── CulturalReadingBlock ─────────────────────────────────────────────
 // Editorial output del Cultural Intelligence Engine™.
 // Mostra status (pending/ready/failed) + headline + body + spatial + atmosphere
@@ -282,11 +306,21 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
 // Quando pending, polling automatico ogni 4s fino a max 12 tentativi.
 const CulturalReadingBlock = ({ data, mediaId, onRefresh }) => {
   const [poll, setPoll] = useState(0);
+  const [narrativeMode, setNarrativeMode] = useState('');
+  const [narrativeIntensity, setNarrativeIntensity] = useState('');
+  const [openOverride, setOpenOverride] = useState(false);
   const cr = data?.cultural_reading || {};
   const status = cr.status || 'absent';
   const ed = cr.editorial_interpretation || {};
   const desc = cr.mapped_cultural_descriptors || {};
   const byCat = desc.by_category || {};
+  // Pre-fill controls with the last applied direction (so user sees current state).
+  useEffect(() => {
+    const pm = cr.provider_meta || {};
+    if (pm.narrative_mode && !narrativeMode) setNarrativeMode(pm.narrative_mode);
+    if (pm.narrative_intensity && !narrativeIntensity) setNarrativeIntensity(pm.narrative_intensity);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cr.provider_meta?.narrative_mode, cr.provider_meta?.narrative_intensity]);
 
   useEffect(() => {
     if (status !== 'pending' && status !== 'in_progress') return;
@@ -304,16 +338,28 @@ const CulturalReadingBlock = ({ data, mediaId, onRefresh }) => {
     return () => clearTimeout(t);
   }, [status, poll, mediaId, onRefresh]);
 
-  const retry = async () => {
+  const retry = async (opts = {}) => {
     try {
-      await api.post(`/api/inspirations/archive/${mediaId}/cultural-reading`);
+      const body = {};
+      if (opts.narrative_mode !== undefined)      body.narrative_mode      = opts.narrative_mode || null;
+      if (opts.narrative_intensity !== undefined) body.narrative_intensity = opts.narrative_intensity || null;
+      await api.post(`/api/inspirations/archive/${mediaId}/cultural-reading`, body);
       setPoll(0);
-      onRefresh?.({ status: 'pending' });
-      toast.info('MOOD sta leggendo il linguaggio culturale di questo riferimento.');
+      onRefresh?.({ status: 'pending', provider_meta: { ...(cr.provider_meta || {}), ...body } });
+      toast.info(
+        opts.narrative_mode || opts.narrative_intensity
+          ? 'MOOD sta ribilanciando l\'interpretazione editoriale.'
+          : 'MOOD sta leggendo il linguaggio culturale di questo riferimento.'
+      );
     } catch (e) {
       toast.error('Impossibile avviare la lettura.');
     }
   };
+
+  const regenerateWithDirection = () => retry({
+    narrative_mode:      narrativeMode,
+    narrative_intensity: narrativeIntensity,
+  });
 
   // Status: pending / in_progress
   if (status === 'pending' || status === 'in_progress') {
@@ -337,7 +383,7 @@ const CulturalReadingBlock = ({ data, mediaId, onRefresh }) => {
             ? 'La lettura culturale non è stata completata. Puoi riprovare.'
             : 'MOOD non ha ancora letto questo riferimento.'}
         </p>
-        <button type="button" className="ins-btn" onClick={retry} data-testid="cultural-reading-retry">
+        <button type="button" className="ins-btn" onClick={() => retry()} data-testid="cultural-reading-retry">
           <Icons.Sparkles size={12} /> Avvia lettura culturale
         </button>
       </div>
@@ -381,7 +427,60 @@ const CulturalReadingBlock = ({ data, mediaId, onRefresh }) => {
         </div>
       )}
 
-      <button type="button" className="insd-cultural__refresh" onClick={retry}
+      {/* ── Narrative Mode™ override contestuale ────────────────────── */}
+      <div className="insd-narrative" data-testid="narrative-mode-block">
+        <button type="button"
+                className="insd-narrative__toggle"
+                onClick={() => setOpenOverride((v) => !v)}
+                data-testid="narrative-mode-toggle"
+                aria-expanded={openOverride}>
+          <Icons.SlidersHorizontal size={11} />
+          <span>Adatta la direzione editoriale per questo riferimento</span>
+          <Icons.ChevronDown size={11}
+                              style={{ transform: openOverride ? 'rotate(180deg)' : 'none',
+                                       transition: 'transform 160ms ease' }} />
+        </button>
+        {openOverride && (
+          <div className="insd-narrative__panel" data-testid="narrative-mode-panel">
+            <div className="insd-narrative__row">
+              <label className="ins-label" htmlFor="narrative-mode-select">Direzione editoriale</label>
+              <select id="narrative-mode-select"
+                      className="insd-narrative__select"
+                      value={narrativeMode}
+                      onChange={(e) => setNarrativeMode(e.target.value)}
+                      data-testid="narrative-mode-select">
+                {NARRATIVE_MODES.map((m) => (
+                  <option key={m.key || 'default'} value={m.key}>{m.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="insd-narrative__row">
+              <label className="ins-label" htmlFor="narrative-intensity-select">Intensità narrativa</label>
+              <select id="narrative-intensity-select"
+                      className="insd-narrative__select"
+                      value={narrativeIntensity}
+                      onChange={(e) => setNarrativeIntensity(e.target.value)}
+                      data-testid="narrative-intensity-select">
+                {NARRATIVE_INTENSITIES.map((m) => (
+                  <option key={m.key || 'default'} value={m.key}>{m.label}</option>
+                ))}
+              </select>
+            </div>
+            <p className="insd-narrative__hint">
+              La direzione qui sotto sovrascrive solo questa interpretazione.
+              I segnali visivi restano invariati, ribilanciamo solo il registro editoriale.
+            </p>
+            <button type="button"
+                    className="insd-narrative__regen"
+                    onClick={regenerateWithDirection}
+                    data-testid="narrative-mode-regenerate">
+              <Icons.RefreshCw size={11} /> Rigenera interpretazione
+            </button>
+          </div>
+        )}
+      </div>
+
+      <button type="button" className="insd-cultural__refresh" onClick={() => retry()}
               data-testid="cultural-reading-refresh">
         <Icons.RefreshCw size={10} /> Riesegui lettura
       </button>

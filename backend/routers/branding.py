@@ -43,6 +43,23 @@ class Branding(BaseModel):
     tagline_i18n: Optional[Dict[str, str]] = None
     short_description_i18n: Optional[Dict[str, str]] = None
 
+    # ── Voce editoriale dello studio (Brand Voice™ persistente) ──────
+    # Dimensioni opzionali consumate dal Cultural Intelligence Engine™
+    # per modulare il registro di TUTTE le interpretazioni editoriali
+    # generate per questo tenant. È poi sovrascrivibile contestualmente
+    # dal Narrative Mode™ all'interno di ogni Inspiration / Cultural Edition.
+    #
+    # Keys attese (tutte opzionali):
+    #   communication_personality  · strategic | technical | editorial | hospitality
+    #                                | commercial_soft | luxury | minimal_executive
+    #                                | cultural_consultant
+    #   vocabulary_style           · architecture_studio | interior_design
+    #                                | luxury_hospitality | executive | editorial_magazine
+    #                                | retail_showroom | international_consultancy
+    #   narrative_intensity        · minimal | balanced | editorial | cinematic
+    #   interpretation_density     · concise | standard | deep_analysis
+    editorial_voice: Optional[Dict[str, Any]] = None
+
 
 class ThemePalette(BaseModel):
     primary: Optional[str] = None

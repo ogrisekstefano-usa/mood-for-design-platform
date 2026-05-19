@@ -192,6 +192,17 @@ class LinkCreate(BaseModel):
     note:        Optional[str] = None
 
 
+class CulturalReadingRetryBody(BaseModel):
+    """Body opzionale del re-trigger della lettura culturale.
+
+    Quando presente, il pipeline riusa i segnali Vision già in cache e
+    ribilancia SOLO Layer 3 (Editorial Interpretation) col nuovo registro.
+    """
+    narrative_mode:       Optional[str] = None
+    narrative_intensity:  Optional[str] = None
+    presentation_context: Optional[str] = None
+
+
 # ── Helpers ───────────────────────────────────────────────────────────
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -613,18 +624,46 @@ def get_cultural_reading(media_id: str, ctx=Depends(get_tenant_context)):
 
 @router.post("/archive/{media_id}/cultural-reading", status_code=202)
 def retry_cultural_reading(media_id: str, background_tasks: BackgroundTasks,
+                            body: Optional[CulturalReadingRetryBody] = None,
                             ctx=Depends(get_tenant_context)):
-    """Manual re-trigger of the cultural reading pipeline (admin / debug)."""
+    """Manual re-trigger of the cultural reading pipeline.
+
+    Quando arriva un body con `narrative_mode` / `narrative_intensity` /
+    `presentation_context`, ribilancia SOLO Layer 3 (Editorial Interpretation)
+    riutilizzando i segnali Vision già in cache: niente nuovo costo, ~3-5s.
+    """
     c = db()
-    rows = (c.table("media_library").select("id,file_url")
+    rows = (c.table("media_library").select("id,file_url,cultural_reading")
             .eq("id", media_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute().data or [])
     if not rows:
         raise HTTPException(404, "Riferimento non trovato")
     image_url = rows[0].get("file_url")
     if not image_url:
         raise HTTPException(400, "Nessuna immagine associata al riferimento")
-    background_tasks.add_task(_kick_off_cultural_reading, media_id, ctx["tenant_id"], image_url)
-    return {"status": "queued", "media_id": media_id}
+
+    narrative_mode = body.narrative_mode if body else None
+    narrative_intensity = body.narrative_intensity if body else None
+    presentation_context = body.presentation_context if body else None
+
+    # Se ho già una lettura ready e l'utente sta solo cambiando direzione,
+    # salto Layer 1 (Vision) → ribilancia solo l'interpretazione editoriale.
+    existing = (rows[0].get("cultural_reading") or {})
+    has_ready_reading = existing.get("status") == "ready"
+    skip_vision = bool(has_ready_reading and (narrative_mode or narrative_intensity or presentation_context))
+
+    background_tasks.add_task(
+        _kick_off_cultural_reading,
+        media_id, ctx["tenant_id"], image_url,
+        narrative_mode=narrative_mode,
+        narrative_intensity=narrative_intensity,
+        presentation_context=presentation_context,
+        skip_vision=skip_vision,
+    )
+    return {
+        "status":      "queued",
+        "media_id":    media_id,
+        "narrative_only": skip_vision,
+    }
 
 
 @router.get("/archive/{media_id}/resonance")
@@ -779,16 +818,6 @@ def list_links(media_id: str, ctx=Depends(get_tenant_context)):
     c = db()
     rows = (c.table("inspiration_links").select("*")
             .eq("media_id", media_id).eq("tenant_id", ctx["tenant_id"]).execute().data or [])
-    return {"items": [_slim(r) for r in rows]}
-
-
-@router.delete("/archive/links/{link_id}", status_code=204)
-def delete_link(link_id: str, ctx=Depends(get_tenant_context)):
-    c = db()
-    (c.table("inspiration_links").delete()
-     .eq("id", link_id).eq("tenant_id", ctx["tenant_id"]).execute())
-    return None
-["tenant_id"]).execute().data or [])
     return {"items": [_slim(r) for r in rows]}
 
 
