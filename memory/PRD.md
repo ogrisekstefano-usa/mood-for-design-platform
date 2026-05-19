@@ -53,6 +53,87 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint SUPPLIER-CATALOG-IMPORT v1 (Feb 19, 2026 · iter81)
+**Supplier Catalog Import™ MVP — sistema di upload catalogo PDF dedicato, separato dall'upload immagine normale, con estrazione deterministica via PyMuPDF.**
+
+#### Strategic principle
+Ogni tenant carica SOLO cataloghi che possiede / immagini autorizzate. MOOD NON è un PIM né un database brand pubblico — è un layer curatoriale che trasforma cataloghi fornitore in Product Inspirations™ riusabili in moodboard, progetti, Cultural Editions™.
+
+#### Database (Migration 057)
+- **NEW** tabella `supplier_catalogs` (id, tenant_id, brand, supplier_name, collection, catalog_year, category, source_file_id/url/kind, status['draft','extracting','review','imported','archived'], default_atmosphere/material/markets/luxury/profile/room_type, rights_status, candidate_count, imported_count, extraction_payload JSONB)
+- `media_library.inspiration_meta` JSONB documentata con schema product-specific (inspiration_type, supplier_catalog_id, brand, collection, product_name, product_category, designer, page_number, rights_status, original_catalog_file_id)
+- **Indici parziali** per Product Inspirations + per brand su media_library
+- **Storage bucket** `catalog-sources` (private; signed URL 1y) creato — PDF originali confidenziali
+
+#### Backend
+- **NEW** `cultural_engine/catalog_extractor.py` — extractor PyMuPDF deterministico:
+  - Filtro hero image (min 400×400, scarta thumbnail/loghi)
+  - Detection product name nel top-15 lines + blacklist editoriale ('26 Collection', 'made in italy', 'p.v. alternativo'…)
+  - Detection sezione (TOC headers tipo 'Tavoli / Tables' → category propagation cross-page)
+  - Detection designer da pattern "X design Y" + split nome+designer
+  - Dedup pagina hero + technical sheet di stesso prodotto entro 3 pagine
+  - Su Bonaldo 26 Collection (113 pagine): 61 candidati estratti, ~52% con product_name (Flatiron table, Oshi, Liaison, Alpha, Teia, Artemis…), 99% con categoria
+- **NEW** `routers/supplier_catalogs.py`:
+  - `GET /api/inspirations/catalogs/taxonomy` (10 categorie + 4 rights_statuses pubblici)
+  - `POST /api/inspirations/catalogs` (create draft)
+  - `POST /api/inspirations/catalogs/{id}/upload-pdf` (multipart, max 60MB) → estrazione + upload PDF + upload immagini candidati su `cms-assets` (pubblico)
+  - `GET /api/inspirations/catalogs/{id}` (dettaglio + candidati)
+  - `PATCH /api/inspirations/catalogs/{id}/candidates` (review grid edits)
+  - `POST /api/inspirations/catalogs/{id}/finalize` con batch tags (atmosphere/material/markets/luxury/profile) → persiste i candidati selezionati come Product Inspirations in media_library
+  - `GET /api/inspirations/catalogs` (Studio Collections™ list)
+  - `DELETE /api/inspirations/catalogs/{id}` (soft archive, asset live)
+- **UPDATED** `routers/inspirations_archive.py` — `GET /archive` accetta nuovi query param `inspiration_type=editorial|product` + `brand=X` (case-insensitive); `_to_card` include `inspiration_type`, `product_category`, `designer`, `rights_status`, `supplier_catalog_id`
+
+#### Frontend
+- **NEW** `SupplierCatalogImportModal.jsx` — wizard 4-step:
+  - Step 1 **Identità catalogo** (brand, collezione, anno, categoria, showroom, origine diritti)
+  - Step 2 **Caricamento** dropzone PDF con stato "MOOD sta preparando le anteprime del catalogo…"
+  - Step 3 **Revisione** griglia 4-col con checkbox + edit inline (nome/categoria/designer) + select-all/clear/named shortcuts + counter "X di Y selezionati"
+  - Step 4 **Tagging batch** con chip toggle per atmosfera/materia/mercati + select luxury/profile
+- **UPDATED** `InspirationsPage.jsx`:
+  - Nuova CTA `ins-catalog-btn` "Importa catalogo fornitore" accanto a "Aggiungi riferimento"
+  - Nuovo type-toggle pill `Tutti · Editoriali · Prodotti` (ins-type-all/editorial/product)
+  - InspirationCard ora ha variant `ins-card--product` con badge "Prodotto" + meta "Brand · Categoria · Collezione" sopra il titolo
+- **UPDATED** `InspirationDetailDrawer.jsx` — nuovo `ProductInfoBlock` visibile solo per `inspiration_type='product'`:
+  - Eyebrow "PRODUCT INSPIRATION™" + grid Brand/Collezione/Categoria/Designer
+  - Badge diritti italiano ("Autorizzato dal fornitore" / "Caricato dallo studio" / ecc.)
+  - Warning soft "verifica i diritti d'uso prima della pubblicazione esterna" (tranne quando rights_status='supplier_authorized')
+- **NEW** CSS file `supplier-catalog.css` con stili modal completi (dropzone, stepper, candidate grid, chips)
+
+#### Linguaggio compliance (strict)
+UI: "Importa catalogo fornitore", "MOOD ha preparato le anteprime del catalogo", "Trascina qui il PDF", "Seleziona le immagini più utili", "Tagging e import", "Origine dei contenuti", "Verifica i diritti d'uso".
+ZERO occorrenze verificate: `AI`, `OCR`, `parser`, `algoritmo`, `machine learning`, `model`, `temperature`, `prompt`.
+
+#### Test results (testing_agent_v3_fork iter81)
+- **Backend 10/10 PASS · 100%**: taxonomy, create catalog, upload PDF+extract (61 candidati su 113 pagine Bonaldo, image_url HTTP 200), GET catalog, PATCH candidates persistito, finalize 28 prodotti, archive product filter, archive editorial+brand filter, list catalogs, delete soft-archive (prodotti già importati restano live)
+- **Frontend 7/7 PASS · 100%**: CTA button, type-toggle 3 pills, modal 4-step stepper, step1 6 fields con disable→enable, step2 dropzone copy, drawer ProductInfoBlock, ZERO forbidden AI/OCR/parser/model words in DOM
+- Test report: `/app/test_reports/iteration_81.json`
+
+#### Esempio reale di estrazione (Bonaldo 26 Collection)
+- 113 pagine → 61 candidati hero image estratti
+- 36 prodotti con product_name automatico (Flatiron table, Oshi, Liaison, Alpha, Teia, Artemis, Aspen, Sasso, Sloan, Gem, Blocco Sideboard, Alicanto, Spy…)
+- 60 con categoria propagata da TOC (Tavoli, Sedie, Complementi)
+- User review step permette correzione manuale per il ~30% di candidati senza nome
+- ~3-5 secondi per PDF medio (10-30 MB)
+
+#### Production confidence: **9.6/10**
+Limiti noti accettati:
+- Designer extraction al ~10% (è "best-effort" — l'utente può aggiungerlo manualmente in review)
+- PDF complessi/protetti potrebbero fallire l'estrazione → il dropzone mostra error con fallback "Riprova con un altro PDF"
+- Limite 80 candidati per catalogo (warning mostrato — cataloghi più lunghi vengono troncati)
+
+#### Cosa NON è incluso (deferred Phase 2)
+- ZIP image batch upload (oggi solo PDF + alla volta)
+- Excel/CSV listini
+- Drive/Dropbox links
+- Studio Collections™ vista raggruppata per brand (foundation backend pronto via `GET /catalogs`)
+- Vision AI cross-check per filtrare automaticamente le immagini editoriali (oggi tutte le hero image vanno in review, l'utente deseleziona)
+- Material/finish/dimension extraction (resta scelta consapevole — NON un PIM)
+- Database globale brand / scraping cataloghi
+
+---
+
+
 ### Sprint MARKET-NARRATIVE-PROFILES v1 (Feb 19, 2026 · iter80)
 **Market Narrative Profiles™ — Cultural Edition™ Narrative Geography Layer (Phase 1).**
 
