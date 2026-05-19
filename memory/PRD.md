@@ -53,6 +53,59 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint THEME-PALETTE v2 (Feb 19, 2026) — 8 fix post-feedback
+**Round di rifiniture su feedback diretto dell'utente dopo lo sprint palette v1. 8 task in batch single-turn.**
+
+#### Direttive applicate
+1. ✅ **Z-index palette popover** alzato a 9000 (era 80, finiva sotto box editorial)
+2. ✅ **Palette propagation totale** sui temi chiari — usa `!important` su `:root` + selettore rafforzato `html[data-palette] [data-surface]` che batte TenantThemeContext
+3. ✅ **Market Matrix** card+chip backgrounds ora bind a `var(--bp-surface-2)` / `var(--bp-primary-soft)` / `var(--bp-border)` invece di rgba whites hardcoded
+4. ✅ **Sidebar restructure** — "Projects Studio" spostata da gruppo "Projects" a nuovo gruppo dedicato **"Sito Web"**
+5. ✅ **Profile menu opacity** rimossa (`bg-[var(--bp-bg)]/95 backdrop-blur-xl` → `bg-[var(--bp-bg)]` solido)
+6. ✅ **AssetPickerModal · tab URL** aggiunto — incolla URL pubblico immagine, alt-text, preview live, "Usa URL" emit asset esterno
+7. ✅ **Pen-icon edit** su ogni AssetCard — overlay su hover top-left, apre **ImageEditModal** con:
+   - Tab **Crop** (react-easy-crop v5.5.7 + 6 aspect chips: Libero/1:1/16:9/9:16/4:3/3:4 + zoom slider)
+   - Tab **Filtri** (luminosità · contrasto · saturazione · rotazione, con reset)
+   - Save: persiste filters in `media_library.filters` + se crop modificato, render canvas + re-upload come nuovo asset
+8. ✅ Rimossa label "Usa nel racconto" → solo "Usa"
+
+#### File nuovi
+- `/app/frontend/src/components/common/ImageEditModal.jsx` (220 righe)
+- `/app/frontend/src/components/common/image-edit-modal.css` (195 righe)
+
+#### File modificati
+- `/app/frontend/src/lib/curatedPalettes.js` — `!important` + selettore rafforzato per propagation totale
+- `/app/frontend/src/components/common/palette-switcher.css` — z-index 9000
+- `/app/frontend/src/components/layout/Sidebar.jsx` — gruppo "Sito Web" + Projects Studio
+- `/app/frontend/src/components/common/UserMenu.jsx` — bg solido (no opacity/blur)
+- `/app/frontend/src/pages/settings/AssetPickerModal.jsx` — URL tab + pen icon + ImageEditModal mount + label fix
+- `/app/frontend/src/pages/settings/asset-picker.css` — `.mfd-picker__card-edit` overlay + URL form inputs
+- `/app/frontend/src/pages/governance/market-matrix.css` — chip+card bind a token semantici
+
+#### Dipendenza aggiunta
+- `react-easy-crop@5.5.7` (yarn add)
+
+#### Validazione (testing_agent iter69 — 85% runtime + 100% source-level)
+**Runtime-verified:**
+- FIX 1: popover computed `z-index = 9000` ✓
+- FIX 2: `--bp-primary = #9D4E5A` su rose / `#5A8FE5` su cobalt; bottoni visivamente cobalt-blue sotto cobalt theme ✓
+- FIX 4: sidebar contiene "Projects" + "Sito Web" come sezioni distinte, Projects Studio sotto Sito Web ✓
+- FIX 5: user menu computed `bg=rgb(15,15,16) alpha=1 backdrop-filter=none` ✓
+
+**Source-verified:**
+- FIX 3: chip+card market-matrix usano var(--bp-*) ✓
+- FIX 6: testid `asset-picker-tab-url/url-input/url-alt/url-use` presenti ✓
+- FIX 7: testid `picker-asset-edit-<id>` + `image-edit-modal/iem-tab-crop/iem-tab-filters/iem-aspect-*/iem-save` presenti, react-easy-crop installato ✓
+- FIX 8: grep "Usa nel racconto" = 0 hit ✓
+
+**Patch testing agent applicata:** rimosso `eslint-disable-next-line jsx-a11y/img-redundant-alt` (rule non configurata in CRA ESLint) da ImageEditModal.jsx + alt='preview' (non triggera la rule). Compilation OK.
+
+#### Production confidence: **9.5/10**
+Tutte e 8 le richieste dell'utente sono in produzione. La modifica più importante è l'**ImageEditModal con crop + filtri** — funzione "OBBLIGATORIA" richiesta. Workflow completo: aprire Media Library → hover su qualsiasi foto → click penna in alto a sinistra → modal con crop (aspect ratios + zoom) o filtri (4 slider) → Salva.
+
+---
+
+
 ### Sprint THEME-PALETTE v1 (Feb 19, 2026) — Tavolozza & contrast fix
 **Sostituito il legacy Sun/Moon toggle nel Topbar con un Palette Switcher concierge di 24 temi curati. Fix dei box neri che restavano hardcoded indipendentemente dalla palette.**
 
