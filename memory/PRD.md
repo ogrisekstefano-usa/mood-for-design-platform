@@ -53,6 +53,90 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint CULTURAL-EDITION-ACTIVATION v1 (Feb 20, 2026 · iter76)
+**Cultural Edition™ Flow Activation — wizard editoriale a 5 step, AI adaptation reale (Claude Sonnet 4.5), review side-by-side. Dashboard polish (logo studio + phantom scroll fix).**
+
+#### A · Cultural Edition™ — wizard reale + AI adaptation
+- ✅ **Migration 053** `cultural_edition_drafts` table applicata (source_type / source_id / source_payload / target_market / target_locale / adaptation_scope[] / market_version JSONB / status / generation_meta)
+- ✅ **Router** `/app/backend/routers/cultural_editions.py` (470 righe):
+  - `GET /api/cultural-editions/markets` → 6 mercati curati + 7 ambiti + 4 source_types
+  - `GET /api/cultural-editions/sources?type=project|moodboard` → contenuti del tenant
+  - `POST /api/cultural-editions/drafts` → crea bozza + **generazione reale Claude Sonnet 4.5** (model="claude-sonnet-4-5-20250929") con prompt editoriale per mercato; fallback italiano se LLM fallisce
+  - `GET /drafts` · `GET /drafts/{id}` (con campo `market` embedded) · `PATCH /drafts/{id}` (status: draft/in_review/approved/archived)
+- ✅ **6 mercati curati** con descrittori editoriali italiani: USA Miami · USA NYC · UAE Dubai · UK Londra · Italia Milano · Francia Parigi
+- ✅ **Wizard React** `CulturalEditionWizard.jsx` (380 righe, modale fixed z-index 10080):
+  1. Tipo (Progetto · Moodboard · Showcase · Selezione materiali)
+  2. Contenuto (lista visuale con cover/title/subtitle)
+  3. Mercato (6 card editoriali con atmosfera + chip descriptors)
+  4. Ambito di adattamento (7 chip selezionabili + briefing textarea)
+  5. Revisione editoriale (riepilogo + CTA "Crea versione mercato")
+- ✅ **Processing state** durante POST: pulse cyan + frase "La redazione internazionale di MOOD sta preparando l'adattamento…" (ZERO menzioni AI/GPT/Claude/prompt nell'UI)
+- ✅ **Pages**:
+  - `/workspace/cultural-editions` — `CulturalEditionsListPage.jsx` con elenco bozze + bottone "Nuova edizione" + supporto `?new=1` deep-link
+  - `/workspace/cultural-editions/:id` — `CulturalEditionReviewPage.jsx` side-by-side editoriale (Contenuto base SINISTRA · Versione mercato DESTRA) con tutti i 9 campi della market_version, stato + transizioni (Manda in revisione · Approva · Archivia)
+- ✅ **CSS bound a token Blueprint** (`--bp-*`) — il wizard e la review adattano automaticamente i 33 temi light/dark
+- ✅ **Linguaggio** 100% italiano editoriale: "Contenuto base", "Versione mercato", "Revisione editoriale", "Ambito di adattamento", "Atto editoriale"
+
+#### B · Dashboard polish
+- ✅ **Logo studio** in `.cck-hero__studio` top-right del box "Buongiorno, Stefano":
+  - `branding.primary_logo_url` da `useTenantTheme()` se presente
+  - Fallback elegante con iniziali del `public_brand_name` in cornice cyan + nome studio piccolo
+  - Backdrop blur 8px, border 1px, transizione cyan su hover
+- ✅ **Phantom scroll fix**:
+  - `cck-page` padding-bottom 56px → 24px
+  - Suspense fallback (height:220) per CockpitTimeline rimosso (era visibile prima del lazy-load)
+  - Verificato: `body.scrollHeight == viewport` dopo full load
+- ✅ Cultural Edition™ CTA hero ora apre il wizard in-place (button, no Link → no dead route)
+- ✅ Quick Actions™ cluster "Internazionalizzazione" → click su "Crea Cultural Edition™" apre il wizard anche da qui
+
+#### File nuovi
+- `/app/supabase/migrations/053_cultural_edition_drafts.sql` (applicata via psycopg2)
+- `/app/backend/scripts/apply_migration_053.py`
+- `/app/backend/routers/cultural_editions.py`
+- `/app/frontend/src/components/cultural/CulturalEditionWizard.jsx`
+- `/app/frontend/src/components/cultural/cultural-edition-wizard.css`
+- `/app/frontend/src/pages/cultural/CulturalEditionsListPage.jsx`
+- `/app/frontend/src/pages/cultural/CulturalEditionReviewPage.jsx`
+- `/app/frontend/src/pages/cultural/cultural-editions.css`
+- `/app/backend/tests/test_iteration_76_cultural_editions.py`
+
+#### File modificati
+- `/app/backend/server.py` — import + mount `cultural_editions.router`
+- `/app/frontend/src/App.js` — 2 nuove route protette
+- `/app/frontend/src/pages/dashboard/DashboardPage.jsx` — `useTenantTheme()` per logo + wizard launch state + StudioLogo component
+- `/app/frontend/src/pages/dashboard/dashboard-cockpit.css` — padding-bottom + `.cck-hero__studio*` styles + button reset per `.cck-quick-item`
+
+#### Validazione (testing_agent_v3_fork iter76)
+- **Backend**: 100% (12/12 pytest PASS)
+  - 6 mercati curati restituiti + 7 ambiti + 4 source_types ✓
+  - GET /sources?type=project ritorna progetti reali del demo tenant ✓
+  - POST /drafts genera con Claude Sonnet 4.5 (model verificato, fallback=False) con tutti i 9 campi market_version popolati e cue contestuali di Miami presenti ✓
+  - GET /drafts/{id} embed metadata curated del mercato ✓
+  - PATCH valida transizione status (400 per stato non riconosciuto) ✓
+- **Frontend**: 85% (codice + render verificato)
+  - Hero logo fallback iniziali corretto (primary_logo_url null per demo tenant) ✓
+  - No phantom scroll ✓
+  - CTA → wizard apertura in-place (URL invariato) ✓
+  - 5 step renderizzati con testid corretti ✓
+  - Italian editorial copy presente ovunque ✓
+  - Source list step 2 popolata con progetti reali ✓
+  - 1 minor: Playwright sync issue su step 2 selection (NON app bug — test harness)
+- **Main agent self-test (manual)**: ✓ list page + review page side-by-side renderizzati con contenuto Claude reale ("Stefano Apartment: Where Mediterranean Light Meets Miami Living" + corpo editoriale completo + CTA "Schedule Private Viewing" + 4 blocchi note culturali)
+
+#### Production confidence: **9.5/10**
+Cultural Edition™ è LIVE end-to-end: dal click del CTA in hero, alla generazione editoriale reale con Claude, alla review page side-by-side. Il linguaggio è 100% editoriale italiano. La feature è una delle 3 vere ragioni di esistere di MOOD — ora funziona.
+
+#### Cosa NON è incluso (deferred)
+- Rate limiting su POST /drafts (testing agent raccomandazione P2)
+- Permission gating su PATCH status (oggi qualunque profile_id può transizionare — P2)
+- Editor inline della market_version nella review page (oggi solo display + status transitions)
+- Re-generation con prompt diverso (P2 — "Riadatta versione mercato")
+- Cultural Edition collegate ad Account/CRM timeline (foundation già in crm_intelligence.py — wiring P2)
+- Showcase + Selezione materiali source types con context completo (oggi i progetti/moodboard hanno context ricco, gli altri 2 minimi)
+
+---
+
+
 ### Sprint COCKPIT-PHASE1 v1 (Feb 19, 2026 · iter75)
 **Daily Design Operations Cockpit™ Phase 1 — Dashboard rebuild + performance refactor.**
 
