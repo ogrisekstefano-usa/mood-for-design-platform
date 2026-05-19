@@ -231,6 +231,11 @@ export const BlueprintProvider = ({ children }) => {
         tData = tRes.value.data;
         setTenant(tData);
         applyTheme(tData?.theme);
+        // Expose tenant_id as window global for the lightweight Market
+        // Intelligence signal hook (useMarketSignal) without prop drilling.
+        if (typeof window !== 'undefined' && tData?.id) {
+          window.__MFD_TENANT_ID__ = tData.id;
+        }
         if (!localStorage.getItem(LOCALE_KEY) && tData?.locales?.default) {
           resolvedLocale = tData.locales.default;
           setLocaleState(resolvedLocale);

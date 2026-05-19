@@ -23,6 +23,7 @@ import { usePositioning, resolveCtaLabels } from '../../site/usePositioning';
 import { findProjectBySlug } from '../../site/content/projects';
 import { uiContent } from '../../site/content/ui';
 import { Reveal, SiteImage } from '../../site/components/Reveal';
+import { useMarketSignal } from '../../hooks/useMarketSignal';
 import '../../site/components/PublicHotspot.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -56,6 +57,18 @@ const ProjectDetailPage = () => {
 
   // null = loading | { project } = runtime variant | { fallback } | 404
   const [state, setState] = useState({ status: 'loading' });
+
+  // ── Market Intelligence Engine™ signal (anonymous, privacy-by-design) ──
+  // Declared at the top to respect rules-of-hooks (no conditional calls).
+  const signalMarket = state.status === 'runtime' ? (state.project?.market_code || null) : null;
+  const signalLocale = state.status === 'runtime' ? (state.project?.target_locale || null) : null;
+  const signal = useMarketSignal({ marketCode: signalMarket, locale: signalLocale });
+  useEffect(() => {
+    if (slug && state.status !== 'loading' && state.status !== '404') {
+      signal('project_view', { project_slug: slug });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug, state.status, signalMarket]);
 
   useEffect(() => {
     let alive = true;

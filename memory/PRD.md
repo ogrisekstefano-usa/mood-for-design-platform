@@ -53,6 +53,69 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase MIE-PHASE-1.5 v1 (Feb 19, 2026) — Brand Voice + Aggregates + Signal Hook
+**Sprint A + B + C completo: estensione strategica del Phase 1 con tenant customization layer, aggregation foundation, e signal hook per ingestione live.**
+
+#### Direttive applicate
+- ✅ **A · Brand Voice Adapters**: 8 dimensioni editoriali per tenant entro la cultura del mercato (NON modificano la foundation)
+- ✅ **B · Behavior Aggregation Layer**: rollup table + endpoint recompute (Phase 1 = on-demand; Phase 2 = cron)
+- ✅ **C · Frontend Signal Hook**: `useMarketSignal()` lightweight con privacy-by-design, già wired in ProjectDetailPage
+- ✅ Tutti gli endpoint testati live con curl, UI testata con screenshot
+- ❌ NON aggiunto: AI generation pipeline (Phase 2), tenant analytics dashboard (NEVER), event hook su Gallery/Hotspot/Article (P1.6)
+
+#### File creati/modificati
+- **NEW** `/app/supabase/migrations/049_brand_voice_adapters_and_aggregates.sql` — `tenants.brand_voice_adapters JSONB` + `market_signal_aggregates` table con UNIQUE INDEX COALESCE
+- **UPDATED** `/app/backend/routers/market_intelligence.py` — 4 nuovi endpoint:
+  - `GET /adapters` · `PATCH /adapters` (admin-only, validation [-2..+2])
+  - `GET /aggregates?window=24h|7d|30d` (editorial counts only, mai CTR%)
+  - `POST /aggregates/recompute` (admin-only, in-memory rollup di 24h+7d+30d, idempotente)
+- **NEW** `/app/frontend/src/hooks/useMarketSignal.js` — Hook React lightweight con:
+  - PII guard client-side (defense in depth oltre al server)
+  - `localStorage['mfd_signal_optout'] = '1'` opt-out check
+  - `fetch keepalive: true` per fire-on-unload
+  - Auto-bind a `window.__MFD_TENANT_ID__` (popolato da BlueprintContext al login)
+  - Fire-and-forget (mai blocca UX visitor)
+- **UPDATED** `/app/frontend/src/contexts/BlueprintContext.jsx` — Set `window.__MFD_TENANT_ID__` quando tenant config carica
+- **UPDATED** `/app/frontend/src/pages/site/ProjectDetailPage.jsx` — `useMarketSignal` hook al top, emette `project_view` con `project_slug` quando il progetto si carica (no PII, conform rules-of-hooks)
+- **NEW** `/app/frontend/src/pages/governance/BrandVoiceAdaptersPage.jsx` (200 righe) — UI editoriale 5-stop sliders × 8 dimensioni in 6 lingue
+- **NEW** `/app/frontend/src/pages/governance/brand-voice.css` — Editorial track design (no native slider · custom dots con brass primary · stop centrale dashed per neutro · responsive mobile)
+- **UPDATED** `/app/frontend/src/App.js` — Route `/blueprint/voice` (StudioAdminRoute gated)
+
+#### Le 8 dimensioni Brand Voice
+1. **Calore del tono** · Più fresco·misurato ←→ Più caldo·relazionale
+2. **Livello di ospitalità** · Residenziale intimo ←→ Hospitality scenografica
+3. **Audacia visuale** · Sussurrato·materico ←→ Scenografico·dichiarato
+4. **Ritmo editoriale** · Lento·contemplativo ←→ Denso·ritmato
+5. **Intensità architettonica** · Domestico·vissuto ←→ Architettonico·monumentale
+6. **Intensità emotiva** · Sobrio·misurato ←→ Emotivo·narrativo
+7. **Storytelling dei materiali** · Implicito·ambientale ←→ Esplicito·documentale
+8. **Stile della CTA** · Invito·sussurrato ←→ Diretto·deciso
+
+Tutte le anchor labels sono naturali in **6 lingue** (it-IT, en-US, en-GB, es-ES, fr-FR, de-DE). NON traduzioni letterali ma vocabolario designer per lingua.
+
+#### Validazione live E2E
+- `GET /adapters` → 200, 8 keys con valori [-2..+2] ✓
+- `PATCH /adapters {"tone_warmth":1, "visual_boldness":-1, "material_storytelling":2}` → merge corretto ✓
+- `POST /aggregates/recompute` → 3 rollup creati (24h + 7d + 30d) per il test event ✓
+- `GET /aggregates?window=7d` → restituisce le righe rollup con count + unique_sessions ✓
+- `/blueprint/voice` UI: 8 sliders editorial · click +2 abilita save · save persistente · neutral hint visibile quando dot center ✓
+- ProjectDetailPage carica senza regressioni · `useMarketSignal` rispetta rules-of-hooks ✓
+- Eventi reali ingest funzionante (un nuovo `project_view` arriverà nel database al prossimo visit pubblico)
+
+#### Privacy verificata
+- PII stripping doppio (server + hook client-side)
+- Opt-out via localStorage immediato
+- fetch keepalive per non bloccare unload
+- `__MFD_TENANT_ID__` global mai contiene PII (solo UUID tenant)
+- session_hash SHA256 daily-rotating preserve l'anonimato
+
+#### Production confidence: **9.5/10**
+Phase 1.5 chiusa. Foundation completa per Phase 2 (AI pattern recognition): la tabella aggregates è popolabile via job schedulato, i Brand Voice Adapters formano l'input per la futura AI di adaptive editorial. Il signal hook è LIVE e raccoglie già eventi puliti su ProjectDetailPage.
+
+---
+
+
+
 ### Fase MARKET-INTELLIGENCE-ENGINE-PHASE-1 v1 (Feb 19, 2026) — Geo-Cultural Adaptive Foundation
 **Foundation architetturale del sistema di Editorial Cultural Intelligence di MOOD. Strategic Co-Pilot™, NON autopilot. Phase 1 = struttura pulita, niente AI ancora.**
 

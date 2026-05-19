@@ -8,12 +8,16 @@ NO AI inference, NO pattern recognition. Phase 1 = clean architecture.
   POST /api/market-intelligence/events            — anonymous signal ingest
   GET  /api/market-intelligence/insights          — tenant editorial briefs
   GET  /api/market-intelligence/health            — system status
+  GET  /api/market-intelligence/adapters          — tenant Brand Voice Adapters
+  PATCH/api/market-intelligence/adapters          — update adapters (one or more)
+  GET  /api/market-intelligence/aggregates        — read pre-computed signal rollups
+  POST /api/market-intelligence/aggregates/recompute — recompute rollups for tenant
 """
 from __future__ import annotations
 
 import hashlib
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
@@ -220,3 +224,167 @@ def health(user: Dict[str, Any] = Depends(get_current_user)):
         "ai_inference_enabled": False,
         "tenant_id": tenant_id,
     }
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 5 · BRAND VOICE ADAPTERS (tenant-owned)
+# ───────────────────────────────────────────────────────────────────────
+#
+# 8 editorial dimensions, each a small signed integer from -2 to +2,
+# centered at 0 (neutral — let the cultural foundation speak).
+# These DO NOT modify macro cultural foundations; they orient the
+# brand voice WITHIN them.
+
+ADAPTER_KEYS = [
+    "tone_warmth",
+    "hospitality_level",
+    "visual_boldness",
+    "editorial_pacing",
+    "architectural_intensity",
+    "emotional_intensity",
+    "material_storytelling",
+    "cta_style",
+]
+
+
+def _validate_adapters(payload: Dict[str, Any]) -> Dict[str, int]:
+    out: Dict[str, int] = {}
+    for k, v in (payload or {}).items():
+        if k not in ADAPTER_KEYS:
+            continue
+        try:
+            iv = int(v)
+        except (TypeError, ValueError):
+            raise HTTPException(400, f"adapter '{k}' must be integer in [-2,+2]")
+        if iv < -2 or iv > 2:
+            raise HTTPException(400, f"adapter '{k}' out of range [-2,+2]")
+        out[k] = iv
+    return out
+
+
+@router.get("/adapters")
+def get_adapters(user: Dict[str, Any] = Depends(get_current_user)):
+    tenant_id = user.get("tenant_id") or user.get("active_tenant_id")
+    if not tenant_id:
+        raise HTTPException(404, "tenant not resolved")
+    c = db()
+    row = (c.table("tenants").select("brand_voice_adapters")
+            .eq("id", tenant_id).limit(1).execute().data)
+    current = (row[0].get("brand_voice_adapters") if row else {}) or {}
+    # Provide explicit default values for any missing keys
+    return {
+        "adapters": {k: int(current.get(k, 0)) for k in ADAPTER_KEYS},
+        "keys": ADAPTER_KEYS,
+        "range": [-2, 2],
+    }
+
+
+class AdaptersPatch(BaseModel):
+    adapters: Dict[str, Any] = Field(default_factory=dict)
+
+
+@router.patch("/adapters")
+def update_adapters(body: AdaptersPatch, user: Dict[str, Any] = Depends(get_current_user)):
+    tenant_id = user.get("tenant_id") or user.get("active_tenant_id")
+    if not tenant_id:
+        raise HTTPException(404, "tenant not resolved")
+    role = user.get("role") or user.get("active_role") or ""
+    if role not in ("super_admin", "tenant_admin", "studio_admin", "owner"):
+        raise HTTPException(403, "admins only")
+    patch = _validate_adapters(body.adapters)
+    c = db()
+    row = (c.table("tenants").select("brand_voice_adapters")
+            .eq("id", tenant_id).limit(1).execute().data)
+    existing = (row[0].get("brand_voice_adapters") if row else {}) or {}
+    merged = {**existing, **patch}
+    c.table("tenants").update({"brand_voice_adapters": merged}).eq("id", tenant_id).execute()
+    return {"adapters": {k: int(merged.get(k, 0)) for k in ADAPTER_KEYS}}
+
+
+# ───────────────────────────────────────────────────────────────────────
+# 6 · SIGNAL AGGREGATES (read + recompute)
+# ───────────────────────────────────────────────────────────────────────
+@router.get("/aggregates")
+def list_aggregates(
+    user: Dict[str, Any] = Depends(get_current_user),
+    window: str = Query("7d", regex="^(24h|7d|30d)$"),
+    submarket: Optional[str] = Query(None),
+):
+    """
+    Pre-computed signal rollups. Editorial-facing — counts only, NEVER
+    raw rates. The frontend uses these to render passive presence
+    indicators (NOT CTR%).
+    """
+    tenant_id = user.get("tenant_id") or user.get("active_tenant_id")
+    if not tenant_id:
+        return {"aggregates": [], "window": window}
+    c = db()
+    q = (c.table("market_signal_aggregates").select("*")
+           .eq("tenant_id", tenant_id).eq("window_key", window))
+    if submarket:
+        q = q.eq("submarket_code", submarket)
+    rows = q.order("event_count", desc=True).limit(120).execute().data or []
+    return {"aggregates": rows, "window": window}
+
+
+@router.post("/aggregates/recompute")
+def recompute_aggregates(user: Dict[str, Any] = Depends(get_current_user)):
+    """
+    Recompute aggregates for THIS tenant only. Phase 1 = on-demand
+    (admins press a button or it runs at low frequency). Phase 2 will
+    schedule this via a cron worker.
+    """
+    tenant_id = user.get("tenant_id") or user.get("active_tenant_id")
+    if not tenant_id:
+        raise HTTPException(404, "tenant not resolved")
+    role = user.get("role") or user.get("active_role") or ""
+    if role not in ("super_admin", "tenant_admin", "studio_admin", "owner"):
+        raise HTTPException(403, "admins only")
+
+    c = db()
+    now = datetime.now(timezone.utc)
+    windows = {
+        "24h": now - timedelta(hours=24),
+        "7d":  now - timedelta(days=7),
+        "30d": now - timedelta(days=30),
+    }
+    # Aggregate in-memory (Phase 1 is read-mostly; a tenant rarely has
+    # more than ~50k events in 30d which fits comfortably in memory).
+    rebuilt = 0
+    for window_key, since in windows.items():
+        rows = (c.table("market_behavior_events")
+                  .select("market_code, submarket_code, event_type, session_hash, created_at")
+                  .eq("tenant_id", tenant_id)
+                  .gte("created_at", since.isoformat())
+                  .limit(50000)
+                  .execute().data or [])
+        buckets: Dict[tuple, Dict[str, Any]] = {}
+        for r in rows:
+            key = (r.get("market_code") or "", r.get("submarket_code") or "", r.get("event_type"))
+            b = buckets.setdefault(key, {"count": 0, "sessions": set(), "last": None})
+            b["count"] += 1
+            if r.get("session_hash"):
+                b["sessions"].add(r["session_hash"])
+            ts = r.get("created_at")
+            if ts and (b["last"] is None or ts > b["last"]):
+                b["last"] = ts
+
+        # Wipe previous aggregates for this tenant + window, then bulk-insert
+        c.table("market_signal_aggregates").delete() \
+            .eq("tenant_id", tenant_id).eq("window_key", window_key).execute()
+
+        if buckets:
+            insert_rows = [{
+                "tenant_id":       tenant_id,
+                "market_code":     k[0] or None,
+                "submarket_code":  k[1] or None,
+                "event_type":      k[2],
+                "window_key":      window_key,
+                "event_count":     v["count"],
+                "unique_sessions": len(v["sessions"]),
+                "last_event_at":   v["last"],
+            } for k, v in buckets.items()]
+            c.table("market_signal_aggregates").insert(insert_rows).execute()
+            rebuilt += len(insert_rows)
+
+    return {"ok": True, "rebuilt_rows": rebuilt, "tenant_id": tenant_id, "computed_at": now.isoformat()}
