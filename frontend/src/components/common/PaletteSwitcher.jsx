@@ -28,16 +28,21 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import './palette-switcher.css';
 
 // ── Mini-swatch · 3 stop (bg · surface · primary→accent gradient) ─────
-const Swatch = ({ preset, active, onPick, applying }) => {
+const Swatch = ({ preset, active, onPick }) => {
   const p = preset.theme?.palette || {};
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onPick(preset);
+  };
   return (
     <button
       type="button"
-      onClick={() => !applying && onPick(preset)}
+      onClick={handleClick}
+      onMouseDown={(e) => e.stopPropagation()}
       title={`${preset.label} — ${preset.description || ''}`}
       aria-label={`Tema ${preset.label}`}
       aria-pressed={active}
-      disabled={applying}
       data-testid={`palette-swatch-${preset.key}`}
       className={`palsw-swatch ${active ? 'palsw-swatch--active' : ''}`}
     >
@@ -49,7 +54,7 @@ const Swatch = ({ preset, active, onPick, applying }) => {
         }} />
       </span>
       <span className="palsw-swatch__name">{preset.label}</span>
-      {active && <Check size={11} className="palsw-swatch__check" strokeWidth={2.4} />}
+      {active && <Check size={10} className="palsw-swatch__check" strokeWidth={2.6} />}
     </button>
   );
 };
@@ -59,7 +64,6 @@ const PaletteSwitcher = () => {
   const [open, setOpen] = useState(false);
   const [presets, setPresets] = useState([]);
   const [currentKey, setCurrentKey] = useState(null);
-  const [applyingKey, setApplyingKey] = useState(null);
   const [coords, setCoords] = useState({ top: 64, right: 24 });
   const ref = useRef();
   const triggerRef = useRef();
@@ -103,23 +107,20 @@ const PaletteSwitcher = () => {
   }, [open]);
 
   const pick = async (preset) => {
-    if (!preset?.key || applyingKey) return;
-    setApplyingKey(preset.key);
+    if (!preset?.key) return;
+    // Optimistic feedback istantaneo + chiusura popover subito
+    setCurrentKey(preset.key);
+    setOpen(false);
     try {
-      // CRITICO: pulisci eventuali override curated (!important) prima
-      // di applicare un preset chiaro — altrimenti lo sfondo resta scuro.
+      // Pulisce gli override !important del curated PaletteSwitcher
+      // (necessario per applicare un preset chiaro su top di un theme scuro)
       clearPalette();
       await api.post('/api/branding/apply-preset', { preset_key: preset.key });
-      setCurrentKey(preset.key);
-      // Refresh blueprint context per aggiornare le var CSS globali
       try { await refresh(); } catch { /* tolerable */ }
       toast.success(`Tema "${preset.label}" applicato`);
-      // Chiudi dopo un breve istante per feedback visivo
-      setTimeout(() => setOpen(false), 350);
     } catch (e) {
+      console.error('[PaletteSwitcher] apply-preset failed', e);
       toast.error(e?.response?.data?.detail || 'Non sono riuscito ad applicare il tema');
-    } finally {
-      setApplyingKey(null);
     }
   };
 
@@ -180,7 +181,6 @@ const PaletteSwitcher = () => {
                     {lights.map((p) => (
                       <Swatch key={p.key} preset={p}
                               active={currentKey === p.key}
-                              applying={applyingKey === p.key}
                               onPick={pick} />
                     ))}
                   </div>
@@ -196,7 +196,6 @@ const PaletteSwitcher = () => {
                     {darks.map((p) => (
                       <Swatch key={p.key} preset={p}
                               active={currentKey === p.key}
-                              applying={applyingKey === p.key}
                               onPick={pick} />
                     ))}
                   </div>
