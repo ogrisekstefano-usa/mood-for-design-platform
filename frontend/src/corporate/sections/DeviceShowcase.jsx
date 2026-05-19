@@ -2,6 +2,25 @@ import React from 'react';
 import { useReveal } from '../hooks/useReveal';
 
 /**
+ * Render a headline that may contain `*word*` markers — those are turned into
+ * italic Playfair teal accent spans (editorial style).
+ */
+const renderHeadlineWithAccent = (text) => {
+  if (!text || !text.includes('*')) return text;
+  const parts = text.split(/(\*[^*]+\*)/g);
+  return parts.map((p, i) => {
+    if (p.startsWith('*') && p.endsWith('*')) {
+      return (
+        <span key={i} className="italic" style={{ color: '#00C9B3', fontFamily: 'Playfair Display, serif' }}>
+          {p.slice(1, -1)}
+        </span>
+      );
+    }
+    return <span key={i}>{p}</span>;
+  });
+};
+
+/**
  * DeviceShowcase — laptop + phone + tablet stacked devices on the left,
  * editorial caption + CTA on the right.
  * content: { overline?, headline, body, cta:{text,href} }
@@ -59,7 +78,7 @@ const DeviceShowcase = ({ content = {}, config = {} }) => {
           {content.overline && <p className="overline-teal mb-6">{content.overline}</p>}
           {content.headline && (
             <h2 className="font-serif text-white leading-[1.05]" style={{ fontSize: 'clamp(2rem, 3.4vw, 3rem)', whiteSpace: 'pre-line' }}>
-              {content.headline}
+              {renderHeadlineWithAccent(content.headline)}
             </h2>
           )}
           {content.body && (

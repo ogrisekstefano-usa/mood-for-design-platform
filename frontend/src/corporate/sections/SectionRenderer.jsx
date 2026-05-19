@@ -17,6 +17,9 @@ import ProjectShowcase from './ProjectShowcase';
 import PressLogos from './PressLogos';
 import DeviceShowcase from './DeviceShowcase';
 import TestimonialGrid from './TestimonialGrid';
+import WorkflowEcosystem from './WorkflowEcosystem';
+import ExperiencePillars from './ExperiencePillars';
+import FragmentedTools from './FragmentedTools';
 
 /**
  * MOOD Section Registry
@@ -43,6 +46,9 @@ export const SECTION_REGISTRY = {
   press_logos: PressLogos,
   device_showcase: DeviceShowcase,
   testimonial_grid: TestimonialGrid,
+  workflow_ecosystem: WorkflowEcosystem,
+  experience_pillars: ExperiencePillars,
+  fragmented_tools: FragmentedTools,
 };
 
 /**

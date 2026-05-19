@@ -35,12 +35,12 @@ const CTASection = ({ content = {}, config = {} }) => {
       />
 
       <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-14 py-28 lg:py-36 grid place-items-center min-h-[70vh]">
-        <div ref={ref} className={`text-center max-w-3xl reveal ${visible ? 'visible' : ''}`}>
+        <div ref={ref} className={`text-center max-w-6xl reveal ${visible ? 'visible' : ''}`}>
           {content.overline && <p className="overline-teal mb-8">{content.overline}</p>}
           {content.headline && (
             <h2
-              className="font-serif text-white leading-[1.05]"
-              style={{ fontSize: 'clamp(2.4rem, 5vw, 4.5rem)' }}
+              className="font-serif text-white leading-[1.08]"
+              style={{ fontSize: 'clamp(2rem, 4vw, 4rem)', whiteSpace: 'pre-line' }}
             >
               {content.headline}
             </h2>

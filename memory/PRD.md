@@ -22,6 +22,22 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ## Sessions completed
 
+### Session III: Premium Editorial Homepage V5 (May 19, 2026) ✅
+- Rewrote homepage to match the latest dark-luxury Italian mockup (no SaaS feel, no fake brands/testimonials/metrics)
+- **3 new section types** registered in `SectionRenderer`:
+  - `workflow_ecosystem` — 8-step horizontal flow (Lead → CRM → Moodboard → Projects → Hotspot → Editorial → Publishing → Retention) with teal icons + arrow connectors
+  - `experience_pillars` — 4-column "Un sistema nato dall'esperienza" pillars
+  - `fragmented_tools` — 8-icon "Oggi il tuo lavoro è frammentato" problem grid (WhatsApp/Email/PDF/Drive/Pinterest/Excel/File dispersi/Strumenti scollegati)
+- Extended `EditorialHero`:
+  - New italic teal `subheading_accent` + italic white `subheading_white` sub-headline block
+  - New `floating_card.style: 'phone'` variant — phone-shaped mock with circular progress (62%) + phase rows
+- `DeviceShowcase` now parses `*ambiente*` markdown for inline italic-teal serif accent
+- `CTASection` supports multi-line headlines via `pre-line` and `max-w-6xl`
+- Removed legacy `logos_wall` (fake brand list), `testimonial_grid` (fake quotes), `metrics_strip` (fake numbers) from home — per user direction (no fake content)
+- New seed `db/reseed_home_v5.py` — idempotent, multilingual; rewrites home & navigation
+- Updated navigation: Piattaforma, Per gli Studi, Per i Retailer, Template, Journal, Chi siamo (removed "Prezzi")
+- CTA in nav: "Richiedi una demo"
+
 ### Session II: Dark Editorial Redesign (May 2026) ✅
 - Complete frontend palette overhaul: dark `#0A1320` ink, brand teal `#3DDAD0`, warm bone `#F5F2EC`
 - New design tokens in `index.css`: pill buttons, feature chips, step circles, glow halos, grain texture, ink/light surface helpers
