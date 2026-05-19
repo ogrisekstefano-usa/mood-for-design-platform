@@ -1,0 +1,218 @@
+/* ────────────────────────────────────────────────────────────────────
+   TerritorySelector — Editorial luxury territory picker.
+   Mood: Monocle × FT × luxury private banking. NEVER GIS admin.
+   ────────────────────────────────────────────────────────────────── */
+
+.trs {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  font-family: var(--bp-font-body, system-ui, sans-serif);
+}
+
+.trs__warning {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #F59E0B;
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.18);
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin: 0;
+}
+
+/* ── Search ─────────────────────────────────────────────────────── */
+.trs__search-wrap {
+  position: relative;
+}
+.trs__search-icon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--bp-text-muted, #6B6863);
+  pointer-events: none;
+}
+.trs__search {
+  width: 100%;
+  padding: 10px 12px 10px 36px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: var(--bp-text, #EFEBE4);
+  font-size: 13.5px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.trs__search:focus {
+  border-color: var(--bp-primary, #C9A36E);
+  background: rgba(255, 255, 255, 0.06);
+}
+.trs__search::placeholder {
+  color: var(--bp-text-muted, #6B6863);
+  font-style: italic;
+}
+.trs__searching {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--bp-text-muted, #6B6863);
+  font-size: 12px;
+}
+
+/* ── Suggestions ────────────────────────────────────────────────── */
+.trs__suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bp-surface, #0F0F10);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  z-index: 30;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  max-height: 280px;
+  overflow-y: auto;
+}
+.trs__suggestion {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--bp-text, #EFEBE4);
+  font-size: 13px;
+  font-family: inherit;
+  transition: background 0.12s ease;
+}
+.trs__suggestion:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.trs__suggestion svg { color: var(--bp-text-muted, #6B6863); flex-shrink: 0; }
+.trs__suggestion-name {
+  font-weight: 500;
+  white-space: nowrap;
+}
+.trs__suggestion-ctx {
+  color: var(--bp-text-muted, #6B6863);
+  font-size: 11.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+/* ── Static map preview ─────────────────────────────────────────── */
+.trs__map {
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #0A0B0D;
+}
+.trs__map img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: saturate(0.85);
+}
+.trs__map-cap {
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted, #A19D98);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.018);
+}
+
+/* ── Groups ─────────────────────────────────────────────────────── */
+.trs__group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.trs__group-lbl {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted, #6B6863);
+  margin: 0;
+  font-weight: 600;
+}
+.trs__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.trs__empty {
+  padding: 20px 16px;
+  text-align: center;
+  border: 1px dashed rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+  font-size: 12.5px;
+  font-style: italic;
+  color: var(--bp-text-muted, #6B6863);
+  margin: 0;
+}
+
+/* ── Chips ──────────────────────────────────────────────────────── */
+.trs-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--bp-text, #EFEBE4);
+  font-size: 12.5px;
+  transition: all 0.15s ease;
+}
+.trs-chip--primary {
+  background: rgba(201, 163, 110, 0.08);
+  border-color: rgba(201, 163, 110, 0.28);
+  padding: 10px 14px;
+}
+.trs-chip--primary > svg:first-child {
+  color: var(--bp-primary, #C9A36E);
+  fill: var(--bp-primary, #C9A36E);
+}
+.trs-chip__lbl { font-weight: 500; }
+.trs-chip__type {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted, #6B6863);
+  border-left: 1px dashed rgba(255, 255, 255, 0.08);
+  padding-left: 8px;
+}
+.trs-chip__btn {
+  background: transparent;
+  border: none;
+  color: var(--bp-text-muted, #6B6863);
+  cursor: pointer;
+  padding: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  transition: color 0.12s, background 0.12s;
+}
+.trs-chip__btn:hover { color: var(--bp-text, #EFEBE4); background: rgba(255, 255, 255, 0.06); }
+.trs-chip__btn--x:hover { color: #E07A5F; }

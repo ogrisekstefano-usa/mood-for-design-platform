@@ -349,6 +349,7 @@ def admin_advisor_detail(aid: str, user: Dict[str, Any] = Depends(get_current_us
         "referrals": [_safe_referral_view(r) for r in refs],
         "commission_periods": periods,
         "reports": reports,
+        "territories": _list_territories(aid),
     }
 
 
@@ -481,3 +482,91 @@ def emit_tenant_activity(tenant_id: str, event_type: str, user_id: Optional[str]
         }).execute()
     except Exception:
         pass
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# TERRITORIES (Phase 1 · Mapbox-backed structured geo selection)
+# ═══════════════════════════════════════════════════════════════════════
+
+class TerritoryIn(BaseModel):
+    territory_type:     str = Field("city", max_length=32)
+    country_code:       Optional[str] = Field(None, max_length=2)
+    region:             Optional[str] = None
+    sub_region:         Optional[str] = None
+    city:               Optional[str] = None
+    geo_label:          str = Field(..., min_length=1, max_length=200)
+    mapbox_place_id:    Optional[str] = None
+    mapbox_place_type:  Optional[str] = None
+    latitude:           Optional[float] = None
+    longitude:          Optional[float] = None
+    bbox:               Optional[List[float]] = None
+    coverage_radius_km: Optional[int] = None
+    is_primary:         bool = False
+    notes:              Optional[str] = None
+
+
+def _terr_payload(advisor_id: str, body: TerritoryIn, sort_order: int = 0) -> Dict[str, Any]:
+    return {
+        "advisor_id":         advisor_id,
+        "territory_type":     body.territory_type,
+        "country_code":       (body.country_code or "").upper()[:2] or None,
+        "region":             body.region,
+        "sub_region":         body.sub_region,
+        "city":               body.city,
+        "geo_label":          body.geo_label,
+        "mapbox_place_id":    body.mapbox_place_id,
+        "mapbox_place_type":  body.mapbox_place_type,
+        "latitude":           body.latitude,
+        "longitude":          body.longitude,
+        "bbox":               body.bbox,
+        "coverage_radius_km": body.coverage_radius_km,
+        "is_primary":         body.is_primary,
+        "sort_order":         sort_order,
+        "notes":              body.notes,
+    }
+
+
+def _list_territories(advisor_id: str) -> List[Dict[str, Any]]:
+    return (db().table("advisor_territories").select("*")
+              .eq("advisor_id", advisor_id).order("sort_order")
+              .execute().data or [])
+
+
+@router.get("/admin/advisors/{aid}/territories")
+def admin_list_territories(aid: str, user: Dict[str, Any] = Depends(get_current_user)):
+    _require_superadmin(user)
+    return {"territories": _list_territories(aid)}
+
+
+@router.post("/admin/advisors/{aid}/territories")
+def admin_add_territory(aid: str, body: TerritoryIn, user: Dict[str, Any] = Depends(get_current_user)):
+    _require_superadmin(user)
+    c = db()
+    a = c.table("advisor_profiles").select("id").eq("id", aid).limit(1).execute().data
+    if not a:
+        raise HTTPException(404, "advisor not found")
+    # If new territory is primary, unset other primaries
+    if body.is_primary:
+        c.table("advisor_territories").update({"is_primary": False}) \
+            .eq("advisor_id", aid).eq("is_primary", True).execute()
+    existing = c.table("advisor_territories").select("id", count="exact") \
+        .eq("advisor_id", aid).execute().count or 0
+    record = _terr_payload(aid, body, sort_order=existing)
+    inserted = c.table("advisor_territories").insert(record).execute().data
+    return {"territory": (inserted[0] if inserted else None)}
+
+
+@router.delete("/admin/advisors/{aid}/territories/{tid}", status_code=204)
+def admin_remove_territory(aid: str, tid: str, user: Dict[str, Any] = Depends(get_current_user)):
+    _require_superadmin(user)
+    db().table("advisor_territories").delete() \
+        .eq("id", tid).eq("advisor_id", aid).execute()
+    return None
+
+
+# Advisor's own read-only view of their territories
+@router.get("/territories")
+def my_territories(user: Dict[str, Any] = Depends(get_current_user)):
+    adv = _require_advisor(user)
+    return {"territories": _list_territories(adv["id"])}
+
