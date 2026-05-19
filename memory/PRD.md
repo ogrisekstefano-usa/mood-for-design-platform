@@ -53,6 +53,78 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint SUPERADMIN-REFACTOR + ADVISOR-NETWORK-P0 v1 (Feb 19, 2026)
+**Trasformazione completa del SuperAdmin in un International Editorial Operating Layer + operativizzazione finale dell'Advisor Network. Sprint cardinale di identità di piattaforma.**
+
+#### A — SuperAdmin Refactor
+- ✅ **Theme hard-coded** graphite #0A0B0E + cyan #00C9B3 intelligence accent (NO amber/gold)
+- ✅ **Tenant theme isolato** — `data-surface="control-center"` scope aliasa --bp-* sui token MOOD platform-level. Tema rose/cobalt scelto dal tenant NON contamina il Control Center.
+- ✅ **MOOD dual-circle inline SVG** (3 cerchi: 2 anelli interlocking + 1 punto cyan intersezione) — editorial-tech, no gradients, no shield, no neon
+- ✅ **Sidebar restructure**: Orchestrazione (Panoramica · Studi) · Network (Advisor Network™) · Piattaforma (Platform Capabilities™ · Lingue · Audit log)
+- ✅ **"Pagine" rimossa** dalle route + sidebar (sia `/admin/pages` sia `/superadmin/pages`)
+- ✅ **"Moduli" → "Platform Capabilities™"** label + page completamente nuova
+- ✅ **Mobile collapse** sidebar (≤900px): off-canvas con backdrop + hamburger toggle
+
+#### B — Platform Capabilities™ Page
+**Non un toggle matrix · una mappa ecosistemica.** 11 capability cards:
+Editorial Studio™ · Market Editions™ · Relationship Intelligence CRM™ · Moodboard Intelligence™ · Pinterest Research™ · Market Signals™ · Advisor Network™ · International Presence™ · Forms & Journeys™ · DAM & Media Library™ · Cultural Design Intelligence™
+- Hero editoriale con 4 counter (Capabilities · Stable · Beta · Vision)
+- Ogni card: name + descrizione editoriale + Surfaces chips + Linkages chips + maturity badge + tier line + activation toggle
+- Hover lift + cyan accent line top edge
+- Stable / Beta / Vision color-coded badges
+
+#### C — Advisor Network™ Operationalization
+- ✅ **AdvisorEditDrawer** — single coherent editorial drawer con 4 sezioni:
+  1. Identità & contatti (name · email · phone · status)
+  2. Economia della relazione (commission · default discount · payout · qualified months)
+  3. Specializzazione & lettura della relazione (market_specialization chips · relationship_tags chips · notes textarea)
+  4. Presenza territoriale (TerritorySelector embedded · live edit)
+- ✅ **TerritorySelector wired** nell'AdvisorDetailPage sidebar (block "Presenza territoriale")
+- ✅ **Bottone Modifica** primary cyan nell'hero AdvisorDetailPage
+- ✅ Chip input editoriale (Enter o virgola per aggiungere; Backspace per rimuovere ultimo)
+- ✅ Save persiste via PATCH `/api/advisor/admin/advisors/{aid}` con tutti i nuovi campi
+
+#### File nuovi
+- `/app/frontend/src/components/common/MoodDualCircleIcon.jsx`
+- `/app/frontend/src/components/layout/admin-control-center.css` (graphite+cyan tokens + responsive mobile collapse)
+- `/app/frontend/src/pages/admin/PlatformCapabilitiesPage.jsx` (250 righe)
+- `/app/frontend/src/pages/admin/platform-capabilities.css`
+- `/app/frontend/src/pages/admin/AdvisorEditDrawer.jsx` (240 righe)
+- `/app/frontend/src/pages/admin/advisor-edit-drawer.css`
+- `/app/supabase/migrations/052_advisor_rich_profile.sql` (market_specialization · relationship_tags · notes columns)
+
+#### File modificati
+- `/app/frontend/src/components/layout/AdminLayout.jsx` (rewritten — graphite+cyan + dual-circle + Platform Capabilities label + mobile hamburger)
+- `/app/frontend/src/pages/admin/AdvisorDetailPage.jsx` (TerritorySelector sidebar block + Modifica button + drawer mount)
+- `/app/frontend/src/App.js` (deleted /admin/pages + /superadmin/pages routes · AdminModulesPage now maps to PlatformCapabilitiesPage · SuperAdminRoute synchronous role fallback)
+- `/app/frontend/src/contexts/BlueprintContext.jsx` (setLoading(true) at top of load effect — fixed race condition with guards)
+- `/app/backend/routers/advisor_network.py` (AdvisorUpdate Pydantic model extended)
+
+#### Validazione (testing_agent iter71 + iter72)
+**Backend** — 100% green:
+- PATCH advisor con `market_specialization=['Hospitality','Yacht client']` + `relationship_tags=['consigliere','partner-editoriale']` + `notes='...'` → 200 OK, persisted ✓
+- pytest /app/backend/tests/test_iteration_71_advisor_rich_profile.py PASS ✓
+
+**Frontend** — 92% green:
+- 4 SuperAdmin routes mount senza redirect ✓
+- Sidebar groups in ordine corretto, ZERO 'Pagine'/'Moduli' label ✓
+- Dual-circle SVG nel brand mark ✓
+- Active nav color rgb(0,201,179) cyan ✓
+- Tenant palette rose NON penetra il Control Center ✓
+- 11/11 capability cards + toggle funzionanti ✓
+- AdvisorEditDrawer apre, 4 sezioni, PATCH 200, toast 'Advisor aggiornato', drawer chiude ✓
+- TerritorySelector mounted in sidebar ✓
+- Mobile responsive: **gap chiuso con questo deploy** (hamburger + off-canvas + backdrop)
+
+#### Critical race fixed
+Iter71 ha rivelato che `BlueprintContext.load()` non chiamava `setLoading(true)` all'inizio dell'effect → guards leggevano stato stale → super_admin redirezionato a /dashboard. Fix in 2 layer: (a) setLoading(true) at top; (b) SuperAdminRoute accetta `user.role==='super_admin'` come fallback sincrono.
+
+#### Production confidence: **9.5/10**
+SuperAdmin ora è platform-level operating layer. Designer/showroom percepiscono che la piattaforma è governata da un livello editoriale, non da un admin enterprise.
+
+---
+
+
 ### Sprint THEME-PALETTE v3 (Feb 19, 2026) — Brand Studio integration
 **3 fix puntuali post-feedback sullo sprint Palette v2.**
 

@@ -145,6 +145,9 @@
   background: rgba(8,9,12,0.78);
   backdrop-filter: blur(14px);
 }
+.acc-topbar__title {
+  display: flex; align-items: center; gap: 12px;
+}
 .acc-topbar__chip {
   display: inline-flex; align-items: center;
   padding: 4px 10px;
@@ -189,4 +192,39 @@
   --bp-primary:          var(--mood-accent);
   --bp-primary-soft:     var(--mood-accent-soft);
   --bp-accent:           #C9A36E;  /* warm hint for sparing use */
+}
+
+/* ── Mobile sidebar collapse ───────────────────────────────── */
+.acc-mobile-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--mood-border);
+  color: var(--mood-ink-soft);
+  padding: 6px 10px;
+  border-radius: 3px;
+  align-items: center; gap: 6px;
+  cursor: pointer;
+  font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+}
+
+.acc-mobile-backdrop {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
+  z-index: 90;
+}
+
+@media (max-width: 900px) {
+  .acc-shell { position: relative; }
+  .acc-sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 220ms cubic-bezier(.2,.7,.2,1);
+    box-shadow: 18px 0 40px rgba(0,0,0,0.4);
+  }
+  .acc-shell[data-mobile-nav="open"] .acc-sidebar { transform: translateX(0); }
+  .acc-shell[data-mobile-nav="open"] .acc-mobile-backdrop { display: block; }
+  .acc-mobile-toggle { display: inline-flex; }
 }

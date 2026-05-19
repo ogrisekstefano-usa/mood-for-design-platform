@@ -11,11 +11,11 @@
  *
  * Tone: international editorial operating system, not an admin panel.
  */
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import {
   Activity, Building2, Handshake, Layers, Languages, ScrollText,
-  ArrowLeft, LogOut,
+  ArrowLeft, LogOut, Menu, X,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBlueprint } from '../../contexts/BlueprintContext';
@@ -44,12 +44,20 @@ const AdminLayout = () => {
   const { user, signOut } = useAuth();
   const { t } = useBlueprint();
   const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="acc-shell" data-surface="control-center"
+         data-mobile-nav={mobileOpen ? 'open' : 'closed'}
          data-testid="admin-shell">
+      {/* Mobile backdrop overlay (closes nav on tap) */}
+      <div className="acc-mobile-backdrop"
+           onClick={() => setMobileOpen(false)}
+           data-testid="admin-mobile-backdrop"
+           aria-hidden />
       {/* ── Sidebar ───────────────────────────────────────────────── */}
-      <aside className="acc-sidebar" data-testid="admin-sidebar">
+      <aside className="acc-sidebar" data-testid="admin-sidebar"
+             onClick={() => setMobileOpen(false)}>
         <div className="acc-brand">
           <span className="acc-brand__mark" aria-hidden>
             <MoodDualCircleIcon size={26} strokeWidth={1.5} />
@@ -101,6 +109,14 @@ const AdminLayout = () => {
       <div className="acc-main">
         <header className="acc-topbar">
           <div className="acc-topbar__title">
+            <button type="button"
+                    className="acc-mobile-toggle"
+                    onClick={() => setMobileOpen((v) => !v)}
+                    data-testid="admin-mobile-toggle"
+                    aria-label={mobileOpen ? 'Chiudi menu' : 'Apri menu'}>
+              {mobileOpen ? <X size={13} /> : <Menu size={13} />}
+              <span>Menu</span>
+            </button>
             <span className="acc-topbar__chip">Platform · Super Admin</span>
           </div>
           <div className="acc-topbar__meta">
