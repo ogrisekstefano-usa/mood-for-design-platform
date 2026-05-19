@@ -1,75 +1,90 @@
 /**
- * PaletteSwitcher — Topbar trigger that opens a "tavolozza" of 24 curated
- * themes for the workspace. Replaces the legacy Dark/Light toggle.
+ * PaletteSwitcher — Topbar trigger che apre l'Atelier dei temi con i 28
+ * preset editoriali DB (16 chiari + 12 scuri).
  *
  *   ┌──────────────────────────────────────┐
- *   │  TEMI CURATI                    [×]  │
+ *   │  ATELIER DEI TEMI               [×]  │
  *   │                                      │
- *   │  CHIARI (15)                         │
- *   │   ⬜ Ivory   ⬜ Linen   ⬜ Pearl ...   │
+ *   │  ☀ Chiari (16)                       │
+ *   │   ⬜ Florence  ⬜ Warm   ⬜ Tokyo …  │
  *   │                                      │
- *   │  SCURI (9)                           │
- *   │   ⬛ Graphite  ⬛ Midnight ...        │
+ *   │  ☾ Scuri (12)                        │
+ *   │   ⬛ Graphite  ⬛ Obsidian ⬛ ...     │
  *   │                                      │
- *   │  ─────────────────────────────────   │
- *   │  Apri Brand Studio → custom completa │
+ *   │  Apri Brand Studio · personalizza    │
  *   └──────────────────────────────────────┘
  *
- * Each swatch shows three stops (bg · surface · accent) so the designer reads
- * the palette at a glance — like a Pantone chip, not a SaaS toggle.
+ * Click → applica il preset completo (palette + tipografia + radius) via
+ * POST /api/branding/apply-preset. Visibilmente cambia tutto subito.
  */
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Palette, Check, Sparkles, ExternalLink, X } from 'lucide-react';
+import { Palette, Check, Sun, Moon, ExternalLink, X, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import {
-  LIGHT_PALETTES, DARK_PALETTES, applyPalette, getStoredPalette, storePalette, PALETTE_BY_ID,
-} from '../../lib/curatedPalettes';
+import { toast } from 'sonner';
+import { clearPalette } from '../../lib/curatedPalettes';
+import api from '../../lib/api';
+import { useBlueprint } from '../../contexts/BlueprintContext';
 import './palette-switcher.css';
 
-const Swatch = ({ palette, active, onPick }) => (
-  <button
-    type="button"
-    onClick={() => onPick(palette.id)}
-    title={`${palette.name} — ${palette.description}`}
-    aria-label={`Tema ${palette.name}`}
-    aria-pressed={active}
-    data-testid={`palette-swatch-${palette.id}`}
-    className={`palsw-swatch ${active ? 'palsw-swatch--active' : ''}`}
-  >
-    <span className="palsw-swatch__chip" aria-hidden>
-      <span style={{ background: palette.bg }} />
-      <span style={{ background: palette.surfaceElev }} />
-      <span style={{
-        background: `linear-gradient(135deg, ${palette.primary} 0%, ${palette.accent || palette.primary} 100%)`,
-      }} />
-    </span>
-    <span className="palsw-swatch__name">{palette.name}</span>
-    {active && <Check size={11} className="palsw-swatch__check" strokeWidth={2.4} />}
-  </button>
-);
+// ── Mini-swatch · 3 stop (bg · surface · primary→accent gradient) ─────
+const Swatch = ({ preset, active, onPick, applying }) => {
+  const p = preset.theme?.palette || {};
+  return (
+    <button
+      type="button"
+      onClick={() => !applying && onPick(preset)}
+      title={`${preset.label} — ${preset.description || ''}`}
+      aria-label={`Tema ${preset.label}`}
+      aria-pressed={active}
+      disabled={applying}
+      data-testid={`palette-swatch-${preset.key}`}
+      className={`palsw-swatch ${active ? 'palsw-swatch--active' : ''}`}
+    >
+      <span className="palsw-swatch__chip" aria-hidden>
+        <span style={{ background: p.background }} />
+        <span style={{ background: p.surface }} />
+        <span style={{
+          background: `linear-gradient(135deg, ${p.primary || '#888'} 0%, ${p.accent || p.primary || '#888'} 100%)`,
+        }} />
+      </span>
+      <span className="palsw-swatch__name">{preset.label}</span>
+      {active && <Check size={11} className="palsw-swatch__check" strokeWidth={2.4} />}
+    </button>
+  );
+};
 
 const PaletteSwitcher = () => {
+  const { refresh } = useBlueprint();
   const [open, setOpen] = useState(false);
-  const [current, setCurrent] = useState(() => getStoredPalette());
+  const [presets, setPresets] = useState([]);
+  const [currentKey, setCurrentKey] = useState(null);
+  const [applyingKey, setApplyingKey] = useState(null);
   const [coords, setCoords] = useState({ top: 64, right: 24 });
   const ref = useRef();
   const triggerRef = useRef();
 
-  // Apply on mount so a fresh tab/browser loads the saved palette.
-  useEffect(() => { applyPalette(current); }, [current]);
+  // Carica i preset una sola volta + theme corrente per evidenziare attivo
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      api.get('/api/branding/presets').catch(() => ({ data: { presets: [] } })),
+      api.get('/api/branding/theme').catch(() => ({ data: { theme: {} } })),
+    ]).then(([pr, th]) => {
+      if (cancelled) return;
+      setPresets(pr.data?.presets || []);
+      setCurrentKey(th.data?.theme?.preset_key || null);
+    });
+    return () => { cancelled = true; };
+  }, []);
 
-  // Position the portal popover under the trigger button.
+  // Position popover under trigger
   useEffect(() => {
     if (!open || !triggerRef.current) return;
     const r = triggerRef.current.getBoundingClientRect();
-    setCoords({
-      top:   r.bottom + 8,
-      right: Math.max(8, window.innerWidth - r.right),
-    });
+    setCoords({ top: r.bottom + 8, right: Math.max(8, window.innerWidth - r.right) });
   }, [open]);
 
-  // Click outside to close.
   useEffect(() => {
     if (!open) return undefined;
     const handler = (e) => {
@@ -87,13 +102,32 @@ const PaletteSwitcher = () => {
     };
   }, [open]);
 
-  const pick = (id) => {
-    setCurrent(id);
-    storePalette(id);
-    applyPalette(id);
+  const pick = async (preset) => {
+    if (!preset?.key || applyingKey) return;
+    setApplyingKey(preset.key);
+    try {
+      // CRITICO: pulisci eventuali override curated (!important) prima
+      // di applicare un preset chiaro — altrimenti lo sfondo resta scuro.
+      clearPalette();
+      await api.post('/api/branding/apply-preset', { preset_key: preset.key });
+      setCurrentKey(preset.key);
+      // Refresh blueprint context per aggiornare le var CSS globali
+      try { await refresh(); } catch { /* tolerable */ }
+      toast.success(`Tema "${preset.label}" applicato`);
+      // Chiudi dopo un breve istante per feedback visivo
+      setTimeout(() => setOpen(false), 350);
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || 'Non sono riuscito ad applicare il tema');
+    } finally {
+      setApplyingKey(null);
+    }
   };
 
-  const activeMeta = PALETTE_BY_ID[current];
+  // Split presets in light / dark
+  const lights = presets.filter((p) => (p.theme?.mode || '').toLowerCase() !== 'dark');
+  const darks  = presets.filter((p) => (p.theme?.mode || '').toLowerCase() === 'dark');
+  const active = presets.find((p) => p.key === currentKey);
+  const activePalette = active?.theme?.palette || {};
 
   return (
     <div className="palsw-root" data-testid="palette-switcher-root">
@@ -102,19 +136,19 @@ const PaletteSwitcher = () => {
         type="button"
         onClick={() => setOpen((v) => !v)}
         data-testid="palette-switcher-trigger"
-        title={`Tema · ${activeMeta?.name || 'Default'}`}
+        title={`Tema · ${active?.label || 'Default'}`}
         aria-expanded={open}
         className="palsw-trigger"
       >
         <Palette size={13} strokeWidth={1.7} />
         <span className="palsw-trigger__chip" aria-hidden>
-          <span style={{ background: activeMeta?.bg }} />
-          <span style={{ background: activeMeta?.primary }} />
+          <span style={{ background: activePalette.background || '#1a1a1a' }} />
+          <span style={{ background: activePalette.primary || '#00C9B3' }} />
         </span>
       </button>
 
       {open && createPortal(
-        <div className="palsw-popover" role="dialog" aria-label="Temi curati"
+        <div className="palsw-popover" role="dialog" aria-label="Preset editoriali"
              data-testid="palette-switcher-popover"
              ref={ref}
              style={{ top: coords.top, right: coords.right }}>
@@ -130,25 +164,55 @@ const PaletteSwitcher = () => {
             </button>
           </header>
 
-          <section className="palsw-section" data-testid="palette-section-dark">
-            <p className="palsw-section__label">
-              <span className="palsw-section__moon" aria-hidden /> {DARK_PALETTES.length} atmosfere scure
-            </p>
-            <div className="palsw-grid">
-              {DARK_PALETTES.map((p) => (
-                <Swatch key={p.id} palette={p} active={current === p.id} onPick={pick} />
-              ))}
+          {presets.length === 0 ? (
+            <div className="palsw-loading">
+              <Loader2 size={14} className="animate-spin" />
+              <span>Carico i temi…</span>
             </div>
-          </section>
+          ) : (
+            <>
+              {lights.length > 0 && (
+                <section className="palsw-section" data-testid="palette-section-light">
+                  <p className="palsw-section__label">
+                    <Sun size={10} strokeWidth={1.8} /> Chiari · {lights.length}
+                  </p>
+                  <div className="palsw-grid">
+                    {lights.map((p) => (
+                      <Swatch key={p.key} preset={p}
+                              active={currentKey === p.key}
+                              applying={applyingKey === p.key}
+                              onPick={pick} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {darks.length > 0 && (
+                <section className="palsw-section" data-testid="palette-section-dark">
+                  <p className="palsw-section__label">
+                    <Moon size={10} strokeWidth={1.8} /> Scuri · {darks.length}
+                  </p>
+                  <div className="palsw-grid">
+                    {darks.map((p) => (
+                      <Swatch key={p.key} preset={p}
+                              active={currentKey === p.key}
+                              applying={applyingKey === p.key}
+                              onPick={pick} />
+                    ))}
+                  </div>
+                </section>
+              )}
+            </>
+          )}
 
           <footer className="palsw-popover__foot">
-            <Link to="/settings/brand#section-curated-palettes" onClick={() => setOpen(false)}
+            <Link to="/settings/brand#section-presets" onClick={() => setOpen(false)}
                   data-testid="palette-switcher-brand-studio"
                   className="palsw-foot__link">
               Apri Brand Studio · personalizza <ExternalLink size={11} strokeWidth={1.7} />
             </Link>
             <p className="palsw-foot__hint">
-              Imposta colori, font e micro-copy editoriale del tuo studio.
+              Imposta colori, tipografia e radius del tuo studio.
             </p>
           </footer>
         </div>,

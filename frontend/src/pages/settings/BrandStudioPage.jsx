@@ -18,7 +18,7 @@ import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   ArrowLeft, Palette, Type, Save, RotateCcw, Loader2, CheckCircle2,
-  Image as ImageIcon, Layers, Sparkles, Square, Circle,
+  Image as ImageIcon, Layers, Sparkles, Square, Circle, Sun, Moon,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
@@ -28,7 +28,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import BlueprintColorPicker from '../../components/common/BlueprintColorPicker';
 import EditorialMediaField from '../../components/common/EditorialMediaField';
 import {
-  LIGHT_PALETTES, DARK_PALETTES, applyPalette as applyCuratedRoot, storePalette,
+  LIGHT_PALETTES, DARK_PALETTES, applyPalette as applyCuratedRoot, storePalette, clearPalette as clearCuratedRoot,
 } from '../../lib/curatedPalettes';
 
 const DISPLAY_FONTS = [
@@ -94,17 +94,19 @@ const parseColor = (input) => {
   return { h, s: sat, l };
 };
 
-// Ordina i preset per famiglia cromatica usando primary color come anchor.
-// I grayscale (saturation < 0.12) finiscono in coda; il resto è ordinato
-// per hue 0→360 (rosso → arancio → giallo → verde → ciano → blu → viola → rosa).
+// Ordina i preset prima per LUMINANCE (chiari prima, scuri dopo) e poi
+// per famiglia cromatica (hue). I grayscale finiscono in coda nel proprio gruppo.
 const sortPresetsByHue = (presets) => {
   if (!Array.isArray(presets)) return [];
   return [...presets].sort((a, b) => {
+    const modeA = (a?.theme?.mode || '').toLowerCase() === 'dark' ? 1 : 0;
+    const modeB = (b?.theme?.mode || '').toLowerCase() === 'dark' ? 1 : 0;
+    if (modeA !== modeB) return modeA - modeB; // light (0) prima, dark (1) dopo
     const ca = parseColor(a?.theme?.palette?.primary) || { h: 0, s: 0, l: 0 };
     const cb = parseColor(b?.theme?.palette?.primary) || { h: 0, s: 0, l: 0 };
     const greyA = ca.s < 0.12 ? 1 : 0;
     const greyB = cb.s < 0.12 ? 1 : 0;
-    if (greyA !== greyB) return greyA - greyB; // i grigi in fondo
+    if (greyA !== greyB) return greyA - greyB; // i grigi in fondo del gruppo
     if (greyA === 1) return ca.l - cb.l;       // tra grigi, dal chiaro allo scuro
     return ca.h - cb.h;                         // famiglie cromatiche per hue
   });
@@ -452,6 +454,9 @@ const BrandStudioPage = () => {
 
   const applyPreset = async (preset) => {
     try {
+      // CRITICO: rimuove gli override CSS !important del PaletteSwitcher
+      // altrimenti un preset chiaro applica il theme ma lo sfondo resta scuro.
+      clearCuratedRoot();
       const r = await api.post('/api/branding/apply-preset', { preset_key: preset.key });
       const next = r.data?.theme || preset.theme || {};
       setTheme({ ...next, palette: { ...DEFAULT_PALETTE, ...(next.palette || {}) } });
@@ -656,15 +661,46 @@ const BrandStudioPage = () => {
           <Section kicker="E · Preset editoriali"
                    title={t('brand.section.presetsTitle', null, 'Preset editoriali')}
                    testid="section-presets"
-                   trace={t('brand.presetsTrace', null, `${presets.length} identità complete · ordinate per famiglia cromatica · sovrascrivono palette + tipografia + radius`)}>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3" data-testid="brand-editorial-presets-grid">
-              {sortPresetsByHue(presets).map((p) => (
-                <PresetCard key={p.key} preset={p}
-                            current={theme.preset_key === p.key}
-                            onPick={applyPreset}
-                            testid={`preset-${p.key}`} />
-              ))}
-            </div>
+                   trace={t('brand.presetsTrace', null, `${presets.length} identità complete · raggruppate per atmosfera · sovrascrivono palette + tipografia + radius`)}>
+            {(() => {
+              const sorted = sortPresetsByHue(presets);
+              const lights = sorted.filter((p) => (p?.theme?.mode || '').toLowerCase() !== 'dark');
+              const darks  = sorted.filter((p) => (p?.theme?.mode || '').toLowerCase() === 'dark');
+              return (
+                <>
+                  {lights.length > 0 && (
+                    <>
+                      <div className="mb-3 text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body flex items-center gap-2">
+                        <Sun size={10} strokeWidth={1.8} /> Atmosfere chiare · {lights.length}
+                      </div>
+                      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-7" data-testid="brand-editorial-presets-light-grid">
+                        {lights.map((p) => (
+                          <PresetCard key={p.key} preset={p}
+                                      current={theme.preset_key === p.key}
+                                      onPick={applyPreset}
+                                      testid={`preset-${p.key}`} />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {darks.length > 0 && (
+                    <>
+                      <div className="mb-3 text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body flex items-center gap-2">
+                        <Moon size={10} strokeWidth={1.8} /> Atmosfere scure · {darks.length}
+                      </div>
+                      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3" data-testid="brand-editorial-presets-dark-grid">
+                        {darks.map((p) => (
+                          <PresetCard key={p.key} preset={p}
+                                      current={theme.preset_key === p.key}
+                                      onPick={applyPreset}
+                                      testid={`preset-${p.key}`} />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </>
+              );
+            })()}
           </Section>
         </div>
 

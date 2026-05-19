@@ -41,7 +41,7 @@
        free from any parent stacking context / overflow constraints) ── */
 .palsw-popover {
   position: fixed;
-  width: 320px;
+  width: 360px;
   background: var(--bp-surface);
   color: var(--bp-text-primary);
   border: 1px solid var(--bp-border);
@@ -96,7 +96,16 @@
 }
 
 .palsw-grid {
-  display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+}
+
+/* Loading state · pre-fetch presets */
+.palsw-loading {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 32px 16px;
+  font-size: 12px;
+  color: var(--bp-text-muted);
+  font-style: italic;
 }
 
 /* ── Swatch ───────────────────────────────────────────────────── */
