@@ -1,14 +1,27 @@
 /**
- * AdminLayout — separate control-center experience for super_admin.
- * Premium dark, Linear/Vercel/Raycast inspired.
+ * AdminLayout — Blueprint OS™ Control Center.
+ *
+ * SuperAdmin Refactor v2 (Feb 2026):
+ *   • Hard-coded graphite foundation (#0A0B0E → #14161B)
+ *   • Cyan intelligence accent (#00C9B3) — never amber/gold
+ *   • MOOD dual-circle inline SVG icon — editorial-tech, no gradients
+ *   • Tenant theme is BYPASSED here: this is platform-level chrome
+ *   • Removed "Pagine" navigation (legacy)
+ *   • Renamed "Moduli" → "Platform Capabilities™"
+ *
+ * Tone: international editorial operating system, not an admin panel.
  */
 import React from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import {
+  Activity, Building2, Handshake, Layers, Languages, ScrollText,
+  ArrowLeft, LogOut,
+} from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBlueprint } from '../../contexts/BlueprintContext';
-import { Shield, Building2, ToggleRight, Activity, ScrollText, ArrowLeft, LogOut, Languages, Layers, Handshake } from 'lucide-react';
-import BlueprintThemeProvider from '../../design-system/os/BlueprintThemeProvider';
+import MoodDualCircleIcon from '../common/MoodDualCircleIcon';
 import PlatformFooterBar from '../common/PlatformFooterBar';
+import './admin-control-center.css';
 
 const AdminNavItem = ({ to, icon: Icon, labelKey, fallback, end }) => {
   const { t } = useBlueprint();
@@ -18,15 +31,11 @@ const AdminNavItem = ({ to, icon: Icon, labelKey, fallback, end }) => {
       end={end}
       data-testid={`admin-nav-${labelKey.replace(/\./g, '-')}`}
       className={({ isActive }) =>
-        `flex items-center gap-3 px-3 py-2 text-sm rounded-[3px] transition-all ${
-          isActive
-            ? 'bg-white/[0.05] text-[#EFEBE4]'
-            : 'text-[#6B6863] hover:text-[#A19D98] hover:bg-white/[0.03]'
-        }`
+        `acc-nav__item ${isActive ? 'is-active' : ''}`
       }
     >
-      <Icon size={14} strokeWidth={1.5} />
-      <span className="font-body font-medium tracking-wide">{t(labelKey, null, fallback)}</span>
+      <Icon size={14} strokeWidth={1.4} />
+      <span>{t(labelKey, null, fallback)}</span>
     </NavLink>
   );
 };
@@ -37,59 +46,75 @@ const AdminLayout = () => {
   const navigate = useNavigate();
 
   return (
-    <BlueprintThemeProvider className="h-screen">
-    <div className="h-screen flex bg-[#08080A] text-[#EFEBE4]">
-      <aside data-testid="admin-sidebar" className="w-[240px] flex-shrink-0 bg-[#0A0A0B] border-r border-white/[0.05] flex flex-col">
-        <div className="px-4 pt-5 pb-4 border-b border-white/[0.05]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 bg-gradient-to-br from-amber-300 to-amber-500 rounded-[3px] flex items-center justify-center">
-              <Shield size={14} className="text-[#0A0A0B]" strokeWidth={2} />
-            </div>
-            <div>
-              <p className="text-[#EFEBE4] text-[11px] font-semibold font-body tracking-[0.1em] uppercase">Blueprint OS</p>
-              <p className="text-amber-400/70 text-[9px] font-body tracking-[0.2em] uppercase">Control Center</p>
-            </div>
+    <div className="acc-shell" data-surface="control-center"
+         data-testid="admin-shell">
+      {/* ── Sidebar ───────────────────────────────────────────────── */}
+      <aside className="acc-sidebar" data-testid="admin-sidebar">
+        <div className="acc-brand">
+          <span className="acc-brand__mark" aria-hidden>
+            <MoodDualCircleIcon size={26} strokeWidth={1.5} />
+          </span>
+          <div className="acc-brand__text">
+            <p className="acc-brand__product">Blueprint OS</p>
+            <p className="acc-brand__eyebrow">Control Center</p>
           </div>
         </div>
 
-        <nav className="flex-1 px-2 py-4 space-y-0.5">
-          <AdminNavItem to="/admin" end icon={Activity} labelKey="admin.nav.overview" fallback="Panoramica" />
-          <AdminNavItem to="/admin/tenants" icon={Building2} labelKey="admin.nav.tenants" fallback="Studi" />
-          <AdminNavItem to="/admin/advisors" icon={Handshake} labelKey="admin.nav.advisors" fallback="Advisor Network" />
-          <AdminNavItem to="/admin/modules" icon={ToggleRight} labelKey="admin.nav.modules" fallback="Moduli" />
-          <AdminNavItem to="/admin/languages" icon={Languages} labelKey="admin.nav.languages" fallback="Lingue" />
-          <AdminNavItem to="/admin/pages" icon={Layers} labelKey="admin.nav.pages" fallback="Pagine" />
-          <AdminNavItem to="/admin/audit" icon={ScrollText} labelKey="admin.nav.audit" fallback="Audit log" />
+        <nav className="acc-nav" aria-label="Control Center navigation">
+          <p className="acc-nav__section">Orchestrazione</p>
+          <AdminNavItem to="/admin" end icon={Activity}
+                        labelKey="admin.nav.overview" fallback="Panoramica" />
+          <AdminNavItem to="/admin/tenants" icon={Building2}
+                        labelKey="admin.nav.tenants" fallback="Studi" />
+
+          <p className="acc-nav__section">Network</p>
+          <AdminNavItem to="/admin/advisors" icon={Handshake}
+                        labelKey="admin.nav.advisors" fallback="Advisor Network™" />
+
+          <p className="acc-nav__section">Piattaforma</p>
+          <AdminNavItem to="/admin/modules" icon={Layers}
+                        labelKey="admin.nav.capabilities" fallback="Platform Capabilities™" />
+          <AdminNavItem to="/admin/languages" icon={Languages}
+                        labelKey="admin.nav.languages" fallback="Lingue" />
+          <AdminNavItem to="/admin/audit" icon={ScrollText}
+                        labelKey="admin.nav.audit" fallback="Audit log" />
         </nav>
 
-        <div className="border-t border-white/[0.05] p-3 space-y-2">
-          <button onClick={() => navigate('/dashboard')}
-            className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[#6B6863] hover:text-[#A19D98] hover:bg-white/[0.03] rounded-[3px] transition-colors">
-            <ArrowLeft size={12} strokeWidth={1.5} /> {t('admin.exit', null, 'Exit to workspace')}
+        <div className="acc-foot">
+          <button type="button" onClick={() => navigate('/dashboard')}
+                  className="acc-foot__btn"
+                  data-testid="admin-exit-workspace">
+            <ArrowLeft size={12} strokeWidth={1.5} />
+            <span>{t('admin.exit', null, 'Torna al workspace')}</span>
           </button>
-          <button onClick={async () => { await signOut(); navigate('/auth/login'); }}
-            className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[#6B6863] hover:text-red-400 hover:bg-white/[0.03] rounded-[3px] transition-colors">
-            <LogOut size={12} strokeWidth={1.5} /> {t('common.logout')}
+          <button type="button"
+                  onClick={async () => { await signOut(); navigate('/auth/login'); }}
+                  className="acc-foot__btn acc-foot__btn--danger"
+                  data-testid="admin-logout">
+            <LogOut size={12} strokeWidth={1.5} />
+            <span>{t('common.logout', null, 'Esci')}</span>
           </button>
         </div>
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="h-13 flex items-center justify-between px-6 border-b border-white/[0.05] bg-[#08080A]/80 backdrop-blur-xl flex-shrink-0" style={{ height: '52px' }}>
-          <div className="flex items-center gap-2">
-            <span className="text-amber-400/80 text-[10px] font-body uppercase tracking-[0.2em] font-semibold">Super Admin</span>
+      {/* ── Main column ───────────────────────────────────────────── */}
+      <div className="acc-main">
+        <header className="acc-topbar">
+          <div className="acc-topbar__title">
+            <span className="acc-topbar__chip">Platform · Super Admin</span>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-[#A19D98] text-xs font-body">{user?.email}</span>
+          <div className="acc-topbar__meta">
+            <span className="acc-topbar__email">{user?.email}</span>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto">
+
+        <main className="acc-content">
           <Outlet />
         </main>
+
         <PlatformFooterBar surface="os" />
       </div>
     </div>
-    </BlueprintThemeProvider>
   );
 };
 

@@ -1,0 +1,53 @@
+{
+  "summary": "Iteration 71 — SuperAdmin Refactor + Advisor Network P0 sprint. Backend PATCH for new advisor rich-profile fields (market_specialization, relationship_tags, notes) PASSES end-to-end (verified via pytest with GET-back persistence). FRONTEND TESTING IS BLOCKED by a regression in SuperAdminRoute guard: super_admin users (verified is_super_admin=true on /api/blueprint/me/permissions, role=super_admin) are redirected from /admin, /admin/modules, /admin/advisors/<id>, /superadmin back to /dashboard. AdminLayout, PlatformCapabilitiesPage, AdvisorDetailPage, AdvisorEditDrawer, MoodDualCircleIcon, the new sidebar IA (Orchestrazione/Network/Piattaforma), and the graphite+cyan theme could NOT be runtime-verified because the guarded subtree never mounts.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "SuperAdminRoute guard (App.js:161-167) backed by BlueprintContext.jsx loading lifecycle",
+        "issue": "Race condition: when user transitions from null → super_admin, BlueprintProvider's useEffect (lines 208-258) does NOT setLoading(true) at the start of the user-branch. So between the !user branch (which set loading=false) and the await of Promise.allSettled, the component renders with user=truthy, bpLoading=false, isSuperAdmin=false (stale initial false). SuperAdminRoute fires <Navigate to=\"/dashboard\"/> before /api/blueprint/me/permissions resolves. Even though the response carries is_super_admin=true (200 OK confirmed via response interception), the redirect already happened. Reproduced 100% in three consecutive sessions; permission endpoint response was 200 with is_super_admin: true, role: super_admin every time.",
+        "selector": "[data-testid=\"admin-shell\"] never appears; URL ends at /dashboard",
+        "priority": "CRITICAL"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "All SuperAdmin flows (Control Center overview, Platform Capabilities™ grid, Advisor Network admin, Advisor detail edit drawer, TerritorySelector embed, Languages, Audit)",
+        "issue": "Blocked by the SuperAdminRoute redirect bug above — none of the new screens, testids, or theme tokens can be exercised at runtime.",
+        "affected_selectors": ["[data-testid=admin-shell]", "[data-testid=pcap-card-*]", "[data-testid=pcap-toggle-*]", "[data-testid=adv-detail-edit-open]", "[data-testid=advisor-edit-drawer]", "[data-testid=aed-save]", "[data-testid=adv-detail-territories-block]"]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_71_advisor_rich_profile.py",
+    "/app/test_reports/pytest/iteration_71.xml"
+  ],
+  "action_items": [
+    "FIX (highest priority): In /app/frontend/src/contexts/BlueprintContext.jsx, inside the load() useEffect (around line 209), call setLoading(true) at the very start of the function BEFORE the if(!user) check — so that on every user change the guard re-enters Loading state until the new Promise.allSettled completes. This will unblock the SuperAdmin Control Center entirely.",
+    "Alternative/additional: have SuperAdminRoute fall back to a permissive check using useAuth().user.role === 'super_admin' (already available synchronously) instead of waiting on bpLoading + isSuperAdmin race.",
+    "Code review: /app/frontend/src/App.js line 414 still has <Route path=\"/superadmin/pages\" element={<HomepageBuilderPage />}/> — review request stated 'Pagine architecture deprecated' and /admin/pages was removed, but the /superadmin/pages alias still points to HomepageBuilderPage. Consider removing for consistency.",
+    "After the FE fix, re-run runtime checks on: admin-shell data-surface=control-center, MoodDualCircleIcon SVG circles, sidebar groups Orchestrazione/Network/Piattaforma, absence of Pagine + Moduli labels, PLATFORM·SUPER ADMIN chip color = cyan #00C9B3, all 11 pcap-card-* testids, AdvisorEditDrawer 4 sections + save flow, tenant-palette-isolation regression."
+  ],
+  "critical_code_review_comments": [
+    "BlueprintContext.jsx load() effect is non-idempotent across user transitions: it should setLoading(true) at the top so consumers can rely on bpLoading flipping back to true when user changes (critical for SuperAdminRoute, TenantTheme, modules permission gating).",
+    "Confirmed via code inspection of /app/backend/routers/advisor_network.py — AdvisorUpdate Pydantic model correctly extended with market_specialization: Optional[List[str]], relationship_tags: Optional[List[str]], notes: Optional[str]. PATCH /api/advisor/admin/advisors/{aid} accepts these and persists; GET round-trip verified through pytest.",
+    "App.js Route declaration on line 396 has malformed formatting: <Route element={<SuperAdminRoute><AdminLayout /></SuperAdminRoute>}>                  <Route path=\"/admin\" element... — works but should be reformatted onto its own line for readability."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_71_advisor_rich_profile.py (NEW)"
+  ],
+  "success_rate": {
+    "backend": "100% (2/2 pytest tests passed)",
+    "frontend": "BLOCKED — 0% runtime-verified due to SuperAdminRoute redirect bug; no UI in scope could be reached"
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (Super Admin) — confirmed role=super_admin, is_super_admin=true via /api/blueprint/me/permissions 200 OK",
+  "seed_data_creation": "Backend test wrote market_specialization=[Hospitality,Retail], relationship_tags=[consigliere,warm], notes='TEST_Iteration71 rich profile patch' onto advisor e508a1b6-34ca-4c8a-b1ca-3327faf73fbe (Raffaella Ruggieri). Main agent may want to reset these to cleaner values before screenshots.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend rich-profile patch is GREEN. The only blocker on the frontend is the BlueprintContext loading race that makes SuperAdminRoute redirect super_admin users to /dashboard. After main agent ships the setLoading(true)-at-top fix, redo: (1) /admin → verify admin-shell, data-surface=control-center, dual-circle SVG (svg circle count >=2 in sidebar header), nav groups Orchestrazione/Network/Piattaforma, NO Pagine, NO Moduli label, only Platform Capabilities™. (2) /admin/modules → 11 pcap-card-* cards + pcap-toggle-* toggles + maturity badges. (3) /admin/advisors/e508a1b6-34ca-4c8a-b1ca-3327faf73fbe → click adv-detail-edit-open → AdvisorEditDrawer mounts with 4 sections, chip inputs persist (aed-specialization, aed-tags), Save fires PATCH /api/advisor/admin/advisors/{aid}, toast 'Advisor aggiornato'. (4) Sidebar 'Presenza territoriale' block + TerritorySelector mapbox input renders (skip suggestion click). (5) Tenant theme isolation: change palette to rose in workspace, navigate back to /admin/ — Control Center MUST remain graphite (--mood-accent cyan, not rose). (6) Mobile 390x844 — sidebar collapse + cards single column + drawer fullscreen.",
+  "rca of the issue": "Reproduced: 1) Login as demo@moodfordesign.com 2) wait_for_url('**/dashboard**') 3) page.goto('/admin') 4) Observed: URL stays at /dashboard, admin-shell never mounts. Network panel confirms /api/blueprint/me/permissions returns 200 with {is_super_admin: true, role: 'super_admin'} every time. RCA: SuperAdminRoute (App.js:161) renders <Navigate to='/dashboard'/> when isSuperAdmin === false AND (loading || bpLoading) === false. On user transition (null→super_admin), BlueprintContext.jsx load() effect (line 208) does not reset setLoading(true) at the start of the user branch, so for one render cycle: user truthy, bpLoading=false (residual from the !user branch), isSuperAdmin=false (initial useState false). Navigate fires before Promise.allSettled awaits resolve and setIsSuperAdmin(true) is committed. Mitigation: add `setLoading(true);` as the first line inside the inner async load() (before the if(!user) early return), so every dependency change forces a Loading state until both endpoints (permissions in particular) resolve. Alternative belt-and-suspenders: in SuperAdminRoute, accept user.role === 'super_admin' from useAuth as a synchronous fallback alongside bp.isSuperAdmin."
+}

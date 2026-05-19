@@ -96,7 +96,7 @@ import {
 const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
 const AdminTenantsPage = lazy(() => import('./pages/admin/AdminTenantsPage'));
 const AdminTenantDetailPage = lazy(() => import('./pages/admin/AdminTenantDetailPage'));
-const AdminModulesPage = lazy(() => import('./pages/admin/AdminModulesPage'));
+const AdminModulesPage = lazy(() => import('./pages/admin/PlatformCapabilitiesPage'));
 const AdminAuditPage = lazy(() => import('./pages/admin/AdminAuditPage'));
 const AdvisorNetworkAdminPage = lazy(() => import('./pages/admin/AdvisorNetworkAdminPage'));
 const AdvisorDetailPage = lazy(() => import('./pages/admin/AdvisorDetailPage'));
@@ -403,7 +403,7 @@ function App() {
                   <Route path="/admin/advisors/:id" element={<AdvisorDetailPage />} />
                   {/* New IA — superadmin-only platform internals */}
                   <Route path="/admin/languages" element={<LanguagesPage />} />
-                  <Route path="/admin/pages" element={<HomepageBuilderPage />} />
+                  {/* /admin/pages REMOVED — legacy "Pagine" architecture deprecated */}
                   {/* /superadmin/* aliases per Session-G architecture */}
                   <Route path="/superadmin" element={<AdminOverviewPage />} />
                   <Route path="/superadmin/tenants" element={<AdminTenantsPage />} />

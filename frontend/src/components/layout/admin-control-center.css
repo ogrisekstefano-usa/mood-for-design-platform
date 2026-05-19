@@ -1,0 +1,192 @@
+/* ──────────────────────────────────────────────────────────────────
+   Blueprint OS™ · Control Center
+   SuperAdmin chrome — hard-coded graphite + cyan intelligence accent.
+   Intentionally NOT consuming --bp-* tokens: this is platform-level
+   chrome and must NEVER inherit tenant theme.
+   ────────────────────────────────────────────────────────────────── */
+
+.acc-shell {
+  --mood-ink-strong:  #EFEBE4;    /* soft ivory */
+  --mood-ink-soft:    #A6ABB5;    /* mist gray  */
+  --mood-ink-faint:   #6A6F78;
+  --mood-bg:          #0A0B0E;    /* deep graphite */
+  --mood-bg-elev-1:   #11131A;
+  --mood-bg-elev-2:   #161922;
+  --mood-bg-elev-3:   #1C2030;
+  --mood-border:      rgba(255,255,255,0.06);
+  --mood-border-hot:  rgba(0,201,179,0.36);
+  --mood-accent:      #00C9B3;
+  --mood-accent-soft: rgba(0,201,179,0.10);
+  --mood-accent-glow: rgba(0,201,179,0.22);
+
+  display: flex;
+  height: 100vh;
+  background: var(--mood-bg);
+  color: var(--mood-ink-strong);
+  font-family: var(--bp-font-body, 'Inter', system-ui, sans-serif);
+  overflow: hidden;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────── */
+.acc-sidebar {
+  width: 244px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #08090C 0%, #0B0D12 100%);
+  border-right: 1px solid var(--mood-border);
+  display: flex; flex-direction: column;
+}
+
+.acc-brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 22px 18px 18px;
+  border-bottom: 1px solid var(--mood-border);
+}
+.acc-brand__mark {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--mood-bg-elev-2);
+  border: 1px solid var(--mood-border);
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px rgba(0,201,179,0.10) inset, 0 6px 16px rgba(0,201,179,0.06);
+}
+.acc-brand__product {
+  font-family: var(--bp-font-heading, 'Playfair Display', Georgia, serif);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.005em;
+  color: var(--mood-ink-strong);
+  line-height: 1.1;
+}
+.acc-brand__eyebrow {
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mood-accent);
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+/* ── Nav ─────────────────────────────────────────────────────── */
+.acc-nav {
+  flex: 1;
+  padding: 14px 10px 10px;
+  overflow-y: auto;
+}
+.acc-nav__section {
+  font-size: 9.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--mood-ink-faint);
+  margin: 18px 12px 6px;
+  font-weight: 600;
+}
+.acc-nav__section:first-child { margin-top: 6px; }
+
+.acc-nav__item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  color: var(--mood-ink-soft);
+  border-radius: 3px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: color 140ms ease, background 140ms ease, border-color 140ms ease;
+  letter-spacing: 0.005em;
+}
+.acc-nav__item:hover {
+  color: var(--mood-ink-strong);
+  background: rgba(255,255,255,0.02);
+}
+.acc-nav__item.is-active {
+  color: var(--mood-accent);
+  background: var(--mood-accent-soft);
+  border-color: var(--mood-border-hot);
+  font-weight: 600;
+}
+.acc-nav__item svg { flex-shrink: 0; }
+
+/* ── Sidebar footer ─────────────────────────────────────────── */
+.acc-foot {
+  border-top: 1px solid var(--mood-border);
+  padding: 12px 10px 16px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.acc-foot__btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  font-size: 11.5px;
+  color: var(--mood-ink-faint);
+  background: transparent;
+  border: none; cursor: pointer;
+  border-radius: 3px;
+  text-align: left;
+  transition: color 140ms ease, background 140ms ease;
+}
+.acc-foot__btn:hover {
+  color: var(--mood-ink-strong);
+  background: rgba(255,255,255,0.025);
+}
+.acc-foot__btn--danger:hover { color: #FF6B7A; }
+
+/* ── Main column ─────────────────────────────────────────────── */
+.acc-main {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  background: var(--mood-bg);
+}
+
+/* ── Topbar ─────────────────────────────────────────────────── */
+.acc-topbar {
+  height: 56px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 26px;
+  border-bottom: 1px solid var(--mood-border);
+  background: rgba(8,9,12,0.78);
+  backdrop-filter: blur(14px);
+}
+.acc-topbar__chip {
+  display: inline-flex; align-items: center;
+  padding: 4px 10px;
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mood-accent);
+  background: var(--mood-accent-soft);
+  border: 1px solid var(--mood-border-hot);
+  border-radius: 999px;
+  font-weight: 600;
+}
+.acc-topbar__email {
+  font-size: 11.5px;
+  color: var(--mood-ink-soft);
+}
+
+/* ── Content ─────────────────────────────────────────────────── */
+.acc-content {
+  flex: 1;
+  overflow-y: auto;
+  /* Force the cyan accent everywhere inside Control Center so any
+     pages that read --bp-primary inherit it from this scope. */
+}
+
+[data-surface="control-center"] {
+  --bp-bg:               var(--mood-bg);
+  --bp-surface:          var(--mood-bg-elev-1);
+  --bp-surface-1:        var(--mood-bg-elev-1);
+  --bp-surface-2:        var(--mood-bg-elev-2);
+  --bp-surface-3:        var(--mood-bg-elev-3);
+  --bp-surface-elev:     var(--mood-bg-elev-3);
+  --bp-border:           var(--mood-border);
+  --bp-border-strong:    rgba(255,255,255,0.14);
+  --bp-border-hover:     rgba(255,255,255,0.14);
+  --bp-text:             var(--mood-ink-strong);
+  --bp-text-primary:     var(--mood-ink-strong);
+  --bp-text-secondary:   var(--mood-ink-soft);
+  --bp-text-muted:       var(--mood-ink-faint);
+  --bp-text-subtle:      var(--mood-ink-faint);
+  --bp-text-faint:       var(--mood-ink-faint);
+  --bp-primary:          var(--mood-accent);
+  --bp-primary-soft:     var(--mood-accent-soft);
+  --bp-accent:           #C9A36E;  /* warm hint for sparing use */
+}

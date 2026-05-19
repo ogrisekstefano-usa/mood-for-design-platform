@@ -15,9 +15,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
-import { ArrowLeft, Copy, MapPin } from 'lucide-react';
+import { ArrowLeft, Copy, MapPin, Pencil } from 'lucide-react';
 import api from '../../lib/api';
 import { avatarPalette, initialsOf } from '../../lib/avatarHue';
+import TerritorySelector from '../../components/advisor/TerritorySelector';
+import AdvisorEditDrawer from './AdvisorEditDrawer';
 import '../advisor/advisor.css';
 
 const STATUS_LABEL = { active: 'Attivo', paused: 'In pausa', archived: 'Archiviato' };
@@ -60,6 +62,7 @@ const AdvisorDetailPage = () => {
   const nav = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [editOpen, setEditOpen] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -127,6 +130,11 @@ const AdvisorDetailPage = () => {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button className="adv-btn adv-btn--primary"
+                    onClick={() => setEditOpen(true)}
+                    data-testid="adv-detail-edit-open">
+              <Pencil size={11} /> Modifica
+            </button>
             {adv.status !== 'active' && (
               <button className="adv-btn adv-btn--ghost" onClick={() => updateStatus('active')} data-testid="adv-set-active">
                 Attiva
@@ -178,6 +186,14 @@ const AdvisorDetailPage = () => {
             <h3 className="adv-detail-block__head">Anagrafica</h3>
             <div className="adv-detail-row"><span>Creato</span><span>{fmtDate(adv.created_at)}</span></div>
             <div className="adv-detail-row"><span>Aggiornato</span><span>{fmtDate(adv.updated_at)}</span></div>
+          </section>
+
+          <section className="adv-detail-block" data-testid="adv-detail-territories-block">
+            <h3 className="adv-detail-block__head">Presenza territoriale</h3>
+            <p className="adv-detail-block__caption">
+              Orchestrazione delle aree di rappresentanza · territorio primario + aree di copertura.
+            </p>
+            <TerritorySelector advisorId={adv.id} locale="it-IT" />
           </section>
         </aside>
 
@@ -307,6 +323,11 @@ const AdvisorDetailPage = () => {
           </section>
         </div>
       </div>
+
+      <AdvisorEditDrawer open={editOpen}
+                         advisor={adv}
+                         onClose={() => setEditOpen(false)}
+                         onSaved={() => { setEditOpen(false); load(); }} />
     </div>
   );
 };

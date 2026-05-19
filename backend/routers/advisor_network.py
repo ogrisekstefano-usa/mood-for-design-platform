@@ -101,6 +101,9 @@ class AdvisorUpdate(BaseModel):
     default_discount_percentage: Optional[float] = None
     payout_cycle_months: Optional[int] = None
     minimum_qualified_months: Optional[int] = None
+    market_specialization: Optional[List[str]] = None
+    relationship_tags: Optional[List[str]] = None
+    notes: Optional[str] = None
 
 
 class ReportCreate(BaseModel):
