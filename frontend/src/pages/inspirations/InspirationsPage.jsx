@@ -21,14 +21,17 @@ import api from '../../lib/api';
 import { asErrorString } from '../../lib/asErrorString';
 import AddInspirationModal from './AddInspirationModal';
 import InspirationDetailDrawer from './InspirationDetailDrawer';
+import SupplierCatalogImportModal from './SupplierCatalogImportModal';
 import './inspirations.css';
 
 const InspirationsPage = () => {
   const [items, setItems] = useState(null);
   const [filtersConfig, setFiltersConfig] = useState(null);
   const [filters, setFilters] = useState({ market: '', atmosphere: '', material: '', luxury: '', profile: '' });
+  const [typeFilter, setTypeFilter] = useState('');  // '' | 'editorial' | 'product'
   const [search, setSearch] = useState('');
   const [addOpen, setAddOpen] = useState(false);
+  const [catalogOpen, setCatalogOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [error, setError] = useState(null);
 
@@ -41,11 +44,13 @@ const InspirationsPage = () => {
     const qs = new URLSearchParams();
     Object.entries(filters).forEach(([k, v]) => { if (v) qs.set(k, v); });
     if (search) qs.set('q', search);
+    if (typeFilter) qs.set('inspiration_type', typeFilter);
     api.get(`/api/inspirations/archive?${qs.toString()}`)
       .then((r) => setItems(r.data?.items || []))
       .catch((e) => setError(asErrorString(e, 'Errore nel caricamento')));
   };
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [filters.market, filters.atmosphere, filters.material, filters.luxury, filters.profile]);
+  useEffect(() => { load(); /* eslint-disable-next-line */ },
+    [filters.market, filters.atmosphere, filters.material, filters.luxury, filters.profile, typeFilter]);
 
   const onImported = (it) => {
     setItems((prev) => [it, ...(prev || [])]);
@@ -84,6 +89,11 @@ const InspirationsPage = () => {
               data-testid="ins-search-input"
             />
           </div>
+          <button type="button" className="ins-cta-secondary"
+                  onClick={() => setCatalogOpen(true)}
+                  data-testid="ins-catalog-btn">
+            <Icons.FolderInput size={13} /> Importa catalogo fornitore
+          </button>
           <button type="button" className="ins-cta-primary"
                   onClick={() => setAddOpen(true)}
                   data-testid="ins-add-btn">
@@ -91,6 +101,25 @@ const InspirationsPage = () => {
           </button>
         </div>
       </header>
+
+      {/* ── Tipo di Inspiration: Tutti · Editoriali · Prodotti ── */}
+      <div className="ins-type-toggle" data-testid="ins-type-toggle">
+        {[
+          { key: '',          label: 'Tutti',       icon: 'Layers' },
+          { key: 'editorial', label: 'Editoriali',  icon: 'BookOpen' },
+          { key: 'product',   label: 'Prodotti',    icon: 'Package' },
+        ].map((t) => {
+          const Ico = Icons[t.icon] || Icons.Circle;
+          return (
+            <button key={t.key || 'all'} type="button"
+                    className={`ins-type-toggle__btn ${typeFilter === t.key ? 'is-active' : ''}`}
+                    onClick={() => setTypeFilter(t.key)}
+                    data-testid={`ins-type-${t.key || 'all'}`}>
+              <Ico size={12} strokeWidth={1.5} /> {t.label}
+            </button>
+          );
+        })}
+      </div>
 
       <FilterBar
         config={filtersConfig}
@@ -144,6 +173,18 @@ const InspirationsPage = () => {
         onImported={(it) => { setAddOpen(false); onImported(it); }}
       />
 
+      <SupplierCatalogImportModal
+        open={catalogOpen}
+        onClose={() => setCatalogOpen(false)}
+        config={filtersConfig}
+        onImported={(count) => {
+          setCatalogOpen(false);
+          setTypeFilter('product');  // show what was just imported
+          toast.success(`Importati ${count} prodotti come Product Inspirations™.`);
+          load();
+        }}
+      />
+
       <InspirationDetailDrawer
         open={!!selectedId}
         id={selectedId}
@@ -193,11 +234,12 @@ const FilterBar = ({ config, value, onChange }) => {
 // ── InspirationCard ───────────────────────────────────────────────────
 const InspirationCard = ({ item, onOpen }) => {
   const [failed, setFailed] = useState(false);
+  const isProduct = item.inspiration_type === 'product';
   const atmos = (item.atmosphere_tags || []).slice(0, 2);
   const mats  = (item.material_tags || []).slice(0, 2);
   const showImage = !!item.image_url && !failed;
   return (
-    <button type="button" className="ins-card"
+    <button type="button" className={`ins-card ${isProduct ? 'ins-card--product' : ''}`}
             onClick={onOpen}
             data-testid={`inspiration-card-${item.id}`}>
       <div className="ins-card__media">
@@ -214,9 +256,14 @@ const InspirationCard = ({ item, onOpen }) => {
             <span className="ins-card__media-fallback">
               {item.source_kind === 'pinterest' ? 'Pinterest · copertina in attesa' :
                item.source_kind === 'instagram' ? 'Instagram · copertina in attesa' :
-               'Copertina in attesa'}
+               isProduct ? 'Anteprima prodotto in attesa' : 'Copertina in attesa'}
             </span>
           </div>
+        )}
+        {isProduct && (
+          <span className="ins-card__product-badge" data-testid="ins-card-product-badge">
+            <Icons.Package size={9} strokeWidth={1.6} /> Prodotto
+          </span>
         )}
         <div className="ins-card__overlay">
           <div className="ins-card__chips">
@@ -227,8 +274,16 @@ const InspirationCard = ({ item, onOpen }) => {
         </div>
       </div>
       <div className="ins-card__body">
+        {isProduct && (item.brand || item.product_category) && (
+          <p className="ins-card__product-meta">
+            {item.brand}
+            {item.product_category && <span> · {item.product_category}</span>}
+            {item.collection && <span> · {item.collection}</span>}
+          </p>
+        )}
         <h3 className="ins-card__title">{item.title}</h3>
-        {item.description && <p className="ins-card__desc">{item.description}</p>}
+        {!isProduct && item.description && <p className="ins-card__desc">{item.description}</p>}
+        {isProduct && item.designer && <p className="ins-card__desc">design {item.designer}</p>}
       </div>
     </button>
   );

@@ -1,0 +1,29 @@
+{
+  "summary": "Supplier Catalog Import™ MVP — full backend + frontend testing. 10/10 backend tests passed (taxonomy, create, upload-PDF-extract, GET catalog, PATCH candidates, finalize, archive product filter, archive editorial+brand filter, list catalogs, delete soft-archive). 7/7 frontend wizard + UI assertions passed (CTA button, type-toggle with 3 pills, modal with 4-step stepper, step1 6 fields with disable→enable on brand, step2 dropzone copy, drawer ProductInfoBlock with brand/collezione/categoria/diritti, ZERO forbidden AI/OCR/parser/model words in DOM).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_81_supplier_catalog.py",
+    "/app/test_reports/pytest/iter81_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "supplier_catalogs.py uses `image_ext or 'png'` content-type mapping (line 245) — works but `image/jpg` is non-standard; PIL produces 'jpeg'. Confirm extractor returns 'jpeg' not 'jpg' to avoid odd mime types — minor.",
+    "finalize_catalog idempotency relies on cand.media_id but the field is reset only via re-finalize; if a candidate insert fails mid-loop, retries will re-insert all preceding ones. Consider an upsert-by-(catalog_id,page_number) media_library check.",
+    "Inspiration cards lack a unique data-testid like `ins-card-{id}`. Only `ins-card-product-badge` is on the badge — makes deterministic card targeting in tests verbose. Adding a `data-testid=\"ins-card-{id}\"` on the card root would improve testability."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_81_supplier_catalog.py (new)"
+  ],
+  "success_rate": {"backend": "100% (10/10)", "frontend": "100% (7/7)"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin) — works",
+  "seed_data_creation": "Test created 1 fresh 'Bonaldo' catalog with full PDF upload + finalize (57 Product Inspirations imported, archived at end of test, products remain live). Also 1 lightweight 'TestBrand' draft catalog (no PDF). Both are visible in /api/inspirations/catalogs list.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend pytest: pytest /app/backend/tests/test_iteration_81_supplier_catalog.py -v (40s, requires /tmp/bonaldo.pdf). Frontend: card click must target parent of [data-testid='ins-card-product-badge'] since the card root has no dedicated testid. Existing Bonaldo catalogs from manual + this run accumulate in the tenant — archive endpoint is soft, never deletes media_library rows.",
+  "rca of the issue": "N/A — all flows passed end-to-end including PDF extraction (113 pages → 61 candidates, ~57 named), candidate image upload to cms-assets (public URL reachable HTTP 200), candidate edit persistence, finalize → media_library inserts, archive filter inspiration_type=product/editorial + case-insensitive brand filter, soft archive preserves imported products."
+}

@@ -294,6 +294,11 @@ def _to_card(row: Dict[str, Any]) -> Dict[str, Any]:
         "brand":              meta.get("brand"),
         "collection":         meta.get("collection"),
         "product_name":       meta.get("product_name"),
+        "product_category":   meta.get("product_category"),
+        "designer":           meta.get("designer"),
+        "inspiration_type":   meta.get("inspiration_type") or "editorial",
+        "rights_status":      meta.get("rights_status"),
+        "supplier_catalog_id": meta.get("supplier_catalog_id"),
         "tags":               row.get("tags") or [],
         "created_at":         row.get("created_at"),
         "updated_at":         row.get("updated_at"),
@@ -547,6 +552,8 @@ def list_archive(
     material:    Optional[str] = Query(None),
     luxury:      Optional[str] = Query(None),
     profile:     Optional[str] = Query(None),
+    inspiration_type: Optional[str] = Query(None, regex="^(editorial|product)$"),
+    brand:       Optional[str] = Query(None),
     q:           Optional[str] = Query(None),
     limit:       int = Query(60, le=200),
     offset:      int = 0,
@@ -568,6 +575,12 @@ def list_archive(
     # Client-side JSON filters (Supabase doesn't allow easy JSONB array filter via PostgREST shim)
     def keep(r: Dict[str, Any]) -> bool:
         meta = r.get("inspiration_meta") or {}
+        # Default inspiration_type is 'editorial' if not set
+        m_type = meta.get("inspiration_type") or "editorial"
+        if inspiration_type and inspiration_type != m_type:
+            return False
+        if brand and (meta.get("brand") or "").lower() != brand.lower():
+            return False
         if market and market not in (meta.get("market_codes") or []):
             return False
         if atmosphere and atmosphere not in (meta.get("atmosphere_tags") or []):

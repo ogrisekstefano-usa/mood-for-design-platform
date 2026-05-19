@@ -135,6 +135,11 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
                 )}
               </header>
 
+              {/* Product info — only for Product Inspirations™ */}
+              {!editing && data.inspiration_type === 'product' && (
+                <ProductInfoBlock data={data} />
+              )}
+
               {/* Cultural Reading™ — output editoriale, in cima */}
               {!editing && <CulturalReadingBlock data={data} mediaId={id} onRefresh={(cr) => setData({ ...data, cultural_reading: cr })} />}
 
@@ -484,6 +489,55 @@ const CulturalReadingBlock = ({ data, mediaId, onRefresh }) => {
               data-testid="cultural-reading-refresh">
         <Icons.RefreshCw size={10} /> Riesegui lettura
       </button>
+    </div>
+  );
+};
+
+// ── ProductInfoBlock — visible only for inspiration_type='product' ───
+// Mostra Brand · Collection · Categoria · Designer · Page reference + diritti.
+// NESSUN prezzo, NESSUN codice prodotto: questo NON è un PIM.
+const ProductInfoBlock = ({ data }) => {
+  const rightsLabel = {
+    uploaded_by_tenant:  'Caricato dallo studio',
+    supplier_authorized: 'Autorizzato dal fornitore',
+    external_reference:  'Riferimento esterno',
+    unknown:             'Diritti da verificare',
+  }[data.rights_status] || 'Caricato dallo studio';
+  return (
+    <div className="insd-product" data-testid="inspiration-product-block">
+      <p className="ins-eyebrow"><Icons.Package size={11} /> Product Inspiration™</p>
+      <div className="insd-product__grid">
+        {data.brand && (
+          <div>
+            <span className="ins-label">Brand</span>
+            <p className="insd-product__val">{data.brand}</p>
+          </div>
+        )}
+        {data.collection && (
+          <div>
+            <span className="ins-label">Collezione</span>
+            <p className="insd-product__val">{data.collection}</p>
+          </div>
+        )}
+        {data.product_category && (
+          <div>
+            <span className="ins-label">Categoria</span>
+            <p className="insd-product__val">{data.product_category}</p>
+          </div>
+        )}
+        {data.designer && (
+          <div>
+            <span className="ins-label">Design</span>
+            <p className="insd-product__val">{data.designer}</p>
+          </div>
+        )}
+      </div>
+      <p className="insd-product__rights" data-testid="inspiration-product-rights">
+        <Icons.ShieldCheck size={10} /> {rightsLabel}
+        {data.rights_status !== 'supplier_authorized' && (
+          <em> · verifica i diritti d'uso prima della pubblicazione esterna.</em>
+        )}
+      </p>
     </div>
   );
 };
