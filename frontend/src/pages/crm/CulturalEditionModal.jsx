@@ -84,7 +84,9 @@ export const CulturalEditionModal = ({ open, accountId, sourceType = 'project',
   };
 
   return (
-    <div className="rl-modal-backdrop" onClick={(e) => { if (e.target === e.currentTarget) onClose?.(); }}>
+    <div className="rl-modal-backdrop"
+         data-testid="cultural-edition-modal-backdrop"
+         onClick={(e) => { if (e.target === e.currentTarget) onClose?.(); }}>
       <div className="rl-modal" data-testid="cultural-edition-modal">
         <div className="rl-modal__head">
           <div>

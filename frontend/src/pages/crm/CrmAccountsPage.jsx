@@ -160,7 +160,8 @@ const AccountCard = ({ account, onOpen }) => {
   return (
     <button type="button"
             onClick={() => onOpen(account)}
-            data-testid={`crm-account-card-${account.id}`}
+            data-testid={`account-card-${account.id}`}
+            data-account-id={account.id}
             className="crm-card">
       <div className="crm-card__head">
         <span className="crm-avatar"

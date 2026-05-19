@@ -1,0 +1,29 @@
+{
+  "summary": "Iteration 67 — Frontend regression re-verify for the 3 blockers reported in iter66. ALL THREE FIXES GREEN. (1) CulturalEditionModal: clicking [data-testid='open-cultural-edition'] on AccountDetailPage opens the modal — [data-testid='cultural-edition-modal'] renders within 2s, backdrop carries [data-testid='cultural-edition-modal-backdrop'], ce-submarket-select is populated with 49 options (>10 requirement met), ce-create button present and DISABLED before selection, ENABLED after selecting 'usa_miami'. (2) CrmAccountsPage list now loads — 71 account cards rendered with [data-testid='account-card-<id>'] (alias confirmed). Fixture account 8e40f60c-1e91-4b4e-9d13-a52fc71c146a found in list. Clicking a card navigates correctly to /crm/accounts/<id>. (3) [data-testid='relationship-summary-panel'] is present on the right-column aside. Quick-action CTAs (open-cultural-edition + open-voice-note + open-followup) are positioned at the TOP of the panel (CTA HTML position 714, Stage row at 3400 — confirms CTAs render BEFORE the Stage/Health/Owner rows). Regression smoke: /workspace/leads → /crm/accounts redirect ✅, 7 canonical stage pills ✅, quick-add-menu shows exactly 9 items ✅, AccountDetailPage loads cleanly ✅, existing TEST_iter66 timeline entries titled 'Create a Cultural Edition™ · Miami' visible (display_name resolution via _sub_label working correctly — title shows 'Miami' not 'usa_miami').",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "AccountDetailPage right panel CTAs", "issues": ["Minor visual overlap on 1920x1080 between the 'Aggiungi' quick-add dropdown menu and the Relationship Summary Panel CTAs — when both are open simultaneously the menu floats over the CTA buttons. Not blocking interaction (the menu is z-index'd above) but worth keeping in mind for future polish."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_67.json",
+    "/app/backend/tests/test_iteration_66_crm_refactor_phase1.py (backend regression — still 7/7 green from iter66)"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "CulturalEditionModal <option> renders submarket label via inline expression which emergent's instrumentation wraps in a <span> — Chrome logs a hydration warning 'In HTML, <span> cannot be a child of <option>'. Functionally harmless (49 options render, select works, value 'usa_miami' is set correctly), but the warning is noisy. If desired, precompute the option text into a plain string variable before render so no JSX expression sits inside <option>.",
+    "AccountDetailPage CulturalEditionModal is always mounted (open prop toggled) — fine for this size but if many modals get added consider gating with {open && <Modal />} to avoid running the submarkets useEffect prematurely. Currently the useEffect is correctly guarded with `if (!open) return;` so this is just hygiene.",
+    "CrmAccountsPage canonical testid is now 'account-card-<id>' (alias) coexisting with the legacy 'crm-account-card-<id>' on the underlying row component. Verified the new alias resolves to the same clickable button — both testids work. Consider migrating any internal references to the canonical name in a follow-up."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (no backend changes — iter66 7/7 still valid)", "frontend": "100% — all 3 regression fixes verified + 4/4 smoke checks pass"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (tenant 81a09ead-0306-4d71-a5c4-ca2b3956add2). Login URL is /auth/login (not /login).",
+  "seed_data_creation": "No new seed data this iteration — leveraged existing iter66 fixtures (account 8e40f60c-1e91-4b4e-9d13-a52fc71c146a 'Maya Aldhabi' with TEST_iter66 cultural edition + voice note interactions).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 3 iter66 blockers are resolved. Re-verify route: login /auth/login → /crm/accounts (71 cards render, alias account-card-<id>) → click card or deep-link to /crm/accounts/8e40f60c-... → AccountDetailPage with relationship-summary-panel testid → click open-cultural-edition → cultural-edition-modal opens with 49 submarket options including 'usa_miami'. Backend POST /api/relationships/accounts/<id>/cultural-editions with target_submarket_code='usa_miami' still produces title 'Create a Cultural Edition™ · Miami' (visible in existing timeline TEST_iter66 entries). Phase 1 Relationship OS™ end-to-end flow from list → detail → cultural edition is now unblocked for the user.",
+  "rca_of_the_issue": "All three iter66 root causes were addressed: (a) [data-testid='cultural-edition-modal'] was added to the modal root div and [data-testid='cultural-edition-modal-backdrop'] on the backdrop wrapper — modal now mounts on open=true via the open-cultural-edition click. (b) [data-testid='account-card-<id>'] alias was added to the AccountCard button (alongside legacy crm-account-card-<id>) — list page now resolves cards by both selectors. (c) [data-testid='relationship-summary-panel'] was added to the aside wrapper in AccountDetailPage AND the quick-action CTAs were moved to the TOP of the panel (above the Stage/Health/Owner rows) as specified. No further work required."
+}

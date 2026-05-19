@@ -318,11 +318,30 @@ const AccountDetailPage = () => {
         </section>
 
         {/* ── Summary panel right ── */}
-        <aside className="rl-panel" data-testid="rl-summary-panel">
+        <aside className="rl-panel"
+               data-testid="relationship-summary-panel"
+               aria-label="Relationship Summary Panel">
           <p className="rl-panel__eyebrow">Relationship Summary™</p>
           <h3 className="rl-panel__title">{account.account_name}</h3>
 
-          <div className="rl-panel__row">
+          {/* Quick actions — placed early so concierge CTAs are always above the fold */}
+          <div className="rl-panel__cta">
+            <button className="rl-panel__cta-btn rl-panel__cta-btn--primary"
+                    type="button"
+                    onClick={() => setCeOpen(true)} data-testid="open-cultural-edition">
+              <Globe size={13} /> Create a Cultural Edition™
+            </button>
+            <button className="rl-panel__cta-btn" type="button"
+                    onClick={() => onQuickPick('voice_note')} data-testid="open-voice-note">
+              <Mic size={13} /> Nota vocale rapida
+            </button>
+            <button className="rl-panel__cta-btn" type="button"
+                    onClick={() => onQuickPick('follow_up')} data-testid="open-followup">
+              <BellRing size={13} /> Pianifica follow-up
+            </button>
+          </div>
+
+          <div className="rl-panel__row" style={{ marginTop: 16 }}>
             <span>Stage</span>
             <span>
               <span className="rl-tag rl-tag--accent">
@@ -397,22 +416,6 @@ const AccountDetailPage = () => {
           <div className="rl-panel__row">
             <span>Timeline progetto</span>
             <span>{style?.timing_range || '—'}</span>
-          </div>
-
-          {/* Quick actions */}
-          <div className="rl-panel__cta">
-            <button className="rl-panel__cta-btn rl-panel__cta-btn--primary"
-                    onClick={() => setCeOpen(true)} data-testid="open-cultural-edition">
-              <Globe size={13} /> Create a Cultural Edition™
-            </button>
-            <button className="rl-panel__cta-btn"
-                    onClick={() => onQuickPick('voice_note')} data-testid="open-voice-note">
-              <Mic size={13} /> Nota vocale rapida
-            </button>
-            <button className="rl-panel__cta-btn"
-                    onClick={() => onQuickPick('follow_up')} data-testid="open-followup">
-              <BellRing size={13} /> Pianifica follow-up
-            </button>
           </div>
 
           {/* Micro-insights */}
