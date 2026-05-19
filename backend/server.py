@@ -95,6 +95,7 @@ from routers import editorial_calendar
 from routers import market_intelligence
 from routers import cultural_editions
 from routers import supplier_catalogs
+from routers import brands_registry
 api_router.include_router(portfolio.router, prefix="/portfolio", tags=["portfolio"])
 api_router.include_router(proposals.router, prefix="/proposals", tags=["proposals"])
 api_router.include_router(moodboards.router, prefix="/moodboards", tags=["moodboards"])
@@ -107,6 +108,7 @@ api_router.include_router(workspace.router, prefix="/workspace", tags=["workspac
 api_router.include_router(inspirations_boards.router, prefix="/inspirations", tags=["inspirations-boards"])
 api_router.include_router(inspirations_archive.router, prefix="/inspirations", tags=["inspirations-archive"])
 api_router.include_router(supplier_catalogs.router, prefix="/inspirations", tags=["supplier-catalogs"])
+api_router.include_router(brands_registry.router,   prefix="/inspirations", tags=["brand-registry"])
 api_router.include_router(inspirations.router, prefix="/inspirations", tags=["inspirations"])
 api_router.include_router(insights.router, prefix="/insights", tags=["insights"])
 api_router.include_router(settings.router, prefix="/settings", tags=["settings"])

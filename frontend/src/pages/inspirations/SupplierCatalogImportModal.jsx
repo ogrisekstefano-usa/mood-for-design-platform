@@ -30,12 +30,16 @@ const SupplierCatalogImportModal = ({ open, onClose, config, onImported }) => {
   const [taxonomy, setTaxonomy] = useState(null);
 
   // Step 1
-  const [brand, setBrand] = useState('');
+  const [brand, setBrand] = useState('');             // legacy free text fallback
+  const [brandObj, setBrandObj] = useState(null);     // { id, name, slug, category, … }
+  const [collectionObj, setCollectionObj] = useState(null);  // { id, name, brand_id, year, … }
   const [supplierName, setSupplierName] = useState('');
-  const [collection, setCollection] = useState('');
+  const [collection, setCollection] = useState('');   // free text fallback (when no collectionObj)
   const [year, setYear] = useState('');
   const [category, setCategory] = useState('arredi');
-  const [rightsStatus, setRightsStatus] = useState('uploaded_by_tenant');
+  const [rightsStatus, setRightsStatus] = useState('studio_uploaded');
+  const [showAddBrand, setShowAddBrand] = useState(false);
+  const [showAddCollection, setShowAddCollection] = useState(false);
 
   // Step 2/3
   const [catalogId, setCatalogId] = useState(null);
@@ -53,7 +57,7 @@ const SupplierCatalogImportModal = ({ open, onClose, config, onImported }) => {
 
   useEffect(() => {
     if (!open) return;
-    api.get('/api/inspirations/catalogs/taxonomy')
+    api.get('/api/inspirations/registry/taxonomy')
       .then((r) => setTaxonomy(r.data))
       .catch(() => {});
   }, [open]);
@@ -62,10 +66,12 @@ const SupplierCatalogImportModal = ({ open, onClose, config, onImported }) => {
     if (!open) {
       // Reset on close
       setStep(0); setCatalogId(null); setExtraction(null); setCandidates([]);
-      setBrand(''); setSupplierName(''); setCollection(''); setYear('');
-      setCategory('arredi'); setRightsStatus('uploaded_by_tenant');
+      setBrand(''); setBrandObj(null); setCollectionObj(null);
+      setSupplierName(''); setCollection(''); setYear('');
+      setCategory('arredi'); setRightsStatus('studio_uploaded');
       setBatchAtmos([]); setBatchMat([]); setBatchMarkets([]);
       setBatchLuxury(''); setBatchProfile('');
+      setShowAddBrand(false); setShowAddCollection(false);
     }
   }, [open]);
 
@@ -76,12 +82,16 @@ const SupplierCatalogImportModal = ({ open, onClose, config, onImported }) => {
 
   // ── Step 1 → 2: create catalog draft ───────────────────────────
   const createCatalog = async () => {
-    if (!brand.trim()) { toast.error('Indica il nome del brand o fornitore.'); return; }
+    if (!brandObj && !brand.trim()) {
+      toast.error('Indica il produttore.'); return;
+    }
     try {
       const r = await api.post('/api/inspirations/catalogs', {
-        brand: brand.trim(),
+        brand_id:      brandObj?.id || null,
+        brand:         brandObj?.name || brand.trim() || null,
+        collection_id: collectionObj?.id || null,
+        collection:    collectionObj?.name || collection.trim() || null,
         supplier_name: supplierName.trim() || null,
-        collection:    collection.trim() || null,
         catalog_year:  year ? Number(year) : null,
         category,
         rights_status: rightsStatus,
@@ -204,11 +214,15 @@ const SupplierCatalogImportModal = ({ open, onClose, config, onImported }) => {
             <IdentityStep
               taxonomy={taxonomy}
               brand={brand} setBrand={setBrand}
+              brandObj={brandObj} setBrandObj={setBrandObj}
+              collectionObj={collectionObj} setCollectionObj={setCollectionObj}
               supplierName={supplierName} setSupplierName={setSupplierName}
               collection={collection} setCollection={setCollection}
               year={year} setYear={setYear}
               category={category} setCategory={setCategory}
               rightsStatus={rightsStatus} setRightsStatus={setRightsStatus}
+              onOpenAddBrand={() => setShowAddBrand(true)}
+              onOpenAddCollection={() => setShowAddCollection(true)}
             />
           )}
 
@@ -254,7 +268,7 @@ const SupplierCatalogImportModal = ({ open, onClose, config, onImported }) => {
           <div className="scim-foot__spacer" />
           {step === 0 && (
             <button type="button" className="scim-btn" onClick={createCatalog}
-                    disabled={!brand.trim()}
+                    disabled={!brandObj && !brand.trim()}
                     data-testid="catalog-import-create">
               Continua <Icons.ChevronRight size={12} />
             </button>
@@ -286,77 +300,428 @@ const SupplierCatalogImportModal = ({ open, onClose, config, onImported }) => {
           )}
         </footer>
       </div>
+
+      {/* Mini-drawer: Aggiungi produttore (Brand Registry™) */}
+      {showAddBrand && (
+        <AddBrandDrawer
+          taxonomy={taxonomy}
+          markets={config?.markets || []}
+          initialName={brand}
+          onClose={() => setShowAddBrand(false)}
+          onCreated={(b) => {
+            setBrandObj(b);
+            setBrand(b.name);
+            if (b.category) setCategory(b.category);
+            setShowAddBrand(false);
+            toast.success(`${b.name} aggiunto al Brand Registry™.`);
+          }}
+        />
+      )}
+
+      {/* Mini-drawer: Nuova collezione */}
+      {showAddCollection && brandObj && (
+        <AddCollectionDrawer
+          brand={brandObj}
+          onClose={() => setShowAddCollection(false)}
+          onCreated={(col) => {
+            setCollectionObj(col);
+            setCollection(col.name);
+            setShowAddCollection(false);
+            toast.success(`Collezione “${col.name}” creata.`);
+          }}
+        />
+      )}
     </div>
   );
 };
 
 
 // ── Step 1: identity ────────────────────────────────────────────────
-const IdentityStep = ({ taxonomy, brand, setBrand, supplierName, setSupplierName,
+const IdentityStep = ({ taxonomy, brand, setBrand, brandObj, setBrandObj,
+                       collectionObj, setCollectionObj,
+                       supplierName, setSupplierName,
                        collection, setCollection, year, setYear,
-                       category, setCategory, rightsStatus, setRightsStatus }) => (
-  <div className="scim-grid" data-testid="catalog-step-identity">
-    <p className="scim-lead">
-      Iniziamo dall'identità del catalogo. MOOD userà questi dati per organizzare
-      ogni asset estratto come <em>Product Inspiration™</em> dentro la tua libreria.
-    </p>
+                       category, setCategory, rightsStatus, setRightsStatus,
+                       onOpenAddBrand, onOpenAddCollection }) => {
+  const rightsMeta = (taxonomy?.rights_permissions || []).find((r) => r.key === rightsStatus);
+  return (
+    <div className="scim-grid" data-testid="catalog-step-identity">
+      <p className="scim-lead">
+        Iniziamo dall'identità del catalogo. MOOD userà questi dati per organizzare
+        ogni asset come <em>Product Inspiration™</em> dentro il <strong>Brand Registry™</strong> dello studio.
+      </p>
 
-    <Field label="Brand o fornitore" required>
-      <input type="text" className="scim-input" value={brand}
-             onChange={(e) => setBrand(e.target.value)}
-             placeholder="es. Bonaldo · Minotti · Margraf"
-             data-testid="catalog-field-brand" />
-    </Field>
-
-    <Field label="Collezione">
-      <input type="text" className="scim-input" value={collection}
-             onChange={(e) => setCollection(e.target.value)}
-             placeholder="es. 26 Collection · Heritage · Outdoor 2026"
-             data-testid="catalog-field-collection" />
-    </Field>
-
-    <div className="scim-row">
-      <Field label="Anno catalogo">
-        <input type="number" className="scim-input" value={year}
-               min="1990" max="2100"
-               onChange={(e) => setYear(e.target.value)}
-               placeholder="2026"
-               data-testid="catalog-field-year" />
+      <Field label="Produttore" required>
+        <BrandPicker
+          value={brandObj}
+          freeText={brand}
+          onSelect={(b) => {
+            setBrandObj(b);
+            setBrand(b?.name || '');
+            setCollectionObj(null);
+            if (b?.category) setCategory(b.category);
+          }}
+          onFreeText={(s) => { setBrandObj(null); setBrand(s); setCollectionObj(null); }}
+          onAddNew={onOpenAddBrand}
+        />
+        {brandObj && (
+          <p className="scim-hint scim-hint--soft" data-testid="catalog-brand-meta">
+            <Icons.BadgeCheck size={11} /> {brandObj.name}
+            {brandObj.luxury_tier && <> · <em>{brandObj.luxury_tier}</em></>}
+            {brandObj.country && <> · {brandObj.country}</>}
+            {brandObj.visibility_level === 'studio_private' && <> · <em>privato dello studio</em></>}
+          </p>
+        )}
       </Field>
 
-      <Field label="Categoria principale">
-        <select className="scim-input" value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                data-testid="catalog-field-category">
-          {(taxonomy?.categories || []).map((c) => (
-            <option key={c.key} value={c.key}>{c.label}</option>
+      <Field label="Collezione">
+        <CollectionPicker
+          brand={brandObj}
+          value={collectionObj}
+          freeText={collection}
+          onSelect={(c) => {
+            setCollectionObj(c);
+            setCollection(c?.name || '');
+            if (c?.year) setYear(String(c.year));
+          }}
+          onFreeText={(s) => { setCollectionObj(null); setCollection(s); }}
+          onAddNew={onOpenAddCollection}
+        />
+      </Field>
+
+      <div className="scim-row">
+        <Field label="Anno catalogo">
+          <input type="number" className="scim-input" value={year}
+                 min="1990" max="2100"
+                 onChange={(e) => setYear(e.target.value)}
+                 placeholder="2026"
+                 data-testid="catalog-field-year" />
+        </Field>
+        <Field label="Categoria principale">
+          <select className="scim-input" value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  data-testid="catalog-field-category">
+            {(taxonomy?.categories || []).map((c) => (
+              <option key={c.key} value={c.key}>{c.label}</option>
+            ))}
+          </select>
+        </Field>
+      </div>
+
+      <Field label="Showroom / Studio (opzionale)">
+        <input type="text" className="scim-input" value={supplierName}
+               onChange={(e) => setSupplierName(e.target.value)}
+               placeholder="Distributore / dealer / showroom"
+               data-testid="catalog-field-supplier" />
+      </Field>
+
+      <Field label="Rights & Permissions™">
+        <select className="scim-input" value={rightsStatus}
+                onChange={(e) => setRightsStatus(e.target.value)}
+                data-testid="catalog-field-rights">
+          {(taxonomy?.rights_permissions || []).map((r) => (
+            <option key={r.key} value={r.key}>{r.label}</option>
           ))}
         </select>
+        {rightsMeta && (
+          <div className="scim-rights-meta" data-testid="catalog-rights-meta">
+            <RightsTag on={rightsMeta.publishable}    label="Pubblicabile" />
+            <RightsTag on={rightsMeta.exportable}     label="Esportabile" />
+            <RightsTag on={rightsMeta.commercial_use} label="Uso commerciale" />
+            <RightsTag on={rightsMeta.modifiable}     label="Modificabile" />
+          </div>
+        )}
       </Field>
     </div>
+  );
+};
 
-    <Field label="Showroom / Studio (opzionale)">
-      <input type="text" className="scim-input" value={supplierName}
-             onChange={(e) => setSupplierName(e.target.value)}
-             placeholder="Distributore / dealer / showroom"
-             data-testid="catalog-field-supplier" />
-    </Field>
-
-    <Field label="Origine dei contenuti">
-      <select className="scim-input" value={rightsStatus}
-              onChange={(e) => setRightsStatus(e.target.value)}
-              data-testid="catalog-field-rights">
-        {(taxonomy?.rights_statuses || []).map((r) => (
-          <option key={r.key} value={r.key}>{r.label}</option>
-        ))}
-      </select>
-      <p className="scim-hint scim-hint--soft">
-        Contenuto caricato dallo studio. Verifica i diritti d'uso prima della
-        pubblicazione esterna.
-      </p>
-    </Field>
-  </div>
+const RightsTag = ({ on, label }) => (
+  <span className={`scim-rights-tag ${on ? 'is-on' : ''}`}>
+    {on ? <Icons.Check size={10} strokeWidth={2.4} /> : <Icons.X size={10} strokeWidth={2.4} />}
+    {label}
+  </span>
 );
+
+
+// ── BrandPicker — autocomplete su Brand Registry™ ──────────────────
+const BrandPicker = ({ value, freeText, onSelect, onFreeText, onAddNew }) => {
+  const [q, setQ]           = useState(value?.name || freeText || '');
+  const [items, setItems]   = useState([]);
+  const [open, setOpen]     = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => { setQ(value?.name || freeText || ''); }, [value, freeText]);
+
+  useEffect(() => {
+    if (!open) return;
+    setLoading(true);
+    const t = setTimeout(() => {
+      api.get(`/api/inspirations/registry/brands?q=${encodeURIComponent(q)}&limit=20`)
+        .then((r) => setItems(r.data?.items || []))
+        .catch(() => setItems([]))
+        .finally(() => setLoading(false));
+    }, 180);
+    return () => clearTimeout(t);
+  }, [q, open]);
+
+  return (
+    <div className="scim-picker" data-testid="catalog-brand-picker">
+      <input type="text" className="scim-input"
+             value={q}
+             onChange={(e) => { setQ(e.target.value); onFreeText?.(e.target.value); setOpen(true); }}
+             onFocus={() => setOpen(true)}
+             onBlur={() => setTimeout(() => setOpen(false), 180)}
+             placeholder="Cerca produttore (Minotti, Poliform, …)"
+             data-testid="catalog-field-brand" />
+      {open && (
+        <div className="scim-picker__panel" data-testid="catalog-brand-results">
+          {loading && <div className="scim-picker__item is-muted">Cerco nel registro…</div>}
+          {!loading && items.length === 0 && (
+            <div className="scim-picker__item is-muted">Nessun produttore trovato.</div>
+          )}
+          {items.map((b) => (
+            <button key={b.id} type="button"
+                    className={`scim-picker__item ${value?.id === b.id ? 'is-on' : ''}`}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => { onSelect(b); setOpen(false); }}
+                    data-testid={`catalog-brand-opt-${b.slug}`}>
+              <div className="scim-picker__item-main">
+                <span className="scim-picker__item-name">{b.name}</span>
+                {b.category && <span className="scim-picker__item-cat">{b.category}</span>}
+              </div>
+              <div className="scim-picker__item-meta">
+                {b.luxury_tier && <span>{b.luxury_tier}</span>}
+                {b.visibility_level === 'studio_private' && <em>· privato</em>}
+              </div>
+            </button>
+          ))}
+          <button type="button"
+                  className="scim-picker__add"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => { setOpen(false); onAddNew?.(); }}
+                  data-testid="catalog-brand-add-new">
+            <Icons.Plus size={11} /> Aggiungi produttore
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+
+// ── CollectionPicker — autocomplete delle collezioni del brand ─────
+const CollectionPicker = ({ brand, value, freeText, onSelect, onFreeText, onAddNew }) => {
+  const [q, setQ]         = useState(value?.name || freeText || '');
+  const [items, setItems] = useState([]);
+  const [open, setOpen]   = useState(false);
+
+  useEffect(() => { setQ(value?.name || freeText || ''); }, [value, freeText]);
+
+  useEffect(() => {
+    if (!open || !brand?.id) { setItems([]); return; }
+    api.get(`/api/inspirations/registry/brands/${brand.id}/collections`)
+      .then((r) => setItems(r.data?.items || []))
+      .catch(() => setItems([]));
+  }, [open, brand?.id]);
+
+  const filtered = useMemo(() => {
+    if (!q) return items;
+    const ql = q.toLowerCase();
+    return items.filter((c) => (c.name || '').toLowerCase().includes(ql));
+  }, [items, q]);
+
+  return (
+    <div className="scim-picker" data-testid="catalog-collection-picker">
+      <input type="text" className="scim-input"
+             value={q}
+             onChange={(e) => { setQ(e.target.value); onFreeText?.(e.target.value); setOpen(true); }}
+             onFocus={() => setOpen(true)}
+             onBlur={() => setTimeout(() => setOpen(false), 180)}
+             placeholder={brand ? `Cerca collezione di ${brand.name}…` : 'Seleziona prima un produttore'}
+             disabled={!brand}
+             data-testid="catalog-field-collection" />
+      {open && brand && (
+        <div className="scim-picker__panel">
+          {filtered.length === 0 && (
+            <div className="scim-picker__item is-muted">
+              Nessuna collezione registrata per {brand.name}.
+            </div>
+          )}
+          {filtered.map((c) => (
+            <button key={c.id} type="button"
+                    className={`scim-picker__item ${value?.id === c.id ? 'is-on' : ''}`}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => { onSelect(c); setOpen(false); }}
+                    data-testid={`catalog-collection-opt-${c.slug}`}>
+              <div className="scim-picker__item-main">
+                <span className="scim-picker__item-name">{c.name}</span>
+                {c.year && <span className="scim-picker__item-cat">{c.year}</span>}
+              </div>
+            </button>
+          ))}
+          <button type="button"
+                  className="scim-picker__add"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => { setOpen(false); onAddNew?.(); }}
+                  data-testid="catalog-collection-add-new">
+            <Icons.Plus size={11} /> Nuova collezione
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+
+// ── AddBrandDrawer — Brand Registry™ insert ─────────────────────────
+const AddBrandDrawer = ({ taxonomy, markets, initialName, onClose, onCreated }) => {
+  const [name, setName]         = useState(initialName || '');
+  const [website, setWebsite]   = useState('');
+  const [category, setCategory] = useState('arredi');
+  const [country, setCountry]   = useState('');
+  const [positioning, setPositioning] = useState('');
+  const [primary, setPrimary]   = useState([]);
+  const [saving, setSaving]     = useState(false);
+  const toggle = (k) => setPrimary((p) => p.includes(k) ? p.filter((x) => x !== k) : [...p, k]);
+  const save = async () => {
+    if (!name.trim()) { toast.error('Nome obbligatorio'); return; }
+    setSaving(true);
+    try {
+      const r = await api.post('/api/inspirations/registry/brands', {
+        name: name.trim(),
+        website: website.trim() || null,
+        category, country: country.trim() || null,
+        positioning: positioning.trim() || null,
+        primary_markets: primary,
+      });
+      onCreated(r.data.item);
+    } catch (e) {
+      toast.error(asErrorString(e, 'Salvataggio non riuscito'));
+    } finally { setSaving(false); }
+  };
+  return (
+    <div className="scim-drawer" data-testid="catalog-add-brand-drawer" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="scim-drawer__panel">
+        <header className="scim-drawer__head">
+          <p className="scim-eyebrow">Brand Registry™</p>
+          <h3 className="scim-drawer__title">Nuovo produttore</h3>
+          <button type="button" className="scim-close" onClick={onClose}><Icons.X size={14} /></button>
+        </header>
+        <div className="scim-drawer__body">
+          <Field label="Nome" required>
+            <input className="scim-input" value={name} onChange={(e) => setName(e.target.value)}
+                   placeholder="es. Walter Knoll" data-testid="add-brand-name" />
+          </Field>
+          <Field label="Website">
+            <input className="scim-input" value={website} onChange={(e) => setWebsite(e.target.value)}
+                   placeholder="walterknoll.de" data-testid="add-brand-website" />
+          </Field>
+          <div className="scim-row">
+            <Field label="Categoria">
+              <select className="scim-input" value={category} onChange={(e) => setCategory(e.target.value)}
+                      data-testid="add-brand-category">
+                {(taxonomy?.categories || []).map((c) => (
+                  <option key={c.key} value={c.key}>{c.label}</option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Paese">
+              <input className="scim-input" value={country} onChange={(e) => setCountry(e.target.value)}
+                     placeholder="IT, FR, DE…" maxLength={2} data-testid="add-brand-country" />
+            </Field>
+          </div>
+          <Field label="Positioning curatoriale">
+            <input className="scim-input" value={positioning} onChange={(e) => setPositioning(e.target.value)}
+                   placeholder="es. editorial luxury · design contemporaneo"
+                   data-testid="add-brand-positioning" />
+          </Field>
+          <Field label="Mercati principali">
+            <div className="scim-chips" data-testid="add-brand-markets">
+              {markets.map((m) => (
+                <button key={m.code} type="button"
+                        className={`scim-chip ${primary.includes(m.code) ? 'is-on' : ''}`}
+                        onClick={() => toggle(m.code)}>
+                  {m.label}
+                </button>
+              ))}
+            </div>
+          </Field>
+        </div>
+        <footer className="scim-drawer__foot">
+          <button type="button" className="scim-btn-soft" onClick={onClose}>Annulla</button>
+          <button type="button" className="scim-btn" onClick={save} disabled={saving || !name.trim()}
+                  data-testid="add-brand-save">
+            {saving ? 'Salvataggio…' : 'Salva nel Brand Registry™'}
+          </button>
+        </footer>
+      </div>
+    </div>
+  );
+};
+
+
+// ── AddCollectionDrawer — collection insert ─────────────────────────
+const AddCollectionDrawer = ({ brand, onClose, onCreated }) => {
+  const [name, setName]         = useState('');
+  const [year, setYear]         = useState('');
+  const [season, setSeason]     = useState('');
+  const [description, setDescription] = useState('');
+  const [saving, setSaving]     = useState(false);
+  const save = async () => {
+    if (!name.trim()) { toast.error('Nome obbligatorio'); return; }
+    setSaving(true);
+    try {
+      const r = await api.post(`/api/inspirations/registry/brands/${brand.id}/collections`, {
+        name: name.trim(),
+        year: year ? Number(year) : null,
+        season: season.trim() || null,
+        description: description.trim() || null,
+      });
+      onCreated(r.data.item);
+    } catch (e) {
+      toast.error(asErrorString(e, 'Salvataggio non riuscito'));
+    } finally { setSaving(false); }
+  };
+  return (
+    <div className="scim-drawer" data-testid="catalog-add-collection-drawer" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="scim-drawer__panel">
+        <header className="scim-drawer__head">
+          <p className="scim-eyebrow">Collections Registry™ · {brand.name}</p>
+          <h3 className="scim-drawer__title">Nuova collezione</h3>
+          <button type="button" className="scim-close" onClick={onClose}><Icons.X size={14} /></button>
+        </header>
+        <div className="scim-drawer__body">
+          <Field label="Nome collezione" required>
+            <input className="scim-input" value={name} onChange={(e) => setName(e.target.value)}
+                   placeholder="es. Heritage · 26 Collection"
+                   data-testid="add-collection-name" />
+          </Field>
+          <div className="scim-row">
+            <Field label="Anno"><input type="number" className="scim-input" value={year}
+                   onChange={(e) => setYear(e.target.value)} placeholder="2026"
+                   data-testid="add-collection-year" /></Field>
+            <Field label="Stagione"><input className="scim-input" value={season}
+                   onChange={(e) => setSeason(e.target.value)} placeholder="Outdoor · Permanent"
+                   data-testid="add-collection-season" /></Field>
+          </div>
+          <Field label="Descrizione">
+            <textarea className="scim-input" rows={3} value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Una riga descrittiva…" />
+          </Field>
+        </div>
+        <footer className="scim-drawer__foot">
+          <button type="button" className="scim-btn-soft" onClick={onClose}>Annulla</button>
+          <button type="button" className="scim-btn" onClick={save} disabled={saving || !name.trim()}
+                  data-testid="add-collection-save">
+            {saving ? 'Salvataggio…' : 'Salva collezione'}
+          </button>
+        </footer>
+      </div>
+    </div>
+  );
+};
 
 
 // ── Step 2: upload ──────────────────────────────────────────────────

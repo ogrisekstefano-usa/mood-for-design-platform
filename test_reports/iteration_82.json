@@ -1,0 +1,31 @@
+{
+  "summary": "Iteration 82 — Brand Registry™ + Collections Registry™ + Tag Registry™ + refactored Supplier Catalog Import™ entity-pickers + Studio Collections™ page. 21/21 backend tests pass (brands autocomplete with 15 curated seeded, brand create idempotent, collections list+create idempotent, taxonomy 14 categories + 6 rights with flag semantics, tag registry by 3 types, catalog with brand_id+collection_id resolves names, validation errors 400 for invalid brand / mismatched collection, legacy text-only catalog path preserved, usage-events with denormalized brand_id from product). 9/9 frontend assertions pass (3 CTAs present, BrandPicker debounced autocomplete shows Poliform, brand-meta 'Poliform · premium · IT' visible, category auto-set to 'arredi', CollectionPicker shows '+ Nuova collezione' for Poliform, AddBrandDrawer with 5 expected fields, Rights & Permissions select reactive, /inspirations/collections shows heading 'Archivio curatoriale dello studio' with 3 brand groups + 7 catalog cards, ZERO forbidden vocab AI/OCR/parser/algoritmo/automation/machine learning/model/prompt anywhere in rendered DOM of inspirations + wizard + collections page).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_82_brand_registry.py",
+    "/app/test_reports/pytest/iter82_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "brands_registry.py:81 — brand_autocomplete fetches up to 150 rows then filters in Python. Works for current 15 brands but will degrade once studio_private brands grow >150. Should push the .ilike() filter to PostgREST (.or_('name.ilike.*q*,slug.ilike.*q*')).",
+    "brands_registry.py:152 — list_collections calls get_brand() internally which itself raises 404; clean pattern but it means a 404 from collections endpoint reports 'Produttore non trovato' instead of a clearer 'Collezioni non disponibili'. Cosmetic.",
+    "supplier_catalogs.py CatalogCreate — when brand_id is provided AND user also typed a freeform 'brand' string, the registry name silently overrides it. Could log a warning so the user knows their typed text was dropped.",
+    "FE7 (rights badges) — the four chip labels ('Pubblicabile/Esportabile/Uso commerciale/Modificabile') always render; only their ON/OFF state (✓/X) changes via CSS class. Playwright text-content extraction can't tell them apart without inspecting class. Recommend adding data-testid='rights-tag-{key}-{state}' so test selectors can distinguish ON vs OFF. Not a bug, just testability.",
+    "Studio Collections page shows soft-archived catalogs in the same group as drafts (e.g. Bonaldo has 4 BOZZA + 1 ARCHIVIATO). Visual treatment is differentiated by the badge but consider toggling a 'Mostra archiviati' filter to reduce noise once catalog counts grow."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_82_brand_registry.py (new)"
+  ],
+  "success_rate": {"backend": "100% (21/21)", "frontend": "100% (9/9)"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin) — works",
+  "seed_data_creation": "Backend tests created (auto-cleanup-prefixed with TEST_): 2 studio_private brands (TEST_WalterKnoll_*, TEST_Brand_Slug_*), 2 Bonaldo collections (TEST_Heritage_*, TEST_Cat_Coll_*), 2 supplier_catalogs (1 with brand_id+collection_id linked to Bonaldo Test collection, 1 legacy text-only TEST_LegacyBrand_*), 1+ product_usage_event rows. All live in MOOD Demo Studio tenant. Visible on /inspirations/collections page.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend pytest: pytest /app/backend/tests/test_iteration_82_brand_registry.py -v (≈11s, no PDF needed — relies on already-seeded 15 curated brands and uses iter81's leftover Bonaldo products for usage-event tests). Wait_for_selector pattern with timeout=5000 works reliably for the 180ms debounced BrandPicker. Note: rights & permissions ON/OFF state is visible only via CSS class, not text content — see code review comment #4 if more granular FE7 validation is needed in future.",
+  "rca of the issue": "N/A — all flows passed end-to-end. Registry endpoints reachable, idempotency keys (slug+tenant_id+brand_id) work as designed, catalog brand_id/collection_id resolution + cross-brand validation enforced (HTTP 400), backward-compatibility with legacy 'brand' free-text retained, /inspirations/collections page renders grouped by brand with correct catalog status badges (Bozza/Archiviato/Storico), forbidden vocab regex (AI/OCR/parser/algoritmo/machine learning/automation/prompt/model) returns ZERO hits in /inspirations + wizard + drawers + /inspirations/collections."
+}

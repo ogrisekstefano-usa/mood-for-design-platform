@@ -15,6 +15,7 @@
  * Linguaggio: 100% italiano editoriale. ZERO jargon SaaS.
  */
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
@@ -89,6 +90,10 @@ const InspirationsPage = () => {
               data-testid="ins-search-input"
             />
           </div>
+          <Link to="/inspirations/collections" className="ins-cta-secondary"
+                data-testid="ins-collections-link">
+            <Icons.Library size={13} /> Studio Collections™
+          </Link>
           <button type="button" className="ins-cta-secondary"
                   onClick={() => setCatalogOpen(true)}
                   data-testid="ins-catalog-btn">

@@ -73,12 +73,14 @@ def _slim_catalog(row: Dict[str, Any]) -> Dict[str, Any]:
 
 # ─── Models ────────────────────────────────────────────────────────────
 class CatalogCreate(BaseModel):
-    brand:          str = Field(..., min_length=1, max_length=120)
+    brand:          Optional[str] = None  # legacy / fallback when no brand_id
+    brand_id:       Optional[str] = None  # NEW — preferred (Brand Registry™)
+    collection_id:  Optional[str] = None  # NEW — Collection Registry™
     supplier_name:  Optional[str] = None
     collection:     Optional[str] = None
     catalog_year:   Optional[int] = None
     category:       Optional[str] = None
-    rights_status:  Optional[str] = "uploaded_by_tenant"
+    rights_status:  Optional[str] = "studio_uploaded"
     note:           Optional[str] = None
 
 
@@ -151,18 +153,55 @@ def catalog_taxonomy():
 
 @router.post("/catalogs", status_code=201)
 def create_catalog(body: CatalogCreate, ctx=Depends(get_tenant_context)):
-    """Create an empty supplier catalog (Step 1 of the wizard)."""
+    """Create an empty supplier catalog (Step 1 of the wizard).
+
+    Brand resolution priority: brand_id (Brand Registry™) > brand (legacy text).
+    If brand_id is provided we hydrate brand/collection names from the registry.
+    """
     c = db()
+    tid = ctx["tenant_id"]
+
+    # Resolve brand identity
+    brand_id: Optional[str] = body.brand_id
+    brand_name: Optional[str] = (body.brand or "").strip() or None
+    collection_id: Optional[str] = body.collection_id
+    collection_name: Optional[str] = (body.collection or "").strip() or None
+
+    if brand_id:
+        b = (c.table("brands").select("id,name,category")
+             .or_(f"tenant_id.is.null,tenant_id.eq.{tid}")
+             .eq("id", brand_id).limit(1).execute().data or [])
+        if not b:
+            raise HTTPException(400, "Produttore non trovato nel Brand Registry™")
+        brand_name = b[0]["name"]
+        # If category not explicitly set, inherit from brand
+        if not body.category and b[0].get("category"):
+            body.category = b[0]["category"]
+
+    if collection_id:
+        col = (c.table("brand_collections").select("id,name,brand_id")
+               .eq("id", collection_id).limit(1).execute().data or [])
+        if not col:
+            raise HTTPException(400, "Collezione non trovata")
+        if brand_id and col[0]["brand_id"] != brand_id:
+            raise HTTPException(400, "La collezione non appartiene al produttore selezionato")
+        collection_name = col[0]["name"]
+
+    if not brand_name:
+        raise HTTPException(400, "Indica il produttore (Brand Registry™ o nome libero)")
+
     cid = str(uuid.uuid4())
     row = {
         "id":             cid,
-        "tenant_id":      ctx["tenant_id"],
-        "brand":          body.brand.strip(),
+        "tenant_id":      tid,
+        "brand":          brand_name,
+        "brand_id":       brand_id,
         "supplier_name":  (body.supplier_name or "").strip() or None,
-        "collection":     (body.collection or "").strip() or None,
+        "collection":     collection_name,
+        "collection_id":  collection_id,
         "catalog_year":   body.catalog_year,
         "category":       body.category,
-        "rights_status":  body.rights_status or "uploaded_by_tenant",
+        "rights_status":  body.rights_status or "studio_uploaded",
         "status":         "draft",
         "created_by":     ctx.get("profile_id"),
         "created_at":     _now(),
@@ -336,11 +375,13 @@ def finalize_catalog(cid: str, body: FinalizeBody, ctx=Depends(get_tenant_contex
     base_meta = {
         "inspiration_type":     "product",
         "supplier_catalog_id":  cid,
+        "brand_id":             cat.get("brand_id"),
+        "collection_id":        cat.get("collection_id"),
         "brand":                cat.get("brand"),
         "collection":           cat.get("collection"),
         "product_category":     cat.get("category"),
         "supplier_name":        cat.get("supplier_name"),
-        "rights_status":        cat.get("rights_status") or "uploaded_by_tenant",
+        "rights_status":        cat.get("rights_status") or "studio_uploaded",
         "original_catalog_file_id": cat.get("source_file_id"),
         # batch defaults
         "atmosphere_tags":      body.default_atmosphere or [],
