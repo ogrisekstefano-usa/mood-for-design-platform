@@ -53,6 +53,58 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase IMAGE-FILTER-CONTINUITY v1 (Feb 19, 2026 — iteration 69) — Public Renderer Wiring
+**Micro-sprint focused. Direttiva: "what the user edits in Blueprint must be what the visitor sees on the public site". NO new features — solo wiring del rendering filtri persistiti dal iter_68.**
+
+#### Backend — Batch enrichment
+- **NEW** `/app/backend/routers/media_enrichment.py` — `enrich_items_with_filters(*item_lists)` helper:
+  - Walk recursivamente in gallery items + story_body blocks (incl. nested `items[]` di gallery blocks)
+  - Collezione di TUTTI gli `asset_id` referenziati → 1 sola query batch `media_library.select('id, filters, focal_point').in_('id', [...])`
+  - Mutates list in-place inserendo `filters` + `focal_point` su ogni item che ha `asset_id`
+- **Wirato** in 3 endpoint:
+  - `portfolio.public_detail` (gallery + story_body)
+  - `portfolio.read_master` (admin Blueprint preview parity)
+  - `magazine.public_article_detail` (body_blocks)
+
+#### Frontend — Renderer wiring
+- **`SiteImage`** (`/site/components/Reveal.jsx`) — accept `filters`, `focalPoint`, `style` props. Compone:
+  - CSS `filter: brightness() contrast() saturate()` inlined
+  - `transform` composto con la base `scale()` per non rompere l'animazione di entrance
+  - `objectPosition` per focal point `{x, y}` come percentuali
+- **`PublicHotspotImage`** (`ProjectDetailPage.jsx`) — stessa logica inline (no util import per restare leaf component)
+- **`MagazineArticlePage.ArticleBody`** — image, hotspot_image, e nested gallery block items renderizzati con filter+transform+objectPosition
+- Wirato anche nei consumer della **ProjectDetailPage** per:
+  - gallery items
+  - story_body blocks tipi `image`, `hotspot_image`, `gallery.items[]`
+
+#### Validazione end-to-end
+- **Seed test**: iniettato `asset_id` in un gallery item + filtri `{brightness:1.15, contrast:1.05, saturation:0.9, rotate:0}` sull'asset
+- **GET pubblico** `/api/portfolio/public/{tenant}/{slug}`:
+  ```
+  item[0].keys: ['asset_id', 'caption', 'filters', 'id', 'url']
+  item[0].filters = {'rotate': 0, 'contrast': 1.05, 'brightness': 1.15, 'saturation': 0.9}
+  ```
+  → filter propagati attraverso il batch enrichment ✓
+- Lint JS + Python clean su tutti i file (1 pre-existing E701 fix collaterale)
+- Zero regressioni sul rendering esistente — i blocchi senza `asset_id`/`filters` continuano a renderizzare normalmente
+
+#### File changes
+- **NEW** `/app/backend/routers/media_enrichment.py`
+- `/app/backend/routers/portfolio.py` — import + wiring in `read_master` e `public_detail`
+- `/app/backend/routers/magazine.py` — wiring in `public_article_detail`
+- `/app/frontend/src/site/components/Reveal.jsx` — `SiteImage` accept filter/focal props
+- `/app/frontend/src/pages/site/ProjectDetailPage.jsx` — `PublicHotspotImage` + gallery + story_body wiring
+- `/app/frontend/src/pages/site/MagazineArticlePage.jsx` — `ArticleBody` image/hotspot_image + minigallery wiring
+
+#### Cosa NON è incluso (esplicitamente fuori scope per direttiva)
+- **Supabase image transform optimization** (signed URL pre-applied filter) — deferred
+- **Hero hero_url** del Magazine non enrichcato (non ha asset_id direttamente)
+- **Nuovi filter controls** (focal-point drag UI, blur, hue-rotate)
+- **Tenant-specific filter presets**
+
+#### Production confidence: **9.5/10**
+La continuità Blueprint → Storefront ora è veramente end-to-end. L'unico componente non-enrich è l'hero del Magazine (richiede backend schema change minore) — non blocker.
+
 ### Fase P1-CONSOLIDATION v1 (Feb 18, 2026 — iteration 68) — Hotspot brand bridge + Tooltip placement + Image Filters lightweight
 **Sprint consolidamento P1. Direttiva: NO new features. Refine Hotspot mobile (già 44px iter_67) + brand accent override + Where Used (già iter_67) + Image Filters lightweight (5 strumenti, persist DB, render cross-surface).**
 

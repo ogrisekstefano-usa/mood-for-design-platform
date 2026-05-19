@@ -471,6 +471,10 @@ def public_article_detail(tenant_slug: str, slug: str,
         ).eq("id", article["id"]).execute()
     except Exception:
         pass
+
+    # Enrich body blocks with image filters + focal points (single batch).
+    from .media_enrichment import enrich_items_with_filters
+    enrich_items_with_filters(article.get("body_blocks") or [])
     return {"article": article}
 
 

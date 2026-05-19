@@ -33,6 +33,7 @@ from pydantic import BaseModel, Field
 
 from database import db
 from middleware.auth import get_current_user
+from .media_enrichment import enrich_items_with_filters
 
 router = APIRouter(tags=["portfolio"])
 
@@ -146,7 +147,12 @@ def read_master(master_id: str, user: Dict[str, Any] = Depends(get_current_user)
         raise HTTPException(404, "master not found")
     v = (c.table("portfolio_project_variants").select("*")
          .eq("master_id", master_id).order("target_locale").execute().data or [])
-    return {"master": m[0], "variants": v}
+    master = m[0]
+    # Enrich filters + focal_point so admin previews match public site.
+    enrich_items_with_filters(master.get("gallery") or [], master.get("story_body") or [])
+    for variant in v:
+        enrich_items_with_filters(variant.get("story_body") or [])
+    return {"master": master, "variants": v}
 
 
 @router.patch("/admin/projects/{master_id}")
@@ -324,14 +330,19 @@ def public_detail(tenant_slug: str, project_slug: str, locale_code: Optional[str
             variant = rows[0]
     if not variant:
         # Master is published but no variant yet: serve the master as-is.
+        gallery = master.get("gallery") or []
+        story_body = master.get("story_body") or []
+        enrich_items_with_filters(gallery, story_body)
         return {"project": {
             "id": master["id"], "slug": master["slug"], "title": master["title"],
-            "subtitle": master.get("subtitle"), "story_body": master.get("story_body") or [],
-            "gallery": master.get("gallery") or [], "cover_image_url": master.get("cover_image_url"),
+            "subtitle": master.get("subtitle"), "story_body": story_body,
+            "gallery": gallery, "cover_image_url": master.get("cover_image_url"),
             "client": master.get("client"), "location": master.get("location"),
             "year": master.get("year"), "category": master.get("category"),
             "material_palette": master.get("material_palette") or [],
             "target_locale": master.get("default_locale"), "market_code": None,
             "_source": "master_only",
         }}
-    return {"project": _shape_variant_public(variant, master)}
+    shaped = _shape_variant_public(variant, master)
+    enrich_items_with_filters(shaped.get("gallery") or [], shaped.get("story_body") or [])
+    return {"project": shaped}

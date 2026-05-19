@@ -245,7 +245,8 @@ const ProjectDetailPage = () => {
               if (b.type === 'image' && b.url) {
                 return (
                   <Reveal key={b.id || i} delay={(i % 3) + 1} style={{ maxWidth: 'none', margin: '0 calc(-1 * clamp(0px, 6vw, 80px))' }}>
-                    <SiteImage src={b.url} aspect="16/9" alt={b.alt_text || b.caption || ''} />
+                    <SiteImage src={b.url} aspect="16/9" alt={b.alt_text || b.caption || ''}
+                               filters={b.filters} focalPoint={b.focal_point} />
                     {b.caption && (
                       <p style={{
                         marginTop: '0.5rem', fontSize: '0.85rem',
@@ -268,7 +269,8 @@ const ProjectDetailPage = () => {
                     }}>
                       {b.items.map((g, gi) => (
                         <div key={g.id || gi}>
-                          <SiteImage src={g.url} aspect="4/5" alt={g.alt_text || g.caption || ''} />
+                          <SiteImage src={g.url} aspect="4/5" alt={g.alt_text || g.caption || ''}
+                                     filters={g.filters} focalPoint={g.focal_point} />
                           {g.caption && (
                             <p style={{
                               marginTop: '0.4rem', fontSize: '0.8rem',
@@ -286,7 +288,8 @@ const ProjectDetailPage = () => {
               if (b.type === 'hotspot_image' && b.url) {
                 return (
                   <Reveal key={b.id || i} delay={(i % 3) + 1} style={{ maxWidth: 'none', margin: '0 calc(-1 * clamp(0px, 6vw, 80px))' }}>
-                    <PublicHotspotImage url={b.url} caption={b.caption} hotspots={b.hotspots || []} alt={b.alt_text} />
+                    <PublicHotspotImage url={b.url} caption={b.caption} hotspots={b.hotspots || []} alt={b.alt_text}
+                                        filters={b.filters} focalPoint={b.focal_point} />
                   </Reveal>
                 );
               }
@@ -354,10 +357,12 @@ const ProjectDetailPage = () => {
                 return (
                   <Reveal key={g.id || i} delay={(i % 3) + 1} className={wide ? 'mfd-gallery__wide' : ''}>
                     {hsList.length > 0 ? (
-                      <PublicHotspotImage url={g.url} caption={g.caption} hotspots={hsList} alt={g.alt_text || g.caption || ''} aspect={wide ? '16/9' : '4/5'} />
+                      <PublicHotspotImage url={g.url} caption={g.caption} hotspots={hsList} alt={g.alt_text || g.caption || ''} aspect={wide ? '16/9' : '4/5'}
+                                          filters={g.filters} focalPoint={g.focal_point} />
                     ) : (
                       <>
-                        <SiteImage src={g.url} aspect={wide ? '16/9' : '4/5'} alt={g.alt_text || g.caption || ''} />
+                        <SiteImage src={g.url} aspect={wide ? '16/9' : '4/5'} alt={g.alt_text || g.caption || ''}
+                                   filters={g.filters} focalPoint={g.focal_point} />
                         {g.caption && (
                           <p
                             style={{
@@ -529,7 +534,7 @@ const RelatedRuntimeProjects = ({ currentSlug, locale, pickUiRelated }) => {
 export default ProjectDetailPage;
 
 // ─── PublicHotspotImage — read-only editorial detail points ──────
-const PublicHotspotImage = ({ url, caption, hotspots = [], alt, aspect = '16/9' }) => {
+const PublicHotspotImage = ({ url, caption, hotspots = [], alt, aspect = '16/9', filters, focalPoint }) => {
   const [activeId, setActiveId] = React.useState(null);
   const active = hotspots.find((h) => h.id === activeId);
   // Anti-overflow placement: flip horizontally past 60%, vertically
@@ -540,10 +545,24 @@ const PublicHotspotImage = ({ url, caption, hotspots = [], alt, aspect = '16/9' 
     const vy = h.y_pct > 70 ? '-100%' : (h.y_pct < 30 ? '0%' : '-50%');
     return `translate(${hx}, ${vy})`;
   };
+  // Build CSS filter + transform + focal point — same logic as SiteImage
+  // so the underlying image renders identically inside the hotspot canvas.
+  const imgStyle = {};
+  if (filters) {
+    const parts = [];
+    if (filters.brightness != null && filters.brightness !== 1) parts.push(`brightness(${filters.brightness})`);
+    if (filters.contrast   != null && filters.contrast   !== 1) parts.push(`contrast(${filters.contrast})`);
+    if (filters.saturation != null && filters.saturation !== 1) parts.push(`saturate(${filters.saturation})`);
+    if (parts.length) imgStyle.filter = parts.join(' ');
+    if (filters.rotate != null && filters.rotate !== 0) imgStyle.transform = `rotate(${filters.rotate}deg)`;
+  }
+  if (focalPoint && (focalPoint.x != null || focalPoint.y != null)) {
+    imgStyle.objectPosition = `${(focalPoint.x ?? 0.5) * 100}% ${(focalPoint.y ?? 0.5) * 100}%`;
+  }
   return (
     <div className="phs-wrap" data-testid="public-hotspot-image">
       <div className="phs-canvas" style={{ aspectRatio: aspect }}>
-        <img src={url} alt={alt || caption || ''} className="phs-img" />
+        <img src={url} alt={alt || caption || ''} className="phs-img" style={imgStyle} />
         {hotspots.map((h) => (
           <button
             key={h.id}

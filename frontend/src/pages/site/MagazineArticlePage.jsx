@@ -272,10 +272,26 @@ const ArticleBody = ({ blocks, hotspots, locale, articleId, openSoftLead, onSent
           const url = b.url || b.image_url;
           const caption = b.caption || lc.caption || '';
           if (!url) return null;
+          // Filter + focal-point styles inlined (no new imports for the
+          // leaf renderer). Matches the SiteImage signature.
+          const imgStyle = {};
+          const f = b.filters;
+          if (f) {
+            const parts = [];
+            if (f.brightness != null && f.brightness !== 1) parts.push(`brightness(${f.brightness})`);
+            if (f.contrast   != null && f.contrast   !== 1) parts.push(`contrast(${f.contrast})`);
+            if (f.saturation != null && f.saturation !== 1) parts.push(`saturate(${f.saturation})`);
+            if (parts.length) imgStyle.filter = parts.join(' ');
+            if (f.rotate != null && f.rotate !== 0) imgStyle.transform = `rotate(${f.rotate}deg)`;
+          }
+          const fp = b.focal_point;
+          if (fp && (fp.x != null || fp.y != null)) {
+            imgStyle.objectPosition = `${(fp.x ?? 0.5) * 100}% ${(fp.y ?? 0.5) * 100}%`;
+          }
           return (
             <figure key={blockKey} className="mfd-article__figure" data-testid={`block-${blockKey}`}>
               <div className="mfd-article__figure-media">
-                <img src={url} alt={b.alt_text || lc.alt || ''} loading="lazy" />
+                <img src={url} alt={b.alt_text || lc.alt || ''} loading="lazy" style={imgStyle} />
                 {embeddedHs.map((h) => (
                   <Hotspot key={h.id}
                            hotspot={{ ...h, image_url: url }}
@@ -299,20 +315,36 @@ const ArticleBody = ({ blocks, hotspots, locale, articleId, openSoftLead, onSent
                    gap: '0.8rem',
                    margin: '2rem 0',
                  }}>
-              {b.items.map((g, gi) => (
-                <figure key={g.id || gi} className="mfd-article__minigallery-item" style={{ margin: 0 }}>
-                  <img src={g.url} alt={g.alt_text || g.caption || ''} loading="lazy"
-                       style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', display: 'block' }} />
-                  {g.caption && (
-                    <figcaption style={{
-                      fontSize: '0.8rem', marginTop: '0.35rem',
-                      fontFamily: 'var(--site-serif, "Playfair Display", Georgia, serif)',
-                      fontStyle: 'italic',
-                      color: 'var(--site-ink-muted, rgba(28,24,20,0.6))',
-                    }}>{g.caption}</figcaption>
-                  )}
-                </figure>
-              ))}
+              {b.items.map((g, gi) => {
+                const ig = {};
+                const gf = g.filters;
+                if (gf) {
+                  const parts = [];
+                  if (gf.brightness != null && gf.brightness !== 1) parts.push(`brightness(${gf.brightness})`);
+                  if (gf.contrast   != null && gf.contrast   !== 1) parts.push(`contrast(${gf.contrast})`);
+                  if (gf.saturation != null && gf.saturation !== 1) parts.push(`saturate(${gf.saturation})`);
+                  if (parts.length) ig.filter = parts.join(' ');
+                  if (gf.rotate != null && gf.rotate !== 0) ig.transform = `rotate(${gf.rotate}deg)`;
+                }
+                const gfp = g.focal_point;
+                if (gfp && (gfp.x != null || gfp.y != null)) {
+                  ig.objectPosition = `${(gfp.x ?? 0.5) * 100}% ${(gfp.y ?? 0.5) * 100}%`;
+                }
+                return (
+                  <figure key={g.id || gi} className="mfd-article__minigallery-item" style={{ margin: 0 }}>
+                    <img src={g.url} alt={g.alt_text || g.caption || ''} loading="lazy"
+                         style={{ width: '100%', aspectRatio: '4/5', objectFit: 'cover', display: 'block', ...ig }} />
+                    {g.caption && (
+                      <figcaption style={{
+                        fontSize: '0.8rem', marginTop: '0.35rem',
+                        fontFamily: 'var(--site-serif, "Playfair Display", Georgia, serif)',
+                        fontStyle: 'italic',
+                        color: 'var(--site-ink-muted, rgba(28,24,20,0.6))',
+                      }}>{g.caption}</figcaption>
+                    )}
+                  </figure>
+                );
+              })}
             </div>
           );
         }

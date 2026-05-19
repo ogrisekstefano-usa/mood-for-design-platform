@@ -52,8 +52,23 @@ export const Reveal = ({ children, delay, className = '', as: As = 'div', ...res
   );
 };
 
-export const SiteImage = ({ src, alt = '', aspect, className = '', priority = false, ...rest }) => {
+export const SiteImage = ({ src, alt = '', aspect, className = '', priority = false, filters, focalPoint, style: extraStyle, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
+  // Build CSS filter + transform + focal-point styles when present.
+  // Kept inline (no new util import) so SiteImage stays a leaf component.
+  const filterParts = [];
+  let extraTransform = '';
+  let objectPosition;
+  if (filters) {
+    if (filters.brightness != null && filters.brightness !== 1) filterParts.push(`brightness(${filters.brightness})`);
+    if (filters.contrast   != null && filters.contrast   !== 1) filterParts.push(`contrast(${filters.contrast})`);
+    if (filters.saturation != null && filters.saturation !== 1) filterParts.push(`saturate(${filters.saturation})`);
+    if (filters.rotate     != null && filters.rotate     !== 0) extraTransform = `rotate(${filters.rotate}deg)`;
+  }
+  if (focalPoint && (focalPoint.x != null || focalPoint.y != null)) {
+    objectPosition = `${(focalPoint.x ?? 0.5) * 100}% ${(focalPoint.y ?? 0.5) * 100}%`;
+  }
+  const baseTransform = loaded ? 'scale(1)' : 'scale(1.02)';
   return (
     <div
       className={`${loaded ? '' : 'mfd-img-skeleton'} ${className}`.trim()}
@@ -69,8 +84,11 @@ export const SiteImage = ({ src, alt = '', aspect, className = '', priority = fa
         style={{
           width: '100%', height: '100%', objectFit: 'cover', display: 'block',
           opacity: loaded ? 1 : 0,
-          transform: loaded ? 'scale(1)' : 'scale(1.02)',
+          transform: extraTransform ? `${baseTransform} ${extraTransform}` : baseTransform,
           transition: 'opacity 900ms ease, transform 1600ms cubic-bezier(0.2,0.7,0.2,1)',
+          ...(filterParts.length ? { filter: filterParts.join(' ') } : {}),
+          ...(objectPosition ? { objectPosition } : {}),
+          ...extraStyle,
         }}
         {...rest}
       />
