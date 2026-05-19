@@ -28,11 +28,26 @@ import { useAuth } from '../../contexts/AuthContext';
 import BlueprintColorPicker from '../../components/common/BlueprintColorPicker';
 import EditorialMediaField from '../../components/common/EditorialMediaField';
 
-const DISPLAY_FONTS = ['Playfair Display', 'Cormorant Garamond', 'DM Serif Display', 'Bodoni Moda', 'Fraunces', 'Inter Tight'];
-const BODY_FONTS    = ['Inter', 'Montserrat', 'Manrope', 'Plus Jakarta Sans', 'Space Grotesk', 'Inter Tight'];
+const DISPLAY_FONTS = [
+  // Serif (editorial)
+  'Playfair Display', 'Cormorant Garamond', 'DM Serif Display', 'Bodoni Moda', 'Fraunces', 'EB Garamond',
+  // Sans (modern)
+  'Inter Tight', 'Space Grotesk', 'Manrope', 'DM Sans', 'Archivo', 'Outfit',
+];
+const BODY_FONTS    = ['Inter', 'Montserrat', 'Manrope', 'Plus Jakarta Sans', 'Space Grotesk', 'DM Sans', 'Work Sans', 'Karla'];
 const RADIUS_OPTS   = ['0px', '2px', '4px', '8px', '12px'];
 const DENSITY_OPTS  = ['compact', 'comfortable', 'spacious'];
 const SHADOW_OPTS   = ['none', 'soft', 'medium', 'strong'];
+
+// Font kind hint — same catalog as TenantThemeContext, used to render
+// each font option in its OWN typeface so the user sees what they're choosing.
+const FONT_KIND = {
+  'Playfair Display':'serif','Cormorant Garamond':'serif','DM Serif Display':'serif',
+  'Bodoni Moda':'serif','Fraunces':'serif','EB Garamond':'serif',
+  'Inter':'sans','Inter Tight':'sans','Montserrat':'sans','Manrope':'sans',
+  'Plus Jakarta Sans':'sans','Space Grotesk':'sans','DM Sans':'sans',
+  'Archivo':'sans','Outfit':'sans','Work Sans':'sans','Karla':'sans','Sora':'sans',
+};
 
 const DEFAULT_PALETTE = {
   primary: '#00C9B3', secondary: '#33DCC6', accent: '#7EE6DA',
@@ -157,12 +172,19 @@ const ColorPicker = ({ value, onChange, label, testid }) => (
   </div>
 );
 
-const SelectChips = ({ options, value, onChange, testid }) => (
+const SelectChips = ({ options, value, onChange, testid, renderAs }) => (
   <div className="flex flex-wrap gap-1.5">
     {options.map((o) => {
       const active = value === o;
+      // For typography chips, render the option label in its OWN font so
+      // the picker visually communicates the choice (serif vs sans).
+      const fontStyle = renderAs === 'font'
+        ? { fontFamily: `'${o}', ${FONT_KIND[o] === 'serif' ? 'serif' : 'sans-serif'}`,
+            letterSpacing: 0.02, textTransform: 'none', fontSize: 13 }
+        : null;
       return (
         <button type="button" key={o} onClick={() => onChange(o)} data-testid={`${testid}-${o}`}
+                style={fontStyle || undefined}
                 className={`px-3 py-1.5 rounded-[var(--bp-radius-xs)] text-[10px] font-body uppercase tracking-[0.18em] border transition-colors
                   ${active ? 'border-[var(--bp-primary)] text-[var(--bp-primary)] bg-[var(--bp-primary)]/8'
                            : 'border-[var(--bp-border)] text-[var(--bp-text-secondary)] hover:border-[var(--bp-border-strong)] hover:text-[var(--bp-text-primary)]'}`}>
@@ -352,7 +374,7 @@ const BrandStudioPage = () => {
   const palette = theme.palette || {};
 
   return (
-    <div className="p-8 max-w-[1500px] mx-auto" data-testid="brand-page">
+    <div className="p-8 pb-24 max-w-[1500px] mx-auto" data-testid="brand-page">
       {/* Header */}
       <div className="flex items-start justify-between mb-7">
         <div>
@@ -479,10 +501,10 @@ const BrandStudioPage = () => {
 
           <Section kicker={t('brand.section.typographyKicker', null, 'C · Tipografia')} title={t('brand.section.typographyTitle', null, 'Caratteri')} testid="section-typography">
             <Field label={t('brand.field.display', null, 'Display (Titoli)')}>
-              <SelectChips options={DISPLAY_FONTS} value={theme.typography?.display} onChange={(v) => setTypo('display', v)} testid="font-display" />
+              <SelectChips options={DISPLAY_FONTS} value={theme.typography?.display} onChange={(v) => setTypo('display', v)} testid="font-display" renderAs="font" />
             </Field>
             <Field label={t('brand.field.body', null, 'Body (Interfaccia)')}>
-              <SelectChips options={BODY_FONTS} value={theme.typography?.body} onChange={(v) => setTypo('body', v)} testid="font-body" />
+              <SelectChips options={BODY_FONTS} value={theme.typography?.body} onChange={(v) => setTypo('body', v)} testid="font-body" renderAs="font" />
             </Field>
           </Section>
 

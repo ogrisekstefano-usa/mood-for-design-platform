@@ -210,6 +210,151 @@ PRESETS = [
             "radius": "6px", "density": "spacious", "shadow": "soft",
         },
     },
+    # ═══════════════════════════════════════════════════════════════════
+    # COLORFUL CURATED THEMES (Feb 2026) — designer-balanced vibrant
+    # palettes. Always one bold hue + one tactile neutral + restrained
+    # contrast pair. Never circus colors.
+    # ═══════════════════════════════════════════════════════════════════
+    {
+        "key": "bordeaux",
+        "label": "Atelier Bordeaux",
+        "description": "Burgundy & rose · DM Serif × Plus Jakarta",
+        "vibe_tags": ["serif", "warm", "dark", "luxury", "bordeaux"],
+        "sort_order": 100,
+        "is_default": False,
+        "theme": {
+            "mode": "dark",
+            "palette": {
+                "primary": "#A8324A", "secondary": "#C46778", "accent": "#E8B4A8",
+                "background": "#1A0F12", "surface": "#241419",
+                "text_primary": "#F3E6E0", "text_secondary": "#C5A99E",
+                "border": "rgba(232,180,168,0.12)",
+                "success": "#86C68E", "warning": "#E4B95F", "danger": "#E07A5F",
+            },
+            "typography": {"display": "DM Serif Display", "body": "Plus Jakarta Sans"},
+            "radius": "2px", "density": "comfortable", "shadow": "medium",
+        },
+    },
+    {
+        "key": "aegean",
+        "label": "Aegean Atelier",
+        "description": "Deep blue & whitewash · Cormorant × Manrope",
+        "vibe_tags": ["serif", "blue", "light", "mediterranean"],
+        "sort_order": 110,
+        "is_default": False,
+        "theme": {
+            "mode": "light",
+            "palette": {
+                "primary": "#1F4E79", "secondary": "#3D7AAA", "accent": "#88B7D8",
+                "background": "#F7F4ED", "surface": "#FFFFFF",
+                "text_primary": "#16243A", "text_secondary": "#4F6177",
+                "border": "rgba(31,78,121,0.14)",
+                "success": "#3F8B6E", "warning": "#D2A359", "danger": "#C24E3A",
+            },
+            "typography": {"display": "Cormorant Garamond", "body": "Manrope"},
+            "radius": "4px", "density": "spacious", "shadow": "soft",
+        },
+    },
+    {
+        "key": "linen_sage",
+        "label": "Linen Sage",
+        "description": "Sage & linen · Fraunces × DM Sans",
+        "vibe_tags": ["serif", "green", "light", "calm", "natural"],
+        "sort_order": 120,
+        "is_default": False,
+        "theme": {
+            "mode": "light",
+            "palette": {
+                "primary": "#5C7A5C", "secondary": "#8AA38A", "accent": "#C7D2B5",
+                "background": "#F5F2EA", "surface": "#FFFFFF",
+                "text_primary": "#2A3328", "text_secondary": "#5E6359",
+                "border": "rgba(42,51,40,0.10)",
+                "success": "#6F8C5A", "warning": "#D2A359", "danger": "#B5523B",
+            },
+            "typography": {"display": "Fraunces", "body": "DM Sans"},
+            "radius": "8px", "density": "spacious", "shadow": "soft",
+        },
+    },
+    {
+        "key": "florence_sienna",
+        "label": "Florence Sienna",
+        "description": "Terracotta & ochre · Bodoni × Outfit",
+        "vibe_tags": ["serif", "warm", "italian", "earth", "vibrant"],
+        "sort_order": 130,
+        "is_default": False,
+        "theme": {
+            "mode": "light",
+            "palette": {
+                "primary": "#C44536", "secondary": "#E07A5F", "accent": "#F2C075",
+                "background": "#FAF3E7", "surface": "#FFFFFF",
+                "text_primary": "#2B1A14", "text_secondary": "#6B5547",
+                "border": "rgba(43,26,20,0.10)",
+                "success": "#6F8C5A", "warning": "#E4B95F", "danger": "#A82C24",
+            },
+            "typography": {"display": "Bodoni Moda", "body": "Outfit"},
+            "radius": "2px", "density": "comfortable", "shadow": "medium",
+        },
+    },
+    {
+        "key": "tokyo_ink",
+        "label": "Tokyo Ink",
+        "description": "Indigo & rice paper · Inter Tight × Inter",
+        "vibe_tags": ["sans", "dark", "minimal", "japanese", "modern"],
+        "sort_order": 140,
+        "is_default": False,
+        "theme": {
+            "mode": "dark",
+            "palette": {
+                "primary": "#4A6FE3", "secondary": "#7B95EE", "accent": "#A8B8F2",
+                "background": "#0F1116", "surface": "#171A22",
+                "text_primary": "#EEF0F6", "text_secondary": "#A8AEC2",
+                "border": "rgba(168,184,242,0.12)",
+                "success": "#5DD39E", "warning": "#F2B441", "danger": "#EF4444",
+            },
+            "typography": {"display": "Inter Tight", "body": "Inter"},
+            "radius": "4px", "density": "compact", "shadow": "strong",
+        },
+    },
+    {
+        "key": "soho_rose",
+        "label": "Soho Rose",
+        "description": "Dusty rose & graphite · Playfair × Karla",
+        "vibe_tags": ["serif", "rose", "soft", "feminine", "editorial"],
+        "sort_order": 150,
+        "is_default": False,
+        "theme": {
+            "mode": "light",
+            "palette": {
+                "primary": "#9D5A6C", "secondary": "#C28394", "accent": "#E8C5C8",
+                "background": "#F8F3F2", "surface": "#FFFFFF",
+                "text_primary": "#2A1F23", "text_secondary": "#665058",
+                "border": "rgba(157,90,108,0.12)",
+                "success": "#6F8C5A", "warning": "#D2A359", "danger": "#B53A4F",
+            },
+            "typography": {"display": "Playfair Display", "body": "Karla"},
+            "radius": "6px", "density": "comfortable", "shadow": "soft",
+        },
+    },
+    {
+        "key": "verde_tuscan",
+        "label": "Verde Tuscan",
+        "description": "Olive & cream · EB Garamond × Work Sans",
+        "vibe_tags": ["serif", "olive", "warm", "rustic", "earthy"],
+        "sort_order": 160,
+        "is_default": False,
+        "theme": {
+            "mode": "light",
+            "palette": {
+                "primary": "#6B7A39", "secondary": "#94A35A", "accent": "#C4CC9A",
+                "background": "#F7F2E5", "surface": "#FFFFFF",
+                "text_primary": "#2A2E1A", "text_secondary": "#5A5E48",
+                "border": "rgba(107,122,57,0.14)",
+                "success": "#6F8C5A", "warning": "#D2A359", "danger": "#B5523B",
+            },
+            "typography": {"display": "EB Garamond", "body": "Work Sans"},
+            "radius": "4px", "density": "spacious", "shadow": "soft",
+        },
+    },
 ]
 
 

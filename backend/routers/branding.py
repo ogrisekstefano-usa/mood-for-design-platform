@@ -122,6 +122,14 @@ def update_branding(
         existing = t.get("branding_settings") or {}
         # Merge — only update keys explicitly provided (drop None)
         patch = {k: v for k, v in body.branding.model_dump().items() if v is not None}
+        # ── i18n bags need DEEP merge, not shallow replace ────────────
+        # When the user edits ONLY en-US, the frontend sends
+        # `public_brand_name_i18n: {'en-US': 'NEW'}`. A shallow merge
+        # would wipe the it-IT / fr-FR / es-ES entries already saved.
+        I18N_FIELDS = ("public_brand_name_i18n", "tagline_i18n", "short_description_i18n")
+        for f in I18N_FIELDS:
+            if f in patch and isinstance(patch[f], dict):
+                patch[f] = {**(existing.get(f) or {}), **patch[f]}
         update["branding_settings"] = {**existing, **patch}
 
     if body.theme is not None:

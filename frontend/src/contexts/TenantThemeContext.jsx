@@ -2,19 +2,19 @@
  * TenantThemeProvider — runtime CSS-variable injector for tenant theme.
  *
  * Reads `theme_settings` from /api/branding once at boot, then maps the payload
- * to a flat set of `--brand-*` CSS variables and writes them on
- * `document.documentElement`. Other components / pages can also bridge a theme
- * payload to vars without persisting via `applyThemeVarsToRoot()`.
+ * to a flat set of CSS variables and writes them on `document.documentElement`.
  *
- *   --brand-primary  --brand-secondary  --brand-accent
- *   --brand-bg       --brand-surface    --brand-border
- *   --brand-text     --brand-text-2
- *   --brand-success  --brand-warning    --brand-danger
- *   --brand-radius   --brand-font-display  --brand-font-body
- *   --brand-shadow   --brand-density
+ * TIERED THEME PROPAGATION (rev2 — Feb 2026):
  *
- * Falls back gracefully: when a key is missing, the var is *not* set so
- * the global stylesheet defaults (index.css `--bp-*`) win.
+ *   STOREFRONT  (data-surface="storefront"):
+ *     Full theme — primary, secondary, accent, bg, surface, text, border,
+ *     status colors, fonts, radius, density, shadow.
+ *
+ *   BLUEPRINT OS  (data-surface="os"):
+ *     Now mirrors the FULL theme (palette + fonts + radius + density +
+ *     shadow). When the tenant picks a light preset the editor flips to
+ *     light too. When they switch to dark, vice versa. The previous
+ *     "safe subset only" approach was hiding the user's identity.
  */
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import api from '../lib/api';
@@ -24,50 +24,34 @@ const TenantThemeContext = createContext({
   refresh: () => {}, applyDraft: () => {}, clearDraft: () => {},
 });
 
-const VAR_MAP = {
-  'palette.primary':         '--brand-primary',
-  'palette.secondary':       '--brand-secondary',
-  'palette.accent':          '--brand-accent',
-  'palette.background':      '--brand-bg',
-  'palette.surface':         '--brand-surface',
-  'palette.text_primary':    '--brand-text',
-  'palette.text_secondary':  '--brand-text-2',
-  'palette.border':          '--brand-border',
-  'palette.success':         '--brand-success',
-  'palette.warning':         '--brand-warning',
-  'palette.danger':          '--brand-danger',
-  'typography.display':      '--brand-font-display',
-  'typography.body':         '--brand-font-body',
-  'radius':                  '--brand-radius',
-  'density':                 '--brand-density',
-  'shadow':                  '--brand-shadow',
+// Font catalog — single source of truth for kind (serif vs sans).
+// Used to emit the correct CSS fallback chain.
+const FONT_KIND = {
+  // Serif
+  'Playfair Display': 'serif', 'Cormorant Garamond': 'serif',
+  'DM Serif Display': 'serif', 'Bodoni Moda': 'serif', 'Fraunces': 'serif',
+  'EB Garamond': 'serif', 'Cardo': 'serif', 'Lora': 'serif',
+  // Sans
+  'Inter': 'sans', 'Inter Tight': 'sans', 'Montserrat': 'sans',
+  'Manrope': 'sans', 'Plus Jakarta Sans': 'sans', 'Space Grotesk': 'sans',
+  'DM Sans': 'sans', 'Archivo': 'sans', 'Outfit': 'sans',
+  'Work Sans': 'sans', 'Karla': 'sans', 'Sora': 'sans',
 };
-
-const dig = (obj, path) => path.split('.').reduce((a, k) => (a == null ? undefined : a[k]), obj);
 
 const fontFamilyFor = (name) => {
   if (!name) return undefined;
-  // Wrap unquoted multi-word names so the browser parses correctly
-  return /\s/.test(name) ? `'${name}', serif` : `${name}, sans-serif`;
+  const kind = FONT_KIND[name] || (/\s/.test(name) ? 'serif' : 'sans');
+  const stack = kind === 'serif' ? 'serif' : 'system-ui, sans-serif';
+  return `'${name}', ${stack}`;
 };
 
-// ── Surface-scoped runtime stylesheet ────────────────────────────────
-//   TIERED THEME PROPAGATION:
-//
-//   STOREFRONT  (data-surface="storefront"):
-//     Full theme — primary, secondary, accent, bg, surface, text, border,
-//     status colors, fonts, radius, density, shadow.
-//
-//   BLUEPRINT OS  (data-surface="os"):
-//     SAFE SUBSET only — accent color + heading/body fonts override the
-//     OS chrome. Backgrounds, surfaces, borders remain OS-controlled so
-//     even an acid-pink tenant palette keeps the editor usable. The
-//     designer still SEES their identity in the chrome (heading typeface,
-//     accent CTA color) without compromising operational legibility.
-//
-//   Both rules live in a single <style> tag.
-const RUNTIME_STYLE_ID = 'mfd-tenant-runtime-theme';
+// Shadow strength multipliers (consumed by --bp-shadow-strength)
+const SHADOW_STRENGTH = { none: 0, soft: 0.6, medium: 1.0, strong: 1.5 };
 
+// Density tokens (consumed via body class in index.css)
+const DENSITY_CLASSES = ['density-compact', 'density-comfortable', 'density-spacious'];
+
+const RUNTIME_STYLE_ID = 'mfd-tenant-runtime-theme';
 function _runtimeStyleEl() {
   if (typeof document === 'undefined') return null;
   let el = document.getElementById(RUNTIME_STYLE_ID);
@@ -80,20 +64,38 @@ function _runtimeStyleEl() {
   return el;
 }
 
-// Subset of tokens that propagate to the OS surface. These tokens are
-// usability-safe: tinting the accent and fonts does not break editor
-// readability (unlike overriding background/surface/border).
-const OS_SAFE_VAR_MAP = {
-  'palette.primary':        '--bp-primary',
-  'palette.accent':         '--bp-accent',
-  'typography.display':     '--bp-font-heading',
-  'typography.body':        '--bp-font-body',
-};
+// Full map: writes both --brand-* (storefront tokens) and --bp-* (OS tokens)
+const VAR_MAP = [
+  // path                 storefront var       OS var
+  ['palette.primary',         '--brand-primary',    '--bp-primary'],
+  ['palette.secondary',       '--brand-secondary',  '--bp-secondary'],
+  ['palette.accent',          '--brand-accent',     '--bp-accent'],
+  ['palette.background',      '--brand-bg',         '--bp-bg'],
+  ['palette.surface',         '--brand-surface',    '--bp-surface'],
+  ['palette.surface',         null,                 '--bp-surface-2'],
+  ['palette.text_primary',    '--brand-text',       '--bp-text-primary'],
+  ['palette.text_secondary',  '--brand-text-2',     '--bp-text-secondary'],
+  ['palette.text_secondary',  null,                 '--bp-text-muted'],
+  ['palette.border',          '--brand-border',     '--bp-border'],
+  ['palette.success',         '--brand-success',    '--bp-success'],
+  ['palette.warning',         '--brand-warning',    '--bp-warning'],
+  ['palette.danger',          '--brand-danger',     '--bp-danger'],
+  ['typography.display',      '--brand-font-display', '--bp-font-heading'],
+  ['typography.body',         '--brand-font-body',  '--bp-font-body'],
+  ['radius',                  '--brand-radius',     '--bp-radius-sm'],
+];
+
+const dig = (obj, path) => path.split('.').reduce((a, k) => (a == null ? undefined : a[k]), obj);
 
 export function applyThemeVarsToRoot(theme) {
   if (typeof document === 'undefined') return;
   const styleEl = _runtimeStyleEl();
   if (!styleEl) return;
+
+  // Clear density classes on body — always reset first
+  const body = document.body;
+  if (body) DENSITY_CLASSES.forEach((c) => body.classList.remove(c));
+
   if (!theme) {
     styleEl.textContent = '';
     document.documentElement.removeAttribute('data-tenant-theme');
@@ -101,44 +103,55 @@ export function applyThemeVarsToRoot(theme) {
     return;
   }
 
-  // ── Storefront (full theme) ────────────────────────────────────
   const storefrontDecls = [];
-  Object.entries(VAR_MAP).forEach(([path, cssVar]) => {
+  const osDecls = [];
+
+  VAR_MAP.forEach(([path, sfVar, osVar]) => {
     let value = dig(theme, path);
-    if (cssVar === '--brand-font-display' || cssVar === '--brand-font-body') {
+    if (path === 'typography.display' || path === 'typography.body') {
       value = fontFamilyFor(value);
     }
     if (value != null && value !== '') {
-      storefrontDecls.push(`${cssVar}: ${String(value)};`);
+      if (sfVar) storefrontDecls.push(`${sfVar}: ${String(value)};`);
+      if (osVar) osDecls.push(`${osVar}: ${String(value)};`);
     }
   });
 
-  // ── Blueprint OS (safe subset only) ─────────────────────────────
-  const osDecls = [];
-  Object.entries(OS_SAFE_VAR_MAP).forEach(([path, cssVar]) => {
-    let value = dig(theme, path);
-    if (cssVar === '--bp-font-heading' || cssVar === '--bp-font-body') {
-      value = fontFamilyFor(value);
-    }
-    if (value != null && value !== '') {
-      osDecls.push(`${cssVar}: ${String(value)};`);
-    }
-  });
-  // Derive primary-soft and primary-glow tints from the tenant primary
-  // so hover/active states feel cohesive across the editor chrome.
+  // Derive primary tints (soft / glow / border-hover / selection)
   const p = dig(theme, 'palette.primary');
   if (typeof p === 'string' && /^#[0-9a-f]{6}$/i.test(p)) {
     const r = parseInt(p.slice(1, 3), 16);
     const g = parseInt(p.slice(3, 5), 16);
     const b = parseInt(p.slice(5, 7), 16);
-    osDecls.push(`--bp-primary-soft: rgba(${r}, ${g}, ${b}, 0.12);`);
-    osDecls.push(`--bp-primary-glow: rgba(${r}, ${g}, ${b}, 0.18);`);
-    osDecls.push(`--bp-border-hover: rgba(${r}, ${g}, ${b}, 0.28);`);
-    osDecls.push(`--bp-border-active: rgba(${r}, ${g}, ${b}, 0.40);`);
-    osDecls.push(`--bp-selection-bg: rgba(${r}, ${g}, ${b}, 0.20);`);
+    const tints = [
+      `--bp-primary-soft: rgba(${r}, ${g}, ${b}, 0.12);`,
+      `--bp-primary-glow: rgba(${r}, ${g}, ${b}, 0.18);`,
+      `--bp-border-hover: rgba(${r}, ${g}, ${b}, 0.28);`,
+      `--bp-border-active: rgba(${r}, ${g}, ${b}, 0.40);`,
+      `--bp-selection-bg: rgba(${r}, ${g}, ${b}, 0.20);`,
+    ];
+    osDecls.push(...tints);
+    storefrontDecls.push(
+      `--brand-primary-soft: rgba(${r}, ${g}, ${b}, 0.12);`,
+      `--brand-primary-glow: rgba(${r}, ${g}, ${b}, 0.18);`,
+    );
   }
 
-  styleEl.textContent = `[data-surface="storefront"] {\n  ${storefrontDecls.join('\n  ')}\n}\n[data-surface="os"] {\n  ${osDecls.join('\n  ')}\n}`;
+  // Shadow strength — multiplier consumed by index.css shadow tokens
+  const shadowKey = theme.shadow || 'soft';
+  const strength = SHADOW_STRENGTH[shadowKey] ?? 0.6;
+  osDecls.push(`--bp-shadow-strength: ${strength};`);
+  storefrontDecls.push(`--brand-shadow-strength: ${strength};`);
+
+  styleEl.textContent =
+    `[data-surface="storefront"] {\n  ${storefrontDecls.join('\n  ')}\n}\n` +
+    `[data-surface="os"] {\n  ${osDecls.join('\n  ')}\n}`;
+
+  // Density → body class (consumed by existing index.css rules)
+  if (body) {
+    const density = theme.density || 'comfortable';
+    body.classList.add(`density-${density}`);
+  }
 
   if (theme.preset_key) document.documentElement.setAttribute('data-tenant-theme', theme.preset_key);
   if (theme.mode)       document.documentElement.setAttribute('data-tenant-mode', theme.mode);
@@ -166,7 +179,6 @@ export const TenantThemeProvider = ({ children }) => {
 
   useEffect(() => { refresh(); }, [refresh]);
 
-  // Apply theme (draft wins for live preview)
   useEffect(() => {
     applyThemeVarsToRoot(draft || theme);
   }, [draft, theme]);

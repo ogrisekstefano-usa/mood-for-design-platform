@@ -304,10 +304,28 @@
   font-size: 12.5px;
   font-family: var(--bp-font-body, system-ui);
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--bp-text-muted) 50%),
+    linear-gradient(135deg, var(--bp-text-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 16px) 14px,
+    calc(100% - 11px) 14px;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 28px;
 }
 .emf-select:focus {
   outline: none;
   border-color: var(--bp-border-hover);
+}
+/* Ensure native option items render legibly across light/dark themes
+   (some browsers — Chrome on macOS — inherit the select bg badly). */
+.emf-select option {
+  background: #16171A;
+  color: #F4F5F7;
+  padding: 8px;
 }
 
 /* ── Usage relationships chip ────────────────────────────────────────── */

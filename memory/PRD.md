@@ -53,6 +53,84 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase BRAND-STUDIO-FIX-PACK v1 (Feb 19, 2026) — 7 bug fix integrati
+**Reaction sprint a feedback utente concreto: theme non si applicava all'OS chrome, font solo serif, density/shadow senza effetto, image intent invisibile, identità multilingua persa al salvataggio, presets poco colorati, over-scroll dopo footer.**
+
+#### Tutti i fix testati live (Florence Sienna applicato — OS chrome → cream `#FAF3E7` ✓)
+
+1. **Theme propagation OS completo** (`TenantThemeContext.jsx` rewritten)
+   - Ora il theme tenant SCRIVE sia `--brand-*` (storefront) sia `--bp-*` (OS): bg, surface, text-primary, text-secondary, border, primary, secondary, accent, success/warning/danger, fonts, radius.
+   - Quando l'utente sceglie un preset light → tutto il Blueprint editor flippa light (sidebar, topbar, main, preset cards). Cream + terracotta visibili in tutto l'editor.
+   - Density → body class `density-{compact|comfortable|spacious}` (consumed by index.css esistente).
+   - Shadow → `--bp-shadow-strength` 0/0.6/1.0/1.5 multiplier disponibile alle ombre.
+   - Hex primary derivato in `--bp-primary-soft/glow/border-hover/active/selection-bg` per coerenza hover/active states.
+
+2. **Font catalog con sans-serif heading** (`BrandStudioPage.jsx`)
+   - DISPLAY_FONTS da 6 → 12: aggiunti `Inter Tight`, `Space Grotesk`, `Manrope`, `DM Sans`, `Archivo`, `Outfit` (sans modernisti).
+   - BODY_FONTS da 6 → 8: aggiunti `DM Sans`, `Work Sans`, `Karla`.
+   - **Font picker renderizza ogni opzione NEL PROPRIO carattere** (renderAs="font"): l'utente vede "Playfair Display" in serif e "Inter Tight" in sans-serif — visual font picker autentico.
+   - `fontFamilyFor()` ora usa `FONT_KIND` map per emettere corretto fallback chain (`'Bodoni Moda', serif` vs `'Inter Tight', system-ui, sans-serif`).
+
+3. **Densità + Ombre con effetto reale**
+   - density → body class globale (già consumed in index.css con `--bp-pad-y` / `--bp-pad-x` adjustments).
+   - shadow → `--bp-shadow-strength` su entrambi i surface (storefront + OS).
+   - Verificato live: Tokyo Ink (density=compact) → `body.className = 'cursor-refined density-compact'` ✓
+
+4. **Image Intent dropdown leggibile** (`editorial-media-field.css`)
+   - Aggiunto custom triangle indicator (no native arrow brutto).
+   - `option { background: #16171A; color: #F4F5F7; padding: 8px; }` — risolve problema Chrome macOS che renderizzava menu invisibile.
+
+5. **Identity multilingua deep-merge** (BUG CRITICO fix — `branding.py`)
+   - Prima: salvare il valore en-US **cancellava** it-IT/fr-FR/de-DE già salvati (shallow merge replaceva l'intera mappa `_i18n`).
+   - Ora: deep merge sui 3 bag `_i18n` (public_brand_name / tagline / short_description) prima dello shallow merge top-level.
+   - Test curl verificato: 2 PUT parziali (it-IT+en-US, poi fr-FR) → tutti e 7 i locali preservati ✓
+
+6. **+7 Curated themes colorful** (`seed_theme_presets.py` da 9 → 16 presets)
+   - **Atelier Bordeaux** (burgundy & rose · DM Serif × Plus Jakarta)
+   - **Aegean Atelier** (deep blue & whitewash · Cormorant × Manrope) · light
+   - **Linen Sage** (sage & linen · Fraunces × DM Sans) · light
+   - **Florence Sienna** (terracotta & ochre · Bodoni × Outfit) · light
+   - **Tokyo Ink** (indigo & rice paper · Inter Tight × Inter) · dark sans
+   - **Soho Rose** (dusty rose & graphite · Playfair × Karla) · light
+   - **Verde Tuscan** (olive & cream · EB Garamond × Work Sans) · light
+   Tutti designer-balanced (1 bold hue + 1 tactile neutral + status colors armonizzati).
+
+7. **Over-scroll past footer fix** (`BrandStudioPage.jsx`)
+   - `p-8` → `p-8 pb-24` per riservare spazio finale e evitare contenuto tagliato dal footer fixed.
+
+#### Architettura del propagation tier
+```
+TenantThemeContext (Feb19 v2)
+   │
+   ├── [data-surface="storefront"]  ← TUTTI gli --brand-* tokens (full theme)
+   └── [data-surface="os"]          ← TUTTI gli --bp-* tokens (full theme)
+                                       + body.density-* class
+                                       + html[data-tenant-mode="light|dark"]
+```
+La precedente direttiva "OS safe subset only" è stata sostituita: l'utente vuole VEDERE la propria identità nel proprio editor. La leggibilità è garantita dai preset che sono già designer-balanced.
+
+#### Validazione live
+- Login super_admin → `/settings/brand` ✓
+- 16 preset cards renderizzate, 12 display fonts, 8 body fonts ✓
+- Click "Florence Sienna" → OS chrome flips: bg cream, primary terracotta, font Bodoni Moda · sidebar / topbar / main tutti cream ✓
+- Click "Tokyo Ink" → body.className = `cursor-refined density-compact`, --bp-bg=#0F1116, --bp-primary=#4A6FE3 ✓
+- Curl test deep merge i18n: 7 locales tutti preservati dopo 2 PUT parziali ✓
+- Toast "Preset 'Florence Sienna' applied" visibile ✓
+
+#### File modificati
+- `/app/frontend/src/contexts/TenantThemeContext.jsx` (rewrite completo, 187→200 righe)
+- `/app/frontend/src/pages/settings/BrandStudioPage.jsx` (+ font kind map, + sans options, + visual font picker, + pb-24)
+- `/app/frontend/src/components/common/editorial-media-field.css` (+ option styling, + custom arrow)
+- `/app/backend/routers/branding.py` (deep merge i18n bags fix)
+- `/app/backend/scripts/seed_theme_presets.py` (+7 colorful presets)
+
+#### Production confidence: **9.5/10**
+Brand Studio ora si comporta come previsto: l'utente sceglie un tema e l'intero editor si trasforma. La leggibilità rimane perché i preset sono designer-balanced. La persistenza multilingua è ora corretta. I font sans-serif sono disponibili per i titoli.
+
+---
+
+
+
 ### Fase MARKET-MATRIX-HUMANIZATION v1 (Feb 19, 2026) — Market Intelligence Board
 **Direttiva strict: rendere `/blueprint/markets` uno strumento strategico reale per designer/showroom/PM. Niente jargon AI/editoriale interno ("serif-led", "magazine-led", "hospitality-first"). Tutto leggibile, multilingue, in DB.**
 
