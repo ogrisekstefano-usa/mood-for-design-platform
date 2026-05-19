@@ -135,6 +135,9 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
                 )}
               </header>
 
+              {/* Cultural Reading™ — output editoriale, in cima */}
+              {!editing && <CulturalReadingBlock data={data} mediaId={id} onRefresh={(cr) => setData({ ...data, cultural_reading: cr })} />}
+
               {/* Tags display or edit */}
               <div className="insd-section">
                 <p className="ins-label">Atmosfera</p>
@@ -201,26 +204,36 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
                 </div>
               )}
 
-              {/* Market Resonance */}
+              {/* Market Resonance — usa Cultural Engine output se disponibile, altrimenti euristica legacy */}
               <div className="insd-section">
-                <p className="ins-label" data-testid="insd-resonance-label">Affinità culturale</p>
+                <p className="ins-label" data-testid="insd-resonance-label">Market Resonance™</p>
+                <p className="insd-hint">Le percentuali sono secondarie. Il significato è nell'interpretazione editoriale qui sopra.</p>
                 <ul className="insd-resonance" data-testid="inspiration-detail-resonance">
-                  {(data.resonance || []).map((r) => (
-                    <li key={r.market_code} className="insd-resonance__row">
-                      <div className="insd-resonance__top">
-                        <span className="insd-resonance__market">{r.market_label}</span>
-                        <span className={`insd-resonance__pct ${r.percentage >= 70 ? 'insd-resonance__pct--high' : r.percentage >= 40 ? 'insd-resonance__pct--mid' : 'insd-resonance__pct--low'}`}>
-                          {r.percentage}%
-                        </span>
-                      </div>
-                      <div className="insd-resonance__bar">
-                        <span className="insd-resonance__bar-fill" style={{ width: `${r.percentage}%` }} />
-                      </div>
-                      {r.explanation && (
-                        <p className="insd-resonance__note">{r.explanation}</p>
-                      )}
-                    </li>
-                  ))}
+                  {(() => {
+                    const cr = data.cultural_reading || {};
+                    const useEngine = cr.status === 'ready' && Array.isArray(cr.market_resonance) && cr.market_resonance.length;
+                    const list = useEngine ? cr.market_resonance : (data.resonance || []);
+                    return list.map((r) => {
+                      const code = r.market_code;
+                      const label = r.market_label;
+                      const pct = r.percentage;
+                      const narr = r.narrative || r.explanation || '';
+                      return (
+                        <li key={code} className="insd-resonance__row">
+                          <div className="insd-resonance__top">
+                            <span className="insd-resonance__market">{label}</span>
+                            <span className={`insd-resonance__pct ${pct >= 70 ? 'insd-resonance__pct--high' : pct >= 40 ? 'insd-resonance__pct--mid' : 'insd-resonance__pct--low'}`}>
+                              {pct}%
+                            </span>
+                          </div>
+                          <div className="insd-resonance__bar">
+                            <span className="insd-resonance__bar-fill" style={{ width: `${pct}%` }} />
+                          </div>
+                          {narr && <p className="insd-resonance__note">{narr}</p>}
+                        </li>
+                      );
+                    });
+                  })()}
                 </ul>
               </div>
 
@@ -258,6 +271,120 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
           </>
         )}
       </div>
+    </div>
+  );
+};
+
+// ── CulturalReadingBlock ─────────────────────────────────────────────
+// Editorial output del Cultural Intelligence Engine™.
+// Mostra status (pending/ready/failed) + headline + body + spatial + atmosphere
+// + descriptors attivati raggruppati per categoria.
+// Quando pending, polling automatico ogni 4s fino a max 12 tentativi.
+const CulturalReadingBlock = ({ data, mediaId, onRefresh }) => {
+  const [poll, setPoll] = useState(0);
+  const cr = data?.cultural_reading || {};
+  const status = cr.status || 'absent';
+  const ed = cr.editorial_interpretation || {};
+  const desc = cr.mapped_cultural_descriptors || {};
+  const byCat = desc.by_category || {};
+
+  useEffect(() => {
+    if (status !== 'pending' && status !== 'in_progress') return;
+    if (poll >= 12) return;
+    const t = setTimeout(async () => {
+      try {
+        const r = await api.get(`/api/inspirations/archive/${mediaId}/cultural-reading`);
+        if (r.data && r.data.status !== status) {
+          onRefresh?.(r.data);
+          return;
+        }
+      } catch (e) { /* ignore */ }
+      setPoll((p) => p + 1);
+    }, 4000);
+    return () => clearTimeout(t);
+  }, [status, poll, mediaId, onRefresh]);
+
+  const retry = async () => {
+    try {
+      await api.post(`/api/inspirations/archive/${mediaId}/cultural-reading`);
+      setPoll(0);
+      onRefresh?.({ status: 'pending' });
+      toast.info('MOOD sta leggendo il linguaggio culturale di questo riferimento.');
+    } catch (e) {
+      toast.error('Impossibile avviare la lettura.');
+    }
+  };
+
+  // Status: pending / in_progress
+  if (status === 'pending' || status === 'in_progress') {
+    return (
+      <div className="insd-cultural insd-cultural--pending" data-testid="cultural-reading-pending">
+        <p className="ins-eyebrow"><Icons.Sparkles size={11} /> Cultural Reading™</p>
+        <div className="insd-cultural__pending">
+          <span className="insd-cultural__pulse" />
+          <p>MOOD sta leggendo il linguaggio culturale di questo riferimento…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === 'failed' || status === 'absent') {
+    return (
+      <div className="insd-cultural insd-cultural--absent" data-testid="cultural-reading-absent">
+        <p className="ins-eyebrow"><Icons.Sparkles size={11} /> Cultural Reading™</p>
+        <p className="insd-cultural__quiet">
+          {status === 'failed'
+            ? 'La lettura culturale non è stata completata. Puoi riprovare.'
+            : 'MOOD non ha ancora letto questo riferimento.'}
+        </p>
+        <button type="button" className="ins-btn" onClick={retry} data-testid="cultural-reading-retry">
+          <Icons.Sparkles size={12} /> Avvia lettura culturale
+        </button>
+      </div>
+    );
+  }
+
+  // status === 'ready'
+  return (
+    <div className="insd-cultural" data-testid="cultural-reading-ready">
+      <p className="ins-eyebrow"><Icons.Sparkles size={11} /> Editorial Interpretation™</p>
+      {ed.headline && <h3 className="insd-cultural__headline">{ed.headline}</h3>}
+      {ed.body && <p className="insd-cultural__body">{ed.body}</p>}
+
+      <div className="insd-cultural__grid">
+        {ed.spatial_reading && (
+          <div className="insd-cultural__cell">
+            <p className="ins-label">Spatial Intelligence™</p>
+            <p className="insd-cultural__cell-body">{ed.spatial_reading}</p>
+          </div>
+        )}
+        {ed.atmosphere_language && (
+          <div className="insd-cultural__cell">
+            <p className="ins-label">Atmosphere Reading™</p>
+            <p className="insd-cultural__cell-body">{ed.atmosphere_language}</p>
+          </div>
+        )}
+      </div>
+
+      {Object.keys(byCat).length > 0 && (
+        <div className="insd-cultural__descriptors">
+          <p className="ins-label">Design Affinity™</p>
+          <div className="insd-cultural__chips">
+            {Object.entries(byCat).map(([cat, list]) => (
+              list.slice(0, 4).map((d) => (
+                <span key={`${cat}-${d.code}`} className="insd-cultural__chip" title={cat}>
+                  {d.label}
+                </span>
+              ))
+            ))}
+          </div>
+        </div>
+      )}
+
+      <button type="button" className="insd-cultural__refresh" onClick={retry}
+              data-testid="cultural-reading-refresh">
+        <Icons.RefreshCw size={10} /> Riesegui lettura
+      </button>
     </div>
   );
 };

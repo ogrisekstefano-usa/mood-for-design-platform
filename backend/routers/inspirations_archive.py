@@ -30,10 +30,11 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
 
 from core.tenant_context import get_tenant_context
+from cultural_engine import descriptor_mapper, editorial_interpreter, vision_provider_adapter
 from database import db
 
 logger = logging.getLogger(__name__)
@@ -355,6 +356,102 @@ def _compute_resonance(meta: Dict[str, Any]) -> List[Dict[str, Any]]:
     return rows
 
 
+# ─── Cultural Intelligence Engine™ — 3-layer orchestration ────────────
+async def _run_cultural_reading(media_id: str, tenant_id: str, image_url: str) -> Dict[str, Any]:
+    """Run the full hybrid 3-layer pipeline for one media item.
+
+    Persists final result into media_library.cultural_reading regardless
+    of partial failures (graceful degradation).
+    """
+    started = _now()
+    result: Dict[str, Any] = {
+        "status":            "in_progress",
+        "raw_vision_signals": None,
+        "mapped_cultural_descriptors": None,
+        "market_resonance":  None,
+        "editorial_interpretation": None,
+        "provider_meta":     {},
+        "generated_at":      started,
+    }
+    try:
+        # Layer 1
+        vision = await vision_provider_adapter.analyze_image(image_url)
+        result["provider_meta"] = {
+            "vision_provider": vision.get("provider"),
+            "vision_model":    vision.get("model"),
+            "vision_latency_ms": vision.get("latency_ms"),
+            "vision_error":    vision.get("error"),
+        }
+        signals = vision.get("signals") or {}
+        result["raw_vision_signals"] = signals
+        if not signals:
+            result["status"] = "failed"
+            _save_cultural_reading(media_id, tenant_id, result)
+            return result
+
+        # Layer 2 (proprietary, deterministic)
+        mapping = descriptor_mapper.map_signals_to_culture(signals)
+        result["mapped_cultural_descriptors"] = {
+            "activated": mapping.get("activated_descriptors", []),
+            "by_category": mapping.get("descriptors_by_category", {}),
+        }
+        result["market_resonance"] = mapping.get("market_resonance", [])
+
+        # Layer 3 — Editorial interpretation
+        editorial = await editorial_interpreter.interpret(
+            signals,
+            mapping.get("activated_descriptors", []),
+            mapping.get("market_resonance", []),
+        )
+        result["editorial_interpretation"] = editorial
+        result["provider_meta"]["editorial_provider"] = editorial.get("provider")
+        result["provider_meta"]["editorial_model"]    = editorial.get("model")
+        result["provider_meta"]["editorial_fallback"] = editorial.get("fallback")
+
+        result["status"] = "ready"
+    except Exception as e:
+        logger.exception(f"cultural reading pipeline failed for {media_id}: {e}")
+        result["status"] = "failed"
+        result["provider_meta"]["pipeline_error"] = str(e)[:300]
+
+    _save_cultural_reading(media_id, tenant_id, result)
+    return result
+
+
+def _save_cultural_reading(media_id: str, tenant_id: str, payload: Dict[str, Any]) -> None:
+    try:
+        db().table("media_library").update({
+            "cultural_reading": payload,
+            "updated_at":       _now(),
+        }).eq("id", media_id).eq("tenant_id", tenant_id).execute()
+    except Exception as e:
+        logger.warning(f"cultural reading persist failed: {e}")
+
+
+def _mark_cultural_reading_pending(media_id: str, tenant_id: str) -> None:
+    """Mark the cultural reading as pending immediately so the UI can show status."""
+    try:
+        db().table("media_library").update({
+            "cultural_reading": {"status": "pending", "queued_at": _now()},
+            "updated_at":       _now(),
+        }).eq("id", media_id).eq("tenant_id", tenant_id).execute()
+    except Exception:
+        pass
+
+
+import asyncio
+def _kick_off_cultural_reading(media_id: str, tenant_id: str, image_url: str) -> None:
+    """Fire-and-forget background runner usable from sync FastAPI BackgroundTasks."""
+    if not image_url:
+        return
+    _mark_cultural_reading_pending(media_id, tenant_id)
+    try:
+        asyncio.create_task(_run_cultural_reading(media_id, tenant_id, image_url))
+    except RuntimeError:
+        # No running loop — run synchronously as fallback
+        asyncio.run(_run_cultural_reading(media_id, tenant_id, image_url))
+
+
 # ─── Endpoints ────────────────────────────────────────────────────────
 @router.get("/archive/_filters")
 def filters_taxonomy():
@@ -428,13 +525,42 @@ def get_archive_item(media_id: str, ctx=Depends(get_tenant_context)):
     card["bucket"] = r.get("bucket")
     card["storage_path"] = r.get("storage_path")
     card["is_inspiration"] = bool(r.get("is_inspiration"))
-    # Resonance embed
+    # Resonance embed (legacy heuristic — kept as quick fallback)
     card["resonance"] = _compute_resonance(r.get("inspiration_meta") or {})
+    # Cultural Intelligence Engine™ embed
+    card["cultural_reading"] = r.get("cultural_reading") or {"status": "absent"}
     # Links
     links = (c.table("inspiration_links").select("*")
              .eq("media_id", media_id).eq("tenant_id", ctx["tenant_id"]).execute().data or [])
     card["links"] = [_slim(link) for link in links]
     return card
+
+
+@router.get("/archive/{media_id}/cultural-reading")
+def get_cultural_reading(media_id: str, ctx=Depends(get_tenant_context)):
+    c = db()
+    rows = (c.table("media_library").select("cultural_reading,file_url")
+            .eq("id", media_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Riferimento non trovato")
+    cr = rows[0].get("cultural_reading") or {"status": "absent"}
+    return cr
+
+
+@router.post("/archive/{media_id}/cultural-reading", status_code=202)
+def retry_cultural_reading(media_id: str, background_tasks: BackgroundTasks,
+                            ctx=Depends(get_tenant_context)):
+    """Manual re-trigger of the cultural reading pipeline (admin / debug)."""
+    c = db()
+    rows = (c.table("media_library").select("id,file_url")
+            .eq("id", media_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Riferimento non trovato")
+    image_url = rows[0].get("file_url")
+    if not image_url:
+        raise HTTPException(400, "Nessuna immagine associata al riferimento")
+    background_tasks.add_task(_kick_off_cultural_reading, media_id, ctx["tenant_id"], image_url)
+    return {"status": "queued", "media_id": media_id}
 
 
 @router.get("/archive/{media_id}/resonance")
@@ -448,7 +574,8 @@ def get_resonance(media_id: str, ctx=Depends(get_tenant_context)):
 
 
 @router.post("/archive/import", status_code=201)
-async def import_inspiration(body: ImportPayload, ctx=Depends(get_tenant_context)):
+async def import_inspiration(body: ImportPayload, background_tasks: BackgroundTasks,
+                              ctx=Depends(get_tenant_context)):
     c = db()
     tid = ctx["tenant_id"]
     now = _now()
@@ -456,7 +583,7 @@ async def import_inspiration(body: ImportPayload, ctx=Depends(get_tenant_context
 
     if body.media_id:
         # Promote existing media_library row to Inspiration (no new file)
-        rows = (c.table("media_library").select("id,inspiration_meta")
+        rows = (c.table("media_library").select("id,inspiration_meta,file_url")
                 .eq("id", body.media_id).eq("tenant_id", tid).limit(1).execute().data or [])
         if not rows:
             raise HTTPException(404, "Asset Media Library non trovato")
@@ -472,6 +599,8 @@ async def import_inspiration(body: ImportPayload, ctx=Depends(get_tenant_context
             patch["description"] = body.description
         r = (c.table("media_library").update(patch)
              .eq("id", body.media_id).eq("tenant_id", tid).execute())
+        image_url = (r.data[0].get("file_url") if r.data else rows[0].get("file_url"))
+        background_tasks.add_task(_kick_off_cultural_reading, body.media_id, tid, image_url)
         return _to_card(r.data[0]) if r.data else {"id": body.media_id, **patch}
 
     if not body.url:
@@ -510,6 +639,7 @@ async def import_inspiration(body: ImportPayload, ctx=Depends(get_tenant_context
     except Exception as e:
         logger.error(f"insert inspiration failed: {e}")
         raise HTTPException(500, "Impossibile salvare il riferimento")
+    background_tasks.add_task(_kick_off_cultural_reading, mid, tid, resolved)
     return _to_card(row)
 
 
