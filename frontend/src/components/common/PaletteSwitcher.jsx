@@ -19,6 +19,7 @@
  * the palette at a glance — like a Pantone chip, not a SaaS toggle.
  */
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Palette, Check, Sparkles, ExternalLink, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
@@ -49,15 +50,32 @@ const Swatch = ({ palette, active, onPick }) => (
 const PaletteSwitcher = () => {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState(() => getStoredPalette());
+  const [coords, setCoords] = useState({ top: 64, right: 24 });
   const ref = useRef();
+  const triggerRef = useRef();
 
   // Apply on mount so a fresh tab/browser loads the saved palette.
   useEffect(() => { applyPalette(current); }, [current]);
 
+  // Position the portal popover under the trigger button.
+  useEffect(() => {
+    if (!open || !triggerRef.current) return;
+    const r = triggerRef.current.getBoundingClientRect();
+    setCoords({
+      top:   r.bottom + 8,
+      right: Math.max(8, window.innerWidth - r.right),
+    });
+  }, [open]);
+
   // Click outside to close.
   useEffect(() => {
     if (!open) return undefined;
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target) &&
+          triggerRef.current && !triggerRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
     const esc = (e) => { if (e.key === 'Escape') setOpen(false); };
     document.addEventListener('mousedown', handler);
     document.addEventListener('keydown', esc);
@@ -76,8 +94,9 @@ const PaletteSwitcher = () => {
   const activeMeta = PALETTE_BY_ID[current];
 
   return (
-    <div className="palsw-root" ref={ref} data-testid="palette-switcher-root">
+    <div className="palsw-root" data-testid="palette-switcher-root">
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         data-testid="palette-switcher-trigger"
@@ -92,9 +111,11 @@ const PaletteSwitcher = () => {
         </span>
       </button>
 
-      {open && (
+      {open && createPortal(
         <div className="palsw-popover" role="dialog" aria-label="Temi curati"
-             data-testid="palette-switcher-popover">
+             data-testid="palette-switcher-popover"
+             ref={ref}
+             style={{ top: coords.top, right: coords.right }}>
           <header className="palsw-popover__head">
             <div>
               <p className="palsw-popover__eyebrow">Atelier dei temi</p>
@@ -139,7 +160,8 @@ const PaletteSwitcher = () => {
               Imposta colori, font, micro-copy e logotipo del tuo studio.
             </p>
           </footer>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
