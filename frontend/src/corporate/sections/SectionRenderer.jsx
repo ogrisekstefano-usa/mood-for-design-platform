@@ -15,6 +15,8 @@ import TemplateShowcase from './TemplateShowcase';
 import ProcessSteps from './ProcessSteps';
 import ProjectShowcase from './ProjectShowcase';
 import PressLogos from './PressLogos';
+import DeviceShowcase from './DeviceShowcase';
+import TestimonialGrid from './TestimonialGrid';
 
 /**
  * MOOD Section Registry
@@ -39,6 +41,8 @@ export const SECTION_REGISTRY = {
   process_steps: ProcessSteps,
   project_showcase: ProjectShowcase,
   press_logos: PressLogos,
+  device_showcase: DeviceShowcase,
+  testimonial_grid: TestimonialGrid,
 };
 
 /**

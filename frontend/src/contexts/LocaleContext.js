@@ -31,7 +31,7 @@ const LocaleContext = createContext({
 
 export const LocaleProvider = ({ children }) => {
   const [locale, setLocaleState] = useState(() => {
-    return localStorage.getItem('mood_locale') || 'en-us';
+    return localStorage.getItem('mood_locale') || 'it';
   });
   const [locales, setLocales] = useState([
     { code: 'it', name: 'Italiano', flag: 'IT' },

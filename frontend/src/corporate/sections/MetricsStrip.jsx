@@ -39,37 +39,26 @@ const MetricsStrip = ({ content = {}, config = {} }) => {
 
         <div className={`grid grid-cols-2 md:grid-cols-4 gap-0 reveal ${visible ? 'visible' : ''}`}>
           {metrics.map((metric, i) => {
-            const Icon = ICON_BY_TONE[metric.tone] || TrendingUp;
             return (
               <div
                 key={i}
-                className="relative px-6 md:px-8 py-8"
+                className="relative px-6 md:px-8 py-10 text-center"
                 style={{
                   borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none',
                   transitionDelay: `${i * 0.07}s`,
                 }}
                 data-testid={`metric-${i}`}
               >
-                <div className="flex items-start gap-4 mb-1">
-                  <span
-                    className="inline-flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0"
-                    style={{ background: 'transparent', border: '1px solid rgba(0,201,179,0.5)' }}
-                  >
-                    <Icon size={16} strokeWidth={1.6} style={{ color: '#00C9B3' }} />
-                  </span>
-                  <div>
-                    {metric.eyebrow && (
-                      <p className="text-xs font-medium text-white/55 mb-1.5">{metric.eyebrow}</p>
-                    )}
-                    <p
-                      className="font-serif font-normal leading-none mb-1"
-                      style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', color: '#00C9B3' }}
-                    >
-                      {metric.value}
-                    </p>
-                    <p className="text-xs font-light text-white/55 mt-2">{metric.label}</p>
-                  </div>
-                </div>
+                {metric.eyebrow && (
+                  <p className="text-[0.65rem] font-medium tracking-[0.18em] uppercase text-white/45 mb-3">{metric.eyebrow}</p>
+                )}
+                <p
+                  className="font-serif font-normal leading-none mb-3"
+                  style={{ fontSize: 'clamp(2.4rem, 5vw, 4rem)', color: '#FFFFFF' }}
+                >
+                  {metric.value}
+                </p>
+                <p className="text-sm font-light leading-relaxed text-white/65 max-w-[14rem] mx-auto">{metric.label}</p>
               </div>
             );
           })}
