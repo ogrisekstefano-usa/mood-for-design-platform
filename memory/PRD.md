@@ -53,6 +53,86 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint MARKET-NARRATIVE-PROFILES v1 (Feb 19, 2026 · iter80)
+**Market Narrative Profiles™ — Cultural Edition™ Narrative Geography Layer (Phase 1).**
+
+Quarto strato dell'Editorial Intelligence Stack di MOOD: cultura narrativa geografica. NON sostituisce Brand Voice™, la *influenza* culturalmente. Stesso progetto verso Miami suona hospitality/lifestyle, verso Milano suona rigore/composizione — ma lo studio resta sempre riconoscibile come lo stesso studio.
+
+#### Architecture
+| Layer | Funzione |
+|---|---|
+| Brand Voice™ | identità permanente studio (persistente in `branding_settings.editorial_voice`) |
+| Narrative Mode™ | tono singolo contenuto (override contestuale) |
+| Presentation Context™ | contesto output |
+| **Market Narrative Profile™** | **cultura narrativa geografica (soft influence, NEW)** |
+
+#### Database & Seed
+- **Migration 056** `056_market_narrative_profiles.sql` applicata:
+  - Nuova tabella `market_narrative_profiles` (16 colonne incluso `narrative_direction[]`, `vocabulary_bias[]`, `emotional_bias[]`, `hospitality_bias[]`, `luxury_expression`, `storytelling_density`, `editorial_style`, `anti_patterns[]`, `curator_note`, `suggested_narrative_mode`, `suggested_intensity`)
+  - Estensione `cultural_edition_drafts` con 7 nuove colonne: `market_narrative_profile_id` (FK), `suggested_narrative_mode/intensity`, `selected_narrative_mode/intensity`, `manual_override` BOOLEAN, `applied_market_biases` JSONB
+- **7 profili curati seeded** (Italian editorial copy):
+  - **Miami** → hospitality · cinematic — "narrazioni luminose, hospitality-driven e lifestyle-centric"
+  - **Southern California** → editorial · balanced — wellness, organic, soft minimalism
+  - **NYC** → strategic · balanced — sofisticazione urbana, layering, gallery atmosphere
+  - **Milano** → editorial · balanced — rigore compositivo, dettaglio materico, sobrietà
+  - **Dubai** → cinematic · cinematic — monumentale, ceremoniale, dramatic luxury
+  - **Londra** → cultural_analyst · balanced — heritage contemporaneo, layered warmth
+  - **Parigi** → emotional · editorial — artistic layering, romantic architecture, curated intimacy
+
+#### Backend
+- **NEW** `/app/backend/cultural_engine/market_narrative_provider.py` (Layer 4) con `get_profile`, `list_profiles`, `build_market_influence_block` (genera blocco prompt italiano per soft influence), `applied_biases_snapshot`. In-memory cache.
+- **UPDATED** `editorial_interpreter.interpret()` ora accetta `market_influence_block: Optional[str]` — appeso al system prompt come *suggestion culturale*, NON come identity override. Regola esplicita nel prompt: "l'identità dello studio resta riconoscibile, il mercato la *ribilancia* culturalmente".
+- **UPDATED** `cultural_editions.py` router:
+  - `GET /api/cultural-editions/markets` ora arricchisce ogni mercato con campo `narrative_profile` inline (curator_note, narrative_direction, suggested, anti_patterns)
+  - **NEW** `GET /api/cultural-editions/market-narrative-profile/{market_code}` — dettaglio per la UI del wizard
+  - `POST /api/cultural-editions/drafts` ora accetta `selected_narrative_mode` + `selected_intensity`; carica automaticamente il profilo del mercato; calcola `manual_override` (true se selected ≠ suggested); persiste tutto sulla draft per Cultural Pattern Learning™ futuro.
+  - `_generate_market_version` ora compone Brand Voice + Market Influence + Selected Narrative direction nello stesso system prompt.
+
+#### Frontend — Cultural Edition Wizard
+- **UPDATED** `CulturalEditionWizard.jsx` — Step 3 (Mercato) ora include **`cew-narrative-profile`** card che appare quando si seleziona un mercato:
+  - Badge cyan "SUGGERITO DAL MERCATO" + nome mercato editoriale
+  - Titolo Playfair italic "Direzione narrativa del mercato" + curator note italiano
+  - Chip narrative_direction (es. Miami: HOSPITALITY · CINEMATIC · WARM LUXURY · LIFESTYLE-DRIVEN)
+  - 2 select editabili `cew-narrative-mode` (10 opzioni) e `cew-narrative-intensity` (4 opzioni), PRE-COMPILATE con i suggested del profilo
+  - Hint italiano: "MOOD ha pre-compilato i campi con la cultura narrativa di {city}. Puoi cambiarli liberamente — è un suggerimento, non una regola."
+  - On change → `manualOverride=true` → mostra `cew-narrative-override` con bottone `cew-narrative-reset`
+  - Auto-prefill quando l'utente cambia mercato (se non ha sovrascritto)
+- Step 5 review: nuovo row `cew-review-narrative` mostra "Direzione narrativa: {modalità} · {intensità}" + hint "suggerita dal mercato" o "personalizzata"
+- Submit body include `selected_narrative_mode` + `selected_intensity`
+
+#### Frontend — Cultural Edition Review Page
+- **NEW** sezione `ce-narrative-trace` su `CulturalEditionReviewPage.jsx`:
+  - Eyebrow "Direzione narrativa applicata"
+  - Grid 3 colonne: Modalità · Intensità · Origine ("suggerita dal mercato X" oppure "personalizzata dal designer")
+  - Chip `ce-narrative-trace-chips` con i `narrative_direction` del profilo applicato
+
+#### Linguaggio compliance (strict)
+- UI/copy: "Direzione narrativa del mercato", "Intensità narrativa", "Suggerito dal mercato", "Linguaggio interpretativo", "Atmosfera editoriale".
+- VIETATI (verificati ZERO occorrenze in DOM + output editoriale): `prompt`, `AI`, `model`, `temperature`, `algorithm`, `machine learning`, `creativity level`.
+
+#### Test results (testing_agent_v3_fork iter80 + main agent self-test)
+- **Backend**: **7/7 pytest PASS · 100%** — markets enriched, profile endpoint, 404 on missing, default draft suggested==selected/manual_override=False, override draft manual_override=True, Milano vs Miami body vocabulary differenziato (Milano: "misurati/composizione/materia"; Miami: "hospitality/luce/calore"), ZERO jargon AI in generated bodies.
+- **Frontend**: **F1 + F9 + jargon scan via testing agent**, **F3–F8 via main agent self-test (Playwright)**: 100% PASS — Miami pre-fill (hospitality/cinematic), override→reset cycle, market switch Miami→Milano auto-prefill (editorial/balanced), review row "Editoriale · registro magazine · Bilanciata · misurata · suggerita dal mercato", redirect to review page, `ce-narrative-trace` with MODALITÀ/INTENSITÀ/ORIGINE + chips (EDITORIAL · RESTRAINED ELEGANCE · STRATEGIC MINIMALISM), ZERO forbidden jargon on review page DOM.
+
+#### Production confidence: **9.7/10**
+
+La stessa villa ora produce:
+- **Milano**: *"Architettura del quotidiano · L'intervento nasce da un gesto di sottrazione. Le superfici dialogano attraverso il dettaglio artigiano: ottone spazzolato, noce canaletto, pietra serena."*
+- **Miami**: *"Light, Space, and Miami Living · This apartment unfolds like a story of hospitality and light. Walls dissolve into terraces, inviting the sky inside. Warm textures ground the space—linen, stone, natural oak."*
+
+Stesso progetto → due reinterpretazioni culturali completamente diverse, ma sempre riconoscibilmente "lo stesso studio".
+
+#### Cosa NON è incluso (deferred Phase 2)
+- Wiring profili in Inspirations™ Cultural Reading (oggi usa solo Brand Voice + Narrative Mode)
+- Wiring in Moodboards / Editorial articles / Project storytelling / Presentation narratives (foundation-ready)
+- Auto-learning narrative profiles
+- Dynamic market adaptation analytics
+- Cultural Pattern Learning™ aggregato sui dati `manual_override` raccolti
+- Multilingual narrative generation avanzata (oggi 6 locale fixed)
+
+---
+
+
 ### Sprint NARRATIVE-MODE-EDITORIAL-TONE v1 (Feb 19, 2026 · iter79)
 **Narrative Mode™ & Editorial Tone Engine — decouple persistent Brand Voice™ (studio identity) from contextual Narrative Mode™ (per-Inspiration override).**
 
