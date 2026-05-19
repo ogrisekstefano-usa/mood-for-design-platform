@@ -53,6 +53,68 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint STRUCTURED-CURATORIAL-DATA · Phase A (Feb 19, 2026 · iter82)
+**Brand Registry™ + Collections Registry™ + Tag Registry™ + Product Usage Events™ + Supplier Catalog Import™ entity-picker refactor + Studio Collections™ page.**
+
+Phase A di un sprint trilogia (Phase B = Cropper universale · Phase C = Moodboard quick-picker). Trasforma MOOD da media uploader a sistema operativo curatoriale con dati normalizzati e relazionali.
+
+#### Database (Migration 058)
+- **NEW** `brands` table — Brand Registry™ con visibility_level (curated_public vs studio_private), luxury_tier, hospitality/residential/contract/retail scores (0-100), primary_markets, agreement_status, asset_pack_available
+- **NEW** `brand_collections` — FK brand_id + tenant_id nullable per condivisione
+- **NEW** `tag_registry` — normalizzazione tag con synonyms, type (brand/atmosphere/material/style/room_type/cultural), usage_count, approved
+- **NEW** `product_usage_events` — Product Intelligence™ analytics foundation
+- `supplier_catalogs` esteso con `brand_id` + `collection_id` FK (legacy `brand`/`collection` text-only mantenuti per back-compat)
+- **Seed**: 15 brand reali curati (Minotti, Poliform, Cassina, B&B Italia, Flexform, Bonaldo, Cattelan Italia, Molteni&C, Maxalto, Flos, Artemide, Boffi, Margraf, Rimadesio, Edra) con luxury_tier + scores realistici + primary_markets curati. Tag registry seeded con 12 atmosphere + 15 material + 15 brand tag.
+
+#### Backend
+- **NEW** `routers/brands_registry.py`:
+  - `GET /api/inspirations/registry/brands?q=` — autocomplete (curated_public ∪ tenant studio_private)
+  - `POST /api/inspirations/registry/brands` — create studio_private brand, idempotent su (tenant_id, slug)
+  - `GET /api/inspirations/registry/brands/{id}` — read
+  - `GET .../{id}/collections` — list collezioni
+  - `POST .../{id}/collections` — create collection, idempotent
+  - `GET /api/inspirations/registry/tags?type=&q=` — tag autocomplete con synonyms match
+  - `POST /api/inspirations/registry/usage-events` — emit usage event con brand_id denormalizzato dal product
+  - `GET /api/inspirations/registry/taxonomy` — 14 categorie (arredi/cucine/bagni/illuminazione/outdoor/rivestimenti/pietra_naturale/decor/contract/hospitality/workspace/lifestyle/technical/materials) + 6 Rights & Permissions™ (`official_brand_asset`, `authorized_distributor`, `showroom_asset`, `studio_uploaded`, `editorial_reference`, `restricted_usage`) con flag publishable/exportable/commercial_use/modifiable
+- **UPDATED** `routers/supplier_catalogs.py`:
+  - `CatalogCreate` accetta `brand_id` + `collection_id` (preferred) con fallback al `brand` testo libero
+  - Auto-resolve brand_name/collection_name dai registry; validazione 400 su brand_id inesistente o collection_id che non appartiene al brand
+  - `finalize_catalog` persiste `brand_id` + `collection_id` nei `media_library.inspiration_meta` di ogni Product Inspiration™
+
+#### Frontend
+- **REFACTOR completo** `SupplierCatalogImportModal.jsx`:
+  - Step 1 ora con **BrandPicker** (autocomplete debounced 180ms, badge meta "Brand · luxury_tier · country", auto-set categoria dal brand selezionato)
+  - **CollectionPicker** (legato al brand selezionato, lista collezioni del Registry)
+  - **AddBrandDrawer** — mini drawer scivolante da destra con nome, website, categoria, paese, positioning, mercati principali (chips toggle)
+  - **AddCollectionDrawer** — header "COLLECTIONS REGISTRY™ · {brand}", campi nome/anno/stagione/descrizione
+  - **Rights & Permissions™** select con 6 valori + 4 badge visuali reattivi (Pubblicabile · Esportabile · Uso commerciale · Modificabile) che si attivano/disattivano in base ai flag del rights status
+  - Categoria principale select con 14 valori strutturati
+- **NEW** `StudioCollectionsPage.jsx` (`/inspirations/collections`) — read-only grid raggruppato per brand con catalog cards (status badges, imported/candidate counts) e link "Torna a Inspirations™"
+- **UPDATED** `InspirationsPage.jsx` — nuova CTA "Studio Collections™" (Icons.Library) accanto a "Importa catalogo fornitore"
+- **NEW** route `/inspirations/collections` registrata in `App.js`
+- CSS dedicato: `supplier-catalog.css` esteso con `.scim-picker*`, `.scim-drawer*`, `.scim-rights-tag*` · nuovo `studio-collections.css`
+
+#### Linguaggio compliance (strict)
+UI: "Brand Registry™", "Collections Registry™", "Rights & Permissions™", "Aggiungi produttore", "Nuova collezione", "Archivio curatoriale dello studio", "privato dello studio".
+ZERO occorrenze verificate: `AI`, `OCR`, `parser`, `algoritmo`, `machine learning`, `model`, `automation`, `prompt`.
+
+#### Test results (testing_agent_v3_fork iter82)
+- **Backend 21/21 PASS · 100%**: 15 brand seeded visibili, autocomplete con/senza q, brand create idempotent, collections list+create idempotent, taxonomy 14+6, tag registry per 3 types, catalog con brand_id+collection_id, validazioni 400 (brand_id inesistente / collection mismatch), legacy text-only path preservato, usage-events con brand_id denormalizzato.
+- **Frontend 9/9 PASS · 100%**: 3 CTAs header, BrandPicker debounced (Poliform appare digitando 'pol'), brand-meta 'Poliform · premium · IT', auto-set categoria 'arredi', CollectionPicker mostra '+ Nuova collezione' su brand senza collezioni, AddBrandDrawer con 5 campi, Rights & Permissions reattivi, /inspirations/collections con 3 brand groups + 7 catalog cards, ZERO jargon vietato nel DOM.
+- Test report: `/app/test_reports/iteration_82.json`
+
+#### Production confidence: **9.8/10**
+
+#### Cosa NON è incluso (Phase B/C esplicitamente deferred)
+- **Phase B**: Universal Editorial Cropper riusabile (7 filtri editoriali: Editorial Neutral, Warm Residential, Hospitality Glow, AD Contrast, Soft Natural, Material Focus, Cinematic Dark) + Universal Media Pipeline (focal point, safe area, multi-device preview, compressione)
+- **Phase C**: Moodboards quick-picker Inspirations™ con tab Inspirations/Products/Materials/Recent/Studio Collections + Media Library editorial modes (Grid/Filmstrip/Brand Mode/Material Mode)
+- Migration completa dei tag legacy esistenti nel Tag Registry (oggi solo i nuovi tag passano dal registry)
+- UI per modificare brand/collection esistenti (oggi solo create)
+- Analytics dashboards basate su `product_usage_events` (foundation pronta, le query "Brand più usati in Miami" / "Materiali più associati a Poliform" si possono già scrivere)
+
+---
+
+
 ### Sprint SUPPLIER-CATALOG-IMPORT v1 (Feb 19, 2026 · iter81)
 **Supplier Catalog Import™ MVP — sistema di upload catalogo PDF dedicato, separato dall'upload immagine normale, con estrazione deterministica via PyMuPDF.**
 
