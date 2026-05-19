@@ -30,6 +30,7 @@ import EditorialMediaField from '../../components/common/EditorialMediaField';
 import {
   LIGHT_PALETTES, DARK_PALETTES, applyPalette as applyCuratedRoot, storePalette, clearPalette as clearCuratedRoot,
 } from '../../lib/curatedPalettes';
+import { applyThemeEverywhere } from '../../lib/themeApply';
 
 const DISPLAY_FONTS = [
   // Serif (editorial)
@@ -454,11 +455,14 @@ const BrandStudioPage = () => {
 
   const applyPreset = async (preset) => {
     try {
-      // CRITICO: rimuove gli override CSS !important del PaletteSwitcher
-      // altrimenti un preset chiaro applica il theme ma lo sfondo resta scuro.
+      // 1. UI optimistic: pulisci override curated + applica subito le var
       clearCuratedRoot();
+      applyThemeEverywhere(preset.theme);
+      // 2. Server sync
       const r = await api.post('/api/branding/apply-preset', { preset_key: preset.key });
       const next = r.data?.theme || preset.theme || {};
+      // 3. Riapplico il theme dal server (potrebbe avere defaults merged)
+      applyThemeEverywhere(next);
       setTheme({ ...next, palette: { ...DEFAULT_PALETTE, ...(next.palette || {}) } });
       await refresh();
       toast.success(`Preset "${preset.label}" applied`);

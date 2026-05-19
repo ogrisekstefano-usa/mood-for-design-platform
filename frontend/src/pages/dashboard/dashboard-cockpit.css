@@ -160,7 +160,6 @@
   background: transparent;
   color: var(--bp-primary, #00C9B3);
 }
-
 /* ── BLOCK base ─────────────────────────────────────────────────── */
 .cck-block {
   background: var(--bp-surface-1, #16171A);

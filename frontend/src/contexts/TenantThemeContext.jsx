@@ -154,7 +154,14 @@ export function applyThemeVarsToRoot(theme) {
   }
 
   if (theme.preset_key) document.documentElement.setAttribute('data-tenant-theme', theme.preset_key);
-  if (theme.mode)       document.documentElement.setAttribute('data-tenant-mode', theme.mode);
+  if (theme.mode) {
+    document.documentElement.setAttribute('data-tenant-mode', theme.mode);
+    // Sync workspace-mode + theme-mode per tokens.css scope rules.
+    // Senza, le var light vs dark non vengono ri-derivate al cambio.
+    document.documentElement.setAttribute('data-workspace-mode', theme.mode);
+    document.documentElement.setAttribute('data-theme-mode',     theme.mode);
+    document.documentElement.setAttribute('data-palette-mode',   theme.mode);
+  }
 }
 
 export const TenantThemeProvider = ({ children }) => {

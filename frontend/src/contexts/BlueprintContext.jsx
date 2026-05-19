@@ -66,22 +66,58 @@ export const applyTheme = (effective) => {
   const at = effective.atmosphere || {};
   const cp = effective.components || {};
 
-  // Palette
-  if (p.primary) root.style.setProperty('--bp-primary', p.primary);
-  if (p.accent)  root.style.setProperty('--bp-accent',  p.accent);
-  if (p.background) root.style.setProperty('--bp-bg', p.background);
-  if (p.surface_1) root.style.setProperty('--bp-surface-1', p.surface_1);
-  if (p.surface_2) root.style.setProperty('--bp-surface-2', p.surface_2);
-  if (p.surface_3) root.style.setProperty('--bp-surface-3', p.surface_3);
-  if (p.overlay)   root.style.setProperty('--bp-overlay', p.overlay);
-  if (p.border) root.style.setProperty('--bp-border', p.border);
-  if (p.border_strong) root.style.setProperty('--bp-border-strong', p.border_strong);
-  if (p.text_primary)   root.style.setProperty('--bp-text-primary', p.text_primary);
-  if (p.text_secondary) root.style.setProperty('--bp-text-secondary', p.text_secondary);
-  if (p.text_muted) root.style.setProperty('--bp-text-muted', p.text_muted);
-  if (p.text_subtle) root.style.setProperty('--bp-text-subtle', p.text_subtle);
-  if (p.selection_bg) root.style.setProperty('--bp-selection-bg', p.selection_bg);
-  if (p.selection_fg) root.style.setProperty('--bp-selection-fg', p.selection_fg);
+  // ── Palette vars · applicate a :root + body + TUTTI [data-surface] ──
+  // Le var --bp-* sono dichiarate sotto `[data-surface="os"]` in tokens.css,
+  // quindi devono essere settate anche su quello scope per vincere la
+  // specificity. Senza, topbar/sidebar restano col theme precedente.
+  const paletteTokens = {};
+  if (p.primary) paletteTokens['--bp-primary'] = p.primary;
+  if (p.accent)  paletteTokens['--bp-accent']  = p.accent;
+  if (p.background) {
+    paletteTokens['--bp-bg'] = p.background;
+    paletteTokens['--bp-bg-deep'] = p.background;
+    paletteTokens['--brand-bg'] = p.background;
+  }
+  if (p.surface_1) paletteTokens['--bp-surface-1'] = p.surface_1;
+  if (p.surface_2) paletteTokens['--bp-surface-2'] = p.surface_2;
+  if (p.surface_3) paletteTokens['--bp-surface-3'] = p.surface_3;
+  // Some backends send `surface` (singular). Treat it as surface-1/2/3 default.
+  if (p.surface && !p.surface_1) {
+    paletteTokens['--bp-surface']    = p.surface;
+    paletteTokens['--bp-surface-1']  = p.surface;
+    paletteTokens['--bp-surface-2']  = p.surface;
+    paletteTokens['--bp-surface-3']  = p.surface;
+    paletteTokens['--bp-surface-elev'] = p.surface;
+    paletteTokens['--brand-surface'] = p.surface;
+  }
+  if (p.overlay)        paletteTokens['--bp-overlay']        = p.overlay;
+  if (p.border)         paletteTokens['--bp-border']         = p.border;
+  if (p.border_strong)  paletteTokens['--bp-border-strong']  = p.border_strong;
+  if (p.text_primary) {
+    paletteTokens['--bp-text']           = p.text_primary;
+    paletteTokens['--bp-text-primary']   = p.text_primary;
+    paletteTokens['--brand-text']        = p.text_primary;
+  }
+  if (p.text_secondary) paletteTokens['--bp-text-secondary'] = p.text_secondary;
+  if (p.text_muted)     paletteTokens['--bp-text-muted']     = p.text_muted;
+  if (p.text_subtle)    paletteTokens['--bp-text-subtle']    = p.text_subtle;
+  if (p.selection_bg)   paletteTokens['--bp-selection-bg']   = p.selection_bg;
+  if (p.selection_fg)   paletteTokens['--bp-selection-fg']   = p.selection_fg;
+
+  // Sync workspace-mode attribute (light/dark) per le regole condizionali
+  const mode = (effective.mode || '').toLowerCase();
+  if (mode === 'light' || mode === 'dark') {
+    root.setAttribute('data-theme-mode', mode);
+    root.setAttribute('data-workspace-mode', mode);
+    root.setAttribute('data-palette-mode', mode);
+  }
+
+  const applyPaletteTokensTo = (el) => {
+    Object.entries(paletteTokens).forEach(([k, v]) => el.style.setProperty(k, v));
+  };
+  applyPaletteTokensTo(root);
+  if (document.body) applyPaletteTokensTo(document.body);
+  document.querySelectorAll('[data-surface]').forEach(applyPaletteTokensTo);
 
   // Typography
   if (t.font_heading) root.style.setProperty('--bp-font-heading', t.font_heading);

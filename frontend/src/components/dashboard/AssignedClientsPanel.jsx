@@ -64,10 +64,10 @@ const AssignedClientsPanel = () => {
 };
 
 const STATUS_LABEL = {
-  pending:   { label: 'Da contattare',    tone: 'text-[var(--bp-text-muted)]' },
-  suggested: { label: 'Suggestion pronta', tone: 'text-[var(--bp-primary)]' },
-  sent:      { label: 'Primo contatto inviato', tone: 'text-emerald-300' },
-  overdue:   { label: 'In ritardo',       tone: 'text-amber-300' },
+  pending:   { label: 'Da contattare',          tone: 'text-[var(--bp-text-muted)]' },
+  suggested: { label: 'Suggestion pronta',      tone: 'text-[var(--bp-primary)]' },
+  sent:      { label: 'Primo contatto inviato', tone: 'text-[var(--bp-success,#22C55E)]' },
+  overdue:   { label: 'In ritardo',             tone: 'text-[var(--bp-warning,#D2A359)]' },
 };
 
 const AssignedRow = ({ row, onReload }) => {
