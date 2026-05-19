@@ -48,8 +48,12 @@
   box-shadow: 0 24px 56px rgba(0,0,0,0.32), 0 1px 0 rgba(255,255,255,0.04) inset;
   z-index: 10010;
   padding: 14px 14px 10px;
-  animation: palsw-in 180ms cubic-bezier(.2,.7,.2,1);
+  max-height: calc(100vh - 88px);
+  overflow-y: auto;
 }
+.palsw-popover::-webkit-scrollbar { width: 4px; }
+.palsw-popover::-webkit-scrollbar-thumb { background: var(--bp-border-strong); border-radius: 4px; }
+.palsw-popover { animation: palsw-in 180ms cubic-bezier(.2,.7,.2,1); }
 @keyframes palsw-in {
   from { opacity: 0; transform: translateY(-4px) scale(0.985); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
