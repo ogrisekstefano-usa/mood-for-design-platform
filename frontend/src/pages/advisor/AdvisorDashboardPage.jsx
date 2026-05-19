@@ -11,7 +11,7 @@
  * media files, billing). Only safe activity health summary.
  */
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Copy, MapPin, BellRing, NotebookPen, Plus, ChevronRight, AlertTriangle } from 'lucide-react';
 import api from '../../lib/api';
@@ -39,10 +39,12 @@ const REPORT_TYPES = [
 ];
 
 const AdvisorDashboardPage = () => {
+  const nav = useNavigate();
   const [me, setMe] = useState(null);
   const [refs, setRefs] = useState([]);
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [forbidden, setForbidden] = useState(false);
   const [showReport, setShowReport] = useState(false);
 
   const load = async () => {
@@ -57,7 +59,12 @@ const AdvisorDashboardPage = () => {
       setRefs(r.data.referrals || []);
       setReports(rep.data.reports || []);
     } catch (e) {
-      toast.error('Accesso non autorizzato all\'Advisor Network');
+      const status = e?.response?.status;
+      if (status === 403 || status === 404) {
+        setForbidden(true);
+      } else {
+        toast.error('Errore nel caricamento Advisor');
+      }
     } finally { setLoading(false); }
   };
 
@@ -69,8 +76,23 @@ const AdvisorDashboardPage = () => {
     toast.success('Magic link copiato');
   };
 
-  if (loading) return <div className="adv-loading">Carico…</div>;
-  if (!me) return <div className="adv-empty"><p>Profilo Advisor non trovato.</p></div>;
+  if (loading) return <div className="adv-page"><div className="adv-loading">Carico…</div></div>;
+  if (forbidden) return (
+    <div className="adv-page" data-testid="advisor-forbidden">
+      <header className="adv-hero">
+        <p className="adv-hero__eyebrow">Advisor · Partner Relationship</p>
+        <h1 className="adv-hero__title">Quest'area è riservata agli Advisor di MOOD.</h1>
+        <p className="adv-hero__lead">
+          Il tuo account non è collegato a un profilo Advisor. Se sei un partner territoriale e
+          credi sia un errore, contatta il team MOOD per attivare il tuo accesso.
+        </p>
+      </header>
+      <button className="adv-btn adv-btn--ghost" onClick={() => nav('/dashboard')} data-testid="adv-back-to-dashboard">
+        Torna alla dashboard
+      </button>
+    </div>
+  );
+  if (!me) return <div className="adv-page"><div className="adv-empty"><p className="adv-empty__lead">Profilo Advisor non trovato.</p></div></div>;
 
   const adv = me.advisor;
   const pal = avatarPalette(adv.name);

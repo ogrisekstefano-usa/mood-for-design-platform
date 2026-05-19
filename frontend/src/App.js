@@ -95,6 +95,9 @@ const AdminTenantsPage = lazy(() => import('./pages/admin/AdminTenantsPage'));
 const AdminTenantDetailPage = lazy(() => import('./pages/admin/AdminTenantDetailPage'));
 const AdminModulesPage = lazy(() => import('./pages/admin/AdminModulesPage'));
 const AdminAuditPage = lazy(() => import('./pages/admin/AdminAuditPage'));
+const AdvisorNetworkAdminPage = lazy(() => import('./pages/admin/AdvisorNetworkAdminPage'));
+const AdvisorDetailPage = lazy(() => import('./pages/admin/AdvisorDetailPage'));
+const AdvisorDashboardPage = lazy(() => import('./pages/advisor/AdvisorDashboardPage'));
 
 const Loading = () => {
   let label = 'Loading';
@@ -381,11 +384,17 @@ function App() {
                   <Route path="/client/messages" element={<ClientMessagesPage />} />
                 </Route>
 
+                {/* ADVISOR self-service — standalone surface, gated by API (advisor_profile lookup) */}
+                <Route path="/advisor" element={<ProtectedRoute><OSWrap><AdvisorDashboardPage /></OSWrap></ProtectedRoute>} />
+
                 <Route element={<SuperAdminRoute><AdminLayout /></SuperAdminRoute>}>                  <Route path="/admin" element={<AdminOverviewPage />} />
                   <Route path="/admin/tenants" element={<AdminTenantsPage />} />
                   <Route path="/admin/tenants/:id" element={<AdminTenantDetailPage />} />
                   <Route path="/admin/modules" element={<AdminModulesPage />} />
                   <Route path="/admin/audit" element={<AdminAuditPage />} />
+                  {/* Advisor Network — Partner Relationship system (SuperAdmin) */}
+                  <Route path="/admin/advisors" element={<AdvisorNetworkAdminPage />} />
+                  <Route path="/admin/advisors/:id" element={<AdvisorDetailPage />} />
                   {/* New IA — superadmin-only platform internals */}
                   <Route path="/admin/languages" element={<LanguagesPage />} />
                   <Route path="/admin/pages" element={<HomepageBuilderPage />} />

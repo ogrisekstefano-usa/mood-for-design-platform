@@ -53,6 +53,62 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase ADVISOR-NETWORK-P0-WIRING v1 (Feb 19, 2026) — Advisor Network UI closure
+**P0 sprint chiusura Advisor Network. Backend già completo + deployato (iter 70). Wiring frontend completo: SuperAdmin overview, Advisor detail page, Advisor self-service dashboard, role-gating, sidebar nav.**
+
+#### Direttive utente (strict scope)
+- Solo CLOSURE P0. Nessun tenant banner, nessun signup public banner, nessuna gamification, nessuna leaderboard.
+- UX: premium · territorial · partner relationship · NON affiliate/MLM.
+- Linguaggio: "Advisor", "Studi referenti", "Report di supporto", "Cicli di commissione" — MAI "affiliate", "downline", "payout race".
+
+#### File creati/modificati
+- **NEW** `/app/frontend/src/pages/advisor/advisor.css` — Editorial styling shared (hero, pulse strip, cards, drawer, detail grid, mobile breakpoints @900px @480px)
+- **NEW** `/app/frontend/src/pages/admin/AdvisorDetailPage.jsx` — SuperAdmin deep-dive con 5 sezioni: hero+status pill+azioni status (Attiva/Metti in pausa/Archivia), Contatti, Codice & link (con copy), Referenti studio/showroom, Cicli di commissione (tabella 6 col), Report di supporto recenti.
+- **UPDATED** `/app/frontend/src/pages/admin/AdvisorNetworkAdminPage.jsx` — fix import CSS path
+- **UPDATED** `/app/frontend/src/pages/advisor/AdvisorDashboardPage.jsx` — aggiunto forbidden state editoriale per utenti non-Advisor (super_admin/tenant_admin che atterrano su `/advisor` vedono pannello "Quest'area è riservata agli Advisor" + bottone "Torna alla dashboard")
+- **UPDATED** `/app/frontend/src/App.js` — 3 nuove route:
+  - `/admin/advisors` (dentro SuperAdminRoute + AdminLayout)
+  - `/admin/advisors/:id` (idem)
+  - `/advisor` (standalone, ProtectedRoute + OSWrap; gating per ruolo Advisor delegato al backend `/api/advisor/me` → 403 mostra forbidden screen)
+- **UPDATED** `/app/frontend/src/components/layout/AdminLayout.jsx` — aggiunta voce sidebar "Advisor Network" tra Tenants e Modules con icona `Handshake` (lucide-react)
+- **UPDATED** `/app/backend/routers/advisor_network.py` — bug fix: rimosso join `tenants(name, city, country)` (colonne city/country non esistono su tenants); ora `tenants(name)` con `_safe_referral_view` che restituisce comunque None per tenant_city/tenant_country.
+
+#### Validazione E2E live
+- Login `demo@moodfordesign.com` (super_admin) → `/admin/advisors` ✓
+  - Sidebar AdminLayout mostra "Advisor Network" highlighted ✓
+  - Hero + KPI strip (1/1 Advisor attivi · 0 studi · 0 commissioni · 0 supporto) ✓
+  - Card Marta Conti (ADV-9CB5B0) con avatar tinted, status "Attivo", territorio "Lombardia · IT", 0 studi, 15% commissione ✓
+- Click card → `/admin/advisors/43e5d295-...` ✓
+  - Hero con avatar 52px + status pill + bottoni "Metti in pausa" / "Archivia"
+  - Sidebar 3 blocchi (Contatti · Codice & link · Anagrafica) con tutti i campi
+  - Main: Studi&showroom referenti (0 con empty state editoriale) · Cicli di commissione (empty editoriale) · Report di supporto (empty editoriale)
+- Bottone "Network Advisor" back → torna a /admin/advisors ✓
+- Drawer "Nuovo Advisor" si apre con form (nome, email, telefono, territorio, commissione %, sconto default %) + chiude correttamente ✓
+- `/advisor` come super_admin → forbidden screen editoriale "Quest'area è riservata agli Advisor di MOOD" + bottone "Torna alla dashboard" ✓
+- Mobile (390×844): zero horizontal overflow sia su /admin/advisors che su /admin/advisors/:id ✓
+
+#### Bug fix backend collaterale
+`tenants_1.city does not exist` (42703) su 3 endpoint che facevano join `tenants(name, city, country)`. Rimosso city/country dal SELECT — il frontend usa già `.filter(Boolean).join(', ')` quindi tollera null.
+
+#### Sicurezza / Permissions
+- `/api/advisor/admin/*` → `_require_superadmin` check (403 per non-super_admin)
+- `/api/advisor/me`, `/api/advisor/referrals`, `/api/advisor/reports`, `/api/advisor/notes` → `_require_advisor` lookup su `advisor_profiles.user_id` (403 se non Advisor; 403 anche per super_admin per evitare confusione di scope)
+- `/api/advisor/referral/{code}/preview` → public (no auth) ma 404 se advisor non `active`
+- `_safe_referral_view` esposta agli Advisor mostra SOLO: tenant_name, city, country, signup_date, activation_date, subscription_status, discount, commission_percentage, health_status, last_activity_date, current_period_start/end, commission_eligible. NESSUN dato privato del tenant (no CRM, no progetti, no moodboard, no media).
+
+#### Cosa NON è incluso (per direttiva strict)
+- Tenant banner ("Sei stato presentato da X")  — P1
+- Signup public banner (`/auth/signup?ref=ADV-XXX` referral preview UI) — P1
+- Compute month / Compute commission buttons nel UI detail — P1
+- Leaderboard / ranking advisor / gamification — esplicitamente fuori scope
+- Pulsante "Genera report mensile aggregato" — P2
+- Toggle status integration tests — coperto in detail page con 3 azioni dichiarate (Attiva/Metti in pausa/Archivia)
+
+#### Production confidence: **9/10**
+Modulo usabile end-to-end. Backend solido (router 484 righe, già testato in iter 70). Frontend 3 pagine + role-gating + mobile responsive + zero regressioni alle pagine SuperAdmin esistenti (Overview/Tenants/Modules/Lingue/Pagine/Audit).
+
+
+
 ### Fase IMAGE-FILTER-CONTINUITY v1 (Feb 19, 2026 — iteration 69) — Public Renderer Wiring
 **Micro-sprint focused. Direttiva: "what the user edits in Blueprint must be what the visitor sees on the public site". NO new features — solo wiring del rendering filtri persistiti dal iter_68.**
 

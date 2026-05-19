@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import api from '../../lib/api';
 import { avatarPalette, initialsOf } from '../../lib/avatarHue';
-import './advisor.css';
+import '../advisor/advisor.css';
 
 const STATUS_LABEL = { active: 'Attivo', paused: 'In pausa', archived: 'Archiviato' };
 

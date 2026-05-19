@@ -6,7 +6,7 @@ import React from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBlueprint } from '../../contexts/BlueprintContext';
-import { Shield, Building2, ToggleRight, Activity, ScrollText, ArrowLeft, LogOut, Languages, Layers } from 'lucide-react';
+import { Shield, Building2, ToggleRight, Activity, ScrollText, ArrowLeft, LogOut, Languages, Layers, Handshake } from 'lucide-react';
 import BlueprintThemeProvider from '../../design-system/os/BlueprintThemeProvider';
 import PlatformFooterBar from '../common/PlatformFooterBar';
 
@@ -55,6 +55,7 @@ const AdminLayout = () => {
         <nav className="flex-1 px-2 py-4 space-y-0.5">
           <AdminNavItem to="/admin" end icon={Activity} labelKey="admin.nav.overview" fallback="Panoramica" />
           <AdminNavItem to="/admin/tenants" icon={Building2} labelKey="admin.nav.tenants" fallback="Studi" />
+          <AdminNavItem to="/admin/advisors" icon={Handshake} labelKey="admin.nav.advisors" fallback="Advisor Network" />
           <AdminNavItem to="/admin/modules" icon={ToggleRight} labelKey="admin.nav.modules" fallback="Moduli" />
           <AdminNavItem to="/admin/languages" icon={Languages} labelKey="admin.nav.languages" fallback="Lingue" />
           <AdminNavItem to="/admin/pages" icon={Layers} labelKey="admin.nav.pages" fallback="Pagine" />

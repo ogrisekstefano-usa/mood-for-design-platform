@@ -158,7 +158,7 @@ def list_my_referrals(user: Dict[str, Any] = Depends(get_current_user)):
     adv = _require_advisor(user)
     c = db()
     # Join tenant safe fields
-    refs = c.table("advisor_referrals").select("*, tenants(name, city, country)") \
+    refs = c.table("advisor_referrals").select("*, tenants(name)") \
         .eq("advisor_id", adv["id"]).order("created_at", desc=True).execute().data or []
     return {"referrals": [_safe_referral_view(r) for r in refs]}
 
@@ -167,7 +167,7 @@ def list_my_referrals(user: Dict[str, Any] = Depends(get_current_user)):
 def get_referral_detail(rid: str, user: Dict[str, Any] = Depends(get_current_user)):
     adv = _require_advisor(user)
     c = db()
-    r = c.table("advisor_referrals").select("*, tenants(name, city, country)") \
+    r = c.table("advisor_referrals").select("*, tenants(name)") \
         .eq("id", rid).eq("advisor_id", adv["id"]).limit(1).execute().data
     if not r:
         raise HTTPException(404, "referral not found")
@@ -338,7 +338,7 @@ def admin_advisor_detail(aid: str, user: Dict[str, Any] = Depends(get_current_us
     c = db()
     adv = c.table("advisor_profiles").select("*").eq("id", aid).limit(1).execute().data
     if not adv: raise HTTPException(404, "advisor not found")
-    refs = c.table("advisor_referrals").select("*, tenants(name, city, country)") \
+    refs = c.table("advisor_referrals").select("*, tenants(name)") \
         .eq("advisor_id", aid).order("created_at", desc=True).execute().data or []
     periods = c.table("advisor_commission_periods").select("*").eq("advisor_id", aid) \
         .order("period_start", desc=True).execute().data or []
