@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import httpx
 
-from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine, ai_studio_brief, project_workspace_v2, proposal_composer, market_perspectives, locale_runtime, editorial_variants, advisor_suggestions, reference_intelligence, relationships, markets, editorial, advisor_network
+from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine, ai_studio_brief, project_workspace_v2, proposal_composer, market_perspectives, locale_runtime, editorial_variants, advisor_suggestions, reference_intelligence, relationships, markets, editorial, advisor_network, crm_voice_notes, crm_intelligence
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -86,6 +86,8 @@ api_router.include_router(editorial_variants.router, tags=["editorial-variants"]
 api_router.include_router(advisor_suggestions.router, tags=["advisor-suggestions"])
 api_router.include_router(reference_intelligence.router, tags=["reference-intelligence"])
 api_router.include_router(relationships.router, tags=["relationships"])
+api_router.include_router(crm_voice_notes.router, tags=["relationships"])
+api_router.include_router(crm_intelligence.router, tags=["relationships"])
 api_router.include_router(markets.router, tags=["markets"])
 api_router.include_router(editorial.router, tags=["editorial"])
 from routers import portfolio

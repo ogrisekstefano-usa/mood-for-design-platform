@@ -27,16 +27,13 @@ import api from '../../lib/api';
 import { avatarPalette, initialsOf } from '../../lib/avatarHue';
 import AccountDetailDrawer from './AccountDetailDrawer';
 import './crm.css';
+import './relationship-os.css';
 
 // ─── Tab definitions ────────────────────────────────────────────────
 // All filter via lifecycle_stage values stored in relationship_lookups.
 // Each sub-route maps to a stage filter (NOT hardcoded UI labels).
 const CRM_TABS = [
-  { id: 'accounts',   to: '/crm/accounts',    label: 'Accounts',   icon: Users,       filter: null, helper: 'Tutte le relazioni · ogni Account può avere più Contact' },
-  { id: 'contacts',   to: '/crm/contacts',    label: 'Contacts',   icon: UserCircle,  filter: '__contacts__', helper: 'Singole persone esterne (collegate ad Account)' },
-  { id: 'leads',      to: '/crm/leads',       label: 'Leads',      icon: Sparkles,    filter: 'discovery',   helper: 'Discovery · primo contatto, nessun progetto ancora' },
-  { id: 'prospects',  to: '/crm/prospects',   label: 'Prospects',  icon: Search,      filter: 'project_conversation', helper: 'Conversazione di progetto in corso' },
-  { id: 'clients',    to: '/crm/clients',     label: 'Clients',    icon: Crown,       filter: 'active_collaboration', helper: 'Collaborazione attiva · cliente' },
+  { id: 'accounts',   to: '/crm/accounts',    label: 'Accounts',   icon: Users,       filter: null, helper: 'Tutte le relazioni · Lead, Prospect, Cliente — tutto qui, come stage evolutivi' },
   { id: 'follow-ups', to: '/crm/follow-ups',  label: 'Follow-ups', icon: BellRing,    filter: '__followups__', helper: 'Azioni programmate · scadenze' },
   { id: 'archived',   to: '/crm/archived',    label: 'Archived',   icon: Archive,     filter: 'archived',    helper: 'Relazioni archiviate · solo lettura' },
 ];
@@ -47,16 +44,38 @@ const ACCOUNT_TYPE_LABEL = {
   company:               'Azienda',
   architecture_studio:   'Studio di architettura',
   interior_design_studio:'Studio interior design',
-  developer:             'Developer',
-  hospitality_group:     'Gruppo hospitality',
-  contractor:            'Contractor',
-  partner:               'Partner',
   showroom:              'Showroom',
+  developer:             'Developer',
+  contractor:            'Contractor',
+  hospitality_group:     'Gruppo hospitality',
+  hotel_group:           'Gruppo alberghiero',
+  yacht_client:          'Cliente yacht',
+  luxury_retail:         'Retail luxury',
+  partner_brand:         'Brand partner',
+  partner:               'Partner',
 };
+
+const CANONICAL_PIPELINE = [
+  { key: 'lead',             label: 'Lead' },
+  { key: 'prospect',         label: 'Prospect' },
+  { key: 'qualified',        label: 'Qualificato' },
+  { key: 'active_project',   label: 'Progetto attivo' },
+  { key: 'client',           label: 'Cliente' },
+  { key: 'returning_client', label: 'Cliente di ritorno' },
+  { key: 'archived',         label: 'Archiviato' },
+];
 
 // ─── Sub-components ─────────────────────────────────────────────────
 
 const STAGE_META = {
+  // Canonical pipeline
+  lead:                    { c: '#9CA3AF', label: 'Lead' },
+  prospect:                { c: '#88c0d0', label: 'Prospect' },
+  qualified:               { c: '#5B7CA0', label: 'Qualificato' },
+  active_project:          { c: '#C9A36E', label: 'Progetto attivo' },
+  client:                  { c: '#10B981', label: 'Cliente' },
+  returning_client:        { c: '#059669', label: 'Cliente di ritorno' },
+  // Editorial sub-stages (legacy, still shown if used)
   discovery:               { c: '#9CA3AF', label: 'Discovery' },
   inspiration:             { c: '#88c0d0', label: 'Inspiration' },
   editorial_engagement:    { c: '#88c0d0', label: 'Editorial' },
@@ -180,7 +199,7 @@ const AccountCard = ({ account, onOpen }) => {
 const NewAccountModal = ({ open, onClose, onCreated }) => {
   const [name, setName] = useState('');
   const [type, setType] = useState('private_client');
-  const [stage, setStage] = useState('discovery');
+  const [stage, setStage] = useState('lead');
   const [saving, setSaving] = useState(false);
 
   if (!open) return null;
@@ -231,11 +250,9 @@ const NewAccountModal = ({ open, onClose, onCreated }) => {
           <select value={stage} onChange={(e) => setStage(e.target.value)}
                   data-testid="crm-new-account-stage"
                   className="crm-input">
-            <option value="discovery">Discovery</option>
-            <option value="inspiration">Inspiration</option>
-            <option value="editorial_engagement">Editorial Engagement</option>
-            <option value="project_conversation">Project Conversation</option>
-            <option value="active_collaboration">Active Collaboration</option>
+            {CANONICAL_PIPELINE.map((s) => (
+              <option key={s.key} value={s.key}>{s.label}</option>
+            ))}
           </select>
         </div>
         <footer className="crm-modal__foot">
@@ -265,6 +282,10 @@ const CrmAccountsPage = () => {
   const [showNew, setShowNew] = useState(false);
   const [drawerAccount, setDrawerAccount] = useState(null);
   const [reload, setReload] = useState(0);
+  // CRM Refactor™ filters
+  const [filterStage, setFilterStage] = useState('');
+  const [filterType, setFilterType]   = useState('');
+  const [filterHealth, setFilterHealth] = useState('');
 
   // Load accounts (or follow-ups)
   useEffect(() => {
@@ -303,17 +324,23 @@ const CrmAccountsPage = () => {
   }, [accountId]);
 
   const filtered = useMemo(() => {
-    if (!searchQ) return accounts;
-    const q = searchQ.toLowerCase();
-    return accounts.filter((a) =>
-      (a.account_name || '').toLowerCase().includes(q) ||
-      (a.primary_contact?.email || '').toLowerCase().includes(q),
-    );
-  }, [accounts, searchQ]);
+    let rows = accounts;
+    if (filterStage)  rows = rows.filter((a) => a.lifecycle_stage === filterStage);
+    if (filterType)   rows = rows.filter((a) => a.account_type === filterType);
+    if (filterHealth) rows = rows.filter((a) => a.relationship_health === filterHealth);
+    if (searchQ) {
+      const q = searchQ.toLowerCase();
+      rows = rows.filter((a) =>
+        (a.account_name || '').toLowerCase().includes(q) ||
+        (a.primary_contact?.email || '').toLowerCase().includes(q),
+      );
+    }
+    return rows;
+  }, [accounts, searchQ, filterStage, filterType, filterHealth]);
 
   const openDrawer = (a) => {
-    setDrawerAccount(a);
-    navigate(`/crm/${activeTab.id}/${a.id}`, { replace: false });
+    // CRM Refactor™ — open the full-page experience instead of the drawer
+    navigate(`/crm/accounts/${a.id}`);
   };
   const closeDrawer = () => {
     setDrawerAccount(null);
@@ -408,6 +435,33 @@ const CrmAccountsPage = () => {
           </button>
         </div>
       </div>
+
+      {/* ── Filter bar (stage · type · health) ── */}
+      {activeTab.filter !== '__followups__' && (
+        <div className="rl-list-filters" data-testid="crm-filters">
+          <select value={filterStage} onChange={(e) => setFilterStage(e.target.value)}
+                  data-testid="crm-filter-stage">
+            <option value="">Tutti gli stage</option>
+            {CANONICAL_PIPELINE.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
+          </select>
+          <select value={filterType} onChange={(e) => setFilterType(e.target.value)}
+                  data-testid="crm-filter-type">
+            <option value="">Tutti i tipi</option>
+            {Object.entries(ACCOUNT_TYPE_LABEL).map(([k, v]) => (
+              <option key={k} value={k}>{v}</option>
+            ))}
+          </select>
+          <select value={filterHealth} onChange={(e) => setFilterHealth(e.target.value)}
+                  data-testid="crm-filter-health">
+            <option value="">Health</option>
+            <option value="healthy">Sano</option>
+            <option value="stable">Stabile</option>
+            <option value="needs_support">Necessita supporto</option>
+            <option value="at_risk">A rischio</option>
+            <option value="dormant">Dormiente</option>
+          </select>
+        </div>
+      )}
 
       {/* ── Body ── */}
       {loading && (

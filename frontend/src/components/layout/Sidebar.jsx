@@ -116,7 +116,9 @@ const Sidebar = () => {
   const contentModules = moduleList.filter((m) => ['library', 'moodboards', 'inspirations'].includes(m.id));
   const intelligenceModules = moduleList.filter((m) => m.id === 'insights');
 
-  const wsRoutes = workspaceModules.flatMap((m) => m.routes);
+  const wsRoutes = workspaceModules.flatMap((m) => m.routes)
+    // CRM Refactor™ — Leads/Clients are now stages inside /crm/accounts.
+    .filter((r) => r.to !== '/workspace/leads' && r.to !== '/workspace/clients');
   const contentRoutes = contentModules.flatMap((m) => m.routes);
   const intelligenceRoutes = intelligenceModules.flatMap((m) => m.routes);
 
@@ -184,15 +186,11 @@ const Sidebar = () => {
           </div>
         )}
 
-        {/* ── CRM ───────────────────────────────────────────────── */}
+        {/* ── CRM (Relationship OS™ — single Accounts entry) ───── */}
         <div>
           <SectionLabel collapsed={collapsed}>CRM</SectionLabel>
           <div className="space-y-0.5">
             <NavItem to="/crm/accounts"    icon="Users"      labelKey="nav.crmAccounts"   fallback="Accounts"    collapsed={collapsed} />
-            <NavItem to="/crm/contacts"    icon="UserCircle" labelKey="nav.crmContacts"   fallback="Contacts"    collapsed={collapsed} />
-            <NavItem to="/crm/leads"       icon="Sparkles"   labelKey="nav.crmLeads"      fallback="Leads"       collapsed={collapsed} />
-            <NavItem to="/crm/prospects"   icon="Search"     labelKey="nav.crmProspects"  fallback="Prospects"   collapsed={collapsed} />
-            <NavItem to="/crm/clients"     icon="Crown"      labelKey="nav.crmClients"    fallback="Clients"     collapsed={collapsed} />
             <NavItem to="/crm/follow-ups"  icon="BellRing"   labelKey="nav.crmFollowUps"  fallback="Follow-ups"  collapsed={collapsed} />
             <NavItem to="/crm/archived"    icon="Archive"    labelKey="nav.crmArchived"   fallback="Archived"    collapsed={collapsed} />
           </div>

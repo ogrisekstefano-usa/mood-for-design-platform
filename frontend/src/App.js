@@ -32,6 +32,7 @@ const MarketMatrixPage = lazy(() => import('./pages/governance/MarketMatrixPage'
 const MarketInsightsPage = lazy(() => import('./pages/governance/MarketInsightsPage'));
 const BrandVoiceAdaptersPage = lazy(() => import('./pages/governance/BrandVoiceAdaptersPage'));
 const CrmAccountsPage = lazy(() => import('./pages/crm/CrmAccountsPage'));
+const AccountDetailPage = lazy(() => import('./pages/crm/AccountDetailPage'));
 const InternationalPresencePage = lazy(() => import('./pages/settings/InternationalPresencePage'));
 const StorefrontStudioPage = lazy(() => import('./pages/storefront/StorefrontStudioPage'));
 const EditorialCalendarPage = lazy(() => import('./pages/editorial/EditorialCalendarPage'));
@@ -311,7 +312,7 @@ function App() {
 
                 <Route element={<ProtectedRoute><StudioRoute><DashboardLayout /></StudioRoute></ProtectedRoute>}>
                   <Route path="/dashboard" element={<DashboardPage />} />
-                  <Route path="/workspace/leads" element={<LeadsPage />} />
+                  <Route path="/workspace/leads" element={<Navigate to="/crm/accounts" replace />} />
                   <Route path="/workspace/projects" element={<ProjectsPage />} />
                   <Route path="/workspace/projects/:id" element={<ProjectDetailPage />} />
                   <Route path="/workspace/proposals" element={<ProposalsPage />} />
@@ -327,7 +328,7 @@ function App() {
                   <Route path="/workspace/activity" element={<ActivityHub />} />
                   {/* /workspace/team → operational redirect to /settings/members (real feature). */}
                   <Route path="/workspace/team" element={<Navigate to="/settings/members" replace />} />
-                  <Route path="/workspace/clients" element={<ClientsHub />} />
+                  <Route path="/workspace/clients" element={<Navigate to="/crm/accounts" replace />} />
                   <Route path="/workspace/messages" element={<MessagesHub />} />
                   <Route path="/workspace/reports" element={<ReportsHub />} />
                   <Route path="/settings/integrations" element={<IntegrationsHub />} />
@@ -354,6 +355,7 @@ function App() {
 
                   {/* CRM routes (tab + optional account_id deep-link) */}
                   <Route path="/crm" element={<Navigate to="/crm/accounts" replace />} />
+                  <Route path="/crm/accounts/:accountId" element={<AccountDetailPage />} />
                   <Route path="/crm/:tab" element={<CrmAccountsPage />} />
                   <Route path="/crm/:tab/:accountId" element={<CrmAccountsPage />} />
                   {/* Legacy redirect — old /workspace/relationships → /crm/accounts */}
