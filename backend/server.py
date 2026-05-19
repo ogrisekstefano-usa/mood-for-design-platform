@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import httpx
 
-from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine, ai_studio_brief, project_workspace_v2, proposal_composer, market_perspectives, locale_runtime, editorial_variants, advisor_suggestions, reference_intelligence, relationships, markets, editorial
+from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine, ai_studio_brief, project_workspace_v2, proposal_composer, market_perspectives, locale_runtime, editorial_variants, advisor_suggestions, reference_intelligence, relationships, markets, editorial, advisor_network
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -128,6 +128,7 @@ api_router.include_router(profile.router, prefix="/profile", tags=["profile"])
 api_router.include_router(client_messages.router, prefix="/client-messages", tags=["client-messages"])
 api_router.include_router(magazine.router, prefix="/magazine", tags=["magazine"])
 api_router.include_router(editorial_calendar.router, prefix="/blueprint/calendar", tags=["editorial-calendar"])
+api_router.include_router(advisor_network.router, tags=["advisor-network"])
 
 
 @api_router.get("/health")
