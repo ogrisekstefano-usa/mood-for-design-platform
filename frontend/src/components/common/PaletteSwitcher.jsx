@@ -17,24 +17,31 @@ import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import './palette-switcher.css';
 
-// ── Apply theme vars DIRECTLY to :root (instant visual feedback) ─────
+// ── Apply theme vars DIRECTLY to :root AND all [data-surface] elements ──
+// L'app usa selettori CSS scoped `[data-surface="os"]` che hanno specificity
+// superiore al `:root`. Quindi le var devono essere settate AL livello dello
+// scope `[data-surface]` per vincere. Inoltre `[data-workspace-mode]` regola
+// l'override light/dark e va sincronizzato.
 const applyThemeToRoot = (theme) => {
   if (!theme) return;
   const p = theme.palette || {};
-  const r = document.documentElement;
   const isDark = (theme.mode || '').toLowerCase() === 'dark';
+  const root = document.documentElement;
 
-  r.setAttribute('data-theme-mode', isDark ? 'dark' : 'light');
-  r.setAttribute('data-workspace-mode', isDark ? 'dark' : 'light');
-  r.setAttribute('data-palette-mode', isDark ? 'dark' : 'light');
+  // Modes su <html> — questo riattiva le regole `:root[data-workspace-mode="light"]`
+  root.setAttribute('data-theme-mode', isDark ? 'dark' : 'light');
+  root.setAttribute('data-workspace-mode', isDark ? 'dark' : 'light');
+  root.setAttribute('data-palette-mode', isDark ? 'dark' : 'light');
 
   const tokens = {
     '--bp-bg':              p.background,
+    '--bp-bg-deep':         p.background,
     '--bp-surface':         p.surface,
     '--bp-surface-1':       p.surface,
     '--bp-surface-2':       p.surface,
     '--bp-surface-3':       p.surface,
     '--bp-surface-elev':    p.surface,
+    '--bp-surface-elevated':p.surface,
     '--bp-border':          p.border,
     '--bp-text':            p.text_primary,
     '--bp-text-primary':    p.text_primary,
@@ -47,7 +54,19 @@ const applyThemeToRoot = (theme) => {
     '--brand-surface':      p.surface,
     '--brand-text':         p.text_primary,
   };
-  Object.entries(tokens).forEach(([k, v]) => v && r.style.setProperty(k, v, 'important'));
+
+  const applyTokens = (el) => {
+    Object.entries(tokens).forEach(([k, v]) => v && el.style.setProperty(k, v, 'important'));
+  };
+
+  // 1. :root (per i selettori globali)
+  applyTokens(root);
+  // 2. <body> (per i selettori `body`)
+  if (document.body) applyTokens(document.body);
+  // 3. TUTTI gli elementi con data-surface — è qui che la maggior parte
+  //    delle var --bp-* sono dichiarate (tokens.css). Senza questo step
+  //    il topbar/sidebar restano col theme precedente.
+  document.querySelectorAll('[data-surface]').forEach(applyTokens);
 };
 
 // ── Mini-swatch · 3 stop (bg · surface · primary→accent gradient) ─────
