@@ -582,7 +582,7 @@ def list_archive(
     tid = ctx["tenant_id"]
     base = (c.table("media_library")
             .select("id,file_url,file_name,alt_text,description,width,height,dominant_color,"
-                    "source_url,source_kind,tags,inspiration_meta,created_at,updated_at")
+                    "source_url,source_kind,tags,inspiration_meta,metadata_json,created_at,updated_at")
             .eq("tenant_id", tid)
             .eq("is_inspiration", True)
             .is_("archived_at", None))
