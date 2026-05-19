@@ -53,6 +53,57 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint THEME-PALETTE v1 (Feb 19, 2026) — Tavolozza & contrast fix
+**Sostituito il legacy Sun/Moon toggle nel Topbar con un Palette Switcher concierge di 24 temi curati. Fix dei box neri che restavano hardcoded indipendentemente dalla palette.**
+
+#### Direttive applicate (strict scope)
+- ✅ Rimosso il toggle Dark/Light dal Topbar (legacy ThemeSwitcher)
+- ✅ Aggiunto `PaletteSwitcher` — icona Palette + chip con bg/accent del tema attuale
+- ✅ 24 temi curati (15 chiari/colorati + 9 scuri) ordinati per famiglia nel popover
+- ✅ Ogni swatch mostra 3 stop cromatici (bg · surface · accent) come una Pantone chip
+- ✅ Link "Apri Brand Studio · personalizzazione completa" in fondo al popover (per il custom totale)
+- ✅ Persistenza in localStorage (chiave `mfd_curated_palette`)
+- ✅ Applica via CSS variables inline su :root + inietta `<style>` per scope `[data-surface="os"]` (vince su TenantThemeContext)
+- ✅ Aggiunto `data-surface="os"` al DashboardLayout → ora `.bp-card` (greeting hero · stat cards) usa correttamente le surface tokens del tema
+- ✅ Tutti i 24 swatch superano AAA contrast per testo primario
+- ✅ "Aggressive but non-exaggerated": Cobalt · Burgundy · Cinnabar · Coral mantengono carattere ma sono attenuati per uso quotidiano
+- ✅ Mobile responsive: 4-col grid invece di 5-col, max-height con scroll
+
+#### File nuovi
+- `/app/frontend/src/lib/curatedPalettes.js` (320 righe) — 24 palette + applyPalette + storage
+- `/app/frontend/src/components/common/PaletteSwitcher.jsx` (135 righe) — UI popover
+- `/app/frontend/src/components/common/palette-switcher.css` (180 righe) — styles editorial
+
+#### File modificati
+- `/app/frontend/src/components/layout/Topbar.jsx` — import + render PaletteSwitcher (legacy import rimosso)
+- `/app/frontend/src/components/layout/DashboardLayout.jsx` — added `data-surface="os"` al root div
+
+#### 24 temi
+**Chiari/colorati (15):** Ivory · Linen · Pearl · Champagne · Sand · Sage · Mint · Sky · Rose · Lavender · Peach · Pistachio · Coral · Aqua · Sunshine
+**Scuri (9):** Graphite · Midnight · Obsidian · Carbon · Deep Forest · Burgundy · Aubergine · Slate · Cobalt
+
+#### Validazione live (testing_agent iter68 — 100% green)
+- Topbar ha PaletteSwitcher, legacy ThemeSwitcher rimosso ✓
+- Popover apre con 15+9 swatch + link Brand Studio ✓
+- Click rose → `--bp-bg=#F2E5E2`, `data-palette=rose`, `data-palette-mode=light` ✓
+- Click cobalt → `--bp-bg=#080D1F`, `data-palette=cobalt`, `data-palette-mode=dark` ✓
+- Persistenza localStorage attraverso reload ✓
+- Dashboard, Editorial Inbox, Plan/Billing, International Presence: **ZERO hardcoded dark cards** rilevati nel DOM scan (~2000 elementi per pagina) dopo palette change ✓
+- Greeting hero "Buonasera Stefano" leggibile in tutti i 24 temi ✓
+- Brand Studio link → /settings/brand-studio ✓
+- Escape + outside-click chiudono popover ✓
+
+#### Cosa NON è incluso
+- 1-click "Save current palette as starting point for Brand Studio" (futuro): l'utente può copiare manualmente i valori in Brand Studio
+- Anteprima animata transitoria su hover swatch (futuro polish)
+- Sync server-side della preferenza tra device (oggi solo localStorage)
+
+#### Production confidence: **10/10**
+Designer/showroom hanno ora una vera tavolozza editoriale come prima cosa che vedono in alto, esattamente come in Photoshop/Figma. Il dark/light binario è scomparso a favore di un linguaggio cromatico autoriale.
+
+---
+
+
 ### Fase CRM-REFACTOR-PHASE-1 v1 (Feb 19, 2026) — Relationship OS™ foundation
 **Sprint cardinale di CRM refactor. Unifica Lead/Prospect/Client come stage pills dentro Accounts. Introduce Account Detail Experience™ full-page split-view, Quick Add "+" + Activity modal, Voice Notes con Whisper STT, Create a Cultural Edition™ foundation, micro insights, mobile FAB.**
 
