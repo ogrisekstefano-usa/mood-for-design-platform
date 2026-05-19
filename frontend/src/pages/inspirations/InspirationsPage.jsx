@@ -198,13 +198,23 @@ const InspirationCard = ({ item, onOpen }) => {
             onClick={onOpen}
             data-testid={`inspiration-card-${item.id}`}>
       <div className="ins-card__media">
-        {item.image_url ? (
-          <img src={item.image_url} alt={item.title || ''} loading="lazy" />
-        ) : (
-          <div className="ins-card__media-placeholder">
-            <Icons.Image size={32} strokeWidth={1.2} />
-          </div>
-        )}
+        {item.image_url && item.image_url.match(/\.(jpe?g|png|webp|gif|avif)(\?|$)/i) ? (
+          <img
+            src={item.image_url}
+            alt={item.title || ''}
+            loading="lazy"
+            onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex'; }}
+          />
+        ) : null}
+        <div className="ins-card__media-placeholder"
+             style={{ display: item.image_url && item.image_url.match(/\.(jpe?g|png|webp|gif|avif)(\?|$)/i) ? 'none' : 'flex' }}>
+          <Icons.ImageOff size={28} strokeWidth={1.2} />
+          <span className="ins-card__media-fallback">
+            {item.source_kind === 'pinterest' ? 'Reference Pinterest · copertina in attesa' :
+             item.source_kind === 'instagram' ? 'Reference Instagram · copertina in attesa' :
+             'Copertina in attesa'}
+          </span>
+        </div>
         <div className="ins-card__overlay">
           <div className="ins-card__chips">
             {atmos.map((a, i) => <span key={`a-${i}`} className="ins-chip ins-chip--atmos">{a.replace(/_/g, ' ')}</span>)}

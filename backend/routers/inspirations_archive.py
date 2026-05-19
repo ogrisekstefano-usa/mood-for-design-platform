@@ -209,19 +209,21 @@ def _detect_source_kind(url: str) -> str:
     return "url"
 
 
-def _resolve_image_url(url: str, source_kind: str) -> str:
+async def _resolve_image_url(url: str, source_kind: str) -> str:
     """For Pinterest/Instagram URLs, attempt to extract an image via og:image.
 
     Fase 1: best-effort tramite meta tag og:image. Se fallisce, salviamo
     l'URL originale come fallback — la card mostrerà comunque una
     placeholder editoriale fino a sostituzione manuale.
+
+    Async per non bloccare il worker FastAPI.
     """
     if source_kind == "url" and re.search(r"\.(jpe?g|png|webp|gif|avif)(\?|$)", url, re.I):
         return url
     try:
-        with httpx.Client(follow_redirects=True, timeout=8.0,
-                          headers={"User-Agent": "Mozilla/5.0 (MOOD/Inspirations bot)"}) as c:
-            r = c.get(url)
+        async with httpx.AsyncClient(follow_redirects=True, timeout=5.0,
+                                     headers={"User-Agent": "Mozilla/5.0 (MOOD/Inspirations bot)"}) as c:
+            r = await c.get(url)
             if r.status_code >= 400:
                 return url
             html = r.text
@@ -446,7 +448,7 @@ def get_resonance(media_id: str, ctx=Depends(get_tenant_context)):
 
 
 @router.post("/archive/import", status_code=201)
-def import_inspiration(body: ImportPayload, ctx=Depends(get_tenant_context)):
+async def import_inspiration(body: ImportPayload, ctx=Depends(get_tenant_context)):
     c = db()
     tid = ctx["tenant_id"]
     now = _now()
@@ -476,7 +478,7 @@ def import_inspiration(body: ImportPayload, ctx=Depends(get_tenant_context)):
         raise HTTPException(400, "Fornisci un URL oppure un media_id esistente")
 
     source_kind = body.source_kind or _detect_source_kind(body.url)
-    resolved = _resolve_image_url(body.url, source_kind)
+    resolved = await _resolve_image_url(body.url, source_kind)
 
     mid = str(uuid.uuid4())
     # For external references we synth a path so the NOT NULL constraint passes.
