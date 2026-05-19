@@ -203,6 +203,24 @@ class CulturalReadingRetryBody(BaseModel):
     presentation_context: Optional[str] = None
 
 
+class DisplayMetaBody(BaseModel):
+    """Universal Editorial Cropper™ — regia immagine persistita su media_library.
+
+    Tutti i consumer (Hero, Moodboard, Presentation) leggono questi valori
+    per costruire il display_url runtime. Il file raster originale non viene
+    mai modificato: cambia solo come l'immagine viene presentata.
+    """
+    # Focal point relativo all'immagine — 0..1 sui due assi
+    focal_x:          Optional[float] = None   # 0..1
+    focal_y:          Optional[float] = None   # 0..1
+    # Filtro editoriale corrente (slug)
+    editorial_filter: Optional[str]   = None
+    # Aspect-ratio preferito quando il consumer lo permette ('16:9'|'4:3'|'1:1'|'9:16'|'21:9'|'auto')
+    crop_ratio:       Optional[str]   = None
+    # Zoom relativo (1.0 = fit, 1.5 = +50%)
+    zoom:             Optional[float] = None
+
+
 # ── Helpers ───────────────────────────────────────────────────────────
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -299,6 +317,7 @@ def _to_card(row: Dict[str, Any]) -> Dict[str, Any]:
         "inspiration_type":   meta.get("inspiration_type") or "editorial",
         "rights_status":      meta.get("rights_status"),
         "supplier_catalog_id": meta.get("supplier_catalog_id"),
+        "display_meta":       (row.get("metadata_json") or {}).get("display_meta") or {},
         "tags":               row.get("tags") or [],
         "created_at":         row.get("created_at"),
         "updated_at":         row.get("updated_at"),
@@ -633,6 +652,39 @@ def get_cultural_reading(media_id: str, ctx=Depends(get_tenant_context)):
         raise HTTPException(404, "Riferimento non trovato")
     cr = rows[0].get("cultural_reading") or {"status": "absent"}
     return cr
+
+
+@router.patch("/archive/{media_id}/display-meta")
+def patch_display_meta(media_id: str, body: DisplayMetaBody, ctx=Depends(get_tenant_context)):
+    """Universal Editorial Cropper™ — salva la regia immagine.
+
+    Aggiorna `metadata_json.display_meta` su `media_library`. Non tocca il file
+    raster, è metadata-only. I consumer (Hero / Moodboard / Presentation)
+    leggono questi valori per costruire object-position / object-fit / filtri.
+    """
+    c = db()
+    rows = (c.table("media_library").select("id,metadata_json")
+            .eq("id", media_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Riferimento non trovato")
+    meta = rows[0].get("metadata_json") or {}
+    display = meta.get("display_meta") or {}
+    # Patch only provided fields, normalize ranges
+    if body.focal_x is not None:
+        display["focal_x"] = max(0.0, min(1.0, float(body.focal_x)))
+    if body.focal_y is not None:
+        display["focal_y"] = max(0.0, min(1.0, float(body.focal_y)))
+    if body.editorial_filter is not None:
+        display["editorial_filter"] = (body.editorial_filter or "").strip() or None
+    if body.crop_ratio is not None:
+        display["crop_ratio"] = body.crop_ratio
+    if body.zoom is not None:
+        display["zoom"] = max(1.0, min(4.0, float(body.zoom)))
+    meta["display_meta"] = display
+    c.table("media_library").update(
+        {"metadata_json": meta, "updated_at": datetime.now(timezone.utc).isoformat()}
+    ).eq("id", media_id).execute()
+    return {"display_meta": display}
 
 
 @router.post("/archive/{media_id}/cultural-reading", status_code=202)

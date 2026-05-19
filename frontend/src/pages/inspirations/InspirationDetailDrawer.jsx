@@ -13,9 +13,11 @@ import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
 import { asErrorString } from '../../lib/asErrorString';
+import UniversalEditorialCropper, { filterCssFor } from '../../components/media/UniversalEditorialCropper';
 
 const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemoved }) => {
   const [data, setData] = useState(null);
+  const [cropperOpen, setCropperOpen] = useState(false);
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -108,7 +110,20 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
           <>
             <section className="insd-media" data-testid="inspiration-detail-media">
               {data.image_url ? (
-                <img src={data.image_url} alt={data.title || ''} />
+                <>
+                  <img src={data.image_url} alt={data.title || ''}
+                       style={{
+                         objectPosition: `${(data.display_meta?.focal_x ?? 0.5) * 100}% ${(data.display_meta?.focal_y ?? 0.5) * 100}%`,
+                         filter: filterCssFor(data.display_meta?.editorial_filter),
+                         transform: data.display_meta?.zoom ? `scale(${data.display_meta.zoom})` : undefined,
+                       }} />
+                  <button type="button"
+                          className="insd-stage-action"
+                          onClick={() => setCropperOpen(true)}
+                          data-testid="inspiration-open-cropper">
+                    <Icons.Wand2 size={11} /> Regia immagine
+                  </button>
+                </>
               ) : (
                 <div className="insd-media__placeholder"><Icons.Image size={48} /></div>
               )}
@@ -276,6 +291,16 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
           </>
         )}
       </div>
+
+      {/* Universal Editorial Cropper™ — regia immagine */}
+      <UniversalEditorialCropper
+        open={cropperOpen}
+        mediaId={id}
+        imageUrl={data?.image_url}
+        initial={data?.display_meta}
+        onClose={() => setCropperOpen(false)}
+        onSaved={(dm) => { setData({ ...data, display_meta: dm }); setCropperOpen(false); onChanged?.(); }}
+      />
     </div>
   );
 };
