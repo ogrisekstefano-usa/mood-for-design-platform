@@ -14,6 +14,8 @@ import React, { useRef, useState } from 'react';
 import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { asErrorString } from '../../lib/asErrorString';
+import ImageEditor from '../../components/media/ImageEditor';
 
 const AddInspirationModal = ({ open, onClose, onImported, config }) => {
   const [mode, setMode] = useState('url'); // 'url' | 'upload'
@@ -27,6 +29,7 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
   const [marketCodes, setMarketCodes] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [pendingFile, setPendingFile] = useState(null);
   const fileInput = useRef(null);
 
   const reset = () => {
@@ -65,37 +68,39 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
     } finally { setSubmitting(false); }
   };
 
-  const handleFiles = async (files) => {
+  const handleFiles = (files) => {
     if (!files || files.length === 0) return;
     const file = files[0];
     if (!file.type.startsWith('image/')) {
       toast.error('Carica un\'immagine (JPG, PNG, WebP)');
       return;
     }
+    // Apri l'editor crop+filtri prima dell'upload (requisito MOOD: ogni file passa per cura editoriale)
+    setPendingFile(file);
+  };
+
+  const uploadEdited = async (editedFile) => {
+    setPendingFile(null);
     setSubmitting(true);
     try {
-      // 1) Get signed upload URL
-      const ext = file.name.split('.').pop().toLowerCase();
+      const ext = 'jpg';
       const sp = `inspirations/${Date.now()}-${Math.random().toString(36).slice(2, 9)}.${ext}`;
       const su = await api.post('/api/storage/signed-upload', {
         bucket: 'media-library', storage_path: sp,
-        content_type: file.type, file_size: file.size,
+        content_type: editedFile.type, file_size: editedFile.size,
       });
-      // 2) Upload file to Supabase via signed URL
       const signed = su.data?.signed_url || su.data?.url;
       if (signed) {
-        await fetch(signed, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file });
+        await fetch(signed, { method: 'PUT', headers: { 'Content-Type': editedFile.type }, body: editedFile });
       }
-      // 3) Register media in DB
       const reg = await api.post('/api/storage/media', {
         bucket: 'media-library', storage_path: sp,
-        file_name: file.name, file_type: file.type, file_size: file.size,
-        alt_text: title || file.name, category: 'inspiration', tags: ['inspiration'],
+        file_name: editedFile.name, file_type: editedFile.type, file_size: editedFile.size,
+        alt_text: title || editedFile.name, category: 'inspiration', tags: ['inspiration'],
       });
-      // 4) Promote to Inspiration with the editorial metadata
       const r = await api.post('/api/inspirations/archive/import', {
         media_id: reg.data?.id || reg.data?.media?.id,
-        title: title || file.name,
+        title: title || editedFile.name,
         description: description || null,
         atmosphere_tags: atmosphereTags,
         material_tags: materialTags,
@@ -287,6 +292,14 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
           )}
         </footer>
       </div>
+
+      {/* Editor crop + filtri base — obbligatorio per ogni upload */}
+      <ImageEditor
+        open={!!pendingFile}
+        file={pendingFile}
+        onCancel={() => setPendingFile(null)}
+        onConfirm={uploadEdited}
+      />
     </div>
   );
 };
