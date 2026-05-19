@@ -29,9 +29,10 @@ import api from '../../lib/api';
 import {
   Plus, Image as ImageIcon, Type, Palette, StickyNote, Package, Layers,
   Square as SquareIcon, Minus, Crosshair, Hexagon, MoveRight, LayoutGrid,
-  BookOpen, Sparkles, FileText, ArrowUpRight,
+  Sparkles, FileText, ArrowUpRight,
   PanelLeftClose, PanelLeftOpen, FilePlus,
 } from 'lucide-react';
+import MoodPanel from './MoodPanel';
 
 const LS_KEY = 'mfd_library_collapsed';
 
@@ -290,32 +291,15 @@ const PagesTab = ({ pages = [], skeletons = [], activePageId, onOpenSkeletons, o
   </>
 );
 
-const InspirationsTab = ({ t }) => (
-  <div className="py-8 text-center">
-    <div className="w-12 h-12 mx-auto mb-4 rounded-full border border-[var(--bp-border)] flex items-center justify-center text-[var(--bp-text-subtle)]">
-      <BookOpen size={16} strokeWidth={1.3} />
-    </div>
-    <p className="bp-eyebrow !text-[10px] !text-[var(--bp-text-muted)] mb-2">
-      {t('moodboards.inspirations.eyebrow', null, 'Coming soon')}
-    </p>
-    <h4 className="bp-h3 !text-[14px] text-[var(--bp-text-primary)] mb-2">
-      {t('moodboards.inspirations.title', null, 'Inspirations Hub')}
-    </h4>
-    <p className="bp-caption !text-[11px] !text-[var(--bp-text-secondary)] leading-relaxed max-w-[200px] mx-auto">
-      {t('moodboards.inspirations.hint', null,
-        'Saved references, client mood notes and project wishlist will live here — pinned to every moodboard you craft.')}
-    </p>
-    <div className="mt-5 inline-flex items-center gap-1.5 text-[9px] tracking-[0.22em] uppercase text-[var(--bp-text-subtle)]">
-      <FileText size={10} strokeWidth={1.5} />
-      <span>{t('moodboards.inspirations.preview', null, 'Preview release')}</span>
-    </div>
-  </div>
+const InspirationsTab = ({ onAddInspiration, moodboardId }) => (
+  <MoodPanel onAddInspiration={onAddInspiration} moodboardId={moodboardId} />
 );
 
 // ── Main component ─────────────────────────────────────────────────────────
 const EditorPanel = ({
   onAddBlock, onOpenSkeletons, onOpenSkeletonPicker, t,
   pages, activePageId,
+  onAddInspiration, moodboardId,
 }) => {
   const [tab, setTab] = useState('insert');
   const { locale } = useBlueprint();
@@ -403,7 +387,9 @@ const EditorPanel = ({
       </div>
 
       {/* Body */}
-      <div className="flex-1 overflow-y-auto px-5 pb-5 pt-1">
+      <div className={`flex-1 min-h-0 ${tab === 'inspirations'
+        ? 'overflow-hidden px-4 pb-4 pt-2 flex flex-col'
+        : 'overflow-y-auto px-5 pb-5 pt-1'}`}>
         {tab === 'insert'       && <InsertTab        onAddBlock={onAddBlock} skeletons={skeletons}
                                                      onOpenSkeletons={onOpenSkeletons}
                                                      onOpenSkeletonPicker={onOpenSkeletonPicker}
@@ -414,7 +400,7 @@ const EditorPanel = ({
                                                      onOpenSkeletons={onOpenSkeletons}
                                                      onOpenSkeletonPicker={onOpenSkeletonPicker}
                                                      t={t} />}
-        {tab === 'inspirations' && <InspirationsTab  t={t} />}
+        {tab === 'inspirations' && <InspirationsTab  onAddInspiration={onAddInspiration} moodboardId={moodboardId} />}
       </div>
     </aside>
   );

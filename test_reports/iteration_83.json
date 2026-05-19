@@ -1,0 +1,51 @@
+{
+  "summary": "Iteration 83 — Moodboards Inspirations Flow™ (Phase C / Slice 2 — MoodPanel + Quick Add). Backend: 6/7 pass (1 CRITICAL bug: POST /api/moodboards/{id}/blocks drops the `metadata` field — Pydantic BlockCreate schema and create_block handler do NOT accept/persist metadata_json, even though the frontend sends rich curatorial provenance: brand, inspiration_id, display_meta, source_type, editorial_filter, market_context). Inspirations archive (editorial/product/brand filters), catalogs, display-meta PATCH and usage-events all work. Frontend: MoodPanel renders correctly, 4 tabs visible, old 'Inspirations Hub Coming soon' placeholder gone, Products tab shows 80 tiles with 'Prodotto' badge, brand-input only on Products, atmosphere chip toggles is-on, collections tab renders, no forbidden jargon detected. Editorial Inspirations tab returned 0 tiles (acceptable empty state per spec — only Product seed data exists in archive currently).",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "POST /api/moodboards/{id}/blocks",
+        "issue": "BlockCreate Pydantic schema (backend/routers/moodboards_v1.py:196-206) does NOT declare a `metadata` field, and create_block() (line 550-584) does NOT write metadata_json. As a result, all Quick Add curatorial metadata (inspiration_id, brand, display_meta, editorial_filter, source_type, market_context) sent by MoodPanel's addInspirationBlock callback is silently dropped on creation. Verified by POST + GET roundtrip: metadata dict comes back as {}. This breaks the entire Brand Intelligence / Cultural Coherence promise of Slice 2 for newly-added blocks. BlockUpdate already supports metadata, so a follow-up PATCH would work — but Quick Add does not patch after create.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": [
+      {"endpoint": "/api/inspirations/archive?inspiration_type=editorial", "issue": "Returns 0 items for demo tenant — spec said '5+ items'; the Inspirations™ tab therefore renders the empty state. Either seed editorial inspirations or update the spec."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Quick Add — curatorial metadata persistence",
+        "issue": "Even if the UI POST contains content.src + style.focal_point + metadata.{...}, the backend strips metadata. ImageBlock.composeFilter() will therefore never receive editorial_filter from block.metadata for newly-added Quick Add blocks (verified: no CSS filter present on canvas <img>s after Quick Add).",
+        "affected_selectors": ["[data-testid=moodboard-canvas] img", "[data-testid^=block-image]"]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_83_mood_panel.py",
+    "/app/test_reports/pytest/iteration_83.xml"
+  ],
+  "action_items": [
+    "URGENT: Add `metadata: Optional[Dict[str, Any]] = None` to BlockCreate schema in /app/backend/routers/moodboards_v1.py:196 AND persist `metadata_json: body.metadata or {}` in the create_block() insert row (line 565-576). Without this fix Quick Add provenance is silently lost on every new inspiration tile drop.",
+    "Optionally seed 5+ editorial (non-product) inspirations for demo tenant so the Inspirations™ tab is not empty on first open.",
+    "Retest the full Quick Add round-trip after the schema fix: POST /blocks then GET /moodboards/{id} must return metadata.brand, metadata.inspiration_id, metadata.display_meta, metadata.source_type for the new block; ImageBlock should then render the editorial_filter CSS filter on the <img>."
+  ],
+  "critical_code_review_comments": [
+    "moodboards_v1.py:196 — BlockCreate is missing metadata field (BlockUpdate has it on line 218 — asymmetric). This is the root cause of the Quick Add metadata loss.",
+    "moodboards_v1.py:565-576 — create_block insert row never sets metadata_json. Inconsistent with the duplicate (line 667) and batch update (line 709) paths which do persist metadata_json.",
+    "MoodPanel.jsx:166 — `params.q` is sent but the backend route may or may not honor it (not verified). Should be confirmed.",
+    "MoodboardEditor.jsx:397 — `api.post('/api/inspirations/registry/usage-events', ...)` swallows errors silently with .catch(()=>{}) — fine for foundation events but consider a debug log so QA can spot 4xx in dev console."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_83_mood_panel.py (new)"
+  ],
+  "success_rate": {"backend": "86% (6/7 — 1 CRITICAL bug surfaced)", "frontend": "90% (MoodPanel UI shell + tabs + chips + tiles + jargon-clean verified; Quick Add network capture + canvas block count partial — execution truncated; metadata persistence verified-broken via backend)"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin) — works. Auth response shape: {session: {access_token}, user: {...}}",
+  "seed_data_creation": "None. Test only created+deleted 1 image block on existing moodboard cdd8478a-6cf5-442e-be4d-52c37a68a84a (TEST_iter83 caption).",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend tests live at /app/backend/tests/test_iteration_83_mood_panel.py. Run via: REACT_APP_BACKEND_URL=https://content-hub-pro-22.preview.emergentagent.com pytest backend/tests/test_iteration_83_mood_panel.py -v. The 1 failing test (TestBlockMetadataPersistence::test_create_image_block_with_inspiration_meta) WILL pass once BlockCreate schema accepts metadata AND create_block persists metadata_json — see action items. Frontend MoodPanel UI is solid and the four tabs + chips + brand-input + collections grouping all render correctly; the user-visible feature break is invisible until you inspect the saved block's metadata after Quick Add.",
+  "rca of the issue": "Root cause = schema/handler asymmetry. BlockUpdate(BaseModel) declares metadata (line 218) and update_block() merges/persists it (line 610-615); duplicate_block (line 667) copies metadata_json; batch update (line 709) writes metadata_json. ONLY the create path (BlockCreate line 196-206 + create_block line 565-576) omits metadata. Frontend already sends the right payload — see MoodboardEditor.addInspirationBlock at line 350-388 — but Pydantic silently drops unknown fields on input (default behavior), and the handler never reads them. Mitigation: 2-line fix on the backend (add field to schema + add metadata_json to insert row). Once shipped, the existing failing pytest will go green and ImageBlock's editorial filter will start applying on Quick Add."
+}

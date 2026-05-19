@@ -11,6 +11,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ImageOff, ImagePlus } from 'lucide-react';
 import api from '../../../lib/api';
+import { filterCssFor } from '../../../components/media/UniversalEditorialCropper';
 
 const buildFilter = (a = {}) => {
   const parts = [];
@@ -25,6 +26,18 @@ const buildFilter = (a = {}) => {
   if (a.blur)       parts.push(`blur(${a.blur}px)`);
   if (a.grayscale)  parts.push(`grayscale(${Math.min(1, a.grayscale)})`);
   return parts.length ? parts.join(' ') : 'none';
+};
+
+// Compose the per-block adjustment filter with the Universal Editorial
+// Cropper™ filter persisted in `block.metadata.editorial_filter`. The
+// cropper is the regia engine — its CSS filter must follow the asset
+// wherever it's reused (moodboards, presentations, magazine, exports).
+const composeFilter = (adj, editorialKey) => {
+  const adjStr = buildFilter(adj);
+  const eStr = editorialKey ? filterCssFor(editorialKey) : null;
+  if (!eStr || eStr === 'none') return adjStr;
+  if (adjStr === 'none') return eStr;
+  return `${eStr} ${adjStr}`;
 };
 
 const SHADOW_MAP = {
@@ -162,7 +175,7 @@ const ImageBlock = ({ block, readOnly, t }) => {
             objectPosition,
             transform: `scale(${zoom})`,
             transformOrigin: objectPosition,
-            filter: buildFilter(adj),
+            filter: composeFilter(adj, block.metadata?.editorial_filter),
             opacity: loaded && !errored ? 1 : 0,
             // Cinematic fade-in handled by .bp-img-in (blur-up + scale settle).
             // The opacity transition is the safety net for cached images that

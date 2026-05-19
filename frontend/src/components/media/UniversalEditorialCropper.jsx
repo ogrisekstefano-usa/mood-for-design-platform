@@ -15,7 +15,7 @@
  * Linguaggio: "Regia immagine", "Preparazione editoriale", "Punto focale",
  * "Filtro editoriale". MAI: editor / cropper / image filter / photo editor.
  */
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
@@ -75,7 +75,7 @@ const UniversalEditorialCropper = ({
 
   if (!open) return null;
 
-  const cssFilter = useMemo(() => filterCssFor(filter), [filter]);
+  const cssFilter = filterCssFor(filter);
 
   const focalToObjPos = `${(focal.x * 100).toFixed(1)}% ${(focal.y * 100).toFixed(1)}%`;
 

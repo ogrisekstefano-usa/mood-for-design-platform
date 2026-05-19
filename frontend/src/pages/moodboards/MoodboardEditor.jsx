@@ -317,6 +317,102 @@ const MoodboardEditor = ({ readOnly = false }) => {
       { entityType: 'moodboard', entityId: id });
   };
 
+  // ── Quick Add™ — instant add from MoodPanel (Inspirations / Products /
+  // Recent / Studio Collections). Preserves curatorial intent (focal point,
+  // editorial filter, brand provenance, market context) end-to-end so the
+  // moodboard always reads as a curated table, never a media browser.
+  const addInspirationBlock = useCallback(async (item, ctx = {}) => {
+    if (readOnly || !item) return;
+    const dm = item.display_meta || {};
+    const samePageBlocks = blocks.filter((b) =>
+      (b.page_id || firstPageId) === activePageId
+    );
+    const maxZ = samePageBlocks.reduce((m, b) => Math.max(m, b.z_index || 0), -1);
+
+    // Aspect ratio: prefer crop_ratio, else the source's intrinsic ratio.
+    let aspect = 4 / 5;
+    if (dm.crop_ratio && /^\d+:\d+$/.test(dm.crop_ratio)) {
+      const [w, h] = dm.crop_ratio.split(':').map(Number);
+      if (w && h) aspect = w / h;
+    } else if (item.width && item.height) {
+      aspect = item.width / item.height;
+    }
+    const width = 360;
+    const height = Math.round(width / aspect);
+
+    const focalX = ((dm.focal_x ?? 0.5) * 100).toFixed(1);
+    const focalY = ((dm.focal_y ?? 0.5) * 100).toFixed(1);
+
+    // Stagger placement so consecutive Quick Adds never overlap perfectly
+    const offsetX = 60 + ((samePageBlocks.length % 6) * 24);
+    const offsetY = 60 + ((samePageBlocks.length % 6) * 24);
+
+    const payload = {
+      type: 'image',
+      x: offsetX,
+      y: offsetY,
+      width,
+      height,
+      z_index: maxZ + 1,
+      page_id: activePageId,
+      content: {
+        src: item.image_url,
+        caption: item.title || item.product_name || '',
+      },
+      style: {
+        fit_mode: 'cover',
+        focal_point: `${focalX}% ${focalY}%`,
+        zoom: dm.zoom ?? 1,
+        border_radius: 4,
+      },
+      metadata: {
+        // ── Curatorial provenance ──
+        inspiration_id: item.id,
+        source_type: item.inspiration_type || (ctx.source_tab === 'products' ? 'product' : 'inspiration'),
+        source_tab: ctx.source_tab || null,
+        // ── Brand intelligence anchors ──
+        brand: item.brand || null,
+        collection: item.collection || null,
+        product_name: item.product_name || null,
+        product_category: item.product_category || null,
+        designer: item.designer || null,
+        rights_status: item.rights_status || null,
+        supplier_catalog_id: item.supplier_catalog_id || null,
+        // ── Universal Editorial Cropper™ regia ──
+        display_meta: dm,
+        editorial_filter: dm.editorial_filter || null,
+        // ── Market context (for Cultural Edition™ future wiring) ──
+        market_context: item.market_codes || [],
+      },
+    };
+
+    const r = await api.post(`/api/moodboards/${id}/blocks`, payload);
+    setBlocks((bs) => { const next = [...bs, r.data]; history.record(next); return next; });
+    setSelectedId(r.data.id);
+    setRightTab('inspector');
+
+    // Emit Product Usage Event™ — foundation for Brand Intelligence /
+    // Material Affinity / Cultural Coherence. Non-blocking, best-effort.
+    if ((item.inspiration_type === 'product' || ctx.source_tab === 'products')) {
+      api.post('/api/inspirations/registry/usage-events', {
+        product_id: item.id,
+        usage_type: 'added_to_moodboard',
+        moodboard_id: id,
+      }).catch(() => { /* foundation event — silently ignore */ });
+    }
+
+    trackEvent('moodboard.inspiration_added',
+      {
+        moodboard_id: id,
+        inspiration_id: item.id,
+        source_type: payload.metadata.source_type,
+        brand: item.brand || null,
+      },
+      { entityType: 'moodboard', entityId: id });
+
+    toast.success(item.brand ? `${item.brand} aggiunto alla selezione.` : 'Riferimento aggiunto.');
+  }, [readOnly, blocks, firstPageId, activePageId, id, history]);
+
   const updateBlock = (bid, patch) => {
     setBlocks((bs) => bs.map((b) => {
       if (b.id !== bid) return b;
@@ -891,6 +987,8 @@ const MoodboardEditor = ({ readOnly = false }) => {
         {!readOnly && (
           <EditorPanel
             onAddBlock={addBlock}
+            onAddInspiration={addInspirationBlock}
+            moodboardId={id}
             onOpenSkeletons={(skid) => {
               api.post(`/api/moodboards/${id}/pages/from_skeleton`, { skeleton_id: skid })
                 .then((r) => { setActivePageId(r.data.id); reloadPagesAndBlocks(); })
