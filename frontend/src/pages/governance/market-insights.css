@@ -1,0 +1,242 @@
+/* ────────────────────────────────────────────────────────────────────
+   Market Insights™ — Phase 1 editorial surface.
+   Mood: FT Weekend × AD × Monocle. Never analytics dashboard.
+   ────────────────────────────────────────────────────────────────── */
+
+.mxi-page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 48px 44px 96px;
+  color: var(--bp-text, #EFEBE4);
+  font-family: var(--bp-font-body, 'Inter', system-ui, sans-serif);
+}
+
+/* ── Hero ───────────────────────────────────────────────────────── */
+.mxi-hero { max-width: 760px; margin-bottom: 36px; }
+.mxi-hero__eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--bp-primary, #C9A36E);
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+.mxi-hero__title {
+  font-family: var(--bp-font-heading, 'Playfair Display', serif);
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.012em;
+  margin: 0 0 14px;
+}
+.mxi-hero__lead {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--bp-text-muted, #A19D98);
+  margin: 0;
+}
+
+/* ── Health card ────────────────────────────────────────────────── */
+.mxi-health {
+  padding: 26px 28px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  margin-bottom: 44px;
+}
+.mxi-health__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+}
+.mxi-health__kicker {
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted, #6B6863);
+  margin: 0;
+  font-weight: 500;
+}
+.mxi-health__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bp-primary, #C9A36E);
+  font-weight: 600;
+}
+.mxi-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--bp-primary, #C9A36E);
+  position: relative;
+  box-shadow: 0 0 0 0 var(--bp-primary, #C9A36E);
+  animation: mxiPulse 2.2s infinite;
+}
+@keyframes mxiPulse {
+  0%   { box-shadow: 0 0 0 0    rgba(201, 163, 110, 0.55); }
+  70%  { box-shadow: 0 0 0 10px rgba(201, 163, 110, 0); }
+  100% { box-shadow: 0 0 0 0    rgba(201, 163, 110, 0); }
+}
+
+.mxi-health__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+.mxi-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.mxi-stat svg { color: var(--bp-text-muted, #6B6863); margin-bottom: 4px; }
+.mxi-stat__num {
+  font-family: var(--bp-font-heading, 'Playfair Display', serif);
+  font-size: 30px;
+  line-height: 1;
+  margin: 0;
+  color: var(--bp-text, #EFEBE4);
+  font-variant-numeric: tabular-nums;
+}
+.mxi-stat__lbl {
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted, #6B6863);
+  margin: 0;
+}
+
+/* ── Feed ───────────────────────────────────────────────────────── */
+.mxi-feed { margin-bottom: 52px; }
+.mxi-feed__head {
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 26px;
+}
+.mxi-feed__title {
+  font-family: var(--bp-font-heading, 'Playfair Display', serif);
+  font-size: 22px;
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.mxi-empty {
+  padding: 64px 36px;
+  text-align: center;
+  border: 1px dashed rgba(255, 255, 255, 0.07);
+  border-radius: 6px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.mxi-empty__eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--bp-primary, #C9A36E);
+  margin: 0 0 14px;
+  font-weight: 600;
+}
+.mxi-empty__lead {
+  font-family: var(--bp-font-heading, 'Playfair Display', serif);
+  font-size: 19px;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--bp-text-muted, #A19D98);
+  margin: 0;
+}
+
+/* ── Narrative list ─────────────────────────────────────────────── */
+.mxi-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.mxi-narrative {
+  padding: 22px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+}
+.mxi-narrative:last-child { border-bottom: none; }
+.mxi-narrative__head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.mxi-narrative__type {
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bp-primary, #C9A36E);
+  font-weight: 600;
+}
+.mxi-narrative__loc {
+  font-size: 11px;
+  color: var(--bp-text-muted, #6B6863);
+}
+.mxi-narrative__headline {
+  font-family: var(--bp-font-heading, 'Playfair Display', serif);
+  font-size: 20px;
+  line-height: 1.3;
+  margin: 0 0 10px;
+  color: var(--bp-text, #EFEBE4);
+}
+.mxi-narrative__body {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--bp-text-muted, #A19D98);
+  margin: 0 0 10px;
+  max-width: 720px;
+}
+.mxi-narrative__reco {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--bp-primary, #C9A36E);
+  font-style: italic;
+  margin: 0;
+}
+
+/* ── Privacy footer ─────────────────────────────────────────────── */
+.mxi-privacy {
+  display: flex;
+  gap: 14px;
+  padding: 22px 26px;
+  background: rgba(255, 255, 255, 0.018);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 5px;
+  align-items: flex-start;
+}
+.mxi-privacy svg { color: var(--bp-text-muted, #6B6863); flex-shrink: 0; margin-top: 2px; }
+.mxi-privacy__kicker {
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted, #6B6863);
+  margin: 0 0 4px;
+  font-weight: 500;
+}
+.mxi-privacy__body {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--bp-text-muted, #A19D98);
+  margin: 0;
+  max-width: 720px;
+  font-style: italic;
+}
+
+/* ── Mobile ─────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .mxi-page { padding: 32px 22px 60px; }
+  .mxi-hero__title { font-size: 28px; }
+  .mxi-health__grid { grid-template-columns: 1fr; gap: 20px; }
+  .mxi-health__head { flex-wrap: wrap; gap: 10px; }
+  .mxi-empty { padding: 44px 22px; }
+  .mxi-empty__lead { font-size: 17px; }
+  .mxi-narrative__headline { font-size: 18px; }
+}
+@media (max-width: 480px) {
+  .mxi-page { padding: 24px 16px 48px; }
+  .mxi-hero__title { font-size: 24px; }
+}

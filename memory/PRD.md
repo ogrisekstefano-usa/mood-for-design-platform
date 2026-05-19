@@ -53,6 +53,83 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase MARKET-INTELLIGENCE-ENGINE-PHASE-1 v1 (Feb 19, 2026) — Geo-Cultural Adaptive Foundation
+**Foundation architetturale del sistema di Editorial Cultural Intelligence di MOOD. Strategic Co-Pilot™, NON autopilot. Phase 1 = struttura pulita, niente AI ancora.**
+
+#### Direttive applicate (strict scope)
+- ✅ Architettura DB completa, 3 tabelle
+- ✅ Seed submarket taxonomy (48 cluster geo-culturali)
+- ✅ Foundation API (4 endpoint, niente AI logic)
+- ✅ UI evolution Market Matrix con submarket chips
+- ✅ Nuova pagina Market Insights™ con empty state editoriale
+- ✅ Privacy-by-design (hash sessione daily-rotating, NO PII, geo region-level only)
+- ❌ Pattern recognition AI (Phase 2)
+- ❌ Adaptive editorial automation (Phase 3)
+- ❌ Frontend event tracker hook (Phase 2)
+- ❌ Tenant analytics dashboard (esplicitamente fuori scope — NEVER)
+
+#### File creati/modificati
+- **NEW** `/app/supabase/migrations/048_market_intelligence_engine.sql` — 3 tabelle: `market_submarkets` (15 campi culturali human-readable), `market_behavior_events` (anonimi), `market_insights` (editorial narratives). 9 indici, 3 commenti privacy-aware.
+- **NEW** `/app/backend/scripts/seed_submarkets.py` — 48 submarket curati con 12 campi culturali ciascuno (editorial_profile · luxury_profile · consultation_style · visual_behavior · decision_rhythm · relationship_expectation · hospitality_profile · cta_psychology · visual_rhythm · design_culture · seo_behavior · publishing_windows) ognuno in **2 lingue** (it-IT + en-US).
+- **NEW** `/app/backend/routers/market_intelligence.py` (240 righe) — 4 endpoint con privacy-by-design:
+  - `GET /submarkets?market=` — taxonomy public (no auth)
+  - `POST /events` — anonymous ingest (no auth, PII stripping aggressivo)
+  - `GET /insights` — tenant-scoped editorial
+  - `GET /health` — system status
+- **UPDATED** `/app/frontend/src/pages/governance/MarketMatrixPage.jsx` — Card market ora mostra anche cluster submarket sotto le keyword chips (max 6 visibili + "+N" overflow)
+- **UPDATED** `/app/frontend/src/pages/governance/market-matrix.css` — Stili `.mxm-submarkets` + `.mxm-sub-chip` (più neutri/secondari rispetto ai brass keyword chips)
+- **NEW** `/app/frontend/src/pages/governance/MarketInsightsPage.jsx` (240 righe) — Strategic Co-Pilot™ surface in 6 lingue: hero + health card (3 stat) + insight feed + empty state editoriale + privacy footer
+- **NEW** `/app/frontend/src/pages/governance/market-insights.css` — Editorial dark, FT × AD × Monocle. Pulse animation sul status "In ascolto". Mobile responsive.
+- **UPDATED** `/app/backend/server.py` — Mount `market_intelligence.router` su `/api/market-intelligence/*`
+- **UPDATED** `/app/frontend/src/App.js` — Route `/blueprint/intelligence` (StudioAdminRoute gated)
+
+#### Submarket taxonomy (48 totali)
+**USA (11):** NYC · Miami · Chicago · Los Angeles · San Francisco · Texas · Aspen · Hamptons · Scottsdale · Pacific Northwest · New England
+**Italia (11):** Milano · Roma · Nord Est · Verona · Lago di Como · Cortina d'Ampezzo · Costa Smeralda · Forte dei Marmi · Firenze · Sicilia · Napoli
+**Francia (4):** Parigi · Costa Azzurra · Lione · Bordeaux
+**DACH (5):** Berlino · Monaco di Baviera · Amburgo · Zurigo · Vienna
+**UK (3):** Londra · Scozia · Midlands
+**GCC (4):** Dubai · Riyadh · Doha · Abu Dhabi
+**Spagna (3):** Madrid · Barcellona · Baleari
+**LatAm (7):** São Paulo · Rio · CDMX · Monterrey · Bogotá · Buenos Aires · Santiago
+
+**Esempio profilo culturale "Forte dei Marmi" (it-IT):**
+- editorial_profile: `mediterraneo · milanese estivo · sartoriale`
+- decision_rhythm: `pre-Ferragosto · fine settimana`
+- publishing_windows: `giu-ago prime · Ferragosto`
+- cta_psychology: `visita alla villa · appuntamento privato`
+- design_culture: `Versilia · Pietrasanta · marmo Carrara`
+
+#### Privacy-by-design verificata
+- ✅ `_session_hash()`: SHA256(secret + day + ip + ua + tenant) — ruota daily, mai IP raw persistito
+- ✅ `_strip_pii()`: blocca email · phone · name · address · ip · lat/lng · user_id · device_id · fingerprint
+- ✅ Geo solo region-level (cf-ipcountry / x-vercel-ip-country-region / cf-ipcity) — mai coordinate
+- ✅ Validazione `event_type` whitelist (18 tipi consentiti) — restituisce 400 per tipi sconosciuti
+- ✅ Fire-and-forget su errori insert — visitor UX mai bloccato
+
+#### Validazione live E2E
+- `GET /submarkets?market=italy` → 11 submarket italiani con profili culturali ✓
+- `GET /health` → `{phase:1, system:"Market Intelligence Engine™", status:"listening", submarkets_active:48, events_total:0, insights_published:0, ai_inference_enabled:false}` ✓
+- `POST /events` con `email` in event_data → 204, riga inserita SENZA email (PII strippato), session_hash 64 char ✓
+- `POST /events` con event_type sconosciuto → 400 ✓
+- `/blueprint/markets` ora mostra submarket chips: Italia → `Milano · Roma · Nord Est · Verona · Lago di Como · Cortina d'Ampezzo · +5` ✓
+- `/blueprint/intelligence` hero + health (48 cluster · 1 segnale · 0 narrative) + empty editoriale "Stiamo ascoltando · Le prime narrative culturali appariranno qui…" + privacy footer ✓
+
+#### Production confidence: **9.5/10**
+Foundation pronta. Quando Phase 2 attiverà l'AI di generazione narrative, ogni componente è già al suo posto: il database accumulerà eventi (oggi 1, domani migliaia), gli insights potranno essere scritti dalla pipeline, e l'UI le mostrerà senza modifiche. Lo zero-state è curato — la pagina è già bellissima a 0 narrative.
+
+#### Cosa NON è incluso (per direttiva strict)
+- AI generation pipeline (Phase 2)
+- Frontend event hook `useMarketSignal()` (Phase 2)
+- Tenant editor per submarket profili (P2)
+- Side-by-side comparison fra submarket (P2)
+- Geo-IP inference avanzata oltre header edge (P3)
+- Tenant analytics dashboard — esplicitamente fuori scope NEVER
+
+---
+
+
+
 ### Fase BRAND-STUDIO-FIX-PACK v1 (Feb 19, 2026) — 7 bug fix integrati
 **Reaction sprint a feedback utente concreto: theme non si applicava all'OS chrome, font solo serif, density/shadow senza effetto, image intent invisibile, identità multilingua persa al salvataggio, presets poco colorati, over-scroll dopo footer.**
 

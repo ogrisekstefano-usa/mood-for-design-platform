@@ -180,6 +180,49 @@
   margin-top: 12px;
 }
 
+/* ── Submarket clusters (geo-cultural) ──────────────────────────── */
+.mxm-submarkets {
+  border-top: 1px dashed rgba(255, 255, 255, 0.05);
+  padding-top: 12px;
+  margin-top: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mxm-submarkets__label {
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted, #6B6863);
+  margin: 0;
+  font-weight: 500;
+}
+.mxm-sub-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.mxm-sub-chip {
+  display: inline-flex;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: var(--bp-text-secondary, #A19D98);
+  font-size: 10.5px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.mxm-sub-chip--more {
+  color: var(--bp-text-muted, #6B6863);
+  font-variant-numeric: tabular-nums;
+  background: transparent;
+  border-style: dashed;
+}
+
 /* ── Open-insights CTA ──────────────────────────────────────────── */
 .mxm-card__cta {
   margin-top: auto;

@@ -71,15 +71,26 @@ const MarketMatrixPage = () => {
     : SUPPORTED.find((l) => l.split('-')[0] === (bpLocale || '').split('-')[0]) || 'en-US';
 
   const [markets, setMarkets] = useState([]);
+  const [submarketsByMacro, setSubmarketsByMacro] = useState({});
   const [loading, setLoading] = useState(true);
   const [openMarket, setOpenMarket] = useState(null);
 
   const load = async () => {
     setLoading(true);
     try {
-      const r = await api.get('/api/markets');
-      const list = r.data?.markets || r.data || [];
+      const [mr, sr] = await Promise.all([
+        api.get('/api/markets'),
+        api.get('/api/market-intelligence/submarkets'),
+      ]);
+      const list = mr.data?.markets || mr.data || [];
       setMarkets(Array.isArray(list) ? list : []);
+      const sm = sr.data?.submarkets || [];
+      const groupedSm = {};
+      sm.forEach((s) => {
+        const macro = s.macro_market_code || 'unknown';
+        (groupedSm[macro] = groupedSm[macro] || []).push(s);
+      });
+      setSubmarketsByMacro(groupedSm);
     } catch {
       toast.error(tr(I18N.loading, locale));
     } finally { setLoading(false); }
@@ -131,6 +142,7 @@ const MarketMatrixPage = () => {
                   <MarketCard
                     key={m.id}
                     market={m}
+                    submarkets={submarketsByMacro[m.code] || []}
                     locale={locale}
                     onOpen={() => setOpenMarket(m)}
                   />
@@ -153,13 +165,18 @@ const MarketMatrixPage = () => {
 };
 
 // ────────────────────────────────────────────────────────────────────
-const MarketCard = ({ market, locale, onOpen }) => {
+const MarketCard = ({ market, submarkets = [], locale, onOpen }) => {
   const intel = market.market_intelligence || {};
   const keywords = intel.keywords?.[locale] || intel.keywords?.['en-US'] || [];
   const insights = intel.insights?.[locale] || intel.insights?.['en-US'] || null;
   const displayName = (market.display_name || {})[locale]
     || (market.display_name || {})['en-US']
     || market.code;
+
+  // Submarket cluster labels (max 6 visible)
+  const subLabels = submarkets
+    .slice(0, 6)
+    .map((s) => (s.display_name?.[locale] || s.display_name?.['en-US'] || s.code));
 
   return (
     <article className="mxm-card" data-testid={`mxm-card-${market.code}`}>
@@ -178,6 +195,22 @@ const MarketCard = ({ market, locale, onOpen }) => {
         </ul>
       ) : (
         <p className="mxm-card__nodata">{tr(I18N.no_data, locale)}</p>
+      )}
+
+      {subLabels.length > 0 && (
+        <div className="mxm-submarkets" data-testid={`mxm-subs-${market.code}`}>
+          <p className="mxm-submarkets__label">
+            {locale.startsWith('it') ? 'Geo-cultural cluster' : 'Geo-cultural clusters'}
+          </p>
+          <ul className="mxm-sub-chips">
+            {subLabels.map((s, i) => (
+              <li key={`${market.code}-sub-${i}`} className="mxm-sub-chip">{s}</li>
+            ))}
+            {submarkets.length > subLabels.length && (
+              <li className="mxm-sub-chip mxm-sub-chip--more">+{submarkets.length - subLabels.length}</li>
+            )}
+          </ul>
+        </div>
       )}
 
       {insights && (

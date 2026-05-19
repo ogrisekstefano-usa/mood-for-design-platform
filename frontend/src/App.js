@@ -29,6 +29,7 @@ const ReferencesPage = lazy(() => import('./pages/workspace/ReferencesPage'));
 const VariantApprovalInboxPage = lazy(() => import('./pages/editorial/VariantApprovalInboxPage'));
 const EditorialStudioPage = lazy(() => import('./pages/editorial/EditorialStudioPage'));
 const MarketMatrixPage = lazy(() => import('./pages/governance/MarketMatrixPage'));
+const MarketInsightsPage = lazy(() => import('./pages/governance/MarketInsightsPage'));
 const CrmAccountsPage = lazy(() => import('./pages/crm/CrmAccountsPage'));
 const InternationalPresencePage = lazy(() => import('./pages/settings/InternationalPresencePage'));
 const StorefrontStudioPage = lazy(() => import('./pages/storefront/StorefrontStudioPage'));
@@ -347,6 +348,7 @@ function App() {
                   {/* Editorial Studio — Composition Room (Phase E-2 Prompt 2). */}
                   <Route path="/blueprint/editorial" element={<StudioAdminRoute><EditorialStudioPage /></StudioAdminRoute>} />
                   <Route path="/blueprint/markets" element={<StudioAdminRoute><MarketMatrixPage /></StudioAdminRoute>} />
+                  <Route path="/blueprint/intelligence" element={<StudioAdminRoute><MarketInsightsPage /></StudioAdminRoute>} />
 
                   {/* CRM routes (tab + optional account_id deep-link) */}
                   <Route path="/crm" element={<Navigate to="/crm/accounts" replace />} />
