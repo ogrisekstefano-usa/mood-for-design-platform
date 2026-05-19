@@ -205,3 +205,104 @@
   .iem-stage { min-height: 260px; }
   .iem-panel { border-left: none; border-top: 1px solid var(--bp-border); }
 }
+
+/* ── Focal Point Editor ─────────────────────────────────────────────
+   Surface drag-to-set + safe-zone + target indicator + 3 ratio previews.
+   Tono editoriale: tracciato sottile, target a doppio anello, no graphic-
+   designer crosshair grezzo. */
+
+.iem-focal-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 380px;
+  cursor: crosshair;
+  background: #000;
+  display: flex; align-items: center; justify-content: center;
+  user-select: none;
+  touch-action: none;
+}
+.iem-focal-stage img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  display: block;
+}
+.iem-focal-safe {
+  position: absolute;
+  border: 1px dashed rgba(255,255,255,0.20);
+  border-radius: 2px;
+  pointer-events: none;
+}
+.iem-focal-target {
+  position: absolute;
+  width: 0; height: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+.iem-focal-target__ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 40px; height: 40px;
+  margin: -20px 0 0 -20px;
+  border: 2px solid var(--bp-primary, #00C9B3);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.35);
+  animation: iem-focal-pulse 1800ms ease-in-out infinite;
+}
+.iem-focal-target__dot {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 8px; height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: var(--bp-primary, #00C9B3);
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.5);
+}
+@keyframes iem-focal-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.18); opacity: 0.55; }
+}
+
+/* Focal previews — 3 ratio editoriali */
+.iem-fp-previews {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.iem-fp-preview {
+  display: flex; flex-direction: column; gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+.iem-fp-preview__frame {
+  width: 100%;
+  background: #000;
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 140ms ease;
+}
+.iem-fp-preview:hover .iem-fp-preview__frame {
+  border-color: var(--bp-primary, #00C9B3);
+}
+.iem-fp-preview__frame img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.iem-fp-preview__label {
+  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--bp-text-muted); font-weight: 600;
+}
+.iem-fp-coords {
+  display: flex; gap: 14px;
+  font-size: 11px; font-family: monospace;
+  color: var(--bp-text-primary);
+  margin-bottom: 8px;
+}

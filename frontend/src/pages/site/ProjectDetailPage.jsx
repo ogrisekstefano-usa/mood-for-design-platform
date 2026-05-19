@@ -63,9 +63,10 @@ const ProjectDetailPage = () => {
   const signalMarket = state.status === 'runtime' ? (state.project?.market_code || null) : null;
   const signalLocale = state.status === 'runtime' ? (state.project?.target_locale || null) : null;
   const signal = useMarketSignal({ marketCode: signalMarket, locale: signalLocale });
+  // gallery_open emesso una sola volta quando il progetto è caricato.
   useEffect(() => {
     if (slug && state.status !== 'loading' && state.status !== '404') {
-      signal('project_view', { project_slug: slug });
+      signal.fireGalleryOpen({ project_slug: slug });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug, state.status, signalMarket]);
@@ -302,14 +303,17 @@ const ProjectDetailPage = () => {
                 return (
                   <Reveal key={b.id || i} delay={(i % 3) + 1} style={{ maxWidth: 'none', margin: '0 calc(-1 * clamp(0px, 6vw, 80px))' }}>
                     <PublicHotspotImage url={b.url} caption={b.caption} hotspots={b.hotspots || []} alt={b.alt_text}
-                                        filters={b.filters} focalPoint={b.focal_point} />
+                                        filters={b.filters} focalPoint={b.focal_point}
+                                        onHotspotOpen={(h) => signal.fireHotspotOpen({ project_slug: slug, hotspot_id: h.id, hotspot_kind: h.kind || 'detail', material_id: h.material_id || null })}
+                                        onMaterialZoom={(h) => h.material_id && signal.fireMaterialZoom({ project_slug: slug, material_id: h.material_id, hotspot_id: h.id })} />
                   </Reveal>
                 );
               }
               if (b.type === 'cta' && b.label) {
                 return (
                   <Reveal key={b.id || i} delay={(i % 3) + 1} style={{ textAlign: 'center', padding: '1rem 0' }}>
-                    <Link to="/start-project" className="mfd-btn mfd-btn--paper" data-testid={`project-story-cta-${i}`}>
+                    <Link to="/start-project" className="mfd-btn mfd-btn--paper" data-testid={`project-story-cta-${i}`}
+                          onClick={() => signal.fireCtaClick({ project_slug: slug, cta_action: b.action || `story_cta_${i}`, cta_label: b.label })}>
                       {b.label} <ArrowUpRight size={14} />
                     </Link>
                   </Reveal>
@@ -371,7 +375,9 @@ const ProjectDetailPage = () => {
                   <Reveal key={g.id || i} delay={(i % 3) + 1} className={wide ? 'mfd-gallery__wide' : ''}>
                     {hsList.length > 0 ? (
                       <PublicHotspotImage url={g.url} caption={g.caption} hotspots={hsList} alt={g.alt_text || g.caption || ''} aspect={wide ? '16/9' : '4/5'}
-                                          filters={g.filters} focalPoint={g.focal_point} />
+                                          filters={g.filters} focalPoint={g.focal_point}
+                                          onHotspotOpen={(h) => signal.fireHotspotOpen({ project_slug: slug, hotspot_id: h.id, hotspot_kind: h.kind || 'detail', material_id: h.material_id || null })}
+                                          onMaterialZoom={(h) => h.material_id && signal.fireMaterialZoom({ project_slug: slug, material_id: h.material_id, hotspot_id: h.id })} />
                     ) : (
                       <>
                         <SiteImage src={g.url} aspect={wide ? '16/9' : '4/5'} alt={g.alt_text || g.caption || ''}
@@ -461,16 +467,19 @@ const ProjectDetailPage = () => {
                     to="/start-project"
                     className={i === 0 ? 'mfd-btn mfd-btn--paper' : 'mfd-btn'}
                     data-testid={`project-cta-${c.action || i}`}
+                    onClick={() => signal.fireCtaClick({ project_slug: slug, cta_action: c.action || `cta_${i}`, cta_index: i })}
                   >
                     {c.label || positioningCtas.primary || labels.beginCta} <ArrowUpRight size={14} />
                   </Link>
                 ))
               : (
                 <>
-                  <Link to="/onboarding/private" className="mfd-btn mfd-btn--paper" data-testid="project-cta-begin">
+                  <Link to="/onboarding/private" className="mfd-btn mfd-btn--paper" data-testid="project-cta-begin"
+                        onClick={() => signal.fireCtaClick({ project_slug: slug, cta_action: 'begin_dialogue' })}>
                     {positioningCtas.primary || labels.beginCta} <ArrowUpRight size={14} />
                   </Link>
-                  <Link to="/projects" className="mfd-btn" data-testid="project-cta-explore">
+                  <Link to="/projects" className="mfd-btn" data-testid="project-cta-explore"
+                        onClick={() => signal.fireCtaClick({ project_slug: slug, cta_action: 'explore_more' })}>
                     {positioningCtas.secondary || pick(ui.explore, 'ui.detail.explore')} <ArrowUpRight size={14} />
                   </Link>
                 </>
@@ -547,9 +556,25 @@ const RelatedRuntimeProjects = ({ currentSlug, locale, pickUiRelated }) => {
 export default ProjectDetailPage;
 
 // ─── PublicHotspotImage — read-only editorial detail points ──────
-const PublicHotspotImage = ({ url, caption, hotspots = [], alt, aspect = '16/9', filters, focalPoint }) => {
+const PublicHotspotImage = ({ url, caption, hotspots = [], alt, aspect = '16/9', filters, focalPoint, onHotspotOpen, onMaterialZoom }) => {
   const [activeId, setActiveId] = React.useState(null);
+  const firedRef = React.useRef(new Set());
   const active = hotspots.find((h) => h.id === activeId);
+  const handlePinClick = (h) => {
+    const willOpen = activeId !== h.id;
+    setActiveId(willOpen ? h.id : null);
+    if (willOpen) {
+      // Emetti hotspot_open una sola volta per pin per sessione di visita.
+      if (!firedRef.current.has(`open:${h.id}`)) {
+        firedRef.current.add(`open:${h.id}`);
+        onHotspotOpen?.(h);
+      }
+      if (h.material_id && !firedRef.current.has(`mat:${h.material_id}`)) {
+        firedRef.current.add(`mat:${h.material_id}`);
+        onMaterialZoom?.(h);
+      }
+    }
+  };
   // Anti-overflow placement: flip horizontally past 60%, vertically
   // past 70% so the tooltip never lands off-canvas on mobile.
   const tipTransform = (h) => {
@@ -582,7 +607,7 @@ const PublicHotspotImage = ({ url, caption, hotspots = [], alt, aspect = '16/9',
             type="button"
             className={`phs-pin ${activeId === h.id ? 'is-active' : ''}`}
             style={{ left: `${h.x_pct}%`, top: `${h.y_pct}%` }}
-            onClick={() => setActiveId(activeId === h.id ? null : h.id)}
+            onClick={() => handlePinClick(h)}
             aria-label={h.title || 'Detail Point'}
             data-testid={`phs-pin-${h.id}`}
           >

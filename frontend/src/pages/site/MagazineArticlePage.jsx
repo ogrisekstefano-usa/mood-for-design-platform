@@ -6,6 +6,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, ArrowUpRight, BookOpen, Plus, X, Check, Send, Globe } from 'lucide-react';
+import { useDwellRead } from '../../hooks/useMarketSignal';
 import { SiteProvider, useSite } from '../../site/SiteContext';
 import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
 import { navigationContent } from '../../site/content/navigation';
@@ -438,6 +439,16 @@ const MagazineArticleInner = () => {
     const id = setTimeout(() => setToast(null), 3800);
     return () => clearTimeout(id);
   }, [toast]);
+
+  // Dwell-read signal — `article_read` viene emesso DOPO 30s di lettura
+  // attiva. Misura risonanza editoriale, non bounce rate.
+  useDwellRead({
+    articleSlug: slug,
+    market: state.article?.market_code || null,
+    locale: runtime?.localeCode || locale || null,
+    thresholdMs: 30000,
+    enabled: !!state.article,
+  });
 
   const handleSentRef = (data) => {
     const msg = data?.advisor_name

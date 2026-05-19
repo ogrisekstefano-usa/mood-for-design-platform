@@ -21,6 +21,7 @@ import { avatarPalette, initialsOf } from '../../lib/avatarHue';
 import ActivityModal from './ActivityModal';
 import StageChangeModal, { CANONICAL_STAGES } from './StageChangeModal';
 import CulturalEditionModal from './CulturalEditionModal';
+import RelationshipGraph from './RelationshipGraph';
 import './relationship-os.css';
 
 // ── icon glyph by interaction_type ──────────────────────────────────
@@ -435,6 +436,9 @@ const AccountDetailPage = () => {
           )}
         </aside>
       </div>
+
+      {/* Relationship Graph™ — editorial connection map */}
+      <RelationshipGraph accountId={accountId} />
 
       {/* Mobile FAB */}
       <button className="rl-fab" onClick={() => setQuickMenuOpen((v) => !v)} data-testid="rl-fab">

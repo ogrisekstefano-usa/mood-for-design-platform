@@ -1,20 +1,20 @@
 /**
- * ImageEditModal — Modal "✏️ Edit" per ogni foto della Media Library.
+ * ImageEditModal — Modifica editoriale per ogni immagine del DAM.
  *
- * Funzioni Phase 1:
- *   • CROP libero o con preset (square · 16:9 · 4:3 · 3:4 · 9:16 · free)
- *   • FILTRI base — luminosità · contrasto · saturazione · rotazione
- *   • Live preview in canvas, applicati on save
- *   • Salvataggio: invia metadati filters al backend (media_library.filters)
- *     + se cambia il crop, applica trasformazione canvas e ri-upload
+ * 3 tab editoriali:
+ *   • CROP — react-easy-crop con preset (Libero · 1:1 · 16:9 · 9:16 · 4:3 · 3:4)
+ *   • PUNTO FOCALE — drag-to-set su superficie editoriale con preview live
+ *     in 3 ratio (16:9 hero, 9:16 storytelling mobile, 1:1 card editoriale).
+ *     NON modifica il raster — solo metadata `focal_point: {x, y}` letti
+ *     runtime tramite `object-position` su tutti i renderer.
+ *   • FILTRI — luminosità · contrasto · saturazione · rotazione + reset
  *
- * Si apre da AssetPickerModal (icona penna su ogni card) o da EditorialMediaField
- * (icona penna nel pannello azioni). Riusa lo schema filtri già presente in
- * imageFilters.js e il modulo media.update().
+ * Save: PATCH /api/media/{id} con focal_point + filters.
+ * Il display_url e il SiteImage universale propagano in modo continuo.
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  X, Check, RotateCw, Crop as CropIcon, SlidersHorizontal, Loader2,
+  X, Check, RotateCw, Crop as CropIcon, SlidersHorizontal, Loader2, Crosshair,
 } from 'lucide-react';
 import Cropper from 'react-easy-crop';
 import { toast } from 'sonner';
@@ -31,14 +31,21 @@ const ASPECTS = [
   { id: '3x4',   label: '3:4',      value: 3 / 4 },
 ];
 
-// Build a cropped+filtered jpeg from the canvas crop area.
+// Ratios per cui il punto focale viene previewed.
+// Ogni voce determina come l'immagine appare in un consumo reale.
+const FP_PREVIEWS = [
+  { id: '16x9', label: '16:9 · hero / progetto',          ratio: 16 / 9, hint: 'Pagina progetto, hero editoriale' },
+  { id: '9x16', label: '9:16 · mobile · storytelling',   ratio: 9 / 16, hint: 'Storia mobile, Inspirations™' },
+  { id: '1x1',  label: '1:1 · card · grid · avatar',     ratio: 1,      hint: 'Magazine card, moodboard preview' },
+];
+
+const CROP_SAFE_INSET = 0.08; // 8% safe-zone interna (no testo/volto vicino al bordo)
+
 const buildCroppedBlob = (imageSrc, cropArea, filters) => new Promise((resolve, reject) => {
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.onload = () => {
     const canvas = document.createElement('canvas');
-    const rotation = ((filters?.rotate || 0) * Math.PI) / 180;
-    // For simplicity we don't rotate canvas here — the saved filters carry the rotate.
     canvas.width = cropArea.width;
     canvas.height = cropArea.height;
     const ctx = canvas.getContext('2d');
@@ -58,12 +65,13 @@ const buildCroppedBlob = (imageSrc, cropArea, filters) => new Promise((resolve, 
 });
 
 const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
-  const [tab, setTab] = useState('crop');     // crop | filters
+  const [tab, setTab] = useState('crop'); // crop | focal | filters
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [aspect, setAspect] = useState(null); // null = free
+  const [aspect, setAspect] = useState(null);
   const [croppedArea, setCroppedArea] = useState(null);
   const [filters, setFilters] = useState({ ...DEFAULT_FILTERS });
+  const [focal, setFocal] = useState({ x: 0.5, y: 0.5 });
   const [saving, setSaving] = useState(false);
   const initialUrl = useRef('');
 
@@ -75,6 +83,11 @@ const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
     setAspect(null);
     setCroppedArea(null);
     setFilters({ ...DEFAULT_FILTERS, ...(asset.filters || {}) });
+    const fp = asset.focal_point || {};
+    setFocal({
+      x: typeof fp.x === 'number' ? fp.x : 0.5,
+      y: typeof fp.y === 'number' ? fp.y : 0.5,
+    });
     setTab('crop');
   }, [open, asset]);
 
@@ -86,16 +99,18 @@ const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
     if (!asset) return;
     setSaving(true);
     try {
-      // Step 1: persist filters metadata (always)
-      await media.update(asset.id, { filters });
+      // Persist filters + focal_point sempre (anche senza crop).
+      await media.update(asset.id, {
+        filters,
+        focal_point: { x: Number(focal.x.toFixed(4)), y: Number(focal.y.toFixed(4)) },
+      });
 
-      // Step 2: if user did a crop, render new image and re-upload
       const didCrop = croppedArea && (croppedArea.width > 0) && (
         croppedArea.x > 1 || croppedArea.y > 1 ||
         Math.abs(croppedArea.width - asset.width) > 2 ||
         Math.abs(croppedArea.height - asset.height) > 2
       );
-      let saved = { ...asset, filters };
+      let saved = { ...asset, filters, focal_point: focal };
       if (didCrop) {
         const blob = await buildCroppedBlob(initialUrl.current, croppedArea, filters);
         const file = new File([blob], asset.file_name || `edit-${asset.id}.jpg`, { type: 'image/jpeg' });
@@ -105,7 +120,6 @@ const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
           folder: asset.folder || 'editorial',
           category: asset.category || null,
         });
-        // Replace the original asset's URL so consumers see the cropped version
         await media.update(asset.id, {
           file_url: newAsset.file_url,
           display_url: newAsset.display_url || newAsset.file_url,
@@ -114,7 +128,7 @@ const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
         }).catch(() => { /* tolerated */ });
         saved = { ...saved, file_url: newAsset.file_url, display_url: newAsset.display_url || newAsset.file_url, width: newAsset.width, height: newAsset.height };
       }
-      toast.success('Immagine aggiornata');
+      toast.success('Immagine aggiornata · stile propagato ovunque');
       onSaved?.(saved);
       onClose?.();
     } catch (e) {
@@ -132,7 +146,7 @@ const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
       <div className="iem-modal">
         <header className="iem-modal__head">
           <div>
-            <p className="iem-modal__eyebrow">Modifica immagine</p>
+            <p className="iem-modal__eyebrow">Modifica immagine · continuità editoriale</p>
             <h2 className="iem-modal__title">{asset.file_name || 'Asset senza nome'}</h2>
           </div>
           <button type="button" className="iem-modal__close" onClick={onClose}
@@ -149,6 +163,12 @@ const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
             <CropIcon size={12} /> Crop
           </button>
           <button type="button" role="tab"
+                  className={`iem-tab ${tab === 'focal' ? 'is-active' : ''}`}
+                  onClick={() => setTab('focal')}
+                  data-testid="iem-tab-focal">
+            <Crosshair size={12} /> Punto focale
+          </button>
+          <button type="button" role="tab"
                   className={`iem-tab ${tab === 'filters' ? 'is-active' : ''}`}
                   onClick={() => setTab('filters')}
                   data-testid="iem-tab-filters">
@@ -158,7 +178,7 @@ const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
 
         <div className="iem-body">
           <div className="iem-stage">
-            {tab === 'crop' ? (
+            {tab === 'crop' && (
               <Cropper
                 image={initialUrl.current}
                 crop={crop}
@@ -172,7 +192,15 @@ const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
                 objectFit="contain"
                 style={{ containerStyle: { background: 'rgba(0,0,0,0.6)' } }}
               />
-            ) : (
+            )}
+            {tab === 'focal' && (
+              <FocalSurface
+                src={initialUrl.current}
+                focal={focal}
+                onChange={setFocal}
+              />
+            )}
+            {tab === 'filters' && (
               <div className="iem-filters-preview">
                 <img src={initialUrl.current} alt={asset.alt_text || 'preview'}
                      style={previewStyle} data-testid="iem-filter-preview" />
@@ -181,7 +209,7 @@ const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
           </div>
 
           <aside className="iem-panel">
-            {tab === 'crop' ? (
+            {tab === 'crop' && (
               <>
                 <p className="iem-panel__label">Aspect ratio</p>
                 <div className="iem-aspects">
@@ -200,7 +228,13 @@ const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
                        data-testid="iem-zoom" />
                 <p className="iem-panel__hint">Trascina l'area visibile · usa le maniglie per regolare</p>
               </>
-            ) : (
+            )}
+
+            {tab === 'focal' && (
+              <FocalPreviews src={initialUrl.current} focal={focal} filters={filters} onPick={setFocal} />
+            )}
+
+            {tab === 'filters' && (
               <>
                 <FilterRow label="Luminosità" testid="iem-flt-brightness"
                            value={filters.brightness} min={0.5} max={1.5} step={0.05}
@@ -248,6 +282,107 @@ const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
         </footer>
       </div>
     </div>
+  );
+};
+
+// ─── Focal surface — drag-to-set sull'immagine intera ─────────────────
+const FocalSurface = ({ src, focal, onChange }) => {
+  const surfaceRef = useRef(null);
+  const [dragging, setDragging] = useState(false);
+
+  const updateFromEvent = useCallback((clientX, clientY) => {
+    const el = surfaceRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    // Trova il bounding box dell'immagine all'interno della surface (object-fit:contain).
+    const img = el.querySelector('img');
+    if (!img || !img.naturalWidth) return;
+    const sw = rect.width;
+    const sh = rect.height;
+    const ar = img.naturalWidth / img.naturalHeight;
+    let iw, ih, ox, oy;
+    if (sw / sh > ar) {
+      ih = sh; iw = ih * ar; ox = (sw - iw) / 2; oy = 0;
+    } else {
+      iw = sw; ih = iw / ar; ox = 0; oy = (sh - ih) / 2;
+    }
+    const rx = Math.min(1, Math.max(0, (clientX - rect.left - ox) / iw));
+    const ry = Math.min(1, Math.max(0, (clientY - rect.top  - oy) / ih));
+    onChange({ x: rx, y: ry });
+  }, [onChange]);
+
+  const onPointerDown = (e) => {
+    e.preventDefault();
+    setDragging(true);
+    updateFromEvent(e.clientX, e.clientY);
+  };
+  const onPointerMove = (e) => {
+    if (!dragging) return;
+    updateFromEvent(e.clientX, e.clientY);
+  };
+  const onPointerUp = () => setDragging(false);
+
+  return (
+    <div className="iem-focal-stage" ref={surfaceRef}
+         onPointerDown={onPointerDown}
+         onPointerMove={onPointerMove}
+         onPointerUp={onPointerUp}
+         onPointerLeave={onPointerUp}
+         data-testid="iem-focal-stage">
+      <img src={src} alt="focal-source" draggable={false} />
+      {/* Safe zone overlay */}
+      <div className="iem-focal-safe" style={{
+        left:   `${CROP_SAFE_INSET * 100}%`,
+        right:  `${CROP_SAFE_INSET * 100}%`,
+        top:    `${CROP_SAFE_INSET * 100}%`,
+        bottom: `${CROP_SAFE_INSET * 100}%`,
+      }} />
+      <div className="iem-focal-target"
+           style={{ left: `${focal.x * 100}%`, top: `${focal.y * 100}%` }}
+           data-testid="iem-focal-target">
+        <span className="iem-focal-target__ring" />
+        <span className="iem-focal-target__dot" />
+      </div>
+    </div>
+  );
+};
+
+// ─── Focal previews — 3 ratio editoriali ───────────────────────────────
+const FocalPreviews = ({ src, focal, filters, onPick }) => {
+  const filterCss = cssFilterOf(filters);
+  return (
+    <>
+      <p className="iem-panel__label">Anteprime di consumo</p>
+      <p className="iem-panel__hint" style={{ marginTop: 0, marginBottom: 12 }}>
+        Il punto focale resta visibile in tutti i ritagli — hero, mobile, card.
+      </p>
+      <div className="iem-fp-previews">
+        {FP_PREVIEWS.map((p) => (
+          <button type="button" key={p.id} className="iem-fp-preview"
+                  onClick={() => onPick && onPick(focal)}
+                  data-testid={`iem-fp-preview-${p.id}`}>
+            <div className="iem-fp-preview__frame" style={{ aspectRatio: String(p.ratio) }}>
+              <img src={src} alt={`preview ${p.label}`}
+                   style={{
+                     filter: filterCss,
+                     objectPosition: `${focal.x * 100}% ${focal.y * 100}%`,
+                   }} />
+            </div>
+            <span className="iem-fp-preview__label">{p.label}</span>
+          </button>
+        ))}
+      </div>
+      <p className="iem-panel__label" style={{ marginTop: 16 }}>Posizione</p>
+      <div className="iem-fp-coords">
+        <span>X · {Math.round(focal.x * 100)}%</span>
+        <span>Y · {Math.round(focal.y * 100)}%</span>
+      </div>
+      <button type="button" className="iem-reset"
+              onClick={() => onPick({ x: 0.5, y: 0.5 })}
+              data-testid="iem-focal-reset">
+        Centra il punto focale
+      </button>
+    </>
   );
 };
 

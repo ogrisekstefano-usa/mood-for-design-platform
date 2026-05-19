@@ -262,6 +262,202 @@ def mood_signals(account_id: str, ctx=Depends(get_tenant_context)):
     return {"mood": _compute_mood(c, account_id, tid)}
 
 
+# ─── Relationship Graph™ — editorial connection map ───────────────────
+@router.get("/accounts/{account_id}/graph")
+def relationship_graph(account_id: str, ctx=Depends(get_tenant_context)):
+    """Editorial map of an account — NOT a debug graph viz.
+
+    Aggregates every connection the relationship has woven across MOOD:
+      • Progetti collegati (relationship_projects)
+      • Moodboard condivise (via interactions with moodboard_id)
+      • Cultural Editions™ avviate (interactions report_payload kind=cultural_edition_intent)
+      • Ispirazioni salvate (relationship_inspirations)
+      • Materiali in risonanza (relationship_material_affinities, ordered by attraction_score)
+      • Mercati attivi (account_markets)
+      • Segnali editoriali recenti (relationship_engagement_signals)
+
+    Tono: concierge · editorial · MAI tecnico ("nodes/edges/weight" non
+    vengono mai esposti al frontend).
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+    _row_or_404(c, "accounts", account_id, tid)
+
+    # ─ Projects linked ─
+    proj_links = (c.table("relationship_projects").select("*")
+                  .eq("account_id", account_id).eq("tenant_id", tid)
+                  .order("linked_at", desc=True).limit(20).execute().data or [])
+    project_ids = [pl["project_id"] for pl in proj_links if pl.get("project_id")]
+    proj_titles: Dict[str, Dict[str, Any]] = {}
+    if project_ids:
+        try:
+            pr = (c.table("portfolio_projects").select("id, master_title, slug, status")
+                  .in_("id", project_ids).eq("tenant_id", tid).execute().data or [])
+            proj_titles = {p["id"]: p for p in pr}
+        except Exception:
+            proj_titles = {}
+    projects = [{
+        "id":            pl["project_id"],
+        "name":          (proj_titles.get(pl["project_id"]) or {}).get("master_title") or "Progetto",
+        "slug":          (proj_titles.get(pl["project_id"]) or {}).get("slug"),
+        "status":        (proj_titles.get(pl["project_id"]) or {}).get("status"),
+        "role":          pl.get("role"),
+        "linked_at":     pl.get("linked_at"),
+    } for pl in proj_links]
+
+    # ─ Moodboards (inferred from interactions where moodboard_id is set) ─
+    mb_ints = (c.table("interactions")
+               .select("moodboard_id, occurred_at, interaction_type")
+               .eq("account_id", account_id).eq("tenant_id", tid)
+               .not_.is_("moodboard_id", "null")
+               .order("occurred_at", desc=True).limit(40).execute().data or [])
+    mb_seen: Dict[str, Dict[str, Any]] = {}
+    for it in mb_ints:
+        mid = it.get("moodboard_id")
+        if not mid or mid in mb_seen:
+            continue
+        mb_seen[mid] = {
+            "id":          mid,
+            "last_touch":  it.get("occurred_at"),
+            "via":         it.get("interaction_type"),
+        }
+    moodboard_ids = list(mb_seen.keys())
+    if moodboard_ids:
+        try:
+            mb_rows = (c.table("moodboards").select("id, title, status")
+                       .in_("id", moodboard_ids).eq("tenant_id", tid).execute().data or [])
+            mb_titles = {m["id"]: m for m in mb_rows}
+        except Exception:
+            mb_titles = {}
+        for mid, m in mb_seen.items():
+            t = mb_titles.get(mid, {})
+            m["name"] = t.get("title") or "Moodboard"
+            m["status"] = t.get("status")
+    moodboards = list(mb_seen.values())
+
+    # ─ Cultural Editions™ requested ─
+    ce_rows = (c.table("interactions").select("id, occurred_at, title, report_payload")
+               .eq("account_id", account_id).eq("tenant_id", tid)
+               .eq("interaction_type", "ai_summary")
+               .order("occurred_at", desc=True).limit(20).execute().data or [])
+    cultural_editions = []
+    for it in ce_rows:
+        rp = it.get("report_payload") or {}
+        if rp.get("kind") != "cultural_edition_intent":
+            continue
+        snap = rp.get("submarket_snapshot") or {}
+        cultural_editions.append({
+            "intent_id":          it["id"],
+            "started_at":         it.get("occurred_at"),
+            "submarket_name":     snap.get("name") or rp.get("target_submarket"),
+            "submarket_code":     rp.get("target_submarket"),
+            "market_code":        rp.get("target_market"),
+            "locale":             rp.get("target_locale"),
+        })
+
+    # ─ Inspirations saved ─
+    insp_rows = (c.table("relationship_inspirations").select("*")
+                 .eq("account_id", account_id).eq("tenant_id", tid)
+                 .order("saved_at", desc=True).limit(20).execute().data or [])
+    inspirations = [{
+        "id":            r["reference_id"],
+        "saved_at":      r.get("saved_at"),
+        "source":        r.get("source"),
+        "resonance":     r.get("resonance_note"),
+    } for r in insp_rows]
+
+    # ─ Material affinities (ordered) ─
+    mat_rows = (c.table("relationship_material_affinities").select("*")
+                .eq("account_id", account_id).eq("tenant_id", tid)
+                .order("attraction_score", desc=True).limit(12).execute().data or [])
+    mat_ids = [m["material_id"] for m in mat_rows if m.get("material_id")]
+    mat_titles: Dict[str, Dict[str, Any]] = {}
+    if mat_ids:
+        try:
+            mr = (c.table("material_registry").select("id, name, category, finish")
+                  .in_("id", mat_ids).eq("tenant_id", tid).execute().data or [])
+            mat_titles = {m["id"]: m for m in mr}
+        except Exception:
+            mat_titles = {}
+    materials = [{
+        "id":            m["material_id"],
+        "name":          (mat_titles.get(m["material_id"]) or {}).get("name") or "Materiale",
+        "family":        (mat_titles.get(m["material_id"]) or {}).get("category"),
+        "finish":        (mat_titles.get(m["material_id"]) or {}).get("finish"),
+        "affinity":      float(m.get("attraction_score") or 0),
+        "sample_requested": bool(m.get("sample_requested")),
+        "specified":     bool(m.get("specified")),
+        "last_touch":    m.get("last_engaged_at"),
+    } for m in mat_rows]
+
+    # ─ Active markets ─
+    am_rows = (c.table("account_markets").select("*")
+               .eq("account_id", account_id).eq("tenant_id", tid)
+               .order("is_primary", desc=True).execute().data or [])
+    market_ids = [a["market_id"] for a in am_rows if a.get("market_id")]
+    market_titles: Dict[str, Dict[str, Any]] = {}
+    if market_ids:
+        try:
+            mks = (c.table("markets").select("id, code, name")
+                   .in_("id", market_ids).execute().data or [])
+            market_titles = {m["id"]: m for m in mks}
+        except Exception:
+            market_titles = {}
+    markets = [{
+        "id":            a["market_id"],
+        "name":          (market_titles.get(a["market_id"]) or {}).get("name")
+                          or (market_titles.get(a["market_id"]) or {}).get("code")
+                          or "Mercato",
+        "code":          (market_titles.get(a["market_id"]) or {}).get("code"),
+        "is_primary":    bool(a.get("is_primary")),
+        "engagement":    float(a.get("engagement_strength") or 0),
+    } for a in am_rows]
+
+    # ─ Recent editorial signals ─
+    recent_sigs = (c.table("relationship_engagement_signals")
+                   .select("signal_type, entity_type, occurred_at, cta_intent, atmosphere_tags, material_tags, market_id")
+                   .eq("account_id", account_id).eq("tenant_id", tid)
+                   .order("occurred_at", desc=True).limit(8).execute().data or [])
+
+    # ─ Editorial counts (concierge-tone, not analytics) ─
+    counts = {
+        "projects":          len(projects),
+        "moodboards":        len(moodboards),
+        "cultural_editions": len(cultural_editions),
+        "inspirations":      len(inspirations),
+        "materials":         len(materials),
+        "markets":           len(markets),
+    }
+
+    # ─ Editorial summary line — concierge tone, not KPI ─
+    summary_lines: List[str] = []
+    if counts["projects"]:
+        summary_lines.append(f"{counts['projects']} progetti tessuti insieme.")
+    if counts["moodboards"]:
+        summary_lines.append(f"{counts['moodboards']} moodboard condivise nel tempo.")
+    if counts["cultural_editions"]:
+        summary_lines.append(f"{counts['cultural_editions']} Cultural Editions™ avviate.")
+    if counts["markets"] >= 2:
+        summary_lines.append("Relazione internazionale — vive in più mercati.")
+    if counts["materials"] >= 3:
+        summary_lines.append("Mostra una grammatica materica chiara.")
+    if not summary_lines:
+        summary_lines.append("La relazione è ancora un foglio bianco — il primo gesto la inizierà.")
+
+    return {
+        "account_id":        account_id,
+        "counts":            counts,
+        "projects":          projects,
+        "moodboards":        moodboards,
+        "cultural_editions": cultural_editions,
+        "inspirations":      inspirations,
+        "materials":         materials,
+        "markets":           markets,
+        "recent_signals":    recent_sigs,
+        "editorial_summary": summary_lines,
+    }
+
+
 # ─── Cultural Editions foundation endpoint ────────────────────────────
 class CulturalEditionIntent(BaseModel):
     source_type:  str = Field(..., description="project | article | moodboard")

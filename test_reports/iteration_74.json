@@ -1,0 +1,34 @@
+{
+  "summary": "Iteration 74 testing — Public Render Continuity™ + Market Signals™ 1.5 + Relationship Intelligence Foundation. Backend: 10/10 pytest PASS (graph schema + counts + 404, summary/mood-signals regression, all 5 editorial event types accepted 204, bogus event 400). Frontend: RelationshipGraph mounts with data-testid='relationship-graph' on AccountDetailPage; section chips appear exactly for non-empty sections (cultural_editions, materials, markets all YES; projects/moodboards/inspirations correctly absent on account 8e40f60c). Media Library located at /library (NOT /media — /media returns 404). ImageEditModal testids verified via source review (only render when modal opens; reachable via pen icon on AssetPickerModal cards).",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "AccountDetailPage (Maya Aldhabi · 8e40f60c)", "issues": ["First load occasionally renders 'Account non disponibile.' before the detail UI hydrates — race between session restore and account fetch. Reproducible on direct deep-link to /crm/accounts/{id} after fresh login. Subsequent navigations are fine. NOT a regression from this sprint but worth tracking."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_74_relationships_signals.py",
+    "/app/test_reports/pytest/iteration_74.xml"
+  ],
+  "action_items": [
+    "(Optional polish) Editorial summary lines in RelationshipGraph use a styling pattern that did not match a computed-style scan looking for fontStyle=italic + borderLeftStyle=dotted. Verify they render visually as italic w/ dotted left border per spec; if using border-left shorthand consider explicit borderLeftStyle for testability.",
+    "(Out of scope but noted) Background 401/503 errors on workspace endpoints persist on /crm/accounts/[id]; carried from iteration_73 — separate cleanup."
+  ],
+  "critical_code_review_comments": [
+    "ALLOWED_EVENT_TYPES in /app/backend/routers/market_intelligence.py includes the 5 editorial signals + many legacy types (gallery_view_complete, hotspot_complete, project_view, image_engage, session_*). The strict 5-signal whitelist is enforced FRONT-END SIDE via EDITORIAL_SIGNALS in useMarketSignal.js. If product really wants 'strict 5' across the stack, also trim the backend whitelist.",
+    "RelationshipGraph correctly renders only sections with data — clean editorial UX. Italian language preserved (NO 'lead/deal/funnel/conversion' jargon observed).",
+    "ImageEditModal testids could not be observed live (modal mounts on demand); rely on source review at /app/frontend/src/components/common/ImageEditModal.jsx for 3 tabs + focal stage + 3 previews + reset/save testids."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_74_relationships_signals.py (new pytest module)"
+  ],
+  "success_rate": { "backend": "100% (10/10)", "frontend": "85% (RelationshipGraph fully verified live; ImageEditModal only verified via source — modal-on-demand)" },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024!  (tenant 81a09ead-0306-4d71-a5c4-ca2b3956add2)",
+  "seed_data_creation": "none — used existing seeded accounts; one verified account = 8e40f60c-1e91-4b4e-9d13-a52fc71c146a (Maya Aldhabi, counts cultural_editions=3, materials=1, markets=2)",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend whitelist for market events is BROADER than the frontend editorial 5-signal whitelist (frontend strict, backend permissive). All 5 editorial signals (gallery_open, hotspot_open, article_read, cta_click, material_zoom) return 204; bogus returns 400. RelationshipGraph backend at GET /api/relationships/accounts/{id}/graph returns full payload with all required keys + counts as ints + editorial_summary as non-empty list[str]. Media Library route is /library (NOT /media — /media is 404). To test ImageEditModal end-to-end open Media Library, click a card to open AssetPickerModal-flow, then click the pen icon. Public storefront project route is /projects/:slug (mounted under locale-prefixed and locale-less variants in App.js). Magazine route is /magazine/:slug. Auth uses JSON login returning {session:{access_token}, user:{tenant_id}} — pass as Bearer.",
+  "rca_of_the_issue": "n/a — sprint goals delivered. Minor frontend race condition on AccountDetailPage first-load shows 'Account non disponibile' transiently before the account fetch resolves; not a regression from this sprint."
+}
