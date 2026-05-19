@@ -326,7 +326,7 @@ function App() {
                   <Route path="/workspace/projects/:id" element={<ProjectDetailPage />} />
                   <Route path="/workspace/proposals" element={<ProposalsPage />} />
                   <Route path="/workspace/proposals/:id/compose" element={<ProposalComposerPage />} />
-                  <Route path="/workspace/references" element={<ReferencesPage />} />
+                  <Route path="/workspace/references" element={<Navigate to="/inspirations" replace />} />
                   <Route path="/moodboards" element={<MoodboardsPage />} />
                   <Route path="/moodboards/:id" element={<MoodboardEditor />} />
                   <Route path="/library" element={<MediaLibraryPage />} />

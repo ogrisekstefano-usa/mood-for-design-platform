@@ -1,20 +1,224 @@
-import React from 'react';
-import { useBlueprint } from '../../contexts/BlueprintContext';
-import { BookOpen } from 'lucide-react';
+/**
+ * InspirationsPage — Cultural Editorial Archive
+ *
+ * Inspirations™ = layer editoriale sopra la Media Library.
+ * NON è un Pinterest viewer. NON è un file manager.
+ * È l'archivio curatoriale culturale dello studio.
+ *
+ * Layout:
+ *   01 · Editorial header (cultural design intelligence layer)
+ *   02 · Filtri orizzontali (mercato · atmosfera · materiale · luxury · profilo)
+ *   03 · Masonry grid (cards cinematografiche con resonance hints)
+ *   04 · Detail drawer (fullscreen cinematic con Market Resonance™)
+ *   05 · Add Reference modal (upload · URL Pinterest · URL Instagram · URL immagine)
+ *
+ * Linguaggio: 100% italiano editoriale. ZERO jargon SaaS.
+ */
+import React, { useEffect, useMemo, useState } from 'react';
+import * as Icons from 'lucide-react';
+import { toast } from 'sonner';
+import api from '../../lib/api';
+import AddInspirationModal from './AddInspirationModal';
+import InspirationDetailDrawer from './InspirationDetailDrawer';
+import './inspirations.css';
 
 const InspirationsPage = () => {
-  const { t } = useBlueprint();
+  const [items, setItems] = useState(null);
+  const [filtersConfig, setFiltersConfig] = useState(null);
+  const [filters, setFilters] = useState({ market: '', atmosphere: '', material: '', luxury: '', profile: '' });
+  const [search, setSearch] = useState('');
+  const [addOpen, setAddOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    api.get('/api/inspirations/archive/_filters').then((r) => setFiltersConfig(r.data)).catch(() => {});
+  }, []);
+
+  const load = () => {
+    setError(null);
+    const qs = new URLSearchParams();
+    Object.entries(filters).forEach(([k, v]) => { if (v) qs.set(k, v); });
+    if (search) qs.set('q', search);
+    api.get(`/api/inspirations/archive?${qs.toString()}`)
+      .then((r) => setItems(r.data?.items || []))
+      .catch((e) => setError(e?.response?.data?.detail || 'Errore nel caricamento'));
+  };
+  useEffect(() => { load(); /* eslint-disable-next-line */ }, [filters.market, filters.atmosphere, filters.material, filters.luxury, filters.profile]);
+
+  const onImported = (it) => {
+    setItems((prev) => [it, ...(prev || [])]);
+    toast.success('Riferimento aggiunto a Inspirations™');
+  };
+
+  const onChanged = (it) => {
+    setItems((prev) => (prev || []).map((x) => x.id === it.id ? { ...x, ...it } : x));
+  };
+
+  const onRemoved = (id) => {
+    setItems((prev) => (prev || []).filter((x) => x.id !== id));
+    setSelectedId(null);
+  };
+
+  const empty = items && items.length === 0;
+
   return (
-    <div className="p-8 max-w-7xl mx-auto" data-testid="inspirations-page">
-      <div className="mb-8">
-        <p className="text-[var(--bp-text-muted)] text-[10px] font-body uppercase tracking-[0.2em] mb-1">{t('nav.section.content')}</p>
-        <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)]">{t('inspirations.title')}</h1>
-      </div>
-      <div className="text-center py-20">
-        <BookOpen size={36} className="text-[var(--bp-text-subtle)] mx-auto mb-4" strokeWidth={1} />
-        <p className="text-[var(--bp-text-muted)] font-body">{t('inspirations.empty')}</p>
-      </div>
+    <div className="ins-page" data-testid="inspirations-page">
+      <header className="ins-header" data-testid="inspirations-header">
+        <p className="ins-eyebrow">Cultural Design Intelligence Layer</p>
+        <h1 className="ins-title">Inspirations™</h1>
+        <p className="ins-lede">
+          L'archivio curatoriale dello studio. Ogni riferimento è letto attraverso la lente culturale
+          dei mercati internazionali: atmosfera, materia, affinità editoriale.
+        </p>
+        <div className="ins-header__actions">
+          <div className="ins-search">
+            <Icons.Search size={13} strokeWidth={1.5} />
+            <input
+              type="text"
+              placeholder="Cerca per atmosfera, materia, brand…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') load(); }}
+              data-testid="ins-search-input"
+            />
+          </div>
+          <button type="button" className="ins-cta-primary"
+                  onClick={() => setAddOpen(true)}
+                  data-testid="ins-add-btn">
+            <Icons.Plus size={13} /> Aggiungi riferimento
+          </button>
+        </div>
+      </header>
+
+      <FilterBar
+        config={filtersConfig}
+        value={filters}
+        onChange={(next) => setFilters(next)}
+      />
+
+      {error && (
+        <div className="ins-empty" data-testid="inspirations-error">
+          <Icons.AlertCircle size={22} strokeWidth={1.2} />
+          <p>{error}</p>
+        </div>
+      )}
+
+      {items === null && !error && (
+        <div className="ins-grid">
+          {[0,1,2,3,4,5,6,7].map((i) => (
+            <div key={i} className="ins-card ins-card--skel" style={{ height: 180 + (i % 4) * 60 }} />
+          ))}
+        </div>
+      )}
+
+      {empty && (
+        <div className="ins-empty" data-testid="inspirations-empty">
+          <Icons.Bookmark size={28} strokeWidth={1.1} />
+          <p className="ins-empty__title">L'archivio è ancora vuoto.</p>
+          <p className="ins-empty__hint">
+            Aggiungi il primo riferimento: un upload, un link Pinterest, un link Instagram o
+            qualsiasi URL di immagine. MOOD lo trasformerà in Inspiration culturale.
+          </p>
+          <button type="button" className="ins-cta-primary"
+                  onClick={() => setAddOpen(true)}
+                  data-testid="ins-empty-add">
+            <Icons.Plus size={13} /> Aggiungi il primo riferimento
+          </button>
+        </div>
+      )}
+
+      {items && items.length > 0 && (
+        <div className="ins-grid" data-testid="inspirations-grid">
+          {items.map((it) => (
+            <InspirationCard key={it.id} item={it} onOpen={() => setSelectedId(it.id)} />
+          ))}
+        </div>
+      )}
+
+      <AddInspirationModal
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        config={filtersConfig}
+        onImported={(it) => { setAddOpen(false); onImported(it); }}
+      />
+
+      <InspirationDetailDrawer
+        open={!!selectedId}
+        id={selectedId}
+        onClose={() => setSelectedId(null)}
+        config={filtersConfig}
+        onChanged={onChanged}
+        onRemoved={onRemoved}
+      />
     </div>
   );
 };
+
+// ── FilterBar ──────────────────────────────────────────────────────────
+const FilterBar = ({ config, value, onChange }) => {
+  if (!config) return null;
+  const Sel = ({ name, options, placeholder, testid }) => (
+    <select
+      className="ins-filter"
+      value={value[name]}
+      onChange={(e) => onChange({ ...value, [name]: e.target.value })}
+      data-testid={testid}
+    >
+      <option value="">{placeholder}</option>
+      {options.map((o) => (
+        <option key={o.code || o.key} value={o.code || o.key}>{o.label}</option>
+      ))}
+    </select>
+  );
+  return (
+    <div className="ins-filter-bar" data-testid="inspirations-filters">
+      <Sel name="market"     options={config.markets}              placeholder="Mercato"     testid="ins-filter-market" />
+      <Sel name="atmosphere" options={config.atmosphere_tags}      placeholder="Atmosfera"   testid="ins-filter-atmosphere" />
+      <Sel name="material"   options={config.material_tags}        placeholder="Materia"     testid="ins-filter-material" />
+      <Sel name="luxury"     options={config.luxury_levels}        placeholder="Tono luxury" testid="ins-filter-luxury" />
+      <Sel name="profile"    options={config.hospitality_profiles} placeholder="Destinazione" testid="ins-filter-profile" />
+      {(value.market || value.atmosphere || value.material || value.luxury || value.profile) && (
+        <button type="button" className="ins-filter-clear"
+                onClick={() => onChange({ market: '', atmosphere: '', material: '', luxury: '', profile: '' })}
+                data-testid="ins-filter-clear">
+          Reset
+        </button>
+      )}
+    </div>
+  );
+};
+
+// ── InspirationCard ───────────────────────────────────────────────────
+const InspirationCard = ({ item, onOpen }) => {
+  const atmos = (item.atmosphere_tags || []).slice(0, 2);
+  const mats  = (item.material_tags || []).slice(0, 2);
+  return (
+    <button type="button" className="ins-card"
+            onClick={onOpen}
+            data-testid={`inspiration-card-${item.id}`}>
+      <div className="ins-card__media">
+        {item.image_url ? (
+          <img src={item.image_url} alt={item.title || ''} loading="lazy" />
+        ) : (
+          <div className="ins-card__media-placeholder">
+            <Icons.Image size={32} strokeWidth={1.2} />
+          </div>
+        )}
+        <div className="ins-card__overlay">
+          <div className="ins-card__chips">
+            {atmos.map((a, i) => <span key={`a-${i}`} className="ins-chip ins-chip--atmos">{a.replace(/_/g, ' ')}</span>)}
+            {mats.map((m, i)  => <span key={`m-${i}`} className="ins-chip ins-chip--mat">{m.replace(/_/g, ' ')}</span>)}
+          </div>
+          {item.brand && <span className="ins-card__brand">{item.brand}</span>}
+        </div>
+      </div>
+      <div className="ins-card__body">
+        <h3 className="ins-card__title">{item.title}</h3>
+        {item.description && <p className="ins-card__desc">{item.description}</p>}
+      </div>
+    </button>
+  );
+};
+
 export default InspirationsPage;

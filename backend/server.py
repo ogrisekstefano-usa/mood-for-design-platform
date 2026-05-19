@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import httpx
 
-from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine, ai_studio_brief, project_workspace_v2, proposal_composer, market_perspectives, locale_runtime, editorial_variants, advisor_suggestions, reference_intelligence, relationships, markets, editorial, advisor_network, crm_voice_notes, crm_intelligence
+from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_archive, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine, ai_studio_brief, project_workspace_v2, proposal_composer, market_perspectives, locale_runtime, editorial_variants, advisor_suggestions, reference_intelligence, relationships, markets, editorial, advisor_network, crm_voice_notes, crm_intelligence
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -104,6 +104,7 @@ api_router.include_router(workspace.router, prefix="/workspace", tags=["workspac
 # included BEFORE the legacy `inspirations` magazine router, otherwise the
 # legacy `GET /{post_id}` catch-all shadows `/boards`, `/items/*`, etc.
 api_router.include_router(inspirations_boards.router, prefix="/inspirations", tags=["inspirations-boards"])
+api_router.include_router(inspirations_archive.router, prefix="/inspirations", tags=["inspirations-archive"])
 api_router.include_router(inspirations.router, prefix="/inspirations", tags=["inspirations"])
 api_router.include_router(insights.router, prefix="/insights", tags=["insights"])
 api_router.include_router(settings.router, prefix="/settings", tags=["settings"])

@@ -1,0 +1,38 @@
+{
+  "summary": "Iteration 77 — Inspirations™ Editorial Archive (Foundation Sprint). Tested backend router /api/inspirations/archive/* end-to-end (16 pytest cases, all passed) and frontend /inspirations page via Playwright (login, header, filters, grid, detail drawer + Market Resonance™, Add modal, legacy redirect, jargon scan). Pre-existing Mediterranean villa inspiration scored 95% Miami (passes ≥80% requirement). Newly imported test inspiration also scored ≥80% Miami. All taxonomy counts match spec (12/16/6/4/4). NO Pinterest Research / AI score / KPI jargon detected anywhere on /inspirations page DOM. Legacy /workspace/references redirects to /inspirations. Detail drawer shows AFFINITÀ CULTURALE with 6 markets sorted desc, italian explanation per market.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Inspirations grid", "issues": ["Test-only artifact: an existing inspiration imported with a pinterest.com placeholder URL renders a broken image (no og:image). Backend fallback returns the original URL → card shows empty <img>. Acceptable per spec (placeholder editoriale fino a sostituzione manuale) but consider adding an explicit CSS placeholder or 'fallback' badge when source_kind=='pinterest/instagram' and og:image extraction fails."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_77_inspirations_archive.py",
+    "/app/test_reports/pytest/iteration_77.xml"
+  ],
+  "action_items": [
+    "(Optional cosmetic) Add a visual placeholder for cards whose external image fails to render — currently a broken-image icon appears for unresolved Pinterest/Instagram URLs.",
+    "(Optional cleanup) Sidebar appears collapsed/icon-only in the test viewport — could not assert 'Inspirations™' label via text scan. PlatformCapabilitiesPage label change was NOT browsed (not on critical path). Main agent can self-verify by visiting /admin platform capabilities."
+  ],
+  "critical_code_review_comments": [
+    "inspirations_archive.py is 595 lines — within the 700-line guideline but approaching it. Consider extracting taxonomy constants + _compute_resonance + _resolve_image_url into a /core/inspirations module if more endpoints are added.",
+    "Idempotency on POST /archive/{id}/links relies on a try/except around DB insert without explicit UNIQUE constraint check — verified working but could fail silently if the unique index is dropped. Consider an explicit pre-select-then-insert pattern.",
+    "_resolve_image_url performs a synchronous httpx.Client call inside the request lifecycle (blocking up to 8s) — for Pinterest pages this can stall the FastAPI worker. Recommend moving to async httpx.AsyncClient or background-task resolution with later patch.",
+    "GET /archive applies market/atmosphere/material filters client-side after fetching with .limit (rows are pulled first then filtered), so the 'next_offset' pagination semantics are slightly broken when filters are active. Acceptable for current dataset sizes; document if scaling beyond a few hundred inspirations."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_77_inspirations_archive.py (new)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin) — login route is /auth/login (Italian 'Bentornato' / 'Accedi'). Login endpoint: POST /api/auth/login returns body.session.access_token.",
+  "seed_data_creation": "Test created two inspirations via /api/inspirations/archive/import: (a) TEST_ImportedMedVilla (Unsplash image, full atmosphere/material/market metadata) — deleted/unflagged at end of test run; (b) TEST_PinterestRef (pinterest.com placeholder URL) — left in archive as residue (is_inspiration=true) with a broken image because og:image extraction failed. Main agent may want to manually delete or fix the og:image extractor.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 16 backend tests in /app/backend/tests/test_iteration_77_inspirations_archive.py passed in ~10s. Use the same file for regression. Pre-existing inspirations (d703a487-4a58-409c-b36e-83ef784878a6 Mediterranean villa, ea38cfce-21e0-4819-9303-4e986ac9e29c NYC penthouse) remain present and Mediterranean scores 95% Miami. PlatformCapabilitiesPage label rename was NOT browsed; quick check needed if regressed.",
+  "rca of the issue": "No bugs found. Backend resonance math matches spec (Miami = 100% for the Mediterranean villa, far above 80% threshold). Frontend integration is solid: filter changes trigger reload via useEffect deps, detail drawer fetches /resonance per market, Add modal POSTs to /import and prepends new card to grid."
+}
