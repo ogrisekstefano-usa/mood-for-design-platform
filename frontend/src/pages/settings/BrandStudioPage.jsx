@@ -27,6 +27,9 @@ import { useTenantTheme } from '../../contexts/TenantThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import BlueprintColorPicker from '../../components/common/BlueprintColorPicker';
 import EditorialMediaField from '../../components/common/EditorialMediaField';
+import {
+  LIGHT_PALETTES, DARK_PALETTES, applyPalette as applyCuratedRoot, storePalette,
+} from '../../lib/curatedPalettes';
 
 const DISPLAY_FONTS = [
   // Serif (editorial)
@@ -221,6 +224,30 @@ const PresetCard = ({ preset, current, onPick, testid }) => {
   );
 };
 
+// ── Curated palette card (24 curated themes from the topbar mega-menu)
+const CuratedPaletteCard = ({ palette, current, onPick, testid }) => (
+  <button type="button" onClick={() => onPick(palette)}
+          data-testid={testid}
+          className={`relative text-left rounded-[var(--bp-radius-sm)] p-3 border transition-all group
+            ${current
+              ? 'border-[var(--bp-primary)] bg-[var(--bp-primary)]/5 ring-1 ring-[var(--bp-primary)]'
+              : 'border-[var(--bp-border)] hover:border-[var(--bp-border-strong)] hover:-translate-y-px'}`}>
+    <div className="aspect-[5/2] rounded-[3px] mb-2 overflow-hidden flex border border-[var(--bp-border)]">
+      <span className="flex-1" style={{ background: palette.bg }} />
+      <span className="flex-1" style={{ background: palette.surfaceElev }} />
+      <span className="flex-1" style={{ background: palette.primary }} />
+      <span className="flex-1" style={{ background: palette.accent }} />
+    </div>
+    <p className="text-[11px] font-body text-[var(--bp-text-primary)]">{palette.name}</p>
+    <p className="text-[9px] font-body text-[var(--bp-text-muted)] line-clamp-1 mt-0.5">{palette.description}</p>
+    {current && (
+      <span className="absolute top-2 right-2 inline-flex w-4 h-4 rounded-full bg-[var(--bp-primary)] text-white items-center justify-center">
+        <CheckCircle2 size={10} strokeWidth={2.4} />
+      </span>
+    )}
+  </button>
+);
+
 // ── Live Preview surface ───────────────────────────────────────────
 const LivePreview = ({ branding, theme }) => {
   const palette = theme?.palette || DEFAULT_PALETTE;
@@ -361,6 +388,40 @@ const BrandStudioPage = () => {
     } catch (e) {
       toast.error(e?.response?.data?.detail || 'Could not apply preset');
     }
+  };
+
+  // ── Curated palette (mega-menu) — applies instantly to the workspace +
+  //    propagates into the brand theme so the storefront receives it too.
+  const applyCuratedPalette = (palette) => {
+    // 1. Instant visual feedback on the workspace via :root override.
+    applyCuratedRoot(palette.id);
+    storePalette(palette.id);
+    // 2. Map curated palette tokens → brand theme.palette so Save persists it.
+    const isDark = (palette.text || '').toLowerCase().startsWith('#e') ||
+                   (palette.text || '').toLowerCase().startsWith('#f');
+    const mode = isDark ? 'dark' : 'light';
+    setTheme((prev) => ({
+      ...prev,
+      mode,
+      preset_key: `curated_${palette.id}`,
+      palette: {
+        ...DEFAULT_PALETTE,
+        ...(prev.palette || {}),
+        background:        palette.bg,
+        surface:           palette.surface,
+        surface_elevated:  palette.surfaceElev,
+        primary:           palette.primary,
+        primary_soft:      palette.primarySoft,
+        secondary:         palette.accent,
+        accent:            palette.accent,
+        border:            palette.border,
+        border_strong:     palette.borderStrong,
+        text_primary:      palette.text,
+        text_secondary:    palette.textMuted,
+        text_muted:        palette.textFaint,
+      },
+    }));
+    toast.success(`Tema "${palette.name}" applicato — premi "Salva" per renderlo definitivo`);
   };
 
   if (!canManage) {
@@ -520,17 +581,45 @@ const BrandStudioPage = () => {
             </Field>
           </Section>
 
-          <Section kicker="E · Presets" title={t('brand.section.presetsTitle', null, 'Temi curati')} testid="section-presets"
-                   trace={t('brand.presetsTrace', null, 'Identità visiva completa · 9 preset editoriali curati')}>
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-              {presets.map((p) => (
-                <PresetCard key={p.key} preset={p}
-                            current={theme.preset_key === p.key}
-                            onPick={applyPreset}
-                            testid={`preset-${p.key}`} />
+          <Section kicker="E · Temi curati" title={t('brand.section.curatedTitle', null, 'Temi curati')} testid="section-curated-palettes"
+                   trace={t('brand.curatedTrace', null, `${LIGHT_PALETTES.length + DARK_PALETTES.length} palette ordinate per famiglia · click per applicare · poi premi Salva`)}>
+            <div className="mb-2 mt-1 text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body flex items-center gap-2">
+              <Sparkles size={10} strokeWidth={1.7} /> Chiari & colorati · {LIGHT_PALETTES.length}
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-5" data-testid="brand-curated-light-grid">
+              {LIGHT_PALETTES.map((p) => (
+                <CuratedPaletteCard key={p.id} palette={p}
+                                    current={theme.preset_key === `curated_${p.id}`}
+                                    onPick={applyCuratedPalette}
+                                    testid={`brand-curated-${p.id}`} />
+              ))}
+            </div>
+            <div className="mb-2 text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] font-body flex items-center gap-2">
+              <span className="inline-block w-2 h-2 rounded-full bg-[var(--bp-text-primary)]" /> Scuri · {DARK_PALETTES.length}
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3" data-testid="brand-curated-dark-grid">
+              {DARK_PALETTES.map((p) => (
+                <CuratedPaletteCard key={p.id} palette={p}
+                                    current={theme.preset_key === `curated_${p.id}`}
+                                    onPick={applyCuratedPalette}
+                                    testid={`brand-curated-${p.id}`} />
               ))}
             </div>
           </Section>
+
+          {presets.length > 0 && (
+            <Section kicker="F · Editorial presets" title={t('brand.section.presetsTitle', null, 'Preset editoriali')} testid="section-presets"
+                     trace={t('brand.presetsTrace', null, 'Identità complete · server-side · sovrascrivono anche tipografia e radius')}>
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                {presets.map((p) => (
+                  <PresetCard key={p.key} preset={p}
+                              current={theme.preset_key === p.key}
+                              onPick={applyPreset}
+                              testid={`preset-${p.key}`} />
+                ))}
+              </div>
+            </Section>
+          )}
         </div>
 
         {/* Live preview */}

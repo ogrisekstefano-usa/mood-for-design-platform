@@ -321,6 +321,25 @@ export const applyPalette = (id) => {
 
 const STORAGE_KEY = 'mfd_curated_palette';
 
+/** Remove the palette overrides — used when Brand Studio takes over. */
+export const clearPalette = () => {
+  const r = document.documentElement;
+  r.removeAttribute('data-palette');
+  // Don't touch data-palette-mode / data-workspace-mode (tenant theme manages those)
+  const styleEl = document.getElementById('palette-switcher-os-overrides');
+  if (styleEl) styleEl.remove();
+  // Remove inline :root vars we set
+  const keys = [
+    '--bp-bg','--bp-surface','--bp-surface-1','--bp-surface-2','--bp-surface-3','--bp-surface-elev',
+    '--bp-border','--bp-border-strong','--bp-border-hover',
+    '--bp-text','--bp-text-primary','--bp-text-secondary','--bp-text-muted','--bp-text-subtle','--bp-text-faint',
+    '--bp-primary','--bp-primary-soft','--bp-accent',
+    '--brand-primary','--brand-bg','--brand-surface','--brand-text',
+  ];
+  keys.forEach((k) => r.style.removeProperty(k));
+  try { localStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
+};
+
 export const getStoredPalette = () => {
   try {
     const id = localStorage.getItem(STORAGE_KEY);

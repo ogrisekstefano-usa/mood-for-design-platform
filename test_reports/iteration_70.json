@@ -1,0 +1,30 @@
+{
+  "summary": "Frontend-only sprint testing 6 Brand Studio palette fixes. All 6 fixes runtime-verified via Playwright + DOM probing. Brand Studio Curated grid renders 15 light + 9 dark cards in correct order. Clicking cobalt applies the palette instantly (--bp-bg=#080D1F, --bp-primary=#5A8FE5, data-palette=cobalt, LivePreview turns dark cinematic blue, toast 'Cobalt applicato' shown, localStorage='cobalt'). Persistence after page reload works (ls/data-palette/--bp-bg all restored). Clicking Salva fires PUT /api/branding which returns 200 with theme.preset_key='curated_cobalt' — toast 'Brand saved' confirmed. Palette popover .palsw-popover computed z-index = 10010 ✓. Editorial presets section still renders + POST /api/branding/apply-preset returns 200 with 'Preset Editorial applied' toast.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "applyCuratedPalette() in BrandStudioPage.jsx correctly does both: applyPalette(id) for instant root-level CSS overrides + setTheme() to mark dirty + propagate via PUT /api/branding. Verified end-to-end.",
+    "PUT /api/branding response payload echoed theme.preset_key='curated_cobalt' confirming server persistence — no need for separate GET /api/branding/current endpoint (the FE uses GET /api/branding).",
+    "Note: the review request mentions GET /api/branding/current but the actual endpoint is GET /api/branding (current is implicit). Not a bug — only a documentation drift in the test spec.",
+    "palette-switcher.css .palsw-popover { z-index: 10010 } matches FIX 4. Confirmed via getComputedStyle on the live element after opening the popover from the topbar trigger."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only sprint)",
+    "frontend": "100% — all 6 fixes runtime-verified"
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (Super Admin)",
+  "seed_data_creation": "None — used existing demo tenant",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "RUNTIME-VERIFIED:\n  FIX 1 — [data-testid='section-curated-palettes'] has two grids in DOM order: brand-curated-light-grid (15 cards) then brand-curated-dark-grid (9 cards). All 24 expected testids present (ivory, linen, pearl, champagne, sand, sage, mint, sky, rose, lavender, peach, pistachio, coral, aqua, sunshine, graphite, midnight, obsidian, carbon, forest, burgundy, aubergine, slate, cobalt).\n  FIX 2 — click on [data-testid='brand-curated-cobalt'] → document.documentElement.style.--bp-bg='#080D1F', --bp-primary='#5A8FE5', data-palette='cobalt'. Toast text: 'Tema \"Cobalt\" applicato — premi \"Salva\" per renderlo definitivo'. localStorage.mfd_curated_palette='cobalt'. LivePreview block visually turns dark cinematic blue.\n  FIX 3 — After page reload, localStorage + data-palette + --bp-bg all restored automatically. Click Salva → PUT /api/branding 200 with response.theme.preset_key='curated_cobalt'. Toast 'Brand saved' confirmed.\n  FIX 4 — .palsw-popover element computed z-index=10010, visible after clicking [data-testid='palette-switcher-trigger']. Width 320px, visually on top of the topbar.\n  FIX 5 — [data-testid='section-presets'] renders below curated section. Preset cards visible (Editorial, Warm Italian Luxury, Warm Cream, Monochrome Atelier, Architectural Minimal, Nordic Editorial, Modern Gallery, Dark Stone, Soft Hospitality + more).\n  FIX 6 — POST /api/branding/apply-preset returns 200 on first preset; toast 'Preset \"Editorial\" applied'. No regression on legacy endpoint.\n\nKnown non-issue: page.evaluate(`fetch('/api/branding')`) returns 401 because the axios api.js client uses an in-memory auth token header, while raw window fetch doesn't carry it. The PUT itself succeeds because the FE triggers it via the api.js instance with proper auth. No fix needed."
+}
