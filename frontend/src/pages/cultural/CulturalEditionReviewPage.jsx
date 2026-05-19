@@ -193,6 +193,40 @@ const CulturalEditionReviewPage = () => {
         </section>
       </div>
 
+      {/* ── Market Narrative Profile™ — direzione narrativa applicata ── */}
+      {(draft.selected_narrative_mode || draft.suggested_narrative_mode) && (
+        <section className="ce-narrative-trace" data-testid="ce-narrative-trace">
+          <p className="ce-eyebrow">
+            <Icons.Compass size={11} /> Direzione narrativa applicata
+          </p>
+          <div className="ce-narrative-trace__grid">
+            <div>
+              <span className="ce-narrative-trace__lbl">Modalità</span>
+              <span className="ce-narrative-trace__val">{draft.selected_narrative_mode || draft.suggested_narrative_mode}</span>
+            </div>
+            <div>
+              <span className="ce-narrative-trace__lbl">Intensità</span>
+              <span className="ce-narrative-trace__val">{draft.selected_intensity || draft.suggested_intensity}</span>
+            </div>
+            <div>
+              <span className="ce-narrative-trace__lbl">Origine</span>
+              <span className="ce-narrative-trace__val">
+                {draft.manual_override
+                  ? 'personalizzata dal designer'
+                  : `suggerita dal mercato ${draft.target_market_label || ''}`.trim()}
+              </span>
+            </div>
+          </div>
+          {draft.applied_market_biases?.narrative_direction?.length > 0 && (
+            <div className="ce-narrative-trace__chips" data-testid="ce-narrative-trace-chips">
+              {draft.applied_market_biases.narrative_direction.slice(0, 6).map((d, i) => (
+                <span key={i} className="ce-narrative-trace__chip">{d}</span>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
       <footer className="ce-review-foot">
         <div className="ce-review-foot__meta">
           <span>Lingua: {draft.target_locale}</span>

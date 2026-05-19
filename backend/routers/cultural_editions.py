@@ -31,6 +31,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
 
 from core.tenant_context import get_tenant_context
+from cultural_engine import market_narrative_provider
 from database import db
 
 logger = logging.getLogger(__name__)
@@ -146,6 +147,11 @@ class DraftCreate(BaseModel):
     target_locale:    Optional[str] = None
     adaptation_scope: List[str] = Field(default_factory=list)
     note:             Optional[str] = None
+    # Market Narrative Profile™ — selezione contestuale dal wizard.
+    # Se assenti, il backend usa i suggested del profilo. Se diversi
+    # dai suggested → manual_override = true (utile per Cultural Pattern Learning™).
+    selected_narrative_mode:   Optional[str] = None
+    selected_intensity:        Optional[str] = None
 
 
 class DraftPatch(BaseModel):
@@ -282,8 +288,16 @@ def _build_user_message(source: Dict[str, Any], scope: List[str], note: Optional
 
 async def _generate_market_version(market: Dict[str, Any], source: Dict[str, Any],
                                    scope: List[str], locale: str,
-                                   note: Optional[str]) -> Dict[str, Any]:
-    """Returns (market_version_dict, generation_meta_dict)."""
+                                   note: Optional[str],
+                                   market_influence_block: Optional[str] = None,
+                                   selected_narrative_mode: Optional[str] = None,
+                                   selected_intensity: Optional[str] = None) -> Dict[str, Any]:
+    """Returns (market_version_dict, generation_meta_dict).
+
+    Quando viene passato `market_influence_block` (testo Italian editoriale
+    dal Market Narrative Provider™), viene **appeso** al system prompt come
+    *soft influence* — modula il tono SENZA cancellare l'identità di base.
+    """
     fallback = _fallback_market_version(market, source, scope, locale)
     meta = {
         "model":        "fallback",
@@ -295,11 +309,26 @@ async def _generate_market_version(market: Dict[str, Any], source: Dict[str, Any
         return fallback, meta
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage  # type: ignore
+        system_prompt = _build_system_prompt(market, locale)
+        if market_influence_block:
+            system_prompt = (
+                system_prompt
+                + "\n\n"
+                + market_influence_block
+            )
+        # Direzione narrativa scelta dal designer (override del profilo).
+        if selected_narrative_mode or selected_intensity:
+            extras = ["DIREZIONE EDITORIALE SCELTA DAL DESIGNER (rispetta sempre):"]
+            if selected_narrative_mode:
+                extras.append(f"- Modalità narrativa: {selected_narrative_mode}")
+            if selected_intensity:
+                extras.append(f"- Intensità narrativa: {selected_intensity}")
+            system_prompt += "\n\n" + "\n".join(extras)
         chat = (
             LlmChat(
                 api_key=key,
                 session_id=f"cultural-edition-{uuid.uuid4().hex[:10]}",
-                system_message=_build_system_prompt(market, locale),
+                system_message=system_prompt,
             )
             .with_model("anthropic", "claude-sonnet-4-5-20250929")
             .with_params(max_tokens=1100)
@@ -322,7 +351,14 @@ async def _generate_market_version(market: Dict[str, Any], source: Dict[str, Any
             "cultural_notes":   (parsed.get("cultural_notes") or fallback["cultural_notes"]).strip(),
             "locale":           locale,
         }
-        meta = {"model": "claude-sonnet-4-5-20250929", "generated_at": _iso(), "fallback": False}
+        meta = {
+            "model":               "claude-sonnet-4-5-20250929",
+            "generated_at":        _iso(),
+            "fallback":            False,
+            "market_influence":    bool(market_influence_block),
+            "selected_narrative_mode": selected_narrative_mode,
+            "selected_intensity":      selected_intensity,
+        }
         return version, meta
     except Exception as e:
         logger.warning(f"cultural edition generation fallback: {e}")
@@ -332,12 +368,54 @@ async def _generate_market_version(market: Dict[str, Any], source: Dict[str, Any
 # ─── Endpoints ─────────────────────────────────────────────────────────
 @router.get("/markets")
 def list_markets():
-    """Public curated taxonomy — 6 mercati editoriali."""
+    """Public curated taxonomy + Market Narrative Profiles™ inline."""
+    profiles = market_narrative_provider.list_profiles()
+    # Map curated market codes ↔ narrative profile market codes
+    # (some legacy codes need normalization to match seed data)
+    code_alias = {
+        "usa_miami":   "usa_miami",
+        "usa_nyc":     "usa_nyc",
+        "usa_socal":   "usa_socal",
+        "uae_dubai":   "uae_dubai",
+        "uk_london":   "uk_london",
+        "italy_milano":"italy_milano",
+        "france_paris":"france_paris",
+    }
+    enriched = []
+    for m in CURATED_MARKETS:
+        profile = profiles.get(code_alias.get(m["code"], m["code"]))
+        copy_market = {**m}
+        if profile:
+            copy_market["narrative_profile"] = {
+                "id":                       profile.get("id"),
+                "curator_note":             profile.get("curator_note"),
+                "narrative_direction":      profile.get("narrative_direction"),
+                "suggested_narrative_mode": profile.get("suggested_narrative_mode"),
+                "suggested_intensity":      profile.get("suggested_intensity"),
+                "luxury_expression":        profile.get("luxury_expression"),
+                "anti_patterns":            profile.get("anti_patterns"),
+            }
+        enriched.append(copy_market)
     return {
-        "markets":           CURATED_MARKETS,
+        "markets":           enriched,
         "adaptation_scopes": ADAPTATION_SCOPES,
         "source_types":      SOURCE_TYPES,
     }
+
+
+@router.get("/market-narrative-profile/{market_code}")
+def get_market_narrative_profile(market_code: str):
+    """Full Market Narrative Profile™ for the wizard's contextual card.
+
+    Pubblico (no auth) come `/markets`: i profili sono taxonomy curata,
+    non dati di tenant. UI usa questa per mostrare 'Direzione narrativa
+    del mercato' con curator_note + suggerimenti + anti-patterns.
+    """
+    profile = market_narrative_provider.get_profile(market_code)
+    if not profile:
+        # Non bloccante: alcuni mercati legacy potrebbero non essere ancora seeded
+        raise HTTPException(404, "Profilo narrativo non disponibile per questo mercato")
+    return {"profile": profile}
 
 
 @router.get("/sources")
@@ -399,7 +477,26 @@ async def create_draft(body: DraftCreate, ctx=Depends(get_tenant_context)):
     locale = body.target_locale or market.get("default_locale", "it-IT")
     scope = [s for s in (body.adaptation_scope or []) if s] or [s["key"] for s in ADAPTATION_SCOPES]
 
-    version, meta = await _generate_market_version(market, snapshot, scope, locale, body.note)
+    # ── Market Narrative Profile™ — soft cultural influence ─────────────
+    profile = market_narrative_provider.get_profile(market["code"])
+    influence_block = market_narrative_provider.build_market_influence_block(profile)
+
+    # Suggested vs Selected (per Cultural Pattern Learning™ futuro)
+    suggested_mode      = (profile or {}).get("suggested_narrative_mode")
+    suggested_intensity = (profile or {}).get("suggested_intensity")
+    selected_mode       = body.selected_narrative_mode or suggested_mode
+    selected_intensity  = body.selected_intensity      or suggested_intensity
+    manual_override     = bool(
+        (body.selected_narrative_mode and body.selected_narrative_mode != suggested_mode) or
+        (body.selected_intensity      and body.selected_intensity      != suggested_intensity)
+    )
+
+    version, meta = await _generate_market_version(
+        market, snapshot, scope, locale, body.note,
+        market_influence_block=influence_block,
+        selected_narrative_mode=selected_mode,
+        selected_intensity=selected_intensity,
+    )
 
     did = str(uuid.uuid4())
     row = {
@@ -417,6 +514,14 @@ async def create_draft(body: DraftCreate, ctx=Depends(get_tenant_context)):
         "market_version":     version,
         "generation_meta":    meta,
         "note":               body.note,
+        # Market Narrative Profile™ persistence (Phase 1)
+        "market_narrative_profile_id": (profile or {}).get("id"),
+        "suggested_narrative_mode":    suggested_mode,
+        "suggested_intensity":         suggested_intensity,
+        "selected_narrative_mode":     selected_mode,
+        "selected_intensity":          selected_intensity,
+        "manual_override":             manual_override,
+        "applied_market_biases":       market_narrative_provider.applied_biases_snapshot(profile),
         "created_by":         ctx.get("profile_id"),
         "created_at":         _iso(),
         "updated_at":         _iso(),

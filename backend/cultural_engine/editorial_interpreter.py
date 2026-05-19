@@ -142,7 +142,8 @@ SYSTEM_PROMPT_BASE = (
 def _build_system_prompt(brand_voice: Optional[Dict[str, Any]],
                          narrative_mode: Optional[str],
                          intensity: Optional[str],
-                         presentation_context: Optional[str]) -> str:
+                         presentation_context: Optional[str],
+                         market_influence: Optional[str] = None) -> str:
     blocks = [SYSTEM_PROMPT_BASE]
     bv = _build_brand_voice_block(brand_voice)
     if bv:
@@ -150,6 +151,9 @@ def _build_system_prompt(brand_voice: Optional[Dict[str, Any]],
     nd = _build_narrative_directive(narrative_mode, intensity, presentation_context)
     if nd:
         blocks.append(nd)
+    if market_influence:
+        # Market Narrative Profile™ — SOFT influence, never overrides Brand Voice.
+        blocks.append(market_influence)
     return "\n\n".join(blocks)
 
 
@@ -205,22 +209,28 @@ async def interpret(signals: Dict[str, Any], activated: List[Dict[str, Any]],
                     brand_voice: Optional[Dict[str, Any]] = None,
                     narrative_mode: Optional[str] = None,
                     narrative_intensity: Optional[str] = None,
-                    presentation_context: Optional[str] = None) -> Dict[str, Any]:
-    """Returns editorial interpretation tuned by Brand Voice + Narrative Mode."""
+                    presentation_context: Optional[str] = None,
+                    market_influence_block: Optional[str] = None) -> Dict[str, Any]:
+    """Returns editorial interpretation tuned by Brand Voice + Narrative Mode
+    + (optionally) Market Narrative Profile™ as soft cultural influence."""
     fb = _fallback(signals, activated, markets)
     key = os.environ.get("EMERGENT_LLM_KEY")
     meta_extra = {
-        "narrative_mode":       narrative_mode,
-        "intensity":            narrative_intensity,
-        "presentation_context": presentation_context,
-        "brand_voice_applied":  bool(brand_voice),
+        "narrative_mode":          narrative_mode,
+        "intensity":               narrative_intensity,
+        "presentation_context":    presentation_context,
+        "brand_voice_applied":     bool(brand_voice),
+        "market_influence_applied": bool(market_influence_block),
     }
     if not key:
         return {**fb, "provider": "fallback", "model": "fallback", "fallback": True, **meta_extra}
 
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage  # type: ignore
-        system_prompt = _build_system_prompt(brand_voice, narrative_mode, narrative_intensity, presentation_context)
+        system_prompt = _build_system_prompt(
+            brand_voice, narrative_mode, narrative_intensity, presentation_context,
+            market_influence=market_influence_block,
+        )
         chat = (
             LlmChat(api_key=key, session_id=f"cult-{uuid.uuid4().hex[:10]}",
                     system_message=system_prompt)

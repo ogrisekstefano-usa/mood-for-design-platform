@@ -44,6 +44,33 @@ const ADAPTATION_SCOPES_FALLBACK = [
   { key: 'atmosphere',       label: 'Atmosfera narrativa' },
 ];
 
+// ── Direzioni narrative & intensità (allineate al backend) ───────────
+// Lessico editoriale italiano: NESSUN jargon AI/prompt/model.
+const NARRATIVE_MODES_OPTS = [
+  { key: 'strategic',         label: 'Strategica · sintetica e progettuale' },
+  { key: 'technical',         label: 'Tecnica · architettonica, zero metafore' },
+  { key: 'emotional',         label: 'Emozionale · misurata, sensoriale' },
+  { key: 'cinematic',         label: 'Cinematografica · immersiva' },
+  { key: 'hospitality',       label: 'Ospitale · esperienziale' },
+  { key: 'luxury_editorial',  label: 'Editorial luxury · magazine alta gamma' },
+  { key: 'commercial_soft',   label: 'Commerciale morbida · rassicurante' },
+  { key: 'cultural_analyst',  label: 'Consulenziale · culturale internazionale' },
+  { key: 'minimal_executive', label: 'Minimal executive · una frase essenziale' },
+  { key: 'editorial',         label: 'Editoriale · registro magazine' },
+];
+
+const NARRATIVE_INTENSITY_OPTS = [
+  { key: 'minimal',   label: 'Minimal · essenziale' },
+  { key: 'balanced',  label: 'Bilanciata · misurata' },
+  { key: 'editorial', label: 'Editoriale · densa' },
+  { key: 'cinematic', label: 'Cinematica · narrativa' },
+];
+
+const labelForNarrativeMode = (key) =>
+  NARRATIVE_MODES_OPTS.find((o) => o.key === key)?.label || key;
+const labelForIntensity = (key) =>
+  NARRATIVE_INTENSITY_OPTS.find((o) => o.key === key)?.label || key;
+
 const CulturalEditionWizard = ({ open, onClose, onCreated,
                                  initialSourceType = null, initialSourceId = null,
                                  initialSourceTitle = null }) => {
@@ -62,6 +89,14 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
   const [scope, setScope] = useState([]);
   const [note, setNote] = useState('');
 
+  // ── Market Narrative Profile™ — direzione narrativa contestuale ──
+  // Lo stato locale tiene la SCELTA dell'utente. Quando seleziona un
+  // mercato, pre-riempiamo con i suggested del profilo; se l'utente
+  // modifica → manual_override=true → backend lo salva per Pattern Learning™.
+  const [narrativeMode, setNarrativeMode] = useState('');
+  const [narrativeIntensity, setNarrativeIntensity] = useState('');
+  const [manualOverride, setManualOverride] = useState(false);
+
   // Carica configurazione (mercati + ambiti + tipi) all'apertura
   useEffect(() => {
     if (!open) return;
@@ -72,6 +107,9 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
     setMarket('');
     setLocale('');
     setNote('');
+    setNarrativeMode('');
+    setNarrativeIntensity('');
+    setManualOverride(false);
     // Default scope = tutti gli ambiti (immediatamente disponibile dai fallback)
     setScope(ADAPTATION_SCOPES_FALLBACK.map((s) => s.key));
     api.get('/api/cultural-editions/markets')
@@ -99,17 +137,41 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
       .finally(() => setLoadingSources(false));
   }, [open, sourceType]);
 
-  // Selezione del mercato → imposta locale predefinito
+  // Selezione del mercato → imposta locale predefinito + pre-fill Market Narrative Profile™
   useEffect(() => {
     if (!market || !config) return;
     const m = (config.markets || []).find((x) => x.code === market);
     if (m && !locale) setLocale(m.default_locale || 'it-IT');
-  }, [market, config, locale]);
+    // Auto-prefill della direzione narrativa dal profilo del mercato (ibrido):
+    // l'utente vede subito "Suggerito dal mercato: Hospitality · Cinematic" ma
+    // può sovrascrivere. Se ha già sovrascritto, NON azzeriamo il suo input.
+    const np = m?.narrative_profile;
+    if (np && !manualOverride) {
+      setNarrativeMode(np.suggested_narrative_mode || '');
+      setNarrativeIntensity(np.suggested_intensity || '');
+    }
+  }, [market, config, locale, manualOverride]);
 
   const selectedMarket = useMemo(
     () => (config?.markets || []).find((m) => m.code === market),
     [market, config]
   );
+
+  const selectedProfile = selectedMarket?.narrative_profile || null;
+  const isOverridden = useMemo(() => {
+    if (!selectedProfile) return false;
+    return (
+      (narrativeMode && narrativeMode !== selectedProfile.suggested_narrative_mode) ||
+      (narrativeIntensity && narrativeIntensity !== selectedProfile.suggested_intensity)
+    );
+  }, [narrativeMode, narrativeIntensity, selectedProfile]);
+
+  const resetToSuggested = () => {
+    if (!selectedProfile) return;
+    setNarrativeMode(selectedProfile.suggested_narrative_mode || '');
+    setNarrativeIntensity(selectedProfile.suggested_intensity || '');
+    setManualOverride(false);
+  };
 
   const canAdvance = useMemo(() => {
     if (stepIdx === 0) return !!sourceType;
@@ -140,6 +202,8 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
         target_locale:    locale || selectedMarket.default_locale,
         adaptation_scope: scope,
         note,
+        selected_narrative_mode: narrativeMode || undefined,
+        selected_intensity:      narrativeIntensity || undefined,
       });
       toast.success(`Versione mercato pronta · ${selectedMarket.label}`);
       onCreated?.(r.data);
@@ -300,6 +364,69 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
                   </select>
                 </div>
               )}
+
+              {/* ── Direzione narrativa del mercato — Market Narrative Profile™ ── */}
+              {selectedMarket && selectedProfile && (
+                <div className="cew-narrative-profile"
+                     data-testid="cew-narrative-profile">
+                  <div className="cew-narrative-profile__head">
+                    <span className="cew-narrative-profile__badge">
+                      <Icons.Compass size={11} strokeWidth={1.6} /> Suggerito dal mercato
+                    </span>
+                    <span className="cew-narrative-profile__market">{selectedMarket.label}</span>
+                  </div>
+                  <h4 className="cew-narrative-profile__title">Direzione narrativa del mercato</h4>
+                  <p className="cew-narrative-profile__note">{selectedProfile.curator_note}</p>
+                  {selectedProfile.narrative_direction?.length > 0 && (
+                    <div className="cew-narrative-profile__chips">
+                      {selectedProfile.narrative_direction.slice(0, 5).map((d, i) => (
+                        <span key={i} className="cew-narrative-profile__chip">{d}</span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="cew-narrative-profile__grid">
+                    <div className="cew-field">
+                      <label className="cew-label">Direzione narrativa</label>
+                      <select className="cew-input"
+                              value={narrativeMode}
+                              onChange={(e) => { setNarrativeMode(e.target.value); setManualOverride(true); }}
+                              data-testid="cew-narrative-mode">
+                        {NARRATIVE_MODES_OPTS.map((o) => (
+                          <option key={o.key} value={o.key}>{o.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="cew-field">
+                      <label className="cew-label">Intensità narrativa</label>
+                      <select className="cew-input"
+                              value={narrativeIntensity}
+                              onChange={(e) => { setNarrativeIntensity(e.target.value); setManualOverride(true); }}
+                              data-testid="cew-narrative-intensity">
+                        {NARRATIVE_INTENSITY_OPTS.map((o) => (
+                          <option key={o.key} value={o.key}>{o.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  {isOverridden ? (
+                    <div className="cew-narrative-profile__override" data-testid="cew-narrative-override">
+                      <span>Hai personalizzato la direzione del mercato.</span>
+                      <button type="button"
+                              className="cew-narrative-profile__reset"
+                              onClick={resetToSuggested}
+                              data-testid="cew-narrative-reset">
+                        <Icons.RotateCcw size={10} /> Torna ai suggerimenti del mercato
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="cew-narrative-profile__hint">
+                      MOOD ha pre-compilato i campi con la cultura narrativa di
+                      {' '}{selectedMarket.city || selectedMarket.label}. Puoi
+                      cambiarli liberamente — è un suggerimento, non una regola.
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -355,6 +482,20 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
                   <span className="cew-review__lbl">Atmosfera</span>
                   <span className="cew-review__val cew-review__val--soft">{selectedMarket?.atmosphere}</span>
                 </div>
+                {(narrativeMode || narrativeIntensity) && (
+                  <div className="cew-review__row" data-testid="cew-review-narrative">
+                    <span className="cew-review__lbl">Direzione narrativa</span>
+                    <span className="cew-review__val">
+                      {labelForNarrativeMode(narrativeMode)} · {labelForIntensity(narrativeIntensity)}
+                      {isOverridden && (
+                        <em className="cew-review__hint"> · personalizzata</em>
+                      )}
+                      {!isOverridden && selectedProfile && (
+                        <em className="cew-review__hint"> · suggerita dal mercato</em>
+                      )}
+                    </span>
+                  </div>
+                )}
                 <div className="cew-review__row">
                   <span className="cew-review__lbl">Lingua</span>
                   <span className="cew-review__val">{locale || selectedMarket?.default_locale}</span>
