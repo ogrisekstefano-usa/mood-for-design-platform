@@ -65,6 +65,7 @@ class MarketIn(BaseModel):
     tone_of_voice:      Dict[str, Any] = Field(default_factory=dict)
     cta_style:          Dict[str, Any] = Field(default_factory=dict)
     seo_intent:         Dict[str, Any] = Field(default_factory=dict)
+    market_intelligence: Dict[str, Any] = Field(default_factory=dict)
     sub_regions:        List[Dict[str, Any]] = Field(default_factory=list)
     active:             bool = True
     sort_order:         int = 0
@@ -82,6 +83,7 @@ class MarketPatch(BaseModel):
     tone_of_voice:      Optional[Dict[str, Any]] = None
     cta_style:          Optional[Dict[str, Any]] = None
     seo_intent:         Optional[Dict[str, Any]] = None
+    market_intelligence: Optional[Dict[str, Any]] = None
     sub_regions:        Optional[List[Dict[str, Any]]] = None
     active:             Optional[bool] = None
     sort_order:         Optional[int] = None

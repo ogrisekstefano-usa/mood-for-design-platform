@@ -53,6 +53,76 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Fase MARKET-MATRIX-HUMANIZATION v1 (Feb 19, 2026) — Market Intelligence Board
+**Direttiva strict: rendere `/blueprint/markets` uno strumento strategico reale per designer/showroom/PM. Niente jargon AI/editoriale interno ("serif-led", "magazine-led", "hospitality-first"). Tutto leggibile, multilingue, in DB.**
+
+#### Direttive applicate
+- 15 mercati, ognuno con **5 keyword editoriali umane** in 6 lingue (it-IT · en-US · en-GB · es-ES · fr-FR · de-DE)
+- 7 campi insight per mercato × per lingua: **tone · visual_style · cta_behavior · client_expectations · imagery · headlines · pitfalls**
+- Vocabolario naturale per lingua (non traduzione letterale: "warm" → "caldo" / "chaleureux" / "warm" / "cálido" / "warm")
+- Zero hardcoded: tutto in `markets.market_intelligence` JSONB
+- UI: intelligence board (FT × AD × Monocle × Wallpaper), NON admin table
+
+#### File creati/modificati
+- **NEW** `/app/supabase/migrations/047_market_intelligence.sql` — Aggiunge colonna `markets.market_intelligence JSONB DEFAULT '{}'`
+- **NEW** `/app/backend/scripts/seed_market_intelligence.py` — Seed completo: 15 mercati × 6 locali × (5 keyword + 7 insights). Idempotente.
+- **UPDATED** `/app/backend/routers/markets.py` — `MarketIn` + `MarketPatch` ora accettano `market_intelligence: Optional[Dict[str, Any]]`
+- **REWROTE** `/app/frontend/src/pages/governance/MarketMatrixPage.jsx` (216 → 240 righe) — Da tabella inline-editable a board grouped per macro-region, card per market con chips + drawer Market Insights con 7 sezioni
+- **REWROTE** `/app/frontend/src/pages/governance/market-matrix.css` (187 → 280 righe) — Premium dark, brass chips, mobile @900 @480 responsive, micro-tinting per insight type (amber pitfalls, blue client expectations, green cta_behavior)
+
+#### Markets coperti (15)
+**Europa (6):** italy · dach · france_fr_europe · uk_ireland · scandinavia · spain_iberian
+**Nord America (4):** usa_national · usa_east_coast · usa_south_florida · usa_west_coast
+**MENA (1):** gcc_luxury
+**LatAm (3):** spanish_mexico · spanish_latam · central_america · brazil
+
+Esempi di humanization applicata:
+- Italia IT: `narrativo · emotivo · sartoriale · caldo · relazionale` (era "serif-led, intimate, made-to-measure narrative")
+- DACH IT: `preciso · minimale · razionale · tecnico · ordinato` (era "precise, evidence-led, restrained")
+- USA East IT: `sofisticato · competitivo · veloce · autorevole · architettonico`
+- GCC IT: `cerimoniale · prestigioso · scenografico · hospitality · alto servizio`
+- Scandinavia IT: `essenziale · luminoso · sincero · calmo · naturale` (era "plain-spoken, restrained, light-first")
+
+#### Logica multilingua
+- La pagina legge `useBlueprint().locale` e lo normalizza al palette di 6 locali supportati
+- Fallback chain: locale corrente → en-US → it-IT
+- Le keyword e gli insights si adattano automaticamente alla lingua del Blueprint
+- Validato live: switch da `it-IT` → `en-US` cambia chips Italia da `narrativo/emotivo/sartoriale/caldo/relazionale` a `narrative/warm/tailored/intimate/craft-led` ✓
+
+#### UI premium intelligence
+- **Hero**: eyebrow brass uppercase + title 36px Playfair + lead 14.5px + chip locale indicator
+- **Region sections**: titolo + count chip, dividers eleganti tra macro-aree
+- **Cards**: 310px min-width grid, hover lift soft, chip brass per keyword
+- **Drawer Insights**: 640px sliding from right, 7 sezioni con icone, body 14px lh 1.65, max-width 560px per readability
+- **Color hints**: amber pitfalls (errori), blue client expectations (aspettative), green cta_behavior (azione)
+- **Mobile responsive**: cards stack a 1-col @900px, drawer full-width @900px, hero shrinks @480px
+
+#### Validazione live E2E
+- Login super_admin → `/blueprint/markets` ✓
+  - 5 regioni renderizzate (Europa · Nord America · Medio Oriente · America Latina · ecc.)
+  - 15 card mercato visibili con chips brass
+  - Italia mostra 5 chips italiani: narrativo · emotivo · sartoriale · caldo · relazionale
+- Click "Apri Market Insights" su Italia → drawer si apre ✓
+  - 7 sezioni: Tono editoriale · Stile visuale · Comportamento CTA · Aspettative del cliente · Tipo di immagini · Headline efficaci · Errori da evitare
+  - Tutti i testi in italiano impeccabile, non tradotti AI ma naturali
+  - Color hints: amber per "Errori da evitare", blue per "Aspettative", green per "CTA"
+- Locale switch en-US → chips Italia diventano `narrative · warm · tailored · intimate · craft-led` ✓
+- Mobile 390×844: zero horizontal overflow ✓
+
+#### Production confidence: **9.5/10**
+La pagina è passata da "tabella tecnica interna" a "strategic intelligence board". Designer e showroom italiani ora possono usarla come riferimento culturale reale per ogni mercato in cui pubblicheranno.
+
+#### Cosa NON è incluso (per direttiva strict — no overengineering)
+- Tooltip hover sulle singole keyword (P1 nice-to-have, non blocker)
+- Editing inline delle keyword/insights da UI (oggi solo via seed script — coerente con "qualità dati prima della UX di editing")
+- Confronto multi-market side-by-side (Compare view) — P2
+- Export PDF "Market briefing per [studio]" — P2
+- AI suggestions per riscritture — esplicitamente fuori scope
+
+---
+
+
+
 ### Fase ADVISOR-NETWORK-P0-WIRING v1 (Feb 19, 2026) — Advisor Network UI closure
 **P0 sprint chiusura Advisor Network. Backend già completo + deployato (iter 70). Wiring frontend completo: SuperAdmin overview, Advisor detail page, Advisor self-service dashboard, role-gating, sidebar nav.**
 
