@@ -34,6 +34,7 @@ import InlineEditorialRegia from '../../blueprint/moodboard/InlineEditorialRegia
 // ActionToolbar removed from the editor — canvas-implicit interactions only.
 import { computeSnap } from '../../blueprint/moodboard/useSnap';
 import SnapGuides from '../../blueprint/moodboard/SnapGuides';
+import SpacingBadges from '../../blueprint/moodboard/SpacingBadges';
 import useHistory from '../../blueprint/moodboard/useHistory';
 import PresentationMode from '../../blueprint/moodboard/PresentationMode';
 import PageInspector from '../../blueprint/moodboard/PageInspector';
@@ -67,6 +68,8 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const [presenting, setPresenting] = useState(false);
   const [presentIndex, setPresentIndex] = useState(0);
   const [snapGuides, setSnapGuides] = useState([]);
+  const [spacingHarmonics, setSpacingHarmonics] = useState([]);
+  const [magneticEngaged, setMagneticEngaged] = useState(false);
   const [snapEnabled, setSnapEnabled] = useState(true);
   const [pages, setPages] = useState([]);
   const [activePageId, setActivePageId] = useState(null);
@@ -633,6 +636,8 @@ const MoodboardEditor = ({ readOnly = false }) => {
         isActive = true;
       }
       let nextGuides = [];
+      let nextHarmonics = [];
+      let nextMagnetic = false;
       setBlocks((bs) => bs.map((b) => {
         if (b.id !== drag.id) return b;
         let raw;
@@ -661,11 +666,15 @@ const MoodboardEditor = ({ readOnly = false }) => {
             drag.mode,
           );
           nextGuides = snapped.guides;
+          nextHarmonics = snapped.harmonics || [];
+          nextMagnetic = !!snapped.magnetic;
           return { ...raw, x: snapped.x, y: snapped.y, width: snapped.width, height: snapped.height };
         }
         return raw;
       }));
       setSnapGuides(nextGuides);
+      setSpacingHarmonics(nextHarmonics);
+      setMagneticEngaged(nextMagnetic);
       markDirty(drag.id);
     };
     const onMove = (e) => {
@@ -676,6 +685,8 @@ const MoodboardEditor = ({ readOnly = false }) => {
       if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
       setDrag(null);
       setSnapGuides([]);
+      setSpacingHarmonics([]);
+      setMagneticEngaged(false);
       // Snapshot ONLY if the move actually committed (isActive) — pure
       // clicks must NOT push history entries (otherwise undo gets noisy).
       if (isActive) {
@@ -1041,7 +1052,10 @@ const MoodboardEditor = ({ readOnly = false }) => {
                      }} />
               )}
               {!readOnly && drag && snapEnabled && (
-                <SnapGuides guides={snapGuides} canvasWidth={canvasW} canvasHeight={canvasH} />
+                <>
+                  <SnapGuides guides={snapGuides} canvasWidth={canvasW} canvasHeight={canvasH} />
+                  <SpacingBadges harmonics={spacingHarmonics} canvasWidth={canvasW} canvasHeight={canvasH} />
+                </>
               )}
               {sortedPageBlocks.map((b) => {
                 if (b.hidden && readOnly) return null;
@@ -1056,11 +1070,18 @@ const MoodboardEditor = ({ readOnly = false }) => {
                                      : 'block-idle'}
                                    ${b.hidden ? 'opacity-30' : ''}
                                    ${b.locked ? 'cursor-default' : 'cursor-move'}
-                                   ${isDragging ? 'block-dragging' : ''}`}
+                                   ${isDragging ? 'block-dragging' : ''}
+                                   ${isDragging && magneticEngaged ? 'is-magnetic' : ''}`}
                        style={{
                          left: b.x, top: b.y, width: b.width, height: b.height, zIndex: b.z_index || 0,
                          opacity: (b.opacity !== undefined ? b.opacity : 1) * (b.hidden ? 0.3 : 1),
-                         transform: b.rotation ? `rotate(${b.rotation}deg)` : undefined,
+                         // Cinematic lift: tilt impercettibile (0.4°) + scale
+                         // (1.012) durante il drag. Combinato con rotation del
+                         // blocco se l'utente l'ha settato — preserva intent.
+                         transform: [
+                           b.rotation ? `rotate(${b.rotation}deg)` : null,
+                           isDragging ? 'translateZ(0) scale(1.012) rotate(0.4deg)' : null,
+                         ].filter(Boolean).join(' ') || undefined,
                          // GPU-accelerated layer promotion during drag so the
                          // browser can move the element without repainting
                          // surrounding content.

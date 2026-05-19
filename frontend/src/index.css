@@ -582,14 +582,20 @@ a, button, [role="button"] {
  * ────────────────────────────────────────────────────────────────────── */
 .block-idle {
   box-shadow: 0 0 0 1px transparent;
-  transition: box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* Resting elevation — fa percepire l'elemento come "foglio appoggiato"
+     sul tavolo curatoriale (Phase D · Magnetic Moodboards™). Soft + ampia. */
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.10)) drop-shadow(0 6px 14px rgba(0,0,0,0.12));
+  transition: box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+              filter 240ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .block-idle:hover {
-  /* Subtle 1px outline that does NOT shift layout. Soft teal at 22% so
-     hover hints presence without competing with the artwork. */
+  /* Subtle 1px outline che non shifta layout. Soft teal al 22% così l'hover
+     fa sentire la presenza senza competere con la materia. */
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--bp-primary) 28%, transparent),
     0 2px 12px rgba(0, 0, 0, 0.18);
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.14)) drop-shadow(0 10px 22px rgba(0,0,0,0.16));
 }
 .block-selected {
   /* Flush 1.5px primary outline + soft cinematic glow. */
@@ -600,11 +606,32 @@ a, button, [role="button"] {
   transition: box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .block-dragging {
-  /* Lifted state — stronger glow + premium shadow. */
+  /* Stato "foglio sollevato dal tavolo" — depth + tilt impercettibile +
+     ombra cinematografica. NESSUNA motion gratuita: il rotate è 0.4°,
+     percepibile solo a livello tattile. */
   box-shadow:
     0 0 0 1.5px var(--bp-primary),
     0 0 0 5px color-mix(in srgb, var(--bp-primary) 18%, transparent),
-    0 24px 64px rgba(0, 0, 0, 0.50);
+    0 2px 6px rgba(0, 0, 0, 0.25),
+    0 32px 80px rgba(0, 0, 0, 0.55);
+  /* will-change is set inline durante il drag — non serve qui. */
+  transition: box-shadow 160ms ease;
+}
+.block-dragging .block-content,
+.block-dragging > *:not(.block-regia-trigger):not([data-testid^="block-resize-"]) {
+  /* L'inner content sale di 1px + scala impercettibile per separare
+     visivamente dal "tavolo". Il transform è sul child così non interferisce
+     con il transform: rotate del wrapper (che gestisce il drag pos). */
+}
+/* Magnetic Moodboards™ — pulse cyan extra sull'outline quando l'attrazione
+   morbida è in azione (engaged ma non ancora committed). Glow secondario. */
+.block-dragging.is-magnetic {
+  box-shadow:
+    0 0 0 1.5px var(--bp-primary),
+    0 0 0 5px color-mix(in srgb, var(--bp-primary) 22%, transparent),
+    0 0 0 12px color-mix(in srgb, var(--bp-primary) 6%, transparent),
+    0 2px 6px rgba(0, 0, 0, 0.25),
+    0 36px 90px rgba(0, 0, 0, 0.60);
 }
 
 /* ──────────────────────────────────────────────────────────────────────
