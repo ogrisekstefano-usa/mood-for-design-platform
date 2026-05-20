@@ -536,24 +536,31 @@ def client_journey_companion(journey_id: str, ctx: dict = Depends(get_tenant_con
         "closed_at":      m.get("closed_at"),
     } for m in milestones if m.get("status") in ("approved", "closed")]
 
-    # Conversations — recent curatorial voices across all milestones
+    # Conversations — recent curatorial voices across all milestones (from
+    # the canonical `milestone_feedback` table written by Milestone Dialogue™).
     conversations = []
     if milestones:
         mids = [m["id"] for m in milestones]
         try:
-            vrows = (c.table("milestone_chapter_voices")
-                     .select("id,milestone_id,message,tone,author_name,created_at")
+            vrows = (c.table("milestone_feedback")
+                     .select("id,milestone_id,quote,kind,author_role,created_at")
                      .eq("tenant_id", tenant_id)
                      .in_("milestone_id", mids)
                      .order("created_at", desc=True).limit(12)
                      .execute().data or [])
             ms_label = {m["id"]: m["title"] for m in milestones}
+            REORIENT = {"wants_lighter", "wants_more_material"}
+            EMBRACE  = {"embraces", "palette_works", "material_loved",
+                        "storytelling_strong"}
             conversations = [{
                 "id":           v["id"],
                 "chapter":      ms_label.get(v.get("milestone_id"), "—"),
-                "message":      v.get("message"),
-                "tone":         v.get("tone"),
-                "author_name":  v.get("author_name"),
+                "message":      v.get("quote"),
+                "tone":         "reorient" if (v.get("kind") or "") in REORIENT
+                                else "embrace" if (v.get("kind") or "") in EMBRACE
+                                else "voice",
+                "author_name":  "Tu" if (v.get("author_role") or "").lower() == "client"
+                                else (studio_name or "Il tuo studio"),
                 "created_at":   v.get("created_at"),
             } for v in vrows]
         except Exception:

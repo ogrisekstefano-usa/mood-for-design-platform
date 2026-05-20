@@ -1,0 +1,43 @@
+{
+  "summary": "Sprint G.7 supplement (G.7-bis) — Villa Riviera demo Journey seed VALIDATED end-to-end. Backend: 33/33 G.7+G.7-bis tests pass (5 new test_iteration_108_villa_riviera_seed.py + 18 G.7 companion + 10 G.7 RBAC). Full G.x regression: 124/124 pass (test_iteration_10*.py). Seed script idempotency confirmed by two consecutive runs — counts stable: 10 milestones, 3 moodboards, 3 milestone_versions, 8 milestone_feedback voices, 16 journey_timeline_events. GET /api/client/journeys returns zero_data=false with project_title='Villa Riviera', studio_name='MOOD Demo Studio', current_chapter.title='Moodboard Direction™'. GET /api/client/journeys/{jid}/companion returns header.location='Sanremo, Liguria', approved_chapters≥2, active_chapter.milestone_type='moodboard_direction', 3 shared_directions (titles contain 'fredda', 'materic', 'alternativ'/'living'), ≥6 conversations with 'più calore' + 'travertino' + 'pietra grigia' present, ≥10 evolution_timeline with 'brief'+'moodboard'+'material direction'+'revisione'+'travertino'+'scartata', ≥2 memory_archive chapters. Voci editoriali use Italian-only tone — 'Tu' (cliente) + 'Il tuo studio' (studio), no SaaS jargon. Frontend DESKTOP (1920x1080) walkthrough live: login as client@moodfordesign.com auto-redirects /client → /client/journey/a0745567-3cd1-499f-99fc-a04298af7e22 (single-journey shortcut). Hero renders full Mediterranean villa cover with pill 'IL VIAGGIO È IN CORSO', editorial subtitle 'Capitolo attivo · Moodboard Direction™. La direzione editoriale prende forma in una composizione narrativa.', meta strip 'SANREMO, LIGURIA · RESIDENZIALE · RESTYLE INTEGRALE · 2 DI 10 CAPITOLI APPROVATI', and CTA 'ESPLORA IL CAPITOLO'. Topbar 'Bentornato, Marco · Il tuo percorso progettuale ti aspetta'. Sidebar shows 7 Journey-first ™ sections + 'SCRIVI AL TUO STUDIO' CTA. Scroll reveals 'Direzioni condivise · Shared Directions™ · 3 direzioni' with 3 moodboard cards (fredda V1, materica V2, alternativa V3). All 15 editorial needles found in DOM (Villa Riviera, Sanremo, fredda, materic, alternativ, travertino, pietra grigia, più calore, MOOD Demo Studio, Brief, Inspirations, 2 di 10, Residenziale, IL VIAGGIO È IN CORSO, Moodboard Direction). Frontend MOBILE (390x844 — iPhone 13 Pro): sidebar collapsed, hamburger button present (data-testid found), tap opens drawer with all 7 Journey-first sections; hero full-width with cover, meta pills wrap vertically on 3 rows (SANREMO/LIGURIA · RESIDENZIALE / RESTYLE / 2 DI 10), 'ESPLORA IL CAPITOLO' CTA visible. The demo successfully avoids the 'too perfect / marketing showroom' pitfall — visible frictions (revision_requested status on V1, 'pietra grigia scartata' event, client requesting more warmth, palette evolution travertino vs Calacatta swap) make it read as an authentic in-progress project.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/branding & /api/branding/studio-palette & /api/branding/theme", "issue": "Returns 401/404 in client portal layout — produces console noise on every navigation. Pre-existing from iter107, NOT G.7-bis scoped."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_108_villa_riviera_seed.py",
+    "/app/test_reports/pytest/iteration_108_results.xml",
+    "/app/test_reports/pytest/iteration_108_full.xml"
+  ],
+  "action_items": [
+    "(Optional · non-blocking, pre-existing from iter107) Investigate /api/branding* 401/404 noise in the client portal layout — either skip the calls when user role is client, or grant read-only access."
+  ],
+  "critical_code_review_comments": [
+    "seed_demo_journey.py is correctly idempotent — every insert is gated by a find_* lookup or a count check on existing rows. Re-running 2x produces zero duplicates (10/3/3/8/16 stay stable). SEED_TAG='villa_riviera_g7_demo' stored in metadata_json.demo_seed_tag for future cleanup.",
+    "Editorial tone is consistent in milestone_feedback voices — Italian only, conversational, with realistic friction (kind='wants_more_material' + kind='palette_works' + kind='request_variant' map cleanly to FEEDBACK_LABEL in milestone_dialogue.py).",
+    "16 journey_timeline_events span 8 weeks with realistic offsets (day 0 → day 56) and include the critical narrative beats: milestone_started, milestone_approved, milestone_revision_requested, voice_received, material_rejected ('Pietra grigia originale — scartata'), material_selected (travertino).",
+    "3 moodboards correctly express the lifecycle progression: V1 status='revision_requested' (frizione), V2 status='viewed' (current direction), V3 status='draft' (alternativa in lavorazione). Each carries Unsplash cover + palette + rationale + ai_metadata for the Companion to render shared_directions cards.",
+    "ClientDashboardLayout.jsx mobile drawer (<md breakpoint) verified live at 390x844 — hamburger opens drawer with 7 sections, scroll locks correctly, route change closes drawer.",
+    "Single-journey auto-redirect in ClientJourneysIndexPage.jsx works end-to-end — /client → /client/journey/{id} fires correctly when journeys.length===1.",
+    "Test pinning ensures direction lock — test_voices_use_italian_only blocks future drift toward English SaaS copy ('approve this', 'click to', 'deadline', 'approval queue', 'task list').",
+    "Companion endpoint shape unchanged from iter107 — backwards compatible (lifecycle_label enum still valid, 7 sections still present)."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% — 5/5 new G.7-bis seed tests + 33/33 G.7 supplement tests + 124/124 full G.x regression (test_iteration_10*.py)",
+    "frontend": "100% — Desktop (1920x1080) auto-redirect + hero + 7 sections + all 15 editorial needles confirmed live; Mobile (390x844) hamburger + 7-section drawer + full-width hero + wrapped meta pills confirmed live"
+  },
+  "test_credentials": "client@moodfordesign.com / Client2024! (Marco Bianchi · seeded with Villa Riviera). demo@moodfordesign.com / Blueprint2024! (super_admin fallback).",
+  "seed_data_creation": "Verified existing seed: 1 account 'Famiglia Bianchi · Villa Riviera', 1 project 'Villa Riviera' (Sanremo · 180-230k€ · in_review), 1 design_journey (in_progress, lifecycle_state=presenting), 10 journey_milestones (brief+inspirations approved · moodboard_direction+material_direction in_progress · 6 not_started), 3 moodboards, 3 milestone_versions, 8 milestone_feedback voices, 16 journey_timeline_events. Tag: metadata_json.demo_seed_tag='villa_riviera_g7_demo'.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "G.7 + G.7-bis are GREEN. Villa Riviera demo Journey is FULLY operational at /client/journey/a0745567-3cd1-499f-99fc-a04298af7e22 for client@moodfordesign.com. The 'authentic progress' direction lock is enforced by test_iteration_108_villa_riviera_seed.py — specifically test_companion_has_lived_in_data pins the presence of frictions ('più calore', 'travertino', 'pietra grigia', 'scartata', 'revisione'). If future sprints rename moodboard titles or remove friction events, those assertions catch the drift. Next sprint G.8 'Site Evolution™' can build on top of the seeded site_evolution milestone (currently status=not_started). Pre-existing /api/branding* 401/404 noise persists but does NOT block any flow.",
+  "rca of the issue": "No issues found in G.7-bis. Initial desktop screenshot during browser test caught the transient 'Stiamo aprendo il tuo percorso...' loading state because the auto-redirect (/client → /client/journey/{id}) takes ~3-4s after login while the journeys API resolves. Second pass with longer wait confirmed the redirect lands correctly and the full Companion renders with hero + all sections. Not a bug — just async timing on the test harness."
+}

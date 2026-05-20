@@ -217,18 +217,38 @@ ARTIFACT_LOADER = {
 
 
 def _voices_for_milestone(c, tid: str, mid: str) -> List[Dict[str, Any]]:
-    """Curatorial voices on the milestone (feedback, revision requests, approvals).
+    """Curatorial voices on the milestone (feedback / revision / approval).
 
-    Pulls from milestone_chapter_voices (Sprint F.B Milestone Dialogue) when
-    available. Returns [] if the schema is not present.
+    Pulls from `milestone_feedback` (Milestone Dialogue™ schema). Maps the
+    editorial `kind` values defined in milestone_dialogue.FEEDBACK_LABEL/TONE
+    into the UI tone vocabulary used by VersionStack / ClientInteractionLayer.
     """
     rows = _safe_select(
-        c, "milestone_chapter_voices",
+        c, "milestone_feedback",
         {"tenant_id": tid, "milestone_id": mid},
-        fields="id, voice_type, tone, message, author_name, created_at, decision",
+        fields="id, kind, quote, author_role, version_id, created_at",
         order="created_at", desc=True, limit=20,
     )
-    return rows
+    TONE = {
+        "embraces": "embrace", "palette_works": "embrace",
+        "material_loved": "embrace", "storytelling_strong": "embrace",
+        "explore_atmosphere": "curious", "request_variant": "curious",
+        "request_detail": "curious",
+        "wants_lighter": "reorient", "wants_more_material": "reorient",
+        "free_voice": "voice",
+    }
+    out: List[Dict[str, Any]] = []
+    for r in rows:
+        kind = (r.get("kind") or "").lower()
+        out.append({
+            "id":          r.get("id"),
+            "voice_type":  kind or "voce",
+            "tone":        TONE.get(kind, "voice"),
+            "message":     r.get("quote"),
+            "author_name": "Cliente" if (r.get("author_role") or "").lower() == "client" else "Studio",
+            "created_at":  r.get("created_at"),
+        })
+    return out
 
 
 def _step_progress(milestones: List[Dict[str, Any]],
