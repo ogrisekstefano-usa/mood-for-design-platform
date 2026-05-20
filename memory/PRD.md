@@ -53,6 +53,38 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint F.A · Design Journey™ Foundation (Feb 21, 2026 · iter94)
+**Backbone narrativo del progetto — il Journey diventa la nuova homepage mentale.**
+
+#### Strategic shift
+Il Project Detail smette di essere un'overview amministrativa. Diventa il **Design Journey™**: il sistema operativo curatoriale-relazionale che accompagna il progetto dalla prima conversazione (Brief Cliente) alla **Chiusura Certificata**. Le altre tab (Overview, Moodboard, Materiali, ecc.) non sono più sezioni indipendenti ma **ambienti collegati al Journey**.
+
+#### Database (Migration 061)
+- **NEW** `design_journeys`: 1 journey per progetto, current_milestone_id + overall_status ('in_progress' | 'closed'). UNIQUE (tenant_id, project_id).
+- **NEW** `journey_milestones`: 10 pietre miliari per journey, ordinate. milestone_type ∈ {brief, inspirations, moodboard_direction, material_direction, concept_design, technical_package, curated_selections, site_evolution, final_presentation, certified_closure}. Status ∈ {not_started, in_progress, presented, revision_requested, partially_approved, approved, closed}. Timestamps per ogni transizione + linked_entity_type/id + metadata JSONB (open_mode, linked_route).
+- **NEW** `journey_timeline_events`: storia narrativa italiana (NON technical log). narrative_text in italian editorial tone.
+
+#### Backend — `routers/design_journey.py`
+- `GET /api/projects/{id}/journey` — auto-create idempotente: 10 milestones (Brief in_progress, altre not_started) + 2 narrative events iniziali ("Il Design Journey™ del progetto inizia…").
+- `PATCH /api/journeys/milestones/{mid}` — transizione status + auto-emit narrative event in italiano ("{title} presentata al cliente.", "Cliente chiede una revisione su {title}.", …). Avanza `current_milestone_id` quando approved. Chiude il journey quando certified_closure→approved.
+- `GET /api/journeys/{jid}/timeline` — timeline narrativa newest-first.
+- `POST /api/journeys/milestones/{mid}/open` — risolve l'"Apri" CTA: inline | navigate + route hint. Auto-transition not_started → in_progress al primo open.
+
+#### Frontend
+- **NEW** `DesignJourneyTab.jsx` (~420 lines, sotto soglia 700) — cinematic dark luxury 3-column shell (Rail · Focus · Details) + bottom Evolution Timeline.
+- `ProjectDetailPage.jsx` aggiornato: `'journey'` è il PRIMO tab e il default (URL pulito senza ?tab=journey).
+- STATUS_META editoriale italiano: 'In lavorazione', 'Presentata', 'Revisione richiesta', 'Approvata parzialmente', 'Approvata', 'Chiusa'.
+- STATUS_TRANSITIONS forward-only allineate al backend state machine.
+- Inline panels per Brief / Site Evolution™ / Chiusura Certificata con hint "arriverà nel prossimo capitolo".
+- Navigate panels (Moodboard Direction™, Material Direction™, ecc.) con CTA hero "Apri <Milestone>".
+
+#### Editorial language guard
+Vietate in tutta la UI e nei narrative: `task`, `sprint`, `kanban`, `workflow`, `dashboard`, `ticket`, `todo`, `doing`, `done`, `asset uploaded`, `status updated`, `entity modified`. Verificato da pytest + Playwright agent.
+
+#### Tests
+- **Backend**: 11/11 pass — `/app/backend/tests/test_iteration_94_design_journey.py` (auto-create, idempotency, transitions, narrative emission, italian editorial lexicon, invalid status 400, missing 404, current_milestone_id advance, timeline ordering, milestone titles compliance, STATUS_META JSX scan).
+- **Frontend**: 12/12 acceptance criteria pass (Playwright `iteration_94.json`), 18 verified flows, zero pageerror, zero React overlay, zero forbidden lexicon in DOM.
+
 ### Sprint F2.4 · Client Preview Link™ (Feb 20, 2026 · iter93)
 **Private Curatorial Presentation Experience™ — il ponte emozionale tra studio e cliente.**
 
