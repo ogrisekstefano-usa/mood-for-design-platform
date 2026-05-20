@@ -53,6 +53,110 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint BRAND-MODE · Phase D · Slice 3 — Phase D CHIUSA (Feb 19, 2026 · iter86)
+**Brand Mode™ — atlante curatoriale dei produttori. Chiude Phase D.**
+
+Trasforma il Brand Registry™ da "dataset produttori" a **atlante curatoriale del design contemporaneo**: ogni brand letto come linguaggio progettuale (atmosfere · materialità · geografie narrative · moodboard correlate) con Curatorial Insights™ testuali, MAI dashboard analytics.
+
+#### Backend — 2 nuovi endpoint
+- **NEW** `GET /api/inspirations/registry/brands-atlas` (`brands_registry.py`):
+  - Lista brand enriched con `collections_count`, `inspirations_count`, `products_count`, `dominant_atmospheres[]`, `dominant_materials[]`, `dominant_markets[]` (top-3 per ciascuna dimensione)
+  - Aggregazione single-query da `brands` + `brand_collections` + `media_library.inspiration_meta` (zero N+1)
+  - Supporta `?q=` (matching su name + positioning) e `?limit=` (max 120)
+- **NEW** `GET /api/inspirations/registry/brands/{brand_id}/curatorial-profile`:
+  - Returns: `brand`, `collections[]`, `inspirations[≤48]`, `products[≤48]`, `moodboards[]` (via product_usage_events), `dominant_atmospheres/materials/markets/profiles`, `counts`, **`curatorial_insights[]`**
+  - **Curatorial Insights™** = frasi italiane editoriali generate da heuristiche (NO LLM, NO analytics):
+    - "Il brand viene letto prevalentemente con atmosfere {top2} — il linguaggio progettuale ricorrente è caratterizzato da {top_material} come materia narrativa centrale."
+    - "Le geografie narrative dove il brand compare più spesso sono {Milano e New York} — coerenti con i mercati primari dichiarati nel posizionamento."
+    - "Il brand compare frequentemente in composizioni hospitality-oriented caratterizzate da continuità indoor/outdoor e layering materico."
+    - "Le moodboard dello studio mostrano {N} composizioni che integrano questo brand — segnale di una continuità progettuale ricorrente."
+    - "L'archivio collezioni copre {N} riferimenti tra il {anno_min} e il {anno_max}, con una densità editoriale costante."
+    - Fallback: "Il brand è in fase di lettura curatoriale — aggiungi riferimenti o importa un catalogo…"
+  - `market_label_map` supporta sia nuovo formato (`us-miami`, `it-milano`) sia legacy supplier-import (`usa_miami`, `italy_milano`)
+
+#### Frontend — 2 nuove pagine routed
+- **NEW** `/app/frontend/src/pages/inspirations/BrandModePage.jsx` (`/inspirations/brands`):
+  - Hero "I produttori come *linguaggi progettuali*" (Playfair italic em accent)
+  - Search field + facets per luxury_tier (dinamici da risultati)
+  - Grid di brand cards editoriali:
+    - Avatar circolare con iniziali Playfair italic (fallback per logo mancante)
+    - Tag luxury_tier (cyan glow) + 2 market tag
+    - Chip atmosfere prevalenti (top 3, lowercase, soft border)
+    - Linea "materialità · legno · metallo · ottone" (Playfair italic small)
+    - Counts piccoli/secondari (collezioni · prodotti · riferimenti) sotto divider dashed
+    - CTA "Entra nell'atelier" con arrow uppercase tracking
+    - Hover: hairline cyan corner animation + translateY(-2px) + cinematic shadow
+  - Empty state editoriale + skeleton shimmer
+- **NEW** `/app/frontend/src/pages/inspirations/BrandDetailPage.jsx` (`/inspirations/brands/:brandId`):
+  - Back nav minimale "Atlante curatoriale" (sottile, eyebrow caps)
+  - Hero 3-col: logo 84px + title + lead positioning + meta tags / counts laterali con `<em>` Playfair italic (18px, mai protagonisti)
+  - **Curatorial Insights™ section** (PROTAGONISTA): ordinal markers `01/02/03` mono + frasi Playfair italic 17px
+  - Dominants 3-col grid: Atmosfere prevalenti · Materialità ricorrenti (chip Playfair italic) · Geografie narrative
+  - Collezioni grid con anno/categoria/description
+  - Product Inspirations™ grid (4:5 cards con cinematic shadow + hover lift)
+  - Riferimenti editoriali grid
+  - Moodboard correlate (linked → /moodboards/{id})
+  - **Quick Jump bar**: Inspirations™ · Studio Collections™ · Moodboards™ · Cultural Editions™ (pill rounded uppercase)
+- **NEW** `/app/frontend/src/pages/inspirations/brand-mode.css` (480 righe): editorial atelier aesthetic — Playfair italic titles, mono caps eyebrow, dashed dividers, soft drop-shadows, hairline cyan accent on hover.
+- **UPDATED** `/app/frontend/src/pages/inspirations/InspirationsPage.jsx`: nuova CTA `[data-testid=ins-brand-mode-link]` "Brand Mode™" nell'header (icona Compass)
+- **UPDATED** `/app/frontend/src/App.js`: lazy imports + 2 nuove route
+
+#### Linguaggio compliance (strict · verificato dal testing agent nel DOM live)
+Markers italiani PRESENTI in `/inspirations/brands` + `/inspirations/brands/{id}`:
+- "atlante curatoriale" ✓
+- "lettura curatoriale" ✓
+- "linguaggi progettuali" / "linguaggio progettuale" ✓
+- "atmosfere prevalenti" ✓
+- "materialità ricorrenti" ✓
+- "geografie narrative" ✓
+- "Curatorial Insights™" ✓
+- "continua la lettura" ✓
+- "entra nell'atelier" ✓
+
+Termini VIETATI verificati ASSENTI:
+- `vendor`, `dashboard`, `KPI`, `engagement rate`, `analytics`, `leaderboard`, `AI insights`, `supplier management`, `performance metrics`
+
+#### Test results (testing_agent_v3_fork iter86)
+- **Backend: 16/16 PASS · 100%** (1 expected skip)
+  - `test_iteration_86_brand_mode.py` · 6/6 PASS:
+    - `test_atlas_returns_enriched_cards`, `test_atlas_search_q`, `test_bonaldo_has_product_aggregations`
+    - `test_profile_404_for_missing`, `test_profile_shape_full`, `test_profile_for_brand_without_data`
+  - `test_iteration_83_mood_panel.py` · 6/6 PASS (1 skip) — Slice 2 regression
+  - `test_iteration_85_magnetic_snap_curve.py` · 4/4 PASS — Slice D2 regression
+- **Frontend E2E: 8/8 critical flows PASS · 100%**
+  - /inspirations CTA "Brand Mode™" visible ✓
+  - /inspirations/brands renders 18 brand cards ✓
+  - Bonaldo card: atmospheres (sobrio + architettonico) · materialità · legno · metallo · 3 collezioni · 57 prodotti ✓
+  - Search "bonaldo" filtra a 1 card, clear restora ✓
+  - Luxury facet "icon" filtra a 7 cards icon-tier ✓
+  - Bonaldo detail: hero + counts (3 collezioni · 57 prodotti · 0 riferimenti · 0 moodboard) ✓
+  - Curatorial Insights™ TESTUALI italiani Playfair italic ✓
+  - Dominants 3-col + collections + 18 product tiles + Quick Jump 4 buttons ✓
+  - Back nav verso atlante ✓
+  - Jargon scan: ZERO termini vietati ✓
+- **Regression**: MoodPanel + Inline Regia + Magnetic Drag — tutti verificati stabili
+- Test report: `/app/test_reports/iteration_86.json`
+
+#### Production confidence: **9.9/10**
+
+#### Phase D — STATUS COMPLETO
+- ✅ D1 · Editorial Inspirations Seed™ + Inline Editorial Regia™ (iter84)
+- ✅ D2 · Magnetic Moodboards™ + Smart Spacing™ + Depth System™ (iter85)
+- ✅ D3 · Brand Mode™ atlante curatoriale (iter86)
+
+#### Cosa NON è incluso (Phase E roadmap)
+- **Smart recommendations** basate sui `product_usage_events` aggregati (foundation live da Slice 2)
+  - Brand affinity: "Spesso usato insieme a Cassina, Flos, Living Divani"
+  - Material affinity grid: "Quando questo brand viene usato in moodboard hospitality, i materiali correlati più ricorrenti sono…"
+- **Cultural Editions™ ↔ Brand** linking: oggi il Quick Jump punta a /cultural-editions generico — il filtro per-brand è P2
+- **Brand Relationship Graph™** visuale (oggi solo dati aggregati raw) — P3
+- **Advisor Network Tenant UI** & Visit Reports (P2)
+- **Territory Overlap Alerts & Analytics** (P2)
+- **Forms & Journeys™** (P3)
+
+---
+
+
 ### Sprint MAGNETIC-MOODBOARDS · Phase D · Slice 2 (Feb 19, 2026 · iter85)
 **Magnetic Moodboards™ — drag&drop sigmoidal pull-curve + Smart Spacing™ harmonic badges + Depth System™ cinematic lift.**
 
