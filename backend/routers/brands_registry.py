@@ -147,6 +147,280 @@ def get_brand(brand_id: str, ctx=Depends(get_tenant_context)):
     return rows[0]
 
 
+# ─── Brand Mode™ — atlante curatoriale dei produttori ───────────────────
+# Phase D · Sprint D3. Brand Mode™ list endpoint enriches each brand with
+# the counts the editorial card needs (collections, product inspirations,
+# atmosphere prevalence) without forcing the frontend to issue N+1 calls.
+#
+# Linguaggio: "atlante curatoriale", non "vendor list / supplier catalog".
+@router.get("/registry/brands-atlas")
+def brands_atlas(
+    q:     Optional[str] = Query(None, max_length=80),
+    limit: int = Query(60, le=120),
+    ctx=Depends(get_tenant_context),
+):
+    """Atlante curatoriale — brand cards enriched with collections/inspirations
+    counts and dominant atmosphere/material prevalence (for the editorial Brand Mode™ list view)."""
+    c = db()
+    tid = ctx["tenant_id"]
+
+    # 1. Visible brands (curated_public ∪ studio_private)
+    raw_brands = (c.table("brands").select("*")
+                  .or_(f"tenant_id.is.null,tenant_id.eq.{tid}")
+                  .order("name").limit(limit).execute().data or [])
+    if q:
+        ql = q.strip().lower()
+        raw_brands = [b for b in raw_brands
+                      if ql in (b.get("name") or "").lower()
+                      or ql in (b.get("positioning") or "").lower()]
+
+    if not raw_brands:
+        return {"items": []}
+
+    brand_ids = [b["id"] for b in raw_brands]
+    brand_name_index = {b["name"]: b for b in raw_brands}
+
+    # 2. Collections counts per brand_id (single query)
+    coll_rows = (c.table("brand_collections").select("brand_id,id")
+                 .in_("brand_id", brand_ids).execute().data or [])
+    coll_count: Dict[str, int] = {}
+    for r in coll_rows:
+        coll_count[r["brand_id"]] = coll_count.get(r["brand_id"], 0) + 1
+
+    # 3. Inspirations / Products counts per brand (media_library.inspiration_meta.brand)
+    # NB: inspiration_meta.brand is the brand NAME (matches the supplier-import path)
+    insp_rows = (c.table("media_library")
+                 .select("inspiration_meta,is_inspiration")
+                 .eq("tenant_id", tid)
+                 .eq("is_inspiration", True)
+                 .is_("archived_at", None)
+                 .execute().data or [])
+    insp_count:    Dict[str, int] = {}
+    product_count: Dict[str, int] = {}
+    atmo_bag:      Dict[str, Dict[str, int]] = {}  # brand_name → tag → count
+    mat_bag:       Dict[str, Dict[str, int]] = {}
+    markets_bag:   Dict[str, Dict[str, int]] = {}
+
+    for r in insp_rows:
+        meta = r.get("inspiration_meta") or {}
+        brand_name = meta.get("brand")
+        if not brand_name or brand_name not in brand_name_index:
+            continue
+        bn = brand_name
+        if (meta.get("inspiration_type") or "").lower() == "product":
+            product_count[bn] = product_count.get(bn, 0) + 1
+        else:
+            insp_count[bn] = insp_count.get(bn, 0) + 1
+        for tag in (meta.get("atmosphere_tags") or []):
+            atmo_bag.setdefault(bn, {})[tag] = atmo_bag.get(bn, {}).get(tag, 0) + 1
+        for tag in (meta.get("material_tags") or []):
+            mat_bag.setdefault(bn, {})[tag] = mat_bag.get(bn, {}).get(tag, 0) + 1
+        for mkt in (meta.get("market_codes") or []):
+            markets_bag.setdefault(bn, {})[mkt] = markets_bag.get(bn, {}).get(mkt, 0) + 1
+
+    # 4. Compose enriched cards
+    def _top3(bag: Optional[Dict[str, int]]):
+        if not bag:
+            return []
+        return [k for k, _ in sorted(bag.items(), key=lambda kv: -kv[1])[:3]]
+
+    items = []
+    for b in raw_brands:
+        bn = b["name"]
+        items.append({
+            **b,
+            "collections_count":   coll_count.get(b["id"], 0),
+            "inspirations_count":  insp_count.get(bn, 0),
+            "products_count":      product_count.get(bn, 0),
+            "dominant_atmospheres": _top3(atmo_bag.get(bn)),
+            "dominant_materials":   _top3(mat_bag.get(bn)),
+            "dominant_markets":     _top3(markets_bag.get(bn)) or (b.get("primary_markets") or [])[:3],
+        })
+
+    return {"items": items}
+
+
+@router.get("/registry/brands/{brand_id}/curatorial-profile")
+def brand_curatorial_profile(brand_id: str, ctx=Depends(get_tenant_context)):
+    """Brand Detail View™ — composes the curatorial reading of a brand from
+    aggregated inspirations + collections + product usage events. Returns
+    `curatorial_insights[]` (textual phrases, NEVER raw analytics).
+
+    Linguaggio: "letture curatoriali", "geografie narrative", "atmosfere prevalenti".
+    """
+    brand = get_brand(brand_id, ctx)  # visibility check
+    c = db()
+    tid = ctx["tenant_id"]
+    bn = brand["name"]
+
+    # Collections (full list, year desc)
+    collections = (c.table("brand_collections").select("*")
+                   .eq("brand_id", brand_id)
+                   .or_(f"tenant_id.is.null,tenant_id.eq.{tid}")
+                   .order("year", desc=True).execute().data or [])
+
+    # Inspirations + Products of this brand
+    insp_rows = (c.table("media_library")
+                 .select("id,file_url,alt_text,description,inspiration_meta")
+                 .eq("tenant_id", tid)
+                 .eq("is_inspiration", True)
+                 .is_("archived_at", None)
+                 .execute().data or [])
+    inspirations: List[Dict[str, Any]] = []
+    products:     List[Dict[str, Any]] = []
+    atmo_bag, mat_bag, markets_bag, hp_bag, luxury_bag = {}, {}, {}, {}, {}
+    for r in insp_rows:
+        meta = r.get("inspiration_meta") or {}
+        if (meta.get("brand") or "") != bn:
+            continue
+        card = {
+            "id":        r["id"],
+            "image_url": r.get("file_url"),
+            "title":     r.get("alt_text") or "",
+            "atmosphere_tags": meta.get("atmosphere_tags") or [],
+            "material_tags":   meta.get("material_tags") or [],
+            "market_codes":    meta.get("market_codes") or [],
+            "product_name":    meta.get("product_name"),
+            "collection":      meta.get("collection"),
+        }
+        if (meta.get("inspiration_type") or "").lower() == "product":
+            products.append(card)
+        else:
+            inspirations.append(card)
+        for t in (meta.get("atmosphere_tags") or []):
+            atmo_bag[t] = atmo_bag.get(t, 0) + 1
+        for t in (meta.get("material_tags") or []):
+            mat_bag[t] = mat_bag.get(t, 0) + 1
+        for m in (meta.get("market_codes") or []):
+            markets_bag[m] = markets_bag.get(m, 0) + 1
+        if meta.get("hospitality_profile"):
+            hp_bag[meta["hospitality_profile"]] = hp_bag.get(meta["hospitality_profile"], 0) + 1
+        if meta.get("luxury_level"):
+            luxury_bag[meta["luxury_level"]] = luxury_bag.get(meta["luxury_level"], 0) + 1
+
+    # Moodboards connected via product_usage_events (best-effort, table may not exist)
+    moodboard_ids: List[str] = []
+    try:
+        product_ids = [p["id"] for p in products]
+        if product_ids:
+            ev_rows = (c.table("product_usage_events").select("moodboard_id")
+                       .in_("product_id", product_ids)
+                       .eq("usage_type", "added_to_moodboard")
+                       .execute().data or [])
+            moodboard_ids = list({r["moodboard_id"] for r in ev_rows if r.get("moodboard_id")})
+    except Exception as e:
+        logger.info(f"product_usage_events lookup skipped: {e}")
+    moodboards: List[Dict[str, Any]] = []
+    if moodboard_ids:
+        try:
+            mb_rows = (c.table("moodboards").select("id,title,cover_image_url,updated_at")
+                       .in_("id", moodboard_ids[:24]).execute().data or [])
+            moodboards = mb_rows
+        except Exception as e:
+            logger.info(f"moodboards lookup skipped: {e}")
+
+    # Top-K helper
+    def top_k(bag, k=5):
+        if not bag:
+            return []
+        return [{"label": kk, "count": vv}
+                for kk, vv in sorted(bag.items(), key=lambda kv: -kv[1])[:k]]
+
+    dom_atmo    = top_k(atmo_bag)
+    dom_mat     = top_k(mat_bag)
+    dom_markets = top_k(markets_bag)
+    dom_hp      = top_k(hp_bag, k=2)
+
+    # ── Curatorial Insights™ — testual, NOT analytics ──
+    # Heuristics that read like a curator commenting, not a dashboard.
+    # Strict italian editorial language.
+    market_label_map = {
+        "us-miami":     "Miami",
+        "us-nyc":       "New York",
+        "us-socal":     "Southern California",
+        "it-milano":    "Milano",
+        "uk-london":    "Londra",
+        "fr-paris":     "Parigi",
+        "ae-dubai":     "Dubai",
+        # Legacy / supplier-import naming convention (snake_case region_city)
+        "usa_miami":    "Miami",
+        "usa_nyc":      "New York",
+        "usa_socal":    "Southern California",
+        "italy_milano": "Milano",
+        "uk_london":    "Londra",
+        "france_paris": "Parigi",
+        "uae_dubai":    "Dubai",
+    }
+    hp_label_map = {
+        "hospitality_focused": "hospitality",
+        "residential_focused": "residenziale",
+        "boutique_intimate":   "boutique",
+    }
+
+    insights: List[str] = []
+    if dom_atmo:
+        atm = ", ".join([a["label"] for a in dom_atmo[:2]])
+        insights.append(
+            f"Il brand viene letto prevalentemente con atmosfere {atm} — il linguaggio progettuale ricorrente è "
+            f"caratterizzato da {dom_mat[0]['label'] if dom_mat else 'materialità stratificata'} "
+            f"come materia narrativa centrale."
+        )
+    if dom_markets:
+        mkt_labels = [market_label_map.get(m["label"], m["label"]) for m in dom_markets[:2]]
+        insights.append(
+            f"Le geografie narrative dove il brand compare più spesso sono "
+            f"{' e '.join(mkt_labels)} — coerenti con i mercati primari dichiarati nel posizionamento."
+        )
+    if dom_hp:
+        hp_labels = [hp_label_map.get(h["label"], h["label"]) for h in dom_hp]
+        if "hospitality" in hp_labels:
+            insights.append(
+                "Il brand compare frequentemente in composizioni hospitality-oriented "
+                "caratterizzate da continuità indoor/outdoor e layering materico."
+            )
+        elif "residenziale" in hp_labels:
+            insights.append(
+                "Il brand viene reinterpretato soprattutto in chiave residenziale, "
+                "con composizioni a bassa orizzontalità e tattilità centrale."
+            )
+    if moodboards:
+        insights.append(
+            f"Le moodboard dello studio mostrano {len(moodboards)} composizioni "
+            f"che integrano questo brand — segnale di una continuità progettuale ricorrente."
+        )
+    if collections:
+        years = sorted({c.get("year") for c in collections if c.get("year")}, reverse=True)
+        if years:
+            insights.append(
+                f"L'archivio collezioni copre {len(collections)} riferimenti tra il "
+                f"{years[-1]} e il {years[0]}, con una densità editoriale costante."
+            )
+    if not insights:
+        insights.append(
+            "Il brand è in fase di lettura curatoriale — aggiungi riferimenti o "
+            "importa un catalogo per leggere atmosfere, materialità e geografie narrative."
+        )
+
+    return {
+        "brand":           brand,
+        "collections":     collections,
+        "inspirations":    inspirations[:48],
+        "products":        products[:48],
+        "moodboards":      moodboards,
+        "dominant_atmospheres": dom_atmo,
+        "dominant_materials":   dom_mat,
+        "dominant_markets":     dom_markets,
+        "dominant_profiles":    dom_hp,
+        "curatorial_insights":  insights,
+        "counts": {
+            "collections":  len(collections),
+            "inspirations": len(inspirations),
+            "products":     len(products),
+            "moodboards":   len(moodboards),
+        },
+    }
+
+
 # ─── Collections endpoints ─────────────────────────────────────────────
 @router.get("/registry/brands/{brand_id}/collections")
 def list_collections(brand_id: str, ctx=Depends(get_tenant_context)):

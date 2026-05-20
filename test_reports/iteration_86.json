@@ -1,0 +1,24 @@
+{
+  "summary": "Sprint D3 · Brand Mode™ atlante curatoriale — FULL PASS. Backend 16/16 passed (1 expected skip). Frontend E2E 8/8 critical flows passed: login, /inspirations ins-brand-mode-link CTA visible, /inspirations/brands renders brand-mode-page with 18 cards, Bonaldo card shows atmospheres (sobrio + architettonico) + materialità · legno · metallo + 3 collezioni 57 prodotti, search 'bonaldo' filters to 1 card and restores on clear, luxury facet 'icon' filters to 7 icon-tier cards, Bonaldo detail navigates to /inspirations/brands/{id} with brand-detail-page, bd-counts (3 collezioni · 57 prodotti · 0 riferimenti · 0 moodboard), bd-insights-section with TEXTUAL italian Curatorial Insights™ ('Il brand viene letto prevalentemente con atmosfere sobrio, architettonico — il linguaggio progettuale ricorrente…' / 'Le geografie narrative…'), bd-dominants 3-col (Atmosfere prevalenti · Materialità ricorrenti · Geografie narrative), bd-collections-section with 3 coll cards, bd-products-section with 18 product tiles, bd-quick-jump 4 buttons, bd-back returns to atlante. JARGON scan clean on both list and detail (no vendor/dashboard/kpi/engagement/analytics/leaderboard/ai insights/supplier management; markers atlante curatoriale + lettura curatoriale + linguaggi progettuali + atmosfere prevalenti + geografie narrative all present). MoodPanel regression: /moodboards/cdd8478a-… loads (34 images, no errors).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_86_brand_mode.py",
+    "/app/backend/tests/test_iteration_83_mood_panel.py",
+    "/app/backend/tests/test_iteration_85_magnetic_snap_curve.py",
+    "/app/test_reports/pytest/iter86_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Insights are properly textual italian phrases — no charts/percentages — meeting strict editorial language requirement.",
+    "Both 'us-miami' (D1 editorial) and 'usa_miami' / 'italy_milano' (legacy supplier) market keys render cleanly in chip labels.",
+    "Curatorial Insights numbered with ordinal markers '01', '02' (Playfair italic) — visually editorial, not analytics."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (16/16 tests, 1 expected skip)", "frontend": "100% (8/8 critical E2E + regression load)"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin · mood-demo-studio)",
+  "seed_data_creation": "None — used existing Bonaldo curated_public brand with 57 products + 3 collections.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Sprint D3 Brand Mode™ fully verified. Brand atlas at /inspirations/brands (testid: brand-mode-page, brand-mode-grid, bm-card-*, brand-mode-search, brand-mode-facet-{icon|premium|contemporary}). Detail at /inspirations/brands/:id (testid: brand-detail-page, bd-counts, bd-insights-section, bd-dominants, bd-collections-section, bd-coll-*, bd-products-section, bd-product-*, bd-quick-jump, bd-jump-{inspirations|collections|moodboards|editions}, bd-back). Bonaldo is the populated brand (id discovered dynamically via atlas q=bonaldo). All curated brands besides Bonaldo show empty fallback insight."
+}

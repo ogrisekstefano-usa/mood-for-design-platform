@@ -94,6 +94,10 @@ const InspirationsPage = () => {
                 data-testid="ins-collections-link">
             <Icons.Library size={13} /> Studio Collections™
           </Link>
+          <Link to="/inspirations/brands" className="ins-cta-secondary"
+                data-testid="ins-brand-mode-link">
+            <Icons.Compass size={13} /> Brand Mode™
+          </Link>
           <button type="button" className="ins-cta-secondary"
                   onClick={() => setCatalogOpen(true)}
                   data-testid="ins-catalog-btn">
