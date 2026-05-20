@@ -1,24 +1,26 @@
 /**
- * Sidebar — MOOD for DESIGN™ · Architecture v4.
+ * Sidebar — MOOD for DESIGN™ · Architecture v5 (Sprint G.5).
  *
- * Mappa mentale del sistema operativo curatoriale. NON è un menu admin,
- * NON è dashboard enterprise. È l'architettura editoriale che traduce
- * il pensiero del designer in 5 sezioni:
+ * Sidebar Journey-first. NON è più un menu di moduli.
+ * È la manifestazione visiva del Design Journey OS™:
  *
- *   01 · HOME                — il punto di partenza
- *   02 · DESIGN JOURNEY™     — costruzione progetto (dominante)
- *   03 · CURATORIAL ATLAS    — memoria culturale dello studio
- *   04 · CLIENT RELATIONS    — relazioni commerciali
- *   05 · CONTENT STUDIO      — publishing e presenza editoriale
- *   06 · STUDIO OS           — governance dello studio
+ *   01 · HOME                — Studio Pulse™ (ritmo progettuale)
+ *   02 · DESIGN JOURNEY™     — i Journey vivi + rail attivo + Inizia
+ *   03 · CURATORIAL ATLAS    — archivio culturale globale
+ *   04 · CLIENT RELATIONS    — Accounts + Voci aperte + Memoria
+ *   05 · CONTENT STUDIO      — publishing (solo admin)
+ *   06 · STUDIO OS           — Team, Brand Studio, governance
  *   ⛨   · PLATFORM           — super-admin (impersonation, audit)
  *
- * Regola ™: usato SOLO su brand identitari rari (Blueprint OS™,
- * Design Journey™, Cultural Editions™, Composition Modes™).
- * Mai su Magazine, Materials, Accounts, ecc.
+ * Rimossi dal root (vivono SOLO via Journey → Step → Artifact):
+ * Moodboards, Render, Hotspots, Site Evolution, Documents.
+ *
+ * Regola ™: usato SOLO su brand identitari rari (Design Journey™,
+ * Studio Pulse™, Cultural Editions™, Brand Mode™, Material View™).
+ *
+ * Active Journey Rail: live list dei viaggi vivi con glow lifecycle.
  *
  * Sezioni collapsible — stato persistente per utente in localStorage.
- * Active states: accent verticale dorato, NO background SaaS blu.
  */
 import React, { useState, useCallback, useMemo } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
@@ -26,6 +28,7 @@ import * as Icons from 'lucide-react';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import Brand from '../common/Brand';
 import useSidebarCollapsed from '../../hooks/useSidebarCollapsed';
+import ActiveJourneyRail from './ActiveJourneyRail';
 
 // ── Section collapse persistence ─────────────────────────────────
 const SECTION_STORAGE_KEY = 'mood.sidebar.sections.v4';
@@ -241,24 +244,21 @@ const Sidebar = () => {
 
         {/* ── 01 · HOME ─────────────────────────────────────── */}
         <Section id="home" label="Home" {...sectionProps} sectionCollapsed={sectionIsCollapsed('home')}>
-          <NavItem to="/dashboard"          icon="LayoutDashboard" label="Dashboard"   end collapsed={collapsed} />
+          <NavItem to="/dashboard"          icon="Waves"           label="Studio Pulse" hasMark end collapsed={collapsed} />
         </Section>
 
         {/* ── 02 · DESIGN JOURNEY™ (dominante) ──────────────── */}
         <Section id="design-journey" label="Design Journey" hasMark {...sectionProps} sectionCollapsed={sectionIsCollapsed('design-journey')}>
-          <NavItem to="/workspace/projects"    icon="Compass"     label="Projects"        collapsed={collapsed} />
-          <NavItem to="/moodboards"            icon="Layers"      label="Moodboards"      collapsed={collapsed} />
-          <NavItem to="/journey/render"         icon="Camera"     label="Render"          collapsed={collapsed} soon />
-          <NavItem to="/journey/hotspots"       icon="Crosshair"  label="Hotspots"        collapsed={collapsed} soon />
-          <NavItem to="/journey/site-evolution" icon="Sun"        label="Site Evolution"  collapsed={collapsed} soon />
-          <NavItem to="/journey/documents"      icon="FileText"   label="Documents"       collapsed={collapsed} soon />
+          <NavItem to="/workspace/projects"    icon="Compass"      label="I tuoi Journey"      collapsed={collapsed} />
+          <NavItem to="/begin-journey"          icon="Sparkles"    label="Inizia un Journey"   collapsed={collapsed} hasMark />
+          {!collapsed && <ActiveJourneyRail collapsed={collapsed} />}
         </Section>
 
         {/* ── 03 · CURATORIAL ATLAS ─────────────────────────── */}
         <Section id="curatorial-atlas" label="Curatorial Atlas" {...sectionProps} sectionCollapsed={sectionIsCollapsed('curatorial-atlas')}>
           <NavItem to="/inspirations"               icon="Bookmark"   label="Inspirations"      collapsed={collapsed} end />
-          <NavItem to="/inspirations/brands"        icon="Sparkles"   label="Brand Mode"        collapsed={collapsed} />
-          <NavItem to="/inspirations/materials"     icon="Palette"    label="Material View"     collapsed={collapsed}
+          <NavItem to="/inspirations/brands"        icon="Sparkles"   label="Brand Mode"        collapsed={collapsed} hasMark />
+          <NavItem to="/inspirations/materials"     icon="Palette"    label="Material View"     collapsed={collapsed} hasMark
                    testid="sidebar-nav-material-view" />
           <NavItem to="/library"                    icon="FolderOpen" label="Media Library"     collapsed={collapsed} />
           <NavItem to="/workspace/cultural-editions" icon="Globe"     label="Cultural Editions" hasMark collapsed={collapsed} />
@@ -266,9 +266,9 @@ const Sidebar = () => {
 
         {/* ── 04 · CLIENT RELATIONS ─────────────────────────── */}
         <Section id="client-relations" label="Client Relations" {...sectionProps} sectionCollapsed={sectionIsCollapsed('client-relations')}>
-          <NavItem to="/crm/accounts"          icon="Users"      label="Accounts"   collapsed={collapsed} />
-          <NavItem to="/crm/follow-ups"        icon="BellRing"   label="Follow-ups" collapsed={collapsed} />
-          <NavItem to="/crm/archived"          icon="Archive"    label="Archived"   collapsed={collapsed} />
+          <NavItem to="/crm/accounts"          icon="Users"      label="Accounts"      collapsed={collapsed} />
+          <NavItem to="/crm/follow-ups"        icon="BellRing"   label="Voci aperte"   collapsed={collapsed} />
+          <NavItem to="/crm/archived"          icon="Archive"    label="Memoria"       collapsed={collapsed} />
         </Section>
 
         {/* ── 05 · CONTENT STUDIO ───────────────────────────── */}

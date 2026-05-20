@@ -1,0 +1,50 @@
+/* ────────────────────────────────────────────────────────────────
+   Journey OS · shared tokens
+   ────────────────────────────────────────────────────────────────
+   Tutte le nuove superfici del Design Journey OS™ (G.2/G.3/G.4/G.5)
+   consumano questi token, che a loro volta ereditano dal sistema
+   di branding tenant-aware (TenantThemeContext → --bp-*) con fallback
+   alla mood-atmosphere palette (--mood-*).
+
+   In questo modo, quando lo studio cambia la propria palette in
+   Brand Studio, tutte le sezioni nuove si adattano automaticamente.
+   ──────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Background layer (warm charcoal con fallback) */
+  --jo-bg:       var(--bp-bg, var(--mood-bg, #0c0e11));
+  --jo-bg-soft:  var(--bp-surface, var(--mood-bg-2, #11141a));
+  --jo-bg-deep:  var(--mood-bg-3, #161a22);
+
+  /* Text */
+  --jo-text:        var(--bp-text-primary, var(--mood-pearl, #f0ebe0));
+  --jo-text-soft:   color-mix(in srgb, var(--jo-text) 62%, transparent);
+  --jo-text-mute:   color-mix(in srgb, var(--jo-text) 42%, transparent);
+  --jo-text-faint:  color-mix(in srgb, var(--jo-text) 28%, transparent);
+
+  /* Accent · primary (warm — gold default) */
+  --jo-accent:        var(--bp-primary, var(--mood-warm, #d9b285));
+  --jo-accent-soft:   color-mix(in srgb, var(--jo-accent) 14%, transparent);
+  --jo-accent-glow:   color-mix(in srgb, var(--jo-accent) 22%, transparent);
+  --jo-accent-line:   color-mix(in srgb, var(--jo-accent) 32%, transparent);
+
+  /* Accent · cool (teal — lifecycle: alive) */
+  --jo-cool:        var(--bp-secondary, var(--mood-cyan, #7fdfff));
+  --jo-cool-soft:   color-mix(in srgb, var(--jo-cool) 12%, transparent);
+  --jo-cool-glow:   color-mix(in srgb, var(--jo-cool) 22%, transparent);
+  --jo-cool-line:   color-mix(in srgb, var(--jo-cool) 35%, transparent);
+
+  /* Accent · attention (amber — lifecycle: presenting/reorient) */
+  --jo-attn:        var(--mood-amber, #e8a558);
+  --jo-attn-soft:   color-mix(in srgb, var(--jo-attn) 14%, transparent);
+  --jo-attn-line:   color-mix(in srgb, var(--jo-attn) 35%, transparent);
+
+  /* Lines */
+  --jo-line:        var(--bp-border, var(--mood-line, rgba(255,255,255,0.058)));
+  --jo-line-2:      var(--mood-line-2, rgba(255,255,255,0.10));
+
+  /* Surface tints (alpha-on-text for cards) */
+  --jo-surface-1:   color-mix(in srgb, var(--jo-text) 2.5%, transparent);
+  --jo-surface-2:   color-mix(in srgb, var(--jo-text) 4.5%, transparent);
+  --jo-surface-3:   color-mix(in srgb, var(--jo-text) 7%, transparent);
+}
