@@ -80,6 +80,17 @@ Niente nuove feature fuori dal Journey OS finché il riallineamento non è compl
 > Frontend: `BeginJourneyPage.jsx` (3 step cinematic) + `JourneyWelcomePage.jsx` (welcome
 > ritual). CTA homepage privata → `/begin-journey`. Whitelisted public surfaces.
 > 12/12 pytest PASS + 120/120 regression. Spec: `/app/memory/G2_BEGIN_JOURNEY_SPEC.md`.
+>
+> 🔒 **G.3 — Account = Constellation of Journeys™ COMPLETO** (21 Feb 2026 · iter103):
+> Backend `g3_constellation.py` (extends crm_intelligence.router) con
+> `GET /api/relationships/accounts/{id}/constellation` che aggrega: hero (relationship_state
+> editoriale growing/active/trusted/dormant/strategic/returning), active_journeys (con
+> current_milestone, progress, last_event narrativo), people (contacts con primary badge),
+> memory (preferred_materials, rationales, inspirations), shared_artifacts (via VIEW
+> journey_artifacts di G.1), insights (journey_health_signals di G.1), lexicon italiano.
+> Frontend: `AccountConstellation.jsx` montato in cima ad `AccountDetailPage`, dark warm
+> charcoal + teal/gold glow + italic Playfair, legacy stage strip soppressa. ZERO
+> pipeline/conversion/lead-score lexicon. 11/11 pytest PASS + 131/131 regression.
 
 ## Tenancy & users
 - SuperAdmin: `demo@moodfordesign.com` / `Blueprint2024!`

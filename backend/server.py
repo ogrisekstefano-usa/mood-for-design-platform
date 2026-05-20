@@ -87,6 +87,7 @@ api_router.include_router(advisor_suggestions.router, tags=["advisor-suggestions
 api_router.include_router(reference_intelligence.router, tags=["reference-intelligence"])
 api_router.include_router(relationships.router, tags=["relationships"])
 api_router.include_router(crm_voice_notes.router, tags=["relationships"])
+from routers import g3_constellation  # noqa: F401  (extends crm_intelligence.router BEFORE include)
 api_router.include_router(crm_intelligence.router, tags=["relationships"])
 api_router.include_router(markets.router, tags=["markets"])
 api_router.include_router(editorial.router, tags=["editorial"])

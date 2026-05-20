@@ -22,7 +22,9 @@ import ActivityModal from './ActivityModal';
 import StageChangeModal, { CANONICAL_STAGES } from './StageChangeModal';
 import CulturalEditionModal from './CulturalEditionModal';
 import RelationshipGraph from './RelationshipGraph';
+import AccountConstellation from './AccountConstellation';
 import './relationship-os.css';
+import './g3-overrides.css';
 
 // ── icon glyph by interaction_type ──────────────────────────────────
 const TYPE_GLYPH = {
@@ -233,8 +235,11 @@ const AccountDetailPage = () => {
         </div>
       </header>
 
-      {/* Stage pills */}
-      <div className="rl-stages" data-testid="rl-stages">
+      {/* ── Sprint G.3 · Account = Constellation of Journeys™ ── */}
+      <AccountConstellation accountId={accountId} />
+
+      {/* Stage pills · LEGACY (kept for backwards compat with relationship_os) */}
+      <div className="rl-stages rl-stages--legacy" data-testid="rl-stages">
         {CANONICAL_STAGES.map((s) => {
           const active = s.key === currentStage;
           return (
