@@ -294,6 +294,155 @@ const StudioLanguageWidget = () => {
   );
 };
 
+// ─── Client Preview Link™ inline manager (Sprint F2.4) ─────────────
+const ClientPreviewLinkRow = ({ collection }) => {
+  const [links, setLinks] = useState(null);     // null = loading, [] = none yet
+  const [generating, setGenerating] = useState(false);
+  const [feedbackOpenId, setFeedbackOpenId] = useState(null);
+
+  const reload = useCallback(() => {
+    api.get(`/api/inspirations/references/collections/${collection.id}/preview-links`)
+      .then(r => setLinks(r.data?.items || []))
+      .catch(() => setLinks([]));
+  }, [collection.id]);
+
+  useEffect(() => { reload(); }, [reload]);
+
+  const onGenerate = async () => {
+    setGenerating(true);
+    try {
+      const r = await api.post(
+        `/api/inspirations/references/collections/${collection.id}/preview-links`,
+        { preview_mode: 'editorial', title: collection.title },
+      );
+      const newLink = r.data?.item;
+      const url = `${window.location.origin}/preview/${newLink.token}`;
+      try { await navigator.clipboard.writeText(url); }
+      catch { /* clipboard might not be available */ }
+      toast.success('Link cliente generato — copiato negli appunti');
+      reload();
+    } catch (e) {
+      toast.error('Impossibile generare il link');
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const onCopy = (token) => {
+    const url = `${window.location.origin}/preview/${token}`;
+    navigator.clipboard.writeText(url).then(
+      () => toast.success('Link copiato'),
+      () => toast.error('Copia non riuscita'),
+    );
+  };
+
+  const onRevoke = async (linkId) => {
+    if (!window.confirm('Vuoi revocare questo link cliente? Non sarà più accessibile.')) return;
+    try {
+      await api.delete(`/api/inspirations/references/preview-links/${linkId}`);
+      toast.success('Link revocato');
+      reload();
+    } catch { toast.error('Revoca non riuscita'); }
+  };
+
+  if (links === null) return null;
+
+  const active = links.filter(l => !l.revoked_at);
+
+  return (
+    <div className="pg-preview-link" data-testid={`pg-preview-link-${collection.id}`}>
+      {active.length === 0 ? (
+        <button
+          type="button"
+          className="pg-preview-link__cta"
+          onClick={onGenerate}
+          disabled={generating}
+          data-testid={`pg-preview-generate-${collection.id}`}
+        >
+          <Icons.Send size={11} />
+          <span>{generating ? 'Sto preparando…' : 'Genera link cliente'}</span>
+        </button>
+      ) : (
+        active.map(link => (
+          <div key={link.id} className="pg-preview-link__row">
+            <button
+              type="button"
+              className="pg-preview-link__copy"
+              onClick={() => onCopy(link.token)}
+              data-testid={`pg-preview-copy-${link.id}`}
+              title="Copia link"
+            >
+              <Icons.Link size={11} />
+              <span className="pg-preview-link__url">
+                /preview/{link.token.slice(0, 12)}…
+              </span>
+            </button>
+            <span className="pg-preview-link__stats">
+              <Icons.Eye size={10} /> {link.views_count || 0}
+            </span>
+            <button
+              type="button"
+              className="pg-preview-link__action"
+              onClick={() => setFeedbackOpenId(
+                feedbackOpenId === link.id ? null : link.id,
+              )}
+              title="Riscontri dal cliente"
+              data-testid={`pg-preview-feedback-${link.id}`}
+            >
+              <Icons.MessageCircle size={11} />
+            </button>
+            <button
+              type="button"
+              className="pg-preview-link__action pg-preview-link__action--danger"
+              onClick={() => onRevoke(link.id)}
+              title="Revoca"
+              data-testid={`pg-preview-revoke-${link.id}`}
+            >
+              <Icons.X size={11} />
+            </button>
+            {feedbackOpenId === link.id && (
+              <ClientFeedbackPanel linkId={link.id} />
+            )}
+          </div>
+        ))
+      )}
+    </div>
+  );
+};
+
+const ClientFeedbackPanel = ({ linkId }) => {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    api.get(`/api/inspirations/references/preview-links/${linkId}/feedback`)
+      .then(r => setData(r.data))
+      .catch(() => setData(null));
+  }, [linkId]);
+  if (!data) return null;
+  return (
+    <div className="pg-preview-feedback" data-testid={`pg-preview-feedback-panel-${linkId}`}>
+      <p className="pg-preview-feedback__head">
+        Riscontri · {data.summary.total_views} viste · {data.summary.approvals} approvazioni
+        · {data.summary.alternatives} alternative · {data.summary.notes} note
+      </p>
+      {(data.feedback || []).slice(0, 5).map(f => (
+        <div key={f.id} className="pg-preview-feedback__item">
+          <span className={`pg-preview-feedback__chip pg-preview-feedback__chip--${f.action_type}`}>
+            {f.action_type === 'approve_direction' && 'Approvato'}
+            {f.action_type === 'request_alternatives' && 'Alternative'}
+            {f.action_type === 'note' && 'Nota'}
+          </span>
+          {f.client_identifier && <span className="pg-preview-feedback__who">{f.client_identifier}</span>}
+          {f.note && <p className="pg-preview-feedback__note">{f.note}</p>}
+        </div>
+      ))}
+      {data.feedback.length === 0 && (
+        <p className="pg-preview-feedback__empty">In attesa di riscontro dal cliente</p>
+      )}
+    </div>
+  );
+};
+
+
 const ReferencesTab = ({ collections, onCreate, onAddToCollection, currentAsset, savedInstances }) => (
   <div className="pg-refs" data-testid="pg-tab-references">
     <header className="pg-refs__head">
@@ -338,6 +487,9 @@ const ReferencesTab = ({ collections, onCreate, onAddToCollection, currentAsset,
             </div>
             <Icons.Plus size={14} className="pg-refs__add" />
           </button>
+          {c.visibility === 'client_visible' && (
+            <ClientPreviewLinkRow collection={c} />
+          )}
         </li>
       ))}
       {(!collections || collections.length === 0) && (

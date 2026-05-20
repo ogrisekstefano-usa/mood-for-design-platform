@@ -46,6 +46,7 @@ const BrandModePage = lazy(() => import('./pages/inspirations/BrandModePage'));
 const BrandDetailPage = lazy(() => import('./pages/inspirations/BrandDetailPage'));
 const ProductGalleryPage = lazy(() => import('./pages/inspirations/ProductGalleryPage'));
 const MaterialViewPage = lazy(() => import('./pages/inspirations/MaterialViewPage'));
+const ClientPreviewPage = lazy(() => import('./pages/ClientPreviewPage'));
 const InsightsPage = lazy(() => import('./pages/insights/InsightsPage'));
 const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'));
 const BrandStudioPage = lazy(() => import('./pages/settings/BrandStudioPage'));
@@ -223,6 +224,10 @@ function App() {
             <Suspense fallback={<Loading />}>
               <LocaleHead />
               <Routes>
+                {/* Client Preview Link™ — public, no auth, no layout.
+                    Sprint F2.4: presentazione cliente fullscreen cinematic. */}
+                <Route path="/preview/:token" element={<ClientPreviewPage />} />
+
                 {/* SITE (public marketing) — global brand surface.
                     Magazine + Start Project now share the same SiteLayout
                     (P0 stabilization: ONE renderer, ONE runtime, ONE source of truth). */}

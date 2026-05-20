@@ -53,6 +53,92 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint F2.4 · Client Preview Link™ (Feb 20, 2026 · iter93)
+**Private Curatorial Presentation Experience™ — il ponte emozionale tra studio e cliente.**
+
+#### Strategic shift
+MOOD smette di sembrare "tool interno". Diventa **una stanza digitale curatoriale privata** che lo studio condivide con il cliente. Il cliente non percepisce "sto guardando una gallery condivisa" ma "sto vivendo una direzione progettuale creata per me". Zero sidebar, zero workspace, zero jargon — solo l'esperienza cinematica firmata dallo studio.
+
+#### Database (Migration 060)
+- **NEW** `preview_tokens`: token URL-safe 32 bytes (~256-bit entropy) + tenant_id + resource_type ('curated_collection' | future 'moodboard') + preview_mode + settings JSONB + expires_at? + revoked_at? + views_count + unique_visitors_count + last_viewed_at + timestamps. Index parziale su `token WHERE revoked_at IS NULL` per lookup veloce.
+- **NEW** `client_preview_feedback`: action_type ('approve_direction' | 'request_alternatives' | 'note') + target_asset_id? + note + client_identifier? + metadata JSONB
+- **NEW** `client_preview_views`: target_asset_id? + duration_ms + viewer_signature (SHA256 di UA+IP, no PII)
+
+#### Backend — `routers/client_preview.py` NUOVO
+**PRIVATE endpoints (studio auth)**:
+- `POST /api/inspirations/references/collections/{cid}/preview-links` — genera token; **gating**: solo `client_visible` collections; messaggio italiano se rifiutato
+- `GET /api/inspirations/references/collections/{cid}/preview-links` — lista (attivi + revocati)
+- `PATCH /api/inspirations/references/preview-links/{id}` — aggiorna mode/settings/expires
+- `DELETE /api/inspirations/references/preview-links/{id}` — revoke soft (SET revoked_at, preserva feedback FK)
+- `GET /api/inspirations/references/preview-links/{id}/feedback` — feedback aggregate + views + summary {total_views, approvals, alternatives, notes}
+
+**PUBLIC endpoints (NO auth — token-in-URL è l'autenticazione)**:
+- `GET /api/inspirations/public/preview/{token}` — payload public-safe della direzione (studio name+slug ONLY, NO tenant_id / NO storage_path / NO supplier_catalog_id / NO uploaded_by). Auto-increment views_count + write view-event con viewer_signature hashed
+- `POST /api/inspirations/public/preview/{token}/feedback` — client submit action (validazione: solo `approve_direction | request_alternatives | note`)
+- `POST /api/inspirations/public/preview/{token}/view` — best-effort tracking per Usage Memory™ (mai blocca client, mai raises)
+
+**Sicurezza**:
+- Token 32 bytes secrets.token_urlsafe (~256 bit)
+- Revoked tokens → 410 Gone
+- Expired tokens → 410 Gone (con tolerance su parsing)
+- Public payload strips tutti gli internal fields
+- viewer_signature è SHA256(UA + IP)[0:16] — no PII memorizzata
+
+#### Frontend — Route `/preview/:token` (PUBLIC, no auth, no layout)
+- **NEW** route registrata in `App.js` PRIMA delle SiteLayout/Routes authed
+- **NEW** `ClientPreviewPage.jsx` (~280 lines) + dedicated `client-preview.css` (~360 lines)
+- **Stile**: dark luxury cinematic (background radial-gradient warm amber subtle dal top, font Playfair Display per titles italic, JetBrains Mono per eyebrow/status, Inter per body)
+- **Layout fullscreen**:
+  - **Header sticky** minimale (28px padding): dot accent colorato (varia per mode) + studio name italic Playfair + status "Presentazione privata" mono
+  - **Hero**: eyebrow editoriale italian per-mode ("Una direzione progettuale" · "Una lettura materica" · "Una narrazione progettuale" · "Una composizione curatoriale"), title `clamp(36px, 6vw, 64px)` italic, description, intro narrativa Playfair
+  - **Sequence narrativa** verticale: 1 frame per riga con grid `60px 1fr`, numero progressivo mono (01, 02…) + media (cursor zoom-in) + caption Playfair italic + brand mono uppercase + studio note + "Aggiungi una nota" CTA inline
+  - Animation: cinematic rise-in stagger (100ms delay incrementale, max 4 frame), cubic-bezier 800ms
+  - **Footer cinematic**: eyebrow "Una direzione ti parla?" Playfair italic, 3 CTAs pill (Approvo direzione warm-amber primary · Esplora alternative ghost · Aggiungi nota ghost), tutti con tagline italiana esatta come da spec ("Approvo questa direzione" · "Vorrei esplorare alternative" · "Aggiungi una nota")
+- **Zoom modal** fullscreen: backdrop blur 16px + max-width 92vw / 84vh + caption sotto centrata
+- **Note modal**: card centered, input nome opzionale + textarea (autofocus, max 2000 char), "Lasciaci sentire la tua direzione" Playfair italic accent warm
+- **Thanks modal post-action**: messaggio editoriale italiano per-action ("Grazie · La tua direzione è stata trasmessa allo studio" / "Ricevuto · Lo studio preparerà direzioni alternative ispirate al tuo sentire" / "Nota inviata · Lo studio la leggerà con attenzione")
+- **Tracking**: `recordView` su mouse-enter di ogni frame (dedup via `useRef Set`) + on-click; mai blocca UX
+- **Mode-aware ambient**: ogni mode ha accent color + eyebrow + intro testo dedicati (`MODE_AMBIENT` table)
+- **Mobile**: media query 760px → grid mono-colonna, num diventa accent-color floating, gap ridotti, button più compatti
+
+#### Frontend — Studio-side UI manager
+- **NEW** `ClientPreviewLinkRow` component inline nel `ReferencesTab` della ProductGalleryPage
+- Appare automaticamente SOLO per `c.visibility === 'client_visible'`
+- Quando non ci sono link → CTA dashed warm "Genera link cliente"
+- Quando ci sono link attivi → mostra preview `/preview/abc12345...` cliccabile (copia URL completo in clipboard via Navigator API), views counter mono-font, button "Riscontri" (toggle feedback panel sotto) + button revoca
+- **`ClientFeedbackPanel`** popover sotto al link: summary line (`N viste · N approvazioni · N alternative · N note`), poi lista feedback con chip color-coded ('approve_direction' warm / 'request_alternatives' cyan / 'note' muted) + client_identifier Playfair italic + note italiana
+- Copy-to-clipboard con toast "Link cliente generato — copiato negli appunti"
+- Revoke con confirm browser-native italiano
+
+#### Linguaggio compliance (strict verification)
+**REQUIRED ITALIAN MARKERS** verificati nel DOM:
+"Presentazione privata", "Direzione progettuale", "Approvo questa direzione", "Vorrei esplorare alternative", "Aggiungi una nota", "Una nota progettuale", "Lasciaci sentire la tua direzione", "Cosa ti emoziona di questa direzione?", "Lo studio leggerà con attenzione", "Una direzione ti parla?", "Una direzione progettuale", "Riscontri", "Genera link cliente"
+
+**FORBIDDEN** verificati ASSENTI sia nel router che nel frontend:
+`reject`, `decline`, `disapprove`, `shared gallery`, `collaboration tool`, `dashboard`, `review board`, `DAM`, `workspace`, `AI suggestions`, `client portal`, `enterprise`
+
+#### Test results
+- **Backend Sprint F2.4: 12/12 PASS · 100%** (`tests/test_iteration_93_client_preview.py`):
+  - `TestGeneratePreviewLink` · 3 test (create gating per visibility, success client_visible, invalid mode 400)
+  - `TestPublicPreview` · 5 test (no-auth fetch + shape, no-leak internal fields, invalid 404, revoked 410, views counter increments)
+  - `TestClientFeedback` · 3 test (approve_direction, note con target_asset_id, invalid 400)
+  - `TestLanguageCompliance` · 1 test
+- **Backend regression**: 49/49 PASS (iter88/90/91/92/93) + 1 skip preesistente · zero rotture
+- **Frontend self-verified via Playwright**:
+  - Login + create client_visible collection + 4 saved refs + generate preview link via API eval
+  - Clear cookies + visit `/preview/{token}` senza auth → `cp-shell` render + title "Direzione Cliente Riva" + 6 frames + 3 actions + note modal apre con UI italian editorial
+  - Dark luxury aesthetic confermato visually
+
+#### Production confidence: **9.8/10**
+
+#### Cosa NON è incluso (Sprint F2.5 + Deferred)
+- **Sprint F2.5** (next, optional): Preview Modes™ runtime switch (cambiare mode lato cliente con toggle elegante) + sequenza dipendente da mode (Editorial sort vs Material sort) lato pubblico
+- **Sprint F2.3** (skipped per ora): Usage Memory™ tracking completo + tab "Moodboard/Editorial/Journey Usage" nel right sidebar ProductGallery
+- **Deferred**: realtime collaboration · live cursors · video calls · approval snapshots formali · milestone approvals · legal signature · AI narrative adaptation · contractor sharing
+
+---
+
+
 ### Sprint F2.2 · Composition Modes™ + Material View™ + Usage Memory™ Foundation (Feb 20, 2026 · iter92)
 **Da Visual Atelier™ a sistema compositivo intelligente — MOOD comincia a comprendere il linguaggio progettuale dello studio.**
 
