@@ -91,6 +91,17 @@ Niente nuove feature fuori dal Journey OS finché il riallineamento non è compl
 > Frontend: `AccountConstellation.jsx` montato in cima ad `AccountDetailPage`, dark warm
 > charcoal + teal/gold glow + italic Playfair, legacy stage strip soppressa. ZERO
 > pipeline/conversion/lead-score lexicon. 11/11 pytest PASS + 131/131 regression.
+>
+> 🔒 **G.4 — Journey Pulse™ COMPLETO** (21 Feb 2026 · iter104):
+> Backend `journey_pulse.py` con `GET /api/dashboard/pulse` che aggrega 7 sezioni in 1.4s
+> con bulk queries: active_journeys (con current_milestone/progress/last_event/days_silent),
+> voices_today (last 24h con tono+phrase editoriale), chapters_waiting (versioni senza voce
+> dopo), revisions_open (reorient feedback senza nuova versione), recent_evolutions (7d),
+> silent_journeys (>14gg silenzio), next_actions (editorial suggestions con priorità).
+> Frontend: `JourneyPulsePage.jsx` montata a `/dashboard` (legacy a `/dashboard/legacy`),
+> hero "Buon pomeriggio, Stefano" italic Playfair, 7 sezioni dark warm charcoal con accent
+> glow teal/gold/amber/muted. ZERO conversion/KPI/pipeline lexicon. 10/10 pytest PASS +
+> 141/141 regression. Performance: pulse da >60s a 1.4s grazie a bulk query batching.
 
 ## Tenancy & users
 - SuperAdmin: `demo@moodfordesign.com` / `Blueprint2024!`
