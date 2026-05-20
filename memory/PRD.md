@@ -1,9 +1,10 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
-- **Sprint G.5 — Sidebar v5 (IA Journey-first)** · ✅ COMPLETED · iter105 · 14/14 tests pass
-- **Sprint G.6 — Step-Anchored Artifact Pages™** · ✅ COMPLETED · iter106 · 16/16 tests pass + 80/80 G.1→G.6 regression. Backend `journey_step_workspace.py` + route `/journey/:projectId/step/:milestoneType`. Three editorial layers (`StepContextHeader`, `VersionStack`, `ClientInteractionLayer`) + workspace bodies (Moodboard / Material). DesignJourneyTab routes moodboard/material steps to the new workspace; legacy global pages carry an `ArchiveBanner`. Validated by testing agent (`/app/test_reports/iteration_106.json`).
-- **Sprint G.7 — Client Portal Journey Companion™** · ✅ COMPLETED · iter107 · 18/18 + 10/10 RBAC supplement + 108/108 G.1→G.7 regression. Backend `GET /api/client/journeys` + `GET /api/client/journeys/{journey_id}/companion` (7 sezioni: header, active_chapter, shared_directions, evolution_timeline, materials_atmospheres, memory_archive, conversations). Frontend nuova IA `/client` + `/client/journey/:journeyId` con sidebar v2 (7 voci Journey-first ™) + zero-data editoriale. Legacy `/client/project|moodboards|approvals|timeline|files` redirezionano alla nuova IA. RBAC: client/tenant_admin/super_admin OK, designer → 403. Mobile-first verified at 390x844. Validato da testing agent (`/app/test_reports/iteration_107.json`).
+- **Sprint G.5 — Sidebar v5 (IA Journey-first)** · ✅ COMPLETED · iter105
+- **Sprint G.6 — Step-Anchored Artifact Pages™** · ✅ COMPLETED · iter106
+- **Sprint G.7 — Client Portal Journey Companion™** · ✅ COMPLETED · iter107
+- **Sprint G.7-bis — Villa Riviera demo seed™** · ✅ COMPLETED · iter108 · 5/5 seed tests + 124/124 full G.x regression. `/app/backend/scripts/seed_demo_journey.py` (idempotente, tag `villa_riviera_g7_demo`) crea per `client@moodfordesign.com` un Journey CREDIBILE: Villa Riviera a Sanremo, 8 settimane di evoluzione, 3 moodboard (V1 fredda revision_requested · V2 materica viewed · V3 alternativa draft), 8 voci con frizioni reali (cliente chiede più calore, pietra grigia scartata, travertino selezionato), 16 timeline events, 2 capitoli approvati su 10. Mobile drawer (hamburger sotto md breakpoint) aggiunto al `ClientDashboardLayout`. Direction Lock pinnata: `test_voices_use_italian_only` blocca future derive in copy SaaS EN. Validato live desktop + mobile da testing agent (`/app/test_reports/iteration_108.json`). 
 - **Next P1**: G.8 Site Evolution™ · G.9 Certified Closure ceremony.
 
 ## 🔒 PRODUCT DIRECTION LOCK (Feb 21, 2026 · iter100+) — IMMUTABLE
