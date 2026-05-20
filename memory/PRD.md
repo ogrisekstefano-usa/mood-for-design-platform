@@ -57,6 +57,13 @@ Niente nuove feature fuori dal Journey OS finché il riallineamento non è compl
 
 **Language**: Italian (Italiano).
 
+> 📜 **Architecture lock**: see `/app/memory/JOURNEY_ALIGNMENT_AUDIT.md` (Sprint G.0, 21 Feb 2026).
+> Ogni nuovo sprint DEVE referenziare questo audit. Ordine sprint immutabile:
+> G.1 (Schema) → G.2 (Lead "Inizia il Design Journey") → G.3 (Account constellation) →
+> G.4 (Dashboard Journey Pulse) → G.5 (Sidebar v5) → G.6 (Step-anchored artifacts) →
+> G.7 (Client Portal Journey-first) → G.8 (Site Evolution™) → G.9 (Certified Closure) →
+> G.10 (Cultural Editions gen) → G.11 (Advisor) → G.12 (collab→dialogue merge).
+
 ## Tenancy & users
 - SuperAdmin: `demo@moodfordesign.com` / `Blueprint2024!`
 - Roles: `super_admin`, `tenant_admin`, `client`, `member`
