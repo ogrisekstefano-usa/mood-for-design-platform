@@ -30,6 +30,38 @@ const LocaleRuntimeContext = createContext(null);
 
 const PUBLIC_LOCALE_STORAGE_KEY = 'mfd_public_locale';
 
+// BCP-47 ↔ Composite mapping for the Sprint I18N-01 cross-context bridge.
+// Composite (IT_IT, EN_US, AR_AE) is used server-side / LocaleRuntime;
+// BCP-47 (it, en-US, ar) is used by Blueprint + UserMenu + i18n strings.
+const BCP47_TO_COMPOSITE = {
+  'it':    'IT_IT',
+  'it-IT': 'IT_IT',
+  'en':    'EN_US',
+  'en-US': 'EN_US',
+  'en-GB': 'EN_GB',
+  'en-AE': 'EN_AE',
+  'fr':    'FR_FR',
+  'fr-FR': 'FR_FR',
+  'de':    'DE_DE',
+  'de-DE': 'DE_DE',
+  'es':    'ES_ES',
+  'es-ES': 'ES_ES',
+  'ar':    'AR_AE',
+  'ar-AE': 'AR_AE',
+};
+const COMPOSITE_TO_BCP47 = {
+  'IT_IT': 'it',
+  'EN_US': 'en-US',
+  'EN_GB': 'en-GB',
+  'EN_AE': 'en-AE',
+  'FR_FR': 'fr',
+  'DE_DE': 'de',
+  'ES_ES': 'es',
+  'AR_AE': 'ar',
+};
+const bcp47ToComposite = (c) => BCP47_TO_COMPOSITE[c] || null;
+const compositeToBcp47 = (c) => COMPOSITE_TO_BCP47[c] || null;
+
 const SYSTEM_FALLBACK_PROFILE = {
   locale_code: 'IT_IT',
   language: 'it',
@@ -44,7 +76,7 @@ export const LocaleRuntimeProvider = ({ children }) => {
     localeCode: 'IT_IT',
     profile:    SYSTEM_FALLBACK_PROFILE,
     source:     'system',
-    supported:  ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES'],
+    supported:  ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES', 'AR_AE'],
     loading:    true,
     error:      null,
     anonymous:  !user,
@@ -60,7 +92,7 @@ export const LocaleRuntimeProvider = ({ children }) => {
           localeCode: d.locale_code || 'IT_IT',
           profile:    d.profile || SYSTEM_FALLBACK_PROFILE,
           source:     d.source || 'system',
-          supported:  d.supported || ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES'],
+          supported:  d.supported || ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES', 'AR_AE'],
           loading:    false,
           error:      null,
           anonymous:  false,
@@ -84,7 +116,7 @@ export const LocaleRuntimeProvider = ({ children }) => {
         localeCode: d.locale_code || 'IT_IT',
         profile:    d.profile || SYSTEM_FALLBACK_PROFILE,
         source:     d.source || 'system',
-        supported:  d.supported || ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES'],
+        supported:  d.supported || ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES', 'AR_AE'],
         loading:    false,
         error:      null,
         anonymous:  true,
@@ -96,14 +128,45 @@ export const LocaleRuntimeProvider = ({ children }) => {
 
   useEffect(() => { fetchRuntime(); }, [fetchRuntime]);
 
-  const setLocale = useCallback(async (code) => {
+  // ── Sprint I18N-01 · cross-context locale bridge ──────────────────
+  // Listen for Blueprint locale changes and re-resolve the cultural
+  // runtime so the two systems never drift. Without this bridge,
+  // useT() (LocaleRuntime) and useBlueprint() (Blueprint) could
+  // render two different locales on the same page.
+  useEffect(() => {
+    const onCrossContext = (e) => {
+      const incoming = e?.detail?.locale;
+      if (!incoming) return;
+      // Convert BCP-47 → composite (it → IT_IT, en-US → EN_US, ar → AR_AE).
+      const composite = bcp47ToComposite(incoming);
+      if (composite && composite !== state.localeCode) {
+        // Re-resolve via the same path setLocale uses (auth-aware).
+        setLocaleInternal(composite, { silent: true });
+      }
+    };
+    const onStorage = (e) => {
+      if (e.key === 'mfd_locale' && e.newValue) {
+        const composite = bcp47ToComposite(e.newValue);
+        if (composite && composite !== state.localeCode) {
+          setLocaleInternal(composite, { silent: true });
+        }
+      }
+    };
+    window.addEventListener('mfd:locale:change', onCrossContext);
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.removeEventListener('mfd:locale:change', onCrossContext);
+      window.removeEventListener('storage', onStorage);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.localeCode, user]);
+
+  // Internal worker used by both setLocale and the bridge listener
+  const setLocaleInternal = useCallback(async (code, opts = {}) => {
     if (!code) return;
-    // Anonymous flow: persist locally, re-resolve via public endpoint.
     if (!user) {
-      try {
-        localStorage.setItem(PUBLIC_LOCALE_STORAGE_KEY, code);
-      } catch (_) { /* ignore */ }
-      // Re-resolve immediately with the saved hint.
+      // Anonymous
+      try { localStorage.setItem(PUBLIC_LOCALE_STORAGE_KEY, code); } catch (_) {}
       try {
         const r = await api.get('/api/locale-runtime/resolve/public', {
           params: { saved_locale: code },
@@ -113,7 +176,7 @@ export const LocaleRuntimeProvider = ({ children }) => {
           localeCode: d.locale_code || 'IT_IT',
           profile:    d.profile || SYSTEM_FALLBACK_PROFILE,
           source:     d.source || 'system',
-          supported:  d.supported || ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES'],
+          supported:  d.supported || ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES', 'AR_AE'],
           loading:    false,
           error:      null,
           anonymous:  true,
@@ -123,7 +186,7 @@ export const LocaleRuntimeProvider = ({ children }) => {
       }
       return;
     }
-    // Authenticated flow: persist server-side, then re-resolve.
+    // Authenticated
     try {
       await api.put('/api/locale-runtime/preference', { locale_code: code });
       await fetchRuntime();
@@ -131,6 +194,17 @@ export const LocaleRuntimeProvider = ({ children }) => {
       setState((s) => ({ ...s, error: 'preference_save_failed' }));
     }
   }, [user, fetchRuntime]);
+
+  const setLocale = useCallback(async (code) => {
+    await setLocaleInternal(code);
+    // Notify the rest of the app — Blueprint will pick it up via its listener.
+    try {
+      const bcp = compositeToBcp47(code);
+      if (bcp) {
+        window.dispatchEvent(new CustomEvent('mfd:locale:change', { detail: { locale: bcp } }));
+      }
+    } catch (_) {}
+  }, [setLocaleInternal]);
 
   // Semantic copy accessor — culturally repositioned, NOT translated.
   const copy = useCallback((token, extra = {}) => {
@@ -165,7 +239,7 @@ export const useLocaleRuntime = () => {
       localeCode: 'IT_IT',
       profile:    SYSTEM_FALLBACK_PROFILE,
       source:     'system',
-      supported:  ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES'],
+      supported:  ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES', 'AR_AE'],
       loading:    false,
       error:      null,
       anonymous:  true,

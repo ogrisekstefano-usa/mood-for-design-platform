@@ -1,0 +1,111 @@
+{
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "search": "بحث",
+    "loading": "جارٍ التحميل…",
+    "empty": "لا توجد عناصر",
+    "yes": "نعم",
+    "no": "لا",
+    "all": "الكل",
+    "back": "رجوع",
+    "next": "التالي",
+    "close": "إغلاق",
+    "saving": "جارٍ الحفظ…",
+    "creating": "جارٍ الإنشاء…",
+    "primary": "أساسي",
+    "none": "—",
+    "assigned": "مُعيَّن",
+    "unassigned": "غير مُعيَّن"
+  },
+  "relationships": {
+    "eyebrow": "نظام العلاقات",
+    "title": "العلاقات",
+    "subtitle": "ذاكرة الاستوديو المشتركة — الحسابات، جهات الاتصال، المحادثات، الخطوات التالية.",
+    "searchPlaceholder": "ابحث بالاسم، البريد الإلكتروني، المدينة…",
+    "viewTable": "جدول",
+    "viewKanban": "كانبان",
+    "ctaNew": "علاقة جديدة",
+    "sidebarTitle": "العلاقات",
+    "filters": {
+      "all":           "جميع العلاقات",
+      "new":           "جديد",
+      "unassigned":    "غير مُعيَّن",
+      "follow_up":     "بحاجة إلى متابعة",
+      "high_intent":   "نية عالية",
+      "international": "دولي",
+      "active":        "مشاريع نشطة",
+      "clients":       "العملاء",
+      "archived":      "الأرشيف"
+    },
+    "table": {
+      "account":   "الحساب",
+      "type":      "النوع",
+      "stage":     "المرحلة",
+      "contact":   "جهة الاتصال الأساسية",
+      "lastActivity": "آخر نشاط",
+      "open":      "مفتوح",
+      "owner":     "المالك",
+      "emptyFiltered": "لا توجد علاقات في هذا الفلتر."
+    },
+    "kanban": {
+      "emptyColumn": "فارغ"
+    },
+    "drawer": {
+      "tabs": {
+        "overview": "نظرة عامة",
+        "contacts": "جهات الاتصال",
+        "timeline": "الخط الزمني",
+        "actions":  "الخطوات التالية"
+      },
+      "lastActivityPrefix": "آخر نشاط",
+      "accountData":   "بيانات الحساب",
+      "changeStage":   "تغيير المرحلة",
+      "counters":      "العدادات",
+      "interactions":  "التفاعلات",
+      "openActions":   "مفتوح",
+      "source":        "المصدر",
+      "health":        "الحالة الصحية",
+      "emptyContacts": "لم تُسجَّل أي جهة اتصال.",
+      "emptyTimeline": "لا توجد تفاعلات بعد.",
+      "emptyActions":  "لا توجد خطوة تالية مفتوحة.",
+      "nextStep":      "الخطوة التالية:",
+      "due":           "موعد الاستحقاق",
+      "stageChanged":  "تم تحديث المرحلة",
+      "stageError":    "تعذّر تغيير المرحلة.",
+      "actionError":   "خطأ في تحديث الإجراء.",
+      "loadingRelation":"جارٍ تحميل العلاقة…",
+      "markDone":      "وضع كمكتمل",
+      "reopen":        "إعادة فتح"
+    },
+    "newModal": {
+      "eyebrow":      "علاقة جديدة",
+      "title":        "افتح علاقة جديدة",
+      "accountName":  "اسم الحساب / العائلة / الاستوديو",
+      "accountType":  "نوع الحساب",
+      "source":       "المصدر",
+      "city":         "المدينة",
+      "firstName":    "الاسم الأول لجهة الاتصال",
+      "lastName":     "اسم العائلة لجهة الاتصال",
+      "email":        "البريد الإلكتروني",
+      "phone":        "الهاتف",
+      "notes":        "ملاحظات أولية (اختياري)",
+      "submit":       "إنشاء العلاقة",
+      "successCreated":"تم إنشاء العلاقة.",
+      "errorCreate":  "تعذّر إنشاء العلاقة.",
+      "errorNameRequired": "يرجى إدخال اسم الحساب."
+    },
+    "loadingAccounts": "جارٍ قراءة ذاكرة الاستوديو…"
+  },
+  "user": {
+    "language": "اللغة",
+    "logout": "تسجيل الخروج",
+    "profile": "الملف الشخصي"
+  },
+  "nav": {
+    "settings": "الإعدادات",
+    "settings.brand": "هوية الاستوديو"
+  }
+}

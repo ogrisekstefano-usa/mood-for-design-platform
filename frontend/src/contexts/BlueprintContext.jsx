@@ -350,15 +350,31 @@ export const BlueprintProvider = ({ children }) => {
   const enabledModuleIds = useMemo(() => new Set(modules?.modules?.map((m) => m.id) || []), [modules]);
   const isModuleEnabled = useCallback((id) => enabledModuleIds.has(id), [enabledModuleIds]);
 
+  // ── Sprint I18N-01 · RTL + dir document attribute ──────────────────
+  // Compute RTL flag from the active locale and propagate to <html>.
+  // Any component can also read isRtl / dir from the context.
+  const isRtl = useMemo(() => {
+    try { return !!resolveLanguage(locale)?.rtl; } catch (_) { return false; }
+  }, [locale]);
+  const dir = isRtl ? 'rtl' : 'ltr';
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.setAttribute('dir', dir);
+    document.documentElement.setAttribute('lang', locale);
+  }, [dir, locale]);
+
   const value = useMemo(() => ({
     tenant, navigation, dashboardConfig, modules, featureFlags,
     permissions, isSuperAdmin, can, isModuleEnabled,
     impersonating, startImpersonation, stopImpersonation,
     locale, setLocale, availableLocales, messages, t, loading,
+    isRtl, dir,
   }), [tenant, navigation, dashboardConfig, modules, featureFlags,
        permissions, isSuperAdmin, can, isModuleEnabled,
        impersonating, startImpersonation, stopImpersonation,
-       locale, setLocale, availableLocales, messages, t, loading]);
+       locale, setLocale, availableLocales, messages, t, loading,
+       isRtl, dir]);
 
   return <BlueprintContext.Provider value={value}>{children}</BlueprintContext.Provider>;
 };

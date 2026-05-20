@@ -1,0 +1,91 @@
+/**
+ * MOOD for DESIGN™ — RTL minimal guards (Sprint I18N-01).
+ *
+ * When <html dir="rtl"> is active, we flip layout primitives that
+ * would otherwise read awkwardly in Arabic. We DO NOT redesign
+ * components — we only apply safe, low-risk adjustments.
+ *
+ * Scope:
+ *   · Sidebar — flip the side, mirror chevrons
+ *   · Topbar — mirror order
+ *   · Cards / hero — flip text alignment when the design assumes LTR
+ *   · Dossier — keep typography numerals LTR (architectural archive)
+ *
+ * Anything not listed continues to inherit native browser RTL behaviour
+ * (flexbox flips automatically; text aligns to start; padding-inline
+ * uses logical properties when present).
+ */
+
+html[dir="rtl"] {
+  /* Numerals stay Latin so dates, measurements, prices read consistently
+     across the Studio Identity™ system. The user can override per surface. */
+  --num-direction: ltr;
+}
+
+html[dir="rtl"] body {
+  text-align: right;
+}
+
+/* Sidebar — when present, push to the right edge instead of left. */
+html[dir="rtl"] aside[data-testid="sidebar"],
+html[dir="rtl"] aside.bp-sidebar,
+html[dir="rtl"] aside.sidebar {
+  border-right: none;
+  border-left: 1px solid var(--bp-border, rgba(255,255,255,0.06));
+}
+
+/* Mirror chevron-like icons inside nav items so they point "forward"
+   visually in RTL. */
+html[dir="rtl"] aside .lucide-chevron-right,
+html[dir="rtl"] aside .lucide-chevron-left {
+  transform: scaleX(-1);
+}
+
+/* Logical padding on the topbar (avoid hard-coded left padding bleed) */
+html[dir="rtl"] header.bp-topbar,
+html[dir="rtl"] header.topbar {
+  padding-inline-start: 1.25rem;
+  padding-inline-end:   1rem;
+}
+
+/* Hero eyebrows / monospace tracking — keep Latin orientation when the
+   content is a brand/system token (e.g. "STUDIO PULSE™"). Heuristic:
+   any element with class .keep-ltr stays LTR. */
+html[dir="rtl"] .keep-ltr,
+html[dir="rtl"] [data-direction="ltr"] {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: isolate;
+}
+
+/* Dossier numerals (capitoli 01-10) stay LTR to preserve the editorial
+   monograph numbering — Arabic readers expect Western numerals in
+   architectural archives. */
+html[dir="rtl"] .dossier-chapters__num {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: left;
+}
+
+/* Journey timeline — vertical lines don't need mirroring, but icons that
+   point along the reading direction need flipping. */
+html[dir="rtl"] .cj-timeline__chevron,
+html[dir="rtl"] .dj-rail__chevron,
+html[dir="rtl"] .lucide-arrow-right {
+  transform: scaleX(-1);
+}
+
+/* Card chips that use margin-right need symmetric treatment. */
+html[dir="rtl"] .cj-jcard__pill,
+html[dir="rtl"] .bm-card__chip {
+  margin-inline-start: 0;
+  margin-inline-end: 6px;
+}
+
+/* Form labels with monospace tokens stay LTR (codes, IDs, ISO dates). */
+html[dir="rtl"] .dossier-eyebrow,
+html[dir="rtl"] .cp-eyebrow,
+html[dir="rtl"] .bp-mono-eyebrow {
+  direction: ltr;
+  unicode-bidi: isolate;
+}

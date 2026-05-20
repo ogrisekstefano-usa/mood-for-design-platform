@@ -1146,6 +1146,39 @@ DEFAULT_I18N["es"] = {
     "brand": {"name": "MOOD for DESIGN", "tagline": "A Blueprint OS™ Platform"},
 }
 
+# ── Arabic (ar) — Sprint I18N-01. Blueprint Command Center™ admin locale. ──
+DEFAULT_I18N["ar"] = {
+    "common": {"loading": "جارٍ التحميل", "save": "حفظ", "cancel": "إلغاء", "delete": "حذف",
+               "edit": "تعديل", "search": "بحث", "close": "إغلاق", "new": "جديد", "actions": "إجراءات",
+               "all": "الكل", "noResults": "لا توجد نتائج", "logout": "تسجيل الخروج",
+               "welcome": "أهلاً", "submit": "إرسال", "back": "رجوع"},
+    "nav": {"dashboard": "لوحة التحكم", "leads": "العملاء المحتملون", "projects": "المشاريع",
+            "proposals": "العروض", "moodboards": "لوحات الإلهام", "inspirations": "الإلهام",
+            "insights": "التحليلات", "settings": "الإعدادات",
+            "section.workspace": "مساحة Blueprint", "section.content": "المحتوى",
+            "section.intelligence": "الذكاء", "section.system": "النظام"},
+    "auth": {"login.title": "أهلاً بعودتك", "login.subtitle": "ادخل إلى مساحة عملك.",
+             "login.email": "البريد الإلكتروني", "login.password": "كلمة المرور", "login.submit": "دخول",
+             "login.forgot": "هل نسيت كلمة المرور؟", "login.noAccount": "ليس لديك حساب؟",
+             "login.signup": "إنشاء مساحة عمل", "login.tagline": "أناقة خالدة.",
+             "login.taglineSub": "Blueprint OS™ لتميّز التصميم",
+             "signup.title": "أنشئ استوديوك", "signup.subtitle": "ابدأ في ثوانٍ.",
+             "signup.firstName": "الاسم", "signup.lastName": "اسم العائلة",
+             "signup.company": "اسم الاستوديو", "signup.submit": "إنشاء",
+             "signup.hasAccount": "هل لديك حساب؟", "signup.signin": "دخول",
+             "forgot.title": "إعادة تعيين", "forgot.subtitle": "سنرسل لك رابطًا.",
+             "forgot.submit": "إرسال", "forgot.sent": "تم إرسال البريد إن وُجد الحساب."},
+    "dashboard": {"title": "أهلاً بك", "kpi.leads": "عملاء نشطون", "kpi.projects": "المشاريع",
+                  "kpi.proposals": "العروض", "kpi.moodboards": "لوحات الإلهام",
+                  "activity.title": "النشاط الأخير", "activity.empty": "لا يوجد نشاط",
+                  "quick_actions.title": "إجراءات سريعة"},
+    "settings": {"title": "الإعدادات", "branding": "الهوية البصرية", "locale": "اللغات", "team": "الفريق"},
+    "form": {"required": "حقل إلزامي", "invalid_email": "بريد إلكتروني غير صالح",
+             "password_min": "8 أحرف على الأقل"},
+    "brand": {"name": "MOOD for DESIGN", "tagline": "A Blueprint OS™ Platform"},
+    "user": {"language": "اللغة", "logout": "تسجيل الخروج", "profile": "الملف الشخصي"},
+}
+
 LOCALE_FALLBACK = "en-US"
 
 

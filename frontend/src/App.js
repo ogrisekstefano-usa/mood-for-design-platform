@@ -13,6 +13,7 @@ import './App.css';
 // Frozen Blueprint OS tokens — declared under [data-surface="os"] only,
 // so importing this file is side-effect free for the storefront subtree.
 import './design-system/os/tokens.css';
+import './styles/rtl-guards.css';
 
 const DashboardLayout = lazy(() => import('./components/layout/DashboardLayout'));
 const AdminLayout = lazy(() => import('./components/layout/AdminLayout'));
