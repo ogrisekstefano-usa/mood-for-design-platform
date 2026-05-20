@@ -26,10 +26,14 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import BackgroundTasks
 from pydantic import BaseModel, Field
 
 from core.tenant_context import get_tenant_context
 from cultural_engine import catalog_extractor
+from cultural_engine import asset_classifier
+from cultural_engine import visual_grouping
+from cultural_engine import vision_asset_classifier
 from database import db, get_admin_client
 
 logger = logging.getLogger(__name__)
@@ -108,6 +112,52 @@ class FinalizeBody(BaseModel):
 
 
 # ─── Helpers ───────────────────────────────────────────────────────────
+def _run_vision_enrichment_async(
+    *, media_id: str, tenant_id: str, image_url: Optional[str],
+    rule_confidence: float,
+) -> None:
+    """Background-task entrypoint: run Layer 2 vision enrichment and
+    merge results back into media_library.inspiration_meta.
+
+    NEVER blocks the finalize call. NEVER raises. Caches the result so
+    re-runs are cheap.
+    """
+    if not image_url:
+        return
+    try:
+        import asyncio
+        from cultural_engine import vision_asset_classifier as _vac
+
+        # Run the async enrich in a fresh event loop (BackgroundTasks
+        # passes a sync callable so we own the loop here).
+        loop = asyncio.new_event_loop()
+        try:
+            asyncio.set_event_loop(loop)
+            result = loop.run_until_complete(_vac.enrich_asset(image_url, media_id=media_id))
+        finally:
+            loop.close()
+        if not result or not result.get("ok") or not result.get("enrichment"):
+            return
+
+        c = db()
+        rows = (c.table("media_library").select("inspiration_meta")
+                .eq("id", media_id).eq("tenant_id", tenant_id)
+                .limit(1).execute().data or [])
+        if not rows:
+            return
+        base_meta = rows[0].get("inspiration_meta") or {}
+        merged = _vac.merge_enrichment_into_meta(
+            base_meta, result["enrichment"], rule_confidence=rule_confidence,
+        )
+        merged["vision_latency_ms"] = result.get("latency_ms")
+        merged["vision_model"]      = result.get("model")
+        c.table("media_library").update(
+            {"inspiration_meta": merged, "updated_at": _now()}
+        ).eq("id", media_id).eq("tenant_id", tenant_id).execute()
+    except Exception as e:
+        logger.warning(f"vision enrichment async failed for {media_id}: {e}")
+
+
 def _require_catalog(c, tid: str, cid: str) -> Dict[str, Any]:
     rows = (c.table("supplier_catalogs").select("*")
             .eq("id", cid).eq("tenant_id", tid).limit(1).execute().data or [])
@@ -360,7 +410,9 @@ def patch_candidates(cid: str, body: CandidatesPatchBody, ctx=Depends(get_tenant
 
 
 @router.post("/catalogs/{cid}/finalize", status_code=201)
-def finalize_catalog(cid: str, body: FinalizeBody, ctx=Depends(get_tenant_context)):
+def finalize_catalog(cid: str, body: FinalizeBody,
+                     background_tasks: BackgroundTasks = None,
+                     ctx=Depends(get_tenant_context)):
     """Persist all selected candidates as Product Inspirations in media_library."""
     c = db()
     tid = ctx["tenant_id"]
@@ -398,6 +450,43 @@ def finalize_catalog(cid: str, body: FinalizeBody, ctx=Depends(get_tenant_contex
             # Already finalized once — skip (idempotency)
             continue
         mid = str(uuid.uuid4())
+
+        # ── Layer 1 · Rule-based asset classification (deterministic) ──
+        layer1: Dict[str, Any] = {}
+        try:
+            # Re-fetch the candidate image bytes for analysis. The bytes
+            # we extracted at upload time are NOT kept in DB; we fetch
+            # the public URL we just uploaded so analysis is identical.
+            img_url = cand.get("image_url")
+            if img_url:
+                import httpx
+                with httpx.Client(timeout=20) as cli:
+                    r = cli.get(img_url)
+                    if r.status_code == 200:
+                        layer1 = asset_classifier.classify_asset(
+                            r.content,
+                            width=cand.get("width"),
+                            height=cand.get("height"),
+                            ordinal_in_group=int(cand.get("asset_index_in_page") or 0),
+                            page_position=cand.get("page_position"),
+                        )
+        except Exception as e:
+            logger.warning(f"finalize: layer1 classify failed page {cand.get('page_number')}: {e}")
+
+        # ── Visual grouping key ──────────────────────────────────────
+        try:
+            vg_key = visual_grouping.compute_visual_group_key(
+                tenant_id=tid,
+                supplier_catalog_id=cid,
+                brand_id=cat.get("brand_id"),
+                brand_name=cat.get("brand"),
+                product_name=cand.get("product_name"),
+                collection=cat.get("collection"),
+                page_window=cand.get("nearby_pages_key"),
+            )
+        except Exception:
+            vg_key = None
+
         meta = {
             **base_meta,
             "product_name":  cand.get("product_name"),
@@ -405,6 +494,11 @@ def finalize_catalog(cid: str, body: FinalizeBody, ctx=Depends(get_tenant_contex
             "page_number":   cand.get("page_number"),
             # Per-candidate override of category if heuristic detected one
             "product_category": cand.get("category_hint") or base_meta.get("product_category"),
+            # Phase F1 · Visual Ecosystem
+            "visual_group_key": vg_key,
+            "asset_index_in_page": int(cand.get("asset_index_in_page") or 0),
+            # Layer 1 classification (only persisted when classifier ran)
+            **layer1,
         }
         meta = {k: v for k, v in meta.items() if v is not None}
 
@@ -435,6 +529,16 @@ def finalize_catalog(cid: str, body: FinalizeBody, ctx=Depends(get_tenant_contex
             c.table("media_library").insert(ml_row).execute()
             cand["media_id"] = mid
             inserted_ids.append(mid)
+            # Queue Layer 2 (vision) if Layer 1 confidence is low.
+            if layer1 and asset_classifier.needs_vision_fallback(layer1):
+                if background_tasks is not None:
+                    background_tasks.add_task(
+                        _run_vision_enrichment_async,
+                        media_id=mid,
+                        tenant_id=tid,
+                        image_url=cand.get("image_url"),
+                        rule_confidence=float(layer1.get("classification_confidence") or 0.0),
+                    )
         except Exception as e:
             logger.error(f"finalize: insert failed for page {cand.get('page_number')}: {e}")
 

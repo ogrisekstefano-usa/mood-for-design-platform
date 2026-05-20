@@ -695,3 +695,198 @@ def get_taxonomy():
         "categories":         CATEGORIES,
         "rights_permissions": RIGHTS_PERMISSIONS,
     }
+
+
+# ─── Phase F1 · Product Visual Atlas™ ──────────────────────────────────
+# Bucket layout returned by the Visual Atlas API.
+ATLAS_BUCKETS = [
+    "lifestyle", "still_life", "cutouts", "textures",
+    "details", "technicals", "renderings", "campaigns",
+    "material_samples", "variants",
+]
+
+_ASSET_TYPE_TO_BUCKET = {
+    "lifestyle":        "lifestyle",
+    "still_life":       "still_life",
+    "cutout":           "cutouts",
+    "texture":          "textures",
+    "detail":           "details",
+    "technical":        "technicals",
+    "rendering":        "renderings",
+    "campaign":         "campaigns",
+    "material_sample":  "material_samples",
+    "variant":          "variants",
+}
+
+
+def _atlas_card(row: Dict[str, Any]) -> Dict[str, Any]:
+    """Slim shape for the Visual Atlas API. NO _id, NO raw blobs."""
+    meta = row.get("inspiration_meta") or {}
+    return {
+        "id":                       row.get("id"),
+        "file_url":                 row.get("file_url"),
+        "width":                    row.get("width"),
+        "height":                   row.get("height"),
+        "alt_text":                 row.get("alt_text"),
+        "product_name":             meta.get("product_name"),
+        "brand":                    meta.get("brand"),
+        "collection":               meta.get("collection"),
+        "page_number":              meta.get("page_number"),
+        "asset_type":               meta.get("asset_type"),
+        "compositional_role":       meta.get("compositional_role"),
+        "view_angle":               meta.get("view_angle"),
+        "visual_group_key":         meta.get("visual_group_key"),
+        "editorial_score":          meta.get("editorial_score"),
+        "moodboard_priority":       meta.get("moodboard_priority"),
+        "visual_weight":            meta.get("visual_weight"),
+        "composition_friendly":     meta.get("composition_friendly"),
+        "classification_confidence": meta.get("classification_confidence"),
+        "classified_by":            meta.get("classified_by"),
+        "color_family":             meta.get("color_family"),
+        "dominant_color_palette":   meta.get("dominant_color_palette") or [],
+        "mood_tags":                meta.get("mood_tags") or [],
+        "room_type":                meta.get("room_type"),
+        "recommended_usage":        meta.get("recommended_usage") or [],
+        "is_primary_asset":         bool(meta.get("is_primary_asset")),
+    }
+
+
+@router.get("/registry/products/{product_id}/visual-assets")
+def product_visual_atlas(product_id: str, ctx=Depends(get_tenant_context)):
+    """Product Visual Atlas™ — restituisce TUTTI gli asset visuali
+    associati a un prodotto (raggruppati per asset_type).
+
+    `product_id` è l'id di una riga `media_library` di tipo Product
+    Inspiration. Il grouping avviene via `inspiration_meta.visual_group_key`
+    (Phase F1). Per i prodotti pre-F1 (senza visual_group_key) si esegue
+    fallback su (supplier_catalog_id + normalized product_name) o
+    (brand_id + normalized product_name).
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+
+    seed_rows = (c.table("media_library").select(
+        "id,file_url,width,height,alt_text,inspiration_meta,created_at"
+    ).eq("id", product_id).eq("tenant_id", tid).eq("is_inspiration", True)
+     .limit(1).execute().data or [])
+    if not seed_rows:
+        raise HTTPException(404, "Product Inspiration non trovato")
+    seed = seed_rows[0]
+    seed_meta = seed.get("inspiration_meta") or {}
+
+    vg_key = seed_meta.get("visual_group_key")
+    sibling_rows: List[Dict[str, Any]] = []
+
+    if vg_key:
+        sibling_rows = (c.table("media_library").select(
+            "id,file_url,width,height,alt_text,inspiration_meta,created_at"
+        ).eq("tenant_id", tid).eq("is_inspiration", True)
+         .eq("inspiration_meta->>visual_group_key", vg_key)
+         .order("created_at", desc=False)
+         .limit(200).execute().data or [])
+
+    # Fallback: legacy rows (Phase F0) have no visual_group_key. Group by
+    # (supplier_catalog_id + product_name) when available.
+    if not sibling_rows or len(sibling_rows) <= 1:
+        scid = seed_meta.get("supplier_catalog_id")
+        pname = seed_meta.get("product_name")
+        if scid and pname:
+            try:
+                bulk = (c.table("media_library").select(
+                    "id,file_url,width,height,alt_text,inspiration_meta,created_at"
+                ).eq("tenant_id", tid).eq("is_inspiration", True)
+                 .eq("inspiration_meta->>supplier_catalog_id", scid)
+                 .eq("inspiration_meta->>product_name", pname)
+                 .order("created_at", desc=False)
+                 .limit(200).execute().data or [])
+                if bulk:
+                    sibling_rows = bulk
+            except Exception as e:
+                logger.warning(f"atlas: legacy grouping fallback failed: {e}")
+
+    if not sibling_rows:
+        sibling_rows = [seed]
+
+    # Build buckets
+    buckets: Dict[str, List[Dict[str, Any]]] = {b: [] for b in ATLAS_BUCKETS}
+    gallery: List[Dict[str, Any]] = []
+    hero: Optional[Dict[str, Any]] = None
+    for row in sibling_rows:
+        card = _atlas_card(row)
+        gallery.append(card)
+        at = (card.get("asset_type") or "").lower()
+        bucket = _ASSET_TYPE_TO_BUCKET.get(at)
+        if bucket:
+            buckets[bucket].append(card)
+        # Hero selection: prefer compositional_role='hero', else best moodboard_priority
+        if card.get("compositional_role") == "hero" and hero is None:
+            hero = card
+
+    if hero is None:
+        # Pick the highest moodboard_priority / lifestyle as hero fallback
+        ranked = sorted(
+            gallery,
+            key=lambda c: (
+                -(int(c.get("moodboard_priority") or 0)),
+                -(float(c.get("editorial_score") or 0.0)),
+            ),
+        )
+        hero = ranked[0] if ranked else _atlas_card(seed)
+
+    # Sort each bucket by moodboard_priority desc, then editorial_score desc
+    for k in buckets:
+        buckets[k].sort(
+            key=lambda c: (
+                -(int(c.get("moodboard_priority") or 0)),
+                -(float(c.get("editorial_score") or 0.0)),
+            )
+        )
+
+    # Aggregated mood / palette / family across the group
+    all_mood = []
+    all_palette = []
+    fams: Dict[str, int] = {}
+    for card in gallery:
+        for t in (card.get("mood_tags") or []):
+            if t and t not in all_mood: all_mood.append(t)
+        for p in (card.get("dominant_color_palette") or []):
+            all_palette.append(p)
+        fam = card.get("color_family")
+        if fam: fams[fam] = fams.get(fam, 0) + 1
+    dominant_family = max(fams.items(), key=lambda kv: kv[1])[0] if fams else None
+
+    return {
+        "product_id":     seed.get("id"),
+        "visual_group_key": vg_key,
+        "product": {
+            "name":         seed_meta.get("product_name"),
+            "brand":        seed_meta.get("brand"),
+            "brand_id":     seed_meta.get("brand_id"),
+            "collection":   seed_meta.get("collection"),
+            "category":     seed_meta.get("product_category"),
+            "designer":     seed_meta.get("designer"),
+            "rights_status": seed_meta.get("rights_status"),
+        },
+        "hero":              hero,
+        "lifestyle":         buckets["lifestyle"],
+        "still_life":        buckets["still_life"],
+        "cutouts":           buckets["cutouts"],
+        "textures":          buckets["textures"],
+        "details":           buckets["details"],
+        "technicals":        buckets["technicals"],
+        "renderings":        buckets["renderings"],
+        "campaigns":         buckets["campaigns"],
+        "material_samples":  buckets["material_samples"],
+        "variants":          buckets["variants"],
+        "gallery":           gallery,
+        "counts": {
+            "total":            len(gallery),
+            **{k: len(v) for k, v in buckets.items()},
+        },
+        "metadata": {
+            "mood_tags":             all_mood[:12],
+            "color_family_dominant": dominant_family,
+            "palette_aggregate":     all_palette[:8],
+        },
+    }
+

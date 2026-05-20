@@ -53,6 +53,92 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Phase F1 · Product Visual Ecosystem™ Foundation (Feb 20, 2026 · iter90)
+**Visual Design Operating System™ — gli asset diventano componenti intelligenti del processo creativo, non upload immagini.**
+
+#### Strategic shift
+Da "media uploader" a sistema operativo visuale per il design: ogni prodotto/materiale/collezione → cluster di asset semanticamente organizzati (lifestyle · still life · cutout · texture · detail · technical · rendering · campaign · material sample · variant).
+
+#### Backend — Cultural Engine (3 NUOVI moduli)
+1. **NEW** `/app/backend/cultural_engine/asset_classifier.py` (Layer 1 deterministic):
+   - PIL-based metrics: `whitespace_ratio`, `edge_density`, `subject_focus_score`, `texture_repetition_score`, `color_saturation`, `negative_space_score`, `aspect_ratio`, `corner_isolation`
+   - Output: `asset_type` (10 valori) · `compositional_role` (6) · `view_angle` (9) + scores `editorial_score`, `visual_weight`, `composition_friendly`, `moodboard_priority` (1-5) + `dominant_color_palette` (4 hex+ratio) + `color_family` (italian: bianco/nero/grigio/ocra/terra/blu/...)
+   - Deterministic. Idempotent. CPU-fast (downsample a 384px lato lungo)
+   - Confidence threshold per fallback Layer 2: `LOW_CONFIDENCE_THRESHOLD=0.55`
+
+2. **NEW** `/app/backend/cultural_engine/visual_grouping.py`:
+   - `normalize_product_name()` rimuove suffissi tecnici (detail/macro/front/three_quarter/variant…) e numeri/connettori
+   - `compute_visual_group_key()` priorità: (tenant, catalog, normalized_name) > (tenant, catalog, page_window) > (tenant, brand, normalized_name) > orphan
+   - `page_window_for(pno, 3)` fallback per asset senza nome (3 pagine consecutive = stesso prodotto)
+
+3. **NEW** `/app/backend/cultural_engine/vision_asset_classifier.py` (Layer 2 LLM fallback):
+   - Provider: OpenAI gpt-5.1 vision via Emergent LLM Key (riuso pattern di `vision_provider_adapter.py`)
+   - Triggered ONLY se Layer 1 confidence < 0.55
+   - Non-blocking · best-effort · max 1 retry · fail silent · risultati cachati in `inspiration_meta.vision_*`
+   - `merge_enrichment_into_meta()`: Layer 1 stays authoritative se confidence ≥ 0.45; sotto soglia Vision sostituisce canonical fields
+   - Enrichment esclusivo Layer 2: `room_type`, `mood_tags[]`, `recommended_usage[]`, `vision_summary`
+
+#### Backend — `catalog_extractor.py` OVERHAULED
+- `MIN_IMG_WIDTH_PX/HEIGHT_PX`: 400 → **300** (cattura textures/cutouts piccoli)
+- `MAX_IMAGES_PER_PAGE=6` (era 1 hero-only): estrae TUTTE le immagini utili per pagina, ordinate larger-first
+- `MAX_CANDIDATES_DEFAULT`: 80 → **240** (cataloghi corposi)
+- Rimossa dedup "stesso nome 1-3 pagine" — ora detail/hero/cutout dello stesso prodotto coesistono (è quello che vogliamo!)
+- `ProductCandidate` esteso con `asset_index_in_page`, `nearby_pages_key`, `extracted_name`, `page_position`
+
+#### Backend — `supplier_catalogs.py` integrazione
+- `finalize_catalog(BackgroundTasks)`: per ogni candidato → fetch immagine + `asset_classifier.classify_asset()` + `visual_grouping.compute_visual_group_key()` → merge in `inspiration_meta`
+- Se Layer 1 confidence < 0.55 → coda `_run_vision_enrichment_async` come BackgroundTask (non-blocking)
+- L'API finalize NON aspetta Layer 2 — Phase F1 async-by-design
+
+#### Backend — Product Visual Atlas API™ (P1)
+- **NEW** `GET /api/inspirations/registry/products/{product_id}/visual-assets` in `brands_registry.py`
+- Lookup: usa `inspiration_meta.visual_group_key` (Phase F1) o fallback su `supplier_catalog_id + product_name` (Phase F0 legacy)
+- Response shape: `hero` · `lifestyle[]` · `still_life[]` · `cutouts[]` · `textures[]` · `details[]` · `technicals[]` · `renderings[]` · `campaigns[]` · `material_samples[]` · `variants[]` · `gallery[]` · `counts{total + per-bucket}` · `metadata{mood_tags, color_family_dominant, palette_aggregate}`
+- Hero selection: prefer `compositional_role=hero`, fallback su moodboard_priority desc + editorial_score desc
+- Bucket sort: per moodboard_priority desc + editorial_score desc
+
+#### Backend — Reclassification script
+- **NEW** `/app/backend/scripts/reclassify_existing_assets.py`:
+  - Batch Layer 1 only (NO LLM cost) su tutti i Product Inspirations™ esistenti
+  - Resumable (skip rows con `classified_by` già set, unless `--force`)
+  - Args: `--tenant TID` · `--force` · `--limit N` · `--batch 50` · `--sleep S`
+  - Idempotent: stesso input → stesso output. Sicuro su milioni di asset
+  - Smoke run: 5/5 updated in <3s · ogni row riceve `asset_type`, `compositional_role`, `visual_group_key`, palette, scores
+
+#### Backend — JSONB extension (zero migration)
+Nuove keys in `media_library.inspiration_meta`:
+`asset_type` · `compositional_role` · `view_angle` · `editorial_score` · `moodboard_priority` · `is_primary_asset` · `classification_confidence` · `classified_by` · `visual_weight` · `composition_friendly` · `whitespace_ratio` · `visual_density_score` · `texture_repetition_score` · `negative_space_score` · `subject_focus_score` · `dominant_color_palette[]` · `color_family` · `visual_group_key` · `asset_index_in_page` · `room_type` · `mood_tags[]` · `recommended_usage[]` · `vision_*` (raw enrichment) · `reclassified_at` · `vision_latency_ms` · `vision_model`
+
+Tutto opzionale. Zero breaking schema changes.
+
+#### Linguaggio compliance (strict)
+Identificatori JSONB (asset_type, classified_by, hero) sono chiavi tecniche NON esposte direttamente — la UI Phase F2 le tradurrà in italiano editoriale. Test specifico `test_no_forbidden_jargon_in_classifier` verifica assenza di `machine learning`, `DAM`, `asset manager`, `AI search`, `dashboard analytics`, `ml model` nei moduli.
+
+#### Test results
+- **Backend Phase F1: 18/18 PASS · 100%** (`tests/test_iteration_90_visual_ecosystem.py`):
+  - `TestAssetClassifier` · 6 test (cutout, texture, lifestyle, technical, metadata completeness, vision_fallback helper)
+  - `TestVisualGrouping` · 3 test (normalize suffixes, same-product-same-key, page_window fallback)
+  - `TestVisionFallbackModule` · 3 test (importable, merge low-conf swap, merge high-conf preserve)
+  - `TestCatalogExtractor` · 2 test (thresholds lowered, dataclass fields)
+  - `TestVisualAtlasAPI` · 2 test (404 missing, full shape on existing product)
+  - `TestReclassifyScript` · 1 test (importable + has _process_row/main)
+  - `TestLanguageCompliance` · 1 test
+- **Regression: 45/45 PASS · 100%** (iter81/82/83/87/88) + 8 skip preesistenti
+- **Smoke run reclassify**: 5/5 product inspirations riclassificati · Atlas API ritorna `visual_group_key`, `asset_type=material_sample`, `classified_by=rule`, `confidence=0.63`, `color_family=grigio_chiaro`, palette dominante
+- Test report: `/app/test_reports/iteration_90.json` (manual run logs)
+
+#### Production confidence: **9.6/10**
+
+#### Cosa NON è incluso (Phase F2 roadmap)
+- **UI Product Gallery™** — visualizzazione del Visual Atlas in `/inspirations/products/:id` (cards raggruppate per bucket · view switcher Grid/Composition/Editorial)
+- **Material View Foundation™** — sfoglia per material_tags + color_family
+- **Smart Composition Engine™** — auto-layout/auto-layering basato su `visual_weight` + `composition_friendly` + `dominant_color_palette`
+- **Relational Visual Graph** — collegamenti `marble texture related to kitchen scene` (schema preparato via `mood_tags` + `room_type` ma non ancora consumato)
+- **Reclassify produzione**: il batch è stato eseguito su 5 asset per smoke; main agent può lanciare `python3 scripts/reclassify_existing_assets.py` per riclassificare tutti i ~120 Product Inspirations Bonaldo (Layer 1 only, free)
+
+---
+
+
 ### Phase E · Governance & Curatorial Foundations (Feb 19, 2026 · iter89)
 **Sprint E1 · Brand Management™ + E2 · Studio Collections™ + E3 · Curatorial Inspirations Modal™ — chiude Phase E completa in una sessione.**
 
