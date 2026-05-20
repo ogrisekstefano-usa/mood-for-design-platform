@@ -53,6 +53,53 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint Sidebar Refinements + Studio Insights + Projects Atelier (Feb 21, 2026 · iter98)
+**Quick sidebar tweaks + Studio Overview cinematic + Lista progetti come atelier editoriale.**
+
+#### Sidebar refinements (per richiesta utente)
+- **Design Journey™** ora contiene SOLO: Projects · Moodboards · Render · Hotspots · Site Evolution · Documents. Rimossi Project Studio (assorbito da Design Stories) e Materials (vive solo in Curatorial Atlas come Material View).
+- **Curatorial Atlas** invariato: Inspirations · Brand Mode · Product Gallery · Material View · Visual Archive · Cultural Editions™.
+- **Content Studio · Design Stories** ora punta a `/blueprint/projects-studio` (preso il posto della vecchia voce "Project Studio"). Niente più badge "presto".
+- **Client Relations** snello: Accounts · Follow-ups · Archived. Rimosso Proposals (non più voce di sidebar; la route resta accessibile).
+- **Product Gallery** in Curatorial Atlas → `/inspirations/products` → redirect a `/inspirations?type=product` (route già registrata in iter97).
+
+#### Backend — Studio Overview endpoint
+- **NEW** `GET /api/insights/studio-overview` (`/app/backend/routers/insights.py`):
+  - **Headline counters**: projects, projects_in_progress, projects_won, moodboards, inspirations (da `media_library`), accounts (`crm_accounts`), leads, design_journeys, milestones_approved, milestones_in_progress, members (`tenant_memberships`).
+  - **Timeline** ultime 12 settimane (projects + moodboards + milestones) — array di 12 valori weekly.
+  - **Milestone pulse**: 10 milestone types × distribuzione stati corrente.
+  - **Activity surface**: ultimi 30 giorni di `journey_timeline_events` per heatmap.
+  - **Signature curatoriale**: top 10 tag + 8 brand + 8 famiglie cromatiche da `media_library.cultural_reading`.
+  - **Active members**: top 5 utenti per record creati ultimi 90gg.
+  - Difensivo: ogni query in `_safe_select` con try/except, ritorna lista vuota se la tabella manca.
+
+#### Frontend — Insights Page cinematic
+- Riscritta `InsightsPage.jsx` (~280 righe) con:
+  - **6 stat cards** cromatiche (gold/cyan/pearl) con left-rail glow.
+  - **Sparkline SVG** (pure, GPU-safe) per progetti/moodboard/pietre miliari.
+  - **Milestone Pulse** orizzontale segmented bar per ogni milestone_type.
+  - **Activity Heatmap** 30 celle cyan rgba (intensità = numero eventi).
+  - **Signature curatoriale** chip cloud per tag e famiglie cromatiche.
+- Linguaggio: editoriale italiano completo ("Le pulsazioni dello studio", "L'evoluzione dello studio", "Dove si trova il pensiero progettuale", "La superficie viva del Journey", "La grammatica dello studio").
+
+#### Frontend — Projects Atelier
+- `ProjectsPage.jsx` ridisegnata: NO admin CRUD. Editorial atelier con:
+  - Header italic Playfair "I tuoi progetti", eyebrow "Design Journey · Atelier".
+  - Tab editoriali Italian: "Brief in apertura" / "In revisione" / "Direzione in lavorazione" / "Direzione presentata" / "Direzione approvata" / "Progetto vinto" / "Archiviato".
+  - **Project cards** cinematiche con:
+    - Status glow rail sinistro (cyan/warm/amber/success/rose/closed)
+    - Titolo italic Playfair
+    - Client name prefisso "Per ·"
+    - Palette dots dai colori del brief (35 mappature: earth/olive/bronze/...)
+    - Mood/material chip pills
+    - Footer con timestamp narrativo ("3 ore fa", "pochi istanti fa", ...)
+    - CTA cinematic "Continua il viaggio" fade-in on hover
+- Palette: dark luxury + cyan/gold/teal. Zero SaaS blue.
+
+#### Tests
+- **Backend**: 64/64 pass — iter94 (11) + iter95 (13) + iter96 (10) + iter97 (16) + iter98 (14).
+- **Frontend**: 14/14 acceptance criteria pass (Playwright iter98). Zero ui_bugs, zero integration_issues. Real DB numbers: projects=59, moodboards=177, inspirations=115, members=52.
+
 ### Sprint Sidebar Architecture v4 (Feb 21, 2026 · iter97)
 **La mappa mentale definitiva di MOOD — sidebar non più admin panel, ma architettura editoriale.**
 

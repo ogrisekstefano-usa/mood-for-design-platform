@@ -123,7 +123,7 @@ def studio_overview(
         "design_journeys":    _count('design_journeys',  tid),
         "milestones_approved": _count('journey_milestones', tid, {'status': 'approved'}),
         "milestones_in_progress": _count('journey_milestones', tid, {'status': 'in_progress'}),
-        "members":            _count('memberships',      tid),
+        "members":            _count('tenant_memberships', tid),
     }
 
     # ── 2) Last 12 weeks timeline (projects + moodboards + milestones) ─
