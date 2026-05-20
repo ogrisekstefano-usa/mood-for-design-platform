@@ -53,6 +53,111 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Phase F2.1 · Product Gallery™ + Curated References™ (Feb 20, 2026 · iter91)
+**Visual Atelier immersive — gli asset visuali diventano strumenti di composizione, relazione e workflow creativo.**
+
+#### Strategic shift
+Prima esperienza UI immersiva del Product Visual Ecosystem™. Layout 3-col editorial luxury (Linear/Framer/Kinfolk inspired) con hero immersive, Visual Asset Stream raggruppato per 10 bucket semantici, e contextual sidebar tabs. Curated References™ system per organizzare riferimenti progettuali in micro-collezioni curatoriali con visibility scoping.
+
+#### Database (Migration 059)
+- **NEW** `curated_collections` — micro-collezioni curatoriali (id, tenant_id, user_id, title, description, tags JSONB, cover_asset_id, visibility[private|team|client_visible], timestamps)
+- **NEW** `saved_references` — singoli asset salvati con FK soft a curated_collections (ON DELETE SET NULL), unique constraint (tenant, collection, asset) idempotente
+- Naming `curated_*` per evitare collisione con tabella `reference_collections` preesistente (advisor feature diversa)
+
+#### Backend — `routers/curated_references.py` NUOVO
+Endpoint set sotto `/api/inspirations/references/*`:
+- `GET /collections` — lista (team-visible + own private) con counts + cover_asset hydrate
+- `POST /collections` — create studio collection (visibility default 'team')
+- `GET /collections/{id}` — detail + items hydrated da media_library con asset metadata (asset_type, color_family, moodboard_priority…)
+- `PATCH /collections/{id}` — update (title/description/tags/cover/visibility) con gating private→owner-only
+- `DELETE /collections/{id}` — hard delete; saved_references FK ON DELETE SET NULL (no cascade)
+- `POST /save` — save asset (con o senza collection) idempotent; touches collection.updated_at
+- `DELETE /{id}` — rimuovi saved reference
+- `PATCH /{id}` — update note/tags/collection_id
+- `GET /by-asset/{asset_id}` — saved status + instances list
+
+Visibility scoping centralizzato in `_visibility_filter()`: team+client_visible sono tenant-wide, private è own-only.
+
+#### Backend — Works well with… endpoint
+- **NEW** `GET /api/inspirations/registry/products/{id}/related?limit=12` in `brands_registry.py`
+- Rule-based scoring tenant-scoped (NEVER cross-tenant):
+  - same color_family → +3 (palette)
+  - same collection → +2
+  - same brand → +2
+  - shared mood_tags → +1 per overlap (cap 3, "atmosfera")
+  - same product_category → +1
+  - shared material_tags → +1 per overlap (cap 3, "materia")
+  - moodboard_priority bonus → ×0.1
+  - **EXCLUDED** same visual_group_key (those are atlas siblings, NOT related products)
+- Output: `{seed, items[{...atlas_card, match_score, match_reasons[]}], total}`
+- Designer curation feel, NOT ecommerce recommendation
+
+#### Frontend — Product Gallery™ immersive page
+- **NEW** route `/inspirations/products/:productId` → `ProductGalleryPage.jsx` (~580 lines)
+- **Layout 3-col**:
+  - LEFT (240px): Quick Filters (7 chip toggles: Moodboard ready / Editorial / Composition friendly / High visual weight / Texture / Still life / Dettagli) + Atmosfera + Family cromatica + Palette aggregata
+  - CENTER: Hero immersive (16:9 max 540px, hover scale 1.015, fullscreen mode, 3 CTAs Fullscreen/Salva in References™/Aggiungi al moodboard) + Visual Asset Stream raggruppato per 10 bucket collapsible (lifestyle/still_life/cutouts/textures/details/material_samples/variants/campaigns/renderings/technicals) con count badge italici Playfair
+  - RIGHT (320px): 3 tabs (Asset Info · References · Affinità) con dynamic content
+- **Asset Info tab**: 8 metadata rows mono-font (Tipologia asset / Ruolo compositivo / Angolo / Family cromatica / Editorial score / Composition friendly / Visual weight / Moodboard priority) + atmosphere chips + palette dominante swatches
+- **References tab**: lista collections con cover + items_count + visibility, button "Nuova collezione" → apre `CuratedCollectionDrawer`, click su una collection → POST /save dell'asset attivo, banner "Già salvato in N collezioni"
+- **Affinità tab**: lazy-fetch /related → lista compatta con thumb + match_reasons in italian ('palette · collezione · brand · atmosfera')
+- **Asset tile premium**: aspect 4/5, hover translateY(-3px) + brightness(1.04) + cyan ring glow 1px, overlay reveal con badges (max 3) + save toggle bookmark cyan
+- **AssetBadges** premium chips: 'Moodboard ready' · 'Editorial' · 'Composition' · 'Texture' · 'Materia' · 'Dettaglio' · 'Still life' · 'High visual weight'
+- **Floating tray** post-save (Apple/Linear inspired): cyan check + message + actions (Apri collezione / Aggiungi al moodboard), auto-dismiss 5.5s + cinematic slide-in 320ms cubic-bezier
+
+#### Frontend — MoodboardPickerModal
+- **NEW** `MoodboardPickerModal.jsx` premium modal per scegliere moodboard destinazione
+- Search bar + lista recent moodboard (cover/title/sub) + "Crea nuovo moodboard" inline
+- On select: POST `/api/moodboards/{id}/blocks` preservando metadata completi (inspiration_id, source_type='product_gallery', brand, collection, product_name, asset_type, compositional_role, color_family) + emit `product_usage_events` con `usage_type='added_to_moodboard'`
+- Robust payload parsing: gestisce `{items}` · `{data}` · array nudo per /api/moodboards (bug fix post-testing agent — backend ritorna `{data:[...], total}`)
+
+#### Frontend — CuratedCollectionDrawer
+- **NEW** drawer scivolante da destra (cinematic slide-in 320ms)
+- 4 fields: title (max 140) · description (textarea 3 rows) · tags inline-chip-input free-form (max 12, italic Playfair chip) · visibility 3-card (Studio / Privata / Cliente con hint)
+- On submit: POST /collections + auto-save asset attivo nella nuova collection
+- Enter / virgola → add tag · Backspace su input vuoto → rimuove ultimo tag
+
+#### Frontend — Entry point da InspirationDetailDrawer
+- Aggiunto CTA `[data-testid=inspiration-open-product-gallery]` "Apri Product Gallery™" nel `ProductInfoBlock` (visible solo per inspiration_type='product')
+- Pill cyan luxury con arrow → link `/inspirations/products/:id`
+
+#### Linguaggio compliance (verificato dal testing agent nel DOM live)
+Marker italiani PRESENTI: "Product Gallery™", "Visual Atelier", "Quick filtri", "Moodboard ready", "Composition friendly", "High visual weight", "Atmosfera", "Family cromatica", "Palette aggregata", "Linguaggio progettuale", "Salva in References™", "Aggiungi al moodboard", "Asset · References · Affinità", "Campioni materia", "Tipologia asset", "Ruolo compositivo", "Editorial score", "Visual weight", "Moodboard priority", "Palette dominante", "Curated References™", "Nuova collezione", "Works well with…", "Cerca tra i tuoi moodboard", "Aggiungi al moodboard".
+
+Termini VIETATI verificati ASSENTI dal DOM: `Favorites`, `Bookmarks`, `DAM`, `Catalog browser`, `Asset Manager`, `ML model`, `AI search`, `Pinterest masonry`, `Shopify`, `vendor`.
+
+#### Test results
+- **Backend: 13/13 PASS · 100%** (`tests/test_iteration_91_product_gallery.py`):
+  - `TestCollectionsCRUD` · 5 (create, visibility validation, list team-visible, patch, delete)
+  - `TestSavedReferencesCRUD` · 5 (save into collection, idempotent, scratchpad, by-asset, 404 invalid asset)
+  - `TestRelatedEndpoint` · 2 (shape, 404 missing)
+  - `TestNamingCompliance` · 1
+- **Backend regression: 34/34 PASS** (iter83/88/90) + 1 skip preesistente · zero regression
+- **Frontend (testing_agent_v3_fork iter91)**: **12/13 PASS** + 1 CRITICAL bug fixato post-test:
+  - ✅ Login + nav diretta a /inspirations/products/:id → pg-shell render (Bonaldo · Alpha · 26 Collection)
+  - ✅ 3-col layout (pg-aside-left + pg-main + pg-aside-right)
+  - ✅ Hero + 3 buttons clickable
+  - ✅ Quick filter pg-filter-textures applica .is-on
+  - ✅ Bucket toggle collapse/expand
+  - ✅ Right tabs switching (asset_info default · references · related)
+  - ✅ Curated References™ create flow: cc-drawer → fill cc-title + cc-vis-team → cc-submit → collection appare in lista (4 items)
+  - ✅ Hero save → pg-tray "Salvato in Curated References™" con action
+  - ✅ ZERO forbidden jargon nel DOM
+  - ✅ Dark luxury aesthetic confermato visually
+  - ✅ Nav da InspirationDetailDrawer → inspiration-open-product-gallery → /inspirations/products/:id
+  - ❌→✅ **FIXED** MoodboardPickerModal crash (TypeError on filtered.map): backend /api/moodboards ritornava `{data:[...]}` ma frontend si aspettava `{items:[...]}` — payload parsing reso robusto: `Array.isArray(payload) || payload.items || payload.data || payload.moodboards`. Verificato post-fix: modal apre, 173 moodboards listed, search + create trigger presenti.
+- Test report: `/app/test_reports/iteration_90.json`
+
+#### Production confidence: **9.7/10**
+
+#### Cosa NON è incluso (Sprint F2.2 / F2.3 / Deferred)
+- **Sprint F2.2** (next): 4 Composition Modes (Editorial · Composition · Material · Storytelling) + Material View foundation + Smart Suggestions UI che consuma /related
+- **Sprint F2.3**: Usage Memory™ estensione + drag-to-moodboard premium con preservation source + tab usage in sidebar (Moodboard Usage · Editorial Usage · Journey Usage)
+- **Deferred**: Client Reference Uploads (Pinterest/Instagram → richiede social API integrations) · Visual Relationship Graph visuale (asset-to-asset edge db) · Design Journey deep integration (richiede Journey module) · AI auto-composition (richiede embedding pipeline)
+
+---
+
+
 ### Phase F1 · Product Visual Ecosystem™ Foundation (Feb 20, 2026 · iter90)
 **Visual Design Operating System™ — gli asset diventano componenti intelligenti del processo creativo, non upload immagini.**
 

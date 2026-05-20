@@ -31,7 +31,15 @@ export default function MoodboardPickerModal({ asset, onClose, onAdded }) {
 
   useEffect(() => {
     api.get('/api/moodboards?limit=40')
-      .then(r => setMoodboards(r.data?.items || r.data || []))
+      .then(r => {
+        const payload = r.data;
+        let items = [];
+        if (Array.isArray(payload)) items = payload;
+        else if (Array.isArray(payload?.items)) items = payload.items;
+        else if (Array.isArray(payload?.data)) items = payload.data;
+        else if (Array.isArray(payload?.moodboards)) items = payload.moodboards;
+        setMoodboards(items);
+      })
       .catch(() => setMoodboards([]))
       .finally(() => setLoading(false));
   }, []);
@@ -96,7 +104,9 @@ export default function MoodboardPickerModal({ asset, onClose, onAdded }) {
     if (!title) { toast.error('Indica un titolo'); return; }
     try {
       const r = await api.post('/api/moodboards', { title });
-      const mb = r.data?.item || r.data;
+      // POST /api/moodboards returns the moodboard object flat (id at root)
+      const mb = r.data?.item || r.data?.data || r.data;
+      if (!mb?.id) { toast.error('Risposta server non valida'); return; }
       setMoodboards(m => [mb, ...m]);
       setCreating(false);
       setNewTitle('');
