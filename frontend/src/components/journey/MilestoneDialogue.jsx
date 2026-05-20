@@ -1,0 +1,309 @@
+/**
+ * MilestoneDialogue — Sprint F.B · Immersive Project Dialogue.
+ *
+ * Sostituisce il vecchio "approval/comments" feeling con uno spazio
+ * curatoriale continuo dove convivono:
+ *   • Capitoli progettuali (versions) con label editoriali italiani
+ *     (NESSUN "V1/V2/V3").
+ *   • Voce curatoriale del cliente — 9 CTA editoriali + free voice.
+ *   • Storico narrativo woven in line with chapters.
+ *
+ * NON è ticketing, NON è approval engine, NON è file diff.
+ * È dialogo progettuale immersivo.
+ */
+import React, { useState, useEffect, useCallback } from 'react';
+import { Quote, Plus, Send, Sparkles, BookOpenText } from 'lucide-react';
+import { toast } from 'sonner';
+import api from '../../lib/api';
+import './milestone-dialogue.css';
+
+const TONE_STYLE = {
+  embrace:  'embrace',
+  curious:  'curious',
+  reorient: 'reorient',
+  voice:    'voice',
+};
+
+// ─── New chapter inline composer ─────────────────────────────────
+const ChapterComposer = ({ lexicon, onCreate, onCancel, busy }) => {
+  const [kind, setKind]         = useState('proposed_evolution');
+  const [title, setTitle]       = useState('');
+  const [summary, setSummary]   = useState('');
+  const [rationale, setRationale] = useState('');
+
+  const submit = () => {
+    if (!title.trim()) {
+      toast.error('Dai un titolo a questo capitolo');
+      return;
+    }
+    onCreate({ chapter_kind: kind, title: title.trim(),
+               summary: summary.trim() || null,
+               rationale: rationale.trim() || null });
+  };
+
+  return (
+    <div className="mdialog__composer" data-testid="chapter-composer">
+      <p className="mdialog__composer-eyebrow">Nuovo capitolo progettuale</p>
+
+      <div className="mdialog__composer-kinds">
+        {Object.entries(lexicon.chapter_kinds || {}).map(([k, lbl]) => (
+          <button
+            key={k}
+            type="button"
+            onClick={() => setKind(k)}
+            data-testid={`chapter-kind-${k}`}
+            className={`mdialog__chip ${kind === k ? 'is-active' : ''}`}
+          >
+            {lbl}
+          </button>
+        ))}
+      </div>
+
+      <input
+        data-testid="chapter-title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Titolo del capitolo (es. Luce mediterranea)"
+        className="mdialog__input mdialog__input--title"
+      />
+      <textarea
+        data-testid="chapter-summary"
+        rows={2}
+        value={summary}
+        onChange={(e) => setSummary(e.target.value)}
+        placeholder="Cosa cambia in questo capitolo — in poche righe"
+        className="mdialog__input"
+      />
+      <textarea
+        data-testid="chapter-rationale"
+        rows={4}
+        value={rationale}
+        onChange={(e) => setRationale(e.target.value)}
+        placeholder="Il perché di questa direzione — materia, luce, atmosfera, linguaggio progettuale"
+        className="mdialog__input"
+      />
+
+      <div className="mdialog__composer-foot">
+        <button type="button" onClick={onCancel} className="mdialog__btn mdialog__btn--ghost">
+          Annulla
+        </button>
+        <button data-testid="chapter-submit" type="button" onClick={submit}
+                disabled={busy} className="mdialog__btn mdialog__btn--primary">
+          {busy ? 'Sto scrivendo…' : 'Aggiungi il capitolo'}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// ─── Chapter card (cinematic, NO file feel) ──────────────────────
+const ChapterCard = ({ chapter, index }) => (
+  <article
+    className="mdialog__chapter"
+    data-testid={`chapter-${index}`}
+    style={{ animationDelay: `${Math.min(index, 6) * 60}ms` }}
+  >
+    <header className="mdialog__chapter-head">
+      <span className="mdialog__chapter-num">
+        capitolo · {String(index + 1).padStart(2, '0')}
+      </span>
+      <span className="mdialog__chapter-kind">{chapter.chapter_label}</span>
+    </header>
+    <h4 className="mdialog__chapter-title"><em>{chapter.title}</em></h4>
+    {chapter.summary && <p className="mdialog__chapter-summary">{chapter.summary}</p>}
+    {chapter.rationale && (
+      <blockquote className="mdialog__chapter-rationale">
+        {chapter.rationale}
+      </blockquote>
+    )}
+  </article>
+);
+
+// ─── Curatorial Feedback strip ───────────────────────────────────
+const CuratorialFeedback = ({ lexicon, feedback, onSend, busy }) => {
+  const [activeKind, setActiveKind] = useState(null);
+  const [quote, setQuote] = useState('');
+  const [showVoice, setShowVoice] = useState(false);
+
+  const send = (kind, q = null) => {
+    onSend({ kind, quote: q });
+    setActiveKind(null);
+    setQuote('');
+    setShowVoice(false);
+  };
+
+  return (
+    <section className="mdialog__feedback" data-testid="curatorial-feedback">
+      <header className="mdialog__feedback-head">
+        <p className="mdialog__feedback-eyebrow">Voce del cliente</p>
+        <h3 className="mdialog__feedback-title"><em>Conversazione progettuale</em></h3>
+      </header>
+
+      {/* 9 editorial CTAs */}
+      <div className="mdialog__feedback-actions">
+        {Object.entries(lexicon.feedback_kinds || {}).map(([k, lbl]) => {
+          if (k === 'free_voice') return null;
+          return (
+            <button
+              key={k}
+              type="button"
+              onClick={() => send(k)}
+              disabled={busy}
+              data-testid={`feedback-cta-${k}`}
+              className="mdialog__cta"
+            >
+              {lbl}
+            </button>
+          );
+        })}
+        <button
+          type="button"
+          onClick={() => setShowVoice(true)}
+          data-testid="feedback-cta-free-voice"
+          className="mdialog__cta mdialog__cta--voice"
+        >
+          <Quote size={11} strokeWidth={1.5} />
+          Una voce libera
+        </button>
+      </div>
+
+      {showVoice && (
+        <div className="mdialog__voice" data-testid="feedback-voice-composer">
+          <textarea
+            rows={3}
+            value={quote}
+            onChange={(e) => setQuote(e.target.value)}
+            placeholder="Racconta a parole tue — un'atmosfera, un riferimento, una sensazione…"
+            className="mdialog__input"
+          />
+          <div className="mdialog__voice-foot">
+            <button type="button" onClick={() => setShowVoice(false)}
+                    className="mdialog__btn mdialog__btn--ghost">Chiudi</button>
+            <button data-testid="feedback-voice-send" type="button"
+                    onClick={() => quote.trim() && send('free_voice', quote.trim())}
+                    className="mdialog__btn mdialog__btn--primary">
+              <Send size={11} strokeWidth={1.5} /> Condividi
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Echoes — past feedback rendered as quiet murmurs */}
+      {feedback.length > 0 && (
+        <ul className="mdialog__echoes" data-testid="feedback-echoes">
+          {feedback.slice(0, 8).map((f) => (
+            <li key={f.id} className={`mdialog__echo mdialog__echo--${TONE_STYLE[f.tone] || 'voice'}`}>
+              <span className="mdialog__echo-kind">{f.kind_label}</span>
+              {f.quote && <em className="mdialog__echo-quote">"{f.quote}"</em>}
+              <span className="mdialog__echo-time">
+                {f.created_at ? new Date(f.created_at).toLocaleDateString('it-IT', { day: '2-digit', month: 'short' }) : ''}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+};
+
+// ─── Main Dialogue Surface ───────────────────────────────────────
+const MilestoneDialogue = ({ milestoneId }) => {
+  const [data, setData]       = useState(null);
+  const [composing, setComp]  = useState(false);
+  const [busy, setBusy]       = useState(false);
+
+  const load = useCallback(() => {
+    if (!milestoneId) return;
+    api.get(`/api/milestones/${milestoneId}/dialogue`)
+      .then((r) => setData(r.data))
+      .catch(() => setData(null));
+  }, [milestoneId]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const onCreateChapter = async (payload) => {
+    setBusy(true);
+    try {
+      await api.post(`/api/milestones/${milestoneId}/versions`, payload);
+      toast.success('Nuovo capitolo aggiunto al dialogo');
+      setComp(false);
+      load();
+    } catch {
+      toast.error('Non sono riuscito a salvare il capitolo');
+    } finally { setBusy(false); }
+  };
+
+  const onSendFeedback = async (payload) => {
+    setBusy(true);
+    try {
+      await api.post(`/api/milestones/${milestoneId}/feedback`, payload);
+      toast.success('La voce del cliente è stata accolta');
+      load();
+    } catch {
+      toast.error('Non sono riuscito a registrare la voce');
+    } finally { setBusy(false); }
+  };
+
+  if (!data) {
+    return <p className="mdialog__loading">Sto preparando il dialogo progettuale…</p>;
+  }
+
+  const { chapters, feedback, lexicon } = data;
+
+  return (
+    <div className="mdialog" data-testid="milestone-dialogue">
+      {/* ─── Chapters ─── */}
+      <section className="mdialog__chapters" data-testid="dialogue-chapters">
+        <header className="mdialog__chapters-head">
+          <div>
+            <p className="mdialog__eyebrow">Evoluzione del progetto</p>
+            <h3 className="mdialog__title"><em>I capitoli condivisi</em></h3>
+          </div>
+          {!composing && (
+            <button
+              type="button"
+              onClick={() => setComp(true)}
+              data-testid="add-chapter-btn"
+              className="mdialog__btn mdialog__btn--ghost-warm"
+            >
+              <Plus size={11} strokeWidth={1.6} /> Aggiungi un capitolo
+            </button>
+          )}
+        </header>
+
+        {composing && (
+          <ChapterComposer
+            lexicon={lexicon}
+            busy={busy}
+            onCreate={onCreateChapter}
+            onCancel={() => setComp(false)}
+          />
+        )}
+
+        {chapters.length === 0 && !composing && (
+          <div className="mdialog__empty" data-testid="chapters-empty">
+            <BookOpenText size={26} strokeWidth={1} />
+            <p>
+              <em>Nessun capitolo condiviso ancora.</em><br />
+              Il primo capitolo apre la conversazione progettuale con il cliente.
+            </p>
+          </div>
+        )}
+
+        <div className="mdialog__chapters-list">
+          {chapters.map((c, i) => <ChapterCard key={c.id} chapter={c} index={i} />)}
+        </div>
+      </section>
+
+      {/* ─── Curatorial Feedback ─── */}
+      <CuratorialFeedback
+        lexicon={lexicon}
+        feedback={feedback}
+        busy={busy}
+        onSend={onSendFeedback}
+      />
+    </div>
+  );
+};
+
+export default MilestoneDialogue;

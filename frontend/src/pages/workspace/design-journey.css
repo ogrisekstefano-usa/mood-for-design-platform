@@ -28,6 +28,17 @@
   background-image: var(--mood-atmosphere);
 }
 
+/* Sprint F.B · dialogue wrap */
+.dj-dialogue-wrap {
+  padding: 24px 64px 64px;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.18) 100%),
+    var(--mood-bg);
+}
+@media (max-width: 860px) {
+  .dj-dialogue-wrap { padding: 24px 22px 48px; }
+}
+
 .dj-shell--loading,
 .dj-shell--error {
   padding: 80px 32px;

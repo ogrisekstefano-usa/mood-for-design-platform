@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import MilestoneDialogue from '../../components/journey/MilestoneDialogue';
 import './design-journey.css';
 
 const STATUS_META = {
@@ -469,6 +470,14 @@ const DesignJourneyTab = ({ projectId, project }) => {
       </div>
 
       <EvolutionTimeline events={data.timeline || []} />
+
+      {/* Sprint F.B — Immersive Project Dialogue.
+          Si attiva sulla milestone attiva. Capitoli + voci curatoriali. */}
+      {active && (
+        <div className="dj-dialogue-wrap">
+          <MilestoneDialogue milestoneId={active.id} />
+        </div>
+      )}
     </div>
   );
 };
