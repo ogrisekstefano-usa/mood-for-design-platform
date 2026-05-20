@@ -248,10 +248,6 @@ const Sidebar = () => {
         <Section id="design-journey" label="Design Journey" hasMark {...sectionProps} sectionCollapsed={sectionIsCollapsed('design-journey')}>
           <NavItem to="/workspace/projects"    icon="Compass"     label="Projects"        collapsed={collapsed} />
           <NavItem to="/moodboards"            icon="Layers"      label="Moodboards"      collapsed={collapsed} />
-          {isAdmin && (
-            <NavItem to="/blueprint/projects-studio" icon="Frame" label="Project Studio"  collapsed={collapsed} />
-          )}
-          <NavItem to="/inspirations/materials" icon="Boxes"      label="Materials"       collapsed={collapsed} />
           <NavItem to="/journey/render"         icon="Camera"     label="Render"          collapsed={collapsed} soon />
           <NavItem to="/journey/hotspots"       icon="Crosshair"  label="Hotspots"        collapsed={collapsed} soon />
           <NavItem to="/journey/site-evolution" icon="Sun"        label="Site Evolution"  collapsed={collapsed} soon />
@@ -273,7 +269,6 @@ const Sidebar = () => {
         <Section id="client-relations" label="Client Relations" {...sectionProps} sectionCollapsed={sectionIsCollapsed('client-relations')}>
           <NavItem to="/crm/accounts"          icon="Users"      label="Accounts"   collapsed={collapsed} />
           <NavItem to="/crm/follow-ups"        icon="BellRing"   label="Follow-ups" collapsed={collapsed} />
-          <NavItem to="/workspace/proposals"   icon="FileSignature" label="Proposals" collapsed={collapsed} />
           <NavItem to="/crm/archived"          icon="Archive"    label="Archived"   collapsed={collapsed} />
         </Section>
 
@@ -282,7 +277,7 @@ const Sidebar = () => {
           <Section id="content-studio" label="Content Studio" {...sectionProps} sectionCollapsed={sectionIsCollapsed('content-studio')}>
             <NavItem to="/blueprint/editorial-calendar" icon="CalendarDays" label="Editorial Calendar" collapsed={collapsed} />
             <NavItem to="/blueprint/editorial"          icon="BookOpen"     label="Magazine"           collapsed={collapsed} />
-            <NavItem to="/content/design-stories"       icon="Quote"        label="Design Stories"     collapsed={collapsed} soon />
+            <NavItem to="/blueprint/projects-studio"    icon="Quote"        label="Design Stories"     collapsed={collapsed} />
             <NavItem to="/editorial/inbox"              icon="Inbox"        label="Publishing Queue"   collapsed={collapsed} />
             <NavItem to="/blueprint/markets"            icon="Globe2"       label="Market Matrix"      collapsed={collapsed} />
             <NavItem to="/blueprint/experience"         icon="LayoutTemplate" label="Web Presence"     collapsed={collapsed} />

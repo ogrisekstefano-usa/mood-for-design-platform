@@ -61,9 +61,10 @@ def test_section_order():
 # ─── Design Journey™ section content ──────────────────────────────
 def test_design_journey_items_are_correct():
     src = _read(SIDEBAR)
-    # The Design Journey section must contain exactly these items
-    # (Projects, Moodboards, Project Studio, Materials, Render,
-    # Hotspots, Site Evolution, Documents).
+    # Per iter98 user mandate: Project Studio + Materials removed from
+    # Design Journey™ (DJ now contains only the project-evolution
+    # phases). Design Stories absorbs the Project Studio link in
+    # Content Studio. Materials lives only in Curatorial Atlas.
     journey_block = re.search(
         r'<Section id="design-journey".*?</Section>',
         src, re.S,
@@ -73,14 +74,15 @@ def test_design_journey_items_are_correct():
     for label in (
         'label="Projects"',
         'label="Moodboards"',
-        'label="Project Studio"',
-        'label="Materials"',
         'label="Render"',
         'label="Hotspots"',
         'label="Site Evolution"',
         'label="Documents"',
     ):
         assert label in blk, f"Design Journey missing {label}"
+    # Explicitly assert the removed items are gone
+    assert 'label="Project Studio"' not in blk
+    assert 'label="Materials"' not in blk
 
 
 def test_inspirations_lives_in_curatorial_atlas_not_journey():
@@ -117,13 +119,14 @@ def test_curatorial_atlas_items():
 def test_client_relations_items():
     src = _read(SIDEBAR)
     blk = re.search(r'<Section id="client-relations".*?</Section>', src, re.S).group(0)
+    # Iter98: Proposals removed per user request — surface relations only.
     for label in (
         'label="Accounts"',
         'label="Follow-ups"',
-        'label="Proposals"',
         'label="Archived"',
     ):
         assert label in blk
+    assert 'label="Proposals"' not in blk
 
 
 # ─── Content Studio ───────────────────────────────────────────────
@@ -145,11 +148,15 @@ def test_content_studio_items_and_web_presence_rename():
 
 
 def test_design_stories_is_distinct_from_project_studio():
-    """Design Stories (editorial publishing) and Project Studio (web
-    portfolio editor) must coexist as DIFFERENT items."""
+    """Iter98 mandate: Design Stories now takes over the
+    /blueprint/projects-studio route (the editorial portfolio editor) —
+    they are conceptually the same surface in the user's mental model.
+    The visible label in the sidebar is 'Design Stories', not 'Project
+    Studio'."""
     src = _read(SIDEBAR)
     assert 'label="Design Stories"' in src
-    assert 'label="Project Studio"' in src
+    # Project Studio is no longer a separate sidebar label
+    assert 'label="Project Studio"' not in src
 
 
 # ─── Studio OS ────────────────────────────────────────────────────
@@ -208,7 +215,6 @@ def test_existing_canonical_routes_still_referenced():
         "/crm/accounts",
         "/crm/follow-ups",
         "/crm/archived",
-        "/workspace/proposals",
         "/blueprint/editorial-calendar",
         "/blueprint/editorial",
         "/blueprint/markets",

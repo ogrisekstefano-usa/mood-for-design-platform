@@ -1,7 +1,19 @@
 /**
- * ProjectsPage — list + create. Plan-aware.
+ * ProjectsPage — Design Journey™ project atelier.
+ *
+ * Lista progetti come "atelier editoriale", non come CRUD enterprise.
+ * Ogni card mostra:
+ *   • status glow + editorial state
+ *   • title in italic Playfair
+ *   • client + advisor
+ *   • palette preview dai colori del brief
+ *   • mood/material chips
+ *   • timestamp narrativo
+ *   • hover cinematic con CTA "Continua il viaggio"
+ *
+ * Plan-aware (limit/atCap).
  */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api, { formatError } from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
@@ -9,21 +21,163 @@ import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
 import { useLicense, refreshLicense } from '../../hooks/useLicense';
 import UsageChip from '../../components/common/UsageChip';
 import { toast } from 'sonner';
-import { Plus, FolderOpen, MapPin, Lock } from 'lucide-react';
+import { Plus, MapPin, Lock, Compass, ArrowUpRight, Layers } from 'lucide-react';
+import './projects-page.css';
 
-const STATUS_TONES = {
-  new: 'bg-blue-500/10 text-blue-400',
-  in_review: 'bg-purple-500/10 text-purple-400',
-  brief_completed: 'bg-purple-500/10 text-purple-400',
-  proposal_in_progress: 'bg-[var(--bp-primary)]/10 text-[var(--bp-primary)]',
-  proposal_sent: 'bg-[var(--bp-primary)]/10 text-[var(--bp-primary)]',
-  approved: 'bg-emerald-500/10 text-emerald-400',
-  won: 'bg-emerald-500/10 text-emerald-400',
-  rejected: 'bg-red-500/10 text-red-400',
-  lost: 'bg-red-500/10 text-red-400',
-  archived: 'bg-white/5 text-[var(--bp-text-muted)]',
+// ── Editorial Italian status labels & cinematic tones ────────────
+const STATUS_META = {
+  new:                  { label: 'Brief in apertura',       tone: 'cyan'    },
+  in_review:            { label: 'In revisione',            tone: 'amber'   },
+  brief_completed:      { label: 'Brief consolidato',       tone: 'cyan'    },
+  proposal_in_progress: { label: 'Direzione in lavorazione', tone: 'warm'   },
+  proposal_sent:        { label: 'Direzione presentata',    tone: 'cyan'    },
+  approved:             { label: 'Direzione approvata',     tone: 'success' },
+  won:                  { label: 'Progetto vinto',          tone: 'success' },
+  rejected:             { label: 'Direzione rifiutata',     tone: 'rose'    },
+  lost:                 { label: 'Progetto chiuso',         tone: 'closed'  },
+  archived:             { label: 'Archiviato',              tone: 'closed'  },
 };
 
+// Color name → swatch hex (editorial palette). Maps the brief vocabulary
+// (earth, olive, bronze, …) to subtle real swatches for the preview dots.
+const PALETTE_SWATCH = {
+  earth:     '#8a6a4a',
+  olive:     '#7d8b56',
+  bronze:    '#a07550',
+  black:     '#1a1a1c',
+  white:     '#ece8df',
+  beige:     '#cdb999',
+  gold:      '#c8a064',
+  brass:     '#b08a4a',
+  blue:      '#5a779e',
+  navy:      '#2b3a55',
+  teal:      '#508a8a',
+  green:     '#5e7d5b',
+  forest:    '#3b5042',
+  cream:     '#e3d8be',
+  charcoal:  '#3a3a3d',
+  walnut:    '#6e4a30',
+  oak:       '#a98660',
+  marble:    '#dddad2',
+  terracotta:'#b56b50',
+  sand:      '#c9b58a',
+  ivory:     '#ede2c8',
+  warm:      '#d6b687',
+  cool:      '#88a0a8',
+  rust:      '#a35538',
+  copper:    '#b0673a',
+  pink:      '#d9a59d',
+  rose:      '#c98a86',
+  amber:     '#e0a258',
+  glass:     '#bcd2d8',
+  brick:     '#a06255',
+  sage:      '#9aaa8c',
+  stone:     '#b3aca0',
+  smoke:     '#8b8e91',
+  mocha:     '#7a5c45',
+  fog:       '#bcbbb1',
+};
+
+const swatch = (name) => {
+  const k = (name || '').toLowerCase();
+  return PALETTE_SWATCH[k] || '#5a5a5a';
+};
+
+const formatRelative = (iso) => {
+  if (!iso) return null;
+  try {
+    const t = new Date(iso).getTime();
+    const now = Date.now();
+    const sec = Math.floor((now - t) / 1000);
+    if (sec < 60) return 'pochi istanti fa';
+    if (sec < 3600) return `${Math.floor(sec / 60)} min fa`;
+    if (sec < 86400) return `${Math.floor(sec / 3600)} ore fa`;
+    if (sec < 86400 * 7) return `${Math.floor(sec / 86400)} giorni fa`;
+    return new Date(iso).toLocaleDateString('it-IT', { day: '2-digit', month: 'short' });
+  } catch { return null; }
+};
+
+// ── Editorial Project Card ───────────────────────────────────────
+const ProjectCard = ({ project, index }) => {
+  const meta = STATUS_META[project.status] || STATUS_META.new;
+  const payload = project?.metadata_json?.onboarding_payload || {};
+  const colors    = (payload.colors    || []).slice(0, 5);
+  const moods     = (payload.moods     || []).slice(0, 2);
+  const materials = (payload.materials || []).slice(0, 2);
+  const clientName = (() => {
+    const fn = payload.first_name;
+    const ln = payload.last_name;
+    if (fn || ln) return `${fn || ''} ${ln || ''}`.trim();
+    return project.client_email || null;
+  })();
+  const updated = project.updated_at || project.created_at;
+
+  return (
+    <Link
+      to={`/workspace/projects/${project.id}`}
+      data-testid={`project-card-${index}`}
+      className={`pcard pcard--${meta.tone}`}
+    >
+      {/* Status glow rail */}
+      <span aria-hidden="true" className="pcard__glow" />
+
+      <div className="pcard__top">
+        <span className="pcard__status" data-testid={`project-card-${index}-status`}>
+          <span className="pcard__status-dot" />
+          {meta.label}
+        </span>
+        {project.project_type && (
+          <span className="pcard__type">{project.project_type}</span>
+        )}
+      </div>
+
+      <h3 className="pcard__title" data-testid={`project-card-${index}-title`}>
+        <em>{project.title}</em>
+      </h3>
+
+      {clientName && (
+        <p className="pcard__client">Per · {clientName}</p>
+      )}
+
+      {/* Palette preview — colored dots from the client brief */}
+      {colors.length > 0 && (
+        <div className="pcard__palette" data-testid={`project-card-${index}-palette`}>
+          {colors.map((c, i) => (
+            <span key={`${c}-${i}`}
+                  className="pcard__swatch"
+                  title={c}
+                  style={{ backgroundColor: swatch(c) }} />
+          ))}
+        </div>
+      )}
+
+      {/* Mood + Material chips */}
+      {(moods.length > 0 || materials.length > 0) && (
+        <ul className="pcard__chips">
+          {moods.map((m) => (
+            <li key={`mood-${m}`} className="pcard__chip pcard__chip--mood">{m.replace(/_/g, ' ')}</li>
+          ))}
+          {materials.map((m) => (
+            <li key={`mat-${m}`} className="pcard__chip pcard__chip--mat">{m}</li>
+          ))}
+        </ul>
+      )}
+
+      <div className="pcard__foot">
+        <span className="pcard__time">
+          {updated ? `Ultimo movimento · ${formatRelative(updated)}` : '\u00A0'}
+        </span>
+        <span className="pcard__cta">
+          <Compass size={11} strokeWidth={1.4} />
+          Continua il viaggio
+          <ArrowUpRight size={11} strokeWidth={1.4} />
+        </span>
+      </div>
+    </Link>
+  );
+};
+
+// ── New Project Modal (preserved from previous version) ──────────
 const NewProjectModal = ({ onClose, onSaved }) => {
   const { t, locale } = useBlueprint();
   const [form, setForm] = useState({ title: '', description: '', project_type: '', priority: 'normal', budget_range: '', timeline: '', language: locale });
@@ -84,29 +238,7 @@ const NewProjectModal = ({ onClose, onSaved }) => {
   );
 };
 
-const ProjectCard = ({ project, index }) => {
-  const { t } = useBlueprint();
-  return (
-    <Link to={`/workspace/projects/${project.id}`}
-          data-testid={`project-card-${index}`}
-          className="block bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-md p-5 cursor-pointer card-hover group hover:border-[var(--bp-border-strong)] transition-colors">
-      <div className="flex items-start justify-between mb-3">
-        <FolderOpen size={18} strokeWidth={1.5} className="text-[var(--bp-primary)]" />
-        <span className={`text-[10px] font-semibold font-body px-2 py-0.5 rounded-[3px] ${STATUS_TONES[project.status] || STATUS_TONES.new}`}>
-          {t(`projects.status.${project.status}`)}
-        </span>
-      </div>
-      <h3 className="font-heading text-xl text-[var(--bp-text-primary)] leading-tight mb-2">{project.title}</h3>
-      {project.description && <p className="text-[var(--bp-text-muted)] text-xs font-body line-clamp-2 mb-3">{project.description}</p>}
-      <div className="flex items-center gap-4 text-[10px] text-[var(--bp-text-subtle)] font-body">
-        {project.project_type && <span className="capitalize">{project.project_type}</span>}
-        {project.budget_range && <span>{project.budget_range}</span>}
-        {project.timeline && <span className="flex items-center gap-1"><MapPin size={10} />{project.timeline}</span>}
-      </div>
-    </Link>
-  );
-};
-
+// ── Main page ────────────────────────────────────────────────────
 const ProjectsPage = () => {
   const { t } = useBlueprint();
   const runtime = useLocaleRuntime();
@@ -139,72 +271,62 @@ const ProjectsPage = () => {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto" data-testid="projects-page">
+    <div className="ppage" data-testid="projects-page">
       {showModal && <NewProjectModal onClose={() => setShowModal(false)} onSaved={() => { setShowModal(false); load(); }} />}
-      <div className="flex items-start justify-between mb-8 gap-6">
+
+      <header className="ppage__head">
         <div>
-          <p className="text-[var(--bp-text-muted)] text-[10px] font-body uppercase tracking-[0.2em] mb-1"
-             data-testid="projects-page-eyebrow">
-            {runtime.copy('projects.page.eyebrow')}
+          <p className="ppage__eyebrow" data-testid="projects-page-eyebrow">
+            {runtime.copy('projects.page.eyebrow') || 'Design Journey · Atelier'}
           </p>
-          <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)]"
-              data-testid="projects-page-title">
-            {runtime.copy('projects.page.title')}
+          <h1 className="ppage__title" data-testid="projects-page-title">
+            <em>{runtime.copy('projects.page.title') || 'I tuoi progetti'}</em>
           </h1>
-          <p className="text-[var(--bp-text-subtle)] text-sm font-body mt-1">{t('projects.count', { n: projects.length })}</p>
+          <p className="ppage__sub">{t('projects.count', { n: projects.length })}</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="ppage__actions">
           {license && (
-            <UsageChip label="Projects" current={cap.current} limit={cap.limit}
+            <UsageChip label="Progetti" current={cap.current} limit={cap.limit}
                        unlimited={cap.unlimited} atCap={cap.atCap} nearCap={cap.nearCap}
                        testid="projects-usage-chip" />
           )}
           <button data-testid="new-project-btn" onClick={onCta}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-body font-semibold rounded-[3px] transition-all
-              ${cap.atCap
-                ? 'bg-[var(--bp-surface-2)] border border-[var(--bp-border)] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] hover:border-[var(--bp-border-strong)]'
-                : 'bg-[var(--bp-primary)] hover:opacity-90 text-[var(--bp-bg)]'}`}>
+            className={`ppage__cta ${cap.atCap ? 'ppage__cta--lock' : ''}`}>
             {cap.atCap
-              ? (<><Lock size={12} strokeWidth={1.8} /> Upgrade to create more</>)
-              : (<><Plus size={14} /> {runtime.copy('projects.new.cta')}</>)}
+              ? (<><Lock size={12} strokeWidth={1.8} /> Upgrade per crearne altri</>)
+              : (<><Plus size={14} strokeWidth={1.4} /> {runtime.copy('projects.new.cta') || 'Nuovo progetto'}</>)}
           </button>
         </div>
-      </div>
+      </header>
 
-      <div className="flex gap-1 bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[4px] p-1 mb-6 w-fit flex-wrap">
+      <div className="ppage__tabs">
         {tabs.map((tk) => (
           <button key={tk || 'all'} data-testid={`tab-${tk || 'all'}`} onClick={() => setTab(tk)}
-            className={`px-3 py-1.5 text-xs font-body font-medium rounded-[3px] ${tab === tk ? 'bg-[var(--bp-surface-2)] text-[var(--bp-text-primary)]' : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-secondary)]'}`}>
-            {tk ? t(`projects.status.${tk}`) : t('common.all')}
+            className={`ppage__tab ${tab === tk ? 'is-active' : ''}`}>
+            {tk ? (STATUS_META[tk]?.label || tk) : 'Tutti'}
           </button>
         ))}
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[1,2,3].map(i => <div key={i} className="h-44 skeleton rounded-md" />)}
+        <div className="ppage__grid">
+          {[1, 2, 3].map(i => <div key={i} className="pcard pcard--skeleton" />)}
         </div>
       ) : projects.length === 0 ? (
-        <div className="text-center py-20" data-testid="projects-empty"
-             data-locale-code={runtime.localeCode}>
-          <FolderOpen size={36} className="text-[var(--bp-text-subtle)] mx-auto mb-4" strokeWidth={1} />
-          <h3 className="font-heading text-[20px] font-light text-[var(--bp-text-primary)] mb-2"
-              data-testid="projects-empty-title">
-            {runtime.copy('projects.empty.title')}
+        <div className="ppage__empty" data-testid="projects-empty">
+          <Layers size={36} strokeWidth={1} />
+          <h3 data-testid="projects-empty-title">
+            {runtime.copy('projects.empty.title') || 'Nessun viaggio progettuale ancora aperto'}
           </h3>
-          <p className="text-[var(--bp-text-muted)] font-body mb-5 max-w-md mx-auto leading-relaxed"
-             data-testid="projects-empty-subtitle">
-            {runtime.copy('projects.empty.subtitle')}
+          <p data-testid="projects-empty-subtitle">
+            {runtime.copy('projects.empty.subtitle') || 'Apri il primo capitolo del tuo studio.'}
           </p>
-          <button onClick={onCta}
-                  data-testid="projects-empty-cta"
-                  className="text-[var(--bp-primary)] text-sm font-body hover:opacity-80
-                             inline-flex items-center gap-1.5">
-            {cap.atCap ? 'Upgrade plan to create projects' : `+ ${runtime.copy('projects.empty.cta')}`}
+          <button onClick={onCta} data-testid="projects-empty-cta" className="ppage__cta ppage__cta--ghost">
+            {cap.atCap ? 'Aggiorna il piano' : '+ Apri il primo viaggio'}
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="ppage__grid">
           {projects.map((p, i) => <ProjectCard key={p.id} project={p} index={i} />)}
         </div>
       )}

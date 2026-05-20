@@ -1,0 +1,36 @@
+{
+  "summary": "Iter98 frontend validation — Sidebar v4 refinements + Studio Insights cinematic + Projects atelier cards. Sidebar architecture is 100% correct (Design Journey lost Project Studio + Materials, Client Relations lost Proposals, Content Studio's Design Stories points to /blueprint/projects-studio). Product Gallery redirect chain /inspirations/products → /inspirations?type=product works. /insights renders cinematic page with real DB values (moodboards=177, inspirations=115, journeys=3) using gold/cyan/pearl palette (NO blue). Activity heatmap = cyan rgba(127,223,255,X). ins-activity__num color = rgb(127,223,255). All 6 Italian editorial phrases present (the 'Pietre miliari' text IS rendered, only uppercased via CSS text-transform). NO SaaS jargon (no dashboard/kanban/workflow/task). /workspace/projects renders cinematic atelier layout with all 6 editorial tab labels, italic Playfair titles, status glow, palette dots, mood chips, 'Per ·' client prefix, relative timestamps, and 'Continua il viaggio' CTA. Click card → /workspace/projects/<id>. Mobile 720px: ins-stats collapses to 2 columns, projects collapse to 1 column, no horizontal overflow. ONE backend semantic concern: headline.projects can return 0 while timeline.projects sums to 59 (tenant-scope inconsistency between headline aggregation and timeline) — visible as PROGETTI VIVI=0 in second run despite 59 projects in timeline. Also headline.members=0 (should be ≥1 for the logged-in super admin) and headline.accounts=0 while sublabel '59 nuovi contatti' (leads) appears — these are backend data-scope issues, NOT frontend rendering bugs.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/insights/studio-overview", "issue": "headline.projects appears unstable / scoped differently than timeline.projects (got 59 on first call then 0 on second call within same session, while timeline.projects sum stayed at 59). Suggests headline filters by active/non-closed status while timeline counts created in window — value=0 looks empty/misleading on the card."},
+      {"endpoint": "/api/insights/studio-overview", "issue": "headline.members returns 0 — logged-in super admin alone should make this ≥1. Likely tenant-membership query missing super_admin or counting only invited members."},
+      {"endpoint": "/api/insights/studio-overview", "issue": "headline.accounts=0 but headline.leads=59 → 'ACCOUNTS 0 · 59 nuovi contatti' looks semantically odd. Either accounts-table is empty (genuine) or query mis-scopes. Worth confirming demo tenant has accounts seeded."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Insights · Pietre miliari pulse card", "issues": ["When milestone_pulse is empty (second session), card body collapses to just 'Nessuna pietra miliare ancora attiva.' — height feels short vs the evolution card next to it. Cosmetic only."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Audit /api/insights/studio-overview backend: ensure headline.projects, headline.members, headline.accounts are scoped consistently with timeline + milestone_pulse for the demo tenant (super_admin scope). Specifically the value PROGETTI VIVI=0 while timeline shows 59 is misleading.",
+    "Confirm headline.members ≥ 1 (super admin is a member of the tenant).",
+    "Optional: reconsider the editorial copy 'ACCOUNTS 0 · 59 nuovi contatti' — feels mismatched; perhaps merge into a single 'Contatti' figure or split into Lead vs Account cards."
+  ],
+  "critical_code_review_comments": [
+    "Sidebar.jsx is clean and follows architecture v4 spec exactly.",
+    "InsightsPage.jsx components (Sparkline, ActivityHeatmap, PulseRow, StatCard) are well-factored; consider extracting them to a /components folder if reused.",
+    "ProjectsPage.jsx >300 lines but cohesive (status meta, palette swatch dict, card render). PALETTE_SWATCH map could move to a separate constants file."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (not in scope)", "frontend": "100%"},
+  "seed_data_creation": "None — used existing demo tenant data.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All iter98 frontend mandates validated: (1) Sidebar Design Journey contains exactly Projects/Moodboards/Render/Hotspots/Site Evolution/Documents (no Project Studio, no Materials). (2) Curatorial Atlas contains the 6 expected items. (3) Content Studio's Design Stories → /blueprint/projects-studio renders. (4) Client Relations has no Proposals. (5) Insights page renders gold/cyan/pearl, all editorial phrases present, sparklines + heatmap + pulse + signature all there. (6) Projects atelier cards render italic Playfair title, status glow, palette dots, mood chips, Continua il viaggio CTA, navigate to /workspace/projects/<id>. Mobile 720px collapses to 1col projects, 2col stats, no overflow. Backend tenant-scope inconsistency for headline.projects/members/accounts is the only follow-up — main agent should look into /app/backend/routers/insights.py headline aggregation.",
+  "rca of the issue": "Backend headline aggregation in /api/insights/studio-overview appears to filter projects with a status whitelist (e.g., status NOT IN ('won','lost','archived')) while timeline.projects sums all 12-week creations. Result: PROGETTI VIVI card shows 0 while the sparkline below shows 59. Either soften the headline filter (count alive == not archived) or rename the card to 'Progetti in lavorazione' for honesty. headline.members=0 likely comes from a memberships table query that requires explicit invite acceptance — super_admin entries may be missing from that table. Mitigation: union memberships with tenant.owner_id."
+}
