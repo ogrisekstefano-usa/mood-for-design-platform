@@ -1040,7 +1040,7 @@ const StrategicDirectionCard = ({ projectId, project }) => {
         </div>
       )}
       {showComposer && (
-        <ComposeProposalWizard projectId={projectId} defaultMarket={brief?.market || market}
+        <ComposeProposalWizard projectId={projectId} defaultMarket={brief?.market || 'IT'}
                                onClose={() => setShowComposer(false)} />
       )}
     </section>

@@ -53,6 +53,49 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint Journey Continuity™ + Absorption™ + Full Width Refactor (Feb 21, 2026 · iter95)
+**UX/architectural consolidation — non nuove feature, ma percezione di ecosistema continuo.**
+
+#### Strategic shift
+MOOD smette di sembrare "suite di tool separati". Diventa **un unico ambiente progettuale continuo**. Il Design Journey™ diventa la **vera homepage** del progetto: full-bleed, environment immersivo, assorbe identità del progetto e narrativa di avanzamento. I moduli satellite (Moodboards in priorità 1, poi Materials/Documents/Render) mostrano un **Journey Context Header™** che ricorda al designer la pietra miliare che sta attraversando.
+
+#### Backend
+- **NEW endpoint** `GET /api/journeys/context/by-entity?entity_type=<…>&entity_id=<…>` — risolve il contesto Journey per moduli satellite. Mapping:
+  - `moodboard` → milestone `moodboard_direction` (tutti i moodboard del progetto puntano alla stessa pietra miliare — regola approvata dall'utente)
+  - `material` → `material_direction`
+  - `document` → `technical_package`
+  - `render` → `final_presentation`
+  - `project` → `journey.current_milestone_id`
+  - sconosciuto/orfano → 200 `linked: false` (NON 404, satellite modules render nothing senza rompere)
+
+#### Frontend — Full Width Journey
+- `ProjectDetailPage.jsx` refattorizzata in due branch:
+  - **Journey branch**: `min-h-screen` full-bleed, NO `max-w-6xl`, NO project identity header duplicato (la Journey assorbe), solo back-button + tab bar + DesignJourneyTab.
+  - **Boxed branch** (altre tab): layout classico con StatusBadge + titolo + advisor card + tab bar.
+- `design-journey.css`: `.dj-shell` ora `border: none` + `border-radius: 0` (environment, non card). Padding aumentati (header 36/56, focus 56/64, rail 36/32). Vignette radiale per profondità cinematica.
+
+#### Frontend — Journey Absorption
+- `DesignJourneyTab.jsx` accetta `project` come prop e renderizza:
+  - **Absorption header** (`dj-absorption-header`): titolo progetto in Playfair italic, eyebrow `Design Journey™`, **progress narrative editoriale soft** (no percentuali!) — esempi: "Il viaggio è appena iniziato", "2 pietre miliari completate · ora Moodboard Direction™", "Tutte le pietre miliari sono state approvate", "Chiusura certificata · capitolo concluso".
+  - **Advisor strip** (`dj-advisor-strip`): avatar + "Seguito da" + nome advisor in italic.
+- Overview tab **svuotata**: rimosso il grid 6-stat (`Sintesi operativa` non esiste più nel DOM). Solo `StrategicDirectionCard` rimane — Overview diventa l'identità del progetto, mai dashboard operativa.
+
+#### Frontend — Journey Continuity™
+- **NEW** `/app/frontend/src/components/journey/JourneyContextHeader.jsx` + `journey-context.css` — strip elegante editoriale: "Stai attraversando · {progetto} → {pietra miliare} · {status editoriale}" + shortcut "Design Journey™" (back link).
+- Montato in `MoodboardEditor.jsx` (solo `!readOnly`) tra header e canvas area.
+- Status pill colorata per tono editoriale (warm/cyan/amber/success/muted/closed).
+
+#### Editorial language guard
+Riconfermato vietato in tutta la UI: `task`, `sprint`, `kanban`, `workflow`, `dashboard`, `ticket`, `todo`, `doing`, `done`, `asset uploaded`, `status updated`, `entity modified`, `admin toolbar`, `module state`, `tool switch`.
+
+#### Bonus fix
+- Risolto pre-existing latent bug in `StrategicDirectionCard`: `defaultMarket={brief?.market || market}` (variabile `market` undefined) → ora `'IT'` fallback. Avrebbe causato `ReferenceError` cliccando "Componi proposta" con brief privo di market.
+
+#### Tests
+- **Backend**: 24/24 pass — iter94 (11) + iter95 (13) tests.
+  - `test_iteration_95_journey_continuity.py`: context-by-entity completo (project/moodboard/material/document/render + unknown + orfano), editorial lexicon guard, JSX static checks (full-bleed CSS, Overview cleanup, JCH mounted in editor).
+- **Frontend**: 12/12 acceptance criteria pass (Playwright `iteration_95.json`) — full-bleed render, absorption header, Overview cleanup confirmed, JCH visibile nel moodboard editor con link funzionanti, zero forbidden lexicon, no layout shift, no pageerror, responsive a 720w.
+
 ### Sprint F.A · Design Journey™ Foundation (Feb 21, 2026 · iter94)
 **Backbone narrativo del progetto — il Journey diventa la nuova homepage mentale.**
 
