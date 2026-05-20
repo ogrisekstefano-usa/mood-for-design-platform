@@ -18,7 +18,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   Compass, Sparkles, Layers, MessageSquareQuote,
-  Clock4, Palette, Archive,
+  Clock4, Palette, Archive, HardHat,
 } from 'lucide-react';
 
 const NAV = [
@@ -28,6 +28,7 @@ const NAV = [
   { to: '/client#conversazioni',    label: 'Conversazioni',      icon: MessageSquareQuote, hasMark: true, anchor: 'conversazioni' },
   { to: '/client#evoluzione',       label: 'Evolution Timeline', icon: Clock4,            hasMark: true, anchor: 'evoluzione' },
   { to: '/client#materia',          label: 'Materia & Atmosfere', icon: Palette,          hasMark: true, anchor: 'materia' },
+  { to: '/client#cantiere',         label: 'Site Evolution',     icon: HardHat,           hasMark: true, anchor: 'cantiere' },
   { to: '/client#memoria',          label: 'Memoria & Archivio', icon: Archive,           hasMark: true, anchor: 'memoria' },
 ];
 

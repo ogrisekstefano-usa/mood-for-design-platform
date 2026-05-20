@@ -18,6 +18,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../lib/api';
 import SharedVoiceComposer from '../../components/client/SharedVoiceComposer';
+import SiteEvolutionSection from '../../components/client/SiteEvolutionSection';
 import './client-companion.css';
 
 const fmtDate = (iso) => {
@@ -336,14 +337,23 @@ const MemoryArchiveSection = ({ items }) => (
 const ClientCompanionPage = () => {
   const { journeyId } = useParams();
   const [data, setData]     = useState(null);
+  const [siteEvolution, setSiteEvolution] = useState(null);
   const [loading, setLoad]  = useState(true);
   const [error, setError]   = useState(null);
 
   useEffect(() => {
     let alive = true;
     setLoad(true);
-    api.get(`/api/client/journeys/${journeyId}/companion`)
-      .then((r) => { if (alive) setData(r.data); })
+    Promise.all([
+      api.get(`/api/client/journeys/${journeyId}/companion`),
+      api.get(`/api/client/journeys/${journeyId}/site-evolution`)
+        .catch(() => ({ data: { available: false, entries: [], groups: [] } })),
+    ])
+      .then(([r, s]) => {
+        if (!alive) return;
+        setData(r.data);
+        setSiteEvolution(s.data);
+      })
       .catch((e) => {
         if (!alive) return;
         setError(e?.response?.data?.detail || 'Non riesco ad aprire questo Journey.');
@@ -447,6 +457,15 @@ const ClientCompanionPage = () => {
       <ConversationsSection items={conversations} />
       <EvolutionSection items={evolution_timeline} />
       <MaterialsSection items={materials_atmospheres} />
+      <Section
+        id="cantiere"
+        eyebrow="Site Evolution™"
+        title="La memoria viva del cantiere"
+        count={siteEvolution?.entries?.length ? `${siteEvolution.entries.length} ${siteEvolution.entries.length === 1 ? 'momento' : 'momenti'}` : null}
+        testid="cj-section-cantiere"
+      >
+        <SiteEvolutionSection data={siteEvolution} />
+      </Section>
       <MemoryArchiveSection items={memory_archive} />
     </div>
   );

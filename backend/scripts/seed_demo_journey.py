@@ -506,6 +506,133 @@ def ensure_timeline(tenant_id: str, journey_id: str, milestones: list):
     print(f"  + {len(rows)} eventi timeline creati (8 settimane di evoluzione)")
 
 
+# ── Site Evolution™ entries (Sprint G.8) ─────────────────────────
+def ensure_site_evolution(tenant_id: str, journey_id: str, milestones: list):
+    """Seed 8 momenti reali del cantiere — sopralluoghi, demolizioni,
+    arrivo materiali, installazioni. Sobrio, documentaristico.
+    """
+    by_type = {m["milestone_type"]: m for m in milestones}
+    se_ms = by_type.get("site_evolution")
+    if not se_ms:
+        return
+
+    existing = (c.table("journey_timeline_events").select("id")
+                .eq("journey_id", journey_id)
+                .eq("event_type", "site_evolution").execute().data or [])
+    if existing:
+        print(f"  ✓ Site Evolution™ già seedato ({len(existing)} momenti)")
+        return
+
+    base = now() - timedelta(weeks=8)
+    entries = [
+        # 1. Primo sopralluogo
+        {"off": 4, "space": "living", "kind": "site_visit",
+         "title": "Primo sopralluogo · Living",
+         "narrative": "Sopralluogo iniziale della villa. Misurazioni del living, verifica dell'altezza del soffitto a vela, registrazione della luce naturale lungo l'arco della giornata.",
+         "photos": [
+            {"url": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1400&q=80",
+             "caption": "Living prima dell'intervento"},
+            {"url": "https://images.unsplash.com/photo-1567016526105-22da7c13161a?auto=format&fit=crop&w=1400&q=80",
+             "caption": "Vista verso il mare"},
+         ],
+         "before": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1400&q=80"},
+        # 2. Demolizioni
+        {"off": 33, "space": "kitchen", "kind": "demolition",
+         "title": "Demolizioni · Cucina e parete divisoria",
+         "narrative": "Rimossa la parete divisoria tra cucina e living per aprire il volume sulla terrazza. Recuperate due travi originali in rovere, da reintegrare nel disegno finale.",
+         "photos": [
+            {"url": "https://images.unsplash.com/photo-1581094488379-6b0d4cf4b8a8?auto=format&fit=crop&w=1400&q=80",
+             "caption": "Demolizione parete divisoria"},
+         ]},
+        # 3. Showroom visit per il travertino
+        {"off": 40, "space": "master_bath", "kind": "showroom",
+         "title": "Showroom · Campioni travertino",
+         "narrative": "Visita allo showroom del fornitore per i campioni di travertino chiaro. Selezionata la lastra con venatura orizzontale per la parete del bagno padronale.",
+         "photos": [
+            {"url": "https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=1400&q=80",
+             "caption": "Lastra di travertino selezionata"},
+         ],
+         "materials": ["travertino_chiaro"]},
+        # 4. Mockup palette
+        {"off": 47, "space": "living", "kind": "mockup",
+         "title": "Mockup palette · Living",
+         "narrative": "Mockup in scala 1:1 della palette materica del living. Travertino chiaro, rovere termotrattato, lino grezzo accostati alla luce naturale di mezzogiorno.",
+         "photos": [
+            {"url": "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1400&q=80",
+             "caption": "Mockup materico in luce naturale"},
+         ]},
+        # 5. Pietra arrivata
+        {"off": 49, "space": "master_bath", "kind": "delivery",
+         "title": "Arrivo travertino in showroom",
+         "narrative": "Le lastre di travertino chiaro sono arrivate in showroom. Catalogazione completa, verifica delle venature, taglio programmato per la prossima settimana.",
+         "photos": [
+            {"url": "https://images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=1400&q=80",
+             "caption": "Lastre di travertino in showroom"},
+         ],
+         "materials": ["travertino_chiaro"]},
+        # 6. Sopralluogo elettrico
+        {"off": 51, "space": "living", "kind": "test",
+         "title": "Verifica illuminazione · Living",
+         "narrative": "Test della temperatura di colore lungo la fascia delle dieci di sera. Confermata la scelta 2700K per i punti d'angolo, 3000K per la parete in travertino.",
+         "photos": [
+            {"url": "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=80",
+             "caption": "Test illuminazione serale"},
+         ]},
+        # 7. Installazione cucina (recent)
+        {"off": 54, "space": "kitchen", "kind": "installation",
+         "title": "Inizio installazione · Cucina",
+         "narrative": "Posa dei moduli inferiori della cucina. Il piano in pietra Pietra Serena è previsto per la prossima settimana, dopo la rettifica delle giunzioni.",
+         "photos": [
+            {"url": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=1400&q=80",
+             "caption": "Moduli cucina posati"},
+         ]},
+        # 8. Terrazza — sopralluogo finale prima del progetto
+        {"off": 56, "space": "terrace", "kind": "site_visit",
+         "title": "Sopralluogo terrazza · vista finale",
+         "narrative": "Sopralluogo della terrazza prima del nuovo progetto di pavimentazione esterna. Verifica della pendenza, registrazione della vista sul mare al tramonto.",
+         "photos": [
+            {"url": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80",
+             "caption": "Vista terrazza al tramonto"},
+         ]},
+    ]
+    rows = []
+    for e in entries:
+        ts = iso(base + timedelta(days=e["off"]))
+        metadata = {
+            "kind":         "site_evolution",
+            "space_key":    e["space"],
+            "title":        e["title"],
+            "narrative":    e["narrative"],
+            "visit_kind":   e["kind"],
+            "occurred_at":  ts,
+            "photos":       e.get("photos", []),
+            "before_url":   e.get("before"),
+            "after_url":    e.get("after"),
+            "materials_linked": e.get("materials", []),
+            "author_role":  "studio",
+        }
+        rows.append({
+            "id":             str(uuid.uuid4()),
+            "tenant_id":      tenant_id,
+            "journey_id":     journey_id,
+            "milestone_id":   se_ms["id"],
+            "event_type":     "site_evolution",
+            "narrative_text": e["title"],
+            "created_by":     DESIGNER_PROFILE_ID,
+            "metadata":       metadata,
+            "created_at":     ts,
+        })
+    c.table("journey_timeline_events").insert(rows).execute()
+
+    # Activate the milestone
+    c.table("journey_milestones").update({
+        "status":     "in_progress",
+        "started_at": iso(base + timedelta(days=4)),
+        "updated_at": iso(now()),
+    }).eq("id", se_ms["id"]).execute()
+    print(f"  + {len(rows)} momenti di Site Evolution™ seedati (5 spazi)")
+
+
 # ── Main ─────────────────────────────────────────────────────────
 def main():
     print("\n🌱 Seeding Villa Riviera™ — un Journey vero, con frizioni vere.\n")
@@ -526,6 +653,7 @@ def main():
     ensure_milestone_versions(tenant["id"], moodboard_milestone["id"], moodboards)
     ensure_voices(tenant["id"], milestones)
     ensure_timeline(tenant["id"], journey["id"], milestones)
+    ensure_site_evolution(tenant["id"], journey["id"], milestones)
 
     print("\n✓ Seed completato. Villa Riviera™ è viva nel Companion del cliente Marco.\n")
     print(f"  Project ID: {project['id']}")

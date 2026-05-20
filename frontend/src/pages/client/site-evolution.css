@@ -1,0 +1,185 @@
+/* ──────────────────────────────────────────────────────────────────
+   Site Evolution™ · Sprint G.8
+   Memoria viva della trasformazione fisica. NON gallery, NON media manager.
+   Architectural photography mood. Documentaristic, calm.
+   ────────────────────────────────────────────────────────────────── */
+
+.se-empty {
+  padding: 56px 32px;
+  text-align: center;
+  border: 1px dashed color-mix(in srgb, var(--cp-text-primary) 12%, transparent);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--cp-text-primary) 2%, transparent);
+}
+.se-empty__title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--cp-text-primary, #efe8d8);
+  margin: 0 0 8px;
+}
+.se-empty__lede {
+  font-size: 13px;
+  color: color-mix(in srgb, var(--cp-text-primary) 60%, transparent);
+  max-width: 56ch;
+  margin: 0 auto;
+  line-height: 1.55;
+}
+
+/* ── Spaces filter ────────────────────────────────────────────── */
+.se-spaces {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin: -6px 0 30px;
+}
+.se-space-chip {
+  padding: 7px 14px;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--cp-text-primary) 10%, transparent);
+  color: color-mix(in srgb, var(--cp-text-primary) 60%, transparent);
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.22s ease;
+}
+.se-space-chip:hover {
+  border-color: color-mix(in srgb, var(--cp-gold, #d9b285) 35%, transparent);
+  color: var(--cp-gold, #d9b285);
+}
+.se-space-chip.is-active {
+  background: color-mix(in srgb, var(--cp-gold, #d9b285) 14%, transparent);
+  border-color: color-mix(in srgb, var(--cp-gold, #d9b285) 45%, transparent);
+  color: var(--cp-gold, #d9b285);
+}
+
+/* ── Timeline entries ─────────────────────────────────────────── */
+.se-timeline { display: flex; flex-direction: column; gap: 48px; }
+.se-entry {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 36px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid color-mix(in srgb, var(--cp-text-primary) 5%, transparent);
+}
+@media (max-width: 720px) {
+  .se-entry { grid-template-columns: 1fr; gap: 16px; padding-bottom: 30px; }
+}
+.se-entry:last-child { border-bottom: none; }
+
+.se-entry__meta {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.se-entry__date {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--cp-text-primary) 50%, transparent);
+}
+.se-entry__kind {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 9.5px; letter-spacing: 0.20em; text-transform: uppercase;
+  color: var(--cp-gold, #d9b285);
+}
+.se-entry__space {
+  font-family: 'Playfair Display', serif;
+  font-style: italic; font-size: 14px;
+  color: color-mix(in srgb, var(--cp-text-primary) 70%, transparent);
+}
+
+.se-entry__body { min-width: 0; }
+.se-entry__title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic; font-size: 24px; line-height: 1.18;
+  color: var(--cp-text-primary, #efe8d8);
+  margin: 0 0 14px;
+}
+@media (max-width: 720px) {
+  .se-entry__title { font-size: 21px; }
+}
+.se-entry__narrative {
+  font-size: 14.5px; line-height: 1.65;
+  color: color-mix(in srgb, var(--cp-text-primary) 75%, transparent);
+  margin: 0 0 22px;
+  max-width: 68ch;
+}
+
+/* ── Photos (architectural, calm) ─────────────────────────────── */
+.se-photos {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+@media (max-width: 720px) {
+  .se-photos { grid-template-columns: 1fr; }
+}
+.se-photo {
+  position: relative;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--cp-text-primary) 4%, transparent);
+}
+.se-photo img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.se-photo:hover img { transform: scale(1.02); }
+.se-photo__caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 14px 16px 12px;
+  background: linear-gradient(180deg, transparent, rgba(15, 14, 12, 0.85));
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--cp-text-primary) 70%, transparent);
+}
+
+/* ── Before / After slider ────────────────────────────────────── */
+.se-baf {
+  position: relative;
+  margin-top: 18px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--cp-text-primary) 4%, transparent);
+  user-select: none;
+}
+.se-baf__img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.se-baf__after-wrap {
+  position: absolute; inset: 0;
+  overflow: hidden;
+}
+.se-baf__handle {
+  position: absolute; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--cp-gold, #d9b285);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--cp-gold, #d9b285) 55%, transparent);
+  cursor: ew-resize;
+}
+.se-baf__handle::before {
+  content: ""; position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(15, 14, 12, 0.6); backdrop-filter: blur(12px);
+  border: 1px solid var(--cp-gold, #d9b285);
+}
+.se-baf__handle::after {
+  content: "↔";
+  position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--cp-gold, #d9b285);
+  font-size: 16px;
+}
+.se-baf__label {
+  position: absolute; top: 14px;
+  padding: 5px 11px;
+  background: rgba(15, 14, 12, 0.78); backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--cp-text-primary) 14%, transparent);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--cp-text-primary) 80%, transparent);
+  border-radius: 999px;
+}
+.se-baf__label--before { left: 14px; }
+.se-baf__label--after  { right: 14px; }

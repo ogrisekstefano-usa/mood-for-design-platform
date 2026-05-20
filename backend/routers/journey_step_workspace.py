@@ -64,7 +64,7 @@ ARTIFACT_SOURCE = {
     "technical_package":    ["project_documents"],
     "final_presentation":   ["proposals"],
     "curated_selections":   ["moodboards"],
-    "site_evolution":       ["site_evolution_photos"],
+    "site_evolution":       ["site_evolution_entries"],
     "inspirations":         [],
     "brief":                [],
     "certified_closure":    [],
@@ -213,7 +213,45 @@ ARTIFACT_LOADER = {
     "project_materials":   _materials_for_step,
     "proposals":           _proposals_for_step,
     "project_documents":   _documents_for_step,
+    "site_evolution_entries": lambda c, tid, pid: _site_evolution_for_step(c, tid, pid),
 }
+
+
+def _site_evolution_for_step(c, tid: str, pid: str) -> List[Dict[str, Any]]:
+    """Pull site evolution entries for the journey of this project (G.8).
+
+    We fetch them via the journey_id derived from the project, and surface
+    each entry as an artifact with cover_url = first photo or before_url.
+    """
+    j_rows = (c.table("design_journeys").select("id")
+              .eq("tenant_id", tid).eq("project_id", pid)
+              .limit(1).execute().data or [])
+    if not j_rows:
+        return []
+    journey_id = j_rows[0]["id"]
+    rows = _safe_select(
+        c, "journey_timeline_events",
+        {"tenant_id": tid, "journey_id": journey_id,
+         "event_type": "site_evolution"},
+        fields="id, narrative_text, metadata, created_at",
+        order="created_at", desc=True, limit=40,
+    )
+    out: List[Dict[str, Any]] = []
+    for i, r in enumerate(rows):
+        meta = r.get("metadata") or {}
+        photos = meta.get("photos") or []
+        cover = (photos[0].get("url") if photos else None) or meta.get("after_url") or meta.get("before_url")
+        out.append({
+            "artifact_id":    r["id"],
+            "artifact_type":  "site_evolution",
+            "title":          meta.get("title") or r.get("narrative_text"),
+            "cover_url":      cover,
+            "approval_state": meta.get("visit_kind") or "milestone",
+            "chapter_label":  meta.get("space_key", "Spazio").title(),
+            "chapter_index":  i,
+            "created_at":     r.get("created_at"),
+        })
+    return out
 
 
 def _voices_for_milestone(c, tid: str, mid: str) -> List[Dict[str, Any]]:
