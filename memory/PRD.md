@@ -53,6 +53,58 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint UI Consolidation (Feb 21, 2026 · iter99)
+**Coerenza percettiva: palette atmosferica condivisa + cleanup sidebar + Moodboards atelier.**
+
+#### Strategic shift
+Sprint di consolidamento (non nuove feature). Elimina incoerenze cromatiche, sezioni "pure black SaaS", densità sbagliate, feeling "placeholder" sui moodboard senza cover. MOOD diventa un **ecosistema editoriale premium coerente**.
+
+#### Sidebar cleanup
+- **Curatorial Atlas** ora contiene SOLO: Inspirations · Brand Mode · Material View · **Media Library** (→ /library) · Cultural Editions™.
+- **Rimossi**: Product Gallery (ridondante con Inspirations), Visual Archive (sostituito da Media Library).
+
+#### Shared atmospheric base
+- **NEW** `/app/frontend/src/styles/mood-atmosphere.css` — layer atmosferico condiviso, importato dall'`index.css`:
+  - `--mood-bg` = `#0c0e11` (warm charcoal, MAI #000 / #0a0b0c)
+  - `--mood-atmosphere` = 3 ellissi radiali diffuse (warm 0.045 · cyan 0.035 · cyan 0.015)
+  - Palette tokens: `--mood-warm` `--mood-cyan` `--mood-pearl` `--mood-amber` `--mood-success` `--mood-rose`
+  - `.mood-atmospheric` helper class + `--grain` variant con texture sottilissima (`prefers-reduced-motion` rispettato).
+
+#### Opt-in pagine
+- `projects-page.css`, `design-journey.css`, `insights.css`, `inspirations.css`, `material-view.css`, `moodboards-atelier.css` ora usano `var(--mood-bg)` + `var(--mood-atmosphere)`. Zero pure-black backgrounds.
+
+#### Inspirations grid refactor
+- Column-count progression: **6** (>=1700px) → 5 → 4 → 4 (1100px) → 3 (960px) → 2 (760px) → 1.
+- Gap stretto: 10px (era 12).
+- Card border-radius più sobrio (4px).
+- Page padding ridotto (36px verticale).
+- Feeling: archivio curatoriale, non social feed.
+
+#### Material View tile compactness
+- `minmax(150px, 1fr)` invece di 180px → tiles più dense, atlante materico editoriale.
+- Gap 5px (era 6).
+
+#### Insights raffinamento
+- Glow stat cards softened: `box-shadow rgba(...,0.20)` (era 0.35).
+- Atmosphere base diffusa, meno contrasto aggressivo, più respiro.
+
+#### Moodboards atelier (CRITICO)
+- **MoodboardCard** smart fallback composition: se la cover manca, genera:
+  - **Hero gradient** dai colori reali del progetto (35 swatch IT mapping: earth/olive/bronze/...).
+  - **Strips colorati** decorativi sul bottom del hero.
+  - **Titolo italic Playfair** floating center con text-shadow.
+  - **Status pill** glassmorphic con dot glow.
+- **Body**: titolo, "Per · {progetto}" con hue dot, atmosphere chip italic warm, palette dots reali, material chips, footer con timestamp narrativo + **"Continua la direzione →"** CTA hover.
+- Eyebrow: "Design Journey · Tavolo Creativo".
+- Status meta editoriali: "Composizione aperta", "Direzione condivisa", "Cliente in lettura", "Direzione approvata", "Revisione richiesta", "Da ripensare".
+
+#### Editorial language guard
+Vietato come label visibile: `Product Library`, `Asset Manager`, `Grid Manager`, `card widget`, `file browser`, `Open moodboard`. Confermati vietati: `task`, `sprint`, `kanban`, `workflow`, `todo`, `dashboard widget`.
+
+#### Tests
+- **Backend**: 80/80 pass (iter94+95+96+97+98+99). `test_iteration_99_ui_consolidation.py` lock: sidebar Curatorial Atlas cleanup, mood-atmosphere layer + tokens + import, 5 pagine opt-in, inspirations grid denser, material-view tiles più compatte, moodboards atelier card smart fallback, no pure black, no admin lexicon.
+- **Frontend**: 7/7 mandates pass (Playwright iter99). Zero ui_bugs, zero integration_issues. Solo 2 osservazioni cosmetiche risolte: breakpoint 4-col aggiunto a 1100px, italic title già presente via `.mbcard__title em`.
+
 ### Sprint Sidebar Refinements + Studio Insights + Projects Atelier (Feb 21, 2026 · iter98)
 **Quick sidebar tweaks + Studio Overview cinematic + Lista progetti come atelier editoriale.**
 
