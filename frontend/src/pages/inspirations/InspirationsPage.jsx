@@ -98,6 +98,10 @@ const InspirationsPage = () => {
                 data-testid="ins-brand-mode-link">
             <Icons.Compass size={13} /> Brand Mode™
           </Link>
+          <Link to="/inspirations/materials" className="ins-cta-secondary"
+                data-testid="ins-material-view-link">
+            <Icons.Layers size={13} /> Material View™
+          </Link>
           <button type="button" className="ins-cta-secondary"
                   onClick={() => setCatalogOpen(true)}
                   data-testid="ins-catalog-btn">

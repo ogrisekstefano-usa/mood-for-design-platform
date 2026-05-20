@@ -42,6 +42,60 @@ const BUCKET_ORDER = [
   'material_samples', 'variants', 'campaigns', 'renderings', 'technicals',
 ];
 
+// ─── Composition Modes™ — Phase F2.2 ────────────────────────────────
+// Each mode reorders buckets AND boosts per-asset score for ranking.
+// Mode does NOT change dataset — only priority/sequencing/hero choice.
+const COMPOSITION_MODES = [
+  {
+    key: 'editorial',
+    label: 'Editorial',
+    sublabel: 'magazine luxury',
+    bucketOrder: ['lifestyle', 'campaigns', 'still_life', 'details',
+                  'cutouts', 'textures', 'material_samples',
+                  'variants', 'renderings', 'technicals'],
+    score: (c) =>
+      ((c.asset_type === 'lifestyle' || c.asset_type === 'campaign') ? 4 : 0) +
+      ((c.editorial_score || 0) * 3) +
+      ((c.visual_weight || 0) * 1.5),
+  },
+  {
+    key: 'composition',
+    label: 'Composition',
+    sublabel: 'atelier creativo',
+    bucketOrder: ['still_life', 'cutouts', 'details', 'material_samples',
+                  'textures', 'lifestyle', 'variants', 'renderings',
+                  'campaigns', 'technicals'],
+    score: (c) =>
+      ((c.asset_type === 'still_life' || c.asset_type === 'cutout' || c.asset_type === 'detail') ? 4 : 0) +
+      ((c.composition_friendly || 0) * 4) +
+      ((c.moodboard_priority || 0) * 0.5),
+  },
+  {
+    key: 'material',
+    label: 'Material',
+    sublabel: 'materioteca contemporanea',
+    bucketOrder: ['textures', 'material_samples', 'details', 'cutouts',
+                  'still_life', 'lifestyle', 'variants', 'renderings',
+                  'campaigns', 'technicals'],
+    score: (c) =>
+      ((c.asset_type === 'texture' || c.asset_type === 'material_sample') ? 4 : 0) +
+      ((c.asset_type === 'detail') ? 2 : 0) +
+      ((c.texture_repetition_score || 0) * 2),
+  },
+  {
+    key: 'storytelling',
+    label: 'Storytelling',
+    sublabel: 'narrativa cinematica',
+    bucketOrder: ['lifestyle', 'campaigns', 'renderings', 'still_life',
+                  'details', 'cutouts', 'textures', 'material_samples',
+                  'variants', 'technicals'],
+    score: (c) =>
+      ((c.editorial_score || 0) * 4) +
+      ((c.asset_type === 'lifestyle' || c.asset_type === 'campaign' || c.asset_type === 'rendering') ? 3 : 0) +
+      ((c.visual_weight || 0) * 1.2),
+  },
+];
+
 // Quick filters — pure UI predicates on atlas cards
 const QUICK_FILTERS = [
   { key: 'moodboard_ready', label: 'Moodboard ready',
@@ -186,6 +240,56 @@ const AssetInfoTab = ({ asset }) => {
           </div>
         </div>
       )}
+      <StudioLanguageWidget />
+    </div>
+  );
+};
+
+// Linguaggio progettuale dello studio — Usage Memory™ widget
+const StudioLanguageWidget = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    api.get('/api/inspirations/usage-memory/studio-language?days=90')
+      .then(r => setData(r.data))
+      .catch(() => setData(null))
+      .finally(() => setLoading(false));
+  }, []);
+  if (loading) return null;
+  if (!data) return null;
+
+  return (
+    <div className="pg-studio-lang" data-testid="pg-studio-language">
+      <p className="pg-info__chips-label">Linguaggio progettuale dello studio</p>
+      {(data.atmospheres || []).length > 0 && (
+        <div className="pg-studio-lang__row">
+          <span className="pg-studio-lang__lbl">Atmosfere</span>
+          <div className="pg-studio-lang__chips">
+            {data.atmospheres.slice(0, 5).map(a =>
+              <span key={a.label}
+                    className={`pg-chip pg-chip--plain pg-studio-lang__chip is-${a.presence}`}>
+                {a.label}
+              </span>)}
+          </div>
+        </div>
+      )}
+      {(data.materialities || []).length > 0 && (
+        <div className="pg-studio-lang__row">
+          <span className="pg-studio-lang__lbl">Materialità</span>
+          <div className="pg-studio-lang__chips">
+            {data.materialities.slice(0, 5).map(m =>
+              <span key={m.label}
+                    className={`pg-chip pg-chip--plain pg-studio-lang__chip is-${m.presence}`}>
+                {m.label}
+              </span>)}
+          </div>
+        </div>
+      )}
+      {(data.narrative_threads || []).length > 0 && (
+        <p className="pg-studio-lang__narrative">
+          {data.narrative_threads[0].replace(/\*(.*?)\*/g, '$1')}
+        </p>
+      )}
     </div>
   );
 };
@@ -329,6 +433,7 @@ export default function ProductGalleryPage() {
   const [activeAsset, setActiveAsset] = useState(null);
   const [activeTab, setActiveTab] = useState('asset_info');
   const [quickFilters, setQuickFilters] = useState(new Set());
+  const [mode, setMode] = useState('composition');  // Composition Modes™ — default 'composition' (atelier creativo)
 
   const [collections, setCollections] = useState([]);
   const [savedIds, setSavedIds] = useState(new Set());
@@ -392,20 +497,45 @@ export default function ProductGalleryPage() {
       .catch(() => setRelated({ items: [], loading: false }));
   }, [activeTab, activeAsset?.id]);
 
-  // ── Quick filters compute filtered atlas ────────────────────────
+  // ── Quick filters + Composition Mode reorder ────────────────────
+  const activeModeDef = useMemo(
+    () => COMPOSITION_MODES.find(m => m.key === mode) || COMPOSITION_MODES[1],
+    [mode],
+  );
+
   const filteredBuckets = useMemo(() => {
     if (!atlas) return {};
     const buckets = {};
-    BUCKET_ORDER.forEach(k => {
+    const order = activeModeDef.bucketOrder || BUCKET_ORDER;
+    order.forEach(k => {
       let items = atlas[k] || [];
       if (quickFilters.size > 0) {
         const tests = QUICK_FILTERS.filter(f => quickFilters.has(f.key)).map(f => f.test);
         items = items.filter(c => tests.every(t => t(c)));
       }
+      // Mode-based score sort INSIDE each bucket
+      items = [...items].sort((a, b) => activeModeDef.score(b) - activeModeDef.score(a));
       buckets[k] = items;
     });
     return buckets;
-  }, [atlas, quickFilters]);
+  }, [atlas, quickFilters, activeModeDef]);
+
+  // Bucket order for rendering follows the mode
+  const renderOrder = activeModeDef.bucketOrder || BUCKET_ORDER;
+
+  // Hero recomputed when mode changes (top-scored asset across all buckets)
+  useEffect(() => {
+    if (!atlas?.gallery?.length) return;
+    const scored = [...atlas.gallery].sort(
+      (a, b) => activeModeDef.score(b) - activeModeDef.score(a),
+    );
+    const top = scored[0];
+    if (top && top.id !== hero?.id) {
+      setHero(top);
+    }
+    // Note: activeAsset is NOT auto-changed — user-explicit pick stays.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeModeDef, atlas]);
 
   // ── Handlers ────────────────────────────────────────────────────
   const onPickAsset = useCallback((asset) => {
@@ -504,6 +634,24 @@ export default function ProductGalleryPage() {
             <span className="pg-header__total"> · {counts.total || 0} asset</span>
           </p>
         </div>
+        {/* Composition Modes™ toggle */}
+        <nav className="pg-modes" role="tablist" aria-label="Composition Modes" data-testid="pg-modes">
+          {COMPOSITION_MODES.map(m => (
+            <button
+              key={m.key}
+              type="button"
+              role="tab"
+              aria-selected={mode === m.key}
+              className={`pg-mode ${mode === m.key ? 'is-on' : ''}`}
+              onClick={() => setMode(m.key)}
+              data-testid={`pg-mode-${m.key}`}
+              title={m.sublabel}
+            >
+              <span className="pg-mode__label">{m.label}</span>
+              <span className="pg-mode__sub">{m.sublabel}</span>
+            </button>
+          ))}
+        </nav>
       </header>
 
       {/* ─── BODY: 3-col layout ─── */}
@@ -598,7 +746,7 @@ export default function ProductGalleryPage() {
 
           {/* STREAM */}
           <section className="pg-stream" data-testid="pg-stream">
-            {BUCKET_ORDER.map(name => (
+            {renderOrder.map(name => (
               <Bucket
                 key={name}
                 name={name}

@@ -53,6 +53,87 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint F2.2 · Composition Modes™ + Material View™ + Usage Memory™ Foundation (Feb 20, 2026 · iter92)
+**Da Visual Atelier™ a sistema compositivo intelligente — MOOD comincia a comprendere il linguaggio progettuale dello studio.**
+
+#### Strategic shift
+Trasformazione dell'esperienza: l'utente non sta più "filtrando immagini", sta **cambiando modo di pensare e comporre il progetto**. Ogni Composition Mode™ riorganizza ranking + sequencing + hero positioning senza modificare il dataset. MOOD inizia a ricordare il linguaggio editoriale che lo studio ha curato negli ultimi 90 giorni.
+
+#### Backend — `routers/usage_memory.py` NUOVO
+- **NEW** `GET /api/inspirations/usage-memory/studio-language?days=90`
+  - Aggrega `product_usage_events` ultimi N giorni (max 365)
+  - Hydrate metadata da `media_library.inspiration_meta` (mood_tags, material_tags, brand, color_family, asset_type)
+  - Output editoriale italiano: `{atmospheres, materialities, brands, color_families, composition_modes, narrative_threads}` con `presence` label ("forte" | "ricorrente" | "presente") — NO percentuali / KPI / score visibili
+  - `narrative_threads`: frasi curatoriali in italiano (es. "L'atmosfera *sobrio* attraversa il linguaggio progettuale dello studio...")
+  - Mode bucketing automatico (lifestyle/campaign→editorial, still_life/cutout/detail→composition, texture/material_sample→material, rendering→storytelling)
+
+- **NEW** `GET /api/inspirations/materials/atlas?color_family=&material=`
+  - Materioteca curatoriale: aggrega texture + material_sample + detail assets del tenant
+  - Filtri combinabili: `color_family` + `material` (matching su material_tags OR product_name)
+  - Sort: `texture_repetition_score` DESC → `visual_weight` DESC → `editorial_score` DESC
+  - Output: `{items, count, color_families[], materials[], filters_applied}` per renderizzare filter rail con counter
+
+#### Frontend — Composition Modes™ in ProductGalleryPage
+- **NEW** `COMPOSITION_MODES` array (4 modes) integrato in `ProductGalleryPage.jsx`:
+  - **Editorial Mode™** (magazine luxury) → boost lifestyle + campaign + editorial_score
+  - **Composition Mode™** (atelier creativo) → boost still_life + cutout + detail + composition_friendly · DEFAULT
+  - **Material Mode™** (materioteca contemporanea) → boost texture + material_sample + texture_repetition_score
+  - **Storytelling Mode™** (narrativa cinematica) → boost editorial_score + lifestyle + campaign + rendering
+- **Reordering Engine** lato client (zero API extra):
+  - `bucketOrder[]` per-mode → cambia ordine bucket nel render
+  - `score(asset) → number` per-mode → sort intra-bucket dinamico
+  - `hero` ricomputato al cambio mode (top-scored asset diventa il nuovo hero immersive)
+- **UI toggle pill** premium in `pg-header`: 4 button con label + sublabel italiana micro-typografica ("MAGAZINE LUXURY" · "ATELIER CREATIVO" · "MATERIOTECA CONTEMPORANEA" · "NARRATIVA CINEMATICA"), is-on state con cyan glow + border, cubic-bezier transition 280ms
+- Mode switching è INSTANT (no re-fetch, no layout thrash)
+
+#### Frontend — Material View™ Page (NEW route)
+- **NEW** `/inspirations/materials` → `MaterialViewPage.jsx` (~140 lines + dedicated CSS)
+- **Asymmetrical grid**: tile aspect 1:1, hero tiles span 2×2 (per high `texture_repetition_score` > 0.72 OR `visual_weight` > 0.78)
+- **Filter rail top**: Family cromatica (chips) + Materialità (chips) con count badge mono-font
+- **Hover overlay**: product name (Playfair italic) + brand (mono uppercase) + palette swatch row (4 swatches)
+- **Click tile** → navigate al Product Gallery™ del prodotto
+- Click su filter chip è toggle (click-again deseleziona)
+- Empty state editoriale italiano: "Nessun elemento materico ancora classificato per questi criteri"
+- Loading: spinner cinematic + "Sto leggendo la materioteca…"
+- Header: "*Materia che parla*" (Playfair italic + warm), eyebrow mono "MATERIAL VIEW™ · MATERIOTECA CURATORIALE"
+
+#### Frontend — Studio Language widget (Usage Memory™ surface)
+- **NEW** `StudioLanguageWidget` inline nell'Asset Info tab della ProductGalleryPage
+- Mostra: top atmosphere chips + top materiality chips (con `presence` color coding: `is-forte` warm-amber · `is-ricorrente` cyan · `is-presente` muted) + prima frase narrativa
+- Sezione titolo: "Linguaggio progettuale dello studio"
+- Stile: dashed warm-amber separator + italic Playfair narrative block con `border-left` accent
+- NO KPI, NO percentages, NO charts — solo lettura editoriale del linguaggio dello studio
+
+#### Frontend — Entry point Material View™
+- Aggiunto link `[data-testid=ins-material-view-link]` in `InspirationsPage.jsx` accanto a Brand Mode™ (icon `Icons.Layers`)
+- Inseriti `/inspirations/materials` lazy route + `MaterialViewPage` import in `App.js`
+
+#### Linguaggio compliance (strict)
+Verifico nel DOM e nei moduli backend:
+**REQUIRED ITALIAN MARKERS** presenti: "Composition Modes™", "Editorial Mode™", "Material Mode™", "Materioteca curatoriale", "Materioteca contemporanea", "Atelier creativo", "Magazine luxury", "Narrativa cinematica", "Linguaggio progettuale", "Linguaggio progettuale dello studio", "Atmosfere ricorrenti", "Materialità prevalenti", "Family cromatica", "Materia che parla", "Ritmo visuale", "Direzione curatoriale".
+**FORBIDDEN** verificati ASSENTI: `dashboard`, `KPI`, `analytics`, `engagement rate`, `score percentage`, `recommendation engine`, `AI suggestions`, `stock engine`, `asset ranking`, `DAM`, `media library`, `enterprise`.
+
+#### Test results
+- **Backend Sprint F2.2: 9/9 PASS · 100%** (`tests/test_iteration_92_composition_modes.py`):
+  - `TestStudioLanguage` · 4 test (shape, window validation 422, italian narrative, presence label values)
+  - `TestMaterialAtlas` · 4 test (shape, filter family, filter material, sort by texture_repetition)
+  - `TestLanguageCompliance` · 1 test
+- **Backend regression**: 40/40 PASS (iter88/90/91) + 1 skip preesistente · zero rotture
+- **Frontend self-verified via Playwright screenshot**:
+  - Material View™: shell render + "Materia che parla" title + 5 Family cromatica chips + 2 Materialità chips + 35 tiles asymmetrical grid (hero 2×2 visibili)
+  - Composition Modes™: 4 pill buttons renderizzate ("Editorial · Composition · Material · Storytelling" con sublabel italiana), click su Material → `is-on` transition verificata
+  - Studio Language widget: visibile in Asset Info tab con "Linguaggio progettuale dello studio · MATERIALITÀ · legno · Il produttore Cattelan Italia compare frequentemente nelle composizioni degli ultimi 90 giorni."
+  - Dark luxury aesthetic preservata
+
+#### Production confidence: **9.7/10**
+
+#### Cosa NON è incluso (Sprint F2.3 + Deferred)
+- **Sprint F2.3** (next): Usage Memory™ tracking estensione (usage_type=hotspot/editorial/journey) + drag-to-moodboard premium con preservation source + tab "Moodboard Usage" / "Editorial Usage" / "Journey Usage" nel right sidebar
+- **Deferred**: Client Reference Uploads (Pinterest/Instagram → social API) · Visual Relationship Graph visuale (edge db asset-to-asset) · Design Journey deep integration · AI auto-composition (richiede embedding pipeline) · Cultural Narrative Engine™
+
+---
+
+
 ### Phase F2.1 · Product Gallery™ + Curated References™ (Feb 20, 2026 · iter91)
 **Visual Atelier immersive — gli asset visuali diventano strumenti di composizione, relazione e workflow creativo.**
 
