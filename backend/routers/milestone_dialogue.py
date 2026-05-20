@@ -182,11 +182,12 @@ def create_version(mid: str, body: VersionIn, ctx=Depends(get_tenant_context)):
     # Emit an editorial timeline event on the journey
     try:
         db().table('journey_timeline_events').insert({
-            "tenant_id":     tid,
-            "journey_id":    m.get('journey_id'),
-            "event_type":    "chapter_added",
+            "tenant_id":      tid,
+            "journey_id":     m.get('journey_id'),
+            "milestone_id":   mid,
+            "event_type":     "chapter_added",
             "narrative_text": f"{CHAPTER_LABEL[body.chapter_kind]} aggiunta a {m.get('title')}.",
-            "actor_id":      ctx.get("user_id"),
+            "created_by":     ctx.get("profile_id") or ctx.get("user_id"),
         }).execute()
     except Exception:
         pass
@@ -220,11 +221,12 @@ def create_feedback(mid: str, body: FeedbackIn, ctx=Depends(get_tenant_context))
         narrative = (f'{phrase} · "{body.quote}"' if body.quote and body.kind == 'free_voice'
                      else phrase)
         db().table('journey_timeline_events').insert({
-            "tenant_id":     tid,
-            "journey_id":    m.get('journey_id'),
-            "event_type":    "client_voice",
+            "tenant_id":      tid,
+            "journey_id":     m.get('journey_id'),
+            "milestone_id":   mid,
+            "event_type":     "client_voice",
             "narrative_text": f"Voce del cliente · {narrative}",
-            "actor_id":      ctx.get("user_id"),
+            "created_by":     ctx.get("profile_id") or ctx.get("user_id"),
         }).execute()
     except Exception:
         pass

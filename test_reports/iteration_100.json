@@ -1,0 +1,53 @@
+{
+  "summary": "Sprint F.B · Immersive Project Dialogue™ — Full backend + frontend validation. 11/11 backend pytest PASS. Frontend MilestoneDialogue mounts correctly under Design Journey™, renders all 10 editorial Italian CTAs (9 + free-voice), 10 chapter-kind pills, composer, voice composer, echo cards, and emits 'Voce del cliente · ...' narrative events into the EvolutionTimeline. ZERO forbidden lexicon terms found in live DOM. Atmosphere is cinematic editorial — no Jira/Asana/SaaS percezione.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_100_milestone_dialogue.py",
+    "/app/test_reports/pytest/iteration_100.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "PASS · Editorial Italian lexicon is consistently enforced both server-side (CHAPTER_LABEL/FEEDBACK_LABEL maps + 400 reject on unknown kinds) and client-side (no V1/V2/V3, no approve/reject anywhere).",
+    "PASS · Backend correctly persists rationale_json under projects.metadata_json.rationale_json (7 editorial keys) with idempotent merge semantics + rationale_updated_at timestamp.",
+    "PASS · POST /feedback and POST /versions emit narrative_text events on journey_timeline_events (event_type='client_voice' / 'chapter_added') using 'created_by' (no actor_id reference, schema-aligned).",
+    "NIT · The pytest fixture originally hard-pinned to the first project (no milestones in seed) — fixed to scan for a project with a moodboard_direction milestone. Recommend creating a stable seed fixture for E1 to keep tests deterministic.",
+    "OBSERVATION · MilestoneDialogue renders BELOW the EvolutionTimeline (DesignJourneyTab L478). UX-wise this means the curatorial conversation lives 'after the timeline' — works well editorially, but may want a soft anchor link from the active milestone card so users discover it without scrolling.",
+    "OBSERVATION · The CuratorialFeedback CTA column at 1440px renders as a tall vertical list of 10 buttons (right column). At narrower viewports it could feel like a long list — consider a 2-column chip layout above ~1100px for breathing room. NOT a blocker."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_100_milestone_dialogue.py"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "During UI testing I posted 3 real feedback rows (palette_works, embraces, palette_works) + 1 chapter 'Luce mediterranea / Evoluzione proposta' against milestone Moodboard Direction™ of project 80c5f050-b354-4051-8483-9e4c32d6b725. Plus pytest creates a few TEST chapters/feedback on that same project — totally safe (no enterprise vocab).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Sprint F.B is solid end-to-end. Use project_id 80c5f050-b354-4051-8483-9e4c32d6b725 for any UI verification (has 10 milestones including Moodboard Direction™). For backend regression run: pytest /app/backend/tests/test_iteration_100_milestone_dialogue.py — fixture now self-discovers the right project so it stays green. The MilestoneDialogue mounts BELOW EvolutionTimeline, scroll required.",
+  "tests_executed": {
+    "backend_pytest": "11 passed (test_get_dialogue_returns_editorial_lexicon, test_create_chapter_with_italian_kind, test_create_chapter_rejects_v1_style_kind, test_create_feedback_with_curatorial_kind, test_create_feedback_rejects_enterprise_kind, test_feedback_emits_client_voice_event, test_put_rationale_persists_editorial_keys, test_project_memory_returns_narrative_entries, test_milestone_dialogue_component_exists_and_mounted, test_frontend_component_uses_editorial_italian_labels, test_frontend_renders_all_9_client_ctas)",
+    "frontend_e2e": [
+      "Login demo@moodfordesign.com → /dashboard OK",
+      "Navigate /workspace/projects/80c5f050... → Design Journey™ tab OK",
+      "Click milestone 'Moodboard Direction™' → FocusPanel + DetailsPanel + EvolutionTimeline render in italiano editoriale",
+      "MilestoneDialogue mounts below EvolutionTimeline with 'I capitoli condivisi' (1), 'Conversazione progettuale' (2), 'Voce del cliente' (3), 'Aggiungi un capitolo' (1), 'Una voce libera' (1)",
+      "10 feedback CTAs rendered via data-testid=feedback-cta-* (9 editorial + free-voice) — all visible IT labels",
+      "Click 'Aggiungi un capitolo' → chapter-composer opens with 10 chapter-kind pills (Direzione iniziale/Evoluzione proposta/Variante condivisa/Revisione materica/Nuova interpretazione/Direzione finale/Variante più luminosa/Direzione più materica/Interpretazione hospitality/Evoluzione minimal contemporanea), title input, summary textarea, rationale textarea, 'Aggiungi il capitolo' submit, 'Annulla' cancel",
+      "Click 'Una voce libera' → voice composer opens with textarea + 'Condividi' send + 'Chiudi'",
+      "Click feedback-cta-palette_works → echo card appears with 'Questa palette funziona molto bene' + dated stamp 'it-IT' format; toast 'La voce del cliente è stata accolta' surfaces",
+      "EvolutionTimeline shows new narrative events: 'Voce del cliente · Questa direzione mi rappresenta', 'Voce del cliente · Questa palette funziona molto bene', 'Evoluzione proposta aggiunta a Moodboard Direction™' — perfect editorial continuity",
+      "Forbidden lexicon scan on MilestoneDialogue subtree: ZERO hits (task/sprint/kanban/workflow/dashboard widget/ticket/todo/doing/approve/reject/V1/V2/V3/revision history/compare revisions/add comment/change request/pending review/upload center/attachment center/audit log/file management/review queue)",
+      "Forbidden lexicon scan on WHOLE page DOM (including sidebar/header): ZERO hits",
+      "Responsive: no horizontal overflow at 1280×800 or 768×1024"
+    ],
+    "cinematic_perception_check": "PASS — Dark warm charcoal background, italic serif headings ('I capitoli condivisi', 'Conversazione progettuale'), warm gold/beige CTAs with subtle borders, capitoli numbered 'capitolo · 01' in small-caps eyebrow, chapter_label as italic accent ('Evoluzione proposta'), rationale rendered as blockquote. Echo cards use tone-colored left border (embrace/curious/reorient/voice). Toast 'La voce del cliente è stata accolta' is editorial-warm, not 'Success!' generic. NO Jira/Asana/Monday/ClickUp/PM dashboard feeling detected at any point of the surface."
+  },
+  "rca_of_the_issue": "Initial 8/11 pytest failures stemmed from the fixture pinning to /api/projects?limit=1 — the first project returned by the API had no milestones (broken seed). Root cause: hard-coded ordering assumption in test fixture. Mitigation: rewrote fixture to first try the seeded preferred project (80c5f050-b354-4051-8483-9e4c32d6b725) then fall back to scanning up to 50 projects until one with a moodboard_direction milestone is found, with pytest.skip if none exist."
+}

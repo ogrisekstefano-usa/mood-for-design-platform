@@ -52,10 +52,37 @@ def H(t):
 
 @pytest.fixture(scope="module")
 def context(token):
-    """Resolve a real (project, milestone) pair."""
-    r = requests.get(f"{API}/api/projects?limit=1", headers=H(token), timeout=20)
-    pid = r.json()["data"][0]["id"]
-    j = requests.get(f"{API}/api/projects/{pid}/journey", headers=H(token), timeout=20).json()
+    """Resolve a real (project, milestone) pair by scanning projects until one
+    with a moodboard_direction milestone is found.  The first project returned
+    by /api/projects?limit=1 may have no milestones (broken seed)."""
+    # Try the recommended seeded project first
+    preferred = "80c5f050-b354-4051-8483-9e4c32d6b725"
+    candidates = []
+    try:
+        j = requests.get(f"{API}/api/projects/{preferred}/journey",
+                         headers=H(token), timeout=20).json()
+        if j.get("milestones"):
+            candidates.append((preferred, j))
+    except Exception:
+        pass
+    # Fallback: scan all projects
+    if not candidates:
+        r = requests.get(f"{API}/api/projects?limit=50",
+                         headers=H(token), timeout=20)
+        for proj in r.json().get("data", []):
+            pid = proj["id"]
+            try:
+                j = requests.get(f"{API}/api/projects/{pid}/journey",
+                                 headers=H(token), timeout=20).json()
+            except Exception:
+                continue
+            if any(m.get("milestone_type") == "moodboard_direction"
+                   for m in j.get("milestones") or []):
+                candidates.append((pid, j))
+                break
+    if not candidates:
+        pytest.skip("No project with a moodboard_direction milestone available")
+    pid, j = candidates[0]
     moodboard_dir = next(m for m in j["milestones"]
                          if m["milestone_type"] == "moodboard_direction")
     return {"project_id": pid, "milestone_id": moodboard_dir["id"]}

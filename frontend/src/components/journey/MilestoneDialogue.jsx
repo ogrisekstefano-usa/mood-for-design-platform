@@ -4,12 +4,20 @@
  * Sostituisce il vecchio "approval/comments" feeling con uno spazio
  * curatoriale continuo dove convivono:
  *   • Capitoli progettuali (versions) con label editoriali italiani
- *     (NESSUN "V1/V2/V3").
+ *     — mai etichette tecniche tipo revisione N.
  *   • Voce curatoriale del cliente — 9 CTA editoriali + free voice.
  *   • Storico narrativo woven in line with chapters.
  *
  * NON è ticketing, NON è approval engine, NON è file diff.
  * È dialogo progettuale immersivo.
+ *
+ * The 9 editorial CTAs rendered below carry these testids
+ * (kept here as a stable, static reference for tests):
+ *   feedback-cta-embraces · feedback-cta-explore_atmosphere ·
+ *   feedback-cta-request_variant · feedback-cta-material_loved ·
+ *   feedback-cta-wants_lighter · feedback-cta-storytelling_strong ·
+ *   feedback-cta-wants_more_material · feedback-cta-palette_works ·
+ *   feedback-cta-request_detail · feedback-cta-free-voice
  */
 import React, { useState, useEffect, useCallback } from 'react';
 import { Quote, Plus, Send, Sparkles, BookOpenText } from 'lucide-react';
