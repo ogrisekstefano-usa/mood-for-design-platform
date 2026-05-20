@@ -60,6 +60,19 @@ class BrandCreate(BaseModel):
     agreement_status: Optional[str] = "unverified"
 
 
+class BrandUpdate(BaseModel):
+    """Patch payload for studio_private brands. All fields optional."""
+    name:            Optional[str] = Field(None, min_length=1, max_length=120)
+    website:         Optional[str] = None
+    category:        Optional[str] = None
+    country:         Optional[str] = None
+    primary_markets: Optional[List[str]] = None
+    positioning:     Optional[str] = None
+    luxury_tier:     Optional[str] = None
+    agreement_status: Optional[str] = None
+    logo_url:        Optional[str] = None
+
+
 class CollectionCreate(BaseModel):
     name:        str = Field(..., min_length=1, max_length=160)
     year:        Optional[int] = None
@@ -147,6 +160,63 @@ def get_brand(brand_id: str, ctx=Depends(get_tenant_context)):
     return rows[0]
 
 
+def _is_studio_private(brand: Dict[str, Any], tenant_id: str) -> bool:
+    """Editable/deletable only when the brand BELONGS to the current tenant
+    (curated_public brands have tenant_id IS NULL and are read-only).
+    """
+    return brand.get("tenant_id") is not None and brand.get("tenant_id") == tenant_id
+
+
+@router.patch("/registry/brands/{brand_id}")
+def update_brand(brand_id: str, body: BrandUpdate, ctx=Depends(get_tenant_context)):
+    """Update a studio_private brand. Curated_public brands (curated by MOOD)
+    are read-only — the registry consistency depends on it.
+
+    Linguaggio italiano editoriale negli errori — niente "permission denied"
+    enterprise.
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+    brand = get_brand(brand_id, ctx)
+    if not _is_studio_private(brand, tid):
+        raise HTTPException(403,
+            "Questo produttore è curato da MOOD — non è modificabile dallo studio.")
+
+    patch: Dict[str, Any] = {k: v for k, v in body.model_dump(exclude_unset=True).items()
+                             if v is not None}
+    if "name" in patch:
+        patch["slug"] = _slugify(patch["name"])
+    patch["updated_at"] = _now()
+
+    if not patch:
+        return brand
+
+    c.table("brands").update(patch).eq("id", brand_id).execute()
+    # Read-back so the response has the merged row
+    return get_brand(brand_id, ctx)
+
+
+@router.delete("/registry/brands/{brand_id}", status_code=204)
+def delete_brand(brand_id: str, ctx=Depends(get_tenant_context)):
+    """Remove a studio_private brand. The brand visibility check is the
+    same as PATCH — curated brands stay protected.
+
+    Side effects (deliberate · best-effort, non-blocking):
+      • brand_collections of this brand stay in the DB but become orphaned
+        (we don't cascade — collections may carry curatorial value worth
+        archiving). The frontend filters them out in Studio Collections™.
+      • product_usage_events stay (historic data).
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+    brand = get_brand(brand_id, ctx)
+    if not _is_studio_private(brand, tid):
+        raise HTTPException(403,
+            "Questo produttore è curato da MOOD — non è eliminabile dallo studio.")
+    c.table("brands").delete().eq("id", brand_id).execute()
+    return None
+
+
 # ─── Brand Mode™ — atlante curatoriale dei produttori ───────────────────
 # Phase D · Sprint D3. Brand Mode™ list endpoint enriches each brand with
 # the counts the editorial card needs (collections, product inspirations,
@@ -229,6 +299,7 @@ def brands_atlas(
         bn = b["name"]
         items.append({
             **b,
+            "is_studio_private":  b.get("tenant_id") is not None and b.get("tenant_id") == tid,
             "collections_count":   coll_count.get(b["id"], 0),
             "inspirations_count":  insp_count.get(bn, 0),
             "products_count":      product_count.get(bn, 0),
@@ -252,6 +323,8 @@ def brand_curatorial_profile(brand_id: str, ctx=Depends(get_tenant_context)):
     c = db()
     tid = ctx["tenant_id"]
     bn = brand["name"]
+    # Expose studio-private flag so the UI can gate edit/delete buttons
+    brand = {**brand, "is_studio_private": _is_studio_private(brand, tid)}
 
     # Collections (full list, year desc)
     collections = (c.table("brand_collections").select("*")
@@ -461,6 +534,65 @@ def create_collection(brand_id: str, body: CollectionCreate, ctx=Depends(get_ten
     }
     c.table("brand_collections").insert(row).execute()
     return {"item": row, "created": True}
+
+
+# ─── Collection edit / delete — Sprint E2 · Studio Collections™ CRUD ───
+class CollectionUpdate(BaseModel):
+    """Patch payload for studio-owned brand collections. All fields optional."""
+    name:        Optional[str] = Field(None, min_length=1, max_length=160)
+    year:        Optional[int] = None
+    season:      Optional[str] = None
+    category:    Optional[str] = None
+    description: Optional[str] = None
+
+
+def _get_collection(collection_id: str, tid: str) -> Dict[str, Any]:
+    c = db()
+    rows = (c.table("brand_collections").select("*")
+            .or_(f"tenant_id.is.null,tenant_id.eq.{tid}")
+            .eq("id", collection_id).limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Collezione non trovata")
+    return rows[0]
+
+
+def _is_studio_collection(coll: Dict[str, Any], tid: str) -> bool:
+    """Editable/deletable only for tenant-owned (studio_private) collections."""
+    return coll.get("tenant_id") is not None and coll.get("tenant_id") == tid
+
+
+@router.patch("/registry/collections/{collection_id}")
+def update_collection(collection_id: str, body: CollectionUpdate, ctx=Depends(get_tenant_context)):
+    """Update a studio-owned collection. Curated_public collections (those
+    seeded by MOOD with tenant_id IS NULL) stay read-only."""
+    tid = ctx["tenant_id"]
+    coll = _get_collection(collection_id, tid)
+    if not _is_studio_collection(coll, tid):
+        raise HTTPException(403,
+            "Questa collezione è curata da MOOD — non è modificabile dallo studio.")
+    patch: Dict[str, Any] = {k: v for k, v in body.model_dump(exclude_unset=True).items()
+                             if v is not None}
+    if "name" in patch:
+        patch["slug"] = _slugify(patch["name"])
+    patch["updated_at"] = _now()
+    if not patch:
+        return coll
+    db().table("brand_collections").update(patch).eq("id", collection_id).execute()
+    return _get_collection(collection_id, tid)
+
+
+@router.delete("/registry/collections/{collection_id}", status_code=204)
+def delete_collection(collection_id: str, ctx=Depends(get_tenant_context)):
+    """Remove a studio-owned collection. Linked Product Inspirations stay
+    in the archive (inspiration_meta.collection field is just a string ref —
+    we don't cascade)."""
+    tid = ctx["tenant_id"]
+    coll = _get_collection(collection_id, tid)
+    if not _is_studio_collection(coll, tid):
+        raise HTTPException(403,
+            "Questa collezione è curata da MOOD — non è eliminabile dallo studio.")
+    db().table("brand_collections").delete().eq("id", collection_id).execute()
+    return None
 
 
 # ─── Tag Registry™ ─────────────────────────────────────────────────────

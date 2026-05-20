@@ -31,6 +31,7 @@ import BlueprintColorPicker from '../../components/common/BlueprintColorPicker';
 import PagesFilmstrip from '../../blueprint/moodboard/PagesFilmstrip';
 import EditorPanel from '../../blueprint/moodboard/EditorPanel';
 import InlineEditorialRegia from '../../blueprint/moodboard/InlineEditorialRegia';
+import CuratorialInspirationsModal from '../../blueprint/moodboard/CuratorialInspirationsModal';
 // ActionToolbar removed from the editor — canvas-implicit interactions only.
 import { computeSnap } from '../../blueprint/moodboard/useSnap';
 import SnapGuides from '../../blueprint/moodboard/SnapGuides';
@@ -74,6 +75,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
   const [pages, setPages] = useState([]);
   const [activePageId, setActivePageId] = useState(null);
   const [regia, setRegia] = useState(null);  // { blockId, anchorRect } — Inline Editorial Regia™ popover
+  const [curatorialOpen, setCuratorialOpen] = useState(false);  // Curatorial Inspirations Modal™ fullscreen
   const [transitions, setTransitions] = useState([]);
   // QuickAdjust modal — lifted to editor root so changing the active block
   // doesn't unmount it mid-adjust. Holds { blockId, src }.
@@ -1001,6 +1003,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
           <EditorPanel
             onAddBlock={addBlock}
             onAddInspiration={addInspirationBlock}
+            onOpenCuratorial={() => setCuratorialOpen(true)}
             moodboardId={id}
             onOpenSkeletons={(skid) => {
               api.post(`/api/moodboards/${id}/pages/from_skeleton`, { skeleton_id: skid })
@@ -1319,6 +1322,14 @@ const MoodboardEditor = ({ readOnly = false }) => {
                             t={t} />
         );
       })()}
+
+      {/* Curatorial Inspirations Modal™ — fullscreen cinematic discovery */}
+      <CuratorialInspirationsModal
+        open={curatorialOpen}
+        onClose={() => setCuratorialOpen(false)}
+        moodboardId={id}
+        onAddInspiration={addInspirationBlock}
+      />
 
       {/* Inline Editorial Regia™ — contextual mini popover anchored to
           the image block. Live updates style.focal_point, style.zoom and

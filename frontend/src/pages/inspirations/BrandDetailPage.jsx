@@ -14,10 +14,15 @@
  * Inspirations / Moodboards / Cultural Editions™.
  */
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import * as Icons from 'lucide-react';
+import { toast } from 'sonner';
 import api from '../../lib/api';
+import BrandFormModal from './BrandFormModal';
+import CollectionFormModal from './CollectionFormModal';
+import ConfirmCinematicDialog from '../../components/ConfirmCinematicDialog';
 import './brand-mode.css';
+import './brand-form.css';
 
 const MARKET_LABEL = {
   'us-miami':    'Miami',  'us-nyc':      'New York',
@@ -60,15 +65,49 @@ const Tile = ({ src, label, sub, to, testid }) => {
 
 const BrandDetailPage = () => {
   const { brandId } = useParams();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [err, setErr] = useState(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [confirmDel, setConfirmDel] = useState(false);
+  const [collForm, setCollForm] = useState(null);  // { mode, collection?: {} } | null
+  const [confirmDelColl, setConfirmDelColl] = useState(null);  // collection | null
 
-  useEffect(() => {
+  const reload = () => {
     setProfile(null); setErr(null);
     api.get(`/api/inspirations/registry/brands/${brandId}/curatorial-profile`)
       .then((r) => setProfile(r.data))
       .catch((e) => setErr(e?.response?.data?.detail || 'Profilo non disponibile'));
-  }, [brandId]);
+  };
+
+  useEffect(reload, [brandId]);
+
+  const handleDelete = async () => {
+    try {
+      await api.delete(`/api/inspirations/registry/brands/${brandId}`);
+      toast.success('Produttore rimosso dall\'atlante');
+      setConfirmDel(false);
+      navigate('/inspirations/brands');
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || 'Impossibile rimuovere il produttore');
+      setConfirmDel(false);
+    }
+  };
+
+  const handleDeleteCollection = async () => {
+    if (!confirmDelColl) return;
+    try {
+      await api.delete(`/api/inspirations/registry/collections/${confirmDelColl.id}`);
+      toast.success(`Collezione "${confirmDelColl.name}" rimossa`);
+      setConfirmDelColl(null);
+      reload();
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || 'Impossibile rimuovere la collezione');
+      setConfirmDelColl(null);
+    }
+  };
+
+  const collectionsAreEditable = profile?.brand?.is_studio_private;
 
   if (err) {
     return (
@@ -117,6 +156,32 @@ const BrandDetailPage = () => {
                 <span key={m} className="bm-tag bm-tag--market">{formatMarket(m)}</span>
               ))}
               {brand.country && <span className="bm-tag">{brand.country}</span>}
+              {!brand.is_studio_private && (
+                <span className="bm-curated-badge" data-testid="bd-curated-badge">
+                  <Icons.Sparkles size={8} strokeWidth={1.6} /> Curato da MOOD
+                </span>
+              )}
+            </div>
+          )}
+          {/* Edit/Delete row · only for studio_private brands. Click handlers
+              wired to the BrandFormModal (edit) and ConfirmCinematicDialog
+              (delete). Curated_public brands stay read-only. */}
+          {!loading && brand.is_studio_private && (
+            <div className="bm-actions" data-testid="bd-actions" style={{ marginTop: 8 }}>
+              <button type="button"
+                      className="bm-action-btn"
+                      onClick={() => setEditOpen(true)}
+                      data-testid="bd-edit-brand"
+                      title="Modifica produttore">
+                <Icons.Pencil size={12} strokeWidth={1.4} />
+              </button>
+              <button type="button"
+                      className="bm-action-btn bm-action-btn--danger"
+                      onClick={() => setConfirmDel(true)}
+                      data-testid="bd-delete-brand"
+                      title="Rimuovi produttore">
+                <Icons.Trash2 size={12} strokeWidth={1.4} />
+              </button>
             </div>
           )}
         </div>
@@ -181,23 +246,66 @@ const BrandDetailPage = () => {
       )}
 
       {/* Collezioni */}
-      {!loading && profile.collections.length > 0 && (
+      {!loading && (profile.collections.length > 0 || collectionsAreEditable) && (
         <section className="bd-section" data-testid="bd-collections-section">
           <header className="bd-section__head">
             <p className="bd-section__eyebrow">Collezioni</p>
-            <span className="bd-section__count">{profile.collections.length}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span className="bd-section__count">{profile.collections.length}</span>
+              {collectionsAreEditable && (
+                <button type="button"
+                        className="bm-action-btn"
+                        onClick={() => setCollForm({ mode: 'create' })}
+                        data-testid="bd-add-collection"
+                        title="Aggiungi capitolo editoriale">
+                  <Icons.Plus size={12} strokeWidth={1.4} />
+                </button>
+              )}
+            </div>
           </header>
-          <div className="bd-coll-grid">
-            {profile.collections.slice(0, 12).map((c) => (
-              <div key={c.id} className="bd-coll-card" data-testid={`bd-coll-${c.id}`}>
-                <p className="bd-coll-card__title">{c.name}</p>
-                <p className="bd-coll-card__meta">
-                  {c.year && <em>{c.year}</em>}{c.category && <> · {c.category}</>}
-                </p>
-                {c.description && <p className="bd-coll-card__desc">{c.description}</p>}
-              </div>
-            ))}
-          </div>
+          {profile.collections.length === 0 ? (
+            <p style={{ fontSize: 11, color: 'var(--bp-text-muted)', fontStyle: 'italic', padding: '14px 0' }}>
+              Nessuna collezione registrata — il primo capitolo editoriale apre la lettura curatoriale del brand.
+            </p>
+          ) : (
+            <div className="bd-coll-grid">
+              {profile.collections.slice(0, 24).map((c) => (
+                <div key={c.id} className="bd-coll-card"
+                     data-testid={`bd-coll-${c.id}`}
+                     style={{ position: 'relative' }}>
+                  <p className="bd-coll-card__title">{c.name}</p>
+                  <p className="bd-coll-card__meta">
+                    {c.year && <em>{c.year}</em>}{c.category && <> · {c.category}</>}
+                    {c.season && <> · {c.season.toUpperCase()}</>}
+                  </p>
+                  {c.description && <p className="bd-coll-card__desc">{c.description}</p>}
+                  {collectionsAreEditable && (
+                    <div className="bm-actions"
+                         style={{ position: 'absolute', top: 8, right: 8, opacity: 0.6, transition: 'opacity .18s' }}
+                         onMouseEnter={(e) => { e.currentTarget.style.opacity = 1; }}
+                         onMouseLeave={(e) => { e.currentTarget.style.opacity = 0.6; }}>
+                      <button type="button"
+                              className="bm-action-btn"
+                              onClick={() => setCollForm({ mode: 'edit', collection: c })}
+                              data-testid={`bd-coll-edit-${c.id}`}
+                              title="Modifica collezione"
+                              style={{ width: 24, height: 24 }}>
+                        <Icons.Pencil size={10} strokeWidth={1.4} />
+                      </button>
+                      <button type="button"
+                              className="bm-action-btn bm-action-btn--danger"
+                              onClick={() => setConfirmDelColl(c)}
+                              data-testid={`bd-coll-delete-${c.id}`}
+                              title="Rimuovi collezione"
+                              style={{ width: 24, height: 24 }}>
+                        <Icons.Trash2 size={10} strokeWidth={1.4} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       )}
 
@@ -281,6 +389,49 @@ const BrandDetailPage = () => {
           </div>
         </section>
       )}
+
+      {/* Edit Brand Modal */}
+      <BrandFormModal
+        open={editOpen}
+        mode="edit"
+        brand={brand}
+        onClose={() => setEditOpen(false)}
+        onSaved={() => reload()}
+      />
+
+      {/* Cinematic Delete Confirm (brand) */}
+      <ConfirmCinematicDialog
+        open={confirmDel}
+        title={`Rimuovere ${brand?.name || 'il produttore'} dall'atlante?`}
+        body="Il produttore verrà rimosso dall'atlante curatoriale dello studio. Le collezioni e i moodboard associati restano archiviati."
+        confirmLabel="Rimuovi produttore"
+        tone="destructive"
+        onConfirm={handleDelete}
+        onClose={() => setConfirmDel(false)}
+        testid="bd-delete-confirm"
+      />
+
+      {/* Collection form modal — create/edit */}
+      <CollectionFormModal
+        open={!!collForm}
+        mode={collForm?.mode || 'create'}
+        brand={brand}
+        collection={collForm?.collection}
+        onClose={() => setCollForm(null)}
+        onSaved={() => reload()}
+      />
+
+      {/* Cinematic Delete Confirm (collection) */}
+      <ConfirmCinematicDialog
+        open={!!confirmDelColl}
+        title={`Rimuovere la collezione "${confirmDelColl?.name || ''}"?`}
+        body="La collezione verrà rimossa dal capitolo editoriale del brand. I prodotti già archiviati restano accessibili nell'archivio Inspirations™."
+        confirmLabel="Rimuovi collezione"
+        tone="destructive"
+        onConfirm={handleDeleteCollection}
+        onClose={() => setConfirmDelColl(null)}
+        testid="bd-coll-delete-confirm"
+      />
     </div>
   );
 };

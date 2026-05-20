@@ -33,6 +33,7 @@ import {
   PanelLeftClose, PanelLeftOpen, FilePlus,
 } from 'lucide-react';
 import MoodPanel from './MoodPanel';
+import './curatorial-modal.css';
 
 const LS_KEY = 'mfd_library_collapsed';
 
@@ -291,15 +292,80 @@ const PagesTab = ({ pages = [], skeletons = [], activePageId, onOpenSkeletons, o
   </>
 );
 
-const InspirationsTab = ({ onAddInspiration, moodboardId }) => (
-  <MoodPanel onAddInspiration={onAddInspiration} moodboardId={moodboardId} />
+const InspirationsTab = ({ onAddInspiration, moodboardId, onOpenCuratorial }) => (
+  <div className="ci-cta-block" data-testid="inspirations-tab-cta">
+    {/* CTA principale — apre il Curatorial Inspirations Modal™ fullscreen */}
+    <button type="button"
+            className="ci-cta"
+            onClick={() => onOpenCuratorial?.()}
+            data-testid="open-curatorial-modal">
+      <span className="ci-cta__eyebrow">Tavolo curatoriale</span>
+      <span className="ci-cta__title">Apri Inspirations™</span>
+      <span className="ci-cta__lead">
+        Esplora atmosfere, materialità e geografie narrative · porta i riferimenti nel moodboard.
+      </span>
+      <span className="ci-cta__arrow">
+        Apri tavolo &nbsp;→
+      </span>
+    </button>
+
+    {/* Riferimenti recenti — context layer leggero (NON archivio completo) */}
+    <RecentReferences onAddInspiration={onAddInspiration} moodboardId={moodboardId} />
+  </div>
 );
+
+// Recent references — leggera quick-access lateral pannello SOLO ultimi usati
+const RecentReferences = ({ onAddInspiration, moodboardId }) => {
+  const [items, setItems] = React.useState(null);
+  React.useEffect(() => {
+    import('../../lib/api').then(({ default: api }) => {
+      api.get('/api/inspirations/archive', { params: { limit: 6 } })
+        .then((r) => setItems((r.data?.items || []).slice(0, 6)))
+        .catch(() => setItems([]));
+    });
+  }, []);
+  if (!items || items.length === 0) return null;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '4px 4px' }}>
+      <p style={{ fontSize: 8.5, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--bp-text-muted)' }}>
+        Riferimenti recenti
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 5 }}>
+        {items.map((it) => (
+          <button key={it.id}
+                  type="button"
+                  onClick={() => onAddInspiration?.(it, { source_tab: it.inspiration_type === 'product' ? 'products' : 'inspirations', moodboardId })}
+                  data-testid={`recent-tile-${it.id}`}
+                  title={it.title || it.product_name || 'Riferimento'}
+                  style={{
+                    aspectRatio: '1/1',
+                    background: `url(${it.image_url}) center/cover`,
+                    border: '1px solid var(--bp-border)',
+                    borderRadius: 4,
+                    cursor: 'pointer',
+                    padding: 0,
+                    transition: 'transform .25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow .25s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-1px) scale(1.02)';
+                    e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.25)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = '';
+                    e.currentTarget.style.boxShadow = '';
+                  }} />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 // ── Main component ─────────────────────────────────────────────────────────
 const EditorPanel = ({
   onAddBlock, onOpenSkeletons, onOpenSkeletonPicker, t,
   pages, activePageId,
   onAddInspiration, moodboardId,
+  onOpenCuratorial,
 }) => {
   const [tab, setTab] = useState('insert');
   const { locale } = useBlueprint();
@@ -387,9 +453,7 @@ const EditorPanel = ({
       </div>
 
       {/* Body */}
-      <div className={`flex-1 min-h-0 ${tab === 'inspirations'
-        ? 'overflow-hidden px-4 pb-4 pt-2 flex flex-col'
-        : 'overflow-y-auto px-5 pb-5 pt-1'}`}>
+      <div className="flex-1 min-h-0 overflow-y-auto px-5 pb-5 pt-1">
         {tab === 'insert'       && <InsertTab        onAddBlock={onAddBlock} skeletons={skeletons}
                                                      onOpenSkeletons={onOpenSkeletons}
                                                      onOpenSkeletonPicker={onOpenSkeletonPicker}
@@ -400,7 +464,7 @@ const EditorPanel = ({
                                                      onOpenSkeletons={onOpenSkeletons}
                                                      onOpenSkeletonPicker={onOpenSkeletonPicker}
                                                      t={t} />}
-        {tab === 'inspirations' && <InspirationsTab  onAddInspiration={onAddInspiration} moodboardId={moodboardId} />}
+        {tab === 'inspirations' && <InspirationsTab  onAddInspiration={onAddInspiration} moodboardId={moodboardId} onOpenCuratorial={onOpenCuratorial} />}
       </div>
     </aside>
   );

@@ -1,0 +1,273 @@
+/**
+ * brand-form.css — BrandFormModal + ConfirmCinematicDialog editorial styling.
+ * Dark layered, soft glow, Playfair italic eyebrow. NON enterprise form.
+ */
+
+.bf-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 9, 11, 0.72);
+  backdrop-filter: blur(14px);
+  z-index: 9100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: bf-fade 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes bf-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.bf-modal {
+  background: var(--bp-surface-0, #0d0d0e);
+  border: 1px solid color-mix(in srgb, var(--bp-text-primary) 10%, transparent);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--bp-text-primary) 8%, transparent) inset,
+    0 28px 80px rgba(0, 0, 0, 0.55);
+  animation: bf-rise 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+@keyframes bf-rise {
+  from { opacity: 0; transform: translateY(10px) scale(0.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Header */
+.bf-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 22px 14px;
+  border-bottom: 1px dashed var(--bp-border);
+}
+.bf-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--bp-primary);
+  margin-bottom: 4px;
+}
+.bf-title {
+  font-family: 'Playfair Display', var(--bp-font-heading), serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--bp-text-primary);
+  letter-spacing: -0.005em;
+  margin: 0;
+}
+.bf-title em { font-style: italic; color: var(--bp-primary); }
+.bf-close {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--bp-text-muted);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.bf-close:hover { color: var(--bp-text-primary); border-color: var(--bp-text-secondary); }
+
+/* Body */
+.bf-body {
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bp-border) transparent;
+}
+.bf-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.bf-field { display: flex; flex-direction: column; gap: 5px; }
+.bf-field__label {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted);
+}
+.bf-field__label em {
+  font-style: normal;
+  color: var(--bp-primary);
+  margin-left: 4px;
+}
+
+.bf-field input,
+.bf-field textarea,
+.bf-field select {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: 6px;
+  padding: 9px 11px;
+  color: var(--bp-text-primary);
+  font-family: inherit;
+  font-size: 12.5px;
+  transition: border-color 0.18s ease, background 0.18s ease;
+  outline: none;
+  width: 100%;
+}
+.bf-field input:focus,
+.bf-field textarea:focus,
+.bf-field select:focus {
+  border-color: var(--bp-primary);
+  background: var(--bp-surface-2);
+}
+.bf-field input::placeholder,
+.bf-field textarea::placeholder { color: var(--bp-text-subtle); }
+.bf-field textarea { resize: vertical; min-height: 60px; }
+.bf-field select { appearance: none; cursor: pointer; }
+
+/* Chips */
+.bf-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.bf-chip {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-secondary);
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  letter-spacing: 0.04em;
+}
+.bf-chip:hover { color: var(--bp-text-primary); border-color: var(--bp-text-secondary); }
+.bf-chip.is-on {
+  border-color: var(--bp-primary);
+  color: var(--bp-primary);
+  background: color-mix(in srgb, var(--bp-primary) 9%, transparent);
+}
+
+/* Footer */
+.bf-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 14px 22px 18px;
+  border-top: 1px dashed var(--bp-border);
+}
+.bf-btn-soft,
+.bf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.bf-btn-soft {
+  background: transparent;
+  border-color: var(--bp-border);
+  color: var(--bp-text-secondary);
+}
+.bf-btn-soft:hover {
+  border-color: var(--bp-text-secondary);
+  color: var(--bp-text-primary);
+}
+.bf-btn {
+  background: var(--bp-primary);
+  color: var(--bp-surface-0, #0a0a0a);
+  border-color: var(--bp-primary);
+  font-weight: 500;
+}
+.bf-btn:hover:not(:disabled) { filter: brightness(1.08); }
+.bf-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.bf-btn--danger {
+  background: #d44b3e;
+  color: #fff;
+  border-color: #d44b3e;
+}
+
+/* Confirm dialog */
+.bf-confirm {
+  background: var(--bp-surface-0, #0d0d0e);
+  border: 1px solid color-mix(in srgb, var(--bp-text-primary) 10%, transparent);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 380px;
+  padding: 24px 26px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55);
+  animation: bf-rise 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.bf-confirm__icon {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: color-mix(in srgb, #d44b3e 16%, transparent);
+  border: 1px solid color-mix(in srgb, #d44b3e 50%, transparent);
+  color: #d44b3e;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 4px;
+}
+.bf-confirm__title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--bp-text-primary);
+  margin: 0;
+}
+.bf-confirm__body {
+  font-size: 12px;
+  color: var(--bp-text-secondary);
+  line-height: 1.55;
+  margin: 4px 0 12px;
+}
+.bf-confirm__actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+/* MOOD-curated badge — used on read-only brands */
+.bm-curated-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bp-primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--bp-primary) 40%, transparent);
+  color: var(--bp-primary);
+  white-space: nowrap;
+}
+
+/* Edit/delete row on BrandDetail header */
+.bm-actions {
+  display: flex;
+  gap: 6px;
+}
+.bm-action-btn {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-muted);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.bm-action-btn:hover { color: var(--bp-text-primary); border-color: var(--bp-text-secondary); }
+.bm-action-btn--danger:hover { color: #d44b3e; border-color: #d44b3e; }

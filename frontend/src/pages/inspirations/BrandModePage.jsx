@@ -15,7 +15,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import api from '../../lib/api';
+import BrandFormModal from './BrandFormModal';
 import './brand-mode.css';
+import './brand-form.css';
 
 const LUXURY_LABEL = {
   entry:        'entry',
@@ -73,6 +75,11 @@ const BrandCard = ({ b }) => {
         {markets.slice(0, 2).map((m) => (
           <span key={m} className="bm-tag bm-tag--market">{formatMarket(m)}</span>
         ))}
+        {!b.is_studio_private && (
+          <span className="bm-curated-badge" data-testid={`bm-curated-${b.id}`}>
+            <Icons.Sparkles size={8} strokeWidth={1.6} /> Curato da MOOD
+          </span>
+        )}
       </div>
 
       {atmo.length > 0 && (
@@ -121,11 +128,16 @@ const BrandModePage = () => {
   const [items, setItems] = useState(null);
   const [q, setQ] = useState('');
   const [luxuryFilter, setLuxuryFilter] = useState(null);
+  const [addOpen, setAddOpen] = useState(false);
 
-  useEffect(() => {
+  const refresh = () => {
     api.get('/api/inspirations/registry/brands-atlas', { params: { limit: 60 } })
       .then((r) => setItems(r.data?.items || []))
       .catch(() => setItems([]));
+  };
+
+  useEffect(() => {
+    refresh();
   }, []);
 
   const filtered = useMemo(() => {
@@ -154,14 +166,25 @@ const BrandModePage = () => {
   return (
     <div className="bm-root" data-testid="brand-mode-page">
       <header className="bm-hero">
-        <p className="bm-hero__eyebrow">Brand Mode™ · atlante curatoriale</p>
-        <h1 className="bm-hero__title">
-          I produttori come <em>linguaggi progettuali</em>
-        </h1>
-        <p className="bm-hero__lead">
-          Ogni brand è una lettura — atmosfere prevalenti, materialità ricorrenti, geografie narrative
-          dove compare nei tuoi progetti. Esplora l'atlante curatoriale dello studio.
-        </p>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }}>
+          <div style={{ flex: 1, minWidth: 280 }}>
+            <p className="bm-hero__eyebrow">Brand Mode™ · atlante curatoriale</p>
+            <h1 className="bm-hero__title">
+              I produttori come <em>linguaggi progettuali</em>
+            </h1>
+            <p className="bm-hero__lead">
+              Ogni brand è una lettura — atmosfere prevalenti, materialità ricorrenti, geografie narrative
+              dove compare nei tuoi progetti. Esplora l'atlante curatoriale dello studio.
+            </p>
+          </div>
+          <button type="button"
+                  className="bm-empty__back"
+                  style={{ background: 'var(--bp-primary)', color: 'var(--bp-surface-0, #0a0a0a)', borderColor: 'var(--bp-primary)' }}
+                  onClick={() => setAddOpen(true)}
+                  data-testid="bm-add-brand">
+            <Icons.Plus size={11} /> Aggiungi produttore
+          </button>
+        </div>
       </header>
 
       <div className="bm-controls">
@@ -210,6 +233,21 @@ const BrandModePage = () => {
           {filtered.map((b) => <BrandCard key={b.id} b={b} />)}
         </div>
       )}
+
+      <BrandFormModal
+        open={addOpen}
+        mode="create"
+        onClose={() => setAddOpen(false)}
+        onSaved={(item, status) => {
+          // 'created' → prepend; 'existing' → just refresh (already in atlas)
+          if (status === 'created' && item) {
+            setItems((prev) => [{ ...item, is_studio_private: true, collections_count: 0, products_count: 0, inspirations_count: 0,
+                                  dominant_atmospheres: [], dominant_materials: [], dominant_markets: item.primary_markets || [] }, ...(prev || [])]);
+          } else {
+            refresh();
+          }
+        }}
+      />
     </div>
   );
 };

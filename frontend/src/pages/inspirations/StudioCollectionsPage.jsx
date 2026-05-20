@@ -8,17 +8,22 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as Icons from 'lucide-react';
+import { toast } from 'sonner';
 import api from '../../lib/api';
+import ConfirmCinematicDialog from '../../components/ConfirmCinematicDialog';
 import './inspirations.css';
 import './supplier-catalog.css';
 import './studio-collections.css';
+import './brand-form.css';
 
 const StudioCollectionsPage = () => {
   const [catalogs, setCatalogs] = useState([]);
   const [brands, setBrands]     = useState([]);
   const [loading, setLoading]   = useState(true);
+  const [confirmDel, setConfirmDel] = useState(null);  // catalog to delete
 
-  useEffect(() => {
+  const reload = () => {
+    setLoading(true);
     Promise.all([
       api.get('/api/inspirations/catalogs'),
       api.get('/api/inspirations/registry/brands?limit=50'),
@@ -26,7 +31,22 @@ const StudioCollectionsPage = () => {
       setCatalogs(rc.data?.items || []);
       setBrands(rb.data?.items || []);
     }).finally(() => setLoading(false));
-  }, []);
+  };
+
+  useEffect(reload, []);
+
+  const handleDelete = async () => {
+    if (!confirmDel) return;
+    try {
+      await api.delete(`/api/inspirations/catalogs/${confirmDel.id}`);
+      toast.success(`Catalogo "${confirmDel.collection || 'senza titolo'}" rimosso`);
+      setConfirmDel(null);
+      reload();
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || 'Impossibile rimuovere il catalogo');
+      setConfirmDel(null);
+    }
+  };
 
   // Group catalogs by brand
   const grouped = useMemo(() => {
@@ -59,10 +79,16 @@ const StudioCollectionsPage = () => {
             registro. {totalImported > 0 && <> Hai già <strong>{totalImported}</strong> Product Inspirations™ archiviate.</>}
           </p>
         </div>
-        <Link to="/inspirations" className="ins-cta-secondary"
-              data-testid="sc-back-inspirations">
-          <Icons.ArrowLeft size={12} /> Torna a Inspirations™
-        </Link>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <Link to="/inspirations" className="ins-cta-secondary"
+                data-testid="sc-import-catalog">
+            <Icons.Plus size={12} /> Importa catalogo fornitore
+          </Link>
+          <Link to="/inspirations" className="ins-cta-secondary"
+                data-testid="sc-back-inspirations">
+            <Icons.ArrowLeft size={12} /> Torna a Inspirations™
+          </Link>
+        </div>
       </header>
 
       {loading && <p className="sc-empty">Carico l'archivio curatoriale…</p>}
@@ -76,14 +102,25 @@ const StudioCollectionsPage = () => {
 
       <div className="sc-grid">
         {grouped.map((g) => (
-          <BrandGroup key={g.brand_name} group={g} />
+          <BrandGroup key={g.brand_name} group={g} onAskDelete={setConfirmDel} />
         ))}
       </div>
+
+      <ConfirmCinematicDialog
+        open={!!confirmDel}
+        title={`Rimuovere il catalogo "${confirmDel?.collection || 'senza titolo'}"?`}
+        body="Il catalogo verrà rimosso dall'archivio dello studio. I prodotti già importati nei Product Inspirations™ restano archiviati."
+        confirmLabel="Rimuovi catalogo"
+        tone="destructive"
+        onConfirm={handleDelete}
+        onClose={() => setConfirmDel(null)}
+        testid="sc-delete-confirm"
+      />
     </div>
   );
 };
 
-const BrandGroup = ({ group }) => (
+const BrandGroup = ({ group, onAskDelete }) => (
   <section className="sc-brand" data-testid={`sc-brand-${(group.brand_meta?.slug || group.brand_name).toLowerCase()}`}>
     <header className="sc-brand__head">
       <div>
@@ -103,7 +140,8 @@ const BrandGroup = ({ group }) => (
     </header>
     <div className="sc-catalogs">
       {group.catalogs.map((c) => (
-        <article key={c.id} className="sc-catalog" data-testid={`sc-catalog-${c.id}`}>
+        <article key={c.id} className="sc-catalog" data-testid={`sc-catalog-${c.id}`}
+                 style={{ position: 'relative' }}>
           <header>
             <p className="sc-catalog__title">
               {c.collection || 'Catalogo senza collezione'}
@@ -114,6 +152,19 @@ const BrandGroup = ({ group }) => (
           <p className="sc-catalog__meta">
             {c.imported_count || 0} prodotti importati · {c.candidate_count || 0} candidati totali
           </p>
+          <div className="bm-actions"
+               style={{ position: 'absolute', top: 10, right: 10, opacity: 0.55, transition: 'opacity .18s' }}
+               onMouseEnter={(e) => { e.currentTarget.style.opacity = 1; }}
+               onMouseLeave={(e) => { e.currentTarget.style.opacity = 0.55; }}>
+            <button type="button"
+                    className="bm-action-btn bm-action-btn--danger"
+                    onClick={() => onAskDelete?.(c)}
+                    data-testid={`sc-delete-${c.id}`}
+                    title="Rimuovi catalogo"
+                    style={{ width: 26, height: 26 }}>
+              <Icons.Trash2 size={11} strokeWidth={1.4} />
+            </button>
+          </div>
         </article>
       ))}
     </div>
