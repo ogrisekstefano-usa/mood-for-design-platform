@@ -1,5 +1,10 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
+## 📌 Sprint Status (latest)
+- **Sprint G.5 — Sidebar v5 (IA Journey-first)** · ✅ COMPLETED · iter105 · 14/14 tests pass
+- **Sprint G.6 — Step-Anchored Artifact Pages™** · ✅ COMPLETED · iter106 · 16/16 tests pass + 80/80 G.1→G.6 regression. Backend `journey_step_workspace.py` + route `/journey/:projectId/step/:milestoneType`. Three editorial layers (`StepContextHeader`, `VersionStack`, `ClientInteractionLayer`) + workspace bodies (Moodboard / Material). DesignJourneyTab routes moodboard/material steps to the new workspace; legacy global pages carry an `ArchiveBanner`. Validated by testing agent (`/app/test_reports/iteration_106.json`).
+- **Next P1**: G.7 Client Portal Journey-first refactor · G.8 Site Evolution™ · G.9 Certified Closure ceremony.
+
 ## 🔒 PRODUCT DIRECTION LOCK (Feb 21, 2026 · iter100+) — IMMUTABLE
 MOOD for DESIGN **non è**: tool collection, generic CRM, generic PM, isolated moodboard app,
 modular SaaS without flow, dashboard CRUD, aggressive lead-gen funnel, HubSpot/Asana/Trello/Canva/Pinterest clone.
