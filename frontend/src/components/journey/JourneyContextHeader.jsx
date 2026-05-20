@@ -1,30 +1,41 @@
 /**
  * JourneyContextHeader — Journey Continuity™ thin layer.
  *
- * Strip elegante, quasi invisibile, montata in cima ai moduli satellite
- * (Moodboards, Materials, Documents, Render). Risolve il contesto del
- * Design Journey™ via /api/journeys/context/by-entity e mostra:
+ * Strip elegante, quasi atmosferica, montata in cima ai moduli satellite
+ * (Moodboards, Materials, Render, Documents, Inspirations, Product
+ * Gallery). Risolve il contesto del Design Journey™ via
+ * /api/journeys/context/by-entity e mostra:
  *
  *   Stai attraversando
  *   {Project Name}
  *   {Milestone Title} · {Editorial Status}
  *
- * Quando il modulo non è collegato a una milestone (es. moodboard
- * orfano), la strip non si renderizza — mai fallback enterprise.
+ * Quando il modulo non è collegato a una milestone (es. visita globale
+ * senza progetto in contesto), la strip non si renderizza — mai
+ * fallback enterprise.
+ *
+ * Risoluzione del contesto:
+ *   1. props.entityType + props.entityId (esplicito, prioritario)
+ *   2. URL query ?project=<id> (set dalla CTA "Apri" del Design
+ *      Journey™ — preserva la continuità ambientale fra moduli)
+ *   3. Niente → componente non monta UI
+ *
+ * STRICTLY no inline actions, no quick-status buttons, no toolbar
+ * controls. Questa strip è atmosfera, non operatività.
  */
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowUpRight, MoveRight } from 'lucide-react';
 import api from '../../lib/api';
 import './journey-context.css';
 
 const STATUS_LABEL = {
   not_started:        'Non iniziata',
-  in_progress:        'In lavorazione',
-  presented:          'Presentata',
+  in_progress:        'Evoluzione in corso',
+  presented:          'Direzione presentata',
   revision_requested: 'Revisione richiesta',
   partially_approved: 'Approvata parzialmente',
-  approved:           'Approvata',
+  approved:           'Direzione approvata',
   closed:             'Chiusa',
 };
 
@@ -39,20 +50,30 @@ const STATUS_TONE = {
 };
 
 const JourneyContextHeader = ({ entityType, entityId, compact = false }) => {
+  const [searchParams] = useSearchParams();
   const [ctx, setCtx] = useState(null);
   const [loaded, setLoaded] = useState(false);
 
+  // Resolve the effective entity to query.
+  // Explicit props always win; otherwise fall back to ?project=<id>
+  // which the Journey™ CTA appends to preserve ambient continuity.
+  const effType = entityType || (searchParams.get('project') ? 'project' : null);
+  const effId   = entityId   || searchParams.get('project');
+
   useEffect(() => {
-    if (!entityType || !entityId) return;
+    if (!effType || !effId) {
+      setLoaded(true);
+      return undefined;
+    }
     let cancelled = false;
     api.get('/api/journeys/context/by-entity', {
-      params: { entity_type: entityType, entity_id: entityId },
+      params: { entity_type: effType, entity_id: effId },
     })
       .then((r) => { if (!cancelled) setCtx(r.data); })
       .catch(() => { if (!cancelled) setCtx({ linked: false }); })
       .finally(() => { if (!cancelled) setLoaded(true); });
     return () => { cancelled = true; };
-  }, [entityType, entityId]);
+  }, [effType, effId]);
 
   if (!loaded || !ctx || !ctx.linked || !ctx.milestone || !ctx.project) {
     return null;

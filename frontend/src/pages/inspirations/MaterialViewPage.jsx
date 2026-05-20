@@ -17,6 +17,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import api from '../../lib/api';
+import JourneyContextHeader from '../../components/journey/JourneyContextHeader';
 import './product-gallery.css';
 import './material-view.css';
 
@@ -53,6 +54,11 @@ export default function MaterialViewPage() {
 
   return (
     <div className="mv-shell" data-testid="mv-shell">
+      {/* Journey Continuity™ — atmospheric strip that reminds the
+          designer which milestone of the Design Journey™ this materioteca
+          serves. Renders only when ?project=<id> is in the URL. */}
+      <JourneyContextHeader compact />
+
       {/* Header */}
       <header className="mv-header">
         <Link to="/inspirations" className="pg-back" data-testid="mv-back">

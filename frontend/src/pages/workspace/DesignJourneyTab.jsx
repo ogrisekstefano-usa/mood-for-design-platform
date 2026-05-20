@@ -374,12 +374,18 @@ const DesignJourneyTab = ({ projectId, project }) => {
       const r = await api.post(`/api/journeys/milestones/${m.id}/open`);
       const { open_mode, linked_route, linked_entity_id, linked_entity_type } = r.data;
       if (open_mode === 'navigate' && linked_route) {
-        // Append linked_entity_id if relevant
+        // Resolve the destination route. When opening a specific moodboard
+        // we navigate directly to its canvas; otherwise we land on the
+        // module index.
         let route = linked_route;
         if (linked_entity_type === 'moodboard' && linked_entity_id) {
           route = `/moodboards/${linked_entity_id}`;
         }
-        navigate(route);
+        // Append ?project=<id> to preserve the Journey Continuity™ context
+        // in the satellite module — the JourneyContextHeader™ reads it.
+        const sep = route.includes('?') ? '&' : '?';
+        const withCtx = `${route}${sep}project=${projectId}&from=journey`;
+        navigate(withCtx);
       } else {
         // Inline mode → just stay on the focus panel (already showing inline body)
         toast.success(`${m.title} aperta`);
@@ -453,6 +459,7 @@ const DesignJourneyTab = ({ projectId, project }) => {
           onPick={onPick}
         />
         <FocusPanel
+          key={active?.id || 'none'}
           milestone={active}
           onStatusChange={onStatusChange}
           onOpen={onOpen}

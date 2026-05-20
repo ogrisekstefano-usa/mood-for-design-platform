@@ -23,6 +23,7 @@ import { asErrorString } from '../../lib/asErrorString';
 import AddInspirationModal from './AddInspirationModal';
 import InspirationDetailDrawer from './InspirationDetailDrawer';
 import SupplierCatalogImportModal from './SupplierCatalogImportModal';
+import JourneyContextHeader from '../../components/journey/JourneyContextHeader';
 import './inspirations.css';
 
 const InspirationsPage = () => {
@@ -71,6 +72,12 @@ const InspirationsPage = () => {
 
   return (
     <div className="ins-page" data-testid="inspirations-page">
+      {/* Journey Continuity™ — atmospheric strip che ricorda al designer
+          quale milestone del Design Journey™ sta vivendo (Inspirations™
+          o Curated Selections™ o Final Presentation, a seconda di come
+          il Journey naviga qui). Renderizza solo se ?project=<id>. */}
+      <JourneyContextHeader compact />
+
       <header className="ins-header" data-testid="inspirations-header">
         <p className="ins-eyebrow">Cultural Design Intelligence Layer</p>
         <h1 className="ins-title">Inspirations™</h1>

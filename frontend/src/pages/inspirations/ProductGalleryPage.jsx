@@ -21,6 +21,7 @@ import { toast } from 'sonner';
 import api from '../../lib/api';
 import MoodboardPickerModal from './MoodboardPickerModal';
 import CuratedCollectionDrawer from './CuratedCollectionDrawer';
+import JourneyContextHeader from '../../components/journey/JourneyContextHeader';
 import './product-gallery.css';
 
 // ─── Bucket labels (italian editorial copy) ─────────────────────────
@@ -769,6 +770,10 @@ export default function ProductGalleryPage() {
 
   return (
     <div className="pg-shell" data-testid="pg-shell">
+      {/* Journey Continuity™ — atmospheric strip. Renders only when the
+          gallery is being explored within a Journey™ context (?project=…). */}
+      <JourneyContextHeader compact />
+
       {/* ─── HEADER ─── */}
       <header className="pg-header">
         <Link to="/inspirations" className="pg-back" data-testid="pg-back">

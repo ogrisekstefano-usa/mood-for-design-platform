@@ -225,13 +225,14 @@ def test_journey_context_header_component_exists():
         "frontend" / "src" / "components" / "journey" / "JourneyContextHeader.jsx"
     assert p.exists(), "JourneyContextHeader.jsx missing"
     src = p.read_text(encoding="utf-8")
-    # Must use the editorial lead phrase and the Italian status labels
+    # Must use the editorial lead phrase and the cinematic Italian
+    # status labels (Phase 2 vocabulary — atmospheric, not enterprise).
     assert "Stai attraversando" in src
     for label in (
-        "In lavorazione", "Presentata", "Revisione richiesta",
-        "Approvata", "Chiusa",
+        "Evoluzione in corso", "Direzione presentata", "Revisione richiesta",
+        "Direzione approvata", "Chiusa",
     ):
-        assert label in src
+        assert label in src, f"Missing editorial label '{label}'"
     # And must NOT contain forbidden enterprise terms
     lower = src.lower()
     for bad in ("kanban", "sprint", "ticket", "workflow", "dashboard"):
