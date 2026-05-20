@@ -102,17 +102,21 @@ def test_inspirations_lives_in_curatorial_atlas_not_journey():
 
 # ─── Curatorial Atlas ─────────────────────────────────────────────
 def test_curatorial_atlas_items():
+    """Iter99: Product Gallery + Visual Archive removed.
+    Media Library added. Material View stays."""
     src = _read(SIDEBAR)
     blk = re.search(r'<Section id="curatorial-atlas".*?</Section>', src, re.S).group(0)
     for label in (
         'label="Inspirations"',
         'label="Brand Mode"',
-        'label="Product Gallery"',
         'label="Material View"',
-        'label="Visual Archive"',
+        'label="Media Library"',
         'label="Cultural Editions"',
     ):
         assert label in blk
+    # Removed surfaces
+    assert 'label="Product Gallery"' not in blk
+    assert 'label="Visual Archive"' not in blk
 
 
 # ─── Client Relations ─────────────────────────────────────────────

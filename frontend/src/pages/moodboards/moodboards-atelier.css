@@ -1,0 +1,247 @@
+/**
+ * moodboards-atelier.css — Moodboards index come "tavolo creativo".
+ * Smart fallback composition quando manca la cover image.
+ * Dark luxury editorial, atmosfera diffusa, never file-manager.
+ */
+
+.mb-page {
+  min-height: 100vh;
+  background: var(--mood-bg);
+  background-image: var(--mood-atmosphere);
+  color: #e8e6e1;
+}
+.mb-page__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 48px 56px 80px;
+}
+
+.mb-page__eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--mood-warm);
+  margin: 0 0 14px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+.mb-page__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 44px;
+  line-height: 1.05;
+  font-weight: 400;
+  margin: 0;
+  letter-spacing: -0.015em;
+  color: #ece8df;
+}
+.mb-page__title em { font-style: italic; }
+.mb-page__sub {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: #a8a8a4;
+  max-width: 56ch;
+  font-style: italic;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* ── Atelier grid ── */
+.mb-atelier {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+@media (max-width: 1200px) { .mb-atelier { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 720px)  { .mb-atelier { grid-template-columns: 1fr; } .mb-page__inner { padding: 32px 22px 60px; } .mb-page__title { font-size: 32px; } }
+
+/* ── Atelier Card ── */
+.mbcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--mood-bg-2);
+  border: 1px solid var(--mood-line);
+  border-radius: 5px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 380ms cubic-bezier(0.16,1,0.3,1),
+              transform 380ms cubic-bezier(0.16,1,0.3,1),
+              box-shadow 380ms cubic-bezier(0.16,1,0.3,1);
+}
+.mbcard:hover {
+  border-color: var(--mood-line-2);
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px -20px rgba(0,0,0,0.7);
+}
+
+/* ── Hero (cover or generated composition) ── */
+.mbcard__hero {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--mood-bg-3);
+}
+.mbcard__hero-img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mbcard:hover .mbcard__hero-img { transform: scale(1.04); }
+
+/* Generated composition layers (visible only when no cover) */
+.mbcard__hero-grad {
+  position: absolute;
+  inset: 0;
+  filter: saturate(0.85) brightness(0.85);
+}
+.mbcard__hero-strips {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 6px;
+  display: flex;
+}
+.mbcard__hero-strips span { flex: 1; height: 100%; }
+
+.mbcard__hero-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 28px;
+  text-align: center;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 26px;
+  line-height: 1.18;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: -0.005em;
+  text-shadow: 0 2px 18px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+.mbcard__hero-text em { font-style: italic; }
+
+.mbcard__hero-fade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 50%, rgba(10, 12, 16, 0.45) 100%),
+    radial-gradient(ellipse 80% 60% at 50% 50%, transparent 30%, rgba(0,0,0,0.20) 100%);
+  pointer-events: none;
+}
+
+/* Status pill on the hero corner */
+.mbcard__pill {
+  position: absolute;
+  top: 12px; right: 12px;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(10, 12, 16, 0.55);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.mbcard__pill-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+}
+.mbcard__pill--warm    { color: var(--mood-warm); }
+.mbcard__pill--cyan    { color: var(--mood-cyan); }
+.mbcard__pill--amber   { color: var(--mood-amber); }
+.mbcard__pill--success { color: var(--mood-success); }
+.mbcard__pill--rose    { color: var(--mood-rose); }
+
+/* ── Body ── */
+.mbcard__body {
+  display: flex; flex-direction: column;
+  padding: 18px 20px 18px;
+  gap: 8px;
+}
+.mbcard__title {
+  margin: 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #ece8df;
+  letter-spacing: -0.005em;
+}
+.mbcard__title em { font-style: italic; }
+
+.mbcard__project {
+  margin: 0;
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11.5px;
+  color: #a8a8a4;
+  font-style: italic;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+.mbcard__project-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mbcard__atmo {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--mood-warm);
+  font-family: 'Playfair Display', Georgia, serif;
+  opacity: 0.85;
+}
+
+.mbcard__palette {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+.mbcard__swatch {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.mbcard__chips {
+  list-style: none;
+  padding: 0; margin: 2px 0 0;
+  display: flex; flex-wrap: wrap; gap: 5px;
+}
+.mbcard__chip {
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border: 1px solid var(--mood-line);
+  border-radius: 999px;
+  color: var(--mood-warm);
+  background: var(--mood-warm-soft);
+  text-transform: lowercase;
+}
+
+.mbcard__foot {
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--mood-line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.mbcard__time {
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: #6e6e6a;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+.mbcard__cta {
+  font-size: 9.5px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--mood-warm);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+.mbcard:hover .mbcard__cta { opacity: 1; transform: translateX(0); }

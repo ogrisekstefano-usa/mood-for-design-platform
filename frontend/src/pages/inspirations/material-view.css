@@ -3,18 +3,19 @@
  * Stile: tavolo materico, tactile, atmospheric. Asymmetrical grid.
  */
 .mv-shell {
-  --pg-bg:        #0a0b0c;
-  --pg-bg-2:      #101113;
-  --pg-bg-3:      #161719;
-  --pg-line:      rgba(255, 255, 255, 0.08);
+  --pg-bg:        var(--mood-bg);
+  --pg-bg-2:      var(--mood-bg-2);
+  --pg-bg-3:      var(--mood-bg-3);
+  --pg-line:      var(--mood-line);
   --pg-text:      #e8e6e1;
   --pg-text-2:    #a8a8a4;
   --pg-text-3:    #6e6e6a;
-  --pg-cyan:      #7fdfff;
-  --pg-warm:      #d9b285;
+  --pg-cyan:      var(--mood-cyan);
+  --pg-warm:      var(--mood-warm);
 
   min-height: 100vh;
   background: var(--pg-bg);
+  background-image: var(--mood-atmosphere);
   color: var(--pg-text);
   font-family: 'Inter', system-ui, sans-serif;
 }
@@ -95,12 +96,12 @@
   letter-spacing: 0.04em;
 }
 
-/* Grid — asymmetrical CSS grid, hero tiles span 2 cells */
+/* Grid — atlante materico editoriale, tiles più compatte */
 .mv-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 6px;
-  padding: 28px 48px 80px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 5px;
+  padding: 24px 40px 72px;
   grid-auto-flow: dense;
 }
 .mv-tile {

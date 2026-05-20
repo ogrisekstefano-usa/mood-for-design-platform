@@ -258,10 +258,9 @@ const Sidebar = () => {
         <Section id="curatorial-atlas" label="Curatorial Atlas" {...sectionProps} sectionCollapsed={sectionIsCollapsed('curatorial-atlas')}>
           <NavItem to="/inspirations"               icon="Bookmark"   label="Inspirations"      collapsed={collapsed} end />
           <NavItem to="/inspirations/brands"        icon="Sparkles"   label="Brand Mode"        collapsed={collapsed} />
-          <NavItem to="/inspirations/products"      icon="LayoutGrid" label="Product Gallery"   collapsed={collapsed} />
           <NavItem to="/inspirations/materials"     icon="Palette"    label="Material View"     collapsed={collapsed}
                    testid="sidebar-nav-material-view" />
-          <NavItem to="/inspirations/visual-archive" icon="FolderOpen" label="Visual Archive"   collapsed={collapsed} soon />
+          <NavItem to="/library"                    icon="FolderOpen" label="Media Library"     collapsed={collapsed} />
           <NavItem to="/workspace/cultural-editions" icon="Globe"     label="Cultural Editions" hasMark collapsed={collapsed} />
         </Section>
 

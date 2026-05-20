@@ -13,6 +13,149 @@ import { Plus, Layers, X, Lock } from 'lucide-react';
 import StatusBadge from '../../components/common/StatusBadge';
 import TemplatePicker from '../../blueprint/moodboard/TemplatePicker';
 import { avatarPalette } from '../../lib/avatarHue';
+import './moodboards-atelier.css';
+
+// ─── Editorial status labels (atelier vocabulary) ───────────────
+const MB_STATUS = {
+  draft:              { label: 'Composizione aperta',  tone: 'warm'   },
+  sent:               { label: 'Direzione condivisa',  tone: 'cyan'   },
+  viewed:             { label: 'Cliente in lettura',   tone: 'cyan'   },
+  approved:           { label: 'Direzione approvata',  tone: 'success'},
+  revision_requested: { label: 'Revisione richiesta',  tone: 'amber'  },
+  rejected:           { label: 'Da ripensare',         tone: 'rose'   },
+};
+
+// Color name → swatch (small map, reused for palette dots)
+const SWATCH = {
+  earth: '#8a6a4a', olive: '#7d8b56', bronze: '#a07550', black: '#1a1a1c',
+  white: '#ece8df', beige: '#cdb999', gold: '#c8a064', brass: '#b08a4a',
+  blue: '#5a779e', navy: '#2b3a55', teal: '#508a8a', green: '#5e7d5b',
+  forest: '#3b5042', cream: '#e3d8be', charcoal: '#3a3a3d', walnut: '#6e4a30',
+  oak: '#a98660', marble: '#dddad2', terracotta: '#b56b50', sand: '#c9b58a',
+  ivory: '#ede2c8', warm: '#d6b687', cool: '#88a0a8', rust: '#a35538',
+  copper: '#b0673a', pink: '#d9a59d', rose: '#c98a86', amber: '#e0a258',
+  sage: '#9aaa8c', stone: '#b3aca0', smoke: '#8b8e91', mocha: '#7a5c45',
+};
+const swatch = (n) => SWATCH[(n || '').toLowerCase()] || '#5a5a5a';
+
+const formatRelative = (iso) => {
+  if (!iso) return null;
+  try {
+    const t = new Date(iso).getTime();
+    const sec = Math.floor((Date.now() - t) / 1000);
+    if (sec < 60) return 'pochi istanti fa';
+    if (sec < 3600) return `${Math.floor(sec / 60)} min fa`;
+    if (sec < 86400) return `${Math.floor(sec / 3600)} ore fa`;
+    if (sec < 86400 * 7) return `${Math.floor(sec / 86400)} giorni fa`;
+    return new Date(iso).toLocaleDateString('it-IT', { day: '2-digit', month: 'short' });
+  } catch { return null; }
+};
+
+// ─── Atelier MoodboardCard — smart fallback composition ──────────
+const MoodboardCard = ({ m, project }) => {
+  const meta = MB_STATUS[m.status || 'draft'] || MB_STATUS.draft;
+  const palettePal = project?.title ? avatarPalette(project.title) : null;
+  // Pull palette from project brief if present (≤ 5)
+  const payload = project?.metadata_json?.onboarding_payload || {};
+  const colors    = (payload.colors    || []).slice(0, 5);
+  const materials = (payload.materials || []).slice(0, 2);
+  const atmosphere = payload.atmosphere || payload.emotional_tone || null;
+  const coverUrl = m.cover_metadata?.thumb_url || m.cover_metadata?.image_url || null;
+
+  // Build the gradient hero from the project's palette (or fallback to warm/cyan/pearl)
+  const gradColors = colors.length
+    ? colors.slice(0, 4).map(swatch)
+    : ['#2a2418', '#1c1e25', '#0f1417'];
+  const gradient = gradColors.length === 1
+    ? `linear-gradient(135deg, ${gradColors[0]} 0%, #11141a 100%)`
+    : `linear-gradient(135deg, ${gradColors.join(', ')})`;
+
+  return (
+    <Link
+      to={`/moodboards/${m.id}`}
+      data-testid={`moodboard-card-${m.id}`}
+      className={`mbcard mbcard--${meta.tone}`}
+    >
+      {/* Smart hero: cover image OR generated composition */}
+      <div className="mbcard__hero" aria-hidden="true">
+        {coverUrl ? (
+          <img
+            src={coverUrl}
+            alt=""
+            className="mbcard__hero-img"
+            loading="lazy"
+          />
+        ) : (
+          <>
+            <div className="mbcard__hero-grad" style={{ background: gradient }} />
+            {/* Decorative stripes from project palette */}
+            <div className="mbcard__hero-strips">
+              {gradColors.map((c, i) => (
+                <span key={i} style={{ backgroundColor: c }} />
+              ))}
+            </div>
+            {/* Editorial title floating over the gradient */}
+            <div className="mbcard__hero-text">
+              <em>{m.title || 'Composizione senza titolo'}</em>
+            </div>
+            {/* Diffused vignette */}
+            <div className="mbcard__hero-fade" />
+          </>
+        )}
+
+        <span className={`mbcard__pill mbcard__pill--${meta.tone}`}>
+          <span className="mbcard__pill-dot" />
+          {meta.label}
+        </span>
+      </div>
+
+      {/* Body */}
+      <div className="mbcard__body">
+        <h3 className="mbcard__title"><em>{m.title || 'Composizione senza titolo'}</em></h3>
+
+        {project && (
+          <p className="mbcard__project">
+            {palettePal && (
+              <span className="mbcard__project-dot" style={{ background: palettePal.border }} aria-hidden />
+            )}
+            <span>Per · {project.title}</span>
+          </p>
+        )}
+
+        {/* Atmosphere chip */}
+        {atmosphere && (
+          <p className="mbcard__atmo"><em>{atmosphere}</em></p>
+        )}
+
+        {/* Palette dots */}
+        {colors.length > 0 && (
+          <div className="mbcard__palette">
+            {colors.map((c, i) => (
+              <span key={`${c}-${i}`} className="mbcard__swatch"
+                    title={c} style={{ backgroundColor: swatch(c) }} />
+            ))}
+          </div>
+        )}
+
+        {/* Material chips */}
+        {materials.length > 0 && (
+          <ul className="mbcard__chips">
+            {materials.map((mat) => (
+              <li key={mat} className="mbcard__chip">{mat}</li>
+            ))}
+          </ul>
+        )}
+
+        <div className="mbcard__foot">
+          <span className="mbcard__time">
+            {m.updated_at ? `Ultimo movimento · ${formatRelative(m.updated_at)}` : '\u00A0'}
+          </span>
+          <span className="mbcard__cta">Continua la direzione →</span>
+        </div>
+      </div>
+    </Link>
+  );
+};
 
 const CreateModal = ({ projects, onClose, onCreate, t }) => {
   const [title, setTitle] = useState('');
@@ -158,12 +301,13 @@ const MoodboardsPage = () => {
   const filters = ['', 'draft', 'sent', 'viewed', 'approved', 'revision_requested', 'rejected'];
 
   return (
-    <div className="p-10 max-w-7xl mx-auto" data-testid="moodboards-page">
+    <div className="mb-page mood-atmospheric" data-testid="moodboards-page">
+      <div className="mb-page__inner">
       <div className="flex items-start justify-between mb-10 gap-6">
         <div>
-          <p className="bp-eyebrow !text-[var(--bp-text-muted)] mb-2">{t('nav.section.content')}</p>
-          <h1 className="bp-h1 text-[var(--bp-text-primary)] font-light">{t('moodboards.title')}</h1>
-          <p className="bp-body !text-sm text-[var(--bp-text-muted)] mt-2 max-w-md">{t('moodboards.subtitle')}</p>
+          <p className="mb-page__eyebrow">Design Journey · Tavolo Creativo</p>
+          <h1 className="mb-page__title"><em>{t('moodboards.title')}</em></h1>
+          <p className="mb-page__sub">{t('moodboards.subtitle')}</p>
         </div>
         <div className="flex items-center gap-3">
           {license && (
@@ -213,47 +357,10 @@ const MoodboardsPage = () => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="mb-atelier" data-testid="moodboards-atelier-grid">
           {filtered.map((m) => {
             const project = projects.find((p) => p.id === m.project_id);
-            // Relationship hue — same color as the linked Account/Project
-            // would carry across the platform. Stays subtle (top edge bar
-            // + caption dot), never dominant.
-            const pal = project?.title ? avatarPalette(project.title) : null;
-            return (
-              <Link key={m.id} to={`/moodboards/${m.id}`}
-                    data-testid={`moodboard-card-${m.id}`}
-                    className="group block bg-[var(--bp-surface-1)] border border-[var(--bp-border)] hover:border-[var(--bp-border-strong)] rounded-[var(--bp-radius-md)] overflow-hidden transition-colors">
-                {pal && (
-                  <div className="h-[3px] w-full" style={{ background: pal.border }} aria-hidden
-                       data-testid={`moodboard-hue-${m.id}`} />
-                )}
-                <div className="aspect-[4/3] bg-[var(--bp-surface-2)] relative overflow-hidden">
-                  <div className="absolute inset-0 bg-[var(--bp-hero-gradient)] opacity-60" />
-                  <Layers size={42} strokeWidth={0.75}
-                          className="text-[var(--bp-text-subtle)] absolute inset-0 m-auto group-hover:scale-110 transition-transform duration-[var(--bp-duration-cinematic)]" />
-                  <div className="absolute top-3 right-3">
-                    <StatusBadge status={m.status} t={t} />
-                  </div>
-                </div>
-                <div className="p-5">
-                  <h3 className="bp-h3 text-[var(--bp-text-primary)] truncate">
-                    {m.title || t('moodboards.untitled')}
-                  </h3>
-                  {project && (
-                    <p className="bp-caption text-[var(--bp-text-muted)] mt-1.5 truncate flex items-center gap-1.5">
-                      {pal && <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: pal.border }} aria-hidden />}
-                      {project.title}
-                    </p>
-                  )}
-                  {m.updated_at && (
-                    <p className="bp-caption !text-[10px] text-[var(--bp-text-subtle)] mt-3">
-                      {new Date(m.updated_at).toLocaleDateString()}
-                    </p>
-                  )}
-                </div>
-              </Link>
-            );
+            return <MoodboardCard key={m.id} m={m} project={project} />;
           })}
         </div>
       )}
@@ -262,6 +369,7 @@ const MoodboardsPage = () => {
         <CreateModal projects={projects} t={t}
                      onClose={() => setShowCreate(false)} onCreate={handleCreate} />
       )}
+      </div>
     </div>
   );
 };

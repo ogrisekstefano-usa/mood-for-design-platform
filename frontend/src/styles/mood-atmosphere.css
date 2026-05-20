@@ -1,0 +1,75 @@
+/**
+ * mood-atmosphere.css — Atmospheric layered base shared across the
+ * editorial environments (Projects, Design Journey, Insights,
+ * Inspirations, Material View, Moodboards).
+ *
+ * Replaces pure-black SaaS feel with luxury layered charcoal +
+ * diffused warm/cyan/pearl atmospheric overlays. Subtle grain.
+ *
+ * Page CSS roots that opt into this layer should:
+ *   1. Use `background: var(--mood-bg)` (not #000 or #0a0b0c).
+ *   2. Apply `.mood-atmospheric` class on the root container OR set
+ *      `background-image: var(--mood-atmosphere)` directly.
+ *
+ * NEVER use full-black flat or enterprise contrast.
+ */
+
+:root,
+.mood-atmospheric {
+  /* Layered charcoal palette — warmer, slightly desaturated. */
+  --mood-bg:        #0c0e11;            /* base — never #000 / #0a0b0c */
+  --mood-bg-2:      #11141a;            /* primary surface */
+  --mood-bg-3:      #161a22;            /* elevated surface */
+  --mood-bg-4:      #1c2129;            /* hover surface */
+  --mood-line:      rgba(255, 255, 255, 0.058);
+  --mood-line-2:    rgba(255, 255, 255, 0.10);
+  --mood-line-warm: rgba(217, 178, 133, 0.18);
+
+  /* Editorial palette accents — diffused, never pure. */
+  --mood-warm:      #d9b285;
+  --mood-warm-soft: rgba(217, 178, 133, 0.10);
+  --mood-cyan:      #7fdfff;
+  --mood-cyan-soft: rgba(127, 223, 255, 0.07);
+  --mood-pearl:     #f0ebe0;
+  --mood-amber:     #e8a558;
+  --mood-success:   #7fc89f;
+  --mood-rose:      #c98a86;
+
+  /* Atmospheric overlay — gradient diffusion for depth. Applied as
+     a background-image so it stacks ABOVE the base color. */
+  --mood-atmosphere:
+    radial-gradient(ellipse 90% 50% at 18% -8%,
+                    rgba(217, 178, 133, 0.045) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 45% at 90% 105%,
+                    rgba(127, 223, 255, 0.035) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 50% 50%,
+                    rgba(127, 223, 255, 0.015) 0%, transparent 70%);
+}
+
+/* Opt-in helper class for root containers. */
+.mood-atmospheric {
+  background: var(--mood-bg);
+  background-image: var(--mood-atmosphere);
+  background-attachment: fixed;
+}
+
+/* Subtle film-grain texture (CSS-only · GPU-safe). Apply only when
+   the container opts in via .mood-atmospheric--grain. Disabled at
+   prefers-reduced-motion to be polite. */
+.mood-atmospheric--grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.024;
+  mix-blend-mode: overlay;
+  background-image:
+    radial-gradient(circle at 25% 30%, rgba(255,255,255,1) 1px, transparent 1px),
+    radial-gradient(circle at 75% 70%, rgba(255,255,255,1) 1px, transparent 1px);
+  background-size: 3px 3px, 3px 3px;
+  background-position: 0 0, 1.5px 1.5px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mood-atmospheric--grain::before { display: none; }
+}

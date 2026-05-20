@@ -3,25 +3,23 @@
  * Dark luxury · teal/gold glow · editorial. NO admin CRUD.
  */
 .ppage {
-  --pp-bg:       #0a0b0c;
-  --pp-bg-2:     #101113;
-  --pp-line:     rgba(255, 255, 255, 0.07);
-  --pp-line-2:   rgba(255, 255, 255, 0.12);
+  --pp-bg:       var(--mood-bg);
+  --pp-bg-2:     var(--mood-bg-2);
+  --pp-line:     var(--mood-line);
+  --pp-line-2:   var(--mood-line-2);
   --pp-text:     #e8e6e1;
   --pp-text-2:   #a8a8a4;
   --pp-text-3:   #6e6e6a;
-  --pp-cyan:     #7fdfff;
-  --pp-warm:     #d9b285;
-  --pp-amber:    #e8a558;
-  --pp-success:  #7fc89f;
-  --pp-rose:     #c98a86;
+  --pp-cyan:     var(--mood-cyan);
+  --pp-warm:     var(--mood-warm);
+  --pp-amber:    var(--mood-amber);
+  --pp-success:  var(--mood-success);
+  --pp-rose:     var(--mood-rose);
   --pp-closed:   #8a8a85;
 
   min-height: 100vh;
   background: var(--pp-bg);
-  background-image:
-    radial-gradient(ellipse 70% 50% at 15% -10%, rgba(127, 223, 255, 0.05) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 85% 100%, rgba(217, 178, 133, 0.04) 0%, transparent 60%);
+  background-image: var(--mood-atmosphere);
   color: var(--pp-text);
   font-family: 'Inter', system-ui, sans-serif;
   padding: 56px 64px 80px;

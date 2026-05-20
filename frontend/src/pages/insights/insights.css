@@ -3,25 +3,23 @@
  * Dark luxury · teal/gold glow · editorial. NO admin dashboard.
  */
 .ins-page {
-  --ins-bg:     #0a0b0c;
-  --ins-bg-2:   #101113;
-  --ins-bg-3:   #161719;
-  --ins-line:   rgba(255, 255, 255, 0.07);
-  --ins-line-2: rgba(255, 255, 255, 0.12);
+  --ins-bg:     var(--mood-bg);
+  --ins-bg-2:   var(--mood-bg-2);
+  --ins-bg-3:   var(--mood-bg-3);
+  --ins-line:   var(--mood-line);
+  --ins-line-2: var(--mood-line-2);
   --ins-text:   #e8e6e1;
   --ins-text-2: #a8a8a4;
   --ins-text-3: #6e6e6a;
-  --ins-cyan:   #7fdfff;
-  --ins-warm:   #d9b285;
-  --ins-pearl:  #f0ebe0;
-  --ins-amber:  #e8a558;
-  --ins-success:#7fc89f;
+  --ins-cyan:   var(--mood-cyan);
+  --ins-warm:   var(--mood-warm);
+  --ins-pearl:  var(--mood-pearl);
+  --ins-amber:  var(--mood-amber);
+  --ins-success:var(--mood-success);
 
   min-height: 100vh;
   background: var(--ins-bg);
-  background-image:
-    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(127, 223, 255, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(217, 178, 133, 0.05) 0%, transparent 60%);
+  background-image: var(--mood-atmosphere);
   color: var(--ins-text);
   font-family: 'Inter', system-ui, sans-serif;
   padding: 56px 64px 80px;
@@ -92,8 +90,8 @@
   border-radius: 0 2px 2px 0;
   opacity: 0.85;
 }
-.ins-stat--cyan::before  { background: linear-gradient(180deg, transparent, var(--ins-cyan)  60%, transparent); box-shadow: 0 0 12px rgba(127,223,255,0.35); }
-.ins-stat--gold::before  { background: linear-gradient(180deg, transparent, var(--ins-warm)  60%, transparent); box-shadow: 0 0 12px rgba(217,178,133,0.35); }
+.ins-stat--cyan::before  { background: linear-gradient(180deg, transparent, var(--ins-cyan)  60%, transparent); box-shadow: 0 0 8px rgba(127,223,255,0.20); }
+.ins-stat--gold::before  { background: linear-gradient(180deg, transparent, var(--ins-warm)  60%, transparent); box-shadow: 0 0 8px rgba(217,178,133,0.20); }
 .ins-stat--pearl::before { background: linear-gradient(180deg, transparent, var(--ins-pearl) 60%, transparent); }
 
 .ins-stat__icon {

@@ -3,19 +3,19 @@
  * Cinematic dark luxury · environment immersivo (mai boxed admin).
  */
 .dj-shell {
-  --dj-bg:        #0a0b0c;
-  --dj-bg-2:      #101113;
-  --dj-bg-3:      #161719;
-  --dj-line:      rgba(255, 255, 255, 0.07);
+  --dj-bg:        var(--mood-bg);
+  --dj-bg-2:      var(--mood-bg-2);
+  --dj-bg-3:      var(--mood-bg-3);
+  --dj-line:      var(--mood-line);
   --dj-text:      #e8e6e1;
   --dj-text-2:    #a8a8a4;
   --dj-text-3:    #6e6e6a;
-  --dj-cyan:      #7fdfff;
+  --dj-cyan:      var(--mood-cyan);
   --dj-cyan-soft: rgba(127, 223, 255, 0.15);
-  --dj-warm:      #d9b285;
+  --dj-warm:      var(--mood-warm);
   --dj-warm-soft: rgba(217, 178, 133, 0.14);
-  --dj-amber:     #e8a558;
-  --dj-success:   #7fc89f;
+  --dj-amber:     var(--mood-amber);
+  --dj-success:   var(--mood-success);
 
   background: var(--dj-bg);
   color: var(--dj-text);
@@ -25,10 +25,7 @@
   overflow: visible;
   font-family: 'Inter', system-ui, sans-serif;
   margin: 0;
-  /* Subtle vignette to give cinematic depth without admin chrome. */
-  background-image:
-    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(217, 178, 133, 0.06) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 40% at 50% 105%, rgba(127, 223, 255, 0.04) 0%, transparent 50%);
+  background-image: var(--mood-atmosphere);
 }
 
 .dj-shell--loading,

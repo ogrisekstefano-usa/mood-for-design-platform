@@ -98,11 +98,10 @@ def test_client_relations_no_proposals():
 
 
 def test_product_gallery_route_redirect_still_exists():
-    """Product Gallery in Curatorial Atlas points to /inspirations/products
-    which is registered as a redirect to /inspirations?type=product."""
-    sidebar = _read("components", "layout", "Sidebar.jsx")
+    """Iter99: Product Gallery removed from the sidebar (Inspirations
+    already covers product inspirations). The /inspirations/products
+    redirect route remains registered for any legacy deep-links."""
     app_js = _read("App.js")
-    assert 'to="/inspirations/products"' in sidebar
     assert '"/inspirations/products"' in app_js
     assert "type=product" in app_js
 

@@ -11,6 +11,9 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  background: var(--mood-bg);
+  background-image: var(--mood-atmosphere);
+  min-height: 100vh;
 }
 
 /* ── Header ──────────────────────────────────────────────────────── */
@@ -133,25 +136,26 @@
   font-weight: 600;
 }
 
-/* ── Grid (masonry-ish via CSS columns) ─────────────────────────── */
+/* ── Grid (masonry-ish via CSS columns) — denser editorial archive ── */
 .ins-grid {
-  column-count: 5;
-  column-gap: 12px;
+  column-count: 6;
+  column-gap: 10px;
   margin-top: 8px;
 }
-@media (max-width: 1500px) { .ins-grid { column-count: 4; } }
-@media (max-width: 1200px) { .ins-grid { column-count: 3; } }
-@media (max-width: 860px)  { .ins-grid { column-count: 2; } }
-@media (max-width: 520px)  { .ins-grid { column-count: 1; } }
+@media (max-width: 1700px) { .ins-grid { column-count: 5; } }
+@media (max-width: 1400px) { .ins-grid { column-count: 4; } }
+@media (max-width: 1100px) { .ins-grid { column-count: 3; } }
+@media (max-width: 760px)  { .ins-grid { column-count: 2; } }
+@media (max-width: 460px)  { .ins-grid { column-count: 1; } }
 
 .ins-card {
   display: block;
   width: 100%;
   break-inside: avoid;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   background: var(--bp-surface-1, #16171A);
   border: 1px solid var(--bp-border);
-  border-radius: 6px;
+  border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
   font-family: inherit;
