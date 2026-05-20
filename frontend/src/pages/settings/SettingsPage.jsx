@@ -117,8 +117,8 @@ const SettingsPage = () => {
             description={t('settings.domains.sub', null, 'Connect custom domains and subdomains to your workspace.')}
           />
           <SettingsTile testid="tile-brand" icon={Palette} to="/settings/brand"
-            title={t('settings.brand.title', null, 'Brand Studio')}
-            description={t('settings.brand.sub', null, 'Logo, palette, typography and style preset for your tenant.')}
+            title={t('settings.brand.title', null, 'Studio Identity™')}
+            description={t('settings.brand.sub', null, 'Definisci logo, palette, font e presenza visiva del tuo workspace.')}
           />
           <SettingsTile testid="tile-international-presence" icon={Globe} to="/settings/international-presence" accent="core"
             title={t('settings.internationalPresence.title', null, 'International Presence™')}

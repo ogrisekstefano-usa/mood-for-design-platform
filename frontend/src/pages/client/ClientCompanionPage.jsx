@@ -140,7 +140,7 @@ const ActiveChapterSection = ({ chapter, journeyId, onVoiceShared }) => {
       testid="cj-section-capitolo"
     >
       <p style={{
-        fontFamily: "'Playfair Display', serif",
+        fontFamily: "var(--mood-font-serif, 'Playfair Display', serif)",
         fontStyle: 'italic',
         fontSize: 18, lineHeight: 1.6,
         color: 'color-mix(in srgb, var(--cp-text-primary) 75%, transparent)',
@@ -150,7 +150,7 @@ const ActiveChapterSection = ({ chapter, journeyId, onVoiceShared }) => {
       </p>
       <p style={{
         marginTop: 18,
-        fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+        fontFamily: "var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace)",
         fontSize: 10.5,
         letterSpacing: '0.22em',
         textTransform: 'uppercase',
@@ -381,7 +381,7 @@ const ClientCompanionPage = () => {
            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}
            data-testid="cj-loading">
         <p style={{
-          fontFamily: "'Playfair Display', serif",
+          fontFamily: "var(--mood-font-serif, 'Playfair Display', serif)",
           fontStyle: 'italic', fontSize: 17,
           color: 'color-mix(in srgb, var(--cp-text-primary) 55%, transparent)',
         }}>
@@ -397,7 +397,7 @@ const ClientCompanionPage = () => {
            style={{ padding: '96px 56px', textAlign: 'center' }}
            data-testid="cj-error">
         <h3 style={{
-          fontFamily: "'Playfair Display', serif",
+          fontFamily: "var(--mood-font-serif, 'Playfair Display', serif)",
           fontStyle: 'italic', fontSize: 26, margin: 0,
           color: 'var(--cp-text-primary, #efe8d8)',
         }}>

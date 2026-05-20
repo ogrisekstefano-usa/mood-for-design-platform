@@ -369,11 +369,16 @@ function App() {
                   <Route path="/inspirations/collections" element={<StudioCollectionsPage />} />
                   <Route path="/inspirations/brands" element={<BrandModePage />} />
                   <Route path="/inspirations/brands/:brandId" element={<BrandDetailPage />} />
+                  {/* Sprint UI-SYS-01 · Brand Atlas™ canonical alias */}
+                  <Route path="/brand-atlas" element={<Navigate to="/inspirations/brands" replace />} />
+                  <Route path="/brand-atlas/:brandId" element={<Navigate to="/inspirations/brands/:brandId" replace />} />
                   <Route path="/inspirations/products/:productId" element={<ProductGalleryPage />} />
                   <Route path="/inspirations/materials" element={<MaterialViewPage />} />
                   <Route path="/insights" element={<InsightsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="/settings/brand" element={<StudioAdminRoute><BrandStudioPage /></StudioAdminRoute>} />
+                  {/* Sprint UI-SYS-01 · Studio Identity™ canonical alias */}
+                  <Route path="/studio-identity" element={<Navigate to="/settings/brand" replace />} />
                   <Route path="/settings/domains" element={<StudioAdminRoute><DomainsPage /></StudioAdminRoute>} />
                   <Route path="/settings/forms" element={<StudioAdminRoute><FormBuilderPage /></StudioAdminRoute>} />
                   <Route path="/settings/magazine" element={<StudioAdminRoute><MagazineAdminPage /></StudioAdminRoute>} />

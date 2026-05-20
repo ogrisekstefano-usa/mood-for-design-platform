@@ -65,13 +65,13 @@ const JourneyClosureCeremony = ({ journeyId, projectTitle, onDeposited }) => {
           style={{
             marginTop: 22,
             padding: '11px 22px',
-            fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+            fontFamily: "var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace)",
             fontSize: 10.5,
             letterSpacing: '0.28em',
             textTransform: 'uppercase',
-            color: '#b89870',
+            color: 'var(--mood-gold, #b89870)',
             background: 'transparent',
-            border: '1px solid #b89870',
+            border: '1px solid var(--mood-gold, #b89870)',
             cursor: 'pointer',
             transition: 'all 0.28s ease',
           }}
@@ -123,7 +123,7 @@ const JourneyClosureCeremony = ({ journeyId, projectTitle, onDeposited }) => {
             rows={5}
             placeholder="Un paragrafo che riassume il percorso. Senza enfasi, senza retorica. Documentazione editoriale di ciò che è stato attraversato."
             data-testid="dj-closure-statement"
-            style={{ ...inpStyle, fontFamily: "'Playfair Display', serif", fontStyle: 'italic', fontSize: 15, resize: 'vertical' }}
+            style={{ ...inpStyle, fontFamily: "var(--mood-font-serif, 'Playfair Display', serif)", fontStyle: 'italic', fontSize: 15, resize: 'vertical' }}
           />
           <span style={{ ...lblStyle, opacity: 0.55, textTransform: 'none', letterSpacing: 0 }}>
             {statement.length} / 800
@@ -152,13 +152,13 @@ const JourneyClosureCeremony = ({ journeyId, projectTitle, onDeposited }) => {
           data-testid="dj-closure-submit"
           style={{
             padding: '12px 24px',
-            fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+            fontFamily: "var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace)",
             fontSize: 10.5,
             letterSpacing: '0.28em',
             textTransform: 'uppercase',
             color: '#0e0f11',
-            background: '#b89870',
-            border: '1px solid #b89870',
+            background: 'var(--mood-gold, #b89870)',
+            border: '1px solid var(--mood-gold, #b89870)',
             cursor: canSubmit && !busy ? 'pointer' : 'not-allowed',
             opacity: canSubmit && !busy ? 1 : 0.4,
             transition: 'all 0.28s ease',
@@ -173,7 +173,7 @@ const JourneyClosureCeremony = ({ journeyId, projectTitle, onDeposited }) => {
           data-testid="dj-closure-cancel"
           style={{
             padding: '12px 18px',
-            fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+            fontFamily: "var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace)",
             fontSize: 10.5,
             letterSpacing: '0.22em',
             textTransform: 'uppercase',
@@ -191,7 +191,7 @@ const JourneyClosureCeremony = ({ journeyId, projectTitle, onDeposited }) => {
 };
 
 const lblStyle = {
-  fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+  fontFamily: "var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace)",
   fontSize: 10,
   letterSpacing: '0.22em',
   textTransform: 'uppercase',
@@ -204,7 +204,7 @@ const inpStyle = {
   color: '#efe8d8',
   padding: '11px 14px',
   fontSize: 14,
-  fontFamily: 'Inter, sans-serif',
+  fontFamily: "var(--mood-font-body, 'Inter', sans-serif)",
   outline: 'none',
 };
 

@@ -1,6 +1,6 @@
 /**
- * BrandModePage — Brand Mode™ · atlante curatoriale dei produttori.
- * Phase D · Sprint D3.
+ * BrandModePage — Brand Atlas™ · atlante curatoriale dei produttori.
+ * Phase D · Sprint D3. Renamed in Sprint UI-SYS-01 (was 'Brand Mode™').
  *
  * Lettura: i brand sono LINGUAGGI PROGETTUALI, non vendor records.
  * UX: editorial cards con atmosfera prevalente + materialità + mercati
@@ -168,13 +168,14 @@ const BrandModePage = () => {
       <header className="bm-hero">
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap' }}>
           <div style={{ flex: 1, minWidth: 280 }}>
-            <p className="bm-hero__eyebrow">Brand Mode™ · atlante curatoriale</p>
-            <h1 className="bm-hero__title">
+            <p className="bm-hero__eyebrow" data-testid="brand-atlas-eyebrow">Brand Atlas™ · atlante curatoriale dei produttori</p>
+            <h1 className="bm-hero__title" data-testid="brand-atlas-title">
               I produttori come <em>linguaggi progettuali</em>
             </h1>
             <p className="bm-hero__lead">
+              Esplora i marchi, le collezioni e il linguaggio progettuale dei produttori presenti in MOOD.
               Ogni brand è una lettura — atmosfere prevalenti, materialità ricorrenti, geografie narrative
-              dove compare nei tuoi progetti. Esplora l'atlante curatoriale dello studio.
+              dove compare nei tuoi progetti.
             </p>
           </div>
           <button type="button"

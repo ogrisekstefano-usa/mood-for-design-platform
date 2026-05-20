@@ -253,7 +253,7 @@ const PaletteSwitcher = () => {
             <Link to="/settings/brand#section-presets" onClick={() => setOpen(false)}
                   data-testid="palette-switcher-brand-studio"
                   className="palsw-foot__link">
-              Apri Brand Studio · personalizza <ExternalLink size={11} strokeWidth={1.7} />
+              Apri Studio Identity™ · personalizza <ExternalLink size={11} strokeWidth={1.7} />
             </Link>
             <p className="palsw-foot__hint">
               Imposta colori, tipografia e radius del tuo studio.

@@ -102,8 +102,8 @@ const InspirationsPage = () => {
             <Icons.Library size={13} /> Studio Collections™
           </Link>
           <Link to="/inspirations/brands" className="ins-cta-secondary"
-                data-testid="ins-brand-mode-link">
-            <Icons.Compass size={13} /> Brand Mode™
+                data-testid="ins-brand-atlas-link">
+            <Icons.Compass size={13} /> Brand Atlas™
           </Link>
           <Link to="/inspirations/materials" className="ins-cta-secondary"
                 data-testid="ins-material-view-link">

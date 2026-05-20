@@ -108,7 +108,7 @@ def test_curatorial_atlas_items():
     blk = re.search(r'<Section id="curatorial-atlas".*?</Section>', src, re.S).group(0)
     for label in (
         'label="Inspirations"',
-        'label="Brand Mode"',
+        'label="Brand Atlas"',
         'label="Material View"',
         'label="Media Library"',
         'label="Cultural Editions"',
@@ -117,6 +117,8 @@ def test_curatorial_atlas_items():
     # Removed surfaces
     assert 'label="Product Gallery"' not in blk
     assert 'label="Visual Archive"' not in blk
+    # Sprint UI-SYS-01: 'Brand Mode' renamed to 'Brand Atlas'
+    assert 'label="Brand Mode"' not in blk
 
 
 # ─── Client Relations ─────────────────────────────────────────────
@@ -170,13 +172,15 @@ def test_studio_os_items():
     for label in (
         'label="Team"',
         'label="Insights"',
-        'label="Brand Studio"',
+        'label="Studio Identity"',
         'label="Forms & Journeys"',
         'label="Integrations"',
         'label="Billing"',
         'label="Settings"',
     ):
         assert label in blk
+    # Sprint UI-SYS-01: 'Brand Studio' renamed to 'Studio Identity'
+    assert 'label="Brand Studio"' not in blk
 
 
 # ─── ™ usage rules ────────────────────────────────────────────────
@@ -192,8 +196,9 @@ def test_trademark_usage_is_restrained():
         "Inspirations\u2122", "Materials\u2122", "Magazine\u2122",
         "Accounts\u2122", "Settings\u2122", "Team\u2122",
         "Documents\u2122", "Publishing Queue\u2122", "Web Presence\u2122",
-        "Brand Mode\u2122", "Product Gallery\u2122", "Material View\u2122",
+        "Brand Atlas\u2122", "Product Gallery\u2122", "Material View\u2122",
         "Visual Archive\u2122", "Experience Studio\u2122",
+        "Studio Identity\u2122",
     ]
     for bad in forbidden:
         assert bad not in src, f"Forbidden ™ usage: '{bad}'"

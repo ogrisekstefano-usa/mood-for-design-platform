@@ -35,6 +35,35 @@
   --mood-success:   #7fc89f;
   --mood-rose:      #c98a86;
 
+  /* ── Sprint UI-SYS-01 · Semantic token aliases ───────────────────
+     Public, theme-agnostic API consumed by every editorial surface.
+     Bridges --bp-* (tenant-controlled) and --mood-* (atmospheric base).
+     When the tenant changes palette/font via Studio Identity™, the
+     --bp-* tokens shift, and these aliases follow automatically. */
+  --mood-surface:        var(--bp-surface,        var(--mood-bg-2));
+  --mood-surface-soft:   var(--bp-surface-alt,    var(--mood-bg));
+  --mood-card:           var(--bp-bg-elevated,    var(--mood-bg-3));
+  --mood-border:         var(--bp-border-subtle,  var(--mood-line));
+  --mood-border-strong:  var(--bp-border,         var(--mood-line-2));
+  --mood-text:           var(--bp-text,           var(--mood-pearl));
+  --mood-text-muted:     var(--bp-text-secondary, color-mix(in srgb, var(--mood-pearl) 60%, transparent));
+  --mood-accent:         var(--bp-primary,        var(--mood-warm));
+  --mood-accent-soft:    var(--mood-warm-soft);
+  --mood-accent-glow:    rgba(217, 178, 133, 0.28);
+  --mood-gold:           var(--mood-warm);
+  --mood-gold-soft:      var(--mood-warm-soft);
+  --mood-danger:         var(--bp-danger,   var(--mood-rose));
+  --mood-warning:        var(--bp-warning,  var(--mood-amber));
+  --mood-success-fg:     var(--bp-success,  var(--mood-success));
+
+  /* Font tokens — read from --bp-font-* (tenant Studio Identity™)
+     with editorial fallbacks. Components MUST consume these tokens
+     so that font changes in Studio Identity™ propagate everywhere. */
+  --mood-font-heading: var(--bp-font-heading, 'Playfair Display', Georgia, serif);
+  --mood-font-body:    var(--bp-font-body,    'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+  --mood-font-serif:   var(--bp-font-heading, 'Playfair Display', Georgia, serif);
+  --mood-font-mono:    var(--bp-font-mono,    'JetBrains Mono', ui-monospace, SFMono-Regular, monospace);
+
   /* Atmospheric overlay — gradient diffusion for depth. Applied as
      a background-image so it stacks ABOVE the base color. */
   --mood-atmosphere:

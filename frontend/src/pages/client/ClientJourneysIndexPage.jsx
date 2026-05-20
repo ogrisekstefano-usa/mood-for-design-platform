@@ -117,7 +117,7 @@ const ClientJourneysIndexPage = () => {
            className="cj-shell"
            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
         <p style={{
-          fontFamily: "'Playfair Display', serif",
+          fontFamily: "var(--mood-font-serif, 'Playfair Display', serif)",
           fontStyle: 'italic', fontSize: 17,
           color: 'color-mix(in srgb, var(--cp-text-primary) 55%, transparent)',
         }}>

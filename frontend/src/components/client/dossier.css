@@ -9,19 +9,19 @@
   --d-mute:      color-mix(in srgb, #ebe6dc 42%, transparent);
   --d-rule:      color-mix(in srgb, #ebe6dc 14%, transparent);
   --d-paper:     #131418;
-  --d-accent:    #b89870; /* gold leaf, ATTENUATO. NO #d9b285 brillante */
+  --d-accent:    var(--mood-gold, #b89870); /* tenant gold, ATTENUATO. NO bright #d9b285 */
 
   max-width: 960px;
   margin: 0 auto;
   padding: 48px 24px 96px;
   color: var(--d-ink);
   background: var(--d-bg);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--mood-font-body, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
 }
 
 /* Eyebrows */
 .dossier-eyebrow {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace);
   font-size: 10.5px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -29,7 +29,7 @@
   margin: 0 0 14px;
 }
 .dossier-h3 {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-weight: 400;
   font-style: italic;
   font-size: 28px;
@@ -62,7 +62,7 @@
 }
 .dossier-hero__body { max-width: 720px; }
 .dossier-hero__eyebrow {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace);
   font-size: 10.5px;
   letter-spacing: 0.32em;
   text-transform: uppercase;
@@ -70,7 +70,7 @@
   margin: 0 0 36px;
 }
 .dossier-hero__title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-weight: 400;
   font-style: italic;
   font-size: clamp(40px, 5.4vw, 64px);
@@ -80,20 +80,20 @@
 }
 .dossier-hero__title em { font-style: italic; }
 .dossier-hero__meta {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--mood-font-body, 'Inter', sans-serif);
   font-size: 14px;
   letter-spacing: 0.02em;
   color: var(--d-ink-soft);
   margin: 0 0 18px;
 }
 .dossier-hero__studio {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--mood-font-body, 'Inter', sans-serif);
   font-size: 13px;
   color: var(--d-mute);
   margin: 0;
 }
 .dossier-hero__studio em {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   color: var(--d-ink-soft);
 }
@@ -101,7 +101,7 @@
 /* STATEMENT -------------------------------------------------- */
 .dossier-statement { margin: 0 0 64px; }
 .dossier-statement__quote {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-weight: 400;
   font-size: clamp(20px, 2.4vw, 26px);
@@ -124,7 +124,7 @@
   border-bottom: 1px solid var(--d-rule);
 }
 .dossier-duration__val {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 20px;
   color: var(--d-ink);
@@ -147,21 +147,21 @@
   border-bottom: 1px solid var(--d-rule);
 }
 .dossier-chapters__num {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace);
   font-size: 11px;
   letter-spacing: 0.22em;
   color: var(--d-mute);
   padding-top: 4px;
 }
 .dossier-chapters__title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 19px;
   color: var(--d-ink);
   margin: 0 0 4px;
 }
 .dossier-chapters__state {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--mood-font-body, 'Inter', sans-serif);
   font-size: 12.5px;
   color: var(--d-mute);
   margin: 0;
@@ -213,7 +213,7 @@
 }
 .dossier-baf__lbl {
   position: absolute; bottom: 14px;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace);
   font-size: 9.5px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -225,7 +225,7 @@
 .dossier-baf__lbl--l { left: 14px; }
 .dossier-baf__lbl--r { right: 14px; }
 .dossier-baf__cap {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 15px;
   color: var(--d-ink-soft);
@@ -247,7 +247,7 @@
   filter: grayscale(0.12);
 }
 .dossier-visual__cap {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 15px;
   color: var(--d-ink-soft);
@@ -269,7 +269,7 @@
   filter: grayscale(0.18);
 }
 .dossier-moment__cap {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace);
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -299,14 +299,14 @@
   background: var(--d-paper) center/cover no-repeat;
 }
 .dossier-material__name {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 16px;
   color: var(--d-ink);
   margin: 0 0 2px;
 }
 .dossier-material__cat {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace);
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -322,7 +322,7 @@
   border-top: 1px solid var(--d-rule);
 }
 .dossier-voice__msg {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 17px;
   line-height: 1.55;
@@ -331,7 +331,7 @@
   max-width: 64ch;
 }
 .dossier-voice__meta {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace);
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -353,7 +353,7 @@
   background: var(--d-rule);
 }
 .dossier-closure__line {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace);
   font-size: 10.5px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -367,13 +367,13 @@
   text-align: center;
 }
 .dossier-loading p {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 16px;
   color: color-mix(in srgb, #ebe6dc 50%, transparent);
 }
 .dossier-empty__msg {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 18px;
   color: color-mix(in srgb, #ebe6dc 60%, transparent);

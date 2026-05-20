@@ -30,7 +30,7 @@
   color: var(--bp-primary);
 }
 .bm-hero__title {
-  font-family: 'Playfair Display', var(--bp-font-heading), serif;
+  font-family: var(--mood-font-serif, var(--bp-font-heading, 'Playfair Display', serif));
   font-size: clamp(28px, 4vw, 42px);
   font-weight: 400;
   line-height: 1.1;
@@ -154,7 +154,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 16px;
   color: var(--bp-text-primary);
@@ -163,7 +163,7 @@
 }
 .bm-card__logo img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
 .bm-card__title h3 {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-size: 16px;
   font-weight: 400;
   margin: 0;
@@ -209,7 +209,7 @@
   text-transform: lowercase;
 }
 .bm-chip--material {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   text-transform: none;
 }
@@ -284,7 +284,7 @@
   color: var(--bp-text-subtle);
 }
 .bm-empty h3 {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 15px;
   color: var(--bp-text-primary);
@@ -346,7 +346,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 28px;
   color: var(--bp-text-primary);
@@ -361,7 +361,7 @@
   color: var(--bp-primary);
 }
 .bd-hero__title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-size: clamp(28px, 4vw, 42px);
   font-weight: 400;
   letter-spacing: -0.01em;
@@ -394,7 +394,7 @@
   white-space: nowrap;
 }
 .bd-counts em {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 18px;
   color: var(--bp-text-primary);
@@ -426,7 +426,7 @@
   border-bottom: 1px dashed var(--bp-border);
 }
 .bd-section__count {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 14px;
   color: var(--bp-text-muted);
@@ -447,7 +447,7 @@
   color: var(--bp-primary);
 }
 .bd-insight p {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 17px;
   line-height: 1.55;
@@ -477,7 +477,7 @@
 }
 .bd-coll-card:hover { border-color: var(--bp-text-secondary); }
 .bd-coll-card__title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-size: 14px;
   font-style: italic;
   color: var(--bp-text-primary);
@@ -530,7 +530,7 @@
 .bd-tile__label {
   font-size: 10.5px;
   color: var(--bp-text-primary);
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   margin-top: 4px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -567,7 +567,7 @@
 }
 .bd-mb-card__cover img { width: 100%; height: 100%; object-fit: cover; }
 .bd-mb-card__title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', serif);
   font-style: italic;
   font-size: 12.5px;
   color: var(--bp-text-primary);

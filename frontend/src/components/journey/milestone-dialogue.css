@@ -16,7 +16,7 @@
 .mdialog__loading {
   padding: 32px 0;
   color: var(--mood-text-3, #6e6e6a);
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', Georgia, serif);
   font-style: italic;
 }
 
@@ -29,11 +29,11 @@
   text-transform: uppercase;
   color: var(--mood-warm, #d9b285);
   margin: 0 0 8px;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace);
 }
 .mdialog__title,
 .mdialog__feedback-title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', Georgia, serif);
   font-size: 22px;
   line-height: 1.15;
   font-weight: 400;
@@ -84,18 +84,18 @@
   letter-spacing: 0.20em;
   text-transform: uppercase;
   color: var(--mood-text-3, #6e6e6a);
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace);
 }
 .mdialog__chapter-kind {
   font-size: 11px;
   letter-spacing: 0.04em;
   color: var(--mood-warm, #d9b285);
   font-style: italic;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', Georgia, serif);
 }
 .mdialog__chapter-title {
   margin: 0 0 8px;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', Georgia, serif);
   font-size: 19px;
   font-weight: 400;
   color: #ece8df;
@@ -116,7 +116,7 @@
   background: rgba(217, 178, 133, 0.045);
   border: 1px solid rgba(217, 178, 133, 0.12);
   border-radius: 3px;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', Georgia, serif);
   font-style: italic;
   color: #d6d5d0;
   font-weight: 300;
@@ -132,7 +132,7 @@
 }
 .mdialog__empty p {
   margin: 14px 0 0;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', Georgia, serif);
   font-size: 13.5px;
   line-height: 1.6;
   color: var(--mood-text-2, #a8a8a4);
@@ -156,7 +156,7 @@
   background: rgba(255,255,255,0.02);
   border: 1px solid var(--mood-line, rgba(255,255,255,0.07));
   color: var(--mood-text-2, #a8a8a4);
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', Georgia, serif);
   font-style: italic;
   font-size: 12px;
   padding: 5px 12px;
@@ -187,7 +187,7 @@
   transition: border-color 200ms ease;
 }
 .mdialog__input--title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', Georgia, serif);
   font-style: italic;
   font-size: 18px;
 }
@@ -214,7 +214,7 @@
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace);
   cursor: pointer;
   border: 1px solid var(--mood-line, rgba(255,255,255,0.07));
   background: transparent;
@@ -249,7 +249,7 @@
   color: #ece8df;
   padding: 10px 14px;
   border-radius: 3px;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', Georgia, serif);
   font-style: italic;
   font-size: 13.5px;
   cursor: pointer;
@@ -265,7 +265,7 @@
 .mdialog__cta--voice {
   display: inline-flex; align-items: center; gap: 8px;
   font-style: normal;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace);
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -298,21 +298,21 @@
   line-height: 1.5;
 }
 .mdialog__echo-kind {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', Georgia, serif);
   font-style: italic;
   color: #ece8df;
 }
 .mdialog__echo-quote {
   font-style: italic;
   color: var(--mood-text-2, #a8a8a4);
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--mood-font-serif, 'Playfair Display', Georgia, serif);
 }
 .mdialog__echo-time {
   margin-left: auto;
   font-size: 9.5px;
   letter-spacing: 0.12em;
   color: var(--mood-text-3, #6e6e6a);
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--mood-font-mono, 'JetBrains Mono', ui-monospace, monospace);
 }
 .mdialog__echo--embrace  { border-left-color: var(--mood-success, #7fc89f); }
 .mdialog__echo--curious  { border-left-color: var(--mood-cyan, #7fdfff); }

@@ -9,14 +9,14 @@
  *   03 · CURATORIAL ATLAS    — archivio culturale globale
  *   04 · CLIENT RELATIONS    — Accounts + Voci aperte + Memoria
  *   05 · CONTENT STUDIO      — publishing (solo admin)
- *   06 · STUDIO OS           — Team, Brand Studio, governance
+ *   06 · STUDIO OS           — Team, Studio Identity™, governance
  *   ⛨   · PLATFORM           — super-admin (impersonation, audit)
  *
  * Rimossi dal root (vivono SOLO via Journey → Step → Artifact):
  * Moodboards, Render, Hotspots, Site Evolution, Documents.
  *
  * Regola ™: usato SOLO su brand identitari rari (Design Journey™,
- * Studio Pulse™, Cultural Editions™, Brand Mode™, Material View™).
+ * Studio Pulse™, Cultural Editions™, Brand Atlas™, Material View™).
  *
  * Active Journey Rail: live list dei viaggi vivi con glow lifecycle.
  *
@@ -257,7 +257,8 @@ const Sidebar = () => {
         {/* ── 03 · CURATORIAL ATLAS ─────────────────────────── */}
         <Section id="curatorial-atlas" label="Curatorial Atlas" {...sectionProps} sectionCollapsed={sectionIsCollapsed('curatorial-atlas')}>
           <NavItem to="/inspirations"               icon="Bookmark"   label="Inspirations"      collapsed={collapsed} end />
-          <NavItem to="/inspirations/brands"        icon="Sparkles"   label="Brand Mode"        collapsed={collapsed} hasMark />
+          <NavItem to="/inspirations/brands"        icon="Sparkles"   label="Brand Atlas"        collapsed={collapsed} hasMark
+                   testid="sidebar-nav-brand-atlas" />
           <NavItem to="/inspirations/materials"     icon="Palette"    label="Material View"     collapsed={collapsed} hasMark
                    testid="sidebar-nav-material-view" />
           <NavItem to="/library"                    icon="FolderOpen" label="Media Library"     collapsed={collapsed} />
@@ -289,7 +290,8 @@ const Sidebar = () => {
           <NavItem to="/insights"          icon="LineChart" label="Insights"    collapsed={collapsed} />
           {isAdmin && (
             <>
-              <NavItem to="/settings/brand"             icon="Palette" label="Brand Studio"      collapsed={collapsed} />
+              <NavItem to="/settings/brand"             icon="Palette" label="Studio Identity"   collapsed={collapsed}
+                       testid="sidebar-nav-studio-identity" hasMark />
               <NavItem to="/blueprint/forms-journeys"   icon="Sparkle" label="Forms & Journeys"  collapsed={collapsed} />
               <NavItem to="/settings/integrations"      icon="Plug"    label="Integrations"      collapsed={collapsed} />
               <NavItem to="/settings/plan"              icon="Receipt" label="Billing"           collapsed={collapsed} />

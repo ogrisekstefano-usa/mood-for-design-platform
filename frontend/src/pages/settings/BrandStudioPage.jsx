@@ -565,17 +565,20 @@ const BrandStudioPage = () => {
                   className="flex items-center gap-1.5 text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] text-[10px] font-body uppercase tracking-[0.22em] mb-3">
             <ArrowLeft size={11} strokeWidth={1.5} /> {t('common.back', null, 'Back')}
           </button>
-          <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.22em] font-semibold mb-1">
-            Workspace · Brand Studio
+          <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.22em] font-semibold mb-1"
+             data-testid="studio-identity-eyebrow">
+            Workspace · Studio Identity™
           </p>
-          <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)] leading-none">
-            {t('brand.title', null, 'Identità & Tema')}
+          <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)] leading-none"
+              data-testid="studio-identity-title">
+            {t('brand.title', null, 'Studio Identity™')}
           </h1>
           <p className="text-[var(--bp-text-muted)] text-[13px] font-body mt-2 max-w-xl">
-            {t('brand.intro', null, "Brand Studio è il sistema di identità visiva del tuo studio: palette, tipografia, presets. La tua identità propaga al sito pubblico (completa) e al Blueprint editor (solo accent + tipografia, per non compromettere l'usabilità operativa).")}
+            {t('brand.intro', null, "Definisci logo, palette, font e presenza visiva del tuo workspace. La tua identità propaga al sito pubblico (completa) e al Blueprint editor (solo accent + tipografia, per non compromettere l'usabilità operativa).")}
           </p>
-          {/* Scope traceability — Brand Studio controls IDENTITY only.
-              Navigation / footer / sections live in Experience Studio. */}
+          {/* Scope traceability — Studio Identity™ controls IDENTITY only.
+              Navigation / footer / sections live in Experience Studio.
+              Producer brands ecosystem lives in Brand Atlas™. */}
           <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-sm)]"
                data-testid="brand-scope-trace">
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--bp-primary)]" aria-hidden />
