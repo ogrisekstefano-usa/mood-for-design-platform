@@ -1,0 +1,48 @@
+{
+  "summary": "Frontend testing of Sprint F.A — Design Journey™ Foundation on /workspace/projects/79d96981-1ef4-4052-ae27-ff1252e00f3c (Apartment — Stefano). ALL 12 acceptance criteria PASS. Design Journey™ is now the first AND default tab; the 3-column shell (rail · focus · details) plus bottom evolution timeline render perfectly with editorial Italian copy. Status transitions work end-to-end with toast confirming Italian lexicon ('Presentata', 'Approvata', etc).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verified_flows_ok": [
+    "Login demo@moodfordesign.com / Blueprint2024! → /dashboard",
+    "Direct nav /workspace/projects/79d96981-1ef4-4052-ae27-ff1252e00f3c (no ?tab param) → dj-shell renders immediately (Journey is DEFAULT)",
+    "URL stays clean (no ?tab=journey) when on default journey tab — verified after returning from tab-overview",
+    "Tab DOM order: ['tab-journey','tab-overview','tab-inspirations','tab-moodboards','tab-materials','tab-proposals','tab-conversations','tab-timeline','tab-content'] — tab-journey is FIRST",
+    "Header: eyebrow='Design Journey™' + italic title 'L'evoluzione progettuale di questo progetto'",
+    "Left rail dj-rail with eyebrow 'Pietre miliari' + all 10 numbered milestones present: brief, inspirations, moodboard_direction, material_direction, concept_design, technical_package, curated_selections, site_evolution, final_presentation, certified_closure",
+    "Click dj-rail-item-moodboard_direction → dj-focus updates to italic title 'Moodboard Direction™' with pill 'In lavorazione'",
+    "Navigate-mode milestone shows dj-focus-hero with CTA dj-focus-open labelled 'Apri Moodboard Direction™'",
+    "Brief Cliente is 'Approvata' in seeded project (not in_progress as the prompt assumed) — verified via dj-rail-item-brief click",
+    "Moodboard Direction™ (in_progress) offers both dj-transition-presented (label 'Presentata') and dj-transition-approved (label 'Approvata')",
+    "Click dj-transition-presented → API PATCH succeeds → toast 'Moodboard Direction™ · Presentata' (Italian editorial lexicon) → pill updates to 'Presentata' without page refresh",
+    "Revert flow works: presented → revision_requested → in_progress, pill returns to 'In lavorazione' (state restored for next runs)",
+    "Right dj-details panel renders eyebrow 'Dettagli pietra miliare' + 4 timestamps (Iniziata / Presentata / Approvata / Chiusa)",
+    "Bottom dj-evolution timeline renders narrative events in Italian (e.g. 'Moodboard Direction™ — in lavorazione.', 'Cliente chiede una revisione su Moodboard Direction™.', 'Moodboard Direction™ presentata al cliente.', 'Brief Cliente approvata. Il progetto avanza.', 'Material Direction™ — in lavorazione.')",
+    "ZERO forbidden enterprise jargon found in entire dj-shell innerText: task / sprint / kanban / workflow / dashboard / ticket / todo / doing / done / 'asset uploaded' / 'status updated' / 'entity modified'",
+    "Tab navigation: tab-overview → URL ?tab=overview; back to tab-journey → URL clean + dj-shell re-renders correctly with no layout shift",
+    "ZERO pageerror events captured across both runs; ZERO React error overlays",
+    "Viewport 1280x800 — full 3-column responsive layout renders without overflow"
+  ],
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "DesignJourneyTab.jsx is well-scoped (~420 lines) and below the 700-line maintainability threshold. No urgent refactor needed.",
+    "Defensive note: dj-focus-hero copy template assumes milestone.title is short; for very long titles (rare) the button label 'Apri <title>' could wrap — currently fine for the 10 seeded milestones.",
+    "Re-render of journey after tab toggle resets activeId to current_milestone_id (Inspirations™) — UX-acceptable behaviour but could be persisted to component state if main agent wants stickiness; not a bug per Sprint F.A spec.",
+    "STATUS_TRANSITIONS for 'in_progress' offers ['presented','approved'] only — no direct 'revision_requested' from in_progress; this matches the backend state machine validated in iteration_94 pytest. Confirmed editorial lexicon used throughout."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (frontend-only request)", "frontend": "100% (12/12 Sprint F.A acceptance criteria)"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin) — read from /app/memory/test_credentials.md",
+  "seed_data_creation": "Made one temporary status transition on Moodboard Direction™ (in_progress → presented → revision_requested → in_progress) to test the lexicon flow. Final state restored to 'In lavorazione' so subsequent test agents see the same baseline.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Sprint F.A is fully wired and visually polished. The Design Journey™ tab is now the editorial heart of the project page. Next sprints (F.B / F.C / F.D) will plug real editors into the inline-mode milestones (Brief, Site Evolution, Certified Closure) and connect navigate-mode milestones to their dedicated ambienti. Current inline panels correctly show the placeholder hint 'arriverà nel prossimo capitolo'. The seeded project already has Brief='Approvata' and Inspirations='Approvata', so current_milestone_id auto-advances to Moodboard Direction™ ('In lavorazione') — use that milestone for any future transition tests.",
+  "rca_of_the_issue": "No bugs found. The single ambiguity in the test request (Brief described as in_progress) reflects the original seed assumption; the live demo project has Brief already approved because previous test iterations advanced it. Sprint F.A is production-ready for the F.B follow-on."
+}

@@ -1,5 +1,5 @@
 /**
- * DesignJourneyTab — Phase F.A · Design Journey™ Foundation.
+ * DesignJourneyTab — Design Journey™ Foundation (Phase F.A).
  *
  * Default landing del Project Detail.
  *
@@ -12,7 +12,7 @@
  *   ┌─ BOTTOM · Project Evolution Timeline (narrativa) ─┐
  *   └────────────────────────────────────────────────────┘
  *
- * Italian-only copy. No tasks/sprints/kanban/dashboard language.
+ * Italian-only copy. Linguaggio editoriale, mai project management.
  */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -118,7 +118,7 @@ const InlinePanel = ({ milestone }) => {
         </p>
         <div className="dj-inline__hint">
           <Icons.Info size={11} />
-          <span>L'editor del Brief sarà disponibile in Sprint F.B.</span>
+          <span>L'editor del Brief arriverà nel prossimo capitolo.</span>
         </div>
       </div>
     );
@@ -136,7 +136,7 @@ const InlinePanel = ({ milestone }) => {
         </p>
         <div className="dj-inline__hint">
           <Icons.Info size={11} />
-          <span>La timeline fotografica sarà disponibile in Sprint F.C.</span>
+          <span>La timeline fotografica arriverà nel prossimo capitolo.</span>
         </div>
       </div>
     );
@@ -149,13 +149,13 @@ const InlinePanel = ({ milestone }) => {
           <em>Il progetto entra nella memoria firmata dello studio</em>
         </h3>
         <p className="dj-inline__sub">
-          La ceremony di chiusura riassume pietre miliari completate,
+          La cerimonia di chiusura riassume pietre miliari completate,
           approvazioni e snapshot finale. Una volta certificato il progetto
           potrà cristallizzare una Cultural Edition™.
         </p>
         <div className="dj-inline__hint">
           <Icons.Info size={11} />
-          <span>La ceremony e la cristallizzazione arrivano in Sprint F.D.</span>
+          <span>La cerimonia e la cristallizzazione arriveranno nei capitoli successivi.</span>
         </div>
       </div>
     );
@@ -270,7 +270,7 @@ const DetailsPanel = ({ milestone }) => {
         </div>
       </dl>
       <div className="dj-details__hint">
-        Riscontri cliente e varianti compariranno qui in Sprint F.B.
+        Riscontri cliente e varianti compariranno qui nei prossimi capitoli.
       </div>
     </aside>
   );

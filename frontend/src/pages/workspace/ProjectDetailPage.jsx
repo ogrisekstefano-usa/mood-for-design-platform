@@ -22,6 +22,8 @@ import {
 import StatusBadge from '../../components/common/StatusBadge';
 import TemplatePicker from '../../blueprint/moodboard/TemplatePicker';
 import { ComposeProposalWizard } from '../../components/proposals/ComposeProposalWizard';
+import DesignJourneyTab from './DesignJourneyTab';
+import { Compass } from 'lucide-react';
 
 // ── Time util ────────────────────────────────────────────────────────────────
 const fmtRelative = (iso) => {
@@ -1046,7 +1048,10 @@ const StrategicDirectionCard = ({ projectId, project }) => {
 };
 
 // ── Main page ───────────────────────────────────────────────────────────────
+// Design Journey™ is the FIRST tab and the default landing view of a project.
+// Le altre tab sono "ambienti collegati" al Journey, non sezioni indipendenti.
 const TABS = [
+  { id: 'journey',       icon: Compass,       label: 'Design Journey™' },
   { id: 'overview',      icon: FileText,      label: 'Overview' },
   { id: 'inspirations',  icon: Bookmark,      label: 'Ispirazioni' },
   { id: 'moodboards',    icon: Layers,        label: 'Moodboard' },
@@ -1073,13 +1078,13 @@ const ProjectDetailPage = () => {
   const [loadError, setLoadError] = useState(null);
 
   const tab = useMemo(() => {
-    const q = (searchParams.get('tab') || 'overview').toLowerCase();
-    return TABS.find((x) => x.id === q) ? q : 'overview';
+    const q = (searchParams.get('tab') || 'journey').toLowerCase();
+    return TABS.find((x) => x.id === q) ? q : 'journey';
   }, [searchParams]);
 
   const setTab = useCallback((id) => {
     const next = new URLSearchParams(searchParams);
-    if (id === 'overview') next.delete('tab');
+    if (id === 'journey') next.delete('tab');
     else next.set('tab', id);
     setSearchParams(next, { replace: true });
   }, [searchParams, setSearchParams]);
@@ -1192,6 +1197,9 @@ const ProjectDetailPage = () => {
       </div>
 
       <div data-testid="tab-content">
+        {tab === 'journey' && (
+          <DesignJourneyTab projectId={id} project={project} />
+        )}
         {tab === 'overview' && (
           <div className="space-y-10" data-testid="overview-tab">
             <StrategicDirectionCard projectId={id} project={project} />
