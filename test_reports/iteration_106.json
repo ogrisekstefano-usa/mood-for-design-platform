@@ -1,0 +1,45 @@
+{
+  "summary": "Sprint G.6 — Step-Anchored Artifact Pages™ validated end-to-end. Backend endpoint GET /api/journey/projects/{project_id}/steps/{milestone_type} returns full context for all 7 canonical milestone types, 404s on unknown, tolerates empty artifact tables, exposes italian editorial lifecycle_label, and emits chapter-based progress (current_step_index/total_steps/completed_steps — no percentages). Frontend live route /journey/:projectId/step/moodboard_direction renders correctly: StepContextHeader with breadcrumb (Studio Pulse · Conversazione di G3_FCRVRH · Moodboard Direction™), italian title, lifecycle pills (Non iniziata / Viaggio in corso), progress narrative 'Capitolo 3 di 10 · 0 pietre miliari approvate', and prev/next chips (Inspirations™ ← → Material Direction™). All four ClientInteractionLayer gestures present with correct testids and italian copy. Empty VersionStack shows 'Ancora nessun capitolo'. MaterialDirectionWorkspace renders editorial italian body. ArchiveBanner present on all three legacy pages (/moodboards, /library/materials, /workspace/proposals) with 'Archivio trasversale · Sprint G.6' eyebrow and 'vivono dentro i loro Journey' framing. Sprint G.5 sidebar regression: no legacy roots (Moodboards/Materials/Documents/Render/Pipeline/Leads) in top-level nav. All 16/16 G.6 tests + 14/14 G.5 regression tests pass.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Legacy /workspace/proposals page (archived)",
+        "issues": [
+          "Title 'Proposals' still in English; breadcrumb 'Blueprint Workspace > Proposals' is anglicized; table headers 'ACTIONS / STATUS / BUDGET / CREATED' and 'draft' status remain SaaS-style. This is the LEGACY page being archived and the ArchiveBanner correctly redirects users to Studio Pulse, so it does not violate the G.6 Direction Lock (which scopes only the NEW workspace surface). Recommend a follow-up to italianize legacy archive copy for consistency, but NOT a blocker for G.6."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_106_step_workspace.py",
+    "/app/backend/tests/test_iteration_105_sidebar_v5.py",
+    "/app/test_reports/pytest/iteration_106_results.xml"
+  ],
+  "action_items": [
+    "(Optional · non-blocking) Italianize legacy ProposalsPage title/breadcrumb/table headers in a future cleanup sprint — page is archived but still uses English copy."
+  ],
+  "critical_code_review_comments": [
+    "StepWorkspacePage + workspace bodies are well-decomposed into focused components (StepContextHeader / VersionStack / ClientInteractionLayer / MoodboardDirectionWorkspace / MaterialDirectionWorkspace). No file exceeds the 700-line guideline.",
+    "Backend endpoint already tolerates missing artifact tables (returns []), honors tenant isolation via ctx['tenant_id'], and uses Pydantic context shape. No ObjectId leakage observed.",
+    "Direction Lock vocabulary is strictly enforced in NEW G.6 surface: zero occurrences of V1/V2/kanban/ticket/Get started/Create your first scanned across PAGE, HEADER, VSTACK, CIL, MOOD_WS, MAT_WS, BANNER.",
+    "Frontend uses REACT_APP_BACKEND_URL through API client (no hardcoded URLs).",
+    "All interactive elements expose data-testid (sw-context-*, sw-cil-*) — testability is excellent."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (4/4 endpoint tests + 4/4 endpoint shapes + 1/1 router-registration = pytest 16/16, plus 14/14 G.5 regression)",
+    "frontend": "100% live UI (StepWorkspace, ClientInteractionLayer, ArchiveBanner on all 3 legacy pages, sidebar regression)"
+  },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin on MOOD Demo Studio)",
+  "seed_data_creation": "None — used seeded Demo Studio journeys; one active project_id auto-selected via GET /api/dashboard/pulse → active_journeys[0].project_id.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Sprint G.6 is GREEN. The new step workspace route /journey/:projectId/step/:milestoneType is the canonical surface for moodboard_direction, material_direction, technical_package, final_presentation (and serves brief / concept_design / certified_closure too). When testing, fetch project_id via /api/dashboard/pulse using Bearer token from localStorage key 'mfd_session'.access_token (httpOnly cookies are NOT used for API auth on this app). Material/Moodboard workspaces show empty states ('Ancora nessun capitolo') until artifacts are seeded — this is correct behavior; bucket labels (La materia scelta / Materie ancora in ascolto / Materie scartate) only render when materials exist. ProposalsPage lives at /workspace/proposals (NOT /proposals). Iteration_104 was the most recent previous report; iter105/106 are new this cycle.",
+  "rca of the issue": "No issues — sprint validated."
+}

@@ -104,6 +104,7 @@ from routers import design_journey
 from routers import milestone_dialogue
 from routers import journey_initiate
 from routers import journey_pulse
+from routers import journey_step_workspace
 api_router.include_router(portfolio.router, prefix="/portfolio", tags=["portfolio"])
 api_router.include_router(proposals.router, prefix="/proposals", tags=["proposals"])
 api_router.include_router(moodboards.router, prefix="/moodboards", tags=["moodboards"])
@@ -124,6 +125,7 @@ api_router.include_router(design_journey.router,                            tags
 api_router.include_router(milestone_dialogue.router,                        tags=["milestone-dialogue"])
 api_router.include_router(journey_initiate.router,                          tags=["begin-journey"])
 api_router.include_router(journey_pulse.router,                             tags=["dashboard-pulse"])
+api_router.include_router(journey_step_workspace.router,                    tags=["journey-step-workspace"])
 api_router.include_router(inspirations.router, prefix="/inspirations", tags=["inspirations"])
 api_router.include_router(insights.router, prefix="/insights", tags=["insights"])
 api_router.include_router(settings.router, prefix="/settings", tags=["settings"])

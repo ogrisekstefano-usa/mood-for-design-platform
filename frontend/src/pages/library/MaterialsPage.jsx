@@ -13,6 +13,8 @@ import { Gem, Plus, Search, Loader2, X, Archive } from 'lucide-react';
 import { materials as matApi } from '../../lib/mediaApi';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { toast } from 'sonner';
+import ArchiveBanner from '../../components/journey/ArchiveBanner';
+import '../journey/step-workspace.css';
 
 const CATEGORIES = [
   { id: 'stone',    label: 'Stone' },
@@ -235,6 +237,19 @@ const MaterialsPage = () => {
 
   return (
     <div data-testid="materials-page" className="flex flex-col h-full bg-[var(--bp-bg)]">
+      {/* Sprint G.6 · Archive context — la pagina è una vista trasversale,
+          NON un workspace. Le materie scelte vivono nel capitolo
+          Material Direction™ del singolo Journey. */}
+      <div className="px-10 pt-10">
+        <ArchiveBanner
+          testid="materials-archive-banner"
+          eyebrow="Archivio trasversale · Sprint G.6"
+          title="Le materie scelte vivono dentro i loro Journey"
+          lede="Questo archivio elenca ogni voce materica registrata dallo studio. Selezione, alternative e decisioni materiche di un progetto si incontrano invece nel capitolo Material Direction™ del Journey."
+          ctaLabel="Apri Studio Pulse"
+          ctaTo="/dashboard"
+        />
+      </div>
       {/* Hero */}
       <div className="px-10 pt-10 pb-8 border-b border-[var(--bp-border)]">
         <p className="text-[9px] tracking-[0.28em] uppercase text-[var(--bp-text-muted)] font-body mb-2">

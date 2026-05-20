@@ -12,8 +12,10 @@ import { toast } from 'sonner';
 import { Plus, Layers, X, Lock } from 'lucide-react';
 import StatusBadge from '../../components/common/StatusBadge';
 import TemplatePicker from '../../blueprint/moodboard/TemplatePicker';
+import ArchiveBanner from '../../components/journey/ArchiveBanner';
 import { avatarPalette } from '../../lib/avatarHue';
 import './moodboards-atelier.css';
+import '../journey/step-workspace.css';
 
 // ─── Editorial status labels (atelier vocabulary) ───────────────
 const MB_STATUS = {
@@ -303,6 +305,14 @@ const MoodboardsPage = () => {
   return (
     <div className="mb-page mood-atmospheric" data-testid="moodboards-page">
       <div className="mb-page__inner">
+      <ArchiveBanner
+        testid="moodboards-archive-banner"
+        eyebrow="Archivio trasversale · Sprint G.6"
+        title="Le moodboard vivono dentro i loro Journey"
+        lede="Questa è una vista d'archivio per ritrovare le moodboard composte attraverso tutti i Journey. La composizione vera avviene nel capitolo Moodboard Direction™ del singolo Journey."
+        ctaLabel="Apri Studio Pulse"
+        ctaTo="/dashboard"
+      />
       <div className="flex items-start justify-between mb-10 gap-6">
         <div>
           <p className="mb-page__eyebrow">Design Journey · Tavolo Creativo</p>

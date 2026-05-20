@@ -374,6 +374,23 @@ const DesignJourneyTab = ({ projectId, project }) => {
     try {
       const r = await api.post(`/api/journeys/milestones/${m.id}/open`);
       const { open_mode, linked_route, linked_entity_id, linked_entity_type } = r.data;
+
+      // Sprint G.6 — Step-Anchored Artifact Pages™.
+      // Per i capitoli che hanno un workspace contestuale, NON navighiamo
+      // più alla pagina globale (moodboards / materials). Apriamo lo Step
+      // Workspace dentro al Journey.
+      const STEP_WORKSPACE_TYPES = new Set([
+        'moodboard_direction',
+        'material_direction',
+        'technical_package',
+        'final_presentation',
+      ]);
+      if (STEP_WORKSPACE_TYPES.has(m.milestone_type)) {
+        navigate(`/journey/${projectId}/step/${m.milestone_type}`);
+        load();
+        return;
+      }
+
       if (open_mode === 'navigate' && linked_route) {
         // Resolve the destination route. When opening a specific moodboard
         // we navigate directly to its canvas; otherwise we land on the

@@ -61,6 +61,7 @@ const LeadFormPage = lazy(() => import('./pages/public/LeadFormPage'));
 const MoodboardEditor = lazy(() => import('./pages/moodboards/MoodboardEditor'));
 const PublicPresentation = lazy(() => import('./pages/moodboards/PublicPresentation'));
 const ReviewMode = lazy(() => import('./pages/collab/ReviewMode'));
+const StepWorkspacePage = lazy(() => import('./pages/journey/StepWorkspacePage'));
 const ComingSoonPage = lazy(() => import('./pages/placeholder/ComingSoonPage'));
 
 // Site (public marketing) — global brand surface
@@ -341,6 +342,9 @@ function App() {
                   <Route path="/workspace/leads" element={<Navigate to="/crm/accounts" replace />} />
                   <Route path="/workspace/projects" element={<ProjectsPage />} />
                   <Route path="/workspace/projects/:id" element={<ProjectDetailPage />} />
+                  {/* Sprint G.6 — Step-Anchored Artifact Pages™.
+                      Il workspace dello step. Il contesto precede l'artifact. */}
+                  <Route path="/journey/:projectId/step/:milestoneType" element={<StepWorkspacePage />} />
                   <Route path="/workspace/proposals" element={<ProposalsPage />} />
                   <Route path="/workspace/proposals/:id/compose" element={<ProposalComposerPage />} />
                   <Route path="/workspace/references" element={<Navigate to="/inspirations" replace />} />

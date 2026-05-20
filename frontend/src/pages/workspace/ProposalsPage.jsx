@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { FileText } from 'lucide-react';
+import ArchiveBanner from '../../components/journey/ArchiveBanner';
+import '../journey/step-workspace.css';
 
 const ProposalsPage = () => {
   const { t } = useBlueprint();
@@ -14,6 +16,14 @@ const ProposalsPage = () => {
 
   return (
     <div className="p-8 max-w-7xl mx-auto" data-testid="proposals-page">
+      <ArchiveBanner
+        testid="proposals-archive-banner"
+        eyebrow="Archivio trasversale · Sprint G.6"
+        title="Le presentazioni vivono dentro i loro Journey"
+        lede="Le presentazioni di concept, technical package e momenti finali si compongono nel capitolo del Journey che le ha generate. Qui le ritrovi tutte, attraverso ogni viaggio."
+        ctaLabel="Apri Studio Pulse"
+        ctaTo="/dashboard"
+      />
       <div className="mb-8">
         <p className="text-[var(--bp-text-muted)] text-[10px] font-body uppercase tracking-[0.2em] mb-1">{t('nav.section.workspace')}</p>
         <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)]">{t('proposals.title')}</h1>
