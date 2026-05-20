@@ -39,10 +39,10 @@ const ClientTopbar = () => {
           data-testid="client-greeting"
           className="font-heading text-[28px] leading-[1.05] text-[var(--cp-text-primary)]"
         >
-          Benvenuto{firstName ? `, ${firstName}` : ''}
+          Bentornato{firstName ? `, ${firstName}` : ''}
         </h1>
-        <p className="text-[13px] text-[var(--cp-text-muted)] font-body mt-1.5">
-          Ecco lo stato del tuo progetto.
+        <p className="text-[13px] text-[var(--cp-text-muted)] font-body mt-1.5 italic" style={{fontFamily: "'Playfair Display', serif"}}>
+          Il tuo percorso progettuale ti aspetta.
         </p>
       </div>
 

@@ -92,10 +92,13 @@ const MaterialDetailPage = lazy(() => import('./pages/library/MaterialDetailPage
 const ClientDashboardLayout = lazy(() => import('./components/client/ClientDashboardLayout'));
 const ClientOverviewPage = lazy(() => import('./pages/client/ClientOverviewPage'));
 const ClientMessagesPage = lazy(() => import('./pages/client/ClientMessagesPage'));
-import {
-  ClientProjectPage, ClientMoodboardsPage, ClientTimelinePage,
-  ClientApprovalsPage, ClientFilesPage,
-} from './pages/client/ClientStubPages';
+const ClientJourneysIndexPage = lazy(() => import('./pages/client/ClientJourneysIndexPage'));
+const ClientCompanionPage = lazy(() => import('./pages/client/ClientCompanionPage'));
+// Legacy client stub pages — still mountable at /client/overview-legacy for QA;
+// daily routes redirect to the new Journey Companion (Sprint G.7).
+// eslint-disable-next-line no-unused-vars
+import { ClientProjectPage, ClientMoodboardsPage, ClientTimelinePage,
+         ClientApprovalsPage, ClientFilesPage } from './pages/client/ClientStubPages';
 
 // MVP-lite operational hubs replacing the previous "Coming soon" placeholders.
 // Workflow-aware: each redirects/links to the real feature that already
@@ -433,15 +436,21 @@ function App() {
                   <Route path="/inspirations/products" element={<Navigate to="/inspirations?type=product" replace />} />
                 </Route>
 
-                {/* CLIENT PORTAL (Phase R) — surface-isolated, role=client only */}
+                {/* CLIENT PORTAL — Sprint G.7 · Design Journey Companion Experience™.
+                    Il cliente entra nel proprio Journey, non in un dashboard.
+                    Legacy routes (project / moodboards / timeline / approvals /
+                    files) redirezionano alla nuova IA. */}
                 <Route element={<ClientRoute><ClientDashboardLayout /></ClientRoute>}>
-                  <Route path="/client" element={<ClientOverviewPage />} />
-                  <Route path="/client/project" element={<ClientProjectPage />} />
-                  <Route path="/client/moodboards" element={<ClientMoodboardsPage />} />
-                  <Route path="/client/timeline" element={<ClientTimelinePage />} />
-                  <Route path="/client/approvals" element={<ClientApprovalsPage />} />
-                  <Route path="/client/files" element={<ClientFilesPage />} />
+                  <Route path="/client" element={<ClientJourneysIndexPage />} />
+                  <Route path="/client/journey/:journeyId" element={<ClientCompanionPage />} />
                   <Route path="/client/messages" element={<ClientMessagesPage />} />
+                  {/* Legacy redirects → tutto torna ai Journey */}
+                  <Route path="/client/overview-legacy" element={<ClientOverviewPage />} />
+                  <Route path="/client/project" element={<Navigate to="/client" replace />} />
+                  <Route path="/client/moodboards" element={<Navigate to="/client" replace />} />
+                  <Route path="/client/timeline" element={<Navigate to="/client#evoluzione" replace />} />
+                  <Route path="/client/approvals" element={<Navigate to="/client" replace />} />
+                  <Route path="/client/files" element={<Navigate to="/client#direzioni" replace />} />
                 </Route>
 
                 {/* ADVISOR self-service — standalone surface, gated by API (advisor_profile lookup) */}

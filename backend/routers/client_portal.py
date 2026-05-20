@@ -271,3 +271,324 @@ def client_approvals(ctx: dict = Depends(get_tenant_context)):
             for p in (pp.data or [])
         ]
     }
+
+
+
+# ════════════════════════════════════════════════════════════════════
+# SPRINT G.7 · Client Portal Journey-First Experience™
+#
+# Il cliente non gestisce task. Vive il proprio percorso progettuale.
+# Endpoint che restituiscono *Journey* (NON projects) e tutto in
+# vocabolario editoriale italiano.
+# ════════════════════════════════════════════════════════════════════
+
+# Italian editorial lifecycle labels for the client surface — slightly
+# softer than the studio side (which uses "Conversazione aperta",
+# "Viaggio in corso", etc.). Here we want the client to read it as
+# narration of THEIR journey.
+CLIENT_LIFECYCLE_LABEL = {
+    "conversation_open": "La conversazione è iniziata",
+    "in_progress":       "Il viaggio è in corso",
+    "presenting":        "Nuove direzioni condivise",
+    "drifting":          "In ascolto del tuo riscontro",
+    "on_pause":          "In pausa",
+    "approved":          "Direzione approvata",
+    "closed":            "Journey completato",
+    "editioned":         "Edizione culturale",
+    "abandoned":         "Viaggio sospeso",
+}
+
+CLIENT_STEP_STATUS_LABEL = {
+    "not_started":        "Capitolo in attesa",
+    "in_progress":        "Capitolo in lavorazione",
+    "presented":          "Capitolo condiviso con te",
+    "revision_requested": "In ascolto del tuo riscontro",
+    "partially_approved": "Approvato in parte",
+    "approved":           "Capitolo approvato",
+    "closed":             "Capitolo chiuso",
+}
+
+
+def _client_project_ids(c, tenant_id: str, profile_id: str) -> List[str]:
+    pr = (c.table("projects").select("id")
+          .eq("tenant_id", tenant_id)
+          .eq("client_user_id", profile_id).execute())
+    return [p["id"] for p in (pr.data or [])]
+
+
+def _journeys_for_projects(c, tenant_id: str, project_ids: List[str]) -> List[dict]:
+    if not project_ids:
+        return []
+    rows = (c.table("design_journeys").select("*")
+            .eq("tenant_id", tenant_id)
+            .in_("project_id", project_ids)
+            .order("updated_at", desc=True).execute().data or [])
+    return rows
+
+
+@router.get("/journeys")
+def client_journeys(ctx: dict = Depends(get_tenant_context)):
+    """My Design Journeys™ — list of journeys owned by this client.
+
+    Each journey carries: project title/cover, current chapter,
+    lifecycle label (italian editorial), latest evolution narrative,
+    studio/showroom name (tenant), and progress.
+    """
+    profile_id = _require_client(ctx)
+    tenant_id = ctx["tenant_id"]
+    c = db()
+
+    project_ids = _client_project_ids(c, tenant_id, profile_id)
+    journeys = _journeys_for_projects(c, tenant_id, project_ids)
+
+    if not journeys:
+        return {"zero_data": True, "journeys": []}
+
+    # Bulk-fetch projects, milestones (current), and latest timeline events
+    pr_rows = (c.table("projects").select("id,title,project_type,metadata_json,status")
+               .eq("tenant_id", tenant_id)
+               .in_("id", project_ids).execute().data or [])
+    pr_map = {p["id"]: p for p in pr_rows}
+
+    tenant_row = (c.table("tenants").select("id,name,slug")
+                  .eq("id", tenant_id).limit(1).execute().data or [])
+    studio_name = tenant_row[0].get("name") if tenant_row else "Lo studio"
+
+    out = []
+    for j in journeys:
+        proj = pr_map.get(j["project_id"]) or {}
+        meta = proj.get("metadata_json") or {}
+
+        # Current milestone
+        cur_id = j.get("current_milestone_id")
+        cur = None
+        if cur_id:
+            cm = (c.table("journey_milestones").select("*")
+                  .eq("id", cur_id).limit(1).execute().data or [])
+            cur = cm[0] if cm else None
+
+        # Total chapters + approved chapters
+        ms = (c.table("journey_milestones")
+              .select("id,status,order_index")
+              .eq("journey_id", j["id"]).execute().data or [])
+        total = len(ms)
+        approved = sum(1 for m in ms if m.get("status") in ("approved", "closed"))
+
+        # Latest evolution narrative
+        ev = (c.table("journey_timeline_events").select("narrative_text,created_at")
+              .eq("journey_id", j["id"])
+              .order("created_at", desc=True).limit(1).execute().data or [])
+        latest_evolution = ev[0] if ev else None
+
+        lifecycle = j.get("overall_status") or "in_progress"
+        out.append({
+            "journey_id":   j["id"],
+            "project_id":   j["project_id"],
+            "project_title": proj.get("title") or "Il tuo Journey",
+            "project_type":  proj.get("project_type"),
+            "location":      meta.get("location"),
+            "cover_url":     meta.get("cover_url"),
+            "studio_name":   studio_name,
+            "lifecycle_state": lifecycle,
+            "lifecycle_label": CLIENT_LIFECYCLE_LABEL.get(lifecycle, "Il viaggio è in corso"),
+            "current_chapter": {
+                "id":             cur.get("id") if cur else None,
+                "milestone_type": cur.get("milestone_type") if cur else None,
+                "title":          cur.get("title") if cur else None,
+                "status_label":   CLIENT_STEP_STATUS_LABEL.get(
+                                    cur.get("status") if cur else None, "—"),
+            } if cur else None,
+            "progress": {
+                "total_chapters":    total,
+                "approved_chapters": approved,
+            },
+            "latest_evolution": ({
+                "narrative":  latest_evolution["narrative_text"],
+                "created_at": latest_evolution["created_at"],
+            } if latest_evolution else None),
+            "updated_at": j.get("updated_at"),
+        })
+
+    return {"zero_data": False, "journeys": out}
+
+
+@router.get("/journeys/{journey_id}/companion")
+def client_journey_companion(journey_id: str, ctx: dict = Depends(get_tenant_context)):
+    """Design Journey Companion Experience™ — il payload completo per
+    accompagnare il cliente lungo il proprio Journey.
+
+    Restituisce 7 sezioni narrative:
+      · header           — hero + lifecycle + studio
+      · active_chapter   — il capitolo in corso, con artifacts e voci
+      · shared_directions — direzioni condivise di recente (cross-step)
+      · evolution_timeline — narrazione storica del Journey
+      · materials_atmospheres — palette tattile dell'intero Journey
+      · memory_archive   — capitoli passati & versioni approvate
+      · conversations    — voci curatoriali aggregate
+    """
+    profile_id = _require_client(ctx)
+    tenant_id = ctx["tenant_id"]
+    c = db()
+
+    # Verify journey ownership (must belong to a project owned by this client)
+    j_rows = (c.table("design_journeys").select("*")
+              .eq("id", journey_id).eq("tenant_id", tenant_id)
+              .limit(1).execute().data or [])
+    if not j_rows:
+        raise HTTPException(404, "Journey non trovato")
+    journey = j_rows[0]
+
+    # Ownership check
+    pr = (c.table("projects").select("id,title,project_type,metadata_json,client_user_id,status")
+          .eq("id", journey["project_id"]).eq("tenant_id", tenant_id)
+          .limit(1).execute().data or [])
+    if not pr or pr[0].get("client_user_id") != profile_id:
+        # tenant_admin / super_admin bypass (for QA)
+        role = (ctx.get("role") or "").lower()
+        if role not in {"tenant_admin", "super_admin"}:
+            raise HTTPException(403, "Journey non accessibile")
+    project = pr[0] if pr else {}
+    meta = project.get("metadata_json") or {}
+
+    # Tenant (studio) name
+    tenant_row = (c.table("tenants").select("name,slug")
+                  .eq("id", tenant_id).limit(1).execute().data or [])
+    studio_name = tenant_row[0].get("name") if tenant_row else "Lo studio"
+
+    # Milestones (full list)
+    milestones = (c.table("journey_milestones").select("*")
+                  .eq("journey_id", journey_id).eq("tenant_id", tenant_id)
+                  .order("order_index", desc=False).execute().data or [])
+
+    # Active chapter
+    active = None
+    cur_id = journey.get("current_milestone_id")
+    if cur_id:
+        active = next((m for m in milestones if m["id"] == cur_id), None)
+    if not active:
+        # Fallback: first in_progress, else first not_started
+        active = next((m for m in milestones if m.get("status") == "in_progress"), None) \
+            or next((m for m in milestones if m.get("status") == "not_started"), None) \
+            or (milestones[0] if milestones else None)
+
+    # Recent shared directions — moodboards/proposals updated in the last 60 events
+    moodboards = (c.table("moodboards")
+                  .select("id,title,status,cover_metadata,updated_at,project_id")
+                  .eq("tenant_id", tenant_id)
+                  .eq("project_id", journey["project_id"])
+                  .is_("deleted_at", "null")
+                  .order("updated_at", desc=True).limit(8)
+                  .execute().data or [])
+    shared_directions = [{
+        "kind":       "moodboard",
+        "id":         m["id"],
+        "title":      m.get("title") or "Direzione",
+        "state":      m.get("status"),
+        "state_label": {
+            "draft": "Bozza interna",
+            "sent": "Condivisa con te",
+            "viewed": "Sei in lettura",
+            "approved": "Approvata",
+            "revision_requested": "In ascolto del tuo riscontro",
+            "rejected": "Da ripensare",
+        }.get(m.get("status"), m.get("status") or "—"),
+        "cover_url":  (m.get("cover_metadata") or {}).get("signed_url")
+                      or (m.get("cover_metadata") or {}).get("url"),
+        "updated_at": m.get("updated_at"),
+    } for m in moodboards]
+
+    # Evolution timeline (narrative)
+    ev_rows = (c.table("journey_timeline_events")
+               .select("id,narrative_text,milestone_id,event_type,created_at")
+               .eq("journey_id", journey_id).eq("tenant_id", tenant_id)
+               .order("created_at", desc=True).limit(40)
+               .execute().data or [])
+    evolution_timeline = [{
+        "id":         e["id"],
+        "narrative":  e["narrative_text"],
+        "kind":       e.get("event_type"),
+        "created_at": e.get("created_at"),
+    } for e in ev_rows]
+
+    # Materials & atmospheres — best-effort (table may not exist on tenant)
+    materials = []
+    try:
+        mr = (c.table("project_materials").select("*")
+              .eq("tenant_id", tenant_id)
+              .eq("project_id", journey["project_id"])
+              .limit(20).execute().data or [])
+        materials = [{
+            "id":       m.get("id") or m.get("material_id"),
+            "title":    m.get("title") or m.get("name") or "Materia",
+            "image_url": m.get("image_url") or m.get("thumb_url"),
+            "category": m.get("category"),
+            "selection": (m.get("decision") or m.get("status") or "selected"),
+        } for m in mr]
+    except Exception:
+        materials = []
+
+    # Memory archive — approved/closed milestones
+    archive = [{
+        "id":             m["id"],
+        "milestone_type": m["milestone_type"],
+        "title":          m["title"],
+        "approved_at":    m.get("approved_at"),
+        "closed_at":      m.get("closed_at"),
+    } for m in milestones if m.get("status") in ("approved", "closed")]
+
+    # Conversations — recent curatorial voices across all milestones
+    conversations = []
+    if milestones:
+        mids = [m["id"] for m in milestones]
+        try:
+            vrows = (c.table("milestone_chapter_voices")
+                     .select("id,milestone_id,message,tone,author_name,created_at")
+                     .eq("tenant_id", tenant_id)
+                     .in_("milestone_id", mids)
+                     .order("created_at", desc=True).limit(12)
+                     .execute().data or [])
+            ms_label = {m["id"]: m["title"] for m in milestones}
+            conversations = [{
+                "id":           v["id"],
+                "chapter":      ms_label.get(v.get("milestone_id"), "—"),
+                "message":      v.get("message"),
+                "tone":         v.get("tone"),
+                "author_name":  v.get("author_name"),
+                "created_at":   v.get("created_at"),
+            } for v in vrows]
+        except Exception:
+            conversations = []
+
+    lifecycle = journey.get("overall_status") or "in_progress"
+    total = len(milestones)
+    approved = sum(1 for m in milestones if m.get("status") in ("approved", "closed"))
+
+    return {
+        "header": {
+            "journey_id":      journey_id,
+            "project_id":      journey["project_id"],
+            "project_title":   project.get("title") or "Il tuo Journey",
+            "project_type":    project.get("project_type"),
+            "location":        meta.get("location"),
+            "cover_url":       meta.get("cover_url"),
+            "studio_name":     studio_name,
+            "lifecycle_state": lifecycle,
+            "lifecycle_label": CLIENT_LIFECYCLE_LABEL.get(lifecycle, "Il viaggio è in corso"),
+            "progress": {"total_chapters": total, "approved_chapters": approved},
+        },
+        "active_chapter": ({
+            "id":             active["id"],
+            "milestone_type": active["milestone_type"],
+            "title":          active["title"],
+            "description":    active.get("description"),
+            "status":         active.get("status"),
+            "status_label":   CLIENT_STEP_STATUS_LABEL.get(active.get("status"), "—"),
+            "narrative_intro": (active.get("description")
+                                 or "Il tuo studio sta dando forma a questo capitolo del Journey."),
+        } if active else None),
+        "shared_directions":    shared_directions,
+        "evolution_timeline":   evolution_timeline,
+        "materials_atmospheres": materials,
+        "memory_archive":       archive,
+        "conversations":        conversations,
+    }
