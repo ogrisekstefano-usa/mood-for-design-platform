@@ -28,7 +28,7 @@ import './inspirations.css';
 const InspirationsPage = () => {
   const [items, setItems] = useState(null);
   const [filtersConfig, setFiltersConfig] = useState(null);
-  const [filters, setFilters] = useState({ market: '', atmosphere: '', material: '', luxury: '', profile: '' });
+  const [filters, setFilters] = useState({ market: '', atmosphere: '', material: '', luxury: '', profile: '', product_category: '' });
   const [typeFilter, setTypeFilter] = useState('');  // '' | 'editorial' | 'product'
   const [search, setSearch] = useState('');
   const [addOpen, setAddOpen] = useState(false);
@@ -51,7 +51,7 @@ const InspirationsPage = () => {
       .catch((e) => setError(asErrorString(e, 'Errore nel caricamento')));
   };
   useEffect(() => { load(); /* eslint-disable-next-line */ },
-    [filters.market, filters.atmosphere, filters.material, filters.luxury, filters.profile, typeFilter]);
+    [filters.market, filters.atmosphere, filters.material, filters.luxury, filters.profile, filters.product_category, typeFilter]);
 
   const onImported = (it) => {
     setItems((prev) => [it, ...(prev || [])]);
@@ -227,11 +227,17 @@ const FilterBar = ({ config, value, onChange }) => {
       <Sel name="market"     options={config.markets}              placeholder="Mercato"     testid="ins-filter-market" />
       <Sel name="atmosphere" options={config.atmosphere_tags}      placeholder="Atmosfera"   testid="ins-filter-atmosphere" />
       <Sel name="material"   options={config.material_tags}        placeholder="Materia"     testid="ins-filter-material" />
+      {config.product_categories && config.product_categories.length > 0 && (
+        <Sel name="product_category"
+             options={config.product_categories}
+             placeholder="Complemento d'arredo"
+             testid="ins-filter-category" />
+      )}
       <Sel name="luxury"     options={config.luxury_levels}        placeholder="Tono luxury" testid="ins-filter-luxury" />
       <Sel name="profile"    options={config.hospitality_profiles} placeholder="Destinazione" testid="ins-filter-profile" />
-      {(value.market || value.atmosphere || value.material || value.luxury || value.profile) && (
+      {(value.market || value.atmosphere || value.material || value.luxury || value.profile || value.product_category) && (
         <button type="button" className="ins-filter-clear"
-                onClick={() => onChange({ market: '', atmosphere: '', material: '', luxury: '', profile: '' })}
+                onClick={() => onChange({ market: '', atmosphere: '', material: '', luxury: '', profile: '', product_category: '' })}
                 data-testid="ins-filter-clear">
           Reset
         </button>

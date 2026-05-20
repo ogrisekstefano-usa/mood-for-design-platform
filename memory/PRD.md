@@ -53,6 +53,39 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint INSPIRATIONS-CATEGORY-FILTER (Feb 19, 2026 · iter87)
+**Filtro "Complemento d'arredo" dinamico su /inspirations.**
+
+Aggiunge il filtro per categoria prodotto (Complementi · Sedie · Letti · Divani · Tavoli · etc.) nella filter bar di `/inspirations`. Le opzioni sono DINAMICHE — vengono dalle categorie effettivamente presenti nei Product Inspirations del tenant (zero opzioni morte nel dropdown).
+
+#### Backend
+- **UPDATED** `GET /api/inspirations/archive/_filters` (`inspirations_archive.py`):
+  - Nuovo campo `product_categories[]` aggregato live da `media_library.inspiration_meta.product_category` del tenant
+  - Ogni entry: `{key, label, count}` ordinato alfabeticamente
+- **UPDATED** `GET /api/inspirations/archive`:
+  - Nuovo query param `?product_category=` (case-insensitive)
+  - **Fix collaterale**: quando sono attivi JSON filter (inspiration_type/brand/market/atmosphere/material/luxury/profile/category) il fetch upstream sale a 800 righe per evitare empty page quando i match stanno in profondità (prima limit=60 droppava i Bonaldo products perché l'editorial seed dominava le prime righe per data created_at desc). Slicing finale rispetta il `limit` richiesto.
+
+#### Frontend
+- **UPDATED** `/app/frontend/src/pages/inspirations/InspirationsPage.jsx`:
+  - State `filters` esteso con `product_category: ''`
+  - `<FilterBar />` renderizza nuovo Sel `[data-testid=ins-filter-category]` placeholder "Complemento d'arredo" — visibile SOLO se il backend ritorna categorie (zero rumore quando il tenant non ha Product Inspirations)
+  - Reset button propaga il clear anche al nuovo filtro
+
+#### Test results
+- **Backend: 5/5 PASS** · `test_iteration_87_product_category_filter.py`:
+  - `_filters` include `product_categories[]` con counts
+  - Filter `Complementi` → solo Complementi (17 match)
+  - Filter `Sedie` → solo Sedie (7 match)
+  - No-filter → mix editorial + product
+  - Filter combinato `inspiration_type=product + product_category=Letti` → solo letti products
+- **Regression: 13/13 PASS** (iter83 + iter86)
+
+#### Production confidence: **9.9/10**
+
+---
+
+
 ### Sprint BRAND-MODE · Phase D · Slice 3 — Phase D CHIUSA (Feb 19, 2026 · iter86)
 **Brand Mode™ — atlante curatoriale dei produttori. Chiude Phase D.**
 

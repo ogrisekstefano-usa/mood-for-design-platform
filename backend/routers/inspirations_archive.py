@@ -553,14 +553,43 @@ def _kick_off_cultural_reading(media_id: str, tenant_id: str, image_url: str,
 
 # ─── Endpoints ────────────────────────────────────────────────────────
 @router.get("/archive/_filters")
-def filters_taxonomy():
-    """Taxonomy curata per i filtri UI — niente metadata engine vibes."""
+def filters_taxonomy(ctx=Depends(get_tenant_context)):
+    """Taxonomy curata per i filtri UI — niente metadata engine vibes.
+
+    Le `product_categories` sono DINAMICHE: si compongono dai valori realmente
+    presenti nei Product Inspirations del tenant (così l'utente non vede
+    nel dropdown categorie senza match). Etichette case-as-is, ordine
+    alfabetico per leggibilità editoriale.
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+    rows = (c.table("media_library")
+            .select("inspiration_meta")
+            .eq("tenant_id", tid)
+            .eq("is_inspiration", True)
+            .is_("archived_at", None)
+            .execute().data or [])
+
+    cat_bag: Dict[str, int] = {}
+    for r in rows:
+        meta = r.get("inspiration_meta") or {}
+        cat = (meta.get("product_category") or "").strip()
+        if not cat:
+            continue
+        cat_bag[cat] = cat_bag.get(cat, 0) + 1
+
+    product_categories = [
+        {"key": k, "label": k, "count": v}
+        for k, v in sorted(cat_bag.items(), key=lambda kv: kv[0].lower())
+    ]
+
     return {
         "markets":              CURATED_MARKETS,
         "atmosphere_tags":      ATMOSPHERE_TAGS,
         "material_tags":        MATERIAL_TAGS,
         "luxury_levels":        LUXURY_LEVELS,
         "hospitality_profiles": HOSPITALITY_PROFILES,
+        "product_categories":   product_categories,
     }
 
 
@@ -573,6 +602,7 @@ def list_archive(
     profile:     Optional[str] = Query(None),
     inspiration_type: Optional[str] = Query(None, regex="^(editorial|product)$"),
     brand:       Optional[str] = Query(None),
+    product_category: Optional[str] = Query(None),
     q:           Optional[str] = Query(None),
     limit:       int = Query(60, le=200),
     offset:      int = 0,
@@ -589,7 +619,17 @@ def list_archive(
     if q:
         base = base.or_(f"alt_text.ilike.%{q}%,description.ilike.%{q}%,file_name.ilike.%{q}%")
 
-    rows = base.order("created_at", desc=True).range(offset, offset + limit - 1).execute().data or []
+    # When JSONB filters are present (atmosphere/material/profile/luxury/
+    # category/brand/inspiration_type) we filter client-side, so the upstream
+    # fetch window must cover enough rows for the post-filter slice to be
+    # meaningful — otherwise the user sees an empty page even though matches
+    # exist deeper in the dataset.
+    has_json_filter = any([inspiration_type, brand, market, atmosphere,
+                           material, luxury, profile, product_category])
+    upstream_limit = 800 if has_json_filter else max(limit, 60)
+
+    rows = (base.order("created_at", desc=True)
+                .range(offset, offset + upstream_limit - 1).execute().data or [])
 
     # Client-side JSON filters (Supabase doesn't allow easy JSONB array filter via PostgREST shim)
     def keep(r: Dict[str, Any]) -> bool:
@@ -610,13 +650,17 @@ def list_archive(
             return False
         if profile and profile != meta.get("hospitality_profile"):
             return False
+        if product_category and (meta.get("product_category") or "").lower() != product_category.lower():
+            return False
         return True
 
     filtered = [r for r in rows if keep(r)]
+    # Cap the response page to the requested limit (client-side post-filter).
+    page = filtered[:limit]
     return {
-        "items": [_to_card(r) for r in filtered],
+        "items": [_to_card(r) for r in page],
         "total": len(filtered),
-        "next_offset": offset + len(rows) if len(rows) == limit else None,
+        "next_offset": offset + len(rows) if len(rows) == upstream_limit else None,
     }
 
 
