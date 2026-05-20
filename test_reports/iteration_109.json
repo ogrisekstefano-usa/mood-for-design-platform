@@ -1,0 +1,42 @@
+{
+  "summary": "Sprint G.7-ter Shared Voice™ FULLY VALIDATED end-to-end. Backend pytest /app/backend/tests/test_iteration_109_shared_voice.py: 15/15 PASS (6 endpoint behavior + 4 composer editorial tone + 2 companion wiring + 3 backend direction-lock). Full G.x regression test_iteration_10*.py: 139/139 PASS in 93s (incl. iter100→iter109). Live walkthrough DESKTOP (1920x1080) on https://content-hub-pro-22.preview.emergentagent.com: login client@moodfordesign.com → auto-redirect /client → /client/journey/a0745567-3cd1-499f-99fc-a04298af7e22 (single-journey shortcut works) → scroll #capitolo → INVITE card visible with copy 'Vuoi raccontarci qualcosa su Moodboard Direction™? · Una sensazione, un dettaglio che senti più vicino, un riferimento che vorresti condividere con il tuo studio.' + gold CTA 'CONDIVIDI UNA VOCE' → click → COMPOSER opens with eyebrow 'SHARED VOICE™', title 'Raccontaci una impressione', textarea, character counter 'X CARATTERI RIMASTI' mono uppercase, 3 toggle pills (Aggiungi un riferimento / Condividi una atmosfera / Aggiungi una nota), ANNULLA + CONDIVIDI LA VOCE → typed the test phrase + toggled riferimento + URL → submit → toast 'Voce condivisa nel Journey' fired bottom-right → composer collapsed back to INVITE → scroll #conversazioni → new voice appears as TOP entry with author 'Tu · Moodboard Direction™ · 20 mag' AND '— riferimento: https://www.pinterest.com/pin/test-light/' suffix. Optimistic UI confirmed (voice visible BEFORE any refetch, before the marker pytest entry). Live walkthrough MOBILE (390x844 iPhone 13 Pro): INVITE card full-width with 22px gutter (346/390 width), composer same width, 3 gesture chips wrap to 3 separate rows, textarea readable, 'CONDIVIDI LA VOCE' send pill visible below ANNULLA at y=758 inside viewport. Direction Lock G.7-ter: zero occurrences of Add comment/Reply/Mention/Send message/Thread/Type a message/emoji/reaction/like in SharedVoiceComposer.jsx (confirmed by test_composer_has_no_chat_pm_terminology). RBAC: designer@moodfordesign.com → 403 confirmed. Validation: 422 on text<2 or >600 chars, 404 on unknown milestone_id or journey_id. Persistence: writes kind='free_voice' to milestone_feedback + 'voice_received' event to journey_timeline_events + updates design_journeys.updated_at — all confirmed by router static scan AND by GET /api/client/journeys/{jid}/companion returning the voice in both conversations[] and evolution_timeline[]. Frontend mount: <SharedVoiceComposer appears exactly 1 time in ClientCompanionPage.jsx (inside ActiveChapterSection). handleVoiceShared optimistic refresh confirmed in source (conversations:[newVoice,...] + [newEvent,...]).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/branding* (client portal layout)", "issue": "Still produces 401 console noise on client portal navigation. Pre-existing carry-over from iter107/iter108, NOT G.7-ter scoped."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_109_shared_voice.py",
+    "/app/test_reports/pytest/iteration_109_results.xml",
+    "/app/test_reports/pytest/iteration_109_regression.xml"
+  ],
+  "action_items": [
+    "(Optional · housekeeping) Multiple historical pytest voices now accumulated in #conversazioni for Moodboard Direction™ milestone (Una nota di test · g7ter_marker_companion_check, plus several copies of the live-walkthrough voice). Conversations limit was correctly raised to 30 so seed narrative is preserved, but if these test-injected voices keep accumulating each iteration, consider a periodic cleanup script keyed on kind='free_voice' AND text LIKE '%g7ter_marker%' OR '%villa-light-test%'. NOT a bug, NOT blocking — main agent's note explicitly said 'non bloccare se vedi voci storiche'.",
+    "(Optional · pre-existing) Fix /api/branding* 401 noise in client portal layout — either gate the calls behind role!=='client' or grant read-only access for branding tokens."
+  ],
+  "critical_code_review_comments": [
+    "Endpoint POST /api/client/journeys/{journey_id}/voice (client_portal.py ~line 613) correctly: (a) validates pydantic SharedVoiceIn(text: constr(min=2,max=600)), (b) calls _verify_journey_ownership before mutating, (c) bypasses ownership for tenant_admin/super_admin (QA-friendly), (d) returns 403 for designer role, (e) writes kind='free_voice' + author_role='client' to milestone_feedback, (f) writes event_type='voice_received' with Italian narrative 'Hai lasciato una voce su \"{chapter}\": \"{first 140}...\"' to journey_timeline_events, (g) bumps design_journeys.updated_at.",
+    "SharedVoiceComposer.jsx is editorially clean: lucide icons Link2 / ImagePlus / NotebookPen / Sparkles (no MessageCircle/MessageSquare/Bot). All 9 required data-testids present. Character counter '{X} CARATTERI RIMASTI' is mono uppercase, breathing room respected (.cj-sv-card + .cj-sv-textarea CSS classes confirmed).",
+    "Optimistic submit pattern in ClientCompanionPage.jsx handleVoiceShared correctly prepends newVoice to conversations and newEvent to evolution_timeline locally — user sees their voice instantly without round-trip, confirmed live (the just-posted voice ranked #1 in #conversazioni before any refetch).",
+    "Conversations limit lifted from 12 → 30 in companion endpoint successfully — verified live since the Villa Riviera seed (8 seeded voices) + accumulated pytest voices (10+) all surface without truncating the original seed narrative.",
+    "Single-journey shortcut /client → /client/journey/{id} still works as in iter108 (auto-redirect within ~3-4s of login).",
+    "Mobile responsive: .cj-sv-* CSS handles 390px viewport cleanly — card has 22px gutter, gesture chips wrap, send pill stays within viewport at y=758/844."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% — 15/15 G.7-ter (test_iteration_109_shared_voice.py) + 139/139 full G.x regression (test_iteration_10*.py in 93s)",
+    "frontend": "100% — Desktop (1920x1080) INVITE→COMPOSER→submit→toast→optimistic refresh→voice in #conversazioni with riferimento all confirmed live. Mobile (390x844) full-width card + wrapped gesture chips + visible send button confirmed live."
+  },
+  "test_credentials": "client@moodfordesign.com / Client2024! (Marco Bianchi — primary). designer@moodfordesign.com / Designer2024! (RBAC 403 verification). demo@moodfordesign.com / Blueprint2024! (super_admin QA bypass).",
+  "seed_data_creation": "No new seed required — relied on Villa Riviera seed from iter108. Live walkthrough did inject 1 voice via UI ('Questa seconda proposta mi sembra molto più vicina alla luce che immaginiamo per il living. + Pinterest URL') and pytest injected its own marker voice (g7ter_marker_companion_check) + several copies of the primary test voice. These now sit in #conversazioni for the Moodboard Direction™ milestone of journey a0745567-3cd1-499f-99fc-a04298af7e22.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "G.7-ter Shared Voice™ is GREEN — 15/15 + 139/139 + live E2E + RBAC + mobile responsive. Next sprint will likely be G.8 'Site Evolution™' (site_evolution milestone is currently status=not_started in the seed). The Conversations™ section now has ~15+ voices for Moodboard Direction™ (8 seeded + accumulated pytest+live test voices); main agent's brief explicitly allows this. If accumulation becomes visually noisy in future demos, add a one-shot cleanup query: DELETE FROM milestone_feedback WHERE kind='free_voice' AND (text LIKE '%g7ter_marker%' OR text LIKE '%villa-light-test%' OR text LIKE '%journey fantasma test%' OR text LIKE '%milestone fantasma test%' OR text LIKE '%designer test%'). The POST /api/client/journeys/{jid}/voice endpoint behavior is locked by pytest — any future tweak (e.g., adding a 4th gesture, changing kind, changing narrative template) must keep test_iteration_109_shared_voice.py green.",
+  "rca of the issue": "No issues found. The 4 /api/branding* 401s in console are pre-existing from iter107/iter108 and unrelated to G.7-ter; they don't block any flow. The presence of multiple historical pytest voices in #conversazioni is intentional (conversations limit raised to 30 specifically to keep the seed narrative visible alongside accumulated test data) and was anticipated by the main agent."
+}

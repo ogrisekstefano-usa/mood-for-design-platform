@@ -14,6 +14,7 @@ welcome experience.
 from datetime import datetime, timezone
 from typing import Optional, List
 from fastapi import APIRouter, HTTPException, Depends
+from pydantic import BaseModel, Field
 from core.tenant_context import get_tenant_context
 from database import db
 
@@ -546,7 +547,7 @@ def client_journey_companion(journey_id: str, ctx: dict = Depends(get_tenant_con
                      .select("id,milestone_id,quote,kind,author_role,created_at")
                      .eq("tenant_id", tenant_id)
                      .in_("milestone_id", mids)
-                     .order("created_at", desc=True).limit(12)
+                     .order("created_at", desc=True).limit(30)
                      .execute().data or [])
             ms_label = {m["id"]: m["title"] for m in milestones}
             REORIENT = {"wants_lighter", "wants_more_material"}
@@ -599,3 +600,138 @@ def client_journey_companion(journey_id: str, ctx: dict = Depends(get_tenant_con
         "memory_archive":       archive,
         "conversations":        conversations,
     }
+
+
+# ════════════════════════════════════════════════════════════════════
+# SPRINT G.7-ter · Shared Voice™
+#
+# Il cliente lascia una VOCE editoriale sul Journey attivo. NON è un
+# commento, non è una chat, non è un thread. È un gesto relazionale
+# contestuale al capitolo.
+#
+# La voce vive in milestone_feedback (kind='free_voice') ed entra
+# nella Journey Memory via journey_timeline_events (event_type='voice_received').
+# ════════════════════════════════════════════════════════════════════
+
+class SharedVoiceIn(BaseModel):
+    milestone_id: str = Field(..., description="UUID del capitolo a cui legare la voce.")
+    text: str         = Field(..., min_length=2, max_length=600,
+                              description="Testo della voce (sobrio, breve).")
+    reference_url: Optional[str] = Field(None, max_length=600,
+                              description="Pinterest / Instagram / link a un riferimento.")
+    image_url: Optional[str]     = Field(None, max_length=600,
+                              description="Immagine allegata.")
+    note: Optional[str]          = Field(None, max_length=400,
+                              description="Nota aggiuntiva opzionale.")
+
+
+def _verify_journey_ownership(c, tenant_id: str, journey_id: str, profile_id: str,
+                              role: str) -> dict:
+    """Returns the journey if the caller owns the underlying project.
+    super_admin / tenant_admin bypass for QA."""
+    rows = (c.table("design_journeys").select("*")
+            .eq("id", journey_id).eq("tenant_id", tenant_id)
+            .limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Journey non trovato")
+    j = rows[0]
+    role_l = (role or "").lower()
+    if role_l in {"tenant_admin", "super_admin"}:
+        return j
+    pr = (c.table("projects").select("client_user_id")
+          .eq("id", j["project_id"]).eq("tenant_id", tenant_id)
+          .limit(1).execute().data or [])
+    if not pr or pr[0].get("client_user_id") != profile_id:
+        raise HTTPException(403, "Journey non accessibile")
+    return j
+
+
+@router.post("/journeys/{journey_id}/voice", status_code=201)
+def leave_shared_voice(journey_id: str, body: SharedVoiceIn,
+                       ctx: dict = Depends(get_tenant_context)):
+    """Lascia una voce editoriale sul capitolo del Journey.
+
+    Persistenza:
+      · milestone_feedback (kind='free_voice', author_role='client')
+      · journey_timeline_events (event_type='voice_received')
+    """
+    profile_id = _require_client(ctx)
+    tenant_id  = ctx["tenant_id"]
+    c = db()
+
+    journey = _verify_journey_ownership(c, tenant_id, journey_id, profile_id,
+                                         ctx.get("role"))
+
+    ms = (c.table("journey_milestones").select("id,title,milestone_type")
+          .eq("id", body.milestone_id).eq("journey_id", journey_id)
+          .eq("tenant_id", tenant_id).limit(1).execute().data or [])
+    if not ms:
+        raise HTTPException(404, "Capitolo non disponibile per questo Journey")
+    chapter = ms[0]
+
+    # Build the quote — base text plus optional reference/image/note lines.
+    parts = [body.text.strip()]
+    if body.reference_url:
+        parts.append(f"\n— riferimento: {body.reference_url.strip()}")
+    if body.image_url:
+        parts.append(f"\n— immagine: {body.image_url.strip()}")
+    if body.note:
+        parts.append(f"\n— nota: {body.note.strip()}")
+    quote = "".join(parts)
+
+    import uuid
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    voice_row = {
+        "id":             str(uuid.uuid4()),
+        "tenant_id":      tenant_id,
+        "milestone_id":   body.milestone_id,
+        "version_id":     None,
+        "kind":           "free_voice",
+        "quote":          quote,
+        "author_role":    "client",
+        "author_user_id": profile_id,
+        "created_at":     now_iso,
+    }
+    c.table("milestone_feedback").insert(voice_row).execute()
+
+    short = body.text.strip().replace("\n", " ")
+    if len(short) > 140:
+        short = short[:137] + "…"
+    narrative = f'Hai lasciato una voce su "{chapter["title"]}": "{short}"'
+    timeline_row = {
+        "id":             str(uuid.uuid4()),
+        "journey_id":     journey_id,
+        "tenant_id":      tenant_id,
+        "milestone_id":   body.milestone_id,
+        "event_type":     "voice_received",
+        "narrative_text": narrative,
+        "created_by":     profile_id,
+        "metadata":       {"voice_id": voice_row["id"],
+                           "kind":     "shared_voice"},
+        "created_at":     now_iso,
+    }
+    c.table("journey_timeline_events").insert(timeline_row).execute()
+
+    c.table("design_journeys").update({"updated_at": now_iso}) \
+                              .eq("id", journey_id).execute()
+
+    return {
+        "voice": {
+            "id":            voice_row["id"],
+            "milestone_id":  body.milestone_id,
+            "text":          body.text,
+            "reference_url": body.reference_url,
+            "image_url":     body.image_url,
+            "note":          body.note,
+            "author_role":   "client",
+            "created_at":    now_iso,
+        },
+        "timeline_event": {
+            "id":         timeline_row["id"],
+            "narrative":  narrative,
+            "created_at": now_iso,
+        },
+        "chapter": {"id": chapter["id"], "title": chapter["title"]},
+    }
+

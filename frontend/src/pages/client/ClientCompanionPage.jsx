@@ -17,6 +17,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../lib/api';
+import SharedVoiceComposer from '../../components/client/SharedVoiceComposer';
 import './client-companion.css';
 
 const fmtDate = (iso) => {
@@ -112,7 +113,7 @@ const CompanionHero = ({ header, activeChapter }) => {
 };
 
 // ── Active Chapter ───────────────────────────────────────────────
-const ActiveChapterSection = ({ chapter }) => {
+const ActiveChapterSection = ({ chapter, journeyId, onVoiceShared }) => {
   if (!chapter) {
     return (
       <Section
@@ -155,6 +156,14 @@ const ActiveChapterSection = ({ chapter }) => {
       }}>
         {chapter.status_label}
       </p>
+
+      {/* Sprint G.7-ter · Shared Voice™ — un gesto editoriale, NON un commento. */}
+      <SharedVoiceComposer
+        journeyId={journeyId}
+        milestoneId={chapter.id}
+        chapterTitle={chapter.title}
+        onSubmitted={onVoiceShared}
+      />
     </Section>
   );
 };
@@ -399,10 +408,41 @@ const ClientCompanionPage = () => {
     materials_atmospheres, memory_archive, conversations,
   } = data;
 
+  // Optimistic insert after the client shares a voice on the active chapter.
+  const handleVoiceShared = (payload) => {
+    if (!payload?.voice || !active_chapter) return;
+    setData((prev) => {
+      if (!prev) return prev;
+      const newVoice = {
+        id:           payload.voice.id,
+        chapter:      payload.chapter?.title || active_chapter.title,
+        message:      payload.voice.text,
+        tone:         'voice',
+        author_name:  'Tu',
+        created_at:   payload.voice.created_at,
+      };
+      const newEvent = {
+        id:         payload.timeline_event.id,
+        narrative:  payload.timeline_event.narrative,
+        kind:       'voice_received',
+        created_at: payload.timeline_event.created_at,
+      };
+      return {
+        ...prev,
+        conversations:      [newVoice, ...(prev.conversations || [])],
+        evolution_timeline: [newEvent, ...(prev.evolution_timeline || [])],
+      };
+    });
+  };
+
   return (
     <div className="cj-shell" data-testid="client-companion-page">
       <CompanionHero header={header} activeChapter={active_chapter} />
-      <ActiveChapterSection chapter={active_chapter} />
+      <ActiveChapterSection
+        chapter={active_chapter}
+        journeyId={journeyId}
+        onVoiceShared={handleVoiceShared}
+      />
       <SharedDirectionsSection items={shared_directions} />
       <ConversationsSection items={conversations} />
       <EvolutionSection items={evolution_timeline} />
