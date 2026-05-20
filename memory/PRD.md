@@ -53,6 +53,48 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint Sidebar Architecture v4 (Feb 21, 2026 · iter97)
+**La mappa mentale definitiva di MOOD — sidebar non più admin panel, ma architettura editoriale.**
+
+#### Strategic shift
+La sidebar smette di essere un menu SaaS multi-modulo e diventa la mappa mentale del sistema operativo curatoriale. 6 sezioni canoniche che riflettono il modo in cui il designer pensa: costruisco progetti → accedo all'intelligenza culturale → gestisco relazioni → pubblico → governo lo studio.
+
+#### Struttura v4
+- **01 · HOME** → Dashboard
+- **02 · DESIGN JOURNEY™** (sezione dominante) → Projects · Moodboards · Project Studio · Materials · Render · Hotspots · Site Evolution · Documents
+- **03 · CURATORIAL ATLAS** → Inspirations · Brand Mode · Product Gallery · Material View · Visual Archive · Cultural Editions™
+- **04 · CLIENT RELATIONS** → Accounts · Follow-ups · Proposals · Archived
+- **05 · CONTENT STUDIO** (admin) → Editorial Calendar · Magazine · Design Stories · Publishing Queue · Market Matrix · **Web Presence** (era Experience Studio™)
+- **06 · STUDIO OS** → Team · Insights · Brand Studio · Forms & Journeys · Integrations · Billing · Settings
+- **⛨ PLATFORM** (super-admin) → Super Admin
+
+#### Regole identitarie
+- **™ disciplinato**: usato SOLO su Blueprint OS™, Design Journey™, Cultural Editions™, Composition Modes™. Mai su Magazine, Materials, Accounts, Documents, Web Presence, Settings, Team, Inspirations, Brand Mode, Material View, ecc.
+- **Experience Studio™ → Web Presence**: rinominato per essere comprensibile (route `/blueprint/experience` preservata).
+- **Inspirations** rimossa da Design Journey™ → vive solo in Curatorial Atlas (è archivio culturale, non pietra miliare operativa).
+- **Design Stories ≠ Project Studio**: storytelling editoriale dei progetti pubblicati vs editor portfolio web.
+
+#### Tecnologia
+- `Section` collapsible con persistenza localStorage (`mood.sidebar.sections.v4`).
+- **Active state cinematic**: accento dorato hardcoded `#d9b285` a sinistra + 5% gold tint background (NO SaaS blue). Hardcoded perché `--bp-primary` è bound al teal del brand.
+- Gold halo via `box-shadow: 0 0 6px rgba(217,178,133,0.45)` sull'accento attivo.
+- **Soft chevron rotation** sulle sezioni collapsed (300ms ease-out).
+- **™ symbol color**: hardcoded gold inline per non essere shadowed dal teal CSS var.
+- Badge "presto" elegante (mono, opacity 60%) sui placeholder.
+
+#### Routing safety
+- 7 nuove route registrate, mappate al placeholder `ComingSoonPage`: `/journey/render`, `/journey/hotspots`, `/journey/site-evolution`, `/journey/documents`, `/content/design-stories`, `/inspirations/visual-archive`, `/inspirations/products` (redirect a `/inspirations?type=product`).
+- TUTTE le route canonical esistenti preservate (verificato via static check + Playwright).
+- `ComingSoonPage` con JCH montato per continuità ambientale + slug-driven editorial copy per ogni capitolo + CTA "Torna ai progetti".
+
+#### Editorial language guard
+Vietato come label visibile: `Experience Studio`, `Workflow`, `Kanban`, `Ticket`, `Todo`, `Dashboard Manager`, `Asset Manager`, `Admin Content`.
+
+#### Tests
+- **Backend**: 50/50 pass — iter94 (11) + iter95 (13) + iter96 (10) + iter97 (16 static guards).
+  - `test_iteration_97_sidebar_v4.py`: presenza/ordine delle 6 sezioni, collapsible localStorage, Design Journey items, Inspirations NOT in Journey, Curatorial Atlas items, Client Relations items, Content Studio items + Web Presence rename, Studio OS items, ™ discipline, route safety, ComingSoonPage editorial language, gold accent no blue.
+- **Frontend**: 17/17 acceptance criteria pass (Playwright `iteration_97.json`). Bug fix in-flight: active accent ora hardcoded `#d9b285` (era teal perché `--bp-primary` shadowava il fallback gold).
+
 ### Sprint Journey Continuity™ Phase 2 (Feb 21, 2026 · iter96)
 **Satellite Context Expansion · Milestone Immersion · Editorial Vocabulary Refinement.**
 

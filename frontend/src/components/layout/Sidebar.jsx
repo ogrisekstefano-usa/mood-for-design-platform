@@ -70,15 +70,17 @@ const NavItem = ({ to, icon, label, collapsed, end, testid, soon = false, hasMar
     >
       {({ isActive }) => (
         <>
-          {/* Left accent — architectural gold, NO SaaS blue */}
+          {/* Left accent — architectural gold, NO SaaS blue. Hard-coded
+              because --bp-primary is bound to teal at the theme root. */}
           <span
             aria-hidden="true"
             className={`absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full transition-all duration-300 ${
-              isActive
-                ? 'bg-[var(--bp-primary,#d9b285)] opacity-90'
-                : 'bg-transparent opacity-0'
+              isActive ? 'opacity-90' : 'opacity-0'
             }`}
-            style={isActive ? { boxShadow: '0 0 6px rgba(217,178,133,0.45)' } : undefined}
+            style={isActive ? {
+              backgroundColor: '#d9b285',
+              boxShadow: '0 0 6px rgba(217,178,133,0.45)',
+            } : undefined}
           />
           <Icon size={14} strokeWidth={1.4} className={isActive ? 'opacity-95' : 'opacity-70 group-hover:opacity-95'} />
           {!collapsed && (
@@ -90,7 +92,7 @@ const NavItem = ({ to, icon, label, collapsed, end, testid, soon = false, hasMar
             >
               {label}
               {hasMark && (
-                <span className="ml-0.5" style={{ color: 'var(--bp-primary,#d9b285)' }}>™</span>
+                <span className="ml-0.5" style={{ color: '#d9b285' }}>™</span>
               )}
             </span>
           )}
@@ -133,7 +135,7 @@ const Section = ({ id, label, hasMark, collapsed, sectionCollapsed, onToggle, ch
         >
           {label}
           {hasMark && (
-            <span className="ml-0.5" style={{ color: 'var(--bp-primary,#d9b285)' }}>™</span>
+            <span className="ml-0.5" style={{ color: '#d9b285' }}>™</span>
           )}
         </span>
         <Icons.ChevronDown
