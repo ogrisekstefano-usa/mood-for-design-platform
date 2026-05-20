@@ -52,11 +52,11 @@ const FALLBACK = {
   dual: {
     privato: {
       eyebrow: { it: 'Sei un privato?',  en: 'Are you a private client?' },
-      title:   { it: 'Inizia il tuo progetto', en: 'Start your project' },
-      body:    { it: 'Raccontaci la tua idea, i tuoi desideri e le tue esigenze. Ti guideremo passo dopo passo nella creazione del tuo spazio ideale.',
-                 en: 'Tell us your idea, your wishes and your needs. We will guide you step by step in shaping your ideal space.' },
-      cta:     { it: 'Inizia il tuo progetto', en: 'Start your project' },
-      href:    '/start-project',
+      title:   { it: 'Inizia il tuo Design Journey™', en: 'Begin your Design Journey™' },
+      body:    { it: 'Raccontaci l\'atmosfera che stai cercando, il modo in cui vivi gli spazi. Apriamo insieme una conversazione progettuale — senza preventivi, senza fretta.',
+                 en: 'Tell us the atmosphere you are looking for, the way you inhabit spaces. We open a design conversation together — no quotes, no rush.' },
+      cta:     { it: 'Inizia il tuo Design Journey™', en: 'Begin your Design Journey™' },
+      href:    '/begin-journey',
       image:   'https://images.unsplash.com/photo-1492138645846-7ba729b4d6ae?auto=format&fit=crop&w=900&q=85',
     },
     professional: {

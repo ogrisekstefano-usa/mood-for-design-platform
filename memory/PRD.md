@@ -71,6 +71,15 @@ Niente nuove feature fuori dal Journey OS finché il riallineamento non è compl
 > tabella `journey_health_signals` (4 segnali analytics-ready), VIEW `journey_artifacts`
 > (lettura unificata con legacy fallback). Zero data loss su 10 tabelle. 17/17 pytest PASS
 > + 94/94 regression (F.A → F.B). Spec: `/app/memory/G1_SEMANTIC_ARCHITECTURE_LOCK.md`.
+>
+> 🔒 **G.2 — "Inizia il tuo Design Journey™" COMPLETO** (21 Feb 2026 · iter102):
+> Migration 064 (welcome_token). Router `journey_initiate.py` con POST
+> `/api/public/journeys/initiate` (crea Account + Contact + Project + Journey con
+> `lifecycle_state='conversation_open'` + 10 milestones + Brief auto-started + initial chapter
+> + 2 timeline events canonici) e GET `/api/public/journeys/welcome/{token}` (public-safe).
+> Frontend: `BeginJourneyPage.jsx` (3 step cinematic) + `JourneyWelcomePage.jsx` (welcome
+> ritual). CTA homepage privata → `/begin-journey`. Whitelisted public surfaces.
+> 12/12 pytest PASS + 120/120 regression. Spec: `/app/memory/G2_BEGIN_JOURNEY_SPEC.md`.
 
 ## Tenancy & users
 - SuperAdmin: `demo@moodfordesign.com` / `Blueprint2024!`

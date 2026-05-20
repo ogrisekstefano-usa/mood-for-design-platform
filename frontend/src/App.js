@@ -69,6 +69,8 @@ const ProjectsIndexPage = lazy(() => import('./pages/site/ProjectsIndexPage'));
 const SiteProjectDetailPage = lazy(() => import('./pages/site/ProjectDetailPage'));
 const OnboardingPlaceholderPage = lazy(() => import('./pages/site/OnboardingPlaceholderPage'));
 const StartProjectWizard = lazy(() => import('./pages/site/StartProjectWizard'));
+const BeginJourneyPage   = lazy(() => import('./pages/site/BeginJourneyPage'));
+const JourneyWelcomePage = lazy(() => import('./pages/site/JourneyWelcomePage'));
 import MagazinePage from './pages/site/MagazinePage';
 import MagazineArticlePage from './pages/site/MagazineArticlePage';
 const MagazineAdminPage = lazy(() => import('./pages/settings/MagazineAdminPage'));
@@ -239,6 +241,8 @@ function App() {
                   <Route path="/magazine" element={<MagazinePage />} />
                   <Route path="/magazine/:slug" element={<MagazineArticlePage />} />
                   <Route path="/start-project" element={<StartProjectWizard />} />
+                  <Route path="/begin-journey" element={<BeginJourneyPage />} />
+                  <Route path="/journey/welcome/:token" element={<JourneyWelcomePage />} />
                   <Route path="/onboarding/:kind" element={<OnboardingPlaceholderPage />} />
                   <Route path="/professionals" element={<ProfessionalsGatewayPage />} />
                   <Route path="/professionals/intake" element={<ProfessionalIntakePage />} />

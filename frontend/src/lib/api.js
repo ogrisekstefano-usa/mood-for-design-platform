@@ -43,6 +43,8 @@ api.interceptors.response.use(
         p === '/professionals' ||
         p === '/platform' ||
         p === '/start-project' ||
+        p === '/begin-journey' ||
+        p.startsWith('/journey/welcome/') ||
         p === '/magazine' ||
         p.startsWith('/magazine/') ||
         p.startsWith('/onboarding/') ||
