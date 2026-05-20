@@ -294,7 +294,8 @@ CLIENT_LIFECYCLE_LABEL = {
     "drifting":          "In ascolto del tuo riscontro",
     "on_pause":          "In pausa",
     "approved":          "Direzione approvata",
-    "closed":            "Journey completato",
+    "closed":            "Memoria della casa",
+    "archived":          "Memoria della casa",
     "editioned":         "Edizione culturale",
     "abandoned":         "Viaggio sospeso",
 }
@@ -382,6 +383,10 @@ def client_journeys(ctx: dict = Depends(get_tenant_context)):
         latest_evolution = ev[0] if ev else None
 
         lifecycle = j.get("overall_status") or "in_progress"
+        is_archived = (lifecycle == "archived"
+                       or j.get("lifecycle_state") in ("closed", "certified_closure"))
+        if is_archived:
+            lifecycle = "archived"
         out.append({
             "journey_id":   j["id"],
             "project_id":   j["project_id"],
@@ -390,6 +395,8 @@ def client_journeys(ctx: dict = Depends(get_tenant_context)):
             "location":      meta.get("location"),
             "cover_url":     meta.get("cover_url"),
             "studio_name":   studio_name,
+            "is_archived":   is_archived,
+            "closed_at":     j.get("closed_at"),
             "lifecycle_state": lifecycle,
             "lifecycle_label": CLIENT_LIFECYCLE_LABEL.get(lifecycle, "Il viaggio è in corso"),
             "current_chapter": {
@@ -568,6 +575,10 @@ def client_journey_companion(journey_id: str, ctx: dict = Depends(get_tenant_con
             conversations = []
 
     lifecycle = journey.get("overall_status") or "in_progress"
+    is_archived = (lifecycle == "archived"
+                   or journey.get("lifecycle_state") in ("closed", "certified_closure"))
+    if is_archived:
+        lifecycle = "archived"
     total = len(milestones)
     approved = sum(1 for m in milestones if m.get("status") in ("approved", "closed"))
 
@@ -580,6 +591,8 @@ def client_journey_companion(journey_id: str, ctx: dict = Depends(get_tenant_con
             "location":        meta.get("location"),
             "cover_url":       meta.get("cover_url"),
             "studio_name":     studio_name,
+            "is_archived":     is_archived,
+            "closed_at":       journey.get("closed_at"),
             "lifecycle_state": lifecycle,
             "lifecycle_label": CLIENT_LIFECYCLE_LABEL.get(lifecycle, "Il viaggio è in corso"),
             "progress": {"total_chapters": total, "approved_chapters": approved},

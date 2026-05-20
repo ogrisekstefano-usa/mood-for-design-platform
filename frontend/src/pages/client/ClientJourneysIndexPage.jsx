@@ -23,13 +23,13 @@ const fmtDate = (iso) => {
   } catch { return ''; }
 };
 
-const JourneyCard = ({ j }) => {
+const JourneyCard = ({ j, isArchived = false }) => {
   const cover = j.cover_url;
   const chapter = j.current_chapter?.title;
   return (
     <Link
       to={`/client/journey/${j.journey_id}`}
-      className="cj-jcard"
+      className={`cj-jcard${isArchived ? ' is-archived' : ''}`}
       data-testid={`client-journey-card-${j.journey_id}`}
     >
       <div
@@ -44,18 +44,28 @@ const JourneyCard = ({ j }) => {
       <div className="cj-jcard__body">
         <p className="cj-jcard__eyebrow">{j.studio_name}</p>
         <h3 className="cj-jcard__title"><em>{j.project_title}</em></h3>
-        {chapter && (
-          <p className="cj-jcard__chapter">
-            Capitolo attivo · <em>{chapter}</em>
-          </p>
-        )}
-        {j.progress && j.progress.total_chapters > 0 && (
-          <p className="cj-jcard__chapter" style={{ opacity: 0.65 }}>
-            {j.progress.approved_chapters} su {j.progress.total_chapters} capitoli approvati
-          </p>
-        )}
-        {j.latest_evolution && (
-          <p className="cj-jcard__evolution">"{j.latest_evolution.narrative}"</p>
+        {isArchived ? (
+          j.closed_at && (
+            <p className="cj-jcard__chapter" style={{ opacity: 0.7 }}>
+              Memoria depositata · {fmtDate(j.closed_at)}
+            </p>
+          )
+        ) : (
+          <>
+            {chapter && (
+              <p className="cj-jcard__chapter">
+                Capitolo attivo · <em>{chapter}</em>
+              </p>
+            )}
+            {j.progress && j.progress.total_chapters > 0 && (
+              <p className="cj-jcard__chapter" style={{ opacity: 0.65 }}>
+                {j.progress.approved_chapters} su {j.progress.total_chapters} capitoli approvati
+              </p>
+            )}
+            {j.latest_evolution && (
+              <p className="cj-jcard__evolution">"{j.latest_evolution.narrative}"</p>
+            )}
+          </>
         )}
       </div>
     </Link>
@@ -83,9 +93,11 @@ const ClientJourneysIndexPage = () => {
           try { d = await fetchOnce(); } catch { /* keep first response */ }
         }
         if (!alive) return;
-        // Deep entry: 1 Journey solo → vai dritto al companion.
-        if (!d.zero_data && d.journeys?.length === 1) {
-          navigate(`/client/journey/${d.journeys[0].journey_id}`, { replace: true });
+        // Deep entry: 1 ACTIVE Journey only → go straight to companion.
+        // Archived journeys are kept in their own section and never auto-open.
+        const activeOnly = (d.journeys || []).filter((j) => !j.is_archived);
+        if (!d.zero_data && activeOnly.length === 1 && (d.journeys || []).length === 1) {
+          navigate(`/client/journey/${activeOnly[0].journey_id}`, { replace: true });
           return; // keep loading=true so the welcome screen doesn't flash
         }
         setData(d);
@@ -133,6 +145,9 @@ const ClientJourneysIndexPage = () => {
     );
   }
 
+  const active = (data.journeys || []).filter((j) => !j.is_archived);
+  const archived = (data.journeys || []).filter((j) => j.is_archived);
+
   return (
     <div className="cj-shell" data-testid="client-journeys-page">
       {/* Hero editoriale */}
@@ -151,21 +166,45 @@ const ClientJourneysIndexPage = () => {
         </div>
       </section>
 
-      {/* Griglia Journey */}
-      <section className="cj-section" data-testid="client-journeys-grid-section">
-        <div className="cj-section__head">
-          <div>
-            <p className="cj-section__eyebrow">In corso</p>
-            <h2 className="cj-section__title"><em>Tutti i tuoi Journey</em></h2>
+      {/* Journey in corso */}
+      {active.length > 0 && (
+        <section className="cj-section" data-testid="client-journeys-grid-section">
+          <div className="cj-section__head">
+            <div>
+              <p className="cj-section__eyebrow">In corso</p>
+              <h2 className="cj-section__title"><em>I percorsi che stai attraversando</em></h2>
+            </div>
+            <span className="cj-section__count">
+              {active.length} {active.length === 1 ? 'percorso' : 'percorsi'}
+            </span>
           </div>
-          <span className="cj-section__count">
-            {data.journeys.length} {data.journeys.length === 1 ? 'percorso' : 'percorsi'}
-          </span>
-        </div>
-        <div className="cj-grid" data-testid="client-journeys-grid">
-          {data.journeys.map((j) => <JourneyCard key={j.journey_id} j={j} />)}
-        </div>
-      </section>
+          <div className="cj-grid" data-testid="client-journeys-grid">
+            {active.map((j) => <JourneyCard key={j.journey_id} j={j} />)}
+          </div>
+        </section>
+      )}
+
+      {/* Memoria della casa — archivio sobrio */}
+      {archived.length > 0 && (
+        <section className="cj-section cj-section--archive"
+                 data-testid="client-journeys-archive-section">
+          <div className="cj-section__head">
+            <div>
+              <p className="cj-section__eyebrow">Journey Archive</p>
+              <h2 className="cj-section__title"><em>La memoria della casa</em></h2>
+            </div>
+            <span className="cj-section__count">
+              {archived.length} {archived.length === 1 ? 'percorso' : 'percorsi'}
+            </span>
+          </div>
+          <p className="cj-archive-lede">
+            I percorsi che appartengono ora alla memoria progettuale della casa.
+          </p>
+          <div className="cj-grid" data-testid="client-journeys-archive-grid">
+            {archived.map((j) => <JourneyCard key={j.journey_id} j={j} isArchived />)}
+          </div>
+        </section>
+      )}
     </div>
   );
 };

@@ -518,8 +518,17 @@ def ensure_archived_journey_brera(tenant_id: str, client_id: str):
           .eq("tenant_id", tenant_id).eq("client_user_id", client_id)
           .eq("title", title).limit(1).execute().data or [])
     if pr:
-        print(f"  ✓ Journey archiviato già presente: {title}")
-        return
+        existing_pid = pr[0]["id"]
+        # Idempotency: only skip if BOTH project AND its archived journey exist.
+        jr = (c.table("design_journeys").select("id,overall_status")
+              .eq("tenant_id", tenant_id).eq("project_id", existing_pid)
+              .limit(1).execute().data or [])
+        if jr and jr[0].get("overall_status") == "archived":
+            print(f"  ✓ Journey archiviato già presente: {title}")
+            return
+        # Orphan project (no journey, or non-archived) → clean up and re-seed
+        c.table("projects").delete().eq("id", existing_pid).execute()
+        print(f"  ✻ Riallineo Journey archiviato {title} (orfano rimosso)")
 
     closed_at  = now() - timedelta(days=120)
     started_at = closed_at - timedelta(days=210)  # 7 mesi

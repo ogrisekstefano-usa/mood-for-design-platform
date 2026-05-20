@@ -20,6 +20,7 @@ import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
 import MilestoneDialogue from '../../components/journey/MilestoneDialogue';
+import JourneyClosureCeremony from '../../components/journey/JourneyClosureCeremony';
 import './design-journey.css';
 
 const STATUS_META = {
@@ -104,7 +105,7 @@ const TimelineRail = ({ milestones, currentId, onPick }) => (
 
 
 // ─── Center · Active milestone focus panel ──────────────────────────
-const InlinePanel = ({ milestone }) => {
+const InlinePanel = ({ milestone, project }) => {
   const t = milestone.milestone_type;
   if (t === 'brief') {
     return (
@@ -144,28 +145,21 @@ const InlinePanel = ({ milestone }) => {
   }
   if (t === 'certified_closure') {
     return (
-      <div className="dj-inline" data-testid="dj-inline-closure">
-        <p className="dj-inline__eyebrow">Chiusura Certificata</p>
-        <h3 className="dj-inline__title">
-          <em>Il progetto entra nella memoria firmata dello studio</em>
-        </h3>
-        <p className="dj-inline__sub">
-          La cerimonia di chiusura riassume pietre miliari completate,
-          approvazioni e snapshot finale. Una volta certificato il progetto
-          potrà cristallizzare una Cultural Edition™.
-        </p>
-        <div className="dj-inline__hint">
-          <Icons.Info size={11} />
-          <span>La cerimonia e la cristallizzazione arriveranno nei capitoli successivi.</span>
-        </div>
-      </div>
+      <JourneyClosureCeremony
+        journeyId={project?.journey_id || milestone?.journey_id}
+        projectTitle={project?.title || ''}
+        onDeposited={() => {
+          // Soft refresh: reload the page so the journey reflects archived state
+          if (typeof window !== 'undefined') window.location.reload();
+        }}
+      />
     );
   }
   return null;
 };
 
 
-const FocusPanel = ({ milestone, onStatusChange, onOpen, busy }) => {
+const FocusPanel = ({ milestone, project, onStatusChange, onOpen, busy }) => {
   if (!milestone) return null;
   const meta = STATUS_META[milestone.status] || STATUS_META.not_started;
   const Icon = MILESTONE_ICON[milestone.milestone_type] || Icons.Circle;
@@ -190,7 +184,7 @@ const FocusPanel = ({ milestone, onStatusChange, onOpen, busy }) => {
       </header>
 
       {/* Inline-rendered milestones get a placeholder body */}
-      {openMode === 'inline' && <InlinePanel milestone={milestone} />}
+      {openMode === 'inline' && <InlinePanel milestone={milestone} project={project} />}
 
       {/* Navigate-mode milestones get a CTA hero */}
       {openMode === 'navigate' && (
@@ -479,6 +473,11 @@ const DesignJourneyTab = ({ projectId, project }) => {
         <FocusPanel
           key={active?.id || 'none'}
           milestone={active}
+          project={{
+            id: project?.id,
+            title: project?.title,
+            journey_id: data?.journey?.id,
+          }}
           onStatusChange={onStatusChange}
           onOpen={onOpen}
           busy={busy}

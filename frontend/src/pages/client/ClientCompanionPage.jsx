@@ -19,6 +19,7 @@ import { useParams } from 'react-router-dom';
 import api from '../../lib/api';
 import SharedVoiceComposer from '../../components/client/SharedVoiceComposer';
 import SiteEvolutionSection from '../../components/client/SiteEvolutionSection';
+import DossierSection from '../../components/client/DossierSection';
 import './client-companion.css';
 
 const fmtDate = (iso) => {
@@ -446,27 +447,37 @@ const ClientCompanionPage = () => {
   };
 
   return (
-    <div className="cj-shell" data-testid="client-companion-page">
-      <CompanionHero header={header} activeChapter={active_chapter} />
-      <ActiveChapterSection
-        chapter={active_chapter}
-        journeyId={journeyId}
-        onVoiceShared={handleVoiceShared}
-      />
-      <SharedDirectionsSection items={shared_directions} />
-      <ConversationsSection items={conversations} />
-      <EvolutionSection items={evolution_timeline} />
-      <MaterialsSection items={materials_atmospheres} />
-      <Section
-        id="cantiere"
-        eyebrow="Site Evolution™"
-        title="La memoria viva del cantiere"
-        count={siteEvolution?.entries?.length ? `${siteEvolution.entries.length} ${siteEvolution.entries.length === 1 ? 'momento' : 'momenti'}` : null}
-        testid="cj-section-cantiere"
-      >
-        <SiteEvolutionSection data={siteEvolution} />
-      </Section>
-      <MemoryArchiveSection items={memory_archive} />
+    <div
+      className={`cj-shell${header.is_archived ? ' is-archived' : ''}`}
+      data-testid="client-companion-page"
+      data-archived={header.is_archived ? 'true' : 'false'}
+    >
+      {header.is_archived ? (
+        <DossierSection journeyId={journeyId} conversations={conversations} />
+      ) : (
+        <>
+          <CompanionHero header={header} activeChapter={active_chapter} />
+          <ActiveChapterSection
+            chapter={active_chapter}
+            journeyId={journeyId}
+            onVoiceShared={handleVoiceShared}
+          />
+          <SharedDirectionsSection items={shared_directions} />
+          <ConversationsSection items={conversations} />
+          <EvolutionSection items={evolution_timeline} />
+          <MaterialsSection items={materials_atmospheres} />
+          <Section
+            id="cantiere"
+            eyebrow="Site Evolution™"
+            title="La memoria viva del cantiere"
+            count={siteEvolution?.entries?.length ? `${siteEvolution.entries.length} ${siteEvolution.entries.length === 1 ? 'momento' : 'momenti'}` : null}
+            testid="cj-section-cantiere"
+          >
+            <SiteEvolutionSection data={siteEvolution} />
+          </Section>
+          <MemoryArchiveSection items={memory_archive} />
+        </>
+      )}
     </div>
   );
 };

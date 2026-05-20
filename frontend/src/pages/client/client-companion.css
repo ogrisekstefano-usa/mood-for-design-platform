@@ -528,3 +528,32 @@
   box-shadow: 0 0 18px color-mix(in srgb, var(--cp-gold, #d9b285) 28%, transparent);
 }
 .cj-sv-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Sprint G.9 · Journey Archive cards & section ─────────────── */
+.cj-section--archive {
+  border-top: 1px solid color-mix(in srgb, var(--cp-text-primary, #efe8d8) 10%, transparent);
+  padding-top: 56px;
+  margin-top: 24px;
+}
+.cj-archive-lede {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: color-mix(in srgb, var(--cp-text-primary, #efe8d8) 55%, transparent);
+  max-width: 56ch;
+  margin: 0 0 32px;
+}
+.cj-jcard.is-archived {
+  filter: saturate(0.7) brightness(0.93);
+}
+.cj-jcard.is-archived .cj-jcard__cover {
+  filter: grayscale(0.18);
+}
+.cj-jcard.is-archived .cj-jcard__pill {
+  background: rgba(14,15,17,0.6);
+  color: color-mix(in srgb, var(--cp-text-primary, #efe8d8) 65%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cp-text-primary, #efe8d8) 18%, transparent);
+}
+.cj-jcard.is-archived:hover {
+  filter: saturate(0.8) brightness(1);
+}

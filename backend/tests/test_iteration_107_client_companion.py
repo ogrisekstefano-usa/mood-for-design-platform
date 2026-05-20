@@ -140,7 +140,9 @@ class TestJourneysIndexPage:
             "My Design Journeys",
             "I tuoi percorsi progettuali",
             "Il tuo Journey sta per iniziare",  # zero-data
-            "Tutti i tuoi Journey",
+            # G.9: active/archived split — copy clarifies it surfaces
+            # only the active percorsi (archive lives below as its own section).
+            "I percorsi che stai attraversando",
         ):
             assert phrase in src, f"missing index copy: {phrase}"
 
