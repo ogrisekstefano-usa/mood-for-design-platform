@@ -3,7 +3,8 @@
 ## 📌 Sprint Status (latest)
 - **Sprint G.5 — Sidebar v5 (IA Journey-first)** · ✅ COMPLETED · iter105 · 14/14 tests pass
 - **Sprint G.6 — Step-Anchored Artifact Pages™** · ✅ COMPLETED · iter106 · 16/16 tests pass + 80/80 G.1→G.6 regression. Backend `journey_step_workspace.py` + route `/journey/:projectId/step/:milestoneType`. Three editorial layers (`StepContextHeader`, `VersionStack`, `ClientInteractionLayer`) + workspace bodies (Moodboard / Material). DesignJourneyTab routes moodboard/material steps to the new workspace; legacy global pages carry an `ArchiveBanner`. Validated by testing agent (`/app/test_reports/iteration_106.json`).
-- **Next P1**: G.7 Client Portal Journey-first refactor · G.8 Site Evolution™ · G.9 Certified Closure ceremony.
+- **Sprint G.7 — Client Portal Journey Companion™** · ✅ COMPLETED · iter107 · 18/18 + 10/10 RBAC supplement + 108/108 G.1→G.7 regression. Backend `GET /api/client/journeys` + `GET /api/client/journeys/{journey_id}/companion` (7 sezioni: header, active_chapter, shared_directions, evolution_timeline, materials_atmospheres, memory_archive, conversations). Frontend nuova IA `/client` + `/client/journey/:journeyId` con sidebar v2 (7 voci Journey-first ™) + zero-data editoriale. Legacy `/client/project|moodboards|approvals|timeline|files` redirezionano alla nuova IA. RBAC: client/tenant_admin/super_admin OK, designer → 403. Mobile-first verified at 390x844. Validato da testing agent (`/app/test_reports/iteration_107.json`).
+- **Next P1**: G.8 Site Evolution™ · G.9 Certified Closure ceremony.
 
 ## 🔒 PRODUCT DIRECTION LOCK (Feb 21, 2026 · iter100+) — IMMUTABLE
 MOOD for DESIGN **non è**: tool collection, generic CRM, generic PM, isolated moodboard app,
