@@ -69,19 +69,32 @@ const ClientJourneysIndexPage = () => {
 
   useEffect(() => {
     let alive = true;
+    const fetchOnce = () => api.get('/api/client/journeys').then((r) => r.data);
+
     (async () => {
       try {
-        const { data: d } = await api.get('/api/client/journeys');
+        let d = await fetchOnce();
+        // Cold-login race: on first navigation right after login the tenant
+        // context may not be fully resolved yet — a single short retry on
+        // zero_data smooths the experience.
+        if (alive && d?.zero_data) {
+          await new Promise((r) => setTimeout(r, 700));
+          if (!alive) return;
+          try { d = await fetchOnce(); } catch { /* keep first response */ }
+        }
         if (!alive) return;
         // Deep entry: 1 Journey solo → vai dritto al companion.
         if (!d.zero_data && d.journeys?.length === 1) {
           navigate(`/client/journey/${d.journeys[0].journey_id}`, { replace: true });
-          return;
+          return; // keep loading=true so the welcome screen doesn't flash
         }
         setData(d);
+        setLoading(false);
       } catch {
-        if (alive) setData({ zero_data: true, journeys: [] });
-      } finally { if (alive) setLoading(false); }
+        if (!alive) return;
+        setData({ zero_data: true, journeys: [] });
+        setLoading(false);
+      }
     })();
     return () => { alive = false; };
   }, [navigate]);

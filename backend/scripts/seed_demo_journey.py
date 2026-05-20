@@ -543,7 +543,9 @@ def ensure_site_evolution(tenant_id: str, journey_id: str, milestones: list):
          "photos": [
             {"url": "https://images.unsplash.com/photo-1581094488379-6b0d4cf4b8a8?auto=format&fit=crop&w=1400&q=80",
              "caption": "Demolizione parete divisoria"},
-         ]},
+         ],
+         "before": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=80",
+         "after":  "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=1400&q=80"},
         # 3. Showroom visit per il travertino
         {"off": 40, "space": "master_bath", "kind": "showroom",
          "title": "Showroom · Campioni travertino",
@@ -569,6 +571,8 @@ def ensure_site_evolution(tenant_id: str, journey_id: str, milestones: list):
             {"url": "https://images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=1400&q=80",
              "caption": "Lastre di travertino in showroom"},
          ],
+         "before": "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=1400&q=80",
+         "after":  "https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=1400&q=80",
          "materials": ["travertino_chiaro"]},
         # 6. Sopralluogo elettrico
         {"off": 51, "space": "living", "kind": "test",

@@ -1,12 +1,13 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
-- **Sprint G.5 — Sidebar v5 (IA Journey-first)** · ✅ COMPLETED · iter105
-- **Sprint G.6 — Step-Anchored Artifact Pages™** · ✅ COMPLETED · iter106
-- **Sprint G.7 — Client Portal Journey Companion™** · ✅ COMPLETED · iter107
-- **Sprint G.7-bis — Villa Riviera demo seed™** · ✅ COMPLETED · iter108
-- **Sprint G.7-ter — Shared Voice™** · ✅ COMPLETED · iter109 · 15/15 + 139/139 G.x regression verde. Backend `POST /api/client/journeys/{journey_id}/voice` con persistenza canonica (milestone_feedback + journey_timeline_events + bump journey.updated_at), RBAC client-only (designer 403, tenant_admin/super_admin QA bypass), validation 422 text 2-600 chars, 404 unknown journey/milestone. Frontend `SharedVoiceComposer.jsx` editoriale: INVITE card con CTA "Condividi una voce" + COMPOSER con textarea + 3 gesture pill chips (riferimento Pinterest/Instagram · atmosfera immagine · nota privata) + submit ottimistico (la voce appare istantaneamente come prima in #conversazioni con author='Tu'). Direction Lock: zero terminologia chat/PM/SaaS. Mobile-first verified at 390x844. Validato live da testing agent (`/app/test_reports/iteration_109.json`).
-- **Next P1**: G.8 Site Evolution™ · G.9 Certified Closure ceremony.
+- **Sprint G.5 — Sidebar v5** · ✅ iter105
+- **Sprint G.6 — Step-Anchored Artifact Pages™** · ✅ iter106
+- **Sprint G.7 — Client Portal Journey Companion™** · ✅ iter107
+- **Sprint G.7-bis — Villa Riviera demo seed™** · ✅ iter108
+- **Sprint G.7-ter — Shared Voice™** · ✅ iter109
+- **Sprint G.8 — Site Evolution™** · ✅ COMPLETED · iter110 · 16/16 + 155/155 G.x regression verde. Backend nuovo router `site_evolution.py` con 3 endpoint (studio GET/POST + client GET read-only), persistenza intelligente via `journey_timeline_events` con `event_type='site_evolution'` + metadata JSON (zero schema migration). RBAC: studio read = super_admin/tenant_admin/designer/pm/editor/advisor · studio write = stessi minus advisor · client read = owner del project (tenant_admin/super_admin bypass QA). Dizionari editoriali italiani: 9 visit_labels (Sopralluogo · Demolizione · Arrivo materiali · Installazione · Mockup materiali · Visita showroom · Verifica tecnica · Styling · Momento chiave) + 11 space_labels (Living · Cucina · Camera padronale · Bagno padronale · Terrazza · Ingresso · Studio · Giardino · Suite 03 · Lobby · Spazi comuni). Frontend `SiteEvolutionSection.jsx` con timeline editoriale documentaristica, filter chips per spazio, **Before/After slider con drag handle gold** (Prima · Stato attuale), foto architettoniche aspect-ratio 16:11 con caption mono uppercase. Sidebar v2 estesa a 8 voci con `HardHat` icon su 'Site Evolution™'. Auto-attivazione milestone `site_evolution` da `not_started` → `in_progress` al primo POST. Seed Villa Riviera arricchito con 8 momenti reali su 5 spazi (Living 3, Cucina 2, Bagno padronale 2, Terrazza 1) **inclusi 2 Before/After confermati live** (Demolizioni Cucina + Arrivo travertino). Cold-login race risolto con retry one-shot in `ClientJourneysIndexPage`. Validato live desktop + mobile da testing agent (`/app/test_reports/iteration_110.json`).
+- **Next P1**: G.9 Certified Closure ceremony.
 
 ## 🔒 PRODUCT DIRECTION LOCK (Feb 21, 2026 · iter100+) — IMMUTABLE
 MOOD for DESIGN **non è**: tool collection, generic CRM, generic PM, isolated moodboard app,
