@@ -1,9 +1,59 @@
-# MOOD for DESIGN™ — Cultural Design Intelligence Operating System™
+# MOOD for DESIGN™ — Design Journey OS™
+
+## 🔒 PRODUCT DIRECTION LOCK (Feb 21, 2026 · iter100+) — IMMUTABLE
+MOOD for DESIGN **non è**: tool collection, generic CRM, generic PM, isolated moodboard app,
+modular SaaS without flow, dashboard CRUD, aggressive lead-gen funnel, HubSpot/Asana/Trello/Canva/Pinterest clone.
+
+MOOD for DESIGN **è un** **Design Journey OS™**.
+
+### Architettura canonica (immutabile)
+```
+Account / Cliente
+  └─ Design Journey™              ← centro del sistema
+       └─ Journey Step (pietra miliare)
+            └─ Artifact (moodboard, materiali, documents, render, ...)
+                 └─ Version (capitolo progettuale, NO "V1/V2")
+                      └─ Feedback / Approval (voce curatoriale)
+                           └─ Analytics
+```
+
+### Centri NON validi (questi NON sono il fulcro)
+Projects · Moodboards · CRM · Inspirations · Documents.
+Tutti questi sono **strumenti, artefatti o layer** del Journey.
+
+### Domande di validazione per ogni modulo/feature
+Ogni cosa che si costruisce deve rispondere a:
+1. A quale **Journey** appartiene?
+2. A quale **step** del Journey serve?
+3. Quale **decisione progettuale** aiuta a prendere?
+
+Se la risposta è "nessuna" → quel modulo è archivio globale (Curatorial Atlas, Brand Studio,
+Studio OS) e **non deve rompere il flow operativo**.
+
+### Entry-point e linguaggio
+- Primo touchpoint = "**Inizia il tuo Design Journey**", MAI "Richiedi progetto" / "Get a quote".
+- Brief iniziale = ingresso **relazionale, morbido, curatoriale**. NON form commerciale.
+- NON chiedere subito: budget, timing, urgenza, "quanto vuoi spendere".
+- Prima creare: **accoglienza · contesto · stile di vita · atmosfera · fiducia · relazione**.
+
+### Cosa NON fare (regole di esclusione)
+- Non introdurre marketplace, funnel marketing aggressivo, agent sales logic.
+- Non trasformare MOOD in HubSpot/Asana/Trello/Canva/Pinterest clone.
+- Non proporre feature fuori dal Journey OS.
+- Procedere per **sprint piccoli, testabili, non distruttivi**: mettere ordine nell'esistente
+  e riallineare tutto al Design Journey OS™.
+
+---
 
 ## Original Problem Statement
-Multi-tenant SaaS "Design Workflow Operating System" (Blueprint OS) for interior designers, architects, retailers. Evolve into a **Cultural Design Intelligence Operating System™** with luxury Relationship CRM and multi-market, culturally-native Editorial Intelligence Engine. Public-facing storefronts must be 100% DB-driven and culturally adaptive.
+Multi-tenant SaaS per interior designers, architects, retailers, evoluto in **Design Journey OS™**:
+un sistema operativo curatoriale-relazionale che accompagna ogni progetto dal primo touchpoint
+("Inizia il tuo Design Journey") alla Certified Closure. Il Journey è la spina dorsale; tutti
+gli altri moduli (CRM, moodboard, materiali, documenti, inspirations, cultural editions) sono
+strumenti al servizio del Journey.
 
-**Active mandate**: ZERO HARDCODED POLICY. Every public surface must be editable from Blueprint, traceable, intentional. No new features until cleanup batches complete.
+**Active mandate**: ZERO HARDCODED POLICY · ogni superficie pubblica modificabile da Blueprint.
+Niente nuove feature fuori dal Journey OS finché il riallineamento non è completo.
 
 **Language**: Italian (Italiano).
 
