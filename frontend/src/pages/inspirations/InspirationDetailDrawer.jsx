@@ -9,6 +9,7 @@
  * Mobile: stack verticale fullscreen.
  */
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
@@ -563,6 +564,17 @@ const ProductInfoBlock = ({ data }) => {
           <em> · verifica i diritti d'uso prima della pubblicazione esterna.</em>
         )}
       </p>
+      {data.id && (
+        <Link
+          to={`/inspirations/products/${data.id}`}
+          className="insd-product__atlas-link"
+          data-testid="inspiration-open-product-gallery"
+        >
+          <Icons.LayoutGrid size={11} />
+          <span>Apri Product Gallery™</span>
+          <Icons.ArrowRight size={11} />
+        </Link>
+      )}
     </div>
   );
 };

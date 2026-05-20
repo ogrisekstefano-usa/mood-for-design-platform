@@ -890,3 +890,114 @@ def product_visual_atlas(product_id: str, ctx=Depends(get_tenant_context)):
         },
     }
 
+
+# ─── Phase F2.1 · Related Assets ("Works well with…") ─────────────────
+@router.get("/registry/products/{product_id}/related")
+def product_related_assets(
+    product_id: str,
+    limit: int = Query(12, le=40),
+    ctx=Depends(get_tenant_context),
+):
+    """Rule-based "Works well with…" suggestions.
+
+    Scoring (tenant-scoped, NEVER cross-tenant):
+      • same color_family            → +3
+      • same collection              → +2
+      • same brand                   → +2
+      • shared mood_tag              → +1 per overlap (cap 3)
+      • same product_category        → +1
+      • shared material_tag          → +1 per overlap (cap 3)
+      • SAME visual_group_key       → EXCLUDED (those are siblings, not related)
+
+    Designer curation feel, NOT ecommerce recommendation.
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+    seed_rows = (c.table("media_library").select(
+        "id,inspiration_meta,file_url,alt_text,width,height,created_at"
+    ).eq("id", product_id).eq("tenant_id", tid).eq("is_inspiration", True)
+     .limit(1).execute().data or [])
+    if not seed_rows:
+        raise HTTPException(404, "Asset visuale non trovato")
+    seed = seed_rows[0]
+    sm = seed.get("inspiration_meta") or {}
+
+    seed_vg = sm.get("visual_group_key")
+    seed_family = sm.get("color_family")
+    seed_brand = sm.get("brand")
+    seed_collection = sm.get("collection")
+    seed_category = sm.get("product_category")
+    seed_moods = set(sm.get("mood_tags") or [])
+    seed_materials = set(sm.get("material_tags") or [])
+
+    # Pull a candidate set — tenant scoped, only product inspirations,
+    # exclude exact same visual group (those are atlas siblings).
+    # We pull up to 400 and rank in Python — cheap, no full-text index needed.
+    rows = (c.table("media_library").select(
+        "id,inspiration_meta,file_url,alt_text,width,height,created_at"
+    ).eq("tenant_id", tid).eq("is_inspiration", True)
+     .eq("inspiration_meta->>inspiration_type", "product")
+     .order("created_at", desc=True).limit(400).execute().data or [])
+
+    scored: List[Dict[str, Any]] = []
+    for r in rows:
+        if r.get("id") == product_id:
+            continue
+        m = r.get("inspiration_meta") or {}
+        if seed_vg and m.get("visual_group_key") == seed_vg:
+            continue  # siblings of same product → not "related", they're the SAME
+
+        score = 0.0
+        reasons: List[str] = []
+        if seed_family and m.get("color_family") == seed_family:
+            score += 3
+            reasons.append("palette")
+        if seed_collection and m.get("collection") == seed_collection:
+            score += 2
+            reasons.append("collezione")
+        if seed_brand and m.get("brand") == seed_brand:
+            score += 2
+            reasons.append("brand")
+        if seed_category and m.get("product_category") == seed_category:
+            score += 1
+            reasons.append("categoria")
+        mood_overlap = list(seed_moods.intersection(m.get("mood_tags") or []))
+        if mood_overlap:
+            score += min(3, len(mood_overlap))
+            reasons.append("atmosfera")
+        mat_overlap = list(seed_materials.intersection(m.get("material_tags") or []))
+        if mat_overlap:
+            score += min(3, len(mat_overlap))
+            reasons.append("materia")
+
+        # Compositional bonus — moodboard_priority strengthens the suggestion
+        mp = m.get("moodboard_priority")
+        if isinstance(mp, (int, float)):
+            score += float(mp) * 0.1
+
+        if score <= 0:
+            continue
+
+        card = _atlas_card(r)
+        # Dedup reasons preserving order
+        seen = set(); ordered: List[str] = []
+        for x in reasons:
+            if x not in seen:
+                seen.add(x); ordered.append(x)
+        card["match_score"] = round(score, 2)
+        card["match_reasons"] = ordered
+        scored.append(card)
+
+    scored.sort(key=lambda c: -float(c.get("match_score") or 0.0))
+    return {
+        "seed": {
+            "id":            product_id,
+            "product_name":  sm.get("product_name"),
+            "brand":         seed_brand,
+            "color_family":  seed_family,
+        },
+        "items": scored[:limit],
+        "total": len(scored),
+    }
+
+

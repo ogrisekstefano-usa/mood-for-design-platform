@@ -44,6 +44,7 @@ const InspirationsPage = lazy(() => import('./pages/inspirations/InspirationsPag
 const StudioCollectionsPage = lazy(() => import('./pages/inspirations/StudioCollectionsPage'));
 const BrandModePage = lazy(() => import('./pages/inspirations/BrandModePage'));
 const BrandDetailPage = lazy(() => import('./pages/inspirations/BrandDetailPage'));
+const ProductGalleryPage = lazy(() => import('./pages/inspirations/ProductGalleryPage'));
 const InsightsPage = lazy(() => import('./pages/insights/InsightsPage'));
 const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'));
 const BrandStudioPage = lazy(() => import('./pages/settings/BrandStudioPage'));
@@ -348,6 +349,7 @@ function App() {
                   <Route path="/inspirations/collections" element={<StudioCollectionsPage />} />
                   <Route path="/inspirations/brands" element={<BrandModePage />} />
                   <Route path="/inspirations/brands/:brandId" element={<BrandDetailPage />} />
+                  <Route path="/inspirations/products/:productId" element={<ProductGalleryPage />} />
                   <Route path="/insights" element={<InsightsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="/settings/brand" element={<StudioAdminRoute><BrandStudioPage /></StudioAdminRoute>} />

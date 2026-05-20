@@ -1,0 +1,53 @@
+{
+  "summary": "Frontend testing of Phase F2.1 Product Gallery™ + Curated References™ + Moodboard Picker on /inspirations/products/8be6c3b4-bd3c-45a6-8ece-8051924af599. 12/13 flows PASS visually and functionally. One CRITICAL crash in MoodboardPickerModal blocks the moodboard add flow and produces a full-screen React error overlay.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/moodboards?limit=40", "issue": "Returns {data: [...]} envelope while frontend MoodboardPickerModal expects {items: [...]} or a raw array. API contract mismatch — backend can either also expose 'items' alias or frontend must handle 'data' key. Caller crashes."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "MoodboardPickerModal", "issue": "Crashes with TypeError: filtered.map is not a function (and earlier moodboards.filter on a non-array). Root cause: line 36 setMoodboards(r.data?.items || r.data || []) — when API returns {data:[...]}, r.data.items is undefined, fallback r.data is the object {data:[...]}, not array. .filter() on object → TypeError. The error overlay then unmounts the entire page UI. FIX: setMoodboards(r.data?.items || r.data?.data || (Array.isArray(r.data) ? r.data : []))", "selector": "[data-testid=pg-hero-moodboard] → [data-testid=mp-modal]", "priority": "CRITICAL"}
+    ],
+    "integration_issues": [
+      {"flow": "Moodboard picker open from Product Gallery", "issue": "Cannot test mp-search / mp-row-* / add-to-moodboard / mp-create flows because modal crashes on mount. /api/moodboards integration broken in this component.", "affected_selectors": ["[data-testid=mp-modal]", "[data-testid=mp-search]", "[data-testid^=mp-row-]", "[data-testid=mp-create-trigger]"]}
+    ],
+    "design_issues": []
+  },
+  "verified_flows_ok": [
+    "Login as demo@moodfordesign.com / Blueprint2024! → /dashboard",
+    "Direct nav /inspirations/products/8be6c3b4... renders pg-shell (Bonaldo · Alpha · 26 Collection)",
+    "3-col immersive layout: pg-aside-left + pg-main + pg-aside-right all present",
+    "Hero: pg-hero + 3 buttons (pg-hero-fullscreen, pg-hero-save, pg-hero-moodboard) present and clickable",
+    "Quick filter pg-filter-textures click → applies .is-on class correctly",
+    "Bucket toggle pg-bucket-toggle-material_samples collapses/expands grid DOM",
+    "Right tabs pg-tab-asset_info (default) · pg-tab-references · pg-tab-related — tab switching adds .is-on class",
+    "Curated References™ create flow: pg-refs-new opens cc-drawer → cc-title + cc-vis-team + cc-submit work → drawer closes after submit → collection appears in pg-refs list (4 items observed) → POST /api/inspirations/references/collections returns 200/201",
+    "Hero save: pg-hero-save → pg-tray appears with message 'Salvato in Curated References™' + action 'Aggiungi al moodboard' — toast/tray UX works",
+    "Italian copy visible in screenshot: 'Product Gallery™', 'Visual Atelier', 'Quick filtri', 'Moodboard ready', 'Editorial', 'Composition friendly', 'High visual weight', 'Texture', 'Still life', 'Dettagli', 'Atmosfera', 'Family cromatica', 'Palette aggregata', 'Linguaggio progettuale', 'Salva in References™', 'Aggiungi al moodboard', 'Fullscreen', 'Asset · References · Affinità', 'Campioni materia', 'Tipologia asset', 'Ruolo compositivo', 'Angolo', 'Editorial score', 'Composition friendly', 'Visual weight', 'Moodboard priority', 'Palette dominante', 'Curated References™' (in drawer), 'Nuova collezione' (in drawer), 'Works well with…' (in related tab title)",
+    "ZERO forbidden jargon found ('Favorites', 'Bookmarks', 'DAM', 'Catalog browser', 'Asset Manager', 'ML model', 'AI search', 'Pinterest masonry' all absent)",
+    "Dark luxury aesthetic confirmed visually: editorial dark cinematic layout, Playfair italic on header 'Alpha', warm gold-on-dark CTA, full-bleed hero, gallery 3-col composition matches Linear/Framer/Kinfolk aesthetic — NOT a Pinterest catalog",
+    "Nav from InspirationDetailDrawer: /inspirations → click card → inspiration-open-product-gallery → routes to /inspirations/products/:id (verified for 14c0f0c2-47b6-...)",
+    "Related tab pg-tab-related shows curatorial copy 'Curatela editoriale — non raccomandazione algoritmica.' and 'Sto leggendo le relazioni…' / list panel"
+  ],
+  "test_report_links": [],
+  "action_items": [
+    "CRITICAL: Fix MoodboardPickerModal.jsx line 36 — handle {data:[...]} envelope from /api/moodboards. Suggested patch: const list = r.data?.items ?? r.data?.data ?? (Array.isArray(r.data) ? r.data : []); setMoodboards(list); This will unblock pg-hero-moodboard flow and prevent the React error overlay from killing the page.",
+    "Optional: backend can also alias 'items' on /api/moodboards response for consistency with collections endpoint (which returns {items:[...]})."
+  ],
+  "critical_code_review_comments": [
+    "MoodboardPickerModal.jsx:36 — defensive parsing of paginated API responses is missing; the OR fallback r.data?.items || r.data silently passes through non-array shapes and explodes downstream in .filter/.map. Always guard with Array.isArray before useMemo filter chains.",
+    "ProductGalleryPage.jsx — no <ErrorBoundary> wrapping MoodboardPickerModal / CuratedCollectionDrawer; a single uncaught error tears down the entire 3-col immersive view. Recommend wrapping modals in an ErrorBoundary so the parent gallery survives child crashes.",
+    "Inconsistent API envelope across modules: /api/moodboards uses {data:[...]} while /api/inspirations/references/collections uses {items:[...]}. Pick one and document it.",
+    "ProductGalleryPage.jsx (~695 lines, single file) is approaching the 700-line maintainability threshold — extract Bucket, AssetTile, AssetBadges, AssetInfoTab, ReferencesTab, RelatedTab, FloatingTray into small files under /pages/inspirations/product-gallery/."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (skipped per instructions)", "frontend": "92% (12/13 flows ok; moodboard picker BROKEN)"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024!",
+  "seed_data_creation": "Created 1 test curated collection 'TEST_Atelier_Playwright_F2.1' (team visibility) and triggered 1 hero-save reference linking to product asset. Both via real backend API calls — not mocked.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Re-run only the MoodboardPicker flow after the fix: click pg-hero-moodboard, expect mp-modal visible, mp-search input present, mp-row-* items rendered (the moodboards list returned at least 1 item 'TEST_iter83' in API response), no React runtime error overlay. Also verify mp-create-trigger → mp-create-title → mp-create-confirm creates a new moodboard and adds the active asset.",
+  "rca_of_the_issue": "API /api/moodboards?limit=40 returns {data: [...]}. Frontend code does setMoodboards(r.data?.items || r.data || []) → because r.data.items is undefined and r.data is truthy (it's the response body object), moodboards state becomes the literal response object {data:[...]}. Then in useMemo: moodboards.filter(...) on an object throws TypeError, AND/OR filtered.map(...) on the result throws. CRA error overlay then replaces the rendered tree, which is why italian copy and tabs become 'missing' in DOM after the crash. Reproduction: login → /inspirations/products/8be6c3b4-bd3c-45a6-8ece-8051924af599 → click [data-testid=pg-hero-moodboard] → red overlay 'filtered.map is not a function at MoodboardPickerModal'. Mitigation: normalize response in MoodboardPickerModal useEffect to always assign an array."
+}
