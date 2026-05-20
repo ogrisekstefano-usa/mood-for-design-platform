@@ -99,6 +99,7 @@ from routers import brands_registry
 from routers import curated_references
 from routers import usage_memory
 from routers import client_preview
+from routers import design_journey
 api_router.include_router(portfolio.router, prefix="/portfolio", tags=["portfolio"])
 api_router.include_router(proposals.router, prefix="/proposals", tags=["proposals"])
 api_router.include_router(moodboards.router, prefix="/moodboards", tags=["moodboards"])
@@ -115,6 +116,7 @@ api_router.include_router(brands_registry.router,   prefix="/inspirations", tags
 api_router.include_router(curated_references.router, prefix="/inspirations", tags=["curated-references"])
 api_router.include_router(usage_memory.router,      prefix="/inspirations", tags=["usage-memory"])
 api_router.include_router(client_preview.router,    prefix="/inspirations", tags=["client-preview"])
+api_router.include_router(design_journey.router,                            tags=["design-journey"])
 api_router.include_router(inspirations.router, prefix="/inspirations", tags=["inspirations"])
 api_router.include_router(insights.router, prefix="/insights", tags=["insights"])
 api_router.include_router(settings.router, prefix="/settings", tags=["settings"])

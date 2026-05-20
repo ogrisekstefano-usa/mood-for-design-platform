@@ -1,0 +1,406 @@
+"""Design Journey™ router — Phase F.A.
+
+Backbone narrativa del progetto. NON è project management — è il sistema
+operativo curatoriale-relazionale che accompagna il progetto dalla prima
+intuizione alla chiusura certificata.
+
+Endpoints:
+  GET   /api/projects/{project_id}/journey
+        Returns the journey + milestones + timeline. Auto-creates the
+        journey + 10 default milestones on first access (Brief in
+        'in_progress', tutte le altre 'not_started').
+
+  PATCH /api/journeys/milestones/{milestone_id}
+        Update status / metadata. Status transition auto-emits a
+        narrative timeline event in italian editorial language.
+
+  GET   /api/journeys/{journey_id}/timeline
+        Full project evolution timeline (italian narrative).
+
+  POST  /api/journeys/milestones/{milestone_id}/open
+        Resolve the "Apri" CTA target: returns navigation hint
+        (inline | navigate + route) per the F.A spec mix policy.
+
+Italian compliance: NO 'task', 'sprint', 'kanban', 'dashboard',
+'workflow', 'ticket', 'project management'. USA 'pietre miliari',
+'direzione progettuale', 'evoluzione progetto', 'revisione richiesta',
+'chiusura certificata'.
+"""
+from __future__ import annotations
+
+import logging
+import uuid
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
+
+from core.tenant_context import get_tenant_context
+from database import db
+
+logger = logging.getLogger(__name__)
+router = APIRouter()
+
+
+def _now() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _slim(row: Dict[str, Any]) -> Dict[str, Any]:
+    return {k: v for k, v in (row or {}).items() if k != "_id"}
+
+
+# ─── DEFAULT MILESTONES (10) ───────────────────────────────────────────
+# Mix italian + branded ™ terms (per user spec approval F.A).
+DEFAULT_MILESTONES = [
+    {"type": "brief",                "title": "Brief Cliente",
+     "description": "La prima conversazione progettuale: obiettivi, atmosfera, ambienti.",
+     "open_mode": "inline",      "linked_route": None},
+
+    {"type": "inspirations",         "title": "Inspirations™",
+     "description": "Linguaggio visuale di partenza: riferimenti, atmosfere, suggestioni.",
+     "open_mode": "navigate",    "linked_route": "/inspirations"},
+
+    {"type": "moodboard_direction",  "title": "Moodboard Direction™",
+     "description": "La direzione editoriale prende forma in una composizione narrativa.",
+     "open_mode": "navigate",    "linked_route": "/moodboards"},
+
+    {"type": "material_direction",   "title": "Material Direction™",
+     "description": "Il tavolo materico: pietre, legni, tessuti, palette tattile.",
+     "open_mode": "navigate",    "linked_route": "/inspirations/materials"},
+
+    {"type": "concept_design",       "title": "Concept Design™",
+     "description": "Render, tavole, layout: il progetto trova la sua spazialità.",
+     "open_mode": "navigate",    "linked_route": "/workspace/projects"},
+
+    {"type": "technical_package",    "title": "Technical Package™",
+     "description": "Tavole tecniche, schede, documenti — il progetto pronto per il cantiere.",
+     "open_mode": "navigate",    "linked_route": "/workspace/projects"},
+
+    {"type": "curated_selections",   "title": "Curated Selections™",
+     "description": "Selezioni finali: prodotti scelti, varianti, approvazioni materiche.",
+     "open_mode": "navigate",    "linked_route": "/inspirations"},
+
+    {"type": "site_evolution",       "title": "Site Evolution™",
+     "description": "L'evoluzione reale del progetto, raccontata per immagini.",
+     "open_mode": "inline",      "linked_route": None},
+
+    {"type": "final_presentation",   "title": "Presentazione Finale",
+     "description": "L'incontro cinematico in cui il progetto viene celebrato.",
+     "open_mode": "navigate",    "linked_route": "/inspirations"},
+
+    {"type": "certified_closure",    "title": "Chiusura Certificata",
+     "description": "Il progetto entra nella memoria firmata dello studio.",
+     "open_mode": "inline",      "linked_route": None},
+]
+
+
+# ─── Models ────────────────────────────────────────────────────────────
+class MilestonePatch(BaseModel):
+    status:       Optional[str] = None
+    title:        Optional[str] = None
+    description:  Optional[str] = None
+    owner_user_id: Optional[str] = None
+    linked_entity_type: Optional[str] = None
+    linked_entity_id:   Optional[str] = None
+    metadata:     Optional[Dict[str, Any]] = None
+
+
+VALID_STATUSES = {
+    "not_started", "in_progress", "presented", "revision_requested",
+    "partially_approved", "approved", "closed",
+}
+
+# Narrative templates — italian editorial, NO technical log.
+STATUS_NARRATIVE = {
+    "in_progress":         "{title} — in lavorazione.",
+    "presented":           "{title} presentata al cliente.",
+    "revision_requested":  "Cliente chiede una revisione su {title}.",
+    "partially_approved":  "{title} approvata parzialmente.",
+    "approved":            "{title} approvata. Il progetto avanza.",
+    "closed":              "{title} chiusa. Capitolo concluso.",
+}
+
+
+# ─── Helpers ───────────────────────────────────────────────────────────
+def _ensure_journey(c, tenant_id: str, project_id: str, user_id: Optional[str]) -> Dict[str, Any]:
+    """Find or create the journey for a project. Idempotent."""
+    rows = (c.table("design_journeys").select("*")
+            .eq("tenant_id", tenant_id).eq("project_id", project_id)
+            .limit(1).execute().data or [])
+    if rows:
+        return rows[0]
+
+    # Create journey
+    jid = str(uuid.uuid4())
+    j_row = {
+        "id":            jid,
+        "tenant_id":     tenant_id,
+        "project_id":    project_id,
+        "current_milestone_id": None,
+        "overall_status": "in_progress",
+        "started_at":    _now(),
+        "closed_at":     None,
+        "created_by":    user_id,
+        "created_at":    _now(),
+        "updated_at":    _now(),
+    }
+    c.table("design_journeys").insert(j_row).execute()
+
+    # Create 10 default milestones
+    milestones = []
+    for idx, m in enumerate(DEFAULT_MILESTONES):
+        is_brief = (m["type"] == "brief")
+        mid = str(uuid.uuid4())
+        m_row = {
+            "id":             mid,
+            "journey_id":     jid,
+            "tenant_id":      tenant_id,
+            "milestone_type": m["type"],
+            "title":          m["title"],
+            "description":    m["description"],
+            "order_index":    idx,
+            "status":         "in_progress" if is_brief else "not_started",
+            "started_at":     _now() if is_brief else None,
+            "presented_at":   None,
+            "approved_at":    None,
+            "closed_at":      None,
+            "owner_user_id":  user_id if is_brief else None,
+            "metadata":       {
+                "open_mode":    m["open_mode"],
+                "linked_route": m["linked_route"],
+            },
+            "created_at":     _now(),
+            "updated_at":     _now(),
+        }
+        milestones.append(m_row)
+    c.table("journey_milestones").insert(milestones).execute()
+
+    # Set current_milestone_id to the Brief
+    brief_mid = next(m["id"] for m in milestones if m["milestone_type"] == "brief")
+    c.table("design_journeys").update(
+        {"current_milestone_id": brief_mid, "updated_at": _now()}
+    ).eq("id", jid).execute()
+    j_row["current_milestone_id"] = brief_mid
+
+    # Initial narrative events
+    events = [
+        {
+            "id":           str(uuid.uuid4()),
+            "journey_id":   jid,
+            "tenant_id":    tenant_id,
+            "milestone_id": None,
+            "event_type":   "journey_started",
+            "narrative_text": "Il Design Journey™ del progetto inizia. Una direzione progettuale prende forma.",
+            "created_by":   user_id,
+            "metadata":     {},
+            "created_at":   _now(),
+        },
+        {
+            "id":           str(uuid.uuid4()),
+            "journey_id":   jid,
+            "tenant_id":    tenant_id,
+            "milestone_id": brief_mid,
+            "event_type":   "milestone_started",
+            "narrative_text": "Brief Cliente — in lavorazione. La prima conversazione progettuale è avviata.",
+            "created_by":   user_id,
+            "metadata":     {},
+            "created_at":   _now(),
+        },
+    ]
+    c.table("journey_timeline_events").insert(events).execute()
+    return j_row
+
+
+def _emit_event(c, *, journey_id: str, tenant_id: str, milestone_id: Optional[str],
+                event_type: str, narrative: str, created_by: Optional[str] = None,
+                meta: Optional[Dict[str, Any]] = None) -> None:
+    c.table("journey_timeline_events").insert({
+        "id":             str(uuid.uuid4()),
+        "journey_id":     journey_id,
+        "tenant_id":      tenant_id,
+        "milestone_id":   milestone_id,
+        "event_type":     event_type,
+        "narrative_text": narrative,
+        "created_by":     created_by,
+        "metadata":       meta or {},
+        "created_at":     _now(),
+    }).execute()
+
+
+# ─── Endpoints ─────────────────────────────────────────────────────────
+@router.get("/projects/{project_id}/journey")
+def get_or_create_journey(project_id: str, ctx=Depends(get_tenant_context)):
+    """Get the project's Design Journey™ + milestones + timeline.
+    Auto-creates everything on first access."""
+    c = db()
+    tid = ctx["tenant_id"]
+    uid = ctx.get("profile_id")
+
+    # Verify project belongs to tenant (best-effort — table may or may not exist
+    # depending on tenant setup; we do a soft check)
+    journey = _ensure_journey(c, tid, project_id, uid)
+
+    milestones = (c.table("journey_milestones").select("*")
+                  .eq("journey_id", journey["id"]).eq("tenant_id", tid)
+                  .order("order_index", desc=False).execute().data or [])
+    timeline = (c.table("journey_timeline_events").select("*")
+                .eq("journey_id", journey["id"]).eq("tenant_id", tid)
+                .order("created_at", desc=True).limit(120).execute().data or [])
+
+    return {
+        "journey":    _slim(journey),
+        "milestones": [_slim(m) for m in milestones],
+        "timeline":   [_slim(e) for e in timeline],
+    }
+
+
+@router.patch("/journeys/milestones/{mid}")
+def patch_milestone(mid: str, body: MilestonePatch,
+                    ctx=Depends(get_tenant_context)):
+    c = db()
+    tid = ctx["tenant_id"]
+    uid = ctx.get("profile_id")
+    rows = (c.table("journey_milestones").select("*")
+            .eq("id", mid).eq("tenant_id", tid).limit(1)
+            .execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Pietra miliare non trovata")
+    cur = rows[0]
+
+    patch: Dict[str, Any] = {}
+    new_status: Optional[str] = None
+    if body.status is not None:
+        s = body.status.lower()
+        if s not in VALID_STATUSES:
+            raise HTTPException(400, "Stato non valido")
+        if s != cur["status"]:
+            new_status = s
+            patch["status"] = s
+            # Timestamp transitions
+            if s == "in_progress" and not cur.get("started_at"):
+                patch["started_at"] = _now()
+            if s == "presented":
+                patch["presented_at"] = _now()
+            if s == "approved":
+                patch["approved_at"] = _now()
+            if s == "closed":
+                patch["closed_at"] = _now()
+    if body.title is not None:       patch["title"] = body.title.strip()[:200]
+    if body.description is not None: patch["description"] = body.description.strip() or None
+    if body.owner_user_id is not None: patch["owner_user_id"] = body.owner_user_id or None
+    if body.linked_entity_type is not None: patch["linked_entity_type"] = body.linked_entity_type or None
+    if body.linked_entity_id is not None:   patch["linked_entity_id"]   = body.linked_entity_id or None
+    if body.metadata is not None:
+        merged = {**(cur.get("metadata") or {}), **(body.metadata or {})}
+        patch["metadata"] = merged
+
+    if not patch:
+        return {"item": _slim(cur)}
+
+    patch["updated_at"] = _now()
+    c.table("journey_milestones").update(patch).eq("id", mid).execute()
+
+    if new_status:
+        narrative = STATUS_NARRATIVE.get(new_status, "{title} aggiornata.").format(
+            title=cur["title"],
+        )
+        _emit_event(
+            c,
+            journey_id=cur["journey_id"],
+            tenant_id=tid,
+            milestone_id=mid,
+            event_type=f"milestone_{new_status}",
+            narrative=narrative,
+            created_by=uid,
+        )
+        # If approved → mark journey current_milestone to next not-yet-started
+        if new_status in ("approved", "closed"):
+            sib = (c.table("journey_milestones").select("id,order_index,status")
+                   .eq("journey_id", cur["journey_id"])
+                   .eq("tenant_id", tid)
+                   .gt("order_index", cur["order_index"])
+                   .order("order_index", desc=False).limit(1)
+                   .execute().data or [])
+            if sib:
+                c.table("design_journeys").update(
+                    {"current_milestone_id": sib[0]["id"], "updated_at": _now()}
+                ).eq("id", cur["journey_id"]).execute()
+        # If a Certified Closure approved → close journey
+        if cur.get("milestone_type") == "certified_closure" and new_status == "approved":
+            c.table("design_journeys").update(
+                {"overall_status": "closed", "closed_at": _now(),
+                 "updated_at": _now()}
+            ).eq("id", cur["journey_id"]).execute()
+            _emit_event(
+                c, journey_id=cur["journey_id"], tenant_id=tid,
+                milestone_id=mid, event_type="journey_closed",
+                narrative="Design Journey™ chiuso. Il progetto entra nella memoria firmata dello studio.",
+                created_by=uid,
+            )
+
+    upd = (c.table("journey_milestones").select("*")
+           .eq("id", mid).limit(1).execute().data or [])[0]
+    return {"item": _slim(upd)}
+
+
+@router.get("/journeys/{jid}/timeline")
+def get_timeline(jid: str, ctx=Depends(get_tenant_context)):
+    c = db()
+    tid = ctx["tenant_id"]
+    rows = (c.table("journey_timeline_events").select("*")
+            .eq("journey_id", jid).eq("tenant_id", tid)
+            .order("created_at", desc=True).limit(200).execute().data or [])
+    return {"items": [_slim(r) for r in rows]}
+
+
+@router.post("/journeys/milestones/{mid}/open")
+def open_milestone(mid: str, ctx=Depends(get_tenant_context)):
+    """Resolve the 'Apri' CTA target.
+
+    Returns the navigation hint:
+      {
+        "open_mode":     "inline" | "navigate",
+        "linked_route":  "/inspirations/materials" | …,
+        "milestone_type": "brief" | "material_direction" | …
+      }
+
+    The frontend uses this to either expand the inline panel OR navigate
+    to the existing module (Moodboards/Inspirations/Material View/…).
+
+    Also auto-transitions 'not_started' → 'in_progress' (first open).
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+    uid = ctx.get("profile_id")
+    rows = (c.table("journey_milestones").select("*")
+            .eq("id", mid).eq("tenant_id", tid).limit(1)
+            .execute().data or [])
+    if not rows:
+        raise HTTPException(404, "Pietra miliare non trovata")
+    m = rows[0]
+    meta = m.get("metadata") or {}
+
+    # Auto-transition not_started → in_progress on first open
+    if m["status"] == "not_started":
+        c.table("journey_milestones").update({
+            "status": "in_progress",
+            "started_at": _now(),
+            "updated_at": _now(),
+        }).eq("id", mid).execute()
+        narrative = STATUS_NARRATIVE["in_progress"].format(title=m["title"])
+        _emit_event(
+            c, journey_id=m["journey_id"], tenant_id=tid,
+            milestone_id=mid, event_type="milestone_in_progress",
+            narrative=narrative, created_by=uid,
+        )
+
+    return {
+        "milestone_id":    mid,
+        "milestone_type":  m["milestone_type"],
+        "open_mode":       meta.get("open_mode") or "inline",
+        "linked_route":    meta.get("linked_route"),
+        "linked_entity_type": m.get("linked_entity_type"),
+        "linked_entity_id":   m.get("linked_entity_id"),
+    }
