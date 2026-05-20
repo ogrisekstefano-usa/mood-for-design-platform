@@ -506,7 +506,167 @@ def ensure_timeline(tenant_id: str, journey_id: str, milestones: list):
     print(f"  + {len(rows)} eventi timeline creati (8 settimane di evoluzione)")
 
 
-# ── Site Evolution™ entries (Sprint G.8) ─────────────────────────
+# ── Sprint G.9 · Appartamento Brera (archived demo) ──────────────
+def ensure_archived_journey_brera(tenant_id: str, client_id: str):
+    """Seedare un secondo Journey della stessa famiglia, già archiviato.
+
+    Permette di dimostrare il Certified Closure™ e l'Archive index senza
+    dover prima certificare Villa Riviera (che è in corso).
+    """
+    title = "Appartamento Brera"
+    pr = (c.table("projects").select("id")
+          .eq("tenant_id", tenant_id).eq("client_user_id", client_id)
+          .eq("title", title).limit(1).execute().data or [])
+    if pr:
+        print(f"  ✓ Journey archiviato già presente: {title}")
+        return
+
+    closed_at  = now() - timedelta(days=120)
+    started_at = closed_at - timedelta(days=210)  # 7 mesi
+
+    # Account (riutilizzo Famiglia Bianchi se esiste)
+    a = (c.table("accounts").select("id")
+         .eq("tenant_id", tenant_id)
+         .eq("account_name", "Famiglia Bianchi · Villa Riviera").limit(1)
+         .execute().data or [])
+    account_id = a[0]["id"] if a else None
+
+    pid = str(uuid.uuid4())
+    c.table("projects").insert({
+        "id":             pid,
+        "tenant_id":      tenant_id,
+        "client_user_id": client_id,
+        "assigned_to":    DESIGNER_PROFILE_ID,
+        "title":          title,
+        "description":    "Restyle di un appartamento storico in zona Brera. Tre camere, due bagni, sala da pranzo affacciata sul cortile.",
+        "project_type":   "Residenziale · restyle integrale",
+        "status":         "in_review",
+        "language":       "it",
+        "metadata_json":  {
+            "location":   "Milano, Brera",
+            "cover_url":  "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?auto=format&fit=crop&w=1600&q=80",
+            "demo_seed_tag": SEED_TAG,
+        },
+        "created_at":     iso(started_at),
+        "updated_at":     iso(closed_at),
+    }).execute()
+
+    jid = str(uuid.uuid4())
+    c.table("design_journeys").insert({
+        "id":              jid,
+        "tenant_id":       tenant_id,
+        "project_id":      pid,
+        "account_id":      account_id,
+        "current_milestone_id": None,
+        "overall_status":  "archived",
+        "lifecycle_state": "closed",
+        "started_at":      iso(started_at),
+        "closed_at":       iso(closed_at),
+        "created_by":      DESIGNER_PROFILE_ID,
+        "created_at":      iso(started_at),
+        "updated_at":      iso(closed_at),
+    }).execute()
+
+    # Minimal milestones (5/10 approvati per dare "key chapters")
+    plan = [
+        ("brief", "Brief Cliente",        "approved",    5),
+        ("inspirations", "Inspirations™", "approved",   18),
+        ("moodboard_direction", "Moodboard Direction™", "approved", 60),
+        ("material_direction",  "Material Direction™",   "approved", 95),
+        ("concept_design",      "Concept Design™",       "approved", 130),
+        ("technical_package",   "Technical Package™",    "approved", 160),
+        ("curated_selections",  "Curated Selections™",   "closed",   180),
+        ("site_evolution",      "Site Evolution™",       "closed",   200),
+        ("final_presentation",  "Presentazione Finale",  "closed",   206),
+        ("certified_closure",   "Chiusura Certificata",  "closed",   210),
+    ]
+    rows = []
+    for idx, (typ, t, st, off) in enumerate(plan):
+        rows.append({
+            "id":             str(uuid.uuid4()),
+            "tenant_id":      tenant_id,
+            "journey_id":     jid,
+            "milestone_type": typ,
+            "title":          t,
+            "description":    f"Capitolo {t} del Journey archiviato.",
+            "order_index":    idx,
+            "status":         st,
+            "owner_user_id":  DESIGNER_PROFILE_ID,
+            "started_at":     iso(started_at + timedelta(days=max(0, off-3))),
+            "approved_at":    iso(started_at + timedelta(days=off)),
+            "closed_at":      iso(closed_at) if st == "closed" else None,
+            "metadata":       {"open_mode": "inline"},
+            "created_at":     iso(started_at),
+            "updated_at":     iso(closed_at),
+        })
+    c.table("journey_milestones").insert(rows).execute()
+
+    # Dossier metadata (G.9) — il cuore del closure
+    dossier_meta = {
+        "final_title":  "Appartamento Brera · una conversazione con la luce milanese",
+        "statement":    "Un percorso sviluppato attorno alla relazione tra le proporzioni storiche dell'appartamento e una palette materica essenziale. La luce nordica di Brera entra nel progetto come materiale principale, accompagnata da rovere termotrattato, intonaco veneziano e ferro brunito.",
+        "cover_url":    "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?auto=format&fit=crop&w=1600&q=80",
+        "certified_at": iso(closed_at),
+        "certified_by_role": "designer",
+    }
+    c.table("journey_timeline_events").insert({
+        "id":             str(uuid.uuid4()),
+        "tenant_id":      tenant_id,
+        "journey_id":     jid,
+        "event_type":     "dossier_metadata",
+        "narrative_text": dossier_meta["final_title"],
+        "created_by":     DESIGNER_PROFILE_ID,
+        "metadata":       dossier_meta,
+        "created_at":     iso(closed_at),
+    }).execute()
+
+    # Closure ceremony marker
+    c.table("journey_timeline_events").insert({
+        "id":             str(uuid.uuid4()),
+        "tenant_id":      tenant_id,
+        "journey_id":     jid,
+        "event_type":     "journey_certified_closure",
+        "narrative_text": f'Il Journey è entrato nel suo archivio firmato come "{dossier_meta["final_title"]}".',
+        "created_by":     DESIGNER_PROFILE_ID,
+        "metadata":       {"kind": "ceremony"},
+        "created_at":     iso(closed_at + timedelta(minutes=1)),
+    }).execute()
+
+    # A few moodboards as iconic visuals
+    mb_specs = [
+        {"title": "Direzione living · Brera",
+         "url": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80",
+         "status": "approved"},
+        {"title": "Direzione cucina · Brera",
+         "url": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=1400&q=80",
+         "status": "approved"},
+        {"title": "Direzione bagno padronale · Brera",
+         "url": "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=1400&q=80",
+         "status": "approved"},
+    ]
+    mb_rows = []
+    for i, m in enumerate(mb_specs):
+        mb_rows.append({
+            "id":            str(uuid.uuid4()),
+            "tenant_id":     tenant_id,
+            "project_id":    pid,
+            "journey_id":    jid,
+            "created_by":    DESIGNER_PROFILE_ID,
+            "title":         m["title"],
+            "description":   m["title"],
+            "status":        m["status"],
+            "current_version": 1,
+            "cover_strategy": "manual",
+            "cover_metadata": {"signed_url": m["url"], "url": m["url"]},
+            "created_at":    iso(started_at + timedelta(days=60+i*10)),
+            "updated_at":    iso(closed_at),
+        })
+    c.table("moodboards").insert(mb_rows).execute()
+
+    print(f"  + Journey archiviato seedato: {title} (lifecycle=certified_closure)")
+
+
+# ── Sprint G.8 · Site Evolution™ entries ─────────────────────────
 def ensure_site_evolution(tenant_id: str, journey_id: str, milestones: list):
     """Seed 8 momenti reali del cantiere — sopralluoghi, demolizioni,
     arrivo materiali, installazioni. Sobrio, documentaristico.
@@ -658,6 +818,9 @@ def main():
     ensure_voices(tenant["id"], milestones)
     ensure_timeline(tenant["id"], journey["id"], milestones)
     ensure_site_evolution(tenant["id"], journey["id"], milestones)
+
+    # Sprint G.9 — un secondo Journey già archiviato per la stessa famiglia.
+    ensure_archived_journey_brera(tenant["id"], client_profile["id"])
 
     print("\n✓ Seed completato. Villa Riviera™ è viva nel Companion del cliente Marco.\n")
     print(f"  Project ID: {project['id']}")
