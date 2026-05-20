@@ -471,7 +471,7 @@ const DesignJourneyTab = ({ projectId, project }) => {
 
       <EvolutionTimeline events={data.timeline || []} />
 
-      {/* Sprint F.B — Immersive Project Dialogue.
+      {/* Iter100 · Immersive Project Dialogue.
           Si attiva sulla milestone attiva. Capitoli + voci curatoriali. */}
       {active && (
         <div className="dj-dialogue-wrap">

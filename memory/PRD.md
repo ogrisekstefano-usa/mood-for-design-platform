@@ -63,6 +63,14 @@ Niente nuove feature fuori dal Journey OS finché il riallineamento non è compl
 > G.4 (Dashboard Journey Pulse) → G.5 (Sidebar v5) → G.6 (Step-anchored artifacts) →
 > G.7 (Client Portal Journey-first) → G.8 (Site Evolution™) → G.9 (Certified Closure) →
 > G.10 (Cultural Editions gen) → G.11 (Advisor) → G.12 (collab→dialogue merge).
+>
+> 🔒 **G.1 — Semantic Architecture Lock COMPLETO** (21 Feb 2026 · iter101):
+> Migration 063 applicata. `design_journeys.account_id` + `lifecycle_state` (9 stati),
+> `moodboards/proposals/curated_collections.journey_id + milestone_id`,
+> `journey_timeline_events.event_canon` (10 eventi canonici),
+> tabella `journey_health_signals` (4 segnali analytics-ready), VIEW `journey_artifacts`
+> (lettura unificata con legacy fallback). Zero data loss su 10 tabelle. 17/17 pytest PASS
+> + 94/94 regression (F.A → F.B). Spec: `/app/memory/G1_SEMANTIC_ARCHITECTURE_LOCK.md`.
 
 ## Tenancy & users
 - SuperAdmin: `demo@moodfordesign.com` / `Blueprint2024!`
