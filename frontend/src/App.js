@@ -60,6 +60,7 @@ const LeadFormPage = lazy(() => import('./pages/public/LeadFormPage'));
 const MoodboardEditor = lazy(() => import('./pages/moodboards/MoodboardEditor'));
 const PublicPresentation = lazy(() => import('./pages/moodboards/PublicPresentation'));
 const ReviewMode = lazy(() => import('./pages/collab/ReviewMode'));
+const ComingSoonPage = lazy(() => import('./pages/placeholder/ComingSoonPage'));
 
 // Site (public marketing) — global brand surface
 const SiteLayout = lazy(() => import('./site/SiteLayout'));
@@ -405,6 +406,21 @@ function App() {
 
                   {/* Projects Studio™ — Phase S-CONNECT Step 3 (Portfolio Cultural Adaptation). */}
                   <Route path="/blueprint/projects-studio" element={<StudioAdminRoute><ProjectsStudioPage /></StudioAdminRoute>} />
+
+                  {/* ── Design Journey™ — placeholder chapters ──
+                      Render · Hotspots · Site Evolution · Documents
+                      live as editorial coming-soon pages until the
+                      respective sprints (F.B / F.C / F.D) ship. */}
+                  <Route path="/journey/render"         element={<ComingSoonPage />} />
+                  <Route path="/journey/hotspots"       element={<ComingSoonPage />} />
+                  <Route path="/journey/site-evolution" element={<ComingSoonPage />} />
+                  <Route path="/journey/documents"      element={<ComingSoonPage />} />
+                  {/* ── Content Studio · Design Stories ──
+                      Storytelling editoriale dei progetti pubblicati. */}
+                  <Route path="/content/design-stories" element={<ComingSoonPage />} />
+                  {/* ── Curatorial Atlas · Visual Archive · Product Gallery index ── */}
+                  <Route path="/inspirations/visual-archive" element={<ComingSoonPage />} />
+                  <Route path="/inspirations/products" element={<Navigate to="/inspirations?type=product" replace />} />
                 </Route>
 
                 {/* CLIENT PORTAL (Phase R) — surface-isolated, role=client only */}

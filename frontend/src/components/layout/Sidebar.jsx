@@ -1,52 +1,106 @@
-import React from 'react';
+/**
+ * Sidebar — MOOD for DESIGN™ · Architecture v4.
+ *
+ * Mappa mentale del sistema operativo curatoriale. NON è un menu admin,
+ * NON è dashboard enterprise. È l'architettura editoriale che traduce
+ * il pensiero del designer in 5 sezioni:
+ *
+ *   01 · HOME                — il punto di partenza
+ *   02 · DESIGN JOURNEY™     — costruzione progetto (dominante)
+ *   03 · CURATORIAL ATLAS    — memoria culturale dello studio
+ *   04 · CLIENT RELATIONS    — relazioni commerciali
+ *   05 · CONTENT STUDIO      — publishing e presenza editoriale
+ *   06 · STUDIO OS           — governance dello studio
+ *   ⛨   · PLATFORM           — super-admin (impersonation, audit)
+ *
+ * Regola ™: usato SOLO su brand identitari rari (Blueprint OS™,
+ * Design Journey™, Cultural Editions™, Composition Modes™).
+ * Mai su Magazine, Materials, Accounts, ecc.
+ *
+ * Sezioni collapsible — stato persistente per utente in localStorage.
+ * Active states: accent verticale dorato, NO background SaaS blu.
+ */
+import React, { useState, useCallback, useMemo } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import { useBlueprint } from '../../contexts/BlueprintContext';
-import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
 import Brand from '../common/Brand';
 import useSidebarCollapsed from '../../hooks/useSidebarCollapsed';
 
-/**
- * Sidebar — workspace navigation ONLY.
- *
- * Strict scope (the user-locked information architecture):
- *   - Dashboard · Leads · Projects · Moodboards · Inspirations · Insights · Settings
- *   - NEVER: block insertion, page management, canvas tools, inspector
- *
- * Visual rules:
- *   - Ultra-slim left rail (icon-only by default, like Figma)
- *   - Monogram "M" lives at the very top, doubles as the expand/collapse trigger
- *   - User profile + logout live in the Topbar avatar menu (NOT here)
- *   - Edge collapse handle on the right border for users who prefer that pattern
- *   - Default state: COLLAPSED (icon-only). User can pin it open; choice persists.
- */
-const NavItem = ({ to, icon, labelKey, fallback, collapsed, end }) => {
-  const { t } = useBlueprint();
-  const Icon = Icons[icon] || Icons.Square;
-  const testid = `sidebar-nav-${labelKey.replace(/\./g, '-')}`;
-  const label = t(labelKey, null, fallback);
+// ── Section collapse persistence ─────────────────────────────────
+const SECTION_STORAGE_KEY = 'mood.sidebar.sections.v4';
+const useSectionCollapse = () => {
+  const [state, setState] = useState(() => {
+    try {
+      const raw = window.localStorage.getItem(SECTION_STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch { return {}; }
+  });
+  const toggle = useCallback((key) => {
+    setState((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      try { window.localStorage.setItem(SECTION_STORAGE_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, []);
+  const isCollapsed = useCallback((key) => Boolean(state[key]), [state]);
+  return { isCollapsed, toggle };
+};
+
+// ── NavItem ──────────────────────────────────────────────────────
+const NavItem = ({ to, icon, label, collapsed, end, testid, soon = false, hasMark = false }) => {
+  const Icon = Icons[icon] || Icons.Circle;
+  const tid = testid || `sidebar-nav-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
   return (
     <NavLink
       to={to}
       end={end}
-      data-testid={testid}
+      data-testid={tid}
       aria-label={label}
       title={collapsed ? label : undefined}
-      className={({ isActive }) =>
-        `flex items-center ${collapsed ? 'justify-center' : 'gap-3'} ${collapsed ? 'px-0 py-2.5' : 'px-2.5 py-1.5'}
-         rounded-[7px] relative group transition-colors duration-150 ${
-          isActive
-            ? 'text-[var(--bp-primary)]'
-            : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]'
-        }`
-      }
+      className={({ isActive }) => `
+        relative flex items-center
+        ${collapsed ? 'justify-center px-0 py-2.5' : 'gap-3 px-3 py-2'}
+        rounded-[4px] group
+        transition-colors duration-200 ease-out
+        ${isActive
+          ? 'text-[var(--bp-text-primary)] bg-[rgba(217,178,133,0.05)]'
+          : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] hover:bg-[rgba(255,255,255,0.018)]'}
+      `}
     >
       {({ isActive }) => (
         <>
-          <span className={`absolute left-0 top-1 bottom-1 w-[2px] rounded-full transition-all duration-200 ${isActive ? 'bg-[var(--bp-primary)]' : 'bg-transparent'}`} />
-          <Icon size={15} strokeWidth={1.5} />
+          {/* Left accent — architectural gold, NO SaaS blue */}
+          <span
+            aria-hidden="true"
+            className={`absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full transition-all duration-300 ${
+              isActive
+                ? 'bg-[var(--bp-primary,#d9b285)] opacity-90'
+                : 'bg-transparent opacity-0'
+            }`}
+            style={isActive ? { boxShadow: '0 0 6px rgba(217,178,133,0.45)' } : undefined}
+          />
+          <Icon size={14} strokeWidth={1.4} className={isActive ? 'opacity-95' : 'opacity-70 group-hover:opacity-95'} />
           {!collapsed && (
-            <span className="font-body tracking-[0.005em] truncate text-[12.5px]">{label}</span>
+            <span
+              className={`flex-1 truncate text-[12.5px] tracking-[0.005em] ${
+                isActive ? 'font-medium' : 'font-normal'
+              }`}
+              style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+            >
+              {label}
+              {hasMark && (
+                <span className="ml-0.5" style={{ color: 'var(--bp-primary,#d9b285)' }}>™</span>
+              )}
+            </span>
+          )}
+          {!collapsed && soon && (
+            <span
+              className="text-[8.5px] tracking-[0.18em] uppercase font-mono opacity-60"
+              style={{ color: 'var(--bp-text-faint,#6e6e6a)' }}
+            >
+              presto
+            </span>
           )}
         </>
       )}
@@ -54,17 +108,47 @@ const NavItem = ({ to, icon, labelKey, fallback, collapsed, end }) => {
   );
 };
 
-const SectionLabel = ({ children, collapsed }) => {
+// ── Section ──────────────────────────────────────────────────────
+const Section = ({ id, label, hasMark, collapsed, sectionCollapsed, onToggle, children }) => {
   if (collapsed) {
-    return <div className="my-2 mx-2 h-px bg-[var(--bp-border)]" aria-hidden="true" />;
+    return (
+      <div className="my-3" data-testid={`sidebar-section-${id}`}>
+        <div className="mx-2 h-px bg-[var(--bp-border)] opacity-50" aria-hidden="true" />
+        <div className="mt-2 space-y-0.5">{children}</div>
+      </div>
+    );
   }
+  const open = !sectionCollapsed;
   return (
-    <p className="px-2.5 mb-2 text-[9px] uppercase tracking-[0.28em] text-[var(--bp-text-faint)] font-body font-medium">
-      {children}
-    </p>
+    <div data-testid={`sidebar-section-${id}`}>
+      <button
+        type="button"
+        onClick={() => onToggle(id)}
+        data-testid={`sidebar-section-toggle-${id}`}
+        className="w-full flex items-center justify-between px-3 mb-2 group hover:opacity-100 opacity-90 transition-opacity"
+      >
+        <span
+          className="text-[9px] uppercase tracking-[0.30em] font-mono"
+          style={{ color: 'var(--bp-text-faint,#6e6e6a)' }}
+        >
+          {label}
+          {hasMark && (
+            <span className="ml-0.5" style={{ color: 'var(--bp-primary,#d9b285)' }}>™</span>
+          )}
+        </span>
+        <Icons.ChevronDown
+          size={10}
+          strokeWidth={1.6}
+          className={`transition-transform duration-300 ease-out ${open ? '' : '-rotate-90'}`}
+          style={{ color: 'var(--bp-text-faint,#6e6e6a)' }}
+        />
+      </button>
+      {open && <div className="space-y-0.5">{children}</div>}
+    </div>
   );
 };
 
+// ── Workspace selector ───────────────────────────────────────────
 const WorkspaceSelector = ({ collapsed }) => {
   const { tenant } = useBlueprint();
   const tenantName = tenant?.name || tenant?.slug || 'Workspace';
@@ -74,7 +158,7 @@ const WorkspaceSelector = ({ collapsed }) => {
       <div
         data-testid="workspace-selector"
         title={tenantName}
-        className="m-2 mb-3 flex items-center justify-center w-9 h-9 rounded-[7px]
+        className="m-2 mb-3 flex items-center justify-center w-9 h-9 rounded-[5px]
                    border border-[var(--bp-border)] bg-[var(--bp-surface-1)]
                    text-[11px] font-mono text-[var(--bp-text-secondary)]"
       >
@@ -85,68 +169,64 @@ const WorkspaceSelector = ({ collapsed }) => {
   return (
     <div
       data-testid="workspace-selector"
-      className="mx-2 mb-3 px-2.5 py-2 rounded-[8px] border border-[var(--bp-border)]
-                 bg-[var(--bp-surface-1)] flex items-center gap-2.5 transition-colors
-                 hover:border-[var(--bp-border-strong)] cursor-pointer"
+      className="mx-2 mb-3 px-3 py-2.5 rounded-[5px] border border-[var(--bp-border)]
+                 bg-[var(--bp-surface-1)] flex items-center gap-3"
     >
-      <span className="w-7 h-7 rounded-[5px] bg-[var(--bp-surface-2)] flex items-center justify-center text-[11px] font-mono text-[var(--bp-text-secondary)]">
+      <span className="w-7 h-7 rounded-[4px] bg-[var(--bp-surface-2)] flex items-center justify-center text-[11px] font-mono text-[var(--bp-text-secondary)]">
         {monogram}
       </span>
       <div className="flex-1 min-w-0">
-        <p className="text-[11.5px] text-[var(--bp-text-primary)] font-medium truncate font-body">
+        <p className="text-[11.5px] text-[var(--bp-text-primary)] font-medium truncate"
+           style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
           {tenantName}
         </p>
-        <p className="text-[9px] uppercase tracking-[0.18em] text-[var(--bp-text-muted)] font-body">
+        <p className="text-[8.5px] uppercase tracking-[0.22em] font-mono"
+           style={{ color: 'var(--bp-text-faint,#6e6e6a)' }}>
           Workspace
         </p>
       </div>
-      <Icons.ChevronsUpDown size={11} className="text-[var(--bp-text-muted)] flex-shrink-0" />
     </div>
   );
 };
 
+// ── Main Sidebar ─────────────────────────────────────────────────
 const Sidebar = () => {
-  const { t, modules, isSuperAdmin, can, impersonating } = useBlueprint();
-  const runtime = useLocaleRuntime();
+  const { isSuperAdmin, can, impersonating } = useBlueprint();
   const { collapsed, toggle } = useSidebarCollapsed();
+  const { isCollapsed: sectionIsCollapsed, toggle: toggleSection } = useSectionCollapse();
   const location = useLocation();
-
-  const moduleList = modules?.modules || [];
-  const workspaceModules = moduleList.filter((m) => m.id === 'workspace');
-  const contentModules = moduleList.filter((m) => ['library', 'moodboards', 'inspirations'].includes(m.id));
-  const intelligenceModules = moduleList.filter((m) => m.id === 'insights');
-
-  const wsRoutes = workspaceModules.flatMap((m) => m.routes)
-    // CRM Refactor™ — Leads/Clients are now stages inside /crm/accounts.
-    .filter((r) => r.to !== '/workspace/leads' && r.to !== '/workspace/clients');
-  const contentRoutes = contentModules.flatMap((m) => m.routes);
-  const intelligenceRoutes = intelligenceModules.flatMap((m) => m.routes);
-
   const inAdmin = location.pathname.startsWith('/admin');
-  const width = collapsed ? 60 : 212;
+  const width = collapsed ? 60 : 232;
+
+  const isAdmin = can('tenant:settings');
+
+  const sectionProps = useMemo(() => ({
+    collapsed,
+    onToggle: toggleSection,
+  }), [collapsed, toggleSection]);
 
   return (
     <aside
       data-testid="sidebar-nav"
       style={{ width }}
       className="relative flex-shrink-0 bg-[var(--bp-bg)] border-r border-[var(--bp-border)]
-                 flex flex-col h-full transition-[width] duration-200 ease-out"
+                 flex flex-col h-full transition-[width] duration-300 ease-out"
     >
-      {/* Monogram — pinned at the top, doubles as the expand/collapse trigger.
-          A single, silent brand mark. No subtitle, no tagline. */}
+      {/* Brand monogram — silent, doubles as collapse toggle */}
       <button
         type="button"
         onClick={toggle}
         data-testid="sidebar-brand-toggle"
-        title={collapsed ? t('common.expand', null, 'Espandi') : t('common.collapse', null, 'Riduci')}
+        title={collapsed ? 'Espandi' : 'Riduci'}
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        className={`flex items-center ${collapsed ? 'justify-center px-2' : 'justify-start gap-3 px-4'}
-                    pt-5 pb-4 border-b border-[var(--bp-border)] hover:bg-[var(--bp-surface-2)]/30
-                    transition-colors group`}
+        className={`flex items-center ${collapsed ? 'justify-center px-2' : 'justify-start gap-3 px-5'}
+                    pt-5 pb-4 border-b border-[var(--bp-border)]
+                    hover:bg-[var(--bp-surface-2)]/30 transition-colors group`}
       >
         <Brand variant="monogram" size={collapsed ? 'sm' : 'md'} />
         {!collapsed && (
-          <span className="text-[10px] tracking-[0.28em] uppercase text-[var(--bp-text-muted)] font-body opacity-0 group-hover:opacity-100 transition-opacity ml-auto">
+          <span className="text-[10px] tracking-[0.28em] uppercase font-mono opacity-0 group-hover:opacity-100 transition-opacity ml-auto"
+                style={{ color: 'var(--bp-text-muted)' }}>
             <Icons.PanelLeftClose size={13} strokeWidth={1.5} />
           </span>
         )}
@@ -155,148 +235,89 @@ const Sidebar = () => {
         )}
       </button>
 
-      <nav className={`flex-1 ${collapsed ? 'px-1.5' : 'px-2.5'} py-5 space-y-6 overflow-y-auto overflow-x-hidden`}>
-        {/* ── DASHBOARD ─────────────────────────────────────────── */}
-        <div>
-          <NavItem to="/dashboard" icon="LayoutDashboard" labelKey="nav.dashboard" end collapsed={collapsed} />
-        </div>
+      <nav className={`flex-1 ${collapsed ? 'px-1.5' : 'px-3'} py-6 space-y-7 overflow-y-auto overflow-x-hidden`}>
 
-        {/* ── EDITORIAL OPERATIONS — operational heart of the platform ─ */}
-        {can('tenant:settings') && (
-          <div>
-            <SectionLabel collapsed={collapsed}>Editorial Operations</SectionLabel>
-            <div className="space-y-0.5">
-              <NavItem to="/blueprint/editorial-calendar" icon="CalendarDays" labelKey="nav.editorialCalendar" fallback="Editorial Calendar" collapsed={collapsed} />
-              <NavItem to="/blueprint/editorial" icon="BookOpen" labelKey="nav.editorialStudio" fallback="Magazine · Market Editions" collapsed={collapsed} />
-              <NavItem to="/blueprint/markets" icon="Globe2" labelKey="nav.marketMatrix" fallback="Market Matrix · Governance" collapsed={collapsed} />
-              <NavItem to="/editorial/inbox" icon="Inbox" labelKey="nav.publishingQueue" fallback="Publishing Queue" collapsed={collapsed} />
-            </div>
-          </div>
+        {/* ── 01 · HOME ─────────────────────────────────────── */}
+        <Section id="home" label="Home" {...sectionProps} sectionCollapsed={sectionIsCollapsed('home')}>
+          <NavItem to="/dashboard"          icon="LayoutDashboard" label="Dashboard"   end collapsed={collapsed} />
+        </Section>
+
+        {/* ── 02 · DESIGN JOURNEY™ (dominante) ──────────────── */}
+        <Section id="design-journey" label="Design Journey" hasMark {...sectionProps} sectionCollapsed={sectionIsCollapsed('design-journey')}>
+          <NavItem to="/workspace/projects"    icon="Compass"     label="Projects"        collapsed={collapsed} />
+          <NavItem to="/moodboards"            icon="Layers"      label="Moodboards"      collapsed={collapsed} />
+          {isAdmin && (
+            <NavItem to="/blueprint/projects-studio" icon="Frame" label="Project Studio"  collapsed={collapsed} />
+          )}
+          <NavItem to="/inspirations/materials" icon="Boxes"      label="Materials"       collapsed={collapsed} />
+          <NavItem to="/journey/render"         icon="Camera"     label="Render"          collapsed={collapsed} soon />
+          <NavItem to="/journey/hotspots"       icon="Crosshair"  label="Hotspots"        collapsed={collapsed} soon />
+          <NavItem to="/journey/site-evolution" icon="Sun"        label="Site Evolution"  collapsed={collapsed} soon />
+          <NavItem to="/journey/documents"      icon="FileText"   label="Documents"       collapsed={collapsed} soon />
+        </Section>
+
+        {/* ── 03 · CURATORIAL ATLAS ─────────────────────────── */}
+        <Section id="curatorial-atlas" label="Curatorial Atlas" {...sectionProps} sectionCollapsed={sectionIsCollapsed('curatorial-atlas')}>
+          <NavItem to="/inspirations"               icon="Bookmark"   label="Inspirations"      collapsed={collapsed} end />
+          <NavItem to="/inspirations/brands"        icon="Sparkles"   label="Brand Mode"        collapsed={collapsed} />
+          <NavItem to="/inspirations/products"      icon="LayoutGrid" label="Product Gallery"   collapsed={collapsed} />
+          <NavItem to="/inspirations/materials"     icon="Palette"    label="Material View"     collapsed={collapsed}
+                   testid="sidebar-nav-material-view" />
+          <NavItem to="/inspirations/visual-archive" icon="FolderOpen" label="Visual Archive"   collapsed={collapsed} soon />
+          <NavItem to="/workspace/cultural-editions" icon="Globe"     label="Cultural Editions" hasMark collapsed={collapsed} />
+        </Section>
+
+        {/* ── 04 · CLIENT RELATIONS ─────────────────────────── */}
+        <Section id="client-relations" label="Client Relations" {...sectionProps} sectionCollapsed={sectionIsCollapsed('client-relations')}>
+          <NavItem to="/crm/accounts"          icon="Users"      label="Accounts"   collapsed={collapsed} />
+          <NavItem to="/crm/follow-ups"        icon="BellRing"   label="Follow-ups" collapsed={collapsed} />
+          <NavItem to="/workspace/proposals"   icon="FileSignature" label="Proposals" collapsed={collapsed} />
+          <NavItem to="/crm/archived"          icon="Archive"    label="Archived"   collapsed={collapsed} />
+        </Section>
+
+        {/* ── 05 · CONTENT STUDIO ───────────────────────────── */}
+        {isAdmin && (
+          <Section id="content-studio" label="Content Studio" {...sectionProps} sectionCollapsed={sectionIsCollapsed('content-studio')}>
+            <NavItem to="/blueprint/editorial-calendar" icon="CalendarDays" label="Editorial Calendar" collapsed={collapsed} />
+            <NavItem to="/blueprint/editorial"          icon="BookOpen"     label="Magazine"           collapsed={collapsed} />
+            <NavItem to="/content/design-stories"       icon="Quote"        label="Design Stories"     collapsed={collapsed} soon />
+            <NavItem to="/editorial/inbox"              icon="Inbox"        label="Publishing Queue"   collapsed={collapsed} />
+            <NavItem to="/blueprint/markets"            icon="Globe2"       label="Market Matrix"      collapsed={collapsed} />
+            <NavItem to="/blueprint/experience"         icon="LayoutTemplate" label="Web Presence"     collapsed={collapsed} />
+          </Section>
         )}
 
-        {/* ── WORKSPACE ─────────────────────────────────────────── */}
-        {wsRoutes.length > 0 && (
-          <div>
-            <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.workspace')}</SectionLabel>
-            <div className="space-y-0.5">
-              {wsRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
-              <NavItem to="/moodboards" icon="Layers" labelKey="nav.moodboards" collapsed={collapsed} />
-              <NavItem to="/inspirations" icon="Bookmark" labelKey="nav.inspirations" fallback="Inspirations™" collapsed={collapsed} />
-              <NavItem to="/workspace/cultural-editions" icon="Globe" labelKey="nav.culturalEditions" fallback="Cultural Editions™" collapsed={collapsed} />
-            </div>
-          </div>
-        )}
+        {/* ── 06 · STUDIO OS ────────────────────────────────── */}
+        <Section id="studio-os" label="Studio OS" {...sectionProps} sectionCollapsed={sectionIsCollapsed('studio-os')}>
+          <NavItem to="/settings/members"  icon="Users"   label="Team"          collapsed={collapsed} />
+          <NavItem to="/insights"          icon="LineChart" label="Insights"    collapsed={collapsed} />
+          {isAdmin && (
+            <>
+              <NavItem to="/settings/brand"             icon="Palette" label="Brand Studio"      collapsed={collapsed} />
+              <NavItem to="/blueprint/forms-journeys"   icon="Sparkle" label="Forms & Journeys"  collapsed={collapsed} />
+              <NavItem to="/settings/integrations"      icon="Plug"    label="Integrations"      collapsed={collapsed} />
+              <NavItem to="/settings/plan"              icon="Receipt" label="Billing"           collapsed={collapsed} />
+              <NavItem to="/settings"                   icon="Settings" label="Settings"  end    collapsed={collapsed} />
+            </>
+          )}
+        </Section>
 
-        {/* ── CRM (Relationship OS™ — single Accounts entry) ───── */}
-        <div>
-          <SectionLabel collapsed={collapsed}>CRM</SectionLabel>
-          <div className="space-y-0.5">
-            <NavItem to="/crm/accounts"    icon="Users"      labelKey="nav.crmAccounts"   fallback="Accounts"    collapsed={collapsed} />
-            <NavItem to="/crm/follow-ups"  icon="BellRing"   labelKey="nav.crmFollowUps"  fallback="Follow-ups"  collapsed={collapsed} />
-            <NavItem to="/crm/archived"    icon="Archive"    labelKey="nav.crmArchived"   fallback="Archived"    collapsed={collapsed} />
-          </div>
-        </div>
-
-        {/* ── EXPERIENCE ────────────────────────────────────────── */}
-        {can('tenant:settings') && (
-          <div>
-            <SectionLabel collapsed={collapsed}>Experience</SectionLabel>
-            <div className="space-y-0.5">
-              <NavItem to="/blueprint/experience" icon="LayoutGrid" labelKey="nav.experienceStudio" fallback="Experience Studio" collapsed={collapsed} />
-            </div>
-          </div>
-        )}
-
-        {/* ── PROJECTS ──────────────────────────────────────────── */}
-        {can('tenant:settings') && (
-          <div>
-            <SectionLabel collapsed={collapsed}>Projects</SectionLabel>
-            <div className="space-y-0.5">
-              {contentRoutes.filter((r) => r.to !== '/moodboards' && r.to !== '/library').map((r) => (
-                <NavItem key={r.to} {...r} collapsed={collapsed} />
-              ))}
-              <NavItem to="/library" icon="FolderOpen" labelKey="nav.mediaLibrary" fallback="Media Library" end collapsed={collapsed} />
-            </div>
-          </div>
-        )}
-
-        {/* ── SITO WEB — public-facing website surfaces ─────────── */}
-        {can('tenant:settings') && (
-          <div>
-            <SectionLabel collapsed={collapsed}>Sito Web</SectionLabel>
-            <div className="space-y-0.5">
-              <NavItem to="/blueprint/projects-studio" icon="Frame" labelKey="nav.projectsStudio" fallback="Projects Studio" collapsed={collapsed} />
-            </div>
-          </div>
-        )}
-
-        {/* ── FORMS & JOURNEYS ──────────────────────────────────── */}
-        {can('tenant:settings') && (
-          <div>
-            <SectionLabel collapsed={collapsed}>Forms & Journeys</SectionLabel>
-            <div className="space-y-0.5">
-              <NavItem to="/blueprint/forms-journeys" icon="Workflow" labelKey="nav.formsJourneys" fallback="Forms & Journeys" collapsed={collapsed} />
-            </div>
-          </div>
-        )}
-
-        {/* ── INTERNATIONAL ─────────────────────────────────────── */}
-        {can('tenant:settings') && (
-          <div>
-            <SectionLabel collapsed={collapsed}>International</SectionLabel>
-            <div className="space-y-0.5">
-              <NavItem to="/settings/international-presence" icon="Map" labelKey="nav.internationalPresence" fallback="International Presence" collapsed={collapsed} />
-            </div>
-          </div>
-        )}
-
-        {/* ── TEAM & INTELLIGENCE ───────────────────────────────── */}
-        <div>
-          <SectionLabel collapsed={collapsed}>Team</SectionLabel>
-          <div className="space-y-0.5">
-            <NavItem to="/settings/members" icon="Users" labelKey="nav.team" collapsed={collapsed} />
-            {intelligenceRoutes.map((r) => <NavItem key={r.to} {...r} collapsed={collapsed} />)}
-          </div>
-        </div>
-
-        {/* ── SETTINGS (admin only) ─────────────────────────────── */}
-        {can('tenant:settings') && (
-          <div>
-            <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.settings')}</SectionLabel>
-            <div className="space-y-0.5">
-              <NavItem to="/settings" icon="Settings" labelKey="nav.settings" end collapsed={collapsed} />
-              <NavItem to="/settings/brand" icon="Palette" labelKey="nav.brand" fallback="Brand Studio" collapsed={collapsed} />
-              <NavItem to="/settings/plan" icon="Receipt" labelKey="nav.billing" collapsed={collapsed} />
-              <NavItem to="/settings/integrations" icon="Plug" labelKey="nav.integrations" fallback="Integrations" collapsed={collapsed} />
-            </div>
-          </div>
-        )}
-
-        {/* ── PLATFORM (super admin only) ───────────────────────── */}
+        {/* ── PLATFORM (super-admin only) ───────────────────── */}
         {isSuperAdmin && (
-          <div>
-            <SectionLabel collapsed={collapsed}>{runtime.copy('sidebar.section.platform')}</SectionLabel>
-            <div className="space-y-0.5">
-              <NavItem to="/admin" icon="Shield" labelKey="nav.superAdmin" collapsed={collapsed} />
-            </div>
-          </div>
+          <Section id="platform" label="Platform" {...sectionProps} sectionCollapsed={sectionIsCollapsed('platform')}>
+            <NavItem to="/admin" icon="Shield" label="Super Admin" collapsed={collapsed} />
+          </Section>
         )}
       </nav>
 
-      {/* Workspace selector — pinned at the bottom. Shows the current tenant
-          and acts as a future entry point for tenant switching / workspace
-          management. */}
       <WorkspaceSelector collapsed={collapsed} />
 
-
-      {/* Edge collapse handle — pinned to the right border. Generous 16px
-          hit area, subtle 2px rail that brightens on hover. NOT hover-expand:
-          users must click to toggle. State is persisted. */}
+      {/* Edge collapse handle */}
       <button
         type="button"
         onClick={toggle}
         data-testid="sidebar-collapse-toggle"
-        title={collapsed ? t('common.expand', null, 'Espandi') : t('common.collapse', null, 'Riduci')}
+        title={collapsed ? 'Espandi' : 'Riduci'}
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         className="group absolute top-0 right-[-8px] h-full w-4 flex items-center justify-center
                    cursor-col-resize z-30"
@@ -305,11 +326,11 @@ const Sidebar = () => {
           aria-hidden="true"
           className="block w-[2px] h-12 rounded-full bg-[var(--bp-border)]
                      group-hover:bg-[var(--bp-primary)] group-hover:h-20
-                     transition-all duration-200"
+                     transition-all duration-300"
         />
         <span
           aria-hidden="true"
-          className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200
+          className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300
                      flex items-center justify-center w-5 h-5 rounded-full
                      bg-[var(--bp-bg)] border border-[var(--bp-border-strong)] shadow-[var(--bp-shadow-sm)]"
         >

@@ -1,0 +1,55 @@
+{
+  "summary": "Frontend-only validation of MOOD for DESIGN™ Sidebar Architecture v4. Logged in as demo@moodfordesign.com (super-admin), verified the complete sidebar structure, ™ discipline, collapse persistence, active states, ComingSoonPage rendering, redirects and canonical routes. Overall result: PASS — all 17 spec items verified. One minor visual discrepancy: the active-state left accent strip computes to rgb(0,201,179) (teal) instead of gold #d9b285 because the CSS variable --bp-primary is set to teal at the theme level (the code uses `var(--bp-primary,#d9b285)` so the fallback gold is shadowed). The background tint IS correctly gold rgba(217,178,133,0.05). No SaaS blue is present.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Sidebar · NavItem active accent",
+        "issue": "Active left-accent vertical strip renders TEAL rgb(0,201,179) instead of architectural gold #d9b285. Cause: CSS var --bp-primary is bound to teal at the theme root, so `bg-[var(--bp-primary,#d9b285)]` resolves to teal. The 5% background tint is correctly gold (rgba(217,178,133,0.05)). Spec mandated gold accent — currently the accent visually conflicts with the gold tint.",
+        "selector": "[data-testid='sidebar-nav-projects'] > span[aria-hidden='true']",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      { "screen": "Sidebar active state", "issues": ["Accent strip color (teal) inconsistent with gold tint — visual dissonance; consider hard-coding #d9b285 or aliasing a dedicated --bp-accent-gold variable."] }
+    ]
+  },
+  "verification_matrix": {
+    "sections_present": "PASS — sidebar-section-home, design-journey, curatorial-atlas, client-relations, content-studio, studio-os, platform all rendered",
+    "section_labels_exact_case": "PASS — Home / Design Journey™ / Curatorial Atlas / Client Relations / Content Studio / Studio OS / Platform (CSS uppercases visually; underlying text matches spec)",
+    "tm_discipline": "PASS — ™ appears ONLY on 'Design Journey™' (section label) and 'Cultural Editions™' (nav item). Sidebar innerText scan returned exactly 2 lines containing ™.",
+    "design_journey_items": "PASS — Projects → Moodboards → Project Studio (admin) → Materials → Render → Hotspots → Site Evolution → Documents (last 4 carry 'presto' badge)",
+    "curatorial_atlas_items": "PASS — Inspirations → Brand Mode → Product Gallery → Material View → Visual Archive (presto) → Cultural Editions™",
+    "content_studio_items": "PASS — Editorial Calendar → Magazine → Design Stories (presto) → Publishing Queue → Market Matrix → Web Presence (renamed from Experience Studio, route /blueprint/experience preserved)",
+    "studio_os_items": "PASS — Team → Insights → Brand Studio → Forms & Journeys → Integrations → Billing → Settings",
+    "client_relations_items": "PASS — Accounts → Follow-ups → Proposals → Archived",
+    "inspirations_not_in_design_journey": "PASS — confirmed absent in design-journey section",
+    "collapse_persistence": "PASS — toggling sidebar-section-toggle-design-journey writes {\"design-journey\":true} into localStorage key 'mood.sidebar.sections.v4'. After reload section remained collapsed (0 nav items visible).",
+    "active_state_workspace_projects": "PARTIAL — gold tint bg rgba(217,178,133,0.05) ✓ but accent rgb(0,201,179) teal (see ui_bugs)",
+    "coming_soon_pages": "PASS — /journey/render, /journey/hotspots, /journey/site-evolution, /journey/documents, /content/design-stories, /inspirations/visual-archive all render ComingSoonPage with correct Italian eyebrow ('Capitolo · X'), italic title (e.g. 'Il progetto trova la sua immagine'), body, 'Torna ai progetti' button. Corresponding sidebar items show active gold tint.",
+    "inspirations_products_redirect": "PASS — /inspirations/products → /inspirations?type=product (via <Navigate replace>)",
+    "canonical_routes_no_404_or_overlay": "PASS — 18/18 canonical routes (/dashboard, /workspace/projects, /moodboards, /inspirations[/brands|/materials], /workspace/cultural-editions, /crm/accounts, /blueprint/editorial, /blueprint/experience, /blueprint/forms-journeys, /blueprint/projects-studio, /settings[/members|/brand|/integrations|/plan], /insights) loaded without React error overlay or pageerror",
+    "sidebar_collapse_toggle": "PASS — width transitions 232 → 60 → 232 via sidebar-brand-toggle. Persisted via 'mfd_sidebar_collapsed'.",
+    "forbidden_lexicon": "PASS — no occurrence of 'Experience Studio', 'Workflow', 'Kanban', 'Ticket', 'Todo', 'Dashboard Manager', 'Asset Manager', 'Admin Content' anywhere in sidebar DOM",
+    "responsive_720x900": "PASS — sidebar renders at 60px (collapsed style) on 720px viewport. Note: one mobile reload hit a Cloudflare bot challenge (transient, unrelated to app).",
+    "page_errors": "PASS — zero pageerror events captured across all navigations"
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Decide gold-vs-teal for the active-state left accent. Either (a) hard-code `bg-[#d9b285]` on the accent span in Sidebar.jsx NavItem (line ~78), or (b) introduce a dedicated CSS var --bp-accent-gold so the theme-level --bp-primary (teal) does not shadow the gold fallback. Per spec the accent MUST be gold #d9b285."
+  ],
+  "critical_code_review_comments": [
+    "Sidebar.jsx line 78: `bg-[var(--bp-primary,#d9b285)]` — the CSS fallback only fires when --bp-primary is undefined. In the current theme --bp-primary resolves to teal #00c9b3, so the gold-fallback is dead code. Use an explicit gold token to enforce the architectural color.",
+    "ComingSoonPage.jsx: clean editorial implementation; Italian copy and slug-driven content are correct. Consider adding `aria-current` semantics for the active sidebar entry to improve accessibility.",
+    "Sidebar.jsx Section component: when sidebar is collapsed (icon-mode) the section toggle button is not rendered (Section returns just a separator) — this is fine for UX but means automated tests must expand the sidebar before exercising toggle persistence. Documented for next testers."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a", "frontend": "94% (16/17 spec items full PASS, 1 PARTIAL on accent color)" },
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super-admin) — verified working",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Sidebar v4 architecture validated. localStorage keys to clear before testing collapse behaviour: 'mood.sidebar.sections.v4' (per-section collapse state) and 'mfd_sidebar_collapsed' (global sidebar width). When sidebar is in icon-mode, section toggle buttons are hidden — expand first. Demo super-admin has both isSuperAdmin and tenant:settings capability so admin-gated items (Project Studio, full Content Studio section, Brand Studio/Forms & Journeys/Integrations/Billing/Settings in Studio OS, and Platform section) are visible. ™ symbol present in DOM exactly twice in sidebar: 'Design Journey™' and 'Cultural Editions™'. The only outstanding spec mismatch is the active accent color (teal vs gold) — see action_items.",
+  "rca of the issue": "Active-state accent color: NavItem at /app/frontend/src/components/layout/Sidebar.jsx line 78 declares className `bg-[var(--bp-primary,#d9b285)]`. The CSS variable --bp-primary is globally bound to the theme's teal #00c9b3 (visible also on 'Cultural Edition™' CTA button and ™ marks). Since the var IS defined, the #d9b285 fallback never activates. Spec demands gold accent. Mitigation: replace with `bg-[#d9b285]` literal or introduce a separate --bp-accent-gold token in the design system root and use it on accent strip + ™ marks for consistency."
+}
