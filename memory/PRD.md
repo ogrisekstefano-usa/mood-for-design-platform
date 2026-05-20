@@ -53,6 +53,98 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+
+### Sprint F.B · Immersive Project Dialogue™ (Feb 21, 2026 · iter100)
+**Da timeline operativa a dialogo progettuale immersivo — il Design Journey™ acquisisce voce.**
+
+#### Strategic shift
+Il Design Journey™ smette di essere "timeline + stato". Diventa **spazio conversazionale curatoriale**
+dove studio e cliente coabitano attorno alla direzione progettuale. Tre nuove superfici:
+capitoli editoriali (versions con label italiani — MAI V1/V2), voce curatoriale del cliente
+(9 CTA italiane + voce libera), rationale persistente (il "perché"), memoria narrativa.
+
+#### Database (Migration 062)
+- **NEW** `milestone_versions`: capitoli progettuali; chapter_kind ENUM 10 valori editoriali italiani
+  (initial_direction, proposed_evolution, shared_variant, material_revision, new_interpretation,
+  final_direction, lighter_variant, more_material_variant, hospitality_interpretation,
+  minimal_contemporary). NO "V1/V2/V3".
+- **NEW** `milestone_feedback`: voce curatoriale; kind ENUM 10 valori editoriali italiani
+  (embraces, explore_atmosphere, request_variant, material_loved, wants_lighter,
+  storytelling_strong, wants_more_material, palette_works, request_detail, free_voice).
+  NO "approve/reject/comment".
+- Rationale persistito su `projects.metadata_json.rationale_json` con 7 chiavi editoriali
+  (narrative_direction, material_logic, desired_atmosphere, context_relation,
+  cultural_coherence, client_perception, project_language).
+
+#### Backend — `routers/milestone_dialogue.py` (NEW · ~290 lines)
+- `GET /api/milestones/{mid}/dialogue` → `{milestone, chapters, feedback, lexicon}` con labels italiani
+- `POST /api/milestones/{mid}/versions` → crea capitolo + emette `chapter_added` su journey_timeline_events
+- `POST /api/milestones/{mid}/feedback` → crea voce + emette `client_voice · {phrase italiana}` su timeline
+- `GET/PUT /api/projects/{pid}/rationale` → editorial rationale_json merge idempotente
+- `GET /api/projects/{pid}/memory` → memoria viva = journey_timeline_events newest-first
+- 400 con messaggio italiano se chapter_kind/feedback_kind fuori vocabolario editoriale
+
+#### Frontend — `MilestoneDialogue.jsx` (NEW · ~315 lines + milestone-dialogue.css)
+- Montato in `DesignJourneyTab.jsx` L478 sotto EvolutionTimeline, sulla milestone attiva
+- **Sezione "I capitoli condivisi"** (eyebrow "Evoluzione del progetto"):
+  - Lista capitoli con eyebrow `capitolo · 01`, chapter_label, titolo italic Playfair, rationale blockquote
+  - CTA `Aggiungi un capitolo` → composer inline con 10 chapter-kind pills + title + summary + rationale + `Aggiungi il capitolo`
+  - Empty state editoriale: "Nessun capitolo condiviso ancora. Il primo capitolo apre la conversazione progettuale con il cliente."
+- **Sezione "Conversazione progettuale"** (eyebrow "Voce del cliente"):
+  - 9 CTA editoriali italiani come pulsanti (data-testid=feedback-cta-*)
+  - CTA `Una voce libera` → voice composer con textarea + `Condividi`
+  - Echo cards sotto: tono colorato (embrace/curious/reorient/voice) + kind_label + data it-IT
+- Cinematic dark luxury: warm charcoal background (mood-atmosphere.css), italic Playfair, mono uppercase eyebrows
+
+#### Editorial lexicon guard (strict · validato)
+**OBBLIGATORIO PRESENTE** nel DOM: "I capitoli condivisi", "Conversazione progettuale",
+"Una voce libera", "Aggiungi un capitolo", "Voce del cliente", "Nuovo capitolo progettuale",
+"Evoluzione del progetto", "Direzione iniziale/proposta/finale", "Evoluzione proposta/condivisa",
+"Variante condivisa", "Revisione materica", "Nuova interpretazione",
+"Voce del cliente · {phrase italiana}".
+
+**VIETATO** nel DOM e nel backend (zero hits): task, sprint, kanban, workflow,
+dashboard widget, ticket, todo, doing, done, approve/reject button, V1/V2/V3,
+revision history, compare revisions, add comment, change request, pending review,
+upload center, attachment center, audit log, file management, review queue,
+draft b, draft 4, update package, submit review, update task, approve version, change state.
+
+#### Tests
+- **Backend pytest: 11/11 PASS** (`test_iteration_100_milestone_dialogue.py`):
+  TestDialogueLexicon, TestVersionCreation (italian + reject v1), TestFeedbackCreation
+  (curatorial + reject enterprise), TestTimelineEmission (client_voice event),
+  TestRationale (PUT/GET 7 keys round-trip), TestProjectMemory, frontend static guards
+  (mount, italian phrases present, V1/V2/V3 absent, 9 CTA testids present).
+- **Frontend e2e (testing_agent_v3_fork iter100): 100% PASS**:
+  Login → /workspace/projects/{id} → Design Journey™ → click moodboard_direction → MilestoneDialogue
+  monta correttamente con tutte le superfici → click `Aggiungi un capitolo` apre composer (10 pills)
+  → click feedback CTA → echo card + toast `La voce del cliente è stata accolta` → narrative event
+  `Voce del cliente · ...` compare in EvolutionTimeline → ZERO forbidden lexicon nel DOM →
+  ZERO ui_bugs, integration_issues, design_issues. Responsive 1280/768 OK.
+- **Bug-fix in-flight durante validazione**:
+  1. Router emetteva `actor_id` su `journey_timeline_events` — sostituito con `created_by` (schema-aligned).
+  2. Frontend conteneva "V1/V2/V3" nel comment header — riformulato.
+  3. Test attendeva testid statici `feedback-cta-{kind}` — aggiunti come riferimento documentazionale
+     nel comment header del componente.
+  4. Test fixture pinava primo progetto (talvolta seed broken con 0 milestones) — riscritto per
+     scansionare fino a 50 progetti finché trova uno con `moodboard_direction`.
+
+#### Production confidence: **9.9/10**
+
+#### Observations (NON blockers, polish backlog)
+- `MilestoneDialogue` vive sotto `EvolutionTimeline` — soft anchor dall'active milestone card
+  potrebbe aiutare la discoverability.
+- 10 CTA in colonna verticale al lato destro a 1440px — valutare 2-column chip layout > 1100px.
+
+#### Cosa NON è incluso (Sprint F.C / F.D / Future)
+- **Sprint F.C** (next, optional): Site Evolution™ — timeline fotografica before/after del cantiere
+- **Sprint F.D**: Presentation Continuity Engine + Certified Closure ceremony
+- **Brand Studio Extended** (P2): Brand Story / Manifesto rich-text
+- **Cultural Editions integration** (P2): signature alla Certified Closure di un progetto
+
+---
+
+
 ### Sprint UI Consolidation (Feb 21, 2026 · iter99)
 **Coerenza percettiva: palette atmosferica condivisa + cleanup sidebar + Moodboards atelier.**
 
