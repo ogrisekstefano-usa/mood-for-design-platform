@@ -97,11 +97,13 @@ const Tile = ({ item, onAdd, onPreview, onToggleStage, staged }) => {
 
   return (
     <div className={`ci-tile ${staged ? 'is-staged' : ''}`} data-testid={`ci-tile-${item.id}`}>
-      <button
-        type="button"
+      <div
+        role="button"
+        tabIndex={0}
         className="ci-tile__media"
         onClick={() => onPreview?.(item)}
         onDoubleClick={() => onAdd?.(item)}
+        onKeyDown={(e) => { if (e.key === 'Enter') onAdd?.(item); }}
         data-testid={`ci-tile-media-${item.id}`}
         title="Click: anteprima · Doppio click: porta nel moodboard"
       >
@@ -154,7 +156,7 @@ const Tile = ({ item, onAdd, onPreview, onToggleStage, staged }) => {
           title={staged ? 'Rimuovi dal tavolo' : 'Aggiungi al tavolo'}>
           {staged ? <Icons.Check size={11} /> : <Icons.Bookmark size={11} />}
         </button>
-      </button>
+      </div>
     </div>
   );
 };

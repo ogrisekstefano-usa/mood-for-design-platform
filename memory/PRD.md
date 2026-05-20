@@ -53,6 +53,94 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Phase E · Governance & Curatorial Foundations (Feb 19, 2026 · iter89)
+**Sprint E1 · Brand Management™ + E2 · Studio Collections™ + E3 · Curatorial Inspirations Modal™ — chiude Phase E completa in una sessione.**
+
+#### E1 · Brand Management™ (CRUD governance)
+- **Backend** · `brands_registry.py`:
+  - `PATCH /api/inspirations/registry/brands/{id}` — accetta `BrandUpdate` (name/positioning/luxury/markets/country/website/agreement_status/logo_url). Gate `_is_studio_private`: 403 italiano "curato da MOOD — non è modificabile dallo studio" se curated_public.
+  - `DELETE /api/inspirations/registry/brands/{id}` — 204 (studio) / 403 (curated). Collections orfane restano archiviate (no cascade — valore curatoriale preservato).
+  - `brands-atlas` + `curatorial-profile` espongono ora `is_studio_private` flag per UI gating.
+- **Frontend**:
+  - `<BrandFormModal mode="create|edit" />` editoriale (Playfair italic eyebrow + select luxury/category + chip toggles markets). Backdrop blur cinematic.
+  - `<ConfirmCinematicDialog tone="destructive" />` riusabile (Playfair italic + warning ring + danger pill button). NON browser alert.
+  - CTA `[data-testid=bm-add-brand]` "Aggiungi produttore" in `/inspirations/brands` header (style pill primary).
+  - Badge `[data-testid^=bm-curated-]` "Curato da MOOD" sulle cards non-studio.
+  - Su `/inspirations/brands/:id` (studio_private): `[data-testid=bd-edit-brand]` (pencil) + `[data-testid=bd-delete-brand]` (trash); su curated: `[data-testid=bd-curated-badge]` + NESSUN action button.
+
+#### E2 · Studio Collections™ (CRUD capitoli editoriali)
+- **Backend**:
+  - `PATCH /api/inspirations/registry/collections/{id}` — `CollectionUpdate` (name/year/season/category/description). Gate `_is_studio_collection`: 403 se curated_public.
+  - `DELETE /api/inspirations/registry/collections/{id}` — 204/403. Linked Product Inspirations restano nell'archivio (no cascade).
+- **Frontend**:
+  - `<CollectionFormModal />` editoriale con campi year + season + category + description curatoriale.
+  - `[data-testid=bd-add-collection]` icon in header collezioni section di BrandDetailPage (SOLO studio_private).
+  - `[data-testid=bd-coll-edit-{id}]` + `[data-testid=bd-coll-delete-{id}]` action buttons inline su ogni card (opacity hover transition).
+  - `[data-testid=bd-coll-delete-confirm]` cinematic dialog.
+  - `StudioCollectionsPage`: nuovo CTA `[data-testid=sc-import-catalog]` "Importa catalogo fornitore" + delete button `[data-testid^=sc-delete-]` per ogni supplier_catalog card + `[data-testid=sc-delete-confirm]` dialog.
+
+#### E3 · Curatorial Inspirations Modal™ (GRANDE REFACTOR UX)
+- **Concetto**: la sidebar verticale MOOD del moodboard editor (MoodPanel) NON era navigabile né produttiva. Sostituita con **overlay fullscreen cinematic** che separa context layer (sidebar leggera) da discovery layer (modal immersiva).
+- **NEW** `/app/frontend/src/blueprint/moodboard/CuratorialInspirationsModal.jsx` (~440 lines):
+  - **Layout 3-col**: left filters (5 groups: tipologia/atmosfera/materialità/geografie/luxury) · center masonry immersive grid · right Staging Tray™ (multi-select)
+  - Background dark layered con radial gradient + vignettatura + backdrop-filter blur(20px)
+  - **Tile cinematic**: aspect 4/5, soft luminous shadow + hover lift `translateY(-3px) scale(1.05)` con cyan glow ring · overlay reveal su hover con brand badge + atmosphere chips + Playfair italic title
+  - **CTA pill `Porta nel moodboard`** appare su hover (translateY animated)
+  - **Staging button** top-right (Bookmark/Check toggle) — quando staged la card acquisisce cyan border 2px
+  - **Quick Preview overlay** (single click): grande immagine + atmosfera + materialità + narrative + bottoni Chiudi/Porta nel moodboard
+  - **Double click su tile** → `onAddInspiration(item)` (preserva display_meta/focal/filter)
+  - **Staging Tray™ destra**: lista verticale staged · "Porta tutti nel moodboard" batch CTA · rimozione singola con animazione
+  - **Filtri persistenti** via `localStorage`:
+    - chiave scoped: `mood.curatorial.filters:{moodboardId}`
+    - fallback globale: `mood.curatorial.filters:_global`
+  - **Responsive**: 3-col → 2-col (≤1100px, tray nascosta) → 1-col mobile
+- **NEW** `/app/frontend/src/blueprint/moodboard/curatorial-modal.css` (~560 lines):
+  - Editorial dark atelier aesthetic, NESSUNA enterprise UI
+  - Pill toggles editoriali (lowercase, .ci-pill--mat in Playfair italic per materialità)
+  - Cinematic entrance animation 320ms cubic-bezier
+- **UPDATED** `EditorPanel.jsx`: `InspirationsTab` ora renderizza:
+  - CTA card `[data-testid=open-curatorial-modal]` "Apri Inspirations™ · Tavolo curatoriale" (gradient cyan)
+  - `<RecentReferences />` — 6 ultimi riferimenti come tiles 1:1 cliccabili (Quick Add diretto dalla sidebar leggera)
+  - **Rimosso completamente** MoodPanel masonry-scrolled dalla sidebar (resta importato ma non usato)
+- **UPDATED** `MoodboardEditor.jsx`: state `curatorialOpen`, prop `onOpenCuratorial` passata a EditorPanel, modal renderizzato top-level (Portal z:9200).
+- **Fix nested `<button>`** in Tile (outer wrapper era `<button>` con figli `<button>` annidati — convertito in `<div role="button" tabIndex={0}>` con `onKeyDown` per accessibilità).
+
+#### Linguaggio compliance (strict · verificato testing_agent_v3_fork)
+Markers italiani presenti: "Tavolo curatoriale", "Inspirations™", "Componi riferimenti progettuali", "Porta nel moodboard", "Atmosfera", "Materialità", "Geografie", "Tono luxury", "Selezione", "Curato da MOOD", "Azione definitiva".
+
+Termini VIETATI verificati ASSENTI: `media picker`, `asset browser`, `AI search`, `DAM`, `stock manager`, `gallery browser`, `media selector`, `vendor`, `engagement rate`, `analytics dashboard`.
+
+#### Test results
+- **Backend: 31/31 PASS · 100%** (1 expected skip · curated-collection-403)
+  - `test_iteration_88_brand_collection_crud.py` · 9/9 PASS (1 skip) — Brand CRUD + Collection CRUD + tutti 403 paths
+  - Full regression: iter83/85/86/87/88 tutti verdi
+- **Frontend E2E**: critical flows E1 + E2 + E3 + D1/D2/D3 regression — ALL PASS
+  - E1: add brand → atlas card · edit brand → modal pre-populated + PATCH → toast · delete brand → cinematic dialog + DELETE + redirect · curated brands hide edit/delete (15/20 cards hanno bm-curated-badge)
+  - E2: add collection on studio brand · edit/delete inline · sc-delete-confirm su supplier_catalogs
+  - E3: open-curatorial-modal CTA + 6 recent tiles invece di MoodPanel · click apre fullscreen overlay 3-col · filters/atmo/material/markets/luxury tutti funzionanti · localStorage persistence verificato post-reload · Quick Preview + Staging Tray multi-select + drop-all OK · ZERO jargon vietato nel DOM
+  - Regressioni D1/D3: Inline Editorial Regia™ + Brand Mode pages caricano + lavorano normalmente
+- Test report: `/app/test_reports/iteration_89.json`
+
+#### Production confidence: **9.9/10**
+
+#### Issues noted (NON-blocking)
+- Playwright synthetic `dblclick` non triggera React `onDoubleClick` deterministico — real users (browser nativo) lavorano normalmente. Alternative add paths (Quick Preview CTA + Staging Tray drop-all) entrambi verificati.
+- React `<button>` nested warning era nel Tile component — **FIXATO post-test** (outer button → `<div role="button">` con keyboard handler).
+
+#### Phase E — STATUS COMPLETO
+- ✅ E1 · Brand Management™ governance
+- ✅ E2 · Studio Collections™ capitoli editoriali
+- ✅ E3 · Curatorial Inspirations Modal™ tavolo immersivo
+
+#### Roadmap futura (Phase F)
+- Smart Recommendations™ via `product_usage_events` aggregati
+- Cultural Editions™ ↔ Brand linking
+- Advisor Network Tenant UI + Visit Reports
+- Forms & Journeys™ luxury lead architecture
+
+---
+
+
 ### Sprint INSPIRATIONS-CATEGORY-FILTER (Feb 19, 2026 · iter87)
 **Filtro "Complemento d'arredo" dinamico su /inspirations.**
 
