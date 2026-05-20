@@ -53,6 +53,39 @@ Each editor displays a **"Controls public experience: X"** traceability chip.
 
 ## Completed Sessions
 
+### Sprint Journey Continuity™ Phase 2 (Feb 21, 2026 · iter96)
+**Satellite Context Expansion · Milestone Immersion · Editorial Vocabulary Refinement.**
+
+#### Strategic shift
+La continuità mentale del sistema si estende ai moduli satellite principali. Non vengono introdotti engine o azioni: la `JourneyContextHeader™` resta **atmosferica**, mai operativa. MOOD inizia a sembrare un unico ambiente continuo anche quando il designer apre Material View, Product Gallery o Inspirations.
+
+#### Frontend
+- **JourneyContextHeader™** (`/app/frontend/src/components/journey/JourneyContextHeader.jsx`):
+  - Ora risolve il contesto in due modi: (1) props espliciti `entityType`/`entityId`, (2) URL `?project=<id>` come fallback ambientale.
+  - **Nuovo vocabolario cinematico**: `Evoluzione in corso`, `Direzione presentata`, `Direzione approvata`, `Revisione richiesta`, `Chiusa` (al posto delle etichette base usate nelle transizioni interne al Journey).
+  - **Garanzia atmosferica**: NO `<button>`, NO `onClick`, NO quick-status. Solo `<Link>` (project + back-to-journey).
+- **Montata in 4 moduli satellite**:
+  - `MoodboardEditor.jsx` (già da iter95)
+  - `MaterialViewPage.jsx` (`/inspirations/materials`)
+  - `ProductGalleryPage.jsx` (`/inspirations/products/:productId`)
+  - `InspirationsPage.jsx` (`/inspirations`)
+- **Continuità di navigazione**: `DesignJourneyTab.jsx` ora appende `?project=<id>&from=journey` a tutti i `linked_route` quando l'utente clicca "Apri <milestone>". Il satellite reads it e renderizza la strip.
+
+#### Milestone Immersion™ (CSS-only, GPU-safe)
+- `.dj-rail__list::before` — **spina architettonica verticale** sottile lungo le 10 pietre miliari (gradient verticale che svanisce in alto/basso).
+- `.dj-rail__item.is-current .dj-rail__btn::before` — **accento dorato architettonico** sulla milestone attiva (2px wide, gradient verticale gold).
+- `dj-cinematic-fade` keyframe (460ms cubic-bezier ease) applicato a `dj-focus__head`, `dj-focus__hero`, `dj-inline`, `dj-focus__transitions`. Triggera al cambio milestone via `key={active?.id}` sul `FocusPanel`.
+- `prefers-reduced-motion` guard rispetta gli utenti che disattivano le animazioni.
+- Focus title scalato 32px → **42px italic** Playfair, descrizione passata a italic editorial prose.
+
+#### Editorial language guard
+Riconfermato vietato in tutta la UI satellite: `task`, `sprint`, `kanban`, `workflow`, `dashboard`, `ticket`, `todo`, `doing`, `done`, `quick action`, `admin toolbar`, `module state`, `tool switch`, `asset uploaded`, `status updated`, `entity modified`.
+
+#### Tests
+- **Backend**: 34/34 pass — iter94 (11) + iter95 (13) + iter96 (10 static JSX/CSS guards).
+  - `test_iteration_96_continuity_phase2.py`: URL-based JCH resolution, Phase 2 vocabulary, NO inline actions/buttons, mounted in 4 satellites, journey CTA appends `?project=&from=journey`, FocusPanel keyed for immersion, architectural spine + gold halo + cinematic fade + reduced-motion present.
+- **Frontend**: 14/14 acceptance criteria pass (Playwright `iteration_96.json`). Zero forbidden lexicon, zero pageerror, atmospheric strip verified, navigation continuity verified, milestone immersion fade observed.
+
 ### Sprint Journey Continuity™ + Absorption™ + Full Width Refactor (Feb 21, 2026 · iter95)
 **UX/architectural consolidation — non nuove feature, ma percezione di ecosistema continuo.**
 
