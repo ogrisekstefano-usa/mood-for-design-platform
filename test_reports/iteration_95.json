@@ -1,0 +1,24 @@
+{
+  "summary": "Frontend e2e validation of Sprint Journey Continuity™ + Journey Absorption™ + Full-Width Refactor (iteration 95). All 12 acceptance criteria PASS. Full-bleed Journey environment confirmed (min-h-screen, no max-w-6xl). Journey absorption header renders correctly with project title 'Apartment — Stefano', editorial italian progress narrative ('2 pietre miliari completate · ora Moodboard Direction™'), and advisor strip with 'Seguito da Elizabeth Whitcomb'. Overview tab cleanup verified: 'Sintesi operativa' string COMPLETELY ABSENT from DOM; boxed layout (max-w-6xl mx-auto) returns; StrategicDirectionCard only. Tab routing clean: no ?tab for journey, ?tab=overview etc. dj-shell computed style: border 0px none, border-radius 0px (full-bleed CSS confirmed). JourneyContextHeader™ renders below moodboard editor toolbar showing project name → 'Moodboard Direction™' → 'In lavorazione' pill with working jch-project-link and jch-back-to-journey shortcut. Regression iter94: 10 milestones in dj-rail, click on dj-rail-item-moodboard_direction switches focus, 2 status transition buttons available. No horizontal overflow at 720w viewport. No pageerrors during tab switching. Forbidden lexicon scan: NONE of [task, sprint, kanban, workflow, dashboard, ticket, todo, doing, done, asset uploaded, status updated, entity modified, admin toolbar, module state, tool switch] appears in either project-detail/overview or moodboard editor DOM.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_95.json"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Hydration warning logged by veng instrumentation: a <span> with x-component='option' is injected inside <select><option>...</option></select> in ProjectDetailPage.jsx line 891 — appears to be tag-instrumentation artifact (x-source-editable=false, data-ve-dynamic=true), NOT a real bug introduced by this iteration. It also exists on prior iterations. Non-blocking but worth flagging to E1 if veng instrumentation is theirs to tune.",
+    "ProjectDetailPage.jsx is ~1250 lines — at the threshold of the 700 LOC code-review guideline. Suggest splitting tab components (InspirationsTab/MaterialsTab/ProposalsTab/ConversationsTab/TimelineTab/StrategicDirectionCard) into separate files in a follow-up refactor.",
+    "Line 1043: ComposeProposalWizard uses 'market' which is undefined in StrategicDirectionCard scope (should be brief?.market only). Will throw ReferenceError if user clicks 'Componi proposta' when brief.market is undefined. Pre-existing, not introduced by iter 95."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (frontend-only run)", "frontend": "100% (12/12 acceptance criteria)"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (verified)",
+  "seed_data_creation": "None — used existing demo project 79d96981-1ef4-4052-ae27-ff1252e00f3c and moodboard cdd8478a-6cf5-442e-be4d-52c37a68a84a",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "When testing the JourneyContextHeader™ on /moodboards/<id>, allow at least 5-6 seconds after navigation for auth cookie propagation + /api/journeys/context/by-entity to resolve. A 4.5s wait was insufficient on a fresh tab the first time, but the strip rendered correctly after a longer wait (verified in screenshot iter95_final). The JCH gracefully renders nothing when ctx.linked=false — no fallback. Iter 95 Sprint approved end-to-end.",
+  "rca of the issue": "n/a — no functional issues found. All twelve acceptance criteria from the review_request validated against the live preview with super_admin credentials."
+}

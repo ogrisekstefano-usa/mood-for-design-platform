@@ -305,7 +305,7 @@ const EvolutionTimeline = ({ events }) => {
 
 
 // ─── Main component ────────────────────────────────────────────────
-const DesignJourneyTab = ({ projectId }) => {
+const DesignJourneyTab = ({ projectId, project }) => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -332,6 +332,28 @@ const DesignJourneyTab = ({ projectId }) => {
     () => data?.milestones?.find(m => m.id === activeId) || null,
     [data, activeId],
   );
+
+  // Journey Absorption™ — soft progress narrative in editorial italian.
+  // No percentages. No "X% complete". Only milestone-counted prose.
+  const progressNarrative = useMemo(() => {
+    if (!data?.milestones?.length) return null;
+    const ms = data.milestones;
+    const total = ms.length;
+    const completed = ms.filter(m =>
+      ['approved', 'closed'].includes(m.status)).length;
+    const inProgress = ms.find(m =>
+      ['in_progress', 'presented', 'revision_requested', 'partially_approved']
+        .includes(m.status));
+    const journeyClosed = data.journey?.overall_status === 'closed';
+
+    if (journeyClosed) return 'Chiusura certificata · capitolo concluso';
+    if (completed === 0 && !inProgress) return 'Il viaggio è appena iniziato';
+    if (completed === 0 && inProgress) return `Direzione in avvio · ${inProgress.title}`;
+    if (completed === total) return 'Tutte le pietre miliari sono state approvate';
+    const noun = completed === 1 ? 'pietra miliare completata' : 'pietre miliari completate';
+    if (inProgress) return `${completed} ${noun} · ora ${inProgress.title}`;
+    return `${completed} ${noun}`;
+  }, [data]);
 
   const onPick = (mid) => setActiveId(mid);
 
@@ -387,13 +409,41 @@ const DesignJourneyTab = ({ projectId }) => {
     );
   }
 
+  const designer = project?.assigned_designer;
+
   return (
     <div className="dj-shell" data-testid="dj-shell">
-      <header className="dj-shell__head">
-        <p className="dj-shell__eyebrow">Design Journey™</p>
-        <h1 className="dj-shell__title">
-          <em>L'evoluzione progettuale di questo progetto</em>
-        </h1>
+      <header className="dj-shell__head" data-testid="dj-absorption-header">
+        <div className="dj-shell__head-row">
+          <div className="dj-shell__head-main">
+            <p className="dj-shell__eyebrow">Design Journey™</p>
+            <h1 className="dj-shell__title" data-testid="dj-project-title">
+              <em>{project?.title || 'Progetto'}</em>
+            </h1>
+            {progressNarrative && (
+              <p className="dj-shell__narrative" data-testid="dj-progress-narrative">
+                {progressNarrative}
+              </p>
+            )}
+          </div>
+          {designer && (
+            <aside className="dj-shell__advisor" data-testid="dj-advisor-strip">
+              {designer.avatar_url && (
+                <img
+                  src={designer.avatar_url}
+                  alt={designer.first_name || ''}
+                  className="dj-shell__advisor-avatar"
+                />
+              )}
+              <div className="dj-shell__advisor-meta">
+                <span className="dj-shell__advisor-eyebrow">Seguito da</span>
+                <span className="dj-shell__advisor-name">
+                  {designer.first_name} {designer.last_name || ''}
+                </span>
+              </div>
+            </aside>
+          )}
+        </div>
       </header>
 
       <div className="dj-body">

@@ -355,6 +355,105 @@ def get_timeline(jid: str, ctx=Depends(get_tenant_context)):
     return {"items": [_slim(r) for r in rows]}
 
 
+@router.get("/journeys/context/by-entity")
+def journey_context_by_entity(
+    entity_type: str,
+    entity_id: str,
+    ctx=Depends(get_tenant_context),
+):
+    """Journey Continuity™ context lookup.
+
+    Lightweight resolver used by satellite modules (Moodboards, Materials,
+    Documents, Render) to render the Journey Context Header™:
+
+        Stai attraversando
+        {project.title}
+        {milestone.title} · {status_label}
+
+    Supported entity_type values:
+      • 'moodboard'  → resolves the moodboard's project_id, then maps to
+                       the 'moodboard_direction' milestone of that journey.
+      • 'project'    → resolves the journey's current milestone (fallback
+                       used by Materials/Documents/Render which live at
+                       project-scope, not entity-scope).
+
+    Returns 200 with `{linked: false, …}` (NEVER 404) when the lookup
+    can't resolve — satellite modules render nothing without breaking.
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+
+    project_id: Optional[str] = None
+    target_milestone_type: Optional[str] = None
+
+    et = (entity_type or "").lower().strip()
+    if et == "moodboard":
+        rows = (c.table("moodboards").select("id, project_id, title")
+                .eq("id", entity_id).eq("tenant_id", tid)
+                .limit(1).execute().data or [])
+        if not rows:
+            return {"linked": False, "reason": "moodboard_not_found"}
+        project_id = rows[0].get("project_id")
+        target_milestone_type = "moodboard_direction"
+    elif et == "project":
+        project_id = entity_id
+        target_milestone_type = None  # use journey.current_milestone_id
+    elif et == "material":
+        project_id = entity_id  # caller passes project_id for project-scoped lookup
+        target_milestone_type = "material_direction"
+    elif et == "document":
+        project_id = entity_id
+        target_milestone_type = "technical_package"
+    elif et == "render":
+        project_id = entity_id
+        target_milestone_type = "final_presentation"
+    else:
+        return {"linked": False, "reason": "unsupported_entity_type"}
+
+    if not project_id:
+        return {"linked": False, "reason": "no_project_link"}
+
+    # Resolve project (lightweight projection)
+    p_rows = (c.table("projects").select("id, title, status")
+              .eq("id", project_id).eq("tenant_id", tid)
+              .limit(1).execute().data or [])
+    if not p_rows:
+        return {"linked": False, "reason": "project_not_found"}
+    project = p_rows[0]
+
+    # Resolve journey
+    j_rows = (c.table("design_journeys").select("*")
+              .eq("project_id", project_id).eq("tenant_id", tid)
+              .limit(1).execute().data or [])
+    if not j_rows:
+        return {
+            "linked": False,
+            "reason": "journey_not_initialized",
+            "project": _slim(project),
+        }
+    journey = j_rows[0]
+
+    # Resolve milestone
+    if target_milestone_type:
+        m_rows = (c.table("journey_milestones").select("*")
+                  .eq("journey_id", journey["id"]).eq("tenant_id", tid)
+                  .eq("milestone_type", target_milestone_type)
+                  .limit(1).execute().data or [])
+    else:
+        cur_id = journey.get("current_milestone_id")
+        m_rows = (c.table("journey_milestones").select("*")
+                  .eq("id", cur_id).eq("tenant_id", tid)
+                  .limit(1).execute().data or []) if cur_id else []
+    milestone = m_rows[0] if m_rows else None
+
+    return {
+        "linked":    bool(milestone),
+        "project":   _slim(project),
+        "journey":   {"id": journey["id"], "overall_status": journey.get("overall_status")},
+        "milestone": _slim(milestone) if milestone else None,
+    }
+
+
 @router.post("/journeys/milestones/{mid}/open")
 def open_milestone(mid: str, ctx=Depends(get_tenant_context)):
     """Resolve the 'Apri' CTA target.

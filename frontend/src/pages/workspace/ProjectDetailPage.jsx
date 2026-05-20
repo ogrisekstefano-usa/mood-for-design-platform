@@ -1119,6 +1119,104 @@ const ProjectDetailPage = () => {
   }
   if (!project) return null;
 
+  // Journey Continuity™: when Design Journey™ is the active tab, the page
+  // becomes a full-bleed environment — no boxed admin container, no
+  // duplicated project header (the Journey absorbs project identity).
+  const isJourney = tab === 'journey';
+
+  // Project header (status badge · title · advisor) — rendered only when
+  // NOT on the Journey tab. The Journey owns its own absorption header.
+  const ProjectIdentityHeader = (
+    <div className="flex items-start justify-between gap-6 mb-10 flex-wrap">
+      <div className="min-w-0">
+        <div className="flex items-center gap-3 mb-3">
+          <StatusBadge status={project.status} t={t} kind="projects" />
+          {project.project_type && (
+            <span className="bp-caption text-[var(--bp-text-muted)] uppercase tracking-[0.15em]">
+              {project.project_type}
+            </span>
+          )}
+        </div>
+        <h1 className="bp-h1 text-[var(--bp-text-primary)] font-light">{project.title}</h1>
+        {project.client_email && <p className="bp-body text-[var(--bp-text-muted)] mt-3">{project.client_email}</p>}
+      </div>
+      {project.assigned_designer && (
+        <div data-testid="assigned-designer-card"
+             className="flex items-center gap-4 bg-[var(--bp-surface-1)] border border-[var(--bp-border)] px-5 py-4 min-w-[280px]">
+          {project.assigned_designer.avatar_url && (
+            <img src={project.assigned_designer.avatar_url}
+                 alt={project.assigned_designer.first_name}
+                 className="w-12 h-12 rounded-full object-cover" />
+          )}
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-primary)] font-body font-semibold mb-0.5">
+              {t('workspace.followed_by') || 'Seguito da'}
+            </p>
+            <p className="font-heading text-[var(--bp-text-primary)] text-base truncate">
+              {project.assigned_designer.first_name} {project.assigned_designer.last_name || ''}
+            </p>
+            {project.assigned_designer.role_label && (
+              <p className="text-[var(--bp-text-muted)] text-xs font-body truncate">
+                {typeof project.assigned_designer.role_label === 'string'
+                  ? project.assigned_designer.role_label
+                  : (project.assigned_designer.role_label._default || '')}
+              </p>
+            )}
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <span className={`w-1.5 h-1.5 rounded-full ${
+                project.assigned_designer.online_status === 'available' ? 'bg-emerald-500'
+                : project.assigned_designer.online_status === 'away' ? 'bg-amber-500'
+                : 'bg-zinc-500'
+              }`} />
+              <span className="text-[10px] font-body uppercase tracking-[0.15em] text-[var(--bp-text-subtle)]">
+                {project.assigned_designer.online_status || 'offline'}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  const TabBar = (
+    <div className="border-b border-[var(--bp-border)] mb-8 overflow-x-auto" data-testid="project-tabbar">
+      <div className="flex gap-1 min-w-max">
+        {TABS.map(({ id: tabId, icon: Icon, label }) => (
+          <button key={tabId} onClick={() => setTab(tabId)}
+                  data-testid={`tab-${tabId}`}
+                  className={`flex items-center gap-2 px-4 py-3 text-[12.5px] font-body whitespace-nowrap
+                              border-b-2 transition-colors ${
+                    tab === tabId
+                      ? 'border-[var(--bp-primary)] text-[var(--bp-text-primary)]'
+                      : 'border-transparent text-[var(--bp-text-muted)] hover:text-[var(--bp-text-secondary)]'
+                  }`}>
+            <Icon size={14} strokeWidth={1.5} /> {label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  // ── Full-bleed Journey environment ──────────────────────────────
+  if (isJourney) {
+    return (
+      <div className="min-h-screen bg-[var(--bp-bg)]" data-testid="project-detail">
+        <div className="px-6 sm:px-10 pt-6">
+          <button onClick={() => navigate('/workspace/projects')}
+                  data-testid="back-to-projects"
+                  className="bp-caption text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] mb-4 flex items-center gap-1.5">
+            <ArrowLeft size={13} strokeWidth={1.5} /> {t('workspace.back.projects')}
+          </button>
+          {TabBar}
+        </div>
+        <div data-testid="tab-content" data-tab="journey">
+          <DesignJourneyTab projectId={id} project={project} />
+        </div>
+      </div>
+    );
+  }
+
+  // ── Classic boxed view for non-Journey tabs ─────────────────────
   return (
     <div className="p-6 sm:p-10 max-w-6xl mx-auto" data-testid="project-detail">
       <button onClick={() => navigate('/workspace/projects')}
@@ -1127,95 +1225,17 @@ const ProjectDetailPage = () => {
         <ArrowLeft size={13} strokeWidth={1.5} /> {t('workspace.back.projects')}
       </button>
 
-      <div className="flex items-start justify-between gap-6 mb-10 flex-wrap">
-        <div className="min-w-0">
-          <div className="flex items-center gap-3 mb-3">
-            <StatusBadge status={project.status} t={t} kind="projects" />
-            {project.project_type && (
-              <span className="bp-caption text-[var(--bp-text-muted)] uppercase tracking-[0.15em]">
-                {project.project_type}
-              </span>
-            )}
-          </div>
-          <h1 className="bp-h1 text-[var(--bp-text-primary)] font-light">{project.title}</h1>
-          {project.client_email && <p className="bp-body text-[var(--bp-text-muted)] mt-3">{project.client_email}</p>}
-        </div>
-
-        {project.assigned_designer && (
-          <div data-testid="assigned-designer-card"
-               className="flex items-center gap-4 bg-[var(--bp-surface-1)] border border-[var(--bp-border)] px-5 py-4 min-w-[280px]">
-            {project.assigned_designer.avatar_url && (
-              <img src={project.assigned_designer.avatar_url}
-                   alt={project.assigned_designer.first_name}
-                   className="w-12 h-12 rounded-full object-cover" />
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-primary)] font-body font-semibold mb-0.5">
-                {t('workspace.followed_by') || 'Seguito da'}
-              </p>
-              <p className="font-heading text-[var(--bp-text-primary)] text-base truncate">
-                {project.assigned_designer.first_name} {project.assigned_designer.last_name || ''}
-              </p>
-              {project.assigned_designer.role_label && (
-                <p className="text-[var(--bp-text-muted)] text-xs font-body truncate">
-                  {typeof project.assigned_designer.role_label === 'string'
-                    ? project.assigned_designer.role_label
-                    : (project.assigned_designer.role_label._default || '')}
-                </p>
-              )}
-              <div className="flex items-center gap-1.5 mt-1.5">
-                <span className={`w-1.5 h-1.5 rounded-full ${
-                  project.assigned_designer.online_status === 'available' ? 'bg-emerald-500'
-                  : project.assigned_designer.online_status === 'away' ? 'bg-amber-500'
-                  : 'bg-zinc-500'
-                }`} />
-                <span className="text-[10px] font-body uppercase tracking-[0.15em] text-[var(--bp-text-subtle)]">
-                  {project.assigned_designer.online_status || 'offline'}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Tab bar — scrolls horizontally on mobile to preserve cinematic spacing */}
-      <div className="border-b border-[var(--bp-border)] mb-8 overflow-x-auto">
-        <div className="flex gap-1 min-w-max">
-          {TABS.map(({ id: tabId, icon: Icon, label }) => (
-            <button key={tabId} onClick={() => setTab(tabId)}
-                    data-testid={`tab-${tabId}`}
-                    className={`flex items-center gap-2 px-4 py-3 text-[12.5px] font-body whitespace-nowrap
-                                border-b-2 transition-colors ${
-                      tab === tabId
-                        ? 'border-[var(--bp-primary)] text-[var(--bp-text-primary)]'
-                        : 'border-transparent text-[var(--bp-text-muted)] hover:text-[var(--bp-text-secondary)]'
-                    }`}>
-              <Icon size={14} strokeWidth={1.5} /> {label}
-            </button>
-          ))}
-        </div>
-      </div>
+      {ProjectIdentityHeader}
+      {TabBar}
 
       <div data-testid="tab-content">
-        {tab === 'journey' && (
-          <DesignJourneyTab projectId={id} project={project} />
-        )}
         {tab === 'overview' && (
           <div className="space-y-10" data-testid="overview-tab">
+            {/* Overview is becoming the *identity* of the project, not an
+                operational dashboard. The Journey™ now carries stats and
+                evolution narrative — Overview keeps only Strategic
+                Direction™ + advisor identity hero. */}
             <StrategicDirectionCard projectId={id} project={project} />
-            <div>
-              <p className="text-[10px] tracking-[0.32em] uppercase text-[var(--bp-text-muted)] font-body mb-4">
-                Sintesi operativa
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Stat label={t('workspace.stat.budget')}     value={project.budget_range || '—'} />
-                <Stat label={t('workspace.stat.timeline')}   value={project.timeline || '—'} />
-                <Stat label={t('workspace.stat.proposals')}  value={(project.proposals || []).length} />
-                <Stat label={t('workspace.stat.moodboards')} value={(project.moodboards || []).length} />
-                <Stat label={t('workspace.stat.files')}      value={project.files_count || 0} />
-                <Stat label={t('workspace.stat.status')}     value={t(`projects.status.${project.status || 'new'}`)} />
-              </div>
-            </div>
           </div>
         )}
         {tab === 'inspirations'  && <InspirationsTab projectId={id} />}

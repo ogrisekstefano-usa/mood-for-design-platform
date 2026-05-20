@@ -1,6 +1,6 @@
 /**
- * design-journey.css — Design Journey™ Foundation · Phase F.A.
- * Cinematic dark luxury. NEVER kanban / gantt / enterprise.
+ * design-journey.css — Design Journey™ Foundation.
+ * Cinematic dark luxury · environment immersivo (mai boxed admin).
  */
 .dj-shell {
   --dj-bg:        #0a0b0c;
@@ -19,11 +19,16 @@
 
   background: var(--dj-bg);
   color: var(--dj-text);
-  border-radius: 6px;
-  border: 1px solid var(--dj-line);
-  overflow: hidden;
+  /* Full-bleed environment: no border, no radius — la pagina è l'environment. */
+  border: none;
+  border-radius: 0;
+  overflow: visible;
   font-family: 'Inter', system-ui, sans-serif;
-  margin-bottom: 36px;
+  margin: 0;
+  /* Subtle vignette to give cinematic depth without admin chrome. */
+  background-image:
+    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(217, 178, 133, 0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 40% at 50% 105%, rgba(127, 223, 255, 0.04) 0%, transparent 50%);
 }
 
 .dj-shell--loading,
@@ -35,51 +40,117 @@
   font-family: 'Playfair Display', Georgia, serif;
 }
 
-/* Header */
+/* ─── Absorption Header ─────────────────────────────────────────── */
 .dj-shell__head {
-  padding: 28px 36px 18px;
+  padding: 36px 56px 28px;
   border-bottom: 1px solid var(--dj-line);
   background: linear-gradient(180deg, #0c0e10 0%, #0a0b0c 100%);
 }
+.dj-shell__head-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.dj-shell__head-main {
+  min-width: 0;
+  flex: 1 1 auto;
+}
 .dj-shell__eyebrow {
   font-size: 10.5px;
-  letter-spacing: 0.20em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--dj-warm);
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 .dj-shell__title {
   font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
-  font-size: 28px;
+  font-size: 38px;
+  line-height: 1.1;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.012em;
   margin: 0;
   color: var(--dj-text);
 }
 .dj-shell__title em { font-style: italic; }
+.dj-shell__narrative {
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--dj-text-2);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+.dj-shell__advisor {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  border: 1px solid var(--dj-line);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.015);
+}
+.dj-shell__advisor-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--dj-line);
+}
+.dj-shell__advisor-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.dj-shell__advisor-eyebrow {
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dj-warm);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+.dj-shell__advisor-name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--dj-text);
+}
 
-/* Body 3-col layout */
+/* Body 3-col layout · piÃ¹ respiro */
 .dj-body {
   display: grid;
-  grid-template-columns: 280px 1fr 260px;
-  min-height: 540px;
+  grid-template-columns: 320px 1fr 300px;
+  min-height: 600px;
   border-bottom: 1px solid var(--dj-line);
+}
+
+@media (max-width: 1180px) {
+  .dj-body { grid-template-columns: 280px 1fr; }
+  .dj-details { display: none; }
+}
+@media (max-width: 860px) {
+  .dj-body { grid-template-columns: 1fr; }
+  .dj-rail { border-right: none; border-bottom: 1px solid var(--dj-line); }
+  .dj-shell__head { padding: 28px 24px 20px; }
+  .dj-shell__title { font-size: 30px; }
 }
 
 /* ─── Left rail · numbered timeline ──────────────────────────── */
 .dj-rail {
-  padding: 22px 18px;
+  padding: 36px 26px 36px 32px;
   border-right: 1px solid var(--dj-line);
   background: var(--dj-bg-2);
   overflow-y: auto;
 }
 .dj-rail__eyebrow {
   font-size: 10px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.20em;
   text-transform: uppercase;
   color: var(--dj-text-3);
-  margin: 0 0 16px;
+  margin: 0 0 22px;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 .dj-rail__list {
@@ -163,10 +234,10 @@
 
 /* ─── Center · focus panel ───────────────────────────────────── */
 .dj-focus {
-  padding: 32px 36px 36px;
+  padding: 56px 64px 64px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 36px;
   overflow-y: auto;
   background:
     radial-gradient(ellipse at 80% 0%, rgba(217, 178, 133, 0.05) 0%, transparent 50%),

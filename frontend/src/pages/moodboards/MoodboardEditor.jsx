@@ -46,6 +46,7 @@ import ImageQuickAdjust from '../../blueprint/moodboard/ImageQuickAdjust';
 import { trackEvent } from '../../lib/telemetry';
 import { FONT_REGISTRY, FONT_CATEGORIES } from '../../blueprint/moodboard/fontRegistry';
 import { copyStyle, pasteStyle, hasClipboardStyle, clipboardBlockType } from '../../blueprint/moodboard/styleClipboard';
+import JourneyContextHeader from '../../components/journey/JourneyContextHeader';
 
 const CANVAS_W = 1400;
 const CANVAS_H = 2400;
@@ -991,6 +992,13 @@ const MoodboardEditor = ({ readOnly = false }) => {
           )}
         </div>
       </header>
+
+      {/* Journey Continuity™ — context strip che ricorda al designer
+          quale pietra miliare del Design Journey™ sta vivendo.
+          Nessuna render in modalità read-only (public review). */}
+      {!readOnly && (
+        <JourneyContextHeader entityType="moodboard" entityId={id} compact />
+      )}
 
       {/* Action Toolbar removed in the Figma-Grade Stabilization sprint.
           Select / Deselect / Move / Resize / Align / Zoom are now canvas-
