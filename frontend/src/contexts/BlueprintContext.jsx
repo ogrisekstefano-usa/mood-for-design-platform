@@ -9,6 +9,7 @@ import axios from 'axios';
 import api from '../lib/api';
 import { useAuth } from './AuthContext';
 import { blueprintLanguages, getDefaultLocale, resolveLanguage } from '../site/content/languages';
+import { pickString } from '../i18n/engine';
 
 const BlueprintContext = createContext(null);
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -341,9 +342,18 @@ export const BlueprintProvider = ({ children }) => {
 
   const t = useCallback((key, vars, fallback) => {
     const value = messages[key];
-    if (value === undefined) return interpolate(fallback || key, vars);
-    return interpolate(value, vars);
-  }, [messages]);
+    if (value !== undefined) return interpolate(value, vars);
+    // Sprint I18N-02: when the backend dictionary does not own this key
+    // (e.g. companion.* / dossier.* / new editorial namespaces), look it
+    // up in the frontend static STRINGS via the BCP-47 fallback chain.
+    // This keeps editorial copy reactive to language switch without
+    // requiring a backend deploy for every UI string.
+    try {
+      const picked = pickString(key, locale, vars || null);
+      if (picked && picked !== key) return picked;
+    } catch (_) { /* ignore — fall through to fallback */ }
+    return interpolate(fallback || key, vars);
+  }, [messages, locale]);
 
   const can = useCallback((perm) => permissions.includes(perm), [permissions]);
 

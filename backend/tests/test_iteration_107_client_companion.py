@@ -139,7 +139,10 @@ class TestJourneysIndexPage:
         for phrase in (
             "My Design Journeys",
             "I tuoi percorsi progettuali",
-            "Il tuo Journey sta per iniziare",  # zero-data
+            # I18N-02: zero-data title evolved from "Il tuo Journey sta per
+            # iniziare" to the editorial form "Il tuo Design Journey™ sta
+            # per iniziare". Either still validates the empty-state intent.
+            "Il tuo Design Journey™ sta per iniziare",  # zero-data
             # G.9: active/archived split — copy clarifies it surfaces
             # only the active percorsi (archive lives below as its own section).
             "I percorsi che stai attraversando",
@@ -186,10 +189,12 @@ class TestCompanionPageSections:
         src = COMPANION.read_text()
         for phrase in (
             "Il prossimo capitolo verrà condiviso dal tuo studio",
-            "Il tuo Journey è appena iniziato",
+            "Il tuo Design Journey™ sta per iniziare",
             "La conversazione attende",
             "La palette tattile sta per prendere forma",
-            "L'archivio del Journey è ancora vuoto",
+            # I18N-02: JS-escaped form because the source apostrophe is now
+            # inside a single-quoted t() fallback (L\'archivio…).
+            "archivio del Journey è ancora vuoto",
         ):
             assert phrase in src, f"missing editorial empty state: {phrase}"
 

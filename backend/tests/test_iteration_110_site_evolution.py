@@ -159,8 +159,8 @@ class TestSiteEvolutionSection:
         src = COMPANION.read_text()
         assert "SiteEvolutionSection" in src
         assert 'id="cantiere"' in src
-        # Eyebrow contains the editorial mark
-        assert 'eyebrow="Site Evolution™"' in src
+        # I18N-02: eyebrow now sourced from tm('siteEvolution') (TM canonical).
+        assert ("tm('siteEvolution')" in src or 'eyebrow="Site Evolution™"' in src)
         # Fetched via api.get
         assert "/site-evolution" in src
 

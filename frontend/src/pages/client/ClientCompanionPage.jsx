@@ -20,12 +20,20 @@ import api from '../../lib/api';
 import SharedVoiceComposer from '../../components/client/SharedVoiceComposer';
 import SiteEvolutionSection from '../../components/client/SiteEvolutionSection';
 import DossierSection from '../../components/client/DossierSection';
+import { useT as useBlueprintT, useBlueprint } from '../../contexts/BlueprintContext';
+import { tm } from '../../i18n/translation-memory';
 import './client-companion.css';
 
-const fmtDate = (iso) => {
+const interp = (s, vars) => {
+  if (!s) return s;
+  return Object.entries(vars || {}).reduce(
+    (acc, [k, v]) => acc.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v)), s);
+};
+
+const fmtDate = (iso, locale) => {
   if (!iso) return '';
   try {
-    return new Date(iso).toLocaleDateString('it-IT',
+    return new Date(iso).toLocaleDateString(locale || 'it-IT',
       { day: '2-digit', month: 'short' });
   } catch { return ''; }
 };
@@ -59,6 +67,7 @@ const EmptyHint = ({ title, lede, testid }) => (
 
 // ── Hero ─────────────────────────────────────────────────────────
 const CompanionHero = ({ header, activeChapter }) => {
+  const t = useBlueprintT();
   const cover = header.cover_url;
   return (
     <section className="cj-hero" data-testid="cj-hero">
@@ -76,7 +85,7 @@ const CompanionHero = ({ header, activeChapter }) => {
         </h1>
         {activeChapter && (
           <p className="cj-hero__lede">
-            Capitolo attivo · <em>{activeChapter.title}</em>.
+            {t('companion.card.chapter_active', null, 'Capitolo attivo')} · <em>{activeChapter.title}</em>.
             {activeChapter.narrative_intro && (
               <> {activeChapter.narrative_intro}</>
             )}
@@ -96,7 +105,8 @@ const CompanionHero = ({ header, activeChapter }) => {
           {header.progress && header.progress.total_chapters > 0 && (
             <span className="cj-hero__meta-item">
               <span className="cj-hero__meta-dot" />
-              {header.progress.approved_chapters} di {header.progress.total_chapters} capitoli approvati
+              {interp(t('companion.card.progress', null, '{done} su {total} capitoli approvati'),
+                      { done: header.progress.approved_chapters, total: header.progress.total_chapters })}
             </span>
           )}
         </div>
@@ -106,7 +116,7 @@ const CompanionHero = ({ header, activeChapter }) => {
             className="cj-hero__cta"
             data-testid="cj-hero-cta"
           >
-            Esplora il capitolo
+            {t('companion.hero.cta', null, 'Esplora il capitolo')}
           </a>
         )}
       </div>
@@ -116,18 +126,21 @@ const CompanionHero = ({ header, activeChapter }) => {
 
 // ── Active Chapter ───────────────────────────────────────────────
 const ActiveChapterSection = ({ chapter, journeyId, onVoiceShared }) => {
+  const t = useBlueprintT();
   if (!chapter) {
     return (
       <Section
         id="capitolo"
-        eyebrow="Capitolo attivo · Active Chapter™"
-        title="In attesa del prossimo capitolo"
+        eyebrow={t('companion.section.active_chapter.eyebrow', null, 'Capitolo attivo · Active Chapter™')}
+        title={t('companion.section.active_chapter.empty_title', null, 'In attesa del prossimo capitolo')}
         testid="cj-section-capitolo"
       >
         <EmptyHint
           testid="cj-active-empty"
-          title="Il prossimo capitolo verrà condiviso dal tuo studio"
-          lede="Quando il tuo studio inizierà la prossima direzione progettuale, comparirà qui — narrata e in attesa del tuo sguardo."
+          title={t('companion.section.active_chapter.empty_hint_title', null,
+                   'Il prossimo capitolo verrà condiviso dal tuo studio')}
+          lede={t('companion.section.active_chapter.empty_hint_lede', null,
+                  'Quando il tuo studio inizierà la prossima direzione progettuale, comparirà qui — narrata e in attesa del tuo sguardo.')}
         />
       </Section>
     );
@@ -135,7 +148,7 @@ const ActiveChapterSection = ({ chapter, journeyId, onVoiceShared }) => {
   return (
     <Section
       id="capitolo"
-      eyebrow="Capitolo attivo · Active Chapter™"
+      eyebrow={t('companion.section.active_chapter.eyebrow', null, 'Capitolo attivo · Active Chapter™')}
       title={chapter.title}
       testid="cj-section-capitolo"
     >
@@ -171,19 +184,27 @@ const ActiveChapterSection = ({ chapter, journeyId, onVoiceShared }) => {
 };
 
 // ── Shared Directions ────────────────────────────────────────────
-const SharedDirectionsSection = ({ items }) => (
+const SharedDirectionsSection = ({ items }) => {
+  const t = useBlueprintT();
+  const count = items?.length
+    ? interp(t(items.length === 1 ? 'companion.direction.count.one' : 'companion.direction.count.many',
+               null, items.length === 1 ? '{n} direzione' : '{n} direzioni'), { n: items.length })
+    : null;
+  return (
   <Section
     id="direzioni"
-    eyebrow="Direzioni condivise · Shared Directions™"
-    title="Le proposte aperte tra te e lo studio"
-    count={items?.length ? `${items.length} ${items.length === 1 ? 'direzione' : 'direzioni'}` : null}
+    eyebrow={t('companion.section.shared_directions.eyebrow', null, 'Direzioni condivise · Shared Directions™')}
+    title={t('companion.section.shared_directions.title', null, 'Le proposte aperte tra te e lo studio')}
+    count={count}
     testid="cj-section-direzioni"
   >
     {(!items || items.length === 0) ? (
       <EmptyHint
         testid="cj-directions-empty"
-        title="Nessuna direzione condivisa al momento"
-        lede="Quando il tuo studio aprirà una nuova direzione (moodboard, palette, atmosfera), la troverai qui."
+        title={t('companion.section.shared_directions.empty_title', null,
+                 'Nessuna direzione condivisa al momento')}
+        lede={t('companion.section.shared_directions.empty_lede', null,
+                'Quando il tuo studio aprirà una nuova direzione (moodboard, palette, atmosfera), la troverai qui.')}
       />
     ) : (
       <div className="cj-directions" data-testid="cj-directions-grid">
@@ -206,21 +227,26 @@ const SharedDirectionsSection = ({ items }) => (
       </div>
     )}
   </Section>
-);
+  );
+};
 
 // ── Conversations ────────────────────────────────────────────────
-const ConversationsSection = ({ items }) => (
+const ConversationsSection = ({ items }) => {
+  const t = useBlueprintT();
+  const { locale } = useBlueprint();
+  return (
   <Section
     id="conversazioni"
-    eyebrow="Conversazioni · Conversations™"
-    title="Le voci sul percorso"
+    eyebrow={t('companion.section.conversations.eyebrow', null, 'Conversazioni · Conversations™')}
+    title={t('companion.section.conversations.title', null, 'Le voci sul percorso')}
     testid="cj-section-conversazioni"
   >
     {(!items || items.length === 0) ? (
       <EmptyHint
         testid="cj-conversations-empty"
-        title="La conversazione attende"
-        lede="Le voci curatoriali sui capitoli del tuo Journey compariranno qui — pensate per essere ascoltate, non gestite."
+        title={t('companion.section.conversations.empty_title', null, 'La conversazione attende')}
+        lede={t('companion.section.conversations.empty_lede', null,
+                'Le voci curatoriali sui capitoli del tuo Journey compariranno qui — pensate per essere ascoltate, non gestite.')}
       />
     ) : (
       <div className="cj-voices" data-testid="cj-voices-list">
@@ -230,7 +256,7 @@ const ConversationsSection = ({ items }) => (
             <div>
               <p className="cj-voice__msg">"{v.message}"</p>
               <p className="cj-voice__meta">
-                {v.author_name || 'Voce sul Journey'} · {v.chapter} · {fmtDate(v.created_at)}
+                {v.author_name || t('dossier.voices.author_default', null, 'Voce sul Journey')} · {v.chapter} · {fmtDate(v.created_at, locale)}
               </p>
             </div>
           </article>
@@ -238,49 +264,64 @@ const ConversationsSection = ({ items }) => (
       </div>
     )}
   </Section>
-);
+  );
+};
 
 // ── Evolution Timeline ───────────────────────────────────────────
-const EvolutionSection = ({ items }) => (
+const EvolutionSection = ({ items }) => {
+  const t = useBlueprintT();
+  const { locale } = useBlueprint();
+  return (
   <Section
     id="evoluzione"
-    eyebrow="Evolution Timeline™"
-    title="La storia del tuo Journey"
+    eyebrow={t('companion.section.evolution.eyebrow', null, 'Evolution Timeline™')}
+    title={t('companion.section.evolution.title', null, 'L\'evoluzione del viaggio')}
     testid="cj-section-evoluzione"
   >
     {(!items || items.length === 0) ? (
       <EmptyHint
         testid="cj-evolution-empty"
-        title="Il tuo Journey è appena iniziato"
-        lede="Ogni nuova direzione, riscontro e decisione lascerà qui una traccia — narrata, mai cronologica."
+        title={t('companion.section.evolution.empty_title', null,
+                 'Il tuo Design Journey™ sta per iniziare')}
+        lede={t('companion.section.evolution.empty_lede', null,
+                'Ogni nuova direzione, riscontro e decisione lascerà qui una traccia — narrata, mai cronologica.')}
       />
     ) : (
       <ol className="cj-timeline" data-testid="cj-evolution-list">
         {items.map((e) => (
           <li key={e.id} className="cj-timeline__item" data-testid={`cj-evolution-${e.id}`}>
-            <span className="cj-timeline__date">{fmtDate(e.created_at)}</span>
+            <span className="cj-timeline__date">{fmtDate(e.created_at, locale)}</span>
             <p className="cj-timeline__msg">{e.narrative}</p>
           </li>
         ))}
       </ol>
     )}
   </Section>
-);
+  );
+};
 
 // ── Materials & Atmospheres ──────────────────────────────────────
-const MaterialsSection = ({ items }) => (
+const MaterialsSection = ({ items }) => {
+  const t = useBlueprintT();
+  const count = items?.length
+    ? interp(t(items.length === 1 ? 'companion.materials.count.one' : 'companion.materials.count.many',
+               null, items.length === 1 ? '{n} voce' : '{n} voci'), { n: items.length })
+    : null;
+  return (
   <Section
     id="materia"
-    eyebrow="Materia & Atmosfere · Materials & Atmospheres™"
-    title="La materia del progetto"
-    count={items?.length ? `${items.length} ${items.length === 1 ? 'voce' : 'voci'}` : null}
+    eyebrow={t('companion.section.materials.eyebrow', null, 'Materia & Atmosfere · Materials & Atmospheres™')}
+    title={t('companion.section.materials.title', null, 'La materia del progetto')}
+    count={count}
     testid="cj-section-materia"
   >
     {(!items || items.length === 0) ? (
       <EmptyHint
         testid="cj-materials-empty"
-        title="La palette tattile sta per prendere forma"
-        lede="Quando il tuo studio inizierà a comporre la materia del Journey — pietre, legni, tessuti — la troverai qui."
+        title={t('companion.section.materials.empty_title', null,
+                 'La palette tattile sta per prendere forma')}
+        lede={t('companion.section.materials.empty_lede', null,
+                'Quando il tuo studio inizierà a comporre la materia del Journey — pietre, legni, tessuti — la troverai qui.')}
       />
     ) : (
       <div className="cj-materials" data-testid="cj-materials-grid">
@@ -301,22 +342,32 @@ const MaterialsSection = ({ items }) => (
       </div>
     )}
   </Section>
-);
+  );
+};
 
 // ── Memory & Archive ─────────────────────────────────────────────
-const MemoryArchiveSection = ({ items }) => (
+const MemoryArchiveSection = ({ items }) => {
+  const t = useBlueprintT();
+  const { locale } = useBlueprint();
+  const count = items?.length
+    ? interp(t(items.length === 1 ? 'companion.archive.count.one' : 'companion.archive.count.many',
+               null, items.length === 1 ? '{n} capitolo' : '{n} capitoli'), { n: items.length })
+    : null;
+  return (
   <Section
     id="memoria"
-    eyebrow="Memoria & Archivio · Memory & Archive™"
-    title="I capitoli che hai attraversato"
-    count={items?.length ? `${items.length} ${items.length === 1 ? 'capitolo' : 'capitoli'}` : null}
+    eyebrow={t('companion.section.archive.eyebrow', null, 'Memoria & Archivio · Memory & Archive™')}
+    title={t('companion.section.archive.title', null, 'I capitoli che hai attraversato')}
+    count={count}
     testid="cj-section-memoria"
   >
     {(!items || items.length === 0) ? (
       <EmptyHint
         testid="cj-archive-empty"
-        title="L'archivio del Journey è ancora vuoto"
-        lede="Ogni capitolo approvato entrerà qui — diventerà parte della memoria firmata del tuo percorso."
+        title={t('companion.section.archive.empty_title', null,
+                 'L\'archivio del Journey è ancora vuoto')}
+        lede={t('companion.section.archive.empty_lede', null,
+                'Ogni capitolo approvato entrerà qui — diventerà parte della memoria firmata del tuo percorso.')}
       />
     ) : (
       <ul className="cj-archive" data-testid="cj-archive-list">
@@ -324,19 +375,21 @@ const MemoryArchiveSection = ({ items }) => (
           <li key={m.id} className="cj-archive__item" data-testid={`cj-archive-${m.id}`}>
             <span className="cj-archive__chapter"><em>{m.title}</em></span>
             <span className="cj-archive__date">
-              {m.approved_at ? `Approvato · ${fmtDate(m.approved_at)}`
-                             : m.closed_at ? `Chiuso · ${fmtDate(m.closed_at)}` : '—'}
+              {m.approved_at ? `${t('companion.archive.approved', null, 'Approvato')} · ${fmtDate(m.approved_at, locale)}`
+                             : m.closed_at ? `${t('companion.archive.closed', null, 'Chiuso')} · ${fmtDate(m.closed_at, locale)}` : '—'}
             </span>
           </li>
         ))}
       </ul>
     )}
   </Section>
-);
+  );
+};
 
 // ── Main ─────────────────────────────────────────────────────────
 const ClientCompanionPage = () => {
   const { journeyId } = useParams();
+  const t = useBlueprintT();
   const [data, setData]     = useState(null);
   const [siteEvolution, setSiteEvolution] = useState(null);
   const [loading, setLoad]  = useState(true);
@@ -385,7 +438,7 @@ const ClientCompanionPage = () => {
           fontStyle: 'italic', fontSize: 17,
           color: 'color-mix(in srgb, var(--cp-text-primary) 55%, transparent)',
         }}>
-          Stiamo aprendo il tuo Journey…
+          {t('companion.loading', null, 'Stiamo aprendo il tuo Journey…')}
         </p>
       </div>
     );
@@ -401,14 +454,14 @@ const ClientCompanionPage = () => {
           fontStyle: 'italic', fontSize: 26, margin: 0,
           color: 'var(--cp-text-primary, #efe8d8)',
         }}>
-          Questo Journey è in attesa
+          {t('companion.error.title', null, 'Questo Journey è in attesa')}
         </h3>
         <p style={{
           fontSize: 14,
           color: 'color-mix(in srgb, var(--cp-text-primary) 55%, transparent)',
           marginTop: 14,
         }}>
-          {error || 'Non disponibile.'}
+          {error || t('companion.error.unavailable', null, 'Non disponibile.')}
         </p>
       </div>
     );
@@ -468,9 +521,15 @@ const ClientCompanionPage = () => {
           <MaterialsSection items={materials_atmospheres} />
           <Section
             id="cantiere"
-            eyebrow="Site Evolution™"
-            title="La memoria viva del cantiere"
-            count={siteEvolution?.entries?.length ? `${siteEvolution.entries.length} ${siteEvolution.entries.length === 1 ? 'momento' : 'momenti'}` : null}
+            eyebrow={tm('siteEvolution')}
+            title={t('companion.section.site_evolution.title', null, 'La memoria viva del cantiere')}
+            count={siteEvolution?.entries?.length
+              ? interp(t(siteEvolution.entries.length === 1
+                         ? 'companion.section.site_evolution.count.one'
+                         : 'companion.section.site_evolution.count.many',
+                         null, siteEvolution.entries.length === 1 ? '{n} momento' : '{n} momenti'),
+                       { n: siteEvolution.entries.length })
+              : null}
             testid="cj-section-cantiere"
           >
             <SiteEvolutionSection data={siteEvolution} />

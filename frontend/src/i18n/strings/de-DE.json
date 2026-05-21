@@ -30,24 +30,24 @@
     "ctaNew": "Neue Beziehung",
     "sidebarTitle": "Beziehungen",
     "filters": {
-      "all":           "Alle Beziehungen",
-      "new":           "Neu",
-      "unassigned":    "Nicht zugewiesen",
-      "follow_up":     "Nachzuverfolgen",
-      "high_intent":   "Hohes Interesse",
+      "all": "Alle Beziehungen",
+      "new": "Neu",
+      "unassigned": "Nicht zugewiesen",
+      "follow_up": "Nachzuverfolgen",
+      "high_intent": "Hohes Interesse",
       "international": "International",
-      "active":        "Aktive Projekte",
-      "clients":       "Kunden",
-      "archived":      "Archiviert"
+      "active": "Aktive Projekte",
+      "clients": "Kunden",
+      "archived": "Archiviert"
     },
     "table": {
-      "account":   "Account",
-      "type":      "Typ",
-      "stage":     "Phase",
-      "contact":   "Hauptkontakt",
+      "account": "Account",
+      "type": "Typ",
+      "stage": "Phase",
+      "contact": "Hauptkontakt",
       "lastActivity": "Letzte Aktivität",
-      "open":      "Offen",
-      "owner":     "Verantwortlich",
+      "open": "Offen",
+      "owner": "Verantwortlich",
       "emptyFiltered": "Keine Beziehungen in diesem Filter."
     },
     "kanban": {
@@ -58,45 +58,151 @@
         "overview": "Übersicht",
         "contacts": "Kontakte",
         "timeline": "Verlauf",
-        "actions":  "Nächste Schritte"
+        "actions": "Nächste Schritte"
       },
       "lastActivityPrefix": "letzte Aktivität",
-      "accountData":   "Account-Daten",
-      "changeStage":   "Phase ändern",
-      "counters":      "Zähler",
-      "interactions":  "Interaktionen",
-      "openActions":   "Offen",
-      "source":        "Quelle",
-      "health":        "Gesundheit",
+      "accountData": "Account-Daten",
+      "changeStage": "Phase ändern",
+      "counters": "Zähler",
+      "interactions": "Interaktionen",
+      "openActions": "Offen",
+      "source": "Quelle",
+      "health": "Gesundheit",
       "emptyContacts": "Keine Kontakte registriert.",
       "emptyTimeline": "Keine Interaktionen.",
-      "emptyActions":  "Keine offenen Schritte.",
-      "nextStep":      "Nächster Schritt:",
-      "due":           "fällig",
-      "stageChanged":  "Phase aktualisiert",
-      "stageError":    "Phase kann nicht geändert werden.",
-      "actionError":   "Fehler beim Aktualisieren.",
-      "loadingRelation":"Beziehung wird geladen…",
-      "markDone":      "Als erledigt markieren",
-      "reopen":        "Wieder öffnen"
+      "emptyActions": "Keine offenen Schritte.",
+      "nextStep": "Nächster Schritt:",
+      "due": "fällig",
+      "stageChanged": "Phase aktualisiert",
+      "stageError": "Phase kann nicht geändert werden.",
+      "actionError": "Fehler beim Aktualisieren.",
+      "loadingRelation": "Beziehung wird geladen…",
+      "markDone": "Als erledigt markieren",
+      "reopen": "Wieder öffnen"
     },
     "newModal": {
-      "eyebrow":      "Neue Beziehung",
-      "title":        "Neue Beziehung eröffnen",
-      "accountName":  "Account- / Familien- / Studio-Name",
-      "accountType":  "Account-Typ",
-      "source":       "Quelle",
-      "city":         "Stadt",
-      "firstName":    "Kontakt-Vorname",
-      "lastName":     "Kontakt-Nachname",
-      "email":        "E-Mail",
-      "phone":        "Telefon",
-      "notes":        "Erste Notizen (optional)",
-      "submit":       "Beziehung erstellen",
-      "successCreated":"Beziehung erstellt.",
-      "errorCreate":  "Beziehung kann nicht erstellt werden.",
+      "eyebrow": "Neue Beziehung",
+      "title": "Neue Beziehung eröffnen",
+      "accountName": "Account- / Familien- / Studio-Name",
+      "accountType": "Account-Typ",
+      "source": "Quelle",
+      "city": "Stadt",
+      "firstName": "Kontakt-Vorname",
+      "lastName": "Kontakt-Nachname",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "notes": "Erste Notizen (optional)",
+      "submit": "Beziehung erstellen",
+      "successCreated": "Beziehung erstellt.",
+      "errorCreate": "Beziehung kann nicht erstellt werden.",
       "errorNameRequired": "Bitte einen Account-Namen eingeben."
     },
     "loadingAccounts": "Studio-Gedächtnis wird gelesen…"
+  },
+  "companion": {
+    "hero": {
+      "eyebrow": "Design Journey™ · Ihre Gestaltungsreise"
+    },
+    "index": {
+      "hero": {
+        "eyebrow": "My Design Journeys™",
+        "title": "Ihre Gestaltungsreisen",
+        "lede": "Jede Journey ist ein lebendiges Gespräch zwischen Ihnen und Ihrem Studio. Öffnen Sie die Reise, die Sie heute bewohnen möchten."
+      },
+      "zero": {
+        "title": "Ihre Design Journey™ beginnt",
+        "lede": "Das Studio bereitet das erste Kapitel Ihrer Reise vor."
+      },
+      "active": {
+        "eyebrow": "Im Verlauf",
+        "title": "Reisen, die Sie bewohnen"
+      },
+      "archive": {
+        "eyebrow": "Journey Archive™",
+        "title": "Das lebendige Hausgedächtnis",
+        "lede": "Die Reisen, die nun zum gestalterischen Gedächtnis des Hauses gehören."
+      },
+      "count": {
+        "one": "{n} Reise",
+        "many": "{n} Reisen"
+      }
+    },
+    "card": {
+      "chapter_active": "Aktives Kapitel",
+      "progress": "{done} von {total} Kapiteln freigegeben",
+      "deposited_at": "Erinnerung hinterlegt · {date}"
+    },
+    "section": {
+      "shared_voice": {
+        "title": "Geteilte Gedanken"
+      },
+      "evolution": {
+        "title": "Die Entfaltung der Reise"
+      },
+      "materials": {
+        "title": "Materie und Atmosphäre"
+      },
+      "site_evolution": {
+        "eyebrow": "Site Evolution™",
+        "title": "Das lebendige Baustellengedächtnis",
+        "count": {
+          "one": "{n} Moment",
+          "many": "{n} Momente"
+        }
+      }
+    },
+    "loading": "Ihre Journey wird geöffnet…"
+  },
+  "dossier": {
+    "hero": {
+      "eyebrow": "Journey Archive™"
+    },
+    "statement": {
+      "eyebrow": "Projektstatement"
+    },
+    "duration": {
+      "start": "Beginn der Reise",
+      "end": "Erinnerung hinterlegt",
+      "span": "Dauer der Reise",
+      "months": {
+        "one": "{n} Monat",
+        "many": "{n} Monate"
+      }
+    },
+    "chapters": {
+      "eyebrow": "Die durchschrittenen Kapitel",
+      "title": "Die Abfolge der Reise"
+    },
+    "transformations": {
+      "eyebrow": "Räumliche Transformationen",
+      "title": "Architektonische Dokumentation",
+      "before": "Vorher",
+      "after": "Endzustand"
+    },
+    "visuals": {
+      "eyebrow": "Geteilte Richtungen",
+      "title": "Kompositionen der Reise"
+    },
+    "moments": {
+      "eyebrow": "Spuren der Baustelle",
+      "title": "Zwischenmomente der Reise"
+    },
+    "materials": {
+      "eyebrow": "Materialpalette",
+      "title": "Die Materie des Projekts"
+    },
+    "voices": {
+      "eyebrow": "Reflexionen entlang der Reise",
+      "title": "Sedimentierte Stimmen",
+      "author_default": "Eine Stimme zur Journey"
+    },
+    "closure": {
+      "line": "Erinnerung hinterlegt · {date}"
+    },
+    "loading": "Das Dossier wird geöffnet…",
+    "empty": {
+      "eyebrow": "Erinnerung der Reise",
+      "message": "Das Dossier dieser Journey wird in Kürze hinterlegt."
+    }
   }
 }

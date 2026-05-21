@@ -30,24 +30,24 @@
     "ctaNew": "New relationship",
     "sidebarTitle": "Relationships",
     "filters": {
-      "all":           "All relationships",
-      "new":           "New enquiries",
-      "unassigned":    "Unassigned",
-      "follow_up":     "Needs follow-up",
-      "high_intent":   "High intent",
+      "all": "All relationships",
+      "new": "New enquiries",
+      "unassigned": "Unassigned",
+      "follow_up": "Needs follow-up",
+      "high_intent": "High intent",
       "international": "International",
-      "active":        "Live projects",
-      "clients":       "Clients",
-      "archived":      "Archived"
+      "active": "Live projects",
+      "clients": "Clients",
+      "archived": "Archived"
     },
     "table": {
-      "account":   "Account",
-      "type":      "Type",
-      "stage":     "Stage",
-      "contact":   "Primary contact",
+      "account": "Account",
+      "type": "Type",
+      "stage": "Stage",
+      "contact": "Primary contact",
       "lastActivity": "Last activity",
-      "open":      "Open",
-      "owner":     "Owner",
+      "open": "Open",
+      "owner": "Owner",
       "emptyFiltered": "No relationships in this filter."
     },
     "kanban": {
@@ -58,45 +58,151 @@
         "overview": "Overview",
         "contacts": "Contacts",
         "timeline": "Timeline",
-        "actions":  "Next steps"
+        "actions": "Next steps"
       },
       "lastActivityPrefix": "last activity",
-      "accountData":   "Account data",
-      "changeStage":   "Change stage",
-      "counters":      "Counters",
-      "interactions":  "Interactions",
-      "openActions":   "Open",
-      "source":        "Source",
-      "health":        "Health",
+      "accountData": "Account data",
+      "changeStage": "Change stage",
+      "counters": "Counters",
+      "interactions": "Interactions",
+      "openActions": "Open",
+      "source": "Source",
+      "health": "Health",
       "emptyContacts": "No contacts registered.",
       "emptyTimeline": "No interactions yet.",
-      "emptyActions":  "No open next step.",
-      "nextStep":      "Next step:",
-      "due":           "due",
-      "stageChanged":  "Stage updated",
-      "stageError":    "Unable to change stage.",
-      "actionError":   "Error updating action.",
-      "loadingRelation":"Loading relationship…",
-      "markDone":      "Mark as done",
-      "reopen":        "Reopen"
+      "emptyActions": "No open next step.",
+      "nextStep": "Next step:",
+      "due": "due",
+      "stageChanged": "Stage updated",
+      "stageError": "Unable to change stage.",
+      "actionError": "Error updating action.",
+      "loadingRelation": "Loading relationship…",
+      "markDone": "Mark as done",
+      "reopen": "Reopen"
     },
     "newModal": {
-      "eyebrow":      "New relationship",
-      "title":        "Open a new relationship",
-      "accountName":  "Account / family / studio name",
-      "accountType":  "Account type",
-      "source":       "Source",
-      "city":         "City",
-      "firstName":    "Contact first name",
-      "lastName":     "Contact surname",
-      "email":        "Email",
-      "phone":        "Telephone",
-      "notes":        "Initial notes (optional)",
-      "submit":       "Create relationship",
-      "successCreated":"Relationship created.",
-      "errorCreate":  "Unable to create the relationship.",
+      "eyebrow": "New relationship",
+      "title": "Open a new relationship",
+      "accountName": "Account / family / studio name",
+      "accountType": "Account type",
+      "source": "Source",
+      "city": "City",
+      "firstName": "Contact first name",
+      "lastName": "Contact surname",
+      "email": "Email",
+      "phone": "Telephone",
+      "notes": "Initial notes (optional)",
+      "submit": "Create relationship",
+      "successCreated": "Relationship created.",
+      "errorCreate": "Unable to create the relationship.",
       "errorNameRequired": "Please enter an account name."
     },
     "loadingAccounts": "Reading the studio's memory…"
+  },
+  "companion": {
+    "hero": {
+      "eyebrow": "Design Journey™ · Your design journey"
+    },
+    "index": {
+      "hero": {
+        "eyebrow": "My Design Journeys™",
+        "title": "Your design journeys",
+        "lede": "Each Journey is a living conversation between you and your studio. Open the one you wish to inhabit today."
+      },
+      "zero": {
+        "title": "Your Design Journey™ is beginning",
+        "lede": "The studio is preparing the first chapter of your journey."
+      },
+      "active": {
+        "eyebrow": "In progress",
+        "title": "Journeys you are inhabiting"
+      },
+      "archive": {
+        "eyebrow": "Journey Archive™",
+        "title": "The living memory of the home",
+        "lede": "The journeys that now belong to the design memory of the home."
+      },
+      "count": {
+        "one": "{n} journey",
+        "many": "{n} journeys"
+      }
+    },
+    "card": {
+      "chapter_active": "Active chapter",
+      "progress": "{done} of {total} chapters approved",
+      "deposited_at": "Memory deposited · {date}"
+    },
+    "section": {
+      "shared_voice": {
+        "title": "Shared Thoughts"
+      },
+      "evolution": {
+        "title": "The unfolding of the journey"
+      },
+      "materials": {
+        "title": "Matter and atmosphere"
+      },
+      "site_evolution": {
+        "eyebrow": "Site Evolution™",
+        "title": "The living memory of the site",
+        "count": {
+          "one": "{n} moment",
+          "many": "{n} moments"
+        }
+      }
+    },
+    "loading": "Opening your Journey…"
+  },
+  "dossier": {
+    "hero": {
+      "eyebrow": "Journey Archive™"
+    },
+    "statement": {
+      "eyebrow": "Project statement"
+    },
+    "duration": {
+      "start": "Beginning of the journey",
+      "end": "Memory deposited",
+      "span": "Duration of the journey",
+      "months": {
+        "one": "{n} month",
+        "many": "{n} months"
+      }
+    },
+    "chapters": {
+      "eyebrow": "The chapters traversed",
+      "title": "The sequence of the journey"
+    },
+    "transformations": {
+      "eyebrow": "Spatial transformations",
+      "title": "Architectural documentation",
+      "before": "Before",
+      "after": "Final state"
+    },
+    "visuals": {
+      "eyebrow": "Shared directions",
+      "title": "Compositions of the journey"
+    },
+    "moments": {
+      "eyebrow": "Site traces",
+      "title": "Intermediate moments of the journey"
+    },
+    "materials": {
+      "eyebrow": "Material palette",
+      "title": "The matter of the project"
+    },
+    "voices": {
+      "eyebrow": "Reflections along the journey",
+      "title": "Voices sedimented in time",
+      "author_default": "A voice on the Journey"
+    },
+    "closure": {
+      "line": "Memory deposited · {date}"
+    },
+    "loading": "Opening the dossier…",
+    "empty": {
+      "eyebrow": "Memory of the journey",
+      "message": "The dossier of this Journey will be deposited shortly."
+    }
   }
 }

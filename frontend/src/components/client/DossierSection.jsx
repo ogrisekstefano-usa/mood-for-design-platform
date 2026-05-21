@@ -1,31 +1,24 @@
 /**
- * DossierSection — Sprint G.9 · Certified Closure™.
+ * DossierSection — Sprint G.9 · Certified Closure™ / Journey Archive™.
+ * I18N: Sprint I18N-02 — every string is now driven by Blueprint t().
  *
- * Quando un Design Journey™ entra nella memoria della casa, smette
- * di essere superficie operativa e diventa **dossier editoriale**.
+ * È un archivio editoriale vivo del percorso progettuale — NON success
+ * screen, NON portfolio showcase, NON completion wizard.
  *
- * NON è:
- *   · una success screen
- *   · una case study marketing
- *   · una portfolio page
- *   · un completion wizard
- *   · una luxury celebration
- *
- * È:
- *   · documentazione architettonica sobria
- *   · archivio vivo del percorso
- *   · memoria sedimentata, leggibile, atemporale
- *
- * Lingua: italiano editoriale. Tono: AD monograph.
+ * Tono: AD monograph · documentazione architettonica · timeless.
+ * Voci preservate sono READ-ONLY. NO textarea. NO CTA conversazione.
  */
 import React, { useEffect, useState } from 'react';
 import api from '../../lib/api';
+import { useT as useBlueprintT } from '../../contexts/BlueprintContext';
+import { tm } from '../../i18n/translation-memory';
 import './dossier.css';
 
-const fmtMonthYear = (iso) => {
+const fmtMonthYear = (iso, locale) => {
   if (!iso) return '';
   try {
-    return new Date(iso).toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
+    return new Date(iso).toLocaleDateString(locale || 'it-IT',
+      { month: 'long', year: 'numeric' });
   } catch { return ''; }
 };
 
@@ -34,8 +27,14 @@ const fmtYear = (iso) => {
   try { return new Date(iso).getFullYear(); } catch { return ''; }
 };
 
+const interp = (s, vars) => {
+  if (!s) return s;
+  return Object.entries(vars || {}).reduce(
+    (acc, [k, v]) => acc.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v)), s);
+};
+
 // ── Hero del Dossier ─────────────────────────────────────────────
-const DossierHero = ({ header }) => {
+const DossierHero = ({ header, t, locale }) => {
   const yearSpan = (() => {
     const a = fmtYear(header.started_at), b = fmtYear(header.closed_at);
     if (!a && !b) return '';
@@ -51,7 +50,7 @@ const DossierHero = ({ header }) => {
       )}
       <div className="dossier-hero__veil" aria-hidden="true" />
       <div className="dossier-hero__body">
-        <p className="dossier-hero__eyebrow">Journey Archive</p>
+        <p className="dossier-hero__eyebrow">{tm('journeyArchive')}</p>
         <h1 className="dossier-hero__title" data-testid="dossier-hero-title">
           <em>{header.final_title}</em>
         </h1>
@@ -59,7 +58,7 @@ const DossierHero = ({ header }) => {
           {[header.location, yearSpan].filter(Boolean).join(' · ')}
         </p>
         <p className="dossier-hero__studio">
-          Studio · <em>{header.studio_name}</em>
+          {t('dossier.studio_prefix', null, 'Studio')} · <em>{header.studio_name}</em>
         </p>
       </div>
     </header>
@@ -67,11 +66,11 @@ const DossierHero = ({ header }) => {
 };
 
 // ── Closure Statement ────────────────────────────────────────────
-const StatementBlock = ({ statement }) => {
+const StatementBlock = ({ statement, t }) => {
   if (!statement) return null;
   return (
     <section className="dossier-statement" data-testid="dossier-statement">
-      <p className="dossier-eyebrow">Statement di progetto</p>
+      <p className="dossier-eyebrow">{t('dossier.statement.eyebrow', null, 'Statement di progetto')}</p>
       <blockquote className="dossier-statement__quote">
         {statement}
       </blockquote>
@@ -80,24 +79,27 @@ const StatementBlock = ({ statement }) => {
 };
 
 // ── Durata narrativa ─────────────────────────────────────────────
-const DurationBlock = ({ header }) => {
+const DurationBlock = ({ header, t, locale }) => {
   if (!header.duration_months && !header.started_at) return null;
+  const m = header.duration_months;
+  const monthsLabel = m
+    ? interp(t(m === 1 ? 'dossier.duration.months.one' : 'dossier.duration.months.many',
+              null, m === 1 ? '{n} mese' : '{n} mesi'), { n: m })
+    : null;
   return (
     <section className="dossier-duration" data-testid="dossier-duration">
       <div className="dossier-duration__col">
-        <p className="dossier-eyebrow">Inizio del percorso</p>
-        <p className="dossier-duration__val">{fmtMonthYear(header.started_at)}</p>
+        <p className="dossier-eyebrow">{t('dossier.duration.start', null, 'Inizio del percorso')}</p>
+        <p className="dossier-duration__val">{fmtMonthYear(header.started_at, locale)}</p>
       </div>
       <div className="dossier-duration__col">
-        <p className="dossier-eyebrow">Memoria depositata</p>
-        <p className="dossier-duration__val">{fmtMonthYear(header.closed_at)}</p>
+        <p className="dossier-eyebrow">{t('dossier.duration.end', null, 'Memoria depositata')}</p>
+        <p className="dossier-duration__val">{fmtMonthYear(header.closed_at, locale)}</p>
       </div>
-      {header.duration_months && (
+      {m && (
         <div className="dossier-duration__col">
-          <p className="dossier-eyebrow">Durata del percorso</p>
-          <p className="dossier-duration__val">
-            {header.duration_months} {header.duration_months === 1 ? 'mese' : 'mesi'}
-          </p>
+          <p className="dossier-eyebrow">{t('dossier.duration.span', null, 'Durata del percorso')}</p>
+          <p className="dossier-duration__val">{monthsLabel}</p>
         </div>
       )}
     </section>
@@ -105,20 +107,22 @@ const DurationBlock = ({ header }) => {
 };
 
 // ── Capitoli del percorso ────────────────────────────────────────
-const CHAPTER_STATE = {
-  approved:           'Capitolo approvato',
-  closed:             'Capitolo chiuso',
-  presented:          'Capitolo condiviso',
-  in_progress:        'Capitolo in lavorazione',
-  revision_requested: 'Capitolo rivisitato',
-};
-
-const ChaptersBlock = ({ chapters }) => {
+const ChaptersBlock = ({ chapters, t }) => {
   if (!chapters?.length) return null;
+  const stateLabel = (status) => {
+    switch (status) {
+      case 'approved':           return t('dossier.chapter.approved', null, 'Capitolo approvato');
+      case 'closed':             return t('dossier.chapter.closed', null, 'Capitolo chiuso');
+      case 'presented':          return t('dossier.chapter.presented', null, 'Capitolo condiviso');
+      case 'in_progress':        return t('dossier.chapter.in_progress', null, 'Capitolo in lavorazione');
+      case 'revision_requested': return t('dossier.chapter.revision_requested', null, 'Capitolo rivisitato');
+      default:                   return t('dossier.chapter.default', null, 'Capitolo');
+    }
+  };
   return (
     <section className="dossier-chapters" data-testid="dossier-chapters">
-      <p className="dossier-eyebrow">I capitoli attraversati</p>
-      <h3 className="dossier-h3"><em>La sequenza del percorso</em></h3>
+      <p className="dossier-eyebrow">{t('dossier.chapters.eyebrow', null, 'I capitoli attraversati')}</p>
+      <h3 className="dossier-h3"><em>{t('dossier.chapters.title', null, 'La sequenza del percorso')}</em></h3>
       <ol className="dossier-chapters__list">
         {chapters.map((ch, i) => (
           <li key={ch.id}
@@ -129,9 +133,7 @@ const ChaptersBlock = ({ chapters }) => {
             </span>
             <div>
               <p className="dossier-chapters__title"><em>{ch.title}</em></p>
-              <p className="dossier-chapters__state">
-                {CHAPTER_STATE[ch.status] || 'Capitolo'}
-              </p>
+              <p className="dossier-chapters__state">{stateLabel(ch.status)}</p>
             </div>
           </li>
         ))}
@@ -140,8 +142,8 @@ const ChaptersBlock = ({ chapters }) => {
   );
 };
 
-// ── Before / After — usato solo per momenti realmente trasformativi ──
-const BeforeAfter = ({ pair }) => {
+// ── Before / After ──────────────────────────────────────────────
+const BeforeAfter = ({ pair, t }) => {
   const [pos, setPos] = useState(50);
   const onMove = (clientX, rect) => {
     const p = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
@@ -152,44 +154,42 @@ const BeforeAfter = ({ pair }) => {
       <div className="dossier-baf__frame"
            onMouseMove={(e) => onMove(e.clientX, e.currentTarget.getBoundingClientRect())}
            onTouchMove={(e) => onMove(e.touches[0].clientX, e.currentTarget.getBoundingClientRect())}>
-        <img src={pair.after_url} alt="Stato finale" className="dossier-baf__img dossier-baf__after" />
+        <img src={pair.after_url} alt={t('dossier.transformations.after', null, 'Stato finale')} className="dossier-baf__img dossier-baf__after" />
         <div className="dossier-baf__before-clip" style={{ width: `${pos}%` }}>
-          <img src={pair.before_url} alt="Stato preesistente" className="dossier-baf__img dossier-baf__before" />
+          <img src={pair.before_url} alt={t('dossier.transformations.before', null, 'Prima')} className="dossier-baf__img dossier-baf__before" />
         </div>
         <span className="dossier-baf__handle"
               style={{ left: `${pos}%` }}
               data-testid={`dossier-baf-handle-${pair.id}`}
               aria-hidden="true" />
-        <span className="dossier-baf__lbl dossier-baf__lbl--l">Prima</span>
-        <span className="dossier-baf__lbl dossier-baf__lbl--r">Stato finale</span>
+        <span className="dossier-baf__lbl dossier-baf__lbl--l">{t('dossier.transformations.before', null, 'Prima')}</span>
+        <span className="dossier-baf__lbl dossier-baf__lbl--r">{t('dossier.transformations.after', null, 'Stato finale')}</span>
       </div>
-      <figcaption className="dossier-baf__cap">
-        {pair.title}
-      </figcaption>
+      <figcaption className="dossier-baf__cap">{pair.title}</figcaption>
     </figure>
   );
 };
 
-const TransformationsBlock = ({ pairs }) => {
+const TransformationsBlock = ({ pairs, t }) => {
   if (!pairs?.length) return null;
   return (
     <section className="dossier-transforms" data-testid="dossier-transforms">
-      <p className="dossier-eyebrow">Trasformazioni dello spazio</p>
-      <h3 className="dossier-h3"><em>Documentazione architettonica</em></h3>
+      <p className="dossier-eyebrow">{t('dossier.transformations.eyebrow', null, 'Trasformazioni dello spazio')}</p>
+      <h3 className="dossier-h3"><em>{t('dossier.transformations.title', null, 'Documentazione architettonica')}</em></h3>
       <div className="dossier-transforms__grid">
-        {pairs.slice(0, 3).map((p) => <BeforeAfter key={p.id} pair={p} />)}
+        {pairs.slice(0, 3).map((p) => <BeforeAfter key={p.id} pair={p} t={t} />)}
       </div>
     </section>
   );
 };
 
-// ── Key Visuals — direzioni condivise, non solo immagini finali ──
-const KeyVisualsBlock = ({ items }) => {
+// ── Key Visuals ──────────────────────────────────────────────────
+const KeyVisualsBlock = ({ items, t }) => {
   if (!items?.length) return null;
   return (
     <section className="dossier-visuals" data-testid="dossier-visuals">
-      <p className="dossier-eyebrow">Direzioni condivise</p>
-      <h3 className="dossier-h3"><em>Le composizioni del percorso</em></h3>
+      <p className="dossier-eyebrow">{t('dossier.visuals.eyebrow', null, 'Direzioni condivise')}</p>
+      <h3 className="dossier-h3"><em>{t('dossier.visuals.title', null, 'Le composizioni del percorso')}</em></h3>
       <div className="dossier-visuals__grid">
         {items.slice(0, 6).map((v) => (
           <figure key={v.id} className="dossier-visual"
@@ -206,12 +206,12 @@ const KeyVisualsBlock = ({ items }) => {
 };
 
 // ── Materia iconica ─────────────────────────────────────────────
-const MaterialsBlock = ({ items }) => {
+const MaterialsBlock = ({ items, t }) => {
   if (!items?.length) return null;
   return (
     <section className="dossier-materials" data-testid="dossier-materials">
-      <p className="dossier-eyebrow">Palette materica</p>
-      <h3 className="dossier-h3"><em>La materia del progetto</em></h3>
+      <p className="dossier-eyebrow">{t('dossier.materials.eyebrow', null, 'Palette materica')}</p>
+      <h3 className="dossier-h3"><em>{t('dossier.materials.title', null, 'La materia del progetto')}</em></h3>
       <ul className="dossier-materials__list">
         {items.slice(0, 8).map((m) => (
           <li key={m.id || m.title} className="dossier-material"
@@ -234,20 +234,20 @@ const MaterialsBlock = ({ items }) => {
   );
 };
 
-// ── Pensieri preservati — read-only, no interaction ──────────────
-const PreservedVoicesBlock = ({ voices }) => {
+// ── Pensieri preservati — read-only ─────────────────────────────
+const PreservedVoicesBlock = ({ voices, t }) => {
   if (!voices?.length) return null;
   return (
     <section className="dossier-voices" data-testid="dossier-voices">
-      <p className="dossier-eyebrow">Pensieri lungo il percorso</p>
-      <h3 className="dossier-h3"><em>Le voci sedimentate</em></h3>
+      <p className="dossier-eyebrow">{t('dossier.voices.eyebrow', null, 'Pensieri lungo il percorso')}</p>
+      <h3 className="dossier-h3"><em>{t('dossier.voices.title', null, 'Le voci sedimentate')}</em></h3>
       <ul className="dossier-voices__list">
         {voices.slice(0, 8).map((v) => (
           <li key={v.id} className="dossier-voice"
               data-testid={`dossier-voice-${v.id}`}>
             <p className="dossier-voice__msg">"{v.message}"</p>
             <p className="dossier-voice__meta">
-              {v.author_name || 'Voce sul Journey'} · {v.chapter}
+              {v.author_name || t('dossier.voices.author_default', null, 'Voce sul Journey')} · {v.chapter}
             </p>
           </li>
         ))}
@@ -256,13 +256,13 @@ const PreservedVoicesBlock = ({ voices }) => {
   );
 };
 
-// ── Site Moments — momenti intermedi del cantiere ───────────────
-const SiteMomentsBlock = ({ moments }) => {
+// ── Site Moments ────────────────────────────────────────────────
+const SiteMomentsBlock = ({ moments, t }) => {
   if (!moments?.length) return null;
   return (
     <section className="dossier-moments" data-testid="dossier-moments">
-      <p className="dossier-eyebrow">Tracce del cantiere</p>
-      <h3 className="dossier-h3"><em>Momenti intermedi del percorso</em></h3>
+      <p className="dossier-eyebrow">{t('dossier.moments.eyebrow', null, 'Tracce del cantiere')}</p>
+      <h3 className="dossier-h3"><em>{t('dossier.moments.title', null, 'Momenti intermedi del percorso')}</em></h3>
       <div className="dossier-moments__grid">
         {moments.slice(0, 4).map((m) => (
           <figure key={m.id} className="dossier-moment"
@@ -279,17 +279,23 @@ const SiteMomentsBlock = ({ moments }) => {
 };
 
 // ── Closure marker ───────────────────────────────────────────────
-const ClosureMarker = ({ certified_at }) => (
+const ClosureMarker = ({ certified_at, t, locale }) => (
   <footer className="dossier-closure" data-testid="dossier-closure-marker">
     <span className="dossier-closure__rule" aria-hidden="true" />
     <p className="dossier-closure__line">
-      Memoria depositata · {fmtMonthYear(certified_at)}
+      {interp(t('dossier.closure.line', null, 'Memoria depositata · {date}'),
+              { date: fmtMonthYear(certified_at, locale) })}
     </p>
   </footer>
 );
 
 // ── Main ─────────────────────────────────────────────────────────
 const DossierSection = ({ journeyId, conversations }) => {
+  const t = useBlueprintT();
+  // We pass the active Blueprint locale through to date formatters.
+  // It's exposed via the global <html lang> attribute set in I18N-01.
+  const locale = (typeof document !== 'undefined'
+    ? document.documentElement.getAttribute('lang') : null) || 'it';
   const [dossier, setDossier] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -311,16 +317,17 @@ const DossierSection = ({ journeyId, conversations }) => {
   if (loading) {
     return (
       <div className="dossier-loading" data-testid="dossier-loading">
-        <p>Stiamo aprendo il dossier…</p>
+        <p>{t('dossier.loading', null, 'Stiamo aprendo il dossier…')}</p>
       </div>
     );
   }
   if (error || !dossier?.available) {
     return (
       <div className="dossier-empty" data-testid="dossier-empty">
-        <p className="dossier-eyebrow">Memoria del percorso</p>
+        <p className="dossier-eyebrow">{t('dossier.empty.eyebrow', null, 'Memoria del percorso')}</p>
         <p className="dossier-empty__msg">
-          Il dossier di questo Journey verrà depositato a breve.
+          {t('dossier.empty.message', null,
+             'Il dossier di questo Journey verrà depositato a breve.')}
         </p>
       </div>
     );
@@ -328,16 +335,17 @@ const DossierSection = ({ journeyId, conversations }) => {
 
   return (
     <article className="dossier-shell" data-testid="dossier-shell">
-      <DossierHero header={dossier.header} />
-      <StatementBlock statement={dossier.statement} />
-      <DurationBlock header={dossier.header} />
-      <ChaptersBlock chapters={dossier.key_chapters} />
-      <TransformationsBlock pairs={dossier.before_after_pairs} />
-      <KeyVisualsBlock items={dossier.key_visuals} />
-      <SiteMomentsBlock moments={dossier.site_moments} />
-      <MaterialsBlock items={dossier.iconic_materials} />
-      <PreservedVoicesBlock voices={conversations} />
-      <ClosureMarker certified_at={dossier.certified_at || dossier.header.closed_at} />
+      <DossierHero header={dossier.header} t={t} locale={locale} />
+      <StatementBlock statement={dossier.statement} t={t} />
+      <DurationBlock header={dossier.header} t={t} locale={locale} />
+      <ChaptersBlock chapters={dossier.key_chapters} t={t} />
+      <TransformationsBlock pairs={dossier.before_after_pairs} t={t} />
+      <KeyVisualsBlock items={dossier.key_visuals} t={t} />
+      <SiteMomentsBlock moments={dossier.site_moments} t={t} />
+      <MaterialsBlock items={dossier.iconic_materials} t={t} />
+      <PreservedVoicesBlock voices={conversations} t={t} />
+      <ClosureMarker certified_at={dossier.certified_at || dossier.header.closed_at}
+                     t={t} locale={locale} />
     </article>
   );
 };

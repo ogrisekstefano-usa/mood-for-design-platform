@@ -355,8 +355,10 @@ class TestIndexArchiveSection:
         assert "is_archived" in s
         # Has a Journey Archive section testid
         assert "client-journeys-archive-section" in s
-        assert "Journey Archive" in s
-        assert "La memoria della casa" in s
+        # I18N-02: archive section header now driven by t()+tm()
+        assert ("Journey Archive" in s or "tm('journeyArchive')" in s)
+        assert ("La memoria della casa" in s or
+                "companion.index.archive.title" in s)
 
     def test_index_auto_redirect_only_for_single_active(self):
         s = INDEX_PAGE.read_text(encoding='utf-8')

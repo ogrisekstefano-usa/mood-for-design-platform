@@ -30,24 +30,24 @@
     "ctaNew": "Nueva relación",
     "sidebarTitle": "Relaciones",
     "filters": {
-      "all":           "Todas las relaciones",
-      "new":           "Nuevas",
-      "unassigned":    "Sin asignar",
-      "follow_up":     "Seguimiento pendiente",
-      "high_intent":   "Alta intención",
+      "all": "Todas las relaciones",
+      "new": "Nuevas",
+      "unassigned": "Sin asignar",
+      "follow_up": "Seguimiento pendiente",
+      "high_intent": "Alta intención",
       "international": "Internacionales",
-      "active":        "Proyectos activos",
-      "clients":       "Clientes",
-      "archived":      "Archivadas"
+      "active": "Proyectos activos",
+      "clients": "Clientes",
+      "archived": "Archivadas"
     },
     "table": {
-      "account":   "Cuenta",
-      "type":      "Tipo",
-      "stage":     "Etapa",
-      "contact":   "Contacto principal",
+      "account": "Cuenta",
+      "type": "Tipo",
+      "stage": "Etapa",
+      "contact": "Contacto principal",
       "lastActivity": "Última actividad",
-      "open":      "Abiertos",
-      "owner":     "Responsable",
+      "open": "Abiertos",
+      "owner": "Responsable",
       "emptyFiltered": "Sin relaciones en este filtro."
     },
     "kanban": {
@@ -58,45 +58,151 @@
         "overview": "Resumen",
         "contacts": "Contactos",
         "timeline": "Cronología",
-        "actions":  "Próximos pasos"
+        "actions": "Próximos pasos"
       },
       "lastActivityPrefix": "última actividad",
-      "accountData":   "Datos de la cuenta",
-      "changeStage":   "Cambiar etapa",
-      "counters":      "Contadores",
-      "interactions":  "Interacciones",
-      "openActions":   "Abiertos",
-      "source":        "Origen",
-      "health":        "Salud",
+      "accountData": "Datos de la cuenta",
+      "changeStage": "Cambiar etapa",
+      "counters": "Contadores",
+      "interactions": "Interacciones",
+      "openActions": "Abiertos",
+      "source": "Origen",
+      "health": "Salud",
       "emptyContacts": "Sin contactos registrados.",
       "emptyTimeline": "Sin interacciones.",
-      "emptyActions":  "Sin próximos pasos abiertos.",
-      "nextStep":      "Próximo paso:",
-      "due":           "vence",
-      "stageChanged":  "Etapa actualizada",
-      "stageError":    "No se pudo cambiar la etapa.",
-      "actionError":   "Error al actualizar la acción.",
-      "loadingRelation":"Cargando relación…",
-      "markDone":      "Marcar como hecho",
-      "reopen":        "Reabrir"
+      "emptyActions": "Sin próximos pasos abiertos.",
+      "nextStep": "Próximo paso:",
+      "due": "vence",
+      "stageChanged": "Etapa actualizada",
+      "stageError": "No se pudo cambiar la etapa.",
+      "actionError": "Error al actualizar la acción.",
+      "loadingRelation": "Cargando relación…",
+      "markDone": "Marcar como hecho",
+      "reopen": "Reabrir"
     },
     "newModal": {
-      "eyebrow":      "Nueva relación",
-      "title":        "Abrir una nueva relación",
-      "accountName":  "Nombre cuenta / familia / estudio",
-      "accountType":  "Tipo de cuenta",
-      "source":       "Origen",
-      "city":         "Ciudad",
-      "firstName":    "Nombre del contacto",
-      "lastName":     "Apellido del contacto",
-      "email":        "Email",
-      "phone":        "Teléfono",
-      "notes":        "Notas iniciales (opcional)",
-      "submit":       "Crear relación",
-      "successCreated":"Relación creada.",
-      "errorCreate":  "No se pudo crear la relación.",
+      "eyebrow": "Nueva relación",
+      "title": "Abrir una nueva relación",
+      "accountName": "Nombre cuenta / familia / estudio",
+      "accountType": "Tipo de cuenta",
+      "source": "Origen",
+      "city": "Ciudad",
+      "firstName": "Nombre del contacto",
+      "lastName": "Apellido del contacto",
+      "email": "Email",
+      "phone": "Teléfono",
+      "notes": "Notas iniciales (opcional)",
+      "submit": "Crear relación",
+      "successCreated": "Relación creada.",
+      "errorCreate": "No se pudo crear la relación.",
       "errorNameRequired": "Introduce un nombre de cuenta."
     },
     "loadingAccounts": "Leyendo la memoria del estudio…"
+  },
+  "companion": {
+    "hero": {
+      "eyebrow": "Design Journey™ · Tu viaje de diseño"
+    },
+    "index": {
+      "hero": {
+        "eyebrow": "My Design Journeys™",
+        "title": "Tus viajes de diseño",
+        "lede": "Cada Journey es una conversación viva entre tú y tu estudio. Abre el que quieras habitar hoy."
+      },
+      "zero": {
+        "title": "Tu Design Journey™ está comenzando",
+        "lede": "El estudio está preparando el primer capítulo de tu viaje."
+      },
+      "active": {
+        "eyebrow": "En curso",
+        "title": "Los viajes que habitas"
+      },
+      "archive": {
+        "eyebrow": "Journey Archive™",
+        "title": "La memoria viva de la casa",
+        "lede": "Los viajes que ahora pertenecen a la memoria proyectual de la casa."
+      },
+      "count": {
+        "one": "{n} viaje",
+        "many": "{n} viajes"
+      }
+    },
+    "card": {
+      "chapter_active": "Capítulo activo",
+      "progress": "{done} de {total} capítulos aprobados",
+      "deposited_at": "Memoria depositada · {date}"
+    },
+    "section": {
+      "shared_voice": {
+        "title": "Pensamientos compartidos"
+      },
+      "evolution": {
+        "title": "El despliegue del viaje"
+      },
+      "materials": {
+        "title": "Materia y atmósfera"
+      },
+      "site_evolution": {
+        "eyebrow": "Site Evolution™",
+        "title": "La memoria viva de la obra",
+        "count": {
+          "one": "{n} momento",
+          "many": "{n} momentos"
+        }
+      }
+    },
+    "loading": "Abriendo tu Journey…"
+  },
+  "dossier": {
+    "hero": {
+      "eyebrow": "Journey Archive™"
+    },
+    "statement": {
+      "eyebrow": "Declaración del proyecto"
+    },
+    "duration": {
+      "start": "Inicio del viaje",
+      "end": "Memoria depositada",
+      "span": "Duración del viaje",
+      "months": {
+        "one": "{n} mes",
+        "many": "{n} meses"
+      }
+    },
+    "chapters": {
+      "eyebrow": "Los capítulos atravesados",
+      "title": "La secuencia del viaje"
+    },
+    "transformations": {
+      "eyebrow": "Transformaciones del espacio",
+      "title": "Documentación arquitectónica",
+      "before": "Antes",
+      "after": "Estado final"
+    },
+    "visuals": {
+      "eyebrow": "Direcciones compartidas",
+      "title": "Las composiciones del viaje"
+    },
+    "moments": {
+      "eyebrow": "Trazas de la obra",
+      "title": "Momentos intermedios del viaje"
+    },
+    "materials": {
+      "eyebrow": "Paleta material",
+      "title": "La materia del proyecto"
+    },
+    "voices": {
+      "eyebrow": "Reflexiones a lo largo del viaje",
+      "title": "Voces sedimentadas",
+      "author_default": "Una voz del Journey"
+    },
+    "closure": {
+      "line": "Memoria depositada · {date}"
+    },
+    "loading": "Abriendo el dossier…",
+    "empty": {
+      "eyebrow": "Memoria del viaje",
+      "message": "El dossier de este Journey se depositará en breve."
+    }
   }
 }

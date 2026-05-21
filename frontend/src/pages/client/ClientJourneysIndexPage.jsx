@@ -1,29 +1,34 @@
 /**
  * ClientJourneysIndexPage — My Design Journeys™ (Sprint G.7).
+ * I18N: Sprint I18N-02 — every visible string driven by Blueprint t().
  *
  * Il primo schermo del Client Portal. NON è un dashboard, è la
  * raccolta dei propri percorsi progettuali.
- *
- *   · Hero editoriale ("Il tuo percorso")
- *   · Griglia di Journey cards (cover · capitolo attivo · ultima evoluzione)
- *   · Stato zero-data: invito calmo all'attesa
  *
  * Quando esiste UN solo Journey vivo, lo apriamo direttamente (deep entry).
  */
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
+import { useT as useBlueprintT, useBlueprint } from '../../contexts/BlueprintContext';
+import { tm } from '../../i18n/translation-memory';
 import './client-companion.css';
 
-const fmtDate = (iso) => {
+const fmtDate = (iso, locale) => {
   if (!iso) return '';
   try {
-    return new Date(iso).toLocaleDateString('it-IT',
+    return new Date(iso).toLocaleDateString(locale || 'it-IT',
       { day: '2-digit', month: 'short', year: 'numeric' });
   } catch { return ''; }
 };
 
-const JourneyCard = ({ j, isArchived = false }) => {
+const interp = (s, vars) => {
+  if (!s) return s;
+  return Object.entries(vars || {}).reduce(
+    (acc, [k, v]) => acc.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v)), s);
+};
+
+const JourneyCard = ({ j, isArchived = false, t, locale }) => {
   const cover = j.cover_url;
   const chapter = j.current_chapter?.title;
   return (
@@ -47,19 +52,21 @@ const JourneyCard = ({ j, isArchived = false }) => {
         {isArchived ? (
           j.closed_at && (
             <p className="cj-jcard__chapter" style={{ opacity: 0.7 }}>
-              Memoria depositata · {fmtDate(j.closed_at)}
+              {interp(t('companion.card.deposited_at', null, 'Memoria depositata · {date}'),
+                      { date: fmtDate(j.closed_at, locale) })}
             </p>
           )
         ) : (
           <>
             {chapter && (
               <p className="cj-jcard__chapter">
-                Capitolo attivo · <em>{chapter}</em>
+                {t('companion.card.chapter_active', null, 'Capitolo attivo')} · <em>{chapter}</em>
               </p>
             )}
             {j.progress && j.progress.total_chapters > 0 && (
               <p className="cj-jcard__chapter" style={{ opacity: 0.65 }}>
-                {j.progress.approved_chapters} su {j.progress.total_chapters} capitoli approvati
+                {interp(t('companion.card.progress', null, '{done} su {total} capitoli approvati'),
+                        { done: j.progress.approved_chapters, total: j.progress.total_chapters })}
               </p>
             )}
             {j.latest_evolution && (
@@ -74,6 +81,8 @@ const JourneyCard = ({ j, isArchived = false }) => {
 
 const ClientJourneysIndexPage = () => {
   const navigate = useNavigate();
+  const t = useBlueprintT();
+  const { locale } = useBlueprint();
   const [data, setData]       = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -84,21 +93,16 @@ const ClientJourneysIndexPage = () => {
     (async () => {
       try {
         let d = await fetchOnce();
-        // Cold-login race: on first navigation right after login the tenant
-        // context may not be fully resolved yet — a single short retry on
-        // zero_data smooths the experience.
         if (alive && d?.zero_data) {
           await new Promise((r) => setTimeout(r, 700));
           if (!alive) return;
           try { d = await fetchOnce(); } catch { /* keep first response */ }
         }
         if (!alive) return;
-        // Deep entry: 1 ACTIVE Journey only → go straight to companion.
-        // Archived journeys are kept in their own section and never auto-open.
         const activeOnly = (d.journeys || []).filter((j) => !j.is_archived);
         if (!d.zero_data && activeOnly.length === 1 && (d.journeys || []).length === 1) {
           navigate(`/client/journey/${activeOnly[0].journey_id}`, { replace: true });
-          return; // keep loading=true so the welcome screen doesn't flash
+          return;
         }
         setData(d);
         setLoading(false);
@@ -121,7 +125,7 @@ const ClientJourneysIndexPage = () => {
           fontStyle: 'italic', fontSize: 17,
           color: 'color-mix(in srgb, var(--cp-text-primary) 55%, transparent)',
         }}>
-          Stiamo aprendo il tuo percorso…
+          {t('companion.loading', null, 'Stiamo aprendo il tuo Journey…')}
         </p>
       </div>
     );
@@ -131,14 +135,13 @@ const ClientJourneysIndexPage = () => {
     return (
       <div className="cj-shell" data-testid="client-journeys-empty">
         <div className="cj-welcome">
-          <p className="cj-hero__eyebrow">Design Journey Companion™</p>
+          <p className="cj-hero__eyebrow">{t('companion.hero.eyebrow', null, `${tm('designJourney')} · Companion`)}</p>
           <h1 className="cj-welcome__title">
-            Il tuo Journey sta per iniziare
+            {t('companion.index.zero.title', null, 'Il tuo Design Journey™ sta per iniziare')}
           </h1>
           <p className="cj-welcome__lede">
-            Il primo capitolo del tuo percorso progettuale verrà condiviso
-            dal tuo studio. Appena pronto, lo troverai qui — narrato passo
-            dopo passo, in attesa del tuo sguardo.
+            {t('companion.index.zero.lede', null,
+               'Lo studio sta preparando il primo capitolo del vostro percorso.')}
           </p>
         </div>
       </div>
@@ -147,6 +150,9 @@ const ClientJourneysIndexPage = () => {
 
   const active = (data.journeys || []).filter((j) => !j.is_archived);
   const archived = (data.journeys || []).filter((j) => j.is_archived);
+  const countLabel = (n) => interp(
+    t(n === 1 ? 'companion.index.count.one' : 'companion.index.count.many',
+      null, n === 1 ? '{n} percorso' : '{n} percorsi'), { n });
 
   return (
     <div className="cj-shell" data-testid="client-journeys-page">
@@ -155,13 +161,13 @@ const ClientJourneysIndexPage = () => {
         <div className="cj-hero__veil" aria-hidden="true" />
         <div className="cj-hero__noise" aria-hidden="true" />
         <div className="cj-hero__body">
-          <p className="cj-hero__eyebrow">My Design Journeys™</p>
+          <p className="cj-hero__eyebrow">{t('companion.index.hero.eyebrow', null, 'My Design Journeys™')}</p>
           <h1 className="cj-hero__title">
-            <em>I tuoi percorsi progettuali</em>
+            <em>{t('companion.index.hero.title', null, 'I tuoi percorsi progettuali')}</em>
           </h1>
           <p className="cj-hero__lede">
-            Ogni Journey racconta una conversazione viva tra te e il tuo studio.
-            Apri quello che vuoi attraversare oggi.
+            {t('companion.index.hero.lede', null,
+               'Ogni Journey racconta una conversazione viva tra te e il tuo studio. Apri quello che vuoi attraversare oggi.')}
           </p>
         </div>
       </section>
@@ -171,15 +177,15 @@ const ClientJourneysIndexPage = () => {
         <section className="cj-section" data-testid="client-journeys-grid-section">
           <div className="cj-section__head">
             <div>
-              <p className="cj-section__eyebrow">In corso</p>
-              <h2 className="cj-section__title"><em>I percorsi che stai attraversando</em></h2>
+              <p className="cj-section__eyebrow">{t('companion.index.active.eyebrow', null, 'In corso')}</p>
+              <h2 className="cj-section__title">
+                <em>{t('companion.index.active.title', null, 'I percorsi che stai attraversando')}</em>
+              </h2>
             </div>
-            <span className="cj-section__count">
-              {active.length} {active.length === 1 ? 'percorso' : 'percorsi'}
-            </span>
+            <span className="cj-section__count">{countLabel(active.length)}</span>
           </div>
           <div className="cj-grid" data-testid="client-journeys-grid">
-            {active.map((j) => <JourneyCard key={j.journey_id} j={j} />)}
+            {active.map((j) => <JourneyCard key={j.journey_id} j={j} t={t} locale={locale} />)}
           </div>
         </section>
       )}
@@ -190,18 +196,19 @@ const ClientJourneysIndexPage = () => {
                  data-testid="client-journeys-archive-section">
           <div className="cj-section__head">
             <div>
-              <p className="cj-section__eyebrow">Journey Archive</p>
-              <h2 className="cj-section__title"><em>La memoria della casa</em></h2>
+              <p className="cj-section__eyebrow">{t('companion.index.archive.eyebrow', null, tm('journeyArchive'))}</p>
+              <h2 className="cj-section__title">
+                <em>{t('companion.index.archive.title', null, 'La memoria della casa')}</em>
+              </h2>
             </div>
-            <span className="cj-section__count">
-              {archived.length} {archived.length === 1 ? 'percorso' : 'percorsi'}
-            </span>
+            <span className="cj-section__count">{countLabel(archived.length)}</span>
           </div>
           <p className="cj-archive-lede">
-            I percorsi che appartengono ora alla memoria progettuale della casa.
+            {t('companion.index.archive.lede', null,
+               'I percorsi che appartengono ora alla memoria progettuale della casa.')}
           </p>
           <div className="cj-grid" data-testid="client-journeys-archive-grid">
-            {archived.map((j) => <JourneyCard key={j.journey_id} j={j} isArchived />)}
+            {archived.map((j) => <JourneyCard key={j.journey_id} j={j} isArchived t={t} locale={locale} />)}
           </div>
         </section>
       )}

@@ -18,9 +18,10 @@ import enGB from './strings/en-GB.json';
 import esES from './strings/es-ES.json';
 import frFR from './strings/fr-FR.json';
 import deDE from './strings/de-DE.json';
+import ar   from './strings/ar.json';
 
 // ── Locale code helpers (BCP-47) ─────────────────────────────────────────
-export const SUPPORTED_LOCALES = ['it-IT', 'en-US', 'en-GB', 'es-ES', 'fr-FR', 'de-DE'];
+export const SUPPORTED_LOCALES = ['it-IT', 'en-US', 'en-GB', 'es-ES', 'fr-FR', 'de-DE', 'ar-AE'];
 export const PLATFORM_DEFAULT_LOCALE = 'it-IT';
 
 const STRINGS = {
@@ -30,6 +31,8 @@ const STRINGS = {
   'es-ES': esES,
   'fr-FR': frFR,
   'de-DE': deDE,
+  'ar-AE': ar,
+  'ar':    ar,
 };
 
 /**
