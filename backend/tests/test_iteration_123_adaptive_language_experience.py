@@ -154,6 +154,9 @@ class TestApiEndpoints:
         body = r.json()
         assert body["source_locale"] == "it"
         assert body["target_locale"] == "en-US"
+        # iter124 wraps the payload; accept either the legacy `model` field
+        # (raw translate() result) or the wrapped `translation_model`.
+        model_field = body.get("translation_model") or body.get("model")
         # Either the translation went through (translated=True + localized differs)
         # or it gracefully fell back (translated=False, localized==original).
         if body["translated"]:
@@ -161,7 +164,7 @@ class TestApiEndpoints:
             # Brand DNT must be preserved verbatim
             assert "MOOD for DESIGN" in body["localized"]
             assert "Cattelan Italia" in body["localized"]
-            assert body["model"]
+            assert model_field
         else:
             assert body["localized"] == body["original"]
 

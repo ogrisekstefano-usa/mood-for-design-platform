@@ -51,6 +51,8 @@ export const LocalizedMessage = ({
   text,
   sourceLocale,
   targetLocale,          // override; default = reader's UI locale
+  messageId,             // iter124: per-message cache anchor
+  surface = 'client_message', // iter124: client_message | milestone_note | …
   mode = 'localized_only', // 'localized_only' | 'original_only' | 'dual'
   showLabel = true,
   className = '',
@@ -72,25 +74,33 @@ export const LocalizedMessage = ({
       text,
       source_locale: sourceLocale,
       target_locale: target,
+      message_id: messageId || undefined,
+      surface,
     })
       .then((r) => { if (!cancel) setLocalized(r.data); })
-      .catch(() => { if (!cancel) setLocalized({ localized: text, translated: false }); })
+      .catch(() => { if (!cancel) setLocalized({ localized: text, translated: false, translation_cached: false }); })
       .finally(() => { if (!cancel) setLoading(false); });
     return () => { cancel = true; };
-  }, [text, sourceLocale, target, needsTranslation]);
+  }, [text, sourceLocale, target, needsTranslation, messageId, surface]);
 
   if (!text) return null;
   if (!needsTranslation) {
     return <span className={className} data-testid={testid}>{text}</span>;
   }
-  const display = localized?.localized || text;
-  const wasTranslated = localized?.translated;
+  const display = localized?.localized || localized?.localized_text || text;
+  const wasTranslated = !!localized?.translated;
+  // iter124 — cached translations should render WITHOUT the soft shimmer.
+  // Only a fresh LLM round-trip shows the loading state. After the first
+  // resolve we know `translation_cached`; the shimmer is suppressed when
+  // the variant came from cache/memory/no_op (translation_cached=true).
+  const cached = !!localized?.translation_cached;
+  const showShimmer = loading && !cached;
 
   return (
     <span className={`ale-msg ${className}`} data-testid={testid}>
-      {loading ? (
+      {showShimmer ? (
         <span className="ale-msg__loading" data-testid={`${testid}-loading`}>
-          {text}
+          <span style={shimmerStyle}>{text}</span>
         </span>
       ) : (
         <span className="ale-msg__primary" data-testid={`${testid}-primary`}>
@@ -155,27 +165,36 @@ const originalStyle = {
   color: 'var(--mood-text-muted, rgba(240,235,224,0.6))',
   fontStyle: 'italic',
 };
+// iter124 — very soft shimmer applied ONLY on fresh translations.
+// Cached variants render instantly, no shimmer, no flicker.
+const shimmerStyle = {
+  opacity: 0.55,
+  transition: 'opacity 220ms ease',
+};
 
 export default LocalizedMessage;
 
 /** Convenience hook for callers that want the raw translation result. */
-export const useLocalizedContent = (text, sourceLocale, targetLocaleOverride = null) => {
+export const useLocalizedContent = (text, sourceLocale, targetLocaleOverride = null, opts = {}) => {
   const { locale: uiLocale } = useBlueprint();
   const target = targetLocaleOverride || uiLocale;
-  const [state, setState] = useState({ localized: text, translated: false, loading: false });
+  const [state, setState] = useState({ localized: text, translated: false, loading: false, translation_cached: false });
 
   useEffect(() => {
     if (!text || !sourceLocale || sourceLocale === target) {
-      setState({ localized: text, translated: false, loading: false });
+      setState({ localized: text, translated: false, loading: false, translation_cached: true });
       return;
     }
     let cancel = false;
     setState((s) => ({ ...s, loading: true }));
-    api.post('/api/ale/localize', { text, source_locale: sourceLocale, target_locale: target })
+    api.post('/api/ale/localize', {
+      text, source_locale: sourceLocale, target_locale: target,
+      message_id: opts.messageId, surface: opts.surface || 'client_message',
+    })
       .then((r) => { if (!cancel) setState({ ...r.data, loading: false }); })
-      .catch(() => { if (!cancel) setState({ localized: text, translated: false, loading: false }); });
+      .catch(() => { if (!cancel) setState({ localized: text, translated: false, loading: false, translation_cached: false }); });
     return () => { cancel = true; };
-  }, [text, sourceLocale, target]);
+  }, [text, sourceLocale, target, opts.messageId, opts.surface]);
 
   return state;
 };

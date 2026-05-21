@@ -65,6 +65,9 @@ def _public_message(row: dict, viewer_is_client: bool) -> dict:
         "status": row.get("status"),
         "created_at": row.get("created_at"),
         "read_at": row.get("read_at"),
+        # iter124: the actual language the message was authored in,
+        # so ALE can localize without guessing.
+        "source_locale": row.get("source_locale"),
         # Sender label — client sees "Te" or assignee first_name,
         # studio members see full sender info.
         "sender_user_id": row.get("sender_user_id") if not viewer_is_client else None,
@@ -129,6 +132,7 @@ class SendReq(BaseModel):
     client_id: Optional[str] = None    # required for assignees, ignored for clients
     visibility: Optional[str] = None   # admins may post internal_only
     project_id: Optional[str] = None
+    source_locale: Optional[str] = None  # iter124: real authoring locale
 
 
 @router.post("/send")
@@ -160,6 +164,12 @@ def send_message(body: SendReq, ctx: dict = Depends(get_tenant_context)):
 
     project_id = body.project_id or _project_id_for_client(tenant_id, target_client_id)
     row_id = str(uuid.uuid4())
+    # iter124: source_locale fallback chain — explicit body → caller locale →
+    # role default. Studio members default to IT, clients to their tenant's
+    # default locale (typically EN-US for international clients).
+    src_locale = (body.source_locale or '').strip() or None
+    if not src_locale:
+        src_locale = 'it' if not _is_client(role) else (ctx.get('locale') or 'en-US')
     row = {
         "id": row_id,
         "tenant_id": tenant_id,
@@ -172,6 +182,7 @@ def send_message(body: SendReq, ctx: dict = Depends(get_tenant_context)):
         "message_type": message_type,
         "visibility": visibility,
         "status": "sent",
+        "source_locale": src_locale,
         "created_at": _now(),
     }
     c.table("client_messages").insert(row).execute()

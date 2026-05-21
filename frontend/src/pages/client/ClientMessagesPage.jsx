@@ -14,8 +14,10 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Send, Loader2, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { useBlueprint } from '../../contexts/BlueprintContext';
 
 const ClientMessagesPage = () => {
+  const { locale: uiLocale } = useBlueprint();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [draft, setDraft] = useState('');
@@ -47,7 +49,10 @@ const ClientMessagesPage = () => {
     if (text.length < 4) return;
     setSending(true);
     try {
-      await api.post('/api/client-messages/send', { message_body: text });
+      await api.post('/api/client-messages/send', {
+        message_body: text,
+        source_locale: uiLocale,  // iter124: real authoring locale
+      });
       setDraft('');
       await load();
     } catch (_) {
@@ -181,10 +186,9 @@ import LocalizedMessage from '../../components/ale/LocalizedMessage';
 const MessageRow = ({ message, assignee }) => {
   const isClient = message.message_type === 'client_message';
   const firstName = assignee?.first_name || 'Referente';
-  // Assume studio messages are authored in Italian by default; client messages
-  // in the client's reading locale. This metadata will be enriched server-side
-  // in a future iteration (per-message `source_locale` column).
-  const sourceLocale = isClient ? null : (message.source_locale || 'it');
+  // iter124: rely on server-stored `source_locale`. Fallback chain kept
+  // for legacy rows authored before column existed.
+  const sourceLocale = message.source_locale || (isClient ? null : 'it');
   return (
     <li data-testid={`client-message-${message.id}`} className="flex flex-col gap-1.5">
       <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--cp-text-muted)]">
@@ -201,6 +205,8 @@ const MessageRow = ({ message, assignee }) => {
           <LocalizedMessage
             text={message.message_body}
             sourceLocale={sourceLocale}
+            messageId={message.id}
+            surface="client_message"
             mode="localized_only"
             testid={`client-message-${message.id}-body`}
           />
