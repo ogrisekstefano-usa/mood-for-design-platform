@@ -1252,10 +1252,17 @@ def get_locale_strings(
                 overrides = ov
 
     merged = _deep_merge(base, overrides)
+    flat = _flatten(merged)
+    # Sprint JOURNEY-TAXONOMY-I18N™: embed editorial taxonomy in the bundle.
+    try:
+        from taxonomy import flatten_for_locale as _tax_flatten  # noqa: WPS433
+        flat.update(_tax_flatten(locale))
+    except Exception:
+        pass
     return {
         "locale": locale,
         "fallback": LOCALE_FALLBACK if locale not in DEFAULT_I18N else None,
-        "messages": _flatten(merged),
+        "messages": flat,
     }
 
 

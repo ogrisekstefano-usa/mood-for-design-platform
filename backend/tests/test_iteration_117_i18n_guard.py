@@ -124,7 +124,7 @@ class TestGovernanceOverlayMissingCounter:
 class TestJourneyPulsePageMigrated:
     def test_imports_useT(self):
         s = JOURNEY_PULSE.read_text(encoding='utf-8')
-        assert "import { useT }" in s or "useT } from" in s
+        assert "useT" in s and "from '../../contexts/BlueprintContext'" in s
         assert "const t = useT()" in s
 
     def test_eyebrow_uses_t(self):

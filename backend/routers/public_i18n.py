@@ -57,10 +57,19 @@ def get_public_locale_strings(
                 overrides = ov
 
     merged = _deep_merge(base, overrides)
+    flat = _flatten(merged)
+    # Sprint JOURNEY-TAXONOMY-I18N™: embed editorial taxonomy directly inside
+    # the i18n payload so the frontend `t()` resolver picks up keys like
+    # `taxonomy.journey_lifecycle_studio.in_progress` without a separate fetch.
+    try:
+        from taxonomy import flatten_for_locale as _tax_flatten  # noqa: WPS433
+        flat.update(_tax_flatten(locale))
+    except Exception:
+        pass  # taxonomy module absent or broken — fail soft, i18n still works
     return {
         "locale": locale,
         "fallback": LOCALE_FALLBACK if locale not in DEFAULT_I18N else None,
-        "messages": _flatten(merged),
+        "messages": flat,
         "scope": "public",
     }
 

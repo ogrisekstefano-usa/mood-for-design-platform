@@ -139,6 +139,9 @@ api_router.include_router(pages.router, prefix="/blueprint", tags=["blueprint-pa
 # Sprint HARDENING-I18N-GUARD™: public i18n endpoint (separate from blueprint)
 from routers import public_i18n  # noqa: E402
 api_router.include_router(public_i18n.router, prefix="/public", tags=["public-i18n"])
+# Sprint JOURNEY-TAXONOMY-I18N™: editorial taxonomy registry endpoint
+from routers import taxonomy_api  # noqa: E402
+api_router.include_router(taxonomy_api.router, prefix="/taxonomy", tags=["taxonomy"])
 api_router.include_router(navigation.router, prefix="/settings", tags=["navigation-footer"])
 api_router.include_router(forms.router, prefix="/forms", tags=["forms"])
 api_router.include_router(public.router, prefix="/public", tags=["public"])

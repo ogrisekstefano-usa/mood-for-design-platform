@@ -13,7 +13,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import api from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
-import { useT } from '../../contexts/BlueprintContext';
+import { useT, useBlueprint } from '../../contexts/BlueprintContext';
 import './journey-pulse.css';
 
 const LIFECYCLE_GLOW = {
@@ -54,17 +54,20 @@ const JourneyPulsePage = () => {
   const nav = useNavigate();
   const { user } = useAuth();
   const t = useT();
+  const { locale } = useBlueprint();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancel = false;
-    api.get('/api/dashboard/pulse')
+    // Sprint JOURNEY-TAXONOMY-I18N: pass the active locale so the backend
+    // resolves lifecycle / milestone labels via the editorial taxonomy.
+    api.get('/api/dashboard/pulse', { params: { locale } })
        .then((r) => { if (!cancel) setData(r.data); })
        .catch(() => {})
        .finally(() => { if (!cancel) setLoading(false); });
     return () => { cancel = true; };
-  }, []);
+  }, [locale]);
 
   const greet = () => {
     const h = new Date().getHours();

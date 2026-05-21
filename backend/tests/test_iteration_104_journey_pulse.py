@@ -76,19 +76,21 @@ class TestPulseEndpoint:
 # ── FRONTEND STATIC ───────────────────────────────────────────────
 class TestPulseFrontend:
     def test_page_renders_all_seven_section_titles(self):
+        """After Sprint HARDENING-I18N-GUARD (iter117), section titles live in the
+        i18n JSON dictionaries (`dashboard.pulse.sections.*.title`). The JSX
+        references them via `t()`. We verify the keys are wired, not the literals."""
         src = PULSE_JSX.read_text()
-        for snippet in [
-            "Studio Pulse™ · ritmo progettuale",
-            "I Journey vivi",
-            "Le voci di oggi",
-            "Capitoli condivisi · ancora silenziosi",
-            "Revisioni aperte",
-            "Ultime evoluzioni",
-            "Journey in attesa di una nuova voce",
-            "Da dove puoi continuare",
-            "Prossimi gesti progettuali",
+        for key in [
+            "t('dashboard.pulse.eyebrow')",
+            "t('dashboard.pulse.sections.active.title')",
+            "t('dashboard.pulse.sections.voices.title')",
+            "t('dashboard.pulse.sections.waiting.title')",
+            "t('dashboard.pulse.sections.revisions.title')",
+            "t('dashboard.pulse.sections.evolutions.title')",
+            "t('dashboard.pulse.sections.silent.title')",
+            "t('dashboard.pulse.sections.actions.title')",
         ]:
-            assert snippet in src, f"missing italian section copy: {snippet}"
+            assert key in src, f"missing i18n key wiring: {key}"
 
     def test_page_has_required_testids(self):
         src = PULSE_JSX.read_text()
@@ -125,9 +127,15 @@ class TestPulseFrontend:
         assert 'path="/dashboard/legacy"' in app
 
     def test_empty_state_invites_begin_journey_not_create_project(self):
+        """Iter117: empty-state CTA is now sourced from `dashboard.pulse.sections.active.cta`.
+        Verify the i18n key wiring and that the IT JSON still owns the canonical phrase."""
         src = PULSE_JSX.read_text()
-        assert "Inizia una conversazione progettuale" in src
+        assert "t('dashboard.pulse.sections.active.cta')" in src
         assert "/begin-journey" in src
+        # Verify the canonical IT phrase still lives in the dictionary
+        import json as _json
+        it = _json.loads((REPO / "frontend" / "src" / "i18n" / "strings" / "it-IT.json").read_text(encoding="utf-8"))
+        assert it["dashboard"]["pulse"]["sections"]["active"]["cta"] == "Inizia una conversazione progettuale"
         # ensure NO commercial CTAs
         for bad in ["Get started", "Create your first project", "Request a demo"]:
             assert bad not in src

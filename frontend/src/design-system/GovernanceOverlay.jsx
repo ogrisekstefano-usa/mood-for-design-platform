@@ -21,7 +21,7 @@
  */
 import React, { useEffect, useMemo, useState } from 'react';
 import { SEMANTIC_TOKENS, KERNEL_ID, readToken } from './kernel';
-import { getMissing, getMissingCount, subscribeMissing, clearMissing } from './missingI18nRegistry';
+import { getMissing, getMissingCount, getMissingTaxonomyCount, subscribeMissing, clearMissing } from './missingI18nRegistry';
 
 const isEnabled = () => {
   if (typeof window === 'undefined') return false;
@@ -48,6 +48,7 @@ const GovernanceOverlay = () => {
   const [active] = useState(() => isEnabled());
   const [tick, setTick] = useState(0);
   const [missingCount, setMissingCount] = useState(() => getMissingCount());
+  const [missingTaxonomyCount, setMissingTaxonomyCount] = useState(() => getMissingTaxonomyCount());
   const [missingOpen, setMissingOpen] = useState(false);
 
   // Tick once per second to keep locale/dir/theme readings fresh.
@@ -60,7 +61,10 @@ const GovernanceOverlay = () => {
   // Subscribe to live missing-translation events.
   useEffect(() => {
     if (!active) return;
-    return subscribeMissing((n) => setMissingCount(n));
+    return subscribeMissing((n) => {
+      setMissingCount(n);
+      setMissingTaxonomyCount(getMissingTaxonomyCount());
+    });
   }, [active]);
 
   const state = useMemo(() => {
@@ -146,6 +150,22 @@ const GovernanceOverlay = () => {
           {missingCount === 0 ? '0 · clean' : `${missingCount} keys ▾`}
         </span>
       </button>
+
+      {/* Sprint JOURNEY-TAXONOMY-I18N™ · separate KPI for editorial vocabulary gaps */}
+      <div
+        data-testid="governance-overlay-missing-taxonomy-row"
+        style={{
+          ...rowStyle,
+          color: missingTaxonomyCount > 0
+            ? 'var(--mood-warning, #c9a36e)'
+            : 'var(--mood-text-muted)',
+        }}
+      >
+        <span style={rowLabelStyle}>Missing taxonomy</span>
+        <span style={{ ...rowValStyle, color: 'inherit' }}>
+          {missingTaxonomyCount === 0 ? '0 · clean' : `${missingTaxonomyCount} editorial keys`}
+        </span>
+      </div>
 
       {missingOpen && missingCount > 0 && (
         <div

@@ -42,6 +42,7 @@ export function recordMissing({ key, locale, fallbackSrc = 'key-literal' }) {
       first_seen: Date.now(),
       last_seen: Date.now(),
       count: 1,
+      is_taxonomy: key.startsWith('taxonomy.') || fallbackSrc === 'taxonomy-missing',
     });
     _emit();
   }
@@ -53,6 +54,17 @@ export function getMissing() {
 
 export function getMissingCount() {
   return _missing.size;
+}
+
+/** Sprint JOURNEY-TAXONOMY-I18N · count of missing TAXONOMY keys only.
+ *  Surfaced as a separate row in the GovernanceOverlay so the editorial
+ *  vocabulary gaps are visible distinctly from generic i18n gaps. */
+export function getMissingTaxonomyCount() {
+  let n = 0;
+  for (const v of _missing.values()) {
+    if (v.is_taxonomy) n += 1;
+  }
+  return n;
 }
 
 export function clearMissing() {

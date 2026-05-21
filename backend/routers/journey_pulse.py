@@ -3,18 +3,32 @@
 NON è analytics. NON è KPI. NON è BI.
 È la dashboard editoriale che riflette dove si trova lo studio
 in questo momento dentro i propri Design Journey.
+
+Sprint JOURNEY-TAXONOMY-I18N (iter118): labels now resolved via the
+editorial taxonomy registry — accepts `?locale=` to render in the active
+language. Backward compatible: default locale = 'it' keeps legacy behavior.
 """
 from datetime import datetime, timezone, timedelta
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from collections import defaultdict
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 
 from database import db
 from core.tenant_context import get_tenant_context
 from routers.milestone_dialogue import FEEDBACK_LABEL, FEEDBACK_TONE
+from taxonomy import resolve as resolve_taxonomy
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard-pulse"])
+
+# Maps backend `milestone_type` (technical enum) to a taxonomy.journey_milestone
+# key. Centralised here so the editorial layer is the single source of labels.
+MILESTONE_TYPE_TO_TAXONOMY_KEY = {
+    "brief":              "client_brief",
+    "inspirations":       "inspirations_alignment",
+    "moodboard_direction":"moodboard_direction",
+    "material_direction": "material_direction",
+}
 
 MILESTONE_LABEL = {
     "brief":              "Brief Cliente™",
@@ -41,8 +55,24 @@ LIFECYCLE_LABEL = {
 }
 
 
-def _label_for(m_type: str) -> str:
+def _label_for(m_type: str, locale: str = "it") -> str:
+    """Editorial label for a milestone_type. Prefers the taxonomy registry
+    when the milestone_type maps to a taxonomy key; falls back to the
+    legacy IT-only dictionary for milestones not yet in the registry."""
+    tax_key = MILESTONE_TYPE_TO_TAXONOMY_KEY.get(m_type)
+    if tax_key:
+        return resolve_taxonomy("journey_milestone", tax_key, locale,
+                                fallback=MILESTONE_LABEL.get(m_type, m_type))
     return MILESTONE_LABEL.get(m_type, m_type or "Pietra miliare")
+
+
+def _lifecycle_label_for(lifecycle: str, locale: str = "it") -> str:
+    """Editorial label for a journey lifecycle. Always goes through the
+    taxonomy registry (studio narration variant)."""
+    return resolve_taxonomy(
+        "journey_lifecycle_studio", lifecycle, locale,
+        fallback=LIFECYCLE_LABEL.get(lifecycle, "Viaggio in corso"),
+    )
 
 
 def _days_since(iso: str | None) -> int | None:
@@ -58,8 +88,8 @@ def _voice_phrase(kind: str | None) -> str:
     return FEEDBACK_LABEL.get(kind or "", "Una voce è arrivata")
 
 
-def _suggested_action(milestone_type: str, lifecycle: str) -> str:
-    base = _label_for(milestone_type)
+def _suggested_action(milestone_type: str, lifecycle: str, locale: str = "it") -> str:
+    base = _label_for(milestone_type, locale)
     if lifecycle == "conversation_open":
         return f"Apri il dialogo · {base}"
     if lifecycle == "presenting":
@@ -72,7 +102,10 @@ def _suggested_action(milestone_type: str, lifecycle: str) -> str:
 
 
 @router.get("/pulse")
-def pulse(ctx: dict = Depends(get_tenant_context)):
+def pulse(
+    ctx: dict = Depends(get_tenant_context),
+    locale: str = Query("it", description="Editorial taxonomy locale (it/en-US/...)"),
+):
     c   = db()
     tid = ctx["tenant_id"]
     now = datetime.now(timezone.utc)
@@ -172,12 +205,15 @@ def pulse(ctx: dict = Depends(get_tenant_context)):
             "project_id":      j["project_id"],
             "account_name":    accounts_by_id.get(j.get("account_id") or "") or "—",
             "lifecycle_state": lifecycle,
-            "lifecycle_label": LIFECYCLE_LABEL.get(lifecycle, "Viaggio in corso"),
+            "lifecycle_key":   lifecycle,  # taxonomy.journey_lifecycle_studio.{key}
+            "lifecycle_label": _lifecycle_label_for(lifecycle, locale),
             "current_milestone": current and {
                 "id":     current["id"],
                 "type":   current["milestone_type"],
-                "label":  _label_for(current["milestone_type"]),
+                "taxonomy_key": MILESTONE_TYPE_TO_TAXONOMY_KEY.get(current["milestone_type"]),
+                "label":  _label_for(current["milestone_type"], locale),
                 "status": current["status"],
+                "status_key": current["status"],  # taxonomy.step_status.{key}
             },
             "progress":         progress,
             "milestones_done":  completed,
@@ -202,8 +238,8 @@ def pulse(ctx: dict = Depends(get_tenant_context)):
                 "journey_id":  j["id"],
                 "project_id":  j["project_id"],
                 "account":     entry["account_name"],
-                "milestone":   _label_for(current["milestone_type"]),
-                "suggestion":  _suggested_action(current["milestone_type"], lifecycle),
+                "milestone":   _label_for(current["milestone_type"], locale),
+                "suggestion":  _suggested_action(current["milestone_type"], lifecycle, locale),
             })
 
     # ── 2 · VOICES TODAY ─────────────────────────────────────────
@@ -221,7 +257,7 @@ def pulse(ctx: dict = Depends(get_tenant_context)):
             "journey_id":   jid,
             "project_id":   journey_pids.get(jid),
             "account":      account_name_for_journey(jid),
-            "milestone":    _label_for(m["milestone_type"]),
+            "milestone":    _label_for(m["milestone_type"], locale),
             "voice_phrase": _voice_phrase(kind),
             "tone":         FEEDBACK_TONE.get(kind, "voice"),
             "quote":        (f.get("quote") or "")[:200],
@@ -249,7 +285,7 @@ def pulse(ctx: dict = Depends(get_tenant_context)):
             "journey_id":    jid,
             "project_id":    journey_pids.get(jid),
             "account":       account_name_for_journey(jid),
-            "milestone":     _label_for(m["milestone_type"]),
+            "milestone":     _label_for(m["milestone_type"], locale),
             "chapter_title": last_chap.get("title") or "Capitolo",
             "since_days":    wait_days,
             "presented_at":  chap_when,
@@ -277,7 +313,7 @@ def pulse(ctx: dict = Depends(get_tenant_context)):
             "journey_id":   jid,
             "project_id":   journey_pids.get(jid),
             "account":      account_name_for_journey(jid),
-            "milestone":    _label_for(m["milestone_type"]),
+            "milestone":    _label_for(m["milestone_type"], locale),
             "voice_phrase": _voice_phrase(kind),
             "quote":        (f.get("quote") or "")[:200],
             "when":         f.get("created_at"),
@@ -299,7 +335,7 @@ def pulse(ctx: dict = Depends(get_tenant_context)):
             "journey_id":  jid,
             "project_id":  journey_pids.get(jid),
             "account":     account_name_for_journey(jid),
-            "milestone":   _label_for(m["milestone_type"]),
+            "milestone":   _label_for(m["milestone_type"], locale),
             "chapter":     v.get("title") or "Capitolo",
             "chapter_kind": v.get("chapter_kind"),
             "when":        v.get("created_at"),

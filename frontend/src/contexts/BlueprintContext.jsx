@@ -411,4 +411,32 @@ export const useT = () => {
   return t;
 };
 
+/**
+ * Sprint JOURNEY-TAXONOMY-I18N™ · useTaxonomy(type, key) helper.
+ *
+ * Resolves an editorial taxonomy label via the i18n bundle. The taxonomy
+ * is embedded in the backend i18n payload under `taxonomy.{type}.{key}`,
+ * so this is really a thin convenience wrapper over `t()` with two
+ * differences:
+ *   1. It returns `null` (not the key literal) when the entry is missing,
+ *      letting callers decide whether to render a placeholder.
+ *   2. It tags any missing taxonomy lookup with `fallbackSrc='taxonomy-missing'`
+ *      so the GovernanceOverlay can count taxonomy gaps separately from
+ *      generic i18n misses.
+ */
+export const useTaxonomy = (type, key) => {
+  const { messages, locale } = useBlueprint();
+  if (!type || !key) return null;
+  const dotted = `taxonomy.${type}.${key}`;
+  const val = messages[dotted];
+  if (val) return val;
+  // Record as a taxonomy-specific missing entry.
+  try {
+    // eslint-disable-next-line global-require
+    const { recordMissing } = require('../design-system/missingI18nRegistry');
+    recordMissing({ key: dotted, locale, fallbackSrc: 'taxonomy-missing' });
+  } catch (_) { /* noop */ }
+  return null;
+};
+
 export default BlueprintContext;
