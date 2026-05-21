@@ -148,6 +148,9 @@ api_router.include_router(ale_api.router, prefix="/ale", tags=["adaptive-languag
 # Sprint ITER125 · Studio Voice™ — editorial language identity
 from routers import voice_api  # noqa: E402
 api_router.include_router(voice_api.router, prefix="/voice", tags=["studio-voice"])
+# Sprint ITER127 · Language Command Center™ — runtime UI copy governance
+from routers import language_api  # noqa: E402
+api_router.include_router(language_api.router, prefix="/language", tags=["language-cc"])
 api_router.include_router(navigation.router, prefix="/settings", tags=["navigation-footer"])
 api_router.include_router(forms.router, prefix="/forms", tags=["forms"])
 api_router.include_router(public.router, prefix="/public", tags=["public"])

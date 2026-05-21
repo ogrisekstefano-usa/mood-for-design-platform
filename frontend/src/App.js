@@ -36,6 +36,7 @@ const MarketMatrixPage = lazy(() => import('./pages/governance/MarketMatrixPage'
 const MarketInsightsPage = lazy(() => import('./pages/governance/MarketInsightsPage'));
 const BrandVoiceAdaptersPage = lazy(() => import('./pages/governance/BrandVoiceAdaptersPage'));
 const StudioVoicePage = lazy(() => import('./pages/blueprint/StudioVoicePage'));
+const LanguageCommandCenter = lazy(() => import('./pages/blueprint/LanguageCommandCenter'));
 const CrmAccountsPage = lazy(() => import('./pages/crm/CrmAccountsPage'));
 const AccountDetailPage = lazy(() => import('./pages/crm/AccountDetailPage'));
 const CulturalEditionsListPage = lazy(() => import('./pages/cultural/CulturalEditionsListPage'));
@@ -405,6 +406,7 @@ function App() {
                   <Route path="/blueprint/intelligence" element={<StudioAdminRoute><MarketInsightsPage /></StudioAdminRoute>} />
                   <Route path="/blueprint/voice" element={<StudioAdminRoute><BrandVoiceAdaptersPage /></StudioAdminRoute>} />
                   <Route path="/blueprint/studio-voice" element={<StudioAdminRoute><StudioVoicePage /></StudioAdminRoute>} />
+                  <Route path="/blueprint/language" element={<StudioAdminRoute><LanguageCommandCenter /></StudioAdminRoute>} />
 
                   {/* CRM routes (tab + optional account_id deep-link) */}
                   <Route path="/crm" element={<Navigate to="/crm/accounts" replace />} />
