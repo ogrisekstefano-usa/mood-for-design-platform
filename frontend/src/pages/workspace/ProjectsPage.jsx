@@ -16,7 +16,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api, { formatError } from '../../lib/api';
-import { useBlueprint } from '../../contexts/BlueprintContext';
+import { useBlueprint, useTaxonomy } from '../../contexts/BlueprintContext';
 import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
 import { useLicense, refreshLicense } from '../../hooks/useLicense';
 import UsageChip from '../../components/common/UsageChip';
@@ -24,19 +24,34 @@ import { toast } from 'sonner';
 import { Plus, MapPin, Lock, Compass, ArrowUpRight, Layers } from 'lucide-react';
 import './projects-page.css';
 
-// ── Editorial Italian status labels & cinematic tones ────────────
-const STATUS_META = {
-  new:                  { label: 'Brief in apertura',       tone: 'cyan'    },
-  in_review:            { label: 'In revisione',            tone: 'amber'   },
-  brief_completed:      { label: 'Brief consolidato',       tone: 'cyan'    },
-  proposal_in_progress: { label: 'Direzione in lavorazione', tone: 'warm'   },
-  proposal_sent:        { label: 'Direzione presentata',    tone: 'cyan'    },
-  approved:             { label: 'Direzione approvata',     tone: 'success' },
-  won:                  { label: 'Progetto vinto',          tone: 'success' },
-  rejected:             { label: 'Direzione rifiutata',     tone: 'rose'    },
-  lost:                 { label: 'Progetto chiuso',         tone: 'closed'  },
-  archived:             { label: 'Archiviato',              tone: 'closed'  },
+// ── Status TONE map (visual only; labels come from taxonomy registry) ──
+// Editorial Italian labels live in /app/backend/taxonomy/__init__.py
+// under `journey_lifecycle_studio` and are pulled at render time via
+// useTaxonomy(). This keeps the tone here (visual concern) and the
+// editorial vocabulary in the governance layer.
+//
+// Mapping: STATUS_TONE[backend_status] = { tone, taxonomy_key }
+const STATUS_TONE = {
+  new:                  { tone: 'cyan',    taxonomy_key: 'conversation_open' },
+  in_review:            { tone: 'amber',   taxonomy_key: 'drifting' },
+  brief_completed:      { tone: 'cyan',    taxonomy_key: 'in_progress' },
+  proposal_in_progress: { tone: 'warm',    taxonomy_key: 'in_progress' },
+  proposal_sent:        { tone: 'cyan',    taxonomy_key: 'presenting' },
+  approved:             { tone: 'success', taxonomy_key: 'approved' },
+  won:                  { tone: 'success', taxonomy_key: 'approved' },
+  rejected:             { tone: 'rose',    taxonomy_key: 'abandoned' },
+  lost:                 { tone: 'closed',  taxonomy_key: 'abandoned' },
+  archived:             { tone: 'closed',  taxonomy_key: 'closed' },
 };
+
+// Helper: derive the editorial label for a project status. Used inside
+// components that have access to the `t()` function (it() messages).
+const labelForStatus = (status, t) => {
+  const meta = STATUS_TONE[status];
+  if (!meta) return status;
+  return t(`taxonomy.journey_lifecycle_studio.${meta.taxonomy_key}`, null, status);
+};
+const toneForStatus = (status) => STATUS_TONE[status]?.tone || 'neutral';
 
 // Color name → swatch hex (editorial palette). Maps the brief vocabulary
 // (earth, olive, bronze, …) to subtle real swatches for the preview dots.
@@ -83,23 +98,25 @@ const swatch = (name) => {
   return PALETTE_SWATCH[k] || '#5a5a5a';
 };
 
-const formatRelative = (iso) => {
+const formatRelative = (iso, t) => {
   if (!iso) return null;
   try {
-    const t = new Date(iso).getTime();
+    const ts = new Date(iso).getTime();
     const now = Date.now();
-    const sec = Math.floor((now - t) / 1000);
-    if (sec < 60) return 'pochi istanti fa';
-    if (sec < 3600) return `${Math.floor(sec / 60)} min fa`;
-    if (sec < 86400) return `${Math.floor(sec / 3600)} ore fa`;
-    if (sec < 86400 * 7) return `${Math.floor(sec / 86400)} giorni fa`;
-    return new Date(iso).toLocaleDateString('it-IT', { day: '2-digit', month: 'short' });
+    const sec = Math.floor((now - ts) / 1000);
+    if (sec < 60)         return t('common.time.moments_ago',  null, 'pochi istanti fa');
+    if (sec < 3600)       return t('common.time.minutes_ago',  { n: Math.floor(sec / 60) },    '{n} min fa');
+    if (sec < 86400)      return t('common.time.hours_ago',    { n: Math.floor(sec / 3600) },  '{n} ore fa');
+    if (sec < 86400 * 7)  return t('common.time.days_ago',     { n: Math.floor(sec / 86400) }, '{n} giorni fa');
+    return new Date(iso).toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
   } catch { return null; }
 };
 
 // ── Editorial Project Card ───────────────────────────────────────
 const ProjectCard = ({ project, index }) => {
-  const meta = STATUS_META[project.status] || STATUS_META.new;
+  const { t } = useBlueprint();
+  const tone = toneForStatus(project.status);
+  const label = labelForStatus(project.status, t);
   const payload = project?.metadata_json?.onboarding_payload || {};
   const colors    = (payload.colors    || []).slice(0, 5);
   const moods     = (payload.moods     || []).slice(0, 2);
@@ -116,7 +133,7 @@ const ProjectCard = ({ project, index }) => {
     <Link
       to={`/workspace/projects/${project.id}`}
       data-testid={`project-card-${index}`}
-      className={`pcard pcard--${meta.tone}`}
+      className={`pcard pcard--${tone}`}
     >
       {/* Status glow rail */}
       <span aria-hidden="true" className="pcard__glow" />
@@ -124,7 +141,7 @@ const ProjectCard = ({ project, index }) => {
       <div className="pcard__top">
         <span className="pcard__status" data-testid={`project-card-${index}-status`}>
           <span className="pcard__status-dot" />
-          {meta.label}
+          {label}
         </span>
         {project.project_type && (
           <span className="pcard__type">{project.project_type}</span>
@@ -136,7 +153,7 @@ const ProjectCard = ({ project, index }) => {
       </h3>
 
       {clientName && (
-        <p className="pcard__client">Per · {clientName}</p>
+        <p className="pcard__client">{t('projects.card.for_client', { name: clientName }, 'Per · {name}')}</p>
       )}
 
       {/* Palette preview — colored dots from the client brief */}
@@ -165,11 +182,11 @@ const ProjectCard = ({ project, index }) => {
 
       <div className="pcard__foot">
         <span className="pcard__time">
-          {updated ? `Ultimo movimento · ${formatRelative(updated)}` : '\u00A0'}
+          {updated ? t('projects.card.last_movement', { when: formatRelative(updated, t) }, 'Ultimo movimento · {when}') : '\u00A0'}
         </span>
         <span className="pcard__cta">
           <Compass size={11} strokeWidth={1.4} />
-          Continua il viaggio
+          {t('projects.card.continue_journey', null, 'Continua il viaggio')}
           <ArrowUpRight size={11} strokeWidth={1.4} />
         </span>
       </div>
@@ -286,15 +303,15 @@ const ProjectsPage = () => {
         </div>
         <div className="ppage__actions">
           {license && (
-            <UsageChip label="Progetti" current={cap.current} limit={cap.limit}
+            <UsageChip label={t('projects.usage_label', null, 'Progetti')} current={cap.current} limit={cap.limit}
                        unlimited={cap.unlimited} atCap={cap.atCap} nearCap={cap.nearCap}
                        testid="projects-usage-chip" />
           )}
           <button data-testid="new-project-btn" onClick={onCta}
             className={`ppage__cta ${cap.atCap ? 'ppage__cta--lock' : ''}`}>
             {cap.atCap
-              ? (<><Lock size={12} strokeWidth={1.8} /> Upgrade per crearne altri</>)
-              : (<><Plus size={14} strokeWidth={1.4} /> {runtime.copy('projects.new.cta') || 'Nuovo progetto'}</>)}
+              ? (<><Lock size={12} strokeWidth={1.8} /> {t('projects.actions.upgrade_for_more', null, 'Upgrade per crearne altri')}</>)
+              : (<><Plus size={14} strokeWidth={1.4} /> {runtime.copy('projects.new.cta') || t('projects.newProject', null, 'Nuovo progetto')}</>)}
           </button>
         </div>
       </header>
@@ -303,7 +320,7 @@ const ProjectsPage = () => {
         {tabs.map((tk) => (
           <button key={tk || 'all'} data-testid={`tab-${tk || 'all'}`} onClick={() => setTab(tk)}
             className={`ppage__tab ${tab === tk ? 'is-active' : ''}`}>
-            {tk ? (STATUS_META[tk]?.label || tk) : 'Tutti'}
+            {tk ? labelForStatus(tk, t) : t('projects.tabs.all', null, 'Tutti')}
           </button>
         ))}
       </div>
@@ -316,13 +333,15 @@ const ProjectsPage = () => {
         <div className="ppage__empty" data-testid="projects-empty">
           <Layers size={36} strokeWidth={1} />
           <h3 data-testid="projects-empty-title">
-            {runtime.copy('projects.empty.title') || 'Nessun viaggio progettuale ancora aperto'}
+            {runtime.copy('projects.empty.title') || t('projects.empty.title', null, 'Nessun viaggio progettuale ancora aperto')}
           </h3>
           <p data-testid="projects-empty-subtitle">
-            {runtime.copy('projects.empty.subtitle') || 'Apri il primo capitolo del tuo studio.'}
+            {runtime.copy('projects.empty.subtitle') || t('projects.empty.subtitle', null, 'Apri il primo capitolo del tuo studio.')}
           </p>
           <button onClick={onCta} data-testid="projects-empty-cta" className="ppage__cta ppage__cta--ghost">
-            {cap.atCap ? 'Aggiorna il piano' : '+ Apri il primo viaggio'}
+            {cap.atCap
+              ? t('projects.actions.upgrade_plan', null, 'Aggiorna il piano')
+              : t('projects.empty.open_first_journey', null, '+ Apri il primo viaggio')}
           </button>
         </div>
       ) : (

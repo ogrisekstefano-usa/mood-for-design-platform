@@ -18,7 +18,14 @@
     "primary": "أساسي",
     "none": "—",
     "assigned": "مُعيَّن",
-    "unassigned": "غير مُعيَّن"
+    "unassigned": "غير مُعيَّن",
+    "time": {
+      "moments_ago": "قبل لحظات",
+      "minutes_ago": "قبل {n} دقيقة",
+      "hours_ago": "قبل {n} ساعة",
+      "days_ago": "قبل {n} أيام"
+    },
+    "workspace": "Workspace"
   },
   "relationships": {
     "eyebrow": "نظام العلاقات",
@@ -106,7 +113,42 @@
   },
   "nav": {
     "settings": "الإعدادات",
-    "settings.brand": "هوية الاستوديو"
+    "settings.brand": "هوية الاستوديو",
+    "section": {
+      "home": "الرئيسية",
+      "design_journey": "Design Journey",
+      "curatorial_atlas": "Curatorial Atlas",
+      "client_relations": "العلاقات مع العملاء",
+      "content_studio": "Content Studio",
+      "studio_os": "Studio OS",
+      "platform": "المنصة"
+    },
+    "studio_pulse": "Studio Pulse",
+    "your_journeys": "رحلاتك",
+    "begin_journey": "ابدأ Journey",
+    "inspirations": "Inspirations",
+    "brand_atlas": "Brand Atlas",
+    "material_view": "Material View",
+    "media_library": "مكتبة الوسائط",
+    "cultural_editions": "Cultural Editions",
+    "accounts": "الحسابات",
+    "open_voices": "أصوات مفتوحة",
+    "memory": "الذاكرة",
+    "editorial_calendar": "Editorial Calendar",
+    "magazine": "المجلة",
+    "design_stories": "Design Stories",
+    "publishing_queue": "قائمة النشر",
+    "market_matrix": "Market Matrix",
+    "web_presence": "الحضور الرقمي",
+    "team": "الفريق",
+    "insights": "Insights",
+    "studio_identity": "Studio Identity",
+    "forms_journeys": "Forms & Journeys",
+    "integrations": "التكاملات",
+    "billing": "الفوترة",
+    "super_admin": "Super Admin",
+    "expand": "توسيع",
+    "collapse": "طي"
   },
   "companion": {
     "hero": {
@@ -300,5 +342,26 @@
       "success": "تدخل الرحلة الآن في ذاكرة البيت.",
       "error": "تعذّر إيداع الدوسيه."
     }
+  },
+  "projects": {
+    "tabs": {
+      "all": "الكل"
+    },
+    "card": {
+      "last_movement": "آخر حركة · {when}",
+      "continue_journey": "تابع الرحلة",
+      "for_client": "لـ · {name}"
+    },
+    "empty": {
+      "title": "لم تُفتح بعد أي رحلة مشروع",
+      "subtitle": "افتح الفصل الأول من استوديوك.",
+      "open_first_journey": "+ افتح أول رحلة"
+    },
+    "actions": {
+      "upgrade_plan": "ترقية الخطة",
+      "upgrade_for_more": "رقّ خطتك لإنشاء المزيد"
+    },
+    "usage_label": "المشاريع",
+    "newProject": "مشروع جديد"
   }
 }

@@ -18,7 +18,14 @@
     "primary": "Primär",
     "none": "—",
     "assigned": "zugewiesen",
-    "unassigned": "nicht zugewiesen"
+    "unassigned": "nicht zugewiesen",
+    "time": {
+      "moments_ago": "vor einem Moment",
+      "minutes_ago": "vor {n} Min.",
+      "hours_ago": "vor {n} Std.",
+      "days_ago": "vor {n} Tagen"
+    },
+    "workspace": "Workspace"
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -291,5 +298,64 @@
       "success": "Die Reise geht nun in die Erinnerung des Hauses ein.",
       "error": "Das Dossier konnte nicht hinterlegt werden."
     }
+  },
+  "nav": {
+    "section": {
+      "home": "Start",
+      "design_journey": "Design Journey",
+      "curatorial_atlas": "Curatorial Atlas",
+      "client_relations": "Kundenbeziehungen",
+      "content_studio": "Content Studio",
+      "studio_os": "Studio OS",
+      "platform": "Plattform"
+    },
+    "studio_pulse": "Studio Pulse",
+    "your_journeys": "Deine Journeys",
+    "begin_journey": "Journey eröffnen",
+    "inspirations": "Inspirations",
+    "brand_atlas": "Brand Atlas",
+    "material_view": "Material View",
+    "media_library": "Medienbibliothek",
+    "cultural_editions": "Cultural Editions",
+    "accounts": "Konten",
+    "open_voices": "Offene Stimmen",
+    "memory": "Erinnerung",
+    "editorial_calendar": "Editorial Calendar",
+    "magazine": "Magazine",
+    "design_stories": "Design Stories",
+    "publishing_queue": "Publishing Queue",
+    "market_matrix": "Market Matrix",
+    "web_presence": "Web Presence",
+    "team": "Team",
+    "insights": "Insights",
+    "studio_identity": "Studio Identity",
+    "forms_journeys": "Forms & Journeys",
+    "integrations": "Integrationen",
+    "billing": "Abrechnung",
+    "settings": "Einstellungen",
+    "super_admin": "Super Admin",
+    "expand": "Ausklappen",
+    "collapse": "Einklappen"
+  },
+  "projects": {
+    "tabs": {
+      "all": "Alle"
+    },
+    "card": {
+      "last_movement": "Letzte Bewegung · {when}",
+      "continue_journey": "Die Reise fortsetzen",
+      "for_client": "Für · {name}"
+    },
+    "empty": {
+      "title": "Noch keine Projektreise eröffnet",
+      "subtitle": "Eröffne das erste Kapitel deines Studios.",
+      "open_first_journey": "+ Erste Reise eröffnen"
+    },
+    "actions": {
+      "upgrade_plan": "Plan upgraden",
+      "upgrade_for_more": "Upgraden, um weitere zu erstellen"
+    },
+    "usage_label": "Projekte",
+    "newProject": "Neues Projekt"
   }
 }

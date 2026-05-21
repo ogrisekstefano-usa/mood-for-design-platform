@@ -18,7 +18,14 @@
     "primary": "Primary",
     "none": "—",
     "assigned": "assigned",
-    "unassigned": "unassigned"
+    "unassigned": "unassigned",
+    "time": {
+      "moments_ago": "moments ago",
+      "minutes_ago": "{n} min ago",
+      "hours_ago": "{n} hours ago",
+      "days_ago": "{n} days ago"
+    },
+    "workspace": "Workspace"
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -223,21 +230,57 @@
         "revisions_open": "{n} revisions open"
       },
       "sections": {
-        "active":     { "eyebrow": "Dominant section",            "title": "Journeys unfolding", "empty": "The studio is awaiting its first journey.", "cta": "Open a project conversation" },
-        "voices":     { "eyebrow": "Latest gestures",              "title": "Today's voices" },
-        "waiting":    { "eyebrow": "Awaiting a voice",             "title": "Chapters shared · still silent" },
-        "revisions":  { "eyebrow": "A new direction is waiting",   "title": "Revisions open" },
-        "evolutions": { "eyebrow": "Last 7 days",                  "title": "Recent evolutions" },
-        "silent":     { "eyebrow": "In silence",                   "title": "Journeys awaiting a new voice" },
-        "actions":    { "eyebrow": "Next project gestures",        "title": "Where you can continue" }
+        "active": {
+          "eyebrow": "Dominant section",
+          "title": "Journeys unfolding",
+          "empty": "The studio is awaiting its first journey.",
+          "cta": "Open a project conversation"
+        },
+        "voices": {
+          "eyebrow": "Latest gestures",
+          "title": "Today's voices"
+        },
+        "waiting": {
+          "eyebrow": "Awaiting a voice",
+          "title": "Chapters shared · still silent"
+        },
+        "revisions": {
+          "eyebrow": "A new direction is waiting",
+          "title": "Revisions open"
+        },
+        "evolutions": {
+          "eyebrow": "Last 7 days",
+          "title": "Recent evolutions"
+        },
+        "silent": {
+          "eyebrow": "In silence",
+          "title": "Journeys awaiting a new voice"
+        },
+        "actions": {
+          "eyebrow": "Next project gestures",
+          "title": "Where you can continue"
+        }
       },
-      "card":   { "last_voice": "Last voice · {when}", "opening": "Opening" },
-      "action": { "open_journey": "Open the Journey", "presented_relative": "presented {when}" },
-      "relative": { "today": "today", "yesterday": "yesterday", "days_ago": "{n} days ago" }
+      "card": {
+        "last_voice": "Last voice · {when}",
+        "opening": "Opening"
+      },
+      "action": {
+        "open_journey": "Open the Journey",
+        "presented_relative": "presented {when}"
+      },
+      "relative": {
+        "today": "today",
+        "yesterday": "yesterday",
+        "days_ago": "{n} days ago"
+      }
     }
   },
   "errors": {
-    "notFound": { "code": "404", "title": "This page does not exist." }
+    "notFound": {
+      "code": "404",
+      "title": "This page does not exist."
+    }
   },
   "closure": {
     "inline": {
@@ -255,5 +298,64 @@
       "success": "The journey now enters the memory of the home.",
       "error": "It was not possible to deposit the dossier."
     }
+  },
+  "nav": {
+    "section": {
+      "home": "Home",
+      "design_journey": "Design Journey",
+      "curatorial_atlas": "Curatorial Atlas",
+      "client_relations": "Client Relations",
+      "content_studio": "Content Studio",
+      "studio_os": "Studio OS",
+      "platform": "Platform"
+    },
+    "studio_pulse": "Studio Pulse",
+    "your_journeys": "Your Journeys",
+    "begin_journey": "Begin a Journey",
+    "inspirations": "Inspirations",
+    "brand_atlas": "Brand Atlas",
+    "material_view": "Material View",
+    "media_library": "Media Library",
+    "cultural_editions": "Cultural Editions",
+    "accounts": "Accounts",
+    "open_voices": "Open voices",
+    "memory": "Memory",
+    "editorial_calendar": "Editorial Calendar",
+    "magazine": "Magazine",
+    "design_stories": "Design Stories",
+    "publishing_queue": "Publishing Queue",
+    "market_matrix": "Market Matrix",
+    "web_presence": "Web Presence",
+    "team": "Team",
+    "insights": "Insights",
+    "studio_identity": "Studio Identity",
+    "forms_journeys": "Forms & Journeys",
+    "integrations": "Integrations",
+    "billing": "Billing",
+    "settings": "Settings",
+    "super_admin": "Super Admin",
+    "expand": "Expand",
+    "collapse": "Collapse"
+  },
+  "projects": {
+    "tabs": {
+      "all": "All"
+    },
+    "card": {
+      "last_movement": "Last movement · {when}",
+      "continue_journey": "Continue the journey",
+      "for_client": "For · {name}"
+    },
+    "empty": {
+      "title": "No project journey opened yet",
+      "subtitle": "Open the first chapter of your studio.",
+      "open_first_journey": "+ Open the first journey"
+    },
+    "actions": {
+      "upgrade_plan": "Upgrade plan",
+      "upgrade_for_more": "Upgrade to create more"
+    },
+    "usage_label": "Projects",
+    "newProject": "New project"
   }
 }

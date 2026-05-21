@@ -18,7 +18,14 @@
     "primary": "Primario",
     "none": "—",
     "assigned": "assegnata",
-    "unassigned": "non assegnata"
+    "unassigned": "non assegnata",
+    "time": {
+      "moments_ago": "pochi istanti fa",
+      "minutes_ago": "{n} min fa",
+      "hours_ago": "{n} ore fa",
+      "days_ago": "{n} giorni fa"
+    },
+    "workspace": "Workspace"
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -229,12 +236,30 @@
           "empty": "Lo studio è in attesa del primo viaggio.",
           "cta": "Inizia una conversazione progettuale"
         },
-        "voices":     { "eyebrow": "Negli ultimi gesti",          "title": "Le voci di oggi" },
-        "waiting":    { "eyebrow": "In attesa di voce",            "title": "Capitoli condivisi · ancora silenziosi" },
-        "revisions":  { "eyebrow": "Una nuova direzione attende",  "title": "Revisioni aperte" },
-        "evolutions": { "eyebrow": "Ultimi 7 giorni",              "title": "Ultime evoluzioni" },
-        "silent":     { "eyebrow": "In silenzio",                  "title": "Journey in attesa di una nuova voce" },
-        "actions":    { "eyebrow": "Prossimi gesti progettuali",   "title": "Da dove puoi continuare" }
+        "voices": {
+          "eyebrow": "Negli ultimi gesti",
+          "title": "Le voci di oggi"
+        },
+        "waiting": {
+          "eyebrow": "In attesa di voce",
+          "title": "Capitoli condivisi · ancora silenziosi"
+        },
+        "revisions": {
+          "eyebrow": "Una nuova direzione attende",
+          "title": "Revisioni aperte"
+        },
+        "evolutions": {
+          "eyebrow": "Ultimi 7 giorni",
+          "title": "Ultime evoluzioni"
+        },
+        "silent": {
+          "eyebrow": "In silenzio",
+          "title": "Journey in attesa di una nuova voce"
+        },
+        "actions": {
+          "eyebrow": "Prossimi gesti progettuali",
+          "title": "Da dove puoi continuare"
+        }
       },
       "card": {
         "last_voice": "Ultima voce · {when}",
@@ -273,5 +298,64 @@
       "success": "Il percorso entra nella memoria della casa.",
       "error": "Non è stato possibile depositare il dossier."
     }
+  },
+  "nav": {
+    "section": {
+      "home": "Home",
+      "design_journey": "Design Journey",
+      "curatorial_atlas": "Curatorial Atlas",
+      "client_relations": "Client Relations",
+      "content_studio": "Content Studio",
+      "studio_os": "Studio OS",
+      "platform": "Platform"
+    },
+    "studio_pulse": "Studio Pulse",
+    "your_journeys": "I tuoi Journey",
+    "begin_journey": "Inizia un Journey",
+    "inspirations": "Inspirations",
+    "brand_atlas": "Brand Atlas",
+    "material_view": "Material View",
+    "media_library": "Media Library",
+    "cultural_editions": "Cultural Editions",
+    "accounts": "Accounts",
+    "open_voices": "Voci aperte",
+    "memory": "Memoria",
+    "editorial_calendar": "Editorial Calendar",
+    "magazine": "Magazine",
+    "design_stories": "Design Stories",
+    "publishing_queue": "Publishing Queue",
+    "market_matrix": "Market Matrix",
+    "web_presence": "Web Presence",
+    "team": "Team",
+    "insights": "Insights",
+    "studio_identity": "Studio Identity",
+    "forms_journeys": "Forms & Journeys",
+    "integrations": "Integrations",
+    "billing": "Billing",
+    "settings": "Settings",
+    "super_admin": "Super Admin",
+    "expand": "Espandi",
+    "collapse": "Riduci"
+  },
+  "projects": {
+    "tabs": {
+      "all": "Tutti"
+    },
+    "card": {
+      "last_movement": "Ultimo movimento · {when}",
+      "continue_journey": "Continua il viaggio",
+      "for_client": "Per · {name}"
+    },
+    "empty": {
+      "title": "Nessun viaggio progettuale ancora aperto",
+      "subtitle": "Apri il primo capitolo del tuo studio.",
+      "open_first_journey": "+ Apri il primo viaggio"
+    },
+    "actions": {
+      "upgrade_plan": "Aggiorna il piano",
+      "upgrade_for_more": "Upgrade per crearne altri"
+    },
+    "usage_label": "Progetti",
+    "newProject": "Nuovo progetto"
   }
 }

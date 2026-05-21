@@ -18,7 +18,14 @@
     "primary": "Primario",
     "none": "—",
     "assigned": "asignada",
-    "unassigned": "sin asignar"
+    "unassigned": "sin asignar",
+    "time": {
+      "moments_ago": "hace un momento",
+      "minutes_ago": "hace {n} min",
+      "hours_ago": "hace {n} h",
+      "days_ago": "hace {n} días"
+    },
+    "workspace": "Workspace"
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -291,5 +298,64 @@
       "success": "El viaje entra ahora en la memoria de la casa.",
       "error": "No se pudo depositar el dossier."
     }
+  },
+  "nav": {
+    "section": {
+      "home": "Inicio",
+      "design_journey": "Design Journey",
+      "curatorial_atlas": "Curatorial Atlas",
+      "client_relations": "Relaciones con Clientes",
+      "content_studio": "Content Studio",
+      "studio_os": "Studio OS",
+      "platform": "Plataforma"
+    },
+    "studio_pulse": "Studio Pulse",
+    "your_journeys": "Tus Journeys",
+    "begin_journey": "Abre un Journey",
+    "inspirations": "Inspirations",
+    "brand_atlas": "Brand Atlas",
+    "material_view": "Material View",
+    "media_library": "Biblioteca multimedia",
+    "cultural_editions": "Cultural Editions",
+    "accounts": "Cuentas",
+    "open_voices": "Voces abiertas",
+    "memory": "Memoria",
+    "editorial_calendar": "Editorial Calendar",
+    "magazine": "Magazine",
+    "design_stories": "Design Stories",
+    "publishing_queue": "Cola de publicación",
+    "market_matrix": "Market Matrix",
+    "web_presence": "Presencia web",
+    "team": "Equipo",
+    "insights": "Insights",
+    "studio_identity": "Studio Identity",
+    "forms_journeys": "Forms & Journeys",
+    "integrations": "Integraciones",
+    "billing": "Facturación",
+    "settings": "Ajustes",
+    "super_admin": "Super Admin",
+    "expand": "Expandir",
+    "collapse": "Replegar"
+  },
+  "projects": {
+    "tabs": {
+      "all": "Todos"
+    },
+    "card": {
+      "last_movement": "Último movimiento · {when}",
+      "continue_journey": "Continuar el viaje",
+      "for_client": "Para · {name}"
+    },
+    "empty": {
+      "title": "Aún no se ha abierto ningún viaje proyectual",
+      "subtitle": "Abre el primer capítulo de tu estudio.",
+      "open_first_journey": "+ Abrir el primer viaje"
+    },
+    "actions": {
+      "upgrade_plan": "Actualizar plan",
+      "upgrade_for_more": "Actualiza para crear más"
+    },
+    "usage_label": "Proyectos",
+    "newProject": "Nuevo proyecto"
   }
 }

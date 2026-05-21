@@ -18,7 +18,14 @@
     "primary": "Principal",
     "none": "—",
     "assigned": "assignée",
-    "unassigned": "non assignée"
+    "unassigned": "non assignée",
+    "time": {
+      "moments_ago": "il y a un instant",
+      "minutes_ago": "il y a {n} min",
+      "hours_ago": "il y a {n} h",
+      "days_ago": "il y a {n} jours"
+    },
+    "workspace": "Workspace"
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -291,5 +298,64 @@
       "success": "Le parcours entre maintenant dans la mémoire de la maison.",
       "error": "Le dossier n'a pas pu être déposé."
     }
+  },
+  "nav": {
+    "section": {
+      "home": "Accueil",
+      "design_journey": "Design Journey",
+      "curatorial_atlas": "Curatorial Atlas",
+      "client_relations": "Relations Clients",
+      "content_studio": "Content Studio",
+      "studio_os": "Studio OS",
+      "platform": "Plateforme"
+    },
+    "studio_pulse": "Studio Pulse",
+    "your_journeys": "Vos Journeys",
+    "begin_journey": "Ouvrir un Journey",
+    "inspirations": "Inspirations",
+    "brand_atlas": "Brand Atlas",
+    "material_view": "Material View",
+    "media_library": "Bibliothèque média",
+    "cultural_editions": "Cultural Editions",
+    "accounts": "Comptes",
+    "open_voices": "Voix ouvertes",
+    "memory": "Mémoire",
+    "editorial_calendar": "Editorial Calendar",
+    "magazine": "Magazine",
+    "design_stories": "Design Stories",
+    "publishing_queue": "File de publication",
+    "market_matrix": "Market Matrix",
+    "web_presence": "Présence web",
+    "team": "Équipe",
+    "insights": "Insights",
+    "studio_identity": "Studio Identity",
+    "forms_journeys": "Forms & Journeys",
+    "integrations": "Intégrations",
+    "billing": "Facturation",
+    "settings": "Paramètres",
+    "super_admin": "Super Admin",
+    "expand": "Déplier",
+    "collapse": "Replier"
+  },
+  "projects": {
+    "tabs": {
+      "all": "Tous"
+    },
+    "card": {
+      "last_movement": "Dernier mouvement · {when}",
+      "continue_journey": "Poursuivre le voyage",
+      "for_client": "Pour · {name}"
+    },
+    "empty": {
+      "title": "Aucun voyage projectuel encore ouvert",
+      "subtitle": "Ouvrez le premier chapitre de votre atelier.",
+      "open_first_journey": "+ Ouvrir le premier voyage"
+    },
+    "actions": {
+      "upgrade_plan": "Mettre à niveau",
+      "upgrade_for_more": "Mettre à niveau pour en créer plus"
+    },
+    "usage_label": "Projets",
+    "newProject": "Nouveau projet"
   }
 }

@@ -18,7 +18,14 @@
     "primary": "Primary",
     "none": "—",
     "assigned": "assigned",
-    "unassigned": "unassigned"
+    "unassigned": "unassigned",
+    "time": {
+      "moments_ago": "moments ago",
+      "minutes_ago": "{n} min ago",
+      "hours_ago": "{n} hours ago",
+      "days_ago": "{n} days ago"
+    },
+    "workspace": "Workspace"
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -291,5 +298,64 @@
       "success": "The journey now enters the memory of the home.",
       "error": "It was not possible to deposit the dossier."
     }
+  },
+  "nav": {
+    "section": {
+      "home": "Home",
+      "design_journey": "Design Journey",
+      "curatorial_atlas": "Curatorial Atlas",
+      "client_relations": "Client Relations",
+      "content_studio": "Content Studio",
+      "studio_os": "Studio OS",
+      "platform": "Platform"
+    },
+    "studio_pulse": "Studio Pulse",
+    "your_journeys": "Your Journeys",
+    "begin_journey": "Begin a Journey",
+    "inspirations": "Inspirations",
+    "brand_atlas": "Brand Atlas",
+    "material_view": "Material View",
+    "media_library": "Media Library",
+    "cultural_editions": "Cultural Editions",
+    "accounts": "Accounts",
+    "open_voices": "Open voices",
+    "memory": "Memory",
+    "editorial_calendar": "Editorial Calendar",
+    "magazine": "Magazine",
+    "design_stories": "Design Stories",
+    "publishing_queue": "Publishing Queue",
+    "market_matrix": "Market Matrix",
+    "web_presence": "Web Presence",
+    "team": "Team",
+    "insights": "Insights",
+    "studio_identity": "Studio Identity",
+    "forms_journeys": "Forms & Journeys",
+    "integrations": "Integrations",
+    "billing": "Billing",
+    "settings": "Settings",
+    "super_admin": "Super Admin",
+    "expand": "Expand",
+    "collapse": "Collapse"
+  },
+  "projects": {
+    "tabs": {
+      "all": "All"
+    },
+    "card": {
+      "last_movement": "Last movement · {when}",
+      "continue_journey": "Continue the journey",
+      "for_client": "For · {name}"
+    },
+    "empty": {
+      "title": "No project journey opened yet",
+      "subtitle": "Open the first chapter of your studio.",
+      "open_first_journey": "+ Open the first journey"
+    },
+    "actions": {
+      "upgrade_plan": "Upgrade plan",
+      "upgrade_for_more": "Upgrade to create more"
+    },
+    "usage_label": "Projects",
+    "newProject": "New project"
   }
 }

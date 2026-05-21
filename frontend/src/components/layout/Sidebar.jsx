@@ -155,7 +155,7 @@ const Section = ({ id, label, hasMark, collapsed, sectionCollapsed, onToggle, ch
 
 // ── Workspace selector ───────────────────────────────────────────
 const WorkspaceSelector = ({ collapsed }) => {
-  const { tenant } = useBlueprint();
+  const { tenant, t } = useBlueprint();
   const tenantName = tenant?.name || tenant?.slug || 'Workspace';
   const monogram = tenantName.charAt(0).toUpperCase();
   if (collapsed) {
@@ -187,7 +187,7 @@ const WorkspaceSelector = ({ collapsed }) => {
         </p>
         <p className="text-[8.5px] uppercase tracking-[0.22em] font-mono"
            style={{ color: 'var(--bp-text-faint,#6e6e6a)' }}>
-          Workspace
+          {t('common.workspace', null, 'Workspace')}
         </p>
       </div>
     </div>
@@ -196,7 +196,7 @@ const WorkspaceSelector = ({ collapsed }) => {
 
 // ── Main Sidebar ─────────────────────────────────────────────────
 const Sidebar = () => {
-  const { isSuperAdmin, can, impersonating } = useBlueprint();
+  const { isSuperAdmin, can, impersonating, t } = useBlueprint();
   const { collapsed, toggle } = useSidebarCollapsed();
   const { isCollapsed: sectionIsCollapsed, toggle: toggleSection } = useSectionCollapse();
   const location = useLocation();
@@ -222,7 +222,7 @@ const Sidebar = () => {
         type="button"
         onClick={toggle}
         data-testid="sidebar-brand-toggle"
-        title={collapsed ? 'Espandi' : 'Riduci'}
+        title={collapsed ? t('nav.expand', null, 'Espandi') : t('nav.collapse', null, 'Riduci')}
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         className={`flex items-center ${collapsed ? 'justify-center px-2' : 'justify-start gap-3 px-5'}
                     pt-5 pb-4 border-b border-[var(--bp-border)]
@@ -236,74 +236,74 @@ const Sidebar = () => {
           </span>
         )}
         {impersonating && !inAdmin && !collapsed && (
-          <span className="absolute right-3 top-3 w-1.5 h-1.5 rounded-full bg-amber-400" aria-label="Impersonating" />
+          <span className="absolute right-3 top-3 w-1.5 h-1.5 rounded-full bg-amber-400" aria-label={t('nav.impersonating', null, 'Impersonating')} />
         )}
       </button>
 
       <nav className={`flex-1 ${collapsed ? 'px-1.5' : 'px-3'} py-6 space-y-7 overflow-y-auto overflow-x-hidden`}>
 
         {/* ── 01 · HOME ─────────────────────────────────────── */}
-        <Section id="home" label="Home" {...sectionProps} sectionCollapsed={sectionIsCollapsed('home')}>
-          <NavItem to="/dashboard"          icon="Waves"           label="Studio Pulse" hasMark end collapsed={collapsed} />
+        <Section id="home" label={t('nav.section.home', null, 'Home')} {...sectionProps} sectionCollapsed={sectionIsCollapsed('home')}>
+          <NavItem to="/dashboard"          icon="Waves"           label={t('nav.studio_pulse', null, 'Studio Pulse')} hasMark end collapsed={collapsed} />
         </Section>
 
         {/* ── 02 · DESIGN JOURNEY™ (dominante) ──────────────── */}
-        <Section id="design-journey" label="Design Journey" hasMark {...sectionProps} sectionCollapsed={sectionIsCollapsed('design-journey')}>
-          <NavItem to="/workspace/projects"    icon="Compass"      label="I tuoi Journey"      collapsed={collapsed} />
-          <NavItem to="/begin-journey"          icon="Sparkles"    label="Inizia un Journey"   collapsed={collapsed} hasMark />
+        <Section id="design-journey" label={t('nav.section.design_journey', null, 'Design Journey')} hasMark {...sectionProps} sectionCollapsed={sectionIsCollapsed('design-journey')}>
+          <NavItem to="/workspace/projects"    icon="Compass"      label={t('nav.your_journeys', null, 'I tuoi Journey')}      collapsed={collapsed} />
+          <NavItem to="/begin-journey"          icon="Sparkles"    label={t('nav.begin_journey', null, 'Inizia un Journey')}   collapsed={collapsed} hasMark />
           {!collapsed && <ActiveJourneyRail collapsed={collapsed} />}
         </Section>
 
         {/* ── 03 · CURATORIAL ATLAS ─────────────────────────── */}
-        <Section id="curatorial-atlas" label="Curatorial Atlas" {...sectionProps} sectionCollapsed={sectionIsCollapsed('curatorial-atlas')}>
-          <NavItem to="/inspirations"               icon="Bookmark"   label="Inspirations"      collapsed={collapsed} end />
-          <NavItem to="/inspirations/brands"        icon="Sparkles"   label="Brand Atlas"        collapsed={collapsed} hasMark
+        <Section id="curatorial-atlas" label={t('nav.section.curatorial_atlas', null, 'Curatorial Atlas')} {...sectionProps} sectionCollapsed={sectionIsCollapsed('curatorial-atlas')}>
+          <NavItem to="/inspirations"               icon="Bookmark"   label={t('nav.inspirations', null, 'Inspirations')}      collapsed={collapsed} end />
+          <NavItem to="/inspirations/brands"        icon="Sparkles"   label={t('nav.brand_atlas', null, 'Brand Atlas')}        collapsed={collapsed} hasMark
                    testid="sidebar-nav-brand-atlas" />
-          <NavItem to="/inspirations/materials"     icon="Palette"    label="Material View"     collapsed={collapsed} hasMark
+          <NavItem to="/inspirations/materials"     icon="Palette"    label={t('nav.material_view', null, 'Material View')}     collapsed={collapsed} hasMark
                    testid="sidebar-nav-material-view" />
-          <NavItem to="/library"                    icon="FolderOpen" label="Media Library"     collapsed={collapsed} />
-          <NavItem to="/workspace/cultural-editions" icon="Globe"     label="Cultural Editions" hasMark collapsed={collapsed} />
+          <NavItem to="/library"                    icon="FolderOpen" label={t('nav.media_library', null, 'Media Library')}     collapsed={collapsed} />
+          <NavItem to="/workspace/cultural-editions" icon="Globe"     label={t('nav.cultural_editions', null, 'Cultural Editions')} hasMark collapsed={collapsed} />
         </Section>
 
         {/* ── 04 · CLIENT RELATIONS ─────────────────────────── */}
-        <Section id="client-relations" label="Client Relations" {...sectionProps} sectionCollapsed={sectionIsCollapsed('client-relations')}>
-          <NavItem to="/crm/accounts"          icon="Users"      label="Accounts"      collapsed={collapsed} />
-          <NavItem to="/crm/follow-ups"        icon="BellRing"   label="Voci aperte"   collapsed={collapsed} />
-          <NavItem to="/crm/archived"          icon="Archive"    label="Memoria"       collapsed={collapsed} />
+        <Section id="client-relations" label={t('nav.section.client_relations', null, 'Client Relations')} {...sectionProps} sectionCollapsed={sectionIsCollapsed('client-relations')}>
+          <NavItem to="/crm/accounts"          icon="Users"      label={t('nav.accounts', null, 'Accounts')}      collapsed={collapsed} />
+          <NavItem to="/crm/follow-ups"        icon="BellRing"   label={t('nav.open_voices', null, 'Voci aperte')}   collapsed={collapsed} />
+          <NavItem to="/crm/archived"          icon="Archive"    label={t('nav.memory', null, 'Memoria')}       collapsed={collapsed} />
         </Section>
 
         {/* ── 05 · CONTENT STUDIO ───────────────────────────── */}
         {isAdmin && (
-          <Section id="content-studio" label="Content Studio" {...sectionProps} sectionCollapsed={sectionIsCollapsed('content-studio')}>
-            <NavItem to="/blueprint/editorial-calendar" icon="CalendarDays" label="Editorial Calendar" collapsed={collapsed} />
-            <NavItem to="/blueprint/editorial"          icon="BookOpen"     label="Magazine"           collapsed={collapsed} />
-            <NavItem to="/blueprint/projects-studio"    icon="Quote"        label="Design Stories"     collapsed={collapsed} />
-            <NavItem to="/editorial/inbox"              icon="Inbox"        label="Publishing Queue"   collapsed={collapsed} />
-            <NavItem to="/blueprint/markets"            icon="Globe2"       label="Market Matrix"      collapsed={collapsed} />
-            <NavItem to="/blueprint/experience"         icon="LayoutTemplate" label="Web Presence"     collapsed={collapsed} />
+          <Section id="content-studio" label={t('nav.section.content_studio', null, 'Content Studio')} {...sectionProps} sectionCollapsed={sectionIsCollapsed('content-studio')}>
+            <NavItem to="/blueprint/editorial-calendar" icon="CalendarDays" label={t('nav.editorial_calendar', null, 'Editorial Calendar')} collapsed={collapsed} />
+            <NavItem to="/blueprint/editorial"          icon="BookOpen"     label={t('nav.magazine', null, 'Magazine')}           collapsed={collapsed} />
+            <NavItem to="/blueprint/projects-studio"    icon="Quote"        label={t('nav.design_stories', null, 'Design Stories')}     collapsed={collapsed} />
+            <NavItem to="/editorial/inbox"              icon="Inbox"        label={t('nav.publishing_queue', null, 'Publishing Queue')}   collapsed={collapsed} />
+            <NavItem to="/blueprint/markets"            icon="Globe2"       label={t('nav.market_matrix', null, 'Market Matrix')}      collapsed={collapsed} />
+            <NavItem to="/blueprint/experience"         icon="LayoutTemplate" label={t('nav.web_presence', null, 'Web Presence')}     collapsed={collapsed} />
           </Section>
         )}
 
         {/* ── 06 · STUDIO OS ────────────────────────────────── */}
-        <Section id="studio-os" label="Studio OS" {...sectionProps} sectionCollapsed={sectionIsCollapsed('studio-os')}>
-          <NavItem to="/settings/members"  icon="Users"   label="Team"          collapsed={collapsed} />
-          <NavItem to="/insights"          icon="LineChart" label="Insights"    collapsed={collapsed} />
+        <Section id="studio-os" label={t('nav.section.studio_os', null, 'Studio OS')} {...sectionProps} sectionCollapsed={sectionIsCollapsed('studio-os')}>
+          <NavItem to="/settings/members"  icon="Users"   label={t('nav.team', null, 'Team')}          collapsed={collapsed} />
+          <NavItem to="/insights"          icon="LineChart" label={t('nav.insights', null, 'Insights')}    collapsed={collapsed} />
           {isAdmin && (
             <>
-              <NavItem to="/settings/brand"             icon="Palette" label="Studio Identity"   collapsed={collapsed}
+              <NavItem to="/settings/brand"             icon="Palette" label={t('nav.studio_identity', null, 'Studio Identity')}   collapsed={collapsed}
                        testid="sidebar-nav-studio-identity" hasMark />
-              <NavItem to="/blueprint/forms-journeys"   icon="Sparkle" label="Forms & Journeys"  collapsed={collapsed} />
-              <NavItem to="/settings/integrations"      icon="Plug"    label="Integrations"      collapsed={collapsed} />
-              <NavItem to="/settings/plan"              icon="Receipt" label="Billing"           collapsed={collapsed} />
-              <NavItem to="/settings"                   icon="Settings" label="Settings"  end    collapsed={collapsed} />
+              <NavItem to="/blueprint/forms-journeys"   icon="Sparkle" label={t('nav.forms_journeys', null, 'Forms & Journeys')}  collapsed={collapsed} />
+              <NavItem to="/settings/integrations"      icon="Plug"    label={t('nav.integrations', null, 'Integrations')}      collapsed={collapsed} />
+              <NavItem to="/settings/plan"              icon="Receipt" label={t('nav.billing', null, 'Billing')}           collapsed={collapsed} />
+              <NavItem to="/settings"                   icon="Settings" label={t('nav.settings', null, 'Settings')}  end    collapsed={collapsed} />
             </>
           )}
         </Section>
 
         {/* ── PLATFORM (super-admin only) ───────────────────── */}
         {isSuperAdmin && (
-          <Section id="platform" label="Platform" {...sectionProps} sectionCollapsed={sectionIsCollapsed('platform')}>
-            <NavItem to="/admin" icon="Shield" label="Super Admin" collapsed={collapsed} />
+          <Section id="platform" label={t('nav.section.platform', null, 'Platform')} {...sectionProps} sectionCollapsed={sectionIsCollapsed('platform')}>
+            <NavItem to="/admin" icon="Shield" label={t('nav.super_admin', null, 'Super Admin')} collapsed={collapsed} />
           </Section>
         )}
       </nav>
@@ -315,7 +315,7 @@ const Sidebar = () => {
         type="button"
         onClick={toggle}
         data-testid="sidebar-collapse-toggle"
-        title={collapsed ? 'Espandi' : 'Riduci'}
+        title={collapsed ? t('nav.expand', null, 'Espandi') : t('nav.collapse', null, 'Riduci')}
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         className="group absolute top-0 right-[-8px] h-full w-4 flex items-center justify-center
                    cursor-col-resize z-30"
