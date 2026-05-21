@@ -176,9 +176,15 @@ const ClientMessagesPage = () => {
   );
 };
 
+import LocalizedMessage from '../../components/ale/LocalizedMessage';
+
 const MessageRow = ({ message, assignee }) => {
   const isClient = message.message_type === 'client_message';
   const firstName = assignee?.first_name || 'Referente';
+  // Assume studio messages are authored in Italian by default; client messages
+  // in the client's reading locale. This metadata will be enriched server-side
+  // in a future iteration (per-message `source_locale` column).
+  const sourceLocale = isClient ? null : (message.source_locale || 'it');
   return (
     <li data-testid={`client-message-${message.id}`} className="flex flex-col gap-1.5">
       <p className="text-[10px] uppercase tracking-[0.22em] text-[var(--cp-text-muted)]">
@@ -187,12 +193,21 @@ const MessageRow = ({ message, assignee }) => {
           {formatTime(message.created_at)}
         </span>
       </p>
-      <p className={`text-[14px] leading-[1.7] font-body whitespace-pre-wrap
+      <div className={`text-[14px] leading-[1.7] font-body whitespace-pre-wrap
                      ${isClient
                        ? 'text-[var(--cp-text-primary)]'
                        : 'text-[var(--cp-text-primary)] pl-3 border-l-2 border-[var(--cp-gold)]/60'}`}>
-        {message.message_body}
-      </p>
+        {sourceLocale ? (
+          <LocalizedMessage
+            text={message.message_body}
+            sourceLocale={sourceLocale}
+            mode="localized_only"
+            testid={`client-message-${message.id}-body`}
+          />
+        ) : (
+          <span data-testid={`client-message-${message.id}-body`}>{message.message_body}</span>
+        )}
+      </div>
     </li>
   );
 };

@@ -142,6 +142,9 @@ api_router.include_router(public_i18n.router, prefix="/public", tags=["public-i1
 # Sprint JOURNEY-TAXONOMY-I18N™: editorial taxonomy registry endpoint
 from routers import taxonomy_api  # noqa: E402
 api_router.include_router(taxonomy_api.router, prefix="/taxonomy", tags=["taxonomy"])
+# Sprint ITER123 · Adaptive Language Experience™ — relational AI translation
+from routers import ale_api  # noqa: E402
+api_router.include_router(ale_api.router, prefix="/ale", tags=["adaptive-language"])
 api_router.include_router(navigation.router, prefix="/settings", tags=["navigation-footer"])
 api_router.include_router(forms.router, prefix="/forms", tags=["forms"])
 api_router.include_router(public.router, prefix="/public", tags=["public"])
