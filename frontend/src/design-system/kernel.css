@@ -1,0 +1,171 @@
+/**
+ * MOOD for DESIGN™ — Design System Kernel™
+ * Sprint HARDENING-01.1 · governance baseline ufficiale.
+ *
+ * ============================================================
+ *   Single source of truth per il sistema visivo MOOD.
+ * ============================================================
+ *
+ * Questo file NON è un foglio di stile.
+ * È il **layer sovrano** che governa:
+ *
+ *   · COLORI            (--mood-bg, --mood-surface, --mood-accent…)
+ *   · TIPOGRAFIA        (--mood-font-heading/body/serif/mono)
+ *   · SPAZIATURA        (--mood-space-*, ritmo editoriale)
+ *   · MOTION            (--mood-ease-*, --mood-duration-*)
+ *   · RTL & I18N        (--mood-dir, --mood-text-align)
+ *   · GLOW / ATMOSPHERE (--mood-glow-*, overlays diffusi)
+ *
+ * REGOLE OPERATIVE
+ * ---------------------------------------------------------------
+ *  1. Tutti i nuovi componenti consumano da questi token.
+ *  2. Vietato `font-family` hardcoded fuori dai fallback `var(…)`.
+ *  3. Vietato hex bare fuori dai fallback `var(--token, #hex)`.
+ *  4. Tutti i token sono **semantici**, mai tecnici:
+ *      ✅ `--mood-archive-glow`  (parla del dominio)
+ *      ❌ `--gray-300`            (parla solo del valore)
+ *  5. I tenant editano via Studio Identity™ → `--bp-*` →
+ *     questi token reagiscono automaticamente.
+ *  6. Modifiche al kernel richiedono PR review e ADR.
+ *
+ * QUESTI TOKEN SONO IMPORTATI GLOBALMENTE DA App.js.
+ * Mai duplicare in altri file. Mai sovrascrivere a livello pagina.
+ */
+
+:root,
+.mood-kernel {
+  /* ── Surface palette · Atelier charcoal ─────────────────── */
+  --mood-bg:               #0c0e11;
+  --mood-bg-2:             #11141a;
+  --mood-bg-3:             #161a22;
+  --mood-bg-4:             #1c2129;
+
+  /* ── Semantic surfaces — alias dei --bp-* (tenant) ──────── */
+  --mood-surface:          var(--bp-surface,        var(--mood-bg-2));
+  --mood-surface-soft:     var(--bp-surface-alt,    var(--mood-bg));
+  --mood-surface-elevated: var(--bp-bg-elevated,    var(--mood-bg-3));
+  --mood-surface-hover:    var(--bp-surface-hover,  var(--mood-bg-4));
+  --mood-card:             var(--bp-bg-elevated,    var(--mood-bg-3));
+
+  /* ── Borders / lines ────────────────────────────────────── */
+  --mood-line:             rgba(255, 255, 255, 0.058);
+  --mood-line-2:           rgba(255, 255, 255, 0.10);
+  --mood-line-warm:        rgba(217, 178, 133, 0.18);
+  --mood-border:           var(--bp-border-subtle,  var(--mood-line));
+  --mood-border-strong:    var(--bp-border,         var(--mood-line-2));
+  --mood-editorial-border: var(--mood-line-warm);
+
+  /* ── Text ───────────────────────────────────────────────── */
+  --mood-pearl:            #f0ebe0;
+  --mood-text:             var(--bp-text,           var(--mood-pearl));
+  --mood-text-muted:       var(--bp-text-secondary, color-mix(in srgb, var(--mood-pearl) 60%, transparent));
+  --mood-text-faint:       color-mix(in srgb, var(--mood-pearl) 40%, transparent);
+
+  /* ── Editorial accents ──────────────────────────────────── */
+  --mood-warm:             #d9b285;
+  --mood-warm-soft:        rgba(217, 178, 133, 0.10);
+  --mood-cyan:             #7fdfff;
+  --mood-cyan-soft:        rgba(127, 223, 255, 0.07);
+  --mood-amber:            #e8a558;
+  --mood-success:          #7fc89f;
+  --mood-rose:              #c98a86;
+
+  --mood-accent:           var(--bp-primary,        var(--mood-warm));
+  --mood-accent-soft:      var(--mood-warm-soft);
+  --mood-accent-glow:      rgba(217, 178, 133, 0.28);
+  --mood-gold:             var(--mood-warm);
+  --mood-gold-soft:        var(--mood-warm-soft);
+  --mood-gold-attenuated:  #b89870;      /* Dossier monograph */
+
+  --mood-danger:           var(--bp-danger,   var(--mood-rose));
+  --mood-warning:          var(--bp-warning,  var(--mood-amber));
+  --mood-success-fg:       var(--bp-success,  var(--mood-success));
+
+  /* ── Domain-specific semantic tokens ────────────────────── */
+  --mood-journey-accent:        var(--mood-gold);
+  --mood-archive-glow:          color-mix(in srgb, var(--mood-gold-attenuated) 28%, transparent);
+  --mood-client-calm-bg:        #0e0f11;
+  --mood-dossier-paper:         #131418;
+  --mood-companion-veil:        rgba(14, 15, 17, 0.78);
+  --mood-shared-voice-ring:     color-mix(in srgb, var(--mood-cyan) 18%, transparent);
+  --mood-site-evolution-mark:   var(--mood-amber);
+  --mood-relationship-pulse:    var(--mood-cyan);
+
+  /* ── Typography — read from tenant Studio Identity™ ─────── */
+  --mood-font-heading: var(--bp-font-heading, 'Playfair Display', Georgia, serif);
+  --mood-font-body:    var(--bp-font-body,    'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+  --mood-font-serif:   var(--bp-font-heading, 'Playfair Display', Georgia, serif);
+  --mood-font-mono:    var(--bp-font-mono,    'JetBrains Mono', ui-monospace, SFMono-Regular, monospace);
+
+  /* ── Typographic rhythm ─────────────────────────────────── */
+  --mood-leading-tight:  1.12;
+  --mood-leading-cozy:   1.32;
+  --mood-leading-body:   1.58;
+  --mood-leading-reading: 1.72;
+  --mood-tracking-mono:  0.22em;
+
+  /* ── Spacing rhythm — editorial, generous ───────────────── */
+  --mood-space-1:  4px;
+  --mood-space-2:  8px;
+  --mood-space-3:  12px;
+  --mood-space-4:  18px;
+  --mood-space-5:  24px;
+  --mood-space-6:  32px;
+  --mood-space-7:  48px;
+  --mood-space-8:  64px;
+  --mood-space-9:  96px;
+  --mood-section-rhythm: var(--mood-space-9);
+
+  /* ── Radii — sharp editorial, never pill ────────────────── */
+  --mood-radius-sm: 2px;
+  --mood-radius-md: 4px;
+  --mood-radius-lg: 8px;
+
+  /* ── Shadows ────────────────────────────────────────────── */
+  --mood-shadow-soft:  0 8px 28px rgba(0, 0, 0, 0.28);
+  --mood-shadow-hover: 0 14px 44px rgba(0, 0, 0, 0.36);
+  --mood-shadow-glow:  0 0 32px var(--mood-accent-glow);
+
+  /* ── Motion ─────────────────────────────────────────────── */
+  --mood-ease-out:    cubic-bezier(0.16, 1, 0.3, 1);   /* expressive */
+  --mood-ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+  --mood-ease-calm:   cubic-bezier(0.4, 0, 0.2, 1);
+  --mood-duration-fast:  140ms;
+  --mood-duration-base:  280ms;
+  --mood-duration-slow:  520ms;
+  --mood-duration-cinematic: 900ms;
+
+  /* ── Layout / responsive ────────────────────────────────── */
+  --mood-content-max:    1280px;
+  --mood-reading-max:    64ch;
+  --mood-narrow-max:     960px;
+
+  /* ── Atmospheric overlay ────────────────────────────────── */
+  --mood-atmosphere:
+    radial-gradient(ellipse 90% 50% at 18% -8%,
+                    rgba(217, 178, 133, 0.045) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 45% at 90% 105%,
+                    rgba(127, 223, 255, 0.035) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 50% 50%,
+                    rgba(127, 223, 255, 0.015) 0%, transparent 70%);
+}
+
+/* ── Direction propagation ────────────────────────────────── */
+html[dir="rtl"] :root {
+  --mood-text-align-start: right;
+  --mood-text-align-end:   left;
+}
+html :root, html[dir="ltr"] :root {
+  --mood-text-align-start: left;
+  --mood-text-align-end:   right;
+}
+
+/* ── Reduced motion override ──────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --mood-duration-fast:  0ms;
+    --mood-duration-base:  0ms;
+    --mood-duration-slow:  0ms;
+    --mood-duration-cinematic: 0ms;
+  }
+}

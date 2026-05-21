@@ -1,0 +1,67 @@
+{
+  "sprint": "HARDENING-01.1",
+  "total_hex": 828,
+  "total_font": 214,
+  "files_no_t": [
+    "components/client/ClientDashboardLayout.jsx",
+    "components/client/ClientSidebar.jsx",
+    "components/client/SiteEvolutionSection.jsx",
+    "components/common/HotspotEditor.jsx",
+    "components/cultural/CulturalEditionWizard.jsx",
+    "components/journey/ClientInteractionLayer.jsx",
+    "components/journey/JourneyClosureCeremony.jsx",
+    "components/journey/MaterialDirectionWorkspace.jsx",
+    "components/journey/MilestoneDialogue.jsx",
+    "components/journey/MoodboardDirectionWorkspace.jsx",
+    "components/journey/StepContextHeader.jsx",
+    "components/journey/VersionStack.jsx",
+    "components/storefront/renderers/TeamIdentityCardRenderer.jsx",
+    "pages/ClientPreviewPage.jsx",
+    "pages/crm/AccountConstellation.jsx",
+    "pages/crm/AccountDetailPage.jsx",
+    "pages/crm/ActivityModal.jsx",
+    "pages/crm/RelationshipGraph.jsx",
+    "pages/cultural/CulturalEditionReviewPage.jsx",
+    "pages/dashboard/JourneyPulsePage.jsx",
+    "pages/editorial/ArticleEditorPanel.jsx",
+    "pages/editorial/EditorialStudioPage.jsx",
+    "pages/editorial/MarketEditionsToolbar.jsx",
+    "pages/inspirations/AddInspirationModal.jsx",
+    "pages/inspirations/BrandDetailPage.jsx",
+    "pages/inspirations/CollectionFormModal.jsx",
+    "pages/inspirations/CuratedCollectionDrawer.jsx",
+    "pages/inspirations/InspirationDetailDrawer.jsx",
+    "pages/inspirations/ProductGalleryPage.jsx",
+    "pages/journey/StepWorkspacePage.jsx",
+    "pages/projects/ProjectsStudioPage.jsx",
+    "pages/settings/AssetPickerModal.jsx",
+    "pages/settings/MagazineAdminPage.jsx",
+    "pages/site/JourneyWelcomePage.jsx",
+    "pages/site/ProfessionalIntakePage.jsx",
+    "pages/site/StartProjectWizard.jsx",
+    "pages/storefront/StorefrontStudioPage.jsx",
+    "pages/storefront/bandEditors.jsx",
+    "pages/workspace/AddReferenceModal.jsx",
+    "pages/workspace/DesignJourneyTab.jsx"
+  ],
+  "by_surface": {
+    "P1": {
+      "files": 109,
+      "hex": 683,
+      "font": 134,
+      "no_t": 22
+    },
+    "P0": {
+      "files": 39,
+      "hex": 123,
+      "font": 70,
+      "no_t": 18
+    },
+    "P2": {
+      "files": 3,
+      "hex": 22,
+      "font": 10,
+      "no_t": 0
+    }
+  }
+}

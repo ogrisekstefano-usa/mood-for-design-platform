@@ -10,6 +10,8 @@ import LocaleRoute from './site/LocaleRoute';
 import LocaleHead from './site/LocaleHead';
 import { Toaster } from 'sonner';
 import './App.css';
+// ── Sprint HARDENING-01.1 · Design System Kernel™ (single source of truth) ──
+import './design-system/kernel.css';
 // Frozen Blueprint OS tokens — declared under [data-surface="os"] only,
 // so importing this file is side-effect free for the storefront subtree.
 import './design-system/os/tokens.css';
@@ -220,6 +222,8 @@ const OSWrap = ({ children }) => (
 
 const PublicMoodboardWrapper = () => <MoodboardEditor readOnly={true} />;
 
+import GovernanceOverlay from './design-system/GovernanceOverlay';
+
 function App() {
   return (
     <div className="App">
@@ -230,6 +234,7 @@ function App() {
           <LocaleRuntimeProvider>
           <BlueprintI18nProvider>
           <BrowserRouter>
+            <GovernanceOverlay />
             <Suspense fallback={<Loading />}>
               <LocaleHead />
               <Routes>
