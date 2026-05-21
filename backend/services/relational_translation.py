@@ -111,7 +111,9 @@ def _unwrap_dnt(text: str, recovered: List[str]) -> str:
 
 
 # ── Editorial prompt (Claude Sonnet 4.5) ───────────────────────
-def _build_prompt(text_masked: str, src_locale: str, tgt_locale: str) -> str:
+def _build_prompt(text_masked: str, src_locale: str, tgt_locale: str,
+                  voice_addendum: str = "") -> str:
+    voice_block = (voice_addendum + "\n\n") if voice_addendum else ""
     return (
         f"You are MOOD for DESIGN™'s in-house cultural translator — an editor at "
         f"a high-end interior architecture studio (Cassina · Molteni · Minotti "
@@ -119,6 +121,7 @@ def _build_prompt(text_masked: str, src_locale: str, tgt_locale: str) -> str:
         f"who re-authors a designer's message from {_label(src_locale)} into "
         f"natural, editorial {_label(tgt_locale)} as if it had been written "
         f"there originally.\n\n"
+        f"{voice_block}"
         f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
         f"INPUT (source: {src_locale}):\n"
         f"{text_masked}\n"
@@ -137,7 +140,10 @@ def _build_prompt(text_masked: str, src_locale: str, tgt_locale: str) -> str:
         f"     becomes a culturally-equivalent salutation (\"Un caro saluto\" → "
         f"     \"Warmly\", not \"A dear greeting\").\n"
         f"  5. Convert idioms culturally; never calque them.\n"
-        f"  6. Return ONLY the rewritten text. No quotation marks, no headers, "
+        f"  6. When the EDITORIAL VOICE block above specifies preferred vocabulary "
+        f"     or corrections, treat them as the studio's house style — they "
+        f"     OVERRIDE your defaults.\n"
+        f"  7. Return ONLY the rewritten text. No quotation marks, no headers, "
         f"     no commentary, no JSON. Plain text only.\n\n"
         f"EDITORIAL CRAFT — concrete IT→EN examples (calibrate from these)\n"
         f"  ❌ \"alleggerito\" → \"lightened\"          ✅ \"refined\" / \"pared back\"\n"
@@ -181,11 +187,16 @@ def _cache_key(text: str, src: str, tgt: str) -> str:
 
 
 def translate(text: str, source_locale: str, target_locale: str,
-              dnt_terms: Optional[tuple] = None) -> TranslationResult:
+              dnt_terms: Optional[tuple] = None,
+              voice_addendum: str = "") -> TranslationResult:
     """Localize an editorial message from source_locale to target_locale.
 
     Idempotent: same (text, src, tgt) → same result for the process lifetime.
     Returns a TranslationResult with translated=False on any failure path.
+
+    `voice_addendum` (iter125) — Studio Voice™ block prepended to the prompt
+    when a tenant has a configured Language DNA / preferred vocabulary /
+    recent corrections. Pass "" to keep the platform default behaviour.
     """
     text = (text or "").strip()
     if not text:
@@ -217,12 +228,17 @@ def translate(text: str, source_locale: str, target_locale: str,
         )
 
     ck = _cache_key(text, source_locale, target_locale)
+    # iter125: voice_addendum carries tenant-specific Language DNA, vocab,
+    # corrections — it MUST be part of the cache key, otherwise tenants
+    # with different voice profiles would share the same cached output.
+    if voice_addendum:
+        ck = hashlib.sha1(f"{ck}|{voice_addendum}".encode("utf-8")).hexdigest()
     cached = _CACHE.get(ck)
     if cached is not None:
         return cached
 
     masked, recovered = _wrap_dnt(text, dnt_terms or DEFAULT_DNT_TERMS)
-    prompt = _build_prompt(masked, source_locale, target_locale)
+    prompt = _build_prompt(masked, source_locale, target_locale, voice_addendum=voice_addendum)
 
     start = time.time()
     try:

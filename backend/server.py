@@ -145,6 +145,9 @@ api_router.include_router(taxonomy_api.router, prefix="/taxonomy", tags=["taxono
 # Sprint ITER123 · Adaptive Language Experience™ — relational AI translation
 from routers import ale_api  # noqa: E402
 api_router.include_router(ale_api.router, prefix="/ale", tags=["adaptive-language"])
+# Sprint ITER125 · Studio Voice™ — editorial language identity
+from routers import voice_api  # noqa: E402
+api_router.include_router(voice_api.router, prefix="/voice", tags=["studio-voice"])
 api_router.include_router(navigation.router, prefix="/settings", tags=["navigation-footer"])
 api_router.include_router(forms.router, prefix="/forms", tags=["forms"])
 api_router.include_router(public.router, prefix="/public", tags=["public"])

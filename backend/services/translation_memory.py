@@ -252,10 +252,40 @@ def localize_with_memory(
 
     original_hash = _hash_original(text)
 
+    # iter125: Lock-Approved short-circuit. If the studio has manually
+    # locked a translation for this exact source text + locale pair, it
+    # bypasses the LLM entirely AND the per-message cache (the lock is
+    # tenant-scoped, not message-scoped).
+    if tenant_id:
+        try:
+            from services.studio_voice import load_locked_translation
+            locked = load_locked_translation(tenant_id, source_locale,
+                                             target_locale, text)
+            if locked:
+                row = {
+                    'original_text': text,
+                    'localized_text': locked,
+                    'source_locale': source_locale,
+                    'target_locale': target_locale,
+                    'translation_model': 'studio_voice/locked',
+                    'confidence_score': 1.0,
+                    'review_status': 'locked_approved',
+                    'translation_version': 1,
+                }
+                return _wrap_payload(row, source='locked')
+        except Exception as e:
+            logger.warning("locked-translation lookup failed: %s", e)
+
     # 1) Per-message cache (most specific).
     if message_id:
         cached = _lookup_cached(message_id, target_locale, original_hash)
         if cached:
+            # iter125: best-effort usage bump for Translation Analytics™.
+            try:
+                from services.studio_voice import bump_usage
+                bump_usage(cached.get('id'))
+            except Exception:
+                pass
             return _wrap_payload(cached, source='cache')
 
     # 2) Translation Memory™ (cross-message reuse for identical source text).
@@ -289,11 +319,19 @@ def localize_with_memory(
             }
             return _wrap_payload(row, source='memory')
 
-    # 3) Fresh translation via LLM.
+    # 3) Fresh translation via LLM (with Studio Voice™ injected).
     dnt = _merge_dnt_terms(tenant_id)
     if extra_dnt_terms:
         dnt = tuple(list(dnt) + list(extra_dnt_terms))
-    result = translate(text, source_locale, target_locale, dnt_terms=dnt)
+    voice_addendum = ""
+    if tenant_id:
+        try:
+            from services.studio_voice import voice_addendum_for_prompt
+            voice_addendum = voice_addendum_for_prompt(tenant_id, source_locale, target_locale)
+        except Exception as e:
+            logger.warning("voice_addendum_for_prompt failed: %s", e)
+    result = translate(text, source_locale, target_locale, dnt_terms=dnt,
+                       voice_addendum=voice_addendum)
 
     if not result.translated:
         # Either LLM failure, empty output, or fallback path. Return the
@@ -389,6 +427,7 @@ def stats_for_tenant(tenant_id: str) -> dict:
 # ── Helpers ────────────────────────────────────────────────────
 def _wrap_payload(row: dict, *, source: str) -> dict:
     return {
+        'id': row.get('id'),
         'original_text': row.get('original_text'),
         'localized_text': row.get('localized_text'),
         # back-compat aliases (the POC frontend reads `localized`)
@@ -397,12 +436,13 @@ def _wrap_payload(row: dict, *, source: str) -> dict:
         'source_locale': row.get('source_locale'),
         'target_locale': row.get('target_locale'),
         'translated': row.get('localized_text') != row.get('original_text'),
-        'translation_cached': source in ('cache', 'memory', 'no_op'),
+        'translation_cached': source in ('cache', 'memory', 'no_op', 'locked'),
         'translation_source': source,
         'translation_model': row.get('translation_model'),
         'confidence_score': row.get('confidence_score'),
         'review_status': row.get('review_status') or 'ai_only',
         'translation_version': int(row.get('translation_version') or 1),
+        'usage_count': int(row.get('usage_count') or 1),
         'error': None,
     }
 
