@@ -357,5 +357,79 @@
     },
     "usage_label": "Proyectos",
     "newProject": "Nuevo proyecto"
+  },
+  "inspirations": {
+    "eyebrow": "Cultural Design Intelligence Layer",
+    "lede": "El archivo curatorial del estudio. Cada referencia se lee a través de la lente cultural de los mercados internacionales: atmósfera, materia, afinidad editorial.",
+    "search": {
+      "placeholder": "Busca por atmósfera, materia, brand…"
+    },
+    "cta": {
+      "import_catalog": "Importar catálogo de proveedor",
+      "add_reference": "Añadir referencia"
+    },
+    "tabs": {
+      "all": "Todos",
+      "editorial": "Editoriales",
+      "product": "Productos"
+    },
+    "empty": {
+      "title": "El archivo aún está vacío.",
+      "hint": "Añade la primera referencia: una subida, un enlace de Pinterest, un enlace de Instagram o cualquier URL de imagen. MOOD la convertirá en una Inspiration cultural.",
+      "cta": "Añadir la primera referencia"
+    },
+    "error": {
+      "load": "Error al cargar"
+    },
+    "toast": {
+      "added": "Referencia añadida a Inspirations™",
+      "imported": "Importados {count} productos como Product Inspirations™."
+    },
+    "filter": {
+      "market": "Mercado",
+      "atmosphere": "Atmósfera",
+      "material": "Materia",
+      "product_category": "Categoría de mobiliario",
+      "luxury": "Tono luxury",
+      "profile": "Destino",
+      "reset": "Reset"
+    }
+  },
+  "editorial": {
+    "eyebrow": "Blueprint · International Editorial Operations",
+    "intro": "Organiza publicaciones internacionales en todos los mercados e idiomas. Arrastra los eventos para reprogramar, haz clic para abrir la vista pública.",
+    "cta": {
+      "new_master": "Nuevo Editorial Master",
+      "new_variant": "Nueva Market Edition"
+    },
+    "hint": {
+      "drag": "Arrastra a un día para programar"
+    },
+    "section": {
+      "today": {
+        "eyebrow": "Today's International Presence",
+        "title": "Lo que está pasando ahora en tus mercados"
+      }
+    },
+    "view": {
+      "month": "Mes",
+      "week": "Semana"
+    },
+    "type": {
+      "article": "Magazine",
+      "project": "Proyecto",
+      "page": "Página escaparate"
+    },
+    "presence": {
+      "empty": "Ningún mercado con eventos en la ventana actual.",
+      "flag": "Bandera",
+      "market": "Mercado",
+      "today": "Hoy",
+      "scheduled": "Programados",
+      "published": "Publicados"
+    },
+    "toast": {
+      "load_error": "Error al cargar el calendario editorial"
+    }
   }
 }

@@ -357,5 +357,79 @@
     },
     "usage_label": "Projects",
     "newProject": "New project"
+  },
+  "inspirations": {
+    "eyebrow": "Cultural Design Intelligence Layer",
+    "lede": "The studio's curatorial archive. Every reference is read through the cultural lens of international markets: atmosphere, material, editorial affinity.",
+    "search": {
+      "placeholder": "Search by atmosphere, material, brand…"
+    },
+    "cta": {
+      "import_catalog": "Import supplier catalog",
+      "add_reference": "Add reference"
+    },
+    "tabs": {
+      "all": "All",
+      "editorial": "Editorial",
+      "product": "Product"
+    },
+    "empty": {
+      "title": "The archive is still empty.",
+      "hint": "Add the first reference: an upload, a Pinterest link, an Instagram link or any image URL. MOOD will transform it into a cultural Inspiration.",
+      "cta": "Add the first reference"
+    },
+    "error": {
+      "load": "Loading error"
+    },
+    "toast": {
+      "added": "Reference added to Inspirations™",
+      "imported": "Imported {count} products as Product Inspirations™."
+    },
+    "filter": {
+      "market": "Market",
+      "atmosphere": "Atmosphere",
+      "material": "Material",
+      "product_category": "Furnishing category",
+      "luxury": "Luxury tone",
+      "profile": "Destination",
+      "reset": "Reset"
+    }
+  },
+  "editorial": {
+    "eyebrow": "Blueprint · International Editorial Operations",
+    "intro": "Organise international publications across all markets and languages. Drag events to reschedule, click to open the public preview.",
+    "cta": {
+      "new_master": "New Editorial Master",
+      "new_variant": "New Market Edition"
+    },
+    "hint": {
+      "drag": "Drag onto a day to schedule"
+    },
+    "section": {
+      "today": {
+        "eyebrow": "Today's International Presence",
+        "title": "What is happening right now in your markets"
+      }
+    },
+    "view": {
+      "month": "Month",
+      "week": "Week"
+    },
+    "type": {
+      "article": "Magazine",
+      "project": "Project",
+      "page": "Storefront page"
+    },
+    "presence": {
+      "empty": "No market with events in the current window.",
+      "flag": "Flag",
+      "market": "Market",
+      "today": "Today",
+      "scheduled": "Scheduled",
+      "published": "Published"
+    },
+    "toast": {
+      "load_error": "Error loading the editorial calendar"
+    }
   }
 }

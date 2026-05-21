@@ -16,8 +16,23 @@ import { Link } from 'react-router-dom';
 import { Calendar, ChevronLeft, ChevronRight, Filter, RefreshCw, AlertTriangle, Sparkles, Plus, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { useT, useBlueprint } from '../../contexts/BlueprintContext';
 import PublicPreviewDrawer from './PublicPreviewDrawer';
 import './editorialCalendar.css';
+
+// Maps our editorial locales to BCP-47 strings the Intl APIs understand.
+const intlLocale = (lc) => {
+  switch (lc) {
+    case 'it':    return 'it-IT';
+    case 'en-US': return 'en-US';
+    case 'en-GB': return 'en-GB';
+    case 'fr':    return 'fr-FR';
+    case 'de':    return 'de-DE';
+    case 'es':    return 'es-ES';
+    case 'ar':    return 'ar';
+    default:      return lc || 'it-IT';
+  }
+};
 
 const TYPE_LABEL = {
   article: 'Magazine',
@@ -32,12 +47,28 @@ const STATUS_TONE = {
   archived:  'archived',
 };
 
+// Sprint ITER121: locale-aware month/day/time formatting (no more hardcoded 'it-IT').
 const fmtMonth = (date, locale = 'it-IT') =>
   date.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
 const fmtDay = (date, locale = 'it-IT') =>
   date.toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
-const fmtTime = (date) =>
-  date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+const fmtTime = (date, locale = 'it-IT') =>
+  date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+
+// Locale-aware short weekday names for the calendar header row.
+// e.g. en-US → ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+const buildWeekHeader = (locale = 'it-IT') => {
+  const intl = new Intl.DateTimeFormat(locale, { weekday: 'short' });
+  // Reference Monday: 2024-01-01 was a Monday.
+  const monday = new Date(2024, 0, 1);
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const label = intl.format(d);
+    // Capitalize first letter for languages like 'lun'/'mon' to read sober editorial.
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  });
+};
 
 const buildMonthGrid = (cursor) => {
   // Returns 42 cells (6 weeks) for the month containing `cursor`, week starts Monday.
@@ -55,22 +86,22 @@ const buildMonthGrid = (cursor) => {
 // ───────────────────────────────────────────────────────────────────────
 // TODAY'S INTERNATIONAL PRESENCE
 // ───────────────────────────────────────────────────────────────────────
-const PresenceTable = ({ byMarket }) => {
+const PresenceTable = ({ byMarket, t }) => {
   if (!byMarket || byMarket.length === 0) {
     return (
       <div className="ec-presence ec-presence--empty">
-        <p>Nessun mercato con eventi nella finestra corrente.</p>
+        <p>{t ? t('editorial.presence.empty', null, 'Nessun mercato con eventi nella finestra corrente.') : 'No market with events in the current window.'}</p>
       </div>
     );
   }
   return (
     <div className="ec-presence" data-testid="ec-presence">
       <div className="ec-presence__head">
-        <span style={{ flex: '0 0 50px' }}>Flag</span>
-        <span style={{ flex: 1 }}>Market</span>
-        <span style={{ flex: '0 0 70px' }}>Today</span>
-        <span style={{ flex: '0 0 100px' }}>Scheduled</span>
-        <span style={{ flex: '0 0 100px' }}>Published</span>
+        <span style={{ flex: '0 0 50px' }}>{t ? t('editorial.presence.flag',      null, 'Flag')      : 'Flag'}</span>
+        <span style={{ flex: 1 }}>{t ? t('editorial.presence.market',    null, 'Market')    : 'Market'}</span>
+        <span style={{ flex: '0 0 70px'  }}>{t ? t('editorial.presence.today',     null, 'Today')     : 'Today'}</span>
+        <span style={{ flex: '0 0 100px' }}>{t ? t('editorial.presence.scheduled', null, 'Scheduled') : 'Scheduled'}</span>
+        <span style={{ flex: '0 0 100px' }}>{t ? t('editorial.presence.published', null, 'Published') : 'Published'}</span>
       </div>
       {byMarket.map((m) => (
         <div className="ec-presence__row" key={m.code} data-testid={`ec-market-${m.code}`}>
@@ -199,6 +230,9 @@ const WeekView = ({ cursor, eventsByDay, onDragStart, onDragOver, onDragLeave, o
 // PAGE
 // ───────────────────────────────────────────────────────────────────────
 const EditorialCalendarPage = () => {
+  const t = useT();
+  const { locale } = useBlueprint();
+  const intl = intlLocale(locale);
   const [cursor, setCursor] = useState(() => new Date());
   const [view, setView]     = useState('month'); // month | week
   const [feed, setFeed]     = useState({ events: [], by_market: [], totals: {} });
@@ -227,7 +261,7 @@ const EditorialCalendarPage = () => {
       if (feedRes.status === 'fulfilled') setFeed(feedRes.value.data);
       if (intelRes.status === 'fulfilled') setIntel(intelRes.value.data);
     } catch (e) {
-      toast.error("Errore nel caricamento dell'agenda editoriale");
+      toast.error(t('editorial.toast.load_error', null, "Errore nel caricamento dell'agenda editoriale"));
     } finally {
       setLoading(false);
     }
@@ -290,43 +324,42 @@ const EditorialCalendarPage = () => {
 
   const today = new Date();
   const monthIdx = cursor.getMonth();
-  const weekHeader = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+  const weekHeader = useMemo(() => buildWeekHeader(intl), [intl]);
 
   const totals = feed.totals || {};
 
   return (
     <div className="ec-stage" data-testid="editorial-calendar-page">
       <header className="ec-head">
-        <p className="ec-head__eyebrow">Blueprint · International Editorial Operations</p>
+        <p className="ec-head__eyebrow">{t('editorial.eyebrow', null, 'Blueprint · International Editorial Operations')}</p>
         <h1 className="ec-head__title">Editorial Calendar<sup>™</sup></h1>
         <p className="ec-head__intro">
-          Organizza pubblicazioni internazionali su tutti i mercati e le lingue.
-          Trascina gli eventi per riprogrammare, clicca per aprire l'anteprima pubblica.
+          {t('editorial.intro', null, "Organizza pubblicazioni internazionali su tutti i mercati e le lingue. Trascina gli eventi per riprogrammare, clicca per aprire l'anteprima pubblica.")}
         </p>
         <div className="ec-head-actions">
           <Link to="/blueprint/editorial?new=master" className="ec-action ec-action--primary"
                 data-testid="ec-action-new-master">
-            <Plus size={11} strokeWidth={1.8} /> Nuovo Editorial Master
+            <Plus size={11} strokeWidth={1.8} /> {t('editorial.cta.new_master', null, 'Nuovo Editorial Master')}
           </Link>
           <Link to="/blueprint/editorial?new=variant" className="ec-action ec-action--ghost"
                 data-testid="ec-action-new-variant">
-            <Plus size={11} strokeWidth={1.8} /> Nuova Market Edition
+            <Plus size={11} strokeWidth={1.8} /> {t('editorial.cta.new_variant', null, 'Nuova Market Edition')}
           </Link>
           <Link to="/blueprint/projects-studio?new=1" className="ec-action ec-action--ghost"
                 data-testid="ec-action-new-project">
-            <Plus size={11} strokeWidth={1.8} /> Nuovo progetto
+            <Plus size={11} strokeWidth={1.8} /> {t('projects.newProject', null, 'Nuovo progetto')}
           </Link>
           <span className="ec-action ec-action--hint">
-            <Globe size={10} strokeWidth={1.7} /> Trascina sul giorno per programmare
+            <Globe size={10} strokeWidth={1.7} /> {t('editorial.hint.drag', null, 'Trascina sul giorno per programmare')}
           </span>
         </div>
       </header>
 
       {/* Today's International Presence */}
       <section className="ec-section">
-        <p className="ec-section__kicker">Today's International Presence</p>
-        <h2 className="ec-section__title">Cosa sta accadendo ora nei tuoi mercati</h2>
-        <PresenceTable byMarket={feed.by_market} />
+        <p className="ec-section__kicker">{t('editorial.section.today.eyebrow', null, "Today's International Presence")}</p>
+        <h2 className="ec-section__title">{t('editorial.section.today.title', null, 'Cosa sta accadendo ora nei tuoi mercati')}</h2>
+        <PresenceTable byMarket={feed.by_market} t={t} />
       </section>
 
       {/* Filters + View nav */}
@@ -340,7 +373,7 @@ const EditorialCalendarPage = () => {
                     data-testid="ec-prev"><ChevronLeft size={14} /></button>
             <button type="button" className="ec-month" onClick={() => setCursor(new Date())}
                     data-testid="ec-today">
-              <Calendar size={12} strokeWidth={1.7} /> {view === 'week' ? fmtDay(cursor) : fmtMonth(cursor)}
+              <Calendar size={12} strokeWidth={1.7} /> {view === 'week' ? fmtDay(cursor, intl) : fmtMonth(cursor, intl)}
             </button>
             <button type="button" className="ec-icon-btn"
                     onClick={() => setCursor(view === 'month'
@@ -353,19 +386,21 @@ const EditorialCalendarPage = () => {
                         data-active={view === v}
                         data-testid={`ec-view-${v}`}
                         onClick={() => setView(v)}>
-                  {v === 'month' ? 'Mese' : 'Settimana'}
+                  {v === 'month' ? t('editorial.view.month', null, 'Mese') : t('editorial.view.week', null, 'Settimana')}
                 </button>
               ))}
             </div>
           </div>
           <div className="ec-toolbar__filters">
             <Filter size={11} strokeWidth={1.7} />
-            {['all', 'article', 'project', 'page'].map((t) => (
-              <button key={t} type="button" className="ec-chip"
-                      data-active={typeFilter === t}
-                      data-testid={`ec-filter-${t}`}
-                      onClick={() => setTypeFilter(t)}>
-                {t === 'all' ? 'Tutti' : TYPE_LABEL[t]}
+            {['all', 'article', 'project', 'page'].map((tk) => (
+              <button key={tk} type="button" className="ec-chip"
+                      data-active={typeFilter === tk}
+                      data-testid={`ec-filter-${tk}`}
+                      onClick={() => setTypeFilter(tk)}>
+                {tk === 'all'
+                  ? t('projects.tabs.all', null, 'Tutti')
+                  : t(`editorial.type.${tk}`, null, TYPE_LABEL[tk])}
               </button>
             ))}
             <button type="button" className="ec-chip ec-chip--ghost" onClick={load} disabled={loading}

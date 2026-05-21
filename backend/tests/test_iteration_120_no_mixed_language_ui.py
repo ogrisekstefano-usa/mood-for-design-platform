@@ -49,12 +49,63 @@ FORBIDDEN_STRINGS = [
 
 # P0 consumer files that must NOT contain forbidden hardcoded strings.
 # This list grows as more surfaces are migrated; iter120 covers the
-# baseline set explicitly migrated in this sprint.
+# baseline set explicitly migrated in this sprint. iter121 extended to
+# include Inspirations + Editorial Calendar.
 P0_FILES = [
     'components/layout/Sidebar.jsx',
     'pages/workspace/ProjectsPage.jsx',
     'pages/dashboard/JourneyPulsePage.jsx',
     'components/journey/JourneyClosureCeremony.jsx',
+    'pages/inspirations/InspirationsPage.jsx',
+    'pages/editorial/EditorialCalendarPage.jsx',
+]
+
+# ── Sprint ITER121 · Directory-wide scanner ─────────────────────
+# In addition to the explicit P0 list above (hard-failing), we also run a
+# directory-wide leak detection over `pages/**/*.jsx` + `components/**/*.jsx`
+# that fails if NEW hardcoded Italian editorial strings appear outside the
+# whitelist. The whitelist is intentionally broad so this iteration does
+# not break the build on legacy un-migrated files — only on files that
+# either (a) are on the P0 list or (b) introduce a NEW occurrence of the
+# 5 most critical forbidden strings.
+DIRWIDE_SCAN_ROOTS = ['pages', 'components']
+DIRWIDE_FORBIDDEN_CRITICAL = [
+    'I tuoi Journey',
+    'Inizia un Journey',
+    'Brief in apertura',
+    'Direzione presentata',
+    'Continua il viaggio',
+]
+DIRWIDE_WHITELIST_PATHS = [
+    # Legacy un-migrated areas — addressed in following sprints.
+    'pages/admin/',           # admin tools, governed via Translation Studio later
+    'pages/superadmin/',      # super-admin internal — IT acceptable
+    'pages/onboarding/',      # client onboarding flows — pending migration
+    'pages/crm/',             # iter122 scope
+    'pages/workspace/',       # only ProjectsPage already covered above
+    'pages/client/',          # Companion has its own i18n path
+    'pages/auth/',            # auth flows — separate migration
+    'pages/site/',             # site content — comes from blueprint pages
+    'pages/public/',           # public templates rendered server-side
+    'pages/dashboard/',        # JourneyPulsePage already on P0 list
+    'pages/inspirations/',     # only InspirationsPage on P0 list above; sub-pages later
+    'pages/editorial/',        # only EditorialCalendarPage on P0 list
+    'pages/insights/',         # iter122
+    'pages/blueprint/',        # blueprint editor — admin
+    'pages/settings/',         # settings — handled separately
+    'pages/journey/',          # has its own i18n flow
+    'components/admin/',
+    'components/superadmin/',
+    'components/onboarding/',
+    'components/blueprint/',
+    'components/journey/',     # JourneyClosureCeremony already on P0
+    'components/site/',
+    'components/public/',
+    'components/insights/',
+    'components/client/',      # Companion-specific
+    'components/dossier/',     # Dossier
+    'components/collab/',
+    'components/workspace/',
 ]
 
 # Lines that are explicitly ALLOWED to contain a forbidden string:
@@ -177,3 +228,49 @@ class TestNewNamespacesCoverage:
         data = _json.loads(p.read_text(encoding='utf-8'))
         missing = [k for k in self.REQUIRED_KEYS if not self._get(data, k)]
         assert not missing, f"{locale}.json missing: {missing[:20]}"
+
+
+# ── Sprint ITER121 · Directory-wide enforcement ─────────────────
+# Scans every .jsx file under DIRWIDE_SCAN_ROOTS for the 5 most critical
+# forbidden Italian editorial strings, excluding the whitelist (legacy
+# areas) and excluding `t(...)` inline fallback patterns. Any NEW PR that
+# introduces one of these strings outside the whitelist will fail the build.
+def _is_in_whitelist(rel_path):
+    rel = rel_path.replace('\\', '/')
+    return any(rel.startswith(w) for w in DIRWIDE_WHITELIST_PATHS)
+
+
+def _line_is_safe(line):
+    return any(p.search(line) for p in ALLOWED_LINE_PATTERNS)
+
+
+def test_directory_wide_no_critical_italian_leaks():
+    """Iter121: no NEW hardcoded Italian editorial vocabulary may appear in
+    pages/**/*.jsx + components/**/*.jsx OUTSIDE the whitelist. The
+    whitelist captures legacy areas still pending migration; the check
+    enforces that newly written code goes through `t()` or `taxonomy`."""
+    leaks = []
+    for root_name in DIRWIDE_SCAN_ROOTS:
+        root = FRONTEND_SRC / root_name
+        if not root.exists():
+            continue
+        for jsx in root.rglob('*.jsx'):
+            rel = str(jsx.relative_to(FRONTEND_SRC))
+            if _is_in_whitelist(rel):
+                continue
+            src = jsx.read_text(encoding='utf-8')
+            for n, line in enumerate(src.splitlines(), start=1):
+                for forbidden in DIRWIDE_FORBIDDEN_CRITICAL:
+                    if forbidden in line and not _line_is_safe(line):
+                        leaks.append(f"  {rel}:{n}  '{forbidden}'  → {line.strip()[:120]}")
+    assert not leaks, (
+        "Directory-wide enforcement detected hardcoded Italian editorial strings:\n"
+        + "\n".join(leaks)
+        + "\n\nFix: route the label through `t('key', null, 'fallback')` or `useTaxonomy()`."
+    )
+
+
+def test_directory_wide_scanner_covers_pages_and_components():
+    """Sanity: the scanner must actually walk both directory roots."""
+    for d in DIRWIDE_SCAN_ROOTS:
+        assert (FRONTEND_SRC / d).is_dir(), f"Expected root not found: {d}"

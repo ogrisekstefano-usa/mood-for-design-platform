@@ -357,5 +357,79 @@
     },
     "usage_label": "Projekte",
     "newProject": "Neues Projekt"
+  },
+  "inspirations": {
+    "eyebrow": "Cultural Design Intelligence Layer",
+    "lede": "Das kuratorische Archiv des Studios. Jede Referenz wird durch die kulturelle Linse internationaler Märkte gelesen: Atmosphäre, Material, redaktionelle Affinität.",
+    "search": {
+      "placeholder": "Suche nach Atmosphäre, Material, Brand…"
+    },
+    "cta": {
+      "import_catalog": "Lieferantenkatalog importieren",
+      "add_reference": "Referenz hinzufügen"
+    },
+    "tabs": {
+      "all": "Alle",
+      "editorial": "Redaktionell",
+      "product": "Produkt"
+    },
+    "empty": {
+      "title": "Das Archiv ist noch leer.",
+      "hint": "Füge die erste Referenz hinzu: ein Upload, ein Pinterest-Link, ein Instagram-Link oder eine beliebige Bild-URL. MOOD verwandelt sie in eine kulturelle Inspiration.",
+      "cta": "Erste Referenz hinzufügen"
+    },
+    "error": {
+      "load": "Ladefehler"
+    },
+    "toast": {
+      "added": "Referenz zu Inspirations™ hinzugefügt",
+      "imported": "{count} Produkte als Product Inspirations™ importiert."
+    },
+    "filter": {
+      "market": "Markt",
+      "atmosphere": "Atmosphäre",
+      "material": "Material",
+      "product_category": "Einrichtungskategorie",
+      "luxury": "Luxus-Ton",
+      "profile": "Destination",
+      "reset": "Reset"
+    }
+  },
+  "editorial": {
+    "eyebrow": "Blueprint · International Editorial Operations",
+    "intro": "Organisiere internationale Publikationen über alle Märkte und Sprachen. Ziehe Ereignisse zum Verschieben, klicke für die öffentliche Vorschau.",
+    "cta": {
+      "new_master": "Neuer Editorial Master",
+      "new_variant": "Neue Market Edition"
+    },
+    "hint": {
+      "drag": "Auf einen Tag ziehen, um zu planen"
+    },
+    "section": {
+      "today": {
+        "eyebrow": "Today's International Presence",
+        "title": "Was gerade in deinen Märkten passiert"
+      }
+    },
+    "view": {
+      "month": "Monat",
+      "week": "Woche"
+    },
+    "type": {
+      "article": "Magazine",
+      "project": "Projekt",
+      "page": "Showcase-Seite"
+    },
+    "presence": {
+      "empty": "Kein Markt mit Ereignissen im aktuellen Fenster.",
+      "flag": "Flagge",
+      "market": "Markt",
+      "today": "Heute",
+      "scheduled": "Geplant",
+      "published": "Veröffentlicht"
+    },
+    "toast": {
+      "load_error": "Fehler beim Laden des Editorial Calendars"
+    }
   }
 }

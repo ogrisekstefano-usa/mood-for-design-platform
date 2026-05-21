@@ -363,5 +363,79 @@
     },
     "usage_label": "المشاريع",
     "newProject": "مشروع جديد"
+  },
+  "inspirations": {
+    "eyebrow": "Cultural Design Intelligence Layer",
+    "lede": "الأرشيف التحريري للاستوديو. كل مرجع يُقرأ من خلال العدسة الثقافية للأسواق الدولية: الأجواء، المواد، القرابة التحريرية.",
+    "search": {
+      "placeholder": "ابحث بالأجواء، بالمواد، بالبراند…"
+    },
+    "cta": {
+      "import_catalog": "استيراد كتالوج المورّد",
+      "add_reference": "إضافة مرجع"
+    },
+    "tabs": {
+      "all": "الكل",
+      "editorial": "تحريريات",
+      "product": "منتجات"
+    },
+    "empty": {
+      "title": "الأرشيف لا يزال فارغًا.",
+      "hint": "أضف أول مرجع: رفع، رابط Pinterest، رابط Instagram أو أي URL لصورة. MOOD سيحوّله إلى Inspiration ثقافي.",
+      "cta": "أضف أول مرجع"
+    },
+    "error": {
+      "load": "خطأ في التحميل"
+    },
+    "toast": {
+      "added": "تمت إضافة المرجع إلى Inspirations™",
+      "imported": "تم استيراد {count} منتجًا كـ Product Inspirations™."
+    },
+    "filter": {
+      "market": "السوق",
+      "atmosphere": "الأجواء",
+      "material": "المواد",
+      "product_category": "فئة الأثاث",
+      "luxury": "نَفَس الفخامة",
+      "profile": "الوجهة",
+      "reset": "إعادة"
+    }
+  },
+  "editorial": {
+    "eyebrow": "Blueprint · International Editorial Operations",
+    "intro": "نظِّم النشرات الدولية عبر جميع الأسواق واللغات. اسحب الأحداث لإعادة الجدولة، انقر لفتح المعاينة العامة.",
+    "cta": {
+      "new_master": "Editorial Master جديد",
+      "new_variant": "Market Edition جديدة"
+    },
+    "hint": {
+      "drag": "اسحب إلى يوم للجدولة"
+    },
+    "section": {
+      "today": {
+        "eyebrow": "Today's International Presence",
+        "title": "ما يحدث الآن في أسواقك"
+      }
+    },
+    "view": {
+      "month": "الشهر",
+      "week": "الأسبوع"
+    },
+    "type": {
+      "article": "Magazine",
+      "project": "مشروع",
+      "page": "صفحة عرض"
+    },
+    "presence": {
+      "empty": "لا توجد سوق ذات أحداث في النافذة الحالية.",
+      "flag": "العَلَم",
+      "market": "السوق",
+      "today": "اليوم",
+      "scheduled": "مُجدوَل",
+      "published": "منشور"
+    },
+    "toast": {
+      "load_error": "خطأ في تحميل التقويم التحريري"
+    }
   }
 }

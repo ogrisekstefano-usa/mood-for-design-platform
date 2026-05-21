@@ -20,6 +20,7 @@ import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
 import { asErrorString } from '../../lib/asErrorString';
+import { useT } from '../../contexts/BlueprintContext';
 import AddInspirationModal from './AddInspirationModal';
 import InspirationDetailDrawer from './InspirationDetailDrawer';
 import SupplierCatalogImportModal from './SupplierCatalogImportModal';
@@ -27,6 +28,7 @@ import JourneyContextHeader from '../../components/journey/JourneyContextHeader'
 import './inspirations.css';
 
 const InspirationsPage = () => {
+  const t = useT();
   const [items, setItems] = useState(null);
   const [filtersConfig, setFiltersConfig] = useState(null);
   const [filters, setFilters] = useState({ market: '', atmosphere: '', material: '', luxury: '', profile: '', product_category: '' });
@@ -49,14 +51,14 @@ const InspirationsPage = () => {
     if (typeFilter) qs.set('inspiration_type', typeFilter);
     api.get(`/api/inspirations/archive?${qs.toString()}`)
       .then((r) => setItems(r.data?.items || []))
-      .catch((e) => setError(asErrorString(e, 'Errore nel caricamento')));
+      .catch((e) => setError(asErrorString(e, t('inspirations.error.load', null, 'Errore nel caricamento'))));
   };
   useEffect(() => { load(); /* eslint-disable-next-line */ },
     [filters.market, filters.atmosphere, filters.material, filters.luxury, filters.profile, filters.product_category, typeFilter]);
 
   const onImported = (it) => {
     setItems((prev) => [it, ...(prev || [])]);
-    toast.success('Riferimento aggiunto a Inspirations™');
+    toast.success(t('inspirations.toast.added', null, 'Riferimento aggiunto a Inspirations™'));
   };
 
   const onChanged = (it) => {
@@ -79,18 +81,17 @@ const InspirationsPage = () => {
       <JourneyContextHeader compact />
 
       <header className="ins-header" data-testid="inspirations-header">
-        <p className="ins-eyebrow">Cultural Design Intelligence Layer</p>
+        <p className="ins-eyebrow">{t('inspirations.eyebrow', null, 'Cultural Design Intelligence Layer')}</p>
         <h1 className="ins-title">Inspirations™</h1>
         <p className="ins-lede">
-          L'archivio curatoriale dello studio. Ogni riferimento è letto attraverso la lente culturale
-          dei mercati internazionali: atmosfera, materia, affinità editoriale.
+          {t('inspirations.lede', null, "L'archivio curatoriale dello studio. Ogni riferimento è letto attraverso la lente culturale dei mercati internazionali: atmosfera, materia, affinità editoriale.")}
         </p>
         <div className="ins-header__actions">
           <div className="ins-search">
             <Icons.Search size={13} strokeWidth={1.5} />
             <input
               type="text"
-              placeholder="Cerca per atmosfera, materia, brand…"
+              placeholder={t('inspirations.search.placeholder', null, 'Cerca per atmosfera, materia, brand…')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') load(); }}
@@ -112,30 +113,30 @@ const InspirationsPage = () => {
           <button type="button" className="ins-cta-secondary"
                   onClick={() => setCatalogOpen(true)}
                   data-testid="ins-catalog-btn">
-            <Icons.FolderInput size={13} /> Importa catalogo fornitore
+            <Icons.FolderInput size={13} /> {t('inspirations.cta.import_catalog', null, 'Importa catalogo fornitore')}
           </button>
           <button type="button" className="ins-cta-primary"
                   onClick={() => setAddOpen(true)}
                   data-testid="ins-add-btn">
-            <Icons.Plus size={13} /> Aggiungi riferimento
+            <Icons.Plus size={13} /> {t('inspirations.cta.add_reference', null, 'Aggiungi riferimento')}
           </button>
         </div>
       </header>
 
-      {/* ── Tipo di Inspiration: Tutti · Editoriali · Prodotti ── */}
+      {/* ── Tipo di Inspiration: All · Editorial · Product ── */}
       <div className="ins-type-toggle" data-testid="ins-type-toggle">
         {[
-          { key: '',          label: 'Tutti',       icon: 'Layers' },
-          { key: 'editorial', label: 'Editoriali',  icon: 'BookOpen' },
-          { key: 'product',   label: 'Prodotti',    icon: 'Package' },
-        ].map((t) => {
-          const Ico = Icons[t.icon] || Icons.Circle;
+          { key: '',          labelKey: 'inspirations.tabs.all',       icon: 'Layers' },
+          { key: 'editorial', labelKey: 'inspirations.tabs.editorial', icon: 'BookOpen' },
+          { key: 'product',   labelKey: 'inspirations.tabs.product',   icon: 'Package' },
+        ].map((tab) => {
+          const Ico = Icons[tab.icon] || Icons.Circle;
           return (
-            <button key={t.key || 'all'} type="button"
-                    className={`ins-type-toggle__btn ${typeFilter === t.key ? 'is-active' : ''}`}
-                    onClick={() => setTypeFilter(t.key)}
-                    data-testid={`ins-type-${t.key || 'all'}`}>
-              <Ico size={12} strokeWidth={1.5} /> {t.label}
+            <button key={tab.key || 'all'} type="button"
+                    className={`ins-type-toggle__btn ${typeFilter === tab.key ? 'is-active' : ''}`}
+                    onClick={() => setTypeFilter(tab.key)}
+                    data-testid={`ins-type-${tab.key || 'all'}`}>
+              <Ico size={12} strokeWidth={1.5} /> {t(tab.labelKey, null, tab.key || 'Tutti')}
             </button>
           );
         })}
@@ -145,6 +146,7 @@ const InspirationsPage = () => {
         config={filtersConfig}
         value={filters}
         onChange={(next) => setFilters(next)}
+        t={t}
       />
 
       {error && (
@@ -165,15 +167,14 @@ const InspirationsPage = () => {
       {empty && (
         <div className="ins-empty" data-testid="inspirations-empty">
           <Icons.Bookmark size={28} strokeWidth={1.1} />
-          <p className="ins-empty__title">L'archivio è ancora vuoto.</p>
+          <p className="ins-empty__title">{t('inspirations.empty.title', null, "L'archivio è ancora vuoto.")}</p>
           <p className="ins-empty__hint">
-            Aggiungi il primo riferimento: un upload, un link Pinterest, un link Instagram o
-            qualsiasi URL di immagine. MOOD lo trasformerà in Inspiration culturale.
+            {t('inspirations.empty.hint', null, 'Aggiungi il primo riferimento: un upload, un link Pinterest, un link Instagram o qualsiasi URL di immagine. MOOD lo trasformerà in Inspiration culturale.')}
           </p>
           <button type="button" className="ins-cta-primary"
                   onClick={() => setAddOpen(true)}
                   data-testid="ins-empty-add">
-            <Icons.Plus size={13} /> Aggiungi il primo riferimento
+            <Icons.Plus size={13} /> {t('inspirations.empty.cta', null, 'Aggiungi il primo riferimento')}
           </button>
         </div>
       )}
@@ -200,7 +201,7 @@ const InspirationsPage = () => {
         onImported={(count) => {
           setCatalogOpen(false);
           setTypeFilter('product');  // show what was just imported
-          toast.success(`Importati ${count} prodotti come Product Inspirations™.`);
+          toast.success(t('inspirations.toast.imported', { count }, 'Importati {count} prodotti come Product Inspirations™.'));
           load();
         }}
       />
@@ -218,7 +219,7 @@ const InspirationsPage = () => {
 };
 
 // ── FilterBar ──────────────────────────────────────────────────────────
-const FilterBar = ({ config, value, onChange }) => {
+const FilterBar = ({ config, value, onChange, t }) => {
   if (!config) return null;
   const Sel = ({ name, options, placeholder, testid }) => (
     <select
@@ -235,22 +236,22 @@ const FilterBar = ({ config, value, onChange }) => {
   );
   return (
     <div className="ins-filter-bar" data-testid="inspirations-filters">
-      <Sel name="market"     options={config.markets}              placeholder="Mercato"     testid="ins-filter-market" />
-      <Sel name="atmosphere" options={config.atmosphere_tags}      placeholder="Atmosfera"   testid="ins-filter-atmosphere" />
-      <Sel name="material"   options={config.material_tags}        placeholder="Materia"     testid="ins-filter-material" />
+      <Sel name="market"     options={config.markets}              placeholder={t('inspirations.filter.market',     null, 'Mercato')}     testid="ins-filter-market" />
+      <Sel name="atmosphere" options={config.atmosphere_tags}      placeholder={t('inspirations.filter.atmosphere', null, 'Atmosfera')}   testid="ins-filter-atmosphere" />
+      <Sel name="material"   options={config.material_tags}        placeholder={t('inspirations.filter.material',   null, 'Materia')}     testid="ins-filter-material" />
       {config.product_categories && config.product_categories.length > 0 && (
         <Sel name="product_category"
              options={config.product_categories}
-             placeholder="Complemento d'arredo"
+             placeholder={t('inspirations.filter.product_category', null, "Complemento d'arredo")}
              testid="ins-filter-category" />
       )}
-      <Sel name="luxury"     options={config.luxury_levels}        placeholder="Tono luxury" testid="ins-filter-luxury" />
-      <Sel name="profile"    options={config.hospitality_profiles} placeholder="Destinazione" testid="ins-filter-profile" />
+      <Sel name="luxury"     options={config.luxury_levels}        placeholder={t('inspirations.filter.luxury',  null, 'Tono luxury')} testid="ins-filter-luxury" />
+      <Sel name="profile"    options={config.hospitality_profiles} placeholder={t('inspirations.filter.profile', null, 'Destinazione')} testid="ins-filter-profile" />
       {(value.market || value.atmosphere || value.material || value.luxury || value.profile || value.product_category) && (
         <button type="button" className="ins-filter-clear"
                 onClick={() => onChange({ market: '', atmosphere: '', material: '', luxury: '', profile: '', product_category: '' })}
                 data-testid="ins-filter-clear">
-          Reset
+          {t('inspirations.filter.reset', null, 'Reset')}
         </button>
       )}
     </div>
