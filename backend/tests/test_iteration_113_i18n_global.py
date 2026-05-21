@@ -94,10 +94,12 @@ class TestArabicStringsFile:
         assert data["user"]["language"] == "اللغة"
 
 
-# ── Backend Blueprint i18n returns Arabic messages ─────────────
+# ── Public i18n endpoint serves Arabic messages ────────────────
+# After HARDENING-I18N-GUARD (iter117), Arabic moved from /api/blueprint/i18n
+# (now 403 for non-operational locales) to /api/public/i18n.
 class TestBackendBlueprintI18nArabic:
-    def test_backend_serves_arabic_locale(self):
-        r = requests.get(f"{API}/api/blueprint/i18n/ar", timeout=15)
+    def test_backend_serves_arabic_locale_via_public_endpoint(self):
+        r = requests.get(f"{API}/api/public/i18n/ar", timeout=15)
         assert r.status_code == 200, r.text
         d = r.json()
         assert d["locale"] == "ar"
@@ -110,15 +112,17 @@ class TestBackendBlueprintI18nArabic:
         assert msgs.get("nav.dashboard") == "لوحة التحكم"
         assert msgs.get("user.language") == "اللغة"
 
+    def test_blueprint_endpoint_now_forbids_arabic(self):
+        """After iter117, blueprint surface is locked to 6 operational locales."""
+        r = requests.get(f"{API}/api/blueprint/i18n/ar", timeout=15)
+        assert r.status_code == 403
+        assert r.json()["detail"]["error"] == "forbidden_locale"
+
     def test_arabic_is_not_falling_back(self):
-        """Sanity: requesting a missing locale falls back to en-US."""
+        """Sanity: requesting a missing locale falls back to en-US (still via blueprint endpoint, since 'xx' is not a valid public locale either — but blueprint blocks it first)."""
         r = requests.get(f"{API}/api/blueprint/i18n/xx", timeout=15)
-        assert r.status_code == 200
-        d = r.json()
-        # Falling back means 'fallback' is set
-        assert d["fallback"] == "en-US"
-        # And messages come from the en-US default
-        assert d["messages"].get("common.save") == "Save"
+        # 'xx' is not operational → 403, not 200
+        assert r.status_code == 403
 
 
 # ── FASE A · Locale propagation bridge ─────────────────────────

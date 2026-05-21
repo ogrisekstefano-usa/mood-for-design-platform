@@ -16,8 +16,10 @@ import React, { useState } from 'react';
 import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { useT } from '../../contexts/BlueprintContext';
 
 const JourneyClosureCeremony = ({ journeyId, projectTitle, onDeposited }) => {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [finalTitle, setFinalTitle] = useState(projectTitle || '');
   const [statement, setStatement] = useState('');
@@ -35,11 +37,11 @@ const JourneyClosureCeremony = ({ journeyId, projectTitle, onDeposited }) => {
         statement:   statement.trim(),
         cover_url:   coverUrl.trim() || null,
       });
-      toast.success('Il percorso entra nella memoria della casa.');
+      toast.success(t('closure.toast.success'));
       setOpen(false);
       if (onDeposited) onDeposited();
     } catch (e) {
-      toast.error(e?.response?.data?.detail || 'Non è stato possibile depositare il dossier.');
+      toast.error(e?.response?.data?.detail || t('closure.toast.error'));
     } finally {
       setBusy(false);
     }
@@ -48,14 +50,12 @@ const JourneyClosureCeremony = ({ journeyId, projectTitle, onDeposited }) => {
   if (!open) {
     return (
       <div className="dj-inline" data-testid="dj-inline-closure">
-        <p className="dj-inline__eyebrow">Certified Closure™</p>
+        <p className="dj-inline__eyebrow">{t('closure.inline.eyebrow')}</p>
         <h3 className="dj-inline__title">
-          <em>Il percorso entra nella memoria della casa</em>
+          <em>{t('closure.inline.title')}</em>
         </h3>
         <p className="dj-inline__sub">
-          Quando il Journey raggiunge la sua forma definitiva, lo studio deposita
-          un dossier editoriale: titolo, statement, cover. Il percorso non
-          finisce — viene cristallizzato come memoria progettuale viva.
+          {t('closure.inline.sub')}
         </p>
         <button
           type="button"
@@ -82,7 +82,7 @@ const JourneyClosureCeremony = ({ journeyId, projectTitle, onDeposited }) => {
             e.currentTarget.style.background = 'transparent';
           }}
         >
-          Apri il rituale di chiusura
+          {t('closure.inline.cta')}
         </button>
       </div>
     );
@@ -90,14 +90,12 @@ const JourneyClosureCeremony = ({ journeyId, projectTitle, onDeposited }) => {
 
   return (
     <div className="dj-inline" data-testid="dj-closure-ceremony">
-      <p className="dj-inline__eyebrow">Rituale di chiusura · Certified Closure™</p>
+      <p className="dj-inline__eyebrow">{t('closure.ceremony.eyebrow')}</p>
       <h3 className="dj-inline__title">
-        <em>Deposita il dossier del percorso</em>
+        <em>{t('closure.ceremony.title')}</em>
       </h3>
       <p className="dj-inline__sub" style={{ maxWidth: '60ch' }}>
-        Tono editoriale, sobrio, atemporale. Nessuna celebrazione, nessun
-        marketing — solo la sintesi del percorso che entrerà nella memoria
-        della casa.
+        {t('closure.ceremony.sub')}
       </p>
 
       <div style={{ marginTop: 24, display: 'grid', gap: 18, maxWidth: 640 }}>

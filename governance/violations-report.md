@@ -5,14 +5,23 @@
 Questo report NON è un debug log. È il **catalogo enforce-able** del debito sistemico.
 La policy: il numero di violation **non può crescere**. Vedi `test_iteration_115_governance.py`.
 
+## Progress log
+
+| Sprint | Date | Delta |
+|---|---|---|
+| HARDENING-01.1 (baseline) | 18 Mag 2026 | 151 files · 828 hex · 214 font · 40 untranslated |
+| HARDENING-I18N-CORRECTION | 21 Mag 2026 | Whitelist 6 operational locales enforced (no delta on debt — governance fix only) |
+| HARDENING-I18N-GUARD (iter117) | 21 Mag 2026 | **−3 untranslated files** · `JourneyPulsePage.jsx` ✓ · `JourneyClosureCeremony.jsx` ✓ · `PublicTenantPage.jsx` (404) ✓ · added live missing-i18n KPI on overlay |
+| Current | — | 151 files · 828 hex · 214 font · **37 untranslated** |
+
 ## Summary by surface
 
 | Surface | Files | Hex hardcoded | Naked font-family | Files senza t() |
 |---|---:|---:|---:|---:|
-| **P0** | 39 | 123 | 70 | 18 |
+| **P0** | 39 | 123 | 70 | **15** (was 18) |
 | **P1** | 109 | 683 | 134 | 22 |
 | **P2** | 3 | 22 | 10 | 0 |
-| **TOTAL** | **151** | **828** | **214** | **40** |
+| **TOTAL** | **151** | **828** | **214** | **37** |
 
 ## P0 — Client-facing surfaces (highest priority)
 
@@ -24,7 +33,7 @@ These surfaces are visible to clients (Companion, Dossier, Journey, CRM workspac
 | `pages/insights/insights.css` | 0 | 19 | ✓ |
 | `pages/crm/CrmAccountsPage.jsx` | 19 | 0 | ✓ |
 | `pages/workspace/projects-page.css` | 3 | 15 | ✓ |
-| `components/journey/JourneyClosureCeremony.jsx` | 5 | 0 | ❌ |
+| `components/journey/JourneyClosureCeremony.jsx` | 5 | 0 | ✓ |
 | `components/journey/milestone-dialogue.css` | 12 | 2 | ✓ |
 | `pages/insights/InsightsPage.jsx` | 12 | 0 | ✓ |
 | `pages/crm/AccountDetailPage.jsx` | 1 | 0 | ❌ |
@@ -33,7 +42,8 @@ These surfaces are visible to clients (Companion, Dossier, Journey, CRM workspac
 | `pages/crm/ActivityModal.jsx` | 0 | 0 | ❌ |
 | `pages/workspace/AddReferenceModal.jsx` | 0 | 0 | ❌ |
 | `pages/workspace/DesignJourneyTab.jsx` | 0 | 0 | ❌ |
-| `pages/dashboard/JourneyPulsePage.jsx` | 0 | 0 | ❌ |
+| `pages/dashboard/JourneyPulsePage.jsx` | 0 | 0 | ✓ |
+| `pages/public/PublicTenantPage.jsx` (404) | 0 | 0 | ✓ |
 | `pages/inspirations/BrandDetailPage.jsx` | 0 | 0 | ❌ |
 | `components/journey/MilestoneDialogue.jsx` | 0 | 0 | ❌ |
 | `components/journey/ClientInteractionLayer.jsx` | 0 | 0 | ❌ |

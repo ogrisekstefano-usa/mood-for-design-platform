@@ -204,5 +204,92 @@
       "eyebrow": "Erinnerung der Reise",
       "message": "Das Dossier dieser Journey wird in Kürze hinterlegt."
     }
+  },
+  "dashboard": {
+    "pulse": {
+      "eyebrow": "Studio Pulse™ · Projektrhythmus",
+      "loading_title": "Lese den Projektrhythmus…",
+      "greet": {
+        "morning": "Guten Morgen",
+        "afternoon": "Guten Tag",
+        "evening": "Guten Abend"
+      },
+      "summary": {
+        "empty": "Noch lebt keine Journey. Öffne ein Projektgespräch, um zu beginnen.",
+        "one": "{n} Journey im Lauf",
+        "many": "{n} Journeys im Lauf",
+        "voices_today": "{n} Stimmen heute eingegangen",
+        "chapters_waiting": "{n} Kapitel warten",
+        "revisions_open": "{n} offene Revisionen"
+      },
+      "sections": {
+        "active": {
+          "eyebrow": "Hauptbereich",
+          "title": "Lebendige Journeys",
+          "empty": "Das Studio wartet auf seine erste Reise.",
+          "cta": "Ein Projektgespräch eröffnen"
+        },
+        "voices": {
+          "eyebrow": "Letzte Gesten",
+          "title": "Stimmen von heute"
+        },
+        "waiting": {
+          "eyebrow": "Stimme erwartet",
+          "title": "Geteilte Kapitel · noch still"
+        },
+        "revisions": {
+          "eyebrow": "Eine neue Richtung wartet",
+          "title": "Offene Revisionen"
+        },
+        "evolutions": {
+          "eyebrow": "Letzte 7 Tage",
+          "title": "Aktuelle Entwicklungen"
+        },
+        "silent": {
+          "eyebrow": "Im Schweigen",
+          "title": "Journeys, die auf eine neue Stimme warten"
+        },
+        "actions": {
+          "eyebrow": "Nächste Projektgesten",
+          "title": "Wo Sie weitermachen können"
+        }
+      },
+      "card": {
+        "last_voice": "Letzte Stimme · {when}",
+        "opening": "Eröffnung"
+      },
+      "action": {
+        "open_journey": "Journey öffnen",
+        "presented_relative": "präsentiert {when}"
+      },
+      "relative": {
+        "today": "heute",
+        "yesterday": "gestern",
+        "days_ago": "vor {n} Tagen"
+      }
+    }
+  },
+  "errors": {
+    "notFound": {
+      "code": "404",
+      "title": "Diese Seite existiert nicht."
+    }
+  },
+  "closure": {
+    "inline": {
+      "eyebrow": "Certified Closure™",
+      "title": "Die Reise geht in die Erinnerung des Hauses ein",
+      "sub": "Wenn die Journey ihre endgültige Form erreicht, hinterlegt das Studio ein redaktionelles Dossier: Titel, Statement, Cover. Die Reise endet nicht — sie wird als lebendige Projekterinnerung kristallisiert.",
+      "cta": "Das Abschlussritual öffnen"
+    },
+    "ceremony": {
+      "eyebrow": "Abschlussritual · Certified Closure™",
+      "title": "Hinterlegen Sie das Dossier der Reise",
+      "sub": "Redaktioneller, nüchterner, zeitloser Ton. Keine Feier, kein Marketing — nur die Synthese des Wegs, der in die Erinnerung des Hauses eingeht."
+    },
+    "toast": {
+      "success": "Die Reise geht nun in die Erinnerung des Hauses ein.",
+      "error": "Das Dossier konnte nicht hinterlegt werden."
+    }
   }
 }

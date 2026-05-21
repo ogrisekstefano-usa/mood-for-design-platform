@@ -152,5 +152,13 @@ export function pickString(key, locale, params = null, tenantDefault = null) {
     // eslint-disable-next-line no-console
     console.warn(`[i18n] Missing string key: ${key} (locale ${locale})`);
   }
+  // Sprint HARDENING-I18N-GUARD™: record into the LiveQA missing registry.
+  try {
+    // Lazy require to avoid an upfront dependency on the design-system layer
+    // from the public site bundle.
+    // eslint-disable-next-line global-require
+    const { recordMissing } = require('../design-system/missingI18nRegistry');
+    recordMissing({ key, locale, fallbackSrc: 'frontend-static' });
+  } catch (_) { /* noop */ }
   return key;
 }

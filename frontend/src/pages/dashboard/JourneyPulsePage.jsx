@@ -13,6 +13,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import api from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { useT } from '../../contexts/BlueprintContext';
 import './journey-pulse.css';
 
 const LIFECYCLE_GLOW = {
@@ -47,15 +48,12 @@ const fmtWhen = (iso) => {
   } catch { return ''; }
 };
 
-const fmtDaysAgo = (n) => {
-  if (n === 0) return 'oggi';
-  if (n === 1) return 'ieri';
-  return `${n} giorni fa`;
-};
+// fmtDaysAgo now lives inside the component to access the t() function.
 
 const JourneyPulsePage = () => {
   const nav = useNavigate();
   const { user } = useAuth();
+  const t = useT();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -70,9 +68,15 @@ const JourneyPulsePage = () => {
 
   const greet = () => {
     const h = new Date().getHours();
-    if (h < 12) return 'Buongiorno';
-    if (h < 18) return 'Buon pomeriggio';
-    return 'Buonasera';
+    if (h < 12) return t('dashboard.pulse.greet.morning');
+    if (h < 18) return t('dashboard.pulse.greet.afternoon');
+    return t('dashboard.pulse.greet.evening');
+  };
+
+  const fmtDaysAgo = (n) => {
+    if (n === 0) return t('dashboard.pulse.relative.today');
+    if (n === 1) return t('dashboard.pulse.relative.yesterday');
+    return t('dashboard.pulse.relative.days_ago', { n });
   };
 
   const openJourney = (project_id) => nav(`/workspace/projects/${project_id}`);
@@ -81,8 +85,8 @@ const JourneyPulsePage = () => {
     return (
       <div className="jp-shell" data-testid="pulse-loading">
         <div className="jp-container">
-          <div className="jp-hero__eyebrow">Studio Pulse™</div>
-          <h1 className="jp-hero__title">Lettura del ritmo progettuale…</h1>
+          <div className="jp-hero__eyebrow">{t('dashboard.pulse.eyebrow').split(' · ')[0]}</div>
+          <h1 className="jp-hero__title">{t('dashboard.pulse.loading_title')}</h1>
         </div>
       </div>
     );
@@ -106,19 +110,21 @@ const JourneyPulsePage = () => {
 
         {/* ── HERO ─────────────────────────────────────────────── */}
         <header className="jp-hero" data-testid="jp-hero">
-          <div className="jp-hero__eyebrow">Studio Pulse™ · ritmo progettuale</div>
+          <div className="jp-hero__eyebrow">{t('dashboard.pulse.eyebrow')}</div>
           <h1 className="jp-hero__title">
             {greet()}{user?.first_name ? `, ${user.first_name}` : ''}.
           </h1>
           <p className="jp-hero__sub">
             {counts.active === 0 ? (
-              <>Nessun Journey è ancora vivo. Apri una conversazione progettuale per cominciare.</>
+              <>{t('dashboard.pulse.summary.empty')}</>
             ) : (
               <>
-                {counts.active} {counts.active === 1 ? 'Journey vivo' : 'Journey vivi'}
-                {counts.voices_today > 0 && <> · {counts.voices_today} voci ricevute oggi</>}
-                {counts.chapters_waiting > 0 && <> · {counts.chapters_waiting} capitoli in attesa</>}
-                {counts.revisions_open > 0 && <> · {counts.revisions_open} revisioni aperte</>}
+                {counts.active === 1
+                  ? t('dashboard.pulse.summary.one', { n: counts.active })
+                  : t('dashboard.pulse.summary.many', { n: counts.active })}
+                {counts.voices_today > 0 && <> · {t('dashboard.pulse.summary.voices_today', { n: counts.voices_today })}</>}
+                {counts.chapters_waiting > 0 && <> · {t('dashboard.pulse.summary.chapters_waiting', { n: counts.chapters_waiting })}</>}
+                {counts.revisions_open > 0 && <> · {t('dashboard.pulse.summary.revisions_open', { n: counts.revisions_open })}</>}
               </>
             )}
           </p>
@@ -127,15 +133,15 @@ const JourneyPulsePage = () => {
         {/* ── 1 · ACTIVE DESIGN JOURNEYS™ (dominante) ─────────── */}
         <section className="jp-section" data-testid="jp-active-section">
           <header className="jp-section__head">
-            <span className="jp-section__eyebrow">Sezione dominante</span>
-            <h2 className="jp-section__title">I Journey vivi</h2>
+            <span className="jp-section__eyebrow">{t('dashboard.pulse.sections.active.eyebrow')}</span>
+            <h2 className="jp-section__title">{t('dashboard.pulse.sections.active.title')}</h2>
           </header>
 
           {active_journeys.length === 0 ? (
             <div className="jp-empty" data-testid="jp-active-empty">
-              <p>Lo studio è in attesa del primo viaggio.</p>
+              <p>{t('dashboard.pulse.sections.active.empty')}</p>
               <Link to="/begin-journey" className="jp-empty__cta">
-                Inizia una conversazione progettuale
+                {t('dashboard.pulse.sections.active.cta')}
               </Link>
             </div>
           ) : (
@@ -152,7 +158,7 @@ const JourneyPulsePage = () => {
                       <span className="jp-card__lifecycle">{j.lifecycle_label}</span>
                     </div>
                     <div className="jp-card__milestone">
-                      {j.current_milestone?.label || 'In apertura'}
+                      {j.current_milestone?.label || t('dashboard.pulse.card.opening')}
                     </div>
                     <div className="jp-card__progress">
                       <div className="jp-card__bar">
@@ -162,7 +168,7 @@ const JourneyPulsePage = () => {
                     </div>
                     {j.last_event && (
                       <p className="jp-card__last">
-                        <em>Ultima voce · {fmtWhen(j.last_event.when)}</em>
+                        <em>{t('dashboard.pulse.card.last_voice', { when: fmtWhen(j.last_event.when) })}</em>
                         {j.last_event.text}
                       </p>
                     )}
@@ -177,8 +183,8 @@ const JourneyPulsePage = () => {
         {voices_today.length > 0 && (
           <section className="jp-section" data-testid="jp-voices-section">
             <header className="jp-section__head">
-              <span className="jp-section__eyebrow">Negli ultimi gesti</span>
-              <h2 className="jp-section__title">Le voci di oggi</h2>
+              <span className="jp-section__eyebrow">{t('dashboard.pulse.sections.voices.eyebrow')}</span>
+              <h2 className="jp-section__title">{t('dashboard.pulse.sections.voices.title')}</h2>
             </header>
             <div className="jp-voices">
               {voices_today.slice(0, 8).map((v) => (
@@ -205,8 +211,8 @@ const JourneyPulsePage = () => {
         {chapters_waiting.length > 0 && (
           <section className="jp-section" data-testid="jp-waiting-section">
             <header className="jp-section__head">
-              <span className="jp-section__eyebrow">In attesa di voce</span>
-              <h2 className="jp-section__title">Capitoli condivisi · ancora silenziosi</h2>
+              <span className="jp-section__eyebrow">{t('dashboard.pulse.sections.waiting.eyebrow')}</span>
+              <h2 className="jp-section__title">{t('dashboard.pulse.sections.waiting.title')}</h2>
             </header>
             <div className="jp-list">
               {chapters_waiting.slice(0, 6).map((c, i) => (
@@ -215,7 +221,7 @@ const JourneyPulsePage = () => {
                      data-testid={`jp-waiting-${i}`}>
                   <em>{c.account}</em>
                   <span className="jp-line__main">{c.chapter_title} · {c.milestone}</span>
-                  <span className="jp-line__hint">presentato {fmtDaysAgo(c.since_days)}</span>
+                  <span className="jp-line__hint">{t('dashboard.pulse.action.presented_relative', { when: fmtDaysAgo(c.since_days) })}</span>
                 </div>
               ))}
             </div>
@@ -226,8 +232,8 @@ const JourneyPulsePage = () => {
         {revisions_open.length > 0 && (
           <section className="jp-section" data-testid="jp-revisions-section">
             <header className="jp-section__head">
-              <span className="jp-section__eyebrow">Una nuova direzione attende</span>
-              <h2 className="jp-section__title">Revisioni aperte</h2>
+              <span className="jp-section__eyebrow">{t('dashboard.pulse.sections.revisions.eyebrow')}</span>
+              <h2 className="jp-section__title">{t('dashboard.pulse.sections.revisions.title')}</h2>
             </header>
             <div className="jp-list">
               {revisions_open.slice(0, 6).map((r) => (
@@ -247,8 +253,8 @@ const JourneyPulsePage = () => {
         {recent_evolutions.length > 0 && (
           <section className="jp-section" data-testid="jp-evolutions-section">
             <header className="jp-section__head">
-              <span className="jp-section__eyebrow">Ultimi 7 giorni</span>
-              <h2 className="jp-section__title">Ultime evoluzioni</h2>
+              <span className="jp-section__eyebrow">{t('dashboard.pulse.sections.evolutions.eyebrow')}</span>
+              <h2 className="jp-section__title">{t('dashboard.pulse.sections.evolutions.title')}</h2>
             </header>
             <div className="jp-list">
               {recent_evolutions.slice(0, 6).map((e) => (
@@ -268,8 +274,8 @@ const JourneyPulsePage = () => {
         {silent_journeys.length > 0 && (
           <section className="jp-section" data-testid="jp-silent-section">
             <header className="jp-section__head">
-              <span className="jp-section__eyebrow">In silenzio</span>
-              <h2 className="jp-section__title">Journey in attesa di una nuova voce</h2>
+              <span className="jp-section__eyebrow">{t('dashboard.pulse.sections.silent.eyebrow')}</span>
+              <h2 className="jp-section__title">{t('dashboard.pulse.sections.silent.title')}</h2>
             </header>
             <div className="jp-list">
               {silent_journeys.slice(0, 6).map((s) => (
@@ -291,8 +297,8 @@ const JourneyPulsePage = () => {
         {next_actions.length > 0 && (
           <section className="jp-section" data-testid="jp-actions-section">
             <header className="jp-section__head">
-              <span className="jp-section__eyebrow">Prossimi gesti progettuali</span>
-              <h2 className="jp-section__title">Da dove puoi continuare</h2>
+              <span className="jp-section__eyebrow">{t('dashboard.pulse.sections.actions.eyebrow')}</span>
+              <h2 className="jp-section__title">{t('dashboard.pulse.sections.actions.title')}</h2>
             </header>
             <div className="jp-actions">
               {next_actions.map((a) => (
@@ -302,7 +308,7 @@ const JourneyPulsePage = () => {
                   <div className="jp-action__suggestion">{a.suggestion}</div>
                   <div className="jp-action__ctx">{a.account}</div>
                   <div className="jp-action__cta">
-                    Apri il Journey <ArrowRight size={11} />
+                    {t('dashboard.pulse.action.open_journey')} <ArrowRight size={11} />
                   </div>
                 </div>
               ))}

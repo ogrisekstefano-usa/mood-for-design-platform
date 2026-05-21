@@ -241,7 +241,10 @@ class TestBackendI18nResolvesAll:
         ('ar',    'common.save', 'حفظ'),
     ])
     def test_backend_locale_returns_expected_translation(self, locale, key, expected):
-        r = requests.get(f"{API}/api/blueprint/i18n/{locale}", timeout=15)
+        # After HARDENING-I18N-GUARD (iter117), AR is only available on the
+        # public endpoint. Blueprint operational locales still use the blueprint endpoint.
+        endpoint = "public" if locale == "ar" else "blueprint"
+        r = requests.get(f"{API}/api/{endpoint}/i18n/{locale}", timeout=15)
         assert r.status_code == 200, r.text
         d = r.json()
         # Some locales may fallback for the 'common' namespace.

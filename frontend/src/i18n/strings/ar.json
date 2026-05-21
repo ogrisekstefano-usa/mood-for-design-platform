@@ -213,5 +213,92 @@
       "eyebrow": "ذاكرة الرحلة",
       "message": "سيُودَع دوسيه هذه الرحلة قريبًا."
     }
+  },
+  "dashboard": {
+    "pulse": {
+      "eyebrow": "Studio Pulse™ · إيقاع المشروع",
+      "loading_title": "قراءة إيقاع المشروع…",
+      "greet": {
+        "morning": "صباح الخير",
+        "afternoon": "مساء الخير",
+        "evening": "مساء الخير"
+      },
+      "summary": {
+        "empty": "لا توجد Journey حيّة بعد. افتح حواراً تصميمياً لتبدأ.",
+        "one": "Journey واحدة قيد التطوّر",
+        "many": "{n} Journeys قيد التطوّر",
+        "voices_today": "{n} أصوات وصلت اليوم",
+        "chapters_waiting": "{n} فصول في الانتظار",
+        "revisions_open": "{n} مراجعات مفتوحة"
+      },
+      "sections": {
+        "active": {
+          "eyebrow": "القسم الرئيسي",
+          "title": "الـ Journeys قيد التطوّر",
+          "empty": "الاستوديو ينتظر رحلته الأولى.",
+          "cta": "افتح حواراً تصميمياً"
+        },
+        "voices": {
+          "eyebrow": "آخر اللفتات",
+          "title": "أصوات اليوم"
+        },
+        "waiting": {
+          "eyebrow": "في انتظار صوت",
+          "title": "فصول مشتركة · لا تزال صامتة"
+        },
+        "revisions": {
+          "eyebrow": "اتجاه جديد ينتظر",
+          "title": "مراجعات مفتوحة"
+        },
+        "evolutions": {
+          "eyebrow": "آخر 7 أيام",
+          "title": "تطوّرات حديثة"
+        },
+        "silent": {
+          "eyebrow": "في صمت",
+          "title": "Journeys في انتظار صوت جديد"
+        },
+        "actions": {
+          "eyebrow": "اللفتات التصميمية التالية",
+          "title": "من أين يمكنك أن تكمل"
+        }
+      },
+      "card": {
+        "last_voice": "آخر صوت · {when}",
+        "opening": "بداية الافتتاح"
+      },
+      "action": {
+        "open_journey": "افتح الـ Journey",
+        "presented_relative": "قُدِّم {when}"
+      },
+      "relative": {
+        "today": "اليوم",
+        "yesterday": "أمس",
+        "days_ago": "قبل {n} أيام"
+      }
+    }
+  },
+  "errors": {
+    "notFound": {
+      "code": "404",
+      "title": "هذه الصفحة غير موجودة."
+    }
+  },
+  "closure": {
+    "inline": {
+      "eyebrow": "Certified Closure™",
+      "title": "تدخل الرحلة في ذاكرة البيت",
+      "sub": "حين تبلغ الـ Journey صورتها النهائية، يودِع الاستوديو دوسيهًا تحريرياً: العنوان، البيان، الغلاف. الرحلة لا تنتهي — تتبلور كذاكرة تصميمية حيّة.",
+      "cta": "افتح طقس الختام"
+    },
+    "ceremony": {
+      "eyebrow": "طقس الختام · Certified Closure™",
+      "title": "أودِع دوسيه الرحلة",
+      "sub": "نبرة تحريرية، رصينة، خارج الزمن. لا احتفاء، لا تسويق — فقط خلاصة المسار التي ستدخل ذاكرة البيت."
+    },
+    "toast": {
+      "success": "تدخل الرحلة الآن في ذاكرة البيت.",
+      "error": "تعذّر إيداع الدوسيه."
+    }
   }
 }

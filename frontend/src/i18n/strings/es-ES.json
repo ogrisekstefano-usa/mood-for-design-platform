@@ -204,5 +204,92 @@
       "eyebrow": "Memoria del viaje",
       "message": "El dossier de este Journey se depositará en breve."
     }
+  },
+  "dashboard": {
+    "pulse": {
+      "eyebrow": "Studio Pulse™ · ritmo del proyecto",
+      "loading_title": "Leyendo el ritmo del proyecto…",
+      "greet": {
+        "morning": "Buenos días",
+        "afternoon": "Buenas tardes",
+        "evening": "Buenas noches"
+      },
+      "summary": {
+        "empty": "Aún no hay ningún Journey vivo. Abre una conversación de proyecto para comenzar.",
+        "one": "{n} Journey en curso",
+        "many": "{n} Journeys en curso",
+        "voices_today": "{n} voces recibidas hoy",
+        "chapters_waiting": "{n} capítulos en espera",
+        "revisions_open": "{n} revisiones abiertas"
+      },
+      "sections": {
+        "active": {
+          "eyebrow": "Sección dominante",
+          "title": "Los Journeys en curso",
+          "empty": "El estudio aguarda su primer viaje.",
+          "cta": "Abrir una conversación de proyecto"
+        },
+        "voices": {
+          "eyebrow": "Últimos gestos",
+          "title": "Las voces de hoy"
+        },
+        "waiting": {
+          "eyebrow": "A la espera de una voz",
+          "title": "Capítulos compartidos · aún silenciosos"
+        },
+        "revisions": {
+          "eyebrow": "Una nueva dirección aguarda",
+          "title": "Revisiones abiertas"
+        },
+        "evolutions": {
+          "eyebrow": "Últimos 7 días",
+          "title": "Evoluciones recientes"
+        },
+        "silent": {
+          "eyebrow": "En silencio",
+          "title": "Journeys a la espera de una nueva voz"
+        },
+        "actions": {
+          "eyebrow": "Próximos gestos de proyecto",
+          "title": "Desde dónde puedes continuar"
+        }
+      },
+      "card": {
+        "last_voice": "Última voz · {when}",
+        "opening": "En apertura"
+      },
+      "action": {
+        "open_journey": "Abrir el Journey",
+        "presented_relative": "presentado {when}"
+      },
+      "relative": {
+        "today": "hoy",
+        "yesterday": "ayer",
+        "days_ago": "hace {n} días"
+      }
+    }
+  },
+  "errors": {
+    "notFound": {
+      "code": "404",
+      "title": "Esta página no existe."
+    }
+  },
+  "closure": {
+    "inline": {
+      "eyebrow": "Certified Closure™",
+      "title": "El viaje entra en la memoria de la casa",
+      "sub": "Cuando el Journey alcanza su forma definitiva, el estudio deposita un dossier editorial: título, statement, portada. El viaje no termina — se cristaliza como memoria viva del proyecto.",
+      "cta": "Abrir el ritual de cierre"
+    },
+    "ceremony": {
+      "eyebrow": "Ritual de cierre · Certified Closure™",
+      "title": "Deposita el dossier del viaje",
+      "sub": "Tono editorial, sobrio, atemporal. Sin celebraciones, sin marketing — solo la síntesis del recorrido que entrará en la memoria de la casa."
+    },
+    "toast": {
+      "success": "El viaje entra ahora en la memoria de la casa.",
+      "error": "No se pudo depositar el dossier."
+    }
   }
 }

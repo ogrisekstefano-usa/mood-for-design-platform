@@ -168,11 +168,13 @@ class TestEditorialCopy:
 # ── Backend still serves Arabic translations (no regression on client) ──
 # The point of the correction is NOT to remove AR from the platform —
 # only to prevent it from being a Blueprint workspace locale. The /api
-# endpoint must still return Arabic strings for Client Companion surfaces.
+# endpoints must still return Arabic strings for Client Companion surfaces —
+# via the public endpoint (HARDENING-I18N-GUARD iter117).
 class TestBackendArabicStillServed:
     @pytest.mark.skipif(not API, reason="REACT_APP_BACKEND_URL not configured")
-    def test_backend_serves_arabic_locale(self):
-        r = requests.get(f"{API}/api/blueprint/i18n/ar", timeout=15)
+    def test_backend_serves_arabic_locale_via_public_endpoint(self):
+        # AR now lives on the public endpoint; blueprint endpoint returns 403.
+        r = requests.get(f"{API}/api/public/i18n/ar", timeout=15)
         assert r.status_code == 200, r.text
         d = r.json()
         assert d["locale"] == "ar"
@@ -181,3 +183,8 @@ class TestBackendArabicStillServed:
         # Must contain at least some Arabic translation
         assert any("common." in k for k in msgs.keys()), \
             "Backend must still serve Arabic translations for client surfaces"
+
+    @pytest.mark.skipif(not API, reason="REACT_APP_BACKEND_URL not configured")
+    def test_blueprint_endpoint_blocks_arabic(self):
+        r = requests.get(f"{API}/api/blueprint/i18n/ar", timeout=15)
+        assert r.status_code == 403

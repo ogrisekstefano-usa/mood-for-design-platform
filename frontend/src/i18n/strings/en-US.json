@@ -204,5 +204,56 @@
       "eyebrow": "Memory of the journey",
       "message": "The dossier of this Journey will be deposited shortly."
     }
+  },
+  "dashboard": {
+    "pulse": {
+      "eyebrow": "Studio Pulse™ · project rhythm",
+      "loading_title": "Reading the project rhythm…",
+      "greet": {
+        "morning": "Good morning",
+        "afternoon": "Good afternoon",
+        "evening": "Good evening"
+      },
+      "summary": {
+        "empty": "No Journey is alive yet. Open a project conversation to begin.",
+        "one": "{n} Journey unfolding",
+        "many": "{n} Journeys unfolding",
+        "voices_today": "{n} voices received today",
+        "chapters_waiting": "{n} chapters waiting",
+        "revisions_open": "{n} revisions open"
+      },
+      "sections": {
+        "active":     { "eyebrow": "Dominant section",            "title": "Journeys unfolding", "empty": "The studio is awaiting its first journey.", "cta": "Open a project conversation" },
+        "voices":     { "eyebrow": "Latest gestures",              "title": "Today's voices" },
+        "waiting":    { "eyebrow": "Awaiting a voice",             "title": "Chapters shared · still silent" },
+        "revisions":  { "eyebrow": "A new direction is waiting",   "title": "Revisions open" },
+        "evolutions": { "eyebrow": "Last 7 days",                  "title": "Recent evolutions" },
+        "silent":     { "eyebrow": "In silence",                   "title": "Journeys awaiting a new voice" },
+        "actions":    { "eyebrow": "Next project gestures",        "title": "Where you can continue" }
+      },
+      "card":   { "last_voice": "Last voice · {when}", "opening": "Opening" },
+      "action": { "open_journey": "Open the Journey", "presented_relative": "presented {when}" },
+      "relative": { "today": "today", "yesterday": "yesterday", "days_ago": "{n} days ago" }
+    }
+  },
+  "errors": {
+    "notFound": { "code": "404", "title": "This page does not exist." }
+  },
+  "closure": {
+    "inline": {
+      "eyebrow": "Certified Closure™",
+      "title": "The journey enters the memory of the home",
+      "sub": "When the Journey reaches its definitive form, the studio deposits an editorial dossier: title, statement, cover. The journey does not end — it is crystallised as living project memory.",
+      "cta": "Open the closure ritual"
+    },
+    "ceremony": {
+      "eyebrow": "Closure ritual · Certified Closure™",
+      "title": "Deposit the dossier of the journey",
+      "sub": "Editorial, sober, timeless tone. No celebration, no marketing — only the synthesis of the path that will enter the memory of the home."
+    },
+    "toast": {
+      "success": "The journey now enters the memory of the home.",
+      "error": "It was not possible to deposit the dossier."
+    }
   }
 }

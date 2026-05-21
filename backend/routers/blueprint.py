@@ -17,6 +17,19 @@ from core.tenant_context import get_tenant_context
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
+# ── HARDENING-I18N-GUARD™ (Sprint Iter117) ─────────────────────
+# Server-side enforcement of the language governance contract:
+#   - Blueprint operational locales = 6 fixed (it, en-US, en-GB, fr, de, es)
+#   - Anything else requested against /api/blueprint/i18n/{locale} → 403
+#   - Public surfaces use /api/public/i18n/{locale} (separate router).
+# This is defense-in-depth: even if a frontend localStorage override or a
+# manually crafted axios call tries to fetch ar/zh/ja from Blueprint, the
+# server refuses. Mirrors BLUEPRINT_OPERATIONAL_CODES in
+# /app/frontend/src/site/content/languages.js.
+BLUEPRINT_OPERATIONAL_LOCALES = frozenset({
+    "it", "en-US", "en-GB", "fr", "de", "es",
+})
+
 
 def _now():
     return datetime.now(timezone.utc).isoformat()
@@ -1210,7 +1223,23 @@ def get_locale_strings(
     tenant_slug: str = Query(None),
 ):
     """Returns flattened translation map for a locale.
+
+    Sprint HARDENING-I18N-GUARD: Blueprint admin surfaces are LOCKED to the
+    6 operational locales. Requesting ar/zh/ja/etc returns 403, not 404 —
+    the locale exists in the platform, it just isn't permitted for Blueprint.
+    Public surfaces (Client Companion, public site) must use `/api/public/i18n/{locale}`.
+
     Optionally tenant-specific overrides if tenant_slug is provided (or via auth)."""
+    if locale not in BLUEPRINT_OPERATIONAL_LOCALES:
+        raise HTTPException(
+            status_code=403,
+            detail={
+                "error": "forbidden_locale",
+                "message": f"Locale '{locale}' is not enabled for Blueprint operational surfaces.",
+                "operational_locales": sorted(BLUEPRINT_OPERATIONAL_LOCALES),
+                "hint": "For public site / Client Companion use /api/public/i18n/{locale}.",
+            },
+        )
     base = DEFAULT_I18N.get(locale) or DEFAULT_I18N.get(LOCALE_FALLBACK, {})
 
     overrides = {}

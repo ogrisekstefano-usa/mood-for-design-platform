@@ -352,6 +352,17 @@ export const BlueprintProvider = ({ children }) => {
       const picked = pickString(key, locale, vars || null);
       if (picked && picked !== key) return picked;
     } catch (_) { /* ignore — fall through to fallback */ }
+    // Sprint HARDENING-I18N-GUARD™: nothing matched, register the miss so the
+    // LiveQA overlay can surface it. We deliberately do NOT record when an
+    // explicit `fallback` was provided — those are intentional editorial
+    // strings the developer wants to ship while the backend is being wired.
+    if (!fallback) {
+      try {
+        // eslint-disable-next-line global-require
+        const { recordMissing } = require('../design-system/missingI18nRegistry');
+        recordMissing({ key, locale, fallbackSrc: 'key-literal' });
+      } catch (_) { /* noop */ }
+    }
     return interpolate(fallback || key, vars);
   }, [messages, locale]);
 

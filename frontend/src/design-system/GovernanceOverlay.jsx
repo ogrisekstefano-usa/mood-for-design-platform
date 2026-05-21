@@ -21,6 +21,7 @@
  */
 import React, { useEffect, useMemo, useState } from 'react';
 import { SEMANTIC_TOKENS, KERNEL_ID, readToken } from './kernel';
+import { getMissing, getMissingCount, subscribeMissing, clearMissing } from './missingI18nRegistry';
 
 const isEnabled = () => {
   if (typeof window === 'undefined') return false;
@@ -46,12 +47,20 @@ const GovernanceOverlay = () => {
   const [open, setOpen] = useState(false);
   const [active] = useState(() => isEnabled());
   const [tick, setTick] = useState(0);
+  const [missingCount, setMissingCount] = useState(() => getMissingCount());
+  const [missingOpen, setMissingOpen] = useState(false);
 
   // Tick once per second to keep locale/dir/theme readings fresh.
   useEffect(() => {
     if (!active) return;
     const id = setInterval(() => setTick((t) => t + 1), 1000);
     return () => clearInterval(id);
+  }, [active]);
+
+  // Subscribe to live missing-translation events.
+  useEffect(() => {
+    if (!active) return;
+    return subscribeMissing((n) => setMissingCount(n));
   }, [active]);
 
   const state = useMemo(() => {
@@ -116,6 +125,60 @@ const GovernanceOverlay = () => {
       <Row label="Background" value={swatch(state.bg)} indicator={state.bg} />
       <Row label="Tokens"     value={`${state.tokensInUse} / ${SEMANTIC_TOKENS.length} active`} />
       <Row label="Kernel"     value={KERNEL_ID} mono />
+
+      {/* Sprint HARDENING-I18N-GUARD™ · LiveQA missing-translation counter.
+          Click expands to a sober list of the first 10 missing keys. */}
+      <button
+        type="button"
+        onClick={() => setMissingOpen((v) => !v)}
+        data-testid="governance-overlay-missing-row"
+        style={{
+          ...rowStyle,
+          background: 'transparent', border: 'none', width: '100%',
+          padding: '5px 0', cursor: 'pointer', textAlign: 'left',
+          color: missingCount > 0
+            ? 'var(--mood-warning, #c9a36e)'
+            : 'var(--mood-text)',
+        }}
+      >
+        <span style={rowLabelStyle}>Missing i18n</span>
+        <span style={{ ...rowValStyle, color: 'inherit' }}>
+          {missingCount === 0 ? '0 · clean' : `${missingCount} keys ▾`}
+        </span>
+      </button>
+
+      {missingOpen && missingCount > 0 && (
+        <div
+          data-testid="governance-overlay-missing-list"
+          style={missingListStyle}
+        >
+          {getMissing().slice(0, 10).map((m, i) => (
+            <div key={`${m.locale}|${m.key}|${i}`} style={missingItemStyle}>
+              <div style={missingKeyStyle} title={m.key}>{truncate(m.key, 40)}</div>
+              <div style={missingMetaStyle}>
+                <span>{m.locale}</span>
+                <span style={{ opacity: 0.45 }}>·</span>
+                <span title={m.page}>{truncate(m.page, 18)}</span>
+                <span style={{ opacity: 0.45 }}>·</span>
+                <span>×{m.count}</span>
+              </div>
+            </div>
+          ))}
+          {missingCount > 10 && (
+            <p style={missingMoreStyle}>
+              + {missingCount - 10} more · check console for full list
+            </p>
+          )}
+          <button
+            type="button"
+            onClick={() => { clearMissing(); setMissingOpen(false); }}
+            data-testid="governance-overlay-missing-reset"
+            style={missingResetBtnStyle}
+          >
+            Reset
+          </button>
+        </div>
+      )}
 
       <footer style={footStyle}>
         <button type="button" onClick={close} style={hideBtnStyle}>
@@ -233,6 +296,49 @@ const hideBtnStyle = {
   padding: '6px 12px',
   fontFamily: "var(--mood-font-mono, 'JetBrains Mono', monospace)",
   fontSize: 9, letterSpacing: '0.22em',
+  textTransform: 'uppercase', cursor: 'pointer',
+};
+
+// Missing-translation expansion list — sober, monograph spirit.
+const missingListStyle = {
+  marginTop: 6, marginBottom: 6,
+  padding: '8px 10px',
+  background: 'rgba(255,255,255,0.025)',
+  border: '1px solid var(--mood-border, rgba(255,255,255,0.08))',
+  borderRadius: 'var(--mood-radius-sm, 3px)',
+  maxHeight: 240, overflowY: 'auto',
+};
+const missingItemStyle = {
+  padding: '5px 0',
+  borderBottom: '1px solid rgba(255,255,255,0.04)',
+};
+const missingKeyStyle = {
+  fontFamily: "var(--mood-font-mono, 'JetBrains Mono', monospace)",
+  fontSize: 10.5,
+  color: 'var(--mood-text)',
+  marginBottom: 2,
+};
+const missingMetaStyle = {
+  display: 'flex', gap: 6, alignItems: 'center',
+  fontFamily: "var(--mood-font-mono, 'JetBrains Mono', monospace)",
+  fontSize: 9,
+  color: 'var(--mood-text-muted)',
+  letterSpacing: '0.05em',
+};
+const missingMoreStyle = {
+  margin: '8px 0 0',
+  fontFamily: "var(--mood-font-mono, 'JetBrains Mono', monospace)",
+  fontSize: 9, letterSpacing: '0.1em',
+  color: 'var(--mood-text-faint, rgba(240,235,224,0.4))',
+};
+const missingResetBtnStyle = {
+  marginTop: 8,
+  background: 'transparent',
+  color: 'var(--mood-text-muted)',
+  border: '1px solid var(--mood-border)',
+  padding: '4px 10px',
+  fontFamily: "var(--mood-font-mono, 'JetBrains Mono', monospace)",
+  fontSize: 8.5, letterSpacing: '0.22em',
   textTransform: 'uppercase', cursor: 'pointer',
 };
 

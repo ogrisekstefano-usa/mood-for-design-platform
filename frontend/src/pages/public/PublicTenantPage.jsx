@@ -13,6 +13,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { applyTheme } from '../../contexts/BlueprintContext';
+import { pickString } from '../../i18n/engine';
 import BlueprintPageRenderer from '../../blueprint/PageRenderer';
 import PublicNavigation from './PublicNavigation';
 import PublicFooter from './PublicFooter';
@@ -82,8 +83,8 @@ const PublicTenantPage = () => {
   if (notFound || !tenant || !page) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--bp-bg)] flex-col gap-4">
-        <p className="bp-eyebrow text-[var(--bp-text-muted)]">404</p>
-        <h1 className="bp-h1">This page does not exist.</h1>
+        <p className="bp-eyebrow text-[var(--bp-text-muted)]">{pickString('errors.notFound.code', locale)}</p>
+        <h1 className="bp-h1">{pickString('errors.notFound.title', locale)}</h1>
       </div>
     );
   }
