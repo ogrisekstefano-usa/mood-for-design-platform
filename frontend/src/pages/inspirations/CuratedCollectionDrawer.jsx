@@ -74,7 +74,7 @@ export default function CuratedCollectionDrawer({ onClose, onCreated }) {
             type="button"
             className="cc-drawer__close"
             onClick={onClose}
-            aria-label="Chiudi"
+            aria-label={t('common.close')}
             data-testid="cc-close"
           >
             <Icons.X size={14} />
@@ -101,7 +101,7 @@ export default function CuratedCollectionDrawer({ onClose, onCreated }) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              placeholder="Cosa raccoglie questo capitolo curatoriale?"
+              placeholder={t('inspirations.curated_collection.description_placeholder')}
               data-testid="cc-description"
             />
           </label>

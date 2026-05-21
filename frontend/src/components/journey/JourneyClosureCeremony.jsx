@@ -100,13 +100,13 @@ const JourneyClosureCeremony = ({ journeyId, projectTitle, onDeposited }) => {
 
       <div style={{ marginTop: 24, display: 'grid', gap: 18, maxWidth: 640 }}>
         <label style={{ display: 'grid', gap: 6 }}>
-          <span style={lblStyle}>Titolo definitivo del Journey</span>
+          <span style={lblStyle}>{t('journey.closure.title_label')}</span>
           <input
             type="text"
             value={finalTitle}
             onChange={(e) => setFinalTitle(e.target.value)}
             maxLength={180}
-            placeholder="Es. Villa Riviera · una conversazione con la luce"
+            placeholder={t('journey.closure.title_placeholder')}
             data-testid="dj-closure-title"
             style={inpStyle}
           />
@@ -119,7 +119,7 @@ const JourneyClosureCeremony = ({ journeyId, projectTitle, onDeposited }) => {
             onChange={(e) => setStatement(e.target.value)}
             maxLength={800}
             rows={5}
-            placeholder="Un paragrafo che riassume il percorso. Senza enfasi, senza retorica. Documentazione editoriale di ciò che è stato attraversato."
+            placeholder={t('journey.closure.summary_placeholder')}
             data-testid="dj-closure-statement"
             style={{ ...inpStyle, fontFamily: "var(--mood-font-serif, 'Playfair Display', serif)", fontStyle: 'italic', fontSize: 15, resize: 'vertical' }}
           />

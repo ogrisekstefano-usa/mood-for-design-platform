@@ -308,7 +308,7 @@ const MoodboardsPage = () => {
       <ArchiveBanner
         testid="moodboards-archive-banner"
         eyebrow="Archivio trasversale · Sprint G.6"
-        title="Le moodboard vivono dentro i loro Journey"
+        title={t('moodboards.empty_inside_journey')}
         lede="Questa è una vista d'archivio per ritrovare le moodboard composte attraverso tutti i Journey. La composizione vera avviene nel capitolo Moodboard Direction™ del singolo Journey."
         ctaLabel="Apri Studio Pulse"
         ctaTo="/dashboard"

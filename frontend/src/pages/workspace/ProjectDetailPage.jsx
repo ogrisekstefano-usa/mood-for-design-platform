@@ -23,6 +23,7 @@ import StatusBadge from '../../components/common/StatusBadge';
 import TemplatePicker from '../../blueprint/moodboard/TemplatePicker';
 import { ComposeProposalWizard } from '../../components/proposals/ComposeProposalWizard';
 import DesignJourneyTab from './DesignJourneyTab';
+import { useT } from '../../i18n/useT';
 import { Compass } from 'lucide-react';
 
 // ── Time util ────────────────────────────────────────────────────────────────
@@ -166,7 +167,7 @@ const MoodboardsTab = ({ project, t }) => {
           icon={Layers}
           testid="moodboards-empty"
           eyebrow="Moodboard"
-          title="Il primo moodboard nasce da un'ispirazione."
+          title={t('project.detail.empty_moodboards')}
           body="Crea un moodboard vuoto o parti da un template. Le ispirazioni salvate dal Magazine si integreranno automaticamente."
         />
       ) : (
@@ -193,6 +194,7 @@ const MoodboardsTab = ({ project, t }) => {
 
 // ── Tab: Inspirations (P0.6.B.1) ────────────────────────────────────────────
 const InspirationsTab = ({ projectId }) => {
+  const { t } = useT();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -216,7 +218,7 @@ const InspirationsTab = ({ projectId }) => {
         icon={Bookmark}
         testid="inspirations-empty"
         eyebrow="Ispirazioni · Design References™"
-        title="Nessuna ispirazione ancora salvata per questo progetto."
+        title={t('project.detail.empty_inspirations')}
         body="I clienti e gli advisor salvano riferimenti dagli articoli del Magazine. Ogni hotspot toccato diventa un seme per il moodboard. Apri il Magazine per iniziare la conversazione visiva."
         ctaLabel="Apri Magazine"
         ctaTo="/magazine"
@@ -324,6 +326,7 @@ const InspirationCard = ({ item }) => {
 
 // ── Tab: Materials (P0.6.B.4) ───────────────────────────────────────────────
 const MaterialsTab = ({ projectId }) => {
+  const { t } = useT();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -347,7 +350,7 @@ const MaterialsTab = ({ projectId }) => {
         icon={Boxes}
         testid="materials-empty"
         eyebrow="Materiali"
-        title="Nessun materiale collegato a questo progetto."
+        title={t('project.detail.empty_materials')}
         body="Aggiungi materiali dall'archivio per dare corpo alla direzione progettuale: palette, finitura, atmosfera tattile vengono salvati con il loro contesto."
         ctaLabel="Apri archivio materiali"
         ctaTo="/library/materials"
@@ -415,6 +418,7 @@ const MaterialsTab = ({ projectId }) => {
 
 // ── Tab: Proposals (P0.6.B.5) ───────────────────────────────────────────────
 const ProposalsTab = ({ projectId }) => {
+  const { t } = useT();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -438,7 +442,7 @@ const ProposalsTab = ({ projectId }) => {
         icon={FileText}
         testid="proposals-empty"
         eyebrow="Proposte"
-        title="Nessuna proposta ancora redatta per questo progetto."
+        title={t('project.detail.empty_proposals')}
         body={`Continuità: ${data?.continuity.moodboards_in_project || 0} moodboard · ${data?.continuity.inspirations_in_project || 0} ispirazioni salvate. Quando la direzione è chiara, la proposta nasce dal progetto stesso.`}
         ctaLabel="Vai alle proposte"
         ctaTo="/workspace/proposals"
@@ -504,6 +508,7 @@ const ProposalsTab = ({ projectId }) => {
 
 // ── Tab: Conversations (P0.6.B.3) ───────────────────────────────────────────
 const ConversationsTab = ({ projectId, project }) => {
+  const { t } = useT();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -562,7 +567,7 @@ const ConversationsTab = ({ projectId, project }) => {
           icon={MessageSquare}
           testid="conversations-empty"
           eyebrow="Conversazioni"
-          title="Nessuna conversazione attiva su questo progetto."
+          title={t('project.detail.empty_conversations')}
           body="Le conversazioni iniziano dall'advisor: un messaggio di apertura dedicato che lega il cliente al progetto. Puoi inviarlo dall'hub messaggi."
           ctaLabel="Apri hub messaggi"
           ctaTo="/client-messages"
@@ -621,6 +626,7 @@ const TIMELINE_KIND_META = {
 };
 
 const TimelineTab = ({ projectId }) => {
+  const { t } = useT();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -644,7 +650,7 @@ const TimelineTab = ({ projectId }) => {
         icon={Activity}
         testid="timeline-empty"
         eyebrow="Timeline · Memoria di progetto"
-        title="La memoria del progetto si scrive sola."
+        title={t('project.detail.memory_writes_itself')}
         body="Ogni ispirazione salvata, ogni moodboard pubblicato, ogni proposta inviata viene registrata qui in linguaggio umano. Inizia salvando un riferimento dal Magazine o creando un moodboard."
       />
     );
@@ -711,6 +717,7 @@ const SECTION_DEF = [
 ];
 
 const StrategicDirectionCard = ({ projectId, project }) => {
+  const { t } = useT();
   const [brief, setBrief] = useState(null);
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
@@ -895,7 +902,7 @@ const StrategicDirectionCard = ({ projectId, project }) => {
             </select>
             <button onClick={generate} disabled={generating}
                     data-testid="strategic-direction-regenerate"
-                    title="Rigenera la direzione con il contesto attuale"
+                    title={t('project.detail.regenerate_direction_title')}
                     className="bp-btn bp-btn-ghost text-[10px] uppercase tracking-[0.22em] inline-flex items-center gap-1.5">
               <RefreshCw size={11} strokeWidth={1.6} className={generating ? 'animate-spin' : ''} />
               {generating ? 'In corso…' : 'Rigenera'}
@@ -912,14 +919,14 @@ const StrategicDirectionCard = ({ projectId, project }) => {
           </button>
           <button onClick={sendAsMemo} disabled={busyAction === 'memo'}
                   data-testid="strategic-direction-send-memo"
-                  title="Condividi nel thread interno del team"
+                  title={t('project.detail.share_thread_title')}
                   className="bp-btn bp-btn-ghost text-[10px] uppercase tracking-[0.22em] inline-flex items-center gap-1.5">
             <Share2 size={11} strokeWidth={1.6} />
             {busyAction === 'memo' ? 'Invio…' : 'Condividi con il team'}
           </button>
           <button onClick={promoteToProposal} disabled={busyAction === 'proposal'}
                   data-testid="strategic-direction-to-proposal"
-                  title="Componi una proposta editoriale dal contesto del progetto"
+                  title={t('project.detail.compose_proposal_title')}
                   className="bp-btn bp-btn-ghost text-[10px] uppercase tracking-[0.22em] inline-flex items-center gap-1.5">
             <FileSignature size={11} strokeWidth={1.6} />
             Componi proposta

@@ -670,7 +670,7 @@ def get_archive_item(media_id: str, ctx=Depends(get_tenant_context)):
     rows = (c.table("media_library").select("*")
             .eq("id", media_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute().data or [])
     if not rows:
-        raise HTTPException(404, "Riferimento non trovato")
+        raise HTTPException(404, "Reference not found")
     r = rows[0]
     card = _to_card(r)
     card["bucket"] = r.get("bucket")
@@ -693,7 +693,7 @@ def get_cultural_reading(media_id: str, ctx=Depends(get_tenant_context)):
     rows = (c.table("media_library").select("cultural_reading,file_url")
             .eq("id", media_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute().data or [])
     if not rows:
-        raise HTTPException(404, "Riferimento non trovato")
+        raise HTTPException(404, "Reference not found")
     cr = rows[0].get("cultural_reading") or {"status": "absent"}
     return cr
 
@@ -710,7 +710,7 @@ def patch_display_meta(media_id: str, body: DisplayMetaBody, ctx=Depends(get_ten
     rows = (c.table("media_library").select("id,metadata_json")
             .eq("id", media_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute().data or [])
     if not rows:
-        raise HTTPException(404, "Riferimento non trovato")
+        raise HTTPException(404, "Reference not found")
     meta = rows[0].get("metadata_json") or {}
     display = meta.get("display_meta") or {}
     # Patch only provided fields, normalize ranges
@@ -745,7 +745,7 @@ def retry_cultural_reading(media_id: str, background_tasks: BackgroundTasks,
     rows = (c.table("media_library").select("id,file_url,cultural_reading")
             .eq("id", media_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute().data or [])
     if not rows:
-        raise HTTPException(404, "Riferimento non trovato")
+        raise HTTPException(404, "Reference not found")
     image_url = rows[0].get("file_url")
     if not image_url:
         raise HTTPException(400, "Nessuna immagine associata al riferimento")
@@ -781,7 +781,7 @@ def get_resonance(media_id: str, ctx=Depends(get_tenant_context)):
     rows = (c.table("media_library").select("inspiration_meta")
             .eq("id", media_id).eq("tenant_id", ctx["tenant_id"]).limit(1).execute().data or [])
     if not rows:
-        raise HTTPException(404, "Riferimento non trovato")
+        raise HTTPException(404, "Reference not found")
     return {"items": _compute_resonance(rows[0].get("inspiration_meta") or {})}
 
 
@@ -850,7 +850,7 @@ async def import_inspiration(body: ImportPayload, background_tasks: BackgroundTa
         c.table("media_library").insert(row).execute()
     except Exception as e:
         logger.error(f"insert inspiration failed: {e}")
-        raise HTTPException(500, "Impossibile salvare il riferimento")
+        raise HTTPException(500, "Could not save the reference")
     background_tasks.add_task(_kick_off_cultural_reading, mid, tid, resolved)
     return _to_card(row)
 
@@ -862,7 +862,7 @@ def patch_archive_item(media_id: str, body: InspirationPatch, ctx=Depends(get_te
     rows = (c.table("media_library").select("inspiration_meta,tags")
             .eq("id", media_id).eq("tenant_id", tid).limit(1).execute().data or [])
     if not rows:
-        raise HTTPException(404, "Riferimento non trovato")
+        raise HTTPException(404, "Reference not found")
     patch: Dict[str, Any] = {"updated_at": _now()}
     if body.inspiration_meta is not None:
         # merge anziché replace per non perdere campi precedenti
@@ -894,7 +894,7 @@ def unflag_archive_item(media_id: str, ctx=Depends(get_tenant_context)):
 @router.post("/archive/{media_id}/links", status_code=201)
 def create_link(media_id: str, body: LinkCreate, ctx=Depends(get_tenant_context)):
     if body.target_type not in {"moodboard", "project", "account", "cultural_edition", "material", "magazine_post"}:
-        raise HTTPException(400, "target_type non riconosciuto")
+        raise HTTPException(400, "Unknown target_type")
     c = db()
     tid = ctx["tenant_id"]
     # Idempotent: try insert; on conflict pass
@@ -918,7 +918,7 @@ def create_link(media_id: str, body: LinkCreate, ctx=Depends(get_tenant_context)
                     .limit(1).execute().data or [])
         if existing:
             return _slim(existing[0])
-        raise HTTPException(500, "Impossibile creare la relazione")
+        raise HTTPException(500, "Could not create the relationship")
     return _slim(row)
 
 

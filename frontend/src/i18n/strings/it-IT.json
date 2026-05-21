@@ -447,6 +447,10 @@
       "refine_material_narrative_materia_primaria_seconda": "Refine Material Narrative · materia primaria · secondaria · tattilità",
       "explore_material": "Explore material",
       "aggiungi_cta": "+ Aggiungi CTA"
+    },
+    "studio": {
+      "mood_placeholder": "Atmosfera, materia, ritmo",
+      "tag_input_placeholder": "aggiungi…"
     }
   },
   "inspirations": {
@@ -536,7 +540,8 @@
       "il_linguaggio_progettuale_di_questo_capitolo_le_ma": "Il linguaggio progettuale di questo capitolo, le materialità prevalenti, l'atmosfera."
     },
     "curated_collection": {
-      "descrizione_editoriale": "Descrizione editoriale"
+      "descrizione_editoriale": "Descrizione editoriale",
+      "description_placeholder": "Cosa raccoglie questo capitolo curatoriale?"
     },
     "inspiration_detail": {
       "apertura_del_riferimento": "Apertura del riferimento…",
@@ -547,7 +552,9 @@
       "adatta_la_direzione_editoriale_per_questo_riferime": "Adatta la direzione editoriale per questo riferimento",
       "direzione_editoriale": "Direzione editoriale",
       "verifica_i_diritti_d_uso_prima_della_pubblicazione": "· verifica i diritti d'uso prima della pubblicazione esterna.",
-      "apri_product_gallery": "Apri Product Gallery™"
+      "apri_product_gallery": "Apri Product Gallery™",
+      "description_placeholder": "Descrizione editoriale",
+      "rights_verify_note": "· verifica i diritti d'uso prima della pubblicazione esterna."
     },
     "material_view": {
       "sto_leggendo_la_materioteca": "Sto leggendo la materioteca…",
@@ -577,7 +584,8 @@
       "product_gallery_visual_atelier": "Product Gallery™ · Visual Atelier",
       "atmosfera_in_lettura_curatoriale": "Atmosfera in lettura curatoriale",
       "salva_in_references": "Salva in References™",
-      "aggiungi_al_moodboard": "Aggiungi al moodboard"
+      "aggiungi_al_moodboard": "Aggiungi al moodboard",
+      "feedback_title": "Riscontri dal cliente"
     },
     "studio_collections": {
       "archivio_curatoriale_dello_studio": "Archivio curatoriale dello studio",
@@ -591,6 +599,11 @@
       "annulla": "Annulla",
       "mood_sta_preparando_le_anteprime_del_catalogo": "MOOD sta preparando le anteprime del catalogo…",
       "trascina_qui_il_pdf_del_catalogo": "Trascina qui il PDF del catalogo"
+    },
+    "supplier_import": {
+      "wizard_step_aria": "Stato del wizard",
+      "search_placeholder": "Cerca produttore (Minotti, Poliform, …)",
+      "atmosphere_title": "Atmosfera abituale"
     }
   },
   "editorial": {
@@ -664,6 +677,25 @@
       "ripristina_la_composizione_editoriale_rigenerata_d": "Ripristina la composizione editoriale rigenerata dal master — sovrascrive le modifiche manuali.",
       "blocca_la_versione_manuale_corrente_come_stabile": "Blocca la versione manuale corrente come stabile.",
       "apre_l_anteprima_pubblica_nella_surface_di_destina": "Apre l'anteprima pubblica nella surface di destinazione."
+    },
+    "article": {
+      "fields": {
+        "title_market": {
+          "placeholder": "Il titolo definitivo per il mercato"
+        },
+        "lead": {
+          "placeholder": "L'angolo emotivo che apre l'articolo nel mercato target."
+        },
+        "cta_copy": {
+          "placeholder": "Copy editoriale della CTA"
+        },
+        "meta_description": {
+          "placeholder": "Meta description editoriale — ≤ 155 caratteri"
+        }
+      }
+    },
+    "intelligence": {
+      "empty": "Nessun segnale operativo critico. Il ritmo editoriale è in equilibrio sui mercati attivi."
     }
   },
   "clientpreview": {
@@ -909,12 +941,27 @@
     },
     "version_stack": {
       "ancora_nessun_capitolo": "Ancora nessun capitolo"
+    },
+    "tab": {
+      "first_conversation": "La prima conversazione",
+      "brief_editor_coming": "L'editor del Brief arriverà nel prossimo capitolo.",
+      "evolution_real": "L'evoluzione reale del progetto",
+      "timeline_coming": "La timeline fotografica arriverà nel prossimo capitolo.",
+      "update_direction": "Aggiorna direzione",
+      "evolution": "Evoluzione del progetto",
+      "story": "La storia che il progetto sta scrivendo"
+    },
+    "closure": {
+      "title_label": "Titolo definitivo del Journey",
+      "title_placeholder": "Es. Villa Riviera · una conversazione con la luce",
+      "summary_placeholder": "Un paragrafo che riassume il percorso. Senza enfasi, senza retorica. Documentazione editoriale di ciò che è stato attraversato."
     }
   },
   "moodboards": {
     "moodboards": {
       "continua_la_direzione": "Continua la direzione →"
-    }
+    },
+    "empty_inside_journey": "Le moodboard vivono dentro i loro Journey"
   },
   "placeholder": {
     "coming_soon": {
@@ -1110,6 +1157,9 @@
       "material_registry": "Material Registry",
       "register_first_material": "Register first material",
       "le_materie_scelte_vivono_dentro_i_loro_journey": "Le materie scelte vivono dentro i loro Journey"
+    },
+    "rail": {
+      "material_registry": "Registro materiali"
     }
   },
   "ai": {
@@ -1131,6 +1181,54 @@
       "ad_esempio_sono_qui_per_accompagnarti_nelle_prime": "Ad esempio: Sono qui per accompagnarti nelle prime fasi del progetto…",
       "visibile_sotto_il_tuo_nome_nella_human_card": "Visibile sotto il tuo nome nella Human Card.",
       "es_scrivi_a_stefano_default_ricavato_dal_nome": "Es. 'Scrivi a Stefano'. Default ricavato dal nome."
+    }
+  },
+  "stubs": {
+    "client": {
+      "project": {
+        "eyebrow": "Il mio progetto",
+        "title": "La pagina del tuo progetto è in preparazione.",
+        "body": "A breve troverai qui la sintesi del progetto, gli avanzamenti più recenti e tutti gli aggiornamenti curati dal nostro studio."
+      },
+      "moodboards": {
+        "eyebrow": "Moodboard",
+        "title": "Le tue moodboard arriveranno qui.",
+        "body": "Il nostro team sta selezionando immagini, materiali e atmosfere per costruire le prime proposte visive del tuo progetto."
+      },
+      "timeline": {
+        "eyebrow": "Timeline",
+        "title": "La timeline completa del progetto sarà pronta a breve.",
+        "body": "Qui potrai seguire ogni fase, ogni appuntamento e ogni consegna con la precisione di un piano d'autore."
+      },
+      "approvals": {
+        "eyebrow": "Approvazioni",
+        "title": "Le prime proposte da approvare stanno arrivando.",
+        "body": "Quando una scelta richiederà il tuo via libera — materiali, layout, soluzioni — la troverai qui, sempre chiara e tracciabile."
+      },
+      "files": {
+        "eyebrow": "File condivisi",
+        "title": "Documenti, rendering e disegni — in un unico archivio.",
+        "body": "Ogni file condiviso dallo studio sarà disponibile qui, ordinato per fase e sempre accessibile."
+      },
+      "messages": {
+        "eyebrow": "Messaggi",
+        "title": "Un filo diretto con il tuo studio.",
+        "body": "Comunicazioni, aggiornamenti e domande viaggeranno qui — senza email da cercare e senza chat sparse."
+      },
+      "in_arrivo": "In arrivo"
+    }
+  },
+  "project": {
+    "detail": {
+      "empty_moodboards": "Il primo moodboard nasce da un'ispirazione.",
+      "empty_inspirations": "Nessuna ispirazione ancora salvata per questo progetto.",
+      "empty_materials": "Nessun materiale collegato a questo progetto.",
+      "empty_proposals": "Nessuna proposta ancora redatta per questo progetto.",
+      "empty_conversations": "Nessuna conversazione attiva su questo progetto.",
+      "memory_writes_itself": "La memoria del progetto si scrive sola.",
+      "regenerate_direction_title": "Rigenera la direzione con il contesto attuale",
+      "share_thread_title": "Condividi nel thread interno del team",
+      "compose_proposal_title": "Componi una proposta editoriale dal contesto del progetto"
     }
   }
 }

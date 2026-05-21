@@ -58,7 +58,7 @@ const ITALIAN_PATTERNS = [
   // Common UI verbs (imperative + 1st-2nd person)
   /\b(scegli|aggiungi|aggiorna|riscrivi|fissa|sblocca|riprova|annulla|salva|conferma|invia|elimina|modifica|carica|esporta|stampa|condividi|pubblica|crea|apri|chiudi|continua|inizia|riapri|avvia|cerca|filtra|esplora|esegui)\b/i,
   // Editorial vocabulary that's almost never accidental
-  /\b(moodboard|materico|atmosfera|raffinato|composizione|materiali?|tonalit[àa])\b/i,
+  /\b(moodboard|materico|atmosfera|raffinato|composizione|materiali|tonalit[àa])\b/i,
   // High-signal phrases / nouns
   /\b(prossimi passi|messaggio|capitolo|sezione|impostazion[ei]|notifich[ei]|contatti|atelier|esperienze|insights|inspirazion[ei]|editorial[ei]|caricamento|salvataggio)\b/i,
   // Common Italian function words in long contexts

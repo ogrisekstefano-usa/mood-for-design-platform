@@ -365,6 +365,7 @@ const InternalReviewView = ({ internal }) => {
 
 // ─── Published Locale = editable form ────────────────────────────
 const PublishedEditorView = ({ variant, patchField, patchSeo, patchCta, addCta, removeCta, patchBlock, addBlock, removeBlock }) => {
+  const { t } = useT();
   const seo = variant.seo || {};
   return (
     <>
@@ -376,7 +377,7 @@ const PublishedEditorView = ({ variant, patchField, patchSeo, patchCta, addCta, 
           data-testid="ed-field-title"
           value={variant.title || ''}
           onChange={(e) => patchField('title', e.target.value)}
-          placeholder="Il titolo definitivo per il mercato"
+          placeholder={t('editorial.article.fields.title_market.placeholder')}
         />
       </div>
 
@@ -412,7 +413,7 @@ const PublishedEditorView = ({ variant, patchField, patchSeo, patchCta, addCta, 
           rows={3}
           value={variant.excerpt || ''}
           onChange={(e) => patchField('excerpt', e.target.value)}
-          placeholder="L'angolo emotivo che apre l'articolo nel mercato target."
+          placeholder={t('editorial.article.fields.lead.placeholder')}
         />
       </div>
 
@@ -449,7 +450,7 @@ const PublishedEditorView = ({ variant, patchField, patchSeo, patchCta, addCta, 
                 data-testid={`ed-cta-${i}-label`}
                 value={cta.label || ''}
                 onChange={(e) => patchCta(i, 'label', e.target.value)}
-                placeholder="Copy editoriale della CTA"
+                placeholder={t('editorial.article.fields.cta_copy.placeholder')}
               />
               <select
                 className="ed-cta__tier"
@@ -490,7 +491,7 @@ const PublishedEditorView = ({ variant, patchField, patchSeo, patchCta, addCta, 
           rows={2}
           value={seo.meta_description || ''}
           onChange={(e) => patchSeo('meta_description', e.target.value)}
-          placeholder="Meta description editoriale — ≤ 155 caratteri"
+          placeholder={t('editorial.article.fields.meta_description.placeholder')}
         />
         <p style={{ marginTop: 16 }} />
         <input

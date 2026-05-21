@@ -35,7 +35,7 @@
       "nessun_altro_luogo_asset_orfano": "Nessun altro luogo · asset orfano",
       "annulla": "Annulla",
       "carica_nuovo_file": "Carica nuovo file",
-      "scegli_o_carica_un_immagine": "Scegli o carica un'immagine"
+      "scegli_o_carica_un_immagine": "Choose or upload an image"
     },
     "hotspot": {
       "annulla": "Annulla",
@@ -45,10 +45,10 @@
       "breve_nota_editoriale_sul_dettaglio": "Breve nota editoriale sul dettaglio."
     },
     "image_edit": {
-      "modifica_immagine_continuita_editoriale": "Modifica immagine · continuità editoriale",
+      "modifica_immagine_continuita_editoriale": "Image editing · editorial continuity",
       "trascina_l_area_visibile_usa_le_maniglie_per_regol": "Trascina l'area visibile · usa le maniglie per regolare",
       "annulla": "Annulla",
-      "il_punto_focale_resta_visibile_in_tutti_i_ritagli": "Il punto focale resta visibile in tutti i ritagli — hero, mobile, card.",
+      "il_punto_focale_resta_visibile_in_tutti_i_ritagli": "The focal point remains visible across all crops — hero, mobile, card.",
       "centra_il_punto_focale": "Centra il punto focale",
       "chiudi": "Chiudi"
     },
@@ -60,30 +60,30 @@
       "chiudi": "Chiudi"
     },
     "coming_soon": {
-      "nel_frattempo_le_scadenze_attivita_sono_visibili_n": "Nel frattempo, le scadenze attività sono visibili nella Dashboard e nelle pagine progetto.",
-      "feed_attivita_dello_studio": "Feed attività dello studio",
-      "cronologia_completa_di_ogni_azione_cliente_designe": "Cronologia completa di ogni azione cliente, designer e di sistema.",
-      "per_ora_la_gestione_utenti_e_in_impostazioni_membr": "Per ora, la gestione utenti è in Impostazioni → Membri.",
+      "nel_frattempo_le_scadenze_attivita_sono_visibili_n": "Meanwhile, task deadlines are visible in the Dashboard and in project pages.",
+      "feed_attivita_dello_studio": "Studio activity feed",
+      "cronologia_completa_di_ogni_azione_cliente_designe": "Complete history of every client, designer, and system action.",
+      "per_ora_la_gestione_utenti_e_in_impostazioni_membr": "For now, user management lives in Settings → Members.",
       "conversazioni_client_studio_integrate_allegati_not": "Conversazioni client-studio integrate, allegati, notifiche.",
-      "report_esportabili_progetti_fatturato_performance": "Report esportabili: progetti, fatturato, performance team, materiali più utilizzati.",
-      "una_vista_a_se_per_le_tue_raccolte_curate_di_asset": "Una vista a sé per le tue raccolte curate di asset. Per ora le collezioni vivono nell'Archivio.",
-      "nel_frattempo_gestisci_le_tue_collezioni_dal_panne": "Nel frattempo, gestisci le tue collezioni dal pannello sinistro dell'Archivio."
+      "report_esportabili_progetti_fatturato_performance": "Exportable reports: projects, revenue, team performance, most-specified materials.",
+      "una_vista_a_se_per_le_tue_raccolte_curate_di_asset": "A dedicated view for your curated asset collections. For now, collections live in the Archive.",
+      "nel_frattempo_gestisci_le_tue_collezioni_dal_panne": "In the meantime, manage your collections from the left panel of the Archive."
     },
     "mvp_lite": {
-      "le_conversazioni_vivono_sul_progetto": "Le conversazioni vivono sul progetto.",
-      "le_scadenze_sono_sul_progetto": "Le scadenze sono sul progetto.",
-      "il_feed_attivita_vive_nella_dashboard": "Il feed attività vive nella dashboard.",
+      "le_conversazioni_vivono_sul_progetto": "Conversations live on the project.",
+      "le_scadenze_sono_sul_progetto": "The deadlines are tied to the project.",
+      "il_feed_attivita_vive_nella_dashboard": "The activity feed lives in the dashboard.",
       "le_collezioni_vivono_nell_archivio": "Le collezioni vivono nell'archivio."
     },
     "media_delete_protection": {
-      "questo_asset_e_utilizzato_in": "Questo asset è utilizzato in",
-      "rimuoverlo_senza_sostituirlo_lascera_spazi_vuoti_s": "Rimuoverlo senza sostituirlo lascerà spazi vuoti sulle superfici pubbliche.\n                Scegli un'azione consapevole.",
-      "il_dam_ragiona_come_un_editorial_relationships_gra": "Il DAM ragiona come un editorial relationships graph, non come un file system.\n            Ogni rimozione produce conseguenze sulle superfici pubbliche.",
-      "carica_un_nuovo_file_tutte_le_relazioni_vengono_mi": "Carica un nuovo file. Tutte le relazioni vengono migrate automaticamente al nuovo asset. La versione vecchia resta nel version chain.",
+      "questo_asset_e_utilizzato_in": "This asset is used in",
+      "rimuoverlo_senza_sostituirlo_lascera_spazi_vuoti_s": "Removing it without replacement will leave voids across public surfaces.\n                Choose a mindful action.",
+      "il_dam_ragiona_come_un_editorial_relationships_gra": "The DAM functions as an editorial relationships graph, not as a file system.\nEvery removal has consequences across public-facing surfaces.",
+      "carica_un_nuovo_file_tutte_le_relazioni_vengono_mi": "Upload a new file. All relationships migrate automatically to the new asset. The previous version remains in the version chain.",
       "scegli_su_quali_superfici_aggiornare_l_asset_e_qua": "Scegli su quali superfici aggiornare l'asset e quali lasciare invariate. Utile per A/B test di immagini per mercato.",
-      "l_asset_viene_archiviato_non_piu_visibile_nella_li": "L'asset viene archiviato (non più visibile nella Library) ma le relazioni restano attive. Il pubblico continua a vedere questa immagine finché non la sostituisci.",
+      "l_asset_viene_archiviato_non_piu_visibile_nella_li": "The asset is archived — no longer visible in the Library — but all relationships remain active. The public continues to see this image until you replace it.",
       "apri_le_superfici_interessate": "Apri le superfici interessate",
-      "chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp": "Chiudi questo drawer e apri la tab Usage dell'Inspector per navigare manualmente ogni relazione."
+      "chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp": "Close this drawer and open the Usage tab in the Inspector to navigate each relationship manually."
     }
   },
   "relationships": {
@@ -335,18 +335,18 @@
       }
     },
     "cockpit_timeline": {
-      "il_battito_del_tuo_studio": "Il battito del tuo studio",
-      "carica_un_riferimento_o_crea_una_moodboard_per_dar": "Carica un riferimento o crea una moodboard per dare ritmo alla giornata."
+      "il_battito_del_tuo_studio": "The pulse of your practice",
+      "carica_un_riferimento_o_crea_una_moodboard_per_dar": "Upload a reference or build a moodboard to set the rhythm for the day."
     },
     "dashboard": {
       "decisioni_che_la_giornata_sussurra": "Decisioni che la giornata sussurra",
-      "mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud": "MOOD sta iniziando a leggere il ritmo del tuo studio.",
+      "mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud": "MOOD is beginning to read the rhythm of your studio.",
       "i_primi_suggerimenti_appariranno_con_l_utilizzo_re": "I primi suggerimenti appariranno con l'utilizzo reale della piattaforma.",
-      "progetti_che_chiedono_la_tua_presenza": "Progetti che chiedono la tua presenza",
+      "progetti_che_chiedono_la_tua_presenza": "Projects that ask for your presence",
       "le_relazioni_che_attendono_un_gesto": "Le relazioni che attendono un gesto",
       "nessuna_relazione_raffreddata": "Nessuna relazione raffreddata.",
       "nuova_moodboard": "Nuova moodboard",
-      "tutti_gli_account": "Tutti gli account",
+      "tutti_gli_account": "All accounts",
       "riprova": "Riprova",
       "apri_timeline": "Apri timeline"
     }
@@ -444,9 +444,13 @@
       "cover_hero_l_apertura_visiva_del_progetto": "Cover hero · l'apertura visiva del progetto",
       "vocabolario_materico": "Vocabolario materico",
       "titolo_per_il_mercato": "Titolo per il mercato",
-      "refine_material_narrative_materia_primaria_seconda": "Refine Material Narrative · materia primaria · secondaria · tattilità",
+      "refine_material_narrative_materia_primaria_seconda": "Primary material · secondary material · tactility\n\n**Refine Material Narrative** — primary material · secondary material · tactility",
       "explore_material": "Explore material",
       "aggiungi_cta": "+ Aggiungi CTA"
+    },
+    "studio": {
+      "mood_placeholder": "Atmosphere, material, cadence",
+      "tag_input_placeholder": "add a tag…"
     }
   },
   "inspirations": {
@@ -490,9 +494,9 @@
       "url_della_reference": "URL della reference",
       "descrizione_editoriale_opzionale": "Descrizione editoriale (opzionale)",
       "atmosfera": "Atmosfera",
-      "carica_un_immagine_oppure_incolla_un_link_pinteres": "Carica un'immagine, oppure incolla un link Pinterest, Instagram o qualunque URL.\n            MOOD lo aggiunge alla Media Library e lo rende disponibile in tutto il sistema.",
+      "carica_un_immagine_oppure_incolla_un_link_pinteres": "Upload an image, or paste a Pinterest, Instagram, or any other URL.\nMOOD adds it to the Media Library and makes it available system-wide.",
       "carica_file": "Carica file",
-      "pinterest_instagram_o_link_diretto_mood_prova_a_es": "Pinterest, Instagram o link diretto. MOOD prova a estrarre l'immagine principale —\n                se non riesce, salva comunque il link e potrai aggiornare la copertina più tardi.",
+      "pinterest_instagram_o_link_diretto_mood_prova_a_es": "Pinterest, Instagram, or a direct link. MOOD will attempt to extract the hero image — if it can't, the link is saved anyway and you can update the cover later.",
       "annulla": "Annulla",
       "chiudi": "Chiudi",
       "es_salotto_materico_palette_neutra": "Es. Salotto materico, palette neutra",
@@ -503,7 +507,7 @@
       "riferimenti_editoriali": "Riferimenti editoriali",
       "moodboard_correlate": "Moodboard correlate",
       "continua_la_lettura": "Continua la lettura",
-      "nessuna_collezione_registrata_il_primo_capitolo_ed": "Nessuna collezione registrata — il primo capitolo editoriale apre la lettura curatoriale del brand.",
+      "nessuna_collezione_registrata_il_primo_capitolo_ed": "No collections on record yet — this opening chapter begins the brand's curatorial narrative.",
       "modifica_produttore": "Modifica produttore",
       "aggiungi_capitolo_editoriale": "Aggiungi capitolo editoriale",
       "modifica_collezione": "Modifica collezione"
@@ -519,9 +523,9 @@
     },
     "brand_mode": {
       "entra_nell_atelier": "Entra nell'atelier",
-      "nessun_produttore_corrisponde_alla_ricerca": "Nessun produttore corrisponde alla ricerca",
-      "l_atlante_curatoriale_e_in_costruzione_aggiungi_un": "L'atlante curatoriale è in costruzione. Aggiungi un produttore o importa un catalogo per iniziare la lettura.",
-      "esplora_i_marchi_le_collezioni_e_il_linguaggio_pro": "Esplora i marchi, le collezioni e il linguaggio progettuale dei produttori presenti in MOOD.\n              Ogni brand è una lettura — atmosfere prevalenti, materialità ricorrenti, geografie narrative\n              dove compare nei tuoi progetti.",
+      "nessun_produttore_corrisponde_alla_ricerca": "No manufacturers match your search",
+      "l_atlante_curatoriale_e_in_costruzione_aggiungi_un": "Your curatorial atlas is still taking shape. Add a manufacturer or import a catalog to begin browsing.",
+      "esplora_i_marchi_le_collezioni_e_il_linguaggio_pro": "Explore the brands, collections, and design vocabulary of the manufacturers featured in MOOD.\nEach brand is a study in itself — prevailing atmospheres, recurring material vocabularies, narrative geographies where it appears across your work.",
       "aggiungi_produttore": "Aggiungi produttore",
       "tutti_i_posizionamenti": "tutti i posizionamenti",
       "cerca_per_nome_atmosfera_materia": "Cerca per nome, atmosfera, materia…"
@@ -533,37 +537,40 @@
       "aggiungi_collezione": "Aggiungi collezione",
       "annulla": "Annulla",
       "chiudi": "Chiudi",
-      "il_linguaggio_progettuale_di_questo_capitolo_le_ma": "Il linguaggio progettuale di questo capitolo, le materialità prevalenti, l'atmosfera."
+      "il_linguaggio_progettuale_di_questo_capitolo_le_ma": "The design language of this chapter, its prevailing materials, the atmosphere."
     },
     "curated_collection": {
-      "descrizione_editoriale": "Descrizione editoriale"
+      "descrizione_editoriale": "Descrizione editoriale",
+      "description_placeholder": "What does this curatorial chapter gather?"
     },
     "inspiration_detail": {
       "apertura_del_riferimento": "Apertura del riferimento…",
       "modifica": "Modifica",
       "atmosfera": "Atmosfera",
-      "le_percentuali_sono_secondarie_il_significato_e_ne": "Le percentuali sono secondarie. Il significato è nell'interpretazione editoriale qui sopra.",
-      "mood_sta_leggendo_il_linguaggio_culturale_di_quest": "MOOD sta leggendo il linguaggio culturale di questo riferimento…",
-      "adatta_la_direzione_editoriale_per_questo_riferime": "Adatta la direzione editoriale per questo riferimento",
+      "le_percentuali_sono_secondarie_il_significato_e_ne": "The percentages are secondary. What matters is the editorial interpretation above.",
+      "mood_sta_leggendo_il_linguaggio_culturale_di_quest": "MOOD is reading the cultural language of this reference…",
+      "adatta_la_direzione_editoriale_per_questo_riferime": "Adapt the editorial direction for this reference",
       "direzione_editoriale": "Direzione editoriale",
       "verifica_i_diritti_d_uso_prima_della_pubblicazione": "· verifica i diritti d'uso prima della pubblicazione esterna.",
-      "apri_product_gallery": "Apri Product Gallery™"
+      "apri_product_gallery": "Apri Product Gallery™",
+      "description_placeholder": "Editorial description",
+      "rights_verify_note": "· verify usage rights before any external publication."
     },
     "material_view": {
       "sto_leggendo_la_materioteca": "Sto leggendo la materioteca…",
-      "nessun_elemento_materico_ancora_classificato_per_q": "Nessun elemento materico ancora classificato per questi criteri.",
-      "aumenta_il_numero_di_asset_curati_per_arricchire_l": "Aumenta il numero di asset curati per arricchire la materioteca."
+      "nessun_elemento_materico_ancora_classificato_per_q": "No materials match these criteria yet.",
+      "aumenta_il_numero_di_asset_curati_per_arricchire_l": "Expand the curated asset collection to enrich the materials library."
     },
     "moodboard_picker": {
-      "aggiungi_al_moodboard": "Aggiungi al moodboard",
+      "aggiungi_al_moodboard": "Add to moodboard",
       "sto_caricando_i_moodboard": "Sto caricando i moodboard…",
-      "crea_nuovo_moodboard": "Crea nuovo moodboard",
-      "nessun_moodboard": "Nessun moodboard",
-      "crea_il_primo": ". Crea il primo.",
-      "crea_e_aggiungi": "Crea e aggiungi",
+      "crea_nuovo_moodboard": "Create new moodboard",
+      "nessun_moodboard": "No moodboard",
+      "crea_il_primo": "Create the first one.",
+      "crea_e_aggiungi": "Create and add",
       "annulla": "Annulla",
       "chiudi": "Chiudi",
-      "cerca_tra_i_tuoi_moodboard": "Cerca tra i tuoi moodboard",
+      "cerca_tra_i_tuoi_moodboard": "Search your moodboards",
       "titolo_nuovo_moodboard": "Titolo nuovo moodboard"
     },
     "product_gallery": {
@@ -573,17 +580,18 @@
       "in_attesa_di_riscontro_dal_cliente": "In attesa di riscontro dal cliente",
       "curatela_editoriale_non_raccomandazione_algoritmic": "Curatela editoriale — non raccomandazione algoritmica.",
       "sto_leggendo_le_relazioni": "Sto leggendo le relazioni…",
-      "ancora_nessuna_affinita_curatoriale_rilevata": "Ancora nessuna affinità curatoriale rilevata.",
+      "ancora_nessuna_affinita_curatoriale_rilevata": "No curatorial affinities identified yet.",
       "product_gallery_visual_atelier": "Product Gallery™ · Visual Atelier",
       "atmosfera_in_lettura_curatoriale": "Atmosfera in lettura curatoriale",
       "salva_in_references": "Salva in References™",
-      "aggiungi_al_moodboard": "Aggiungi al moodboard"
+      "aggiungi_al_moodboard": "Add to moodboard",
+      "feedback_title": "Client signals"
     },
     "studio_collections": {
       "archivio_curatoriale_dello_studio": "Archivio curatoriale dello studio",
       "nessuna_collezione_importata_inizia_caricando_un_c": "Nessuna collezione importata. Inizia caricando un catalogo fornitore.",
       "importa_il_primo_catalogo": "Importa il primo catalogo",
-      "tutti_i_produttori_e_le_collezioni_che_lo_studio_h": "Tutti i produttori e le collezioni che lo studio ha aggiunto al proprio\n            registro."
+      "tutti_i_produttori_e_le_collezioni_che_lo_studio_h": "All producers and collections the studio has added to its own registry."
     },
     "supplier_catalog_import": {
       "privato_dello_studio": "privato dello studio",
@@ -591,6 +599,11 @@
       "annulla": "Annulla",
       "mood_sta_preparando_le_anteprime_del_catalogo": "MOOD sta preparando le anteprime del catalogo…",
       "trascina_qui_il_pdf_del_catalogo": "Trascina qui il PDF del catalogo"
+    },
+    "supplier_import": {
+      "wizard_step_aria": "Wizard progress",
+      "search_placeholder": "Search a maker (Minotti, Poliform, …)",
+      "atmosphere_title": "Habitual atmosphere"
     }
   },
   "editorial": {
@@ -642,14 +655,14 @@
       "tutti_i_mercati": "Tutti i mercati"
     },
     "editorial_calendar": {
-      "nessun_segnale_operativo_critico_il_ritmo_editoria": "Nessun segnale operativo critico. Il ritmo editoriale è in equilibrio sui mercati attivi."
+      "nessun_segnale_operativo_critico_il_ritmo_editoria": "No critical operational signals. Editorial rhythm is balanced across active markets."
     },
     "market_editions_toolbar": {
       "annulla": "Annulla",
       "programma_la_pubblicazione": "Programma la pubblicazione",
       "apri_calendario": "Apri Calendario",
-      "la_direzione_editoriale_globale_da_cui_nasceranno": "La direzione editoriale globale da cui nasceranno le Market Editions.",
-      "scegli_il_mercato_di_destinazione_tono_cta_e_ritmo": "Scegli il mercato di destinazione. Tono, CTA e ritmo si adatteranno alla cultura locale.",
+      "la_direzione_editoriale_globale_da_cui_nasceranno": "The global editorial direction from which the Market Editions will emerge.",
+      "scegli_il_mercato_di_destinazione_tono_cta_e_ritmo": "Choose your destination market. Tone, calls-to-action, and pacing will adapt to the local culture.",
       "una_frase_che_cattura_l_atmosfera_non_un_brief_tec": "Una frase che cattura l'atmosfera, non un brief tecnico."
     },
     "public_preview": {
@@ -660,22 +673,41 @@
       "rigenera_i_body_blocks_partendo_dalla_direzione_ed": "Rigenera i body blocks partendo dalla direzione editoriale del master.",
       "riallinea_l_adattamento_al_master_attuale_mantenen": "Riallinea l'adattamento al master attuale mantenendo solo le sezioni bloccate manualmente.",
       "apre_un_diff_lato_a_lato_tra_l_adattamento_e_la_di": "Apre un diff lato-a-lato tra l'adattamento e la direzione editoriale del master.",
-      "marca_le_modifiche_correnti_come_curate_manualment": "Marca le modifiche correnti come curate manualmente — re-sync NON le sovrascriverà.",
-      "ripristina_la_composizione_editoriale_rigenerata_d": "Ripristina la composizione editoriale rigenerata dal master — sovrascrive le modifiche manuali.",
+      "marca_le_modifiche_correnti_come_curate_manualment": "Mark current edits as hand-curated — re-sync will not overwrite them.",
+      "ripristina_la_composizione_editoriale_rigenerata_d": "Restores the editorial composition regenerated from the master — overwrites manual edits.",
       "blocca_la_versione_manuale_corrente_come_stabile": "Blocca la versione manuale corrente come stabile.",
       "apre_l_anteprima_pubblica_nella_surface_di_destina": "Apre l'anteprima pubblica nella surface di destinazione."
+    },
+    "article": {
+      "fields": {
+        "title_market": {
+          "placeholder": "The final headline for this market"
+        },
+        "lead": {
+          "placeholder": "The emotional angle that opens the piece in the target market."
+        },
+        "cta_copy": {
+          "placeholder": "Editorial call-to-action copy"
+        },
+        "meta_description": {
+          "placeholder": "Editorial meta description — ≤ 155 characters"
+        }
+      }
+    },
+    "intelligence": {
+      "empty": "No critical operational signals. The editorial cadence is balanced across active markets."
     }
   },
   "clientpreview": {
     "client_preview": {
       "sto_preparando_la_stanza": "Sto preparando la stanza…",
-      "questa_direzione_non_e_piu_attiva": "Questa direzione non è più attiva",
-      "la_stanza_non_e_disponibile": "La stanza non è disponibile",
-      "verifica_con_lo_studio_il_link_ricevuto": "Verifica con lo studio il link ricevuto.",
-      "questa_direzione_e_ancora_in_fase_di_curatela": "Questa direzione è ancora in fase di curatela.",
+      "questa_direzione_non_e_piu_attiva": "This address is no longer active",
+      "la_stanza_non_e_disponibile": "Room unavailable",
+      "verifica_con_lo_studio_il_link_ricevuto": "Please confirm the link you received with the studio.",
+      "questa_direzione_e_ancora_in_fase_di_curatela": "This direction is still being curated.",
       "aggiungi_una_nota": "Aggiungi una nota",
       "approvo_questa_direzione": "Approvo questa direzione",
-      "lasciaci_sentire_la_tua_direzione": "Lasciaci sentire la tua direzione",
+      "lasciaci_sentire_la_tua_direzione": "Let us hear where you're headed",
       "invia_la_nota": "Invia la nota"
     }
   },
@@ -684,14 +716,14 @@
       "contatti": "Contatti"
     },
     "advisor_edit": {
-      "identita_contatti": "Identità & contatti",
+      "identita_contatti": "Identity & contacts",
       "economia_della_relazione": "Economia della relazione",
       "specializzazione_lettura_della_relazione": "Specializzazione & lettura della relazione",
       "annulla": "Annulla",
       "aree_di_rappresentanza_editoriale_cambi_sono_salva": "Aree di rappresentanza editoriale. Cambi sono salvati istantaneamente.",
       "chiudi": "Chiudi",
       "es_consigliere_architettura_partner_editoriale": "es. consigliere · architettura · partner editoriale",
-      "contesto_storia_sensibilita_della_relazione": "Contesto, storia, sensibilità della relazione…"
+      "contesto_storia_sensibilita_della_relazione": "Context, history, the sensibility of the relationship…"
     },
     "advisor_network_admin": {
       "network_degli_advisor": "Network degli Advisor",
@@ -704,15 +736,15 @@
   },
   "advisor": {
     "advisor_dashboard": {
-      "quest_area_e_riservata_agli_advisor_di_mood": "Quest'area è riservata agli Advisor di MOOD.",
+      "quest_area_e_riservata_agli_advisor_di_mood": "This area is reserved for MOOD Advisors.",
       "nessuno_specifico": "— Nessuno specifico —",
       "annulla": "Annulla",
-      "il_tuo_account_non_e_collegato_a_un_profilo_adviso": "Il tuo account non è collegato a un profilo Advisor. Se sei un partner territoriale e\n          credi sia un errore, contatta il team MOOD per attivare il tuo accesso.",
+      "il_tuo_account_non_e_collegato_a_un_profilo_adviso": "Your account is not linked to an Advisor profile. If you're a territorial partner and believe this is an error, please reach out to the MOOD team to activate your access.",
       "torna_alla_dashboard": "Torna alla dashboard",
-      "la_tua_rete_di_studi_e_showroom_referenti_le_loro": "La tua rete di studi e showroom referenti, le loro attività recenti e le note di supporto.",
+      "la_tua_rete_di_studi_e_showroom_referenti_le_loro": "Your network of reference studios and showrooms, their recent activities and support notes.",
       "condividi_con_uno_studio_o_showroom_sconto_del": "Condividi con uno studio o showroom · sconto del",
-      "non_hai_ancora_studi_referenti_inizia_condividendo": "Non hai ancora studi referenti. Inizia condividendo il tuo magic link.",
-      "nessun_report_ancora_crea_il_primo_dopo_una_visita": "Nessun report ancora. Crea il primo dopo una visita o una call con uno studio.",
+      "non_hai_ancora_studi_referenti_inizia_condividendo": "You don't have any referring studios yet. Start by sharing your magic link.",
+      "nessun_report_ancora_crea_il_primo_dopo_una_visita": "No reports yet. Create the first one after a studio visit or call.",
       "cosa_li_sta_frenando_dall_usare_la_piattaforma": "Cosa li sta frenando dall'usare la piattaforma"
     }
   },
@@ -721,25 +753,25 @@
       "caricamento_conversazione": "Caricamento conversazione"
     },
     "client_overview": {
-      "le_tue_moodboard": "Le tue moodboard"
+      "le_tue_moodboard": "Your mood boards"
     },
     "site_evolution": {
-      "il_cantiere_non_e_ancora_iniziato": "Il cantiere non è ancora iniziato"
+      "il_cantiere_non_e_ancora_iniziato": "Construction has not yet begun"
     },
     "client_stub_pages": {
-      "la_pagina_del_tuo_progetto_e_in_preparazione": "La pagina del tuo progetto è in preparazione.",
-      "le_tue_moodboard_arriveranno_qui": "Le tue moodboard arriveranno qui.",
-      "la_timeline_completa_del_progetto_sara_pronta_a_br": "La timeline completa del progetto sarà pronta a breve.",
+      "la_pagina_del_tuo_progetto_e_in_preparazione": "Your project page is in preparation.",
+      "le_tue_moodboard_arriveranno_qui": "Your moodboards will arrive here.",
+      "la_timeline_completa_del_progetto_sara_pronta_a_br": "The full project timeline will be ready shortly.",
       "le_prime_proposte_da_approvare_stanno_arrivando": "Le prime proposte da approvare stanno arrivando.",
-      "un_filo_diretto_con_il_tuo_studio": "Un filo diretto con il tuo studio."
+      "un_filo_diretto_con_il_tuo_studio": "A direct line to your studio."
     },
     "client_dashboard_layout": {
-      "il_tuo_percorso_progettuale_ti_aspetta": "Il tuo percorso progettuale ti aspetta.",
+      "il_tuo_percorso_progettuale_ti_aspetta": "Your design journey awaits.",
       "apri_menu": "Apri menu",
       "chiudi_menu": "Chiudi menu"
     },
     "shared_voice_composer": {
-      "una_sensazione_un_dettaglio_che_senti_piu_vicino_u": "Una sensazione, un dettaglio che senti più vicino, un riferimento\n          che vorresti condividere con il tuo studio.",
+      "una_sensazione_un_dettaglio_che_senti_piu_vicino_u": "A feeling, a detail that resonates with you, a reference you'd like to share with the studio.",
       "condividi_una_voce": "Condividi una voce",
       "aggiungi_un_riferimento": "Aggiungi un riferimento",
       "condividi_una_atmosfera": "Condividi una atmosfera",
@@ -753,40 +785,40 @@
   "crm": {
     "account_constellation": {
       "sezione_dominante": "Sezione dominante",
-      "nessun_journey_aperto_con_questa_relazione": "Nessun Journey aperto con questa relazione.",
+      "nessun_journey_aperto_con_questa_relazione": "No Journey open for this relationship.",
       "apri_una_conversazione_progettuale_per_cominciare": "Apri una conversazione progettuale per cominciare.",
-      "le_persone_della_relazione": "Le persone della relazione",
+      "le_persone_della_relazione": "The people in the relationship",
       "segnali_del_viaggio": "Segnali del viaggio",
       "sto_leggendo_la_costellazione_relazionale": "Sto leggendo la costellazione relazionale…",
       "apri_il_journey": "Apri il Journey"
     },
     "account_detail": {
       "caricamento": "Caricamento…",
-      "nessun_contact_ancora_aggiungi_il_primo_qui_sotto": "Nessun contact ancora. Aggiungi il primo qui sotto.",
+      "nessun_contact_ancora_aggiungi_il_primo_qui_sotto": "No contacts yet. Add the first one below.",
       "annulla": "Annulla",
       "salva": "Salva",
       "nessuna_interazione_registrata": "Nessuna interazione registrata.",
       "files_allegati_arriva_con_il_media_library_inspect": "Files allegati arriva con il Media Library inspector.",
       "style_dna_non_ancora_compilato_per_questo_account": "Style DNA non ancora compilato per questo Account.",
-      "la_memoria_della_relazione_e_ancora_bianca": "La memoria della relazione è ancora bianca.",
+      "la_memoria_della_relazione_e_ancora_bianca": "The memory of the relationship is still blank.",
       "registra_il_primo_contatto_una_call_una_nota_vocal": "Registra il primo contatto — una call, una nota vocale, una visita.",
       "materiali_preferiti": "Materiali preferiti",
-      "collegate_a_questo_account_i_membri_del_team_appar": "collegate a questo Account.\n        I membri del Team appartengono alla sezione",
+      "collegate_a_questo_account_i_membri_del_team_appar": "connected to this Account.\n        Team members belong to the",
       "aggiungi_contact": "Aggiungi contact",
-      "linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb": "Linkaggio Moodboard arriva in P1 dedicato.\n      Le moodboard create da team sono visibili in",
+      "linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb": "Moodboard linking now available on dedicated P1.\nMoodboards created by the team are visible in",
       "chiudi": "Chiudi"
     },
     "crm_accounts": {
-      "nessun_contatto_primario_aggiungi_al_drawer": "Nessun contatto primario · aggiungi al drawer",
+      "nessun_contatto_primario_aggiungi_al_drawer": "No primary contact · add to drawer",
       "aggiungi_un_account": "Aggiungi un Account",
       "annulla": "Annulla",
-      "le_relazioni_della_tua_casa_di_design": "Le relazioni della tua casa di design",
-      "tutti_gli_stage": "Tutti gli stage",
+      "le_relazioni_della_tua_casa_di_design": "The relationships within your design home",
+      "tutti_gli_stage": "All internships",
       "tutti_i_tipi": "Tutti i tipi",
       "caricamento": "Caricamento…",
       "sala_delle_relazioni": "Sala delle relazioni",
       "crea_account": "Crea Account",
-      "account_centered_ogni_account_puo_avere_piu_contac": "Account-centered. Ogni Account può avere più Contact.\n          I membri del Team vivono in",
+      "account_centered_ogni_account_puo_avere_piu_contac": "Account-centered. Each Account may include multiple Contacts.\n          Team members exist within",
       "apri_il_primo_account": "Apri il primo Account",
       "apri_account": "Apri Account →",
       "cerca_per_nome_account_o_email_contact": "Cerca per nome account o email contact…"
@@ -801,16 +833,16 @@
       "briefing_editoriale_angle_desiderato_vincoli": "Briefing editoriale — angle desiderato, vincoli…"
     },
     "relationship_graph": {
-      "tracciando_la_mappa_della_relazione": "Tracciando la mappa della relazione…",
+      "tracciando_la_mappa_della_relazione": "Charting the landscape of connection…",
       "relationship_graph_mappa_editoriale": "Relationship Graph™ · mappa editoriale",
       "dove_vive_la_relazione": "Dove vive la relazione",
-      "nessun_progetto_moodboard_o_materiale_ancora_colle": "Nessun progetto, moodboard o materiale ancora collegato."
+      "nessun_progetto_moodboard_o_materiale_ancora_colle": "No projects, moodboards, or materials linked yet."
     },
     "stage_change": {
-      "il_cambio_sara_tracciato_come_evento_in_timeline": "Il cambio sarà tracciato come evento in timeline.",
+      "il_cambio_sara_tracciato_come_evento_in_timeline": "The change will be logged as a timeline event.",
       "annulla": "Annulla",
       "chiudi": "Chiudi",
-      "perche_stiamo_cambiando_fase_il_contesto_rimane_in": "Perché stiamo cambiando fase? Il contesto rimane in timeline."
+      "perche_stiamo_cambiando_fase_il_contesto_rimane_in": "Why are we shifting direction? The timeline stays intact."
     },
     "activity": {
       "annulla": "Annulla",
@@ -826,12 +858,12 @@
       "atmosfera": "Atmosfera"
     },
     "cultural_editions_list": {
-      "le_tue_versioni_mercato": "Le tue versioni mercato.",
+      "le_tue_versioni_mercato": "Your market versions.",
       "nessuna_edizione_ancora": "Nessuna edizione ancora."
     },
     "cultural_edition": {
-      "adatta_il_tuo_lavoro_a_un_altro_mercato_culturale": "Adatta il tuo lavoro a un altro mercato culturale.",
-      "scegli_il_contenuto_da_adattare": "Scegli il contenuto da adattare.",
+      "adatta_il_tuo_lavoro_a_un_altro_mercato_culturale": "Adapt your work to another cultural market.",
+      "scegli_il_contenuto_da_adattare": "Choose the content to adapt.",
       "in_attesa_dei_contenuti_dello_studio": "In attesa dei contenuti dello studio…",
       "lingua_della_versione_mercato": "Lingua della versione mercato",
       "direzione_narrativa_del_mercato": "Direzione narrativa del mercato",
@@ -840,35 +872,35 @@
       "revisione_editoriale_prima_di_creare": "Revisione editoriale prima di creare.",
       "atmosfera": "Atmosfera",
       "suggerita_dal_mercato": "· suggerita dal mercato",
-      "mood_prende_un_tuo_contenuto_e_ne_prepara_una_vers": "MOOD prende un tuo contenuto e ne prepara una versione editoriale per la cultura del mercato che scegli.\n            Niente traduzione automatica — è un atto editoriale guidato.",
+      "mood_prende_un_tuo_contenuto_e_ne_prepara_una_vers": "DNT0 takes your content and crafts an editorial version tuned to the culture of your target market—not machine translation, but guided editorial adaptation.",
       "showcase_e_selezioni_materiali_sono_in_lavorazione": "Showcase e selezioni materiali sono in lavorazione — al momento puoi inserire un riferimento manuale.",
       "suggerito_dal_mercato": "Suggerito dal mercato",
       "torna_ai_suggerimenti_del_mercato": "Torna ai suggerimenti del mercato",
       "mood_ha_pre_compilato_i_campi_con_la_cultura_narra": "MOOD ha pre-compilato i campi con la cultura narrativa di",
-      "puoi_selezionare_uno_o_piu_ambiti_la_redazione_di": "Puoi selezionare uno o più ambiti. La redazione di MOOD lavorerà solo su questi.",
+      "puoi_selezionare_uno_o_piu_ambiti_la_redazione_di": "You may select one or more areas. The MOOD team will work only on those.",
       "la_redazione_internazionale_di_mood_sta_preparando": "La redazione internazionale di MOOD sta preparando l'adattamento…",
       "chiudi": "Chiudi"
     }
   },
   "insights": {
     "insights": {
-      "sto_leggendo_le_pulsazioni_dello_studio": "Sto leggendo le pulsazioni dello studio…",
+      "sto_leggendo_le_pulsazioni_dello_studio": "I'm reading the studio's pulse…",
       "studio_insights": "Studio · Insights",
-      "le_pulsazioni_dello_studio": "Le pulsazioni dello studio",
+      "le_pulsazioni_dello_studio": "The studio's pulse",
       "l_evoluzione_dello_studio": "L'evoluzione dello studio",
       "moodboard": "Moodboard",
       "dove_si_trova_il_pensiero_progettuale": "Dove si trova il pensiero progettuale",
       "nessuna_pietra_miliare_ancora_attiva": "Nessuna pietra miliare ancora attiva.",
       "la_superficie_viva_del_journey": "La superficie viva del Journey",
       "eventi_narrativi_nel_mese": "eventi narrativi nel mese",
-      "ogni_cella_un_giorno_intensita_numero_di_eventi": "ogni cella · un giorno · intensità = numero di eventi",
-      "la_grammatica_dello_studio": "La grammatica dello studio"
+      "ogni_cella_un_giorno_intensita_numero_di_eventi": "each cell · one day · intensity = number of events",
+      "la_grammatica_dello_studio": "The Grammar of the Studio"
     }
   },
   "journey": {
     "step_workspace": {
       "capitolo_in_corso": "Capitolo in corso",
-      "le_tracce_di_questo_passaggio": "Le tracce di questo passaggio"
+      "le_tracce_di_questo_passaggio": "The marks of this passage"
     },
     "client_interaction_layer": {
       "questa_direzione": "questa direzione"
@@ -877,7 +909,7 @@
       "titolo_definitivo_del_journey": "Titolo definitivo del Journey"
     },
     "material_direction_workspace": {
-      "il_tavolo_della_materia": "Il tavolo della materia"
+      "il_tavolo_della_materia": "*Awaiting full Italian source passage to re-author.*"
     },
     "milestone_dialogue": {
       "nuovo_capitolo_progettuale": "Nuovo capitolo progettuale",
@@ -890,11 +922,11 @@
       "capitolo": "capitolo ·",
       "condividi": "Condividi",
       "aggiungi_un_capitolo": "Aggiungi un capitolo",
-      "il_primo_capitolo_apre_la_conversazione_progettual": "Il primo capitolo apre la conversazione progettuale con il cliente.",
+      "il_primo_capitolo_apre_la_conversazione_progettual": "The first chapter opens the design conversation with the client.",
       "titolo_del_capitolo_es_luce_mediterranea": "Titolo del capitolo (es. Luce mediterranea)",
       "cosa_cambia_in_questo_capitolo_in_poche_righe": "Cosa cambia in questo capitolo — in poche righe",
-      "il_perche_di_questa_direzione_materia_luce_atmosfe": "Il perché di questa direzione — materia, luce, atmosfera, linguaggio progettuale",
-      "racconta_a_parole_tue_un_atmosfera_un_riferimento": "Racconta a parole tue — un'atmosfera, un riferimento, una sensazione…"
+      "il_perche_di_questa_direzione_materia_luce_atmosfe": "Why this direction — material, light, atmosphere, design language",
+      "racconta_a_parole_tue_un_atmosfera_un_riferimento": "Tell us in your own words—an atmosphere, a reference, a feeling…"
     },
     "moodboard_direction_workspace": {
       "direzione_editoriale": "Direzione editoriale",
@@ -909,12 +941,27 @@
     },
     "version_stack": {
       "ancora_nessun_capitolo": "Ancora nessun capitolo"
+    },
+    "tab": {
+      "first_conversation": "The first conversation",
+      "brief_editor_coming": "The Brief editor will arrive in the next chapter.",
+      "evolution_real": "The real evolution of the project",
+      "timeline_coming": "The photographic timeline will arrive in the next chapter.",
+      "update_direction": "Update direction",
+      "evolution": "Project evolution",
+      "story": "The story this project is writing"
+    },
+    "closure": {
+      "title_label": "Definitive Journey title",
+      "title_placeholder": "e.g. Villa Riviera · a conversation with light",
+      "summary_placeholder": "A single paragraph that records the path. No emphasis, no rhetoric. Editorial documentation of what was traversed."
     }
   },
   "moodboards": {
     "moodboards": {
       "continua_la_direzione": "Continua la direzione →"
-    }
+    },
+    "empty_inside_journey": "Moodboards live inside their Journey"
   },
   "placeholder": {
     "coming_soon": {
@@ -924,13 +971,13 @@
   "settings": {
     "asset_picker": {
       "caricamento": "Caricamento…",
-      "nessun_asset_corrisponde_carica_nuove_immagini_per": "Nessun asset corrisponde. Carica nuove immagini per iniziare a curare.",
+      "nessun_asset_corrisponde_carica_nuove_immagini_per": "No matching assets. Upload new images to begin curating.",
       "trascina_qui_le_immagini": "Trascina qui le immagini",
       "scegli_dal_computer": "scegli dal computer",
       "carica_file": "Carica file",
       "annulla": "Annulla",
       "chiudi": "Chiudi",
-      "incolla_un_url_pubblico_https_di_un_immagine_verra": "Incolla un URL pubblico (https://…) di un'immagine. Verrà collegata come asset esterno —\n                non occupa spazio nella tua Library.",
+      "incolla_un_url_pubblico_https_di_un_immagine_verra": "Paste a public image URL (https://…). It will be linked as an external asset — it won't take up space in your Library.",
       "modifica_crop_filtri": "Modifica · crop & filtri",
       "cerca_per_nome_descrizione_alt": "Cerca per nome, descrizione, alt…"
     },
@@ -938,12 +985,12 @@
       "caricamento_della_presenza_editoriale": "Caricamento della presenza editoriale…",
       "nessun_mercato_disponibile_nel_catalogo_platform": "Nessun mercato disponibile nel catalogo platform.",
       "annulla": "Annulla",
-      "uno_studio_di_new_york_puo_rivolgersi_al_mercato_a": "uno studio di New York può rivolgersi al mercato americano usando una",
+      "uno_studio_di_new_york_puo_rivolgersi_al_mercato_a": "A New York studio can approach the American market using a",
       "italian_material_culture": "Italian Material Culture",
       "l_asse_strategico_di_posizionamento_commerciale_pe": "L'asse strategico di posizionamento commerciale per questo mercato.",
       "cosa_vuoi_ottenere_strategicamente_da_questo_merca": "Cosa vuoi ottenere strategicamente da questo mercato.",
       "a_chi_parli_prevalentemente_in_questo_mercato": "A chi parli prevalentemente in questo mercato.",
-      "come_gli_interlocutori_in_questo_mercato_tipicamen": "Come gli interlocutori in questo mercato tipicamente decidono. Queste euristiche guidano lo storefront, il CTA e l'editorial composer."
+      "come_gli_interlocutori_in_questo_mercato_tipicamen": "How clients in this market typically make decisions. These heuristics shape the storefront, the CTA, and the editorial composer."
     },
     "magazine_admin": {
       "caricamento": "Caricamento…",
@@ -957,8 +1004,8 @@
       "cta_label_es_esplora_la_palette_materica": "CTA label (es. Esplora la palette materica)"
     },
     "brand_studio": {
-      "il_preset_sceglie_la_modalita_automaticamente_puoi": "Il preset sceglie la modalità automaticamente · puoi sovrascriverla",
-      "la_voce_dello_studio_resta_persistente_la_direzion": "La voce dello studio resta persistente. La Direzione editoriale e\n                l'Intensità narrativa di una singola Inspiration sovrascrivono\n                solo quella lettura, senza alterare le altre.",
+      "il_preset_sceglie_la_modalita_automaticamente_puoi": "The preset selects the mode automatically · you can override it",
+      "la_voce_dello_studio_resta_persistente_la_direzion": "The studio's voice remains consistent. The editorial direction and narrative intensity of a single Inspiration override only that reading, leaving the others intact.",
       "voce_editoriale_dello_studio": "Voce editoriale dello studio"
     },
     "plan": {
@@ -971,43 +1018,43 @@
       "niente_di_formale_tutto_quello_che_ti_viene_in_men": "Niente di formale — tutto quello che ti viene in mente.",
       "quali_materiali_ti_fanno_stare_bene": "Quali materiali ti fanno stare bene?",
       "facoltativo_alcune_cose_si_capiscono_meglio_a_voce": "Facoltativo — alcune cose si capiscono meglio a voce.",
-      "stiamo_aprendo_il_tuo_design_journey": "Stiamo aprendo il tuo Design Journey…",
+      "stiamo_aprendo_il_tuo_design_journey": "Opening your Design Journey…",
       "quale_atmosfera_stai_cercando": "Quale atmosfera stai cercando?",
       "inizia_a_raccontarci_lo_spazio_che_immagini_senza": "Inizia a raccontarci lo spazio che immagini — senza fretta.",
       "continua_il_racconto": "Continua il racconto →",
       "come_vivi_gli_spazi": "Come vivi gli spazi?",
-      "aiutaci_a_comprendere_il_tuo_modo_di_abitare_non_i": "Aiutaci a comprendere il tuo modo di abitare, non il tuo budget.",
+      "aiutaci_a_comprendere_il_tuo_modo_di_abitare_non_i": "Help us understand how you live, not what you'd like to spend.",
       "avvicinati_al_tuo_journey": "Avvicinati al tuo Journey →",
-      "tre_dettagli_soltanto_il_resto_nascera_dalla_conve": "Tre dettagli soltanto — il resto nascerà dalla conversazione.",
-      "inizia_il_tuo_design_journey": "Inizia il tuo Design Journey™",
-      "nessun_preventivo_nessuna_pressione_solo_una_conve": "Nessun preventivo, nessuna pressione. Solo una conversazione.",
+      "tre_dettagli_soltanto_il_resto_nascera_dalla_conve": "Only three details—the rest will emerge in conversation.",
+      "inizia_il_tuo_design_journey": "Start your Design Journey™",
+      "nessun_preventivo_nessuna_pressione_solo_una_conve": "No quote, no pressure. Just a conversation.",
       "una_sensazione_un_momento_del_giorno_un_ricordo": "Una sensazione, un momento del giorno, un ricordo…"
     },
     "journey_welcome": {
-      "questo_link_non_e_piu_disponibile": "Questo link non è più disponibile.",
-      "aprendo_il_tuo_design_journey": "Aprendo il tuo Design Journey…",
+      "questo_link_non_e_piu_disponibile": "This link is no longer available.",
+      "aprendo_il_tuo_design_journey": "Opening your DNT0…",
       "lo_studio_che_ti_accompagna": "Lo studio che ti accompagna:",
       "l_atmosfera_che_cerchi": "L'atmosfera che cerchi",
       "il_modo_in_cui_vivi": "Il modo in cui vivi ·",
       "capitolo_primo_brief_cliente": "Capitolo primo · Brief Cliente",
-      "forse_il_viaggio_e_stato_gia_archiviato_o_il_link": "Forse il viaggio è stato già archiviato — o il link è stato modificato.\n            Scrivi allo studio per ritrovarlo.",
-      "il_tuo_design_journey_e_iniziato": "Il tuo Design Journey™ · è iniziato",
-      "questo_e_il_tuo_design_journey_tutto_cio_che_condi": "Questo è il tuo Design Journey™. Tutto ciò che condivideremo da qui in\n          avanti vivrà in questo spazio — capitoli, atmosfere, conversazioni.",
-      "salva_questo_link_e_la_porta_del_tuo_design_journe": "Salva questo link — è la porta del tuo Design Journey.\n            Lo studio ti scriverà presto sulla mail che hai condiviso."
+      "forse_il_viaggio_e_stato_gia_archiviato_o_il_link": "This page may have been archived — or the link has changed.\n            Reach out to the studio and we'll help you find it.",
+      "il_tuo_design_journey_e_iniziato": "Your Design Journey™ has begun",
+      "questo_e_il_tuo_design_journey_tutto_cio_che_condi": "This is your Design Journey™. Everything we share from here forward will live in this space—chapters, atmospheres, conversations.",
+      "salva_questo_link_e_la_porta_del_tuo_design_journe": "Save this link — it's your gateway to Design Journey.\nThe studio will be in touch soon at the email you shared."
     }
   },
   "storefront": {
     "storefront_studio": {
       "pubblica_pagina": "Pubblica pagina",
       "caricamento_dell_orchestrazione": "Caricamento dell'orchestrazione…",
-      "nessuna_fascia_per_questa_pagina": "Nessuna fascia per questa pagina.",
+      "nessuna_fascia_per_questa_pagina": "No band for this page.",
       "chiudi": "Chiudi",
-      "l_orchestrazione_cinematica_della_presenza_pubblic": "L'orchestrazione cinematica della presenza pubblica. Ogni fascia\n            è una superficie narrativa che adatta tono, ritmo e CTA al mercato che la guarda.\n            Tutto ciò che vedi qui è il sito pubblico — niente di nascosto, niente di hardcoded.",
+      "l_orchestrazione_cinematica_della_presenza_pubblic": "The cinematic choreography of your public presence. Each band is a narrative surface—adjusting tone, rhythm, and call to action for the audience looking at it. Everything you see here is the public site: no hidden layers, nothing hardcoded.",
       "sopra_titolo_editoriale": "Sopra-titolo editoriale"
     },
     "band_editors": {
-      "nessuna_voce_di_menu_aggiungi_la_prima": "Nessuna voce di menu. Aggiungi la prima ↓",
-      "nessuna_colonna_aggiungi_la_prima": "Nessuna colonna. Aggiungi la prima ↓",
+      "nessuna_voce_di_menu_aggiungi_la_prima": "No menu items yet. Add the first one ↓",
+      "nessuna_colonna_aggiungi_la_prima": "No columns yet. Add the first one ↓",
       "automatica_ultimi_articoli_pubblicati_nel_locale": "Automatica · ultimi articoli pubblicati nel locale",
       "aggiungi_voce_di_menu": "Aggiungi voce di menu",
       "aggiungi_link": "Aggiungi link",
@@ -1017,31 +1064,31 @@
       "aggiungi_logo": "Aggiungi logo",
       "eyebrow_editoriale": "Eyebrow editoriale",
       "le_case_che_ci_scelgono": "Le case che ci scelgono",
-      "leggi_tutti_gli_articoli": "Leggi tutti gli articoli",
+      "leggi_tutti_gli_articoli": "Read all articles",
       "body_editoriale": "Body editoriale",
-      "la_tua_email": "La tua email"
+      "la_tua_email": "Your email address"
     }
   },
   "workspace": {
     "add_reference": {
       "sfoglia_la_media_library": "Sfoglia la Media Library",
       "aggiungi_un_riferimento": "Aggiungi un riferimento",
-      "ogni_riferimento_entra_nella_cultural_design_intel": "Ogni riferimento entra nella Cultural Design Intelligence™ · interpretato attraverso il mercato di destinazione.",
+      "ogni_riferimento_entra_nella_cultural_design_intel": "Every reference enters the Cultural Design Intelligence™ — interpreted through the lens of the destination market.",
       "url_del_pin": "URL del pin",
-      "stiamo_salvando_l_url_del_pin_scraping_automatico": "Stiamo salvando l'URL del pin. Scraping automatico (titolo · immagine · descrizione) arriverà in Fase P2 con l'integrazione Pinterest API ufficiale.",
+      "stiamo_salvando_l_url_del_pin_scraping_automatico": "We're saving the pin URL. Automatic scraping—title, image, and description—will roll out in Phase P2 with the official Pinterest API integration.",
       "annulla": "Annulla",
       "es_hospitality_emotion_material_atmosphere": "Es. Hospitality emotion · Material atmosphere",
-      "perche_questo_riferimento_entra_nell_archivio": "Perché questo riferimento entra nell'archivio?",
+      "perche_questo_riferimento_entra_nell_archivio": "Why does this reference belong in the archive?",
       "scegli_un_asset_dalla_library": "Scegli un asset dalla Library"
     },
     "design_journey_tab": {
       "la_prima_conversazione": "La prima conversazione",
-      "l_editor_del_brief_arrivera_nel_prossimo_capitolo": "L'editor del Brief arriverà nel prossimo capitolo.",
+      "l_editor_del_brief_arrivera_nel_prossimo_capitolo": "The Brief editor will arrive in the next chapter.",
       "l_evoluzione_reale_del_progetto": "L'evoluzione reale del progetto",
-      "la_timeline_fotografica_arrivera_nel_prossimo_capi": "La timeline fotografica arriverà nel prossimo capitolo.",
+      "la_timeline_fotografica_arrivera_nel_prossimo_capi": "The photographic timeline will arrive in the next chapter.",
       "aggiorna_direzione": "Aggiorna direzione",
       "evoluzione_del_progetto": "Evoluzione del progetto",
-      "la_storia_che_il_progetto_sta_scrivendo": "La storia che il progetto sta scrivendo"
+      "la_storia_che_il_progetto_sta_scrivendo": "The story this project is writing"
     },
     "proposals": {
       "le_presentazioni_vivono_dentro_i_loro_journey": "Le presentazioni vivono dentro i loro Journey"
@@ -1054,7 +1101,7 @@
     "universal_editorial_cropper": {
       "salva_regia": "Salva regia",
       "trascina_il_punto_focale_sulla_parte_importante_de": "Trascina il punto focale sulla parte importante dell'immagine",
-      "questa_e_la_proporzione_che_i_consumer_hero_moodbo": "Questa è la proporzione che i consumer (Hero · Moodboard · Presentation)\n                useranno quando possono scegliere.",
+      "questa_e_la_proporzione_che_i_consumer_hero_moodbo": "This is the proportion consumers will gravitate toward when given the choice.",
       "chiudi": "Chiudi",
       "filtro_editoriale": "Filtro editoriale"
     }
@@ -1068,8 +1115,8 @@
       "gallery_del_progetto": "Gallery del progetto",
       "annulla": "Annulla",
       "conferma_immagine": "Conferma immagine",
-      "nessuna_immagine_ancora_aggiungi_la_prima_per_iniz": "Nessuna immagine ancora. Aggiungi la prima per iniziare la case history.",
-      "aggiungi_la_prima_immagine": "+ Aggiungi la prima immagine",
+      "nessuna_immagine_ancora_aggiungi_la_prima_per_iniz": "No images yet. Add the first to begin the case study.",
+      "aggiungi_la_prima_immagine": "Add the first image",
       "una_case_history_editoriale_non_una_scheda_portfol": "Una case history editoriale, non una scheda portfolio. Trascina per\n            riordinare · clicca",
       "per_impostare_la_cover_clicca": "per impostare la cover · clicca",
       "aggiungi_immagine": "Aggiungi immagine",
@@ -1078,7 +1125,7 @@
     },
     "story_sections": {
       "sezioni_della_storia": "Sezioni della storia",
-      "nessun_blocco_ancora_inizia_la_narrazione": "Nessun blocco ancora. Inizia la narrazione.",
+      "nessun_blocco_ancora_inizia_la_narrazione": "No blocks yet. Begin the narrative.",
       "annulla": "Annulla",
       "apri_editor_hotspot": "Apri editor hotspot",
       "add_to_moodboard": "Add to moodboard",
@@ -1095,11 +1142,11 @@
   "ClientPreviewPage": {
     "jsx": {
       "client_preview": {
-        "lo_studio_potrebbe_averla_aggiornata_chiedi_un_nuo": "Lo studio potrebbe averla aggiornata. Chiedi un nuovo link per ritrovare il percorso.",
-        "il_tuo_studio": "Il tuo studio:",
+        "lo_studio_potrebbe_averla_aggiornata_chiedi_un_nuo": "This link may have been updated. Please request a new one to find your way back.",
+        "il_tuo_studio": "Your studio:",
         "annulla": "Annulla",
         "chiudi": "Chiudi",
-        "il_tuo_nome_opzionale": "Il tuo nome (opzionale)",
+        "il_tuo_nome_opzionale": "Your name (optional)",
         "cosa_ti_emoziona_di_questa_direzione_cosa_vorresti": "Cosa ti emoziona di questa direzione? Cosa vorresti approfondire?"
       }
     }
@@ -1110,6 +1157,9 @@
       "material_registry": "Material Registry",
       "register_first_material": "Register first material",
       "le_materie_scelte_vivono_dentro_i_loro_journey": "Le materie scelte vivono dentro i loro Journey"
+    },
+    "rail": {
+      "material_registry": "Material registry"
     }
   },
   "ai": {
@@ -1120,17 +1170,65 @@
   "onboarding": {
     "owner_introduction": {
       "presentati_ai_tuoi_clienti": "Presentati ai tuoi clienti.",
-      "foto_ruolo_e_bio_sono_visibili_a_ogni_cliente_del": "Foto, ruolo e bio sono visibili a ogni cliente del tuo studio. È il primo segnale di cura che riceveranno.",
+      "foto_ruolo_e_bio_sono_visibili_a_ogni_cliente_del": "Your photo, role, and bio are visible to every client at your studio. It's the first signal of care they'll receive.",
       "annulla": "Annulla",
       "conferma_foto": "Conferma foto",
       "salva_e_pubblica": "Salva e pubblica",
       "chiudi": "Chiudi",
       "posiziona_la_foto": "Posiziona la foto",
-      "trascina_per_centrare_il_volto_usa_lo_zoom_per_rit": "Trascina per centrare il volto. Usa lo zoom per ritagliare.",
-      "cosa_vuoi_che_il_cliente_sappia_di_te": "Cosa vuoi che il cliente sappia di te.",
-      "ad_esempio_sono_qui_per_accompagnarti_nelle_prime": "Ad esempio: Sono qui per accompagnarti nelle prime fasi del progetto…",
-      "visibile_sotto_il_tuo_nome_nella_human_card": "Visibile sotto il tuo nome nella Human Card.",
+      "trascina_per_centrare_il_volto_usa_lo_zoom_per_rit": "Drag to center the face. Use zoom to crop.",
+      "cosa_vuoi_che_il_cliente_sappia_di_te": "What you want the client to know about you.",
+      "ad_esempio_sono_qui_per_accompagnarti_nelle_prime": "For instance: I'm here to guide you through the early stages of the project…",
+      "visibile_sotto_il_tuo_nome_nella_human_card": "Visible below your name on the Human Card.",
       "es_scrivi_a_stefano_default_ricavato_dal_nome": "Es. 'Scrivi a Stefano'. Default ricavato dal nome."
+    }
+  },
+  "stubs": {
+    "client": {
+      "project": {
+        "eyebrow": "My project",
+        "title": "Your project workspace is being prepared.",
+        "body": "You will soon find here the project synthesis, the most recent progress and every update curated by our studio."
+      },
+      "moodboards": {
+        "eyebrow": "Moodboards",
+        "title": "Your moodboards will land here.",
+        "body": "Our team is selecting images, materials and atmospheres to compose the first visual directions for your project."
+      },
+      "timeline": {
+        "eyebrow": "Timeline",
+        "title": "The full project timeline will be ready shortly.",
+        "body": "Here you will follow every phase, every appointment and every delivery with the precision of an authored plan."
+      },
+      "approvals": {
+        "eyebrow": "Approvals",
+        "title": "The first proposals awaiting your approval are on their way.",
+        "body": "When a decision needs your sign-off — materials, layouts, directions — you will find it here, clear and traceable."
+      },
+      "files": {
+        "eyebrow": "Shared files",
+        "title": "Documents, renderings and drawings — in one quiet archive.",
+        "body": "Every file shared by the studio will live here, ordered by phase and always within reach."
+      },
+      "messages": {
+        "eyebrow": "Messages",
+        "title": "A direct line to your studio.",
+        "body": "Conversations, updates and questions will travel here — no scattered emails, no fragmented chats."
+      },
+      "in_arrivo": "Arriving soon"
+    }
+  },
+  "project": {
+    "detail": {
+      "empty_moodboards": "The first moodboard begins with a single inspiration.",
+      "empty_inspirations": "No inspirations saved for this project yet.",
+      "empty_materials": "No materials linked to this project yet.",
+      "empty_proposals": "No proposals drafted for this project yet.",
+      "empty_conversations": "No active conversations on this project.",
+      "memory_writes_itself": "The project's memory writes itself.",
+      "regenerate_direction_title": "Regenerate the direction with the current context",
+      "share_thread_title": "Share inside the internal team thread",
+      "compose_proposal_title": "Compose an editorial proposal from the project context"
     }
   }
 }

@@ -138,7 +138,7 @@ const EventPill = ({ event, onDragStart, onSelect }) => {
 // ───────────────────────────────────────────────────────────────────────
 // OPERATIONS INTELLIGENCE — rule-based AI suggestions sidebar
 // ───────────────────────────────────────────────────────────────────────
-const OperationsIntelligence = ({ data }) => {
+const OperationsIntelligence = ({ data, t }) => {
   if (!data || !data.suggestions) return null;
   const sugs = data.suggestions;
   return (
@@ -149,7 +149,7 @@ const OperationsIntelligence = ({ data }) => {
       </header>
       {sugs.length === 0 ? (
         <div className="ec-intel__empty">
-          <p>Nessun segnale operativo critico. Il ritmo editoriale è in equilibrio sui mercati attivi.</p>
+          <p>{t ? t('editorial.intelligence.empty', null, 'No critical operational signals. The editorial cadence is balanced across active markets.') : 'No critical operational signals.'}</p>
         </div>
       ) : (
         <div className="ec-intel__list">
@@ -466,7 +466,7 @@ const EditorialCalendarPage = () => {
                         onSelect={setSelectedEvent} />
             )}
           </div>
-          <OperationsIntelligence data={intel} />
+          <OperationsIntelligence data={intel} t={t} />
         </div>
       </section>
 

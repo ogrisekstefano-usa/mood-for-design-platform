@@ -11,6 +11,15 @@
  *     → 'it-IT' (platform default) → English-US (universal safety net).
  *   • NO hardcoded strings in components: every label comes from a dictionary
  *     or from `relationship_lookups` (DB-driven config).
+ *
+ *   ITER130 · STRICT_LOCALIZATION_MODE
+ *   ----------------------------------
+ *   When `REACT_APP_STRICT_LOCALIZATION=true` (default in dev/staging):
+ *     • Missing key → visible ⟦key⟧ token + console.warn
+ *     • Italian leak resolved into a non-Italian locale → console.error
+ *       (so a CI scan or a designer sees the violation immediately)
+ *     • Same behaviour as before in production unless explicitly enabled.
+ *   When the flag is OFF, the platform falls back to dev-only visible tokens.
  */
 import itIT from './strings/it-IT.json';
 import enUS from './strings/en-US.json';
@@ -23,6 +32,39 @@ import ar   from './strings/ar.json';
 // ── Locale code helpers (BCP-47) ─────────────────────────────────────────
 export const SUPPORTED_LOCALES = ['it-IT', 'en-US', 'en-GB', 'es-ES', 'fr-FR', 'de-DE', 'ar-AE'];
 export const PLATFORM_DEFAULT_LOCALE = 'it-IT';
+
+// ITER130 · Strict mode (dev/staging warnings + leak errors).
+// Controlled by REACT_APP_STRICT_LOCALIZATION. Defaults to ON in non-prod.
+export const STRICT_LOCALIZATION_MODE = (() => {
+  try {
+    const flag = (typeof process !== 'undefined' && process.env)
+      ? process.env.REACT_APP_STRICT_LOCALIZATION
+      : null;
+    if (flag === 'true')  return true;
+    if (flag === 'false') return false;
+    // Default: enabled in development, opt-in for production.
+    return typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
+  } catch (_) { return true; }
+})();
+
+// Heuristic Italian fingerprint used to detect IT leaks resolved into a
+// non-Italian locale. Intentionally narrow — catches the high-signal
+// articles and verbs without trapping correctly authored English copy.
+const _IT_LEAK_RX = /\b(il|lo|la|gli|le|della|dello|delle|degli|nella|nelle|negli|alla|alle|allo|agli|tuo|tua|tuoi|tue|nostro|nostra|nostri|nostre|sono|siamo|essere|già|più|perché|può|però|questa|questo|quella|quello|questi|queste|ogni|nessun|nessuna|tutti|tutte|aggiungi|annulla|salva|chiudi|carica|scegli|conferma|sceglie|raccogli|aggiorna|crea|modifica)\b/i;
+
+function _reportItalianLeakIfStrict(key, target, value) {
+  if (!STRICT_LOCALIZATION_MODE) return;
+  if (!value || typeof value !== 'string') return;
+  if (!target || target.toLowerCase().startsWith('it')) return;
+  if (!_IT_LEAK_RX.test(value)) return;
+  // eslint-disable-next-line no-console
+  console.error(`[i18n · STRICT] Italian leak in ${target} for key "${key}": ${value.slice(0, 120)}`);
+  try {
+    // eslint-disable-next-line global-require
+    const { recordMissing } = require('../design-system/missingI18nRegistry');
+    recordMissing({ key, locale: target, fallbackSrc: 'italian-leak' });
+  } catch (_) { /* noop */ }
+}
 
 const STRINGS = {
   'it-IT': itIT,
@@ -171,6 +213,10 @@ export function pickString(key, locale, params = null, tenantDefault = null) {
       else { cur = null; break; }
     }
     if (typeof cur === 'string') {
+      // ITER130 · STRICT_LOCALIZATION_MODE — surface Italian leaks that
+      // resolved into a non-Italian locale (e.g. en-US fallback contains
+      // an Italian string still pending translation).
+      _reportItalianLeakIfStrict(key, target, cur);
       if (!params) return cur;
       return cur.replace(/\{(\w+)\}/g, (_, p) => (params[p] != null ? String(params[p]) : `{${p}}`));
     }
@@ -184,8 +230,8 @@ export function pickString(key, locale, params = null, tenantDefault = null) {
     const { recordMissing } = require('../design-system/missingI18nRegistry');
     recordMissing({ key, locale: target, fallbackSrc: 'key-literal' });
   } catch (_) { /* noop */ }
-  // Visible MISSING token in dev, bare key in prod — never Italian.
-  if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
+  // Visible MISSING token in strict mode, bare key in prod — never Italian.
+  if (STRICT_LOCALIZATION_MODE) {
     return `⟦${key}⟧`;
   }
   return key;

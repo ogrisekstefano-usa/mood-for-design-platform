@@ -3737,3 +3737,63 @@ See `/app/memory/FRONTEND_RUNTIME_AUDIT.md` for the running cleanup ledger. Afte
 - Storefront duplicates (`StorefrontPage.jsx`, `StorefrontStudio.jsx`) → ✅ deleted
 - Traceability gaps on header/footer/stats/logos/magazine grid → ✅ closed
 - Remaining: legacy `homepage.js` / `navigation.js` fallbacks (kept for now as last-resort safety net, removal scheduled in Fase 6)
+
+---
+
+## SPRINT ITER130 · LOCALIZATION COMPLETION™ (2026-02-21)
+
+**Status:** ✅ COMPLETE · Zero leak / Zero meta-contamination / 145 tests green
+
+### What was implemented
+- **Source-code leak elimination** — the 44 AST-skipped Italian literals in
+  JSX (arrays, prop_title, prop_placeholder, aria-label, jsx_text) have been
+  refactored to `t('key')` calls. Re-running `localization_source_audit.js`
+  reports **0 leaks**. Files touched:
+  ClientStubPages.jsx · ArticleEditorPanel.jsx · EditorialCalendarPage.jsx ·
+  CuratedCollectionDrawer.jsx · InspirationDetailDrawer.jsx ·
+  ProductGalleryPage.jsx · SupplierCatalogImportModal.jsx ·
+  MediaLibraryPage.jsx · MoodboardsPage.jsx · ProjectsStudioPage.jsx ·
+  DesignJourneyTab.jsx · ProjectDetailPage.jsx · JourneyClosureCeremony.jsx
+- **Bulk Editorial Refinement™** — wrote a Python runner
+  (`backend/scripts/iter130_bulk_translate_en_us.py`) that detected 140
+  Italian-leaking values inside `en-US.json` (AST-remediator artifacts where
+  keys were created but values were left untranslated) and re-authored
+  every single one through ALE + Studio Voice™ + Claude Sonnet 4.5.
+  Output: **0 Italian leaks** in en-US.json.
+- **Meta-contamination sanitizer** — a follow-up pass
+  (`iter130_sanitize_translations.py`) detected 36 LLM responses that
+  carried markdown preambles / "I'm ready" / "Source:" / dividers and
+  re-translated them with a stricter system prompt. Output: **0 meta-leaks**.
+- **`POST /api/language/batch-translate`** — new endpoint in
+  `routers/language_api.py` that runs an editorial bulk translate via ALE +
+  Studio Voice and optionally upserts to `localization_overrides`.
+- **STRICT_LOCALIZATION_MODE** — added to `frontend/src/i18n/engine.js`,
+  controlled by `REACT_APP_STRICT_LOCALIZATION` (`.env`). When on:
+  missing keys render `⟦key⟧` and any Italian text resolved into a
+  non-Italian locale triggers a `console.error` (so CI / a designer can
+  spot regressions immediately).
+- **Backend payload hygiene** — converted user-facing Italian
+  `HTTPException` messages in `inspirations_archive.py` to neutral English
+  ("Reference not found", "Could not save the reference", etc.) so EN-US
+  clients never receive Italian toasts on errors.
+- **Test suite** — `tests/test_iter130_localization_completion.py` enforces
+  the 7-point contract (0 source leaks · 0 IT leaks · 0 meta-contamination ·
+  batch endpoint wired · STRICT_LOCALIZATION_MODE present · protected terms
+  intact · visible ⟦key⟧ token in strict mode). 145 backend tests green
+  (138 prior iterations + 7 new).
+
+### Health snapshot
+- `it-IT.json` · 816 keys (was 762)
+- `en-US.json` · 816 keys · 0 Italian leaks · 0 meta-contamination
+- `governance/source-leaks.json` · **0** hardcoded leaks across 234 scanned files
+- `/api/language/health` reports all locales
+
+### P1/P2 backlog
+- en-GB / fr-FR / de-DE / es-ES still carry the 269 baseline keys (haven't
+  been extended yet to 816). Recommended next sprint: run the same bulk
+  pipeline targeting each locale (the endpoint and script support it).
+- Backend payload audit · convert remaining Italian text inside
+  `client_portal.py`, `usage_memory.py`, `client_messages.py`,
+  `core/workspace_genesis.py` to use the i18n key contract.
+- Sprint G.10 · Cultural Editions auto-gen alla Closure.
+- Sprint G.11 · Advisor "I miei Journey".

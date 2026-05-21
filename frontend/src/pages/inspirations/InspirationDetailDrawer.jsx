@@ -95,7 +95,7 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
          data-testid="inspiration-detail-backdrop">
       <div className="insd-drawer" data-testid="inspiration-detail">
         <button type="button" className="insd-close" onClick={onClose}
-                aria-label="Chiudi" data-testid="inspiration-detail-close">
+                aria-label={t('common.close')} data-testid="inspiration-detail-close">
           <Icons.X size={18} />
         </button>
 
@@ -147,7 +147,7 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
                            placeholder="Titolo" data-testid="insd-edit-title" />
                     <textarea className="ins-textarea" rows={2}
                               value={description} onChange={(e) => setDescription(e.target.value)}
-                              placeholder="Descrizione editoriale"
+                              placeholder={t('inspirations.inspiration_detail.description_placeholder')}
                               data-testid="insd-edit-desc" />
                   </>
                 )}
@@ -338,6 +338,7 @@ const NARRATIVE_INTENSITIES = [
 // + descriptors attivati raggruppati per categoria.
 // Quando pending, polling automatico ogni 4s fino a max 12 tentativi.
 const CulturalReadingBlock = ({ data, mediaId, onRefresh }) => {
+  const { t } = useT();
   const [poll, setPoll] = useState(0);
   const [narrativeMode, setNarrativeMode] = useState('');
   const [narrativeIntensity, setNarrativeIntensity] = useState('');
@@ -525,6 +526,7 @@ const CulturalReadingBlock = ({ data, mediaId, onRefresh }) => {
 // Mostra Brand · Collection · Categoria · Designer · Page reference + diritti.
 // NESSUN prezzo, NESSUN codice prodotto: questo NON è un PIM.
 const ProductInfoBlock = ({ data }) => {
+  const { t } = useT();
   const rightsLabel = {
     uploaded_by_tenant:  'Caricato dallo studio',
     supplier_authorized: 'Autorizzato dal fornitore',
@@ -563,7 +565,7 @@ const ProductInfoBlock = ({ data }) => {
       <p className="insd-product__rights" data-testid="inspiration-product-rights">
         <Icons.ShieldCheck size={10} /> {rightsLabel}
         {data.rights_status !== 'supplier_authorized' && (
-          <em> · verifica i diritti d'uso prima della pubblicazione esterna.</em>
+          <em>{' '}{t('inspirations.inspiration_detail.rights_verify_note')}</em>
         )}
       </p>
       {data.id && (

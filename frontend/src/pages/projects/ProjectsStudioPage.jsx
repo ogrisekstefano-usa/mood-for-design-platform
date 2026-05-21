@@ -529,6 +529,7 @@ const ProjectsStudioPage = () => {
 
 // ── Master Story Editor (subcomponent) ────────────────────────
 const MasterStoryEditor = ({ master, onChange, onPaletteAdd, onPaletteRemove, onSave, dirty, saving }) => {
+  const { t } = useT();
   const [paletteInput, setPaletteInput] = useState('');
   return (
     <section data-testid="ps-master-tab">
@@ -548,7 +549,7 @@ const MasterStoryEditor = ({ master, onChange, onPaletteAdd, onPaletteRemove, on
             className="ps-input"
             value={master.subtitle || ''}
             onChange={(e) => onChange({ subtitle: e.target.value })}
-            placeholder="Atmosfera, materia, ritmo"
+            placeholder={t('projects.studio.mood_placeholder')}
           />
         </div>
       </div>
@@ -666,7 +667,7 @@ const MasterStoryEditor = ({ master, onChange, onPaletteAdd, onPaletteRemove, on
             onKeyDown={(e) => {
               if (e.key === 'Enter') { e.preventDefault(); onPaletteAdd(paletteInput); setPaletteInput(''); }
             }}
-            placeholder="aggiungi…"
+            placeholder={t('projects.studio.tag_input_placeholder')}
           />
         </div>
       </div>

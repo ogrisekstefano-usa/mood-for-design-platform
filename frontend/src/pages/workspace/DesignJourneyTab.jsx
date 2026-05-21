@@ -21,6 +21,7 @@ import { toast } from 'sonner';
 import api from '../../lib/api';
 import MilestoneDialogue from '../../components/journey/MilestoneDialogue';
 import JourneyClosureCeremony from '../../components/journey/JourneyClosureCeremony';
+import { useT } from '../../i18n/useT';
 import './design-journey.css';
 
 const STATUS_META = {
@@ -106,13 +107,14 @@ const TimelineRail = ({ milestones, currentId, onPick }) => (
 
 // ─── Center · Active milestone focus panel ──────────────────────────
 const InlinePanel = ({ milestone, project }) => {
+  const { t: tt } = useT();
   const t = milestone.milestone_type;
   if (t === 'brief') {
     return (
       <div className="dj-inline" data-testid="dj-inline-brief">
         <p className="dj-inline__eyebrow">Brief Cliente</p>
         <h3 className="dj-inline__title">
-          <em>La prima conversazione</em>
+          <em>{tt('journey.tab.first_conversation')}</em>
         </h3>
         <p className="dj-inline__sub">
           Raccogli obiettivi, atmosfera desiderata, ambienti e timing.
@@ -120,7 +122,7 @@ const InlinePanel = ({ milestone, project }) => {
         </p>
         <div className="dj-inline__hint">
           <Icons.Info size={11} />
-          <span>L'editor del Brief arriverà nel prossimo capitolo.</span>
+          <span>{tt('journey.tab.brief_editor_coming')}</span>
         </div>
       </div>
     );
@@ -130,7 +132,7 @@ const InlinePanel = ({ milestone, project }) => {
       <div className="dj-inline" data-testid="dj-inline-site-evolution">
         <p className="dj-inline__eyebrow">Site Evolution™</p>
         <h3 className="dj-inline__title">
-          <em>L'evoluzione reale del progetto</em>
+          <em>{tt('journey.tab.evolution_real')}</em>
         </h3>
         <p className="dj-inline__sub">
           Fotografie di avanzamento, prima/dopo, dettagli materiali,
@@ -138,7 +140,7 @@ const InlinePanel = ({ milestone, project }) => {
         </p>
         <div className="dj-inline__hint">
           <Icons.Info size={11} />
-          <span>La timeline fotografica arriverà nel prossimo capitolo.</span>
+          <span>{tt('journey.tab.timeline_coming')}</span>
         </div>
       </div>
     );
@@ -160,6 +162,7 @@ const InlinePanel = ({ milestone, project }) => {
 
 
 const FocusPanel = ({ milestone, project, onStatusChange, onOpen, busy }) => {
+  const { t: tt } = useT();
   if (!milestone) return null;
   const meta = STATUS_META[milestone.status] || STATUS_META.not_started;
   const Icon = MILESTONE_ICON[milestone.milestone_type] || Icons.Circle;
@@ -212,7 +215,7 @@ const FocusPanel = ({ milestone, project, onStatusChange, onOpen, busy }) => {
       {/* Status transition actions */}
       {transitions.length > 0 && (
         <div className="dj-focus__transitions" data-testid="dj-focus-transitions">
-          <p className="dj-focus__transitions-label">Aggiorna direzione</p>
+          <p className="dj-focus__transitions-label">{tt('journey.tab.update_direction')}</p>
           <div className="dj-focus__transitions-row">
             {transitions.map(s => {
               const m = STATUS_META[s];
@@ -274,13 +277,14 @@ const DetailsPanel = ({ milestone }) => {
 
 // ─── Bottom · Project Evolution Timeline ─────────────────────────────
 const EvolutionTimeline = ({ events }) => {
+  const { t: tt } = useT();
   if (!events?.length) return null;
   return (
     <section className="dj-evolution" data-testid="dj-evolution">
       <header className="dj-evolution__head">
-        <p className="dj-evolution__eyebrow">Evoluzione del progetto</p>
+        <p className="dj-evolution__eyebrow">{tt('journey.tab.evolution')}</p>
         <h3 className="dj-evolution__title">
-          <em>La storia che il progetto sta scrivendo</em>
+          <em>{tt('journey.tab.story')}</em>
         </h3>
       </header>
       <ol className="dj-evolution__list">

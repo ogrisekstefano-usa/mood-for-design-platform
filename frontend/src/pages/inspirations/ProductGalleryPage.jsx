@@ -299,6 +299,7 @@ const StudioLanguageWidget = () => {
 
 // ─── Client Preview Link™ inline manager (Sprint F2.4) ─────────────
 const ClientPreviewLinkRow = ({ collection }) => {
+  const { t } = useT();
   const [links, setLinks] = useState(null);     // null = loading, [] = none yet
   const [generating, setGenerating] = useState(false);
   const [feedbackOpenId, setFeedbackOpenId] = useState(null);
@@ -389,7 +390,7 @@ const ClientPreviewLinkRow = ({ collection }) => {
               onClick={() => setFeedbackOpenId(
                 feedbackOpenId === link.id ? null : link.id,
               )}
-              title="Riscontri dal cliente"
+              title={t('inspirations.product_gallery.feedback_title')}
               data-testid={`pg-preview-feedback-${link.id}`}
             >
               <Icons.MessageCircle size={11} />
@@ -541,9 +542,10 @@ const RelatedTab = ({ items, loading, onPick }) => (
 
 // ─── Floating action tray ───────────────────────────────────────────
 const FloatingTray = ({ message, actions, onClose }) => {
+  const { t } = useT();
   useEffect(() => {
-    const t = setTimeout(onClose, 5500);
-    return () => clearTimeout(t);
+    const timer = setTimeout(onClose, 5500);
+    return () => clearTimeout(timer);
   }, [onClose]);
   return (
     <div className="pg-tray" data-testid="pg-tray" role="status">
@@ -565,7 +567,7 @@ const FloatingTray = ({ message, actions, onClose }) => {
           type="button"
           className="pg-tray__close"
           onClick={onClose}
-          aria-label="Chiudi"
+          aria-label={t('common.close')}
         >
           <Icons.X size={12} />
         </button>

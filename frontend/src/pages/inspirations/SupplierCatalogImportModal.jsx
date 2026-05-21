@@ -196,12 +196,12 @@ const SupplierCatalogImportModal = ({ open, onClose, config, onImported }) => {
             <h2 className="scim-title">Importa catalogo fornitore</h2>
           </div>
           <button type="button" className="scim-close" onClick={onClose}
-                  data-testid="catalog-import-close" aria-label="Chiudi">
+                  data-testid="catalog-import-close" aria-label={t('common.close')}>
             <Icons.X size={16} />
           </button>
         </header>
 
-        <ol className="scim-steps" aria-label="Stato del wizard">
+        <ol className="scim-steps" aria-label={t('inspirations.supplier_import.wizard_step_aria')}>
           {STEPS.map((s, i) => (
             <li key={s.key}
                 className={`scim-step ${i === step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}`}>
@@ -448,6 +448,7 @@ const RightsTag = ({ on, label }) => (
 
 // ── BrandPicker — autocomplete su Brand Registry™ ──────────────────
 const BrandPicker = ({ value, freeText, onSelect, onFreeText, onAddNew }) => {
+  const { t } = useT();
   const [q, setQ]           = useState(value?.name || freeText || '');
   const [items, setItems]   = useState([]);
   const [open, setOpen]     = useState(false);
@@ -458,13 +459,13 @@ const BrandPicker = ({ value, freeText, onSelect, onFreeText, onAddNew }) => {
   useEffect(() => {
     if (!open) return;
     setLoading(true);
-    const t = setTimeout(() => {
+    const tmo = setTimeout(() => {
       api.get(`/api/inspirations/registry/brands?q=${encodeURIComponent(q)}&limit=20`)
         .then((r) => setItems(r.data?.items || []))
         .catch(() => setItems([]))
         .finally(() => setLoading(false));
     }, 180);
-    return () => clearTimeout(t);
+    return () => clearTimeout(tmo);
   }, [q, open]);
 
   return (
@@ -474,7 +475,7 @@ const BrandPicker = ({ value, freeText, onSelect, onFreeText, onAddNew }) => {
              onChange={(e) => { setQ(e.target.value); onFreeText?.(e.target.value); setOpen(true); }}
              onFocus={() => setOpen(true)}
              onBlur={() => setTimeout(() => setOpen(false), 180)}
-             placeholder="Cerca produttore (Minotti, Poliform, …)"
+             placeholder={t('inspirations.supplier_import.search_placeholder')}
              data-testid="catalog-field-brand" />
       {open && (
         <div className="scim-picker__panel" data-testid="catalog-brand-results">
@@ -896,6 +897,7 @@ const TaggingStep = ({ config, batchAtmos, setBatchAtmos, batchMat, setBatchMat,
                       batchLuxury, setBatchLuxury,
                       batchProfile, setBatchProfile,
                       selectedCount, brand }) => {
+  const { t } = useT();
   const toggle = (arr, setArr, key) => {
     if (arr.includes(key)) setArr(arr.filter((k) => k !== key));
     else setArr([...arr, key]);
@@ -908,7 +910,7 @@ const TaggingStep = ({ config, batchAtmos, setBatchAtmos, batchMat, setBatchMat,
         singolarmente in seguito.
       </p>
 
-      <TagGroup title="Atmosfera abituale"
+      <TagGroup title={t('inspirations.supplier_import.atmosphere_title')}
                 options={config?.atmosphere_tags || []}
                 values={batchAtmos}
                 onToggle={(k) => toggle(batchAtmos, setBatchAtmos, k)}

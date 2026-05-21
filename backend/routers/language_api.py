@@ -295,7 +295,7 @@ def ingest_audit(report: AuditReport, ctx: dict = Depends(get_tenant_context)):
         from database import db, db_available
         if not db_available():
             return {"ok": False, "reason": "db_unavailable"}
-        leaks_total   = sum(l.count for l in report.leaks)
+        leaks_total   = sum(item.count for item in report.leaks)
         missing_total = len(report.missing)
         # store the run row + raw report
         res = db().table('localization_audit_runs').insert({
@@ -305,7 +305,7 @@ def ingest_audit(report: AuditReport, ctx: dict = Depends(get_tenant_context)):
             'leaks_total':   leaks_total,
             'missing_total': missing_total,
             'report_json':   {
-                'leaks':   [l.model_dump() for l in report.leaks],
+                'leaks':   [item.model_dump() for item in report.leaks],
                 'missing': report.missing,
             },
             'triggered_by':  ctx.get('profile_id') or ctx.get('user_id'),
@@ -348,3 +348,143 @@ def list_leaks(limit: int = Query(100, ge=1, le=500),
     return {"items": leaks[:limit], "run_id": last['id'],
             "scanned_at": last['created_at'],
             "locale": last['locale']}
+
+
+# ─── ITER130 · Bulk Editorial Batch Translate (Studio Voice + ALE) ─────
+class BatchTranslateItem(BaseModel):
+    key_path:     str
+    source_text:  str
+    review_status: str = 'ai_suggested'
+
+
+class BatchTranslateRequest(BaseModel):
+    source_locale: str = 'it'
+    target_locale: str
+    items:         List[BatchTranslateItem]
+    dry_run:       bool = False
+    persist:       bool = True
+
+
+@router.post("/batch-translate")
+def batch_translate(payload: BatchTranslateRequest,
+                    ctx: dict = Depends(get_tenant_context)):
+    """Editorial batch translation pipeline.
+
+    Powers the Language Command Center's "Refine in bulk with Studio Voice™"
+    action. For every (key_path, source_text), the endpoint:
+
+      1. Runs the text through `relational_translation.translate(...)` —
+         Claude Sonnet 4.5 · DNT-aware · Studio Voice™ injected.
+      2. When `persist=True`, upserts the result into `localization_overrides`
+         (review_status from the item, default `ai_suggested`).
+      3. Returns a per-item report: `{key, locale, original, localized,
+         translated (bool), confidence, model, error?}`.
+
+    `dry_run=True` skips the DB write but still returns the localized text
+    — useful for preview-then-approve UX in the Command Center.
+    """
+    _require_admin(ctx)
+    tenant_id = ctx.get('tenant_id')
+    src = (payload.source_locale or 'it').strip()
+    # Normalise: relational_translation.SUPPORTED_LOCALES uses 'it' (no region).
+    src_translate = 'it' if src.lower().startswith('it') else src
+    tgt = payload.target_locale.strip()
+    tgt_translate = tgt
+    # The translate() service uses 'fr' / 'de' / 'es' (no region) — bridge it.
+    if tgt.lower() in {'fr-fr', 'fr'}:
+        tgt_translate = 'fr'
+    elif tgt.lower() in {'de-de', 'de'}:
+        tgt_translate = 'de'
+    elif tgt.lower() in {'es-es', 'es'}:
+        tgt_translate = 'es'
+    elif tgt.lower() in {'it-it', 'it'}:
+        tgt_translate = 'it'
+    elif tgt.lower() in {'ar-ae', 'ar'}:
+        tgt_translate = 'ar'
+    # en-US / en-GB pass through verbatim.
+
+    # Studio Voice™ addendum — best-effort, never fatal.
+    voice_addendum = ""
+    try:
+        from services.studio_voice import voice_addendum_for_prompt
+        voice_addendum = voice_addendum_for_prompt(tenant_id, src_translate, tgt_translate) or ""
+    except Exception:  # pragma: no cover — Studio Voice is best-effort
+        voice_addendum = ""
+
+    # Lazy import: only needed when we persist.
+    db_fn = db_available_fn = None
+    if payload.persist and not payload.dry_run:
+        try:
+            from database import db as _db, db_available as _ok
+            db_fn, db_available_fn = _db, _ok
+        except Exception:
+            db_fn = db_available_fn = None
+
+    from services.relational_translation import translate as _translate
+    report = []
+    succ = fail = 0
+    for it in payload.items:
+        try:
+            r = _translate(
+                it.source_text,
+                source_locale=src_translate,
+                target_locale=tgt_translate,
+                voice_addendum=voice_addendum,
+            )
+            rec = {
+                'key':        it.key_path,
+                'locale':     tgt,
+                'original':   r.original,
+                'localized':  r.localized,
+                'translated': bool(r.translated),
+                'model':      r.model,
+                'confidence': r.confidence,
+                'error':      r.error,
+            }
+            if r.translated:
+                succ += 1
+            else:
+                fail += 1
+
+            # Persist as override when requested.
+            if (payload.persist and not payload.dry_run and r.translated
+                    and tenant_id and db_fn and db_available_fn and db_available_fn()):
+                try:
+                    db_fn().table('localization_overrides').upsert({
+                        'tenant_id':     tenant_id,
+                        'key_path':      it.key_path,
+                        'locale':        tgt,
+                        'override_text': r.localized.strip(),
+                        'review_status': it.review_status or 'ai_suggested',
+                        'source_text':   r.original,
+                        'surface':       _surface_of_key(it.key_path),
+                        'reviewed_by':   ctx.get('profile_id') or ctx.get('user_id'),
+                        'reviewed_at':   _now_iso(),
+                        'updated_at':    _now_iso(),
+                    }, on_conflict='tenant_id,key_path,locale').execute()
+                    rec['persisted'] = True
+                except Exception as pe:
+                    rec['persisted'] = False
+                    rec['persist_error'] = str(pe)[:200]
+            else:
+                rec['persisted'] = False
+            report.append(rec)
+        except Exception as e:
+            fail += 1
+            report.append({
+                'key': it.key_path, 'locale': tgt,
+                'original': it.source_text,
+                'localized': it.source_text,
+                'translated': False, 'error': str(e)[:200],
+            })
+
+    return {
+        'source_locale':   src,
+        'target_locale':   tgt,
+        'requested':       len(payload.items),
+        'translated_ok':   succ,
+        'failed':          fail,
+        'persisted':       sum(1 for r in report if r.get('persisted')),
+        'voice_addendum':  bool(voice_addendum),
+        'items':           report,
+    }
