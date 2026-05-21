@@ -65,12 +65,27 @@ export function toBcp47(code) {
 /**
  * Build a fallback chain for a given BCP-47 locale.
  *
- *   en-AE  → ['en-AE','en-GB','en-US','it-IT','en-US']
- *   it-IT  → ['it-IT','en-US']  (it-IT IS the platform default)
- *   pt-BR  → ['pt-BR','en-US','it-IT','en-US']  (unsupported → en-US fallback)
+ * Sprint ITER126 · Global UI Localization Sweep™ — STRICT MODE:
  *
- * Optional `tenantDefault` is appended right after the language family chain
- * so a tenant-specific override is honoured before the platform fallback.
+ *   IF requested locale starts with 'it-' (e.g. 'it-IT', 'it-CH'):
+ *     it-IT → en-US (universal safety net)
+ *
+ *   IF requested locale is ANY OTHER language:
+ *     en-AE  → ['en-AE', 'en-GB', 'en-US']        (same-family + EN safety net)
+ *     fr-FR  → ['fr-FR', 'en-US']                 (no IT silent fallback)
+ *     de-DE  → ['de-DE', 'en-US']
+ *     pt-BR  → ['pt-BR', 'en-US']                 (unsupported → EN safety net)
+ *
+ * The platform-default Italian (`it-IT`) is NEVER inserted into a non-IT
+ * chain. If a key is missing from the requested locale AND from the English
+ * safety net, `pickString()` records the gap and returns a visible MISSING
+ * token (in dev) or the key path (in prod) — but it does NOT leak Italian
+ * into a non-IT user's UI. This is the core anti-mixed-language rule.
+ *
+ * Optional `tenantDefault` is appended right after the language family
+ * chain so a tenant-specific override is honoured before the platform
+ * safety net — BUT it is also suppressed if it is Italian and the requested
+ * locale is not (same anti-leakage rule).
  */
 export function buildFallbackChain(locale, tenantDefault = null) {
   const target = toBcp47(locale);
@@ -79,7 +94,6 @@ export function buildFallbackChain(locale, tenantDefault = null) {
 
   // 1. Same-language regional siblings (en-AE → en-GB → en-US, etc.)
   const siblings = SUPPORTED_LOCALES.filter((l) => l.startsWith(`${lang}-`) && l !== target);
-  // British English gets priority before American English for Commonwealth locales.
   if (target === 'en-AE') {
     if (siblings.includes('en-GB')) chain.push('en-GB');
     if (siblings.includes('en-US')) chain.push('en-US');
@@ -87,14 +101,20 @@ export function buildFallbackChain(locale, tenantDefault = null) {
     siblings.forEach((s) => chain.push(s));
   }
 
-  // 2. Tenant default (if configured and not already present).
+  // 2. Tenant default (if configured, not already present, AND not an
+  //    Italian leak for a non-Italian user).
   if (tenantDefault) {
     const td = toBcp47(tenantDefault);
-    if (!chain.includes(td)) chain.push(td);
+    const isItalianLeak = td.startsWith('it-') && lang !== 'it';
+    if (!chain.includes(td) && !isItalianLeak) chain.push(td);
   }
 
-  // 3. Platform default (it-IT).
-  if (!chain.includes(PLATFORM_DEFAULT_LOCALE)) chain.push(PLATFORM_DEFAULT_LOCALE);
+  // 3. Italian-only chains get the platform default. Every other language
+  //    skips it entirely so we never silently fall back to Italian for a
+  //    non-Italian user.
+  if (lang === 'it' && !chain.includes(PLATFORM_DEFAULT_LOCALE)) {
+    chain.push(PLATFORM_DEFAULT_LOCALE);
+  }
 
   // 4. Universal safety net (English-US) — always last.
   if (!chain.includes('en-US')) chain.push('en-US');
@@ -130,10 +150,17 @@ export function pickLocaleValue(labelObj, locale, tenantDefault = null) {
 /**
  * Resolve a string-dictionary key (`"relationships.title"`) for a locale.
  * Supports `{var}` interpolation: t('greeting', { name: 'Anna' }).
+ *
+ * Sprint ITER126 · STRICT MODE: when the key is not found anywhere in the
+ * (Italian-free) fallback chain for non-Italian users, returns a visible
+ * `⟦key⟧` token in development so the gap is impossible to miss, and the
+ * bare key in production. Italian is NEVER served as a silent fallback
+ * to a non-Italian user.
  */
 export function pickString(key, locale, params = null, tenantDefault = null) {
   if (!key) return '';
-  const chain = buildFallbackChain(locale, tenantDefault);
+  const target = toBcp47(locale);
+  const chain = buildFallbackChain(target, tenantDefault);
   const path = String(key).split('.');
   for (const code of chain) {
     const dict = STRINGS[code];
@@ -150,15 +177,16 @@ export function pickString(key, locale, params = null, tenantDefault = null) {
   }
   if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line no-console
-    console.warn(`[i18n] Missing string key: ${key} (locale ${locale})`);
+    console.warn(`[i18n] Missing string key: ${key} (locale ${target})`);
   }
-  // Sprint HARDENING-I18N-GUARD™: record into the LiveQA missing registry.
   try {
-    // Lazy require to avoid an upfront dependency on the design-system layer
-    // from the public site bundle.
     // eslint-disable-next-line global-require
     const { recordMissing } = require('../design-system/missingI18nRegistry');
-    recordMissing({ key, locale, fallbackSrc: 'frontend-static' });
+    recordMissing({ key, locale: target, fallbackSrc: 'key-literal' });
   } catch (_) { /* noop */ }
+  // Visible MISSING token in dev, bare key in prod — never Italian.
+  if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
+    return `⟦${key}⟧`;
+  }
   return key;
 }

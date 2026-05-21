@@ -224,6 +224,7 @@ const OSWrap = ({ children }) => (
 const PublicMoodboardWrapper = () => <MoodboardEditor readOnly={true} />;
 
 import GovernanceOverlay from './design-system/GovernanceOverlay';
+import LocalizationOverlay from './i18n/LocalizationOverlay';
 
 function App() {
   return (
@@ -236,6 +237,7 @@ function App() {
           <BlueprintI18nProvider>
           <BrowserRouter>
             <GovernanceOverlay />
+            <LocalizationOverlay />
             <Suspense fallback={<Loading />}>
               <LocaleHead />
               <Routes>
