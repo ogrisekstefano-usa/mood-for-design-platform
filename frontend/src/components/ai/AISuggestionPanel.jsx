@@ -20,49 +20,77 @@ import { Sparkles, Check, X, RotateCcw, Loader2 } from 'lucide-react';
 import api from '../../lib/api';
 import { toast } from 'sonner';
 // Source of truth = backend ACTIONS dict in /app/backend/routers/ai_editorial.py
-export const AI_ACTIONS = [
-  { id: 'improve',            label: 'Improve copy',           desc: 'Editorial polish' },
-  { id: 'premium',            label: 'More premium',           desc: 'Restrained luxury tone' },
-  { id: 'concise',            label: 'More concise',           desc: 'Tighten · same meaning' },
-  { id: 'readability',        label: 'Improve readability',    desc: 'Better flow & rhythm' },
-  { id: 'storytelling',       label: 'Add storytelling',       desc: 'Subtle editorial cues' },
-  { id: 'seo',                label: 'Improve SEO',            desc: 'Surface key phrase' },
-  { id: 'audience_us',        label: 'Adapt for US audience',  desc: 'US-English · sophisticated' },
-  { id: 'audience_luxury',    label: 'Adapt for luxury',       desc: 'HNW / A&D audience' },
-  { id: 'improve_cta',        label: 'Improve CTA',            desc: 'Confident · short · action' },
-  { id: 'rewrite_headline',   label: 'Rewrite headline',       desc: 'Single line · ≤80 chars' },
-  { id: 'alternative_titles', label: 'Alternative titles',     desc: '3 distinct angles' },
-];
-
+import { useT } from "../../i18n/useT";
+export const AI_ACTIONS = [{
+  id: 'improve',
+  label: 'Improve copy',
+  desc: 'Editorial polish'
+}, {
+  id: 'premium',
+  label: 'More premium',
+  desc: 'Restrained luxury tone'
+}, {
+  id: 'concise',
+  label: 'More concise',
+  desc: 'Tighten · same meaning'
+}, {
+  id: 'readability',
+  label: 'Improve readability',
+  desc: 'Better flow & rhythm'
+}, {
+  id: 'storytelling',
+  label: 'Add storytelling',
+  desc: 'Subtle editorial cues'
+}, {
+  id: 'seo',
+  label: 'Improve SEO',
+  desc: 'Surface key phrase'
+}, {
+  id: 'audience_us',
+  label: 'Adapt for US audience',
+  desc: 'US-English · sophisticated'
+}, {
+  id: 'audience_luxury',
+  label: 'Adapt for luxury',
+  desc: 'HNW / A&D audience'
+}, {
+  id: 'improve_cta',
+  label: 'Improve CTA',
+  desc: 'Confident · short · action'
+}, {
+  id: 'rewrite_headline',
+  label: 'Rewrite headline',
+  desc: 'Single line · ≤80 chars'
+}, {
+  id: 'alternative_titles',
+  label: 'Alternative titles',
+  desc: '3 distinct angles'
+}];
 export const useEditorialSuggest = () => {
-  const call = useCallback(async (payload) => {
-    const { data } = await api.post('/api/ai/editorial-suggest', payload);
+  const call = useCallback(async payload => {
+    const {
+      data
+    } = await api.post('/api/ai/editorial-suggest', payload);
     return data;
   }, []);
-  return { call };
+  return {
+    call
+  };
 };
 
 /* ── Trigger (chip) ─────────────────────────────────────────────── */
 
-export const AISuggestionTrigger = ({ active, onClick, testIdPrefix = 'ai' }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    data-testid={`${testIdPrefix}-trigger`}
-    aria-pressed={!!active}
-    aria-label="Open editorial AI"
-    className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-[6px]
+export const AISuggestionTrigger = ({
+  active,
+  onClick,
+  testIdPrefix = 'ai'
+}) => <button type="button" onClick={onClick} data-testid={`${testIdPrefix}-trigger`} aria-pressed={!!active} aria-label="Open editorial AI" className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-[6px]
                 text-[10px] uppercase tracking-[0.16em] font-body
                 border transition-colors
-                ${active
-                  ? 'text-[var(--bp-primary)] border-[var(--bp-border-active)] bg-[var(--bp-primary-soft)]'
-                  : 'text-[var(--bp-text-muted)] border-transparent hover:text-[var(--bp-primary)] hover:bg-[var(--bp-primary-soft)] hover:border-[var(--bp-border-active)]'}`}
-    title="Suggest improvements with editorial AI"
-  >
+                ${active ? 'text-[var(--bp-primary)] border-[var(--bp-border-active)] bg-[var(--bp-primary-soft)]' : 'text-[var(--bp-text-muted)] border-transparent hover:text-[var(--bp-primary)] hover:bg-[var(--bp-primary-soft)] hover:border-[var(--bp-border-active)]'}`} title="Suggest improvements with editorial AI">
     <Sparkles size={11} strokeWidth={1.5} />
     Improve
-  </button>
-);
+  </button>;
 
 /* ── Panel body (no trigger) ────────────────────────────────────── */
 
@@ -74,18 +102,22 @@ export const AISuggestionPanelBody = ({
   onClose,
   defaultAction = 'improve',
   testIdPrefix = 'ai',
-  autoRun = true,
+  autoRun = true
 }) => {
+  const {
+    t
+  } = useT();
   const [action, setAction] = useState(defaultAction);
   const [suggestion, setSuggestion] = useState(null);
   const [reasoning, setReasoning] = useState('');
   const [latency, setLatency] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { call } = useEditorialSuggest();
+  const {
+    call
+  } = useEditorialSuggest();
   const ranOnceRef = useRef(false);
   const rootRef = useRef(null);
-
-  const run = useCallback(async (nextAction) => {
+  const run = useCallback(async nextAction => {
     const a = nextAction || action;
     if (!text?.trim()) {
       toast.error('No text to improve');
@@ -94,7 +126,10 @@ export const AISuggestionPanelBody = ({
     setLoading(true);
     try {
       const res = await call({
-        action: a, text, original_text: originalText || null, ...context,
+        action: a,
+        text,
+        original_text: originalText || null,
+        ...context
       });
       setSuggestion(res.suggested_text);
       setReasoning(res.reasoning);
@@ -119,7 +154,7 @@ export const AISuggestionPanelBody = ({
   // ESC closes the panel — global while mounted. Only one panel can be
   // open at a time (parent owns single-open invariant) so this is safe.
   useEffect(() => {
-    const onKey = (e) => {
+    const onKey = e => {
       if (e.key !== 'Escape') return;
       e.stopPropagation();
       onClose?.();
@@ -127,33 +162,22 @@ export const AISuggestionPanelBody = ({
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
-
   const accept = () => {
     if (!suggestion) return;
     onAccept?.(suggestion);
     onClose?.();
     toast.success('Suggestion applied');
   };
-
   const reject = () => {
     setSuggestion(null);
     setReasoning('');
   };
-
-  const onActionChange = (id) => {
+  const onActionChange = id => {
     setAction(id);
     run(id);
   };
-
-  return (
-    <div
-      ref={rootRef}
-      data-testid={`${testIdPrefix}-panel`}
-      role="region"
-      aria-label="Editorial AI suggestion"
-      className="mt-2 rounded-[10px] border border-[var(--bp-border-active)]
-                 bg-[var(--bp-surface-2)] overflow-hidden"
-    >
+  return <div ref={rootRef} data-testid={`${testIdPrefix}-panel`} role="region" aria-label={t("ai.aisuggestion.editorial_ai_suggestion")} className="mt-2 rounded-[10px] border border-[var(--bp-border-active)]
+                 bg-[var(--bp-surface-2)] overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--bp-border)]/60 bg-[var(--bp-surface-elevated)]">
         <div className="flex items-center gap-2">
@@ -162,40 +186,21 @@ export const AISuggestionPanelBody = ({
             Editorial Assistant
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          data-testid={`${testIdPrefix}-close`}
-          aria-label="Close editorial AI"
-          className="text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors"
-        >
+        <button type="button" onClick={onClose} data-testid={`${testIdPrefix}-close`} aria-label="Close editorial AI" className="text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors">
           <X size={12} strokeWidth={1.5} />
         </button>
       </div>
 
       {/* Action chip row */}
       <div className="px-3 py-2 flex items-center gap-2 flex-wrap border-b border-[var(--bp-border)]/40">
-        <select
-          value={action}
-          onChange={(e) => onActionChange(e.target.value)}
-          data-testid={`${testIdPrefix}-action-select`}
-          className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[5px]
+        <select value={action} onChange={e => onActionChange(e.target.value)} data-testid={`${testIdPrefix}-action-select`} className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[5px]
                      px-2 py-1 text-[11px] text-[var(--bp-text-primary)] font-body
-                     focus:outline-none focus:border-[var(--bp-border-hover)]"
-        >
-          {AI_ACTIONS.map((a) => (
-            <option key={a.id} value={a.id}>{a.label}</option>
-          ))}
+                     focus:outline-none focus:border-[var(--bp-border-hover)]">
+          {AI_ACTIONS.map(a => <option key={a.id} value={a.id}>{a.label}</option>)}
         </select>
-        <button
-          type="button"
-          onClick={() => run()}
-          disabled={loading}
-          data-testid={`${testIdPrefix}-regenerate`}
-          className="inline-flex items-center gap-1 px-2 py-1 rounded-[5px]
+        <button type="button" onClick={() => run()} disabled={loading} data-testid={`${testIdPrefix}-regenerate`} className="inline-flex items-center gap-1 px-2 py-1 rounded-[5px]
                      text-[10px] uppercase tracking-[0.16em] font-body
-                     text-[var(--bp-text-muted)] hover:text-[var(--bp-primary)] transition-colors disabled:opacity-40"
-        >
+                     text-[var(--bp-text-muted)] hover:text-[var(--bp-primary)] transition-colors disabled:opacity-40">
           <RotateCcw size={10} strokeWidth={1.5} />
           Regenerate
         </button>
@@ -203,92 +208,60 @@ export const AISuggestionPanelBody = ({
 
       {/* Suggestion body — fixed min-height to avoid layout jump */}
       <div className="px-3 py-3 min-h-[72px]">
-        {loading ? (
-          <div className="flex items-center gap-2 text-[11px] text-[var(--bp-text-muted)] font-body">
+        {loading ? <div className="flex items-center gap-2 text-[11px] text-[var(--bp-text-muted)] font-body">
             <Loader2 size={11} className="animate-spin" />
             <span>Composing editorial suggestion…</span>
-          </div>
-        ) : suggestion ? (
-          <>
-            <p
-              data-testid={`${testIdPrefix}-suggestion`}
-              className="text-[12.5px] text-[var(--bp-text-primary)] font-body whitespace-pre-wrap leading-relaxed"
-            >
+          </div> : suggestion ? <>
+            <p data-testid={`${testIdPrefix}-suggestion`} className="text-[12.5px] text-[var(--bp-text-primary)] font-body whitespace-pre-wrap leading-relaxed">
               {suggestion}
             </p>
-            {reasoning && (
-              <p className="mt-2 text-[10px] text-[var(--bp-text-muted)] font-body italic leading-relaxed">
+            {reasoning && <p className="mt-2 text-[10px] text-[var(--bp-text-muted)] font-body italic leading-relaxed">
                 <span className="uppercase tracking-[0.18em] not-italic mr-1.5">Why</span>
                 {reasoning}
-              </p>
-            )}
-          </>
-        ) : (
-          <p className="text-[11px] text-[var(--bp-text-faint)] italic font-body">
+              </p>}
+          </> : <p className="text-[11px] text-[var(--bp-text-faint)] italic font-body">
             No suggestion yet — choose an action above.
-          </p>
-        )}
+          </p>}
       </div>
 
       {/* Footer actions */}
-      {suggestion && !loading && (
-        <div className="flex items-center justify-between gap-2 px-3 py-2 border-t border-[var(--bp-border)]/40 bg-[var(--bp-surface-1)]">
-          {latency != null && (
-            <span className="text-[9px] font-mono uppercase tracking-[0.18em] text-[var(--bp-text-faint)]">
+      {suggestion && !loading && <div className="flex items-center justify-between gap-2 px-3 py-2 border-t border-[var(--bp-border)]/40 bg-[var(--bp-surface-1)]">
+          {latency != null && <span className="text-[9px] font-mono uppercase tracking-[0.18em] text-[var(--bp-text-faint)]">
               {latency}ms · claude
-            </span>
-          )}
+            </span>}
           <div className="flex items-center gap-1.5 ml-auto">
-            <button
-              type="button"
-              onClick={reject}
-              data-testid={`${testIdPrefix}-reject`}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[5px]
+            <button type="button" onClick={reject} data-testid={`${testIdPrefix}-reject`} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[5px]
                          text-[10px] uppercase tracking-[0.18em] font-body
                          text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]
-                         border border-transparent hover:border-[var(--bp-border)] transition-colors"
-            >
+                         border border-transparent hover:border-[var(--bp-border)] transition-colors">
               <X size={10} strokeWidth={1.5} />
               Discard
             </button>
-            <button
-              type="button"
-              onClick={accept}
-              data-testid={`${testIdPrefix}-accept`}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[5px]
+            <button type="button" onClick={accept} data-testid={`${testIdPrefix}-accept`} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[5px]
                          text-[10px] uppercase tracking-[0.18em] font-body font-medium
-                         bg-[var(--bp-primary)] text-black hover:opacity-90 transition-opacity"
-            >
+                         bg-[var(--bp-primary)] text-black hover:opacity-90 transition-opacity">
               <Check size={10} strokeWidth={2} />
               Apply
             </button>
           </div>
-        </div>
-      )}
-    </div>
-  );
+        </div>}
+    </div>;
 };
 
 /* ── Self-contained combined panel (backwards compat) ───────────── */
 
 export const AISuggestionPanel = ({
-  text, originalText, context = {}, onAccept, defaultAction = 'improve', testIdPrefix = 'ai',
+  text,
+  originalText,
+  context = {},
+  onAccept,
+  defaultAction = 'improve',
+  testIdPrefix = 'ai'
 }) => {
   const [open, setOpen] = useState(false);
   if (!open) {
     return <AISuggestionTrigger active={false} onClick={() => setOpen(true)} testIdPrefix={testIdPrefix} />;
   }
-  return (
-    <AISuggestionPanelBody
-      text={text}
-      originalText={originalText}
-      context={context}
-      onAccept={onAccept}
-      defaultAction={defaultAction}
-      testIdPrefix={testIdPrefix}
-      onClose={() => setOpen(false)}
-    />
-  );
+  return <AISuggestionPanelBody text={text} originalText={originalText} context={context} onAccept={onAccept} defaultAction={defaultAction} testIdPrefix={testIdPrefix} onClose={() => setOpen(false)} />;
 };
-
 export default AISuggestionPanel;

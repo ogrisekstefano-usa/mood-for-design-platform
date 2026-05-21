@@ -8,43 +8,73 @@ import { X } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
 import { useT } from '../../i18n/useT';
-
-export const CANONICAL_STAGES = [
-  { key: 'lead',              label: 'Lead',              color: '#9CA3AF' },
-  { key: 'prospect',          label: 'Prospect',          color: '#88c0d0' },
-  { key: 'qualified',         label: 'Qualificato',       color: '#5B7CA0' },
-  { key: 'active_project',    label: 'Progetto attivo',   color: '#C9A36E' },
-  { key: 'client',            label: 'Cliente',           color: '#10B981' },
-  { key: 'returning_client',  label: 'Cliente di ritorno',color: '#059669' },
-  { key: 'archived',          label: 'Archiviato',        color: '#6B7280' },
-];
-
-export const StageChangeModal = ({ open, accountId, currentStage, targetStage, onClose, onChanged }) => {
-  const { t } = useT();
+export const CANONICAL_STAGES = [{
+  key: 'lead',
+  label: 'Lead',
+  color: '#9CA3AF'
+}, {
+  key: 'prospect',
+  label: 'Prospect',
+  color: '#88c0d0'
+}, {
+  key: 'qualified',
+  label: 'Qualificato',
+  color: '#5B7CA0'
+}, {
+  key: 'active_project',
+  label: 'Progetto attivo',
+  color: '#C9A36E'
+}, {
+  key: 'client',
+  label: 'Cliente',
+  color: '#10B981'
+}, {
+  key: 'returning_client',
+  label: 'Cliente di ritorno',
+  color: '#059669'
+}, {
+  key: 'archived',
+  label: 'Archiviato',
+  color: '#6B7280'
+}];
+export const StageChangeModal = ({
+  open,
+  accountId,
+  currentStage,
+  targetStage,
+  onClose,
+  onChanged
+}) => {
+  const {
+    t
+  } = useT();
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
-
   if (!open || !targetStage) return null;
-
-  const target = CANONICAL_STAGES.find((s) => s.key === targetStage) || { key: targetStage, label: targetStage };
-
+  const target = CANONICAL_STAGES.find(s => s.key === targetStage) || {
+    key: targetStage,
+    label: targetStage
+  };
   const save = async () => {
     setSaving(true);
     try {
       await api.post(`/api/relationships/accounts/${accountId}/stage`, {
         lifecycle_stage: target.key,
-        note: note || null,
+        note: note || null
       });
       toast.success(`Stage aggiornato · ${target.label}`);
       onChanged?.(target.key);
       onClose?.();
     } catch (e) {
-      console.error(e); toast.error('Cambio stage fallito');
-    } finally { setSaving(false); }
+      console.error(e);
+      toast.error('Cambio stage fallito');
+    } finally {
+      setSaving(false);
+    }
   };
-
-  return (
-    <div className="rl-modal-backdrop" onClick={(e) => { if (e.target === e.currentTarget) onClose?.(); }}>
+  return <div className="rl-modal-backdrop" onClick={e => {
+    if (e.target === e.currentTarget) onClose?.();
+  }}>
       <div className="rl-modal" data-testid="stage-change-modal">
         <div className="rl-modal__head">
           <div>
@@ -53,32 +83,26 @@ export const StageChangeModal = ({ open, accountId, currentStage, targetStage, o
               {currentStage ? <>Da <em>{currentStage}</em> → </> : ''}{target.label}
             </h2>
           </div>
-          <button className="rl-modal__close" onClick={onClose} aria-label="Chiudi" data-testid="stage-modal-close">
+          <button className="rl-modal__close" onClick={onClose} aria-label={t("crm.stage_change.chiudi")} data-testid="stage-modal-close">
             <X size={18} />
           </button>
         </div>
 
         <div className="rl-field">
           <label className="rl-field__label">Nota (opzionale)</label>
-          <textarea className="rl-field__textarea" value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                    placeholder="Perché stiamo cambiando fase? Il contesto rimane in timeline."
-                    data-testid="stage-note-input" />
+          <textarea className="rl-field__textarea" value={note} onChange={e => setNote(e.target.value)} placeholder={t("crm.stage_change.perche_stiamo_cambiando_fase_il_contesto_rimane_in")} data-testid="stage-note-input" />
           <p className="rl-field__hint">{t('crm.stage_change.il_cambio_sara_tracciato_come_evento_in_timeline')}</p>
         </div>
 
         <div className="rl-modal__actions">
           <button className="rl-btn rl-btn--ghost" onClick={onClose} data-testid="stage-cancel">
-            Annulla
+            {t("crm.stage_change.annulla")}
           </button>
-          <button className="rl-btn rl-btn--primary" onClick={save}
-                  disabled={saving} data-testid="stage-confirm">
+          <button className="rl-btn rl-btn--primary" onClick={save} disabled={saving} data-testid="stage-confirm">
             {saving ? 'Salvo…' : `Conferma · ${target.label}`}
           </button>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default StageChangeModal;

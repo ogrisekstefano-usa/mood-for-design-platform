@@ -18,36 +18,84 @@
  *   "editorial relationships graph", NOT "file system".
  */
 import React, { useRef, useState } from 'react';
-import {
-  X, AlertTriangle, RefreshCw, ListChecks, Archive, Trash2,
-  ExternalLink, Loader2, Lock,
-} from 'lucide-react';
+import { X, AlertTriangle, RefreshCw, ListChecks, Archive, Trash2, ExternalLink, Loader2, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { media, uploadMediaFile } from '../../lib/mediaApi';
-
+import { useT } from "../../i18n/useT";
 const ENTITY_META = {
-  project:           { label: 'Project',          icon: 'FolderOpen', href: (id) => `/workspace/projects/${id}` },
-  moodboard:         { label: 'Moodboard',        icon: 'Layers',     href: (id) => `/moodboards/${id}` },
-  proposal:          { label: 'Proposal',         icon: 'FileText',   href: (id) => `/workspace/proposals/${id}` },
-  lead:              { label: 'Lead',             icon: 'Users',      href: (id) => `/workspace/leads/${id}` },
-  magazine_article:  { label: 'Magazine Article', icon: 'BookOpen',   href: (id) => `/blueprint/editorial?article=${id}` },
-  cms_page:          { label: 'Storefront Page',  icon: 'Globe',      href: () => '/blueprint/experience' },
-  storefront_page:   { label: 'Storefront Page',  icon: 'Globe',      href: () => '/blueprint/experience' },
-  cms_section:       { label: 'Storefront Section', icon: 'LayoutGrid', href: () => '/blueprint/experience' },
-  material:          { label: 'Material',         icon: 'Gem',        href: (id) => `/library/materials/${id}` },
-  branding_asset:    { label: 'Branding',         icon: 'Palette',    href: () => '/settings/brand' },
-  design_reference:  { label: 'Pinterest Research', icon: 'Compass',  href: () => '/workspace/references' },
+  project: {
+    label: 'Project',
+    icon: 'FolderOpen',
+    href: id => `/workspace/projects/${id}`
+  },
+  moodboard: {
+    label: 'Moodboard',
+    icon: 'Layers',
+    href: id => `/moodboards/${id}`
+  },
+  proposal: {
+    label: 'Proposal',
+    icon: 'FileText',
+    href: id => `/workspace/proposals/${id}`
+  },
+  lead: {
+    label: 'Lead',
+    icon: 'Users',
+    href: id => `/workspace/leads/${id}`
+  },
+  magazine_article: {
+    label: 'Magazine Article',
+    icon: 'BookOpen',
+    href: id => `/blueprint/editorial?article=${id}`
+  },
+  cms_page: {
+    label: 'Storefront Page',
+    icon: 'Globe',
+    href: () => '/blueprint/experience'
+  },
+  storefront_page: {
+    label: 'Storefront Page',
+    icon: 'Globe',
+    href: () => '/blueprint/experience'
+  },
+  cms_section: {
+    label: 'Storefront Section',
+    icon: 'LayoutGrid',
+    href: () => '/blueprint/experience'
+  },
+  material: {
+    label: 'Material',
+    icon: 'Gem',
+    href: id => `/library/materials/${id}`
+  },
+  branding_asset: {
+    label: 'Branding',
+    icon: 'Palette',
+    href: () => '/settings/brand'
+  },
+  design_reference: {
+    label: 'Pinterest Research',
+    icon: 'Compass',
+    href: () => '/workspace/references'
+  }
 };
-
-const RelationshipRow = ({ link, assetUrl }) => {
-  const meta = ENTITY_META[link.entity_type] || { label: link.entity_type, icon: 'Circle', href: () => '#' };
+const RelationshipRow = ({
+  link,
+  assetUrl
+}) => {
+  const {
+    t
+  } = useT();
+  const meta = ENTITY_META[link.entity_type] || {
+    label: link.entity_type,
+    icon: 'Circle',
+    href: () => '#'
+  };
   const title = link.entity_title || `${meta.label} · ${(link.entity_id || '').slice(0, 8)}`;
   const href = meta.href(link.entity_id);
   const localeChip = link.metadata_json?.locale || link.metadata_json?.market;
-
-  const inner = (
-    <div className="flex items-center gap-3 p-3 rounded-[10px] bg-[var(--bp-surface-2)] border border-[var(--bp-border)] hover:border-[var(--bp-border-hover)] transition-colors group">
+  const inner = <div className="flex items-center gap-3 p-3 rounded-[10px] bg-[var(--bp-surface-2)] border border-[var(--bp-border)] hover:border-[var(--bp-border-hover)] transition-colors group">
       <div className="w-12 h-12 rounded-[7px] overflow-hidden bg-[var(--bp-surface-3)] border border-[var(--bp-border)] flex-shrink-0">
         {assetUrl && <img src={assetUrl} alt="" className="w-full h-full object-cover" />}
       </div>
@@ -57,35 +105,21 @@ const RelationshipRow = ({ link, assetUrl }) => {
         </p>
         <p className="text-[12.5px] text-[var(--bp-text-primary)] truncate font-body">{title}</p>
       </div>
-      <ExternalLink size={13} strokeWidth={1.5}
-        className="text-[var(--bp-text-muted)] group-hover:text-[var(--bp-primary)] transition-colors flex-shrink-0" />
-    </div>
-  );
-
-  return href !== '#' ? (
-    <Link to={href} data-testid={`mdp-usage-${link.id}`} className="block">{inner}</Link>
-  ) : (
-    <div data-testid={`mdp-usage-${link.id}`}>{inner}</div>
-  );
+      <ExternalLink size={13} strokeWidth={1.5} className="text-[var(--bp-text-muted)] group-hover:text-[var(--bp-primary)] transition-colors flex-shrink-0" />
+    </div>;
+  return href !== '#' ? <Link to={href} data-testid={`mdp-usage-${link.id}`} className="block">{inner}</Link> : <div data-testid={`mdp-usage-${link.id}`}>{inner}</div>;
 };
-
-const ActionCard = ({ icon: Icon, title, description, onClick, danger, disabled, testid, loading }) => (
-  <button
-    type="button"
-    onClick={onClick}
-    disabled={disabled || loading}
-    data-testid={testid}
-    className={`w-full text-left p-4 rounded-[10px] border transition-colors flex items-start gap-3 ${
-      disabled
-        ? 'border-[var(--bp-border)] bg-[var(--bp-surface-2)]/40 cursor-not-allowed opacity-60'
-        : danger
-          ? 'border-[var(--bp-border)] bg-[var(--bp-surface-2)] hover:border-red-400/40 hover:bg-red-500/5'
-          : 'border-[var(--bp-border)] bg-[var(--bp-surface-2)] hover:border-[var(--bp-primary)] hover:bg-[var(--bp-primary-soft)]'
-    }`}
-  >
-    <span className={`flex-shrink-0 w-9 h-9 rounded-[7px] flex items-center justify-center ${
-      danger ? 'bg-red-500/10 text-red-400' : 'bg-[var(--bp-surface-3)] text-[var(--bp-text-secondary)]'
-    }`}>
+const ActionCard = ({
+  icon: Icon,
+  title,
+  description,
+  onClick,
+  danger,
+  disabled,
+  testid,
+  loading
+}) => <button type="button" onClick={onClick} disabled={disabled || loading} data-testid={testid} className={`w-full text-left p-4 rounded-[10px] border transition-colors flex items-start gap-3 ${disabled ? 'border-[var(--bp-border)] bg-[var(--bp-surface-2)]/40 cursor-not-allowed opacity-60' : danger ? 'border-[var(--bp-border)] bg-[var(--bp-surface-2)] hover:border-red-400/40 hover:bg-red-500/5' : 'border-[var(--bp-border)] bg-[var(--bp-surface-2)] hover:border-[var(--bp-primary)] hover:bg-[var(--bp-primary-soft)]'}`}>
+    <span className={`flex-shrink-0 w-9 h-9 rounded-[7px] flex items-center justify-center ${danger ? 'bg-red-500/10 text-red-400' : 'bg-[var(--bp-surface-3)] text-[var(--bp-text-secondary)]'}`}>
       {loading ? <Loader2 size={14} className="animate-spin" /> : <Icon size={14} strokeWidth={1.6} />}
     </span>
     <div className="flex-1 min-w-0">
@@ -95,20 +129,21 @@ const ActionCard = ({ icon: Icon, title, description, onClick, danger, disabled,
       <p className="text-[11.5px] text-[var(--bp-text-muted)] font-body mt-1 leading-relaxed">
         {description}
       </p>
-      {disabled && (
-        <span className="inline-block mt-2 text-[9px] uppercase tracking-[0.2em] text-[var(--bp-text-faint)] font-mono">
+      {disabled && <span className="inline-block mt-2 text-[9px] uppercase tracking-[0.2em] text-[var(--bp-text-faint)] font-mono">
           <Lock size={8} className="inline mr-1" />Coming soon
-        </span>
-      )}
+        </span>}
     </div>
-  </button>
-);
-
-const MediaDeleteProtectionDrawer = ({ asset, links = [], onClose, onCompleted, onForceArchive }) => {
+  </button>;
+const MediaDeleteProtectionDrawer = ({
+  asset,
+  links = [],
+  onClose,
+  onCompleted,
+  onForceArchive
+}) => {
   const fileInputRef = useRef(null);
   const [pending, setPending] = useState(null); // 'replace' | 'archive_keep' | 'force_remove'
   const [confirmForce, setConfirmForce] = useState(false);
-
   const usageCount = links.length;
   const assetUrl = asset?.display_url || asset?.file_url;
 
@@ -119,7 +154,7 @@ const MediaDeleteProtectionDrawer = ({ asset, links = [], onClose, onCompleted, 
   }, {});
 
   // ── Action 1: Replace everywhere (upload new + migrate_links)
-  const handleReplaceFile = async (file) => {
+  const handleReplaceFile = async file => {
     if (!file?.type?.startsWith('image/')) {
       toast.error('Solo immagini');
       return;
@@ -129,9 +164,12 @@ const MediaDeleteProtectionDrawer = ({ asset, links = [], onClose, onCompleted, 
       const newAsset = await uploadMediaFile({
         file,
         bucket: asset.bucket || 'tenant-assets',
-        folder: 'library/replacements',
+        folder: 'library/replacements'
       });
-      await media.replace(asset.id, { new_asset_id: newAsset.id, migrate_links: true });
+      await media.replace(asset.id, {
+        new_asset_id: newAsset.id,
+        migrate_links: true
+      });
       toast.success(`Asset sostituito · ${usageCount} ${usageCount === 1 ? 'relazione migrata' : 'relazioni migrate'}`);
       onCompleted?.();
       onClose?.();
@@ -179,19 +217,12 @@ const MediaDeleteProtectionDrawer = ({ asset, links = [], onClose, onCompleted, 
 
   // ── Action 5: Open usages (jump to usage tab inside inspector)
   const handleOpenUsages = () => {
-    onClose?.({ jumpToUsage: true });
+    onClose?.({
+      jumpToUsage: true
+    });
   };
-
-  return (
-    <div
-      data-testid="media-delete-protection"
-      className="fixed inset-0 z-[60] bg-black/72 backdrop-blur-sm flex items-stretch justify-end"
-      onClick={() => onClose?.()}
-    >
-      <aside
-        onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-[680px] h-full bg-[var(--bp-surface-elevated)] border-l border-[var(--bp-border)] shadow-2xl flex flex-col"
-      >
+  return <div data-testid="media-delete-protection" className="fixed inset-0 z-[60] bg-black/72 backdrop-blur-sm flex items-stretch justify-end" onClick={() => onClose?.()}>
+      <aside onClick={e => e.stopPropagation()} className="w-full max-w-[680px] h-full bg-[var(--bp-surface-elevated)] border-l border-[var(--bp-border)] shadow-2xl flex flex-col">
         {/* Header (sticky) */}
         <header className="flex items-start justify-between gap-4 px-7 pt-7 pb-5 border-b border-[var(--bp-border)] flex-shrink-0">
           <div className="flex items-start gap-3">
@@ -203,20 +234,14 @@ const MediaDeleteProtectionDrawer = ({ asset, links = [], onClose, onCompleted, 
                 Editorial Relationships Graph
               </p>
               <h2 className="text-[22px] font-heading text-[var(--bp-text-primary)] leading-tight">
-                Questo asset è utilizzato in {usageCount} {usageCount === 1 ? 'luogo' : 'luoghi'}
+                {t("common.media_delete_protection.questo_asset_e_utilizzato_in")} {usageCount} {usageCount === 1 ? 'luogo' : 'luoghi'}
               </h2>
               <p className="text-[12.5px] text-[var(--bp-text-muted)] font-body mt-1.5 italic max-w-md leading-relaxed">
-                Rimuoverlo senza sostituirlo lascerà spazi vuoti sulle superfici pubbliche.
-                Scegli un'azione consapevole.
+                {t("common.media_delete_protection.rimuoverlo_senza_sostituirlo_lascera_spazi_vuoti_s")}
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => onClose?.()}
-            data-testid="mdp-close"
-            className="text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors flex-shrink-0"
-          >
+          <button type="button" onClick={() => onClose?.()} data-testid="mdp-close" className="text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors flex-shrink-0">
             <X size={17} strokeWidth={1.5} />
           </button>
         </header>
@@ -240,16 +265,14 @@ const MediaDeleteProtectionDrawer = ({ asset, links = [], onClose, onCompleted, 
               Usato in
             </p>
             <div className="space-y-4">
-              {Object.entries(grouped).map(([etype, list]) => (
-                <div key={etype}>
+              {Object.entries(grouped).map(([etype, list]) => <div key={etype}>
                   <p className="text-[11px] text-[var(--bp-text-muted)] font-body mb-2 uppercase tracking-[0.16em]">
                     {ENTITY_META[etype]?.label || etype} · {list.length}
                   </p>
                   <div className="space-y-1.5">
-                    {list.map((l) => <RelationshipRow key={l.id} link={l} assetUrl={assetUrl} />)}
+                    {list.map(l => <RelationshipRow key={l.id} link={l} assetUrl={assetUrl} />)}
                   </div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </section>
 
@@ -259,49 +282,11 @@ const MediaDeleteProtectionDrawer = ({ asset, links = [], onClose, onCompleted, 
               Azioni disponibili
             </p>
             <div className="space-y-2.5">
-              <ActionCard
-                icon={RefreshCw}
-                title="Sostituisci ovunque"
-                description="Carica un nuovo file. Tutte le relazioni vengono migrate automaticamente al nuovo asset. La versione vecchia resta nel version chain."
-                testid="mdp-action-replace-everywhere"
-                loading={pending === 'replace'}
-                onClick={() => fileInputRef.current?.click()}
-              />
-              <ActionCard
-                icon={ListChecks}
-                title="Sostituisci selettivamente"
-                description="Scegli su quali superfici aggiornare l'asset e quali lasciare invariate. Utile per A/B test di immagini per mercato."
-                testid="mdp-action-replace-selective"
-                disabled
-              />
-              <ActionCard
-                icon={Archive}
-                title="Archivia mantenendo i collegamenti"
-                description="L'asset viene archiviato (non più visibile nella Library) ma le relazioni restano attive. Il pubblico continua a vedere questa immagine finché non la sostituisci."
-                testid="mdp-action-archive-keep"
-                loading={pending === 'archive_keep'}
-                onClick={handleArchiveKeep}
-              />
-              <ActionCard
-                icon={Trash2}
-                title={confirmForce ? 'Conferma rimozione forzata' : 'Rimuovi forzatamente'}
-                description={
-                  confirmForce
-                    ? `⚠ Le ${usageCount} relazioni resteranno orfane e le superfici pubbliche mostreranno placeholder vuoti. Operazione SCONSIGLIATA.`
-                    : 'Forza l\'archiviazione senza migrare le relazioni. Le superfici pubbliche perderanno l\'immagine.'
-                }
-                testid="mdp-action-force-remove"
-                danger
-                loading={pending === 'force_remove'}
-                onClick={handleForceRemove}
-              />
-              <ActionCard
-                icon={ExternalLink}
-                title="Apri le superfici interessate"
-                description="Chiudi questo drawer e apri la tab Usage dell'Inspector per navigare manualmente ogni relazione."
-                testid="mdp-action-open-usages"
-                onClick={handleOpenUsages}
-              />
+              <ActionCard icon={RefreshCw} title="Sostituisci ovunque" description={t("common.media_delete_protection.carica_un_nuovo_file_tutte_le_relazioni_vengono_mi")} testid="mdp-action-replace-everywhere" loading={pending === 'replace'} onClick={() => fileInputRef.current?.click()} />
+              <ActionCard icon={ListChecks} title="Sostituisci selettivamente" description={t("common.media_delete_protection.scegli_su_quali_superfici_aggiornare_l_asset_e_qua")} testid="mdp-action-replace-selective" disabled />
+              <ActionCard icon={Archive} title="Archivia mantenendo i collegamenti" description={t("common.media_delete_protection.l_asset_viene_archiviato_non_piu_visibile_nella_li")} testid="mdp-action-archive-keep" loading={pending === 'archive_keep'} onClick={handleArchiveKeep} />
+              <ActionCard icon={Trash2} title={confirmForce ? 'Conferma rimozione forzata' : 'Rimuovi forzatamente'} description={confirmForce ? `⚠ Le ${usageCount} relazioni resteranno orfane e le superfici pubbliche mostreranno placeholder vuoti. Operazione SCONSIGLIATA.` : 'Forza l\'archiviazione senza migrare le relazioni. Le superfici pubbliche perderanno l\'immagine.'} testid="mdp-action-force-remove" danger loading={pending === 'force_remove'} onClick={handleForceRemove} />
+              <ActionCard icon={ExternalLink} title={t("common.media_delete_protection.apri_le_superfici_interessate")} description={t("common.media_delete_protection.chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp")} testid="mdp-action-open-usages" onClick={handleOpenUsages} />
             </div>
           </section>
         </div>
@@ -309,27 +294,17 @@ const MediaDeleteProtectionDrawer = ({ asset, links = [], onClose, onCompleted, 
         {/* Footer (sticky) */}
         <footer className="px-7 py-4 border-t border-[var(--bp-border)] bg-[var(--bp-surface-1)] flex-shrink-0">
           <p className="text-[11px] text-[var(--bp-text-faint)] font-body italic leading-relaxed">
-            Il DAM ragiona come un editorial relationships graph, non come un file system.
-            Ogni rimozione produce conseguenze sulle superfici pubbliche.
+            {t("common.media_delete_protection.il_dam_ragiona_come_un_editorial_relationships_gra")}
           </p>
         </footer>
 
         {/* Hidden file input for "Replace everywhere" */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) handleReplaceFile(f);
-            e.target.value = '';
-          }}
-          data-testid="mdp-replace-file-input"
-        />
+        <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={e => {
+        const f = e.target.files?.[0];
+        if (f) handleReplaceFile(f);
+        e.target.value = '';
+      }} data-testid="mdp-replace-file-input" />
       </aside>
-    </div>
-  );
+    </div>;
 };
-
 export default MediaDeleteProtectionDrawer;

@@ -17,9 +17,15 @@ import api from '../../lib/api';
 import { asErrorString } from '../../lib/asErrorString';
 import ImageEditor from '../../components/media/ImageEditor';
 import { useT } from '../../i18n/useT';
-
-const AddInspirationModal = ({ open, onClose, onImported, config }) => {
-  const { t } = useT();
+const AddInspirationModal = ({
+  open,
+  onClose,
+  onImported,
+  config
+}) => {
+  const {
+    t
+  } = useT();
   const [mode, setMode] = useState('url'); // 'url' | 'upload'
   const [url, setUrl] = useState('');
   const [title, setTitle] = useState('');
@@ -33,19 +39,26 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
   const [dragOver, setDragOver] = useState(false);
   const [pendingFile, setPendingFile] = useState(null);
   const fileInput = useRef(null);
-
   const reset = () => {
-    setMode('url'); setUrl(''); setTitle(''); setDescription('');
-    setAtmosphereTags([]); setMaterialTags([]); setLuxuryLevel('');
-    setHospitalityProfile(''); setMarketCodes([]);
+    setMode('url');
+    setUrl('');
+    setTitle('');
+    setDescription('');
+    setAtmosphereTags([]);
+    setMaterialTags([]);
+    setLuxuryLevel('');
+    setHospitalityProfile('');
+    setMarketCodes([]);
   };
-
-  const close = () => { if (!submitting) { reset(); onClose?.(); } };
-
+  const close = () => {
+    if (!submitting) {
+      reset();
+      onClose?.();
+    }
+  };
   const toggle = (arr, setArr, val) => {
-    setArr(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
+    setArr(arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val]);
   };
-
   const submitUrl = async () => {
     if (!url.trim()) {
       toast.error('Inserisci un URL valido');
@@ -61,16 +74,17 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
         material_tags: materialTags,
         luxury_level: luxuryLevel || null,
         hospitality_profile: hospitalityProfile || null,
-        market_codes: marketCodes,
+        market_codes: marketCodes
       });
       onImported?.(r.data);
       reset();
     } catch (e) {
       toast.error(asErrorString(e, 'Non è stato possibile salvare il riferimento'));
-    } finally { setSubmitting(false); }
+    } finally {
+      setSubmitting(false);
+    }
   };
-
-  const handleFiles = (files) => {
+  const handleFiles = files => {
     if (!files || files.length === 0) return;
     const file = files[0];
     if (!file.type.startsWith('image/')) {
@@ -80,25 +94,37 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
     // Apri l'editor crop+filtri prima dell'upload (requisito MOOD: ogni file passa per cura editoriale)
     setPendingFile(file);
   };
-
-  const uploadEdited = async (editedFile) => {
+  const uploadEdited = async editedFile => {
     setPendingFile(null);
     setSubmitting(true);
     try {
       const ext = 'jpg';
       const sp = `inspirations/${Date.now()}-${Math.random().toString(36).slice(2, 9)}.${ext}`;
       const su = await api.post('/api/storage/signed-upload', {
-        bucket: 'media-library', storage_path: sp,
-        content_type: editedFile.type, file_size: editedFile.size,
+        bucket: 'media-library',
+        storage_path: sp,
+        content_type: editedFile.type,
+        file_size: editedFile.size
       });
       const signed = su.data?.signed_url || su.data?.url;
       if (signed) {
-        await fetch(signed, { method: 'PUT', headers: { 'Content-Type': editedFile.type }, body: editedFile });
+        await fetch(signed, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': editedFile.type
+          },
+          body: editedFile
+        });
       }
       const reg = await api.post('/api/storage/media', {
-        bucket: 'media-library', storage_path: sp,
-        file_name: editedFile.name, file_type: editedFile.type, file_size: editedFile.size,
-        alt_text: title || editedFile.name, category: 'inspiration', tags: ['inspiration'],
+        bucket: 'media-library',
+        storage_path: sp,
+        file_name: editedFile.name,
+        file_type: editedFile.type,
+        file_size: editedFile.size,
+        alt_text: title || editedFile.name,
+        category: 'inspiration',
+        tags: ['inspiration']
       });
       const r = await api.post('/api/inspirations/archive/import', {
         media_id: reg.data?.id || reg.data?.media?.id,
@@ -108,158 +134,114 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
         material_tags: materialTags,
         luxury_level: luxuryLevel || null,
         hospitality_profile: hospitalityProfile || null,
-        market_codes: marketCodes,
+        market_codes: marketCodes
       });
       onImported?.(r.data);
       reset();
     } catch (e) {
       console.error(e);
       toast.error(asErrorString(e, 'Upload fallito'));
-    } finally { setSubmitting(false); }
+    } finally {
+      setSubmitting(false);
+    }
   };
-
   if (!open) return null;
   const atmos = config?.atmosphere_tags || [];
-  const mats  = config?.material_tags || [];
-  const luxs  = config?.luxury_levels || [];
+  const mats = config?.material_tags || [];
+  const luxs = config?.luxury_levels || [];
   const profs = config?.hospitality_profiles || [];
-  const mks   = config?.markets || [];
-
-  return (
-    <div className="ins-backdrop" onClick={(e) => { if (e.target === e.currentTarget) close(); }}
-         data-testid="add-inspiration-backdrop">
+  const mks = config?.markets || [];
+  return <div className="ins-backdrop" onClick={e => {
+    if (e.target === e.currentTarget) close();
+  }} data-testid="add-inspiration-backdrop">
       <div className="ins-modal" data-testid="add-inspiration-modal">
-        <button type="button" className="ins-modal__close" onClick={close} aria-label="Chiudi"
-                data-testid="add-inspiration-close">
+        <button type="button" className="ins-modal__close" onClick={close} aria-label={t("inspirations.add_inspiration.chiudi")} data-testid="add-inspiration-close">
           <Icons.X size={16} />
         </button>
         <header className="ins-modal__head">
           <p className="ins-eyebrow">Inspirations™</p>
           <h2 className="ins-modal__title">{t('inspirations.add_inspiration.aggiungi_riferimento')}</h2>
           <p className="ins-modal__lede">
-            Carica un'immagine, oppure incolla un link Pinterest, Instagram o qualunque URL.
-            MOOD lo aggiunge alla Media Library e lo rende disponibile in tutto il sistema.
+            {t("inspirations.add_inspiration.carica_un_immagine_oppure_incolla_un_link_pinteres")}
           </p>
         </header>
 
         <div className="ins-tabs">
-          <button type="button"
-                  className={`ins-tab ${mode === 'url' ? 'ins-tab--on' : ''}`}
-                  onClick={() => setMode('url')}
-                  data-testid="add-inspiration-tab-url">
+          <button type="button" className={`ins-tab ${mode === 'url' ? 'ins-tab--on' : ''}`} onClick={() => setMode('url')} data-testid="add-inspiration-tab-url">
             <Icons.Link2 size={12} /> Link
           </button>
-          <button type="button"
-                  className={`ins-tab ${mode === 'upload' ? 'ins-tab--on' : ''}`}
-                  onClick={() => setMode('upload')}
-                  data-testid="add-inspiration-tab-upload">
-            <Icons.Upload size={12} /> Carica file
+          <button type="button" className={`ins-tab ${mode === 'upload' ? 'ins-tab--on' : ''}`} onClick={() => setMode('upload')} data-testid="add-inspiration-tab-upload">
+            <Icons.Upload size={12} /> {t("inspirations.add_inspiration.carica_file")}
           </button>
         </div>
 
         <div className="ins-modal__body">
-          {mode === 'url' && (
-            <div className="ins-field" data-testid="add-inspiration-url-panel">
+          {mode === 'url' && <div className="ins-field" data-testid="add-inspiration-url-panel">
               <label className="ins-label">{t('inspirations.add_inspiration.url_della_reference')}</label>
-              <input
-                type="url"
-                className="ins-input"
-                placeholder="https://pinterest.com/pin/… · https://instagram.com/p/… · qualunque URL immagine"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                disabled={submitting}
-                data-testid="add-inspiration-url"
-              />
+              <input type="url" className="ins-input" placeholder="https://pinterest.com/pin/… · https://instagram.com/p/… · qualunque URL immagine" value={url} onChange={e => setUrl(e.target.value)} disabled={submitting} data-testid="add-inspiration-url" />
               <p className="ins-hint">
-                Pinterest, Instagram o link diretto. MOOD prova a estrarre l'immagine principale —
-                se non riesce, salva comunque il link e potrai aggiornare la copertina più tardi.
+                {t("inspirations.add_inspiration.pinterest_instagram_o_link_diretto_mood_prova_a_es")}
               </p>
-            </div>
-          )}
+            </div>}
 
-          {mode === 'upload' && (
-            <div
-              className={`ins-drop ${dragOver ? 'ins-drop--over' : ''}`}
-              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFiles(e.dataTransfer.files); }}
-              onClick={() => fileInput.current?.click()}
-              data-testid="add-inspiration-drop">
+          {mode === 'upload' && <div className={`ins-drop ${dragOver ? 'ins-drop--over' : ''}`} onDragOver={e => {
+          e.preventDefault();
+          setDragOver(true);
+        }} onDragLeave={() => setDragOver(false)} onDrop={e => {
+          e.preventDefault();
+          setDragOver(false);
+          handleFiles(e.dataTransfer.files);
+        }} onClick={() => fileInput.current?.click()} data-testid="add-inspiration-drop">
               <Icons.UploadCloud size={26} strokeWidth={1.2} />
               <p className="ins-drop__title">Trascina un'immagine o clicca per caricare</p>
               <p className="ins-drop__hint">JPG · PNG · WebP — fino a 10MB</p>
-              <input
-                ref={fileInput}
-                type="file"
-                accept="image/*"
-                style={{ display: 'none' }}
-                onChange={(e) => handleFiles(e.target.files)}
-                disabled={submitting}
-                data-testid="add-inspiration-file"
-              />
-            </div>
-          )}
+              <input ref={fileInput} type="file" accept="image/*" style={{
+            display: 'none'
+          }} onChange={e => handleFiles(e.target.files)} disabled={submitting} data-testid="add-inspiration-file" />
+            </div>}
 
           <div className="ins-modal__grid">
             <div className="ins-field">
               <label className="ins-label">Titolo (opzionale)</label>
-              <input type="text" className="ins-input" placeholder="Es. Salotto materico, palette neutra"
-                     value={title} onChange={(e) => setTitle(e.target.value)} disabled={submitting}
-                     data-testid="add-inspiration-title" />
+              <input type="text" className="ins-input" placeholder={t("inspirations.add_inspiration.es_salotto_materico_palette_neutra")} value={title} onChange={e => setTitle(e.target.value)} disabled={submitting} data-testid="add-inspiration-title" />
             </div>
             <div className="ins-field">
               <label className="ins-label">{t('inspirations.add_inspiration.descrizione_editoriale_opzionale')}</label>
-              <textarea className="ins-textarea" rows={2}
-                        placeholder="Cosa ti ha colpito di questa reference?"
-                        value={description} onChange={(e) => setDescription(e.target.value)}
-                        disabled={submitting}
-                        data-testid="add-inspiration-desc" />
+              <textarea className="ins-textarea" rows={2} placeholder={t("inspirations.add_inspiration.cosa_ti_ha_colpito_di_questa_reference")} value={description} onChange={e => setDescription(e.target.value)} disabled={submitting} data-testid="add-inspiration-desc" />
             </div>
           </div>
 
           <div className="ins-modal__section">
             <p className="ins-label">{t('inspirations.add_inspiration.atmosfera')}</p>
             <div className="ins-chips-row">
-              {atmos.map((t) => (
-                <button key={t.key} type="button"
-                        className={`ins-chip-toggle ${atmosphereTags.includes(t.key) ? 'ins-chip-toggle--on' : ''}`}
-                        onClick={() => toggle(atmosphereTags, setAtmosphereTags, t.key)}
-                        data-testid={`add-insp-atmos-${t.key}`}>
+              {atmos.map(t => <button key={t.key} type="button" className={`ins-chip-toggle ${atmosphereTags.includes(t.key) ? 'ins-chip-toggle--on' : ''}`} onClick={() => toggle(atmosphereTags, setAtmosphereTags, t.key)} data-testid={`add-insp-atmos-${t.key}`}>
                   {t.label}
-                </button>
-              ))}
+                </button>)}
             </div>
           </div>
 
           <div className="ins-modal__section">
             <p className="ins-label">Materia principale</p>
             <div className="ins-chips-row">
-              {mats.map((t) => (
-                <button key={t.key} type="button"
-                        className={`ins-chip-toggle ${materialTags.includes(t.key) ? 'ins-chip-toggle--on' : ''}`}
-                        onClick={() => toggle(materialTags, setMaterialTags, t.key)}
-                        data-testid={`add-insp-mat-${t.key}`}>
+              {mats.map(t => <button key={t.key} type="button" className={`ins-chip-toggle ${materialTags.includes(t.key) ? 'ins-chip-toggle--on' : ''}`} onClick={() => toggle(materialTags, setMaterialTags, t.key)} data-testid={`add-insp-mat-${t.key}`}>
                   {t.label}
-                </button>
-              ))}
+                </button>)}
             </div>
           </div>
 
           <div className="ins-modal__grid">
             <div className="ins-field">
               <label className="ins-label">Tono luxury</label>
-              <select className="ins-input" value={luxuryLevel}
-                      onChange={(e) => setLuxuryLevel(e.target.value)} disabled={submitting}>
+              <select className="ins-input" value={luxuryLevel} onChange={e => setLuxuryLevel(e.target.value)} disabled={submitting}>
                 <option value="">—</option>
-                {luxs.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
+                {luxs.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
               </select>
             </div>
             <div className="ins-field">
               <label className="ins-label">Destinazione</label>
-              <select className="ins-input" value={hospitalityProfile}
-                      onChange={(e) => setHospitalityProfile(e.target.value)} disabled={submitting}>
+              <select className="ins-input" value={hospitalityProfile} onChange={e => setHospitalityProfile(e.target.value)} disabled={submitting}>
                 <option value="">—</option>
-                {profs.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
+                {profs.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
               </select>
             </div>
           </div>
@@ -267,43 +249,26 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
           <div className="ins-modal__section">
             <p className="ins-label">Mercati di interesse (opzionale)</p>
             <div className="ins-chips-row">
-              {mks.map((m) => (
-                <button key={m.code} type="button"
-                        className={`ins-chip-toggle ${marketCodes.includes(m.code) ? 'ins-chip-toggle--on' : ''}`}
-                        onClick={() => toggle(marketCodes, setMarketCodes, m.code)}
-                        data-testid={`add-insp-market-${m.code}`}>
+              {mks.map(m => <button key={m.code} type="button" className={`ins-chip-toggle ${marketCodes.includes(m.code) ? 'ins-chip-toggle--on' : ''}`} onClick={() => toggle(marketCodes, setMarketCodes, m.code)} data-testid={`add-insp-market-${m.code}`}>
                   {m.label}
-                </button>
-              ))}
+                </button>)}
             </div>
           </div>
         </div>
 
         <footer className="ins-modal__foot">
-          <button type="button" className="ins-btn ins-btn--ghost" onClick={close} disabled={submitting}
-                  data-testid="add-inspiration-cancel">
-            Annulla
+          <button type="button" className="ins-btn ins-btn--ghost" onClick={close} disabled={submitting} data-testid="add-inspiration-cancel">
+            {t("inspirations.add_inspiration.annulla")}
           </button>
-          {mode === 'url' && (
-            <button type="button" className="ins-btn ins-btn--primary"
-                    onClick={submitUrl} disabled={submitting || !url.trim()}
-                    data-testid="add-inspiration-submit-url">
+          {mode === 'url' && <button type="button" className="ins-btn ins-btn--primary" onClick={submitUrl} disabled={submitting || !url.trim()} data-testid="add-inspiration-submit-url">
               {submitting ? 'Salvataggio…' : 'Aggiungi a Inspirations™'}
               {!submitting && <Icons.ArrowRight size={13} />}
-            </button>
-          )}
+            </button>}
         </footer>
       </div>
 
       {/* Editor crop + filtri base — obbligatorio per ogni upload */}
-      <ImageEditor
-        open={!!pendingFile}
-        file={pendingFile}
-        onCancel={() => setPendingFile(null)}
-        onConfirm={uploadEdited}
-      />
-    </div>
-  );
+      <ImageEditor open={!!pendingFile} file={pendingFile} onCancel={() => setPendingFile(null)} onConfirm={uploadEdited} />
+    </div>;
 };
-
 export default AddInspirationModal;

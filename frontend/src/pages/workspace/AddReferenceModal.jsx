@@ -22,15 +22,16 @@ import api from '../../lib/api';
 import { uploadMediaFile } from '../../lib/mediaApi';
 import AssetPickerModal from '../settings/AssetPickerModal';
 import { useT } from '../../i18n/useT';
-
-const TAG_VOCABULARY = [
-  'mood', 'material', 'hospitality', 'color', 'era',
-  'mediterranean', 'mid-century', 'minimalism', 'maximalism',
-  'natural-light', 'sculptural-stone', 'soft-textile', 'warm-wood',
-];
-
-const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
-  const { t } = useT();
+const TAG_VOCABULARY = ['mood', 'material', 'hospitality', 'color', 'era', 'mediterranean', 'mid-century', 'minimalism', 'maximalism', 'natural-light', 'sculptural-stone', 'soft-textile', 'warm-wood'];
+const AddReferenceModal = ({
+  open,
+  onClose,
+  onCreated,
+  projects = []
+}) => {
+  const {
+    t
+  } = useT();
   const [source, setSource] = useState('upload'); // upload | pinterest | library
   const [pinUrl, setPinUrl] = useState('');
   const [importedUrl, setImportedUrl] = useState(''); // resolved after upload/library
@@ -46,18 +47,27 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
-
   if (!open) return null;
-
   const reset = () => {
-    setSource('upload'); setPinUrl(''); setImportedUrl(''); setFilePreview(null);
-    setUploading(false); setProgress(0); setCurator(''); setIntent('');
-    setNotes(''); setTags([]); setProjectId(''); setError(null); setSaving(false);
+    setSource('upload');
+    setPinUrl('');
+    setImportedUrl('');
+    setFilePreview(null);
+    setUploading(false);
+    setProgress(0);
+    setCurator('');
+    setIntent('');
+    setNotes('');
+    setTags([]);
+    setProjectId('');
+    setError(null);
+    setSaving(false);
   };
-
-  const close = () => { reset(); onClose?.(); };
-
-  const handleFile = async (file) => {
+  const close = () => {
+    reset();
+    onClose?.();
+  };
+  const handleFile = async file => {
     if (!file?.type?.startsWith('image/')) {
       setError('Carica solo immagini (jpg, png, webp, heic)');
       return;
@@ -73,7 +83,7 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
         folder: 'references/pinterest',
         category: 'pinterest_research',
         tags: ['pinterest_research', ...tags],
-        onProgress: (p) => setProgress(Math.max(p, 10)),
+        onProgress: p => setProgress(Math.max(p, 10))
       });
       setImportedUrl(asset.file_url);
       setProgress(100);
@@ -84,22 +94,20 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
       setUploading(false);
     }
   };
-
-  const handleLibraryPicked = ({ asset }) => {
+  const handleLibraryPicked = ({
+    asset
+  }) => {
     setImportedUrl(asset?.display_url || asset?.file_url || '');
     setFilePreview(asset?.display_url || asset?.file_url || null);
     setPickerOpen(false);
   };
-
-  const toggleTag = (t) => {
-    setTags((curr) => curr.includes(t) ? curr.filter((x) => x !== t) : [...curr, t]);
+  const toggleTag = t => {
+    setTags(curr => curr.includes(t) ? curr.filter(x => x !== t) : [...curr, t]);
   };
-
   const canSubmit = () => {
     if (source === 'pinterest') return !!pinUrl.trim() && !saving;
     return !!importedUrl && !uploading && !saving;
   };
-
   const submit = async () => {
     setSaving(true);
     setError(null);
@@ -107,7 +115,6 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
       let payloadImageUrl = importedUrl;
       let payloadSourceUrl = null;
       let payloadSourceType = 'upload';
-
       if (source === 'pinterest') {
         // P0: no scraping — use pin URL itself as both source + imported_image_url.
         // The backend accepts external URL strings.
@@ -119,18 +126,14 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
       } else {
         payloadSourceType = 'upload';
       }
-
       const body = {
         imported_image_url: payloadImageUrl,
         source_url: payloadSourceUrl,
         source_type: payloadSourceType,
         curator_name: curator || null,
         design_intent: intent || null,
-        advisor_notes: [
-          notes || null,
-          tags.length ? `Tags: ${tags.join(', ')}` : null,
-        ].filter(Boolean).join('\n\n') || null,
-        project_id: projectId || null,
+        advisor_notes: [notes || null, tags.length ? `Tags: ${tags.join(', ')}` : null].filter(Boolean).join('\n\n') || null,
+        project_id: projectId || null
       };
       const r = await api.post('/api/references', body);
       toast.success('Riferimento aggiunto · interpretazione editoriale in corso');
@@ -143,17 +146,8 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
       setSaving(false);
     }
   };
-
-  return (
-    <div
-      data-testid="add-reference-modal"
-      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 overflow-y-auto"
-      onClick={close}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-2xl bg-[var(--bp-surface-elevated)] border border-[var(--bp-border)] rounded-[16px] shadow-2xl my-8 flex flex-col max-h-[calc(100vh-4rem)]"
-      >
+  return <div data-testid="add-reference-modal" className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 overflow-y-auto" onClick={close}>
+      <div onClick={e => e.stopPropagation()} className="w-full max-w-2xl bg-[var(--bp-surface-elevated)] border border-[var(--bp-border)] rounded-[16px] shadow-2xl my-8 flex flex-col max-h-[calc(100vh-4rem)]">
         {/* Header (sticky) */}
         <header className="flex items-start justify-between px-7 pt-7 pb-5 border-b border-[var(--bp-border)] flex-shrink-0 bg-[var(--bp-surface-elevated)] rounded-t-[16px]">
           <div>
@@ -161,18 +155,13 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
               Pinterest Research™
             </p>
             <h2 className="text-[24px] font-heading text-[var(--bp-text-primary)] leading-tight">
-              Aggiungi un riferimento
+              {t("workspace.add_reference.aggiungi_un_riferimento")}
             </h2>
             <p className="text-[12.5px] text-[var(--bp-text-muted)] font-body mt-1.5 italic max-w-md">
-              Ogni riferimento entra nella Cultural Design Intelligence™ · interpretato attraverso il mercato di destinazione.
+              {t("workspace.add_reference.ogni_riferimento_entra_nella_cultural_design_intel")}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={close}
-            data-testid="add-reference-close"
-            className="text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors"
-          >
+          <button type="button" onClick={close} data-testid="add-reference-close" className="text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors">
             <X size={16} strokeWidth={1.5} />
           </button>
         </header>
@@ -180,29 +169,18 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
         {/* Source tabs */}
         <div className="px-7 pt-5 flex-shrink-0">
           <div className="flex gap-1 p-1 rounded-[10px] bg-[var(--bp-surface-1)] border border-[var(--bp-border)]">
-            {[
-              ['upload', 'Upload manuale', Upload],
-              ['pinterest', 'URL Pinterest', Link2],
-              ['library', 'Media Library', Library],
-            ].map(([id, label, Icon]) => {
-              const active = source === id;
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => { setSource(id); setImportedUrl(''); setFilePreview(null); setError(null); }}
-                  data-testid={`add-reference-source-${id}`}
-                  className={`flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-[7px] text-[12.5px] font-body transition-colors ${
-                    active
-                      ? 'bg-[var(--bp-primary-soft)] text-[var(--bp-primary)] border border-[var(--bp-border-active)]'
-                      : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] border border-transparent'
-                  }`}
-                >
+            {[['upload', 'Upload manuale', Upload], ['pinterest', 'URL Pinterest', Link2], ['library', 'Media Library', Library]].map(([id, label, Icon]) => {
+            const active = source === id;
+            return <button key={id} type="button" onClick={() => {
+              setSource(id);
+              setImportedUrl('');
+              setFilePreview(null);
+              setError(null);
+            }} data-testid={`add-reference-source-${id}`} className={`flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-[7px] text-[12.5px] font-body transition-colors ${active ? 'bg-[var(--bp-primary-soft)] text-[var(--bp-primary)] border border-[var(--bp-border-active)]' : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] border border-transparent'}`}>
                   <Icon size={12} strokeWidth={1.6} />
                   {label}
-                </button>
-              );
-            })}
+                </button>;
+          })}
           </div>
         </div>
 
@@ -210,96 +188,54 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
         <div className="flex-1 overflow-y-auto">
         {/* Source body */}
         <div className="px-7 py-6">
-          {source === 'upload' && (
-            <div data-testid="add-reference-upload-body">
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => { e.preventDefault(); handleFile(e.dataTransfer.files?.[0]); }}
-                disabled={uploading}
-                data-testid="add-reference-upload-zone"
-                className="w-full aspect-[16/9] rounded-[12px] border border-dashed border-[var(--bp-border-strong)] bg-[var(--bp-surface-1)]
+          {source === 'upload' && <div data-testid="add-reference-upload-body">
+              <button type="button" onClick={() => fileInputRef.current?.click()} onDragOver={e => e.preventDefault()} onDrop={e => {
+              e.preventDefault();
+              handleFile(e.dataTransfer.files?.[0]);
+            }} disabled={uploading} data-testid="add-reference-upload-zone" className="w-full aspect-[16/9] rounded-[12px] border border-dashed border-[var(--bp-border-strong)] bg-[var(--bp-surface-1)]
                            hover:border-[var(--bp-primary)] hover:bg-[var(--bp-primary-soft)] transition-all
-                           flex flex-col items-center justify-center gap-3 text-[var(--bp-text-muted)] relative overflow-hidden"
-              >
-                {filePreview ? (
-                  <img src={filePreview} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                ) : (
-                  <>
+                           flex flex-col items-center justify-center gap-3 text-[var(--bp-text-muted)] relative overflow-hidden">
+                {filePreview ? <img src={filePreview} alt="" className="absolute inset-0 w-full h-full object-cover" /> : <>
                     <Upload size={26} strokeWidth={1.3} />
                     <p className="text-[13px] font-body">Trascina · oppure clicca per scegliere</p>
                     <p className="text-[10.5px] font-body text-[var(--bp-text-faint)]">jpg · png · webp · heic</p>
-                  </>
-                )}
-                {uploading && (
-                  <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center gap-3">
+                  </>}
+                {uploading && <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center gap-3">
                     <Loader2 size={22} className="animate-spin text-[var(--bp-primary)]" />
                     <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--bp-primary)]">{progress}%</p>
-                  </div>
-                )}
+                  </div>}
               </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ''; }}
-                data-testid="add-reference-file-input"
-              />
-            </div>
-          )}
+              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={e => {
+              const f = e.target.files?.[0];
+              if (f) handleFile(f);
+              e.target.value = '';
+            }} data-testid="add-reference-file-input" />
+            </div>}
 
-          {source === 'pinterest' && (
-            <div data-testid="add-reference-pinterest-body" className="space-y-3">
+          {source === 'pinterest' && <div data-testid="add-reference-pinterest-body" className="space-y-3">
               <label className="block text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-faint)] font-body">
-                URL del pin
+                {t("workspace.add_reference.url_del_pin")}
               </label>
-              <input
-                type="url"
-                value={pinUrl}
-                onChange={(e) => setPinUrl(e.target.value)}
-                placeholder="https://pinterest.com/pin/…"
-                data-testid="add-reference-pinterest-input"
-                className="w-full bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[8px] py-2.5 px-3 text-[14px]
-                           text-[var(--bp-text-primary)] focus:outline-none focus:border-[var(--bp-border-hover)] font-body"
-              />
+              <input type="url" value={pinUrl} onChange={e => setPinUrl(e.target.value)} placeholder="https://pinterest.com/pin/…" data-testid="add-reference-pinterest-input" className="w-full bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[8px] py-2.5 px-3 text-[14px]
+                           text-[var(--bp-text-primary)] focus:outline-none focus:border-[var(--bp-border-hover)] font-body" />
               <p className="text-[11px] text-[var(--bp-text-faint)] font-body italic leading-relaxed">
-                Stiamo salvando l'URL del pin. Scraping automatico (titolo · immagine · descrizione) arriverà in Fase P2 con l'integrazione Pinterest API ufficiale.
+                {t("workspace.add_reference.stiamo_salvando_l_url_del_pin_scraping_automatico")}
               </p>
-            </div>
-          )}
+            </div>}
 
-          {source === 'library' && (
-            <div data-testid="add-reference-library-body" className="space-y-3">
-              {filePreview ? (
-                <div className="aspect-[16/9] rounded-[12px] overflow-hidden border border-[var(--bp-border-active)] bg-[var(--bp-surface-1)]">
+          {source === 'library' && <div data-testid="add-reference-library-body" className="space-y-3">
+              {filePreview ? <div className="aspect-[16/9] rounded-[12px] overflow-hidden border border-[var(--bp-border-active)] bg-[var(--bp-surface-1)]">
                   <img src={filePreview} alt="" className="w-full h-full object-cover" />
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setPickerOpen(true)}
-                  data-testid="add-reference-library-open"
-                  className="w-full aspect-[16/9] rounded-[12px] border border-dashed border-[var(--bp-border-strong)] bg-[var(--bp-surface-1)]
+                </div> : <button type="button" onClick={() => setPickerOpen(true)} data-testid="add-reference-library-open" className="w-full aspect-[16/9] rounded-[12px] border border-dashed border-[var(--bp-border-strong)] bg-[var(--bp-surface-1)]
                              hover:border-[var(--bp-primary)] hover:bg-[var(--bp-primary-soft)] transition-all
-                             flex flex-col items-center justify-center gap-3 text-[var(--bp-text-muted)]"
-                >
+                             flex flex-col items-center justify-center gap-3 text-[var(--bp-text-muted)]">
                   <Library size={26} strokeWidth={1.3} />
                   <p className="text-[13px] font-body">{t('workspace.add_reference.sfoglia_la_media_library')}</p>
-                </button>
-              )}
-              {filePreview && (
-                <button
-                  type="button"
-                  onClick={() => setPickerOpen(true)}
-                  className="text-[11px] font-body text-[var(--bp-text-muted)] hover:text-[var(--bp-primary)] transition-colors"
-                >
+                </button>}
+              {filePreview && <button type="button" onClick={() => setPickerOpen(true)} className="text-[11px] font-body text-[var(--bp-text-muted)] hover:text-[var(--bp-primary)] transition-colors">
                   Cambia asset…
-                </button>
-              )}
-            </div>
-          )}
+                </button>}
+            </div>}
         </div>
 
         {/* Metadata (always visible) */}
@@ -309,31 +245,17 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
               <label className="block text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-faint)] font-body mb-1.5">
                 Curatore (opzionale)
               </label>
-              <input
-                type="text"
-                value={curator}
-                onChange={(e) => setCurator(e.target.value)}
-                placeholder="Es. Giulia Ferri"
-                data-testid="add-reference-curator"
-                className="w-full bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[7px] py-2 px-3 text-[13px]
-                           text-[var(--bp-text-primary)] focus:outline-none focus:border-[var(--bp-border-hover)] font-body"
-              />
+              <input type="text" value={curator} onChange={e => setCurator(e.target.value)} placeholder="Es. Giulia Ferri" data-testid="add-reference-curator" className="w-full bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[7px] py-2 px-3 text-[13px]
+                           text-[var(--bp-text-primary)] focus:outline-none focus:border-[var(--bp-border-hover)] font-body" />
             </div>
             <div>
               <label className="block text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-faint)] font-body mb-1.5">
                 Progetto collegato (opzionale)
               </label>
-              <select
-                value={projectId}
-                onChange={(e) => setProjectId(e.target.value)}
-                data-testid="add-reference-project"
-                className="w-full bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[7px] py-2 px-3 text-[13px]
-                           text-[var(--bp-text-primary)] focus:outline-none focus:border-[var(--bp-border-hover)] font-body cursor-pointer"
-              >
+              <select value={projectId} onChange={e => setProjectId(e.target.value)} data-testid="add-reference-project" className="w-full bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[7px] py-2 px-3 text-[13px]
+                           text-[var(--bp-text-primary)] focus:outline-none focus:border-[var(--bp-border-hover)] font-body cursor-pointer">
                 <option value="">— Nessun progetto —</option>
-                {projects.map((p) => (
-                  <option key={p.id} value={p.id}>{p.title || p.name || p.id.slice(0, 8)}</option>
-                ))}
+                {projects.map(p => <option key={p.id} value={p.id}>{p.title || p.name || p.id.slice(0, 8)}</option>)}
               </select>
             </div>
           </div>
@@ -342,15 +264,8 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
             <label className="block text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-faint)] font-body mb-1.5">
               Design intent (opzionale)
             </label>
-            <input
-              type="text"
-              value={intent}
-              onChange={(e) => setIntent(e.target.value)}
-              placeholder="Es. Hospitality emotion · Material atmosphere"
-              data-testid="add-reference-intent"
-              className="w-full bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[7px] py-2 px-3 text-[13px]
-                         text-[var(--bp-text-primary)] focus:outline-none focus:border-[var(--bp-border-hover)] font-body"
-            />
+            <input type="text" value={intent} onChange={e => setIntent(e.target.value)} placeholder={t("workspace.add_reference.es_hospitality_emotion_material_atmosphere")} data-testid="add-reference-intent" className="w-full bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[7px] py-2 px-3 text-[13px]
+                         text-[var(--bp-text-primary)] focus:outline-none focus:border-[var(--bp-border-hover)] font-body" />
           </div>
 
           <div>
@@ -358,23 +273,11 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
               Tag tematici
             </label>
             <div className="flex flex-wrap gap-1.5">
-              {TAG_VOCABULARY.map((t) => {
+              {TAG_VOCABULARY.map(t => {
                 const active = tags.includes(t);
-                return (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => toggleTag(t)}
-                    data-testid={`add-reference-tag-${t}`}
-                    className={`text-[11px] font-body px-2.5 py-1 rounded-full transition-colors ${
-                      active
-                        ? 'bg-[var(--bp-primary)] text-black border border-[var(--bp-primary)]'
-                        : 'bg-[var(--bp-surface-1)] text-[var(--bp-text-muted)] border border-[var(--bp-border)] hover:border-[var(--bp-border-hover)]'
-                    }`}
-                  >
+                return <button key={t} type="button" onClick={() => toggleTag(t)} data-testid={`add-reference-tag-${t}`} className={`text-[11px] font-body px-2.5 py-1 rounded-full transition-colors ${active ? 'bg-[var(--bp-primary)] text-black border border-[var(--bp-primary)]' : 'bg-[var(--bp-surface-1)] text-[var(--bp-text-muted)] border border-[var(--bp-border)] hover:border-[var(--bp-border-hover)]'}`}>
                     #{t}
-                  </button>
-                );
+                  </button>;
               })}
             </div>
           </div>
@@ -383,22 +286,13 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
             <label className="block text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-faint)] font-body mb-1.5">
               Note dell'advisor (opzionale)
             </label>
-            <textarea
-              rows={2}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Perché questo riferimento entra nell'archivio?"
-              data-testid="add-reference-notes"
-              className="w-full bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[7px] py-2 px-3 text-[13px]
-                         text-[var(--bp-text-primary)] focus:outline-none focus:border-[var(--bp-border-hover)] font-body resize-none"
-            />
+            <textarea rows={2} value={notes} onChange={e => setNotes(e.target.value)} placeholder={t("workspace.add_reference.perche_questo_riferimento_entra_nell_archivio")} data-testid="add-reference-notes" className="w-full bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[7px] py-2 px-3 text-[13px]
+                         text-[var(--bp-text-primary)] focus:outline-none focus:border-[var(--bp-border-hover)] font-body resize-none" />
           </div>
 
-          {error && (
-            <p className="text-[12px] text-red-400 font-body flex items-center gap-1.5">
+          {error && <p className="text-[12px] text-red-400 font-body flex items-center gap-1.5">
               <AlertCircle size={12} strokeWidth={1.8} /> {error}
-            </p>
-          )}
+            </p>}
         </div>
         </div>{/* /scrollable body wrapper */}
 
@@ -409,21 +303,11 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
             Cultural reading generata automaticamente
           </div>
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={close}
-              className="px-3 py-2 text-[12px] font-body text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors"
-            >
-              Annulla
+            <button type="button" onClick={close} className="px-3 py-2 text-[12px] font-body text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors">
+              {t("workspace.add_reference.annulla")}
             </button>
-            <button
-              type="button"
-              onClick={submit}
-              disabled={!canSubmit()}
-              data-testid="add-reference-submit"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-[8px] bg-[var(--bp-primary)] text-black
-                         hover:opacity-90 transition-opacity text-[12.5px] font-body font-medium disabled:opacity-40 disabled:cursor-not-allowed"
-            >
+            <button type="button" onClick={submit} disabled={!canSubmit()} data-testid="add-reference-submit" className="inline-flex items-center gap-2 px-4 py-2 rounded-[8px] bg-[var(--bp-primary)] text-black
+                         hover:opacity-90 transition-opacity text-[12.5px] font-body font-medium disabled:opacity-40 disabled:cursor-not-allowed">
               {saving ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
               {saving ? 'Salvataggio…' : 'Aggiungi al research room'}
             </button>
@@ -431,21 +315,7 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
         </footer>
       </div>
 
-      {pickerOpen && (
-        <AssetPickerModal
-          open
-          onClose={() => setPickerOpen(false)}
-          onSelect={handleLibraryPicked}
-          entityType="design_reference"
-          bucket="tenant-assets"
-          folder="references/pinterest"
-          title="Scegli un asset dalla Library"
-          eyebrow="PINTEREST RESEARCH"
-          defaultTab="library"
-        />
-      )}
-    </div>
-  );
+      {pickerOpen && <AssetPickerModal open onClose={() => setPickerOpen(false)} onSelect={handleLibraryPicked} entityType="design_reference" bucket="tenant-assets" folder="references/pinterest" title={t("workspace.add_reference.scegli_un_asset_dalla_library")} eyebrow="PINTEREST RESEARCH" defaultTab="library" />}
+    </div>;
 };
-
 export default AddReferenceModal;
