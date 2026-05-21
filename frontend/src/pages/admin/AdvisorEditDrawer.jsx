@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 import api from '../../lib/api';
 import TerritorySelector from '../../components/advisor/TerritorySelector';
 import './advisor-edit-drawer.css';
+import { useT } from '../../i18n/useT';
 
 const STATUS_OPTS = [
   { v: 'active',   l: 'Attivo' },
@@ -26,6 +27,7 @@ const STATUS_OPTS = [
 ];
 
 const ChipInput = ({ label, value, onChange, placeholder, testid }) => {
+  const { t } = useT();
   const [draft, setDraft] = useState('');
   const arr = Array.isArray(value) ? value : [];
   const add = () => {
@@ -131,7 +133,7 @@ const AdvisorEditDrawer = ({ open, advisor, onClose, onSaved }) => {
         <div className="aed-body">
           {/* ── Identità & contatti ─────────────────────────────── */}
           <section className="aed-section">
-            <p className="aed-section__label">Identità & contatti</p>
+            <p className="aed-section__label">{t('admin.advisor_edit.identita_contatti')}</p>
             <div className="aed-grid">
               <div className="aed-field aed-field--span2">
                 <label className="aed-label">Nome completo</label>
@@ -163,7 +165,7 @@ const AdvisorEditDrawer = ({ open, advisor, onClose, onSaved }) => {
 
           {/* ── Economia della relazione ───────────────────────── */}
           <section className="aed-section">
-            <p className="aed-section__label">Economia della relazione</p>
+            <p className="aed-section__label">{t('admin.advisor_edit.economia_della_relazione')}</p>
             <div className="aed-grid">
               <div className="aed-field">
                 <label className="aed-label">Commissione %</label>
@@ -198,7 +200,7 @@ const AdvisorEditDrawer = ({ open, advisor, onClose, onSaved }) => {
 
           {/* ── Specializzazione & relazione ──────────────────── */}
           <section className="aed-section">
-            <p className="aed-section__label">Specializzazione & lettura della relazione</p>
+            <p className="aed-section__label">{t('admin.advisor_edit.specializzazione_lettura_della_relazione')}</p>
             <ChipInput label="Specializzazione di mercato"
                        value={form.market_specialization}
                        onChange={(v) => set('market_specialization', v)}
@@ -232,7 +234,7 @@ const AdvisorEditDrawer = ({ open, advisor, onClose, onSaved }) => {
         <footer className="aed-foot">
           <button type="button" className="aed-btn aed-btn--ghost"
                   onClick={onClose} disabled={saving}
-                  data-testid="aed-cancel">Annulla</button>
+                  data-testid="aed-cancel">{t('admin.advisor_edit.annulla')}</button>
           <button type="button" className="aed-btn aed-btn--primary"
                   onClick={save} disabled={saving}
                   data-testid="aed-save">

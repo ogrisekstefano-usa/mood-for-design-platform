@@ -25,6 +25,7 @@ import RelationshipGraph from './RelationshipGraph';
 import AccountConstellation from './AccountConstellation';
 import './relationship-os.css';
 import './g3-overrides.css';
+import { useT } from '../../i18n/useT';
 
 // ── icon glyph by interaction_type ──────────────────────────────────
 const TYPE_GLYPH = {
@@ -83,6 +84,7 @@ const ICON_BY_INSIGHT = { globe: Globe, compass: Compass, sparkles: Sparkles, fe
 
 // ─── Component ──────────────────────────────────────────────────────
 const AccountDetailPage = () => {
+  const { t } = useT();
   const { accountId } = useParams();
   const nav = useNavigate();
 
@@ -280,8 +282,8 @@ const AccountDetailPage = () => {
 
           {visible.length === 0 ? (
             <div className="rl-tl-empty">
-              <p>La memoria della relazione è ancora bianca.</p>
-              <p>Registra il primo contatto — una call, una nota vocale, una visita.<br />
+              <p>{t('crm.account_detail.la_memoria_della_relazione_e_ancora_bianca')}</p>
+              <p>{t('crm.account_detail.registra_il_primo_contatto_una_call_una_nota_vocal')}<br />
                 Ogni gesto diventa parte della storia.</p>
             </div>
           ) : (
@@ -404,7 +406,7 @@ const AccountDetailPage = () => {
             </span>
           </div>
           <div className="rl-panel__row">
-            <span>Materiali preferiti</span>
+            <span>{t('crm.account_detail.materiali_preferiti')}</span>
             <span>
               {style?.preferred_materials?.length ? (
                 <span className="rl-tag-list">

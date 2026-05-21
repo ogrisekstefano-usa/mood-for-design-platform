@@ -15,6 +15,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { useT } from '../../i18n/useT';
 
 const fmtDate = (iso) => {
   try { return new Date(iso).toLocaleDateString('it-IT', { day: '2-digit', month: 'short' }); }
@@ -22,6 +23,7 @@ const fmtDate = (iso) => {
 };
 
 export default function MoodboardPickerModal({ asset, onClose, onAdded }) {
+  const { t } = useT();
   const [moodboards, setMoodboards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -128,7 +130,7 @@ export default function MoodboardPickerModal({ asset, onClose, onAdded }) {
       <div className="mp-modal__card" onClick={(e) => e.stopPropagation()}>
         <header className="mp-modal__head">
           <div>
-            <p className="mp-modal__eyebrow">Aggiungi al moodboard</p>
+            <p className="mp-modal__eyebrow">{t('inspirations.moodboard_picker.aggiungi_al_moodboard')}</p>
             <h3 className="mp-modal__title">
               <em>{asset?.product_name || 'Asset'}</em>
             </h3>
@@ -160,7 +162,7 @@ export default function MoodboardPickerModal({ asset, onClose, onAdded }) {
           </div>
 
           <div className="mp-modal__list" data-testid="mp-list">
-            {loading && <p className="mp-modal__loading">Sto caricando i moodboard…</p>}
+            {loading && <p className="mp-modal__loading">{t('inspirations.moodboard_picker.sto_caricando_i_moodboard')}</p>}
             {!loading && filtered.length === 0 && (
               <p className="mp-modal__empty">
                 Nessun moodboard {search ? 'trovato' : 'ancora'}. Crea il primo.
@@ -226,7 +228,7 @@ export default function MoodboardPickerModal({ asset, onClose, onAdded }) {
               data-testid="mp-create-trigger"
             >
               <Icons.Plus size={13} />
-              <span>Crea nuovo moodboard</span>
+              <span>{t('inspirations.moodboard_picker.crea_nuovo_moodboard')}</span>
             </button>
           )}
         </div>

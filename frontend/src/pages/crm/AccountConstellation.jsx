@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Users, Sparkles, Layers, Compass } from 'lucide-react';
 import api from '../../lib/api';
 import './constellation.css';
+import { useT } from '../../i18n/useT';
 
 const STATE_TONE = {
   growing:   { eyebrow: 'In crescita',    glow: 'teal' },
@@ -62,6 +63,7 @@ const fmtWhen = (iso) => {
 };
 
 const AccountConstellation = ({ accountId }) => {
+  const { t } = useT();
   const nav = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -118,14 +120,14 @@ const AccountConstellation = ({ accountId }) => {
       {/* ── ACTIVE DESIGN JOURNEYS (dominante) ──────────────── */}
       <section className="ac-section ac-journeys" data-testid="ac-journeys-section">
         <header className="ac-section__head">
-          <span className="ac-section__eyebrow">Sezione dominante</span>
+          <span className="ac-section__eyebrow">{t('crm.account_constellation.sezione_dominante')}</span>
           <h2 className="ac-section__title">I Journey condivisi</h2>
         </header>
 
         {active_journeys.length === 0 ? (
           <div className="ac-empty" data-testid="ac-journeys-empty">
-            <p>Nessun Journey aperto con questa relazione.</p>
-            <p className="ac-empty__sub">Apri una conversazione progettuale per cominciare.</p>
+            <p>{t('crm.account_constellation.nessun_journey_aperto_con_questa_relazione')}</p>
+            <p className="ac-empty__sub">{t('crm.account_constellation.apri_una_conversazione_progettuale_per_cominciare')}</p>
           </div>
         ) : (
           <div className="ac-journey-grid">
@@ -170,7 +172,7 @@ const AccountConstellation = ({ accountId }) => {
         <section className="ac-section" data-testid="ac-people-section">
           <header className="ac-section__head">
             <span className="ac-section__eyebrow"><Users size={11} /> Compagni di viaggio</span>
-            <h2 className="ac-section__title">Le persone della relazione</h2>
+            <h2 className="ac-section__title">{t('crm.account_constellation.le_persone_della_relazione')}</h2>
           </header>
           <div className="ac-people">
             {people.map((p) => (

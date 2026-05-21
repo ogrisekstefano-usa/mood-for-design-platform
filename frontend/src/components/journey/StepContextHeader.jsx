@@ -17,6 +17,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import * as Icons from 'lucide-react';
+import { useT } from '../../i18n/useT';
 
 const STATE_TONE = {
   conversation_open: 'cool',
@@ -41,6 +42,7 @@ const STEP_TONE = {
 };
 
 const StepContextHeader = ({ context, projectId }) => {
+  const { t } = useT();
   const { project, account, journey, step, prev_step, next_step, progress } = context || {};
   if (!step) return null;
 
@@ -128,7 +130,7 @@ const StepContextHeader = ({ context, projectId }) => {
             >
               <Icons.ArrowLeft size={13} />
               <span>
-                <span className="sw-nav-chip__eyebrow">Capitolo precedente</span>
+                <span className="sw-nav-chip__eyebrow">{t('journey.step_context_header.capitolo_precedente')}</span>
                 <span className="sw-nav-chip__title">{prev_step.title}</span>
               </span>
             </Link>
@@ -140,7 +142,7 @@ const StepContextHeader = ({ context, projectId }) => {
               data-testid="sw-context-next"
             >
               <span style={{ textAlign: 'right' }}>
-                <span className="sw-nav-chip__eyebrow">Capitolo seguente</span>
+                <span className="sw-nav-chip__eyebrow">{t('journey.step_context_header.capitolo_seguente')}</span>
                 <span className="sw-nav-chip__title">{next_step.title}</span>
               </span>
               <Icons.ArrowRight size={13} />

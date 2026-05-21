@@ -11,6 +11,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { X, ExternalLink, Edit3, CalendarClock, Copy, Globe } from 'lucide-react';
+import { useT } from '../../i18n/useT';
 
 const STATUS_LABEL_IT = {
   published: 'Pubblicato',
@@ -34,6 +35,7 @@ const fmtFull = (iso) => {
 };
 
 const PublicPreviewDrawer = ({ event, onClose, onPublishNow }) => {
+  const { t } = useT();
   if (!event) return null;
   const tone = event.status === 'published' ? 'live'
             : event.status === 'scheduled' ? 'scheduled'
@@ -82,7 +84,7 @@ const PublicPreviewDrawer = ({ event, onClose, onPublishNow }) => {
               <dd>{fmtFull(event.datetime)}</dd>
             </div>
             <div>
-              <dt>Mercato editoriale</dt>
+              <dt>{t('editorial.public_preview.mercato_editoriale')}</dt>
               <dd>
                 <span className="ecp-drawer__market">
                   {event.country.flag} {event.country.country}
@@ -91,7 +93,7 @@ const PublicPreviewDrawer = ({ event, onClose, onPublishNow }) => {
               </dd>
             </div>
             <div>
-              <dt>CTA editoriale</dt>
+              <dt>{t('editorial.public_preview.cta_editoriale')}</dt>
               <dd>{event.cta_target}</dd>
             </div>
             <div>

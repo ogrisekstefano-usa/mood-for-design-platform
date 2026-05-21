@@ -17,6 +17,7 @@
 import React from 'react';
 import { Plus, Trash2, ArrowUp, ArrowDown, ExternalLink } from 'lucide-react';
 import EditorialMediaField from '../../components/common/EditorialMediaField';
+import { useT } from '../../i18n/useT';
 
 // ───────────────────────────────────────────────────────────────────────
 // Traceability metadata — which public surface each section type controls.
@@ -47,6 +48,7 @@ export const TRACEABILITY = {
 // Shared primitives
 // ───────────────────────────────────────────────────────────────────────
 export const TraceabilityChip = ({ section_type }) => {
+  const { t } = useT();
   const surface = TRACEABILITY[section_type];
   if (!surface) return null;
   return (
@@ -123,7 +125,7 @@ export const NavTopEditor = ({ section, localeTab, onPatchSetting }) => {
         <span style={{ flex: '0 0 90px' }} />
       </div>
       {items.length === 0 && (
-        <p className="ss-table__empty">Nessuna voce di menu. Aggiungi la prima ↓</p>
+        <p className="ss-table__empty">{t('storefront.band_editors.nessuna_voce_di_menu_aggiungi_la_prima')}</p>
       )}
       {items.map((it, idx) => (
         <div className="ss-table__row" key={it.id || idx} data-testid={`ss-nav-row-${idx}`}>
@@ -218,7 +220,7 @@ export const FooterColumnsEditor = ({ section, localeTab, onPatchSetting }) => {
   return (
     <div className="ss-table" data-testid="ss-footer-cols-editor">
       <div className="ss-subhead">Footer columns ({columns.length})</div>
-      {columns.length === 0 && <p className="ss-table__empty">Nessuna colonna. Aggiungi la prima ↓</p>}
+      {columns.length === 0 && <p className="ss-table__empty">{t('storefront.band_editors.nessuna_colonna_aggiungi_la_prima')}</p>}
       {columns.map((col, idx) => (
         <div className="ss-footer-col-card" key={col.id || idx} data-testid={`ss-footer-col-${idx}`}>
           <div className="ss-footer-col-card__head">
@@ -409,7 +411,7 @@ export const MagazineGridEditor = ({ section, localeTab, onPatchLocale, onPatchS
         <p className="ss-section__label">Strategia di selezione</p>
         <select className="ss-select" data-testid="ss-mag-mode"
           value={mode} onChange={(e) => onPatchSetting('mode', e.target.value)}>
-          <option value="auto">Automatica · ultimi articoli pubblicati nel locale</option>
+          <option value="auto">{t('storefront.band_editors.automatica_ultimi_articoli_pubblicati_nel_locale')}</option>
           <option value="manual">Manuale · seleziona slug specifici</option>
         </select>
       </div>

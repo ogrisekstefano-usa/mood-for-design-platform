@@ -17,6 +17,7 @@ import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
 import './cultural-edition-wizard.css';
+import { useT } from '../../i18n/useT';
 
 const STEPS = [
   { key: 'source_type',  label: 'Tipo' },
@@ -74,6 +75,7 @@ const labelForIntensity = (key) =>
 const CulturalEditionWizard = ({ open, onClose, onCreated,
                                  initialSourceType = null, initialSourceId = null,
                                  initialSourceTitle = null }) => {
+  const { t } = useT();
   const [stepIdx, setStepIdx] = useState(0);
   const [config, setConfig] = useState(null);
   const [sources, setSources] = useState([]);
@@ -234,7 +236,7 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
 
         <header className="cew-head">
           <p className="cew-eyebrow">Cultural Edition™</p>
-          <h2 className="cew-title">Adatta il tuo lavoro a un altro mercato culturale.</h2>
+          <h2 className="cew-title">{t('cultural.cultural_edition.adatta_il_tuo_lavoro_a_un_altro_mercato_culturale')}</h2>
           <p className="cew-lede">
             MOOD prende un tuo contenuto e ne prepara una versione editoriale per la cultura del mercato che scegli.
             Niente traduzione automatica — è un atto editoriale guidato.
@@ -276,7 +278,7 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
           {/* STEP 2 — CONTENUTO */}
           {stepIdx === 1 && (
             <div className="cew-step-panel" data-testid="cew-panel-source">
-              <p className="cew-question">Scegli il contenuto da adattare.</p>
+              <p className="cew-question">{t('cultural.cultural_edition.scegli_il_contenuto_da_adattare')}</p>
               {(sourceType === 'showcase' || sourceType === 'material_selection') ? (
                 <div className="cew-field">
                   <label className="cew-label">
@@ -292,7 +294,7 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
                   </p>
                 </div>
               ) : loadingSources ? (
-                <div className="cew-loading">In attesa dei contenuti dello studio…</div>
+                <div className="cew-loading">{t('cultural.cultural_edition.in_attesa_dei_contenuti_dello_studio')}</div>
               ) : sources.length === 0 ? (
                 <div className="cew-empty">
                   <Icons.Folder size={20} strokeWidth={1.2} />
@@ -351,7 +353,7 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
               </div>
               {selectedMarket && (
                 <div className="cew-field" style={{ marginTop: 22 }}>
-                  <label className="cew-label">Lingua della versione mercato</label>
+                  <label className="cew-label">{t('cultural.cultural_edition.lingua_della_versione_mercato')}</label>
                   <select className="cew-input" value={locale}
                           onChange={(e) => setLocale(e.target.value)}
                           data-testid="cew-locale-select">
@@ -375,7 +377,7 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
                     </span>
                     <span className="cew-narrative-profile__market">{selectedMarket.label}</span>
                   </div>
-                  <h4 className="cew-narrative-profile__title">Direzione narrativa del mercato</h4>
+                  <h4 className="cew-narrative-profile__title">{t('cultural.cultural_edition.direzione_narrativa_del_mercato')}</h4>
                   <p className="cew-narrative-profile__note">{selectedProfile.curator_note}</p>
                   {selectedProfile.narrative_direction?.length > 0 && (
                     <div className="cew-narrative-profile__chips">
@@ -410,7 +412,7 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
                   </div>
                   {isOverridden ? (
                     <div className="cew-narrative-profile__override" data-testid="cew-narrative-override">
-                      <span>Hai personalizzato la direzione del mercato.</span>
+                      <span>{t('cultural.cultural_edition.hai_personalizzato_la_direzione_del_mercato')}</span>
                       <button type="button"
                               className="cew-narrative-profile__reset"
                               onClick={resetToSuggested}
@@ -454,7 +456,7 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
                 })}
               </div>
               <div className="cew-field" style={{ marginTop: 22 }}>
-                <label className="cew-label">Briefing al caporedattore (opzionale)</label>
+                <label className="cew-label">{t('cultural.cultural_edition.briefing_al_caporedattore_opzionale')}</label>
                 <textarea className="cew-textarea" rows={3}
                           placeholder="Tono che desideri, vincoli, riferimenti culturali da onorare…"
                           value={note} onChange={(e) => setNote(e.target.value)}
@@ -466,7 +468,7 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
           {/* STEP 5 — REVISIONE */}
           {stepIdx === 4 && (
             <div className="cew-step-panel" data-testid="cew-panel-review">
-              <p className="cew-question">Revisione editoriale prima di creare.</p>
+              <p className="cew-question">{t('cultural.cultural_edition.revisione_editoriale_prima_di_creare')}</p>
               <div className="cew-review">
                 <div className="cew-review__row">
                   <span className="cew-review__lbl">Contenuto base</span>
@@ -479,7 +481,7 @@ const CulturalEditionWizard = ({ open, onClose, onCreated,
                   <span className="cew-review__val">{selectedMarket?.label}</span>
                 </div>
                 <div className="cew-review__row">
-                  <span className="cew-review__lbl">Atmosfera</span>
+                  <span className="cew-review__lbl">{t('cultural.cultural_edition.atmosfera')}</span>
                   <span className="cew-review__val cew-review__val--soft">{selectedMarket?.atmosphere}</span>
                 </div>
                 {(narrativeMode || narrativeIntensity) && (

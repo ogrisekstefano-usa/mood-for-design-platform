@@ -24,6 +24,7 @@ import { Quote, Plus, Send, Sparkles, BookOpenText } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
 import './milestone-dialogue.css';
+import { useT } from '../../i18n/useT';
 
 const TONE_STYLE = {
   embrace:  'embrace',
@@ -34,6 +35,7 @@ const TONE_STYLE = {
 
 // ─── New chapter inline composer ─────────────────────────────────
 const ChapterComposer = ({ lexicon, onCreate, onCancel, busy }) => {
+  const { t } = useT();
   const [kind, setKind]         = useState('proposed_evolution');
   const [title, setTitle]       = useState('');
   const [summary, setSummary]   = useState('');
@@ -51,7 +53,7 @@ const ChapterComposer = ({ lexicon, onCreate, onCancel, busy }) => {
 
   return (
     <div className="mdialog__composer" data-testid="chapter-composer">
-      <p className="mdialog__composer-eyebrow">Nuovo capitolo progettuale</p>
+      <p className="mdialog__composer-eyebrow">{t('journey.milestone_dialogue.nuovo_capitolo_progettuale')}</p>
 
       <div className="mdialog__composer-kinds">
         {Object.entries(lexicon.chapter_kinds || {}).map(([k, lbl]) => (
@@ -143,7 +145,7 @@ const CuratorialFeedback = ({ lexicon, feedback, onSend, busy }) => {
   return (
     <section className="mdialog__feedback" data-testid="curatorial-feedback">
       <header className="mdialog__feedback-head">
-        <p className="mdialog__feedback-eyebrow">Voce del cliente</p>
+        <p className="mdialog__feedback-eyebrow">{t('journey.milestone_dialogue.voce_del_cliente')}</p>
         <h3 className="mdialog__feedback-title"><em>Conversazione progettuale</em></h3>
       </header>
 
@@ -186,7 +188,7 @@ const CuratorialFeedback = ({ lexicon, feedback, onSend, busy }) => {
           />
           <div className="mdialog__voice-foot">
             <button type="button" onClick={() => setShowVoice(false)}
-                    className="mdialog__btn mdialog__btn--ghost">Chiudi</button>
+                    className="mdialog__btn mdialog__btn--ghost">{t('journey.milestone_dialogue.chiudi')}</button>
             <button data-testid="feedback-voice-send" type="button"
                     onClick={() => quote.trim() && send('free_voice', quote.trim())}
                     className="mdialog__btn mdialog__btn--primary">
@@ -253,7 +255,7 @@ const MilestoneDialogue = ({ milestoneId }) => {
   };
 
   if (!data) {
-    return <p className="mdialog__loading">Sto preparando il dialogo progettuale…</p>;
+    return <p className="mdialog__loading">{t('journey.milestone_dialogue.sto_preparando_il_dialogo_progettuale')}</p>;
   }
 
   const { chapters, feedback, lexicon } = data;
@@ -264,7 +266,7 @@ const MilestoneDialogue = ({ milestoneId }) => {
       <section className="mdialog__chapters" data-testid="dialogue-chapters">
         <header className="mdialog__chapters-head">
           <div>
-            <p className="mdialog__eyebrow">Evoluzione del progetto</p>
+            <p className="mdialog__eyebrow">{t('journey.milestone_dialogue.evoluzione_del_progetto')}</p>
             <h3 className="mdialog__title"><em>I capitoli condivisi</em></h3>
           </div>
           {!composing && (
@@ -292,7 +294,7 @@ const MilestoneDialogue = ({ milestoneId }) => {
           <div className="mdialog__empty" data-testid="chapters-empty">
             <BookOpenText size={26} strokeWidth={1} />
             <p>
-              <em>Nessun capitolo condiviso ancora.</em><br />
+              <em>{t('journey.milestone_dialogue.nessun_capitolo_condiviso_ancora')}</em><br />
               Il primo capitolo apre la conversazione progettuale con il cliente.
             </p>
           </div>

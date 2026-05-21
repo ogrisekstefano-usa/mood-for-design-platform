@@ -21,6 +21,7 @@ import { Eye, Send, Wand2, Compass, Sparkles, Calendar, BookOpen, ExternalLink, 
 import { toast } from 'sonner';
 import EditorialMediaField from '../../components/common/EditorialMediaField';
 import StorySectionsEditor from '../../components/storytelling/StorySectionsEditor';
+import { useT } from '../../i18n/useT';
 
 const debounce = (fn, ms = 600) => {
   let t = null;
@@ -28,6 +29,7 @@ const debounce = (fn, ms = 600) => {
 };
 
 export const ArticleEditorPanel = ({ variant: initialVariant, onVariantChanged }) => {
+  const { t } = useT();
   const [variant, setVariant] = useState(initialVariant);
   const [activeTab, setActiveTab] = useState('published');  // 'published' | 'internal'
   const [internal, setInternal] = useState(null);
@@ -212,7 +214,7 @@ export const ArticleEditorPanel = ({ variant: initialVariant, onVariantChanged }
                 · {new Date(variant.scheduled_at).toLocaleString('it-IT')}
               </span>
             )}
-            {dirty && <span style={{ marginLeft: 12, opacity: 0.55 }}>Salvataggio…</span>}
+            {dirty && <span style={{ marginLeft: 12, opacity: 0.55 }}>{t('editorial.article_editor.salvataggio')}</span>}
           </p>
         </div>
         <div className="ed-toolbar__actions">
@@ -316,7 +318,7 @@ export const ArticleEditorPanel = ({ variant: initialVariant, onVariantChanged }
               onChange={(e) => setScheduledAt(e.target.value)}
             />
             <div className="ed-modal__actions">
-              <button className="ed-btn" data-testid="ed-schedule-cancel" onClick={() => setScheduling(false)}>Annulla</button>
+              <button className="ed-btn" data-testid="ed-schedule-cancel" onClick={() => setScheduling(false)}>{t('editorial.article_editor.annulla')}</button>
               <button className="ed-btn ed-btn--primary" data-testid="ed-schedule-confirm" onClick={confirmSchedule}>
                 Conferma
               </button>
@@ -330,7 +332,7 @@ export const ArticleEditorPanel = ({ variant: initialVariant, onVariantChanged }
 
 // ─── Internal Translation = review-only viewer ───────────────────
 const InternalReviewView = ({ internal }) => {
-  if (!internal) return <p className="ed-internal-empty">Caricamento della comprensione editoriale…</p>;
+  if (!internal) return <p className="ed-internal-empty">{t('editorial.article_editor.caricamento_della_comprensione_editoriale')}</p>;
   const has = internal && (internal.title || internal.excerpt || (internal.body_blocks || []).length > 0);
   return (
     <>
@@ -415,7 +417,7 @@ const PublishedEditorView = ({ variant, patchField, patchSeo, patchCta, addCta, 
       </div>
 
       <div className="ed-section" data-testid="ed-section-body">
-        <p className="ed-section__label">Body · blocchi editoriali composabili</p>
+        <p className="ed-section__label">{t('editorial.article_editor.body_blocchi_editoriali_composabili')}</p>
         <StorySectionsEditor
           blocks={variant.body_blocks || []}
           onChange={(next) => patchField('body_blocks', next)}
@@ -427,7 +429,7 @@ const PublishedEditorView = ({ variant, patchField, patchSeo, patchCta, addCta, 
       </div>
 
       <div className="ed-section" data-testid="ed-section-cta">
-        <p className="ed-section__label">CTA · tier · azione · transizione editoriale</p>
+        <p className="ed-section__label">{t('editorial.article_editor.cta_tier_azione_transizione_editoriale')}</p>
         {(variant.cta_set || []).map((cta, i) => (
           <div key={i} className="ed-cta" data-testid={`ed-cta-${i}`}>
             <div className="ed-cta__row">
@@ -457,8 +459,8 @@ const PublishedEditorView = ({ variant, patchField, patchSeo, patchCta, addCta, 
               >
                 <option value="save_reference">Save reference</option>
                 <option value="discuss_with_advisor">Discuss with advisor</option>
-                <option value="add_to_moodboard">Add to moodboard</option>
-                <option value="explore_material">Explore material</option>
+                <option value="add_to_moodboard">{t('editorial.article_editor.add_to_moodboard')}</option>
+                <option value="explore_material">{t('editorial.article_editor.explore_material')}</option>
                 <option value="book_visit">Book visit</option>
               </select>
               <button className="ed-block__remove" data-testid={`ed-cta-${i}-remove`}

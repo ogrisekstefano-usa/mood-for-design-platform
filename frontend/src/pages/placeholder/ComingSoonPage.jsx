@@ -10,6 +10,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Compass, ArrowUpRight } from 'lucide-react';
 import JourneyContextHeader from '../../components/journey/JourneyContextHeader';
+import { useT } from '../../i18n/useT';
 
 const PLACEHOLDERS = {
   render: {
@@ -63,6 +64,7 @@ const slugFromPath = (pathname) => {
 };
 
 const ComingSoonPage = () => {
+  const { t } = useT();
   const location = useLocation();
   const slug = slugFromPath(location.pathname);
   const meta = PLACEHOLDERS[slug] || {
@@ -119,7 +121,7 @@ const ComingSoonPage = () => {
                        font-mono"
           >
             <Compass size={14} strokeWidth={1.4} />
-            <span>Torna ai progetti</span>
+            <span>{t('placeholder.coming_soon.torna_ai_progetti')}</span>
             <ArrowUpRight size={12} strokeWidth={1.4} />
           </Link>
 

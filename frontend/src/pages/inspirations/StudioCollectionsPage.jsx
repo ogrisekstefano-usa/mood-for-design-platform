@@ -15,8 +15,10 @@ import './inspirations.css';
 import './supplier-catalog.css';
 import './studio-collections.css';
 import './brand-form.css';
+import { useT } from '../../i18n/useT';
 
 const StudioCollectionsPage = () => {
+  const { t } = useT();
   const [catalogs, setCatalogs] = useState([]);
   const [brands, setBrands]     = useState([]);
   const [loading, setLoading]   = useState(true);
@@ -73,7 +75,7 @@ const StudioCollectionsPage = () => {
       <header className="sc-page__head">
         <div>
           <p className="ins-eyebrow"><Icons.Library size={11} /> Studio Collections™</p>
-          <h1 className="sc-page__title">Archivio curatoriale dello studio</h1>
+          <h1 className="sc-page__title">{t('inspirations.studio_collections.archivio_curatoriale_dello_studio')}</h1>
           <p className="sc-page__subtitle">
             Tutti i produttori e le collezioni che lo studio ha aggiunto al proprio
             registro. {totalImported > 0 && <> Hai già <strong>{totalImported}</strong> Product Inspirations™ archiviate.</>}
@@ -95,7 +97,7 @@ const StudioCollectionsPage = () => {
       {!loading && grouped.length === 0 && (
         <div className="sc-empty">
           <Icons.Package size={28} strokeWidth={1.3} />
-          <p>Nessuna collezione importata. Inizia caricando un catalogo fornitore.</p>
+          <p>{t('inspirations.studio_collections.nessuna_collezione_importata_inizia_caricando_un_c')}</p>
           <Link to="/inspirations" className="ins-cta-primary"><Icons.Plus size={13} /> Importa il primo catalogo</Link>
         </div>
       )}

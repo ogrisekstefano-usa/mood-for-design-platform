@@ -152,7 +152,7 @@ const MoodboardCard = ({ m, project }) => {
           <span className="mbcard__time">
             {m.updated_at ? `Ultimo movimento · ${formatRelative(m.updated_at)}` : '\u00A0'}
           </span>
-          <span className="mbcard__cta">Continua la direzione →</span>
+          <span className="mbcard__cta">{t('moodboards.moodboards.continua_la_direzione')}</span>
         </div>
       </div>
     </Link>

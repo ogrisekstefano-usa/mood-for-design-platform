@@ -20,6 +20,7 @@ import { X } from 'lucide-react';
 import HotspotEditor from '../common/HotspotEditor';
 import api from '../../lib/api';
 import './storytelling.css';
+import { useT } from '../../i18n/useT';
 
 const genId = () => `hs_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
 
@@ -121,7 +122,7 @@ const HotspotImageOverlay = ({
         <header className="hsov-modal__head">
           <div>
             <p className="hsov-eyebrow">Editorial Notes · Detail Points</p>
-            <h3 className="hsov-title">Aggiungi note di dettaglio sull'immagine</h3>
+            <h3 className="hsov-title">{t('storytelling.hotspot_image_overlay.aggiungi_note_di_dettaglio_sull_immagine')}</h3>
             {imageCaption && <p className="hsov-cap">{imageCaption}</p>}
           </div>
           <button
@@ -149,7 +150,7 @@ const HotspotImageOverlay = ({
             className="hsov-btn"
             data-testid="hotspot-overlay-done"
             onClick={onClose}
-          >Chiudi</button>
+          >{t('storytelling.hotspot_image_overlay.chiudi')}</button>
         </footer>
       </div>
     </div>

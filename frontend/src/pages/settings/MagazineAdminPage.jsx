@@ -6,12 +6,14 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BookOpen, Plus, FileText, ExternalLink, Trash2, Eye, Globe } from 'lucide-react';
 import api from '../../lib/api';
+import { useT } from '../../i18n/useT';
 
 const slugify = (s) => (s || '').toLowerCase()
   .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 80);
 
 const StatusPill = ({ status }) => {
+  const { t } = useT();
   const cls = status === 'published'
     ? 'border-emerald-400/40 text-emerald-300 bg-emerald-400/10'
     : status === 'archived'
@@ -98,7 +100,7 @@ const MagazineAdminPage = () => {
         </button>
       </header>
 
-      {state.loading && <p className="text-[var(--bp-text-muted)] text-sm italic">Caricamento…</p>}
+      {state.loading && <p className="text-[var(--bp-text-muted)] text-sm italic">{t('settings.magazine_admin.caricamento')}</p>}
 
       {!state.loading && state.articles.length === 0 && (
         <div className="text-center py-20 max-w-md mx-auto" data-testid="magazine-empty">
@@ -167,7 +169,7 @@ const MagazineAdminPage = () => {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-6" data-testid="magazine-create-modal">
           <form onSubmit={handleCreate} className="bg-[var(--bp-surface)] border border-[var(--bp-border)] w-full max-w-md p-7 shadow-2xl">
             <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--bp-primary)] mb-2">NEW EDITORIAL</p>
-            <h2 className="font-heading text-2xl text-[var(--bp-text-primary)] font-light mb-5">Inizia un nuovo articolo</h2>
+            <h2 className="font-heading text-2xl text-[var(--bp-text-primary)] font-light mb-5">{t('settings.magazine_admin.inizia_un_nuovo_articolo')}</h2>
             <div className="space-y-3">
               <div>
                 <label className="text-[10px] uppercase tracking-[0.22em] text-[var(--bp-text-muted)] block mb-1.5">Titolo</label>

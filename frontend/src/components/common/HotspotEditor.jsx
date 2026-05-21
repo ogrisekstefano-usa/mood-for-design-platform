@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import './hotspot-editor.css';
+import { useT } from '../../i18n/useT';
 
 const KINDS = [
   { id: 'detail_point',      label: 'Detail Point',      icon: MapPin },
@@ -48,6 +49,7 @@ const HotspotEditor = ({
   onCreate, onUpdate, onDelete,
   readOnly = false,
 }) => {
+  const { t } = useT();
   const imgRef = useRef(null);
   const [activeId, setActiveId] = useState(null);
   const [draft, setDraft] = useState(null); // {x_pct, y_pct} for unsaved
@@ -300,7 +302,7 @@ const HotspotEditor = ({
               {activeId === '__draft__' ? (
                 <>
                   <button type="button" onClick={() => { setDraft(null); setActiveId(null); }}
-                          className="hot-btn hot-btn--ghost">Annulla</button>
+                          className="hot-btn hot-btn--ghost">{t('common.hotspot.annulla')}</button>
                   <button type="button" onClick={commitDraft} disabled={busy}
                           className="hot-btn hot-btn--primary" data-testid="hot-commit">
                     {busy ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} />}

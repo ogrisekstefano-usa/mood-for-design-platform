@@ -32,6 +32,7 @@ import { toast } from 'sonner';
 import './storefrontStudio.css';
 import { renderBandEditor, TraceabilityChip } from './bandEditors';
 import EditorialMediaField from '../../components/common/EditorialMediaField';
+import { useT } from '../../i18n/useT';
 
 // Editorial labels for the storefront bands. Keep the section_type as the
 // stable key (matches DB), but show editorial titles to the user.
@@ -86,6 +87,7 @@ const PAGE_TABS = [
 ];
 
 const StorefrontStudioPage = () => {
+  const { t } = useT();
   // Read ?page= from the URL so the Experience Overview can deep-link into
   // a specific surface (Home / Projects / Navigation / Start project).
   const [searchParams, setSearchParams] = useSearchParams();
@@ -235,12 +237,12 @@ const StorefrontStudioPage = () => {
           </span>
           <button className="ss-btn ss-btn--primary"
             data-testid="ss-publish"
-            onClick={publishPage}>Pubblica pagina</button>
+            onClick={publishPage}>{t('storefront.storefront_studio.pubblica_pagina')}</button>
         </div>
 
-        {loading && <p className="ss-empty">Caricamento dell'orchestrazione…</p>}
+        {loading && <p className="ss-empty">{t('storefront.storefront_studio.caricamento_dell_orchestrazione')}</p>}
         {!loading && sections.length === 0 && (
-          <p className="ss-empty">Nessuna fascia per questa pagina.</p>
+          <p className="ss-empty">{t('storefront.storefront_studio.nessuna_fascia_per_questa_pagina')}</p>
         )}
 
         <div className="ss-bands" data-testid="ss-bands">
@@ -489,7 +491,7 @@ const BandEditor = ({ section, markets, activeLocales, dirty, saving, onPatch, o
       )}
 
       <div className="ss-actions">
-        <button className="ss-btn" data-testid="ss-close" onClick={onClose}>Chiudi</button>
+        <button className="ss-btn" data-testid="ss-close" onClick={onClose}>{t('storefront.storefront_studio.chiudi')}</button>
         <button className="ss-btn ss-btn--primary"
           data-testid="ss-save"
           disabled={!dirty || saving}

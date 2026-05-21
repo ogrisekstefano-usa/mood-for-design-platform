@@ -20,8 +20,10 @@ import api from '../../lib/api';
 import JourneyContextHeader from '../../components/journey/JourneyContextHeader';
 import './product-gallery.css';
 import './material-view.css';
+import { useT } from '../../i18n/useT';
 
 export default function MaterialViewPage() {
+  const { t } = useT();
   const navigate = useNavigate();
   const [data, setData] = useState({ items: [], color_families: [], materials: [], count: 0 });
   const [loading, setLoading] = useState(true);
@@ -129,13 +131,13 @@ export default function MaterialViewPage() {
         {loading && (
           <div className="mv-loading">
             <Icons.Loader size={14} className="mv-spin" />
-            <span>Sto leggendo la materioteca…</span>
+            <span>{t('inspirations.material_view.sto_leggendo_la_materioteca')}</span>
           </div>
         )}
         {!loading && tiles.length === 0 && (
           <div className="mv-empty">
-            <p>Nessun elemento materico ancora classificato per questi criteri.</p>
-            <p>Aumenta il numero di asset curati per arricchire la materioteca.</p>
+            <p>{t('inspirations.material_view.nessun_elemento_materico_ancora_classificato_per_q')}</p>
+            <p>{t('inspirations.material_view.aumenta_il_numero_di_asset_curati_per_arricchire_l')}</p>
           </div>
         )}
         {tiles.map(it => (

@@ -15,8 +15,10 @@ import { toast } from 'sonner';
 import api from '../../lib/api';
 import { asErrorString } from '../../lib/asErrorString';
 import UniversalEditorialCropper, { filterCssFor } from '../../components/media/UniversalEditorialCropper';
+import { useT } from '../../i18n/useT';
 
 const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemoved }) => {
+  const { t } = useT();
   const [data, setData] = useState(null);
   const [cropperOpen, setCropperOpen] = useState(false);
   const [error, setError] = useState(null);
@@ -104,7 +106,7 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
         )}
 
         {!data && !error && (
-          <div className="insd-loading">Apertura del riferimento…</div>
+          <div className="insd-loading">{t('inspirations.inspiration_detail.apertura_del_riferimento')}</div>
         )}
 
         {data && (
@@ -140,7 +142,7 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
                   </>
                 ) : (
                   <>
-                    <p className="ins-eyebrow">Modifica</p>
+                    <p className="ins-eyebrow">{t('inspirations.inspiration_detail.modifica')}</p>
                     <input className="ins-input" value={title} onChange={(e) => setTitle(e.target.value)}
                            placeholder="Titolo" data-testid="insd-edit-title" />
                     <textarea className="ins-textarea" rows={2}
@@ -161,7 +163,7 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
 
               {/* Tags display or edit */}
               <div className="insd-section">
-                <p className="ins-label">Atmosfera</p>
+                <p className="ins-label">{t('inspirations.inspiration_detail.atmosfera')}</p>
                 {!editing ? (
                   <div className="insd-chips">
                     {(data.atmosphere_tags || []).length === 0 && <span className="insd-quiet">—</span>}
@@ -228,7 +230,7 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
               {/* Market Resonance — usa Cultural Engine output se disponibile, altrimenti euristica legacy */}
               <div className="insd-section">
                 <p className="ins-label" data-testid="insd-resonance-label">Market Resonance™</p>
-                <p className="insd-hint">Le percentuali sono secondarie. Il significato è nell'interpretazione editoriale qui sopra.</p>
+                <p className="insd-hint">{t('inspirations.inspiration_detail.le_percentuali_sono_secondarie_il_significato_e_ne')}</p>
                 <ul className="insd-resonance" data-testid="inspiration-detail-resonance">
                   {(() => {
                     const cr = data.cultural_reading || {};
@@ -399,7 +401,7 @@ const CulturalReadingBlock = ({ data, mediaId, onRefresh }) => {
         <p className="ins-eyebrow"><Icons.Sparkles size={11} /> Cultural Reading™</p>
         <div className="insd-cultural__pending">
           <span className="insd-cultural__pulse" />
-          <p>MOOD sta leggendo il linguaggio culturale di questo riferimento…</p>
+          <p>{t('inspirations.inspiration_detail.mood_sta_leggendo_il_linguaggio_culturale_di_quest')}</p>
         </div>
       </div>
     );
@@ -466,7 +468,7 @@ const CulturalReadingBlock = ({ data, mediaId, onRefresh }) => {
                 data-testid="narrative-mode-toggle"
                 aria-expanded={openOverride}>
           <Icons.SlidersHorizontal size={11} />
-          <span>Adatta la direzione editoriale per questo riferimento</span>
+          <span>{t('inspirations.inspiration_detail.adatta_la_direzione_editoriale_per_questo_riferime')}</span>
           <Icons.ChevronDown size={11}
                               style={{ transform: openOverride ? 'rotate(180deg)' : 'none',
                                        transition: 'transform 160ms ease' }} />
@@ -474,7 +476,7 @@ const CulturalReadingBlock = ({ data, mediaId, onRefresh }) => {
         {openOverride && (
           <div className="insd-narrative__panel" data-testid="narrative-mode-panel">
             <div className="insd-narrative__row">
-              <label className="ins-label" htmlFor="narrative-mode-select">Direzione editoriale</label>
+              <label className="ins-label" htmlFor="narrative-mode-select">{t('inspirations.inspiration_detail.direzione_editoriale')}</label>
               <select id="narrative-mode-select"
                       className="insd-narrative__select"
                       value={narrativeMode}
@@ -571,7 +573,7 @@ const ProductInfoBlock = ({ data }) => {
           data-testid="inspiration-open-product-gallery"
         >
           <Icons.LayoutGrid size={11} />
-          <span>Apri Product Gallery™</span>
+          <span>{t('inspirations.inspiration_detail.apri_product_gallery')}</span>
           <Icons.ArrowRight size={11} />
         </Link>
       )}

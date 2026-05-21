@@ -15,6 +15,7 @@ import {
 import { toast } from 'sonner';
 import api from '../../lib/api';
 import { avatarPalette, initialsOf } from '../../lib/avatarHue';
+import { useT } from '../../i18n/useT';
 
 const TABS = [
   { id: 'overview',  label: 'Overview',  icon: FileText },
@@ -82,6 +83,7 @@ const OverviewPane = ({ account, primary }) => (
 
 // ─── Contacts pane ─────────────────────────────────────────────────
 const ContactsPane = ({ accountId }) => {
+  const { t } = useT();
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -118,9 +120,9 @@ const ContactsPane = ({ accountId }) => {
         I Contact sono <strong>persone esterne</strong> collegate a questo Account.
         I membri del Team appartengono alla sezione <strong>Team</strong> e non vengono mischiati qui.
       </p>
-      {loading && <p className="adr-empty">Caricamento…</p>}
+      {loading && <p className="adr-empty">{t('crm.account_detail.caricamento')}</p>}
       {!loading && contacts.length === 0 && (
-        <p className="adr-empty">Nessun contact ancora. Aggiungi il primo qui sotto.</p>
+        <p className="adr-empty">{t('crm.account_detail.nessun_contact_ancora_aggiungi_il_primo_qui_sotto')}</p>
       )}
       <div className="adr-list">
         {contacts.map((c) => (
@@ -153,8 +155,8 @@ const ContactsPane = ({ accountId }) => {
           <input className="crm-input" placeholder="Telefono" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
           <input className="crm-input" placeholder="Ruolo (es. Founder, Specifier, …)" value={form.role_title} onChange={(e) => setForm({ ...form, role_title: e.target.value })} />
           <div className="adr-form__actions">
-            <button type="button" className="crm-btn crm-btn--ghost" onClick={() => setShowAdd(false)}>Annulla</button>
-            <button type="button" className="crm-btn crm-btn--primary" onClick={submit} data-testid="adr-contact-submit">Salva</button>
+            <button type="button" className="crm-btn crm-btn--ghost" onClick={() => setShowAdd(false)}>{t('crm.account_detail.annulla')}</button>
+            <button type="button" className="crm-btn crm-btn--primary" onClick={submit} data-testid="adr-contact-submit">{t('crm.account_detail.salva')}</button>
           </div>
         </div>
       )}
@@ -172,7 +174,7 @@ const TimelinePane = ({ accountId }) => {
   }, [accountId]);
   return (
     <div data-testid="adr-timeline-pane">
-      {items.length === 0 && <p className="adr-empty">Nessuna interazione registrata.</p>}
+      {items.length === 0 && <p className="adr-empty">{t('crm.account_detail.nessuna_interazione_registrata')}</p>}
       <ul className="adr-timeline">
         {items.map((it) => (
           <li key={it.id} className="adr-timeline__item">
@@ -223,7 +225,7 @@ const MoodboardsPane = ({ account }) => (
 
 // ─── Files / Notes / Meetings / Style placeholders ─────────────────
 const FilesPane = () => (
-  <div data-testid="adr-files-pane"><p className="adr-empty">Files allegati arriva con il Media Library inspector.</p></div>
+  <div data-testid="adr-files-pane"><p className="adr-empty">{t('crm.account_detail.files_allegati_arriva_con_il_media_library_inspect')}</p></div>
 );
 const NotesPane = () => (
   <div data-testid="adr-notes-pane"><p className="adr-empty">Notes editor in P1.</p></div>
@@ -256,7 +258,7 @@ const StylePane = ({ accountId }) => {
   }, [accountId]);
   return (
     <div data-testid="adr-style-pane">
-      {!style && <p className="adr-empty">Style DNA non ancora compilato per questo Account.</p>}
+      {!style && <p className="adr-empty">{t('crm.account_detail.style_dna_non_ancora_compilato_per_questo_account')}</p>}
       {style && (
         <>
           <Field label="Atmosphere" value={(style.atmosphere_tags || []).join(' · ')} />

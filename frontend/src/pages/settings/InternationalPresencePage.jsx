@@ -20,6 +20,7 @@ import api from '../../lib/api';
 import { ArrowLeft, GripVertical, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 import './internationalPresence.css';
+import { useT } from '../../i18n/useT';
 
 const MACRO_ORDER = ['italy', 'europe', 'americas', 'gcc', 'apac', 'latam', 'other'];
 const MACRO_LABEL = {
@@ -133,6 +134,7 @@ const displayName = (m, preferred = 'en-US') => {
 };
 
 const InternationalPresencePage = () => {
+  const { t } = useT();
   const navigate = useNavigate();
   const [loading, setLoading]   = useState(true);
   const [markets, setMarkets]   = useState([]);
@@ -304,9 +306,9 @@ const InternationalPresencePage = () => {
         </p>
       </header>
 
-      {loading && <p className="ip-loading" data-testid="ip-loading">Caricamento della presenza editoriale…</p>}
+      {loading && <p className="ip-loading" data-testid="ip-loading">{t('settings.international_presence.caricamento_della_presenza_editoriale')}</p>}
       {!loading && grouped.length === 0 && (
-        <p className="ip-empty">Nessun mercato disponibile nel catalogo platform.</p>
+        <p className="ip-empty">{t('settings.international_presence.nessun_mercato_disponibile_nel_catalogo_platform')}</p>
       )}
 
       {grouped.map((g) => (
@@ -355,7 +357,7 @@ const InternationalPresencePage = () => {
             data-testid="ip-discard"
             onClick={discard}
             disabled={saving}
-          >Annulla</button>
+          >{t('settings.international_presence.annulla')}</button>
           <button
             type="button"
             className="ip-btn ip-btn--primary"
@@ -516,13 +518,13 @@ const PositioningDrawer = ({ marketCode, pos, behavior, ctaDefault, luxuryPercep
         Definisci <em>come</em> lo studio vuole essere percepito in questo mercato.
         Il <em>mercato target</em> stabilisce lingua, geografia SEO, fuso editoriale e psicologia
         del CTA. La <em>lente culturale</em> è invece l'identità con cui parli — può differire dal mercato:
-        <br />uno studio di New York può rivolgersi al mercato americano usando una <em>Italian Material Culture</em> come lente editoriale.
+        <br />uno studio di New York può rivolgersi al mercato americano usando una <em>{t('settings.international_presence.italian_material_culture')}</em> come lente editoriale.
       </p>
 
       {/* Positioning Mode */}
       <div className="ip-drawer__group">
         <p className="ip-drawer__label">Positioning Mode</p>
-        <p className="ip-drawer__hint">L'asse strategico di posizionamento commerciale per questo mercato.</p>
+        <p className="ip-drawer__hint">{t('settings.international_presence.l_asse_strategico_di_posizionamento_commerciale_pe')}</p>
         <div className="ip-drawer__radios" role="radiogroup">
           {POSITIONING_MODES.map((p) => (
             <button
@@ -591,7 +593,7 @@ const PositioningDrawer = ({ marketCode, pos, behavior, ctaDefault, luxuryPercep
       {/* Business Intent — multi */}
       <div className="ip-drawer__group">
         <p className="ip-drawer__label">Business Intent</p>
-        <p className="ip-drawer__hint">Cosa vuoi ottenere strategicamente da questo mercato.</p>
+        <p className="ip-drawer__hint">{t('settings.international_presence.cosa_vuoi_ottenere_strategicamente_da_questo_merca')}</p>
         <div className="ip-drawer__chips">
           {BUSINESS_INTENTS.map((b) => (
             <button
@@ -609,7 +611,7 @@ const PositioningDrawer = ({ marketCode, pos, behavior, ctaDefault, luxuryPercep
       {/* Primary Audience — multi */}
       <div className="ip-drawer__group">
         <p className="ip-drawer__label">Primary Audience</p>
-        <p className="ip-drawer__hint">A chi parli prevalentemente in questo mercato.</p>
+        <p className="ip-drawer__hint">{t('settings.international_presence.a_chi_parli_prevalentemente_in_questo_mercato')}</p>
         <div className="ip-drawer__chips">
           {PRIMARY_AUDIENCES.map((a) => (
             <button
@@ -628,7 +630,7 @@ const PositioningDrawer = ({ marketCode, pos, behavior, ctaDefault, luxuryPercep
       {Object.keys(behavior).length > 0 && (
         <div className="ip-drawer__group">
           <p className="ip-drawer__label">Market Behavior<sup>™</sup> <em style={{ opacity: 0.5, fontStyle: 'italic' }}>· read-only intelligence</em></p>
-          <p className="ip-drawer__hint">Come gli interlocutori in questo mercato tipicamente decidono. Queste euristiche guidano lo storefront, il CTA e l'editorial composer.</p>
+          <p className="ip-drawer__hint">{t('settings.international_presence.come_gli_interlocutori_in_questo_mercato_tipicamen')}</p>
           <div className="ip-drawer__behavior">
             {Object.entries(MARKET_BEHAVIOR_LABELS).map(([k, label]) => (
               behavior[k] ? (

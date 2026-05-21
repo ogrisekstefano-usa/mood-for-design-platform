@@ -12,6 +12,7 @@ import { media, links, uploadMediaFile } from '../../lib/mediaApi';
 import ImageEditModal from '../../components/common/ImageEditModal';
 import { toast } from 'sonner';
 import './asset-picker.css';
+import { useT } from '../../i18n/useT';
 
 // Default editorial taxonomy hints for quick-tagging during upload.
 // These are SUGGESTIONS — users can free-type their own.
@@ -355,14 +356,14 @@ const AssetPickerModal = ({
 
             {loading && (
               <div className="mfd-picker__loading" data-testid="asset-picker-loading">
-                <Loader2 size={18} className="animate-spin" /> <span>Caricamento…</span>
+                <Loader2 size={18} className="animate-spin" /> <span>{t('settings.asset_picker.caricamento')}</span>
               </div>
             )}
 
             {!loading && assets.length === 0 && (
               <div className="mfd-picker__empty" data-testid="asset-picker-empty">
                 <ImageIcon size={28} strokeWidth={1} />
-                <p>Nessun asset corrisponde. Carica nuove immagini per iniziare a curare.</p>
+                <p>{t('settings.asset_picker.nessun_asset_corrisponde_carica_nuove_immagini_per')}</p>
                 <button type="button" onClick={() => setTab('upload')} className="mfd-picker__btn mfd-picker__btn--gold">
                   <Upload size={11} strokeWidth={1.6} /> Carica file
                 </button>
@@ -408,9 +409,9 @@ const AssetPickerModal = ({
                  onClick={() => fileInputRef.current?.click()}
                  data-testid="asset-picker-drop">
               <Upload size={28} strokeWidth={1.2} />
-              <p className="mfd-picker__drop-title">Trascina qui le immagini</p>
+              <p className="mfd-picker__drop-title">{t('settings.asset_picker.trascina_qui_le_immagini')}</p>
               <p className="mfd-picker__drop-sub">
-                o <span className="mfd-picker__drop-link">scegli dal computer</span> · jpg / png / webp / heic
+                o <span className="mfd-picker__drop-link">{t('settings.asset_picker.scegli_dal_computer')}</span> · jpg / png / webp / heic
               </p>
               <input ref={fileInputRef} type="file" multiple accept="image/*"
                      style={{ display: 'none' }} onChange={(e) => handleFiles(e.target.files)}

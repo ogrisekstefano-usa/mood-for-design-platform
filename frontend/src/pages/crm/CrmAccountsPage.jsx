@@ -28,6 +28,7 @@ import { avatarPalette, initialsOf } from '../../lib/avatarHue';
 import AccountDetailDrawer from './AccountDetailDrawer';
 import './crm.css';
 import './relationship-os.css';
+import { useT } from '../../i18n/useT';
 
 // ─── Tab definitions ────────────────────────────────────────────────
 // All filter via lifecycle_stage values stored in relationship_lookups.
@@ -90,6 +91,7 @@ const STAGE_META = {
 };
 
 const StageDot = ({ stage }) => {
+  const { t } = useT();
   const meta = STAGE_META[stage] || { c: '#9CA3AF' };
   return <span className="crm-stage-dot" style={{ backgroundColor: meta.c }} aria-hidden />;
 };
@@ -183,7 +185,7 @@ const AccountCard = ({ account, onOpen }) => {
         </div>
       ) : (
         <div className="crm-card__contact crm-card__contact--empty">
-          <span>Nessun contatto primario · aggiungi al drawer</span>
+          <span>{t('crm.crm_accounts.nessun_contatto_primario_aggiungi_al_drawer')}</span>
         </div>
       )}
       <div className="crm-card__foot">
@@ -229,7 +231,7 @@ const NewAccountModal = ({ open, onClose, onCreated }) => {
         <header className="crm-modal__head">
           <div>
             <p className="crm-modal__eyebrow">CRM · Nuova relazione</p>
-            <h2 className="crm-modal__title">Aggiungi un Account</h2>
+            <h2 className="crm-modal__title">{t('crm.crm_accounts.aggiungi_un_account')}</h2>
           </div>
           <button type="button" onClick={onClose}><X size={16} /></button>
         </header>
@@ -257,7 +259,7 @@ const NewAccountModal = ({ open, onClose, onCreated }) => {
           </select>
         </div>
         <footer className="crm-modal__foot">
-          <button type="button" onClick={onClose} className="crm-btn crm-btn--ghost">Annulla</button>
+          <button type="button" onClick={onClose} className="crm-btn crm-btn--ghost">{t('crm.crm_accounts.annulla')}</button>
           <button type="button" onClick={submit} disabled={saving}
                   data-testid="crm-new-account-submit"
                   className="crm-btn crm-btn--primary">
@@ -353,7 +355,7 @@ const CrmAccountsPage = () => {
       {/* ── Hero ── */}
       <header className="crm-hero">
         <p className="crm-hero__eyebrow">CRM</p>
-        <h1 className="crm-hero__title">Le relazioni della tua casa di design</h1>
+        <h1 className="crm-hero__title">{t('crm.crm_accounts.le_relazioni_della_tua_casa_di_design')}</h1>
         <p className="crm-hero__lead">
           Account-centered. Ogni Account può avere più Contact.
           I membri del Team vivono in <strong>Team</strong> — non qui.
@@ -442,12 +444,12 @@ const CrmAccountsPage = () => {
         <div className="rl-list-filters" data-testid="crm-filters">
           <select value={filterStage} onChange={(e) => setFilterStage(e.target.value)}
                   data-testid="crm-filter-stage">
-            <option value="">Tutti gli stage</option>
+            <option value="">{t('crm.crm_accounts.tutti_gli_stage')}</option>
             {CANONICAL_PIPELINE.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
           </select>
           <select value={filterType} onChange={(e) => setFilterType(e.target.value)}
                   data-testid="crm-filter-type">
-            <option value="">Tutti i tipi</option>
+            <option value="">{t('crm.crm_accounts.tutti_i_tipi')}</option>
             {Object.entries(ACCOUNT_TYPE_LABEL).map(([k, v]) => (
               <option key={k} value={k}>{v}</option>
             ))}
@@ -466,7 +468,7 @@ const CrmAccountsPage = () => {
 
       {/* ── Body ── */}
       {loading && (
-        <p className="crm-loading">Caricamento…</p>
+        <p className="crm-loading">{t('crm.crm_accounts.caricamento')}</p>
       )}
 
       {!loading && activeTab.filter === '__followups__' && (
@@ -475,7 +477,7 @@ const CrmAccountsPage = () => {
 
       {!loading && activeTab.filter !== '__followups__' && filtered.length === 0 && (
         <div className="crm-empty-state" data-testid="crm-empty-state">
-          <p className="crm-empty-state__eyebrow">Sala delle relazioni</p>
+          <p className="crm-empty-state__eyebrow">{t('crm.crm_accounts.sala_delle_relazioni')}</p>
           <p className="crm-empty-state__lead">
             {activeTab.id === 'accounts'
               ? 'Nessun Account ancora. Inizia a costruire la memoria delle tue relazioni.'

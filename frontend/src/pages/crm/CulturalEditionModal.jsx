@@ -10,9 +10,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { X, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { useT } from '../../i18n/useT';
 
 export const CulturalEditionModal = ({ open, accountId, sourceType = 'project',
                                       sourceId = '', onClose, onCreated }) => {
+  const { t } = useT();
   const [submarkets, setSubmarkets] = useState([]);
   const [marketFilter, setMarketFilter] = useState('');
   const [selected, setSelected] = useState('');
@@ -91,7 +93,7 @@ export const CulturalEditionModal = ({ open, accountId, sourceType = 'project',
         <div className="rl-modal__head">
           <div>
             <p className="rl-modal__eyebrow">Create a Cultural Edition™</p>
-            <h2 className="rl-modal__title">Adatta tono, ritmo, CTA al mercato</h2>
+            <h2 className="rl-modal__title">{t('crm.cultural_edition.adatta_tono_ritmo_cta_al_mercato')}</h2>
           </div>
           <button className="rl-modal__close" onClick={onClose} aria-label="Chiudi" data-testid="ce-close">
             <X size={18} />
@@ -113,7 +115,7 @@ export const CulturalEditionModal = ({ open, accountId, sourceType = 'project',
                     data-testid="ce-source-type">
               <option value="project">Progetto</option>
               <option value="article">Articolo</option>
-              <option value="moodboard">Moodboard</option>
+              <option value="moodboard">{t('crm.cultural_edition.moodboard')}</option>
               <option value="account">Account</option>
             </select>
             <input className="rl-field__input" value={srcId}
@@ -128,7 +130,7 @@ export const CulturalEditionModal = ({ open, accountId, sourceType = 'project',
           <select className="rl-field__select" value={marketFilter}
                   onChange={(e) => setMarketFilter(e.target.value)}
                   data-testid="ce-market-select">
-            <option value="">Tutti i mercati</option>
+            <option value="">{t('crm.cultural_edition.tutti_i_mercati')}</option>
             {markets.map((m) => <option key={m} value={m}>{m}</option>)}
           </select>
         </div>

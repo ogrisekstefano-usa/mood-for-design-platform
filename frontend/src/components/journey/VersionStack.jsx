@@ -11,6 +11,7 @@
  */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useT } from '../../i18n/useT';
 
 const STATE_LABEL = {
   draft:               'Bozza interna',
@@ -27,13 +28,14 @@ const STATE_LABEL = {
 };
 
 const VersionStack = ({ artifacts, projectId, emptyHint, onAddVersion }) => {
+  const { t } = useT();
   const navigate = useNavigate();
   const items = artifacts || [];
 
   if (items.length === 0) {
     return (
       <div className="sw-empty" data-testid="sw-versions-empty">
-        <h4 className="sw-empty__title">Ancora nessun capitolo</h4>
+        <h4 className="sw-empty__title">{t('journey.version_stack.ancora_nessun_capitolo')}</h4>
         <p className="sw-empty__lede">
           {emptyHint || "Quando aprirai una direzione per questo passaggio, comparirà qui come capitolo progettuale."}
         </p>

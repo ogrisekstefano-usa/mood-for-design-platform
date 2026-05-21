@@ -17,8 +17,10 @@ import ClientHumanCard from '../../components/client/ClientHumanCard';
 import HowItWorksSection from '../../components/client/HowItWorksSection';
 import WhatYouWillFindSection from '../../components/client/WhatYouWillFindSection';
 import ProjectProgressTracker from '../../components/client/ProjectProgressTracker';
+import { useT } from '../../i18n/useT';
 
 const ClientOverviewPage = () => {
+  const { t } = useT();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -193,7 +195,7 @@ const HasDataExperience = ({ data }) => {
         {/* Moodboards */}
         <article data-testid="client-moodboards-card" className="cp-card p-8 lg:col-span-7">
           <header className="flex items-baseline justify-between mb-6">
-            <h4 className="font-heading text-[20px] text-[var(--cp-text-primary)]">Le tue moodboard</h4>
+            <h4 className="font-heading text-[20px] text-[var(--cp-text-primary)]">{t('client.client_overview.le_tue_moodboard')}</h4>
             <a href="/client/moodboards" className="text-[11px] uppercase tracking-[0.18em] text-[var(--cp-gold-soft)] hover:text-[var(--cp-gold)] transition-colors">
               Visualizza tutte →
             </a>

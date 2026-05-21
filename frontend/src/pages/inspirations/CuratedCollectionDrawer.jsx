@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { useT } from '../../i18n/useT';
 
 const VISIBILITY_OPTIONS = [
   { key: 'team',           label: 'Studio',        hint: 'Visibile a tutto il team' },
@@ -16,6 +17,7 @@ const VISIBILITY_OPTIONS = [
 ];
 
 export default function CuratedCollectionDrawer({ onClose, onCreated }) {
+  const { t } = useT();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tagInput, setTagInput] = useState('');
@@ -94,7 +96,7 @@ export default function CuratedCollectionDrawer({ onClose, onCreated }) {
           </label>
 
           <label className="cc-field">
-            <span>Descrizione editoriale</span>
+            <span>{t('inspirations.curated_collection.descrizione_editoriale')}</span>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}

@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import api from '../../lib/api';
 import { asErrorString } from '../../lib/asErrorString';
 import './supplier-catalog.css';
+import { useT } from '../../i18n/useT';
 
 const STEPS = [
   { key: 'identity',  label: 'Catalogo' },
@@ -26,6 +27,7 @@ const STEPS = [
 ];
 
 const SupplierCatalogImportModal = ({ open, onClose, config, onImported }) => {
+  const { t } = useT();
   const [step, setStep] = useState(0);
   const [taxonomy, setTaxonomy] = useState(null);
 
@@ -369,7 +371,7 @@ const IdentityStep = ({ taxonomy, brand, setBrand, brandObj, setBrandObj,
             <Icons.BadgeCheck size={11} /> {brandObj.name}
             {brandObj.luxury_tier && <> · <em>{brandObj.luxury_tier}</em></>}
             {brandObj.country && <> · {brandObj.country}</>}
-            {brandObj.visibility_level === 'studio_private' && <> · <em>privato dello studio</em></>}
+            {brandObj.visibility_level === 'studio_private' && <> · <em>{t('inspirations.supplier_catalog_import.privato_dello_studio')}</em></>}
           </p>
         )}
       </Field>
@@ -476,7 +478,7 @@ const BrandPicker = ({ value, freeText, onSelect, onFreeText, onAddNew }) => {
              data-testid="catalog-field-brand" />
       {open && (
         <div className="scim-picker__panel" data-testid="catalog-brand-results">
-          {loading && <div className="scim-picker__item is-muted">Cerco nel registro…</div>}
+          {loading && <div className="scim-picker__item is-muted">{t('inspirations.supplier_catalog_import.cerco_nel_registro')}</div>}
           {!loading && items.length === 0 && (
             <div className="scim-picker__item is-muted">Nessun produttore trovato.</div>
           )}
@@ -649,7 +651,7 @@ const AddBrandDrawer = ({ taxonomy, markets, initialName, onClose, onCreated }) 
           </Field>
         </div>
         <footer className="scim-drawer__foot">
-          <button type="button" className="scim-btn-soft" onClick={onClose}>Annulla</button>
+          <button type="button" className="scim-btn-soft" onClick={onClose}>{t('inspirations.supplier_catalog_import.annulla')}</button>
           <button type="button" className="scim-btn" onClick={save} disabled={saving || !name.trim()}
                   data-testid="add-brand-save">
             {saving ? 'Salvataggio…' : 'Salva nel Brand Registry™'}
@@ -712,7 +714,7 @@ const AddCollectionDrawer = ({ brand, onClose, onCreated }) => {
           </Field>
         </div>
         <footer className="scim-drawer__foot">
-          <button type="button" className="scim-btn-soft" onClick={onClose}>Annulla</button>
+          <button type="button" className="scim-btn-soft" onClick={onClose}>{t('inspirations.supplier_catalog_import.annulla')}</button>
           <button type="button" className="scim-btn" onClick={save} disabled={saving || !name.trim()}
                   data-testid="add-collection-save">
             {saving ? 'Salvataggio…' : 'Salva collezione'}
@@ -756,7 +758,7 @@ const UploadStep = ({ brand, collection, onPick, extracting }) => {
         {extracting ? (
           <>
             <span className="scim-dropzone__pulse" />
-            <p className="scim-dropzone__title">MOOD sta preparando le anteprime del catalogo…</p>
+            <p className="scim-dropzone__title">{t('inspirations.supplier_catalog_import.mood_sta_preparando_le_anteprime_del_catalogo')}</p>
             <p className="scim-dropzone__hint">
               I cataloghi più voluminosi richiedono fino a un minuto. Resta su questa schermata.
             </p>
@@ -764,7 +766,7 @@ const UploadStep = ({ brand, collection, onPick, extracting }) => {
         ) : (
           <>
             <Icons.UploadCloud size={32} strokeWidth={1.3} />
-            <p className="scim-dropzone__title">Trascina qui il PDF del catalogo</p>
+            <p className="scim-dropzone__title">{t('inspirations.supplier_catalog_import.trascina_qui_il_pdf_del_catalogo')}</p>
             <p className="scim-dropzone__hint">
               oppure clicca per selezionarlo. Limite 60 MB.
             </p>

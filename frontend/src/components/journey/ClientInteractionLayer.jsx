@@ -18,6 +18,7 @@
 import React from 'react';
 import * as Icons from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useT } from '../../i18n/useT';
 
 const TONE_TO_BAR = {
   embrace:   '',
@@ -30,6 +31,7 @@ const TONE_TO_BAR = {
 };
 
 const ClientInteractionLayer = ({ stepId, voices, milestoneType, projectId }) => {
+  const { t } = useT();
   const list = voices || [];
 
   return (
@@ -39,7 +41,7 @@ const ClientInteractionLayer = ({ stepId, voices, milestoneType, projectId }) =>
           Voci sul capitolo
         </p>
         <h3 className="sw-section__title" style={{ marginTop: 6 }}>
-          La conversazione su <em>questa direzione</em>
+          La conversazione su <em>{t('journey.client_interaction_layer.questa_direzione')}</em>
         </h3>
       </header>
 

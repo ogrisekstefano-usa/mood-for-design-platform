@@ -10,6 +10,7 @@ import * as Icons from 'lucide-react';
 import api from '../../lib/api';
 import CulturalEditionWizard from '../../components/cultural/CulturalEditionWizard';
 import './cultural-editions.css';
+import { useT } from '../../i18n/useT';
 
 const fmtDate = (iso) => {
   if (!iso) return '';
@@ -25,6 +26,7 @@ const STATUS_LABEL = {
 };
 
 const CulturalEditionsListPage = () => {
+  const { t } = useT();
   const [drafts, setDrafts] = useState(null);
   const [error, setError] = useState(null);
   const [wizardOpen, setWizardOpen] = useState(false);
@@ -53,7 +55,7 @@ const CulturalEditionsListPage = () => {
       <header className="ce-page-head">
         <div>
           <p className="ce-eyebrow">Cultural Edition™</p>
-          <h1 className="ce-title">Le tue versioni mercato.</h1>
+          <h1 className="ce-title">{t('cultural.cultural_editions_list.le_tue_versioni_mercato')}</h1>
           <p className="ce-lede">
             Ogni edizione è un atto editoriale: un tuo contenuto adattato a una specifica cultura
             di mercato — tono, riferimenti, atmosfera.
@@ -87,7 +89,7 @@ const CulturalEditionsListPage = () => {
       {!error && drafts && drafts.length === 0 && (
         <div className="ce-empty" data-testid="ce-list-empty">
           <Icons.Globe size={26} strokeWidth={1.2} />
-          <p className="ce-empty__title">Nessuna edizione ancora.</p>
+          <p className="ce-empty__title">{t('cultural.cultural_editions_list.nessuna_edizione_ancora')}</p>
           <p className="ce-empty__hint">
             Crea la prima versione mercato di un tuo progetto o di una moodboard:
             è il modo in cui MOOD ti aiuta a parlare correttamente a Miami, NYC, Dubai, Milano o Parigi.

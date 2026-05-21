@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { useT } from '../../i18n/useT';
 
 const FLOW_STAGES = [
   { id: 'master',   label: 'Master',         desc: 'Direzione editoriale globale' },
@@ -29,6 +30,7 @@ const FLOW_STAGES = [
 
 // Map variant.status → which flow stage is active
 const STAGE_FOR_STATUS = (status) => {
+  const { t } = useT();
   if (!status) return 'master';
   if (['draft', 'composing'].includes(status)) return 'editions';
   if (['awaiting_review', 'in_review', 'rebalancing'].includes(status)) return 'review';
@@ -132,7 +134,7 @@ const NewMasterModal = ({ open, onClose, onCreated }) => {
           {error && <p className="text-[12px] text-red-400 font-body">{error}</p>}
         </div>
         <footer className="flex items-center justify-end gap-2 px-6 py-4 border-t border-[var(--bp-border)] bg-[var(--bp-surface-1)] rounded-b-[14px]">
-          <button type="button" onClick={onClose} className="px-3 py-2 text-[12px] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]">Annulla</button>
+          <button type="button" onClick={onClose} className="px-3 py-2 text-[12px] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]">{t('editorial.market_editions_toolbar.annulla')}</button>
           <button type="button" onClick={submit} disabled={saving}
                   data-testid="new-master-submit"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-[8px] bg-[var(--bp-primary)] text-black hover:opacity-90 text-[12.5px] font-medium disabled:opacity-50">
@@ -250,7 +252,7 @@ const NewMarketEditionModal = ({ open, master, markets, onClose, onCreated }) =>
           {error && <p className="text-[12px] text-red-400 font-body">{error}</p>}
         </div>
         <footer className="flex items-center justify-end gap-2 px-6 py-4 border-t border-[var(--bp-border)] bg-[var(--bp-surface-1)] rounded-b-[14px]">
-          <button type="button" onClick={onClose} className="px-3 py-2 text-[12px] text-[var(--bp-text-muted)]">Annulla</button>
+          <button type="button" onClick={onClose} className="px-3 py-2 text-[12px] text-[var(--bp-text-muted)]">{t('editorial.market_editions_toolbar.annulla')}</button>
           <button type="button" onClick={submit} disabled={saving || !master?.id}
                   data-testid="new-edition-submit"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-[8px] bg-[var(--bp-primary)] text-black hover:opacity-90 text-[12.5px] font-medium disabled:opacity-50">
@@ -294,7 +296,7 @@ const ScheduleModal = ({ open, variant, onClose, onScheduled }) => {
            className="w-full max-w-md bg-[var(--bp-surface-elevated)] border border-[var(--bp-border)] rounded-[14px] shadow-2xl">
         <header className="px-6 pt-6 pb-3 border-b border-[var(--bp-border)]">
           <p className="text-[10px] uppercase tracking-[0.28em] text-[var(--bp-primary)] font-body mb-1">Schedule</p>
-          <h2 className="text-[20px] font-heading text-[var(--bp-text-primary)]">Programma la pubblicazione</h2>
+          <h2 className="text-[20px] font-heading text-[var(--bp-text-primary)]">{t('editorial.market_editions_toolbar.programma_la_pubblicazione')}</h2>
         </header>
         <div className="px-6 py-5 space-y-3">
           <p className="text-[12.5px] text-[var(--bp-text-muted)] font-body italic">
@@ -305,7 +307,7 @@ const ScheduleModal = ({ open, variant, onClose, onScheduled }) => {
                  className="w-full bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[7px] py-2 px-3 text-[13px] text-[var(--bp-text-primary)] focus:outline-none focus:border-[var(--bp-border-hover)]" />
         </div>
         <footer className="flex items-center justify-end gap-2 px-6 py-4 border-t border-[var(--bp-border)] bg-[var(--bp-surface-1)] rounded-b-[14px]">
-          <button type="button" onClick={onClose} className="px-3 py-2 text-[12px] text-[var(--bp-text-muted)]">Annulla</button>
+          <button type="button" onClick={onClose} className="px-3 py-2 text-[12px] text-[var(--bp-text-muted)]">{t('editorial.market_editions_toolbar.annulla')}</button>
           <button type="button" onClick={submit} disabled={saving}
                   data-testid="schedule-submit"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-[8px] bg-[var(--bp-primary)] text-black hover:opacity-90 text-[12.5px] font-medium disabled:opacity-50">
@@ -440,7 +442,7 @@ const MarketEditionsToolbar = ({
                   data-testid="me-cta-open-calendar"
                   onClick={() => navigate('/blueprint/editorial-calendar')}>
             <Calendar size={12} strokeWidth={1.6} />
-            <span>Apri Calendario</span>
+            <span>{t('editorial.market_editions_toolbar.apri_calendario')}</span>
           </button>
           <button type="button"
                   className="me-btn me-btn--ghost"

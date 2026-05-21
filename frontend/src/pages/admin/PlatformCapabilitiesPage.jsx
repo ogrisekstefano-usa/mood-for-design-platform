@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import api from '../../lib/api';
 import './platform-capabilities.css';
+import { useT } from '../../i18n/useT';
 
 // ─── Editorial taxonomy ───────────────────────────────────────────
 // 11 platform capabilities. Each is mapped to surfaces it lives on,
@@ -146,6 +147,7 @@ const TIER_META = {
 };
 
 const PlatformCapabilitiesPage = () => {
+  const { t } = useT();
   const [activations, setActivations] = useState({}); // tenant_id agnostic — global toggles
   const [loading, setLoading] = useState(true);
 
@@ -247,7 +249,7 @@ const PlatformCapabilitiesPage = () => {
       </div>
 
       {loading && (
-        <p className="pcap-loading">Sincronizzo lo stato attivazioni…</p>
+        <p className="pcap-loading">{t('admin.platform_capabilities.sincronizzo_lo_stato_attivazioni')}</p>
       )}
     </div>
   );

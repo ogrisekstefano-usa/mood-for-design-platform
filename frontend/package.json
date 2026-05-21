@@ -62,7 +62,10 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "localization:audit": "node scripts/localization_audit.js"
+    "localization:audit": "node scripts/localization_audit.js",
+    "localization:source-audit": "node scripts/localization_source_audit.js",
+    "localization:auto-remediate": "node scripts/localization_auto_remediate.js",
+    "localization:auto-remediate:apply": "node scripts/localization_auto_remediate.js --apply"
   },
   "browserslist": {
     "production": [

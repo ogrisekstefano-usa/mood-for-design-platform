@@ -11,6 +11,7 @@
  */
 import React, { useMemo } from 'react';
 import VersionStack from './VersionStack';
+import { useT } from '../../i18n/useT';
 
 const GROUP_META = {
   selected: { eyebrow: 'Palette tattile', title: 'La materia scelta' },
@@ -19,6 +20,7 @@ const GROUP_META = {
 };
 
 const MaterialDirectionWorkspace = ({ artifacts, projectId, children }) => {
+  const { t } = useT();
   const groups = useMemo(() => {
     const sel = []; const alt = []; const rej = [];
     (artifacts || []).forEach((a) => {
@@ -39,7 +41,7 @@ const MaterialDirectionWorkspace = ({ artifacts, projectId, children }) => {
           <div>
             <p className="sw-section__eyebrow">Direzione materica</p>
             <h2 className="sw-section__title">
-              <em>Il tavolo della materia</em>
+              <em>{t('journey.material_direction_workspace.il_tavolo_della_materia')}</em>
             </h2>
           </div>
           <span className="sw-section__count">

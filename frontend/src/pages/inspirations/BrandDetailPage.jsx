@@ -23,6 +23,7 @@ import CollectionFormModal from './CollectionFormModal';
 import ConfirmCinematicDialog from '../../components/ConfirmCinematicDialog';
 import './brand-mode.css';
 import './brand-form.css';
+import { useT } from '../../i18n/useT';
 
 const MARKET_LABEL = {
   'us-miami':    'Miami',  'us-nyc':      'New York',
@@ -51,6 +52,7 @@ const InsightSkeleton = () => (
 );
 
 const Tile = ({ src, label, sub, to, testid }) => {
+  const { t } = useT();
   const inner = (
     <div className="bd-tile" data-testid={testid}>
       <div className="bd-tile__media">
@@ -192,7 +194,7 @@ const BrandDetailPage = () => {
             <span><em>{profile.counts.collections}</em>collezioni</span>
             <span><em>{profile.counts.products}</em>prodotti</span>
             <span><em>{profile.counts.inspirations}</em>riferimenti</span>
-            <span><em>{profile.counts.moodboards}</em>moodboard</span>
+            <span><em>{profile.counts.moodboards}</em>{t('inspirations.brand_detail.moodboard')}</span>
           </div>
         )}
       </header>
@@ -332,7 +334,7 @@ const BrandDetailPage = () => {
       {!loading && profile.inspirations.length > 0 && (
         <section className="bd-section" data-testid="bd-inspirations-section">
           <header className="bd-section__head">
-            <p className="bd-section__eyebrow">Riferimenti editoriali</p>
+            <p className="bd-section__eyebrow">{t('inspirations.brand_detail.riferimenti_editoriali')}</p>
             <span className="bd-section__count">{profile.counts.inspirations}</span>
           </header>
           <div className="bd-prod-grid">
@@ -350,7 +352,7 @@ const BrandDetailPage = () => {
       {!loading && profile.moodboards.length > 0 && (
         <section className="bd-section" data-testid="bd-moodboards-section">
           <header className="bd-section__head">
-            <p className="bd-section__eyebrow">Moodboard correlate</p>
+            <p className="bd-section__eyebrow">{t('inspirations.brand_detail.moodboard_correlate')}</p>
             <span className="bd-section__count">{profile.moodboards.length}</span>
           </header>
           <div className="bd-mb-grid">
@@ -372,7 +374,7 @@ const BrandDetailPage = () => {
       {/* Quick Jump editoriali — coda della pagina */}
       {!loading && (
         <section className="bd-section bd-jumps" data-testid="bd-quick-jump">
-          <p className="bd-section__eyebrow">Continua la lettura</p>
+          <p className="bd-section__eyebrow">{t('inspirations.brand_detail.continua_la_lettura')}</p>
           <div className="bd-jump-row">
             <Link to="/inspirations" className="bd-jump" data-testid="bd-jump-inspirations">
               <Icons.Sparkles size={11} /> Inspirations™

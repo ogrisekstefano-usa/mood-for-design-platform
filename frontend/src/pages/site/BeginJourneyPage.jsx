@@ -10,6 +10,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import '../../styles/begin-journey.css';
+import { useT } from '../../i18n/useT';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -48,6 +49,7 @@ const STEPS = [
 ];
 
 const BeginJourneyPage = () => {
+  const { t } = useT();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -175,7 +177,7 @@ const BeginJourneyPage = () => {
               </div>
 
               <div className="bj-field">
-                <label className="bj-field__label">Come vuoi sentirti in questo spazio?</label>
+                <label className="bj-field__label">{t('site.begin_journey.come_vuoi_sentirti_in_questo_spazio')}</label>
                 <textarea className="bj-textarea"
                           placeholder="Una sensazione, un momento del giorno, un ricordo…"
                           value={howToFeel} onChange={(e) => setHowToFeel(e.target.value)}
@@ -188,7 +190,7 @@ const BeginJourneyPage = () => {
                           placeholder="Una città, un film, un materiale, un ricordo, un'immagine…"
                           value={refs} onChange={(e) => setRefs(e.target.value)}
                           data-testid="bj-references" />
-                <span className="bj-field__hint">Niente di formale — tutto quello che ti viene in mente.</span>
+                <span className="bj-field__hint">{t('site.begin_journey.niente_di_formale_tutto_quello_che_ti_viene_in_men')}</span>
               </div>
 
               <div className="bj-actions">
@@ -229,7 +231,7 @@ const BeginJourneyPage = () => {
               </div>
 
               <div className="bj-field">
-                <label className="bj-field__label">Quali materiali ti fanno stare bene?</label>
+                <label className="bj-field__label">{t('site.begin_journey.quali_materiali_ti_fanno_stare_bene')}</label>
                 <div className="bj-chips" data-testid="bj-materials">
                   {MATERIALS.map((m) => (
                     <button key={m} type="button"
@@ -298,7 +300,7 @@ const BeginJourneyPage = () => {
                 <input className="bj-input" type="tel" value={phone}
                        onChange={(e) => setPhone(e.target.value)}
                        data-testid="bj-phone" />
-                <span className="bj-field__hint">Facoltativo — alcune cose si capiscono meglio a voce.</span>
+                <span className="bj-field__hint">{t('site.begin_journey.facoltativo_alcune_cose_si_capiscono_meglio_a_voce')}</span>
               </div>
 
               <div className="bj-actions">

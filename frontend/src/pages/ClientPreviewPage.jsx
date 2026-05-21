@@ -27,6 +27,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import './client-preview.css';
+import { useT } from '../i18n/useT';
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -56,6 +57,7 @@ const MODE_AMBIENT = {
 
 
 export default function ClientPreviewPage() {
+  const { t } = useT();
   const { token } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -151,14 +153,14 @@ export default function ClientPreviewPage() {
     return (
       <div className="cp-shell cp-shell--loading" data-testid="cp-loading">
         <div className="cp-skel cp-skel--hero" />
-        <p className="cp-loading-text">Sto preparando la stanza…</p>
+        <p className="cp-loading-text">{t('clientpreview.client_preview.sto_preparando_la_stanza')}</p>
       </div>
     );
   }
   if (error === 'expired') {
     return (
       <div className="cp-shell cp-shell--gone" data-testid="cp-expired">
-        <p className="cp-eyebrow">Questa direzione non è più attiva</p>
+        <p className="cp-eyebrow">{t('clientpreview.client_preview.questa_direzione_non_e_piu_attiva')}</p>
         <h1 className="cp-title"><em>L'anteprima si è chiusa</em></h1>
         <p className="cp-sub">
           Lo studio potrebbe averla aggiornata. Chiedi un nuovo link per ritrovare il percorso.
@@ -170,8 +172,8 @@ export default function ClientPreviewPage() {
     return (
       <div className="cp-shell cp-shell--gone" data-testid="cp-notfound">
         <p className="cp-eyebrow">Direzione non trovata</p>
-        <h1 className="cp-title"><em>La stanza non è disponibile</em></h1>
-        <p className="cp-sub">Verifica con lo studio il link ricevuto.</p>
+        <h1 className="cp-title"><em>{t('clientpreview.client_preview.la_stanza_non_e_disponibile')}</em></h1>
+        <p className="cp-sub">{t('clientpreview.client_preview.verifica_con_lo_studio_il_link_ricevuto')}</p>
       </div>
     );
   }
@@ -208,7 +210,7 @@ export default function ClientPreviewPage() {
       <main className="cp-sequence" data-testid="cp-sequence">
         {data.assets.length === 0 && (
           <div className="cp-empty">
-            <p>Questa direzione è ancora in fase di curatela.</p>
+            <p>{t('clientpreview.client_preview.questa_direzione_e_ancora_in_fase_di_curatela')}</p>
           </div>
         )}
         {data.assets.map((a, idx) => (
@@ -250,7 +252,7 @@ export default function ClientPreviewPage() {
                 data-testid={`cp-frame-note-${a.id}`}
               >
                 <Icons.MessageCircle size={11} />
-                <span>Aggiungi una nota</span>
+                <span>{t('clientpreview.client_preview.aggiungi_una_nota')}</span>
               </button>
             </div>
           </article>
@@ -268,7 +270,7 @@ export default function ClientPreviewPage() {
             data-testid="cp-approve"
           >
             <Icons.Check size={14} />
-            <span>Approvo questa direzione</span>
+            <span>{t('clientpreview.client_preview.approvo_questa_direzione')}</span>
           </button>
           <button
             type="button"
@@ -286,7 +288,7 @@ export default function ClientPreviewPage() {
             data-testid="cp-add-note"
           >
             <Icons.PenLine size={14} />
-            <span>Aggiungi una nota</span>
+            <span>{t('clientpreview.client_preview.aggiungi_una_nota')}</span>
           </button>
         </div>
         <p className="cp-footer__sub">
@@ -341,7 +343,7 @@ export default function ClientPreviewPage() {
                   : 'Una nota progettuale'}
               </p>
               <h3 className="cp-note-card__title">
-                <em>Lasciaci sentire la tua direzione</em>
+                <em>{t('clientpreview.client_preview.lasciaci_sentire_la_tua_direzione')}</em>
               </h3>
             </header>
             <input
@@ -379,7 +381,7 @@ export default function ClientPreviewPage() {
                 data-testid="cp-note-submit"
               >
                 <Icons.Send size={13} />
-                <span>Invia la nota</span>
+                <span>{t('clientpreview.client_preview.invia_la_nota')}</span>
               </button>
             </div>
           </div>

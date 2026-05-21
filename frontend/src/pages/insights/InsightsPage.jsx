@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import api from '../../lib/api';
 import './insights.css';
+import { useT } from '../../i18n/useT';
 
 // ─── Editorial labels for milestone types ──────────────────────────
 const MILESTONE_LABEL = {
@@ -42,6 +43,7 @@ const STATUS_TONE = {
 
 // ─── Sparkline (pure SVG, GPU-safe) ────────────────────────────────
 const Sparkline = ({ values, color = '#7fdfff', height = 60, label }) => {
+  const { t } = useT();
   if (!values || !values.length) return null;
   const max = Math.max(...values, 1);
   const width = 280;
@@ -160,7 +162,7 @@ const InsightsPage = () => {
   if (!data) {
     return (
       <div className="ins-page ins-page--loading" data-testid="ins-loading">
-        <p>Sto leggendo le pulsazioni dello studio…</p>
+        <p>{t('insights.insights.sto_leggendo_le_pulsazioni_dello_studio')}</p>
       </div>
     );
   }
@@ -168,8 +170,8 @@ const InsightsPage = () => {
   return (
     <div className="ins-page" data-testid="insights-page">
       <header className="ins-header">
-        <p className="ins-header__eyebrow">Studio · Insights</p>
-        <h1 className="ins-header__title"><em>Le pulsazioni dello studio</em></h1>
+        <p className="ins-header__eyebrow">{t('insights.insights.studio_insights')}</p>
+        <h1 className="ins-header__title"><em>{t('insights.insights.le_pulsazioni_dello_studio')}</em></h1>
         <p className="ins-header__sub">
           Una lettura editoriale di ciò che lo studio sta producendo, dove si sta muovendo
           il pensiero progettuale, quali capitoli del Design Journey™ stanno fiorendo.
@@ -186,7 +188,7 @@ const InsightsPage = () => {
           <header className="ins-card__head">
             <div>
               <p className="ins-card__eyebrow">Ultime 12 settimane</p>
-              <h2 className="ins-card__title"><em>L'evoluzione dello studio</em></h2>
+              <h2 className="ins-card__title"><em>{t('insights.insights.l_evoluzione_dello_studio')}</em></h2>
             </div>
             <TrendingUp size={16} strokeWidth={1.3} className="ins-card__icon" />
           </header>
@@ -200,7 +202,7 @@ const InsightsPage = () => {
             </div>
             <div className="ins-evolution__row">
               <div className="ins-evolution__meta">
-                <p className="ins-evolution__label">Moodboard</p>
+                <p className="ins-evolution__label">{t('insights.insights.moodboard')}</p>
                 <p className="ins-evolution__value">{data.timeline.moodboards.reduce((a, b) => a + b, 0)}</p>
               </div>
               <Sparkline values={data.timeline.moodboards} color="#7fdfff" label="moodboards" />
@@ -220,14 +222,14 @@ const InsightsPage = () => {
           <header className="ins-card__head">
             <div>
               <p className="ins-card__eyebrow">Pietre miliari · Pulsazioni</p>
-              <h2 className="ins-card__title"><em>Dove si trova il pensiero progettuale</em></h2>
+              <h2 className="ins-card__title"><em>{t('insights.insights.dove_si_trova_il_pensiero_progettuale')}</em></h2>
             </div>
             <CircleDot size={16} strokeWidth={1.3} className="ins-card__icon" />
           </header>
           <div className="ins-pulse">
             {data.milestone_pulse.slice(0, 10).map((e) => <PulseRow key={e.milestone_type} entry={e} />)}
             {data.milestone_pulse.length === 0 && (
-              <p className="ins-empty">Nessuna pietra miliare ancora attiva.</p>
+              <p className="ins-empty">{t('insights.insights.nessuna_pietra_miliare_ancora_attiva')}</p>
             )}
           </div>
         </article>
@@ -237,16 +239,16 @@ const InsightsPage = () => {
           <header className="ins-card__head">
             <div>
               <p className="ins-card__eyebrow">Ultimi 30 giorni</p>
-              <h2 className="ins-card__title"><em>La superficie viva del Journey</em></h2>
+              <h2 className="ins-card__title"><em>{t('insights.insights.la_superficie_viva_del_journey')}</em></h2>
             </div>
             <Activity size={16} strokeWidth={1.3} className="ins-card__icon" />
           </header>
           <p className="ins-activity__total">
             <span className="ins-activity__num">{data.activity_surface.total}</span>
-            <span className="ins-activity__lbl">eventi narrativi nel mese</span>
+            <span className="ins-activity__lbl">{t('insights.insights.eventi_narrativi_nel_mese')}</span>
           </p>
           <ActivityHeatmap surface={data.activity_surface} />
-          <p className="ins-activity__legend">ogni cella · un giorno · intensità = numero di eventi</p>
+          <p className="ins-activity__legend">{t('insights.insights.ogni_cella_un_giorno_intensita_numero_di_eventi')}</p>
         </article>
 
         {/* ── Signature curatoriale ─────────────────────────── */}
@@ -254,7 +256,7 @@ const InsightsPage = () => {
           <header className="ins-card__head">
             <div>
               <p className="ins-card__eyebrow">Signature curatoriale</p>
-              <h2 className="ins-card__title"><em>La grammatica dello studio</em></h2>
+              <h2 className="ins-card__title"><em>{t('insights.insights.la_grammatica_dello_studio')}</em></h2>
             </div>
             <Sparkles size={16} strokeWidth={1.3} className="ins-card__icon" />
           </header>

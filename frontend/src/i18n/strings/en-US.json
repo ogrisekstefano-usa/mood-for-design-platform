@@ -25,7 +25,22 @@
       "hours_ago": "{n} hours ago",
       "days_ago": "{n} days ago"
     },
-    "workspace": "Workspace"
+    "workspace": "Workspace",
+    "editorial_media_field": {
+      "aggiungi_media": "+ Aggiungi media",
+      "trascina_sfoglia_scegli_dalla_library": "Trascina · sfoglia · scegli dalla Library"
+    },
+    "hotspot": {
+      "annulla": "Annulla"
+    },
+    "image_edit": {
+      "modifica_immagine_continuita_editoriale": "Modifica immagine · continuità editoriale",
+      "trascina_l_area_visibile_usa_le_maniglie_per_regol": "Trascina l'area visibile · usa le maniglie per regolare"
+    },
+    "palette_switcher": {
+      "atelier_dei_temi": "Atelier dei temi",
+      "preset_editoriali": "Preset editoriali"
+    }
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -274,6 +289,18 @@
         "yesterday": "yesterday",
         "days_ago": "{n} days ago"
       }
+    },
+    "cockpit_timeline": {
+      "il_battito_del_tuo_studio": "Il battito del tuo studio",
+      "carica_un_riferimento_o_crea_una_moodboard_per_dar": "Carica un riferimento o crea una moodboard per dare ritmo alla giornata."
+    },
+    "dashboard": {
+      "decisioni_che_la_giornata_sussurra": "Decisioni che la giornata sussurra",
+      "mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud": "MOOD sta iniziando a leggere il ritmo del tuo studio.",
+      "i_primi_suggerimenti_appariranno_con_l_utilizzo_re": "I primi suggerimenti appariranno con l'utilizzo reale della piattaforma.",
+      "progetti_che_chiedono_la_tua_presenza": "Progetti che chiedono la tua presenza",
+      "le_relazioni_che_attendono_un_gesto": "Le relazioni che attendono un gesto",
+      "nessuna_relazione_raffreddata": "Nessuna relazione raffreddata."
     }
   },
   "errors": {
@@ -356,7 +383,23 @@
       "upgrade_for_more": "Upgrade to create more"
     },
     "usage_label": "Projects",
-    "newProject": "New project"
+    "newProject": "New project",
+    "projects_studio": {
+      "apri_un_nuovo_progetto": "+ Apri un nuovo progetto",
+      "caricamento_archivio": "Caricamento archivio…",
+      "nessuna_immagine": "Nessuna immagine",
+      "pubblica_progetto": "Pubblica progetto",
+      "titolo_del_progetto": "Titolo del progetto",
+      "atelier": "Atelier",
+      "annulla": "Annulla",
+      "sottotitolo_editoriale": "Sottotitolo editoriale",
+      "cover_hero_l_apertura_visiva_del_progetto": "Cover hero · l'apertura visiva del progetto",
+      "vocabolario_materico": "Vocabolario materico",
+      "titolo_per_il_mercato": "Titolo per il mercato",
+      "refine_material_narrative_materia_primaria_seconda": "Refine Material Narrative · materia primaria · secondaria · tattilità",
+      "explore_material": "Explore material",
+      "aggiungi_cta": "+ Aggiungi CTA"
+    }
   },
   "inspirations": {
     "eyebrow": "Cultural Design Intelligence Layer",
@@ -393,6 +436,83 @@
       "luxury": "Luxury tone",
       "profile": "Destination",
       "reset": "Reset"
+    },
+    "add_inspiration": {
+      "aggiungi_riferimento": "Aggiungi riferimento",
+      "url_della_reference": "URL della reference",
+      "descrizione_editoriale_opzionale": "Descrizione editoriale (opzionale)",
+      "atmosfera": "Atmosfera"
+    },
+    "brand_detail": {
+      "moodboard": "moodboard",
+      "riferimenti_editoriali": "Riferimenti editoriali",
+      "moodboard_correlate": "Moodboard correlate",
+      "continua_la_lettura": "Continua la lettura"
+    },
+    "brand_form": {
+      "salvataggio": "Salvataggio",
+      "salva_modifiche": "Salva modifiche",
+      "aggiungi_all_atlante": "Aggiungi all'atlante"
+    },
+    "brand_mode": {
+      "entra_nell_atelier": "Entra nell'atelier",
+      "nessun_produttore_corrisponde_alla_ricerca": "Nessun produttore corrisponde alla ricerca",
+      "l_atlante_curatoriale_e_in_costruzione_aggiungi_un": "L'atlante curatoriale è in costruzione. Aggiungi un produttore o importa un catalogo per iniziare la lettura."
+    },
+    "collection_form": {
+      "capitolo_editoriale": "Capitolo editoriale ·",
+      "salvataggio": "Salvataggio",
+      "salva_modifiche": "Salva modifiche",
+      "aggiungi_collezione": "Aggiungi collezione"
+    },
+    "curated_collection": {
+      "descrizione_editoriale": "Descrizione editoriale"
+    },
+    "inspiration_detail": {
+      "apertura_del_riferimento": "Apertura del riferimento…",
+      "modifica": "Modifica",
+      "atmosfera": "Atmosfera",
+      "le_percentuali_sono_secondarie_il_significato_e_ne": "Le percentuali sono secondarie. Il significato è nell'interpretazione editoriale qui sopra.",
+      "mood_sta_leggendo_il_linguaggio_culturale_di_quest": "MOOD sta leggendo il linguaggio culturale di questo riferimento…",
+      "adatta_la_direzione_editoriale_per_questo_riferime": "Adatta la direzione editoriale per questo riferimento",
+      "direzione_editoriale": "Direzione editoriale",
+      "verifica_i_diritti_d_uso_prima_della_pubblicazione": "· verifica i diritti d'uso prima della pubblicazione esterna.",
+      "apri_product_gallery": "Apri Product Gallery™"
+    },
+    "material_view": {
+      "sto_leggendo_la_materioteca": "Sto leggendo la materioteca…",
+      "nessun_elemento_materico_ancora_classificato_per_q": "Nessun elemento materico ancora classificato per questi criteri.",
+      "aumenta_il_numero_di_asset_curati_per_arricchire_l": "Aumenta il numero di asset curati per arricchire la materioteca."
+    },
+    "moodboard_picker": {
+      "aggiungi_al_moodboard": "Aggiungi al moodboard",
+      "sto_caricando_i_moodboard": "Sto caricando i moodboard…",
+      "crea_nuovo_moodboard": "Crea nuovo moodboard"
+    },
+    "product_gallery": {
+      "moodboard_priority": "Moodboard priority",
+      "atmosfera": "Atmosfera",
+      "linguaggio_progettuale_dello_studio": "Linguaggio progettuale dello studio",
+      "in_attesa_di_riscontro_dal_cliente": "In attesa di riscontro dal cliente",
+      "curatela_editoriale_non_raccomandazione_algoritmic": "Curatela editoriale — non raccomandazione algoritmica.",
+      "sto_leggendo_le_relazioni": "Sto leggendo le relazioni…",
+      "ancora_nessuna_affinita_curatoriale_rilevata": "Ancora nessuna affinità curatoriale rilevata.",
+      "product_gallery_visual_atelier": "Product Gallery™ · Visual Atelier",
+      "atmosfera_in_lettura_curatoriale": "Atmosfera in lettura curatoriale",
+      "salva_in_references": "Salva in References™",
+      "aggiungi_al_moodboard": "Aggiungi al moodboard"
+    },
+    "studio_collections": {
+      "archivio_curatoriale_dello_studio": "Archivio curatoriale dello studio",
+      "nessuna_collezione_importata_inizia_caricando_un_c": "Nessuna collezione importata. Inizia caricando un catalogo fornitore.",
+      "importa_il_primo_catalogo": "Importa il primo catalogo"
+    },
+    "supplier_catalog_import": {
+      "privato_dello_studio": "privato dello studio",
+      "cerco_nel_registro": "Cerco nel registro…",
+      "annulla": "Annulla",
+      "mood_sta_preparando_le_anteprime_del_catalogo": "MOOD sta preparando le anteprime del catalogo…",
+      "trascina_qui_il_pdf_del_catalogo": "Trascina qui il PDF del catalogo"
     }
   },
   "editorial": {
@@ -430,6 +550,310 @@
     },
     "toast": {
       "load_error": "Error loading the editorial calendar"
+    },
+    "article_editor": {
+      "salvataggio": "Salvataggio…",
+      "annulla": "Annulla",
+      "caricamento_della_comprensione_editoriale": "Caricamento della comprensione editoriale…",
+      "body_blocchi_editoriali_composabili": "Body · blocchi editoriali composabili",
+      "cta_tier_azione_transizione_editoriale": "CTA · tier · azione · transizione editoriale",
+      "add_to_moodboard": "Add to moodboard",
+      "explore_material": "Explore material"
+    },
+    "composition_room_rail": {
+      "tutti_i_mercati": "Tutti i mercati"
+    },
+    "editorial_calendar": {
+      "nessun_segnale_operativo_critico_il_ritmo_editoria": "Nessun segnale operativo critico. Il ritmo editoriale è in equilibrio sui mercati attivi."
+    },
+    "market_editions_toolbar": {
+      "annulla": "Annulla",
+      "programma_la_pubblicazione": "Programma la pubblicazione",
+      "apri_calendario": "Apri Calendario"
+    },
+    "public_preview": {
+      "mercato_editoriale": "Mercato editoriale",
+      "cta_editoriale": "CTA editoriale"
+    }
+  },
+  "clientpreview": {
+    "client_preview": {
+      "sto_preparando_la_stanza": "Sto preparando la stanza…",
+      "questa_direzione_non_e_piu_attiva": "Questa direzione non è più attiva",
+      "la_stanza_non_e_disponibile": "La stanza non è disponibile",
+      "verifica_con_lo_studio_il_link_ricevuto": "Verifica con lo studio il link ricevuto.",
+      "questa_direzione_e_ancora_in_fase_di_curatela": "Questa direzione è ancora in fase di curatela.",
+      "aggiungi_una_nota": "Aggiungi una nota",
+      "approvo_questa_direzione": "Approvo questa direzione",
+      "lasciaci_sentire_la_tua_direzione": "Lasciaci sentire la tua direzione",
+      "invia_la_nota": "Invia la nota"
+    }
+  },
+  "admin": {
+    "advisor_detail": {
+      "contatti": "Contatti"
+    },
+    "advisor_edit": {
+      "identita_contatti": "Identità & contatti",
+      "economia_della_relazione": "Economia della relazione",
+      "specializzazione_lettura_della_relazione": "Specializzazione & lettura della relazione",
+      "annulla": "Annulla"
+    },
+    "advisor_network_admin": {
+      "network_degli_advisor": "Network degli Advisor",
+      "crea_advisor": "Crea Advisor",
+      "annulla": "Annulla"
+    },
+    "platform_capabilities": {
+      "sincronizzo_lo_stato_attivazioni": "Sincronizzo lo stato attivazioni…"
+    }
+  },
+  "advisor": {
+    "advisor_dashboard": {
+      "quest_area_e_riservata_agli_advisor_di_mood": "Quest'area è riservata agli Advisor di MOOD.",
+      "nessuno_specifico": "— Nessuno specifico —",
+      "annulla": "Annulla"
+    }
+  },
+  "client": {
+    "client_messages": {
+      "caricamento_conversazione": "Caricamento conversazione"
+    },
+    "client_overview": {
+      "le_tue_moodboard": "Le tue moodboard"
+    },
+    "site_evolution": {
+      "il_cantiere_non_e_ancora_iniziato": "Il cantiere non è ancora iniziato"
+    }
+  },
+  "crm": {
+    "account_constellation": {
+      "sezione_dominante": "Sezione dominante",
+      "nessun_journey_aperto_con_questa_relazione": "Nessun Journey aperto con questa relazione.",
+      "apri_una_conversazione_progettuale_per_cominciare": "Apri una conversazione progettuale per cominciare.",
+      "le_persone_della_relazione": "Le persone della relazione",
+      "segnali_del_viaggio": "Segnali del viaggio"
+    },
+    "account_detail": {
+      "caricamento": "Caricamento…",
+      "nessun_contact_ancora_aggiungi_il_primo_qui_sotto": "Nessun contact ancora. Aggiungi il primo qui sotto.",
+      "annulla": "Annulla",
+      "salva": "Salva",
+      "nessuna_interazione_registrata": "Nessuna interazione registrata.",
+      "files_allegati_arriva_con_il_media_library_inspect": "Files allegati arriva con il Media Library inspector.",
+      "style_dna_non_ancora_compilato_per_questo_account": "Style DNA non ancora compilato per questo Account.",
+      "la_memoria_della_relazione_e_ancora_bianca": "La memoria della relazione è ancora bianca.",
+      "registra_il_primo_contatto_una_call_una_nota_vocal": "Registra il primo contatto — una call, una nota vocale, una visita.",
+      "materiali_preferiti": "Materiali preferiti"
+    },
+    "crm_accounts": {
+      "nessun_contatto_primario_aggiungi_al_drawer": "Nessun contatto primario · aggiungi al drawer",
+      "aggiungi_un_account": "Aggiungi un Account",
+      "annulla": "Annulla",
+      "le_relazioni_della_tua_casa_di_design": "Le relazioni della tua casa di design",
+      "tutti_gli_stage": "Tutti gli stage",
+      "tutti_i_tipi": "Tutti i tipi",
+      "caricamento": "Caricamento…",
+      "sala_delle_relazioni": "Sala delle relazioni"
+    },
+    "cultural_edition": {
+      "adatta_tono_ritmo_cta_al_mercato": "Adatta tono, ritmo, CTA al mercato",
+      "moodboard": "Moodboard",
+      "tutti_i_mercati": "Tutti i mercati"
+    },
+    "relationship_graph": {
+      "tracciando_la_mappa_della_relazione": "Tracciando la mappa della relazione…",
+      "relationship_graph_mappa_editoriale": "Relationship Graph™ · mappa editoriale",
+      "dove_vive_la_relazione": "Dove vive la relazione",
+      "nessun_progetto_moodboard_o_materiale_ancora_colle": "Nessun progetto, moodboard o materiale ancora collegato."
+    },
+    "stage_change": {
+      "il_cambio_sara_tracciato_come_evento_in_timeline": "Il cambio sarà tracciato come evento in timeline."
+    }
+  },
+  "cultural": {
+    "cultural_edition_review": {
+      "revisione_editoriale": "Revisione editoriale",
+      "atmosfera_originaria": "Atmosfera originaria",
+      "corpo_editoriale": "Corpo editoriale",
+      "atmosfera": "Atmosfera"
+    },
+    "cultural_editions_list": {
+      "le_tue_versioni_mercato": "Le tue versioni mercato.",
+      "nessuna_edizione_ancora": "Nessuna edizione ancora."
+    },
+    "cultural_edition": {
+      "adatta_il_tuo_lavoro_a_un_altro_mercato_culturale": "Adatta il tuo lavoro a un altro mercato culturale.",
+      "scegli_il_contenuto_da_adattare": "Scegli il contenuto da adattare.",
+      "in_attesa_dei_contenuti_dello_studio": "In attesa dei contenuti dello studio…",
+      "lingua_della_versione_mercato": "Lingua della versione mercato",
+      "direzione_narrativa_del_mercato": "Direzione narrativa del mercato",
+      "hai_personalizzato_la_direzione_del_mercato": "Hai personalizzato la direzione del mercato.",
+      "briefing_al_caporedattore_opzionale": "Briefing al caporedattore (opzionale)",
+      "revisione_editoriale_prima_di_creare": "Revisione editoriale prima di creare.",
+      "atmosfera": "Atmosfera",
+      "suggerita_dal_mercato": "· suggerita dal mercato"
+    }
+  },
+  "insights": {
+    "insights": {
+      "sto_leggendo_le_pulsazioni_dello_studio": "Sto leggendo le pulsazioni dello studio…",
+      "studio_insights": "Studio · Insights",
+      "le_pulsazioni_dello_studio": "Le pulsazioni dello studio",
+      "l_evoluzione_dello_studio": "L'evoluzione dello studio",
+      "moodboard": "Moodboard",
+      "dove_si_trova_il_pensiero_progettuale": "Dove si trova il pensiero progettuale",
+      "nessuna_pietra_miliare_ancora_attiva": "Nessuna pietra miliare ancora attiva.",
+      "la_superficie_viva_del_journey": "La superficie viva del Journey",
+      "eventi_narrativi_nel_mese": "eventi narrativi nel mese",
+      "ogni_cella_un_giorno_intensita_numero_di_eventi": "ogni cella · un giorno · intensità = numero di eventi",
+      "la_grammatica_dello_studio": "La grammatica dello studio"
+    }
+  },
+  "journey": {
+    "step_workspace": {
+      "capitolo_in_corso": "Capitolo in corso",
+      "le_tracce_di_questo_passaggio": "Le tracce di questo passaggio"
+    },
+    "client_interaction_layer": {
+      "questa_direzione": "questa direzione"
+    },
+    "journey_closure_ceremony": {
+      "titolo_definitivo_del_journey": "Titolo definitivo del Journey"
+    },
+    "material_direction_workspace": {
+      "il_tavolo_della_materia": "Il tavolo della materia"
+    },
+    "milestone_dialogue": {
+      "nuovo_capitolo_progettuale": "Nuovo capitolo progettuale",
+      "voce_del_cliente": "Voce del cliente",
+      "chiudi": "Chiudi",
+      "sto_preparando_il_dialogo_progettuale": "Sto preparando il dialogo progettuale…",
+      "evoluzione_del_progetto": "Evoluzione del progetto",
+      "nessun_capitolo_condiviso_ancora": "Nessun capitolo condiviso ancora."
+    },
+    "moodboard_direction_workspace": {
+      "direzione_editoriale": "Direzione editoriale",
+      "l_orizzonte_di_questo_capitolo": "L'orizzonte di questo capitolo",
+      "capitoli_moodboard": "Capitoli moodboard",
+      "le_direzioni_proposte": "Le direzioni proposte"
+    },
+    "step_context_header": {
+      "capitolo_precedente": "Capitolo precedente",
+      "capitolo_seguente": "Capitolo seguente"
+    },
+    "version_stack": {
+      "ancora_nessun_capitolo": "Ancora nessun capitolo"
+    }
+  },
+  "moodboards": {
+    "moodboards": {
+      "continua_la_direzione": "Continua la direzione →"
+    }
+  },
+  "placeholder": {
+    "coming_soon": {
+      "torna_ai_progetti": "Torna ai progetti"
+    }
+  },
+  "settings": {
+    "asset_picker": {
+      "caricamento": "Caricamento…",
+      "nessun_asset_corrisponde_carica_nuove_immagini_per": "Nessun asset corrisponde. Carica nuove immagini per iniziare a curare.",
+      "trascina_qui_le_immagini": "Trascina qui le immagini",
+      "scegli_dal_computer": "scegli dal computer"
+    },
+    "international_presence": {
+      "caricamento_della_presenza_editoriale": "Caricamento della presenza editoriale…",
+      "nessun_mercato_disponibile_nel_catalogo_platform": "Nessun mercato disponibile nel catalogo platform.",
+      "annulla": "Annulla",
+      "uno_studio_di_new_york_puo_rivolgersi_al_mercato_a": "uno studio di New York può rivolgersi al mercato americano usando una",
+      "italian_material_culture": "Italian Material Culture",
+      "l_asse_strategico_di_posizionamento_commerciale_pe": "L'asse strategico di posizionamento commerciale per questo mercato.",
+      "cosa_vuoi_ottenere_strategicamente_da_questo_merca": "Cosa vuoi ottenere strategicamente da questo mercato.",
+      "a_chi_parli_prevalentemente_in_questo_mercato": "A chi parli prevalentemente in questo mercato.",
+      "come_gli_interlocutori_in_questo_mercato_tipicamen": "Come gli interlocutori in questo mercato tipicamente decidono. Queste euristiche guidano lo storefront, il CTA e l'editorial composer."
+    },
+    "magazine_admin": {
+      "caricamento": "Caricamento…",
+      "inizia_un_nuovo_articolo": "Inizia un nuovo articolo"
+    },
+    "magazine_editor": {
+      "caricamento": "Caricamento…",
+      "torna_alla_lista": "Torna alla lista"
+    }
+  },
+  "site": {
+    "begin_journey": {
+      "come_vuoi_sentirti_in_questo_spazio": "Come vuoi sentirti in questo spazio?",
+      "niente_di_formale_tutto_quello_che_ti_viene_in_men": "Niente di formale — tutto quello che ti viene in mente.",
+      "quali_materiali_ti_fanno_stare_bene": "Quali materiali ti fanno stare bene?",
+      "facoltativo_alcune_cose_si_capiscono_meglio_a_voce": "Facoltativo — alcune cose si capiscono meglio a voce."
+    },
+    "journey_welcome": {
+      "questo_link_non_e_piu_disponibile": "Questo link non è più disponibile.",
+      "aprendo_il_tuo_design_journey": "Aprendo il tuo Design Journey…",
+      "lo_studio_che_ti_accompagna": "Lo studio che ti accompagna:",
+      "l_atmosfera_che_cerchi": "L'atmosfera che cerchi",
+      "il_modo_in_cui_vivi": "Il modo in cui vivi ·",
+      "capitolo_primo_brief_cliente": "Capitolo primo · Brief Cliente"
+    }
+  },
+  "storefront": {
+    "storefront_studio": {
+      "pubblica_pagina": "Pubblica pagina",
+      "caricamento_dell_orchestrazione": "Caricamento dell'orchestrazione…",
+      "nessuna_fascia_per_questa_pagina": "Nessuna fascia per questa pagina.",
+      "chiudi": "Chiudi"
+    },
+    "band_editors": {
+      "nessuna_voce_di_menu_aggiungi_la_prima": "Nessuna voce di menu. Aggiungi la prima ↓",
+      "nessuna_colonna_aggiungi_la_prima": "Nessuna colonna. Aggiungi la prima ↓",
+      "automatica_ultimi_articoli_pubblicati_nel_locale": "Automatica · ultimi articoli pubblicati nel locale"
+    }
+  },
+  "workspace": {
+    "add_reference": {
+      "sfoglia_la_media_library": "Sfoglia la Media Library"
+    },
+    "design_journey_tab": {
+      "la_prima_conversazione": "La prima conversazione",
+      "l_editor_del_brief_arrivera_nel_prossimo_capitolo": "L'editor del Brief arriverà nel prossimo capitolo.",
+      "l_evoluzione_reale_del_progetto": "L'evoluzione reale del progetto",
+      "la_timeline_fotografica_arrivera_nel_prossimo_capi": "La timeline fotografica arriverà nel prossimo capitolo.",
+      "aggiorna_direzione": "Aggiorna direzione",
+      "evoluzione_del_progetto": "Evoluzione del progetto",
+      "la_storia_che_il_progetto_sta_scrivendo": "La storia che il progetto sta scrivendo"
+    }
+  },
+  "media": {
+    "image": {
+      "caricamento_immagine": "Caricamento immagine…"
+    },
+    "universal_editorial_cropper": {
+      "salva_regia": "Salva regia"
+    }
+  },
+  "storytelling": {
+    "hotspot_image_overlay": {
+      "aggiungi_note_di_dettaglio_sull_immagine": "Aggiungi note di dettaglio sull'immagine",
+      "chiudi": "Chiudi"
+    },
+    "project_gallery": {
+      "gallery_del_progetto": "Gallery del progetto",
+      "annulla": "Annulla",
+      "conferma_immagine": "Conferma immagine",
+      "nessuna_immagine_ancora_aggiungi_la_prima_per_iniz": "Nessuna immagine ancora. Aggiungi la prima per iniziare la case history.",
+      "aggiungi_la_prima_immagine": "+ Aggiungi la prima immagine"
+    },
+    "story_sections": {
+      "sezioni_della_storia": "Sezioni della storia",
+      "nessun_blocco_ancora_inizia_la_narrazione": "Nessun blocco ancora. Inizia la narrazione.",
+      "annulla": "Annulla",
+      "apri_editor_hotspot": "Apri editor hotspot",
+      "add_to_moodboard": "Add to moodboard",
+      "explore_material": "Explore material",
+      "aggiungi_immagine": "Aggiungi immagine"
     }
   }
 }

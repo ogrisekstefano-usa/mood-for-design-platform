@@ -26,6 +26,7 @@ import EditorialMediaField from '../../components/common/EditorialMediaField';
 import ProjectGalleryEditor from '../../components/storytelling/ProjectGalleryEditor';
 import StorySectionsEditor from '../../components/storytelling/StorySectionsEditor';
 import './projectsStudio.css';
+import { useT } from '../../i18n/useT';
 
 const TABS = [
   { key: 'master',  label: 'Master Story' },
@@ -47,6 +48,7 @@ const COMPOSING_LINES = [
 ];
 
 const ProjectsStudioPage = () => {
+  const { t } = useT();
   const [masters, setMasters]       = useState([]);
   const [markets, setMarkets]       = useState([]);
   const [loading, setLoading]       = useState(true);
@@ -304,11 +306,11 @@ const ProjectsStudioPage = () => {
             className="ps-rail__new"
             data-testid="ps-new-master"
             onClick={() => setShowNewModal(true)}
-          >+ Apri un nuovo progetto</button>
+          >{t('projects.projects_studio.apri_un_nuovo_progetto')}</button>
         </header>
 
         <div className="ps-masters" data-testid="ps-masters">
-          {loading && <p style={{ color: 'var(--bp-text-muted)', fontStyle: 'italic' }}>Caricamento archivio…</p>}
+          {loading && <p style={{ color: 'var(--bp-text-muted)', fontStyle: 'italic' }}>{t('projects.projects_studio.caricamento_archivio')}</p>}
           {!loading && masters.length === 0 && (
             <p style={{ color: 'var(--bp-text-muted)', fontStyle: 'italic', fontFamily: 'var(--bp-font-heading)' }}>
               Nessun progetto in archivio. Apri il primo.
@@ -328,7 +330,7 @@ const ProjectsStudioPage = () => {
                 <div className={m.cover_image_url ? 'ps-card__cover' : 'ps-card__cover ps-card__cover--empty'}>
                   {m.cover_image_url
                     ? <img src={m.cover_image_url} alt={m.title} />
-                    : <span>Nessuna immagine</span>}
+                    : <span>{t('projects.projects_studio.nessuna_immagine')}</span>}
                 </div>
                 <div className="ps-card__body">
                   <p className={'ps-card__eyebrow ' + (m.is_published ? '' : 'ps-card__eyebrow--mute')}>
@@ -376,7 +378,7 @@ const ProjectsStudioPage = () => {
                   data-testid="ps-publish-master"
                   disabled={master.is_published}
                   onClick={publishMaster}
-                >Pubblica progetto</button>
+                >{t('projects.projects_studio.pubblica_progetto')}</button>
               </div>
             </header>
 
@@ -463,12 +465,12 @@ const ProjectsStudioPage = () => {
       {showNewModal && (
         <div className="ps-modal-bg" onClick={() => setShowNewModal(false)}>
           <div className="ps-modal" onClick={(e) => e.stopPropagation()} data-testid="ps-new-modal">
-            <h2>Apri un nuovo progetto</h2>
+            <h2>{t('projects.projects_studio.apri_un_nuovo_progetto')}</h2>
             <p className="ps-modal__sub">
               Crea il record master. Le edizioni internazionali si compongono in seguito.
             </p>
             <div className="ps-section">
-              <p className="ps-section__label">Titolo del progetto</p>
+              <p className="ps-section__label">{t('projects.projects_studio.titolo_del_progetto')}</p>
               <input
                 className="ps-input ps-input--display"
                 data-testid="ps-new-title"
@@ -489,7 +491,7 @@ const ProjectsStudioPage = () => {
                   <option value="residential">Residenziale</option>
                   <option value="hospitality">Hospitality</option>
                   <option value="commercial">Commercial</option>
-                  <option value="atelier">Atelier</option>
+                  <option value="atelier">{t('projects.projects_studio.atelier')}</option>
                   <option value="wellness">Wellness</option>
                 </select>
               </div>
@@ -513,7 +515,7 @@ const ProjectsStudioPage = () => {
               />
             </div>
             <div className="ps-modal__actions">
-              <button type="button" className="ps-btn ps-btn--ghost" onClick={() => setShowNewModal(false)}>Annulla</button>
+              <button type="button" className="ps-btn ps-btn--ghost" onClick={() => setShowNewModal(false)}>{t('projects.projects_studio.annulla')}</button>
               <button type="button" className="ps-btn ps-btn--primary" data-testid="ps-new-create" onClick={createMaster}>
                 Crea progetto
               </button>
@@ -541,7 +543,7 @@ const MasterStoryEditor = ({ master, onChange, onPaletteAdd, onPaletteRemove, on
           />
         </div>
         <div className="ps-section">
-          <p className="ps-section__label">Sottotitolo editoriale</p>
+          <p className="ps-section__label">{t('projects.projects_studio.sottotitolo_editoriale')}</p>
           <input
             className="ps-input"
             value={master.subtitle || ''}
@@ -563,7 +565,7 @@ const MasterStoryEditor = ({ master, onChange, onPaletteAdd, onPaletteRemove, on
             <option value="residential">Residenziale</option>
             <option value="hospitality">Hospitality</option>
             <option value="commercial">Commercial</option>
-            <option value="atelier">Atelier</option>
+            <option value="atelier">{t('projects.projects_studio.atelier')}</option>
             <option value="wellness">Wellness</option>
           </select>
         </div>
@@ -613,7 +615,7 @@ const MasterStoryEditor = ({ master, onChange, onPaletteAdd, onPaletteRemove, on
       </div>
 
       <div className="ps-section">
-        <p className="ps-section__label">Cover hero · l'apertura visiva del progetto</p>
+        <p className="ps-section__label">{t('projects.projects_studio.cover_hero_l_apertura_visiva_del_progetto')}</p>
         <EditorialMediaField
           valueShape="object"
           value={{
@@ -648,7 +650,7 @@ const MasterStoryEditor = ({ master, onChange, onPaletteAdd, onPaletteRemove, on
       />
 
       <div className="ps-section">
-        <p className="ps-section__label">Vocabolario materico</p>
+        <p className="ps-section__label">{t('projects.projects_studio.vocabolario_materico')}</p>
         <div className="ps-chips" data-testid="ps-material-palette">
           {(master.material_palette || []).map((p, i) => (
             <span key={i} className="ps-chip">
@@ -738,7 +740,7 @@ const MarketEditionEditor = ({ master, market, variant, onChange, onSave, onPubl
       </div>
 
       <div className="ps-section">
-        <p className="ps-section__label">Titolo per il mercato</p>
+        <p className="ps-section__label">{t('projects.projects_studio.titolo_per_il_mercato')}</p>
         <input
           className="ps-input ps-input--display"
           data-testid="ps-variant-title"
@@ -786,7 +788,7 @@ const MarketEditionEditor = ({ master, market, variant, onChange, onSave, onPubl
       </div>
 
       <div className="ps-section">
-        <p className="ps-section__label">Refine Material Narrative · materia primaria · secondaria · tattilità</p>
+        <p className="ps-section__label">{t('projects.projects_studio.refine_material_narrative_materia_primaria_seconda')}</p>
         <div className="ps-grid-3">
           <input
             className="ps-input"
@@ -857,7 +859,7 @@ const MarketEditionEditor = ({ master, market, variant, onChange, onSave, onPubl
             >
               <option value="book_consultation">Book consultation</option>
               <option value="request_visit">Request visit</option>
-              <option value="explore_material">Explore material</option>
+              <option value="explore_material">{t('projects.projects_studio.explore_material')}</option>
               <option value="save_reference">Save reference</option>
             </select>
           </div>
@@ -866,7 +868,7 @@ const MarketEditionEditor = ({ master, market, variant, onChange, onSave, onPubl
           type="button"
           className="ps-btn ps-btn--ghost"
           onClick={() => onChange({ cta_set: [...ctaSet, { tier: 'soft', label: '', action: 'book_consultation' }] })}
-        >+ Aggiungi CTA</button>
+        >{t('projects.projects_studio.aggiungi_cta')}</button>
       </div>
 
       <div className="ps-grid-2">

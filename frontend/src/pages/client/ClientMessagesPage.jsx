@@ -17,7 +17,7 @@ import api from '../../lib/api';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 
 const ClientMessagesPage = () => {
-  const { locale: uiLocale } = useBlueprint();
+  const { locale: uiLocale, t } = useBlueprint();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [draft, setDraft] = useState('');
@@ -67,7 +67,7 @@ const ClientMessagesPage = () => {
       <div data-testid="client-messages-page" className="max-w-[920px] mt-2">
         <div className="cp-card p-10 flex items-center gap-3 text-[var(--cp-text-muted)]">
           <Loader2 size={14} className="animate-spin" />
-          <span className="text-[11px] uppercase tracking-[0.2em]">Caricamento conversazione</span>
+          <span className="text-[11px] uppercase tracking-[0.2em]">{t('client.client_messages.caricamento_conversazione')}</span>
         </div>
       </div>
     );

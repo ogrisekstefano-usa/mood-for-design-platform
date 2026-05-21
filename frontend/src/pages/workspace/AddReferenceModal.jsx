@@ -21,6 +21,7 @@ import { toast } from 'sonner';
 import api from '../../lib/api';
 import { uploadMediaFile } from '../../lib/mediaApi';
 import AssetPickerModal from '../settings/AssetPickerModal';
+import { useT } from '../../i18n/useT';
 
 const TAG_VOCABULARY = [
   'mood', 'material', 'hospitality', 'color', 'era',
@@ -29,6 +30,7 @@ const TAG_VOCABULARY = [
 ];
 
 const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
+  const { t } = useT();
   const [source, setSource] = useState('upload'); // upload | pinterest | library
   const [pinUrl, setPinUrl] = useState('');
   const [importedUrl, setImportedUrl] = useState(''); // resolved after upload/library
@@ -284,7 +286,7 @@ const AddReferenceModal = ({ open, onClose, onCreated, projects = [] }) => {
                              flex flex-col items-center justify-center gap-3 text-[var(--bp-text-muted)]"
                 >
                   <Library size={26} strokeWidth={1.3} />
-                  <p className="text-[13px] font-body">Sfoglia la Media Library</p>
+                  <p className="text-[13px] font-body">{t('workspace.add_reference.sfoglia_la_media_library')}</p>
                 </button>
               )}
               {filePreview && (

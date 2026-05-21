@@ -11,6 +11,7 @@
  */
 import React, { useState, useMemo, useRef, useCallback } from 'react';
 import '../../pages/client/site-evolution.css';
+import { useT } from '../../i18n/useT';
 
 const fmtDate = (iso) => {
   if (!iso) return '';
@@ -22,6 +23,7 @@ const fmtDate = (iso) => {
 
 // ── Before / After slider ────────────────────────────────────────
 const BeforeAfter = ({ before, after }) => {
+  const { t } = useT();
   const wrap = useRef(null);
   const [pos, setPos] = useState(50);
 
@@ -122,7 +124,7 @@ const SiteEvolutionSection = ({ data }) => {
   if (!data?.available || entries.length === 0) {
     return (
       <div className="se-empty" data-testid="se-empty">
-        <p className="se-empty__title">Il cantiere non è ancora iniziato</p>
+        <p className="se-empty__title">{t('client.site_evolution.il_cantiere_non_e_ancora_iniziato')}</p>
         <p className="se-empty__lede">
           Quando il tuo studio inizierà a documentare l'evoluzione fisica
           dello spazio — sopralluoghi, demolizioni, arrivo dei materiali —

@@ -11,6 +11,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import api from '../../lib/api';
 import { Calendar } from 'lucide-react';
 import { statusMeta, SPINE_STATUSES } from './editorialStatus';
+import { useT } from '../../i18n/useT';
 
 function fmtDate(iso) {
   if (!iso) return null;
@@ -25,6 +26,7 @@ export const CompositionRoomRail = ({
   onSelectVariant,
   onSelectMaster,
 }) => {
+  const { t } = useT();
   const [masters, setMasters] = useState([]);
   const [variants, setVariants] = useState([]);     // flat list, indexed by master_id
   const [markets, setMarkets] = useState([]);
@@ -96,7 +98,7 @@ export const CompositionRoomRail = ({
           data-active={filterMarket === null}
           data-testid="ed-filter-market-all"
           onClick={() => setFilterMarket(null)}
-        >Tutti i mercati</button>
+        >{t('editorial.composition_room_rail.tutti_i_mercati')}</button>
         {markets.map((m) => (
           <button key={m.id} type="button" className="ed-chip"
             data-active={filterMarket === m.id}

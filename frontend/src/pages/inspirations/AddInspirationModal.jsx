@@ -16,8 +16,10 @@ import { toast } from 'sonner';
 import api from '../../lib/api';
 import { asErrorString } from '../../lib/asErrorString';
 import ImageEditor from '../../components/media/ImageEditor';
+import { useT } from '../../i18n/useT';
 
 const AddInspirationModal = ({ open, onClose, onImported, config }) => {
+  const { t } = useT();
   const [mode, setMode] = useState('url'); // 'url' | 'upload'
   const [url, setUrl] = useState('');
   const [title, setTitle] = useState('');
@@ -133,7 +135,7 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
         </button>
         <header className="ins-modal__head">
           <p className="ins-eyebrow">Inspirations™</p>
-          <h2 className="ins-modal__title">Aggiungi riferimento</h2>
+          <h2 className="ins-modal__title">{t('inspirations.add_inspiration.aggiungi_riferimento')}</h2>
           <p className="ins-modal__lede">
             Carica un'immagine, oppure incolla un link Pinterest, Instagram o qualunque URL.
             MOOD lo aggiunge alla Media Library e lo rende disponibile in tutto il sistema.
@@ -158,7 +160,7 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
         <div className="ins-modal__body">
           {mode === 'url' && (
             <div className="ins-field" data-testid="add-inspiration-url-panel">
-              <label className="ins-label">URL della reference</label>
+              <label className="ins-label">{t('inspirations.add_inspiration.url_della_reference')}</label>
               <input
                 type="url"
                 className="ins-input"
@@ -206,7 +208,7 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
                      data-testid="add-inspiration-title" />
             </div>
             <div className="ins-field">
-              <label className="ins-label">Descrizione editoriale (opzionale)</label>
+              <label className="ins-label">{t('inspirations.add_inspiration.descrizione_editoriale_opzionale')}</label>
               <textarea className="ins-textarea" rows={2}
                         placeholder="Cosa ti ha colpito di questa reference?"
                         value={description} onChange={(e) => setDescription(e.target.value)}
@@ -216,7 +218,7 @@ const AddInspirationModal = ({ open, onClose, onImported, config }) => {
           </div>
 
           <div className="ins-modal__section">
-            <p className="ins-label">Atmosfera</p>
+            <p className="ins-label">{t('inspirations.add_inspiration.atmosfera')}</p>
             <div className="ins-chips-row">
               {atmos.map((t) => (
                 <button key={t.key} type="button"

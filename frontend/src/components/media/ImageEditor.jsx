@@ -16,6 +16,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as Icons from 'lucide-react';
 import './image-editor.css';
+import { useT } from '../../i18n/useT';
 
 const ASPECT_PRESETS = [
   { key: 'free',   label: 'Libero',  ratio: null },
@@ -38,6 +39,7 @@ const FILTER_STYLE = (f) =>
 
 
 const ImageEditor = ({ open, file, onCancel, onConfirm }) => {
+  const { t } = useT();
   const [imgEl, setImgEl] = useState(null);
   const [aspectKey, setAspectKey] = useState('free');
   const [crop, setCrop] = useState(null); // {x, y, w, h} in image pixels
@@ -209,7 +211,7 @@ const ImageEditor = ({ open, file, onCancel, onConfirm }) => {
                 )}
               </>
             ) : (
-              <div className="imed-loading">Caricamento immagine…</div>
+              <div className="imed-loading">{t('media.image.caricamento_immagine')}</div>
             )}
           </div>
 

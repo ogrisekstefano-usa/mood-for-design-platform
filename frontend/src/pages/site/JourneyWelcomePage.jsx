@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import '../../styles/begin-journey.css';
+import { useT } from '../../i18n/useT';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -26,6 +27,7 @@ const GUESTS_LABEL = {
 };
 
 const JourneyWelcomePage = () => {
+  const { t } = useT();
   const { token } = useParams();
   const [data, setData] = useState(null);
   const [err, setErr]   = useState(null);
@@ -43,7 +45,7 @@ const JourneyWelcomePage = () => {
       <div className="jw-shell" data-testid="welcome-error">
         <div className="jw-container">
           <div className="jw-eyebrow">Welcome non trovato</div>
-          <h1 className="jw-hero">Questo link non è più disponibile.</h1>
+          <h1 className="jw-hero">{t('site.journey_welcome.questo_link_non_e_piu_disponibile')}</h1>
           <p className="jw-intro">
             Forse il viaggio è stato già archiviato — o il link è stato modificato.
             Scrivi allo studio per ritrovarlo.
@@ -57,7 +59,7 @@ const JourneyWelcomePage = () => {
     return (
       <div className="jw-shell" data-testid="welcome-loading">
         <div className="jw-container">
-          <div className="jw-eyebrow">Aprendo il tuo Design Journey…</div>
+          <div className="jw-eyebrow">{t('site.journey_welcome.aprendo_il_tuo_design_journey')}</div>
         </div>
       </div>
     );
@@ -93,7 +95,7 @@ const JourneyWelcomePage = () => {
 
         {/* Reflected atmosphere */}
         <div className="jw-card" data-testid="welcome-atmosphere">
-          <div className="jw-card__eyebrow">L'atmosfera che cerchi</div>
+          <div className="jw-card__eyebrow">{t('site.journey_welcome.l_atmosfera_che_cerchi')}</div>
           <div className="jw-card__body">
             {atmosphere.how_to_feel && (<p>{atmosphere.how_to_feel}</p>)}
             {atmosphere.references && (<p><strong>Riferimenti che ami · </strong>{atmosphere.references}</p>)}
@@ -112,7 +114,7 @@ const JourneyWelcomePage = () => {
         {/* First chapter */}
         {chap && (
           <div className="jw-card" data-testid="welcome-first-chapter">
-            <div className="jw-card__eyebrow">Capitolo primo · Brief Cliente</div>
+            <div className="jw-card__eyebrow">{t('site.journey_welcome.capitolo_primo_brief_cliente')}</div>
             <div className="jw-card__title">{chap.title || 'Direzione iniziale'}</div>
             <div className="jw-card__body">
               <p>{chap.rationale}</p>

@@ -17,6 +17,7 @@ import { Copy, MapPin, BellRing, NotebookPen, Plus, ChevronRight, AlertTriangle 
 import api from '../../lib/api';
 import { avatarPalette, initialsOf } from '../../lib/avatarHue';
 import './advisor.css';
+import { useT } from '../../i18n/useT';
 
 const HEALTH_LABEL = {
   healthy: { lbl: 'Sano', color: '#10B981' },
@@ -39,6 +40,7 @@ const REPORT_TYPES = [
 ];
 
 const AdvisorDashboardPage = () => {
+  const { t } = useT();
   const nav = useNavigate();
   const [me, setMe] = useState(null);
   const [refs, setRefs] = useState([]);
@@ -81,7 +83,7 @@ const AdvisorDashboardPage = () => {
     <div className="adv-page" data-testid="advisor-forbidden">
       <header className="adv-hero">
         <p className="adv-hero__eyebrow">Advisor · Partner Relationship</p>
-        <h1 className="adv-hero__title">Quest'area è riservata agli Advisor di MOOD.</h1>
+        <h1 className="adv-hero__title">{t('advisor.advisor_dashboard.quest_area_e_riservata_agli_advisor_di_mood')}</h1>
         <p className="adv-hero__lead">
           Il tuo account non è collegato a un profilo Advisor. Se sei un partner territoriale e
           credi sia un errore, contatta il team MOOD per attivare il tuo accesso.
@@ -253,7 +255,7 @@ const ReportDrawer = ({ onClose, referrals }) => {
         <div className="adv-drawer__body">
           <Field label="Studio/showroom (opzionale)" testid="rpt-tenant">
             <select className="adv-field__input" value={form.tenant_id} onChange={(e) => setForm({ ...form, tenant_id: e.target.value })}>
-              <option value="">— Nessuno specifico —</option>
+              <option value="">{t('advisor.advisor_dashboard.nessuno_specifico')}</option>
               {referrals.map((r) => <option key={r.tenant_id} value={r.tenant_id}>{r.tenant_name}</option>)}
             </select>
           </Field>
@@ -295,7 +297,7 @@ const ReportDrawer = ({ onClose, referrals }) => {
           </div>
         </div>
         <footer className="adv-drawer__foot">
-          <button className="adv-btn adv-btn--ghost" onClick={onClose}>Annulla</button>
+          <button className="adv-btn adv-btn--ghost" onClick={onClose}>{t('advisor.advisor_dashboard.annulla')}</button>
           <button className="adv-btn adv-btn--primary" onClick={submit} disabled={saving} data-testid="rpt-submit">
             {saving ? 'Salvataggio…' : 'Salva report'}
           </button>

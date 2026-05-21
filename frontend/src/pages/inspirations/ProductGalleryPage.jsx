@@ -23,6 +23,7 @@ import MoodboardPickerModal from './MoodboardPickerModal';
 import CuratedCollectionDrawer from './CuratedCollectionDrawer';
 import JourneyContextHeader from '../../components/journey/JourneyContextHeader';
 import './product-gallery.css';
+import { useT } from '../../i18n/useT';
 
 // ─── Bucket labels (italian editorial copy) ─────────────────────────
 const BUCKET_LABELS = {
@@ -120,6 +121,7 @@ const BadgeChip = ({ label, intent = 'default' }) => (
 );
 
 const AssetBadges = ({ asset }) => {
+  const { t } = useT();
   const b = [];
   if ((asset.moodboard_priority || 0) >= 4)        b.push({ k: 'mb',   label: 'Moodboard ready', intent: 'cyan' });
   if ((asset.editorial_score || 0) >= 0.78)        b.push({ k: 'ed',   label: 'Editorial',       intent: 'warm' });
@@ -222,12 +224,12 @@ const AssetInfoTab = ({ asset }) => {
           <dd>{asset.composition_friendly != null ? Math.round(asset.composition_friendly * 100) + '%' : '—'}</dd></div>
         <div><dt>Visual weight</dt>
           <dd>{asset.visual_weight != null ? Math.round(asset.visual_weight * 100) + '%' : '—'}</dd></div>
-        <div><dt>Moodboard priority</dt><dd>{asset.moodboard_priority ?? '—'}</dd></div>
+        <div><dt>{t('inspirations.product_gallery.moodboard_priority')}</dt><dd>{asset.moodboard_priority ?? '—'}</dd></div>
       </dl>
 
       {(asset.mood_tags?.length || 0) > 0 && (
         <div className="pg-info__chips">
-          <p className="pg-info__chips-label">Atmosfera</p>
+          <p className="pg-info__chips-label">{t('inspirations.product_gallery.atmosfera')}</p>
           {asset.mood_tags.map(t => <span key={t} className="pg-chip pg-chip--plain">{t}</span>)}
         </div>
       )}
@@ -261,7 +263,7 @@ const StudioLanguageWidget = () => {
 
   return (
     <div className="pg-studio-lang" data-testid="pg-studio-language">
-      <p className="pg-info__chips-label">Linguaggio progettuale dello studio</p>
+      <p className="pg-info__chips-label">{t('inspirations.product_gallery.linguaggio_progettuale_dello_studio')}</p>
       {(data.atmospheres || []).length > 0 && (
         <div className="pg-studio-lang__row">
           <span className="pg-studio-lang__lbl">Atmosfere</span>
@@ -437,7 +439,7 @@ const ClientFeedbackPanel = ({ linkId }) => {
         </div>
       ))}
       {data.feedback.length === 0 && (
-        <p className="pg-preview-feedback__empty">In attesa di riscontro dal cliente</p>
+        <p className="pg-preview-feedback__empty">{t('inspirations.product_gallery.in_attesa_di_riscontro_dal_cliente')}</p>
       )}
     </div>
   );
@@ -505,10 +507,10 @@ const ReferencesTab = ({ collections, onCreate, onAddToCollection, currentAsset,
 const RelatedTab = ({ items, loading, onPick }) => (
   <div className="pg-related" data-testid="pg-tab-related">
     <h4 className="pg-related__title">Works well with…</h4>
-    <p className="pg-related__hint">Curatela editoriale — non raccomandazione algoritmica.</p>
-    {loading && <p className="pg-related__loading">Sto leggendo le relazioni…</p>}
+    <p className="pg-related__hint">{t('inspirations.product_gallery.curatela_editoriale_non_raccomandazione_algoritmic')}</p>
+    {loading && <p className="pg-related__loading">{t('inspirations.product_gallery.sto_leggendo_le_relazioni')}</p>}
     {!loading && (items || []).length === 0 && (
-      <p className="pg-related__empty">Ancora nessuna affinità curatoriale rilevata.</p>
+      <p className="pg-related__empty">{t('inspirations.product_gallery.ancora_nessuna_affinita_curatoriale_rilevata')}</p>
     )}
     <ul className="pg-related__list">
       {(items || []).slice(0, 8).map(it => (
@@ -781,7 +783,7 @@ export default function ProductGalleryPage() {
           <span>Archivio</span>
         </Link>
         <div className="pg-header__meta">
-          <p className="pg-header__eyebrow">Product Gallery™ · Visual Atelier</p>
+          <p className="pg-header__eyebrow">{t('inspirations.product_gallery.product_gallery_visual_atelier')}</p>
           <h1 className="pg-header__title">
             <em>{product.name || 'Asset visuale'}</em>
           </h1>
@@ -837,12 +839,12 @@ export default function ProductGalleryPage() {
           </section>
 
           <section className="pg-aside__group">
-            <p className="pg-aside__label">Atmosfera</p>
+            <p className="pg-aside__label">{t('inspirations.product_gallery.atmosfera')}</p>
             <div className="pg-meta-list">
               {(atlas.metadata?.mood_tags || []).slice(0, 10).map(t =>
                 <span key={t} className="pg-chip pg-chip--plain">{t}</span>)}
               {(atlas.metadata?.mood_tags || []).length === 0 && (
-                <p className="pg-aside__empty">Atmosfera in lettura curatoriale</p>
+                <p className="pg-aside__empty">{t('inspirations.product_gallery.atmosfera_in_lettura_curatoriale')}</p>
               )}
             </div>
           </section>
@@ -888,14 +890,14 @@ export default function ProductGalleryPage() {
                 data-testid="pg-hero-save"
               >
                 <Icons.Bookmark size={13} />
-                <span>Salva in References™</span>
+                <span>{t('inspirations.product_gallery.salva_in_references')}</span>
               </button>
               <button type="button" className="pg-btn pg-btn--accent"
                 onClick={onAddActiveToMoodboard}
                 data-testid="pg-hero-moodboard"
               >
                 <Icons.LayoutGrid size={13} />
-                <span>Aggiungi al moodboard</span>
+                <span>{t('inspirations.product_gallery.aggiungi_al_moodboard')}</span>
               </button>
             </div>
             {hero && <div className="pg-hero__badges"><AssetBadges asset={hero} /></div>}

@@ -14,6 +14,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import * as Icons from 'lucide-react';
+import { useT } from '../../i18n/useT';
 
 const ICON_BY_TYPE = {
   moodboard:  'Layers',
@@ -51,6 +52,7 @@ const fmtDayLabel = (iso) => {
 };
 
 const CockpitTimeline = ({ events = [], activity = [] }) => {
+  const { t } = useT();
   // Merge in ordine cronologico — i recent_activity hanno già "timestamp"
   // mentre i timeline events hanno "date" (proposals due dates).
   const items = useMemo(() => {
@@ -97,7 +99,7 @@ const CockpitTimeline = ({ events = [], activity = [] }) => {
       <header className="cck-block__head">
         <div>
           <p className="cck-block__eyebrow">Timeline operativa</p>
-          <h3 className="cck-block__title">Il battito del tuo studio</h3>
+          <h3 className="cck-block__title">{t('dashboard.cockpit_timeline.il_battito_del_tuo_studio')}</h3>
         </div>
         <Link to="/workspace/calendar" className="cck-block__link" data-testid="cockpit-timeline-calendar">
           Calendario <Icons.ArrowUpRight size={11} />
@@ -107,7 +109,7 @@ const CockpitTimeline = ({ events = [], activity = [] }) => {
         <div className="cck-empty">
           <Icons.Activity size={22} strokeWidth={1.2} className="cck-empty__icon" />
           <p className="cck-empty__title">Studio in quiete creativa.</p>
-          <p className="cck-empty__hint">Carica un riferimento o crea una moodboard per dare ritmo alla giornata.</p>
+          <p className="cck-empty__hint">{t('dashboard.cockpit_timeline.carica_un_riferimento_o_crea_una_moodboard_per_dar')}</p>
         </div>
       ) : (
         <div className="cck-tl">

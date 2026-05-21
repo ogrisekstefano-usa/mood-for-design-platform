@@ -13,6 +13,7 @@ import api from '../../lib/api';
 import { uploadMediaFile, links as mediaLinks } from '../../lib/mediaApi';
 import AssetPickerModal from './AssetPickerModal';
 import './magazine-editor.css';
+import { useT } from '../../i18n/useT';
 
 const LOCALES = [
   { id: 'it', label: 'Italiano' },
@@ -43,6 +44,7 @@ const CTA_ACTIONS = [
 ];
 
 const MagazineEditorPage = () => {
+  const { t } = useT();
   const { id } = useParams();
   const navigate = useNavigate();
   const [locale, setLocale] = useState('it');
@@ -190,10 +192,10 @@ const MagazineEditorPage = () => {
   }, [id, article]);
 
   // ─── Render ──────────────────────────────────────────────────────────
-  if (loading) return <div className="p-12 text-[var(--bp-text-muted)] italic">Caricamento…</div>;
+  if (loading) return <div className="p-12 text-[var(--bp-text-muted)] italic">{t('settings.magazine_editor.caricamento')}</div>;
   if (!article) return (
     <div className="p-12 text-[var(--bp-text-muted)]">
-      Articolo non trovato. <Link to="/settings/magazine" className="text-[var(--bp-primary)]">Torna alla lista</Link>
+      Articolo non trovato. <Link to="/settings/magazine" className="text-[var(--bp-primary)]">{t('settings.magazine_editor.torna_alla_lista')}</Link>
     </div>
   );
 

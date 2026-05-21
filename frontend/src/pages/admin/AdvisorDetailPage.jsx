@@ -21,6 +21,7 @@ import { avatarPalette, initialsOf } from '../../lib/avatarHue';
 import TerritorySelector from '../../components/advisor/TerritorySelector';
 import AdvisorEditDrawer from './AdvisorEditDrawer';
 import '../advisor/advisor.css';
+import { useT } from '../../i18n/useT';
 
 const STATUS_LABEL = { active: 'Attivo', paused: 'In pausa', archived: 'Archiviato' };
 
@@ -58,6 +59,7 @@ const fmtMoney = (n) => {
 };
 
 const AdvisorDetailPage = () => {
+  const { t } = useT();
   const { id } = useParams();
   const nav = useNavigate();
   const [data, setData] = useState(null);
@@ -158,7 +160,7 @@ const AdvisorDetailPage = () => {
         {/* ── Sidebar ─────────────────────────────────────────────── */}
         <aside className="adv-detail-side">
           <section className="adv-detail-block" data-testid="adv-detail-profile">
-            <h3 className="adv-detail-block__head">Contatti</h3>
+            <h3 className="adv-detail-block__head">{t('admin.advisor_detail.contatti')}</h3>
             <div className="adv-detail-row"><span>Email</span><span>{adv.email || '—'}</span></div>
             <div className="adv-detail-row"><span>Telefono</span><span>{adv.phone || '—'}</span></div>
             <div className="adv-detail-row"><span>Territorio</span><span>{adv.territory || '—'}</span></div>

@@ -28,6 +28,7 @@ import {
 import EditorialMediaField from '../common/EditorialMediaField';
 import HotspotImageOverlay from './HotspotImageOverlay';
 import './storytelling.css';
+import { useT } from '../../i18n/useT';
 
 const BLOCK_TYPES = [
   { id: 'paragraph',     label: 'Paragrafo',      icon: Type },
@@ -112,7 +113,7 @@ const StorySectionsEditor = ({
     <section className="ss-wrap" data-testid={testId}>
       <header className="ss-head">
         <p className="ss-eyebrow">Narrazione visiva</p>
-        <h3 className="ss-title">Sezioni della storia</h3>
+        <h3 className="ss-title">{t('storytelling.story_sections.sezioni_della_storia')}</h3>
         <p className="ss-sub">
           Componi blocchi editoriali — testo, immagini, gallery, detail points,
           CTA. Trascina la maniglia per riordinare.
@@ -121,7 +122,7 @@ const StorySectionsEditor = ({
 
       {safeBlocks.length === 0 && (
         <div className="ss-empty" data-testid="ss-empty">
-          <p>Nessun blocco ancora. Inizia la narrazione.</p>
+          <p>{t('storytelling.story_sections.nessun_blocco_ancora_inizia_la_narrazione')}</p>
         </div>
       )}
 
@@ -178,7 +179,7 @@ const StorySectionsEditor = ({
                 type="button"
                 className="ss-add-opt ss-add-opt--cancel"
                 onClick={() => setShowAdd(false)}
-              >Annulla</button>
+              >{t('storytelling.story_sections.annulla')}</button>
             </div>
           )}
         </div>
@@ -213,6 +214,7 @@ const BlockRow = ({
   onChange, onRemove, onMoveUp, onMoveDown,
   onDragStart, onDrop, onOpenHotspots,
 }) => {
+  const { t } = useT();
   const meta = BLOCK_TYPES.find((t) => t.id === block.type) || BLOCK_TYPES[0];
   const Icon = meta.icon;
   return (
@@ -345,7 +347,7 @@ const BlockRow = ({
                   className="ss-btn"
                   data-testid={`ss-open-hotspots-${index}`}
                   onClick={onOpenHotspots}
-                >Apri editor hotspot</button>
+                >{t('storytelling.story_sections.apri_editor_hotspot')}</button>
               </div>
             )}
           </>
@@ -377,8 +379,8 @@ const BlockRow = ({
             >
               <option value="save_reference">Save reference</option>
               <option value="discuss_with_advisor">Discuss with advisor</option>
-              <option value="add_to_moodboard">Add to moodboard</option>
-              <option value="explore_material">Explore material</option>
+              <option value="add_to_moodboard">{t('storytelling.story_sections.add_to_moodboard')}</option>
+              <option value="explore_material">{t('storytelling.story_sections.explore_material')}</option>
               <option value="book_visit">Book visit</option>
               <option value="book_consultation">Book consultation</option>
             </select>

@@ -28,6 +28,7 @@ import { toast } from 'sonner';
 import EditorialMediaField from '../common/EditorialMediaField';
 import HotspotImageOverlay from './HotspotImageOverlay';
 import './storytelling.css';
+import { useT } from '../../i18n/useT';
 
 const newItemId = () => `gal_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
 
@@ -107,7 +108,7 @@ const ProjectGalleryEditor = ({
       <header className="pg-head">
         <div>
           <p className="pg-eyebrow">Visual Storytelling</p>
-          <h3 className="pg-title">Gallery del progetto</h3>
+          <h3 className="pg-title">{t('storytelling.project_gallery.gallery_del_progetto')}</h3>
           <p className="pg-sub">
             Una case history editoriale, non una scheda portfolio. Trascina per
             riordinare · clicca <em>★</em> per impostare la cover · clicca
@@ -146,14 +147,14 @@ const ProjectGalleryEditor = ({
               type="button"
               className="pg-btn pg-btn--ghost"
               onClick={() => { setAdding(false); setAddDraft({ url: '', asset_id: null, alt_text: '', caption: '' }); }}
-            >Annulla</button>
+            >{t('storytelling.project_gallery.annulla')}</button>
             <button
               type="button"
               className="pg-btn pg-btn--primary"
               data-testid="pg-add-commit"
               onClick={commitAdd}
               disabled={!addDraft.url}
-            >Conferma immagine</button>
+            >{t('storytelling.project_gallery.conferma_immagine')}</button>
           </div>
         </div>
       )}
@@ -162,14 +163,14 @@ const ProjectGalleryEditor = ({
       {safeGallery.length === 0 && !adding && (
         <div className="pg-empty" data-testid="pg-empty">
           <span className="pg-empty__eyebrow">Sequenza visiva</span>
-          <p>Nessuna immagine ancora. Aggiungi la prima per iniziare la case history.</p>
+          <p>{t('storytelling.project_gallery.nessuna_immagine_ancora_aggiungi_la_prima_per_iniz')}</p>
           {!readOnly && (
             <button
               type="button"
               className="pg-btn pg-btn--primary"
               data-testid="pg-empty-add"
               onClick={() => setAdding(true)}
-            >+ Aggiungi la prima immagine</button>
+            >{t('storytelling.project_gallery.aggiungi_la_prima_immagine')}</button>
           )}
         </div>
       )}

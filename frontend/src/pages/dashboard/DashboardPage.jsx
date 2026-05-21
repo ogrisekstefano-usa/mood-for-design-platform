@@ -28,6 +28,7 @@ import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
 import { useTenantTheme } from '../../contexts/TenantThemeContext';
 import CulturalEditionWizard from '../../components/cultural/CulturalEditionWizard';
 import './dashboard-cockpit.css';
+import { useT } from '../../i18n/useT';
 
 // Lazy below-the-fold sections — ridotti dal bundle iniziale.
 const StudioOnboardingPanel = lazy(() => import('../../components/dashboard/StudioOnboardingPanel'));
@@ -82,6 +83,7 @@ const writeCache = (data) => {
 // 1 · DAILY STUDIO STATUS™ — Hero operativo
 // ═══════════════════════════════════════════════════════════════════════
 const StudioLogo = ({ logoUrl, name }) => {
+  const { t } = useT();
   const [errored, setErrored] = useState(false);
   const initials = (name || 'MOOD')
     .split(' ').map((p) => p[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
@@ -198,7 +200,7 @@ const SuggestedNextActions = ({ suggestions, loading }) => (
     <header className="cck-block__head">
       <div>
         <p className="cck-block__eyebrow">Suggested Next Actions™</p>
-        <h3 className="cck-block__title">Decisioni che la giornata sussurra</h3>
+        <h3 className="cck-block__title">{t('dashboard.dashboard.decisioni_che_la_giornata_sussurra')}</h3>
       </div>
     </header>
     {loading && (!suggestions || suggestions.length === 0) ? (
@@ -233,8 +235,8 @@ const SuggestedNextActions = ({ suggestions, loading }) => (
     ) : (
       <div className="cck-empty">
         <Icons.Compass size={22} strokeWidth={1.2} className="cck-empty__icon" />
-        <p className="cck-empty__title">MOOD sta iniziando a leggere il ritmo del tuo studio.</p>
-        <p className="cck-empty__hint">I primi suggerimenti appariranno con l'utilizzo reale della piattaforma.</p>
+        <p className="cck-empty__title">{t('dashboard.dashboard.mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud')}</p>
+        <p className="cck-empty__hint">{t('dashboard.dashboard.i_primi_suggerimenti_appariranno_con_l_utilizzo_re')}</p>
       </div>
     )}
   </section>
@@ -345,7 +347,7 @@ const StudioAttention = ({ projects, staleIds = [], loading }) => {
       <header className="cck-block__head">
         <div>
           <p className="cck-block__eyebrow">Studio Attention™</p>
-          <h3 className="cck-block__title">Progetti che chiedono la tua presenza</h3>
+          <h3 className="cck-block__title">{t('dashboard.dashboard.progetti_che_chiedono_la_tua_presenza')}</h3>
         </div>
         <Link to="/workspace/projects" className="cck-block__link" data-testid="cockpit-attention-all">
           Vedi tutti <Icons.ArrowUpRight size={11} />
@@ -422,7 +424,7 @@ const RelationshipEngine = ({ rows, loading }) => {
       <header className="cck-block__head">
         <div>
           <p className="cck-block__eyebrow">Relationship Engine™</p>
-          <h3 className="cck-block__title">Le relazioni che attendono un gesto</h3>
+          <h3 className="cck-block__title">{t('dashboard.dashboard.le_relazioni_che_attendono_un_gesto')}</h3>
         </div>
         <Link to="/crm/accounts" className="cck-block__link" data-testid="cockpit-rel-all">
           Tutti gli account <Icons.ArrowUpRight size={11} />
@@ -477,7 +479,7 @@ const RelationshipEngine = ({ rows, loading }) => {
       ) : (
         <div className="cck-empty">
           <Icons.Users size={22} strokeWidth={1.2} className="cck-empty__icon" />
-          <p className="cck-empty__title">Nessuna relazione raffreddata.</p>
+          <p className="cck-empty__title">{t('dashboard.dashboard.nessuna_relazione_raffreddata')}</p>
           <p className="cck-empty__hint">Quando un account passa giorni senza un gesto, apparirà qui.</p>
         </div>
       )}

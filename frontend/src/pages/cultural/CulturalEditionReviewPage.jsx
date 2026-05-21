@@ -13,6 +13,7 @@ import * as Icons from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
 import './cultural-editions.css';
+import { useT } from '../../i18n/useT';
 
 const STATUS_LABEL = {
   draft:     'Bozza',
@@ -22,6 +23,7 @@ const STATUS_LABEL = {
 };
 
 const CulturalEditionReviewPage = () => {
+  const { t } = useT();
   const { id } = useParams();
   const navigate = useNavigate();
   const [draft, setDraft] = useState(null);
@@ -85,7 +87,7 @@ const CulturalEditionReviewPage = () => {
             {STATUS_LABEL[draft.status] || draft.status}
           </span>
         </div>
-        <p className="ce-eyebrow">Revisione editoriale</p>
+        <p className="ce-eyebrow">{t('cultural.cultural_edition_review.revisione_editoriale')}</p>
         <h1 className="ce-title">
           {draft.source_title || 'Contenuto base'} <span className="ce-arrow">→</span> {draft.target_market_label}
         </h1>
@@ -130,7 +132,7 @@ const CulturalEditionReviewPage = () => {
           )}
           {Array.isArray(src.atmosphere) && src.atmosphere.length > 0 && (
             <div className="ce-pane__block">
-              <p className="ce-block-label">Atmosfera originaria</p>
+              <p className="ce-block-label">{t('cultural.cultural_edition_review.atmosfera_originaria')}</p>
               <div className="ce-chips">{src.atmosphere.slice(0, 8).map((s, i) => <span key={i}>{s}</span>)}</div>
             </div>
           )}
@@ -153,7 +155,7 @@ const CulturalEditionReviewPage = () => {
           </div>
           {ver.body && (
             <div className="ce-pane__block">
-              <p className="ce-block-label">Corpo editoriale</p>
+              <p className="ce-block-label">{t('cultural.cultural_edition_review.corpo_editoriale')}</p>
               <p className="ce-block-body ce-block-body--narrative">{ver.body}</p>
             </div>
           )}
@@ -168,7 +170,7 @@ const CulturalEditionReviewPage = () => {
           )}
           {ver.atmosphere_notes && (
             <div className="ce-pane__block">
-              <p className="ce-block-label">Atmosfera</p>
+              <p className="ce-block-label">{t('cultural.cultural_edition_review.atmosfera')}</p>
               <p className="ce-block-body ce-block-body--narrative">{ver.atmosphere_notes}</p>
             </div>
           )}

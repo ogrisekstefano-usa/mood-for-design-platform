@@ -12,10 +12,12 @@ import {
 import api from '../../lib/api';
 import { avatarPalette, initialsOf } from '../../lib/avatarHue';
 import '../advisor/advisor.css';
+import { useT } from '../../i18n/useT';
 
 const STATUS_LABEL = { active: 'Attivo', paused: 'In pausa', archived: 'Archiviato' };
 
 const AdvisorNetworkAdminPage = () => {
+  const { t } = useT();
   const nav = useNavigate();
   const [overview, setOverview] = useState(null);
   const [advisors, setAdvisors] = useState([]);
@@ -42,7 +44,7 @@ const AdvisorNetworkAdminPage = () => {
     <div className="adv-page" data-testid="advisor-network-admin">
       <header className="adv-hero">
         <p className="adv-hero__eyebrow">Partner Relationship · Advisor Network</p>
-        <h1 className="adv-hero__title">Network degli Advisor</h1>
+        <h1 className="adv-hero__title">{t('admin.advisor_network_admin.network_degli_advisor')}</h1>
         <p className="adv-hero__lead">
           La rete dei partner territoriali che introducono MOOD a studi, showroom e
           atelier. Premiati su <em>attivazione e adozione</em>, non su semplici signup.
@@ -158,7 +160,7 @@ const NewAdvisorDrawer = ({ onClose }) => {
       <aside className="adv-drawer" data-testid="adv-new-drawer">
         <header className="adv-drawer__head">
           <div>
-            <p className="adv-eyebrow">Crea Advisor</p>
+            <p className="adv-eyebrow">{t('admin.advisor_network_admin.crea_advisor')}</p>
             <h2 className="adv-drawer__title">Nuovo partner di rete</h2>
           </div>
           <button onClick={onClose} className="adv-drawer__close" data-testid="adv-new-close"><X size={17} /></button>
@@ -178,7 +180,7 @@ const NewAdvisorDrawer = ({ onClose }) => {
           </div>
         </div>
         <footer className="adv-drawer__foot">
-          <button className="adv-btn adv-btn--ghost" onClick={onClose}>Annulla</button>
+          <button className="adv-btn adv-btn--ghost" onClick={onClose}>{t('admin.advisor_network_admin.annulla')}</button>
           <button className="adv-btn adv-btn--primary" onClick={submit} disabled={saving} data-testid="adv-new-submit">
             {saving ? 'Salvataggio…' : 'Crea Advisor'}
           </button>

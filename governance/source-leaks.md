@@ -1,0 +1,66 @@
+# Source-Code Italian Leakage Audit · 2026-05-21
+
+**Files scanned**: 234    **Total leaks**: 163    **Files with leaks**: 60
+
+| File | Leaks |
+|---|---:|
+| `src/pages/workspace/ProjectDetailPage.jsx` | 9 |
+| `src/components/onboarding/OwnerIntroductionModal.jsx` | 8 |
+| `src/pages/editorial/AdaptationOperationsPanel.jsx` | 7 |
+| `src/pages/workspace/DesignJourneyTab.jsx` | 7 |
+| `src/pages/inspirations/BrandFormModal.jsx` | 6 |
+| `src/pages/inspirations/CollectionFormModal.jsx` | 6 |
+| `src/pages/client/ClientStubPages.jsx` | 5 |
+| `src/pages/storefront/bandEditors.jsx` | 5 |
+| `src/components/common/MediaDeleteProtectionDrawer.jsx` | 5 |
+| `src/components/storytelling/StorySectionsEditor.jsx` | 5 |
+| `src/pages/common/ComingSoonPage.jsx` | 4 |
+| `src/pages/common/MvpLitePage.jsx` | 4 |
+| `src/pages/editorial/ArticleEditorPanel.jsx` | 4 |
+| `src/pages/inspirations/SupplierCatalogImportModal.jsx` | 4 |
+| `src/components/journey/MilestoneDialogue.jsx` | 4 |
+| `src/pages/ClientPreviewPage.jsx` | 3 |
+| `src/pages/admin/AdvisorEditDrawer.jsx` | 3 |
+| `src/pages/inspirations/AddInspirationModal.jsx` | 3 |
+| `src/pages/inspirations/BrandDetailPage.jsx` | 3 |
+| `src/pages/inspirations/InspirationDetailDrawer.jsx` | 3 |
+| `src/pages/inspirations/MoodboardPickerModal.jsx` | 3 |
+| `src/pages/settings/MagazineEditorPage.jsx` | 3 |
+| `src/pages/workspace/AddReferenceModal.jsx` | 3 |
+| `src/components/client/SharedVoiceComposer.jsx` | 3 |
+| `src/components/journey/JourneyClosureCeremony.jsx` | 3 |
+| `src/components/media/UniversalEditorialCropper.jsx` | 3 |
+| `src/pages/crm/ActivityModal.jsx` | 2 |
+| `src/pages/crm/CulturalEditionModal.jsx` | 2 |
+| `src/pages/crm/StageChangeModal.jsx` | 2 |
+| `src/pages/inspirations/CuratedCollectionDrawer.jsx` | 2 |
+| `src/pages/inspirations/ProductGalleryPage.jsx` | 2 |
+| `src/pages/projects/ProjectsStudioPage.jsx` | 2 |
+| `src/pages/settings/AssetPickerModal.jsx` | 2 |
+| `src/pages/site/JourneyWelcomePage.jsx` | 2 |
+| `src/components/client/ClientDashboardLayout.jsx` | 2 |
+| `src/components/common/EditorialMediaField.jsx` | 2 |
+| `src/components/common/PaletteSwitcher.jsx` | 2 |
+| `src/components/cultural/CulturalEditionWizard.jsx` | 2 |
+| `src/components/storytelling/ProjectGalleryEditor.jsx` | 2 |
+| `src/pages/advisor/AdvisorDashboardPage.jsx` | 1 |
+| `src/pages/crm/AccountConstellation.jsx` | 1 |
+| `src/pages/crm/AccountDetailDrawer.jsx` | 1 |
+| `src/pages/crm/CrmAccountsPage.jsx` | 1 |
+| `src/pages/dashboard/DashboardPage.jsx` | 1 |
+| `src/pages/editorial/EditorialCalendarPage.jsx` | 1 |
+| `src/pages/editorial/MarketEditionsToolbar.jsx` | 1 |
+| `src/pages/inspirations/BrandModePage.jsx` | 1 |
+| `src/pages/inspirations/StudioCollectionsPage.jsx` | 1 |
+| `src/pages/library/MaterialsPage.jsx` | 1 |
+| `src/pages/library/MediaLibraryPage.jsx` | 1 |
+| `src/pages/moodboards/MoodboardsPage.jsx` | 1 |
+| `src/pages/settings/BrandStudioPage.jsx` | 1 |
+| `src/pages/settings/PlanPage.jsx` | 1 |
+| `src/pages/site/BeginJourneyPage.jsx` | 1 |
+| `src/pages/storefront/StorefrontStudioPage.jsx` | 1 |
+| `src/pages/workspace/ProposalsPage.jsx` | 1 |
+| `src/components/ai/AISuggestionPanel.jsx` | 1 |
+| `src/components/common/HotspotEditor.jsx` | 1 |
+| `src/components/common/ImageEditModal.jsx` | 1 |
+| `src/components/journey/StepContextHeader.jsx` | 1 |

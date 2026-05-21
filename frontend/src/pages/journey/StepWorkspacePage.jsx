@@ -20,16 +20,18 @@ import MoodboardDirectionWorkspace from '../../components/journey/MoodboardDirec
 import MaterialDirectionWorkspace from '../../components/journey/MaterialDirectionWorkspace';
 import VersionStack from '../../components/journey/VersionStack';
 import './step-workspace.css';
+import { useT } from '../../i18n/useT';
 
 // ── Generic fallback for steps we haven't given a custom body yet ─────
 const GenericStepWorkspace = ({ context, artifacts, projectId }) => {
+  const { t } = useT();
   const { step } = context;
   return (
     <div data-testid="sw-workspace-generic">
       <section className="sw-section" data-testid="sw-section-rationale">
         <div className="sw-section__head">
           <div>
-            <p className="sw-section__eyebrow">Capitolo in corso</p>
+            <p className="sw-section__eyebrow">{t('journey.step_workspace.capitolo_in_corso')}</p>
             <h2 className="sw-section__title"><em>{step.title}</em></h2>
           </div>
         </div>
@@ -49,7 +51,7 @@ const GenericStepWorkspace = ({ context, artifacts, projectId }) => {
         <div className="sw-section__head">
           <div>
             <p className="sw-section__eyebrow">Capitoli registrati</p>
-            <h2 className="sw-section__title"><em>Le tracce di questo passaggio</em></h2>
+            <h2 className="sw-section__title"><em>{t('journey.step_workspace.le_tracce_di_questo_passaggio')}</em></h2>
           </div>
           <span className="sw-section__count">
             {artifacts?.length || 0} {artifacts?.length === 1 ? 'capitolo' : 'capitoli'}

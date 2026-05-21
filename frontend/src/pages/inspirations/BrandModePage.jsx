@@ -18,6 +18,7 @@ import api from '../../lib/api';
 import BrandFormModal from './BrandFormModal';
 import './brand-mode.css';
 import './brand-form.css';
+import { useT } from '../../i18n/useT';
 
 const LUXURY_LABEL = {
   entry:        'entry',
@@ -49,6 +50,7 @@ const MARKET_LABEL = {
 const formatMarket = (code) => MARKET_LABEL[code] || code;
 
 const BrandCard = ({ b }) => {
+  const { t } = useT();
   const atmo = b.dominant_atmospheres || [];
   const mat  = b.dominant_materials   || [];
   const markets = (b.dominant_markets || b.primary_markets || []).slice(0, 3);
@@ -103,7 +105,7 @@ const BrandCard = ({ b }) => {
       </div>
 
       <div className="bm-card__cta">
-        <span>Entra nell'atelier</span>
+        <span>{t('inspirations.brand_mode.entra_nell_atelier')}</span>
         <Icons.ArrowUpRight size={11} strokeWidth={1.5} />
       </div>
     </Link>
@@ -226,8 +228,8 @@ const BrandModePage = () => {
       ) : filtered.length === 0 ? (
         <div className="bm-empty" data-testid="brand-mode-empty">
           <div className="bm-empty__ring"><Icons.Compass size={16} strokeWidth={1.3} /></div>
-          <h3>Nessun produttore corrisponde alla ricerca</h3>
-          <p>L'atlante curatoriale è in costruzione. Aggiungi un produttore o importa un catalogo per iniziare la lettura.</p>
+          <h3>{t('inspirations.brand_mode.nessun_produttore_corrisponde_alla_ricerca')}</h3>
+          <p>{t('inspirations.brand_mode.l_atlante_curatoriale_e_in_costruzione_aggiungi_un')}</p>
         </div>
       ) : (
         <div className="bm-grid" data-testid="brand-mode-grid">

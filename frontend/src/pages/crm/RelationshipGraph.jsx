@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import api from '../../lib/api';
 import './relationship-graph.css';
+import { useT } from '../../i18n/useT';
 
 const SECTIONS = [
   { key: 'projects',          icon: Compass,  title: 'Progetti tessuti insieme',     empty: 'Nessun progetto ancora collegato.' },
@@ -30,6 +31,7 @@ const SECTIONS = [
 ];
 
 const RelationshipGraph = ({ accountId }) => {
+  const { t } = useT();
   const [graph, setGraph] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +48,7 @@ const RelationshipGraph = ({ accountId }) => {
     return (
       <div className="rgraph rgraph--loading" data-testid="relationship-graph-loading">
         <p className="rgraph__eyebrow">Relationship Graph™</p>
-        <p className="rgraph__loading-line">Tracciando la mappa della relazione…</p>
+        <p className="rgraph__loading-line">{t('crm.relationship_graph.tracciando_la_mappa_della_relazione')}</p>
       </div>
     );
   }
@@ -57,8 +59,8 @@ const RelationshipGraph = ({ accountId }) => {
   return (
     <section className="rgraph" data-testid="relationship-graph">
       <header className="rgraph__head">
-        <p className="rgraph__eyebrow">Relationship Graph™ · mappa editoriale</p>
-        <h3 className="rgraph__title">Dove vive la relazione</h3>
+        <p className="rgraph__eyebrow">{t('crm.relationship_graph.relationship_graph_mappa_editoriale')}</p>
+        <h3 className="rgraph__title">{t('crm.relationship_graph.dove_vive_la_relazione')}</h3>
         {graph.editorial_summary?.length > 0 && (
           <div className="rgraph__summary">
             {graph.editorial_summary.map((line, i) => (
@@ -70,7 +72,7 @@ const RelationshipGraph = ({ accountId }) => {
 
       {total === 0 ? (
         <div className="rgraph__empty-state">
-          <p>Nessun progetto, moodboard o materiale ancora collegato.</p>
+          <p>{t('crm.relationship_graph.nessun_progetto_moodboard_o_materiale_ancora_colle')}</p>
           <p className="rgraph__empty-hint">
             Avvia una direzione editoriale: condividi una moodboard o avvia una Cultural Edition™.
           </p>

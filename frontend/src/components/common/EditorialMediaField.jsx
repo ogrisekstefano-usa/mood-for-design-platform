@@ -34,6 +34,7 @@ import { media, links, uploadMediaFile } from '../../lib/mediaApi';
 import AssetPickerModal from '../../pages/settings/AssetPickerModal';
 import { DEFAULT_FILTERS, cssFilterOf } from '../../lib/imageFilters';
 import './editorial-media-field.css';
+import { useT } from '../../i18n/useT';
 
 const IMAGE_INTENTS = [
   { value: '',                       label: '— Nessun intento —' },
@@ -340,8 +341,8 @@ const EditorialMediaField = ({
         {surfaceState === 'empty' && (
           <div className="emf-empty">
             <span className="emf-empty__icon"><ImagePlus size={18} strokeWidth={1.5} /></span>
-            <p className="emf-empty__title">+ Aggiungi media</p>
-            <p className="emf-empty__sub">Trascina · sfoglia · scegli dalla Library</p>
+            <p className="emf-empty__title">{t('common.editorial_media_field.aggiungi_media')}</p>
+            <p className="emf-empty__sub">{t('common.editorial_media_field.trascina_sfoglia_scegli_dalla_library')}</p>
           </div>
         )}
 
@@ -599,6 +600,7 @@ export default EditorialMediaField;
 //   Live preview is bound by the parent (filtersDraft → preview img style).
 //   Persists to media_library.filters via PATCH on Save.
 const ImageFiltersPanel = ({ assetId, filters, onChange, onSaved, onCancel, testId }) => {
+  const { t } = useT();
   const [saving, setSaving] = React.useState(false);
 
   const setKey = (k, v) => onChange({ ...filters, [k]: v });

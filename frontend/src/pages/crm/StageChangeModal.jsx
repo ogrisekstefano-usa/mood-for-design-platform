@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { useT } from '../../i18n/useT';
 
 export const CANONICAL_STAGES = [
   { key: 'lead',              label: 'Lead',              color: '#9CA3AF' },
@@ -19,6 +20,7 @@ export const CANONICAL_STAGES = [
 ];
 
 export const StageChangeModal = ({ open, accountId, currentStage, targetStage, onClose, onChanged }) => {
+  const { t } = useT();
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -62,7 +64,7 @@ export const StageChangeModal = ({ open, accountId, currentStage, targetStage, o
                     onChange={(e) => setNote(e.target.value)}
                     placeholder="Perché stiamo cambiando fase? Il contesto rimane in timeline."
                     data-testid="stage-note-input" />
-          <p className="rl-field__hint">Il cambio sarà tracciato come evento in timeline.</p>
+          <p className="rl-field__hint">{t('crm.stage_change.il_cambio_sara_tracciato_come_evento_in_timeline')}</p>
         </div>
 
         <div className="rl-modal__actions">

@@ -21,6 +21,7 @@ import { toast } from 'sonner';
 import { media, uploadMediaFile } from '../../lib/mediaApi';
 import { DEFAULT_FILTERS, cssFilterOf } from '../../lib/imageFilters';
 import './image-edit-modal.css';
+import { useT } from '../../i18n/useT';
 
 const ASPECTS = [
   { id: 'free',  label: 'Libero',   value: null },
@@ -65,6 +66,7 @@ const buildCroppedBlob = (imageSrc, cropArea, filters) => new Promise((resolve, 
 });
 
 const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
+  const { t } = useT();
   const [tab, setTab] = useState('crop'); // crop | focal | filters
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -146,7 +148,7 @@ const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
       <div className="iem-modal">
         <header className="iem-modal__head">
           <div>
-            <p className="iem-modal__eyebrow">Modifica immagine · continuità editoriale</p>
+            <p className="iem-modal__eyebrow">{t('common.image_edit.modifica_immagine_continuita_editoriale')}</p>
             <h2 className="iem-modal__title">{asset.file_name || 'Asset senza nome'}</h2>
           </div>
           <button type="button" className="iem-modal__close" onClick={onClose}
@@ -226,7 +228,7 @@ const ImageEditModal = ({ open, asset, onClose, onSaved }) => {
                 <input type="range" min={1} max={3} step={0.01} value={zoom}
                        onChange={(e) => setZoom(parseFloat(e.target.value))}
                        data-testid="iem-zoom" />
-                <p className="iem-panel__hint">Trascina l'area visibile · usa le maniglie per regolare</p>
+                <p className="iem-panel__hint">{t('common.image_edit.trascina_l_area_visibile_usa_le_maniglie_per_regol')}</p>
               </>
             )}
 

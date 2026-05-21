@@ -56,7 +56,7 @@ const Swatch = ({ preset, active, onPick }) => {
 };
 
 const PaletteSwitcher = () => {
-  const { refresh } = useBlueprint();
+  const { refresh, t } = useBlueprint();
   const [open, setOpen] = useState(false);
   const [presets, setPresets] = useState([]);
   const [currentKey, setCurrentKey] = useState(null);
@@ -200,8 +200,8 @@ const PaletteSwitcher = () => {
              }}>
           <header className="palsw-popover__head">
             <div>
-              <p className="palsw-popover__eyebrow">Atelier dei temi</p>
-              <h3 className="palsw-popover__title">Preset editoriali</h3>
+              <p className="palsw-popover__eyebrow">{t('common.palette_switcher.atelier_dei_temi')}</p>
+              <h3 className="palsw-popover__title">{t('common.palette_switcher.preset_editoriali')}</h3>
             </div>
             <button type="button" className="palsw-popover__close"
                     onClick={() => setOpen(false)} aria-label="Chiudi"
