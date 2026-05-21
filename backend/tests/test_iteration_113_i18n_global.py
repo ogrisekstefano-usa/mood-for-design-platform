@@ -34,33 +34,44 @@ BACKEND_BP  = REPO / 'backend' / 'routers' / 'blueprint.py'
 
 
 # ── FASE B · Blueprint Command Center™ governance ──────────────
+# 21 May 2026 · CORRECTED by Sprint HARDENING-I18N-CORRECTION:
+# Blueprint admin UI is now LOCKED to 6 OPERATIONAL languages
+# (it, en-US, en-GB, fr, de, es). Arabic, Chinese, Japanese live in the
+# Global Language Registry but cannot be selected as Blueprint workspace
+# locales. They remain available for the public site + Client Companion.
 class TestBlueprintCommandCenterLanguages:
-    """Blueprint admin must support exactly 6 base languages:
-    IT, EN (US+GB), FR, DE, ES, AR."""
-    def test_arabic_is_blueprint_enabled(self):
+    """Blueprint admin must support exactly 6 OPERATIONAL languages.
+    AR/ZH/JA are NOT allowed in Blueprint workspace."""
+    def test_arabic_is_NOT_blueprint_enabled(self):
         s = LANG_REG.read_text(encoding='utf-8')
-        # The 'ar' entry must have blueprint_enabled: true
-        # Naive but reliable: find the line containing code: 'ar' and check.
         for line in s.splitlines():
             if "code: 'ar'" in line:
-                assert "blueprint_enabled: true" in line, \
-                    f"AR must be blueprint_enabled: true. Line: {line}"
-                assert "rtl: true" in line, "AR must be RTL"
+                assert "blueprint_enabled: false" in line, \
+                    f"AR must NOT be blueprint_enabled. Line: {line}"
+                assert "rtl: true" in line, "AR must remain RTL"
+                assert "public_enabled: true" in line, \
+                    "AR must remain available for public site / Client Companion"
                 return
         pytest.fail("'ar' entry not found in language registry")
 
-    def test_six_base_blueprint_languages_present(self):
+    def test_six_operational_blueprint_languages_present(self):
         s = LANG_REG.read_text(encoding='utf-8')
-        # Each must be enabled AND blueprint_enabled
-        for code in ("'it'", "'en-US'", "'fr'", "'de'", "'es'", "'ar'"):
-            # Find the line and verify both flags
+        for code in ("'it'", "'en-US'", "'en-GB'", "'fr'", "'de'", "'es'"):
             for line in s.splitlines():
                 if f"code: {code}" in line and "blueprint_enabled" in line:
                     assert "blueprint_enabled: true" in line, \
-                        f"Language {code} must be Blueprint-enabled. Line: {line}"
+                        f"Operational language {code} must be Blueprint-enabled. Line: {line}"
                     break
             else:
-                pytest.fail(f"Language {code} not found")
+                pytest.fail(f"Operational language {code} not found")
+
+    def test_blueprint_operational_whitelist_constant_exists(self):
+        s = LANG_REG.read_text(encoding='utf-8')
+        assert "BLUEPRINT_OPERATIONAL_CODES" in s, \
+            "Whitelist constant BLUEPRINT_OPERATIONAL_CODES must be exported"
+        # Whitelist must contain exactly the 6 operational codes
+        for code in ("'it'", "'en-US'", "'en-GB'", "'fr'", "'de'", "'es'"):
+            assert code in s, f"Whitelist must include {code}"
 
 
 # ── ar.json minimum coverage ───────────────────────────────────

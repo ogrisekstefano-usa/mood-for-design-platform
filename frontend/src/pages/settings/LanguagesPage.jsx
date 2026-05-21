@@ -18,6 +18,8 @@ import {
   LANGUAGE_REGISTRY,
   getLanguageRegistry,
   setLanguageRegistry,
+  BLUEPRINT_OPERATIONAL_CODES,
+  isBlueprintOperational,
 } from '../../site/content/languages';
 import '../admin/platform-capabilities.css'; // reuse .pcap-toggle styles
 
@@ -68,7 +70,16 @@ const LanguagesPage = () => {
   const [dirty, setDirty] = useState(false);
 
   const update = (code, patch) => {
-    setRegistry((prev) => prev.map((l) => (l.code === code ? { ...l, ...patch } : l)));
+    setRegistry((prev) => prev.map((l) => {
+      if (l.code !== code) return l;
+      // Guard: cannot enable Blueprint on a non-operational language.
+      // The Blueprint Command Center™ workspace is locked to 6 fixed locales.
+      const safePatch = { ...patch };
+      if ('blueprint_enabled' in safePatch && safePatch.blueprint_enabled && !isBlueprintOperational(code)) {
+        delete safePatch.blueprint_enabled;
+      }
+      return { ...l, ...safePatch };
+    }));
     setDirty(true);
   };
 
@@ -110,6 +121,38 @@ const LanguagesPage = () => {
         </p>
       </div>
 
+      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-3" data-testid="languages-governance-grid">
+        <div className="p-4 bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)]"
+             data-testid="languages-blueprint-note">
+          <p className="text-[var(--bp-primary)] text-[9.5px] font-body uppercase tracking-[0.24em] mb-1.5">
+            {t('settings.languages.blueprint.eyebrow', null, 'Blueprint Languages')}
+          </p>
+          <p className="text-[var(--bp-text-secondary)] text-[12.5px] font-body leading-relaxed">
+            {t('settings.languages.blueprint.copy', null,
+              'Lingue operative disponibili per il workspace Blueprint.')}
+          </p>
+          <p className="mt-2 text-[var(--bp-text-muted)] text-[11px] font-body">
+            <code style={{ fontSize: 11 }}>
+              {BLUEPRINT_OPERATIONAL_CODES.join(' · ')}
+            </code>
+          </p>
+        </div>
+        <div className="p-4 bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)]"
+             data-testid="languages-public-note">
+          <p className="text-[var(--bp-primary)] text-[9.5px] font-body uppercase tracking-[0.24em] mb-1.5">
+            {t('settings.languages.public.eyebrow', null, 'Public Site Languages')}
+          </p>
+          <p className="text-[var(--bp-text-secondary)] text-[12.5px] font-body leading-relaxed">
+            {t('settings.languages.public.copy', null,
+              'Lingue disponibili per sito pubblico, form, onboarding e Client Companion.')}
+          </p>
+          <p className="mt-2 text-[var(--bp-text-muted)] text-[11px] font-body">
+            {t('settings.languages.ai.copy', null,
+              'AI Translate: precompila traduzioni per le lingue pubbliche abilitate.')}
+          </p>
+        </div>
+      </div>
+
       <div className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] overflow-x-auto" data-testid="languages-table-wrap">
         <table className="mfd-langs-table" style={{ minWidth: 880 }}>
           <thead>
@@ -146,10 +189,16 @@ const LanguagesPage = () => {
                           testid={`lang-public-${l.code}`} />
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  <Toggle checked={l.blueprint_enabled}
-                          disabled={!l.enabled}
+                  <Toggle checked={l.blueprint_enabled && isBlueprintOperational(l.code)}
+                          disabled={!l.enabled || !isBlueprintOperational(l.code)}
                           onChange={(v) => update(l.code, { blueprint_enabled: v })}
-                          label={l.blueprint_enabled ? 'Nascondi da Blueprint' : 'Mostra in Blueprint'}
+                          label={
+                            !isBlueprintOperational(l.code)
+                              ? t('settings.languages.blueprint.locked',
+                                  null,
+                                  'Lingua non operativa per Blueprint — disponibile solo per sito pubblico e Client Companion.')
+                              : (l.blueprint_enabled ? 'Nascondi da Blueprint' : 'Mostra in Blueprint')
+                          }
                           testid={`lang-blueprint-${l.code}`} />
                 </td>
                 <td style={{ textAlign: 'center' }}>

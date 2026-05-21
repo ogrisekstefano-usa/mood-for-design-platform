@@ -30,6 +30,33 @@
  * @property {string}  base            — Base 2-char code (en-US/en-UK → 'en')
  */
 
+/**
+ * BLUEPRINT_OPERATIONAL_CODES — HARDENING-I18N · 21 Mag 2026.
+ *
+ * The Blueprint Command Center™ admin UI is LOCKED to exactly 6 operational
+ * languages. This whitelist is enforced by `blueprintLanguages()` regardless
+ * of what an admin (or a localStorage override) sets `blueprint_enabled` to.
+ *
+ * Public site, Client Companion, onboarding, and AI translation pipelines
+ * remain free to use the full Global Language Registry below (e.g. ar, zh, ja).
+ *
+ * Mapping: user spec → registry codes (we keep canonical short forms already
+ * in use across the codebase):
+ *   it-IT  → 'it'
+ *   en-US  → 'en-US'
+ *   en-GB  → 'en-GB'
+ *   fr-FR  → 'fr'
+ *   de-DE  → 'de'
+ *   es-ES  → 'es'
+ */
+export const BLUEPRINT_OPERATIONAL_CODES = Object.freeze([
+  'it', 'en-US', 'en-GB', 'fr', 'de', 'es',
+]);
+
+/** True if a language code is one of the 6 Blueprint operational languages. */
+export const isBlueprintOperational = (code) =>
+  BLUEPRINT_OPERATIONAL_CODES.includes(code);
+
 /** @type {LanguageEntry[]} */
 export const LANGUAGE_REGISTRY = [
   { code: 'it',    name: 'Italian',         native_name: 'Italiano',      enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: true,  rtl: false, fallback_locale: 'en-US', sort_order: 10, ai_translation_enabled: true,  short: 'IT',    base: 'it' },
@@ -38,7 +65,10 @@ export const LANGUAGE_REGISTRY = [
   { code: 'fr',    name: 'French',          native_name: 'Français',      enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 40, ai_translation_enabled: true,  short: 'FR',    base: 'fr' },
   { code: 'de',    name: 'German',          native_name: 'Deutsch',       enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 50, ai_translation_enabled: true,  short: 'DE',    base: 'de' },
   { code: 'es',    name: 'Spanish',         native_name: 'Español',       enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 60, ai_translation_enabled: true,  short: 'ES',    base: 'es' },
-  { code: 'ar',    name: 'Arabic (UAE)',    native_name: 'العربية',        enabled: true,  public_enabled: true,  blueprint_enabled: true,  default_locale: false, rtl: true,  fallback_locale: 'en-US', sort_order: 70, ai_translation_enabled: true,  short: 'AE',    base: 'ar' },
+  // Non-operational languages: visible/usable on public site + Client Companion ONLY.
+  // `blueprint_enabled` is forced to false at registry level; admin UI cannot flip
+  // it (toggle is locked — see LanguagesPage.jsx + blueprintLanguages() whitelist).
+  { code: 'ar',    name: 'Arabic (UAE)',    native_name: 'العربية',        enabled: true,  public_enabled: true,  blueprint_enabled: false, default_locale: false, rtl: true,  fallback_locale: 'en-US', sort_order: 70, ai_translation_enabled: true,  short: 'AE',    base: 'ar' },
   { code: 'zh',    name: 'Chinese (Simpl.)',native_name: '中文',           enabled: false, public_enabled: false, blueprint_enabled: false, default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 80, ai_translation_enabled: true,  short: 'ZH',    base: 'zh' },
   { code: 'ja',    name: 'Japanese',        native_name: '日本語',         enabled: false, public_enabled: false, blueprint_enabled: false, default_locale: false, rtl: false, fallback_locale: 'en-US', sort_order: 90, ai_translation_enabled: true,  short: 'JA',    base: 'ja' },
 ];
@@ -80,7 +110,8 @@ export const publicLanguages = () => getLanguageRegistry()
   .filter((l) => l.enabled && l.public_enabled).sort((a, b) => a.sort_order - b.sort_order);
 
 export const blueprintLanguages = () => getLanguageRegistry()
-  .filter((l) => l.enabled && l.blueprint_enabled).sort((a, b) => a.sort_order - b.sort_order);
+  .filter((l) => l.enabled && l.blueprint_enabled && BLUEPRINT_OPERATIONAL_CODES.includes(l.code))
+  .sort((a, b) => a.sort_order - b.sort_order);
 
 // Resolve any incoming code to its canonical registry entry (BCP-47 or 2-char)
 export function resolveLanguage(code) {
