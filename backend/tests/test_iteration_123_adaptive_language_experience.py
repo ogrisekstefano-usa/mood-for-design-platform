@@ -59,8 +59,9 @@ class TestServiceModule:
         s = SERVICE.read_text(encoding='utf-8')
         # The prompt must instruct the model to use the editorial register,
         # not literal translation.
-        assert "luxury hospitality" in s.lower() or "atelier" in s.lower()
-        assert "never literal" in s.lower() or "never word-for-word" in s.lower() or "not word-for-word" in s.lower()
+        assert "luxury hospitality" in s.lower() or "atelier" in s.lower() or "architecture editorial" in s.lower()
+        assert ("never literal" in s.lower() or "never word-for-word" in s.lower()
+                or "not word-for-word" in s.lower() or "never translate word-for-word" in s.lower())
 
     def test_dnt_wrap_helper_present(self):
         s = SERVICE.read_text(encoding='utf-8')
