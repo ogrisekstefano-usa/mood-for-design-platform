@@ -1,297 +1,16 @@
 {
   "locale": "en-US",
   "base": "https://content-hub-pro-22.preview.emergentagent.com",
-  "generated_at": "2026-05-22T00:13:52Z",
+  "generated_at": "2026-05-22T01:21:25Z",
   "routes_crawled": 20,
-  "summary": {
-    "DB_SEEDED_CONTENT": 37,
-    "EDITORIAL_SEED_BY_DESIGN": 5
-  },
-  "findings": [
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/dashboard",
-      "text": "Brief Cliente — in apertura. G3_HIEFFV racconta la sua atmosfera.",
-      "testid": "jp-journey-0ec90999-2e47-46be-918e-6d50e8d21804"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/dashboard",
-      "text": "Brief Cliente approvata. Il progetto avanza.",
-      "testid": "jp-journey-7b3f4f93-2022-4d7e-ab2e-23dc4a153326"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/dashboard",
-      "text": "Il Journey è entrato nel suo archivio firmato come \"Test Closure 47bd6228\".",
-      "testid": "jp-journey-0e02f251-203f-4833-9451-91b4771953ec"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/dashboard",
-      "text": "Il Journey è stato riaperto per un nuovo capitolo. Test round-trip teardown",
-      "testid": "jp-journey-81e6f9b1-1e9c-455e-8f6d-9ed0214561d1"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/dashboard",
-      "text": "Questa seconda proposta mi sembra molto più vicina alla luce che immaginiamo per il living.\n— riferimento: https://www.pinterest.com/pin/villa-light-test/",
-      "testid": "jp-voice-4b88d79b-71a0-4760-ad12-14d4d043c2bf"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/dashboard",
-      "text": "Apri il dialogo · Client Brief",
-      "testid": "jp-action-a72c757a-5bb7-4088-a78e-107d86ea59d4"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "bouclé",
-      "testid": "inspiration-card-fe022fa7-737f-4822-ac49-3288e6b56889"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "velluto canneté",
-      "testid": "inspiration-card-d37b1917-aadb-492a-98cb-fff242c50bdc"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "Boutique hotel europeo — densità curatoriale",
-      "testid": "inspiration-card-d37b1917-aadb-492a-98cb-fff242c50bdc"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "Suite boutique hotel — pareti in laccato verde inglese profondo, testata letto in velluto canneté, comodini in marmo verde alpi, lampade da tavolo in ottone pieno. Densità decorativa controllata: poch",
-      "testid": "inspiration-card-d37b1917-aadb-492a-98cb-fff242c50bdc"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "Stone luxury — atmosfera ceremoniale Dubai",
-      "testid": "inspiration-card-4fa621f8-d6c6-46e5-89fa-b2cbaa99a119"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "Ingresso residenziale Dubai con vocazione monumentale. Onice retroilluminato sulla quinta principale, pavimento in marmo Calacatta Oro a fascione, scalinata a sbalzo in acciaio brunito e onice. Compos",
-      "testid": "inspiration-card-4fa621f8-d6c6-46e5-89fa-b2cbaa99a119"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "Residenza Malibu con linguaggio organico contemporaneo. Pareti in calce naturale color burro, trave in legno recuperato a vista, lino lavato sui tessili principali, ceramica artigianale locale. L'illu",
-      "testid": "inspiration-card-be953003-03ab-4a4c-a65c-c67c0ec6a467"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "Townhouse Kensington — boiserie originale in noce restaurata, integrata con tessuti contemporanei (lino Loro Piana, mohair Pierre Frey), tappeti vintage Esfahan. Il dialogo storico-contemporaneo è esp",
-      "testid": "inspiration-card-ad613535-844d-432c-8738-018322d8129d"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "Penthouse Miami con continuità totale indoor-outdoor. Vetrate scorrevoli a tutta altezza, pavimento in travertino chiaro continuo dentro/fuori, piscina a sfioro come quinta visiva. Vegetazione tropica",
-      "testid": "inspiration-card-477bcaf7-61c6-42d3-b539-cd094a1884c0"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "Penthouse newyorchese — atmosfera gallery",
-      "testid": "inspiration-card-85d76355-9168-4bf7-a454-89052c292244"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "Penthouse Upper East Side. Pareti in stucco veneziano scuro, parquet a spina ungherese in noce, opere d'arte trattate come elementi architettonici. Verticalità marcata, pochi pezzi di seduta molto pre",
-      "testid": "inspiration-card-85d76355-9168-4bf7-a454-89052c292244"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "Spazio milanese costruito sul gesto sottrattivo. Pavimento in resina chiara continua, boiserie a tutta altezza in rovere spazzolato, dettaglio sottile in ottone satinato sull'attacco a soffitto. Nessu",
-      "testid": "inspiration-card-10409fde-d96d-477c-851f-0afed1b0adfc"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "Living residenziale con palette terrosa stratificata: noce canaletto sui mobili principali, bouclé chiaro sul divano modulare, tappeto in lana cardata. Luce diffusa dall'esterno, nessuna sorgente punt",
-      "testid": "inspiration-card-88459025-96a6-40b0-9086-8407241a0469"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations",
-      "text": "Hall hospitality con doppia altezza. Pietra calcarea calda a pavimento, boiserie sabbia su parete continua, illuminazione zenitale che restituisce all'ottone una morbidezza diurna. Composizione che la",
-      "testid": "inspiration-card-850cdc3f-5432-4e52-a599-aa1bba3cdf0c"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations/brands",
-      "text": "design della luce",
-      "testid": "bm-card-c9bf3dd2-4797-4959-900d-29044e5e0430"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations/brands",
-      "text": "Step into the atelier",
-      "testid": "bm-card-c9bf3dd2-4797-4959-900d-29044e5e0430"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations/brands",
-      "text": "materialità ·",
-      "testid": "bm-materials-65a41392-c3a1-4ca8-9a27-cfdd1bbe577b"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations/brands",
-      "text": "patrimonio del design",
-      "testid": "bm-card-88d18679-113c-48ed-84e3-037562864367"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations/brands",
-      "text": "E2E Test Atelier pmneq",
-      "testid": "bm-card-bb39cb31-eb93-4b40-b28c-5fbf8659fc17"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations/brands",
-      "text": "E2E Test Atelier zxlyv",
-      "testid": "bm-card-16e6a66f-9961-44ae-a416-dead971a21f5"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations/brands",
-      "text": "sartorialità domestica",
-      "testid": "bm-card-332f2116-214e-4239-a2da-e5684db71bd8"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/workspace/cultural-editions",
-      "text": "Appartamento Stefano — Geometrie domestiche del quotidiano",
-      "testid": "ce-row-b8cb5030-cfed-4af4-b231-c0846b8bb11d"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/workspace/cultural-editions",
-      "text": "Appartamento Stefano — Architettura del quotidiano",
-      "testid": "ce-row-62b2cc3a-e981-4eef-9be4-502a8807108b"
-    },
-    {
-      "kind": "EDITORIAL_SEED_BY_DESIGN",
-      "page": "/blueprint/studio-voice",
-      "text": "materico",
-      "testid": "voice-vocab-row-dfc10472-96c7-4915-b88f-c7bca95c5e4d"
-    },
-    {
-      "kind": "EDITORIAL_SEED_BY_DESIGN",
-      "page": "/blueprint/studio-voice",
-      "text": "Buongiorno Marco, abbiamo aggiornato la moodboard della cucina con superfici opache e finiture più calde. Ti mostriamo i campioni materici lunedì allo showroom. [TEST·8582b060-a930-47ea-92f1-872042672",
-      "testid": "voice-memory-row-970670c9-e5f6-4c7a-befe-1176483412b5"
-    },
-    {
-      "kind": "EDITORIAL_SEED_BY_DESIGN",
-      "page": "/blueprint/studio-voice",
-      "text": "Ciao Stefano, vorrei capire i prossimi passi per il progetto. Quando possiamo sentirci?",
-      "testid": "voice-memory-row-3bdc88dc-a4fe-48b8-936c-774a84a5a7e8"
-    },
-    {
-      "kind": "EDITORIAL_SEED_BY_DESIGN",
-      "page": "/blueprint/studio-voice",
-      "text": "Grazie del feedback. Procediamo aggiornando la proposta con finiture più calde.\n\nUn caro saluto,\nStefano",
-      "testid": "voice-memory-row-92d63bcf-0e09-4397-9fe7-4ff14f89fc4e"
-    },
-    {
-      "kind": "EDITORIAL_SEED_BY_DESIGN",
-      "page": "/blueprint/studio-voice",
-      "text": "Marco, abbiamo alleggerito la proposta della cucina introducendo superfici più luminose e una composizione meno materica. Per la zona giorno suggeriamo Cattelan Italia con una palette più discreta, va",
-      "testid": "voice-memory-row-64dcd3f6-5598-477f-8da5-2171a34d65ee"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/moodboards",
-      "text": "Continua la direzione →",
-      "testid": "moodboard-card-5fb3e4f6-350c-42e5-9b26-0b0eb14ce82c"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/moodboards",
-      "text": "Living alternativo · terzo capitolo",
-      "testid": "moodboard-card-762625ed-45f0-4069-8481-58bc52b0cde9"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/moodboards",
-      "text": "Nuovo progetto — Camilla",
-      "testid": "moodboard-card-4f70d48e-c1f0-4b37-b4b7-ce6075f51019"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/moodboards",
-      "text": "Nuovo progetto — Test",
-      "testid": "moodboard-card-e1e7512d-0f02-4572-b337-410247d195fb"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/moodboards",
-      "text": "Nuovo progetto — Alessio",
-      "testid": "moodboard-card-45413174-5470-4003-acdf-997018175b09"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/moodboards",
-      "text": "Direzione materica · secondo capitolo",
-      "testid": "moodboard-card-6da79e82-1bbf-4f83-9de6-86f7fbf2f0b0"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/moodboards",
-      "text": "Cliente in lettura",
-      "testid": "moodboard-card-6da79e82-1bbf-4f83-9de6-86f7fbf2f0b0"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/moodboards",
-      "text": "Direzione fredda · primo capitolo",
-      "testid": "moodboard-card-d5487020-4b02-4ef4-830e-6ce775d966c5"
-    }
-  ],
+  "summary": {},
+  "findings": [],
   "pages": [
     {
       "key": "dashboard",
       "url": "/dashboard",
       "nav_error": null,
-      "italian_leaks": [
-        {
-          "text": "Brief Cliente — in apertura. G3_HIEFFV racconta la sua atmosfera.",
-          "testid": "jp-journey-0ec90999-2e47-46be-918e-6d50e8d21804"
-        },
-        {
-          "text": "Brief Cliente approvata. Il progetto avanza.",
-          "testid": "jp-journey-7b3f4f93-2022-4d7e-ab2e-23dc4a153326"
-        },
-        {
-          "text": "Il Journey è entrato nel suo archivio firmato come \"Test Closure 47bd6228\".",
-          "testid": "jp-journey-0e02f251-203f-4833-9451-91b4771953ec"
-        },
-        {
-          "text": "Il Journey è stato riaperto per un nuovo capitolo. Test round-trip teardown",
-          "testid": "jp-journey-81e6f9b1-1e9c-455e-8f6d-9ed0214561d1"
-        },
-        {
-          "text": "Questa seconda proposta mi sembra molto più vicina alla luce che immaginiamo per il living.\n— riferimento: https://www.pinterest.com/pin/villa-light-test/",
-          "testid": "jp-voice-4b88d79b-71a0-4760-ad12-14d4d043c2bf"
-        },
-        {
-          "text": "Apri il dialogo · Client Brief",
-          "testid": "jp-action-a72c757a-5bb7-4088-a78e-107d86ea59d4"
-        }
-      ],
+      "italian_leaks": [],
       "missing_tokens": [],
       "raw_keys": [],
       "error_boundary": false,
@@ -349,27 +68,7 @@
         },
         {
           "type": "warning",
-          "text": "[LEAKAGE] {phrase: Le relazioni, locale: en-US, page: /crm/accounts, testid: crm-page}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: del Team, locale: en-US, page: /crm/accounts, testid: crm-page}"
-        },
-        {
-          "type": "warning",
           "text": "[LEAKAGE] {phrase: le relazioni, locale: en-US, page: /crm/accounts, testid: crm-page}"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
         },
         {
           "type": "error",
@@ -405,14 +104,6 @@
           "text": "Failed to load resource: the server responded with a status of 404 ()"
         },
         {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Le relazioni, locale: en-US, page: /crm/follow-ups, testid: crm-page}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: del Team, locale: en-US, page: /crm/follow-ups, testid: crm-page}"
-        },
-        {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
         }
@@ -423,64 +114,7 @@
       "key": "inspirations",
       "url": "/inspirations",
       "nav_error": null,
-      "italian_leaks": [
-        {
-          "text": "bouclé",
-          "testid": "inspiration-card-fe022fa7-737f-4822-ac49-3288e6b56889"
-        },
-        {
-          "text": "velluto canneté",
-          "testid": "inspiration-card-d37b1917-aadb-492a-98cb-fff242c50bdc"
-        },
-        {
-          "text": "Boutique hotel europeo — densità curatoriale",
-          "testid": "inspiration-card-d37b1917-aadb-492a-98cb-fff242c50bdc"
-        },
-        {
-          "text": "Suite boutique hotel — pareti in laccato verde inglese profondo, testata letto in velluto canneté, comodini in marmo verde alpi, lampade da tavolo in ottone pieno. Densità decorativa controllata: poch",
-          "testid": "inspiration-card-d37b1917-aadb-492a-98cb-fff242c50bdc"
-        },
-        {
-          "text": "Stone luxury — atmosfera ceremoniale Dubai",
-          "testid": "inspiration-card-4fa621f8-d6c6-46e5-89fa-b2cbaa99a119"
-        },
-        {
-          "text": "Ingresso residenziale Dubai con vocazione monumentale. Onice retroilluminato sulla quinta principale, pavimento in marmo Calacatta Oro a fascione, scalinata a sbalzo in acciaio brunito e onice. Compos",
-          "testid": "inspiration-card-4fa621f8-d6c6-46e5-89fa-b2cbaa99a119"
-        },
-        {
-          "text": "Residenza Malibu con linguaggio organico contemporaneo. Pareti in calce naturale color burro, trave in legno recuperato a vista, lino lavato sui tessili principali, ceramica artigianale locale. L'illu",
-          "testid": "inspiration-card-be953003-03ab-4a4c-a65c-c67c0ec6a467"
-        },
-        {
-          "text": "Townhouse Kensington — boiserie originale in noce restaurata, integrata con tessuti contemporanei (lino Loro Piana, mohair Pierre Frey), tappeti vintage Esfahan. Il dialogo storico-contemporaneo è esp",
-          "testid": "inspiration-card-ad613535-844d-432c-8738-018322d8129d"
-        },
-        {
-          "text": "Penthouse Miami con continuità totale indoor-outdoor. Vetrate scorrevoli a tutta altezza, pavimento in travertino chiaro continuo dentro/fuori, piscina a sfioro come quinta visiva. Vegetazione tropica",
-          "testid": "inspiration-card-477bcaf7-61c6-42d3-b539-cd094a1884c0"
-        },
-        {
-          "text": "Penthouse newyorchese — atmosfera gallery",
-          "testid": "inspiration-card-85d76355-9168-4bf7-a454-89052c292244"
-        },
-        {
-          "text": "Penthouse Upper East Side. Pareti in stucco veneziano scuro, parquet a spina ungherese in noce, opere d'arte trattate come elementi architettonici. Verticalità marcata, pochi pezzi di seduta molto pre",
-          "testid": "inspiration-card-85d76355-9168-4bf7-a454-89052c292244"
-        },
-        {
-          "text": "Spazio milanese costruito sul gesto sottrattivo. Pavimento in resina chiara continua, boiserie a tutta altezza in rovere spazzolato, dettaglio sottile in ottone satinato sull'attacco a soffitto. Nessu",
-          "testid": "inspiration-card-10409fde-d96d-477c-851f-0afed1b0adfc"
-        },
-        {
-          "text": "Living residenziale con palette terrosa stratificata: noce canaletto sui mobili principali, bouclé chiaro sul divano modulare, tappeto in lana cardata. Luce diffusa dall'esterno, nessuna sorgente punt",
-          "testid": "inspiration-card-88459025-96a6-40b0-9086-8407241a0469"
-        },
-        {
-          "text": "Hall hospitality con doppia altezza. Pietra calcarea calda a pavimento, boiserie sabbia su parete continua, illuminazione zenitale che restituisce all'ottone una morbidezza diurna. Composizione che la",
-          "testid": "inspiration-card-850cdc3f-5432-4e52-a599-aa1bba3cdf0c"
-        }
-      ],
+      "italian_leaks": [],
       "missing_tokens": [],
       "raw_keys": [],
       "error_boundary": false,
@@ -505,36 +139,7 @@
       "key": "brand-atlas",
       "url": "/inspirations/brands",
       "nav_error": null,
-      "italian_leaks": [
-        {
-          "text": "design della luce",
-          "testid": "bm-card-c9bf3dd2-4797-4959-900d-29044e5e0430"
-        },
-        {
-          "text": "Step into the atelier",
-          "testid": "bm-card-c9bf3dd2-4797-4959-900d-29044e5e0430"
-        },
-        {
-          "text": "materialità ·",
-          "testid": "bm-materials-65a41392-c3a1-4ca8-9a27-cfdd1bbe577b"
-        },
-        {
-          "text": "patrimonio del design",
-          "testid": "bm-card-88d18679-113c-48ed-84e3-037562864367"
-        },
-        {
-          "text": "E2E Test Atelier pmneq",
-          "testid": "bm-card-bb39cb31-eb93-4b40-b28c-5fbf8659fc17"
-        },
-        {
-          "text": "E2E Test Atelier zxlyv",
-          "testid": "bm-card-16e6a66f-9961-44ae-a416-dead971a21f5"
-        },
-        {
-          "text": "sartorialità domestica",
-          "testid": "bm-card-332f2116-214e-4239-a2da-e5684db71bd8"
-        }
-      ],
+      "italian_leaks": [],
       "missing_tokens": [],
       "raw_keys": [],
       "error_boundary": false,
@@ -545,12 +150,12 @@
           "text": "Failed to load resource: the server responded with a status of 404 ()"
         },
         {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 404 ()"
-        },
-        {
           "type": "warning",
           "text": "[LEAKAGE] {phrase: Brand, locale: en-US, page: /inspirations/brands, testid: brand-atlas-eyebrow}"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/brand-atlas.jpg"
@@ -572,6 +177,10 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/material-view.jpg"
@@ -580,16 +189,7 @@
       "key": "cultural-editions",
       "url": "/workspace/cultural-editions",
       "nav_error": null,
-      "italian_leaks": [
-        {
-          "text": "Appartamento Stefano — Geometrie domestiche del quotidiano",
-          "testid": "ce-row-b8cb5030-cfed-4af4-b231-c0846b8bb11d"
-        },
-        {
-          "text": "Appartamento Stefano — Architettura del quotidiano",
-          "testid": "ce-row-62b2cc3a-e981-4eef-9be4-502a8807108b"
-        }
-      ],
+      "italian_leaks": [],
       "missing_tokens": [],
       "raw_keys": [],
       "error_boundary": false,
@@ -604,8 +204,20 @@
           "text": "Failed to load resource: the server responded with a status of 404 ()"
         },
         {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: del quotidiano, locale: en-US, page: /workspace/cultural-editions, testid: ce-row-b8cb5030-cfed-4af4-b231-c0846b8bb11d}"
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/cultural-editions.jpg"
@@ -664,14 +276,6 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 500 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/magazine.jpg"
@@ -701,6 +305,10 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/publishing.jpg"
@@ -763,6 +371,10 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/web-presence.jpg"
@@ -821,6 +433,10 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/integrations.jpg"
@@ -879,10 +495,6 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 500 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/forms.jpg"
@@ -891,33 +503,16 @@
       "key": "studio-voice",
       "url": "/blueprint/studio-voice",
       "nav_error": null,
-      "italian_leaks": [
-        {
-          "text": "materico",
-          "testid": "voice-vocab-row-dfc10472-96c7-4915-b88f-c7bca95c5e4d"
-        },
-        {
-          "text": "Buongiorno Marco, abbiamo aggiornato la moodboard della cucina con superfici opache e finiture più calde. Ti mostriamo i campioni materici lunedì allo showroom. [TEST·8582b060-a930-47ea-92f1-872042672",
-          "testid": "voice-memory-row-970670c9-e5f6-4c7a-befe-1176483412b5"
-        },
-        {
-          "text": "Ciao Stefano, vorrei capire i prossimi passi per il progetto. Quando possiamo sentirci?",
-          "testid": "voice-memory-row-3bdc88dc-a4fe-48b8-936c-774a84a5a7e8"
-        },
-        {
-          "text": "Grazie del feedback. Procediamo aggiornando la proposta con finiture più calde.\n\nUn caro saluto,\nStefano",
-          "testid": "voice-memory-row-92d63bcf-0e09-4397-9fe7-4ff14f89fc4e"
-        },
-        {
-          "text": "Marco, abbiamo alleggerito la proposta della cucina introducendo superfici più luminose e una composizione meno materica. Per la zona giorno suggeriamo Cattelan Italia con una palette più discreta, va",
-          "testid": "voice-memory-row-64dcd3f6-5598-477f-8da5-2171a34d65ee"
-        }
-      ],
+      "italian_leaks": [],
       "missing_tokens": [],
       "raw_keys": [],
       "error_boundary": false,
       "page_errors": [],
       "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
@@ -1186,53 +781,12 @@
       "key": "moodboards",
       "url": "/moodboards",
       "nav_error": null,
-      "italian_leaks": [
-        {
-          "text": "Continua la direzione →",
-          "testid": "moodboard-card-5fb3e4f6-350c-42e5-9b26-0b0eb14ce82c"
-        },
-        {
-          "text": "Living alternativo · terzo capitolo",
-          "testid": "moodboard-card-762625ed-45f0-4069-8481-58bc52b0cde9"
-        },
-        {
-          "text": "Nuovo progetto — Camilla",
-          "testid": "moodboard-card-4f70d48e-c1f0-4b37-b4b7-ce6075f51019"
-        },
-        {
-          "text": "Nuovo progetto — Test",
-          "testid": "moodboard-card-e1e7512d-0f02-4572-b337-410247d195fb"
-        },
-        {
-          "text": "Nuovo progetto — Alessio",
-          "testid": "moodboard-card-45413174-5470-4003-acdf-997018175b09"
-        },
-        {
-          "text": "Direzione materica · secondo capitolo",
-          "testid": "moodboard-card-6da79e82-1bbf-4f83-9de6-86f7fbf2f0b0"
-        },
-        {
-          "text": "Cliente in lettura",
-          "testid": "moodboard-card-6da79e82-1bbf-4f83-9de6-86f7fbf2f0b0"
-        },
-        {
-          "text": "Direzione fredda · primo capitolo",
-          "testid": "moodboard-card-d5487020-4b02-4ef4-830e-6ce775d966c5"
-        }
-      ],
+      "italian_leaks": [],
       "missing_tokens": [],
       "raw_keys": [],
       "error_boundary": false,
       "page_errors": [],
       "console": [
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Moodboard, locale: en-US, page: /moodboards, testid: moodboards-archive-banner}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: moodboard, locale: en-US, page: /moodboards, testid: new-moodboard-btn}"
-        },
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"

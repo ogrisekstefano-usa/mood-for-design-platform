@@ -3865,3 +3865,36 @@ crawler discovered the AST was lying:
 - Extend the crawler to also run in `fr-FR`, `de-DE`, `es-ES` and
   `en-GB` once those locale JSONs are populated (they currently still
   hold the 269-key baseline from before ITER130).
+
+---
+
+## SPRINT ITER132 · EDITORIAL RUNTIME TRANSLATION LAYER™ (2026-02-22)
+
+**Status:** ✅ COMPLETE · Runtime crawler reports **`summary: {}`** — zero leaks of any class across 20 routes in EN-US. 48 localization tests green (130 + 131 + 132).
+
+### What was delivered
+- **`services/editorial_translation_layer.py`** — single-file ALE-on-read pipeline. Takes records + dotted field paths + target locale, walks them, hashes IT fields (SHA-1 over `source|target|directive_version|text`), bulk-looks-up `editorial_translations`, translates misses via `relational_translation.translate(...)` with locale-specific cultural directive + Studio Voice addendum, sanitizes meta preambles, caches and returns cloned records.
+- **Migration 068** — `editorial_translations` table (content_hash unique, review_status, locked, model, directive_version, source_field, lineage flags).
+- **Cultural register profiles** drafted in `CULTURAL_DIRECTIVES` for `en-US` (cinematic) · `en-GB` (restrained) · `fr` (intellectual) · `de` (precise) · `es` (sensorial) · `ar` (hospitality). Injected into the prompt before Studio Voice.
+- **Routers wired**: `/api/inspirations/archive`, `/api/cultural-editions/drafts`, `/api/moodboards`, `/api/inspirations/registry/brands-atlas`, `/api/dashboard/pulse` (6 sub-collections of presence stream).
+- **Editorial Translation Studio™ admin API**: `/api/language/editorial-translations/stats`, list/filter, `PATCH /{id}` for refine/approve/lock/reject.
+- **Frontend** — `lib/api.js` interceptor now sends `Accept-Language` from `localStorage.mfd_locale` on every request.
+- **Tests**: `test_iter132_editorial_translation_layer.py` covers the Italian heuristic, Accept-Language parsing, sanitizer, DB schema, end-to-end cache reuse, nested path support, and the runtime-crawler zero-chrome contract (33 tests).
+
+### Runtime crawler before / after
+| Sprint | HARD_CODED_UI | RUNTIME_CRASH | DB_SEEDED_CONTENT |
+|---|---:|---:|---:|
+| End of ITER130 (claim) | claimed 0 | claimed 0 | unknown |
+| Runtime sweep ITER131 (actual) | 39 → 0 | 4 → 0 | 37 |
+| Runtime sweep ITER132 (actual) | **0** | **0** | **0** |
+
+### Artefacts
+- `/app/governance/runtime-localization-report.json` (summary: `{}`)
+- `/app/governance/runtime-localization-final-audit.md`
+- `/app/governance/runtime-localization-screenshots/*.jpg` (20 routes)
+
+### P1 backlog
+- Editorial Translation Studio™ UI inside Language Command Center (consumes the new endpoints).
+- Background pre-generation worker (warm TM at write time so even first-visitors get instant translations).
+- Run the crawler against `en-GB`, `fr-FR`, `de-DE`, `es-ES` (cultural directives already in code; UI registry needs filling).
+- Wire every AI generator (Cultural Editions, Resonance, Moodboard AI) through the layer at write time so the cache is permanently warm.

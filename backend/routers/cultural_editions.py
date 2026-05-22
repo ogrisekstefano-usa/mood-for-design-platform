@@ -27,7 +27,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
 from core.tenant_context import get_tenant_context
@@ -531,14 +531,36 @@ async def create_draft(body: DraftCreate, ctx=Depends(get_tenant_context)):
 
 
 @router.get("/drafts")
-def list_drafts(limit: int = 30, ctx=Depends(get_tenant_context)):
+def list_drafts(request: Request, limit: int = 30, ctx=Depends(get_tenant_context)):
     c = db()
     tid = ctx["tenant_id"]
     rows = (c.table("cultural_edition_drafts")
             .select("id,source_type,source_id,source_title,target_market,target_market_label,"
                     "target_locale,status,created_at,updated_at,market_version,generation_meta")
             .eq("tenant_id", tid).order("created_at", desc=True).limit(limit).execute().data or [])
-    return {"drafts": [_slim(r) for r in rows]}
+    drafts = [_slim(r) for r in rows]
+
+    # ITER132 · ALE-on-read for editorial chrome. We only translate
+    # source_title (the headline visible in the list) — the per-market
+    # generation_meta carries already-localised content per market.
+    try:
+        from services.editorial_translation_layer import (
+            localize_records as _ale_localize_records,
+            parse_accept_language as _ale_pick_locale,
+        )
+        target = _ale_pick_locale(request.headers.get('Accept-Language'))
+        if target and target != 'it':
+            drafts = _ale_localize_records(
+                drafts,
+                fields=('source_title', 'market_version.headline', 'market_version.dek', 'market_version.lede'),
+                target_locale=target,
+                tenant_id=tid,
+                surface='cultural_edition_row',
+            )
+    except Exception as e:
+        logger.warning("ALE list_drafts skipped: %s", e)
+
+    return {"drafts": drafts}
 
 
 @router.get("/drafts/{draft_id}")

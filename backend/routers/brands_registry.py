@@ -25,7 +25,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
 from core.tenant_context import get_tenant_context
@@ -225,6 +225,7 @@ def delete_brand(brand_id: str, ctx=Depends(get_tenant_context)):
 # Linguaggio: "atlante curatoriale", non "vendor list / supplier catalog".
 @router.get("/registry/brands-atlas")
 def brands_atlas(
+    request: Request,
     q:     Optional[str] = Query(None, max_length=80),
     limit: int = Query(60, le=120),
     ctx=Depends(get_tenant_context),
@@ -307,6 +308,26 @@ def brands_atlas(
             "dominant_materials":   _top3(mat_bag.get(bn)),
             "dominant_markets":     _top3(markets_bag.get(bn)) or (b.get("primary_markets") or [])[:3],
         })
+
+    # ITER132 · ALE-on-read · translate the editorial fields of each brand
+    # card when the caller is in a non-Italian locale.
+    try:
+        from services.editorial_translation_layer import (
+            localize_records as _ale_localize_records,
+            parse_accept_language as _ale_pick_locale,
+        )
+        target = _ale_pick_locale(request.headers.get('Accept-Language'))
+        if target and target != 'it':
+            items = _ale_localize_records(
+                items,
+                fields=('positioning', 'story', 'description', 'tagline'),
+                target_locale=target,
+                tenant_id=tid,
+                surface='brand_atlas_card',
+            )
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning("ALE brands_atlas skipped: %s", e)
 
     return {"items": items}
 

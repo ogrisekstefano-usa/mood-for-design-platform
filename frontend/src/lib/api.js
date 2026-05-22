@@ -19,6 +19,12 @@ api.interceptors.request.use((config) => {
     // Tenant impersonation header (super_admin only — backend enforces role check)
     const impersonate = sessionStorage.getItem('mfd_impersonate_tenant');
     if (impersonate) config.headers['X-Tenant-Override'] = impersonate;
+    // ITER132 · Always send the active locale so the backend can apply
+    // ALE-on-read on editorial / DB-seeded content before serving the payload.
+    const locale = localStorage.getItem('mfd_locale') || 'it-IT';
+    if (locale && !config.headers['Accept-Language']) {
+      config.headers['Accept-Language'] = locale;
+    }
   } catch (_) {}
   return config;
 });

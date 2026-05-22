@@ -350,6 +350,105 @@ def list_leaks(limit: int = Query(100, ge=1, le=500),
             "locale": last['locale']}
 
 
+# ─── ITER132 · Editorial Translation Studio™ admin views ────────────────
+@router.get("/editorial-translations/stats")
+def editorial_translation_stats(ctx: dict = Depends(get_tenant_context)):
+    """High-level TM stats for the Editorial Translation Studio™ panel."""
+    try:
+        from services.editorial_translation_layer import cache_stats
+        return cache_stats(ctx.get('tenant_id'))
+    except Exception as e:
+        return {'available': False, 'error': str(e)[:200]}
+
+
+@router.get("/editorial-translations")
+def list_editorial_translations(
+    target_locale: Optional[str] = Query(None),
+    review_status: Optional[str] = Query(None),
+    locked: Optional[bool] = Query(None),
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    ctx: dict = Depends(get_tenant_context),
+):
+    """List cached editorial translations for review / approval / lock.
+    Returns IT source · target locale value · status · model · timestamps."""
+    _require_admin(ctx)
+    try:
+        from database import db, db_available
+        if not db_available():
+            return {"items": [], "total": 0, "available": False}
+        q = (db().table('editorial_translations')
+             .select('id, content_hash, source_locale, target_locale, source_text, '
+                     'translated_text, review_status, locked, model, source_field, '
+                     'created_at, updated_at, reviewed_at, ai_generated, manual_refined',
+                     count='exact')
+             .eq('tenant_id', ctx.get('tenant_id')))
+        if target_locale:
+            q = q.eq('target_locale', target_locale)
+        if review_status:
+            q = q.eq('review_status', review_status)
+        if locked is not None:
+            q = q.eq('locked', locked)
+        q = q.order('updated_at', desc=True).range(offset, offset + limit - 1)
+        res = q.execute()
+        return {
+            "items": res.data or [],
+            "total": res.count or 0,
+            "available": True,
+        }
+    except Exception as e:
+        return {"items": [], "total": 0, "available": False, "error": str(e)[:200]}
+
+
+class EditorialTranslationUpdate(BaseModel):
+    translated_text: Optional[str] = None
+    review_status:   Optional[str] = None
+    locked:          Optional[bool] = None
+
+
+@router.patch("/editorial-translations/{translation_id}")
+def update_editorial_translation(
+    translation_id: str,
+    body: EditorialTranslationUpdate,
+    ctx: dict = Depends(get_tenant_context),
+):
+    """Update a cached editorial translation (refine wording, lock as the
+    approved version, or change its review state)."""
+    _require_admin(ctx)
+    payload: dict = {'updated_at': _now_iso()}
+    if body.translated_text is not None:
+        payload['translated_text'] = body.translated_text.strip()
+        payload['manual_refined'] = True
+    if body.review_status is not None:
+        if body.review_status not in ('ai_suggested', 'reviewed', 'locked_approved', 'rejected'):
+            raise HTTPException(400, "invalid review_status")
+        payload['review_status'] = body.review_status
+        if body.review_status in ('reviewed', 'locked_approved'):
+            payload['reviewed_at'] = _now_iso()
+            payload['reviewed_by'] = ctx.get('profile_id') or ctx.get('user_id')
+    if body.locked is not None:
+        payload['locked'] = bool(body.locked)
+        if body.locked:
+            payload['review_status'] = payload.get('review_status') or 'locked_approved'
+    try:
+        from database import db, db_available
+        if not db_available():
+            raise HTTPException(503, "database unavailable")
+        res = (db().table('editorial_translations')
+               .update(payload)
+               .eq('id', translation_id)
+               .eq('tenant_id', ctx.get('tenant_id'))
+               .execute())
+        rows = res.data or []
+        if not rows:
+            raise HTTPException(404, "translation not found")
+        return rows[0]
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(500, f"update failed: {str(e)[:200]}")
+
+
 # ─── ITER130 · Bulk Editorial Batch Translate (Studio Voice + ALE) ─────
 class BatchTranslateItem(BaseModel):
     key_path:     str

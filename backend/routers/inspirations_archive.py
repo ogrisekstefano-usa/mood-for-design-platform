@@ -30,12 +30,16 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 import httpx
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
 from core.tenant_context import get_tenant_context
 from cultural_engine import descriptor_mapper, editorial_interpreter, vision_provider_adapter
 from database import db
+from services.editorial_translation_layer import (
+    localize_records as _ale_localize_records,
+    parse_accept_language as _ale_pick_locale,
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -595,6 +599,7 @@ def filters_taxonomy(ctx=Depends(get_tenant_context)):
 
 @router.get("/archive")
 def list_archive(
+    request:     Request,
     market:      Optional[str] = Query(None),
     atmosphere:  Optional[str] = Query(None),
     material:    Optional[str] = Query(None),
@@ -657,8 +662,23 @@ def list_archive(
     filtered = [r for r in rows if keep(r)]
     # Cap the response page to the requested limit (client-side post-filter).
     page = filtered[:limit]
+    items = [_to_card(r) for r in page]
+
+    # ITER132 · ALE-on-read editorial layer. When the request is for a
+    # non-Italian locale, translate the title/description through ALE +
+    # Studio Voice™ + the locale's cultural directive, cached via TM.
+    target = _ale_pick_locale(request.headers.get('Accept-Language'))
+    if target and target != 'it':
+        items = _ale_localize_records(
+            items,
+            fields=('title', 'description'),
+            target_locale=target,
+            tenant_id=tid,
+            surface='inspiration_card',
+        )
+
     return {
-        "items": [_to_card(r) for r in page],
+        "items": items,
         "total": len(filtered),
         "next_offset": offset + len(rows) if len(rows) == upstream_limit else None,
     }

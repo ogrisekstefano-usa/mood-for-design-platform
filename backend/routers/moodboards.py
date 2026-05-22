@@ -1,8 +1,9 @@
 """Moodboards CRUD — block-based editor backbone."""
+import logging
 import re
 import uuid
 from datetime import datetime, timezone
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query, Request
 from models.schemas import MoodboardCreate, MoodboardUpdate
 from middleware.auth import get_current_user
 from core.tenant_context import get_tenant_context, require_permission
@@ -12,6 +13,7 @@ from core.permissions import (
 from core.licensing import assert_capacity
 from database import db
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 _UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.I)
@@ -33,6 +35,7 @@ def _scrub(d: dict) -> dict:
 
 @router.get("")
 def list_moodboards(
+    request: Request,
     project_id: str = Query(None),
     status: str = Query(None),
     current_user: dict = Depends(require_permission(P_MOODBOARDS_READ)),
@@ -47,7 +50,28 @@ def list_moodboards(
     if status:
         q = q.eq('status', status)
     r = q.order('updated_at', desc=True).execute()
-    return {"data": r.data or [], "total": len(r.data or [])}
+    items = r.data or []
+
+    # ITER132 · ALE-on-read · translate title + description when the
+    # request comes from a non-Italian locale.
+    try:
+        from services.editorial_translation_layer import (
+            localize_records as _ale_localize_records,
+            parse_accept_language as _ale_pick_locale,
+        )
+        target = _ale_pick_locale(request.headers.get('Accept-Language'))
+        if target and target != 'it':
+            items = _ale_localize_records(
+                items,
+                fields=('title', 'description'),
+                target_locale=target,
+                tenant_id=current_user['tenant_id'],
+                surface='moodboard_card',
+            )
+    except Exception as e:
+        logger.warning("ALE list_moodboards skipped: %s", e)
+
+    return {"data": items, "total": len(items)}
 
 
 @router.post("", status_code=201)
