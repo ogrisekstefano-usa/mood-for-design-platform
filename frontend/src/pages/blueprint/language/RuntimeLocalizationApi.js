@@ -61,8 +61,14 @@ export const fetchVoiceProfiles = async () => {
   return data;
 };
 
+export const fetchAtelierVoices = async () => {
+  const { data } = await api.get(`${BASE}/atelier-voices`);
+  return data;
+};
+
 export const requestSemanticRewrite = async ({
-  sourceText, sourceLocale = 'it-IT', key, targetLocales, marketContext, useCache = true,
+  sourceText, sourceLocale = 'it-IT', key, targetLocales,
+  marketContext, useCache = true,
 }) => {
   const { data } = await api.post(`${BASE}/semantic-rewrite`, {
     source_text: sourceText,
@@ -72,6 +78,35 @@ export const requestSemanticRewrite = async ({
     market_context: marketContext || null,
     use_cache: useCache,
   });
+  return data;
+};
+
+// ─── ITER136 · Editorial Review Memory™ ────────────────────────────────
+export const upsertEditorialReview = async (payload) => {
+  const { data } = await api.post(`${BASE}/editorial-reviews`, payload);
+  return data;
+};
+
+export const listEditorialReviews = async ({
+  registryKey, targetLocale, status, limit = 200,
+} = {}) => {
+  const params = new URLSearchParams();
+  if (registryKey)  params.set('registry_key',  registryKey);
+  if (targetLocale) params.set('target_locale', targetLocale);
+  if (status)       params.set('status', status);
+  params.set('limit', String(limit));
+  const { data } = await api.get(`${BASE}/editorial-reviews?${params.toString()}`);
+  return data;
+};
+
+export const setEditorialReviewStatus = async (reviewId, status) => {
+  const { data } = await api.post(
+    `${BASE}/editorial-reviews/${reviewId}/status`, { status });
+  return data;
+};
+
+export const fetchReviewVersions = async (reviewId) => {
+  const { data } = await api.get(`${BASE}/editorial-reviews/${reviewId}/versions`);
   return data;
 };
 

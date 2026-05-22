@@ -1,0 +1,18 @@
+{
+  "ran_at": "2026-05-22T04:56:50+00:00",
+  "queue_size": 1,
+  "processed": 1,
+  "rewrites": 8,
+  "dry_run": false,
+  "items": [
+    {
+      "iteration": 99,
+      "page": "/test",
+      "url": "/api/test/seed",
+      "body_excerpt": "{\"title\":\"Materia che parla, atmosfera del progetto\",\"description\":\"La materialità del nostro studio attraverso le geometrie del tempo.\"}",
+      "ts": "2026-05-22T04:55:00Z",
+      "status": "remediated",
+      "phrases": 2
+    }
+  ]
+}

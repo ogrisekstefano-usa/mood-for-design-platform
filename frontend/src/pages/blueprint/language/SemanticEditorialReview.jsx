@@ -19,10 +19,11 @@
  *   └─────────────┘ └─────────────┘ └─────────────┘
  */
 import React, { useEffect, useMemo, useState } from 'react';
-import { Loader2, Sparkles, Repeat } from 'lucide-react';
+import { Loader2, Sparkles, Repeat, Check, Lock, Unlock, X, History } from 'lucide-react';
 import { toast } from 'sonner';
 import {
-  fetchVoiceProfiles, requestSemanticRewrite,
+  fetchVoiceProfiles, fetchAtelierVoices, requestSemanticRewrite,
+  upsertEditorialReview, setEditorialReviewStatus,
 } from './RuntimeLocalizationApi';
 
 const ALL_LOCALES = ['it-IT', 'en-US', 'en-GB', 'fr-FR', 'de-DE', 'es-ES', 'ar'];
@@ -32,11 +33,24 @@ const FLAGS = {
   'fr-FR': '🇫🇷', 'de-DE': '🇩🇪', 'es-ES': '🇪🇸', 'ar': '🇦🇪',
 };
 
+const VARIANTS = [
+  { id: '',                 label: 'Stock voice' },
+  { id: 'softer',           label: 'Softer' },
+  { id: 'more_architectural', label: 'More architectural' },
+  { id: 'more_cinematic',   label: 'More cinematic' },
+  { id: 'more_restrained',  label: 'More restrained' },
+  { id: 'more_sensory',     label: 'More sensory' },
+];
+
 const isRTL = (loc) => loc === 'ar';
 
 const SemanticEditorialReview = () => {
   const [profiles, setProfiles]    = useState({});
   const [profilesLoaded, setProfilesLoaded] = useState(false);
+  const [ateliers, setAteliers]    = useState([]);
+  const [atelierId, setAtelierId]  = useState('default');
+  const [variant, setVariant]      = useState('');
+  const [reviewStatus, setReviewStatus] = useState({});
   const [sourceText, setSourceText] = useState('Materia che parla.');
   const [sourceLocale, setSourceLocale] = useState('it-IT');
   const [registryKey, setRegistryKey] = useState('material_view.header.title');
@@ -52,6 +66,9 @@ const SemanticEditorialReview = () => {
     fetchVoiceProfiles()
       .then((d) => { setProfiles(d.profiles || {}); setProfilesLoaded(true); })
       .catch(() => setProfilesLoaded(true));
+    fetchAtelierVoices()
+      .then((d) => setAteliers(d.items || []))
+      .catch(() => setAteliers([]));
   }, []);
 
   const toggleTarget = (lc) => {
@@ -75,7 +92,10 @@ const SemanticEditorialReview = () => {
         sourceLocale,
         key: registryKey || null,
         targetLocales: selectedTargets,
-        marketContext: { audience: marketAudience, luxury_tier: luxuryTier },
+        marketContext: {
+          audience: marketAudience, luxury_tier: luxuryTier,
+          atelier_id: atelierId, variant,
+        },
         useCache: true,
       });
       setResult(data);
@@ -100,7 +120,10 @@ const SemanticEditorialReview = () => {
         sourceLocale,
         key: registryKey || null,
         targetLocales: [lc],
-        marketContext: { audience: marketAudience, luxury_tier: luxuryTier },
+        marketContext: {
+          audience: marketAudience, luxury_tier: luxuryTier,
+          atelier_id: atelierId, variant,
+        },
         useCache: false,  // force a regeneration
       });
       // merge into existing result so other cards stay
@@ -121,6 +144,29 @@ const SemanticEditorialReview = () => {
       toast.error(`Regenerate failed · ${lc}`);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onReviewAction = async (lc, rewriteText, status) => {
+    if (!registryKey) {
+      toast.error('Set a registry key first to persist this review');
+      return;
+    }
+    try {
+      const res = await upsertEditorialReview({
+        registry_key: registryKey,
+        target_locale: lc,
+        source_text: sourceText,
+        source_locale: sourceLocale,
+        rewrite_text: rewriteText,
+        atelier_id: atelierId,
+        variant,
+        status,
+      });
+      setReviewStatus((cur) => ({ ...cur, [`${lc}|${variant}`]: { id: res.id, status } }));
+      toast.success(`${lc} · ${status}`);
+    } catch (_) {
+      toast.error('Persist failed');
     }
   };
 
@@ -217,6 +263,45 @@ const SemanticEditorialReview = () => {
               <option value="contemporary_luxury">Contemporary luxury</option>
               <option value="ultra_luxury">Ultra luxury</option>
               <option value="heritage">Heritage / legacy</option>
+            </select>
+          </div>
+        </div>
+
+        {/* ITER136 · Atelier Voice Architecture™ + Variant nudges */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+          <div>
+            <label className="text-[9.5px] uppercase tracking-[0.26em] font-mono text-[var(--mood-text-muted, rgba(240,235,224,0.55))] block mb-1.5">
+              Atelier voice override
+            </label>
+            <select
+              value={atelierId}
+              onChange={(e) => setAtelierId(e.target.value)}
+              data-testid="locgov-sem-atelier"
+              className="w-full bg-transparent border border-[var(--mood-border, rgba(255,255,255,0.08))] py-2 px-3 text-[11px] uppercase tracking-[0.18em] font-mono text-[var(--mood-text-muted, rgba(240,235,224,0.75))]"
+            >
+              {ateliers.map((a) => (
+                <option key={a.id} value={a.id}>{a.label}</option>
+              ))}
+            </select>
+            {atelierId !== 'default' && (
+              <p className="mt-1.5 text-[10px] font-mono text-[var(--mood-text-faint, rgba(240,235,224,0.45))] italic leading-[1.5]">
+                {ateliers.find((a) => a.id === atelierId)?.tagline || ''}
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="text-[9.5px] uppercase tracking-[0.26em] font-mono text-[var(--mood-text-muted, rgba(240,235,224,0.55))] block mb-1.5">
+              Variant nudge
+            </label>
+            <select
+              value={variant}
+              onChange={(e) => setVariant(e.target.value)}
+              data-testid="locgov-sem-variant"
+              className="w-full bg-transparent border border-[var(--mood-border, rgba(255,255,255,0.08))] py-2 px-3 text-[11px] uppercase tracking-[0.18em] font-mono text-[var(--mood-text-muted, rgba(240,235,224,0.75))]"
+            >
+              {VARIANTS.map((v) => (
+                <option key={v.id} value={v.id}>{v.label}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -324,6 +409,48 @@ const SemanticEditorialReview = () => {
                       {r.cached  && <span className="text-[var(--mood-accent, #d9b285)]">cached</span>}
                       {r.fallback && <span className="text-[var(--mood-danger, #c25b5b)]">fallback</span>}
                     </p>
+
+                    {/* ITER136 · Approve / Reject / Lock review actions */}
+                    <div className="pt-2 mt-1 border-t border-[var(--mood-border, rgba(255,255,255,0.05))] flex items-center gap-2.5">
+                      {(() => {
+                        const st = reviewStatus[`${r.target_locale}|${variant}`]?.status;
+                        const Icon = st === 'locked' ? Lock
+                                   : st === 'approved' ? Check
+                                   : st === 'rejected' ? X
+                                   : History;
+                        return (
+                          <span className="flex items-center gap-1.5 text-[9.5px] uppercase tracking-[0.22em]"
+                                style={{ color:
+                                  st === 'locked'   ? '#d9b285' :
+                                  st === 'approved' ? '#3d8b6a' :
+                                  st === 'rejected' ? '#c25b5b' :
+                                  'rgba(240,235,224,0.45)'}}>
+                            <Icon size={10} strokeWidth={1.7} />
+                            {st || 'pending'}
+                          </span>
+                        );
+                      })()}
+                      <button type="button" onClick={() => onReviewAction(r.target_locale, r.text, 'approved')}
+                              data-testid={`locgov-sem-approve-${r.target_locale}`}
+                              className="text-[#3d8b6a] hover:opacity-70" title="Approve">
+                        <Check size={11} strokeWidth={1.7} />
+                      </button>
+                      <button type="button" onClick={() => onReviewAction(r.target_locale, r.text, 'locked')}
+                              data-testid={`locgov-sem-lock-${r.target_locale}`}
+                              className="text-[var(--mood-accent, #d9b285)] hover:opacity-70" title="Lock">
+                        <Lock size={11} strokeWidth={1.7} />
+                      </button>
+                      <button type="button" onClick={() => onReviewAction(r.target_locale, r.text, 'pending')}
+                              data-testid={`locgov-sem-unlock-${r.target_locale}`}
+                              className="text-[var(--mood-text-muted, rgba(240,235,224,0.55))] hover:text-[var(--mood-text, #f0ebe0)]" title="Reset to pending">
+                        <Unlock size={11} strokeWidth={1.7} />
+                      </button>
+                      <button type="button" onClick={() => onReviewAction(r.target_locale, r.text, 'rejected')}
+                              data-testid={`locgov-sem-reject-${r.target_locale}`}
+                              className="text-[var(--mood-danger, #c25b5b)] hover:opacity-70" title="Reject">
+                        <X size={11} strokeWidth={1.7} />
+                      </button>
+                    </div>
                   </footer>
                 </article>
               );

@@ -847,6 +847,96 @@ def runtime_voice_profiles(ctx: dict = Depends(get_tenant_context)):
 
 
 
+# ─── ITER136 · Atelier Voice Architecture™ + Editorial Review Memory ───
+from services import atelier_voice_architecture, editorial_review_memory  # noqa: E402
+
+
+@router.get("/runtime/atelier-voices")
+def runtime_atelier_voices(ctx: dict = Depends(get_tenant_context)):
+    """List of atelier voice presets. Voice/semantic layer ONLY — NO
+    visual UI implications. Visual Blueprint Atelier™ ships in a future
+    sprint and must respect uploaded reference graphics 100%.
+    """
+    _require_admin(ctx)
+    return {"items": atelier_voice_architecture.list_atelier_voices()}
+
+
+class ReviewUpsertRequest(BaseModel):
+    registry_key: str = Field(..., min_length=1, max_length=240)
+    target_locale: str
+    source_text: str = Field(..., min_length=1, max_length=2000)
+    source_locale: str = "it-IT"
+    rewrite_text: str = Field(..., min_length=1, max_length=2000)
+    atelier_id: str = ""
+    variant: str = ""
+    rationale: Optional[str] = None
+    model: Optional[str] = None
+    status: str = "pending"
+
+
+class ReviewStatusRequest(BaseModel):
+    status: str  # 'pending' | 'approved' | 'rejected' | 'locked'
+
+
+@router.post("/runtime/editorial-reviews")
+def runtime_upsert_review(
+    body: ReviewUpsertRequest,
+    ctx: dict = Depends(get_tenant_context),
+):
+    _require_admin(ctx)
+    actor = (ctx.get('user') or {}).get('email') or 'admin'
+    res = editorial_review_memory.upsert_review(
+        registry_key=body.registry_key, target_locale=body.target_locale,
+        source_text=body.source_text, source_locale=body.source_locale,
+        rewrite_text=body.rewrite_text, atelier_id=body.atelier_id,
+        variant=body.variant, rationale=body.rationale, model=body.model,
+        status=body.status, actor=actor,
+    )
+    return res
+
+
+@router.get("/runtime/editorial-reviews")
+def runtime_list_reviews(
+    registry_key: Optional[str] = Query(None),
+    target_locale: Optional[str] = Query(None),
+    status: Optional[str] = Query(None),
+    limit: int = Query(200, ge=1, le=500),
+    ctx: dict = Depends(get_tenant_context),
+):
+    _require_admin(ctx)
+    return {"items": editorial_review_memory.list_reviews(
+        registry_key=registry_key, target_locale=target_locale,
+        status=status, limit=limit)}
+
+
+@router.post("/runtime/editorial-reviews/{review_id}/status")
+def runtime_review_set_status(
+    review_id: str,
+    body: ReviewStatusRequest,
+    ctx: dict = Depends(get_tenant_context),
+):
+    _require_admin(ctx)
+    actor = (ctx.get('user') or {}).get('email') or 'admin'
+    try:
+        res = editorial_review_memory.set_status(review_id, body.status, actor=actor)
+    except ValueError as e:
+        raise HTTPException(400, detail=str(e))
+    if not res:
+        raise HTTPException(404, detail="not_found")
+    return res
+
+
+@router.get("/runtime/editorial-reviews/{review_id}/versions")
+def runtime_review_versions(
+    review_id: str, ctx: dict = Depends(get_tenant_context),
+):
+    _require_admin(ctx)
+    return {"items": editorial_review_memory.list_versions(review_id)}
+
+
+
+
+
 @router.get("/runtime/run-loop/status/{job_id}")
 def runtime_run_loop_status(
     job_id: str,

@@ -236,8 +236,10 @@ def _build_prompt(
     audience  = ctx.get("audience", "studio_owners")
     luxury    = ctx.get("luxury_tier", "ultra_luxury")
     page_type = ctx.get("page_type", "")
+    atelier_id = ctx.get("atelier_id")
+    variant   = ctx.get("variant")
 
-    return (
+    base = (
         "You are MOOD for DESIGN™'s in-market editorial copywriter for "
         f"{voice['label']}.\n\n"
         "TASK: Rewrite — DO NOT translate — the following source string for "
@@ -268,6 +270,39 @@ def _build_prompt(
         " · OUTPUT FORMAT: one line, no quotes, no preamble. Just the "
         "rewritten copy.\n"
     )
+
+    # ITER136 · Atelier Voice override (appended ONLY when atelier_id given).
+    if atelier_id:
+        try:
+            from services.atelier_voice_architecture import compose_voice_addendum
+            base += compose_voice_addendum(
+                market_locale=target_locale,
+                atelier_id=atelier_id,
+                market_context=ctx,
+            )
+        except Exception:
+            pass
+
+    # ITER136 · Variant nudge ("rewrite softer", "more architectural", etc.)
+    variant_nudge = {
+        "softer":         "VARIANT NUDGE: keep meaning, soften the tone. Reduce "
+                          "imperatives, allow more breathing room, lower the "
+                          "emotional amplitude by ~30%.",
+        "more_architectural":
+                          "VARIANT NUDGE: lean architectural — reach for "
+                          "structural and material vocabulary, prefer nouns of "
+                          "construction (line, plane, threshold, register).",
+        "more_cinematic": "VARIANT NUDGE: lean cinematic — adjective-rich, "
+                          "image-led opening, but never theatrical or shouty.",
+        "more_restrained": "VARIANT NUDGE: lean restrained — short clauses, "
+                          "negative space, avoid adjectives, allow silence.",
+        "more_sensory":   "VARIANT NUDGE: lean sensory — touch, light, weight, "
+                          "grain, breath. Surfaces over labels.",
+    }.get((variant or "").strip())
+    if variant_nudge:
+        base += f"\n\n{variant_nudge}\n"
+
+    return base
 
 
 def _emergent_key() -> str:
@@ -322,8 +357,14 @@ def semantic_rewrite(
         return RewriteResult(target_locale, source_text, None, None, 0, False, True)
 
     voice = MARKET_VOICES.get(target_locale, {})
-    cache_key = _ck(source_text, source_locale, target_locale,
-                    key or "", voice.get("voice_directive", ""))
+    ctx = market_context or {}
+    cache_key = _ck(
+        source_text, source_locale, target_locale,
+        key or "",
+        voice.get("voice_directive", ""),
+        ctx.get("atelier_id") or "",
+        ctx.get("variant") or "",
+    )
     if use_cache and cache_key in _CACHE:
         cached = _CACHE[cache_key]
         return RewriteResult(**{**asdict(cached), "cached": True})

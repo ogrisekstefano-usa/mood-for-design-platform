@@ -176,10 +176,16 @@ def authenticate(page) -> None:
 
 
 def drive_interactions(page) -> None:
-    """Click up to 4 tabs + open up to 3 collapsibles on the page."""
+    """ITER136 · Deep Runtime Traversal™.
+
+    Open every interactive surface that holds copy: tabs, collapsibles,
+    drawers, dropdown menus, profile menus, dialog/modal triggers,
+    tooltip-on-hover targets, command palette. Tries each surface a few
+    times then collapses, so the next route gets a clean slate.
+    """
+    # 1. Primary tabs.
     try:
-        tabs = page.query_selector_all('[role="tab"],[data-testid*="tab-"]')
-        for tb in tabs[:4]:
+        for tb in page.query_selector_all('[role="tab"],[data-testid*="tab-"]')[:6]:
             try:
                 tb.click(timeout=1200, force=True)
                 page.wait_for_timeout(450)
@@ -187,14 +193,95 @@ def drive_interactions(page) -> None:
                 pass
     except Exception:
         pass
+
+    # 2. Collapsibles / accordions / hidden expanders.
     try:
-        triggers = page.query_selector_all('[data-state="closed"][aria-expanded="false"]')
-        for tr in triggers[:3]:
+        triggers = page.query_selector_all(
+            '[data-state="closed"][aria-expanded="false"]'
+        )
+        for tr in triggers[:5]:
             try:
                 tr.click(timeout=1200, force=True)
+                page.wait_for_timeout(280)
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+    # 3. Dropdown / popover / select triggers (Radix uses aria-haspopup).
+    try:
+        triggers = page.query_selector_all(
+            '[aria-haspopup="menu"], [aria-haspopup="listbox"], '
+            '[aria-haspopup="dialog"], [data-radix-popper-content-wrapper]'
+        )
+        for tr in triggers[:4]:
+            try:
+                tr.click(timeout=1000, force=True)
+                page.wait_for_timeout(420)
+                # Press Escape to close.
+                page.keyboard.press("Escape")
+                page.wait_for_timeout(150)
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+    # 4. Generic dialog / drawer triggers (testid heuristic).
+    try:
+        for tr in page.query_selector_all(
+            '[data-testid*="-open-"], [data-testid$="-open"], '
+            '[data-testid$="-trigger"], [data-testid*="-drawer"], '
+            '[data-testid*="-modal"], [data-testid*="open-"]'
+        )[:3]:
+            try:
+                tr.click(timeout=900, force=True)
+                page.wait_for_timeout(420)
+                page.keyboard.press("Escape")
+                page.wait_for_timeout(150)
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+    # 5. Profile / topbar menu.
+    try:
+        for sel in ('[data-testid*="profile-menu"]',
+                    '[data-testid*="user-menu"]',
+                    '[data-testid="topbar-menu"]',
+                    '[aria-label="User menu"]'):
+            el = page.query_selector(sel)
+            if el:
+                try:
+                    el.click(timeout=900, force=True)
+                    page.wait_for_timeout(380)
+                    page.keyboard.press("Escape")
+                except Exception:
+                    pass
+                break
+    except Exception:
+        pass
+
+    # 6. Hover-card / tooltip surfaces (best effort: hover over the first
+    #    few "info" markers per page).
+    try:
+        for el in page.query_selector_all(
+            '[data-state="instant-open"], [aria-describedby*="tooltip"], '
+            '[data-radix-tooltip-trigger]'
+        )[:3]:
+            try:
+                el.hover(timeout=600, force=True)
                 page.wait_for_timeout(300)
             except Exception:
                 pass
+    except Exception:
+        pass
+
+    # 7. Command palette / search palette.
+    try:
+        page.keyboard.press("Meta+K")
+        page.wait_for_timeout(280)
+        page.keyboard.press("Escape")
+        page.wait_for_timeout(150)
     except Exception:
         pass
 
