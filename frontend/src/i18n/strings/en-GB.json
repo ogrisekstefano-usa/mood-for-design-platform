@@ -438,7 +438,8 @@
       "client_relations": "Client Relations",
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
-      "platform": "Platform"
+      "platform": "Platform",
+      "workspace": "Atelier"
     },
     "studio_pulse": "Studio Pulse",
     "your_journeys": "Your Journeys",
@@ -468,7 +469,15 @@
     "expand": "Expand",
     "collapse": "Collapse",
     "studio_voice": "Studio Voice",
-    "language_command_center": "Language Command Centre"
+    "language_command_center": "Language Command Centre",
+    "impersonating": "Viewing as",
+    "logout": "Close atelier session",
+    "moodboard": {
+      "editor": "Moodboard atelier"
+    },
+    "project": {
+      "detail": "Project record"
+    }
   },
   "projects": {
     "tabs": {
@@ -510,6 +519,11 @@
       "mood_placeholder": "Atmosphere, material, cadence",
       "status_live": "In practice",
       "tag_input_placeholder": "add your terms…"
+    },
+    "count": "{count} registered projects",
+    "field": {
+      "description": "Project statement",
+      "title": "Project title"
     }
   },
   "inspirations": {
@@ -1263,7 +1277,204 @@
     "editorPanel": {
       "title": "Editorial suite"
     },
-    "empty": "No moodboards composed as yet."
+    "empty": "No moodboards composed as yet.",
+    "emptyCta": "Compose your first moodboard",
+    "field": {
+      "addColor": "Register colour",
+      "arrowHead": "Arrow terminus",
+      "arrowKind": "Arrow style",
+      "bgColor": "Background colour register",
+      "bgImage": "Background composition",
+      "bgOverlay": "Background overlay register",
+      "blur": "Soft focus",
+      "borderColor": "Border colour register",
+      "borderRadius": "Corner radius",
+      "borderStyle": "Border treatment",
+      "borderWidth": "Border weight",
+      "brightness": "Luminance control",
+      "caption": "Image annotation",
+      "chapter": "Chapter",
+      "chapterPlaceholder": "e.g. Tactile atmospheres",
+      "color": "Colour palette",
+      "colors": "Colour palette",
+      "contrast": "Tonal range",
+      "dashed": "Dashed rule",
+      "decoration": "Ornament",
+      "fill": "Infill treatment",
+      "finish": "Surface specification",
+      "fitMode": {
+        "contain": "Contain within frame",
+        "cover": "Frame-fill",
+        "fill": "Fill frame"
+      },
+      "fitModeLabel": "Composition register",
+      "focalPoint": "Visual anchor",
+      "fontFamily": "Typeface register",
+      "fontSize": "Body text scale",
+      "fontWeight": "Weight",
+      "grayscale": "Monochrome register",
+      "hiddenFromClient": "Withhold from client view",
+      "hiddenFromClientHint": "Visible to studio members only",
+      "hiddenInPresentation": "Omit from presentation view",
+      "hiddenInPresentationHint": "Withheld from live presentation view.",
+      "imageUrl": "Image reference URL",
+      "letterSpacing": "Letter spacing",
+      "lineHeight": "Line height",
+      "listStyle": "List format",
+      "name": "Project title",
+      "note": "Annotation",
+      "opacity": "Transparency value",
+      "pageBackground": "Canvas ground",
+      "price": "Registered value",
+      "rotation": "Orientation angle",
+      "saturation": "Colour intensity",
+      "shadow": "Shadow register",
+      "shapeKind": "Shape classification",
+      "size": "Dimensions",
+      "swatch": "Specimen",
+      "text": "Annotation",
+      "textAlign": "Text alignment",
+      "thickness": "Depth",
+      "title": "Board title",
+      "transition": "Transition register",
+      "transitionDuration": "Transition interval",
+      "transitionIn": "Opening transition",
+      "vendor": "Maker reference",
+      "vignette": "Frame edge falloff",
+      "visibility": "Visibility setting",
+      "warmth": "Warmth register",
+      "zoom": "Refine view"
+    },
+    "insert": {
+      "exploreTemplates": "Browse the library of forms",
+      "group": {
+        "templates": "Registered layout"
+      }
+    },
+    "inspector": {
+      "advancedSoon": "Advanced · forthcoming",
+      "empty": {
+        "body": "Select an element to refine its registered properties.",
+        "title": "No element currently held"
+      },
+      "group": {
+        "advanced": "Advanced parameters",
+        "image": {
+          "eyebrow": "Visual reference"
+        },
+        "imageLabel": "Visual reference",
+        "layout": "Composition structure",
+        "style": {
+          "eyebrow": "Visual language"
+        },
+        "styleLabel": "Visual language",
+        "typography": {
+          "eyebrow": "Type Registry"
+        },
+        "typographyLabel": "Type registry"
+      },
+      "selectedItem": "Item in focus"
+    },
+    "library": {
+      "collapse": "Collapse library",
+      "expand": "Reveal in full",
+      "personal": "Private archive",
+      "section": {
+        "content": "Library materials",
+        "primitives": "Elemental forms",
+        "saved": "Archived"
+      },
+      "tab": {
+        "blocks": "Compositions",
+        "content": "Library material"
+      },
+      "title": "Archive of Intent"
+    },
+    "new": "Compose new study",
+    "page": {
+      "add": "Add page",
+      "delete": "Remove page",
+      "duplicate": "Duplicate page",
+      "eyebrow": "Sheet",
+      "fromTemplate": "From the archive",
+      "insertHere": "Place composition here",
+      "new": "Fresh page registered",
+      "untitled": "Untitled sheet"
+    },
+    "pages": {
+      "exploreAll": "Browse the complete archive",
+      "hint": "Select a layout to begin composing your page.",
+      "layouts": "Composition structure",
+      "thisProject": "Within this collection",
+      "untitled": "Untitled composition"
+    },
+    "picker": {
+      "eyebrow": "Archive to board",
+      "insertAfter": "Place after selected",
+      "subtitle": "Select the moodboard from which to draw your content.",
+      "title": "Choose moodboard from library"
+    },
+    "placeholder": {
+      "replaceImage": "Revise image selection"
+    },
+    "premium": {
+      "appliedMulti": "Applied across multiple pages",
+      "applyFailed": "Template application was unable to proceed",
+      "archiveTitle": "Premium template library",
+      "completeTemplates": {
+        "short": "Registered templates"
+      },
+      "failed": "The action could not be completed. Please try again.",
+      "intro": {
+        "short": "Considered layouts, prepared for the editorial studio."
+      },
+      "pageCount": {
+        "plural": "{count} pages composed",
+        "singular": "One page registered"
+      },
+      "partialPages": "Certain pages remain unrevised"
+    },
+    "presentation": {
+      "chapters": "Sections",
+      "empty": "No pages registered for presentation as yet."
+    },
+    "shadow": {
+      "dramatic": "Theatrical shadow play",
+      "medium": "Visual register",
+      "none": "None registered",
+      "soft": "Diffused shadow"
+    },
+    "skeleton": {
+      "applied": "Layout now registered",
+      "applyFailed": "Layout could not be registered",
+      "section": {
+        "eyebrow": "Page frameworks",
+        "intro": "Page frameworks designed to establish composition within moments."
+      },
+      "singlePages": "Individual sheets"
+    },
+    "subtitle": "Visual narratives considered for your projects.",
+    "tab": {
+      "assets": "Archive element",
+      "insert": "Place into composition",
+      "inspirations": "Reference library",
+      "pages": "Folios",
+      "title": "Composition"
+    },
+    "templates": {
+      "blank": "Unmarked canvas",
+      "blankDesc": "Begin with an open canvas.",
+      "derivedFrom": "Adapted from",
+      "eyebrow": "Registered format",
+      "pageCount": "{count} pages in composition",
+      "saveAs": "Register as template",
+      "saveFailed": "Unable to preserve this composition",
+      "saved": "Template archived to library",
+      "startBlank": "Begin with an empty canvas",
+      "tenantPreset": "Studio archive"
+    },
+    "title": "Visual register",
+    "untitled": "Untitled composition"
   },
   "onboarding": {
     "owner_introduction": {
@@ -1340,7 +1551,99 @@
       "torna_alla_lista": "Return to register"
     },
     "plan": {
-      "ai_credits": "AI allocation"
+      "ai_credits": "AI allocation",
+      "sub": "Current plan, operational limits and billing records.",
+      "title": "Subscription tier"
+    },
+    "account": {
+      "body": "Your registered credentials and account preferences.",
+      "kicker": "Studio register",
+      "title": "Studio registration"
+    },
+    "brand": {
+      "sub": "The atelier's typographic language, colour library and visual density.",
+      "title": "Brand identity"
+    },
+    "domains": {
+      "sub": "A considered domain for your public-facing studio presence.",
+      "title": "Registered domains"
+    },
+    "forms": {
+      "sub": "Contact form and onboarding language configuration.",
+      "title": "Studio Forms Registry"
+    },
+    "internationalPresence": {
+      "sub": "Language, locale, and international register.",
+      "title": "Global presence"
+    },
+    "journal": {
+      "sub": "Editorials, journals and publishing cadence.",
+      "title": "Studio register"
+    },
+    "kicker": "Studio",
+    "languages": {
+      "active": "Languages in use",
+      "ai": {
+        "copy": "Languages for which artificial intelligence translation is registered."
+      },
+      "architecture": "Language architecture",
+      "architectureBody": "Three orchestrated layers: public language, operational blueprint, machine translation.",
+      "blueprint": {
+        "copy": "Languages in which the operational blueprint is published.",
+        "eyebrow": "Operational framework",
+        "locked": "Held to the current plan."
+      },
+      "col": {
+        "blueprint": "Foundational register",
+        "code": "Language code",
+        "default": "Registered language",
+        "enabled": "Registered",
+        "fallback": "Archival language retained when translation unavailable",
+        "name": "Language",
+        "native": "Endonym",
+        "public": "Published",
+        "rtl": "Right-to-left language behaviour",
+        "ai": "AI"
+      },
+      "eyebrow": "Language repertoire",
+      "intro": "Languages registered for use within the Blueprint workspace.",
+      "public": {
+        "copy": "Languages offered across the public site and within the client companion.",
+        "eyebrow": "Public site"
+      },
+      "title": "Language & locale registry"
+    },
+    "notifications": {
+      "sub": "Transactional correspondence, digests and workspace notices.",
+      "title": "Alerts received"
+    },
+    "profile": {
+      "sub": "Your name, portrait, and editorial signature.",
+      "title": "Studio record"
+    },
+    "security": {
+      "sub": "Passwords, access, and workspace security provisions.",
+      "title": "Protection & access registry"
+    },
+    "storefront": {
+      "sub": "Public presence, editorial content and discoverability.",
+      "title": "Shop window settings"
+    },
+    "sub": "The considered organisation of every voice within the atelier.",
+    "team": {
+      "sub": "Workspace membership, roles and access privileges.",
+      "title": "Studio register"
+    },
+    "title": "Studio configuration",
+    "website": {
+      "body": "Public pages, connections, social channels and enquiry forms.",
+      "kicker": "Featured work",
+      "title": "Public site"
+    },
+    "workspace": {
+      "body": "Workspace identity, registered mark and active modules.",
+      "kicker": "Studio atelier",
+      "title": "Studio registry"
     }
   },
   "site": {
@@ -1535,6 +1838,13 @@
     },
     "proposals": {
       "le_presentazioni_vivono_dentro_i_loro_journey": "Presentations are held within their respective Journeys"
+    },
+    "back": {
+      "projects": "Return to the project register"
+    },
+    "followed_by": "Followed by",
+    "lead": {
+      "convert": "Register as project"
     }
   },
   "auth": {
@@ -1634,5 +1944,17 @@
       "ad_partner": "Registered advertising collaborator",
       "private_client": "Private commission"
     }
+  },
+  "proposals": {
+    "empty": "No proposals registered for consideration.",
+    "title": "Submitted Works"
+  },
+  "user": {
+    "notifications": "Notices received",
+    "preferences": "Atelier settings",
+    "theme": "Atelier theme",
+    "workspace": "Studio archive",
+    "profile": "Profile",
+    "language": "Language"
   }
 }

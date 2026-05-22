@@ -438,7 +438,8 @@
       "client_relations": "Kundenbeziehungen",
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
-      "platform": "Plattform"
+      "platform": "Plattform",
+      "workspace": "Atelier"
     },
     "studio_pulse": "Studio Pulse",
     "your_journeys": "Deine Journeys",
@@ -468,7 +469,15 @@
     "expand": "Ausklappen",
     "collapse": "Einklappen",
     "studio_voice": "Studio-Stimme",
-    "language_command_center": "Sprach-Kommandozentrale"
+    "language_command_center": "Sprach-Kommandozentrale",
+    "impersonating": "Stellvertreter-Ansicht aktiv",
+    "logout": "Verlassen",
+    "moodboard": {
+      "editor": "Moodboard-Werkstatt"
+    },
+    "project": {
+      "detail": "Projektansicht"
+    }
   },
   "projects": {
     "tabs": {
@@ -510,6 +519,11 @@
       "mood_placeholder": "Raum, Material, Struktur",
       "status_live": "Aktiv",
       "tag_input_placeholder": "Stichwort eingeben…"
+    },
+    "count": "{count} Projekte im Atelier",
+    "field": {
+      "description": "Projektbeschreibung",
+      "title": "Projektbezeichnung"
     }
   },
   "inspirations": {
@@ -1263,7 +1277,204 @@
     "editorPanel": {
       "title": "Werkstatt für Gestaltung"
     },
-    "empty": "Noch keine Bildkomposition angelegt."
+    "empty": "Noch keine Bildkomposition angelegt.",
+    "emptyCta": "Erste Moodboard-Gestaltung beginnen",
+    "field": {
+      "addColor": "Farbe hinzufügen",
+      "arrowHead": "Pfeilspitze",
+      "arrowKind": "Pfeilform",
+      "bgColor": "Hintergrundfarbe",
+      "bgImage": "Hintergrundbild",
+      "bgOverlay": "Hintergrund-Überlagerung",
+      "blur": "Weichzeichnung",
+      "borderColor": "Randfarbe",
+      "borderRadius": "Kantenradius",
+      "borderStyle": "Randgestaltung",
+      "borderWidth": "Stärke der Rahmung",
+      "brightness": "Lichtstärke",
+      "caption": "Bildtext",
+      "chapter": "Kapitel",
+      "chapterPlaceholder": "Z. B. Haptische Materialität",
+      "color": "Farbgebung",
+      "colors": "Farbsprache",
+      "contrast": "Spannung",
+      "dashed": "Gestrichelt",
+      "decoration": "Oberflächengestaltung",
+      "fill": "Flächenfüllung",
+      "finish": "Oberflächenveredelung",
+      "fitMode": {
+        "contain": "Einpassen",
+        "cover": "Formatfüllend",
+        "fill": "Vollformat"
+      },
+      "fitModeLabel": "Anpassungsmodus",
+      "focalPoint": "Blickachse",
+      "fontFamily": "Schriftfamilie",
+      "fontSize": "Mengensatz",
+      "fontWeight": "Schriftstärke",
+      "grayscale": "Graustufenskala",
+      "hiddenFromClient": "Für Kundensicht ausblenden",
+      "hiddenFromClientHint": "Nur für interne Atelierprozesse sichtbar.",
+      "hiddenInPresentation": "Aus der Präsentation ausschließen",
+      "hiddenInPresentationHint": "Bleibt in der Live-Präsentation unsichtbar.",
+      "imageUrl": "Bild-Adresse",
+      "letterSpacing": "Zeichenabstand",
+      "lineHeight": "Zeilenhöhe",
+      "listStyle": "Darstellungsformat",
+      "name": "Bezeichnung",
+      "note": "Anmerkung",
+      "opacity": "Deckkraft",
+      "pageBackground": "Hintergrund der Arbeitsfläche",
+      "price": "Wertangabe",
+      "rotation": "Drehung",
+      "saturation": "Farbintensität",
+      "shadow": "Schattenwurf",
+      "shapeKind": "Formensprache",
+      "size": "Format",
+      "swatch": "Musterstück",
+      "text": "Textebene",
+      "textAlign": "Textausrichtung",
+      "thickness": "Materialstärke",
+      "title": "Bezeichnung",
+      "transition": "Übergang",
+      "transitionDuration": "Übergangsdauer",
+      "transitionIn": "Eintrittsübergang",
+      "vendor": "Materialpartner",
+      "vignette": "Randabdunklung",
+      "visibility": "Sichtbarkeit",
+      "warmth": "Wärme",
+      "zoom": "Vergrößerung"
+    },
+    "insert": {
+      "exploreTemplates": "Vorlagen erkunden",
+      "group": {
+        "templates": "Gestaltungsraster"
+      }
+    },
+    "inspector": {
+      "advancedSoon": "Erweitert · in Vorbereitung",
+      "empty": {
+        "body": "Wählen Sie ein Element aus, um dessen Eigenschaften zu definieren.",
+        "title": "Keine Auswahl getroffen"
+      },
+      "group": {
+        "advanced": "Erweiterte Funktionen",
+        "image": {
+          "eyebrow": "Bildmaterial"
+        },
+        "imageLabel": "Bildmaterial",
+        "layout": "Anordnung",
+        "style": {
+          "eyebrow": "Gestaltungshaltung"
+        },
+        "styleLabel": "Gestaltungssprache",
+        "typography": {
+          "eyebrow": "Typografie"
+        },
+        "typographyLabel": "Schriftsatz"
+      },
+      "selectedItem": "Ausgewähltes Element"
+    },
+    "library": {
+      "collapse": "Einklappen",
+      "expand": "Ansicht erweitern",
+      "personal": "Eigene Werkstatt",
+      "section": {
+        "content": "Inhalte",
+        "primitives": "Grundformen",
+        "saved": "Gespeichert"
+      },
+      "tab": {
+        "blocks": "Bausteine",
+        "content": "Materialien"
+      },
+      "title": "Materialarchiv"
+    },
+    "new": "Neue Gestaltungstafel",
+    "page": {
+      "add": "Seite hinzufügen",
+      "delete": "Seite entfernen",
+      "duplicate": "Seite duplizieren",
+      "eyebrow": "Seite",
+      "fromTemplate": "Aus Vorlage",
+      "insertHere": "Hier einfügen",
+      "new": "Neue Seite",
+      "untitled": "Seite ohne Bezeichnung"
+    },
+    "pages": {
+      "exploreAll": "Alle Seiten durchsehen",
+      "hint": "Wähle eine Struktur, um mit der Gestaltung zu beginnen.",
+      "layouts": "Komposition",
+      "thisProject": "In dieser Gestaltungsphase",
+      "untitled": "Ohne Bezeichnung"
+    },
+    "picker": {
+      "eyebrow": "Zur Gestaltung hinzufügen",
+      "insertAfter": "Danach einfügen",
+      "subtitle": "Wählen Sie das Moodboard, aus dem Sie Inhalte übernehmen möchten.",
+      "title": "Moodboard wählen"
+    },
+    "placeholder": {
+      "replaceImage": "Bild ersetzen"
+    },
+    "premium": {
+      "appliedMulti": "Über mehrere Seiten angewendet",
+      "applyFailed": "Anwendung der Vorlage nicht möglich",
+      "archiveTitle": "Archiv für Premium-Vorlagen",
+      "completeTemplates": {
+        "short": "Vollständige Vorlagen"
+      },
+      "failed": "Die Ausführung war nicht erfolgreich. Bitte erneut versuchen.",
+      "intro": {
+        "short": "Gestaltungsraster für Ateliers mit redaktioneller Haltung."
+      },
+      "pageCount": {
+        "plural": "{count} Seiten",
+        "singular": "1 Seite"
+      },
+      "partialPages": "Einzelne Seiten wurden noch nicht aktualisiert."
+    },
+    "presentation": {
+      "chapters": "Abschnitte",
+      "empty": "Keine Seite für die Präsentation vorbereitet."
+    },
+    "shadow": {
+      "dramatic": "Ausgeprägte Schattenführung",
+      "medium": "Materialien",
+      "none": "Ohne Schatten",
+      "soft": "Weich"
+    },
+    "skeleton": {
+      "applied": "Layout übernommen",
+      "applyFailed": "Layout lässt sich nicht anwenden",
+      "section": {
+        "eyebrow": "Seitengerüst",
+        "intro": "Strukturgerüste, die eine Seite in Sekunden aufbauen lassen."
+      },
+      "singlePages": "Einzelne Seiten"
+    },
+    "subtitle": "Visuelle Konzepte mit gestalterischer Haltung für Ihre Projekte.",
+    "tab": {
+      "assets": "Bildelement",
+      "insert": "Einfügen",
+      "inspirations": "Referenzen",
+      "pages": "Seiten",
+      "title": "Gestaltung"
+    },
+    "templates": {
+      "blank": "Leere Arbeitsfläche",
+      "blankDesc": "Beginne mit unbeschriebener Fläche.",
+      "derivedFrom": "Abgeleitet aus",
+      "eyebrow": "Strukturvorlage",
+      "pageCount": "{count} Seiten",
+      "saveAs": "Als Vorlage sichern",
+      "saveFailed": "Speichern der Vorlage nicht möglich",
+      "saved": "Vorlage gesichert",
+      "startBlank": "Von der leeren Fläche aus beginnen",
+      "tenantPreset": "Studiovorlage"
+    },
+    "title": "Gestaltungsatelier",
+    "untitled": "Ohne Bezeichnung"
   },
   "onboarding": {
     "owner_introduction": {
@@ -1340,7 +1551,99 @@
       "torna_alla_lista": "Zurück zur Übersicht"
     },
     "plan": {
-      "ai_credits": "KI-Kontingent"
+      "ai_credits": "KI-Kontingent",
+      "sub": "Ihr Atelier-Modell, Kapazitäten und Abrechnung.",
+      "title": "Konfiguration"
+    },
+    "account": {
+      "body": "Zugang, Kennwort und Einstellungen Ihres Atelierkontos.",
+      "kicker": "Zugang",
+      "title": "Kontoführung"
+    },
+    "brand": {
+      "sub": "Schriftsprache, Farbhaltung und visuelle Dichte des Ateliers.",
+      "title": "Markenidentität"
+    },
+    "domains": {
+      "sub": "Eigene Domain für die öffentliche Präsenz des Ateliers.",
+      "title": "Domänen"
+    },
+    "forms": {
+      "sub": "Einrichtung der Kontaktformulare und Aufnahme neuer Projekte.",
+      "title": "Formular"
+    },
+    "internationalPresence": {
+      "sub": "Sprachen, Standorte und internationale Präsenz des Ateliers.",
+      "title": "Weltweite Präsenz"
+    },
+    "journal": {
+      "sub": "Redaktionelle Beiträge, Magazine und Publikationsrhythmen.",
+      "title": "Dokumentation"
+    },
+    "kicker": "Werkstatt",
+    "languages": {
+      "active": "Aktive Sprachen",
+      "ai": {
+        "copy": "Sprachen, für die KI-gestützte Übersetzung verfügbar ist."
+      },
+      "architecture": "Architektonische Sprachgestaltung",
+      "architectureBody": "Drei orchestrierte Ebenen: öffentliche Präsenz, operatives Blueprint, KI-Übersetzung.",
+      "blueprint": {
+        "copy": "Die Sprachen, in denen der operative Entwurf verfügbar ist.",
+        "eyebrow": "Strukturelle Grundlage",
+        "locked": "Auf dieser Planebene fixiert."
+      },
+      "col": {
+        "blueprint": "Konstruktionsplan",
+        "code": "Sprachkürzel",
+        "default": "Standardsprache",
+        "enabled": "Aktiviert",
+        "fallback": "Ausweichlösung",
+        "name": "Sprache",
+        "native": "Eigenbezeichnung",
+        "public": "Öffentlich",
+        "rtl": "Rechts-nach-links-Schriftsystem",
+        "ai": "KI"
+      },
+      "eyebrow": "Arbeitssprachen",
+      "intro": "Verfügbare Arbeitssprachen für den Blueprint-Arbeitsbereich.",
+      "public": {
+        "copy": "Die auf der öffentlichen Website und im Begleitwerkzeug verfügbaren Sprachen.",
+        "eyebrow": "Öffentliche Präsenz"
+      },
+      "title": "Sprache & Räume"
+    },
+    "notifications": {
+      "sub": "Transaktionsmeldungen, Zusammenfassungen und Hinweise der Werkstatt.",
+      "title": "Benachrichtigungen"
+    },
+    "profile": {
+      "sub": "Name, Bild und redaktionelle Signatur.",
+      "title": "Atelier-Einstellungen"
+    },
+    "security": {
+      "sub": "Zugang, Authentifizierung und Sicherheitsarchitektur des Ateliers.",
+      "title": "Sicherheitsarchitektur"
+    },
+    "storefront": {
+      "sub": "Öffentliche Präsenz, Inhalte und Sichtbarkeit.",
+      "title": "Schaufenster"
+    },
+    "sub": "Die Komposition der Stimmen, die das Atelier bilden.",
+    "team": {
+      "sub": "Mitglieder, Rollen und Zugriffsrechte des Ateliers.",
+      "title": "Mitarbeiter"
+    },
+    "title": "Konfiguration",
+    "website": {
+      "body": "Öffentliche Seiten, Verweise, Kontaktkanäle und Eingabefelder.",
+      "kicker": "Schaufenster",
+      "title": "Öffentliche Präsenz"
+    },
+    "workspace": {
+      "body": "Identität, Markenarchitektur und aktive Module des Ateliers.",
+      "kicker": "Arbeitsumgebung",
+      "title": "Arbeitsumgebung"
     }
   },
   "site": {
@@ -1535,6 +1838,13 @@
     },
     "proposals": {
       "le_presentazioni_vivono_dentro_i_loro_journey": "Präsentationen entstehen innerhalb ihrer Journey-Struktur"
+    },
+    "back": {
+      "projects": "Zurück zur Projektübersicht"
+    },
+    "followed_by": "Gefolgt von",
+    "lead": {
+      "convert": "In Projekt überführen"
     }
   },
   "auth": {
@@ -1634,5 +1944,17 @@
       "ad_partner": "Atelier-Partner AD",
       "private_client": "Privatauftrag"
     }
+  },
+  "proposals": {
+    "empty": "Keine Vorschläge im Atelier vorhanden.",
+    "title": "Entwürfe"
+  },
+  "user": {
+    "notifications": "Mitteilungen",
+    "preferences": "Persönliche Einstellungen",
+    "theme": "Gestaltungshaltung",
+    "workspace": "Gestaltungsatelier",
+    "profile": "Profil",
+    "language": "Sprache"
   }
 }

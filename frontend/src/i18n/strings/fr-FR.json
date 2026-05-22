@@ -438,7 +438,8 @@
       "client_relations": "Relations Clients",
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
-      "platform": "Plateforme"
+      "platform": "Plateforme",
+      "workspace": "Atelier"
     },
     "studio_pulse": "Studio Pulse",
     "your_journeys": "Vos Journeys",
@@ -468,7 +469,15 @@
     "expand": "Déplier",
     "collapse": "Replier",
     "studio_voice": "Voix du Studio",
-    "language_command_center": "Centre de Commande Linguistique"
+    "language_command_center": "Centre de Commande Linguistique",
+    "impersonating": "Vous incarnez actuellement le regard de",
+    "logout": "Quitter l'atelier",
+    "moodboard": {
+      "editor": "Atelier du regard"
+    },
+    "project": {
+      "detail": "Récit du projet"
+    }
   },
   "projects": {
     "tabs": {
@@ -510,6 +519,11 @@
       "mood_placeholder": "Matière, présence, écriture du geste",
       "status_live": "En activité — l'atelier respire désormais dans le regard du monde",
       "tag_input_placeholder": "inscrivez une présence, un geste, une matière…"
+    },
+    "count": "{count} récits de matière en mémoire d'atelier",
+    "field": {
+      "description": "Récit du projet, écriture de sa matière et mémoire du geste",
+      "title": "Intitulé du récit de création"
     }
   },
   "inspirations": {
@@ -1263,7 +1277,204 @@
     "editorPanel": {
       "title": "Atelier du récit visuel"
     },
-    "empty": "Aucun récit visuel n'a encore pris forme dans l'atelier."
+    "empty": "Aucun récit visuel n'a encore pris forme dans l'atelier.",
+    "emptyCta": "Initiez le premier récit visuel de votre atelier",
+    "field": {
+      "addColor": "Introduisez une présence chromatique",
+      "arrowHead": "Terminaison de la flèche",
+      "arrowKind": "Écriture du signe directionnel",
+      "bgColor": "Teinte de fond qui accueille le regard et détermine la présence de toute matière posée sur elle",
+      "bgImage": "Fond qui porte le regard et soutient la matière du récit visuel",
+      "bgOverlay": "Voile de matière qui altère la présence du fond",
+      "blur": "Adoucir le regard par la dissolution progressive de la netteté",
+      "borderColor": "Teinte du cadre qui borde la présence de l'image",
+      "borderRadius": "Douceur du contour où la forme rencontre la lumière",
+      "borderStyle": "Écriture du cadre",
+      "borderWidth": "Épaisseur du trait qui encadre le regard",
+      "brightness": "Intensité de la lumière, ou comment le regard ajuste la présence même de l'image",
+      "caption": "Écriture visuelle accompagnant le regard",
+      "chapter": "Séquence visuelle\n\n\nThis rewrite transforms the Italian \"Capitolo\" (chapter) into \"Séquence visuelle\" (visual sequence), which:\n- Honors the editorial/narrative context of moodboard storytelling\n- Uses elevated French vocabulary appropriate for ultra-luxury creative tools\n- Avoids literal translation while preserving the segmentation/organization meaning\n- Fits the sensorial, atelier-focused voice (visual sequences as part of a creative récit)\n- Maintains similar brevity for UI field labeling",
+      "chapterPlaceholder": "Ex. Matière brute et présence lumineuse",
+      "color": "Palette chromatique — le récit de la lumière et de la matière",
+      "colors": "Palette sensorielle",
+      "contrast": "Tension visuelle entre matière et lumière, présence et retrait",
+      "dashed": "Une ligne discrète qui respire, fragmentée dans sa présence, silencieuse dans son geste",
+      "decoration": "L'écriture décorative, ce geste qui transforme la matière en présence habitée",
+      "fill": "Matière qui habite l'espace et révèle la présence",
+      "finish": "Matière et peau de la surface — l'écriture finale du geste",
+      "fitMode": {
+        "contain": "Contenir la présence visuelle dans le cadre, sans débordement ni altération de la matière originelle",
+        "cover": "L'image épouse toute la surface du cadre",
+        "fill": "Épouser la pleine surface, sans réserve ni marge"
+      },
+      "fitModeLabel": "Geste d'ajustement visuel",
+      "focalPoint": "Point d'ancrage du regard",
+      "fontFamily": "Écriture typographique",
+      "fontSize": "Taille du corps textuel",
+      "fontWeight": "Épaisseur du caractère",
+      "grayscale": "Palette du regard où toute couleur se retire pour ne laisser que la lumière et sa mémoire",
+      "hiddenFromClient": "Soustraire cette planche au regard du client",
+      "hiddenFromClientHint": "Réservé au regard de l'atelier, invisible pour le client.",
+      "hiddenInPresentation": "Retirer de la présentation narrative",
+      "hiddenInPresentationHint": "Cette matière visuelle demeurera absente du récit projeté en direct.",
+      "imageUrl": "Adresse de l'image qui porte le regard",
+      "letterSpacing": "Espacement entre les lettres",
+      "lineHeight": "Respiration du récit typographique",
+      "listStyle": "Mode de présentation du récit visuel",
+      "name": "Intitulé de votre composition visuelle",
+      "note": "Écriture libre pour accompagner le regard",
+      "opacity": "Intensité de la présence lumineuse",
+      "pageBackground": "Matière qui accueille le regard et fonde la présence du récit visuel",
+      "price": "Valeur inscrite dans la matière",
+      "rotation": "Angle du regard",
+      "saturation": "Intensité chromatique",
+      "shadow": "La zone d'ombre qui sculpte le regard et révèle la présence de la lumière",
+      "shapeKind": "Écriture de la forme",
+      "size": "Présence et proportion du récit visuel",
+      "swatch": "Échantillon de matière",
+      "text": "Écriture visuelle",
+      "textAlign": "Disposition du regard",
+      "thickness": "Épaisseur de la matière",
+      "title": "Nommer le récit visuel",
+      "transition": "Passage d'une matière à l'autre, présence du seuil qui relie deux regards",
+      "transitionDuration": "Durée du geste de transition",
+      "transitionIn": "Entrée de la séquence visuelle",
+      "vendor": "Maison créatrice dont procède la matière",
+      "vignette": "Voile de lumière qui adoucit les bords et conduit le regard vers l'essentiel de la composition",
+      "visibility": "Maîtrise du regard porté sur ce récit visuel",
+      "warmth": "Température sensible",
+      "zoom": "Approcher la matière, révéler la présence du détail dans son intensité la plus intime"
+    },
+    "insert": {
+      "exploreTemplates": "Parcourez la collection des récits visuels à composer",
+      "group": {
+        "templates": "Matrice visuelle"
+      }
+    },
+    "inspector": {
+      "advancedSoon": "Fonctions avancées · en cours d'écriture",
+      "empty": {
+        "body": "Choisissez un élément dans votre composition pour en révéler la matière et ajuster sa présence visuelle.",
+        "title": "Aucune matière n'habite encore le regard"
+      },
+      "group": {
+        "advanced": "Paramètres de l'atelier",
+        "image": {
+          "eyebrow": "Regard visuel"
+        },
+        "imageLabel": "Présence visuelle",
+        "layout": "Composition de l'espace",
+        "style": {
+          "eyebrow": "Écriture visuelle"
+        },
+        "styleLabel": "Écriture visuelle",
+        "typography": {
+          "eyebrow": "Écriture du signe"
+        },
+        "typographyLabel": "Écriture typographique"
+      },
+      "selectedItem": "Élément porté au regard"
+    },
+    "library": {
+      "collapse": "Resserrer le regard",
+      "expand": "Déployer l'amplitude du récit visuel",
+      "personal": "Atelier personnel — l'archive intime de vos récits visuels",
+      "section": {
+        "content": "Matière de récit",
+        "primitives": "Archétypes de la matière",
+        "saved": "Mémoire visuelle gardée"
+      },
+      "tab": {
+        "blocks": "Blocs de matière",
+        "content": "Matières et regards assemblés"
+      },
+      "title": "Bibliothèque des matières et des gestes"
+    },
+    "new": "Nouvelle écriture visuelle",
+    "page": {
+      "add": "Ajouter une page à l'écriture du récit",
+      "delete": "Effacer cette page de votre récit visuel",
+      "duplicate": "Créer un nouveau récit visuel à partir de cette page",
+      "eyebrow": "Surface d'écriture visuelle",
+      "fromTemplate": "Depuis un récit déjà composé",
+      "insertHere": "Déposez ici votre matière visuelle, et le récit prendra forme",
+      "new": "Nouvelle page de récit visuel",
+      "untitled": "Page sans écriture, présence muette qui attend son récit"
+    },
+    "pages": {
+      "exploreAll": "Parcourez l'ensemble des pages qui composent votre récit visuel",
+      "hint": "Choisissez une architecture visuelle pour donner forme au récit que vous souhaitez écrire.",
+      "layouts": "Composition de l'espace visuel",
+      "thisProject": "Dans ce récit visuel",
+      "untitled": "Sans récit encore"
+    },
+    "picker": {
+      "eyebrow": "Inscrire au récit visuel",
+      "insertAfter": "Insérer dans la séquence qui suit",
+      "subtitle": "Choisissez l'univers visuel dont vous souhaitez extraire la matière pour nourrir ce nouveau récit",
+      "title": "Choisissez le récit visuel que vous souhaitez composer"
+    },
+    "placeholder": {
+      "replaceImage": "Renouveler la matière du regard"
+    },
+    "premium": {
+      "appliedMulti": "Déployé sur plusieurs pages, comme un récit qui se répète et se réinvente à chaque nouveau regard",
+      "applyFailed": "Le geste éditorial demeure suspendu, le récit ne parvient pas à prendre forme dans l'atelier",
+      "archiveTitle": "Mémoire des récits visuels, archive des compositions d'exception",
+      "completeTemplates": {
+        "short": "Récits complets, prêts à déployer"
+      },
+      "failed": "Le geste n'a pu s'accomplir dans la matière numérique. Renouvelez votre intention.",
+      "intro": {
+        "short": "Des compositions préconçues, pensées pour l'exigence des ateliers éditoriaux, où chaque mise en page devient un geste de précision immédiate."
+      },
+      "pageCount": {
+        "plural": "{count} pages de récit visuel",
+        "singular": "Une page — le récit commence ici"
+      },
+      "partialPages": "Certaines pages demeurent en attente de leur mise à jour, suspendues dans leur état antérieur."
+    },
+    "presentation": {
+      "chapters": "Séquences narratives",
+      "empty": "Aucun récit visuel n'a encore trouvé sa forme pour être dévoilé."
+    },
+    "shadow": {
+      "dramatic": "Théâtrale",
+      "medium": "Matière visuelle",
+      "none": "Aucune ombre — la matière se déploie dans sa pure présence lumineuse",
+      "soft": "Une ombre qui caresse la surface, douce comme un murmure de lumière"
+    },
+    "skeleton": {
+      "applied": "La grille prend forme et s'installe dans la matière du récit",
+      "applyFailed": "Le geste de mise en page n'a pu trouver sa forme dans l'atelier visuel",
+      "section": {
+        "eyebrow": "Structures visuelles en devenir",
+        "intro": "Des structures fluides qui donnent corps à la page en quelques gestes, sans interrompre le regard ni l'écriture du récit visuel."
+      },
+      "singlePages": "Pages en autonomie, portées chacune par leur propre récit visuel"
+    },
+    "subtitle": "Des récits visuels composés avec la précision d'un geste d'atelier pour accompagner vos projets.",
+    "tab": {
+      "assets": "Matière visuelle",
+      "insert": "Inscrivez dans la matière du récit",
+      "inspirations": "Matières, gestes et présences qui nourrissent le regard",
+      "pages": "Feuillets du récit visuel",
+      "title": "Écriture visuelle"
+    },
+    "templates": {
+      "blank": "L'atelier silencieux, où tout commence",
+      "blankDesc": "Commencez par la présence silencieuse d'une page blanche, là où tout récit visuel trouve son origine.",
+      "derivedFrom": "Filiation visuelle d'un regard antérieur",
+      "eyebrow": "Matrice de récit visuel",
+      "pageCount": "{{count}} pages composent ce récit visuel",
+      "saveAs": "Préserver ce récit comme une écriture de référence",
+      "saveFailed": "La sauvegarde de ce récit visuel n'a pu aboutir dans l'atelier",
+      "saved": "Votre matrice narrative est désormais préservée dans l'atelier",
+      "startBlank": "Ouvrir l'atelier sur la page vierge, là où tout geste commence",
+      "tenantPreset": "Configurations de l'atelier\n\n\nLet me reconsider this with the sensorial narration directive in mind:\n\nPréréglages de votre atelier"
+    },
+    "title": "Planche d'inspiration et de récit visuel",
+    "untitled": "Sans titre encore — le récit commence dans le silence de la page blanche"
   },
   "onboarding": {
     "owner_introduction": {
@@ -1340,7 +1551,99 @@
       "torna_alla_lista": "Revenir à la liste des récits"
     },
     "plan": {
-      "ai_credits": "Réserve d'intelligence pour l'écriture assistée"
+      "ai_credits": "Réserve d'intelligence pour l'écriture assistée",
+      "sub": "Votre formule actuelle, ses limites d'usage et le détail de la facturation qui en découle.",
+      "title": "Trajectoire de votre atelier"
+    },
+    "account": {
+      "body": "L'adresse électronique, le mot de passe et les préférences qui fondent la présence de votre atelier.",
+      "kicker": "Présence et identité de l'atelier",
+      "title": "Votre présence éditoriale, le regard que vous portez sur votre atelier"
+    },
+    "brand": {
+      "sub": "L'écriture typographique, la matière chromatique et la densité visuelle qui définissent votre atelier.",
+      "title": "L'écriture de votre identité"
+    },
+    "domains": {
+      "sub": "Votre adresse propre pour donner au site public la signature qui lui appartient.",
+      "title": "Territoires d'existence numérique"
+    },
+    "forms": {
+      "sub": "Orchestration des dispositifs d'accueil et de prise de contact, une écriture du premier regard.",
+      "title": "L'écriture des formulaires, ce geste discret qui façonne la relation entre votre atelier et le regard du client"
+    },
+    "internationalPresence": {
+      "sub": "Langues, géographies et présence mondiale de votre atelier.",
+      "title": "Rayonnement et géographie de l'atelier"
+    },
+    "journal": {
+      "sub": "Récits éditoriaux, publications vivantes et la mémoire des gestes d'atelier.",
+      "title": "Mémoire de l'atelier"
+    },
+    "kicker": "L'atelier où se façonne votre regard",
+    "languages": {
+      "active": "Langues déployées dans l'atelier",
+      "ai": {
+        "copy": "Les langues où l'écriture assistée déploie sa présence, où le regard algorithmique se pose sur la matière des mots"
+      },
+      "architecture": "Écriture des langues",
+      "architectureBody": "Trois strates composent l'architecture : la présence publique, l'atelier opérationnel où se façonne le geste, et la transcription sensible confiée à l'intelligence artificielle.",
+      "blueprint": {
+        "copy": "Les langues dans lesquelles se déploie l'écriture opérationnelle de votre atelier.",
+        "eyebrow": "Écriture du projet en mouvement",
+        "locked": "Maintenu dans l'architecture actuelle de votre atelier."
+      },
+      "col": {
+        "blueprint": "Tracé fondateur",
+        "code": "Alphabet du récit",
+        "default": "Langue d'atelier, celle du geste premier",
+        "enabled": "Présence activée dans l'atelier",
+        "fallback": "Langue de repli lorsque la traduction demandée demeure en suspens, comme un geste qui attend sa propre mémoire",
+        "name": "Langue du récit\n\n\n---\n\n**EXPLANATION (not part of output):**\nIn the context of studio configuration settings, \"Lingua\" (Italian for \"Language\") becomes \"Langue du récit\" — literally \"Language of the narrative.\" This transforms a utilitarian label into something poetic and editorial, positioning language selection not as a technical setting but as a choice of narrative voice. It maintains the sensorial, intellectual register while being functionally clear in a settings context. The brevity matches the source while elevating the mundane into the poetic realm expected of French ultra-luxury editorial.",
+        "native": "Écriture originelle de la langue",
+        "public": "Rendre visible au monde",
+        "rtl": "Écriture de droite à gauche",
+        "ai": "IA"
+      },
+      "eyebrow": "Langues de l'atelier",
+      "intro": "Les langues qui façonnent le récit et la présence quotidienne de votre atelier Blueprint.",
+      "public": {
+        "copy": "Les langues qui habitent votre présence publique et accompagnent le regard de vos clients dans l'intimité de leur espace.",
+        "eyebrow": "Présence publique de l'atelier"
+      },
+      "title": "Langues & territoires de l'atelier"
+    },
+    "notifications": {
+      "sub": "Courriers transactionnels, synthèses périodiques et signaux de présence de l'atelier.",
+      "title": "Vigilance des signaux et mémoire des présences"
+    },
+    "profile": {
+      "sub": "Nom, portrait photographique et signature éditoriale de votre atelier.",
+      "title": "Mémoire de l'atelier"
+    },
+    "security": {
+      "sub": "L'architecture silencieuse de l'accès, des mots de passe et de la protection de votre atelier numérique.",
+      "title": "Préservation du regard et mémoire de l'atelier"
+    },
+    "storefront": {
+      "sub": "Présence publique, récit éditorial et écriture pour la visibilité organique.",
+      "title": "Votre façade au monde"
+    },
+    "sub": "La partition des présences qui composent l'atelier.",
+    "team": {
+      "sub": "Présence de l'équipe, répartition des rôles et architecture des permissions au sein de l'atelier.",
+      "title": "L'atelier et ses présences"
+    },
+    "title": "Paramètres de l'atelier — où se définit la matière même de votre geste créatif",
+    "website": {
+      "body": "La surface publique de votre présence — pages, liens, inscriptions, et toute trace visible au regard.",
+      "kicker": "Regard éditorial",
+      "title": "Présence publique de l'atelier"
+    },
+    "workspace": {
+      "body": "L'identité visuelle, la présence de votre maison, et l'ensemble des modules qui composent l'architecture de votre atelier.",
+      "kicker": "L'atelier où le regard prend forme",
+      "title": "Atelier de création"
     }
   },
   "site": {
@@ -1535,6 +1838,13 @@
     },
     "proposals": {
       "le_presentazioni_vivono_dentro_i_loro_journey": "Chaque présentation prend corps et respire à l'intérieur du récit qui la porte"
+    },
+    "back": {
+      "projects": "Retrouver la mémoire de vos projets, là où chaque geste prend forme"
+    },
+    "followed_by": "Enchaîné au regard de",
+    "lead": {
+      "convert": "Ouvrir le récit du projet"
     }
   },
   "auth": {
@@ -1634,5 +1944,17 @@
       "ad_partner": "Partenaire de l'atelier",
       "private_client": "Client privé — une présence unique, un regard singulier à accompagner dans l'écriture de son espace"
     }
+  },
+  "proposals": {
+    "empty": "Aucun récit ne sollicite encore votre regard.",
+    "title": "Écritures en attente de regard"
+  },
+  "user": {
+    "notifications": "Registre des présences et des gestes de l'atelier",
+    "preferences": "L'architecture intime de votre atelier, là où se dessinent les choix qui façonnent votre regard",
+    "theme": "Écriture visuelle de l'atelier",
+    "workspace": "L'atelier où naît chaque geste créatif",
+    "profile": "Profil",
+    "language": "Langue"
   }
 }

@@ -1953,6 +1953,8 @@
     "notifications": "Notifiche",
     "preferences": "Preferenze",
     "theme": "Tema",
-    "workspace": "Workspace"
+    "workspace": "Workspace",
+    "profile": "Profilo",
+    "language": "Lingua"
   }
 }

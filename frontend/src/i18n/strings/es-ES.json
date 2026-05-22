@@ -438,7 +438,8 @@
       "client_relations": "Relaciones con Clientes",
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
-      "platform": "Plataforma"
+      "platform": "Plataforma",
+      "workspace": "Atelier"
     },
     "studio_pulse": "Studio Pulse",
     "your_journeys": "Tus Journeys",
@@ -468,7 +469,15 @@
     "expand": "Expandir",
     "collapse": "Replegar",
     "studio_voice": "Voz del Estudio",
-    "language_command_center": "Centro de Mando Lingüístico"
+    "language_command_center": "Centro de Mando Lingüístico",
+    "impersonating": "Suplantando identidad",
+    "logout": "Salir del atelier",
+    "moodboard": {
+      "editor": "Atelier de moodboard"
+    },
+    "project": {
+      "detail": "Mirada al proyecto"
+    }
   },
   "projects": {
     "tabs": {
@@ -510,6 +519,11 @@
       "mood_placeholder": "Atmósfera, materia, cadencia",
       "status_live": "En curso",
       "tag_input_placeholder": "añada un toque de identidad…"
+    },
+    "count": "{count} proyectos en el atelier",
+    "field": {
+      "description": "Relato del proyecto",
+      "title": "Nombre del proyecto"
     }
   },
   "inspirations": {
@@ -1263,7 +1277,204 @@
     "editorPanel": {
       "title": "Espacio de edición visual"
     },
-    "empty": "Aún no hay ningún relato visual en marcha."
+    "empty": "Aún no hay ningún relato visual en marcha.",
+    "emptyCta": "Comience su primer relato visual",
+    "field": {
+      "addColor": "Incorpore un matiz cromático",
+      "arrowHead": "Punta de la flecha",
+      "arrowKind": "Carácter de la flecha",
+      "bgColor": "Fondo de la composición",
+      "bgImage": "Imagen de atmósfera",
+      "bgOverlay": "Velo de atmósfera",
+      "blur": "Desenfoque atmosférico",
+      "borderColor": "Color del marco",
+      "borderRadius": "Redondeo del marco",
+      "borderStyle": "Trazo del contorno",
+      "borderWidth": "Grosor del marco",
+      "brightness": "Claridad de la luz",
+      "caption": "Texto de la imagen",
+      "chapter": "Episodio",
+      "chapterPlaceholder": "Ej. Atmósfera de la materia",
+      "color": "Cromática",
+      "colors": "Paleta cromática",
+      "contrast": "Tensión visual",
+      "dashed": "Línea fragmentada",
+      "decoration": "Ornamentación y detalle",
+      "fill": "Relleno de fondo",
+      "finish": "Acabado",
+      "fitMode": {
+        "contain": "Ajustar al marco",
+        "cover": "Completar el encuadre",
+        "fill": "Ocupa el encuadre"
+      },
+      "fitModeLabel": "Modo de encuadre",
+      "focalPoint": "Dónde reposa la mirada",
+      "fontFamily": "Tipografía del relato visual",
+      "fontSize": "Cuerpo del texto",
+      "fontWeight": "Peso de la tipografía",
+      "grayscale": "Gama de matices neutros",
+      "hiddenFromClient": "Ocultar de la mirada del cliente",
+      "hiddenFromClientHint": "Solo visible para el equipo interno del estudio.",
+      "hiddenInPresentation": "Ocultar en el relato visual",
+      "hiddenInPresentationHint": "No se mostrará durante la presentación en directo",
+      "imageUrl": "Dirección de la imagen",
+      "letterSpacing": "Espaciado entre letras",
+      "lineHeight": "Interlineado del texto",
+      "listStyle": "Composición del relato visual",
+      "name": "Identidad del relato visual",
+      "note": "Apunte de atelier",
+      "opacity": "Grado de veladura",
+      "pageBackground": "Atmósfera de la composición",
+      "price": "Inversión",
+      "rotation": "Giro de la imagen",
+      "saturation": "Intensidad cromática",
+      "shadow": "Penumbra",
+      "shapeKind": "Geometría de la forma",
+      "size": "Formato",
+      "swatch": "Muestra de referencia",
+      "text": "Relato visual",
+      "textAlign": "Alineación del relato visual",
+      "thickness": "Grosor de la materia",
+      "title": "Nombre del relato visual",
+      "transition": "Paso de atmósfera",
+      "transitionDuration": "Duración del fundido",
+      "transitionIn": "Entrada del relato visual",
+      "vendor": "Artesano de referencia",
+      "vignette": "Atmósfera de viñeta",
+      "visibility": "Presencia del proyecto",
+      "warmth": "Calidez atmosférica",
+      "zoom": "Ampliar la mirada"
+    },
+    "insert": {
+      "exploreTemplates": "Descubra los modelos de atmósfera",
+      "group": {
+        "templates": "Plantilla base"
+      }
+    },
+    "inspector": {
+      "advancedSoon": "Avanzadas · próximamente en su atelier",
+      "empty": {
+        "body": "Seleccione un elemento para ajustar su presencia visual",
+        "title": "Ningún elemento en la composición"
+      },
+      "group": {
+        "advanced": "Configuración del relato visual",
+        "image": {
+          "eyebrow": "Mirada visual"
+        },
+        "imageLabel": "Imagen del relato",
+        "layout": "Composición visual",
+        "style": {
+          "eyebrow": "Identidad visual"
+        },
+        "styleLabel": "Identidad visual",
+        "typography": {
+          "eyebrow": "Letra y carácter"
+        },
+        "typographyLabel": "Carácter tipográfico"
+      },
+      "selectedItem": "Elemento en composición"
+    },
+    "library": {
+      "collapse": "Replegar la vista",
+      "expand": "Amplíe la mirada",
+      "personal": "Íntimo",
+      "section": {
+        "content": "Materia visual",
+        "primitives": "Primarios",
+        "saved": "Guardados con atención"
+      },
+      "tab": {
+        "blocks": "Composiciones",
+        "content": "Materia visual"
+      },
+      "title": "Archivo de atmósferas"
+    },
+    "new": "Nueva identidad visual",
+    "page": {
+      "add": "Añadir una nueva página al relato visual",
+      "delete": "Retirar esta página del relato",
+      "duplicate": "Duplicar esta página",
+      "eyebrow": "Página de proyecto",
+      "fromTemplate": "Desde una plantilla base",
+      "insertHere": "Componga aquí su relato visual",
+      "new": "Nueva atmósfera visual",
+      "untitled": "Página sin nombre"
+    },
+    "pages": {
+      "exploreAll": "Descubra todas las páginas del relato",
+      "hint": "Elija una composición para comenzar su relato visual.",
+      "layouts": "Composición visual",
+      "thisProject": "En este relato visual",
+      "untitled": "Sin título aún"
+    },
+    "picker": {
+      "eyebrow": "Añada a su relato visual",
+      "insertAfter": "Insertar a continuación",
+      "subtitle": "Seleccione el moodboard del que desea extraer contenido visual",
+      "title": "Elija su tablero de atmósfera"
+    },
+    "placeholder": {
+      "replaceImage": "Reemplazar imagen"
+    },
+    "premium": {
+      "appliedMulti": "Presente en múltiples páginas",
+      "applyFailed": "No ha sido posible aplicar esta plantilla",
+      "archiveTitle": "Archivo de plantillas de autor",
+      "completeTemplates": {
+        "short": "Plantillas con identidad completa"
+      },
+      "failed": "La operación no ha podido completarse. Le invitamos a intentarlo de nuevo",
+      "intro": {
+        "short": "Composiciones listas para usar, pensadas para ateliers editoriales"
+      },
+      "pageCount": {
+        "plural": "{count} páginas de relato visual",
+        "singular": "1 página"
+      },
+      "partialPages": "Algunas páginas aún no reflejan los últimos cambios"
+    },
+    "presentation": {
+      "chapters": "Relatos visuales",
+      "empty": "Ninguna propuesta lista para compartir aún"
+    },
+    "shadow": {
+      "dramatic": "Presencia intensa",
+      "medium": "Atmósfera visual",
+      "none": "Sin sombra",
+      "soft": "Suave al tacto"
+    },
+    "skeleton": {
+      "applied": "Composición aplicada a la página",
+      "applyFailed": "No ha sido posible aplicar esta configuración visual",
+      "section": {
+        "eyebrow": "Estructuras de atmósfera",
+        "intro": "Estructuras visuales que permiten componer una página con gesto preciso y en apenas unos segundos"
+      },
+      "singlePages": "Páginas independientes"
+    },
+    "subtitle": "Relatos visuales con identidad para cada proyecto que imagina",
+    "tab": {
+      "assets": "Materiales visuales",
+      "insert": "Incorpore su selección",
+      "inspirations": "Inspiración visual",
+      "pages": "Láminas del relato",
+      "title": "Relato visual"
+    },
+    "templates": {
+      "blank": "Lienzo en blanco",
+      "blankDesc": "Comience desde una página en blanco y construya su relato visual",
+      "derivedFrom": "Inspirado en",
+      "eyebrow": "Plantilla de referencia",
+      "pageCount": "{count} páginas de relato visual",
+      "saveAs": "Guardar como modelo de atelier",
+      "saveFailed": "No hemos podido guardar este gesto visual",
+      "saved": "La plantilla ya forma parte de tu biblioteca",
+      "startBlank": "Comience desde lo blanco",
+      "tenantPreset": "Configuraciones del atelier"
+    },
+    "title": "Tablero de inspiración visual",
+    "untitled": "Sin título aún"
   },
   "onboarding": {
     "owner_introduction": {
@@ -1340,7 +1551,99 @@
       "torna_alla_lista": "Volver al índice"
     },
     "plan": {
-      "ai_credits": "Créditos de inteligencia creativa"
+      "ai_credits": "Créditos de inteligencia creativa",
+      "sub": "Alcance actual, límites del espacio y condiciones acordadas.",
+      "title": "Modalidad de atelier"
+    },
+    "account": {
+      "body": "La identidad de su cuenta, sus claves de acceso y el modo en que desea trabajar.",
+      "kicker": "Identidad del atelier",
+      "title": "Identidad del atelier"
+    },
+    "brand": {
+      "sub": "Tipografía, paleta cromática y densidad visual del atelier.",
+      "title": "Identidad de su estudio"
+    },
+    "domains": {
+      "sub": "Un dominio propio para su presencia pública en la red",
+      "title": "Identidad digital del atelier"
+    },
+    "forms": {
+      "sub": "Configuración de formularios de contacto y presentación del atelier",
+      "title": "Formularios de contacto"
+    },
+    "internationalPresence": {
+      "sub": "Idiomas, presencia territorial y alcance global del atelier.",
+      "title": "Presencia en otros territorios"
+    },
+    "journal": {
+      "sub": "Editoriales, publicaciones y el ritmo de cada entrega.",
+      "title": "Relato del estudio"
+    },
+    "kicker": "Atelier",
+    "languages": {
+      "active": "Lenguas activas en su atelier",
+      "ai": {
+        "copy": "Los idiomas sobre los que actúa la traducción inteligente del atelier."
+      },
+      "architecture": "Arquitectura del lenguaje",
+      "architectureBody": "Tres capas en diálogo: la presencia pública, la estructura de oficio, la traducción para IA.",
+      "blueprint": {
+        "copy": "Los idiomas en los que puede consultar el relato operativo de su atelier.",
+        "eyebrow": "Guía de gestión del estudio",
+        "locked": "No disponible en su plan actual."
+      },
+      "col": {
+        "blueprint": "Estructura fundacional",
+        "code": "Identificador de idioma",
+        "default": "Original del atelier",
+        "enabled": "Activa",
+        "fallback": "Idioma predeterminado",
+        "name": "Idioma",
+        "native": "Nombre original",
+        "public": "Visible para todos",
+        "rtl": "Escritura de derecha a izquierda",
+        "ai": "IA"
+      },
+      "eyebrow": "Idioma del atelier",
+      "intro": "Idiomas disponibles para trabajar en el espacio Blueprint.",
+      "public": {
+        "copy": "Los idiomas que conviven en su espacio público y en el entorno privado del cliente",
+        "eyebrow": "Presencia visible al público"
+      },
+      "title": "Idioma y espacios de trabajo"
+    },
+    "notifications": {
+      "sub": "Mensajes operativos, resúmenes y avisos del atelier.",
+      "title": "Avisos y comunicaciones"
+    },
+    "profile": {
+      "sub": "Nombre, imagen y firma de su atelier.",
+      "title": "Identidad del atelier"
+    },
+    "security": {
+      "sub": "Contraseñas, accesos y protección del atelier digital.",
+      "title": "Protección y acceso"
+    },
+    "storefront": {
+      "sub": "Presencia pública, contenidos y posicionamiento orgánico.",
+      "title": "Identidad visual del atelier"
+    },
+    "sub": "La presencia de cada voz que da forma al atelier.",
+    "team": {
+      "sub": "Quiénes componen el atelier, su oficio y su acceso a cada espacio",
+      "title": "Equipo del atelier"
+    },
+    "title": "Configuración del atelier",
+    "website": {
+      "body": "Páginas, enlaces, redes y formularios de cara al público.",
+      "kicker": "Escaparate del atelier",
+      "title": "Sitio de cara al mundo"
+    },
+    "workspace": {
+      "body": "Identidad, presencia visual y módulos activos del atelier.",
+      "kicker": "Espacio de trabajo",
+      "title": "Espacio de trabajo"
     }
   },
   "site": {
@@ -1535,6 +1838,13 @@
     },
     "proposals": {
       "le_presentazioni_vivono_dentro_i_loro_journey": "Las presentaciones habitan el relato de cada proyecto"
+    },
+    "back": {
+      "projects": "Volver al atelier de proyectos"
+    },
+    "followed_by": "Acompañado por",
+    "lead": {
+      "convert": "Crear espacio de proyecto"
     }
   },
   "auth": {
@@ -1634,5 +1944,17 @@
       "ad_partner": "Socio publicitario",
       "private_client": "Cliente particular"
     }
+  },
+  "proposals": {
+    "empty": "Aún no hay propuestas en su atelier.",
+    "title": "Propuestas en curso"
+  },
+  "user": {
+    "notifications": "Avisos del atelier",
+    "preferences": "Configuración del atelier",
+    "theme": "Atmósfera del atelier",
+    "workspace": "Atelier personal",
+    "profile": "Perfil",
+    "language": "Idioma"
   }
 }
