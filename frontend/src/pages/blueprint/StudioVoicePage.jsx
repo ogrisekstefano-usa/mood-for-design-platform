@@ -15,6 +15,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loader2, Lock, Unlock, PencilLine, Plus, Trash2, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { useT } from '../../i18n/useT';
 
 const REVIEW_LABELS = {
   ai_only:        'AI · DRAFT',
@@ -48,6 +49,7 @@ const Card = ({ children, className = '' }) => (
 );
 
 const StudioVoicePage = () => {
+  const { t } = useT();
   const [profile, setProfile]   = useState(null);
   const [presets, setPresets]   = useState([]);
   const [vocab, setVocab]       = useState([]);

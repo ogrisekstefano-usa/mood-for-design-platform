@@ -1,27 +1,34 @@
-# Runtime Localization Report · 2026-05-22
+# Runtime Localization Report · en-US · 2026-05-22T02:44:44+00:00
 
-**Locale**: `en-US`    **Routes**: 20
+**Routes crawled**: 21
 
 ## Summary
 
 | Category | Count |
 |---|---:|
-| DB_SEEDED_CONTENT | 5 |
-| INVALID_USE_TRANSLATION | 2 |
-| RUNTIME_CRASH | 2 |
+| DB_SEEDED_CONTENT | 12 |
 
 ## Findings by page
 
-### /inspirations/brands  (brand-atlas)
+### /inspirations  (`inspirations`)
 
-**HARD_CODED_UI** · 5
+**Italian leaks (DOM)** · 4
 
-- «Step into the atelier»  · `bm-card-c9bf3dd2-4797-4959-900d-29044e5e0430`
-- «materialità ·»  · `bm-materials-65a41392-c3a1-4ca8-9a27-cfdd1bbe577b`
-- «E2E Test Atelier pmneq»  · `bm-card-bb39cb31-eb93-4b40-b28c-5fbf8659fc17`
-- «E2E Test Atelier zxlyv»  · `bm-card-16e6a66f-9961-44ae-a416-dead971a21f5`
-- «**Source (IT):**  
-sartorialità domestica
+- `inspiration-card-fe022fa7-737f-4822-ac49-3288e6b56889` · «bouclé»
+- `inspiration-card-d37b1917-aadb-492a-98cb-fff242c50bdc` · «velluto canneté»
+- `inspiration-card-85d76355-9168-4bf7-a454-89052c292244` · «Penthouse newyorchese — atmosfera gallery»
+- `inspiration-card-88459025-96a6-40b0-9086-8407241a0469` · «Residential living room built on a layered earth palette: canaletto walnut anchors the primary pieces, pale bouclé upholsters the modular so»
+
+**DB_SEEDED_CONTENT** · 1 API responses with IT markers
+
+- `https://content-hub-pro-22.preview.emergentagent.com/api/inspirations/archive?` · {"items":[{"id":"980d67cb-43f3-428f-bbb5-5a4eace6dfaf","title":"TEST_iter78_auto_cultural","description":null,"image_url":"https://images.unsplash.com/photo-1505691938895-1758d7feb…
+
+### /inspirations/brands  (`brand-atlas`)
+
+**Italian leaks (DOM)** · 2
+
+- `bm-materials-65a41392-c3a1-4ca8-9a27-cfdd1bbe577b` · «materialità ·»
+- `bm-card-332f2116-214e-4239-a2da-e5684db71bd8` · «**Source term:** *sartorialità domestica*
 
 ---
 
@@ -29,27 +36,24 @@ domestic tailoring
 
 ---
 
-**Editorial note:**  
-*Sartorialità* carries the Italian connotatio»  · `bm-card-332f2116-214e-4239-a2da-e5684db71bd8`
+**Alternate editorial phrasings** (context-dependent):
 
-**INVALID_USE_TRANSLATION (raw key rendered)** · 1
+- bespoke d»
 
-- inspirations.brand_mode.curated_by_mood  · `bm-curated-c9bf3dd2-4797-4959-900d-29044e5e0430`
+### /workspace/cultural-editions  (`cultural-editions`)
 
-### /inspirations/materials  (material-view)
+**Italian leaks (DOM)** · 2
 
-**INVALID_USE_TRANSLATION (raw key rendered)** · 1
+- `ce-row-b8cb5030-cfed-4af4-b231-c0846b8bb11d` · «Appartamento Stefano — Geometrie domestiche del quotidiano»
+- `ce-row-62b2cc3a-e981-4eef-9be4-502a8807108b` · «Appartamento Stefano — Architettura del quotidiano»
 
-- material_view.header.title  · `mv-shell`
+**DB_SEEDED_CONTENT** · 2 API responses with IT markers
 
-### /blueprint/studio-voice  (studio-voice)
+- `https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts` · {"drafts":[{"id":"61cd4006-eadd-48ad-9f26-93f8c63f7148","source_type":"project","source_id":"79d96981-1ef4-4052-ae27-ff1252e00f3c","source_title":"Apartment — Stefano","target_mark…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts` · {"drafts":[{"id":"61cd4006-eadd-48ad-9f26-93f8c63f7148","source_type":"project","source_id":"79d96981-1ef4-4052-ae27-ff1252e00f3c","source_title":"Apartment — Stefano","target_mark…
 
-**RUNTIME_CRASH** · 1
+### /forms  (`forms`)
 
-- `t is not a function`
+**DB_SEEDED_CONTENT** · 1 API responses with IT markers
 
-### /blueprint/language  (language-center)
-
-**RUNTIME_CRASH** · 1
-
-- `t is not a function`
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"IT_IT","requested":"IT_IT","source":"tenant","candidates":{"explicit":null,"user":null,"project":null,"lead":null,"tenant":"IT_IT","browser":"EN_US","system":"IT_IT…

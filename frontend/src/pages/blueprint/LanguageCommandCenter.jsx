@@ -18,6 +18,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loader2, Search, Save, RotateCcw, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
+import { useT } from '../../i18n/useT';
 
 const LOCALES = ['it-IT', 'en-US', 'en-GB', 'fr-FR', 'de-DE', 'es-ES', 'ar'];
 const SURFACES = [
@@ -49,6 +50,7 @@ const Section = ({ eyebrow, title, lede, children, testid }) => (
 );
 
 const LanguageCommandCenter = () => {
+  const { t } = useT();
   const [surface, setSurface]   = useState('All');
   const [search, setSearch]     = useState('');
   const [missingOnly, setMissingOnly] = useState(false);
@@ -138,7 +140,7 @@ const LanguageCommandCenter = () => {
         <Section
           eyebrow="01 · UI Copy Registry™"
           title={t('blueprint.language.all_phrases_title', null, 'All Blueprint phrases')}
-          lede="Ogni chiave di traduzione, ogni superficie, ogni locale. Filtra, cerca, correggi. Le modifiche entrano in vigore al prossimo render — niente deploy."
+          lede={t('blueprint.language.all_phrases_lede', null, "Every translation key, every surface, every locale. Filter, search, refine. Changes take effect at the next render — no deploy.")}
           testid="language-cc-registry-section"
         >
           <div className="flex flex-wrap gap-3 mb-7">
@@ -147,7 +149,7 @@ const LanguageCommandCenter = () => {
               <input
                 data-testid="language-cc-search"
                 type="search" value={search} onChange={(e) => setSearch(e.target.value)}
-                placeholder="Cerca per chiave o testo…"
+                placeholder={t('blueprint.language.search_placeholder', null, 'Search by key or text…')}
                 className="w-full bg-transparent border border-[var(--mood-border, rgba(255,255,255,0.08))] py-2.5 pl-9 pr-4
                            text-[13px] font-body text-[var(--mood-text, #f0ebe0)] outline-none focus:border-[var(--mood-accent-soft, rgba(217,178,133,0.4))]
                            placeholder:text-[var(--mood-text-muted, rgba(240,235,224,0.4))]"
@@ -166,18 +168,18 @@ const LanguageCommandCenter = () => {
             <label className="flex items-center gap-2 text-[10.5px] uppercase tracking-[0.22em] font-mono text-[var(--mood-text-muted, rgba(240,235,224,0.65))] cursor-pointer">
               <input type="checkbox" checked={missingOnly} onChange={(e) => setMissingOnly(e.target.checked)}
                 data-testid="language-cc-missing-only" />
-              Solo missing
+              {t('blueprint.language.only_missing', null, 'Only missing')}
             </label>
           </div>
 
           {loading ? (
             <div className="py-16 flex items-center gap-3 text-[var(--mood-text-muted, rgba(240,235,224,0.55))]">
               <Loader2 size={14} className="animate-spin" />
-              <span className="text-[11px] uppercase tracking-[0.24em]">Caricamento registro</span>
+              <span className="text-[11px] uppercase tracking-[0.24em]">{t('blueprint.language.loading_registry', null, 'Loading registry')}</span>
             </div>
           ) : items.length === 0 ? (
             <p className="py-16 font-heading italic text-[15px] text-[var(--mood-text-muted, rgba(240,235,224,0.55))]">
-              Nessuna chiave corrisponde ai filtri.
+              {t('blueprint.language.no_matches', null, 'No keys match your filters.')}
             </p>
           ) : (
             <ol className="space-y-3" data-testid="language-cc-registry-list">

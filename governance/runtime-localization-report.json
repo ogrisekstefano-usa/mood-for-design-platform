@@ -1,25 +1,42 @@
 {
+  "iteration": "ITER132",
   "locale": "en-US",
   "base": "https://content-hub-pro-22.preview.emergentagent.com",
-  "generated_at": "2026-05-22T02:11:27Z",
-  "routes_crawled": 20,
+  "generated_at": "2026-05-22T02:44:44+00:00",
+  "routes_crawled": 21,
   "summary": {
-    "INVALID_USE_TRANSLATION": 2,
-    "DB_SEEDED_CONTENT": 5,
-    "RUNTIME_CRASH": 2
+    "DB_SEEDED_CONTENT": 12
   },
   "findings": [
     {
-      "kind": "INVALID_USE_TRANSLATION",
-      "page": "/inspirations/brands",
-      "text": "inspirations.brand_mode.curated_by_mood",
-      "testid": "bm-curated-c9bf3dd2-4797-4959-900d-29044e5e0430"
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/inspirations",
+      "text": "bouclé",
+      "testid": "inspiration-card-fe022fa7-737f-4822-ac49-3288e6b56889"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations/brands",
-      "text": "Step into the atelier",
-      "testid": "bm-card-c9bf3dd2-4797-4959-900d-29044e5e0430"
+      "page": "/inspirations",
+      "text": "velluto canneté",
+      "testid": "inspiration-card-d37b1917-aadb-492a-98cb-fff242c50bdc"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/inspirations",
+      "text": "Penthouse newyorchese — atmosfera gallery",
+      "testid": "inspiration-card-85d76355-9168-4bf7-a454-89052c292244"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/inspirations",
+      "text": "Residential living room built on a layered earth palette: canaletto walnut anchors the primary pieces, pale bouclé upholsters the modular sofa, carded wool grounds the rug. Light drifts in from outsid",
+      "testid": "inspiration-card-88459025-96a6-40b0-9086-8407241a0469"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/inspirations",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/inspirations/archive?",
+      "body_excerpt": "{\"items\":[{\"id\":\"980d67cb-43f3-428f-bbb5-5a4eace6dfaf\",\"title\":\"TEST_iter78_auto_cultural\",\"description\":null,\"image_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_url\":\"https://images.unsplash.com/p"
     },
     {
       "kind": "DB_SEEDED_CONTENT",
@@ -30,36 +47,38 @@
     {
       "kind": "DB_SEEDED_CONTENT",
       "page": "/inspirations/brands",
-      "text": "E2E Test Atelier pmneq",
-      "testid": "bm-card-bb39cb31-eb93-4b40-b28c-5fbf8659fc17"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations/brands",
-      "text": "E2E Test Atelier zxlyv",
-      "testid": "bm-card-16e6a66f-9961-44ae-a416-dead971a21f5"
-    },
-    {
-      "kind": "DB_SEEDED_CONTENT",
-      "page": "/inspirations/brands",
-      "text": "**Source (IT):**  \nsartorialità domestica\n\n---\n\ndomestic tailoring\n\n---\n\n**Editorial note:**  \n*Sartorialità* carries the Italian connotation of bespoke craft, precision, and hand-finished detail—qual",
+      "text": "**Source term:** *sartorialità domestica*\n\n---\n\ndomestic tailoring\n\n---\n\n**Alternate editorial phrasings** (context-dependent):\n\n- bespoke domesticity\n- tailored interiors\n- the couture of home\n- dome",
       "testid": "bm-card-332f2116-214e-4239-a2da-e5684db71bd8"
     },
     {
-      "kind": "INVALID_USE_TRANSLATION",
-      "page": "/inspirations/materials",
-      "text": "material_view.header.title",
-      "testid": "mv-shell"
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/workspace/cultural-editions",
+      "text": "Appartamento Stefano — Geometrie domestiche del quotidiano",
+      "testid": "ce-row-b8cb5030-cfed-4af4-b231-c0846b8bb11d"
     },
     {
-      "kind": "RUNTIME_CRASH",
-      "page": "/blueprint/studio-voice",
-      "message": "t is not a function"
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/workspace/cultural-editions",
+      "text": "Appartamento Stefano — Architettura del quotidiano",
+      "testid": "ce-row-62b2cc3a-e981-4eef-9be4-502a8807108b"
     },
     {
-      "kind": "RUNTIME_CRASH",
-      "page": "/blueprint/language",
-      "message": "t is not a function"
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/workspace/cultural-editions",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts",
+      "body_excerpt": "{\"drafts\":[{\"id\":\"61cd4006-eadd-48ad-9f26-93f8c63f7148\",\"source_type\":\"project\",\"source_id\":\"79d96981-1ef4-4052-ae27-ff1252e00f3c\",\"source_title\":\"Apartment — Stefano\",\"target_market\":\"italy_milano\",\"target_market_label\":\"Italia · Milano\",\""
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/workspace/cultural-editions",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts",
+      "body_excerpt": "{\"drafts\":[{\"id\":\"61cd4006-eadd-48ad-9f26-93f8c63f7148\",\"source_type\":\"project\",\"source_id\":\"79d96981-1ef4-4052-ae27-ff1252e00f3c\",\"source_title\":\"Apartment — Stefano\",\"target_market\":\"italy_milano\",\"target_market_label\":\"Italia · Milano\",\""
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/forms",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"tenant\",\"candidates\":{\"explicit\":null,\"user\":null,\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"l"
     }
   ],
   "pages": [
@@ -68,10 +87,9 @@
       "url": "/dashboard",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
@@ -80,24 +98,10 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/dashboard.jpg"
     },
     {
@@ -105,10 +109,9 @@
       "url": "/workspace/projects",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
@@ -119,6 +122,8 @@
           "text": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/journeys.jpg"
     },
     {
@@ -126,10 +131,9 @@
       "url": "/crm/accounts",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
@@ -148,6 +152,8 @@
           "text": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/crm-accounts.jpg"
     },
     {
@@ -155,10 +161,9 @@
       "url": "/crm/follow-ups",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
@@ -181,22 +186,36 @@
           "text": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/crm-follow-ups.jpg"
     },
     {
       "key": "inspirations",
       "url": "/inspirations",
       "nav_error": null,
-      "italian_leaks": [],
-      "missing_tokens": [],
-      "raw_keys": [],
-      "error_boundary": false,
-      "page_errors": [],
-      "console": [
+      "italian_leaks": [
         {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 404 ()"
+          "text": "bouclé",
+          "testid": "inspiration-card-fe022fa7-737f-4822-ac49-3288e6b56889"
         },
+        {
+          "text": "velluto canneté",
+          "testid": "inspiration-card-d37b1917-aadb-492a-98cb-fff242c50bdc"
+        },
+        {
+          "text": "Penthouse newyorchese — atmosfera gallery",
+          "testid": "inspiration-card-85d76355-9168-4bf7-a454-89052c292244"
+        },
+        {
+          "text": "Residential living room built on a layered earth palette: canaletto walnut anchors the primary pieces, pale bouclé upholsters the modular sofa, carded wool grounds the rug. Light drifts in from outsid",
+          "testid": "inspiration-card-88459025-96a6-40b0-9086-8407241a0469"
+        }
+      ],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
@@ -204,6 +223,52 @@
         {
           "type": "warning",
           "text": "[LEAKAGE] {phrase: Brand, locale: en-US, page: /inspirations, testid: ins-brand-atlas-link}"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/inspirations/archive?",
+          "status": 200,
+          "marker_hits": 1,
+          "accent_hits": 4,
+          "body_excerpt": "{\"items\":[{\"id\":\"980d67cb-43f3-428f-bbb5-5a4eace6dfaf\",\"title\":\"TEST_iter78_auto_cultural\",\"description\":null,\"image_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_kind\":\"url\",\"width\":null,\"height\":null,\"dominant_color\":null,\"atmosphere_tags\":[\"warm_minimal\"],\"material_tags\":[\"wood_natural\"],\"market_codes\":[],\"style_tags\":[],\"palette\":[],\"hospitality_profile\":null,\"luxury_level\":null,\"brand\":null,\"collection\":null,\"product_name\":null,\"product_category\":null,\"designer\":null,\"inspiration_type\":\"editorial\",\"rights_status\":null,\"supplier_catalog_id\":null,\"display_meta\":{\"zoom\":1.4,\"focal_x\":0.33,\"focal_y\":0.66,\"crop_ratio\":\"4:5\",\"editorial_filter\":\"cinematic_dark\"},\"tags\":[\"inspiration\"],\"created_at\":\"2026-05-22T00:25:02.849284+00:00\",\"updated_at\":\"2026-05-22T00:26:58.385494+00:00\"},{\"id\":\"97770cde-856c-4e4f-b9c9-8daebc3c27e4\",\"title\":\"TEST_PinterestRef\",\"description\":null,\"image_url\":\"https://www.pinterest.com/pin/12345/\",\"source_url\":\"https://www.pinterest.com/pin/12345/\",\"source_kind\":\"pinterest\",\"width\":null,\"height\":null,\"dominant_color\":null,\"atmosphere_tags\":[],\"material_tags\":[],\"market_codes\":[],\"style_tags\":[],\"palette\":[],\"hospitality_profile\":null,\"luxury_level\":null,\"brand\":null,\"collection\":null,\"product_name\":null,\"product_category\":null,\"designer\":null,\"inspiration_type\":\"editorial\",\"rights_status\":null,\"supplier_catalog_id\":null,\"displa"
         }
       ],
       "screenshot": "runtime-localization-screenshots/inspirations.jpg"
@@ -214,35 +279,17 @@
       "nav_error": null,
       "italian_leaks": [
         {
-          "text": "Step into the atelier",
-          "testid": "bm-card-c9bf3dd2-4797-4959-900d-29044e5e0430"
-        },
-        {
           "text": "materialità ·",
           "testid": "bm-materials-65a41392-c3a1-4ca8-9a27-cfdd1bbe577b"
         },
         {
-          "text": "E2E Test Atelier pmneq",
-          "testid": "bm-card-bb39cb31-eb93-4b40-b28c-5fbf8659fc17"
-        },
-        {
-          "text": "E2E Test Atelier zxlyv",
-          "testid": "bm-card-16e6a66f-9961-44ae-a416-dead971a21f5"
-        },
-        {
-          "text": "**Source (IT):**  \nsartorialità domestica\n\n---\n\ndomestic tailoring\n\n---\n\n**Editorial note:**  \n*Sartorialità* carries the Italian connotation of bespoke craft, precision, and hand-finished detail—qual",
+          "text": "**Source term:** *sartorialità domestica*\n\n---\n\ndomestic tailoring\n\n---\n\n**Alternate editorial phrasings** (context-dependent):\n\n- bespoke domesticity\n- tailored interiors\n- the couture of home\n- dome",
           "testid": "bm-card-332f2116-214e-4239-a2da-e5684db71bd8"
         }
       ],
+      "raw_keys": [],
       "missing_tokens": [],
-      "raw_keys": [
-        {
-          "text": "inspirations.brand_mode.curated_by_mood",
-          "testid": "bm-curated-c9bf3dd2-4797-4959-900d-29044e5e0430"
-        }
-      ],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
@@ -257,10 +304,16 @@
           "text": "[LEAKAGE] {phrase: Brand, locale: en-US, page: /inspirations/brands, testid: brand-atlas-eyebrow}"
         },
         {
-          "type": "error",
-          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay BrandCard BrandCard"
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: atelier, locale: en-US, page: /inspirations/brands, testid: bm-card-c9bf3dd2-4797-4959-900d-29044e5e0430}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Atelier, locale: en-US, page: /inspirations/brands, testid: bm-card-bb39cb31-eb93-4b40-b28c-5fbf8659fc17}"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/brand-atlas.jpg"
     },
     {
@@ -268,40 +321,44 @@
       "url": "/inspirations/materials",
       "nav_error": null,
       "italian_leaks": [],
+      "raw_keys": [],
       "missing_tokens": [],
-      "raw_keys": [
-        {
-          "text": "material_view.header.title",
-          "testid": "mv-shell"
-        }
-      ],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
-          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay MaterialViewPage MaterialViewPage"
-        },
-        {
-          "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
         },
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: la materioteca, locale: en-US, page: /inspirations/materials, testid: mv-grid}"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/material-view.jpg"
     },
     {
       "key": "cultural-editions",
       "url": "/workspace/cultural-editions",
       "nav_error": null,
-      "italian_leaks": [],
-      "missing_tokens": [],
+      "italian_leaks": [
+        {
+          "text": "Appartamento Stefano — Geometrie domestiche del quotidiano",
+          "testid": "ce-row-b8cb5030-cfed-4af4-b231-c0846b8bb11d"
+        },
+        {
+          "text": "Appartamento Stefano — Architettura del quotidiano",
+          "testid": "ce-row-62b2cc3a-e981-4eef-9be4-502a8807108b"
+        }
+      ],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
@@ -310,6 +367,27 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: del quotidiano, locale: en-US, page: /workspace/cultural-editions, testid: ce-row-b8cb5030-cfed-4af4-b231-c0846b8bb11d}"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts",
+          "status": 200,
+          "marker_hits": 87,
+          "accent_hits": 9,
+          "body_excerpt": "{\"drafts\":[{\"id\":\"61cd4006-eadd-48ad-9f26-93f8c63f7148\",\"source_type\":\"project\",\"source_id\":\"79d96981-1ef4-4052-ae27-ff1252e00f3c\",\"source_title\":\"Apartment — Stefano\",\"target_market\":\"italy_milano\",\"target_market_label\":\"Italia · Milano\",\"target_locale\":\"it-IT\",\"status\":\"draft\",\"created_at\":\"2026-05-22T00:26:29.482659+00:00\",\"updated_at\":\"2026-05-22T00:26:29.482668+00:00\",\"market_version\":{\"body\":\"L'appartamento Stefano nasce da una riflessione sul vivere contemporaneo: spazi misurati, gesti architettonici precisi, materiali che invecchiano con dignità. Ogni superficie dialoga con la luce naturale attraverso texture sobrie — pietra, legno, metallo brunito. Il progetto non cerca l'effetto, ma la coerenza: ogni elemento costruttivo è pensato per durare, per raccontare il tempo anziché subirlo. Un'architettura d'interni che rispetta il silenzio degli spazi domestici.\",\"lede\":\"A residential intervention in which construction detail becomes compositional grammar. Balance between function and material.\",\"locale\":\"it-IT\",\"headline\":\"Living with Rigor: Stefano's Apartment\",\"cta_label\":\"Fissa una consulenza\",\"cta_subtext\":\"Discuti il tuo progetto residenziale\",\"imagery_notes\":\"Fotografia architettonica frontale, luce zenitale che evidenzia texture, inquadrature geometriche che esaltano giunti e dettagli costruttivi.\",\"cultural_notes\":\"Onorare la tradizione progettuale milanese: rigore compositivo, dettaglio artigiano, rifiuto dell'effimero.\",\"material_notes\":\"Palette cemento spatolat"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts",
+          "status": 200,
+          "marker_hits": 87,
+          "accent_hits": 9,
+          "body_excerpt": "{\"drafts\":[{\"id\":\"61cd4006-eadd-48ad-9f26-93f8c63f7148\",\"source_type\":\"project\",\"source_id\":\"79d96981-1ef4-4052-ae27-ff1252e00f3c\",\"source_title\":\"Apartment — Stefano\",\"target_market\":\"italy_milano\",\"target_market_label\":\"Italia · Milano\",\"target_locale\":\"it-IT\",\"status\":\"draft\",\"created_at\":\"2026-05-22T00:26:29.482659+00:00\",\"updated_at\":\"2026-05-22T00:26:29.482668+00:00\",\"market_version\":{\"body\":\"L'appartamento Stefano nasce da una riflessione sul vivere contemporaneo: spazi misurati, gesti architettonici precisi, materiali che invecchiano con dignità. Ogni superficie dialoga con la luce naturale attraverso texture sobrie — pietra, legno, metallo brunito. Il progetto non cerca l'effetto, ma la coerenza: ogni elemento costruttivo è pensato per durare, per raccontare il tempo anziché subirlo. Un'architettura d'interni che rispetta il silenzio degli spazi domestici.\",\"lede\":\"A residential intervention in which construction detail becomes compositional grammar. Balance between function and material.\",\"locale\":\"it-IT\",\"headline\":\"Living with Rigor: Stefano's Apartment\",\"cta_label\":\"Fissa una consulenza\",\"cta_subtext\":\"Discuti il tuo progetto residenziale\",\"imagery_notes\":\"Fotografia architettonica frontale, luce zenitale che evidenzia texture, inquadrature geometriche che esaltano giunti e dettagli costruttivi.\",\"cultural_notes\":\"Onorare la tradizione progettuale milanese: rigore compositivo, dettaglio artigiano, rifiuto dell'effimero.\",\"material_notes\":\"Palette cemento spatolat"
         }
       ],
       "screenshot": "runtime-localization-screenshots/cultural-editions.jpg"
@@ -319,10 +397,9 @@
       "url": "/editorial/calendar",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
@@ -341,6 +418,8 @@
           "text": "Failed to load resource: the server responded with a status of 500 ()"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/editorial-calendar.jpg"
     },
     {
@@ -348,10 +427,9 @@
       "url": "/editorial/magazine",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
@@ -370,6 +448,8 @@
           "text": "Failed to load resource: the server responded with a status of 500 ()"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/magazine.jpg"
     },
     {
@@ -377,10 +457,9 @@
       "url": "/editorial/publishing",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
@@ -396,7 +475,7 @@
         },
         {
           "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
         },
         {
           "type": "error",
@@ -407,6 +486,8 @@
           "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/publishing.jpg"
     },
     {
@@ -414,10 +495,9 @@
       "url": "/editorial/market",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
@@ -436,6 +516,8 @@
           "text": "Failed to load resource: the server responded with a status of 500 ()"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/market-matrix.jpg"
     },
     {
@@ -443,10 +525,9 @@
       "url": "/editorial/web-presence",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
@@ -465,6 +546,8 @@
           "text": "Failed to load resource: the server responded with a status of 500 ()"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/web-presence.jpg"
     },
     {
@@ -472,68 +555,9 @@
       "url": "/team/studio-identity",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
-      "error_boundary": false,
-      "page_errors": [],
-      "console": [
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 500 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 500 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 500 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 500 ()"
-        }
-      ],
-      "screenshot": "runtime-localization-screenshots/studio-identity.jpg"
-    },
-    {
-      "key": "integrations",
-      "url": "/team/integrations",
-      "nav_error": null,
-      "italian_leaks": [],
       "missing_tokens": [],
-      "raw_keys": [],
       "error_boundary": false,
-      "page_errors": [],
-      "console": [
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 500 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 500 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 500 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 500 ()"
-        }
-      ],
-      "screenshot": "runtime-localization-screenshots/integrations.jpg"
-    },
-    {
-      "key": "insights",
-      "url": "/team/insights",
-      "nav_error": null,
-      "italian_leaks": [],
-      "missing_tokens": [],
-      "raw_keys": [],
-      "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
@@ -556,17 +580,18 @@
           "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
-      "screenshot": "runtime-localization-screenshots/insights.jpg"
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/studio-identity.jpg"
     },
     {
-      "key": "forms",
-      "url": "/forms",
+      "key": "integrations",
+      "url": "/team/integrations",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
         {
           "type": "error",
@@ -583,6 +608,84 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/integrations.jpg"
+    },
+    {
+      "key": "insights",
+      "url": "/team/insights",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/insights.jpg"
+    },
+    {
+      "key": "forms",
+      "url": "/forms",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "status": 200,
+          "marker_hits": 10,
+          "accent_hits": 7,
+          "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"tenant\",\"candidates\":{\"explicit\":null,\"user\":null,\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and cont"
         }
       ],
       "screenshot": "runtime-localization-screenshots/forms.jpg"
@@ -592,12 +695,9 @@
       "url": "/blueprint/studio-voice",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [
-        "t is not a function"
-      ],
       "console": [
         {
           "type": "error",
@@ -608,6 +708,8 @@
           "text": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/studio-voice.jpg"
     },
     {
@@ -615,22 +717,213 @@
       "url": "/blueprint/language",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [
-        "t is not a function"
-      ],
       "console": [
         {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Contatti, locale: en-US, page: /blueprint/language, testid: language-cc-row-admin.advisor_detail.contatti}"
         },
         {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: editoriale, locale: en-US, page: /blueprint/language, testid: language-cc-row-admin.advisor_edit.aree_di_rappresentanza_editoriale_cambi_sono_salva}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: della relazione, locale: en-US, page: /blueprint/language, testid: language-cc-row-admin.advisor_edit.contesto_storia_sensibilita_della_relazione}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: degli Advisor, locale: en-US, page: /blueprint/language, testid: language-cc-row-admin.advisor_network_admin.network_degli_advisor}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: lo stato, locale: en-US, page: /blueprint/language, testid: language-cc-row-admin.platform_capabilities.sincronizzo_lo_stato_attivazioni}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Condividi, locale: en-US, page: /blueprint/language, testid: language-cc-row-advisor.advisor_dashboard.condividi_con_uno_studio_o_showroom_sconto_del}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: la piattaforma, locale: en-US, page: /blueprint/language, testid: language-cc-row-advisor.advisor_dashboard.cosa_li_sta_frenando_dall_usare_la_piattaforma}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: La tua, locale: en-US, page: /blueprint/language, testid: language-cc-row-advisor.advisor_dashboard.la_tua_rete_di_studi_e_showroom_referenti_le_loro}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: il primo, locale: en-US, page: /blueprint/language, testid: language-cc-row-advisor.advisor_dashboard.nessun_report_ancora_crea_il_primo_dopo_una_visita}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: il tuo, locale: en-US, page: /blueprint/language, testid: language-cc-row-advisor.advisor_dashboard.non_hai_ancora_studi_referenti_inizia_condividendo}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: alla dashboard, locale: en-US, page: /blueprint/language, testid: language-cc-row-advisor.advisor_dashboard.torna_alla_dashboard}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: le frasi, locale: en-US, page: /blueprint/language, testid: language-cc-row-blueprint.language.all_phrases_title}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Le tue, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.client_overview.le_tue_moodboard}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: La pagina, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.client_stub_pages.la_pagina_del_tuo_progetto_e_in_preparazione}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: La timeline, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.client_stub_pages.la_timeline_completa_del_progetto_sara_pronta_a_br}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Le prime, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.client_stub_pages.le_prime_proposte_da_approvare_stanno_arrivando}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Aggiungi, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.shared_voice_composer.aggiungi_un_riferimento}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: lo studio, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.shared_voice_composer.una_nota_privata_per_lo_studio_facoltativa}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: gli spazi, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.site_evolution.all_spaces}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Il cantiere, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.site_evolution.il_cantiere_non_e_ancora_iniziato}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: la nota, locale: en-US, page: /blueprint/language, testid: language-cc-row-clientpreview.client_preview.invia_la_nota}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: La stanza, locale: en-US, page: /blueprint/language, testid: language-cc-row-clientpreview.client_preview.la_stanza_non_e_disponibile}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: la tua, locale: en-US, page: /blueprint/language, testid: language-cc-row-clientpreview.client_preview.lasciaci_sentire_la_tua_direzione}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: la stanza, locale: en-US, page: /blueprint/language, testid: language-cc-row-clientpreview.client_preview.sto_preparando_la_stanza}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: la sintesi, locale: en-US, page: /blueprint/language, testid: language-cc-row-closure.ceremony.sub}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: il dossier, locale: en-US, page: /blueprint/language, testid: language-cc-row-closure.ceremony.title}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: il rituale, locale: en-US, page: /blueprint/language, testid: language-cc-row-closure.inline.cta}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: il Journey, locale: en-US, page: /blueprint/language, testid: language-cc-row-closure.inline.sub}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Il percorso, locale: en-US, page: /blueprint/language, testid: language-cc-row-closure.inline.title}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: notifiche, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.coming_soon.conversazioni_client_studio_integrate_allegati_not}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: dello studio, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.coming_soon.feed_attivita_dello_studio}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: le tue, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.coming_soon.nel_frattempo_gestisci_le_tue_collezioni_dal_panne}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: le scadenze, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.coming_soon.nel_frattempo_le_scadenze_attivita_sono_visibili_n}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: la gestione, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.coming_soon.per_ora_la_gestione_utenti_e_in_impostazioni_membr}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: materiali, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.coming_soon.report_esportabili_progetti_fatturato_performance}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Elimina, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.delete}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Modifica, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.edit}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Carica, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.editorial_media_field.carica_file}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: conferma, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.editorial_media_field.conferma}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Conferma, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.editorial_media_field.conferma}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Scegli, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.editorial_media_field.scegli_dalla_library}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: scegli, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.editorial_media_field.trascina_sfoglia_scegli_dalla_library}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: sul dettaglio, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.hotspot.breve_nota_editoriale_sul_dettaglio}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: elimina, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.hotspot.elimina}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Salva, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.hotspot.salva_hotspot}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: il punto, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.image_edit.centra_il_punto_focale}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Il punto, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.image_edit.il_punto_focale_resta_visibile_in_tutti_i_ritagli}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: le maniglie, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.image_edit.trascina_l_area_visibile_usa_le_maniglie_per_regol}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: le superfici, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.media_delete_protection.apri_le_superfici_interessate}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: le relazioni, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.media_delete_protection.carica_un_nuovo_file_tutte_le_relazioni_vengono_mi}"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/language-center.jpg"
     },
     {
@@ -638,11 +931,14 @@
       "url": "/moodboards",
       "nav_error": null,
       "italian_leaks": [],
-      "missing_tokens": [],
       "raw_keys": [],
+      "missing_tokens": [],
       "error_boundary": false,
-      "page_errors": [],
       "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
@@ -652,7 +948,22 @@
           "text": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
+      "page_errors": [],
+      "api_leaks": [],
       "screenshot": "runtime-localization-screenshots/moodboards.jpg"
+    },
+    {
+      "key": "settings-locales",
+      "url": "/settings/locales",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/settings-locales.jpg"
     }
   ]
 }

@@ -376,27 +376,27 @@ def pulse(
         ale_target = _ale_norm(locale)
         if ale_target and ale_target != 'it':
             active_journeys   = _ale_localize_records(active_journeys,
-                                  fields=('title', 'subtitle'),
+                                  fields=('title', 'subtitle', 'last_event.text'),
                                   target_locale=ale_target, tenant_id=tid,
                                   surface='journey_pulse_journey')
             voices_today      = _ale_localize_records(voices_today,
-                                  fields=('text', 'subtitle'),
+                                  fields=('voice_phrase', 'quote', 'milestone'),
                                   target_locale=ale_target, tenant_id=tid,
                                   surface='journey_pulse_voice')
             chapters_waiting  = _ale_localize_records(chapters_waiting,
-                                  fields=('title', 'subtitle'),
+                                  fields=('title', 'subtitle', 'milestone'),
                                   target_locale=ale_target, tenant_id=tid,
                                   surface='journey_pulse_chapter')
             revisions_open    = _ale_localize_records(revisions_open,
-                                  fields=('text', 'subtitle'),
+                                  fields=('text', 'subtitle', 'milestone'),
                                   target_locale=ale_target, tenant_id=tid,
                                   surface='journey_pulse_revision')
             recent_evolutions = _ale_localize_records(recent_evolutions,
-                                  fields=('text', 'subtitle'),
+                                  fields=('text', 'subtitle', 'milestone'),
                                   target_locale=ale_target, tenant_id=tid,
                                   surface='journey_pulse_evolution')
             deduped_actions   = _ale_localize_records(deduped_actions,
-                                  fields=('label', 'subtitle'),
+                                  fields=('suggestion', 'label', 'milestone'),
                                   target_locale=ale_target, tenant_id=tid,
                                   surface='journey_pulse_action')
     except Exception as e:
