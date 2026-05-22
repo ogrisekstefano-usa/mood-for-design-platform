@@ -407,6 +407,10 @@ function App() {
                   <Route path="/blueprint/voice" element={<StudioAdminRoute><BrandVoiceAdaptersPage /></StudioAdminRoute>} />
                   <Route path="/blueprint/studio-voice" element={<StudioAdminRoute><StudioVoicePage /></StudioAdminRoute>} />
                   <Route path="/blueprint/language" element={<StudioAdminRoute><LanguageCommandCenter /></StudioAdminRoute>} />
+                  {/* ITER133 · /admin aliases for the Language Command Center (Heatmap tab pre-selected). */}
+                  <Route path="/admin/language" element={<StudioAdminRoute><LanguageCommandCenter /></StudioAdminRoute>} />
+                  <Route path="/admin/language/heatmap" element={<StudioAdminRoute><LanguageCommandCenter initialTab="heatmap" /></StudioAdminRoute>} />
+                  <Route path="/admin/language/:tab" element={<StudioAdminRoute><LanguageCommandCenter /></StudioAdminRoute>} />
 
                   {/* CRM routes (tab + optional account_id deep-link) */}
                   <Route path="/crm" element={<Navigate to="/crm/accounts" replace />} />

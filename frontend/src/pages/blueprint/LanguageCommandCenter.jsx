@@ -15,10 +15,13 @@
  *   /blueprint/studio-voice).
  */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Loader2, Search, Save, RotateCcw, AlertTriangle } from 'lucide-react';
+import { useParams, Link } from 'react-router-dom';
+import { Loader2, Search, Save, RotateCcw, AlertTriangle, ArrowUpRight } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
 import { useT } from '../../i18n/useT';
+import RuntimeHeatmapPanel from './language/RuntimeHeatmapPanel';
+import LeakInspectorTable from './language/LeakInspectorTable';
 
 const LOCALES = ['it-IT', 'en-US', 'en-GB', 'fr-FR', 'de-DE', 'es-ES', 'ar'];
 const SURFACES = [
@@ -49,17 +52,24 @@ const Section = ({ eyebrow, title, lede, children, testid }) => (
   </section>
 );
 
-const LanguageCommandCenter = () => {
+const LanguageCommandCenter = ({ initialTab = 'registry' }) => {
   const { t } = useT();
+  const { tab: tabParam } = useParams();
   const [surface, setSurface]   = useState('All');
   const [search, setSearch]     = useState('');
   const [missingOnly, setMissingOnly] = useState(false);
   const [locale, setLocale]     = useState('en-US');
   const [items, setItems]       = useState([]);
   const [loading, setLoading]   = useState(true);
-  const [tab, setTab]           = useState('registry');
+  const [tab, setTab]           = useState(tabParam || initialTab);
   const [leaks, setLeaks]       = useState({ items: [], scanned_at: null, run_id: null });
   const [audit, setAudit]       = useState(null);
+
+  // Keep the active tab in sync with the URL param (`/admin/language/:tab`).
+  useEffect(() => {
+    if (tabParam && tabParam !== tab) setTab(tabParam);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tabParam]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -119,15 +129,20 @@ const LanguageCommandCenter = () => {
         </div>
       </header>
 
-      {/* Tabs */}
-      <div className="flex gap-6 mb-10 border-b border-[var(--mood-border, rgba(255,255,255,0.06))]">
+      {/* Tabs · ITER133 includes Runtime Heatmap + Leak Inspector + cross-links */}
+      <div className="flex gap-6 mb-10 border-b border-[var(--mood-border, rgba(255,255,255,0.06))] overflow-x-auto">
         {[
-          ['registry', 'UI Copy Registry'],
+          ['registry', 'UI Copy Registry™'],
+          ['heatmap',  'Runtime Heatmap™'],
+          ['leaks',    'Leak Inspector™'],
           ['leakage',  `Missing & Leakage (${(leaks.items||[]).length})`],
+          ['editorial','Editorial Translation Studio™'],
+          ['voice',    'Studio Voice™'],
+          ['taxonomy', 'Taxonomy & Narrative™'],
         ].map(([id, label]) => (
           <button key={id} type="button" onClick={() => setTab(id)}
             data-testid={`language-cc-tab-${id}`}
-            className={`px-1 py-3 text-[11px] uppercase tracking-[0.24em] font-mono border-b-2 transition-colors
+            className={`px-1 py-3 text-[11px] uppercase tracking-[0.24em] font-mono border-b-2 transition-colors whitespace-nowrap
               ${tab === id
                 ? 'border-[var(--mood-accent, #d9b285)] text-[var(--mood-accent, #d9b285)]'
                 : 'border-transparent text-[var(--mood-text-muted, rgba(240,235,224,0.55))] hover:text-[var(--mood-text, #f0ebe0)]'}`}>
@@ -135,6 +150,54 @@ const LanguageCommandCenter = () => {
           </button>
         ))}
       </div>
+
+      {tab === 'heatmap' && <RuntimeHeatmapPanel />}
+
+      {tab === 'leaks' && (
+        <Section
+          eyebrow="04 · Leak Inspector™"
+          title="Every signal, every state"
+          lede="Searchable ledger of every leak observed by the autonomous runtime crawler. Filter by classification, search across text · page · testid, inspect remediation history."
+          testid="language-cc-leak-inspector-section"
+        >
+          <LeakInspectorTable />
+        </Section>
+      )}
+
+      {tab === 'editorial' && (
+        <CrossLinkSection
+          eyebrow="05 · Editorial Translation Studio™"
+          title="ALE Translation Memory · Review queue"
+          lede="Studio-grade review surface for every AI-generated translation stored by the Editorial Translation Layer. Lock, refine, version. Already lives at the existing endpoint set — full UI extraction queued for a follow-on sprint."
+          actionHref="#"
+          actionLabel="Coming next"
+          disabled
+          testid="language-cc-editorial-section"
+        />
+      )}
+
+      {tab === 'voice' && (
+        <CrossLinkSection
+          eyebrow="06 · Studio Voice™"
+          title="Editorial language identity"
+          lede="Language DNA · preferred vocabulary · translation memory inspector — the editorial atelier where the studio shapes its international voice. Opens in its dedicated workspace."
+          actionHref="/blueprint/studio-voice"
+          actionLabel="Open Studio Voice"
+          testid="language-cc-voice-section"
+        />
+      )}
+
+      {tab === 'taxonomy' && (
+        <CrossLinkSection
+          eyebrow="07 · Taxonomy & Narrative™"
+          title="Journey lifecycle · milestone vocabulary"
+          lede="The editorial taxonomy registry (`backend/taxonomy/`) governs the soft narrative labels for lifecycle states, milestones, CRM stages and companion states across every locale. Per-key inline editor planned for the next iteration."
+          actionHref="#"
+          actionLabel="Coming next"
+          disabled
+          testid="language-cc-taxonomy-section"
+        />
+      )}
 
       {tab === 'registry' && (
         <Section
@@ -348,3 +411,30 @@ const RegistryRow = ({ item, locale, onChanged }) => {
 };
 
 export default LanguageCommandCenter;
+
+// ───────── Cross-link section (Studio Voice · Editorial TS · Taxonomy) ─────────
+const CrossLinkSection = ({ eyebrow, title, lede, actionHref, actionLabel, disabled, testid }) => (
+  <section data-testid={testid} className="mb-14">
+    <div className="mb-7">
+      <p className="text-[10px] uppercase tracking-[0.32em] text-[var(--mood-accent, #d9b285)] mb-2">{eyebrow}</p>
+      <h2 className="font-heading text-[28px] leading-[1.15] text-[var(--mood-text, #f0ebe0)] tracking-[-0.005em] mb-2">{title}</h2>
+      {lede && <p className="text-[13px] leading-[1.7] text-[var(--mood-text-muted, rgba(240,235,224,0.65))] font-body max-w-[68ch]">{lede}</p>}
+    </div>
+    {disabled ? (
+      <span
+        data-testid={`${testid}-disabled-cta`}
+        className="inline-flex items-center gap-2 px-5 py-3 border border-[var(--mood-border, rgba(255,255,255,0.05))] text-[10.5px] uppercase tracking-[0.22em] font-mono text-[var(--mood-text-faint, rgba(240,235,224,0.4))]"
+      >
+        <ArrowUpRight size={12} strokeWidth={1.6} /> {actionLabel}
+      </span>
+    ) : (
+      <Link
+        to={actionHref}
+        data-testid={`${testid}-cta`}
+        className="inline-flex items-center gap-2 px-5 py-3 border border-[var(--mood-accent, #d9b285)] text-[10.5px] uppercase tracking-[0.22em] font-mono text-[var(--mood-accent, #d9b285)] hover:bg-[var(--mood-accent-soft, rgba(217,178,133,0.06))]"
+      >
+        <ArrowUpRight size={12} strokeWidth={1.6} /> {actionLabel}
+      </Link>
+    )}
+  </section>
+);

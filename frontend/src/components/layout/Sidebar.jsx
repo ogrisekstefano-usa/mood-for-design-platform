@@ -293,6 +293,10 @@ const Sidebar = () => {
               <NavItem to="/settings/brand"             icon="Palette" label={t('nav.studio_identity', null, 'Studio Identity')}   collapsed={collapsed}
                        testid="sidebar-nav-studio-identity" hasMark />
               <NavItem to="/blueprint/forms-journeys"   icon="Sparkle" label={t('nav.forms_journeys', null, 'Forms & Journeys')}  collapsed={collapsed} />
+              <NavItem to="/blueprint/studio-voice"     icon="Mic2"    label={t('nav.studio_voice', null, 'Studio Voice')}        collapsed={collapsed}
+                       testid="sidebar-nav-studio-voice" />
+              <NavItem to="/admin/language/heatmap"     icon="Languages" label={t('nav.language_command_center', null, 'Language Command Center')} collapsed={collapsed}
+                       testid="sidebar-nav-language-cc" />
               <NavItem to="/settings/integrations"      icon="Plug"    label={t('nav.integrations', null, 'Integrations')}      collapsed={collapsed} />
               <NavItem to="/settings/plan"              icon="Receipt" label={t('nav.billing', null, 'Billing')}           collapsed={collapsed} />
               <NavItem to="/settings"                   icon="Settings" label={t('nav.settings', null, 'Settings')}  end    collapsed={collapsed} />
