@@ -25,7 +25,66 @@
       "hours_ago": "hace {n} h",
       "days_ago": "hace {n} días"
     },
-    "workspace": "Workspace"
+    "workspace": "Workspace",
+    "brand_mode": {
+      "aggiungi_produttore": "Incorporar artesano"
+    },
+    "coming_soon": {
+      "conversazioni_client_studio_integrate_allegati_not": "Conversaciones con el cliente integradas en el atelier, documentos adjuntos, avisos en tiempo real",
+      "cronologia_completa_di_ogni_azione_cliente_designe": "Relato cronológico de cada gesto del cliente, del atelier y del sistema",
+      "feed_attivita_dello_studio": "Relato de la actividad del atelier",
+      "nel_frattempo_gestisci_le_tue_collezioni_dal_panne": "Mientras tanto, organice sus colecciones desde el panel izquierdo del Archivo",
+      "nel_frattempo_le_scadenze_attivita_sono_visibili_n": "Mientras tanto, las fechas de entrega están presentes en el Panel y en cada página de proyecto.",
+      "per_ora_la_gestione_utenti_e_in_impostazioni_membr": "Por ahora, la gestión de miembros reside en Configuración → Miembros.",
+      "report_esportabili_progetti_fatturato_performance": "Informes exportables: proyectos, facturación, rendimiento del atelier, materias más empleadas",
+      "una_vista_a_se_per_le_tue_raccolte_curate_di_asset": "Una vista propia para sus colecciones de materiales. Por ahora, las colecciones habitan en el Archivo."
+    },
+    "editorial_media_field": {
+      "aggiungi_media": "Añadir material visual",
+      "annulla": "Dejar sin cambios",
+      "carica_file": "Incorpore su archivo",
+      "carica_nuovo_file": "Añadir nueva pieza visual",
+      "conferma": "Confirmar la selección",
+      "nessun_altro_luogo_asset_orfano": "Sin contexto · material sin asignar",
+      "scegli_dalla_library": "Explore su archivo visual",
+      "scegli_o_carica_un_immagine": "Elija una imagen o suba la suya",
+      "trascina_sfoglia_scegli_dalla_library": "Arrastre · explore · elija de su archivo"
+    },
+    "hotspot": {
+      "breve_nota_editoriale_sul_dettaglio": "Una breve reflexión editorial sobre el detalle",
+      "elimina": "Retirar",
+      "material": "materia ·"
+    },
+    "image_edit": {
+      "centra_il_punto_focale": "Ajuste la mirada principal de la imagen",
+      "chiudi": "Cerrar imagen",
+      "il_punto_focale_resta_visibile_in_tutti_i_ritagli": "El foco permanece visible en todos los encuadres — hero, móvil, tarjeta.",
+      "modifica_immagine_continuita_editoriale": "Editar imagen · coherencia narrativa",
+      "trascina_l_area_visibile_usa_le_maniglie_per_regol": "Desplace el encuadre con el gesto · ajuste la presencia desde los controles"
+    },
+    "media_delete_protection": {
+      "apri_le_superfici_interessate": "Acceda a las superficies vinculadas",
+      "carica_un_nuovo_file_tutte_le_relazioni_vengono_mi": "Incorpore un archivo nuevo. Todas las relaciones se trasladan de forma automática al nuevo material. La versión anterior permanece en el historial de versiones.",
+      "chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp": "Cierre este panel y abra la pestaña Usage del Inspector para explorar cada relación con calma",
+      "il_dam_ragiona_come_un_editorial_relationships_gra": "El DAM funciona como un relato de vínculos editoriales, no como un archivo de carpetas. Cada supresión deja huella en las superficies públicas.",
+      "l_asset_viene_archiviato_non_piu_visibile_nella_li": "El archivo se retira de la vista (ya no aparece en tu biblioteca), pero conserva su presencia activa. El público seguirá viendo esta imagen hasta que decidas sustituirla.",
+      "questo_asset_e_utilizzato_in": "Este elemento forma parte de",
+      "rimuoverlo_senza_sostituirlo_lascera_spazi_vuoti_s": "Retirarlo sin sustituirlo dejará vacíos en las superficies públicas. Elija un gesto consciente.",
+      "scegli_su_quali_superfici_aggiornare_l_asset_e_qua": "Defina en qué espacios desea renovar la imagen y cuáles mantener intactos. Ideal para ensayos visuales según territorio."
+    },
+    "mvp_lite": {
+      "il_feed_attivita_vive_nella_dashboard": "El pulso de su atelier vive en el espacio central",
+      "le_collezioni_vivono_nell_archivio": "Las colecciones viven en el archivo del atelier.",
+      "le_conversazioni_vivono_sul_progetto": "Las conversaciones habitan en el proyecto.",
+      "le_scadenze_sono_sul_progetto": "Las fechas viven dentro del proyecto"
+    },
+    "palette_switcher": {
+      "apri_studio_identity_personalizza": "Abra Studio Identity™ · personalice su mirada",
+      "atelier_dei_temi": "Taller de atmósferas",
+      "chiudi": "Cerrar esta vista",
+      "imposta_colori_tipografia_e_radius_del_tuo_studio": "Defina el color, la tipografía y los radios visuales de su atelier.",
+      "preset_editoriali": "Paletas editoriales"
+    }
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -442,6 +501,130 @@
       "loading_registry": "Cargando registro",
       "no_matches": "Ninguna clave coincide con tus filtros.",
       "all_phrases_title": "Todas las frases del Blueprint"
+    }
+  },
+  "ClientPreviewPage": {
+    "jsx": {
+      "client_preview": {
+        "annulla": "Volver al atelier",
+        "chiudi": "Cerrar vista previa",
+        "cosa_ti_emoziona_di_questa_direzione_cosa_vorresti": "¿Qué le conmueve de esta mirada? ¿Qué aspectos desearía explorar con mayor profundidad?",
+        "il_tuo_nome_opzionale": "Su nombre (si desea compartirlo)",
+        "il_tuo_studio": "Tu atelier:",
+        "lo_studio_potrebbe_averla_aggiornata_chiedi_un_nuo": "Es posible que el atelier haya actualizado esta vista. Solicite un nuevo enlace para recuperar el acceso."
+      }
+    }
+  },
+  "admin": {
+    "advisor_detail": {
+      "contatti": "Conversación y contacto"
+    },
+    "advisor_edit": {
+      "annulla": "Omitir cambios",
+      "aree_di_rappresentanza_editoriale_cambi_sono_salva": "Territorios de presencia editorial. Cada gesto se guarda al instante.",
+      "chiudi": "Cerrar esta ventana",
+      "contesto_storia_sensibilita_della_relazione": "Contexto, trayectoria, sensibilidad del vínculo…",
+      "economia_della_relazione": "Economía del vínculo",
+      "es_consigliere_architettura_partner_editoriale": "p. ej. consejero · arquitectura · colaborador editorial",
+      "identita_contatti": "Identidad & presencia del atelier",
+      "specializzazione_lettura_della_relazione": "Especialización y lectura del vínculo entre espacio y cliente"
+    },
+    "advisor_network_admin": {
+      "annulla": "Volver al origen",
+      "crea_advisor": "Incorporar un nuevo atelier",
+      "network_degli_advisor": "Red de Asesores del Atelier"
+    },
+    "platform_capabilities": {
+      "sincronizzo_lo_stato_attivazioni": "Sincronizando el estado de sus activaciones…"
+    }
+  },
+  "advisor": {
+    "advisor_dashboard": {
+      "annulla": "Volver atrás",
+      "condividi_con_uno_studio_o_showroom_sconto_del": "Comparta con su atelier o sala de exposición · descuento del",
+      "cosa_li_sta_frenando_dall_usare_la_piattaforma": "Qué les impide entrar en el atelier digital",
+      "il_tuo_account_non_e_collegato_a_un_profilo_adviso": "Tu cuenta no está vinculada a un perfil Advisor. Si eres partner territorial y consideras que esto es un error, te invitamos a contactar al equipo MOOD para activar tu acceso.",
+      "la_tua_rete_di_studi_e_showroom_referenti_le_loro": "Tu red de ateliers y espacios de referencia, su actividad reciente y las notas de acompañamiento",
+      "nessun_report_ancora_crea_il_primo_dopo_una_visita": "Aún no hay informes. Cree el primero tras una visita o conversación con el atelier.",
+      "nessuno_specifico": "— Sin definir —",
+      "non_hai_ancora_studi_referenti_inizia_condividendo": "Aún no hay ateliers referidos. Comparta su enlace para abrir esta red de oficios",
+      "quest_area_e_riservata_agli_advisor_di_mood": "Este espacio está dedicado a los Advisors de MOOD",
+      "torna_alla_dashboard": "Volver al atelier"
+    }
+  },
+  "ai": {
+    "aisuggestion": {
+      "editorial_ai_suggestion": "Sugerencia editorial del atelier digital"
+    }
+  },
+  "client": {
+    "client_dashboard_layout": {
+      "apri_menu": "Abrir menú del atelier",
+      "chiudi_menu": "Cerrar esta navegación",
+      "il_tuo_percorso_progettuale_ti_aspetta": "Su relato creativo le espera en el atelier"
+    },
+    "client_messages": {
+      "caricamento_conversazione": "Recuperando el relato de la conversación"
+    },
+    "client_overview": {
+      "le_tue_moodboard": "Sus tableros de atmósfera"
+    },
+    "client_stub_pages": {
+      "la_pagina_del_tuo_progetto_e_in_preparazione": "La página de su proyecto está tomando forma",
+      "la_timeline_completa_del_progetto_sara_pronta_a_br": "El relato completo del proyecto estará disponible en unos días",
+      "le_prime_proposte_da_approvare_stanno_arrivando": "Las primeras propuestas esperan su mirada para tomar forma.",
+      "le_tue_moodboard_arriveranno_qui": "Aquí encontrará sus tableros de inspiración",
+      "un_filo_diretto_con_il_tuo_studio": "Una conversación directa con su atelier"
+    },
+    "shared_voice_composer": {
+      "aggiungi_un_riferimento": "Incorpore una referencia visual",
+      "aggiungi_una_nota": "Añada un apunte al relato",
+      "annulla": "Retirar",
+      "chiudi": "Cerrar el espacio de trabajo",
+      "condividi_una_atmosfera": "Comparta una atmósfera",
+      "condividi_una_voce": "Comparta su relato visual",
+      "una_nota_privata_per_lo_studio_facoltativa": "Una anotación privada para su atelier (opcional)",
+      "una_sensazione_un_dettaglio_che_senti_piu_vicino_u": "Un gesto, una materia que reconoce como propia, una atmósfera que desea integrar en su atelier.",
+      "url_di_un_immagine_che_racconta_l_atmosfera": "URL de una imagen que capture la atmósfera del atelier"
+    },
+    "site_evolution": {
+      "all_spaces": "Cada rincón del atelier",
+      "il_cantiere_non_e_ancora_iniziato": "El atelier aún no ha comenzado a tomar forma"
+    }
+  },
+  "clientpreview": {
+    "client_preview": {
+      "aggiungi_una_nota": "Añada una anotación de atelier",
+      "approvo_questa_direzione": "Apruebo esta dirección creativa",
+      "invia_la_nota": "Comparta su mirada",
+      "la_stanza_non_e_disponibile": "Este espacio aún no está listo para mostrarse",
+      "lasciaci_sentire_la_tua_direzione": "Déjenos sentir su mirada creativa",
+      "questa_direzione_e_ancora_in_fase_di_curatela": "Esta sección está aún en proceso de curaduría",
+      "questa_direzione_non_e_piu_attiva": "Este espacio ya no está en activo",
+      "sto_preparando_la_stanza": "Preparando el espacio para usted",
+      "verifica_con_lo_studio_il_link_ricevuto": "Confirme con el atelier el enlace compartido"
+    }
+  },
+  "crm": {
+    "account_constellation": {
+      "apri_il_journey": "Abra su relato de marca",
+      "apri_una_conversazione_progettuale_per_cominciare": "Inicie un diálogo creativo para dar forma a su proyecto",
+      "le_persone_della_relazione": "Las personas que habitan la relación",
+      "nessun_journey_aperto_con_questa_relazione": "Ningún relato abierto con esta relación.",
+      "segnali_del_viaggio": "Huellas de la relación",
+      "sezione_dominante": "Relación principal",
+      "sto_leggendo_la_costellazione_relazionale": "Estamos trazando el mapa de vínculos y presencias…"
+    },
+    "account_detail": {
+      "aggiungi_contact": "Sumar una nueva presencia",
+      "annulla": "Dejar sin cambios",
+      "caricamento": "Preparando la mirada…",
+      "chiudi": "Cerrar esta vista",
+      "collegate_a_questo_account_i_membri_del_team_appar": "vinculadas a esta Cuenta. Los miembros del equipo pertenecen a la sección",
+      "files_allegati_arriva_con_il_media_library_inspect": "Los archivos adjuntos se integran ahora con el inspector de la Biblioteca de Medios",
+      "la_memoria_della_relazione_e_ancora_bianca": "La memoria de esta relación aún está por escribirse.",
+      "linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb": "Los tableros de atmósfera creados por su equipo ahora tienen espacio propio en P1. Visibles en",
+      "materiali_preferiti": "Materias que definen su identidad"
     }
   }
 }

@@ -25,7 +25,67 @@
       "hours_ago": "قبل {n} ساعة",
       "days_ago": "قبل {n} أيام"
     },
-    "workspace": "Workspace"
+    "workspace": "Workspace",
+    "brand_mode": {
+      "aggiungi_produttore": "إضافة دار حِرَفية"
+    },
+    "coming_soon": {
+      "conversazioni_client_studio_integrate_allegati_not": "حوارات مباشرة بين العميل والورشة، مرفقات، وتنبيهات حية",
+      "cronologia_completa_di_ogni_azione_cliente_designe": "سجلّ كامل لكلّ حركة من العميل والمصمّم والنظام، محفوظة بدقّة الورشة",
+      "feed_attivita_dello_studio": "سرد حضور الورشة",
+      "nel_frattempo_gestisci_le_tue_collezioni_dal_panne": "حتى ذلك الحين، دبّر مجموعاتك من اللوحة اليمنى للأرشيف",
+      "nel_frattempo_le_scadenze_attivita_sono_visibili_n": "في هذه الأثناء، تظهر مواعيد المهام في لوحة العمل وصفحات المشاريع بوضوح تام",
+      "per_ora_la_gestione_utenti_e_in_impostazioni_membr": "في هذه المرحلة، يُدار حضور الأعضاء من الإعدادات ← الأعضاء",
+      "report_esportabili_progetti_fatturato_performance": "تقارير قابلة للتصدير: المشاريع، الإيرادات، أداء الورشة، المواد الأكثر حضورًا",
+      "una_vista_a_se_per_le_tue_raccolte_curate_di_asset": "فضاء مُخصَّص لمجموعاتك المُنتقاة من المواد. تسكن المجموعات حالياً في الأرشيف"
+    },
+    "editorial_media_field": {
+      "aggiungi_media": "+ إضافة حضور مرئي",
+      "annulla": "إلغاء الإجراء",
+      "carica_file": "إضافة مادة بصرية",
+      "carica_nuovo_file": "إضافة ملف جديد",
+      "conferma": "تثبيت الحضور",
+      "nessun_altro_luogo_asset_orfano": "لا مرجع بصري · عنصر غير مرتبط",
+      "scegli_dalla_library": "اختر من مكتبة المواد",
+      "scegli_o_carica_un_immagine": "اختر صورة أو ارفعها من الورشة",
+      "trascina_sfoglia_scegli_dalla_library": "اسحب · تصفّح · اختر من الأرشيف"
+    },
+    "hotspot": {
+      "annulla": "إلغاء الأثر",
+      "breve_nota_editoriale_sul_dettaglio": "ملاحظة موجزة حول حضور التفصيل",
+      "elimina": "إزالة الأثر"
+    },
+    "image_edit": {
+      "annulla": "تراجع",
+      "centra_il_punto_focale": "ضبط بؤرة الحضور",
+      "chiudi": "إغلاق",
+      "il_punto_focale_resta_visibile_in_tutti_i_ritagli": "النقطة المحورية تحافظ على حضورها في جميع الإطارات — hero، mobile، card.",
+      "modifica_immagine_continuita_editoriale": "تحرير الصورة · تواصل السرد البصري",
+      "trascina_l_area_visibile_usa_le_maniglie_per_regol": "حرّك المساحة المرئية · اضبط الإطار بالمقابض"
+    },
+    "media_delete_protection": {
+      "apri_le_superfici_interessate": "اكشف السطوح المعنيّة",
+      "carica_un_nuovo_file_tutte_le_relazioni_vengono_mi": "حمّل ملفًا جديدًا؛ تنتقل جميع العلاقات تلقائيًا إلى الأصل الجديد، بينما تُحفظ النسخة السابقة ضمن سلسلة الذاكرة",
+      "chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp": "أغلق هذه اللوحة وافتح تبويب Usage في المُراقِب لتتبّع كل علاقة بحضورها المادي",
+      "il_dam_ragiona_come_un_editorial_relationships_gra": "يعمل DAM كشبكة علاقات سردية، لا كنظام ملفات. كل إزالة تترك أثرًا على الحضور العام.",
+      "l_asset_viene_archiviato_non_piu_visibile_nella_li": "يُحفظ الأثر في الذاكرة (يغيب عن المكتبة) بينما تبقى علاقاته حاضرة، ويستمر الجمهور في رؤية هذه الصورة حتى تستبدلها بأخرى",
+      "questo_asset_e_utilizzato_in": "هذا الأثر حاضر ضمن",
+      "rimuoverlo_senza_sostituirlo_lascera_spazi_vuoti_s": "غيابه من الفضاء العام يترك فراغًا في السرد البصري. اختر بوعي الأثر الذي تتركه.",
+      "scegli_su_quali_superfici_aggiornare_l_asset_e_qua": "حدّد المساحات التي ترغب في تحديث الأصل البصري عليها، وتلك التي تحتفظ بحضورها الحالي. مفيد لاختبار الصور بحسب السوق."
+    },
+    "mvp_lite": {
+      "il_feed_attivita_vive_nella_dashboard": "يسكن سجل الحضور في لوحة العمل",
+      "le_collezioni_vivono_nell_archivio": "المجموعات تسكن الأرشيف بكامل حضورها.",
+      "le_conversazioni_vivono_sul_progetto": "الحوارات تتجذّر في المشروع وتحيا به",
+      "le_scadenze_sono_sul_progetto": "المواعيد مُثبّتة ضمن المشروع"
+    },
+    "palette_switcher": {
+      "apri_studio_identity_personalizza": "افتح Studio Identity™ · صِغ حضورك",
+      "atelier_dei_temi": "ورشة السرديات البصرية",
+      "chiudi": "إغلاق",
+      "imposta_colori_tipografia_e_radius_del_tuo_studio": "حدّد لوحة الألوان والطباعة والزوايا التي تعكس حضور ورشتك",
+      "preset_editoriali": "الإعدادات المحفوظة للورشة"
+    }
   },
   "relationships": {
     "eyebrow": "نظام العلاقات",
@@ -448,6 +508,130 @@
       "loading_registry": "تحميل السجل",
       "no_matches": "لا توجد مفاتيح تطابق التصفيات.",
       "all_phrases_title": "كل عبارات Blueprint"
+    }
+  },
+  "ClientPreviewPage": {
+    "jsx": {
+      "client_preview": {
+        "annulla": "إلغاء الحضور",
+        "chiudi": "إغلاق المشهد",
+        "cosa_ti_emoziona_di_questa_direzione_cosa_vorresti": "ما الذي يشدّك في هذا المسار، وأين تودّ أن تعمّق حضورك؟",
+        "il_tuo_nome_opzionale": "اسمك إن شئت إضافته",
+        "il_tuo_studio": "ورشتك الخاصة:",
+        "lo_studio_potrebbe_averla_aggiornata_chiedi_un_nuo": "قد يكون المسار قد تغيّر في الورشة، اطلب رابطًا جديدًا لاستعادة الحضور"
+      }
+    }
+  },
+  "admin": {
+    "advisor_detail": {
+      "contatti": "طرق الحضور والتواصل"
+    },
+    "advisor_edit": {
+      "annulla": "تراجع عن التحرير",
+      "aree_di_rappresentanza_editoriale_cambi_sono_salva": "مناطق الحضور التحريري للورشة. كلّ تعديل يُحفظ في لحظته",
+      "chiudi": "إغلاق الورشة",
+      "contesto_storia_sensibilita_della_relazione": "السياق، السرد، حساسية الحضور المشترك…",
+      "economia_della_relazione": "اقتصاد الحضور والأثر",
+      "es_consigliere_architettura_partner_editoriale": "مثلاً: مستشار · الهندسة المعمارية · شريك السرد",
+      "identita_contatti": "الهوية ومسارات التواصل",
+      "specializzazione_lettura_della_relazione": "التخصص وقراءة حوار المادة"
+    },
+    "advisor_network_admin": {
+      "annulla": "إلغاء الحركة",
+      "crea_advisor": "إنشاء مستشار الورشة",
+      "network_degli_advisor": "منظومة المستشارين الحِرَفيّين"
+    },
+    "platform_capabilities": {
+      "sincronizzo_lo_stato_attivazioni": "جارٍ مواءمة حالة التفعيلات في الورشة…"
+    }
+  },
+  "advisor": {
+    "advisor_dashboard": {
+      "annulla": "إلغاء الحضور",
+      "condividi_con_uno_studio_o_showroom_sconto_del": "شارك مع ورشة أو صالة عرض · تخفيض بقيمة",
+      "cosa_li_sta_frenando_dall_usare_la_piattaforma": "ما الذي يحول دون حضورهم الكامل في الورشة الرقمية",
+      "il_tuo_account_non_e_collegato_a_un_profilo_adviso": "حسابك لا يحمل صفة Advisor بعد. إن كنت شريكًا إقليميًا وترى في هذا خطأً، تواصل مع فريق MOOD لتفعيل حضورك في الورشة.",
+      "la_tua_rete_di_studi_e_showroom_referenti_le_loro": "شبكة الورش والأجنحة المرافقة، حضورها الأخير وملاحظات الدعم المرفقة",
+      "nessun_report_ancora_crea_il_primo_dopo_una_visita": "لم يُدوَّن أي سرد بعد. ابدأ الأول بعد زيارة الورشة أو محادثة مع Studio",
+      "nessuno_specifico": "— دون تحديد مسبق —",
+      "non_hai_ancora_studi_referenti_inizia_condividendo": "لم تستضف بعد ورشات أخرى في شبكة الإحالة. ابدأ بمشاركة رابطك الخاص",
+      "quest_area_e_riservata_agli_advisor_di_mood": "هذا الفضاء مُعدّ حصرياً لمستشاري MOOD المعتمدين",
+      "torna_alla_dashboard": "العودة إلى مساحة التوجيه"
+    }
+  },
+  "ai": {
+    "aisuggestion": {
+      "editorial_ai_suggestion": "اقتراح ذكي لسرد المادة"
+    }
+  },
+  "client": {
+    "client_dashboard_layout": {
+      "apri_menu": "استدعاء القائمة",
+      "chiudi_menu": "إغلاق الفهرس",
+      "il_tuo_percorso_progettuale_ti_aspetta": "رحلتك في عالم التصميم تنتظر حضورك"
+    },
+    "client_messages": {
+      "caricamento_conversazione": "تحميل الحوار المحفوظ"
+    },
+    "client_overview": {
+      "le_tue_moodboard": "لوحات الحضور المادي لديك"
+    },
+    "client_stub_pages": {
+      "la_pagina_del_tuo_progetto_e_in_preparazione": "جاري إعداد صفحة مشروعك بعناية فائقة",
+      "la_timeline_completa_del_progetto_sara_pronta_a_br": "سيكتمل السرد الزمني للمشروع في وقت قريب",
+      "le_prime_proposte_da_approvare_stanno_arrivando": "تبدأ المقترحات الأولى بالوصول إلى الورشة في انتظار موافقتك",
+      "le_tue_moodboard_arriveranno_qui": "ستتجلى لوحاتك هنا في حضورها الكامل",
+      "un_filo_diretto_con_il_tuo_studio": "حضورٌ مباشر مع فضاء Studio الخاص بك"
+    },
+    "shared_voice_composer": {
+      "aggiungi_un_riferimento": "أضِف مرجعًا للذاكرة",
+      "aggiungi_una_nota": "أضِف أثرًا مكتوبًا",
+      "annulla": "إلغاء الأثر",
+      "chiudi": "إغلاق الورشة",
+      "condividi_una_atmosfera": "شارك حضور المكان",
+      "condividi_una_voce": "شارك صوتًا من الورشة",
+      "una_nota_privata_per_lo_studio_facoltativa": "ملاحظة خاصة بالورشة (اختيارية)",
+      "una_sensazione_un_dettaglio_che_senti_piu_vicino_u": "حضور تشعر بثقله، تفصيل يسكن الورشة، أثر تريد أن يعيش في Studio الخاص بك",
+      "url_di_un_immagine_che_racconta_l_atmosfera": "رابط صورة تجسّد روح المكان وحضوره المادي"
+    },
+    "site_evolution": {
+      "all_spaces": "كامل الأروقة والورش",
+      "il_cantiere_non_e_ancora_iniziato": "لم تبدأ الورشة حضورها بعد"
+    }
+  },
+  "clientpreview": {
+    "client_preview": {
+      "aggiungi_una_nota": "أضف أثرًا مكتوبًا",
+      "approvo_questa_direzione": "أوافق على هذا التوجّه المادي",
+      "invia_la_nota": "إرسال الملاحظة إلى الورشة",
+      "la_stanza_non_e_disponibile": "هذا الفضاء غير متاح للحضور",
+      "lasciaci_sentire_la_tua_direzione": "دعنا نستشعر وجهتك الإبداعية",
+      "questa_direzione_e_ancora_in_fase_di_curatela": "هذا المسار لا يزال قيد الإعداد والتنسيق",
+      "questa_direzione_non_e_piu_attiva": "لم يعد لهذا المسار حضور في السجل",
+      "sto_preparando_la_stanza": "جارٍ تهيئة الفضاء…",
+      "verifica_con_lo_studio_il_link_ricevuto": "تحقّق من الرابط المُرسَل مع فريق الورشة"
+    }
+  },
+  "crm": {
+    "account_constellation": {
+      "apri_il_journey": "ادخل إلى فضاء السرد",
+      "apri_una_conversazione_progettuale_per_cominciare": "ابدأ حواراً حول المادة والحضور لتشكيل الأثر المشترك",
+      "le_persone_della_relazione": "حضور العلاقة وأصحابها",
+      "nessun_journey_aperto_con_questa_relazione": "لا سرد مفتوح مع هذا الحضور بعد",
+      "segnali_del_viaggio": "آثار المسار",
+      "sezione_dominante": "المحور الأبرز في العلاقة",
+      "sto_leggendo_la_costellazione_relazionale": "أستقرئ خارطة العلاقات في الورشة"
+    },
+    "account_detail": {
+      "aggiungi_contact": "إضافة حضور جديد",
+      "annulla": "التراجع عن الأثر",
+      "caricamento": "جارٍ استحضار التفاصيل",
+      "chiudi": "إغلاق الحضور",
+      "collegate_a_questo_account_i_membri_del_team_appar": "يُضاف أعضاء الورشة إلى قسم العلاقات المرتبطة بهذا الحساب",
+      "files_allegati_arriva_con_il_media_library_inspect": "تصل الملفات المرفقة مع أداة فحص مكتبة المحتوى المرئي",
+      "la_memoria_della_relazione_e_ancora_bianca": "لم تُكتب بعد ذاكرة هذا الحضور.",
+      "linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb": "لوحات Moodboard المنسوجة من الورشة تحضر الآن في فضاء P1 المخصّص، مرئيةً في",
+      "materiali_preferiti": "المواد التي تحمل أثرك"
     }
   }
 }

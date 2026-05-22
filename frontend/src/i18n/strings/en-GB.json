@@ -25,7 +25,67 @@
       "hours_ago": "{n} hours ago",
       "days_ago": "{n} days ago"
     },
-    "workspace": "Workspace"
+    "workspace": "Workspace",
+    "brand_mode": {
+      "aggiungi_produttore": "Register maker"
+    },
+    "coming_soon": {
+      "conversazioni_client_studio_integrate_allegati_not": "Correspondence with clients archived within the studio, attachments, considered alerts.",
+      "cronologia_completa_di_ogni_azione_cliente_designe": "A complete record of every client, designer and system action, preserved in sequence.",
+      "feed_attivita_dello_studio": "Studio activity register",
+      "nel_frattempo_gestisci_le_tue_collezioni_dal_panne": "Meanwhile, curate your collections from the left-hand panel of the Archive.",
+      "nel_frattempo_le_scadenze_attivita_sono_visibili_n": "Meanwhile, task deadlines remain visible within the Dashboard and across project pages.",
+      "per_ora_la_gestione_utenti_e_in_impostazioni_membr": "For now, user administration resides within Settings → Members.",
+      "report_esportabili_progetti_fatturato_performance": "Exportable reports: project archive, revenue, atelier performance, preferred materials catalogue.",
+      "una_vista_a_se_per_le_tue_raccolte_curate_di_asset": "A dedicated space for your curated collections. For now, these reside within the Archive."
+    },
+    "editorial_media_field": {
+      "aggiungi_media": "+ Add to library",
+      "annulla": "Withdraw",
+      "carica_file": "Upload file",
+      "carica_nuovo_file": "Register new file",
+      "conferma": "Approve selection",
+      "nessun_altro_luogo_asset_orfano": "No location assigned · orphaned asset",
+      "scegli_dalla_library": "Select from the Library",
+      "scegli_o_carica_un_immagine": "Select or upload an image from your library",
+      "trascina_sfoglia_scegli_dalla_library": "Drag · browse · select from Library"
+    },
+    "hotspot": {
+      "annulla": "Revert",
+      "breve_nota_editoriale_sul_dettaglio": "A considered note on this detail",
+      "elimina": "Remove",
+      "salva_hotspot": "Archive hotspot"
+    },
+    "image_edit": {
+      "centra_il_punto_focale": "Centre the focal point",
+      "chiudi": "Close",
+      "il_punto_focale_resta_visibile_in_tutti_i_ritagli": "The focal point remains visible across all crop formats — hero, mobile, card.",
+      "modifica_immagine_continuita_editoriale": "Amend image · editorial continuity",
+      "trascina_l_area_visibile_usa_le_maniglie_per_regol": "Reposition the visible frame · adjust using the corner points"
+    },
+    "media_delete_protection": {
+      "apri_le_superfici_interessate": "Review affected surfaces",
+      "carica_un_nuovo_file_tutte_le_relazioni_vengono_mi": "Upload a revised file. All associations migrate automatically to the new asset. The previous version remains archived within the version chain.",
+      "chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp": "Close this panel and open the Usage view within the Inspector to examine each relation in turn.",
+      "il_dam_ragiona_come_un_editorial_relationships_gra": "The DAM operates as an editorial relationships library, not a file archive. Each removal affects all published surfaces.",
+      "l_asset_viene_archiviato_non_piu_visibile_nella_li": "The asset is archived from view within the Library, yet all associations remain active. Your audience continues to see this image until you choose to replace it.",
+      "questo_asset_e_utilizzato_in": "This asset is referenced in",
+      "rimuoverlo_senza_sostituirlo_lascera_spazi_vuoti_s": "Removing it without replacement will leave public surfaces incomplete. Consider your action with care.",
+      "scegli_su_quali_superfici_aggiornare_l_asset_e_qua": "Select which surfaces receive the updated asset and which retain the current version—useful for market-specific image comparisons."
+    },
+    "mvp_lite": {
+      "il_feed_attivita_vive_nella_dashboard": "The activity feed resides within your dashboard.",
+      "le_collezioni_vivono_nell_archivio": "Collections are held in the archive.",
+      "le_conversazioni_vivono_sul_progetto": "Dialogue is held at the project level.",
+      "le_scadenze_sono_sul_progetto": "Deadlines are held within the project."
+    },
+    "palette_switcher": {
+      "apri_studio_identity_personalizza": "Open Studio Identity™ · compose your language",
+      "atelier_dei_temi": "Thematic atelier",
+      "chiudi": "Close palette",
+      "imposta_colori_tipografia_e_radius_del_tuo_studio": "Establish the palette, typographic language and radius values for your studio.",
+      "preset_editoriali": "Curated palettes"
+    }
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -442,6 +502,131 @@
       "loading_registry": "Loading registry",
       "no_matches": "No keys match your filters.",
       "all_phrases_title": "All Blueprint phrases"
+    }
+  },
+  "ClientPreviewPage": {
+    "jsx": {
+      "client_preview": {
+        "annulla": "Withdraw",
+        "chiudi": "Close register",
+        "cosa_ti_emoziona_di_questa_direzione_cosa_vorresti": "What draws you to this direction, and where might you wish to deepen your enquiry?",
+        "il_tuo_nome_opzionale": "Your name (optional)",
+        "il_tuo_studio": "Your studio register:",
+        "lo_studio_potrebbe_averla_aggiornata_chiedi_un_nuo": "The studio may have revised this view. Request a renewed link to restore access."
+      }
+    }
+  },
+  "admin": {
+    "advisor_detail": {
+      "contatti": "Contact particulars"
+    },
+    "advisor_edit": {
+      "annulla": "Withdraw changes",
+      "aree_di_rappresentanza_editoriale_cambi_sono_salva": "Editorial representation by region. Changes are preserved immediately.",
+      "chiudi": "Close register",
+      "contesto_storia_sensibilita_della_relazione": "Context, provenance, the register of relation…",
+      "economia_della_relazione": "Relational economy",
+      "es_consigliere_architettura_partner_editoriale": "e.g. adviser · architecture · editorial collaborator",
+      "identita_contatti": "Studio profile & correspondence",
+      "specializzazione_lettura_della_relazione": "Specialisation & reading of the brief"
+    },
+    "advisor_network_admin": {
+      "annulla": "Withdraw",
+      "crea_advisor": "Register new advisor",
+      "network_degli_advisor": "Advisor Register and Connections"
+    },
+    "platform_capabilities": {
+      "sincronizzo_lo_stato_attivazioni": "Synchronising activation register…"
+    }
+  },
+  "advisor": {
+    "advisor_dashboard": {
+      "annulla": "Withdraw",
+      "condividi_con_uno_studio_o_showroom_sconto_del": "Share with a registered studio or showroom · discount of",
+      "cosa_li_sta_frenando_dall_usare_la_piattaforma": "What prevents their engagement with the register",
+      "il_tuo_account_non_e_collegato_a_un_profilo_adviso": "Your account is not currently linked to an Advisor profile. If you are a territorial partner and believe this to be an error, please contact the MOOD team to arrange access.",
+      "la_tua_rete_di_studi_e_showroom_referenti_le_loro": "Your registered network of ateliers and showrooms, their recent activity and supporting annotations.",
+      "nessun_report_ancora_crea_il_primo_dopo_una_visita": "No entries recorded yet. Begin your first after a studio visit or call.",
+      "nessuno_specifico": "— No adviser assigned —",
+      "non_hai_ancora_studi_referenti_inizia_condividendo": "No referring ateliers registered yet. Begin by sharing your magic link.",
+      "quest_area_e_riservata_agli_advisor_di_mood": "Access to this register is reserved for accredited MOOD Advisors.",
+      "torna_alla_dashboard": "Return to register"
+    }
+  },
+  "ai": {
+    "aisuggestion": {
+      "editorial_ai_suggestion": "AI editorial consideration"
+    }
+  },
+  "client": {
+    "client_dashboard_layout": {
+      "apri_menu": "Open register menu",
+      "chiudi_menu": "Close register",
+      "il_tuo_percorso_progettuale_ti_aspetta": "Your design register awaits consideration."
+    },
+    "client_messages": {
+      "caricamento_conversazione": "Retrieving conversation from the archive"
+    },
+    "client_overview": {
+      "le_tue_moodboard": "Your registered moodboards"
+    },
+    "client_stub_pages": {
+      "la_pagina_del_tuo_progetto_e_in_preparazione": "Your project folio is currently under curation.",
+      "la_timeline_completa_del_progetto_sara_pronta_a_br": "The project chronology will be assembled shortly.",
+      "le_prime_proposte_da_approvare_stanno_arrivando": "The first proposals await your review and consideration.",
+      "le_tue_moodboard_arriveranno_qui": "Your moodboards will collect here.",
+      "un_filo_diretto_con_il_tuo_studio": "A direct line to your atelier."
+    },
+    "shared_voice_composer": {
+      "aggiungi_un_riferimento": "Register a reference",
+      "aggiungi_una_nota": "Register a note",
+      "annulla": "Withdraw intention",
+      "chiudi": "Close register",
+      "condividi_una_atmosfera": "Register an atmosphere",
+      "condividi_una_voce": "Register a considered voice",
+      "una_nota_privata_per_lo_studio_facoltativa": "A private notation for the atelier (optional)",
+      "una_sensazione_un_dettaglio_che_senti_piu_vicino_u": "A sensibility, a fragment you recognise as your own, a reference you wish to register within the studio archive.",
+      "url_di_un_immagine_che_racconta_l_atmosfera": "URL of an image that conveys the prevailing atmosphere"
+    },
+    "site_evolution": {
+      "all_spaces": "The complete register of rooms",
+      "il_cantiere_non_e_ancora_iniziato": "Works yet to commence"
+    }
+  },
+  "clientpreview": {
+    "client_preview": {
+      "aggiungi_una_nota": "Record a notation",
+      "approvo_questa_direzione": "I endorse this course",
+      "invia_la_nota": "Register the note",
+      "la_stanza_non_e_disponibile": "This studio is presently unavailable",
+      "lasciaci_sentire_la_tua_direzione": "Let us register your creative intent",
+      "questa_direzione_e_ancora_in_fase_di_curatela": "This direction remains under curatorial consideration.",
+      "questa_direzione_non_e_piu_attiva": "This register has been withdrawn from active use",
+      "sto_preparando_la_stanza": "Preparing the room…",
+      "verifica_con_lo_studio_il_link_ricevuto": "Confirm the received link with your atelier."
+    }
+  },
+  "crm": {
+    "account_constellation": {
+      "apri_il_journey": "View the client narrative",
+      "apri_una_conversazione_progettuale_per_cominciare": "Begin with a considered conversation about the work ahead.",
+      "le_persone_della_relazione": "The people in the relationship",
+      "nessun_journey_aperto_con_questa_relazione": "No active journey registered with this relationship.",
+      "segnali_del_viaggio": "Markers from the journey",
+      "sezione_dominante": "Principal relationship",
+      "sto_leggendo_la_costellazione_relazionale": "Mapping the relational structure now…"
+    },
+    "account_detail": {
+      "aggiungi_contact": "Register a contact",
+      "annulla": "Withdraw this record",
+      "caricamento": "Gathering your library",
+      "chiudi": "Close",
+      "collegate_a_questo_account_i_membri_del_team_appar": "Team members associated with this Account are listed within the",
+      "files_allegati_arriva_con_il_media_library_inspect": "Attached files arrive with the Media Library inspector.",
+      "la_memoria_della_relazione_e_ancora_bianca": "No record of this relationship has yet been registered.",
+      "linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb": "Moodboard Linkage now resides in its own P1 environment. Board collections authored by your team appear within",
+      "materiali_preferiti": "Materials of record",
+      "nessun_contact_ancora_aggiungi_il_primo_qui_sotto": "No contacts recorded. Consider adding the first below."
     }
   }
 }

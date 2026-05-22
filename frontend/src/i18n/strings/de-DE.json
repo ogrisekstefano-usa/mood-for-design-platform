@@ -25,7 +25,66 @@
       "hours_ago": "vor {n} Std.",
       "days_ago": "vor {n} Tagen"
     },
-    "workspace": "Workspace"
+    "workspace": "Workspace",
+    "brand_mode": {
+      "aggiungi_produttore": "Hersteller hinzufügen"
+    },
+    "coming_soon": {
+      "conversazioni_client_studio_integrate_allegati_not": "Atelierkommunikation, Dokumentenablage, Benachrichtigungen – in einem System",
+      "cronologia_completa_di_ogni_azione_cliente_designe": "Vollständige Dokumentation aller Vorgänge – Auftraggeber, Gestalter, System.",
+      "feed_attivita_dello_studio": "Atelierprojekte im Überblick",
+      "nel_frattempo_gestisci_le_tue_collezioni_dal_panne": "Ihre Kollektionen verwalten Sie in der linken Leiste des Archivs.",
+      "nel_frattempo_le_scadenze_attivita_sono_visibili_n": "Bis dahin bleiben Aufgabentermine in der Übersicht und in den Projektansichten sichtbar.",
+      "per_ora_la_gestione_utenti_e_in_impostazioni_membr": "Nutzer und Rollen verwalten Sie vorläufig unter Einstellungen → Mitglieder.",
+      "report_esportabili_progetti_fatturato_performance": "Exportierbare Auswertungen: Projekte, Honorarumsatz, Atelierkennzahlen, eingesetzte Materialien",
+      "una_vista_a_se_per_le_tue_raccolte_curate_di_asset": "Eine eigenständige Ansicht für Ihre kuratierten Asset-Sammlungen. Sammlungen befinden sich derzeit im Archiv."
+    },
+    "editorial_media_field": {
+      "aggiungi_media": "+ Medium hinzufügen",
+      "annulla": "Verwerfen",
+      "carica_file": "Datei hinzufügen",
+      "carica_nuovo_file": "Datei hinzufügen",
+      "conferma": "Bestätigen",
+      "nessun_altro_luogo_asset_orfano": "Kein weiterer Ort · verwaiste Datei",
+      "scegli_dalla_library": "Aus der Bibliothek wählen",
+      "scegli_o_carica_un_immagine": "Bild wählen oder hochladen",
+      "trascina_sfoglia_scegli_dalla_library": "Ablegen · durchsehen · aus der Materialsammlung wählen"
+    },
+    "hotspot": {
+      "annulla": "Verwerfen",
+      "breve_nota_editoriale_sul_dettaglio": "Kurze redaktionelle Anmerkung zum Detail.",
+      "elimina": "Entfernen",
+      "material": "Materialität ·"
+    },
+    "image_edit": {
+      "chiudi": "Schließen",
+      "il_punto_focale_resta_visibile_in_tutti_i_ritagli": "Der Fokuspunkt bleibt in allen Ausschnitten sichtbar — Hero, Mobil, Karte.",
+      "modifica_immagine_continuita_editoriale": "Bildbearbeitung · redaktionelle Kontinuität",
+      "trascina_l_area_visibile_usa_le_maniglie_per_regol": "Bildbereich verschieben · Anpassung über Handhabungspunkte"
+    },
+    "media_delete_protection": {
+      "apri_le_superfici_interessate": "Betroffene Flächen öffnen",
+      "carica_un_nuovo_file_tutte_le_relazioni_vengono_mi": "Neue Datei hochladen. Alle Verknüpfungen werden automatisch auf das neue Asset übertragen. Die frühere Version bleibt in der Versionskette erhalten.",
+      "chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp": "Schließen Sie diesen Drawer und öffnen Sie den Usage-Tab im Inspector, um jede Verknüpfung manuell zu prüfen.",
+      "il_dam_ragiona_come_un_editorial_relationships_gra": "Das DAM arbeitet als Beziehungsgeflecht redaktioneller Inhalte, nicht als Dateisystem. Jede Entfernung wirkt sich auf veröffentlichte Oberflächen aus.",
+      "l_asset_viene_archiviato_non_piu_visibile_nella_li": "Das Asset wird archiviert und verlässt die sichtbare Werkstatt – bestehende Verknüpfungen bleiben aktiv. Die Präsenz im öffentlichen Raum besteht fort, bis Sie das Bild ersetzen.",
+      "questo_asset_e_utilizzato_in": "Dieses Asset ist in Verwendung in",
+      "rimuoverlo_senza_sostituirlo_lascera_spazi_vuoti_s": "Löschen ohne Ersatz hinterlässt leere Flächen im öffentlichen Raum. Triff eine bewusste Entscheidung.",
+      "scegli_su_quali_superfici_aggiornare_l_asset_e_qua": "Bestimmen Sie, auf welchen Oberflächen das Asset aktualisiert wird und welche unverändert bleiben – geeignet für marktspezifische Bildvarianten im A/B-Verfahren."
+    },
+    "mvp_lite": {
+      "il_feed_attivita_vive_nella_dashboard": "Der Aktivitätsfeed ist im Dashboard verankert.",
+      "le_collezioni_vivono_nell_archivio": "Die Kollektionen existieren im Archiv.",
+      "le_conversazioni_vivono_sul_progetto": "Der Dialog bleibt am Projekt verankert.",
+      "le_scadenze_sono_sul_progetto": "Die Fristen liegen im Projekt."
+    },
+    "palette_switcher": {
+      "apri_studio_identity_personalizza": "Studio Identity™ öffnen · Gestaltung anpassen",
+      "atelier_dei_temi": "Themenwerkstatt",
+      "chiudi": "Schließen",
+      "imposta_colori_tipografia_e_radius_del_tuo_studio": "Farben, Typografie und Radien Ihres Ateliers definieren.",
+      "preset_editoriali": "Redaktionelle Vorlagen"
+    }
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -442,6 +501,130 @@
       "loading_registry": "Register wird geladen",
       "no_matches": "Keine Schlüssel passen zu Ihren Filtern.",
       "all_phrases_title": "Alle Blueprint-Phrasen"
+    }
+  },
+  "ClientPreviewPage": {
+    "jsx": {
+      "client_preview": {
+        "annulla": "Verwerfen",
+        "chiudi": "Schließen",
+        "cosa_ti_emoziona_di_questa_direzione_cosa_vorresti": "Welche Aspekte dieser Richtung überzeugen Sie? Was möchten Sie vertiefen?",
+        "il_tuo_nome_opzionale": "Ihr Name (optional)",
+        "il_tuo_studio": "Ihr Atelier:",
+        "lo_studio_potrebbe_averla_aggiornata_chiedi_un_nuo": "Die Verlinkung wurde möglicherweise aktualisiert. Fordern Sie einen neuen Zugang an, um fortzufahren."
+      }
+    }
+  },
+  "admin": {
+    "advisor_detail": {
+      "contatti": "Direktkontakt"
+    },
+    "advisor_edit": {
+      "annulla": "Vorgang beenden",
+      "aree_di_rappresentanza_editoriale_cambi_sono_salva": "Redaktionelle Vertretungsbereiche. Änderungen werden automatisch gesichert.",
+      "chiudi": "Schließen",
+      "contesto_storia_sensibilita_della_relazione": "Kontext, Archiv, Beziehungssprache…",
+      "economia_della_relazione": "Beziehungsökonomie",
+      "es_consigliere_architettura_partner_editoriale": "z. B. Berater · Architektur · redaktioneller Partner",
+      "identita_contatti": "Atelier & Kontaktdaten",
+      "specializzazione_lettura_della_relazione": "Fachrichtung & Auslesen der Beziehungsstruktur"
+    },
+    "advisor_network_admin": {
+      "annulla": "Vorgang abbrechen",
+      "crea_advisor": "Advisor anlegen",
+      "network_degli_advisor": "Netzwerk der Fachberater"
+    },
+    "platform_capabilities": {
+      "sincronizzo_lo_stato_attivazioni": "Aktivierungsstatus wird synchronisiert…"
+    }
+  },
+  "advisor": {
+    "advisor_dashboard": {
+      "annulla": "Verwerfen",
+      "condividi_con_uno_studio_o_showroom_sconto_del": "Weiterleitung an Atelier oder Showroom · Kondition von",
+      "cosa_li_sta_frenando_dall_usare_la_piattaforma": "Was sie von der Nutzung des Systems abhält",
+      "il_tuo_account_non_e_collegato_a_un_profilo_adviso": "Ihr Zugang ist derzeit keinem Advisor-Profil zugeordnet. Falls Sie als territorialer Partner registriert sind und dies nicht korrekt erscheint, wenden Sie sich bitte an das MOOD Team zur Freischaltung.",
+      "la_tua_rete_di_studi_e_showroom_referenti_le_loro": "Ihr Netzwerk aus Ateliers und Referenz-Showrooms, deren aktuelle Projekte und Ihre Notizen zur Begleitung.",
+      "nessun_report_ancora_crea_il_primo_dopo_una_visita": "Noch keine Dokumentation vorhanden. Legen Sie die erste nach einem Atelierbesuch oder Gespräch an.",
+      "nessuno_specifico": "— Keine Zuordnung —",
+      "non_hai_ancora_studi_referenti_inizia_condividendo": "Noch keine referenzierten Ateliers. Beginnen Sie mit der Weitergabe Ihres Magic Link.",
+      "quest_area_e_riservata_agli_advisor_di_mood": "Dieser Bereich ist den Advisors von MOOD vorbehalten.",
+      "torna_alla_dashboard": "Zurück zur Steuerungszentrale"
+    }
+  },
+  "ai": {
+    "aisuggestion": {
+      "editorial_ai_suggestion": "KI-gestützte Redaktionsempfehlung"
+    }
+  },
+  "client": {
+    "client_dashboard_layout": {
+      "apri_menu": "Menü öffnen",
+      "chiudi_menu": "Menü schließen",
+      "il_tuo_percorso_progettuale_ti_aspetta": "Ihre gestalterische Laufbahn wartet auf Sie."
+    },
+    "client_messages": {
+      "caricamento_conversazione": "Gespräch wird geladen"
+    },
+    "client_overview": {
+      "le_tue_moodboard": "Ihre Gestaltungsräume"
+    },
+    "client_stub_pages": {
+      "la_pagina_del_tuo_progetto_e_in_preparazione": "Ihre Projektseite befindet sich in Vorbereitung.",
+      "la_timeline_completa_del_progetto_sara_pronta_a_br": "Die vollständige Projektchronologie wird in Kürze zur Verfügung stehen.",
+      "le_prime_proposte_da_approvare_stanno_arrivando": "Die ersten Entwürfe zur Freigabe sind eingetroffen.",
+      "le_tue_moodboard_arriveranno_qui": "Deine Moodboards erscheinen hier.",
+      "un_filo_diretto_con_il_tuo_studio": "Direkter Zugang zu Ihrem Atelier."
+    },
+    "shared_voice_composer": {
+      "aggiungi_un_riferimento": "Referenz hinzufügen",
+      "aggiungi_una_nota": "Notiz hinzufügen",
+      "annulla": "Verwerfen",
+      "chiudi": "Schließen",
+      "condividi_una_atmosfera": "Teilen Sie eine Raumstimmung",
+      "condividi_una_voce": "Gestalterische Haltung teilen",
+      "una_nota_privata_per_lo_studio_facoltativa": "Interne Notiz für das Atelier (optional)",
+      "una_sensazione_un_dettaglio_che_senti_piu_vicino_u": "Eine Materialität, ein Detail von besonderer Nähe, eine Referenz für Ihr Atelier.",
+      "url_di_un_immagine_che_racconta_l_atmosfera": "URL eines Bildes, das die atmosphärische Präsenz dokumentiert"
+    },
+    "site_evolution": {
+      "all_spaces": "Sämtliche Räume",
+      "il_cantiere_non_e_ancora_iniziato": "Die Werkstatt ist noch nicht eröffnet"
+    }
+  },
+  "clientpreview": {
+    "client_preview": {
+      "aggiungi_una_nota": "Anmerkung hinzufügen",
+      "approvo_questa_direzione": "Ich bestätige diese Ausrichtung",
+      "invia_la_nota": "Notiz übergeben",
+      "la_stanza_non_e_disponibile": "Dieser Raum steht nicht zur Verfügung",
+      "lasciaci_sentire_la_tua_direzione": "Zeigen Sie uns Ihre gestalterische Haltung",
+      "questa_direzione_e_ancora_in_fase_di_curatela": "Dieser Bereich befindet sich noch in der Vorbereitung.",
+      "questa_direzione_non_e_piu_attiva": "Diese Ausrichtung ist nicht mehr verfügbar",
+      "sto_preparando_la_stanza": "Der Raum wird vorbereitet",
+      "verifica_con_lo_studio_il_link_ricevuto": "Prüfen Sie den erhaltenen Link mit dem Atelier."
+    }
+  },
+  "crm": {
+    "account_constellation": {
+      "apri_il_journey": "Projektverlauf öffnen",
+      "apri_una_conversazione_progettuale_per_cominciare": "Eröffnen Sie den gestalterischen Dialog und beginnen Sie mit der Arbeit.",
+      "le_persone_della_relazione": "Die Menschen der Beziehung",
+      "nessun_journey_aperto_con_questa_relazione": "Keine gestaltete Beziehung zu diesem Atelier verzeichnet.",
+      "segnali_del_viaggio": "Wegmarken der Zusammenarbeit",
+      "sezione_dominante": "Führender Bereich",
+      "sto_leggendo_la_costellazione_relazionale": "Ich lade das Beziehungsgeflecht Ihres Ateliers"
+    },
+    "account_detail": {
+      "aggiungi_contact": "Kontakt anlegen",
+      "annulla": "Verwerfen",
+      "caricamento": "Wird geladen",
+      "chiudi": "Schließen",
+      "collegate_a_questo_account_i_membri_del_team_appar": "Die Mitglieder des Ateliers gehören zur Sektion, die diesem Projekt zugeordnet ist.",
+      "files_allegati_arriva_con_il_media_library_inspect": "Dateianhänge werden über den Media Library Inspector sichtbar.",
+      "la_memoria_della_relazione_e_ancora_bianca": "Die Beziehung beginnt ohne Gedächtnis.",
+      "linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb": "Moodboard-Verknüpfung erscheint im dedizierten P1-Bereich. Atelierweit erstellte Moodboards sind sichtbar in",
+      "materiali_preferiti": "Bevorzugte Materialien"
     }
   }
 }

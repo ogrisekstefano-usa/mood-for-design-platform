@@ -25,7 +25,69 @@
       "hours_ago": "il y a {n} h",
       "days_ago": "il y a {n} jours"
     },
-    "workspace": "Workspace"
+    "workspace": "Workspace",
+    "brand_mode": {
+      "aggiungi_produttore": "Inscrire un nouveau geste au registre de l'atelier"
+    },
+    "coming_soon": {
+      "conversazioni_client_studio_integrate_allegati_not": "Échanges atelier-client préservés dans leur mémoire, documents joints, alertes silencieuses.",
+      "cronologia_completa_di_ogni_azione_cliente_designe": "Mémoire vivante de chaque geste du client, du créateur, du système lui-même.",
+      "feed_attivita_dello_studio": "Récit vivant de l'atelier, regard sensible sur chaque geste créatif",
+      "nel_frattempo_gestisci_le_tue_collezioni_dal_panne": "En attendant, orchestrez vos collections depuis le volet latéral de l'Archivio — un geste, une présence",
+      "nel_frattempo_le_scadenze_attivita_sono_visibili_n": "En attendant, les échéances qui rythment chaque projet habitent déjà la surface du tableau de bord et la mémoire des pages atelier.",
+      "per_ora_la_gestione_utenti_e_in_impostazioni_membr": "Pour l'heure, la gestion de vos collaborateurs se trouve dans Réglages → Membres.",
+      "report_esportabili_progetti_fatturato_performance": "Rapports disponibles à l'export : le récit de vos projets, la cartographie du chiffre d'affaires, la mémoire des gestes de l'atelier, les matières qui traversent votre création.",
+      "una_vista_a_se_per_le_tue_raccolte_curate_di_asset": "Un espace dédié pour orchestrer vos ensembles d'éléments visuels avec intention. Pour l'heure, vos collections résident dans l'Archivio."
+    },
+    "editorial_media_field": {
+      "aggiungi_media": "+ Déposer une matière visuelle",
+      "annulla": "Renoncer au geste",
+      "carica_file": "Déposer un document",
+      "carica_nuovo_file": "Déposer un nouveau document dans l'atelier",
+      "conferma": "Valider le geste",
+      "nessun_altro_luogo_asset_orfano": "Aucun autre espace · élément sans récit",
+      "scegli_dalla_library": "Puiser dans la mémoire de l'atelier",
+      "scegli_o_carica_un_immagine": "Sélectionnez une image dans votre bibliothèque ou déposez-en une nouvelle depuis votre atelier",
+      "trascina_sfoglia_scegli_dalla_library": "Glissez · parcourez · puisez dans la Bibliothèque"
+    },
+    "hotspot": {
+      "annulla": "Interrompre le geste",
+      "breve_nota_editoriale_sul_dettaglio": "Regard éditorial sur la matière du détail",
+      "elimina": "Effacer toute trace",
+      "material": "matière ·",
+      "salva_hotspot": "Garder en mémoire ce point d'attention"
+    },
+    "image_edit": {
+      "annulla": "Revenir au geste initial\n\n\nLet me reconsider - \"Annulla\" is a cancel/undo action in Italian. For the ultra-luxury editorial cockpit context with sensorial narration, a more evocative phrase would be:\n\nReprendre le geste",
+      "centra_il_punto_focale": "Ajustez le regard jusqu'à révéler l'essentiel",
+      "chiudi": "Revenir au regard d'ensemble",
+      "il_punto_focale_resta_visibile_in_tutti_i_ritagli": "Le point focal demeure présent dans chaque format — qu'il s'agisse du panoramique hero, du mobile ou de la carte éditoriale.",
+      "modifica_immagine_continuita_editoriale": "Retouche · préservation du récit visuel",
+      "trascina_l_area_visibile_usa_le_maniglie_per_regol": "Déplacez le cadre visible pour explorer la matière · ajustez les poignées d'un geste précis"
+    },
+    "media_delete_protection": {
+      "apri_le_superfici_interessate": "Déployez les surfaces que le regard se prépare à explorer",
+      "carica_un_nuovo_file_tutte_le_relazioni_vengono_mi": "Déposez un nouveau fichier : toutes les relations migreront vers ce nouvel élément tandis que la version précédente demeure inscrite dans la chaîne de mémoire.",
+      "chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp": "Refermez ce panneau latéral et ouvrez l'onglet Usage de l'Inspecteur pour parcourir manuellement chaque relation, avec méthode et présence",
+      "il_dam_ragiona_come_un_editorial_relationships_gra": "Le DAM tisse une mémoire de relations éditoriales, non une simple arborescence de fichiers. Chaque suppression infléchit la présence de vos surfaces publiques.",
+      "l_asset_viene_archiviato_non_piu_visibile_nella_li": "L'archive retire cette présence de votre atelier visuel sans rompre le fil des relations établies, et le regard du public demeure posé sur cette image tant qu'un nouveau geste ne vient la remplacer.",
+      "questo_asset_e_utilizzato_in": "Cet élément visuel nourrit déjà la présence de\n\n\n---\n\n**Note**: Given the ultra-luxury editorial register and sensorial narration voice, I've transformed the utilitarian \"is used in\" into \"already nourishes the presence of\" — evoking the asset's active, living role within the design ecosystem rather than mere technical usage. The phrase remains concise for UI context while elevating the transactional into the experiential, consistent with the *atelier* register and French luxury's intellectual sensuality.",
+      "rimuoverlo_senza_sostituirlo_lascera_spazi_vuoti_s": "Le retrait sans substitution laisse des absences visibles dans l'espace public de vos surfaces. Le geste mérite attention.",
+      "scegli_su_quali_superfici_aggiornare_l_asset_e_qua": "Choisissez les surfaces où actualiser la présence visuelle de votre matière, et celles que vous souhaitez préserver intactes — un geste précieux pour orchestrer vos récits par marché."
+    },
+    "mvp_lite": {
+      "il_feed_attivita_vive_nella_dashboard": "Le flux d'activité prend corps au sein du tableau de bord.",
+      "le_collezioni_vivono_nell_archivio": "Les collections trouvent leur mémoire dans l'archive.",
+      "le_conversazioni_vivono_sul_progetto": "Chaque échange prend forme et se dépose sur le projet, comme une strate de sens qui s'accumule.",
+      "le_scadenze_sono_sul_progetto": "Les échéances vivent au cœur du projet, inscrites dans sa matière même."
+    },
+    "palette_switcher": {
+      "apri_studio_identity_personalizza": "Ouvrez l'atelier Identity™ pour écrire votre signature visuelle",
+      "atelier_dei_temi": "Atelier des matières et des regards",
+      "chiudi": "Fermer ce regard",
+      "imposta_colori_tipografia_e_radius_del_tuo_studio": "Définissez les teintes, la typographie et les courbures qui signeront l'identité visuelle de votre atelier.",
+      "preset_editoriali": "Gammes éditoriales préconfigurées"
+    }
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -442,6 +504,131 @@
       "loading_registry": "Chargement du registre",
       "no_matches": "Aucune clé ne correspond à vos filtres.",
       "all_phrases_title": "Toutes les phrases Blueprint"
+    }
+  },
+  "ClientPreviewPage": {
+    "jsx": {
+      "client_preview": {
+        "annulla": "Revenir à l'atelier sans altérer le geste en cours",
+        "chiudi": "Refermer le regard",
+        "cosa_ti_emoziona_di_questa_direzione_cosa_vorresti": "Qu'est-ce qui résonne en vous dans cette direction, et vers quelle matière aimeriez-vous prolonger le regard",
+        "il_tuo_nome_opzionale": "Votre nom, si vous souhaitez inscrire cette présence dans le récit de l'atelier",
+        "il_tuo_studio": "Votre atelier, tel qu'il se dessine",
+        "lo_studio_potrebbe_averla_aggiornata_chiedi_un_nuo": "L'atelier a peut-être modifié cette présence — sollicitez un nouveau lien pour en retrouver le fil et renouer avec ce parcours."
+      }
+    }
+  },
+  "admin": {
+    "advisor_detail": {
+      "contatti": "Coordonnées de l'atelier"
+    },
+    "advisor_edit": {
+      "annulla": "Revenir au geste initial",
+      "aree_di_rappresentanza_editoriale_cambi_sono_salva": "Territoires de présence éditoriale. Chaque geste s'inscrit sans délai dans la mémoire de l'atelier.",
+      "chiudi": "Refermer l'atelier et préserver le geste en mémoire",
+      "contesto_storia_sensibilita_della_relazione": "Contexte, mémoire sensible, écriture de la relation…",
+      "economia_della_relazione": "Économie du regard et des présences",
+      "es_consigliere_architettura_partner_editoriale": "ex. conseil architectural · présence éditoriale · atelier partenaire",
+      "identita_contatti": "Présence et coordonnées de l'atelier",
+      "specializzazione_lettura_della_relazione": "Domaine d'intervention & interprétation de la relation au sein de l'atelier"
+    },
+    "advisor_network_admin": {
+      "annulla": "Revenir à l'état premier du geste, avant toute inscription",
+      "crea_advisor": "Inscrire un nouveau regard au sein de votre réseau de conseil",
+      "network_degli_advisor": "Réseau des Conseillers de l'atelier"
+    },
+    "platform_capabilities": {
+      "sincronizzo_lo_stato_attivazioni": "Synchronisation en cours de l'état des présences actives dans l'atelier"
+    }
+  },
+  "advisor": {
+    "advisor_dashboard": {
+      "annulla": "Revenir au geste précédent, suspendre l'écriture en cours",
+      "condividi_con_uno_studio_o_showroom_sconto_del": "Partagez avec un atelier ou un showroom partenaire · réduction de",
+      "cosa_li_sta_frenando_dall_usare_la_piattaforma": "Ce qui empêche encore leur geste de rejoindre pleinement cet atelier numérique",
+      "il_tuo_account_non_e_collegato_a_un_profilo_adviso": "Votre accès demeure en suspend, sans inscription à l'univers Advisor : si vous êtes partenaire territorial et percevez là une anomalie, nous vous invitons à solliciter l'équipe MOOD afin que votre présence soit pleinement reconnue.",
+      "la_tua_rete_di_studi_e_showroom_referenti_le_loro": "Votre réseau d'ateliers et de lieux partenaires, la mémoire de leurs gestes récents et les notes qui soutiennent cette présence commune.",
+      "nessun_report_ancora_crea_il_primo_dopo_una_visita": "Aucune trace écrite pour l'instant. Le premier récit naîtra après votre visite ou votre échange avec l'atelier.",
+      "nessuno_specifico": "— Aucune présence spécifique —",
+      "non_hai_ancora_studi_referenti_inizia_condividendo": "Aucun atelier ne rejoint encore votre réseau par ce lien : le geste du partage en ouvre la présence",
+      "quest_area_e_riservata_agli_advisor_di_mood": "Cet espace est dédié aux Advisors de MOOD, gardiens d'un regard et d'un geste qui façonnent la matière du conseil.",
+      "torna_alla_dashboard": "Revenir à l'atelier où naissent vos récits"
+    }
+  },
+  "ai": {
+    "aisuggestion": {
+      "editorial_ai_suggestion": "Proposition éditoriale suggérée par l'intelligence"
+    }
+  },
+  "client": {
+    "client_dashboard_layout": {
+      "apri_menu": "Ouvrir la navigation de l'atelier",
+      "chiudi_menu": "Refermer l'espace de présence",
+      "il_tuo_percorso_progettuale_ti_aspetta": "Votre atelier de création prend forme, et le geste attend son accomplissement."
+    },
+    "client_messages": {
+      "caricamento_conversazione": "L'atelier reconstitue la mémoire de vos échanges"
+    },
+    "client_overview": {
+      "le_tue_moodboard": "Vos planches de matière et d'intention"
+    },
+    "client_stub_pages": {
+      "la_pagina_del_tuo_progetto_e_in_preparazione": "Votre projet prend forme dans le silence de l'atelier, bientôt prêt à recevoir le regard.",
+      "la_timeline_completa_del_progetto_sara_pronta_a_br": "Le récit complet de votre projet prendra forme dans les prochains jours, avec la précision d'un geste maîtrisé.",
+      "le_prime_proposte_da_approvare_stanno_arrivando": "Les premières propositions qui sollicitent votre regard sont désormais présentes dans l'atelier.",
+      "le_tue_moodboard_arriveranno_qui": "C'est ici que prendront forme vos tableaux d'inspiration, dans la lumière de l'atelier.",
+      "un_filo_diretto_con_il_tuo_studio": "Une présence immédiate, un regard ouvert sur votre atelier."
+    },
+    "shared_voice_composer": {
+      "aggiungi_un_riferimento": "Inscrire une référence dans la mémoire du projet",
+      "aggiungi_una_nota": "Consigner ce que la matière inspire, ce que le regard retient",
+      "annulla": "Revenir au silence de l'atelier",
+      "chiudi": "Refermer l'atelier et préserver le geste en mémoire",
+      "condividi_una_atmosfera": "Partagez la présence d'une atmosphère",
+      "condividi_una_voce": "Partagez la présence d'un récit, transmettez la matière d'une voix",
+      "una_nota_privata_per_lo_studio_facoltativa": "Une note personnelle destinée à l'atelier, si le geste l'exige",
+      "una_sensazione_un_dettaglio_che_senti_piu_vicino_u": "Une présence qui retient le regard, un détail de matière dont vous sentez la proximité, une note que vous souhaiteriez confier à la mémoire de votre atelier.",
+      "url_di_un_immagine_che_racconta_l_atmosfera": "URL d'une image qui saisit la matière sensible de l'atmosphère"
+    },
+    "site_evolution": {
+      "all_spaces": "L'ensemble des ateliers, réunis dans la continuité du regard",
+      "il_cantiere_non_e_ancora_iniziato": "L'atelier demeure encore dans son silence initial, avant que le geste ne prenne corps"
+    }
+  },
+  "clientpreview": {
+    "client_preview": {
+      "aggiungi_una_nota": "Inscrire une note dans le registre de l'atelier",
+      "approvo_questa_direzione": "J'adopte cette direction dans l'atelier",
+      "invia_la_nota": "Adresser cette présence à votre regard",
+      "la_stanza_non_e_disponibile": "Cet espace n'offre plus de présence visible dans le registre de l'atelier",
+      "lasciaci_sentire_la_tua_direzione": "Laissez-nous percevoir la direction que prend votre regard",
+      "questa_direzione_e_ancora_in_fase_di_curatela": "Cette direction demeure encore sous le regard attentif de notre atelier éditorial.",
+      "questa_direzione_non_e_piu_attiva": "Cette adresse n'existe plus dans la mémoire de l'atelier",
+      "sto_preparando_la_stanza": "Je compose l'espace de votre atelier avec la précision d'un geste ancien",
+      "verifica_con_lo_studio_il_link_ricevuto": "Vérifiez auprès de l'atelier la justesse du lien qui vous a été adressé."
+    }
+  },
+  "crm": {
+    "account_constellation": {
+      "apri_il_journey": "Ouvrez le récit de cette relation",
+      "apri_una_conversazione_progettuale_per_cominciare": "Ouvrez un espace de dialogue autour du projet, et laissez le récit prendre forme.",
+      "le_persone_della_relazione": "L'écriture sensible de ceux qui habitent la relation",
+      "nessun_journey_aperto_con_questa_relazione": "Aucun récit n'a encore pris forme dans l'espace de cette relation.",
+      "segnali_del_viaggio": "Mémoire des gestes partagés",
+      "sezione_dominante": "Constellation dominante dans votre regard",
+      "sto_leggendo_la_costellazione_relazionale": "Je parcours la cartographie des présences qui composent votre atelier"
+    },
+    "account_detail": {
+      "aggiungi_contact": "Inscrire une nouvelle présence au récit",
+      "annulla": "Revenir au geste d'avant",
+      "caricamento": "Le regard se dépose, la matière se révèle",
+      "chiudi": "Refermer ce regard",
+      "collegate_a_questo_account_i_membri_del_team_appar": "Les membres de l'atelier se déploient dans la section Équipe, reliés par le fil invisible de cet univers partagé",
+      "files_allegati_arriva_con_il_media_library_inspect": "L'inspecteur de bibliothèque média révèle désormais la présence de vos documents attachés, geste après geste",
+      "la_memoria_della_relazione_e_ancora_bianca": "La mémoire de cette relation demeure vierge, ouverte à l'écriture d'un premier geste.",
+      "linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb": "Les moodboards créées par vos équipes trouvent désormais leur présence dédiée en P1, et se révèlent dans",
+      "materiali_preferiti": "Matières de prédilection inscrites dans la mémoire du geste",
+      "nessun_contact_ancora_aggiungi_il_primo_qui_sotto": "Aucune présence n'habite encore cet espace — inscrivez ici le premier regard."
     }
   }
 }
