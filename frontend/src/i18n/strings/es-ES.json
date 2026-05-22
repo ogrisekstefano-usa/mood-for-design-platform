@@ -51,11 +51,14 @@
       "trascina_sfoglia_scegli_dalla_library": "Arrastre · explore · elija de su archivo"
     },
     "hotspot": {
+      "annulla": "Annulla",
       "breve_nota_editoriale_sul_dettaglio": "Una breve reflexión editorial sobre el detalle",
       "elimina": "Retirar",
-      "material": "materia ·"
+      "material": "materia ·",
+      "salva_hotspot": "Salva hotspot"
     },
     "image_edit": {
+      "annulla": "Annulla",
       "centra_il_punto_focale": "Ajuste la mirada principal de la imagen",
       "chiudi": "Cerrar imagen",
       "il_punto_focale_resta_visibile_in_tutti_i_ritagli": "El foco permanece visible en todos los encuadres — hero, móvil, tarjeta.",
@@ -333,6 +336,22 @@
         "yesterday": "ayer",
         "days_ago": "hace {n} días"
       }
+    },
+    "cockpit_timeline": {
+      "carica_un_riferimento_o_crea_una_moodboard_per_dar": "Suba una referencia o componga un moodboard para dar ritmo a la jornada del atelier",
+      "il_battito_del_tuo_studio": "El pulso de su atelier"
+    },
+    "dashboard": {
+      "apri_timeline": "Descubra el relato del proyecto",
+      "decisioni_che_la_giornata_sussurra": "Decisiones que la jornada sugiere en voz baja",
+      "i_primi_suggerimenti_appariranno_con_l_utilizzo_re": "Las primeras sugerencias cobrarán forma a medida que utilice el atelier.",
+      "le_relazioni_che_attendono_un_gesto": "Las relaciones que esperan tu gesto",
+      "mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud": "MOOD comienza a reconocer el ritmo de su atelier.",
+      "nessuna_relazione_raffreddata": "Ninguna relación enfriada por el tiempo",
+      "nuova_moodboard": "Nueva composición de atmósfera",
+      "progetti_che_chiedono_la_tua_presenza": "Proyectos que esperan su mirada",
+      "riprova": "Inténtelo de nuevo",
+      "tutti_gli_account": "Todos los espacios de atelier"
     }
   },
   "errors": {
@@ -417,7 +436,28 @@
       "upgrade_for_more": "Actualiza para crear más"
     },
     "usage_label": "Proyectos",
-    "newProject": "Nuevo proyecto"
+    "newProject": "Nuevo proyecto",
+    "projects_studio": {
+      "aggiungi_cta": "+ Añadir llamada a la acción",
+      "annulla": "Retirar cambios",
+      "apri_un_nuovo_progetto": "+ Iniciar un nuevo relato de proyecto",
+      "atelier": "Atelier de interiorismo",
+      "caricamento_archivio": "Recuperando el archivo de su atelier…",
+      "cover_hero_l_apertura_visiva_del_progetto": "Imagen de portada · la mirada que abre el proyecto",
+      "explore_material": "Descubra la materia",
+      "nessuna_immagine": "Sin imágenes en este atelier",
+      "pubblica_progetto": "Publique su proyecto",
+      "refine_material_narrative_materia_primaria_seconda": "Afinar Relato de Materia · primaria · secundaria · presencia táctil",
+      "sottotitolo_editoriale": "Subtítulo del relato editorial",
+      "titolo_del_progetto": "Título del atelier",
+      "titolo_per_il_mercato": "Título para el mercado",
+      "vocabolario_materico": "Léxico de materias y texturas"
+    },
+    "studio": {
+      "mood_placeholder": "Atmósfera, materia, cadencia",
+      "status_live": "En curso",
+      "tag_input_placeholder": "añada un toque de identidad…"
+    }
   },
   "inspirations": {
     "eyebrow": "Cultural Design Intelligence Layer",
@@ -454,6 +494,125 @@
       "luxury": "Tono luxury",
       "profile": "Destino",
       "reset": "Reset"
+    },
+    "add_inspiration": {
+      "aggiungi_riferimento": "Añada una referencia a su atlas",
+      "annulla": "Detener este gesto",
+      "atmosfera": "Atmósfera",
+      "carica_file": "Incorpore su material",
+      "carica_un_immagine_oppure_incolla_un_link_pinteres": "Suba una imagen o incorpore un enlace de Pinterest, Instagram o cualquier URL. MOOD la integra en su Biblioteca y la hace visible en todo el atelier digital.",
+      "chiudi": "Cerrar este espacio",
+      "cosa_ti_ha_colpito_di_questa_reference": "¿Qué le atrajo de esta referencia?",
+      "descrizione_editoriale_opzionale": "Relato editorial (si lo desea)",
+      "es_salotto_materico_palette_neutra": "Ej. Salón de materias nobles, paleta neutra",
+      "pinterest_instagram_o_link_diretto_mood_prova_a_es": "Pinterest, Instagram o enlace directo. MOOD intentará capturar la imagen principal — si no lo consigue, el enlace quedará guardado y podrá actualizar la portada más adelante.",
+      "url_della_reference": "Enlace de la referencia visual"
+    },
+    "brand_detail": {
+      "aggiungi_capitolo_editoriale": "Añada un nuevo relato material",
+      "continua_la_lettura": "Siga el relato completo",
+      "curated_by_mood": "Seleccionado por MOOD",
+      "modifica_collezione": "Editar selección de referentes",
+      "modifica_produttore": "Editar identidad del fabricante",
+      "moodboard": "Cuaderno de atmósfera",
+      "moodboard_correlate": "Atmósferas afines",
+      "nessuna_collezione_registrata_il_primo_capitolo_ed": "Aún sin colecciones registradas — el primer relato abre la mirada curatorial sobre la identidad de la marca.",
+      "riferimenti_editoriali": "Referentes visuales del universo de marca"
+    },
+    "brand_form": {
+      "aggiungi_all_atlante": "Añada a su atlas de referencias",
+      "annulla": "Descartar este gesto",
+      "chiudi": "Cerrar ventana",
+      "es_atelier_sereno": "ej. Atelier Sereno",
+      "salva_modifiche": "Guarde su trabajo",
+      "salvataggio": "Guardar el relato",
+      "una_frase_che_identifica_il_linguaggio_progettuale": "Una línea que define la identidad visual y el lenguaje de marca"
+    },
+    "brand_mode": {
+      "add_maker": "Añadir atelier a su atlas",
+      "aggiungi_produttore": "Incorpore un fabricante a su atlas",
+      "cerca_per_nome_atmosfera_materia": "Busque por nombre, atmósfera, materia…",
+      "curated_by_mood": "Seleccionado por MOOD",
+      "entra_nell_atelier": "Descubra el atelier",
+      "esplora_i_marchi_le_collezioni_e_il_linguaggio_pro": "Descubra la identidad narrativa, las colecciones y el lenguaje de materia de cada firma presente en MOOD. Cada marca es una lectura abierta: atmósferas dominantes, materialidades recurrentes, geografías de relato donde aparece en sus proyectos.",
+      "l_atlante_curatoriale_e_in_costruzione_aggiungi_un": "Su atlas de materias y creadores aún está en blanco. Añada un productor o importe un catálogo para comenzar a componer su mirada.",
+      "nessun_produttore_corrisponde_alla_ricerca": "Ningún atelier responde a esta mirada",
+      "tutti_i_posizionamenti": "todas las presencias en proyecto"
+    },
+    "collection_form": {
+      "aggiungi_collezione": "Cree su colección de referencias",
+      "annulla": "Deshacer este gesto",
+      "capitolo_editoriale": "Capítulo de identidad ·",
+      "chiudi": "Cerrar vista",
+      "il_linguaggio_progettuale_di_questo_capitolo_le_ma": "El lenguaje matérico de este capítulo, sus texturas dominantes, la atmósfera que lo define",
+      "salva_modifiche": "Conservar cambios",
+      "salvataggio": "Guardar el gesto"
+    },
+    "curated_collection": {
+      "description_placeholder": "¿Qué materias y miradas reúne este capítulo curatorial?",
+      "descrizione_editoriale": "Relato editorial"
+    },
+    "inspiration_detail": {
+      "adatta_la_direzione_editoriale_per_questo_riferime": "Ajuste la orientación narrativa de esta referencia según su mirada editorial",
+      "apertura_del_riferimento": "Abriendo la referencia seleccionada…",
+      "apri_product_gallery": "Explore la galería de materias",
+      "atmosfera": "Atmósfera",
+      "description_placeholder": "Relato editorial de la inspiración",
+      "direzione_editoriale": "Dirección de la mirada editorial",
+      "le_percentuali_sono_secondarie_il_significato_e_ne": "Los porcentajes son solo referencia. El sentido habita en la mirada editorial que ofrecemos arriba.",
+      "modifica": "Editar este relato",
+      "mood_sta_leggendo_il_linguaggio_culturale_di_quest": "MOOD está interpretando el universo material de esta referencia…",
+      "rights_verify_note": "· Verifique los derechos de uso antes de compartir fuera del atelier.",
+      "verifica_i_diritti_d_uso_prima_della_pubblicazione": "Verifique los derechos de uso antes de cualquier publicación externa"
+    },
+    "material_view": {
+      "aumenta_il_numero_di_asset_curati_per_arricchire_l": "Amplíe su colección de materias seleccionadas para enriquecer el relato del atelier",
+      "nessun_elemento_materico_ancora_classificato_per_q": "Aún no hay materias clasificadas bajo estos criterios de búsqueda",
+      "sto_leggendo_la_materioteca": "Leyendo el atlas de materias…"
+    },
+    "moodboard_picker": {
+      "aggiungi_al_moodboard": "Añadir a su tablero de atmósferas",
+      "annulla": "Dejar atrás",
+      "cerca_tra_i_tuoi_moodboard": "Explore entre sus tableros de atmósfera",
+      "chiudi": "Cerrar esta mirada",
+      "crea_e_aggiungi": "Inicie su relato visual",
+      "crea_il_primo": "Cree el primero",
+      "crea_nuovo_moodboard": "Crear un nuevo espacio de inspiración",
+      "nessun_moodboard": "Sin atmósfera seleccionada",
+      "sto_caricando_i_moodboard": "Preparando su atlas de referencias visuales",
+      "titolo_nuovo_moodboard": "Nueva constelación de imágenes"
+    },
+    "product_gallery": {
+      "aggiungi_al_moodboard": "Guarde en su tablero de atmósferas",
+      "ancora_nessuna_affinita_curatoriale_rilevata": "Aún no hemos encontrado afinidades en su atlas de materias y marcas",
+      "atmosfera": "Atmósfera",
+      "atmosfera_in_lettura_curatoriale": "Atmósfera en clave curatorial",
+      "curatela_editoriale_non_raccomandazione_algoritmic": "Curación editorial — no sugerencias automáticas",
+      "feedback_title": "La mirada del cliente",
+      "in_attesa_di_riscontro_dal_cliente": "Pendiente de respuesta del atelier",
+      "linguaggio_progettuale_dello_studio": "Lenguaje visual del atelier",
+      "moodboard_priority": "Prioridad en la paleta visual",
+      "product_gallery_visual_atelier": "Galería de Producto™ · Atelier Visual",
+      "salva_in_references": "Guarde en su Atlas de Materia",
+      "sto_leggendo_le_relazioni": "Consultando el relato de las materias…"
+    },
+    "studio_collections": {
+      "archivio_curatoriale_dello_studio": "Archivo sensorial del atelier",
+      "importa_il_primo_catalogo": "Incorpore su primer atlas de materias",
+      "nessuna_collezione_importata_inizia_caricando_un_c": "Aún no hay colecciones en su atelier. Comience cargando el catálogo de un proveedor para dar forma a su biblioteca de materias",
+      "tutti_i_produttori_e_le_collezioni_che_lo_studio_h": "Las firmas y colecciones que el atelier ha incorporado a su registro de materias"
+    },
+    "supplier_catalog_import": {
+      "annulla": "Deshacer este gesto",
+      "cerco_nel_registro": "Buscando en el registro de proveedores…",
+      "mood_sta_preparando_le_anteprime_del_catalogo": "MOOD está componiendo la primera mirada al catálogo…",
+      "privato_dello_studio": "archivo personal del atelier",
+      "trascina_qui_il_pdf_del_catalogo": "Incorpore aquí el catálogo en PDF"
+    },
+    "supplier_import": {
+      "atmosphere_title": "Atmósfera de origen",
+      "search_placeholder": "Busque por firma (Minotti, Poliform, …)",
+      "wizard_step_aria": "Paso del recorrido de importación"
     }
   },
   "editorial": {
@@ -491,6 +650,61 @@
     },
     "toast": {
       "load_error": "Error al cargar el calendario editorial"
+    },
+    "adaptation_operations": {
+      "apre_l_anteprima_pubblica_nella_surface_di_destina": "Abre la vista previa pública en la superficie de destino",
+      "apre_un_diff_lato_a_lato_tra_l_adattamento_e_la_di": "Muestra ambas miradas en paralelo: la adaptación junto a la dirección editorial matriz",
+      "blocca_la_versione_manuale_corrente_come_stabile": "Fije esta versión manual como referencia estable para su publicación",
+      "marca_le_modifiche_correnti_come_curate_manualment": "Preserve el gesto manual de cada edición — la sincronización respetará su mirada",
+      "riallinea_l_adattamento_al_master_attuale_mantenen": "Sincroniza con el original preservando únicamente las secciones fijadas por usted",
+      "rigenera_i_body_blocks_partendo_dalla_direzione_ed": "Regenere los bloques de contenido desde la dirección editorial del maestro",
+      "ripristina_la_composizione_editoriale_rigenerata_d": "Recupera la composición regenerada desde el maestro — este gesto reemplaza los ajustes manuales aplicados"
+    },
+    "article": {
+      "fields": {
+        "cta_copy": {
+          "placeholder": "Texto de invitación al gesto"
+        },
+        "lead": {
+          "placeholder": "El gesto narrativo que abre la pieza en el mercado de destino"
+        },
+        "meta_description": {
+          "placeholder": "Descripción editorial para buscadores — máximo 155 caracteres"
+        },
+        "title_market": {
+          "placeholder": "El título definitivo para esta edición"
+        }
+      }
+    },
+    "article_editor": {
+      "add_to_moodboard": "Guardar en su tablero de atmósferas",
+      "annulla": "Descartar cambios",
+      "body_blocchi_editoriali_composabili": "Cuerpo · bloques editoriales de composición libre",
+      "caricamento_della_comprensione_editoriale": "Preparando la mirada editorial…",
+      "cta_tier_azione_transizione_editoriale": "CTA · nivel · acción · transición del relato editorial",
+      "explore_material": "Descubra la materia",
+      "salvataggio": "Guardando su trabajo…"
+    },
+    "composition_room_rail": {
+      "tutti_i_mercati": "Todos los mercados"
+    },
+    "editorial_calendar": {
+      "nessun_segnale_operativo_critico_il_ritmo_editoria": "Todo fluye con naturalidad. El ritmo editorial sostiene su cadencia en los mercados activos."
+    },
+    "intelligence": {
+      "empty": "Todo fluye con calma. El ritmo editorial sostiene su presencia natural en los mercados activos."
+    },
+    "market_editions_toolbar": {
+      "annulla": "Retirar cambios",
+      "apri_calendario": "Consulte el ritmo editorial",
+      "la_direzione_editoriale_globale_da_cui_nasceranno": "La mirada editorial global desde la que nacen las Ediciones de Mercado",
+      "programma_la_pubblicazione": "Programe su calendario editorial",
+      "scegli_il_mercato_di_destinazione_tono_cta_e_ritmo": "Elija su mercado y cada texto encontrará su tono, su ritmo y la atmósfera propia de esa cultura",
+      "una_frase_che_cattura_l_atmosfera_non_un_brief_tec": "Una frase que evoque la atmósfera, no una descripción técnica"
+    },
+    "public_preview": {
+      "cta_editoriale": "Descubra el relato completo",
+      "mercato_editoriale": "Panorama editorial"
     }
   },
   "blueprint": {
@@ -624,7 +838,505 @@
       "files_allegati_arriva_con_il_media_library_inspect": "Los archivos adjuntos se integran ahora con el inspector de la Biblioteca de Medios",
       "la_memoria_della_relazione_e_ancora_bianca": "La memoria de esta relación aún está por escribirse.",
       "linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb": "Los tableros de atmósfera creados por su equipo ahora tienen espacio propio en P1. Visibles en",
-      "materiali_preferiti": "Materias que definen su identidad"
+      "materiali_preferiti": "Materias que definen su identidad",
+      "nessun_contact_ancora_aggiungi_il_primo_qui_sotto": "Aún no hay presencias aquí. Comience añadiendo la primera a continuación.",
+      "nessuna_interazione_registrata": "Aún no se ha registrado ningún gesto compartido.",
+      "registra_il_primo_contatto_una_call_una_nota_vocal": "Registre el primer gesto — una conversación, un mensaje de voz, una visita al atelier",
+      "salva": "Conservar el gesto",
+      "style_dna_non_ancora_compilato_per_questo_account": "La identidad estilística de este perfil aún no ha sido construida"
+    },
+    "activity": {
+      "annulla": "Retirar este gesto",
+      "chiudi": "Cerrar esta página",
+      "es_inviare_proposta_materiali": "Compartir selección de materias con el atelier"
+    },
+    "crm_accounts": {
+      "account_centered_ogni_account_puo_avere_piu_contac": "Centrado en la cuenta. Cada cuenta puede reunir varios contactos. Los miembros del estudio habitan en",
+      "action": "Gesto registrado",
+      "aggiungi_un_account": "Incorpore una nueva presencia a su atelier",
+      "annulla": "Dejar sin cambios",
+      "apri_account": "Abra su atelier →",
+      "apri_il_primo_account": "Abra su primer espacio de relación",
+      "caricamento": "Preparando el espacio…",
+      "cerca_per_nome_account_o_email_contact": "Busque por nombre de estudio o correo del contacto…",
+      "crea_account": "Abra su espacio de relaciones",
+      "due": "Fecha de cierre",
+      "empty": {
+        "accounts_hint": "Una Cuenta es una relación de confianza — un cliente, un estudio, una familia. Los Contactos son las personas que viven dentro de ella.",
+        "accounts_lead": "Aún no hay relatos. Comience a construir la memoria de quienes confían en su atelier.",
+        "other_hint": "Cambie de pestaña o cree una nueva identidad para comenzar su relato",
+        "other_lead": "Ningún {label} en esta mirada aún."
+      },
+      "le_relazioni_della_tua_casa_di_design": "El tejido de vínculos de tu atelier de diseño",
+      "nessun_contatto_primario_aggiungi_al_drawer": "Sin presencia principal · añada al panel de relaciones",
+      "no_due_date": "Sin fecha prevista",
+      "no_follow_ups": "Ningún relato pendiente en este momento",
+      "sala_delle_relazioni": "Salón de las relaciones",
+      "tutti_gli_stage": "Cada relación, cada momento",
+      "tutti_i_tipi": "Todas las miradas"
+    },
+    "cultural_edition": {
+      "adatta_tono_ritmo_cta_al_mercato": "Ajuste tono, ritmo y llamada según el territorio que le habla",
+      "annulla": "Dejar atrás este gesto",
+      "briefing_editoriale_angle_desiderato_vincoli": "Encargo editorial — enfoque, atmósfera y coordenadas del relato",
+      "chiudi": "Cerrar esta ventana",
+      "mood_adatta_tono_ritmo_cta_e_narrativa_al_mercato": "MOOD adapta presencia, ritmo visual, narrativa y llamada a la acción según el mercado elegido. El sistema considera las expectativas de hospitalidad, la cadencia de la mirada y la percepción del lujo propias de cada identidad cultural.",
+      "moodboard": "Tablero de atmósfera",
+      "tutti_i_mercati": "Todas las geografías del oficio"
+    },
+    "relationship_graph": {
+      "dove_vive_la_relazione": "Donde habita la relación",
+      "nessun_progetto_moodboard_o_materiale_ancora_colle": "Aún no hay proyectos, tableros ni materiales vinculados a esta relación",
+      "relationship_graph_mappa_editoriale": "Relationship Graph™ · territorio relacional y oficio editorial",
+      "tracciando_la_mappa_della_relazione": "Tejiendo el mapa de la relación…"
+    },
+    "stage_change": {
+      "annulla": "Volver atrás",
+      "chiudi": "Cerrar esta conversación",
+      "il_cambio_sara_tracciato_come_evento_in_timeline": "El gesto quedará registrado como momento en la cronología del relato.",
+      "perche_stiamo_cambiando_fase_il_contesto_rimane_in": "¿Por qué avanzamos de fase? El relato sigue vivo en la línea temporal."
+    }
+  },
+  "cultural": {
+    "cultural_edition": {
+      "adatta_il_tuo_lavoro_a_un_altro_mercato_culturale": "Adapte su oficio a otra atmósfera cultural",
+      "atmosfera": "Atmósfera del atelier",
+      "briefing_al_caporedattore_opzionale": "Conversación con la dirección editorial (opcional)",
+      "chiudi": "Cerrar el registro del atelier",
+      "direzione_narrativa_del_mercato": "Identidad del relato de mercado",
+      "hai_personalizzato_la_direzione_del_mercato": "Ha definido la mirada de su mercado.",
+      "in_attesa_dei_contenuti_dello_studio": "En espera de los contenidos del atelier…",
+      "la_redazione_internazionale_di_mood_sta_preparando": "El equipo editorial de MOOD está dando forma a esta edición cultural…",
+      "lingua_della_versione_mercato": "Idioma de la edición cultural",
+      "mood_ha_pre_compilato_i_campi_con_la_cultura_narra": "MOOD ha configurado los campos con la identidad narrativa de",
+      "mood_prende_un_tuo_contenuto_e_ne_prepara_una_vers": "MOOD toma un contenido tuyo y le da forma editorial para la cultura del mercado que elijas. No es traducción automática — es un gesto editorial guiado.",
+      "puoi_selezionare_uno_o_piu_ambiti_la_redazione_di": "Seleccione los ámbitos sobre los que desea que trabaje nuestro atelier editorial: uno o varios, según su mirada",
+      "revisione_editoriale_prima_di_creare": "Revise su relato visual antes de dar forma al proyecto",
+      "scegli_il_contenuto_da_adattare": "Elija el relato que desea reinterpretar",
+      "showcase_e_selezioni_materiali_sono_in_lavorazione": "Las selecciones de materia están en preparación — mientras tanto, puede añadir una referencia de forma manual",
+      "suggerita_dal_mercato": "· seleccionada desde el oficio",
+      "suggerito_dal_mercato": "Seleccionado por el atelier",
+      "torna_ai_suggerimenti_del_mercato": "Volver a la mirada del mercado"
+    },
+    "cultural_edition_review": {
+      "atmosfera": "Atmósfera del espacio",
+      "atmosfera_originaria": "Atmósfera del origen",
+      "corpo_editoriale": "Consejo de redacción del atelier",
+      "revisione_editoriale": "Revisión de la identidad editorial",
+      "status_updated": "Registro actualizado con nuevos detalles"
+    },
+    "cultural_editions_list": {
+      "le_tue_versioni_mercato": "Sus ediciones en cada territorio",
+      "lede": "Cada edición es un gesto editorial: su relato adaptado a la identidad cultural de un mercado — en tono, referencias y atmósfera propios.",
+      "nessuna_edizione_ancora": "Aún no se ha creado ninguna edición",
+      "new_edition": "Edición reciente"
+    }
+  },
+  "inbox": {
+    "refresh": "Renueve la mirada",
+    "refreshing": "Actualizando el atelier…",
+    "tabs": {
+      "articles": "Relatos del atelier",
+      "references": "Referentes visuales"
+    }
+  },
+  "insights": {
+    "insights": {
+      "dove_si_trova_il_pensiero_progettuale": "Dónde habita el pensamiento del atelier",
+      "eventi_narrativi_nel_mese": "relatos del mes en el atelier",
+      "l_evoluzione_dello_studio": "La identidad del atelier en transformación",
+      "la_grammatica_dello_studio": "La sintaxis del atelier",
+      "la_superficie_viva_del_journey": "La materia viva del recorrido",
+      "le_pulsazioni_dello_studio": "El pulso del atelier",
+      "moodboard": "Tablero de atmósfera y materia",
+      "nessuna_pietra_miliare_ancora_attiva": "Ningún hito creado aún en su atelier",
+      "ogni_cella_un_giorno_intensita_numero_di_eventi": "cada celda · un día · la intensidad revela el número de eventos",
+      "sto_leggendo_le_pulsazioni_dello_studio": "Leyendo la identidad viva del atelier…",
+      "studio_insights": "Atelier · Mirada y esencia"
+    }
+  },
+  "journey": {
+    "client_interaction_layer": {
+      "questa_direzione": "esta línea de trabajo"
+    },
+    "closure": {
+      "summary_placeholder": "Un párrafo que registra lo recorrido. Sin énfasis, sin retórica. Documentación editorial de la materia atravesada.",
+      "title_label": "Título definitivo del relato",
+      "title_placeholder": "Ej. Casa Tramontana · un diálogo con la materia"
+    },
+    "journey_closure_ceremony": {
+      "titolo_definitivo_del_journey": "Título definitivo de este relato"
+    },
+    "material_direction_workspace": {
+      "il_tavolo_della_materia": "La mesa donde nace la materia"
+    },
+    "milestone_dialogue": {
+      "aggiungi_un_capitolo": "Añada un nuevo capítulo a su relato",
+      "annulla": "Dejar sin cambios",
+      "capitolo": "capítulo ·",
+      "chiudi": "Cerrar esta ventana",
+      "condividi": "Comparta este relato",
+      "cosa_cambia_in_questo_capitolo_in_poche_righe": "Lo que cambia en este capítulo — en pocas líneas",
+      "evoluzione_del_progetto": "Evolución del relato del proyecto",
+      "il_perche_di_questa_direzione_materia_luce_atmosfe": "Por qué este camino — materia, luz, atmósfera, lenguaje proyectual",
+      "il_primo_capitolo_apre_la_conversazione_progettual": "El primer capítulo inicia el diálogo creativo con el cliente.",
+      "nessun_capitolo_condiviso_ancora": "Aún no hay ningún relato compartido.",
+      "nuovo_capitolo_progettuale": "Un nuevo relato toma forma",
+      "racconta_a_parole_tue_un_atmosfera_un_riferimento": "Cuéntenos con sus palabras — una atmósfera, una referencia, algo que haya sentido…",
+      "sto_preparando_il_dialogo_progettuale": "Estoy preparando el diálogo del proyecto…",
+      "titolo_del_capitolo_es_luce_mediterranea": "Título del capítulo (p. ej. Luz mediterránea)",
+      "voce_del_cliente": "La voz de quien habita el espacio"
+    },
+    "moodboard_direction_workspace": {
+      "capitoli_moodboard": "Capítulos del relato visual",
+      "direzione_editoriale": "Dirección narrativa del estudio",
+      "l_orizzonte_di_questo_capitolo": "La mirada que guía este capítulo",
+      "le_direzioni_proposte": "Las direcciones que proponemos"
+    },
+    "step_context_header": {
+      "capitolo_precedente": "Capítulo anterior en el relato",
+      "capitolo_seguente": "El siguiente relato",
+      "posizione_nel_journey": "Momento en el relato del proyecto"
+    },
+    "step_workspace": {
+      "capitolo_in_corso": "Capítulo en desarrollo",
+      "le_tracce_di_questo_passaggio": "La huella de este recorrido"
+    },
+    "tab": {
+      "brief_editor_coming": "El editor del Brief llegará en el próximo capítulo de este relato",
+      "evolution": "El relato del encargo",
+      "evolution_real": "La evolución real del proyecto",
+      "first_conversation": "La primera conversación",
+      "story": "El relato que este proyecto está escribiendo",
+      "timeline_coming": "El relato visual llegará en el próximo capítulo de su atelier",
+      "update_direction": "Actualice el rumbo del relato"
+    },
+    "version_stack": {
+      "ancora_nessun_capitolo": "Aún no hay ningún relato iniciado"
+    }
+  },
+  "library": {
+    "materials": {
+      "le_materie_scelte_vivono_dentro_i_loro_journey": "Cada materia elegida habita su propio relato sensorial",
+      "material_registry": "Archivo de materias del atelier",
+      "register_first_material": "Registre su primera materia",
+      "register_material": "Registrar una nueva materia"
+    },
+    "rail": {
+      "material_registry": "Registro de materias del atelier"
+    }
+  },
+  "material_view": {
+    "filter": {
+      "materiality": "Presencia de la materia"
+    },
+    "header": {
+      "title": "Materia con identidad propia"
+    }
+  },
+  "media": {
+    "image": {
+      "caricamento_immagine": "Preparando la imagen con cuidado…"
+    },
+    "universal_editorial_cropper": {
+      "chiudi": "Cerrar la vista",
+      "filtro_editoriale": "Mirada editorial del atelier",
+      "questa_e_la_proporzione_che_i_consumer_hero_moodbo": "Esta es la proporción que elegirán quienes observan con mirada propia cuando tienen la libertad de decidir",
+      "salva_regia": "Guarda de proporción real",
+      "trascina_il_punto_focale_sulla_parte_importante_de": "Desplace el punto de atención hacia la zona que define la mirada de la imagen"
+    }
+  },
+  "moodboards": {
+    "archive": {
+      "cta": "Acceda a su atelier visual",
+      "eyebrow": "Archivo transversal · Sprint G.6",
+      "lede": "Este archivo reúne todas las composiciones visuales creadas a lo largo de sus Journey, mientras que la construcción de cada moodboard ocurre en el capítulo Moodboard Direction™ de cada proyecto individual."
+    },
+    "empty_inside_journey": "Los moodboards habitan dentro de sus Journeys",
+    "eyebrow": "Relato visual · Mesa de inspiración",
+    "moodboards": {
+      "continua_la_direzione": "Continúe el relato visual →"
+    },
+    "filter": {
+      "all": "Todos",
+      "draft": "Borrador",
+      "sent": "Enviados",
+      "viewed": "Vistos",
+      "approved": "Aprobados",
+      "revision_requested": "Revisión solicitada",
+      "rejected": "Rechazados"
+    }
+  },
+  "onboarding": {
+    "owner_introduction": {
+      "ad_esempio_sono_qui_per_accompagnarti_nelle_prime": "Por ejemplo: Estoy aquí para acompañarle en los primeros pasos del proyecto…",
+      "annulla": "Dejar para otro momento",
+      "chiudi": "Cerrar esta ventana",
+      "conferma_foto": "Confirme su retrato de oficio",
+      "cosa_vuoi_che_il_cliente_sappia_di_te": "Qué desea que su cliente conozca sobre su mirada y su oficio",
+      "es_scrivi_a_stefano_default_ricavato_dal_nome": "Ej. 'Escríbale a Stefano'. Sugerencia extraída del nombre del titular.",
+      "foto_ruolo_e_bio_sono_visibili_a_ogni_cliente_del": "Tu fotografía, tu función y tu biografía configuran la primera mirada que cada cliente tendrá de tu atelier: el primer gesto de cuidado que recibirá.",
+      "posiziona_la_foto": "Encuadre su mirada",
+      "presentati_ai_tuoi_clienti": "Preséntese a quienes confían en su oficio",
+      "salva_e_pubblica": "Publique su relato",
+      "trascina_per_centrare_il_volto_usa_lo_zoom_per_rit": "Deslice para centrar el rostro. Amplíe la imagen para encuadrar con precisión.",
+      "visibile_sotto_il_tuo_nome_nella_human_card": "Aparecerá junto a su nombre en la Human Card"
+    }
+  },
+  "placeholder": {
+    "coming_soon": {
+      "torna_ai_progetti": "Volver al registro de proyectos"
+    }
+  },
+  "project": {
+    "detail": {
+      "compose_proposal_title": "Componga un relato editorial desde la atmósfera del proyecto",
+      "empty_conversations": "Aún no hay conversación abierta en torno a este proyecto.",
+      "empty_inspirations": "Aún no ha guardado ninguna referencia visual para este proyecto",
+      "empty_materials": "Aún no hay materias vinculadas a este relato de proyecto.",
+      "empty_moodboards": "Todo atelier comienza con una primera mirada",
+      "empty_proposals": "Aún no se ha redactado ninguna propuesta para este proyecto.",
+      "memory_writes_itself": "El relato del proyecto se construye solo",
+      "regenerate_direction_title": "Renueve el rumbo según el momento presente del atelier",
+      "share_thread_title": "Comparta en el hilo del atelier"
+    }
+  },
+  "settings": {
+    "asset_picker": {
+      "annulla": "Deshacer elección",
+      "carica_file": "Incorpore su material",
+      "caricamento": "Preparando la atmósfera…",
+      "cerca_per_nome_descrizione_alt": "Busque por nombre, descripción, texto alternativo…",
+      "chiudi": "Cerrar esta ventana",
+      "incolla_un_url_pubblico_https_di_un_immagine_verra": "Inserte una dirección URL pública (https://…) de su imagen. Se vinculará como recurso externo — no ocupa espacio en su Library.",
+      "modifica_crop_filtri": "Ajustar · encuadre y atmósfera",
+      "nessun_asset_corrisponde_carica_nuove_immagini_per": "Aún no hay materia visual. Suba nuevas imágenes para comenzar a dar forma a su relato",
+      "scegli_dal_computer": "seleccione desde su ordenador",
+      "trascina_qui_le_immagini": "Arrastre aquí sus imágenes"
+    },
+    "brand_studio": {
+      "il_preset_sceglie_la_modalita_automaticamente_puoi": "El ajuste selecciona la modalidad por sí solo · puede modificarla cuando lo desee",
+      "la_voce_dello_studio_resta_persistente_la_direzion": "La voz del estudio permanece intacta. La Dirección editorial y la Intensidad narrativa de cada Inspiration modifican únicamente esa lectura, sin alterar el resto.",
+      "voce_editoriale_dello_studio": "Voz editorial de su atelier"
+    },
+    "international_presence": {
+      "a_chi_parli_prevalentemente_in_questo_mercato": "A quién dirige su mirada y su oficio en este mercado",
+      "annulla": "Volver atrás",
+      "caricamento_della_presenza_editoriale": "Preparando su presencia editorial…",
+      "come_gli_interlocutori_in_questo_mercato_tipicamen": "Cómo toman decisiones quienes conforman este mercado. Estas heurísticas orientan la presencia visual, el gesto de invitación y el relato editorial.",
+      "cosa_vuoi_ottenere_strategicamente_da_questo_merca": "Qué presencia desea construir en este mercado",
+      "italian_material_culture": "Cultura material italiana",
+      "l_asse_strategico_di_posizionamento_commerciale_pe": "La estrategia de presencia comercial que define su posición en este mercado.",
+      "nessun_mercato_disponibile_nel_catalogo_platform": "Aún no hay mercados disponibles en el catálogo de presencias",
+      "uno_studio_di_new_york_puo_rivolgersi_al_mercato_a": "un atelier de Nueva York puede dirigirse al mercado norteamericano con una"
+    },
+    "magazine_admin": {
+      "caricamento": "Preparando el espacio…",
+      "inizia_un_nuovo_articolo": "Comience un nuevo relato editorial"
+    },
+    "magazine_editor": {
+      "caricamento": "Preparando el espacio…",
+      "cta_label_es_esplora_la_palette_materica": "Descubra la paleta matérica",
+      "riassunto_editoriale_1_2_frasi": "Síntesis editorial (1 o 2 frases)",
+      "testo_editoriale_del_paragrafo": "Texto editorial del párrafo…",
+      "torna_alla_lista": "Volver al índice"
+    },
+    "plan": {
+      "ai_credits": "Créditos de inteligencia creativa"
+    }
+  },
+  "site": {
+    "begin_journey": {
+      "aiutaci_a_comprendere_il_tuo_modo_di_abitare_non_i": "Ayúdenos a conocer su forma de habitar, no su presupuesto.",
+      "avvicinati_al_tuo_journey": "Acérquese a su relato →",
+      "come_vivi_gli_spazi": "¿Cómo habita su atelier?",
+      "come_vuoi_sentirti_in_questo_spazio": "¿Qué atmósfera quiere que viva este espacio?",
+      "continua_il_racconto": "Continúe el relato →",
+      "facoltativo_alcune_cose_si_capiscono_meglio_a_voce": "Opcional — hay cosas que se entienden mejor en una conversación",
+      "inizia_a_raccontarci_lo_spazio_che_immagini_senza": "Cuéntenos el espacio que imagina — con calma, a su ritmo",
+      "inizia_il_tuo_design_journey": "Comience su relato en materia y diseño",
+      "nessun_preventivo_nessuna_pressione_solo_una_conve": "Sin compromisos, sin presión. Solo una conversación entre quienes entienden el oficio.",
+      "niente_di_formale_tutto_quello_che_ti_viene_in_men": "Sin protocolo — lo que surja de su mirada y su oficio.",
+      "quale_atmosfera_stai_cercando": "¿Qué atmósfera define su relato interior?",
+      "quali_materiali_ti_fanno_stare_bene": "¿Qué materias dan forma a su atmósfera?",
+      "stiamo_aprendo_il_tuo_design_journey": "Estamos abriendo las puertas de su universo creativo",
+      "tre_dettagli_soltanto_il_resto_nascera_dalla_conve": "Tres detalles para empezar — lo demás nacerá del diálogo",
+      "una_sensazione_un_momento_del_giorno_un_ricordo": "Una atmósfera, un instante de luz, una presencia…"
+    },
+    "journey_welcome": {
+      "aprendo_il_tuo_design_journey": "Abro la mirada a su universo creativo…",
+      "capitolo_primo_brief_cliente": "Primer relato · La mirada del cliente",
+      "forse_il_viaggio_e_stato_gia_archiviato_o_il_link": "Puede que este relato ya se haya cerrado — o que la dirección haya cambiado. Escriba al atelier para recuperarlo.",
+      "il_modo_in_cui_vivi": "La manera en que habita ·",
+      "il_tuo_design_journey_e_iniziato": "Tu relato de diseño ha comenzado",
+      "l_atmosfera_che_cerchi": "La atmósfera que define su proyecto",
+      "lo_studio_che_ti_accompagna": "El atelier que acompaña su mirada",
+      "questo_e_il_tuo_design_journey_tutto_cio_che_condi": "Este es tu espacio de identidad creativa. Todo lo que construyamos juntos vivirá aquí — relatos, atmósferas, conversaciones de oficio.",
+      "questo_link_non_e_piu_disponibile": "Este enlace ya no forma parte de nuestro relato",
+      "salva_questo_link_e_la_porta_del_tuo_design_journe": "Guarde este enlace — es el umbral de su relato de diseño. El atelier le escribirá pronto a la dirección que compartió."
+    }
+  },
+  "storefront": {
+    "band_editors": {
+      "aggiungi_colonna": "Incorporar nueva columna",
+      "aggiungi_kpi": "Incorpore indicadores de desempeño",
+      "aggiungi_link": "Incorpore enlace al relato",
+      "aggiungi_logo": "Añada la identidad de su atelier",
+      "aggiungi_social": "Vincule su presencia digital",
+      "aggiungi_voce_di_menu": "Añada un gesto al menú del atelier",
+      "automatica_ultimi_articoli_pubblicati_nel_locale": "Automática · últimos relatos publicados en su mercado",
+      "body_editoriale": "Cuerpo editorial del atelier",
+      "eyebrow_editoriale": "Mirada editorial del atelier",
+      "la_tua_email": "Su dirección de correo",
+      "le_case_che_ci_scelgono": "Los espacios que nos eligen",
+      "leggi_tutti_gli_articoli": "Descubra todos los relatos del atelier",
+      "nessuna_colonna_aggiungi_la_prima": "Aún no hay columnas. Cree la primera aquí abajo",
+      "nessuna_voce_di_menu_aggiungi_la_prima": "Aún no hay ningún gesto. Añada el primero aquí abajo"
+    },
+    "storefront_studio": {
+      "caricamento_dell_orchestrazione": "Preparando la identidad del atelier…",
+      "chiudi": "Cerrar el atelier",
+      "l_orchestrazione_cinematica_della_presenza_pubblic": "La presencia pública como relato visual. Cada espacio es una superficie narrativa que ajusta tono, ritmo y gesto según la mirada que lo habita. Todo lo que ve aquí es el sitio público — sin capas ocultas, sin código cerrado.",
+      "nessuna_fascia_per_questa_pagina": "Esta página aún espera su identidad visual",
+      "pubblica_pagina": "Publicar la página de su atelier",
+      "sopra_titolo_editoriale": "Encabezado del relato editorial"
+    }
+  },
+  "storytelling": {
+    "hotspot_image_overlay": {
+      "aggiungi_note_di_dettaglio_sull_immagine": "Añada una nota sobre la materia, el gesto o la atmósfera de esta imagen",
+      "chiudi": "Cerrar la mirada"
+    },
+    "project_gallery": {
+      "aggiungi_immagine": "Incorpore una imagen al relato",
+      "aggiungi_la_prima_immagine": "Añada la primera imagen de su atelier",
+      "annulla": "Dejar sin cambios",
+      "caption_editoriale_visibile": "Epígrafe editorial (visible en galería)",
+      "conferma_immagine": "Confirmar imagen del registro",
+      "elimina": "Retirar del relato",
+      "gallery_del_progetto": "Galería visual del proyecto",
+      "nessuna_immagine_ancora_aggiungi_la_prima_per_iniz": "Aún no hay imágenes. Comience el relato del proyecto con la primera",
+      "per_impostare_la_cover_clicca": "para definir la portada · pulse aquí",
+      "una_case_history_editoriale_non_una_scheda_portfol": "Un relato visual de proyecto, no una ficha técnica. Arrastre para reordenar · pulse"
+    },
+    "story_sections": {
+      "add_to_moodboard": "Añadir a su moodboard de atelier",
+      "aggiungi_blocco": "Añadir un nuevo relato",
+      "aggiungi_immagine": "Incorpore una imagen al relato",
+      "annulla": "Deshacer el gesto",
+      "apri_editor_hotspot": "Abrir el editor de puntos sensibles",
+      "componi_blocchi_editoriali_testo_immagini_gallery": "Componga bloques de relato — texto, imágenes, galerías, detalles clave, llamadas. Arrastre el gesto para reordenar la presencia.",
+      "copy_editoriale_cta": "Redacte su propuesta editorial con intención",
+      "elimina_blocco": "Retirar este bloque",
+      "explore_material": "Descubra la materia",
+      "la_frase_che_rimane": "La frase que permanece.",
+      "nessun_blocco_ancora_inizia_la_narrazione": "Aún no hay bloques. Comience a construir su relato.",
+      "paragrafo_editoriale": "Fragmento del relato visual",
+      "sezioni_della_storia": "Capítulos del relato"
+    }
+  },
+  "stubs": {
+    "client": {
+      "approvals": {
+        "body": "Cada decisión que requiera su mirada —materias, composición, gestos de proyecto— encontrará aquí su espacio: visible, ordenada, siempre a mano.",
+        "eyebrow": "Validaciones del atelier",
+        "title": "Las primeras propuestas esperan su mirada en el atelier"
+      },
+      "files": {
+        "body": "Cada documento compartido por el atelier descansa aquí, ordenado por fase de proyecto y siempre a su alcance.",
+        "eyebrow": "Archivos compartidos en el atelier",
+        "title": "Documentos, representaciones y trazos — reunidos en un solo archivo de atelier."
+      },
+      "in_arrivo": "En camino",
+      "messages": {
+        "body": "Conversaciones, actualizaciones y consultas reunidas en un solo espacio — sin correos dispersos ni mensajes perdidos entre carpetas.",
+        "eyebrow": "Conversaciones del atelier",
+        "title": "Una conversación abierta con tu atelier"
+      },
+      "moodboards": {
+        "body": "Nuestro atelier está reuniendo materias, texturas y atmósferas para componer las primeras imágenes de identidad de su proyecto.",
+        "eyebrow": "Atmósfera visual",
+        "title": "Aquí vivirán sus tableros de atmósfera"
+      },
+      "project": {
+        "body": "Muy pronto encontrará aquí el relato del proyecto, los últimos avances y todas las actualizaciones preparadas desde nuestro atelier.",
+        "eyebrow": "Tu proyecto en atelier",
+        "title": "Tu espacio de proyecto está tomando forma"
+      },
+      "timeline": {
+        "body": "Aquí podrá seguir cada fase, cada encuentro y cada entrega con la precisión de un relato de autor.",
+        "eyebrow": "Cronología del proyecto",
+        "title": "El relato completo del proyecto tomará forma en breve"
+      }
+    }
+  },
+  "taxonomy": {
+    "advisor_status": {
+      "accepted": "Confirmado en el atelier",
+      "active": "En activo",
+      "declined": "No aceptado",
+      "invited": "Invitado al atelier",
+      "suspended": "En pausa temporal"
+    },
+    "common": {
+      "all": "Todas las piezas",
+      "all_m": "Todo el catálogo",
+      "none": "Ninguna selección activa"
+    },
+    "cultural_edition": {
+      "approved": "Validada",
+      "archived": "Edición anterior",
+      "archived_at": "Archivada en la memoria del atelier",
+      "draft": "En proceso",
+      "in_review": "En proceso de revisión"
+    },
+    "editorial_status": {
+      "ai_composing": "En proceso de creación",
+      "approved": "Validada en atelier",
+      "archived": "En el archivo del atelier",
+      "direction_defined": "Dirección definida con claridad",
+      "draft": "En proceso de creación",
+      "published": "Presente en el relato",
+      "ready_for_editorial_review": "Listo para la mirada editorial",
+      "revision_requested": "Requiere nueva mirada",
+      "scheduled": "En preparación"
+    },
+    "material_family": {
+      "ceramica": "Cerámica y gres",
+      "composito": "Materia compuesta",
+      "legno": "Maderas naturales",
+      "malta": "Mortero",
+      "marmo": "Mármol",
+      "metallo": "Metales con presencia",
+      "naturale": "Materia viva",
+      "pietra": "Piedra natural",
+      "tessile": "Textil y fibras",
+      "vetro": "Cristal"
+    }
+  },
+  "workspace": {
+    "add_reference": {
+      "aggiungi_un_riferimento": "Añada una referencia visual",
+      "annulla": "Volver atrás",
+      "es_hospitality_emotion_material_atmosphere": "Ej. Hospitalidad emocional · Atmósfera material",
+      "ogni_riferimento_entra_nella_cultural_design_intel": "Cada referencia se integra en la Cultural Design Intelligence™ · interpretada desde la mirada del mercado de destino.",
+      "perche_questo_riferimento_entra_nell_archivio": "¿Por qué este referente forma parte del relato del atelier?",
+      "scegli_un_asset_dalla_library": "Elija una pieza de su archivo visual",
+      "sfoglia_la_media_library": "Explore el archivo visual de su atelier",
+      "stiamo_salvando_l_url_del_pin_scraping_automatico": "Guardamos la URL de ese pin. La captura automática de contenido (título · imagen · descripción) llegará en Fase P2, con la integración oficial de la API de Pinterest.",
+      "url_del_pin": "Dirección del archivo de referencia"
+    },
+    "design_journey_tab": {
+      "aggiorna_direzione": "Renueve la mirada del proyecto",
+      "evoluzione_del_progetto": "Evolución del relato del proyecto",
+      "l_editor_del_brief_arrivera_nel_prossimo_capitolo": "El editor del Brief llegará en el próximo capítulo del relato",
+      "l_evoluzione_reale_del_progetto": "La trayectoria real del proyecto",
+      "la_prima_conversazione": "La primera conversación del proyecto",
+      "la_storia_che_il_progetto_sta_scrivendo": "El relato que está tomando forma en este proyecto",
+      "la_timeline_fotografica_arrivera_nel_prossimo_capi": "El registro visual se incorporará en el próximo capítulo del proyecto"
+    },
+    "proposals": {
+      "le_presentazioni_vivono_dentro_i_loro_journey": "Las presentaciones habitan el relato de cada proyecto"
     }
   }
 }

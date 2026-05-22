@@ -54,9 +54,11 @@
       "annulla": "Revert",
       "breve_nota_editoriale_sul_dettaglio": "A considered note on this detail",
       "elimina": "Remove",
+      "material": "material ·",
       "salva_hotspot": "Archive hotspot"
     },
     "image_edit": {
+      "annulla": "Annulla",
       "centra_il_punto_focale": "Centre the focal point",
       "chiudi": "Close",
       "il_punto_focale_resta_visibile_in_tutti_i_ritagli": "The focal point remains visible across all crop formats — hero, mobile, card.",
@@ -334,6 +336,22 @@
         "yesterday": "yesterday",
         "days_ago": "{n} days ago"
       }
+    },
+    "cockpit_timeline": {
+      "carica_un_riferimento_o_crea_una_moodboard_per_dar": "Upload a reference or compose a moodboard to set the rhythm of the day.",
+      "il_battito_del_tuo_studio": "The pulse of your atelier"
+    },
+    "dashboard": {
+      "apri_timeline": "View chronology",
+      "decisioni_che_la_giornata_sussurra": "Choices the day quietly registers",
+      "i_primi_suggerimenti_appariranno_con_l_utilizzo_re": "Recommendations will appear as your studio activity develops a recorded history.",
+      "le_relazioni_che_attendono_un_gesto": "Connections awaiting your consideration",
+      "mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud": "MOOD is beginning to recognise the cadence of your studio.",
+      "nessuna_relazione_raffreddata": "No lapsed relations recorded",
+      "nuova_moodboard": "Register new moodboard",
+      "progetti_che_chiedono_la_tua_presenza": "Projects requiring your consideration",
+      "riprova": "Reattempt the register entry",
+      "tutti_gli_account": "Complete atelier register"
     }
   },
   "errors": {
@@ -418,7 +436,28 @@
       "upgrade_for_more": "Upgrade to create more"
     },
     "usage_label": "Projects",
-    "newProject": "New project"
+    "newProject": "New project",
+    "projects_studio": {
+      "aggiungi_cta": "+ Register call to action",
+      "annulla": "Withdraw",
+      "apri_un_nuovo_progetto": "+ Open a new atelier project",
+      "atelier": "Studio register",
+      "caricamento_archivio": "Loading register entries…",
+      "cover_hero_l_apertura_visiva_del_progetto": "Cover hero · the visual opening of the project register",
+      "explore_material": "Review material archive",
+      "nessuna_immagine": "No image registered",
+      "pubblica_progetto": "Register project",
+      "refine_material_narrative_materia_primaria_seconda": "Refine Material Register · primary matter · secondary stock · tactile annotation",
+      "sottotitolo_editoriale": "Editorial subtitle",
+      "titolo_del_progetto": "Project title",
+      "titolo_per_il_mercato": "Market-facing title for the atelier",
+      "vocabolario_materico": "Material lexicon"
+    },
+    "studio": {
+      "mood_placeholder": "Atmosphere, material, cadence",
+      "status_live": "In practice",
+      "tag_input_placeholder": "add your terms…"
+    }
   },
   "inspirations": {
     "eyebrow": "Cultural Design Intelligence Layer",
@@ -455,6 +494,125 @@
       "luxury": "Luxury tone",
       "profile": "Destination",
       "reset": "Reset"
+    },
+    "add_inspiration": {
+      "aggiungi_riferimento": "Register new reference",
+      "annulla": "Discard",
+      "atmosfera": "Mood register",
+      "carica_file": "Upload material",
+      "carica_un_immagine_oppure_incolla_un_link_pinteres": "Upload an image or paste a link from Pinterest, Instagram or any URL. MOOD registers it to your Media Library and makes it accessible throughout the system.",
+      "chiudi": "Close this entry",
+      "cosa_ti_ha_colpito_di_questa_reference": "What caught your attention in this reference?",
+      "descrizione_editoriale_opzionale": "Editorial note (optional)",
+      "es_salotto_materico_palette_neutra": "E.g. Tactile drawing room, neutral register",
+      "pinterest_instagram_o_link_diretto_mood_prova_a_es": "Pinterest, Instagram or direct reference — MOOD will attempt to retrieve the principal image; if unsuccessful, the link is retained and the cover may be revised at your convenience.",
+      "url_della_reference": "Reference provenance URL"
+    },
+    "brand_detail": {
+      "aggiungi_capitolo_editoriale": "Register new editorial chapter",
+      "continua_la_lettura": "Continue reading",
+      "curated_by_mood": "Curated by MOOD",
+      "modifica_collezione": "Revise collection",
+      "modifica_produttore": "Amend manufacturer record",
+      "moodboard": "mood atlas",
+      "moodboard_correlate": "Related references",
+      "nessuna_collezione_registrata_il_primo_capitolo_ed": "No collections registered—this opening chapter initiates the curatorial reading of the brand.",
+      "riferimenti_editoriali": "Editorial references\n\n\n---\n\n**JUSTIFICATION (for internal review only):**\n\nThis UK-GB rendering maintains the archival, library-like quality implied by \"riferimenti editoriali\" while adopting the restrained, curatorial register expected in British design editorial contexts. \"References\" carries both scholarly and curatorial weight—evoking footnotes, citations, and catalogued materials—without the transactional coldness of \"links\" or the platform-speak of \"resources.\" The phrase functions as a section label in an editorial cockpit where studio owners curate their atlas of brands and materials, mirroring the measured tone of publications like *The World of Interiors*."
+    },
+    "brand_form": {
+      "aggiungi_all_atlante": "Register to the atlas",
+      "annulla": "Discard",
+      "chiudi": "Close",
+      "es_atelier_sereno": "e.g. Sereno Atelier",
+      "salva_modifiche": "Preserve edits",
+      "salvataggio": "Archive entry",
+      "una_frase_che_identifica_il_linguaggio_progettuale": "A single line that articulates the design language of this house"
+    },
+    "brand_mode": {
+      "add_maker": "Register maker",
+      "aggiungi_produttore": "Register new maker",
+      "cerca_per_nome_atmosfera_materia": "Search by name, atmosphere, material language…",
+      "curated_by_mood": "Curated by MOOD",
+      "entra_nell_atelier": "Step into the atelier",
+      "esplora_i_marchi_le_collezioni_e_il_linguaggio_pro": "Explore each manufacturer's design language, recurrent materiality and tonal atmosphere — a curated register of how and where these collections appear within your practice.",
+      "l_atlante_curatoriale_e_in_costruzione_aggiungi_un": "Your curatorial atlas awaits its first entry. Add a maker or import a catalogue to begin your library.",
+      "nessun_produttore_corrisponde_alla_ricerca": "No manufacturer matches the search criteria entered",
+      "tutti_i_posizionamenti": "every registered placement"
+    },
+    "collection_form": {
+      "aggiungi_collezione": "Register new collection",
+      "annulla": "Disregard",
+      "capitolo_editoriale": "Editorial chapter ·",
+      "chiudi": "Close",
+      "il_linguaggio_progettuale_di_questo_capitolo_le_ma": "The design language of this chapter, its prevailing materials, the atmosphere intended.",
+      "salva_modifiche": "Commit revisions",
+      "salvataggio": "Archiving"
+    },
+    "curated_collection": {
+      "description_placeholder": "What intent does this curatorial chapter gather?",
+      "descrizione_editoriale": "Curatorial note"
+    },
+    "inspiration_detail": {
+      "adatta_la_direzione_editoriale_per_questo_riferime": "Tailor the editorial direction for this reference",
+      "apertura_del_riferimento": "Opening reference entry…",
+      "apri_product_gallery": "View the material library",
+      "atmosfera": "Ambient character",
+      "description_placeholder": "Editorial notation",
+      "direzione_editoriale": "Editorial stewardship",
+      "le_percentuali_sono_secondarie_il_significato_e_ne": "The figures are ancillary. Meaning resides in the curatorial interpretation above.",
+      "modifica": "Amend entry",
+      "mood_sta_leggendo_il_linguaggio_culturale_di_quest": "MOOD is interpreting the cultural language of this reference…",
+      "rights_verify_note": "· confirm usage rights before external publication.",
+      "verifica_i_diritti_d_uso_prima_della_pubblicazione": "· confirm rights and usage terms before any external publication."
+    },
+    "material_view": {
+      "aumenta_il_numero_di_asset_curati_per_arricchire_l": "Expand your curated collection to build a more comprehensive materials library.",
+      "nessun_elemento_materico_ancora_classificato_per_q": "No materials yet registered under these criteria.",
+      "sto_leggendo_la_materioteca": "Consulting the materials library…"
+    },
+    "moodboard_picker": {
+      "aggiungi_al_moodboard": "Archive to moodboard",
+      "annulla": "Revert selection",
+      "cerca_tra_i_tuoi_moodboard": "Search your library of moodboards",
+      "chiudi": "Close atlas",
+      "crea_e_aggiungi": "Compose and register",
+      "crea_il_primo": "Establish your first",
+      "crea_nuovo_moodboard": "Begin new collection",
+      "nessun_moodboard": "No moodboard selected",
+      "sto_caricando_i_moodboard": "Assembling your moodboards, one moment",
+      "titolo_nuovo_moodboard": "New moodboard title"
+    },
+    "product_gallery": {
+      "aggiungi_al_moodboard": "Add to moodboard",
+      "ancora_nessuna_affinita_curatoriale_rilevata": "No curatorial affinities registered as yet.",
+      "atmosfera": "Ambient quality",
+      "atmosfera_in_lettura_curatoriale": "Atmosphere read through curatorial intent",
+      "curatela_editoriale_non_raccomandazione_algoritmic": "Editorial curation — not algorithmic suggestion.",
+      "feedback_title": "Client responses recorded",
+      "in_attesa_di_riscontro_dal_cliente": "Awaiting client response",
+      "linguaggio_progettuale_dello_studio": "The studio's design vocabulary",
+      "moodboard_priority": "Curatorial order of materials",
+      "product_gallery_visual_atelier": "Product Gallery™ · Visual Atelier",
+      "salva_in_references": "Archive to References™",
+      "sto_leggendo_le_relazioni": "Reviewing material associations…"
+    },
+    "studio_collections": {
+      "archivio_curatoriale_dello_studio": "Studio's curatorial register of works and materials",
+      "importa_il_primo_catalogo": "Register your first material library",
+      "nessuna_collezione_importata_inizia_caricando_un_c": "No collections registered. Begin by uploading a supplier catalogue.",
+      "tutti_i_produttori_e_le_collezioni_che_lo_studio_h": "The register of manufacturers and collections the studio has chosen to archive for reference."
+    },
+    "supplier_catalog_import": {
+      "annulla": "Withdraw this action",
+      "cerco_nel_registro": "Consulting the register…",
+      "mood_sta_preparando_le_anteprime_del_catalogo": "MOOD is composing the catalogue previews for you",
+      "privato_dello_studio": "studio's private collection",
+      "trascina_qui_il_pdf_del_catalogo": "Drop catalogue PDF here to register"
+    },
+    "supplier_import": {
+      "atmosphere_title": "Characteristic atmosphere",
+      "search_placeholder": "Search by maker (Minotti, Poliform, …)",
+      "wizard_step_aria": "Progress through the import sequence"
     }
   },
   "editorial": {
@@ -492,6 +650,61 @@
     },
     "toast": {
       "load_error": "Error loading the editorial calendar"
+    },
+    "adaptation_operations": {
+      "apre_l_anteprima_pubblica_nella_surface_di_destina": "Opens the public preview within the designated surface.",
+      "apre_un_diff_lato_a_lato_tra_l_adattamento_e_la_di": "Opens a side-by-side comparison between the adaptation and the master editorial direction.",
+      "blocca_la_versione_manuale_corrente_come_stabile": "Register the current manual edition as the recognised stable version.",
+      "marca_le_modifiche_correnti_come_curate_manualment": "Mark current edits as manually curated — re-sync will honour these revisions",
+      "riallinea_l_adattamento_al_master_attuale_mantenen": "Realign adaptation to current master, preserving only manually held sections.",
+      "rigenera_i_body_blocks_partendo_dalla_direzione_ed": "Reconstitute body blocks from the master's editorial direction",
+      "ripristina_la_composizione_editoriale_rigenerata_d": "Restore the master composition as regenerated — this will overwrite manual edits made since"
+    },
+    "article": {
+      "fields": {
+        "cta_copy": {
+          "placeholder": "Call-to-action language"
+        },
+        "lead": {
+          "placeholder": "The opening passage that establishes the article's emotional bearing in the target market."
+        },
+        "meta_description": {
+          "placeholder": "Editorial summary for search engines — 155 characters maximum"
+        },
+        "title_market": {
+          "placeholder": "Market-specific title as registered"
+        }
+      }
+    },
+    "article_editor": {
+      "add_to_moodboard": "Archive to moodboard",
+      "annulla": "Discard changes",
+      "body_blocchi_editoriali_composabili": "Body · composable editorial modules",
+      "caricamento_della_comprensione_editoriale": "Loading editorial register…",
+      "cta_tier_azione_transizione_editoriale": "CTA · tier · action · editorial passage",
+      "explore_material": "Consider material archives",
+      "salvataggio": "Archiving in progress"
+    },
+    "composition_room_rail": {
+      "tutti_i_mercati": "All registered markets"
+    },
+    "editorial_calendar": {
+      "nessun_segnale_operativo_critico_il_ritmo_editoria": "All signals measured, the editorial cadence remains balanced across active markets."
+    },
+    "intelligence": {
+      "empty": "No critical signals observed. Editorial rhythm remains measured across active markets."
+    },
+    "market_editions_toolbar": {
+      "annulla": "Revert changes",
+      "apri_calendario": "View calendar",
+      "la_direzione_editoriale_globale_da_cui_nasceranno": "The global editorial tradition from which all Market Editions are drawn",
+      "programma_la_pubblicazione": "Schedule publication",
+      "scegli_il_mercato_di_destinazione_tono_cta_e_ritmo": "Select your market edition. Voice, invitation and cadence will observe local editorial convention.",
+      "una_frase_che_cattura_l_atmosfera_non_un_brief_tec": "A line to register atmosphere, not a technical brief."
+    },
+    "public_preview": {
+      "cta_editoriale": "Editorial commission",
+      "mercato_editoriale": "Publishing cadence"
     }
   },
   "blueprint": {
@@ -626,7 +839,504 @@
       "la_memoria_della_relazione_e_ancora_bianca": "No record of this relationship has yet been registered.",
       "linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb": "Moodboard Linkage now resides in its own P1 environment. Board collections authored by your team appear within",
       "materiali_preferiti": "Materials of record",
-      "nessun_contact_ancora_aggiungi_il_primo_qui_sotto": "No contacts recorded. Consider adding the first below."
+      "nessun_contact_ancora_aggiungi_il_primo_qui_sotto": "No contacts recorded. Consider adding the first below.",
+      "nessuna_interazione_registrata": "No exchange recorded to date.",
+      "registra_il_primo_contatto_una_call_una_nota_vocal": "Register the first contact — a call, a voice note, a studio visit.",
+      "salva": "Register this entry",
+      "style_dna_non_ancora_compilato_per_questo_account": "Style DNA not yet registered for this Account."
+    },
+    "activity": {
+      "annulla": "Withdraw entry",
+      "chiudi": "Close this entry",
+      "es_inviare_proposta_materiali": "Submit materials proposal"
+    },
+    "crm_accounts": {
+      "account_centered_ogni_account_puo_avere_piu_contac": "Account-centric. Each Account may hold multiple Contacts. Team members are registered within",
+      "action": "Next step",
+      "aggiungi_un_account": "Register a new account",
+      "annulla": "Discard changes",
+      "apri_account": "Access your library →",
+      "apri_il_primo_account": "Register your first account",
+      "caricamento": "Assembling registry…",
+      "cerca_per_nome_account_o_email_contact": "Search by registered name or contact correspondence",
+      "crea_account": "Establish your archive",
+      "due": "Due date",
+      "empty": {
+        "accounts_hint": "An Account is a relationship — a client, a practice, a household. Contacts are the individuals within that relationship.",
+        "accounts_lead": "Your archive begins here. Start building the record of your connections.",
+        "other_hint": "Consider switching view, or begin by registering a new account.",
+        "other_lead": "No {label} recorded in this view."
+      },
+      "le_relazioni_della_tua_casa_di_design": "The register of your design house",
+      "nessun_contatto_primario_aggiungi_al_drawer": "No primary contact recorded · add to drawer",
+      "no_due_date": "Open-ended",
+      "no_follow_ups": "All follow-ups attended to",
+      "sala_delle_relazioni": "Relationships Room",
+      "tutti_gli_stage": "All stages in the relationship",
+      "tutti_i_tipi": "All categories"
+    },
+    "cultural_edition": {
+      "adatta_tono_ritmo_cta_al_mercato": "Tailor voice, cadence and invitation to the market at hand",
+      "annulla": "Withdraw",
+      "briefing_editoriale_angle_desiderato_vincoli": "Editorial brief — intended angle, parameters, constraints",
+      "chiudi": "Close this record",
+      "mood_adatta_tono_ritmo_cta_e_narrativa_al_mercato": "MOOD calibrates tone, cadence, prompts and narrative language to the selected market, observing hospitality codes, visual rhythm and the registered perception of luxury within each cultural cluster.",
+      "moodboard": "Visual register",
+      "tutti_i_mercati": "All territories"
+    },
+    "relationship_graph": {
+      "dove_vive_la_relazione": "Where relation is registered",
+      "nessun_progetto_moodboard_o_materiale_ancora_colle": "No projects, moodboards or materials yet registered to this record.",
+      "relationship_graph_mappa_editoriale": "Relationship Graph™ · editorial cartography",
+      "tracciando_la_mappa_della_relazione": "Mapping the lineage of connection…"
+    },
+    "stage_change": {
+      "annulla": "Withdraw this change",
+      "chiudi": "Close stage",
+      "il_cambio_sara_tracciato_come_evento_in_timeline": "This change will be registered as a timeline entry.",
+      "perche_stiamo_cambiando_fase_il_contesto_rimane_in": "Why are we moving forward? The record remains in view."
+    }
+  },
+  "cultural": {
+    "cultural_edition": {
+      "adatta_il_tuo_lavoro_a_un_altro_mercato_culturale": "Reframe your practice for another cultural register.",
+      "atmosfera": "Atmospheric quality",
+      "briefing_al_caporedattore_opzionale": "Editor's note (optional)",
+      "chiudi": "Close register",
+      "direzione_narrativa_del_mercato": "Market narrative direction",
+      "hai_personalizzato_la_direzione_del_mercato": "Your market direction has been registered in the studio archive.",
+      "in_attesa_dei_contenuti_dello_studio": "Awaiting studio materials for the register…",
+      "la_redazione_internazionale_di_mood_sta_preparando": "The MOOD editorial atelier is preparing this edition's cultural register for your studio",
+      "lingua_della_versione_mercato": "Market edition language",
+      "mood_ha_pre_compilato_i_campi_con_la_cultura_narra": "MOOD has pre-filled these fields with the narrative tradition of",
+      "mood_prende_un_tuo_contenuto_e_ne_prepara_una_vers": "MOOD takes your material and prepares a considered edition for the cultural context you specify — not translation, but guided editorial intent.",
+      "puoi_selezionare_uno_o_piu_ambiti_la_redazione_di": "Select one or more disciplines—our editorial team will focus their attention solely on these.",
+      "revisione_editoriale_prima_di_creare": "Editorial review before composing",
+      "scegli_il_contenuto_da_adattare": "Select the archive to curate for your edition.",
+      "showcase_e_selezioni_materiali_sono_in_lavorazione": "Material libraries and curated showcases are under preparation — for now, you may enter a manual reference.",
+      "suggerita_dal_mercato": "· curated by the atelier",
+      "suggerito_dal_mercato": "Recommended by your market",
+      "torna_ai_suggerimenti_del_mercato": "Return to market suggestions"
+    },
+    "cultural_edition_review": {
+      "atmosfera": "Ambient register",
+      "atmosfera_originaria": "Originating atmosphere",
+      "corpo_editoriale": "Editorial Register",
+      "revisione_editoriale": "Editorial review and register",
+      "status_updated": "Status revised"
+    },
+    "cultural_editions_list": {
+      "le_tue_versioni_mercato": "Your registered market editions",
+      "lede": "Each edition is an editorial act: your material considered anew for a given market's language, cadence, and cultural register.",
+      "nessuna_edizione_ancora": "No editions registered yet.",
+      "new_edition": "Latest registered edition"
+    }
+  },
+  "inbox": {
+    "refresh": "Refresh register",
+    "refreshing": "Refreshing the register",
+    "tabs": {
+      "articles": "Registered pieces",
+      "references": "Reference archive"
+    }
+  },
+  "insights": {
+    "insights": {
+      "dove_si_trova_il_pensiero_progettuale": "Where design thinking resides",
+      "eventi_narrativi_nel_mese": "narrative entries this month",
+      "l_evoluzione_dello_studio": "The atelier in transition",
+      "la_grammatica_dello_studio": "The language of the studio",
+      "la_superficie_viva_del_journey": "The living surface of Journey",
+      "le_pulsazioni_dello_studio": "The studio's measured rhythm",
+      "moodboard": "Visual register",
+      "nessuna_pietra_miliare_ancora_attiva": "No milestones registered as yet.",
+      "ogni_cella_un_giorno_intensita_numero_di_eventi": "each cell · one day · intensity measured by event count",
+      "sto_leggendo_le_pulsazioni_dello_studio": "Reading the register of the atelier…",
+      "studio_insights": "Atelier · Registered Observations"
+    }
+  },
+  "journey": {
+    "client_interaction_layer": {
+      "questa_direzione": "this considered path forward"
+    },
+    "closure": {
+      "summary_placeholder": "A paragraph that registers the trajectory. Without emphasis, without embellishment. Editorial documentation of what was observed.",
+      "title_label": "Final title of record for the narrative",
+      "title_placeholder": "e.g. The Glasshouse · a study in natural light"
+    },
+    "journey_closure_ceremony": {
+      "titolo_definitivo_del_journey": "Registered title of the Journey"
+    },
+    "material_direction_workspace": {
+      "il_tavolo_della_materia": "The materials table"
+    },
+    "milestone_dialogue": {
+      "aggiungi_un_capitolo": "Register a new chapter",
+      "annulla": "Withdraw",
+      "capitolo": "chapter ·",
+      "chiudi": "Close dialogue",
+      "condividi": "Pass along",
+      "cosa_cambia_in_questo_capitolo_in_poche_righe": "What this chapter introduces — in brief",
+      "evoluzione_del_progetto": "Project evolution as recorded",
+      "il_perche_di_questa_direzione_materia_luce_atmosfe": "The intent behind this direction — material, light, atmosphere, design language",
+      "il_primo_capitolo_apre_la_conversazione_progettual": "The opening chapter establishes the foundations of dialogue with the client.",
+      "nessun_capitolo_condiviso_ancora": "No chapters registered yet.",
+      "nuovo_capitolo_progettuale": "A new design chapter opens",
+      "racconta_a_parole_tue_un_atmosfera_un_riferimento": "Describe in your own words — an atmosphere, a reference, a feeling observed",
+      "sto_preparando_il_dialogo_progettuale": "Composing your project dialogue now…",
+      "titolo_del_capitolo_es_luce_mediterranea": "Chapter title (e.g. Mediterranean Light)",
+      "voce_del_cliente": "Client voice"
+    },
+    "moodboard_direction_workspace": {
+      "capitoli_moodboard": "Moodboard chapters",
+      "direzione_editoriale": "Editorial direction",
+      "l_orizzonte_di_questo_capitolo": "The horizon of this chapter",
+      "le_direzioni_proposte": "Proposed design directions"
+    },
+    "step_context_header": {
+      "capitolo_precedente": "Previous chapter",
+      "capitolo_seguente": "Next chapter",
+      "posizione_nel_journey": "Position within narrative sequence"
+    },
+    "step_workspace": {
+      "capitolo_in_corso": "Chapter in progress",
+      "le_tracce_di_questo_passaggio": "The record of this passage"
+    },
+    "tab": {
+      "brief_editor_coming": "The Brief editor arrives in the chapter to follow.",
+      "evolution": "Project chronicle",
+      "evolution_real": "The project as it unfolds",
+      "first_conversation": "The opening dialogue",
+      "story": "The narrative unfolding through this commission",
+      "timeline_coming": "The photographic timeline arrives in the chapter to follow.",
+      "update_direction": "Revise orientation"
+    },
+    "version_stack": {
+      "ancora_nessun_capitolo": "No chapters registered yet"
+    }
+  },
+  "library": {
+    "materials": {
+      "le_materie_scelte_vivono_dentro_i_loro_journey": "Each material selected holds its own provenance within the atelier record",
+      "material_registry": "Material Archive",
+      "register_first_material": "Register your first material entry",
+      "register_material": "Record a new material"
+    },
+    "rail": {
+      "material_registry": "Material archive"
+    }
+  },
+  "material_view": {
+    "filter": {
+      "materiality": "Material character"
+    },
+    "header": {
+      "title": "Material as language"
+    }
+  },
+  "media": {
+    "image": {
+      "caricamento_immagine": "Image registering to archive…"
+    },
+    "universal_editorial_cropper": {
+      "chiudi": "Close register",
+      "filtro_editoriale": "Editorial register",
+      "questa_e_la_proporzione_che_i_consumer_hero_moodbo": "The proportion consumers will favour when choice is offered (Hero · Moodboard · Presentation)",
+      "salva_regia": "Preserve royal dimensions",
+      "trascina_il_punto_focale_sulla_parte_importante_de": "Position the focal point over the essential detail of the image"
+    }
+  },
+  "moodboards": {
+    "archive": {
+      "cta": "Open Studio Pulse",
+      "eyebrow": "Cross-disciplinary Archive · Sprint G.6",
+      "lede": "This archive gathers all moodboards composed across Journeys; the principal curation takes place within each Journey's Moodboard Direction™ chapter."
+    },
+    "empty_inside_journey": "Moodboards are curated within their respective Journeys",
+    "eyebrow": "Creative Practice · Atelier Register",
+    "moodboards": {
+      "continua_la_direzione": "Maintain the visual direction →"
+    },
+    "filter": {
+      "all": "All",
+      "draft": "Draft",
+      "sent": "Sent",
+      "viewed": "Viewed",
+      "approved": "Approved",
+      "revision_requested": "Revision requested",
+      "rejected": "Rejected"
+    }
+  },
+  "onboarding": {
+    "owner_introduction": {
+      "ad_esempio_sono_qui_per_accompagnarti_nelle_prime": "I'm here to accompany you through the early stages of the project…",
+      "annulla": "Withdraw from register",
+      "chiudi": "Close register",
+      "conferma_foto": "Confirm photograph",
+      "cosa_vuoi_che_il_cliente_sappia_di_te": "What clients ought to know about your practice and intent.",
+      "es_scrivi_a_stefano_default_ricavato_dal_nome": "E.g. 'Write to Stefano'. Default drawn from the registered name.",
+      "foto_ruolo_e_bio_sono_visibili_a_ogni_cliente_del": "Your photograph, role and biography appear to each client of the studio—a first gesture of considered care.",
+      "posiziona_la_foto": "Position the photograph",
+      "presentati_ai_tuoi_clienti": "Introduce yourself to your clients in your own words.",
+      "salva_e_pubblica": "Preserve and register",
+      "trascina_per_centrare_il_volto_usa_lo_zoom_per_rit": "Reposition to centre the portrait. Adjust the frame with zoom to compose.",
+      "visibile_sotto_il_tuo_nome_nella_human_card": "Appears beneath your name on the Human Card."
+    }
+  },
+  "placeholder": {
+    "coming_soon": {
+      "torna_ai_progetti": "Return to archive"
+    }
+  },
+  "project": {
+    "detail": {
+      "compose_proposal_title": "Compose an editorial proposal from the project archive",
+      "empty_conversations": "No dialogue recorded for this commission at present.",
+      "empty_inspirations": "No references yet gathered for this register.",
+      "empty_materials": "No materials currently registered to this project.",
+      "empty_moodboards": "Every moodboard begins with a single, considered intent.",
+      "empty_proposals": "No proposals yet registered for this project.",
+      "memory_writes_itself": "The archive composes itself as you work.",
+      "regenerate_direction_title": "Recalibrate direction in light of present context",
+      "share_thread_title": "Share with the atelier thread"
+    }
+  },
+  "settings": {
+    "asset_picker": {
+      "annulla": "Disregard selection",
+      "carica_file": "Upload material",
+      "caricamento": "Assembling your library…",
+      "cerca_per_nome_descrizione_alt": "Search by title, caption, or attributed text",
+      "chiudi": "Close",
+      "incolla_un_url_pubblico_https_di_un_immagine_verra": "Paste a public URL (https://…) for an image. It will be registered as an external asset — no allocation from your Library required.",
+      "modifica_crop_filtri": "Refine · crop & colour treatment",
+      "nessun_asset_corrisponde_carica_nuove_immagini_per": "No assets registered. Upload new imagery to begin curation.",
+      "scegli_dal_computer": "select from library",
+      "trascina_qui_le_immagini": "Drag images to this area"
+    },
+    "brand_studio": {
+      "il_preset_sceglie_la_modalita_automaticamente_puoi": "The preset selects mode automatically · you may override if preferred",
+      "la_voce_dello_studio_resta_persistente_la_direzion": "The studio's registered voice remains constant. Editorial intent and narrative register of a single Inspiration overwrite only that reading, leaving all others undisturbed.",
+      "voce_editoriale_dello_studio": "Studio editorial register"
+    },
+    "international_presence": {
+      "a_chi_parli_prevalentemente_in_questo_mercato": "The primary language of your audience in this territory",
+      "annulla": "Disregard",
+      "caricamento_della_presenza_editoriale": "Assembling editorial presence for the archive…",
+      "come_gli_interlocutori_in_questo_mercato_tipicamen": "The heuristics that shape buyer intent in this market—and inform storefront language, invitations to act, and editorial composition.",
+      "cosa_vuoi_ottenere_strategicamente_da_questo_merca": "Your strategic intent for this market",
+      "italian_material_culture": "Material culture of Italy",
+      "l_asse_strategico_di_posizionamento_commerciale_pe": "The considered positioning strategy for this market territory.",
+      "nessun_mercato_disponibile_nel_catalogo_platform": "No territories currently registered within the catalogue architecture",
+      "uno_studio_di_new_york_puo_rivolgersi_al_mercato_a": "a New York studio may address the American market using a"
+    },
+    "magazine_admin": {
+      "caricamento": "Preparing your library",
+      "inizia_un_nuovo_articolo": "Begin a new piece"
+    },
+    "magazine_editor": {
+      "caricamento": "Loading material",
+      "cta_label_es_esplora_la_palette_materica": "CTA label (e.g. Browse the material palette)",
+      "riassunto_editoriale_1_2_frasi": "Editorial précis (one to two sentences)",
+      "testo_editoriale_del_paragrafo": "Editorial language for the paragraph…",
+      "torna_alla_lista": "Return to register"
+    },
+    "plan": {
+      "ai_credits": "AI allocation"
+    }
+  },
+  "site": {
+    "begin_journey": {
+      "aiutaci_a_comprendere_il_tuo_modo_di_abitare_non_i": "Help us understand how you inhabit space, not what you intend to spend.",
+      "avvicinati_al_tuo_journey": "Begin your registered atelier →",
+      "come_vivi_gli_spazi": "How do you inhabit your rooms?",
+      "come_vuoi_sentirti_in_questo_spazio": "How do you wish this space to make you feel?",
+      "continua_il_racconto": "Proceed with the narrative →",
+      "facoltativo_alcune_cose_si_capiscono_meglio_a_voce": "Optional — some conversations are better held by voice.",
+      "inizia_a_raccontarci_lo_spazio_che_immagini_senza": "Begin to describe the interior you envision — unhurried, in your own time",
+      "inizia_il_tuo_design_journey": "Begin your Design Journey™",
+      "nessun_preventivo_nessuna_pressione_solo_una_conve": "No estimate required, no obligation assumed. Simply a conversation.",
+      "niente_di_formale_tutto_quello_che_ti_viene_in_men": "No ceremony here — simply whatever comes to mind.",
+      "quale_atmosfera_stai_cercando": "Which atmosphere are you seeking to register",
+      "quali_materiali_ti_fanno_stare_bene": "Which materials bring you a sense of composure?",
+      "stiamo_aprendo_il_tuo_design_journey": "Preparing your Design Journey with care…",
+      "tre_dettagli_soltanto_il_resto_nascera_dalla_conve": "Three details only — the rest will emerge through conversation.",
+      "una_sensazione_un_momento_del_giorno_un_ricordo": "A feeling, a time of day, a memory held..."
+    },
+    "journey_welcome": {
+      "aprendo_il_tuo_design_journey": "Opening your Design Journey atelier",
+      "capitolo_primo_brief_cliente": "Chapter one · Client brief received",
+      "forse_il_viaggio_e_stato_gia_archiviato_o_il_link": "This record may have been archived, or the address altered — write to the atelier to retrieve it.",
+      "il_modo_in_cui_vivi": "The language of how you live ·",
+      "il_tuo_design_journey_e_iniziato": "Your Design Journey™ · now begins",
+      "l_atmosfera_che_cerchi": "The atmosphere you're setting out to find",
+      "lo_studio_che_ti_accompagna": "The studio that accompanies your practice",
+      "questo_e_il_tuo_design_journey_tutto_cio_che_condi": "This is your Design Journey™. Everything we share from this point forward will be held here — chapters, atmospheres, exchanges.",
+      "questo_link_non_e_piu_disponibile": "This invitation has been withdrawn from circulation.",
+      "salva_questo_link_e_la_porta_del_tuo_design_journe": "Bookmark this link — it marks the threshold of your Design Journey. The studio will reach you shortly at the address you have registered."
+    }
+  },
+  "storefront": {
+    "band_editors": {
+      "aggiungi_colonna": "Add column to register",
+      "aggiungi_kpi": "Register key measure",
+      "aggiungi_link": "Register a reference",
+      "aggiungi_logo": "Register atelier mark",
+      "aggiungi_social": "Register social channels",
+      "aggiungi_voce_di_menu": "Register new entry",
+      "automatica_ultimi_articoli_pubblicati_nel_locale": "Automatica · latest editorial entries registered in locale",
+      "body_editoriale": "Editorial register",
+      "eyebrow_editoriale": "Editorial heading",
+      "la_tua_email": "Your registered address",
+      "le_case_che_ci_scelgono": "The houses that recognise us",
+      "leggi_tutti_gli_articoli": "View the complete editorial register",
+      "nessuna_colonna_aggiungi_la_prima": "No columns yet. Begin by adding your first below",
+      "nessuna_voce_di_menu_aggiungi_la_prima": "No entries recorded. Register your first below"
+    },
+    "storefront_studio": {
+      "caricamento_dell_orchestrazione": "Orchestration layer loading",
+      "chiudi": "Close register",
+      "l_orchestrazione_cinematica_della_presenza_pubblic": "The cinematic orchestration of public presence. Each band functions as a narrative surface, adjusting tone, rhythm and register to the market observing it. Everything visible here constitutes the public site — nothing concealed, nothing hardcoded.",
+      "nessuna_fascia_per_questa_pagina": "No register entry has been assigned to this page.",
+      "pubblica_pagina": "Register page to library",
+      "sopra_titolo_editoriale": "Editorial overline"
+    }
+  },
+  "storytelling": {
+    "hotspot_image_overlay": {
+      "aggiungi_note_di_dettaglio_sull_immagine": "Add considered notes to this detail",
+      "chiudi": "Close view"
+    },
+    "project_gallery": {
+      "aggiungi_immagine": "Add to library",
+      "aggiungi_la_prima_immagine": "Add your first image to the library",
+      "annulla": "Withdraw intent",
+      "caption_editoriale_visibile": "Published caption (visible to readers)",
+      "conferma_immagine": "Confirm image selection",
+      "elimina": "Remove from register",
+      "gallery_del_progetto": "Project archive register",
+      "nessuna_immagine_ancora_aggiungi_la_prima_per_iniz": "No images registered yet. Begin your project record with the first.",
+      "per_impostare_la_cover_clicca": "to appoint your cover · press here",
+      "una_case_history_editoriale_non_una_scheda_portfol": "An editorial case study, not a portfolio entry. Drag to reorder · click"
+    },
+    "story_sections": {
+      "add_to_moodboard": "Register to library",
+      "aggiungi_blocco": "Register a new section",
+      "aggiungi_immagine": "Register image",
+      "annulla": "Withdraw changes",
+      "apri_editor_hotspot": "Open hotspot register",
+      "componi_blocchi_editoriali_testo_immagini_gallery": "Compose editorial sections — copy, imagery, galleries, detail points, calls to action. Reorder by dragging the handle.",
+      "copy_editoriale_cta": "Editorial copy call-to-action",
+      "elimina_blocco": "Remove section",
+      "explore_material": "Review the material language",
+      "la_frase_che_rimane": "The phrase that endures.",
+      "nessun_blocco_ancora_inizia_la_narrazione": "No sections recorded yet. Begin the narrative.",
+      "paragrafo_editoriale": "Editorial passage…",
+      "sezioni_della_storia": "Narrative chapters"
+    }
+  },
+  "stubs": {
+    "client": {
+      "approvals": {
+        "body": "Each decision requiring your approval — material, layout, resolution — is recorded here, clearly registered and traceable throughout.",
+        "eyebrow": "Approvals Register",
+        "title": "The first proposals are arriving for your consideration."
+      },
+      "files": {
+        "body": "Each file registered by the studio appears here, arranged by phase and held in permanent archive.",
+        "eyebrow": "Registered holdings",
+        "title": "One archive for documents, renders and drawings alike."
+      },
+      "in_arrivo": "Forthcoming entries",
+      "messages": {
+        "body": "All correspondence, updates and enquiries held here — no archive to sift, no scattered threads to recover.",
+        "eyebrow": "Correspondence",
+        "title": "A direct line to your atelier."
+      },
+      "moodboards": {
+        "body": "Our atelier is assembling imagery, material and atmosphere to compose the opening visual proposals for your commission.",
+        "eyebrow": "Visual register",
+        "title": "Your moodboards will appear in this register."
+      },
+      "project": {
+        "body": "This register will soon hold the project summary, recent progress, and all studio-curated updates in one considered view.",
+        "eyebrow": "My project register",
+        "title": "Your project folio is being prepared."
+      },
+      "timeline": {
+        "body": "Here every milestone, appointment and delivery is registered with the discipline of an atelier record.",
+        "eyebrow": "Chronology of record",
+        "title": "The project timeline will be made available shortly."
+      }
+    }
+  },
+  "taxonomy": {
+    "advisor_status": {
+      "accepted": "Confirmed as advisor",
+      "active": "Currently registered",
+      "declined": "Declined by atelier",
+      "invited": "Invited to register",
+      "suspended": "Held from register"
+    },
+    "common": {
+      "all": "All entries",
+      "all_m": "All registered ateliers",
+      "none": "Not recorded"
+    },
+    "cultural_edition": {
+      "approved": "Registered for edition",
+      "archived": "Withdrawn from register",
+      "archived_at": "Archived in register",
+      "draft": "In progress",
+      "in_review": "Under consideration"
+    },
+    "editorial_status": {
+      "ai_composing": "Under composition",
+      "approved": "Registered for publication",
+      "archived": "Archived from register",
+      "direction_defined": "Direction established",
+      "draft": "In preparation",
+      "published": "Registered to archive",
+      "ready_for_editorial_review": "Prepared for editorial consideration",
+      "revision_requested": "Revision requested",
+      "scheduled": "Scheduled for publication"
+    },
+    "material_family": {
+      "ceramica": "Ceramic",
+      "composito": "Composite material",
+      "legno": "Timber",
+      "malta": "Limestone from the Maltese archipelago",
+      "marmo": "Marble",
+      "metallo": "Metal",
+      "naturale": "Natural Materials",
+      "pietra": "Stone",
+      "tessile": "Textile",
+      "vetro": "Glass"
+    }
+  },
+  "workspace": {
+    "add_reference": {
+      "aggiungi_un_riferimento": "Register a reference",
+      "annulla": "Withdraw",
+      "es_hospitality_emotion_material_atmosphere": "e.g. Hospitality sensibility · Material register",
+      "ogni_riferimento_entra_nella_cultural_design_intel": "Each reference enters the Cultural Design Intelligence™ · interpreted through the lens of your intended market.",
+      "perche_questo_riferimento_entra_nell_archivio": "Why does this reference enter the register?",
+      "scegli_un_asset_dalla_library": "Select an asset from the Library",
+      "sfoglia_la_media_library": "Consult the reference library",
+      "stiamo_salvando_l_url_del_pin_scraping_automatico": "We're registering the pin URL for now — automated retrieval of title, image and description will arrive in Phase P2 once the official Pinterest integration is in place.",
+      "url_del_pin": "Pin reference URL"
+    },
+    "design_journey_tab": {
+      "aggiorna_direzione": "Revise direction",
+      "evoluzione_del_progetto": "Project evolution as registered",
+      "l_editor_del_brief_arrivera_nel_prossimo_capitolo": "The Brief editor arrives in the chapter that follows.",
+      "l_evoluzione_reale_del_progetto": "The measured evolution of intent",
+      "la_prima_conversazione": "The opening dialogue",
+      "la_storia_che_il_progetto_sta_scrivendo": "The narrative unfolding through this work",
+      "la_timeline_fotografica_arrivera_nel_prossimo_capi": "The photographic timeline will appear in the chapter that follows."
+    },
+    "proposals": {
+      "le_presentazioni_vivono_dentro_i_loro_journey": "Presentations are held within their respective Journeys"
     }
   }
 }

@@ -990,7 +990,16 @@
       "lede": "Questa è una vista d'archivio per ritrovare le moodboard composte attraverso tutti i Journey. La composizione vera avviene nel capitolo Moodboard Direction™ del singolo Journey.",
       "cta": "Apri Studio Pulse"
     },
-    "eyebrow": "Design Journey · Tavolo Creativo"
+    "eyebrow": "Design Journey · Tavolo Creativo",
+    "filter": {
+      "all": "Tutti",
+      "draft": "Bozza",
+      "sent": "Inviati",
+      "viewed": "Visualizzati",
+      "approved": "Approvati",
+      "revision_requested": "Revisione richiesta",
+      "rejected": "Rifiutati"
+    }
   },
   "placeholder": {
     "coming_soon": {

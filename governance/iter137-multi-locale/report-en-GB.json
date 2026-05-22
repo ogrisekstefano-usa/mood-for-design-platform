@@ -1,0 +1,797 @@
+{
+  "iteration": "ITER132",
+  "locale": "en-GB",
+  "base": "https://content-hub-pro-22.preview.emergentagent.com",
+  "generated_at": "2026-05-22T07:00:50+00:00",
+  "routes_crawled": 21,
+  "summary": {},
+  "findings": [],
+  "pages": [
+    {
+      "key": "dashboard",
+      "url": "/dashboard",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/dashboard.jpg"
+    },
+    {
+      "key": "journeys",
+      "url": "/workspace/projects",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/journeys.jpg"
+    },
+    {
+      "key": "crm-accounts",
+      "url": "/crm/accounts",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/crm-accounts.jpg"
+    },
+    {
+      "key": "crm-follow-ups",
+      "url": "/crm/follow-ups",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/crm-follow-ups.jpg"
+    },
+    {
+      "key": "inspirations",
+      "url": "/inspirations",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/inspirations.jpg"
+    },
+    {
+      "key": "brand-atlas",
+      "url": "/inspirations/brands",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/brand-atlas.jpg"
+    },
+    {
+      "key": "material-view",
+      "url": "/inspirations/materials",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/material-view.jpg"
+    },
+    {
+      "key": "cultural-editions",
+      "url": "/workspace/cultural-editions",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay LoginPage LoginPage"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/cultural-editions.jpg"
+    },
+    {
+      "key": "editorial-calendar",
+      "url": "/editorial/calendar",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay LoginPage LoginPage"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/editorial-calendar.jpg"
+    },
+    {
+      "key": "magazine",
+      "url": "/editorial/magazine",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/magazine.jpg"
+    },
+    {
+      "key": "publishing",
+      "url": "/editorial/publishing",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/publishing.jpg"
+    },
+    {
+      "key": "market-matrix",
+      "url": "/editorial/market",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/market-matrix.jpg"
+    },
+    {
+      "key": "web-presence",
+      "url": "/editorial/web-presence",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/web-presence.jpg"
+    },
+    {
+      "key": "studio-identity",
+      "url": "/team/studio-identity",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/studio-identity.jpg"
+    },
+    {
+      "key": "integrations",
+      "url": "/team/integrations",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/integrations.jpg"
+    },
+    {
+      "key": "insights",
+      "url": "/team/insights",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/insights.jpg"
+    },
+    {
+      "key": "forms",
+      "url": "/forms",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/forms.jpg"
+    },
+    {
+      "key": "studio-voice",
+      "url": "/blueprint/studio-voice",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/studio-voice.jpg"
+    },
+    {
+      "key": "language-center",
+      "url": "/blueprint/language",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/language-center.jpg"
+    },
+    {
+      "key": "moodboards",
+      "url": "/moodboards",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/moodboards.jpg"
+    },
+    {
+      "key": "settings-locales",
+      "url": "/settings/locales",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/settings-locales.jpg"
+    }
+  ]
+}

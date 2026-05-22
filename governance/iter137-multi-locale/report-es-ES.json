@@ -1,0 +1,894 @@
+{
+  "iteration": "ITER132",
+  "locale": "es-ES",
+  "base": "https://content-hub-pro-22.preview.emergentagent.com",
+  "generated_at": "2026-05-22T07:09:07+00:00",
+  "routes_crawled": 21,
+  "summary": {
+    "HARD_CODED_UI": 2,
+    "DB_SEEDED_CONTENT": 26
+  },
+  "findings": [
+    {
+      "kind": "HARD_CODED_UI",
+      "page": "/dashboard",
+      "text": "Leyendo el ritmo del proyecto…",
+      "testid": "pulse-loading"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/dashboard",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/dashboard",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/workspace/projects",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/workspace/projects",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/crm/accounts",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/crm/accounts",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/crm/follow-ups",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/crm/follow-ups",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "HARD_CODED_UI",
+      "page": "/inspirations",
+      "text": "El archivo curatorial del estudio. Cada referencia se lee a través de la lente cultural de los mercados internacionales: atmósfera, materia, afinidad editorial.",
+      "testid": "inspirations-header"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/inspirations",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/inspirations",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/editorial/calendar",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/editorial/publishing",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/editorial/publishing",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/editorial/web-presence",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/editorial/web-presence",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/team/studio-identity",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/team/studio-identity",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/team/integrations",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/team/integrations",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/team/integrations",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"tenant\",\"candidates\":{\"explicit\":null,\"user\":null,\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"ES_ES\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"l"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/team/insights",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/team/insights",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/forms",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/forms",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/blueprint/studio-voice",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/blueprint/studio-voice",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+      "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"langua"
+    }
+  ],
+  "pages": [
+    {
+      "key": "dashboard",
+      "url": "/dashboard",
+      "nav_error": null,
+      "italian_leaks": [
+        {
+          "text": "Leyendo el ritmo del proyecto…",
+          "testid": "pulse-loading"
+        }
+      ],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: del proyecto, locale: es, page: /dashboard, testid: pulse-loading}"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/dashboard.jpg"
+    },
+    {
+      "key": "journeys",
+      "url": "/workspace/projects",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/journeys.jpg"
+    },
+    {
+      "key": "crm-accounts",
+      "url": "/crm/accounts",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: le relazioni, locale: es, page: /crm/accounts, testid: crm-page}"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/crm-accounts.jpg"
+    },
+    {
+      "key": "crm-follow-ups",
+      "url": "/crm/follow-ups",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Alle Nachfassaktionen, locale: es, page: /crm/follow-ups, testid: crm-followups}"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/crm-follow-ups.jpg"
+    },
+    {
+      "key": "inspirations",
+      "url": "/inspirations",
+      "nav_error": null,
+      "italian_leaks": [
+        {
+          "text": "El archivo curatorial del estudio. Cada referencia se lee a través de la lente cultural de los mercados internacionales: atmósfera, materia, afinidad editorial.",
+          "testid": "inspirations-header"
+        }
+      ],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: la lente, locale: es, page: /inspirations, testid: inspirations-header}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Brand, locale: es, page: /inspirations, testid: ins-brand-atlas-link}"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/inspirations.jpg"
+    },
+    {
+      "key": "brand-atlas",
+      "url": "/inspirations/brands",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/brand-atlas.jpg"
+    },
+    {
+      "key": "material-view",
+      "url": "/inspirations/materials",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/material-view.jpg"
+    },
+    {
+      "key": "cultural-editions",
+      "url": "/workspace/cultural-editions",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/cultural-editions.jpg"
+    },
+    {
+      "key": "editorial-calendar",
+      "url": "/editorial/calendar",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/editorial-calendar.jpg"
+    },
+    {
+      "key": "magazine",
+      "url": "/editorial/magazine",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/magazine.jpg"
+    },
+    {
+      "key": "publishing",
+      "url": "/editorial/publishing",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/publishing.jpg"
+    },
+    {
+      "key": "market-matrix",
+      "url": "/editorial/market",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/market-matrix.jpg"
+    },
+    {
+      "key": "web-presence",
+      "url": "/editorial/web-presence",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/web-presence.jpg"
+    },
+    {
+      "key": "studio-identity",
+      "url": "/team/studio-identity",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/studio-identity.jpg"
+    },
+    {
+      "key": "integrations",
+      "url": "/team/integrations",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "status": 200,
+          "marker_hits": 10,
+          "accent_hits": 7,
+          "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"tenant\",\"candidates\":{\"explicit\":null,\"user\":null,\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"ES_ES\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and cont"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/integrations.jpg"
+    },
+    {
+      "key": "insights",
+      "url": "/team/insights",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/insights.jpg"
+    },
+    {
+      "key": "forms",
+      "url": "/forms",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/forms.jpg"
+    },
+    {
+      "key": "studio-voice",
+      "url": "/blueprint/studio-voice",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Alle Register, locale: es, page: /blueprint/studio-voice, testid: voice-memory-filter-all}"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=ES_ES",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 3,
+          "body_excerpt": "{\"locale_code\":\"ES_ES\",\"requested\":\"ES_ES\",\"source\":\"saved\",\"candidates\":{\"explicit\":null,\"saved\":\"ES_ES\",\"browser\":\"ES_ES\",\"tenant\":null,\"system\":\"IT_IT\"},\"profile\":{\"id\":\"a4f15fa1-a78d-4e67-bc5f-1eab82afd4db\",\"locale_code\":\"ES_ES\",\"language\":\"es\",\"market\":\"ES\",\"display_name\":\"España\",\"emotional_style\":\"warm experiential Mediterranean\",\"luxury_style\":\"luz mediterránea, materiales cálidos, gesto sensorial\",\"hospitality_style\":\"sobremesa, espacios sociales, hospitalidad cálida\",\"editorial_tone\":\"registro culto, prosa poética y sensorial\",\"cta_style\":\"invitación cálida — 'Hablemos cuando el proyecto te llame'\",\"investment_language\":\"calidad de vida, experiencia compartida, herencia mediterránea\",\"atmosphere_language\":\"atmósfera serena, luz natural, ritmo mediterráneo, calidez\",\"focus\":[\"Mediterranean warmth\",\"social atmosphere\",\"sunlight\",\"experiential hospitality\"],\"vocabulary_rules\":[\"calidez\",\"luz natural\",\"convivencia\",\"experiencia sensorial\",\"ritmo mediterráneo\",\"materia cálida\",\"atmósfera serena\",\"gesto poético\"],\"forbidden_patterns\":[\"lujo frío\",\"rigor germánico\",\"AI\",\"generado por\"],\"positioning_examples\":[\"Una casa pensada para la sobremesa, no para la fotografía.\",\"La luz mediterránea no se imita: se respeta y se construye con ella.\"],\"system_brief\":\"Write for a Spanish audience valuing warm Mediterranean experience, social spaces, natural light and emotional hospitality. Speak with poetic warmth. Avoid German-style construction rigor framing and Northern-European res"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/studio-voice.jpg"
+    },
+    {
+      "key": "language-center",
+      "url": "/blueprint/language",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/language-center.jpg"
+    },
+    {
+      "key": "moodboards",
+      "url": "/moodboards",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/moodboards.jpg"
+    },
+    {
+      "key": "settings-locales",
+      "url": "/settings/locales",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/settings-locales.jpg"
+    }
+  ]
+}

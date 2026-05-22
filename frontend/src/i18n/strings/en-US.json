@@ -990,7 +990,16 @@
       "lede": "This is an archive view that lets you rediscover moodboards composed across every Journey. True composition happens inside the Moodboard Direction™ chapter of each Journey.",
       "cta": "Open Studio Pulse"
     },
-    "eyebrow": "Design Journey · Creative Table"
+    "eyebrow": "Design Journey · Creative Table",
+    "filter": {
+      "all": "All",
+      "draft": "Draft",
+      "sent": "Sent",
+      "viewed": "Viewed",
+      "approved": "Approved",
+      "revision_requested": "Revision requested",
+      "rejected": "Rejected"
+    }
   },
   "placeholder": {
     "coming_soon": {

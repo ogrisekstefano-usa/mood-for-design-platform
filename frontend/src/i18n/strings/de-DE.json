@@ -54,9 +54,12 @@
       "annulla": "Verwerfen",
       "breve_nota_editoriale_sul_dettaglio": "Kurze redaktionelle Anmerkung zum Detail.",
       "elimina": "Entfernen",
-      "material": "Materialität ·"
+      "material": "Materialität ·",
+      "salva_hotspot": "Salva hotspot"
     },
     "image_edit": {
+      "annulla": "Annulla",
+      "centra_il_punto_focale": "Centra il punto focale",
       "chiudi": "Schließen",
       "il_punto_focale_resta_visibile_in_tutti_i_ritagli": "Der Fokuspunkt bleibt in allen Ausschnitten sichtbar — Hero, Mobil, Karte.",
       "modifica_immagine_continuita_editoriale": "Bildbearbeitung · redaktionelle Kontinuität",
@@ -333,6 +336,22 @@
         "yesterday": "gestern",
         "days_ago": "vor {n} Tagen"
       }
+    },
+    "cockpit_timeline": {
+      "carica_un_riferimento_o_crea_una_moodboard_per_dar": "Referenz hochladen oder Moodboard anlegen – für Struktur im Tagesablauf.",
+      "il_battito_del_tuo_studio": "Der Rhythmus deines Ateliers"
+    },
+    "dashboard": {
+      "apri_timeline": "Zeitachse öffnen",
+      "decisioni_che_la_giornata_sussurra": "Entscheidungen, die der Tag formuliert",
+      "i_primi_suggerimenti_appariranno_con_l_utilizzo_re": "Die ersten Empfehlungen entstehen mit der aktiven Nutzung des Ateliers.",
+      "le_relazioni_che_attendono_un_gesto": "Beziehungen, die eine Geste erwarten",
+      "mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud": "MOOD beginnt, die Arbeitsrhythmen Ihres Ateliers zu erfassen.",
+      "nessuna_relazione_raffreddata": "Keine abgekühlte Verbindung.",
+      "nuova_moodboard": "Neue Gestaltungsmatrix",
+      "progetti_che_chiedono_la_tua_presenza": "Projekte, die Ihre Aufmerksamkeit erfordern",
+      "riprova": "Erneut versuchen",
+      "tutti_gli_account": "Sämtliche Atelierkonten"
     }
   },
   "errors": {
@@ -417,7 +436,28 @@
       "upgrade_for_more": "Upgraden, um weitere zu erstellen"
     },
     "usage_label": "Projekte",
-    "newProject": "Neues Projekt"
+    "newProject": "Neues Projekt",
+    "projects_studio": {
+      "aggiungi_cta": "+ CTA hinzufügen",
+      "annulla": "Verwerfen",
+      "apri_un_nuovo_progetto": "+ Neues Projekt anlegen",
+      "atelier": "Werkstatt",
+      "caricamento_archivio": "Archiv wird geladen",
+      "cover_hero_l_apertura_visiva_del_progetto": "Cover Hero · die visuelle Eröffnung des Projekts",
+      "explore_material": "Materialität erkunden",
+      "nessuna_immagine": "Keine Bilddokumentation vorhanden",
+      "pubblica_progetto": "Projekt veröffentlichen",
+      "refine_material_narrative_materia_primaria_seconda": "Materialsprache verfeinern · primäre · sekundäre Ebene · haptische Präsenz",
+      "sottotitolo_editoriale": "Redaktionelle Unterzeile",
+      "titolo_del_progetto": "Projektbezeichnung",
+      "titolo_per_il_mercato": "Projekttitel für den Markt",
+      "vocabolario_materico": "Materialsprache des Ateliers"
+    },
+    "studio": {
+      "mood_placeholder": "Raum, Material, Struktur",
+      "status_live": "Aktiv",
+      "tag_input_placeholder": "Stichwort eingeben…"
+    }
   },
   "inspirations": {
     "eyebrow": "Cultural Design Intelligence Layer",
@@ -454,6 +494,125 @@
       "luxury": "Luxus-Ton",
       "profile": "Destination",
       "reset": "Reset"
+    },
+    "add_inspiration": {
+      "aggiungi_riferimento": "Referenz hinzufügen",
+      "annulla": "Verwerfen",
+      "atmosfera": "Raumstimmung",
+      "carica_file": "Datei hinzufügen",
+      "carica_un_immagine_oppure_incolla_un_link_pinteres": "Bild hochladen oder URL aus Pinterest, Instagram oder einer beliebigen Quelle einfügen. MOOD überführt es in die Media Library und macht es systemweit verfügbar.",
+      "chiudi": "Schließen",
+      "cosa_ti_ha_colpito_di_questa_reference": "Was prägt diese Referenz für Ihr Atelier?",
+      "descrizione_editoriale_opzionale": "Redaktionelle Anmerkung (optional)",
+      "es_salotto_materico_palette_neutra": "Z. B. Wohnraum mit haptischer Materialität, neutrale Farbgebung",
+      "pinterest_instagram_o_link_diretto_mood_prova_a_es": "Pinterest, Instagram oder direkter Link. MOOD extrahiert das Hauptbild automatisch — bei Nichterfolg wird der Link gespeichert und die Deckansicht lässt sich später ergänzen.",
+      "url_della_reference": "Referenz-Adresse"
+    },
+    "brand_detail": {
+      "aggiungi_capitolo_editoriale": "Kapitel hinzufügen",
+      "continua_la_lettura": "Lektüre fortsetzen",
+      "curated_by_mood": "Kuratiert von MOOD",
+      "modifica_collezione": "Kollektion bearbeiten",
+      "modifica_produttore": "Hersteller bearbeiten",
+      "moodboard": "Bildarchiv",
+      "moodboard_correlate": "Verwandte Materialwelten",
+      "nessuna_collezione_registrata_il_primo_capitolo_ed": "Noch keine Kollektion hinterlegt — das erste editoriale Kapitel eröffnet die kuratorische Lesart der Marke.",
+      "riferimenti_editoriali": "Redaktionelle Bezüge"
+    },
+    "brand_form": {
+      "aggiungi_all_atlante": "Zum Archiv hinzufügen",
+      "annulla": "Abbrechen",
+      "chiudi": "Schließen",
+      "es_atelier_sereno": "z. B. Atelier Sereno",
+      "salva_modifiche": "Änderungen übernehmen",
+      "salvataggio": "Sicherung",
+      "una_frase_che_identifica_il_linguaggio_progettuale": "Ein Satz, der die gestalterische Haltung der Marke definiert."
+    },
+    "brand_mode": {
+      "add_maker": "Hersteller hinzufügen",
+      "aggiungi_produttore": "Hersteller hinzufügen",
+      "cerca_per_nome_atmosfera_materia": "Name, Materialität, Stimmung durchsuchen",
+      "curated_by_mood": "Kuratiert von MOOD",
+      "entra_nell_atelier": "Zur Materialwerkstatt",
+      "esplora_i_marchi_le_collezioni_e_il_linguaggio_pro": "Erkunde die Hersteller, ihre Kollektionen und gestalterische Haltung im MOOD Repertoire. Jede Marke wird zur Lektüre — vorherrschende Atmosphären, wiederkehrende Materialitäten, narrative Geografie für deine Projekte.",
+      "l_atlante_curatoriale_e_in_costruzione_aggiungi_un": "Ihr Materialatlas entsteht. Legen Sie einen Hersteller an oder importieren Sie einen Katalog, um die kuratorische Arbeit zu beginnen.",
+      "nessun_produttore_corrisponde_alla_ricerca": "Kein Hersteller entspricht den Suchkriterien",
+      "tutti_i_posizionamenti": "sämtliche Positionierungen"
+    },
+    "collection_form": {
+      "aggiungi_collezione": "Kollektion anlegen",
+      "annulla": "Verwerfen",
+      "capitolo_editoriale": "Redaktionelle Ebene ·",
+      "chiudi": "Schließen",
+      "il_linguaggio_progettuale_di_questo_capitolo_le_ma": "Die gestalterische Haltung dieses Kapitels, seine materiellen Konstanten, seine Atmosphäre.",
+      "salva_modifiche": "Änderungen sichern",
+      "salvataggio": "Speichern"
+    },
+    "curated_collection": {
+      "description_placeholder": "Welche Materialien und Hersteller umfasst dieses kuratorische Kapitel?",
+      "descrizione_editoriale": "Redaktionelle Einordnung"
+    },
+    "inspiration_detail": {
+      "adatta_la_direzione_editoriale_per_questo_riferime": "Redaktionelle Haltung für diese Referenz definieren",
+      "apertura_del_riferimento": "Referenz wird geladen…",
+      "apri_product_gallery": "Materialatlas öffnen",
+      "atmosfera": "Raumcharakter",
+      "description_placeholder": "Redaktionelle Beschreibung",
+      "direzione_editoriale": "Redaktionelle Leitung",
+      "le_percentuali_sono_secondarie_il_significato_e_ne": "Die Zahlen sind nachgeordnet. Die Bedeutung liegt in der redaktionellen Einordnung darüber.",
+      "modifica": "Bearbeiten",
+      "mood_sta_leggendo_il_linguaggio_culturale_di_quest": "MOOD analysiert die gestalterische Haltung dieser Referenz",
+      "rights_verify_note": "· Nutzungsrechte vor externer Veröffentlichung prüfen.",
+      "verifica_i_diritti_d_uso_prima_della_pubblicazione": "· Nutzungsrechte vor externer Veröffentlichung prüfen."
+    },
+    "material_view": {
+      "aumenta_il_numero_di_asset_curati_per_arricchire_l": "Erweitern Sie die kuratierten Positionen zur Vertiefung Ihrer Materialsammlung.",
+      "nessun_elemento_materico_ancora_classificato_per_q": "Für diese Filterung liegt noch kein Material vor.",
+      "sto_leggendo_la_materioteca": "Materialbibliothek wird geladen…"
+    },
+    "moodboard_picker": {
+      "aggiungi_al_moodboard": "Zum Moodboard hinzufügen",
+      "annulla": "Abbrechen",
+      "cerca_tra_i_tuoi_moodboard": "Durchsuchen Sie Ihre Moodboards",
+      "chiudi": "Schließen",
+      "crea_e_aggiungi": "Gestalten und hinzufügen",
+      "crea_il_primo": "Legen Sie das erste an.",
+      "crea_nuovo_moodboard": "Neues Moodboard anlegen",
+      "nessun_moodboard": "Ohne Materialsammlung",
+      "sto_caricando_i_moodboard": "Moodboards werden geladen",
+      "titolo_nuovo_moodboard": "Neue Materialsammlung anlegen"
+    },
+    "product_gallery": {
+      "aggiungi_al_moodboard": "Zum Moodboard hinzufügen",
+      "ancora_nessuna_affinita_curatoriale_rilevata": "Kuratorische Bezüge noch nicht erfasst.",
+      "atmosfera": "Stimmung",
+      "atmosfera_in_lettura_curatoriale": "Atmosphäre in kuratorischer Lesart",
+      "curatela_editoriale_non_raccomandazione_algoritmic": "Redaktionelle Kuratierung — keine algorithmische Empfehlung.",
+      "feedback_title": "Rückmeldungen aus der Praxis",
+      "in_attesa_di_riscontro_dal_cliente": "Rückmeldung durch den Auftraggeber ausstehend",
+      "linguaggio_progettuale_dello_studio": "Gestalterische Haltung des Ateliers",
+      "moodboard_priority": "Priorisierung im Atelier-Board",
+      "product_gallery_visual_atelier": "Produktatlas™ · Visuelles Archiv",
+      "salva_in_references": "In References™ archivieren",
+      "sto_leggendo_le_relazioni": "Ich lese die Materialdossiers"
+    },
+    "studio_collections": {
+      "archivio_curatoriale_dello_studio": "Materialarchiv des Ateliers",
+      "importa_il_primo_catalogo": "Ersten Katalog in die Werkstatt übernehmen",
+      "nessuna_collezione_importata_inizia_caricando_un_c": "Noch kein Katalog hinterlegt. Beginnen Sie mit dem Einpflegen einer Lieferantensammlung.",
+      "tutti_i_produttori_e_le_collezioni_che_lo_studio_h": "Alle Hersteller und Kollektionen, die das Atelier in sein Materialregister aufgenommen hat"
+    },
+    "supplier_catalog_import": {
+      "annulla": "Vorgang beenden",
+      "cerco_nel_registro": "Durchsuche das Herstellerverzeichnis…",
+      "mood_sta_preparando_le_anteprime_del_catalogo": "MOOD bereitet die Katalogvorschau vor – Materialien werden geladen",
+      "privato_dello_studio": "Atelierarchiv",
+      "trascina_qui_il_pdf_del_catalogo": "Katalog-PDF in diesen Bereich ziehen"
+    },
+    "supplier_import": {
+      "atmosphere_title": "Gewohnte Atmosphäre",
+      "search_placeholder": "Hersteller suchen (Minotti, Poliform, …)",
+      "wizard_step_aria": "Fortschritt des Importvorgangs"
     }
   },
   "editorial": {
@@ -491,6 +650,61 @@
     },
     "toast": {
       "load_error": "Fehler beim Laden des Editorial Calendars"
+    },
+    "adaptation_operations": {
+      "apre_l_anteprima_pubblica_nella_surface_di_destina": "Öffnet die öffentliche Vorschau in der Zielfläche.",
+      "apre_un_diff_lato_a_lato_tra_l_adattamento_e_la_di": "Zeigt eine parallele Gegenüberstellung zwischen Lokalisierung und redaktioneller Mastervorgabe",
+      "blocca_la_versione_manuale_corrente_come_stabile": "Aktuelle manuelle Fassung als verbindliche Version festlegen.",
+      "marca_le_modifiche_correnti_come_curate_manualment": "Aktuelle Änderungen als manuell bearbeitet kennzeichnen — Re-Sync überschreibt diese nicht.",
+      "riallinea_l_adattamento_al_master_attuale_mantenen": "Anpassung mit aktuellem Master abgleichen, nur manuell fixierte Abschnitte beibehalten.",
+      "rigenera_i_body_blocks_partendo_dalla_direzione_ed": "Textbausteine neu aufbauen — ausgehend von der redaktionellen Haltung des Masters",
+      "ripristina_la_composizione_editoriale_rigenerata_d": "Setzt die aus dem Master regenerierte Gestaltung zurück — überschreibt manuelle Eingriffe."
+    },
+    "article": {
+      "fields": {
+        "cta_copy": {
+          "placeholder": "CTA-Handlungstext des Beitrags"
+        },
+        "lead": {
+          "placeholder": "Der emotionale Auftakt, mit dem der Beitrag im Zielmarkt einsetzt."
+        },
+        "meta_description": {
+          "placeholder": "Redaktionelle Meta-Beschreibung — max. 155 Zeichen"
+        },
+        "title_market": {
+          "placeholder": "Endgültiger Titel für diesen Markt"
+        }
+      }
+    },
+    "article_editor": {
+      "add_to_moodboard": "Zur Materialsammlung hinzufügen",
+      "annulla": "Verwerfen",
+      "body_blocchi_editoriali_composabili": "Body · modulare Gestaltungseinheiten mit kompositorischer Struktur",
+      "caricamento_della_comprensione_editoriale": "Redaktionelle Struktur wird geladen…",
+      "cta_tier_azione_transizione_editoriale": "CTA · Ebene · Handlung · redaktionelle Überleitung",
+      "explore_material": "Materialität erkunden",
+      "salvataggio": "Wird gespeichert"
+    },
+    "composition_room_rail": {
+      "tutti_i_mercati": "Alle Märkte"
+    },
+    "editorial_calendar": {
+      "nessun_segnale_operativo_critico_il_ritmo_editoria": "Keine kritischen Signale. Die redaktionelle Kadenz ist auf allen aktiven Märkten im Gleichgewicht."
+    },
+    "intelligence": {
+      "empty": "Keine kritischen Signale. Die redaktionelle Kadenz ist über alle aktiven Märkte hinweg ausgewogen."
+    },
+    "market_editions_toolbar": {
+      "annulla": "Vorgang abbrechen",
+      "apri_calendario": "Kalender öffnen",
+      "la_direzione_editoriale_globale_da_cui_nasceranno": "Die zentrale Redaktion, aus der alle Marktausgaben entstehen.",
+      "programma_la_pubblicazione": "Erscheinungsrhythmus festlegen",
+      "scegli_il_mercato_di_destinazione_tono_cta_e_ritmo": "Markt wählen. Sprache, Haltung und Rhythmus passen sich der lokalen Gestaltungskultur an.",
+      "una_frase_che_cattura_l_atmosfera_non_un_brief_tec": "Atmosphärische Verdichtung, keine technische Spezifikation."
+    },
+    "public_preview": {
+      "cta_editoriale": "Zur redaktionellen Vorschau",
+      "mercato_editoriale": "Redaktionelle Veröffentlichung"
     }
   },
   "blueprint": {
@@ -624,7 +838,505 @@
       "files_allegati_arriva_con_il_media_library_inspect": "Dateianhänge werden über den Media Library Inspector sichtbar.",
       "la_memoria_della_relazione_e_ancora_bianca": "Die Beziehung beginnt ohne Gedächtnis.",
       "linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb": "Moodboard-Verknüpfung erscheint im dedizierten P1-Bereich. Atelierweit erstellte Moodboards sind sichtbar in",
-      "materiali_preferiti": "Bevorzugte Materialien"
+      "materiali_preferiti": "Bevorzugte Materialien",
+      "nessun_contact_ancora_aggiungi_il_primo_qui_sotto": "Noch keine Kontakte hinterlegt. Ersten Kontakt hier anlegen.",
+      "nessuna_interazione_registrata": "Keine Interaktion dokumentiert.",
+      "registra_il_primo_contatto_una_call_una_nota_vocal": "Erfassen Sie die erste Begegnung — ein Gespräch, eine Notiz, ein Atelierbesuch.",
+      "salva": "Speichern",
+      "style_dna_non_ancora_compilato_per_questo_account": "Für dieses Atelier liegt noch keine gestalterische Haltung vor."
+    },
+    "activity": {
+      "annulla": "Vorgang aufheben",
+      "chiudi": "Schließen",
+      "es_inviare_proposta_materiali": "Materialvorschlag übermitteln"
+    },
+    "crm_accounts": {
+      "account_centered_ogni_account_puo_avere_piu_contac": "Account-zentriert. Jeder Account trägt mehrere Kontakte. Die Mitglieder Ihres Ateliers arbeiten in",
+      "action": "Maßnahme",
+      "aggiungi_un_account": "Kontakt hinzufügen",
+      "annulla": "Verwerfen",
+      "apri_account": "Zugang einrichten →",
+      "apri_il_primo_account": "Erstes Kundenprojekt anlegen",
+      "caricamento": "Wird geladen",
+      "cerca_per_nome_account_o_email_contact": "Suche nach Ateliernamen oder Kontakt-Adresse…",
+      "crea_account": "Zugang anlegen",
+      "due": "Fälligkeit",
+      "empty": {
+        "accounts_hint": "Ein Account ist eine Beziehung — ein Auftraggeber, ein Atelier, eine Familie. Contacts sind die Personen innerhalb dieser Struktur.",
+        "accounts_lead": "Noch keine Accounts. Beginnen Sie mit dem Aufbau Ihrer Beziehungsarchitektur.",
+        "other_hint": "Wechseln Sie die Ansicht oder legen Sie einen neuen Account an, um zu beginnen.",
+        "other_lead": "Keine {label} in dieser Ansicht vorhanden."
+      },
+      "le_relazioni_della_tua_casa_di_design": "Die Beziehungsebenen Ihres Gestaltungsateliers",
+      "nessun_contatto_primario_aggiungi_al_drawer": "Kein primärer Kontakt · zur Ablage hinzufügen",
+      "no_due_date": "Ohne Frist",
+      "no_follow_ups": "Alle Nachfassaktionen abgeschlossen",
+      "sala_delle_relazioni": "Raum der Beziehungen",
+      "tutti_gli_stage": "Sämtliche Projektphasen",
+      "tutti_i_tipi": "Alle Kategorien"
+    },
+    "cultural_edition": {
+      "adatta_tono_ritmo_cta_al_mercato": "Tonalität, Rhythmus und Handlungsimpuls marktspezifisch gestalten",
+      "annulla": "Verwerfen",
+      "briefing_editoriale_angle_desiderato_vincoli": "Redaktionelle Ausrichtung — gewünschter Blickwinkel, Vorgaben",
+      "chiudi": "Schließen",
+      "mood_adatta_tono_ritmo_cta_e_narrativa_al_mercato": "MOOD kalibriert Tonalität, Rhythmus, Handlungsaufforderung und Narrativ nach Markt – berücksichtigt dabei kulturelle Erwartungshaltung im Hospitality-Bereich, visuellen Takt und die jeweilige Wahrnehmung von Luxus im gewählten Cluster.",
+      "moodboard": "Gestaltungsatlas",
+      "tutti_i_mercati": "Alle Märkte"
+    },
+    "relationship_graph": {
+      "dove_vive_la_relazione": "Wo die Beziehung ihre Form findet",
+      "nessun_progetto_moodboard_o_materiale_ancora_colle": "Noch keine Verknüpfung zu Projekten, Moodboards oder Materialien.",
+      "relationship_graph_mappa_editoriale": "Relationship Graph™ · redaktionelle Kartografie",
+      "tracciando_la_mappa_della_relazione": "Die Architektur der Beziehung wird sichtbar gemacht"
+    },
+    "stage_change": {
+      "annulla": "Verwerfen",
+      "chiudi": "Schließen",
+      "il_cambio_sara_tracciato_come_evento_in_timeline": "Die Statusänderung wird als Ereignis in der Zeitachse dokumentiert.",
+      "perche_stiamo_cambiando_fase_il_contesto_rimane_in": "Warum wechselt die Phase? Der Kontext bleibt in der Zeitleiste sichtbar."
+    }
+  },
+  "cultural": {
+    "cultural_edition": {
+      "adatta_il_tuo_lavoro_a_un_altro_mercato_culturale": "Gestalten Sie Ihre Arbeit für einen anderen kulturellen Kontext.",
+      "atmosfera": "Raumstimmung",
+      "briefing_al_caporedattore_opzionale": "Redaktionelle Abstimmung (fakultativ)",
+      "chiudi": "Schließen",
+      "direzione_narrativa_del_mercato": "Marktbezogene Gestaltungsposition",
+      "hai_personalizzato_la_direzione_del_mercato": "Ihre Marktausrichtung wurde angepasst.",
+      "in_attesa_dei_contenuti_dello_studio": "Die Atelierbeiträge befinden sich im Aufbau",
+      "la_redazione_internazionale_di_mood_sta_preparando": "Die internationale Redaktion von MOOD bereitet die Anpassung vor…",
+      "lingua_della_versione_mercato": "Sprache der Marktausgabe",
+      "mood_ha_pre_compilato_i_campi_con_la_cultura_narra": "MOOD hat die Felder mit der narrativen Haltung von vorstrukturiert",
+      "mood_prende_un_tuo_contenuto_e_ne_prepara_una_vers": "MOOD nimmt Ihren Inhalt und entwickelt daraus eine kulturspezifische Fassung für den gewählten Markt — keine maschinelle Übersetzung, sondern redaktionelle Bearbeitung mit editorischer Haltung.",
+      "puoi_selezionare_uno_o_piu_ambiti_la_redazione_di": "Sie wählen einen oder mehrere Bereiche aus – die Redaktion von MOOD bearbeitet ausschließlich diese.",
+      "revisione_editoriale_prima_di_creare": "Redaktionelle Prüfung vor der Gestaltung.",
+      "scegli_il_contenuto_da_adattare": "Wählen Sie die Inhalte zur Anpassung.",
+      "showcase_e_selezioni_materiali_sono_in_lavorazione": "Die Materialauswahl befindet sich noch in Bearbeitung — Sie können vorerst eine manuelle Referenz hinterlegen.",
+      "suggerita_dal_mercato": "· empfohlen von der Gestaltungsgemeinschaft",
+      "suggerito_dal_mercato": "Empfohlen aus dem Markt",
+      "torna_ai_suggerimenti_del_mercato": "Zurück zur Marktübersicht"
+    },
+    "cultural_edition_review": {
+      "atmosfera": "Raumklima",
+      "atmosfera_originaria": "Ursprüngliche Raumatmosphäre",
+      "corpo_editoriale": "Redaktionelle Leitung",
+      "revisione_editoriale": "Redaktionelle Durchsicht",
+      "status_updated": "Status aktualisiert"
+    },
+    "cultural_editions_list": {
+      "le_tue_versioni_mercato": "Deine Marktausgaben",
+      "lede": "Jede Edition ist eine gestalterische Haltung: Ihr Inhalt wird für eine Marktkultur neu gedacht — in Tonalität, Referenz und Atmosphäre.",
+      "nessuna_edizione_ancora": "Noch keine Ausgabe vorhanden.",
+      "new_edition": "Neue Ausgabe"
+    }
+  },
+  "inbox": {
+    "refresh": "Aktualisieren",
+    "refreshing": "Aktualisiere die Register…",
+    "tabs": {
+      "articles": "Beiträge",
+      "references": "Referenzen"
+    }
+  },
+  "insights": {
+    "insights": {
+      "dove_si_trova_il_pensiero_progettuale": "Wo die Gestaltungshaltung entsteht",
+      "eventi_narrativi_nel_mese": "Narrative Ereignisse im Monat",
+      "l_evoluzione_dello_studio": "Die Entwicklung des Ateliers",
+      "la_grammatica_dello_studio": "Die Sprache des Ateliers",
+      "la_superficie_viva_del_journey": "Die lebendige Materialität des Journey",
+      "le_pulsazioni_dello_studio": "Der Rhythmus des Ateliers",
+      "moodboard": "Gestalterische Referenzen",
+      "nessuna_pietra_miliare_ancora_attiva": "Keine Meilensteine in der aktiven Werkstatt.",
+      "ogni_cella_un_giorno_intensita_numero_di_eventi": "jede Zelle · ein Tag · Intensität = Anzahl der Ereignisse",
+      "sto_leggendo_le_pulsazioni_dello_studio": "Ich erfasse die Vitalzeichen des Ateliers",
+      "studio_insights": "Atelier · Einblicke"
+    }
+  },
+  "journey": {
+    "client_interaction_layer": {
+      "questa_direzione": "diese Ausrichtung"
+    },
+    "closure": {
+      "summary_placeholder": "Ein Absatz, der den Prozess dokumentiert. Ohne Überhöhung, ohne rhetorische Figuren. Archivierung dessen, was durchlaufen wurde.",
+      "title_label": "Endgültiger Titel der Projektnarrative",
+      "title_placeholder": "Bsp. Haus am See · ein Dialog mit dem Licht"
+    },
+    "journey_closure_ceremony": {
+      "titolo_definitivo_del_journey": "Endgültiger Titel des Projektverlaufs"
+    },
+    "material_direction_workspace": {
+      "il_tavolo_della_materia": "Der Arbeitstisch der Materialität"
+    },
+    "milestone_dialogue": {
+      "aggiungi_un_capitolo": "Kapitel hinzufügen",
+      "annulla": "Verwerfen",
+      "capitolo": "Abschnitt ·",
+      "chiudi": "Schließen",
+      "condividi": "Weitergeben",
+      "cosa_cambia_in_questo_capitolo_in_poche_righe": "Veränderung in diesem Kapitel — in kurzer Darstellung",
+      "evoluzione_del_progetto": "Entwicklung der Gestaltung",
+      "il_perche_di_questa_direzione_materia_luce_atmosfe": "Warum diese Richtung — Materialität, Licht, Atmosphäre, gestalterische Haltung",
+      "il_primo_capitolo_apre_la_conversazione_progettual": "Das erste Kapitel begründet den gestalterischen Dialog mit dem Auftraggeber.",
+      "nessun_capitolo_condiviso_ancora": "Noch keine gemeinsame Projektphase angelegt.",
+      "nuovo_capitolo_progettuale": "Neue gestalterische Phase",
+      "racconta_a_parole_tue_un_atmosfera_un_riferimento": "Beschreiben Sie mit eigenen Worten — eine Stimmung, eine Referenz, ein Empfinden",
+      "sto_preparando_il_dialogo_progettuale": "Die Projektsprache wird vorbereitet…",
+      "titolo_del_capitolo_es_luce_mediterranea": "Kapiteltitel (z. B. Mediterranes Licht)",
+      "voce_del_cliente": "Stimme des Auftraggebers"
+    },
+    "moodboard_direction_workspace": {
+      "capitoli_moodboard": "Kapitelstruktur der Moodboard-Sprache",
+      "direzione_editoriale": "Redaktionelle Leitung",
+      "l_orizzonte_di_questo_capitolo": "Die Horizonte dieses Kapitels",
+      "le_direzioni_proposte": "Die vorgeschlagenen Gestaltungsrichtungen"
+    },
+    "step_context_header": {
+      "capitolo_precedente": "Vorheriges Kapitel",
+      "capitolo_seguente": "Nächste Gestaltungsphase",
+      "posizione_nel_journey": "Position im Gestaltungsprozess"
+    },
+    "step_workspace": {
+      "capitolo_in_corso": "Laufendes Kapitel",
+      "le_tracce_di_questo_passaggio": "Die Spuren dieser Entwicklung"
+    },
+    "tab": {
+      "brief_editor_coming": "Der Brief-Editor folgt im nächsten Kapitel.",
+      "evolution": "Entwicklung des Projekts",
+      "evolution_real": "Die tatsächliche Entwicklung des Entwurfs",
+      "first_conversation": "Das erste Gespräch",
+      "story": "Die Erzählung, die Ihr Projekt formuliert",
+      "timeline_coming": "Die fotografische Zeitachse wird im nächsten Kapitel verfügbar sein.",
+      "update_direction": "Ausrichtung anpassen"
+    },
+    "version_stack": {
+      "ancora_nessun_capitolo": "Noch kein Kapitel verfasst"
+    }
+  },
+  "library": {
+    "materials": {
+      "le_materie_scelte_vivono_dentro_i_loro_journey": "Jedes Material entfaltet seine Präsenz innerhalb der eigenen Gestaltungsgeschichte",
+      "material_registry": "Materialverzeichnis",
+      "register_first_material": "Erstes Material anlegen",
+      "register_material": "Material erfassen"
+    },
+    "rail": {
+      "material_registry": "Materialverzeichnis"
+    }
+  },
+  "material_view": {
+    "filter": {
+      "materiality": "Materialität"
+    },
+    "header": {
+      "title": "Materialität mit Aussage"
+    }
+  },
+  "media": {
+    "image": {
+      "caricamento_immagine": "Bild wird geladen"
+    },
+    "universal_editorial_cropper": {
+      "chiudi": "Schließen",
+      "filtro_editoriale": "Redaktionelle Auswahl",
+      "questa_e_la_proporzione_che_i_consumer_hero_moodbo": "Dieses Format wählen Gestalter (Hero · Moodboard · Präsentation), sobald sie die Wahl haben.",
+      "salva_regia": "Königliches Speichern",
+      "trascina_il_punto_focale_sulla_parte_importante_de": "Setzen Sie den Bildmittelpunkt auf die gestaltungsrelevante Fläche"
+    }
+  },
+  "moodboards": {
+    "archive": {
+      "cta": "Studio Pulse öffnen",
+      "eyebrow": "Disziplinübergreifendes Archiv · Sprint G.6",
+      "lede": "Dieses Archiv versammelt alle gestalterischen Moodboards aus sämtlichen Journeys. Die eigentliche Komposition findet im Kapitel Moodboard Direction™ des jeweiligen Journeys statt."
+    },
+    "empty_inside_journey": "Moodboards existieren innerhalb ihrer Journey",
+    "eyebrow": "Gestaltungsprozess · Visuelles Atelier",
+    "moodboards": {
+      "continua_la_direzione": "Zur Gestaltung wechseln →"
+    },
+    "filter": {
+      "all": "Alle",
+      "draft": "Entwurf",
+      "sent": "Gesendet",
+      "viewed": "Angesehen",
+      "approved": "Genehmigt",
+      "revision_requested": "Überarbeitung angefragt",
+      "rejected": "Abgelehnt"
+    }
+  },
+  "onboarding": {
+    "owner_introduction": {
+      "ad_esempio_sono_qui_per_accompagnarti_nelle_prime": "Zum Beispiel: Ich begleite Sie in der Entwurfsphase und beim Aufbau Ihres Ateliers",
+      "annulla": "Vorgang abbrechen",
+      "chiudi": "Schließen",
+      "conferma_foto": "Bild bestätigen",
+      "cosa_vuoi_che_il_cliente_sappia_di_te": "Welche Haltung und Gestaltungsdisziplin soll der Auftraggeber über Ihr Atelier kennen.",
+      "es_scrivi_a_stefano_default_ricavato_dal_nome": "Z. B. »Nachricht an Lukas«. Vorgabe aus dem Ateliernamen abgeleitet.",
+      "foto_ruolo_e_bio_sono_visibili_a_ogni_cliente_del": "Foto, Rolle und Kurzporträt sind für jeden Auftraggeber sichtbar – der erste Ausdruck Ihrer gestalterischen Haltung.",
+      "posiziona_la_foto": "Bild platzieren",
+      "presentati_ai_tuoi_clienti": "Stellen Sie sich Ihrer Klientel vor.",
+      "salva_e_pubblica": "Sichern und veröffentlichen",
+      "trascina_per_centrare_il_volto_usa_lo_zoom_per_rit": "Gesicht mit Verschiebung zentrieren. Bildausschnitt über Zoom definieren.",
+      "visibile_sotto_il_tuo_nome_nella_human_card": "Erscheint unterhalb deines Namens auf der Human Card."
+    }
+  },
+  "placeholder": {
+    "coming_soon": {
+      "torna_ai_progetti": "Zurück zur Projektübersicht"
+    }
+  },
+  "project": {
+    "detail": {
+      "compose_proposal_title": "Redaktionellen Beitrag aus dem Projektzusammenhang entwickeln",
+      "empty_conversations": "Zu diesem Projekt liegt derzeit kein Austausch vor.",
+      "empty_inspirations": "Für dieses Projekt wurde noch keine Referenz hinterlegt.",
+      "empty_materials": "Zu diesem Projekt wurden keine Materialien hinterlegt.",
+      "empty_moodboards": "Jedes Moodboard beginnt mit einer gestalterischen Haltung.",
+      "empty_proposals": "Für dieses Projekt liegt noch keine Gestaltungsposition vor.",
+      "memory_writes_itself": "Das Projekt dokumentiert seine eigene Entstehung.",
+      "regenerate_direction_title": "Richtung anhand der aktuellen Projekthaltung erneuern",
+      "share_thread_title": "Im Atelier-Thread teilen"
+    }
+  },
+  "settings": {
+    "asset_picker": {
+      "annulla": "Abbrechen",
+      "carica_file": "Datei laden",
+      "caricamento": "Wird geladen",
+      "cerca_per_nome_descrizione_alt": "Suche nach Name, Beschreibung, Alt-Text …",
+      "chiudi": "Schließen",
+      "incolla_un_url_pubblico_https_di_un_immagine_verra": "Öffentliche Bild-URL (https://…) einfügen. Wird als externes Asset verknüpft — beansprucht keinen Speicher in Ihrer Bibliothek.",
+      "modifica_crop_filtri": "Bearbeitung · Schnitt & Filter",
+      "nessun_asset_corrisponde_carica_nuove_immagini_per": "Keine Übereinstimmung. Laden Sie neue Bilddaten, um die Auswahl zu beginnen.",
+      "scegli_dal_computer": "vom Rechner wählen",
+      "trascina_qui_le_immagini": "Bilddateien hierher ziehen"
+    },
+    "brand_studio": {
+      "il_preset_sceglie_la_modalita_automaticamente_puoi": "Die Voreinstellung wählt den Modus automatisch · manuelle Steuerung bleibt möglich",
+      "la_voce_dello_studio_resta_persistente_la_direzion": "Die Haltung des Ateliers bleibt bestehen. Redaktionelle Ausrichtung und narrative Dichte einer einzelnen Inspiration überschreiben nur jene Lektüre, ohne die übrigen zu verändern.",
+      "voce_editoriale_dello_studio": "Redaktionelle Haltung des Ateliers"
+    },
+    "international_presence": {
+      "a_chi_parli_prevalentemente_in_questo_mercato": "An wen sich Ihre Gestaltungssprache in diesem Markt primär richtet.",
+      "annulla": "Verwerfen",
+      "caricamento_della_presenza_editoriale": "Editorielle Präsenz wird geladen…",
+      "come_gli_interlocutori_in_questo_mercato_tipicamen": "Entscheidungslogik der Gestalter in diesem Markt. Diese Heuristiken steuern Präsenz, Handlungsaufforderung und redaktionelle Komposition.",
+      "cosa_vuoi_ottenere_strategicamente_da_questo_merca": "Welche strategische Haltung soll Ihr Atelier in diesem Markt einnehmen.",
+      "italian_material_culture": "Italienische Materialkultur",
+      "l_asse_strategico_di_posizionamento_commerciale_pe": "Die strategische Achse der Marktpositionierung für diesen Kulturraum.",
+      "nessun_mercato_disponibile_nel_catalogo_platform": "Kein Markt im Katalog der Plattform hinterlegt",
+      "uno_studio_di_new_york_puo_rivolgersi_al_mercato_a": "Ein Atelier in New York kann den amerikanischen Markt mit einer"
+    },
+    "magazine_admin": {
+      "caricamento": "Wird geladen",
+      "inizia_un_nuovo_articolo": "Neuen Beitrag beginnen"
+    },
+    "magazine_editor": {
+      "caricamento": "Wird geladen",
+      "cta_label_es_esplora_la_palette_materica": "Materialpalette erkunden",
+      "riassunto_editoriale_1_2_frasi": "Redaktionelle Zusammenfassung (1–2 Sätze)",
+      "testo_editoriale_del_paragrafo": "Redaktioneller Absatztext…",
+      "torna_alla_lista": "Zurück zur Übersicht"
+    },
+    "plan": {
+      "ai_credits": "KI-Kontingent"
+    }
+  },
+  "site": {
+    "begin_journey": {
+      "aiutaci_a_comprendere_il_tuo_modo_di_abitare_non_i": "Sprechen Sie über Ihre Gestaltungshaltung, nicht über Ihr Budget.",
+      "avvicinati_al_tuo_journey": "Gestalte deinen Weg – mit Haltung →",
+      "come_vivi_gli_spazi": "Wie gestalten Sie Ihre Räume?",
+      "come_vuoi_sentirti_in_questo_spazio": "Welche Atmosphäre soll dieser Raum für Sie gestalten?",
+      "continua_il_racconto": "Zur Werkstatt →",
+      "facoltativo_alcune_cose_si_capiscono_meglio_a_voce": "Optional — manches lässt sich im Gespräch präziser klären.",
+      "inizia_a_raccontarci_lo_spazio_che_immagini_senza": "Beschreiben Sie den Raum, den Sie sich vorstellen — in Ihrer Geschwindigkeit.",
+      "inizia_il_tuo_design_journey": "Beginnen Sie Ihre gestalterische Praxis",
+      "nessun_preventivo_nessuna_pressione_solo_una_conve": "Kein Angebot, kein Druck. Nur ein Gespräch.",
+      "niente_di_formale_tutto_quello_che_ti_viene_in_men": "Kein Format — nur Ihre Haltung zur Gestaltung.",
+      "quale_atmosfera_stai_cercando": "Welche räumliche Haltung verfolgen Sie",
+      "quali_materiali_ti_fanno_stare_bene": "Welche Materialität bestimmt Ihre gestalterische Haltung?",
+      "stiamo_aprendo_il_tuo_design_journey": "Wir öffnen Ihre Gestaltungswerkstatt.",
+      "tre_dettagli_soltanto_il_resto_nascera_dalla_conve": "Drei Angaben genügen — der Dialog formt den Entwurf.",
+      "una_sensazione_un_momento_del_giorno_un_ricordo": "Eine Atmosphäre, eine Tageszeit, eine Erinnerung…"
+    },
+    "journey_welcome": {
+      "aprendo_il_tuo_design_journey": "Dein Gestaltungsprozess wird vorbereitet",
+      "capitolo_primo_brief_cliente": "Erstes Kapitel · Briefing Auftraggeber",
+      "forse_il_viaggio_e_stato_gia_archiviato_o_il_link": "Dieses Projekt wurde möglicherweise bereits archiviert — oder der Verweis wurde angepasst. Kontaktieren Sie das Atelier, um es wiederherzustellen.",
+      "il_modo_in_cui_vivi": "Wie Sie Räume denken ·",
+      "il_tuo_design_journey_e_iniziato": "Ihre Design Journey™ · hat begonnen",
+      "l_atmosfera_che_cerchi": "Die Atmosphäre Ihres Ateliers",
+      "lo_studio_che_ti_accompagna": "Das Atelier, das Ihre Haltung trägt",
+      "questo_e_il_tuo_design_journey_tutto_cio_che_condi": "Dies ist Ihr Design Journey™. Alles, was wir ab jetzt mit Ihnen teilen — Kapitel, Atmosphären, Gespräche — findet hier seinen Ort.",
+      "questo_link_non_e_piu_disponibile": "Dieser Zugang besteht nicht mehr.",
+      "salva_questo_link_e_la_porta_del_tuo_design_journe": "Dieser Link führt zu Ihrem Design Journey — bitte sichern. Das Atelier meldet sich in Kürze über die von Ihnen hinterlegte Adresse."
+    }
+  },
+  "storefront": {
+    "band_editors": {
+      "aggiungi_colonna": "Spalte hinzufügen",
+      "aggiungi_kpi": "Kennzahl definieren",
+      "aggiungi_link": "Verknüpfung hinzufügen",
+      "aggiungi_logo": "Signet hinzufügen",
+      "aggiungi_social": "Soziale Kanäle verknüpfen",
+      "aggiungi_voce_di_menu": "Menüpunkt hinzufügen",
+      "automatica_ultimi_articoli_pubblicati_nel_locale": "Automatica · jüngste Beiträge im lokalen Atelier",
+      "body_editoriale": "Redaktionelle Textebene",
+      "eyebrow_editoriale": "Redaktionelle Dachzeile",
+      "la_tua_email": "Ihre E-Mail-Adresse",
+      "le_case_che_ci_scelgono": "Die Objekte, die uns wählen",
+      "leggi_tutti_gli_articoli": "Alle Beiträge ansehen",
+      "nessuna_colonna_aggiungi_la_prima": "Keine Spalte vorhanden. Erste Spalte anlegen ↓",
+      "nessuna_voce_di_menu_aggiungi_la_prima": "Keine Menüeinträge vorhanden. Ersten Eintrag anlegen ↓"
+    },
+    "storefront_studio": {
+      "caricamento_dell_orchestrazione": "Orchestrierung wird geladen…",
+      "chiudi": "Schließen",
+      "l_orchestrazione_cinematica_della_presenza_pubblic": "Die öffentliche Präsenz als bauliche Abfolge. Jede Ebene ist gestaltete Materialität – Haltung, Rhythmus und Ansprache spezifisch für den jeweiligen Markt. Was Sie hier sehen, ist die öffentliche Anlage vollständig – keine verborgenen Ebenen, keine festgeschriebenen Strukturen.",
+      "nessuna_fascia_per_questa_pagina": "Für diese Seite wurde keine Fassung angelegt.",
+      "pubblica_pagina": "Seite veröffentlichen",
+      "sopra_titolo_editoriale": "Redaktionelle Dachzeile"
+    }
+  },
+  "storytelling": {
+    "hotspot_image_overlay": {
+      "aggiungi_note_di_dettaglio_sull_immagine": "Bilddetails präzisieren und vermerken",
+      "chiudi": "Schließen"
+    },
+    "project_gallery": {
+      "aggiungi_immagine": "Bild hinzufügen",
+      "aggiungi_la_prima_immagine": "+ Erstes Bild zur Werkstatt hinzufügen",
+      "annulla": "Verwerfen",
+      "caption_editoriale_visibile": "Bildtext zur Redaktion (sichtbar)",
+      "conferma_immagine": "Bild bestätigen",
+      "elimina": "Entfernen",
+      "gallery_del_progetto": "Projektgalerie des Ateliers",
+      "nessuna_immagine_ancora_aggiungi_la_prima_per_iniz": "Noch keine Bildsprache vorhanden. Legen Sie das erste Bild an und beginnen Sie die Projektdokumentation.",
+      "per_impostare_la_cover_clicca": "Cover-Bild festlegen · hier klicken",
+      "una_case_history_editoriale_non_una_scheda_portfol": "Ein redaktionelles Werkstück, kein Portfolioeintrag. Sortieren per Drag · Klick"
+    },
+    "story_sections": {
+      "add_to_moodboard": "Zur Materialsammlung hinzufügen",
+      "aggiungi_blocco": "Abschnitt hinzufügen",
+      "aggiungi_immagine": "Bild hinzufügen",
+      "annulla": "Abbrechen",
+      "apri_editor_hotspot": "Hotspot-Editor öffnen",
+      "componi_blocchi_editoriali_testo_immagini_gallery": "Gestalten Sie redaktionelle Elemente — Text, Bilder, Bildstrecken, Detailpunkte, Handlungsaufforderung. Verschieben Sie per Anfasser zur Neuordnung.",
+      "copy_editoriale_cta": "Redaktionelle Handlungsaufforderung",
+      "elimina_blocco": "Abschnitt entfernen",
+      "explore_material": "Materialität erkunden",
+      "la_frase_che_rimane": "Der Satz, der bleibt.",
+      "nessun_blocco_ancora_inizia_la_narrazione": "Noch keine Elemente gesetzt. Beginnen Sie mit der Gestaltung.",
+      "paragrafo_editoriale": "Redaktioneller Abschnitt…",
+      "sezioni_della_storia": "Kapitel der Erzählung"
+    }
+  },
+  "stubs": {
+    "client": {
+      "approvals": {
+        "body": "Entscheidungen zu Materialität, Raumstruktur und Gestaltung werden hier dokumentiert — präzise nachvollziehbar, jederzeit verfügbar für Ihre Freigabe.",
+        "eyebrow": "Freigaben",
+        "title": "Die ersten Gestaltungsvorschläge liegen zur Freigabe vor."
+      },
+      "files": {
+        "body": "Alle vom Atelier freigegebenen Dokumente erscheinen hier — geordnet nach Projektphase, durchgängig zugänglich.",
+        "eyebrow": "Atelierdokumente im Zugriff",
+        "title": "Dokumentation, Rendering, Zeichnung — ein Archiv"
+      },
+      "in_arrivo": "In Vorbereitung",
+      "messages": {
+        "body": "Kommunikation, Nachfragen und Aktualisierungen bleiben hier — ohne E-Mail-Ablage, ohne verstreute Nachrichten.",
+        "eyebrow": "Korrespondenz",
+        "title": "Direkte Verbindung zu Ihrem Atelier."
+      },
+      "moodboards": {
+        "body": "Unser Team erarbeitet gegenwärtig Bildsprache, Materialität und räumliche Atmosphären für die ersten visuellen Konzeptvorschläge Ihres Projekts.",
+        "eyebrow": "Gestaltungsatlas",
+        "title": "Hier entstehen Ihre Moodboards."
+      },
+      "project": {
+        "body": "In Kürze finden Sie hier die Projektsynthese, aktuelle Entwicklungsstände und sämtliche Dokumentationen aus unserem Atelier.",
+        "eyebrow": "Mein Gestaltungsvorhaben",
+        "title": "Ihre Projektseite befindet sich in der Vorbereitung."
+      },
+      "timeline": {
+        "body": "Jede Phase, jeder Termin, jede Übergabe – mit der Präzision eines gestalterischen Masterplans.",
+        "eyebrow": "Zeitachse",
+        "title": "Die vollständige Projektchronologie liegt in Kürze vor."
+      }
+    }
+  },
+  "taxonomy": {
+    "advisor_status": {
+      "accepted": "Bestätigt",
+      "active": "Im Atelier tätig",
+      "declined": "Abgelehnt",
+      "invited": "Eingeladen",
+      "suspended": "Ruhestellung"
+    },
+    "common": {
+      "all": "Alle Register",
+      "all_m": "Alle",
+      "none": "Keine Zuordnung"
+    },
+    "cultural_edition": {
+      "approved": "Freigegeben",
+      "archived": "Abgeschlossen",
+      "archived_at": "Archiviert",
+      "draft": "Entwurf",
+      "in_review": "In Prüfung"
+    },
+    "editorial_status": {
+      "ai_composing": "In Bearbeitung",
+      "approved": "Freigegeben",
+      "archived": "Archiviert",
+      "direction_defined": "Ausrichtung festgelegt",
+      "draft": "Entwurf",
+      "published": "Veröffentlicht",
+      "ready_for_editorial_review": "Bereit zur redaktionellen Prüfung",
+      "revision_requested": "Überarbeitung angefordert",
+      "scheduled": "Geplant"
+    },
+    "material_family": {
+      "ceramica": "Keramik",
+      "composito": "Verbundwerkstoffe",
+      "legno": "Holz",
+      "malta": "Mörtel",
+      "marmo": "Marmor",
+      "metallo": "Metall",
+      "naturale": "Natürliche Materialien",
+      "pietra": "Naturstein",
+      "tessile": "Textile Werkstoffe",
+      "vetro": "Glas"
+    }
+  },
+  "workspace": {
+    "add_reference": {
+      "aggiungi_un_riferimento": "Referenz hinzufügen",
+      "annulla": "Vorgang abbrechen",
+      "es_hospitality_emotion_material_atmosphere": "z. B. Hospitality-Emotion · Atmosphäre durch Materialität",
+      "ogni_riferimento_entra_nella_cultural_design_intel": "Jede Referenz wird Teil der Cultural Design Intelligence™ · übersetzt in die Sprache des Zielmarktes.",
+      "perche_questo_riferimento_entra_nell_archivio": "Warum gehört diese Referenz in Ihr Archiv?",
+      "scegli_un_asset_dalla_library": "Wähle ein Material aus der Gestaltungssammlung",
+      "sfoglia_la_media_library": "Medienarchiv durchsehen",
+      "stiamo_salvando_l_url_del_pin_scraping_automatico": "Die Pin-URL wird gesichert. Automatisches Auslesen von Titel, Bild und Beschreibung folgt in Phase P2 mit der offiziellen Pinterest-API-Integration.",
+      "url_del_pin": "Pin-Referenz URL"
+    },
+    "design_journey_tab": {
+      "aggiorna_direzione": "Ausrichtung anpassen",
+      "evoluzione_del_progetto": "Entwicklung der Gestaltung",
+      "l_editor_del_brief_arrivera_nel_prossimo_capitolo": "Der Brief-Editor folgt im nächsten Kapitel.",
+      "l_evoluzione_reale_del_progetto": "Die tatsächliche Entwicklung des Entwurfs",
+      "la_prima_conversazione": "Das erste Gespräch",
+      "la_storia_che_il_progetto_sta_scrivendo": "Die Narration, die das Projekt entwickelt",
+      "la_timeline_fotografica_arrivera_nel_prossimo_capi": "Die fotografische Zeitachse folgt im nächsten Kapitel."
+    },
+    "proposals": {
+      "le_presentazioni_vivono_dentro_i_loro_journey": "Präsentationen entstehen innerhalb ihrer Journey-Struktur"
     }
   }
 }

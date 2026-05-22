@@ -53,7 +53,9 @@
     "hotspot": {
       "annulla": "إلغاء الأثر",
       "breve_nota_editoriale_sul_dettaglio": "ملاحظة موجزة حول حضور التفصيل",
-      "elimina": "إزالة الأثر"
+      "elimina": "إزالة الأثر",
+      "material": "material ·",
+      "salva_hotspot": "Salva hotspot"
     },
     "image_edit": {
       "annulla": "تراجع",
@@ -380,6 +382,22 @@
         "yesterday": "أمس",
         "days_ago": "قبل {n} أيام"
       }
+    },
+    "cockpit_timeline": {
+      "carica_un_riferimento_o_crea_una_moodboard_per_dar": "أضف مرجعًا بصريًا أو انشئ لوحة إلهام لتمنح اليوم حضوره وإيقاعه",
+      "il_battito_del_tuo_studio": "نبض الورشة الحيّ"
+    },
+    "dashboard": {
+      "apri_timeline": "استعرض مسار السرد",
+      "decisioni_che_la_giornata_sussurra": "قرارات تهمس بها ساعات اليوم",
+      "i_primi_suggerimenti_appariranno_con_l_utilizzo_re": "ستظهر الإشارات الأولى مع حضور العمل الفعلي داخل الورشة",
+      "le_relazioni_che_attendono_un_gesto": "علاقات تنتظر لمسة حاسمة",
+      "mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud": "MOOD يبدأ في استقراء إيقاع الورشة وحضورها المادي",
+      "nessuna_relazione_raffreddata": "لا علاقة فقدت دفئها",
+      "nuova_moodboard": "لوحة حضور جديدة",
+      "progetti_che_chiedono_la_tua_presenza": "مشاريع تنتظر حضورك المادي",
+      "riprova": "عاود الدخول إلى الورشة",
+      "tutti_gli_account": "جميع ورش الحضور المسجّلة"
     }
   },
   "errors": {
@@ -424,7 +442,28 @@
       "upgrade_for_more": "رقّ خطتك لإنشاء المزيد"
     },
     "usage_label": "المشاريع",
-    "newProject": "مشروع جديد"
+    "newProject": "مشروع جديد",
+    "projects_studio": {
+      "aggiungi_cta": "+ إضافة دعوة للحضور",
+      "annulla": "إلغاء الأثر",
+      "apri_un_nuovo_progetto": "+ ابدأ مشروعًا جديدًا في الورشة",
+      "atelier": "ورشة المادة والحضور",
+      "caricamento_archivio": "جارٍ استحضار الذاكرة المادية للورشة",
+      "cover_hero_l_apertura_visiva_del_progetto": "صورة الافتتاح · البوابة البصرية للسرد المعماري",
+      "explore_material": "اكتشف حضور المادة",
+      "nessuna_immagine": "غياب الحضور البصري",
+      "pubblica_progetto": "إطلاق المشروع في الورشة",
+      "refine_material_narrative_materia_primaria_seconda": "صقل السرد المادي · الخامة الأولى · الثانوية · الحضور اللمسي",
+      "sottotitolo_editoriale": "العنوان الثانوي للسرد البصري",
+      "titolo_del_progetto": "اسم المشروع الإبداعي",
+      "titolo_per_il_mercato": "عنوان المشروع في السوق",
+      "vocabolario_materico": "سجلّ المواد والحضور"
+    },
+    "studio": {
+      "mood_placeholder": "الحضور، المادة، الإيقاع",
+      "status_live": "حاضر الآن",
+      "tag_input_placeholder": "اكتب وسمًا…"
+    }
   },
   "inspirations": {
     "eyebrow": "Cultural Design Intelligence Layer",
@@ -461,6 +500,125 @@
       "luxury": "نَفَس الفخامة",
       "profile": "الوجهة",
       "reset": "إعادة"
+    },
+    "add_inspiration": {
+      "aggiungi_riferimento": "أضف إلى الذاكرة البصرية",
+      "annulla": "التراجع عن الإضافة",
+      "atmosfera": "الأجواء والحضور",
+      "carica_file": "إضافة الأثر المادي",
+      "carica_un_immagine_oppure_incolla_un_link_pinteres": "ارفع صورة أو الصق رابطًا من Pinterest أو Instagram أو أي عنوان آخر، يضمّه MOOD إلى مكتبة الذاكرة المرئية ويجعله حاضرًا في كل أرجاء الورشة.",
+      "chiudi": "إغلاق الصفحة",
+      "cosa_ti_ha_colpito_di_questa_reference": "ما الذي استوقفك في حضور هذه المادة؟",
+      "descrizione_editoriale_opzionale": "سرد المادة وحضورها (اختياري)",
+      "es_salotto_materico_palette_neutra": "مثال: صالون المواد الحسّية، لوحة ألوان محايدة",
+      "pinterest_instagram_o_link_diretto_mood_prova_a_es": "Pinterest أو Instagram أو رابط مباشر. يحاول MOOD استخلاص الصورة الرئيسية — وإن لم يتمكن، يُحفظ الرابط ويمكنك تحديث الغلاف لاحقًا.",
+      "url_della_reference": "رابط المرجع الأصلي"
+    },
+    "brand_detail": {
+      "aggiungi_capitolo_editoriale": "إضافة فصل إلى السرد البصري",
+      "continua_la_lettura": "استكمال السرد",
+      "curated_by_mood": "من اختيار MOOD",
+      "modifica_collezione": "تحرير المجموعة المادية",
+      "modifica_produttore": "تعديل بيانات الورشة الحرفية",
+      "moodboard": "لوحة الحضور البصري",
+      "moodboard_correlate": "لوحات الإلهام ذات الصلة",
+      "nessuna_collezione_registrata_il_primo_capitolo_ed": "لا مجموعات مسجّلة بعد — الفصل الافتتاحي يُرسي أولى طبقات السرد البصري للعلامة",
+      "riferimenti_editoriali": "مرجعيات السرد البصري"
+    },
+    "brand_form": {
+      "aggiungi_all_atlante": "أضفها إلى الأطلس",
+      "annulla": "التراجع عن الحضور",
+      "chiudi": "إغلاق الصفحة",
+      "es_atelier_sereno": "مثال: Atelier Sereno",
+      "salva_modifiche": "حفظ الأثر",
+      "salvataggio": "حفظ الأثر",
+      "una_frase_che_identifica_il_linguaggio_progettuale": "عبارة تكشف عن حضور العلامة وأثرها المادي في الفضاء"
+    },
+    "brand_mode": {
+      "add_maker": "أضف ورشة إلى الأطلس",
+      "aggiungi_produttore": "أضف دار التصنيع إلى الأطلس",
+      "cerca_per_nome_atmosfera_materia": "ابحث بالاسم، بالأثر، بحضور المادة…",
+      "curated_by_mood": "من ورشة MOOD",
+      "entra_nell_atelier": "ادخل إلى عالم الورشة",
+      "esplora_i_marchi_le_collezioni_e_il_linguaggio_pro": "استكشف العلامات والمجموعات واللغة التصميمية للمصنّعين في MOOD. كلّ علامة قراءة متكاملة — أجواء سائدة، مواد متكررة، جغرافيات سردية حيث تظهر في مشاريعك.",
+      "l_atlante_curatoriale_e_in_costruzione_aggiungi_un": "الأطلس لم يكتمل بعد. ابدأ بإضافة صانع أو استيراد كتالوج لتشكيل ذاكرة المواد",
+      "nessun_produttore_corrisponde_alla_ricerca": "لا حضور لورشة تحمل هذا الاسم في السرد",
+      "tutti_i_posizionamenti": "كافة مواضع الحضور"
+    },
+    "collection_form": {
+      "aggiungi_collezione": "إضافة مجموعة إلى الأطلس",
+      "annulla": "التراجع عن الحضور",
+      "capitolo_editoriale": "فصل سردي ·",
+      "chiudi": "إغلاق الأرشيف",
+      "il_linguaggio_progettuale_di_questo_capitolo_le_ma": "اللغة التصميمية لهذا الفصل، المواد السائدة، والأجواء المحيطة",
+      "salva_modifiche": "حفظ الأثر",
+      "salvataggio": "حفظ الأثر"
+    },
+    "curated_collection": {
+      "description_placeholder": "ماذا يحتضن هذا الفصل من مواد وذاكرة بصرية؟",
+      "descrizione_editoriale": "السرد المادي للمجموعة"
+    },
+    "inspiration_detail": {
+      "adatta_la_direzione_editoriale_per_questo_riferime": "اصنع سردًا يليق بحضور هذا المرجع",
+      "apertura_del_riferimento": "جارٍ استدعاء المرجع…",
+      "apri_product_gallery": "استكشف عالم Product Gallery™",
+      "atmosfera": "الأجواء والحضور",
+      "description_placeholder": "سردٌ حسّي للمادة وأثرها",
+      "direzione_editoriale": "إشراف السرد البصري",
+      "le_percentuali_sono_secondarie_il_significato_e_ne": "الأرقام تبقى في الهامش. المعنى يكتمل في السرد الذي يسبقها.",
+      "modifica": "تحرير السرد",
+      "mood_sta_leggendo_il_linguaggio_culturale_di_quest": "MOOD تستحضر الذاكرة الحضارية لهذا الأثر المادي…",
+      "rights_verify_note": "· تحقّق من مستندات الحقوق قبل النشر خارج حدود الورشة",
+      "verifica_i_diritti_d_uso_prima_della_pubblicazione": "تحقّق من حقوق الاستخدام قبل النشر خارج الورشة"
+    },
+    "material_view": {
+      "aumenta_il_numero_di_asset_curati_per_arricchire_l": "وسّع حضور المواد المنتقاة لإثراء ذاكرة الورشة البصرية",
+      "nessun_elemento_materico_ancora_classificato_per_q": "لم يتم بعد تصنيف أي مادة ضمن هذه المعايير",
+      "sto_leggendo_la_materioteca": "أستكشف أطلس المواد في الورشة…"
+    },
+    "moodboard_picker": {
+      "aggiungi_al_moodboard": "أضِفها إلى لوحة الحضور",
+      "annulla": "تراجع عن الاختيار",
+      "cerca_tra_i_tuoi_moodboard": "استحضر لوحاتك البصرية من الذاكرة",
+      "chiudi": "إغلاق الأطلس",
+      "crea_e_aggiungi": "ابدأ الورشة وأضف إلى الأثر",
+      "crea_il_primo": "ابدأ بتأسيس الأول",
+      "crea_nuovo_moodboard": "أنشئ لوحة حضور جديدة",
+      "nessun_moodboard": "لا حضور للوحة بصرية بعد",
+      "sto_caricando_i_moodboard": "جارٍ استحضار لوحات الإلهام البصري…",
+      "titolo_nuovo_moodboard": "لوحة أثر جديدة"
+    },
+    "product_gallery": {
+      "aggiungi_al_moodboard": "أضفه إلى لوحة الحضور",
+      "ancora_nessuna_affinita_curatoriale_rilevata": "لم يتشكّل بعد أي توافق في الذائقة التصميمية",
+      "atmosfera": "الأجواء الحسيّة",
+      "atmosfera_in_lettura_curatoriale": "الأجواء بعين القيّم الحسية",
+      "curatela_editoriale_non_raccomandazione_algoritmic": "اختيار تحريري — لا خوارزمية توصية",
+      "feedback_title": "صدى التجربة لدى العميل",
+      "in_attesa_di_riscontro_dal_cliente": "في انتظار الرد من الورشة",
+      "linguaggio_progettuale_dello_studio": "لغة المواد في ذاكرة الورشة",
+      "moodboard_priority": "أولوية الحضور في لوحة المواد",
+      "product_gallery_visual_atelier": "معرض المواد™ · ورشة البصر والحضور",
+      "salva_in_references": "احفظ في References™",
+      "sto_leggendo_le_relazioni": "أتأمل السرد المادي الآن…"
+    },
+    "studio_collections": {
+      "archivio_curatoriale_dello_studio": "أرشيف الورشة للعلامات والمواد المنتقاة",
+      "importa_il_primo_catalogo": "ابدأ بناء أرشيفك الأول من المواد والحضور",
+      "nessuna_collezione_importata_inizia_caricando_un_c": "لم يتم استيراد أي مجموعة بعد، ابدأ بتحميل سرد المواد من الورشة",
+      "tutti_i_produttori_e_le_collezioni_che_lo_studio_h": "جميع المصانع والمجموعات التي ضمّها الأتيليه إلى سجلّه البصري"
+    },
+    "supplier_catalog_import": {
+      "annulla": "إلغاء الأثر",
+      "cerco_nel_registro": "أستحضر من سجل المواد",
+      "mood_sta_preparando_le_anteprime_del_catalogo": "MOOD تُعِدّ المشاهد الأولى لسجلّ المواد…",
+      "privato_dello_studio": "مجموعة الورشة الخاصة",
+      "trascina_qui_il_pdf_del_catalogo": "ضع هنا ملف الكتالوج لإضافة حضوره إلى الورشة"
+    },
+    "supplier_import": {
+      "atmosphere_title": "الأجواء المألوفة في الفضاء",
+      "search_placeholder": "ابحث عن دار التصنيع (Minotti، Poliform، …)",
+      "wizard_step_aria": "مرحلة الحضور في المسار"
     }
   },
   "editorial": {
@@ -498,6 +656,61 @@
     },
     "toast": {
       "load_error": "خطأ في تحميل التقويم التحريري"
+    },
+    "adaptation_operations": {
+      "apre_l_anteprima_pubblica_nella_surface_di_destina": "يفتح المعاينة المنشورة في الفضاء المختار للنشر",
+      "apre_un_diff_lato_a_lato_tra_l_adattamento_e_la_di": "يفتح مقارنة مرئية بين نسخة التكييف والتوجّه التحريري للأصل",
+      "blocca_la_versione_manuale_corrente_come_stabile": "تثبيت النسخة الحالية كمرجع دائم للورشة",
+      "marca_le_modifiche_correnti_come_curate_manualment": "تُحفظ التعديلات الحالية كسرد يدوي — المزامنة اللاحقة لن تمسّ أثرها",
+      "riallinea_l_adattamento_al_master_attuale_mantenen": "إعادة مواءمة السرد مع الأصل الحالي مع الحفاظ على الأقسام المثبّتة يدوياً فقط",
+      "rigenera_i_body_blocks_partendo_dalla_direzione_ed": "إعادة صياغة كتل المحتوى انطلاقًا من التوجّه السردي للأصل",
+      "ripristina_la_composizione_editoriale_rigenerata_d": "استعادة التكوين السردي المُستمدّ من المصدر الأساسي — يُلغي التعديلات اليدوية السابقة"
+    },
+    "article": {
+      "fields": {
+        "cta_copy": {
+          "placeholder": "نص الدعوة إلى الحضور"
+        },
+        "lead": {
+          "placeholder": "المقطع الحسّي الذي يفتتح السرد في السوق المستهدفة"
+        },
+        "meta_description": {
+          "placeholder": "وصف تحريري للنشر — لا يتجاوز ١٥٥ حرفًا"
+        },
+        "title_market": {
+          "placeholder": "العنوان النهائي للسوق المستهدف"
+        }
+      }
+    },
+    "article_editor": {
+      "add_to_moodboard": "أضف إلى لوحة الحضور",
+      "annulla": "إلغاء الأثر",
+      "body_blocchi_editoriali_composabili": "المتن · وحدات سردية قابلة للتأليف",
+      "caricamento_della_comprensione_editoriale": "جارٍ استحضار الرؤية التحريرية…",
+      "cta_tier_azione_transizione_editoriale": "دعوة · مستوى · حركة · انتقال السرد التحريري",
+      "explore_material": "استكشف حضور المادة",
+      "salvataggio": "جارٍ حفظ الأثر…"
+    },
+    "composition_room_rail": {
+      "tutti_i_mercati": "كافة الأسواق والساحات"
+    },
+    "editorial_calendar": {
+      "nessun_segnale_operativo_critico_il_ritmo_editoria": "لا إشارات تستدعي التدخّل. الإيقاع التحريري متّزن عبر الأسواق النشطة"
+    },
+    "intelligence": {
+      "empty": "لا إشارات تتطلب تدخلاً فورياً. إيقاع النشر التحريري متّزن عبر الأسواق الحاضرة."
+    },
+    "market_editions_toolbar": {
+      "annulla": "تراجع عن الأثر",
+      "apri_calendario": "استعرض الإيقاع الزمني",
+      "la_direzione_editoriale_globale_da_cui_nasceranno": "المرجع التحريري الذي تولد منه إصدارات الأسواق",
+      "programma_la_pubblicazione": "حدّد إيقاع الصدور",
+      "scegli_il_mercato_di_destinazione_tono_cta_e_ritmo": "حدّد السوق التي تخاطبها، فيتشكّل السرد والإيقاع والحضور بما يليق بذاكرتها الثقافية",
+      "una_frase_che_cattura_l_atmosfera_non_un_brief_tec": "سردٌ يُجسّد الحضور، لا وصفٌ تقني للمهمّة"
+    },
+    "public_preview": {
+      "cta_editoriale": "دعوة التحرير",
+      "mercato_editoriale": "سوق الحضور التحريري"
     }
   },
   "blueprint": {
@@ -631,7 +844,505 @@
       "files_allegati_arriva_con_il_media_library_inspect": "تصل الملفات المرفقة مع أداة فحص مكتبة المحتوى المرئي",
       "la_memoria_della_relazione_e_ancora_bianca": "لم تُكتب بعد ذاكرة هذا الحضور.",
       "linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb": "لوحات Moodboard المنسوجة من الورشة تحضر الآن في فضاء P1 المخصّص، مرئيةً في",
-      "materiali_preferiti": "المواد التي تحمل أثرك"
+      "materiali_preferiti": "المواد التي تحمل أثرك",
+      "nessun_contact_ancora_aggiungi_il_primo_qui_sotto": "لا حضور مسجّل بعد. ابدأ بإضافة الأول أدناه",
+      "nessuna_interazione_registrata": "لم يُسجّل أيّ حضور بعد",
+      "registra_il_primo_contatto_una_call_una_nota_vocal": "وثّق اللقاء الأول — مكالمة، رسالة صوتية، حضور في الورشة",
+      "salva": "حفظ الأثر",
+      "style_dna_non_ancora_compilato_per_questo_account": "لم يتم بعد تحرير السرد الجمالي لهذا الحساب"
+    },
+    "activity": {
+      "annulla": "إلغاء الأثر",
+      "chiudi": "إتمام الحضور",
+      "es_inviare_proposta_materiali": "تقديم سرد المواد المقترحة"
+    },
+    "crm_accounts": {
+      "account_centered_ogni_account_puo_avere_piu_contac": "محور الحساب. كل حساب يحتضن عدة جهات اتصال. أعضاء الفريق يعملون ضمن",
+      "action": "الأثر المُنتظر",
+      "aggiungi_un_account": "إضافة حضور جديد إلى الورشة",
+      "annulla": "تراجع عن الأثر",
+      "apri_account": "ادخل إلى ورشتك ←",
+      "apri_il_primo_account": "ابدأ بتأسيس أول حساب لورشتك",
+      "caricamento": "جارٍ استحضار الأثر",
+      "cerca_per_nome_account_o_email_contact": "ابحث بحضور الاسم أو عنوان المراسلة…",
+      "crea_account": "تأسيس الحضور",
+      "due": "موعد الحضور المنتظر",
+      "empty": {
+        "accounts_hint": "الحساب هو حضور — عميل، ورشة، عائلة. جهات الاتصال هم الأشخاص الذين يشكّلون هذا الحضور.",
+        "accounts_lead": "لم تُوثّق علاقة بعد. ابدأ ببناء ذاكرة حضورك مع من يشكّلون عالم الورشة",
+        "other_hint": "جرّب التنقّل بين الأقسام، أو ابدأ بإنشاء حساب جديد لتشكيل حضورك هنا",
+        "other_lead": "لا حضور لأي {label} في هذا المشهد"
+      },
+      "le_relazioni_della_tua_casa_di_design": "علاقات ورشتك التي تصنع الحضور",
+      "nessun_contatto_primario_aggiungi_al_drawer": "لا حضور أساسي · أضف إلى الدرج",
+      "no_due_date": "من دون موعد محدد",
+      "no_follow_ups": "لا متابعات معلّقة، كلّ شيء في موضعه",
+      "sala_delle_relazioni": "فضاء الحضور والصلات",
+      "tutti_gli_stage": "جميع المراحل الحاضرة",
+      "tutti_i_tipi": "كل أنواع الحضور"
+    },
+    "cultural_edition": {
+      "adatta_tono_ritmo_cta_al_mercato": "اضبط الإيقاع والسرد والدعوة وفق حضور السوق",
+      "annulla": "تراجع عن الأثر",
+      "briefing_editoriale_angle_desiderato_vincoli": "موجز السرد — الزاوية المُثلى، المحددات، والأثر المنشود",
+      "chiudi": "إغلاق الورشة",
+      "mood_adatta_tono_ritmo_cta_e_narrativa_al_mercato": "يضبط MOOD الحضور والإيقاع والسرد بما يلائم ذاكرة السوق المختار، فيراعي النظام توقعات الضيافة وإيقاع المادة البصرية وإدراك الفخامة الخاص بكل مجموعة ثقافية",
+      "moodboard": "لوحة الحضور والمادة",
+      "tutti_i_mercati": "كلّ الحضور، في كلّ الأسواق"
+    },
+    "relationship_graph": {
+      "dove_vive_la_relazione": "حيث تتجسّد العلاقة في المادة",
+      "nessun_progetto_moodboard_o_materiale_ancora_colle": "لم يتم ربط أي مشروع أو لوحة إلهام أو مادة بعد",
+      "relationship_graph_mappa_editoriale": "Relationship Graph™ · خريطة السرد والحضور",
+      "tracciando_la_mappa_della_relazione": "نحت خريطة الأثر المشترك…"
+    },
+    "stage_change": {
+      "annulla": "التراجع عن الأثر",
+      "chiudi": "إنهاء الحضور",
+      "il_cambio_sara_tracciato_come_evento_in_timeline": "سيُسجّل هذا التحوّل كأثر حيّ ضمن السرد الزمني",
+      "perche_stiamo_cambiando_fase_il_contesto_rimane_in": "لماذا ننتقل إلى مرحلة جديدة؟ السرد يبقى حاضرًا في مسار العلاقة"
+    }
+  },
+  "cultural": {
+    "cultural_edition": {
+      "adatta_il_tuo_lavoro_a_un_altro_mercato_culturale": "اصنع حضورًا لعملك في سياق ثقافي آخر",
+      "atmosfera": "حضور المكان",
+      "briefing_al_caporedattore_opzionale": "موجز إلى مدير التحرير (اختياري)",
+      "chiudi": "إغلاق المشهد",
+      "direzione_narrativa_del_mercato": "توجيه السرد في فضاء الورشة",
+      "hai_personalizzato_la_direzione_del_mercato": "لقد أعدت رسم وجهة الورشة وحضورها في السوق",
+      "in_attesa_dei_contenuti_dello_studio": "جارٍ استحضار سرد الورشة ومادتها البصرية",
+      "la_redazione_internazionale_di_mood_sta_preparando": "يعمل فريق MOOD العالمي حالياً على صياغة النسخة المخصصة لورشتك",
+      "lingua_della_versione_mercato": "لغة السرد في النسخة المحلية",
+      "mood_ha_pre_compilato_i_campi_con_la_cultura_narra": "أعدّت MOOD الحقول مسبقاً بسرد حضاري من",
+      "mood_prende_un_tuo_contenuto_e_ne_prepara_una_vers": "MOOD تأخذ ما تكتبه وتعيد صياغته بحضور ثقافي يليق بالسوق الذي تختاره، دون ترجمة آلية، بل بفعل تحريري موجّه بالسياق والمادة",
+      "puoi_selezionare_uno_o_piu_ambiti_la_redazione_di": "اختر مجالاً واحداً أو أكثر، وسيكرّس فريق MOOD التحريري عمله على ما تحدده فقط",
+      "revisione_editoriale_prima_di_creare": "مراجعة السرد قبل أن يتجسّد الأثر",
+      "scegli_il_contenuto_da_adattare": "اختر السرد الذي يحمل أثرك في الورشة",
+      "showcase_e_selezioni_materiali_sono_in_lavorazione": "يجري العمل على إعداد المعارض واختيارات المواد — يمكنك حالياً إدراج مرجع يدوي",
+      "suggerita_dal_mercato": "· مُوصى بها من الورشة المحلية",
+      "suggerito_dal_mercato": "اختارته الورشة بحضورها",
+      "torna_ai_suggerimenti_del_mercato": "العودة إلى مقترحات السوق المحلية"
+    },
+    "cultural_edition_review": {
+      "atmosfera": "روح المكان",
+      "atmosfera_originaria": "الأجواء الأولى للورشة",
+      "corpo_editoriale": "هيئة السرد والأثر",
+      "revisione_editoriale": "مراجعة الحضور التحريري",
+      "status_updated": "تحديث الحضور مكتمل"
+    },
+    "cultural_editions_list": {
+      "le_tue_versioni_mercato": "إصداراتك في الأسواق",
+      "lede": "كل إصدار هو قرار سردي: محتواك يُصاغ من جديد ليحمل روح سوق بعينها — نبرتها، مرجعياتها، حضورها المادي.",
+      "nessuna_edizione_ancora": "لم يُسجّل أيّ أثر بعد.",
+      "new_edition": "إصدار جديد من السجل"
+    }
+  },
+  "inbox": {
+    "refresh": "تحديث الحضور",
+    "refreshing": "جارٍ تحديث الورشة…",
+    "tabs": {
+      "articles": "النصوص المنشورة",
+      "references": "المراجع والمصادر"
+    }
+  },
+  "insights": {
+    "insights": {
+      "dove_si_trova_il_pensiero_progettuale": "أين يسكن الفكر التصميمي",
+      "eventi_narrativi_nel_mese": "سرديات الورشة خلال الشهر",
+      "l_evoluzione_dello_studio": "تحوّل الورشة عبر الزمن",
+      "la_grammatica_dello_studio": "قواعد الحضور في الورشة",
+      "la_superficie_viva_del_journey": "المادة الحيّة لرحلة Journey",
+      "le_pulsazioni_dello_studio": "نبض الورشة وحضورها المادي",
+      "moodboard": "لوحة الحضور والإلهام",
+      "nessuna_pietra_miliare_ancora_attiva": "لا أثر محفور في السجل بعد",
+      "ogni_cella_un_giorno_intensita_numero_di_eventi": "كل خلية · يوم واحد · الكثافة = عدد الأحداث المسجلة",
+      "sto_leggendo_le_pulsazioni_dello_studio": "أتتبّع إيقاع الورشة وحضورها الآن…",
+      "studio_insights": "Studio · رؤى الورشة وحضورها"
+    }
+  },
+  "journey": {
+    "client_interaction_layer": {
+      "questa_direzione": "هذا المسار الحسي"
+    },
+    "closure": {
+      "summary_placeholder": "فقرة توثق المسار بما حمل من مادة وحضور، بلا مبالغة ولا بلاغة زائدة، سرد لما عُبر وما بقي أثره",
+      "title_label": "عنوان السرد النهائي",
+      "title_placeholder": "مثال: فيلا الأفق · سردٌ مع الضوء والمادة"
+    },
+    "journey_closure_ceremony": {
+      "titolo_definitivo_del_journey": "العنوان النهائي للرحلة التصميمية"
+    },
+    "material_direction_workspace": {
+      "il_tavolo_della_materia": "طاولة الحضور المادي"
+    },
+    "milestone_dialogue": {
+      "aggiungi_un_capitolo": "أضِفْ فصلًا إلى السرد",
+      "annulla": "إلغاء المسار",
+      "capitolo": "فصل ·",
+      "chiudi": "إغلاق السرد",
+      "condividi": "انشر هذا الأثر",
+      "cosa_cambia_in_questo_capitolo_in_poche_righe": "ما يتجدّد في هذا الفصل — في سطور موجزة",
+      "evoluzione_del_progetto": "مسار تشكّل المشروع",
+      "il_perche_di_questa_direzione_materia_luce_atmosfe": "لماذا اخترنا هذا المسار — المادة والضوء والأجواء ولغة التصميم",
+      "il_primo_capitolo_apre_la_conversazione_progettual": "الفصل الأول هو حيث يبدأ السرد المشترك مع صاحب المشروع",
+      "nessun_capitolo_condiviso_ancora": "لم يُكتب فصل مشترك بعد.",
+      "nuovo_capitolo_progettuale": "فصل جديد في سرد المشروع",
+      "racconta_a_parole_tue_un_atmosfera_un_riferimento": "صِفْ بلغتك الخاصة — أجواءً تسكنها الذاكرة، مرجعًا يحمل أثرًا، إحساسًا بالحضور",
+      "sto_preparando_il_dialogo_progettuale": "نُحضّر الآن حوار المشروع وسرده المادي",
+      "titolo_del_capitolo_es_luce_mediterranea": "عنوان الفصل (مثال: ضوء البحر المتوسط)",
+      "voce_del_cliente": "حضور العميل في السرد"
+    },
+    "moodboard_direction_workspace": {
+      "capitoli_moodboard": "فصول اللوحة الحسية",
+      "direzione_editoriale": "ورشة السرد البصري",
+      "l_orizzonte_di_questo_capitolo": "أفق هذا الفصل من السرد",
+      "le_direzioni_proposte": "الاتجاهات المقترحة للسرد البصري"
+    },
+    "step_context_header": {
+      "capitolo_precedente": "الفصل السابق من السرد",
+      "capitolo_seguente": "الفصل التالي من السرد",
+      "posizione_nel_journey": "موضع الحضور ضمن السرد"
+    },
+    "step_workspace": {
+      "capitolo_in_corso": "الفصل الحاضر في الورشة",
+      "le_tracce_di_questo_passaggio": "آثار هذا الحضور المادي"
+    },
+    "tab": {
+      "brief_editor_coming": "محرر الموجز سيحضر في الفصل التالي من هذا السرد",
+      "evolution": "مسار الحضور والتحوّل",
+      "evolution_real": "السرد الحقيقي لتطوّر المشروع",
+      "first_conversation": "الحوار الأول المؤسِّس",
+      "story": "السرد الذي تنسجه المادة في حضورها",
+      "timeline_coming": "سيتجلى السرد البصري في الفصل المقبل من هذه الرحلة",
+      "update_direction": "تجديد مسار السرد"
+    },
+    "version_stack": {
+      "ancora_nessun_capitolo": "لم يُكتب بعد أي فصل في هذا السرد"
+    }
+  },
+  "library": {
+    "materials": {
+      "le_materie_scelte_vivono_dentro_i_loro_journey": "المواد المختارة تحيا في سردها الخاص",
+      "material_registry": "سجل المواد الحية",
+      "register_first_material": "سجّل المادة الأولى في الورشة",
+      "register_material": "توثيق المادة في السجل"
+    },
+    "rail": {
+      "material_registry": "سجل المواد الحسيّة"
+    }
+  },
+  "material_view": {
+    "filter": {
+      "materiality": "الحضور المادي"
+    },
+    "header": {
+      "title": "مواد تروي حضورها"
+    }
+  },
+  "media": {
+    "image": {
+      "caricamento_immagine": "تحضير الصورة للحضور…"
+    },
+    "universal_editorial_cropper": {
+      "chiudi": "إنهاء الحضور",
+      "filtro_editoriale": "مرشّح السرد البصري",
+      "questa_e_la_proporzione_che_i_consumer_hero_moodbo": "هذه هي النسبة التي سيختارها الجمهور (Hero · Moodboard · Presentation) حين تُتاح لهم حرية الاختيار.",
+      "salva_regia": "حفظ الأثر الملكي",
+      "trascina_il_punto_focale_sulla_parte_importante_de": "اسحب نقطة التركيز نحو العنصر الأساسي في التكوين البصري"
+    }
+  },
+  "moodboards": {
+    "archive": {
+      "cta": "ادخل إلى Studio Pulse",
+      "eyebrow": "ذاكرة مفتوحة · إطلاق G.6",
+      "lede": "هذا أرشيف بصري يحفظ ذاكرة اللوحات المؤلّفة عبر كل الرحلات، بينما يتمّ النسج الحقيقي ضمن فصل Moodboard Direction™ في قلب كل Journey على حدة."
+    },
+    "empty_inside_journey": "لوحات المزاج تسكن داخل رحلاتها الخاصة",
+    "eyebrow": "رحلة المادة · ورشة السرد البصري",
+    "moodboards": {
+      "continua_la_direzione": "استكمال الحضور البصري ←"
+    },
+    "filter": {
+      "all": "الكل",
+      "draft": "مسودة",
+      "sent": "مُرسَل",
+      "viewed": "تمت المشاهدة",
+      "approved": "معتمد",
+      "revision_requested": "مطلوب مراجعة",
+      "rejected": "مرفوض"
+    }
+  },
+  "onboarding": {
+    "owner_introduction": {
+      "ad_esempio_sono_qui_per_accompagnarti_nelle_prime": "نحن هنا لنرافق حضورك في المراحل الأولى من بناء المشروع ونصوغ معك أسس الورشة",
+      "annulla": "التراجع عن الخطوة",
+      "chiudi": "إغلاق الورشة",
+      "conferma_foto": "توثيق الحضور البصري",
+      "cosa_vuoi_che_il_cliente_sappia_di_te": "ما الذي تريد أن يعرفه العميل عن حضورك وسردك الإبداعي",
+      "es_scrivi_a_stefano_default_ricavato_dal_nome": "مثال: 'راسل كريم'. الإعداد الافتراضي مستمد من الاسم المدخل",
+      "foto_ruolo_e_bio_sono_visibili_a_ogni_cliente_del": "صورتك وحضورك وسردك الشخصي هي أول ما يستقبل ضيوف الورشة، وأول أثر للعناية يحملونه معهم",
+      "posiziona_la_foto": "اختر الصورة التي تمنح الورشة حضورها الأول",
+      "presentati_ai_tuoi_clienti": "اصنع حضورك أمام من يقصدون ورشتك",
+      "salva_e_pubblica": "حفظ السرد ونشر الحضور",
+      "trascina_per_centrare_il_volto_usa_lo_zoom_per_rit": "اضبط موضع الوجه بالسحب، واستعن بالتكبير لتحديد الحضور المطلوب",
+      "visibile_sotto_il_tuo_nome_nella_human_card": "يظهر أسفل اسمك في بطاقة الحضور الشخصية"
+    }
+  },
+  "placeholder": {
+    "coming_soon": {
+      "torna_ai_progetti": "العودة إلى سرد المشاريع"
+    }
+  },
+  "project": {
+    "detail": {
+      "compose_proposal_title": "اصنع مقترحًا تحريريًا ينبع من حضور المشروع ذاته",
+      "empty_conversations": "لا حوار بعد حول هذا المشروع في الورشة",
+      "empty_inspirations": "لم يُحفظ بعد أيّ أثر بصري يُلهم هذا المشروع",
+      "empty_materials": "لا مواد مرتبطة بهذا المشروع حتى الآن",
+      "empty_moodboards": "كل لوحة إلهام تبدأ من حضور فكرة واحدة",
+      "empty_proposals": "لم يتشكّل بعد أيّ سردٍ مقترح لهذا المشروع.",
+      "memory_writes_itself": "الأثر يكتب نفسه في حضور المادة",
+      "regenerate_direction_title": "استحضر الاتجاه وفق السياق الراهن للورشة",
+      "share_thread_title": "شارك في حوار الورشة الداخلي مع الفريق"
+    }
+  },
+  "settings": {
+    "asset_picker": {
+      "annulla": "إلغاء الاختيار",
+      "carica_file": "إضافة المادة البصرية",
+      "caricamento": "جارٍ استحضار المواد",
+      "cerca_per_nome_descrizione_alt": "البحث عبر الاسم، الوصف، النص البديل…",
+      "chiudi": "إنهاء الاختيار",
+      "incolla_un_url_pubblico_https_di_un_immagine_verra": "أدرج عنوان URL عام (https://…) لمادة بصرية. سيُحفظ كأثر خارجي — دون أن يشغل حيّزًا في ورشتك",
+      "modifica_crop_filtri": "تنقيح · الإطار والأثر البصري",
+      "nessun_asset_corrisponde_carica_nuove_immagini_per": "لا حضور بصري بعد. ابدأ بتحميل المواد لبناء السرد المرئي",
+      "scegli_dal_computer": "اختر من ذاكرة جهازك",
+      "trascina_qui_le_immagini": "أسقِط الصور هنا لتحضر في الورشة"
+    },
+    "brand_studio": {
+      "il_preset_sceglie_la_modalita_automaticamente_puoi": "النمط يختار الوضع تلقائياً، وأنت حرٌّ في تعديله",
+      "la_voce_dello_studio_resta_persistente_la_direzion": "يبقى حضور الورشة ثابتًا في كل المواد. التوجّه التحريري وكثافة السرد في Inspiration واحدة يُعيدان كتابة تلك القراءة فقط، دون المساس بالأخرى",
+      "voce_editoriale_dello_studio": "الصوت التحريري للورشة"
+    },
+    "international_presence": {
+      "a_chi_parli_prevalentemente_in_questo_mercato": "الجمهور الذي تخاطبه في هذا السوق بشكل أساسي",
+      "annulla": "تراجع عن الأثر",
+      "caricamento_della_presenza_editoriale": "جارٍ استحضار الأثر التحريري...",
+      "come_gli_interlocutori_in_questo_mercato_tipicamen": "كيف يتخذ أصحاب الورشات في هذا السوق قراراتهم الحاسمة. هذه البديهيات تُشكّل واجهة الحضور، الدعوة إلى الفعل، ومحرّر السرد.",
+      "cosa_vuoi_ottenere_strategicamente_da_questo_merca": "الأثر الذي تطمح إلى تحقيقه في هذا السوق من منظور استراتيجي",
+      "italian_material_culture": "الحضور المادي للورشة الإيطالية",
+      "l_asse_strategico_di_posizionamento_commerciale_pe": "المحور الاستراتيجي لتأسيس الحضور التجاري في هذا السوق",
+      "nessun_mercato_disponibile_nel_catalogo_platform": "لا يتضمّن السجل الحالي أيّ حضور جغرافي مُسجّل",
+      "uno_studio_di_new_york_puo_rivolgersi_al_mercato_a": "يمكن لورشة تصميم في نيويورك أن تخاطب السوق الأمريكية عبر حضور"
+    },
+    "magazine_admin": {
+      "caricamento": "جارٍ استحضار المحتوى",
+      "inizia_un_nuovo_articolo": "ابدأ سردًا جديدًا"
+    },
+    "magazine_editor": {
+      "caricamento": "جارٍ التهيئة",
+      "cta_label_es_esplora_la_palette_materica": "اكتشف حضور المواد في المجموعة",
+      "riassunto_editoriale_1_2_frasi": "الخلاصة التحريرية (جملة أو جملتان)",
+      "testo_editoriale_del_paragrafo": "نص الفقرة التحريرية…",
+      "torna_alla_lista": "العودة إلى الفهرس المنسّق"
+    },
+    "plan": {
+      "ai_credits": "رصيد الذكاء المادي"
+    }
+  },
+  "site": {
+    "begin_journey": {
+      "aiutaci_a_comprendere_il_tuo_modo_di_abitare_non_i": "ساعدنا في فهم كيف تسكن المساحة، لا كيف تحسب الميزانية",
+      "avvicinati_al_tuo_journey": "ابدأ رحلتك في الحضور ←",
+      "come_vivi_gli_spazi": "كيف تحضر المادة في ورشتك؟",
+      "come_vuoi_sentirti_in_questo_spazio": "ما الحضور الذي تريده لهذه الورشة؟",
+      "continua_il_racconto": "استكمال السرد ←",
+      "facoltativo_alcune_cose_si_capiscono_meglio_a_voce": "اختياري — بعض الأمور يُفصح عنها الصوت بما لا تبلغه الكلمة المكتوبة",
+      "inizia_a_raccontarci_lo_spazio_che_immagini_senza": "ابدأ بسرد الفضاء الذي تستحضره — بتأنٍّ، وبحضور تام",
+      "inizia_il_tuo_design_journey": "ابدأ رحلتك في عالم التصميم مع MOOD",
+      "nessun_preventivo_nessuna_pressione_solo_una_conve": "لا أرقام، لا التزام. مجرد حوار حول المادة والحضور",
+      "niente_di_formale_tutto_quello_che_ti_viene_in_men": "لا قيود، بل ما يسكن خيالك وينبض في حضورك",
+      "quale_atmosfera_stai_cercando": "أيّ حضور تبحث عن تجسيده في المكان؟",
+      "quali_materiali_ti_fanno_stare_bene": "أي المواد تمنح ورشتك حضورها الحقيقي؟",
+      "stiamo_aprendo_il_tuo_design_journey": "نُهيّئ لك مسار التصميم الخاص بك",
+      "tre_dettagli_soltanto_il_resto_nascera_dalla_conve": "ثلاثة تفاصيل فحسب — والباقي يولد من الحوار",
+      "una_sensazione_un_momento_del_giorno_un_ricordo": "إحساس عابر، لحظة من نهار، أو أثر باقٍ في الذاكرة"
+    },
+    "journey_welcome": {
+      "aprendo_il_tuo_design_journey": "نفتح مسار التصميم الخاص بك",
+      "capitolo_primo_brief_cliente": "الفصل الأول · موجز الحضور والطلب",
+      "forse_il_viaggio_e_stato_gia_archiviato_o_il_link": "ربما تمّ إغلاق هذا السرد، أو تبدّل المسار — تواصل مع الورشة لاستعادة الأثر.",
+      "il_modo_in_cui_vivi": "طريقتك في الحضور ·",
+      "il_tuo_design_journey_e_iniziato": "رحلتك في Design Journey™ قد بدأت",
+      "l_atmosfera_che_cerchi": "الحضور الذي تنشده لورشتك",
+      "lo_studio_che_ti_accompagna": "الورشة التي ترافق حضورك",
+      "questo_e_il_tuo_design_journey_tutto_cio_che_condi": "هنا تبدأ رحلتك في Design Journey™. كلّ ما سنسرده معًا من الآن — الفصول، الأجواء، الحوارات — سيحضر في هذا الفضاء",
+      "questo_link_non_e_piu_disponibile": "لم يعد هذا المسار متاحًا في الورشة",
+      "salva_questo_link_e_la_porta_del_tuo_design_journe": "احفظ هذا الرابط — إنه عتبة رحلتك في التصميم. سيتواصل معك الأتيليه قريبًا عبر البريد الذي شاركته."
+    }
+  },
+  "storefront": {
+    "band_editors": {
+      "aggiungi_colonna": "إضافة عمود جديد",
+      "aggiungi_kpi": "أضف مؤشر الأثر",
+      "aggiungi_link": "إضافة رابط إلى السرد",
+      "aggiungi_logo": "أضف شعار الورشة",
+      "aggiungi_social": "أضف حضورك الرقمي",
+      "aggiungi_voce_di_menu": "إضافة بند إلى سجل الورشة",
+      "automatica_ultimi_articoli_pubblicati_nel_locale": "تلقائيًا · أحدث المقالات المنشورة في هذا السوق",
+      "body_editoriale": "هيئة التحرير المادي",
+      "eyebrow_editoriale": "مرسم التحرير",
+      "la_tua_email": "بريدك في الورشة",
+      "le_case_che_ci_scelgono": "المساحات التي تختارنا لتروي حضورها",
+      "leggi_tutti_gli_articoli": "استكشف جميع المقالات في السجل",
+      "nessuna_colonna_aggiungi_la_prima": "لا أعمدة بعد، ابدأ بإضافة العمود الأول ↓",
+      "nessuna_voce_di_menu_aggiungi_la_prima": "لا أثر بعد، ابدأ السرد الأول ↓"
+    },
+    "storefront_studio": {
+      "caricamento_dell_orchestrazione": "جارٍ تحضير السرد البصري…",
+      "chiudi": "إغلاق الورشة",
+      "l_orchestrazione_cinematica_della_presenza_pubblic": "تنسيق سينمائي للحضور العام. كل شريحة سطح سردي يُكيّف النبرة والإيقاع والدعوة وفق السوق الذي يشهدها. كل ما تراه هنا هو الواجهة العامة — لا خفايا، لا شيء مُثبّت في البنية.",
+      "nessuna_fascia_per_questa_pagina": "لا حضور مادّي لهذه الصفحة في الورشة",
+      "pubblica_pagina": "إطلاق الصفحة إلى الحضور",
+      "sopra_titolo_editoriale": "عنوان الورشة الافتتاحي"
+    }
+  },
+  "storytelling": {
+    "hotspot_image_overlay": {
+      "aggiungi_note_di_dettaglio_sull_immagine": "أضف ملاحظات تفصيلية حول حضور الصورة",
+      "chiudi": "إغلاق المشهد"
+    },
+    "project_gallery": {
+      "aggiungi_immagine": "أضِف حضورًا بصريًا",
+      "aggiungi_la_prima_immagine": "+ أضف الصورة الأولى لسردك البصري",
+      "annulla": "إلغاء الإجراء",
+      "caption_editoriale_visibile": "نص السرد البصري (ظاهر للقراءة)",
+      "conferma_immagine": "تثبيت الصورة في السرد",
+      "elimina": "إزالة من السجل",
+      "gallery_del_progetto": "معرض المشروع البصري",
+      "nessuna_immagine_ancora_aggiungi_la_prima_per_iniz": "لا صور بعد. ابدأ السرد البصري بإضافة الصورة الأولى لحكاية المشروع",
+      "per_impostare_la_cover_clicca": "لتحديد صورة الغلاف · انقر هنا",
+      "una_case_history_editoriale_non_una_scheda_portfol": "سردٌ تحريري حيّ، ليس بطاقة أعمال · اسحب لإعادة الترتيب · انقر"
+    },
+    "story_sections": {
+      "add_to_moodboard": "أضِف إلى لوحة الحضور",
+      "aggiungi_blocco": "إضافة فصل جديد للسرد",
+      "aggiungi_immagine": "إضافة صورة إلى السرد المرئي",
+      "annulla": "إلغاء الأثر",
+      "apri_editor_hotspot": "افتح محرّر نقاط الحضور",
+      "componi_blocchi_editoriali_testo_immagini_gallery": "انسج مقاطع السرد — نص، صور، معرض بصري، نقاط تفصيلية، دعوة للحضور. اسحب المقبض لإعادة الترتيب",
+      "copy_editoriale_cta": "نص السرد البصري · الدعوة إلى الحضور",
+      "elimina_blocco": "إزالة المقطع السردي",
+      "explore_material": "استكشف حضور المادة في الورشة",
+      "la_frase_che_rimane": "الجملة التي تبقى في الذاكرة",
+      "nessun_blocco_ancora_inizia_la_narrazione": "لم يُبنَ أثرٌ بعد. ابدأ بنسج السرد الأول",
+      "paragrafo_editoriale": "فقرة من السرد المادي",
+      "sezioni_della_storia": "فصول الأثر المروي"
+    }
+  },
+  "stubs": {
+    "client": {
+      "approvals": {
+        "body": "كل قرار يحتاج حضورك — من اختيار المواد إلى تشكيل المساحة — يظهر هنا بوضوح تام، موثّقًا ومُصانًا في سجل لا يُمحى",
+        "eyebrow": "الموافقات المعتمدة",
+        "title": "المقترحات الأولى تصل الآن إلى ورشتك لتنال موافقتك"
+      },
+      "files": {
+        "body": "كل ما يشاركه الـ Studio من مواد يحضر هنا، مرتّباً بحسب المرحلة ومتاحاً في كل لحظة",
+        "eyebrow": "ملفات الورشة المشتركة",
+        "title": "الوثائق والتصورات والرسوم — في ذاكرة واحدة محفوظة"
+      },
+      "in_arrivo": "قيد الحضور",
+      "messages": {
+        "body": "كل ما يُحفظ هنا — الرسائل والأسئلة والتحديثات — في مكان واحد، بلا بريد متناثر ولا حوارات مبعثرة",
+        "eyebrow": "الحوار المكتوب",
+        "title": "حضور مباشر في قلب ورشتك"
+      },
+      "moodboards": {
+        "body": "يعمل فريقنا على اختيار المواد والأجواء والصور التي ستشكّل الحضور البصري الأوّل لمشروعك",
+        "eyebrow": "لوحة الحضور البصري",
+        "title": "ستتجلّى هنا لوحات الإلهام التي تُشكّل سردك البصري"
+      },
+      "project": {
+        "body": "ستجد هنا قريباً سرد المشروع وأحدث تطوّراته، إلى جانب كلّ ما يوثّقه الأتيليه من مستجدّات ومراحل",
+        "eyebrow": "مشروعي في الورشة",
+        "title": "صفحة مشروعك قيد الإعداد في الورشة"
+      },
+      "timeline": {
+        "body": "هنا تتابع كل مرحلة، كل موعد، وكل تسليم بدقة تليق بسرد معماري محكم.",
+        "eyebrow": "سِجِلّ الحضور",
+        "title": "سيكتمل السرد الزمني للمشروع في القريب العاجل"
+      }
+    }
+  },
+  "taxonomy": {
+    "advisor_status": {
+      "accepted": "مُستقبَل في الورشة",
+      "active": "حاضر في الورشة",
+      "declined": "لم يُقبل",
+      "invited": "مدعوّ بحضوره",
+      "suspended": "متوقف مؤقتاً"
+    },
+    "common": {
+      "all": "الكلّ",
+      "all_m": "الكلّ",
+      "none": "لا شيء حاضر"
+    },
+    "cultural_edition": {
+      "approved": "مُعتمَدة",
+      "archived": "مُودَعة في الذاكرة",
+      "archived_at": "مُودَعة في الذاكرة",
+      "draft": "مسودة أولية",
+      "in_review": "قيد المراجعة الحِرَفية"
+    },
+    "editorial_status": {
+      "ai_composing": "جارٍ نسج السرد",
+      "approved": "مُعتمَدة للنشر",
+      "archived": "مودَعة في الذاكرة",
+      "direction_defined": "المسار محدّد الملامح",
+      "draft": "مسودة العمل",
+      "published": "مُتاحة للحضور",
+      "ready_for_editorial_review": "جاهز للمراجعة التحريرية",
+      "revision_requested": "مراجعة الحضور مطلوبة",
+      "scheduled": "مُجدولة"
+    },
+    "material_family": {
+      "ceramica": "الخزف والسيراميك",
+      "composito": "المواد المركّبة",
+      "legno": "الخشب",
+      "malta": "المونة الصافية",
+      "marmo": "الرخام",
+      "metallo": "المعادن النبيلة",
+      "naturale": "مواد من الأرض والذاكرة",
+      "pietra": "الحجر والذاكرة",
+      "tessile": "المنسوجات والألياف",
+      "vetro": "الزجاج · مادة الشفافية والضوء"
+    }
+  },
+  "workspace": {
+    "add_reference": {
+      "aggiungi_un_riferimento": "أضف مرجعًا إلى السرد",
+      "annulla": "تراجع عن الإضافة",
+      "es_hospitality_emotion_material_atmosphere": "مثال: الضيافة كحضور · الأجواء المادية في المشروع",
+      "ogni_riferimento_entra_nella_cultural_design_intel": "كل مرجع يُدرج في الذاكرة الثقافية للتصميم Cultural Design Intelligence™ · مُفسَّراً عبر حضور السوق المقصود",
+      "perche_questo_riferimento_entra_nell_archivio": "لماذا يدخل هذا المرجع إلى سجلّ الورشة؟",
+      "scegli_un_asset_dalla_library": "اختر عنصرًا من مكتبة المواد",
+      "sfoglia_la_media_library": "استعرض مكتبة المواد البصرية",
+      "stiamo_salvando_l_url_del_pin_scraping_automatico": "نحفظ عنوان المرجع المُثبّت، وسيصل الاستخراج التلقائي للعنوان والصورة والوصف في المرحلة الثانية عبر واجهة Pinterest الرسمية",
+      "url_del_pin": "رابط المرجع البصري"
+    },
+    "design_journey_tab": {
+      "aggiorna_direzione": "تجديد المسار البصري",
+      "evoluzione_del_progetto": "مسار المشروع وتحوّلاته",
+      "l_editor_del_brief_arrivera_nel_prossimo_capitolo": "سيظهر محرر الملخّص التأسيسي في الفصل المقبل من هذه الرحلة",
+      "l_evoluzione_reale_del_progetto": "الحضور المادي لمسار المشروع",
+      "la_prima_conversazione": "الحوار الأول في الورشة",
+      "la_storia_che_il_progetto_sta_scrivendo": "السرد الذي تنسجه المادة في الورشة",
+      "la_timeline_fotografica_arrivera_nel_prossimo_capi": "سيتجلى السرد البصري في الفصل المقبل من رحلة الورشة"
+    },
+    "proposals": {
+      "le_presentazioni_vivono_dentro_i_loro_journey": "العروض تنبض داخل سردها الحيّ"
     }
   }
 }

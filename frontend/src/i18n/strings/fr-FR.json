@@ -336,6 +336,22 @@
         "yesterday": "hier",
         "days_ago": "il y a {n} jours"
       }
+    },
+    "cockpit_timeline": {
+      "carica_un_riferimento_o_crea_una_moodboard_per_dar": "Convoque une référence visuelle ou composez une planche d'inspiration pour orchestrer la présence du jour.",
+      "il_battito_del_tuo_studio": "Le rythme vivant de votre atelier, inscrit dans la matière et le temps"
+    },
+    "dashboard": {
+      "apri_timeline": "Déployez le récit chronologique de l'atelier",
+      "decisioni_che_la_giornata_sussurra": "Les décisions que murmure la journée dans l'atelier",
+      "i_primi_suggerimenti_appariranno_con_l_utilizzo_re": "Les premières suggestions naîtront de l'usage même, au fil des gestes que vous poserez dans l'atelier.",
+      "le_relazioni_che_attendono_un_gesto": "Les relations qui attendent l'attention d'un geste",
+      "mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud": "MOOD commence à percevoir le rythme propre de votre atelier.",
+      "nessuna_relazione_raffreddata": "Aucune relation n'a perdu de son intensité.",
+      "nuova_moodboard": "Composer un nouveau récit de matières et de regards",
+      "progetti_che_chiedono_la_tua_presenza": "Projets qui réclament votre présence, votre regard, votre geste",
+      "riprova": "Renouveler le geste, reprendre l'écriture de cette présence",
+      "tutti_gli_account": "L'ensemble des ateliers dont vous signez le récit"
     }
   },
   "errors": {
@@ -420,7 +436,28 @@
       "upgrade_for_more": "Mettre à niveau pour en créer plus"
     },
     "usage_label": "Projets",
-    "newProject": "Nouveau projet"
+    "newProject": "Nouveau projet",
+    "projects_studio": {
+      "aggiungi_cta": "+ Inscrire un appel à l'action",
+      "annulla": "Reprendre le geste depuis son origine",
+      "apri_un_nuovo_progetto": "+ Ouvrir un nouveau récit de projet dans l'atelier",
+      "atelier": "L'atelier, là où la matière prend forme et le regard se fait geste",
+      "caricamento_archivio": "Convocation des mémoires de l'atelier en cours",
+      "cover_hero_l_apertura_visiva_del_progetto": "Image d'ouverture · le premier regard qui dévoile l'écriture visuelle du projet",
+      "explore_material": "Parcourir la mémoire des matières",
+      "nessuna_immagine": "Aucune image ne vient encore habiter cet espace de l'atelier",
+      "pubblica_progetto": "Inscrire le projet dans la mémoire de l'atelier",
+      "refine_material_narrative_materia_primaria_seconda": "Affiner le récit matière · essence primaire · mémoire secondaire · écriture tactile",
+      "sottotitolo_editoriale": "Écriture éditoriale secondaire",
+      "titolo_del_progetto": "Intitulé du projet dans l'atelier",
+      "titolo_per_il_mercato": "Titre de votre projet pour ce marché",
+      "vocabolario_materico": "Registre des matières et de leur mémoire sensible"
+    },
+    "studio": {
+      "mood_placeholder": "Matière, présence, écriture du geste",
+      "status_live": "En activité — l'atelier respire désormais dans le regard du monde",
+      "tag_input_placeholder": "inscrivez une présence, un geste, une matière…"
+    }
   },
   "inspirations": {
     "eyebrow": "Cultural Design Intelligence Layer",
@@ -457,6 +494,125 @@
       "luxury": "Ton luxury",
       "profile": "Destination",
       "reset": "Reset"
+    },
+    "add_inspiration": {
+      "aggiungi_riferimento": "Inscrire une référence au répertoire",
+      "annulla": "Suspendre le geste en cours et revenir à l'état précédent de votre atlas",
+      "atmosfera": "Ambiance sensible",
+      "carica_file": "Déposer une matière visuelle",
+      "carica_un_immagine_oppure_incolla_un_link_pinteres": "Déposez une image, ou déposez l'adresse d'un regard capté sur Pinterest, Instagram, ou tout autre point du réseau : MOOD l'accueille dans la Bibliothèque, l'inscrit dans la mémoire du système, et en fait une matière disponible, partout, pour l'atelier.",
+      "chiudi": "Refermer ce regard",
+      "cosa_ti_ha_colpito_di_questa_reference": "Qu'est-ce qui, dans cette référence, a retenu votre regard ou réveillé votre mémoire de la matière",
+      "descrizione_editoriale_opzionale": "Écriture libre pour nourrir le regard (facultatif)",
+      "es_salotto_materico_palette_neutra": "Ex. Salon en matières brutes, écriture chromatique neutre",
+      "pinterest_instagram_o_link_diretto_mood_prova_a_es": "Pinterest, Instagram ou lien direct — MOOD tente d'extraire l'image de couverture, et si la matière résiste, conserve la trace pour que vous puissiez compléter le geste plus tard.",
+      "url_della_reference": "Adresse de la référence sensorielle"
+    },
+    "brand_detail": {
+      "aggiungi_capitolo_editoriale": "Ouvrez un nouveau récit éditorial, une page sensible où inscrire la matière et sa mémoire",
+      "continua_la_lettura": "Poursuivez la lecture et laissez le récit déployer sa matière sensible",
+      "curated_by_mood": "Sélectionné par le regard de MOOD",
+      "modifica_collezione": "Recomposer l'écriture de cette collection",
+      "modifica_produttore": "Modifier le regard porté sur la maison",
+      "moodboard": "Récit visuel de matières et d'inspirations",
+      "moodboard_correlate": "Moodboards apparentés par la matière et le regard",
+      "nessuna_collezione_registrata_il_primo_capitolo_ed": "Aucune collection n'a encore été inscrite — le premier récit éditorial posera les fondations du regard curatorial porté sur la marque.",
+      "riferimenti_editoriali": "Mémoire éditoriale du regard"
+    },
+    "brand_form": {
+      "aggiungi_all_atlante": "Inscrire dans votre atlas curatorial",
+      "annulla": "Interrompre le geste",
+      "chiudi": "Refermer l'atelier",
+      "es_atelier_sereno": "p. ex. Atelier Sereno",
+      "salva_modifiche": "Préserver ce geste éditorial",
+      "salvataggio": "Sauvegarde de votre regard éditorial en cours",
+      "una_frase_che_identifica_il_linguaggio_progettuale": "Une phrase qui révèle l'écriture formelle et la sensibilité matérielle propres à la marque."
+    },
+    "brand_mode": {
+      "add_maker": "Inscrire un nouvel atelier à la mémoire du projet",
+      "aggiungi_produttore": "Inscrire une nouvelle maison dans votre atlas éditorial",
+      "cerca_per_nome_atmosfera_materia": "Explorez par le nom, la présence sensible, la matière même",
+      "curated_by_mood": "Sélectionné par l'atelier MOOD",
+      "entra_nell_atelier": "Pénétrez dans l'intimité de l'atelier",
+      "esplora_i_marchi_le_collezioni_e_il_linguaggio_pro": "Parcourez l'univers des éditeurs, leurs collections et l'écriture formelle qui traverse chaque pièce présente dans MOOD. Chaque maison devient un récit — atmosphères dominantes, matières récurrentes, géographies sensorielles où elle s'inscrit dans vos projets.",
+      "l_atlante_curatoriale_e_in_costruzione_aggiungi_un": "Votre atlas de matières et de manufactures attend son premier regard : convoquez un producteur ou importez un catalogue pour en déployer la lecture sensible.",
+      "nessun_produttore_corrisponde_alla_ricerca": "Aucune présence ne répond à votre regard dans cette recherche de matière",
+      "tutti_i_posizionamenti": "l'ensemble des présences cartographiées"
+    },
+    "collection_form": {
+      "aggiungi_collezione": "Composer un nouveau récit de matières",
+      "annulla": "Reprendre le geste",
+      "capitolo_editoriale": "Chapitre éditorial ·",
+      "chiudi": "Refermer ce regard",
+      "il_linguaggio_progettuale_di_questo_capitolo_le_ma": "L'écriture matérielle de ce chapitre, les présences qui le traversent, le regard qu'il convoque",
+      "salva_modifiche": "Préserver ce regard éditorial",
+      "salvataggio": "Archivage de votre regard"
+    },
+    "curated_collection": {
+      "description_placeholder": "Quel récit matériel et sensoriel se dessine au fil de cette constellation curatoriale ?",
+      "descrizione_editoriale": "Récit de la matière"
+    },
+    "inspiration_detail": {
+      "adatta_la_direzione_editoriale_per_questo_riferime": "Ajustez le regard éditorial que porte l'atelier sur cette référence",
+      "apertura_del_riferimento": "Ouverture de la référence en cours — un instant pour déployer sa présence",
+      "apri_product_gallery": "Déployer la constellation des matières et des présences\n\n\nLet me reconsider the length constraint and the specific action being described:\n\nOuvrir la galerie des matières et des gestes",
+      "atmosfera": "Climat sensoriel",
+      "description_placeholder": "Récit éditorial de la matière",
+      "direzione_editoriale": "Regard éditorial",
+      "le_percentuali_sono_secondarie_il_significato_e_ne": "Les proportions demeurent un repère formel ; c'est dans l'interprétation éditoriale ci-dessus que réside le véritable regard",
+      "modifica": "Reprendre l'écriture du regard",
+      "mood_sta_leggendo_il_linguaggio_culturale_di_quest": "MOOD déchiffre la présence culturelle inscrite dans cette référence, en silence…",
+      "rights_verify_note": "· vérifiez les droits d'usage avant toute diffusion hors de l'atelier.",
+      "verifica_i_diritti_d_uso_prima_della_pubblicazione": "· vérifiez les droits d'usage avant toute diffusion au-delà de l'atelier."
+    },
+    "material_view": {
+      "aumenta_il_numero_di_asset_curati_per_arricchire_l": "Enrichissez votre matériauthèque en multipliant les matières éditorialisées qui nourrissent le regard de l'atelier",
+      "nessun_elemento_materico_ancora_classificato_per_q": "Aucune matière n'a encore été inscrite dans la mémoire de ces filtres, aucune présence recensée selon ces critères de regard.",
+      "sto_leggendo_la_materioteca": "Je parcours l'atlas des matières, ce répertoire sensible où chaque surface devient récit"
+    },
+    "moodboard_picker": {
+      "aggiungi_al_moodboard": "Composer votre planche de matières et de regards",
+      "annulla": "Reprendre le regard",
+      "cerca_tra_i_tuoi_moodboard": "Explorez l'ensemble de vos planches sensorielles, mémoire visuelle de vos recherches matière et regard",
+      "chiudi": "Suspendre ce regard",
+      "crea_e_aggiungi": "Composer votre récit et l'inscrire dans l'atelier",
+      "crea_il_primo": "Composez le premier récit de matière",
+      "crea_nuovo_moodboard": "Composer un nouveau récit de matières et de regards",
+      "nessun_moodboard": "Aucune planche sensible pour l'instant",
+      "sto_caricando_i_moodboard": "Les planches sensibles se composent sous vos yeux",
+      "titolo_nuovo_moodboard": "Nouveau récit de matières et de présences"
+    },
+    "product_gallery": {
+      "aggiungi_al_moodboard": "Composer ce regard dans votre atelier de matières",
+      "ancora_nessuna_affinita_curatoriale_rilevata": "Aucune correspondance n'a encore été inscrite dans la mémoire curatoriale de votre atelier.",
+      "atmosfera": "Émotions sensorielles et récit matériel",
+      "atmosfera_in_lettura_curatoriale": "L'atmosphère déchiffrée selon le regard curatorial de l'atelier",
+      "curatela_editoriale_non_raccomandazione_algoritmic": "Un regard éditorial porté par la main humaine — jamais le reflet d'un algorithme.",
+      "feedback_title": "Retours d'atelier et récit d'usage",
+      "in_attesa_di_riscontro_dal_cliente": "En attente du regard du client sur cette proposition de matière",
+      "linguaggio_progettuale_dello_studio": "L'écriture visuelle qui façonne l'identité de l'atelier",
+      "moodboard_priority": "Regard hiérarchisé sur la matière",
+      "product_gallery_visual_atelier": "Galerie des Matières™ · L'atelier du regard",
+      "salva_in_references": "Garder dans votre atlas References™",
+      "sto_leggendo_le_relazioni": "Je parcours les récits de matière en cours de constitution"
+    },
+    "studio_collections": {
+      "archivio_curatoriale_dello_studio": "Mémoire curatoriale de l'atelier",
+      "importa_il_primo_catalogo": "Ouvrez le premier récit des matières qui habitera votre atelier",
+      "nessuna_collezione_importata_inizia_caricando_un_c": "L'atelier attend sa première matière : commencez par déposer un catalogue fournisseur pour composer votre récit.",
+      "tutti_i_produttori_e_le_collezioni_che_lo_studio_h": "L'atlas des maisons et des collections que l'atelier a choisi d'inscrire dans son regard créatif."
+    },
+    "supplier_catalog_import": {
+      "annulla": "Interrompre le geste",
+      "cerco_nel_registro": "Je consulte le répertoire des matières et des ateliers",
+      "mood_sta_preparando_le_anteprime_del_catalogo": "MOOD compose en silence la mémoire visuelle de ce catalogue, avant d'en révéler la présence",
+      "privato_dello_studio": "réservé à l'atelier",
+      "trascina_qui_il_pdf_del_catalogo": "Déposez ici le catalogue, ce geste ouvre la matière à votre regard"
+    },
+    "supplier_import": {
+      "atmosphere_title": "L'atmosphère habitée par ce fournisseur",
+      "search_placeholder": "Convoquez un éditeur, une maison, un atelier (Minotti, Poliform, …)",
+      "wizard_step_aria": "Progression du parcours d'importation"
     }
   },
   "editorial": {
@@ -494,6 +650,61 @@
     },
     "toast": {
       "load_error": "Erreur de chargement du calendrier éditorial"
+    },
+    "adaptation_operations": {
+      "apre_l_anteprima_pubblica_nella_surface_di_destina": "Ouvre le récit en anticipation, là où le regard du public se posera.",
+      "apre_un_diff_lato_a_lato_tra_l_adattamento_e_la_di": "Ouvre une vue en vis-à-vis qui révèle, dans leur présence simultanée, l'adaptation et la direction éditoriale du récit maître.",
+      "blocca_la_versione_manuale_corrente_come_stabile": "Figer dans la mémoire éditoriale le récit manuel tel qu'il s'offre au regard, et lui conférer la permanence du stable.",
+      "marca_le_modifiche_correnti_come_curate_manualment": "Préserver l'écriture manuelle de vos interventions actuelles — la synchronisation ultérieure respectera ce geste et n'effacera pas votre mémoire éditoriale.",
+      "riallinea_l_adattamento_al_master_attuale_mantenen": "Rétablissez la cohérence avec la version maître en préservant uniquement les sections que vous avez verrouillées par un geste délibéré.",
+      "rigenera_i_body_blocks_partendo_dalla_direzione_ed": "Recomposez les sections de contenu en vous appuyant sur la vision éditoriale de l'ensemble maître.",
+      "ripristina_la_composizione_editoriale_rigenerata_d": "Restaure l'écriture éditoriale telle que le master l'a régénérée — ce geste efface toute intervention manuelle préalable."
+    },
+    "article": {
+      "fields": {
+        "cta_copy": {
+          "placeholder": "Texte d'accompagnement de l'invitation éditoriale"
+        },
+        "lead": {
+          "placeholder": "L'amorce sensible qui ouvre le récit et établit la présence éditoriale dans ce marché"
+        },
+        "meta_description": {
+          "placeholder": "Résumé éditorial destiné aux moteurs de recherche — 155 caractères maximum"
+        },
+        "title_market": {
+          "placeholder": "Le titre définitif destiné à votre marché éditorial"
+        }
+      }
+    },
+    "article_editor": {
+      "add_to_moodboard": "Ajouter à la planche de regard",
+      "annulla": "Reprendre le geste à son origine",
+      "body_blocchi_editoriali_composabili": "Corps · modules de récit à composer selon votre regard",
+      "caricamento_della_comprensione_editoriale": "L'écriture se compose sous vos yeux, entre lumière et matière…",
+      "cta_tier_azione_transizione_editoriale": "Orchestrer le récit visuel, engager la matière éditoriale, ouvrir la transition du regard",
+      "explore_material": "Parcourir la matière dans sa présence première",
+      "salvataggio": "L'écriture se dépose, le geste s'inscrit dans la mémoire de l'atelier"
+    },
+    "composition_room_rail": {
+      "tutti_i_mercati": "L'ensemble des territoires où se déploie votre regard"
+    },
+    "editorial_calendar": {
+      "nessun_segnale_operativo_critico_il_ritmo_editoria": "Le rythme de publication respire dans la présence constante de vos marchés, sans turbulence ni signal qui réclame le geste."
+    },
+    "intelligence": {
+      "empty": "Aucune alerte ne vient troubler le rythme de l'atelier éditorial, qui poursuit son geste avec la régularité des marchés en présence."
+    },
+    "market_editions_toolbar": {
+      "annulla": "Revenir au geste premier, avant toute publication",
+      "apri_calendario": "Consulter le rythme de vos parutions",
+      "la_direzione_editoriale_globale_da_cui_nasceranno": "L'écriture éditoriale qui fait naître, par le geste et la présence, chaque déclinaison de marché",
+      "programma_la_pubblicazione": "Orchestrez le rythme de vos parutions à venir",
+      "scegli_il_mercato_di_destinazione_tono_cta_e_ritmo": "Choisissez le territoire de publication — ton, rythme et geste éditorial s'ajusteront alors à la sensibilité de chaque lieu, à sa mémoire propre.",
+      "una_frase_che_cattura_l_atmosfera_non_un_brief_tec": "Un récit sensoriel qui évoque la présence du projet, non une liste de paramètres techniques."
+    },
+    "public_preview": {
+      "cta_editoriale": "Composez votre récit éditorial",
+      "mercato_editoriale": "Espace de diffusion éditoriale\n\n\n---\n\n**REASONING NOTES (not part of output):**\n- \"Mercato editoriale\" = editorial market/marketplace\n- For ultra-luxury French sensorial narration, avoiding commercial terms like \"marché\"\n- \"Espace de diffusion\" evokes presence, circulation, intellectual territory\n- \"éditoriale\" maintains the publishing/editorial context\n- Fits the philosophical, spatial vocabulary (espace/présence/regard)\n- Appropriate length and register for editorial cockpit UI\n- No anglicisms, maintains dignity and intellectual positioning"
     }
   },
   "blueprint": {
@@ -628,7 +839,504 @@
       "la_memoria_della_relazione_e_ancora_bianca": "La mémoire de cette relation demeure vierge, ouverte à l'écriture d'un premier geste.",
       "linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb": "Les moodboards créées par vos équipes trouvent désormais leur présence dédiée en P1, et se révèlent dans",
       "materiali_preferiti": "Matières de prédilection inscrites dans la mémoire du geste",
-      "nessun_contact_ancora_aggiungi_il_primo_qui_sotto": "Aucune présence n'habite encore cet espace — inscrivez ici le premier regard."
+      "nessun_contact_ancora_aggiungi_il_primo_qui_sotto": "Aucune présence n'habite encore cet espace — inscrivez ici le premier regard.",
+      "nessuna_interazione_registrata": "Aucune trace d'échange ne subsiste dans la mémoire de cet atelier.",
+      "registra_il_primo_contatto_una_call_una_nota_vocal": "Inscrivez la trace du premier échange — un appel, un fragment de voix, une présence en atelier.",
+      "salva": "Graver dans la mémoire",
+      "style_dna_non_ancora_compilato_per_questo_account": "L'écriture du regard esthétique n'a pas encore trouvé sa forme pour cet Atelier."
+    },
+    "activity": {
+      "annulla": "Suspendre le geste",
+      "chiudi": "Refermer ce regard",
+      "es_inviare_proposta_materiali": "Proposer un récit matière, accompagné de ses échantillons et de leur présence sensible"
+    },
+    "crm_accounts": {
+      "account_centered_ogni_account_puo_avere_piu_contac": "Centré sur l'Account. Chaque Account accueille plusieurs Contact, tandis que les membres de l'équipe habitent",
+      "action": "Geste entrepris",
+      "aggiungi_un_account": "Inscrire une nouvelle présence dans votre atelier relationnel",
+      "annulla": "Revenir au geste premier",
+      "apri_account": "Ouvrir un espace de regard →",
+      "apri_il_primo_account": "Ouvrez votre premier récit client, posez le geste fondateur de toute relation véritable",
+      "caricamento": "La matière prend forme sous le regard, un instant suspendu",
+      "cerca_per_nome_account_o_email_contact": "Recherchez par le nom de l'atelier ou l'écriture du contact dont vous gardez mémoire…",
+      "crea_account": "Inscrire votre présence dans le récit du studio",
+      "due": "Échéance inscrite dans la mémoire du geste",
+      "empty": {
+        "accounts_hint": "Un Account porte la mémoire d'une relation — un client, un atelier, une maison — tandis que les Contacts incarnent les présences qui l'habitent.",
+        "accounts_lead": "Aucune présence encore inscrite dans votre atelier relationnel, mais tout récit commence par un premier geste.",
+        "other_hint": "Explorez un autre regard ou donnez naissance à un nouveau Compte pour déployer votre atelier.",
+        "other_lead": "Aucune {label} ne compose pour l'instant le récit de cette vue."
+      },
+      "le_relazioni_della_tua_casa_di_design": "Les présences qui habitent votre atelier de design",
+      "nessun_contatto_primario_aggiungi_al_drawer": "Aucune présence première · inscrire au registre des gestes possibles",
+      "no_due_date": "Sans échéance inscrite, le geste demeure ouvert à toute temporalité",
+      "no_follow_ups": "Aucun geste en attente, la relation existe dans sa plénitude présente.",
+      "sala_delle_relazioni": "L'atelier des présences vivantes",
+      "tutti_gli_stage": "L'ensemble des parcours de relation, du premier regard à la mémoire partagée",
+      "tutti_i_tipi": "Toutes les présences, tous les regards"
+    },
+    "cultural_edition": {
+      "adatta_tono_ritmo_cta_al_mercato": "Accordez l'écriture, le rythme et l'appel au regard propre à chaque marché",
+      "annulla": "Revenir à l'atelier du regard",
+      "briefing_editoriale_angle_desiderato_vincoli": "Récit éditorial — angle souhaité, contraintes et cadre du regard",
+      "chiudi": "Refermer la page et retrouver l'atelier",
+      "mood_adatta_tono_ritmo_cta_e_narrativa_al_mercato": "MOOD compose pour chaque marché son propre récit — le rythme visuel, la présence du geste, l'attente sensible de l'hospitalité se réécrivent selon la mémoire et le regard du territoire choisi.",
+      "moodboard": "L'atelier d'images où se construit le regard",
+      "tutti_i_mercati": "Chaque regard, chaque atelier, chaque mémoire du geste"
+    },
+    "relationship_graph": {
+      "dove_vive_la_relazione": "Là où s'écrit la relation dans sa durée, son épaisseur, sa mémoire sensible",
+      "nessun_progetto_moodboard_o_materiale_ancora_colle": "Aucun projet, moodboard ou matière n'habite encore cet espace de relation.",
+      "relationship_graph_mappa_editoriale": "Relationship Graph™ · la cartographie du regard éditorial",
+      "tracciando_la_mappa_della_relazione": "Nous dessinons la géographie sensible de chaque relation, ligne après ligne, mémoire après mémoire"
+    },
+    "stage_change": {
+      "annulla": "Revenir au geste précédent",
+      "chiudi": "Clore ce récit",
+      "il_cambio_sara_tracciato_come_evento_in_timeline": "Chaque inflexion dans le parcours du client devient une inscription vivante dans la mémoire relationnelle de votre atelier.",
+      "perche_stiamo_cambiando_fase_il_contesto_rimane_in": "Pourquoi cette inflexion dans le récit que nous bâtissons ensemble ? La mémoire du lien demeure intacte."
+    }
+  },
+  "cultural": {
+    "cultural_edition": {
+      "adatta_il_tuo_lavoro_a_un_altro_mercato_culturale": "Donnez à votre regard créatif la présence d'une autre géographie culturelle.",
+      "atmosfera": "L'écriture atmosphérique de l'atelier, sa présence silencieuse",
+      "briefing_al_caporedattore_opzionale": "Transmission au directeur de la rédaction, si le regard l'exige",
+      "chiudi": "Refermer l'atelier et préserver le geste en mémoire",
+      "direzione_narrativa_del_mercato": "Regard éditorial sur le territoire de la création",
+      "hai_personalizzato_la_direzione_del_mercato": "Vous avez redéfini l'orientation de votre regard sur le marché, et cette inflexion devient geste.",
+      "in_attesa_dei_contenuti_dello_studio": "L'atelier se prépare à accueillir la matière de votre récit, dans l'attente du premier geste créatif…",
+      "la_redazione_internazionale_di_mood_sta_preparando": "L'atelier éditorial de MOOD compose en ce moment même l'écriture propre à votre regard",
+      "lingua_della_versione_mercato": "Langue de l'édition que vous parcourez en ce moment",
+      "mood_ha_pre_compilato_i_campi_con_la_cultura_narra": "MOOD a pré-composé ces champs à partir du récit culturel de",
+      "mood_prende_un_tuo_contenuto_e_ne_prepara_una_vers": "MOOD recueille votre regard, votre matière première, et en compose une écriture entièrement réinventée pour la sensibilité du marché que vous désignez — sans traduction, par un geste éditorial dirigé.",
+      "puoi_selezionare_uno_o_piu_ambiti_la_redazione_di": "Vous choisissez un ou plusieurs territoires éditoriaux, et la rédaction de MOOD concentrera son regard uniquement sur ceux-là.",
+      "revisione_editoriale_prima_di_creare": "Relire l'écriture du projet avant que le geste ne prenne forme dans la matière",
+      "scegli_il_contenuto_da_adattare": "Sélectionnez le récit que vous souhaitez façonner à votre main.",
+      "showcase_e_selezioni_materiali_sono_in_lavorazione": "Les vitrines et sélections de matières se préparent en atelier — vous pouvez pour l'heure inscrire une référence manuelle.",
+      "suggerita_dal_mercato": "· portée par le regard du marché français",
+      "suggerito_dal_mercato": "Inspiré par le regard de vos confrères",
+      "torna_ai_suggerimenti_del_mercato": "Retrouver le récit de votre marché, là où le regard se posait d'abord"
+    },
+    "cultural_edition_review": {
+      "atmosfera": "L'atmosphère sensible qui habite l'espace de création",
+      "atmosfera_originaria": "Présence première de l'atelier",
+      "corpo_editoriale": "Comité de la rédaction sensorielle",
+      "revisione_editoriale": "Regard critique sur la matière éditoriale",
+      "status_updated": "Le récit de l'édition vient d'accueillir sa nouvelle écriture"
+    },
+    "cultural_editions_list": {
+      "le_tue_versioni_mercato": "Vos récits éditoriaux, déclinés selon la sensibilité de chaque territoire",
+      "lede": "Chaque édition est un geste éditorial : votre récit s'inscrit dans la mémoire d'une culture, en épouse le regard, la matière, la sensorialité propre.",
+      "nessuna_edizione_ancora": "Aucune édition n'habite encore cet espace, mais le geste fondateur reste à venir.",
+      "new_edition": "Nouvelle écriture du registre"
+    }
+  },
+  "inbox": {
+    "refresh": "Renouveler le regard sur votre atelier",
+    "refreshing": "L'atelier se recompose sous votre regard",
+    "tabs": {
+      "articles": "Récits de l'atelier",
+      "references": "Mémoire du regard"
+    }
+  },
+  "insights": {
+    "insights": {
+      "dove_si_trova_il_pensiero_progettuale": "Là où naît le geste créateur, là où se dépose la pensée qui façonne l'espace",
+      "eventi_narrativi_nel_mese": "récits inscrits dans le cours du mois",
+      "l_evoluzione_dello_studio": "L'atelier et son écriture : mémoire d'une métamorphose",
+      "la_grammatica_dello_studio": "L'écriture formelle de l'atelier",
+      "la_superficie_viva_del_journey": "La matière vivante du parcours, saisie dans sa présence sensible",
+      "le_pulsazioni_dello_studio": "Le rythme intérieur de l'atelier",
+      "moodboard": "Registre des présences visuelles",
+      "nessuna_pietra_miliare_ancora_attiva": "Aucun jalon ne marque encore le récit de votre atelier.",
+      "ogni_cella_un_giorno_intensita_numero_di_eventi": "chaque cellule consigne un jour · l'intensité révèle le nombre d'événements inscrits dans la matière du temps",
+      "sto_leggendo_le_pulsazioni_dello_studio": "Je lis en ce moment même les pulsations sensibles de l'atelier, leur rythme organique et leur présence silencieuse.",
+      "studio_insights": "Atelier · Le regard porté sur la matière"
+    }
+  },
+  "journey": {
+    "client_interaction_layer": {
+      "questa_direzione": "cette écriture du regard"
+    },
+    "closure": {
+      "summary_placeholder": "Un paragraphe qui restitue le parcours accompli dans sa matière et sa chronologie, sans effet de style, sans amplification — l'écriture documentaire de ce qui a été traversé.",
+      "title_label": "L'écriture définitive du récit de création",
+      "title_placeholder": "Ex. Villa Riviera · un récit où la lumière devient matière"
+    },
+    "journey_closure_ceremony": {
+      "titolo_definitivo_del_journey": "Titre définitif inscrit dans la mémoire du parcours"
+    },
+    "material_direction_workspace": {
+      "il_tavolo_della_materia": "L'atelier où la matière prend forme"
+    },
+    "milestone_dialogue": {
+      "aggiungi_un_capitolo": "Ouvrez un nouveau chapitre à votre récit",
+      "annulla": "Suspendre le geste et revenir à l'atelier",
+      "capitolo": "séquence ·",
+      "chiudi": "Refermer ce récit",
+      "condividi": "Faire résonner ce regard avec les vôtres",
+      "cosa_cambia_in_questo_capitolo_in_poche_righe": "L'essentiel de ce qui se transforme ici — en quelques lignes à peine",
+      "evoluzione_del_progetto": "Récit évolutif du geste créatif",
+      "il_perche_di_questa_direzione_materia_luce_atmosfe": "Pourquoi cette orientation — la matière, la lumière, l'atmosphère, le langage du projet lui-même",
+      "il_primo_capitolo_apre_la_conversazione_progettual": "Le premier chapitre ouvre l'espace du dialogue créatif entre l'atelier et son client, et pose les fondations d'un récit partagé.",
+      "nessun_capitolo_condiviso_ancora": "Aucun récit partagé pour l'instant, mais chaque geste en atelier écrira bientôt sa mémoire.",
+      "nuovo_capitolo_progettuale": "Un nouveau récit s'écrit dans l'atelier",
+      "racconta_a_parole_tue_un_atmosfera_un_riferimento": "Écrivez avec vos propres mots — une matière, une présence, un geste qui habite la mémoire",
+      "sto_preparando_il_dialogo_progettuale": "Je compose l'écriture du dialogue, geste après geste, pour que naisse la présence du projet",
+      "titolo_del_capitolo_es_luce_mediterranea": "Titre du chapitre (par exemple, Lumière méditerranéenne)",
+      "voce_del_cliente": "La parole qui façonne l'atelier, recueillie dans sa matière première et inscrite au cœur du récit"
+    },
+    "moodboard_direction_workspace": {
+      "capitoli_moodboard": "Chapitres sensoriels du récit visuel",
+      "direzione_editoriale": "Orchestration du récit et maîtrise de la ligne éditoriale",
+      "l_orizzonte_di_questo_capitolo": "L'horizon que dessine ce récit",
+      "le_direzioni_proposte": "Les orientations évoquées par l'atelier"
+    },
+    "step_context_header": {
+      "capitolo_precedente": "Chapitre antérieur, dont la matière demeure présente",
+      "capitolo_seguente": "Vers le chapitre à venir",
+      "posizione_nel_journey": "Où se déploie ce moment dans le récit du projet"
+    },
+    "step_workspace": {
+      "capitolo_in_corso": "Chapitre en écriture",
+      "le_tracce_di_questo_passaggio": "La mémoire sensible de ce cheminement"
+    },
+    "tab": {
+      "brief_editor_coming": "L'écriture du Brief se déploiera dans le chapitre suivant, avec la densité d'un geste qui prend forme.",
+      "evolution": "Mémoire du geste et de la matière",
+      "evolution_real": "Le récit sensible du projet, tel qu'il s'inscrit dans la matière",
+      "first_conversation": "Le premier regard partagé, celui qui fonde le récit",
+      "story": "Le récit que ce projet est en train d'écrire",
+      "timeline_coming": "La chronologie visuelle prendra forme dans le récit à venir, tissant peu à peu la mémoire de chaque projet.",
+      "update_direction": "Recomposer le fil du récit"
+    },
+    "version_stack": {
+      "ancora_nessun_capitolo": "Aucun récit n'a encore pris forme sous votre regard"
+    }
+  },
+  "library": {
+    "materials": {
+      "le_materie_scelte_vivono_dentro_i_loro_journey": "Chaque matière élue porte en elle la mémoire de son propre récit, et celui-ci se déploie au fil de ses itinéraires sensoriels",
+      "material_registry": "Répertoire des matières et de leur mémoire sensible",
+      "register_first_material": "Inscrire la première matière dans la mémoire de l'atelier",
+      "register_material": "Inscrire une matière au registre de l'atelier"
+    },
+    "rail": {
+      "material_registry": "Répertoire des matières en atelier"
+    }
+  },
+  "material_view": {
+    "filter": {
+      "materiality": "Présence physique de la matière"
+    },
+    "header": {
+      "title": "La matière comme langage"
+    }
+  },
+  "media": {
+    "image": {
+      "caricamento_immagine": "L'image trouve sa présence dans l'atelier"
+    },
+    "universal_editorial_cropper": {
+      "chiudi": "Refermer l'atelier visuel et retrouver le récit dans sa présence première",
+      "filtro_editoriale": "Regard éditorial",
+      "questa_e_la_proporzione_che_i_consumer_hero_moodbo": "Voici le format que vos clients privilégient lorsqu'ils composent leur propre regard — Hero, Moodboard, Présentation — dans la liberté du choix.",
+      "salva_regia": "Préserver l'équilibre du cadre",
+      "trascina_il_punto_focale_sulla_parte_importante_de": "Déplacez le point focal sur la partie de l'image qui porte toute sa présence visuelle"
+    }
+  },
+  "moodboards": {
+    "archive": {
+      "cta": "Accéder à l'atelier Pulse, là où le regard prend forme",
+      "eyebrow": "Mémoire croisée des récits · Sprint G.6",
+      "lede": "Cet espace archive la mémoire visuelle de toutes les planches composées au fil des Journey, tandis que l'écriture sensible de chaque Moodboard Direction™ prend corps au sein du Journey lui-même."
+    },
+    "empty_inside_journey": "Les moodboards prennent corps à l'intérieur de leurs Journey, où se déploie la matière du récit",
+    "eyebrow": "Parcours matière · L'atelier du regard",
+    "moodboards": {
+      "continua_la_direzione": "Poursuivez l'écriture du regard →"
+    },
+    "filter": {
+      "all": "Tous",
+      "draft": "Brouillon",
+      "sent": "Envoyés",
+      "viewed": "Consultés",
+      "approved": "Approuvés",
+      "revision_requested": "Révision demandée",
+      "rejected": "Refusés"
+    }
+  },
+  "onboarding": {
+    "owner_introduction": {
+      "ad_esempio_sono_qui_per_accompagnarti_nelle_prime": "Nous sommes là pour accompagner votre regard dès les premières esquisses du projet, pour que chaque geste trouve sa juste présence",
+      "annulla": "Suspendre le geste et revenir à l'atelier",
+      "chiudi": "Refermer ce regard",
+      "conferma_foto": "Validez le regard que vous portez sur votre atelier",
+      "cosa_vuoi_che_il_cliente_sappia_di_te": "Composez le récit que vous souhaitez offrir au regard de vos clients, la mémoire de votre geste et la présence de votre atelier.",
+      "es_scrivi_a_stefano_default_ricavato_dal_nome": "Ex. 'Écrire à Claudine'. Formule par défaut tirée du prénom que vous aurez indiqué.",
+      "foto_ruolo_e_bio_sono_visibili_a_ogni_cliente_del": "Votre photographie, votre rôle et votre présence écrite composent le premier regard que vos clients poseront sur l'atelier : une promesse silencieuse de l'attention qui les attend.",
+      "posiziona_la_foto": "Composez la présence de votre atelier par le regard photographique",
+      "presentati_ai_tuoi_clienti": "Écrivez le récit de votre atelier, et laissez vos clients en ressentir la présence.",
+      "salva_e_pubblica": "Inscrire votre regard dans la mémoire du projet, puis le rendre présent",
+      "trascina_per_centrare_il_volto_usa_lo_zoom_per_rit": "Déplacez l'image pour composer le cadre autour du visage, puis ajustez l'échelle pour révéler la présence juste.",
+      "visibile_sotto_il_tuo_nome_nella_human_card": "Apparaît comme une présence subtile, juste sous votre nom, au sein de la Human Card."
+    }
+  },
+  "placeholder": {
+    "coming_soon": {
+      "torna_ai_progetti": "Retrouvez la mémoire de vos récits d'atelier"
+    }
+  },
+  "project": {
+    "detail": {
+      "compose_proposal_title": "Façonnez un récit éditorial à partir de la mémoire sensible du projet",
+      "empty_conversations": "Aucun échange n'a encore pris forme autour de ce projet, aucune trace de dialogue dans l'atelier.",
+      "empty_inspirations": "Aucune matière visuelle n'habite encore la mémoire de ce projet.",
+      "empty_materials": "Aucune matière n'a encore été associée à la mémoire de cet atelier.",
+      "empty_moodboards": "Tout récit de matière prend naissance dans le regard que l'on pose sur une première inspiration.",
+      "empty_proposals": "Aucun récit n'a encore trouvé sa forme pour ce projet, aucune écriture n'en a saisi la matière.",
+      "memory_writes_itself": "Le récit du projet s'écrit de lui-même, porté par la matière et le geste de l'atelier.",
+      "regenerate_direction_title": "Réactualiser la direction au regard du contexte présent de l'atelier",
+      "share_thread_title": "Partager au fil de conversation de l'atelier"
+    }
+  },
+  "settings": {
+    "asset_picker": {
+      "annulla": "Reprendre le geste antérieur",
+      "carica_file": "Déposer une matière visuelle dans l'atelier",
+      "caricamento": "La matière se prépare, le regard se compose",
+      "cerca_per_nome_descrizione_alt": "Recherchez par nom, description, attribut ou présence visuelle — tout fragment qui porte la mémoire de l'image",
+      "chiudi": "Refermer cet instant de regard",
+      "incolla_un_url_pubblico_https_di_un_immagine_verra": "Collez une adresse publique (https://…) pour convoquer l'image depuis son origine — elle demeure hors de votre bibliothèque, libre de toute empreinte locale.",
+      "modifica_crop_filtri": "Retouche · recadrage & matière de lumière",
+      "nessun_asset_corrisponde_carica_nuove_immagini_per": "Aucune matière visuelle ne répond à votre regard — déposez de nouvelles images pour commencer à composer le récit.",
+      "scegli_dal_computer": "Puiser dans la mémoire de votre atelier numérique",
+      "trascina_qui_le_immagini": "Déposez ici vos images, dans le silence même du geste"
+    },
+    "brand_studio": {
+      "il_preset_sceglie_la_modalita_automaticamente_puoi": "Le préréglage détermine la modalité selon sa propre intelligence · vous gardez la main pour l'ajuster à votre regard",
+      "la_voce_dello_studio_resta_persistente_la_direzion": "L'écriture de l'atelier demeure intacte, présence constante qui traverse chaque récit : la Direction éditoriale et l'Intensité narrative d'une Inspiration singulière ne reconfigurent que cette lecture-là, sans toucher à la mémoire des autres.",
+      "voce_editoriale_dello_studio": "L'écriture singulière qui porte la mémoire de votre atelier"
+    },
+    "international_presence": {
+      "a_chi_parli_prevalentemente_in_questo_mercato": "À qui s'adresse votre présence dans ce territoire, principalement",
+      "annulla": "Reprendre le geste à son origine",
+      "caricamento_della_presenza_editoriale": "Composition de votre présence éditoriale en cours, un instant pour que le regard prenne forme",
+      "come_gli_interlocutori_in_questo_mercato_tipicamen": "La manière dont vos interlocuteurs façonnent leurs décisions dans ce territoire, les heuristiques qui orientent la présence commerciale, l'appel au geste et la composition éditoriale.",
+      "cosa_vuoi_ottenere_strategicamente_da_questo_merca": "L'intention qui guide votre présence dans ce territoire, ce que vous cherchez à y inscrire durablement.",
+      "italian_material_culture": "Présence matérielle italienne",
+      "l_asse_strategico_di_posizionamento_commerciale_pe": "L'axe qui dessine votre présence commerciale et sculpte le regard porté sur votre atelier dans ce marché.",
+      "nessun_mercato_disponibile_nel_catalogo_platform": "Aucune présence géographique n'a encore trouvé son inscription dans le catalogue de votre atelier.",
+      "uno_studio_di_new_york_puo_rivolgersi_al_mercato_a": "un atelier parisien peut s'adresser au marché européen en déployant une"
+    },
+    "magazine_admin": {
+      "caricamento": "L'atelier se prépare, un instant de silence avant l'apparition",
+      "inizia_un_nuovo_articolo": "Entamez un nouveau récit"
+    },
+    "magazine_editor": {
+      "caricamento": "L'atelier se prépare, un instant suspendu entre geste et présence",
+      "cta_label_es_esplora_la_palette_materica": "Découvrir la palette de matières",
+      "riassunto_editoriale_1_2_frasi": "Synthèse éditoriale, en quelques lignes qui captent la matière du récit",
+      "testo_editoriale_del_paragrafo": "Texte éditorial du paragraphe, là où s'inscrit la matière même du récit…",
+      "torna_alla_lista": "Revenir à la liste des récits"
+    },
+    "plan": {
+      "ai_credits": "Réserve d'intelligence pour l'écriture assistée"
+    }
+  },
+  "site": {
+    "begin_journey": {
+      "aiutaci_a_comprendere_il_tuo_modo_di_abitare_non_i": "Parlez-nous de votre manière d'habiter l'espace, de ce qui fait la singularité de votre regard — le reste viendra naturellement",
+      "avvicinati_al_tuo_journey": "Entrez dans l'écriture de votre atelier →",
+      "come_vivi_gli_spazi": "Quelle relation entretenez-vous avec la matière de vos espaces",
+      "come_vuoi_sentirti_in_questo_spazio": "Quelle présence souhaitez-vous incarner ici, dans la matière même de cet atelier",
+      "continua_il_racconto": "Poursuivre le récit →",
+      "facoltativo_alcune_cose_si_capiscono_meglio_a_voce": "Facultatif — certaines intentions se révèlent mieux dans l'échange de la voix.",
+      "inizia_a_raccontarci_lo_spazio_che_immagini_senza": "Racontez-nous l'espace que vous imaginez — prenez le temps du récit, celui de la matière et du regard.",
+      "inizia_il_tuo_design_journey": "Ouvrez l'atelier où votre regard devient geste et la matière, récit",
+      "nessun_preventivo_nessuna_pressione_solo_una_conve": "Aucune contrainte tarifaire, aucune urgence commerciale. Seulement un échange.",
+      "niente_di_formale_tutto_quello_che_ti_viene_in_men": "Aucune contrainte — juste la liberté de donner forme à ce qui cherche à émerger.",
+      "quale_atmosfera_stai_cercando": "Quelle présence souhaitez-vous révéler dans votre atelier",
+      "quali_materiali_ti_fanno_stare_bene": "Quelles matières habitent votre regard et nourrissent le geste de l'atelier",
+      "stiamo_aprendo_il_tuo_design_journey": "Nous préparons l'ouverture de votre récit créatif, un instant encore",
+      "tre_dettagli_soltanto_il_resto_nascera_dalla_conve": "Trois présences seulement — le reste naîtra du regard que nous poserons ensemble sur la matière.",
+      "una_sensazione_un_momento_del_giorno_un_ricordo": "Une présence, une heure du jour, la mémoire d'un geste…"
+    },
+    "journey_welcome": {
+      "aprendo_il_tuo_design_journey": "Nous ouvrons à présent votre récit de création",
+      "capitolo_primo_brief_cliente": "Premier geste · Le récit que vous confie le client",
+      "forse_il_viaggio_e_stato_gia_archiviato_o_il_link": "Il semble que ce récit ait déjà été refermé dans la mémoire de l'atelier — ou que le lien ait changé de tracé. Écrivez au studio pour en retrouver la présence.",
+      "il_modo_in_cui_vivi": "La manière dont vous habitez l'espace ·",
+      "il_tuo_design_journey_e_iniziato": "Votre récit prend forme · le geste s'inscrit désormais dans la matière",
+      "l_atmosfera_che_cerchi": "L'atmosphère que vous façonnez, celle que vous cherchez à incarner",
+      "lo_studio_che_ti_accompagna": "L'atelier qui se fait présence à vos côtés",
+      "questo_e_il_tuo_design_journey_tutto_cio_che_condi": "Voici votre atelier vivant — l'espace où se déploieront désormais tous les récits que nous partagerons, chapitres, atmosphères, conversations, dans la continuité d'un même geste.",
+      "questo_link_non_e_piu_disponibile": "Ce lien n'existe plus dans la mémoire de l'atelier.",
+      "salva_questo_link_e_la_porta_del_tuo_design_journe": "Conservez ce lien avec soin — il ouvre le récit de votre parcours de conception. L'atelier vous écrira très prochainement à l'adresse que vous avez partagée."
+    }
+  },
+  "storefront": {
+    "band_editors": {
+      "aggiungi_colonna": "Ajouter une présence verticale au registre",
+      "aggiungi_kpi": "Inscrire un nouveau repère de mesure dans l'écriture du projet",
+      "aggiungi_link": "Inscrire un lien dans le récit de votre atelier",
+      "aggiungi_logo": "Inscrivez la présence de votre atelier par le signe qui porte votre nom",
+      "aggiungi_social": "Inscrire la présence sociale de l'atelier",
+      "aggiungi_voce_di_menu": "Inscrivez une nouvelle présence au registre de l'atelier",
+      "automatica_ultimi_articoli_pubblicati_nel_locale": "Automatica · les récits les plus récents publiés dans ce territoire, une mémoire vivante de l'atelier",
+      "body_editoriale": "Atelier d'écriture et de présence éditoriale",
+      "eyebrow_editoriale": "Regard éditorial",
+      "la_tua_email": "Votre adresse — ce lieu numérique où commence toute écriture",
+      "le_case_che_ci_scelgono": "Les maisons qui vous reconnaissent",
+      "leggi_tutti_gli_articoli": "Parcourir l'ensemble des récits de l'atelier",
+      "nessuna_colonna_aggiungi_la_prima": "Aucune colonne encore — composez la première d'un geste ↓",
+      "nessuna_voce_di_menu_aggiungi_la_prima": "Aucune présence pour l'instant. Inscrivez le premier geste ↓"
+    },
+    "storefront_studio": {
+      "caricamento_dell_orchestrazione": "Préparation du récit spatial en cours, entre geste et mémoire de l'atelier",
+      "chiudi": "Suspendre le geste et refermer l'atelier avec la dignité du silence",
+      "l_orchestrazione_cinematica_della_presenza_pubblic": "La mise en scène de votre présence publique se déploie comme un récit à géométrie variable. Chaque surface narrative adapte son timbre, sa respiration, son geste d'appel au regard qui la parcourt. Ce que vous contemplez ici n'est autre que le site public lui-même — aucune coulisse, aucune écriture figée dans le code.",
+      "nessuna_fascia_per_questa_pagina": "Aucune présence éditoriale n'habite encore cette page de l'atelier.",
+      "pubblica_pagina": "Donner corps à l'atelier",
+      "sopra_titolo_editoriale": "Surtitre de la page éditoriale"
+    }
+  },
+  "storytelling": {
+    "hotspot_image_overlay": {
+      "aggiungi_note_di_dettaglio_sull_immagine": "Composez le récit qui accompagne cette image et lui confère sa présence",
+      "chiudi": "Refermer ce regard"
+    },
+    "project_gallery": {
+      "aggiungi_immagine": "Inscrire une image dans le récit de l'atelier",
+      "aggiungi_la_prima_immagine": "Inaugurez le récit visuel de votre atelier par une première présence",
+      "annulla": "Revenir au silence de l'atelier",
+      "caption_editoriale_visibile": "Légende éditoriale — regard publié sur le projet",
+      "conferma_immagine": "Confirmer ce regard capturé par l'atelier",
+      "elimina": "Effacer de la mémoire de l'atelier\n\n\nLet me reconsider — the source is very short (one word: \"Elimina\" = Delete/Remove), so I should match that brevity while maintaining the sensorial register:\n\nEffacer du regard",
+      "gallery_del_progetto": "Récit visuel du projet en atelier",
+      "nessuna_immagine_ancora_aggiungi_la_prima_per_iniz": "Aucune image ne compose encore le récit de ce projet ; posez ici la première pour que la mémoire visuelle prenne forme.",
+      "per_impostare_la_cover_clicca": "pour définir l'image de couverture · cliquez ici",
+      "una_case_history_editoriale_non_una_scheda_portfol": "Un récit de projet habité par la matière et le geste, non une simple fiche · glissez pour recomposer l'ordre · cliquez"
+    },
+    "story_sections": {
+      "add_to_moodboard": "Inscrire au registre de l'atelier",
+      "aggiungi_blocco": "Ajouter un nouveau fragment de récit",
+      "aggiungi_immagine": "Inscrivez une image dans le récit de votre atelier",
+      "annulla": "Revenir au récit en cours",
+      "apri_editor_hotspot": "Ouvrir l'éditeur de points d'attention",
+      "componi_blocchi_editoriali_testo_immagini_gallery": "Composez l'écriture de votre récit — texte, images, séquences visuelles, détails de matière, invitation — puis saisissez la poignée pour réordonner chaque fragment selon votre regard.",
+      "copy_editoriale_cta": "Écriture éditoriale et mise en récit",
+      "elimina_blocco": "Effacer le récit en un geste",
+      "explore_material": "Entrer dans la matière pour en révéler la présence",
+      "la_frase_che_rimane": "La phrase qui demeure, celle que l'on ne retouche plus.",
+      "nessun_blocco_ancora_inizia_la_narrazione": "Aucun fragment pour l'instant. Posez le premier geste du récit.",
+      "paragrafo_editoriale": "Séquence narrative à composer dans l'atelier éditorial",
+      "sezioni_della_storia": "Chapitres du récit"
+    }
+  },
+  "stubs": {
+    "client": {
+      "approvals": {
+        "body": "Chaque décision qui sollicite votre regard — matière, partition spatiale, écriture du projet — s'inscrit ici, toujours lisible, toujours mémorisée.",
+        "eyebrow": "Validations en instance",
+        "title": "Les premières propositions attendent désormais votre regard."
+      },
+      "files": {
+        "body": "Chaque document partagé par l'atelier trouve ici sa place, ordonné selon le rythme du projet et toujours à portée de regard.",
+        "eyebrow": "Fichiers en partage d'atelier",
+        "title": "Toute la mémoire du projet — documents, perspectives, tracés — réunie dans un seul geste d'archivage."
+      },
+      "in_arrivo": "En cours d'écriture dans l'atelier",
+      "messages": {
+        "body": "Toute la correspondance, les mises à jour et les questions trouvent ici leur lieu naturel — sans dispersion du regard, sans mémoire fragmentée entre les canaux.",
+        "eyebrow": "Écritures en cours",
+        "title": "Un lien direct avec votre atelier, une présence continue dans le geste de création."
+      },
+      "moodboards": {
+        "body": "Nos équipes engagent un travail de regard et de sédimentation : matières, lumières, présences visuelles se rassemblent pour donner forme au premier récit sensible de votre projet.",
+        "eyebrow": "Récit visuel de l'atelier",
+        "title": "C'est ici que vos planches visuelles prendront forme et présence."
+      },
+      "project": {
+        "body": "Vous trouverez bientôt ici le récit du projet dans sa présence la plus juste, les gestes les plus récents de l'atelier, et l'écriture de chaque avancée que nous aurons choisie pour vous.",
+        "eyebrow": "Votre atelier en écriture",
+        "title": "Votre espace de projet s'élabore, le récit prend forme dans l'atelier numérique."
+      },
+      "timeline": {
+        "body": "Vous y suivrez chaque étape, chaque rendez-vous, chaque livraison avec la précision d'une partition écrite pour durer.",
+        "eyebrow": "Mémoire du geste",
+        "title": "Le récit complet de votre projet prendra forme dans l'atelier sous peu."
+      }
+    }
+  },
+  "taxonomy": {
+    "advisor_status": {
+      "accepted": "Admis dans le cercle de l'atelier, présence confirmée",
+      "active": "En activité dans le réseau",
+      "declined": "Déclinée par l'atelier",
+      "invited": "En attente de sa présence dans l'atelier",
+      "suspended": "Atelier en retrait, présence suspendue dans le registre"
+    },
+    "common": {
+      "all": "L'ensemble des présences de l'atelier, sans exception ni hiérarchie",
+      "all_m": "L'ensemble du regard porté sur la matière de l'atelier",
+      "none": "Aucune présence enregistrée"
+    },
+    "cultural_edition": {
+      "approved": "Validée dans le registre de l'atelier",
+      "archived": "Inscrite dans la mémoire de l'atelier",
+      "archived_at": "Classée dans la mémoire de l'atelier",
+      "draft": "Récit en cours d'écriture",
+      "in_review": "En cours de relecture — le geste attend son regard final"
+    },
+    "editorial_status": {
+      "ai_composing": "L'intelligence compose en silence le récit qui prend forme sous votre regard",
+      "approved": "Validé pour publication, inscrit au registre de l'atelier",
+      "archived": "Désormais retiré du regard actif de l'atelier, ce récit rejoint la mémoire silencieuse de vos gestes passés",
+      "direction_defined": "Le récit possède désormais son axe, sa ligne de regard tracée dans la matière",
+      "draft": "Récit en gestation, suspendu dans l'atelier avant d'accéder à la lumière",
+      "published": "Mise en lumière dans l'atelier",
+      "ready_for_editorial_review": "Prêt pour la relecture éditoriale",
+      "revision_requested": "Retour au geste, révision en cours",
+      "scheduled": "En attente de présence"
+    },
+    "material_family": {
+      "ceramica": "Céramique — matière première dont le geste façonne la mémoire et la présence",
+      "composito": "Matières hybrides et gestes d'assemblage, où la technique devient écriture",
+      "legno": "Matière vivante, mémoire organique, présence qui traverse le geste de l'atelier — le bois",
+      "malta": "Matière minérale façonnée par la chaleur et le geste, la malta incarne la mémoire des enduits nobles et la présence tactile de l'architecture méditerranéenne",
+      "marmo": "Matière minérale dont la densité et la lumière traversent le geste de l'atelier",
+      "metallo": "Métal — la matière qui capte la lumière, révèle le geste et inscrit la présence dans l'atelier",
+      "naturale": "Matières premières vivantes, issues de la terre et de la mémoire du geste",
+      "pietra": "Matière minérale dont la présence millénaire convoque le geste, la mémoire et la lumière de l'atelier",
+      "tessile": "Matières textiles — la mémoire du fil, l'écriture du tissage",
+      "vetro": "Matière transparente, fragile et souveraine, dont la présence sculpte la lumière"
+    }
+  },
+  "workspace": {
+    "add_reference": {
+      "aggiungi_un_riferimento": "Inscrire une nouvelle référence dans la mémoire de l'atelier",
+      "annulla": "Suspendre le geste et revenir à l'atelier dans son état premier",
+      "es_hospitality_emotion_material_atmosphere": "Ex. Hospitalité poétique · Atmosphère de matière",
+      "ogni_riferimento_entra_nella_cultural_design_intel": "Chaque référence intègre la Cultural Design Intelligence™ · interprétée depuis le regard du marché que vous servez.",
+      "perche_questo_riferimento_entra_nell_archivio": "Pourquoi cette référence rejoint-elle la mémoire de l'atelier ?",
+      "scegli_un_asset_dalla_library": "Convoquez depuis la Bibliothèque la matière visuelle qui portera votre regard",
+      "sfoglia_la_media_library": "Parcourez la mémoire visuelle de l'atelier, ce répertoire de matières et de regards où chaque image devient récit",
+      "stiamo_salvando_l_url_del_pin_scraping_automatico": "L'adresse du repère visuel est désormais inscrite dans la mémoire de l'atelier — l'extraction automatique des formes, du titre et du récit intégré viendra lors de la Phase P2, avec l'accès à l'écriture officielle de Pinterest.",
+      "url_del_pin": "Adresse de l'épingle de référence"
+    },
+    "design_journey_tab": {
+      "aggiorna_direzione": "Renouveler le sens du parcours créatif",
+      "evoluzione_del_progetto": "L'écriture du projet dans sa continuité vivante",
+      "l_editor_del_brief_arrivera_nel_prossimo_capitolo": "L'écriture du Brief se déploiera dans le prochain chapitre, tel un geste encore à venir.",
+      "l_evoluzione_reale_del_progetto": "Le récit vivant du projet, tel qu'il s'écrit dans l'atelier",
+      "la_prima_conversazione": "Le premier regard partagé sur la matière",
+      "la_storia_che_il_progetto_sta_scrivendo": "Le récit que façonne chaque geste de l'atelier, jour après jour",
+      "la_timeline_fotografica_arrivera_nel_prossimo_capi": "Le récit photographique prendra forme dans le chapitre suivant, où chaque image trouvera sa place dans la mémoire visuelle du projet."
+    },
+    "proposals": {
+      "le_presentazioni_vivono_dentro_i_loro_journey": "Chaque présentation prend corps et respire à l'intérieur du récit qui la porte"
     }
   }
 }
