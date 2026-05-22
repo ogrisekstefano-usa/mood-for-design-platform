@@ -87,7 +87,12 @@
     },
     "brand_mode": {
       "aggiungi_produttore": "Aggiungi produttore"
-    }
+    },
+    "logout": "Esci",
+    "noResults": "Nessun risultato.",
+    "reset": "Reimposta",
+    "submit": "Conferma",
+    "welcome": "Benvenuto"
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -170,7 +175,8 @@
   },
   "companion": {
     "hero": {
-      "eyebrow": "Design Journey™ · Il tuo viaggio progettuale"
+      "eyebrow": "Design Journey™ · Il tuo viaggio progettuale",
+      "cta": "Apri il prossimo capitolo"
     },
     "index": {
       "hero": {
@@ -206,10 +212,16 @@
         "title": "Pensieri condivisi"
       },
       "evolution": {
-        "title": "L'evoluzione del viaggio"
+        "title": "L'evoluzione del viaggio",
+        "empty_lede": "L'evoluzione del progetto verrà tracciata qui.",
+        "empty_title": "Nessuna evoluzione",
+        "eyebrow": "Evoluzione"
       },
       "materials": {
-        "title": "Materia e atmosfera"
+        "title": "Materia e atmosfera",
+        "empty_lede": "I materiali condivisi dallo studio appariranno qui.",
+        "empty_title": "Nessun materiale",
+        "eyebrow": "Materiali"
       },
       "site_evolution": {
         "eyebrow": "Site Evolution™",
@@ -218,9 +230,41 @@
           "one": "{n} momento",
           "many": "{n} momenti"
         }
+      },
+      "active_chapter": {
+        "empty_hint_lede": "Quando il tuo studio aprirà un nuovo capitolo, lo troverai qui.",
+        "empty_hint_title": "In attesa del prossimo capitolo",
+        "empty_title": "Nessun capitolo attivo",
+        "eyebrow": "Capitolo attivo"
+      },
+      "archive": {
+        "empty_lede": "I capitoli approvati e archiviati appariranno qui.",
+        "empty_title": "Archivio vuoto",
+        "eyebrow": "Archivio",
+        "title": "Archivio dei capitoli"
+      },
+      "conversations": {
+        "empty_lede": "Le conversazioni con lo studio compariranno qui.",
+        "empty_title": "Nessuna conversazione",
+        "eyebrow": "Conversazioni",
+        "title": "Conversazioni"
+      },
+      "shared_directions": {
+        "empty_lede": "Le direzioni condivise dallo studio compariranno qui.",
+        "empty_title": "Nessuna direzione",
+        "eyebrow": "Direzioni",
+        "title": "Direzioni condivise"
       }
     },
-    "loading": "Stiamo aprendo il tuo Journey…"
+    "loading": "Stiamo aprendo il tuo Journey…",
+    "archive": {
+      "approved": "Approvato",
+      "closed": "Archiviato"
+    },
+    "error": {
+      "title": "Qualcosa è andato storto",
+      "unavailable": "Il Companion non è raggiungibile in questo momento. Riprova fra qualche istante."
+    }
   },
   "dossier": {
     "hero": {
@@ -272,7 +316,16 @@
     "empty": {
       "eyebrow": "Memoria del percorso",
       "message": "Il dossier di questo Journey verrà depositato a breve."
-    }
+    },
+    "chapter": {
+      "approved": "Approvato",
+      "closed": "Chiuso",
+      "default": "Capitolo",
+      "in_progress": "In lavorazione",
+      "presented": "Presentato",
+      "revision_requested": "Revisione richiesta"
+    },
+    "studio_prefix": "Studio"
   },
   "dashboard": {
     "pulse": {
@@ -385,7 +438,8 @@
       "client_relations": "Client Relations",
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
-      "platform": "Platform"
+      "platform": "Platform",
+      "workspace": "Workspace"
     },
     "studio_pulse": "Studio Pulse",
     "your_journeys": "I tuoi Journey",
@@ -415,7 +469,15 @@
     "expand": "Espandi",
     "collapse": "Riduci",
     "studio_voice": "Voce dello Studio",
-    "language_command_center": "Centro di Comando Linguistico"
+    "language_command_center": "Centro di Comando Linguistico",
+    "impersonating": "Stai impersonando",
+    "logout": "Esci",
+    "moodboard": {
+      "editor": "Editor moodboard"
+    },
+    "project": {
+      "detail": "Dettaglio progetto"
+    }
   },
   "projects": {
     "tabs": {
@@ -457,6 +519,11 @@
       "mood_placeholder": "Atmosfera, materia, ritmo",
       "tag_input_placeholder": "aggiungi…",
       "status_live": "Live"
+    },
+    "count": "{count} progetti",
+    "field": {
+      "description": "Descrizione",
+      "title": "Titolo del progetto"
     }
   },
   "inspirations": {
@@ -741,6 +808,48 @@
     },
     "platform_capabilities": {
       "sincronizzo_lo_stato_attivazioni": "Sincronizzo lo stato attivazioni…"
+    },
+    "audit": {
+      "title": "Audit di piattaforma"
+    },
+    "detail": {
+      "flags": "Feature flags",
+      "members": "Membri",
+      "modules": "Moduli attivi",
+      "statusPlan": "Stato / Piano"
+    },
+    "exit": "Esci",
+    "impersonate": "Impersona",
+    "modules": {
+      "sub": "Catalogo dei moduli orchestrati dalla piattaforma.",
+      "title": "Moduli"
+    },
+    "nav": {
+      "audit": "Audit",
+      "modules": "Moduli",
+      "overview": "Panoramica",
+      "tenants": "Tenant"
+    },
+    "overview": {
+      "subtitle": "Indicatori vivi della piattaforma operativa.",
+      "title": "Panoramica"
+    },
+    "saved": "Salvato",
+    "stats": {
+      "leads": "Lead",
+      "magazine": "Editoriali",
+      "moodboards": "Moodboard",
+      "projects": "Progetti",
+      "proposals": "Proposte",
+      "suspended": "Sospesi",
+      "tenants": "Tenant",
+      "users": "Utenti"
+    },
+    "tenants": {
+      "empty": "Nessun tenant configurato.",
+      "new": "Nuovo tenant",
+      "title": "Tenant",
+      "totalSub": "Totale degli atelier serviti dalla piattaforma."
     }
   },
   "advisor": {
@@ -841,7 +950,8 @@
         "other_lead": "Nessun {label} in questa vista.",
         "accounts_hint": "Un Account è una relazione — un cliente, uno studio, una famiglia. I Contact sono le persone dentro quella relazione.",
         "other_hint": "Prova a cambiare tab o crea un nuovo Account per iniziare."
-      }
+      },
+      "lead_outside_team": "— non qui."
     },
     "cultural_edition": {
       "adatta_tono_ritmo_cta_al_mercato": "Adatta tono, ritmo, CTA al mercato",
@@ -999,6 +1109,305 @@
       "approved": "Approvati",
       "revision_requested": "Revisione richiesta",
       "rejected": "Rifiutati"
+    },
+    "title": "Moodboard",
+    "subtitle": "Narrazioni visive curate per i tuoi progetti.",
+    "new": "Nuova moodboard",
+    "empty": "Nessuna moodboard ancora composta.",
+    "emptyCta": "Componi la prima moodboard",
+    "untitled": "Senza titolo",
+    "tab": {
+      "title": "Composizione",
+      "assets": "Asset",
+      "insert": "Inserisci",
+      "inspirations": "Ispirazioni",
+      "pages": "Pagine"
+    },
+    "assets": {
+      "intro": "Tutte le immagini caricate o salvate per questa moodboard.",
+      "saved": "Salvati",
+      "savedEmpty": "Nessun riferimento ancora salvato.",
+      "uploaded": "Caricati",
+      "uploadedHint": "Trascina o seleziona file per aggiungerli alla moodboard."
+    },
+    "block": {
+      "image": {
+        "placeholder": "Trascina qui un'immagine"
+      },
+      "material": "Materiale",
+      "note": {
+        "placeholder": "Aggiungi una nota editoriale…"
+      },
+      "product": {
+        "placeholder": "Nome del prodotto",
+        "label": "Prodotto senza nome"
+      },
+      "text": {
+        "placeholder": "Scrivi qualcosa…"
+      }
+    },
+    "create": {
+      "failed": "Impossibile creare la moodboard. Riprova.",
+      "projectLabel": "Journey",
+      "projectPh": "Seleziona un journey",
+      "submit": "Crea",
+      "timeout": "La creazione sta impiegando troppo tempo. Riprova.",
+      "title": "Nuova moodboard",
+      "titleLabel": "Titolo",
+      "titlePh": "Es. Direzione materica · Villa Verbano",
+      "titleRequired": "Inserisci un titolo per la moodboard."
+    },
+    "editor": {
+      "actualSize": "Dimensioni reali",
+      "adjustments": "Regolazioni",
+      "applyAll": "Applica a tutte le pagine",
+      "applyAllDone": "Applicato a tutte le pagine",
+      "applyAllPages": "Applica a tutte le pagine",
+      "applyStyleAll": "Applica lo stile ovunque",
+      "approve": "Approva",
+      "autosaveOn": "Salvataggio automatico attivo",
+      "bringForward": "Porta avanti",
+      "bringToFront": "Porta in primo piano",
+      "contextualHint": "Seleziona un elemento per regolarne le proprietà.",
+      "copyStyle": "Copia stile",
+      "crop": "Ritaglia",
+      "delete": "Elimina",
+      "dropImage": "Trascina un'immagine qui",
+      "duplicate": "Duplica",
+      "fitHeight": "Adatta in altezza",
+      "fitWidth": "Adatta in larghezza",
+      "imageMissing": "Immagine non disponibile",
+      "inspector": "Inspector",
+      "layers": "Livelli",
+      "openReview": "Apri review",
+      "openShare": "Condividi",
+      "page": "Pagina",
+      "pageInspector": "Inspector di pagina",
+      "pasteStyle": "Incolla stile",
+      "pasteStyleEmpty": "Nessuno stile copiato. Copia prima uno stile da un elemento.",
+      "present": "Presenta",
+      "quickAdjust": {
+        "adjust": "Regola",
+        "confirm": "Conferma",
+        "eyebrow": "Regolazione rapida",
+        "fit": "Adatta",
+        "focal": "Punto focale",
+        "focalHint": "Trascina per scegliere il punto focale dell'immagine.",
+        "reset": "Reimposta",
+        "skip": "Salta",
+        "title": "Regolazione rapida"
+      },
+      "redo": "Ripeti",
+      "requestRevision": "Richiedi revisione",
+      "reset": "Reimposta",
+      "resetCrop": "Reimposta ritaglio",
+      "retry": "Riprova",
+      "saveFailed": "Salvataggio non riuscito",
+      "saveFailedHint": "Le ultime modifiche non sono state salvate. Riprova.",
+      "saving": "Salvataggio in corso…",
+      "sendBackward": "Porta indietro",
+      "sendReview": "Invia in review",
+      "sendToBack": "Porta in fondo",
+      "share": "Condividi",
+      "shareEyebrow": "Condivisione",
+      "shareLegacyLabel": "Link classico",
+      "sharePresentLabel": "Modalità presentazione",
+      "shareReviewLabel": "Modalità review",
+      "shareTitle": "Condividi la moodboard",
+      "typography": "Tipografia",
+      "undo": "Annulla",
+      "unsaved": "Modifiche non salvate",
+      "uploadFailed": "Caricamento non riuscito",
+      "uploading": "Caricamento in corso…",
+      "visualProps": "Proprietà visive"
+    },
+    "editorPanel": {
+      "title": "Pannello editor"
+    },
+    "field": {
+      "addColor": "Aggiungi colore",
+      "arrowHead": "Punta della freccia",
+      "arrowKind": "Tipo di freccia",
+      "bgColor": "Colore di sfondo",
+      "bgImage": "Immagine di sfondo",
+      "bgOverlay": "Overlay di sfondo",
+      "blur": "Sfocatura",
+      "borderColor": "Colore del bordo",
+      "borderRadius": "Raggio del bordo",
+      "borderStyle": "Stile del bordo",
+      "borderWidth": "Spessore del bordo",
+      "brightness": "Luminosità",
+      "caption": "Didascalia",
+      "chapter": "Capitolo",
+      "chapterPlaceholder": "Es. Atmosfera materica",
+      "color": "Colore",
+      "colors": "Colori",
+      "contrast": "Contrasto",
+      "dashed": "Tratteggiato",
+      "decoration": "Decorazione",
+      "fill": "Riempimento",
+      "finish": "Finitura",
+      "fitMode": {
+        "contain": "Contenuto",
+        "cover": "Coprente",
+        "fill": "Riempi"
+      },
+      "focalPoint": "Punto focale",
+      "fontFamily": "Famiglia tipografica",
+      "fontSize": "Corpo",
+      "fontWeight": "Peso",
+      "grayscale": "Scala di grigi",
+      "hiddenFromClient": "Nascondi al cliente",
+      "hiddenFromClientHint": "Visibile solo agli interni dello studio.",
+      "hiddenInPresentation": "Nascondi in presentazione",
+      "hiddenInPresentationHint": "Non comparirà durante la presentazione live.",
+      "imageUrl": "URL dell'immagine",
+      "letterSpacing": "Crenatura",
+      "lineHeight": "Interlinea",
+      "listStyle": "Stile elenco",
+      "name": "Nome",
+      "note": "Nota",
+      "opacity": "Opacità",
+      "pageBackground": "Sfondo della pagina",
+      "price": "Prezzo",
+      "rotation": "Rotazione",
+      "saturation": "Saturazione",
+      "shadow": "Ombra",
+      "shapeKind": "Tipo di forma",
+      "size": "Dimensione",
+      "swatch": "Campione",
+      "text": "Testo",
+      "textAlign": "Allineamento",
+      "thickness": "Spessore",
+      "title": "Titolo",
+      "transition": "Transizione",
+      "transitionDuration": "Durata transizione",
+      "transitionIn": "Transizione in entrata",
+      "vendor": "Fornitore",
+      "vignette": "Vignettatura",
+      "visibility": "Visibilità",
+      "warmth": "Calore",
+      "zoom": "Zoom",
+      "fitModeLabel": "Modalità di adattamento"
+    },
+    "insert": {
+      "exploreTemplates": "Esplora i template",
+      "group": {
+        "templates": "Template"
+      }
+    },
+    "inspector": {
+      "advancedSoon": "Avanzate · in arrivo",
+      "empty": {
+        "body": "Seleziona un elemento per regolarne le proprietà.",
+        "title": "Nessun elemento selezionato"
+      },
+      "group": {
+        "advanced": "Avanzate",
+        "image": {
+          "eyebrow": "Immagine"
+        },
+        "layout": "Layout",
+        "style": {
+          "eyebrow": "Stile"
+        },
+        "typography": {
+          "eyebrow": "Tipografia"
+        },
+        "imageLabel": "Immagine",
+        "styleLabel": "Stile",
+        "typographyLabel": "Tipografia"
+      },
+      "selectedItem": "Elemento selezionato"
+    },
+    "library": {
+      "collapse": "Comprimi",
+      "expand": "Espandi",
+      "personal": "Personale",
+      "section": {
+        "content": "Contenuti",
+        "primitives": "Primitive",
+        "saved": "Salvati"
+      },
+      "tab": {
+        "blocks": "Blocchi",
+        "content": "Contenuti"
+      },
+      "title": "Libreria"
+    },
+    "page": {
+      "add": "Aggiungi pagina",
+      "delete": "Elimina pagina",
+      "duplicate": "Duplica pagina",
+      "eyebrow": "Pagina",
+      "fromTemplate": "Da template",
+      "insertHere": "Inserisci qui",
+      "new": "Nuova pagina",
+      "untitled": "Pagina senza titolo"
+    },
+    "pages": {
+      "exploreAll": "Esplora tutte le pagine",
+      "hint": "Scegli un layout per iniziare a comporre.",
+      "layouts": "Layout",
+      "thisProject": "In questo journey",
+      "untitled": "Senza titolo"
+    },
+    "picker": {
+      "eyebrow": "Inserisci nella moodboard",
+      "insertAfter": "Inserisci dopo",
+      "subtitle": "Scegli da quale moodboard prelevare il contenuto.",
+      "title": "Seleziona moodboard"
+    },
+    "placeholder": {
+      "replaceImage": "Sostituisci immagine"
+    },
+    "premium": {
+      "appliedMulti": "Applicato a più pagine",
+      "applyFailed": "Impossibile applicare il template",
+      "archiveTitle": "Archivio template premium",
+      "completeTemplates": {
+        "short": "Template completi"
+      },
+      "failed": "Operazione non riuscita. Riprova.",
+      "intro": {
+        "short": "Layout pronti all'uso, curati per atelier editoriali."
+      },
+      "pageCount": {
+        "plural": "{count} pagine",
+        "singular": "1 pagina"
+      },
+      "partialPages": "Alcune pagine non sono state aggiornate."
+    },
+    "presentation": {
+      "chapters": "Capitoli",
+      "empty": "Nessuna pagina pronta per la presentazione."
+    },
+    "shadow": {
+      "dramatic": "Drammatica",
+      "medium": "Media",
+      "none": "Nessuna",
+      "soft": "Morbida"
+    },
+    "skeleton": {
+      "applied": "Layout applicato",
+      "applyFailed": "Impossibile applicare il layout",
+      "section": {
+        "eyebrow": "Scheletri di pagina",
+        "intro": "Strutture rapide per impostare una pagina in pochi secondi."
+      },
+      "singlePages": "Pagine singole"
+    },
+    "templates": {
+      "blank": "Pagina bianca",
+      "blankDesc": "Parti da una pagina vuota.",
+      "derivedFrom": "Derivato da",
+      "eyebrow": "Template",
+      "pageCount": "{count} pagine",
+      "saveAs": "Salva come template",
+      "saveFailed": "Impossibile salvare il template",
+      "saved": "Template salvato",
+      "startBlank": "Inizia da bianco",
+      "tenantPreset": "Preset dello studio"
     }
   },
   "placeholder": {
@@ -1047,7 +1456,99 @@
       "voce_editoriale_dello_studio": "Voce editoriale dello studio"
     },
     "plan": {
-      "ai_credits": "AI credits"
+      "ai_credits": "AI credits",
+      "sub": "Piano corrente, limiti operativi e fatturazione.",
+      "title": "Piano"
+    },
+    "account": {
+      "body": "Email, password e preferenze del tuo account.",
+      "kicker": "Account",
+      "title": "Account"
+    },
+    "brand": {
+      "sub": "Tipografia, palette e densità dell'atelier.",
+      "title": "Identità di brand"
+    },
+    "domains": {
+      "sub": "Dominio personalizzato per il sito pubblico.",
+      "title": "Domini"
+    },
+    "forms": {
+      "sub": "Configurazione dei form di contatto e onboarding.",
+      "title": "Form"
+    },
+    "internationalPresence": {
+      "sub": "Lingue, locali e disponibilità internazionale.",
+      "title": "Presenza internazionale"
+    },
+    "journal": {
+      "sub": "Editoriali, magazine e flussi di pubblicazione.",
+      "title": "Journal"
+    },
+    "kicker": "Atelier",
+    "languages": {
+      "active": "Lingue attive",
+      "ai": {
+        "copy": "Le lingue su cui la traduzione AI è abilitata."
+      },
+      "architecture": "Architettura linguistica",
+      "architectureBody": "Tre livelli orchestrati: pubblico, blueprint operativo, traduzione AI.",
+      "blueprint": {
+        "copy": "Le lingue in cui il blueprint operativo è disponibile.",
+        "eyebrow": "Blueprint operativo",
+        "locked": "Bloccato sul piano corrente."
+      },
+      "col": {
+        "ai": "AI",
+        "blueprint": "Blueprint",
+        "code": "Codice",
+        "default": "Predefinita",
+        "enabled": "Attiva",
+        "fallback": "Fallback",
+        "name": "Lingua",
+        "native": "Nome nativo",
+        "public": "Pubblica",
+        "rtl": "RTL"
+      },
+      "eyebrow": "Lingue",
+      "intro": "Lingue operative disponibili per il workspace Blueprint.",
+      "public": {
+        "copy": "Le lingue offerte sul sito pubblico e nel companion cliente.",
+        "eyebrow": "Sito pubblico"
+      },
+      "title": "Lingue & locali"
+    },
+    "notifications": {
+      "sub": "Email transazionali, digest e avvisi del workspace.",
+      "title": "Notifiche"
+    },
+    "profile": {
+      "sub": "Nome, foto e firma editoriale.",
+      "title": "Profilo"
+    },
+    "security": {
+      "sub": "Password, accessi e sicurezza del workspace.",
+      "title": "Sicurezza"
+    },
+    "storefront": {
+      "sub": "Vetrina pubblica, contenuti e SEO.",
+      "title": "Storefront"
+    },
+    "sub": "L'orchestrazione delle voci che compongono l'atelier.",
+    "team": {
+      "sub": "Membri, ruoli e permessi del workspace.",
+      "title": "Team"
+    },
+    "title": "Impostazioni",
+    "website": {
+      "body": "Pagine, link, social e form pubblici.",
+      "kicker": "Vetrina",
+      "title": "Sito pubblico"
+    },
+    "workspace": {
+      "body": "Identità, brand e moduli attivi del workspace.",
+      "kicker": "Workspace",
+      "title": "Workspace"
     }
   },
   "site": {
@@ -1130,6 +1631,13 @@
     },
     "proposals": {
       "le_presentazioni_vivono_dentro_i_loro_journey": "Le presentazioni vivono dentro i loro Journey"
+    },
+    "back": {
+      "projects": "Torna ai progetti"
+    },
+    "followed_by": "Seguito da",
+    "lead": {
+      "convert": "Converti in progetto"
     }
   },
   "media": {
@@ -1338,5 +1846,113 @@
       "loading_registry": "Caricamento registro",
       "no_matches": "Nessuna chiave corrisponde ai filtri."
     }
+  },
+  "auth": {
+    "forgot": {
+      "sent": "Se l'email corrisponde a un account, riceverai a breve un link per reimpostare la password.",
+      "submit": "Invia link",
+      "subtitle": "Ricevi un link per reimpostare la password al tuo indirizzo email.",
+      "title": "Reimposta la password"
+    },
+    "login": {
+      "email": "Email",
+      "forgot": "Password dimenticata?",
+      "noAccount": "Non hai ancora un atelier?",
+      "password": "Password",
+      "signup": "Crea un atelier",
+      "submit": "Accedi",
+      "subtitle": "Accedi al tuo workspace Blueprint.",
+      "tagline": "Lo strumento editoriale degli studi di design.",
+      "taglineSub": "Blueprint OS™ per l'eccellenza del design.",
+      "title": "Bentornato"
+    },
+    "signup": {
+      "company": "Nome dello studio",
+      "hasAccount": "Hai già un atelier?",
+      "signin": "Accedi",
+      "submit": "Crea workspace",
+      "subtitle": "Inizia a comporre il tuo Blueprint editoriale.",
+      "title": "Crea il tuo atelier"
+    }
+  },
+  "brand": {
+    "controls": "Controlli",
+    "controlsLabel": "Personalizza ogni dettaglio.",
+    "discard": "Annulla modifiche",
+    "field": {
+      "body": "Carattere del testo",
+      "density": "Densità delle interfacce",
+      "display": "Carattere display",
+      "phone": "Telefono",
+      "primary_logo": "Logo primario",
+      "primary_logo_helper": "PNG o SVG, sfondo trasparente, fino a 2 MB.",
+      "radius": "Raggio degli angoli",
+      "shadow": "Profondità delle ombre",
+      "support_email": "Email di supporto",
+      "website": "Sito web"
+    },
+    "intro": "Componi qui l'identità visiva dello studio: tipografia, palette, geometrie.",
+    "livePreview": "Anteprima dal vivo",
+    "name": "MOOD for DESIGN",
+    "paletteTrace": "Variazioni cromatiche generate dalla palette principale.",
+    "presetsTrace": "Preset visivi disponibili per l'intero workspace.",
+    "save": "Salva identità",
+    "section": {
+      "identity": "Identità",
+      "identityKicker": "Nome, logo e dati pubblici dello studio.",
+      "paletteKicker": "Tre colori che reggono l'intera composizione.",
+      "paletteTitle": "Palette",
+      "presetsTitle": "Preset visivi",
+      "surfaceTitle": "Superfici",
+      "typographyKicker": "Le voci tipografiche che compongono l'atelier.",
+      "typographyTitle": "Tipografia"
+    },
+    "tagline": "Lo strumento editoriale degli studi di design.",
+    "title": "Identità di brand"
+  },
+  "collab": {
+    "handoff": {
+      "cta": "Apri handoff",
+      "failed": "Impossibile registrare l'handoff. Riprova.",
+      "recorded": "Handoff registrato"
+    }
+  },
+  "form": {
+    "password_min": "La password deve contenere almeno 8 caratteri."
+  },
+  "greeting": "Bentornato",
+  "impersonation": {
+    "active": "Modalità impersonificazione attiva",
+    "stop": "Esci dall'impersonificazione"
+  },
+  "leads": {
+    "empty": "Nessun lead da seguire al momento.",
+    "emptyCta": "Aggiungi il primo lead",
+    "field": {
+      "budget": "Budget",
+      "email": "Email",
+      "firstName": "Nome",
+      "lastName": "Cognome",
+      "leadType": "Tipo di lead",
+      "notes": "Note",
+      "phone": "Telefono",
+      "projectType": "Tipologia di progetto"
+    },
+    "newLead": "Nuovo lead",
+    "title": "Lead",
+    "type": {
+      "ad_partner": "Partner AD",
+      "private_client": "Cliente privato"
+    }
+  },
+  "proposals": {
+    "empty": "Nessuna proposta da seguire.",
+    "title": "Proposte"
+  },
+  "user": {
+    "notifications": "Notifiche",
+    "preferences": "Preferenze",
+    "theme": "Tema",
+    "workspace": "Workspace"
   }
 }

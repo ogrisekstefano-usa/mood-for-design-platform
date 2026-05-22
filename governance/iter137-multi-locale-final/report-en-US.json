@@ -1,0 +1,845 @@
+{
+  "iteration": "ITER132",
+  "locale": "en-US",
+  "base": "https://content-hub-pro-22.preview.emergentagent.com",
+  "generated_at": "2026-05-22T13:27:46+00:00",
+  "routes_crawled": 21,
+  "summary": {
+    "HARD_CODED_UI": 3,
+    "DB_SEEDED_CONTENT": 6
+  },
+  "findings": [
+    {
+      "kind": "HARD_CODED_UI",
+      "page": "/dashboard",
+      "text": "Le relazioni della tua casa di design",
+      "testid": "crm-page"
+    },
+    {
+      "kind": "HARD_CODED_UI",
+      "page": "/dashboard",
+      "text": "Account-centered. Ogni Account può avere più Contact.\n          I membri del Team vivono in",
+      "testid": "crm-page"
+    },
+    {
+      "kind": "HARD_CODED_UI",
+      "page": "/dashboard",
+      "text": "Nessun follow-up aperto. 🎉",
+      "testid": "crm-followups"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/dashboard",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"tenant\",\"candidates\":{\"explicit\":null,\"user\":null,\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"l"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/dashboard",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=en-US",
+      "body_excerpt": "{\"active_journeys\":[{\"journey_id\":\"1a21d096-c861-423f-9547-9670458c04ef\",\"project_id\":\"00782540-0146-4a69-8bea-d3df8490a0aa\",\"account_name\":\"G3_GSRTLM\",\"lifecycle_state\":\"conversation_open\",\"lifecycle_key\":\"conversation_open\",\"lifecycle_lab"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/dashboard",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=en-US",
+      "body_excerpt": "{\"active_journeys\":[{\"journey_id\":\"1a21d096-c861-423f-9547-9670458c04ef\",\"project_id\":\"00782540-0146-4a69-8bea-d3df8490a0aa\",\"account_name\":\"G3_GSRTLM\",\"lifecycle_state\":\"conversation_open\",\"lifecycle_key\":\"conversation_open\",\"lifecycle_lab"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/inspirations",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/inspirations/archive?",
+      "body_excerpt": "{\"items\":[{\"id\":\"980d67cb-43f3-428f-bbb5-5a4eace6dfaf\",\"title\":\"TEST_iter78_auto_cultural\",\"description\":null,\"image_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_url\":\"https://images.unsplash.com/p"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/inspirations",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/inspirations/archive?",
+      "body_excerpt": "{\"items\":[{\"id\":\"980d67cb-43f3-428f-bbb5-5a4eace6dfaf\",\"title\":\"TEST_iter78_auto_cultural\",\"description\":null,\"image_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_url\":\"https://images.unsplash.com/p"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/editorial/web-presence",
+      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+      "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"tenant\",\"candidates\":{\"explicit\":null,\"user\":null,\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"l"
+    }
+  ],
+  "pages": [
+    {
+      "key": "dashboard",
+      "url": "/dashboard",
+      "nav_error": null,
+      "italian_leaks": [
+        {
+          "text": "Le relazioni della tua casa di design",
+          "testid": "crm-page"
+        },
+        {
+          "text": "Account-centered. Ogni Account può avere più Contact.\n          I membri del Team vivono in",
+          "testid": "crm-page"
+        },
+        {
+          "text": "Nessun follow-up aperto. 🎉",
+          "testid": "crm-followups"
+        }
+      ],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Le relazioni, locale: en-US, page: /crm/follow-ups, testid: crm-page}"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: del Team, locale: en-US, page: /crm/follow-ups, testid: crm-page}"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "status": 200,
+          "marker_hits": 10,
+          "accent_hits": 7,
+          "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"tenant\",\"candidates\":{\"explicit\":null,\"user\":null,\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and cont"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=en-US",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 0,
+          "body_excerpt": "{\"active_journeys\":[{\"journey_id\":\"1a21d096-c861-423f-9547-9670458c04ef\",\"project_id\":\"00782540-0146-4a69-8bea-d3df8490a0aa\",\"account_name\":\"G3_GSRTLM\",\"lifecycle_state\":\"conversation_open\",\"lifecycle_key\":\"conversation_open\",\"lifecycle_label\":\"Opening Conversation\",\"current_milestone\":{\"id\":\"14c5fefe-324e-4662-adf4-0263bddfe51e\",\"type\":\"inspirations\",\"taxonomy_key\":\"inspirations_alignment\",\"label\":\"Inspirations Alignment\",\"status\":\"in_progress\",\"status_key\":\"in_progress\"},\"progress\":10,\"milestones_done\":1,\"milestones_total\":10,\"last_event\":{\"canon\":null,\"text\":\"Client brief approved. The project moves forward.\",\"when\":\"2026-05-22T00:28:45.341984+00:00\"},\"days_silent\":0},{\"journey_id\":\"f886dff9-1f11-4d49-a8b8-9c68d41932d9\",\"project_id\":\"2dcfd214-f78d-470a-83b1-a0c7a4f81b63\",\"account_name\":\"G3_PQGZYK\",\"lifecycle_state\":\"in_progress\",\"lifecycle_key\":\"in_progress\",\"lifecycle_label\":\"Journey unfolding\",\"current_milestone\":{\"id\":\"37debf78-5044-46a2-9cf2-e858cf5fe183\",\"type\":\"brief\",\"taxonomy_key\":\"client_brief\",\"label\":\"Client Brief\",\"status\":\"in_progress\",\"status_key\":\"in_progress\"},\"progress\":0,\"milestones_done\":0,\"milestones_total\":10,\"last_event\":{\"canon\":null,\"text\":\"The Journey has been reopened for a new chapter. Test round-trip teardown\",\"when\":\"2026-05-22T00:19:43.806997+00:00\"},\"days_silent\":0},{\"journey_id\":\"0ec90999-2e47-46be-918e-6d50e8d21804\",\"project_id\":\"f69b82d8-c213-441b-a98d-e2fe6b36ccd0\",\"account_name\":\"G3_HIEFFV\",\"lifecycle_state\":\"conversation_open\",\"lifecycl"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=en-US",
+          "status": 200,
+          "marker_hits": 3,
+          "accent_hits": 0,
+          "body_excerpt": "{\"active_journeys\":[{\"journey_id\":\"1a21d096-c861-423f-9547-9670458c04ef\",\"project_id\":\"00782540-0146-4a69-8bea-d3df8490a0aa\",\"account_name\":\"G3_GSRTLM\",\"lifecycle_state\":\"conversation_open\",\"lifecycle_key\":\"conversation_open\",\"lifecycle_label\":\"Opening Conversation\",\"current_milestone\":{\"id\":\"14c5fefe-324e-4662-adf4-0263bddfe51e\",\"type\":\"inspirations\",\"taxonomy_key\":\"inspirations_alignment\",\"label\":\"Inspirations Alignment\",\"status\":\"in_progress\",\"status_key\":\"in_progress\"},\"progress\":10,\"milestones_done\":1,\"milestones_total\":10,\"last_event\":{\"canon\":null,\"text\":\"Client brief approved. The project moves forward.\",\"when\":\"2026-05-22T00:28:45.341984+00:00\"},\"days_silent\":0},{\"journey_id\":\"f886dff9-1f11-4d49-a8b8-9c68d41932d9\",\"project_id\":\"2dcfd214-f78d-470a-83b1-a0c7a4f81b63\",\"account_name\":\"G3_PQGZYK\",\"lifecycle_state\":\"in_progress\",\"lifecycle_key\":\"in_progress\",\"lifecycle_label\":\"Journey unfolding\",\"current_milestone\":{\"id\":\"37debf78-5044-46a2-9cf2-e858cf5fe183\",\"type\":\"brief\",\"taxonomy_key\":\"client_brief\",\"label\":\"Client Brief\",\"status\":\"in_progress\",\"status_key\":\"in_progress\"},\"progress\":0,\"milestones_done\":0,\"milestones_total\":10,\"last_event\":{\"canon\":null,\"text\":\"The Journey has been reopened for a new chapter. Test round-trip teardown\",\"when\":\"2026-05-22T00:19:43.806997+00:00\"},\"days_silent\":0},{\"journey_id\":\"0ec90999-2e47-46be-918e-6d50e8d21804\",\"project_id\":\"f69b82d8-c213-441b-a98d-e2fe6b36ccd0\",\"account_name\":\"G3_HIEFFV\",\"lifecycle_state\":\"conversation_open\",\"lifecycl"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/dashboard.jpg"
+    },
+    {
+      "key": "journeys",
+      "url": "/workspace/projects",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/journeys.jpg"
+    },
+    {
+      "key": "crm-accounts",
+      "url": "/crm/accounts",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: le relazioni, locale: en-US, page: /crm/accounts, testid: crm-page}"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/crm-accounts.jpg"
+    },
+    {
+      "key": "crm-follow-ups",
+      "url": "/crm/follow-ups",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/crm-follow-ups.jpg"
+    },
+    {
+      "key": "inspirations",
+      "url": "/inspirations",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Brand, locale: en-US, page: /inspirations, testid: ins-brand-atlas-link}"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/inspirations/archive?",
+          "status": 200,
+          "marker_hits": 1,
+          "accent_hits": 4,
+          "body_excerpt": "{\"items\":[{\"id\":\"980d67cb-43f3-428f-bbb5-5a4eace6dfaf\",\"title\":\"TEST_iter78_auto_cultural\",\"description\":null,\"image_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_kind\":\"url\",\"width\":null,\"height\":null,\"dominant_color\":null,\"atmosphere_tags\":[\"warm_minimal\"],\"material_tags\":[\"wood_natural\"],\"market_codes\":[],\"style_tags\":[],\"palette\":[],\"hospitality_profile\":null,\"luxury_level\":null,\"brand\":null,\"collection\":null,\"product_name\":null,\"product_category\":null,\"designer\":null,\"inspiration_type\":\"editorial\",\"rights_status\":null,\"supplier_catalog_id\":null,\"display_meta\":{\"zoom\":1.4,\"focal_x\":0.33,\"focal_y\":0.66,\"crop_ratio\":\"4:5\",\"editorial_filter\":\"cinematic_dark\"},\"tags\":[\"inspiration\"],\"created_at\":\"2026-05-22T00:25:02.849284+00:00\",\"updated_at\":\"2026-05-22T00:26:58.385494+00:00\"},{\"id\":\"97770cde-856c-4e4f-b9c9-8daebc3c27e4\",\"title\":\"TEST_PinterestRef\",\"description\":null,\"image_url\":\"https://www.pinterest.com/pin/12345/\",\"source_url\":\"https://www.pinterest.com/pin/12345/\",\"source_kind\":\"pinterest\",\"width\":null,\"height\":null,\"dominant_color\":null,\"atmosphere_tags\":[],\"material_tags\":[],\"market_codes\":[],\"style_tags\":[],\"palette\":[],\"hospitality_profile\":null,\"luxury_level\":null,\"brand\":null,\"collection\":null,\"product_name\":null,\"product_category\":null,\"designer\":null,\"inspiration_type\":\"editorial\",\"rights_status\":null,\"supplier_catalog_id\":null,\"displa"
+        },
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/inspirations/archive?",
+          "status": 200,
+          "marker_hits": 1,
+          "accent_hits": 4,
+          "body_excerpt": "{\"items\":[{\"id\":\"980d67cb-43f3-428f-bbb5-5a4eace6dfaf\",\"title\":\"TEST_iter78_auto_cultural\",\"description\":null,\"image_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_kind\":\"url\",\"width\":null,\"height\":null,\"dominant_color\":null,\"atmosphere_tags\":[\"warm_minimal\"],\"material_tags\":[\"wood_natural\"],\"market_codes\":[],\"style_tags\":[],\"palette\":[],\"hospitality_profile\":null,\"luxury_level\":null,\"brand\":null,\"collection\":null,\"product_name\":null,\"product_category\":null,\"designer\":null,\"inspiration_type\":\"editorial\",\"rights_status\":null,\"supplier_catalog_id\":null,\"display_meta\":{\"zoom\":1.4,\"focal_x\":0.33,\"focal_y\":0.66,\"crop_ratio\":\"4:5\",\"editorial_filter\":\"cinematic_dark\"},\"tags\":[\"inspiration\"],\"created_at\":\"2026-05-22T00:25:02.849284+00:00\",\"updated_at\":\"2026-05-22T00:26:58.385494+00:00\"},{\"id\":\"97770cde-856c-4e4f-b9c9-8daebc3c27e4\",\"title\":\"TEST_PinterestRef\",\"description\":null,\"image_url\":\"https://www.pinterest.com/pin/12345/\",\"source_url\":\"https://www.pinterest.com/pin/12345/\",\"source_kind\":\"pinterest\",\"width\":null,\"height\":null,\"dominant_color\":null,\"atmosphere_tags\":[],\"material_tags\":[],\"market_codes\":[],\"style_tags\":[],\"palette\":[],\"hospitality_profile\":null,\"luxury_level\":null,\"brand\":null,\"collection\":null,\"product_name\":null,\"product_category\":null,\"designer\":null,\"inspiration_type\":\"editorial\",\"rights_status\":null,\"supplier_catalog_id\":null,\"displa"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/inspirations.jpg"
+    },
+    {
+      "key": "brand-atlas",
+      "url": "/inspirations/brands",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "warning",
+          "text": "[LEAKAGE] {phrase: Brand, locale: en-US, page: /inspirations/brands, testid: brand-atlas-eyebrow}"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/brand-atlas.jpg"
+    },
+    {
+      "key": "material-view",
+      "url": "/inspirations/materials",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/material-view.jpg"
+    },
+    {
+      "key": "cultural-editions",
+      "url": "/workspace/cultural-editions",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay UserMenu UserMenu"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/cultural-editions.jpg"
+    },
+    {
+      "key": "editorial-calendar",
+      "url": "/editorial/calendar",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/editorial-calendar.jpg"
+    },
+    {
+      "key": "magazine",
+      "url": "/editorial/magazine",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/magazine.jpg"
+    },
+    {
+      "key": "publishing",
+      "url": "/editorial/publishing",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/publishing.jpg"
+    },
+    {
+      "key": "market-matrix",
+      "url": "/editorial/market",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/market-matrix.jpg"
+    },
+    {
+      "key": "web-presence",
+      "url": "/editorial/web-presence",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [
+        {
+          "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
+          "status": 200,
+          "marker_hits": 10,
+          "accent_hits": 7,
+          "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"tenant\",\"candidates\":{\"explicit\":null,\"user\":null,\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and cont"
+        }
+      ],
+      "screenshot": "runtime-localization-screenshots/web-presence.jpg"
+    },
+    {
+      "key": "studio-identity",
+      "url": "/team/studio-identity",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/studio-identity.jpg"
+    },
+    {
+      "key": "integrations",
+      "url": "/team/integrations",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/integrations.jpg"
+    },
+    {
+      "key": "insights",
+      "url": "/team/insights",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/insights.jpg"
+    },
+    {
+      "key": "forms",
+      "url": "/forms",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 500 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/forms.jpg"
+    },
+    {
+      "key": "studio-voice",
+      "url": "/blueprint/studio-voice",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/studio-voice.jpg"
+    },
+    {
+      "key": "language-center",
+      "url": "/blueprint/language",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/language-center.jpg"
+    },
+    {
+      "key": "moodboards",
+      "url": "/moodboards",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/moodboards.jpg"
+    },
+    {
+      "key": "settings-locales",
+      "url": "/settings/locales",
+      "nav_error": null,
+      "italian_leaks": [],
+      "raw_keys": [],
+      "missing_tokens": [],
+      "error_boundary": false,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 ()"
+        }
+      ],
+      "page_errors": [],
+      "api_leaks": [],
+      "screenshot": "runtime-localization-screenshots/settings-locales.jpg"
+    }
+  ]
+}

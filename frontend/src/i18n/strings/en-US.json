@@ -87,7 +87,12 @@
     },
     "brand_mode": {
       "aggiungi_produttore": "Add maker"
-    }
+    },
+    "logout": "Sign out",
+    "noResults": "No results.",
+    "reset": "Reset",
+    "submit": "Submit",
+    "welcome": "Welcome"
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -170,7 +175,8 @@
   },
   "companion": {
     "hero": {
-      "eyebrow": "Design Journey™ · Your design journey"
+      "eyebrow": "Design Journey™ · Your design journey",
+      "cta": "Open the next chapter"
     },
     "index": {
       "hero": {
@@ -206,10 +212,16 @@
         "title": "Shared Thoughts"
       },
       "evolution": {
-        "title": "The unfolding of the journey"
+        "title": "The unfolding of the journey",
+        "empty_lede": "The project's evolution will be tracked here.",
+        "empty_title": "No evolution yet",
+        "eyebrow": "Evolution"
       },
       "materials": {
-        "title": "Matter and atmosphere"
+        "title": "Matter and atmosphere",
+        "empty_lede": "Materials shared by the studio will appear here.",
+        "empty_title": "No materials yet",
+        "eyebrow": "Materials"
       },
       "site_evolution": {
         "eyebrow": "Site Evolution™",
@@ -218,9 +230,41 @@
           "one": "{n} moment",
           "many": "{n} moments"
         }
+      },
+      "active_chapter": {
+        "empty_hint_lede": "When your studio opens a new chapter, you'll find it here.",
+        "empty_hint_title": "Awaiting the next chapter",
+        "empty_title": "No active chapter",
+        "eyebrow": "Active chapter"
+      },
+      "archive": {
+        "empty_lede": "Approved and archived chapters will appear here.",
+        "empty_title": "Archive is empty",
+        "eyebrow": "Archive",
+        "title": "Chapter archive"
+      },
+      "conversations": {
+        "empty_lede": "Conversations with the studio will appear here.",
+        "empty_title": "No conversations yet",
+        "eyebrow": "Conversations",
+        "title": "Conversations"
+      },
+      "shared_directions": {
+        "empty_lede": "Directions shared by the studio will appear here.",
+        "empty_title": "No directions yet",
+        "eyebrow": "Directions",
+        "title": "Shared directions"
       }
     },
-    "loading": "Opening your Journey…"
+    "loading": "Opening your Journey…",
+    "archive": {
+      "approved": "Approved",
+      "closed": "Closed"
+    },
+    "error": {
+      "title": "Something went wrong",
+      "unavailable": "The Companion is unavailable right now. Please try again shortly."
+    }
   },
   "dossier": {
     "hero": {
@@ -272,7 +316,16 @@
     "empty": {
       "eyebrow": "Memory of the journey",
       "message": "The dossier of this Journey will be deposited shortly."
-    }
+    },
+    "chapter": {
+      "approved": "Approved",
+      "closed": "Closed",
+      "default": "Chapter",
+      "in_progress": "In progress",
+      "presented": "Presented",
+      "revision_requested": "Revision requested"
+    },
+    "studio_prefix": "Studio"
   },
   "dashboard": {
     "pulse": {
@@ -385,7 +438,8 @@
       "client_relations": "Client Relations",
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
-      "platform": "Platform"
+      "platform": "Platform",
+      "workspace": "Workspace"
     },
     "studio_pulse": "Studio Pulse",
     "your_journeys": "Your Journeys",
@@ -415,7 +469,15 @@
     "expand": "Expand",
     "collapse": "Collapse",
     "studio_voice": "Studio Voice",
-    "language_command_center": "Language Command Center"
+    "language_command_center": "Language Command Center",
+    "impersonating": "You are impersonating",
+    "logout": "Sign out",
+    "moodboard": {
+      "editor": "Moodboard editor"
+    },
+    "project": {
+      "detail": "Project detail"
+    }
   },
   "projects": {
     "tabs": {
@@ -457,6 +519,11 @@
       "mood_placeholder": "Atmosphere, material, cadence",
       "tag_input_placeholder": "add a tag…",
       "status_live": "Live"
+    },
+    "count": "{count} projects",
+    "field": {
+      "description": "Description",
+      "title": "Project title"
     }
   },
   "inspirations": {
@@ -741,6 +808,48 @@
     },
     "platform_capabilities": {
       "sincronizzo_lo_stato_attivazioni": "Sincronizzo lo stato attivazioni…"
+    },
+    "audit": {
+      "title": "Platform audit"
+    },
+    "detail": {
+      "flags": "Feature flags",
+      "members": "Members",
+      "modules": "Active modules",
+      "statusPlan": "Status / Plan"
+    },
+    "exit": "Exit",
+    "impersonate": "Impersonate",
+    "modules": {
+      "sub": "Catalog of modules orchestrated by the platform.",
+      "title": "Modules"
+    },
+    "nav": {
+      "audit": "Audit",
+      "modules": "Modules",
+      "overview": "Overview",
+      "tenants": "Tenants"
+    },
+    "overview": {
+      "subtitle": "Live indicators of the operational platform.",
+      "title": "Overview"
+    },
+    "saved": "Saved",
+    "stats": {
+      "leads": "Leads",
+      "magazine": "Editorials",
+      "moodboards": "Moodboards",
+      "projects": "Projects",
+      "proposals": "Proposals",
+      "suspended": "Suspended",
+      "tenants": "Tenants",
+      "users": "Users"
+    },
+    "tenants": {
+      "empty": "No tenants configured yet.",
+      "new": "New tenant",
+      "title": "Tenants",
+      "totalSub": "Total ateliers served by the platform."
     }
   },
   "advisor": {
@@ -841,7 +950,8 @@
         "other_lead": "No {label} in this view.",
         "accounts_hint": "An Account is a relationship — a client, a studio, a family. Contacts are the people inside that relationship.",
         "other_hint": "Try another tab or compose a new Account to begin."
-      }
+      },
+      "lead_outside_team": "— not here."
     },
     "cultural_edition": {
       "adatta_tono_ritmo_cta_al_mercato": "Adatta tono, ritmo, CTA al mercato",
@@ -999,6 +1109,305 @@
       "approved": "Approved",
       "revision_requested": "Revision requested",
       "rejected": "Rejected"
+    },
+    "title": "Moodboards",
+    "subtitle": "Curated visual narratives for your projects.",
+    "new": "New moodboard",
+    "empty": "No moodboards composed yet.",
+    "emptyCta": "Compose the first moodboard",
+    "untitled": "Untitled",
+    "tab": {
+      "title": "Composition",
+      "assets": "Assets",
+      "insert": "Insert",
+      "inspirations": "Inspirations",
+      "pages": "Pages"
+    },
+    "assets": {
+      "intro": "All images uploaded or saved into this moodboard.",
+      "saved": "Saved",
+      "savedEmpty": "No references saved yet.",
+      "uploaded": "Uploaded",
+      "uploadedHint": "Drop files or click to add them to the moodboard."
+    },
+    "block": {
+      "image": {
+        "placeholder": "Drop an image here"
+      },
+      "material": "Material",
+      "note": {
+        "placeholder": "Add an editorial note…"
+      },
+      "product": {
+        "placeholder": "Product name",
+        "label": "Unnamed product"
+      },
+      "text": {
+        "placeholder": "Type something…"
+      }
+    },
+    "create": {
+      "failed": "Could not create the moodboard. Please try again.",
+      "projectLabel": "Journey",
+      "projectPh": "Select a journey",
+      "submit": "Create",
+      "timeout": "Creation is taking too long. Please try again.",
+      "title": "New moodboard",
+      "titleLabel": "Title",
+      "titlePh": "e.g. Material direction · Villa Verbano",
+      "titleRequired": "Please enter a moodboard title."
+    },
+    "editor": {
+      "actualSize": "Actual size",
+      "adjustments": "Adjustments",
+      "applyAll": "Apply to all pages",
+      "applyAllDone": "Applied to all pages",
+      "applyAllPages": "Apply to all pages",
+      "applyStyleAll": "Apply style everywhere",
+      "approve": "Approve",
+      "autosaveOn": "Autosave on",
+      "bringForward": "Bring forward",
+      "bringToFront": "Bring to front",
+      "contextualHint": "Select an element to adjust its properties.",
+      "copyStyle": "Copy style",
+      "crop": "Crop",
+      "delete": "Delete",
+      "dropImage": "Drop an image here",
+      "duplicate": "Duplicate",
+      "fitHeight": "Fit height",
+      "fitWidth": "Fit width",
+      "imageMissing": "Image unavailable",
+      "inspector": "Inspector",
+      "layers": "Layers",
+      "openReview": "Open review",
+      "openShare": "Share",
+      "page": "Page",
+      "pageInspector": "Page inspector",
+      "pasteStyle": "Paste style",
+      "pasteStyleEmpty": "No style copied. Copy a style from an element first.",
+      "present": "Present",
+      "quickAdjust": {
+        "adjust": "Adjust",
+        "confirm": "Confirm",
+        "eyebrow": "Quick adjust",
+        "fit": "Fit",
+        "focal": "Focal point",
+        "focalHint": "Drag to choose the image's focal point.",
+        "reset": "Reset",
+        "skip": "Skip",
+        "title": "Quick adjust"
+      },
+      "redo": "Redo",
+      "requestRevision": "Request revision",
+      "reset": "Reset",
+      "resetCrop": "Reset crop",
+      "retry": "Retry",
+      "saveFailed": "Save failed",
+      "saveFailedHint": "The latest changes weren't saved. Please retry.",
+      "saving": "Saving…",
+      "sendBackward": "Send backward",
+      "sendReview": "Send to review",
+      "sendToBack": "Send to back",
+      "share": "Share",
+      "shareEyebrow": "Share",
+      "shareLegacyLabel": "Legacy link",
+      "sharePresentLabel": "Presentation mode",
+      "shareReviewLabel": "Review mode",
+      "shareTitle": "Share the moodboard",
+      "typography": "Typography",
+      "undo": "Undo",
+      "unsaved": "Unsaved changes",
+      "uploadFailed": "Upload failed",
+      "uploading": "Uploading…",
+      "visualProps": "Visual properties"
+    },
+    "editorPanel": {
+      "title": "Editor panel"
+    },
+    "field": {
+      "addColor": "Add color",
+      "arrowHead": "Arrow head",
+      "arrowKind": "Arrow kind",
+      "bgColor": "Background color",
+      "bgImage": "Background image",
+      "bgOverlay": "Background overlay",
+      "blur": "Blur",
+      "borderColor": "Border color",
+      "borderRadius": "Border radius",
+      "borderStyle": "Border style",
+      "borderWidth": "Border width",
+      "brightness": "Brightness",
+      "caption": "Caption",
+      "chapter": "Chapter",
+      "chapterPlaceholder": "e.g. Material atmosphere",
+      "color": "Color",
+      "colors": "Colors",
+      "contrast": "Contrast",
+      "dashed": "Dashed",
+      "decoration": "Decoration",
+      "fill": "Fill",
+      "finish": "Finish",
+      "fitMode": {
+        "contain": "Contain",
+        "cover": "Cover",
+        "fill": "Fill"
+      },
+      "focalPoint": "Focal point",
+      "fontFamily": "Font family",
+      "fontSize": "Font size",
+      "fontWeight": "Font weight",
+      "grayscale": "Grayscale",
+      "hiddenFromClient": "Hide from client",
+      "hiddenFromClientHint": "Visible only to the studio team.",
+      "hiddenInPresentation": "Hide in presentation",
+      "hiddenInPresentationHint": "Won't appear during the live presentation.",
+      "imageUrl": "Image URL",
+      "letterSpacing": "Letter spacing",
+      "lineHeight": "Line height",
+      "listStyle": "List style",
+      "name": "Name",
+      "note": "Note",
+      "opacity": "Opacity",
+      "pageBackground": "Page background",
+      "price": "Price",
+      "rotation": "Rotation",
+      "saturation": "Saturation",
+      "shadow": "Shadow",
+      "shapeKind": "Shape kind",
+      "size": "Size",
+      "swatch": "Swatch",
+      "text": "Text",
+      "textAlign": "Text align",
+      "thickness": "Thickness",
+      "title": "Title",
+      "transition": "Transition",
+      "transitionDuration": "Transition duration",
+      "transitionIn": "Transition in",
+      "vendor": "Vendor",
+      "vignette": "Vignette",
+      "visibility": "Visibility",
+      "warmth": "Warmth",
+      "zoom": "Zoom",
+      "fitModeLabel": "Fit mode"
+    },
+    "insert": {
+      "exploreTemplates": "Explore templates",
+      "group": {
+        "templates": "Templates"
+      }
+    },
+    "inspector": {
+      "advancedSoon": "Advanced · coming soon",
+      "empty": {
+        "body": "Select an element to adjust its properties.",
+        "title": "Nothing selected"
+      },
+      "group": {
+        "advanced": "Advanced",
+        "image": {
+          "eyebrow": "Image"
+        },
+        "layout": "Layout",
+        "style": {
+          "eyebrow": "Style"
+        },
+        "typography": {
+          "eyebrow": "Typography"
+        },
+        "imageLabel": "Image",
+        "styleLabel": "Style",
+        "typographyLabel": "Typography"
+      },
+      "selectedItem": "Selected item"
+    },
+    "library": {
+      "collapse": "Collapse",
+      "expand": "Expand",
+      "personal": "Personal",
+      "section": {
+        "content": "Content",
+        "primitives": "Primitives",
+        "saved": "Saved"
+      },
+      "tab": {
+        "blocks": "Blocks",
+        "content": "Content"
+      },
+      "title": "Library"
+    },
+    "page": {
+      "add": "Add page",
+      "delete": "Delete page",
+      "duplicate": "Duplicate page",
+      "eyebrow": "Page",
+      "fromTemplate": "From template",
+      "insertHere": "Insert here",
+      "new": "New page",
+      "untitled": "Untitled page"
+    },
+    "pages": {
+      "exploreAll": "Explore all pages",
+      "hint": "Choose a layout to start composing.",
+      "layouts": "Layouts",
+      "thisProject": "In this journey",
+      "untitled": "Untitled"
+    },
+    "picker": {
+      "eyebrow": "Insert into moodboard",
+      "insertAfter": "Insert after",
+      "subtitle": "Choose which moodboard to pull content from.",
+      "title": "Select moodboard"
+    },
+    "placeholder": {
+      "replaceImage": "Replace image"
+    },
+    "premium": {
+      "appliedMulti": "Applied to multiple pages",
+      "applyFailed": "Could not apply the template",
+      "archiveTitle": "Premium template archive",
+      "completeTemplates": {
+        "short": "Complete templates"
+      },
+      "failed": "Operation failed. Please try again.",
+      "intro": {
+        "short": "Ready-made layouts curated for editorial ateliers."
+      },
+      "pageCount": {
+        "plural": "{count} pages",
+        "singular": "1 page"
+      },
+      "partialPages": "Some pages were not updated."
+    },
+    "presentation": {
+      "chapters": "Chapters",
+      "empty": "No pages ready to present."
+    },
+    "shadow": {
+      "dramatic": "Dramatic",
+      "medium": "Medium",
+      "none": "None",
+      "soft": "Soft"
+    },
+    "skeleton": {
+      "applied": "Layout applied",
+      "applyFailed": "Could not apply the layout",
+      "section": {
+        "eyebrow": "Page skeletons",
+        "intro": "Quick scaffolds to set up a page in seconds."
+      },
+      "singlePages": "Single pages"
+    },
+    "templates": {
+      "blank": "Blank page",
+      "blankDesc": "Start from an empty page.",
+      "derivedFrom": "Derived from",
+      "eyebrow": "Templates",
+      "pageCount": "{count} pages",
+      "saveAs": "Save as template",
+      "saveFailed": "Could not save the template",
+      "saved": "Template saved",
+      "startBlank": "Start blank",
+      "tenantPreset": "Studio preset"
     }
   },
   "placeholder": {
@@ -1047,7 +1456,99 @@
       "voce_editoriale_dello_studio": "The studio's editorial voice"
     },
     "plan": {
-      "ai_credits": "AI credits"
+      "ai_credits": "AI credits",
+      "sub": "Current plan, operational limits and billing.",
+      "title": "Plan"
+    },
+    "account": {
+      "body": "Email, password and personal preferences.",
+      "kicker": "Account",
+      "title": "Account"
+    },
+    "brand": {
+      "sub": "Typography, palette and atelier density.",
+      "title": "Brand identity"
+    },
+    "domains": {
+      "sub": "Custom domain for the public storefront.",
+      "title": "Domains"
+    },
+    "forms": {
+      "sub": "Contact and onboarding form configuration.",
+      "title": "Forms"
+    },
+    "internationalPresence": {
+      "sub": "Languages, locales and international availability.",
+      "title": "International presence"
+    },
+    "journal": {
+      "sub": "Editorials, magazine and publishing flows.",
+      "title": "Journal"
+    },
+    "kicker": "Atelier",
+    "languages": {
+      "active": "Active languages",
+      "ai": {
+        "copy": "Languages where AI translation is enabled."
+      },
+      "architecture": "Language architecture",
+      "architectureBody": "Three orchestrated layers: public site, operational blueprint, AI translation.",
+      "blueprint": {
+        "copy": "Languages in which the operational blueprint is available.",
+        "eyebrow": "Operational blueprint",
+        "locked": "Locked on the current plan."
+      },
+      "col": {
+        "ai": "AI",
+        "blueprint": "Blueprint",
+        "code": "Code",
+        "default": "Default",
+        "enabled": "Enabled",
+        "fallback": "Fallback",
+        "name": "Language",
+        "native": "Native name",
+        "public": "Public",
+        "rtl": "RTL"
+      },
+      "eyebrow": "Languages",
+      "intro": "Operational languages available for the Blueprint workspace.",
+      "public": {
+        "copy": "Languages offered on the public site and in the client companion.",
+        "eyebrow": "Public site"
+      },
+      "title": "Languages & locales"
+    },
+    "notifications": {
+      "sub": "Transactional email, digests and workspace alerts.",
+      "title": "Notifications"
+    },
+    "profile": {
+      "sub": "Name, photo and editorial signature.",
+      "title": "Profile"
+    },
+    "security": {
+      "sub": "Password, sessions and workspace security.",
+      "title": "Security"
+    },
+    "storefront": {
+      "sub": "Public storefront, content and SEO.",
+      "title": "Storefront"
+    },
+    "sub": "The orchestration of the voices that compose the atelier.",
+    "team": {
+      "sub": "Members, roles and workspace permissions.",
+      "title": "Team"
+    },
+    "title": "Settings",
+    "website": {
+      "body": "Pages, links, social and public forms.",
+      "kicker": "Storefront",
+      "title": "Public site"
+    },
+    "workspace": {
+      "body": "Identity, brand and active workspace modules.",
+      "kicker": "Workspace",
+      "title": "Workspace"
     }
   },
   "site": {
@@ -1130,6 +1631,13 @@
     },
     "proposals": {
       "le_presentazioni_vivono_dentro_i_loro_journey": "Le presentazioni vivono dentro i loro Journey"
+    },
+    "back": {
+      "projects": "Back to projects"
+    },
+    "followed_by": "Followed by",
+    "lead": {
+      "convert": "Convert to project"
     }
   },
   "media": {
@@ -1338,5 +1846,113 @@
       "loading_registry": "Loading registry",
       "no_matches": "No keys match your filters."
     }
+  },
+  "auth": {
+    "forgot": {
+      "sent": "If that email matches an account, a reset link is on its way.",
+      "submit": "Send reset link",
+      "subtitle": "We'll email you a link to reset your password.",
+      "title": "Reset your password"
+    },
+    "login": {
+      "email": "Email",
+      "forgot": "Forgot password?",
+      "noAccount": "Don't have an atelier yet?",
+      "password": "Password",
+      "signup": "Create an atelier",
+      "submit": "Sign in",
+      "subtitle": "Sign in to your Blueprint workspace.",
+      "tagline": "The editorial workspace of design studios.",
+      "taglineSub": "Blueprint OS™ for design excellence.",
+      "title": "Welcome back"
+    },
+    "signup": {
+      "company": "Studio name",
+      "hasAccount": "Already have an atelier?",
+      "signin": "Sign in",
+      "submit": "Create workspace",
+      "subtitle": "Start composing your editorial Blueprint.",
+      "title": "Create your atelier"
+    }
+  },
+  "brand": {
+    "controls": "Controls",
+    "controlsLabel": "Tune every detail.",
+    "discard": "Discard changes",
+    "field": {
+      "body": "Body font",
+      "density": "Interface density",
+      "display": "Display font",
+      "phone": "Phone",
+      "primary_logo": "Primary logo",
+      "primary_logo_helper": "PNG or SVG, transparent background, up to 2 MB.",
+      "radius": "Corner radius",
+      "shadow": "Shadow depth",
+      "support_email": "Support email",
+      "website": "Website"
+    },
+    "intro": "Compose the studio's visual identity here: typography, palette, geometry.",
+    "livePreview": "Live preview",
+    "name": "MOOD for DESIGN",
+    "paletteTrace": "Color variations generated from the primary palette.",
+    "presetsTrace": "Visual presets available across the entire workspace.",
+    "save": "Save identity",
+    "section": {
+      "identity": "Identity",
+      "identityKicker": "Name, logo and public studio details.",
+      "paletteKicker": "Three colors that anchor the whole composition.",
+      "paletteTitle": "Palette",
+      "presetsTitle": "Visual presets",
+      "surfaceTitle": "Surfaces",
+      "typographyKicker": "The typographic voices that compose the atelier.",
+      "typographyTitle": "Typography"
+    },
+    "tagline": "The editorial workspace of design studios.",
+    "title": "Brand identity"
+  },
+  "collab": {
+    "handoff": {
+      "cta": "Open handoff",
+      "failed": "Could not record the handoff. Please try again.",
+      "recorded": "Handoff recorded"
+    }
+  },
+  "form": {
+    "password_min": "Password must be at least 8 characters."
+  },
+  "greeting": "Welcome back",
+  "impersonation": {
+    "active": "Impersonation mode active",
+    "stop": "Stop impersonation"
+  },
+  "leads": {
+    "empty": "No leads to follow up on yet.",
+    "emptyCta": "Add the first lead",
+    "field": {
+      "budget": "Budget",
+      "email": "Email",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "leadType": "Lead type",
+      "notes": "Notes",
+      "phone": "Phone",
+      "projectType": "Project type"
+    },
+    "newLead": "New lead",
+    "title": "Leads",
+    "type": {
+      "ad_partner": "AD partner",
+      "private_client": "Private client"
+    }
+  },
+  "proposals": {
+    "empty": "No proposals to follow.",
+    "title": "Proposals"
+  },
+  "user": {
+    "notifications": "Notifications",
+    "preferences": "Preferences",
+    "theme": "Theme",
+    "workspace": "Workspace"
   }
 }

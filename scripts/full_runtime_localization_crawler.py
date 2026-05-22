@@ -95,7 +95,7 @@ IT_MARKERS_RX = re.compile(
     re.IGNORECASE,
 )
 IT_ACCENT_RX = re.compile(r"[àèéìòùÀÈÉÌÒÙ]")
-RAW_KEY_RX   = re.compile(r"^[a-z][a-z0-9_]+(?:\.[a-z][a-z0-9_]+){2,}$", re.IGNORECASE)
+RAW_KEY_RX   = re.compile(r"^[a-z][a-z0-9_-]*(?:\.[a-z0-9_-]+){1,}$", re.IGNORECASE)
 MISSING_TOKEN_RX = re.compile(r"^⟦.+⟧$")
 RUNTIME_ERR_RX = re.compile(
     r"t is not a function|undefined is not a function|TypeError|"
@@ -109,7 +109,7 @@ HARVEST_JS = r"""
 () => {
   const ITRX = /\b(il|lo|la|gli|le|della|dello|delle|degli|alla|alle|nella|nelle|nel|del|sul|dal|tuoi|tue|tuo|tua|nostro|nostra|nessun|nessuna|aggiungi|annulla|salva|chiudi|carica|scegli|conferma|raccogli|aggiorna|crea|modifica|riprova|esporta|stampa|condividi|pubblica|prossimi|capitolo|sezione|atmosfera|materico|materialit[aà]|cliente|progetto|ispirazione|geometrie|finiture|proposta|cucina|domestiche|quotidiano)\b/i;
   const ACCENT = /[àèéìòù]/;
-  const RAW = /^[a-z][a-z0-9_]+(\.[a-z][a-z0-9_]+){2,}$/i;
+  const RAW = /^[a-z][a-z0-9_-]*(\.[a-z0-9_-]+){1,}$/i;
   const MISS = /^⟦.+⟧$/;
   const out = { italian_leaks: [], raw_keys: [], missing_tokens: [], error_boundary: false };
   const seen = new Set();

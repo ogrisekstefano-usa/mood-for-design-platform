@@ -1603,7 +1603,7 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
       </p>
       <label className="block mb-4">
         <span className="bp-eyebrow !text-[10px] mb-1.5 block !text-[var(--bp-text-secondary)]">
-          {t('moodboards.field.fitMode')}
+          {t('moodboards.field.fitModeLabel')}
         </span>
         <select value={s.fit_mode || 'cover'} onChange={(e) => setS('fit_mode', e.target.value)}
                 data-testid="block-image-fit"
@@ -2051,13 +2051,13 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
             {layoutJsx}
           </InspectorGroup>
           <InspectorGroup groupKey="IMAGE" blockType="image"
-                          title={t('moodboards.inspector.group.image', null, 'Image')}
+                          title={t('moodboards.inspector.group.imageLabel', null, 'Image')}
                           eyebrow={t('moodboards.inspector.group.image.eyebrow', null, 'crop & tonal')}>
             {cropFocalJsx}
             {adjustmentsJsx}
           </InspectorGroup>
           <InspectorGroup groupKey="STYLE" blockType="image"
-                          title={t('moodboards.inspector.group.style', null, 'Style')}
+                          title={t('moodboards.inspector.group.styleLabel', null, 'Style')}
                           eyebrow={t('moodboards.inspector.group.style.eyebrow', null, 'opacity · border · shadow')}>
             {visualPropsJsx}
           </InspectorGroup>
@@ -2083,7 +2083,7 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
         </label>
         <div className="mt-2 space-y-0">
           <InspectorGroup groupKey="TYPOGRAPHY" blockType="text"
-                          title={t('moodboards.inspector.group.typography', null, 'Typography')}
+                          title={t('moodboards.inspector.group.typographyLabel', null, 'Typography')}
                           eyebrow={t('moodboards.inspector.group.typography.eyebrow', null, 'font · weight · tracking')}>
             {typographyJsx}
           </InspectorGroup>
@@ -2092,7 +2092,7 @@ const BlockInspector = ({ block, onChangeContent, onChangeStyle, onChange, onOpe
             {layoutJsx}
           </InspectorGroup>
           <InspectorGroup groupKey="STYLE" blockType="text"
-                          title={t('moodboards.inspector.group.style', null, 'Style')}
+                          title={t('moodboards.inspector.group.styleLabel', null, 'Style')}
                           eyebrow={t('moodboards.inspector.group.style.eyebrow', null, 'opacity · border · shadow')}>
             {visualPropsJsx}
           </InspectorGroup>

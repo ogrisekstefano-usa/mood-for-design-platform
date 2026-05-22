@@ -1,4 +1,4 @@
-# Runtime Localization Report · ar · 2026-05-22T07:14:43+00:00
+# Runtime Localization Report · ar · 2026-05-22T13:44:07+00:00
 
 **Routes crawled**: 21
 
@@ -6,280 +6,239 @@
 
 | Category | Count |
 |---|---:|
-| HARD_CODED_UI | 63 |
-| DB_SEEDED_CONTENT | 42 |
+| DB_SEEDED_CONTENT | 92 |
+| HARD_CODED_UI | 13 |
 
 ## Findings by page
 
 ### /dashboard  (`dashboard`)
 
-**Italian leaks (DOM)** · 3
+**Italian leaks (DOM)** · 11
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
+- `jp-active-section` · «Sezione dominante»
+- `jp-journey-1a21d096-c861-423f-9547-9670458c04ef` · «Brief Cliente approvata. Il progetto avanza.»
+- `jp-journey-f886dff9-1f11-4d49-a8b8-9c68d41932d9` · «Brief Cliente»
+- `jp-journey-f886dff9-1f11-4d49-a8b8-9c68d41932d9` · «Il Journey è stato riaperto per un nuovo capitolo. Test round-trip teardown»
+- `jp-journey-0ec90999-2e47-46be-918e-6d50e8d21804` · «Il Design Journey™ di G3_HIEFFV ha avuto inizio. Una conversazione apre il viaggio.»
+- `jp-journey-0e02f251-203f-4833-9451-91b4771953ec` · «Il Journey è entrato nel suo archivio firmato come "Test Closure 47bd6228".»
+- `jp-voices-section` · «Le voci di oggi»
+- `jp-voice-4d1db28c-093e-4fad-bd7f-e7dd7890a0c0` · «Questa seconda proposta mi sembra molto più vicina alla luce che immaginiamo per il living.
+— riferimento: https://www.pinterest.com/pin/vil»
+- `jp-actions-section` · «Prossimi gesti progettuali»
+- `jp-action-0e02f251-203f-4833-9451-91b4771953ec` · «Continua da · Brief Cliente»
+- `jp-action-0e02f251-203f-4833-9451-91b4771953ec` · «Apri il Journey»
 
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
+**DB_SEEDED_CONTENT** · 6 API responses with IT markers
 
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=it` · {"active_journeys":[{"journey_id":"1a21d096-c861-423f-9547-9670458c04ef","project_id":"00782540-0146-4a69-8bea-d3df8490a0aa","account_name":"G3_GSRTLM","lifecycle_state":"conversat…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/dashboard/pulse?locale=it` · {"active_journeys":[{"journey_id":"1a21d096-c861-423f-9547-9670458c04ef","project_id":"00782540-0146-4a69-8bea-d3df8490a0aa","account_name":"G3_GSRTLM","lifecycle_state":"conversat…
 
 ### /workspace/projects  (`journeys`)
 
-**Italian leaks (DOM)** · 3
+**Italian leaks (DOM)** · 2
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
+- `tab-won` · «Progetto vinto»
+- `projects-empty-cta` · «+ Apri il primo viaggio»
 
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
 
 ### /crm/accounts  (`crm-accounts`)
 
-**Italian leaks (DOM)** · 3
+**Italian leaks (DOM)** · 1
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
+- `crm-page` · «Centrado en la cuenta. Cada cuenta puede reunir varios contactos. Los miembros del estudio habitan en»
 
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
 
 ### /crm/follow-ups  (`crm-follow-ups`)
 
-**Italian leaks (DOM)** · 3
+**Italian leaks (DOM)** · 1
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
+- `crm-page` · «Centrado en la cuenta. Cada cuenta puede reunir varios contactos. Los miembros del estudio habitan en»
 
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":null,"browser":null,"system":"IT_IT"},"p…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
 
 ### /inspirations  (`inspirations`)
 
-**Italian leaks (DOM)** · 3
+**Italian leaks (DOM)** · 2
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
+- `inspirations-header` · «L'archivio curatoriale dello studio. Ogni riferimento è letto attraverso la lente culturale dei mercati internazionali: atmosfera, materia, »
+- `ins-add-btn` · «Aggiungi riferimento»
 
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
 
 ### /inspirations/brands  (`brand-atlas`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"IT_IT","requested":"IT_IT","source":"tenant","candidates":{"explicit":null,"user":null,"project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"},…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":null,"browser":null,"system":"IT_IT"},"p…
 
 ### /inspirations/materials  (`material-view`)
 
-**Italian leaks (DOM)** · 3
+**Italian leaks (DOM)** · 1
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
+- `mv-filters` · «Presencia de la materia»
 
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
 
 ### /workspace/cultural-editions  (`cultural-editions`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":null,"browser":null,"system":"IT_IT"},"p…
 
 ### /editorial/calendar  (`editorial-calendar`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
 
 ### /editorial/magazine  (`magazine`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":null,"browser":null,"system":"IT_IT"},"p…
 
 ### /editorial/publishing  (`publishing`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 3 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
 
 ### /editorial/market  (`market-matrix`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
 
 ### /editorial/web-presence  (`web-presence`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
 
 ### /team/studio-identity  (`studio-identity`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
 
 ### /team/integrations  (`integrations`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":null,"browser":null,"system":"IT_IT"},"p…
 
 ### /team/insights  (`insights`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
 
 ### /forms  (`forms`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
 
 ### /blueprint/studio-voice  (`studio-voice`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
 
 ### /blueprint/language  (`language-center`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":null,"browser":null,"system":"IT_IT"},"p…
 
 ### /moodboards  (`moodboards`)
 
 **Italian leaks (DOM)** · 3
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
+- `moodboards-archive-banner` · «Le moodboard vivono dentro i loro Journey»
+- `moodboards-archive-banner` · «Questa è una vista d'archivio per ritrovare le moodboard composte attraverso tutti i Journey. La composizione vera avviene nel capitolo Mood»
+- `moodboards-page` · «Narrazioni visive curate per i tuoi progetti.»
 
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
+**DB_SEEDED_CONTENT** · 4 API responses with IT markers
 
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":null,"browser":null,"system":"IT_IT"},"p…
 
 ### /settings/locales  (`settings-locales`)
 
-**Italian leaks (DOM)** · 3
+**DB_SEEDED_CONTENT** · 3 API responses with IT markers
 
-- `login-page` · «Accedi al tuo workspace Blueprint.»
-- `link-signup` · «Crea workspace»
-- `login-page` · «Blueprint OS™ per l'eccellenza del design»
-
-**DB_SEEDED_CONTENT** · 2 API responses with IT markers
-
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
-- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public?saved_locale=AR_AE` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve/public` · {"locale_code":"IT_IT","requested":"IT_IT","source":"system","candidates":{"explicit":null,"saved":null,"browser":null,"tenant":null,"system":"IT_IT"},"profile":{"id":"af88cf96-d31…
+- `https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve` · {"locale_code":"ES_ES","requested":"ES_ES","source":"user","candidates":{"explicit":null,"user":"ES_ES","project":null,"lead":null,"tenant":"IT_IT","browser":null,"system":"IT_IT"}…

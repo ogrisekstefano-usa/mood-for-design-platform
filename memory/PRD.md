@@ -3940,3 +3940,42 @@ crawler discovered the AST was lying:
 - Background pre-generation worker (warm TM at write time so even first-visitors get instant translations).
 - Run the crawler against `en-GB`, `fr-FR`, `de-DE`, `es-ES` (cultural directives already in code; UI registry needs filling).
 - Wire every AI generator (Cultural Editions, Resonance, Moodboard AI) through the layer at write time so the cache is permanently warm.
+
+---
+
+## ITER137 · Full Registry Semantic Migration™ — CLOSED (2026-05-22)
+
+**Status**: ✅ Structural convergence achieved · ready for ITER138 blocker (Atelier visual references).
+
+### What was done in this session
+1. **Background migration finalized**: 3 008 / 3 018 jobs completed via Claude Sonnet 4.5 (Universal Key), 10 fallbacks (budget cap). Cache snapshot at `/app/governance/migration_cache.json` (3 020 entries). All 6 target-locale JSONs written atomically.
+2. **Crawler regex bugfix** (`RAW_KEY_RX`): now matches single-dot namespaces, kebab-case, uppercase. Patch applied to both the Python crawler and the in-page DOM JS snippet.
+3. **Deep audit revealed 435 keys called by `t()` but never seeded** in any locale JSON (out of 1 214 distinct keys in the codebase). Of those, 201 had no hardcoded fallback → raw dotted-key strings visible to users.
+4. **Canonical authoring it-IT + en-US**: 440 editorial Studio Voice entries written across `admin`, `auth`, `brand`, `collab`, `common`, `companion`, `dossier`, `form`, `impersonation`, `leads`, `nav`, `projects`, `proposals`, `settings`, `user`, `workspace`, `moodboards`, plus `moodboards.filter.*`.
+5. **Five label/parent JSON conflicts resolved**: `*.fitModeLabel`, `*.imageLabel`, `*.styleLabel`, `*.typographyLabel`, `*.product.label` introduced in JSX callsites.
+6. **Hardcoded Italian fixed**: literal ` — non qui.` outside `t()` in `CrmAccountsPage.jsx` wrapped into `crm.crm_accounts.lead_outside_team`.
+
+### Registry coverage (1 329 keys total)
+- it-IT 99.7 %, en-US 99.7 % (4 short-token skips < 3 chars)
+- en-GB / fr-FR / de-DE / es-ES / ar: 67 % native + 33 % served by en-US fallback chain · pending semantic rewrite on budget refill
+
+### Live verification
+- `/dashboard` (en-US) → overlay `MISS 0 · LEAK 0`
+- `/moodboards` (de-DE) → overlay `MISS 0 · LEAK 3` (LEAK = en-US fallback editorial copy, not raw keys; DOM scan confirms 0 raw-key leaks)
+- 7-locale crawler ran a final pass; RAW_KEY = 0, MISSING_REGISTRY_KEY = 0, INVALID_USE_TRANSLATION = 0, RUNTIME_CRASH = 0 across all operational locales
+
+### Blockers / next actions
+1. **User must refill the Emergent Universal Key** (`Profile → Universal Key → Add Balance`) before the 435 fallback-served keys can be rewritten into native en-GB / fr-FR / de-DE / es-ES / ar by `full_registry_migration.py`.
+2. **ITER138 — Blueprint Atelier™ Visual System** is **BLOCKED** on user-supplied visual references (mood-board, layout, palette, density, atmosphere). Agent will not invent palette / typography / spacing per the user directive.
+
+### Files (this session)
+- `/app/scripts/iter137_canonical_authoring_part{1,2,3a,3b,3c}.py`
+- `/app/scripts/iter137_provisional_fill.py` (executed then idempotently reverted by `iter137_revert_provisional_fill.py`)
+- `/app/scripts/full_runtime_localization_crawler.py` (regex bugfix)
+- `/app/governance/iter137-multi-locale-final/report-{en-US,en-GB,fr-FR,de-DE,es-ES,it-IT,ar}.json`
+- `/app/governance/iter137-final-convergence-report.md` (rev 2 — real convergence)
+
+### Localization architecture work — END OF LINE
+Per user directive 2026-05-22:
+> "Dopo questa fase: STOP localization architecture. Passiamo finalmente a: Blueprint Atelier™ visual system."
+

@@ -440,7 +440,7 @@ const CrmAccountsPage = () => {
         <p className="crm-hero__eyebrow">CRM</p>
         <h1 className="crm-hero__title">{t('crm.crm_accounts.le_relazioni_della_tua_casa_di_design')}</h1>
         <p className="crm-hero__lead">
-          {t("crm.crm_accounts.account_centered_ogni_account_puo_avere_piu_contac")} <strong>Team</strong> — non qui.
+          {t("crm.crm_accounts.account_centered_ogni_account_puo_avere_piu_contac")} <strong>Team</strong> {t('crm.crm_accounts.lead_outside_team', null, '— not here.')}
         </p>
       </header>
 

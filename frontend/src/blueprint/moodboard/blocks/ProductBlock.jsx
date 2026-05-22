@@ -10,7 +10,7 @@ const ProductBlock = ({ block, t }) => {
       </div>
       <div className="p-3">
         {vendor && <p className="bp-eyebrow !text-[var(--bp-text-muted)]">{vendor}</p>}
-        <p className="bp-body !text-sm text-[var(--bp-text-primary)] mt-1">{name || (t ? t('moodboards.block.product') : '')}</p>
+        <p className="bp-body !text-sm text-[var(--bp-text-primary)] mt-1">{name || (t ? t('moodboards.block.product.label') : '')}</p>
         {price && <p className="bp-caption text-[var(--bp-primary)] mt-1">{price}</p>}
       </div>
     </div>
