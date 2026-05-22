@@ -35,16 +35,27 @@ const HEALTH_LABEL = {
 };
 
 const PERIOD_STATUS_LABEL = {
-  eligible:     'Eleggibile',
-  approved:     'Approvata',
-  paid:         'Pagata',
-  not_eligible: 'Non eleggibile',
+  eligible:     { it: 'Eleggibile',     en: 'Eligible' },
+  approved:     { it: 'Approvata',      en: 'Approved' },
+  paid:         { it: 'Pagata',         en: 'Paid' },
+  not_eligible: { it: 'Non eleggibile', en: 'Not eligible' },
 };
 
 const REPORT_TYPE_LABEL = {
-  visit: 'Visita', call: 'Chiamata', onboarding: 'Onboarding',
-  training: 'Training', support: 'Supporto', feedback: 'Feedback',
-  issue: 'Issue', follow_up: 'Follow-up',
+  visit:      { it: 'Visita',     en: 'Visit' },
+  call:       { it: 'Chiamata',   en: 'Call' },
+  onboarding: { it: 'Onboarding', en: 'Onboarding' },
+  training:   { it: 'Training',   en: 'Training' },
+  support:    { it: 'Supporto',   en: 'Support' },
+  feedback:   { it: 'Feedback',   en: 'Feedback' },
+  issue:      { it: 'Issue',      en: 'Issue' },
+  follow_up:  { it: 'Follow-up',  en: 'Follow-up' },
+};
+
+const _lbl = (map, key, locale) => {
+  const m = map[key];
+  if (!m) return key;
+  return (locale && String(locale).toLowerCase().startsWith('it')) ? m.it : m.en;
 };
 
 const fmtDate = (iso) => {
@@ -59,7 +70,7 @@ const fmtMoney = (n) => {
 };
 
 const AdvisorDetailPage = () => {
-  const { t } = useT();
+  const { t, locale } = useT();
   const { id } = useParams();
   const nav = useNavigate();
   const [data, setData] = useState(null);
@@ -289,7 +300,7 @@ const AdvisorDetailPage = () => {
                         <td>{fmtMoney(p.commission_amount)}</td>
                         <td>
                           <span className={`adv-period-pill adv-period-pill--${p.status}`}>
-                            {PERIOD_STATUS_LABEL[p.status] || p.status}
+                            {_lbl(PERIOD_STATUS_LABEL, p.status, locale)}
                           </span>
                         </td>
                       </tr>
@@ -316,7 +327,7 @@ const AdvisorDetailPage = () => {
             <div className="adv-report-list">
               {reports.map((rep) => (
                 <article key={rep.id} className="adv-report-row" data-testid={`adv-rep-${rep.id}`}>
-                  <span className="adv-report-row__type">{REPORT_TYPE_LABEL[rep.report_type] || rep.report_type}</span>
+                  <span className="adv-report-row__type">{_lbl(REPORT_TYPE_LABEL, rep.report_type, locale)}</span>
                   <p className="adv-report-row__title">{rep.title || rep.summary?.slice(0, 80) || '—'}</p>
                   <span className="adv-report-row__date">{fmtDate(rep.date)}</span>
                 </article>

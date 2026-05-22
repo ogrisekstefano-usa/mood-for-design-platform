@@ -229,7 +229,7 @@ const StudioVoicePage = () => {
             />
           </div>
           {[
-            ['all',             'Tutte'],
+            ['all',             t('taxonomy.common.all', null, 'All')],
             ['ai_only',         'AI'],
             ['human_reviewed',  'Riviste'],
             ['locked_approved', 'Lock'],

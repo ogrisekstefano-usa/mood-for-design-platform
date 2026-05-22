@@ -18,11 +18,11 @@ const fmtDate = (iso) => {
   return d.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
 };
 
-const STATUS_LABEL = {
-  draft:     'Bozza',
-  in_review: 'In revisione',
-  approved:  'Approvata',
-  archived:  'Archiviata',
+const STATUS_LABEL_KEY = {
+  draft:     'taxonomy.cultural_edition.draft',
+  in_review: 'taxonomy.cultural_edition.in_review',
+  approved:  'taxonomy.cultural_edition.approved',
+  archived:  'taxonomy.cultural_edition.archived',
 };
 
 const CulturalEditionsListPage = () => {
@@ -120,7 +120,7 @@ const CulturalEditionsListPage = () => {
                 </span>
               </span>
               <span className="ce-row__meta">
-                <span className={`ce-status ce-status--${d.status}`}>{STATUS_LABEL[d.status] || d.status}</span>
+                <span className={`ce-status ce-status--${d.status}`}>{t(STATUS_LABEL_KEY[d.status] || `taxonomy.cultural_edition.${d.status}`, null, d.status) || d.status}</span>
                 <span className="ce-row__date">{fmtDate(d.created_at)}</span>
               </span>
               <Icons.ArrowUpRight size={13} className="ce-row__arrow" />

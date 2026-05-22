@@ -116,6 +116,9 @@ const DailyStudioStatus = ({
   studioName,
   onOpenCulturalWizard
 }) => {
+  const {
+    t
+  } = useT();
   const runtime = useLocaleRuntime();
   const greeting = greetingFor();
 
@@ -205,7 +208,11 @@ const KIND_ICON = {
 const SuggestedNextActions = ({
   suggestions,
   loading
-}) => <section className="cck-block" data-testid="cockpit-suggested-actions">
+}) => {
+  const {
+    t
+  } = useT();
+  return <section className="cck-block" data-testid="cockpit-suggested-actions">
     <header className="cck-block__head">
       <div>
         <p className="cck-block__eyebrow">Suggested Next Actions™</p>
@@ -221,8 +228,8 @@ const SuggestedNextActions = ({
           </div>)}
       </div> : suggestions && suggestions.length > 0 ? <div className="cck-grid-3">
         {suggestions.slice(0, 3).map(s => {
-      const Icon = Icons[KIND_ICON[s.kind]] || Icons.Sparkles;
-      return <Link key={s.id} to={s.cta_to} className="cck-suggest" data-testid={`cockpit-suggest-${s.kind}-${s.id}`}>
+        const Icon = Icons[KIND_ICON[s.kind]] || Icons.Sparkles;
+        return <Link key={s.id} to={s.cta_to} className="cck-suggest" data-testid={`cockpit-suggest-${s.kind}-${s.id}`}>
               <span className="cck-suggest__ring">
                 <Icon size={14} strokeWidth={1.6} />
               </span>
@@ -232,13 +239,14 @@ const SuggestedNextActions = ({
                 {s.cta_label} <Icons.ArrowUpRight size={11} strokeWidth={1.7} />
               </span>
             </Link>;
-    })}
+      })}
       </div> : <div className="cck-empty">
         <Icons.Compass size={22} strokeWidth={1.2} className="cck-empty__icon" />
         <p className="cck-empty__title">{t('dashboard.dashboard.mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud')}</p>
         <p className="cck-empty__hint">{t('dashboard.dashboard.i_primi_suggerimenti_appariranno_con_l_utilizzo_re')}</p>
       </div>}
   </section>;
+};
 
 // ═══════════════════════════════════════════════════════════════════════
 // 3 · QUICK ACTIONS™ — 4 cluster editoriali premium
@@ -364,6 +372,9 @@ const StudioAttention = ({
   staleIds = [],
   loading
 }) => {
+  const {
+    t
+  } = useT();
   const staleSet = new Set(staleIds);
   return <section className="cck-block" data-testid="cockpit-studio-attention">
       <header className="cck-block__head">
@@ -425,6 +436,9 @@ const RelationshipEngine = ({
   rows,
   loading
 }) => {
+  const {
+    t
+  } = useT();
   const navigate = useNavigate();
   return <section className="cck-block" data-testid="cockpit-relationship-engine">
       <header className="cck-block__head">
@@ -482,6 +496,9 @@ const RelationshipEngine = ({
 // MAIN — Cockpit Page
 // ═══════════════════════════════════════════════════════════════════════
 const DashboardPage = () => {
+  const {
+    t
+  } = useT();
   const {
     user
   } = useAuth();

@@ -10,12 +10,80 @@ This is the operational heart of the platform — what is publishing, where,
 when, in which locale, with which CTA target. No conceptual abstractions.
 """
 from datetime import datetime, timedelta, timezone
+import re
 from typing import Optional, List, Dict, Any
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from core.tenant_context import get_tenant_context
 from database import db
 
 router = APIRouter(tags=["editorial-calendar"])
+
+
+# ── ITER131hf · Intelligence suggestions localisation ────────────────────
+# The intelligence rules below emit Italian copy by default. Translate it
+# on the way out so EN-US toasts never carry IT text.
+_INTEL_EN = {
+    "under-published": {
+        "title": "Market {region} has no recent publications",
+        "body":  "No releases in the past 30 days for {region}. Schedule at least one magazine piece or project to keep SEO saturation alive.",
+        "cta_label": "Plan content",
+    },
+    "seo-pressure": {
+        "title": "Low SEO pressure",
+        "body":  "In the past 30 days you have published many projects but few editorial pieces. Articles drive international discoverability.",
+        "cta_label": "Open Magazine Studio",
+    },
+    "authority-gap": {
+        "title": "Authority gap on projects",
+        "body":  "Strong editorial rhythm but very few projects published. Two or three case studies will lift authority and professional conversion.",
+        "cta_label": "Open Projects Studio",
+    },
+    "empty-pipeline": {
+        "title": "Editorial pipeline empty",
+        "body":  "Nothing scheduled in the future. International presence needs continuity — plan at least four releases across the next four weeks.",
+        "cta_label": "Open Editorial Calendar",
+    },
+    "primary-cadence": {
+        "title": "Low cadence in the primary market ({region})",
+        "body":  "The primary market needs a minimum of two to three releases per month to consolidate authority.",
+        "cta_label": "Plan in the primary market",
+    },
+}
+
+
+def _localize_suggestions(suggestions: List[Dict[str, Any]], request: Request) -> List[Dict[str, Any]]:
+    """Translate the operational-intelligence suggestion strings.
+
+    When `Accept-Language` does not start with `it`, we replace the IT
+    copy with the editorial English variant defined above (keeping the
+    same shape and the same `kind` / `severity` codes). When IT, the
+    payload passes through unchanged."""
+    al = (request.headers.get('Accept-Language') or '').lower()
+    if al.startswith('it'):
+        return suggestions
+    out = []
+    for s in suggestions:
+        kind = s.get('kind')
+        spec = _INTEL_EN.get(kind)
+        if not spec:
+            out.append(s)
+            continue
+        region = ''
+        # Recover region from the title format strings.
+        m = re.search(r'\(([A-Z]{2,3})\)', s.get('title', ''))
+        if m:
+            region = m.group(1)
+        else:
+            m2 = re.search(r'Mercato ([A-Z]{2,3})', s.get('title', ''))
+            if m2:
+                region = m2.group(1)
+        out.append({
+            **s,
+            "title":     spec["title"].format(region=region) if region else spec["title"].split(' ({region})')[0],
+            "body":      spec["body"].format(region=region)  if region else spec["body"],
+            "cta_label": spec["cta_label"],
+        })
+    return out
 
 
 def _is_admin(role: str) -> bool:
@@ -290,7 +358,7 @@ def reschedule_event(event_id: str, body: RescheduleBody, ctx=Depends(get_tenant
 # OPERATIONS INTELLIGENCE — rule-based market/CTA/SEO suggestions
 # ────────────────────────────────────────────────────────────────────────
 @router.get("/intelligence")
-def operations_intelligence(ctx=Depends(get_tenant_context)):
+def operations_intelligence(request: Request, ctx=Depends(get_tenant_context)):
     if not _is_admin(ctx["role"]):
         raise HTTPException(403, "admin required")
     tenant_id = ctx["tenant_id"]
@@ -418,7 +486,7 @@ def operations_intelligence(ctx=Depends(get_tenant_context)):
             })
 
     return {
-        "suggestions": suggestions,
+        "suggestions": _localize_suggestions(suggestions, request),
         "by_locale": by_locale,
         "window_days": 30,
     }

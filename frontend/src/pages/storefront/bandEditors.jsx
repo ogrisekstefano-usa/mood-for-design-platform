@@ -91,6 +91,9 @@ export const NavTopEditor = ({
   localeTab,
   onPatchSetting
 }) => {
+  const {
+    t
+  } = useT();
   const items = Array.isArray(section.settings?.links) ? section.settings.links : [];
   const update = next => onPatchSetting('links', next);
   const addLink = () => update([...items, {
@@ -190,6 +193,9 @@ export const FooterColumnsEditor = ({
   localeTab,
   onPatchSetting
 }) => {
+  const {
+    t
+  } = useT();
   const settings = section.settings || {};
   const columns = Array.isArray(settings.columns) ? settings.columns : [];
   const socials = Array.isArray(settings.socials) ? settings.socials : [];
@@ -365,6 +371,9 @@ export const StatsBandEditor = ({
   onPatchLocale,
   onPatchSetting
 }) => {
+  const {
+    t
+  } = useT();
   const localeData = (section.locale_content || {})[localeTab] || {};
   const items = Array.isArray(section.settings?.stats) ? section.settings.stats : [];
   const updateStats = next => onPatchSetting('stats', next);
@@ -426,6 +435,9 @@ export const BrandLogosEditor = ({
   onPatchLocale,
   onPatchSetting
 }) => {
+  const {
+    t
+  } = useT();
   const localeData = (section.locale_content || {})[localeTab] || {};
   const items = Array.isArray(section.settings?.logos) ? section.settings.logos : [];
   const updateLogos = next => onPatchSetting('logos', next);
@@ -481,6 +493,9 @@ export const MagazineGridEditor = ({
   onPatchLocale,
   onPatchSetting
 }) => {
+  const {
+    t
+  } = useT();
   const localeData = (section.locale_content || {})[localeTab] || {};
   const limit = section.settings?.limit ?? 3;
   const mode = section.settings?.mode || 'auto'; // auto | manual
@@ -521,6 +536,9 @@ export const NewsletterEditor = ({
   localeTab,
   onPatchLocale
 }) => {
+  const {
+    t
+  } = useT();
   const localeData = (section.locale_content || {})[localeTab] || {};
   return <>
       <TextField label="Title" value={localeData.title} testid="ss-field-title" display onChange={v => onPatchLocale('title', v)} placeholder="Ispirazione e novità" />

@@ -361,6 +361,9 @@ const FocalPreviews = ({
   filters,
   onPick
 }) => {
+  const {
+    t
+  } = useT();
   const filterCss = cssFilterOf(filters);
   return <>
       <p className="iem-panel__label">Anteprime di consumo</p>

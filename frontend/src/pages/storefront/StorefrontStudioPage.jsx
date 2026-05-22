@@ -412,6 +412,9 @@ const BandEditor = ({
   onSave,
   onClose
 }) => {
+  const {
+    t
+  } = useT();
   const [localeTab, setLocaleTab] = useState(activeLocales[0] || 'it-IT');
   const meta = bandMeta(section.section_type);
   const settings = section.settings || {};

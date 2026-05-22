@@ -125,6 +125,9 @@ const EditorialMediaField = ({
   testId = 'editorial-media-field',
   disabled = false
 }) => {
+  const {
+    t
+  } = useT();
   const normalized = useMemo(() => normalize(value), [value]);
   const [state, setState] = useState('idle'); // idle | uploading | ready | error
   const [progress, setProgress] = useState(0);

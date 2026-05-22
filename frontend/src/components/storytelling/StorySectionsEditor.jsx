@@ -63,6 +63,9 @@ const StorySectionsEditor = ({
   testId = 'story-sections',
   readOnly = false
 }) => {
+  const {
+    t
+  } = useT();
   const [showAdd, setShowAdd] = useState(false);
   const [dragIdx, setDragIdx] = useState(null);
   const [hotspotBlockId, setHotspotBlockId] = useState(null);
@@ -330,6 +333,9 @@ const MiniGalleryEditor = ({
   entityId,
   blockIndex
 }) => {
+  const {
+    t
+  } = useT();
   const addItem = () => onChange([...items, {
     id: `mg_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 5)}`,
     url: '',

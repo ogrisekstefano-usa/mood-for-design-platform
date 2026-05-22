@@ -141,6 +141,9 @@ const MediaDeleteProtectionDrawer = ({
   onCompleted,
   onForceArchive
 }) => {
+  const {
+    t
+  } = useT();
   const fileInputRef = useRef(null);
   const [pending, setPending] = useState(null); // 'replace' | 'archive_keep' | 'force_remove'
   const [confirmForce, setConfirmForce] = useState(false);

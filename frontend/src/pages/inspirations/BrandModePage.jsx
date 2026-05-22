@@ -74,7 +74,7 @@ const BrandCard = ({
         <span className="bm-tag bm-tag--luxury" data-testid={`bm-luxury-${b.id}`}>{luxury}</span>
         {markets.slice(0, 2).map(m => <span key={m} className="bm-tag bm-tag--market">{formatMarket(m)}</span>)}
         {!b.is_studio_private && <span className="bm-curated-badge" data-testid={`bm-curated-${b.id}`}>
-            <Icons.Sparkles size={8} strokeWidth={1.6} /> Curato da MOOD
+            <Icons.Sparkles size={8} strokeWidth={1.6} /> {t('inspirations.brand_mode.curated_by_mood', null, 'Curated by MOOD')}
           </span>}
       </div>
 

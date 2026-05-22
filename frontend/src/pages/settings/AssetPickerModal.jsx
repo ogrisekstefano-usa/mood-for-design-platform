@@ -33,14 +33,18 @@ const AssetCard = ({
   selected,
   onClick,
   onEdit
-}) => <button type="button" onClick={onClick} className={`mfd-picker__card ${selected ? 'is-selected' : ''}`} data-testid={`picker-asset-${asset.id}`} aria-label={asset.alt_text || asset.file_name}>
+}) => {
+  const {
+    t
+  } = useT();
+  return <button type="button" onClick={onClick} className={`mfd-picker__card ${selected ? 'is-selected' : ''}`} data-testid={`picker-asset-${asset.id}`} aria-label={asset.alt_text || asset.file_name}>
     <div className="mfd-picker__card-media">
       {(asset.display_url || asset.file_url) && <img src={asset.display_url || asset.file_url} alt="" loading="lazy" />}
       {selected && <div className="mfd-picker__card-check"><Check size={14} strokeWidth={2} /></div>}
       <button type="button" onClick={e => {
-      e.stopPropagation();
-      onEdit?.(asset);
-    }} className="mfd-picker__card-edit" title={t("settings.asset_picker.modifica_crop_filtri")} aria-label={`Modifica ${asset.file_name}`} data-testid={`picker-asset-edit-${asset.id}`}>
+        e.stopPropagation();
+        onEdit?.(asset);
+      }} className="mfd-picker__card-edit" title={t("settings.asset_picker.modifica_crop_filtri")} aria-label={`Modifica ${asset.file_name}`} data-testid={`picker-asset-edit-${asset.id}`}>
         <Edit2 size={12} strokeWidth={1.8} />
       </button>
     </div>
@@ -49,6 +53,7 @@ const AssetCard = ({
       {asset.category && <span className="mfd-picker__card-chip">{asset.category}</span>}
     </div>
   </button>;
+};
 
 // ─── Upload row ─────────────────────────────────────────────────────────
 const UploadRow = ({

@@ -51,12 +51,42 @@ const ComingSoonPage = ({
 };
 
 // Surface-specific presets — keep configuration close to the routes.
-export const CalendarComingSoon = () => <ComingSoonPage title="Calendario integrato" subtitle="Riunioni cliente, consegne proposte, milestone progetto e timeline operative — in arrivo." icon="Calendar" hint={t("common.coming_soon.nel_frattempo_le_scadenze_attivita_sono_visibili_n")} />;
-export const ActivityComingSoon = () => <ComingSoonPage title={t("common.coming_soon.feed_attivita_dello_studio")} subtitle={t("common.coming_soon.cronologia_completa_di_ogni_azione_cliente_designe")} icon="Activity" />;
-export const TeamComingSoon = () => <ComingSoonPage title="Gestione team" subtitle="Membri, permessi, ruoli di studio, attività individuale, carichi di lavoro." icon="Users" hint={t("common.coming_soon.per_ora_la_gestione_utenti_e_in_impostazioni_membr")} backTo="/settings" />;
+export const CalendarComingSoon = () => {
+  const {
+    t
+  } = useT();
+  return <ComingSoonPage title="Calendario integrato" subtitle="Riunioni cliente, consegne proposte, milestone progetto e timeline operative — in arrivo." icon="Calendar" hint={t("common.coming_soon.nel_frattempo_le_scadenze_attivita_sono_visibili_n")} />;
+};
+export const ActivityComingSoon = () => {
+  const {
+    t
+  } = useT();
+  return <ComingSoonPage title={t("common.coming_soon.feed_attivita_dello_studio")} subtitle={t("common.coming_soon.cronologia_completa_di_ogni_azione_cliente_designe")} icon="Activity" />;
+};
+export const TeamComingSoon = () => {
+  const {
+    t
+  } = useT();
+  return <ComingSoonPage title="Gestione team" subtitle="Membri, permessi, ruoli di studio, attività individuale, carichi di lavoro." icon="Users" hint={t("common.coming_soon.per_ora_la_gestione_utenti_e_in_impostazioni_membr")} backTo="/settings" />;
+};
 export const ClientsComingSoon = () => <ComingSoonPage title="Anagrafica clienti" subtitle="Storico clienti, progetti collegati, comunicazioni, fatturazione." icon="UserCircle" hint="I lead attivi sono già in Workspace → Lead." />;
-export const MessagesComingSoon = () => <ComingSoonPage title="Messaggi" subtitle={t("common.coming_soon.conversazioni_client_studio_integrate_allegati_not")} icon="MessageSquare" />;
-export const ReportsComingSoon = () => <ComingSoonPage title="Report" subtitle={t("common.coming_soon.report_esportabili_progetti_fatturato_performance")} icon="FileBarChart" />;
+export const MessagesComingSoon = () => {
+  const {
+    t
+  } = useT();
+  return <ComingSoonPage title="Messaggi" subtitle={t("common.coming_soon.conversazioni_client_studio_integrate_allegati_not")} icon="MessageSquare" />;
+};
+export const ReportsComingSoon = () => {
+  const {
+    t
+  } = useT();
+  return <ComingSoonPage title="Report" subtitle={t("common.coming_soon.report_esportabili_progetti_fatturato_performance")} icon="FileBarChart" />;
+};
 export const IntegrationsComingSoon = () => <ComingSoonPage title="Integrazioni" subtitle="Connetti Stripe, Google Calendar, Slack, Dropbox, fornitori e cataloghi." icon="Plug" backTo="/settings" />;
-export const CollectionsComingSoon = () => <ComingSoonPage title="Pagina dedicata Collezioni" subtitle={t("common.coming_soon.una_vista_a_se_per_le_tue_raccolte_curate_di_asset")} icon="FolderHeart" hint={t("common.coming_soon.nel_frattempo_gestisci_le_tue_collezioni_dal_panne")} backTo="/library" backLabel="Vai all'Archivio" />;
+export const CollectionsComingSoon = () => {
+  const {
+    t
+  } = useT();
+  return <ComingSoonPage title="Pagina dedicata Collezioni" subtitle={t("common.coming_soon.una_vista_a_se_per_le_tue_raccolte_curate_di_asset")} icon="FolderHeart" hint={t("common.coming_soon.nel_frattempo_gestisci_le_tue_collezioni_dal_panne")} backTo="/library" backLabel="Vai all'Archivio" />;
+};
 export default ComingSoonPage;

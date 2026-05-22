@@ -1,10 +1,67 @@
 {
   "locale": "en-US",
   "base": "https://content-hub-pro-22.preview.emergentagent.com",
-  "generated_at": "2026-05-22T01:21:25Z",
+  "generated_at": "2026-05-22T02:11:27Z",
   "routes_crawled": 20,
-  "summary": {},
-  "findings": [],
+  "summary": {
+    "INVALID_USE_TRANSLATION": 2,
+    "DB_SEEDED_CONTENT": 5,
+    "RUNTIME_CRASH": 2
+  },
+  "findings": [
+    {
+      "kind": "INVALID_USE_TRANSLATION",
+      "page": "/inspirations/brands",
+      "text": "inspirations.brand_mode.curated_by_mood",
+      "testid": "bm-curated-c9bf3dd2-4797-4959-900d-29044e5e0430"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/inspirations/brands",
+      "text": "Step into the atelier",
+      "testid": "bm-card-c9bf3dd2-4797-4959-900d-29044e5e0430"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/inspirations/brands",
+      "text": "materialità ·",
+      "testid": "bm-materials-65a41392-c3a1-4ca8-9a27-cfdd1bbe577b"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/inspirations/brands",
+      "text": "E2E Test Atelier pmneq",
+      "testid": "bm-card-bb39cb31-eb93-4b40-b28c-5fbf8659fc17"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/inspirations/brands",
+      "text": "E2E Test Atelier zxlyv",
+      "testid": "bm-card-16e6a66f-9961-44ae-a416-dead971a21f5"
+    },
+    {
+      "kind": "DB_SEEDED_CONTENT",
+      "page": "/inspirations/brands",
+      "text": "**Source (IT):**  \nsartorialità domestica\n\n---\n\ndomestic tailoring\n\n---\n\n**Editorial note:**  \n*Sartorialità* carries the Italian connotation of bespoke craft, precision, and hand-finished detail—qual",
+      "testid": "bm-card-332f2116-214e-4239-a2da-e5684db71bd8"
+    },
+    {
+      "kind": "INVALID_USE_TRANSLATION",
+      "page": "/inspirations/materials",
+      "text": "material_view.header.title",
+      "testid": "mv-shell"
+    },
+    {
+      "kind": "RUNTIME_CRASH",
+      "page": "/blueprint/studio-voice",
+      "message": "t is not a function"
+    },
+    {
+      "kind": "RUNTIME_CRASH",
+      "page": "/blueprint/language",
+      "message": "t is not a function"
+    }
+  ],
   "pages": [
     {
       "key": "dashboard",
@@ -23,6 +80,22 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/dashboard.jpg"
@@ -139,12 +212,42 @@
       "key": "brand-atlas",
       "url": "/inspirations/brands",
       "nav_error": null,
-      "italian_leaks": [],
+      "italian_leaks": [
+        {
+          "text": "Step into the atelier",
+          "testid": "bm-card-c9bf3dd2-4797-4959-900d-29044e5e0430"
+        },
+        {
+          "text": "materialità ·",
+          "testid": "bm-materials-65a41392-c3a1-4ca8-9a27-cfdd1bbe577b"
+        },
+        {
+          "text": "E2E Test Atelier pmneq",
+          "testid": "bm-card-bb39cb31-eb93-4b40-b28c-5fbf8659fc17"
+        },
+        {
+          "text": "E2E Test Atelier zxlyv",
+          "testid": "bm-card-16e6a66f-9961-44ae-a416-dead971a21f5"
+        },
+        {
+          "text": "**Source (IT):**  \nsartorialità domestica\n\n---\n\ndomestic tailoring\n\n---\n\n**Editorial note:**  \n*Sartorialità* carries the Italian connotation of bespoke craft, precision, and hand-finished detail—qual",
+          "testid": "bm-card-332f2116-214e-4239-a2da-e5684db71bd8"
+        }
+      ],
       "missing_tokens": [],
-      "raw_keys": [],
+      "raw_keys": [
+        {
+          "text": "inspirations.brand_mode.curated_by_mood",
+          "testid": "bm-curated-c9bf3dd2-4797-4959-900d-29044e5e0430"
+        }
+      ],
       "error_boundary": false,
       "page_errors": [],
       "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
+        },
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
@@ -155,7 +258,7 @@
         },
         {
           "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 404 ()"
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay BrandCard BrandCard"
         }
       ],
       "screenshot": "runtime-localization-screenshots/brand-atlas.jpg"
@@ -166,13 +269,18 @@
       "nav_error": null,
       "italian_leaks": [],
       "missing_tokens": [],
-      "raw_keys": [],
+      "raw_keys": [
+        {
+          "text": "material_view.header.title",
+          "testid": "mv-shell"
+        }
+      ],
       "error_boundary": false,
       "page_errors": [],
       "console": [
         {
           "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 404 ()"
+          "text": "Cannot update a component (`%s`) while rendering a different component (`%s`). To locate the bad setState() call inside `%s`, follow the stack trace as described in https://react.dev/link/setstate-in-render LocalizationOverlay MaterialViewPage MaterialViewPage"
         },
         {
           "type": "error",
@@ -180,7 +288,7 @@
         },
         {
           "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
+          "text": "Failed to load resource: the server responded with a status of 404 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/material-view.jpg"
@@ -202,22 +310,6 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/cultural-editions.jpg"
@@ -304,7 +396,11 @@
         },
         {
           "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 500 ()"
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
         },
         {
           "type": "error",
@@ -367,14 +463,6 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 500 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/web-presence.jpg"
@@ -433,10 +521,6 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 500 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/integrations.jpg"
@@ -466,6 +550,10 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 500 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/insights.jpg"
@@ -507,12 +595,10 @@
       "missing_tokens": [],
       "raw_keys": [],
       "error_boundary": false,
-      "page_errors": [],
+      "page_errors": [
+        "t is not a function"
+      ],
       "console": [
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
-        },
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
@@ -532,247 +618,17 @@
       "missing_tokens": [],
       "raw_keys": [],
       "error_boundary": false,
-      "page_errors": [],
+      "page_errors": [
+        "t is not a function"
+      ],
       "console": [
         {
           "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 404 ()"
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
         },
         {
           "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 404 ()"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: atelier, locale: en-US, page: /blueprint/language, testid: language-command-center}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: le frasi, locale: en-US, page: /blueprint/language, testid: language-cc-registry-section}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Le modifiche, locale: en-US, page: /blueprint/language, testid: language-cc-registry-section}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: annulla, locale: en-US, page: /blueprint/language, testid: language-cc-row-ClientPreviewPage.jsx.client_preview.annulla}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Annulla, locale: en-US, page: /blueprint/language, testid: language-cc-row-ClientPreviewPage.jsx.client_preview.annulla}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Il tuo, locale: en-US, page: /blueprint/language, testid: language-cc-row-ClientPreviewPage.jsx.client_preview.il_tuo_nome_opzionale}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Lo studio, locale: en-US, page: /blueprint/language, testid: language-cc-row-ClientPreviewPage.jsx.client_previ…o_studio_potrebbe_averla_aggiornata_chiedi_un_nuo}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: contatti, locale: en-US, page: /blueprint/language, testid: language-cc-row-admin.advisor_detail.contatti}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Contatti, locale: en-US, page: /blueprint/language, testid: language-cc-row-admin.advisor_detail.contatti}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: editoriale, locale: en-US, page: /blueprint/language, testid: language-cc-row-admin.advisor_edit.aree_di_rappresentanza_editoriale_cambi_sono_salva}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: della relazione, locale: en-US, page: /blueprint/language, testid: language-cc-row-admin.advisor_edit.contesto_storia_sensibilita_della_relazione}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: degli Advisor, locale: en-US, page: /blueprint/language, testid: language-cc-row-admin.advisor_network_admin.network_degli_advisor}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: lo stato, locale: en-US, page: /blueprint/language, testid: language-cc-row-admin.platform_capabilities.sincronizzo_lo_stato_attivazioni}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Condividi, locale: en-US, page: /blueprint/language, testid: language-cc-row-advisor.advisor_dashboard.condividi_con_uno_studio_o_showroom_sconto_del}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: la piattaforma, locale: en-US, page: /blueprint/language, testid: language-cc-row-advisor.advisor_dashboard.cosa_li_sta_frenando_dall_usare_la_piattaforma}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: La tua, locale: en-US, page: /blueprint/language, testid: language-cc-row-advisor.advisor_dashboard.la_tua_rete_di_studi_e_showroom_referenti_le_loro}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: il primo, locale: en-US, page: /blueprint/language, testid: language-cc-row-advisor.advisor_dashboard.nessun_report_ancora_crea_il_primo_dopo_una_visita}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: il tuo, locale: en-US, page: /blueprint/language, testid: language-cc-row-advisor.advisor_dashboard.non_hai_ancora_studi_referenti_inizia_condividendo}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: alla dashboard, locale: en-US, page: /blueprint/language, testid: language-cc-row-advisor.advisor_dashboard.torna_alla_dashboard}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Le tue, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.client_overview.le_tue_moodboard}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: La pagina, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.client_stub_pages.la_pagina_del_tuo_progetto_e_in_preparazione}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: La timeline, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.client_stub_pages.la_timeline_completa_del_progetto_sara_pronta_a_br}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Le prime, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.client_stub_pages.le_prime_proposte_da_approvare_stanno_arrivando}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Aggiungi, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.shared_voice_composer.aggiungi_un_riferimento}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: lo studio, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.shared_voice_composer.una_nota_privata_per_lo_studio_facoltativa}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Il cantiere, locale: en-US, page: /blueprint/language, testid: language-cc-row-client.site_evolution.il_cantiere_non_e_ancora_iniziato}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: la nota, locale: en-US, page: /blueprint/language, testid: language-cc-row-clientpreview.client_preview.invia_la_nota}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: La stanza, locale: en-US, page: /blueprint/language, testid: language-cc-row-clientpreview.client_preview.la_stanza_non_e_disponibile}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: la tua, locale: en-US, page: /blueprint/language, testid: language-cc-row-clientpreview.client_preview.lasciaci_sentire_la_tua_direzione}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: la stanza, locale: en-US, page: /blueprint/language, testid: language-cc-row-clientpreview.client_preview.sto_preparando_la_stanza}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: la sintesi, locale: en-US, page: /blueprint/language, testid: language-cc-row-closure.ceremony.sub}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: il dossier, locale: en-US, page: /blueprint/language, testid: language-cc-row-closure.ceremony.title}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: il rituale, locale: en-US, page: /blueprint/language, testid: language-cc-row-closure.inline.cta}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: il Journey, locale: en-US, page: /blueprint/language, testid: language-cc-row-closure.inline.sub}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Il percorso, locale: en-US, page: /blueprint/language, testid: language-cc-row-closure.inline.title}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: notifiche, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.coming_soon.conversazioni_client_studio_integrate_allegati_not}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: dello studio, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.coming_soon.feed_attivita_dello_studio}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: le tue, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.coming_soon.nel_frattempo_gestisci_le_tue_collezioni_dal_panne}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: le scadenze, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.coming_soon.nel_frattempo_le_scadenze_attivita_sono_visibili_n}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: la gestione, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.coming_soon.per_ora_la_gestione_utenti_e_in_impostazioni_membr}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: materiali, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.coming_soon.report_esportabili_progetti_fatturato_performance}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Elimina, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.delete}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Modifica, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.edit}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Carica, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.editorial_media_field.carica_file}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: conferma, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.editorial_media_field.conferma}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Conferma, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.editorial_media_field.conferma}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Scegli, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.editorial_media_field.scegli_dalla_library}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: scegli, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.editorial_media_field.trascina_sfoglia_scegli_dalla_library}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: sul dettaglio, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.hotspot.breve_nota_editoriale_sul_dettaglio}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: elimina, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.hotspot.elimina}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Salva, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.hotspot.salva_hotspot}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: il punto, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.image_edit.centra_il_punto_focale}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Il punto, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.image_edit.il_punto_focale_resta_visibile_in_tutti_i_ritagli}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: le maniglie, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.image_edit.trascina_l_area_visibile_usa_le_maniglie_per_regol}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: le superfici, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.media_delete_protection.apri_le_superfici_interessate}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: le relazioni, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.media_delete_protection.carica_un_nuovo_file_tutte_le_relazioni_vengono_mi}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: la tab, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.media_delete_protection.chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp}"
-        },
-        {
-          "type": "warning",
-          "text": "[LEAKAGE] {phrase: Il DAM, locale: en-US, page: /blueprint/language, testid: language-cc-row-common.media_delete_protection.il_dam_ragiona_come_un_editorial_relationships_gra}"
+          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/language-center.jpg"
@@ -794,10 +650,6 @@
         {
           "type": "error",
           "text": "Failed to load resource: the server responded with a status of 404 ()"
-        },
-        {
-          "type": "error",
-          "text": "Failed to load resource: the server responded with a status of 503 ()"
         }
       ],
       "screenshot": "runtime-localization-screenshots/moodboards.jpg"

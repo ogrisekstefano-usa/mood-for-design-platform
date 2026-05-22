@@ -1,35 +1,51 @@
 /**
  * Editorial workflow status — editorial-grade labels & visual tokens.
  *
- * The backend exposes a richer status graph (draft, direction_defined,
- * ai_composing, ready_for_editorial_review, revision_requested,
- * approved, scheduled, published, archived). On the surface we keep the
- * UX coherent with the five published states the user mandated:
+ * ITER131hf · the labels here moved to a locale-aware accessor backed by
+ * the i18n registry so EN-US never receives an Italian status chip.
  *
- *   draft · ai_composing · ready_for_editorial_review · scheduled · published
- *
- * The remaining backend states (direction_defined / revision_requested /
- * approved / archived) keep their precise editorial label so editors are
- * never misled. NEVER aggregate.
- *
- * Rendering rule: editorial calm. No alert-style red, no "enterprise"
- * blue. A single muted accent + a typographic eyebrow.
+ * Each state still carries its precise editorial meaning. The five
+ * canonical "spine" states (draft / ai_composing / ready_for_editorial_review
+ * / scheduled / published) are exposed via SPINE_STATUSES below for the
+ * Editorial Calendar filter chips.
  */
+import { pickString } from '../../i18n/engine';
 
-export const STATUS_META = {
-  draft:                      { label: 'Bozza',                 dot: '#7a7a7a', tone: 'quiet'     },
-  direction_defined:          { label: 'Direzione definita',    dot: '#7a7a7a', tone: 'quiet'     },
-  ai_composing:               { label: 'In composizione',       dot: '#c8a572', tone: 'composing' },
-  ready_for_editorial_review: { label: 'Pronto per revisione',  dot: '#d4af37', tone: 'review'    },
-  revision_requested:         { label: 'Revisione richiesta',   dot: '#c87a3a', tone: 'review'    },
-  approved:                   { label: 'Approvata',             dot: '#9aa56a', tone: 'approved'  },
-  scheduled:                  { label: 'Programmata',           dot: '#6b8aa5', tone: 'scheduled' },
-  published:                  { label: 'Pubblicata',            dot: '#3d6b3a', tone: 'published' },
-  archived:                   { label: 'Archiviata',            dot: '#4a4a4a', tone: 'quiet'     },
+const STATUS_TONES = {
+  draft:                      { dot: '#7a7a7a', tone: 'quiet'     },
+  direction_defined:          { dot: '#7a7a7a', tone: 'quiet'     },
+  ai_composing:               { dot: '#c8a572', tone: 'composing' },
+  ready_for_editorial_review: { dot: '#d4af37', tone: 'review'    },
+  revision_requested:         { dot: '#c87a3a', tone: 'review'    },
+  approved:                   { dot: '#9aa56a', tone: 'approved'  },
+  scheduled:                  { dot: '#6b8aa5', tone: 'scheduled' },
+  published:                  { dot: '#3d6b3a', tone: 'published' },
+  archived:                   { dot: '#4a4a4a', tone: 'quiet'     },
 };
 
-export function statusMeta(status) {
-  return STATUS_META[status] || { label: status || 'Bozza', dot: '#7a7a7a', tone: 'quiet' };
+const STATUS_KEY = (s) => `taxonomy.editorial_status.${s || 'draft'}`;
+
+/** Static legacy export kept for compatibility — values are now lazy. */
+export const STATUS_META = new Proxy({}, {
+  get(_, key) {
+    if (typeof key !== 'string') return undefined;
+    const tones = STATUS_TONES[key] || STATUS_TONES.draft;
+    return {
+      ...tones,
+      get label() {
+        return pickString(STATUS_KEY(key)) || key;
+      },
+    };
+  },
+});
+
+/** Locale-aware accessor — preferred. */
+export function statusMeta(status, t) {
+  const tones = STATUS_TONES[status] || STATUS_TONES.draft;
+  const label = t
+    ? t(STATUS_KEY(status), null, status || 'Draft')
+    : pickString(STATUS_KEY(status));
+  return { ...tones, label };
 }
 
 /** The five canonical "spine" states displayed in calendar filter chips. */

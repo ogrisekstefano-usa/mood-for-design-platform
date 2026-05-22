@@ -86,21 +86,26 @@ const ChapterComposer = ({
 const ChapterCard = ({
   chapter,
   index
-}) => <article className="mdialog__chapter" data-testid={`chapter-${index}`} style={{
-  animationDelay: `${Math.min(index, 6) * 60}ms`
-}}>
-    <header className="mdialog__chapter-head">
-      <span className="mdialog__chapter-num">
-        {t("journey.milestone_dialogue.capitolo")} {String(index + 1).padStart(2, '0')}
-      </span>
-      <span className="mdialog__chapter-kind">{chapter.chapter_label}</span>
-    </header>
-    <h4 className="mdialog__chapter-title"><em>{chapter.title}</em></h4>
-    {chapter.summary && <p className="mdialog__chapter-summary">{chapter.summary}</p>}
-    {chapter.rationale && <blockquote className="mdialog__chapter-rationale">
-        {chapter.rationale}
-      </blockquote>}
-  </article>;
+}) => {
+  const { t } = useT();
+  return (
+    <article className="mdialog__chapter" data-testid={`chapter-${index}`} style={{
+      animationDelay: `${Math.min(index, 6) * 60}ms`
+    }}>
+      <header className="mdialog__chapter-head">
+        <span className="mdialog__chapter-num">
+          {t("journey.milestone_dialogue.capitolo")} {String(index + 1).padStart(2, '0')}
+        </span>
+        <span className="mdialog__chapter-kind">{chapter.chapter_label}</span>
+      </header>
+      <h4 className="mdialog__chapter-title"><em>{chapter.title}</em></h4>
+      {chapter.summary && <p className="mdialog__chapter-summary">{chapter.summary}</p>}
+      {chapter.rationale && <blockquote className="mdialog__chapter-rationale">
+          {chapter.rationale}
+        </blockquote>}
+    </article>
+  );
+};
 
 // ─── Curatorial Feedback strip ───────────────────────────────────
 const CuratorialFeedback = ({
@@ -109,6 +114,7 @@ const CuratorialFeedback = ({
   onSend,
   busy
 }) => {
+  const { t } = useT();
   const [activeKind, setActiveKind] = useState(null);
   const [quote, setQuote] = useState('');
   const [showVoice, setShowVoice] = useState(false);
@@ -171,6 +177,7 @@ const CuratorialFeedback = ({
 const MilestoneDialogue = ({
   milestoneId
 }) => {
+  const { t } = useT();
   const [data, setData] = useState(null);
   const [composing, setComp] = useState(false);
   const [busy, setBusy] = useState(false);

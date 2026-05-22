@@ -137,7 +137,7 @@ const LanguageCommandCenter = () => {
       {tab === 'registry' && (
         <Section
           eyebrow="01 · UI Copy Registry™"
-          title="Tutte le frasi del Blueprint"
+          title={t('blueprint.language.all_phrases_title', null, 'All Blueprint phrases')}
           lede="Ogni chiave di traduzione, ogni superficie, ogni locale. Filtra, cerca, correggi. Le modifiche entrano in vigore al prossimo render — niente deploy."
           testid="language-cc-registry-section"
         >

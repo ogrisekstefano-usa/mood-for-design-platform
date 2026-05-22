@@ -184,6 +184,9 @@ const MaterialCard = ({
     </div>
   </Link>;
 const MaterialsPage = () => {
+  const {
+    t
+  } = useT();
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showNew, setShowNew] = useState(false);

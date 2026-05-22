@@ -69,7 +69,7 @@ export default function MaterialViewPage() {
         </Link>
         <div className="mv-header__meta">
           <p className="mv-header__eyebrow">Material View™ · Materioteca curatoriale</p>
-          <h1 className="mv-header__title"><em>Materia che parla</em></h1>
+          <h1 className="mv-header__title"><em>{t('material_view.header.title', null, 'Material that speaks')}</em></h1>
           <p className="mv-header__sub">
             Un atlante materico organizzato per family cromatica e ritmo visuale —
             non un catalogo tecnico, ma un tavolo curatoriale tattile.
@@ -90,7 +90,7 @@ export default function MaterialViewPage() {
               className={`mv-chip ${!activeFamily ? 'is-on' : ''}`}
               onClick={() => setActiveFamily(null)}
               data-testid="mv-filter-family-all"
-            >Tutte</button>
+            >{t('taxonomy.common.all', null, 'All')}</button>
             {data.color_families.slice(0, 10).map(f => (
               <button
                 key={f.family}

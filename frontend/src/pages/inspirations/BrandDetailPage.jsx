@@ -73,6 +73,9 @@ const Tile = ({
 };
 const BrandDetailPage = () => {
   const {
+    t
+  } = useT();
+  const {
     brandId
   } = useParams();
   const navigate = useNavigate();
@@ -149,7 +152,7 @@ const BrandDetailPage = () => {
               {(brand.primary_markets || []).slice(0, 4).map(m => <span key={m} className="bm-tag bm-tag--market">{formatMarket(m)}</span>)}
               {brand.country && <span className="bm-tag">{brand.country}</span>}
               {!brand.is_studio_private && <span className="bm-curated-badge" data-testid="bd-curated-badge">
-                  <Icons.Sparkles size={8} strokeWidth={1.6} /> Curato da MOOD
+                  <Icons.Sparkles size={8} strokeWidth={1.6} /> {t('inspirations.brand_detail.curated_by_mood', null, 'Curated by MOOD')}
                 </span>}
             </div>}
           {/* Edit/Delete row · only for studio_private brands. Click handlers

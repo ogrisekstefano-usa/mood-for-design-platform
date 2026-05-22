@@ -229,6 +229,9 @@ const ContactsPane = ({
 const TimelinePane = ({
   accountId
 }) => {
+  const {
+    t
+  } = useT();
   const [items, setItems] = useState([]);
   useEffect(() => {
     api.get(`/api/relationships/accounts/${accountId}/interactions`).then(r => setItems(r.data?.interactions || [])).catch(() => setItems([]));
@@ -269,14 +272,24 @@ const ProjectsPane = ({
 // ─── Moodboards pane ───────────────────────────────────────────────
 const MoodboardsPane = ({
   account
-}) => <div data-testid="adr-moodboards-pane">
+}) => {
+  const {
+    t
+  } = useT();
+  return <div data-testid="adr-moodboards-pane">
     <p className="adr-empty">
       {t("crm.account_detail.linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb")} <strong>Workspace · Moodboards</strong>.
     </p>
   </div>;
+};
 
 // ─── Files / Notes / Meetings / Style placeholders ─────────────────
-const FilesPane = () => <div data-testid="adr-files-pane"><p className="adr-empty">{t('crm.account_detail.files_allegati_arriva_con_il_media_library_inspect')}</p></div>;
+const FilesPane = () => {
+  const {
+    t
+  } = useT();
+  return <div data-testid="adr-files-pane"><p className="adr-empty">{t('crm.account_detail.files_allegati_arriva_con_il_media_library_inspect')}</p></div>;
+};
 const NotesPane = () => <div data-testid="adr-notes-pane"><p className="adr-empty">Notes editor in P1.</p></div>;
 const FollowUpsPane = ({
   accountId
@@ -296,6 +309,9 @@ const FollowUpsPane = ({
 const StylePane = ({
   accountId
 }) => {
+  const {
+    t
+  } = useT();
   const [style, setStyle] = useState(null);
   useEffect(() => {
     api.get(`/api/relationships/accounts/${accountId}/style`).then(r => setStyle(r.data?.style || null)).catch(() => setStyle(null));
@@ -316,6 +332,9 @@ const AccountDetailDrawer = ({
   onClose,
   onChanged
 }) => {
+  const {
+    t
+  } = useT();
   const [tab, setTab] = useState('overview');
   const [full, setFull] = useState(account);
   const [primary, setPrimary] = useState(account?.primary_contact);

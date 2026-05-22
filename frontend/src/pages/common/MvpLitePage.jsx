@@ -68,21 +68,36 @@ export const ClientsHub = () => <MvpLitePage testid="clients-hub" icon="UserCirc
   to: '/workspace/projects',
   label: 'Progetti attivi'
 }} />;
-export const MessagesHub = () => <MvpLitePage testid="messages-hub" icon="MessageSquare" eyebrow="STUDIO · CONVERSAZIONI" title={t("common.mvp_lite.le_conversazioni_vivono_sul_progetto")} body="Ogni progetto contiene la sua sequenza di messaggi: note, briefing, revisioni cliente. Un hub centralizzato verrà attivato quando le conversazioni passeranno una certa soglia volumetrica." primaryCta={{
-  to: '/workspace/projects',
-  label: 'Vai ai progetti'
-}} />;
-export const CalendarHub = () => <MvpLitePage testid="calendar-hub" icon="Calendar" eyebrow="STUDIO · TIMELINE" title={t("common.mvp_lite.le_scadenze_sono_sul_progetto")} body="Milestone, consegne e revisioni sono già nel timeline di ogni progetto. Un calendario unificato cross-studio arriverà come overlay del modulo Progetti." primaryCta={{
-  to: '/workspace/projects',
-  label: 'Apri progetti'
-}} secondaryCta={{
-  to: '/dashboard',
-  label: 'Dashboard'
-}} />;
-export const ActivityHub = () => <MvpLitePage testid="activity-hub" icon="Activity" eyebrow="STUDIO · ATTIVITÀ" title={t("common.mvp_lite.il_feed_attivita_vive_nella_dashboard")} body="Le ultime azioni di team, clienti e workflow sono nella sezione 'Human follow-ups' della tua dashboard. Un feed cronologico esteso verrà aperto qui." primaryCta={{
-  to: '/dashboard',
-  label: 'Apri dashboard'
-}} />;
+export const MessagesHub = () => {
+  const {
+    t
+  } = useT();
+  return <MvpLitePage testid="messages-hub" icon="MessageSquare" eyebrow="STUDIO · CONVERSAZIONI" title={t("common.mvp_lite.le_conversazioni_vivono_sul_progetto")} body="Ogni progetto contiene la sua sequenza di messaggi: note, briefing, revisioni cliente. Un hub centralizzato verrà attivato quando le conversazioni passeranno una certa soglia volumetrica." primaryCta={{
+    to: '/workspace/projects',
+    label: 'Vai ai progetti'
+  }} />;
+};
+export const CalendarHub = () => {
+  const {
+    t
+  } = useT();
+  return <MvpLitePage testid="calendar-hub" icon="Calendar" eyebrow="STUDIO · TIMELINE" title={t("common.mvp_lite.le_scadenze_sono_sul_progetto")} body="Milestone, consegne e revisioni sono già nel timeline di ogni progetto. Un calendario unificato cross-studio arriverà come overlay del modulo Progetti." primaryCta={{
+    to: '/workspace/projects',
+    label: 'Apri progetti'
+  }} secondaryCta={{
+    to: '/dashboard',
+    label: 'Dashboard'
+  }} />;
+};
+export const ActivityHub = () => {
+  const {
+    t
+  } = useT();
+  return <MvpLitePage testid="activity-hub" icon="Activity" eyebrow="STUDIO · ATTIVITÀ" title={t("common.mvp_lite.il_feed_attivita_vive_nella_dashboard")} body="Le ultime azioni di team, clienti e workflow sono nella sezione 'Human follow-ups' della tua dashboard. Un feed cronologico esteso verrà aperto qui." primaryCta={{
+    to: '/dashboard',
+    label: 'Apri dashboard'
+  }} />;
+};
 export const ReportsHub = () => <MvpLitePage testid="reports-hub" icon="FileBarChart" eyebrow="STUDIO · INTELLIGENZA" title="I tuoi insight sono in Analytics." body="Conversioni lead, performance editoriali, materiali più curati: la vista intelligence è in /insights. Report esportabili PDF/CSV arriveranno qui." primaryCta={{
   to: '/insights',
   label: 'Apri Analytics'
@@ -91,7 +106,12 @@ export const IntegrationsHub = () => <MvpLitePage testid="integrations-hub" icon
   to: '/settings',
   label: 'Torna in Settings'
 }} />;
-export const CollectionsHub = () => <MvpLitePage testid="collections-hub" icon="FolderHeart" eyebrow="EDITORIAL · COLLEZIONI" title={t("common.mvp_lite.le_collezioni_vivono_nell_archivio")} body="Raggruppa i tuoi asset editoriali in collezioni dalla Media Library: ogni asset può essere aggiunto a una o più collezioni curate." primaryCta={{
-  to: '/library',
-  label: 'Apri Media Library'
-}} />;
+export const CollectionsHub = () => {
+  const {
+    t
+  } = useT();
+  return <MvpLitePage testid="collections-hub" icon="FolderHeart" eyebrow="EDITORIAL · COLLEZIONI" title={t("common.mvp_lite.le_collezioni_vivono_nell_archivio")} body="Raggruppa i tuoi asset editoriali in collezioni dalla Media Library: ogni asset può essere aggiunto a una o più collezioni curate." primaryCta={{
+    to: '/library',
+    label: 'Apri Media Library'
+  }} />;
+};

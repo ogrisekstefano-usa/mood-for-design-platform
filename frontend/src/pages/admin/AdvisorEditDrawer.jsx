@@ -76,6 +76,9 @@ const AdvisorEditDrawer = ({
   onClose,
   onSaved
 }) => {
+  const {
+    t
+  } = useT();
   const [form, setForm] = useState(() => ({}));
   const [saving, setSaving] = useState(false);
   useEffect(() => {

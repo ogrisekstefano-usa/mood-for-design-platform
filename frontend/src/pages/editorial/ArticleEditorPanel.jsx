@@ -22,16 +22,22 @@ import { toast } from 'sonner';
 import EditorialMediaField from '../../components/common/EditorialMediaField';
 import StorySectionsEditor from '../../components/storytelling/StorySectionsEditor';
 import { useT } from '../../i18n/useT';
-
 const debounce = (fn, ms = 600) => {
   let t = null;
-  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), ms);
+  };
 };
-
-export const ArticleEditorPanel = ({ variant: initialVariant, onVariantChanged }) => {
-  const { t } = useT();
+export const ArticleEditorPanel = ({
+  variant: initialVariant,
+  onVariantChanged
+}) => {
+  const {
+    t
+  } = useT();
   const [variant, setVariant] = useState(initialVariant);
-  const [activeTab, setActiveTab] = useState('published');  // 'published' | 'internal'
+  const [activeTab, setActiveTab] = useState('published'); // 'published' | 'internal'
   const [internal, setInternal] = useState(null);
   const [scheduling, setScheduling] = useState(false);
   const [scheduledAt, setScheduledAt] = useState('');
@@ -58,54 +64,76 @@ export const ArticleEditorPanel = ({ variant: initialVariant, onVariantChanged }
       }
     })();
   }, [activeTab, variant?.id, internal]);
-
   if (!variant) return null;
   const meta = statusMeta(variant.status);
 
   // ── Field patch helpers ─────────────────────────────────────────
-  const persistPatch = debounce(async (body) => {
+  const persistPatch = debounce(async body => {
     try {
       const r = await api.patch(`/api/editorial/variants/${variant.id}`, body);
-      setVariant((v) => ({ ...v, ...r.data }));
+      setVariant(v => ({
+        ...v,
+        ...r.data
+      }));
       onVariantChanged?.(r.data);
       setDirty(false);
     } catch (e) {
       toast.error(e?.response?.data?.detail || 'Salvataggio fallito');
     }
   }, 700);
-
   const patchField = (field, value) => {
-    setVariant((v) => ({ ...v, [field]: value }));
+    setVariant(v => ({
+      ...v,
+      [field]: value
+    }));
     setDirty(true);
-    persistPatch({ [field]: value });
+    persistPatch({
+      [field]: value
+    });
   };
   const patchSeo = (key, value) => {
-    const seo = { ...(variant.seo || {}), [key]: value };
+    const seo = {
+      ...(variant.seo || {}),
+      [key]: value
+    };
     patchField('seo', seo);
   };
   const patchCta = (idx, key, value) => {
     const set = [...(variant.cta_set || [])];
-    set[idx] = { ...set[idx], [key]: value };
+    set[idx] = {
+      ...set[idx],
+      [key]: value
+    };
     patchField('cta_set', set);
   };
   const addCta = () => {
-    const set = [...(variant.cta_set || []), { tier: 'soft', label: '', action: 'save_reference' }];
+    const set = [...(variant.cta_set || []), {
+      tier: 'soft',
+      label: '',
+      action: 'save_reference'
+    }];
     patchField('cta_set', set);
   };
-  const removeCta = (idx) => {
+  const removeCta = idx => {
     const set = (variant.cta_set || []).filter((_, i) => i !== idx);
     patchField('cta_set', set);
   };
   const patchBlock = (idx, value) => {
     const blocks = [...(variant.body_blocks || [])];
-    blocks[idx] = { ...blocks[idx], text: value };
+    blocks[idx] = {
+      ...blocks[idx],
+      text: value
+    };
     patchField('body_blocks', blocks);
   };
   const addBlock = () => {
-    const blocks = [...(variant.body_blocks || []), { type: 'paragraph', text: '' }];
+    const blocks = [...(variant.body_blocks || []), {
+      type: 'paragraph',
+      text: ''
+    }];
     patchField('body_blocks', blocks);
   };
-  const removeBlock = (idx) => {
+  const removeBlock = idx => {
     const blocks = (variant.body_blocks || []).filter((_, i) => i !== idx);
     patchField('body_blocks', blocks);
   };
@@ -120,52 +148,63 @@ export const ArticleEditorPanel = ({ variant: initialVariant, onVariantChanged }
       toast.success('Direzione composta');
     } catch (e) {
       toast.error(e?.response?.data?.detail || 'Composizione non riuscita');
-    } finally { setComposing(false); }
+    } finally {
+      setComposing(false);
+    }
   };
-
   const refineAngle = async () => {
     const note = window.prompt('Indica l\'angolo editoriale da raffinare:');
     if (!note) return;
     setComposing(true);
     try {
       const r = await api.post(`/api/editorial/variants/${variant.id}/refine-angle`, {
-        editor_notes: note, revision_options: [],
+        editor_notes: note,
+        revision_options: []
       });
       setVariant(r.data || variant);
       onVariantChanged?.(r.data);
       toast.success('Angolo editoriale raffinato');
     } catch (e) {
       toast.error(e?.response?.data?.detail || 'Rifinitura fallita');
-    } finally { setComposing(false); }
+    } finally {
+      setComposing(false);
+    }
   };
-
   const rebalanceTone = async () => {
     const note = window.prompt('Come riequilibrare ritmo / tono / intensità?');
     if (!note) return;
     setComposing(true);
     try {
       const r = await api.post(`/api/editorial/variants/${variant.id}/rebalance-tone`, {
-        editor_notes: note,
+        editor_notes: note
       });
       setVariant(r.data || variant);
       onVariantChanged?.(r.data);
       toast.success('Tono di hospitality riequilibrato');
     } catch (e) {
       toast.error(e?.response?.data?.detail || 'Riequilibrio fallito');
-    } finally { setComposing(false); }
+    } finally {
+      setComposing(false);
+    }
   };
-
-  const transition = async (to) => {
+  const transition = async to => {
     try {
-      const r = await api.post(`/api/editorial/variants/${variant.id}/transition`, { to });
-      setVariant((v) => ({ ...v, status: to }));
-      onVariantChanged?.({ ...variant, status: to });
+      const r = await api.post(`/api/editorial/variants/${variant.id}/transition`, {
+        to
+      });
+      setVariant(v => ({
+        ...v,
+        status: to
+      }));
+      onVariantChanged?.({
+        ...variant,
+        status: to
+      });
       toast.success(`Stato → ${statusMeta(to).label}`);
     } catch (e) {
       toast.error(e?.response?.data?.detail || 'Transizione non riuscita');
     }
   };
-
   const openSchedule = () => {
     setScheduledAt(variant.scheduled_at ? variant.scheduled_at.slice(0, 16) : '');
     setScheduling(true);
@@ -177,28 +216,34 @@ export const ArticleEditorPanel = ({ variant: initialVariant, onVariantChanged }
       // future per-market timezone scheduling.
       const iso = new Date(scheduledAt).toISOString();
       await api.post(`/api/editorial/variants/${variant.id}/schedule`, {
-        scheduled_at: iso,
+        scheduled_at: iso
       });
-      setVariant((v) => ({ ...v, scheduled_at: iso, status: 'scheduled' }));
-      onVariantChanged?.({ ...variant, scheduled_at: iso, status: 'scheduled' });
+      setVariant(v => ({
+        ...v,
+        scheduled_at: iso,
+        status: 'scheduled'
+      }));
+      onVariantChanged?.({
+        ...variant,
+        scheduled_at: iso,
+        status: 'scheduled'
+      });
       toast.success('Programmazione confermata');
     } catch (e) {
       toast.error(e?.response?.data?.detail || 'Programmazione fallita');
-    } finally { setScheduling(false); }
+    } finally {
+      setScheduling(false);
+    }
   };
-
   const publishNow = () => transition('published');
   const sendToReview = () => transition('ready_for_editorial_review');
   const approveDraft = () => transition('approved');
-
   const previewUrl = () => {
     const locale = variant.target_locale || 'it-IT';
     const slug = variant.variant_slug || '';
     return `/${locale}/magazine/${slug}?preview=1`;
   };
-
-  return (
-    <section className="ed-pane" data-testid="ed-pane">
+  return <section className="ed-pane" data-testid="ed-pane">
       {/* TOOLBAR */}
       <header className="ed-toolbar" data-testid="ed-toolbar">
         <div className="ed-toolbar__title">
@@ -207,75 +252,61 @@ export const ArticleEditorPanel = ({ variant: initialVariant, onVariantChanged }
           </p>
           <h1 className="ed-toolbar__h" data-testid="ed-toolbar-title">{variant.title || variant.variant_slug || 'Senza titolo'}</h1>
           <p className="ed-toolbar__status" data-testid="ed-toolbar-status">
-            <span style={{ width: 7, height: 7, borderRadius: '50%', backgroundColor: meta.dot, display: 'inline-block' }} />
+            <span style={{
+            width: 7,
+            height: 7,
+            borderRadius: '50%',
+            backgroundColor: meta.dot,
+            display: 'inline-block'
+          }} />
             {meta.label}
-            {variant.scheduled_at && variant.status === 'scheduled' && (
-              <span style={{ marginLeft: 10, opacity: 0.7 }}>
+            {variant.scheduled_at && variant.status === 'scheduled' && <span style={{
+            marginLeft: 10,
+            opacity: 0.7
+          }}>
                 · {new Date(variant.scheduled_at).toLocaleString('it-IT')}
-              </span>
-            )}
-            {dirty && <span style={{ marginLeft: 12, opacity: 0.55 }}>{t('editorial.article_editor.salvataggio')}</span>}
+              </span>}
+            {dirty && <span style={{
+            marginLeft: 12,
+            opacity: 0.55
+          }}>{t('editorial.article_editor.salvataggio')}</span>}
           </p>
         </div>
         <div className="ed-toolbar__actions">
-          <button className="ed-btn" data-testid="ed-action-compose"
-            onClick={compose} disabled={composing}>
+          <button className="ed-btn" data-testid="ed-action-compose" onClick={compose} disabled={composing}>
             <Wand2 size={13} strokeWidth={1.5} /> Compose Direction
           </button>
-          <button className="ed-btn" data-testid="ed-action-refine"
-            onClick={refineAngle} disabled={composing}>
+          <button className="ed-btn" data-testid="ed-action-refine" onClick={refineAngle} disabled={composing}>
             <Compass size={13} strokeWidth={1.5} /> Refine Editorial Angle
           </button>
-          <button className="ed-btn" data-testid="ed-action-rebalance"
-            onClick={rebalanceTone} disabled={composing}>
+          <button className="ed-btn" data-testid="ed-action-rebalance" onClick={rebalanceTone} disabled={composing}>
             <Sparkles size={13} strokeWidth={1.5} /> Rebalance Hospitality Tone
           </button>
-          <a className="ed-btn" data-testid="ed-action-preview"
-            href={previewUrl()} target="_blank" rel="noreferrer">
+          <a className="ed-btn" data-testid="ed-action-preview" href={previewUrl()} target="_blank" rel="noreferrer">
             <Eye size={13} strokeWidth={1.5} /> Preview <ExternalLink size={10} strokeWidth={1.5} />
           </a>
-          {variant.status === 'ready_for_editorial_review' && (
-            <button className="ed-btn" data-testid="ed-action-approve" onClick={approveDraft}>
+          {variant.status === 'ready_for_editorial_review' && <button className="ed-btn" data-testid="ed-action-approve" onClick={approveDraft}>
               Approva
-            </button>
-          )}
-          {(variant.status === 'draft' || variant.status === 'ai_composing' || variant.status === 'revision_requested') && (
-            <button className="ed-btn" data-testid="ed-action-send-review" onClick={sendToReview}>
+            </button>}
+          {(variant.status === 'draft' || variant.status === 'ai_composing' || variant.status === 'revision_requested') && <button className="ed-btn" data-testid="ed-action-send-review" onClick={sendToReview}>
               <Send size={13} strokeWidth={1.5} /> Invia in review
-            </button>
-          )}
-          {(variant.status === 'approved' || variant.status === 'scheduled') && (
-            <button className="ed-btn" data-testid="ed-action-schedule" onClick={openSchedule}>
+            </button>}
+          {(variant.status === 'approved' || variant.status === 'scheduled') && <button className="ed-btn" data-testid="ed-action-schedule" onClick={openSchedule}>
               <Calendar size={13} strokeWidth={1.5} /> Programma
-            </button>
-          )}
-          {(variant.status === 'approved' || variant.status === 'scheduled') && (
-            <button className="ed-btn ed-btn--primary" data-testid="ed-action-publish" onClick={publishNow}>
+            </button>}
+          {(variant.status === 'approved' || variant.status === 'scheduled') && <button className="ed-btn ed-btn--primary" data-testid="ed-action-publish" onClick={publishNow}>
               Pubblica ora
-            </button>
-          )}
+            </button>}
         </div>
       </header>
 
       {/* TABS */}
       <div className="ed-tabs" data-testid="ed-tabs">
-        <button
-          type="button"
-          className="ed-tab"
-          data-testid="ed-tab-published"
-          data-active={activeTab === 'published'}
-          onClick={() => setActiveTab('published')}
-        >
+        <button type="button" className="ed-tab" data-testid="ed-tab-published" data-active={activeTab === 'published'} onClick={() => setActiveTab('published')}>
           <span className="ed-tab__eyebrow">Final · Public</span>
           Published Locale
         </button>
-        <button
-          type="button"
-          className="ed-tab"
-          data-testid="ed-tab-internal"
-          data-active={activeTab === 'internal'}
-          onClick={() => setActiveTab('internal')}
-        >
+        <button type="button" className="ed-tab" data-testid="ed-tab-internal" data-active={activeTab === 'internal'} onClick={() => setActiveTab('internal')}>
           <span className="ed-tab__eyebrow">Editor · Review-only</span>
           Internal Understanding
         </button>
@@ -283,40 +314,19 @@ export const ArticleEditorPanel = ({ variant: initialVariant, onVariantChanged }
 
       {/* BODY */}
       <div className="ed-body" data-testid="ed-body">
-        {activeTab === 'internal' && (
-          <InternalReviewView internal={internal} />
-        )}
+        {activeTab === 'internal' && <InternalReviewView internal={internal} />}
 
-        {activeTab === 'published' && (
-          <PublishedEditorView
-            variant={variant}
-            patchField={patchField}
-            patchSeo={patchSeo}
-            patchCta={patchCta}
-            addCta={addCta}
-            removeCta={removeCta}
-            patchBlock={patchBlock}
-            addBlock={addBlock}
-            removeBlock={removeBlock}
-          />
-        )}
+        {activeTab === 'published' && <PublishedEditorView variant={variant} patchField={patchField} patchSeo={patchSeo} patchCta={patchCta} addCta={addCta} removeCta={removeCta} patchBlock={patchBlock} addBlock={addBlock} removeBlock={removeBlock} />}
       </div>
 
       {/* Schedule modal */}
-      {scheduling && (
-        <div className="ed-modal-bg" data-testid="ed-modal-bg" onClick={() => setScheduling(false)}>
-          <div className="ed-modal" onClick={(e) => e.stopPropagation()}>
+      {scheduling && <div className="ed-modal-bg" data-testid="ed-modal-bg" onClick={() => setScheduling(false)}>
+          <div className="ed-modal" onClick={e => e.stopPropagation()}>
             <h2>Programma pubblicazione</h2>
             <p className="ed-modal__sub">
               La variante apparirà online esattamente all'orario indicato (UTC del browser).
             </p>
-            <input
-              type="datetime-local"
-              className="ed-input"
-              data-testid="ed-schedule-input"
-              value={scheduledAt}
-              onChange={(e) => setScheduledAt(e.target.value)}
-            />
+            <input type="datetime-local" className="ed-input" data-testid="ed-schedule-input" value={scheduledAt} onChange={e => setScheduledAt(e.target.value)} />
             <div className="ed-modal__actions">
               <button className="ed-btn" data-testid="ed-schedule-cancel" onClick={() => setScheduling(false)}>{t('editorial.article_editor.annulla')}</button>
               <button className="ed-btn ed-btn--primary" data-testid="ed-schedule-confirm" onClick={confirmSchedule}>
@@ -324,18 +334,20 @@ export const ArticleEditorPanel = ({ variant: initialVariant, onVariantChanged }
               </button>
             </div>
           </div>
-        </div>
-      )}
-    </section>
-  );
+        </div>}
+    </section>;
 };
 
 // ─── Internal Translation = review-only viewer ───────────────────
-const InternalReviewView = ({ internal }) => {
+const InternalReviewView = ({
+  internal
+}) => {
+  const {
+    t
+  } = useT();
   if (!internal) return <p className="ed-internal-empty">{t('editorial.article_editor.caricamento_della_comprensione_editoriale')}</p>;
   const has = internal && (internal.title || internal.excerpt || (internal.body_blocks || []).length > 0);
-  return (
-    <>
+  return <>
       <div className="ed-internal-banner" data-testid="ed-internal-banner">
         <BookOpen size={15} strokeWidth={1.5} className="ed-internal-banner__icon" />
         <div className="ed-internal-banner__text">
@@ -345,130 +357,87 @@ const InternalReviewView = ({ internal }) => {
           <strong> non è indicizzata</strong> e <strong>non sostituisce</strong> la versione market.
         </div>
       </div>
-      {!has && (
-        <article className="ed-internal-readonly ed-internal-empty" data-testid="ed-internal-content">
+      {!has && <article className="ed-internal-readonly ed-internal-empty" data-testid="ed-internal-content">
           Nessuna comprensione editoriale disponibile per questa variante.
-        </article>
-      )}
-      {has && (
-        <article className="ed-internal-readonly" data-testid="ed-internal-content">
+        </article>}
+      {has && <article className="ed-internal-readonly" data-testid="ed-internal-content">
           {internal.title && <h3>{internal.title}</h3>}
-          {internal.excerpt && <p style={{ fontStyle: 'italic', opacity: 0.85 }}>{internal.excerpt}</p>}
-          {(internal.body_blocks || []).map((b, i) => (
-            <p key={i}>{b.text || ''}</p>
-          ))}
-        </article>
-      )}
-    </>
-  );
+          {internal.excerpt && <p style={{
+        fontStyle: 'italic',
+        opacity: 0.85
+      }}>{internal.excerpt}</p>}
+          {(internal.body_blocks || []).map((b, i) => <p key={i}>{b.text || ''}</p>)}
+        </article>}
+    </>;
 };
 
 // ─── Published Locale = editable form ────────────────────────────
-const PublishedEditorView = ({ variant, patchField, patchSeo, patchCta, addCta, removeCta, patchBlock, addBlock, removeBlock }) => {
-  const { t } = useT();
+const PublishedEditorView = ({
+  variant,
+  patchField,
+  patchSeo,
+  patchCta,
+  addCta,
+  removeCta,
+  patchBlock,
+  addBlock,
+  removeBlock
+}) => {
+  const {
+    t
+  } = useT();
   const seo = variant.seo || {};
-  return (
-    <>
+  return <>
       <div className="ed-section" data-testid="ed-section-title">
         <p className="ed-section__label">Titolo · final public</p>
-        <input
-          type="text"
-          className="ed-input ed-input--display"
-          data-testid="ed-field-title"
-          value={variant.title || ''}
-          onChange={(e) => patchField('title', e.target.value)}
-          placeholder={t('editorial.article.fields.title_market.placeholder')}
-        />
+        <input type="text" className="ed-input ed-input--display" data-testid="ed-field-title" value={variant.title || ''} onChange={e => patchField('title', e.target.value)} placeholder={t('editorial.article.fields.title_market.placeholder')} />
       </div>
 
       <div className="ed-section" data-testid="ed-section-hero">
         <p className="ed-section__label">Hero image · l'apertura visiva dell'articolo</p>
-        <EditorialMediaField
-          valueShape="object"
-          value={{
-            url: variant.hero_image_url || '',
-            asset_id: variant.hero_asset_id || null,
-            alt_text: variant.hero_alt_text || '',
-            caption: variant.hero_caption || '',
-          }}
-          onChange={(v) => {
-            patchField('hero_image_url', v.url || '');
-            if ('asset_id' in v) patchField('hero_asset_id', v.asset_id);
-            if ('alt_text' in v) patchField('hero_alt_text', v.alt_text);
-            if ('caption' in v) patchField('hero_caption', v.caption);
-          }}
-          preset="hero"
-          entityType="editorial_variant"
-          entityId={variant.id}
-          role="hero"
-          testId="ed-hero-media"
-        />
+        <EditorialMediaField valueShape="object" value={{
+        url: variant.hero_image_url || '',
+        asset_id: variant.hero_asset_id || null,
+        alt_text: variant.hero_alt_text || '',
+        caption: variant.hero_caption || ''
+      }} onChange={v => {
+        patchField('hero_image_url', v.url || '');
+        if ('asset_id' in v) patchField('hero_asset_id', v.asset_id);
+        if ('alt_text' in v) patchField('hero_alt_text', v.alt_text);
+        if ('caption' in v) patchField('hero_caption', v.caption);
+      }} preset="hero" entityType="editorial_variant" entityId={variant.id} role="hero" testId="ed-hero-media" />
       </div>
 
       <div className="ed-section">
         <p className="ed-section__label">Excerpt · cultural angle</p>
-        <textarea
-          className="ed-textarea ed-input--excerpt"
-          data-testid="ed-field-excerpt"
-          rows={3}
-          value={variant.excerpt || ''}
-          onChange={(e) => patchField('excerpt', e.target.value)}
-          placeholder={t('editorial.article.fields.lead.placeholder')}
-        />
+        <textarea className="ed-textarea ed-input--excerpt" data-testid="ed-field-excerpt" rows={3} value={variant.excerpt || ''} onChange={e => patchField('excerpt', e.target.value)} placeholder={t('editorial.article.fields.lead.placeholder')} />
       </div>
 
       <div className="ed-section" data-testid="ed-section-body">
         <p className="ed-section__label">{t('editorial.article_editor.body_blocchi_editoriali_composabili')}</p>
-        <StorySectionsEditor
-          blocks={variant.body_blocks || []}
-          onChange={(next) => patchField('body_blocks', next)}
-          hotspotMode="memory"
-          entityType="editorial_variant"
-          entityId={variant.id}
-          testId="ed-body-blocks"
-        />
+        <StorySectionsEditor blocks={variant.body_blocks || []} onChange={next => patchField('body_blocks', next)} hotspotMode="memory" entityType="editorial_variant" entityId={variant.id} testId="ed-body-blocks" />
       </div>
 
       <div className="ed-section" data-testid="ed-section-cta">
         <p className="ed-section__label">{t('editorial.article_editor.cta_tier_azione_transizione_editoriale')}</p>
-        {(variant.cta_set || []).map((cta, i) => (
-          <div key={i} className="ed-cta" data-testid={`ed-cta-${i}`}>
+        {(variant.cta_set || []).map((cta, i) => <div key={i} className="ed-cta" data-testid={`ed-cta-${i}`}>
             <div className="ed-cta__row">
-              <select
-                className="ed-cta__tier"
-                data-testid={`ed-cta-${i}-tier`}
-                value={cta.tier || 'soft'}
-                onChange={(e) => patchCta(i, 'tier', e.target.value)}
-              >
+              <select className="ed-cta__tier" data-testid={`ed-cta-${i}-tier`} value={cta.tier || 'soft'} onChange={e => patchCta(i, 'tier', e.target.value)}>
                 <option value="soft">Soft</option>
                 <option value="medium">Medium</option>
                 <option value="strong">Strong</option>
               </select>
-              <input
-                type="text"
-                className="ed-cta__label"
-                data-testid={`ed-cta-${i}-label`}
-                value={cta.label || ''}
-                onChange={(e) => patchCta(i, 'label', e.target.value)}
-                placeholder={t('editorial.article.fields.cta_copy.placeholder')}
-              />
-              <select
-                className="ed-cta__tier"
-                data-testid={`ed-cta-${i}-action`}
-                value={cta.action || 'save_reference'}
-                onChange={(e) => patchCta(i, 'action', e.target.value)}
-              >
+              <input type="text" className="ed-cta__label" data-testid={`ed-cta-${i}-label`} value={cta.label || ''} onChange={e => patchCta(i, 'label', e.target.value)} placeholder={t('editorial.article.fields.cta_copy.placeholder')} />
+              <select className="ed-cta__tier" data-testid={`ed-cta-${i}-action`} value={cta.action || 'save_reference'} onChange={e => patchCta(i, 'action', e.target.value)}>
                 <option value="save_reference">Save reference</option>
                 <option value="discuss_with_advisor">Discuss with advisor</option>
                 <option value="add_to_moodboard">{t('editorial.article_editor.add_to_moodboard')}</option>
                 <option value="explore_material">{t('editorial.article_editor.explore_material')}</option>
                 <option value="book_visit">Book visit</option>
               </select>
-              <button className="ed-block__remove" data-testid={`ed-cta-${i}-remove`}
-                onClick={() => removeCta(i)} title="Rimuovi CTA">×</button>
+              <button className="ed-block__remove" data-testid={`ed-cta-${i}-remove`} onClick={() => removeCta(i)} title="Rimuovi CTA">×</button>
             </div>
-          </div>
-        ))}
+          </div>)}
         <button type="button" className="ed-btn" data-testid="ed-add-cta" onClick={addCta}>
           + Aggiungi CTA
         </button>
@@ -476,35 +445,16 @@ const PublishedEditorView = ({ variant, patchField, patchSeo, patchCta, addCta, 
 
       <div className="ed-section" data-testid="ed-section-seo">
         <p className="ed-section__label">SEO · editorial-grade</p>
-        <input
-          type="text"
-          className="ed-input"
-          data-testid="ed-field-seo-title"
-          value={seo.seo_title || ''}
-          onChange={(e) => patchSeo('seo_title', e.target.value)}
-          placeholder="SEO title — narrativo, ≤ 60 caratteri"
-        />
-        <p style={{ marginTop: 16 }} />
-        <textarea
-          className="ed-textarea"
-          data-testid="ed-field-seo-description"
-          rows={2}
-          value={seo.meta_description || ''}
-          onChange={(e) => patchSeo('meta_description', e.target.value)}
-          placeholder={t('editorial.article.fields.meta_description.placeholder')}
-        />
-        <p style={{ marginTop: 16 }} />
-        <input
-          type="text"
-          className="ed-input"
-          data-testid="ed-field-seo-focus"
-          value={seo.focus_intent || ''}
-          onChange={(e) => patchSeo('focus_intent', e.target.value)}
-          placeholder="Focus intent (es. 'editorial:atmosphere')"
-        />
+        <input type="text" className="ed-input" data-testid="ed-field-seo-title" value={seo.seo_title || ''} onChange={e => patchSeo('seo_title', e.target.value)} placeholder="SEO title — narrativo, ≤ 60 caratteri" />
+        <p style={{
+        marginTop: 16
+      }} />
+        <textarea className="ed-textarea" data-testid="ed-field-seo-description" rows={2} value={seo.meta_description || ''} onChange={e => patchSeo('meta_description', e.target.value)} placeholder={t('editorial.article.fields.meta_description.placeholder')} />
+        <p style={{
+        marginTop: 16
+      }} />
+        <input type="text" className="ed-input" data-testid="ed-field-seo-focus" value={seo.focus_intent || ''} onChange={e => patchSeo('focus_intent', e.target.value)} placeholder="Focus intent (es. 'editorial:atmosphere')" />
       </div>
-    </>
-  );
+    </>;
 };
-
 export default ArticleEditorPanel;

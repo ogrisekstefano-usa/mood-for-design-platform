@@ -400,6 +400,9 @@ const BlockEditor = ({
   onOpenPicker,
   onDirectDrop
 }) => {
+  const {
+    t
+  } = useT();
   const blc = block.locale_content?.[locale] || {};
   const isImage = block.type === 'image' || block.type === 'gallery' || block.type === 'hero';
   if (block.type === 'paragraph') {
@@ -566,6 +569,9 @@ const EditorPin = ({
   onUpdate,
   onDelete
 }) => {
+  const {
+    t
+  } = useT();
   const lc = hotspot.locale_content?.[locale] || {};
   // Smart popover positioning (mirrors the public reader)
   const pos = useMemo(() => ({

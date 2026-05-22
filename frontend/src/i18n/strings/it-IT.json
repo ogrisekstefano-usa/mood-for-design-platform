@@ -453,7 +453,8 @@
     },
     "studio": {
       "mood_placeholder": "Atmosfera, materia, ritmo",
-      "tag_input_placeholder": "aggiungi…"
+      "tag_input_placeholder": "aggiungi…",
+      "status_live": "Live"
     }
   },
   "inspirations": {
@@ -513,7 +514,8 @@
       "nessuna_collezione_registrata_il_primo_capitolo_ed": "Nessuna collezione registrata — il primo capitolo editoriale apre la lettura curatoriale del brand.",
       "modifica_produttore": "Modifica produttore",
       "aggiungi_capitolo_editoriale": "Aggiungi capitolo editoriale",
-      "modifica_collezione": "Modifica collezione"
+      "modifica_collezione": "Modifica collezione",
+      "curated_by_mood": "Curato da MOOD"
     },
     "brand_form": {
       "salvataggio": "Salvataggio",
@@ -532,7 +534,8 @@
       "aggiungi_produttore": "Aggiungi produttore",
       "tutti_i_posizionamenti": "tutti i posizionamenti",
       "cerca_per_nome_atmosfera_materia": "Cerca per nome, atmosfera, materia…",
-      "add_maker": "Aggiungi produttore"
+      "add_maker": "Aggiungi produttore",
+      "curated_by_mood": "Curato da MOOD"
     },
     "collection_form": {
       "capitolo_editoriale": "Capitolo editoriale ·",
@@ -760,7 +763,8 @@
       "le_tue_moodboard": "Le tue moodboard"
     },
     "site_evolution": {
-      "il_cantiere_non_e_ancora_iniziato": "Il cantiere non è ancora iniziato"
+      "il_cantiere_non_e_ancora_iniziato": "Il cantiere non è ancora iniziato",
+      "all_spaces": "Tutti gli spazi"
     },
     "client_stub_pages": {
       "la_pagina_del_tuo_progetto_e_in_preparazione": "La pagina del tuo progetto è in preparazione.",
@@ -869,7 +873,8 @@
       "revisione_editoriale": "Revisione editoriale",
       "atmosfera_originaria": "Atmosfera originaria",
       "corpo_editoriale": "Corpo editoriale",
-      "atmosfera": "Atmosfera"
+      "atmosfera": "Atmosfera",
+      "status_updated": "Stato aggiornato"
     },
     "cultural_editions_list": {
       "le_tue_versioni_mercato": "Le tue versioni mercato.",
@@ -1256,6 +1261,66 @@
   "material_view": {
     "filter": {
       "materiality": "Materialità"
+    },
+    "header": {
+      "title": "Materia che parla"
+    }
+  },
+  "taxonomy": {
+    "editorial_status": {
+      "draft": "Bozza",
+      "direction_defined": "Direzione definita",
+      "ai_composing": "In composizione",
+      "ready_for_editorial_review": "Pronto per revisione",
+      "revision_requested": "Revisione richiesta",
+      "approved": "Approvata",
+      "scheduled": "Programmata",
+      "published": "Pubblicata",
+      "archived": "Archiviata"
+    },
+    "cultural_edition": {
+      "draft": "Bozza",
+      "in_review": "In revisione",
+      "approved": "Approvata",
+      "archived": "Archiviata",
+      "archived_at": "Archiviata"
+    },
+    "advisor_status": {
+      "invited": "Invitato",
+      "accepted": "Accettato",
+      "declined": "Rifiutato",
+      "active": "Attivo",
+      "suspended": "Sospeso"
+    },
+    "material_family": {
+      "legno": "Legno",
+      "pietra": "Pietra",
+      "marmo": "Marmo",
+      "metallo": "Metallo",
+      "tessile": "Tessile",
+      "ceramica": "Ceramica",
+      "vetro": "Vetro",
+      "malta": "Malta",
+      "composito": "Composito",
+      "naturale": "Naturale"
+    },
+    "common": {
+      "all": "Tutte",
+      "all_m": "Tutti",
+      "none": "Nessuno"
+    }
+  },
+  "inbox": {
+    "tabs": {
+      "articles": "Articoli",
+      "references": "Riferimenti"
+    },
+    "refresh": "Aggiorna",
+    "refreshing": "Aggiorno…"
+  },
+  "blueprint": {
+    "language": {
+      "all_phrases_title": "Tutte le frasi del Blueprint"
     }
   }
 }

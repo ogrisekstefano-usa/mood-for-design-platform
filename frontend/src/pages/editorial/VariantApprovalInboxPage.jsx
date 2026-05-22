@@ -13,6 +13,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Check, X, ChevronRight, Clock, Globe, Loader2 } from 'lucide-react';
 import api from '../../lib/api';
+import { useT } from '../../i18n/useT';
 import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
 
 const LOCALE_LABEL = {
@@ -166,6 +167,7 @@ const HotspotCard = ({ item, onApprove, onReject, busy }) => (
 // ── Page ───────────────────────────────────────────────────────────────
 
 const VariantApprovalInboxPage = () => {
+  const { t } = useT();
   const runtime = useLocaleRuntime();
   const [pending, setPending] = useState([]);
   const [tab, setTab] = useState('all'); // all | article | hotspot
@@ -239,25 +241,25 @@ const VariantApprovalInboxPage = () => {
       <nav className="flex items-center gap-1 mb-6 border-b border-[var(--bp-border)]"
            data-testid="inbox-tabs">
         {[
-          { key: 'all',     label: 'Tutte' },
-          { key: 'article', label: 'Articoli' },
-          { key: 'hotspot', label: 'Riferimenti' },
-        ].map((t) => (
-          <button key={t.key} type="button" onClick={() => setTab(t.key)}
-                  data-testid={`inbox-tab-${t.key}`}
+          { key: 'all',     label: t('taxonomy.common.all', null, 'All') },
+          { key: 'article', label: t('inbox.tabs.articles', null, 'Articles') },
+          { key: 'hotspot', label: t('inbox.tabs.references', null, 'References') },
+        ].map((tab_meta) => (
+          <button key={tab_meta.key} type="button" onClick={() => setTab(tab_meta.key)}
+                  data-testid={`inbox-tab-${tab_meta.key}`}
                   className={`px-4 py-3 text-[11px] uppercase tracking-[0.2em] font-body transition-colors
-                              ${tab === t.key
+                              ${tab === tab_meta.key
                                 ? 'text-[var(--bp-primary)] border-b-2 border-[var(--bp-primary)] -mb-px'
                                 : 'text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]'}`}>
-            {t.label}
-            <span className="ml-2 text-[10px] opacity-70">{counts[t.key]}</span>
+            {tab_meta.label}
+            <span className="ml-2 text-[10px] opacity-70">{counts[tab_meta.key]}</span>
           </button>
         ))}
         <button onClick={load} disabled={loading}
                 data-testid="inbox-refresh"
                 className="ml-auto px-3 py-2 text-[10px] uppercase tracking-[0.2em] text-[var(--bp-text-muted)]
                            hover:text-[var(--bp-text-primary)] font-body disabled:opacity-50">
-          {loading ? 'Aggiorno…' : 'Aggiorna'}
+          {loading ? t('inbox.refreshing', null, 'Refreshing…') : t('inbox.refresh', null, 'Refresh')}
         </button>
       </nav>
 

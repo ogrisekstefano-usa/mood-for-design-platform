@@ -15,11 +15,11 @@ import api from '../../lib/api';
 import './cultural-editions.css';
 import { useT } from '../../i18n/useT';
 
-const STATUS_LABEL = {
-  draft:     'Bozza',
-  in_review: 'In revisione',
-  approved:  'Approvata',
-  archived:  'Archiviata',
+const STATUS_LABEL_KEY = {
+  draft:     'taxonomy.cultural_edition.draft',
+  in_review: 'taxonomy.cultural_edition.in_review',
+  approved:  'taxonomy.cultural_edition.approved',
+  archived:  'taxonomy.cultural_edition.archived',
 };
 
 const CulturalEditionReviewPage = () => {
@@ -43,7 +43,7 @@ const CulturalEditionReviewPage = () => {
     try {
       const r = await api.patch(`/api/cultural-editions/drafts/${id}`, { status });
       setDraft({ ...draft, ...r.data });
-      toast.success(`Stato aggiornato · ${STATUS_LABEL[status] || status}`);
+      toast.success(`${t('cultural.cultural_edition_review.status_updated', null, 'Status updated')} · ${t(STATUS_LABEL_KEY[status] || `taxonomy.cultural_edition.${status}`, null, status)}`);
     } catch (e) {
       toast.error(e?.response?.data?.detail || 'Aggiornamento fallito');
     } finally { setSaving(false); }
@@ -84,7 +84,7 @@ const CulturalEditionReviewPage = () => {
             <Icons.ArrowLeft size={12} /> Cultural Edition™
           </Link>
           <span className={`ce-status ce-status--${draft.status}`} data-testid="ce-status">
-            {STATUS_LABEL[draft.status] || draft.status}
+            {t(STATUS_LABEL_KEY[draft.status] || `taxonomy.cultural_edition.${draft.status}`, null, draft.status)}
           </span>
         </div>
         <p className="ce-eyebrow">{t('cultural.cultural_edition_review.revisione_editoriale')}</p>

@@ -453,7 +453,8 @@
     },
     "studio": {
       "mood_placeholder": "Atmosphere, material, cadence",
-      "tag_input_placeholder": "add a tag…"
+      "tag_input_placeholder": "add a tag…",
+      "status_live": "Live"
     }
   },
   "inspirations": {
@@ -513,7 +514,8 @@
       "nessuna_collezione_registrata_il_primo_capitolo_ed": "No collections on record yet — this opening chapter begins the brand's curatorial narrative.",
       "modifica_produttore": "Edit manufacturer",
       "aggiungi_capitolo_editoriale": "Add editorial chapter",
-      "modifica_collezione": "Edit collection"
+      "modifica_collezione": "Edit collection",
+      "curated_by_mood": "Curated by MOOD"
     },
     "brand_form": {
       "salvataggio": "Salvataggio",
@@ -532,7 +534,8 @@
       "aggiungi_produttore": "Add manufacturer",
       "tutti_i_posizionamenti": "tutti i posizionamenti",
       "cerca_per_nome_atmosfera_materia": "Search by name, mood, or material…",
-      "add_maker": "Add maker"
+      "add_maker": "Add maker",
+      "curated_by_mood": "Curated by MOOD"
     },
     "collection_form": {
       "capitolo_editoriale": "Editorial Chapter ·",
@@ -760,7 +763,8 @@
       "le_tue_moodboard": "Your mood boards"
     },
     "site_evolution": {
-      "il_cantiere_non_e_ancora_iniziato": "Construction has not yet begun"
+      "il_cantiere_non_e_ancora_iniziato": "Construction has not yet begun",
+      "all_spaces": "All spaces"
     },
     "client_stub_pages": {
       "la_pagina_del_tuo_progetto_e_in_preparazione": "Your project page is in preparation.",
@@ -869,7 +873,8 @@
       "revisione_editoriale": "Revisione editoriale",
       "atmosfera_originaria": "Primordial atmosphere",
       "corpo_editoriale": "Corpo editoriale",
-      "atmosfera": "Atmosphere"
+      "atmosfera": "Atmosphere",
+      "status_updated": "Status updated"
     },
     "cultural_editions_list": {
       "le_tue_versioni_mercato": "Your market versions.",
@@ -1256,6 +1261,66 @@
   "material_view": {
     "filter": {
       "materiality": "Materiality"
+    },
+    "header": {
+      "title": "Material that speaks"
+    }
+  },
+  "taxonomy": {
+    "editorial_status": {
+      "draft": "Draft",
+      "direction_defined": "Direction defined",
+      "ai_composing": "Composing",
+      "ready_for_editorial_review": "Ready for review",
+      "revision_requested": "Revision requested",
+      "approved": "Approved",
+      "scheduled": "Scheduled",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "cultural_edition": {
+      "draft": "Draft",
+      "in_review": "In review",
+      "approved": "Approved",
+      "archived": "Archived",
+      "archived_at": "Archived"
+    },
+    "advisor_status": {
+      "invited": "Invited",
+      "accepted": "Accepted",
+      "declined": "Declined",
+      "active": "Active",
+      "suspended": "Suspended"
+    },
+    "material_family": {
+      "legno": "Wood",
+      "pietra": "Stone",
+      "marmo": "Marble",
+      "metallo": "Metal",
+      "tessile": "Textile",
+      "ceramica": "Ceramic",
+      "vetro": "Glass",
+      "malta": "Plaster",
+      "composito": "Composite",
+      "naturale": "Natural"
+    },
+    "common": {
+      "all": "All",
+      "all_m": "All",
+      "none": "None"
+    }
+  },
+  "inbox": {
+    "tabs": {
+      "articles": "Articles",
+      "references": "References"
+    },
+    "refresh": "Refresh",
+    "refreshing": "Refreshing…"
+  },
+  "blueprint": {
+    "language": {
+      "all_phrases_title": "All Blueprint phrases"
     }
   }
 }

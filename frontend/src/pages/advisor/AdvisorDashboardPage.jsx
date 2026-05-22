@@ -252,6 +252,9 @@ const ReportDrawer = ({
   onClose,
   referrals
 }) => {
+  const {
+    t
+  } = useT();
   const [form, setForm] = useState({
     tenant_id: '',
     report_type: 'visit',

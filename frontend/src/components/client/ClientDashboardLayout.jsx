@@ -72,6 +72,9 @@ const ClientTopbar = ({
     </header>;
 };
 const ClientDashboardLayout = () => {
+  const {
+    t
+  } = useT();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const location = useLocation();
 

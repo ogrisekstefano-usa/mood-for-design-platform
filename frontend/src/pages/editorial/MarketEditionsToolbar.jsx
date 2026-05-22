@@ -40,9 +40,6 @@ const FLOW_STAGES = [{
 
 // Map variant.status → which flow stage is active
 const STAGE_FOR_STATUS = status => {
-  const {
-    t
-  } = useT();
   if (!status) return 'master';
   if (['draft', 'composing'].includes(status)) return 'editions';
   if (['awaiting_review', 'in_review', 'rebalancing'].includes(status)) return 'review';
@@ -57,6 +54,9 @@ const NewMasterModal = ({
   onClose,
   onCreated
 }) => {
+  const {
+    t
+  } = useT();
   const [code, setCode] = useState('');
   const [title, setTitle] = useState('');
   const [direction, setDirection] = useState('');
@@ -151,6 +151,9 @@ const NewMarketEditionModal = ({
   onClose,
   onCreated
 }) => {
+  const {
+    t
+  } = useT();
   const [marketId, setMarketId] = useState('');
   const [targetLocale, setTargetLocale] = useState('');
   const [variantSlug, setVariantSlug] = useState('');
@@ -252,6 +255,9 @@ const ScheduleModal = ({
   onClose,
   onScheduled
 }) => {
+  const {
+    t
+  } = useT();
   const [when, setWhen] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() + 1);
@@ -327,6 +333,9 @@ const MarketEditionsToolbar = ({
   markets = [],
   onReload
 }) => {
+  const {
+    t
+  } = useT();
   const navigate = useNavigate();
   const [showNewMaster, setShowNewMaster] = useState(false);
   const [showNewEdition, setShowNewEdition] = useState(false);
