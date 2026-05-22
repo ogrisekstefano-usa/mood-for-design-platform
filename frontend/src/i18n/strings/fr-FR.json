@@ -87,7 +87,12 @@
       "chiudi": "Fermer ce regard",
       "imposta_colori_tipografia_e_radius_del_tuo_studio": "Définissez les teintes, la typographie et les courbures qui signeront l'identité visuelle de votre atelier.",
       "preset_editoriali": "Gammes éditoriales préconfigurées"
-    }
+    },
+    "logout": "Quitter l'atelier",
+    "noResults": "Aucune présence détectée dans l'atelier pour l'instant.",
+    "reset": "Reprendre à l'origine du geste",
+    "submit": "Engager le geste",
+    "welcome": "Vous entrez dans l'atelier où la lumière dialogue avec la matière"
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -170,7 +175,8 @@
   },
   "companion": {
     "hero": {
-      "eyebrow": "Design Journey™ · Votre parcours de conception"
+      "eyebrow": "Design Journey™ · Votre parcours de conception",
+      "cta": "Ouvrez la page où s'écrit le geste à venir"
     },
     "index": {
       "hero": {
@@ -206,10 +212,16 @@
         "title": "Pensées partagées"
       },
       "evolution": {
-        "title": "Le déploiement du parcours"
+        "title": "Le déploiement du parcours",
+        "empty_lede": "C'est ici que se dessinera, au fil des gestes et des intentions, la mémoire vivante de votre projet.",
+        "empty_title": "Aucune trace dans le récit de l'atelier",
+        "eyebrow": "Mémoire du geste"
       },
       "materials": {
-        "title": "Matière et atmosphère"
+        "title": "Matière et atmosphère",
+        "empty_lede": "Les matières que vous partagez depuis l'atelier dessineront ici leur présence et leur mémoire.",
+        "empty_title": "Aucune matière n'habite encore ce registre",
+        "eyebrow": "Matières premières et sensorialité"
       },
       "site_evolution": {
         "eyebrow": "Site Evolution™",
@@ -218,9 +230,41 @@
           "one": "{n} moment",
           "many": "{n} moments"
         }
+      },
+      "active_chapter": {
+        "empty_hint_lede": "Lorsque votre atelier ouvrira un nouveau chapitre de son récit, sa présence s'inscrira ici dans la lumière de cette page.",
+        "empty_hint_title": "Le récit attend son prochain geste",
+        "empty_title": "Aucun récit ne s'inscrit encore dans la mémoire de l'atelier",
+        "eyebrow": "Chapitre en présence"
+      },
+      "archive": {
+        "empty_lede": "Les récits approuvés et déposés dans la mémoire de l'atelier trouveront ici leur présence silencieuse.",
+        "empty_title": "Aucune trace ne subsiste encore dans la mémoire de cet atelier",
+        "eyebrow": "Mémoire des gestes et récit de l'atelier",
+        "title": "Mémoire des récits de l'atelier, où chaque chapitre déposé compose l'écriture silencieuse de votre geste créatif"
+      },
+      "conversations": {
+        "empty_lede": "Ici se déploieront les récits et les échanges nés au cœur de votre atelier.",
+        "empty_title": "Aucune trace de dialogue n'habite encore cet espace",
+        "eyebrow": "Récits de l'atelier",
+        "title": "Récit des échanges en atelier"
+      },
+      "shared_directions": {
+        "empty_lede": "Les directions que vous partagez avec l'atelier prendront ici leur présence, leur forme visible dans le récit collectif.",
+        "empty_title": "Aucune direction renseignée pour l'instant",
+        "eyebrow": "Parcours de l'atelier",
+        "title": "Orientations partagées de l'atelier"
       }
     },
-    "loading": "Ouverture de votre Journey…"
+    "loading": "Ouverture de votre Journey…",
+    "archive": {
+      "approved": "Validé dans la mémoire de l'atelier",
+      "closed": "Archivé dans la mémoire de l'atelier, ce récit se retire de la présence active"
+    },
+    "error": {
+      "title": "Un geste inattendu vient d'altérer le récit de votre atelier",
+      "unavailable": "La présence du Companion se dérobe pour l'instant à votre regard ; accordez-lui quelques instants avant de renouveler le geste."
+    }
   },
   "dossier": {
     "hero": {
@@ -272,7 +316,16 @@
     "empty": {
       "eyebrow": "Mémoire du parcours",
       "message": "Le dossier de ce Journey sera déposé prochainement."
-    }
+    },
+    "chapter": {
+      "approved": "Chapitre validé par votre regard, désormais inscrit dans la mémoire de l'atelier",
+      "closed": "Ce chapitre s'est refermé sur lui-même, préservant désormais sa propre mémoire",
+      "default": "Chapitre – un récit singulier de la matière et du geste",
+      "in_progress": "Récit en cours d'écriture",
+      "presented": "Chapitre porté au regard de l'atelier",
+      "revision_requested": "Révision sollicitée par l'atelier"
+    },
+    "studio_prefix": "Atelier"
   },
   "dashboard": {
     "pulse": {
@@ -750,6 +803,48 @@
     },
     "platform_capabilities": {
       "sincronizzo_lo_stato_attivazioni": "Synchronisation en cours de l'état des présences actives dans l'atelier"
+    },
+    "audit": {
+      "title": "Mémoire des gestes de l'atelier — regard sur l'écriture numérique"
+    },
+    "detail": {
+      "flags": "Registre des options de configuration avancées de l'atelier",
+      "members": "Présences qui composent l'atelier",
+      "modules": "Modules en présence dans l'atelier",
+      "statusPlan": "Statut · Élévation de l'atelier"
+    },
+    "exit": "Quitter l'atelier et refermer ce récit",
+    "impersonate": "Incarner le regard d'un autre atelier, le temps d'un geste",
+    "modules": {
+      "sub": "Répertoire des gestes orchestrés par l'atelier numérique, une mémoire vivante des présences disponibles.",
+      "title": "Les modules qui composent l'écriture de votre atelier"
+    },
+    "nav": {
+      "audit": "Mémoire de l'atelier",
+      "modules": "Espaces de composition où se déploie le geste, où naît la présence",
+      "overview": "Vue d'ensemble de l'atelier — là où le regard embrasse la totalité du geste créatif",
+      "tenants": "Espaces de création confiés à votre regard"
+    },
+    "overview": {
+      "subtitle": "L'état vivant de l'atelier, dans l'instant où le geste se déploie.",
+      "title": "Le regard d'ensemble sur l'atelier et ses gestes en devenir"
+    },
+    "saved": "Inscrit dans la mémoire de l'atelier",
+    "stats": {
+      "leads": "Présences à naître dans le registre de l'atelier",
+      "magazine": "Récits éditoriaux",
+      "moodboards": "Planches du regard — l'atelier de toutes les matières convoquées",
+      "projects": "Récits en atelier",
+      "proposals": "Propositions en cours d'écriture dans l'atelier",
+      "suspended": "En suspens dans la mémoire de l'atelier",
+      "tenants": "Atelier inscrit dans le registre de la création",
+      "users": "Présences qui habitent l'atelier"
+    },
+    "tenants": {
+      "empty": "Aucun atelier n'habite encore cet espace, aucune présence n'y inscrit son récit.",
+      "new": "Nouvel atelier en mémoire",
+      "title": "Ateliers enregistrés — le registre vivant de vos espaces de création",
+      "totalSub": "Nombre d'ateliers dont la plateforme accompagne le geste et la mémoire créative."
     }
   },
   "advisor": {
@@ -873,7 +968,8 @@
       "no_follow_ups": "Aucun geste en attente, la relation existe dans sa plénitude présente.",
       "sala_delle_relazioni": "L'atelier des présences vivantes",
       "tutti_gli_stage": "L'ensemble des parcours de relation, du premier regard à la mémoire partagée",
-      "tutti_i_tipi": "Toutes les présences, tous les regards"
+      "tutti_i_tipi": "Toutes les présences, tous les regards",
+      "lead_outside_team": "— pas dans cet atelier."
     },
     "cultural_edition": {
       "adatta_tono_ritmo_cta_al_mercato": "Accordez l'écriture, le rythme et l'appel au regard propre à chaque marché",
@@ -1065,7 +1161,109 @@
       "approved": "Approuvés",
       "revision_requested": "Révision demandée",
       "rejected": "Refusés"
-    }
+    },
+    "assets": {
+      "intro": "L'ensemble des images que vous avez déposées ou conservées au fil de l'écriture de cette moodboard, réunies ici comme les fragments d'un même regard.",
+      "saved": "Mémoire visuelle de l'atelier",
+      "savedEmpty": "Aucune matière, aucun geste, aucune mémoire visuelle encore convoqués dans cet atelier.",
+      "uploaded": "Déjà présents dans votre atelier visuel",
+      "uploadedHint": "Déposez vos images dans cet espace ou sélectionnez-les pour composer le récit visuel de votre moodboard."
+    },
+    "block": {
+      "image": {
+        "placeholder": "Déposez ici une image pour inscrire votre regard dans la matière du récit"
+      },
+      "material": "Matière choisie",
+      "note": {
+        "placeholder": "Posez ici votre regard, esquissez la matière de votre récit…"
+      },
+      "product": {
+        "label": "Matière sans récit encore écrit",
+        "placeholder": "Nommer la matière, inscrire sa présence"
+      },
+      "text": {
+        "placeholder": "Laissez venir le geste, la matière, la lumière… écrivez votre récit"
+      }
+    },
+    "create": {
+      "failed": "Le récit visuel n'a pu prendre forme dans l'atelier. Renouvelez votre geste.",
+      "projectLabel": "Récit visuel",
+      "projectPh": "Choisissez le récit qui portera votre regard",
+      "submit": "Composer ce récit visuel",
+      "timeout": "La composition demande un temps plus long que prévu, nous vous invitons à renouveler le geste.",
+      "title": "Composer un nouveau récit visuel",
+      "titleLabel": "Écriture du récit visuel",
+      "titlePh": "Ex. Matière crépusculaire · Atelier des Brumes",
+      "titleRequired": "Donnez un titre à cette planche pour ancrer son récit dans la mémoire de l'atelier."
+    },
+    "editor": {
+      "actualSize": "Échelle de présence réelle",
+      "adjustments": "Affiner la matière du regard",
+      "applyAll": "Déployer cette écriture visuelle sur l'ensemble du récit",
+      "applyAllDone": "Appliqué à l'ensemble des pages, ce geste traverse désormais la totalité du récit visuel",
+      "applyAllPages": "Appliquer ce geste à l'ensemble du récit visuel",
+      "applyStyleAll": "Diffuser ce regard à l'ensemble de la composition",
+      "approve": "Valider l'écriture du regard",
+      "autosaveOn": "Votre geste créatif se préserve en continu, sans interruption de regard",
+      "bringForward": "Avancer dans le regard",
+      "bringToFront": "Amener au premier plan du regard",
+      "contextualHint": "Choisissez un élément pour en révéler la matière et ajuster sa présence dans le récit visuel.",
+      "copyStyle": "Reprendre l'écriture visuelle d'une planche existante",
+      "crop": "Recadrez la matière pour affiner le regard",
+      "delete": "Effacer ce récit visuel de votre atelier",
+      "dropImage": "Déposez ici l'image qui portera le regard de votre récit",
+      "duplicate": "Prolonger le regard, recomposer la présence",
+      "fitHeight": "Ajuster à la hauteur du regard",
+      "fitWidth": "Ajuster à la largeur du regard",
+      "imageMissing": "L'image demeure en suspens, sa présence encore à venir dans la mémoire visuelle de votre récit",
+      "inspector": "L'atelier du regard — où chaque matière révèle sa présence et compose le récit visuel",
+      "layers": "Strates de composition",
+      "openReview": "Ouvrir le récit critique",
+      "openShare": "Ouvrez le récit à d'autres regards",
+      "page": "Planche d'écriture visuelle",
+      "pageInspector": "Regard sur la composition",
+      "pasteStyle": "Reprendre l'écriture visuelle d'un autre récit",
+      "pasteStyleEmpty": "Aucune écriture n'a encore été prélevée : commencez par capturer le style d'un élément pour le conserver en mémoire.",
+      "present": "Dévoilez votre récit visuel au regard du monde",
+      "quickAdjust": {
+        "adjust": "Affiner la matière visuelle",
+        "confirm": "Valider ce geste",
+        "eyebrow": "Réglage immédiat du regard",
+        "fit": "Ajuster au cadre avec justesse",
+        "focal": "Point d'attention du regard",
+        "focalHint": "Déplacez le regard pour révéler le point de présence de l'image.",
+        "reset": "Retrouver le geste initial",
+        "skip": "Passer ce point du récit",
+        "title": "Ajustement du regard en un seul geste"
+      },
+      "redo": "Réinscrire le geste dans sa lumière première",
+      "requestRevision": "Soumettre à la relecture du regard",
+      "reset": "Remettre à blanc la page et retrouver le geste premier de la composition",
+      "resetCrop": "Rétablir le cadrage d'origine",
+      "retry": "Reprendre le geste, renouveler le regard",
+      "saveFailed": "Le geste d'archivage n'a pu trouver sa trace dans la mémoire de l'atelier",
+      "saveFailedHint": "Les dernières traces de votre geste n'ont pas trouvé leur ancrage dans la mémoire de l'atelier. Veuillez réitérer.",
+      "saving": "Votre récit prend forme, chaque geste se dépose dans la mémoire de l'atelier",
+      "sendBackward": "Reculer dans la profondeur de l'atelier visuel",
+      "sendReview": "Soumettre au regard éditorial",
+      "sendToBack": "Reculer dans la profondeur du récit visuel",
+      "share": "Partagez cette mémoire visuelle avec ceux qui en saisiront la présence",
+      "shareEyebrow": "Partage du regard",
+      "shareLegacyLabel": "Lien d'origine, dans sa première écriture",
+      "sharePresentLabel": "Mode présentation scénographique",
+      "shareReviewLabel": "Mode regard critique — pour affiner la présence avant de partager",
+      "shareTitle": "Partagez ce récit visuel avec vos interlocuteurs",
+      "typography": "Caractères et composition, la mémoire du geste typographique",
+      "undo": "Revenir au geste précédent",
+      "unsaved": "Votre geste reste en suspens, ces variations de matière n'ont pas encore trouvé leur mémoire",
+      "uploadFailed": "Le geste interrompu, la matière n'a pu prendre forme",
+      "uploading": "Le récit visuel prend forme sous vos yeux",
+      "visualProps": "Attributs de la présence visuelle"
+    },
+    "editorPanel": {
+      "title": "Atelier du récit visuel"
+    },
+    "empty": "Aucun récit visuel n'a encore pris forme dans l'atelier."
   },
   "onboarding": {
     "owner_introduction": {
@@ -1337,6 +1535,104 @@
     },
     "proposals": {
       "le_presentazioni_vivono_dentro_i_loro_journey": "Chaque présentation prend corps et respire à l'intérieur du récit qui la porte"
+    }
+  },
+  "auth": {
+    "forgot": {
+      "sent": "Si cette adresse correspond à un atelier enregistré dans notre mémoire, un lien vous parviendra sous peu pour recomposer l'accès à votre espace.",
+      "submit": "Recevoir le lien de réinitialisation",
+      "subtitle": "Un lien vous sera adressé, portant la mémoire d'un nouveau mot de passe, dans l'intimité de votre messagerie.",
+      "title": "Retrouver le fil de votre mémoire d'atelier"
+    },
+    "login": {
+      "email": "Adresse électronique où vous recevrez les récits de votre atelier",
+      "forgot": "Vous aviez inscrit votre mot de passe dans la mémoire du geste, et ce geste vous échappe",
+      "noAccount": "Votre atelier n'existe pas encore dans nos registres",
+      "password": "Clé d'accès à votre atelier numérique",
+      "signup": "Fonder votre atelier, ce lieu où prend forme le geste créatif",
+      "submit": "Entrez dans votre atelier",
+      "subtitle": "Retrouvez l'espace où prend forme votre récit Blueprint, là où chaque geste trouve sa mémoire.",
+      "tagline": "L'instrument qui donne voix et mémoire au geste de l'atelier.",
+      "taglineSub": "Une architecture éditoriale au service de l'excellence du geste créatif.",
+      "title": "Vous retrouvez votre atelier, là où le geste reprend son fil"
+    },
+    "signup": {
+      "company": "Nom de l'atelier dont vous portez la signature",
+      "hasAccount": "Votre atelier existe déjà, et vous souhaitez lui donner une présence ici",
+      "signin": "Retrouvez votre atelier",
+      "submit": "Fonder votre atelier",
+      "subtitle": "Composez dès maintenant le récit éditorial qui donnera forme à votre regard.",
+      "title": "Donnez naissance à votre atelier"
+    }
+  },
+  "brand": {
+    "controls": "Commandes de l'atelier, là où le geste rencontre l'intelligence de la matière",
+    "controlsLabel": "Façonnez la matière dans chacune de ses présences.",
+    "discard": "Revenir à l'écriture première, avant le geste",
+    "field": {
+      "body": "Écriture du corps de texte",
+      "density": "Épaisseur matérielle du regard sur l'atelier",
+      "display": "Caractère d'affichage pour la présence visuelle de l'atelier",
+      "phone": "Numéro de présence — le geste par lequel l'atelier devient accessible au regard du monde",
+      "primary_logo": "Signature visuelle première, celle qui incarne la présence même de l'atelier",
+      "primary_logo_helper": "PNG ou SVG, fond transparent, jusqu'à 2 Mo — la matière première de votre identité visuelle.",
+      "radius": "Courbure des angles, là où le geste rencontre la matière",
+      "shadow": "Épaisseur de l'ombre, là où la lumière se retire et laisse respirer la matière",
+      "support_email": "Adresse électronique dédiée au dialogue et à l'accompagnement de votre atelier",
+      "website": "Adresse numérique de l'atelier"
+    },
+    "intro": "Ici se déploie l'identité visuelle de l'atelier : la typographie qui porte le regard, la palette qui signe la présence, les géométries qui tracent votre écriture.",
+    "livePreview": "Regard en présence, dans l'instant même du geste",
+    "name": "MOOD for DESIGN — L'atelier du regard sensible",
+    "paletteTrace": "Les nuances qui se déploient à partir de la palette fondatrice, témoins d'une écriture chromatique en mouvement.",
+    "presetsTrace": "Des récits visuels prédéfinis qui habitent l'ensemble de votre atelier numérique.",
+    "save": "Préserver la mémoire de l'atelier",
+    "section": {
+      "identity": "L'écriture de votre présence",
+      "identityKicker": "Nom, identité graphique et présence publique de l'atelier",
+      "paletteKicker": "Trois teintes qui portent l'ensemble de la composition et en fondent l'équilibre.",
+      "paletteTitle": "Registre des matières et des présences",
+      "presetsTitle": "Registres de lumière et de matière",
+      "surfaceTitle": "Matières et présences que l'atelier convoque, interroge, sublime",
+      "typographyKicker": "Les écritures typographiques qui façonnent la mémoire de l'atelier.",
+      "typographyTitle": "L'écriture des signes, ou la présence du geste typographique dans l'atelier"
+    },
+    "tagline": "L'écriture sensible des ateliers de design, au service du regard et du geste créateur.",
+    "title": "L'écriture de votre présence au monde"
+  },
+  "collab": {
+    "handoff": {
+      "cta": "Ouvrez le passage vers la transmission du geste",
+      "failed": "Le passage de relais n'a pu s'inscrire dans la mémoire de l'atelier. Renouvelez le geste.",
+      "recorded": "Transmission enregistrée dans la mémoire de l'atelier"
+    }
+  },
+  "form": {
+    "password_min": "Votre mot de passe doit compter au minimum huit caractères, comme l'exige la précision du geste."
+  },
+  "greeting": "Vous revoilà dans l'atelier où chaque geste reprend son fil",
+  "impersonation": {
+    "active": "Mode incarnation active — le regard est celui de l'atelier que vous habitez à présent",
+    "stop": "Quittez le regard de l'autre et retrouvez la présence de votre propre atelier"
+  },
+  "leads": {
+    "empty": "L'atelier demeure silencieux, aucun regard en attente pour l'instant.",
+    "emptyCta": "Inscrivez le premier regard qui ouvrira le registre de votre atelier",
+    "field": {
+      "budget": "Enveloppe destinée au projet",
+      "email": "Adresse d'écriture — pour tracer avec vous le récit de l'atelier",
+      "firstName": "Prénom — l'écriture de votre présence dans l'atelier",
+      "lastName": "Nom de famille",
+      "leadType": "Nature du regard porté sur le contact",
+      "notes": "Mémoire du geste et présence de l'atelier",
+      "phone": "Numéro où l'on peut vous joindre",
+      "projectType": "Nature du récit d'espace"
+    },
+    "newLead": "Nouveau regard en atelier",
+    "title": "Opportunités en gestation",
+    "type": {
+      "ad_partner": "Partenaire de l'atelier",
+      "private_client": "Client privé — une présence unique, un regard singulier à accompagner dans l'écriture de son espace"
     }
   }
 }

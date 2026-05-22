@@ -87,7 +87,12 @@
       "chiudi": "Schließen",
       "imposta_colori_tipografia_e_radius_del_tuo_studio": "Farben, Typografie und Radien Ihres Ateliers definieren.",
       "preset_editoriali": "Redaktionelle Vorlagen"
-    }
+    },
+    "logout": "Abmelden",
+    "noResults": "Keine Ergebnisse vorhanden.",
+    "reset": "Zurücksetzen",
+    "submit": "Bestätigen",
+    "welcome": "Willkommen in Ihrem Atelier"
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -170,7 +175,8 @@
   },
   "companion": {
     "hero": {
-      "eyebrow": "Design Journey™ · Ihre Gestaltungsreise"
+      "eyebrow": "Design Journey™ · Ihre Gestaltungsreise",
+      "cta": "Zum nächsten Kapitel übergehen"
     },
     "index": {
       "hero": {
@@ -206,10 +212,16 @@
         "title": "Geteilte Gedanken"
       },
       "evolution": {
-        "title": "Die Entfaltung der Reise"
+        "title": "Die Entfaltung der Reise",
+        "empty_lede": "Die Entwicklung des Projekts wird hier dokumentiert.",
+        "empty_title": "Keine Entwicklung erfasst",
+        "eyebrow": "Entwicklung"
       },
       "materials": {
-        "title": "Materie und Atmosphäre"
+        "title": "Materie und Atmosphäre",
+        "empty_lede": "Vom Atelier freigegebene Materialien erscheinen an dieser Stelle.",
+        "empty_title": "Keine Materialität hinterlegt",
+        "eyebrow": "Materialität"
       },
       "site_evolution": {
         "eyebrow": "Site Evolution™",
@@ -218,9 +230,41 @@
           "one": "{n} Moment",
           "many": "{n} Momente"
         }
+      },
+      "active_chapter": {
+        "empty_hint_lede": "Sobald Ihr Atelier ein neues Kapitel eröffnet, erscheint es an dieser Stelle.",
+        "empty_hint_title": "Das folgende Kapitel wird vorbereitet",
+        "empty_title": "Kein aktives Kapitel vorhanden",
+        "eyebrow": "Aktives Kapitel"
+      },
+      "archive": {
+        "empty_lede": "Abgeschlossene und archivierte Kapitel erscheinen an dieser Stelle.",
+        "empty_title": "Keine Einträge vorhanden",
+        "eyebrow": "Dokumentation",
+        "title": "Kapitelregister"
+      },
+      "conversations": {
+        "empty_lede": "Hier erscheinen Ihre Gespräche mit dem Atelier.",
+        "empty_title": "Keine Gespräche vorhanden",
+        "eyebrow": "Werkstattgespräche",
+        "title": "Gesprächsregister"
+      },
+      "shared_directions": {
+        "empty_lede": "Geteilte Ausrichtungen des Ateliers erscheinen an dieser Stelle.",
+        "empty_title": "Keine Wegführung hinterlegt",
+        "eyebrow": "Wegführung",
+        "title": "Gemeinsame Arbeitsrichtung"
       }
     },
-    "loading": "Ihre Journey wird geöffnet…"
+    "loading": "Ihre Journey wird geöffnet…",
+    "archive": {
+      "approved": "Freigegeben",
+      "closed": "Abgeschlossen"
+    },
+    "error": {
+      "title": "Ein Fehler ist aufgetreten",
+      "unavailable": "Der Companion ist derzeit nicht erreichbar. Versuchen Sie es in wenigen Augenblicken erneut."
+    }
   },
   "dossier": {
     "hero": {
@@ -272,7 +316,16 @@
     "empty": {
       "eyebrow": "Erinnerung der Reise",
       "message": "Das Dossier dieser Journey wird in Kürze hinterlegt."
-    }
+    },
+    "chapter": {
+      "approved": "Freigegeben",
+      "closed": "Abgeschlossen",
+      "default": "Kapitel",
+      "in_progress": "In Bearbeitung",
+      "presented": "Vorgestellt",
+      "revision_requested": "Überarbeitung angefordert"
+    },
+    "studio_prefix": "Atelier"
   },
   "dashboard": {
     "pulse": {
@@ -750,6 +803,48 @@
     },
     "platform_capabilities": {
       "sincronizzo_lo_stato_attivazioni": "Aktivierungsstatus wird synchronisiert…"
+    },
+    "audit": {
+      "title": "Systemprotokoll des Ateliers"
+    },
+    "detail": {
+      "flags": "Steuerungsmerkmale",
+      "members": "Atelier-Beteiligte",
+      "modules": "Aktivierte Module",
+      "statusPlan": "Status / Planebene"
+    },
+    "exit": "Atelier verlassen",
+    "impersonate": "Rolle übernehmen",
+    "modules": {
+      "sub": "Verzeichnis der von der Plattform gesteuerten Module.",
+      "title": "Strukturbausteine"
+    },
+    "nav": {
+      "audit": "Prüfprotokoll",
+      "modules": "Bausteine",
+      "overview": "Gesamtansicht",
+      "tenants": "Mandant"
+    },
+    "overview": {
+      "subtitle": "Systemdaten des Atelierbetriebs in Echtzeit.",
+      "title": "Atelierübersicht"
+    },
+    "saved": "Archiviert",
+    "stats": {
+      "leads": "Anfrage",
+      "magazine": "Redaktionelle Beiträge",
+      "moodboards": "Gestaltungstafel",
+      "projects": "Entwürfe",
+      "proposals": "Gestaltungsvorschläge",
+      "suspended": "Ruhend",
+      "tenants": "Mandant",
+      "users": "Ateliernutzer"
+    },
+    "tenants": {
+      "empty": "Keine Atelierstruktur hinterlegt.",
+      "new": "Neuer Mandant",
+      "title": "Mandant",
+      "totalSub": "Gesamtzahl der Ateliers, die über das System verwaltet werden."
     }
   },
   "advisor": {
@@ -873,7 +968,8 @@
       "no_follow_ups": "Alle Nachfassaktionen abgeschlossen",
       "sala_delle_relazioni": "Raum der Beziehungen",
       "tutti_gli_stage": "Sämtliche Projektphasen",
-      "tutti_i_tipi": "Alle Kategorien"
+      "tutti_i_tipi": "Alle Kategorien",
+      "lead_outside_team": "— nicht in diesem Atelier."
     },
     "cultural_edition": {
       "adatta_tono_ritmo_cta_al_mercato": "Tonalität, Rhythmus und Handlungsimpuls marktspezifisch gestalten",
@@ -1065,7 +1161,109 @@
       "approved": "Genehmigt",
       "revision_requested": "Überarbeitung angefragt",
       "rejected": "Abgelehnt"
-    }
+    },
+    "assets": {
+      "intro": "Alle für dieses Moodboard hochgeladenen oder archivierten Bilddokumente.",
+      "saved": "Gesichert",
+      "savedEmpty": "Noch keine Referenz in der Werkstatt hinterlegt.",
+      "uploaded": "Hochgeladen",
+      "uploadedHint": "Dateien per Ziehen oder Auswahl in die Moodboard-Gestaltung einbringen."
+    },
+    "block": {
+      "image": {
+        "placeholder": "Bild hier platzieren"
+      },
+      "material": "Materialität",
+      "note": {
+        "placeholder": "Redaktionelle Anmerkung hinzufügen …"
+      },
+      "product": {
+        "label": "Produkt ohne Bezeichnung",
+        "placeholder": "Produktbezeichnung"
+      },
+      "text": {
+        "placeholder": "Setzen Sie Ihre Gedanken in Material um…"
+      }
+    },
+    "create": {
+      "failed": "Die Moodboard-Gestaltung konnte nicht abgeschlossen werden. Bitte erneut versuchen.",
+      "projectLabel": "Gestaltungsweg",
+      "projectPh": "Gestalterische Haltung wählen",
+      "submit": "Zusammenstellen",
+      "timeout": "Die Gestaltung benötigt mehr Zeit als vorgesehen. Bitte erneut versuchen.",
+      "title": "Neues Gestaltungsatelier",
+      "titleLabel": "Bezeichnung",
+      "titlePh": "Bsp. Materialkonzept · Residenz Tegernsee",
+      "titleRequired": "Geben Sie der Moodboard-Komposition einen Titel."
+    },
+    "editor": {
+      "actualSize": "Originalgröße",
+      "adjustments": "Feinjustierung",
+      "applyAll": "Für alle Seiten übernehmen",
+      "applyAllDone": "Auf allen Seiten angewendet",
+      "applyAllPages": "Auf alle Seiten anwenden",
+      "applyStyleAll": "Stil auf alle Flächen übertragen",
+      "approve": "Freigeben",
+      "autosaveOn": "Automatische Sicherung läuft",
+      "bringForward": "Eine Ebene nach vorn",
+      "bringToFront": "In die Vorderebene holen",
+      "contextualHint": "Element wählen, um dessen Eigenschaften zu definieren.",
+      "copyStyle": "Gestaltung übernehmen",
+      "crop": "Bildausschnitt festlegen",
+      "delete": "Entfernen",
+      "dropImage": "Bild hier ablegen",
+      "duplicate": "Duplizieren",
+      "fitHeight": "Höhe anpassen",
+      "fitWidth": "An Seitenbreite anpassen",
+      "imageMissing": "Bildmaterial fehlt",
+      "inspector": "Werkstattsteuerung",
+      "layers": "Ebenen",
+      "openReview": "Prüfung öffnen",
+      "openShare": "Projekt weitergeben",
+      "page": "Blatt",
+      "pageInspector": "Seitenarchitektur",
+      "pasteStyle": "Formatierung übertragen",
+      "pasteStyleEmpty": "Keine Gestaltung übernommen. Kopieren Sie zunächst die Formatierung eines Elements.",
+      "present": "Präsentieren",
+      "quickAdjust": {
+        "adjust": "Anpassung",
+        "confirm": "Übernehmen",
+        "eyebrow": "Präzise Steuerung",
+        "fit": "Einpassen",
+        "focal": "Bildmittelpunkt",
+        "focalHint": "Bildmittelpunkt durch Ziehen der Fläche bestimmen.",
+        "reset": "Zurücksetzen",
+        "skip": "Überspringen",
+        "title": "Direkte Anpassung"
+      },
+      "redo": "Wiederholen",
+      "requestRevision": "Überprüfung anfordern",
+      "reset": "Zurücksetzen",
+      "resetCrop": "Beschnitt zurücksetzen",
+      "retry": "Erneut versuchen",
+      "saveFailed": "Speicherung fehlgeschlagen",
+      "saveFailedHint": "Die Änderungen konnten nicht gesichert werden. Bitte erneut versuchen.",
+      "saving": "Sicherung läuft",
+      "sendBackward": "Eine Ebene zurücksetzen",
+      "sendReview": "Zur Prüfung freigeben",
+      "sendToBack": "In den Hintergrund legen",
+      "share": "Teilen",
+      "shareEyebrow": "Kollaborative Freigabe",
+      "shareLegacyLabel": "Klassischer Freigabe-Link",
+      "sharePresentLabel": "Präsentationsansicht",
+      "shareReviewLabel": "Prüfansicht",
+      "shareTitle": "Moodboard teilen",
+      "typography": "Schriftsatz",
+      "undo": "Zurücksetzen",
+      "unsaved": "Änderungen ohne Sicherung",
+      "uploadFailed": "Übertragung fehlgeschlagen",
+      "uploading": "Wird geladen",
+      "visualProps": "Visuelle Eigenschaften"
+    },
+    "editorPanel": {
+      "title": "Werkstatt für Gestaltung"
+    },
+    "empty": "Noch keine Bildkomposition angelegt."
   },
   "onboarding": {
     "owner_introduction": {
@@ -1337,6 +1535,104 @@
     },
     "proposals": {
       "le_presentazioni_vivono_dentro_i_loro_journey": "Präsentationen entstehen innerhalb ihrer Journey-Struktur"
+    }
+  },
+  "auth": {
+    "forgot": {
+      "sent": "Sofern die Adresse einem Atelier-Zugang zugeordnet ist, erhalten Sie in Kürze einen Link zur Neuvergabe des Passworts.",
+      "submit": "Link zusenden",
+      "subtitle": "Der Link zur Zurücksetzung erreicht Sie an Ihre hinterlegte E-Mail-Adresse.",
+      "title": "Passwort neu definieren"
+    },
+    "login": {
+      "email": "E-Mail-Adresse",
+      "forgot": "Zugang wiederherstellen",
+      "noAccount": "Noch kein Atelier angelegt?",
+      "password": "Zugangscode",
+      "signup": "Atelier gründen",
+      "submit": "Zugang erhalten",
+      "subtitle": "Zugang zu Ihrem Blueprint-Atelier.",
+      "tagline": "Die redaktionelle Sprache für Gestaltungsateliers.",
+      "taglineSub": "Operatives System für Gestaltungsexzellenz.",
+      "title": "Willkommen zurück im Atelier"
+    },
+    "signup": {
+      "company": "Studiobezeichnung",
+      "hasAccount": "Atelier bereits vorhanden?",
+      "signin": "Zum Atelier",
+      "submit": "Atelier einrichten",
+      "subtitle": "Gestalten Sie Ihre redaktionelle Architektur.",
+      "title": "Atelier gründen"
+    }
+  },
+  "brand": {
+    "controls": "Steuerung",
+    "controlsLabel": "Jedes Detail in Ihrer Hand.",
+    "discard": "Änderungen verwerfen",
+    "field": {
+      "body": "Schrifttypologie des Textkörpers",
+      "density": "Dichte der Bedienelemente",
+      "display": "Schrift für Großformate",
+      "phone": "Telefonnummer",
+      "primary_logo": "Primäres Atelierzeichen",
+      "primary_logo_helper": "PNG oder SVG, transparenter Hintergrund, maximal 2 MB.",
+      "radius": "Kantenradius",
+      "shadow": "Tiefe der Schattierung",
+      "support_email": "Kontakt für technische Anfragen",
+      "website": "Webpräsenz"
+    },
+    "intro": "Definieren Sie die visuelle Haltung Ihres Ateliers: Schrift, Farbe, Form.",
+    "livePreview": "Ansicht im Gestaltungsmodus",
+    "name": "MOOD for DESIGN",
+    "paletteTrace": "Farbvariationen, abgeleitet aus der primären Farbdisziplin.",
+    "presetsTrace": "Visuelle Voreinstellungen für den gesamten Arbeitsbereich verfügbar.",
+    "save": "Identität sichern",
+    "section": {
+      "identity": "Haltung",
+      "identityKicker": "Studioname, Signet und öffentliche Atelierdaten.",
+      "paletteKicker": "Drei Farben tragen die gesamte Komposition.",
+      "paletteTitle": "Farbsystem",
+      "presetsTitle": "Voreinstellungen für visuelle Gestaltung",
+      "surfaceTitle": "Materialien",
+      "typographyKicker": "Die typografischen Stimmen, die das Atelier prägen.",
+      "typographyTitle": "Schriftsystem"
+    },
+    "tagline": "Das redaktionelle Werkzeug für Gestaltungsateliers.",
+    "title": "Gestaltungsidentität"
+  },
+  "collab": {
+    "handoff": {
+      "cta": "Übergabe öffnen",
+      "failed": "Die Übergabe konnte nicht erfasst werden. Bitte erneut versuchen.",
+      "recorded": "Übergabe dokumentiert"
+    }
+  },
+  "form": {
+    "password_min": "Mindestens 8 Zeichen für die Kennwortstärke erforderlich."
+  },
+  "greeting": "Willkommen zurück im Atelier",
+  "impersonation": {
+    "active": "Stellvertretender Zugriff aktiv",
+    "stop": "Rolle verlassen"
+  },
+  "leads": {
+    "empty": "Aktuell keine Kontakte in Bearbeitung.",
+    "emptyCta": "Ersten Kontakt erfassen",
+    "field": {
+      "budget": "Investitionsrahmen",
+      "email": "E-Mail-Adresse",
+      "firstName": "Vorname",
+      "lastName": "Familienname",
+      "leadType": "Anfragetypologie",
+      "notes": "Notizen",
+      "phone": "Telefonnummer",
+      "projectType": "Projektdisziplin"
+    },
+    "newLead": "Neuer Kontakt",
+    "title": "Anfragen",
+    "type": {
+      "ad_partner": "Atelier-Partner AD",
+      "private_client": "Privatauftrag"
     }
   }
 }

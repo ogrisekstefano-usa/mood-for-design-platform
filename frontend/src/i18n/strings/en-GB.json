@@ -87,7 +87,12 @@
       "chiudi": "Close palette",
       "imposta_colori_tipografia_e_radius_del_tuo_studio": "Establish the palette, typographic language and radius values for your studio.",
       "preset_editoriali": "Curated palettes"
-    }
+    },
+    "logout": "Sign out",
+    "noResults": "Nothing returned.",
+    "reset": "Restore to origin",
+    "submit": "Confirm selection",
+    "welcome": "Good to see you"
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -170,7 +175,8 @@
   },
   "companion": {
     "hero": {
-      "eyebrow": "Design Journey™ · Your design journey"
+      "eyebrow": "Design Journey™ · Your design journey",
+      "cta": "Begin the next register entry"
     },
     "index": {
       "hero": {
@@ -206,10 +212,16 @@
         "title": "Shared Thoughts"
       },
       "evolution": {
-        "title": "The unfolding of the journey"
+        "title": "The unfolding of the journey",
+        "empty_lede": "The register will trace the project's evolution as it unfolds.",
+        "empty_title": "No evolution recorded",
+        "eyebrow": "Archive of development"
       },
       "materials": {
-        "title": "Matter and atmosphere"
+        "title": "Matter and atmosphere",
+        "empty_lede": "Materials shared by the studio will appear in this register.",
+        "empty_title": "No materials registered",
+        "eyebrow": "Material Archive"
       },
       "site_evolution": {
         "eyebrow": "Site Evolution™",
@@ -218,9 +230,41 @@
           "one": "{n} moment",
           "many": "{n} moments"
         }
+      },
+      "active_chapter": {
+        "empty_hint_lede": "When your studio opens a new chapter, it will be registered here.",
+        "empty_hint_title": "Awaiting the next chapter in your register",
+        "empty_title": "No chapter currently held",
+        "eyebrow": "Current chapter in register"
+      },
+      "archive": {
+        "empty_lede": "Approved chapters, once archived, will appear in this register.",
+        "empty_title": "No entries on record yet",
+        "eyebrow": "Archive Register",
+        "title": "Chapter register"
+      },
+      "conversations": {
+        "empty_lede": "Your studio correspondence will be registered here.",
+        "empty_title": "No exchanges recorded",
+        "eyebrow": "Recorded exchanges",
+        "title": "Recorded exchanges"
+      },
+      "shared_directions": {
+        "empty_lede": "Shared directions from the studio will be registered here.",
+        "empty_title": "No directions registered",
+        "eyebrow": "Location notes",
+        "title": "Aligned intent"
       }
     },
-    "loading": "Opening your Journey…"
+    "loading": "Opening your Journey…",
+    "archive": {
+      "approved": "Registered to archive",
+      "closed": "Committed to archive"
+    },
+    "error": {
+      "title": "An error has occurred in the register",
+      "unavailable": "The Companion is presently unavailable. Please return in a moment."
+    }
   },
   "dossier": {
     "hero": {
@@ -272,7 +316,16 @@
     "empty": {
       "eyebrow": "Memory of the journey",
       "message": "The dossier of this Journey will be deposited shortly."
-    }
+    },
+    "chapter": {
+      "approved": "Registered for record",
+      "closed": "Archived",
+      "default": "Section",
+      "in_progress": "In progress",
+      "presented": "Presented to register",
+      "revision_requested": "Revision requested"
+    },
+    "studio_prefix": "Atelier"
   },
   "dashboard": {
     "pulse": {
@@ -750,6 +803,48 @@
     },
     "platform_capabilities": {
       "sincronizzo_lo_stato_attivazioni": "Synchronising activation register…"
+    },
+    "audit": {
+      "title": "Register of activity"
+    },
+    "detail": {
+      "flags": "Conditional registers",
+      "members": "Atelier register",
+      "modules": "Registered modules in use",
+      "statusPlan": "Status / Register"
+    },
+    "exit": "Close register",
+    "impersonate": "Assume studio identity",
+    "modules": {
+      "sub": "A register of modules orchestrated by the system.",
+      "title": "Studio registers"
+    },
+    "nav": {
+      "audit": "Activity Register",
+      "modules": "Registered components",
+      "overview": "At a glance",
+      "tenants": "Registered atelier"
+    },
+    "overview": {
+      "subtitle": "Live indicators of the operational register.",
+      "title": "At a glance"
+    },
+    "saved": "Registered to atelier archive",
+    "stats": {
+      "leads": "Enquiries recorded",
+      "magazine": "Editorial register",
+      "moodboards": "Curated folios",
+      "projects": "Registered commissions",
+      "proposals": "Proposals on record",
+      "suspended": "Held in abeyance",
+      "tenants": "Registered ateliers",
+      "users": "Registered members"
+    },
+    "tenants": {
+      "empty": "No ateliers presently registered to the library.",
+      "new": "Register new atelier",
+      "title": "Registered ateliers",
+      "totalSub": "Number of ateliers registered to the service."
     }
   },
   "advisor": {
@@ -873,7 +968,8 @@
       "no_follow_ups": "All follow-ups attended to",
       "sala_delle_relazioni": "Relationships Room",
       "tutti_gli_stage": "All stages in the relationship",
-      "tutti_i_tipi": "All categories"
+      "tutti_i_tipi": "All categories",
+      "lead_outside_team": "— not here."
     },
     "cultural_edition": {
       "adatta_tono_ritmo_cta_al_mercato": "Tailor voice, cadence and invitation to the market at hand",
@@ -1065,7 +1161,109 @@
       "approved": "Approved",
       "revision_requested": "Revision requested",
       "rejected": "Rejected"
-    }
+    },
+    "assets": {
+      "intro": "Every image held within this board, uploaded or archived for reference.",
+      "saved": "Archived",
+      "savedEmpty": "No references archived as yet.",
+      "uploaded": "Archived to library",
+      "uploadedHint": "Drag or select to add files to your moodboard"
+    },
+    "block": {
+      "image": {
+        "placeholder": "Drop image here to compose"
+      },
+      "material": "Material notation",
+      "note": {
+        "placeholder": "Add editorial annotation here…"
+      },
+      "product": {
+        "label": "Unlabelled material",
+        "placeholder": "Product title or archival reference"
+      },
+      "text": {
+        "placeholder": "Begin your note here"
+      }
+    },
+    "create": {
+      "failed": "The board could not be assembled. Please revisit.",
+      "projectLabel": "Visual narrative",
+      "projectPh": "Choose a project intent",
+      "submit": "Compose moodboard",
+      "timeout": "This composition is taking longer than anticipated—please try again.",
+      "title": "New composition",
+      "titleLabel": "Board title",
+      "titlePh": "E.g. Material Intent · Villa Verbano",
+      "titleRequired": "A title is required to register your moodboard."
+    },
+    "editor": {
+      "actualSize": "True scale",
+      "adjustments": "Tonal refinements",
+      "applyAll": "Apply across all pages",
+      "applyAllDone": "Applied across all sheets",
+      "applyAllPages": "Apply throughout composition",
+      "applyStyleAll": "Apply style throughout this composition",
+      "approve": "Authorise for publication",
+      "autosaveOn": "Archival safeguarding in place",
+      "bringForward": "Advance layer",
+      "bringToFront": "Bring to fore",
+      "contextualHint": "Select an element to adjust its properties accordingly.",
+      "copyStyle": "Capture visual language",
+      "crop": "Reframe the composition",
+      "delete": "Remove from archive",
+      "dropImage": "Place image here",
+      "duplicate": "Duplicate composition",
+      "fitHeight": "Fit to height",
+      "fitWidth": "Fit to width of frame",
+      "imageMissing": "Image not registered",
+      "inspector": "Attributes panel",
+      "layers": "Stratification",
+      "openReview": "Open for review",
+      "openShare": "Circulate this composition",
+      "page": "Sheet",
+      "pageInspector": "Page anatomy",
+      "pasteStyle": "Apply registered attributes",
+      "pasteStyleEmpty": "No style registered. First capture a style from an element to proceed.",
+      "present": "Present composition",
+      "quickAdjust": {
+        "adjust": "Refine",
+        "confirm": "Confirm this adjustment",
+        "eyebrow": "Immediate refinement",
+        "fit": "Scale to frame",
+        "focal": "Visual anchor point",
+        "focalHint": "Drag to position the focal point of the image.",
+        "reset": "Restore intent",
+        "skip": "Omit",
+        "title": "Rapid refinement"
+      },
+      "redo": "Reinstate action",
+      "requestRevision": "Request editorial review",
+      "reset": "Restore to archive",
+      "resetCrop": "Restore original frame",
+      "retry": "Attempt once more",
+      "saveFailed": "Unable to archive at this time",
+      "saveFailedHint": "Your recent amendments were not registered. Please try again.",
+      "saving": "Archiving in progress…",
+      "sendBackward": "Send backward",
+      "sendReview": "Submit for consideration",
+      "sendToBack": "Send to back",
+      "share": "Circulate this arrangement",
+      "shareEyebrow": "Circulation",
+      "shareLegacyLabel": "Traditional share link",
+      "sharePresentLabel": "Presentation view",
+      "shareReviewLabel": "Review mode",
+      "shareTitle": "Share this moodboard",
+      "typography": "Type library",
+      "undo": "Reverse prior entry",
+      "unsaved": "Unsaved amendments",
+      "uploadFailed": "Upload unsuccessful",
+      "uploading": "Assembling imagery for your library",
+      "visualProps": "Visual qualities"
+    },
+    "editorPanel": {
+      "title": "Editorial suite"
+    },
+    "empty": "No moodboards composed as yet."
   },
   "onboarding": {
     "owner_introduction": {
@@ -1337,6 +1535,104 @@
     },
     "proposals": {
       "le_presentazioni_vivono_dentro_i_loro_journey": "Presentations are held within their respective Journeys"
+    }
+  },
+  "auth": {
+    "forgot": {
+      "sent": "Should the address be registered with us, a password reset link will arrive in your correspondence shortly.",
+      "submit": "Send reset instruction",
+      "subtitle": "A link to restore access will arrive at your registered address.",
+      "title": "Restore access to your atelier"
+    },
+    "login": {
+      "email": "Registered address",
+      "forgot": "Forgotten your password?",
+      "noAccount": "Not yet registered with an atelier",
+      "password": "Registered passphrase",
+      "signup": "Establish your atelier",
+      "submit": "Enter the studio",
+      "subtitle": "Enter your Blueprint atelier space",
+      "tagline": "The editorial instrument for the design atelier.",
+      "taglineSub": "A studied framework for design of consequence.",
+      "title": "Welcome back to your atelier"
+    },
+    "signup": {
+      "company": "Atelier name",
+      "hasAccount": "Already registered with an atelier?",
+      "signin": "Return to your studio",
+      "submit": "Register your atelier",
+      "subtitle": "Begin to compose your editorial Blueprint.",
+      "title": "Establish your studio"
+    }
+  },
+  "brand": {
+    "controls": "Studio register",
+    "controlsLabel": "Refine every element with intent.",
+    "discard": "Revert to registered version",
+    "field": {
+      "body": "Body typeface",
+      "density": "Interface grain and resolution",
+      "display": "Display typeface",
+      "phone": "Registered telephone",
+      "primary_logo": "Primary studio mark",
+      "primary_logo_helper": "PNG or SVG preferred, transparent ground, file size not to exceed 2 MB.",
+      "radius": "Corner radius",
+      "shadow": "Shadow depth register",
+      "support_email": "Registered correspondence for support enquiries",
+      "website": "Atelier address (web)"
+    },
+    "intro": "Establish the visual language of your studio: typeface, palette, compositional order.",
+    "livePreview": "Live atelier view",
+    "name": "MOOD for DESIGN",
+    "paletteTrace": "Chromatic variations derived from the principal palette.",
+    "presetsTrace": "Visual presets registered across the entire workspace.",
+    "save": "Register this identity",
+    "section": {
+      "identity": "Studio signature",
+      "identityKicker": "Studio name, mark and registered particulars.",
+      "paletteKicker": "Three colours anchor the entire composition.",
+      "paletteTitle": "Colour register",
+      "presetsTitle": "Registered visual language",
+      "surfaceTitle": "Material Register",
+      "typographyKicker": "The typographic voices that compose the atelier",
+      "typographyTitle": "Type & Language"
+    },
+    "tagline": "The editorial register for design practices.",
+    "title": "Brand language and register"
+  },
+  "collab": {
+    "handoff": {
+      "cta": "Open handoff register",
+      "failed": "The handoff could not be registered. Please attempt once more.",
+      "recorded": "Handoff archived to register"
+    }
+  },
+  "form": {
+    "password_min": "Please choose a password of at least eight characters."
+  },
+  "greeting": "Welcome back to the atelier",
+  "impersonation": {
+    "active": "Atelier register in active use",
+    "stop": "Resume your own register"
+  },
+  "leads": {
+    "empty": "No enquiries registered at present.",
+    "emptyCta": "Register your first enquiry",
+    "field": {
+      "budget": "Considered investment range",
+      "email": "Correspondence address",
+      "firstName": "Given name",
+      "lastName": "Family name",
+      "leadType": "Enquiry classification",
+      "notes": "Observations",
+      "phone": "Telephone",
+      "projectType": "Project classification"
+    },
+    "newLead": "Prospect registered",
+    "title": "Enquiries",
+    "type": {
+      "ad_partner": "Registered advertising collaborator",
+      "private_client": "Private commission"
     }
   }
 }

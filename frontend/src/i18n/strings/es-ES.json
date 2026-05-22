@@ -87,7 +87,12 @@
       "chiudi": "Cerrar esta vista",
       "imposta_colori_tipografia_e_radius_del_tuo_studio": "Defina el color, la tipografía y los radios visuales de su atelier.",
       "preset_editoriali": "Paletas editoriales"
-    }
+    },
+    "logout": "Cerrar sesión",
+    "noResults": "No hemos encontrado nada con esa búsqueda.",
+    "reset": "Volver al inicio",
+    "submit": "Confirmar gesto",
+    "welcome": "Bienvenido a su espacio de oficio"
   },
   "relationships": {
     "eyebrow": "Relationship OS",
@@ -170,7 +175,8 @@
   },
   "companion": {
     "hero": {
-      "eyebrow": "Design Journey™ · Tu viaje de diseño"
+      "eyebrow": "Design Journey™ · Tu viaje de diseño",
+      "cta": "Abra el siguiente capítulo"
     },
     "index": {
       "hero": {
@@ -206,10 +212,16 @@
         "title": "Pensamientos compartidos"
       },
       "evolution": {
-        "title": "El despliegue del viaje"
+        "title": "El despliegue del viaje",
+        "empty_lede": "Aquí se irá componiendo el relato de este proyecto.",
+        "empty_title": "Aún no hay relato de evolución",
+        "eyebrow": "El taller en movimiento"
       },
       "materials": {
-        "title": "Materia y atmósfera"
+        "title": "Materia y atmósfera",
+        "empty_lede": "Los materiales de su atelier aparecerán aquí cuando los comparta",
+        "empty_title": "Sin materias aún en este atelier",
+        "eyebrow": "Materia y presencia"
       },
       "site_evolution": {
         "eyebrow": "Site Evolution™",
@@ -218,9 +230,41 @@
           "one": "{n} momento",
           "many": "{n} momentos"
         }
+      },
+      "active_chapter": {
+        "empty_hint_lede": "Cada nuevo capítulo de su atelier aparecerá reflejado aquí",
+        "empty_hint_title": "El relato continúa en el próximo capítulo",
+        "empty_title": "Ningún relato en curso",
+        "eyebrow": "Capítulo en desarrollo"
+      },
+      "archive": {
+        "empty_lede": "Los capítulos aprobados y archivados aparecerán aquí, como una memoria del oficio.",
+        "empty_title": "El atelier aguarda su primer relato",
+        "eyebrow": "Archivo de proyectos",
+        "title": "Archivo de relatos del atelier"
+      },
+      "conversations": {
+        "empty_lede": "Aquí aparecerán los diálogos con su atelier.",
+        "empty_title": "Aún no hay conversaciones abiertas",
+        "eyebrow": "Diálogos de atelier",
+        "title": "Diálogos del atelier"
+      },
+      "shared_directions": {
+        "empty_lede": "Aquí aparecerán las direcciones compartidas desde su atelier.",
+        "empty_title": "Ninguna dirección aún registrada",
+        "eyebrow": "Cómo llegar al atelier",
+        "title": "Miradas compartidas del atelier"
       }
     },
-    "loading": "Abriendo tu Journey…"
+    "loading": "Abriendo tu Journey…",
+    "archive": {
+      "approved": "Validado en atelier",
+      "closed": "Cerrado y resguardado"
+    },
+    "error": {
+      "title": "Algo no ha ido como esperábamos",
+      "unavailable": "El Companion no está disponible en este momento. Le invitamos a intentarlo de nuevo dentro de unos instantes."
+    }
   },
   "dossier": {
     "hero": {
@@ -272,7 +316,16 @@
     "empty": {
       "eyebrow": "Memoria del viaje",
       "message": "El dossier de este Journey se depositará en breve."
-    }
+    },
+    "chapter": {
+      "approved": "Validado por el atelier",
+      "closed": "Capítulo cerrado",
+      "default": "Relato",
+      "in_progress": "En proceso de creación",
+      "presented": "Presentado en atelier",
+      "revision_requested": "Requiere nueva mirada"
+    },
+    "studio_prefix": "Atelier"
   },
   "dashboard": {
     "pulse": {
@@ -750,6 +803,48 @@
     },
     "platform_capabilities": {
       "sincronizzo_lo_stato_attivazioni": "Sincronizando el estado de sus activaciones…"
+    },
+    "audit": {
+      "title": "Registro del atelier"
+    },
+    "detail": {
+      "flags": "Marcadores de identidad del proyecto",
+      "members": "Equipo del atelier",
+      "modules": "Módulos en uso",
+      "statusPlan": "Identidad · Modalidad"
+    },
+    "exit": "Cerrar sesión",
+    "impersonate": "Acceder como invitado",
+    "modules": {
+      "sub": "Registro de módulos que conforman la identidad técnica del atelier.",
+      "title": "Registros del atelier"
+    },
+    "nav": {
+      "audit": "Registro del atelier",
+      "modules": "Registros del atelier",
+      "overview": "Visión general del atelier",
+      "tenants": "Estudio registrado"
+    },
+    "overview": {
+      "subtitle": "La actividad del atelier, en tiempo real",
+      "title": "Visión de conjunto del atelier"
+    },
+    "saved": "Guardado en su atelier",
+    "stats": {
+      "leads": "Consulta de interés",
+      "magazine": "Relatos del atelier",
+      "moodboards": "Tableros de inspiración",
+      "projects": "Proyectos del atelier",
+      "proposals": "Propuestas en taller",
+      "suspended": "En pausa temporal",
+      "tenants": "Estudio registrado en su atelier",
+      "users": "Personas en el atelier"
+    },
+    "tenants": {
+      "empty": "Aún no se ha configurado ningún atelier en este espacio",
+      "new": "Nuevo atelier en el registro",
+      "title": "Espacio de trabajo",
+      "totalSub": "Ateliers que forman parte de este relato común de identidad y oficio"
     }
   },
   "advisor": {
@@ -873,7 +968,8 @@
       "no_follow_ups": "Ningún relato pendiente en este momento",
       "sala_delle_relazioni": "Salón de las relaciones",
       "tutti_gli_stage": "Cada relación, cada momento",
-      "tutti_i_tipi": "Todas las miradas"
+      "tutti_i_tipi": "Todas las miradas",
+      "lead_outside_team": "— no aquí."
     },
     "cultural_edition": {
       "adatta_tono_ritmo_cta_al_mercato": "Ajuste tono, ritmo y llamada según el territorio que le habla",
@@ -1065,7 +1161,109 @@
       "approved": "Aprobados",
       "revision_requested": "Revisión solicitada",
       "rejected": "Rechazados"
-    }
+    },
+    "assets": {
+      "intro": "Todas las imágenes que componen la identidad visual de este moodboard",
+      "saved": "Imágenes guardadas",
+      "savedEmpty": "Aún no ha guardado ninguna referencia visual.",
+      "uploaded": "Subidos a su atelier visual",
+      "uploadedHint": "Arrastre o elija imágenes para incorporarlas a su panel de atmósfera"
+    },
+    "block": {
+      "image": {
+        "placeholder": "Deslice aquí una imagen para comenzar su relato visual"
+      },
+      "material": "Materia",
+      "note": {
+        "placeholder": "Añada su relato visual aquí…"
+      },
+      "product": {
+        "label": "Pieza sin identidad",
+        "placeholder": "Nombre de la pieza o materia"
+      },
+      "text": {
+        "placeholder": "Componga su relato visual aquí"
+      }
+    },
+    "create": {
+      "failed": "No ha sido posible crear la moodboard. Inténtelo de nuevo",
+      "projectLabel": "Relato visual",
+      "projectPh": "Elija el relato que define su proyecto",
+      "submit": "Componga su atmósfera",
+      "timeout": "La composición está tomando más tiempo del esperado. Vuelva a intentarlo, por favor.",
+      "title": "Nueva identidad visual",
+      "titleLabel": "Nombre del relato visual",
+      "titlePh": "Ej. Identidad material · Villa Verbano",
+      "titleRequired": "Escriba un título para este relato visual"
+    },
+    "editor": {
+      "actualSize": "Escala real de la imagen",
+      "adjustments": "Ajustes de atmósfera",
+      "applyAll": "Aplicar a toda la composición visual",
+      "applyAllDone": "Aplicado en toda la secuencia",
+      "applyAllPages": "Aplicar a cada página del relato",
+      "applyStyleAll": "Aplique este gesto a toda la composición",
+      "approve": "Confirmar esta mirada",
+      "autosaveOn": "El relato se guarda por sí solo",
+      "bringForward": "Adelante en capas",
+      "bringToFront": "Traer al primer plano\n\n\n(Alternative with more narrative warmth if desired: Traer a primera mirada)",
+      "contextualHint": "Elija un elemento para ajustar su presencia visual",
+      "copyStyle": "Duplicar atmósfera visual",
+      "crop": "Recorte la imagen",
+      "delete": "Retirar de la composición",
+      "dropImage": "Arrastre aquí una imagen para componer su relato visual",
+      "duplicate": "Crear una réplica",
+      "fitHeight": "Ajustar a la altura del marco",
+      "fitWidth": "Ajustar al ancho de la composición",
+      "imageMissing": "La imagen aún no ha llegado al tablero",
+      "inspector": "Panel de detalle visual",
+      "layers": "Capas del relato visual",
+      "openReview": "Abrir la mirada sobre el proyecto",
+      "openShare": "Comparta su relato visual",
+      "page": "Página del relato",
+      "pageInspector": "Panel de composición",
+      "pasteStyle": "Aplicar estilo copiado",
+      "pasteStyleEmpty": "Aún no hay ningún estilo guardado. Copie primero el estilo de un elemento.",
+      "present": "Presente su relato visual",
+      "quickAdjust": {
+        "adjust": "Ajustar la presencia",
+        "confirm": "Conservar este gesto",
+        "eyebrow": "Ajuste sensible",
+        "fit": "Ajusta a la proporción",
+        "focal": "Punto de atención visual",
+        "focalHint": "Desplace para definir dónde posa la mirada en la imagen",
+        "reset": "Restablecer el gesto inicial",
+        "skip": "Omitir",
+        "title": "Ajuste con gesto ágil"
+      },
+      "redo": "Recupere el último gesto",
+      "requestRevision": "Solicitar una mirada externa",
+      "reset": "Volver al gesto inicial",
+      "resetCrop": "Restaurar encuadre original",
+      "retry": "Vuelva a intentarlo",
+      "saveFailed": "No se ha podido conservar el relato visual",
+      "saveFailedHint": "Los últimos gestos no han quedado guardados. Pruebe de nuevo, por favor.",
+      "saving": "Guardando su relato visual",
+      "sendBackward": "Llevar hacia atrás",
+      "sendReview": "Enviar para revisión",
+      "sendToBack": "Llevar al fondo de la composición",
+      "share": "Comparta su relato visual",
+      "shareEyebrow": "Compartir la mirada",
+      "shareLegacyLabel": "Enlace de edición clásica",
+      "sharePresentLabel": "Modo de presentación del relato",
+      "shareReviewLabel": "Modo revisión compartida",
+      "shareTitle": "Comparta este relato visual",
+      "typography": "Letra y carácter",
+      "undo": "Deshacer gesto",
+      "unsaved": "Cambios pendientes de conservar",
+      "uploadFailed": "La carga no ha podido completarse",
+      "uploading": "Componiendo su relato visual…",
+      "visualProps": "Presencia visual"
+    },
+    "editorPanel": {
+      "title": "Espacio de edición visual"
+    },
+    "empty": "Aún no hay ningún relato visual en marcha."
   },
   "onboarding": {
     "owner_introduction": {
@@ -1337,6 +1535,104 @@
     },
     "proposals": {
       "le_presentazioni_vivono_dentro_i_loro_journey": "Las presentaciones habitan el relato de cada proyecto"
+    }
+  },
+  "auth": {
+    "forgot": {
+      "sent": "Si la dirección corresponde a un atelier registrado, recibirá en breve un enlace para restablecer su contraseña",
+      "submit": "Enviar enlace de acceso",
+      "subtitle": "Recibirá un enlace en su correo para restablecer el acceso a su atelier",
+      "title": "Recupere su identidad de acceso"
+    },
+    "login": {
+      "email": "Correo de acceso",
+      "forgot": "¿Ha olvidado su contraseña?",
+      "noAccount": "¿Aún no tiene su atelier?",
+      "password": "Clave de acceso",
+      "signup": "Construya su atelier de diseño",
+      "submit": "Acceda a su atelier",
+      "subtitle": "Acceda a su atelier Blueprint",
+      "tagline": "La mirada editorial del atelier contemporáneo.",
+      "taglineSub": "La arquitectura del diseño que eleva cada gesto del oficio",
+      "title": "De vuelta en su atelier"
+    },
+    "signup": {
+      "company": "Nombre de su atelier",
+      "hasAccount": "¿Ya tiene un atelier registrado?",
+      "signin": "Acceda a su atelier",
+      "submit": "Cree su atelier",
+      "subtitle": "Comience a dar forma a su relato editorial",
+      "title": "Construya su atelier de diseño"
+    }
+  },
+  "brand": {
+    "controls": "Parámetros del atelier",
+    "controlsLabel": "Defina cada gesto del espacio",
+    "discard": "Deshacer los cambios",
+    "field": {
+      "body": "Tipografía del contenido editorial",
+      "density": "Densidad visual del espacio de trabajo",
+      "display": "Tipografía de identidad visual",
+      "phone": "Contacto telefónico",
+      "primary_logo": "Identidad visual principal",
+      "primary_logo_helper": "Formato PNG o SVG con fondo transparente, hasta 2 MB de presencia visual.",
+      "radius": "Curvatura de las esquinas",
+      "shadow": "Profundidad de sombra en el atelier",
+      "support_email": "Contacto del atelier para acompañamiento",
+      "website": "Dirección web del atelier"
+    },
+    "intro": "Aquí define la identidad visual de su atelier: tipografía, paleta cromática, trazos fundacionales.",
+    "livePreview": "Vista previa en tiempo real",
+    "name": "MOOD for DESIGN",
+    "paletteTrace": "Variaciones cromáticas que nacen de la paleta de identidad",
+    "presetsTrace": "Atmósferas visuales disponibles para todo el atelier",
+    "save": "Conservar identidad de atelier",
+    "section": {
+      "identity": "Identidad del atelier",
+      "identityKicker": "Nombre, identidad visual y presencia pública del atelier.",
+      "paletteKicker": "Tres tonos que sostienen todo el relato visual",
+      "paletteTitle": "Gama cromática",
+      "presetsTitle": "Selección de ambientes base",
+      "surfaceTitle": "Materiales y acabados",
+      "typographyKicker": "La identidad tipográfica del atelier",
+      "typographyTitle": "La letra que construye identidad"
+    },
+    "tagline": "El relato editorial de los estudios de diseño",
+    "title": "Identidad de atelier"
+  },
+  "collab": {
+    "handoff": {
+      "cta": "Abra el traspaso de proyecto",
+      "failed": "No ha sido posible registrar el traspaso del atelier. Le invitamos a intentarlo de nuevo.",
+      "recorded": "Traspaso registrado en el atelier"
+    }
+  },
+  "form": {
+    "password_min": "La contraseña requiere al menos 8 caracteres para proteger su atelier"
+  },
+  "greeting": "Qué bien volver a verle",
+  "impersonation": {
+    "active": "Modo representación activa",
+    "stop": "Finalice la sesión de identidad asumida"
+  },
+  "leads": {
+    "empty": "Ningún relato por descubrir en este momento.",
+    "emptyCta": "Incorpore su primer contacto al atelier",
+    "field": {
+      "budget": "Inversión prevista",
+      "email": "Correo electrónico",
+      "firstName": "Nombre de pila",
+      "lastName": "Apellido",
+      "leadType": "Perfil del contacto",
+      "notes": "Apuntes del atelier",
+      "phone": "Teléfono de contacto del atelier",
+      "projectType": "Naturaleza del encargo"
+    },
+    "newLead": "Nueva consulta en el atelier",
+    "title": "Oportunidades en curso",
+    "type": {
+      "ad_partner": "Socio publicitario",
+      "private_client": "Cliente particular"
     }
   }
 }
