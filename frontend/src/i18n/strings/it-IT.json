@@ -413,7 +413,9 @@
     "settings": "Settings",
     "super_admin": "Super Admin",
     "expand": "Espandi",
-    "collapse": "Riduci"
+    "collapse": "Riduci",
+    "studio_voice": "Voce dello Studio",
+    "language_command_center": "Centro di Comando Linguistico"
   },
   "projects": {
     "tabs": {
@@ -1320,7 +1322,12 @@
   },
   "blueprint": {
     "language": {
-      "all_phrases_title": "Tutte le frasi del Blueprint"
+      "all_phrases_title": "Tutte le frasi del Blueprint",
+      "all_phrases_lede": "Ogni chiave di traduzione, ogni superficie, ogni locale. Filtra, cerca, correggi. Le modifiche entrano in vigore al prossimo render — niente deploy.",
+      "search_placeholder": "Cerca per chiave o testo…",
+      "only_missing": "Solo mancanti",
+      "loading_registry": "Caricamento registro",
+      "no_matches": "Nessuna chiave corrisponde ai filtri."
     }
   }
 }

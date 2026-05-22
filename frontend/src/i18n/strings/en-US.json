@@ -413,7 +413,9 @@
     "settings": "Settings",
     "super_admin": "Super Admin",
     "expand": "Expand",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
+    "studio_voice": "Studio Voice",
+    "language_command_center": "Language Command Center"
   },
   "projects": {
     "tabs": {
@@ -1320,7 +1322,12 @@
   },
   "blueprint": {
     "language": {
-      "all_phrases_title": "All Blueprint phrases"
+      "all_phrases_title": "All Blueprint phrases",
+      "all_phrases_lede": "Every translation key, every surface, every locale. Filter, search, refine. Changes take effect at the next render — no deploy.",
+      "search_placeholder": "Search by key or text…",
+      "only_missing": "Only missing",
+      "loading_registry": "Loading registry",
+      "no_matches": "No keys match your filters."
     }
   }
 }

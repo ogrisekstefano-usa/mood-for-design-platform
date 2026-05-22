@@ -148,7 +148,9 @@
     "billing": "الفوترة",
     "super_admin": "Super Admin",
     "expand": "توسيع",
-    "collapse": "طي"
+    "collapse": "طي",
+    "studio_voice": "صوت الاستوديو",
+    "language_command_center": "مركز قيادة اللغة"
   },
   "companion": {
     "hero": {
@@ -436,6 +438,16 @@
     },
     "toast": {
       "load_error": "خطأ في تحميل التقويم التحريري"
+    }
+  },
+  "blueprint": {
+    "language": {
+      "all_phrases_lede": "كل مفتاح ترجمة، كل سطح، كل لغة. تصفية وبحث وتحسين. تطبَّق التعديلات عند العرض التالي — بدون نشر.",
+      "search_placeholder": "ابحث بالمفتاح أو النص…",
+      "only_missing": "المفقود فقط",
+      "loading_registry": "تحميل السجل",
+      "no_matches": "لا توجد مفاتيح تطابق التصفيات.",
+      "all_phrases_title": "كل عبارات Blueprint"
     }
   }
 }

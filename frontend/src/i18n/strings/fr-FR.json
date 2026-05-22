@@ -335,7 +335,9 @@
     "settings": "Paramètres",
     "super_admin": "Super Admin",
     "expand": "Déplier",
-    "collapse": "Replier"
+    "collapse": "Replier",
+    "studio_voice": "Voix du Studio",
+    "language_command_center": "Centre de Commande Linguistique"
   },
   "projects": {
     "tabs": {
@@ -430,6 +432,16 @@
     },
     "toast": {
       "load_error": "Erreur de chargement du calendrier éditorial"
+    }
+  },
+  "blueprint": {
+    "language": {
+      "all_phrases_lede": "Chaque clé de traduction, chaque surface, chaque locale. Filtrez, cherchez, affinez. Les modifications prennent effet au prochain rendu — sans déploiement.",
+      "search_placeholder": "Recherche par clé ou texte…",
+      "only_missing": "Manquants seulement",
+      "loading_registry": "Chargement du registre",
+      "no_matches": "Aucune clé ne correspond à vos filtres.",
+      "all_phrases_title": "Toutes les phrases Blueprint"
     }
   }
 }

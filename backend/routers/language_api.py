@@ -698,9 +698,10 @@ def runtime_leak_db(
 def runtime_screenshot(key: str, ctx: dict = Depends(get_tenant_context)):
     """Serves a per-route JPG captured during the crawl."""
     _require_admin(ctx)
-    # Defensive: key is a route slug — strict charset to prevent traversal.
+    # Defensive: key is a route slug — strict charset (no traversal, no
+    # consecutive dashes/underscores) and length capped at 80.
     import re as _re
-    if not _re.fullmatch(r'[a-z0-9_\-]+', key):
+    if not _re.fullmatch(r'[a-z0-9]+(?:[_-][a-z0-9]+)*', key) or len(key) > 80:
         raise HTTPException(400, "invalid_key")
     f = _GOV_DIR / 'runtime-localization-screenshots' / f'{key}.jpg'
     if not f.exists():

@@ -71,9 +71,12 @@ const RouteHeatmapGrid = ({ pages = [], onSelectRoute }) => {
         return (
           <li
             key={p.key}
-            data-testid={`locgov-route-${p.key}`}
+            data-testid={`locgov-route-row-${p.key}`}
             className="border-b border-[var(--mood-border, rgba(255,255,255,0.06))] hover:bg-[rgba(255,255,255,0.015)] transition-colors cursor-pointer"
             onClick={() => onSelectRoute?.(p)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectRoute?.(p); } }}
           >
             <div className="grid grid-cols-[14px_1fr_auto] items-center gap-6 py-4 px-1">
               <span

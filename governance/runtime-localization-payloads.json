@@ -3,33 +3,10 @@
   "journeys": [],
   "crm-accounts": [],
   "crm-follow-ups": [],
-  "inspirations": [
-    {
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/inspirations/archive?",
-      "status": 200,
-      "marker_hits": 1,
-      "accent_hits": 4,
-      "body_excerpt": "{\"items\":[{\"id\":\"980d67cb-43f3-428f-bbb5-5a4eace6dfaf\",\"title\":\"TEST_iter78_auto_cultural\",\"description\":null,\"image_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_url\":\"https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1280&q=80\",\"source_kind\":\"url\",\"width\":null,\"height\":null,\"dominant_color\":null,\"atmosphere_tags\":[\"warm_minimal\"],\"material_tags\":[\"wood_natural\"],\"market_codes\":[],\"style_tags\":[],\"palette\":[],\"hospitality_profile\":null,\"luxury_level\":null,\"brand\":null,\"collection\":null,\"product_name\":null,\"product_category\":null,\"designer\":null,\"inspiration_type\":\"editorial\",\"rights_status\":null,\"supplier_catalog_id\":null,\"display_meta\":{\"zoom\":1.4,\"focal_x\":0.33,\"focal_y\":0.66,\"crop_ratio\":\"4:5\",\"editorial_filter\":\"cinematic_dark\"},\"tags\":[\"inspiration\"],\"created_at\":\"2026-05-22T00:25:02.849284+00:00\",\"updated_at\":\"2026-05-22T00:26:58.385494+00:00\"},{\"id\":\"97770cde-856c-4e4f-b9c9-8daebc3c27e4\",\"title\":\"TEST_PinterestRef\",\"description\":null,\"image_url\":\"https://www.pinterest.com/pin/12345/\",\"source_url\":\"https://www.pinterest.com/pin/12345/\",\"source_kind\":\"pinterest\",\"width\":null,\"height\":null,\"dominant_color\":null,\"atmosphere_tags\":[],\"material_tags\":[],\"market_codes\":[],\"style_tags\":[],\"palette\":[],\"hospitality_profile\":null,\"luxury_level\":null,\"brand\":null,\"collection\":null,\"product_name\":null,\"product_category\":null,\"designer\":null,\"inspiration_type\":\"editorial\",\"rights_status\":null,\"supplier_catalog_id\":null,\"displa"
-    }
-  ],
+  "inspirations": [],
   "brand-atlas": [],
   "material-view": [],
-  "cultural-editions": [
-    {
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts",
-      "status": 200,
-      "marker_hits": 87,
-      "accent_hits": 9,
-      "body_excerpt": "{\"drafts\":[{\"id\":\"61cd4006-eadd-48ad-9f26-93f8c63f7148\",\"source_type\":\"project\",\"source_id\":\"79d96981-1ef4-4052-ae27-ff1252e00f3c\",\"source_title\":\"Apartment — Stefano\",\"target_market\":\"italy_milano\",\"target_market_label\":\"Italia · Milano\",\"target_locale\":\"it-IT\",\"status\":\"draft\",\"created_at\":\"2026-05-22T00:26:29.482659+00:00\",\"updated_at\":\"2026-05-22T00:26:29.482668+00:00\",\"market_version\":{\"body\":\"L'appartamento Stefano nasce da una riflessione sul vivere contemporaneo: spazi misurati, gesti architettonici precisi, materiali che invecchiano con dignità. Ogni superficie dialoga con la luce naturale attraverso texture sobrie — pietra, legno, metallo brunito. Il progetto non cerca l'effetto, ma la coerenza: ogni elemento costruttivo è pensato per durare, per raccontare il tempo anziché subirlo. Un'architettura d'interni che rispetta il silenzio degli spazi domestici.\",\"lede\":\"A residential intervention in which construction detail becomes compositional grammar. Balance between function and material.\",\"locale\":\"it-IT\",\"headline\":\"Living with Rigor: Stefano's Apartment\",\"cta_label\":\"Fissa una consulenza\",\"cta_subtext\":\"Discuti il tuo progetto residenziale\",\"imagery_notes\":\"Fotografia architettonica frontale, luce zenitale che evidenzia texture, inquadrature geometriche che esaltano giunti e dettagli costruttivi.\",\"cultural_notes\":\"Onorare la tradizione progettuale milanese: rigore compositivo, dettaglio artigiano, rifiuto dell'effimero.\",\"material_notes\":\"Palette cemento spatolat"
-    },
-    {
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/cultural-editions/drafts",
-      "status": 200,
-      "marker_hits": 87,
-      "accent_hits": 9,
-      "body_excerpt": "{\"drafts\":[{\"id\":\"61cd4006-eadd-48ad-9f26-93f8c63f7148\",\"source_type\":\"project\",\"source_id\":\"79d96981-1ef4-4052-ae27-ff1252e00f3c\",\"source_title\":\"Apartment — Stefano\",\"target_market\":\"italy_milano\",\"target_market_label\":\"Italia · Milano\",\"target_locale\":\"it-IT\",\"status\":\"draft\",\"created_at\":\"2026-05-22T00:26:29.482659+00:00\",\"updated_at\":\"2026-05-22T00:26:29.482668+00:00\",\"market_version\":{\"body\":\"L'appartamento Stefano nasce da una riflessione sul vivere contemporaneo: spazi misurati, gesti architettonici precisi, materiali che invecchiano con dignità. Ogni superficie dialoga con la luce naturale attraverso texture sobrie — pietra, legno, metallo brunito. Il progetto non cerca l'effetto, ma la coerenza: ogni elemento costruttivo è pensato per durare, per raccontare il tempo anziché subirlo. Un'architettura d'interni che rispetta il silenzio degli spazi domestici.\",\"lede\":\"A residential intervention in which construction detail becomes compositional grammar. Balance between function and material.\",\"locale\":\"it-IT\",\"headline\":\"Living with Rigor: Stefano's Apartment\",\"cta_label\":\"Fissa una consulenza\",\"cta_subtext\":\"Discuti il tuo progetto residenziale\",\"imagery_notes\":\"Fotografia architettonica frontale, luce zenitale che evidenzia texture, inquadrature geometriche che esaltano giunti e dettagli costruttivi.\",\"cultural_notes\":\"Onorare la tradizione progettuale milanese: rigore compositivo, dettaglio artigiano, rifiuto dell'effimero.\",\"material_notes\":\"Palette cemento spatolat"
-    }
-  ],
+  "cultural-editions": [],
   "editorial-calendar": [],
   "magazine": [],
   "publishing": [],
@@ -38,15 +15,7 @@
   "studio-identity": [],
   "integrations": [],
   "insights": [],
-  "forms": [
-    {
-      "url": "https://content-hub-pro-22.preview.emergentagent.com/api/locale-runtime/resolve",
-      "status": 200,
-      "marker_hits": 10,
-      "accent_hits": 7,
-      "body_excerpt": "{\"locale_code\":\"IT_IT\",\"requested\":\"IT_IT\",\"source\":\"tenant\",\"candidates\":{\"explicit\":null,\"user\":null,\"project\":null,\"lead\":null,\"tenant\":\"IT_IT\",\"browser\":\"EN_US\",\"system\":\"IT_IT\"},\"profile\":{\"id\":\"af88cf96-d31c-4678-95af-30fc043a5bc7\",\"locale_code\":\"IT_IT\",\"language\":\"it\",\"market\":\"IT\",\"display_name\":\"Italia\",\"emotional_style\":\"editorial craftsmanship\",\"luxury_style\":\"lusso silenzioso, materia onesta, durata\",\"hospitality_style\":\"ospitalità domestica, ritmo lento, tavola condivisa\",\"editorial_tone\":\"registro editoriale calmo, prosa misurata\",\"cta_style\":\"invito sobrio, mai imperativo — 'Scrivimi quando il progetto è pronto'\",\"investment_language\":\"valore nel tempo, qualità costruttiva, continuità artigianale\",\"atmosphere_language\":\"atmosfera misurata, luce naturale, presenza calma, materia che dura\",\"focus\":[\"craftsmanship\",\"materials\",\"timelessness\",\"proportion\",\"editorial warmth\"],\"vocabulary_rules\":[\"equilibrio\",\"materia\",\"artigianalità\",\"continuità\",\"luce naturale\",\"misura\",\"atmosfera\",\"presenza calma\",\"gesto antico\",\"registro\",\"tempo lungo\"],\"forbidden_patterns\":[\"lusso ostentato\",\"stile internazionale generico\",\"modern minimal stereotipato\",\"AI\",\"powered by\",\"lifestyle aspirazionale\"],\"positioning_examples\":[\"Una conversazione tra materia e luce, calibrata sul ritmo della casa.\",\"Il progetto si misura sul tempo lungo, non sull'effetto immediato.\"],\"system_brief\":\"Write for an Italian audience that values quiet craftsmanship, material honesty, artisan culture and cont"
-    }
-  ],
+  "forms": [],
   "studio-voice": [],
   "language-center": [],
   "moodboards": [],
