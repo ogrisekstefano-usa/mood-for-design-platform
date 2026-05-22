@@ -587,3 +587,122 @@ def batch_translate(payload: BatchTranslateRequest,
         'voice_addendum':  bool(voice_addendum),
         'items':           report,
     }
+
+
+# ─── ITER132 · Runtime Localization Heatmap™ static surface ───────────
+# These endpoints expose the autonomous-loop artefacts written by
+# `scripts/full_runtime_localization_crawler.py` + remediator. Auth is
+# admin-only since the heatmap reveals internal governance state.
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse  # noqa: E402
+
+_GOV_DIR = Path('/app/governance')
+
+
+@router.get("/runtime/summary")
+def runtime_summary(ctx: dict = Depends(get_tenant_context)):
+    """Latest crawler summary + iteration history (read from disk + SQLite)."""
+    _require_admin(ctx)
+    report_path = _GOV_DIR / 'runtime-localization-report.json'
+    if not report_path.exists():
+        return {
+            "available": False,
+            "message": "No crawl on file. Run `python3 /app/scripts/runtime_remediation_loop.py`.",
+        }
+    report = json.loads(report_path.read_text('utf-8'))
+    # Iteration history from SQLite (optional, best-effort).
+    iterations = []
+    try:
+        import sqlite3
+        db_path = _GOV_DIR / 'runtime_leaks.db'
+        if db_path.exists():
+            conn = sqlite3.connect(str(db_path))
+            for r in conn.execute(
+                "SELECT n, started_at, finished_at, summary_json "
+                "FROM iterations ORDER BY n DESC LIMIT 20"
+            ):
+                iterations.append({
+                    "n": r[0], "started_at": r[1], "finished_at": r[2],
+                    "summary": json.loads(r[3] or '{}'),
+                })
+            conn.close()
+    except Exception:
+        pass
+    return {
+        "available": True,
+        "locale": report.get('locale'),
+        "generated_at": report.get('generated_at'),
+        "routes_crawled": report.get('routes_crawled'),
+        "summary": report.get('summary'),
+        "iterations": iterations,
+    }
+
+
+@router.get("/runtime/heatmap")
+def runtime_heatmap(ctx: dict = Depends(get_tenant_context)):
+    """Serves the editorial Localization Heatmap™ HTML."""
+    _require_admin(ctx)
+    f = _GOV_DIR / 'runtime-localization-heatmap.html'
+    if not f.exists():
+        return HTMLResponse(
+            "<h1>No heatmap on file</h1>"
+            "<p>Run <code>python3 /app/scripts/runtime_remediation_loop.py</code> first.</p>",
+            status_code=404,
+        )
+    return HTMLResponse(f.read_text('utf-8'))
+
+
+@router.get("/runtime/report")
+def runtime_report(ctx: dict = Depends(get_tenant_context)):
+    """Raw crawler report as JSON."""
+    _require_admin(ctx)
+    f = _GOV_DIR / 'runtime-localization-report.json'
+    if not f.exists():
+        return JSONResponse({"available": False}, status_code=404)
+    return JSONResponse(json.loads(f.read_text('utf-8')))
+
+
+@router.get("/runtime/leaks")
+def runtime_leak_db(
+    open_only: bool = Query(False),
+    limit: int = Query(200, ge=1, le=500),
+    ctx: dict = Depends(get_tenant_context),
+):
+    """Reads the SQLite leak DB written by the auto-remediation engine."""
+    _require_admin(ctx)
+    db_path = _GOV_DIR / 'runtime_leaks.db'
+    if not db_path.exists():
+        return {"items": [], "available": False}
+    import sqlite3
+    conn = sqlite3.connect(str(db_path))
+    q = (
+        "SELECT id, iteration, kind, page, text, testid, source, severity, "
+        "first_seen, last_seen, resolution_method, fixed_at, occurrences "
+        "FROM leaks "
+    )
+    if open_only:
+        q += "WHERE resolution_method IS NULL "
+    q += "ORDER BY last_seen DESC LIMIT ?"
+    items = []
+    for r in conn.execute(q, (limit,)):
+        items.append({
+            "id": r[0], "iteration": r[1], "kind": r[2], "page": r[3],
+            "text": r[4], "testid": r[5], "source": r[6], "severity": r[7],
+            "first_seen": r[8], "last_seen": r[9],
+            "resolution_method": r[10], "fixed_at": r[11], "occurrences": r[12],
+        })
+    conn.close()
+    return {"available": True, "items": items, "total": len(items)}
+
+
+@router.get("/runtime/screenshot/{key}")
+def runtime_screenshot(key: str, ctx: dict = Depends(get_tenant_context)):
+    """Serves a per-route JPG captured during the crawl."""
+    _require_admin(ctx)
+    # Defensive: key is a route slug — strict charset to prevent traversal.
+    import re as _re
+    if not _re.fullmatch(r'[a-z0-9_\-]+', key):
+        raise HTTPException(400, "invalid_key")
+    f = _GOV_DIR / 'runtime-localization-screenshots' / f'{key}.jpg'
+    if not f.exists():
+        raise HTTPException(404, "not_found")
+    return FileResponse(str(f), media_type='image/jpeg')
