@@ -779,7 +779,7 @@ const BrandStudioPage = () => {
           <button onClick={save} disabled={!dirty || saving} data-testid="brand-save" className={`px-5 py-2.5 rounded-[var(--bp-radius-sm)] text-[10px] font-body uppercase tracking-[0.22em] flex items-center gap-2 transition-all
                     ${dirty && !saving ? 'bg-[var(--bp-primary)] text-black hover:brightness-110' : 'bg-[var(--bp-surface-2)] text-[var(--bp-text-muted)] cursor-not-allowed'}`}>
             {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} strokeWidth={1.5} />}
-            {t('brand.save', null, 'Salva modifiche')}
+            {t('brand.save_changes', null, 'Save changes')}
           </button>
         </div>
       </div>

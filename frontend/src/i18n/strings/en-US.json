@@ -1908,7 +1908,8 @@
       "typographyTitle": "Typography"
     },
     "tagline": "The editorial workspace of design studios.",
-    "title": "Brand identity"
+    "title": "Brand identity",
+    "save_changes": "Save changes"
   },
   "collab": {
     "handoff": {
@@ -1956,5 +1957,109 @@
     "workspace": "Workspace",
     "profile": "Profile",
     "language": "Language"
+  },
+  "atelier_voice": {
+    "curatorial_modal": {
+      "tray_eyebrow": "Curatorial table",
+      "tray_empty_line1": "Mark the references that matter most.",
+      "tray_empty_line2": "They’ll travel into the moodboard together.",
+      "head_eyebrow": "Curatorial table · Inspirations™",
+      "head_title_lead": "Compose",
+      "head_title_em": "design references",
+      "empty_lede": "Broaden the atmosphere, materiality or geography to read other design languages from the studio."
+    },
+    "editor_panel": {
+      "curatorial_cta_eyebrow": "Curatorial table"
+    },
+    "material_direction": {
+      "eyebrow": "Material direction"
+    },
+    "milestone_dialogue": {
+      "feedback_title": "Design conversation",
+      "chapters_title": "The shared chapters"
+    },
+    "story_sections": {
+      "eyebrow": "Visual narrative"
+    },
+    "advisor_network": {
+      "new_partner_title": "New network partner"
+    },
+    "advisor_dashboard": {
+      "new_report": "New report",
+      "support_report": "Support report"
+    },
+    "account_constellation": {
+      "people_eyebrow": "Travel companions",
+      "memory_eyebrow": "Design memory",
+      "memory_title": "What has already been said",
+      "artifacts_title": "What has been presented"
+    },
+    "activity_modal": {
+      "eyebrow": "New activity"
+    },
+    "crm_accounts": {
+      "new_relationship_eyebrow": "CRM · New relationship"
+    },
+    "cultural_edition": {
+      "palette_label": "Material palette"
+    },
+    "editorial_studio": {
+      "new_master_cta": "New master"
+    },
+    "market_editions": {
+      "new_master": "New editorial master",
+      "new_edition": "New market edition",
+      "new_master_short": "New master"
+    },
+    "insights": {
+      "signature_label": "Curatorial signature"
+    },
+    "add_inspiration": {
+      "main_material_label": "Primary material"
+    },
+    "brand_detail": {
+      "atlas_eyebrow": "Curated atlas",
+      "reading_eyebrow": "Curatorial reading",
+      "count_collections": "collections",
+      "count_products": "products",
+      "count_references": "references"
+    },
+    "collection_form": {
+      "description_label": "Curatorial description"
+    },
+    "curated_collection": {
+      "new_collection": "New collection"
+    },
+    "inspiration_detail": {
+      "material_label": "Material"
+    },
+    "material_view": {
+      "eyebrow_suffix": "curated materials library"
+    },
+    "product_gallery": {
+      "design_language": "Design language",
+      "new_collection": "New collection"
+    },
+    "studio_collections": {
+      "loading": "Loading the curated archive…"
+    },
+    "supplier_import": {
+      "no_producer_found": "No manufacturer found.",
+      "new_producer": "New manufacturer",
+      "new_collection": "New collection"
+    },
+    "step_workspace": {
+      "recorded_chapters": "Recorded chapters"
+    },
+    "projects_studio": {
+      "open_new_hint": "or open a new one to begin"
+    },
+    "brand_atlas": {
+      "eyebrow": "Brand Atlas™ · curated atlas of manufacturers",
+      "title_lead": "Manufacturers as",
+      "title_em": "design languages",
+      "lead": "Explore the manufacturers, their collections and the design language of every brand within MOOD. Each brand is a page in our curated atlas.",
+      "empty_lede": "The curated atlas is being composed. Add a manufacturer or import a catalog to begin the reading."
+    }
   }
 }

@@ -1908,7 +1908,8 @@
       "typographyTitle": "Type & Language"
     },
     "tagline": "The editorial register for design practices.",
-    "title": "Brand language and register"
+    "title": "Brand language and register",
+    "save_changes": "Register revisions"
   },
   "collab": {
     "handoff": {
@@ -1956,5 +1957,109 @@
     "workspace": "Studio archive",
     "profile": "Profile",
     "language": "Language"
+  },
+  "atelier_voice": {
+    "account_constellation": {
+      "artifacts_title": "Work presented to register",
+      "memory_eyebrow": "Design Archive",
+      "memory_title": "Previously recorded notation",
+      "people_eyebrow": "Fellow practitioners"
+    },
+    "activity_modal": {
+      "eyebrow": "Register new entry"
+    },
+    "add_inspiration": {
+      "main_material_label": "Primary material registered"
+    },
+    "advisor_dashboard": {
+      "new_report": "Recorded entry",
+      "support_report": "Advisory correspondence register"
+    },
+    "advisor_network": {
+      "new_partner_title": "Atelier collaborator enrolled"
+    },
+    "brand_atlas": {
+      "empty_lede": "Your atlas awaits its first entry. Register a maker or import a catalogue to begin your curatorial record.",
+      "eyebrow": "Brand Atlas™ · a curated register of makers",
+      "lead": "Study the language, collections and design tradition of each maker catalogued in MOOD—an atlas of curated intention, arranged by atelier.",
+      "title_em": "design vocabularies",
+      "title_lead": "Makers registered as"
+    },
+    "brand_detail": {
+      "atlas_eyebrow": "Curatorial register",
+      "reading_eyebrow": "Curatorial reading",
+      "count_collections": "registered collections",
+      "count_products": "registered works",
+      "count_references": "archived citations"
+    },
+    "collection_form": {
+      "description_label": "Curatorial statement"
+    },
+    "crm_accounts": {
+      "new_relationship_eyebrow": "CRM · New client record"
+    },
+    "cultural_edition": {
+      "palette_label": "Material register"
+    },
+    "curated_collection": {
+      "new_collection": "Recently registered collection"
+    },
+    "curatorial_modal": {
+      "empty_lede": "Broaden by atmosphere, materiality or geography to discover other design languages held within the studio archive.",
+      "head_eyebrow": "Curatorial table · Inspirations™",
+      "head_title_em": "design precedents",
+      "head_title_lead": "Compose your register",
+      "tray_empty_line1": "Register the references of greatest consequence.",
+      "tray_empty_line2": "They will be registered to your moodboard together.",
+      "tray_eyebrow": "Curatorial tray"
+    },
+    "editor_panel": {
+      "curatorial_cta_eyebrow": "Curatorial table"
+    },
+    "editorial_studio": {
+      "new_master_cta": "Register new Master"
+    },
+    "insights": {
+      "signature_label": "Curatorial mark"
+    },
+    "inspiration_detail": {
+      "material_label": "Material record"
+    },
+    "market_editions": {
+      "new_edition": "New Market Edition Registered",
+      "new_master": "New Editorial Register",
+      "new_master_short": "Registered Master Entry"
+    },
+    "material_direction": {
+      "eyebrow": "Material Intent"
+    },
+    "material_view": {
+      "eyebrow_suffix": "curated material library"
+    },
+    "milestone_dialogue": {
+      "chapters_title": "Chapters held in common",
+      "feedback_title": "Recorded studio dialogue"
+    },
+    "product_gallery": {
+      "design_language": "Design vocabulary",
+      "new_collection": "Latest register"
+    },
+    "projects_studio": {
+      "open_new_hint": "or register a new one to begin"
+    },
+    "step_workspace": {
+      "recorded_chapters": "Chapters on record"
+    },
+    "story_sections": {
+      "eyebrow": "Visual narrative"
+    },
+    "studio_collections": {
+      "loading": "Retrieving your curatorial archive…"
+    },
+    "supplier_import": {
+      "new_collection": "Recent addition to the studio register",
+      "new_producer": "Newly registered maker",
+      "no_producer_found": "No producer on record."
+    }
   }
 }

@@ -216,7 +216,7 @@ const AdvisorDashboardPage = () => {
         <div className="adv-section__head">
           <h2 className="adv-section__title">Report di supporto recenti</h2>
           <button className="adv-btn adv-btn--ghost" onClick={() => setShowReport(true)} data-testid="adv-new-report">
-            <Plus size={11} /> Nuovo report
+            <Plus size={11} /> {t('atelier_voice.advisor_dashboard.new_report', null, 'New report')}
           </button>
         </div>
         {reports.length === 0 && <p className="adv-empty__hint" style={{
@@ -296,8 +296,8 @@ const ReportDrawer = ({
       <aside className="adv-drawer" data-testid="adv-report-drawer">
         <header className="adv-drawer__head">
           <div>
-            <p className="adv-eyebrow">Report di supporto</p>
-            <h2 className="adv-drawer__title">Nuovo report</h2>
+            <p className="adv-eyebrow">{t('atelier_voice.advisor_dashboard.support_report', null, 'Support report')}</p>
+            <h2 className="adv-drawer__title">{t('atelier_voice.advisor_dashboard.new_report', null, 'New report')}</h2>
           </div>
           <button onClick={onClose} className="adv-drawer__close"><span style={{
             fontSize: 18

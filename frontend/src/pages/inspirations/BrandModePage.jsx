@@ -156,12 +156,12 @@ const BrandModePage = () => {
           flex: 1,
           minWidth: 280
         }}>
-            <p className="bm-hero__eyebrow" data-testid="brand-atlas-eyebrow">{t('inspirations.brand_mode.atlas_eyebrow', null, 'Brand Atlas™ · curated atlas of manufacturers')}</p>
+            <p className="bm-hero__eyebrow" data-testid="brand-atlas-eyebrow">{t('atelier_voice.brand_atlas.eyebrow', null, 'Brand Atlas™ · curated atlas of manufacturers')}</p>
             <h1 className="bm-hero__title" data-testid="brand-atlas-title">
-              {t('inspirations.brand_mode.atlas_title_lead', null, 'Manufacturers as')} <em>{t('inspirations.brand_mode.atlas_title_em', null, 'design languages')}</em>
+              {t('atelier_voice.brand_atlas.title_lead', null, 'Manufacturers as')} <em>{t('atelier_voice.brand_atlas.title_em', null, 'design languages')}</em>
             </h1>
             <p className="bm-hero__lead">
-              {t("inspirations.brand_mode.atlas_lead")}
+              {t('atelier_voice.brand_atlas.lead')}
             </p>
           </div>
           <button type="button" className="bm-empty__back" style={{
@@ -196,7 +196,7 @@ const BrandModePage = () => {
         </div> : filtered.length === 0 ? <div className="bm-empty" data-testid="brand-mode-empty">
           <div className="bm-empty__ring"><Icons.Compass size={16} strokeWidth={1.3} /></div>
           <h3>{t('inspirations.brand_mode.nessun_produttore_corrisponde_alla_ricerca')}</h3>
-          <p>{t('inspirations.brand_mode.atlas_empty_lead')}</p>
+          <p>{t('atelier_voice.brand_atlas.empty_lede')}</p>
         </div> : <div className="bm-grid" data-testid="brand-mode-grid">
           {filtered.map(b => <BrandCard key={b.id} b={b} />)}
         </div>}

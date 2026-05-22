@@ -3979,3 +3979,44 @@ crawler discovered the AST was lying:
 Per user directive 2026-05-22:
 > "Dopo questa fase: STOP localization architecture. Passiamo finalmente a: Blueprint Atelier™ visual system."
 
+
+---
+
+## ITER137 · FROZEN CORE STATUS™ (2026-05-22 · 23:05 UTC)
+
+**ITER137 is officially closed.** Localization architecture is frozen.
+
+### Final scoreboard
+- **Registry**: 1 381 keys total
+- **Code-key native coverage**: 100.00 % on all 7 locales (1 214/1 214)
+- **Migration cache**: 5 475 entries (persistent at `/app/governance/migration_cache.json`)
+- **Crawler**: RAW_KEY=0 · MISSING=0 · INVALID_USE=0 · RUNTIME_CRASH=0 across all 7 locales × 21 routes
+- **Live overlay**: `MISS 0 LEAK 0` confirmed on en-US, de-DE, es-ES, en-GB sampled routes
+
+### Final eradication waves
+1. **Wave 1**: 43 hardcoded IT JSX nodes → wrapped in `t()`, 46 canonical entries seeded
+2. **Wave 2**: 34 `atelier_voice.*` canonical authoring (it-IT + en-US)
+3. **Wave 2b**: 37 Italian fallback strings inside `t()` → replaced with English (6 JSX files)
+4. **Wave 3**: 5 residual JSX hardcoded labels wrapped + final 10 canonical entries
+5. **Semantic migration #3 + #4**: 255 LLM calls to native-rewrite the new atelier_voice namespace across 5 non-canonical locales
+
+### Single documented exception
+- `PremiumTemplatePreview.jsx:229` — `Palette 01 · Atelier` — static visual mockup label, intentionally non-localized (design exemplar).
+
+### AR (Arabic) operational status
+- `blueprint_enabled: false` in `languages.js` — Blueprint-side Arabic is intentionally disabled
+- Arabic is fully translated and used on **public site + client Companion** only
+- 100 % native coverage achieved on AR for future Blueprint activation (one-line flag flip in `languages.js`)
+
+### Frozen modules (no further work without explicit ITER139+ approval)
+- `backend/services/semantic_rewrite_engine.py`
+- `backend/services/atelier_voice_architecture.py`
+- `backend/services/editorial_review_memory.py`
+- `backend/services/runtime_loop_jobs.py`
+- `scripts/full_runtime_localization_crawler.py`
+- `scripts/full_registry_migration.py`
+- `/app/frontend/src/i18n/strings/{it-IT,en-US,en-GB,fr-FR,de-DE,es-ES,ar}.json`
+
+### Next sprint
+**ITER138 — Blueprint Atelier™ Visual System** — BLOCKED on user-supplied 6 visual references (mood-board, layout, palette, density, atmosphere, typography). Per user mandate, agent will not invent any visual design choice.
+

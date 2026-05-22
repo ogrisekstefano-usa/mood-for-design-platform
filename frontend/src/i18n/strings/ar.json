@@ -1918,7 +1918,8 @@
       "typographyTitle": "الحروف والأثر البصري"
     },
     "tagline": "المنصّة التحريرية لورش التصميم الكبرى",
-    "title": "هوية الحضور المادي"
+    "title": "هوية الحضور المادي",
+    "save_changes": "حفظ الأثر"
   },
   "collab": {
     "handoff": {
@@ -1958,5 +1959,109 @@
   "proposals": {
     "empty": "لا حضور لمقترحات في الورشة بعد",
     "title": "المقترحات الحِرَفية"
+  },
+  "atelier_voice": {
+    "account_constellation": {
+      "artifacts_title": "ما تمّ تقديمه للحضور",
+      "memory_eyebrow": "ذاكرة الورشة المعمارية",
+      "memory_title": "ما حُفظ في الذاكرة",
+      "people_eyebrow": "رفقاء الورشة"
+    },
+    "activity_modal": {
+      "eyebrow": "نشاط جديد في الورشة"
+    },
+    "add_inspiration": {
+      "main_material_label": "المادة الأساسية للعمل"
+    },
+    "advisor_dashboard": {
+      "new_report": "سرد جديد من الورشة",
+      "support_report": "سجل المساندة والحضور"
+    },
+    "advisor_network": {
+      "new_partner_title": "شريك جديد في دائرة الورشة"
+    },
+    "brand_atlas": {
+      "empty_lede": "لم يُبنَ الأطلس بعد. أضِف صانعًا أو استورد سردًا لتبدأ القراءة في المادة",
+      "eyebrow": "Brand Atlas™ · أطلس الحضور للمصنّعين المنتقين",
+      "lead": "استكشف الحضور البصري والسرد المادي لكل دار في MOOD، حيث تتحوّل كل علامة إلى صفحة في أطلسنا الحِرفي المنتقى",
+      "title_em": "لغات الأثر والتصميم",
+      "title_lead": "الورش الحاملة لإرث المادة من قبيل"
+    },
+    "brand_detail": {
+      "atlas_eyebrow": "خارطة الحضور البصري",
+      "reading_eyebrow": "قراءة في الحضور والأثر",
+      "count_collections": "مجموعات الأثر",
+      "count_products": "قطع حاضرة في الورشة",
+      "count_references": "الإشارات المرجعية"
+    },
+    "collection_form": {
+      "description_label": "السرد الورشي للمجموعة"
+    },
+    "crm_accounts": {
+      "new_relationship_eyebrow": "علاقة جديدة · Atelier"
+    },
+    "cultural_edition": {
+      "palette_label": "حضور المادة"
+    },
+    "curated_collection": {
+      "new_collection": "مجموعة تحمل حضورًا جديدًا"
+    },
+    "curatorial_modal": {
+      "empty_lede": "وسّع النظر في الأجواء أو المادة أو المكان لتكتشف لغات التصميم الأخرى التي تنطق بها الورشة.",
+      "head_eyebrow": "طاولة السرد · Inspirations™",
+      "head_title_em": "مرجعيات الأثر والسرد",
+      "head_title_lead": "اصنع السرد",
+      "tray_empty_line1": "حدّد المراجع الأكثر حضورًا في الورشة",
+      "tray_empty_line2": "ستُجمع في لوحة المزاج معاً، حضوراً واحداً",
+      "tray_eyebrow": "طاولة التنسيق والسرد"
+    },
+    "editor_panel": {
+      "curatorial_cta_eyebrow": "منصة السرد البصري"
+    },
+    "editorial_studio": {
+      "new_master_cta": "ورشة أساسية جديدة"
+    },
+    "insights": {
+      "signature_label": "بصمة الورشة الحاضرة"
+    },
+    "inspiration_detail": {
+      "material_label": "المادة الخام"
+    },
+    "market_editions": {
+      "new_edition": "إصدار السوق الجديد",
+      "new_master": "سرد تحريري جديد في الورشة",
+      "new_master_short": "أستاذ جديد في الورشة"
+    },
+    "material_direction": {
+      "eyebrow": "وجهة المادة وحضورها"
+    },
+    "material_view": {
+      "eyebrow_suffix": "مكتبة المواد المُختارة"
+    },
+    "milestone_dialogue": {
+      "chapters_title": "الفصول المشتركة في الورشة",
+      "feedback_title": "حوار الورشة التصميمية"
+    },
+    "product_gallery": {
+      "design_language": "لغة الورشة البصرية",
+      "new_collection": "مجموعة جديدة من المواد والحضور"
+    },
+    "projects_studio": {
+      "open_new_hint": "أو ابدأ مشروعًا جديدًا لتأسيس حضوره"
+    },
+    "step_workspace": {
+      "recorded_chapters": "فصول مُثبّتة في السجلّ"
+    },
+    "story_sections": {
+      "eyebrow": "سرد الحضور البصري"
+    },
+    "studio_collections": {
+      "loading": "جارٍ استدعاء ذاكرة المجموعات المُنتقاة"
+    },
+    "supplier_import": {
+      "new_collection": "مجموعة جديدة في السجل",
+      "new_producer": "مورّد جديد في السجل",
+      "no_producer_found": "لم يتم العثور على أي صانع في السجل"
+    }
   }
 }

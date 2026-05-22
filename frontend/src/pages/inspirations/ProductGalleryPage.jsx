@@ -210,7 +210,7 @@ const AssetInfoTab = ({
   } = useT();
   if (!asset) return null;
   return <div className="pg-info" data-testid="pg-tab-asset-info">
-      <p className="pg-info__eyebrow">Linguaggio progettuale</p>
+      <p className="pg-info__eyebrow">{t('atelier_voice.product_gallery.design_language', null, 'Design language')}</p>
       <h3 className="pg-info__title">{asset.product_name || 'Asset senza nome'}</h3>
       <p className="pg-info__sub">{asset.brand} · {asset.collection || '—'}</p>
 
@@ -395,7 +395,7 @@ const ReferencesTab = ({
       <h4 className="pg-refs__title">Curated References™</h4>
       <button type="button" className="pg-btn pg-btn--ghost" onClick={onCreate} data-testid="pg-refs-new">
         <Icons.Plus size={13} />
-        <span>Nuova collezione</span>
+        <span>{t('atelier_voice.product_gallery.new_collection', null, 'New collection')}</span>
       </button>
     </header>
     {currentAsset && <p className="pg-refs__hint">

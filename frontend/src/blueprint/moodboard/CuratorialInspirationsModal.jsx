@@ -234,7 +234,7 @@ const StagingTray = ({ items, onClear, onRemove, onDropAll }) => (
   <aside className="ci-tray" data-testid="ci-staging-tray">
     <header className="ci-tray__head">
       <div>
-        <p className="ci-eyebrow">Tavolo curatoriale</p>
+        <p className="ci-eyebrow">{t('atelier_voice.curatorial_modal.tray_eyebrow', null, 'Curatorial table')}</p>
         <h4 className="ci-tray__title">Selezione</h4>
       </div>
       {items.length > 0 && (
@@ -248,7 +248,7 @@ const StagingTray = ({ items, onClear, onRemove, onDropAll }) => (
     {items.length === 0 ? (
       <div className="ci-tray__empty">
         <Icons.Bookmark size={16} strokeWidth={1.3} />
-        <p>Marca i riferimenti più rilevanti.<br />Saranno portati nel moodboard insieme.</p>
+        <p>{t('atelier_voice.curatorial_modal.tray_empty_line1', null, 'Mark the references that matter most.')}<br />{t('atelier_voice.curatorial_modal.tray_empty_line2', null, 'They\u2019ll travel into the moodboard together.')}</p>
       </div>
     ) : (
       <div className="ci-tray__list" data-testid="ci-tray-list">
@@ -356,9 +356,9 @@ const CuratorialInspirationsModal = ({ open, onClose, moodboardId, onAddInspirat
     <div className="ci-overlay" data-testid="curatorial-inspirations-modal">
       <header className="ci-overlay__head">
         <div>
-          <p className="ci-eyebrow">Tavolo curatoriale · Inspirations™</p>
+          <p className="ci-eyebrow">{t('atelier_voice.curatorial_modal.head_eyebrow', null, 'Curatorial table \u00B7 Inspirations\u2122')}</p>
           <h2 className="ci-overlay__title">
-            Componi <em>riferimenti progettuali</em>
+            {t('atelier_voice.curatorial_modal.head_title_lead', null, 'Compose')} <em>{t('atelier_voice.curatorial_modal.head_title_em', null, 'design references')}</em>
           </h2>
         </div>
         <button type="button" className="ci-overlay__close"
@@ -476,7 +476,7 @@ const CuratorialInspirationsModal = ({ open, onClose, moodboardId, onAddInspirat
             <div className="ci-empty">
               <div className="ci-empty__ring"><Icons.Sparkles size={18} strokeWidth={1.3} /></div>
               <h3>Nessun riferimento corrisponde</h3>
-              <p>Allarga atmosfera, materialità o geografia per leggere altri linguaggi progettuali dello studio.</p>
+              <p>{t('atelier_voice.curatorial_modal.empty_lede', null, 'Broaden the atmosphere, materiality or geography to read other design languages from the studio.')}</p>
             </div>
           ) : (
             <div className="ci-grid" data-testid="ci-grid">

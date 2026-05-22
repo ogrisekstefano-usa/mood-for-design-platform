@@ -1908,7 +1908,8 @@
       "typographyTitle": "Tipografia"
     },
     "tagline": "Lo strumento editoriale degli studi di design.",
-    "title": "Identità di brand"
+    "title": "Identità di brand",
+    "save_changes": "Salva modifiche"
   },
   "collab": {
     "handoff": {
@@ -1956,5 +1957,109 @@
     "workspace": "Workspace",
     "profile": "Profilo",
     "language": "Lingua"
+  },
+  "atelier_voice": {
+    "curatorial_modal": {
+      "tray_eyebrow": "Tavolo curatoriale",
+      "tray_empty_line1": "Marca i riferimenti più rilevanti.",
+      "tray_empty_line2": "Saranno portati nel moodboard insieme.",
+      "head_eyebrow": "Tavolo curatoriale · Inspirations™",
+      "head_title_lead": "Componi",
+      "head_title_em": "riferimenti progettuali",
+      "empty_lede": "Allarga atmosfera, materialità o geografia per leggere altri linguaggi progettuali dello studio."
+    },
+    "editor_panel": {
+      "curatorial_cta_eyebrow": "Tavolo curatoriale"
+    },
+    "material_direction": {
+      "eyebrow": "Direzione materica"
+    },
+    "milestone_dialogue": {
+      "feedback_title": "Conversazione progettuale",
+      "chapters_title": "I capitoli condivisi"
+    },
+    "story_sections": {
+      "eyebrow": "Narrazione visiva"
+    },
+    "advisor_network": {
+      "new_partner_title": "Nuovo partner di rete"
+    },
+    "advisor_dashboard": {
+      "new_report": "Nuovo report",
+      "support_report": "Report di supporto"
+    },
+    "account_constellation": {
+      "people_eyebrow": "Compagni di viaggio",
+      "memory_eyebrow": "Memoria progettuale",
+      "memory_title": "Ciò che è già stato detto",
+      "artifacts_title": "Ciò che è stato presentato"
+    },
+    "activity_modal": {
+      "eyebrow": "Nuova attività"
+    },
+    "crm_accounts": {
+      "new_relationship_eyebrow": "CRM · Nuova relazione"
+    },
+    "cultural_edition": {
+      "palette_label": "Palette materica"
+    },
+    "editorial_studio": {
+      "new_master_cta": "Nuovo Master"
+    },
+    "market_editions": {
+      "new_master": "Nuovo Editorial Master",
+      "new_edition": "Nuova Market Edition",
+      "new_master_short": "Nuovo Master"
+    },
+    "insights": {
+      "signature_label": "Signature curatoriale"
+    },
+    "add_inspiration": {
+      "main_material_label": "Materia principale"
+    },
+    "brand_detail": {
+      "atlas_eyebrow": "Atlante curatoriale",
+      "reading_eyebrow": "Lettura curatoriale",
+      "count_collections": "collezioni",
+      "count_products": "prodotti",
+      "count_references": "riferimenti"
+    },
+    "collection_form": {
+      "description_label": "Descrizione curatoriale"
+    },
+    "curated_collection": {
+      "new_collection": "Nuova collezione"
+    },
+    "inspiration_detail": {
+      "material_label": "Materia"
+    },
+    "material_view": {
+      "eyebrow_suffix": "materioteca curatoriale"
+    },
+    "product_gallery": {
+      "design_language": "Linguaggio progettuale",
+      "new_collection": "Nuova collezione"
+    },
+    "studio_collections": {
+      "loading": "Carico l’archivio curatoriale…"
+    },
+    "supplier_import": {
+      "no_producer_found": "Nessun produttore trovato.",
+      "new_producer": "Nuovo produttore",
+      "new_collection": "Nuova collezione"
+    },
+    "step_workspace": {
+      "recorded_chapters": "Capitoli registrati"
+    },
+    "projects_studio": {
+      "open_new_hint": "o aprine uno nuovo per iniziare"
+    },
+    "brand_atlas": {
+      "eyebrow": "Brand Atlas™ · atlante curatoriale dei produttori",
+      "title_lead": "I produttori come",
+      "title_em": "linguaggi progettuali",
+      "lead": "Esplora i marchi, le collezioni e il linguaggio progettuale dei produttori presenti in MOOD. Ogni brand è una pagina del nostro atlante curatoriale.",
+      "empty_lede": "L’atlante curatoriale è in costruzione. Aggiungi un produttore o importa un catalogo per iniziare la lettura."
+    }
   }
 }

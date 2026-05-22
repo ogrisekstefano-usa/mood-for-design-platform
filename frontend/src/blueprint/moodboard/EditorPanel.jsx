@@ -299,7 +299,7 @@ const InspirationsTab = ({ onAddInspiration, moodboardId, onOpenCuratorial }) =>
             className="ci-cta"
             onClick={() => onOpenCuratorial?.()}
             data-testid="open-curatorial-modal">
-      <span className="ci-cta__eyebrow">Tavolo curatoriale</span>
+      <span className="ci-cta__eyebrow">{t('atelier_voice.editor_panel.curatorial_cta_eyebrow', null, 'Curatorial table')}</span>
       <span className="ci-cta__title">Apri Inspirations™</span>
       <span className="ci-cta__lead">
         Esplora atmosfere, materialità e geografie narrative · porta i riferimenti nel moodboard.

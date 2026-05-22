@@ -97,7 +97,7 @@ const NewMasterModal = ({
         <header className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-[var(--bp-border)]">
           <div>
             <p className="text-[10px] uppercase tracking-[0.28em] text-[var(--bp-primary)] font-body mb-1">Editorial Studio</p>
-            <h2 className="text-[20px] font-heading text-[var(--bp-text-primary)] leading-tight">Nuovo Editorial Master</h2>
+            <h2 className="text-[20px] font-heading text-[var(--bp-text-primary)] leading-tight">{t('atelier_voice.market_editions.new_master', null, 'New editorial master')}</h2>
             <p className="text-[12px] text-[var(--bp-text-muted)] font-body italic mt-1">
               {t("editorial.market_editions_toolbar.la_direzione_editoriale_globale_da_cui_nasceranno")}
             </p>
@@ -202,7 +202,7 @@ const NewMarketEditionModal = ({
             <p className="text-[10px] uppercase tracking-[0.28em] text-[var(--bp-primary)] font-body mb-1">
               Master · {master?.code || '—'}
             </p>
-            <h2 className="text-[20px] font-heading text-[var(--bp-text-primary)] leading-tight">Nuova Market Edition</h2>
+            <h2 className="text-[20px] font-heading text-[var(--bp-text-primary)] leading-tight">{t('atelier_voice.market_editions.new_edition', null, 'New market edition')}</h2>
             <p className="text-[12px] text-[var(--bp-text-muted)] font-body italic mt-1">
               {t("editorial.market_editions_toolbar.scegli_il_mercato_di_destinazione_tono_cta_e_ritmo")}
             </p>
@@ -384,11 +384,11 @@ const MarketEditionsToolbar = ({
         <div className="me-toolbar__primary">
           <button type="button" className="me-btn me-btn--primary" data-testid="me-cta-new-master" onClick={() => setShowNewMaster(true)}>
             <Plus size={12} strokeWidth={2} />
-            <span>Nuovo Master</span>
+            <span>{t('atelier_voice.market_editions.new_master_short', null, 'New master')}</span>
           </button>
           <button type="button" className="me-btn" data-testid="me-cta-new-edition" onClick={() => setShowNewEdition(true)} disabled={!selectedMaster?.id} title={!selectedMaster?.id ? 'Seleziona prima un Master' : ''}>
             <Plus size={12} strokeWidth={2} />
-            <span>Nuova Market Edition</span>
+            <span>{t('atelier_voice.market_editions.new_edition', null, 'New market edition')}</span>
           </button>
           <button type="button" className="me-btn" data-testid="me-cta-duplicate" onClick={handleDuplicate} disabled={!selectedVariant?.id || duplicating} title={!selectedVariant?.id ? 'Seleziona una Market Edition da duplicare' : ''}>
             {duplicating ? <Loader2 size={12} className="animate-spin" /> : <Copy size={12} strokeWidth={1.6} />}

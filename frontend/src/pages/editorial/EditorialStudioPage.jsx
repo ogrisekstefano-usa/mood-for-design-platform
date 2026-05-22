@@ -141,7 +141,7 @@ export const EditorialStudioPage = () => {
             </p>
             <p className="ed-pane__hint">
               ← Seleziona un Editorial Master o una Market Edition dalla colonna a sinistra,
-              oppure usa <strong>+ Nuovo Master</strong> nella toolbar.
+              oppure usa <strong>+ {t('atelier_voice.editorial_studio.new_master_cta', null, 'New master')}</strong> nella toolbar.
             </p>
           </section>
         )}

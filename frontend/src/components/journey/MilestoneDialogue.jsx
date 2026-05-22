@@ -130,7 +130,7 @@ const CuratorialFeedback = ({
   return <section className="mdialog__feedback" data-testid="curatorial-feedback">
       <header className="mdialog__feedback-head">
         <p className="mdialog__feedback-eyebrow">{t('journey.milestone_dialogue.voce_del_cliente')}</p>
-        <h3 className="mdialog__feedback-title"><em>Conversazione progettuale</em></h3>
+        <h3 className="mdialog__feedback-title"><em>{t('atelier_voice.milestone_dialogue.feedback_title', null, 'Design conversation')}</em></h3>
       </header>
 
       {/* 9 editorial CTAs */}
@@ -227,7 +227,7 @@ const MilestoneDialogue = ({
         <header className="mdialog__chapters-head">
           <div>
             <p className="mdialog__eyebrow">{t('journey.milestone_dialogue.evoluzione_del_progetto')}</p>
-            <h3 className="mdialog__title"><em>I capitoli condivisi</em></h3>
+            <h3 className="mdialog__title"><em>{t('atelier_voice.milestone_dialogue.chapters_title', null, 'The shared chapters')}</em></h3>
           </div>
           {!composing && <button type="button" onClick={() => setComp(true)} data-testid="add-chapter-btn" className="mdialog__btn mdialog__btn--ghost-warm">
               <Plus size={11} strokeWidth={1.6} /> {t("journey.milestone_dialogue.aggiungi_un_capitolo")}

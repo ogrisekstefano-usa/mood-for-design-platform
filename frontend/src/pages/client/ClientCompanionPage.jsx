@@ -85,7 +85,7 @@ const CompanionHero = ({ header, activeChapter }) => {
         </h1>
         {activeChapter && (
           <p className="cj-hero__lede">
-            {t('companion.card.chapter_active', null, 'Capitolo attivo')} · <em>{activeChapter.title}</em>.
+            {t('companion.card.chapter_active', null, 'Active chapter')} · <em>{activeChapter.title}</em>.
             {activeChapter.narrative_intro && (
               <> {activeChapter.narrative_intro}</>
             )}
@@ -105,7 +105,7 @@ const CompanionHero = ({ header, activeChapter }) => {
           {header.progress && header.progress.total_chapters > 0 && (
             <span className="cj-hero__meta-item">
               <span className="cj-hero__meta-dot" />
-              {interp(t('companion.card.progress', null, '{done} su {total} capitoli approvati'),
+              {interp(t('companion.card.progress', null, '{done} of {total} chapters approved'),
                       { done: header.progress.approved_chapters, total: header.progress.total_chapters })}
             </span>
           )}
@@ -116,7 +116,7 @@ const CompanionHero = ({ header, activeChapter }) => {
             className="cj-hero__cta"
             data-testid="cj-hero-cta"
           >
-            {t('companion.hero.cta', null, 'Esplora il capitolo')}
+            {t('companion.hero.cta', null, 'Explore the chapter')}
           </a>
         )}
       </div>
@@ -131,8 +131,8 @@ const ActiveChapterSection = ({ chapter, journeyId, onVoiceShared }) => {
     return (
       <Section
         id="capitolo"
-        eyebrow={t('companion.section.active_chapter.eyebrow', null, 'Capitolo attivo · Active Chapter™')}
-        title={t('companion.section.active_chapter.empty_title', null, 'In attesa del prossimo capitolo')}
+        eyebrow={t('companion.section.active_chapter.eyebrow', null, 'Active chapter · Active Chapter™')}
+        title={t('companion.section.active_chapter.empty_title', null, 'Awaiting the next chapter')}
         testid="cj-section-capitolo"
       >
         <EmptyHint
@@ -148,7 +148,7 @@ const ActiveChapterSection = ({ chapter, journeyId, onVoiceShared }) => {
   return (
     <Section
       id="capitolo"
-      eyebrow={t('companion.section.active_chapter.eyebrow', null, 'Capitolo attivo · Active Chapter™')}
+      eyebrow={t('companion.section.active_chapter.eyebrow', null, 'Active chapter · Active Chapter™')}
       title={chapter.title}
       testid="cj-section-capitolo"
     >
@@ -357,7 +357,7 @@ const MemoryArchiveSection = ({ items }) => {
   <Section
     id="memoria"
     eyebrow={t('companion.section.archive.eyebrow', null, 'Memoria & Archivio · Memory & Archive™')}
-    title={t('companion.section.archive.title', null, 'I capitoli che hai attraversato')}
+    title={t('companion.section.archive.title', null, 'The chapters you’ve walked through')}
     count={count}
     testid="cj-section-memoria"
   >
@@ -454,7 +454,7 @@ const ClientCompanionPage = () => {
           fontStyle: 'italic', fontSize: 26, margin: 0,
           color: 'var(--cp-text-primary, #efe8d8)',
         }}>
-          {t('companion.error.title', null, 'Questo Journey è in attesa')}
+          {t('companion.error.title', null, 'This Journey is awaiting')}
         </h3>
         <p style={{
           fontSize: 14,

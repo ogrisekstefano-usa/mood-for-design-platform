@@ -88,7 +88,7 @@ const StudioCollectionsPage = () => {
         </div>
       </header>
 
-      {loading && <p className="sc-empty">Carico l'archivio curatoriale…</p>}
+      {loading && <p className="sc-empty">{t('atelier_voice.studio_collections.loading', null, 'Loading the curated archive\u2026')}</p>}
       {!loading && grouped.length === 0 && <div className="sc-empty">
           <Icons.Package size={28} strokeWidth={1.3} />
           <p>{t('inspirations.studio_collections.nessuna_collezione_importata_inizia_caricando_un_c')}</p>

@@ -111,17 +111,17 @@ const ChaptersBlock = ({ chapters, t }) => {
   if (!chapters?.length) return null;
   const stateLabel = (status) => {
     switch (status) {
-      case 'approved':           return t('dossier.chapter.approved', null, 'Capitolo approvato');
-      case 'closed':             return t('dossier.chapter.closed', null, 'Capitolo chiuso');
-      case 'presented':          return t('dossier.chapter.presented', null, 'Capitolo condiviso');
-      case 'in_progress':        return t('dossier.chapter.in_progress', null, 'Capitolo in lavorazione');
-      case 'revision_requested': return t('dossier.chapter.revision_requested', null, 'Capitolo rivisitato');
-      default:                   return t('dossier.chapter.default', null, 'Capitolo');
+      case 'approved':           return t('dossier.chapter.approved', null, 'Chapter approved');
+      case 'closed':             return t('dossier.chapter.closed', null, 'Chapter closed');
+      case 'presented':          return t('dossier.chapter.presented', null, 'Chapter shared');
+      case 'in_progress':        return t('dossier.chapter.in_progress', null, 'Chapter in progress');
+      case 'revision_requested': return t('dossier.chapter.revision_requested', null, 'Chapter revisited');
+      default:                   return t('dossier.chapter.default', null, 'Chapter');
     }
   };
   return (
     <section className="dossier-chapters" data-testid="dossier-chapters">
-      <p className="dossier-eyebrow">{t('dossier.chapters.eyebrow', null, 'I capitoli attraversati')}</p>
+      <p className="dossier-eyebrow">{t('dossier.chapters.eyebrow', null, 'The chapters you’ve walked through')}</p>
       <h3 className="dossier-h3"><em>{t('dossier.chapters.title', null, 'La sequenza del percorso')}</em></h3>
       <ol className="dossier-chapters__list">
         {chapters.map((ch, i) => (
@@ -174,7 +174,7 @@ const TransformationsBlock = ({ pairs, t }) => {
   if (!pairs?.length) return null;
   return (
     <section className="dossier-transforms" data-testid="dossier-transforms">
-      <p className="dossier-eyebrow">{t('dossier.transformations.eyebrow', null, 'Trasformazioni dello spazio')}</p>
+      <p className="dossier-eyebrow">{t('dossier.transformations.eyebrow', null, 'Transformations of the space')}</p>
       <h3 className="dossier-h3"><em>{t('dossier.transformations.title', null, 'Documentazione architettonica')}</em></h3>
       <div className="dossier-transforms__grid">
         {pairs.slice(0, 3).map((p) => <BeforeAfter key={p.id} pair={p} t={t} />)}

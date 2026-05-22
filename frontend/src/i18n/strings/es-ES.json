@@ -1908,7 +1908,8 @@
       "typographyTitle": "La letra que construye identidad"
     },
     "tagline": "El relato editorial de los estudios de diseño",
-    "title": "Identidad de atelier"
+    "title": "Identidad de atelier",
+    "save_changes": "Conservar los cambios"
   },
   "collab": {
     "handoff": {
@@ -1956,5 +1957,109 @@
     "workspace": "Atelier personal",
     "profile": "Perfil",
     "language": "Idioma"
+  },
+  "atelier_voice": {
+    "account_constellation": {
+      "artifacts_title": "Lo presentado en el atelier",
+      "memory_eyebrow": "Memoria del atelier",
+      "memory_title": "Lo que ya ha sido contado",
+      "people_eyebrow": "Personas de tu atelier"
+    },
+    "activity_modal": {
+      "eyebrow": "Nueva entrada en el atelier"
+    },
+    "add_inspiration": {
+      "main_material_label": "Materia protagonista"
+    },
+    "advisor_dashboard": {
+      "new_report": "Nuevo relato del atelier",
+      "support_report": "Informe de acompañamiento"
+    },
+    "advisor_network": {
+      "new_partner_title": "Nuevo atelier en la red"
+    },
+    "brand_atlas": {
+      "empty_lede": "El atlas de su atelier está por construirse. Incorpore un productor o importe un catálogo para comenzar a explorar su identidad material.",
+      "eyebrow": "Brand Atlas™ · cartografía editada de los maestros artesanos",
+      "lead": "Cada firma presente en MOOD despliega su identidad material, su lenguaje de proyecto y sus colecciones: un atlas vivo donde cada nombre traza su propio relato de oficio",
+      "title_em": "lenguajes del proyecto",
+      "title_lead": "Ateliers como"
+    },
+    "brand_detail": {
+      "atlas_eyebrow": "Mapa del relato visual",
+      "reading_eyebrow": "Mirada del atelier",
+      "count_collections": "colecciones del atelier",
+      "count_products": "piezas de catálogo",
+      "count_references": "referentes del atelier"
+    },
+    "collection_form": {
+      "description_label": "Relato de la colección"
+    },
+    "crm_accounts": {
+      "new_relationship_eyebrow": "CRM · Nueva relación de atelier"
+    },
+    "cultural_edition": {
+      "palette_label": "Paleta de materias"
+    },
+    "curated_collection": {
+      "new_collection": "Nueva colección en el atelier"
+    },
+    "curatorial_modal": {
+      "empty_lede": "Amplíe atmósfera, materia o geografía para descubrir otros lenguajes del atelier.",
+      "head_eyebrow": "Mesa de inspiración · Atelier",
+      "head_title_em": "referentes del oficio",
+      "head_title_lead": "Construya su identidad",
+      "tray_empty_line1": "Señale las referencias que construyen su identidad visual",
+      "tray_empty_line2": "Se reunirán en el moodboard con naturalidad",
+      "tray_eyebrow": "Mesa de atelier"
+    },
+    "editor_panel": {
+      "curatorial_cta_eyebrow": "Mesa de atelier"
+    },
+    "editorial_studio": {
+      "new_master_cta": "Nuevo Atelier"
+    },
+    "insights": {
+      "signature_label": "Sello del atelier"
+    },
+    "inspiration_detail": {
+      "material_label": "Materia empleada"
+    },
+    "market_editions": {
+      "new_edition": "Nueva Edición de Mercado",
+      "new_master": "Nuevo Relato Editorial Maestro",
+      "new_master_short": "Nuevo atelier maestro"
+    },
+    "material_direction": {
+      "eyebrow": "Identidad en la materia"
+    },
+    "material_view": {
+      "eyebrow_suffix": "colección de materia curada"
+    },
+    "milestone_dialogue": {
+      "chapters_title": "Los relatos compartidos",
+      "feedback_title": "Diálogo sobre el proyecto en curso"
+    },
+    "product_gallery": {
+      "design_language": "Identidad del atelier",
+      "new_collection": "Nueva presencia del atelier"
+    },
+    "projects_studio": {
+      "open_new_hint": "o abra uno nuevo para iniciar su relato"
+    },
+    "step_workspace": {
+      "recorded_chapters": "Capítulos en el registro del atelier"
+    },
+    "story_sections": {
+      "eyebrow": "Relato visual"
+    },
+    "studio_collections": {
+      "loading": "Cargando el archivo de colecciones del atelier…"
+    },
+    "supplier_import": {
+      "new_collection": "Nueva colección en atelier",
+      "new_producer": "Nuevo artesano de referencia",
+      "no_producer_found": "No hemos encontrado ese atelier en el registro"
+    }
   }
 }

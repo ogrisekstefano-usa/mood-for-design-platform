@@ -221,7 +221,7 @@ const AddInspirationModal = ({
           </div>
 
           <div className="ins-modal__section">
-            <p className="ins-label">Materia principale</p>
+            <p className="ins-label">{t('atelier_voice.add_inspiration.main_material_label', null, 'Primary material')}</p>
             <div className="ins-chips-row">
               {mats.map(t => <button key={t.key} type="button" className={`ins-chip-toggle ${materialTags.includes(t.key) ? 'ins-chip-toggle--on' : ''}`} onClick={() => toggle(materialTags, setMaterialTags, t.key)} data-testid={`add-insp-mat-${t.key}`}>
                   {t.label}

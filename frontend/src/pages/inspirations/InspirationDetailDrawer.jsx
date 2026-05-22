@@ -186,7 +186,7 @@ const InspirationDetailDrawer = ({ open, id, onClose, config, onChanged, onRemov
               </div>
 
               <div className="insd-section">
-                <p className="ins-label">Materia</p>
+                <p className="ins-label">{t('atelier_voice.inspiration_detail.material_label', null, 'Material')}</p>
                 {!editing ? (
                   <div className="insd-chips">
                     {(data.material_tags || []).length === 0 && <span className="insd-quiet">—</span>}

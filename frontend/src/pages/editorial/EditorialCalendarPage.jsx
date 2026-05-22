@@ -90,7 +90,7 @@ const PresenceTable = ({ byMarket, t }) => {
   if (!byMarket || byMarket.length === 0) {
     return (
       <div className="ec-presence ec-presence--empty">
-        <p>{t ? t('editorial.presence.empty', null, 'Nessun mercato con eventi nella finestra corrente.') : 'No market with events in the current window.'}</p>
+        <p>{t ? t('editorial.presence.empty', null, 'No market with events in the current window.') : 'No market with events in the current window.'}</p>
       </div>
     );
   }
@@ -339,15 +339,15 @@ const EditorialCalendarPage = () => {
         <div className="ec-head-actions">
           <Link to="/blueprint/editorial?new=master" className="ec-action ec-action--primary"
                 data-testid="ec-action-new-master">
-            <Plus size={11} strokeWidth={1.8} /> {t('editorial.cta.new_master', null, 'Nuovo Editorial Master')}
+            <Plus size={11} strokeWidth={1.8} /> {t('editorial.cta.new_master', null, 'New editorial master')}
           </Link>
           <Link to="/blueprint/editorial?new=variant" className="ec-action ec-action--ghost"
                 data-testid="ec-action-new-variant">
-            <Plus size={11} strokeWidth={1.8} /> {t('editorial.cta.new_variant', null, 'Nuova Market Edition')}
+            <Plus size={11} strokeWidth={1.8} /> {t('editorial.cta.new_variant', null, 'New market edition')}
           </Link>
           <Link to="/blueprint/projects-studio?new=1" className="ec-action ec-action--ghost"
                 data-testid="ec-action-new-project">
-            <Plus size={11} strokeWidth={1.8} /> {t('projects.newProject', null, 'Nuovo progetto')}
+            <Plus size={11} strokeWidth={1.8} /> {t('projects.newProject', null, 'New project')}
           </Link>
           <span className="ec-action ec-action--hint">
             <Globe size={10} strokeWidth={1.7} /> {t('editorial.hint.drag', null, 'Trascina sul giorno per programmare')}
@@ -399,7 +399,7 @@ const EditorialCalendarPage = () => {
                       data-testid={`ec-filter-${tk}`}
                       onClick={() => setTypeFilter(tk)}>
                 {tk === 'all'
-                  ? t('projects.tabs.all', null, 'Tutti')
+                  ? t('projects.tabs.all', null, 'All')
                   : t(`editorial.type.${tk}`, null, TYPE_LABEL[tk])}
               </button>
             ))}

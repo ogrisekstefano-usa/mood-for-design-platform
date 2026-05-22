@@ -166,7 +166,7 @@ const CollectionFormModal = ({
           </label>
 
           <label className="bf-field">
-            <span className="bf-field__label">Descrizione curatoriale</span>
+            <span className="bf-field__label">{t('atelier_voice.collection_form.description_label', null, 'Curatorial description')}</span>
             <textarea rows={3} value={form.description} onChange={e => setForm(f => ({
             ...f,
             description: e.target.value

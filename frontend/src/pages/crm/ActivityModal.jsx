@@ -80,7 +80,7 @@ export const ActivityModal = ({
       <div className="rl-modal" data-testid="activity-modal">
         <div className="rl-modal__head">
           <div>
-            <p className="rl-modal__eyebrow">Nuova attività</p>
+            <p className="rl-modal__eyebrow">{t('atelier_voice.activity_modal.eyebrow', null, 'New activity')}</p>
             <h2 className="rl-modal__title">{TYPE_LABELS[type] || 'Attività'}</h2>
           </div>
           <button className="rl-modal__close" onClick={onClose} aria-label={t("crm.activity.chiudi")} data-testid="activity-modal-close">

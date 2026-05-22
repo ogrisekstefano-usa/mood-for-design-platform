@@ -176,7 +176,7 @@ const CulturalEditionReviewPage = () => {
           )}
           {ver.material_notes && (
             <div className="ce-pane__block">
-              <p className="ce-block-label">Palette materica</p>
+              <p className="ce-block-label">{t('atelier_voice.cultural_edition.palette_label', null, 'Material palette')}</p>
               <p className="ce-block-body ce-block-body--narrative">{ver.material_notes}</p>
             </div>
           )}

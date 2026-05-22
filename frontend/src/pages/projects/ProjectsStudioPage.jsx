@@ -374,7 +374,7 @@ const ProjectsStudioPage = () => {
       {/* RIGHT — STUDIO */}
       <main className="ps-stage" data-testid="ps-stage">
         {!master && <div className="ps-empty">
-            Seleziona un progetto a sinistra<br />o aprine uno nuovo per iniziare<br />l'adattamento culturale.
+            Seleziona un progetto a sinistra<br />{t('atelier_voice.projects_studio.open_new_hint', null, 'or open a new one to begin')}<br />l'adattamento culturale.
           </div>}
 
         {master && <>

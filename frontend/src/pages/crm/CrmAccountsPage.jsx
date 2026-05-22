@@ -319,7 +319,7 @@ const NewAccountModal = ({
       <div className="crm-modal" onClick={e => e.stopPropagation()}>
         <header className="crm-modal__head">
           <div>
-            <p className="crm-modal__eyebrow">CRM · Nuova relazione</p>
+            <p className="crm-modal__eyebrow">{t('atelier_voice.crm_accounts.new_relationship_eyebrow', null, 'CRM \u00B7 New relationship')}</p>
             <h2 className="crm-modal__title">{t('crm.crm_accounts.aggiungi_un_account')}</h2>
           </div>
           <button type="button" onClick={onClose}><X size={16} /></button>

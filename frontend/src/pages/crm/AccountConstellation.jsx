@@ -177,7 +177,7 @@ const AccountConstellation = ({
       {/* ── PEOPLE & STAKEHOLDERS ───────────────────────────── */}
       {people.length > 0 && <section className="ac-section" data-testid="ac-people-section">
           <header className="ac-section__head">
-            <span className="ac-section__eyebrow"><Users size={11} /> Compagni di viaggio</span>
+            <span className="ac-section__eyebrow"><Users size={11} /> {t('atelier_voice.account_constellation.people_eyebrow', null, 'Travel companions')}</span>
             <h2 className="ac-section__title">{t('crm.account_constellation.le_persone_della_relazione')}</h2>
           </header>
           <div className="ac-people">
@@ -197,8 +197,8 @@ const AccountConstellation = ({
       {/* ── PROJECT MEMORY ──────────────────────────────────── */}
       {(memory.preferred_materials?.length || memory.rationales?.length) > 0 && <section className="ac-section ac-memory" data-testid="ac-memory-section">
           <header className="ac-section__head">
-            <span className="ac-section__eyebrow"><Sparkles size={11} /> Memoria progettuale</span>
-            <h2 className="ac-section__title">Ciò che è già stato detto</h2>
+            <span className="ac-section__eyebrow"><Sparkles size={11} /> {t('atelier_voice.account_constellation.memory_eyebrow', null, 'Design memory')}</span>
+            <h2 className="ac-section__title">{t('atelier_voice.account_constellation.memory_title', null, 'What has already been said')}</h2>
           </header>
 
           {memory.preferred_materials?.length > 0 && <div className="ac-memory__row">
@@ -225,7 +225,7 @@ const AccountConstellation = ({
       {shared_artifacts.length > 0 && <section className="ac-section" data-testid="ac-artifacts-section">
           <header className="ac-section__head">
             <span className="ac-section__eyebrow"><Layers size={11} /> Artefatti condivisi</span>
-            <h2 className="ac-section__title">Ciò che è stato presentato</h2>
+            <h2 className="ac-section__title">{t('atelier_voice.account_constellation.artifacts_title', null, 'What has been presented')}</h2>
           </header>
           <div className="ac-artifacts">
             {shared_artifacts.slice(0, 8).map(a => <div key={`${a.artifact_type}-${a.artifact_id}`} className="ac-artifact" data-testid={`ac-artifact-${a.artifact_id}`}>

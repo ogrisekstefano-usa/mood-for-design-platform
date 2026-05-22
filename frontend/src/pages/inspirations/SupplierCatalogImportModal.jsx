@@ -412,7 +412,7 @@ const BrandPicker = ({
     }} onFocus={() => setOpen(true)} onBlur={() => setTimeout(() => setOpen(false), 180)} placeholder={t('inspirations.supplier_import.search_placeholder')} data-testid="catalog-field-brand" />
       {open && <div className="scim-picker__panel" data-testid="catalog-brand-results">
           {loading && <div className="scim-picker__item is-muted">{t('inspirations.supplier_catalog_import.cerco_nel_registro')}</div>}
-          {!loading && items.length === 0 && <div className="scim-picker__item is-muted">Nessun produttore trovato.</div>}
+          {!loading && items.length === 0 && <div className="scim-picker__item is-muted">{t('atelier_voice.supplier_import.no_producer_found', null, 'No manufacturer found.')}</div>}
           {items.map(b => <button key={b.id} type="button" className={`scim-picker__item ${value?.id === b.id ? 'is-on' : ''}`} onMouseDown={e => e.preventDefault()} onClick={() => {
         onSelect(b);
         setOpen(false);
@@ -539,7 +539,7 @@ const AddBrandDrawer = ({
       <div className="scim-drawer__panel">
         <header className="scim-drawer__head">
           <p className="scim-eyebrow">Brand Registry™</p>
-          <h3 className="scim-drawer__title">Nuovo produttore</h3>
+          <h3 className="scim-drawer__title">{t('atelier_voice.supplier_import.new_producer', null, 'New manufacturer')}</h3>
           <button type="button" className="scim-close" onClick={onClose}><Icons.X size={14} /></button>
         </header>
         <div className="scim-drawer__body">
@@ -620,7 +620,7 @@ const AddCollectionDrawer = ({
       <div className="scim-drawer__panel">
         <header className="scim-drawer__head">
           <p className="scim-eyebrow">Collections Registry™ · {brand.name}</p>
-          <h3 className="scim-drawer__title">Nuova collezione</h3>
+          <h3 className="scim-drawer__title">{t('atelier_voice.supplier_import.new_collection', null, 'New collection')}</h3>
           <button type="button" className="scim-close" onClick={onClose}><Icons.X size={14} /></button>
         </header>
         <div className="scim-drawer__body">

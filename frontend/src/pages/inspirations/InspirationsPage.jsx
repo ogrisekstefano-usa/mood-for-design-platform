@@ -91,7 +91,7 @@ const InspirationsPage = () => {
             <Icons.Search size={13} strokeWidth={1.5} />
             <input
               type="text"
-              placeholder={t('inspirations.search.placeholder', null, 'Cerca per atmosfera, materia, brand…')}
+              placeholder={t('inspirations.search.placeholder', null, 'Search by atmosphere, material, brand…')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') load(); }}
@@ -113,12 +113,12 @@ const InspirationsPage = () => {
           <button type="button" className="ins-cta-secondary"
                   onClick={() => setCatalogOpen(true)}
                   data-testid="ins-catalog-btn">
-            <Icons.FolderInput size={13} /> {t('inspirations.cta.import_catalog', null, 'Importa catalogo fornitore')}
+            <Icons.FolderInput size={13} /> {t('inspirations.cta.import_catalog', null, 'Import supplier catalog')}
           </button>
           <button type="button" className="ins-cta-primary"
                   onClick={() => setAddOpen(true)}
                   data-testid="ins-add-btn">
-            <Icons.Plus size={13} /> {t('inspirations.cta.add_reference', null, 'Aggiungi riferimento')}
+            <Icons.Plus size={13} /> {t('inspirations.cta.add_reference', null, 'Add reference')}
           </button>
         </div>
       </header>
@@ -169,12 +169,12 @@ const InspirationsPage = () => {
           <Icons.Bookmark size={28} strokeWidth={1.1} />
           <p className="ins-empty__title">{t('inspirations.empty.title', null, "L'archivio è ancora vuoto.")}</p>
           <p className="ins-empty__hint">
-            {t('inspirations.empty.hint', null, 'Aggiungi il primo riferimento: un upload, un link Pinterest, un link Instagram o qualsiasi URL di immagine. MOOD lo trasformerà in Inspiration culturale.')}
+            {t('inspirations.empty.hint', null, 'Add the first reference: an upload, a Pinterest link, an Instagram link or any image URL. MOOD will turn it into a cultural Inspiration.')}
           </p>
           <button type="button" className="ins-cta-primary"
                   onClick={() => setAddOpen(true)}
                   data-testid="ins-empty-add">
-            <Icons.Plus size={13} /> {t('inspirations.empty.cta', null, 'Aggiungi il primo riferimento')}
+            <Icons.Plus size={13} /> {t('inspirations.empty.cta', null, 'Add the first reference')}
           </button>
         </div>
       )}
@@ -201,7 +201,7 @@ const InspirationsPage = () => {
         onImported={(count) => {
           setCatalogOpen(false);
           setTypeFilter('product');  // show what was just imported
-          toast.success(t('inspirations.toast.imported', { count }, 'Importati {count} prodotti come Product Inspirations™.'));
+          toast.success(t('inspirations.toast.imported', { count }, 'Imported {count} products as Product Inspirations™.'));
           load();
         }}
       />

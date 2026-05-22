@@ -50,7 +50,7 @@ const GenericStepWorkspace = ({ context, artifacts, projectId }) => {
       <section className="sw-section" data-testid="sw-section-versions">
         <div className="sw-section__head">
           <div>
-            <p className="sw-section__eyebrow">Capitoli registrati</p>
+            <p className="sw-section__eyebrow">{t('atelier_voice.step_workspace.recorded_chapters', null, 'Recorded chapters')}</p>
             <h2 className="sw-section__title"><em>{t('journey.step_workspace.le_tracce_di_questo_passaggio')}</em></h2>
           </div>
           <span className="sw-section__count">

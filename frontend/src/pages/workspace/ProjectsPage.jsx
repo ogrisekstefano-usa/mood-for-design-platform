@@ -186,7 +186,7 @@ const ProjectCard = ({ project, index }) => {
         </span>
         <span className="pcard__cta">
           <Compass size={11} strokeWidth={1.4} />
-          {t('projects.card.continue_journey', null, 'Continua il viaggio')}
+          {t('projects.card.continue_journey', null, 'Continue the journey')}
           <ArrowUpRight size={11} strokeWidth={1.4} />
         </span>
       </div>
@@ -310,8 +310,8 @@ const ProjectsPage = () => {
           <button data-testid="new-project-btn" onClick={onCta}
             className={`ppage__cta ${cap.atCap ? 'ppage__cta--lock' : ''}`}>
             {cap.atCap
-              ? (<><Lock size={12} strokeWidth={1.8} /> {t('projects.actions.upgrade_for_more', null, 'Upgrade per crearne altri')}</>)
-              : (<><Plus size={14} strokeWidth={1.4} /> {runtime.copy('projects.new.cta') || t('projects.newProject', null, 'Nuovo progetto')}</>)}
+              ? (<><Lock size={12} strokeWidth={1.8} /> {t('projects.actions.upgrade_for_more', null, 'Upgrade to create more')}</>)
+              : (<><Plus size={14} strokeWidth={1.4} /> {runtime.copy('projects.new.cta') || t('projects.newProject', null, 'New project')}</>)}
           </button>
         </div>
       </header>
@@ -320,7 +320,7 @@ const ProjectsPage = () => {
         {tabs.map((tk) => (
           <button key={tk || 'all'} data-testid={`tab-${tk || 'all'}`} onClick={() => setTab(tk)}
             className={`ppage__tab ${tab === tk ? 'is-active' : ''}`}>
-            {tk ? labelForStatus(tk, t) : t('projects.tabs.all', null, 'Tutti')}
+            {tk ? labelForStatus(tk, t) : t('projects.tabs.all', null, 'All')}
           </button>
         ))}
       </div>
@@ -333,15 +333,15 @@ const ProjectsPage = () => {
         <div className="ppage__empty" data-testid="projects-empty">
           <Layers size={36} strokeWidth={1} />
           <h3 data-testid="projects-empty-title">
-            {runtime.copy('projects.empty.title') || t('projects.empty.title', null, 'Nessun viaggio progettuale ancora aperto')}
+            {runtime.copy('projects.empty.title') || t('projects.empty.title', null, 'No design journey opened yet')}
           </h3>
           <p data-testid="projects-empty-subtitle">
-            {runtime.copy('projects.empty.subtitle') || t('projects.empty.subtitle', null, 'Apri il primo capitolo del tuo studio.')}
+            {runtime.copy('projects.empty.subtitle') || t('projects.empty.subtitle', null, 'Open the first chapter of your studio.')}
           </p>
           <button onClick={onCta} data-testid="projects-empty-cta" className="ppage__cta ppage__cta--ghost">
             {cap.atCap
-              ? t('projects.actions.upgrade_plan', null, 'Aggiorna il piano')
-              : t('projects.empty.open_first_journey', null, '+ Apri il primo viaggio')}
+              ? t('projects.actions.upgrade_plan', null, 'Upgrade plan')
+              : t('projects.empty.open_first_journey', null, '+ Open the first journey')}
           </button>
         </div>
       ) : (

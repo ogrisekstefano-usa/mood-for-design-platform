@@ -60,12 +60,12 @@ const JourneyCard = ({ j, isArchived = false, t, locale }) => {
           <>
             {chapter && (
               <p className="cj-jcard__chapter">
-                {t('companion.card.chapter_active', null, 'Capitolo attivo')} · <em>{chapter}</em>
+                {t('companion.card.chapter_active', null, 'Active chapter')} · <em>{chapter}</em>
               </p>
             )}
             {j.progress && j.progress.total_chapters > 0 && (
               <p className="cj-jcard__chapter" style={{ opacity: 0.65 }}>
-                {interp(t('companion.card.progress', null, '{done} su {total} capitoli approvati'),
+                {interp(t('companion.card.progress', null, '{done} of {total} chapters approved'),
                         { done: j.progress.approved_chapters, total: j.progress.total_chapters })}
               </p>
             )}
@@ -163,7 +163,7 @@ const ClientJourneysIndexPage = () => {
         <div className="cj-hero__body">
           <p className="cj-hero__eyebrow">{t('companion.index.hero.eyebrow', null, 'My Design Journeys™')}</p>
           <h1 className="cj-hero__title">
-            <em>{t('companion.index.hero.title', null, 'I tuoi percorsi progettuali')}</em>
+            <em>{t('companion.index.hero.title', null, 'Your design journeys')}</em>
           </h1>
           <p className="cj-hero__lede">
             {t('companion.index.hero.lede', null,

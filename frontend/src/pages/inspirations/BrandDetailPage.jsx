@@ -133,7 +133,7 @@ const BrandDetailPage = () => {
       {/* Back nav (editorial, sottile) */}
       <Link to="/inspirations/brands" className="bd-back" data-testid="bd-back">
         <Icons.ArrowLeft size={11} strokeWidth={1.5} />
-        <span>Atlante curatoriale</span>
+        <span>{t('atelier_voice.brand_detail.atlas_eyebrow', null, 'Curated atlas')}</span>
       </Link>
 
       {/* Hero — il brand come linguaggio */}
@@ -142,7 +142,7 @@ const BrandDetailPage = () => {
           {brand?.logo_url ? <img src={brand.logo_url} alt="" /> : <span>{(brand?.name || '?').split(/\s+/).slice(0, 2).map(s => s[0]).join('').toUpperCase()}</span>}
         </div>
         <div className="bd-hero__body">
-          <p className="bd-hero__eyebrow">Lettura curatoriale</p>
+          <p className="bd-hero__eyebrow">{t('atelier_voice.brand_detail.reading_eyebrow', null, 'Curatorial reading')}</p>
           <h1 className="bd-hero__title">
             {loading ? <span className="bm-skel bm-skel--title" /> : brand.name}
           </h1>
@@ -172,9 +172,9 @@ const BrandDetailPage = () => {
 
         {/* Counts: piccoli, secondari, MAI protagonisti */}
         {!loading && <div className="bd-counts" data-testid="bd-counts">
-            <span><em>{profile.counts.collections}</em>collezioni</span>
-            <span><em>{profile.counts.products}</em>prodotti</span>
-            <span><em>{profile.counts.inspirations}</em>riferimenti</span>
+            <span><em>{profile.counts.collections}</em>{t('atelier_voice.brand_detail.count_collections', null, 'collections')}</span>
+            <span><em>{profile.counts.products}</em>{t('atelier_voice.brand_detail.count_products', null, 'products')}</span>
+            <span><em>{profile.counts.inspirations}</em>{t('atelier_voice.brand_detail.count_references', null, 'references')}</span>
             <span><em>{profile.counts.moodboards}</em>{t('inspirations.brand_detail.moodboard')}</span>
           </div>}
       </header>

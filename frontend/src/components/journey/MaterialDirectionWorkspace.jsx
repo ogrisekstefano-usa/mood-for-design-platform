@@ -39,7 +39,7 @@ const MaterialDirectionWorkspace = ({ artifacts, projectId, children }) => {
       <section className="sw-section" data-testid="sw-section-rationale">
         <div className="sw-section__head">
           <div>
-            <p className="sw-section__eyebrow">Direzione materica</p>
+            <p className="sw-section__eyebrow">{t('atelier_voice.material_direction.eyebrow', null, 'Material direction')}</p>
             <h2 className="sw-section__title">
               <em>{t('journey.material_direction_workspace.il_tavolo_della_materia')}</em>
             </h2>

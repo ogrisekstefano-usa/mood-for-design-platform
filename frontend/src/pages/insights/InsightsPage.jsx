@@ -276,7 +276,7 @@ const InsightsPage = () => {
         <article className="ins-card ins-card--signature" data-testid="ins-signature">
           <header className="ins-card__head">
             <div>
-              <p className="ins-card__eyebrow">Signature curatoriale</p>
+              <p className="ins-card__eyebrow">{t('atelier_voice.insights.signature_label', null, 'Curatorial signature')}</p>
               <h2 className="ins-card__title"><em>{t('insights.insights.la_grammatica_dello_studio')}</em></h2>
             </div>
             <Sparkles size={16} strokeWidth={1.3} className="ins-card__icon" />

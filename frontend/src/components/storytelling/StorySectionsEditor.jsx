@@ -169,7 +169,7 @@ const StorySectionsEditor = ({
   };
   return <section className="ss-wrap" data-testid={testId}>
       <header className="ss-head">
-        <p className="ss-eyebrow">Narrazione visiva</p>
+        <p className="ss-eyebrow">{t('atelier_voice.story_sections.eyebrow', null, 'Visual narrative')}</p>
         <h3 className="ss-title">{t('storytelling.story_sections.sezioni_della_storia')}</h3>
         <p className="ss-sub">
           {t("storytelling.story_sections.componi_blocchi_editoriali_testo_immagini_gallery")}

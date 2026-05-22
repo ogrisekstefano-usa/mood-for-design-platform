@@ -68,7 +68,7 @@ export default function MaterialViewPage() {
           <span>Archivio</span>
         </Link>
         <div className="mv-header__meta">
-          <p className="mv-header__eyebrow">Material View™ · Materioteca curatoriale</p>
+          <p className="mv-header__eyebrow">Material View\u2122 \u00B7 {t('atelier_voice.material_view.eyebrow_suffix', null, 'curated materials library')}</p>
           <h1 className="mv-header__title"><em>{t('material_view.header.title', null, 'Material that speaks')}</em></h1>
           <p className="mv-header__sub">
             Un atlante materico organizzato per family cromatica e ritmo visuale —

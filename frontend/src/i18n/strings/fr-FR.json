@@ -1908,7 +1908,8 @@
       "typographyTitle": "L'écriture des signes, ou la présence du geste typographique dans l'atelier"
     },
     "tagline": "L'écriture sensible des ateliers de design, au service du regard et du geste créateur.",
-    "title": "L'écriture de votre présence au monde"
+    "title": "L'écriture de votre présence au monde",
+    "save_changes": "Inscrire le geste dans la mémoire de l'atelier"
   },
   "collab": {
     "handoff": {
@@ -1956,5 +1957,109 @@
     "workspace": "L'atelier où naît chaque geste créatif",
     "profile": "Profil",
     "language": "Langue"
+  },
+  "atelier_voice": {
+    "account_constellation": {
+      "artifacts_title": "L'ensemble des gestes portés à la présence",
+      "memory_eyebrow": "Mémoire du geste créatif",
+      "memory_title": "Ce qui appartient déjà au récit de l'atelier",
+      "people_eyebrow": "Ceux qui partagent le regard de l'atelier"
+    },
+    "activity_modal": {
+      "eyebrow": "Nouveau récit en atelier"
+    },
+    "add_inspiration": {
+      "main_material_label": "Matière de prédilection"
+    },
+    "advisor_dashboard": {
+      "new_report": "Nouveau récit d'atelier",
+      "support_report": "Récit d'accompagnement de l'atelier"
+    },
+    "advisor_network": {
+      "new_partner_title": "Nouvelle présence au sein du réseau conseil"
+    },
+    "brand_atlas": {
+      "empty_lede": "L'atlas des maisons et des matières attend son premier geste : ajoutez un producteur ou importez un catalogue pour que le récit prenne forme.",
+      "eyebrow": "Brand Atlas™ · cartographie sensible des éditeurs de matière",
+      "lead": "Parcourez l'écriture formelle, la mémoire matérielle et le geste créatif des maisons présentes dans MOOD, où chaque signature compose une page vivante de notre atlas curatorial.",
+      "title_em": "vocabulaires de l'atelier",
+      "title_lead": "Les créateurs tels que"
+    },
+    "brand_detail": {
+      "atlas_eyebrow": "Cartographie du regard créatif",
+      "reading_eyebrow": "Regard éditorial sur l'atelier",
+      "count_collections": "récits de matière",
+      "count_products": "pièces inscrites dans le récit de l'atelier",
+      "count_references": "récits qui nous mentionnent"
+    },
+    "collection_form": {
+      "description_label": "Récit de la collection"
+    },
+    "crm_accounts": {
+      "new_relationship_eyebrow": "CRM · Inscrire une nouvelle présence"
+    },
+    "cultural_edition": {
+      "palette_label": "Registre des matières de l'atelier"
+    },
+    "curated_collection": {
+      "new_collection": "Nouvel ensemble de pièces dont l'atelier vient d'ouvrir le regard"
+    },
+    "curatorial_modal": {
+      "empty_lede": "Ouvrez le champ de l'atmosphère, de la matière ou de la géographie pour saisir d'autres gestes de l'atelier.",
+      "head_eyebrow": "Table de l'atelier · Inspirations™",
+      "head_title_em": "références du regard créatif",
+      "head_title_lead": "Composez votre récit visuel avec la précision d'un geste d'atelier",
+      "tray_empty_line1": "Marquez les présences qui fondent votre récit visuel.",
+      "tray_empty_line2": "Ils rejoindront ensemble la trame du récit visuel que vous composez.",
+      "tray_eyebrow": "Plateau de l'écriture curatoriale"
+    },
+    "editor_panel": {
+      "curatorial_cta_eyebrow": "Table de travail éditorial"
+    },
+    "editorial_studio": {
+      "new_master_cta": "Créer un nouveau maître d'atelier"
+    },
+    "insights": {
+      "signature_label": "Écriture du regard créatif"
+    },
+    "inspiration_detail": {
+      "material_label": "Matière première"
+    },
+    "market_editions": {
+      "new_edition": "Nouvelle édition de votre atelier pour ce marché",
+      "new_master": "Nouveau récit éditorial de référence",
+      "new_master_short": "Nouveau regard d'atelier"
+    },
+    "material_direction": {
+      "eyebrow": "Regard sur la matière"
+    },
+    "material_view": {
+      "eyebrow_suffix": "bibliothèque de matières à regard d'auteur"
+    },
+    "milestone_dialogue": {
+      "chapters_title": "Les récits partagés de l'atelier",
+      "feedback_title": "Dialogue autour du geste créatif"
+    },
+    "product_gallery": {
+      "design_language": "Écriture formelle de l'atelier",
+      "new_collection": "Une écriture inédite prend forme dans l'atelier"
+    },
+    "projects_studio": {
+      "open_new_hint": "ou amorcez un récit nouveau pour reprendre le geste à sa source"
+    },
+    "step_workspace": {
+      "recorded_chapters": "Chapitres consignés dans la mémoire de l'atelier"
+    },
+    "story_sections": {
+      "eyebrow": "Écriture du regard"
+    },
+    "studio_collections": {
+      "loading": "Nous préparons l'archive de vos écritures et l'ensemble des regards déposés dans l'atelier"
+    },
+    "supplier_import": {
+      "new_collection": "Nouveaux récits de matière à l'atelier",
+      "new_producer": "Nouveau producteur inscrit au registre de l'atelier",
+      "no_producer_found": "Aucune présence artisanale n'a pu être inscrite dans le registre de l'atelier."
+    }
   }
 }

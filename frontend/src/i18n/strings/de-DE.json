@@ -1908,7 +1908,8 @@
       "typographyTitle": "Schriftsystem"
     },
     "tagline": "Das redaktionelle Werkzeug für Gestaltungsateliers.",
-    "title": "Gestaltungsidentität"
+    "title": "Gestaltungsidentität",
+    "save_changes": "Änderungen übernehmen"
   },
   "collab": {
     "handoff": {
@@ -1956,5 +1957,109 @@
     "workspace": "Gestaltungsatelier",
     "profile": "Profil",
     "language": "Sprache"
+  },
+  "atelier_voice": {
+    "account_constellation": {
+      "artifacts_title": "Eingereichte Arbeitsmaterialien",
+      "memory_eyebrow": "Gestalterisches Gedächtnis",
+      "memory_title": "Bereits Dokumentiertes",
+      "people_eyebrow": "Atelierkonstellation"
+    },
+    "activity_modal": {
+      "eyebrow": "Neue Aktivität"
+    },
+    "add_inspiration": {
+      "main_material_label": "Hauptmaterial"
+    },
+    "advisor_dashboard": {
+      "new_report": "Neuer Bericht",
+      "support_report": "Betreuungsprotokoll"
+    },
+    "advisor_network": {
+      "new_partner_title": "Neuer Kooperationspartner im Netzwerk"
+    },
+    "brand_atlas": {
+      "empty_lede": "Das Kuratoren-Register ist noch unbelegt. Fügen Sie einen Hersteller hinzu oder importieren Sie einen Katalog, um die Arbeit zu beginnen.",
+      "eyebrow": "Brand Atlas™ · kuratorisches Register der Produzenten",
+      "lead": "Jede Marke im MOOD-Verzeichnis erschließt eigene Gestaltungspositionen, Kollektionen und materielle Sprachen – Seite für Seite eines kuratierten Atelieratlasses.",
+      "title_em": "Entwurfssprachen",
+      "title_lead": "Hersteller wie"
+    },
+    "brand_detail": {
+      "atlas_eyebrow": "Werkstoff-Register",
+      "reading_eyebrow": "Kuratorische Einordnung",
+      "count_collections": "Kollektionen",
+      "count_products": "Gestaltungen",
+      "count_references": "Referenzprojekte"
+    },
+    "collection_form": {
+      "description_label": "Kuratorische Haltung"
+    },
+    "crm_accounts": {
+      "new_relationship_eyebrow": "CRM · Neue Beziehung"
+    },
+    "cultural_edition": {
+      "palette_label": "Materialsammlung"
+    },
+    "curated_collection": {
+      "new_collection": "Neue Kollektion"
+    },
+    "curatorial_modal": {
+      "empty_lede": "Erweitern Sie nach Atmosphäre, Materialität oder Geografie, um weitere gestalterische Haltungen des Ateliers einzusehen.",
+      "head_eyebrow": "Kuratierungstisch · Inspirations™",
+      "head_title_em": "Gestalterische Referenzen",
+      "head_title_lead": "Gestalte Deine Werkschau",
+      "tray_empty_line1": "Markieren Sie die wesentlichen Referenzen.",
+      "tray_empty_line2": "Sie werden gemeinsam ins Moodboard überführt.",
+      "tray_eyebrow": "Kuratorische Arbeitsfläche"
+    },
+    "editor_panel": {
+      "curatorial_cta_eyebrow": "Kuratorische Werkbank"
+    },
+    "editorial_studio": {
+      "new_master_cta": "Neuer Werkstattmeister"
+    },
+    "insights": {
+      "signature_label": "Gestaltungsposition des Ateliers"
+    },
+    "inspiration_detail": {
+      "material_label": "Materialität"
+    },
+    "market_editions": {
+      "new_edition": "Neue Marktausgabe",
+      "new_master": "Neuer Redaktions-Master",
+      "new_master_short": "Neuer Atelierstamm"
+    },
+    "material_direction": {
+      "eyebrow": "Materialitäre Ausrichtung"
+    },
+    "material_view": {
+      "eyebrow_suffix": "kuratierte Materialsammlung"
+    },
+    "milestone_dialogue": {
+      "chapters_title": "Geteilte Kapitel",
+      "feedback_title": "Projektdialog"
+    },
+    "product_gallery": {
+      "design_language": "Architektonische Formsprache",
+      "new_collection": "Neue Werkfolge"
+    },
+    "projects_studio": {
+      "open_new_hint": "oder ein neues Projekt beginnen"
+    },
+    "step_workspace": {
+      "recorded_chapters": "Erfasste Kapitel"
+    },
+    "story_sections": {
+      "eyebrow": "Bildsprache"
+    },
+    "studio_collections": {
+      "loading": "Archiv wird geladen — kurzer Moment"
+    },
+    "supplier_import": {
+      "new_collection": "Neue Kollektion im Atelier",
+      "new_producer": "Neuer Hersteller",
+      "no_producer_found": "Kein Hersteller in der Datenbank hinterlegt."
+    }
   }
 }

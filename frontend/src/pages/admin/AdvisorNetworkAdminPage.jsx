@@ -165,7 +165,7 @@ const NewAdvisorDrawer = ({
         <header className="adv-drawer__head">
           <div>
             <p className="adv-eyebrow">{t('admin.advisor_network_admin.crea_advisor')}</p>
-            <h2 className="adv-drawer__title">Nuovo partner di rete</h2>
+            <h2 className="adv-drawer__title">{t('atelier_voice.advisor_network.new_partner_title', null, 'New network partner')}</h2>
           </div>
           <button onClick={onClose} className="adv-drawer__close" data-testid="adv-new-close"><X size={17} /></button>
         </header>
