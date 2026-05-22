@@ -187,13 +187,48 @@ def remediate_runtime_crashes(findings: list, conn, iteration: int) -> int:
     return len(crashes)
 
 
+def _semantic_seed_for_key(source_text: str, source_locale: str, key: str) -> dict[str, str]:
+    """ITER135 · semantic rewrite for every target locale.
+
+    Falls back to the literal source if the rewrite engine isn't reachable
+    (no LLM key, network down, etc.) so the loop never blocks.
+    """
+    try:
+        # Lazy import so the script still works in environments without the
+        # LLM dependency (CI, offline runs).
+        sys.path.insert(0, "/app/backend")
+        from services.semantic_rewrite_engine import batch_rewrite_key, ALL_LOCALES  # type: ignore
+        # Map remediator's locale list (LOCALES) to the engine's BCP-47 set.
+        targets = [lc for lc in LOCALES if lc != source_locale]
+        rewrites = batch_rewrite_key(
+            source_text=source_text,
+            source_locale=source_locale,
+            key=key,
+            target_locales=targets,
+        )
+        out: dict[str, str] = {source_locale: source_text}
+        for lc in LOCALES:
+            if lc == source_locale:
+                continue
+            r = rewrites.get(lc)
+            out[lc] = r.text if (r and r.text) else source_text
+        return out
+    except Exception as e:
+        print(f"   ! semantic seed fallback for `{key}` · {e}")
+        return {lc: source_text for lc in LOCALES}
+
+
 def remediate_missing_keys(findings: list, conn, iteration: int) -> int:
     """For raw key + missing token leaks: ensure key exists across ALL locales.
 
-    Strategy:
-      - If key exists in en-US: copy that value as the seed for missing locales
-      - Else use a slugged human-readable label as placeholder (review_status=ai_suggested)
-      - Italian gets the original phrase (when known) or the EN value as fallback
+    ITER135: when a missing key is detected and we have a source string in
+    any locale (preferring it-IT as the editorial source of truth, then
+    en-US), we send it through the **Semantic Rewrite Engine™** (Claude
+    Sonnet 4.5 with per-market editorial voice). The result is a set of
+    7 locale-specific REWRITES — not literal translations.
+
+    Fallback when no source string exists: a slugged placeholder. The
+    Language Command Center will surface these as 'AI suggested'.
     """
     raw_keys = []
     for f in findings:
@@ -213,24 +248,35 @@ def remediate_missing_keys(findings: list, conn, iteration: int) -> int:
         if not key or "." not in key:
             continue
         parts = key.split(".")
-        # First, see if any locale already has the value:
-        seed = None
-        for lc in ("en-US", "it-IT"):
+        # Find a source string + its locale. Editorial source is it-IT;
+        # if absent, en-US; if absent, the final-segment slug.
+        source_text: str | None = None
+        source_locale: str = "it-IT"
+        for lc in ("it-IT", "en-US"):
             v = get_nested(locales_data.get(lc, {}), parts)
             if isinstance(v, str) and v.strip():
-                seed = v
+                source_text = v
+                source_locale = lc
                 break
-        if seed is None:
-            # Build a readable placeholder from the final segment.
-            seed = parts[-1].replace("_", " ").strip().capitalize() or key
-
-        for lc in LOCALES:
-            existing = get_nested(locales_data[lc], parts)
-            if isinstance(existing, str) and existing.strip():
-                continue
-            set_nested(locales_data[lc], parts, seed)
-            dirty[lc] = True
-            keys_added += 1
+        if source_text is None:
+            placeholder = parts[-1].replace("_", " ").strip().capitalize() or key
+            for lc in LOCALES:
+                existing = get_nested(locales_data[lc], parts)
+                if isinstance(existing, str) and existing.strip():
+                    continue
+                set_nested(locales_data[lc], parts, placeholder)
+                dirty[lc] = True
+                keys_added += 1
+        else:
+            print(f"   ↳ semantic rewrite · `{key}` from {source_locale}")
+            seeded = _semantic_seed_for_key(source_text, source_locale, key)
+            for lc in LOCALES:
+                existing = get_nested(locales_data[lc], parts)
+                if isinstance(existing, str) and existing.strip():
+                    continue
+                set_nested(locales_data[lc], parts, seeded.get(lc, source_text))
+                dirty[lc] = True
+                keys_added += 1
 
         leak_id = upsert_leak(
             conn, iteration,
@@ -238,7 +284,7 @@ def remediate_missing_keys(findings: list, conn, iteration: int) -> int:
             finding.get("page", ""), key, finding.get("testid"),
             "i18n_registry", "P0",
         )
-        mark_resolved(conn, leak_id, "registry_key_seeded")
+        mark_resolved(conn, leak_id, "semantic_rewrite_v1")
 
     for lc, changed in dirty.items():
         if changed:

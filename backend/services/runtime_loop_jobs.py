@@ -204,9 +204,13 @@ def kill_job(job_id: str) -> dict:
     if not s:
         return {"ok": False, "reason": "not_found"}
     pid = s.get("pid")
-    if pid and _pid_alive(pid):
+    # SECURITY: refuse to signal init/PID 0 or 1 — a malformed status file
+    # would otherwise tear down the container's process group.
+    if pid and isinstance(pid, int) and pid > 1 and _pid_alive(pid):
         try:
-            os.killpg(os.getpgid(pid), signal.SIGTERM)
+            pgid = os.getpgid(pid)
+            if pgid > 1:
+                os.killpg(pgid, signal.SIGTERM)
         except Exception:
             try:
                 os.kill(pid, signal.SIGTERM)
@@ -223,16 +227,22 @@ def kill_job(job_id: str) -> dict:
 
 def clear_fixed_leaks() -> dict:
     """Delete all rows from runtime_leaks.db where resolution_method IS NOT NULL.
-    Returns the number of leaks cleared.
+    Returns the number of leaks cleared. Uses a 5s busy-timeout so a
+    concurrent crawler write doesn't make the DELETE explode.
     """
     import sqlite3
     db = GOV / "runtime_leaks.db"
     if not db.exists():
         return {"ok": True, "cleared": 0}
-    conn = sqlite3.connect(str(db))
-    cur = conn.execute("SELECT COUNT(*) FROM leaks WHERE resolution_method IS NOT NULL")
-    n = int(cur.fetchone()[0])
-    conn.execute("DELETE FROM leaks WHERE resolution_method IS NOT NULL")
-    conn.commit()
-    conn.close()
+    conn = sqlite3.connect(str(db), timeout=5)
+    try:
+        conn.execute("BEGIN IMMEDIATE")
+        cur = conn.execute(
+            "SELECT COUNT(*) FROM leaks WHERE resolution_method IS NOT NULL"
+        )
+        n = int(cur.fetchone()[0])
+        conn.execute("DELETE FROM leaks WHERE resolution_method IS NOT NULL")
+        conn.commit()
+    finally:
+        conn.close()
     return {"ok": True, "cleared": n}

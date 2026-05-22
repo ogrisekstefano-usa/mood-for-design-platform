@@ -752,6 +752,101 @@ def runtime_run_loop(
     return res
 
 
+# ─── ITER135 · Semantic Editorial Review™ ──────────────────────────────
+from services import semantic_rewrite_engine  # noqa: E402
+
+
+class SemanticPreviewRequest(BaseModel):
+    source_text: str = Field(..., min_length=1, max_length=2000)
+    source_locale: str = "it-IT"
+    key: Optional[str] = None
+    target_locales: Optional[List[str]] = None
+    market_context: Optional[dict] = None
+    use_cache: bool = True
+
+
+@router.post("/runtime/semantic-rewrite")
+def runtime_semantic_rewrite(
+    body: SemanticPreviewRequest,
+    ctx: dict = Depends(get_tenant_context),
+):
+    """ITER135 · Generate side-by-side semantic rewrites of a source string
+    across one or more target locales.
+
+    This is the back-end of the Semantic Editorial Review™ tab: the studio
+    types/pastes one source phrase, picks markets, sees seven distinct
+    editorial voices written by Claude Sonnet 4.5 with per-market voice
+    directives. NOT a literal translator — the model is asked to
+    reinterpret for each market.
+    """
+    _require_admin(ctx)
+    target_locales = body.target_locales or [
+        loc for loc in semantic_rewrite_engine.ALL_LOCALES
+        if loc != body.source_locale
+    ]
+    invalid = [loc for loc in target_locales
+               if loc not in semantic_rewrite_engine.ALL_LOCALES]
+    if invalid:
+        raise HTTPException(400, detail={"reason": "invalid_locales", "invalid": invalid})
+
+    rewrites = semantic_rewrite_engine.batch_rewrite_key(
+        source_text=body.source_text,
+        source_locale=body.source_locale,
+        key=body.key,
+        target_locales=target_locales,
+        market_context=body.market_context,
+    )
+    return {
+        "source_locale": body.source_locale,
+        "source_text": body.source_text,
+        "key": body.key,
+        "rewrites": [
+            {
+                "target_locale": loc,
+                "text": r.text,
+                "rationale": r.rationale,
+                "model": r.model,
+                "duration_ms": r.duration_ms,
+                "cached": r.cached,
+                "fallback": r.fallback,
+            }
+            for loc, r in rewrites.items()
+        ],
+        "voice_profiles": {
+            loc: {
+                "label":     v["label"],
+                "tone":      v["tone"],
+                "rhythm":    v["rhythm"],
+                "luxury":    v["luxury_positioning"],
+            }
+            for loc, v in semantic_rewrite_engine.MARKET_VOICES.items()
+            if loc in [body.source_locale, *target_locales]
+        },
+    }
+
+
+@router.get("/runtime/voice-profiles")
+def runtime_voice_profiles(ctx: dict = Depends(get_tenant_context)):
+    """All 7 in-market editorial voices (label · tone · rhythm · luxury)."""
+    _require_admin(ctx)
+    return {
+        "locales": list(semantic_rewrite_engine.ALL_LOCALES),
+        "profiles": {
+            loc: {
+                "label":              v["label"],
+                "tone":               v["tone"],
+                "rhythm":             v["rhythm"],
+                "vocabulary":         v["vocabulary"],
+                "cta":                v["cta"],
+                "luxury_positioning": v["luxury_positioning"],
+                "voice_directive":    v["voice_directive"],
+            }
+            for loc, v in semantic_rewrite_engine.MARKET_VOICES.items()
+        },
+    }
+
+
+
 @router.get("/runtime/run-loop/status/{job_id}")
 def runtime_run_loop_status(
     job_id: str,

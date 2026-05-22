@@ -55,6 +55,26 @@ export const clearFixedLeaks = async () => {
   return data;
 };
 
+// ─── ITER135 · Semantic Editorial Review™ ──────────────────────────────
+export const fetchVoiceProfiles = async () => {
+  const { data } = await api.get(`${BASE}/voice-profiles`);
+  return data;
+};
+
+export const requestSemanticRewrite = async ({
+  sourceText, sourceLocale = 'it-IT', key, targetLocales, marketContext, useCache = true,
+}) => {
+  const { data } = await api.post(`${BASE}/semantic-rewrite`, {
+    source_text: sourceText,
+    source_locale: sourceLocale,
+    key: key || null,
+    target_locales: targetLocales || null,
+    market_context: marketContext || null,
+    use_cache: useCache,
+  });
+  return data;
+};
+
 // Returns the absolute path so an <img> tag can consume it directly.
 // The browser will attach the existing auth cookie/header.
 export const runtimeScreenshotUrl = (key) => {

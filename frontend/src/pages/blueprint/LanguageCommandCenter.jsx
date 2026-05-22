@@ -22,6 +22,7 @@ import api from '../../lib/api';
 import { useT } from '../../i18n/useT';
 import RuntimeHeatmapPanel from './language/RuntimeHeatmapPanel';
 import LeakInspectorTable from './language/LeakInspectorTable';
+import SemanticEditorialReview from './language/SemanticEditorialReview';
 
 const LOCALES = ['it-IT', 'en-US', 'en-GB', 'fr-FR', 'de-DE', 'es-ES', 'ar'];
 const SURFACES = [
@@ -136,7 +137,7 @@ const LanguageCommandCenter = ({ initialTab = 'registry' }) => {
           ['heatmap',  'Runtime Heatmap™'],
           ['leaks',    'Leak Inspector™'],
           ['leakage',  `Missing & Leakage (${(leaks.items||[]).length})`],
-          ['editorial','Editorial Translation Studio™'],
+          ['editorial','Semantic Editorial Review™'],
           ['voice',    'Studio Voice™'],
           ['taxonomy', 'Taxonomy & Narrative™'],
         ].map(([id, label]) => (
@@ -164,17 +165,7 @@ const LanguageCommandCenter = ({ initialTab = 'registry' }) => {
         </Section>
       )}
 
-      {tab === 'editorial' && (
-        <CrossLinkSection
-          eyebrow="05 · Editorial Translation Studio™"
-          title="ALE Translation Memory · Review queue"
-          lede="Studio-grade review surface for every AI-generated translation stored by the Editorial Translation Layer. Lock, refine, version. Already lives at the existing endpoint set — full UI extraction queued for a follow-on sprint."
-          actionHref="#"
-          actionLabel="Coming next"
-          disabled
-          testid="language-cc-editorial-section"
-        />
-      )}
+      {tab === 'editorial' && <SemanticEditorialReview />}
 
       {tab === 'voice' && (
         <CrossLinkSection
