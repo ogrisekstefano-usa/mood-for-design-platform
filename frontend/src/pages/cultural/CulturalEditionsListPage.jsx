@@ -57,14 +57,15 @@ const CulturalEditionsListPage = () => {
           <p className="ce-eyebrow">Cultural Edition™</p>
           <h1 className="ce-title">{t('cultural.cultural_editions_list.le_tue_versioni_mercato')}</h1>
           <p className="ce-lede">
-            Ogni edizione è un atto editoriale: un tuo contenuto adattato a una specifica cultura
-            di mercato — tono, riferimenti, atmosfera.
+            {t('cultural.cultural_editions_list.lede',
+               null,
+               'Every edition is an editorial act: a piece of your content adapted to a specific market culture — tone, references, atmosphere.')}
           </p>
         </div>
         <button type="button" className="ce-btn ce-btn--primary"
                 onClick={() => setWizardOpen(true)}
                 data-testid="ce-list-new-btn">
-          <Icons.Plus size={13} /> Nuova edizione
+          <Icons.Plus size={13} /> {t('cultural.cultural_editions_list.new_edition', null, 'New edition')}
         </button>
       </header>
 

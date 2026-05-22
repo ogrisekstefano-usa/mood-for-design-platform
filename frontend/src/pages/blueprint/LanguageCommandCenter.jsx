@@ -104,16 +104,16 @@ const LanguageCommandCenter = () => {
           Language Command Center™
         </h1>
         <p className="text-[15px] leading-[1.7] text-[var(--mood-text-muted, rgba(240,235,224,0.65))] font-body max-w-[72ch]">
-          Governance editoriale completa di ogni parola che MOOD pronuncia
-          al mondo. UI copy · taxonomy · Studio Voice · ALE — un solo
-          atelier per controllare il linguaggio internazionale dello studio.
+          Editorial governance over every word MOOD says to the world.
+          UI copy · taxonomy · Studio Voice · ALE — a single atelier to
+          steer the studio's international voice.
         </p>
         <div className="mt-8 flex flex-wrap gap-x-12 gap-y-3 text-[11px] uppercase tracking-[0.22em] text-[var(--mood-text-muted, rgba(240,235,224,0.55))]">
-          <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{stats.keys}</strong> &nbsp;chiavi totali</span>
+          <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{stats.keys}</strong> &nbsp;total keys</span>
           <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{stats.missing}</strong> &nbsp;missing</span>
-          <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{stats.overrides}</strong> &nbsp;override</span>
-          <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{stats.locked}</strong> &nbsp;lock</span>
-          <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{(leaks.items || []).length}</strong> &nbsp;IT leaks dal CLI</span>
+          <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{stats.overrides}</strong> &nbsp;overrides</span>
+          <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{stats.locked}</strong> &nbsp;locked</span>
+          <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{(leaks.items || []).length}</strong> &nbsp;IT leaks (CLI)</span>
         </div>
       </header>
 
@@ -192,22 +192,22 @@ const LanguageCommandCenter = () => {
       {tab === 'leakage' && (
         <Section
           eyebrow="02 · Missing & Leakage Review™"
-          title="Le frasi che leakano in inglese"
-          lede="Risultato dell'ultimo `yarn localization:audit`. Ogni voce indica una stringa italiana hardcoded che appare anche con locale EN-US — candidata a essere portata nel registry tramite `t()`."
+          title="Phrases that leak through to English"
+          lede="Result of the latest `yarn localization:audit`. Each row marks a hardcoded Italian string that also surfaces under locale EN-US — a candidate to be lifted into the registry via `t()`."
           testid="language-cc-leakage-section"
         >
           {audit && (
             <p className="mb-7 text-[10.5px] uppercase tracking-[0.24em] font-mono text-[var(--mood-text-muted, rgba(240,235,224,0.55))]">
-              Ultimo audit · locale <strong className="text-[var(--mood-text, #f0ebe0)]">{audit.locale}</strong> ·
-              &nbsp;{audit.pages_scanned} pagine ·
-              &nbsp;{audit.leaks_total} leak ·
+              Latest audit · locale <strong className="text-[var(--mood-text, #f0ebe0)]">{audit.locale}</strong> ·
+              &nbsp;{audit.pages_scanned} pages ·
+              &nbsp;{audit.leaks_total} leaks ·
               &nbsp;{audit.missing_total} missing ·
               &nbsp;{new Date(audit.created_at).toLocaleString()}
             </p>
           )}
           {(leaks.items || []).length === 0 ? (
             <p className="py-16 font-heading italic text-[15px] text-[var(--mood-text-muted, rgba(240,235,224,0.55))]">
-              Nessun leak registrato. Esegui <code className="font-mono text-[12px] text-[var(--mood-accent, #d9b285)]">yarn localization:audit</code> dalla directory <code>/app/frontend</code> per produrre un report.
+              No leaks on file. Run <code className="font-mono text-[12px] text-[var(--mood-accent, #d9b285)]">yarn localization:audit</code> from <code>/app/frontend</code> to produce a fresh report.
             </p>
           ) : (
             <ol className="space-y-3" data-testid="language-cc-leakage-list">

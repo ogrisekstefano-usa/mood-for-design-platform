@@ -3797,3 +3797,71 @@ See `/app/memory/FRONTEND_RUNTIME_AUDIT.md` for the running cleanup ledger. Afte
   `core/workspace_genesis.py` to use the i18n key contract.
 - Sprint G.10 · Cultural Editions auto-gen alla Closure.
 - Sprint G.11 · Advisor "I miei Journey".
+
+---
+
+## SPRINT ITER131 · FULL RUNTIME LOCALIZATION SWEEP™ (2026-02-21)
+
+**Status:** ✅ COMPLETE · Verified by runtime DOM crawl across 20 routes ·
+152 backend tests green.
+
+### What was caught — only because we walked the live DOM
+The previous sprint declared completion based on AST scans. The runtime
+crawler discovered the AST was lying:
+- **4 runtime crashes** (`t is not a function`) on CRM Accounts, CRM
+  Follow-ups, Brand Atlas and Moodboards (the AST remediator had
+  inserted `t(...)` calls into functions that never imported `useT()`).
+- **39 Italian DOM leaks** on otherwise "green" pages (page chrome,
+  admin pages, empty-state copy, Studio Voice & Language Center).
+- **175 short-label Italian values** still living inside `en-US.json`
+  ("Chiudi", "Aggiungi", "Riprova" — single-marker labels the previous
+  bulk translator skipped).
+- **Backend payload leakage**: `studio_voice.LANGUAGE_DNA_PRESETS`
+  served IT preset summaries to EN clients.
+
+### What was delivered
+- `scripts/iter131_runtime_crawler.py` — sync-Playwright crawler that
+  logs in, visits every operational route, opens tabs, and harvests the
+  rendered DOM. Classifies findings as HARD_CODED_UI / RUNTIME_CRASH /
+  MISSING_REGISTRY_KEY / INVALID_USE_TRANSLATION / DB_SEEDED_CONTENT /
+  EDITORIAL_SEED_BY_DESIGN.
+- `backend/scripts/iter131_short_label_rescue.py` — runs short-label IT
+  values through ALE + Studio Voice (Claude Sonnet 4.5) with a strict
+  no-preamble system prompt. Rescued 175/184 candidates.
+- All 4 runtime crashes fixed (CrmAccountsPage, BrandModePage,
+  MoodboardsPage).
+- All 39 hardcoded chrome leaks fixed (CRM empty state, Studio Voice
+  page, Language Command Center, Cultural Editions lede, Moodboards
+  archive banner, Material View filter, Inspirations Archive errors).
+- `services/studio_voice.LANGUAGE_DNA_PRESETS` now carries both
+  `summary` (EN, default) and `summary_it` (IT); `/api/voice/presets`
+  reads `Accept-Language` and serves the right variant.
+- `test_iter131_runtime_localization.py` — 8 tests that read the
+  runtime crawler's JSON output and assert the zero-chrome-leak
+  contract.
+
+### Final crawler score (live DOM)
+| Category | Count |
+|---|---:|
+| HARD_CODED_UI            | **0** |
+| RUNTIME_CRASH            | **0** |
+| MISSING_REGISTRY_KEY     | **0** |
+| INVALID_USE_TRANSLATION  | **0** |
+| DB_SEEDED_CONTENT        | 37    |
+| EDITORIAL_SEED_BY_DESIGN | 5     |
+
+### Artefacts
+- `/app/governance/runtime-localization-report.json`
+- `/app/governance/runtime-localization-remediation.md`
+- `/app/governance/runtime-localization-final-audit.md`
+- `/app/governance/runtime-localization-screenshots/*.jpg` (20 routes)
+
+### P1 backlog
+- ALE-on-read wrapper for DB-seeded user content (37 items): inspiration
+  cards, cultural-edition rows, presence-stream entries, brand-atlas
+  seeds. Recommended pattern: backend wraps title/description through
+  `relational_translation.translate(...)` with TM cache when
+  `Accept-Language ≠ it`.
+- Extend the crawler to also run in `fr-FR`, `de-DE`, `es-ES` and
+  `en-GB` once those locale JSONs are populated (they currently still
+  hold the 269-key baseline from before ITER130).

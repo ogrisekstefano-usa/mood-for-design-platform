@@ -250,6 +250,7 @@ const AccountCard = ({
   account,
   onOpen
 }) => {
+  const { t } = useT();
   const primary = account.primary_contact;
   const pal = avatarPalette(account.account_name);
   const primaryName = primary ? primary.full_name || `${primary.first_name || ''} ${primary.last_name || ''}`.trim() : '';
@@ -288,6 +289,7 @@ const NewAccountModal = ({
   onClose,
   onCreated
 }) => {
+  const { t } = useT();
   const [name, setName] = useState('');
   const [type, setType] = useState('private_client');
   const [stage, setStage] = useState('lead');
@@ -347,12 +349,13 @@ const NewAccountModal = ({
 
 // ─── Main page ─────────────────────────────────────────────────────
 const CrmAccountsPage = () => {
+  const { t } = useT();
   const navigate = useNavigate();
   const {
     tab = 'accounts',
     accountId
   } = useParams();
-  const activeTab = CRM_TABS.find(t => t.id === tab) || CRM_TABS[0];
+  const activeTab = CRM_TABS.find(tab_meta => tab_meta.id === tab) || CRM_TABS[0];
   const [accounts, setAccounts] = useState([]);
   const [followUps, setFollowUps] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -519,10 +522,14 @@ const CrmAccountsPage = () => {
       {!loading && activeTab.filter !== '__followups__' && filtered.length === 0 && <div className="crm-empty-state" data-testid="crm-empty-state">
           <p className="crm-empty-state__eyebrow">{t('crm.crm_accounts.sala_delle_relazioni')}</p>
           <p className="crm-empty-state__lead">
-            {activeTab.id === 'accounts' ? 'Nessun Account ancora. Inizia a costruire la memoria delle tue relazioni.' : `Nessun ${activeTab.label.toLowerCase()} in questa vista.`}
+            {activeTab.id === 'accounts'
+              ? t('crm.crm_accounts.empty.accounts_lead', null, 'No Accounts yet. Begin composing the memory of your relationships.')
+              : t('crm.crm_accounts.empty.other_lead', { label: activeTab.label.toLowerCase() }, `No ${activeTab.label.toLowerCase()} in this view.`)}
           </p>
           <p className="crm-empty-state__hint">
-            {activeTab.id === 'accounts' ? 'Un Account è una relazione — un cliente, uno studio, una famiglia. I Contact sono le persone dentro quella relazione.' : 'Prova a cambiare tab o crea un nuovo Account per iniziare.'}
+            {activeTab.id === 'accounts'
+              ? t('crm.crm_accounts.empty.accounts_hint', null, 'An Account is a relationship — a client, a studio, a family. Contacts are the people inside that relationship.')
+              : t('crm.crm_accounts.empty.other_hint', null, 'Try another tab or compose a new Account to begin.')}
           </p>
           <button type="button" className="crm-empty-state__cta-btn" data-testid="crm-empty-state-cta" onClick={() => setShowNew(true)}>
             <Plus size={12} /> {t("crm.crm_accounts.apri_il_primo_account")}
@@ -563,12 +570,14 @@ const CrmAccountsPage = () => {
 const FollowUpsList = ({
   followUps,
   onOpenAccount
-}) => <div className="crm-followups" data-testid="crm-followups">
-    {followUps.length === 0 && <p className="crm-empty-state__lead">Nessun follow-up aperto. 🎉</p>}
+}) => {
+  const { t } = useT();
+  return <div className="crm-followups" data-testid="crm-followups">
+    {followUps.length === 0 && <p className="crm-empty-state__lead">{t('crm.crm_accounts.no_follow_ups', null, 'No open follow-ups. 🎉')}</p>}
     {followUps.map(f => <div key={f.id} className="crm-followup" data-testid={`crm-followup-${f.id}`}>
         <div className="crm-followup__main">
-          <p className="crm-followup__title">{f.title || 'Azione'}</p>
-          <p className="crm-followup__meta">{f.due_date ? `Scadenza · ${new Date(f.due_date).toLocaleDateString('it-IT')}` : 'Senza scadenza'} · {f.action_type || 'task'}</p>
+          <p className="crm-followup__title">{f.title || t('crm.crm_accounts.action', null, 'Action')}</p>
+          <p className="crm-followup__meta">{f.due_date ? `${t('crm.crm_accounts.due', null, 'Due')} · ${new Date(f.due_date).toLocaleDateString()}` : t('crm.crm_accounts.no_due_date', null, 'No due date')} · {f.action_type || 'task'}</p>
         </div>
         {f.account_id && <button type="button" className="crm-btn crm-btn--ghost" onClick={() => onOpenAccount({
       id: f.account_id,
@@ -578,4 +587,5 @@ const FollowUpsList = ({
           </button>}
       </div>)}
   </div>;
+};
 export default CrmAccountsPage;

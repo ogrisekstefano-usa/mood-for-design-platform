@@ -504,7 +504,7 @@ const BrandPicker = ({ value, freeText, onSelect, onFreeText, onAddNew }) => {
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => { setOpen(false); onAddNew?.(); }}
                   data-testid="catalog-brand-add-new">
-            <Icons.Plus size={11} /> Aggiungi produttore
+          <Icons.Plus size={11} /> {t('inspirations.brand_mode.add_maker', null, 'Add maker')}
           </button>
         </div>
       )}

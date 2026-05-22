@@ -55,6 +55,7 @@ const formatRelative = (iso) => {
 
 // ─── Atelier MoodboardCard — smart fallback composition ──────────
 const MoodboardCard = ({ m, project }) => {
+  const { t } = useBlueprint();
   const meta = MB_STATUS[m.status || 'draft'] || MB_STATUS.draft;
   const palettePal = project?.title ? avatarPalette(project.title) : null;
   // Pull palette from project brief if present (≤ 5)
@@ -307,15 +308,16 @@ const MoodboardsPage = () => {
       <div className="mb-page__inner">
       <ArchiveBanner
         testid="moodboards-archive-banner"
-        eyebrow="Archivio trasversale · Sprint G.6"
+        eyebrow={t('moodboards.archive.eyebrow', null, 'Cross-Journey archive · Sprint G.6')}
         title={t('moodboards.empty_inside_journey')}
-        lede="Questa è una vista d'archivio per ritrovare le moodboard composte attraverso tutti i Journey. La composizione vera avviene nel capitolo Moodboard Direction™ del singolo Journey."
-        ctaLabel="Apri Studio Pulse"
+        lede={t('moodboards.archive.lede', null,
+          "This is an archive view that lets you rediscover moodboards composed across every Journey. True composition happens inside the Moodboard Direction™ chapter of each Journey.")}
+        ctaLabel={t('moodboards.archive.cta', null, 'Open Studio Pulse')}
         ctaTo="/dashboard"
       />
       <div className="flex items-start justify-between mb-10 gap-6">
         <div>
-          <p className="mb-page__eyebrow">Design Journey · Tavolo Creativo</p>
+          <p className="mb-page__eyebrow">{t('moodboards.eyebrow', null, 'Design Journey · Creative Table')}</p>
           <h1 className="mb-page__title"><em>{t('moodboards.title')}</em></h1>
           <p className="mb-page__sub">{t('moodboards.subtitle')}</p>
         </div>

@@ -84,6 +84,9 @@
       "l_asset_viene_archiviato_non_piu_visibile_nella_li": "L'asset viene archiviato (non più visibile nella Library) ma le relazioni restano attive. Il pubblico continua a vedere questa immagine finché non la sostituisci.",
       "apri_le_superfici_interessate": "Apri le superfici interessate",
       "chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp": "Chiudi questo drawer e apri la tab Usage dell'Inspector per navigare manualmente ogni relazione."
+    },
+    "brand_mode": {
+      "aggiungi_produttore": "Aggiungi produttore"
     }
   },
   "relationships": {
@@ -528,7 +531,8 @@
       "esplora_i_marchi_le_collezioni_e_il_linguaggio_pro": "Esplora i marchi, le collezioni e il linguaggio progettuale dei produttori presenti in MOOD.\n              Ogni brand è una lettura — atmosfere prevalenti, materialità ricorrenti, geografie narrative\n              dove compare nei tuoi progetti.",
       "aggiungi_produttore": "Aggiungi produttore",
       "tutti_i_posizionamenti": "tutti i posizionamenti",
-      "cerca_per_nome_atmosfera_materia": "Cerca per nome, atmosfera, materia…"
+      "cerca_per_nome_atmosfera_materia": "Cerca per nome, atmosfera, materia…",
+      "add_maker": "Aggiungi produttore"
     },
     "collection_form": {
       "capitolo_editoriale": "Capitolo editoriale ·",
@@ -821,7 +825,17 @@
       "account_centered_ogni_account_puo_avere_piu_contac": "Account-centered. Ogni Account può avere più Contact.\n          I membri del Team vivono in",
       "apri_il_primo_account": "Apri il primo Account",
       "apri_account": "Apri Account →",
-      "cerca_per_nome_account_o_email_contact": "Cerca per nome account o email contact…"
+      "cerca_per_nome_account_o_email_contact": "Cerca per nome account o email contact…",
+      "no_follow_ups": "Nessun follow-up aperto. 🎉",
+      "action": "Azione",
+      "due": "Scadenza",
+      "no_due_date": "Senza scadenza",
+      "empty": {
+        "accounts_lead": "Nessun Account ancora. Inizia a costruire la memoria delle tue relazioni.",
+        "other_lead": "Nessun {label} in questa vista.",
+        "accounts_hint": "Un Account è una relazione — un cliente, uno studio, una famiglia. I Contact sono le persone dentro quella relazione.",
+        "other_hint": "Prova a cambiare tab o crea un nuovo Account per iniziare."
+      }
     },
     "cultural_edition": {
       "adatta_tono_ritmo_cta_al_mercato": "Adatta tono, ritmo, CTA al mercato",
@@ -859,7 +873,9 @@
     },
     "cultural_editions_list": {
       "le_tue_versioni_mercato": "Le tue versioni mercato.",
-      "nessuna_edizione_ancora": "Nessuna edizione ancora."
+      "nessuna_edizione_ancora": "Nessuna edizione ancora.",
+      "lede": "Ogni edizione è un atto editoriale: un tuo contenuto adattato a una specifica cultura di mercato — tono, riferimenti, atmosfera.",
+      "new_edition": "Nuova edizione"
     },
     "cultural_edition": {
       "adatta_il_tuo_lavoro_a_un_altro_mercato_culturale": "Adatta il tuo lavoro a un altro mercato culturale.",
@@ -961,7 +977,13 @@
     "moodboards": {
       "continua_la_direzione": "Continua la direzione →"
     },
-    "empty_inside_journey": "Le moodboard vivono dentro i loro Journey"
+    "empty_inside_journey": "Le moodboard vivono dentro i loro Journey",
+    "archive": {
+      "eyebrow": "Archivio trasversale · Sprint G.6",
+      "lede": "Questa è una vista d'archivio per ritrovare le moodboard composte attraverso tutti i Journey. La composizione vera avviene nel capitolo Moodboard Direction™ del singolo Journey.",
+      "cta": "Apri Studio Pulse"
+    },
+    "eyebrow": "Design Journey · Tavolo Creativo"
   },
   "placeholder": {
     "coming_soon": {
@@ -1229,6 +1251,11 @@
       "regenerate_direction_title": "Rigenera la direzione con il contesto attuale",
       "share_thread_title": "Condividi nel thread interno del team",
       "compose_proposal_title": "Componi una proposta editoriale dal contesto del progetto"
+    }
+  },
+  "material_view": {
+    "filter": {
+      "materiality": "Materialità"
     }
   }
 }

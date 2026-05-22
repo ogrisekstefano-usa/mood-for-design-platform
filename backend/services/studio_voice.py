@@ -43,7 +43,8 @@ logger = logging.getLogger(__name__)
 LANGUAGE_DNA_PRESETS = {
     "editorial_italian_luxury": {
         "label": "Editorial Italian Luxury",
-        "summary": "Voce milanese sobria, lessico architettonico (Cassina · Molteni · Minotti), ritmo lento, eleganza non urlata.",
+        "summary": "Restrained Milanese voice, architectural lexicon (Cassina · Molteni · Minotti), slow cadence, elegance that never shouts.",
+        "summary_it": "Voce milanese sobria, lessico architettonico (Cassina · Molteni · Minotti), ritmo lento, eleganza non urlata.",
         "directive": (
             "Voice: editorial Milanese — Cassina · Molteni · Minotti register. "
             "Restrained, architecturally literate, never effusive. Prefers "
@@ -53,7 +54,8 @@ LANGUAGE_DNA_PRESETS = {
     },
     "nordic_minimal": {
         "label": "Nordic Minimal",
-        "summary": "Voce scandinava asciutta, lessico minimale, calore sobrio, frasi brevi.",
+        "summary": "Dry Scandinavian voice, minimalist lexicon, quiet warmth, short sentences.",
+        "summary_it": "Voce scandinava asciutta, lessico minimale, calore sobrio, frasi brevi.",
         "directive": (
             "Voice: Scandinavian editorial — Vipp · Frama · Norm Architects. "
             "Quiet, spare, factual. Prefers 'considered', 'reduced', 'tactile', "
@@ -62,7 +64,8 @@ LANGUAGE_DNA_PRESETS = {
     },
     "hospitality_luxury": {
         "label": "Hospitality Luxury",
-        "summary": "Voce ospitale, calda, premium hospitality, attenta al benessere del lettore.",
+        "summary": "Hospitable, warm, premium-hospitality voice, attentive to the reader's wellbeing.",
+        "summary_it": "Voce ospitale, calda, premium hospitality, attenta al benessere del lettore.",
         "directive": (
             "Voice: hospitality luxury — Aman · Six Senses · Rosewood register. "
             "Warm, attentive, sensorial. Prefers 'welcoming', 'curated', "
@@ -71,7 +74,8 @@ LANGUAGE_DNA_PRESETS = {
     },
     "contemporary_gallery": {
         "label": "Contemporary Gallery",
-        "summary": "Voce galleristica contemporanea, lessico curatoriale, intellettuale.",
+        "summary": "Contemporary gallery voice, curatorial lexicon, intellectual.",
+        "summary_it": "Voce galleristica contemporanea, lessico curatoriale, intellettuale.",
         "directive": (
             "Voice: contemporary gallery — curatorial, references-aware, "
             "intellectually confident. Prefers 'composed', 'reading', 'gesture', "
@@ -80,7 +84,8 @@ LANGUAGE_DNA_PRESETS = {
     },
     "warm_residential": {
         "label": "Warm Residential",
-        "summary": "Voce calda residenziale, attenta alle relazioni, vicina alla famiglia.",
+        "summary": "Warm residential voice, attentive to relationships, close to family life.",
+        "summary_it": "Voce calda residenziale, attenta alle relazioni, vicina alla famiglia.",
         "directive": (
             "Voice: warm residential — for clients who are building a home, "
             "not a portfolio. Prefers 'home', 'evening light', 'gathering', "
@@ -89,7 +94,8 @@ LANGUAGE_DNA_PRESETS = {
     },
     "architectural_minimal": {
         "label": "Architectural Minimal",
-        "summary": "Voce architettonica essenziale, lessico costruttivo, precisione.",
+        "summary": "Essential architectural voice, constructional lexicon, precision.",
+        "summary_it": "Voce architettonica essenziale, lessico costruttivo, precisione.",
         "directive": (
             "Voice: architectural minimal — Pawson · Sanaa · Zumthor register. "
             "Constructional precision. Prefers 'volume', 'plane', 'threshold', "

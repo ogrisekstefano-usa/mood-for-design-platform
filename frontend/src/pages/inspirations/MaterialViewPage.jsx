@@ -107,7 +107,7 @@ export default function MaterialViewPage() {
         </div>
         {data.materials.length > 0 && (
           <div className="mv-filter-group">
-            <span className="mv-filter-group__label">Materialità</span>
+            <span className="mv-filter-group__label">{t('material_view.filter.materiality', null, 'Materiality')}</span>
             <div className="mv-chips">
               {data.materials.slice(0, 14).map(m => (
                 <button

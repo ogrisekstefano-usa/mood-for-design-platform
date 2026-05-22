@@ -110,6 +110,7 @@ const BrandCardSkeleton = () => <div className="bm-card bm-card--skeleton">
     <div className="bm-skel bm-skel--row bm-skel--short" />
   </div>;
 const BrandModePage = () => {
+  const { t } = useT();
   const [items, setItems] = useState(null);
   const [q, setQ] = useState('');
   const [luxuryFilter, setLuxuryFilter] = useState(null);

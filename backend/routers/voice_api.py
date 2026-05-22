@@ -21,7 +21,7 @@ Endpoints
 from datetime import datetime, timezone
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
 from core.tenant_context import get_tenant_context
@@ -63,10 +63,21 @@ class LanguageDnaPayload(BaseModel):
 
 
 @router.get("/presets")
-def list_presets(ctx: dict = Depends(get_tenant_context)):
+def list_presets(
+    request: Request,
+    ctx: dict = Depends(get_tenant_context),
+):
+    """List the Studio Voice™ presets. The summary is localized using the
+    `Accept-Language` header (defaults to English summary)."""
+    al = (request.headers.get('Accept-Language') or '').lower()
+    use_it = al.startswith('it')
     return {
         "presets": [
-            {"id": k, "label": v["label"], "summary": v["summary"]}
+            {
+                "id": k,
+                "label": v["label"],
+                "summary": (v.get("summary_it") if use_it else v["summary"]) or v["summary"],
+            }
             for k, v in LANGUAGE_DNA_PRESETS.items()
         ]
     }

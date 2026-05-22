@@ -135,16 +135,16 @@ const StudioVoicePage = () => {
           Studio Voice™
         </h1>
         <p className="text-[15px] leading-[1.7] text-[var(--mood-text-muted, rgba(240,235,224,0.65))] font-body max-w-[72ch]">
-          La voce internazionale dello studio. MOOD impara dal vostro modo di scrivere
-          — preset tonali, vocabolario preferito, traduzioni fissate — e mantiene la
-          vostra identità in ogni lingua. <em>Non un sistema di traduzione, un'identità editoriale.</em>
+          The international voice of the studio. MOOD learns from the way you write —
+          tonal presets, preferred vocabulary, locked translations — and carries your
+          identity into every language. <em>Not a translation system, an editorial identity.</em>
         </p>
         {analytics && (
           <div className="mt-8 flex flex-wrap gap-x-12 gap-y-3 text-[11px] uppercase tracking-[0.22em] text-[var(--mood-text-muted, rgba(240,235,224,0.55))]">
-            <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{analytics.total_variants}</strong> &nbsp;voci tradotte</span>
-            <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{analytics.locked_count}</strong> &nbsp;lock approved</span>
-            <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{analytics.reviewed_count}</strong> &nbsp;riviste</span>
-            <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{(analytics.locale_pair_usage || []).length}</strong> &nbsp;coppie linguistiche</span>
+            <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{analytics.total_variants}</strong> &nbsp;translated entries</span>
+            <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{analytics.locked_count}</strong> &nbsp;lock-approved</span>
+            <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{analytics.reviewed_count}</strong> &nbsp;reviewed</span>
+            <span><strong className="font-mono text-[var(--mood-text, #f0ebe0)]">{(analytics.locale_pair_usage || []).length}</strong> &nbsp;language pairs</span>
           </div>
         )}
       </header>
@@ -152,8 +152,8 @@ const StudioVoicePage = () => {
       {/* ──────────────  STUDIO LANGUAGE DNA  ────────────── */}
       <Section
         eyebrow="01 · Studio Language DNA™"
-        title="Come parla lo studio"
-        lede="Scegli il preset tonale che meglio rappresenta la voce dello studio. Influenza ogni traduzione editoriale in tutte le lingue."
+        title="How the studio speaks"
+        lede="Select the tonal preset that best represents the studio's voice. It shapes every editorial translation across every locale."
         testid="voice-language-dna"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5" data-testid="voice-preset-selector">
@@ -175,7 +175,7 @@ const StudioVoicePage = () => {
                   <h3 className="font-heading text-[20px] leading-[1.2] text-[var(--mood-text, #f0ebe0)] tracking-[-0.005em]">
                     {p.label}
                   </h3>
-                  {active && <span className="text-[9px] uppercase tracking-[0.24em] font-mono text-[var(--mood-accent, #d9b285)]">attivo</span>}
+                  {active && <span className="text-[9px] uppercase tracking-[0.24em] font-mono text-[var(--mood-accent, #d9b285)]">active</span>}
                 </div>
                 <p className="text-[12.5px] leading-[1.65] text-[var(--mood-text-muted, rgba(240,235,224,0.6))] font-body italic">
                   {p.summary}
@@ -187,7 +187,7 @@ const StudioVoicePage = () => {
         {profile?.directive && (
           <Card className="mt-8">
             <p className="text-[9.5px] uppercase tracking-[0.26em] font-mono text-[var(--mood-text-muted, rgba(240,235,224,0.5))] mb-3">
-              Direttiva attualmente iniettata nel prompt
+              Directive currently injected into the prompt
             </p>
             <p className="font-heading italic text-[15px] leading-[1.65] text-[var(--mood-text, #f0ebe0)]">
               "{profile.directive}"
@@ -199,8 +199,8 @@ const StudioVoicePage = () => {
       {/* ──────────────  PREFERRED VOCABULARY  ────────────── */}
       <Section
         eyebrow="02 · Preferred Vocabulary™"
-        title="Vocabolario dello studio"
-        lede="Termini editoriali preferiti per ogni lingua. Vengono iniettati nel prompt prima della traduzione, e diventano parte stabile della voce dello studio."
+        title="Studio vocabulary"
+        lede="Editorial terms preferred per locale. They are injected into the prompt before every translation, becoming a stable part of the studio's voice."
         testid="voice-preferred-vocabulary"
       >
         <VocabularyEditor vocab={vocab} onChanged={refreshAll} />
@@ -209,8 +209,8 @@ const StudioVoicePage = () => {
       {/* ──────────────  TRANSLATION MEMORY INSPECTOR  ────────────── */}
       <Section
         eyebrow="03 · Translation Memory Inspector™"
-        title="Il dizionario vivente dello studio"
-        lede="Ogni frase tradotta resta qui. Potete fissarla (Lock Approved) per renderla la voce definitiva dello studio, oppure correggerla manualmente e MOOD imparerà."
+        title="The studio's living dictionary"
+        lede="Every translated phrase remains here. You can lock it (Lock Approved) to make it the studio's definitive voice, or correct it manually and MOOD will learn."
         testid="voice-memory-inspector"
       >
         {/* Filters */}
@@ -296,7 +296,7 @@ const VocabularyEditor = ({ vocab, onChanged }) => {
     <>
       <Card className="mb-6" data-testid="voice-vocabulary-add">
         <p className="text-[9.5px] uppercase tracking-[0.26em] font-mono text-[var(--mood-text-muted, rgba(240,235,224,0.5))] mb-4">
-          Aggiungi un termine
+          Add a term
         </p>
         <div className="grid grid-cols-1 md:grid-cols-[1fr_60px_1fr_120px_auto] gap-3 items-end">
           <input
@@ -321,7 +321,7 @@ const VocabularyEditor = ({ vocab, onChanged }) => {
           <button type="button" onClick={add} disabled={adding}
             className="px-5 py-2 text-[10.5px] uppercase tracking-[0.22em] font-mono border border-[var(--mood-accent, #d9b285)] text-[var(--mood-accent, #d9b285)] hover:bg-[var(--mood-accent-soft, rgba(217,178,133,0.06))] disabled:opacity-40 flex items-center gap-2">
             {adding ? <Loader2 size={11} className="animate-spin" /> : <Plus size={11} strokeWidth={1.8} />}
-            Aggiungi
+            {adding ? 'Adding…' : 'Add'}
           </button>
         </div>
       </Card>
