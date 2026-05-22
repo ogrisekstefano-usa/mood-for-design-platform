@@ -1,0 +1,37 @@
+{
+  "summary": "ITER134 Self-Healing Localization Loop — backend 18/18 pass (auth gating, validation, status/list/cancel via seeded files, real subprocess launch + concurrent guard, clear-fixed-leaks). Frontend: all 3 action buttons present and wired; drawer opens with stage pill, progress bar, per-locale tile, log, cancel; cancel sets stage='Cancelled'; concurrent run-audit click resumes existing drawer without error toast.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/admin/language/heatmap (it-IT)", "issues": ["React warning persists from ITER133: 'Cannot update a component while rendering a different component' (LocalizationOverlay setState-in-render — already noted in iter133, still present).", "Console shows multiple 401/403/404/500 from unrelated backend calls during page load (not blocking — pre-existing on this page; ITER133 also flagged registry-vs-runtime data inconsistency '1280 MISSING' visible in stat tile while runtime is converged 0)."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_134_self_healing_loop.py",
+    "/app/test_reports/pytest/iter134_results.xml"
+  ],
+  "action_items": [
+    "(carryover from ITER133, still open) Wrap LocalizationOverlay setState in useEffect to silence React setState-in-render warning."
+  ],
+  "critical_code_review_comments": [
+    "services/runtime_loop_jobs.kill_job calls os.killpg(os.getpgid(pid), SIGTERM). If a malicious or buggy status file ever contained pid=1, this would SIGTERM init's process group and tear down the container. Recommend defensive guard: refuse to kill if pid <= 1 or if pgid in {0,1}. (Discovered while writing the cancel test — initially seeded pid=1 and it killed the backend.)",
+    "/api/language/runtime/run-loop/status/{job_id} regex [a-f0-9]{8,32} accepts UPPERCASE-impossible (only a-f), good — but launch_loop generates 16-char IDs while regex tolerates 8..32. Document the canonical 16-char shape or tighten regex to {16}.",
+    "find_active_job zombie window of 90s is generous — if a backend reload occurs in the middle of a launch, status may show 'queued' stuck until 90s elapse before another loop can be triggered. Consider PID-aliveness as primary signal (already present) and reduce stale-queued window to 30s.",
+    "clear_fixed_leaks opens sqlite without WAL/timeout; if the crawler/remediator is writing concurrently the DELETE could lock. Wrap in `BEGIN IMMEDIATE` with sqlite3.connect(..., timeout=5) for safety."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_134_self_healing_loop.py"
+  ],
+  "success_rate": {"backend": "100% (18/18)", "frontend": "100% (8/8 testid checks; drawer opens, polls, cancels, concurrent guard works)"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (super_admin)",
+  "seed_data_creation": "Test seeds 3 TEST_iter134_* rows in /app/governance/runtime_leaks.db with resolution_method='test_seeded' then verifies clear-fixed-leaks endpoint deletes them. Cancel test seeds a fake job status file with pid=999999 (non-existent) under /app/governance/jobs/. All seeds are cleaned up in fixture teardown.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend verified end-to-end on real subprocess (not mocked). Concurrent guard returns 409 with detail.reason='concurrent_job' and includes the in-flight job_id. Cancel test MUST use a non-existent or non-init PID — never pid=1 because services.runtime_loop_jobs.kill_job calls os.killpg which on PID=1 destroys the entire init process group (verified by reproducing this — backend died mid-test until I fixed the seed). Frontend route is /admin/language/heatmap (legacy /blueprint/language also mounts). Login submit text is 'Accedi' (it-IT) — use button[type=submit] selector instead. Backend WatchFiles reloads on any file in /app/backend including /app/backend/tests; pytest creates __pycache__ which triggers reload — run pytest from /tmp with -p no:cacheprovider to avoid spurious reloads. supervisord seems to die when long-running shells terminate; restart with: setsid nohup sudo /usr/bin/supervisord -c /etc/supervisor/supervisord.conf > /tmp/sup.log 2>&1 < /dev/null & ; disown -a.",
+  "rca of the issue": "No bugs found. One self-inflicted test issue during iteration: original test seeded pid=1 to keep '_pid_alive' true; kill_job's os.killpg(getpgid(1), SIGTERM) tore down backend's process group. Fixed by switching seed pid to 999999 (kill no-op, swallowed by exception handler, status file still updated to stage='cancelled'). Recommended hardening to kill_job documented above."
+}

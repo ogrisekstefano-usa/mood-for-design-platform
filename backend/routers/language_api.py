@@ -707,3 +707,90 @@ def runtime_screenshot(key: str, ctx: dict = Depends(get_tenant_context)):
     if not f.exists():
         raise HTTPException(404, "not_found")
     return FileResponse(str(f), media_type='image/jpeg')
+
+
+
+# ─── ITER134 · Self-Healing Localization Loop™ orchestration ────────────
+from services import runtime_loop_jobs  # noqa: E402
+
+
+class RunLoopRequest(BaseModel):
+    locales: Optional[List[str]] = None
+    max_iters: int = 3
+    no_restart: bool = False
+
+
+@router.post("/runtime/run-loop")
+def runtime_run_loop(
+    body: RunLoopRequest,
+    ctx: dict = Depends(get_tenant_context),
+):
+    """Launch the autonomous self-healing remediation loop in background.
+
+    Body:
+      - locales:      list of locale codes (default ['en-US']); valid set is
+                      it-IT · en-US · en-GB · fr-FR · de-DE · es-ES · ar
+      - max_iters:    crawler/remediator iterations per locale (default 3)
+      - no_restart:   skip supervisorctl restart between iterations (for
+                      quick CI runs); production should leave this False.
+
+    Behaviour:
+      - Refuses a new launch while another loop is in flight (HTTP 409).
+      - Returns immediately with the `job_id` to poll.
+    """
+    _require_admin(ctx)
+    locales = body.locales or ['en-US']
+    if body.max_iters < 1 or body.max_iters > 6:
+        raise HTTPException(400, "max_iters must be 1..6")
+    res = runtime_loop_jobs.launch_loop(
+        locales=locales, max_iters=body.max_iters, no_restart=body.no_restart,
+    )
+    if not res.get("ok"):
+        if res.get("reason") == "concurrent_job":
+            raise HTTPException(409, detail=res)
+        raise HTTPException(400, detail=res)
+    return res
+
+
+@router.get("/runtime/run-loop/status/{job_id}")
+def runtime_run_loop_status(
+    job_id: str,
+    ctx: dict = Depends(get_tenant_context),
+):
+    """Returns the current status of a self-healing job. Safe to poll."""
+    _require_admin(ctx)
+    import re as _re
+    if not _re.fullmatch(r'[a-f0-9]{8,32}', job_id):
+        raise HTTPException(400, "invalid_job_id")
+    res = runtime_loop_jobs.get_status(job_id)
+    if not res.get("ok"):
+        raise HTTPException(404, detail=res)
+    return res["status"]
+
+
+@router.get("/runtime/run-loop/jobs")
+def runtime_list_jobs(
+    limit: int = Query(20, ge=1, le=100),
+    ctx: dict = Depends(get_tenant_context),
+):
+    """Last N jobs (newest first), summary fields only."""
+    _require_admin(ctx)
+    return {"items": runtime_loop_jobs.list_jobs(limit=limit)}
+
+
+@router.post("/runtime/run-loop/{job_id}/cancel")
+def runtime_cancel_job(job_id: str, ctx: dict = Depends(get_tenant_context)):
+    _require_admin(ctx)
+    import re as _re
+    if not _re.fullmatch(r'[a-f0-9]{8,32}', job_id):
+        raise HTTPException(400, "invalid_job_id")
+    return runtime_loop_jobs.kill_job(job_id)
+
+
+@router.post("/runtime/clear-fixed-leaks")
+def runtime_clear_fixed_leaks(ctx: dict = Depends(get_tenant_context)):
+    """Delete all rows from runtime_leaks.db where resolution_method != NULL.
+    Returns the count of pruned rows.
+    """
+    _require_admin(ctx)
+    return runtime_loop_jobs.clear_fixed_leaks()

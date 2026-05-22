@@ -1,0 +1,29 @@
+{
+  "job_id": "551b9a4639ba47a1",
+  "stage": "cancelled",
+  "locales": [
+    "en-US"
+  ],
+  "max_iters": 1,
+  "completed": true,
+  "progress_pct": 42,
+  "started_at": "2026-01-01T00:00:00Z",
+  "finished_at": "2026-05-22T04:18:05Z",
+  "log": [
+    {
+      "ts": "2026-01-01T00:00:00Z",
+      "line": "seeded"
+    }
+  ],
+  "per_locale": {
+    "en-US": {
+      "summary": {
+        "DB_SEEDED_CONTENT": 0
+      },
+      "iterations": 1,
+      "converged": true
+    }
+  },
+  "converged": true,
+  "pid": 1
+}

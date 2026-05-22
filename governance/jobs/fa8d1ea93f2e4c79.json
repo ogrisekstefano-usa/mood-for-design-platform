@@ -1,0 +1,59 @@
+{
+  "job_id": "fa8d1ea93f2e4c79",
+  "stage": "completed",
+  "locales": [
+    "en-US"
+  ],
+  "max_iters": 1,
+  "completed": true,
+  "progress_pct": 100,
+  "started_at": "2026-05-22T04:04:27+00:00",
+  "log": [
+    {
+      "ts": "2026-05-22T04:04:27+00:00",
+      "line": "job started · locales=['en-US'] · max_iters=1"
+    },
+    {
+      "ts": "2026-05-22T04:04:27+00:00",
+      "line": "crawling · en-US"
+    },
+    {
+      "ts": "2026-05-22T04:04:28+00:00",
+      "line": "crawler exit=1 stderr_tail=                                              ║\n║     playwright install                                     ║\n║                                                            ║\n║ <3 Playwright Team                                         ║\n╚════════════════════════════════════════════════════════════╝\n"
+    },
+    {
+      "ts": "2026-05-22T04:04:28+00:00",
+      "line": "summary en-US · {}"
+    },
+    {
+      "ts": "2026-05-22T04:04:28+00:00",
+      "line": "✓ en-US converged at iteration 1"
+    },
+    {
+      "ts": "2026-05-22T04:04:28+00:00",
+      "line": "regenerating heatmap"
+    },
+    {
+      "ts": "2026-05-22T04:04:28+00:00",
+      "line": "job completed · agg={}"
+    }
+  ],
+  "pid": 18983,
+  "log_path": "/tmp/iter134_jobs/fa8d1ea93f2e4c79.log",
+  "per_locale": {
+    "en-US": {
+      "summary": {},
+      "iterations": 1,
+      "converged": true
+    }
+  },
+  "updated_at": "2026-05-22T04:04:28+00:00",
+  "current_iteration": 1,
+  "current_locale": "en-US",
+  "finished_at": "2026-05-22T04:04:28+00:00",
+  "final_summary": {},
+  "final_summary_by_locale": {
+    "en-US": {}
+  },
+  "converged": true
+}

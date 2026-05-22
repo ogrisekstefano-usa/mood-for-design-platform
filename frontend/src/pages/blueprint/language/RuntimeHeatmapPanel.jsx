@@ -6,15 +6,17 @@
  * actions row · screenshot drawer.
  */
 import React, { useCallback, useEffect, useState } from 'react';
-import { Loader2, Download, ExternalLink, PlayCircle, RefreshCcw } from 'lucide-react';
+import { Loader2, Download, ExternalLink, PlayCircle, RefreshCcw, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   fetchRuntimeSummary, fetchRuntimeReport,
   downloadRuntimeReport, runtimeHeatmapRawUrl,
+  launchRuntimeLoop, clearFixedLeaks,
 } from './RuntimeLocalizationApi';
 import LocalizationStatusHero from './LocalizationStatusHero';
 import RouteHeatmapGrid from './RouteHeatmapGrid';
 import LocalizationScreenshotDrawer from './LocalizationScreenshotDrawer';
+import SelfHealingProgressDrawer from './SelfHealingProgressDrawer';
 
 const Action = ({ icon: Icon, label, onClick, disabled, hint, testid }) => (
   <button
@@ -44,6 +46,8 @@ const RuntimeHeatmapPanel = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState(null);
+  const [activeJobId, setActiveJobId]     = useState(null);
+  const [launching, setLaunching]         = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -84,6 +88,55 @@ const RuntimeHeatmapPanel = () => {
     window.open(runtimeHeatmapRawUrl(), '_blank', 'noopener,noreferrer');
   };
 
+  const startLoop = async ({ locales, maxIters }) => {
+    if (launching) return;
+    setLaunching(true);
+    try {
+      const res = await launchRuntimeLoop({ locales, maxIters });
+      setActiveJobId(res.job_id);
+      toast.success(`Self-healing loop started · job ${res.job_id.slice(0, 8)}`);
+    } catch (e) {
+      const detail = e?.response?.data?.detail;
+      if (detail?.reason === 'concurrent_job') {
+        setActiveJobId(detail.job_id);
+        toast.info(`Resuming live job ${detail.job_id.slice(0, 8)}`);
+      } else {
+        toast.error('Failed to start loop');
+      }
+    } finally {
+      setLaunching(false);
+    }
+  };
+
+  const onRunAudit = () => startLoop({ locales: ['en-US'], maxIters: 1 });
+  const onRerunLoop = () => startLoop({
+    locales: ['en-US', 'it-IT', 'en-GB', 'fr-FR', 'de-DE', 'es-ES', 'ar'],
+    maxIters: 3,
+  });
+
+  const onClearFixed = async () => {
+    if (!window.confirm('Delete all closed leak rows from the runtime ledger? This cannot be undone.')) return;
+    try {
+      const res = await clearFixedLeaks();
+      toast.success(`Cleared ${res.cleared} resolved leak${res.cleared === 1 ? '' : 's'}`);
+      load();
+    } catch (_) {
+      toast.error('Clear failed');
+    }
+  };
+
+  const onLoopComplete = useCallback((status) => {
+    if (status?.converged) {
+      toast.success(`Loop converged · ${(status.locales || []).join(' · ')}`);
+    } else if (status?.stage === 'failed' || status?.stage === 'cancelled') {
+      toast.error(`Loop ${status.stage}`);
+    } else {
+      toast.info('Loop finished — review the results');
+    }
+    // Refresh the underlying data so the hero + grid reflect the new state.
+    load();
+  }, [load]);
+
   return (
     <section data-testid="locgov-runtime-heatmap-panel">
       <div className="mb-6">
@@ -113,7 +166,7 @@ const RuntimeHeatmapPanel = () => {
             iterations={summary?.iterations}
           />
 
-          {/* Action row */}
+          {/* Action row · ITER134 wires the 3 self-healing actions */}
           <div className="flex flex-wrap gap-3 mb-10" data-testid="locgov-actions">
             <Action
               icon={refreshing ? Loader2 : RefreshCcw}
@@ -134,24 +187,25 @@ const RuntimeHeatmapPanel = () => {
               testid="locgov-action-open-raw"
             />
             <Action
-              icon={PlayCircle}
+              icon={launching ? Loader2 : PlayCircle}
               label="Run runtime audit"
-              disabled
-              hint="Coming next"
+              onClick={onRunAudit}
+              disabled={launching || !!activeJobId}
+              hint={activeJobId ? 'In flight' : null}
               testid="locgov-action-run-audit"
             />
             <Action
-              icon={PlayCircle}
+              icon={launching ? Loader2 : PlayCircle}
               label="Re-run remediation loop"
-              disabled
-              hint="Coming next"
+              onClick={onRerunLoop}
+              disabled={launching || !!activeJobId}
+              hint={activeJobId ? 'In flight' : 'all 7 locales'}
               testid="locgov-action-rerun-loop"
             />
             <Action
-              icon={RefreshCcw}
+              icon={Trash2}
               label="Clear fixed leaks"
-              disabled
-              hint="Coming next"
+              onClick={onClearFixed}
               testid="locgov-action-clear"
             />
           </div>
@@ -179,6 +233,13 @@ const RuntimeHeatmapPanel = () => {
         <LocalizationScreenshotDrawer
           route={selectedRoute}
           onClose={() => setSelectedRoute(null)}
+        />
+      )}
+      {activeJobId && (
+        <SelfHealingProgressDrawer
+          jobId={activeJobId}
+          onClose={() => setActiveJobId(null)}
+          onComplete={onLoopComplete}
         />
       )}
     </section>

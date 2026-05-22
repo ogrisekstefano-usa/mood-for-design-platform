@@ -27,6 +27,34 @@ export const fetchRuntimeLeaks = async ({ openOnly = false, limit = 200 } = {}) 
   return data;
 };
 
+// ─── ITER134 · Self-Healing Loop orchestration ──────────────────────────
+export const launchRuntimeLoop = async ({ locales = ['en-US'], maxIters = 3, noRestart = false } = {}) => {
+  const { data } = await api.post(`${BASE}/run-loop`, {
+    locales, max_iters: maxIters, no_restart: noRestart,
+  });
+  return data;
+};
+
+export const fetchRuntimeJobStatus = async (jobId) => {
+  const { data } = await api.get(`${BASE}/run-loop/status/${jobId}`);
+  return data;
+};
+
+export const fetchRuntimeJobs = async (limit = 10) => {
+  const { data } = await api.get(`${BASE}/run-loop/jobs?limit=${limit}`);
+  return data;
+};
+
+export const cancelRuntimeJob = async (jobId) => {
+  const { data } = await api.post(`${BASE}/run-loop/${jobId}/cancel`);
+  return data;
+};
+
+export const clearFixedLeaks = async () => {
+  const { data } = await api.post(`${BASE}/clear-fixed-leaks`);
+  return data;
+};
+
 // Returns the absolute path so an <img> tag can consume it directly.
 // The browser will attach the existing auth cookie/header.
 export const runtimeScreenshotUrl = (key) => {
