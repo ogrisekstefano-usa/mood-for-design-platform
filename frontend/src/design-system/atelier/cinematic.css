@@ -1,0 +1,512 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Atelier Nordic™ · Cinematic Polish Layer
+ * ITER138 · Phase 2 · Art Direction Pass (23 Feb 2026)
+ *
+ * Goal: turn the operating system into a luxury cinematic environment, not a
+ * SaaS dashboard. Surgical adjustments only — NO layout changes. Targets:
+ *
+ *   1. Unified image grading pipeline — every image, regardless of source,
+ *      collapses into a single dark-moody-architectural visual family via
+ *      a global filter stack (brightness/saturate/contrast/hue-rotate).
+ *   2. Atmospheric overlays — vignette + fog gradient + faint film grain
+ *      so flat blacks feel layered and inhabited.
+ *   3. Background depth — replace pure #050505 with a subtle charcoal →
+ *      midnight radial gradient. Same canvas, more emotional weight.
+ *   4. Panel softening — reduce border alphas, add inner radial wash,
+ *      eliminate the "component system" feeling.
+ *   5. Typography tightening — refine tracking on display + eyebrow,
+ *      pull line-heights closer.
+ *   6. Sidebar restraint — remove visible separators, soften active state.
+ *
+ * Order: this file MUST load AFTER components.css so it wins specificity
+ * fights without resorting to !important where avoidable.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 1. UNIFIED IMAGE GRADING PIPELINE
+ *    Every photographic image in the OS receives the same cinematic
+ *    treatment so they all read as a single visual family.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .atd-hero__image img,
+[data-atelier="nordic"] .atd-card__cover img,
+[data-atelier="nordic"] .atd-quote__image,
+[data-atelier="nordic"] .ins-card img,
+[data-atelier="nordic"] .pcard__cover img,
+[data-atelier="nordic"] .insd-cover img,
+[data-atelier="nordic"] .bm-card__cover img {
+  filter:
+    brightness(0.56)
+    saturate(0.62)
+    contrast(1.12)
+    hue-rotate(-6deg);
+  transition: filter var(--bp-dur-cinema) var(--bp-ease-cinema),
+              transform var(--bp-dur-cinema) var(--bp-ease-cinema);
+}
+
+[data-atelier="nordic"] .atd-card:hover .atd-card__cover img,
+[data-atelier="nordic"] .ins-card:hover img,
+[data-atelier="nordic"] .pcard:hover .pcard__cover img,
+[data-atelier="nordic"] .bm-card:hover .bm-card__cover img {
+  filter:
+    brightness(0.66)
+    saturate(0.68)
+    contrast(1.10)
+    hue-rotate(-6deg);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 2. BACKGROUND DEPTH — charcoal → midnight gradient
+ *    Replace flat #050505 with subtle vertical wash + ambient radial.
+ *    Same canvas, much more emotional weight.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] {
+  background:
+    radial-gradient(ellipse 100% 60% at 50% 0%, rgba(15, 23, 32, 0.55), transparent 65%),
+    radial-gradient(ellipse 80% 50% at 20% 100%, rgba(20, 30, 38, 0.35), transparent 60%),
+    #050608;
+  background-attachment: fixed;
+}
+
+/* Override on shell root to ensure full canvas inherits */
+[data-atelier="nordic"] .atelier-shell {
+  background: transparent;
+}
+
+[data-atelier="nordic"] .atd-canvas,
+[data-atelier="nordic"] .ppage,
+[data-atelier="nordic"] .crm-page,
+[data-atelier="nordic"] .ins-page,
+[data-atelier="nordic"] .bm-root,
+[data-atelier="nordic"] .bd-root {
+  background: transparent;
+}
+
+/* Subtle film grain — almost imperceptible, but breaks the digital flatness */
+[data-atelier="nordic"] .atelier-shell::after,
+[data-atelier="nordic"] .atd-canvas::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.025;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.85 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 240px 240px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 3. HERO ATMOSPHERIC LAYERS — vignette, fog gradient, warmer warmth
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .atd-hero {
+  position: relative;
+  background:
+    radial-gradient(ellipse 60% 80% at 100% 50%, rgba(15, 23, 32, 0.6), transparent 75%),
+    transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+[data-atelier="nordic"] .atd-hero__image {
+  position: relative;
+}
+
+/* Stronger left-to-right gradient — text side stays cinematic dark */
+[data-atelier="nordic"] .atd-hero__image-overlay {
+  background:
+    linear-gradient(90deg,
+      rgba(5, 6, 8, 0.96) 0%,
+      rgba(5, 6, 8, 0.45) 24%,
+      rgba(5, 6, 8, 0.10) 50%,
+      rgba(5, 6, 8, 0.00) 70%),
+    linear-gradient(180deg,
+      rgba(5, 6, 8, 0.20) 0%,
+      rgba(5, 6, 8, 0.00) 30%,
+      rgba(5, 6, 8, 0.45) 100%),
+    radial-gradient(ellipse 110% 70% at 80% 50%,
+      rgba(180, 130, 80, 0.06),  /* faint warm fireplace glow */
+      transparent 60%);
+  pointer-events: none;
+}
+
+/* Vignette ring on hero image — pulls eye toward composition center */
+[data-atelier="nordic"] .atd-hero__image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 100% 100% at 50% 50%,
+    transparent 55%,
+    rgba(0, 0, 0, 0.32) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 4. PANEL SOFTENING — eliminate the "component system" feeling
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .atd-panel,
+[data-atelier="nordic"] .atd-card,
+[data-atelier="nordic"] .pcard,
+[data-atelier="nordic"] .crm-card,
+[data-atelier="nordic"] .ins-card,
+[data-atelier="nordic"] .bm-card {
+  border-color: rgba(255, 255, 255, 0.035);
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 0%, rgba(94, 234, 212, 0.018), transparent 70%),
+    var(--bp-surface-1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.018);
+  transition:
+    border-color var(--bp-dur-cinema) var(--bp-ease-cinema),
+    transform var(--bp-dur-cinema) var(--bp-ease-cinema),
+    box-shadow var(--bp-dur-cinema) var(--bp-ease-cinema);
+}
+
+[data-atelier="nordic"] .atd-panel:hover,
+[data-atelier="nordic"] .atd-card:hover,
+[data-atelier="nordic"] .pcard:hover,
+[data-atelier="nordic"] .crm-card:hover,
+[data-atelier="nordic"] .ins-card:hover,
+[data-atelier="nordic"] .bm-card:hover {
+  border-color: rgba(255, 255, 255, 0.09);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 24px 60px -28px rgba(0, 0, 0, 0.7);
+}
+
+/* Soften card cover veils — more atmospheric than blocky */
+[data-atelier="nordic"] .atd-card__cover-veil {
+  background:
+    linear-gradient(180deg,
+      rgba(5, 6, 8, 0.00) 0%,
+      rgba(5, 6, 8, 0.05) 38%,
+      rgba(5, 6, 8, 0.65) 72%,
+      rgba(5, 6, 8, 0.96) 100%);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 5. TYPOGRAPHY TIGHTENING — luxury editorial restraint
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .atd-hero__eyebrow {
+  font-size: 9.5px;
+  letter-spacing: 0.32em;
+  font-weight: 500;
+  color: var(--atelier-cyan);
+  opacity: 0.92;
+  margin-bottom: 26px;
+}
+
+[data-atelier="nordic"] .atd-hero__title {
+  font-size: clamp(40px, 3.8vw, 62px);
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+  font-weight: 400;
+  font-style: italic;
+  margin-bottom: 22px;
+  text-shadow: 0 1px 24px rgba(0, 0, 0, 0.45);
+}
+
+[data-atelier="nordic"] .atd-hero__lede {
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  color: rgba(232, 234, 238, 0.78);
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+[data-atelier="nordic"] .atd-hero__signature {
+  font-size: 13px;
+  color: rgba(232, 234, 238, 0.62);
+  font-style: italic;
+  font-family: var(--atelier-serif);
+  margin-bottom: 30px;
+}
+
+[data-atelier="nordic"] .atd-hero__kpis {
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  max-width: 560px;
+}
+
+[data-atelier="nordic"] .atd-kpi__value {
+  font-size: clamp(34px, 2.8vw, 46px);
+  font-weight: 200;
+  letter-spacing: -0.04em;
+  color: var(--atelier-cyan);
+  line-height: 1;
+}
+
+[data-atelier="nordic"] .atd-kpi__label {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: rgba(232, 234, 238, 0.55);
+  line-height: 1.35;
+  max-width: 14ch;
+}
+
+/* Section titles */
+[data-atelier="nordic"] .atd-section__title {
+  font-size: clamp(22px, 1.9vw, 28px);
+  letter-spacing: -0.018em;
+  line-height: 1.1;
+  font-weight: 400;
+}
+
+/* Project card titles */
+[data-atelier="nordic"] .atd-card__title {
+  font-size: clamp(19px, 1.4vw, 23px);
+  letter-spacing: -0.014em;
+  line-height: 1.1;
+  font-weight: 400;
+  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.55);
+}
+
+[data-atelier="nordic"] .atd-card__subtitle {
+  font-size: 11.5px;
+  color: rgba(232, 234, 238, 0.62);
+  letter-spacing: 0.01em;
+  margin-bottom: 18px;
+}
+
+[data-atelier="nordic"] .atd-card__progress-pct {
+  color: rgba(232, 234, 238, 0.85);
+  font-weight: 400;
+}
+
+[data-atelier="nordic"] .atd-card__meta {
+  font-size: 10.5px;
+  color: rgba(232, 234, 238, 0.45);
+}
+
+/* Operational panel titles — calmer */
+[data-atelier="nordic"] .atd-panel__title {
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: rgba(94, 234, 212, 0.82);
+  font-weight: 500;
+  margin-bottom: 22px;
+}
+
+[data-atelier="nordic"] .atd-feed__line {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: rgba(232, 234, 238, 0.85);
+  letter-spacing: 0.01em;
+}
+
+[data-atelier="nordic"] .atd-feed__meta {
+  font-size: 10.5px;
+  color: rgba(232, 234, 238, 0.40);
+}
+
+[data-atelier="nordic"] .atd-feed__icon {
+  width: 30px;
+  height: 30px;
+  background: rgba(94, 234, 212, 0.05);
+  border: 1px solid rgba(94, 234, 212, 0.18);
+  color: rgba(94, 234, 212, 0.78);
+}
+
+[data-atelier="nordic"] .atd-feed__date-day {
+  font-size: 22px;
+  font-weight: 200;
+  color: rgba(232, 234, 238, 0.85);
+  letter-spacing: -0.03em;
+}
+
+[data-atelier="nordic"] .atd-feed__date-month {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: rgba(232, 234, 238, 0.40);
+}
+
+/* Inspiration column quote */
+[data-atelier="nordic"] .atd-quote__line {
+  font-size: 18px;
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+  color: rgba(232, 234, 238, 0.94);
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.6);
+}
+
+[data-atelier="nordic"] .atd-quote__author {
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  color: rgba(232, 234, 238, 0.55);
+  font-family: var(--atelier-sans);
+}
+
+[data-atelier="nordic"] .atd-quote__overlay {
+  background:
+    linear-gradient(180deg,
+      rgba(5, 6, 8, 0.00) 0%,
+      rgba(5, 6, 8, 0.45) 50%,
+      rgba(5, 6, 8, 0.95) 100%);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 6. SIDEBAR RESTRAINT — less software, more atelier
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .atelier-sidebar,
+[data-atelier="nordic"] aside[data-testid*="sidebar"] {
+  background: rgba(8, 9, 12, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.025);
+}
+
+[data-atelier="nordic"] .atelier-nav-item {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: rgba(232, 234, 238, 0.62);
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition:
+    color var(--bp-dur-quick) var(--bp-ease-soft),
+    background-color var(--bp-dur-quick) var(--bp-ease-soft);
+}
+
+[data-atelier="nordic"] .atelier-nav-item:hover {
+  color: rgba(232, 234, 238, 0.92);
+  background: rgba(255, 255, 255, 0.018);
+}
+
+[data-atelier="nordic"] .atelier-nav-item--active {
+  color: rgba(232, 234, 238, 1);
+  background: rgba(94, 234, 212, 0.04);
+}
+
+[data-atelier="nordic"] .atelier-nav-item--active::before {
+  width: 1.5px;
+  background: var(--atelier-cyan);
+  box-shadow: 0 0 5px var(--atelier-cyan-glow);
+  opacity: 0.85;
+}
+
+[data-atelier="nordic"] .atelier-nav-item__icon {
+  opacity: 0.55;
+  width: 15px;
+  height: 15px;
+}
+
+[data-atelier="nordic"] .atelier-nav-item:hover .atelier-nav-item__icon,
+[data-atelier="nordic"] .atelier-nav-item--active .atelier-nav-item__icon {
+  opacity: 0.95;
+}
+
+/* Sidebar section labels — minimal tracking */
+[data-atelier="nordic"] .atelier-rail__section {
+  font-size: 9px;
+  letter-spacing: 0.32em;
+  color: rgba(232, 234, 238, 0.32);
+  font-weight: 500;
+  padding: 0 12px;
+  margin-bottom: 8px;
+}
+
+[data-atelier="nordic"] .atelier-rail__section-num {
+  color: rgba(94, 234, 212, 0.72);
+  font-size: 8.5px;
+}
+
+/* Sidebar dividers — almost invisible */
+[data-atelier="nordic"] .atelier-rail__divider,
+[data-atelier="nordic"] .atelier-sidebar hr {
+  background: rgba(255, 255, 255, 0.02);
+  border: none;
+  height: 1px;
+  margin: 12px 0;
+}
+
+/* Topbar — same glassy restraint */
+[data-atelier="nordic"] .atelier-header,
+[data-atelier="nordic"] header[data-testid*="topbar"] {
+  background: rgba(8, 9, 12, 0.78);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 7. STATUS BADGE REFINEMENT — softer, more cinematic
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .atd-card__badge--cyan {
+  background: rgba(94, 234, 212, 0.08);
+  color: rgba(94, 234, 212, 0.92);
+  border: 1px solid rgba(94, 234, 212, 0.22);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  font-weight: 500;
+  backdrop-filter: blur(12px);
+  padding: 5px 10px;
+}
+
+[data-atelier="nordic"] .atd-card__badge--mute {
+  background: rgba(5, 6, 8, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(232, 234, 238, 0.62);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  backdrop-filter: blur(12px);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 8. PROGRESS BAR — thinner, more atmospheric glow
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .atd-card__progress-track {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-atelier="nordic"] .atd-card__progress-fill {
+  height: 1px;
+  background: rgba(94, 234, 212, 0.85);
+  box-shadow: 0 0 8px rgba(94, 234, 212, 0.35);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 9. SECTION CTA "See all" — calmer
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .atd-section__cta {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(94, 234, 212, 0.78);
+  font-weight: 500;
+}
+
+[data-atelier="nordic"] .atd-section__cta:hover {
+  color: var(--atelier-cyan);
+  opacity: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 10. SCROLLBAR — invisible in body, subtle on panels
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] *::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+[data-atelier="nordic"] *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+[data-atelier="nordic"] *::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+}
+
+[data-atelier="nordic"] *::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
