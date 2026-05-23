@@ -1,6 +1,16 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **Sender Swap Production™** · ✅ DELIVERED · 23 Feb 2026 · `mail.moodfordesign.com` verificato su Resend → swap eseguito.
+  - `EMAIL_FROM=MOOD for DESIGN™ <no-reply@mail.moodfordesign.com>` in `/app/backend/.env`
+  - `tenant_email_settings.sender_email` aggiornato (1 riga · studio tenant) → `no-reply@mail.moodfordesign.com`
+  - Zero dipendenza runtime da `onboarding@resend.dev`
+  - **Live test 4/4 OK** (password_reset, onboarding, invite, lead_captured) → tutti con `ok=true`, `provider=resend`, message_id valido
+  - **Live forgot-password end-to-end** da `studio.moodfordesign.com` → Supabase recovery link generato + Resend delivery con sender produzione + audit log su email_events
+  - Aggregate pytest **31/31 verde** (nessuna regressione)
+  - **Production email pipeline ATTIVA**: ogni email del platform parte ora con sender brandizzato MOOD, redirect tenant-aware, audit completo
+
+## 📌 Sprint Status (previous)
 - **Sprint ITER143E · TENANT EMAIL BRANDING™ + EMAIL GOVERNANCE EXPANSION™** · ✅ DELIVERED · 23 Feb 2026 · Lo studio adesso può rifinire la **voce** delle proprie email (logo, palette, firma, contatti, legali) senza vedere nessuna config tecnica. Email Governance™ centrale acquisisce webhook ingestion + retry + search + provider health.
 
   **Migration `075_tenant_email_branding_extras.sql`**: estensione `tenant_email_settings` con `footer_company_name, footer_address, footer_phone, socials (JSONB), email_signature, legal_footer, privacy_url, terms_url, metadata (JSONB)`.
