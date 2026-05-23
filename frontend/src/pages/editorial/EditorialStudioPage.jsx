@@ -17,9 +17,11 @@ import MarketEditionsToolbar from './MarketEditionsToolbar';
 import EditorialContextRail from './EditorialContextRail';
 import AdaptationOperationsPanel from './AdaptationOperationsPanel';
 import { useNavigate } from 'react-router-dom';
+import { useT } from '../../contexts/BlueprintContext';
 import './editorial.css';
 
 export const EditorialStudioPage = () => {
+  const t = useT();
   const navigate = useNavigate();
   const [selectedMaster, setSelectedMaster] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);

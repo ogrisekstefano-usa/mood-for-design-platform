@@ -2158,6 +2158,14 @@
       "lede": "Votre atelier respire sur une vaste toile. Le système d'exploitation cinématographique repose sur une architecture de bureau — retournez à votre studio pour continuer.",
       "cta": "Envoyer à mon poste",
       "whisper": "Toile recommandée · 1280 px ou plus."
+    },
+    "loader": {
+      "phrase_preparing_atelier": "Préparation de votre atelier…",
+      "phrase_curating_atmosphere": "Curation de l'atmosphère…",
+      "phrase_opening_chapter": "Ouverture du prochain chapitre…",
+      "phrase_synchronizing_rhythm": "Synchronisation du rythme du projet…",
+      "phrase_listening_voices": "À l'écoute des voix du studio…",
+      "phrase_arranging_silence": "Disposition du silence…"
     }
   }
 }

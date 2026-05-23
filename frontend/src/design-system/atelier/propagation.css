@@ -1,0 +1,904 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Atelier Nordic™ · Deep Propagation Layer
+ * ITER138 · Phase 4 · The Cinematic Universe Becomes One
+ *
+ * Scope:
+ *   Editorial Studio™ · Editorial Calendar™ · Brand Atlas™ · Material View™
+ *   Advisor Network™ · Admin Tenants™ · Storefront Studio™
+ *
+ * Strategy:
+ *   Each module already ships its own legacy class prefix (.ed-*, .me-*,
+ *   .adv-*, .ss-*, .mv-*, admin tables). Instead of touching ~20 JSX files
+ *   we override the legacy class roots under [data-atelier="nordic"] to
+ *   inherit the frozen DNA v2:
+ *      - dark cinematic surfaces (no white, no flat)
+ *      - editorial typography (Cormorant italic display + Inter operational)
+ *      - cyan sole accent
+ *      - architectural restraint (thin borders, soft hover lift)
+ *      - atmospheric layering (radial cyan wash + grain via cinematic.css)
+ *
+ * DNA v2 governance applied verbatim — NO visual reinvention. This file is
+ * pure translation of frozen tokens onto legacy class prefixes.
+ *
+ * Load order: this MUST load AFTER components.css + cinematic.css.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * EDITORIAL STUDIO™ — Luxury Editorial Control Room
+ *   .ed-studio · .me-* · .ectx-* · .adop-* · .ed-rail · .ed-master ·
+ *   .ed-variant · .ed-pane · .ed-chip · .ed-filters
+ * Goal: publishing house · architectural magazine · cinematic newsroom.
+ * Never CMS, never blog manager. ════════════════════════════════════ */
+
+[data-atelier="nordic"] .ed-studio-wrap,
+[data-atelier="nordic"] .ed-studio,
+[data-atelier="nordic"] .ed-cal {
+  background: transparent;
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+}
+
+/* Master Editions toolbar — editorial command bar */
+[data-atelier="nordic"] .me-toolbar {
+  background: var(--bp-surface-1);
+  border-color: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  padding: 18px 32px;
+}
+
+[data-atelier="nordic"] .me-btn {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 8px 16px;
+  border-radius: var(--bp-radius-pill);
+}
+[data-atelier="nordic"] .me-btn:hover:not(:disabled) {
+  border-color: var(--bp-border-strong);
+  color: var(--bp-text-headline);
+}
+[data-atelier="nordic"] .me-btn--primary {
+  background: var(--atelier-cyan);
+  color: #051310;
+  border-color: var(--atelier-cyan);
+  box-shadow: var(--atelier-glow-cyan-sm);
+}
+[data-atelier="nordic"] .me-btn--primary:hover:not(:disabled) {
+  background: var(--atelier-cyan-soft);
+  box-shadow: var(--atelier-glow-cyan);
+}
+[data-atelier="nordic"] .me-btn--ghost {
+  background: transparent;
+  color: var(--atelier-cyan);
+  border-color: var(--atelier-cyan-line);
+}
+
+/* Editorial flow strip — visual narrative spine */
+[data-atelier="nordic"] .me-flow-strip {
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  background: linear-gradient(180deg, rgba(94, 234, 212, 0.018), transparent 80%);
+  padding: 14px 32px;
+}
+
+[data-atelier="nordic"] .me-flow-step {
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+}
+[data-atelier="nordic"] .me-flow-step.is-active {
+  color: var(--atelier-cyan);
+}
+
+/* Context rail (left) — editorial dossier */
+[data-atelier="nordic"] .ectx-rail {
+  background: rgba(8, 9, 12, 0.55);
+  border-right: 1px solid rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(20px);
+}
+
+[data-atelier="nordic"] .ectx-field {
+  border-bottom: 1px solid var(--bp-border-soft);
+}
+[data-atelier="nordic"] .ectx-field label,
+[data-atelier="nordic"] .ectx-advisory h4 {
+  font-family: var(--atelier-sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+}
+
+[data-atelier="nordic"] .ectx-advisory {
+  border-top: 1px solid var(--bp-border-soft);
+  background: linear-gradient(180deg, rgba(94, 234, 212, 0.025), transparent 80%);
+}
+
+/* AI Adaptation operations panel */
+[data-atelier="nordic"] .adop-panel {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-md);
+}
+
+[data-atelier="nordic"] .adop-action {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-sm);
+  font-family: var(--atelier-sans);
+}
+[data-atelier="nordic"] .adop-action:hover {
+  border-color: var(--atelier-cyan-line);
+  background: rgba(94, 234, 212, 0.05);
+}
+
+/* Article editor center pane */
+[data-atelier="nordic"] .ed-pane,
+[data-atelier="nordic"] .ed-master,
+[data-atelier="nordic"] .ed-variant {
+  background: transparent;
+}
+
+[data-atelier="nordic"] .ed-master h1,
+[data-atelier="nordic"] .ed-master h2,
+[data-atelier="nordic"] .ed-variant h1,
+[data-atelier="nordic"] .ed-variant h2 {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+}
+
+[data-atelier="nordic"] .ed-rail {
+  background: rgba(8, 9, 12, 0.5);
+  border-right: 1px solid rgba(255, 255, 255, 0.025);
+}
+
+[data-atelier="nordic"] .ed-chip {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-secondary);
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+[data-atelier="nordic"] .ed-chip.is-on,
+[data-atelier="nordic"] .ed-chip--active {
+  border-color: var(--atelier-cyan-line);
+  color: var(--atelier-cyan);
+  background: rgba(94, 234, 212, 0.05);
+}
+
+[data-atelier="nordic"] .ed-filters {
+  border-bottom: 1px solid var(--bp-border-soft);
+  background: transparent;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * EDITORIAL CALENDAR™ — Cinematic Publishing Cadence
+ * ═════════════════════════════════════════════════════════════════════ */
+
+[data-atelier="nordic"] [class*="cal-month"],
+[data-atelier="nordic"] [class*="cal-week"],
+[data-atelier="nordic"] [class*="cal-day"] {
+  border-color: rgba(255, 255, 255, 0.025);
+}
+
+[data-atelier="nordic"] [class*="cal-day"][class*="--today"] {
+  background: rgba(94, 234, 212, 0.04);
+  border-color: var(--atelier-cyan-line);
+}
+
+[data-atelier="nordic"] [class*="cal-event"] {
+  background: rgba(94, 234, 212, 0.06);
+  border: 1px solid var(--atelier-cyan-line);
+  color: var(--atelier-cyan);
+  font-family: var(--atelier-sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border-radius: var(--bp-radius-sm);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * ADVISOR NETWORK™ — International Private Advisory Network
+ *   .adv-* classes. Goal: relationships, trust, intelligence,
+ *   strategic collaboration. NOT employee CRM. ════════════════════════ */
+
+[data-atelier="nordic"] .adv-page {
+  background: transparent;
+  padding: 56px clamp(40px, 5vw, 72px) 80px;
+  position: relative;
+}
+
+[data-atelier="nordic"] .adv-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(900px 480px at 12% -8%, rgba(94, 234, 212, 0.035), transparent 60%);
+}
+
+[data-atelier="nordic"] .adv-hero { padding: 0 0 32px; border-bottom: 1px solid var(--bp-border-soft); }
+
+[data-atelier="nordic"] .adv-eyebrow {
+  color: var(--atelier-cyan);
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-eyebrow);
+  text-transform: uppercase;
+}
+
+[data-atelier="nordic"] .adv-hero h1,
+[data-atelier="nordic"] .adv-hero h2 {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(30px, 3vw, 46px);
+  line-height: 1.05;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+}
+
+[data-atelier="nordic"] .adv-pulse {
+  padding: 22px 0;
+  gap: 48px;
+  border-bottom: 1px solid var(--bp-border-soft);
+}
+
+[data-atelier="nordic"] .adv-pulse [class*="num"],
+[data-atelier="nordic"] .adv-pulse [class*="-num"] {
+  font-family: var(--atelier-sans);
+  font-weight: 200;
+  font-size: 30px;
+  color: var(--bp-text-headline);
+  letter-spacing: -0.03em;
+}
+
+[data-atelier="nordic"] .adv-toolbar {
+  padding: 24px 0;
+  background: transparent;
+  border: none;
+}
+
+[data-atelier="nordic"] .adv-btn {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 9px 16px;
+  border-radius: var(--bp-radius-pill);
+}
+[data-atelier="nordic"] .adv-btn:hover:not(:disabled) {
+  border-color: var(--bp-border-strong);
+}
+[data-atelier="nordic"] .adv-btn--primary {
+  background: var(--atelier-cyan);
+  color: #051310;
+  border-color: var(--atelier-cyan);
+  box-shadow: var(--atelier-glow-cyan-sm);
+}
+[data-atelier="nordic"] .adv-btn--primary:hover:not(:disabled) {
+  background: var(--atelier-cyan-soft);
+  box-shadow: var(--atelier-glow-cyan);
+  transform: translateY(-1px);
+}
+[data-atelier="nordic"] .adv-btn--ghost {
+  border-color: var(--atelier-cyan-line);
+  color: var(--atelier-cyan);
+}
+
+/* Advisor cards — relationship dossier */
+[data-atelier="nordic"] .adv-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 18px;
+}
+
+[data-atelier="nordic"] .adv-card {
+  background: var(--bp-surface-1);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: var(--bp-radius-lg);
+  padding: 24px;
+  transition: border-color var(--bp-dur-cinema) var(--bp-ease-cinema),
+              transform var(--bp-dur-cinema) var(--bp-ease-cinema),
+              box-shadow var(--bp-dur-cinema) var(--bp-ease-cinema);
+}
+[data-atelier="nordic"] .adv-card:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.7);
+}
+
+[data-atelier="nordic"] .adv-card h3,
+[data-atelier="nordic"] .adv-card [class*="name"] {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 19px;
+  color: var(--bp-text-headline);
+  letter-spacing: var(--atelier-track-tight);
+}
+
+[data-atelier="nordic"] .adv-status-pill,
+[data-atelier="nordic"] .adv-health-pill {
+  font-family: var(--atelier-sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: var(--bp-radius-pill);
+}
+[data-atelier="nordic"] .adv-status-pill--active {
+  background: rgba(94, 234, 212, 0.08);
+  color: var(--atelier-cyan);
+  border: 1px solid var(--atelier-cyan-line);
+}
+[data-atelier="nordic"] .adv-status-pill--paused,
+[data-atelier="nordic"] .adv-status-pill--archived {
+  background: rgba(255, 255, 255, 0.015);
+  color: var(--bp-text-faint);
+  border: 1px solid var(--bp-border);
+}
+
+[data-atelier="nordic"] .adv-empty {
+  padding: 96px 24px;
+  text-align: left;
+  max-width: 64ch;
+}
+[data-atelier="nordic"] .adv-empty h3 {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-size: 26px;
+  color: var(--bp-text-headline);
+  line-height: 1.25;
+  letter-spacing: var(--atelier-track-tight);
+}
+
+[data-atelier="nordic"] .advisor-edit-drawer,
+[data-atelier="nordic"] [class*="adv-drawer"] {
+  background: var(--bp-surface-1);
+  border-left: 1px solid var(--bp-border-strong);
+  box-shadow: var(--bp-shadow-lg);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * STOREFRONT STUDIO™ — Editorial Commerce / Luxury Showroom Storytelling
+ * NOT ecommerce backend. NOT Shopify-like. ══════════════════════════ */
+
+[data-atelier="nordic"] .ss-root {
+  background: transparent;
+  font-family: var(--atelier-sans);
+  color: var(--bp-text-primary);
+}
+
+[data-atelier="nordic"] .ss-stage {
+  background: transparent;
+  padding: 24px clamp(36px, 4vw, 64px);
+}
+
+[data-atelier="nordic"] .ss-head {
+  background: transparent;
+  border-bottom: 1px solid var(--bp-border-soft);
+  padding: 20px clamp(36px, 4vw, 64px);
+}
+
+[data-atelier="nordic"] .ss-head h1,
+[data-atelier="nordic"] .ss-head h2 {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+}
+
+[data-atelier="nordic"] .ss-page-tabs {
+  background: transparent;
+  border-bottom: 1px solid var(--bp-border-soft);
+  padding: 0 clamp(36px, 4vw, 64px);
+  gap: 2px;
+}
+
+[data-atelier="nordic"] .ss-page-tab {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 12px 18px;
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted);
+  position: relative;
+}
+[data-atelier="nordic"] .ss-page-tab:hover { color: var(--bp-text-primary); }
+[data-atelier="nordic"] .ss-page-tab.is-active { color: var(--bp-text-headline); background: transparent; }
+[data-atelier="nordic"] .ss-page-tab.is-active::after {
+  content: '';
+  position: absolute;
+  left: 18px; right: 18px; bottom: -1px;
+  height: 1.5px;
+  background: var(--atelier-cyan);
+  box-shadow: 0 0 6px var(--atelier-cyan-glow);
+}
+
+/* Storefront band cards — luxury showroom modules */
+[data-atelier="nordic"] .ss-bands { gap: 14px; }
+
+[data-atelier="nordic"] .ss-band {
+  background: var(--bp-surface-1);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: var(--bp-radius-lg);
+  padding: 20px 22px;
+  transition: border-color var(--bp-dur-cinema) var(--bp-ease-cinema);
+}
+[data-atelier="nordic"] .ss-band:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-atelier="nordic"] .ss-meta-chip {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-secondary);
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: var(--bp-radius-pill);
+}
+
+[data-atelier="nordic"] .ss-eye-btn {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-secondary);
+  border-radius: 999px;
+}
+[data-atelier="nordic"] .ss-eye-btn:hover {
+  border-color: var(--atelier-cyan-line);
+  color: var(--atelier-cyan);
+}
+
+[data-atelier="nordic"] .ss-editor {
+  background: var(--bp-surface-1);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: var(--bp-radius-lg);
+}
+
+[data-atelier="nordic"] .ss-locale-tabs {
+  background: transparent;
+  border-bottom: 1px solid var(--bp-border-soft);
+  padding: 0;
+  gap: 2px;
+}
+
+[data-atelier="nordic"] .ss-locale-tab {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 10px 14px;
+  font-family: var(--atelier-sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted);
+  position: relative;
+}
+[data-atelier="nordic"] .ss-locale-tab.is-active { color: var(--atelier-cyan); }
+[data-atelier="nordic"] .ss-locale-tab.is-active::after {
+  content: '';
+  position: absolute;
+  left: 14px; right: 14px; bottom: -1px;
+  height: 1.5px;
+  background: var(--atelier-cyan);
+}
+
+[data-atelier="nordic"] .ss-section {
+  border-bottom: 1px solid var(--bp-border-soft);
+  padding: 18px 22px;
+}
+
+[data-atelier="nordic"] .ss-input--display {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-size: 19px;
+  color: var(--bp-text-headline);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed var(--bp-border);
+  border-radius: 0;
+  padding: 6px 0;
+}
+[data-atelier="nordic"] .ss-input--display:focus {
+  border-bottom-color: var(--atelier-cyan-line);
+  box-shadow: none;
+}
+
+[data-atelier="nordic"] .ss-textarea {
+  background: var(--bp-bg-soft);
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+  font-size: 13.5px;
+  line-height: 1.6;
+  border-radius: var(--bp-radius-sm);
+}
+
+[data-atelier="nordic"] .ss-multi-chips,
+[data-atelier="nordic"] .ss-chip {
+  font-family: var(--atelier-sans);
+}
+
+[data-atelier="nordic"] .ss-chip {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-secondary);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: var(--bp-radius-pill);
+}
+[data-atelier="nordic"] .ss-chip.is-on,
+[data-atelier="nordic"] .ss-chip--active {
+  background: rgba(94, 234, 212, 0.06);
+  border-color: var(--atelier-cyan-line);
+  color: var(--atelier-cyan);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * MATERIAL VIEW™ — Tactile, Collectible Material Archive
+ *   .mv-* classes. Already partially editorial via inspirations namespace.
+ * ═════════════════════════════════════════════════════════════════════ */
+
+[data-atelier="nordic"] .mv-shell {
+  background: transparent;
+  padding: 56px clamp(40px, 5vw, 72px) 80px;
+}
+
+[data-atelier="nordic"] .mv-header h1 {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+}
+
+[data-atelier="nordic"] .mv-filters {
+  background: transparent;
+  border-bottom: 1px solid var(--bp-border-soft);
+  padding: 18px 0;
+}
+
+[data-atelier="nordic"] .mv-chip {
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-secondary);
+  font-family: var(--atelier-sans);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: var(--bp-radius-pill);
+}
+[data-atelier="nordic"] .mv-chip.is-on,
+[data-atelier="nordic"] .mv-chip--active {
+  background: rgba(94, 234, 212, 0.06);
+  border-color: var(--atelier-cyan-line);
+  color: var(--atelier-cyan);
+}
+
+[data-atelier="nordic"] .mv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+[data-atelier="nordic"] .mv-tile {
+  background: var(--bp-surface-1);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: var(--bp-radius-md);
+  overflow: hidden;
+  transition: border-color var(--bp-dur-cinema) var(--bp-ease-cinema),
+              transform var(--bp-dur-cinema) var(--bp-ease-cinema);
+}
+[data-atelier="nordic"] .mv-tile:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+[data-atelier="nordic"] .mv-tile--hero {
+  background:
+    radial-gradient(ellipse 50% 80% at 20% 0%, rgba(94, 234, 212, 0.04), transparent 70%),
+    var(--bp-surface-1);
+}
+
+[data-atelier="nordic"] .mv-swatch {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+}
+
+[data-atelier="nordic"] .mv-empty {
+  padding: 96px 32px;
+  text-align: center;
+  color: var(--bp-text-faint);
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-size: 18px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * ADMIN TENANTS™ — Operational Coherence Within Cinematic Silence
+ *   Pages: /admin/tenants, /admin/overview, /admin/audit, /admin/modules,
+ *   /admin/capabilities, /admin/advisor-network. Tables, drawers, forms.
+ *   Goal: even operational areas keep cinematic luxury restraint.
+ * ═════════════════════════════════════════════════════════════════════ */
+
+[data-atelier="nordic"] [class*="admin-page"],
+[data-atelier="nordic"] [class*="admin-shell"] {
+  background: transparent;
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+}
+
+[data-atelier="nordic"] [class*="admin-page"] h1,
+[data-atelier="nordic"] [class*="admin-shell"] h1 {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+}
+
+/* Admin tables → editorial register (no zebra, hair-line dividers) */
+[data-atelier="nordic"] [class*="admin"] table thead th {
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+  background: transparent !important;
+  border-bottom: 1px solid var(--bp-border);
+}
+
+[data-atelier="nordic"] [class*="admin"] table tbody tr {
+  background: transparent !important;
+  border-bottom: 1px solid var(--bp-border-soft);
+}
+
+[data-atelier="nordic"] [class*="admin"] table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.018) !important;
+}
+
+[data-atelier="nordic"] [class*="admin"] table tbody td {
+  font-family: var(--atelier-sans);
+  font-size: 13px;
+  color: var(--bp-text-primary);
+  padding: 14px 16px;
+}
+
+/* Admin drawer / side panel */
+[data-atelier="nordic"] [class*="admin"] [class*="drawer"],
+[data-atelier="nordic"] [class*="tenant-detail"] {
+  background: var(--bp-surface-1);
+  border-left: 1px solid var(--bp-border-strong);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * BRAND ATLAS™ — Curatorial Collectible Archive (additive polish)
+ *   .bm-* / .bd-* already covered in components.css §27. This block
+ *   tightens material chip rendering + adds collectible shadows.
+ * ═════════════════════════════════════════════════════════════════════ */
+
+[data-atelier="nordic"] .bm-card {
+  background:
+    radial-gradient(ellipse 60% 30% at 30% 0%, rgba(94, 234, 212, 0.02), transparent 70%),
+    var(--bp-surface-1);
+  border-color: rgba(255, 255, 255, 0.03);
+}
+[data-atelier="nordic"] .bm-card:hover {
+  border-color: rgba(255, 255, 255, 0.10);
+  box-shadow: 0 28px 64px -32px rgba(0, 0, 0, 0.75);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * GLOBAL ERADICATION GUARDS — desperate last-line catches
+ *   For any remaining .bg-white / text-gray Tailwind escapes that slip
+ *   through page-level overrides. Catch-all in components.css already
+ *   handles base — these are deeper rescue rules.
+ * ═════════════════════════════════════════════════════════════════════ */
+
+[data-atelier="nordic"] [class*="bg-white"]:not(input):not(button),
+[data-atelier="nordic"] [class*="bg-gray-50"],
+[data-atelier="nordic"] [class*="bg-gray-100"] {
+  background-color: var(--bp-surface-1) !important;
+}
+
+[data-atelier="nordic"] [class*="text-gray-9"],
+[data-atelier="nordic"] [class*="text-slate-9"] {
+  color: var(--bp-text-headline) !important;
+}
+
+[data-atelier="nordic"] [class*="text-gray-5"],
+[data-atelier="nordic"] [class*="text-gray-6"],
+[data-atelier="nordic"] [class*="text-slate-5"],
+[data-atelier="nordic"] [class*="text-slate-6"] {
+  color: var(--bp-text-secondary) !important;
+}
+
+[data-atelier="nordic"] [class*="shadow-lg"]:not([class*="atelier"]):not([class*="ada"]) {
+  box-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Amber legacy → cyan family (admin tenants, storefront publish, etc.)
+ * DNA v2 governance: cyan is the sole sacred accent. Any amber-* / 
+ * yellow-* / gold-* class collapses into the cyan family.            */
+[data-atelier="nordic"] [class*="bg-amber-4"],
+[data-atelier="nordic"] [class*="bg-amber-3"],
+[data-atelier="nordic"] [class*="bg-amber-5"],
+[data-atelier="nordic"] [class*="bg-yellow-4"],
+[data-atelier="nordic"] [class*="bg-yellow-5"] {
+  background-color: var(--atelier-cyan) !important;
+  color: #051310 !important;
+  box-shadow: var(--atelier-glow-cyan-sm) !important;
+}
+
+[data-atelier="nordic"] [class*="hover\\:bg-amber-3"]:hover,
+[data-atelier="nordic"] [class*="hover\\:bg-amber-2"]:hover,
+[data-atelier="nordic"] [class*="hover\\:bg-yellow-3"]:hover {
+  background-color: var(--atelier-cyan-soft) !important;
+  box-shadow: var(--atelier-glow-cyan) !important;
+}
+
+[data-atelier="nordic"] [class*="text-amber-4"],
+[data-atelier="nordic"] [class*="text-amber-3"],
+[data-atelier="nordic"] [class*="text-yellow-4"],
+[data-atelier="nordic"] [class*="text-yellow-5"] {
+  color: var(--atelier-cyan) !important;
+}
+
+[data-atelier="nordic"] [class*="border-amber-4"],
+[data-atelier="nordic"] [class*="border-yellow-4"] {
+  border-color: var(--atelier-cyan-line) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * SHARED LOADING STATES — see CinematicLoader.jsx
+ * ═════════════════════════════════════════════════════════════════════ */
+
+.cinematic-loader {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 48px clamp(32px, 4vw, 64px);
+  color: var(--bp-text-secondary);
+  font-family: var(--atelier-sans);
+  animation: cinematic-fade-in 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.cinematic-loader--centered {
+  align-items: center;
+  text-align: center;
+  padding: 96px 32px;
+  width: 100%;
+}
+
+.cinematic-loader--inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.cinematic-loader__pulse {
+  position: relative;
+  width: 80px;
+  height: 1.5px;
+  background: rgba(94, 234, 212, 0.10);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.cinematic-loader__pulse::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 30%;
+  height: 100%;
+  background: var(--atelier-cyan);
+  box-shadow: 0 0 10px var(--atelier-cyan-glow);
+  animation: cinematic-pulse 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.cinematic-loader--inline .cinematic-loader__pulse {
+  width: 28px;
+  height: 1px;
+}
+
+.cinematic-loader__phrase {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 16px;
+  color: rgba(232, 234, 238, 0.72);
+  letter-spacing: var(--atelier-track-tight);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.cinematic-loader--centered .cinematic-loader__phrase {
+  font-size: 22px;
+  max-width: 32ch;
+}
+
+.cinematic-loader--inline .cinematic-loader__phrase {
+  font-size: 12.5px;
+  font-style: italic;
+}
+
+.cinematic-loader__sub {
+  font-family: var(--atelier-sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+  margin: 0;
+}
+
+@keyframes cinematic-pulse {
+  0%   { left: -30%;  width: 30%; }
+  50%  { left:  50%;  width: 40%; }
+  100% { left: 100%;  width: 30%; }
+}
+
+@keyframes cinematic-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Editorial skeleton — replaces flat grey blocks with breathing surfaces */
+.cinematic-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.018) 0%,
+    rgba(255, 255, 255, 0.045) 50%,
+    rgba(255, 255, 255, 0.018) 100%
+  );
+  background-size: 200% 100%;
+  animation: cinematic-shimmer 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  border-radius: var(--bp-radius-sm);
+}
+
+@keyframes cinematic-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}

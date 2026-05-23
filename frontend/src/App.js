@@ -8,6 +8,7 @@ import { LocaleRuntimeProvider } from './contexts/LocaleRuntimeContext';
 import { BlueprintI18nProvider } from './i18n';
 import LocaleRoute from './site/LocaleRoute';
 import LocaleHead from './site/LocaleHead';
+import CinematicLoader from './components/CinematicLoader';
 import { Toaster } from 'sonner';
 import './App.css';
 // ── Sprint HARDENING-01.1 · Design System Kernel™ (single source of truth) ──
@@ -126,14 +127,13 @@ const AdvisorDetailPage = lazy(() => import('./pages/admin/AdvisorDetailPage'));
 const AdvisorDashboardPage = lazy(() => import('./pages/advisor/AdvisorDashboardPage'));
 
 const Loading = () => {
-  let label = 'Loading';
-  try { const ctx = useBlueprint(); label = ctx?.t?.('common.loading', null, 'Loading') || 'Loading'; } catch (_) {}
+  // CinematicLoader rendered inside the cinematic canvas — replaces the
+  // legacy spinner with editorial atmosphere (cyan pulse + italic Cormorant
+  // phrase). i18n via atelier.loader.* (rotates through 6 phrases).
   return (
-    <div className="min-h-screen bg-[var(--bp-bg,#0A0A0B)] flex items-center justify-center">
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-6 h-6 border-2 border-[var(--bp-primary,#D4AF37)] border-t-transparent rounded-full animate-spin" />
-        <p className="text-[#6B6863] text-xs font-body tracking-widest uppercase">{label}</p>
-      </div>
+    <div className="min-h-screen flex items-center justify-center"
+         style={{ background: 'var(--bp-bg, #050608)' }}>
+      <CinematicLoader variant="centered" testid="route-loader" />
     </div>
   );
 };

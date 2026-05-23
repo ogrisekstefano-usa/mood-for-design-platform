@@ -2158,6 +2158,14 @@
       "lede": "Ihr Atelier atmet auf einer breiten Leinwand. Das kinematische Betriebssystem ruht auf Desktop-Architektur — kehren Sie ins Studio zurück, um fortzufahren.",
       "cta": "An Arbeitsplatz senden",
       "whisper": "Empfohlene Leinwand · 1280 px und breiter."
+    },
+    "loader": {
+      "phrase_preparing_atelier": "Ihr Atelier wird vorbereitet…",
+      "phrase_curating_atmosphere": "Atmosphäre wird kuratiert…",
+      "phrase_opening_chapter": "Das nächste Kapitel öffnet sich…",
+      "phrase_synchronizing_rhythm": "Design-Rhythmus wird synchronisiert…",
+      "phrase_listening_voices": "Wir hören den Stimmen des Studios zu…",
+      "phrase_arranging_silence": "Die Stille wird arrangiert…"
     }
   }
 }

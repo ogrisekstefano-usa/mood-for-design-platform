@@ -2158,6 +2158,14 @@
       "lede": "Tu atelier respira en un lienzo amplio. El sistema operativo cinematográfico reposa sobre arquitectura de escritorio — regresa al estudio para continuar.",
       "cta": "Enviar a mi estación",
       "whisper": "Lienzo recomendado · 1280 px en adelante."
+    },
+    "loader": {
+      "phrase_preparing_atelier": "Preparando tu atelier…",
+      "phrase_curating_atmosphere": "Curando la atmósfera…",
+      "phrase_opening_chapter": "Abriendo el próximo capítulo…",
+      "phrase_synchronizing_rhythm": "Sincronizando el ritmo del diseño…",
+      "phrase_listening_voices": "Escuchando las voces del estudio…",
+      "phrase_arranging_silence": "Disponiendo el silencio…"
     }
   }
 }

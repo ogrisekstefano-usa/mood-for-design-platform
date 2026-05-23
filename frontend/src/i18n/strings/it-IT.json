@@ -2158,6 +2158,14 @@
       "lede": "Il tuo atelier respira su una tela ampia. Il sistema operativo cinematografico riposa sull'architettura desktop — torna alla postazione di studio per continuare.",
       "cta": "Invia alla mia postazione",
       "whisper": "Tela consigliata · da 1280 px in su."
+    },
+    "loader": {
+      "phrase_preparing_atelier": "Preparando il tuo atelier…",
+      "phrase_curating_atmosphere": "Curando l'atmosfera…",
+      "phrase_opening_chapter": "Aprendo il prossimo capitolo…",
+      "phrase_synchronizing_rhythm": "Sincronizzando il ritmo del progetto…",
+      "phrase_listening_voices": "In ascolto delle voci dello studio…",
+      "phrase_arranging_silence": "Disponendo il silenzio…"
     }
   }
 }

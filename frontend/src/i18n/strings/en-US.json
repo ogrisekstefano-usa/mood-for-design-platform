@@ -2158,6 +2158,14 @@
       "lede": "Your atelier breathes on a wide canvas. The cinematic operating system rests on desktop architecture — return to your studio to continue.",
       "cta": "Send to my workstation",
       "whisper": "Recommended canvas · 1280 px and wider."
+    },
+    "loader": {
+      "phrase_preparing_atelier": "Preparing your atelier…",
+      "phrase_curating_atmosphere": "Curating the atmosphere…",
+      "phrase_opening_chapter": "Opening the next chapter…",
+      "phrase_synchronizing_rhythm": "Synchronising the design rhythm…",
+      "phrase_listening_voices": "Listening for voices in the studio…",
+      "phrase_arranging_silence": "Arranging the silence…"
     }
   }
 }

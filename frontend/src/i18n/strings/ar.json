@@ -2160,6 +2160,14 @@
       "lede": "ورشتك تتنفّس على قماشة واسعة. نظام التشغيل السينمائي يستقرّ على هندسة سطح المكتب — عُد إلى استوديوك للمتابعة.",
       "cta": "أرسل إلى محطّة عملي",
       "whisper": "القماشة الموصى بها · 1280 px وأكثر."
+    },
+    "loader": {
+      "phrase_preparing_atelier": "نُحضِّر ورشتك…",
+      "phrase_curating_atmosphere": "نُنظِّم الأجواء…",
+      "phrase_opening_chapter": "نفتح الفصل التالي…",
+      "phrase_synchronizing_rhythm": "نُزامن إيقاع التصميم…",
+      "phrase_listening_voices": "نُصغي إلى أصوات الورشة…",
+      "phrase_arranging_silence": "نُرتِّب الصمت…"
     }
   }
 }
