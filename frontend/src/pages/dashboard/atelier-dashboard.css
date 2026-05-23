@@ -564,30 +564,60 @@
 }
 
 /* ─── RESPONSIVE ──────────────────────────────────────────────────────── */
+
+/* Ultrawide — prevent stretched emptiness; cap composition width while
+ * keeping hero & desk edge-to-edge but pulling content toward center.    */
+@media (min-width: 2200px) {
+  .atd-hero          { grid-template-columns: minmax(540px, 0.8fr) 1.3fr; }
+  .atd-hero__left    { padding-left: clamp(120px, 8vw, 200px); padding-right: clamp(80px, 5vw, 140px); }
+  .atd-projects      { padding-left: clamp(120px, 8vw, 200px); padding-right: clamp(120px, 8vw, 200px); }
+  .atd-desk          { padding-left: clamp(120px, 8vw, 200px); padding-right: clamp(120px, 8vw, 200px); }
+  .atd-projects__grid { gap: 28px; }
+}
+
+/* Laptop 1440 / 1366 — keep 4-col but tighten gaps and titles */
+@media (max-width: 1500px) {
+  .atd-projects__grid { gap: 16px; }
+  .atd-card__title    { font-size: 19px; }
+  .atd-hero__title    { font-size: clamp(36px, 3.4vw, 50px); }
+}
+
+/* iPad landscape (~1366) — already covered by 1500px breakpoint;
+ * make sure project cards keep readable padding                          */
 @media (max-width: 1380px) {
-  .atd-projects__grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .atd-card__title { font-size: 19px; }
+  .atd-projects__grid { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .atd-card__title { font-size: 18px; }
+  .atd-card__body  { padding: 18px 18px 16px; }
+  .atd-card__badge { top: 14px; left: 14px; padding: 4px 9px; font-size: 8.5px; }
 }
 
+/* iPad portrait (1024 wide) — 2-col cards, hero stays side-by-side
+ * but shrinks left column; desk stacks to 2-col                          */
 @media (max-width: 1180px) {
-  .atd-hero { grid-template-columns: 1fr 1fr; }
-  .atd-projects__grid { grid-template-columns: repeat(2, 1fr); }
-  .atd-desk { grid-template-columns: 1fr; }
+  .atd-hero          { grid-template-columns: 0.85fr 1fr; }
+  .atd-hero__left    { padding: 36px 28px 32px 32px; }
+  .atd-hero__title   { font-size: clamp(32px, 4.2vw, 44px); }
+  .atd-hero__kpis    { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .atd-projects__grid{ grid-template-columns: repeat(2, 1fr); }
+  .atd-desk          { grid-template-columns: 1fr 1fr; gap: 18px; }
+  .atd-panel--inspiration { grid-column: 1 / -1; }
 }
 
+/* Small tablet / large phone — hero stacks (image top, text below) */
 @media (max-width: 900px) {
   .atd-hero {
     grid-template-columns: 1fr;
+    height: auto;
     min-height: auto;
   }
   .atd-hero__image {
     aspect-ratio: 16 / 10;
     order: -1;
   }
-  .atd-hero__left { padding: 36px 24px 32px; }
-  .atd-hero__title { font-size: 40px; }
-  .atd-hero__kpis { grid-template-columns: repeat(2, 1fr); gap: 22px; }
-  .atd-projects { padding: 36px 24px 12px; }
-  .atd-projects__grid { grid-template-columns: 1fr; }
-  .atd-desk { padding: 24px 24px 48px; }
+  .atd-hero__left { padding: 32px 24px 28px; }
+  .atd-hero__title { font-size: 36px; }
+  .atd-hero__kpis { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .atd-projects { padding: 32px 24px 12px; }
+  .atd-projects__grid { grid-template-columns: 1fr; gap: 14px; }
+  .atd-desk { padding: 20px 24px 48px; grid-template-columns: 1fr; }
 }

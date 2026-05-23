@@ -2151,6 +2151,13 @@
       "quote_required": "Zitat-Text erforderlich",
       "confirm_archive": "Dieses Medien-Asset archivieren?",
       "confirm_archive_quote": "Dieses Zitat archivieren?"
+    },
+    "blocker": {
+      "eyebrow": "Blueprint Atelier™",
+      "title": "Für den Studio-Arbeitsplatz entworfen.",
+      "lede": "Ihr Atelier atmet auf einer breiten Leinwand. Das kinematische Betriebssystem ruht auf Desktop-Architektur — kehren Sie ins Studio zurück, um fortzufahren.",
+      "cta": "An Arbeitsplatz senden",
+      "whisper": "Empfohlene Leinwand · 1280 px und breiter."
     }
   }
 }

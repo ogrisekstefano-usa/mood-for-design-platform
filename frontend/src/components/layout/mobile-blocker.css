@@ -1,0 +1,178 @@
+/* Atelier Nordic™ · Mobile Cinematic Blocker
+ * Renders when viewport < 768px in place of the OS shell. */
+
+.abk {
+  position: fixed;
+  inset: 0;
+  background: #050608;
+  color: var(--bp-text-headline);
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+  overflow: hidden;
+  font-family: var(--atelier-sans);
+  isolation: isolate;
+}
+
+.abk__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.abk__bg img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(0.38) saturate(0.55) contrast(1.18) hue-rotate(-6deg);
+}
+
+.abk__veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      rgba(5, 6, 8, 0.55) 0%,
+      rgba(5, 6, 8, 0.25) 35%,
+      rgba(5, 6, 8, 0.65) 70%,
+      rgba(5, 6, 8, 0.95) 100%),
+    radial-gradient(ellipse 100% 70% at 50% 60%, rgba(94, 234, 212, 0.04), transparent 70%);
+  pointer-events: none;
+}
+
+/* Top brand mark */
+.abk__top {
+  position: relative;
+  z-index: 2;
+  padding: 28px 24px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.abk__brand {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--bp-text-headline);
+}
+
+.abk__brand-sub {
+  font-family: var(--atelier-sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+}
+
+/* Body */
+.abk__body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 36px 28px;
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: left;
+  width: 100%;
+}
+
+.abk__eyebrow {
+  font-family: var(--atelier-sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--atelier-cyan);
+  margin: 0 0 22px;
+  opacity: 0.9;
+}
+
+.abk__title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(30px, 8vw, 42px);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--bp-text-headline);
+  margin: 0 0 22px;
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.65);
+}
+
+.abk__lede {
+  font-family: var(--atelier-sans);
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(232, 234, 238, 0.78);
+  margin: 0 0 32px;
+  max-width: 36ch;
+}
+
+.abk__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  padding: 13px 22px;
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  background: rgba(94, 234, 212, 0.08);
+  color: var(--atelier-cyan);
+  border: 1px solid var(--atelier-cyan-line);
+  border-radius: 999px;
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  transition: all var(--bp-dur-base) var(--bp-ease-cinema);
+  margin-bottom: 30px;
+}
+
+.abk__cta:hover,
+.abk__cta:active {
+  background: rgba(94, 234, 212, 0.16);
+  border-color: var(--atelier-cyan);
+  box-shadow: 0 0 24px rgba(94, 234, 212, 0.18);
+  transform: translateY(-1px);
+}
+
+.abk__whisper {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-size: 12.5px;
+  color: rgba(232, 234, 238, 0.42);
+  margin: 0;
+  letter-spacing: 0;
+}
+
+/* Footer */
+.abk__foot {
+  position: relative;
+  z-index: 2;
+  padding: 22px 28px 28px;
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: rgba(232, 234, 238, 0.32);
+}
+
+/* Portrait optimization */
+@media (orientation: portrait) and (max-height: 700px) {
+  .abk__body { padding: 28px 24px; }
+  .abk__title { font-size: 28px; }
+  .abk__lede { font-size: 13px; margin-bottom: 26px; }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  .abk__body { padding: 48px 36px; max-width: 540px; }
+}

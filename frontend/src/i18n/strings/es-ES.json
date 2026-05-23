@@ -2151,6 +2151,13 @@
       "quote_required": "Texto de cita requerido",
       "confirm_archive": "¿Archivar este asset?",
       "confirm_archive_quote": "¿Archivar esta cita?"
+    },
+    "blocker": {
+      "eyebrow": "Blueprint Atelier™",
+      "title": "Diseñado para la estación de trabajo del estudio.",
+      "lede": "Tu atelier respira en un lienzo amplio. El sistema operativo cinematográfico reposa sobre arquitectura de escritorio — regresa al estudio para continuar.",
+      "cta": "Enviar a mi estación",
+      "whisper": "Lienzo recomendado · 1280 px en adelante."
     }
   }
 }

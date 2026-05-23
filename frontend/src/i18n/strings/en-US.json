@@ -2151,6 +2151,13 @@
       "quote_required": "Quote text required",
       "confirm_archive": "Archive this media asset?",
       "confirm_archive_quote": "Archive this quote?"
+    },
+    "blocker": {
+      "eyebrow": "Blueprint Atelier™",
+      "title": "Designed for the studio workstation.",
+      "lede": "Your atelier breathes on a wide canvas. The cinematic operating system rests on desktop architecture — return to your studio to continue.",
+      "cta": "Send to my workstation",
+      "whisper": "Recommended canvas · 1280 px and wider."
     }
   }
 }

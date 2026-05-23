@@ -2151,6 +2151,13 @@
       "quote_required": "Texte de citation requis",
       "confirm_archive": "Archiver cet asset ?",
       "confirm_archive_quote": "Archiver cette citation ?"
+    },
+    "blocker": {
+      "eyebrow": "Blueprint Atelier™",
+      "title": "Conçu pour le poste de travail du studio.",
+      "lede": "Votre atelier respire sur une vaste toile. Le système d'exploitation cinématographique repose sur une architecture de bureau — retournez à votre studio pour continuer.",
+      "cta": "Envoyer à mon poste",
+      "whisper": "Toile recommandée · 1280 px ou plus."
     }
   }
 }
