@@ -55,13 +55,13 @@ def _normalize_image(content: bytes) -> Image.Image:
     img = Image.open(io.BytesIO(content))
     # Honor EXIF orientation, then strip metadata
     img = ImageOps.exif_transpose(img)
-    if img.mode not in ("RGB", "RGBA"):
-        img = img.convert("RGB")
-    elif img.mode == "RGBA":
+    if img.mode == "RGBA":
         # Flatten alpha onto a dark canvas to preserve cinematic mood
         bg = Image.new("RGB", img.size, (12, 12, 14))
         bg.paste(img, mask=img.split()[3])
         img = bg
+    elif img.mode != "RGB":
+        img = img.convert("RGB")
     return img
 
 

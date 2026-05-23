@@ -1,6 +1,59 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **Sprint ITER138 · MEDIA ORCHESTRATION REFINEMENT™** · ✅ DELIVERED · 23 Feb 2026 · L'atelier ha smesso di dipendere da link esterni. Ogni asset visuale (hero, project card fallback, ispirazione) è ora **uploaded · processed · governed · cinematic** dentro Supabase Storage `tenant-assets/atelier-media/{tenant}/`. Il flusso non è una "media library SaaS" — è **Atelier Media Direction™**, un compositore di atmosfera. 8 deliverables consegnati e validati live (9/9 backend pytest + 100% frontend E2E):
+
+  **(1) Migration 070 · Atelier Media Orchestration Schema** — `supabase/migrations/070_atelier_media_orchestration.sql`. Estende `atelier_dashboard_media` con 16 nuove colonne: `original_asset_url`, `optimized_asset_url`, `thumbnail_asset_url`, `blurhash`, `storage_bucket`, `storage_path`, `mime_type`, `file_bytes`, `width_px`, `height_px`, `crop_profile` (JSONB `{x,y,w,h}`), `grain_level` (0–1), `vignette_level` (0–1), `warmth_offset` (-0.5..+0.5), `cyan_atmosphere` (0–1), `uploaded_by`. CHECK constraints rispettati. Indice `atelier_media_storage_idx` su `(storage_bucket, storage_path)`. Applicata via `apply_migration_070.py` — 16/16 colonne verified live.
+
+  **(2) Atelier Media Processor™** — `backend/services/atelier_media_processor.py` (~130 LoC). Pillow-driven pipeline: validate (10MB cap, mime in {jpeg|png|webp}, ≥1KB sanity floor) → decode + `ImageOps.exif_transpose` (auto-orient + strip metadata) → RGBA flatten onto dark canvas (12,12,14) → produce 3 variant streams: `original_bytes` (95-quality, EXIF stripped), `optimized` (1920w · 86-quality progressive JPEG), `thumbnail` (480w · 86-quality). BlurHash 4×3 components computato da numpy array di un 128px thumbnail (graceful empty-string fallback se l'encoder fallisce).
+
+  **(3) Atelier Media Router™** — `backend/routers/atelier_media.py` (~290 LoC). 4 endpoint nuovi gated admin:
+    - `POST /api/atelier/media/upload` (multipart): valida → processa → upload 3 variant su Supabase Storage (`tenant-assets/atelier-media/{tenant_id}/{8-hex}{,-1920,-480}.jpg`) → insert row su `atelier_dashboard_media` con `file_url = optimized_asset_url` (back-compat con dashboard reader). Soft per-tenant cap: max 20 asset attivi → 413 se superato.
+    - `PATCH /api/atelier/media/{id}/transform`: aggiorna metadata art-direction (alt_text, focal_point_x/y, grading_profile, overlay_intensity, grain_level, vignette_level, warmth_offset, cyan_atmosphere, crop_profile, locale, sort_order, media_kind) con tenant-scoping (404 se cross-tenant).
+    - `DELETE /api/atelier/media/{id}`: soft archive (`is_active=false`) + best-effort storage cleanup dei 3 variant.
+    - `GET /api/atelier/media/presets`: 4 grading presets con valori reali (filter pipeline + grain/vignette/warmth/cyan).
+
+  **(4) 4 Grading Presets · Atelier Vocabulary**:
+    - **Nordic Silence** — restraint · cool desaturation · architectural calm (brightness 0.62 · saturate 0.55 · contrast 1.18 · hue −8° · grain 0.08 · vignette 0.30 · warmth −0.05 · cyan 0.18)
+    - **Midnight Editorial** — deep blacks · low saturation · cinematic night (brightness 0.48 · saturate 0.42 · contrast 1.32 · hue −14° · grain 0.18 · vignette 0.55 · cyan 0.28)
+    - **Aman Warmth** — hospitality warmth · soft sepia · fireplace register (brightness 0.78 · saturate 0.88 · contrast 1.06 · hue +8° · sepia 0.14 · warmth +0.18)
+    - **Architectural Dawn** — early-light clarity · gentle uplift · editorial precision (brightness 0.88 · saturate 0.72 · contrast 1.10 · sepia 0.06 · vignette 0.18)
+    Valori persistiti nel DB (non solo etichette) — assi reali, manipolabili e regolabili.
+
+  **(5) Atelier Media Direction™ UI** — `frontend/src/pages/settings/AtelierMediaDirection.jsx` (~470 LoC) + `atelier-media-direction.css` (~530 LoC). Sostituisce il tab "Media Library" dentro `AtelierDashboardAdminPage`. Composizione editoriale:
+    - **Hero**: ATELIER · DIREZIONE MEDIA cyan eyebrow · italic Cormorant title "Componi l'atmosfera." · lede sulla dipendenza-zero da link esterni
+    - **Drop zone** (data-testid `amd-dropzone`): drag&drop + click-to-browse · radial cyan glow on hover · italic title · file-type hint
+    - **Preview canvas** (data-testid `amd-preview`): 3 safe-zone chips (Ultrawide 21:9 · Desktop 16:9 · Card 1:1 · Mobile blocker) che cambiano aspect-ratio del canvas live · cinematic image con CSS filter pipeline costruita dai metadata · overlay layers (vignette + grain + cyan-wash) regolabili · **focal-point crosshair cyan** posizionato cliccando sul canvas (con anche linee guida verticali/orizzontali)
+    - **Preset chips** (data-testid `amd-preset-{key}`): 2-col grid · italic Cormorant label + summary · click applica il preset (con tutti i valori manuali allineati al preset)
+    - **Manual sliders** (data-testid `amd-slider-{key}`): grana, vignetta, calore, atmosfera ciano, intensità overlay — cyan thumb con glow + valore numerico monospace · onMouseUp persist via PATCH transform
+    - **Metadata fields**: alt text · role (hero|project_card|inspiration) · locale (8 opzioni con flag)
+    - **Publish CTA** (data-testid `amd-publish`): pill cyan editoriale "Pubblica nell'atelier" / "Composing into atelier…" durante upload
+    - **Gallery** (data-testid `amd-tiles`): griglia auto-fill tiles con thumbnail · focal-point applicato come `background-position` · filter cinematic pre-applicato · click → asset attivo nel preview · hover → archive button glass-morphism in alto a destra · counter `{count}/20`
+
+  **(6) Localization · atelier.media.* × 7 locales** — `scripts/seed_atelier_media_i18n.py` registra 34 chiavi (eyebrow, title, lede, drop_title, drop_hint, presets_label, manual_label, grain, vignette, warmth, cyan, overlay, metadata_label, alt_text, alt_placeholder, kind, locale_label, kind_hero/project/inspir, publish, publishing, uploaded, updated, archived, confirm_archive, gallery_label, gallery_empty, file_required, invalid_file, too_large, focal_hint, mobile_blocker_zone, reset) × 7 lingue (it-IT, en-US, en-GB, fr-FR, de-DE, es-ES, ar) = **238 entry localization**. **Live IT runtime overlay: MISS 0 · LEAK 0**.
+
+  **(7) DashboardMedia Pydantic Model Extension** — `routers/atelier_dashboard.py`. `DashboardMedia` ora espone 12 nuovi campi opzionali (blurhash, original/optimized/thumbnail URLs, width/height, grain/vignette/warmth/cyan, crop_profile) per consumo da gallery frontend. `_record_to_media` mappa correttamente con default safe.
+
+  **(8) Backward compat preservata** — Le righe legacy seed (Unsplash URLs in migration 069) restano visibili come system default (NULL tenant_id) — il pipeline upload tenant-aware le sovrascrive automaticamente quando un tenant carica i suoi asset (priority chain `tenant+locale > tenant+* > NULL+locale > NULL+*`). Migrazione zero-downtime.
+
+  **Live verification** (9/9 pytest backend + frontend E2E):
+  - `GET /presets` → 4 presets con valori reali
+  - `POST /upload` (real JPG 132KB) → 3 variant stored in Supabase · blurhash `LWBMoTj[0Layj[fQayfQ4:ay?Hj[` · `width_px 2400 × height_px 1600`
+  - `POST /upload` rejects: file >10MB → 400 · text/plain → 400 · invalid media_kind → 400 · no auth → 401
+  - `PATCH /transform` aggiorna grading + focal + crop_profile JSONB
+  - Cross-tenant `PATCH` → 404 (isolation enforced)
+  - `DELETE` soft-archive + asset rimosso da `GET /dashboard/media`
+  - Per-tenant 20 cap → 413
+  - Frontend: tab "Libreria media" click → AtelierMediaDirection mount → drop file → preview rendering con filter cinematic · focal indicator visible · 4 preset chips clickable · 5 sliders responsive · publish → tile added to gallery `9/20`
+  - IT runtime: italic Cormorant "Componi l'atmosfera." · drop title "Trascina un'immagine · o sfoglia" · i18n badge `I18N · IT-IT · MISS 0 · LEAK 0`
+
+  **Governance rule preserved**: ogni asset uploaded sopravvive ai 7 gate questions (DNA · silence · restraint · editorial · cinematic · emotional fit · NOT SaaS). Drop zone non sembra un upload widget — sembra l'ingresso di un atelier.
+
+  **Strategic roadmap (post-ITER138)**:
+  - 🟡 **Wire del Media picker** in hero binding direct, inspiration quote companion, mobile blocker bg, project card fallback covers (oggi il pipeline DB già funziona via priority chain; manca solo il picker UX che permetta di scegliere quale uploaded asset usare per quale slot)
+  - 🟣 **ITER139 · Atelier Initialization™ / Studio Awakening™** — emotional new-atelier ritual (mood selection · visual tension · editorial tone · atelier voice · personalized dashboard) — solo dopo che ITER138 è stabilizzato
+
+## 📌 Sprint Status (previous)
 - **Sprint ITER138 · Phase 4 · Deep Propagation™ + Cinematic Loading States™** · ✅ DELIVERED · 23 Feb 2026 · L'intera superficie operativa MOOD for DESIGN™ è ora **one continuous immersive world** — dashboard cinematic + tutti i moduli operativi sotto identico DNA v2 frozen. Eradicazione visibile del "SaaS feeling" residuo. 3 deliverables consegnati e validati live:
 
   **(1) Deep Propagation Layer** — `frontend/src/design-system/atelier/propagation.css` (~610 LoC). Singolo file CSS che traduce i token DNA v2 frozen su tutte le legacy class prefix dei moduli operativi senza un singolo JSX edit. Copre: **Editorial Studio™** (`.ed-*` · `.me-*` · `.ectx-*` · `.adop-*` → luxury editorial control room / publishing house feel · italic Cormorant titles · cyan flow-step indicators · editorial filter chips); **Editorial Calendar™** (`[class*="cal-*"]` → atmospheric cyan events + day cells); **Advisor Network™** (`.adv-*` → private advisory dossier feel · radial cyan wash · italic relationship cards · cyan glow status pills · adv-status-pill paused/archived neutral); **Storefront Studio™** (`.ss-*` → editorial commerce / luxury showroom · band cards with cyan section eyebrows · ss-input--display italic Cormorant · ss-chip cyan-line on); **Material View™** (`.mv-*` → tactile collectible material archive · 220px min cards · cyan radial hero tile · italic empty state); **Admin Tenants™** (`[class*="admin"]` table editorial register · no zebra · hair-line dividers · drawer cinematic surface); **Brand Atlas™** additive polish (`.bm-card` radial cyan top-glow · collectible drop-shadow). Plus **eradication guards**: `[class*="bg-amber"]` → cyan family · `[class*="bg-white"]` / `[class*="text-gray-9"]` / `[class*="shadow-lg"]` catch-all overrides per Tailwind legacy escapes.
