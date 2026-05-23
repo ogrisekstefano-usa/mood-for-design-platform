@@ -27,6 +27,7 @@ from typing import Any, Dict, Optional
 from database import db
 from services.email_templates import render as render_template
 from services.auth_redirect import resolve_email_context
+from services.tenant_config_resolver import resolve_tenant_config
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +44,68 @@ SYSTEM_SENDERS = {
     "support":   "support@moodfordesign.com",
     "no_reply":  "no-reply@mail.moodfordesign.com",
 }
+
+
+# ─── Runtime identity resolver (ITER144 · Email Identity Runtime™) ────
+# Fallback chain (highest → lowest):
+#   1. tenant_configuration.custom_email_identity   (ITER144)
+#   2. tenant_email_settings (active row)           (ITER143E)
+#   3. platform DEFAULT_FROM / DEFAULT_REPLY        (env)
+def resolve_email_identity(tenant_id: Optional[str]) -> Dict[str, Any]:
+    """Return the merged identity used to send + brand an email.
+
+    Output shape:
+      {
+        'source': 'tenant_runtime' | 'tenant_legacy' | 'platform',
+        'sender_name','sender_email','reply_to','support_email',
+        'logo_url','footer','legal','website',
+        'from_address',
+      }
+    """
+    runtime: Dict[str, Any] = {}
+    legacy_settings = get_tenant_settings(tenant_id)
+    cfg = resolve_tenant_config(tenant_id) if tenant_id else {}
+    custom = (cfg or {}).get("custom_email_identity") or {}
+
+    def pick(field: str, *keys: str) -> Optional[str]:
+        # 1. tenant_configuration.custom_email_identity
+        for k in keys:
+            if custom.get(k):
+                return custom[k]
+        # 2. tenant_email_settings (legacy)
+        if legacy_settings:
+            for k in keys:
+                if legacy_settings.get(k):
+                    return legacy_settings[k]
+        return None
+
+    runtime["sender_name"]   = pick("sender_name",   "sender_name")
+    runtime["sender_email"]  = pick("sender_email",  "sender_email")
+    runtime["reply_to"]      = pick("reply_to",      "reply_to", "support_email")
+    runtime["support_email"] = pick("support_email", "support_email")
+    runtime["logo_url"]      = pick("logo_url",      "logo_url")
+    runtime["footer"]        = pick("footer",        "footer_signature", "footer", "email_signature")
+    runtime["legal"]         = pick("legal",         "legal_footer", "legal")
+    runtime["website"]       = pick("website",       "website")
+
+    # Compose from_address
+    if runtime["sender_name"] and runtime["sender_email"]:
+        runtime["from_address"] = f'{runtime["sender_name"]} <{runtime["sender_email"]}>'
+    elif runtime["sender_email"]:
+        runtime["from_address"] = runtime["sender_email"]
+    else:
+        runtime["from_address"] = DEFAULT_FROM
+    if not runtime["reply_to"]:
+        runtime["reply_to"] = DEFAULT_REPLY
+
+    # Source attribution (for diagnostics + audit)
+    if any(custom.get(k) for k in ("sender_email", "sender_name", "logo_url", "footer")):
+        runtime["source"] = "tenant_runtime"
+    elif legacy_settings:
+        runtime["source"] = "tenant_legacy"
+    else:
+        runtime["source"] = "platform"
+    return runtime
 
 
 # ─── Tenant settings helper ───────────────────────────────────────────
@@ -168,10 +231,12 @@ def send_template_email(
     Returns {ok, event_id, provider, provider_message_id, error}.
     """
     tenant_settings = get_tenant_settings(tenant_id)
+    identity = resolve_email_identity(tenant_id)
     origin = resolve_email_context(source_host or "")
     enriched_ctx = {
         **context,
         "tenant_settings": tenant_settings,
+        "tenant_identity": identity,          # ITER144 · Email Identity Runtime™
         "origin":          origin,
         "login_url":       origin["login_url"],
         "support_url":     origin["support_url"],
@@ -193,8 +258,10 @@ def send_template_email(
         return {"ok": False, "event_id": eid, "provider": EMAIL_PROVIDER,
                 "provider_message_id": None, "error": f"render: {e}"}
 
-    from_email = _from_address(tenant_settings)
-    reply_to   = _reply_to(tenant_settings)
+    from_email = identity["from_address"]
+    reply_to   = identity["reply_to"]
+    # Identity source becomes part of audit metadata
+    audit_meta = {**(metadata or {}), "identity_source": identity["source"]}
 
     provider = EMAIL_PROVIDER
     if provider == "resend":
@@ -207,9 +274,10 @@ def send_template_email(
                          subject=subject, status=status, provider="resend",
                          provider_message_id=r["message_id"],
                          source_domain=origin.get("host"), locale=locale,
-                         error=r["error"], metadata=metadata)
+                         error=r["error"], metadata=audit_meta)
         return {"ok": r["ok"], "event_id": eid, "provider": "resend",
-                "provider_message_id": r["message_id"], "error": r["error"]}
+                "provider_message_id": r["message_id"], "error": r["error"],
+                "identity_source": identity["source"]}
 
     # console fallback — log to stdout, persist as 'sent' so the
     # governance UI shows the audit trail in dev.
@@ -221,12 +289,13 @@ def send_template_email(
                      subject=subject, status="sent", provider="console",
                      provider_message_id=None, source_domain=origin.get("host"),
                      locale=locale, error=None, metadata={
-                         **(metadata or {}),
+                         **audit_meta,
                          "preview": {"subject": subject, "from": from_email,
                                      "to": to, "html_length": len(html)},
                      })
     return {"ok": True, "event_id": eid, "provider": "console",
-            "provider_message_id": None, "error": None}
+            "provider_message_id": None, "error": None,
+            "identity_source": identity["source"]}
 
 
 # Back-compat thin wrapper for the few callers still on the old API.

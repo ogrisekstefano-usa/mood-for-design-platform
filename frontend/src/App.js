@@ -140,6 +140,7 @@ import {
 } from './pages/admin/BlueprintGovernancePages';
 // ITER144 · Tenant Configuration Foundation™ — runtime governance.
 const BlueprintTenantConfigurationPage = lazy(() => import('./pages/admin/BlueprintTenantConfigurationPage'));
+const RuntimeInspectorPage = lazy(() => import('./pages/admin/RuntimeInspectorPage'));
 
 const Loading = () => {
   // CinematicLoader rendered inside the cinematic canvas — replaces the
@@ -529,6 +530,8 @@ function App() {
                   <Route path="/admin/demo-governance" element={<DemoGovernancePage />} />
                   {/* ITER144 · Tenant Configuration Foundation™ */}
                   <Route path="/admin/tenant-configuration" element={<BlueprintTenantConfigurationPage />} />
+                  {/* ITER144 · Runtime Context Inspector™ */}
+                  <Route path="/admin/runtime-inspector" element={<RuntimeInspectorPage />} />
                   {/* Language Governance — reuse existing surface within the new shell */}
                   <Route path="/admin/language-governance" element={<LanguageCommandCenter />} />
                   {/* Legacy admin surfaces (Blueprint Collaborator-only) still accessible

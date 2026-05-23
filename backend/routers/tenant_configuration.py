@@ -29,7 +29,7 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Query
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
 from database import db, db_available
@@ -134,18 +134,43 @@ class TenantConfigurationPatch(BaseModel):
 
 # ─── GET /api/tenant/configuration ───────────────────────────────────
 @router.get("/configuration")
-def get_tenant_configuration(ctx: dict = Depends(get_tenant_context)):
+def get_tenant_configuration(request: Request, ctx: dict = Depends(get_tenant_context)):
     """Return the runtime bundle for the caller's tenant.
 
     NB: this includes navigation filtered for the caller's role/visibility,
     so the frontend can render the sidebar without any further branching.
+    Also exposes the resolved subdomain (when reachable via wildcard
+    runtime) and the resolved email identity source.
     """
-    return resolve_runtime_bundle(
+    bundle = resolve_runtime_bundle(
         tenant_id=ctx.get("tenant_id"),
         user_role=ctx.get("role"),
         is_super_admin=(ctx.get("role") == "super_admin"),
         is_root=bool(ctx.get("is_root_superadmin")),
     )
+    # ITER144 · Wildcard Tenant Runtime™ — expose subdomain resolution
+    resolved = getattr(request.state, "resolved_tenant", None) or {}
+    bundle["runtime"] = {
+        "resolved_subdomain": resolved.get("subdomain"),
+        "resolved_host":      resolved.get("host"),
+        "resolution_source":  resolved.get("source"),
+        "tenant_slug":        resolved.get("tenant_slug"),
+        "impersonating":      bool(ctx.get("impersonating")),
+    }
+    # ITER144 · Email Identity Runtime™ — expose identity source
+    try:
+        from services.email_service import resolve_email_identity
+        identity = resolve_email_identity(ctx.get("tenant_id"))
+        bundle["email_identity"] = {
+            "source":        identity["source"],
+            "from_address":  identity["from_address"],
+            "reply_to":      identity["reply_to"],
+            "sender_email":  identity.get("sender_email"),
+            "logo_url":      identity.get("logo_url"),
+        }
+    except Exception:
+        bundle["email_identity"] = {"source": "unknown"}
+    return bundle
 
 
 @router.get("/configuration/modules")
@@ -325,6 +350,84 @@ def list_configuration_events(
         builder = builder.eq("event_type", event_type)
     rows = builder.execute().data or []
     return {"events": rows, "count": len(rows)}
+
+
+# ─── Runtime Context Inspector™ ──────────────────────────────────────
+@admin_router.get("/runtime-inspector")
+def runtime_inspector(
+    request: Request,
+    user: dict = Depends(require_root_superadmin),
+    tenant_id: Optional[str] = Query(None),
+):
+    """ITER144 · runtime debugging endpoint.
+
+    Returns the FULL resolution trace for the active tenant (or one
+    specified by ?tenant_id=) — branding source, email identity source,
+    locale source, navigation count, cache hit/miss, registry version.
+    """
+    from services.email_service import resolve_email_identity
+    from services.tenant_config_resolver import (
+        resolve_modules, resolve_navigation, resolve_theme,
+    )
+
+    tid = tenant_id or user.get("tenant_id")
+    cfg = resolve_tenant_config(tid)
+    theme = resolve_theme(tid)
+    modules = resolve_modules(tid)
+    nav = resolve_navigation(tid, "tenant_admin",
+                             is_super_admin=False, is_root=False)
+    identity = resolve_email_identity(tid)
+    resolved = getattr(request.state, "resolved_tenant", None) or {}
+
+    # Determine branding source
+    branding = (cfg or {}).get("branding") or {}
+    branding_source = ("tenant_runtime" if branding
+                       else ("tenant_legacy" if (cfg or {}).get("primary_color")
+                             else "platform_default"))
+
+    # Locale source
+    locale_source = "tenant_default" if cfg.get("default_locale") else "platform_default"
+
+    # Count effective module states
+    module_state_counts: Dict[str, int] = {}
+    for m in modules:
+        s = m["effective_state"]
+        module_state_counts[s] = module_state_counts.get(s, 0) + 1
+
+    return {
+        "tenant_id": tid,
+        "resolved_runtime_identity": {
+            "subdomain":         resolved.get("subdomain"),
+            "host":              resolved.get("host"),
+            "resolution_source": resolved.get("source"),
+            "tenant_slug":       resolved.get("tenant_slug"),
+            "request_host":      request.headers.get("host"),
+        },
+        "branding": {
+            "source": branding_source,
+            "tokens": theme,
+        },
+        "email_identity": identity,
+        "locale": {
+            "source": locale_source,
+            "default": cfg.get("default_locale"),
+            "enabled": cfg.get("enabled_locales") or [],
+        },
+        "modules": {
+            "total":         len(modules),
+            "state_counts":  module_state_counts,
+            "sources":       sorted({m["resolution_source"] for m in modules}),
+        },
+        "navigation": {
+            "groups": len(nav),
+            "items":  sum(len(g["items"]) for g in nav),
+        },
+        "feature_flags":   cfg.get("feature_flags") or {},
+        "enabled_modules": cfg.get("enabled_modules") or {},
+        "navigation_overrides": cfg.get("navigation_overrides") or {},
+        "custom_domain":   cfg.get("custom_domain"),
+        "configuration_updated_at": cfg.get("updated_at"),
+    }
 
 
 # ─── Public-ish anonymous bootstrap (for landing pages) ──────────────

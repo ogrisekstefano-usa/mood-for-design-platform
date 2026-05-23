@@ -21,6 +21,7 @@ import { SiteProvider } from '../../site/SiteContext';
 import {
   LayoutGrid, Building2, Users, Sparkles, FileText, Languages,
   Mail, FlaskConical, LogOut, Circle, SlidersHorizontal,
+  ShieldCheck, Network, Activity, Cog,
 } from 'lucide-react';
 import './admin-shell.css';
 
@@ -31,11 +32,15 @@ const NAV = [
   { to: '/admin/dashboard',             Icon: LayoutGrid,        keyName: 'nav.dashboard'  },
   { to: '/admin/tenants',               Icon: Building2,         keyName: 'nav.tenants'    },
   { to: '/admin/users',                 Icon: Users,             keyName: 'nav.users'      },
+  { to: '/admin/advisors',              Icon: Network,           keyName: 'nav.advisors'   },
   { to: '/admin/presets',               Icon: Sparkles,          keyName: 'nav.presets'    },
   { to: '/admin/editorial-runtime',     Icon: FileText,          keyName: 'nav.editorial'  },
   { to: '/admin/tenant-configuration',  Icon: SlidersHorizontal, keyName: 'nav.tenant_configuration' },
+  { to: '/admin/runtime-inspector',     Icon: Activity,          keyName: 'nav.runtime_inspector'    },
+  { to: '/admin/modules',               Icon: Cog,               keyName: 'nav.modules'    },
   { to: '/admin/language-governance',   Icon: Languages,         keyName: 'nav.language'   },
   { to: '/admin/email-governance',      Icon: Mail,              keyName: 'nav.email'      },
+  { to: '/admin/audit',                 Icon: ShieldCheck,       keyName: 'nav.audit'      },
   { to: '/admin/demo-governance',       Icon: FlaskConical,      keyName: 'nav.demo'       },
 ];
 

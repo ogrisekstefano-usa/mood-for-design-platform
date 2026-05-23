@@ -203,3 +203,79 @@ def test_modules_endpoint_returns_effective_state(tok_tadmin):
     by_code = {m["code"]: m for m in mods}
     assert by_code["dashboard"]["effective_state"] == "enabled"
     assert by_code["dashboard"]["is_core"] is True
+
+
+# ── ITER144 · Wildcard Tenant Runtime™ ──────────────────────────────
+def test_runtime_section_present_in_bundle(tok_tadmin):
+    r = _call("GET", "/api/tenant/configuration", tok_tadmin)
+    assert r.status_code == 200
+    runtime = r.json().get("runtime")
+    assert runtime is not None
+    # keys must exist (values may be None when no subdomain hit the host)
+    for key in ("resolved_subdomain", "resolved_host",
+                "resolution_source", "tenant_slug", "impersonating"):
+        assert key in runtime
+
+
+def test_subdomain_resolution_via_host_header(tok_tadmin):
+    headers = {"Authorization": f"Bearer {tok_tadmin}",
+               "Host": "studio.moodfordesign.com"}
+    r = requests.get(f"{BACKEND}/api/tenant/configuration",
+                     headers=headers, timeout=15)
+    assert r.status_code == 200
+    runtime = r.json()["runtime"]
+    assert runtime["resolved_subdomain"] == "studio"
+    assert runtime["tenant_slug"] == "studio"
+    assert runtime["resolution_source"] == "tenants.slug"
+
+
+# ── ITER144 · Email Identity Runtime™ ────────────────────────────────
+def test_email_identity_in_bundle(tok_tadmin):
+    r = _call("GET", "/api/tenant/configuration", tok_tadmin)
+    assert r.status_code == 200
+    ident = r.json()["email_identity"]
+    assert ident["source"] in ("tenant_runtime", "tenant_legacy", "platform")
+    assert ident["from_address"]
+
+
+def test_custom_email_identity_promotes_source(tok_tadmin):
+    payload = {"custom_email_identity": {
+        "sender_name": "Studio Demo",
+        "sender_email": "studio@example.test",
+        "logo_url": "https://example.test/logo.png",
+    }}
+    r = _call("PATCH", "/api/tenant/configuration", tok_tadmin, payload)
+    assert r.status_code == 200
+    r2 = _call("GET", "/api/tenant/configuration", tok_tadmin)
+    ident = r2.json()["email_identity"]
+    assert ident["source"] == "tenant_runtime"
+    assert "Studio Demo" in ident["from_address"]
+    # cleanup
+    _call("PATCH", "/api/tenant/configuration", tok_tadmin,
+          {"custom_email_identity": {}})
+
+
+# ── ITER144 · Runtime Context Inspector™ ─────────────────────────────
+def test_runtime_inspector_root_only(tok_root, tok_tadmin):
+    r = _call("GET", "/api/blueprint-admin/runtime-inspector", tok_root)
+    assert r.status_code == 200
+    b = r.json()
+    assert b["tenant_id"]
+    assert "resolved_runtime_identity" in b
+    assert "branding" in b
+    assert "email_identity" in b
+    assert b["modules"]["total"] >= 27
+    assert b["navigation"]["groups"] >= 5
+    # tenant_admin must be forbidden
+    r2 = _call("GET", "/api/blueprint-admin/runtime-inspector", tok_tadmin)
+    assert r2.status_code == 403
+
+
+def test_runtime_inspector_by_tenant_id(tok_root, tok_tadmin):
+    me = _call("GET", "/api/tenant/configuration", tok_tadmin).json()
+    tid = me["tenant_id"]
+    r = _call("GET",
+              f"/api/blueprint-admin/runtime-inspector?tenant_id={tid}",
+              tok_root)
+    assert r.status_code == 200
+    assert r.json()["tenant_id"] == tid
