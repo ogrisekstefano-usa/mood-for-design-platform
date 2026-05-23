@@ -1,0 +1,150 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Atelier Nordic™ · Typography Engine
+ *
+ *   Cormorant Garamond — editorial serif (hero · titles · emotional quotes)
+ *   Inter              — operational sans (sidebar · UI · forms · tables)
+ *
+ * Loaded from Google Fonts with display=swap so we never flash. Both
+ * families are subset to Latin (extended + symbols) to keep payload small.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ─── Primitive helpers ─────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] {
+  font-family: var(--atelier-sans);
+  font-feature-settings: 'cv11', 'ss01', 'ss03', 'liga';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--bp-text-primary);
+}
+
+/* ─── Class primitives — applied via component className ───────────────── */
+
+.atelier-hero {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--atelier-fs-hero);
+  line-height: var(--atelier-lh-tight);
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+}
+
+.atelier-display {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--atelier-fs-display);
+  line-height: var(--atelier-lh-tight);
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+}
+
+.atelier-h1 {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--atelier-fs-h1);
+  line-height: var(--atelier-lh-snug);
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+}
+
+.atelier-h2 {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--atelier-fs-h2);
+  line-height: var(--atelier-lh-snug);
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+}
+
+.atelier-h3 {
+  font-family: var(--atelier-serif);
+  font-weight: 500;
+  font-size: var(--atelier-fs-h3);
+  line-height: var(--atelier-lh-snug);
+  letter-spacing: 0;
+  color: var(--bp-text-headline);
+}
+
+.atelier-quote {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: var(--atelier-fs-h2);
+  line-height: var(--atelier-lh-snug);
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+}
+
+.atelier-body {
+  font-family: var(--atelier-sans);
+  font-weight: 400;
+  font-size: var(--atelier-fs-body);
+  line-height: var(--atelier-lh-relaxed);
+  color: var(--bp-text-primary);
+}
+
+.atelier-body-lg {
+  font-family: var(--atelier-sans);
+  font-weight: 400;
+  font-size: var(--atelier-fs-body-lg);
+  line-height: var(--atelier-lh-relaxed);
+  color: var(--bp-text-primary);
+}
+
+.atelier-meta {
+  font-family: var(--atelier-sans);
+  font-weight: 400;
+  font-size: var(--atelier-fs-meta);
+  line-height: var(--atelier-lh-normal);
+  color: var(--bp-text-secondary);
+}
+
+.atelier-eyebrow {
+  font-family: var(--atelier-sans);
+  font-weight: 500;
+  font-size: var(--atelier-fs-eyebrow);
+  line-height: 1;
+  letter-spacing: var(--atelier-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--atelier-cyan);
+}
+
+.atelier-eyebrow--ivory {
+  color: var(--bp-text-muted);
+}
+
+.atelier-section-label {
+  font-family: var(--atelier-sans);
+  font-weight: 500;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+}
+
+.atelier-numeric {
+  font-family: var(--atelier-sans);
+  font-feature-settings: 'tnum', 'ss01';
+  font-variant-numeric: tabular-nums;
+  font-weight: 300;
+  font-size: clamp(36px, 3vw, 48px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--bp-text-headline);
+}
+
+.atelier-numeric--lg {
+  font-size: clamp(48px, 4vw, 64px);
+}
+
+/* Tabular numbers helper for KPI rows */
+.atelier-tabular {
+  font-variant-numeric: tabular-nums;
+}

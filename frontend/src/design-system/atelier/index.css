@@ -1,0 +1,8 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Atelier Nordic™ · Index entry
+ * Single import — pulled by BlueprintThemeProvider so the entire OS subtree
+ * receives the Atelier DNA.
+ * ──────────────────────────────────────────────────────────────────────────── */
+@import './typography.css';
+@import './nordic.css';
+@import './primitives.css';

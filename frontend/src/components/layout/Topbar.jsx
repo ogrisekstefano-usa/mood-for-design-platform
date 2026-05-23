@@ -1,19 +1,24 @@
-import React, { useContext, createContext, useState, useMemo } from 'react';
-import { Bell } from 'lucide-react';
-import PaletteSwitcher from '../common/PaletteSwitcher';
-import UserMenu from '../common/UserMenu';
-import NavigableBreadcrumb from '../common/NavigableBreadcrumb';
-
 /**
- * TopbarSlotsContext — lets pages inject CENTER (canvas tools) and RIGHT
- * (page-specific actions, e.g. undo/redo, present, share) content into the
- * global Topbar without the Topbar having to know about every page.
+ * Topbar — Atelier Nordic™ · Editorial Command Bar (ITER138 · Wave A)
  *
- * This is the structural backbone of the "no duplicated commands" rule:
- *   Sidebar   = workspace navigation only
- *   Topbar    = breadcrumb + status + canvas tools + global actions
- *   Editor    = registers its tools via TopbarSlots (see TopbarSlots.jsx)
+ * Reference: master visual governance image.
+ *
+ *   LEFT   : workspace pill ("05 · MOOD for DESIGN™") + optional page slot
+ *   CENTER : page-injected canvas tools (editor only)
+ *   RIGHT  : page actions  →  primary CTA pill  →  bell  →  identity chip
+ *
+ * No logo here — brand mark lives in the left rail only. Cohesive with the
+ * cinematic dark canvas: hairline border + bg-soft + ample horizontal rhythm.
  */
+import React, { useContext, createContext, useState, useMemo } from 'react';
+import { Bell, ChevronDown, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import NavigableBreadcrumb from '../common/NavigableBreadcrumb';
+import UserMenu from '../common/UserMenu';
+import { useBlueprint } from '../../contexts/BlueprintContext';
+import { useAuth } from '../../contexts/AuthContext';
+
+// ── Slots Context (preserve existing API) ────────────────────────
 const TopbarSlotsCtx = createContext({
   slots: { left: null, center: null, right: null },
   setSlots: () => {},
@@ -27,73 +32,119 @@ export const TopbarSlotsProvider = ({ children }) => {
 
 export const useTopbarSlots = () => useContext(TopbarSlotsCtx);
 
-/**
- * Topbar — the editorial command bar (definitive structure).
- *
- *   LEFT   : breadcrumb (deep, clickable, smart-truncated) + optional
- *            page-injected LEFT slot (e.g. project name + status capsule)
- *   CENTER : page-injected canvas tools (only present inside the editor;
- *            invisible on dashboard / list pages)
- *   RIGHT  : page-injected actions (undo/redo · present · share · review),
- *            then GLOBAL: theme · locale · notifications · avatar
- *
- * NO logo lives here. The brand mark is in the left rail only. This is a
- * deliberate, definitive choice — branding stays silent + premium, never
- * onnipresente.
- */
+// ── Workspace selector pill (LEFT) ───────────────────────────────
+const WorkspaceChip = () => {
+  const { tenant, t } = useBlueprint();
+  const tenantName = tenant?.name || tenant?.slug || 'Workspace';
+  // Tenant sequence number — a small editorial badge. Falls back to "·".
+  const seq = (tenant?.sequence_no || tenant?.tenant_no || tenant?.id?.toString().slice(-2) || '01')
+    .toString().padStart(2, '0');
+  return (
+    <button type="button" className="atelier-workspace-pill" data-testid="topbar-workspace-pill"
+            aria-label={t('nav.workspace_switcher', null, 'Switch workspace')}>
+      <span className="atelier-workspace-pill__num">{seq}</span>
+      <span className="atelier-workspace-pill__name">
+        {tenantName}
+        <span className="atelier-workspace-pill__mark">™</span>
+      </span>
+      <ChevronDown size={13} strokeWidth={1.6} className="atelier-workspace-pill__chevron" />
+    </button>
+  );
+};
+
+// ── Primary CTA pill (RIGHT) ─────────────────────────────────────
+const PrimaryCta = () => {
+  const navigate = useNavigate();
+  const { t } = useBlueprint();
+  return (
+    <button
+      type="button"
+      className="atelier-cta"
+      data-testid="topbar-new-journey-cta"
+      onClick={() => navigate('/begin-journey')}
+    >
+      <Plus size={13} strokeWidth={2} />
+      {t('nav.new_journey', null, 'New Journey')}
+    </button>
+  );
+};
+
+// ── Identity chip (avatar + name + email) ────────────────────────
+const IdentityChip = () => {
+  const { user } = useAuth();
+  const fullName = (user?.first_name && `${user.first_name} ${user?.last_name || ''}`.trim())
+                    || user?.full_name
+                    || user?.email?.split('@')[0]
+                    || 'Studio';
+  const email = user?.email || '';
+
+  return (
+    <div data-testid="topbar-identity-chip" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+      <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', maxWidth: 220 }}>
+        <span className="atelier-avatar__name" style={{
+          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%',
+        }}>{fullName}</span>
+        {email && (
+          <span className="atelier-avatar__email" style={{
+            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%',
+          }}>{email}</span>
+        )}
+      </div>
+      <UserMenu />
+    </div>
+  );
+};
+
+// ── Main Topbar ──────────────────────────────────────────────────
 const Topbar = () => {
   const { slots } = useTopbarSlots();
 
   return (
-    <header
-      data-testid="topbar"
-      style={{ height: '56px', position: 'relative', zIndex: 50 }}
-      className="flex items-center justify-between gap-6 px-6 border-b border-[var(--bp-border)]
-                 bg-[var(--bp-bg)]/85 backdrop-blur-xl flex-shrink-0"
-    >
-      {/* LEFT — breadcrumb + page-injected left slot (project name / status) */}
-      <div className="flex items-center gap-4 min-w-0 flex-1">
-        <NavigableBreadcrumb />
-        {slots.left && (
+    <header data-testid="topbar" className="atelier-header" style={{ position: 'relative', zIndex: 50 }}>
+      {/* LEFT — workspace pill + optional page slot */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 24, minWidth: 0, flex: 1 }}>
+        <WorkspaceChip />
+        {slots.left ? (
           <>
-            <div className="h-4 w-px bg-[var(--bp-border)] flex-shrink-0" />
-            <div className="flex items-center gap-3 min-w-0">{slots.left}</div>
+            <span style={{ height: 18, width: 1, background: 'var(--bp-border)', flexShrink: 0 }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>{slots.left}</div>
           </>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
+            <NavigableBreadcrumb compact />
+          </div>
         )}
       </div>
 
-      {/* CENTER — page-injected canvas tools (empty outside editor) */}
+      {/* CENTER — page-injected canvas tools */}
       {slots.center && (
-        <div data-testid="topbar-center" className="flex items-center gap-1 flex-shrink-0">
+        <div data-testid="topbar-center" style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
           {slots.center}
         </div>
       )}
 
-      {/* RIGHT — page actions + global controls */}
-      <div className="flex items-center gap-2 flex-shrink-0 justify-end">
+      {/* RIGHT — actions + global controls */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
         {slots.right && (
           <>
-            <div className="flex items-center gap-1">{slots.right}</div>
-            <div className="w-px h-5 bg-[var(--bp-border)] mx-1" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>{slots.right}</div>
+            <span style={{ width: 1, height: 20, background: 'var(--bp-border)', margin: '0 2px' }} />
           </>
         )}
+
+        <PrimaryCta />
 
         <button
           type="button"
           data-testid="topbar-notifications-btn"
-          title="Notifications"
-          className="relative w-8 h-8 flex items-center justify-center rounded-full
-                     text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]
-                     hover:bg-[var(--bp-surface-2)]/40 transition-colors"
+          className="atelier-icon-btn"
+          aria-label="Notifications"
         >
-          <Bell size={14} strokeWidth={1.6} />
+          <Bell size={15} strokeWidth={1.6} />
+          <span className="atelier-icon-btn__dot" aria-hidden />
         </button>
 
-        <PaletteSwitcher />
-
-        <div className="w-px h-5 bg-[var(--bp-border)] mx-1" />
-
-        <UserMenu />
+        <IdentityChip />
       </div>
     </header>
   );

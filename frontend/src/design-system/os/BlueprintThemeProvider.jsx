@@ -20,9 +20,10 @@
  */
 import React from 'react';
 import './tokens.css';
+import '../atelier/index.css';
 
 const BlueprintThemeProvider = ({ children, className = '' }) => (
-  <div data-surface="os" data-mfd-theme="blueprint" className={className}>
+  <div data-surface="os" data-mfd-theme="blueprint" data-atelier="nordic" className={className}>
     {children}
   </div>
 );
