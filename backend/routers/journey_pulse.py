@@ -365,38 +365,52 @@ def pulse(
         deduped_actions.append(a)
     deduped_actions = deduped_actions[:8]
 
-    # ITER132 · ALE-on-read · translate the narrative fields of every
-    # presence-stream entry when the dashboard is rendered in a non-IT
-    # locale. Translations are cached via TM so subsequent loads are fast.
+    # ITER139 · ALE-on-read · multi-source-language aware. Translates the
+    # narrative fields of every presence-stream entry into the dashboard's
+    # active locale, regardless of the record's stored source language.
+    # Records already in the target locale are passed through unchanged.
     try:
         from services.editorial_translation_layer import (
             localize_records as _ale_localize_records,
             normalize_locale as _ale_norm,
         )
         ale_target = _ale_norm(locale)
-        if ale_target and ale_target != 'it':
+        if ale_target:
             active_journeys   = _ale_localize_records(active_journeys,
-                                  fields=('title', 'subtitle', 'last_event.text'),
+                                  fields=('lifecycle_label',
+                                          'current_milestone.label',
+                                          'last_event.text',
+                                          'last_event.canon'),
                                   target_locale=ale_target, tenant_id=tid,
                                   surface='journey_pulse_journey')
             voices_today      = _ale_localize_records(voices_today,
-                                  fields=('voice_phrase', 'quote', 'milestone'),
+                                  fields=('voice_phrase', 'quote', 'milestone',
+                                          'text', 'subtitle'),
                                   target_locale=ale_target, tenant_id=tid,
                                   surface='journey_pulse_voice')
             chapters_waiting  = _ale_localize_records(chapters_waiting,
-                                  fields=('title', 'subtitle', 'milestone'),
+                                  fields=('title', 'subtitle', 'milestone',
+                                          'lifecycle_label',
+                                          'current_milestone.label',
+                                          'last_event.text'),
                                   target_locale=ale_target, tenant_id=tid,
                                   surface='journey_pulse_chapter')
             revisions_open    = _ale_localize_records(revisions_open,
-                                  fields=('text', 'subtitle', 'milestone'),
+                                  fields=('text', 'subtitle', 'milestone',
+                                          'lifecycle_label',
+                                          'current_milestone.label'),
                                   target_locale=ale_target, tenant_id=tid,
                                   surface='journey_pulse_revision')
             recent_evolutions = _ale_localize_records(recent_evolutions,
-                                  fields=('text', 'subtitle', 'milestone'),
+                                  fields=('text', 'subtitle', 'milestone',
+                                          'last_event.text',
+                                          'current_milestone.label'),
                                   target_locale=ale_target, tenant_id=tid,
                                   surface='journey_pulse_evolution')
             deduped_actions   = _ale_localize_records(deduped_actions,
-                                  fields=('suggestion', 'label', 'milestone'),
+                                  fields=('suggestion', 'label', 'milestone',
+                                          'lifecycle_label',
+                                          'current_milestone.label'),
                                   target_locale=ale_target, tenant_id=tid,
                                   surface='journey_pulse_action')
     except Exception as e:

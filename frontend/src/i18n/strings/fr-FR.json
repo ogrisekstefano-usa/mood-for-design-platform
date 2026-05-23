@@ -2201,7 +2201,11 @@
       "archived": "Actif archivé.",
       "confirm_archive": "Archiver cet actif ?",
       "gallery_label": "Banque média de l'atelier",
-      "gallery_empty": "Aucun actif composé. Déposez votre première image ci-dessus."
+      "gallery_empty": "Aucun actif composé. Déposez votre première image ci-dessus.",
+      "zone_ultrawide": "Ultra-large 21:9",
+      "zone_desktop": "Bureau 16:9",
+      "zone_square": "Carte 1:1",
+      "zone_mobile": "Bloqueur mobile"
     }
   }
 }

@@ -2201,7 +2201,11 @@
       "archived": "Asset archiviato.",
       "confirm_archive": "Archiviare questo asset?",
       "gallery_label": "Banco media atelier",
-      "gallery_empty": "Nessun asset composto. Trascina la prima immagine qui sopra."
+      "gallery_empty": "Nessun asset composto. Trascina la prima immagine qui sopra.",
+      "zone_ultrawide": "Ultrawide 21:9",
+      "zone_desktop": "Desktop 16:9",
+      "zone_square": "Card 1:1",
+      "zone_mobile": "Blocco mobile"
     }
   }
 }

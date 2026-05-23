@@ -2201,7 +2201,11 @@
       "archived": "Activo archivado.",
       "confirm_archive": "¿Archivar este activo?",
       "gallery_label": "Banco de medios del atelier",
-      "gallery_empty": "Aún no hay activos compuestos. Suelta tu primera imagen arriba."
+      "gallery_empty": "Aún no hay activos compuestos. Suelta tu primera imagen arriba.",
+      "zone_ultrawide": "Ultraancho 21:9",
+      "zone_desktop": "Escritorio 16:9",
+      "zone_square": "Tarjeta 1:1",
+      "zone_mobile": "Bloqueador móvil"
     }
   }
 }

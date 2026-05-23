@@ -22,6 +22,7 @@ import api from '../../lib/api';
 import MilestoneDialogue from '../../components/journey/MilestoneDialogue';
 import JourneyClosureCeremony from '../../components/journey/JourneyClosureCeremony';
 import { useT } from '../../i18n/useT';
+import { useBlueprint } from '../../contexts/BlueprintContext';
 import './design-journey.css';
 
 const STATUS_META = {
@@ -312,9 +313,10 @@ const DesignJourneyTab = ({ projectId, project }) => {
   const [activeId, setActiveId] = useState(null);
   const [busy, setBusy] = useState(false);
 
+  const { locale } = useBlueprint();
   const load = useCallback(() => {
     setLoading(true);
-    api.get(`/api/projects/${projectId}/journey`)
+    api.get(`/api/projects/${projectId}/journey`, { params: { locale: locale || 'en-US' } })
       .then(r => {
         setData(r.data);
         const cur = r.data.journey?.current_milestone_id
@@ -323,7 +325,7 @@ const DesignJourneyTab = ({ projectId, project }) => {
       })
       .catch(() => setError('Impossibile caricare il Design Journey™'))
       .finally(() => setLoading(false));
-  }, [projectId]);
+  }, [projectId, locale]);
 
   useEffect(() => { load(); }, [load]);
 

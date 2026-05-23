@@ -39,9 +39,9 @@ const LOCALES = [
 
 // Safe-zones the studio cares about (px units → aspect ratios)
 const SAFE_ZONES = [
-  { id: 'ultrawide', label: 'Ultrawide 21:9',      ratio: 21 / 9,  icon: Monitor },
-  { id: 'desktop',   label: 'Desktop 16:9',        ratio: 16 / 9,  icon: MonitorSmartphone },
-  { id: 'square',    label: 'Card 1:1',            ratio: 1,       icon: Sparkles },
+  { id: 'ultrawide', tkey: 'zone_ultrawide', fallback: 'Ultrawide 21:9', ratio: 21 / 9,  icon: Monitor },
+  { id: 'desktop',   tkey: 'zone_desktop',   fallback: 'Desktop 16:9',   ratio: 16 / 9,  icon: MonitorSmartphone },
+  { id: 'square',    tkey: 'zone_square',    fallback: 'Card 1:1',       ratio: 1,       icon: Sparkles },
 ];
 
 // CSS filter string built from grading metadata
@@ -131,7 +131,16 @@ const AtelierMediaDirection = () => {
       return;
     }
     if (draft.file_preview) URL.revokeObjectURL(draft.file_preview);
-    setDraft(d => ({ ...d, file, file_preview: URL.createObjectURL(file) }));
+    const url = URL.createObjectURL(file);
+    setDraft(d => ({ ...d, file, file_preview: url }));
+    // Detect orientation and choose a sensible default safe-zone so tall
+    // images aren't cropped to a thin slice in the ultrawide preview.
+    const probe = new Image();
+    probe.onload = () => {
+      if (probe.naturalHeight > probe.naturalWidth) setSafeZone('square');
+      else setSafeZone('desktop');
+    };
+    probe.src = url;
   };
 
   const onDrop = (e) => {
@@ -194,8 +203,20 @@ const AtelierMediaDirection = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       if (data?.media) {
-        setMedia(m => [...m, data.media]);
-        setActiveId(data.media.id);
+        const newAsset = data.media;
+        // Preload the optimized URL so the preview transitions seamlessly
+        // from local objectURL → Supabase asset without flashing empty.
+        if (newAsset.optimized_asset_url) {
+          await new Promise((resolve) => {
+            const img = new Image();
+            img.onload = resolve;
+            img.onerror = resolve;
+            img.src = newAsset.optimized_asset_url;
+            setTimeout(resolve, 4000);
+          });
+        }
+        setMedia(m => [...m, newAsset]);
+        setActiveId(newAsset.id);
       }
       // Reset file part of draft, keep grading for chained uploads
       if (draft.file_preview) URL.revokeObjectURL(draft.file_preview);
@@ -304,7 +325,7 @@ const AtelierMediaDirection = () => {
                       onClick={() => setSafeZone(z.id)}
                       data-testid={`amd-zone-${z.id}`}
                     >
-                      <Icon size={12} strokeWidth={1.4} /> {z.label}
+                      <Icon size={12} strokeWidth={1.4} /> {t(`atelier.media.${z.tkey}`, null, z.fallback)}
                     </button>
                   );
                 })}
@@ -315,7 +336,7 @@ const AtelierMediaDirection = () => {
                   title={t('atelier.media.mobile_blocker_zone', null,
                     'Mobile blocker safe zone — the still frame shown on phones')}
                 >
-                  <Smartphone size={12} strokeWidth={1.4} /> Mobile blocker
+                  <Smartphone size={12} strokeWidth={1.4} /> {t('atelier.media.zone_mobile', null, 'Mobile blocker')}
                 </button>
               </div>
 

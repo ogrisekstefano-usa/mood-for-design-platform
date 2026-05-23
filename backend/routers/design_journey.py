@@ -33,7 +33,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 
 from core.tenant_context import get_tenant_context
@@ -231,7 +231,9 @@ def _emit_event(c, *, journey_id: str, tenant_id: str, milestone_id: Optional[st
 
 # ─── Endpoints ─────────────────────────────────────────────────────────
 @router.get("/projects/{project_id}/journey")
-def get_or_create_journey(project_id: str, ctx=Depends(get_tenant_context)):
+def get_or_create_journey(project_id: str,
+                          locale: str = Query("en-US"),
+                          ctx=Depends(get_tenant_context)):
     """Get the project's Design Journey™ + milestones + timeline.
     Auto-creates everything on first access."""
     c = db()
@@ -249,10 +251,34 @@ def get_or_create_journey(project_id: str, ctx=Depends(get_tenant_context)):
                 .eq("journey_id", journey["id"]).eq("tenant_id", tid)
                 .order("created_at", desc=True).limit(120).execute().data or [])
 
+    milestones_out = [_slim(m) for m in milestones]
+    timeline_out   = [_slim(e) for e in timeline]
+
+    # ITER139 · ALE-on-read · localise journey narrative fields into the
+    # active locale (multi-source-language aware).
+    try:
+        from services.editorial_translation_layer import (
+            localize_records as _ale_localize_records,
+            normalize_locale as _ale_norm,
+        )
+        ale_target = _ale_norm(locale)
+        if ale_target:
+            milestones_out = _ale_localize_records(
+                milestones_out, fields=('title', 'description', 'narrative'),
+                target_locale=ale_target, tenant_id=tid,
+                surface='journey_milestone')
+            timeline_out = _ale_localize_records(
+                timeline_out, fields=('narrative', 'event_type_label', 'title'),
+                target_locale=ale_target, tenant_id=tid,
+                surface='journey_timeline_event')
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning("ALE journey skipped: %s", e)
+
     return {
         "journey":    _slim(journey),
-        "milestones": [_slim(m) for m in milestones],
-        "timeline":   [_slim(e) for e in timeline],
+        "milestones": milestones_out,
+        "timeline":   timeline_out,
     }
 
 
@@ -346,13 +372,29 @@ def patch_milestone(mid: str, body: MilestonePatch,
 
 
 @router.get("/journeys/{jid}/timeline")
-def get_timeline(jid: str, ctx=Depends(get_tenant_context)):
+def get_timeline(jid: str, locale: str = Query("en-US"),
+                 ctx=Depends(get_tenant_context)):
     c = db()
     tid = ctx["tenant_id"]
     rows = (c.table("journey_timeline_events").select("*")
             .eq("journey_id", jid).eq("tenant_id", tid)
             .order("created_at", desc=True).limit(200).execute().data or [])
-    return {"items": [_slim(r) for r in rows]}
+    items = [_slim(r) for r in rows]
+    try:
+        from services.editorial_translation_layer import (
+            localize_records as _ale_localize_records,
+            normalize_locale as _ale_norm,
+        )
+        ale_target = _ale_norm(locale)
+        if ale_target:
+            items = _ale_localize_records(
+                items, fields=('narrative', 'title', 'event_type_label'),
+                target_locale=ale_target, tenant_id=tid,
+                surface='journey_timeline_event')
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning("ALE timeline skipped: %s", e)
+    return {"items": items}
 
 
 @router.get("/journeys/context/by-entity")

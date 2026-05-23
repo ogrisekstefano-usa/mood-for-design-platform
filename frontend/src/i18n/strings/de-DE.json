@@ -2201,7 +2201,11 @@
       "archived": "Asset archiviert.",
       "confirm_archive": "Dieses Asset archivieren?",
       "gallery_label": "Atelier-Medienbank",
-      "gallery_empty": "Noch keine Assets komponiert. Legen Sie Ihr erstes Bild oben ab."
+      "gallery_empty": "Noch keine Assets komponiert. Legen Sie Ihr erstes Bild oben ab.",
+      "zone_ultrawide": "Ultrawide 21:9",
+      "zone_desktop": "Desktop 16:9",
+      "zone_square": "Karte 1:1",
+      "zone_mobile": "Mobile-Blocker"
     }
   }
 }

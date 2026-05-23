@@ -1,6 +1,27 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **Sprint ITER139 · LOCALE-AWARE SEEDED CONTENT ORCHESTRATION™ — P0 wave** · ✅ DELIVERED · 23 Feb 2026 · Eradicato il **mixed-language leak** dai contenuti seed/demo/journey della dashboard. Quando l'utente naviga in EN-US, ES-ES, FR-FR, DE-DE, IT-IT, AR — ogni titolo, lifecycle label, milestone label, event narrative e next-action testo arriva nativo nella lingua attiva, traducendo dal **source rilevato runtime** (non più assumendo sempre IT come sorgente).
+
+  **Architettura — strategia C ibrida**: ALE on-read per UI labels brevi/lifecycle/milestone/activity feed (runtime translate + TM cache), `source_locale` field per long-form (rollout P2). Nuovo **multi-source-language fingerprinting** in `editorial_translation_layer.py`: `detect_language()` con regex precisi per IT/EN/ES/FR/DE/AR. Ogni (record, field) viene fingerprint-ato individualmente — skip su no-op (detected==target), translate live dal source rilevato altrimenti. Nuovo **fallback chain editoriale** `locale_fallback_chain()`: `en-us → en-gb → en`, `es-es → es → en`, `de-de → de → en`, sempre terminante a `en` baseline, MAI cross-family.
+
+  **Anti-LLM-preamble guardrail**: nuovo `looks_like_llm_preamble()` rileva system-prompt leaks ("I'm calibrated and ready...", "Understood. I am ready...", "Source language: Italian", bullet-list dumps, len > 3× source). Refuta sia cache hit che response live. **Short-label fast path** in `_build_prompt()` — stringhe ≤90 char senza punctuation di chiusura ricevono ora prompt minimale di 6 righe ("Translate this short UI label … Output ONLY the translated label"). Risolve l'effetto-Claude-over-explains. **Cache purge one-shot** via `scripts/purge_polluted_ale_cache.py` ha rimosso **91 entry tossiche** da `editorial_translations`.
+
+  **ALE wire-up P0**: `GET /api/dashboard/pulse?locale=…` (14 surface tuples × 6 collections), `GET /api/projects/{id}/journey?locale=…` (milestones+timeline), `GET /api/journeys/{jid}/timeline?locale=…`. Sempre invocato (anche per target=IT, per catch reverse leak di contenuti scritti EN/ES dentro studio IT). Frontend `DesignJourneyTab.jsx` ora passa `locale` query param da `useBlueprint()`. Timeout alzato 8s → 25s (cold dashboard ~33s la prima volta, poi warm cache 2-4s).
+
+  **Live verification** (3 locale @ /dashboard):
+  - **EN-US**: "Good afternoon, Stefano." · "STUDIO PULSE™ · PROJECT RHYTHM" · "41 Journeys unfolding" · "Initiating Dialogue | Inspirations Alignment | Client brief approved." · "Continue from · Client Brief" · badge `EN-US · MISS 0 · LEAK 1`
+  - **ES-ES**: "Buenas tardes, Stefano." · "RITMO DEL PROYECTO" · "41 Journeys en respiración" · "Iniciar conversación | Brief del cliente aprobado." · "Continuar desde · Client Brief" · badge `ES · MISS 0 · LEAK 5`
+  - **IT-IT**: "Buon pomeriggio, Stefano." · "RITMO PROGETTUALE" · "41 Journey in respiro" · badge `IT · MISS 0 · LEAK 0` ✅
+
+  **Tabelle ancora scoperte** (rollout successivi): P1 = CRM relationship_actions / project_notes / tasks (Movimenti recenti, Prossimi capitoli) · Editorial Studio masters/variants source_locale. P2 = inspirations_items, magazine_posts, proposals, cms_pages, notifications.
+
+  **Mini-bug fix collaterali su Atelier Media Direction™ (ITER138)**:
+  - **(a) Preview-disappears-after-publish** — `upload()` ora **preload `new Image()`** con `Promise(onload+onerror+4s timeout)` prima di setMedia/setActiveId/clear → la transizione objectURL → Supabase URL è seamless
+  - **(b) Portrait-image safe-zone auto-detect** — drop di immagine alta (height > width) auto-switcha al safe-zone `Card 1:1` invece di crop-pare in ultrawide 21:9
+  - **(c) LEAK 2 → 0 sul media tab** — 4 chip safe-zone ora passano per `t('atelier.media.zone_*')` × 7 locali (28 entry seeded)
+
+## 📌 Sprint Status (previous)
 - **Sprint ITER138 · MEDIA ORCHESTRATION REFINEMENT™** · ✅ DELIVERED · 23 Feb 2026 · L'atelier ha smesso di dipendere da link esterni. Ogni asset visuale (hero, project card fallback, ispirazione) è ora **uploaded · processed · governed · cinematic** dentro Supabase Storage `tenant-assets/atelier-media/{tenant}/`. Il flusso non è una "media library SaaS" — è **Atelier Media Direction™**, un compositore di atmosfera. 8 deliverables consegnati e validati live (9/9 backend pytest + 100% frontend E2E):
 
   **(1) Migration 070 · Atelier Media Orchestration Schema** — `supabase/migrations/070_atelier_media_orchestration.sql`. Estende `atelier_dashboard_media` con 16 nuove colonne: `original_asset_url`, `optimized_asset_url`, `thumbnail_asset_url`, `blurhash`, `storage_bucket`, `storage_path`, `mime_type`, `file_bytes`, `width_px`, `height_px`, `crop_profile` (JSONB `{x,y,w,h}`), `grain_level` (0–1), `vignette_level` (0–1), `warmth_offset` (-0.5..+0.5), `cyan_atmosphere` (0–1), `uploaded_by`. CHECK constraints rispettati. Indice `atelier_media_storage_idx` su `(storage_bucket, storage_path)`. Applicata via `apply_migration_070.py` — 16/16 colonne verified live.

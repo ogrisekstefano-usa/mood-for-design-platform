@@ -254,6 +254,165 @@ def looks_italian(text: str) -> bool:
     return False
 
 
+# ─── Multi-language source detection (ITER139 · locale-aware orchestration) ─
+# Lightweight fingerprints used to classify the source language of a stored
+# record so we can translate FROM the actual source, not always from IT.
+# Order of evaluation matters — more specific languages first.
+_ES_RX = re.compile(
+    r"\b(?:el|los|las|una?s?|del|al|para|por|con|sin|entre|sobre|"
+    r"hacia|desde|hasta|según|esta|esto|estos|estas|aquel|aquella|"
+    r"está|están|son|fue|fueron|hay|hemos|tienen|"
+    r"proyecto|cliente|materia[lr]es?|moodboard|estilo|atelier|"
+    r"diseño|composición|interior|residencia|hospitalidad|"
+    r"añadir|guardar|cancelar|cerrar|continuar|próximo|último|"
+    r"hoy|ayer|mañana|gracias|buenos|buenas|nuevo|nueva)\b",
+    re.I,
+)
+_FR_RX = re.compile(
+    r"\b(?:le|les|une?|des?|du|au|aux|pour|par|avec|sans|entre|sur|"
+    r"vers|depuis|jusqu'à|jusqu'aux|selon|cette|ces|ceux|celle|celles|"
+    r"est|sont|était|étaient|avons|avez|ont|"
+    r"projet|client|matériaux?|moodboard|style|atelier|"
+    r"conception|composition|intérieur|résidence|hospitalité|"
+    r"ajouter|enregistrer|annuler|fermer|continuer|prochain|dernier|"
+    r"aujourd'hui|hier|demain|merci|bonjour|bonsoir|nouveau|nouvelle)\b",
+    re.I,
+)
+_FR_ACC = re.compile(r"[àâçéèêëîïôûùüÿœæ]")
+_DE_RX = re.compile(
+    r"\b(?:der|die|das|den|dem|des|ein[ers]?|eine[mnrs]?|für|mit|"
+    r"ohne|zwischen|über|nach|vor|seit|bis|gemäß|dieser?|jene[mnrs]?|"
+    r"ist|sind|war|waren|haben|hat|hatten|werden|wurde|wurden|"
+    r"Projekt|Kunde|Material[ie]?n?|Moodboard|Stil|Atelier|"
+    r"Gestaltung|Komposition|Innenraum|Residenz|Gastfreundschaft|"
+    r"hinzufügen|speichern|abbrechen|schließen|fortsetzen|nächste|letzte|"
+    r"heute|gestern|morgen|danke|guten|neue[ers]?)\b",
+)
+_DE_UML = re.compile(r"[äöüÄÖÜß]")
+_AR_RX = re.compile(r"[\u0600-\u06ff]")  # Any Arabic codepoint
+
+# English markers re-used from _EN_RX above.
+
+
+def detect_language(text: str) -> Optional[str]:
+    """Best-effort language fingerprinting for stored editorial content.
+
+    Returns: 'it' | 'en' | 'es' | 'fr' | 'de' | 'ar' | None (unknown).
+
+    This is intentionally lightweight (regex-only, no LLM). It is used to
+    decide whether a record needs translation at all and what the SOURCE
+    language is for a downstream LLM call. Short strings (<4 chars) and
+    purely numeric / brand-only strings return None so we don't try to
+    translate them.
+    """
+    if not text or not isinstance(text, str):
+        return None
+    s = text.strip()
+    if len(s) < 4:
+        return None
+    if _AR_RX.search(s):
+        return 'ar'
+    # German has the highest precision via umlauts/ß
+    if _DE_UML.search(s) and _DE_RX.search(s):
+        return 'de'
+    de_hits = len(_DE_RX.findall(s))
+    if de_hits >= 2:
+        return 'de'
+    # French accents are common; need stronger marker corroboration
+    if _FR_RX.search(s) and (_FR_ACC.search(s) or len(_FR_RX.findall(s)) >= 2):
+        return 'fr'
+    # Spanish
+    es_hits = len(_ES_RX.findall(s))
+    if es_hits >= 2:
+        return 'es'
+    if es_hits == 1 and not _EN_RX.search(s) and not _IT_RX.search(s):
+        return 'es'
+    # Italian
+    if looks_italian(s):
+        return 'it'
+    # English — single English marker, no IT/ES/FR markers
+    if _EN_RX.search(s) and not _IT_RX.search(s) and not _ES_RX.search(s):
+        return 'en'
+    return None
+
+
+# ─── Locale fallback chain (ITER139) ─────────────────────────────────────
+# When a translation fails or is unavailable, fall back along the locale
+# family before defaulting to en-US global editorial — NEVER cross-family
+# (e.g. en-US must never fall back to es-ES).
+_FALLBACK_CHAIN: dict = {
+    'it':    ['it', 'en'],
+    'en':    ['en'],
+    'en-us': ['en-us', 'en-gb', 'en'],
+    'en-gb': ['en-gb', 'en-us', 'en'],
+    'es':    ['es', 'en'],
+    'es-es': ['es-es', 'es', 'en'],
+    'fr':    ['fr', 'en'],
+    'fr-fr': ['fr-fr', 'fr', 'en'],
+    'de':    ['de', 'en'],
+    'de-de': ['de-de', 'de', 'en'],
+    'ar':    ['ar', 'en'],
+}
+
+
+def locale_fallback_chain(locale: Optional[str]) -> list:
+    """Return the ordered fallback chain for a locale. Always terminates
+    at 'en' (global editorial baseline)."""
+    if not locale:
+        return ['en']
+    norm = normalize_locale(locale) or locale.lower()
+    return _FALLBACK_CHAIN.get(norm, [norm, 'en'])
+
+
+# ─── LLM preamble / meta-output detector (ITER139) ───────────────────────
+# Claude/GPT sometimes break instruction and dump system-prompt acknowledgement
+# ("I'm calibrated and ready...", "I am your editorial translator...",
+# "Ready. Paste...", "Source language: Italian", etc.) into their reply.
+# These responses are toxic if we cache them — they pollute every downstream
+# render with chatbot meta-commentary instead of clean editorial copy.
+_LLM_PREAMBLE_MARKERS = re.compile(
+    r"(?:I'?m\s+(?:calibrated|ready|your)|I\s+am\s+(?:your|ready|here)|"
+    r"Understood[.,]?\s+I|Understood[.,]?\s+Here|"
+    r"I've\s+absorbed|I\s+have\s+absorbed|"
+    r"I\s+(?:will|shall)\s+(?:rewrite|translate|re-?author)|"
+    r"Ready\.?\s+Paste|Paste\s+the\s+(?:Italian|source)|"
+    r"Source\s+language\s*:|Target\s+language\s*:|"
+    r"Awaiting\s+(?:clarification|input|source|the)|"
+    r"Before\s+I\s+proceed|"
+    r"^---|^━━━|^\*\*Ready\*\*|^\*\*Understood\*\*|"
+    r"editorial\s+(?:cultural\s+)?translator|"
+    r"may\s+I\s+confirm|"
+    r"I\s+notice\s+the\s+INPUT|"
+    r"Non[-\s]?negotiable\b|"
+    r"register\s*[:：]|voice\s+profile\s*[:：]|"
+    r"^Here'?s\s+(?:the|my)|^Here\s+is\s+(?:the|my))",
+    re.I | re.M,
+)
+
+
+def looks_like_llm_preamble(text: str, source_text: str = '') -> bool:
+    """True if `text` looks like an LLM system-prompt leak rather than a
+    clean editorial translation. Used to refuse caching toxic responses.
+    """
+    if not text:
+        return False
+    s = text.strip()
+    if not s:
+        return False
+    # Hard length sanity — translations within ±20% of source. Allow up to
+    # 3× before deeming it suspicious (the LLM might add a sentence or two
+    # culturally), and demand strict guard above that.
+    if source_text and len(s) > max(800, 3 * len(source_text)):
+        return True
+    # Marker scan
+    if _LLM_PREAMBLE_MARKERS.search(s):
+        return True
+    # Bullet-list dumps signal a meta-output, not a single editorial line.
+    if s.count('\n- ') >= 3 or s.count('\n* ') >= 3:
+        return True
+    return False
+
+
 # ─── TM cache (editorial_translations table) ────────────────────────────
 def _content_hash(source_locale: str, target_locale: str,
                   directive_version: str, text: str) -> str:
@@ -362,29 +521,28 @@ def localize_records(
     fields: Sequence[str],
     target_locale: Optional[str],
     tenant_id: Optional[str] = None,
-    source_locale: str = 'it',
+    source_locale: Optional[str] = None,
     voice_addendum: Optional[str] = None,
     surface: str = 'editorial_content',
-    timeout_s: float = 8.0,
+    timeout_s: float = 25.0,
 ) -> List[dict]:
     """Return `records` with every `field` translated into `target_locale`.
 
-    Mutates copies, not the input. Records / fields whose value is already
-    in the target locale (or empty) are left untouched. All cache misses
-    are translated in sequence (bounded by `timeout_s` overall — anything
-    not finished is left in source language with the original value, so
-    the API never blocks indefinitely).
+    ITER139 — multi-source-language aware:
+      • Each (record, field) value is fingerprinted via `detect_language()`.
+      • If detected source == target → field passes through untouched.
+      • If detected source != target → translate from DETECTED source.
+      • Unknown source falls back to `source_locale` (default 'it' for
+        backward compat with IT-first seeded content).
+      • Mutates copies, not the input. The total LLM budget is bounded by
+        `timeout_s` so the API never blocks indefinitely.
     """
     if not records:
         return records
     if not target_locale:
         return records
     tgt = normalize_locale(target_locale)
-    if not tgt or tgt == source_locale:
-        return records
-
-    # Don't bother for Italian targets — source is already IT.
-    if tgt == 'it':
+    if not tgt:
         return records
 
     directive = CULTURAL_DIRECTIVES.get(tgt, '')
@@ -392,8 +550,10 @@ def localize_records(
     voice_block = (voice_addendum or '').strip()
     full_addendum = ((directive + ('\n\n' + voice_block if voice_block else '')) or None)
 
-    # 1. Collect all candidate (record_idx, field, hash, source_text).
-    items: List[Tuple[int, str, str, str]] = []
+    default_source = (source_locale or 'it').lower()
+
+    # 1. Collect (record_idx, field, hash, source_text, detected_src) tuples.
+    items: List[Tuple[int, str, str, str, str]] = []
     for idx, rec in enumerate(records):
         if not isinstance(rec, dict):
             continue
@@ -401,16 +561,20 @@ def localize_records(
             val = _read_field(rec, field)
             if not isinstance(val, str) or not val.strip():
                 continue
-            if not looks_italian(val):
+            detected = detect_language(val) or default_source
+            # Already in target language → no-op (this is the key fix:
+            # previously we ONLY processed IT records, leaving EN/ES/etc.
+            # leaking through unchanged on non-IT dashboards).
+            if detected == tgt:
                 continue
-            h = _content_hash(source_locale, tgt, directive_version, val)
-            items.append((idx, field, h, val))
+            h = _content_hash(detected, tgt, directive_version, val)
+            items.append((idx, field, h, val, detected))
 
     if not items:
         return records
 
     # 2. Cache lookup for ALL hashes in one go.
-    cache = _bulk_lookup(tenant_id, [h for _, _, h, _ in items])
+    cache = _bulk_lookup(tenant_id, [h for _, _, h, _, _ in items])
 
     # 3. Translate the misses (under a wall-clock budget).
     cloned = [_deep_copy_record(r) if isinstance(r, dict) else r for r in records]
@@ -418,12 +582,21 @@ def localize_records(
     misses = 0
     hits = 0
     failed = 0
-    for idx, field, h, src_text in items:
+    for idx, field, h, src_text, src_lang in items:
         cached = cache.get(h)
         if cached and (cached.get('translated_text') or '').strip():
-            _write_field(cloned[idx], field, cached['translated_text'])
-            hits += 1
-            continue
+            cached_text = cached['translated_text']
+            # ITER139 · refuse polluted cache entries (LLM preamble leaks).
+            # The bad row stays in DB so it can be inspected later, but we
+            # don't write it into the record.
+            if looks_like_llm_preamble(cached_text, src_text):
+                log.warning("editorial layer · skipping polluted cache hash=%s len=%d",
+                            h[:8], len(cached_text))
+                # Fall through to live re-translate
+            else:
+                _write_field(cloned[idx], field, cached_text)
+                hits += 1
+                continue
         # Cache miss → translate live.
         if (time.time() - t0) > timeout_s:
             log.warning("editorial layer · time budget exceeded after %d/%d", hits + misses, len(items))
@@ -431,17 +604,22 @@ def localize_records(
         try:
             r = translate(
                 src_text,
-                source_locale=source_locale,
+                source_locale=src_lang,
                 target_locale=tgt,
                 voice_addendum=full_addendum,
             )
             clean = _scrub_llm_response(r.localized or '') if r.translated else ''
+            # Sanity guard — refuse to persist LLM preamble leaks.
+            if clean and looks_like_llm_preamble(clean, src_text):
+                log.warning("editorial layer · refused LLM preamble leak surface=%s field=%s",
+                            surface, field)
+                clean = ''
             if r.translated and clean and clean != src_text:
                 _write_field(cloned[idx], field, clean)
                 _persist(
                     tenant_id=tenant_id,
                     content_hash=h,
-                    source_locale=source_locale,
+                    source_locale=src_lang,
                     target_locale=tgt,
                     source_text=src_text,
                     translated_text=clean,

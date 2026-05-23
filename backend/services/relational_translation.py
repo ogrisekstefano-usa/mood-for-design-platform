@@ -113,6 +113,31 @@ def _unwrap_dnt(text: str, recovered: List[str]) -> str:
 # ── Editorial prompt (Claude Sonnet 4.5) ───────────────────────
 def _build_prompt(text_masked: str, src_locale: str, tgt_locale: str,
                   voice_addendum: str = "") -> str:
+    # ITER139 · short-label fast path. For UI fragments and status labels
+    # (<= 90 chars, no sentence-ending punctuation), the heavy editorial
+    # prompt below makes Claude over-explain and dump system-prompt
+    # acknowledgements into the response. A tight prompt yields clean
+    # one-line outputs.
+    stripped = text_masked.strip()
+    looks_like_label = (
+        len(stripped) <= 90
+        and stripped.count('.') <= 1
+        and stripped.count('\n') == 0
+        and not stripped.endswith(':')
+    )
+    if looks_like_label:
+        return (
+            f"Translate this short UI label from {_label(src_locale)} to "
+            f"{_label(tgt_locale)} in the editorial register of a luxury "
+            f"interior-architecture studio (Cassina · Molteni · Minotti).\n\n"
+            f"Rules:\n"
+            f"  • Output ONLY the translated label, on a single line.\n"
+            f"  • No quotes, no markdown, no commentary, no preamble.\n"
+            f"  • Keep brand/proper nouns and §DNT#§ placeholders unchanged.\n"
+            f"  • Match the brevity of the source.\n\n"
+            f"Source: {stripped}\n"
+            f"Translation:"
+        )
     voice_block = (voice_addendum + "\n\n") if voice_addendum else ""
     return (
         f"You are MOOD for DESIGN™'s in-house cultural translator — an editor at "
