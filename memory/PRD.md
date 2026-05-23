@@ -1,6 +1,16 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **Resend Webhook Live™** · ✅ DELIVERED · 23 Feb 2026 · `RESEND_WEBHOOK_SECRET` iniettato in `/app/backend/.env`, backend riavviato, signature Svix HMAC-SHA256 verification attiva sull'endpoint produzione `https://blueprint.moodfordesign.com/api/email/webhook/resend`.
+  - **Auth gate**: unsigned → 401, tampered → 401, valid Svix signature → 200 (tutti e 3 i test verdi)
+  - **Live ingestion verificata** su 3 `provider_message_id` reali presi da `email_events`:
+    - `email.opened` → `opened_at` SET · `metadata.last_webhook=email.opened`
+    - `email.clicked` → `clicked_at` SET · `metadata.last_webhook=email.clicked`
+    - `email.bounced` → `status=bounced` · `bounced_at` SET · `bounce_reason=MailboxFull` · `metadata.last_webhook=email.bounced`
+  - **Orphan fallback** preservato: webhook che arriva prima dell'insert applicativo → row creata con `metadata.orphan_webhook=true`
+  - **Pipeline completa ora ATTIVA end-to-end**: Resend → Svix HMAC → `email_events` rowupdate → Blueprint Email Governance™ UI feed
+
+## 📌 Sprint Status (previous)
 - **Sender Swap Production™** · ✅ DELIVERED · 23 Feb 2026 · `mail.moodfordesign.com` verificato su Resend → swap eseguito.
   - `EMAIL_FROM=MOOD for DESIGN™ <no-reply@mail.moodfordesign.com>` in `/app/backend/.env`
   - `tenant_email_settings.sender_email` aggiornato (1 riga · studio tenant) → `no-reply@mail.moodfordesign.com`
