@@ -220,32 +220,32 @@ const NewProjectModal = ({ onClose, onSaved }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" data-testid="new-project-modal">
-      <div className="bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-md w-full max-w-lg animate-fadeIn">
-        <div className="flex items-center justify-between p-6 border-b border-[var(--bp-border)]">
-          <h3 className="font-heading text-xl text-[var(--bp-text-primary)]">{t('projects.newProject')}</h3>
-          <button onClick={onClose} className="text-[var(--bp-text-subtle)] hover:text-[var(--bp-text-secondary)] text-lg">×</button>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" data-testid="new-project-modal">
+      <div className="atelier-modal animate-fadeIn">
+        <div className="atelier-modal__head">
+          <h3 className="atelier-modal__title"><em>{t('projects.newProject')}</em></h3>
+          <button onClick={onClose} className="atelier-modal__close" aria-label="Close">×</button>
         </div>
-        <form onSubmit={submit} className="p-6 space-y-4">
-          <div>
-            <label className="block text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--bp-text-muted)] font-body mb-1.5">{t('projects.field.title')}</label>
-            <input required value={form.title} onChange={set('title')} className="input-luxury w-full px-3 py-2.5 text-sm font-body rounded-[3px]" />
+        <form onSubmit={submit} className="atelier-modal__body">
+          <div className="atelier-field">
+            <label className="atelier-field__label">{t('projects.field.title')}</label>
+            <input required value={form.title} onChange={set('title')} className="atelier-field__input" />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="atelier-field__grid">
             {[['project_type', 'projects.field.projectType'], ['budget_range', 'projects.field.budget'], ['timeline', 'projects.field.timeline'], ['priority', 'projects.field.priority']].map(([k, lk]) => (
-              <div key={k}>
-                <label className="block text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--bp-text-muted)] font-body mb-1.5">{t(lk)}</label>
-                <input value={form[k]} onChange={set(k)} className="input-luxury w-full px-3 py-2.5 text-sm font-body rounded-[3px]" />
+              <div key={k} className="atelier-field">
+                <label className="atelier-field__label">{t(lk)}</label>
+                <input value={form[k]} onChange={set(k)} className="atelier-field__input" />
               </div>
             ))}
           </div>
-          <div>
-            <label className="block text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--bp-text-muted)] font-body mb-1.5">{t('projects.field.description')}</label>
-            <textarea rows={3} value={form.description} onChange={set('description')} className="input-luxury w-full px-3 py-2.5 text-sm font-body rounded-[3px] resize-none" />
+          <div className="atelier-field">
+            <label className="atelier-field__label">{t('projects.field.description')}</label>
+            <textarea rows={3} value={form.description} onChange={set('description')} className="atelier-field__input atelier-field__input--area" />
           </div>
-          <div className="flex gap-3 pt-2">
-            <button type="button" onClick={onClose} className="flex-1 px-4 py-2.5 border border-[var(--bp-border-strong)] text-[var(--bp-text-secondary)] text-sm font-body rounded-[3px]">{t('common.cancel')}</button>
-            <button data-testid="save-project-btn" type="submit" disabled={loading} className="flex-1 px-4 py-2.5 bg-[var(--bp-primary)] hover:opacity-90 text-[var(--bp-bg)] font-semibold text-sm font-body rounded-[3px] disabled:opacity-50">
+          <div className="atelier-modal__foot">
+            <button type="button" onClick={onClose} className="ppage__cta ppage__cta--lock">{t('common.cancel')}</button>
+            <button data-testid="save-project-btn" type="submit" disabled={loading} className="ppage__cta">
               {loading ? t('common.loading') : t('common.save')}
             </button>
           </div>

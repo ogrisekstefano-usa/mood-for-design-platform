@@ -1,0 +1,1796 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Atelier Nordic™ · Shared Component Override Layer
+ * ITER138 · Phase 2 · Global Component Audit
+ *
+ * This is the SINGLE source of truth that aligns every shadcn/ui primitive
+ * (Button, Input, Card, Dialog, Drawer, Dropdown, Tooltip, Table, Tabs,
+ * Toggle, Switch, Toast, Pagination, Select, Sheet, Popover, Skeleton …)
+ * to the Atelier Nordic™ DNA.
+ *
+ * Strategy:
+ *   1. Re-declare the Tailwind/shadcn HSL token chain (--background,
+ *      --card, --primary, --border, --input, --ring …) inside the
+ *      [data-atelier="nordic"] gate. Every <Card>, <Button>, <Input>
+ *      automatically inherits Nordic palette — no JSX edits required.
+ *   2. Add cinematic polish on top (border thinness, radii, typography,
+ *      motion, focus rings, hover rhythm) that Tailwind utilities alone
+ *      can't express.
+ *
+ * Order matters — this MUST load AFTER nordic.css and primitives.css.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/* ─── 1. Tailwind/shadcn HSL token re-binding ───────────────────────────── */
+
+[data-atelier="nordic"] {
+  /* Canvas */
+  --background:          0 0% 2%;          /* #050505 */
+  --foreground:          216 12% 92%;      /* #e8eaee */
+
+  /* Card / Popover (surface-1 — #0f1720) */
+  --card:                213 35% 9%;
+  --card-foreground:     216 12% 92%;
+  --popover:             213 35% 9%;
+  --popover-foreground:  216 12% 92%;
+
+  /* Primary = Atelier Cyan (#5eead4) */
+  --primary:             172 71% 64%;
+  --primary-foreground:  170 60% 6%;       /* deep ink-cyan for legibility on cyan */
+
+  /* Secondary surface (surface-2 — #111827) */
+  --secondary:           220 33% 11%;
+  --secondary-foreground:216 12% 92%;
+
+  /* Muted (surface-2 — same body, used for chips & skeletons) */
+  --muted:               220 33% 11%;
+  --muted-foreground:    213 9% 60%;       /* #9aa3ae */
+
+  /* Accent (surface-3 — selected / hover ground) */
+  --accent:              218 32% 14%;
+  --accent-foreground:   42 70% 92%;       /* warm ivory — #f2ead8 */
+
+  /* Destructive (restrained rose — never neon) */
+  --destructive:         2 55% 56%;
+  --destructive-foreground: 38 25% 94%;
+
+  /* Lines */
+  --border:              215 30% 14%;      /* #1a2230 */
+  --input:               215 30% 14%;
+  --ring:                172 71% 64%;      /* cyan focus ring */
+  --radius:              8px;
+
+  /* ── Legacy --bp-* bridge (covers CRM, Inspirations, Settings, Editorial,
+   *    Governance, Storefront — every legacy page still references these
+   *    token names. Re-binding them here means the whole studio inherits
+   *    Atelier Nordic without touching individual page CSS files). */
+  --bp-font-heading:      var(--atelier-serif);
+  --bp-font-display:      var(--atelier-serif);
+  --bp-font-body:         var(--atelier-sans);
+  --bp-font-mono:         var(--atelier-mono);
+
+  --bp-primary-soft:      rgba(94, 234, 212, 0.06);
+  --bp-border-hover:      var(--atelier-cyan-line);
+  --bp-border-active:     var(--atelier-cyan-line);
+  --bp-surface-elevated:  var(--bp-elevated);
+
+  --bp-text-subtle:       var(--bp-text-faint);
+}
+
+/* ─── 2. Buttons — primary CTA = cyan with cinematic press ──────────────── */
+
+[data-atelier="nordic"] .bg-primary {
+  background-color: var(--atelier-cyan);
+  color: #051310;
+  box-shadow: var(--atelier-glow-cyan-sm);
+}
+[data-atelier="nordic"] .hover\:bg-primary\/90:hover {
+  background-color: var(--atelier-cyan-soft);
+  box-shadow: var(--atelier-glow-cyan);
+}
+
+[data-atelier="nordic"] button[type="submit"]:not(.atelier-cta):not(.ppage__cta) {
+  letter-spacing: 0.02em;
+}
+
+/* ─── 3. Inputs / Textareas / Selects — architectural restraint ─────────── */
+
+[data-atelier="nordic"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+[data-atelier="nordic"] textarea,
+[data-atelier="nordic"] select {
+  background-color: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+  font-size: 13.5px;
+  letter-spacing: 0;
+  border-radius: var(--bp-radius-sm);
+  transition: border-color var(--bp-dur-quick) var(--bp-ease-soft),
+              background-color var(--bp-dur-quick) var(--bp-ease-soft),
+              box-shadow var(--bp-dur-base) var(--bp-ease-cinema);
+}
+
+[data-atelier="nordic"] input:hover:not(:disabled),
+[data-atelier="nordic"] textarea:hover:not(:disabled),
+[data-atelier="nordic"] select:hover:not(:disabled) {
+  border-color: var(--bp-border-strong);
+}
+
+[data-atelier="nordic"] input:focus,
+[data-atelier="nordic"] textarea:focus,
+[data-atelier="nordic"] select:focus {
+  outline: none;
+  border-color: var(--atelier-cyan-line);
+  box-shadow: 0 0 0 3px var(--atelier-cyan-glow);
+}
+
+[data-atelier="nordic"] input::placeholder,
+[data-atelier="nordic"] textarea::placeholder {
+  color: var(--bp-text-faint);
+  font-style: italic;
+}
+
+/* Labels — eyebrow editorial style */
+[data-atelier="nordic"] label {
+  color: var(--bp-text-secondary);
+  font-family: var(--atelier-sans);
+}
+
+/* ─── 4. Cards (shadcn) — editorial surface ─────────────────────────────── */
+
+[data-atelier="nordic"] [class*="rounded-xl"][class*="border"][class*="bg-card"] {
+  background-color: var(--bp-surface-1);
+  border-color: var(--bp-border);
+  border-radius: var(--bp-radius-lg);
+  box-shadow: var(--bp-shadow-xs);
+}
+
+/* ─── 5. Dialog / Sheet / Drawer — cinematic overlay ────────────────────── */
+
+[data-atelier="nordic"] [role="dialog"][data-state],
+[data-atelier="nordic"] [role="alertdialog"][data-state] {
+  background-color: var(--bp-surface-1);
+  border: 1px solid var(--bp-border-strong);
+  border-radius: var(--bp-radius-lg);
+  box-shadow: var(--bp-shadow-lg);
+  color: var(--bp-text-primary);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* Overlay — deeper, more cinematic than shadcn's default black/80 */
+[data-atelier="nordic"] [data-state][class*="bg-black\\/80"],
+[data-atelier="nordic"] [data-radix-portal] [data-state][class*="fixed inset-0"]:not([role="dialog"]):not([role="alertdialog"]) {
+  background-color: rgba(5, 5, 5, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ─── 6. Dropdown / Popover / Tooltip / Hover Card ──────────────────────── */
+
+[data-atelier="nordic"] [data-radix-popper-content-wrapper] > * {
+  background-color: var(--bp-surface-1) !important;
+  border: 1px solid var(--bp-border-strong) !important;
+  border-radius: var(--bp-radius-md) !important;
+  box-shadow: var(--bp-shadow-md) !important;
+  color: var(--bp-text-primary) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Menu items (DropdownMenuItem, CommandItem, SelectItem, MenubarItem) */
+[data-atelier="nordic"] [role="menuitem"],
+[data-atelier="nordic"] [role="option"],
+[data-atelier="nordic"] [data-radix-collection-item] {
+  font-family: var(--atelier-sans);
+  font-size: 13px;
+  color: var(--bp-text-secondary);
+  border-radius: var(--bp-radius-xs);
+  transition: background-color var(--bp-dur-quick) var(--bp-ease-soft),
+              color var(--bp-dur-quick) var(--bp-ease-soft);
+}
+
+[data-atelier="nordic"] [role="menuitem"][data-highlighted],
+[data-atelier="nordic"] [role="option"][data-highlighted],
+[data-atelier="nordic"] [data-radix-collection-item][data-highlighted] {
+  background-color: var(--bp-surface-2);
+  color: var(--bp-text-headline);
+  outline: none;
+}
+
+/* Tooltip — minimal whisper */
+[data-atelier="nordic"] [role="tooltip"] {
+  background-color: var(--bp-elevated) !important;
+  border: 1px solid var(--bp-border-strong) !important;
+  color: var(--bp-text-headline) !important;
+  font-family: var(--atelier-sans) !important;
+  font-size: 11.5px !important;
+  letter-spacing: 0.02em !important;
+  padding: 6px 10px !important;
+  border-radius: var(--bp-radius-sm) !important;
+  box-shadow: var(--bp-shadow-sm) !important;
+}
+
+/* ─── 7. Tables — editorial register, no zebra SaaS ─────────────────────── */
+
+[data-atelier="nordic"] table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  font-family: var(--atelier-sans);
+  font-size: 13.5px;
+  color: var(--bp-text-primary);
+}
+
+[data-atelier="nordic"] thead tr,
+[data-atelier="nordic"] thead {
+  background-color: transparent;
+}
+
+[data-atelier="nordic"] thead th {
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+  border-bottom: 1px solid var(--bp-border);
+  padding: 14px 16px;
+  text-align: left;
+  background-color: transparent;
+}
+
+[data-atelier="nordic"] tbody tr {
+  border-bottom: 1px solid var(--bp-border-soft);
+  transition: background-color var(--bp-dur-quick) var(--bp-ease-soft);
+}
+
+[data-atelier="nordic"] tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.018);
+}
+
+[data-atelier="nordic"] tbody td {
+  padding: 16px;
+  font-size: 13.5px;
+  color: var(--bp-text-primary);
+  vertical-align: middle;
+}
+
+/* ─── 8. Tabs ───────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] [role="tablist"] {
+  background-color: transparent;
+  border-bottom: 1px solid var(--bp-border-soft);
+  padding: 0;
+  gap: 2px;
+  border-radius: 0;
+}
+
+[data-atelier="nordic"] [role="tab"] {
+  font-family: var(--atelier-sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted);
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 14px 18px;
+  position: relative;
+  transition: color var(--bp-dur-quick) var(--bp-ease-soft);
+  cursor: pointer;
+  box-shadow: none !important;
+}
+
+[data-atelier="nordic"] [role="tab"]:hover {
+  color: var(--bp-text-primary);
+  background-color: transparent;
+}
+
+[data-atelier="nordic"] [role="tab"][data-state="active"],
+[data-atelier="nordic"] [role="tab"][aria-selected="true"] {
+  color: var(--bp-text-headline);
+  background-color: transparent;
+}
+
+[data-atelier="nordic"] [role="tab"][data-state="active"]::after,
+[data-atelier="nordic"] [role="tab"][aria-selected="true"]::after {
+  content: '';
+  position: absolute;
+  left: 16px; right: 16px; bottom: -1px;
+  height: 1.5px;
+  background: var(--atelier-cyan);
+  box-shadow: 0 0 6px var(--atelier-cyan-glow);
+}
+
+/* ─── 9. Switch / Checkbox / Radio — restrained cyan ────────────────────── */
+
+[data-atelier="nordic"] [role="switch"] {
+  background-color: var(--bp-surface-2) !important;
+  border: 1px solid var(--bp-border-strong) !important;
+}
+
+[data-atelier="nordic"] [role="switch"][data-state="checked"] {
+  background-color: var(--atelier-cyan) !important;
+  border-color: var(--atelier-cyan) !important;
+  box-shadow: var(--atelier-glow-cyan-sm);
+}
+
+[data-atelier="nordic"] [role="checkbox"],
+[data-atelier="nordic"] [role="radio"] {
+  border-color: var(--bp-border-strong) !important;
+  background-color: var(--bp-surface-1) !important;
+}
+
+[data-atelier="nordic"] [role="checkbox"][data-state="checked"],
+[data-atelier="nordic"] [role="radio"][data-state="checked"] {
+  background-color: var(--atelier-cyan) !important;
+  border-color: var(--atelier-cyan) !important;
+  color: #051310 !important;
+}
+
+/* ─── 10. Toggle / ToggleGroup ──────────────────────────────────────────── */
+
+[data-atelier="nordic"] [data-state="off"][class*="toggle"],
+[data-atelier="nordic"] button[role="radio"][class*="toggle"] {
+  background-color: transparent;
+  color: var(--bp-text-secondary);
+  border: 1px solid var(--bp-border);
+}
+
+[data-atelier="nordic"] [data-state="on"][class*="toggle"] {
+  background-color: rgba(94, 234, 212, 0.06);
+  color: var(--atelier-cyan);
+  border-color: var(--atelier-cyan-line);
+}
+
+/* ─── 11. Badges — editorial tonalities ─────────────────────────────────── */
+
+[data-atelier="nordic"] [class*="badge"][class*="rounded"]:not(.atelier-card__badge):not(.pcard__chip) {
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: var(--bp-radius-pill);
+  background-color: var(--bp-surface-2);
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-secondary);
+}
+
+/* ─── 12. Progress — thin cinematic line ────────────────────────────────── */
+
+[data-atelier="nordic"] [role="progressbar"] {
+  height: 1.5px !important;
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+[data-atelier="nordic"] [role="progressbar"] > * {
+  background-color: var(--atelier-cyan) !important;
+  box-shadow: 0 0 6px var(--atelier-cyan-glow);
+}
+
+/* ─── 13. Skeleton — atmospheric shimmer ────────────────────────────────── */
+
+[data-atelier="nordic"] [class*="skeleton"],
+[data-atelier="nordic"] [class*="animate-pulse"] {
+  background: linear-gradient(
+    90deg,
+    var(--bp-surface-1) 0%,
+    var(--bp-surface-2) 50%,
+    var(--bp-surface-1) 100%
+  );
+  background-size: 200% 100%;
+  animation: atelier-shimmer 1.6s ease-in-out infinite;
+  border-radius: var(--bp-radius-sm);
+}
+
+@keyframes atelier-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ─── 14. Toaster (sonner) — editorial whisper ──────────────────────────── */
+
+[data-atelier="nordic"] [data-sonner-toaster] [data-sonner-toast],
+.bp-toast {
+  background-color: var(--bp-surface-1) !important;
+  border: 1px solid var(--bp-border-strong) !important;
+  color: var(--bp-text-primary) !important;
+  font-family: var(--atelier-sans) !important;
+  border-radius: var(--bp-radius-md) !important;
+  box-shadow: var(--bp-shadow-md) !important;
+}
+
+[data-atelier="nordic"] [data-sonner-toast][data-type="success"] {
+  border-color: var(--atelier-cyan-line) !important;
+}
+
+/* ─── 15. Pagination ────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] nav[role="navigation"][aria-label*="pagination" i] a,
+[data-atelier="nordic"] nav[role="navigation"][aria-label*="pagination" i] button {
+  color: var(--bp-text-secondary);
+  border: 1px solid var(--bp-border);
+  background-color: transparent;
+  border-radius: var(--bp-radius-sm);
+  font-family: var(--atelier-sans);
+  font-size: 12px;
+  transition: all var(--bp-dur-quick) var(--bp-ease-soft);
+}
+
+[data-atelier="nordic"] nav[role="navigation"][aria-label*="pagination" i] [aria-current="page"] {
+  background-color: rgba(94, 234, 212, 0.06);
+  border-color: var(--atelier-cyan-line);
+  color: var(--bp-text-headline);
+}
+
+/* ─── 16. Separator / hr ────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] hr,
+[data-atelier="nordic"] [role="separator"] {
+  background-color: var(--bp-border-soft);
+  border: none;
+}
+
+/* ─── 17. Focus rings — global cyan ─────────────────────────────────────── */
+
+[data-atelier="nordic"] *:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--bp-bg), 0 0 0 4px var(--atelier-cyan-line);
+  border-radius: var(--bp-radius-sm);
+}
+
+/* ─── 18. Disabled state — uniform restraint ────────────────────────────── */
+
+[data-atelier="nordic"] :disabled,
+[data-atelier="nordic"] [aria-disabled="true"] {
+  opacity: 0.42;
+  cursor: not-allowed !important;
+}
+
+/* ─── 19. Selection / Caret — cyan signature ────────────────────────────── */
+
+[data-atelier="nordic"] input,
+[data-atelier="nordic"] textarea {
+  caret-color: var(--atelier-cyan);
+}
+
+/* ─── 20. Empty states — editorial silence ──────────────────────────────── */
+
+[data-atelier="nordic"] .atelier-empty {
+  text-align: center;
+  padding: 96px 32px;
+  color: var(--bp-text-faint);
+}
+
+[data-atelier="nordic"] .atelier-empty__title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 26px;
+  color: var(--bp-text-headline);
+  letter-spacing: var(--atelier-track-tight);
+  margin: 22px 0 12px;
+  line-height: 1.2;
+}
+
+[data-atelier="nordic"] .atelier-empty__sub {
+  font-family: var(--atelier-sans);
+  font-size: 13px;
+  color: var(--bp-text-secondary);
+  max-width: 52ch;
+  margin: 0 auto 28px;
+  line-height: 1.65;
+}
+
+/* ─── 21. Page container — editorial canvas defaults ────────────────────── */
+
+[data-atelier="nordic"] .atelier-page {
+  min-height: 100%;
+  background: var(--bp-bg);
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+  padding: 56px 64px 80px;
+}
+
+[data-atelier="nordic"] .atelier-page__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+[data-atelier="nordic"] .atelier-page__eyebrow {
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--atelier-cyan);
+  margin: 0 0 14px;
+}
+
+[data-atelier="nordic"] .atelier-page__title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--atelier-fs-display);
+  line-height: var(--atelier-lh-tight);
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+  margin: 0;
+}
+
+[data-atelier="nordic"] .atelier-page__sub {
+  font-family: var(--atelier-sans);
+  font-size: 13px;
+  color: var(--bp-text-secondary);
+  margin: 12px 0 0;
+  max-width: 60ch;
+  line-height: 1.65;
+}
+
+[data-atelier="nordic"] .atelier-page__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1100px) {
+  [data-atelier="nordic"] .atelier-page {
+    padding: 44px 36px 60px;
+  }
+}
+
+@media (max-width: 720px) {
+  [data-atelier="nordic"] .atelier-page {
+    padding: 32px 20px 56px;
+  }
+}
+
+/* ─── 22. Legacy escape hatch — neutralize hard-coded white surfaces ─────
+ *  Some legacy pages still ship inline bg-white / text-black; this catches
+ *  the most common Tailwind escapes so they don't punch a hole in the
+ *  Nordic atmosphere. Page-level refactors will remove the need over time.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .bg-white {
+  background-color: var(--bp-surface-1) !important;
+  color: var(--bp-text-primary);
+}
+
+[data-atelier="nordic"] .text-black {
+  color: var(--bp-text-headline) !important;
+}
+
+[data-atelier="nordic"] .border-gray-200,
+[data-atelier="nordic"] .border-gray-300,
+[data-atelier="nordic"] .border-gray-100 {
+  border-color: var(--bp-border) !important;
+}
+
+/* ─── 23. Editorial Modal — reusable luxury dialog shell ────────────────── */
+
+.atelier-modal {
+  background-color: var(--bp-surface-1);
+  border: 1px solid var(--bp-border-strong);
+  border-radius: var(--bp-radius-lg);
+  width: 100%;
+  max-width: 560px;
+  box-shadow: var(--bp-shadow-lg);
+  color: var(--bp-text-primary);
+  overflow: hidden;
+  animation: atelier-fade-in var(--bp-dur-base) var(--bp-ease-cinema) both;
+}
+
+.atelier-modal--lg { max-width: 760px; }
+.atelier-modal--xl { max-width: 960px; }
+
+.atelier-modal__head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 28px 18px;
+  border-bottom: 1px solid var(--bp-border-soft);
+}
+
+.atelier-modal__title {
+  font-family: var(--atelier-serif);
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+  margin: 0;
+}
+.atelier-modal__title em { font-style: italic; }
+
+.atelier-modal__close {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--bp-text-muted);
+  font-size: 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all var(--bp-dur-quick) var(--bp-ease-soft);
+}
+.atelier-modal__close:hover {
+  color: var(--bp-text-headline);
+  background: var(--bp-surface-2);
+  border-color: var(--bp-border);
+}
+
+.atelier-modal__body {
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.atelier-modal__foot {
+  display: flex; justify-content: flex-end; gap: 10px;
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+/* ─── 24. Editorial Field — reusable form pattern ───────────────────────── */
+
+.atelier-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.atelier-field__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.atelier-field__label {
+  font-family: var(--atelier-sans);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: var(--atelier-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+  line-height: 1;
+}
+
+.atelier-field__input {
+  width: 100%;
+  background-color: var(--bp-bg-soft);
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+  font-size: 13.5px;
+  padding: 10px 12px;
+  border-radius: var(--bp-radius-sm);
+  transition: border-color var(--bp-dur-quick) var(--bp-ease-soft),
+              box-shadow var(--bp-dur-base) var(--bp-ease-cinema);
+  caret-color: var(--atelier-cyan);
+}
+.atelier-field__input:hover { border-color: var(--bp-border-strong); }
+.atelier-field__input:focus {
+  outline: none;
+  border-color: var(--atelier-cyan-line);
+  box-shadow: 0 0 0 3px var(--atelier-cyan-glow);
+}
+.atelier-field__input::placeholder {
+  color: var(--bp-text-faint);
+  font-style: italic;
+}
+.atelier-field__input--area {
+  resize: vertical;
+  min-height: 90px;
+  font-family: var(--atelier-sans);
+  line-height: 1.55;
+}
+
+@media (max-width: 720px) {
+  .atelier-field__grid { grid-template-columns: 1fr; }
+  .atelier-modal__head { padding: 18px 20px 14px; }
+  .atelier-modal__body { padding: 18px 20px; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 25. CRM — Relationship Intelligence Lounge™ (Atelier overrides)
+ *    Goal: not a sales pipeline tool — a quiet space for conversations,
+ *    memory, trust, design advisory.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .crm-page {
+  background: var(--bp-bg);
+  position: relative;
+}
+
+[data-atelier="nordic"] .crm-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 480px at 8% -10%, rgba(94,234,212,0.035), transparent 60%),
+    radial-gradient(700px 420px at 100% 0%, rgba(94,234,212,0.02), transparent 55%);
+  z-index: 0;
+}
+
+[data-atelier="nordic"] .crm-page > * { position: relative; z-index: 1; }
+
+[data-atelier="nordic"] .crm-hero {
+  padding: 64px 56px 36px;
+  border-bottom: 1px solid var(--bp-border-soft);
+}
+
+[data-atelier="nordic"] .crm-hero__eyebrow {
+  color: var(--atelier-cyan);
+  letter-spacing: var(--atelier-track-eyebrow);
+  font-family: var(--atelier-sans);
+  font-weight: 500;
+  font-size: 10px;
+}
+
+[data-atelier="nordic"] .crm-hero__title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(36px, 3.4vw, 54px);
+  line-height: 1.05;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+  max-width: 24ch;
+}
+
+[data-atelier="nordic"] .crm-hero__lead {
+  font-family: var(--atelier-sans);
+  font-style: normal;
+  font-size: 14.5px;
+  line-height: var(--atelier-lh-relaxed);
+  color: var(--bp-text-secondary);
+  max-width: 64ch;
+}
+
+[data-atelier="nordic"] .crm-hero__lead strong {
+  color: var(--bp-text-headline);
+  font-weight: 500;
+}
+
+/* Tabs — flatten the SaaS pills into editorial underline */
+[data-atelier="nordic"] .crm-tabs {
+  padding: 20px 56px 0;
+  gap: 4px;
+  border-bottom: 1px solid var(--bp-border-soft);
+}
+
+[data-atelier="nordic"] .crm-tab {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 12px 16px;
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted);
+  position: relative;
+  transition: color var(--bp-dur-quick) var(--bp-ease-soft);
+}
+
+[data-atelier="nordic"] .crm-tab:hover {
+  background: transparent;
+  color: var(--bp-text-primary);
+  border-color: transparent;
+}
+
+[data-atelier="nordic"] .crm-tab.is-active {
+  background: transparent;
+  color: var(--bp-text-headline);
+  border-color: transparent;
+}
+
+[data-atelier="nordic"] .crm-tab.is-active::after {
+  content: '';
+  position: absolute;
+  left: 16px; right: 16px; bottom: -1px;
+  height: 1.5px;
+  background: var(--atelier-cyan);
+  box-shadow: 0 0 6px var(--atelier-cyan-glow);
+}
+
+[data-atelier="nordic"] .crm-tab-helper {
+  padding: 14px 56px 0;
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--bp-text-faint);
+  max-width: 64ch;
+}
+
+/* Pulse strip — editorial numeric */
+[data-atelier="nordic"] .crm-pulse {
+  padding: 24px 56px 8px;
+  gap: 48px;
+}
+
+[data-atelier="nordic"] .crm-pulse__num {
+  font-family: var(--atelier-sans);
+  font-feature-settings: 'tnum';
+  font-variant-numeric: tabular-nums;
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--bp-text-headline);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+[data-atelier="nordic"] .crm-pulse__lbl {
+  font-size: 9.5px;
+  letter-spacing: var(--atelier-track-eyebrow);
+  color: var(--bp-text-faint);
+  font-weight: 500;
+}
+
+/* Toolbar — recessed glass tray */
+[data-atelier="nordic"] .crm-toolbar {
+  padding: 28px 56px 16px;
+}
+
+[data-atelier="nordic"] .crm-toolbar__search {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-pill);
+  color: var(--bp-text-secondary);
+  padding: 9px 16px;
+  transition: border-color var(--bp-dur-quick) var(--bp-ease-soft);
+}
+
+[data-atelier="nordic"] .crm-toolbar__search:focus-within {
+  border-color: var(--atelier-cyan-line);
+  box-shadow: 0 0 0 3px var(--atelier-cyan-glow);
+}
+
+[data-atelier="nordic"] .crm-toolbar__search input {
+  font-family: var(--atelier-sans);
+  font-size: 13px;
+  color: var(--bp-text-primary);
+  background: transparent;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0;
+}
+[data-atelier="nordic"] .crm-toolbar__search input:focus {
+  box-shadow: none !important;
+}
+
+[data-atelier="nordic"] .crm-view-toggle {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-pill);
+  overflow: hidden;
+}
+
+[data-atelier="nordic"] .crm-view-toggle button {
+  color: var(--bp-text-muted);
+  border-left: 1px solid var(--bp-border);
+  padding: 8px 12px;
+}
+[data-atelier="nordic"] .crm-view-toggle button:first-child { border-left: 0; }
+[data-atelier="nordic"] .crm-view-toggle button.is-active {
+  background: rgba(94, 234, 212, 0.08);
+  color: var(--atelier-cyan);
+}
+
+/* CRM Buttons — primary = cyan pill */
+[data-atelier="nordic"] .crm-btn {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 9px 16px;
+  border-radius: var(--bp-radius-pill);
+  transition: all var(--bp-dur-quick) var(--bp-ease-soft),
+              box-shadow var(--bp-dur-base) var(--bp-ease-cinema);
+}
+
+[data-atelier="nordic"] .crm-btn:hover:not(:disabled) {
+  border-color: var(--bp-border-strong);
+}
+
+[data-atelier="nordic"] .crm-btn--primary {
+  background: var(--atelier-cyan);
+  color: #051310;
+  border-color: var(--atelier-cyan);
+  box-shadow: var(--atelier-glow-cyan-sm);
+}
+
+[data-atelier="nordic"] .crm-btn--primary:hover:not(:disabled) {
+  background: var(--atelier-cyan-soft);
+  box-shadow: var(--atelier-glow-cyan);
+  transform: translateY(-1px);
+  opacity: 1;
+}
+
+[data-atelier="nordic"] .crm-btn--ghost {
+  background: transparent;
+  border-color: var(--bp-border);
+  color: var(--bp-text-secondary);
+}
+[data-atelier="nordic"] .crm-btn--ghost:hover {
+  background: var(--bp-surface-1);
+  color: var(--bp-text-headline);
+}
+
+/* Account Cards — editorial relationship cards */
+[data-atelier="nordic"] .crm-cards {
+  padding: 20px 56px 64px;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 18px;
+}
+
+[data-atelier="nordic"] .crm-card {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-lg);
+  padding: 24px 24px 20px;
+  transition: border-color var(--bp-dur-base) var(--bp-ease-cinema),
+              transform var(--bp-dur-base) var(--bp-ease-cinema),
+              box-shadow var(--bp-dur-base) var(--bp-ease-cinema);
+}
+
+[data-atelier="nordic"] .crm-card:hover {
+  border-color: var(--bp-border-strong);
+  transform: translateY(-2px);
+  box-shadow: var(--bp-shadow-md);
+}
+
+[data-atelier="nordic"] .crm-card__name {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 19px;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+  margin: 0 0 4px;
+}
+
+[data-atelier="nordic"] .crm-card__type {
+  font-family: var(--atelier-sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--bp-text-faint);
+}
+
+[data-atelier="nordic"] .crm-card__contact {
+  font-size: 12.5px;
+  color: var(--bp-text-secondary);
+}
+
+[data-atelier="nordic"] .crm-card__contact-name {
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-serif);
+  font-style: italic;
+}
+
+[data-atelier="nordic"] .crm-card__contact-email {
+  color: var(--bp-text-faint);
+  font-family: var(--atelier-sans);
+  font-size: 11.5px;
+}
+
+[data-atelier="nordic"] .crm-card__foot {
+  padding-top: 14px;
+  border-top: 1px solid var(--bp-border-soft);
+}
+
+[data-atelier="nordic"] .crm-card__last {
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--bp-text-faint);
+}
+
+[data-atelier="nordic"] .crm-card__actions {
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-eyebrow);
+  color: var(--atelier-cyan);
+}
+
+/* Avatar — initials with brass→cyan tint */
+[data-atelier="nordic"] .crm-avatar {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 500;
+  background: var(--bp-surface-2) !important;
+  border: 1px solid var(--bp-border-strong) !important;
+  color: var(--bp-text-headline) !important;
+}
+
+/* Stage pill — silenced */
+[data-atelier="nordic"] .crm-stage-pill {
+  background: rgba(255, 255, 255, 0.015);
+  backdrop-filter: blur(8px);
+}
+
+[data-atelier="nordic"] .crm-stage-pill__label {
+  font-family: var(--atelier-sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--bp-text-primary);
+}
+
+/* Empty state — editorial silence */
+[data-atelier="nordic"] .crm-empty-state {
+  padding: 96px 56px 80px;
+  max-width: 64ch;
+}
+
+[data-atelier="nordic"] .crm-empty-state__eyebrow {
+  color: var(--atelier-cyan);
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  letter-spacing: var(--atelier-track-eyebrow);
+}
+
+[data-atelier="nordic"] .crm-empty-state__lead {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--bp-text-headline);
+  line-height: 1.25;
+  letter-spacing: var(--atelier-track-tight);
+}
+
+[data-atelier="nordic"] .crm-empty-state__hint {
+  font-family: var(--atelier-sans);
+  font-style: normal;
+  font-size: 13.5px;
+  color: var(--bp-text-secondary);
+  line-height: 1.65;
+}
+
+[data-atelier="nordic"] .crm-empty-state__cta-btn {
+  border: 1px solid var(--atelier-cyan-line);
+  color: var(--atelier-cyan);
+  padding: 12px 24px;
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  border-radius: var(--bp-radius-pill);
+  transition: all var(--bp-dur-quick) var(--bp-ease-soft),
+              box-shadow var(--bp-dur-base) var(--bp-ease-cinema);
+}
+
+[data-atelier="nordic"] .crm-empty-state__cta-btn:hover {
+  background: rgba(94, 234, 212, 0.06);
+  border-color: var(--atelier-cyan);
+  color: var(--atelier-cyan);
+  box-shadow: var(--atelier-glow-cyan-sm);
+}
+
+/* Table view */
+[data-atelier="nordic"] .crm-table-wrap { padding: 16px 56px 56px; }
+
+[data-atelier="nordic"] .crm-table thead th {
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-eyebrow);
+  color: var(--bp-text-faint);
+  border-bottom: 1px solid var(--bp-border);
+  padding: 14px 12px;
+}
+
+[data-atelier="nordic"] .crm-row:hover { background: rgba(255,255,255,0.018); }
+
+[data-atelier="nordic"] .crm-td {
+  border-bottom: 1px solid var(--bp-border-soft);
+  font-family: var(--atelier-sans);
+}
+
+[data-atelier="nordic"] .crm-row__name {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--bp-text-headline);
+  font-weight: 500;
+}
+
+[data-atelier="nordic"] .crm-row__contact {
+  font-family: var(--atelier-sans);
+  color: var(--bp-text-primary);
+}
+
+[data-atelier="nordic"] .crm-td--mono,
+[data-atelier="nordic"] .crm-row__type,
+[data-atelier="nordic"] .crm-row__contact-meta {
+  font-family: var(--atelier-sans) !important;
+  letter-spacing: 0.04em;
+}
+
+/* Filter selects */
+[data-atelier="nordic"] .rl-list-filters {
+  padding: 12px 56px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+[data-atelier="nordic"] .rl-list-filters select {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+  font-size: 12px;
+  border-radius: var(--bp-radius-pill);
+  padding: 8px 16px;
+}
+
+/* CRM Modal — uses the same atelier-modal vocabulary */
+[data-atelier="nordic"] .crm-modal-bg {
+  background: rgba(5, 5, 5, 0.78);
+  backdrop-filter: blur(8px);
+}
+
+[data-atelier="nordic"] .crm-modal {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border-strong);
+  border-radius: var(--bp-radius-lg);
+  max-width: 540px;
+  box-shadow: var(--bp-shadow-lg);
+  overflow: hidden;
+}
+
+[data-atelier="nordic"] .crm-modal__head {
+  border-bottom: 1px solid var(--bp-border-soft);
+  padding: 22px 28px 18px;
+}
+
+[data-atelier="nordic"] .crm-modal__eyebrow {
+  color: var(--atelier-cyan);
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  letter-spacing: var(--atelier-track-eyebrow);
+}
+
+[data-atelier="nordic"] .crm-modal__title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--bp-text-headline);
+  font-weight: 500;
+}
+
+[data-atelier="nordic"] .crm-modal__body {
+  padding: 22px 28px;
+  gap: 10px;
+}
+
+[data-atelier="nordic"] .crm-modal__foot {
+  background: transparent;
+  border-top: 1px solid var(--bp-border-soft);
+  padding: 16px 28px;
+  border-radius: 0;
+}
+
+[data-atelier="nordic"] .crm-label {
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-eyebrow);
+  color: var(--bp-text-faint);
+  margin: 8px 0 4px;
+}
+
+[data-atelier="nordic"] .crm-input {
+  background: var(--bp-bg-soft);
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+  font-size: 13.5px;
+  border-radius: var(--bp-radius-sm);
+  padding: 10px 12px;
+  transition: border-color var(--bp-dur-quick) var(--bp-ease-soft),
+              box-shadow var(--bp-dur-base) var(--bp-ease-cinema);
+}
+
+[data-atelier="nordic"] .crm-input:focus {
+  border-color: var(--atelier-cyan-line);
+  box-shadow: 0 0 0 3px var(--atelier-cyan-glow);
+  outline: none;
+}
+
+/* Follow-up cards */
+[data-atelier="nordic"] .crm-followups {
+  padding: 20px 56px 56px;
+  gap: 10px;
+}
+
+[data-atelier="nordic"] .crm-followup {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-md);
+  padding: 16px 18px;
+}
+
+[data-atelier="nordic"] .crm-followup__title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--bp-text-headline);
+}
+
+[data-atelier="nordic"] .crm-followup__meta {
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  color: var(--bp-text-faint);
+  letter-spacing: 0.06em;
+}
+
+/* Account Detail Drawer (when used) */
+[data-atelier="nordic"] .adr-bg {
+  background: rgba(5, 5, 5, 0.78);
+  backdrop-filter: blur(8px);
+}
+[data-atelier="nordic"] .adr {
+  background: var(--bp-surface-1);
+  border-left: 1px solid var(--bp-border-strong);
+  box-shadow: var(--bp-shadow-lg);
+}
+[data-atelier="nordic"] .adr__title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 500;
+}
+[data-atelier="nordic"] .adr__eyebrow {
+  color: var(--atelier-cyan);
+  letter-spacing: var(--atelier-track-eyebrow);
+}
+[data-atelier="nordic"] .adr__tab.is-active {
+  background: rgba(94,234,212,0.06);
+  color: var(--atelier-cyan);
+  border-color: var(--atelier-cyan-line);
+}
+[data-atelier="nordic"] .adr__facts {
+  background: var(--bp-bg-soft);
+  border-bottom: 1px solid var(--bp-border-soft);
+}
+
+/* Mobile spacing */
+@media (max-width: 760px) {
+  [data-atelier="nordic"] .crm-hero { padding: 36px 22px 22px; }
+  [data-atelier="nordic"] .crm-tabs,
+  [data-atelier="nordic"] .crm-tab-helper,
+  [data-atelier="nordic"] .crm-pulse,
+  [data-atelier="nordic"] .crm-toolbar,
+  [data-atelier="nordic"] .crm-cards,
+  [data-atelier="nordic"] .crm-followups,
+  [data-atelier="nordic"] .crm-table-wrap,
+  [data-atelier="nordic"] .rl-list-filters,
+  [data-atelier="nordic"] .crm-empty-state {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 26. Inspirations — Curatorial Editorial Archive (Atelier overrides)
+ *    Goal: gallery system, material archive, collectible.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .ins-page {
+  background: var(--bp-bg);
+  background-image:
+    radial-gradient(900px 480px at 12% -8%, rgba(94,234,212,0.035), transparent 60%),
+    radial-gradient(700px 420px at 100% 0%, rgba(94,234,212,0.02), transparent 55%);
+  padding: 56px 56px 80px;
+}
+
+[data-atelier="nordic"] .ins-eyebrow {
+  color: var(--atelier-cyan);
+  font-family: var(--atelier-sans);
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-eyebrow);
+}
+
+[data-atelier="nordic"] .ins-title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+  line-height: 1.05;
+}
+
+[data-atelier="nordic"] .ins-lede {
+  font-family: var(--atelier-sans);
+  font-style: normal;
+  font-size: 14.5px;
+  line-height: var(--atelier-lh-relaxed);
+  color: var(--bp-text-secondary);
+  max-width: 64ch;
+}
+
+/* Search & filter pills */
+[data-atelier="nordic"] .ins-search {
+  background: var(--bp-surface-1);
+  border-color: var(--bp-border);
+}
+[data-atelier="nordic"] .ins-search:focus-within {
+  border-color: var(--atelier-cyan-line);
+  box-shadow: 0 0 0 3px var(--atelier-cyan-glow);
+}
+
+[data-atelier="nordic"] .ins-cta-primary {
+  background: var(--atelier-cyan);
+  color: #051310;
+  border-color: var(--atelier-cyan);
+  box-shadow: var(--atelier-glow-cyan-sm);
+}
+[data-atelier="nordic"] .ins-cta-primary:hover {
+  background: var(--atelier-cyan-soft);
+  color: #051310;
+  transform: translateY(-1px);
+  box-shadow: var(--atelier-glow-cyan);
+}
+
+[data-atelier="nordic"] .ins-filter-bar {
+  border-top: 1px solid var(--bp-border-soft);
+  border-bottom: 1px solid var(--bp-border-soft);
+}
+
+[data-atelier="nordic"] .ins-filter {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-secondary);
+}
+[data-atelier="nordic"] .ins-filter:hover,
+[data-atelier="nordic"] .ins-filter:focus {
+  border-color: var(--atelier-cyan-line);
+  color: var(--bp-text-headline);
+}
+
+/* Tabs — flatten to underline */
+[data-atelier="nordic"] .ins-tab {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 12px 16px;
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted);
+  position: relative;
+}
+[data-atelier="nordic"] .ins-tab:hover {
+  color: var(--bp-text-primary);
+  background: transparent;
+}
+[data-atelier="nordic"] .ins-tab--on {
+  background: transparent;
+  color: var(--bp-text-headline);
+  border-color: transparent;
+}
+[data-atelier="nordic"] .ins-tab--on::after {
+  content: '';
+  position: absolute;
+  left: 16px; right: 16px; bottom: -1px;
+  height: 1.5px;
+  background: var(--atelier-cyan);
+  box-shadow: 0 0 6px var(--atelier-cyan-glow);
+}
+
+/* Editorial card — luxury restraint */
+[data-atelier="nordic"] .ins-card {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-lg);
+  transition: border-color var(--bp-dur-base) var(--bp-ease-cinema),
+              transform var(--bp-dur-base) var(--bp-ease-cinema),
+              box-shadow var(--bp-dur-base) var(--bp-ease-cinema);
+}
+[data-atelier="nordic"] .ins-card:hover {
+  border-color: var(--bp-border-strong);
+  box-shadow: var(--bp-shadow-md);
+  transform: translateY(-2px);
+}
+
+[data-atelier="nordic"] .ins-card__title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+  font-size: 13px;
+}
+
+[data-atelier="nordic"] .ins-card__desc {
+  font-family: var(--atelier-sans);
+  font-size: 10.5px;
+  color: var(--bp-text-faint);
+}
+
+[data-atelier="nordic"] .ins-chip {
+  font-family: var(--atelier-sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: rgba(5, 5, 5, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: var(--bp-text-headline);
+  backdrop-filter: blur(8px);
+}
+[data-atelier="nordic"] .ins-chip--atmos {
+  background: rgba(94, 234, 212, 0.10);
+  border-color: var(--atelier-cyan-line);
+  color: var(--atelier-cyan);
+}
+
+[data-atelier="nordic"] .ins-empty {
+  border-color: var(--bp-border);
+  background: transparent;
+}
+[data-atelier="nordic"] .ins-empty__title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  color: var(--bp-text-headline);
+}
+
+/* Modals */
+[data-atelier="nordic"] .ins-backdrop {
+  background: rgba(5, 5, 5, 0.78);
+  backdrop-filter: blur(8px);
+}
+[data-atelier="nordic"] .ins-modal {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border-strong);
+  border-radius: var(--bp-radius-lg);
+  box-shadow: var(--bp-shadow-lg);
+}
+[data-atelier="nordic"] .ins-modal__title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+}
+[data-atelier="nordic"] .ins-modal__lede {
+  font-family: var(--atelier-sans);
+  color: var(--bp-text-secondary);
+}
+
+[data-atelier="nordic"] .ins-input,
+[data-atelier="nordic"] .ins-textarea {
+  background: var(--bp-bg-soft);
+  border-color: var(--bp-border);
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+}
+[data-atelier="nordic"] .ins-input:focus,
+[data-atelier="nordic"] .ins-textarea:focus {
+  border-color: var(--atelier-cyan-line);
+  box-shadow: 0 0 0 3px var(--atelier-cyan-glow);
+}
+
+[data-atelier="nordic"] .ins-label {
+  font-family: var(--atelier-sans);
+  font-weight: 500;
+  color: var(--bp-text-faint);
+  letter-spacing: var(--atelier-track-eyebrow);
+}
+
+[data-atelier="nordic"] .ins-btn {
+  background: transparent;
+  border-color: var(--bp-border);
+  color: var(--bp-text-secondary);
+  font-family: var(--atelier-sans);
+  border-radius: var(--bp-radius-pill);
+}
+[data-atelier="nordic"] .ins-btn:hover:not(:disabled) {
+  border-color: var(--bp-border-strong);
+  color: var(--bp-text-headline);
+}
+[data-atelier="nordic"] .ins-btn--primary {
+  background: var(--atelier-cyan);
+  color: #051310;
+  border-color: var(--atelier-cyan);
+  box-shadow: var(--atelier-glow-cyan-sm);
+}
+[data-atelier="nordic"] .ins-btn--primary:hover:not(:disabled) {
+  background: var(--atelier-cyan-soft);
+  color: #051310;
+  box-shadow: var(--atelier-glow-cyan);
+}
+
+/* Detail drawer */
+[data-atelier="nordic"] .insd-backdrop {
+  background: rgba(5, 5, 5, 0.82);
+  backdrop-filter: blur(12px);
+}
+[data-atelier="nordic"] .insd-drawer { background: var(--bp-bg); }
+[data-atelier="nordic"] .insd-panel {
+  background: var(--bp-surface-1);
+  border-left: 1px solid var(--bp-border-strong);
+}
+[data-atelier="nordic"] .insd-title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+}
+[data-atelier="nordic"] .insd-desc,
+[data-atelier="nordic"] .insd-quiet {
+  font-family: var(--atelier-sans);
+  font-style: normal;
+  color: var(--bp-text-secondary);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 27. Brand Atlas™ — curatorial gallery system (BrandMode + BrandDetail)
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .bm-root,
+[data-atelier="nordic"] .bd-root {
+  background: var(--bp-bg);
+  max-width: 1440px;
+  padding: 56px 56px 80px;
+  position: relative;
+}
+
+[data-atelier="nordic"] .bm-root::before,
+[data-atelier="nordic"] .bd-root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(800px 460px at 10% -8%, rgba(94,234,212,0.03), transparent 60%);
+}
+
+[data-atelier="nordic"] .bm-hero,
+[data-atelier="nordic"] .bd-hero {
+  border-bottom: 1px solid var(--bp-border-soft);
+  padding-bottom: 28px;
+}
+
+[data-atelier="nordic"] .bm-hero__eyebrow,
+[data-atelier="nordic"] .bd-hero__eyebrow,
+[data-atelier="nordic"] .bd-section__eyebrow {
+  color: var(--atelier-cyan);
+  font-family: var(--atelier-sans);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: var(--atelier-track-eyebrow);
+}
+
+[data-atelier="nordic"] .bm-hero__title,
+[data-atelier="nordic"] .bd-hero__title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(36px, 3.6vw, 54px);
+  line-height: 1.05;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+}
+[data-atelier="nordic"] .bm-hero__title em {
+  font-style: italic;
+  color: var(--atelier-cyan);
+}
+
+[data-atelier="nordic"] .bm-hero__lead,
+[data-atelier="nordic"] .bd-hero__lead {
+  font-family: var(--atelier-sans);
+  font-size: 14px;
+  line-height: var(--atelier-lh-relaxed);
+  color: var(--bp-text-secondary);
+}
+
+[data-atelier="nordic"] .bm-search {
+  background: var(--bp-surface-1);
+  border-color: var(--bp-border);
+}
+[data-atelier="nordic"] .bm-search:focus-within {
+  border-color: var(--atelier-cyan-line);
+  box-shadow: 0 0 0 3px var(--atelier-cyan-glow);
+}
+
+[data-atelier="nordic"] .bm-facet {
+  background: var(--bp-surface-1);
+  border-color: var(--bp-border);
+  color: var(--bp-text-secondary);
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+[data-atelier="nordic"] .bm-facet:hover {
+  border-color: var(--bp-border-strong);
+  color: var(--bp-text-headline);
+}
+[data-atelier="nordic"] .bm-facet.is-on {
+  border-color: var(--atelier-cyan-line);
+  color: var(--atelier-cyan);
+  background: rgba(94, 234, 212, 0.06);
+}
+
+/* Brand card — collectible */
+[data-atelier="nordic"] .bm-card {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-lg);
+  transition: border-color var(--bp-dur-base) var(--bp-ease-cinema),
+              transform var(--bp-dur-base) var(--bp-ease-cinema),
+              box-shadow var(--bp-dur-base) var(--bp-ease-cinema);
+}
+[data-atelier="nordic"] .bm-card:hover {
+  border-color: var(--bp-border-strong);
+  transform: translateY(-2px);
+  box-shadow: var(--bp-shadow-md);
+}
+[data-atelier="nordic"] .bm-card::before { background: var(--atelier-cyan); }
+
+[data-atelier="nordic"] .bm-card__logo {
+  background: var(--bp-surface-2);
+  border-color: var(--bp-border-strong);
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  color: var(--bp-text-headline);
+}
+
+[data-atelier="nordic"] .bm-card__title h3 {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--bp-text-headline);
+  letter-spacing: var(--atelier-track-tight);
+}
+
+[data-atelier="nordic"] .bm-card__title p {
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+}
+
+[data-atelier="nordic"] .bm-tag,
+[data-atelier="nordic"] .bm-chip {
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  background: transparent;
+  border-color: var(--bp-border);
+  color: var(--bp-text-secondary);
+}
+[data-atelier="nordic"] .bm-tag--luxury {
+  color: var(--atelier-cyan);
+  border-color: var(--atelier-cyan-line);
+  background: rgba(94, 234, 212, 0.05);
+}
+[data-atelier="nordic"] .bm-chip--material {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-size: 11px;
+  color: var(--bp-text-headline);
+}
+
+[data-atelier="nordic"] .bm-card__counts {
+  font-family: var(--atelier-sans);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+  border-top: 1px solid var(--bp-border-soft);
+}
+
+[data-atelier="nordic"] .bm-card__cta {
+  color: var(--atelier-cyan);
+  font-family: var(--atelier-sans);
+  letter-spacing: var(--atelier-track-eyebrow);
+}
+
+[data-atelier="nordic"] .bm-empty h3 {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  color: var(--bp-text-headline);
+}
+[data-atelier="nordic"] .bm-empty__back {
+  border-color: var(--atelier-cyan-line);
+  color: var(--atelier-cyan);
+  font-family: var(--atelier-sans);
+}
+
+/* Brand Detail */
+[data-atelier="nordic"] .bd-hero__logo {
+  background: var(--bp-surface-2);
+  border-color: var(--bp-border-strong);
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  color: var(--bp-text-headline);
+}
+[data-atelier="nordic"] .bd-counts em {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  color: var(--bp-text-headline);
+}
+[data-atelier="nordic"] .bd-insight__marker {
+  color: var(--atelier-cyan);
+}
+[data-atelier="nordic"] .bd-insight p {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  color: var(--bp-text-headline);
+}
+[data-atelier="nordic"] .bd-section__head,
+[data-atelier="nordic"] .bd-hero,
+[data-atelier="nordic"] .bm-hero {
+  border-color: var(--bp-border-soft);
+}
+[data-atelier="nordic"] .bd-section__count {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  color: var(--bp-text-faint);
+}
+
+[data-atelier="nordic"] .bd-coll-card,
+[data-atelier="nordic"] .bd-tile__media,
+[data-atelier="nordic"] .bd-mb-card__cover {
+  background: var(--bp-surface-1);
+  border-color: var(--bp-border);
+  border-radius: var(--bp-radius-md);
+}
+[data-atelier="nordic"] .bd-coll-card:hover {
+  border-color: var(--bp-border-strong);
+}
+[data-atelier="nordic"] .bd-coll-card__title,
+[data-atelier="nordic"] .bd-tile__label,
+[data-atelier="nordic"] .bd-mb-card__title {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  color: var(--bp-text-headline);
+}
+
+[data-atelier="nordic"] .bd-jump {
+  background: transparent;
+  border-color: var(--bp-border);
+  color: var(--bp-text-secondary);
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+}
+[data-atelier="nordic"] .bd-jump:hover {
+  border-color: var(--atelier-cyan-line);
+  color: var(--atelier-cyan);
+  background: rgba(94, 234, 212, 0.04);
+}
+
+@media (max-width: 760px) {
+  [data-atelier="nordic"] .ins-page,
+  [data-atelier="nordic"] .bm-root,
+  [data-atelier="nordic"] .bd-root { padding: 32px 22px 56px; }
+}
