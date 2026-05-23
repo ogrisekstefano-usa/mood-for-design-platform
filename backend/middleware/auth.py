@@ -81,7 +81,7 @@ def get_current_user(request: Request) -> dict:
     client = db()
     result = (
         client.table('users_profile')
-        .select('id, tenant_id, role, email, first_name, last_name, avatar_url, status, auth_user_id')
+        .select('id, tenant_id, role, email, first_name, last_name, avatar_url, status, auth_user_id, is_root_superadmin')
         .eq('auth_user_id', auth_user_id).limit(1).execute()
     )
     if not result.data:
@@ -101,6 +101,8 @@ def get_current_user(request: Request) -> dict:
         'last_name': p.get('last_name') or '',
         'full_name': f"{p.get('first_name') or ''} {p.get('last_name') or ''}".strip() or (p.get('email') or '').split('@')[0],
         'avatar_url': p.get('avatar_url'),
+        # ITER143C · ROOT SUPERADMIN™ — source of truth is DB flag, NOT email.
+        'is_root_superadmin': bool(p.get('is_root_superadmin')),
     }
 
 
@@ -110,3 +112,14 @@ def require_roles(*roles):
             raise HTTPException(403, 'Insufficient permissions')
         return user
     return checker
+
+
+def require_root_superadmin(user: dict = Depends(get_current_user)) -> dict:
+    """ITER143C · Blueprint Command Center™ gate.
+
+    Only the platform ROOT SUPERADMIN (a single user with
+    `users_profile.is_root_superadmin = TRUE`) may pass.
+    """
+    if not user.get('is_root_superadmin'):
+        raise HTTPException(403, 'ROOT_SUPERADMIN required')
+    return user

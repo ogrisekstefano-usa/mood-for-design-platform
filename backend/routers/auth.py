@@ -37,6 +37,7 @@ def _profile_to_resp(p: dict) -> UserProfileResponse:
         avatar_url=p.get('avatar_url'),
         role=p.get('role', 'designer'),
         status=p.get('status'),
+        is_root_superadmin=bool(p.get('is_root_superadmin')),
     )
 
 

@@ -194,6 +194,9 @@ api_router.include_router(cultural_editions.router, tags=["cultural-editions"])
 # ITER143A+ · Dynamic Editorial Runtime™ — page bundle resolver + governance.
 from routers import editorial_runtime  # noqa: E402
 api_router.include_router(editorial_runtime.router, prefix="/content", tags=["editorial-runtime"])
+# ITER143C · Blueprint Command Center™ — ROOT SUPERADMIN governance API.
+from routers import blueprint_admin  # noqa: E402
+api_router.include_router(blueprint_admin.router, prefix="/blueprint-admin", tags=["blueprint-command-center"])
 
 
 @api_router.get("/health")

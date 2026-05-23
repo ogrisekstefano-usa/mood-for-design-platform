@@ -1,6 +1,38 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **Sprint ITER143C · BLUEPRINT COMMAND CENTER™ — ROOT GOVERNANCE FREEZE** · ✅ DELIVERED · 23 Feb 2026 · Centralizzata **TUTTA** la governance della piattaforma sotto `blueprint.moodfordesign.com/admin/*`, gated da nuovo ruolo **ROOT SUPERADMIN™** (utente unico `admin@moodfordesign.com`). Atterrate 6 Blocks (A→F) in un unico ciclo:
+
+  **A. Identity & Access Freeze** — Migration `073_root_superadmin_freeze.sql`: `users_profile.is_root_superadmin BOOL` + partial unique index `WHERE TRUE` (max 1 attivo). Provisioning idempotente via `backend/scripts/provision_root_superadmin.py` (legge `ROOT_SUPERADMIN_INITIAL_PASSWORD` da env, mai hardcoded in source). Helper `is_root_superadmin(user)` in `core/permissions.py` + nuovo dependency FastAPI `require_root_superadmin` (HTTP 403 `ROOT_SUPERADMIN required`). Email è canonical identity, MA source of truth è il flag DB.
+
+  **B. Route Consolidation Freeze** — Single canonical `/admin/*`. Hard redirect (`<Navigate>`) di `/superadmin`, `/superadmin/tenants[/:id]`, `/superadmin/modules`, `/superadmin/audit`, `/superadmin/languages`, `/admin/languages`, `/admin/language[/:tab]` → `/admin/*`. Nuovo wrapper `RootSuperAdminRoute` (App.js): `user.is_root_superadmin || redirect→/dashboard`. Blueprint Collaborator (super_admin classico) NON entra.
+
+  **C. Cinematic Admin Shell™** — `pages/admin/AdminShell.jsx` + `admin-shell.css` · black-glass deep `#050608` + 18px backdrop-blur, cyan accent `#7ce4f5` con bloom, Cormorant italic per titoli/values, Inter per body, JetBrains Mono per technical labels. Sidebar 240px con 8 sezioni + identity strip ROOT SUPERADMIN™. Linear/Raycast/cinematic terminal mood. NO Bootstrap, NO enterprise tables.
+
+  **D. Section Wiring** — Tenant Orchestration™, User Governance™ (con `effective_role` ROOT/BLUEPRINT/STUDIO/OPERATOR/CLIENT), Atelier Presets™ (frozen view), Language Governance™ (riusa LanguageCommandCenter).
+
+  **E. New Sections** — 5 nuove pagine end-to-end funzionanti:
+   1. **Dashboard Governance™** — live counters (1 tenant attivo, 4 utenti, 0 journey, 177 blocchi editoriali) + matrice copertura linguistica 6 locali (~94-95% across the board)
+   2. **Editorial Runtime™** (Narrative Orchestration™) — gruppi per namespace, source value italic, 6 cerchi per copertura locale, CTA "Ri-orchestra" per blocco
+   3. **Email Governance™** — sent/queued/failed/bounced metrics + event feed da `email_events` (estesa con `locale, user_id, opened_at, clicked_at, bounce_reason`). Provider integration → ITER143E
+   4. **Demo Governance™** — Restore Golden Snapshot™ deterministico (wipe runtime tables, preserve users + presets + locale + editorial runtime + tenant config + governance), audit log via nuova tabella `demo_snapshot_events`, conferma in 2 step
+   5. **Index page** — landing card con CTA
+
+  **F. Documentation + Tests** — `/app/memory/ITER143C_BLUEPRINT_GOVERNANCE.md` con sitemap completa, role matrix, route map, permissions map, new tables, new APIs, blockers, architectural notes. Pytest `test_iter143c_blueprint_governance.py` · **8/8 passed** (ROOT login, Blueprint Collaborator → HTTP 403, anonymous → HTTP 401/403, dashboard shape, demo status, DB unique constraint, redirect contract, editorial listing).
+
+  **Editorial copy via Dynamic Editorial Runtime™** — 77 blocchi auto-localizzati in 6 locali (it·en-US·en-GB·fr·de·es) sotto namespaces `admin.shell|dashboard|tenants|users|presets|editorial|email|demo|index|action`. ZERO stringhe hardcoded nella shell.
+
+  **Live verification (screenshots)**:
+  - Dashboard: "Mission Control · Lo stato vivo della piattaforma." + 4 metric cards + copertura linguistica 6 locale bars
+  - Demo: "Il Golden Demo Tenant. Sempre pronto a ripartire." + inventory + AVVIA RESTORE button
+  - Editorial Runtime: gruppi per namespace, ogni blocco con block_key/type/source/coverage dots/RI-ORCHESTRA CTA
+  - Users: role-distinguished table (ROOT shield icon su admin@moodfordesign.com)
+
+  **API endpoints** (tutti gated da `require_root_superadmin`): `GET /me`, `GET /dashboard`, `GET /tenants`, `GET /users`, `GET /presets`, `GET /editorial-runtime`, `POST /editorial-runtime/{id}/regenerate`, `GET /email-events`, `GET /demo/status`, `POST /demo/restore` — tutti sotto `/api/blueprint-admin/*`.
+
+  **Architettura ready for `studio.moodfordesign.com` Golden Tenant™**: `tenants.is_demo` flag + `demo_snapshot_events` audit log + Restore Golden Snapshot™ operativo. Quando il DNS arriverà, lo studio demo è già pristine.
+
+## 📌 Sprint Status (previous)
 - **Sprint ITER143A+ · DYNAMIC EDITORIAL RUNTIME™ — Phase 1-4** · ✅ DELIVERED · 23 Feb 2026 · Eradicato il modello "frontend con traduzioni statiche". Ogni stringa editoriale visibile su `/begin-journey` e `/professionals` è ora **DB-driven · locale-aware · auto-localized · tenant-aware-ready**. ZERO hardcoded content policy attiva sulle pagine pubbliche prioritarie. Le 4 fasi consegnate:
 
   **(1) FOUNDATION (DB)** — Migration `072_editorial_runtime.sql`. Due tabelle nuove:

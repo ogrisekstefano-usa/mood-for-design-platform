@@ -40,6 +40,7 @@ class UserProfileResponse(BaseModel):
     avatar_url: Optional[str] = None
     role: str
     status: Optional[str] = None
+    is_root_superadmin: Optional[bool] = False
 
 
 class AuthResponse(BaseModel):

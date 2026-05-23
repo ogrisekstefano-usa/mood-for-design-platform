@@ -126,6 +126,14 @@ const AdvisorNetworkAdminPage = lazy(() => import('./pages/admin/AdvisorNetworkA
 const AdvisorDetailPage = lazy(() => import('./pages/admin/AdvisorDetailPage'));
 const AdvisorDashboardPage = lazy(() => import('./pages/advisor/AdvisorDashboardPage'));
 
+// ITER143C · Blueprint Command Center™ — cinematic admin shell + 8 pages.
+const AdminShell = lazy(() => import('./pages/admin/AdminShell'));
+import {
+  AdminIndexPage, DashboardGovernancePage, TenantsGovernancePage,
+  UsersGovernancePage, PresetsGovernancePage, EditorialRuntimePage,
+  EmailGovernancePage, DemoGovernancePage,
+} from './pages/admin/BlueprintGovernancePages';
+
 const Loading = () => {
   // CinematicLoader rendered inside the cinematic canvas — replaces the
   // legacy spinner with editorial atmosphere (cyan pulse + italic Cormorant
@@ -194,6 +202,17 @@ const SuperAdminRoute = ({ children }) => {
   return (isSuperAdmin || synchronousSuperAdmin)
     ? children
     : <Navigate to="/dashboard" replace />;
+};
+
+// ITER143C · Blueprint Command Center™ — ROOT SUPERADMIN gate.
+// Source of truth is `user.is_root_superadmin` (loaded by /api/auth/me).
+// A regular super_admin (Blueprint Collaborator) CANNOT pass this gate.
+const RootSuperAdminRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return <Loading />;
+  if (!user) return <Navigate to="/auth/login" replace />;
+  if (!user.is_root_superadmin) return <Navigate to="/dashboard" replace />;
+  return children;
 };
 
 // Studio config routes (storefront editor, branding, domains, forms, plan, etc.)
@@ -411,10 +430,9 @@ function App() {
                   <Route path="/blueprint/voice" element={<StudioAdminRoute><BrandVoiceAdaptersPage /></StudioAdminRoute>} />
                   <Route path="/blueprint/studio-voice" element={<StudioAdminRoute><StudioVoicePage /></StudioAdminRoute>} />
                   <Route path="/blueprint/language" element={<StudioAdminRoute><LanguageCommandCenter /></StudioAdminRoute>} />
-                  {/* ITER133 · /admin aliases for the Language Command Center (Heatmap tab pre-selected). */}
-                  <Route path="/admin/language" element={<StudioAdminRoute><LanguageCommandCenter /></StudioAdminRoute>} />
-                  <Route path="/admin/language/heatmap" element={<StudioAdminRoute><LanguageCommandCenter initialTab="heatmap" /></StudioAdminRoute>} />
-                  <Route path="/admin/language/:tab" element={<StudioAdminRoute><LanguageCommandCenter /></StudioAdminRoute>} />
+                  {/* ITER143C · /admin/language → consolidated into /admin/language-governance under RootSuperAdmin shell. */}
+                  <Route path="/admin/language" element={<Navigate to="/admin/language-governance" replace />} />
+                  <Route path="/admin/language/:tab" element={<Navigate to="/admin/language-governance" replace />} />
 
                   {/* CRM routes (tab + optional account_id deep-link) */}
                   <Route path="/crm" element={<Navigate to="/crm/accounts" replace />} />
@@ -481,26 +499,35 @@ function App() {
                 {/* ADVISOR self-service — standalone surface, gated by API (advisor_profile lookup) */}
                 <Route path="/advisor" element={<ProtectedRoute><OSWrap><AdvisorDashboardPage /></OSWrap></ProtectedRoute>} />
 
-                <Route element={<SuperAdminRoute><AdminLayout /></SuperAdminRoute>}>                  <Route path="/admin" element={<AdminOverviewPage />} />
-                  <Route path="/admin/tenants" element={<AdminTenantsPage />} />
+                <Route element={<RootSuperAdminRoute><AdminShell /></RootSuperAdminRoute>}>
+                  {/* ITER143C · Blueprint Command Center™ — canonical /admin/* freeze */}
+                  <Route path="/admin" element={<AdminIndexPage />} />
+                  <Route path="/admin/dashboard" element={<DashboardGovernancePage />} />
+                  <Route path="/admin/tenants" element={<TenantsGovernancePage />} />
                   <Route path="/admin/tenants/:id" element={<AdminTenantDetailPage />} />
-                  <Route path="/admin/modules" element={<AdminModulesPage />} />
+                  <Route path="/admin/users" element={<UsersGovernancePage />} />
+                  <Route path="/admin/presets" element={<PresetsGovernancePage />} />
+                  <Route path="/admin/editorial-runtime" element={<EditorialRuntimePage />} />
+                  <Route path="/admin/email-governance" element={<EmailGovernancePage />} />
+                  <Route path="/admin/demo-governance" element={<DemoGovernancePage />} />
+                  {/* Language Governance — reuse existing surface within the new shell */}
+                  <Route path="/admin/language-governance" element={<LanguageCommandCenter />} />
+                  {/* Legacy admin surfaces (Blueprint Collaborator-only) still accessible
+                      under their original paths but mounted in the cinematic shell. */}
                   <Route path="/admin/audit" element={<AdminAuditPage />} />
-                  {/* Advisor Network — Partner Relationship system (SuperAdmin) */}
+                  <Route path="/admin/modules" element={<AdminModulesPage />} />
                   <Route path="/admin/advisors" element={<AdvisorNetworkAdminPage />} />
                   <Route path="/admin/advisors/:id" element={<AdvisorDetailPage />} />
-                  {/* New IA — superadmin-only platform internals */}
-                  <Route path="/admin/languages" element={<LanguagesPage />} />
-                  {/* /admin/pages REMOVED — legacy "Pagine" architecture deprecated */}
-                  {/* /superadmin/* aliases per Session-G architecture */}
-                  <Route path="/superadmin" element={<AdminOverviewPage />} />
-                  <Route path="/superadmin/tenants" element={<AdminTenantsPage />} />
-                  <Route path="/superadmin/tenants/:id" element={<AdminTenantDetailPage />} />
-                  <Route path="/superadmin/modules" element={<AdminModulesPage />} />
-                  <Route path="/superadmin/audit" element={<AdminAuditPage />} />
-                  <Route path="/superadmin/languages" element={<LanguagesPage />} />
-                  {/* /superadmin/pages REMOVED — legacy "Pagine" architecture deprecated */}
                 </Route>
+
+                {/* ITER143C · Deprecated /superadmin/* aliases → hard redirect to /admin/* */}
+                <Route path="/superadmin" element={<Navigate to="/admin" replace />} />
+                <Route path="/superadmin/tenants" element={<Navigate to="/admin/tenants" replace />} />
+                <Route path="/superadmin/tenants/:id" element={<Navigate to="/admin/tenants" replace />} />
+                <Route path="/superadmin/modules" element={<Navigate to="/admin/modules" replace />} />
+                <Route path="/superadmin/audit" element={<Navigate to="/admin/audit" replace />} />
+                <Route path="/superadmin/languages" element={<Navigate to="/admin/language-governance" replace />} />
+                <Route path="/admin/languages" element={<Navigate to="/admin/language-governance" replace />} />
 
                 {/* PUBLIC tenant routes — runtime composition via Blueprint engine */}
                 <Route path="/moodboard/share/:shareToken" element={<PublicMoodboardWrapper />} />

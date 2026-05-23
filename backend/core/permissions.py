@@ -131,3 +131,30 @@ def get_role_permissions(role: str) -> List[str]:
 
 def is_super_admin(role: str) -> bool:
     return role == "super_admin"
+
+
+# ── ROOT SUPERADMIN™ (ITER143C · Blueprint Command Center freeze) ────────────
+# `admin@moodfordesign.com` is canonical identity, BUT the source of truth
+# is the `users_profile.is_root_superadmin` flag. The DB enforces a
+# partial unique constraint so only ONE active root may exist.
+def is_root_superadmin(user: dict) -> bool:
+    """True if the resolved user holds the platform ROOT SUPERADMIN flag.
+
+    Reads exclusively from the user dict that `get_current_user` returns;
+    we never email-match. The middleware loads `is_root_superadmin` from
+    `users_profile` and stores it on the user dict.
+    """
+    if not user:
+        return False
+    return bool(user.get("is_root_superadmin")) is True
+
+
+# Convenience tuple for UI badges + admin role matrix.
+ROLE_HIERARCHY: List[str] = [
+    "root_superadmin",   # Blueprint Command Center™ root
+    "super_admin",       # Blueprint Collaborator (legacy super, no /admin/*)
+    "tenant_admin",      # Studio owner
+    "designer",          # Operator
+    "client",            # Client portal
+    "ad_partner",        # External partner (read-only)
+]
