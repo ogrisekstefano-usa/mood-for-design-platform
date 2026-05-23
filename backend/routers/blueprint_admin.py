@@ -242,6 +242,62 @@ def admin_editorial_regenerate(
 
 
 # ─── Email Governance ─────────────────────────────────────────────────
+@router.get("/email-events/{event_id}")
+def admin_email_event_detail(event_id: str,
+                              user: dict = Depends(require_root_superadmin)):
+    """Full event detail including metadata + preview payload."""
+    if not db_available():
+        raise HTTPException(503, "database unavailable")
+    rows = (db().table('email_events').select('*').eq('id', event_id)
+            .limit(1).execute().data or [])
+    if not rows:
+        raise HTTPException(404, "event not found")
+    return rows[0]
+
+
+@router.post("/email-events/resend-test")
+def admin_email_resend_test(payload: dict,
+                             user: dict = Depends(require_root_superadmin)):
+    """Send a test email — either re-running an event or sending a fresh
+    template render to a chosen recipient.
+
+    Payload:
+      {
+        "to":           "operator@example.com",
+        "template_key": "password_reset",       (optional, default 'generic')
+        "tenant_id":    "<uuid>",                (optional)
+        "source_host":  "studio.moodfordesign.com", (optional)
+        "context":      {…}                      (optional)
+      }
+    """
+    from services.email_service import send_template_email
+    to = (payload or {}).get("to")
+    if not to:
+        raise HTTPException(400, "`to` is required")
+    template_key = payload.get("template_key") or "generic"
+    tenant_id = payload.get("tenant_id")
+    source_host = payload.get("source_host") or "studio.moodfordesign.com"
+    context = payload.get("context") or {}
+    # Provide safe defaults so generic-template renders never crash.
+    context.setdefault("title", "MOOD for DESIGN™ · Test")
+    context.setdefault("body",
+        "Questa è una email di test inviata dal Blueprint Command Center™ "
+        "per verificare la consegna del provider. Se la stai leggendo, "
+        "Resend è correttamente configurato.")
+    context.setdefault("subject", context["title"])
+    context.setdefault("reset_url", "https://studio.moodfordesign.com/auth/login")
+    context.setdefault("accept_url", "https://studio.moodfordesign.com/auth/login")
+    context.setdefault("magic_url", "https://studio.moodfordesign.com/auth/login")
+    r = send_template_email(
+        to=to, template_key=template_key, context=context,
+        event_type=f"test.{template_key}",
+        tenant_id=tenant_id, user_id=user.get("profile_id"),
+        source_host=source_host,
+        metadata={"initiated_by": user.get("email"), "kind": "resend_test"},
+    )
+    return {"requested": True, **r}
+
+
 @router.get("/email-events")
 def admin_email_events(
     user: dict = Depends(require_root_superadmin),
@@ -254,8 +310,10 @@ def admin_email_events(
         return {"events": [], "count": 0}
     c = db()
     q = (c.table('email_events')
-         .select('id, tenant_id, event_type, recipient, subject, status, '
-                 'provider, locale, error, opened_at, clicked_at, created_at')
+         .select('id, tenant_id, event_type, template_key, recipient_email, '
+                 'recipient, subject, status, provider, provider_message_id, '
+                 'source_domain, locale, error, opened_at, clicked_at, '
+                 'bounced_at, failed_at, created_at')
          .order('created_at', desc=True).limit(limit))
     if tenant_id:
         q = q.eq('tenant_id', tenant_id)
@@ -281,7 +339,7 @@ def admin_demo_status(user: dict = Depends(require_root_superadmin)):
         return {"available": False}
     c = db()
     tenant_row = (c.table('tenants').select('id, slug, name, status, is_demo, default_locale_code')
-                  .eq('slug', 'mood-demo').limit(1).execute().data or [])
+                  .eq('slug', 'studio').limit(1).execute().data or [])
     if not tenant_row:
         return {"available": False, "reason": "demo_tenant_missing"}
     t = tenant_row[0]
@@ -324,7 +382,7 @@ def admin_demo_restore(user: dict = Depends(require_root_superadmin)):
         raise HTTPException(503, "database unavailable")
     c = db()
     tenant_row = (c.table('tenants').select('id, slug')
-                  .eq('slug', 'mood-demo').limit(1).execute().data or [])
+                  .eq('slug', 'studio').limit(1).execute().data or [])
     if not tenant_row:
         raise HTTPException(404, "demo tenant not found")
     tenant_id = tenant_row[0]['id']

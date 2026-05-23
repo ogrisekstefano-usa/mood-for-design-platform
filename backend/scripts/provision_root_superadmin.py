@@ -112,9 +112,10 @@ def provision() -> dict:
                 raise RuntimeError("Failed to extract auth user id from Supabase response")
             print(f"✓ Created auth.users for {ROOT_EMAIL}")
 
-        # Find the canonical platform tenant (mood-demo) to anchor the profile.
+        # Find the canonical Golden Demo Tenant™ (slug='studio' after
+        # ITER143D rename — previously 'mood-demo').
         tenant_row = (c.table('tenants').select('id, slug')
-                      .eq('slug', 'mood-demo').limit(1).execute().data or [])
+                      .eq('slug', 'studio').limit(1).execute().data or [])
         if not tenant_row:
             tenant_row = (c.table('tenants').select('id, slug')
                           .limit(1).execute().data or [])

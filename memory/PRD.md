@@ -1,6 +1,62 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **Sprint ITER143D · TENANT-AWARE EMAIL ORCHESTRATION™ + AUTH REDIRECT GOVERNANCE™** · ✅ DELIVERED · 23 Feb 2026 · Foundation per email white-label multi-tenant + redirect tenant-aware su tutto il SaaS. Risolve il problema critico architetturale: `forgot-password` non passava più dal Supabase default, ogni email è brandizzata + tracciata + cinematica.
+
+  **Migration `074_email_orchestration.sql`**:
+  - 🔄 Slug freeze: `UPDATE tenants SET slug='studio' WHERE slug='mood-demo'` (Golden Demo Tenant™ vive su `studio.moodfordesign.com`)
+  - 🆕 `tenant_email_settings` (tenant_id UNIQUE, sender_name/email, reply_to, support_email, logo_url, primary_color, accent_color, footer_signature, email_domain, provider_type, locale_default, active). Provider check: `resend|smtp_custom|sendgrid|postmark|ses|console`
+  - 🆕 `email_events` extension: `template_key, source_domain, provider_message_id, recipient_email, bounced_at, failed_at, updated_at` (+ legacy retained); backfill da legacy columns
+
+  **Backend services**:
+  - `services/auth_redirect.py` — `classify_origin`, `build_callback_url`, `build_tenant_url`, `resolve_email_context`, `parse_subdomain`. Reserved subdomain list. Strict in-family routing (mai cross-tenant fallback).
+  - `services/email_templates.py` — 7 template cinematici (`password_reset`, `invite`, `onboarding`, `lead_captured`, `magic_link`, `proposal_ready`, `generic`). Shared HTML shell con black-glass aesthetic, table-layout, inline CSS, branding cascade da `tenant_email_settings`.
+  - `services/email_service.py` — Single entrypoint `send_template_email()`. Drivers: `resend` (real send, async-friendly) + `console` (audit-only fallback). ALWAYS persiste `email_events` (audit-first design).
+  - `routers/auth.py · /forgot-password` — Tenant-aware recovery. Chiama Supabase Admin `generate_link?type=recovery` con `redirect_to = blueprint…/auth/callback?flow=recovery&origin={host}&next=/auth/reset-password`. Render cinematic via Resend. Audit log sempre. Response opaca per evitare enumeration.
+  - `routers/blueprint_admin.py` — `GET /email-events[?filter]`, `GET /email-events/{id}` detail, `POST /email-events/resend-test`. Tutti gated da `require_root_superadmin`.
+
+  **Frontend**:
+  - `pages/auth/AuthCallbackPage.jsx` — Bridge cinematic. Parse hash session, valida `origin`, bounce a subdomain corretto (SPA se same-origin, full nav se cross-origin con hand-over via URL fragment). NEVER lands on www/root.
+  - `pages/auth/ResetPasswordPage.jsx` — Install hash session, cinematic form, PUT Supabase `auth/v1/user` con nuova password.
+  - `EmailGovernancePage` extended — Test invio form (destinatario, template, source host), filtri status/event, detail modal con JSON payload completo.
+  - App.js: `/auth/callback`, `/auth/reset-password`, `/reset-password`, `/invite`, `/magic-link` routed.
+
+  **Provider config** (`backend/.env`):
+  ```
+  RESEND_API_KEY=re_…  (user-provided, real key)
+  EMAIL_PROVIDER=resend
+  EMAIL_FROM=MOOD for DESIGN™ <onboarding@resend.dev>  (TODO: swap a no-reply@mail.moodfordesign.com quando dominio verifica)
+  PLATFORM_ROOT_DOMAIN=moodfordesign.com
+  ```
+
+  **Strict redirect rules** (`_isAllowedHost`):
+  - studio → studio · blueprint → blueprint · format → format · *.preview.emergent → dev
+  - ❌ Mai www. ❌ Mai bare root ❌ Mai atelier.* (audit verificato: 0 hits)
+  - Supabase whitelist serve UN SOLO URL: `blueprint.moodfordesign.com/auth/callback` — il platform gestisce tutto il fan-out.
+
+  **Live verification**:
+  ```
+  POST /api/auth/forgot-password  Host: studio.moodfordesign.com  to: slabreality@gmail.com
+  → redirect_to_will_be: blueprint…/auth/callback?flow=recovery&origin=studio.moodfordesign.com&next=/auth/reset-password
+  → email_events row: status=sent · provider=resend · provider_message_id=abd6c803-f332-468a-… ·
+    source_domain=studio.moodfordesign.com · subject="MOOD for DESIGN™ · Reset della password"
+  ```
+
+  **Audit**:
+  - 0 occorrenze `atelier.moodfordesign` in source attiva
+  - `mood-demo` slug operativo rimosso (rimane solo in `074_…sql` migration + `seed_demo_users.py` auto-rename fallback)
+  - `provision_root_superadmin.py` aggiornato a `slug='studio'`
+
+  **Tests**: `test_iter143d_email_orchestration.py` · **9/9 passed**. Aggregate suite: **23/23** (ITER143A · 143C · 143D, no regression).
+
+  **Doc**: `/app/memory/ITER143D_EMAIL_ORCHESTRATION.md` (migration · services · UI · env · strict rules · tests · deferred · architectural notes).
+
+  **Deferred**:
+  - ITER143E · Webhook capture (opened_at/clicked_at/bounced_at) + editorial-runtime localization dei subject/body via i18n keys
+  - ITER143F · Inline template preview UI + retry/requeue button
+  - ITER144 · Custom SMTP per-tenant driver + DNS provisioning per `studio.moodfordesign.com`
+
+## 📌 Sprint Status (previous)
 - **Sprint ITER143C · BLUEPRINT COMMAND CENTER™ — ROOT GOVERNANCE FREEZE** · ✅ DELIVERED · 23 Feb 2026 · Centralizzata **TUTTA** la governance della piattaforma sotto `blueprint.moodfordesign.com/admin/*`, gated da nuovo ruolo **ROOT SUPERADMIN™** (utente unico `admin@moodfordesign.com`). Atterrate 6 Blocks (A→F) in un unico ciclo:
 
   **A. Identity & Access Freeze** — Migration `073_root_superadmin_freeze.sql`: `users_profile.is_root_superadmin BOOL` + partial unique index `WHERE TRUE` (max 1 attivo). Provisioning idempotente via `backend/scripts/provision_root_superadmin.py` (legge `ROOT_SUPERADMIN_INITIAL_PASSWORD` da env, mai hardcoded in source). Helper `is_root_superadmin(user)` in `core/permissions.py` + nuovo dependency FastAPI `require_root_superadmin` (HTTP 403 `ROOT_SUPERADMIN required`). Email è canonical identity, MA source of truth è il flag DB.

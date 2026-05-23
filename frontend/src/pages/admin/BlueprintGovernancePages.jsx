@@ -363,10 +363,46 @@ export const EditorialRuntimePage = () => {
 
 /* ── 7. Email Governance™ ────────────────────────────────────────── */
 export const EmailGovernancePage = () => {
-  const { data, loading, error } = useAdminFetch('/api/blueprint-admin/email-events');
-  if (loading) return <SpinnerBlock />;
+  const [filters, setFilters] = useState({ status: '', event_type: '' });
+  const qs = new URLSearchParams(
+    Object.entries(filters).filter(([, v]) => v).reduce((a, [k, v]) => ({ ...a, [k]: v }), {})
+  ).toString();
+  const path = `/api/blueprint-admin/email-events${qs ? '?' + qs : ''}`;
+  const { data, loading, error, refresh } = useAdminFetch(path);
+  const [detail, setDetail] = useState(null);
+  const [testForm, setTestForm] = useState({
+    to: '', template_key: 'password_reset',
+    source_host: 'studio.moodfordesign.com',
+  });
+  const [sending, setSending] = useState(false);
+
+  const openDetail = async (id) => {
+    try {
+      const r = await api.get(`/api/blueprint-admin/email-events/${id}`);
+      setDetail(r.data);
+    } catch (_) { toast.error('Detail unreachable.'); }
+  };
+
+  const sendTest = async (e) => {
+    e.preventDefault();
+    if (!testForm.to) { toast.error('Inserisci destinatario.'); return; }
+    setSending(true);
+    try {
+      const r = await api.post('/api/blueprint-admin/email-events/resend-test', testForm);
+      if (r.data.ok) {
+        toast(`Inviata (${r.data.provider}) — ${r.data.provider_message_id || 'logged'}`);
+      } else {
+        toast.error(`Provider error: ${r.data.error}`);
+      }
+      refresh();
+    } catch (_) { toast.error('Send failed.'); }
+    finally { setSending(false); }
+  };
+
+  if (loading && !data) return <SpinnerBlock />;
   const events = data?.events || [];
   const stats = data?.stats || {};
+
   return (
     <div data-testid="bp-page-email">
       <PageHeader
@@ -380,44 +416,158 @@ export const EmailGovernancePage = () => {
         <Metric label={<Label k="admin.email.metric.failed" />} value={stats.failed} />
         <Metric label={<Label k="admin.email.metric.bounced" />} value={stats.bounced} />
       </div>
-      {error && <div className="bp-empty">⚠ {error}</div>}
-      {events.length === 0 ? (
-        <div className="bp-empty"><Label k="admin.email.empty" /></div>
-      ) : (
-        <div className="bp-card" style={{ padding: 0 }}>
-          <table className="bp-table">
-            <thead>
-              <tr>
-                <th><Label k="admin.email.col.when" /></th>
-                <th><Label k="admin.email.col.event" /></th>
-                <th><Label k="admin.email.col.recipient" /></th>
-                <th><Label k="admin.email.col.subject" /></th>
-                <th><Label k="admin.email.col.status" /></th>
-              </tr>
-            </thead>
-            <tbody>
-              {events.map((e) => (
-                <tr key={e.id}>
-                  <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }}>
-                    {(e.created_at || '').slice(0, 16).replace('T', ' ')}
-                  </td>
-                  <td>{e.event_type}</td>
-                  <td>{e.recipient}</td>
-                  <td>{e.subject || '—'}</td>
-                  <td>
-                    <span className={'bp-pill ' + (e.status === 'sent' ? 'bp-pill--ok' : e.status === 'failed' ? 'bp-pill--fail' : 'bp-pill--warn')}>
-                      {e.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+      {/* Test send card */}
+      <section className="bp-section">
+        <h2 className="bp-section__title">Test invio</h2>
+        <form onSubmit={sendTest} className="bp-card"
+              style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr 1.4fr auto',
+                       gap: 10, alignItems: 'end' }}
+              data-testid="bp-email-test-form">
+          <FormField label="Destinatario"
+                     value={testForm.to}
+                     onChange={(v) => setTestForm({ ...testForm, to: v })}
+                     placeholder="operator@example.com"
+                     testId="bp-email-test-to" />
+          <FormSelect label="Template" value={testForm.template_key}
+                      onChange={(v) => setTestForm({ ...testForm, template_key: v })}
+                      options={[
+                        'password_reset', 'invite', 'onboarding',
+                        'lead_captured', 'magic_link', 'proposal_ready', 'generic',
+                      ]}
+                      testId="bp-email-test-template" />
+          <FormField label="Source host"
+                     value={testForm.source_host}
+                     onChange={(v) => setTestForm({ ...testForm, source_host: v })}
+                     placeholder="studio.moodfordesign.com"
+                     testId="bp-email-test-host" />
+          <button type="submit" disabled={sending} className="bp-btn"
+                  data-testid="bp-email-test-send">
+            {sending ? <Loader2 size={12} className="animate-spin" /> : '⏵'} Invia test
+          </button>
+        </form>
+      </section>
+
+      {/* Filters */}
+      <section className="bp-section">
+        <h2 className="bp-section__title">Eventi</h2>
+        <div className="bp-card" style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
+          <FormSelect label="Status" value={filters.status} compact
+                      onChange={(v) => setFilters({ ...filters, status: v })}
+                      options={['', 'sent', 'failed', 'queued', 'bounced']}
+                      testId="bp-email-filter-status" />
+          <FormSelect label="Event" value={filters.event_type} compact
+                      onChange={(v) => setFilters({ ...filters, event_type: v })}
+                      options={['', 'password_reset', 'invite', 'onboarding',
+                               'lead_captured', 'magic_link', 'test.password_reset',
+                               'test.invite', 'test.generic']}
+                      testId="bp-email-filter-event" />
         </div>
-      )}
+
+        {error && <div className="bp-empty">⚠ {error}</div>}
+        {events.length === 0 ? (
+          <div className="bp-empty"><Label k="admin.email.empty" /></div>
+        ) : (
+          <div className="bp-card" style={{ padding: 0 }}>
+            <table className="bp-table">
+              <thead>
+                <tr>
+                  <th><Label k="admin.email.col.when" /></th>
+                  <th><Label k="admin.email.col.event" /></th>
+                  <th><Label k="admin.email.col.recipient" /></th>
+                  <th>Origin</th>
+                  <th><Label k="admin.email.col.subject" /></th>
+                  <th><Label k="admin.email.col.status" /></th>
+                  <th>Provider</th>
+                </tr>
+              </thead>
+              <tbody>
+                {events.map((e) => (
+                  <tr key={e.id}
+                      onClick={() => openDetail(e.id)}
+                      style={{ cursor: 'pointer' }}
+                      data-testid={`bp-email-row-${e.id}`}>
+                    <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }}>
+                      {(e.created_at || '').slice(0, 16).replace('T', ' ')}
+                    </td>
+                    <td>{e.event_type}</td>
+                    <td>{e.recipient_email || e.recipient}</td>
+                    <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11,
+                                 color: 'var(--bp-cc-ink-mute)' }}>
+                      {e.source_domain || '—'}
+                    </td>
+                    <td>{e.subject || '—'}</td>
+                    <td>
+                      <span className={'bp-pill ' + (e.status === 'sent' ? 'bp-pill--ok' : e.status === 'failed' ? 'bp-pill--fail' : 'bp-pill--warn')}>
+                        {e.status}
+                      </span>
+                    </td>
+                    <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }}>
+                      {e.provider}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      {detail && <EmailEventDetailModal event={detail} onClose={() => setDetail(null)} />}
     </div>
   );
 };
+
+const FormField = ({ label, value, onChange, placeholder, testId }) => (
+  <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+    <span className="bp-page__eyebrow">{label}</span>
+    <input data-testid={testId} value={value || ''} placeholder={placeholder}
+           onChange={(e) => onChange(e.target.value)}
+           style={{ padding: '9px 11px', background: 'rgba(8,10,13,0.5)',
+                    border: '1px solid var(--bp-cc-border)',
+                    borderRadius: 7, color: 'var(--bp-cc-ink)', fontSize: 12 }} />
+  </label>
+);
+
+const FormSelect = ({ label, value, onChange, options, testId, compact }) => (
+  <label style={{ display: 'flex', flexDirection: 'column', gap: 6,
+                  minWidth: compact ? 180 : undefined }}>
+    <span className="bp-page__eyebrow">{label}</span>
+    <select data-testid={testId} value={value || ''}
+            onChange={(e) => onChange(e.target.value)}
+            style={{ padding: '9px 11px', background: 'rgba(8,10,13,0.5)',
+                     border: '1px solid var(--bp-cc-border)',
+                     borderRadius: 7, color: 'var(--bp-cc-ink)', fontSize: 12 }}>
+      {options.map((o) => <option key={o} value={o}>{o || '— any —'}</option>)}
+    </select>
+  </label>
+);
+
+const EmailEventDetailModal = ({ event, onClose }) => (
+  <div onClick={onClose}
+       style={{ position: 'fixed', inset: 0, zIndex: 99,
+                background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(8px)',
+                display: 'grid', placeItems: 'center', padding: 24 }}>
+    <div onClick={(e) => e.stopPropagation()}
+         className="bp-card"
+         style={{ maxWidth: 720, width: '100%', maxHeight: '82vh', overflow: 'auto' }}
+         data-testid="bp-email-detail">
+      <div className="bp-page__eyebrow">Email Event</div>
+      <h3 style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic',
+                   fontSize: 22, margin: '4px 0 18px' }}>
+        {event.subject || event.event_type}
+      </h3>
+      <pre style={{ fontSize: 11, fontFamily: 'JetBrains Mono, monospace',
+                    background: 'rgba(0,0,0,0.4)', padding: 14, borderRadius: 8,
+                    color: 'var(--bp-cc-ink-soft)',
+                    border: '1px solid var(--bp-cc-border)', overflow: 'auto' }}>
+        {JSON.stringify(event, null, 2)}
+      </pre>
+      <button onClick={onClose} className="bp-btn" style={{ marginTop: 16 }}
+              data-testid="bp-email-detail-close">Chiudi</button>
+    </div>
+  </div>
+);
 
 
 /* ── 8. Demo Governance™ ─────────────────────────────────────────── */

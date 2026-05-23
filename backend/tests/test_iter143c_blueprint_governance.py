@@ -72,7 +72,8 @@ def test_demo_status_available(root_token):
     assert r.status_code == 200
     j = r.json()
     assert j['available'] is True
-    assert j['tenant']['slug'] == 'mood-demo'
+    # ITER143D · slug rename mood-demo → studio
+    assert j['tenant']['slug'] == 'studio'
     assert j['tenant']['is_demo'] is True
     assert 'users' in j['inventory']
 

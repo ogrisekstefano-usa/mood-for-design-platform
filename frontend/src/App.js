@@ -23,6 +23,8 @@ const AdminLayout = lazy(() => import('./components/layout/AdminLayout'));
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
 const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage'));
+const AuthCallbackPage = lazy(() => import('./pages/auth/AuthCallbackPage'));
+const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage'));
 const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage'));
 const JourneyPulsePage = lazy(() => import('./pages/dashboard/JourneyPulsePage'));
 const AtelierDashboardPage = lazy(() => import('./pages/dashboard/AtelierDashboardPage'));
@@ -368,6 +370,13 @@ function App() {
                 <Route path="/auth/login" element={<OSWrap><PublicRoute><LoginPage /></PublicRoute></OSWrap>} />
                 <Route path="/auth/signup" element={<OSWrap><PublicRoute><SignupPage /></PublicRoute></OSWrap>} />
                 <Route path="/auth/forgot-password" element={<OSWrap><ForgotPasswordPage /></OSWrap>} />
+                {/* ITER143D · Auth Redirect Governance™ — single platform callback that bounces to the right tenant subdomain. */}
+                <Route path="/auth/callback" element={<AuthCallbackPage />} />
+                <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
+                {/* Legacy / convenience aliases */}
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/invite" element={<AuthCallbackPage />} />
+                <Route path="/magic-link" element={<AuthCallbackPage />} />
                 <Route path="/form/:slug" element={<LeadFormPage />} />
 
                 <Route element={<ProtectedRoute><StudioRoute><DashboardLayout /></StudioRoute></ProtectedRoute>}>

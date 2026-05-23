@@ -214,13 +214,95 @@ def logout():
 
 
 @router.post("/forgot-password")
-def forgot_password(body: ForgotPasswordRequest):
-    # Trigger Supabase password reset email (if SMTP configured in Supabase project)
-    url = f"{SUPABASE_URL}/auth/v1/recover"
+def forgot_password(body: ForgotPasswordRequest, request: Request):
+    """ITER143D · Tenant-aware password recovery.
+
+    The flow:
+      1. Look up the user's profile + tenant via the email (best-effort).
+      2. Generate a recovery `action_link` via Supabase Admin API with
+         `redirect_to = https://blueprint.moodfordesign.com/auth/callback?flow=recovery&origin={request_host}&next=/auth/reset-password`.
+      3. Render the cinematic `password_reset` template (tenant-branded
+         if `tenant_email_settings` exists) and deliver via Resend.
+      4. Log to `email_events` (always).
+
+    The response is opaque ("if the account exists…") to avoid email
+    enumeration. The DB lookup is for branding + audit, not for control flow.
+    """
+    from services.auth_redirect import build_callback_url, classify_origin
+    from services.email_service import send_template_email
+    from database import SUPABASE_SERVICE_ROLE_KEY  # imported lazily to avoid cycles
+
+    email = (body.email or "").lower().strip()
+    host = (request.headers.get("host") or "").lower()
+
+    # 1. Resolve tenant context (best effort, never blocks).
+    tenant_id = None
+    user_id = None
+    first_name = None
     try:
-        requests.post(url, json={"email": body.email.lower()},
-                      headers={"apikey": SUPABASE_ANON_KEY, "Content-Type": "application/json"},
-                      timeout=10)
+        if db_available():
+            rows = (db().table('users_profile')
+                    .select('id, tenant_id, first_name, email')
+                    .ilike('email', email).limit(1).execute().data or [])
+            if rows:
+                user_id    = rows[0]['id']
+                tenant_id  = rows[0].get('tenant_id')
+                first_name = rows[0].get('first_name')
     except Exception:
         pass
-    return {"message": "If the account exists, a reset email has been sent"}
+
+    # 2. Build the redirect_to (Blueprint callback → tenant resolution).
+    redirect_to = build_callback_url(host, "recovery",
+                                     next_path="/auth/reset-password")
+    action_link = None
+    try:
+        adm_url = f"{SUPABASE_URL}/auth/v1/admin/generate_link"
+        adm_headers = {
+            "apikey": SUPABASE_SERVICE_ROLE_KEY,
+            "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE_KEY}",
+            "Content-Type": "application/json",
+        }
+        r = requests.post(adm_url, headers=adm_headers, timeout=15, json={
+            "type": "recovery",
+            "email": email,
+            "options": {"redirect_to": redirect_to},
+        })
+        if r.status_code in (200, 201):
+            j = r.json()
+            action_link = (j.get("properties") or {}).get("action_link") or j.get("action_link")
+        else:
+            logger.warning("supabase generate_link recovery non-200: %s · %s",
+                           r.status_code, r.text[:200])
+    except Exception as e:
+        logger.warning("supabase generate_link failed: %s", e)
+
+    if action_link:
+        # 3. Cinematic branded email via Resend.
+        send_template_email(
+            to=email,
+            template_key="password_reset",
+            context={
+                "first_name":  first_name,
+                "reset_url":   action_link,
+                "origin_host": host,
+            },
+            event_type="password_reset",
+            tenant_id=tenant_id,
+            user_id=user_id,
+            source_host=host,
+            metadata={"origin_kind": classify_origin(host)},
+        )
+    else:
+        # Action link unavailable — log a queued/failed event so the
+        # governance UI surfaces the issue, but always return 200.
+        send_template_email(
+            to=email, template_key="password_reset",
+            context={"first_name": first_name, "reset_url": "",
+                     "origin_host": host},
+            event_type="password_reset_attempt_no_link",
+            tenant_id=tenant_id, user_id=user_id, source_host=host,
+            metadata={"reason": "supabase_generate_link_failed"},
+        )
+
+    return {"message": "If the account exists, a reset email has been sent",
+            "redirect_to_will_be": redirect_to}

@@ -115,24 +115,37 @@ def ensure_user(email: str, password: str, first_name: str, last_name: str,
 
 
 def ensure_second_tenant():
-    """Ensure MOOD Demo Showroom tenant exists with right config."""
-    showroom = find_tenant_by_slug("mood-demo")
+    """Ensure MOOD Demo Showroom tenant (Golden Demo Tenant™) exists.
+
+    ITER143D: slug freeze → `studio`. Was `mood-demo` historically.
+    Both lookups supported for idempotency on legacy databases.
+    """
+    showroom = find_tenant_by_slug("studio") or find_tenant_by_slug("mood-demo")
     if showroom:
+        # If the legacy slug is still in place, rename it.
+        if showroom.get("slug") == "mood-demo":
+            client.table("tenants").update({"slug": "studio",
+                                            "is_demo": True,
+                                            "updated_at": _now_iso()})\
+                .eq("id", showroom["id"]).execute()
+            print("  ✓ Renamed legacy slug 'mood-demo' → 'studio'")
+            showroom = find_tenant_by_slug("studio")
         return showroom
     tid = str(uuid.uuid4())
     now = _now_iso()
     client.table("tenants").insert({
         "id": tid,
         "name": "MOOD Demo Showroom",
-        "slug": "mood-demo",
+        "slug": "studio",
         "status": "active",
+        "is_demo": True,
         "default_language": "en-US",
         "active_languages": ["en-US", "en-GB", "it", "fr"],
         "created_at": now,
         "updated_at": now,
     }).execute()
-    print(f"  ✓ Tenant created: MOOD Demo Showroom (slug=mood-demo)")
-    return find_tenant_by_slug("mood-demo")
+    print("  ✓ Tenant created: MOOD Demo Showroom (slug=studio · Golden Demo Tenant™)")
+    return find_tenant_by_slug("studio")
 
 
 DEMO_USERS = [
