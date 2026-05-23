@@ -38,47 +38,59 @@ PATH_PREFIX = "atelier-media"
 MAX_ASSETS_PER_TENANT = 20  # MVP soft cap (configurable via plan flags later)
 
 
-# ── Grading presets vocabulary ───────────────────────────────────────
+# ── Grading presets vocabulary ─ ITER142 frozen registry ───────────
+# Source of truth = `atelier_presets_registry` table (migration 071).
+# This dict mirrors the seeded rows so the legacy GET /api/atelier/media/presets
+# endpoint keeps working without an extra DB lookup. SuperAdmin updates
+# the names via a migration — never at runtime.
 GRADING_PRESETS: Dict[str, Dict[str, Any]] = {
-    "nordic_silence": {
-        "label": "Nordic Silence",
-        "summary": "Restraint. Soft cool desaturation. Architectural calm.",
-        "filter": {
-            "brightness": 0.62, "saturate": 0.55, "contrast": 1.18,
-            "hue_rotate_deg": -8, "sepia": 0.0,
-        },
+    "nordic_emotions": {
+        "label": "NORDIC EMOTIONS™",
+        "summary": "Restraint. Cool desaturation. Architectural calm.",
+        "filter": {"brightness": 0.62, "saturate": 0.55, "contrast": 1.18,
+                   "hue_rotate_deg": -8, "sepia": 0.0},
         "grain_level": 0.08, "vignette_level": 0.30,
         "warmth_offset": -0.05, "cyan_atmosphere": 0.18,
     },
-    "midnight_editorial": {
-        "label": "Midnight Editorial",
-        "summary": "Deep blacks. Low saturation. Cinematic night register.",
-        "filter": {
-            "brightness": 0.48, "saturate": 0.42, "contrast": 1.32,
-            "hue_rotate_deg": -14, "sepia": 0.0,
-        },
+    "milano_editoriale": {
+        "label": "MILANO EDITORIALE™",
+        "summary": "Editorial precision. Deep blacks. Cinematic register.",
+        "filter": {"brightness": 0.48, "saturate": 0.42, "contrast": 1.32,
+                   "hue_rotate_deg": -14, "sepia": 0.0},
         "grain_level": 0.18, "vignette_level": 0.55,
         "warmth_offset": -0.10, "cyan_atmosphere": 0.28,
     },
-    "aman_warmth": {
-        "label": "Aman Warmth",
-        "summary": "Hospitality warmth. Soft sepia bias. Fireplace register.",
-        "filter": {
-            "brightness": 0.78, "saturate": 0.88, "contrast": 1.06,
-            "hue_rotate_deg": 8, "sepia": 0.14,
-        },
+    "desert_atelier": {
+        "label": "DESERT ATELIER™",
+        "summary": "Warm hospitality. Soft sepia bias. Fireplace register.",
+        "filter": {"brightness": 0.78, "saturate": 0.88, "contrast": 1.06,
+                   "hue_rotate_deg": 8, "sepia": 0.14},
         "grain_level": 0.10, "vignette_level": 0.25,
         "warmth_offset": 0.18, "cyan_atmosphere": 0.0,
     },
-    "architectural_dawn": {
-        "label": "Architectural Dawn",
-        "summary": "Early-light clarity. Gentle uplift. Editorial precision.",
-        "filter": {
-            "brightness": 0.88, "saturate": 0.72, "contrast": 1.10,
-            "hue_rotate_deg": -3, "sepia": 0.06,
-        },
+    "japanese_gallery": {
+        "label": "JAPANESE GALLERY™",
+        "summary": "Wabi-sabi. Soft light. Editorial neutrality.",
+        "filter": {"brightness": 0.86, "saturate": 0.62, "contrast": 1.04,
+                   "hue_rotate_deg": -3, "sepia": 0.04},
+        "grain_level": 0.04, "vignette_level": 0.18,
+        "warmth_offset": 0.02, "cyan_atmosphere": 0.06,
+    },
+    "mood_for_design": {
+        "label": "MOOD for DESIGN™",
+        "summary": "House voice. Architectural dawn. Editorial precision.",
+        "filter": {"brightness": 0.88, "saturate": 0.72, "contrast": 1.10,
+                   "hue_rotate_deg": -3, "sepia": 0.06},
         "grain_level": 0.05, "vignette_level": 0.18,
         "warmth_offset": 0.05, "cyan_atmosphere": 0.08,
+    },
+    "bloom_atelier": {
+        "label": "BLOOM ATELIER™",
+        "summary": "Soft botanic warmth. Floral grading. Hospitality.",
+        "filter": {"brightness": 0.92, "saturate": 0.95, "contrast": 1.02,
+                   "hue_rotate_deg": 4, "sepia": 0.10},
+        "grain_level": 0.06, "vignette_level": 0.22,
+        "warmth_offset": 0.12, "cyan_atmosphere": 0.04,
     },
 }
 
@@ -136,7 +148,7 @@ async def upload_media(
     media_kind: str = Form("hero"),
     alt_text: str = Form(""),
     locale: str = Form("*"),
-    grading_profile: str = Form("nordic_silence"),
+    grading_profile: str = Form("mood_for_design"),
     focal_point_x: float = Form(0.5),
     focal_point_y: float = Form(0.5),
     overlay_intensity: float = Form(0.45),

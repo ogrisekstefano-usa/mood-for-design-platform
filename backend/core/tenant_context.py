@@ -16,19 +16,50 @@ logger = logging.getLogger(__name__)
 
 
 def get_tenant_context(request: Request, current_user: dict = Depends(get_current_user)) -> dict:
-    """Resolve effective tenant_id (with impersonation for super_admin)."""
+    """Resolve effective tenant_id with the following precedence:
+
+      1. Explicit `X-Tenant-Override` (super_admin only — audit-logged).
+      2. Host-based subdomain resolution (`request.state.resolved_tenant`
+         populated by TenantResolverMiddleware) — but ONLY honoured when
+         the resolved tenant matches the user's own tenant or when the
+         user is a super_admin (security: prevent tenant_admin of A from
+         operating against tenant B by spoofing the Host header).
+      3. JWT bearer's profile.tenant_id (default).
+    """
     effective_tid = current_user["tenant_id"]
     impersonating = False
+    resolved_subdomain: Optional[str] = None
+
+    # (1) explicit override
     override = request.headers.get("X-Tenant-Override")
     if override and is_super_admin(current_user.get("role")):
-        # Verify tenant exists
         client = db()
         r = client.table("tenants").select("id, status").eq("id", override).limit(1).execute()
         if not r.data:
             raise HTTPException(404, "Override tenant not found")
         effective_tid = override
         impersonating = True
-    return {**current_user, "tenant_id": effective_tid, "impersonating": impersonating}
+
+    # (2) subdomain-derived tenant (security-gated)
+    elif getattr(request.state, "resolved_tenant", None):
+        rt = request.state.resolved_tenant
+        resolved_subdomain = rt.get("subdomain")
+        host_tid = rt.get("tenant_id")
+        if host_tid and host_tid == current_user["tenant_id"]:
+            # User landing on their own subdomain — pass-through.
+            effective_tid = host_tid
+        elif host_tid and is_super_admin(current_user.get("role")):
+            # SuperAdmin browsing into a tenant subdomain → impersonation.
+            effective_tid = host_tid
+            impersonating = True
+        # else: mismatched subdomain → ignore (return user's own tenant)
+
+    return {
+        **current_user,
+        "tenant_id": effective_tid,
+        "impersonating": impersonating,
+        "resolved_subdomain": resolved_subdomain,
+    }
 
 
 def get_tenant_settings(tenant_id: str, key: str, default=None):

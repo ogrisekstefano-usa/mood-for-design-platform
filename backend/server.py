@@ -26,6 +26,7 @@ cors_origins_env = os.environ.get('CORS_ORIGINS', '')
 # so production auth/CMS/storefront always work with credentials=True.
 _default_origins = [
     "https://blueprint.moodfordesign.com",
+    "https://app.moodfordesign.com",
     "https://moodfordesign.com",
     "https://www.moodfordesign.com",
     "https://content-hub-pro-22.emergent.host",
@@ -56,6 +57,11 @@ else:
         allow_headers=["*"],
         expose_headers=["Content-Disposition"],
     )
+
+# ITER142 · Tenant subdomain resolver — populates request.state.resolved_tenant
+# for {slug}.moodfordesign.com Host headers. Mounted globally; safe (read-only).
+from core.tenant_resolver import TenantResolverMiddleware  # noqa: E402
+app.add_middleware(TenantResolverMiddleware)
 
 
 @app.middleware("http")
@@ -109,6 +115,7 @@ from routers import site_evolution
 from routers import journey_closure
 from routers import atelier_dashboard
 from routers import atelier_media
+from routers import atelier_identity
 api_router.include_router(portfolio.router, prefix="/portfolio", tags=["portfolio"])
 api_router.include_router(proposals.router, prefix="/proposals", tags=["proposals"])
 api_router.include_router(moodboards.router, prefix="/moodboards", tags=["moodboards"])
@@ -134,6 +141,7 @@ api_router.include_router(site_evolution.router,                            tags
 api_router.include_router(journey_closure.router,                           tags=["journey-closure"])
 api_router.include_router(atelier_dashboard.router,                         tags=["atelier-dashboard"])
 api_router.include_router(atelier_media.router,                             tags=["atelier-media"])
+api_router.include_router(atelier_identity.router,                          tags=["atelier-identity"])
 api_router.include_router(inspirations.router, prefix="/inspirations", tags=["inspirations"])
 api_router.include_router(insights.router, prefix="/insights", tags=["insights"])
 api_router.include_router(settings.router, prefix="/settings", tags=["settings"])
