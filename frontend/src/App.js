@@ -24,6 +24,7 @@ const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage'));
 const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage'));
 const JourneyPulsePage = lazy(() => import('./pages/dashboard/JourneyPulsePage'));
+const AtelierDashboardPage = lazy(() => import('./pages/dashboard/AtelierDashboardPage'));
 const LeadsPage = lazy(() => import('./pages/workspace/LeadsPage'));
 const ProjectsPage = lazy(() => import('./pages/workspace/ProjectsPage'));
 const ProjectDetailPage = lazy(() => import('./pages/workspace/ProjectDetailPage'));
@@ -350,7 +351,8 @@ function App() {
                 <Route path="/form/:slug" element={<LeadFormPage />} />
 
                 <Route element={<ProtectedRoute><StudioRoute><DashboardLayout /></StudioRoute></ProtectedRoute>}>
-                  <Route path="/dashboard" element={<JourneyPulsePage />} />
+                  <Route path="/dashboard" element={<AtelierDashboardPage />} />
+                  <Route path="/dashboard/pulse" element={<JourneyPulsePage />} />
                   <Route path="/dashboard/legacy" element={<DashboardPage />} />
                   <Route path="/workspace/leads" element={<Navigate to="/crm/accounts" replace />} />
                   <Route path="/workspace/projects" element={<ProjectsPage />} />

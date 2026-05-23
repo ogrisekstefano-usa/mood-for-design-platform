@@ -1,0 +1,297 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Atelier Nordic™ · Dashboard composition (Wave B)
+ * Cinematic hero · editorial project panels · 3-column rhythm
+ * Inherits all tokens from /design-system/atelier/*.css — no hardcoded colors.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/* ─── Canvas ─────────────────────────────────────────────────────────── */
+.atd-canvas {
+  background: var(--bp-bg);
+  min-height: 100%;
+  padding: 32px clamp(20px, 4vw, 56px) 56px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(40px, 5vw, 64px);
+  animation: atelier-fade-in var(--bp-dur-slow) var(--bp-ease-cinema) both;
+}
+
+/* ─── Hero ───────────────────────────────────────────────────────────── */
+.atd-hero {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: clamp(24px, 4vw, 64px);
+  align-items: stretch;
+  min-height: clamp(360px, 38vh, 520px);
+}
+
+.atd-hero__left {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px 0 8px;
+}
+
+.atd-hero__title {
+  margin: 18px 0 16px;
+  max-width: 14ch;
+}
+
+.atd-hero__lede {
+  max-width: 56ch;
+  color: var(--bp-text-secondary);
+  margin: 0 0 32px;
+}
+
+.atd-hero__kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(20px, 2vw, 40px);
+  padding-top: 26px;
+  border-top: 1px solid var(--bp-border-soft);
+  max-width: 560px;
+}
+
+.atd-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.atd-kpi__value {
+  font-family: var(--atelier-sans);
+  font-feature-settings: 'tnum';
+  font-variant-numeric: tabular-nums;
+  font-weight: 300;
+  font-size: clamp(32px, 2.8vw, 44px);
+  line-height: 1;
+  color: var(--bp-text-headline);
+  letter-spacing: -0.02em;
+}
+
+.atd-kpi__label {
+  font-family: var(--atelier-sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted);
+  line-height: 1.3;
+}
+
+.atd-hero__image {
+  position: relative;
+  border-radius: var(--bp-radius-lg);
+  overflow: hidden;
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  min-height: 360px;
+}
+
+.atd-hero__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.78) saturate(0.85) contrast(1.02);
+  transition: filter var(--bp-dur-cinema) var(--bp-ease-cinema),
+              transform var(--bp-dur-cinema) var(--bp-ease-cinema);
+}
+
+.atd-hero__image:hover img {
+  filter: brightness(0.86) saturate(0.95);
+  transform: scale(1.015);
+}
+
+.atd-hero__image-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--atelier-overlay-deep);
+  pointer-events: none;
+}
+
+/* ─── Section heads ──────────────────────────────────────────────────── */
+.atd-section__head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: clamp(24px, 2.4vw, 36px);
+  max-width: 720px;
+}
+
+.atd-section__title {
+  margin: 0;
+}
+
+/* ─── Projects grid ─────────────────────────────────────────────────── */
+.atd-projects__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(20px, 1.8vw, 28px);
+}
+
+.atd-card {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── 3-column rhythm ───────────────────────────────────────────────── */
+.atd-rhythm {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 2vw, 36px);
+}
+
+.atd-col {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px 26px;
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-lg);
+  min-height: 280px;
+}
+
+.atd-col__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--atelier-cyan);
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--bp-border-soft);
+}
+
+.atd-col__empty {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--bp-text-muted);
+  max-width: 32ch;
+}
+
+.atd-feed {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.atd-feed__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.atd-feed__dot {
+  margin-top: 7px;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--atelier-cyan);
+  box-shadow: 0 0 6px var(--atelier-cyan-glow);
+  flex-shrink: 0;
+}
+
+.atd-feed__line {
+  font-family: var(--atelier-sans);
+  font-size: 13px;
+  color: var(--bp-text-primary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.atd-feed__meta {
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  color: var(--bp-text-faint);
+  margin: 4px 0 0;
+  letter-spacing: 0.02em;
+}
+
+/* ─── Inspiration column ─────────────────────────────────────────────── */
+.atd-col--inspiration {
+  background:
+    radial-gradient(ellipse at top right, rgba(94,234,212,0.06) 0%, rgba(94,234,212,0) 50%),
+    linear-gradient(180deg, var(--bp-surface-1) 0%, var(--bp-bg-cool) 100%);
+}
+
+.atd-quote {
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.atd-quote__line {
+  margin: 0;
+  padding: 0;
+  color: var(--bp-text-headline);
+}
+
+.atd-quote__author {
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted);
+}
+
+/* ─── Responsive — MacBook 13 / ultrawide / iPad ─────────────────────── */
+@media (max-width: 1400px) {
+  .atd-hero {
+    grid-template-columns: 1fr 0.9fr;
+  }
+  .atd-projects__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .atd-projects__grid > *:nth-child(4) {
+    display: none;
+  }
+}
+
+@media (min-width: 1900px) {
+  .atd-canvas {
+    max-width: 1760px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 1100px) {
+  .atd-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .atd-hero__image {
+    min-height: 280px;
+    order: -1;
+  }
+  .atd-projects__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .atd-projects__grid > *:nth-child(3),
+  .atd-projects__grid > *:nth-child(4) {
+    display: flex;
+  }
+  .atd-rhythm {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .atd-canvas {
+    padding: 24px 18px 40px;
+    gap: 36px;
+  }
+  .atd-hero__kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .atd-projects__grid {
+    grid-template-columns: 1fr;
+  }
+}
