@@ -203,6 +203,10 @@ api_router.include_router(tenant_email_branding.router, prefix="/tenant/email-br
 # ITER143E+ · Email orchestration (webhook + retry + search + provider health).
 from routers import email_orchestration  # noqa: E402
 api_router.include_router(email_orchestration.router, prefix="/email", tags=["email-orchestration"])
+# ITER144 · Tenant Configuration Foundation™ — runtime config + navigation + theme.
+from routers import tenant_configuration  # noqa: E402
+api_router.include_router(tenant_configuration.router, prefix="/tenant", tags=["tenant-configuration"])
+api_router.include_router(tenant_configuration.admin_router, prefix="/blueprint-admin", tags=["blueprint-command-center"])
 
 
 @api_router.get("/health")

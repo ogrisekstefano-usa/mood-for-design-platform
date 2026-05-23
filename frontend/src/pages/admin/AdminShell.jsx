@@ -20,7 +20,7 @@ import {
 import { SiteProvider } from '../../site/SiteContext';
 import {
   LayoutGrid, Building2, Users, Sparkles, FileText, Languages,
-  Mail, FlaskConical, LogOut, Circle,
+  Mail, FlaskConical, LogOut, Circle, SlidersHorizontal,
 } from 'lucide-react';
 import './admin-shell.css';
 
@@ -28,14 +28,15 @@ const NS = 'admin.shell';
 const k = (s) => `${NS}.${s}`;
 
 const NAV = [
-  { to: '/admin/dashboard',           Icon: LayoutGrid,    keyName: 'nav.dashboard'  },
-  { to: '/admin/tenants',             Icon: Building2,     keyName: 'nav.tenants'    },
-  { to: '/admin/users',               Icon: Users,         keyName: 'nav.users'      },
-  { to: '/admin/presets',             Icon: Sparkles,      keyName: 'nav.presets'    },
-  { to: '/admin/editorial-runtime',   Icon: FileText,      keyName: 'nav.editorial'  },
-  { to: '/admin/language-governance', Icon: Languages,     keyName: 'nav.language'   },
-  { to: '/admin/email-governance',    Icon: Mail,          keyName: 'nav.email'      },
-  { to: '/admin/demo-governance',     Icon: FlaskConical,  keyName: 'nav.demo'       },
+  { to: '/admin/dashboard',             Icon: LayoutGrid,        keyName: 'nav.dashboard'  },
+  { to: '/admin/tenants',               Icon: Building2,         keyName: 'nav.tenants'    },
+  { to: '/admin/users',                 Icon: Users,             keyName: 'nav.users'      },
+  { to: '/admin/presets',               Icon: Sparkles,          keyName: 'nav.presets'    },
+  { to: '/admin/editorial-runtime',     Icon: FileText,          keyName: 'nav.editorial'  },
+  { to: '/admin/tenant-configuration',  Icon: SlidersHorizontal, keyName: 'nav.tenant_configuration' },
+  { to: '/admin/language-governance',   Icon: Languages,         keyName: 'nav.language'   },
+  { to: '/admin/email-governance',      Icon: Mail,              keyName: 'nav.email'      },
+  { to: '/admin/demo-governance',       Icon: FlaskConical,      keyName: 'nav.demo'       },
 ];
 
 const AdminShellInner = () => {

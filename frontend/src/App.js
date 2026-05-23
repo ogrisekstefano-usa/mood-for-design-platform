@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BlueprintProvider, useBlueprint } from './contexts/BlueprintContext';
+import { TenantConfigurationProvider } from './contexts/TenantConfigurationContext';
 import { TenantThemeProvider } from './contexts/TenantThemeContext';
 import { StudioPaletteProvider } from './contexts/StudioPaletteContext';
 import { LocaleRuntimeProvider } from './contexts/LocaleRuntimeContext';
@@ -137,6 +138,8 @@ import {
   UsersGovernancePage, PresetsGovernancePage, EditorialRuntimePage,
   EmailGovernancePage, DemoGovernancePage,
 } from './pages/admin/BlueprintGovernancePages';
+// ITER144 · Tenant Configuration Foundation™ — runtime governance.
+const BlueprintTenantConfigurationPage = lazy(() => import('./pages/admin/BlueprintTenantConfigurationPage'));
 
 const Loading = () => {
   // CinematicLoader rendered inside the cinematic canvas — replaces the
@@ -257,6 +260,7 @@ function App() {
     <div className="App">
       <AuthProvider>
         <BlueprintProvider>
+          <TenantConfigurationProvider>
           <TenantThemeProvider>
           <StudioPaletteProvider>
           <LocaleRuntimeProvider>
@@ -523,6 +527,8 @@ function App() {
                   <Route path="/admin/editorial-runtime" element={<EditorialRuntimePage />} />
                   <Route path="/admin/email-governance" element={<EmailGovernancePage />} />
                   <Route path="/admin/demo-governance" element={<DemoGovernancePage />} />
+                  {/* ITER144 · Tenant Configuration Foundation™ */}
+                  <Route path="/admin/tenant-configuration" element={<BlueprintTenantConfigurationPage />} />
                   {/* Language Governance — reuse existing surface within the new shell */}
                   <Route path="/admin/language-governance" element={<LanguageCommandCenter />} />
                   {/* Legacy admin surfaces (Blueprint Collaborator-only) still accessible
@@ -571,6 +577,7 @@ function App() {
           </LocaleRuntimeProvider>
           </StudioPaletteProvider>
           </TenantThemeProvider>
+          </TenantConfigurationProvider>
         </BlueprintProvider>
       </AuthProvider>
     </div>
