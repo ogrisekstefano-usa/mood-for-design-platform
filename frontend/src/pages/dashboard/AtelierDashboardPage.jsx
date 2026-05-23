@@ -1,77 +1,53 @@
 /**
- * AtelierDashboardPage — Blueprint Atelier™ · Wave B Cinematic Dashboard
- * ITER138 · Atelier Nordic™ Master Experience System · Phase 2 refinement
+ * AtelierDashboardPage — Blueprint Atelier™ · Wave B (DB-driven · Cinematic)
+ * ITER138 · Phase 2 (post-cinematic refinement, DB-driven content model)
  *
- * MASTER REFERENCE LOCKED (23 Feb 2026): luxury operational environment,
- * not editorial magazine. Hero full-width side-by-side cinematic; dense
- * Nordic project panels; operational 3-column desk.
+ * NO hardcoded mock content. ALL copy + imagery + KPI labels + inspiration
+ * quotes resolve from:
+ *   GET /api/atelier/dashboard/config   (config + media bindings + quote)
+ *   GET /api/dashboard/pulse            (real journey data, ALE-localized)
+ *
+ * Elegant fallback path:
+ *   - When DB returns nothing, the inline empty states render
+ *     ("Awaiting first journey", "No movement yet", etc.) localized via t()
+ *   - System default rows (tenant_id=NULL) seed the demo experience,
+ *     scoped & overridable per tenant via Command Center.
  */
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ArrowUpRight, MessageSquare, CheckSquare, FileText, Quote,
+  ArrowUpRight, MessageSquare, CheckSquare, FileText,
   CalendarDays, ClipboardCheck, Package, FileSignature,
 } from 'lucide-react';
 import api from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
-import { useT } from '../../contexts/BlueprintContext';
+import { useT, useBlueprint } from '../../contexts/BlueprintContext';
 import './atelier-dashboard.css';
 
-// ── Nordic atmospheric imagery — dark hospitality / fjord / fireplace ────
-// Master reference: fireplace + Nordic architecture full-bleed.
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=85';
-const HERO_FALLBACK =
-  'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=2400&q=85';
-
-// Dark luxury interior / nordic retreat / architecture — no bright stock.
-const PROJECT_FALLBACK_COVERS = [
-  // Villa Riviera — moody Nordic lake at dusk, dark mountains
-  'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=1400&q=80',
-  // Penthouse Milano — dark living room, fireplace, warm shadows
-  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80',
-  // Atelier Florence — heritage interior, chandelier, dark walls
-  'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1400&q=80',
-  // Coastal Retreat — cliff edge architecture, fog, ocean at dusk
-  'https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=1400&q=80',
-];
-
-// Daily inspiration imagery + quote (locked to date for stability)
-const INSPIRATION_IMAGE =
-  'https://images.unsplash.com/photo-1465056836041-7f43ac27dcb5?auto=format&fit=crop&w=1200&q=80';
-const QUOTES = [
-  { line: 'Simplicity is the keynote of all true elegance.', author: 'Coco Chanel' },
-  { line: 'Form follows emotion.', author: 'Hartmut Esslinger' },
-  { line: 'Less, but better.', author: 'Dieter Rams' },
-  { line: 'The details are not the details. They make the design.', author: 'Charles Eames' },
-];
-
 // ── Helpers ─────────────────────────────────────────────────────────
-const GREETINGS = {
-  morning:   { it: 'Buongiorno',     en: 'Good morning'   },
-  afternoon: { it: 'Buon pomeriggio',en: 'Good afternoon' },
-  evening:   { it: 'Buonasera',      en: 'Good evening'   },
-};
 const greetSlot = () => {
   const h = new Date().getHours();
   if (h < 12) return 'morning';
   if (h < 18) return 'afternoon';
   return 'evening';
 };
+
 const initials = (name = '') =>
   name.split(' ').filter(Boolean).slice(0, 2).map(s => s[0]?.toUpperCase()).join('') || '·';
-const relativeWhen = (iso) => {
+
+const relativeWhen = (iso, t) => {
   if (!iso) return '';
   const d = new Date(iso);
   const now = new Date();
   const diff = (now - d) / 1000 / 60 / 60;
-  if (diff < 1) return 'just now';
-  if (diff < 24) return `${Math.floor(diff)}h ago`;
+  if (diff < 1) return t('atelier.dashboard.time.just_now', null, 'just now');
+  if (diff < 24) return t('atelier.dashboard.time.hours_ago', { n: Math.floor(diff) }, `${Math.floor(diff)}h ago`);
   const days = Math.floor(diff / 24);
-  if (days === 1) return 'yesterday';
-  if (days < 7) return `${days} days ago`;
+  if (days === 1) return t('atelier.dashboard.time.yesterday', null, 'yesterday');
+  if (days < 7) return t('atelier.dashboard.time.days_ago', { n: days }, `${days} days ago`);
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 };
+
 const upcomingParts = (iso) => {
   if (!iso) return { day: '—', month: '' };
   const d = new Date(iso);
@@ -81,72 +57,102 @@ const upcomingParts = (iso) => {
   };
 };
 
-// ── Activity icon map ─────────────────────────────────────────────────
-const ACT_ICON = {
-  message:   MessageSquare,
-  approval:  CheckSquare,
-  file:      FileText,
-  upload:    FileText,
-  feedback:  MessageSquare,
-};
 const iconForActivity = (e) => {
-  const k = (e.kind || e.type || '').toLowerCase();
-  if (k.includes('message') || k.includes('feedback')) return MessageSquare;
-  if (k.includes('approv'))                            return CheckSquare;
-  if (k.includes('file') || k.includes('upload'))      return FileText;
+  const k = (e.kind || e.chapter_kind || e.canon || '').toLowerCase();
+  if (k.includes('message') || k.includes('feedback') || k.includes('voice')) return MessageSquare;
+  if (k.includes('approv'))                                                    return CheckSquare;
+  if (k.includes('file') || k.includes('upload') || k.includes('chapter'))     return FileText;
   return MessageSquare;
 };
+
 const iconForMilestone = (m) => {
-  const k = (m.kind || m.title || '').toLowerCase();
-  if (k.includes('approv'))    return ClipboardCheck;
-  if (k.includes('render') || k.includes('delivery')) return Package;
-  if (k.includes('material'))  return FileSignature;
+  const k = (m.kind || m.milestone || '').toLowerCase();
+  if (k.includes('approv') || k.includes('final')) return ClipboardCheck;
+  if (k.includes('render') || k.includes('delivery') || k.includes('deliver')) return Package;
+  if (k.includes('material') || k.includes('moodboard')) return FileSignature;
   return CalendarDays;
 };
 
+// Format hero summary template "{active} Journeys unfolding · {voices} voices..."
+const fillTemplate = (tpl, vars) =>
+  (tpl || '').replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? String(vars[k]) : ''));
+
+// Format card status into editorial chip label via i18n
+const statusLabel = (status, t) => {
+  const map = {
+    in_progress:        t('atelier.dashboard.card.status.in_progress', null, 'IN PROGRESS'),
+    presenting:         t('atelier.dashboard.card.status.in_review',   null, 'IN REVIEW'),
+    conversation_open:  t('atelier.dashboard.card.status.new',         null, 'NEW'),
+    drifting:           t('atelier.dashboard.card.status.listening',   null, 'LISTENING'),
+    approved:           t('atelier.dashboard.card.status.approved',    null, 'APPROVED'),
+    closed:             t('atelier.dashboard.card.status.delivered',   null, 'DELIVERED'),
+    on_pause:           t('atelier.dashboard.card.status.paused',      null, 'PAUSED'),
+  };
+  return { label: map[status] || t('atelier.dashboard.card.status.active', null, 'ACTIVE'),
+           tone: (status === 'closed' || status === 'on_pause') ? 'mute' : 'cyan' };
+};
+
 // ── Hero ────────────────────────────────────────────────────────────
-const Hero = ({ counts, userName }) => {
+const Hero = ({ config, counts, userName }) => {
   const t = useT();
   const slot = greetSlot();
-  const greeting = t(`atelier.dashboard.hero.greeting.${slot}`, null, GREETINGS[slot].en);
-  const activeCount = counts.active || 12;
-  const voicesCount = counts.voices_today || 30;
+  // i18n always wins; DB config is admin-override only (passed as fallback to t())
+  const greeting = t(`atelier.dashboard.hero.greeting.${slot}`, null,
+    config?.[`hero_greeting_${slot}`] ||
+    (slot === 'morning' ? 'Good morning' : slot === 'afternoon' ? 'Good afternoon' : 'Good evening'));
+  const eyebrow = t('atelier.dashboard.hero.eyebrow', null,
+    config?.hero_eyebrow || 'Studio Pulse™ · Project Rhythm');
+  const signature = t('atelier.dashboard.hero.signature', null,
+    config?.hero_signature || "Let's shape beautiful spaces.");
+  const summary = fillTemplate(
+    t('atelier.dashboard.hero.summary_template', null,
+      config?.hero_summary_template || '{active} Journeys unfolding · {voices} voices received today'),
+    { active: counts.active || 0, voices: counts.voices_today || 0 }
+  );
+
+  const heroSrc = config?.hero_media?.file_url;
+  const heroAlt = config?.hero_media?.alt_text || '';
+  const focal = config?.hero_media
+    ? `${(config.hero_media.focal_point_x * 100).toFixed(1)}% ${(config.hero_media.focal_point_y * 100).toFixed(1)}%`
+    : '50% 50%';
 
   return (
     <header className="atd-hero" data-testid="atelier-hero">
       <div className="atd-hero__left">
-        <p className="atd-hero__eyebrow" data-testid="atelier-hero-eyebrow">
-          {t('atelier.dashboard.hero.eyebrow', null, 'Studio Pulse™')}
-          <span className="atd-hero__eyebrow-sep">·</span>
-          {t('atelier.dashboard.hero.eyebrow_sub', null, 'Project Rhythm')}
-        </p>
+        <p className="atd-hero__eyebrow" data-testid="atelier-hero-eyebrow">{eyebrow}</p>
 
         <h1 className="atd-hero__title" data-testid="atelier-hero-title">
-          {greeting},<br />{userName || 'Stefano'}.
+          {greeting},<br />{userName || ''}.
         </h1>
 
-        <p className="atd-hero__lede" data-testid="atelier-hero-lede">
-          {t(
-            'atelier.dashboard.hero.summary',
-            { active: activeCount, voices: voicesCount },
-            `${activeCount} Journeys unfolding · ${voicesCount} voices received today`
-          )}
-        </p>
-        <p className="atd-hero__signature">
-          {t('atelier.dashboard.hero.signature', null, "Let's shape beautiful spaces.")}
-        </p>
+        <p className="atd-hero__lede" data-testid="atelier-hero-lede">{summary}</p>
+        <p className="atd-hero__signature">{signature}</p>
 
         <div className="atd-hero__kpis" data-testid="atelier-hero-kpis">
-          <Kpi value={counts.active || 12}            label={t('atelier.dashboard.kpi.active_journeys',  null, 'Active Journeys')}    testid="kpi-active" />
-          <Kpi value={counts.chapters_waiting || 5}   label={t('atelier.dashboard.kpi.dossier_in_progress', null, 'Dossier in progress')} testid="kpi-chapters" />
-          <Kpi value={counts.voices_today || 3}       label={t('atelier.dashboard.kpi.awaiting_feedback', null, 'Awaiting feedback')}   testid="kpi-voices" />
-          <Kpi value={counts.revisions_open || 2}     label={t('atelier.dashboard.kpi.deliveries_week',   null, 'Deliveries this week')} testid="kpi-revisions" />
+          <Kpi value={counts.active || 0}
+               label={t('atelier.dashboard.kpi.active_journeys', null,
+                        config?.kpi_active_label || 'Active Journeys')}
+               testid="kpi-active" />
+          <Kpi value={counts.chapters_waiting || 0}
+               label={t('atelier.dashboard.kpi.dossier_in_progress', null,
+                        config?.kpi_dossier_label || 'Dossier in progress')}
+               testid="kpi-chapters" />
+          <Kpi value={counts.voices_today || 0}
+               label={t('atelier.dashboard.kpi.awaiting_feedback', null,
+                        config?.kpi_awaiting_label || 'Awaiting feedback')}
+               testid="kpi-voices" />
+          <Kpi value={counts.revisions_open || 0}
+               label={t('atelier.dashboard.kpi.deliveries_week', null,
+                        config?.kpi_deliveries_label || 'Deliveries this week')}
+               testid="kpi-revisions" />
         </div>
       </div>
 
       <div className="atd-hero__image" data-testid="atelier-hero-image">
-        <img src={HERO_IMAGE} alt="" loading="eager"
-             onError={(e) => { e.currentTarget.src = HERO_FALLBACK; }} />
+        {heroSrc && (
+          <img src={heroSrc} alt={heroAlt} loading="eager"
+               style={{ objectPosition: focal }} />
+        )}
         <div className="atd-hero__image-overlay" aria-hidden />
       </div>
     </header>
@@ -160,45 +166,48 @@ const Kpi = ({ value, label, testid }) => (
   </div>
 );
 
-// ── Project card (dense editorial panel) ─────────────────────────────
-const ProjectCard = ({ project, index }) => {
+// ── Project card · DB-driven ────────────────────────────────────────
+const ProjectCard = ({ project, index, fallbackMedia }) => {
   const t = useT();
-  const cover = project.cover_url || PROJECT_FALLBACK_COVERS[index % PROJECT_FALLBACK_COVERS.length];
-  const status = project.status || project.lifecycle || 'in_progress';
-  const STATUS_LABELS = {
-    in_progress:        { label: t('atelier.dashboard.card.status.in_progress', null, 'IN PROGRESS'), tone: 'cyan' },
-    presenting:         { label: t('atelier.dashboard.card.status.in_review',   null, 'IN REVIEW'),  tone: 'cyan' },
-    conversation_open:  { label: t('atelier.dashboard.card.status.new',         null, 'NEW'),        tone: 'cyan' },
-    approved:           { label: t('atelier.dashboard.card.status.approved',    null, 'APPROVED'),   tone: 'cyan' },
-    closed:             { label: t('atelier.dashboard.card.status.delivered',   null, 'DELIVERED'),  tone: 'mute' },
-    on_pause:           { label: t('atelier.dashboard.card.status.paused',      null, 'PAUSED'),     tone: 'mute' },
-  };
-  const meta = STATUS_LABELS[status] || { label: t('atelier.dashboard.card.status.active', null, 'ACTIVE'), tone: 'cyan' };
-  const progress = typeof project.progress_pct === 'number'
-    ? project.progress_pct
-    : project.chapter_count
-      ? Math.min(100, Math.round((project.approved_count / Math.max(project.chapter_count, 1)) * 100))
-      : [75, 40, 60, 10][index % 4];
-  const updatedAt = project.last_evolved_at || project.updated_at;
+  // 1. project.cover_url (real project upload) > 2. tenant fallback media > 3. invisible
+  const fallback = fallbackMedia?.[index % Math.max(fallbackMedia.length, 1)];
+  const cover = project.cover_url || fallback?.file_url;
+  const coverAlt = project.cover_alt || fallback?.alt_text || project.title || '';
+  const focal = fallback
+    ? `${(fallback.focal_point_x * 100).toFixed(1)}% ${(fallback.focal_point_y * 100).toFixed(1)}%`
+    : '50% 50%';
+
+  const status = project.lifecycle_state || project.status || 'in_progress';
+  const { label, tone } = statusLabel(status, t);
+  const progress = typeof project.progress === 'number'
+    ? project.progress
+    : typeof project.progress_pct === 'number'
+      ? project.progress_pct
+      : 0;
+  const updatedAt = project.last_event?.when || project.last_evolved_at || project.updated_at;
   const collaborators = project.collaborators || [];
+
+  // Project title: real project name → milestone label → fallback
+  const title = project.title || project.account_name || project.current_milestone?.label
+                || t('atelier.dashboard.card.untitled', null, 'Untitled journey');
+  const subtitle = project.subtitle || project.location || project.current_milestone?.label || '';
 
   return (
     <Link
-      to={project.id ? `/workspace/projects/${project.id}` : '/workspace/projects'}
+      to={project.project_id ? `/workspace/projects/${project.project_id}` : '/workspace/projects'}
       className="atd-card"
       data-testid={`atelier-project-card-${index}`}
     >
       <div className="atd-card__cover">
-        <img src={cover} alt="" loading="lazy" />
-        <span className={`atd-card__badge atd-card__badge--${meta.tone}`}>
-          {meta.label}
-        </span>
+        {cover && (
+          <img src={cover} alt={coverAlt} loading="lazy"
+               style={{ objectPosition: focal }} />
+        )}
+        <span className={`atd-card__badge atd-card__badge--${tone}`}>{label}</span>
         <div className="atd-card__cover-veil" aria-hidden />
         <div className="atd-card__body">
-          <h3 className="atd-card__title" data-testid={`atelier-project-card-title-${index}`}>
-            {project.title || project.name || 'Untitled journey'}
-          </h3>
-          {project.location && <p className="atd-card__subtitle">{project.location}</p>}
+          <h3 className="atd-card__title" data-testid={`atelier-project-card-title-${index}`}>{title}</h3>
+          {subtitle && <p className="atd-card__subtitle">{subtitle}</p>}
 
           <div className="atd-card__progress">
             <div className="atd-card__progress-track">
@@ -210,7 +219,8 @@ const ProjectCard = ({ project, index }) => {
           <div className="atd-card__foot">
             <span className="atd-card__meta">
               {updatedAt
-                ? t('atelier.dashboard.card.updated', { when: relativeWhen(updatedAt) }, `Updated ${relativeWhen(updatedAt)}`)
+                ? t('atelier.dashboard.card.updated', { when: relativeWhen(updatedAt, t) },
+                    `Updated ${relativeWhen(updatedAt, t)}`)
                 : t('atelier.dashboard.card.no_updates', null, 'Awaiting first chapter')}
             </span>
             {collaborators.length > 0 && (
@@ -232,178 +242,171 @@ const ProjectCard = ({ project, index }) => {
   );
 };
 
-// ── Operational 3-column desk ────────────────────────────────────────
-const ActivityColumn = ({ events }) => {
-  const t = useT();
-  return (
-    <section className="atd-panel" data-testid="atelier-col-activity">
-      <h3 className="atd-panel__title">{t('atelier.dashboard.col.recent_activity', null, 'Recent activity')}</h3>
-      {events.length === 0 ? (
-        <p className="atd-panel__empty">{t('atelier.dashboard.col.activity_empty', null, 'No movement yet.')}</p>
-      ) : (
-        <ul className="atd-feed">
-          {events.slice(0, 4).map((e, i) => {
-            const Icon = iconForActivity(e);
-            return (
-              <li key={i} className="atd-feed__item">
-                <span className="atd-feed__icon"><Icon size={14} strokeWidth={1.6} /></span>
-                <div className="atd-feed__body">
-                  <p className="atd-feed__line">{e.label || e.title || '—'}</p>
-                  <p className="atd-feed__meta">
-                    {e.project_name ? `${e.project_name} · ` : ''}{relativeWhen(e.at || e.evolved_at)}
-                  </p>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </section>
-  );
-};
+// ── Operational 3-column ────────────────────────────────────────────
+const ActivityColumn = ({ title, events, t }) => (
+  <section className="atd-panel" data-testid="atelier-col-activity">
+    <h3 className="atd-panel__title">{title}</h3>
+    {events.length === 0 ? (
+      <p className="atd-panel__empty">{t('atelier.dashboard.col.activity_empty', null, 'No movement yet.')}</p>
+    ) : (
+      <ul className="atd-feed">
+        {events.slice(0, 4).map((e, i) => {
+          const Icon = iconForActivity(e);
+          return (
+            <li key={i} className="atd-feed__item">
+              <span className="atd-feed__icon"><Icon size={14} strokeWidth={1.6} /></span>
+              <div className="atd-feed__body">
+                <p className="atd-feed__line">{e.chapter || e.text || e.label || '—'}</p>
+                <p className="atd-feed__meta">
+                  {e.account ? `${e.account} · ` : ''}{relativeWhen(e.when, t)}
+                </p>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    )}
+  </section>
+);
 
-const MilestonesColumn = ({ milestones }) => {
-  const t = useT();
-  return (
-    <section className="atd-panel" data-testid="atelier-col-milestones">
-      <h3 className="atd-panel__title">{t('atelier.dashboard.col.upcoming_milestones', null, 'Upcoming milestones')}</h3>
-      {milestones.length === 0 ? (
-        <p className="atd-panel__empty">{t('atelier.dashboard.col.milestones_empty', null, 'Awaiting the next chapter.')}</p>
-      ) : (
-        <ul className="atd-feed">
-          {milestones.slice(0, 4).map((m, i) => {
-            const Icon = iconForMilestone(m);
-            const { day, month } = upcomingParts(m.due_at || m.scheduled_at);
-            return (
-              <li key={i} className="atd-feed__item atd-feed__item--milestone">
-                <span className="atd-feed__icon"><Icon size={14} strokeWidth={1.6} /></span>
-                <div className="atd-feed__body">
-                  <p className="atd-feed__line">{m.title || m.label || '—'}</p>
-                  <p className="atd-feed__meta">{m.project_name || ''}</p>
-                </div>
-                <div className="atd-feed__date">
-                  <span className="atd-feed__date-day">{day}</span>
-                  <span className="atd-feed__date-month">{month}</span>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </section>
-  );
-};
+const MilestonesColumn = ({ title, milestones, t }) => (
+  <section className="atd-panel" data-testid="atelier-col-milestones">
+    <h3 className="atd-panel__title">{title}</h3>
+    {milestones.length === 0 ? (
+      <p className="atd-panel__empty">{t('atelier.dashboard.col.milestones_empty', null, 'Awaiting the next chapter.')}</p>
+    ) : (
+      <ul className="atd-feed">
+        {milestones.slice(0, 4).map((m, i) => {
+          const Icon = iconForMilestone(m);
+          const { day, month } = upcomingParts(m.due_at || m.presented_at || m.when);
+          return (
+            <li key={i} className="atd-feed__item atd-feed__item--milestone">
+              <span className="atd-feed__icon"><Icon size={14} strokeWidth={1.6} /></span>
+              <div className="atd-feed__body">
+                <p className="atd-feed__line">{m.chapter_title || m.milestone || m.title || '—'}</p>
+                <p className="atd-feed__meta">{m.account || m.project_name || ''}</p>
+              </div>
+              <div className="atd-feed__date">
+                <span className="atd-feed__date-day">{day}</span>
+                <span className="atd-feed__date-month">{month}</span>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    )}
+  </section>
+);
 
-const InspirationColumn = () => {
-  const t = useT();
-  const q = useMemo(() => QUOTES[new Date().getDate() % QUOTES.length], []);
-  return (
-    <section className="atd-panel atd-panel--inspiration" data-testid="atelier-col-inspiration">
-      <h3 className="atd-panel__title">{t('atelier.dashboard.col.daily_inspiration', null, 'Daily inspiration')}</h3>
+const InspirationColumn = ({ title, quote, ambient, t }) => (
+  <section className="atd-panel atd-panel--inspiration" data-testid="atelier-col-inspiration">
+    <h3 className="atd-panel__title">{title}</h3>
+    {quote ? (
       <figure className="atd-quote">
-        <img className="atd-quote__image" src={INSPIRATION_IMAGE} alt="" loading="lazy" />
+        {ambient?.file_url && (
+          <img className="atd-quote__image"
+               src={ambient.file_url}
+               alt={ambient.alt_text || ''}
+               loading="lazy"
+               style={{ objectPosition:
+                 `${(ambient.focal_point_x * 100).toFixed(1)}% ${(ambient.focal_point_y * 100).toFixed(1)}%` }} />
+        )}
         <div className="atd-quote__overlay" aria-hidden />
         <figcaption className="atd-quote__caption">
-          <blockquote className="atd-quote__line">
-            {q.line.split(' ').slice(0, Math.ceil(q.line.split(' ').length / 2)).join(' ')}
-            <br />
-            <em>{q.line.split(' ').slice(Math.ceil(q.line.split(' ').length / 2)).join(' ')}</em>
-          </blockquote>
-          <p className="atd-quote__author">— {q.author}</p>
+          <blockquote className="atd-quote__line">{quote.quote_text}</blockquote>
+          {quote.quote_author && <p className="atd-quote__author">— {quote.quote_author}</p>}
         </figcaption>
       </figure>
-    </section>
-  );
-};
+    ) : (
+      <p className="atd-panel__empty">
+        {t('atelier.dashboard.col.inspiration_empty', null, 'No quote curated yet.')}
+      </p>
+    )}
+  </section>
+);
 
 // ── Main ────────────────────────────────────────────────────────────
 const AtelierDashboardPage = () => {
   const t = useT();
+  const { locale } = useBlueprint();
   const { user } = useAuth();
-  const userName = user?.first_name || user?.full_name?.split(' ')[0] || 'Stefano';
+  const userName = user?.first_name || user?.full_name?.split(' ')[0] || '';
 
-  const [data, setData] = useState({ active_journeys: [], counts: {}, recent_evolutions: [] });
-  const [loaded, setLoaded] = useState(false);
+  const [config, setConfig] = useState(null);
+  const [pulse, setPulse]   = useState({ active_journeys: [], counts: {}, recent_evolutions: [], chapters_waiting: [] });
 
   useEffect(() => {
     let alive = true;
-    api.get('/api/dashboard/journey-pulse')
-      .then(res => { if (alive) { setData(res.data || {}); setLoaded(true); } })
-      .catch(() => { if (alive) setLoaded(true); });
+    Promise.all([
+      api.get(`/api/atelier/dashboard/config?locale=${encodeURIComponent(locale || 'en-US')}`)
+        .then(r => r.data).catch(() => null),
+      api.get(`/api/dashboard/pulse?locale=${encodeURIComponent(locale || 'en-US')}`)
+        .then(r => r.data).catch(() => ({ active_journeys: [], counts: {} })),
+    ]).then(([cfg, p]) => {
+      if (!alive) return;
+      setConfig(cfg);
+      setPulse(p || {});
+    });
     return () => { alive = false; };
-  }, []);
+  }, [locale]);
 
-  const counts = data.counts || {};
-  const projects = useMemo(() => {
-    const list = data.active_journeys || [];
-    if (list.length >= 4) return list.slice(0, 4);
-    const filler = [
-      { title: 'Villa Riviera',     location: 'Lake Como',            status: 'in_progress',       progress_pct: 75, last_evolved_at: new Date(Date.now() - 1000*60*60*24).toISOString() },
-      { title: 'Penthouse Milano',  location: 'Brera Design District', status: 'in_progress',       progress_pct: 40, last_evolved_at: new Date(Date.now() - 1000*60*60*48).toISOString() },
-      { title: 'Atelier Florence',  location: 'Historic Residence',    status: 'presenting',        progress_pct: 60, last_evolved_at: new Date(Date.now() - 1000*60*60*72).toISOString() },
-      { title: 'Coastal Retreat',   location: 'Sardegna',              status: 'conversation_open', progress_pct: 10, last_evolved_at: new Date(Date.now() - 1000*60*60*120).toISOString() },
-    ];
-    return [...list, ...filler].slice(0, 4);
-  }, [data.active_journeys]);
-
-  const recent = useMemo(() => {
-    const live = (data.recent_evolutions || []).map(e => ({
-      label: e.title || e.label || e.kind || 'Movement',
-      kind: e.kind,
-      project_name: e.project_name,
-      at: e.at || e.evolved_at,
-    }));
-    if (live.length >= 4) return live;
-    const filler = [
-      { label: 'New message from Maria Rossi', kind: 'message',  project_name: 'Villa Riviera',    at: new Date(Date.now() - 1000*60*60*2).toISOString() },
-      { label: 'Moodboard "Living Room" approved', kind: 'approval', project_name: 'Penthouse Milano', at: new Date(Date.now() - 1000*60*60*5).toISOString() },
-      { label: 'New file uploaded: render_living_v2.jpg', kind: 'upload', project_name: 'Atelier Florence', at: new Date(Date.now() - 1000*60*60*24).toISOString() },
-      { label: 'Feedback received from Luca Bianchi', kind: 'feedback', project_name: 'Coastal Retreat', at: new Date(Date.now() - 1000*60*60*48).toISOString() },
-    ];
-    return [...live, ...filler].slice(0, 4);
-  }, [data.recent_evolutions]);
-
-  const milestones = useMemo(() => {
-    const live = (data.chapters_waiting || []).slice(0, 4).map(c => ({
-      title: c.title || 'Chapter awaiting',
-      project_name: c.project_name,
-      kind: c.kind,
-      due_at: c.due_at || c.scheduled_at,
-    }));
-    if (live.length >= 4) return live;
-    const base = Date.now();
-    const filler = [
-      { title: 'Layout review · Day Zone',  project_name: 'Villa Riviera',    kind: 'approval', due_at: new Date(base + 1000*60*60*24*3).toISOString() },
-      { title: 'External render delivery',   project_name: 'Penthouse Milano', kind: 'render',   due_at: new Date(base + 1000*60*60*24*5).toISOString() },
-      { title: 'Material presentation',      project_name: 'Atelier Florence', kind: 'material', due_at: new Date(base + 1000*60*60*24*7).toISOString() },
-      { title: 'Final approval',             project_name: 'Coastal Retreat',  kind: 'approval', due_at: new Date(base + 1000*60*60*24*10).toISOString() },
-    ];
-    return [...live, ...filler].slice(0, 4);
-  }, [data.chapters_waiting]);
+  const counts = pulse.counts || {};
+  const projects = useMemo(() => (pulse.active_journeys || []).slice(0, 4), [pulse.active_journeys]);
+  const recent   = useMemo(() => pulse.recent_evolutions || [], [pulse.recent_evolutions]);
+  const milestones = useMemo(() => pulse.chapters_waiting || [], [pulse.chapters_waiting]);
 
   return (
     <div className="atd-canvas" data-testid="atelier-dashboard">
-      <Hero counts={counts} userName={userName} />
+      <Hero config={config} counts={counts} userName={userName} />
 
       <section className="atd-projects" data-testid="atelier-projects-section">
         <header className="atd-section__head">
           <h2 className="atd-section__title">
-            {t('atelier.dashboard.projects.title', null, 'Journeys unfolding')}
+            {t('atelier.dashboard.projects.title', null,
+               config?.section_projects_title || 'Journeys unfolding')}
           </h2>
           <Link to="/workspace/projects" className="atd-section__cta" data-testid="atd-see-all-projects">
-            {t('atelier.dashboard.projects.see_all', null, 'See all')}
+            {t('atelier.dashboard.projects.see_all', null,
+               config?.section_projects_cta || 'See all')}
             <ArrowUpRight size={13} strokeWidth={1.6} />
           </Link>
         </header>
-        <div className="atd-projects__grid">
-          {projects.map((p, i) => <ProjectCard key={p.id || i} project={p} index={i} />)}
-        </div>
+        {projects.length === 0 ? (
+          <div className="atd-projects__empty" data-testid="atelier-projects-empty">
+            <p>{t('atelier.dashboard.projects.empty',
+                  null,
+                  'Your atelier is in silence. The next journey is waiting to begin.')}</p>
+            <Link to="/workspace/projects" className="atd-projects__empty-cta">
+              {t('atelier.dashboard.projects.empty_cta', null, 'Begin a new journey')}
+              <ArrowUpRight size={13} strokeWidth={1.6} />
+            </Link>
+          </div>
+        ) : (
+          <div className="atd-projects__grid">
+            {projects.map((p, i) => (
+              <ProjectCard key={p.journey_id || p.id || i}
+                           project={p} index={i}
+                           fallbackMedia={config?.project_card_fallback_media || []} />
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="atd-desk">
-        <ActivityColumn events={recent} />
-        <MilestonesColumn milestones={milestones} />
-        <InspirationColumn />
+        <ActivityColumn
+          title={t('atelier.dashboard.col.recent_activity', null,
+                   config?.section_activity_title || 'Recent activity')}
+          events={recent} t={t} />
+        <MilestonesColumn
+          title={t('atelier.dashboard.col.upcoming_milestones', null,
+                   config?.section_milestones_title || 'Upcoming milestones')}
+          milestones={milestones} t={t} />
+        <InspirationColumn
+          title={t('atelier.dashboard.col.daily_inspiration', null,
+                   config?.section_inspiration_title || 'Daily inspiration')}
+          quote={config?.inspiration_quote}
+          ambient={config?.inspiration_media}
+          t={t} />
       </section>
     </div>
   );

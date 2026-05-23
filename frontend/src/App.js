@@ -56,6 +56,7 @@ const MaterialViewPage = lazy(() => import('./pages/inspirations/MaterialViewPag
 const ClientPreviewPage = lazy(() => import('./pages/ClientPreviewPage'));
 const InsightsPage = lazy(() => import('./pages/insights/InsightsPage'));
 const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'));
+const AtelierDashboardAdminPage = lazy(() => import('./pages/settings/AtelierDashboardAdminPage'));
 const BrandStudioPage = lazy(() => import('./pages/settings/BrandStudioPage'));
 const DomainsPage = lazy(() => import('./pages/settings/DomainsPage'));
 const HomepageBuilderPage = lazy(() => import('./pages/settings/HomepageBuilderPage'));
@@ -388,6 +389,7 @@ function App() {
                   <Route path="/inspirations/materials" element={<MaterialViewPage />} />
                   <Route path="/insights" element={<InsightsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
+                  <Route path="/settings/atelier-dashboard" element={<StudioAdminRoute><AtelierDashboardAdminPage /></StudioAdminRoute>} />
                   <Route path="/settings/brand" element={<StudioAdminRoute><BrandStudioPage /></StudioAdminRoute>} />
                   {/* Sprint UI-SYS-01 · Studio Identity™ canonical alias */}
                   <Route path="/studio-identity" element={<Navigate to="/settings/brand" replace />} />

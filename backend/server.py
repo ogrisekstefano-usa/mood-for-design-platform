@@ -107,6 +107,7 @@ from routers import journey_pulse
 from routers import journey_step_workspace
 from routers import site_evolution
 from routers import journey_closure
+from routers import atelier_dashboard
 api_router.include_router(portfolio.router, prefix="/portfolio", tags=["portfolio"])
 api_router.include_router(proposals.router, prefix="/proposals", tags=["proposals"])
 api_router.include_router(moodboards.router, prefix="/moodboards", tags=["moodboards"])
@@ -130,6 +131,7 @@ api_router.include_router(journey_pulse.router,                             tags
 api_router.include_router(journey_step_workspace.router,                    tags=["journey-step-workspace"])
 api_router.include_router(site_evolution.router,                            tags=["site-evolution"])
 api_router.include_router(journey_closure.router,                           tags=["journey-closure"])
+api_router.include_router(atelier_dashboard.router,                         tags=["atelier-dashboard"])
 api_router.include_router(inspirations.router, prefix="/inspirations", tags=["inspirations"])
 api_router.include_router(insights.router, prefix="/insights", tags=["insights"])
 api_router.include_router(settings.router, prefix="/settings", tags=["settings"])

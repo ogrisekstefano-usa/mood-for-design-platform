@@ -439,7 +439,8 @@
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
       "platform": "Plattform",
-      "workspace": "Atelier"
+      "workspace": "Atelier",
+      "studio_pulse": "Studio Pulse™"
     },
     "studio_pulse": "Studio Pulse",
     "your_journeys": "Deine Journeys",
@@ -477,7 +478,10 @@
     },
     "project": {
       "detail": "Projektansicht"
-    }
+    },
+    "dashboard": "Dashboard",
+    "workspace_switcher": "Arbeitsbereich",
+    "new_journey": "Neue Journey"
   },
   "projects": {
     "tabs": {
@@ -1644,6 +1648,10 @@
       "body": "Identität, Markenarchitektur und aktive Module des Ateliers.",
       "kicker": "Arbeitsumgebung",
       "title": "Arbeitsumgebung"
+    },
+    "atelier_dashboard": {
+      "title": "Dashboard Atelier",
+      "sub": "Kuratieren Sie Hero-Bilder, kinematische Copy und tägliche Inspirationszitate für Studio Pulse™. Sprachspezifische Überschreibungen."
     }
   },
   "site": {
@@ -2060,6 +2068,89 @@
       "new_collection": "Neue Kollektion im Atelier",
       "new_producer": "Neuer Hersteller",
       "no_producer_found": "Kein Hersteller in der Datenbank hinterlegt."
+    }
+  },
+  "atelier": {
+    "dashboard": {
+      "hero": {
+        "greeting": {
+          "morning": "Guten Morgen",
+          "afternoon": "Guten Tag",
+          "evening": "Guten Abend"
+        },
+        "eyebrow": "Studio Pulse™ · Projekt-Rhythmus",
+        "summary_template": "{active} Journeys im Atemzug · {voices} Stimmen heute eingegangen",
+        "signature": "Wir formen Räume mit Bedeutung."
+      },
+      "kpi": {
+        "active_journeys": "Aktive Journeys",
+        "dossier_in_progress": "Dossier in Arbeit",
+        "awaiting_feedback": "Antwort ausstehend",
+        "deliveries_week": "Lieferungen diese Woche"
+      },
+      "card": {
+        "status": {
+          "in_progress": "IN ARBEIT",
+          "in_review": "IM REVIEW",
+          "new": "NEU",
+          "listening": "IM ZUHÖREN",
+          "approved": "FREIGEGEBEN",
+          "delivered": "GELIEFERT",
+          "paused": "PAUSIERT",
+          "active": "AKTIV"
+        },
+        "untitled": "Journey ohne Titel",
+        "updated": "Aktualisiert {when}",
+        "no_updates": "Wartet auf erstes Kapitel"
+      },
+      "col": {
+        "recent_activity": "Aktuelle Bewegung",
+        "upcoming_milestones": "Nächste Kapitel",
+        "daily_inspiration": "Tägliche Inspiration",
+        "activity_empty": "Noch keine Bewegung. Das Atelier atmet in Stille.",
+        "milestones_empty": "Wartet auf das nächste Kapitel.",
+        "inspiration_empty": "Noch kein Zitat kuratiert."
+      },
+      "projects": {
+        "title": "Journeys im Atemzug",
+        "see_all": "Alle ansehen",
+        "empty": "Ihr Atelier ruht in Stille. Die nächste Journey wartet auf ihren Beginn.",
+        "empty_cta": "Neue Journey beginnen"
+      },
+      "time": {
+        "just_now": "gerade eben",
+        "hours_ago": "vor {n}h",
+        "yesterday": "gestern",
+        "days_ago": "vor {n} Tagen"
+      }
+    },
+    "admin": {
+      "back": "Zurück zu den Einstellungen",
+      "eyebrow": "Atelier · Studio-Identität",
+      "title": "Dashboard Atelier",
+      "lede": "Kuratieren Sie Hero-Copy, kinematische Bildsprache und die Zitatbibliothek, die das Studio Pulse™ Dashboard prägen. Sprachspezifische Überschreibungen werden automatisch kaskadiert.",
+      "tab": {
+        "copy": "Hero & Sektionen",
+        "media": "Medien-Bibliothek",
+        "quotes": "Inspirationszitate"
+      },
+      "locale": "Ziel-Sprache",
+      "use_i18n": "leer → i18n verwenden",
+      "media_library": "Medien-Bibliothek",
+      "add_media": "Neues Medium hinzufügen",
+      "quote_library": "Zitatbibliothek",
+      "add_quote": "Neues Zitat hinzufügen",
+      "add": "Hinzufügen",
+      "save_copy": "Copy-Überschreibung speichern",
+      "copy_saved": "Atelier-Copy gespeichert",
+      "media_added": "Medium hinzugefügt",
+      "media_archived": "Medium archiviert",
+      "quote_added": "Zitat hinzugefügt",
+      "quote_archived": "Zitat archiviert",
+      "url_required": "Bild-URL erforderlich",
+      "quote_required": "Zitat-Text erforderlich",
+      "confirm_archive": "Dieses Medien-Asset archivieren?",
+      "confirm_archive_quote": "Dieses Zitat archivieren?"
     }
   }
 }

@@ -193,7 +193,8 @@
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
       "platform": "المنصة",
-      "workspace": "ورشة الأثر"
+      "workspace": "ورشة الأثر",
+      "studio_pulse": "Studio Pulse™"
     },
     "studio_pulse": "Studio Pulse",
     "your_journeys": "رحلاتك",
@@ -230,7 +231,10 @@
     },
     "project": {
       "detail": "تفاصيل المشروع"
-    }
+    },
+    "dashboard": "لوحة التحكّم",
+    "workspace_switcher": "مساحة العمل",
+    "new_journey": "رحلة جديدة"
   },
   "companion": {
     "hero": {
@@ -1654,6 +1658,10 @@
       "body": "الهوية، الحضور المؤسسي، والمكونات الحية للورشة",
       "kicker": "فضاء الورشة",
       "title": "فضاء الورشة"
+    },
+    "atelier_dashboard": {
+      "title": "لوحة الورشة",
+      "sub": "نظِّم صور البطل والنص السينمائي واقتباسات الإلهام لـ Studio Pulse™. تجاوزات لكل لغة."
     }
   },
   "site": {
@@ -2062,6 +2070,89 @@
       "new_collection": "مجموعة جديدة في السجل",
       "new_producer": "مورّد جديد في السجل",
       "no_producer_found": "لم يتم العثور على أي صانع في السجل"
+    }
+  },
+  "atelier": {
+    "dashboard": {
+      "hero": {
+        "greeting": {
+          "morning": "صباح الخير",
+          "afternoon": "مساء الخير",
+          "evening": "مساء الخير"
+        },
+        "eyebrow": "Studio Pulse™ · إيقاع المشروع",
+        "summary_template": "{active} رحلات في تنفّس · {voices} أصوات وصلت اليوم",
+        "signature": "لِنشكّل فضاءات جميلة معاً."
+      },
+      "kpi": {
+        "active_journeys": "الرحلات النشطة",
+        "dossier_in_progress": "ملفّات قيد العمل",
+        "awaiting_feedback": "في انتظار الصوت",
+        "deliveries_week": "تسليمات هذا الأسبوع"
+      },
+      "card": {
+        "status": {
+          "in_progress": "قيد التنفيذ",
+          "in_review": "قيد المراجعة",
+          "new": "جديد",
+          "listening": "إصغاء",
+          "approved": "مُعتمد",
+          "delivered": "مُسلَّم",
+          "paused": "متوقف",
+          "active": "نشط"
+        },
+        "untitled": "رحلة بلا عنوان",
+        "updated": "حُدّث {when}",
+        "no_updates": "في انتظار الفصل الأول"
+      },
+      "col": {
+        "recent_activity": "الحراك الأخير",
+        "upcoming_milestones": "الفصول القادمة",
+        "daily_inspiration": "إلهام اليوم",
+        "activity_empty": "لا حراك بعد. الورشة تتنفّس في صمت.",
+        "milestones_empty": "في انتظار الفصل التالي.",
+        "inspiration_empty": "لم تُختر اقتباس بعد."
+      },
+      "projects": {
+        "title": "الرحلات في تنفّس",
+        "see_all": "عرض الكل",
+        "empty": "ورشتك تستريح في صمت. الرحلة التالية تنتظر بدايتها.",
+        "empty_cta": "ابدأ رحلة جديدة"
+      },
+      "time": {
+        "just_now": "الآن",
+        "hours_ago": "قبل {n} ساعة",
+        "yesterday": "الأمس",
+        "days_ago": "قبل {n} أيام"
+      }
+    },
+    "admin": {
+      "back": "العودة إلى الإعدادات",
+      "eyebrow": "الورشة · هوية الاستوديو",
+      "title": "لوحة الورشة",
+      "lede": "نظِّم نص البطل والصور السينمائية ومكتبة اقتباسات الإلهام التي تُشكِّل لوحة Studio Pulse™. تُطبَّق التجاوزات حسب اللغة تلقائياً.",
+      "tab": {
+        "copy": "البطل والأقسام",
+        "media": "مكتبة الوسائط",
+        "quotes": "اقتباسات الإلهام"
+      },
+      "locale": "اللغة الهدف",
+      "use_i18n": "فارغ → استخدم i18n",
+      "media_library": "مكتبة الوسائط",
+      "add_media": "أضف وسيطاً جديداً",
+      "quote_library": "مكتبة الاقتباسات",
+      "add_quote": "أضف اقتباساً جديداً",
+      "add": "أضف",
+      "save_copy": "احفظ التجاوز",
+      "copy_saved": "تم حفظ نص الورشة",
+      "media_added": "تمت إضافة الوسيط",
+      "media_archived": "تمت أرشفة الوسيط",
+      "quote_added": "تمت إضافة الاقتباس",
+      "quote_archived": "تمت أرشفة الاقتباس",
+      "url_required": "رابط الصورة مطلوب",
+      "quote_required": "نص الاقتباس مطلوب",
+      "confirm_archive": "هل تريد أرشفة هذا الأصل؟",
+      "confirm_archive_quote": "هل تريد أرشفة هذا الاقتباس؟"
     }
   }
 }

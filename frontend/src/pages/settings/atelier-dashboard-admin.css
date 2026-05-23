@@ -1,0 +1,290 @@
+/* Atelier Dashboard Admin · Studio Identity → Atelier Media
+ * ITER138 · Command Center surface for dashboard content. */
+
+.ada {
+  padding: 56px 56px 80px;
+  max-width: 1280px;
+  background: transparent;
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+}
+
+.ada__head { margin-bottom: 32px; }
+
+.ada__back {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+  text-decoration: none;
+  margin-bottom: 28px;
+  transition: color var(--bp-dur-quick) var(--bp-ease-soft);
+}
+.ada__back:hover { color: var(--atelier-cyan); }
+
+.ada__eyebrow {
+  font-family: var(--atelier-sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--atelier-cyan);
+  margin: 0 0 14px;
+}
+
+.ada__title {
+  font-family: var(--atelier-serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(34px, 3vw, 50px);
+  line-height: 1.05;
+  letter-spacing: var(--atelier-track-tight);
+  color: var(--bp-text-headline);
+  margin: 0 0 16px;
+}
+.ada__title em { font-style: italic; }
+
+.ada__lede {
+  font-family: var(--atelier-sans);
+  font-size: 14px;
+  color: var(--bp-text-secondary);
+  max-width: 64ch;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* Tabs */
+.ada__tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--bp-border-soft);
+  margin-bottom: 36px;
+}
+
+.ada__tab {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 12px 18px;
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bp-text-muted);
+  position: relative;
+  transition: color var(--bp-dur-quick) var(--bp-ease-soft);
+}
+.ada__tab:hover { color: var(--bp-text-primary); }
+.ada__tab.is-active { color: var(--bp-text-headline); }
+.ada__tab.is-active::after {
+  content: ''; position: absolute; left: 18px; right: 18px; bottom: -1px;
+  height: 1.5px; background: var(--atelier-cyan); box-shadow: 0 0 6px var(--atelier-cyan-glow);
+}
+
+/* Panel */
+.ada__panel {
+  background: var(--bp-surface-1);
+  border: 1px solid var(--bp-border);
+  border-radius: var(--bp-radius-lg);
+  padding: 32px;
+  box-shadow: var(--bp-shadow-xs);
+}
+
+.ada__sub {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--bp-text-headline);
+  margin: 0 0 20px;
+  letter-spacing: var(--atelier-track-tight);
+}
+
+.ada__sub + .ada__media,
+.ada__sub + .ada__quotes { margin-bottom: 28px; }
+
+/* Form grid */
+.ada__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 22px;
+}
+.ada__field {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.ada__field--wide { grid-column: 1 / -1; }
+
+.ada__field label {
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--atelier-track-eyebrow);
+  text-transform: uppercase;
+  color: var(--bp-text-faint);
+}
+
+.ada__field input,
+.ada__field textarea,
+.ada__field select {
+  background: var(--bp-bg-soft);
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+  font-size: 13.5px;
+  padding: 10px 12px;
+  border-radius: var(--bp-radius-sm);
+}
+.ada__field input:focus,
+.ada__field textarea:focus,
+.ada__field select:focus {
+  outline: none;
+  border-color: var(--atelier-cyan-line);
+  box-shadow: 0 0 0 3px var(--atelier-cyan-glow);
+}
+
+.ada__foot {
+  margin-top: 24px;
+  display: flex; justify-content: flex-end;
+}
+
+.ada__cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 22px;
+  font-family: var(--atelier-sans);
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 0.04em;
+  background: var(--atelier-cyan);
+  color: #051310;
+  border: none;
+  border-radius: var(--bp-radius-pill);
+  cursor: pointer;
+  box-shadow: var(--atelier-glow-cyan-sm);
+  transition: all var(--bp-dur-quick) var(--bp-ease-soft);
+}
+.ada__cta:hover:not(:disabled) {
+  background: var(--atelier-cyan-soft);
+  transform: translateY(-1px);
+  box-shadow: var(--atelier-glow-cyan);
+}
+.ada__cta:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Media list */
+.ada__media,
+.ada__quotes {
+  list-style: none; padding: 0; margin: 0 0 32px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.ada__media-row {
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  gap: 16px;
+  padding: 14px;
+  background: var(--bp-bg-soft);
+  border: 1px solid var(--bp-border-soft);
+  border-radius: var(--bp-radius-md);
+  align-items: center;
+}
+
+.ada__media-row img {
+  width: 96px; height: 64px;
+  object-fit: cover;
+  border-radius: var(--bp-radius-sm);
+  border: 1px solid var(--bp-border-soft);
+}
+
+.ada__media-kind {
+  font-family: var(--atelier-sans);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--atelier-cyan);
+  margin: 0 0 4px;
+}
+
+.ada__media-alt {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--bp-text-headline);
+  margin: 0 0 4px;
+}
+
+.ada__media-meta {
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  color: var(--bp-text-faint);
+  margin: 0;
+}
+
+/* Quote list */
+.ada__quote-row {
+  position: relative;
+  padding: 16px 50px 16px 18px;
+  background: var(--bp-bg-soft);
+  border: 1px solid var(--bp-border-soft);
+  border-radius: var(--bp-radius-md);
+}
+.ada__quote-row blockquote {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--bp-text-headline);
+  margin: 0 0 6px;
+  line-height: 1.4;
+}
+.ada__quote-meta {
+  font-family: var(--atelier-sans);
+  font-size: 11px;
+  color: var(--bp-text-secondary);
+  margin: 0 0 2px;
+}
+.ada__quote-meta span {
+  background: rgba(94, 234, 212, 0.06);
+  color: var(--atelier-cyan);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  margin-left: 4px;
+}
+.ada__quote-src {
+  font-family: var(--atelier-sans);
+  font-size: 10.5px;
+  color: var(--bp-text-faint);
+  margin: 0;
+}
+
+.ada__icon-btn {
+  position: absolute;
+  right: 12px; top: 12px;
+  width: 30px; height: 30px;
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-muted);
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all var(--bp-dur-quick) var(--bp-ease-soft);
+}
+.ada__icon-btn:hover {
+  border-color: rgba(201, 136, 138, 0.42);
+  color: rgba(201, 136, 138, 0.92);
+}
+
+.ada__empty {
+  font-family: var(--atelier-serif);
+  font-style: italic;
+  color: var(--bp-text-faint);
+  padding: 24px 0;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .ada { padding: 32px 22px 56px; }
+  .ada__grid { grid-template-columns: 1fr; }
+  .ada__panel { padding: 22px; }
+}

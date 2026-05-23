@@ -439,7 +439,8 @@
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
       "platform": "Platform",
-      "workspace": "Workspace"
+      "workspace": "Workspace",
+      "studio_pulse": "Studio Pulse™"
     },
     "studio_pulse": "Studio Pulse",
     "your_journeys": "I tuoi Journey",
@@ -477,7 +478,10 @@
     },
     "project": {
       "detail": "Dettaglio progetto"
-    }
+    },
+    "dashboard": "Dashboard",
+    "workspace_switcher": "Spazio di lavoro",
+    "new_journey": "Nuovo Journey"
   },
   "projects": {
     "tabs": {
@@ -1549,6 +1553,10 @@
       "body": "Identità, brand e moduli attivi del workspace.",
       "kicker": "Workspace",
       "title": "Workspace"
+    },
+    "atelier_dashboard": {
+      "title": "Dashboard Atelier",
+      "sub": "Cura immagini hero, copy cinematografica e citazioni ispirazionali per Studio Pulse™. Sovrascritture per lingua."
     }
   },
   "site": {
@@ -2060,6 +2068,89 @@
       "title_em": "linguaggi progettuali",
       "lead": "Esplora i marchi, le collezioni e il linguaggio progettuale dei produttori presenti in MOOD. Ogni brand è una pagina del nostro atlante curatoriale.",
       "empty_lede": "L’atlante curatoriale è in costruzione. Aggiungi un produttore o importa un catalogo per iniziare la lettura."
+    }
+  },
+  "atelier": {
+    "dashboard": {
+      "hero": {
+        "greeting": {
+          "morning": "Buongiorno",
+          "afternoon": "Buon pomeriggio",
+          "evening": "Buonasera"
+        },
+        "eyebrow": "Studio Pulse™ · Ritmo Progettuale",
+        "summary_template": "{active} Journey in respiro · {voices} voci ricevute oggi",
+        "signature": "Diamo forma a spazi belli."
+      },
+      "kpi": {
+        "active_journeys": "Journey attivi",
+        "dossier_in_progress": "Dossier in corso",
+        "awaiting_feedback": "In attesa di voce",
+        "deliveries_week": "Consegne della settimana"
+      },
+      "card": {
+        "status": {
+          "in_progress": "IN CORSO",
+          "in_review": "IN RIVISTA",
+          "new": "NUOVO",
+          "listening": "IN ASCOLTO",
+          "approved": "APPROVATO",
+          "delivered": "CONSEGNATO",
+          "paused": "IN PAUSA",
+          "active": "ATTIVO"
+        },
+        "untitled": "Journey senza titolo",
+        "updated": "Aggiornato {when}",
+        "no_updates": "In attesa del primo capitolo"
+      },
+      "col": {
+        "recent_activity": "Movimenti recenti",
+        "upcoming_milestones": "Prossimi capitoli",
+        "daily_inspiration": "Ispirazione del giorno",
+        "activity_empty": "Nessun movimento. Lo studio respira in silenzio.",
+        "milestones_empty": "In attesa del prossimo capitolo.",
+        "inspiration_empty": "Nessuna citazione curata ancora."
+      },
+      "projects": {
+        "title": "Journey in respiro",
+        "see_all": "Vedi tutti",
+        "empty": "Il tuo atelier è in silenzio. Il prossimo journey aspetta di iniziare.",
+        "empty_cta": "Inizia un nuovo journey"
+      },
+      "time": {
+        "just_now": "adesso",
+        "hours_ago": "{n}h fa",
+        "yesterday": "ieri",
+        "days_ago": "{n} giorni fa"
+      }
+    },
+    "admin": {
+      "back": "Torna alle impostazioni",
+      "eyebrow": "Atelier · Identità dello studio",
+      "title": "Dashboard Atelier",
+      "lede": "Cura la copy del hero, l'immagine cinematografica e la libreria di citazioni ispirazionali che compongono la dashboard Studio Pulse™. Le sovrascritture per lingua si applicano in cascata automatica.",
+      "tab": {
+        "copy": "Hero e sezioni",
+        "media": "Libreria media",
+        "quotes": "Citazioni ispirazionali"
+      },
+      "locale": "Lingua target",
+      "use_i18n": "vuoto → usa i18n",
+      "media_library": "Libreria media",
+      "add_media": "Aggiungi nuovo media",
+      "quote_library": "Libreria citazioni",
+      "add_quote": "Aggiungi nuova citazione",
+      "add": "Aggiungi",
+      "save_copy": "Salva sovrascrittura copy",
+      "copy_saved": "Copy atelier salvata",
+      "media_added": "Media aggiunto",
+      "media_archived": "Media archiviato",
+      "quote_added": "Citazione aggiunta",
+      "quote_archived": "Citazione archiviata",
+      "url_required": "URL immagine obbligatorio",
+      "quote_required": "Testo citazione obbligatorio",
+      "confirm_archive": "Archiviare questo asset media?",
+      "confirm_archive_quote": "Archiviare questa citazione?"
     }
   }
 }

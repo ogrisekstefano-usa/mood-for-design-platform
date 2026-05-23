@@ -120,6 +120,11 @@ const SettingsPage = () => {
             title={t('settings.brand.title', null, 'Studio Identity™')}
             description={t('settings.brand.sub', null, 'Definisci logo, palette, font e presenza visiva del tuo workspace.')}
           />
+          <SettingsTile testid="tile-atelier-dashboard" icon={Palette} to="/settings/atelier-dashboard" accent="core"
+            title={t('settings.atelier_dashboard.title', null, 'Dashboard Atelier')}
+            description={t('settings.atelier_dashboard.sub', null,
+              'Curate hero imagery, cinematic copy and daily inspiration quotes for Studio Pulse™. Per-locale overrides.')}
+          />
           <SettingsTile testid="tile-international-presence" icon={Globe} to="/settings/international-presence" accent="core"
             title={t('settings.internationalPresence.title', null, 'International Presence™')}
             description={t('settings.internationalPresence.sub', null, 'The editorial map of markets where the studio positions itself. Activates locale-native storefronts.')}

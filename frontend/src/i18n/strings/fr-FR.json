@@ -439,7 +439,8 @@
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
       "platform": "Plateforme",
-      "workspace": "Atelier"
+      "workspace": "Atelier",
+      "studio_pulse": "Studio Pulse™"
     },
     "studio_pulse": "Studio Pulse",
     "your_journeys": "Vos Journeys",
@@ -477,7 +478,10 @@
     },
     "project": {
       "detail": "Récit du projet"
-    }
+    },
+    "dashboard": "Tableau de bord",
+    "workspace_switcher": "Espace de travail",
+    "new_journey": "Nouveau Parcours"
   },
   "projects": {
     "tabs": {
@@ -1644,6 +1648,10 @@
       "body": "L'identité visuelle, la présence de votre maison, et l'ensemble des modules qui composent l'architecture de votre atelier.",
       "kicker": "L'atelier où le regard prend forme",
       "title": "Atelier de création"
+    },
+    "atelier_dashboard": {
+      "title": "Dashboard Atelier",
+      "sub": "Curatez l'imagerie hero, la copy cinématographique et les citations d'inspiration pour Studio Pulse™. Surcharges par langue."
     }
   },
   "site": {
@@ -2060,6 +2068,89 @@
       "new_collection": "Nouveaux récits de matière à l'atelier",
       "new_producer": "Nouveau producteur inscrit au registre de l'atelier",
       "no_producer_found": "Aucune présence artisanale n'a pu être inscrite dans le registre de l'atelier."
+    }
+  },
+  "atelier": {
+    "dashboard": {
+      "hero": {
+        "greeting": {
+          "morning": "Bonjour",
+          "afternoon": "Bon après-midi",
+          "evening": "Bonsoir"
+        },
+        "eyebrow": "Studio Pulse™ · Rythme du Projet",
+        "summary_template": "{active} parcours en souffle · {voices} voix reçues aujourd'hui",
+        "signature": "Donnons forme à des espaces qui touchent."
+      },
+      "kpi": {
+        "active_journeys": "Parcours actifs",
+        "dossier_in_progress": "Dossiers en cours",
+        "awaiting_feedback": "En attente de voix",
+        "deliveries_week": "Livraisons de la semaine"
+      },
+      "card": {
+        "status": {
+          "in_progress": "EN COURS",
+          "in_review": "EN REVUE",
+          "new": "NOUVEAU",
+          "listening": "À L'ÉCOUTE",
+          "approved": "APPROUVÉ",
+          "delivered": "LIVRÉ",
+          "paused": "EN PAUSE",
+          "active": "ACTIF"
+        },
+        "untitled": "Parcours sans titre",
+        "updated": "Actualisé {when}",
+        "no_updates": "En attente du premier chapitre"
+      },
+      "col": {
+        "recent_activity": "Mouvements récents",
+        "upcoming_milestones": "Prochains chapitres",
+        "daily_inspiration": "Inspiration du jour",
+        "activity_empty": "Aucun mouvement. L'atelier respire en silence.",
+        "milestones_empty": "En attente du prochain chapitre.",
+        "inspiration_empty": "Aucune citation à l'horizon."
+      },
+      "projects": {
+        "title": "Parcours en souffle",
+        "see_all": "Voir tout",
+        "empty": "Votre atelier est en silence. Le prochain parcours attend de commencer.",
+        "empty_cta": "Commencer un parcours"
+      },
+      "time": {
+        "just_now": "à l'instant",
+        "hours_ago": "il y a {n}h",
+        "yesterday": "hier",
+        "days_ago": "il y a {n} jours"
+      }
+    },
+    "admin": {
+      "back": "Retour aux paramètres",
+      "eyebrow": "Atelier · Identité du Studio",
+      "title": "Dashboard Atelier",
+      "lede": "Curatez la copy du hero, l'imagerie cinématographique et la bibliothèque de citations qui composent le tableau de bord Studio Pulse™. Les surcharges par langue s'appliquent en cascade.",
+      "tab": {
+        "copy": "Hero & Sections",
+        "media": "Bibliothèque Média",
+        "quotes": "Citations d'inspiration"
+      },
+      "locale": "Langue cible",
+      "use_i18n": "vide → utiliser i18n",
+      "media_library": "Bibliothèque Média",
+      "add_media": "Ajouter un média",
+      "quote_library": "Bibliothèque de citations",
+      "add_quote": "Ajouter une citation",
+      "add": "Ajouter",
+      "save_copy": "Enregistrer la copy",
+      "copy_saved": "Copy atelier enregistrée",
+      "media_added": "Média ajouté",
+      "media_archived": "Média archivé",
+      "quote_added": "Citation ajoutée",
+      "quote_archived": "Citation archivée",
+      "url_required": "URL d'image requise",
+      "quote_required": "Texte de citation requis",
+      "confirm_archive": "Archiver cet asset ?",
+      "confirm_archive_quote": "Archiver cette citation ?"
     }
   }
 }

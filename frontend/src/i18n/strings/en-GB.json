@@ -439,7 +439,8 @@
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
       "platform": "Platform",
-      "workspace": "Atelier"
+      "workspace": "Atelier",
+      "studio_pulse": "Studio Pulse™"
     },
     "studio_pulse": "Studio Pulse",
     "your_journeys": "Your Journeys",
@@ -477,7 +478,10 @@
     },
     "project": {
       "detail": "Project record"
-    }
+    },
+    "dashboard": "Dashboard",
+    "workspace_switcher": "Workspace",
+    "new_journey": "New Journey"
   },
   "projects": {
     "tabs": {
@@ -1644,6 +1648,10 @@
       "body": "Workspace identity, registered mark and active modules.",
       "kicker": "Studio atelier",
       "title": "Studio registry"
+    },
+    "atelier_dashboard": {
+      "title": "Dashboard Atelier",
+      "sub": "Curate hero imagery, cinematic copy and daily inspiration quotes for Studio Pulse™. Per-locale overrides."
     }
   },
   "site": {
@@ -2060,6 +2068,89 @@
       "new_collection": "Recent addition to the studio register",
       "new_producer": "Newly registered maker",
       "no_producer_found": "No producer on record."
+    }
+  },
+  "atelier": {
+    "dashboard": {
+      "hero": {
+        "greeting": {
+          "morning": "Good morning",
+          "afternoon": "Good afternoon",
+          "evening": "Good evening"
+        },
+        "eyebrow": "Studio Pulse™ · Project Rhythm",
+        "summary_template": "{active} journeys in motion · {voices} voices received today",
+        "signature": "Let us shape considered spaces."
+      },
+      "kpi": {
+        "active_journeys": "Active Journeys",
+        "dossier_in_progress": "Dossier in progress",
+        "awaiting_feedback": "Awaiting response",
+        "deliveries_week": "Deliveries this week"
+      },
+      "card": {
+        "status": {
+          "in_progress": "IN PROGRESS",
+          "in_review": "UNDER REVIEW",
+          "new": "NEW",
+          "listening": "LISTENING",
+          "approved": "APPROVED",
+          "delivered": "DELIVERED",
+          "paused": "PAUSED",
+          "active": "ACTIVE"
+        },
+        "untitled": "Untitled journey",
+        "updated": "Updated {when}",
+        "no_updates": "Awaiting first chapter"
+      },
+      "col": {
+        "recent_activity": "Recent activity",
+        "upcoming_milestones": "Upcoming milestones",
+        "daily_inspiration": "Daily inspiration",
+        "activity_empty": "No recent movement. The studio is in considered silence.",
+        "milestones_empty": "Awaiting the next chapter.",
+        "inspiration_empty": "No quote curated yet."
+      },
+      "projects": {
+        "title": "Journeys in motion",
+        "see_all": "See all",
+        "empty": "Your atelier rests in quiet. The next journey awaits its first chapter.",
+        "empty_cta": "Begin a new journey"
+      },
+      "time": {
+        "just_now": "just now",
+        "hours_ago": "{n}h ago",
+        "yesterday": "yesterday",
+        "days_ago": "{n} days ago"
+      }
+    },
+    "admin": {
+      "back": "Back to settings",
+      "eyebrow": "Atelier · Studio Identity",
+      "title": "Dashboard Atelier",
+      "lede": "Curate the hero copy, cinematic imagery and inspiration quote library that compose the Studio Pulse™ dashboard. Per-locale overrides cascade automatically.",
+      "tab": {
+        "copy": "Hero & Sections",
+        "media": "Media Library",
+        "quotes": "Inspiration Quotes"
+      },
+      "locale": "Target locale",
+      "use_i18n": "leave empty → use i18n",
+      "media_library": "Media Library",
+      "add_media": "Add new media",
+      "quote_library": "Inspiration Quote Library",
+      "add_quote": "Add new quote",
+      "add": "Add",
+      "save_copy": "Save copy override",
+      "copy_saved": "Atelier copy saved",
+      "media_added": "Media added",
+      "media_archived": "Media archived",
+      "quote_added": "Quote added",
+      "quote_archived": "Quote archived",
+      "url_required": "Image URL required",
+      "quote_required": "Quote text required",
+      "confirm_archive": "Archive this media asset?",
+      "confirm_archive_quote": "Archive this quote?"
     }
   }
 }

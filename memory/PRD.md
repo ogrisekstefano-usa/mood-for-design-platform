@@ -1,7 +1,42 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
-- **Sprint ITER138 · Blueprint Atelier™ Visual System — Phase 2 (Global Component Audit + Cinematic Art Direction Pass)** · ✅ CORE DELIVERED · 23 Feb 2026 · Atelier Nordic™ DNA propagato all'intera applicazione + cinematic polish layer che trasforma il sistema da "premium SaaS template" a "luxury cinematic operating system for architecture studios". **4 deliverables consegnati e validati live**:
+- **Sprint ITER138 · Blueprint Atelier™ Visual System — Phase 2 Complete + DB-Driven Dashboard™** · ✅ ALL P0 CRITERIA MET · 23 Feb 2026 · L'intera dashboard Atelier è ora **dynamic, tenant-aware, locale-aware, admin-editable, MISS 0 LEAK 0**. 6 deliverables consegnati e validati live:
+
+  **(1) Cinematic Polish Layer** — `frontend/src/design-system/atelier/cinematic.css` (~430 LoC). Unified image grading pipeline (`brightness 0.56 · saturate 0.62 · contrast 1.12 · hue-rotate -6deg`), atmospheric background depth (radial charcoal→midnight + faint SVG film grain), hero atmospheric layers (extended cinematic left gradient + warm fireplace radial + vignette ring), panel softening (border alpha 6%→3.5% + inner radial wash), typography tightening (letter-spacing -0.025em + line-height 0.96), sidebar restraint (backdrop-blur 20px + opacity 0.62 base).
+
+  **(2) Global Component Audit Layer** — `components.css` (~1300 LoC). Re-binding HSL Tailwind/shadcn tokens sotto `[data-atelier="nordic"]` → ogni Button/Input/Card/Dialog/Drawer/Dropdown/Tooltip/Table/Tabs/Toggle/Switch/Toast/Pagination eredita Atelier Nordic. Legacy `--bp-*` bridge (font-heading → Cormorant, primary-soft → cyan, surface-elevated → bp-elevated). Re-usable primitives `.atelier-modal`, `.atelier-field`, `.atelier-page`.
+
+  **(3) 4-Wave Module Refactor** — Design Journey (`/workspace/projects`), CRM Relationship Lounge (`/crm/*`), Inspirations + Brand Atlas Curatorial Gallery (`/inspirations`, `/inspirations/brands`), Settings Operational Coherence (`/settings`). Tutte le superfici OS leggono come un unico film visivo.
+
+  **(4) DB-Driven Dashboard Content Model** — **Migration 069** crea 3 nuove tabelle Supabase:
+    - `atelier_dashboard_config` (tenant_id, locale, hero_eyebrow/greetings/summary/signature, hero_media_id FK, overlay_profile, 4 KPI labels, 5 section titles)
+    - `atelier_dashboard_media` (tenant_id, media_kind: hero|project_card_fallback|inspiration, file_url, alt, focal_point x/y, grading_profile, overlay_intensity, locale)
+    - `atelier_dashboard_quotes` (tenant_id, quote_text, author, source, locale, media_id FK, schedule windows)
+    - Tutte e 3 tenant-scoped con NULL tenant_id come system default fallback. Resolution priority: tenant+locale > tenant+* > NULL+locale > NULL+*.
+    - **Backend router** `routers/atelier_dashboard.py` (~340 LoC): GET `/api/atelier/dashboard/config`, `/media`, `/quotes` con ALE-on-read localization (quote.text rewritten via existing TM when locale ≠ source). PUT `/config`, POST/DELETE `/media`, `/quotes` con role-gated (`super_admin|tenant_admin|owner|designer`).
+    - **Seed**: 1 system default config + 1 hero asset + 1 inspiration asset + 4 project_card_fallback covers + 4 curated quotes (Coco Chanel · Charles Eames · Dieter Rams · Hartmut Esslinger).
+
+  **(5) Frontend Wiring · 100% DB + i18n** — `AtelierDashboardPage.jsx` riscritta da zero: ZERO hardcoded copy, ZERO hardcoded images, ZERO mock arrays. Fetch parallelo a `/api/atelier/dashboard/config` + `/api/dashboard/pulse` (real journey data). **Priority chain**: `t('atelier.dashboard.*')` always primary, DB config used as fallback inside `t()`, hardcoded English as ultimate fallback only. Project cards show real journey codes (`G3_GSRTLM`, `G3_PQGZYK`, etc.) with current_milestone, progress, last_evolved_at. Inspiration quote rotates daily-of-year, ALE-localized. Elegant empty states tutto via `t()`. Validato live: hero "Buongiorno, Stefano." + KPI `41 · 27 · 0 · 0` (real data) + 4 cards reali + Movimenti recenti (4) + Prossimi capitoli (4 con DATE COLUMN) + Ispirazione "Form follows emotion. — Hartmut Esslinger".
+
+  **(6) Atelier Dashboard Command Center** — Nuova pagina admin `/settings/atelier-dashboard` (`AtelierDashboardAdminPage.jsx` + `atelier-dashboard-admin.css`, ~580 LoC totale). 3 tabs editoriali:
+    - **HERO & SECTIONS**: per-locale dropdown (8 opzioni: All locales + 7 lingue) + 15 fields editabili (eyebrow, 3 greetings, summary template con {active}/{voices} interpolation, signature, 4 KPI labels, 5 section titles) + overlay profile picker (Cinematic Left / Cinematic Full Bleed / Minimal / Warm Hospitality Glow). Save → PUT /config con tenant scoping.
+    - **MEDIA LIBRARY**: list current media + add new (URL, alt, focal point x/y, grading profile dropdown, overlay intensity 0-1, brightness offset, locale, sort_order). Archive button (soft delete via is_active=false).
+    - **INSPIRATION QUOTES**: list current quotes + add new (text, author, source, locale source, companion image FK, sort_order). Archive button.
+    - Tile aggiunto in SettingsPage Workspace section con cyan accent.
+
+  **i18n Coverage**: +35 `atelier.dashboard.*` chiavi (hero, kpi, card, col, projects, time) × 7 lingue (it-IT, en-US, en-GB, fr-FR, de-DE, es-ES, ar) + 4 `nav.*` chiavi (dashboard, new_journey, workspace_switcher, section.studio_pulse) × 7 lingue + 22 `atelier.admin.*` chiavi (back, eyebrow, title, lede, 3 tab labels, 11 form labels, 6 toast messages) × 7 lingue + 2 `settings.atelier_dashboard.*` × 7 lingue. Grand total: **~63 nuove chiavi × 7 lingue = 441 entry localization**. **Overlay live runtime: MISS 0 · LEAK 0 su it-IT verificato**.
+
+  **All P0 Approval Criteria Met**:
+  1. ✅ Visual direction cinematic (filter pipeline + atmospheric layers + dark canvas + unified grading)
+  2. ✅ Content dynamic (3 DB tables, tenant-scoped + locale-scoped, NULL fallback chain)
+  3. ✅ Images admin-manageable (`/settings/atelier-dashboard` Media Library tab)
+  4. ✅ Copy multilingual (t() primary, DB fallback)
+  5. ✅ Project cards use real DB data (live pulse API: 41 active journeys, real milestones, real updated_at)
+  6. ✅ No hardcoded mock content (zero `PROJECT_FALLBACK_COVERS`, zero `QUOTES` arrays, zero hardcoded Unsplash URLs)
+  7. ✅ MISS 0 / LEAK 0 confirmed via runtime overlay on it-IT
+
+  **NON consegnato in questa sessione (P1+ backlog ITER138 Phase 3+)**: ⚠️ Responsive hardening completo (iPad refinement, Ultrawide 2560px+, mobile graceful blockers). ⚠️ Deep refactor pagine annidate restanti (Editorial Studio, Editorial Calendar, Storefront Studio, Admin Tenants, Advisor Network). ⚠️ Tenant-specific media upload flow (currently URL-only — Media Library upload integration for ITER139). ⚠️ Quote scheduling UI (schema supports `schedule_starts_at`/`ends_at` but admin form doesn't expose them yet).
 
   **(1) Global Atelier Component Layer** (`frontend/src/design-system/atelier/components.css` · NEW · ~1300 LoC). Re-binding token HSL Tailwind/shadcn sotto `[data-atelier="nordic"]` → ogni primitivo shadcn (Button, Input, Card, Dialog, Drawer, Dropdown, Popover, Tooltip, Table, Tabs, Toggle, Switch, Progress, Skeleton, Toast, Pagination, Select, Sheet) eredita Atelier Nordic senza un singolo edit JSX. **Legacy `--bp-*` bridge** mappa font-heading → Cormorant, primary-soft → cyan, border-hover → cyan-line, surface-elevated → bp-elevated → tutte le pagine annidate ereditano automaticamente. Re-usable primitives `.atelier-modal`, `.atelier-field`, `.atelier-page`.
 
