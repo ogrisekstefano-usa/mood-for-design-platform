@@ -88,6 +88,9 @@ const BlueprintTenantConfigurationPage = () => {
       toast.success(`${code} · ${state.toUpperCase()}`);
       // Refresh registry + current-tenant bundle so the sidebar reacts immediately
       await Promise.all([load(), refresh()]);
+      // ITER144.1 · broadcast cross-page invalidation so the
+      // TenantConfigurationProvider re-fetches on the next focus too.
+      window.dispatchEvent(new CustomEvent('mfd:tenant-configuration:changed'));
     } catch (e) {
       toast.error(e?.response?.data?.detail || 'patch failed');
     }

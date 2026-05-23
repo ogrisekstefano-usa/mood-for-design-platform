@@ -1,7 +1,49 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
-- **Sprint ITER144B · WILDCARD TENANT RUNTIME™ + EMAIL IDENTITY RUNTIME™ + RUNTIME BRANDING CONTINUITY™ + RUNTIME CONTEXT INSPECTOR™ + RESTORED ADMIN ORCHESTRATION** · ✅ DELIVERED · 23 Feb 2026 · Architectural freeze totale di runtime governance + tenant resolution + email identity + admin shell.
+- **Sprint ITER144.1 · GLOBAL MODULE ROUTE GOVERNANCE ENFORCEMENT™ + CINEMATIC BLOCKED STATE™ + EMAIL BRANDING RUNTIME IDENTITY CONTINUITY™** · ✅ DELIVERED · 23 Feb 2026 · Wave A completa.
+
+  **Cinematic Blocked State™** (`/app/frontend/src/components/runtime/ModuleBlockedState.jsx`):
+  - 5 varianti (LOCKED · DISABLED · COMING_SOON · HIDDEN · BETA_RESTRICTED) con icona dedicata, accent color, e radial-gradient cinematic.
+  - Editorial copy via `useBlueprint().t()` → namespace `system.module_guard.*` (16 blocchi seeded · ALE auto-localizzati in 6 locale).
+  - CTA "Torna alla dashboard" via React Router. Module code + state esposti via `data-testid="module-blocked-state"` + data-attrs.
+  - Renders **intenzionale**, non broken — niente 403/blank/redirect-loop.
+
+  **ModuleRouteGuard™** (`/app/frontend/src/components/runtime/ModuleRouteGuard.jsx`):
+  - Renderizza ModuleBlockedState quando `module.state ∈ {disabled,hidden,locked,beta_restricted,coming_soon}`.
+  - Permissivo durante boot (mentre il bundle carica) e per moduli non registrati.
+
+  **Global Route Enforcement** (`App.js`):
+  - Helper inline `G(code, element)` applicato a ~15 route principali: dashboard · journey_index (projects/proposals/step workspace) · inspirations (moodboards/products) · media_library (library/collections) · material_view (materials) · brand_atlas · insights · crm_accounts (3 sub-route) · integrations · magazine (editorial studio) · market_matrix · studio_voice.
+  - Route che sono `<Navigate>` redirects non hanno guard (delegano al target reale).
+
+  **Email Branding Runtime Identity Continuity™** (`tenant_email_branding.py` + `EmailBrandingPage.jsx`):
+  - PATCH `/api/tenant/email-branding` ora **mirror writes** in `tenant_configuration.custom_email_identity` (con alias `footer_signature→footer`, `email_signature→signature`, `legal_footer→legal`). Single source of truth garantita.
+  - `EmailBrandingPage` ora mostra **identity source badge** (`tenant_runtime` cyan · `tenant_legacy` amber · `platform` gray) e **locale switcher 6-lingue** per la live preview.
+  - POST `/api/tenant/email-branding/preview` accetta `locale` parameter.
+  - Verificato: dopo PATCH di `sender_name=Atelier Demo` via UI, `email_identity.source` passa istantaneamente da `tenant_legacy` → `tenant_runtime` con `from_address=Atelier Demo <…>`.
+
+  **Cross-page cache invalidation**:
+  - `TenantConfigurationProvider` ascolta `mfd:tenant-configuration:changed` window event + re-fetch on `focus`.
+  - `BlueprintTenantConfigurationPage.patchModule` dispatcha l'evento dopo ogni PATCH platform default → la sidebar e le route guard reagiscono in tempo reale senza hard refresh.
+
+  **Tests**: `test_iter144_1_runtime_continuity.py` **3/3 PASS** (mirror identity · preview locale · seeded module_guard blocks). Aggregate ITER143+ITER144+ITER144.1: **51/51** (zero regressioni).
+
+  **Live verification** (testing_agent_v3 iter 145 · **100% backend / 85% frontend**):
+  - Disabling `insights` → /insights renders Cinematic Blocked State con `[data-module-code='insights']` `[data-module-state='disabled']` + Italian copy "Modulo disattivato" / "Questo spazio è in silenzio." + CTA "Torna alla dashboard" ✓
+  - `branding-identity-source` badge mostra source corretto ✓
+  - 6-locale switcher in preview pane ✓
+  - PATCH branding via UI promuove source a `tenant_runtime` ✓
+  - Sidebar tenant_admin non leak `/admin/*` ✓
+  - Webpack compile pulito, no rules-of-hooks errors ✓
+  - Action item rimanente (non-blocker): visual restore cache — fixato in questo merge con cross-page event-based invalidation
+
+  **Polish items deferred** (non-blocking):
+  - i18n missing-key warnings per `system.module_guard.*` e `nav.*` su heatmap (copy resolve correttamente via fallback, ma il LiveQA segnala come noise — `t()` con fallback non dovrebbe registrare miss; investigare il path miss-registry)
+  - Cross-locale leakage su owner-introduction-modal (ITER143 legacy, fuori scope)
+
+## 📌 Sprint Status (previous)
+- **Sprint ITER144B · WILDCARD TENANT RUNTIME™ + EMAIL IDENTITY RUNTIME™ + RUNTIME BRANDING CONTINUITY™ + RUNTIME CONTEXT INSPECTOR™ + RESTORED ADMIN ORCHESTRATION** · ✅ DELIVERED · 23 Feb 2026
 
   **Wildcard Tenant Runtime™** (frontend + backend wiring):
   - `TenantResolverMiddleware` esistente già popolava `request.state.resolved_tenant` da Host header.

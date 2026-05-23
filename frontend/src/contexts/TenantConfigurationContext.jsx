@@ -76,6 +76,24 @@ export const TenantConfigurationProvider = ({ children }) => {
 
   useEffect(() => { setLoading(true); load(); }, [load]);
 
+  // ITER144.1 · cross-page cache invalidation. When any admin page
+  // (Blueprint Governance, Tenant settings, …) patches the runtime
+  // configuration, it dispatches `mfd:tenant-configuration:changed`
+  // and this provider re-fetches immediately — no stale bundle visible.
+  useEffect(() => {
+    const onChange = () => { load(); };
+    window.addEventListener('mfd:tenant-configuration:changed', onChange);
+    return () => window.removeEventListener('mfd:tenant-configuration:changed', onChange);
+  }, [load]);
+
+  // Re-fetch when navigating back into a previously-blocked route so the
+  // user always sees the most recent configuration without a hard reload.
+  useEffect(() => {
+    const onFocus = () => { load(); };
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, [load]);
+
   /**
    * Optimistic patch helper used by the Tenant Settings UI and the
    * Blueprint Governance UI. Returns the refreshed bundle.
