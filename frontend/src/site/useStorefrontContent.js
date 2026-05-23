@@ -102,44 +102,83 @@ export function useStorefrontContent(tenantSlug, pageKey, fallback = null) {
 }
 
 /**
- * Resolve a locale-keyed value with the unified fallback chain.
- * Use ONLY for content that comes from the CMS (use the existing pick() for legacy bags).
+ * Resolve a locale-keyed value with the **strict, anti-leak** chain.
+ *
+ * ITER143A · LANGUAGE GOVERNANCE HARDENING™
+ *   • Italian is NEVER inserted into a non-Italian chain.
+ *   • Fallback always terminates at English (en-US) — never cross-language.
+ *   • Same-family siblings honoured (en-AE → en-GB → en-US, fr-CA → fr-FR).
+ *   • Supports BOTH BCP-47 keys (`en-US`) and legacy base keys (`en`,`it`,`fr`).
  */
-export function pickContent(bag, locale, fallbackChain = ['it', 'en-US', 'en-GB', 'fr', 'de', 'es']) {
+function _strictFallback(locale) {
+  const target = (locale || 'en-US').toLowerCase();
+  const lang = target.split('-')[0];
+  const chain = [target];
+  // Same-language regional siblings
+  if (lang === 'en') {
+    if (target !== 'en-gb') chain.push('en-gb');
+    if (target !== 'en-us') chain.push('en-us');
+  } else if (lang === 'es' && target !== 'es-es') {
+    chain.push('es-es');
+  } else if (lang === 'fr' && target !== 'fr-fr') {
+    chain.push('fr-fr');
+  } else if (lang === 'de' && target !== 'de-de') {
+    chain.push('de-de');
+  } else if (lang === 'it' && target !== 'it-it') {
+    chain.push('it-it');
+  }
+  // Legacy base-code (used by professionals.js / homepage.js legacy bags)
+  if (!chain.includes(lang)) chain.push(lang);
+  // Italian-only chains keep IT; all others jump to EN safety net.
+  if (lang === 'it') {
+    // it → keep 'en-us' as universal last resort
+    chain.push('en-us', 'en');
+  } else {
+    chain.push('en-us', 'en-gb', 'en');
+  }
+  chain.push('_default');
+  return chain;
+}
+
+export function pickContent(bag, locale) {
   if (bag == null) return '';
   if (typeof bag !== 'object') return bag;
-  const chain = [locale, ...fallbackChain, '_default'];
+  const chain = _strictFallback(locale);
+  // First, exact-match probe (case-preserving for BCP-47 keys like 'en-US').
   for (const code of chain) {
     if (bag[code] != null && bag[code] !== '') return bag[code];
+    // Case-insensitive variant
+    const upper = code.replace(/-(.+)$/, (_, r) => `-${r.toUpperCase()}`);
+    if (bag[upper] != null && bag[upper] !== '') return bag[upper];
   }
   return '';
 }
 
 /**
  * Helper: get a CMS-resolved value with fallback to a legacy JS-config path.
+ * Same strict chain as `pickContent` — never leaks Italian into a non-IT UI.
+ *
  * @example getOrFallback(content.store_hero, locale, 'headline', fallback.hero.headline)
  */
 export function getOrFallback(sectionBag, locale, field, fallbackBag) {
+  const chain = _strictFallback(locale);
   if (sectionBag) {
-    // sectionBag = { _default, it, en-US, ... }; per-locale fields like { headline, sub }
-    const localeBag = sectionBag[locale];
-    if (localeBag && localeBag[field] != null && localeBag[field] !== '') return localeBag[field];
+    for (const code of chain) {
+      const upper = code.replace(/-(.+)$/, (_, r) => `-${r.toUpperCase()}`);
+      const localeBag = sectionBag[code] || sectionBag[upper];
+      if (localeBag && localeBag[field] != null && localeBag[field] !== '') {
+        return localeBag[field];
+      }
+    }
     const def = sectionBag._default;
     if (def && def[field] != null && def[field] !== '') return def[field];
-    // last resort — any other locale
-    for (const k of Object.keys(sectionBag)) {
-      if (k.startsWith('_')) continue;
-      if (sectionBag[k]?.[field]) return sectionBag[k][field];
-    }
   }
-  // Fallback to legacy
   if (fallbackBag) {
     if (typeof fallbackBag === 'object' && fallbackBag !== null) {
-      // legacy uses simple language codes (it/en/fr/de/es)
-      const legacy = locale.split('-')[0];
-      if (fallbackBag[legacy] != null) return fallbackBag[legacy];
-      if (fallbackBag.en != null) return fallbackBag.en;
-      if (fallbackBag.it != null) return fallbackBag.it;
+      for (const code of chain) {
+        if (fallbackBag[code] != null && fallbackBag[code] !== '') return fallbackBag[code];
+      }
+      return '';   // strict: NEVER drop into cross-language random pick
     }
     return fallbackBag;
   }

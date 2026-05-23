@@ -1670,7 +1670,54 @@
       "quali_materiali_ti_fanno_stare_bene": "Welche Materialität bestimmt Ihre gestalterische Haltung?",
       "stiamo_aprendo_il_tuo_design_journey": "Wir öffnen Ihre Gestaltungswerkstatt.",
       "tre_dettagli_soltanto_il_resto_nascera_dalla_conve": "Drei Angaben genügen — der Dialog formt den Entwurf.",
-      "una_sensazione_un_momento_del_giorno_un_ricordo": "Eine Atmosphäre, eine Tageszeit, eine Erinnerung…"
+      "una_sensazione_un_momento_del_giorno_un_ricordo": "Eine Atmosphäre, eine Tageszeit, eine Erinnerung…",
+      "space": {
+        "home": "Zuhause",
+        "showroom": "Showroom",
+        "hospitality": "Gastfreundschaft",
+        "office": "Büro",
+        "other": "Ein eigener Raum"
+      },
+      "guests": {
+        "often": "Ja, häufig",
+        "sometimes": "Manchmal",
+        "rarely": "Selten",
+        "alone": "Ich bewohne den Raum in Stille"
+      },
+      "materials": {
+        "wood": "Holz",
+        "stone": "Stein",
+        "textiles": "Naturtextilien",
+        "metals": "Warme Metalle",
+        "glass": "Glas",
+        "velvet": "Samt",
+        "marble": "Marmor",
+        "linen": "Leinen"
+      },
+      "ambiance": {
+        "warm": "Warm und umhüllend",
+        "sober": "Nüchtern und minimal",
+        "luminous": "Hell und luftig",
+        "tactile": "Taktil und sinnlich",
+        "cinematic": "Kinematografisch"
+      },
+      "step1": {
+        "eyebrow": "Erster Schritt · Atmosphäre",
+        "short": "Atmosphäre"
+      },
+      "step2": {
+        "eyebrow": "Zweiter Schritt · Wie Sie leben",
+        "short": "Wie Sie leben"
+      },
+      "step3": {
+        "eyebrow": "Letzter Schritt · Lassen Sie uns sprechen",
+        "short": "Lassen Sie uns sprechen"
+      },
+      "toast": {
+        "required": "Bitte hinterlassen Sie uns Ihren Namen und eine E-Mail, damit wir Ihnen schreiben können.",
+        "started": "Ihre Design Journey™ hat begonnen.",
+        "failed": "Wir konnten Ihre Journey nicht starten. Bitte versuchen Sie es gleich noch einmal."
+      }
     },
     "journey_welcome": {
       "aprendo_il_tuo_design_journey": "Dein Gestaltungsprozess wird vorbereitet",

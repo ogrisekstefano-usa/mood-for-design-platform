@@ -12,72 +12,65 @@ import { toast } from 'sonner';
 import '../../styles/begin-journey.css';
 import { useT } from '../../i18n/useT';
 const API = process.env.REACT_APP_BACKEND_URL;
-const SPACE_KINDS = [{
-  v: 'home',
-  l: 'Casa'
-}, {
-  v: 'showroom',
-  l: 'Showroom'
-}, {
-  v: 'hospitality',
-  l: 'Ospitalità'
-}, {
-  v: 'office',
-  l: 'Ufficio'
-}, {
-  v: 'other',
-  l: 'Uno spazio dedicato'
-}];
-const GUESTS = [{
-  v: 'often',
-  l: 'Sì, spesso'
-}, {
-  v: 'sometimes',
-  l: 'Qualche volta'
-}, {
-  v: 'rarely',
-  l: 'Raramente'
-}, {
-  v: 'alone',
-  l: 'Vivo lo spazio in solitudine'
-}];
-const MATERIALS = ['Legno', 'Pietra', 'Tessuti naturali', 'Metalli caldi', 'Vetro', 'Velluto', 'Marmo', 'Lino'];
-const AMBIANCE = [{
-  v: 'warm_enveloping',
-  l: 'Caldi e avvolgenti'
-}, {
-  v: 'sober_minimal',
-  l: 'Sobri e minimali'
-}, {
-  v: 'luminous_airy',
-  l: 'Luminosi e arieggiati'
-}, {
-  v: 'tactile_sensory',
-  l: 'Materici e sensoriali'
-}, {
-  v: 'cinematic',
-  l: 'Cinematici'
-}];
-const STEPS = [{
-  idx: 0,
-  eyebrow: 'Passo Primo · Atmosfera',
-  marker: 'I',
-  short: 'Atmosfera'
-}, {
-  idx: 1,
-  eyebrow: 'Passo Secondo · Come Vivi',
-  marker: 'II',
-  short: 'Come vivi'
-}, {
-  idx: 2,
-  eyebrow: 'Passo Ultimo · Entriamo in Contatto',
-  marker: 'III',
-  short: 'Entriamo in contatto'
-}];
+
+// ITER143A · LANGUAGE GOVERNANCE HARDENING™ — every static option label is
+// pulled at render time through `t()` so non-IT locales never see Italian
+// leaks. Fallback strings are English (universal baseline).
+const useBeginJourneyTaxonomy = () => {
+  const { t } = useT();
+  return {
+    SPACE_KINDS: [
+      { v: 'home',         l: t('site.begin_journey.space.home',         null, 'Home') },
+      { v: 'showroom',     l: t('site.begin_journey.space.showroom',     null, 'Showroom') },
+      { v: 'hospitality',  l: t('site.begin_journey.space.hospitality',  null, 'Hospitality') },
+      { v: 'office',       l: t('site.begin_journey.space.office',       null, 'Office') },
+      { v: 'other',        l: t('site.begin_journey.space.other',        null, 'A dedicated space') },
+    ],
+    GUESTS: [
+      { v: 'often',     l: t('site.begin_journey.guests.often',     null, 'Yes, often') },
+      { v: 'sometimes', l: t('site.begin_journey.guests.sometimes', null, 'Sometimes') },
+      { v: 'rarely',    l: t('site.begin_journey.guests.rarely',    null, 'Rarely') },
+      { v: 'alone',     l: t('site.begin_journey.guests.alone',     null, 'I live the space in solitude') },
+    ],
+    MATERIALS: [
+      t('site.begin_journey.materials.wood',     null, 'Wood'),
+      t('site.begin_journey.materials.stone',    null, 'Stone'),
+      t('site.begin_journey.materials.textiles', null, 'Natural textiles'),
+      t('site.begin_journey.materials.metals',   null, 'Warm metals'),
+      t('site.begin_journey.materials.glass',    null, 'Glass'),
+      t('site.begin_journey.materials.velvet',   null, 'Velvet'),
+      t('site.begin_journey.materials.marble',   null, 'Marble'),
+      t('site.begin_journey.materials.linen',    null, 'Linen'),
+    ],
+    AMBIANCE: [
+      { v: 'warm_enveloping',  l: t('site.begin_journey.ambiance.warm',     null, 'Warm and enveloping') },
+      { v: 'sober_minimal',    l: t('site.begin_journey.ambiance.sober',    null, 'Sober and minimal') },
+      { v: 'luminous_airy',    l: t('site.begin_journey.ambiance.luminous', null, 'Luminous and airy') },
+      { v: 'tactile_sensory',  l: t('site.begin_journey.ambiance.tactile',  null, 'Tactile and sensory') },
+      { v: 'cinematic',        l: t('site.begin_journey.ambiance.cinematic',null, 'Cinematic') },
+    ],
+    STEPS: [
+      { idx: 0,
+        eyebrow: t('site.begin_journey.step1.eyebrow', null, 'First Step · Atmosphere'),
+        marker:  'I',
+        short:   t('site.begin_journey.step1.short',   null, 'Atmosphere') },
+      { idx: 1,
+        eyebrow: t('site.begin_journey.step2.eyebrow', null, 'Second Step · How You Live'),
+        marker:  'II',
+        short:   t('site.begin_journey.step2.short',   null, 'How you live') },
+      { idx: 2,
+        eyebrow: t('site.begin_journey.step3.eyebrow', null, 'Last Step · Let’s Get in Touch'),
+        marker:  'III',
+        short:   t('site.begin_journey.step3.short',   null, 'Let’s get in touch') },
+    ],
+  };
+};
+
 const BeginJourneyPage = () => {
   const {
     t
   } = useT();
+  const { SPACE_KINDS, GUESTS, MATERIALS, AMBIANCE, STEPS } = useBeginJourneyTaxonomy();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -102,7 +95,8 @@ const BeginJourneyPage = () => {
   const step3Valid = firstName.trim().length >= 1 && /.+@.+\..+/.test(email);
   const submit = async () => {
     if (!step3Valid) {
-      toast('Lasciaci almeno il nome e una mail per scriverti.');
+      toast(t('site.begin_journey.toast.required', null,
+        'Please leave at least your name and an email so we can write to you.'));
       return;
     }
     setSubmitting(true);
@@ -130,10 +124,12 @@ const BeginJourneyPage = () => {
         navigate(url);
         return;
       }
-      toast('Il tuo Design Journey è iniziato.');
+      toast(t('site.begin_journey.toast.started', null,
+        'Your Design Journey™ has begun.'));
     } catch (e) {
       console.error(e);
-      toast('Non sono riuscito a iniziare il tuo Journey. Riprova fra un istante.');
+      toast(t('site.begin_journey.toast.failed', null,
+        'We couldn’t start your Journey. Please try again in a moment.'));
       setSubmitting(false);
     }
   };

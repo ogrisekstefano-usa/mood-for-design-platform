@@ -51,6 +51,10 @@ export function detectInitialSiteLocale() {
 const IS_DEV = typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production';
 
 // CONTROLLED FALLBACK CHAIN built from registry (canonical → base → fallback → en)
+// ITER143A · LANGUAGE GOVERNANCE HARDENING™ — strict, never cross-language.
+// If a value is missing in the full registry chain (lang → base → fallback → en),
+// we return the safe placeholder. We NEVER pick a random language to avoid
+// leaking IT into EN/ES/FR/DE surfaces.
 export function pick(value, locale = DEFAULT_PLATFORM_LOCALE, opts = {}) {
   const path = opts.path || '';
 
@@ -65,10 +69,13 @@ export function pick(value, locale = DEFAULT_PLATFORM_LOCALE, opts = {}) {
   for (const code of chain) {
     if (value[code] != null && value[code] !== '') return value[code];
   }
+  // Same-language regional siblings (e.g. en-AE → en-GB → en-US) — handled
+  // implicitly by buildFallbackChain. Below is the ABSOLUTE last resort,
+  // and only when an `en` baseline exists. Otherwise empty (strict).
   if (value._default != null && value._default !== '') return value._default;
-
-  const first = Object.values(value).find((v) => v != null && v !== '');
-  if (first != null) return first;
+  if (value['en-US'] != null && value['en-US'] !== '') return value['en-US'];
+  if (value['en-GB'] != null && value['en-GB'] !== '') return value['en-GB'];
+  if (value['en']    != null && value['en']    !== '') return value['en'];
 
   if (IS_DEV && path) console.warn(`[i18n] Empty content for all locales: ${path}`);
   return opts.safePlaceholder ?? '';

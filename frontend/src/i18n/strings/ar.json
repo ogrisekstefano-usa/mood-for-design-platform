@@ -1680,7 +1680,54 @@
       "quali_materiali_ti_fanno_stare_bene": "أي المواد تمنح ورشتك حضورها الحقيقي؟",
       "stiamo_aprendo_il_tuo_design_journey": "نُهيّئ لك مسار التصميم الخاص بك",
       "tre_dettagli_soltanto_il_resto_nascera_dalla_conve": "ثلاثة تفاصيل فحسب — والباقي يولد من الحوار",
-      "una_sensazione_un_momento_del_giorno_un_ricordo": "إحساس عابر، لحظة من نهار، أو أثر باقٍ في الذاكرة"
+      "una_sensazione_un_momento_del_giorno_un_ricordo": "إحساس عابر، لحظة من نهار، أو أثر باقٍ في الذاكرة",
+      "space": {
+        "home": "المنزل",
+        "showroom": "صالة العرض",
+        "hospitality": "الضيافة",
+        "office": "المكتب",
+        "other": "فضاء مخصص"
+      },
+      "guests": {
+        "often": "نعم، كثيرًا",
+        "sometimes": "أحيانًا",
+        "rarely": "نادرًا",
+        "alone": "أعيش الفضاء في عزلة"
+      },
+      "materials": {
+        "wood": "خشب",
+        "stone": "حجر",
+        "textiles": "أقمشة طبيعية",
+        "metals": "معادن دافئة",
+        "glass": "زجاج",
+        "velvet": "مخمل",
+        "marble": "رخام",
+        "linen": "كتان"
+      },
+      "ambiance": {
+        "warm": "دافئة ومحتضنة",
+        "sober": "هادئة ومينيمالية",
+        "luminous": "مضيئة وفسيحة",
+        "tactile": "ملموسة وحسية",
+        "cinematic": "سينمائية"
+      },
+      "step1": {
+        "eyebrow": "الخطوة الأولى · الأجواء",
+        "short": "الأجواء"
+      },
+      "step2": {
+        "eyebrow": "الخطوة الثانية · كيف تعيش",
+        "short": "كيف تعيش"
+      },
+      "step3": {
+        "eyebrow": "الخطوة الأخيرة · لنبقَ على تواصل",
+        "short": "لنبقَ على تواصل"
+      },
+      "toast": {
+        "required": "اترك لنا على الأقل اسمك وبريدك الإلكتروني لنكتب إليك.",
+        "started": "بدأت رحلة التصميم™ الخاصة بك.",
+        "failed": "لم نتمكن من بدء رحلتك. حاول مرة أخرى بعد لحظة."
+      }
     },
     "journey_welcome": {
       "aprendo_il_tuo_design_journey": "نفتح مسار التصميم الخاص بك",

@@ -1670,7 +1670,54 @@
       "quali_materiali_ti_fanno_stare_bene": "Quelles matières habitent votre regard et nourrissent le geste de l'atelier",
       "stiamo_aprendo_il_tuo_design_journey": "Nous préparons l'ouverture de votre récit créatif, un instant encore",
       "tre_dettagli_soltanto_il_resto_nascera_dalla_conve": "Trois présences seulement — le reste naîtra du regard que nous poserons ensemble sur la matière.",
-      "una_sensazione_un_momento_del_giorno_un_ricordo": "Une présence, une heure du jour, la mémoire d'un geste…"
+      "una_sensazione_un_momento_del_giorno_un_ricordo": "Une présence, une heure du jour, la mémoire d'un geste…",
+      "space": {
+        "home": "Maison",
+        "showroom": "Showroom",
+        "hospitality": "Hôtellerie",
+        "office": "Bureau",
+        "other": "Un espace dédié"
+      },
+      "guests": {
+        "often": "Oui, souvent",
+        "sometimes": "Parfois",
+        "rarely": "Rarement",
+        "alone": "J’habite l’espace en solitude"
+      },
+      "materials": {
+        "wood": "Bois",
+        "stone": "Pierre",
+        "textiles": "Tissus naturels",
+        "metals": "Métaux chauds",
+        "glass": "Verre",
+        "velvet": "Velours",
+        "marble": "Marbre",
+        "linen": "Lin"
+      },
+      "ambiance": {
+        "warm": "Chaleureux et enveloppants",
+        "sober": "Sobres et minimaux",
+        "luminous": "Lumineux et aériens",
+        "tactile": "Tactiles et sensoriels",
+        "cinematic": "Cinématographiques"
+      },
+      "step1": {
+        "eyebrow": "Premier Pas · Atmosphère",
+        "short": "Atmosphère"
+      },
+      "step2": {
+        "eyebrow": "Deuxième Pas · Comment vous vivez",
+        "short": "Comment vous vivez"
+      },
+      "step3": {
+        "eyebrow": "Dernier Pas · Entrons en Contact",
+        "short": "Entrons en contact"
+      },
+      "toast": {
+        "required": "Laissez-nous au moins votre nom et un email pour vous écrire.",
+        "started": "Votre Design Journey™ a commencé.",
+        "failed": "Nous n’avons pas pu démarrer votre Journey. Réessayez dans un instant."
+      }
     },
     "journey_welcome": {
       "aprendo_il_tuo_design_journey": "Nous ouvrons à présent votre récit de création",

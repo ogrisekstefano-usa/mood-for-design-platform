@@ -1575,7 +1575,54 @@
       "tre_dettagli_soltanto_il_resto_nascera_dalla_conve": "Tre dettagli soltanto — il resto nascerà dalla conversazione.",
       "inizia_il_tuo_design_journey": "Inizia il tuo Design Journey™",
       "nessun_preventivo_nessuna_pressione_solo_una_conve": "Nessun preventivo, nessuna pressione. Solo una conversazione.",
-      "una_sensazione_un_momento_del_giorno_un_ricordo": "Una sensazione, un momento del giorno, un ricordo…"
+      "una_sensazione_un_momento_del_giorno_un_ricordo": "Una sensazione, un momento del giorno, un ricordo…",
+      "space": {
+        "home": "Casa",
+        "showroom": "Showroom",
+        "hospitality": "Ospitalità",
+        "office": "Ufficio",
+        "other": "Uno spazio dedicato"
+      },
+      "guests": {
+        "often": "Sì, spesso",
+        "sometimes": "Qualche volta",
+        "rarely": "Raramente",
+        "alone": "Vivo lo spazio in solitudine"
+      },
+      "materials": {
+        "wood": "Legno",
+        "stone": "Pietra",
+        "textiles": "Tessuti naturali",
+        "metals": "Metalli caldi",
+        "glass": "Vetro",
+        "velvet": "Velluto",
+        "marble": "Marmo",
+        "linen": "Lino"
+      },
+      "ambiance": {
+        "warm": "Caldi e avvolgenti",
+        "sober": "Sobri e minimali",
+        "luminous": "Luminosi e arieggiati",
+        "tactile": "Materici e sensoriali",
+        "cinematic": "Cinematici"
+      },
+      "step1": {
+        "eyebrow": "Passo Primo · Atmosfera",
+        "short": "Atmosfera"
+      },
+      "step2": {
+        "eyebrow": "Passo Secondo · Come Vivi",
+        "short": "Come vivi"
+      },
+      "step3": {
+        "eyebrow": "Passo Ultimo · Entriamo in Contatto",
+        "short": "Entriamo in contatto"
+      },
+      "toast": {
+        "required": "Lasciaci almeno il nome e una mail per scriverti.",
+        "started": "Il tuo Design Journey™ è iniziato.",
+        "failed": "Non sono riuscito a iniziare il tuo Journey. Riprova fra un istante."
+      }
     },
     "journey_welcome": {
       "questo_link_non_e_piu_disponibile": "Questo link non è più disponibile.",

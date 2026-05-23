@@ -1575,7 +1575,54 @@
       "tre_dettagli_soltanto_il_resto_nascera_dalla_conve": "Only three details—the rest will emerge in conversation.",
       "inizia_il_tuo_design_journey": "Start your Design Journey™",
       "nessun_preventivo_nessuna_pressione_solo_una_conve": "No quote, no pressure. Just a conversation.",
-      "una_sensazione_un_momento_del_giorno_un_ricordo": "Una sensazione, un momento del giorno, un ricordo…"
+      "una_sensazione_un_momento_del_giorno_un_ricordo": "Una sensazione, un momento del giorno, un ricordo…",
+      "space": {
+        "home": "Home",
+        "showroom": "Showroom",
+        "hospitality": "Hospitality",
+        "office": "Office",
+        "other": "A dedicated space"
+      },
+      "guests": {
+        "often": "Yes, often",
+        "sometimes": "Sometimes",
+        "rarely": "Rarely",
+        "alone": "I live the space in solitude"
+      },
+      "materials": {
+        "wood": "Wood",
+        "stone": "Stone",
+        "textiles": "Natural textiles",
+        "metals": "Warm metals",
+        "glass": "Glass",
+        "velvet": "Velvet",
+        "marble": "Marble",
+        "linen": "Linen"
+      },
+      "ambiance": {
+        "warm": "Warm and enveloping",
+        "sober": "Sober and minimal",
+        "luminous": "Luminous and airy",
+        "tactile": "Tactile and sensory",
+        "cinematic": "Cinematic"
+      },
+      "step1": {
+        "eyebrow": "First Step · Atmosphere",
+        "short": "Atmosphere"
+      },
+      "step2": {
+        "eyebrow": "Second Step · How You Live",
+        "short": "How you live"
+      },
+      "step3": {
+        "eyebrow": "Last Step · Let’s Get in Touch",
+        "short": "Let’s get in touch"
+      },
+      "toast": {
+        "required": "Please leave at least your name and an email so we can write to you.",
+        "started": "Your Design Journey™ has begun.",
+        "failed": "We couldn’t start your Journey. Please try again in a moment."
+      }
     },
     "journey_welcome": {
       "questo_link_non_e_piu_disponibile": "This link is no longer available.",

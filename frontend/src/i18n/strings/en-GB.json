@@ -1670,7 +1670,54 @@
       "quali_materiali_ti_fanno_stare_bene": "Which materials bring you a sense of composure?",
       "stiamo_aprendo_il_tuo_design_journey": "Preparing your Design Journey with care…",
       "tre_dettagli_soltanto_il_resto_nascera_dalla_conve": "Three details only — the rest will emerge through conversation.",
-      "una_sensazione_un_momento_del_giorno_un_ricordo": "A feeling, a time of day, a memory held..."
+      "una_sensazione_un_momento_del_giorno_un_ricordo": "A feeling, a time of day, a memory held...",
+      "space": {
+        "home": "Home",
+        "showroom": "Showroom",
+        "hospitality": "Hospitality",
+        "office": "Office",
+        "other": "A dedicated space"
+      },
+      "guests": {
+        "often": "Yes, often",
+        "sometimes": "Sometimes",
+        "rarely": "Rarely",
+        "alone": "I inhabit the space in solitude"
+      },
+      "materials": {
+        "wood": "Wood",
+        "stone": "Stone",
+        "textiles": "Natural textiles",
+        "metals": "Warm metals",
+        "glass": "Glass",
+        "velvet": "Velvet",
+        "marble": "Marble",
+        "linen": "Linen"
+      },
+      "ambiance": {
+        "warm": "Warm and enveloping",
+        "sober": "Sober and minimal",
+        "luminous": "Luminous and airy",
+        "tactile": "Tactile and sensory",
+        "cinematic": "Cinematic"
+      },
+      "step1": {
+        "eyebrow": "First Step · Atmosphere",
+        "short": "Atmosphere"
+      },
+      "step2": {
+        "eyebrow": "Second Step · How You Live",
+        "short": "How you live"
+      },
+      "step3": {
+        "eyebrow": "Last Step · Let’s Get in Touch",
+        "short": "Let’s get in touch"
+      },
+      "toast": {
+        "required": "Please leave at least your name and an email so we can write to you.",
+        "started": "Your Design Journey™ has begun.",
+        "failed": "We couldn’t start your Journey. Please try again in a moment."
+      }
     },
     "journey_welcome": {
       "aprendo_il_tuo_design_journey": "Opening your Design Journey atelier",

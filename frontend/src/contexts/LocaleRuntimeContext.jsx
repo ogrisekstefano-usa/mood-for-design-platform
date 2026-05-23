@@ -70,16 +70,45 @@ const SYSTEM_FALLBACK_PROFILE = {
   emotional_style: 'editorial craftsmanship',
 };
 
+// ITER143A · LANGUAGE GOVERNANCE HARDENING™
+// Read the persisted public locale (set on first visit or by the picker)
+// synchronously BEFORE first paint so the initial render is already in the
+// correct language. Eliminates the "flash of Italian" while the runtime
+// API call is in flight.
+function _initialLocaleFromStorage() {
+  if (typeof window === 'undefined') return 'IT_IT';
+  try {
+    const raw = window.localStorage.getItem(PUBLIC_LOCALE_STORAGE_KEY)
+              || window.localStorage.getItem('mfd_locale');
+    if (!raw) return 'IT_IT';
+    // Stored may be BCP-47 ("it-IT", "en-US") or composite ("IT_IT", "EN_US")
+    if (raw.includes('_')) return raw.toUpperCase();
+    if (raw.includes('-')) {
+      const c = BCP47_TO_COMPOSITE[raw];
+      if (c) return c;
+    }
+    const c = BCP47_TO_COMPOSITE[raw.toLowerCase()];
+    return c || 'IT_IT';
+  } catch {
+    return 'IT_IT';
+  }
+}
+
 export const LocaleRuntimeProvider = ({ children }) => {
   const { user } = useAuth() || {};
-  const [state, setState] = useState({
-    localeCode: 'IT_IT',
-    profile:    SYSTEM_FALLBACK_PROFILE,
-    source:     'system',
-    supported:  ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES', 'AR_AE'],
-    loading:    true,
-    error:      null,
-    anonymous:  !user,
+  const [state, setState] = useState(() => {
+    const initial = _initialLocaleFromStorage();
+    return {
+      localeCode: initial,
+      profile:    initial === 'IT_IT'
+        ? SYSTEM_FALLBACK_PROFILE
+        : { ...SYSTEM_FALLBACK_PROFILE, locale_code: initial },
+      source:     'storage',
+      supported:  ['IT_IT', 'EN_US', 'EN_GB', 'EN_AE', 'DE_DE', 'FR_FR', 'ES_ES', 'AR_AE'],
+      loading:    true,
+      error:      null,
+      anonymous:  !user,
+    };
   });
 
   const fetchRuntime = useCallback(async () => {
