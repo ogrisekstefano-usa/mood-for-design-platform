@@ -94,6 +94,14 @@
   box-shadow: var(--bp-shadow-xs);
 }
 
+.ada__panel--bare {
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+
 .ada__sub {
   font-family: var(--atelier-serif);
   font-style: italic;

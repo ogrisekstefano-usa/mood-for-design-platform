@@ -58,6 +58,18 @@ class DashboardMedia(BaseModel):
     locale: str = "*"
     sort_order: int = 0
     is_active: bool = True
+    # ITER138 — orchestration metadata exposed to readers (frontend gallery)
+    original_asset_url: Optional[str] = None
+    optimized_asset_url: Optional[str] = None
+    thumbnail_asset_url: Optional[str] = None
+    blurhash: Optional[str] = None
+    width_px: Optional[int] = None
+    height_px: Optional[int] = None
+    grain_level: float = 0.0
+    vignette_level: float = 0.0
+    warmth_offset: float = 0.0
+    cyan_atmosphere: float = 0.0
+    crop_profile: Optional[dict] = None
 
 
 class DashboardQuote(BaseModel):
@@ -155,6 +167,17 @@ def _record_to_media(rec: dict) -> DashboardMedia:
         locale=rec.get("locale") or "*",
         sort_order=int(rec.get("sort_order", 0) or 0),
         is_active=bool(rec.get("is_active", True)),
+        original_asset_url=rec.get("original_asset_url"),
+        optimized_asset_url=rec.get("optimized_asset_url"),
+        thumbnail_asset_url=rec.get("thumbnail_asset_url"),
+        blurhash=rec.get("blurhash"),
+        width_px=rec.get("width_px"),
+        height_px=rec.get("height_px"),
+        grain_level=float(rec.get("grain_level", 0.0) or 0.0),
+        vignette_level=float(rec.get("vignette_level", 0.0) or 0.0),
+        warmth_offset=float(rec.get("warmth_offset", 0.0) or 0.0),
+        cyan_atmosphere=float(rec.get("cyan_atmosphere", 0.0) or 0.0),
+        crop_profile=rec.get("crop_profile"),
     )
 
 

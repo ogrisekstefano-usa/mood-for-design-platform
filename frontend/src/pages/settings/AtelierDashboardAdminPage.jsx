@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom';
 import api from '../../lib/api';
 import { useT, useBlueprint } from '../../contexts/BlueprintContext';
 import { toast } from 'sonner';
+import AtelierMediaDirection from './AtelierMediaDirection';
 import './atelier-dashboard-admin.css';
 
 const GRADING_PROFILES = [
@@ -228,7 +229,7 @@ const AtelierDashboardAdminPage = () => {
                   onClick={() => setActiveTab(tab)}
                   data-testid={`ada-tab-${tab}`}>
             {t(`atelier.admin.tab.${tab}`, null,
-                tab === 'copy' ? 'Hero & Sections' : tab === 'media' ? 'Media Library' : 'Inspiration Quotes')}
+                tab === 'copy' ? 'Hero & Sections' : tab === 'media' ? 'Media Direction' : 'Inspiration Quotes')}
           </button>
         ))}
       </nav>
@@ -290,91 +291,8 @@ const AtelierDashboardAdminPage = () => {
       )}
 
       {activeTab === 'media' && (
-        <section className="ada__panel" data-testid="ada-media-panel">
-          <h3 className="ada__sub">{t('atelier.admin.media_library', null, 'Media Library')}</h3>
-          <ul className="ada__media">
-            {media.length === 0 && <li className="ada__empty">No media yet.</li>}
-            {media.map(m => (
-              <li key={m.id} className="ada__media-row" data-testid={`ada-media-${m.id}`}>
-                <img src={m.file_url} alt={m.alt_text || ''} />
-                <div>
-                  <p className="ada__media-kind">{m.media_kind} · {m.locale}</p>
-                  <p className="ada__media-alt">{m.alt_text || '—'}</p>
-                  <p className="ada__media-meta">
-                    {m.grading_profile} · overlay {Math.round((m.overlay_intensity || 0) * 100)}%
-                  </p>
-                </div>
-                <button onClick={() => deleteMedia(m.id)} className="ada__icon-btn"
-                        data-testid={`ada-delete-media-${m.id}`}>
-                  <Trash2 size={14} strokeWidth={1.6} />
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <h3 className="ada__sub">{t('atelier.admin.add_media', null, 'Add new media')}</h3>
-          <div className="ada__grid">
-            <div className="ada__field">
-              <label>Kind</label>
-              <select value={mediaDraft.media_kind}
-                      onChange={e => setMediaDraft({ ...mediaDraft, media_kind: e.target.value })}>
-                {MEDIA_KINDS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-            </div>
-            <div className="ada__field">
-              <label>Image URL</label>
-              <input value={mediaDraft.file_url}
-                     onChange={e => setMediaDraft({ ...mediaDraft, file_url: e.target.value })}
-                     placeholder="https://…" data-testid="ada-media-url" />
-            </div>
-            <div className="ada__field ada__field--wide">
-              <label>Alt text</label>
-              <input value={mediaDraft.alt_text}
-                     onChange={e => setMediaDraft({ ...mediaDraft, alt_text: e.target.value })} />
-            </div>
-            <div className="ada__field">
-              <label>Focal X (0–1)</label>
-              <input type="number" min={0} max={1} step={0.05}
-                     value={mediaDraft.focal_point_x}
-                     onChange={e => setMediaDraft({ ...mediaDraft, focal_point_x: parseFloat(e.target.value) })} />
-            </div>
-            <div className="ada__field">
-              <label>Focal Y (0–1)</label>
-              <input type="number" min={0} max={1} step={0.05}
-                     value={mediaDraft.focal_point_y}
-                     onChange={e => setMediaDraft({ ...mediaDraft, focal_point_y: parseFloat(e.target.value) })} />
-            </div>
-            <div className="ada__field">
-              <label>Grading profile</label>
-              <select value={mediaDraft.grading_profile}
-                      onChange={e => setMediaDraft({ ...mediaDraft, grading_profile: e.target.value })}>
-                {GRADING_PROFILES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-            </div>
-            <div className="ada__field">
-              <label>Overlay intensity (0–1)</label>
-              <input type="number" min={0} max={1} step={0.05}
-                     value={mediaDraft.overlay_intensity}
-                     onChange={e => setMediaDraft({ ...mediaDraft, overlay_intensity: parseFloat(e.target.value) })} />
-            </div>
-            <div className="ada__field">
-              <label>Locale</label>
-              <select value={mediaDraft.locale}
-                      onChange={e => setMediaDraft({ ...mediaDraft, locale: e.target.value })}>
-                {LOCALES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-            </div>
-            <div className="ada__field">
-              <label>Sort order</label>
-              <input type="number" value={mediaDraft.sort_order}
-                     onChange={e => setMediaDraft({ ...mediaDraft, sort_order: parseInt(e.target.value || 0, 10) })} />
-            </div>
-          </div>
-          <div className="ada__foot">
-            <button className="ada__cta" onClick={addMedia} disabled={saving} data-testid="ada-add-media">
-              <Plus size={14} strokeWidth={1.6} /> {t('atelier.admin.add', null, 'Add media')}
-            </button>
-          </div>
+        <section className="ada__panel ada__panel--bare" data-testid="ada-media-panel">
+          <AtelierMediaDirection />
         </section>
       )}
 
