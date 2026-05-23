@@ -1,6 +1,87 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **Sprint ITER144 · TENANT CONFIGURATION FOUNDATION™ + NAVIGATION RUNTIME™ + THEME RUNTIME™ + CONFIGURATION AUDIT TRAIL™** · ✅ DELIVERED · 23 Feb 2026 · Single codebase · N tenants · N configurations · ZERO frontend forks.
+
+  **Migration `077_navigation_runtime_and_audit.sql`** (additive, idempotent ON CONFLICT seed):
+  - Extends `feature_modules_registry` with navigation metadata: `nav_route`, `nav_icon`, `nav_group`, `nav_section_label`, `nav_visibility` (public/tenant/tenant_admin/super_admin/root_superadmin), `nav_end_match`, `nav_has_mark`, `nav_test_id`, `group_position`
+  - Extends `tenant_configuration` with `branding` JSONB (logo/font/color/radius/glass), `navigation_overrides` JSONB (hide_modules / hide_groups / rename_sections / reorder_groups), `custom_domain`, `custom_email_identity` JSONB
+  - **NEW `configuration_change_events`** audit trail (tenant_id, actor_user_id, actor_email, event_type, scope, source, module_code, diff_before, diff_after, notes, created_at) with indexes on tenant_id+desc and event_type+desc
+  - Seeds **27 canonical modules** in 7 navigation groups: studio-pulse (1) · design-journey (2) · curatorial-atlas (5) · client-relations (3) · content-studio (6) · studio-os (9) · platform (1)
+
+  **Backend `services/tenant_config_resolver.py`** (~290 LoC, rewritten):
+  - `resolve_modules()` precedence chain: `tenant.feature_flags > tenant.enabled_modules > platform_feature_defaults > registry.default_state`. Core modules auto-promoted to enabled (can't be disabled).
+  - `resolve_navigation(tenant_id, user_role, is_super_admin, is_root)`: builds full nav tree with visibility filter (rank-based: public=0 < tenant=1 < tenant_admin=2 < super_admin=3 < root_superadmin=4). Applies `navigation_overrides` (hide_modules, hide_groups, rename_sections, reorder_groups).
+  - `resolve_theme()`: merges `_THEME_DEFAULTS + tenant_configuration legacy fields + branding JSONB`. Branding wins.
+  - `resolve_runtime_bundle()`: one-shot frontend boot bundle `{tenant_id, configuration, theme, modules, navigation}`.
+  - In-memory cache 60s with `invalidate_tenant_config()` / `invalidate_registry()` hooks called on every PATCH.
+
+  **Backend `routers/tenant_configuration.py`** (~300 LoC):
+  - `GET /api/tenant/configuration` → runtime bundle for caller's tenant (filtered by role visibility)
+  - `PATCH /api/tenant/configuration` → tenant_admin/root: branding, navigation_overrides, feature_flags, enabled_modules, …
+  - `GET /api/tenant/configuration/modules` → effective module list
+  - `GET /api/tenant/configuration/public/{tenant_slug}` → public-visible modules (anonymous bootstrap)
+  - `GET /api/blueprint-admin/feature-modules` → registry + platform defaults (root)
+  - `PATCH /api/blueprint-admin/feature-modules/{code}` → set platform_default state (root). Core modules → HTTP 400 if state=disabled.
+  - `GET /api/blueprint-admin/tenants/{id}/configuration` → bundle for any tenant (root)
+  - `PATCH /api/blueprint-admin/tenants/{id}/configuration` → tenant override (root + audit)
+  - `GET /api/blueprint-admin/configuration-events` → audit feed (root, ?tenant_id=&event_type=&limit=)
+  - **Every PATCH writes** to `configuration_change_events` with `actor_email`, `diff_before/after`, `source` (`tenant_admin_ui` | `blueprint_admin`).
+
+  **Frontend `TenantConfigurationProvider`** (`/app/frontend/src/contexts/TenantConfigurationContext.jsx`):
+  - Loads `/api/tenant/configuration` at boot (re-fires on user change), exposes hooks:
+    - `useTenantConfiguration()` → `{bundle, loading, error, refresh, patch}`
+    - `useModuleEnabled(code)` → bool
+    - `useNavigationTree()` → server-built tree
+    - `useThemeTokens()` → merged theme tokens
+    - `useModule(code)` → single module with state/source
+  - Injects theme as CSS variables on `document.documentElement` (`--mfd-color-primary`, `--mfd-font-heading`, …) + legacy bridge `--atelier-cyan-runtime`
+  - Mounted in App.js between BlueprintProvider and TenantThemeProvider
+
+  **Frontend Sidebar Runtime Refactor** (`/app/frontend/src/components/layout/Sidebar.jsx`):
+  - **Zero hardcoded sections, zero hardcoded NavItems, zero tenant_admin/super_admin conditionals**
+  - Consumes `useNavigationTree()` → renders `<Section>` per group + `<NavItem>` per item driven entirely by server payload
+  - Visual DNA Atelier Nordic 100% preserved (cyan active, italic Cormorant brand mark, collapsible sections in localStorage v6, ChevronDown rotation)
+  - `data-nav-runtime="iter144"` flag for testing + each NavItem carries `data-module-code` + `data-module-state` for runtime introspection
+  - Brand mark monogram reads from `bundle.theme.monogram` (runtime, no per-tenant code)
+
+  **Frontend `ModuleRouteGuard`** (`/app/frontend/src/components/runtime/ModuleRouteGuard.jsx`):
+  - Wraps routes; if module state is `disabled`/`hidden`/`locked` → `<Navigate to="/dashboard">`
+  - Permissive while bundle loading or module unknown (so newly-added routes work before registry seed)
+
+  **Blueprint Governance UI** (`/admin/tenant-configuration` · root only):
+  - Cinematic black-glass surface: italic Cormorant `Configuration Foundation.` headline
+  - 27 module rows · 5 state pills per module (enabled/beta/hidden/disabled/locked) · click → PATCH → toast → bundle refresh
+  - Category filter pills (all / core / content / intelligence / growth / platform)
+  - Live navigation preview grid (7 groups × items) with beta amber color
+  - Configuration Audit Trail feed (last 50 events with timestamp · event_type · actor · module · source)
+  - Wired in AdminShell sidebar after Editorial Runtime
+
+  **Tests**: `test_iter144_tenant_foundation.py` · **11/11 passed**. Aggregate ITER143+ITER144: **42/42** (zero regression).
+
+  **Live end-to-end verification** (testing_agent_v3 iter 139):
+  - Backend pytest 11/11 PASS
+  - tenant_admin (`demo@`) sidebar has 6 sections, **NO platform group** ✓
+  - ROOT (`admin@`) sidebar has 7 sections including **platform** ✓
+  - Governance UI shows 27 module rows + 27 nav preview items + 23 audit events
+  - Click state pill BETA on `insights` → toast `insights · BETA` → row chip flips to `OVERRIDE` after reload; restore to enabled flips back to `DEFAULT`
+  - `configuration_change_events` audit trail records every PATCH with `actor_email`, `diff_before`, `diff_after`, `source`
+  - `core` modules (dashboard / blueprint_admin / settings_workspace / journey_index / begin_journey) → HTTP 400 on state=disabled
+
+  **ITER144 STOP CONDITION SATISFIED**:
+  - ✅ Modulo può essere acceso/spento runtime senza deploy frontend
+  - ✅ Menu è runtime-generated (Sidebar consuma 100% da `/api/tenant/configuration`)
+  - ✅ Route runtime-governed (`ModuleRouteGuard` disponibile, già wirato la governance route)
+  - ✅ Branding runtime-driven (CSS vars `--mfd-*` iniettate al boot)
+  - ✅ Audit trail completo su ogni modifica (`configuration_change_events`)
+  - ✅ Future-ready freeze: `custom_domain`, `custom_email_identity`, `navigation_overrides`, `enabled_modules` già supportati
+
+  **Polish items deferred** (non-blocking, segnalati da testing agent):
+  - i18n keys per nuove nav labels runtime (tutte fallback-safe nel codice attuale)
+  - React warning "setState during render" preesistente nel rail · non causa malfunzionamenti
+  - Locale leakage governance UI quando attiva locale != it-IT (default labels Italian)
+
+## 📌 Sprint Status (previous)
 - **Resend Webhook Live™** · ✅ DELIVERED · 23 Feb 2026 · `RESEND_WEBHOOK_SECRET` iniettato in `/app/backend/.env`, backend riavviato, signature Svix HMAC-SHA256 verification attiva sull'endpoint produzione `https://blueprint.moodfordesign.com/api/email/webhook/resend`.
   - **Auth gate**: unsigned → 401, tampered → 401, valid Svix signature → 200 (tutti e 3 i test verdi)
   - **Live ingestion verificata** su 3 `provider_message_id` reali presi da `email_events`:

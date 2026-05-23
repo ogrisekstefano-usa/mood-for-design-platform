@@ -33,6 +33,7 @@ SHELL = {
         ('nav.users',      'label', 'Utenti'),
         ('nav.presets',    'label', 'Preset Atelier'),
         ('nav.editorial',  'label', 'Editorial Runtime'),
+        ('nav.tenant_configuration', 'label', 'Configurazione Tenant'),
         ('nav.language',   'label', 'Lingue'),
         ('nav.email',      'label', 'Email'),
         ('nav.demo',       'label', 'Demo Tenant'),
