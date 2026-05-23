@@ -8,20 +8,34 @@
 
 ## 1. ARCHITETTURA DOMINI
 
-### Canonical layout
+### Canonical layout (ITER142 correction · FROZEN)
 ```
-moodfordesign.com                      → Cloudflare DNS root
-www.moodfordesign.com                  → marketing site (landing/pricing/onboarding)
-app.moodfordesign.com                  → application core (login/dashboard/workspace)
-api.moodfordesign.com                  → backend API (optional — currently served via app)
-admin.moodfordesign.com                → SuperAdmin only (reserved subdomain)
-{tenant-slug}.moodfordesign.com        → tenant runtime (e.g. format.moodfordesign.com)
+moodfordesign.com                      → Cloudflare DNS root → www
+www.moodfordesign.com                  → Corporate / Marketing site (landing/pricing/onboarding/login entrypoint)
+blueprint.moodfordesign.com            → PRIMARY PLATFORM DOMAIN™
+                                          Blueprint Command Center™ + Core Platform
+                                          (login · dashboard · CRM · Design Journey · Media · Editorial · SuperAdmin · governance)
+{tenant-slug}.moodfordesign.com        → Tenant Runtime (workspace operativi degli studi)
+                                          es. format.moodfordesign.com · martinel.moodfordesign.com · studio1.moodfordesign.com
 ```
 
-### Reserved subdomains (never tenant-scoped)
-`www · app · api · admin · staging · preview · dev · docs · status · support · blog · help`
+> **Importante**: `blueprint.moodfordesign.com` NON è un tenant.  
+> È platform core / orchestration layer / SuperAdmin environment.  
+> I tenant restano `{slug}.moodfordesign.com`, **mai** `{slug}.blueprint.moodfordesign.com`.
 
-Definito in `backend/core/tenant_resolver.py · RESERVED_SUBDOMAINS`.
+### Brand semantica
+| Asset | Significato |
+|---|---|
+| **MOOD for DESIGN™** | brand · platform ecosystem (parent) |
+| **Blueprint™** | control tower · orchestration OS (platform core) |
+| **Tenant subdomain** | workspace operativo dello studio |
+
+### Reserved subdomains (mai tenant-scoped)
+```
+www · blueprint · app · api · admin · support · help · blog · docs · status · staging · preview · dev
+```
+
+Definito in `backend/core/tenant_resolver.py · RESERVED_SUBDOMAINS`. Sia `blueprint` che `app` sono protetti (anche `app` resta riservato come alias-safety per non poter MAI essere richiesto come slug di un tenant).
 
 ### Tenant resolution — backend middleware
 **File**: `backend/core/tenant_resolver.py`  
@@ -37,11 +51,12 @@ Algoritmo (precedenza decrescente):
 ### Production deployment (P1 — owner action required)
 | Asset | Provider | Action |
 |---|---|---|
-| `app.moodfordesign.com` CNAME | Cloudflare | → Emergent deployment URL |
-| `*.moodfordesign.com` wildcard CNAME | Cloudflare | → Emergent deployment URL |
+| `blueprint.moodfordesign.com` CNAME | Cloudflare | → Emergent deployment URL (PRIMARY PLATFORM DOMAIN™) |
+| `*.moodfordesign.com` wildcard CNAME | Cloudflare | → Emergent deployment URL (tenant subdomains) |
 | SSL wildcard cert | Let's Encrypt via Emergent | Auto |
-| `REACT_APP_BACKEND_URL` | Frontend `.env` (prod) | `https://app.moodfordesign.com` |
+| `REACT_APP_BACKEND_URL` | Frontend `.env` (prod) | `https://blueprint.moodfordesign.com` |
 | CORS allow-list | Already updated in `server.py` | ✅ |
+| Session cookie `Domain` | Supabase Auth settings | `.moodfordesign.com` (cross-subdomain SSO) |
 
 ---
 
@@ -165,19 +180,23 @@ Log di TUTTE le email transazionali — provider-agnostic.
 ## 5. AUTH REDIRECT FLOW (target — P1 da implementare in frontend)
 
 ```
-[1] Public visitor  → www.moodfordesign.com  → marketing
-[2] CTA "Login"     → app.moodfordesign.com/auth/login
+[1] Public visitor  → www.moodfordesign.com                   → marketing
+[2] CTA "Login"     → blueprint.moodfordesign.com/auth/login   → PRIMARY PLATFORM DOMAIN™
 [3] POST /api/auth/login (Supabase)
        ↓ if 200
-[4] user.role == 'super_admin'  → app.moodfordesign.com/superadmin
+[4] user.role == 'super_admin'  → blueprint.moodfordesign.com/superadmin
     user.role tenant-scoped     → {tenant.slug}.moodfordesign.com/dashboard
 [5] Subsequent navigation stays on tenant subdomain
-    (session cookies set with Domain=.moodfordesign.com so they propagate)
+    (Supabase Auth cookie Domain=.moodfordesign.com → SSO propaga
+     fra blueprint + tutti i subdomain tenant)
 ```
 
-**Frontend state attuale**: il login redirige a `/dashboard` SEMPRE (no tenant subdomain swap). Il redirect "tenant-aware" lo implementeremo in **ITER142.b** dopo l'effettiva configurazione DNS — oggi tutti i preview env sono single-host.
+**Onboarding / invitation / reset-password URLs** — tutti devono puntare a `blueprint.moodfordesign.com/auth/...` (no `app.moodfordesign.com`). Configurare:
+- Supabase Auth → Site URL = `https://blueprint.moodfordesign.com`
+- Supabase Auth → Redirect URLs = `https://blueprint.moodfordesign.com/auth/callback` + `https://*.moodfordesign.com/auth/callback`
+- Email templates (Supabase / Resend) → link base = `https://blueprint.moodfordesign.com`
 
-**Forgot password / Invitations**: oggi vanno via Supabase Auth (server-side template hosted by Supabase). Reply-to deve essere configurato in Supabase Auth dashboard.
+**Frontend state attuale**: il login redirige a `/dashboard` SEMPRE (no tenant subdomain swap). Il redirect "tenant-aware" lo implementeremo in **ITER142.b** dopo l'effettiva configurazione DNS — oggi tutti i preview env sono single-host.
 
 ---
 

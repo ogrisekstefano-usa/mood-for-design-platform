@@ -25,12 +25,15 @@ cors_origins_env = os.environ.get('CORS_ORIGINS', '')
 # and local dev. These stay enabled even when CORS_ORIGINS is unset/empty,
 # so production auth/CMS/storefront always work with credentials=True.
 _default_origins = [
+    # PRIMARY PLATFORM DOMAIN™ (ITER142 correction) — Blueprint Command Center
     "https://blueprint.moodfordesign.com",
-    "https://app.moodfordesign.com",
+    # Corporate marketing site
     "https://moodfordesign.com",
     "https://www.moodfordesign.com",
+    # Preview / emergent platform endpoints
     "https://content-hub-pro-22.emergent.host",
     "https://content-hub-pro-22.preview.emergentagent.com",
+    # Local dev
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]

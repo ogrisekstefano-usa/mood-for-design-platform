@@ -31,9 +31,15 @@ ROOT_DOMAINS = (
     "moodfordesign.com",
 )
 RESERVED_SUBDOMAINS = {
-    # Marketing / app shell — never tenant-scoped:
-    "www", "app", "api", "admin", "staging", "preview", "dev",
-    "docs", "status", "support", "blog", "help",
+    # Platform core — NEVER tenant-scoped.
+    # ITER142 correction: `blueprint` is the PRIMARY PLATFORM DOMAIN™
+    # (Blueprint Command Center · SuperAdmin · orchestration runtime).
+    # `app` is kept reserved too (legacy + future alias safety) so it can
+    # never be claimed as a tenant slug by mistake.
+    "www", "blueprint", "app",
+    # Infrastructure / system endpoints
+    "api", "admin", "support", "help", "blog", "docs", "status",
+    "staging", "preview", "dev",
 }
 
 
