@@ -252,6 +252,7 @@ def _localize_quote(q: DashboardQuote, target_locale: str, tenant_id: str) -> Da
 def get_config(
     ctx: dict = Depends(get_tenant_context),
     locale: str = Query("en-US", description="Active UI locale"),
+    admin: bool = Query(False, description="If true, return strict per-locale config (no cascade fallback) for the admin editor."),
 ):
     """Return the resolved dashboard config for this tenant + locale.
 
@@ -270,7 +271,17 @@ def get_config(
                 .select("*")
                 .or_(f"tenant_id.eq.{tid},tenant_id.is.null")
                 .execute().data or [])
-    cfg = _pick_config(cfg_rows, tid, locale) or {}
+    if admin:
+        # Strict mode: only the tenant's row for this exact locale.
+        # If it doesn't exist yet, return an EMPTY config so the editor
+        # shows blank fields ready for first-time authoring (not the
+        # cascaded fallback that would confuse the user into thinking
+        # there's already a localised copy stored).
+        cfg = next((r for r in cfg_rows
+                    if str(r.get("tenant_id") or "") == str(tid)
+                    and (r.get("locale") or "") == locale), None) or {}
+    else:
+        cfg = _pick_config(cfg_rows, tid, locale) or {}
 
     # 2. All media rows visible to this tenant
     media_rows = (c.table("atelier_dashboard_media")
@@ -365,20 +376,24 @@ def list_media(
 def list_quotes(
     ctx: dict = Depends(get_tenant_context),
     locale: str = Query("en-US"),
+    strict: bool = Query(False, description="If true, only return quotes whose source `locale` equals the target locale (no fallback / no ALE translation). Used by the admin editor."),
 ):
     c = db()
     tid = ctx["tenant_id"]
-    rows = (c.table("atelier_dashboard_quotes").select("*")
+    q = (c.table("atelier_dashboard_quotes").select("*")
             .or_(f"tenant_id.eq.{tid},tenant_id.is.null")
             .eq("is_active", True)
-            .order("sort_order")
-            .execute().data or [])
+            .order("sort_order"))
+    if strict:
+        q = q.eq("locale", locale)
+    rows = q.execute().data or []
     media_rows = (c.table("atelier_dashboard_media").select("*")
                   .or_(f"tenant_id.eq.{tid},tenant_id.is.null")
                   .execute().data or [])
     media_by_id = {str(m["id"]): _record_to_media(m) for m in media_rows}
     quotes = [_record_to_quote(r, media_by_id) for r in rows]
-    quotes = [_localize_quote(q, locale, tid) for q in quotes]
+    if not strict:
+        quotes = [_localize_quote(q, locale, tid) for q in quotes]
     return {"quotes": [q.dict() for q in quotes]}
 
 

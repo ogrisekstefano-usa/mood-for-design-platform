@@ -355,6 +355,20 @@ const AtelierMediaDirection = () => {
                     filter: previewFilter,
                     objectPosition: focalPos,
                   }}
+                  onError={(e) => {
+                    // CDN propagation lag — try the original variant; if
+                    // that also fails, fall back to the local objectURL
+                    // (when available) instead of leaving the canvas black.
+                    const img = e.currentTarget;
+                    if (activeAsset && img.src === activeAsset.optimized_asset_url) {
+                      img.src = activeAsset.original_asset_url
+                        || activeAsset.thumbnail_asset_url
+                        || activeAsset.file_url
+                        || '';
+                    } else if (draft.file_preview && img.src !== draft.file_preview) {
+                      img.src = draft.file_preview;
+                    }
+                  }}
                 />
                 <span
                   className="amd__vignette"

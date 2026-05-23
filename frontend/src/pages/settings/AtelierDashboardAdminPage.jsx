@@ -66,8 +66,12 @@ const AtelierDashboardAdminPage = () => {
   const [activeTab, setActiveTab] = useState('copy');
 
   // Drafts (form state)
+  // ITER141.1 — default both copy locale and quote locale to the active
+  // navigation locale so the admin sees content in the language they're
+  // currently navigating (not the global "All locales" cascade).
+  const initialLocale = (uiLocale || 'en-US');
   const [copyDraft, setCopyDraft] = useState({
-    locale: '*',
+    locale: initialLocale,
     hero_eyebrow: '', hero_greeting_morning: '', hero_greeting_afternoon: '', hero_greeting_evening: '',
     hero_summary_template: '', hero_signature: '',
     hero_overlay_profile: 'cinematic_left',
@@ -80,26 +84,31 @@ const AtelierDashboardAdminPage = () => {
     media_kind: 'hero', file_url: '', alt_text: '',
     focal_point_x: 0.5, focal_point_y: 0.5,
     grading_profile: 'nordic_cinematic', overlay_intensity: 0.45, brightness_offset: 0.0,
-    locale: '*', sort_order: 0,
+    locale: initialLocale, sort_order: 0,
   });
 
   const [quoteDraft, setQuoteDraft] = useState({
     quote_text: '', quote_author: '', quote_source: '',
-    locale: 'en-US', sort_order: 0, media_id: '',
+    locale: initialLocale, sort_order: 0, media_id: '',
   });
 
   // Load
   useEffect(() => {
     let alive = true;
+    const loc = uiLocale || 'en-US';
     Promise.all([
-      api.get(`/api/atelier/dashboard/config?locale=${uiLocale || 'en-US'}`).then(r => r.data),
+      // Pass the navigation locale + admin=true so the API returns the
+      // strict per-locale row (not the cascade fallback) for the editor.
+      api.get(`/api/atelier/dashboard/config?locale=${loc}&admin=true`).then(r => r.data).catch(() => null),
       api.get('/api/atelier/dashboard/media').then(r => r.data.media || []),
-      api.get(`/api/atelier/dashboard/quotes?locale=${uiLocale || 'en-US'}`).then(r => r.data.quotes || []),
+      // strict=true → only quotes whose source locale == loc, no ALE translate
+      api.get(`/api/atelier/dashboard/quotes?locale=${loc}&strict=true`).then(r => r.data.quotes || []),
     ]).then(([cfg, m, q]) => {
       if (!alive) return;
       setConfig(cfg); setMedia(m); setQuotes(q);
       setCopyDraft(d => ({
         ...d,
+        locale: loc,
         hero_eyebrow:           cfg?.hero_eyebrow || '',
         hero_greeting_morning:  cfg?.hero_greeting_morning || '',
         hero_greeting_afternoon:cfg?.hero_greeting_afternoon || '',
@@ -117,6 +126,7 @@ const AtelierDashboardAdminPage = () => {
         section_milestones_title:cfg?.section_milestones_title || '',
         section_inspiration_title:cfg?.section_inspiration_title || '',
       }));
+      setQuoteDraft(d => ({ ...d, locale: loc }));
     });
     return () => { alive = false; };
   }, [uiLocale]);
@@ -178,12 +188,12 @@ const AtelierDashboardAdminPage = () => {
         ...quoteDraft,
         media_id: quoteDraft.media_id || null,
       });
-      // Reload quote list
-      const fresh = await api.get(`/api/atelier/dashboard/quotes?locale=${uiLocale || 'en-US'}`)
+      // Reload quote list (strict per-locale)
+      const fresh = await api.get(`/api/atelier/dashboard/quotes?locale=${quoteDraft.locale}&strict=true`)
         .then(r => r.data.quotes || []);
       setQuotes(fresh);
-      setQuoteDraft({ quote_text: '', quote_author: '', quote_source: '',
-                      locale: 'en-US', sort_order: 0, media_id: '' });
+      setQuoteDraft(d => ({ quote_text: '', quote_author: '', quote_source: '',
+                            locale: d.locale, sort_order: 0, media_id: '' }));
       toast.success(t('atelier.admin.quote_added', null, 'Quote added'));
     } catch (e) {
       toast.error(`${e.response?.data?.detail || e.message}`);
