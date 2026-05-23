@@ -1,0 +1,39 @@
+{
+  "summary": "ITER144.1 Global Module Route Governance + Cinematic Blocked State + Email Branding Runtime Identity Continuity — verified. Backend 51/51 pytest PASS (test_iter144_1_runtime_continuity.py 3/3 + ITER144 foundation 17/17 + ITER143a/c/d/e 31/31). Frontend: ModuleBlockedState renders correctly with data-testid='module-blocked-state', data-module-code='insights', data-module-state='disabled', Italian editorial copy ('Modulo disattivato' eyebrow, 'Questo spazio è in silenzio.' title), and module-blocked-home-cta present. EmailBrandingPage shows identity source badge ('Source · tenant_legacy' after cleanup) and 6-locale preview selector (it-IT/en-US/en-GB/fr-FR/de-DE/es-ES). After restore PATCH, backend confirms insights=enabled at platform_default with no tenant override.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Insights re-enable visual confirmation", "issue": "After PATCH /api/blueprint-admin/feature-modules/insights {state:'enabled'} (verified via backend GET /api/tenant/configuration shows insights state=enabled source=platform_default no override), the /insights page still rendered ModuleBlockedState in the browser session — likely client-side runtime-bundle cache / React Query staleTime. A hard refresh or invalidation may be needed. Backend state is clean.", "affected_selectors": ["[data-testid='module-blocked-state']"]}
+    ],
+    "design_issues": [
+      {"screen": "global", "issues": [
+        "Many [i18n] Missing string key warnings: nav.runtime.loading, nav.journey_index, nav.crm_accounts, nav.crm_follow_ups, nav.crm_archived, nav.language_cc, nav.settings_workspace, nav.blueprint_admin, nav.section.intelligence, AND system.module_guard.disabled.{eyebrow,title,lede} + system.module_guard.cta.home for BOTH it-IT and en-US locales. The text RESOLVES correctly via fallback (Italian copy is visible), but the i18n loader warns 'Missing string key' — module_guard blocks are likely seeded in editorial_blocks but not exported into the active runtime nav/system bundle for those locales. This is a heatmap/leakage signal worth tightening."
+      ]},
+      {"screen": "dashboard owner-introduction", "issues": ["[LEAKAGE] warnings show Italian phrases on en-US dashboard (owner-introduction-modal, owner-introduction-save) — unrelated to ITER144.1 but appears in language heatmap noise."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter144_1_runtime_continuity.py",
+    "/app/test_reports/pytest/iter144_1.xml",
+    "/app/test_reports/pytest/iter144_aggregate.xml"
+  ],
+  "action_items": [
+    "Investigate FE runtime bundle/React-Query cache invalidation for /api/tenant/modules so that disabling/enabling a module reflects immediately without manual refresh.",
+    "Export system.module_guard.* keys (locked/disabled/coming_soon/hidden/beta_restricted .title/.eyebrow/.lede and cta.home) into the active i18n runtime bundle for it-IT, en-US, en-GB, fr-FR, de-DE, es-ES so heatmap stops flagging them as missing (the fallback copy is correct but the warning is noisy).",
+    "Re-export nav.* missing keys flagged in console (runtime.loading, journey_index, crm_accounts, crm_follow_ups, crm_archived, language_cc, settings_workspace, blueprint_admin, section.intelligence) into the runtime nav bundle.",
+    "Investigate cross-locale leakage on owner-introduction-modal (Italian phrases bleeding into en-US dashboard) — separate from ITER144.1 but visible during testing."
+  ],
+  "critical_code_review_comments": [
+    "ModuleBlockedState correctly renders with data-testid, data-module-code, data-module-state attributes — clean Test-friendly contract.",
+    "Email branding mirror works end-to-end (PATCH branding → tenant_configuration.custom_email_identity → source promoted to tenant_runtime) — confirmed by automated pytest including a cleanup PATCH back to {} which falls back to tenant_legacy.",
+    "Preview endpoint accepts locale param and returns body.locale + html (verified)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (51/51)", "frontend": "85% — core UI contract verified; restore-state UI refresh and i18n missing-key warnings need attention"},
+  "test_credentials": "ROOT admin@moodfordesign.com / Blueprint2024!; TENANT demo@moodfordesign.com / Blueprint2024!",
+  "seed_data_creation": "Cleanup performed: PATCH /api/blueprint-admin/feature-modules/insights {state:'enabled'} and PATCH /api/tenant/configuration {custom_email_identity:{}} — both 200.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend pytest aggregate (test_iter144_1_runtime_continuity + ITER144 foundation + ITER143a/c/d/e) is the regression baseline — currently 51/51 PASS. Cinematic Blocked State™ UI contract: [data-testid='module-blocked-state'][data-module-code='<code>'][data-module-state='<locked|disabled|coming_soon|hidden|beta_restricted>'] plus [data-testid='module-blocked-home-cta']. EmailBranding contract: [data-testid='branding-identity-source'] badge text format 'Source · <tenant_runtime|tenant_legacy|platform>'; [data-testid='branding-preview-locale'] select with 6 options. After E2E tests, ALWAYS restore insights→enabled and clear demo tenant custom_email_identity={}."
+}

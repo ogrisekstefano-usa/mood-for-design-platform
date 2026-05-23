@@ -141,6 +141,14 @@ import {
 // ITER144 · Tenant Configuration Foundation™ — runtime governance.
 const BlueprintTenantConfigurationPage = lazy(() => import('./pages/admin/BlueprintTenantConfigurationPage'));
 const RuntimeInspectorPage = lazy(() => import('./pages/admin/RuntimeInspectorPage'));
+// ITER144.1 · Runtime Route Governance™ — global ModuleRouteGuard.
+import ModuleRouteGuard from './components/runtime/ModuleRouteGuard';
+
+/** Wrap a route element with a runtime module guard.
+ *  When the module is disabled/locked/hidden, the route renders the
+ *  Cinematic Blocked State™ instead of mounting the page.
+ */
+const G = (code, el) => <ModuleRouteGuard code={code}>{el}</ModuleRouteGuard>;
 
 const Loading = () => {
   // CinematicLoader rendered inside the cinematic canvas — replaces the
@@ -387,24 +395,24 @@ function App() {
                 <Route path="/form/:slug" element={<LeadFormPage />} />
 
                 <Route element={<ProtectedRoute><StudioRoute><DashboardLayout /></StudioRoute></ProtectedRoute>}>
-                  <Route path="/dashboard" element={<AtelierDashboardPage />} />
-                  <Route path="/dashboard/pulse" element={<JourneyPulsePage />} />
+                  <Route path="/dashboard" element={G('dashboard', <AtelierDashboardPage />)} />
+                  <Route path="/dashboard/pulse" element={G('dashboard', <JourneyPulsePage />)} />
                   <Route path="/dashboard/legacy" element={<DashboardPage />} />
                   <Route path="/workspace/leads" element={<Navigate to="/crm/accounts" replace />} />
-                  <Route path="/workspace/projects" element={<ProjectsPage />} />
-                  <Route path="/workspace/projects/:id" element={<ProjectDetailPage />} />
+                  <Route path="/workspace/projects" element={G('journey_index', <ProjectsPage />)} />
+                  <Route path="/workspace/projects/:id" element={G('journey_index', <ProjectDetailPage />)} />
                   {/* Sprint G.6 — Step-Anchored Artifact Pages™.
                       Il workspace dello step. Il contesto precede l'artifact. */}
-                  <Route path="/journey/:projectId/step/:milestoneType" element={<StepWorkspacePage />} />
-                  <Route path="/workspace/proposals" element={<ProposalsPage />} />
-                  <Route path="/workspace/proposals/:id/compose" element={<ProposalComposerPage />} />
+                  <Route path="/journey/:projectId/step/:milestoneType" element={G('journey_index', <StepWorkspacePage />)} />
+                  <Route path="/workspace/proposals" element={G('journey_index', <ProposalsPage />)} />
+                  <Route path="/workspace/proposals/:id/compose" element={G('journey_index', <ProposalComposerPage />)} />
                   <Route path="/workspace/references" element={<Navigate to="/inspirations" replace />} />
-                  <Route path="/moodboards" element={<MoodboardsPage />} />
-                  <Route path="/moodboards/:id" element={<MoodboardEditor />} />
-                  <Route path="/library" element={<MediaLibraryPage />} />
-                  <Route path="/library/materials" element={<MaterialsPage />} />
-                  <Route path="/library/materials/:slug" element={<MaterialDetailPage />} />
-                  <Route path="/library/collections" element={<CollectionsHub />} />
+                  <Route path="/moodboards" element={G('inspirations', <MoodboardsPage />)} />
+                  <Route path="/moodboards/:id" element={G('inspirations', <MoodboardEditor />)} />
+                  <Route path="/library" element={G('media_library', <MediaLibraryPage />)} />
+                  <Route path="/library/materials" element={G('material_view', <MaterialsPage />)} />
+                  <Route path="/library/materials/:slug" element={G('material_view', <MaterialDetailPage />)} />
+                  <Route path="/library/collections" element={G('media_library', <CollectionsHub />)} />
                   <Route path="/workspace/calendar" element={<CalendarHub />} />
                   <Route path="/workspace/activity" element={<ActivityHub />} />
                   {/* /workspace/team → operational redirect to /settings/members (real feature). */}
@@ -412,17 +420,17 @@ function App() {
                   <Route path="/workspace/clients" element={<Navigate to="/crm/accounts" replace />} />
                   <Route path="/workspace/messages" element={<MessagesHub />} />
                   <Route path="/workspace/reports" element={<ReportsHub />} />
-                  <Route path="/settings/integrations" element={<IntegrationsHub />} />
-                  <Route path="/inspirations" element={<InspirationsPage />} />
-                  <Route path="/inspirations/collections" element={<StudioCollectionsPage />} />
-                  <Route path="/inspirations/brands" element={<BrandModePage />} />
-                  <Route path="/inspirations/brands/:brandId" element={<BrandDetailPage />} />
+                  <Route path="/settings/integrations" element={G('integrations', <IntegrationsHub />)} />
+                  <Route path="/inspirations" element={G('inspirations', <InspirationsPage />)} />
+                  <Route path="/inspirations/collections" element={G('inspirations', <StudioCollectionsPage />)} />
+                  <Route path="/inspirations/brands" element={G('brand_atlas', <BrandModePage />)} />
+                  <Route path="/inspirations/brands/:brandId" element={G('brand_atlas', <BrandDetailPage />)} />
                   {/* Sprint UI-SYS-01 · Brand Atlas™ canonical alias */}
                   <Route path="/brand-atlas" element={<Navigate to="/inspirations/brands" replace />} />
                   <Route path="/brand-atlas/:brandId" element={<Navigate to="/inspirations/brands/:brandId" replace />} />
-                  <Route path="/inspirations/products/:productId" element={<ProductGalleryPage />} />
-                  <Route path="/inspirations/materials" element={<MaterialViewPage />} />
-                  <Route path="/insights" element={<InsightsPage />} />
+                  <Route path="/inspirations/products/:productId" element={G('inspirations', <ProductGalleryPage />)} />
+                  <Route path="/inspirations/materials" element={G('material_view', <MaterialViewPage />)} />
+                  <Route path="/insights" element={G('insights', <InsightsPage />)} />
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="/settings/atelier-dashboard" element={<StudioAdminRoute><AtelierDashboardAdminPage /></StudioAdminRoute>} />
                   <Route path="/settings/brand" element={<StudioAdminRoute><BrandStudioPage /></StudioAdminRoute>} />
@@ -442,11 +450,11 @@ function App() {
                   <Route path="/editorial/inbox" element={<StudioAdminRoute><VariantApprovalInboxPage /></StudioAdminRoute>} />
 
                   {/* Editorial Studio — Composition Room (Phase E-2 Prompt 2). */}
-                  <Route path="/blueprint/editorial" element={<StudioAdminRoute><EditorialStudioPage /></StudioAdminRoute>} />
-                  <Route path="/blueprint/markets" element={<StudioAdminRoute><MarketMatrixPage /></StudioAdminRoute>} />
+                  <Route path="/blueprint/editorial" element={<StudioAdminRoute>{G('magazine', <EditorialStudioPage />)}</StudioAdminRoute>} />
+                  <Route path="/blueprint/markets" element={<StudioAdminRoute>{G('market_matrix', <MarketMatrixPage />)}</StudioAdminRoute>} />
                   <Route path="/blueprint/intelligence" element={<StudioAdminRoute><MarketInsightsPage /></StudioAdminRoute>} />
                   <Route path="/blueprint/voice" element={<StudioAdminRoute><BrandVoiceAdaptersPage /></StudioAdminRoute>} />
-                  <Route path="/blueprint/studio-voice" element={<StudioAdminRoute><StudioVoicePage /></StudioAdminRoute>} />
+                  <Route path="/blueprint/studio-voice" element={<StudioAdminRoute>{G('studio_voice', <StudioVoicePage />)}</StudioAdminRoute>} />
                   <Route path="/blueprint/language" element={<StudioAdminRoute><LanguageCommandCenter /></StudioAdminRoute>} />
                   {/* ITER143C · /admin/language → consolidated into /admin/language-governance under RootSuperAdmin shell. */}
                   <Route path="/admin/language" element={<Navigate to="/admin/language-governance" replace />} />
@@ -454,9 +462,9 @@ function App() {
 
                   {/* CRM routes (tab + optional account_id deep-link) */}
                   <Route path="/crm" element={<Navigate to="/crm/accounts" replace />} />
-                  <Route path="/crm/accounts/:accountId" element={<AccountDetailPage />} />
-                  <Route path="/crm/:tab" element={<CrmAccountsPage />} />
-                  <Route path="/crm/:tab/:accountId" element={<CrmAccountsPage />} />
+                  <Route path="/crm/accounts/:accountId" element={G('crm_accounts', <AccountDetailPage />)} />
+                  <Route path="/crm/:tab" element={G('crm_accounts', <CrmAccountsPage />)} />
+                  <Route path="/crm/:tab/:accountId" element={G('crm_accounts', <CrmAccountsPage />)} />
                   {/* Legacy redirect — old /workspace/relationships → /crm/accounts */}
                   <Route path="/workspace/relationships" element={<Navigate to="/crm/accounts" replace />} />
 

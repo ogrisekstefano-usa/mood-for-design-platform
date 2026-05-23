@@ -64,7 +64,9 @@ const EmailBrandingPage = () => {
   const [saving, setSaving] = useState(false);
   const [previewHtml, setPreviewHtml] = useState('');
   const [previewKey, setPreviewKey] = useState('password_reset');
+  const [previewLocale, setPreviewLocale] = useState('it-IT');
   const [previewing, setPreviewing] = useState(false);
+  const [identitySource, setIdentitySource] = useState(null);
 
   const isRoot = !!user?.is_root_superadmin;
   const canEdit = (user?.role || '').toLowerCase() === 'tenant_admin' ||
@@ -76,6 +78,13 @@ const EmailBrandingPage = () => {
       try {
         const r = await api.get('/api/tenant/email-branding');
         setDraft(r.data.settings || {});
+        // ITER144.1 · also surface runtime identity source from
+        // /api/tenant/configuration so the editor reflects the merged
+        // resolution (custom_email_identity → tenant_email_settings → platform).
+        try {
+          const rc = await api.get('/api/tenant/configuration');
+          setIdentitySource(rc.data?.email_identity?.source || null);
+        } catch { /* non-critical */ }
       } catch (e) {
         toast.error('Impossibile caricare le impostazioni.');
       } finally { setLoaded(true); }
@@ -104,7 +113,7 @@ const EmailBrandingPage = () => {
     setPreviewing(true);
     try {
       const r = await api.post('/api/tenant/email-branding/preview', {
-        template_key: previewKey, draft,
+        template_key: previewKey, draft, locale: previewLocale,
       });
       setPreviewHtml(r.data.html);
     } catch (e) {
@@ -206,21 +215,43 @@ const EmailBrandingPage = () => {
             <div style={{ padding: '14px 18px',
                           borderBottom: '1px solid var(--bp-cc-border)',
                           display: 'flex', justifyContent: 'space-between',
-                          alignItems: 'center' }}>
-              <span style={eyebrowStyle}>Anteprima · {previewKey}</span>
-              <select value={previewKey}
-                      onChange={(e) => setPreviewKey(e.target.value)}
-                      style={{ background: 'rgba(8,10,13,0.5)',
-                               border: '1px solid var(--bp-cc-border)',
-                               color: 'var(--bp-cc-ink)', fontSize: 12,
-                               padding: '6px 10px', borderRadius: 6 }}>
-                <option value="password_reset">password_reset</option>
-                <option value="invite">invite</option>
-                <option value="onboarding">onboarding</option>
-                <option value="lead_captured">lead_captured</option>
-                <option value="magic_link">magic_link</option>
-                <option value="generic">generic</option>
-              </select>
+                          alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+              <span style={eyebrowStyle} data-testid="branding-identity-source">
+                Source · <span style={{
+                  color: identitySource === 'tenant_runtime' ? 'var(--atelier-cyan, #7ce4f5)'
+                       : identitySource === 'tenant_legacy'  ? '#f4c97a'
+                       : 'rgba(232,235,240,0.5)',
+                }}>{identitySource || '—'}</span>
+              </span>
+              <div style={{ display: 'flex', gap: 6 }}>
+                <select data-testid="branding-preview-locale"
+                        value={previewLocale}
+                        onChange={(e) => setPreviewLocale(e.target.value)}
+                        style={{ background: 'rgba(8,10,13,0.5)',
+                                 border: '1px solid var(--bp-cc-border)',
+                                 color: 'var(--bp-cc-ink)', fontSize: 12,
+                                 padding: '6px 10px', borderRadius: 6 }}>
+                  <option value="it-IT">it-IT</option>
+                  <option value="en-US">en-US</option>
+                  <option value="en-GB">en-GB</option>
+                  <option value="fr-FR">fr-FR</option>
+                  <option value="de-DE">de-DE</option>
+                  <option value="es-ES">es-ES</option>
+                </select>
+                <select value={previewKey}
+                        onChange={(e) => setPreviewKey(e.target.value)}
+                        style={{ background: 'rgba(8,10,13,0.5)',
+                                 border: '1px solid var(--bp-cc-border)',
+                                 color: 'var(--bp-cc-ink)', fontSize: 12,
+                                 padding: '6px 10px', borderRadius: 6 }}>
+                  <option value="password_reset">password_reset</option>
+                  <option value="invite">invite</option>
+                  <option value="onboarding">onboarding</option>
+                  <option value="lead_captured">lead_captured</option>
+                  <option value="magic_link">magic_link</option>
+                  <option value="generic">generic</option>
+                </select>
+              </div>
             </div>
             {previewHtml ? (
               <iframe data-testid="branding-preview-frame"

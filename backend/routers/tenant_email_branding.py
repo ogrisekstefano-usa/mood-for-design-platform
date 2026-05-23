@@ -94,6 +94,48 @@ def patch_branding(body: dict,
         }
         c.table("tenant_email_settings").insert(payload).execute()
 
+    # ITER144.1 · Runtime Identity Continuity™
+    # Mirror identity-relevant fields into tenant_configuration.custom_email_identity
+    # so resolve_email_identity() sees the same data (single source of truth).
+    try:
+        from services.tenant_config_resolver import invalidate_tenant_config
+        identity_fields = {
+            "sender_name", "sender_email", "reply_to", "support_email",
+            "logo_url", "website", "footer_signature", "email_signature",
+            "footer_company_name", "footer_address", "footer_phone",
+            "legal_footer", "privacy_url", "terms_url",
+        }
+        identity_patch = {k: v for k, v in updates.items() if k in identity_fields}
+        if identity_patch:
+            # Read current custom_email_identity, merge, write.
+            tc_rows = (c.table("tenant_configuration")
+                       .select("custom_email_identity")
+                       .eq("tenant_id", tid).limit(1).execute().data or [])
+            current = (tc_rows[0].get("custom_email_identity") if tc_rows else {}) or {}
+            # Normalize keys: footer_signature → footer, etc.
+            ALIAS = {"footer_signature": "footer",
+                     "email_signature":  "signature",
+                     "legal_footer":     "legal"}
+            for k, v in identity_patch.items():
+                current[ALIAS.get(k, k)] = v
+            if tc_rows:
+                c.table("tenant_configuration").update(
+                    {"custom_email_identity": current, "updated_at": now}
+                ).eq("tenant_id", tid).execute()
+            else:
+                c.table("tenant_configuration").insert({
+                    "tenant_id": tid,
+                    "custom_email_identity": current,
+                    "created_at": now, "updated_at": now,
+                }).execute()
+            invalidate_tenant_config(tid)
+    except Exception:
+        # Mirror failure must not block the legacy write
+        import logging
+        logging.getLogger(__name__).exception(
+            "tenant_configuration.custom_email_identity mirror failed"
+        )
+
     return get_branding(user=user, tenant_id=tid)
 
 
@@ -106,10 +148,13 @@ def preview_branding(body: dict, user: dict = Depends(get_current_user),
     tid = _resolve_tenant_id(user, tenant_id)
     template_key = (body or {}).get("template_key", "password_reset")
     draft = (body or {}).get("draft") or {}
+    locale = (body or {}).get("locale") or "it-IT"
     # Merge into a virtual tenant_settings so the template sees the draft.
     fake_settings = {**draft}
     ctx = {
         "tenant_settings": fake_settings,
+        "tenant_identity": {**draft, "source": "preview"},
+        "locale":      locale,
         "first_name":  "Anna",
         "reset_url":   "https://studio.moodfordesign.com/auth/reset-password",
         "accept_url":  "https://studio.moodfordesign.com/auth/login",
@@ -121,4 +166,4 @@ def preview_branding(body: dict, user: dict = Depends(get_current_user),
     }
     subject, html, text = render_template(template_key, ctx)
     return {"subject": subject, "html": html, "text": text,
-            "tenant_id": tid, "template_key": template_key}
+            "tenant_id": tid, "template_key": template_key, "locale": locale}

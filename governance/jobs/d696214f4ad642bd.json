@@ -1,0 +1,34 @@
+{
+  "job_id": "d696214f4ad642bd",
+  "stage": "cancelled",
+  "locales": [
+    "en-US"
+  ],
+  "max_iters": 1,
+  "completed": true,
+  "progress_pct": 50,
+  "started_at": "2026-05-23T23:32:30+00:00",
+  "log": [
+    {
+      "ts": "2026-05-23T23:32:30+00:00",
+      "line": "job started · locales=['en-US'] · max_iters=1"
+    },
+    {
+      "ts": "2026-05-23T23:32:30+00:00",
+      "line": "crawling · en-US"
+    }
+  ],
+  "pid": 18634,
+  "log_path": "/tmp/iter134_jobs/d696214f4ad642bd.log",
+  "per_locale": {
+    "en-US": {
+      "summary": {},
+      "iterations": 0,
+      "converged": false
+    }
+  },
+  "updated_at": "2026-05-23T23:32:30+00:00",
+  "current_iteration": 1,
+  "current_locale": "en-US",
+  "finished_at": "2026-05-23T23:32:33Z"
+}
