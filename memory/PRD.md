@@ -1,6 +1,51 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **Sprint ITER144B · WILDCARD TENANT RUNTIME™ + EMAIL IDENTITY RUNTIME™ + RUNTIME BRANDING CONTINUITY™ + RUNTIME CONTEXT INSPECTOR™ + RESTORED ADMIN ORCHESTRATION** · ✅ DELIVERED · 23 Feb 2026 · Architectural freeze totale di runtime governance + tenant resolution + email identity + admin shell.
+
+  **Wildcard Tenant Runtime™** (frontend + backend wiring):
+  - `TenantResolverMiddleware` esistente già popolava `request.state.resolved_tenant` da Host header.
+  - `GET /api/tenant/configuration` ora espone top-level `runtime` block: `{resolved_subdomain, resolved_host, resolution_source, tenant_slug, impersonating}`. Verificato live con Host=studio.moodfordesign.com → `resolved_subdomain='studio'`, source `tenants.slug`.
+  - Architettura pronta per quando DNS Cloudflare propaga `blueprint.moodfordesign.com` + futuri `studio.moodfordesign.com`/wildcard tenants.
+
+  **Email Identity Runtime™** (`services/email_service.py`):
+  - Nuova `resolve_email_identity(tenant_id)` con fallback chain a 3 livelli:
+    1. `tenant_configuration.custom_email_identity` (ITER144 — JSONB)
+    2. `tenant_email_settings` (ITER143E legacy)
+    3. platform `EMAIL_FROM` / `EMAIL_REPLY_TO` (env)
+  - `send_template_email()` ora usa `identity.from_address` + `identity.reply_to`, persiste `metadata.identity_source` su ogni `email_events` row, ritorna `identity_source` nel response.
+  - PATCH del JSONB → source promosso a `tenant_runtime` istantaneamente (verificato: `Studio X <studio@x.test>`).
+
+  **Runtime Branding Continuity™**:
+  - Single source of truth: `tenant_configuration`. Branding tokens → CSS vars `--mfd-*`. Email identity → resolver. Navigation overrides → sidebar. Locale → boot. Modules → route guard. **Zero duplicazione.**
+
+  **Runtime Context Inspector™** (`/admin/runtime-inspector`):
+  - Endpoint `GET /api/blueprint-admin/runtime-inspector?tenant_id={optional}` (root-only).
+  - Cinematic page: 24 stat rows con `resolved_runtime_identity` · `branding.source` (color-coded) · `email_identity` con from_address/reply_to/logo · `locale` · `modules` state_counts · `navigation` · overrides JSON dump.
+  - Refresh button per cache invalidation manuale.
+
+  **Restored Admin Orchestration** (AdminShell sidebar 9 → 13 voci):
+  - + Audit Log (`/admin/audit`)
+  - + Advisor Governance (`/admin/advisors`)
+  - + Runtime Inspector (`/admin/runtime-inspector`)
+  - + Module Registry (`/admin/modules`)
+
+  **Tests**: `test_iter144_tenant_foundation.py` esteso a **17/17 PASS** (+ 6 nuovi: runtime block presence, subdomain resolution via Host, email_identity in bundle, custom_email_identity promotes source, runtime-inspector root-only, by tenant_id). Aggregate ITER143+ITER144: **48/48** (zero regression).
+
+  **Live verification** (testing_agent_v3 iter 144 · 100% backend + 100% frontend):
+  - GET `/api/tenant/configuration` Host=studio.moodfordesign.com → runtime.resolved_subdomain='studio' ✓
+  - PATCH custom_email_identity → source legacy → tenant_runtime ✓
+  - /admin/runtime-inspector renderizza 24 stat rows ✓
+  - AdminShell sidebar mostra 13 voci ✓
+  - Tenant_admin HTTP 403 su runtime-inspector ✓
+
+  **DNS Cloudflare**: utente ha applicato CNAME `blueprint.moodfordesign.com → content-hub-pro-22.preview.emergentagent.com` (DNS-only). In propagazione, fuori dal mio scope di test.
+
+  **Polish items deferred** (non-blocking):
+  - React warning preesistente "setState during render" su /admin/*
+  - Console noise 404/403 intermittenti durante boot
+
+## 📌 Sprint Status (previous)
 - **Sprint ITER144 · TENANT CONFIGURATION FOUNDATION™ + NAVIGATION RUNTIME™ + THEME RUNTIME™ + CONFIGURATION AUDIT TRAIL™** · ✅ DELIVERED · 23 Feb 2026 · Single codebase · N tenants · N configurations · ZERO frontend forks.
 
   **Migration `077_navigation_runtime_and_audit.sql`** (additive, idempotent ON CONFLICT seed):
