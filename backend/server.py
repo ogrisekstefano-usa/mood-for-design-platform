@@ -197,6 +197,12 @@ api_router.include_router(editorial_runtime.router, prefix="/content", tags=["ed
 # ITER143C · Blueprint Command Center™ — ROOT SUPERADMIN governance API.
 from routers import blueprint_admin  # noqa: E402
 api_router.include_router(blueprint_admin.router, prefix="/blueprint-admin", tags=["blueprint-command-center"])
+# ITER143E · Tenant Email Branding™ — tenant_admin-facing settings UI backend.
+from routers import tenant_email_branding  # noqa: E402
+api_router.include_router(tenant_email_branding.router, prefix="/tenant/email-branding", tags=["tenant-email-branding"])
+# ITER143E+ · Email orchestration (webhook + retry + search + provider health).
+from routers import email_orchestration  # noqa: E402
+api_router.include_router(email_orchestration.router, prefix="/email", tags=["email-orchestration"])
 
 
 @api_router.get("/health")

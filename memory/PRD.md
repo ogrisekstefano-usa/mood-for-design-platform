@@ -1,6 +1,54 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **Sprint ITER143E · TENANT EMAIL BRANDING™ + EMAIL GOVERNANCE EXPANSION™** · ✅ DELIVERED · 23 Feb 2026 · Lo studio adesso può rifinire la **voce** delle proprie email (logo, palette, firma, contatti, legali) senza vedere nessuna config tecnica. Email Governance™ centrale acquisisce webhook ingestion + retry + search + provider health.
+
+  **Migration `075_tenant_email_branding_extras.sql`**: estensione `tenant_email_settings` con `footer_company_name, footer_address, footer_phone, socials (JSONB), email_signature, legal_footer, privacy_url, terms_url, metadata (JSONB)`.
+
+  **Backend nuovi**:
+  - `routers/tenant_email_branding.py` — `GET/PATCH /api/tenant/email-branding` (15 campi editabili), `POST .../preview` (render HTML del template con draft settings, NO invio). Gated da tenant_admin / super_admin / root_superadmin; designer → HTTP 403.
+  - `routers/email_orchestration.py` — `POST /api/email/webhook/resend` (HMAC SVix-compatible verification, dev-friendly fallback), `POST /api/email/admin/email-events/{id}/retry`, `GET /api/email/admin/email-events/search?q=&tenant_id=&event_type=&status=&provider_message_id=`, `GET /api/email/admin/email-provider-health` (delivery score per provider + per tenant).
+  - `scripts/swap_sender_to_production.py` — script idempotente per swappare `EMAIL_FROM` + tutti i `tenant_email_settings.sender_email` da `onboarding@resend.dev` → `no-reply@mail.moodfordesign.com` quando il dominio sarà verificato su Resend.
+
+  **Frontend nuovo** `/settings/email-branding`:
+  - Cinematic black-glass studio · NOT "mail server config" · 2-column layout (editor sx + sticky preview dx con `<iframe srcDoc>`)
+  - 5 sezioni: Voce & Mittente · Identità visiva · Firma editoriale · Studio & contatti · Legali
+  - Save + Preview CTAs · color picker per primary/accent · live template switcher
+  - Gated da `StudioAdminRoute` (tenant_admin + root only)
+
+  **Webhook ingestion live-verificato**: simulato `email.opened` su un `provider_message_id` esistente → riga `email_events` aggiornata con `opened_at`. Eventi senza match diventano orphan rows con `metadata.orphan_webhook=true`.
+
+  **Email Governance UI estesa** (la pagina `/admin/email-governance` ITER143C/D acquisisce ora):
+  - Filtri status + event_type live
+  - "Test invio" panel (destinatario, template, source host)
+  - Detail modal con JSON completo
+  - Endpoint `search`, `retry`, `provider-health` pronti per wiring UI completo (deferred ai prossimi iterations)
+
+  **Sender swap — production checklist**:
+  - DNS records SPF/DKIM/MX/return-path su `mail.moodfordesign.com` (utente lato DNS provider)
+  - Verifica su https://resend.com/domains
+  - Eseguire `python3 backend/scripts/swap_sender_to_production.py`
+  - Restart backend · live test da `/admin/email-governance` → "Test invio"
+
+  **Supabase Auth Hardening — manual checklist** (dashboard, NOT source):
+  - Site URL: `https://blueprint.moodfordesign.com`
+  - Additional Redirect URLs: `https://blueprint.moodfordesign.com/auth/callback`, `https://*.moodfordesign.com/auth/callback`, `https://*.preview.emergentagent.com/auth/callback`
+  - Cookie domain (Auth → Advanced): `.moodfordesign.com`
+  - Codebase ENFORCEMENT lato frontend (`_isAllowedHost`) rifiuta `www.` / bare root indipendentemente dalla config Supabase → impossibile la trappola "Awesome Site in The Making"
+
+  **Test**: `test_iter143e_tenant_branding.py` · **8/8 passed** (branding shape, persist, preview, 403 per designer, search, provider-health, webhook dev-friendly, no-supabase-default-redirect). Aggregate suite: **31/31** (ITER143A · 143C · 143D · 143E, zero regression).
+
+  **Doc**: `/app/memory/ITER143E_TENANT_BRANDING_AND_GOVERNANCE.md` (migration · backend · UI · sender swap · Supabase checklist · architectural notes · future-ready surface).
+
+  **Future-ready surface** (architettura pronta, zero refactor richiesto):
+  - automated onboarding sequences
+  - CRM automations (lead_captured → studio notification + thank-you)
+  - editorial digest (newsletter settimanale per tenant)
+  - milestone notifications (project tasks → status=done)
+  - advisor referral workflows
+  - multi-tenant white-label scaling (basta UPDATE di `tenant_email_settings`, nessun code change)
+
+## 📌 Sprint Status (previous)
 - **Sprint ITER143D · TENANT-AWARE EMAIL ORCHESTRATION™ + AUTH REDIRECT GOVERNANCE™** · ✅ DELIVERED · 23 Feb 2026 · Foundation per email white-label multi-tenant + redirect tenant-aware su tutto il SaaS. Risolve il problema critico architetturale: `forgot-password` non passava più dal Supabase default, ogni email è brandizzata + tracciata + cinematica.
 
   **Migration `074_email_orchestration.sql`**:

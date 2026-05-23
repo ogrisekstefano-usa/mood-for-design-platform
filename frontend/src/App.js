@@ -62,6 +62,8 @@ const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'));
 const AtelierDashboardAdminPage = lazy(() => import('./pages/settings/AtelierDashboardAdminPage'));
 const BrandStudioPage = lazy(() => import('./pages/settings/BrandStudioPage'));
 const DomainsPage = lazy(() => import('./pages/settings/DomainsPage'));
+// ITER143E · Tenant Email Branding™
+const EmailBrandingPage = lazy(() => import('./pages/EmailBrandingPage'));
 const HomepageBuilderPage = lazy(() => import('./pages/settings/HomepageBuilderPage'));
 const NavigationEditorPage = lazy(() => import('./pages/settings/NavigationEditorPage'));
 const FormBuilderPage = lazy(() => import('./pages/settings/FormBuilderPage'));
@@ -422,6 +424,8 @@ function App() {
                   {/* Sprint UI-SYS-01 · Studio Identity™ canonical alias */}
                   <Route path="/studio-identity" element={<Navigate to="/settings/brand" replace />} />
                   <Route path="/settings/domains" element={<StudioAdminRoute><DomainsPage /></StudioAdminRoute>} />
+                  {/* ITER143E · Tenant Email Branding™ — tenant_admin facing */}
+                  <Route path="/settings/email-branding" element={<StudioAdminRoute><EmailBrandingPage /></StudioAdminRoute>} />
                   <Route path="/settings/forms" element={<StudioAdminRoute><FormBuilderPage /></StudioAdminRoute>} />
                   <Route path="/settings/magazine" element={<StudioAdminRoute><MagazineAdminPage /></StudioAdminRoute>} />
                   <Route path="/settings/magazine/:id" element={<StudioAdminRoute><MagazineEditorPage /></StudioAdminRoute>} />
