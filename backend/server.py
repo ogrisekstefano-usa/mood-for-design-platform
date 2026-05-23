@@ -191,6 +191,9 @@ api_router.include_router(editorial_calendar.router, prefix="/blueprint/calendar
 api_router.include_router(advisor_network.router, tags=["advisor-network"])
 api_router.include_router(market_intelligence.router, tags=["market-intelligence"])
 api_router.include_router(cultural_editions.router, tags=["cultural-editions"])
+# ITER143A+ · Dynamic Editorial Runtime™ — page bundle resolver + governance.
+from routers import editorial_runtime  # noqa: E402
+api_router.include_router(editorial_runtime.router, prefix="/content", tags=["editorial-runtime"])
 
 
 @api_router.get("/health")

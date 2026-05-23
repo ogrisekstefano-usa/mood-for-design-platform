@@ -1,6 +1,31 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **Sprint ITER143A+ · DYNAMIC EDITORIAL RUNTIME™ — Phase 1-4** · ✅ DELIVERED · 23 Feb 2026 · Eradicato il modello "frontend con traduzioni statiche". Ogni stringa editoriale visibile su `/begin-journey` e `/professionals` è ora **DB-driven · locale-aware · auto-localized · tenant-aware-ready**. ZERO hardcoded content policy attiva sulle pagine pubbliche prioritarie. Le 4 fasi consegnate:
+
+  **(1) FOUNDATION (DB)** — Migration `072_editorial_runtime.sql`. Due tabelle nuove:
+    - `editorial_blocks` (id, scope `system|tenant`, tenant_id, namespace, block_key, page_key, block_type `hero_title|cta_label|chip|helper|placeholder|narrative|empty_state|validation|toast|label|meta|footer`, source_locale, source_value, source_hash sha1, is_active, notes). Partial unique idx su `(namespace,block_key) WHERE scope='system'` e `(tenant_id,namespace,block_key) WHERE scope='tenant'`. CHECK constraint per scope/tenant consistency.
+    - `editorial_block_translations` (block_id, locale BCP-47 lowercase, value, status `auto|manual|stale|source`, source_hash per drift detect, generated_by `ale|human|seed`, model). UNIQUE(block_id,locale).
+
+  **(2) AUTO LOCALIZATION ENGINE™** — `services/editorial_content_orchestrator.py` (~360 LoC). 5 funzioni pubbliche: `upsert_block()` (idempotente, drift detection via source_hash, persiste source-locale row sempre come `status='source'`), `_generate_variants()` (walk delle 6 ACTIVE_LOCALES = it-it · en-us · en-gb · fr-fr · de-de · es-es; rispetta `manual` overrides via skip), `regenerate_block(force=True)` (SuperAdmin), `resolve_page_bundle()` (process-cache TTL 60s · STRICT in-family fallback chain), `list_blocks()`. **STRICT LOCALE CHAIN** assoluta: `en-US → en-GB → en` consentito · `en-US → it` PROIBITO. Quando una variante manca nella chain, la chiave è OMESSA dal bundle (mai foreign-language leak).
+
+  **(3) RUNTIME API + FRONTEND** — `routers/editorial_runtime.py` con `GET /api/content/page/{page_key}?locale=&scope=` (pubblico, no auth), `GET /api/content/blocks` (SuperAdmin per scope=system), `POST /api/content/blocks/{id}/regenerate` (SuperAdmin force). Frontend: `EditorialBundleProvider` (`/app/frontend/src/site/editorial/EditorialBundleProvider.jsx`) carica N bundles in parallelo, dedup-cache per `${scope}|${pageKey}|${locale}`, expose `useEditorialBundle()` + `useEditorialBlock(key, fallback='')`. Pre-paint gate via `ready` flag → no IT→EN flash. `EditorialContent` component con skeleton fallback.
+
+  **(4) MIGRAZIONE CONTENUTI** — 98 source blocks IT seeded via `backend/scripts/seed_editorial_runtime_v1.py` su 5 collection: `site.begin_journey` (58), `site.professionals` (16), `site.header` (6), `site.footer` (13), `site.common` (5). ALE auto-genera 5 varianti per blocco → ~490 traduzioni totali. Coverage live verificata: **58/58 in tutti e 6 i locali** per `/begin-journey` · **16/16** per `/professionals`. Refactor completo di `BeginJourneyPage.jsx` (283→eliminate tutte hardcoded strings + il `<label>quale spazio immagini?</label>` legacy leak) e `ProfessionalsGatewayPage.jsx` (passa attraverso `EditorialBundleProvider`).
+
+  **Live verification (screenshot)**:
+  - **EN-US `/begin-journey`**: "What ambiance are you seeking?" · "Start by telling us about the space you imagine. Take your time — it's the impressions, not the technical specifications, that guide us." · chips: Residence · Showroom · Hospitality · Office · A dedicated space
+  - **FR-FR `/begin-journey`**: "Quelle atmosphère recherchez-vous?" · "Première étape · Atmosphère" · chips: Maison · Showroom · Hôtellerie · Bureau · Un espace dédié
+  - **DE-DE `/professionals`**: "FÜR FACHLEUTE" · "Ein redaktionelles Ökosystem für jene, die die Zukunft des Wohnens gestalten."
+  - **IT-IT** baseline preserved · zero regression
+
+  **Regression test**: `backend/tests/test_iter143a_editorial_runtime.py` · 6/6 passed. Verifica strict chain (pt-BR → empty), zero IT leak in EN-US bundle (regex su [àèéìòù] + parole funzionali italiane), coverage ≥90% in ogni locale attivo.
+
+  **Stop condition rispettata**: NIENTE governance UI / CMS avanzato / block builder / tenant editor — sarà ITER143B su esplicita richiesta dopo verifica visiva.
+
+  **Architettura ready for studio.moodfordesign.com Golden Tenant™**: `scope='tenant'` + `tenant_id` già supportati dall'orchestrator e dall'API; basterà popolare blocks tenant-scoped quando il tenant arriverà.
+
+## 📌 Sprint Status (previous)
 - **Sprint ITER139 · LOCALE-AWARE SEEDED CONTENT ORCHESTRATION™ — P0 wave** · ✅ DELIVERED · 23 Feb 2026 · Eradicato il **mixed-language leak** dai contenuti seed/demo/journey della dashboard. Quando l'utente naviga in EN-US, ES-ES, FR-FR, DE-DE, IT-IT, AR — ogni titolo, lifecycle label, milestone label, event narrative e next-action testo arriva nativo nella lingua attiva, traducendo dal **source rilevato runtime** (non più assumendo sempre IT come sorgente).
 
   **Architettura — strategia C ibrida**: ALE on-read per UI labels brevi/lifecycle/milestone/activity feed (runtime translate + TM cache), `source_locale` field per long-form (rollout P2). Nuovo **multi-source-language fingerprinting** in `editorial_translation_layer.py`: `detect_language()` con regex precisi per IT/EN/ES/FR/DE/AR. Ogni (record, field) viene fingerprint-ato individualmente — skip su no-op (detected==target), translate live dal source rilevato altrimenti. Nuovo **fallback chain editoriale** `locale_fallback_chain()`: `en-us → en-gb → en`, `es-es → es → en`, `de-de → de → en`, sempre terminante a `en` baseline, MAI cross-family.
