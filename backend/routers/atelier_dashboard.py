@@ -38,6 +38,7 @@ from pydantic import BaseModel, Field
 
 from database import db
 from core.tenant_context import get_tenant_context
+from routers.atelier_media import _resign_media_urls
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/atelier/dashboard", tags=["atelier-dashboard"])
@@ -154,6 +155,11 @@ class DashboardQuoteIn(BaseModel):
 # ── Helpers ──────────────────────────────────────────────────────────
 
 def _record_to_media(rec: dict) -> DashboardMedia:
+    # ITER146 P0 HOTFIX · the `tenant-assets` bucket is private; the
+    # stored URLs use the `/public/...` path and resolve to HTTP 400.
+    # Re-sign at read-time so the preview/dashboard never shows a
+    # broken-image icon. Mutates `rec` in place (caller is read-only).
+    rec = _resign_media_urls(rec)
     return DashboardMedia(
         id=str(rec["id"]),
         media_kind=rec["media_kind"],

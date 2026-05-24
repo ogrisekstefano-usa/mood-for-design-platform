@@ -4809,5 +4809,71 @@ mount.
 The dashboard is operationally functional but visually empty
 ("Your atelier is in silence. 0 active journeys"). User requested a
 **Golden Demo Tenant™** seed pack — separate substantial sprint, not
+
+---
+
+## ITER146 HOTFIX · Atelier Media Direction™ private-bucket image bug (2026-02-24)
+
+**Symptom**: User uploaded an image to "Compose the atmosphere" (Atelier
+Media Direction). Upload succeeded server-side (HTTP 201) but the
+cinematic preview showed only a tiny broken-image icon — every other
+asset variant (tile thumbnails, preview, dashboard hero) was equally
+broken.
+
+### Root cause
+`atelier_media.py::_public_url()` called
+`client.storage.from_(BUCKET).get_public_url(path)` to build the
+browser-facing URL. The `tenant-assets` bucket is configured as
+**private** (`public=False` — verified via `list_buckets()`), so the
+returned URL of shape `…/storage/v1/object/public/tenant-assets/…`
+resolves to **HTTP 400 — Bucket not public** at fetch time. The
+`atelier_dashboard_media` row was stored with this broken URL, the
+React `<img>` tag mounted it, the browser rendered the broken-image
+glyph, and the `onError` fallback chain tried `original_asset_url` and
+`thumbnail_asset_url` — same `/public/` URLs — same 400. Nothing to
+render → canvas stayed black.
+
+Verified via curl:
+```
+curl -I 'https://…/storage/v1/object/public/tenant-assets/…1920.jpg'
+→ HTTP/2 400
+```
+
+### Fix
+`_public_url(client, bucket, path)` now calls
+`client.storage.from_(bucket).create_signed_url(path,
+SIGNED_URL_TTL_SECONDS)` (TTL = 7 days, Supabase max for signed
+URLs). The helper retains its name and signature so call-sites need
+no edits. A small companion `_resign_media_urls(rec)` re-signs the
+three variants (optimized / original / thumbnail) at read-time by
+derving the companion paths from the canonical optimized path
+(`{stem}-1920.{ext}`). It's a no-op for legacy rows without
+`storage_path` (e.g. seed Unsplash URLs).
+
+Wired into both upload-response and list endpoints:
+- `routers/atelier_media.py::_media_to_dict` (covers `POST /upload`,
+  `PATCH /{id}/transform`).
+- `routers/atelier_dashboard.py::_record_to_media` (covers
+  `GET /api/atelier/dashboard/config`, `GET /media`, `GET /quotes`,
+  `POST /media`).
+
+### Verification
+- Direct curl on signed URL → `HTTP 200`, 578 309 bytes (image bytes
+  flowing).
+- Playwright probe: tile click on the supabase asset →
+  `.amd__preview-img` shows `complete: true, naturalWidth: 1920,
+  naturalHeight: 1097` (was 0×0 before fix).
+- Final screenshot: Atelier media bank renders 13/13 tiles, including
+  the user's uploaded `bloom_atelier · HERO` artwork.
+- Backend pytest 19/19 PASS (no regression on ITER146 safety / lead
+  pipeline).
+- Python ruff lint clean.
+
+### Future hardening idea (NOT applied)
+A defensive integration test that hits the freshly-signed URL with a
+HEAD request immediately after upload and rejects the response if it's
+not 2xx — would catch a future bucket-configuration drift before users
+notice. Not added in this pass.
+
 applied yet (pending user confirmation on scope).
 

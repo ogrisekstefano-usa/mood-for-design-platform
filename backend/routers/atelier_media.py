@@ -37,6 +37,12 @@ BUCKET = "tenant-assets"
 PATH_PREFIX = "atelier-media"
 MAX_ASSETS_PER_TENANT = 20  # MVP soft cap (configurable via plan flags later)
 
+# ITER146 P0 HOTFIX · the `tenant-assets` bucket is PRIVATE — calls to
+# `get_public_url(...)` return a `/public/...` URL that resolves to
+# HTTP 400. We sign each asset URL for 7 days at read-time so the
+# Atelier Media Direction™ preview never shows a broken-image icon.
+SIGNED_URL_TTL_SECONDS = 7 * 24 * 3600  # 7 days (Supabase signed-URL max)
+
 
 # ── Grading presets vocabulary ─ ITER142 frozen registry ───────────
 # Source of truth = `atelier_presets_registry` table (migration 071).
@@ -102,6 +108,31 @@ def _require_admin(ctx: dict) -> None:
 
 
 def _public_url(client, bucket: str, path: str) -> str:
+    """ITER146 P0 HOTFIX · the `tenant-assets` bucket is PRIVATE, so the
+    `/public/...` URL returns HTTP 400. We always emit a signed URL.
+
+    The helper name is kept for backwards-compat with callers (no rename
+    storm) but the contract is now "browser-renderable URL for this path"
+    — the implementation chooses public vs. signed based on the bucket
+    configuration.
+    """
+    try:
+        res = client.storage.from_(bucket).create_signed_url(
+            path, SIGNED_URL_TTL_SECONDS,
+        )
+        if isinstance(res, dict):
+            url = res.get("signedURL") or res.get("signed_url") or res.get("signedUrl") or ""
+        else:
+            url = str(res or "")
+        if url:
+            # Supabase returns paths like '/storage/v1/object/sign/...?token=…'
+            # — promote to absolute if needed.
+            if url.startswith("/"):
+                base = (client.storage_url or "").rstrip("/")
+                url = f"{base}{url}" if base else url
+            return url.rstrip("?")
+    except Exception:  # pragma: no cover — fall back to legacy public URL
+        logger.exception("signed URL failed for %s/%s; using public URL", bucket, path)
     raw = client.storage.from_(bucket).get_public_url(path)
     if isinstance(raw, dict):
         url = raw.get("publicURL") or raw.get("publicUrl") or ""
@@ -110,10 +141,56 @@ def _public_url(client, bucket: str, path: str) -> str:
     return url.rstrip("?")
 
 
+def _resign_media_urls(rec: dict) -> dict:
+    """ITER146 P0 HOTFIX · re-sign a media row's URLs at read-time so the
+    7-day TTL is refreshed on every page load. Mutates and returns rec.
+    """
+    if not rec:
+        return rec
+    bucket = rec.get("storage_bucket") or BUCKET
+    path = rec.get("storage_path")
+    if not path:
+        return rec  # legacy rows without storage_path — keep as-is
+    admin = get_admin_client()
+    if admin is None:
+        return rec
+    try:
+        # storage_path always points to the optimized variant
+        # (`{base}-1920.{ext}`). The original/thumb live next to it with
+        # known suffixes.
+        opt_path = path
+        ext = _ext_suffix(path)
+        stem = path[:-(len(ext) + 5)] if ext and path.endswith(f"-1920{ext}") else None
+        if stem:
+            orig_path = f"{stem}{ext}"
+            thumb_path = f"{stem}-480{ext}"
+        else:
+            orig_path = path
+            thumb_path = path
+        rec["optimized_asset_url"] = _public_url(admin, bucket, opt_path)
+        rec["original_asset_url"]  = _public_url(admin, bucket, orig_path)
+        rec["thumbnail_asset_url"] = _public_url(admin, bucket, thumb_path)
+        rec["file_url"]            = rec["optimized_asset_url"]
+    except Exception:
+        logger.exception("re-signing media URLs failed for id=%s", rec.get("id"))
+    return rec
+
+
+def _ext_suffix(path: str) -> str:
+    """`'foo/bar-1920.jpg' → '.jpg'`. Empty string if no extension."""
+    dot = path.rfind(".")
+    return path[dot:] if dot > 0 else ""
+
+
 def _media_to_dict(rec: dict) -> dict:
-    """Shape returned to the frontend (no _id, just declared fields)."""
+    """Shape returned to the frontend (no _id, just declared fields).
+
+    Re-signs the asset URLs at read-time so signed-URL TTL is refreshed
+    on every endpoint call.
+    """
     if not rec:
         return {}
+    rec = _resign_media_urls(rec)
     keys = [
         "id", "tenant_id", "media_kind", "file_url",
         "original_asset_url", "optimized_asset_url", "thumbnail_asset_url",
