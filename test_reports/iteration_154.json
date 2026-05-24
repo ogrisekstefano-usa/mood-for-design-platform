@@ -1,0 +1,53 @@
+{
+  "summary": "ITER154 retest. Backend regression PASSES (12/12 + 3 new). All 3 frontend fixes from iteration_153 (owner-gate skip, designer-chip testid, accounts pill count) are not confirmed via UI because the playwright login submit didn't progress the session — but a NEW CRITICAL backend bug was uncovered: POST /api/relationships/intake/answer-event?tenant_slug=mood-demo-studio-81a09e returns 404 'Tenant not found'. Only tenant_slug=studio resolves. The frontend ContinuationInterviewDrawer.jsx hardcodes the fallback slug to 'mood-demo-studio-81a09e' which the answer-event route rejects, so the Continuation Interview flow will break at every option click.",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "POST /api/relationships/intake/answer-event", "issue": "Returns 404 'Tenant not found' for tenant_slug=mood-demo-studio-81a09e (the same slug used by the rest of the storefront e.g. /api/storefront/public/mood-demo-studio-81a09e/* and /api/relationships/intake/groups?tenant_slug=mood-demo-studio-81a09e). Only tenant_slug=studio resolves on this route. Either: (a) the tenants table row has slug='studio' but status='active' while the duplicate slug 'mood-demo-studio-81a09e' is on a different row that is not active, OR (b) the route in /app/backend/routers/relationship_engine.py:67 filters tenants by status='active' too strictly. Confirm by SELECT id, slug, status FROM tenants WHERE slug IN ('studio','mood-demo-studio-81a09e'); — likely two rows exist.", "priority": "CRITICAL"}
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Continuation Interview · option click", "issue": "ContinuationInterviewDrawer.jsx:64 hardcodes the fallback tenant_slug to 'mood-demo-studio-81a09e' for the POST to /api/relationships/intake/answer-event. Even if the runtime tenantSlug prop is correctly threaded, this fallback is also the same slug used elsewhere in the app, so the answer-event POST will 404 unless the backend accepts this slug (see backend critical bug). User clicks on any option → 404 → drawer stuck.", "affected_selectors": ["[data-testid^='ci-drawer-option-']"]}
+    ],
+    "design_issues": [
+      {"screen": "Login console noise", "issues": ["~30 i18n missing-key warnings on every render (auth.login.*, brand.sub) — pre-existing per iteration_153. LEAK 0 / MISS 17 on /auth/login. Also pre-existing 'Cannot update a component while rendering' warning from LocalizationOverlay/LoginPage."]}
+    ]
+  },
+  "verifications": {
+    "Backend_pytest_iter148_sprint_c": "12/12 PASS · /app/test_reports/pytest/iter154.xml (6.85s)",
+    "Backend_welcome_next_moments_for_low_score": "PASS · continuation_interview present in 10/10 low-score leads (progression_score<0.95) — confirms ITER154 backend fix to client_relations.py works",
+    "Backend_intake_groups_for_private_client": "PASS · returns 5 groups (atmosphere/materials/lifestyle/project_timing/budget_range) with Italian prompts (e.g. 'Scegli l\\'atmosfera dominante.') via GET /api/relationships/intake/groups?lead_type=private_client[&tenant_slug=mood-demo-studio-81a09e] — both with/without tenant_slug param return 200",
+    "Backend_intake_answer_event": "FAIL · POST /api/relationships/intake/answer-event?tenant_slug=mood-demo-studio-81a09e returns 404 'Tenant not found'. Only tenant_slug=studio returns 201.",
+    "Frontend_owner_gate_skip": "NOT_VERIFIED · playwright login submit did not transition the user past /auth/login (form filled but URL stayed on /auth/login). Owner gate checks ran on unauthenticated pages and returned False — inconclusive.",
+    "Frontend_designer_chip_count": "NOT_VERIFIED · same reason as above (login did not complete)",
+    "Frontend_stagenav_account_count": "NOT_VERIFIED · same reason as above",
+    "Frontend_welcome_drawer_click_through": "NOT_VERIFIED · same reason as above",
+    "Frontend_continuation_interview_click_through": "NOT_VERIFIED via UI · but backend route 404 (see above) means it will fail integrationally"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter148_sprint_c_relations.py",
+    "/app/backend/tests/test_iter154_welcome_continuation.py",
+    "/app/test_reports/pytest/iter154.xml"
+  ],
+  "action_items": [
+    "FIX BACKEND (CRITICAL): /api/relationships/intake/answer-event must accept tenant_slug=mood-demo-studio-81a09e. Either update the tenants table so this slug is active, or relax the status='active' filter in routers/relationship_engine.py:67 to match how other tenant-resolution code paths work (storefront/public/* and /intake/groups both resolve this slug fine). Without this, the Continuation Interview drawer's option-click POST will 404 in production for the demo tenant.",
+    "RE-RUN UI E2E after the backend slug fix — the 3 frontend fixes (owner-gate skip, designer-chip testid, accounts pill count) need UI verification. Login submit must be debugged: form fields are filled but the 'ACCEDI' button click did not progress (the playwright submit selector may have matched the I'm a private client / professional buttons instead). Suggest a clearer data-testid='login-submit-button' on the Accedi button.",
+    "OPTIONAL: address the i18n MISS 17 LEAK 0 on /auth/login (pre-existing per iter_153)."
+  ],
+  "critical_code_review_comments": [
+    "Frontend hardcoding the fallback tenant slug ('mood-demo-studio-81a09e') inside ContinuationInterviewDrawer.jsx is fragile — the slug should come from the tenant context exclusively, with NO string fallback, and the API should resolve all of the demo tenant slugs uniformly.",
+    "Two endpoints (answer-event vs intake/groups) resolve the demo tenant slug differently — this is an inconsistency that will keep biting until tenant resolution is centralised."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter154_welcome_continuation.py (NEW · 3 tests, 2 PASS · 1 documents the 404 slug bug)"
+  ],
+  "success_rate": {"backend": "94% (15/16 — 12 sprint-c + 2 new pass, 1 new fail on answer-event slug)", "frontend": "unverified (login submit didn't progress in playwright)"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (tenant mood-demo-studio-81a09e per /app/memory/test_credentials.md)",
+  "seed_data_creation": "TestPromote::test_promote_lead_to_prospect_and_rollback leaves the first lead in 'dormant' state (idempotent across runs).",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend critical issue: POST /api/relationships/intake/answer-event?tenant_slug=mood-demo-studio-81a09e → 404 'Tenant not found'. tenant_slug=studio works. The 3 ITER153 frontend fixes are NOT independently verified through the UI in this iteration because playwright login submit click didn't progress the session (likely button-selector ambiguity matched the 'I\\'m a private client' / 'I\\'m a design professional' CTAs at the bottom of the login page instead of the 'ACCEDI' submit button). For the next agent: use a more specific submit selector — e.g. page.get_by_role('button', name='ACCEDI') — or ask E1 to add a data-testid='login-submit-button' to the Accedi button. Backend pytest is solid (12/12 sprint-c PASS, plus the new low-score continuation_interview check PASSES).",
+  "rca of the issue": "RCA · answer-event 404: routers/relationship_engine.py:66-69 queries tenants WHERE slug=:tenant_slug AND status='active'. The slug 'mood-demo-studio-81a09e' is referenced everywhere in the app (frontend storefront, ContinuationInterviewDrawer fallback, /intake/groups param) but on this route returns 'Tenant not found'. Probable cause: there are two tenant rows — one with slug='studio' (status=active) and one with slug='mood-demo-studio-81a09e' (status=trial/inactive). The /intake/groups route does NOT filter by status (it just resolves the catalog) so it returns 200, while /answer-event does — hence the asymmetric result. Fix: align the tenants.slug used across all endpoints, or remove the status='active' filter from the answer-event tenant lookup."
+}

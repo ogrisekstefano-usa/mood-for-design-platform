@@ -97,7 +97,7 @@ const ProspectLane = ({ p, designer, onPromote, onOpen }) => {
           <span className="prospect-lane__pulse" />
           cultivated&nbsp;by
         </p>
-        <DesignerChip designer={designer} size="md" testid={`prospect-designer-${p.id}`} />
+        <DesignerChip designer={designer} size="md" contextId={`prospect-${p.id}`} />
       </div>
 
       {/* Column 2 · Momentum */}

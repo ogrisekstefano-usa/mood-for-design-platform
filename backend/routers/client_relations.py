@@ -299,14 +299,18 @@ def lead_welcome_experience(
     lead = res.data[0]
     roster_resp = designer_roster(current_user=current_user)
     designer = _select_designer_for(lead['id'], roster_resp.get('designers') or [])
-    # Build next-moments
+    # Build next-moments (operator-facing suggestions).
     score = float(lead.get('progression_score') or 0)
+    progression = (lead.get('progression_state') or 'lead').lower()
     next_moments = []
-    if not lead.get('intake_completed_at'):
+    # Continuation interview is always available as long as the
+    # relationship still has progression room. Captures register,
+    # atmosphere, tier and any additional closed-question groups.
+    if progression in ('lead', 'prospect') and score < 0.95:
         next_moments.append({
             "kind": "continuation_interview",
             "label": "Continue the interview",
-            "sub":   "Capture register, atmosphere and tier",
+            "sub":   "Deepen register, atmosphere and tier",
         })
     if (lead.get('atmosphere_signals') or []) and score >= 0.4:
         next_moments.append({
@@ -314,7 +318,7 @@ def lead_welcome_experience(
             "label": "Share a first moodboard",
             "sub":   "Translate the atmosphere into matter",
         })
-    if score >= 0.75:
+    if score >= 0.75 and progression != 'account':
         next_moments.append({
             "kind": "promote_account",
             "label": "Promote to Account",

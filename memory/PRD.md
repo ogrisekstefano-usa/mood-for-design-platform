@@ -1,6 +1,52 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **ITER148 · Sprint C · Designer Presence™ + Welcome Drawer + Continuation Interview™** · ✅ DELIVERED · 24 Mag 2026
+
+  **Backend** (`/app/backend/routers/client_relations.py`):
+  - `GET /api/relations/designers` → studio roster with avatar, role_label,
+    presence (`available|away|offline`), round-robin slot
+  - `GET /api/relations/leads/{id}/welcome` → ceremonial payload:
+    lead + designer (deterministic round-robin until Sprint D wires the
+    real `lead_assignments` row) + narrative `next_moments[]` such as
+    `continuation_interview`, `moodboard_invitation`, `promote_account`,
+    `listen`
+  - Continuation Interview submits answers via the existing
+    `POST /api/relationships/intake/answer-event` (Sprint A endpoint)
+  - 12/12 pytest pass (`/app/backend/tests/test_iter148_sprint_c_relations.py`)
+
+  **Frontend** (`/app/frontend/src/pages/relations/`):
+  - `useDesigners.js` + `DesignerChip.jsx` — Presence™ chip with avatar,
+    name, role, presence dot. `contextId` prop keeps each chip uniquely
+    addressable while always prefixing `data-testid="designer-chip-…"`.
+  - `WelcomeDrawer.jsx` — Blueprint Welcome Experience™ side drawer.
+    Greeting, italic-serif name, "Atmosphere captured", DesignerChip,
+    "Next moments" actionable list.
+  - `ContinuationInterviewDrawer.jsx` — closed-question wizard.
+    Progress bar + group label + italic-serif prompt + full-width
+    option pills + back/skip navigation. Each option POSTs an
+    answer-event and advances.
+  - `useRelations.js` now retries `/api/relations/stats` up to 3× with
+    backoff so the stage-nav pills don't stick at 0 on Supabase 503s.
+  - `OwnerIntroductionGate.jsx` skips auto-open on `/relations/*` so the
+    profile-completion modal no longer intercepts relation-card clicks.
+
+  **Pre-Sprint C polish** (user-directed):
+  - Leads: actionable footer pairs Designer + "intake captured / awaiting"
+  - Prospects: % progression replaced with narrative momentum language
+    (*"arriving at the threshold"*, *"gathering momentum"*, *"finding its voice"*…)
+  - Accounts: 3-metric counters replaced with single "Where we are" tone
+    line (*"the relationship is in full conversation"* …); gold accents
+    softened to subtle warmth, not dominant
+  - Global rhythm: padding +30%, gap +25%, line-height bumped to 1.7
+
+  **Verified via** Playwright smoke + Gemini Vision: Leads 127 / Prospects 4 /
+  Accounts 37, DesignerChips on every card, no profile modal interference,
+  Welcome Drawer + Continuation Interview "1 of 5 · Che atmosfera cerchi? ·
+  Warm & enveloping" wizard.
+
+---
+
 - **ITER148 · P0 · Client Relations™ Visual Distinction** · ✅ DELIVERED · 24 Mag 2026
 
   **Three visually distinct stage experiences** (Leads · Prospects · Accounts).

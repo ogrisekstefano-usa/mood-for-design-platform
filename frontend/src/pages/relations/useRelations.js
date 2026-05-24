@@ -14,10 +14,20 @@ const useRelations = (endpoint, filters = {}) => {
   const [error, setError]     = useState(null);
 
   const fetchCounts = useCallback(async () => {
-    try {
-      const { data } = await api.get('/api/relations/stats');
-      setCounts(data || {});
-    } catch (_) { /* keep prior */ }
+    // The `/api/relations/stats` endpoint sometimes returns a transient
+    // 503 'Upstream temporarily unavailable' from Supabase. We retry up
+    // to 3 times with linear backoff so the stage-nav pills don't get
+    // stuck on the initial all-zeros state.
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        const { data } = await api.get('/api/relations/stats');
+        if (data && Object.keys(data).length > 0) {
+          setCounts(data);
+          return;
+        }
+      } catch (_) { /* try again */ }
+      await new Promise(r => setTimeout(r, 600 * (attempt + 1)));
+    }
   }, []);
 
   const fetchList = useCallback(async () => {

@@ -105,7 +105,7 @@ const LeadCard = ({ lead, designer, onOpen }) => {
       )}
 
       <footer className="lead-card__meta">
-        <DesignerChip designer={designer} size="sm" testid={`lead-designer-${lead.id}`} />
+        <DesignerChip designer={designer} size="sm" contextId={`lead-${lead.id}`} />
         <span className="lead-card__meta-spacer" />
         <span className="lead-card__meta-status">
           {lead.intake_completed_at ? 'intake captured' : 'awaiting first interview'}

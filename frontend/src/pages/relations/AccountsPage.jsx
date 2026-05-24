@@ -107,7 +107,7 @@ const AccountCard = ({ a, designer, onOpen }) => {
       </div>
 
       <footer className="account-card__meta">
-        <DesignerChip designer={designer} size="sm" testid={`account-designer-${a.id}`} />
+        <DesignerChip designer={designer} size="sm" contextId={`account-${a.id}`} />
         <span className="account-card__meta-spacer" />
         <span>last conversation <strong>{formatAgo(a.last_activity_at)} ago</strong></span>
       </footer>

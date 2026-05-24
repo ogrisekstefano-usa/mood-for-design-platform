@@ -33,6 +33,14 @@ const OwnerIntroductionGate = () => {
 
   const checkAndMaybeOpen = useCallback(async () => {
     if (!isOwner) return;
+    // Sprint C: do NOT auto-open the introduction gate on /relations/* —
+    // the editorial relationship surfaces (Leads/Prospects/Accounts) host
+    // their own ceremonial drawers; the owner-intro modal would otherwise
+    // intercept clicks on relation cards.
+    try {
+      const path = typeof window !== 'undefined' ? window.location.pathname : '';
+      if (path.startsWith('/relations/')) return;
+    } catch (_) { /* ignore */ }
     try {
       const { data } = await api.get('/api/profile/me');
       const introduced = !!data?.profile?.is_introduced;

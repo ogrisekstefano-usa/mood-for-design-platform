@@ -108,14 +108,14 @@ const ContinuationInterviewDrawer = ({ open, lead, tenantSlug, onClose, onComple
               <span className="ci-drawer__progress-track">
                 <span className="ci-drawer__progress-fill" style={{ width: `${((step + 1) / total) * 100}%` }} />
               </span>
-              <span className="ci-drawer__progress-group">{current.group.label || current.group.key}</span>
+              <span className="ci-drawer__progress-group">{current.group.label || current.group.group_key || current.group.key}</span>
             </div>
 
             <h3 className="ci-drawer__question" data-testid="ci-drawer-question">
-              {current.question.label || current.question.question_key}
+              {current.question.prompt || current.question.label || current.question.question_key}
             </h3>
-            {current.question.sub && (
-              <p className="ci-drawer__question-sub">{current.question.sub}</p>
+            {(current.question.helper || current.question.sub) && (
+              <p className="ci-drawer__question-sub">{current.question.helper || current.question.sub}</p>
             )}
 
             <ul className="ci-drawer__options" data-testid="ci-drawer-options">
