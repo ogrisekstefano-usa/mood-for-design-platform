@@ -349,51 +349,79 @@
 
 /* ─────────────────────────────────────────────────────────────────────────
  * 12. PROJECT CARDS · COMPACT EDITORIAL HEIGHT
- *    Come da reference image: cards molto meno alte, image più piccola,
- *    progress bar visibile, label + meta + collaborator chips in fondo.
+ *    Come da reference image: cards molto meno alte (16:10 invece di 1:1.18),
+ *    immagine come background con bottom veil per titolo.
  * ──────────────────────────────────────────────────────────────────────── */
 
 [data-atelier="nordic"] .atd-card {
+  aspect-ratio: 16 / 10;
   min-height: 0;
 }
 
-[data-atelier="nordic"] .atd-card__cover {
-  height: 200px;
-  min-height: 200px;
-  max-height: 200px;
-}
-
+/* Card body è absolute positioning sopra cover. */
 [data-atelier="nordic"] .atd-card__body {
   padding: 16px 18px 18px;
 }
 
 [data-atelier="nordic"] .atd-card__title {
-  font-size: 19px;
+  font-family: var(--atelier-sans), 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 17px;
   line-height: 1.18;
-  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  margin-bottom: 2px;
 }
 
 [data-atelier="nordic"] .atd-card__subtitle {
+  font-family: var(--atelier-sans), 'Inter', sans-serif;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.66);
+  color: rgba(255, 255, 255, 0.74);
+  font-weight: 400;
   margin-bottom: 10px;
 }
 
 [data-atelier="nordic"] .atd-card__progress {
-  margin-top: 6px;
-  margin-bottom: 10px;
+  margin-top: 4px;
+  margin-bottom: 8px;
 }
 
 [data-atelier="nordic"] .atd-card__meta {
+  font-family: var(--atelier-sans), 'Inter', sans-serif;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
 }
 
-/* Badge "IN PROGRESS / IN REVIEW / NEW" più piccolo, dentro la card cover */
+/* Badge "IN PROGRESS / IN REVIEW / NEW" più piccolo */
 [data-atelier="nordic"] .atd-card__badge {
   font-size: 9.5px;
   padding: 4px 9px;
   letter-spacing: 0.22em;
+  font-weight: 600;
+}
+
+/* KPI · cyan + tighter spacing + label sans-serif bold leggibile */
+[data-atelier="nordic"] .atd-kpi__value {
+  color: var(--atelier-cyan);
+  font-family: var(--atelier-sans), 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: clamp(40px, 3vw, 52px);
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
+[data-atelier="nordic"] .atd-kpi__label {
+  color: rgba(255, 255, 255, 0.82);
+  font-family: var(--atelier-sans), 'Inter', sans-serif;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  text-transform: none;
+  line-height: 1.32;
+  white-space: normal;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -570,6 +598,54 @@ html [data-atelier="nordic"] [data-testid="settings-hub"] {
 html [data-atelier="nordic"] [data-testid="settings-hub"] .grid,
 html [data-atelier="nordic"] [data-testid="settings-page"] .grid {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 17. MEDIA LIBRARY · sidebar leggibile + testi bianchi più grandi
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] aside.flex-shrink-0 .text-\[10px\],
+[data-atelier="nordic"] aside .text-\[10\.5px\],
+[data-atelier="nordic"] aside .text-\[11px\],
+[data-atelier="nordic"] aside .text-\[11\.5px\] {
+  font-size: 12px !important;
+}
+
+[data-atelier="nordic"] aside .text-\[var\(--bp-text-muted\)\],
+[data-atelier="nordic"] aside .text-\[var\(--bp-text-faint\)\] {
+  color: rgba(255, 255, 255, 0.86) !important;
+}
+
+[data-atelier="nordic"] aside [class*="uppercase"] {
+  color: rgba(255, 255, 255, 0.75) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.22em;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 18. PROJECT DETAIL PAGE · tab sections full-width
+ *    Overview, Ispirazioni, Moodboard, Materiali, Proposte, ecc.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+html [data-atelier="nordic"] [data-testid="project-detail-page"],
+html [data-atelier="nordic"] .project-detail__main,
+html [data-atelier="nordic"] [data-testid^="project-tab-"],
+html [data-atelier="nordic"] .pd-tab-pane {
+  max-width: none !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+html [data-atelier="nordic"] [data-testid="project-detail-page"] .max-w-7xl,
+html [data-atelier="nordic"] [data-testid="project-detail-page"] .max-w-6xl,
+html [data-atelier="nordic"] [data-testid="project-detail-page"] .max-w-5xl,
+html [data-atelier="nordic"] [data-testid="project-detail-page"] .max-w-4xl,
+html [data-atelier="nordic"] [data-testid="project-detail-page"] [class*="max-w-"] {
+  max-width: none !important;
+  width: 100% !important;
+}
+
   gap: 20px !important;
 }
 
