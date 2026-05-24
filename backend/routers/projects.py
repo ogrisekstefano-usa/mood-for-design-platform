@@ -30,11 +30,51 @@ def list_projects(
     current_user: dict = Depends(require_permission(P_PROJECTS_READ)),
 ):
     client = db()
-    q = client.table('projects').select('*').eq('tenant_id', current_user['tenant_id'])
+    tenant_id = current_user['tenant_id']
+    q = client.table('projects').select('*').eq('tenant_id', tenant_id)
     if status:
-        q = q.eq('status', status)
-    result = q.order('created_at', desc=True).range(offset, offset + limit - 1).execute()
-    return {"data": result.data or [], "total": len(result.data or [])}
+        # Support comma-separated status filter (editorial states group multiple raw statuses)
+        statuses = [s.strip() for s in status.split(',') if s.strip()]
+        if len(statuses) == 1:
+            q = q.eq('status', statuses[0])
+        elif len(statuses) > 1:
+            q = q.in_('status', statuses)
+    result = q.order('updated_at', desc=True).range(offset, offset + limit - 1).execute()
+    rows = result.data or []
+
+    # ── Used-In™ live intelligence per project ──────────────────────────
+    # Counts moodboards · proposals · memory events linked to each project.
+    project_ids = [r['id'] for r in rows]
+    usage = {pid: {"moodboards": 0, "proposals": 0, "memories": 0} for pid in project_ids}
+    if project_ids:
+        try:
+            mb = (client.table('moodboards').select('id, project_id')
+                  .eq('tenant_id', tenant_id).in_('project_id', project_ids).execute())
+            for m in (mb.data or []):
+                pid = m.get('project_id')
+                if pid in usage: usage[pid]['moodboards'] += 1
+        except Exception:
+            pass
+        try:
+            pr = (client.table('proposals').select('id, project_id')
+                  .eq('tenant_id', tenant_id).in_('project_id', project_ids).execute())
+            for p in (pr.data or []):
+                pid = p.get('project_id')
+                if pid in usage: usage[pid]['proposals'] += 1
+        except Exception:
+            pass
+        try:
+            ev = (client.table('relationship_events').select('id, project_id')
+                  .eq('tenant_id', tenant_id).in_('project_id', project_ids).execute())
+            for e in (ev.data or []):
+                pid = e.get('project_id')
+                if pid in usage: usage[pid]['memories'] += 1
+        except Exception:
+            pass
+    for r in rows:
+        r['used_in'] = usage.get(r['id'], {"moodboards": 0, "proposals": 0, "memories": 0})
+
+    return {"data": rows, "total": len(rows)}
 
 
 @router.post("", status_code=201)

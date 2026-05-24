@@ -30,7 +30,7 @@ const editorialDarkPresets = [
     bg: '#0A0A0C', surface: '#121215', surfaceElev: '#18181D',
     border: 'rgba(255,255,255,0.07)', borderStrong: 'rgba(255,255,255,0.16)',
     text: '#F3F2EF', textMuted: '#A8A6A1', textFaint: '#6E6C68',
-    primary: '#C9A26B', primarySoft: 'rgba(201, 162, 107, 0.16)',
+    primary: '#00C9B3', primarySoft: 'rgba(0, 201, 179, 0.16)',
     accent: '#E0C088',
   },
   {

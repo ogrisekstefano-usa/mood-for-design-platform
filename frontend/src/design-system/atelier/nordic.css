@@ -23,12 +23,12 @@
   --bp-elevated:          #2a2018;    /* tooltips · floating elements */
 
   /* ── ATELIER WARM CINEMATIC™ accent (single accent — sacred) ───────────── */
-  /* Was: electric mint cyan #C9A26B. Now: smoked bronze warm. */
-  --atelier-cyan:         #C9A26B;    /* primary action · status · progress */
-  --atelier-cyan-soft:    #D6B179;    /* hover */
-  --atelier-cyan-deep:    #B89870;    /* active press */
-  --atelier-cyan-glow:    rgba(201, 162, 107, 0.20);
-  --atelier-cyan-line:    rgba(201, 162, 107, 0.34);
+  /* Was: electric mint cyan #00C9B3. Now: smoked bronze warm. */
+  --atelier-cyan:         #00C9B3;    /* primary action · status · progress */
+  --atelier-cyan-soft:    #00B8A3;    /* hover */
+  --atelier-cyan-deep:    #00B0A0;    /* active press */
+  --atelier-cyan-glow:    rgba(0, 201, 179, 0.20);
+  --atelier-cyan-line:    rgba(0, 201, 179, 0.34);
 
   /* Legacy var aliasing — preserve existing pages */
   --bp-primary:           var(--atelier-cyan);

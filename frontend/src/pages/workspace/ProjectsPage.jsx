@@ -1,200 +1,204 @@
 /**
- * ProjectsPage — Design Journey™ project atelier.
+ * ProjectsPage — Project Relationship Atlas™ (ITER149)
  *
- * Lista progetti come "atelier editoriale", non come CRUD enterprise.
- * Ogni card mostra:
- *   • status glow + editorial state
- *   • title in italic Playfair
- *   • client + advisor
- *   • palette preview dai colori del brief
- *   • mood/material chips
- *   • timestamp narrativo
- *   • hover cinematic con CTA "Continua il viaggio"
+ * Cinematic editorial grid. NOT a SaaS project list. Each card is a
+ * "Relationship Project Surface™": hero photography, status pill, serif
+ * client name, Used-In™ live numerals, palette strip, last movement.
  *
- * Plan-aware (limit/atCap).
+ * Architecture: DB-driven status taxonomy + editorial state groups +
+ * Used-In™ live counters from backend (moodboards / proposals / memories).
  */
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api, { formatError } from '../../lib/api';
-import { useBlueprint, useTaxonomy } from '../../contexts/BlueprintContext';
-import { useLocaleRuntime } from '../../contexts/LocaleRuntimeContext';
+import { useBlueprint } from '../../contexts/BlueprintContext';
 import { useLicense, refreshLicense } from '../../hooks/useLicense';
 import UsageChip from '../../components/common/UsageChip';
 import { toast } from 'sonner';
-import { Plus, MapPin, Lock, Compass, ArrowUpRight, Layers } from 'lucide-react';
+import { Plus, Lock, Layers } from 'lucide-react';
 import './projects-page.css';
 
-// ── Status TONE map (visual only; labels come from taxonomy registry) ──
-// Editorial Italian labels live in /app/backend/taxonomy/__init__.py
-// under `journey_lifecycle_studio` and are pulled at render time via
-// useTaxonomy(). This keeps the tone here (visual concern) and the
-// editorial vocabulary in the governance layer.
-//
-// Mapping: STATUS_TONE[backend_status] = { tone, taxonomy_key }
-const STATUS_TONE = {
-  new:                  { tone: 'cyan',    taxonomy_key: 'conversation_open' },
-  in_review:            { tone: 'amber',   taxonomy_key: 'drifting' },
-  brief_completed:      { tone: 'cyan',    taxonomy_key: 'in_progress' },
-  proposal_in_progress: { tone: 'warm',    taxonomy_key: 'in_progress' },
-  proposal_sent:        { tone: 'cyan',    taxonomy_key: 'presenting' },
-  approved:             { tone: 'success', taxonomy_key: 'approved' },
-  won:                  { tone: 'success', taxonomy_key: 'approved' },
-  rejected:             { tone: 'rose',    taxonomy_key: 'abandoned' },
-  lost:                 { tone: 'closed',  taxonomy_key: 'abandoned' },
-  archived:             { tone: 'closed',  taxonomy_key: 'closed' },
+// ── Editorial relationship STATES ─────────────────────────────────
+// 5 atelier states pivoting many raw backend statuses. Each state
+// passes a comma-joined `status=` query so the API can `.in_()` filter.
+const EDITORIAL_STATES = [
+  { key: '',                    i18n: 'projects.atlas.tab.all',       fallback: 'Tutti',                statuses: '' },
+  { key: 'conversation_open',   i18n: 'projects.atlas.tab.open',      fallback: 'Conversazione aperta', statuses: 'new,brief_completed' },
+  { key: 'in_review',           i18n: 'projects.atlas.tab.review',    fallback: 'In revisione',         statuses: 'in_review,proposal_in_progress' },
+  { key: 'direction_presented', i18n: 'projects.atlas.tab.presented', fallback: 'Direzione presentata', statuses: 'proposal_sent' },
+  { key: 'won',                 i18n: 'projects.atlas.tab.won',       fallback: 'Progetto vinto',       statuses: 'approved,won' },
+  { key: 'archived',            i18n: 'projects.atlas.tab.archived',  fallback: 'Archivio firmato',     statuses: 'archived,lost,rejected' },
+];
+
+const STATUS_TO_EDITORIAL = {
+  new: 'conversation_open',
+  brief_completed: 'conversation_open',
+  in_review: 'in_review',
+  proposal_in_progress: 'in_review',
+  proposal_sent: 'direction_presented',
+  approved: 'won',
+  won: 'won',
+  archived: 'archived',
+  lost: 'archived',
+  rejected: 'archived',
 };
 
-// Helper: derive the editorial label for a project status. Used inside
-// components that have access to the `t()` function (it() messages).
-const labelForStatus = (status, t) => {
-  const meta = STATUS_TONE[status];
-  if (!meta) return status;
-  return t(`taxonomy.journey_lifecycle_studio.${meta.taxonomy_key}`, null, status);
+const editorialLabel = (status, t) => {
+  const key = STATUS_TO_EDITORIAL[status] || 'conversation_open';
+  const state = EDITORIAL_STATES.find(s => s.key === key) || EDITORIAL_STATES[1];
+  return t(state.i18n, null, state.fallback);
 };
-const toneForStatus = (status) => STATUS_TONE[status]?.tone || 'neutral';
 
-// Color name → swatch hex (editorial palette). Maps the brief vocabulary
-// (earth, olive, bronze, …) to subtle real swatches for the preview dots.
+// ── Hero photography pool — deterministic per project id ──────────
+const HERO_POOL = [
+  'photo-1556909114-f6e7ad7d3136',
+  'photo-1567538096630-e0c55bd6374c',
+  'photo-1554995207-c18c203602cb',
+  'photo-1556228720-195a672e8a03',
+  'photo-1493663284031-b7e3aefcae8e',
+  'photo-1505691938895-1758d7feb511',
+  'photo-1565182999561-18d7dc61c393',
+  'photo-1582268611958-ebfd161ef9cf',
+  'photo-1616486338812-3dadae4b4ace',
+];
+const heroFor = (project) => {
+  const explicit = project?.metadata_json?.hero_image_url;
+  if (explicit) return explicit;
+  const id = String(project?.id || '');
+  const hash = id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  return `https://images.unsplash.com/${HERO_POOL[hash % HERO_POOL.length]}?w=720&q=80&auto=format&fit=crop`;
+};
+
+// ── Palette swatch resolver — editorial color vocabulary ──────────
 const PALETTE_SWATCH = {
-  earth:     '#8a6a4a',
-  olive:     '#7d8b56',
-  bronze:    '#a07550',
-  black:     '#1a1a1c',
-  white:     '#ece8df',
-  beige:     '#cdb999',
-  gold:      '#c8a064',
-  brass:     '#b08a4a',
-  blue:      '#5a779e',
-  navy:      '#3E322A',
-  teal:      '#508a8a',
-  green:     '#5e7d5b',
-  forest:    '#3b5042',
-  cream:     '#e3d8be',
-  charcoal:  '#3a3a3d',
-  walnut:    '#6e4a30',
-  oak:       '#a98660',
-  marble:    '#dddad2',
-  terracotta:'#b56b50',
-  sand:      '#c9b58a',
-  ivory:     '#ede2c8',
-  warm:      '#d6b687',
-  cool:      '#88a0a8',
-  rust:      '#a35538',
-  copper:    '#b0673a',
-  pink:      '#d9a59d',
-  rose:      '#c98a86',
-  amber:     '#e0a258',
-  glass:     '#bcd2d8',
-  brick:     '#a06255',
-  sage:      '#9aaa8c',
-  stone:     '#b3aca0',
-  smoke:     '#8b8e91',
-  mocha:     '#7a5c45',
-  fog:       '#bcbbb1',
+  earth: '#8a6a4a', olive: '#7d8b56', bronze: '#a07550', black: '#1a1a1c',
+  white: '#ece8df', beige: '#cdb999', gold: '#c8a064', brass: '#b08a4a',
+  blue: '#5a779e', navy: '#3E322A', teal: '#508a8a', green: '#5e7d5b',
+  forest: '#3b5042', cream: '#e3d8be', charcoal: '#3a3a3d', walnut: '#6e4a30',
+  oak: '#a98660', marble: '#dddad2', terracotta: '#b56b50', sand: '#c9b58a',
+  ivory: '#ede2c8', warm: '#d6b687', cool: '#88a0a8', rust: '#a35538',
+  copper: '#b0673a', pink: '#d9a59d', rose: '#c98a86', amber: '#e0a258',
+  glass: '#bcd2d8', brick: '#a06255', sage: '#9aaa8c', stone: '#b3aca0',
+  smoke: '#8b8e91', mocha: '#7a5c45', fog: '#bcbbb1',
+};
+const swatch = (name) => PALETTE_SWATCH[(name || '').toLowerCase()] || '#5a5a5a';
+
+// Deterministic fallback palette for projects without onboarding_payload.colors
+const DEFAULT_PALETTE_POOL = [
+  ['marble', 'walnut', 'beige', 'charcoal'],
+  ['oak', 'cream', 'terracotta', 'stone'],
+  ['warm', 'mocha', 'sand', 'ivory'],
+  ['olive', 'cream', 'walnut', 'stone'],
+];
+const defaultPaletteFor = (project) => {
+  const id = String(project?.id || '');
+  const hash = id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  return DEFAULT_PALETTE_POOL[hash % DEFAULT_PALETTE_POOL.length];
 };
 
-const swatch = (name) => {
-  const k = (name || '').toLowerCase();
-  return PALETTE_SWATCH[k] || '#5a5a5a';
-};
-
-const formatRelative = (iso, t) => {
+const formatRelative = (iso) => {
   if (!iso) return null;
   try {
-    const ts = new Date(iso).getTime();
-    const now = Date.now();
-    const sec = Math.floor((now - ts) / 1000);
-    if (sec < 60)         return t('common.time.moments_ago',  null, 'pochi istanti fa');
-    if (sec < 3600)       return t('common.time.minutes_ago',  { n: Math.floor(sec / 60) },    '{n} min fa');
-    if (sec < 86400)      return t('common.time.hours_ago',    { n: Math.floor(sec / 3600) },  '{n} ore fa');
-    if (sec < 86400 * 7)  return t('common.time.days_ago',     { n: Math.floor(sec / 86400) }, '{n} giorni fa');
+    const sec = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+    if (sec < 60)        return 'pochi istanti fa';
+    if (sec < 3600)      return `${Math.floor(sec / 60)} min fa`;
+    if (sec < 86400)     return `${Math.floor(sec / 3600)} ore fa`;
+    if (sec < 86400 * 7) return `${Math.floor(sec / 86400)} giorni fa`;
     return new Date(iso).toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
   } catch { return null; }
 };
 
-// ── Editorial Project Card ───────────────────────────────────────
-const ProjectCard = ({ project, index }) => {
-  const { t } = useBlueprint();
-  const tone = toneForStatus(project.status);
-  const label = labelForStatus(project.status, t);
+// ── Editorial state label dictionary (IT) ───────────────────────
+const EDITORIAL_LABEL_IT = {
+  conversation_open:   'Conversazione aperta',
+  in_review:           'In revisione',
+  direction_presented: 'Direzione presentata',
+  won:                 'Progetto vinto',
+  archived:            'Archivio firmato',
+};
+
+// ── Used-In™ numeral pillar ─────────────────────────────────────
+const UsedIn = ({ usedIn }) => (
+  <div className="atlas-card__usedin" aria-label="Used in this relationship">
+    <span className="atlas-card__usedin-eyebrow">USED-IN&trade;</span>
+    <ul className="atlas-card__usedin-list">
+      <li>
+        <strong className="atlas-card__usedin-num">{usedIn.moodboards}</strong>
+        <span className="atlas-card__usedin-label">moodboards</span>
+      </li>
+      <li>
+        <strong className="atlas-card__usedin-num">{usedIn.proposals}</strong>
+        <span className="atlas-card__usedin-label">proposte</span>
+      </li>
+      <li>
+        <strong className="atlas-card__usedin-num">{usedIn.memories}</strong>
+        <span className="atlas-card__usedin-label">memorie</span>
+      </li>
+    </ul>
+  </div>
+);
+
+// ── Relationship Project Surface™ ───────────────────────────────
+const ProjectCard = ({ project, index, featured }) => {
   const payload = project?.metadata_json?.onboarding_payload || {};
-  const colors    = (payload.colors    || []).slice(0, 5);
-  const moods     = (payload.moods     || []).slice(0, 2);
-  const materials = (payload.materials || []).slice(0, 2);
-  const clientName = (() => {
-    const fn = payload.first_name;
-    const ln = payload.last_name;
-    if (fn || ln) return `${fn || ''} ${ln || ''}`.trim();
-    return project.client_email || null;
-  })();
+  const colorsRaw = (payload.colors || []).slice(0, 4);
+  const colors = colorsRaw.length > 0 ? colorsRaw : defaultPaletteFor(project);
+  const clientFirst = payload.first_name || project.client_first_name;
+  // Strip "Conversazione di " / "Conversation with " prefix from title when
+  // the project was auto-named by the onboarding flow.
+  const stripPrefix = (s) =>
+    String(s || '').replace(/^(conversazione di|conversation with|kunde|cliente)\s+/i, '').trim();
+  const clientName = clientFirst || stripPrefix(project.title) ||
+    (project.client_email ? project.client_email.split('@')[0] : '—');
   const updated = project.updated_at || project.created_at;
+  const usedIn = project.used_in || { moodboards: 0, proposals: 0, memories: 0 };
+  const editorialKey = STATUS_TO_EDITORIAL[project.status] || 'conversation_open';
+  const hero = heroFor(project);
+  const editorialPill = EDITORIAL_LABEL_IT[editorialKey] || 'Conversazione aperta';
+  const rel = formatRelative(updated);
 
   return (
     <Link
       to={`/workspace/projects/${project.id}`}
       data-testid={`project-card-${index}`}
-      className={`pcard pcard--${tone}`}
+      className={`atlas-card atlas-card--${editorialKey} ${featured ? 'atlas-card--featured' : ''}`}
     >
-      {/* Status glow rail */}
-      <span aria-hidden="true" className="pcard__glow" />
-
-      <div className="pcard__top">
-        <span className="pcard__status" data-testid={`project-card-${index}-status`}>
-          <span className="pcard__status-dot" />
-          {label}
-        </span>
-        {project.project_type && (
-          <span className="pcard__type">{project.project_type}</span>
-        )}
+      <div className="atlas-card__hero" aria-hidden="true">
+        <img src={hero} alt="" loading="lazy" />
+        <span className="atlas-card__hero-veil" />
       </div>
 
-      <h3 className="pcard__title" data-testid={`project-card-${index}-title`}>
-        <em>{project.title}</em>
-      </h3>
+      <span className="atlas-card__status" data-testid={`project-card-${index}-status`}>
+        <span className="atlas-card__status-dot" />
+        {editorialPill}
+      </span>
 
-      {clientName && (
-        <p className="pcard__client">{t('projects.card.for_client', { name: clientName }, 'Per · {name}')}</p>
-      )}
+      <div className="atlas-card__title-block">
+        <p className="atlas-card__title-eyebrow">Conversazione di</p>
+        <h3 className="atlas-card__title" data-testid={`project-card-${index}-title`}>
+          {clientName}
+        </h3>
+      </div>
 
-      {/* Palette preview — colored dots from the client brief */}
-      {colors.length > 0 && (
-        <div className="pcard__palette" data-testid={`project-card-${index}-palette`}>
-          {colors.map((c, i) => (
-            <span key={`${c}-${i}`}
-                  className="pcard__swatch"
-                  title={c}
-                  style={{ backgroundColor: swatch(c) }} />
-          ))}
-        </div>
-      )}
+      <UsedIn usedIn={usedIn} />
 
-      {/* Mood + Material chips */}
-      {(moods.length > 0 || materials.length > 0) && (
-        <ul className="pcard__chips">
-          {moods.map((m) => (
-            <li key={`mood-${m}`} className="pcard__chip pcard__chip--mood">{m.replace(/_/g, ' ')}</li>
-          ))}
-          {materials.map((m) => (
-            <li key={`mat-${m}`} className="pcard__chip pcard__chip--mat">{m}</li>
-          ))}
-        </ul>
-      )}
+      <div className="atlas-card__palette" data-testid={`project-card-${index}-palette`}>
+        {colors.map((c, i) => (
+          <span key={`${c}-${i}`} className="atlas-card__swatch"
+                style={{ backgroundColor: swatch(c) }} title={c} />
+        ))}
+      </div>
 
-      <div className="pcard__foot">
-        <span className="pcard__time">
-          {updated ? t('projects.card.last_movement', { when: formatRelative(updated, t) }, 'Ultimo movimento · {when}') : '\u00A0'}
-        </span>
-        <span className="pcard__cta">
-          <Compass size={11} strokeWidth={1.4} />
-          {t('projects.card.continue_journey', null, 'Continue the journey')}
-          <ArrowUpRight size={11} strokeWidth={1.4} />
+      <div className="atlas-card__foot">
+        <span className="atlas-card__time">
+          {rel && `Ultimo movimento · ${rel}`}
         </span>
       </div>
     </Link>
   );
 };
 
-// ── New Project Modal (preserved from previous version) ──────────
+// ── New Project Modal (preserved) ───────────────────────────────
 const NewProjectModal = ({ onClose, onSaved }) => {
   const { t, locale } = useBlueprint();
   const [form, setForm] = useState({ title: '', description: '', project_type: '', priority: 'normal', budget_range: '', timeline: '', language: locale });
@@ -255,15 +259,14 @@ const NewProjectModal = ({ onClose, onSaved }) => {
   );
 };
 
-// ── Main page ────────────────────────────────────────────────────
+// ── Main · Project Relationship Atlas™ ──────────────────────────
 const ProjectsPage = () => {
   const { t } = useBlueprint();
-  const runtime = useLocaleRuntime();
   const navigate = useNavigate();
   const { capacityFor, license } = useLicense();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState('');
+  const [stateKey, setStateKey] = useState('');
   const [showModal, setShowModal] = useState(false);
 
   const cap = capacityFor('projects');
@@ -271,16 +274,15 @@ const ProjectsPage = () => {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const params = tab ? `?status=${tab}` : '';
+      const state = EDITORIAL_STATES.find(s => s.key === stateKey);
+      const params = state && state.statuses ? `?status=${encodeURIComponent(state.statuses)}` : '';
       const { data } = await api.get(`/api/projects${params}`);
       setProjects(data.data || []);
     } catch { setProjects([]); }
     finally { setLoading(false); }
-  }, [tab]);
+  }, [stateKey]);
 
   useEffect(() => { load(); }, [load]);
-
-  const tabs = ['', 'new', 'in_review', 'proposal_sent', 'won', 'archived'];
 
   const onCta = () => {
     if (cap.atCap) navigate('/settings/plan');
@@ -288,67 +290,75 @@ const ProjectsPage = () => {
   };
 
   return (
-    <div className="ppage" data-testid="projects-page">
+    <div className="atlas-page" data-testid="projects-page">
       {showModal && <NewProjectModal onClose={() => setShowModal(false)} onSaved={() => { setShowModal(false); load(); }} />}
 
-      <header className="ppage__head">
+      <header className="atlas-page__head">
         <div>
-          <p className="ppage__eyebrow" data-testid="projects-page-eyebrow">
-            {runtime.copy('projects.page.eyebrow') || 'Design Journey · Atelier'}
+          <p className="atlas-page__eyebrow" data-testid="projects-page-eyebrow">
+            Studio
           </p>
-          <h1 className="ppage__title" data-testid="projects-page-title">
-            <em>{runtime.copy('projects.page.title') || 'I tuoi progetti'}</em>
+          <h1 className="atlas-page__title" data-testid="projects-page-title">
+            Progetti
           </h1>
-          <p className="ppage__sub">{t('projects.count', { n: projects.length })}</p>
+          <p className="atlas-page__sub">
+            {projects.length} {projects.length === 1 ? 'progetto' : 'progetti'}
+          </p>
         </div>
-        <div className="ppage__actions">
+        <div className="atlas-page__actions">
           {license && (
-            <UsageChip label={t('projects.usage_label', null, 'Progetti')} current={cap.current} limit={cap.limit}
+            <UsageChip label="Progetti" current={cap.current} limit={cap.limit}
                        unlimited={cap.unlimited} atCap={cap.atCap} nearCap={cap.nearCap}
                        testid="projects-usage-chip" />
           )}
           <button data-testid="new-project-btn" onClick={onCta}
-            className={`ppage__cta ${cap.atCap ? 'ppage__cta--lock' : ''}`}>
+            className={`atlas-page__cta ${cap.atCap ? 'is-locked' : ''}`}>
             {cap.atCap
-              ? (<><Lock size={12} strokeWidth={1.8} /> {t('projects.actions.upgrade_for_more', null, 'Upgrade to create more')}</>)
-              : (<><Plus size={14} strokeWidth={1.4} /> {runtime.copy('projects.new.cta') || t('projects.newProject', null, 'New project')}</>)}
+              ? (<><Lock size={12} strokeWidth={1.8} /> Upgrade to create more</>)
+              : (<><Plus size={14} strokeWidth={1.4} /> Nuovo progetto</>)}
           </button>
         </div>
       </header>
 
-      <div className="ppage__tabs">
-        {tabs.map((tk) => (
-          <button key={tk || 'all'} data-testid={`tab-${tk || 'all'}`} onClick={() => setTab(tk)}
-            className={`ppage__tab ${tab === tk ? 'is-active' : ''}`}>
-            {tk ? labelForStatus(tk, t) : t('projects.tabs.all', null, 'All')}
+      <div className="atlas-page__tabs" role="tablist">
+        {EDITORIAL_STATES.map((s) => (
+          <button
+            key={s.key || 'all'}
+            data-testid={`tab-${s.key || 'all'}`}
+            onClick={() => setStateKey(s.key)}
+            className={`atlas-page__tab ${stateKey === s.key ? 'is-active' : ''}`}
+            role="tab"
+            aria-selected={stateKey === s.key}
+          >
+            {s.fallback}
           </button>
         ))}
       </div>
 
       {loading ? (
-        <div className="ppage__grid">
-          {[1, 2, 3].map(i => <div key={i} className="pcard pcard--skeleton" />)}
+        <div className="atlas-grid">
+          {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="atlas-card atlas-card--skeleton" />)}
         </div>
       ) : projects.length === 0 ? (
-        <div className="ppage__empty" data-testid="projects-empty">
+        <div className="atlas-page__empty" data-testid="projects-empty">
           <Layers size={36} strokeWidth={1} />
-          <h3 data-testid="projects-empty-title">
-            {runtime.copy('projects.empty.title') || t('projects.empty.title', null, 'No design journey opened yet')}
-          </h3>
-          <p data-testid="projects-empty-subtitle">
-            {runtime.copy('projects.empty.subtitle') || t('projects.empty.subtitle', null, 'Open the first chapter of your studio.')}
-          </p>
-          <button onClick={onCta} data-testid="projects-empty-cta" className="ppage__cta ppage__cta--ghost">
-            {cap.atCap
-              ? t('projects.actions.upgrade_plan', null, 'Upgrade plan')
-              : t('projects.empty.open_first_journey', null, '+ Open the first journey')}
+          <h3 data-testid="projects-empty-title">Nessuna relazione ancora.</h3>
+          <p data-testid="projects-empty-subtitle">Apri il primo capitolo dello studio.</p>
+          <button onClick={onCta} data-testid="projects-empty-cta" className="atlas-page__cta">
+            {cap.atCap ? 'Upgrade plan' : '+ Apri la prima relazione'}
           </button>
         </div>
       ) : (
-        <div className="ppage__grid">
-          {projects.map((p, i) => <ProjectCard key={p.id} project={p} index={i} />)}
+        <div className="atlas-grid" data-testid="projects-grid">
+          {projects.map((p, i) => (
+            <ProjectCard key={p.id} project={p} index={i} featured={false} />
+          ))}
         </div>
       )}
+
+      <footer className="atlas-page__manifesto">
+        <em>"Ogni progetto è una relazione. Ogni relazione è un'opera in divenire."</em>
+      </footer>
     </div>
   );
 };

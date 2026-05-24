@@ -149,7 +149,7 @@ const PaletteSwitcher = () => {
     textFaint: 'rgba(255,255,255,0.40)',
     border: 'rgba(255,255,255,0.10)',
     borderStrong: 'rgba(255,255,255,0.18)',
-    primary: ap.primary || '#C9A26B',
+    primary: ap.primary || '#00C9B3',
     onPrimary: '#FFFFFF'
   } : {
     bg: '#FFFFFF',
@@ -174,7 +174,7 @@ const PaletteSwitcher = () => {
           background: ap.background || '#1a1a1a'
         }} />
           <span style={{
-          background: ap.primary || '#C9A26B'
+          background: ap.primary || '#00C9B3'
         }} />
         </span>
       </button>

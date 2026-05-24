@@ -1,7 +1,7 @@
 /**
  * relationship-memory.css · Relationship Memory™ surface
  *
- * Pure palette · #0A0807 / #08101D / #C9A26B / warm ivory.
+ * Pure palette · #0A0807 / #08101D / #00C9B3 / warm ivory.
  * NO gold. NO red/green statuses. NO KPI gradients.
  *
  * Layout: editorial chapters left · intelligence panel right.
@@ -18,8 +18,8 @@
   --mem-text:      #F3EEE7;
   --mem-text-2:    #DAD1C2;
   --mem-text-3:    #968B7C;
-  --mem-teal:      var(--mood-teal, #C9A26B);
-  --mem-teal-soft: rgba(201, 162, 107, 0.10);
+  --mem-teal:      var(--mood-teal, #00C9B3);
+  --mem-teal-soft: rgba(0, 201, 179, 0.10);
   --mem-warm:      #D6B48A;
   --mem-warm-soft: rgba(214,180,138,0.08);
   --mem-rule:      rgba(243,238,231,0.10);
@@ -27,7 +27,7 @@
 
   min-height: 100vh;
   background:
-    radial-gradient(900px 600px at 80% -10%, rgba(201, 162, 107, 0.045), transparent 60%),
+    radial-gradient(900px 600px at 80% -10%, rgba(0, 201, 179, 0.045), transparent 60%),
     radial-gradient(800px 600px at -10% 110%, rgba(214,180,138,0.06), transparent 60%),
     linear-gradient(180deg, var(--mem-bg-0) 0%, var(--mem-bg-1) 100%);
   color: var(--mem-text);

@@ -53,8 +53,8 @@
   --cp-gold-bg-strong: rgba(200, 169, 119, 0.18);
 
   /* Teal — used VERY sparingly (status pulses only) */
-  --cp-teal:        rgba(201, 162, 107, 0.55);
-  --cp-teal-soft:   rgba(201, 162, 107, 0.15);
+  --cp-teal:        rgba(0, 201, 179, 0.55);
+  --cp-teal-soft:   rgba(0, 201, 179, 0.15);
 
   /* Status colours — restrained */
   --cp-success:     #7BBB7E;

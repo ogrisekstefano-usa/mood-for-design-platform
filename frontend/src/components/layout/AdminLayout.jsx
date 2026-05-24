@@ -3,7 +3,7 @@
  *
  * SuperAdmin Refactor v2 (Feb 2026):
  *   • Hard-coded graphite foundation (#0A0B0E → #14161B)
- *   • Cyan intelligence accent (#C9A26B) — never amber/gold
+ *   • Cyan intelligence accent (#00C9B3) — never amber/gold
  *   • MOOD dual-circle inline SVG icon — editorial-tech, no gradients
  *   • Tenant theme is BYPASSED here: this is platform-level chrome
  *   • Removed "Pagine" navigation (legacy)

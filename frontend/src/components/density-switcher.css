@@ -10,7 +10,7 @@
   font-size: 12px;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--mood-teal, #C9A26B);
+  color: var(--mood-teal, #00C9B3);
   font-weight: 600;
   margin-bottom: 10px;
   padding: 0;
@@ -46,14 +46,14 @@
   background: rgba(255,255,255,0.045);
 }
 .density-switcher__opt.is-active {
-  background: rgba(201, 162, 107, 0.08);
-  border-color: var(--mood-teal, #C9A26B);
-  box-shadow: 0 0 0 1px rgba(201, 162, 107, 0.32);
+  background: rgba(0, 201, 179, 0.08);
+  border-color: var(--mood-teal, #00C9B3);
+  box-shadow: 0 0 0 1px rgba(0, 201, 179, 0.32);
 }
 .density-switcher__opt.is-active::after {
   content: '·';
   position: absolute; right: 18px; top: 12px;
-  font-size: 26px; color: var(--mood-teal, #C9A26B);
+  font-size: 26px; color: var(--mood-teal, #00C9B3);
   line-height: 1;
 }
 .density-switcher__opt-label {
@@ -72,8 +72,8 @@
 .density-switcher__preset {
   margin-top: 24px;
   padding: 20px 22px;
-  background: rgba(201, 162, 107, 0.05);
-  border: 1px solid rgba(201, 162, 107, 0.28);
+  background: rgba(0, 201, 179, 0.05);
+  border: 1px solid rgba(0, 201, 179, 0.28);
   border-radius: 2px;
   display: grid;
   grid-template-columns: 1fr auto;
@@ -95,13 +95,13 @@
 }
 .density-switcher__preset-btn {
   padding: 12px 22px;
-  background: #C9A26B; color: #061616;
-  border: 1px solid #C9A26B; font-weight: 600;
+  background: #00C9B3; color: #061616;
+  border: 1px solid #00C9B3; font-weight: 600;
   font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase;
   cursor: pointer; border-radius: 2px;
   transition: all 180ms ease;
 }
-.density-switcher__preset-btn:hover { background: #D6B179; }
+.density-switcher__preset-btn:hover { background: #00B8A3; }
 @media (max-width: 720px) {
   .density-switcher__preset { grid-template-columns: 1fr; }
 }

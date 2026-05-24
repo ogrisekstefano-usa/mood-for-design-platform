@@ -226,7 +226,7 @@
 }
 
 .atd-projects__empty-cta:hover {
-  background: rgba(201, 162, 107, 0.06);
+  background: rgba(0, 201, 179, 0.06);
   border-color: var(--atelier-cyan);
   box-shadow: var(--atelier-glow-cyan-sm);
 }
@@ -297,7 +297,7 @@
   border-radius: var(--bp-radius-sm);
 }
 .atd-card__badge--cyan {
-  background: rgba(201, 162, 107, 0.16);
+  background: rgba(0, 201, 179, 0.16);
   color: var(--atelier-cyan);
   border: 1px solid var(--atelier-cyan-line);
   backdrop-filter: blur(8px);
@@ -448,7 +448,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: rgba(201, 162, 107, 0.08);
+  background: rgba(0, 201, 179, 0.08);
   border: 1px solid var(--atelier-cyan-line);
   color: var(--atelier-cyan);
   display: inline-flex;

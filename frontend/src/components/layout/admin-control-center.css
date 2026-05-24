@@ -14,10 +14,10 @@
   --mood-bg-elev-2:   #161922;
   --mood-bg-elev-3:   #1C2030;
   --mood-border:      rgba(255,255,255,0.06);
-  --mood-border-hot:  rgba(201, 162, 107, 0.36);
-  --mood-accent:      #C9A26B;
-  --mood-accent-soft: rgba(201, 162, 107, 0.10);
-  --mood-accent-glow: rgba(201, 162, 107, 0.22);
+  --mood-border-hot:  rgba(0, 201, 179, 0.36);
+  --mood-accent:      #00C9B3;
+  --mood-accent-soft: rgba(0, 201, 179, 0.10);
+  --mood-accent-glow: rgba(0, 201, 179, 0.22);
 
   display: flex;
   height: 100vh;
@@ -47,7 +47,7 @@
   background: var(--mood-bg-elev-2);
   border: 1px solid var(--mood-border);
   border-radius: 4px;
-  box-shadow: 0 0 0 1px rgba(201, 162, 107, 0.10) inset, 0 6px 16px rgba(201, 162, 107, 0.06);
+  box-shadow: 0 0 0 1px rgba(0, 201, 179, 0.10) inset, 0 6px 16px rgba(0, 201, 179, 0.06);
 }
 .acc-brand__product {
   font-family: var(--bp-font-heading, 'Playfair Display', Georgia, serif);

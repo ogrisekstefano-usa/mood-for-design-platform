@@ -12,7 +12,7 @@ import React from 'react';
 
 const MoodDualCircleIcon = ({
   size = 22,
-  accent = 'var(--mood-accent, #C9A26B)',
+  accent = 'var(--mood-accent, #00C9B3)',
   ink    = 'var(--mood-ink-strong, #EFEBE4)',
   strokeWidth = 1.5,
   className = '',

@@ -19,10 +19,10 @@
   --site-line: rgba(244, 245, 247, 0.10);
   --site-line-strong: rgba(244, 245, 247, 0.22);
   --site-line-paper: rgba(26, 26, 26, 0.14);
-  --site-accent: #C9A26B;        /* brand primary teal */
+  --site-accent: #00C9B3;        /* brand primary teal */
   --site-accent-2: #33DCC6;      /* brand primary-light */
-  --site-accent-3: #E2C68F;      /* brand primary-soft / mint */
-  --site-accent-soft: rgba(201, 162, 107, 0.16);
+  --site-accent-3: #7EE6DA;      /* brand primary-soft / mint */
+  --site-accent-soft: rgba(0, 201, 179, 0.16);
   --site-cta-paper: #FFFFFF;     /* CTAs on dark = snow */
   --site-serif: 'Playfair Display', 'Cormorant Garamond', 'Bodoni Moda', Georgia, serif;
   --site-sans:  'Montserrat', 'Inter Tight', 'Manrope', system-ui, sans-serif;
@@ -32,9 +32,9 @@
      surface, the next 8 lines pick them up and re-expose them as
      --site-*. Fallback chain preserves the editorial defaults so we
      never render an empty value if a key is missing. */
-  --site-accent:  var(--brand-primary, #C9A26B);
+  --site-accent:  var(--brand-primary, #00C9B3);
   --site-accent-2: var(--brand-secondary, #33DCC6);
-  --site-accent-3: var(--brand-accent, #E2C68F);
+  --site-accent-3: var(--brand-accent, #7EE6DA);
   --site-bg:      var(--brand-bg, #0F0F10);
   --site-bg-2:    var(--brand-surface, #16171A);
   --site-ink:     var(--brand-text, #F4F5F7);

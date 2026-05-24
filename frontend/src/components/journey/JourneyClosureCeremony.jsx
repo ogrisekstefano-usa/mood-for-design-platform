@@ -76,7 +76,7 @@ const JourneyClosureCeremony = ({ journeyId, projectTitle, onDeposited }) => {
             transition: 'all 0.28s ease',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(184,152,112,0.10)';
+            e.currentTarget.style.background = 'rgba(0, 201, 179, 0.10)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.background = 'transparent';

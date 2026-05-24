@@ -9,13 +9,13 @@
 @layer base {
   :root {
     /* ── MOOD for DESIGN — Brand palette (2026) ──────────────────────
-       #C9A26B primary  · #33DCC6 primary-light · #E2C68F primary-soft
+       #00C9B3 primary  · #33DCC6 primary-light · #7EE6DA primary-soft
        #6B6E71 graphite · #1A1A1A ink            · #FFFFFF snow         */
     --bp-bg: #0F0F10;
-    --bp-primary: #C9A26B;
+    --bp-primary: #00C9B3;
     --bp-primary-2: #33DCC6;
-    --bp-primary-3: #E2C68F;
-    --bp-accent: #E2C68F;             /* mint — kept for richer hover/focus blends */
+    --bp-primary-3: #7EE6DA;
+    --bp-accent: #7EE6DA;             /* mint — kept for richer hover/focus blends */
     --bp-surface-1: #16171A;
     --bp-surface-2: #1B1D20;
     --bp-surface-3: #22252A;
@@ -26,7 +26,7 @@
     --bp-text-secondary: #C8CACE;
     --bp-text-muted: #8B8E92;
     --bp-text-subtle: #6B6E71;
-    --bp-selection-bg: rgba(201, 162, 107, 0.20);
+    --bp-selection-bg: rgba(0, 201, 179, 0.20);
     --bp-selection-fg: #F4F5F7;
 
     /* ── Typography ──────────────────────────────────────────────────── */
@@ -129,8 +129,8 @@
      workspace + storefront re-themes without code changes.
      The `var(--brand-…, …)` chain keeps existing defaults if no brand is set. */
   :root {
-    --bp-primary:        var(--brand-primary,        var(--bp-primary,        #C9A26B));
-    --bp-accent:         var(--brand-accent,         var(--bp-accent,         #E2C68F));
+    --bp-primary:        var(--brand-primary,        var(--bp-primary,        #00C9B3));
+    --bp-accent:         var(--brand-accent,         var(--bp-accent,         #7EE6DA));
     --bp-bg:             var(--brand-bg,             var(--bp-bg,             #0F0F10));
     --bp-surface-1:      var(--brand-surface,        var(--bp-surface-1,      #16171A));
     --bp-text-primary:   var(--brand-text,           var(--bp-text-primary,   #F4F5F7));
@@ -369,7 +369,7 @@ a, button, [role="button"] {
   --bp-primary:        #7A5530;
   --bp-accent:         #7A5530;
 
-  --bp-selection-bg:   rgba(122, 85, 48, 0.22);
+  --bp-selection-bg:   rgba(13, 138, 112, 0.22);
   --bp-selection-fg:   #0F0D0A;
 
   /* Soft elevations — editorial feels almost flat, never harsh */
@@ -377,7 +377,7 @@ a, button, [role="button"] {
   --bp-shadow-md:  0 4px 18px rgba(20,17,14,0.06);
   --bp-shadow-lg:  0 14px 40px rgba(20,17,14,0.08);
   --bp-shadow-xl:  0 28px 80px rgba(20,17,14,0.12);
-  --bp-shadow-glow: 0 0 0 1px rgba(122, 85, 48, 0.20), 0 0 26px rgba(122, 85, 48, 0.12);
+  --bp-shadow-glow: 0 0 0 1px rgba(13, 138, 112, 0.20), 0 0 26px rgba(13, 138, 112, 0.12);
   --bp-inset-soft: inset 0 1px 0 rgba(255,255,255,0.5);
 
   /* Atmosphere: less vignette, lower glow */

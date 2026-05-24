@@ -26,11 +26,11 @@
   --auth-surface:      rgba(255, 255, 255, 0.03);
   --auth-border:       rgba(255, 255, 255, 0.12);
   --auth-border-soft:  rgba(255, 255, 255, 0.08);
-  --auth-cyan:         #C9A26B;
-  --auth-cyan-soft:    rgba(201, 162, 107, 0.18);
-  --auth-cyan-glow:    0 0 24px rgba(201, 162, 107, 0.22);
-  --auth-warm:         #C9A26B;
-  --auth-warm-hover:   #D6B179;
+  --auth-cyan:         #00C9B3;
+  --auth-cyan-soft:    rgba(0, 201, 179, 0.18);
+  --auth-cyan-glow:    0 0 24px rgba(0, 201, 179, 0.22);
+  --auth-warm:         #00C9B3;
+  --auth-warm-hover:   #00B8A3;
   --auth-text:         #F5F7FA;
   --auth-text-2:       #C9D2DC;
   --auth-text-muted:   rgba(245, 247, 250, 0.62);
@@ -345,7 +345,7 @@
 
 .mfd-auth__submit:hover:not(:disabled) {
   background: var(--auth-warm-hover);
-  box-shadow: 0 0 32px rgba(201, 162, 107, 0.28);
+  box-shadow: 0 0 32px rgba(0, 201, 179, 0.28);
 }
 
 .mfd-auth__submit:active:not(:disabled) { transform: translateY(1px); }

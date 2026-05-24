@@ -36,7 +36,7 @@
 
 [data-atelier="nordic"] .atelier-nav-item:hover {
   color: var(--atelier-cyan);
-  background: rgba(201, 162, 107, 0.06);
+  background: rgba(0, 201, 179, 0.06);
 }
 
 [data-atelier="nordic"] .atelier-nav-item:hover .atelier-nav-item__icon {
@@ -46,7 +46,7 @@
 
 [data-atelier="nordic"] .atelier-nav-item--active {
   color: var(--atelier-cyan);
-  background: rgba(201, 162, 107, 0.07);
+  background: rgba(0, 201, 179, 0.07);
 }
 
 [data-atelier="nordic"] .atelier-nav-item--active .atelier-nav-item__icon {
@@ -121,7 +121,7 @@
 /* Panel titles · cyan but luminous */
 [data-atelier="nordic"] .atd-panel__title {
   font-size: 12.5px;
-  color: rgba(201, 162, 107, 0.96);
+  color: rgba(0, 201, 179, 0.96);
   letter-spacing: 0.04em;
 }
 
@@ -162,7 +162,7 @@
 /* Section CTAs ("vedi tutto") */
 [data-atelier="nordic"] .atd-section__cta {
   font-size: 12px;
-  color: rgba(201, 162, 107, 0.92);
+  color: rgba(0, 201, 179, 0.92);
 }
 
 /* Status badges */
@@ -550,15 +550,15 @@ html .bp-admin .max-w-4xl {
 
 /* Admin pages · neutral cyan-accented (no amber/gold) */
 .bp-admin {
-  --bp-primary: #C9A26B;
-  --bp-primary-soft: rgba(201, 162, 107, 0.15);
-  --bp-primary-glow: rgba(201, 162, 107, 0.32);
-  --bp-accent: #C9A26B;
-  --mood-accent: #C9A26B;
-  --mood-accent-soft: rgba(201, 162, 107, 0.16);
-  --mood-accent-glow: rgba(201, 162, 107, 0.22);
-  --mood-warm: #C9A26B;
-  --pg-warm: #C9A26B;
+  --bp-primary: #00C9B3;
+  --bp-primary-soft: rgba(0, 201, 179, 0.15);
+  --bp-primary-glow: rgba(0, 201, 179, 0.32);
+  --bp-accent: #00C9B3;
+  --mood-accent: #00C9B3;
+  --mood-accent-soft: rgba(0, 201, 179, 0.16);
+  --mood-accent-glow: rgba(0, 201, 179, 0.22);
+  --mood-warm: #00C9B3;
+  --pg-warm: #00C9B3;
   --bp-text-primary: #ffffff;
   --bp-text-secondary: rgba(255, 255, 255, 0.86);
   --bp-text-muted: rgba(255, 255, 255, 0.72);
@@ -574,12 +574,12 @@ html .bp-admin .max-w-4xl {
 
 .bp-admin [class*="bg-amber"],
 .bp-admin [class*="bg-yellow"] {
-  background-color: rgba(201, 162, 107, 0.12) !important;
+  background-color: rgba(0, 201, 179, 0.12) !important;
 }
 
 .bp-admin [class*="border-amber"],
 .bp-admin [class*="border-yellow"] {
-  border-color: rgba(201, 162, 107, 0.32) !important;
+  border-color: rgba(0, 201, 179, 0.32) !important;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -661,9 +661,9 @@ html [data-atelier="nordic"] [data-testid="project-detail-page"] [class*="max-w-
 
 html [data-atelier="nordic"] .dj-shell,
 html .dj-shell {
-  --dj-warm: var(--atelier-cyan, #C9A26B);
-  --dj-warm-soft: rgba(201, 162, 107, 0.14);
-  --dj-amber: var(--atelier-cyan, #C9A26B);
+  --dj-warm: var(--atelier-cyan, #00C9B3);
+  --dj-warm-soft: rgba(0, 201, 179, 0.14);
+  --dj-amber: var(--atelier-cyan, #00C9B3);
   --dj-text: #ffffff;
   --dj-text-2: rgba(255, 255, 255, 0.78);
   --dj-text-3: rgba(255, 255, 255, 0.55);
@@ -762,10 +762,10 @@ html [data-testid="project-detail"] .bp-h3 {
 
 /* Project page palette: cyan accents everywhere */
 html [data-testid="project-detail"] {
-  --bp-primary: var(--atelier-cyan, #C9A26B);
-  --bp-accent: var(--atelier-cyan, #C9A26B);
-  --mood-warm: var(--atelier-cyan, #C9A26B);
-  --mood-accent: var(--atelier-cyan, #C9A26B);
+  --bp-primary: var(--atelier-cyan, #00C9B3);
+  --bp-accent: var(--atelier-cyan, #00C9B3);
+  --mood-warm: var(--atelier-cyan, #00C9B3);
+  --mood-accent: var(--atelier-cyan, #00C9B3);
 }
 
 html [data-atelier="nordic"] .mxm-page {
@@ -801,13 +801,13 @@ html [data-atelier="nordic"] main > [class*="max-w-7xl"] {
 
 [data-atelier="nordic"] .ins-page {
   --ins-accent:        var(--atelier-cyan);
-  --ins-accent-soft:   rgba(201, 162, 107, 0.18);
-  --ins-accent-line:   rgba(201, 162, 107, 0.32);
+  --ins-accent-soft:   rgba(0, 201, 179, 0.18);
+  --ins-accent-line:   rgba(0, 201, 179, 0.32);
   --ins-heatmap-0:     rgba(255, 255, 255, 0.04);
-  --ins-heatmap-1:     rgba(201, 162, 107, 0.22);
-  --ins-heatmap-2:     rgba(201, 162, 107, 0.40);
-  --ins-heatmap-3:     rgba(201, 162, 107, 0.62);
-  --ins-heatmap-4:     rgba(201, 162, 107, 0.85);
+  --ins-heatmap-1:     rgba(0, 201, 179, 0.22);
+  --ins-heatmap-2:     rgba(0, 201, 179, 0.40);
+  --ins-heatmap-3:     rgba(0, 201, 179, 0.62);
+  --ins-heatmap-4:     rgba(0, 201, 179, 0.85);
 }
 
 [data-atelier="nordic"] .ins-spark__svg path,

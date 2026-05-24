@@ -147,9 +147,9 @@ const FONT_KIND = {
   'Sora': 'sans'
 };
 const DEFAULT_PALETTE = {
-  primary: '#C9A26B',
+  primary: '#00C9B3',
   secondary: '#33DCC6',
-  accent: '#E2C68F',
+  accent: '#7EE6DA',
   background: '#0F0F10',
   surface: '#16171A',
   text_primary: '#F4F5F7',

@@ -43,7 +43,7 @@ const stageLabel = (s) => {
 // (visual variety until real moodboard previews are wired in Sprint B).
 const swatchesFor = (id, atmospheres = []) => {
   // Pure warm/espresso/bronze/sage tones — no cold blue, no electric teal.
-  const palette = ['#D6B48A', '#B89870', '#7A5530', '#A38B6E', '#2A1F18', '#3E322A'];
+  const palette = ['#D6B48A', '#00B0A0', '#7A5530', '#A38B6E', '#2A1F18', '#3E322A'];
   const seed = String(id || '').replace(/-/g, '').slice(0, 6);
   return [0,1,2,3].map((i) => {
     const c = parseInt(seed.charAt(i) || '0', 16) || i;

@@ -170,7 +170,7 @@ const OwnerIntroductionModal = ({
     // Frame ring
     ctx.beginPath();
     ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2 - 1, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(201, 162, 107, 0.6)';
+    ctx.strokeStyle = 'rgba(0, 201, 179, 0.6)';
     ctx.lineWidth = 2;
     ctx.stroke();
   }, [pickerImage, zoom, pan]);

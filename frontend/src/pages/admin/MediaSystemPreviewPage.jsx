@@ -16,7 +16,7 @@ const MediaSystemPreviewPage = () => {
 
   return (
     <div style={{ minHeight: '100vh', background: '#0A0807', color: '#F2EFE6', padding: '64px 48px', fontFamily: 'Inter, system-ui, sans-serif' }}>
-      <p style={{ fontSize: 12, letterSpacing: '0.32em', textTransform: 'uppercase', color: '#C9A26B', fontWeight: 600, marginBottom: 14 }}>
+      <p style={{ fontSize: 12, letterSpacing: '0.32em', textTransform: 'uppercase', color: '#00C9B3', fontWeight: 600, marginBottom: 14 }}>
         Media System Unificato™ · preview
       </p>
       <h1 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: 64, lineHeight: 1.02, margin: '0 0 18px', fontWeight: 400, fontStyle: 'italic' }}>
@@ -33,8 +33,8 @@ const MediaSystemPreviewPage = () => {
         data-testid="ump-preview-open"
         style={{
           padding: '16px 28px',
-          background: '#C9A26B', color: '#061616',
-          border: '1px solid #C9A26B',
+          background: '#00C9B3', color: '#061616',
+          border: '1px solid #00C9B3',
           fontSize: 14, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
           cursor: 'pointer',
         }}
@@ -44,7 +44,7 @@ const MediaSystemPreviewPage = () => {
 
       {picked && (
         <div data-testid="ump-preview-picked" style={{ marginTop: 32, padding: 24, border: '1px solid rgba(255,255,255,0.10)', maxWidth: 560 }}>
-          <p style={{ fontSize: 12, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#C9A26B', fontWeight: 600, marginBottom: 10 }}>
+          <p style={{ fontSize: 12, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#00C9B3', fontWeight: 600, marginBottom: 10 }}>
             Last pick
           </p>
           <h3 style={{ fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: 28, margin: '0 0 8px', fontWeight: 400, fontStyle: 'italic' }}>
