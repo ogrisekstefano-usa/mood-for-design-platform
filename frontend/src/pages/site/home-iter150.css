@@ -816,17 +816,18 @@
  * RESPONSIVE BREAKPOINTS — 4K → desktop → tablet → mobile
  * ═══════════════════════════════════════════════════════════════ */
 
-/* 4K · ultra-wide screens — cap content width, breathe more */
+/* 4K · ultra-wide screens — cap CONTENT width only, backgrounds stay full-bleed */
 @media (min-width: 2200px) {
-  .mfd-header,
-  .mfd-welcome-strip,
-  .mfd-trust,
-  .mfd-how,
-  .mfd-home-magazine,
-  .mfd-stories,
-  .mfd-materials,
-  .mfd-finalcta,
-  .mfd-footer {
+  .mfd-welcome-strip__inner,
+  .mfd-header__inner,
+  .mfd-trust__inner,
+  .mfd-how__inner,
+  .mfd-home-hero__inner,
+  .mfd-home-magazine__inner,
+  .mfd-stories__inner,
+  .mfd-materials__inner,
+  .mfd-finalcta__inner,
+  .mfd-footer__inner {
     max-width: 1840px;
     margin-left: auto;
     margin-right: auto;
