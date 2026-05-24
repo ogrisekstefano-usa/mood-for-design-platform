@@ -285,19 +285,19 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
 // HERO
 // ─────────────────────────────────────────────────────────────────────
 const Hero = ({ locale, copy }) => (
-  <section className="mfd-hero" data-testid="hero-section">
-    <div className="mfd-hero__bg" aria-hidden="true">
+  <section className="mfd-home-hero" data-testid="hero-section">
+    <div className="mfd-home-hero__bg" aria-hidden="true">
       <img src={copy.hero.image} alt="" loading="eager" />
-      <span className="mfd-hero__veil" />
+      <span className="mfd-home-hero__veil" />
     </div>
-    <div className="mfd-hero__content">
-      <h1 className="mfd-hero__title" data-testid="hero-title">
+    <div className="mfd-home-hero__content">
+      <h1 className="mfd-home-hero__title" data-testid="hero-title">
         {L(copy.hero.title, locale).split('\n').map((line, i) => (
-          <span key={i} className="mfd-hero__title-line">{line}</span>
+          <span key={i} className="mfd-home-hero__title-line">{line}</span>
         ))}
       </h1>
-      <p className="mfd-hero__sub" data-testid="hero-sub">{L(copy.hero.sub, locale)}</p>
-      <div className="mfd-hero__ctas">
+      <p className="mfd-home-hero__sub" data-testid="hero-sub">{L(copy.hero.sub, locale)}</p>
+      <div className="mfd-home-hero__ctas">
         <Link to="/begin-journey" className="mfd-cta mfd-cta--solid" data-testid="hero-cta-primary">
           {L(copy.hero.cta_primary, locale)}
         </Link>
@@ -435,14 +435,9 @@ const Materials = ({ locale, copy }) => {
   return (
     <section id="materials" className="mfd-materials" data-testid="materials-section">
       <div className="mfd-materials__inner">
-        <header className="mfd-section-head mfd-section-head--with-link">
-          <div>
-            <p className="mfd-section-eyebrow">{L(copy.materials.eyebrow, locale)}</p>
-            <h2 className="mfd-section-title">{L(copy.materials.title, locale)}</h2>
-          </div>
-          <Link to="/materials" className="mfd-section-link" data-testid="materials-explore">
-            {L(copy.materials.explore, locale)} <ArrowRight size={14} strokeWidth={1.6} />
-          </Link>
+        <header className="mfd-section-head">
+          <p className="mfd-section-eyebrow">{L(copy.materials.eyebrow, locale)}</p>
+          <h2 className="mfd-section-title">{L(copy.materials.title, locale)}</h2>
         </header>
         <div className="mfd-materials__wrap">
           <div className="mfd-materials__rail" ref={railRef}>
