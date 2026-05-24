@@ -245,33 +245,37 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
   return (
   <>
     <div className="mfd-welcome-strip" role="region" aria-label="Welcome">
-      <p className="mfd-welcome-strip__msg">{L(copy.welcome, locale)}</p>
-      <div className="mfd-welcome-strip__meta">
-        <LanguageSelector locale={locale} locales={locales} onChange={onLocaleChange} />
-        <Link to="/magazine" className="mfd-welcome-strip__link" data-testid="welcome-magazine-link">
-          {L(copy.nav.magazine, locale)}
-        </Link>
-        <Link to="/auth/login" className="mfd-welcome-strip__link" data-testid="welcome-login-link">
-          {L(copy.nav.login, locale)}
-        </Link>
+      <div className="mfd-welcome-strip__inner">
+        <p className="mfd-welcome-strip__msg">{L(copy.welcome, locale)}</p>
+        <div className="mfd-welcome-strip__meta">
+          <LanguageSelector locale={locale} locales={locales} onChange={onLocaleChange} />
+          <Link to="/magazine" className="mfd-welcome-strip__link" data-testid="welcome-magazine-link">
+            {L(copy.nav.magazine, locale)}
+          </Link>
+          <Link to="/auth/login" className="mfd-welcome-strip__link" data-testid="welcome-login-link">
+            {L(copy.nav.login, locale)}
+          </Link>
+        </div>
       </div>
     </div>
     <header className="mfd-header">
-      <Link to="/" className="mfd-header__brand">
-        <span className="mfd-header__brand-mark">MOOD <em>for</em> DESIGN</span>
-        <span className="mfd-header__brand-sub">Italian Design Studios</span>
-      </Link>
-      <nav className="mfd-header__nav" aria-label="Primary">
-        <a href="#how-it-works">{L(copy.nav.how_it_works, locale)}</a>
-        <Link to="/magazine">{L(copy.nav.magazine, locale)}</Link>
-        <a href="#design-stories">{L(copy.nav.design_stories, locale)}</a>
-        <a href="#materials">{L(copy.nav.materials, locale)}</a>
-        <Link to="/professionals">{L(copy.nav.professionals, locale)}</Link>
-        <a href="#footer">{L(copy.nav.about, locale)}</a>
-      </nav>
-      <Link to="/begin-journey" className="mfd-cta mfd-cta--primary" data-testid="header-cta-start-project">
-        {L(copy.nav.cta, locale)}
-      </Link>
+      <div className="mfd-header__inner">
+        <Link to="/" className="mfd-header__brand">
+          <span className="mfd-header__brand-mark">MOOD <em>for</em> DESIGN</span>
+          <span className="mfd-header__brand-sub">Italian Design Studios</span>
+        </Link>
+        <nav className="mfd-header__nav" aria-label="Primary">
+          <a href="#how-it-works">{L(copy.nav.how_it_works, locale)}</a>
+          <Link to="/magazine">{L(copy.nav.magazine, locale)}</Link>
+          <a href="#design-stories">{L(copy.nav.design_stories, locale)}</a>
+          <a href="#materials">{L(copy.nav.materials, locale)}</a>
+          <Link to="/professionals">{L(copy.nav.professionals, locale)}</Link>
+          <a href="#footer">{L(copy.nav.about, locale)}</a>
+        </nav>
+        <Link to="/begin-journey" className="mfd-cta mfd-cta--primary" data-testid="header-cta-start-project">
+          {L(copy.nav.cta, locale)}
+        </Link>
+      </div>
     </header>
   </>
   );
@@ -310,12 +314,14 @@ const Hero = ({ locale, copy }) => (
 // ─────────────────────────────────────────────────────────────────────
 const TrustStrip = ({ locale, copy }) => (
   <section className="mfd-trust" data-testid="trust-strip">
-    <p className="mfd-trust__eyebrow">{L(copy.trust.eyebrow, locale)}</p>
-    <ul className="mfd-trust__brands">
-      {copy.trust.brands.map((b) => (
-        <li key={b} className="mfd-trust__brand">{b}</li>
-      ))}
-    </ul>
+    <div className="mfd-trust__inner">
+      <p className="mfd-trust__eyebrow">{L(copy.trust.eyebrow, locale)}</p>
+      <ul className="mfd-trust__brands">
+        {copy.trust.brands.map((b) => (
+          <li key={b} className="mfd-trust__brand">{b}</li>
+        ))}
+      </ul>
+    </div>
   </section>
 );
 
@@ -324,25 +330,27 @@ const TrustStrip = ({ locale, copy }) => (
 // ─────────────────────────────────────────────────────────────────────
 const HowItWorks = ({ locale, copy }) => (
   <section id="how-it-works" className="mfd-how" data-testid="how-it-works">
-    <header className="mfd-section-head">
-      <p className="mfd-section-eyebrow">{L(copy.howitworks.eyebrow, locale)}</p>
-      <h2 className="mfd-section-title">{L(copy.howitworks.title, locale)}</h2>
-    </header>
-    <ol className="mfd-how__steps">
-      {copy.howitworks.steps.map((s) => (
-        <li key={s.id} className="mfd-how__step">
-          <span className="mfd-how__step-num">{s.id}</span>
-          <div className="mfd-how__step-body">
-            <h3 className="mfd-how__step-title">{L(s.title, locale)}</h3>
-            <p className="mfd-how__step-text">{L(s.body, locale)}</p>
-          </div>
-        </li>
-      ))}
-    </ol>
-    <div className="mfd-how__cta-wrap">
-      <Link to="/begin-journey" className="mfd-cta mfd-cta--outline" data-testid="how-cta">
-        {L(copy.howitworks.cta, locale)}
-      </Link>
+    <div className="mfd-how__inner">
+      <header className="mfd-section-head">
+        <p className="mfd-section-eyebrow">{L(copy.howitworks.eyebrow, locale)}</p>
+        <h2 className="mfd-section-title">{L(copy.howitworks.title, locale)}</h2>
+      </header>
+      <ol className="mfd-how__steps">
+        {copy.howitworks.steps.map((s) => (
+          <li key={s.id} className="mfd-how__step">
+            <span className="mfd-how__step-num">{s.id}</span>
+            <div className="mfd-how__step-body">
+              <h3 className="mfd-how__step-title">{L(s.title, locale)}</h3>
+              <p className="mfd-how__step-text">{L(s.body, locale)}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <div className="mfd-how__cta-wrap">
+        <Link to="/begin-journey" className="mfd-cta mfd-cta--outline" data-testid="how-cta">
+          {L(copy.howitworks.cta, locale)}
+        </Link>
+      </div>
     </div>
   </section>
 );
@@ -352,33 +360,35 @@ const HowItWorks = ({ locale, copy }) => (
 // ─────────────────────────────────────────────────────────────────────
 const Magazine = ({ locale, copy }) => (
   <section id="magazine" className="mfd-home-magazine" data-testid="magazine-section">
-    <header className="mfd-section-head mfd-section-head--with-link">
-      <div>
-        <p className="mfd-section-eyebrow">{L(copy.magazine.eyebrow, locale)}</p>
-        <h2 className="mfd-section-title">{L(copy.magazine.title, locale)}</h2>
-      </div>
-      <Link to="/magazine" className="mfd-section-link" data-testid="magazine-explore">
-        {L(copy.magazine.explore, locale)} <ArrowRight size={14} strokeWidth={1.6} />
-      </Link>
-    </header>
-    <div className="mfd-home-magazine__grid">
-      {copy.magazine.cards.map((c) => (
-        <Link key={c.id} to={`/magazine/${c.id}`} className="mag-card" data-testid={`magazine-card-${c.id}`}>
-          <div className="mag-card__media">
-            <img src={c.image} alt="" loading="lazy" />
-            <span className="mag-card__veil" />
-          </div>
-          <span className="mag-card__category">{c.category}</span>
-          <h3 className="mag-card__title">
-            {L(c.title, locale).split('\n').map((line, i) => (
-              <span key={i}>{line}</span>
-            ))}
-          </h3>
-          <span className="mag-card__plus" aria-hidden="true">
-            <Plus size={14} strokeWidth={1.6} />
-          </span>
+    <div className="mfd-home-magazine__inner">
+      <header className="mfd-section-head mfd-section-head--with-link">
+        <div>
+          <p className="mfd-section-eyebrow">{L(copy.magazine.eyebrow, locale)}</p>
+          <h2 className="mfd-section-title">{L(copy.magazine.title, locale)}</h2>
+        </div>
+        <Link to="/magazine" className="mfd-section-link" data-testid="magazine-explore">
+          {L(copy.magazine.explore, locale)} <ArrowRight size={14} strokeWidth={1.6} />
         </Link>
-      ))}
+      </header>
+      <div className="mfd-home-magazine__grid">
+        {copy.magazine.cards.map((c) => (
+          <Link key={c.id} to={`/magazine/${c.id}`} className="mag-card" data-testid={`magazine-card-${c.id}`}>
+            <div className="mag-card__media">
+              <img src={c.image} alt="" loading="lazy" />
+              <span className="mag-card__veil" />
+            </div>
+            <span className="mag-card__category">{c.category}</span>
+            <h3 className="mag-card__title">
+              {L(c.title, locale).split('\n').map((line, i) => (
+                <span key={i}>{line}</span>
+              ))}
+            </h3>
+            <span className="mag-card__plus" aria-hidden="true">
+              <Plus size={14} strokeWidth={1.6} />
+            </span>
+          </Link>
+        ))}
+      </div>
     </div>
   </section>
 );
@@ -388,28 +398,30 @@ const Magazine = ({ locale, copy }) => (
 // ─────────────────────────────────────────────────────────────────────
 const DesignStories = ({ locale, copy }) => (
   <section id="design-stories" className="mfd-stories" data-testid="design-stories">
-    <header className="mfd-section-head mfd-section-head--with-link">
-      <div>
-        <p className="mfd-section-eyebrow">{L(copy.stories.eyebrow, locale)}</p>
-        <h2 className="mfd-section-title">{L(copy.stories.title, locale)}</h2>
-      </div>
-      <Link to="/projects" className="mfd-section-link" data-testid="stories-view-all">
-        {L(copy.stories.viewAll, locale)} <ArrowRight size={14} strokeWidth={1.6} />
-      </Link>
-    </header>
-    <div className="mfd-stories__grid">
-      {copy.stories.cards.map((c) => (
-        <Link key={c.id} to={`/projects/${c.id}`} className="story-card" data-testid={`story-card-${c.id}`}>
-          <div className="story-card__media">
-            <img src={c.image} alt="" loading="lazy" />
-          </div>
-          <div className="story-card__body">
-            <p className="story-card__kind">{L(c.kind, locale)}</p>
-            <h3 className="story-card__title">{L(c.title, locale)}</h3>
-            <p className="story-card__excerpt">{L(c.excerpt, locale)}</p>
-          </div>
+    <div className="mfd-stories__inner">
+      <header className="mfd-section-head mfd-section-head--with-link">
+        <div>
+          <p className="mfd-section-eyebrow">{L(copy.stories.eyebrow, locale)}</p>
+          <h2 className="mfd-section-title">{L(copy.stories.title, locale)}</h2>
+        </div>
+        <Link to="/projects" className="mfd-section-link" data-testid="stories-view-all">
+          {L(copy.stories.viewAll, locale)} <ArrowRight size={14} strokeWidth={1.6} />
         </Link>
-      ))}
+      </header>
+      <div className="mfd-stories__grid">
+        {copy.stories.cards.map((c) => (
+          <Link key={c.id} to={`/projects/${c.id}`} className="story-card" data-testid={`story-card-${c.id}`}>
+            <div className="story-card__media">
+              <img src={c.image} alt="" loading="lazy" />
+            </div>
+            <div className="story-card__body">
+              <p className="story-card__kind">{L(c.kind, locale)}</p>
+              <h3 className="story-card__title">{L(c.title, locale)}</h3>
+              <p className="story-card__excerpt">{L(c.excerpt, locale)}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   </section>
 );
@@ -422,31 +434,33 @@ const Materials = ({ locale, copy }) => {
   const scrollBy = (dx) => railRef.current?.scrollBy({ left: dx, behavior: 'smooth' });
   return (
     <section id="materials" className="mfd-materials" data-testid="materials-section">
-      <header className="mfd-section-head mfd-section-head--with-link">
-        <div>
-          <p className="mfd-section-eyebrow">{L(copy.materials.eyebrow, locale)}</p>
-          <h2 className="mfd-section-title">{L(copy.materials.title, locale)}</h2>
-        </div>
-        <Link to="/materials" className="mfd-section-link" data-testid="materials-explore">
-          {L(copy.materials.explore, locale)} <ArrowRight size={14} strokeWidth={1.6} />
-        </Link>
-      </header>
-      <div className="mfd-materials__wrap">
-        <div className="mfd-materials__rail" ref={railRef}>
-          {copy.materials.swatches.map((s) => (
-            <button key={s.id} className="mat-tile" data-testid={`material-tile-${s.id}`} aria-label={s.name}>
-              <img src={s.image} alt="" loading="lazy" />
-              <span className="mat-tile__label">{s.name}</span>
+      <div className="mfd-materials__inner">
+        <header className="mfd-section-head mfd-section-head--with-link">
+          <div>
+            <p className="mfd-section-eyebrow">{L(copy.materials.eyebrow, locale)}</p>
+            <h2 className="mfd-section-title">{L(copy.materials.title, locale)}</h2>
+          </div>
+          <Link to="/materials" className="mfd-section-link" data-testid="materials-explore">
+            {L(copy.materials.explore, locale)} <ArrowRight size={14} strokeWidth={1.6} />
+          </Link>
+        </header>
+        <div className="mfd-materials__wrap">
+          <div className="mfd-materials__rail" ref={railRef}>
+            {copy.materials.swatches.map((s) => (
+              <button key={s.id} className="mat-tile" data-testid={`material-tile-${s.id}`} aria-label={s.name}>
+                <img src={s.image} alt="" loading="lazy" />
+                <span className="mat-tile__label">{s.name}</span>
+              </button>
+            ))}
+          </div>
+          <div className="mfd-materials__controls" aria-hidden="true">
+            <button onClick={() => scrollBy(-360)} className="mfd-materials__arrow" aria-label="prev">
+              <ArrowLeft size={16} strokeWidth={1.4} />
             </button>
-          ))}
-        </div>
-        <div className="mfd-materials__controls" aria-hidden="true">
-          <button onClick={() => scrollBy(-360)} className="mfd-materials__arrow" aria-label="prev">
-            <ArrowLeft size={16} strokeWidth={1.4} />
-          </button>
-          <button onClick={() => scrollBy(360)} className="mfd-materials__arrow" aria-label="next">
-            <ArrowRight size={16} strokeWidth={1.4} />
-          </button>
+            <button onClick={() => scrollBy(360)} className="mfd-materials__arrow" aria-label="next">
+              <ArrowRight size={16} strokeWidth={1.4} />
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -458,23 +472,25 @@ const Materials = ({ locale, copy }) => {
 // ─────────────────────────────────────────────────────────────────────
 const FinalCTA = ({ locale, copy }) => (
   <section className="mfd-finalcta" data-testid="final-cta">
-    <div className="mfd-finalcta__lede">
-      <h2 className="mfd-finalcta__title">
-        {L(copy.finalCTA.title, locale).split('\n').map((line, i) => (
-          <span key={i}>{line}</span>
-        ))}
-      </h2>
-      <p className="mfd-finalcta__sub">{L(copy.finalCTA.sub, locale)}</p>
-    </div>
-    <div className="mfd-finalcta__paths">
-      <Link to="/begin-journey" className="mfd-finalcta__path" data-testid="final-cta-private">
-        <span className="mfd-finalcta__path-label">{L(copy.hero.cta_primary, locale)}</span>
-        <span className="mfd-finalcta__path-sub">{L(copy.finalCTA.private, locale)}</span>
-      </Link>
-      <Link to="/professionals" className="mfd-finalcta__path" data-testid="final-cta-pro">
-        <span className="mfd-finalcta__path-label">{L(copy.hero.cta_secondary, locale)}</span>
-        <span className="mfd-finalcta__path-sub">{L(copy.finalCTA.pro, locale)}</span>
-      </Link>
+    <div className="mfd-finalcta__inner">
+      <div className="mfd-finalcta__lede">
+        <h2 className="mfd-finalcta__title">
+          {L(copy.finalCTA.title, locale).split('\n').map((line, i) => (
+            <span key={i}>{line}</span>
+          ))}
+        </h2>
+        <p className="mfd-finalcta__sub">{L(copy.finalCTA.sub, locale)}</p>
+      </div>
+      <div className="mfd-finalcta__paths">
+        <Link to="/begin-journey" className="mfd-finalcta__path" data-testid="final-cta-private">
+          <span className="mfd-finalcta__path-label">{L(copy.hero.cta_primary, locale)}</span>
+          <span className="mfd-finalcta__path-sub">{L(copy.finalCTA.private, locale)}</span>
+        </Link>
+        <Link to="/professionals" className="mfd-finalcta__path" data-testid="final-cta-pro">
+          <span className="mfd-finalcta__path-label">{L(copy.hero.cta_secondary, locale)}</span>
+          <span className="mfd-finalcta__path-sub">{L(copy.finalCTA.pro, locale)}</span>
+        </Link>
+      </div>
     </div>
   </section>
 );
@@ -484,29 +500,31 @@ const FinalCTA = ({ locale, copy }) => (
 // ─────────────────────────────────────────────────────────────────────
 const SiteFooter = ({ locale, copy }) => (
   <footer id="footer" className="mfd-footer" data-testid="site-footer">
-    <div className="mfd-footer__top">
-      <div className="mfd-footer__brand">
-        <span className="mfd-footer__brand-mark">MOOD <em>for</em> DESIGN</span>
-        <span className="mfd-footer__brand-sub">Italian Design Studios</span>
+    <div className="mfd-footer__inner">
+      <div className="mfd-footer__top">
+        <div className="mfd-footer__brand">
+          <span className="mfd-footer__brand-mark">MOOD <em>for</em> DESIGN</span>
+          <span className="mfd-footer__brand-sub">Italian Design Studios</span>
+        </div>
+        <div className="mfd-footer__cols">
+          {copy.footer.cols.map((col, ci) => (
+            <div key={ci} className="mfd-footer__col">
+              <h4 className="mfd-footer__col-title">{L(col.title, locale)}</h4>
+              <ul>
+                {col.links.map((l, li) => (
+                  <li key={li}>
+                    {l.href?.startsWith('http')
+                      ? <a href={l.href} target="_blank" rel="noopener noreferrer">{L(l.label, locale)}</a>
+                      : <Link to={l.href || '#'}>{L(l.label, locale)}</Link>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="mfd-footer__cols">
-        {copy.footer.cols.map((col, ci) => (
-          <div key={ci} className="mfd-footer__col">
-            <h4 className="mfd-footer__col-title">{L(col.title, locale)}</h4>
-            <ul>
-              {col.links.map((l, li) => (
-                <li key={li}>
-                  {l.href?.startsWith('http')
-                    ? <a href={l.href} target="_blank" rel="noopener noreferrer">{L(l.label, locale)}</a>
-                    : <Link to={l.href || '#'}>{L(l.label, locale)}</Link>}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+      <div className="mfd-footer__rights">{L(copy.footer.rights, locale)}</div>
     </div>
-    <div className="mfd-footer__rights">{L(copy.footer.rights, locale)}</div>
     <div className="mfd-footer__blueprint" aria-label="Blueprint OS">
       <span>© 2026 Blueprint OS™</span>
     </div>

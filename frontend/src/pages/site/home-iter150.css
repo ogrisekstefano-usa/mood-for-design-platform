@@ -31,6 +31,8 @@
   --mfd-accent:    #00C9B3;
   --mfd-accent-2:  #00B0A0;
   --mfd-dark:      #0E0D0B;
+  --mfd-max:       1480px;
+  --mfd-gutter:    clamp(24px, 4vw, 64px);
 
   background: var(--mfd-bg);
   color: var(--mfd-ink);
@@ -40,6 +42,16 @@
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   min-height: 100vh;
+}
+
+/* ─ Boxed inner container · same horizontal rhythm for every section ─ */
+.mfd-inner {
+  max-width: var(--mfd-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--mfd-gutter);
+  padding-right: var(--mfd-gutter);
+  width: 100%;
 }
 
 .mfd-site a { color: inherit; text-decoration: none; }
@@ -61,14 +73,18 @@
  * WELCOME STRIP + HEADER (sticky)
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-welcome-strip {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px clamp(20px, 4vw, 56px);
   background: var(--mfd-dark);
   color: rgba(245, 242, 237, 0.72);
   font-size: 13px;
   letter-spacing: 0.005em;
+}
+.mfd-welcome-strip__inner {
+  max-width: var(--mfd-max);
+  margin: 0 auto;
+  padding: 12px var(--mfd-gutter);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .mfd-welcome-strip__msg { margin: 0; }
 .mfd-welcome-strip__meta {
@@ -121,14 +137,18 @@
 
 .mfd-header {
   position: sticky; top: 0; z-index: 50;
+  background: rgba(245, 242, 237, 0.92);
+  backdrop-filter: saturate(140%) blur(14px);
+  border-bottom: 1px solid var(--mfd-line);
+}
+.mfd-header__inner {
+  max-width: var(--mfd-max);
+  margin: 0 auto;
+  padding: 20px var(--mfd-gutter);
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 32px;
-  padding: 20px clamp(20px, 4vw, 56px);
-  background: rgba(245, 242, 237, 0.92);
-  backdrop-filter: saturate(140%) blur(14px);
-  border-bottom: 1px solid var(--mfd-line);
 }
 .mfd-header__brand {
   display: flex; flex-direction: column; gap: 2px;
@@ -192,17 +212,18 @@
   border-color: #2A2A2A !important;
   color: #ffffff !important;
 }
-.mfd-cta--solid {                             /* hero primary — light over dark */
-  background: rgba(245, 242, 237, 0.96);
-  color: var(--mfd-ink);
-  border: 1px solid rgba(245, 242, 237, 0.96);
+.mfd-cta--solid {                             /* hero primary — CYAN MOOD over dark */
+  background: #00C9B3 !important;
+  color: #0E0D0B !important;
+  border: 1px solid #00C9B3 !important;
   padding: 18px 32px;
+  font-weight: 700;
 }
 .mfd-cta--solid:hover {
-  background: #ffffff;
-  border-color: #ffffff;
-  color: #000000;
-  box-shadow: 0 6px 24px rgba(0, 201, 179, 0.18);
+  background: #00E0C8 !important;
+  border-color: #00E0C8 !important;
+  color: #0E0D0B !important;
+  box-shadow: 0 6px 24px rgba(0, 201, 179, 0.30);
 }
 .mfd-cta--ghost {                             /* hero secondary — ghost over dark */
   background: transparent;
@@ -231,14 +252,18 @@
 .mfd-hero {
   position: relative;
   min-height: clamp(560px, 72vh, 820px);
-  display: grid;
-  grid-template-columns: 1fr;
-  justify-content: start;
-  justify-items: start;
+  display: flex;
   align-items: center;
-  padding: clamp(40px, 6vw, 96px) clamp(28px, 6vw, 80px);
+  padding: 0;
   overflow: hidden;
   color: #fff;
+}
+.mfd-hero__inner {
+  position: relative; z-index: 1;
+  width: 100%;
+  max-width: var(--mfd-max);
+  margin: 0 auto;
+  padding: clamp(40px, 6vw, 96px) var(--mfd-gutter);
 }
 .mfd-hero__bg {
   position: absolute; inset: 0; z-index: 0;
@@ -269,8 +294,8 @@
   justify-self: start;
 }
 .mfd-hero__title {
-  font-size: clamp(58px, 7vw, 112px);
-  line-height: 0.98;
+  font-size: clamp(48px, 5.4vw, 88px);
+  line-height: 1.0;
   margin: 0 0 28px;
   letter-spacing: -0.018em;
   font-weight: 400;
@@ -290,17 +315,22 @@
 .mfd-hero__ctas { display: flex; gap: 14px; flex-wrap: wrap; justify-content: flex-start; }
 
 /* ═════════════════════════════════════════════════════════════════
- * TRUST / PARTNER STRIP — editorial cadence
- *   Left: eyebrow · Right: brand row
+ * TRUST / PARTNER STRIP — single editorial row · boxed
+ *   Background full-width · content boxed to --mfd-max
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-trust {
-  display: grid;
-  grid-template-columns: minmax(220px, 320px) 1fr;
-  align-items: center;
-  gap: 40px;
-  padding: 14px clamp(28px, 6vw, 80px);
+  padding: 14px 0;
   background: var(--mfd-bg);
   border-bottom: 1px solid var(--mfd-line);
+}
+.mfd-trust__inner {
+  max-width: var(--mfd-max);
+  margin: 0 auto;
+  padding: 0 var(--mfd-gutter);
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  flex-wrap: nowrap;
 }
 .mfd-trust__eyebrow {
   font-size: 11px;
@@ -309,19 +339,21 @@
   color: var(--mfd-mute);
   font-weight: 600;
   margin: 0;
-  max-width: 260px;
-  line-height: 1.5;
+  flex: 0 0 auto;
+  max-width: 220px;
+  line-height: 1.4;
 }
 .mfd-trust__brands {
   list-style: none; padding: 0; margin: 0;
   display: flex; align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap; gap: 32px 40px;
+  gap: 28px;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
 }
 .mfd-trust__brand {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
-  font-size: 22px;
+  font-size: 20px;
   color: var(--mfd-ink-2);
   opacity: 0.74;
   letter-spacing: 0.005em;
@@ -373,8 +405,13 @@
  * HOW IT WORKS
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-how {
-  padding: clamp(20px, 2.5vw, 36px) clamp(28px, 6vw, 80px);
+  padding: clamp(20px, 2.5vw, 36px) 0;
   background: var(--mfd-bg);
+}
+.mfd-how__inner {
+  max-width: var(--mfd-max);
+  margin: 0 auto;
+  padding: 0 var(--mfd-gutter);
 }
 .mfd-how__steps {
   list-style: none; padding: 0; margin: 0 0 16px;
@@ -429,9 +466,14 @@
  * MAGAZINE — 5 editorial cards (no date, no author)
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-home-magazine {
-  padding: clamp(16px, 2vw, 32px) clamp(28px, 6vw, 80px) 0;
+  padding: clamp(16px, 2vw, 32px) 0 0;
   background: var(--mfd-bg);
   position: relative;
+}
+.mfd-home-magazine__inner {
+  max-width: var(--mfd-max);
+  margin: 0 auto;
+  padding: 0 var(--mfd-gutter);
 }
 /* No bottom veil — was creating a visible grey shadow stripe before Stories */
 .mfd-home-magazine__grid {
@@ -502,9 +544,14 @@
  * DESIGN STORIES — real projects
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-stories {
-  padding: clamp(12px, 1.5vw, 24px) clamp(28px, 6vw, 80px) clamp(16px, 2vw, 32px);
+  padding: clamp(40px, 4vw, 72px) 0;
   background: var(--mfd-bg-2);
   box-shadow: none;
+}
+.mfd-stories__inner {
+  max-width: var(--mfd-max);
+  margin: 0 auto;
+  padding: 0 var(--mfd-gutter);
 }
 .mfd-stories__grid {
   display: grid;
@@ -557,8 +604,13 @@
  * MATERIALS — horizontal rail
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-materials {
-  padding: clamp(16px, 2vw, 32px) clamp(28px, 6vw, 80px);
+  padding: clamp(16px, 2vw, 32px) 0;
   background: var(--mfd-bg);
+}
+.mfd-materials__inner {
+  max-width: var(--mfd-max);
+  margin: 0 auto;
+  padding: 0 var(--mfd-gutter);
 }
 .mfd-materials__wrap { position: relative; }
 .mfd-materials__rail {
@@ -622,9 +674,14 @@
  * FINAL CTA — dark band
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-finalcta {
-  padding: clamp(36px, 4vw, 64px) clamp(28px, 6vw, 80px);
+  padding: clamp(36px, 4vw, 64px) 0;
   background: #121212;
   color: #f5f2ed;
+}
+.mfd-finalcta__inner {
+  max-width: var(--mfd-max);
+  margin: 0 auto;
+  padding: 0 var(--mfd-gutter);
   display: grid;
   grid-template-columns: 1.3fr 1fr;
   gap: 60px;
@@ -678,9 +735,14 @@
 .mfd-footer {
   background: #000000;
   border-top: 0;
-  padding: 28px clamp(28px, 6vw, 80px) 16px;
+  padding: 28px 0 16px;
   font-size: 14px;
   color: rgba(245, 242, 237, 0.62);
+}
+.mfd-footer__inner {
+  max-width: var(--mfd-max);
+  margin: 0 auto;
+  padding: 0 var(--mfd-gutter);
 }
 .mfd-footer__top {
   display: grid;
@@ -724,11 +786,11 @@
   letter-spacing: 0.005em;
 }
 
-/* Last thin white footer strip — Blueprint OS signature */
+/* Last thin white footer strip — Blueprint OS signature · full-width */
 .mfd-footer__blueprint {
   background: #ffffff;
-  margin: 18px calc(-1 * clamp(28px, 6vw, 80px)) -22px;
-  padding: 12px clamp(28px, 6vw, 80px);
+  margin: 18px 0 -16px;
+  padding: 12px var(--mfd-gutter);
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
