@@ -63,9 +63,12 @@ def ingest_answer_event(
     if not db_available():
         raise HTTPException(503, "Database not configured")
     client = db()
+    # Accept any tenant whose slug matches — relationship-engine answer
+    # events are not status-restricted (trial/onboarding tenants must be
+    # able to capture intake answers just like active ones).
     tenant = client.table('tenants').select('id, status')\
         .eq('slug', tenant_slug).limit(1).execute()
-    if not tenant.data or tenant.data[0].get('status') != 'active':
+    if not tenant.data:
         raise HTTPException(404, "Tenant not found")
 
     q_key = body.get("question_key")

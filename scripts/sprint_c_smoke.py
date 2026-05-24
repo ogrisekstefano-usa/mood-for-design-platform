@@ -52,6 +52,21 @@ async def main():
                     await page.wait_for_timeout(3500)
                     await page.screenshot(path=f"{OUT}/continuation_interview.png", full_page=False)
                     print("continuation_interview: ok")
+                    # Click the first option to verify answer-event posts and step advances
+                    opts = page.locator('[data-testid^=ci-drawer-option-]')
+                    if await opts.count() > 0:
+                        # Track network response for the auth'd answer-event endpoint
+                        post_status = [None]
+                        async def _on_resp(r):
+                            if '/api/relations/intake/answer-event' in r.url:
+                                post_status[0] = r.status
+                        page.on('response', lambda r: asyncio.create_task(_on_resp(r)))
+                        await opts.first.click()
+                        await page.wait_for_timeout(3000)
+                        step = await page.evaluate("document.querySelector('[data-testid=ci-drawer-progress]')?.innerText || ''")
+                        print(f"answer-event status: {post_status[0]} · step now: {step.splitlines()[0] if step else 'none'}")
+                        await page.screenshot(path=f"{OUT}/continuation_interview_step2.png", full_page=False)
+                    else: print("no options in CI drawer")
                 else: print("no continuation action")
             except Exception as e:
                 print("CI drawer err:", e)

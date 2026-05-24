@@ -61,7 +61,7 @@ const ContinuationInterviewDrawer = ({ open, lead, tenantSlug, onClose, onComple
     if (!current || saving) return;
     setSaving(true); setError(null);
     try {
-      await api.post(`/api/relationships/intake/answer-event?tenant_slug=${encodeURIComponent(tenantSlug || 'mood-demo-studio-81a09e')}`, {
+      await api.post(`/api/relations/intake/answer-event`, {
         question_key:  current.question.question_key,
         option_value:  option.value,
         lead_id:       lead?.id,

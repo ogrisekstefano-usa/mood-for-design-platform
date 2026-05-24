@@ -19,12 +19,14 @@ Cinematic editorial design — NO CRM table aesthetics.
 """
 from __future__ import annotations
 import logging
+import uuid
 from datetime import datetime, timezone
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request
 
 from core.permissions import P_LEADS_READ, P_LEADS_WRITE
 from core.tenant_context import require_permission
 from database import db, db_available
+from services.relationship_catalog_service import question_to_group_key
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -351,3 +353,55 @@ def lead_welcome_experience(
         "designer": designer,
         "next_moments": next_moments,
     }
+
+
+# ── ITER148 · Sprint C · authenticated answer-event for the operator-facing
+# Continuation Interview drawer. Mirrors the public storefront endpoint at
+# `/api/relationships/intake/answer-event` but resolves the tenant from the
+# authenticated session (avoids the brittle public-slug lookup that breaks
+# for trial tenants whose slug differs from the operator-facing path).
+@router.post("/intake/answer-event", status_code=201)
+def operator_answer_event(
+    request: Request,
+    body: dict = Body(...),
+    current_user: dict = Depends(require_permission(P_LEADS_WRITE)),
+):
+    """Append a single answer-event from an authenticated operator.
+
+    Body: { question_key, option_value | raw_value, lead_id?, session_id?,
+            source_surface? }
+    """
+    if not db_available():
+        raise HTTPException(503, "Database not configured")
+
+    q_key = body.get("question_key")
+    if not q_key:
+        raise HTTPException(400, "question_key required")
+    group_key = question_to_group_key(q_key)
+    if not group_key:
+        raise HTTPException(400, f"Unknown question_key: {q_key}")
+
+    option_value = body.get("option_value")
+    raw_value = body.get("raw_value")
+    if option_value is None and raw_value is None:
+        raise HTTPException(400, "Either option_value or raw_value required")
+
+    event = {
+        "id":             str(uuid.uuid4()),
+        "tenant_id":      current_user['tenant_id'],
+        "lead_id":        body.get("lead_id"),
+        "account_id":     body.get("account_id"),
+        "question_key":   q_key,
+        "option_value":   option_value,
+        "raw_value":      raw_value,
+        "group_key":      group_key,
+        "occurred_at":    _now(),
+        "source_surface": body.get("source_surface") or "continuation_interview",
+        "session_id":     body.get("session_id"),
+        "metadata":       {
+            "user_agent": request.headers.get("user-agent"),
+            "operator_user_id": current_user.get('id'),
+        },
+    }
+    db().table('relationship_answer_events').insert(event).execute()
+    return {"event_id": event["id"], "occurred_at": event["occurred_at"]}

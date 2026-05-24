@@ -1,0 +1,54 @@
+{
+  "summary": "ITER148 Sprint C final verification (post-fix for the iter154 answer-event slug bug). E1 added a NEW authenticated endpoint POST /api/relations/intake/answer-event (tenant resolved from session, no slug needed). All flows now GREEN end-to-end: backend 20/20 PASS (12/12 sprint_c regression + 8/8 new endpoint tests) and full UI E2E completes — login → /relations/leads (40 cards, 40 designer-chips, Accounts pill=37, OwnerIntroductionGate does NOT auto-open) → lead-card click → Welcome Drawer opens → 'Continue the interview' action → ci-drawer opens → option click fires POST /api/relations/intake/answer-event → 201 → drawer advances to '2 OF 5' with the next Italian prompt ('Quali materiali ti rappresentano?').",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/relationships/intake/answer-event (PUBLIC route, intentionally untouched)", "issue": "Still returns 404 for tenant_slug=mood-demo-studio-81a09e (only resolves slug=studio). E1 explicitly stated this is by design — the new authenticated endpoint at /api/relations/intake/answer-event is the operator-facing path and is the one the UI now uses. Documented here only for future reference."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Login/Sidebar console noise", "issues": ["Pre-existing React warning: 'Cannot update a component while rendering' from LocalizationOverlay/LoginPage and LocalizationOverlay/Sidebar — carries over from iter153/154, not a Sprint C regression.", "i18n MISS 8 LEAK 0 dev pill still visible on /relations/leads (pre-existing)."]}
+    ]
+  },
+  "verifications": {
+    "Backend_pytest_iter148_sprint_c": "12/12 PASS · 10.25s · /app/test_reports/pytest/iter155.xml",
+    "Backend_new_endpoint_answer_event": "8/8 PASS · auth required (401), 400 on missing/unknown question_key, 400 on missing value, 201 with {event_id, occurred_at} on valid body, works WITHOUT tenant_slug query param",
+    "Backend_welcome_continuation_interview_in_next_moments": "PASS · score<0.95 leads contain continuation_interview kind",
+    "Backend_designers_roster": "PASS · returns 3 designers with id+name",
+    "Frontend_owner_introduction_gate_not_auto_open": "PASS · gate NOT present on /relations/leads",
+    "Frontend_lead_cards_count_40": "PASS · 40 cards rendered",
+    "Frontend_designer_chip_count_40": "PASS · 40 [data-testid^='designer-chip-'] in lead-card footers (was 0 in iter153)",
+    "Frontend_accounts_pill_37": "PASS · '37 Accounts active studio' (was 0 in iter153)",
+    "Frontend_welcome_drawer_opens_on_card_click": "PASS · [data-testid='welcome-drawer'] mounts; profile-completion modal no longer intercepts (iter153 bug confirmed fixed)",
+    "Frontend_continuation_interview_action_button": "PASS · [data-testid='welcome-drawer-action-continuation_interview'] visible & clickable",
+    "Frontend_ci_drawer_opens": "PASS · [data-testid='ci-drawer'] renders with 8 options, Italian prompt",
+    "Frontend_option_click_posts_201_and_advances": "PASS · network log shows POST /api/relations/intake/answer-event → 201, drawer text updates to '2 OF 5 · QUALI MATERIALI TI RAPPRESENTANO?'"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter148_sprint_c_relations.py",
+    "/app/backend/tests/test_iter155_relations_answer_event.py",
+    "/app/test_reports/pytest/iter155.xml"
+  ],
+  "action_items": [
+    "(OPTIONAL) Consider deleting or repurposing the public POST /api/relationships/intake/answer-event route's tenant filter if no public surface still depends on it — leaving it as-is is fine since the operator UI uses the new auth path exclusively.",
+    "(OPTIONAL) Address pre-existing i18n MISS 8 LEAK 0 on /relations/leads and the LocalizationOverlay setState-in-render warning — carries over from previous iterations."
+  ],
+  "critical_code_review_comments": [
+    "Adding a separate authenticated endpoint instead of patching the public storefront route was the right call — it isolates the operator surface from public-tenant-resolution quirks (status='active' filter) and centralises tenant resolution via current_user['tenant_id'].",
+    "operator_answer_event correctly validates question_key against the catalog (via question_to_group_key) and persists user_agent + operator_user_id in metadata for audit — clean.",
+    "Test coverage added: auth-required, missing-key 400, unknown-key 400, missing-value 400, 201 happy-path, and explicit 'no tenant_slug param needed' assertion."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter155_relations_answer_event.py (NEW · 8 tests, all PASS)"
+  ],
+  "success_rate": {"backend": "100% (20/20 — 12 sprint_c regression + 8 new endpoint)", "frontend": "100% (all 12 verifications PASS including full Welcome → Continuation Interview flow)"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (tenant mood-demo-studio-81a09e per /app/memory/test_credentials.md). Note: the new endpoint resolves tenant from session — no slug param needed in frontend or tests.",
+  "seed_data_creation": "TestPromote::test_promote_lead_to_prospect_and_rollback leaves the first lead in 'dormant' state (idempotent across runs). The two happy-path answer-event tests append 2 rows to relationship_answer_events for the first lead (audit log, append-only, expected).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Sprint C is fully GREEN end-to-end after this iteration. The new endpoint POST /api/relations/intake/answer-event is the operator-facing canonical path; it requires auth (P_LEADS_WRITE) and reads tenant_id from current_user. The frontend ContinuationInterviewDrawer.jsx now exclusively uses this path. The old public POST /api/relationships/intake/answer-event is unchanged and still 404s for slug=mood-demo-studio-81a09e — but this is intentional and the UI no longer calls it. If a future change reintroduces a public/anonymous Continuation Interview surface, the public route's tenant filter will need to be relaxed.",
+  "rca of the issue": "Resolution of iter154 bug: rather than relax the public route's status='active' tenant filter (which other public storefront flows rely on), E1 introduced a parallel authenticated endpoint that bypasses slug lookup entirely by using current_user['tenant_id']. This is the architecturally cleaner fix — operator surfaces and anonymous surfaces now have separated tenant-resolution semantics."
+}

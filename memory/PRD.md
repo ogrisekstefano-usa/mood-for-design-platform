@@ -11,8 +11,9 @@
     real `lead_assignments` row) + narrative `next_moments[]` such as
     `continuation_interview`, `moodboard_invitation`, `promote_account`,
     `listen`
-  - Continuation Interview submits answers via the existing
-    `POST /api/relationships/intake/answer-event` (Sprint A endpoint)
+  - Continuation Interview submits answers via a NEW operator-facing
+    endpoint `POST /api/relations/intake/answer-event` (auth required;
+    tenant resolved from session — no fragile public-slug lookup)
   - 12/12 pytest pass (`/app/backend/tests/test_iter148_sprint_c_relations.py`)
 
   **Frontend** (`/app/frontend/src/pages/relations/`):
