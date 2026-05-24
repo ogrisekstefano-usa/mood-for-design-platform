@@ -448,8 +448,8 @@
 }
 .mag-card__media {
   position: relative;
-  aspect-ratio: 4 / 5;
-  max-height: 480px;
+  aspect-ratio: 4 / 3;
+  max-height: 320px;
   overflow: hidden;
 }
 .mag-card__media img {
@@ -464,17 +464,17 @@
 .mag-card:hover .mag-card__media img { transform: scale(1.05); }
 .mag-card__category {
   position: absolute;
-  left: 18px; bottom: 84px;
+  left: 16px; bottom: 64px;
   font-size: 10px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(245, 242, 237, 0.78);
+  color: rgba(245, 242, 237, 0.82);
   font-weight: 600;
 }
 .mag-card__title {
   position: absolute;
-  left: 18px; right: 56px; bottom: 22px;
-  font-size: 22px;
+  left: 16px; right: 52px; bottom: 16px;
+  font-size: 18px;
   line-height: 1.12;
   margin: 0;
   color: #fff;
@@ -484,8 +484,8 @@
 .mag-card__title span { display: block; }
 .mag-card__plus {
   position: absolute;
-  right: 16px; bottom: 18px;
-  width: 32px; height: 32px;
+  right: 14px; bottom: 14px;
+  width: 28px; height: 28px;
   border-radius: 50%;
   border: 1px solid rgba(245, 242, 237, 0.45);
   display: inline-flex; align-items: center; justify-content: center;
