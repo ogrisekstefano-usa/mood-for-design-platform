@@ -105,6 +105,7 @@ def _profile_to_public(p: dict) -> dict:
         "response_time_label": p.get("response_time_label"),
         "contact_cta_label":   p.get("contact_cta_label"),
         "is_introduced":    _is_introduced(p),
+        "metadata_json":    p.get("metadata_json") or {},
     }
 
 
@@ -124,7 +125,7 @@ def get_my_profile(ctx: dict = Depends(get_tenant_context)):
     c = db()
     r = (
         c.table("users_profile")
-        .select("id,email,first_name,last_name,role,avatar_url,short_bio,role_label,response_time_label,contact_cta_label")
+        .select("id,email,first_name,last_name,role,avatar_url,short_bio,role_label,response_time_label,contact_cta_label,metadata_json")
         .eq("id", ctx["profile_id"]).limit(1).execute()
     )
     if not r.data:
@@ -159,10 +160,28 @@ def update_my_profile(body: ProfilePatch, ctx: dict = Depends(get_tenant_context
     c.table("users_profile").update(payload).eq("id", ctx["profile_id"]).execute()
     r = (
         c.table("users_profile")
-        .select("id,email,first_name,last_name,role,avatar_url,short_bio,role_label,response_time_label,contact_cta_label")
+        .select("id,email,first_name,last_name,role,avatar_url,short_bio,role_label,response_time_label,contact_cta_label,metadata_json")
         .eq("id", ctx["profile_id"]).limit(1).execute()
     )
     return {"profile": _profile_to_public(r.data[0])}
+
+
+@router.patch("/me/ui-density")
+def update_ui_density(body: dict, ctx: dict = Depends(get_tenant_context)):
+    """Persist the user's UI density preference (Compact/Default/
+    Comfortable/Editorial). Stored on users_profile.metadata_json so the
+    preference travels across devices."""
+    mode = (body or {}).get("ui_density")
+    if mode not in ("compact", "default", "comfortable", "editorial"):
+        raise HTTPException(400, "ui_density must be one of compact|default|comfortable|editorial")
+    c = db()
+    r = (c.table("users_profile").select("metadata_json")
+         .eq("id", ctx["profile_id"]).limit(1).execute())
+    meta = (r.data[0].get("metadata_json") if r.data else {}) or {}
+    meta["ui_density"] = mode
+    c.table("users_profile").update({"metadata_json": meta, "updated_at": _now()})\
+     .eq("id", ctx["profile_id"]).execute()
+    return {"ui_density": mode}
 
 
 @router.post("/me/avatar")

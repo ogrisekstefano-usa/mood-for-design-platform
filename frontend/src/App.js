@@ -12,6 +12,7 @@ import LocaleHead from './site/LocaleHead';
 import CinematicLoader from './components/CinematicLoader';
 import { Toaster } from 'sonner';
 import './App.css';
+import './styles/ui-density.css';
 // ── Sprint HARDENING-01.1 · Design System Kernel™ (single source of truth) ──
 import './design-system/kernel.css';
 // Frozen Blueprint OS tokens — declared under [data-surface="os"] only,
@@ -272,6 +273,13 @@ const PublicMoodboardWrapper = () => <MoodboardEditor readOnly={true} />;
 
 import GovernanceOverlay from './design-system/GovernanceOverlay';
 import LocalizationOverlay from './i18n/LocalizationOverlay';
+import useUiDensity from './hooks/useUiDensity';
+
+/** Mount the UI density hook once globally — applies data attribute + hydrates from server. */
+const UiDensityBoot = () => {
+  useUiDensity();
+  return null;
+};
 
 function App() {
   return (
@@ -284,6 +292,7 @@ function App() {
           <LocaleRuntimeProvider>
           <BlueprintI18nProvider>
           <BrowserRouter>
+            <UiDensityBoot />
             <GovernanceOverlay />
             <LocalizationOverlay />
             <Suspense fallback={<Loading />}>

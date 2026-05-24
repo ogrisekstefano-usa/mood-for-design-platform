@@ -1,0 +1,79 @@
+/**
+ * UI Density / Font Size Controller™ — CSS variables per mode.
+ *
+ * Applied to <html data-ui-density="..."> by the useUiDensity hook.
+ * Selectors below cascade down to body and headings, but each module
+ * is free to opt in by referencing var(--ui-body-size) etc.
+ *
+ * Targets: WCAG-AA contrast (preserved by existing palette tokens).
+ * NEVER goes below 15px body — Compact remains accessible.
+ */
+
+:root {
+  --ui-body-size:    17px;
+  --ui-label-size:   15px;
+  --ui-h1-size:      clamp(46px, 4.6vw, 68px);
+  --ui-h2-size:      clamp(34px, 3.2vw, 46px);
+  --ui-h3-size:      clamp(22px, 2vw,  28px);
+  --ui-leading:      1.7;
+  --ui-tracking:     0;
+  --ui-section-gap:  44px;
+}
+
+html[data-ui-density="compact"] {
+  --ui-body-size:    15px;
+  --ui-label-size:   13px;
+  --ui-h1-size:      clamp(40px, 4vw, 58px);
+  --ui-h2-size:      clamp(28px, 2.8vw, 38px);
+  --ui-h3-size:      clamp(20px, 1.8vw, 24px);
+  --ui-leading:      1.55;
+  --ui-tracking:     0;
+  --ui-section-gap:  28px;
+}
+
+html[data-ui-density="default"] {
+  --ui-body-size:    17px;
+  --ui-label-size:   15px;
+  --ui-leading:      1.7;
+}
+
+html[data-ui-density="comfortable"] {
+  --ui-body-size:    18px;
+  --ui-label-size:   16px;
+  --ui-h1-size:      clamp(50px, 5vw, 76px);
+  --ui-h2-size:      clamp(36px, 3.4vw, 50px);
+  --ui-leading:      1.75;
+  --ui-tracking:     0.005em;
+  --ui-section-gap:  52px;
+}
+
+html[data-ui-density="editorial"] {
+  --ui-body-size:    19px;
+  --ui-label-size:   17px;
+  --ui-h1-size:      clamp(56px, 5.6vw, 88px);
+  --ui-h2-size:      clamp(40px, 3.8vw, 56px);
+  --ui-h3-size:      clamp(24px, 2.2vw, 30px);
+  --ui-leading:      1.8;
+  --ui-tracking:     0.01em;
+  --ui-section-gap:  64px;
+}
+
+/* Apply globally — body + heading sizing tied to the CSS vars.
+ * Existing modules with fixed sizes are unaffected; modules that
+ * adopt the controller can use these vars at will. */
+html { font-size: var(--ui-body-size); }
+body { line-height: var(--ui-leading); letter-spacing: var(--ui-tracking); }
+
+/* Relationship Memory + Client Relations surfaces auto-track density */
+.cr-shell, .mem-shell {
+  font-size: var(--ui-body-size);
+  line-height: var(--ui-leading);
+  letter-spacing: var(--ui-tracking);
+}
+.cr-shell .cr-header__title,
+.mem-hero__title { font-size: var(--ui-h1-size); }
+.cr-shell .cr-header__lede,
+.mem-card__narrative { font-size: var(--ui-body-size); }
+.cr-shell .cr-resultbar,
+.mem-card__when { font-size: var(--ui-label-size); }
+.mem-chapter__title { font-size: var(--ui-h2-size); }

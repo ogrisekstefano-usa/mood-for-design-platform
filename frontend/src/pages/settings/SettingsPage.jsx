@@ -20,6 +20,7 @@ import {
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { useAuth } from '../../contexts/AuthContext';
 import CulturalPerspectivePanel from '../../components/settings/CulturalPerspectivePanel';
+import DensitySwitcher from '../../components/DensitySwitcher';
 
 const SettingsTile = ({ icon: Icon, title, description, to, onClick, testid, accent = 'default', soon }) => {
   const navigate = useNavigate();
@@ -205,6 +206,14 @@ const SettingsPage = () => {
             soon
           />
         </div>
+      </section>
+
+      {/* ── UI DENSITY / FONT SIZE CONTROLLER™ ─────────────────────── */}
+      <section
+        data-testid="settings-density"
+        className="mt-12 p-6 bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)]"
+      >
+        <DensitySwitcher variant="panel" />
       </section>
 
       {/* ── CULTURAL PERSPECTIVE (P0.2.B) ─────────────────────────────── */}

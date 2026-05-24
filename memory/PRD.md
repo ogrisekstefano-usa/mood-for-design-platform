@@ -1,6 +1,42 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **ITER148 · CRM UX Refactor · UI Density + Card Polish + Memory Bridge** · ✅ DELIVERED · 24 Mag 2026
+
+  **UI Density / Font Size Controller™** (NEW · brand-wide accessibility):
+  - Backend: `PATCH /api/profile/me/ui-density` persists on
+    `users_profile.metadata_json.ui_density`; `/api/profile/me` now
+    returns `metadata_json`
+  - Frontend: `useUiDensity` hook · localStorage (FOUC-free pre-mount
+    init in `/app/frontend/src/index.js`) + server hydration on first
+    `/api/profile/me`
+  - Component: `<DensitySwitcher>` editorial 4-segment radio · serif
+    labels · teal active state · mounted in Settings → Display
+  - Token sheet: `/app/frontend/src/styles/ui-density.css` exposes
+    `--ui-body-size · --ui-label-size · --ui-h1-size · --ui-leading ·
+    --ui-tracking · --ui-section-gap` per mode (compact 15px ·
+    default 17px · comfortable 18px · editorial 19px)
+  - `<UiDensityBoot>` mounted globally in `App.js` so the preference
+    applies on every route
+  - Verified live: density round-trips to server, persists across
+    routes (Leads page reads `data-ui-density=editorial` after
+    Settings change)
+
+  **Designer Presence™** vocabulary extended:
+  added **"Composing Concepts"** to PRESENCE_LABEL (now 7 editorial
+  states · legacy SaaS values still gracefully remap).
+
+  **Lead card** now surfaces `origin_source` (slate pill) + italic
+  `emotional_keywords` strip below the signal pills.
+
+  **Memory bridge**: every Lead and Account card now carries a
+  pill-shaped **`memory`** link (book icon · teal border) that jumps
+  to the `/relations/memory/:id` editorial timeline without going
+  through the Welcome Drawer first. Click events scoped via
+  `stopPropagation` so the card's open-drawer behaviour still works.
+
+---
+
 - **ITER148 · Sprint B · Relationship Memory™ Engine** · ✅ DELIVERED · 24 Mag 2026
 
   **Backend** (`/app/backend/services/memory_engine_service.py`):

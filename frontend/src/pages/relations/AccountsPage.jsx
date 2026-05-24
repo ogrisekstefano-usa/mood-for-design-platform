@@ -8,7 +8,8 @@
  * Warm gold accent (#D6B48A). Operator/Studio surface (NOT client-facing).
  */
 import React, { useMemo, useState } from 'react';
-import { Search, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, X, BookOpen } from 'lucide-react';
 import ClientRelationsLayout from './ClientRelationsLayout';
 import useRelations from './useRelations';
 import useDesigners from './useDesigners';
@@ -110,6 +111,15 @@ const AccountCard = ({ a, designer, onOpen }) => {
         <DesignerChip designer={designer} size="sm" contextId={`account-${a.id}`} />
         <span className="account-card__meta-spacer" />
         <span>last conversation <strong>{formatAgo(a.last_activity_at)} ago</strong></span>
+        <Link
+          to={`/relations/memory/${a.id}`}
+          className="account-card__memory-link"
+          onClick={(e) => e.stopPropagation()}
+          data-testid={`account-memory-link-${a.id}`}
+          aria-label="Open the relationship's memory"
+        >
+          <BookOpen size={14} strokeWidth={1.6} /> memory
+        </Link>
       </footer>
     </article>
   );

@@ -11,17 +11,18 @@
 import React from 'react';
 
 const PRESENCE_LABEL = {
-  in_studio:              'In Studio',
-  reviewing_materials:    'Reviewing Materials',
-  curating_inspirations:  'Curating Inspirations',
-  with_clients:           'With Clients',
+  in_studio:                'In Studio',
+  reviewing_materials:      'Reviewing Materials',
+  curating_inspirations:    'Curating Inspirations',
+  with_clients:             'With Clients',
+  composing_concepts:       'Composing Concepts',
   preparing_new_directions: 'Preparing New Directions',
-  traveling:              'Traveling Between Projects',
+  traveling:                'Traveling Between Projects',
   // legacy SaaS values gracefully remapped
-  available:              'In Studio',
-  away:                   'Curating Inspirations',
-  offline:                'Traveling Between Projects',
-  unknown:                'In Studio',
+  available:                'In Studio',
+  away:                     'Composing Concepts',
+  offline:                  'Traveling Between Projects',
+  unknown:                  'In Studio',
 };
 
 const DesignerChip = ({ designer, size = 'md', testid, contextId }) => {

@@ -793,7 +793,47 @@
   font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--cr-text-3); font-weight: 500;
 }
-.lead-card__meta { gap: 14px; }
+.lead-card__meta { gap: 14px; flex-wrap: wrap; }
+
+/* Memory link in card footer */
+.lead-card__memory-link,
+.account-card__memory-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--cr-teal);
+  text-decoration: none;
+  padding: 4px 10px;
+  border: 1px solid rgba(0,201,179,0.32);
+  border-radius: 999px;
+  transition: all 200ms ease;
+}
+.lead-card__memory-link:hover,
+.account-card__memory-link:hover {
+  background: var(--cr-teal-soft);
+  border-color: var(--cr-teal);
+}
+
+/* Lead origin source + emotional keywords */
+.lead-card__origin {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--cr-text-3);
+  letter-spacing: 0.04em;
+}
+.lead-card__origin-source {
+  font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--cr-slate); font-weight: 600;
+  padding: 4px 10px;
+  border: 1px solid rgba(124,155,174,0.32);
+  border-radius: 999px;
+}
+.lead-card__origin-keywords {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--cr-text-2);
+}
 
 /* Account meta footer spacer */
 .account-card__meta-spacer { flex: 1; }

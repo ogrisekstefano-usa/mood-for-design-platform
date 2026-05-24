@@ -7,7 +7,8 @@
  * pressure. The reader is "listening".
  */
 import React, { useMemo, useState } from 'react';
-import { Search, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, X, BookOpen } from 'lucide-react';
 import ClientRelationsLayout from './ClientRelationsLayout';
 import useRelations from './useRelations';
 import useDesigners from './useDesigners';
@@ -104,12 +105,33 @@ const LeadCard = ({ lead, designer, onOpen }) => {
         </ul>
       )}
 
+      {/* Origin source + emotional keywords — discrete metadata row */}
+      <div className="lead-card__origin" data-testid={`lead-origin-${lead.id}`}>
+        <span className="lead-card__origin-source">
+          {(lead.source_channel || lead.origin_source || 'studio inbound').replace(/_/g, ' ')}
+        </span>
+        {Array.isArray(lead.emotional_keywords) && lead.emotional_keywords.length > 0 && (
+          <span className="lead-card__origin-keywords">
+            {lead.emotional_keywords.slice(0, 3).map(k => String(k).replace(/_/g, ' ')).join(' · ')}
+          </span>
+        )}
+      </div>
+
       <footer className="lead-card__meta">
         <DesignerChip designer={designer} size="sm" contextId={`lead-${lead.id}`} />
         <span className="lead-card__meta-spacer" />
         <span className="lead-card__meta-status">
           {lead.intake_completed_at ? 'intake captured' : 'awaiting first interview'}
         </span>
+        <Link
+          to={`/relations/memory/${lead.id}`}
+          className="lead-card__memory-link"
+          onClick={(e) => e.stopPropagation()}
+          data-testid={`lead-memory-link-${lead.id}`}
+          aria-label="Open the relationship's memory"
+        >
+          <BookOpen size={14} strokeWidth={1.6} /> memory
+        </Link>
       </footer>
     </article>
   );
