@@ -429,7 +429,7 @@
  * MAGAZINE — 5 editorial cards (no date, no author)
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-magazine {
-  padding: clamp(16px, 2vw, 32px) clamp(28px, 6vw, 80px) clamp(8px, 1vw, 16px);
+  padding: clamp(16px, 2vw, 32px) clamp(28px, 6vw, 80px) 0;
   background: var(--mfd-bg);
   position: relative;
 }
@@ -448,8 +448,8 @@
 }
 .mag-card__media {
   position: relative;
-  aspect-ratio: 4 / 3;
-  max-height: 320px;
+  aspect-ratio: 4 / 5;
+  max-height: 480px;
   overflow: hidden;
 }
 .mag-card__media img {
@@ -484,8 +484,8 @@
 .mag-card__title span { display: block; }
 .mag-card__plus {
   position: absolute;
-  right: 14px; bottom: 14px;
-  width: 28px; height: 28px;
+  right: 16px; bottom: 18px;
+  width: 32px; height: 32px;
   border-radius: 50%;
   border: 1px solid rgba(245, 242, 237, 0.45);
   display: inline-flex; align-items: center; justify-content: center;
@@ -502,7 +502,7 @@
  * DESIGN STORIES — real projects
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-stories {
-  padding: clamp(16px, 2vw, 32px) clamp(28px, 6vw, 80px);
+  padding: clamp(12px, 1.5vw, 24px) clamp(28px, 6vw, 80px) clamp(16px, 2vw, 32px);
   background: var(--mfd-bg-2);
   box-shadow: none;
 }
