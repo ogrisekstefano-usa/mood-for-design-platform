@@ -21,7 +21,7 @@ const PlatformPillars = ({ content = {} }) => {
       style={{ background: 'var(--mood-black)' }}
       data-testid="platform-pillars"
     >
-      <div ref={ref} className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-24 lg:py-32">
+      <div ref={ref} className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-16 lg:py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-7">
           {PILLARS.map((k, i) => {
             const title = content[`${k}.title`];

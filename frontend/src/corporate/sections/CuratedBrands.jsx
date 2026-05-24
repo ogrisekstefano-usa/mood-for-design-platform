@@ -29,18 +29,18 @@ const CuratedBrands = ({ content = {} }) => {
       style={{ background: 'var(--mood-ink-1)', borderTop: '1px solid var(--mood-line-soft)', borderBottom: '1px solid var(--mood-line-soft)' }}
       data-testid="curated-brands"
     >
-      <div ref={ref} className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-10 lg:py-12">
+      <div ref={ref} className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-6 lg:py-7">
         {content.eyebrow && (
           <p
             className={`reveal ${visible ? 'visible' : ''}`}
             style={{
               fontFamily: 'Inter, sans-serif',
-              fontSize: '0.75rem',
+              fontSize: '0.72rem',
               fontWeight: 600,
               letterSpacing: '0.22em',
               textTransform: 'uppercase',
               color: 'var(--mood-teal)',
-              marginBottom: '2rem',
+              marginBottom: '1.25rem',
             }}
           >
             {content.eyebrow}
@@ -63,7 +63,7 @@ const CuratedBrands = ({ content = {} }) => {
                   fontStyle: s.italic ? 'italic' : 'normal',
                   textTransform: 'uppercase',
                   color: 'var(--mood-text-2)',
-                  fontSize: '1.15rem',
+                  fontSize: '1rem',
                   opacity: 0.75,
                   transition: 'color 0.25s, opacity 0.25s',
                   cursor: 'default',

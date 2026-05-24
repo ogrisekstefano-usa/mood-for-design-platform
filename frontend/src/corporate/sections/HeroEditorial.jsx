@@ -15,7 +15,7 @@ const HeroEditorial = ({ content = {}, media = {}, links = {} }) => {
       className="relative overflow-hidden"
       style={{
         background: 'var(--mood-black)',
-        minHeight: '72vh',
+        minHeight: '64vh',
       }}
       data-testid="hero-editorial"
     >
@@ -35,7 +35,7 @@ const HeroEditorial = ({ content = {}, media = {}, links = {} }) => {
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(90deg, rgba(18,18,18,0.95) 0%, rgba(18,18,18,0.85) 30%, rgba(18,18,18,0.55) 55%, rgba(18,18,18,0.15) 80%, rgba(18,18,18,0) 100%)',
+            'linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.15) 80%, rgba(0,0,0,0) 100%)',
         }}
       />
       {/* Subtle vertical tone to keep nav legible */}
@@ -43,11 +43,11 @@ const HeroEditorial = ({ content = {}, media = {}, links = {} }) => {
         aria-hidden
         className="absolute inset-x-0 top-0 h-32 pointer-events-none"
         style={{
-          background: 'linear-gradient(180deg, rgba(18,18,18,0.7) 0%, rgba(18,18,18,0) 100%)',
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)',
         }}
       />
 
-      <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 pt-36 lg:pt-40 pb-20 min-h-[72vh] flex items-center">
+      <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 pt-32 lg:pt-32 pb-16 min-h-[64vh] flex items-center">
         <div ref={ref} className="lg:w-[60%] xl:w-[55%]">
           {content.eyebrow && (
             <p className={`overline-teal mb-6 reveal ${visible ? 'visible' : ''}`} data-testid="hero-eyebrow">

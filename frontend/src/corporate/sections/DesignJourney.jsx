@@ -19,7 +19,7 @@ const DesignJourney = ({ content = {}, media = {}, links = {} }) => {
       style={{ background: 'var(--mood-black)', borderTop: '1px solid var(--mood-line-soft)' }}
       data-testid="design-journey"
     >
-      <div ref={ref} className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-24 lg:py-32">
+      <div ref={ref} className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-16 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
           {/* Left rail */}
           <div className="lg:col-span-3">
@@ -72,7 +72,7 @@ const DesignJourney = ({ content = {}, media = {}, links = {} }) => {
                     <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.78rem', color: 'var(--mood-teal)', fontWeight: 600, letterSpacing: '0.06em' }}>
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <span style={{ flex: 1, height: 1, background: 'rgba(25,240,255,0.35)' }} />
+                    <span style={{ flex: 1, height: 1, background: 'rgba(0,201,179,0.45)' }} />
                   </div>
                   <h3 style={{ fontFamily: 'Playfair Display, serif', fontWeight: 500, fontSize: '1.45rem', color: 'var(--mood-text-1)', marginTop: 8 }}>
                     {title}
