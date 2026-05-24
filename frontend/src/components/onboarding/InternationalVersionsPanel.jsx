@@ -91,6 +91,16 @@ const InternationalVersionsPanel = ({ canEdit = true }) => {
 
   useEffect(() => { reload(); }, []);
 
+  // ITER147 · Live-refresh hook — listen to the cross-component event
+  // dispatched by OwnerIntroductionModal after a successful save so
+  // the panel reflects newly-authored source fields (e.g. the bio)
+  // without forcing the user to close and re-open the modal.
+  useEffect(() => {
+    const handler = () => { reload(); };
+    window.addEventListener('mfd:identity:refresh', handler);
+    return () => window.removeEventListener('mfd:identity:refresh', handler);
+  }, []);
+
   const fields = identity?.fields || {};
   const sourceLocale = (identity?.default_locale || 'it-it').toLowerCase();
 

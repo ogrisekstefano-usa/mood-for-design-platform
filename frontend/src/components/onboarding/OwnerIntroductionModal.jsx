@@ -283,6 +283,13 @@ const OwnerIntroductionModal = ({
           response_time_label: form.response_time_label || null,
           contact_cta_label: form.contact_cta_label || null,
         });
+        // ITER147 · Notify any mounted InternationalVersionsPanel that
+        // fresh source content is available. Lets the cinematic locale
+        // cards refresh in-place (e.g. the bio becomes a new tab) without
+        // closing the modal.
+        try {
+          window.dispatchEvent(new CustomEvent('mfd:identity:refresh'));
+        } catch (_) {}
       } catch (_) {}
       try {
         await api.post('/api/tenant-onboarding/mark-done', {

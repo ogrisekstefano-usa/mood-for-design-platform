@@ -38,11 +38,18 @@ const ROLE_LABEL = {
   ad_partner:      'A&D partner',
 };
 
-const fmtDate = (iso) => {
+const fmtDate = (iso, { withTime = false } = {}) => {
   if (!iso) return '—';
   try {
     const d = new Date(iso);
-    return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    const datePart = d.toLocaleDateString(undefined, {
+      year: 'numeric', month: 'short', day: 'numeric',
+    });
+    if (!withTime) return datePart;
+    const timePart = d.toLocaleTimeString(undefined, {
+      hour: '2-digit', minute: '2-digit',
+    });
+    return `${datePart} · ${timePart}`;
   } catch { return '—'; }
 };
 
@@ -338,7 +345,7 @@ const EditMemberDrawer = ({ open, member, roles, canManage, isSelf,
 
           {/* Metadata */}
           <div className="grid grid-cols-2 gap-3 pt-4 border-t border-[var(--bp-border)]">
-            <Meta label="Last login"  value={fmtDate(member.last_login_at)} />
+            <Meta label="Last login"  value={fmtDate(member.last_login_at, { withTime: true })} />
             <Meta label="Invitato il"  value={fmtDate(member.invited_at)} />
             <Meta label="Accettato il" value={fmtDate(member.accepted_at)} />
             <Meta label="Creato il"    value={fmtDate(member.created_at)} />
@@ -673,7 +680,7 @@ const MembersPage = () => {
               </span>
             </div>
             <div><StatusBadge status={m.status} /></div>
-            <p className="text-[var(--bp-text-muted)] text-[11px] font-body">{fmtDate(m.last_login_at)}</p>
+            <p className="text-[var(--bp-text-muted)] text-[11px] font-body">{fmtDate(m.last_login_at, { withTime: true })}</p>
             <div className="flex justify-end">
               {canManage && (
                 <ActionMenu m={m}

@@ -559,7 +559,11 @@ function App() {
                 <Route path="/superadmin/modules" element={<Navigate to="/admin/modules" replace />} />
                 <Route path="/superadmin/audit" element={<Navigate to="/admin/audit" replace />} />
                 <Route path="/superadmin/languages" element={<Navigate to="/admin/language-governance" replace />} />
-                <Route path="/admin/languages" element={<Navigate to="/admin/language-governance" replace />} />
+                {/* ITER147 · /admin/languages restored — full registry editor
+                    with per-locale toggles (enabled / public / blueprint /
+                    default_locale / RTL / ai_translation). The newer
+                    LanguageCommandCenter lives at /admin/language-governance. */}
+                <Route path="/admin/languages" element={<LanguagesPage />} />
 
                 {/* PUBLIC tenant routes — runtime composition via Blueprint engine */}
                 <Route path="/moodboard/share/:shareToken" element={<PublicMoodboardWrapper />} />

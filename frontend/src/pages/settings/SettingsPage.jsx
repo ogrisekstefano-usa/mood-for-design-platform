@@ -168,6 +168,13 @@ const SettingsPage = () => {
           body={t('settings.account.body', null, 'These settings apply only to your own user — not the rest of the studio.')}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {isSuper && (
+            <SettingsTile testid="tile-languages-registry" icon={Globe} to="/admin/languages"
+              accent="core"
+              title="Language Registry"
+              description="Master locale switchboard — enable / disable per surface (public, Blueprint, AI translation) and pick the platform default."
+            />
+          )}
           {isOwner && (
             <SettingsTile testid="tile-presentation"
               icon={UserCircle}
