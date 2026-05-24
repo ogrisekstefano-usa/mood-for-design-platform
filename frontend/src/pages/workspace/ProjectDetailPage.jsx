@@ -1225,7 +1225,7 @@ const ProjectDetailPage = () => {
 
   // ── Classic boxed view for non-Journey tabs ─────────────────────
   return (
-    <div className="p-6 sm:p-10 max-w-6xl mx-auto" data-testid="project-detail">
+    <div className="p-6 sm:p-10 w-full" data-testid="project-detail">
       <button onClick={() => navigate('/workspace/projects')}
               data-testid="back-to-projects"
               className="bp-caption text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] mb-4 flex items-center gap-1.5">

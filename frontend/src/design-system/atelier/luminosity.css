@@ -653,6 +653,121 @@ html [data-atelier="nordic"] [data-testid="project-detail-page"] [class*="max-w-
  * 15. /blueprint/markets · full-width
  * ──────────────────────────────────────────────────────────────────────── */
 
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 19. DESIGN JOURNEY™ · cyan palette + sans-serif (no warm gold/italic)
+ * ──────────────────────────────────────────────────────────────────────── */
+
+html [data-atelier="nordic"] .dj-shell,
+html .dj-shell {
+  --dj-warm: var(--atelier-cyan, #5eead4);
+  --dj-warm-soft: rgba(94, 234, 212, 0.14);
+  --dj-amber: var(--atelier-cyan, #5eead4);
+  --dj-text: #ffffff;
+  --dj-text-2: rgba(255, 255, 255, 0.78);
+  --dj-text-3: rgba(255, 255, 255, 0.55);
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+/* Remove ALL Playfair serif + italic in Design Journey */
+html .dj-shell,
+html .dj-shell *,
+html .dj-shell h1,
+html .dj-shell h2,
+html .dj-shell h3,
+html .dj-shell h4,
+html .dj-shell--loading,
+html .dj-shell--error,
+html .dj-shell--error * {
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-style: normal !important;
+}
+
+html .dj-shell [class*="italic"],
+html .dj-shell em,
+html .dj-shell i {
+  font-style: normal !important;
+}
+
+html .dj-shell-* h1,
+html .dj-shell .dj-shell__title,
+html .dj-shell .dj-rail__title,
+html .dj-shell .dj-card__title,
+html .dj-shell .dj-step__title {
+  font-style: normal !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  letter-spacing: -0.012em;
+}
+
+html .dj-shell .dj-shell__title em {
+  font-style: normal !important;
+  color: var(--atelier-cyan) !important;
+}
+
+/* Make Design Journey environment full-width */
+html .dj-shell,
+html .dj-shell__head,
+html .dj-dialogue-wrap,
+html .dj-shell__body,
+html .dj-rail,
+html .dj-canvas,
+html .dj-stage {
+  max-width: none !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+html .dj-shell .max-w-2xl,
+html .dj-shell .max-w-3xl,
+html .dj-shell .max-w-4xl,
+html .dj-shell .max-w-5xl,
+html .dj-shell .max-w-6xl {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* Project Detail tabs · full-width applies to every internal section */
+html [data-testid="project-detail"] .max-w-2xl,
+html [data-testid="project-detail"] .max-w-3xl,
+html [data-testid="project-detail"] .max-w-4xl,
+html [data-testid="project-detail"] .max-w-5xl,
+html [data-testid="project-detail"] .max-w-6xl,
+html [data-testid="project-detail"] .max-w-7xl,
+html [data-testid="project-detail"] [class*="mx-auto"] {
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+}
+
+/* But preserve modal max-width */
+html [data-testid="project-detail"] [role="dialog"] [class*="max-w-"],
+html [data-testid="project-moodboard-modal"] [class*="max-w-"] {
+  max-width: 56rem !important;
+}
+
+/* Restore center-italic for the project detail page eyebrow / cyan accent text */
+html [data-testid="project-detail"] [class*="font-heading"],
+html [data-testid="project-detail"] .bp-h1,
+html [data-testid="project-detail"] .bp-h2,
+html [data-testid="project-detail"] .bp-h3 {
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+}
+
+/* Project page palette: cyan accents everywhere */
+html [data-testid="project-detail"] {
+  --bp-primary: var(--atelier-cyan, #5eead4);
+  --bp-accent: var(--atelier-cyan, #5eead4);
+  --mood-warm: var(--atelier-cyan, #5eead4);
+  --mood-accent: var(--atelier-cyan, #5eead4);
+}
+
 html [data-atelier="nordic"] .mxm-page {
   max-width: none !important;
   width: 100% !important;
