@@ -38,7 +38,14 @@ const ModuleRouteGuard = ({ code, fallback = '/dashboard', children }) => {
   if (loading || !bundle) return children;          // permissive at boot
   if (!module) return children;                     // unknown module → don't block
 
-  const variant = STATE_TO_VARIANT[module.state] ?? 'disabled';
+  // ITER146 HOTFIX · Effective Modules™ — match by hasOwnProperty so the
+  // explicit `null` mapping for `enabled`/`beta` is NOT collapsed by `??`
+  // (the previous `STATE_TO_VARIANT[state] ?? 'disabled'` returned
+  // 'disabled' for `enabled` because `null ?? x` evaluates to x — that
+  // wrongly rendered the Cinematic Blocked State™ on every guarded route
+  // including /dashboard, /workspace/projects, etc.).
+  const known = Object.prototype.hasOwnProperty.call(STATE_TO_VARIANT, module.state);
+  const variant = known ? STATE_TO_VARIANT[module.state] : 'disabled';
   if (variant === null) return children;            // enabled/beta → render
 
   return (

@@ -4743,3 +4743,71 @@ settings-core critical module.
 - React `setState`-in-render warning between LocalizationOverlay and
   Sidebar.
 
+
+---
+
+## ITER146 P0 HOTFIX · Tenant Runtime Effective Modules™ — RCA + Fix (2026-02-24)
+
+**User-reported symptom**: admin@moodfordesign.com saw the Cinematic
+Blocked State™ on `/dashboard` (and presumably every other guarded
+route). The runtime appeared "rotto" — almost every module was being
+rendered as DISABLED in the UI despite the backend resolver returning
+all 27 modules with `state='enabled'`.
+
+### Root cause (verified)
+`/app/frontend/src/components/runtime/ModuleRouteGuard.jsx` line 41
+contained a `??` (nullish coalescing) bug:
+
+```js
+const STATE_TO_VARIANT = { enabled: null, beta: null, locked: 'locked',
+                          disabled: 'disabled', hidden: 'hidden', … };
+const variant = STATE_TO_VARIANT[module.state] ?? 'disabled';
+```
+
+`STATE_TO_VARIANT.enabled` is `null` BY DESIGN (it signals "render the
+children, do NOT block"). But `null ?? 'disabled'` evaluates to
+`'disabled'` (the nullish operator collapses both `null` and
+`undefined`). So for EVERY enabled module, the guard rendered the
+blocked state with variant='disabled'. The downstream check
+`if (variant === null) return children` never ran because variant was
+the string `'disabled'`.
+
+### Fix
+Replaced the `??` collapse with an explicit `hasOwnProperty` check:
+
+```js
+const known = Object.prototype.hasOwnProperty.call(STATE_TO_VARIANT, module.state);
+const variant = known ? STATE_TO_VARIANT[module.state] : 'disabled';
+if (variant === null) return children;
+```
+
+Now `enabled`/`beta` return `null` correctly → guard renders children →
+dashboard, journey index, CRM, inspirations, brand atlas, etc. all
+mount.
+
+### Verification
+- `/api/tenant/configuration` for admin@ returns 27/27 modules
+  `state='enabled'` (verified via direct curl + browser fetch).
+- Post-fix screenshot at `/dashboard` shows the real
+  AtelierDashboardPage ("STUDIO PULSE™ · Good morning, MOOD."),
+  zero `[data-testid='module-blocked-state']` elements.
+- pytest 19/19 PASS (no backend regression).
+- ESLint clean on the patched file.
+
+### Audit summary (delivered as requested)
+- `feature_modules_registry`: 27 modules, all `default_state=enabled`,
+  6 marked `is_core_critical=TRUE`.
+- `platform_feature_defaults`: 1 entry only (`insights=enabled`, no-op).
+- `tenant_configuration` (studio): `feature_flags={}`,
+  `enabled_modules={}` — no overrides.
+- Resolver chain output: 27 `enabled` (`registry_default` × 26 +
+  `platform_default` × 1).
+- Modules intentionally blocked: **none** at present; all critical
+  modules force-enabled by ITER146-safety resolver.
+
+### Outstanding (NOT in this fix)
+The dashboard is operationally functional but visually empty
+("Your atelier is in silence. 0 active journeys"). User requested a
+**Golden Demo Tenant™** seed pack — separate substantial sprint, not
+applied yet (pending user confirmation on scope).
+
