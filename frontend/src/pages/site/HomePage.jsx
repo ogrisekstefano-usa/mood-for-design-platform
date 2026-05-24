@@ -65,8 +65,8 @@ const FALLBACK = {
   },
   howitworks: {
     eyebrow:  { it: 'Come funziona',  en: 'How it works' },
-    title:    { it: 'Un viaggio. Disegnato attorno a te.',
-                en: 'A journey. Designed around you.' },
+    title:    { it: 'Un viaggio.\nDisegnato attorno a te.',
+                en: 'A journey.\nDesigned around you.' },
     steps: [
       { id: '01', title: { it: 'Esplora',  en: 'Discover' },
         body: { it: 'Esplora atmosfere, stili e ispirazioni che parlano di te.',
@@ -335,7 +335,11 @@ const HowItWorks = ({ locale, copy }) => (
     <div className="mfd-how__inner">
       <header className="mfd-section-head">
         <p className="mfd-section-eyebrow">{L(copy.howitworks.eyebrow, locale)}</p>
-        <h2 className="mfd-section-title">{L(copy.howitworks.title, locale)}</h2>
+        <h2 className="mfd-section-title">
+          {L(copy.howitworks.title, locale).split('\n').map((line, i) => (
+            <span key={i} style={{ display: 'block' }}>{line}</span>
+          ))}
+        </h2>
       </header>
       <ol className="mfd-how__steps">
         {copy.howitworks.steps.map((s) => (
