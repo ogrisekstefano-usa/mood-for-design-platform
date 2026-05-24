@@ -8,7 +8,7 @@
   --jch-text:   #d3d2cd;
   --jch-text-2: #898885;
   --jch-warm:   #d9b285;
-  --jch-cyan:   #7fdfff;
+  --jch-cyan:   #B8A892;
   --jch-amber:  #e8a558;
   --jch-success:#7fc89f;
   --jch-muted:  #6e6e6a;
@@ -102,7 +102,7 @@
   margin-left: 2px;
 }
 .jch__status--warm    { color: var(--jch-warm);    background: rgba(217, 178, 133, 0.08); }
-.jch__status--cyan    { color: var(--jch-cyan);    background: rgba(127, 223, 255, 0.08); }
+.jch__status--cyan    { color: var(--jch-cyan);    background: rgba(184, 168, 146, 0.08); }
 .jch__status--amber   { color: var(--jch-amber);   background: rgba(232, 165, 88, 0.10); }
 .jch__status--success { color: var(--jch-success); background: rgba(127, 200, 159, 0.08); }
 .jch__status--muted   { color: var(--jch-muted);   background: rgba(255, 255, 255, 0.03); }

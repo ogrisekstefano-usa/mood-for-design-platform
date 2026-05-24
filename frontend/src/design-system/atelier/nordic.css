@@ -5,46 +5,47 @@
  * The DNA. Don't fork. Don't tint. Don't import elsewhere — only the
  * BlueprintThemeProvider mounts this via `data-atelier="nordic"`.
  *
- * Color philosophy:
- *   · Layered blacks (5 depths)        — architectural depth, not flat
- *   · Cyan glow accent (single hue)    — operational signal, never decoration
- *   · Warm ivory typography            — emotional contrast with cold blacks
- *   · No saturation. No neon. No SaaS blue.
+ * Color philosophy (Atelier Warm Cinematic™ refactor, May 2026):
+ *   · Layered espresso/graphite (5 depths) — architectural warm depth
+ *   · Smoked bronze accent (single hue)    — operational signal, never decoration
+ *   · Warm ivory typography                — luxury emotional contrast
+ *   · No saturation. No neon. No SaaS blue. No cold cyan.
  * ──────────────────────────────────────────────────────────────────────────── */
 
 [data-atelier="nordic"] {
-  /* ── LAYERED BLACKS (5 depths) ─────────────────────────────────────────── */
-  --bp-bg:                #050505;    /* canvas — deepest */
-  --bp-bg-soft:           #070b0d;    /* canvas — sidebar/header lift */
-  --bp-bg-cool:           #0b1115;    /* canvas — image overlay base */
-  --bp-surface-1:         #0f1720;    /* card · dropdown · drawer */
-  --bp-surface-2:         #111827;    /* surface lift · hover */
-  --bp-surface-3:         #182232;    /* selected · active emphasis */
-  --bp-elevated:          #1a2230;    /* tooltips · floating elements */
+  /* ── LAYERED ESPRESSO/GRAPHITE (5 depths) — Atelier Warm Cinematic™ ────── */
+  --bp-bg:                #060504;    /* canvas — deepest espresso */
+  --bp-bg-soft:           #0c0a08;    /* canvas — sidebar/header lift */
+  --bp-bg-cool:           #110d09;    /* canvas — image overlay base (warm) */
+  --bp-surface-1:         #171210;    /* card · dropdown · drawer (warm graphite) */
+  --bp-surface-2:         #1d1714;    /* surface lift · hover */
+  --bp-surface-3:         #251d18;    /* selected · active emphasis */
+  --bp-elevated:          #2a2018;    /* tooltips · floating elements */
 
-  /* ── CYAN GLOW (single accent — sacred) ────────────────────────────────── */
-  --atelier-cyan:         #5eead4;    /* primary action · status · progress */
-  --atelier-cyan-soft:    #2dd4bf;    /* hover */
-  --atelier-cyan-deep:    #14b8a6;    /* active press */
-  --atelier-cyan-glow:    rgba(94, 234, 212, 0.18);
-  --atelier-cyan-line:    rgba(94, 234, 212, 0.32);
+  /* ── ATELIER WARM CINEMATIC™ accent (single accent — sacred) ───────────── */
+  /* Was: electric mint cyan #C9A26B. Now: smoked bronze warm. */
+  --atelier-cyan:         #C9A26B;    /* primary action · status · progress */
+  --atelier-cyan-soft:    #D6B179;    /* hover */
+  --atelier-cyan-deep:    #B89870;    /* active press */
+  --atelier-cyan-glow:    rgba(201, 162, 107, 0.20);
+  --atelier-cyan-line:    rgba(201, 162, 107, 0.34);
 
   /* Legacy var aliasing — preserve existing pages */
   --bp-primary:           var(--atelier-cyan);
   --bp-primary-strong:    var(--atelier-cyan-deep);
   --bp-accent:            var(--atelier-cyan);
 
-  /* ── TYPOGRAPHY COLOR ──────────────────────────────────────────────────── */
+  /* ── TYPOGRAPHY COLOR — warmed ivory tones ─────────────────────────────── */
   --bp-text-headline:     #f2ead8;    /* warm ivory — serif headlines */
-  --bp-text-primary:      #e8eaee;    /* cool ivory — body */
-  --bp-text-secondary:    #9aa3ae;    /* cool grey — meta */
-  --bp-text-muted:        #6b7480;    /* faint — labels */
-  --bp-text-faint:        #4a525c;    /* whisper — separators captions */
+  --bp-text-primary:      #ece4d4;    /* warm ivory — body (no more cool grey) */
+  --bp-text-secondary:    #b5a89a;    /* warm taupe — meta */
+  --bp-text-muted:        #8c8077;    /* warm graphite — labels */
+  --bp-text-faint:        #5c544e;    /* warm whisper — separators captions */
 
-  /* ── BORDERS — architectural thin lines ────────────────────────────────── */
-  --bp-border:            #1a2230;
-  --bp-border-soft:       #11181f;
-  --bp-border-strong:     #232d3b;
+  /* ── BORDERS — architectural thin lines (warmed) ───────────────────────── */
+  --bp-border:            #221d18;
+  --bp-border-soft:       #16120e;
+  --bp-border-strong:     #2e2720;
   --bp-border-accent:     var(--atelier-cyan-line);
 
   /* ── RADIUS — luxury restraint ─────────────────────────────────────────── */
@@ -118,16 +119,16 @@
   --atelier-track-wide:   0.04em;
   --atelier-track-eyebrow:0.22em;     /* caps eyebrows */
 
-  /* ── COMPOSITION — image overlays ─────────────────────────────────────── */
+  /* ── COMPOSITION — image overlays (warm espresso) ─────────────────────── */
   --atelier-overlay-deep:
-    linear-gradient(180deg, rgba(5,5,5,0) 0%, rgba(5,5,5,0.4) 40%, rgba(5,5,5,0.92) 100%);
+    linear-gradient(180deg, rgba(10,6,4,0) 0%, rgba(10,6,4,0.42) 40%, rgba(10,6,4,0.94) 100%);
   --atelier-overlay-side:
-    linear-gradient(90deg, rgba(5,5,5,0.85) 0%, rgba(5,5,5,0.2) 60%, rgba(5,5,5,0) 100%);
+    linear-gradient(90deg, rgba(10,6,4,0.86) 0%, rgba(10,6,4,0.22) 60%, rgba(10,6,4,0) 100%);
   --atelier-overlay-card:
-    linear-gradient(180deg, rgba(5,5,5,0) 50%, rgba(5,5,5,0.85) 100%);
+    linear-gradient(180deg, rgba(10,6,4,0) 50%, rgba(10,6,4,0.86) 100%);
 
-  /* ── SCROLLBAR — cinematic ────────────────────────────────────────────── */
-  --atelier-scrollbar:    rgba(255,255,255,0.08);
+  /* ── SCROLLBAR — warm ivory whisper ───────────────────────────────────── */
+  --atelier-scrollbar:    rgba(238, 224, 200, 0.10);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -140,7 +141,7 @@
   border-radius: 999px;
 }
 [data-atelier="nordic"] ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.18);
+  background: rgba(238, 224, 200, 0.22);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────

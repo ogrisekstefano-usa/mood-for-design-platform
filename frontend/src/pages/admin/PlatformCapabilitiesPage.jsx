@@ -136,7 +136,7 @@ const CAPABILITIES = [
 ];
 
 const MATURITY_META = {
-  stable: { lbl: 'Stable',  color: '#00C9B3' },
+  stable: { lbl: 'Stable',  color: '#C9A26B' },
   beta:   { lbl: 'Beta',    color: '#E0C088' },
   vision: { lbl: 'Vision',  color: '#7AA8E0' },
 };

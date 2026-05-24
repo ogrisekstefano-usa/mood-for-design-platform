@@ -90,7 +90,7 @@
   border-radius: 0 2px 2px 0;
   opacity: 0.85;
 }
-.ins-stat--cyan::before  { background: linear-gradient(180deg, transparent, var(--ins-cyan)  60%, transparent); box-shadow: 0 0 8px rgba(127,223,255,0.20); }
+.ins-stat--cyan::before  { background: linear-gradient(180deg, transparent, var(--ins-cyan)  60%, transparent); box-shadow: 0 0 8px rgba(184, 168, 146, 0.20); }
 .ins-stat--gold::before  { background: linear-gradient(180deg, transparent, var(--ins-warm)  60%, transparent); box-shadow: 0 0 8px rgba(217,178,133,0.20); }
 .ins-stat--pearl::before { background: linear-gradient(180deg, transparent, var(--ins-pearl) 60%, transparent); }
 
@@ -301,7 +301,7 @@
   font-size: 10px;
   color: var(--ins-text-3);
 }
-.ins-sig__chip--color { background: rgba(127,223,255,0.04); }
+.ins-sig__chip--color { background: rgba(184, 168, 146, 0.04); }
 .ins-sig__chip:hover { border-color: var(--ins-warm); }
 
 .ins-empty {

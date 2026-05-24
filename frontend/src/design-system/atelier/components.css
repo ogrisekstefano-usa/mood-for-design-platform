@@ -32,7 +32,7 @@
   --popover:             213 35% 9%;
   --popover-foreground:  216 12% 92%;
 
-  /* Primary = Atelier Cyan (#5eead4) */
+  /* Primary = Atelier Cyan (#C9A26B) */
   --primary:             172 71% 64%;
   --primary-foreground:  170 60% 6%;       /* deep ink-cyan for legibility on cyan */
 
@@ -67,7 +67,7 @@
   --bp-font-body:         var(--atelier-sans);
   --bp-font-mono:         var(--atelier-mono);
 
-  --bp-primary-soft:      rgba(94, 234, 212, 0.06);
+  --bp-primary-soft:      rgba(201, 162, 107, 0.06);
   --bp-border-hover:      var(--atelier-cyan-line);
   --bp-border-active:     var(--atelier-cyan-line);
   --bp-surface-elevated:  var(--bp-elevated);
@@ -338,7 +338,7 @@
 }
 
 [data-atelier="nordic"] [data-state="on"][class*="toggle"] {
-  background-color: rgba(94, 234, 212, 0.06);
+  background-color: rgba(201, 162, 107, 0.06);
   color: var(--atelier-cyan);
   border-color: var(--atelier-cyan-line);
 }
@@ -422,7 +422,7 @@
 }
 
 [data-atelier="nordic"] nav[role="navigation"][aria-label*="pagination" i] [aria-current="page"] {
-  background-color: rgba(94, 234, 212, 0.06);
+  background-color: rgba(201, 162, 107, 0.06);
   border-color: var(--atelier-cyan-line);
   color: var(--bp-text-headline);
 }
@@ -716,8 +716,8 @@
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(900px 480px at 8% -10%, rgba(94,234,212,0.035), transparent 60%),
-    radial-gradient(700px 420px at 100% 0%, rgba(94,234,212,0.02), transparent 55%);
+    radial-gradient(900px 480px at 8% -10%, rgba(201, 162, 107, 0.035), transparent 60%),
+    radial-gradient(700px 420px at 100% 0%, rgba(201, 162, 107, 0.02), transparent 55%);
   z-index: 0;
 }
 
@@ -883,7 +883,7 @@
 }
 [data-atelier="nordic"] .crm-view-toggle button:first-child { border-left: 0; }
 [data-atelier="nordic"] .crm-view-toggle button.is-active {
-  background: rgba(94, 234, 212, 0.08);
+  background: rgba(201, 162, 107, 0.08);
   color: var(--atelier-cyan);
 }
 
@@ -1079,7 +1079,7 @@
 }
 
 [data-atelier="nordic"] .crm-empty-state__cta-btn:hover {
-  background: rgba(94, 234, 212, 0.06);
+  background: rgba(201, 162, 107, 0.06);
   border-color: var(--atelier-cyan);
   color: var(--atelier-cyan);
   box-shadow: var(--atelier-glow-cyan-sm);
@@ -1264,7 +1264,7 @@
   letter-spacing: var(--atelier-track-eyebrow);
 }
 [data-atelier="nordic"] .adr__tab.is-active {
-  background: rgba(94,234,212,0.06);
+  background: rgba(201, 162, 107, 0.06);
   color: var(--atelier-cyan);
   border-color: var(--atelier-cyan-line);
 }
@@ -1298,8 +1298,8 @@
 [data-atelier="nordic"] .ins-page {
   background: var(--bp-bg);
   background-image:
-    radial-gradient(900px 480px at 12% -8%, rgba(94,234,212,0.035), transparent 60%),
-    radial-gradient(700px 420px at 100% 0%, rgba(94,234,212,0.02), transparent 55%);
+    radial-gradient(900px 480px at 12% -8%, rgba(201, 162, 107, 0.035), transparent 60%),
+    radial-gradient(700px 420px at 100% 0%, rgba(201, 162, 107, 0.02), transparent 55%);
   padding: 56px 56px 80px;
 }
 
@@ -1441,7 +1441,7 @@
   backdrop-filter: blur(8px);
 }
 [data-atelier="nordic"] .ins-chip--atmos {
-  background: rgba(94, 234, 212, 0.10);
+  background: rgba(201, 162, 107, 0.10);
   border-color: var(--atelier-cyan-line);
   color: var(--atelier-cyan);
 }
@@ -1565,7 +1565,7 @@
   inset: 0;
   pointer-events: none;
   z-index: -1;
-  background: radial-gradient(800px 460px at 10% -8%, rgba(94,234,212,0.03), transparent 60%);
+  background: radial-gradient(800px 460px at 10% -8%, rgba(201, 162, 107, 0.03), transparent 60%);
 }
 
 [data-atelier="nordic"] .bm-hero,
@@ -1633,7 +1633,7 @@
 [data-atelier="nordic"] .bm-facet.is-on {
   border-color: var(--atelier-cyan-line);
   color: var(--atelier-cyan);
-  background: rgba(94, 234, 212, 0.06);
+  background: rgba(201, 162, 107, 0.06);
 }
 
 /* Brand card — collectible */
@@ -1690,7 +1690,7 @@
 [data-atelier="nordic"] .bm-tag--luxury {
   color: var(--atelier-cyan);
   border-color: var(--atelier-cyan-line);
-  background: rgba(94, 234, 212, 0.05);
+  background: rgba(201, 162, 107, 0.05);
 }
 [data-atelier="nordic"] .bm-chip--material {
   font-family: var(--atelier-serif);
@@ -1786,7 +1786,7 @@
 [data-atelier="nordic"] .bd-jump:hover {
   border-color: var(--atelier-cyan-line);
   color: var(--atelier-cyan);
-  background: rgba(94, 234, 212, 0.04);
+  background: rgba(201, 162, 107, 0.04);
 }
 
 @media (max-width: 760px) {

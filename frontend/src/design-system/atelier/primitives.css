@@ -131,7 +131,7 @@
 
 .atelier-nav-item--active {
   color: var(--bp-text-headline);
-  background: rgba(94, 234, 212, 0.06);
+  background: rgba(201, 162, 107, 0.06);
 }
 
 .atelier-nav-item--active::before {
@@ -214,7 +214,7 @@
   padding: 2px 8px;
   border: 1px solid var(--atelier-cyan-line);
   border-radius: var(--bp-radius-xs);
-  background: rgba(94,234,212,0.04);
+  background: rgba(201, 162, 107, 0.04);
 }
 
 .atelier-workspace-pill__name {
@@ -280,7 +280,7 @@
 }
 
 .atelier-cta--ghost:hover {
-  background: rgba(94, 234, 212, 0.06);
+  background: rgba(201, 162, 107, 0.06);
   border-color: var(--atelier-cyan);
   box-shadow: var(--atelier-glow-cyan-sm);
 }

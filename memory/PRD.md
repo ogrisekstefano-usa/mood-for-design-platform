@@ -1,5 +1,60 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
+
+## 📌 Sprint Status (latest)
+- **ITER149 · Atelier Warm Cinematic Palette™ + Used-In™ live wiring** · ✅ DELIVERED · 24 May 2026
+
+  **Global palette refactor — cold→warm**
+  - `--bp-primary` (was electric teal `#00C9B3`) → **Smoked Bronze `#C9A26B`**
+    propagated through Dashboard, CRM, Cultural Editions, Admin Cockpit,
+    Brand Studio, UserMenu, Topbar CTA pill, Stage Navigator
+  - `--atelier-cyan` (was mint cyan `#5eead4` — the master nordic accent) →
+    **Smoked Bronze `#C9A26B`**. Background layers warmed from cool-grey
+    espresso/graphite. All `rgba(94,234,212,…)` / `rgba(0,201,179,…)` /
+    `rgba(127,223,255,…)` warm-mapped via codebase-wide sweep
+    (≈ 60 files updated)
+  - `kernel.css` `--mood-cyan` warmed to graphite `#B8A892`; atmospheric
+    overlay re-keyed to warm radials only
+  - `client-relations.css` `--cr-teal` (was `#00C9B3`) → warm bronze
+    `#B89870`; welcome/continuation drawers panel gradient (was navy
+    `#0A1124→#050816`) → espresso `#1A130E→#0A0807`; scrim warmed;
+    saturated teal CTA replaced by warm bronze
+  - `AccountsPage` swatchesFor cleaned of all blues (`#3F5F88`,
+    `#1F2A40`, `#7C9BAE`) and saturated teal `#00C9B3`; new palette
+    pure bronze/espresso/graphite
+
+  **Visual Polish · Atelier Editorial Layering**
+  - Leads → **atmospheric discovery surfaces** (soft warm radial heroes,
+    blurred bronze glow blob, dashed dividers, stronger typography)
+  - Prospects → **relationship cultivation strips** (horizontal warm
+    "current" gradient, twin radial blobs left/right, increased
+    typography weight)
+  - Accounts → **living project ecosystems** (gold radial + espresso
+    counter-radial, monogram glow, larger `where we are` line)
+  - Global `.cr-shell` cinematic film-grain SVG overlay (8% opacity,
+    mix-blend overlay)
+  - Stage nav labels & header eyebrows bolder (700 weight) for
+    accessibility/contrast
+
+  **Used-In™ live intelligence (live data, no placeholder)**
+  - Backend: `GET /api/relations/accounts` now augments each row with
+    `used_in: { moodboards, proposals, memories }` — best-effort joins
+    against `moodboards.account_id`, `proposals.account_id`,
+    `relationship_events.subject_id`. Degrades silently if a table is
+    absent
+  - Frontend: `AccountCard` renders a dedicated `account-card__usedin`
+    row with bronze numerals (Cormorant Garamond) + ivory labels,
+    `data-testid="account-usedin-{id}"` for testing
+
+  **API contract change** (additive · non-breaking)
+  - Response shape of `/api/relations/accounts` extended with `used_in`
+    per row. Frontend tolerant when field missing.
+
+  **Status**: Smoke-tested via screenshot tool (Dashboard, Leads,
+  Prospects, Accounts). All compile clean. Backend curl verified
+  `used_in` payload arriving with 37 active studio accounts.
+
+
 ## 📌 Sprint Status (latest)
 - **ITER148 · Phase 1+2 · Editorial Polish + Media System Unificato™ foundations** · ✅ DELIVERED · 24 Mag 2026
 

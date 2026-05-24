@@ -22,28 +22,29 @@
 
   --bp-border:          rgba(255, 255, 255, 0.06);
   --bp-border-strong:   rgba(255, 255, 255, 0.10);
-  --bp-border-hover:    rgba(0, 201, 179, 0.28);    /* teal-tinted hover */
-  --bp-border-active:   rgba(0, 201, 179, 0.40);
+  --bp-border-strong:   rgba(255, 255, 255, 0.10);
+  --bp-border-hover:    rgba(201, 162, 107, 0.32);    /* Atelier Warm Cinematic™ · smoked bronze */
+  --bp-border-active:   rgba(201, 162, 107, 0.46);
 
-  --bp-text-primary:    rgba(255, 255, 255, 0.96);  /* near-white, never pure */
-  --bp-text-secondary:  rgba(255, 255, 255, 0.78);
-  --bp-text-muted:      rgba(255, 255, 255, 0.62);
-  --bp-text-subtle:     rgba(255, 255, 255, 0.38);
-  --bp-text-faint:      rgba(255, 255, 255, 0.22);
+  --bp-text-primary:    rgba(248, 242, 230, 0.96);    /* warm ivory, never pure white */
+  --bp-text-secondary:  rgba(245, 236, 220, 0.78);
+  --bp-text-muted:      rgba(238, 224, 200, 0.62);
+  --bp-text-subtle:     rgba(228, 210, 184, 0.42);
+  --bp-text-faint:      rgba(218, 200, 172, 0.24);
 
-  --bp-primary:         #00C9B3;                    /* operational accent */
-  --bp-primary-soft:    rgba(0, 201, 179, 0.12);
-  --bp-primary-glow:    rgba(0, 201, 179, 0.18);
-  --bp-primary-hover:   #00B8A3;
-  --bp-primary-2:       #7EE6DA;                    /* soft accent */
-  --bp-accent:          #00C9B3;
+  --bp-primary:         #C9A26B;                      /* Atelier Warm Cinematic™ · smoked bronze */
+  --bp-primary-soft:    rgba(201, 162, 107, 0.14);
+  --bp-primary-glow:    rgba(201, 162, 107, 0.22);
+  --bp-primary-hover:   #D6B179;
+  --bp-primary-2:       #E2C68F;                      /* warm ivory accent */
+  --bp-accent:          #C9A26B;
 
-  --bp-selection-bg:    rgba(0, 201, 179, 0.20);
-  --bp-selection-fg:    rgba(255, 255, 255, 0.96);
+  --bp-selection-bg:    rgba(201, 162, 107, 0.22);
+  --bp-selection-fg:    rgba(248, 242, 230, 0.96);
 
-  --bp-success:         #00C27F;
+  --bp-success:         #8FB590;                      /* warm sage, no neon */
   --bp-warning:         #D6A756;
-  --bp-danger:          #E07474;
+  --bp-danger:          #C97A6E;                      /* warm rose terracotta */
 
   /* ── Typography — Phase O direction: editorial headings ──── */
   /* Playfair Display for headlines (architectural · editorial) +
@@ -89,8 +90,8 @@
   --bp-shadow-sm:       0 2px 10px -4px rgba(0, 0, 0, 0.50);
   --bp-shadow-md:       0 10px 28px -14px rgba(0, 0, 0, 0.65);
   --bp-shadow-lg:       0 28px 56px -28px rgba(0, 0, 0, 0.75);
-  --bp-shadow-glow:     0 0 0 1px rgba(0, 201, 179, 0.22),
-                        0 6px 22px rgba(0, 201, 179, 0.10);
+  --bp-shadow-glow:     0 0 0 1px rgba(201, 162, 107, 0.22),
+                        0 6px 22px rgba(201, 162, 107, 0.12);
 
   /* ── Card gradient — Phase O signature surface ───────────── */
   --bp-card-gradient:   linear-gradient(180deg,
@@ -145,8 +146,8 @@
 
   --bp-border:          rgba(20, 17, 14, 0.10);
   --bp-border-strong:   rgba(20, 17, 14, 0.24);
-  --bp-border-hover:    rgba(13, 138, 112, 0.32);
-  --bp-border-active:   rgba(13, 138, 112, 0.48);
+  --bp-border-hover:    rgba(122, 85, 48, 0.32);
+  --bp-border-active:   rgba(122, 85, 48, 0.48);
 
   --bp-text-primary:    #0F0D0A;
   --bp-text-secondary:  #2A2520;
@@ -154,22 +155,22 @@
   --bp-text-subtle:     #8A7F70;
   --bp-text-faint:      rgba(20, 17, 14, 0.22);
 
-  --bp-primary:         #0D8A70;
-  --bp-primary-soft:    rgba(13, 138, 112, 0.10);
-  --bp-primary-glow:    rgba(13, 138, 112, 0.18);
-  --bp-primary-hover:   #0A7560;
-  --bp-primary-2:       #4FB39D;
+  --bp-primary:         #7A5530;                  /* Atelier Warm Cinematic™ · deep espresso bronze */
+  --bp-primary-soft:    rgba(122, 85, 48, 0.10);
+  --bp-primary-glow:    rgba(122, 85, 48, 0.18);
+  --bp-primary-hover:   #6A4724;
+  --bp-primary-2:       #B89870;
   --bp-accent:          #7A5530;
 
-  --bp-selection-bg:    rgba(13, 138, 112, 0.22);
+  --bp-selection-bg:    rgba(122, 85, 48, 0.22);
   --bp-selection-fg:    #0F0D0A;
 
   --bp-shadow-xs:       0 1px 2px rgba(20, 17, 14, 0.04);
   --bp-shadow-sm:       0 2px 10px -4px rgba(20, 17, 14, 0.08);
   --bp-shadow-md:       0 10px 28px -14px rgba(20, 17, 14, 0.10);
   --bp-shadow-lg:       0 28px 56px -28px rgba(20, 17, 14, 0.12);
-  --bp-shadow-glow:     0 0 0 1px rgba(13, 138, 112, 0.22),
-                        0 6px 22px rgba(13, 138, 112, 0.10);
+  --bp-shadow-glow:     0 0 0 1px rgba(122, 85, 48, 0.22),
+                        0 6px 22px rgba(122, 85, 48, 0.10);
 
   --bp-card-gradient:   linear-gradient(180deg,
                           rgba(20, 17, 14, 0.020),

@@ -31,7 +31,7 @@ const MB_STATUS = {
 const SWATCH = {
   earth: '#8a6a4a', olive: '#7d8b56', bronze: '#a07550', black: '#1a1a1c',
   white: '#ece8df', beige: '#cdb999', gold: '#c8a064', brass: '#b08a4a',
-  blue: '#5a779e', navy: '#2b3a55', teal: '#508a8a', green: '#5e7d5b',
+  blue: '#5a779e', navy: '#3E322A', teal: '#508a8a', green: '#5e7d5b',
   forest: '#3b5042', cream: '#e3d8be', charcoal: '#3a3a3d', walnut: '#6e4a30',
   oak: '#a98660', marble: '#dddad2', terracotta: '#b56b50', sand: '#c9b58a',
   ivory: '#ede2c8', warm: '#d6b687', cool: '#88a0a8', rust: '#a35538',

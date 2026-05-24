@@ -5,7 +5,7 @@
  * NOT an enterprise dashboard. NO SSO wall. NO duplicated systems.
  *
  * Strict palette:
- *   Background main     #050816
+ *   Background main     #0A0807
  *   Background panel    #08101D
  *   Elevated surface    rgba(255,255,255,0.03)
  *   Primary accent      #19F0FF  (MOOD cyan Atelier™)
@@ -21,16 +21,16 @@
  */
 
 .mfd-auth {
-  --auth-bg:           #050816;
+  --auth-bg:           #0A0807;
   --auth-bg-panel:     #121212;
   --auth-surface:      rgba(255, 255, 255, 0.03);
   --auth-border:       rgba(255, 255, 255, 0.12);
   --auth-border-soft:  rgba(255, 255, 255, 0.08);
-  --auth-cyan:         #00C9B3;
-  --auth-cyan-soft:    rgba(0, 201, 179, 0.18);
-  --auth-cyan-glow:    0 0 24px rgba(0, 201, 179, 0.22);
-  --auth-warm:         #00C9B3;
-  --auth-warm-hover:   #1AD9C5;
+  --auth-cyan:         #C9A26B;
+  --auth-cyan-soft:    rgba(201, 162, 107, 0.18);
+  --auth-cyan-glow:    0 0 24px rgba(201, 162, 107, 0.22);
+  --auth-warm:         #C9A26B;
+  --auth-warm-hover:   #D6B179;
   --auth-text:         #F5F7FA;
   --auth-text-2:       #C9D2DC;
   --auth-text-muted:   rgba(245, 247, 250, 0.62);
@@ -345,7 +345,7 @@
 
 .mfd-auth__submit:hover:not(:disabled) {
   background: var(--auth-warm-hover);
-  box-shadow: 0 0 32px rgba(0, 201, 179, 0.28);
+  box-shadow: 0 0 32px rgba(201, 162, 107, 0.28);
 }
 
 .mfd-auth__submit:active:not(:disabled) { transform: translateY(1px); }

@@ -177,7 +177,55 @@ def list_accounts(
         query = query.or_(f"account_name.ilike.{like},email.ilike.{like}")
     res = (query.order('last_activity_at', desc=True)
            .range(offset, offset + limit - 1).execute())
-    return {"data": res.data or [], "total": res.count or 0,
+    rows = res.data or []
+
+    # ── Used-In™ live intelligence per account ──────────────────────────
+    # Maps each account to: moodboards / proposals / memory_events counts.
+    # Best-effort — degrade silently if a table is missing in older schemas.
+    account_ids = [r['id'] for r in rows]
+    usage_map: dict[str, dict] = {a_id: {"moodboards": 0, "proposals": 0, "memories": 0} for a_id in account_ids}
+    if account_ids:
+        try:
+            mbres = (client.table('moodboards')
+                     .select('id, account_id')
+                     .eq('tenant_id', tenant_id)
+                     .in_('account_id', account_ids)
+                     .execute())
+            for m in (mbres.data or []):
+                aid = m.get('account_id')
+                if aid in usage_map:
+                    usage_map[aid]['moodboards'] += 1
+        except Exception:
+            logger.debug("moodboards usage fetch skipped")
+        try:
+            prres = (client.table('proposals')
+                     .select('id, account_id')
+                     .eq('tenant_id', tenant_id)
+                     .in_('account_id', account_ids)
+                     .execute())
+            for p in (prres.data or []):
+                aid = p.get('account_id')
+                if aid in usage_map:
+                    usage_map[aid]['proposals'] += 1
+        except Exception:
+            logger.debug("proposals usage fetch skipped")
+        try:
+            evres = (client.table('relationship_events')
+                     .select('id, subject_id')
+                     .eq('tenant_id', tenant_id)
+                     .in_('subject_id', account_ids)
+                     .execute())
+            for e in (evres.data or []):
+                sid = e.get('subject_id')
+                if sid in usage_map:
+                    usage_map[sid]['memories'] += 1
+        except Exception:
+            logger.debug("relationship_events usage fetch skipped")
+
+    for r in rows:
+        r['used_in'] = usage_map.get(r['id'], {"moodboards": 0, "proposals": 0, "memories": 0})
+
+    return {"data": rows, "total": res.count or 0,
             "limit": limit, "offset": offset}
 
 

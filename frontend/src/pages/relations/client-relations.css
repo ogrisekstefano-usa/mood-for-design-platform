@@ -27,9 +27,9 @@
   --cr-text:         #F3EEE7;   /* ivory · WCAG-AA on #070809 */
   --cr-text-2:       #DAD1C2;
   --cr-text-3:       #968B7C;
-  --cr-teal:         var(--mood-teal, #00C9B3);
-  --cr-teal-soft:    rgba(0,201,179,0.12);
-  --cr-teal-glow:    0 0 32px rgba(0,201,179,0.22);
+  --cr-teal:         #B89870;                       /* Atelier Warm · was saturated teal */
+  --cr-teal-soft:    rgba(184, 152, 112, 0.14);
+  --cr-teal-glow:    0 0 32px rgba(184, 152, 112, 0.22);
   --cr-gold:         #D6B48A;
   --cr-gold-soft:    rgba(214,180,138,0.12);
   --cr-gold-glow:    0 0 32px rgba(214,180,138,0.18);
@@ -44,8 +44,9 @@
 
   min-height: 100vh;
   background:
-    radial-gradient(1200px 700px at 80% -10%, rgba(0,201,179,0.05), transparent 60%),
+    radial-gradient(1200px 700px at 80% -10%, rgba(184,152,112,0.05), transparent 60%),
     radial-gradient(1000px 700px at -10% 110%, rgba(214,180,138,0.06), transparent 55%),
+    radial-gradient(900px 500px at 50% 50%, rgba(122,85,48,0.020), transparent 70%),
     linear-gradient(180deg, var(--cr-bg) 0%, var(--cr-bg-2) 100%);
   color: var(--cr-text);
   font-family: 'Inter', system-ui, sans-serif;
@@ -53,9 +54,9 @@
   line-height: 1.7;
   padding: 44px clamp(32px, 4vw, 72px) 120px;
 }
-.cr-shell--lead     { --cr-accent: var(--cr-slate); --cr-accent-soft: var(--cr-slate-soft); --cr-accent-glow: 0 0 28px rgba(124,155,174,0.18); }
+.cr-shell--lead     { --cr-accent: var(--cr-slate); --cr-accent-soft: var(--cr-slate-soft); --cr-accent-glow: 0 0 28px rgba(163,139,110,0.20); }
 .cr-shell--prospect { --cr-accent: var(--cr-teal);  --cr-accent-soft: var(--cr-teal-soft);  --cr-accent-glow: var(--cr-teal-glow); }
-.cr-shell--account  { --cr-accent: var(--cr-gold);  --cr-accent-soft: var(--cr-gold-soft);  --cr-accent-glow: 0 0 28px rgba(214,180,138,0.14); }
+.cr-shell--account  { --cr-accent: var(--cr-gold);  --cr-accent-soft: var(--cr-gold-soft);  --cr-accent-glow: 0 0 28px rgba(214,180,138,0.20); }
 
 /* ─────────────────────────────────────────────────────────────────
  * Stage Sub-Nav · the journey at a glance
@@ -73,13 +74,13 @@
 .cr-stagenav__rail {
   position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
   background: linear-gradient(90deg,
-    rgba(124,155,174,0.45) 0%,
-    rgba(124,155,174,0.45) 33%,
-    rgba(0,201,179,0.55)   33%,
-    rgba(0,201,179,0.55)   66%,
-    rgba(214,180,138,0.55) 66%,
-    rgba(214,180,138,0.55) 100%);
-  opacity: 0.55;
+    rgba(163,139,110,0.55) 0%,
+    rgba(163,139,110,0.55) 33%,
+    rgba(184,152,112,0.65) 33%,
+    rgba(184,152,112,0.65) 66%,
+    rgba(214,180,138,0.65) 66%,
+    rgba(214,180,138,0.65) 100%);
+  opacity: 0.6;
 }
 .cr-stagenav__node {
   position: relative;
@@ -133,8 +134,8 @@
   color: var(--cr-text-3);
   margin-left: auto;
 }
-.cr-stagenav__node--slate.is-active { background: linear-gradient(180deg, rgba(124,155,174,0.10), rgba(124,155,174,0.02)); }
-.cr-stagenav__node--teal.is-active  { background: linear-gradient(180deg, rgba(0,201,179,0.10),  rgba(0,201,179,0.02));  }
+.cr-stagenav__node--slate.is-active { background: linear-gradient(180deg, rgba(163,139,110,0.10), rgba(163,139,110,0.02)); }
+.cr-stagenav__node--teal.is-active  { background: linear-gradient(180deg, rgba(184,152,112,0.10),  rgba(184,152,112,0.02));  }
 .cr-shell--prospect .cr-stagenav__node--teal.is-active { box-shadow: inset 0 -3px 0 var(--cr-teal); }
 .cr-stagenav__node--gold.is-active  { background: linear-gradient(180deg, rgba(214,180,138,0.10),rgba(214,180,138,0.02)); }
 .cr-shell--account  .cr-stagenav__node--gold.is-active { box-shadow: inset 0 -3px 0 var(--cr-gold); }
@@ -223,7 +224,7 @@
   transition: all 180ms ease;
 }
 .cr-chip:hover { border-color: var(--cr-border-2); color: var(--cr-text); }
-.cr-chip--slate.is-active { background: rgba(124,155,174,0.16); border-color: var(--cr-slate); color: var(--cr-slate); }
+.cr-chip--slate.is-active { background: rgba(163,139,110,0.16); border-color: var(--cr-slate); color: var(--cr-slate); }
 .cr-chip--teal.is-active  { background: var(--cr-teal-soft); border-color: var(--cr-teal);  color: var(--cr-teal);  }
 .cr-chip--gold.is-active  { background: var(--cr-gold-soft); border-color: var(--cr-gold);  color: var(--cr-gold);  }
 .cr-chip--reset { background: transparent; color: var(--cr-text-3); }
@@ -277,7 +278,7 @@
   position: relative;
   padding: 36px 36px 30px;
   background:
-    linear-gradient(180deg, rgba(124,155,174,0.04) 0%, transparent 100%),
+    linear-gradient(180deg, rgba(163,139,110,0.04) 0%, transparent 100%),
     var(--cr-bg-card);
   border: 1px solid var(--cr-border);
   border-radius: 2px;
@@ -289,9 +290,9 @@
   transition: border-color 260ms ease, transform 260ms ease, background 260ms ease;
 }
 .lead-card:hover {
-  border-color: rgba(124,155,174,0.45);
+  border-color: rgba(163,139,110,0.45);
   background:
-    linear-gradient(180deg, rgba(124,155,174,0.08) 0%, transparent 100%),
+    linear-gradient(180deg, rgba(163,139,110,0.08) 0%, transparent 100%),
     var(--cr-bg-card-hi);
   transform: translateY(-2px);
 }
@@ -313,8 +314,8 @@
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 22px;
   color: var(--cr-text);
-  background: rgba(124,155,174,0.10);
-  border: 1px solid rgba(124,155,174,0.32);
+  background: rgba(163,139,110,0.10);
+  border: 1px solid rgba(163,139,110,0.32);
   border-radius: 50%;
   letter-spacing: 0.04em;
 }
@@ -406,7 +407,7 @@
   display: grid;
   grid-template-columns: minmax(280px, 1.1fr) minmax(320px, 1.4fr) minmax(240px, 0.9fr);
   gap: 0;
-  background: linear-gradient(90deg, rgba(0,201,179,0.045) 0%, rgba(255,255,255,0.018) 60%, transparent 100%);
+  background: linear-gradient(90deg, rgba(184,152,112,0.045) 0%, rgba(255,255,255,0.018) 60%, transparent 100%);
   border: 1px solid var(--cr-border);
   border-left: 3px solid var(--cr-teal);
   border-radius: 2px;
@@ -416,9 +417,9 @@
   transition: all 260ms ease;
 }
 .prospect-lane:hover {
-  border-color: rgba(0,201,179,0.42);
+  border-color: rgba(184,152,112,0.42);
   border-left-color: var(--cr-teal);
-  background: linear-gradient(90deg, rgba(0,201,179,0.075) 0%, rgba(255,255,255,0.030) 60%, transparent 100%);
+  background: linear-gradient(90deg, rgba(184,152,112,0.075) 0%, rgba(255,255,255,0.030) 60%, transparent 100%);
   box-shadow: var(--cr-teal-glow);
   transform: translateY(-1px);
 }
@@ -444,7 +445,7 @@
   font-size: 24px;
   color: var(--cr-teal);
   background: var(--cr-teal-soft);
-  border: 1px solid rgba(0,201,179,0.42);
+  border: 1px solid rgba(184,152,112,0.42);
   border-radius: 50%;
 }
 .prospect-lane__name {
@@ -471,7 +472,7 @@
 }
 @keyframes cr-pulse {
   0%,100% { box-shadow: 0 0 0 4px var(--cr-teal-soft); }
-  50%     { box-shadow: 0 0 0 8px rgba(0,201,179,0.06); }
+  50%     { box-shadow: 0 0 0 8px rgba(184,152,112,0.06); }
 }
 
 .prospect-lane__momentum {
@@ -496,7 +497,7 @@
   font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--cr-teal);
   background: var(--cr-teal-soft);
-  border: 1px solid rgba(0,201,179,0.32);
+  border: 1px solid rgba(184,152,112,0.32);
   padding: 4px 10px; border-radius: 2px;
   font-weight: 600;
 }
@@ -526,7 +527,7 @@
 }
 .prospect-lane__momentum-fill {
   display: block; height: 100%;
-  background: linear-gradient(90deg, var(--cr-teal), #4DE5D2);
+  background: linear-gradient(90deg, var(--cr-teal), #E2C68F);
   transition: width 520ms ease;
 }
 .prospect-lane__cta {
@@ -546,10 +547,10 @@
 .prospect-lane__cta:hover { background: var(--cr-teal-soft); }
 .prospect-lane__cta.is-ready {
   background: var(--cr-teal);
-  color: #061616;
+  color: #1A130E;
   border-color: var(--cr-teal);
 }
-.prospect-lane__cta.is-ready:hover { background: #1AD9C5; box-shadow: var(--cr-teal-glow); }
+.prospect-lane__cta.is-ready:hover { background: #D6B179; box-shadow: var(--cr-teal-glow); }
 
 @media (max-width: 1024px) {
   .prospect-lane {
@@ -807,7 +808,7 @@
   color: var(--cr-teal);
   text-decoration: none;
   padding: 4px 10px;
-  border: 1px solid rgba(0,201,179,0.32);
+  border: 1px solid rgba(184,152,112,0.32);
   border-radius: 999px;
   transition: all 200ms ease;
 }
@@ -828,7 +829,7 @@
   font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase;
   color: var(--cr-slate); font-weight: 600;
   padding: 4px 10px;
-  border: 1px solid rgba(124,155,174,0.32);
+  border: 1px solid rgba(163,139,110,0.32);
   border-radius: 999px;
 }
 .lead-card__origin-keywords {
@@ -840,6 +841,44 @@
 
 /* Account meta footer spacer */
 .account-card__meta-spacer { flex: 1; }
+
+/* ─────────────────────────────────────────────────────────────────
+ * Account · Used-In™ live intelligence row
+ * Atelier Warm Cinematic — bronze numerals, ivory labels
+ * ───────────────────────────────────────────────────────────────── */
+.account-card__usedin {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 16px 0;
+  border-top: 1px dashed var(--cr-border);
+}
+.account-card__usedin-eyebrow {
+  font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--cr-gold); font-weight: 600;
+}
+.account-card__usedin-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+}
+.account-card__usedin-item {
+  display: inline-flex; align-items: baseline; gap: 8px;
+  font-size: 15px; color: var(--cr-text-2);
+  letter-spacing: 0.01em;
+}
+.account-card__usedin-item strong {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--cr-gold);
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+.account-card__usedin-divider {
+  color: var(--cr-text-3);
+  opacity: 0.5;
+  font-size: 18px;
+  line-height: 1;
+}
 
 /* Prospect designer column refinement */
 .prospect-lane__identity {
@@ -864,7 +903,7 @@
 .welcome-drawer__scrim,
 .ci-drawer__scrim {
   position: absolute; inset: 0;
-  background: rgba(5, 8, 22, 0.66);
+  background: rgba(10, 8, 6, 0.72);
   backdrop-filter: blur(8px);
   animation: cr-fade 280ms ease;
 }
@@ -873,7 +912,7 @@
   position: relative;
   width: clamp(420px, 36vw, 560px);
   height: 100vh;
-  background: linear-gradient(180deg, #0A1124 0%, #050816 100%);
+  background: linear-gradient(180deg, #1A130E 0%, #0A0807 100%);
   border-left: 1px solid rgba(255,255,255,0.10);
   box-shadow: -32px 0 60px rgba(0,0,0,0.55);
   padding: 36px 40px 48px;
@@ -894,7 +933,7 @@
 .welcome-drawer__eyebrow,
 .ci-drawer__eyebrow {
   font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
-  color: var(--cr-teal, #00C9B3); font-weight: 600;
+  color: var(--cr-teal, #B89870); font-weight: 600;
 }
 .welcome-drawer__close,
 .ci-drawer__close {
@@ -960,7 +999,7 @@
 .welcome-drawer__atmos {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 400; font-size: 30px; line-height: 1.15;
-  color: var(--cr-teal, #00C9B3);
+  color: var(--cr-teal, #B89870);
   margin: 0 0 6px;
 }
 .welcome-drawer__atmos em { font-style: italic; }
@@ -987,11 +1026,11 @@
   transition: all 200ms ease;
 }
 .welcome-drawer__moment-btn:hover {
-  border-color: rgba(0,201,179,0.42);
-  background: rgba(0,201,179,0.06);
+  border-color: rgba(184,152,112,0.42);
+  background: rgba(184,152,112,0.06);
   transform: translateX(2px);
 }
-.welcome-drawer__moment-btn svg { color: var(--cr-teal, #00C9B3); }
+.welcome-drawer__moment-btn svg { color: var(--cr-teal, #B89870); }
 .welcome-drawer__moment-label {
   display: block;
   font-size: 16px; font-weight: 600; letter-spacing: -0.003em;
@@ -1012,19 +1051,19 @@
   gap: 16px;
   align-items: center;
   padding: 18px 20px;
-  background: rgba(0,201,179,0.06);
-  border: 1px solid rgba(0,201,179,0.32);
+  background: rgba(184,152,112,0.06);
+  border: 1px solid rgba(184,152,112,0.32);
   color: #F5F7FA;
   text-decoration: none;
   border-radius: 2px;
   transition: all 200ms ease;
 }
 .welcome-drawer__memory-link:hover {
-  background: rgba(0,201,179,0.12);
-  border-color: var(--cr-teal, #00C9B3);
+  background: rgba(184,152,112,0.12);
+  border-color: var(--cr-teal, #B89870);
   transform: translateX(2px);
 }
-.welcome-drawer__memory-link svg { color: var(--cr-teal, #00C9B3); }
+.welcome-drawer__memory-link svg { color: var(--cr-teal, #B89870); }
 .welcome-drawer__memory-label {
   display: block;
   font-family: 'Cormorant Garamond', Georgia, serif;
@@ -1063,12 +1102,12 @@
 }
 .ci-drawer__progress-fill {
   display: block; height: 100%;
-  background: linear-gradient(90deg, var(--cr-teal, #00C9B3), #4DE5D2);
+  background: linear-gradient(90deg, var(--cr-teal, #B89870), #E2C68F);
   transition: width 320ms ease;
 }
 .ci-drawer__progress-group {
   font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--cr-teal, #00C9B3); font-weight: 600;
+  color: var(--cr-teal, #B89870); font-weight: 600;
 }
 .ci-drawer__question {
   font-family: 'Cormorant Garamond', Georgia, serif;
@@ -1100,11 +1139,11 @@
   transition: all 180ms ease;
   font: inherit;
 }
-.ci-drawer__option:hover { border-color: rgba(0,201,179,0.42); background: rgba(0,201,179,0.06); }
+.ci-drawer__option:hover { border-color: rgba(184,152,112,0.42); background: rgba(184,152,112,0.06); }
 .ci-drawer__option.is-picked {
-  background: rgba(0,201,179,0.10);
-  border-color: var(--cr-teal, #00C9B3);
-  color: var(--cr-teal, #00C9B3);
+  background: rgba(184,152,112,0.10);
+  border-color: var(--cr-teal, #B89870);
+  color: var(--cr-teal, #B89870);
 }
 .ci-drawer__option-label { font-size: 16px; font-weight: 500; }
 
@@ -1131,3 +1170,201 @@
   .welcome-drawer__panel,
   .ci-drawer__panel { width: 100vw; padding: 24px 24px 40px; }
 }
+
+
+/* ═════════════════════════════════════════════════════════════════
+ * ATELIER WARM CINEMATIC™ — DEPTH LAYERING (Append · Visual Polish)
+ *
+ * Goals (user mandate):
+ *   · Leads      → atmospheric discovery surfaces
+ *   · Prospects  → relationship cultivation strips
+ *   · Accounts   → living project ecosystems
+ *
+ * Tactics:
+ *   · soft radial hero behind each card
+ *   · grain texture overlay (cinematic film grain)
+ *   · larger typographic rhythm, bolder labels
+ *   · deeper espresso/graphite layering, no flat surfaces
+ * ═════════════════════════════════════════════════════════════════ */
+
+/* ── Global grain · subtle film texture on the shell ──────────── */
+.cr-shell {
+  position: relative;
+}
+.cr-shell::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.92  0 0 0 0 0.84  0 0 0 0 0.72  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.cr-shell > * { position: relative; z-index: 1; }
+
+/* ─────────────────────────────────────────────────────────────────
+ * LEADS · atmospheric discovery surfaces
+ * Each card carries a soft radial hero in the warm-slate family.
+ * ───────────────────────────────────────────────────────────────── */
+.lead-card {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 90% 60% at 86% -10%,
+                    rgba(163,139,110,0.16) 0%, transparent 62%),
+    radial-gradient(ellipse 60% 50% at 0% 100%,
+                    rgba(122,85,48,0.10) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(163,139,110,0.04) 0%, transparent 100%),
+    var(--cr-bg-card);
+}
+.lead-card::before {
+  content: '';
+  position: absolute;
+  top: -28%; right: -18%;
+  width: 240px; height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(214,180,138,0.18) 0%, transparent 65%);
+  filter: blur(36px);
+  opacity: 0.85;
+  pointer-events: none;
+}
+.lead-card:hover {
+  background:
+    radial-gradient(ellipse 90% 60% at 86% -10%,
+                    rgba(163,139,110,0.22) 0%, transparent 62%),
+    radial-gradient(ellipse 60% 50% at 0% 100%,
+                    rgba(122,85,48,0.16) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(163,139,110,0.08) 0%, transparent 100%),
+    var(--cr-bg-card-hi);
+  box-shadow: 0 14px 44px rgba(0,0,0,0.34);
+}
+.lead-card__hero-title {
+  font-size: 30px;
+  letter-spacing: -0.012em;
+  color: var(--cr-text);
+  font-weight: 500;
+}
+.lead-card__hero-eyebrow,
+.lead-card__when-label,
+.lead-card__meta-status,
+.lead-card__origin-source {
+  font-weight: 700;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ * PROSPECTS · relationship cultivation strips
+ * Horizontal lanes with a warm "current" flowing left→right.
+ * ───────────────────────────────────────────────────────────────── */
+.prospect-lane {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg,
+      rgba(184,152,112,0.10) 0%,
+      rgba(184,152,112,0.045) 28%,
+      rgba(255,243,228,0.022) 60%,
+      transparent 100%);
+  border-left-width: 4px;
+}
+.prospect-lane::before {
+  content: '';
+  position: absolute;
+  left: -12%; top: -40%;
+  width: 380px; height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(184,152,112,0.20) 0%, transparent 70%);
+  filter: blur(48px);
+  opacity: 0.85;
+  pointer-events: none;
+}
+.prospect-lane::after {
+  content: '';
+  position: absolute;
+  right: -8%; bottom: -50%;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(214,180,138,0.14) 0%, transparent 70%);
+  filter: blur(40px);
+  opacity: 0.65;
+  pointer-events: none;
+}
+.prospect-lane > * { position: relative; z-index: 1; }
+.prospect-lane:hover {
+  background:
+    linear-gradient(90deg,
+      rgba(184,152,112,0.16) 0%,
+      rgba(184,152,112,0.075) 28%,
+      rgba(255,243,228,0.030) 60%,
+      transparent 100%);
+}
+.prospect-lane__name {
+  font-size: 22px;
+  font-weight: 600;
+}
+.prospect-lane__momentum-eyebrow,
+.prospect-lane__designer-line,
+.prospect-chip {
+  font-weight: 700;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+ * ACCOUNTS · living project ecosystems
+ * Wider warm gradient + monogram glow + grain.
+ * ───────────────────────────────────────────────────────────────── */
+.account-card {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 110% 70% at 100% 0%,
+                    rgba(214,180,138,0.16) 0%, transparent 62%),
+    radial-gradient(ellipse 80% 60% at 0% 100%,
+                    rgba(122,85,48,0.14) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(214,180,138,0.06) 0%, transparent 60%),
+    var(--cr-bg-card);
+}
+.account-card::before {
+  content: '';
+  position: absolute;
+  top: -22%; right: -16%;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(214,180,138,0.24) 0%, transparent 65%);
+  filter: blur(42px);
+  opacity: 0.85;
+  pointer-events: none;
+}
+.account-card > * { position: relative; z-index: 1; }
+.account-card:hover {
+  background:
+    radial-gradient(ellipse 110% 70% at 100% 0%,
+                    rgba(214,180,138,0.22) 0%, transparent 62%),
+    radial-gradient(ellipse 80% 60% at 0% 100%,
+                    rgba(122,85,48,0.20) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(214,180,138,0.10) 0%, transparent 60%),
+    var(--cr-bg-card-hi);
+}
+.account-card__name { font-size: 25px; }
+.account-card__type,
+.account-card__moodlabel,
+.account-card__usedin-eyebrow,
+.account-card__tone-eyebrow {
+  font-weight: 700;
+}
+.account-card__tone-line { font-size: 24px; }
+
+/* ─────────────────────────────────────────────────────────────────
+ * STAGE NAV · stronger contrast on labels (user feedback)
+ * ───────────────────────────────────────────────────────────────── */
+.cr-stagenav__label  { font-weight: 700; }
+.cr-stagenav__sub    { font-weight: 700; color: var(--cr-text-2); }
+
+/* ─────────────────────────────────────────────────────────────────
+ * HEADER · larger lede, stronger contrast
+ * ───────────────────────────────────────────────────────────────── */
+.cr-header__lede { font-size: 20px; color: var(--cr-text); opacity: 0.86; }
+.cr-header__eyebrow { font-weight: 700; }
+
+/* Toolbar labels stronger */
+.cr-chip { font-weight: 600; }
+.cr-resultbar { font-size: 16px; color: var(--cr-text-2); font-weight: 500; }

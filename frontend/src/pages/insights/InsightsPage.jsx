@@ -30,9 +30,9 @@ const MILESTONE_LABEL = {
 const STATUS_TONE = {
   not_started: '#6e6e6a',
   in_progress: '#d9b285',
-  presented: '#7fdfff',
+  presented: '#B8A892',
   revision_requested: '#e8a558',
-  partially_approved: '#7fdfff',
+  partially_approved: '#B8A892',
   approved: '#7fc89f',
   closed: '#8a8a85'
 };
@@ -40,7 +40,7 @@ const STATUS_TONE = {
 // ─── Sparkline (pure SVG, GPU-safe) ────────────────────────────────
 const Sparkline = ({
   values,
-  color = '#7fdfff',
+  color = '#B8A892',
   height = 60,
   label
 }) => {
@@ -228,7 +228,7 @@ const InsightsPage = () => {
                 <p className="ins-evolution__label">{t('insights.insights.moodboard')}</p>
                 <p className="ins-evolution__value">{data.timeline.moodboards.reduce((a, b) => a + b, 0)}</p>
               </div>
-              <Sparkline values={data.timeline.moodboards} color="#7fdfff" label="moodboards" />
+              <Sparkline values={data.timeline.moodboards} color="#B8A892" label="moodboards" />
             </div>
             <div className="ins-evolution__row">
               <div className="ins-evolution__meta">

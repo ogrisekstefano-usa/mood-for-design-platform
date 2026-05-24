@@ -10,7 +10,7 @@
 .pcap-hero { margin-bottom: 32px; }
 .pcap-hero__eyebrow {
   font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
-  color: var(--mood-accent, #00C9B3);
+  color: var(--mood-accent, #C9A26B);
   font-weight: 600; margin-bottom: 10px;
 }
 .pcap-hero__title {
@@ -65,11 +65,11 @@
   content: '';
   position: absolute; top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, var(--mood-accent-glow, rgba(0,201,179,0.22)) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, var(--mood-accent-glow, rgba(201, 162, 107, 0.22)) 50%, transparent 100%);
   opacity: 0; transition: opacity 200ms ease;
 }
 .pcap-card:hover {
-  border-color: rgba(0,201,179,0.20);
+  border-color: rgba(201, 162, 107, 0.20);
   transform: translateY(-1px);
 }
 .pcap-card:hover::before { opacity: 1; }
@@ -87,7 +87,7 @@
   background: var(--mood-bg-elev-2, #161922);
   border: 1px solid var(--mood-border);
   border-radius: 4px;
-  color: var(--mood-accent, #00C9B3);
+  color: var(--mood-accent, #C9A26B);
 }
 .pcap-card__title-block { flex: 1; min-width: 0; }
 .pcap-card__title {
@@ -130,12 +130,12 @@
   transition: transform 200ms ease, background 200ms ease;
 }
 .pcap-toggle input:checked + .pcap-toggle__slider {
-  background: var(--mood-accent-soft, rgba(0,201,179,0.16));
-  border-color: var(--mood-border-hot, rgba(0,201,179,0.36));
+  background: var(--mood-accent-soft, rgba(201, 162, 107, 0.16));
+  border-color: var(--mood-border-hot, rgba(201, 162, 107, 0.36));
 }
 .pcap-toggle input:checked + .pcap-toggle__slider::before {
   transform: translateX(13px);
-  background: var(--mood-accent, #00C9B3);
+  background: var(--mood-accent, #C9A26B);
 }
 
 /* Description */
@@ -168,7 +168,7 @@
 }
 .pcap-chip--linkage {
   color: var(--mood-accent);
-  border-color: rgba(0,201,179,0.20);
+  border-color: rgba(201, 162, 107, 0.20);
   background: var(--mood-accent-soft);
 }
 

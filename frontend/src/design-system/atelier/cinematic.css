@@ -155,7 +155,7 @@
 [data-atelier="nordic"] .bm-card {
   border-color: rgba(255, 255, 255, 0.035);
   background:
-    radial-gradient(ellipse 60% 40% at 20% 0%, rgba(94, 234, 212, 0.018), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 20% 0%, rgba(201, 162, 107, 0.018), transparent 70%),
     var(--bp-surface-1);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.018);
   transition:
@@ -287,7 +287,7 @@
 [data-atelier="nordic"] .atd-panel__title {
   font-size: 11.5px;
   letter-spacing: 0.04em;
-  color: rgba(94, 234, 212, 0.82);
+  color: rgba(201, 162, 107, 0.82);
   font-weight: 500;
   margin-bottom: 22px;
 }
@@ -307,9 +307,9 @@
 [data-atelier="nordic"] .atd-feed__icon {
   width: 30px;
   height: 30px;
-  background: rgba(94, 234, 212, 0.05);
-  border: 1px solid rgba(94, 234, 212, 0.18);
-  color: rgba(94, 234, 212, 0.78);
+  background: rgba(201, 162, 107, 0.05);
+  border: 1px solid rgba(201, 162, 107, 0.18);
+  color: rgba(201, 162, 107, 0.78);
 }
 
 [data-atelier="nordic"] .atd-feed__date-day {
@@ -379,7 +379,7 @@
 
 [data-atelier="nordic"] .atelier-nav-item--active {
   color: rgba(232, 234, 238, 1);
-  background: rgba(94, 234, 212, 0.04);
+  background: rgba(201, 162, 107, 0.04);
 }
 
 [data-atelier="nordic"] .atelier-nav-item--active::before {
@@ -411,7 +411,7 @@
 }
 
 [data-atelier="nordic"] .atelier-rail__section-num {
-  color: rgba(94, 234, 212, 0.72);
+  color: rgba(201, 162, 107, 0.72);
   font-size: 8.5px;
 }
 
@@ -438,9 +438,9 @@
  * ──────────────────────────────────────────────────────────────────────── */
 
 [data-atelier="nordic"] .atd-card__badge--cyan {
-  background: rgba(94, 234, 212, 0.08);
-  color: rgba(94, 234, 212, 0.92);
-  border: 1px solid rgba(94, 234, 212, 0.22);
+  background: rgba(201, 162, 107, 0.08);
+  color: rgba(201, 162, 107, 0.92);
+  border: 1px solid rgba(201, 162, 107, 0.22);
   font-size: 9px;
   letter-spacing: 0.22em;
   font-weight: 500;
@@ -468,8 +468,8 @@
 
 [data-atelier="nordic"] .atd-card__progress-fill {
   height: 1px;
-  background: rgba(94, 234, 212, 0.85);
-  box-shadow: 0 0 8px rgba(94, 234, 212, 0.35);
+  background: rgba(201, 162, 107, 0.85);
+  box-shadow: 0 0 8px rgba(201, 162, 107, 0.35);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -480,7 +480,7 @@
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(94, 234, 212, 0.78);
+  color: rgba(201, 162, 107, 0.78);
   font-weight: 500;
 }
 

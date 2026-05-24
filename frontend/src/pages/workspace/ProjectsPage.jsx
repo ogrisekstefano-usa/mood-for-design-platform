@@ -65,7 +65,7 @@ const PALETTE_SWATCH = {
   gold:      '#c8a064',
   brass:     '#b08a4a',
   blue:      '#5a779e',
-  navy:      '#2b3a55',
+  navy:      '#3E322A',
   teal:      '#508a8a',
   green:     '#5e7d5b',
   forest:    '#3b5042',

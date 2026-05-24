@@ -39,10 +39,11 @@ const stageLabel = (s) => {
   return String(s).replace(/_/g, ' ');
 };
 
-// Tiny deterministic palette swatches derived from id (visual variety until
-// real moodboard previews are wired in Sprint B).
+// Tiny deterministic palette swatches derived from id — Atelier Warm Cinematic™
+// (visual variety until real moodboard previews are wired in Sprint B).
 const swatchesFor = (id, atmospheres = []) => {
-  const palette = ['#D6B48A', '#00C9B3', '#3F5F88', '#A38B6E', '#1F2A40', '#7C9BAE'];
+  // Pure warm/espresso/bronze/sage tones — no cold blue, no electric teal.
+  const palette = ['#D6B48A', '#B89870', '#7A5530', '#A38B6E', '#2A1F18', '#3E322A'];
   const seed = String(id || '').replace(/-/g, '').slice(0, 6);
   return [0,1,2,3].map((i) => {
     const c = parseInt(seed.charAt(i) || '0', 16) || i;
@@ -57,6 +58,7 @@ const AccountCard = ({ a, designer, onOpen }) => {
   const ringDeg = (score / 100) * 360;
   const swatches = swatchesFor(a.id);
   const health = a.relationship_health || 'stable';
+  const usedIn = a.used_in || { moodboards: 0, proposals: 0, memories: 0 };
 
   // Relationship-centric narrative line — NOT a task counter.
   const tone =
@@ -104,7 +106,27 @@ const AccountCard = ({ a, designer, onOpen }) => {
         {swatches.map((c, i) => (
           <span key={i} className="account-card__swatch" style={{ background: c }} />
         ))}
-        <span className="account-card__moodlabel">live moodboard palette</span>
+        <span className="account-card__moodlabel">studio palette</span>
+      </div>
+
+      <div className="account-card__usedin" data-testid={`account-usedin-${a.id}`} aria-label="Used in this relationship">
+        <span className="account-card__usedin-eyebrow">Used in this relationship</span>
+        <ul className="account-card__usedin-list">
+          <li className="account-card__usedin-item" data-testid={`account-usedin-moodboards-${a.id}`}>
+            <strong>{usedIn.moodboards}</strong>
+            <span>moodboard{usedIn.moodboards === 1 ? '' : 's'}</span>
+          </li>
+          <li className="account-card__usedin-divider" aria-hidden="true">·</li>
+          <li className="account-card__usedin-item" data-testid={`account-usedin-proposals-${a.id}`}>
+            <strong>{usedIn.proposals}</strong>
+            <span>proposal{usedIn.proposals === 1 ? '' : 's'}</span>
+          </li>
+          <li className="account-card__usedin-divider" aria-hidden="true">·</li>
+          <li className="account-card__usedin-item" data-testid={`account-usedin-memories-${a.id}`}>
+            <strong>{usedIn.memories}</strong>
+            <span>memor{usedIn.memories === 1 ? 'y' : 'ies'}</span>
+          </li>
+        </ul>
       </div>
 
       <footer className="account-card__meta">

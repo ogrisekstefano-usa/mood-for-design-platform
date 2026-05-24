@@ -61,13 +61,13 @@
   --mood-text-muted:       var(--bp-text-secondary, color-mix(in srgb, var(--mood-pearl) 60%, transparent));
   --mood-text-faint:       color-mix(in srgb, var(--mood-pearl) 40%, transparent);
 
-  /* ── Editorial accents ──────────────────────────────────── */
+  /* ── Editorial accents — Atelier Warm Cinematic™ ─────────── */
   --mood-warm:             #d9b285;
   --mood-warm-soft:        rgba(217, 178, 133, 0.10);
-  --mood-cyan:             #7fdfff;
-  --mood-cyan-soft:        rgba(127, 223, 255, 0.07);
+  --mood-cyan:             #b8a892;                 /* warm graphite (was electric cyan) */
+  --mood-cyan-soft:        rgba(184, 168, 146, 0.08);
   --mood-amber:            #e8a558;
-  --mood-success:          #7fc89f;
+  --mood-success:          #8fb590;                 /* warm sage, no neon */
   --mood-rose:              #c98a86;
 
   --mood-accent:           var(--bp-primary,        var(--mood-warm));
@@ -140,14 +140,14 @@
   --mood-reading-max:    64ch;
   --mood-narrow-max:     960px;
 
-  /* ── Atmospheric overlay ────────────────────────────────── */
+  /* ── Atmospheric overlay · Atelier Warm Cinematic™ ──────── */
   --mood-atmosphere:
     radial-gradient(ellipse 90% 50% at 18% -8%,
-                    rgba(217, 178, 133, 0.045) 0%, transparent 55%),
+                    rgba(217, 178, 133, 0.055) 0%, transparent 55%),
     radial-gradient(ellipse 70% 45% at 90% 105%,
-                    rgba(127, 223, 255, 0.035) 0%, transparent 60%),
+                    rgba(184, 168, 146, 0.038) 0%, transparent 60%),
     radial-gradient(ellipse 50% 30% at 50% 50%,
-                    rgba(127, 223, 255, 0.015) 0%, transparent 70%);
+                    rgba(122, 85, 48, 0.020) 0%, transparent 70%);
 }
 
 /* ── Direction propagation ────────────────────────────────── */

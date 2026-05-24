@@ -70,14 +70,14 @@
 
 .imed-crop {
   position: absolute;
-  border: 1.5px solid var(--bp-primary, #00C9B3);
+  border: 1.5px solid var(--bp-primary, #C9A26B);
   box-shadow: 0 0 0 9999px rgba(0,0,0,0.55);
   cursor: move;
 }
 .imed-handle {
   position: absolute;
   width: 14px; height: 14px;
-  background: var(--bp-primary, #00C9B3);
+  background: var(--bp-primary, #C9A26B);
   border-radius: 50%;
   border: 2px solid var(--bp-bg);
 }
@@ -111,11 +111,11 @@
   cursor: pointer;
   transition: all 160ms ease;
 }
-.imed-chip:hover { border-color: var(--bp-primary, #00C9B3); }
+.imed-chip:hover { border-color: var(--bp-primary, #C9A26B); }
 .imed-chip--on {
-  background: var(--bp-primary-soft, rgba(0,201,179,0.10));
-  border-color: var(--bp-primary, #00C9B3);
-  color: var(--bp-primary, #00C9B3);
+  background: var(--bp-primary-soft, rgba(201, 162, 107, 0.10));
+  border-color: var(--bp-primary, #C9A26B);
+  color: var(--bp-primary, #C9A26B);
 }
 
 .imed-slider { display: flex; flex-direction: column; gap: 4px; }
@@ -142,14 +142,14 @@
   -webkit-appearance: none;
   width: 14px; height: 14px;
   border-radius: 50%;
-  background: var(--bp-primary, #00C9B3);
+  background: var(--bp-primary, #C9A26B);
   cursor: pointer;
   border: 2px solid var(--bp-bg);
 }
 .imed-slider input[type=range]::-moz-range-thumb {
   width: 14px; height: 14px;
   border-radius: 50%;
-  background: var(--bp-primary, #00C9B3);
+  background: var(--bp-primary, #C9A26B);
   cursor: pointer;
   border: 2px solid var(--bp-bg);
 }
@@ -168,7 +168,7 @@
   padding: 4px 0;
   margin-top: 4px;
 }
-.imed-reset:hover { color: var(--bp-primary, #00C9B3); }
+.imed-reset:hover { color: var(--bp-primary, #C9A26B); }
 
 .imed-foot {
   display: flex; justify-content: space-between; gap: 12px;

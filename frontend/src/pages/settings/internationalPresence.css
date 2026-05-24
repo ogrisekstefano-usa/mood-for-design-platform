@@ -205,12 +205,12 @@
   transition: left .3s cubic-bezier(0.22,0.61,0.36,1), background-color .3s;
 }
 .ip-toggle input:checked + .ip-toggle__track {
-  background: rgba(0, 201, 179, 0.15);
+  background: rgba(201, 162, 107, 0.15);
 }
 .ip-toggle input:checked + .ip-toggle__track + .ip-toggle__dot {
   left: 28px;
   background: var(--bp-primary);
-  box-shadow: 0 0 12px rgba(0, 201, 179, 0.4);
+  box-shadow: 0 0 12px rgba(201, 162, 107, 0.4);
 }
 
 .ip-default-link {

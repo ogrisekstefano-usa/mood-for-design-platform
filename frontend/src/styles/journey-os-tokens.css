@@ -29,7 +29,7 @@
   --jo-accent-line:   color-mix(in srgb, var(--jo-accent) 32%, transparent);
 
   /* Accent · cool (teal — lifecycle: alive) */
-  --jo-cool:        var(--bp-secondary, var(--mood-cyan, #7fdfff));
+  --jo-cool:        var(--bp-secondary, var(--mood-cyan, #B8A892));
   --jo-cool-soft:   color-mix(in srgb, var(--jo-cool) 12%, transparent);
   --jo-cool-glow:   color-mix(in srgb, var(--jo-cool) 22%, transparent);
   --jo-cool-line:   color-mix(in srgb, var(--jo-cool) 35%, transparent);

@@ -11,7 +11,7 @@
   --dj-text-2:    #a8a8a4;
   --dj-text-3:    #6e6e6a;
   --dj-cyan:      var(--mood-cyan);
-  --dj-cyan-soft: rgba(127, 223, 255, 0.15);
+  --dj-cyan-soft: rgba(184, 168, 146, 0.15);
   --dj-warm:      var(--mood-warm);
   --dj-warm-soft: rgba(217, 178, 133, 0.14);
   --dj-amber:     var(--mood-amber);
@@ -433,7 +433,7 @@
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 12px;
   background: var(--dj-cyan-soft);
-  border: 1px solid rgba(127, 223, 255, 0.20);
+  border: 1px solid rgba(184, 168, 146, 0.20);
   border-radius: 999px;
   color: var(--dj-cyan);
   font-size: 11px;
@@ -540,7 +540,7 @@
   font-size: 11px;
   color: var(--dj-text-3);
   background: var(--dj-cyan-soft);
-  border: 1px solid rgba(127, 223, 255, 0.18);
+  border: 1px solid rgba(184, 168, 146, 0.18);
   border-radius: 4px;
   font-style: italic;
   line-height: 1.5;

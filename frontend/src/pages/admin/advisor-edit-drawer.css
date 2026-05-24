@@ -32,7 +32,7 @@
 }
 .aed-eyebrow {
   font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
-  color: var(--mood-accent, #00C9B3);
+  color: var(--mood-accent, #C9A26B);
   font-weight: 600;
 }
 .aed-title {
@@ -104,7 +104,7 @@
 }
 .aed-input:focus {
   outline: none;
-  border-color: var(--mood-accent, #00C9B3);
+  border-color: var(--mood-accent, #C9A26B);
 }
 .aed-textarea {
   resize: vertical;
@@ -128,9 +128,9 @@
 .aed-chip {
   display: inline-flex; align-items: center; gap: 4px;
   padding: 3px 8px;
-  background: var(--mood-accent-soft, rgba(0,201,179,0.10));
-  border: 1px solid rgba(0,201,179,0.20);
-  color: var(--mood-accent, #00C9B3);
+  background: var(--mood-accent-soft, rgba(201, 162, 107, 0.10));
+  border: 1px solid rgba(201, 162, 107, 0.20);
+  color: var(--mood-accent, #C9A26B);
   border-radius: 999px;
   font-size: 11.5px;
   letter-spacing: 0.02em;
@@ -178,7 +178,7 @@
   color: var(--mood-ink-strong);
 }
 .aed-btn--primary {
-  background: var(--mood-accent, #00C9B3);
+  background: var(--mood-accent, #C9A26B);
   border-color: var(--mood-accent);
   color: #0A0B0E;
 }
@@ -204,8 +204,8 @@
 
 /* Primary advisor action button (the new Pencil "Modifica" in hero) */
 .adv-btn--primary {
-  background: var(--mood-accent, #00C9B3);
-  border-color: var(--mood-accent, #00C9B3);
+  background: var(--mood-accent, #C9A26B);
+  border-color: var(--mood-accent, #C9A26B);
   color: #0A0B0E;
 }
 .adv-btn--primary:hover { filter: brightness(1.06); }
