@@ -26,7 +26,7 @@ const DesignJourney = ({ content = {}, media = {}, links = {} }) => {
             {content.eyebrow && (
               <p className={`overline-teal mb-5 reveal ${visible ? 'visible' : ''}`}>{content.eyebrow}</p>
             )}
-            {content.title && (
+            {(content.title_pre || content.title_accent) && (
               <h2
                 className={`reveal ${visible ? 'visible' : ''}`}
                 style={{
@@ -35,12 +35,16 @@ const DesignJourney = ({ content = {}, media = {}, links = {} }) => {
                   fontSize: 'var(--fs-h2)',
                   lineHeight: 1.08,
                   color: 'var(--mood-text-1)',
-                  whiteSpace: 'pre-line',
                   transitionDelay: '0.06s',
                 }}
               >
-                {content.title_pre}{' '}
-                <em style={{ color: 'var(--mood-teal)', fontStyle: 'italic' }}>{content.title_accent}</em>
+                {content.title_pre && <span>{content.title_pre}</span>}
+                {content.title_accent && (
+                  <>
+                    {' '}
+                    <em style={{ color: 'var(--mood-teal)', fontStyle: 'italic' }}>{content.title_accent}</em>
+                  </>
+                )}
               </h2>
             )}
           </div>

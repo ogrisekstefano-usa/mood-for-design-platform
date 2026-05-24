@@ -295,10 +295,13 @@ async def resolve_footer(locale: str = DEFAULT_LOCALE) -> dict:
                 'manifesto':  values.get(blocks_map.get('manifesto', ''), ''),
                 'copyright':  values.get(blocks_map.get('copyright', ''), ''),
                 'links':  [{'key': L['key'], 'href': L['href'],
-                            'label': values.get(L.get('label_block', ''), '') or L.get('fallback', '')}
+                            'label': values.get(L.get('label_block', ''), '') or L.get('fallback', ''),
+                            'group': L.get('group'),
+                            'isHeading': L.get('isHeading', False)}
                            for L in links_cfg if L.get('visible', True)],
                 'legal':  [{'key': L['key'], 'href': L['href'],
-                            'label': values.get(L.get('label_block', ''), '') or L.get('fallback', '')}
+                            'label': values.get(L.get('label_block', ''), '') or L.get('fallback', ''),
+                            'isHeading': L.get('isHeading', False)}
                            for L in legal_cfg if L.get('visible', True)],
                 'social': [{'key': s['key'], 'href': s['href'], 'icon': s.get('icon', s['key'])}
                            for s in social_cfg if s.get('visible', True)],

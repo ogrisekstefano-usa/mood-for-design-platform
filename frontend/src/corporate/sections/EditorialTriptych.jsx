@@ -33,7 +33,7 @@ const EditorialTriptych = ({ content = {}, media = {}, links = {} }) => {
                 href={href}
                 className={`group relative block overflow-hidden reveal ${visible ? 'visible' : ''}`}
                 style={{
-                  aspectRatio: '4/5',
+                  aspectRatio: '5/4',
                   borderRadius: 4,
                   textDecoration: 'none',
                   transitionDelay: `${i * 0.08}s`,

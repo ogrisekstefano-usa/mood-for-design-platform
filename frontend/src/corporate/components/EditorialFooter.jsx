@@ -36,10 +36,9 @@ const EditorialFooter = () => {
       data-testid="editorial-footer"
     >
       <div className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 pt-20 pb-12">
-        {/* Top grid: brand + 4 link columns */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-10 lg:gap-8">
-          {/* Brand block */}
-          <div className="col-span-2 md:col-span-3 lg:col-span-2">
+        {/* Top row: brand block (manifesto + logo + social) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 pb-14 mb-14" style={{ borderBottom: '1px solid var(--mood-line-soft)' }}>
+          <div className="lg:col-span-5">
             <Link to="/" style={{ display: 'inline-block' }}>
               <img src={LOGO_URL} alt="MOOD for DESIGN" style={{ height: 56, width: 'auto' }} draggable={false} />
             </Link>
@@ -48,20 +47,20 @@ const EditorialFooter = () => {
                 style={{
                   marginTop: '1.5rem',
                   fontFamily: 'Inter, sans-serif',
-                  fontSize: '0.95rem',
-                  lineHeight: 1.6,
+                  fontSize: '1.05rem',
+                  lineHeight: 1.55,
                   color: 'var(--mood-text-2)',
-                  maxWidth: '36ch',
+                  maxWidth: '44ch',
                 }}
                 data-testid="footer-manifesto"
               >
                 {manifesto}
               </p>
             )}
-
-            {/* Social row */}
+          </div>
+          <div className="lg:col-span-7 flex items-end lg:justify-end">
             {social.length > 0 && (
-              <div className="mt-7 flex items-center gap-4">
+              <div className="flex items-center gap-5">
                 {social.map((s, i) => {
                   const Icon = SOCIAL_ICONS[s.icon] || Instagram;
                   return (
@@ -75,19 +74,20 @@ const EditorialFooter = () => {
                       onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--mood-text-3)')}
                       data-testid={`footer-social-${s.key}`}
                     >
-                      <Icon size={18} strokeWidth={1.4} />
+                      <Icon size={20} strokeWidth={1.4} />
                     </a>
                   );
                 })}
               </div>
             )}
           </div>
+        </div>
 
-          {/* 4 link columns */}
+        {/* Link columns: 5 columns at lg breakpoint */}
+        <div className="grid gap-10 lg:gap-8 footer-link-grid">
           {GROUP_KEYS.map((gk) => {
             const items = groups[gk] || [];
-            if (!items.length) return <div key={gk} />;
-            // Column heading = first item with isHeading=true OR derive from group key
+            if (!items.length) return null;
             const heading = items.find((L) => L.isHeading);
             const visibleItems = items.filter((L) => !L.isHeading);
             return (
@@ -112,7 +112,7 @@ const EditorialFooter = () => {
                         to={L.href}
                         style={{
                           fontFamily: 'Inter, sans-serif',
-                          fontSize: '0.95rem',
+                          fontSize: '0.92rem',
                           color: 'var(--mood-text-2)',
                           textDecoration: 'none',
                           transition: 'color 0.2s',
@@ -151,7 +151,7 @@ const EditorialFooter = () => {
                       href={L.href}
                       style={{
                         fontFamily: 'Inter, sans-serif',
-                        fontSize: '0.95rem',
+                        fontSize: '0.92rem',
                         color: 'var(--mood-text-2)',
                         textDecoration: 'none',
                         transition: 'color 0.2s',
