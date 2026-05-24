@@ -445,6 +445,16 @@
     "studio_pulse": "Studio Pulse",
     "your_journeys": "I tuoi Journey",
     "begin_journey": "Inizia un Journey",
+    "journey_index": "Indice Journey",
+    "settings_workspace": "Impostazioni Workspace",
+    "client_relations_leads": "Leads",
+    "client_relations_prospects": "Prospects",
+    "client_relations_accounts": "Accounts",
+    "client_relations_memory": "Memory",
+    "client_relations_voice_log": "Voice Log",
+    "runtime": {
+      "loading": "Caricamento del modulo…"
+    },
     "inspirations": "Inspirations",
     "brand_atlas": "Brand Atlas",
     "material_view": "Material View",

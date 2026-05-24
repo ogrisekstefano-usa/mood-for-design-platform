@@ -33,6 +33,31 @@ async def main():
         page = await ctx.new_page()
         await login(page)
 
+        # Click a lead → wait drawer body → assert memory link
+        await page.goto(f"{BASE}/relations/leads", wait_until="domcontentloaded", timeout=30000)
+        await page.wait_for_timeout(9000)
+        cards = page.locator('[data-testid^=lead-card-]')
+        if await cards.count() > 0:
+            await cards.first.click()
+            await page.wait_for_selector('[data-testid=welcome-drawer-body]', timeout=10000)
+            mem_link = page.locator('[data-testid=welcome-drawer-memory-link]')
+            visible = await mem_link.count() > 0 and await mem_link.first.is_visible()
+            print(f"welcome-drawer-memory-link visible: {visible}")
+            if visible:
+                await mem_link.first.click()
+                await page.wait_for_url('**/relations/memory/**', timeout=10000)
+                await page.wait_for_timeout(5000)
+                hero = await page.evaluate("document.querySelector('[data-testid=mem-hero] h1')?.innerText || 'none'")
+                chaps = await page.evaluate("document.querySelectorAll('[data-testid^=mem-chapter-]').length")
+                print(f"memory page hero: {hero!r} · chapters: {chaps}")
+            # Check presence vocabulary on chip
+            await page.go_back()
+            await page.wait_for_timeout(2500)
+            chip_text = await page.evaluate("(()=>{const e=document.querySelector('[data-testid^=designer-chip-]');return e?e.innerText:''})()")
+            print(f"designer chip text sample: {chip_text!r}")
+        else:
+            print("no lead cards found")
+
         # Leads → click first lead → Welcome drawer → continuation interview
         await page.goto(f"{BASE}/relations/leads", wait_until="domcontentloaded", timeout=30000)
         await page.wait_for_timeout(9000)
