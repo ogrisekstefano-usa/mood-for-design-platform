@@ -26,6 +26,10 @@ const PRESENCE_LABEL = {
 };
 
 const DesignerChip = ({ designer, size = 'md', testid, contextId }) => {
+  const [imgFailed, setImgFailed] = React.useState(false);
+  // Reset error state when designer changes (avatar_url may differ).
+  React.useEffect(() => { setImgFailed(false); }, [designer && designer.avatar_url]);
+
   if (!designer) {
     return (
       <span
@@ -44,17 +48,21 @@ const DesignerChip = ({ designer, size = 'md', testid, contextId }) => {
     .split(' ').map(s => s[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
   const presence = (designer.presence || 'unknown').toLowerCase();
   const presenceLabel = PRESENCE_LABEL[presence] || PRESENCE_LABEL.unknown;
-  // ALWAYS prefix data-testid with `designer-chip-` so testing selectors
-  // can find chips uniformly across Leads/Prospects/Accounts surfaces.
-  // The `contextId` (lead/prospect/account subject id) is appended when
-  // provided so each chip on a page is uniquely addressable.
   const tid = testid || `designer-chip-${designer.id}${contextId ? `-${contextId}` : ''}`;
+  const showAvatar = designer.avatar_url && !imgFailed;
   return (
     <span className={`cr-designer cr-designer--${size}`} data-testid={tid}>
       <span className="cr-designer__avatar" aria-hidden="true">
-        {designer.avatar_url
-          ? <img src={designer.avatar_url} alt="" />
-          : <span className="cr-designer__initials">{initials}</span>}
+        {showAvatar ? (
+          <img
+            src={designer.avatar_url}
+            alt=""
+            onError={() => setImgFailed(true)}
+            loading="lazy"
+          />
+        ) : (
+          <span className="cr-designer__initials">{initials}</span>
+        )}
         <span className={`cr-designer__pres cr-designer__pres--${presence}`} />
       </span>
       <span className="cr-designer__body">
