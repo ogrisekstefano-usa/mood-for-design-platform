@@ -79,9 +79,16 @@
 
 .mfd-auth__brand {
   position: absolute;
-  top: 48px;
-  left: 56px;
+  top: 40px;
+  left: 48px;
   z-index: 2;
+}
+
+.mfd-auth__brand-logo {
+  width: 132px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.45));
 }
 
 .mfd-auth__brand-mark {
@@ -131,7 +138,8 @@
 }
 
 @media (max-width: 1023px) {
-  .mfd-auth__brand { top: 24px; left: 24px; }
+  .mfd-auth__brand { top: 20px; left: 20px; }
+  .mfd-auth__brand-logo { width: 96px; }
   .mfd-auth__brand-mark { font-size: 22px; }
   .mfd-auth__quote { display: none; }
 }

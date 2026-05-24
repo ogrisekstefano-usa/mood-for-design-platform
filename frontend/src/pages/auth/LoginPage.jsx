@@ -24,6 +24,9 @@ import './auth-login.css';
 const HERO_IMAGE_DEFAULT =
   'https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/ys8jrftd_AdobeStock_1014843351.jpeg';
 
+const BRAND_LOGO_DEFAULT =
+  'https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/klo86yi6_logo_top_frontend.png';
+
 const LoginPage = () => {
   const { signIn } = useAuth();
   const { t } = useBlueprint();
@@ -60,6 +63,8 @@ const LoginPage = () => {
   };
 
   const heroImage = t('auth.login.hero_image', null, HERO_IMAGE_DEFAULT);
+  const brandLogo = t('auth.login.brand_logo', null, BRAND_LOGO_DEFAULT);
+  const supportEmail = t('auth.login.support_email', null, 'support@moodfordesign.com');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -91,8 +96,12 @@ const LoginPage = () => {
         <div className="mfd-auth__hero-overlay" />
 
         <div className="mfd-auth__brand" data-testid="login-brand">
-          <div className="mfd-auth__brand-mark">{copy.brand}</div>
-          <div className="mfd-auth__brand-sub">{copy.brandSub}</div>
+          <img
+            src={brandLogo}
+            alt={copy.brand}
+            className="mfd-auth__brand-logo"
+            data-testid="login-brand-logo"
+          />
         </div>
 
         <figure className="mfd-auth__quote" data-testid="login-quote">
@@ -239,13 +248,13 @@ const LoginPage = () => {
 
         <footer className="mfd-auth__footer" data-testid="login-footer">
           <span className="mfd-auth__footer-left">{copy.needHelp}</span>
-          <Link
-            to="/contact"
+          <a
+            href={`mailto:${supportEmail}`}
             className="mfd-auth__footer-link"
             data-testid="login-support-link"
           >
             {copy.support} <ArrowRight size={14} strokeWidth={1.5} />
-          </Link>
+          </a>
         </footer>
       </section>
     </div>
