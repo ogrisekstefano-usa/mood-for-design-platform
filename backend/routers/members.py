@@ -148,6 +148,9 @@ def _supabase_create_user_no_email(email: str, metadata: dict) -> dict:
     return r.json()
 
 
+from routers.profile import _resign_avatar_url
+
+
 def _profile_to_member(p: dict) -> MemberOut:
     return MemberOut(
         id=p["id"],
@@ -157,7 +160,9 @@ def _profile_to_member(p: dict) -> MemberOut:
         last_name=p.get("last_name"),
         role=p.get("role", ""),
         status=p.get("status") or "active",
-        avatar_url=p.get("avatar_url"),
+        # ITER147 HOTFIX · tenant-assets bucket is private → re-sign
+        # legacy /public/ URLs at read-time so member avatars render.
+        avatar_url=_resign_avatar_url(p.get("avatar_url")),
         last_login_at=p.get("last_login_at"),
         invited_at=p.get("invited_at"),
         accepted_at=p.get("accepted_at"),

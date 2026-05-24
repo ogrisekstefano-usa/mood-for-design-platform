@@ -242,6 +242,164 @@ const InviteDrawer = ({ open, onClose, roles, onSubmit }) => {
   );
 };
 
+// ── Edit drawer (right-side, mirrors InviteDrawer) ─────────────────────────
+const EditMemberDrawer = ({ open, member, roles, canManage, isSelf,
+                            onClose, onSave, onSuspend, onReactivate,
+                            onResend, onRemove }) => {
+  const [first, setFirst] = useState('');
+  const [last,  setLast]  = useState('');
+  const [role,  setRole]  = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (open && member) {
+      setFirst(member.first_name || '');
+      setLast(member.last_name || '');
+      setRole(member.role || '');
+    }
+  }, [open, member]);
+
+  if (!open || !member) return null;
+
+  const dirty = first !== (member.first_name || '') ||
+                last  !== (member.last_name  || '') ||
+                role  !== (member.role || '');
+
+  const submit = async () => {
+    const patchBody = {};
+    if (first !== (member.first_name || '')) patchBody.first_name = first.trim();
+    if (last  !== (member.last_name  || '')) patchBody.last_name  = last.trim();
+    if (role  !== (member.role || ''))       patchBody.role       = role;
+    if (!Object.keys(patchBody).length) { onClose(); return; }
+    setSubmitting(true);
+    try { await onSave(patchBody); }
+    finally { setSubmitting(false); }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex" data-testid="edit-member-drawer">
+      <div className="flex-1 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="w-[460px] bg-[var(--bp-surface-1)] border-l border-[var(--bp-border)] flex flex-col">
+        <header className="flex items-start justify-between p-6 border-b border-[var(--bp-border)]">
+          <div className="flex items-start gap-4 min-w-0">
+            <Avatar m={member} />
+            <div className="min-w-0">
+              <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.22em] font-semibold mb-1">
+                Member · {STATUS_STYLES[member.status]?.label || member.status}
+              </p>
+              <h2 className="font-heading text-2xl text-[var(--bp-text-primary)] truncate">
+                {(member.first_name || '') + ' ' + (member.last_name || '') || member.email}
+              </h2>
+              <p className="text-[var(--bp-text-muted)] text-[11px] font-mono truncate">{member.email}</p>
+            </div>
+          </div>
+          <button onClick={onClose} data-testid="edit-member-close"
+                  className="text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]">
+            <X size={18} strokeWidth={1.5} />
+          </button>
+        </header>
+
+        <div className="flex-1 overflow-y-auto p-6 space-y-5">
+          {/* Self-editing notice */}
+          {isSelf && (
+            <div className="px-3 py-2.5 rounded-[var(--bp-radius-xs)] border border-[var(--bp-border)] bg-[var(--bp-surface-2)]/40 text-[11px] text-[var(--bp-text-secondary)] font-body leading-relaxed"
+                 data-testid="edit-member-self-hint">
+              Stai modificando il tuo profilo. Per cambiare la foto, ruolo o
+              biografia visibili ai clienti usa <strong>“Presentazione al
+              cliente”</strong> in Impostazioni → Account.
+            </div>
+          )}
+
+          <Field label="Nome"    value={first} onChange={setFirst} testid="edit-member-first" autoFocus />
+          <Field label="Cognome" value={last}  onChange={setLast}  testid="edit-member-last" />
+
+          {/* Role */}
+          <div>
+            <label className="block text-[10px] font-body uppercase tracking-[0.22em] text-[var(--bp-text-muted)] mb-2">Ruolo</label>
+            <div className="grid grid-cols-2 gap-2">
+              {(roles || []).map((r) => (
+                <button type="button" key={r.key}
+                        onClick={() => setRole(r.key)}
+                        data-testid={`edit-member-role-${r.key}`}
+                        disabled={!canManage || isSelf}
+                        className={`text-left px-3 py-2.5 rounded-[var(--bp-radius-xs)] border transition-colors
+                          ${role === r.key
+                            ? 'border-[var(--bp-primary)] bg-[var(--bp-primary)]/8 text-[var(--bp-text-primary)]'
+                            : 'border-[var(--bp-border)] text-[var(--bp-text-secondary)] hover:border-[var(--bp-border-strong)]'}
+                          disabled:opacity-40 disabled:cursor-not-allowed`}>
+                  <p className="font-body text-[12px]">{ROLE_LABEL[r.key] || r.key}</p>
+                  <p className="text-[10px] text-[var(--bp-text-muted)] mt-1 line-clamp-1">
+                    {r.permissions.length} permission{r.permissions.length === 1 ? '' : 's'}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Metadata */}
+          <div className="grid grid-cols-2 gap-3 pt-4 border-t border-[var(--bp-border)]">
+            <Meta label="Last login"  value={fmtDate(member.last_login_at)} />
+            <Meta label="Invitato il"  value={fmtDate(member.invited_at)} />
+            <Meta label="Accettato il" value={fmtDate(member.accepted_at)} />
+            <Meta label="Creato il"    value={fmtDate(member.created_at)} />
+          </div>
+
+          {/* Operational actions — only for tenant_admin acting on others */}
+          {canManage && !isSelf && (
+            <div className="pt-4 border-t border-[var(--bp-border)] space-y-2">
+              {member.status === 'invited' && (
+                <DrawerAction icon={Mail} label="Reinvia invito"
+                              testid="edit-member-resend" onClick={onResend} />
+              )}
+              {member.status === 'active' && (
+                <DrawerAction icon={Pause} label="Sospendi membro"
+                              testid="edit-member-suspend" onClick={onSuspend} />
+              )}
+              {member.status === 'suspended' && (
+                <DrawerAction icon={Play} label="Riattiva membro"
+                              testid="edit-member-reactivate" onClick={onReactivate} />
+              )}
+              <DrawerAction icon={Trash2} danger label="Rimuovi dallo studio"
+                            testid="edit-member-remove" onClick={onRemove} />
+            </div>
+          )}
+        </div>
+
+        <footer className="flex items-center justify-end gap-2 p-6 border-t border-[var(--bp-border)]">
+          <button onClick={onClose} data-testid="edit-member-cancel"
+                  className="px-4 py-2 text-[11px] font-body uppercase tracking-[0.2em] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)]">
+            Annulla
+          </button>
+          <button onClick={submit} disabled={!dirty || submitting}
+                  data-testid="edit-member-save"
+                  className="flex items-center gap-2 px-4 py-2 rounded-[var(--bp-radius-xs)] bg-[var(--bp-primary)] text-black text-[11px] font-body uppercase tracking-[0.2em] hover:brightness-110 disabled:opacity-40 transition-all">
+            {submitting ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} strokeWidth={1.8} />}
+            Salva modifiche
+          </button>
+        </footer>
+      </div>
+    </div>
+  );
+};
+
+const Meta = ({ label, value }) => (
+  <div>
+    <p className="text-[9px] font-body uppercase tracking-[0.22em] text-[var(--bp-text-muted)] mb-1">{label}</p>
+    <p className="text-[12px] text-[var(--bp-text-primary)] font-body">{value || '—'}</p>
+  </div>
+);
+
+const DrawerAction = ({ icon: Icon, label, danger, onClick, testid }) => (
+  <button onClick={onClick} data-testid={testid}
+          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-[var(--bp-radius-xs)] border transition-colors text-[12px] font-body
+                      ${danger
+                        ? 'border-rose-500/25 text-rose-300 hover:bg-rose-500/10'
+                        : 'border-[var(--bp-border)] text-[var(--bp-text-secondary)] hover:border-[var(--bp-border-strong)] hover:text-[var(--bp-text-primary)]'}`}>
+    <Icon size={14} strokeWidth={1.5} />
+    {label}
+  </button>
+);
+
 const Field = ({ label, value, onChange, type = 'text', testid, autoFocus }) => (
   <div>
     <label className="block text-[10px] font-body uppercase tracking-[0.22em] text-[var(--bp-text-muted)] mb-2">{label}</label>
@@ -295,6 +453,7 @@ const MembersPage = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [drawer, setDrawer] = useState(false);
+  const [editing, setEditing] = useState(null); // member being edited via right-side drawer
   const [confirm, setConfirm] = useState(null);
   const [license, setLicense] = useState(null);
 
@@ -491,7 +650,12 @@ const MembersPage = () => {
         {!loading && filtered.map((m) => (
           <div key={m.id}
                data-testid={`member-row-${m.id}`}
-               className="grid grid-cols-[1fr_140px_120px_120px_60px] gap-4 px-5 py-3.5 items-center border-b border-[var(--bp-border)] last:border-b-0 hover:bg-[var(--bp-surface-1)]/40 transition-colors">
+               onClick={(e) => {
+                 // Don't trigger when an inner button (ActionMenu) was clicked.
+                 if (e.target.closest('button')) return;
+                 setEditing(m);
+               }}
+               className="grid grid-cols-[1fr_140px_120px_120px_60px] gap-4 px-5 py-3.5 items-center border-b border-[var(--bp-border)] last:border-b-0 hover:bg-[var(--bp-surface-1)]/60 transition-colors cursor-pointer">
             <div className="flex items-center gap-3 min-w-0">
               <Avatar m={m} />
               <div className="min-w-0">
@@ -528,6 +692,24 @@ const MembersPage = () => {
 
       {/* Drawers */}
       <InviteDrawer open={drawer} onClose={() => setDrawer(false)} roles={roles} onSubmit={invite} />
+
+      <EditMemberDrawer
+        open={!!editing}
+        member={editing}
+        roles={roles}
+        canManage={canManage}
+        isSelf={editing?.id === myProfileId}
+        onClose={() => setEditing(null)}
+        onSave={async (body) => {
+          if (!editing) return;
+          await patch(editing, body, `${editing.email} aggiornato`);
+          setEditing(null);
+        }}
+        onSuspend={() => { setConfirm({ kind: 'suspend', m: editing }); setEditing(null); }}
+        onReactivate={() => { patch(editing, { status: 'active' }, `${editing.email} riattivato`); setEditing(null); }}
+        onResend={() => { resend(editing); setEditing(null); }}
+        onRemove={() => { setConfirm({ kind: 'remove', m: editing }); setEditing(null); }}
+      />
 
       <Confirm open={!!confirm && confirm.kind === 'suspend'}
                title="Suspend member?"

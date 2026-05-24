@@ -166,6 +166,19 @@ def login(body: LoginRequest):
     if p.get('status') == 'suspended':
         raise HTTPException(403, "Account suspended")
 
+    # Stamp last_login_at — used by /settings/members to show the
+    # "Last login" column. Non-blocking on failure: a missed stamp
+    # must never block the user from signing in.
+    try:
+        now_iso = _now_iso()
+        client.table('users_profile').update({
+            'last_login_at': now_iso,
+            'updated_at':    now_iso,
+        }).eq('id', p['id']).execute()
+        p['last_login_at'] = now_iso
+    except Exception:
+        pass
+
     return AuthResponse(
         session=AuthSession(
             access_token=session_data['access_token'],
