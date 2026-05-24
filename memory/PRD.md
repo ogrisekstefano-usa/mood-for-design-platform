@@ -4682,3 +4682,64 @@ onboarding flows. No fake success screens.
   daily-quota errors don't flake CI; (b) i18n sweep — EN-US footer leaks
   Italian phrase 'della Manifattura' in showroom column.
 
+
+---
+
+## ITER146 HOTFIX · Core Module Safety™ — CLOSED (2026-02-24)
+
+**Triggering report**: User observed dashboard appearing as DISABLED in
+runtime UI for admin@. DB audit confirmed the state was clean
+(`is_core=TRUE`, `default_state=enabled`, no overrides) — the perception
+was either stale cache or a transient state. User mandated DEFENSIVE
+HARDENING regardless to make the architectural class of bug impossible.
+
+### What's implemented
+- **Migration 080** adds `is_core_critical BOOLEAN` column to
+  `feature_modules_registry`. Six canonical critical modules flagged:
+  `dashboard`, `settings_workspace`, `blueprint_admin`, `journey_index`,
+  `begin_journey`, `team`.
+- **Resolver auto-force**: `resolve_modules()` checks `is_core_critical`
+  BEFORE the legacy `is_core` fallback. If any source places a critical
+  module in a non-operational state (`disabled`, `hidden`, `locked`,
+  `coming_soon`, `beta_restricted`), it's promoted to `enabled` with
+  `resolution_source='core_critical_force_enabled'` and an audit row is
+  written (`event_type='core_critical.resolver_auto_force'`).
+- **API mutation guards**: `PATCH /api/blueprint-admin/feature-modules/
+  {code}` and `PATCH /api/tenant/configuration` both reject any non-
+  operational state targeting a critical module. HTTP 400 + structured
+  audit row `event_type='core_critical.mutation_blocked'`.
+- **UI**: `/admin/tenant-configuration` renders a `CORE CRITICAL` badge
+  (`[data-testid='module-core-critical-badge-{code}']`) on each critical
+  module, locks the disabled/hidden/locked state pills
+  (`data-locked='true'`, `opacity:0.35`, `cursor:not-allowed`, native
+  `disabled` attr), and shows the Italian tooltip "Modulo fondamentale
+  per l'operatività runtime. Non può essere disattivato." Non-critical
+  modules remain freely togglable.
+- **Bundle exposure**: `GET /api/tenant/configuration.modules[*]` now
+  includes `is_core_critical:bool`. `GET /api/blueprint-admin/feature-
+  modules` includes top-level `core_critical_codes` array +
+  `non_operational_states` array.
+
+### Architectural decision NOT to add to registry
+The user-listed conceptual layers `auth`, `navigation`, `tenant_runtime`,
+`settings_core` are NOT registry modules — they are middleware/context
+infrastructure (`middleware/auth.py`, sidebar navigation generator,
+`TenantResolverMiddleware`, etc.). They cannot be toggled in the
+`feature_modules_registry` since they have no UI surface to govern.
+`settings_workspace` (which exists) is treated as the canonical
+settings-core critical module.
+
+### Testing closeout
+- Backend: 24/24 PASS (11 new safety + 8 ITER146 lead pipeline + 1
+  ITER149 parity + 4 ITER150 API contracts). Zero regressions.
+- Frontend: all spec'd `data-testid`s + locked attributes + Italian
+  tooltip verbatim verified live.
+- Report: `/app/test_reports/iteration_150.json`.
+
+### Remaining follow-ups (pre-existing, out of hotfix scope)
+- Missing i18n key `nav.runtime.loading` for it-IT bundle.
+- EN bundle leaks Italian phrases on `/admin/tenant-configuration`
+  (Atelier, Brand, modifica, Insights).
+- React `setState`-in-render warning between LocalizationOverlay and
+  Sidebar.
+
