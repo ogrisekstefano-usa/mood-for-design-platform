@@ -15,10 +15,10 @@ const EditorialTriptych = ({ content = {}, media = {}, links = {} }) => {
   return (
     <section
       className="relative"
-      style={{ background: 'var(--mood-black)' }}
+      style={{ background: '#000000' }}
       data-testid="editorial-triptych"
     >
-      <div ref={ref} className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-14 lg:py-16">
+      <div ref={ref} className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-10 lg:py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
           {TILES.map((k, i) => {
             const cat   = content[`${k}.category`];

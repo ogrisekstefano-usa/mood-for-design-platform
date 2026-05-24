@@ -13,7 +13,7 @@ const FinalCTAImmersive = ({ content = {}, media = {}, links = {} }) => {
   return (
     <section
       className="relative overflow-hidden"
-      style={{ background: 'var(--mood-black)', minHeight: '42vh' }}
+      style={{ background: '#000000', minHeight: '38vh' }}
       data-testid="final-cta-immersive"
     >
       {bg && bg.url && (
@@ -35,7 +35,7 @@ const FinalCTAImmersive = ({ content = {}, media = {}, links = {} }) => {
         }}
       />
 
-      <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-16 lg:py-20 min-h-[42vh] flex items-center justify-end">
+      <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-12 lg:py-14 min-h-[38vh] flex items-center justify-end">
         <div
           ref={ref}
           className={`text-right reveal ${visible ? 'visible' : ''}`}

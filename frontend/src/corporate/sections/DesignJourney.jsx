@@ -16,10 +16,10 @@ const DesignJourney = ({ content = {}, media = {}, links = {} }) => {
   return (
     <section
       className="relative"
-      style={{ background: 'var(--mood-black)', borderTop: '1px solid var(--mood-line-soft)' }}
+      style={{ background: '#000000', borderTop: '1px solid var(--mood-line-soft)' }}
       data-testid="design-journey"
     >
-      <div ref={ref} className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-16 lg:py-20">
+      <div ref={ref} className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-12 lg:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
           {/* Left rail */}
           <div className="lg:col-span-3">

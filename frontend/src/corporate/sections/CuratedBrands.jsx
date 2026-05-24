@@ -26,7 +26,7 @@ const CuratedBrands = ({ content = {} }) => {
   return (
     <section
       className="relative"
-      style={{ background: 'var(--mood-ink-1)', borderTop: '1px solid var(--mood-line-soft)', borderBottom: '1px solid var(--mood-line-soft)' }}
+      style={{ background: '#000000', borderTop: '1px solid var(--mood-line-soft)', borderBottom: '1px solid var(--mood-line-soft)' }}
       data-testid="curated-brands"
     >
       <div ref={ref} className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-6 lg:py-7">

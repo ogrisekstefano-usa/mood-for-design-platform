@@ -65,7 +65,7 @@ const EditorialFooter = () => {
   return (
     <footer
       style={{
-        background: 'var(--mood-black)',
+        background: '#000000',
         color: 'var(--mood-text-1)',
         borderTop: '1px solid var(--mood-line-soft)',
       }}

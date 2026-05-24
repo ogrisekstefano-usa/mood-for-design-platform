@@ -14,8 +14,8 @@ const HeroEditorial = ({ content = {}, media = {}, links = {} }) => {
     <section
       className="relative overflow-hidden"
       style={{
-        background: 'var(--mood-black)',
-        minHeight: '64vh',
+        background: '#000000',
+        minHeight: '60vh',
       }}
       data-testid="hero-editorial"
     >
@@ -47,7 +47,7 @@ const HeroEditorial = ({ content = {}, media = {}, links = {} }) => {
         }}
       />
 
-      <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 pt-32 lg:pt-32 pb-16 min-h-[64vh] flex items-center">
+      <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 pt-28 lg:pt-28 pb-12 min-h-[60vh] flex items-center">
         <div ref={ref} className="lg:w-[60%] xl:w-[55%]">
           {content.eyebrow && (
             <p className={`overline-teal mb-6 reveal ${visible ? 'visible' : ''}`} data-testid="hero-eyebrow">
