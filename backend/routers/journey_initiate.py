@@ -11,7 +11,7 @@ from typing import Optional, List
 import secrets
 import uuid
 
-from fastapi import APIRouter, HTTPException, Body, Query
+from fastapi import APIRouter, HTTPException, Body, Query, Request
 from pydantic import BaseModel, EmailStr, Field
 
 from database import db
@@ -118,7 +118,7 @@ def _compose_rationale(at: Optional[AtmospherePayload],
 
 # ─── Endpoint: initiate ──────────────────────────────────────────────
 @router.post("/public/journeys/initiate", status_code=201)
-def initiate_journey(body: InitiatePayload = Body(...)):
+def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
     """Apre un Design Journey™ a partire dal rituale di accoglienza.
 
     Atomic: crea Account → Contact → Project → Journey → milestones →
@@ -273,6 +273,37 @@ def initiate_journey(body: InitiatePayload = Body(...)):
     # `funnel_events` row so the CRM has ONE canonical pipeline view,
     # regardless of whether the user arrived through /begin-journey
     # (rich design-journey chain) or /begin-partnership (Pro form).
+    # Capture the SAME runtime_identity envelope as routers/leads.py
+    # so audit trails are consistent across onboarding paths.
+    resolved = getattr(request.state, 'resolved_tenant', None) or {}
+    request_host = (request.headers.get('host') or '')
+    resolved_host = resolved.get('host') or request_host or None
+    resolved_subdomain = resolved.get('subdomain')
+    if not resolved_subdomain and request_host:
+        resolved_subdomain = request_host.split(':')[0].split('.')[0] or None
+    qs = dict(request.query_params)
+    journey_runtime_identity = {
+        "resolved_subdomain": resolved_subdomain,
+        "resolved_host":      resolved_host,
+        "tenant_slug":        body.tenant_slug or resolved_subdomain,
+        "request_host":       request_host or None,
+        "user_agent":         request.headers.get('user-agent'),
+        "referer":            request.headers.get('referer'),
+        "source_locale":      "it-IT",
+        "onboarding_path":    "begin_journey",
+        "journey_id":         journey_id,
+        "project_id":         project_id,
+        "account_id":         account_id,
+        "atmosphere":         (body.atmosphere.model_dump() if body.atmosphere else {}),
+        "lifestyle":          (body.lifestyle.model_dump()  if body.lifestyle  else {}),
+        "utm": {
+            "source":   qs.get("utm_source"),
+            "medium":   qs.get("utm_medium"),
+            "campaign": qs.get("utm_campaign"),
+            "term":     qs.get("utm_term"),
+            "content":  qs.get("utm_content"),
+        },
+    }
     lead_id = str(uuid.uuid4())
     try:
         c.table('leads').insert({
@@ -288,14 +319,7 @@ def initiate_journey(body: InitiatePayload = Body(...)):
             "phone":            body.welcome.phone,
             "language":         "it",
             "locale_code":      "it-IT",
-            "runtime_identity": {
-                "onboarding_path": "begin_journey",
-                "journey_id":      journey_id,
-                "project_id":      project_id,
-                "account_id":      account_id,
-                "atmosphere":      (body.atmosphere.model_dump() if body.atmosphere else {}),
-                "lifestyle":       (body.lifestyle.model_dump()  if body.lifestyle  else {}),
-            },
+            "runtime_identity": journey_runtime_identity,
             "metadata_json":    {"journey_id": journey_id,
                                   "project_id": project_id,
                                   "account_id": account_id},

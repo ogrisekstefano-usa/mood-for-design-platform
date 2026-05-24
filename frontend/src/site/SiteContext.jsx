@@ -118,20 +118,35 @@ export const SiteProvider = ({ children }) => {
           typeof window !== 'undefined' &&
           !!window.localStorage.getItem(LOCALE_STORAGE_KEY);
         if (hasExplicitChoice) return;
+        // Derive the tenant slug from the host the same way the public
+        // onboarding flows do. Preview & platform hosts fall back to
+        // the Golden Demo Tenant™ ('studio').
+        const host = (typeof window !== 'undefined' && window.location.hostname) || '';
+        const firstLabel = (host.split('.')[0] || '').toLowerCase();
+        const PLATFORM_HOSTS = ['studio', 'blueprint', 'www', 'localhost'];
+        const looksPreview =
+          firstLabel.startsWith('content-hub-pro-') ||
+          PLATFORM_HOSTS.some((h) => firstLabel === h || firstLabel.startsWith(h));
+        const tenantSlug = looksPreview ? 'studio' : (firstLabel || 'studio');
         const base = process.env.REACT_APP_BACKEND_URL || '';
-        const r = await fetch(`${base}/api/tenant/configuration`, {
-          credentials: 'omit',
-        });
+        // PUBLIC endpoint (anonymous) — exposes locales without auth.
+        const r = await fetch(
+          `${base}/api/tenant/configuration/public/${encodeURIComponent(tenantSlug)}`,
+          { credentials: 'omit' },
+        );
         if (!r.ok) return;
         const cfg = await r.json();
         const tenantDefault =
+          cfg?.configuration?.default_locale ||
           cfg?.locales?.default_locale ||
           cfg?.default_locale ||
-          cfg?.locale?.default ||
           null;
         if (!tenantDefault || cancelled) return;
         const resolved = resolveLanguage(tenantDefault);
         if (!resolved?.enabled || resolved.public_enabled === false) return;
+        // Re-check explicit choice — user may have clicked the locale picker
+        // while the fetch was in flight; never override an explicit choice.
+        if (window.localStorage.getItem(LOCALE_STORAGE_KEY)) return;
         // Switch silently — but do NOT persist to localStorage so a user
         // visiting a different-locale tenant later still gets that tenant's
         // default. We update state directly to bypass the persistence path.
