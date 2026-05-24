@@ -19,7 +19,7 @@ const DesignJourney = ({ content = {}, media = {}, links = {} }) => {
       style={{ background: '#000000', borderTop: '1px solid var(--mood-line-soft)' }}
       data-testid="design-journey"
     >
-      <div ref={ref} className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-12 lg:py-16">
+      <div ref={ref} className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 py-8 lg:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
           {/* Left rail */}
           <div className="lg:col-span-3">
