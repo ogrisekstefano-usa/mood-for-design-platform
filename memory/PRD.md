@@ -4877,3 +4877,82 @@ notice. Not added in this pass.
 
 applied yet (pending user confirmation on scope).
 
+
+---
+
+## ITER146 HARDENING · Runtime State Machine™ (2026-02-24)
+
+**Mandate**: harden `ModuleRouteGuard` beyond the `?? 'disabled'` fix
+so the runtime-state layer — the heart of MOOD OS multi-tenant —
+never silently coerces an ambiguous state.
+
+### Architecture — 7 explicit disjoint surfaces
+
+`/app/frontend/src/components/runtime/ModuleRouteGuard.jsx` is now a
+named state machine with NO implicit fallback path:
+
+1. **LOADING** — bundle not yet fetched → pass-through (pages own
+   their skeleton). Never coerced to blocked.
+2. **UNKNOWN_CODE** — guard configured against a code missing from
+   the registry → pass-through + `console.warn` (dev only).
+3. **OPERATIONAL** — state ∈ {`enabled`,`beta`} → fast path, bypass
+   blocked renderer entirely. This is the lane that the `?? null`
+   bug accidentally broke; it is now explicit and verified.
+4. **CORE_AUTO_RECOVERED** — for modules with `is_core_critical=TRUE`
+   OR in the frontend allow-list (`dashboard`, `settings_workspace`,
+   `blueprint_admin`, `begin_journey`, `journey_index`, `team`):
+   non-operational states never reach the blocked renderer. We render
+   the children + a diagnostic `<CoreAutoRecoveredBadge>` (dev/debug
+   only). Second line of defense behind backend
+   `core_critical_force_enabled`.
+5. **BLOCKED** — known non-operational state ∈ {`hidden`,`locked`,
+   `disabled`,`beta_restricted`,`coming_soon`} → cinematic blocked
+   surface.
+6. **UNAVAILABLE** — unmapped state value (forward-compat valve) →
+   `console.warn` + neutral `unavailable` variant. NOT coerced to
+   `disabled`. Italian copy: "Questa superficie è momentaneamente
+   indisponibile."
+7. **CRASH** — App-level `ErrorBoundary` (intentionally outside this
+   component; documented for completeness).
+
+### New / modified files
+- `components/runtime/ModuleRouteGuard.jsx` — full rewrite (~140 lines)
+- `components/runtime/CoreAutoRecoveredBadge.jsx` — NEW dev/debug badge
+  (`data-testid="core-auto-recovered-badge"`, fixed bottom-right, only
+  visible when `NODE_ENV!=='production'` OR
+  `localStorage['mfd:debug:core_recovery']==='1'`)
+- `components/runtime/ModuleLoadingState.jsx` — NEW neutral runtime
+  shimmer (`data-testid="module-loading-state"`) — distinct from the
+  blocked surface, available for callers that want an explicit loading
+  placeholder
+- `components/runtime/ModuleBlockedState.jsx` — added `unavailable`
+  variant in `VARIANT_META`
+
+### Verification (testing agent, iteration_151.json)
+- OPERATIONAL fast path: 6/6 routes desktop + 2/2 mobile render REAL
+  content. `data-testid="module-blocked-state"` count = 0 everywhere.
+- LOADING pass-through: 12 samples over 3 s on hard refresh of
+  /dashboard — no flash of blocked surface.
+- CORE_AUTO_RECOVERED: backend resolver pre-empts the malicious
+  `feature_flags={dashboard:hidden}` injection and emits
+  `core_critical_safety event=resolver_auto_force` to the logs. The
+  frontend branch is therefore CODE-EVIDENT but E2E-unreachable as
+  long as backend safety holds — exactly the defense-in-depth contract
+  asked for.
+- Atelier Media Direction signed URLs still serving (regression check).
+- Backend pytest 19/19 PASS.
+- ESLint clean on all 4 modified/new files.
+- `retest_needed: false`.
+
+### Backlog (post-this-iter)
+- Add a Jest/RTL unit test that mounts `ModuleRouteGuard` against a
+  stub `useModule()` returning `{state:'hidden', is_core_critical:true}`
+  for `code='dashboard'` and asserts both children render AND the badge
+  testid is present. Requires installing `@testing-library/react` —
+  deferred to keep scope tight (recommended by testing agent).
+- Address the noisy `nav.runtime.loading`, `nav.crm_accounts`,
+  `taxonomy.journey_lifecycle_studio.*` i18n missing-key warnings
+  (pre-existing, dilutes signal).
+- React `setState`-in-render warning in Sidebar/LocalizationOverlay
+  (pre-existing, low priority).
+
