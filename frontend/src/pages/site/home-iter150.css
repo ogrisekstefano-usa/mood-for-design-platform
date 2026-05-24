@@ -230,10 +230,13 @@
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-hero {
   position: relative;
-  min-height: clamp(620px, 78vh, 880px);
+  min-height: clamp(560px, 72vh, 820px);
   display: grid;
+  grid-template-columns: 1fr;
+  justify-content: start;
+  justify-items: start;
   align-items: center;
-  padding: clamp(60px, 8vw, 120px) clamp(28px, 6vw, 80px);
+  padding: clamp(40px, 6vw, 96px) clamp(28px, 6vw, 80px);
   overflow: hidden;
   color: #fff;
 }
@@ -244,15 +247,26 @@
   width: 100%; height: 100%;
   object-fit: cover; object-position: center;
 }
+/* CINEMATIC LEFT VEIL — black scrim heavy on left, fading to clear right.
+   This is the "velina nera" — sits in front of the photo, behind the text. */
 .mfd-hero__veil {
   position: absolute; inset: 0;
   background:
-    linear-gradient(90deg, rgba(8, 7, 6, 0.88) 0%, rgba(8, 7, 6, 0.62) 28%, rgba(8, 7, 6, 0.30) 56%, rgba(8, 7, 6, 0.08) 78%, transparent 100%),
-    linear-gradient(180deg, rgba(8, 7, 6, 0.10) 0%, rgba(8, 7, 6, 0.32) 100%);
+    linear-gradient(90deg,
+      rgba(0, 0, 0, 0.82) 0%,
+      rgba(0, 0, 0, 0.72) 18%,
+      rgba(0, 0, 0, 0.52) 36%,
+      rgba(0, 0, 0, 0.26) 56%,
+      rgba(0, 0, 0, 0.08) 76%,
+      transparent 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.25) 100%);
+  z-index: 0;
 }
 .mfd-hero__content {
   position: relative; z-index: 1;
-  max-width: 620px;
+  max-width: 640px;
+  text-align: left;
+  justify-self: start;
 }
 .mfd-hero__title {
   font-size: clamp(58px, 7vw, 112px);
@@ -261,17 +275,19 @@
   letter-spacing: -0.018em;
   font-weight: 400;
   color: #f6f3ee;
+  text-align: left;
 }
 .mfd-hero__title-line { display: block; }
 .mfd-hero__sub {
   font-size: clamp(17px, 1.3vw, 19px);
   line-height: 1.55;
-  color: rgba(245, 242, 237, 0.86);
+  color: rgba(245, 242, 237, 0.92);
   max-width: 460px;
   margin: 0 0 40px;
   font-weight: 400;
+  text-align: left;
 }
-.mfd-hero__ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+.mfd-hero__ctas { display: flex; gap: 14px; flex-wrap: wrap; justify-content: flex-start; }
 
 /* ═════════════════════════════════════════════════════════════════
  * TRUST / PARTNER STRIP — editorial cadence
@@ -282,7 +298,7 @@
   grid-template-columns: minmax(220px, 320px) 1fr;
   align-items: center;
   gap: 40px;
-  padding: 36px clamp(28px, 6vw, 80px);
+  padding: 20px clamp(28px, 6vw, 80px);
   background: var(--mfd-bg);
   border-bottom: 1px solid var(--mfd-line);
 }
@@ -318,7 +334,7 @@
  * SECTION HEAD (shared)
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-section-head {
-  margin: 0 0 44px;
+  margin: 0 0 28px;
 }
 .mfd-section-head--with-link {
   display: flex; justify-content: space-between; align-items: flex-end; gap: 24px;
@@ -357,16 +373,16 @@
  * HOW IT WORKS
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-how {
-  padding: clamp(56px, 6vw, 96px) clamp(28px, 6vw, 80px);
+  padding: clamp(32px, 4vw, 56px) clamp(28px, 6vw, 80px);
   background: var(--mfd-bg);
 }
 .mfd-how__steps {
-  list-style: none; padding: 0; margin: 0 0 40px;
+  list-style: none; padding: 0; margin: 0 0 28px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 56px;
   border-top: 1px solid var(--mfd-line);
-  padding-top: 32px;
+  padding-top: 24px;
 }
 .mfd-how__step {
   display: grid;
@@ -492,7 +508,7 @@
  * DESIGN STORIES — real projects
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-stories {
-  padding: clamp(60px, 7vw, 110px) clamp(28px, 6vw, 80px);
+  padding: clamp(24px, 3vw, 48px) clamp(28px, 6vw, 80px);
   background: var(--mfd-bg-2);
 }
 .mfd-stories__grid {
@@ -546,7 +562,7 @@
  * MATERIALS — horizontal rail
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-materials {
-  padding: clamp(48px, 5vw, 80px) clamp(28px, 6vw, 80px);
+  padding: clamp(24px, 3vw, 48px) clamp(28px, 6vw, 80px);
   background: var(--mfd-bg);
 }
 .mfd-materials__wrap { position: relative; }
@@ -611,8 +627,8 @@
  * FINAL CTA — dark band
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-finalcta {
-  padding: clamp(56px, 6vw, 88px) clamp(28px, 6vw, 80px);
-  background: #121212;                       /* ITER149 pre-footer · #121212 */
+  padding: clamp(36px, 4vw, 64px) clamp(28px, 6vw, 80px);
+  background: #121212;
   color: #f5f2ed;
   display: grid;
   grid-template-columns: 1.3fr 1fr;
@@ -667,7 +683,7 @@
 .mfd-footer {
   background: #000000;
   border-top: 0;
-  padding: 44px clamp(28px, 6vw, 80px) 22px;
+  padding: 28px clamp(28px, 6vw, 80px) 16px;
   font-size: 14px;
   color: rgba(245, 242, 237, 0.62);
 }
@@ -675,7 +691,7 @@
   display: grid;
   grid-template-columns: 1fr 2.4fr;
   gap: 56px;
-  margin-bottom: 32px;
+  margin-bottom: 22px;
 }
 .mfd-footer__brand-mark {
   font-family: 'Cormorant Garamond', Georgia, serif;
@@ -727,34 +743,135 @@
 }
 
 /* ═════════════════════════════════════════════════════════════════
- * RESPONSIVE
+ * RESPONSIVE BREAKPOINTS — 4K → desktop → tablet → mobile
  * ═══════════════════════════════════════════════════════════════ */
+
+/* 4K · ultra-wide screens — cap content width, breathe more */
+@media (min-width: 2200px) {
+  .mfd-header,
+  .mfd-welcome-strip,
+  .mfd-trust,
+  .mfd-how,
+  .mfd-magazine,
+  .mfd-stories,
+  .mfd-materials,
+  .mfd-finalcta,
+  .mfd-footer {
+    max-width: 1840px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .mfd-hero { min-height: 880px; }
+  .mfd-hero__title { font-size: clamp(96px, 6vw, 142px); }
+  .mfd-section-title { font-size: clamp(56px, 3.6vw, 78px); }
+  .mfd-magazine__grid { gap: 18px; }
+  .mfd-stories__grid { gap: 22px; }
+}
+
+/* Wide desktop (1440 - 2199) — default tokens already tuned */
+
+/* Laptop (1180 - 1439) */
+@media (max-width: 1440px) {
+  .mfd-header__nav { gap: 26px; font-size: 14px; }
+}
+
+/* Tablet landscape (1180 - 880) */
 @media (max-width: 1180px) {
   .mfd-magazine__grid { grid-template-columns: repeat(3, 1fr); }
   .mag-card:nth-child(4), .mag-card:nth-child(5) { display: none; }
   .mfd-stories__grid { grid-template-columns: repeat(2, 1fr); }
-  .mfd-footer__top { grid-template-columns: 1fr; }
+  .mfd-footer__top { grid-template-columns: 1fr; gap: 22px; }
+  .mfd-trust { grid-template-columns: 1fr; gap: 12px; padding: 18px clamp(24px, 5vw, 56px); }
+  .mfd-trust__eyebrow { max-width: 100%; }
+  .mfd-trust__brands { justify-content: flex-start; gap: 22px 32px; }
+  .mfd-trust__brand { font-size: 18px; }
+  .mfd-hero__title { font-size: clamp(48px, 6vw, 84px); }
+  .mfd-hero__content::before {
+    inset: -32px -40px -32px -60px;
+  }
 }
+
+/* Tablet portrait (880 - 640) */
 @media (max-width: 880px) {
-  .mfd-welcome-strip { flex-direction: column; gap: 6px; }
+  .mfd-welcome-strip {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 22px;
+    font-size: 12px;
+    text-align: center;
+  }
   .mfd-header {
     grid-template-columns: 1fr auto;
-    gap: 16px;
+    gap: 14px;
+    padding: 16px 22px;
   }
+  .mfd-header__brand-mark { font-size: 19px; }
+  .mfd-header__brand-sub { font-size: 9px; letter-spacing: 0.24em; }
   .mfd-header__nav { display: none; }
-  .mfd-hero { min-height: 540px; padding: 80px 24px; }
-  .mfd-hero__title { font-size: 48px; }
+  .mfd-cta { padding: 12px 20px; font-size: 11.5px; }
+
+  .mfd-hero {
+    min-height: 520px;
+    padding: 60px 24px;
+    align-items: flex-end;
+  }
+  .mfd-hero__title { font-size: 44px; line-height: 1.02; margin-bottom: 18px; }
+  .mfd-hero__sub { font-size: 16px; margin-bottom: 24px; }
+  .mfd-hero__ctas { flex-direction: column; align-items: stretch; gap: 10px; }
+  .mfd-cta--solid, .mfd-cta--ghost { width: 100%; justify-content: center; padding: 14px 22px; }
+  .mfd-hero__content::before {
+    inset: -24px -24px -24px -32px;
+    background: linear-gradient(90deg,
+      rgba(0,0,0,0.78) 0%,
+      rgba(0,0,0,0.58) 60%,
+      rgba(0,0,0,0.30) 100%);
+  }
+
+  .mfd-section-title { font-size: clamp(28px, 7vw, 38px); }
+  .mfd-section-head--with-link { gap: 16px; }
+  .mfd-section-link { font-size: 10.5px; letter-spacing: 0.18em; }
+
   .mfd-how__steps {
     grid-template-columns: 1fr;
-    gap: 28px;
-    padding-top: 28px;
+    gap: 22px;
+    padding-top: 18px;
   }
   .mfd-how__step:not(:last-child)::after { display: none; }
-  .mfd-magazine__grid { grid-template-columns: repeat(2, 1fr); }
-  .mfd-stories__grid { grid-template-columns: 1fr; }
-  .mfd-finalcta { grid-template-columns: 1fr; }
-  .mfd-finalcta__paths { grid-template-columns: 1fr; }
-  .mfd-footer__cols { grid-template-columns: 1fr 1fr; }
-  .mfd-trust__brands { gap: 18px; }
-  .mfd-trust__brand { font-size: 18px; }
+  .mfd-how__step-title { font-size: 20px; }
+
+  .mfd-magazine__grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mag-card__title { font-size: 18px; }
+  .mag-card__category { left: 14px; bottom: 70px; font-size: 9.5px; }
+
+  .mfd-stories__grid { grid-template-columns: 1fr; gap: 12px; }
+  .story-card__body { padding: 18px 18px 22px; }
+  .story-card__title { font-size: 20px; }
+
+  .mat-tile { width: 132px; }
+
+  .mfd-finalcta {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 32px 22px;
+  }
+  .mfd-finalcta__paths { grid-template-columns: 1fr; gap: 10px; }
+  .mfd-finalcta__title { font-size: 32px; }
+
+  .mfd-footer { padding: 26px 22px 14px; }
+  .mfd-footer__cols { grid-template-columns: 1fr 1fr; gap: 22px; }
+  .mfd-footer__blueprint {
+    margin: 16px -22px -14px;
+    padding: 11px 22px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+}
+
+/* Small mobile (≤ 480) */
+@media (max-width: 480px) {
+  .mfd-hero { min-height: 460px; padding: 48px 18px; }
+  .mfd-hero__title { font-size: 36px; }
+  .mfd-magazine__grid { grid-template-columns: 1fr; gap: 8px; }
+  .mfd-footer__cols { grid-template-columns: 1fr; }
+  .mfd-trust__brand { font-size: 16px; }
 }
