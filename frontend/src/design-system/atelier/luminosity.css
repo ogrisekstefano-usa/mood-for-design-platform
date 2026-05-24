@@ -188,3 +188,58 @@
   --bp-text-muted:     rgba(255, 255, 255, 0.72);
   --bp-text-faint:     rgba(255, 255, 255, 0.55);
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 4. IMAGES · FULL COLOR · niente più veline cinematiche pesanti
+ *    Override del grading pipeline di cinematic.css. Le immagini tornano
+ *    al loro colore naturale. Manteniamo SOLO il gradient testo-side
+ *    necessario per leggibilità (più tenue), niente vignette pesante.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/* Hero + cards + quote + inspiration · filter rimosso */
+[data-atelier="nordic"] .atd-hero__image img,
+[data-atelier="nordic"] .atd-card__cover img,
+[data-atelier="nordic"] .atd-quote__image,
+[data-atelier="nordic"] .ins-card img,
+[data-atelier="nordic"] .pcard__cover img,
+[data-atelier="nordic"] .insd-cover img,
+[data-atelier="nordic"] .bm-card__cover img {
+  filter: none;
+}
+
+[data-atelier="nordic"] .atd-card:hover .atd-card__cover img,
+[data-atelier="nordic"] .ins-card:hover img,
+[data-atelier="nordic"] .pcard:hover .pcard__cover img,
+[data-atelier="nordic"] .bm-card:hover .bm-card__cover img {
+  filter: none;
+  transform: scale(1.015);
+}
+
+/* Hero overlay: SOLO gradient sinistro (per testo "Good morning…"),
+ * niente warm fireplace wash sul resto, niente double layer.
+ * Lato destro dell'immagine resta pulito a colori pieni. */
+[data-atelier="nordic"] .atd-hero__image-overlay {
+  background:
+    linear-gradient(90deg,
+      rgba(5, 6, 8, 0.92) 0%,
+      rgba(5, 6, 8, 0.55) 22%,
+      rgba(5, 6, 8, 0.10) 46%,
+      rgba(5, 6, 8, 0.00) 62%);
+}
+
+/* Vignette ring hero · molto più leggera (era 0.32 → 0.12) */
+[data-atelier="nordic"] .atd-hero__image::after {
+  background: radial-gradient(ellipse 110% 110% at 50% 50%,
+    transparent 70%,
+    rgba(0, 0, 0, 0.12) 100%);
+}
+
+/* Card cover veil · solo bottom-fade per il titolo, niente top */
+[data-atelier="nordic"] .atd-card__cover-veil {
+  background:
+    linear-gradient(180deg,
+      rgba(5, 6, 8, 0.00) 0%,
+      rgba(5, 6, 8, 0.00) 55%,
+      rgba(5, 6, 8, 0.55) 82%,
+      rgba(5, 6, 8, 0.90) 100%);
+}
