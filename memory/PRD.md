@@ -1,6 +1,62 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **Sprint ITER145.A · MULTILINGUAL EMAIL IDENTITY STUDIO™ + TENANT LOCALE ORCHESTRATION™** · ✅ DELIVERED · 24 Feb 2026 · Editorial Runtime™ convergence completa. Le email diventano runtime editorial surfaces. Locale governance freezata.
+
+  **Editorial Runtime™ Convergence for Email** (`scripts/seed_email_editorial_runtime.py`):
+  - **35 editorial blocks** seeded sotto namespace `system.email.*` (5 template × 7 campi: subject/preheader/eyebrow/title/body/cta/legal)
+  - 5 template canonici: `auth_reset`, `invite`, `onboarding`, `lead_captured`, `magic_link`
+  - **ALE auto-localized** in 6 locale: **210 translations** totali (zero stale, 6 locales covered)
+  - Interpolation `{{studio_name}}`, `{{first_name}}`, `{{inviter_name}}` runtime via brand context
+
+  **Email Editorial Resolver™** (`services/email_editorial_resolver.py`):
+  - `resolve_email_copy(template_key, locale, tenant_id=None)` → per-locale dict
+  - `resolve_enabled_locales(tenant_id)` → `{enabled_locales, default_locale, fallback_locale, locale_source, available_platform_locales}` — **single source of truth** per locale governance
+  - `filter_to_enabled(locale, enabled, default)` → coerzione strict (no global leak): foreign locale degrada al default, in-family fuori-enabled degrada al family match
+  - `resolve_email_stats()` → metriche ALE (blocks/translations/stale/locales_covered) per Runtime Inspector
+
+  **email_templates.render() Refactor** (zero-downtime):
+  - Nuovo step `_enrich_with_editorial()` pre-template: pulls editorial blocks → merge in `ctx['locale_copy']`
+  - Template legacy continuano a girare (hardcoded Italian fallback è il **safety net documentato**)
+  - Subjects differiscono per locale: it='Reimposta la tua password · …' · en='Reset your password · …' · fr=ALE-translated · de/es ALE
+
+  **Tenant Locale Orchestration™**:
+  - `/api/tenant/configuration.locales` block: `{enabled_locales, default_locale, fallback_locale, locale_source, available_platform_locales}` — frontend selectors consumano da qui
+  - `EmailBrandingPage` filter locale switcher su `enabled_locales` tenant (no global leak: tenant senza en-GB non lo vede)
+  - Architettura ready per restringere/espandere locale per-tenant senza fork
+
+  **Runtime Context Inspector™ Locale Block**:
+  - `/api/blueprint-admin/runtime-inspector.locale` ora esposto con `{source, default, fallback, enabled, available_platform_locales, ale_status:{email_blocks, email_translations, stale_translations, locales_covered}}`
+  - Diagnostic UI continua a renderizzare le sezioni esistenti
+
+  **Live Multi-Device Preview** (`EmailBrandingPage.jsx`):
+  - Toggle **Desktop / Mobile** (375px width + rounded corners + drop shadow)
+  - Toggle **Dark / Light** (background switch container + iframe)
+  - **Locale switcher tenant-filtered** (enabled_locales only)
+  - Preview chiama il **vero `email_templates.render()`** — niente mock layer
+  - testid: `preview-device-toggle` · `preview-device-{desktop|mobile}` · `preview-color-toggle` · `preview-color-{dark|light}` · `branding-preview-locale` · `branding-preview-container` · `branding-preview-frame` con `data-device-mode` + `data-color-mode`
+
+  **Tests**: `test_iter145_multilingual_email.py` · **10/10 PASS** (editorial seed · resolve copy IT/EN · ALE-driven cross-locale difference · locale isolation filter · render() editorial integration · runtime-inspector locale block). Aggregate **61/61 PASS** (ITER143+ITER144+ITER144.1+ITER145), zero regression.
+
+  **Live verification** (testing_agent_v3 iter 146 · **100% backend / 100% frontend**):
+  - 5 template × 6 locale renderizzati correttamente con copy differenti ✓
+  - `enabled_locales` filter funziona (en-GB escluso per demo tenant) ✓
+  - Runtime Inspector mostra `ale_status: {email_blocks:35, email_translations:210, stale:0, locales_covered:[6]}` ✓
+  - Email Branding Studio mostra toggle device/color/locale + identity source + preview container con data-attrs runtime ✓
+  - Zero locale leakage cross-tenant ✓
+  - Zero critical issues, zero regression
+
+  **Architectural Freeze**:
+  - ✅ Emails sono ufficialmente **runtime editorial surfaces**
+  - ✅ Same ALE logic, same locale governance, same stale tracking, same runtime resolution
+  - ✅ Hardcoded fallback rimane SOLO come safety net (zero-downtime), non come parallel system
+  - ✅ Tenants controllano enabled_locales · Blueprint controlla available_platform_locales
+
+  **Polish items deferred** (informational, non-blocking):
+  - Anteprima first-click occasionalmente non triggera dopo modal close (race condition, second click sempre funziona)
+  - Heatmap noise pre-esistente (LEAK/MISS counters) — fuori scope ITER145
+
+## 📌 Sprint Status (previous)
 - **Sprint ITER144.1 · GLOBAL MODULE ROUTE GOVERNANCE ENFORCEMENT™ + CINEMATIC BLOCKED STATE™ + EMAIL BRANDING RUNTIME IDENTITY CONTINUITY™** · ✅ DELIVERED · 23 Feb 2026 · Wave A completa.
 
   **Cinematic Blocked State™** (`/app/frontend/src/components/runtime/ModuleBlockedState.jsx`):
