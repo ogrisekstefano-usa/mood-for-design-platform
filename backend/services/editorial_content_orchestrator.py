@@ -153,7 +153,8 @@ def _find_block(scope: str, namespace: str, block_key: str,
 def _list_translations(block_id: str) -> Dict[str, dict]:
     c = _ensure_db()
     rows = (c.table('editorial_block_translations')
-            .select('locale, value, status, source_hash, generated_by, model, updated_at')
+            .select('locale, value, status, source_hash, generated_by, '
+                    'model, locked, updated_at')
             .eq('block_id', block_id).execute().data or [])
     return {r['locale'].lower(): r for r in rows}
 

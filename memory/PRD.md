@@ -4956,3 +4956,104 @@ named state machine with NO implicit fallback path:
 - React `setState`-in-render warning in Sidebar/LocalizationOverlay
   (pre-existing, low priority).
 
+
+---
+
+## ITER147 · International Profile Identity™ — CLOSED (2026-02-24)
+
+**Sprint goal**: Evolve the "Presentati ai tuoi clienti" modal into a
+runtime-aware multilingual identity editor that converges with ALE +
+Editorial Runtime™ + Locale Governance™ — NO parallel systems, NO new
+tables besides one boolean column on the existing translations table.
+
+### Convergence verified
+- **Storage**: `editorial_blocks` namespace `profile.identity` +
+  `editorial_block_translations` — 0 new tables.
+- **Drift detection** (sha1 source_hash) inherited.
+- **Manual override** (status='manual') inherited.
+- **Auto regeneration** inherited via `editorial_content_orchestrator`.
+- **Cache invalidation** inherited.
+- **Audit trail** (status / generated_by / model / updated_at)
+  inherited.
+- **The one tiny addition**: migration 081 adds
+  `editorial_block_translations.locked BOOLEAN` so a per-locale value
+  can be FROZEN. Orthogonal to status enum. Read path
+  `_list_translations` extended to surface the column to consumers.
+
+### Cultural Adaptation™ — verified live on REAL ALE
+- Source IT: **"Fondatore"** (`Founder`)
+- 🇺🇸 en-US: **"Founder & Creative Director"**
+- 🇫🇷 fr-FR: **"Fondateur & Directeur Artistique"**
+- 🇩🇪 de-DE: **"Inhaber & Kreativdirektor"**
+- 🇪🇸 es-ES: **"Fundador y Director Creativo"**
+
+Achieved by routing the per-locale `voice_addendum` from
+`profile_identity_directives.build_profile_identity_addendum(locale)`
+into the existing `relational_translation.translate()` call. The label
+fast-path in `relational_translation.py` was extended to honor the
+addendum (previously short labels skipped it).
+
+### New / modified files
+- `services/profile_identity_directives.py` — NEW · cultural directive
+  head + locale calibrations for en-US/en-GB/de-DE/fr-FR/es-ES/it-IT.
+- `services/profile_identity_resolver.py` — NEW · thin orchestration
+  layer on top of `editorial_content_orchestrator`. Public API:
+  `get_identity`, `upsert_source`, `set_manual`, `regenerate_locale`,
+  `lock_locale`, `restore_ale`, `resolve_for_locale`. NAMESPACE =
+  `profile.identity`. SUPPORTED_FIELDS = `(role_label, short_bio,
+  response_time_label, contact_cta_label)`.
+- `routers/profile_identity.py` — NEW · 6 endpoints under
+  `/api/profile`:
+  - `GET    /me/identity`
+  - `PATCH  /me/identity/source`
+  - `PATCH  /me/identity/{field}/{locale}` (manual override)
+  - `POST   /me/identity/{field}/{locale}/regenerate`
+  - `POST   /me/identity/{field}/{locale}/lock?locked=true|false`
+  - `POST   /me/identity/{field}/{locale}/restore-ale`
+  - `GET    /{profile_id}/identity/resolve?locale=…` (public-runtime)
+- `services/relational_translation.py` — patched label fast-path to
+  include voice_addendum so cultural adaptation applies to short
+  labels too.
+- `services/editorial_content_orchestrator.py` — `_list_translations`
+  now selects the `locked` column.
+- `supabase/migrations/081_profile_identity_locked.sql` + apply script.
+- `components/onboarding/InternationalVersionsPanel.jsx` — NEW
+  editorial UI (locale cards, preview-first, soft typography, action
+  icons). Brand-compliant wording — ZERO "AI" / "machine" / "tradotto"
+  references; user-facing labels: "Versioni Internazionali™",
+  "Adattata per il pubblico locale", "Personalizzata", "Approvata ·
+  bloccata", "Adatta nuovamente", "Ripristina versione internazionale".
+- `components/onboarding/OwnerIntroductionModal.jsx` — added optional
+  `<details>` section that mounts the new panel + chained PATCH
+  `/api/profile/me/identity/source` after the legacy `/me` write so
+  ALE auto-localization fires on save.
+- `tests/test_iter147_profile_identity.py` — 8 pytest cases (mocked
+  translate stub for determinism).
+
+### Testing closeout
+- Backend pytest 27/27 PASS (test_iter147 × 8 + test_iter146_core_module_
+  safety × 11 + test_iter146_lead_pipeline × 8).
+- Live E2E (iteration_152.json): 7/7 PASS post status='locked' fix.
+  Cultural-adaptation verdict: all four locales return multi-word
+  culturally-adapted titles (NOT literal one-word translations).
+- Frontend panel renders, all testids present
+  (`international-versions-panel`, `intl-locale-card-{locale}`,
+  `intl-locale-edit/regen/lock/restore-{locale}`, `intl-edit-modal`).
+- Brand-rule audit: NO forbidden phrases in any user-facing surface.
+
+### Bug found + fixed during the iteration
+- **`get_identity` not reporting `locked` status**: root cause was
+  `_list_translations` in the orchestrator only selected
+  `(locale, value, status, source_hash, generated_by, model,
+  updated_at)`. Added `locked` to the select. Now lock writes the DB
+  AND the read path coerces `status='locked'`.
+
+### Followups (NOT in this sprint)
+- `en-GB` is described in `profile_identity_directives` but is NOT in
+  the studio tenant's `enabled_locales` (currently `[it-it, en-us,
+  fr-fr, de-de, es-es]`). Wiring en-GB in (and adding the resolver
+  in-family fallback en-US → en-GB) becomes interesting when the
+  first UK studio tenant is onboarded.
+- Pre-existing cosmetic warnings (i18n missing keys, React
+  setState-in-render Sidebar) — out of scope.
+
