@@ -56,6 +56,13 @@ const VARIANT_META = {
     titleDefault: 'Accesso anticipato richiesto.',
     ledeDefault: 'Questo modulo è in beta e attende una manciata di studi pilota.',
   },
+  unavailable: {
+    Icon: ShieldOff,
+    accent: 'rgba(244, 201, 122, 0.75)',
+    eyebrowDefault: 'Stato runtime non riconosciuto',
+    titleDefault: 'Questa superficie è momentaneamente indisponibile.',
+    ledeDefault: 'Il runtime ha ricevuto uno stato non mappato per questo modulo. Stiamo rendendo una superficie neutra mentre indaghiamo.',
+  },
 };
 
 const ModuleBlockedState = ({ moduleCode, state = 'disabled', fallbackTo = '/dashboard' }) => {

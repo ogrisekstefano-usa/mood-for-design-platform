@@ -1,0 +1,66 @@
+{
+  "summary": "ITER151 · Runtime State Hardening — VERIFIED. Frontend 7-state ModuleRouteGuard pass-through works for all 6 critical operational routes at desktop AND mobile viewports. LOADING pass-through verified (no blocked-state flash during 3s hard-refresh sample window). Backend pytest regression 19/19 PASS. Atelier Media Direction signed URLs intact (Supabase signed URL, complete=True, 1920x1097). Architectural files present (CoreAutoRecoveredBadge.jsx, ModuleLoadingState.jsx, ModuleBlockedState.unavailable variant). NOTE: the CORE_AUTO_RECOVERED diagnostic badge could NOT be triggered via the malicious feature_flag insertion technique because the BACKEND resolver pre-empts the frontend by auto-forcing dashboard back to `enabled` (we confirmed this by direct call to resolve_modules — backend logs `core_critical_safety event=resolver_auto_force code=dashboard attempted_state=hidden`). This is the defense-in-depth contract working as designed (backend safety first, frontend safety as second line). The frontend CORE_AUTO_RECOVERED branch is code-evident in ModuleRouteGuard.jsx (lines 107-118) and CoreAutoRecoveredBadge.jsx exists; the branch will fire only when backend safety regresses.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Global", "issues": ["Many i18n missing string warnings (nav.crm_accounts, nav.journey_index, nav.runtime.loading, taxonomy.journey_lifecycle_studio.* etc) emitting on every page load; pre-existing, not from this iter, but noisy"]},
+      {"screen": "Console", "issues": ["React warning: 'Cannot update a component while rendering a different component' — pre-existing setState-in-render warning"]}
+    ]
+  },
+  "verifications": {
+    "OPERATIONAL_fast_path_desktop_1920x1080": {
+      "/dashboard":               {"blocked": 0, "atelier-dashboard": 1, "badge": 0},
+      "/crm/accounts":            {"blocked": 0, "badge": 0},
+      "/inspirations":            {"blocked": 0, "badge": 0},
+      "/workspace/projects":      {"blocked": 0, "badge": 0},
+      "/journeys":                {"blocked": 0, "badge": 0},
+      "/admin/tenant-configuration": {"blocked": 0, "badge": 0}
+    },
+    "OPERATIONAL_fast_path_mobile_390x844": {
+      "/dashboard":     {"blocked": 0},
+      "/crm/accounts":  {"blocked": 0}
+    },
+    "LOADING_pass_through": {
+      "samples_every_250ms_for_3s_on_/dashboard": [0,0,0,0,0,0,0,0,0,0,0,0],
+      "flash_detected": false
+    },
+    "CORE_AUTO_RECOVERED": {
+      "scenario": "set tenant_configuration.feature_flags={'dashboard':'hidden'} on studio tenant, restart backend, navigate to /dashboard logged in as admin@",
+      "result": {"blocked": 0, "atelier-dashboard": 1, "frontend_badge_visible": false},
+      "explanation": "Backend resolver auto-forces dashboard back to `enabled` before bundle reaches the browser; logs emit 'core_critical_safety event=resolver_auto_force code=dashboard attempted_state=hidden'. Frontend never sees a non-operational state for `dashboard`, so the frontend CORE_AUTO_RECOVERED branch never fires. This is the correct defense-in-depth contract.",
+      "cleanup_applied": "feature_flags reverted to {} and backend restarted"
+    },
+    "Atelier_Media_Direction": {
+      "tiles_in_grid": 13,
+      "supabase_tile_f47cd315_preview": {"complete": true, "naturalWidth": 1920, "naturalHeight": 1097, "isSigned": true, "isPublic": false, "url_contains_/sign/": true}
+    },
+    "Backend_pytest": "19/19 PASS · /app/test_reports/pytest/iter151.xml",
+    "Files_present": ["/app/frontend/src/components/runtime/CoreAutoRecoveredBadge.jsx", "/app/frontend/src/components/runtime/ModuleLoadingState.jsx", "/app/frontend/src/components/runtime/ModuleBlockedState.jsx (unavailable variant at line 59)"]
+  },
+  "test_report_links": [
+    "/app/test_reports/pytest/iter151.xml",
+    "/app/backend/tests/test_iter146_core_module_safety.py",
+    "/app/backend/tests/test_iter146_lead_pipeline.py"
+  ],
+  "action_items": [
+    "OPTIONAL · The CORE_AUTO_RECOVERED frontend branch is currently unreachable via the documented test technique because backend safety pre-empts it. If E1 wants to E2E-verify the frontend safety net, they could (a) ship a transient backend flag to skip auto-force for one tenant, OR (b) add a unit test that mounts ModuleRouteGuard against a stub useModule() returning a non-operational state for a core code and asserts the badge testid renders. Recommended: option (b) — fast and avoids touching prod paths.",
+    "OPTIONAL · Address the noisy i18n missing-key warnings (nav.runtime.loading, nav.crm_accounts, nav.journey_index, nav.crm_follow_ups, nav.crm_archived, nav.language_cc, nav.settings_workspace, nav.blueprint_admin, taxonomy.journey_lifecycle_studio.*) — these emit on every page load and dilute genuine warning signal."
+  ],
+  "critical_code_review_comments": [
+    "ModuleRouteGuard.jsx 7-state machine is clean, explicit, and disjoint — no implicit fallback path. Branch ordering is correct (LOADING → UNKNOWN_CODE → OPERATIONAL → CORE_AUTO_RECOVERED → BLOCKED → UNAVAILABLE).",
+    "FRONTEND_CORE_CRITICAL set (dashboard, settings_workspace, blueprint_admin, begin_journey, journey_index, team) correctly mirrors the backend allow-list per the iter146 review.",
+    "CoreAutoRecoveredBadge correctly gates on NODE_ENV !== 'production' OR localStorage flag — preview build is development so it WILL render when the branch fires.",
+    "ModuleBlockedState.VARIANT_META.unavailable copy is in Italian per user-language requirement.",
+    "Minor: warn() helper short-circuits in production — good. Could be extended to a structured telemetry sink later but not required for this iter."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "100%", "frontend": "100% (within E2E-reachable surface)" },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (root superadmin, tenant_id=848354b9-a43e-4147-bdad-116fb93bd585 / slug=studio)",
+  "seed_data_creation": "Transiently set tenant_configuration.feature_flags={'dashboard':'hidden'} on the studio tenant, then reverted to {} after the CORE_AUTO_RECOVERED probe. Backend restarted twice (set + revert) to invalidate the resolver cache.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend resolver's core-critical safety pre-empts the frontend CORE_AUTO_RECOVERED branch. To E2E-exercise the frontend branch you must bypass backend safety (e.g. temporarily mark dashboard as is_core_critical=FALSE in feature_modules_registry, set feature_flag override, then re-enable). Cleanest path is a Jest/React Testing Library unit test mounting ModuleRouteGuard with a mocked useModule.",
+  "rca of the issue": "N/A — no defect found. The badge non-appearance during the malicious-feature-flag probe is expected behavior given backend safety runs first."
+}
