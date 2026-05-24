@@ -96,6 +96,9 @@ api_router.include_router(advisor_suggestions.router, tags=["advisor-suggestions
 api_router.include_router(reference_intelligence.router, tags=["reference-intelligence"])
 api_router.include_router(relationships.router, tags=["relationships"])
 api_router.include_router(crm_voice_notes.router, tags=["relationships"])
+# ITER148 · Phase 1 · Lead Data Model 2.0 + Closed-Question Intake
+from routers import lead_intake  # noqa: E402
+api_router.include_router(lead_intake.router, prefix="/relationships", tags=["relationships"])
 from routers import g3_constellation  # noqa: F401  (extends crm_intelligence.router BEFORE include)
 api_router.include_router(crm_intelligence.router, tags=["relationships"])
 api_router.include_router(markets.router, tags=["markets"])

@@ -1,6 +1,54 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **Sprint ITER148 · Phase 1 · CRM RELATIONSHIP MEMORY™ — Lead Data Model 2.0 + Closed-Question Schema™** · ✅ DELIVERED (backend) · 25 Feb 2026 · Fondazione del Relationship Memory Engine™. Le risposte di intake non sono più "form fields" — sono **signal projections strutturate** con tagging cluster, atmosphere/material fingerprinting e progression Lead→Prospect→Account.
+
+  **Migration `082_lead_data_model_v2.sql`** (additive, idempotent):
+  - Estende `leads` con 12 colonne nuove: `closed_answers (JSONB)`, `behavioral_tags (JSONB)`, `ai_tags (JSONB)`, `atmosphere_signals (JSONB)`, `material_signals (JSONB)`, `cultural_register (TEXT)`, `luxury_perception_tier (TEXT)`, `progression_state (TEXT default 'lead')`, `progression_score (NUMERIC)`, `narrative_seed (TEXT)`, `intake_completed_at`, `intake_version`.
+  - CHECK constraints: progression_state ∈ {lead,prospect,account,dormant,archived}; cultural_register ∈ {editorial,concierge,consultative,discovery}; luxury_tier ∈ {atelier,couture,pret_a_porter,exploratory}.
+  - GIN indexes su `behavioral_tags`, `atmosphere_signals`, `material_signals` per query "leads con tag X".
+  - Nuova tabella `lead_intake_questions` (catalog runtime-driven · zero hardcoded UI logic) con `options JSONB` che mappa ogni risposta a `tag_cluster[]`, `atmosphere[]`, `material[]`, `cultural_register`, `luxury_tier`, `intent_weight`.
+
+  **Closed-Question Catalog (88% closed · 15+1)**:
+  - **Space (5)**: typology · size · phase · ownership · location_type
+  - **Atmosphere (3)**: dominant (multi×3) · mood_register · light_preference
+  - **Material (2)**: affinities (multi×4) · avoid (multi×3)
+  - **Cultural (3)**: register_preference · decision_horizon · budget_register
+  - **Engagement (2)**: cadence · channel
+  - **Narrative (1 · OPTIONAL open)**: narrative_seed (max 300 chars)
+  - **Required closed**: 8 · **Optional closed**: 7 · **Open**: 1 (opzionale, ≤300)
+
+  **Lead Intake Engine** (`services/lead_intake_engine.py`):
+  - `compute_signals(answers, lead_type)` → progression_state · progression_score · behavioral_tags · atmosphere_signals (top 3) · material_signals (top 3) · cultural_register · luxury_perception_tier
+  - **Progression scoring**: completeness (50%) + signal_density (30%) + intent_strength (20% cap)
+  - **State threshold**: score ≥ 0.75 → `prospect`, altrimenti `lead`
+  - Process-cache 60s del catalog (TTL invalidabile via endpoint)
+
+  **API endpoints** (`routers/lead_intake.py` · mounted on `/api/relationships`):
+  - `GET  /intake/questions?lead_type=…` — public catalog
+  - `POST /intake/closed-answers?tenant_slug=…` — public ingest (anon, multi-tenant)
+  - `GET  /leads/{id}/profile` — auth (`P_LEADS_READ`)
+  - `PATCH /leads/{id}/closed-answers` — auth (`P_LEADS_WRITE`) re-ingest
+  - `POST /intake/cache/invalidate` — cache flush
+
+  **Tests** (`backend/tests/test_iter148_lead_intake.py`): **6/6 PASS**:
+  1. Catalog seeded (16 items, 5+ sections, 7+ required closed) ✓
+  2. Pure-engine simple lead → `lead` state ✓
+  3. Pure-engine strong signals → `prospect` state, score ≥ 0.75, atelier tier ✓
+  4. Public ingest creates lead with all computed signals ✓
+  5. Authenticated `/profile` reads full computed surface ✓
+  6. PATCH re-computes progression from lead → prospect ✓
+
+  **Aggregate regression**: **25/25 PASS** (ITER146 + ITER147 + ITER148.Phase1). Zero regressions.
+
+  **Architectural notes**:
+  - Catalog runtime-driven: aggiungere/modificare una domanda = INSERT in `lead_intake_questions`, ZERO frontend deploy.
+  - Tag cluster vocabulary preserva il lessico Editorial Relationship CRM™ (atelier_tier · editorial_aligned · concierge_aligned · nordic_register …) — niente "lead score", "hot/cold", "MQL/SQL".
+  - `ai_tags` field reserved per LLM enrichment in Phase 1.5 (claude-driven cultural fingerprinting).
+
+  **Next**: Phase 2 (Relationship Memory Timeline™) — `relationship_memory_events` table + narrated event log + AccountDetailPage™ timeline UI.
+
+## 📌 Sprint Status (previous)
 - **Sprint ITER145.A · MULTILINGUAL EMAIL IDENTITY STUDIO™ + TENANT LOCALE ORCHESTRATION™** · ✅ DELIVERED · 24 Feb 2026 · Editorial Runtime™ convergence completa. Le email diventano runtime editorial surfaces. Locale governance freezata.
 
   **Editorial Runtime™ Convergence for Email** (`scripts/seed_email_editorial_runtime.py`):
