@@ -102,6 +102,9 @@ api_router.include_router(lead_intake.router, prefix="/relationships", tags=["re
 # ITER148 · Sprint A · Relationship Engine v2 (unified catalog + answer events)
 from routers import relationship_engine  # noqa: E402
 api_router.include_router(relationship_engine.router, prefix="/relationships", tags=["relationships"])
+# ITER148 · P0 · Client Relations™ (Lead/Prospect/Account editorial layer)
+from routers import client_relations  # noqa: E402
+api_router.include_router(client_relations.router, prefix="/relations", tags=["relations"])
 from routers import g3_constellation  # noqa: F401  (extends crm_intelligence.router BEFORE include)
 api_router.include_router(crm_intelligence.router, tags=["relationships"])
 api_router.include_router(markets.router, tags=["markets"])

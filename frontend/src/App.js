@@ -29,7 +29,7 @@ const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage'));
 const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage'));
 const JourneyPulsePage = lazy(() => import('./pages/dashboard/JourneyPulsePage'));
 const AtelierDashboardPage = lazy(() => import('./pages/dashboard/AtelierDashboardPage'));
-const LeadsPage = lazy(() => import('./pages/workspace/LeadsPage'));
+const LeadsLegacyPage = lazy(() => import('./pages/workspace/LeadsPage'));
 const ProjectsPage = lazy(() => import('./pages/workspace/ProjectsPage'));
 const ProjectDetailPage = lazy(() => import('./pages/workspace/ProjectDetailPage'));
 const ProposalsPage = lazy(() => import('./pages/workspace/ProposalsPage'));
@@ -144,6 +144,12 @@ const BlueprintTenantConfigurationPage = lazy(() => import('./pages/admin/Bluepr
 const RuntimeInspectorPage = lazy(() => import('./pages/admin/RuntimeInspectorPage'));
 // ITER144.1 · Runtime Route Governance™ — global ModuleRouteGuard.
 import ModuleRouteGuard from './components/runtime/ModuleRouteGuard';
+
+// ITER148 · P0 · Client Relations™ — editorial Lead/Prospect/Account layer
+const LeadsPage                = lazy(() => import('./pages/relations/LeadsPage'));
+const ProspectsPage            = lazy(() => import('./pages/relations/ProspectsPage'));
+const AccountsPage             = lazy(() => import('./pages/relations/AccountsPage'));
+const RelationshipMemoryPage   = lazy(() => import('./pages/relations/RelationshipMemoryPage'));
 
 /** Wrap a route element with a runtime module guard.
  *  When the module is disabled/locked/hidden, the route renders the
@@ -467,8 +473,17 @@ function App() {
                   <Route path="/crm/accounts/:accountId" element={G('crm_accounts', <AccountDetailPage />)} />
                   <Route path="/crm/:tab" element={G('crm_accounts', <CrmAccountsPage />)} />
                   <Route path="/crm/:tab/:accountId" element={G('crm_accounts', <CrmAccountsPage />)} />
-                  {/* Legacy redirect — old /workspace/relationships → /crm/accounts */}
-                  <Route path="/workspace/relationships" element={<Navigate to="/crm/accounts" replace />} />
+                  {/* Legacy redirect — old /workspace/relationships → /relations/accounts */}
+                  <Route path="/workspace/relationships" element={<Navigate to="/relations/accounts" replace />} />
+                  <Route path="/crm/accounts" element={<Navigate to="/relations/accounts" replace />} />
+                  <Route path="/crm/inbox"    element={<Navigate to="/relations/leads"    replace />} />
+
+                  {/* ── CLIENT RELATIONS\u2122 (ITER148 · P0 sidebar) ── */}
+                  <Route path="/relations/leads"      element={<LeadsPage />} />
+                  <Route path="/relations/prospects"  element={<ProspectsPage />} />
+                  <Route path="/relations/accounts"   element={<AccountsPage />} />
+                  <Route path="/relations/memory"     element={<RelationshipMemoryPage />} />
+                  <Route path="/relations/voice-log"  element={<Navigate to="/relations/memory" replace />} />
 
                   {/* Cultural Edition™ — versioni mercato dei contenuti dello studio */}
                   <Route path="/workspace/cultural-editions" element={<CulturalEditionsListPage />} />
