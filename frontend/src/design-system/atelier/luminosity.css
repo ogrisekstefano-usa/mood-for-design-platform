@@ -1,0 +1,190 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Atelier Nordic™ · Luminosity Refinement Layer
+ * ITER148.A · 25 Feb 2026 — User-driven readability pass
+ *
+ * Surgical lift della luminosità nella shell + dashboard, mantenendo
+ * intatte composizione, grain, vignette, cinematic image grading.
+ *
+ * Cambiamenti:
+ *  1. Sidebar nav items → #ffffff at rest, atelier-cyan on hover (per richiesta)
+ *  2. Sidebar icons → bianco pieno, cyan in hover/active
+ *  3. Section labels → opacity 0.65 (era 0.32) + font 10.5px (era 9px)
+ *  4. Dashboard body copy → alpha bumped 0.55–0.78 → 0.88–1.0
+ *  5. Microcopy / meta / feed → fontsize +1px per leggibilità
+ *  6. NO change a: hero image grading, vignette, grain, layout, spacing
+ *
+ * Load order: LAST in /atelier/index.css → wins specificity senza !important
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 1. SIDEBAR · WHITE-FIRST · CYAN ON HOVER
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .atelier-nav-item {
+  font-size: 13.5px;
+  color: #ffffff;
+  font-weight: 400;
+}
+
+[data-atelier="nordic"] .atelier-nav-item__icon {
+  opacity: 1;
+  color: #ffffff;
+  width: 16px;
+  height: 16px;
+  transition: color var(--bp-dur-quick) var(--bp-ease-soft);
+}
+
+[data-atelier="nordic"] .atelier-nav-item:hover {
+  color: var(--atelier-cyan);
+  background: rgba(94, 234, 212, 0.06);
+}
+
+[data-atelier="nordic"] .atelier-nav-item:hover .atelier-nav-item__icon {
+  color: var(--atelier-cyan);
+  opacity: 1;
+}
+
+[data-atelier="nordic"] .atelier-nav-item--active {
+  color: var(--atelier-cyan);
+  background: rgba(94, 234, 212, 0.07);
+}
+
+[data-atelier="nordic"] .atelier-nav-item--active .atelier-nav-item__icon {
+  color: var(--atelier-cyan);
+  opacity: 1;
+}
+
+/* Sidebar section labels — luminous, more readable */
+[data-atelier="nordic"] .atelier-rail__section,
+[data-atelier="nordic"] .atelier-rail__section-label,
+[data-atelier="nordic"] .atelier-section-label {
+  font-size: 10.5px;
+  letter-spacing: 0.28em;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 500;
+}
+
+[data-atelier="nordic"] .atelier-rail__section-label:hover {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Brand mark — readable, no opacity */
+[data-atelier="nordic"] .atelier-rail__brand-name {
+  color: #ffffff;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 2. DASHBOARD · LUMINOSITY BOOST
+ *    Bump body copy alpha + 1px font-size on small text surfaces
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/* Hero lede + signature */
+[data-atelier="nordic"] .atd-hero__lede {
+  font-size: 14.5px;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.58;
+}
+
+[data-atelier="nordic"] .atd-hero__signature {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+[data-atelier="nordic"] .atd-hero__eyebrow {
+  font-size: 10.5px;
+  color: var(--atelier-cyan);
+  opacity: 1;
+}
+
+/* KPI labels — were 10px / 0.55 */
+[data-atelier="nordic"] .atd-kpi__label {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.4;
+}
+
+/* Project card */
+[data-atelier="nordic"] .atd-card__subtitle {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+[data-atelier="nordic"] .atd-card__progress-pct {
+  color: rgba(255, 255, 255, 0.96);
+}
+
+[data-atelier="nordic"] .atd-card__meta {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+/* Panel titles · cyan but luminous */
+[data-atelier="nordic"] .atd-panel__title {
+  font-size: 12.5px;
+  color: rgba(94, 234, 212, 0.96);
+  letter-spacing: 0.04em;
+}
+
+/* Feed (operational desk) */
+[data-atelier="nordic"] .atd-feed__line {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.96);
+  line-height: 1.45;
+}
+
+[data-atelier="nordic"] .atd-feed__meta {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+[data-atelier="nordic"] .atd-feed__date-day {
+  font-size: 23px;
+  color: rgba(255, 255, 255, 0.96);
+}
+
+[data-atelier="nordic"] .atd-feed__date-month {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Inspiration quote */
+[data-atelier="nordic"] .atd-quote__line {
+  font-size: 19px;
+  color: #ffffff;
+  line-height: 1.34;
+}
+
+[data-atelier="nordic"] .atd-quote__author {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* Section CTAs ("vedi tutto") */
+[data-atelier="nordic"] .atd-section__cta {
+  font-size: 12px;
+  color: rgba(94, 234, 212, 0.92);
+}
+
+/* Status badges */
+[data-atelier="nordic"] .atd-card__badge--cyan {
+  font-size: 10px;
+  color: var(--atelier-cyan);
+}
+
+[data-atelier="nordic"] .atd-card__badge--mute {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 3. SHARED TEXT TOKENS · luminosity uplift across all OS surfaces
+ *    Bridge legacy --bp-text-* tokens to brighter values when Atelier active.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] {
+  --bp-text-headline:  #ffffff;
+  --bp-text-strong:    rgba(255, 255, 255, 0.96);
+  --bp-text-body:      rgba(255, 255, 255, 0.90);
+  --bp-text-muted:     rgba(255, 255, 255, 0.72);
+  --bp-text-faint:     rgba(255, 255, 255, 0.55);
+}
