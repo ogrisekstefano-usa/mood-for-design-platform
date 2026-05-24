@@ -22,7 +22,7 @@ import LocaleSwitcher from '../../components/common/LocaleSwitcher';
 import './auth-login.css';
 
 const HERO_IMAGE_DEFAULT =
-  'https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/cuppy2wo_ChatGPT%20Image%20May%2023%2C%202026%2C%2010_29_21%20PM.png';
+  'https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/ys8jrftd_AdobeStock_1014843351.jpeg';
 
 const LoginPage = () => {
   const { signIn } = useAuth();

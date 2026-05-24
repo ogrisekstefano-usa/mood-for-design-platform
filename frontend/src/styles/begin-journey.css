@@ -277,31 +277,31 @@
   z-index: 1;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 96px 56px 120px;
+  padding: 40px 56px 80px;
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 88px;
   min-height: 100vh;
 }
 @media (max-width: 1100px) {
-  .bj-container { grid-template-columns: 1fr; padding: 64px 32px 96px; gap: 48px; }
+  .bj-container { grid-template-columns: 1fr; padding: 32px 32px 64px; gap: 36px; }
 }
 @media (max-width: 640px) {
-  .bj-container { padding: 48px 24px 80px; }
+  .bj-container { padding: 24px 24px 56px; }
 }
 
 /* ── LEFT RAIL ── */
-.bj-rail { position: sticky; top: 96px; align-self: start; }
+.bj-rail { position: sticky; top: 40px; align-self: start; }
 @media (max-width: 1100px) { .bj-rail { position: static; } }
 
 .bj-rail__brand {
-  font-family: 'Playfair Display', serif;
-  font-style: italic;
-  font-size: 28px;
-  letter-spacing: 0.01em;
-  color: color-mix(in srgb, var(--jo-text) 95%, transparent);
-  margin-bottom: 56px;
-  font-weight: 400;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-style: normal;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  margin-bottom: 32px;
+  font-weight: 600;
 }
 .bj-rail__brand small {
   display: block;

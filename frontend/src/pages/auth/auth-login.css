@@ -22,15 +22,15 @@
 
 .mfd-auth {
   --auth-bg:           #050816;
-  --auth-bg-panel:     #08101D;
+  --auth-bg-panel:     #121212;
   --auth-surface:      rgba(255, 255, 255, 0.03);
   --auth-border:       rgba(255, 255, 255, 0.12);
   --auth-border-soft:  rgba(255, 255, 255, 0.08);
-  --auth-cyan:         #19F0FF;
-  --auth-cyan-soft:    rgba(25, 240, 255, 0.18);
-  --auth-cyan-glow:    0 0 24px rgba(25, 240, 255, 0.18);
-  --auth-warm:         #D6B48A;
-  --auth-warm-hover:   #DFC09C;
+  --auth-cyan:         #00C9B3;
+  --auth-cyan-soft:    rgba(0, 201, 179, 0.18);
+  --auth-cyan-glow:    0 0 24px rgba(0, 201, 179, 0.22);
+  --auth-warm:         #00C9B3;
+  --auth-warm-hover:   #1AD9C5;
   --auth-text:         #F5F7FA;
   --auth-text-2:       #C9D2DC;
   --auth-text-muted:   rgba(245, 247, 250, 0.62);
@@ -299,8 +299,8 @@
 .mfd-auth__remember input:checked + .mfd-auth__check::after {
   content: '';
   width: 9px; height: 5px;
-  border-left: 2px solid #050816;
-  border-bottom: 2px solid #050816;
+  border-left: 2px solid #061814;
+  border-bottom: 2px solid #061814;
   transform: rotate(-45deg) translate(1px, -1px);
 }
 
@@ -313,7 +313,7 @@
 }
 .mfd-auth__forgot:hover { color: var(--auth-warm-hover); }
 
-/* ── Submit · cinematic warm CTA ───────────────────────────────── */
+/* ── Submit · cinematic MOOD teal CTA ──────────────────────────── */
 .mfd-auth__submit {
   width: 100%;
   height: 60px;
@@ -327,7 +327,7 @@
   font-weight: 600;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #0A0E1A;
+  color: #061814;
   background: var(--auth-warm);
   border: 0;
   border-radius: 2px;
@@ -337,7 +337,7 @@
 
 .mfd-auth__submit:hover:not(:disabled) {
   background: var(--auth-warm-hover);
-  box-shadow: 0 0 32px rgba(214, 180, 138, 0.18);
+  box-shadow: 0 0 32px rgba(0, 201, 179, 0.28);
 }
 
 .mfd-auth__submit:active:not(:disabled) { transform: translateY(1px); }
@@ -488,7 +488,7 @@
 .mfd-auth__spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid #0A0E1A;
+  border: 2px solid #061814;
   border-top-color: transparent;
   border-radius: 50%;
   animation: mfd-spin 720ms linear infinite;
