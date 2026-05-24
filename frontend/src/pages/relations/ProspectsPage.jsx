@@ -13,6 +13,10 @@ import React, { useMemo, useState } from 'react';
 import { Search, X, ArrowRight, MessageCircle, Heart, Repeat } from 'lucide-react';
 import ClientRelationsLayout from './ClientRelationsLayout';
 import useRelations from './useRelations';
+import useDesigners from './useDesigners';
+import DesignerChip from './DesignerChip';
+import WelcomeDrawer from './WelcomeDrawer';
+import ContinuationInterviewDrawer from './ContinuationInterviewDrawer';
 
 const REGISTERS = [
   { v: 'editorial',    l: 'Editorial'    },
@@ -53,30 +57,47 @@ const deriveSignals = (lead) => {
   return { saved, returns, lastTouch };
 };
 
-const ProspectLane = ({ p, onPromote }) => {
+const ProspectLane = ({ p, designer, onPromote, onOpen }) => {
   const name = `${p.first_name || ''} ${p.last_name || ''}`.trim() || p.email || 'Untitled';
   const initials = name.split(' ').map(s => s[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
   const temp = Number(p.relationship_temperature || 0);
-  const score = Math.round(Number(p.progression_score || 0) * 100);
-  const ready = temp >= 0.75 || score >= 80;
-  const designer = p.designer_assigned || 'Unassigned';
+  const score = Number(p.progression_score || 0);
+  const ready = temp >= 0.75 || score >= 0.80;
   const { saved, returns, lastTouch } = deriveSignals(p);
   const register = p.cultural_register || 'discovery';
   const tier = (p.luxury_perception_tier || '').replace(/_/g, ' ') || '—';
 
+  // Narrative momentum language — NO percentages.
+  const momentumLabel =
+    score >= 0.85 ? 'arriving at the threshold' :
+    score >= 0.65 ? 'gathering momentum' :
+    score >= 0.40 ? 'finding its voice' :
+    score >= 0.20 ? 'early dialogue' :
+                    'first whispers';
+
   return (
-    <article className="prospect-lane" data-testid={`prospect-lane-${p.id}`}>
-      {/* Column 1 · Designer */}
-      <div className="prospect-lane__designer">
-        <span className="prospect-lane__avatar" aria-hidden="true">{initials || '·'}</span>
-        <div>
-          <h3 className="prospect-lane__name">{name}</h3>
-          <p className="prospect-lane__email">{p.email}</p>
-          <p className="prospect-lane__designer-line">
-            <span className="prospect-lane__pulse" />
-            cultivated&nbsp;by&nbsp;<strong>{designer}</strong>
-          </p>
+    <article
+      className="prospect-lane"
+      data-testid={`prospect-lane-${p.id}`}
+      onClick={() => onOpen && onOpen(p)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' && onOpen) onOpen(p); }}
+    >
+      {/* Column 1 · Designer Presence™ */}
+      <div className="prospect-lane__designer" onClick={(e) => e.stopPropagation()}>
+        <div className="prospect-lane__identity">
+          <span className="prospect-lane__avatar" aria-hidden="true">{initials || '·'}</span>
+          <div>
+            <h3 className="prospect-lane__name">{name}</h3>
+            <p className="prospect-lane__email">{p.email}</p>
+          </div>
         </div>
+        <p className="prospect-lane__designer-line">
+          <span className="prospect-lane__pulse" />
+          cultivated&nbsp;by
+        </p>
+        <DesignerChip designer={designer} size="md" testid={`prospect-designer-${p.id}`} />
       </div>
 
       {/* Column 2 · Momentum */}
@@ -103,14 +124,14 @@ const ProspectLane = ({ p, onPromote }) => {
         </div>
       </div>
 
-      {/* Column 3 · Decision */}
-      <div className="prospect-lane__decision">
-        <div className="prospect-lane__progress" aria-label={`Progression ${score}%`}>
-          <div className="prospect-lane__progress-track">
-            <div className="prospect-lane__progress-fill" style={{ width: `${Math.max(4, Math.min(100, score))}%` }} />
-          </div>
-          <span className="prospect-lane__progress-value">{score}<span>%</span></span>
-          <span className="prospect-lane__progress-label">progression</span>
+      {/* Column 3 · Decision — narrative, not %  */}
+      <div className="prospect-lane__decision" onClick={(e) => e.stopPropagation()}>
+        <div className="prospect-lane__momentum-narrative" aria-label={`Momentum: ${momentumLabel}`}>
+          <span className="prospect-lane__momentum-eyebrow">Relationship momentum</span>
+          <span className="prospect-lane__momentum-line">{momentumLabel}</span>
+          <span className="prospect-lane__momentum-track" aria-hidden="true">
+            <span className="prospect-lane__momentum-fill" style={{ width: `${Math.max(6, Math.min(100, Math.round(score * 100)))}%` }} />
+          </span>
         </div>
         <button
           type="button"
@@ -131,9 +152,26 @@ const ProspectsPage = () => {
   const [tier, setTier] = useState(null);
   const filters = useMemo(() => ({ q, cultural_register: register, budget_tier: tier }), [q, register, tier]);
   const { items, total, counts, loading, promote } = useRelations('/api/relations/prospects', filters);
+  const { pickDesigner } = useDesigners();
+
+  // Drawers (Sprint C)
+  const [welcomeId, setWelcomeId] = useState(null);
+  const [interviewLead, setInterviewLead] = useState(null);
 
   const handlePromote = async (p) => {
     try { await promote(p.id, 'account'); } catch (_) { /* TODO toast */ }
+  };
+  const handleOpen = (p) => setWelcomeId(p.id);
+  const handleWelcomeAction = (moment, lead) => {
+    if (moment.kind === 'continuation_interview') {
+      setInterviewLead(lead);
+      setWelcomeId(null);
+    } else if (moment.kind === 'promote_account') {
+      handlePromote(lead);
+      setWelcomeId(null);
+    } else {
+      setWelcomeId(null);
+    }
   };
 
   const toolbar = (
@@ -202,9 +240,31 @@ const ProspectsPage = () => {
 
       {!loading && items.length > 0 && (
         <div className="prospect-stack" data-testid="prospects-stack">
-          {items.map((p) => <ProspectLane key={p.id} p={p} onPromote={handlePromote} />)}
+          {items.map((p) => (
+            <ProspectLane
+              key={p.id}
+              p={p}
+              designer={pickDesigner(p.id)}
+              onPromote={handlePromote}
+              onOpen={handleOpen}
+            />
+          ))}
         </div>
       )}
+
+      <WelcomeDrawer
+        subjectId={welcomeId}
+        open={Boolean(welcomeId)}
+        onClose={() => setWelcomeId(null)}
+        onAction={handleWelcomeAction}
+      />
+      <ContinuationInterviewDrawer
+        open={Boolean(interviewLead)}
+        lead={interviewLead}
+        tenantSlug="mood-demo-studio-81a09e"
+        onClose={() => setInterviewLead(null)}
+        onCompleted={() => setInterviewLead(null)}
+      />
     </ClientRelationsLayout>
   );
 };

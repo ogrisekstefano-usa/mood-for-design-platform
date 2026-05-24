@@ -1,0 +1,63 @@
+{
+  "summary": "ITER148 Sprint C · /relations/* lead/prospect/account stages tested end-to-end. Backend 12/12 PASS (stats, list endpoints, filters, promotion lifecycle, designers, welcome payload). Frontend partially passes: leads page renders 40 cards, prospects 4 lanes, accounts 37 cards, stage-nav with 3 pills works and accent colors distinct (slate/teal/gold). TWO CRITICAL FRONTEND BUGS: (1) clicking a lead card opens the 'Profilo Personale — Presentati ai tuoi clienti' onboarding modal instead of the Welcome Drawer (the profile completion gate intercepts the card click for the demo user); (2) DesignerChip is absent from the footer of every lead card (data-testid 'designer-chip-*' count = 0 on /relations/leads — chips ARE present on prospect lanes). ONE STATS DISCREPANCY: the stage-nav shows '0 Accounts' under /relations/leads even though /relations/accounts renders 37 cards — backend /api/relations/stats correctly returns account>=1 in tests, but the navigation pill count appears to read only from leads.progression_state='account' and not the accounts table (or there is a caching/staleness issue).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/relations/leads/{id}/welcome", "issue": "next_moments items use field name `kind` (not `code` as stated in the review request). Frontend WelcomeDrawer.jsx:107 also consumes `m.kind`, so the contract is consistent BUT the review request copy says `code` — update doc or rename one of them for clarity."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "LeadsPage · card click handler", "issue": "Clicking any lead card opens the 'Profilo Personale · Presentati ai tuoi clienti' onboarding modal instead of the Welcome Drawer. The profile-completion modal is gating ALL clicks on relation cards for the demo user (Stefano Ogrisek profile is incomplete). User can never reach the Welcome Drawer → Continuation Interview flow until they complete their personal profile. Either suppress the modal during /relations/* testing OR allow the WelcomeDrawer to open above the profile modal.", "selector": "[data-testid^='lead-card-']", "priority": "CRITICAL"},
+      {"component": "LeadsPage · DesignerChip footer", "issue": "data-testid 'designer-chip-*' count = 0 on /relations/leads even though every card has a 'STEFANO OGRISEK · FONDATORE · AVAILABLE' footer rendered visually. The chip is missing its data-testid OR a different component is being used on Leads vs Prospects. Prospect lanes correctly render designer-chip-*.", "selector": "[data-testid^='designer-chip-']", "priority": "HIGH"},
+      {"component": "RelationsStageNav · Accounts count", "issue": "Stage-nav pill on /relations/leads shows '0 Accounts' but /relations/accounts page renders 37 wide cards (confirmed visually and via /api/relations/accounts returning 37+ rows). The nav count is reading only leads.progression_state='account' and not adding the accounts-table count. Backend /api/relations/stats DOES return account>=1 correctly (test_stats_returns_keys passes) — likely the frontend hook reads a different field or there is a stage-nav-specific counter.", "selector": "[data-testid='cr-stagenav-account']", "priority": "HIGH"}
+    ],
+    "integration_issues": [
+      {"flow": "Welcome Drawer → Continuation Interview", "issue": "Could not exercise the Continuation Interview drawer because the Welcome Drawer never opens (blocked by profile-completion modal — see UI bug above). Backend POST /api/relationships/intake/answer-event was NOT exercised through the UI as a result.", "affected_selectors": ["[data-testid='welcome-drawer']", "[data-testid='ci-drawer']", "[data-testid^='ci-option-']"]}
+    ],
+    "design_issues": [
+      {"screen": "Stage navigation accents", "issues": ["Slate dot on Leads ✓, teal dot on Prospects ✓, gold dot on Accounts ✓ — three accents visibly distinct on the three pages."]},
+      {"screen": "Global console", "issues": ["Many i18n missing string warnings (auth.login.*, nav.client_relations_*, nav.runtime.loading, brand.sub) — pre-existing, but the LEAK 0 / MISS 8 dev pill confirms it.", "Pre-existing React warning: 'Cannot update a component while rendering a different component' from LocalizationOverlay/LoginPage and LocalizationOverlay/Sidebar — pre-existing setState-in-render."]}
+    ]
+  },
+  "verifications": {
+    "Backend_pytest_iter148_sprint_c": "12/12 PASS · 7.71s · /app/test_reports/pytest/iter153.xml",
+    "Frontend_login_to_dashboard": "PASS · /dashboard reached with demo@moodfordesign.com",
+    "Frontend_leads_count": "PASS · 40 lead cards (data-testid='lead-card-*')",
+    "Frontend_prospects_lanes": "PASS · 4 prospect lanes (data-testid='prospect-lane-*'), each with DesignerChip + momentum + 'Promote to account' CTA + italic narrative ('arriving at the threshold')",
+    "Frontend_accounts_cards": "PASS · 37 account cards (data-testid='account-card-*'), each with monogram, 'Where we are' italic tone line, mood swatches strip, 'conversation open' status",
+    "Frontend_stage_nav": "PASS visually (slate/teal/gold accents distinct on 3 pages) · FAIL on Accounts pill count (shows 0 instead of 37)",
+    "Frontend_designer_chip_on_leads": "FAIL · 0 chips with data-testid='designer-chip-*' on /relations/leads",
+    "Frontend_welcome_drawer": "FAIL · clicking lead card opens profile-completion modal instead of WelcomeDrawer",
+    "Frontend_continuation_interview": "NOT_EXERCISED · blocked by Welcome Drawer not opening"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter148_sprint_c_relations.py",
+    "/app/test_reports/pytest/iter153.xml"
+  ],
+  "action_items": [
+    "FIX FRONTEND (CRITICAL): the profile-completion modal must NOT intercept lead-card clicks. Either suppress when the user is on /relations/* or render the WelcomeDrawer above/independent of the profile gate. Without this, the entire Sprint C interactive surface is unreachable for users with incomplete profiles (including the demo user).",
+    "FIX FRONTEND (HIGH): add data-testid='designer-chip-{id}' to the chip rendered in the LeadCard footer (currently missing — only Prospect lanes have it). The footer visually shows the designer, so the chip component is mounted but the testid prop isn't being threaded through.",
+    "FIX FRONTEND (HIGH): RelationsStageNav 'Accounts' pill count is 0 while /relations/accounts has 37 cards. Either the hook is reading leads.progression_state='account' only (missing the accounts-table count), or the stats endpoint result is stale. Backend /api/relations/stats does include accounts-table count — verify useRelations.js / RelationsStageNav.jsx is reading the right field.",
+    "CLARIFY CONTRACT: welcome next_moments uses `kind` field name; the review request copy says `code`. Pick one and update either the doc or the API.",
+    "OPTIONAL: address the noisy i18n missing-key warnings (auth.login.*, nav.client_relations_*, nav.runtime.loading) — pre-existing but it's MISS 8 LEAK 0 on every page."
+  ],
+  "critical_code_review_comments": [
+    "Stage navigation visual distinction (slate/teal/gold) is correctly implemented — the editorial brief is respected.",
+    "LeadsPage renders 40 cards as required; Prospects lanes structure (Designer identity + Momentum metrics + Narrative + Promote CTA) matches the brief.",
+    "AccountsPage wide-card grid with mood swatches + 'Where we are' italic line matches the brief; NO task counters present (compliant).",
+    "/api/relations/promote correctly enforces tenant isolation (test_promote_404_for_unknown_id passes) and the transition matrix in client_relations.py:204 is well-defined.",
+    "Welcome payload contract is correct (`lead`, `designer`, `next_moments[]`) and items include `kind` matching what the frontend WelcomeDrawer.jsx consumes — only the doc/spec mismatch on `kind` vs `code`.",
+    "Frontend gating bug: a global profile-completion modal that intercepts ALL relation-card clicks is a UX dead-end. Card click handlers should check the modal state and either dismiss it first or render the drawer on top."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter148_sprint_c_relations.py (NEW · 12 tests)"
+  ],
+  "success_rate": {"backend": "100% (12/12)", "frontend": "60% (3/5 critical surfaces — lists, prospects, accounts render; Welcome Drawer + DesignerChip on leads + stage-nav account count broken)"},
+  "test_credentials": "demo@moodfordesign.com / Blueprint2024! (tenant mood-demo-studio-81a09e). Used /app/memory/test_credentials.md.",
+  "seed_data_creation": "TestPromote::test_promote_lead_to_prospect_and_rollback moves the FIRST lead returned by /api/relations/leads through lead → prospect → account → dormant. The lead is left in 'dormant' state. Re-running the test will pick the next first lead. No new rows created.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend is solid (12/12 PASS). The frontend has THREE concrete defects that need E1 fixes: (1) profile-completion modal intercepts lead-card clicks → WelcomeDrawer unreachable, (2) DesignerChip data-testid missing on lead cards, (3) stage-nav Accounts pill shows 0 even though accounts table has 37 rows. After fixes, re-run with the same demo user and verify: clicking a lead card opens [data-testid='welcome-drawer'] with greeting + 'Atmosphere captured' + Cultivated by chip + next_moments action buttons, clicking [data-testid='welcome-drawer-action-continuation_interview'] opens [data-testid='ci-drawer'] with progress bar + italic question + options, clicking [data-testid^='ci-option-'] fires POST /api/relationships/intake/answer-event?tenant_slug=mood-demo-studio-81a09e and advances to next question.",
+  "rca of the issue": "Welcome Drawer not opening: a global profile-onboarding modal ('Presentati ai tuoi clienti') renders on top of /relations/* and captures clicks before LeadCard's onClick handler can dispatch the drawer-open event. Likely root in App.js or a top-level layout that mounts the profile modal whenever profile.is_complete=false — the modal should be either dismissible or skipped on /relations/* routes. DesignerChip missing testid on Leads: LeadsPage uses a different chip variant (or omits the testid prop) compared to ProspectsPage — search for <DesignerChip ... /> usage in LeadsPage.jsx and confirm the testid prop is passed. Stage-nav Accounts count = 0: useRelations.js stats hook is probably reading the 'account' key from a payload that excludes the accounts-table count, or the RelationsStageNav.jsx is reading a stale count from a different source — verify by GET /api/relations/stats response in browser devtools."
+}

@@ -8,9 +8,12 @@
  * Warm gold accent (#D6B48A). Operator/Studio surface (NOT client-facing).
  */
 import React, { useMemo, useState } from 'react';
-import { Search, Layers, FileSignature, CheckCircle2, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import ClientRelationsLayout from './ClientRelationsLayout';
 import useRelations from './useRelations';
+import useDesigners from './useDesigners';
+import DesignerChip from './DesignerChip';
+import WelcomeDrawer from './WelcomeDrawer';
 
 const HEALTHS = [
   { v: 'thriving', l: 'Thriving' },
@@ -46,26 +49,35 @@ const swatchesFor = (id, atmospheres = []) => {
   });
 };
 
-const AccountCard = ({ a }) => {
+const AccountCard = ({ a, designer, onOpen }) => {
   const name = a.account_name || a.email || 'Account';
   const initials = name.split(' ').map(s => s[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
   const score = Math.max(0, Math.min(100, Math.round(Number(a.relationship_score || 0))));
   const ringDeg = (score / 100) * 360;
-  // For ITER148 P0 we surface placeholder counts; Sprint B/D wires the
-  // real moodboard/proposal/approval aggregates.
-  const moodboards = a.__moodboards_count ?? '—';
-  const proposals  = a.__proposals_count  ?? '—';
-  const approvals  = a.__approvals_pending ?? '—';
   const swatches = swatchesFor(a.id);
   const health = a.relationship_health || 'stable';
 
+  // Relationship-centric narrative line — NOT a task counter.
+  const tone =
+    score >= 80 ? 'the relationship is in full conversation' :
+    score >= 55 ? 'the dialogue is settling into rhythm' :
+    score >= 30 ? 'the studio is listening closely' :
+                  'the relationship is just opening';
+
   return (
-    <article className="account-card" data-testid={`account-card-${a.id}`}>
+    <article
+      className="account-card"
+      data-testid={`account-card-${a.id}`}
+      onClick={() => onOpen && onOpen(a)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' && onOpen) onOpen(a); }}
+    >
       <header className="account-card__head">
         <div className="account-card__monogram-wrap">
           <span
             className="account-card__ring"
-            style={{ background: `conic-gradient(var(--cr-gold) ${ringDeg}deg, rgba(255,255,255,0.08) 0deg)` }}
+            style={{ background: `conic-gradient(var(--cr-gold) ${ringDeg}deg, rgba(255,255,255,0.06) 0deg)` }}
             aria-hidden="true"
           />
           <span className="account-card__monogram">{initials || '·'}</span>
@@ -80,11 +92,12 @@ const AccountCard = ({ a }) => {
             {stageLabel(a.relationship_journey_stage || a.lifecycle_stage)}
           </p>
         </div>
-        <div className="account-card__score">
-          <span className="account-card__score-value">{score}</span>
-          <span className="account-card__score-label">relationship</span>
-        </div>
       </header>
+
+      <div className="account-card__tone" data-testid={`account-tone-${a.id}`}>
+        <span className="account-card__tone-eyebrow">Where we are</span>
+        <p className="account-card__tone-line">{tone}</p>
+      </div>
 
       <div className="account-card__moodstrip" aria-label="Moodboard palette" data-testid={`account-mood-${a.id}`}>
         {swatches.map((c, i) => (
@@ -93,25 +106,10 @@ const AccountCard = ({ a }) => {
         <span className="account-card__moodlabel">live moodboard palette</span>
       </div>
 
-      <ul className="account-card__metrics">
-        <li>
-          <Layers size={16} strokeWidth={1.6} />
-          <span><strong>{moodboards}</strong> moodboards</span>
-        </li>
-        <li>
-          <FileSignature size={16} strokeWidth={1.6} />
-          <span><strong>{proposals}</strong> proposals</span>
-        </li>
-        <li>
-          <CheckCircle2 size={16} strokeWidth={1.6} />
-          <span><strong>{approvals}</strong> approvals pending</span>
-        </li>
-      </ul>
-
       <footer className="account-card__meta">
-        <span>last touch <strong>{formatAgo(a.last_activity_at)} ago</strong></span>
-        <span>·</span>
-        <span>{a.next_followup_at ? `next ${formatAgo(a.next_followup_at)} ahead` : 'no follow-up scheduled'}</span>
+        <DesignerChip designer={designer} size="sm" testid={`account-designer-${a.id}`} />
+        <span className="account-card__meta-spacer" />
+        <span>last conversation <strong>{formatAgo(a.last_activity_at)} ago</strong></span>
       </footer>
     </article>
   );
@@ -122,6 +120,11 @@ const AccountsPage = () => {
   const [health, setHealth] = useState(null);
   const filters = useMemo(() => ({ q, health }), [q, health]);
   const { items, total, counts, loading } = useRelations('/api/relations/accounts', filters);
+  const { pickDesigner } = useDesigners();
+
+  const [welcomeId, setWelcomeId] = useState(null);
+  const handleOpen = (a) => setWelcomeId(a.id);
+  const handleWelcomeAction = () => setWelcomeId(null);
 
   const toolbar = (
     <>
@@ -180,9 +183,23 @@ const AccountsPage = () => {
 
       {!loading && items.length > 0 && (
         <div className="account-grid" data-testid="accounts-grid">
-          {items.map((a) => <AccountCard key={a.id} a={a} />)}
+          {items.map((a) => (
+            <AccountCard
+              key={a.id}
+              a={a}
+              designer={pickDesigner(a.id)}
+              onOpen={handleOpen}
+            />
+          ))}
         </div>
       )}
+
+      <WelcomeDrawer
+        subjectId={welcomeId}
+        open={Boolean(welcomeId)}
+        onClose={() => setWelcomeId(null)}
+        onAction={handleWelcomeAction}
+      />
     </ClientRelationsLayout>
   );
 };

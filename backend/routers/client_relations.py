@@ -222,3 +222,128 @@ def promote(
         updates['relationship_temperature'] = max(0.8, lead.get('relationship_temperature') or 0.0)
     client.table('leads').update(updates).eq('id', lead_id).execute()
     return {"id": lead_id, "from": current, "to": target, "promoted_at": now}
+
+
+# ── ITER148 · Sprint C · Designer Presence™ + Welcome Experience™ ────
+@router.get("/designers")
+def designer_roster(
+    current_user: dict = Depends(require_permission(P_LEADS_READ)),
+):
+    """Return the studio's designer roster with presence data.
+
+    Designers are users_profile rows with role in {designer, senior_designer,
+    lead_designer, tenant_admin} for the active tenant. Presence label
+    derived from metadata_json.online_status (available | away | offline).
+    """
+    if not db_available():
+        raise HTTPException(503, "Database not configured")
+    client = db()
+    tenant_id = current_user['tenant_id']
+    res = (client.table('users_profile').select(
+        'id, first_name, last_name, role, role_label, avatar_url, '
+        'short_bio, metadata_json, contact_cta_label, response_time_label'
+    ).eq('tenant_id', tenant_id)
+     .in_('role', ['designer', 'tenant_admin', 'super_admin'])
+     .order('created_at')
+     .execute())
+    roster = []
+    for p in (res.data or []):
+        meta = p.get('metadata_json') or {}
+        full = f"{p.get('first_name') or ''} {p.get('last_name') or ''}".strip() or 'Studio'
+        roster.append({
+            "id": p['id'],
+            "name": full,
+            "role_label": p.get('role_label') or (p.get('role') or 'studio').replace('_', ' ').title(),
+            "avatar_url": p.get('avatar_url'),
+            "short_bio": p.get('short_bio'),
+            "presence": meta.get('online_status') or 'available',
+            "roundrobin_slot": meta.get('roundrobin_slot'),
+        })
+    return {"designers": roster, "total": len(roster)}
+
+
+def _select_designer_for(subject_id: str, roster: list) -> dict | None:
+    """Deterministic round-robin assignment based on subject id hash.
+    Until the real lead_assignments row is wired (Sprint D), we keep the
+    Relations cards visually populated with a stable designer.
+    """
+    if not roster:
+        return None
+    h = sum(ord(c) for c in (subject_id or '')) % len(roster)
+    return roster[h]
+
+
+@router.get("/leads/{lead_id}/welcome")
+def lead_welcome_experience(
+    lead_id: str,
+    current_user: dict = Depends(require_permission(P_LEADS_READ)),
+):
+    """Welcome Experience™ ceremonial payload for a Lead or Prospect.
+
+    Returns: assigned designer (round-robin until Sprint D), atmosphere &
+    register signals captured so far, suggested next moments.
+    """
+    if not db_available():
+        raise HTTPException(503, "Database not configured")
+    client = db()
+    tenant_id = current_user['tenant_id']
+    res = (client.table('leads').select(
+        'id, first_name, last_name, email, locale_code, lead_type, '
+        'progression_state, progression_score, relationship_temperature, '
+        'cultural_register, luxury_perception_tier, atmosphere_signals, '
+        'material_signals, behavioral_tags, designer_assigned, '
+        'intake_completed_at, created_at, updated_at'
+    ).eq('tenant_id', tenant_id).eq('id', lead_id).limit(1).execute())
+    if not res.data:
+        raise HTTPException(404, "Lead not found")
+    lead = res.data[0]
+    roster_resp = designer_roster(current_user=current_user)
+    designer = _select_designer_for(lead['id'], roster_resp.get('designers') or [])
+    # Build next-moments
+    score = float(lead.get('progression_score') or 0)
+    next_moments = []
+    if not lead.get('intake_completed_at'):
+        next_moments.append({
+            "kind": "continuation_interview",
+            "label": "Continue the interview",
+            "sub":   "Capture register, atmosphere and tier",
+        })
+    if (lead.get('atmosphere_signals') or []) and score >= 0.4:
+        next_moments.append({
+            "kind": "moodboard_invitation",
+            "label": "Share a first moodboard",
+            "sub":   "Translate the atmosphere into matter",
+        })
+    if score >= 0.75:
+        next_moments.append({
+            "kind": "promote_account",
+            "label": "Promote to Account",
+            "sub":   "Open the Design Journey™",
+        })
+    if not next_moments:
+        next_moments.append({
+            "kind": "listen",
+            "label": "Listen first",
+            "sub":   "Wait for the next signal",
+        })
+    return {
+        "lead": {
+            "id": lead['id'],
+            "name": f"{lead.get('first_name') or ''} {lead.get('last_name') or ''}".strip() or lead.get('email'),
+            "email": lead.get('email'),
+            "locale_code": lead.get('locale_code'),
+            "lead_type": lead.get('lead_type'),
+            "progression_state": lead.get('progression_state'),
+            "progression_score": score,
+            "relationship_temperature": float(lead.get('relationship_temperature') or 0),
+            "cultural_register": lead.get('cultural_register'),
+            "luxury_perception_tier": lead.get('luxury_perception_tier'),
+            "atmosphere_signals": lead.get('atmosphere_signals') or [],
+            "material_signals": lead.get('material_signals') or [],
+            "behavioral_tags": lead.get('behavioral_tags') or [],
+            "intake_completed_at": lead.get('intake_completed_at'),
+            "created_at": lead.get('created_at'),
+        },
+        "designer": designer,
+        "next_moments": next_moments,
+    }

@@ -10,6 +10,10 @@ import React, { useMemo, useState } from 'react';
 import { Search, X } from 'lucide-react';
 import ClientRelationsLayout from './ClientRelationsLayout';
 import useRelations from './useRelations';
+import useDesigners from './useDesigners';
+import DesignerChip from './DesignerChip';
+import WelcomeDrawer from './WelcomeDrawer';
+import ContinuationInterviewDrawer from './ContinuationInterviewDrawer';
 
 const ATMOSPHERES = [
   { v: 'warm_editorial',       l: 'Warm editorial'       },
@@ -40,7 +44,7 @@ const tempLabel = (t) => {
   return 'First contact';
 };
 
-const LeadCard = ({ lead }) => {
+const LeadCard = ({ lead, designer, onOpen }) => {
   const name = `${lead.first_name || ''} ${lead.last_name || ''}`.trim() || lead.email || 'Anonymous';
   const initials = name.split(' ').map(p => p[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
   const atmos    = Array.isArray(lead.atmosphere_signals) ? lead.atmosphere_signals : [];
@@ -52,7 +56,14 @@ const LeadCard = ({ lead }) => {
   const hero = atmos[0] || (tags.find(t => t.endsWith('_register')) || '').replace(/_register$/, '') || 'silent_signal';
 
   return (
-    <article className="lead-card" data-testid={`lead-card-${lead.id}`}>
+    <article
+      className="lead-card"
+      data-testid={`lead-card-${lead.id}`}
+      onClick={() => onOpen && onOpen(lead)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' && onOpen) onOpen(lead); }}
+    >
       <div className="lead-card__rule" />
 
       <header className="lead-card__head">
@@ -74,7 +85,7 @@ const LeadCard = ({ lead }) => {
         </h4>
         <p className="lead-card__hero-temp">
           <span className="lead-card__hero-dot" style={{ opacity: Math.max(0.25, temp) }} />
-          {tempLabel(temp)} · {(lead.lead_type || 'private').replace(/_/g, ' ')}
+          {tempLabel(temp)} · {(lead.lead_type || 'private').replace(/_/g, ' ')} · {(lead.locale_code || 'it').toUpperCase()}
         </p>
       </div>
 
@@ -94,9 +105,11 @@ const LeadCard = ({ lead }) => {
       )}
 
       <footer className="lead-card__meta">
-        <span>{(lead.locale_code || 'it').toUpperCase()}</span>
-        <span>·</span>
-        <span>no journey yet</span>
+        <DesignerChip designer={designer} size="sm" testid={`lead-designer-${lead.id}`} />
+        <span className="lead-card__meta-spacer" />
+        <span className="lead-card__meta-status">
+          {lead.intake_completed_at ? 'intake captured' : 'awaiting first interview'}
+        </span>
       </footer>
     </article>
   );
@@ -107,6 +120,24 @@ const LeadsPage = () => {
   const [atmosphere, setAtmosphere] = useState(null);
   const filters = useMemo(() => ({ q, atmosphere }), [q, atmosphere]);
   const { items, total, counts, loading } = useRelations('/api/relations/leads', filters);
+  const { pickDesigner } = useDesigners();
+
+  // Drawer state — Welcome + Continuation Interview.
+  const [welcomeId, setWelcomeId] = useState(null);
+  const [interviewLead, setInterviewLead] = useState(null);
+
+  const handleOpen = (lead) => setWelcomeId(lead.id);
+  const handleWelcomeAction = (moment, lead) => {
+    if (moment.kind === 'continuation_interview') {
+      setInterviewLead(lead);
+      setWelcomeId(null);
+    } else if (moment.kind === 'promote_account') {
+      // For Leads, we close the drawer — promote handled in Prospects.
+      setWelcomeId(null);
+    } else {
+      setWelcomeId(null);
+    }
+  };
 
   const toolbar = (
     <>
@@ -165,9 +196,30 @@ const LeadsPage = () => {
 
       {!loading && items.length > 0 && (
         <div className="lead-grid" data-testid="leads-grid">
-          {items.map((it) => <LeadCard key={it.id} lead={it} />)}
+          {items.map((it) => (
+            <LeadCard
+              key={it.id}
+              lead={it}
+              designer={pickDesigner(it.id)}
+              onOpen={handleOpen}
+            />
+          ))}
         </div>
       )}
+
+      <WelcomeDrawer
+        subjectId={welcomeId}
+        open={Boolean(welcomeId)}
+        onClose={() => setWelcomeId(null)}
+        onAction={handleWelcomeAction}
+      />
+      <ContinuationInterviewDrawer
+        open={Boolean(interviewLead)}
+        lead={interviewLead}
+        tenantSlug="mood-demo-studio-81a09e"
+        onClose={() => setInterviewLead(null)}
+        onCompleted={() => setInterviewLead(null)}
+      />
     </ClientRelationsLayout>
   );
 };
