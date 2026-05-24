@@ -76,7 +76,7 @@ const SettingsPage = () => {
   const isOwner = role === 'tenant_admin' || role === 'super_admin';
 
   return (
-    <div className="p-10 max-w-5xl mx-auto" data-testid="settings-page">
+    <div className="p-10 w-full" data-testid="settings-page">
       {/* ── Header ────────────────────────────────────────────────────── */}
       <div className="mb-10 flex items-start justify-between gap-6">
         <div>
@@ -107,7 +107,7 @@ const SettingsPage = () => {
           title={t('settings.workspace.title', null, 'Studio governance')}
           body={t('settings.workspace.body', null, 'Who can do what, your plan and limits, the domains you publish on, and your brand identity.')}
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <SettingsTile testid="tile-team" icon={Users} to="/settings/members" accent="core"
             title={t('settings.team.title', null, 'Team & Permissions')}
             description={t('settings.team.sub', null, 'Invite people, assign roles, suspend or remove members. Every action is audit-logged.')}
@@ -143,7 +143,7 @@ const SettingsPage = () => {
           title={t('settings.website.title', null, 'Your public storefront')}
           body={t('settings.website.body', null, 'The pages, forms and editorial content your clients and professionals see.')}
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <SettingsTile testid="tile-storefront" icon={Store} to="/blueprint/experience"
             title={t('settings.storefront.title', null, 'Experience Studio')}
             description={t('settings.storefront.sub', null, 'Homepage, hero, projects, value props — navigation & footer included.')}
@@ -167,7 +167,7 @@ const SettingsPage = () => {
           title={t('settings.account.title', null, 'Your personal preferences')}
           body={t('settings.account.body', null, 'These settings apply only to your own user — not the rest of the studio.')}
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {isSuper && (
             <SettingsTile testid="tile-languages-registry" icon={Globe} to="/admin/languages"
               accent="core"

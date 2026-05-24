@@ -29,20 +29,20 @@ const NS = 'admin.shell';
 const k = (s) => `${NS}.${s}`;
 
 const NAV = [
-  { to: '/admin/dashboard',             Icon: LayoutGrid,        keyName: 'nav.dashboard'  },
-  { to: '/admin/tenants',               Icon: Building2,         keyName: 'nav.tenants'    },
-  { to: '/admin/users',                 Icon: Users,             keyName: 'nav.users'      },
-  { to: '/admin/advisors',              Icon: Network,           keyName: 'nav.advisors'   },
-  { to: '/admin/presets',               Icon: Sparkles,          keyName: 'nav.presets'    },
-  { to: '/admin/editorial-runtime',     Icon: FileText,          keyName: 'nav.editorial'  },
-  { to: '/admin/tenant-configuration',  Icon: SlidersHorizontal, keyName: 'nav.tenant_configuration' },
-  { to: '/admin/runtime-inspector',     Icon: Activity,          keyName: 'nav.runtime_inspector'    },
-  { to: '/admin/modules',               Icon: Cog,               keyName: 'nav.modules'    },
-  { to: '/admin/language-governance',   Icon: Languages,         keyName: 'nav.language'   },
-  { to: '/admin/email-governance',      Icon: Mail,              keyName: 'nav.email'      },
-  { to: '/admin/forms-journeys',        Icon: ClipboardList,     keyName: 'nav.forms_journeys' },
-  { to: '/admin/audit',                 Icon: ShieldCheck,       keyName: 'nav.audit'      },
-  { to: '/admin/demo-governance',       Icon: FlaskConical,      keyName: 'nav.demo'       },
+  { to: '/admin/dashboard',             Icon: LayoutGrid,        keyName: 'nav.dashboard',            label: 'Governance' },
+  { to: '/admin/tenants',               Icon: Building2,         keyName: 'nav.tenants',              label: 'Studi' },
+  { to: '/admin/users',                 Icon: Users,             keyName: 'nav.users',                label: 'Utenti' },
+  { to: '/admin/advisors',              Icon: Network,           keyName: 'nav.advisors',             label: 'Advisor Network™' },
+  { to: '/admin/presets',               Icon: Sparkles,          keyName: 'nav.presets',              label: 'Preset Atelier' },
+  { to: '/admin/editorial-runtime',     Icon: FileText,          keyName: 'nav.editorial',            label: 'Editorial Runtime' },
+  { to: '/admin/tenant-configuration',  Icon: SlidersHorizontal, keyName: 'nav.tenant_configuration', label: 'Tenant Configuration' },
+  { to: '/admin/runtime-inspector',     Icon: Activity,          keyName: 'nav.runtime_inspector',    label: 'Runtime Inspector' },
+  { to: '/admin/modules',               Icon: Cog,               keyName: 'nav.modules',              label: 'Platform Capabilities™' },
+  { to: '/admin/language-governance',   Icon: Languages,         keyName: 'nav.language',             label: 'Lingue' },
+  { to: '/admin/email-governance',      Icon: Mail,              keyName: 'nav.email',                label: 'Email Governance' },
+  { to: '/admin/forms-journeys',        Icon: ClipboardList,     keyName: 'nav.forms_journeys',       label: 'Forms & Journeys' },
+  { to: '/admin/audit',                 Icon: ShieldCheck,       keyName: 'nav.audit',                label: 'Audit log' },
+  { to: '/admin/demo-governance',       Icon: FlaskConical,      keyName: 'nav.demo',                 label: 'Demo Governance' },
 ];
 
 const AdminShellInner = () => {
@@ -56,7 +56,7 @@ const AdminShellInner = () => {
   };
 
   return (
-    <div className="bp-admin" data-testid="bp-admin-shell">
+    <div className="bp-admin" data-atelier="nordic" data-testid="bp-admin-shell">
       <aside className="bp-admin__rail" aria-label="Blueprint Command Center navigation">
         <div className="bp-admin__brand">
           <div className="bp-admin__brand-mark" aria-hidden>
@@ -69,7 +69,7 @@ const AdminShellInner = () => {
         </div>
 
         <nav className="bp-admin__nav">
-          {NAV.map(({ to, Icon, keyName }) => (
+          {NAV.map(({ to, Icon, keyName, label }) => (
             <NavLink
               key={to}
               to={to}
@@ -79,7 +79,7 @@ const AdminShellInner = () => {
               data-testid={`bp-admin-nav-${keyName.split('.').pop()}`}
             >
               <Icon size={15} strokeWidth={1.3} aria-hidden />
-              <span><AdminLabel keyName={keyName} /></span>
+              <span>{label}</span>
             </NavLink>
           ))}
 
@@ -123,9 +123,9 @@ const AdminShellInner = () => {
 };
 
 // Helper component because hooks can't be called inline in a JSX map.
-const AdminLabel = ({ keyName }) => {
+const AdminLabel = ({ keyName, fallback }) => {
   const v = useEditorialBlock(k(keyName));
-  return v || '\u00A0';
+  return v || fallback || '\u00A0';
 };
 
 const AdminShell = () => (

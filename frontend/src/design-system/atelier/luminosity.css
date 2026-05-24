@@ -330,7 +330,7 @@
 }
 
 [data-atelier="nordic"] .atd-kpi__value {
-  color: #ffffff;
+  color: var(--atelier-cyan);
   font-weight: 200;
   font-size: clamp(36px, 2.9vw, 48px);
   letter-spacing: -0.025em;
@@ -345,6 +345,55 @@
   max-width: 100%;
   white-space: normal;
   line-height: 1.35;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 12. PROJECT CARDS · COMPACT EDITORIAL HEIGHT
+ *    Come da reference image: cards molto meno alte, image più piccola,
+ *    progress bar visibile, label + meta + collaborator chips in fondo.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .atd-card {
+  min-height: 0;
+}
+
+[data-atelier="nordic"] .atd-card__cover {
+  height: 200px;
+  min-height: 200px;
+  max-height: 200px;
+}
+
+[data-atelier="nordic"] .atd-card__body {
+  padding: 16px 18px 18px;
+}
+
+[data-atelier="nordic"] .atd-card__title {
+  font-size: 19px;
+  line-height: 1.18;
+  margin-bottom: 4px;
+}
+
+[data-atelier="nordic"] .atd-card__subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.66);
+  margin-bottom: 10px;
+}
+
+[data-atelier="nordic"] .atd-card__progress {
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
+
+[data-atelier="nordic"] .atd-card__meta {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Badge "IN PROGRESS / IN REVIEW / NEW" più piccolo, dentro la card cover */
+[data-atelier="nordic"] .atd-card__badge {
+  font-size: 9.5px;
+  padding: 4px 9px;
+  letter-spacing: 0.22em;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -449,6 +498,102 @@ html [data-atelier="nordic"] [data-testid="settings-page"] {
 }
 
 /* Editorial Inbox — top-level <main> wrapper has no testid */
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 13. ADMIN COMMAND CENTER · full-width pages + neutral palette
+ *    /admin/modules, /admin/advisors, /admin/language-governance
+ * ──────────────────────────────────────────────────────────────────────── */
+
+html .bp-admin__main > * {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+html .bp-admin .max-w-7xl,
+html .bp-admin .max-w-6xl,
+html .bp-admin .max-w-5xl,
+html .bp-admin .max-w-4xl {
+  max-width: none !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Admin pages · neutral cyan-accented (no amber/gold) */
+.bp-admin {
+  --bp-primary: #5eead4;
+  --bp-primary-soft: rgba(94, 234, 212, 0.15);
+  --bp-primary-glow: rgba(94, 234, 212, 0.32);
+  --bp-accent: #5eead4;
+  --mood-accent: #5eead4;
+  --mood-accent-soft: rgba(94, 234, 212, 0.16);
+  --mood-accent-glow: rgba(94, 234, 212, 0.22);
+  --mood-warm: #5eead4;
+  --pg-warm: #5eead4;
+  --bp-text-primary: #ffffff;
+  --bp-text-secondary: rgba(255, 255, 255, 0.86);
+  --bp-text-muted: rgba(255, 255, 255, 0.72);
+  --bp-text-faint: rgba(255, 255, 255, 0.55);
+}
+
+/* Force-cyan all amber/gold accents in admin shells */
+.bp-admin [class*="text-amber"],
+.bp-admin [class*="text-yellow"],
+.bp-admin [class*="text-orange"] {
+  color: var(--atelier-cyan) !important;
+}
+
+.bp-admin [class*="bg-amber"],
+.bp-admin [class*="bg-yellow"] {
+  background-color: rgba(94, 234, 212, 0.12) !important;
+}
+
+.bp-admin [class*="border-amber"],
+.bp-admin [class*="border-yellow"] {
+  border-color: rgba(94, 234, 212, 0.32) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 14. /settings HUB · grid più cards per riga
+ * ──────────────────────────────────────────────────────────────────────── */
+
+html [data-atelier="nordic"] [data-testid="settings-shell"],
+html [data-atelier="nordic"] [data-testid="settings-page"],
+html [data-atelier="nordic"] [data-testid="settings-hub"] {
+  max-width: none !important;
+  width: 100% !important;
+  padding-left: clamp(28px, 3.5vw, 56px) !important;
+  padding-right: clamp(28px, 3.5vw, 56px) !important;
+}
+
+html [data-atelier="nordic"] [data-testid="settings-hub"] .grid,
+html [data-atelier="nordic"] [data-testid="settings-page"] .grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  gap: 20px !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 15. /blueprint/markets · full-width
+ * ──────────────────────────────────────────────────────────────────────── */
+
+html [data-atelier="nordic"] .mxm-page {
+  max-width: none !important;
+  width: 100% !important;
+  padding-left: clamp(28px, 3.5vw, 56px) !important;
+  padding-right: clamp(28px, 3.5vw, 56px) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 16. /insights · palette finale (cards + labels)
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .ins-page [class*="text-amber"],
+[data-atelier="nordic"] .ins-page [class*="text-yellow"],
+[data-atelier="nordic"] .ins-page [class*="text-warm"] {
+  color: var(--atelier-cyan) !important;
+}
+
 html [data-atelier="nordic"] main > [class*="max-w-5xl"],
 html [data-atelier="nordic"] main > [class*="max-w-6xl"],
 html [data-atelier="nordic"] main > [class*="max-w-7xl"] {
