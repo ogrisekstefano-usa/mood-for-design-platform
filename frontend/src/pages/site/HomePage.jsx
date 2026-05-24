@@ -30,7 +30,6 @@ import { useSite, SiteProvider } from '../../site/SiteContext';
 import { useStorefrontContent } from '../../site/useStorefrontContent';
 import StorefrontThemeProvider from '../../design-system/storefront/StorefrontThemeProvider';
 import SiteLocaleBridge from '../../site/SiteLocaleBridge';
-import PlatformFooterBar from '../../components/common/PlatformFooterBar';
 import './home-iter150.css';
 
 // ─────────────────────────────────────────────────────────────────────
@@ -46,22 +45,22 @@ const FALLBACK = {
     magazine:        { it: 'Magazine',       en: 'Magazine' },
     design_stories:  { it: 'Design Stories', en: 'Design Stories' },
     materials:       { it: 'Materiali',      en: 'Materials' },
-    professionals:   { it: 'Per i professionisti', en: 'For Professionals' },
+    professionals:   { it: 'Per i professionisti', en: 'For Professionals™' },
     about:           { it: 'Chi siamo',      en: 'About' },
     login:           { it: 'Accedi',         en: 'Login' },
-    cta:             { it: 'Inizia il tuo progetto', en: 'Start Your Project' },
+    cta:             { it: 'Inizia il tuo viaggio', en: 'Begin Your Journey™' },
   },
   hero: {
     image: 'https://images.unsplash.com/photo-1618219740975-d40978bb7378?auto=format&fit=crop&w=2400&q=85',
     title:    { it: 'Il tuo spazio.\nIl tuo viaggio.',     en: 'Your space.\nYour journey.' },
     sub:      { it: 'Inizia un\'esperienza di design personale con studi italiani di alta gamma.',
                 en: 'Begin a personal design experience with Italian design studios.' },
-    cta_primary:   { it: 'Inizia il tuo progetto',  en: 'Start Your Project' },
-    cta_secondary: { it: 'Accesso professionisti',  en: 'Professional Access' },
+    cta_primary:   { it: 'Inizia il tuo viaggio',   en: 'Begin Your Journey™' },
+    cta_secondary: { it: 'Per i professionisti',    en: 'For Professionals™' },
   },
   trust: {
-    eyebrow: { it: 'Stimati da studi di design e brand in tutto il mondo',
-               en: 'Trusted by design studios and brands worldwide' },
+    eyebrow: { it: 'Materiali Selezionati & Design Partner',
+               en: 'Selected Materials & Design Partners' },
     brands: ['Poliform', 'Molteni&C', 'B&B Italia', 'Minotti', 'FLOS', 'Cattelan Italia', 'Porro', 'Poltrona Frau'],
   },
   howitworks: {
@@ -192,21 +191,67 @@ const L = (obj, locale) => {
   return obj[locale] || obj.en || obj.it || Object.values(obj)[0] || '';
 };
 
+// ── locale registry · CMS-driven (fallback to active two) ──────
+// In future this will read from `cms_settings.enabled_locales`. Today
+// we ship a curated default and accept overrides via copy.locales.
+const DEFAULT_LOCALES = [
+  { code: 'it',    label: 'IT', active: true },
+  { code: 'en',    label: 'EN', active: true },
+  { code: 'fr',    label: 'FR', active: false },
+  { code: 'de',    label: 'DE', active: false },
+  { code: 'es',    label: 'ES', active: false },
+];
+
+const LanguageSelector = ({ locale, locales, onChange }) => {
+  const [open, setOpen] = React.useState(false);
+  const active = locales.filter(l => l.active);
+  const current = active.find(l => l.code === locale) || active[0];
+  return (
+    <div className="mfd-langsel" data-testid="language-selector">
+      <button
+        type="button"
+        className="mfd-langsel__btn"
+        onClick={() => setOpen(o => !o)}
+        aria-haspopup="listbox" aria-expanded={open}
+        data-testid="language-selector-toggle"
+      >
+        {current?.label || 'IT'} <span aria-hidden="true">▾</span>
+      </button>
+      {open && (
+        <ul className="mfd-langsel__menu" role="listbox">
+          {active.map((l) => (
+            <li key={l.code}>
+              <button
+                type="button"
+                className={`mfd-langsel__item ${l.code === locale ? 'is-current' : ''}`}
+                onClick={() => { onChange?.(l.code); setOpen(false); }}
+                data-testid={`language-option-${l.code}`}
+              >
+                {l.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
 // ─────────────────────────────────────────────────────────────────────
 // SITE HEADER — sticky luxury nav
 // ─────────────────────────────────────────────────────────────────────
-const SiteHeader = ({ locale, copy }) => (
+const SiteHeader = ({ locale, copy, onLocaleChange }) => {
+  const locales = (copy.locales && copy.locales.length) ? copy.locales : DEFAULT_LOCALES;
+  return (
   <>
     <div className="mfd-welcome-strip" role="region" aria-label="Welcome">
       <p className="mfd-welcome-strip__msg">{L(copy.welcome, locale)}</p>
       <div className="mfd-welcome-strip__meta">
-        <button className="mfd-welcome-strip__locale" aria-label="Language">
-          {locale === 'en' ? 'EN' : 'IT'} <span aria-hidden="true">▾</span>
-        </button>
-        <Link to="/magazine" className="mfd-welcome-strip__link">
+        <LanguageSelector locale={locale} locales={locales} onChange={onLocaleChange} />
+        <Link to="/magazine" className="mfd-welcome-strip__link" data-testid="welcome-magazine-link">
           {L(copy.nav.magazine, locale)}
         </Link>
-        <Link to="/login" className="mfd-welcome-strip__link">
+        <Link to="/auth/login" className="mfd-welcome-strip__link" data-testid="welcome-login-link">
           {L(copy.nav.login, locale)}
         </Link>
       </div>
@@ -229,7 +274,8 @@ const SiteHeader = ({ locale, copy }) => (
       </Link>
     </header>
   </>
-);
+  );
+};
 
 // ─────────────────────────────────────────────────────────────────────
 // HERO
@@ -260,7 +306,7 @@ const Hero = ({ locale, copy }) => (
 );
 
 // ─────────────────────────────────────────────────────────────────────
-// TRUST STRIP
+// TRUST / MATERIAL & PARTNER STRIP
 // ─────────────────────────────────────────────────────────────────────
 const TrustStrip = ({ locale, copy }) => (
   <section className="mfd-trust" data-testid="trust-strip">
@@ -461,6 +507,9 @@ const SiteFooter = ({ locale, copy }) => (
       </div>
     </div>
     <div className="mfd-footer__rights">{L(copy.footer.rights, locale)}</div>
+    <div className="mfd-footer__blueprint" aria-label="Blueprint OS">
+      <span>© 2026 Blueprint OS™</span>
+    </div>
   </footer>
 );
 
@@ -470,6 +519,10 @@ const SiteFooter = ({ locale, copy }) => (
 const HomePageBody = () => {
   const site = useSite();
   const locale = (site?.locale || 'it').slice(0, 2);
+  const setLocale = site?.setLocale;
+  const onLocaleChange = React.useCallback((code) => {
+    if (setLocale) setLocale(code);
+  }, [setLocale]);
 
   // CMS overrides — merged onto FALLBACK without breaking missing branches.
   const cms = useStorefrontContent('home') || {};
@@ -485,7 +538,7 @@ const HomePageBody = () => {
 
   return (
     <div className="mfd-site" data-testid="public-home-page">
-      <SiteHeader locale={locale} copy={copy} />
+      <SiteHeader locale={locale} copy={copy} onLocaleChange={onLocaleChange} />
       <main>
         <Hero locale={locale} copy={copy} />
         <TrustStrip locale={locale} copy={copy} />
@@ -496,7 +549,6 @@ const HomePageBody = () => {
         <FinalCTA locale={locale} copy={copy} />
       </main>
       <SiteFooter locale={locale} copy={copy} />
-      <PlatformFooterBar surface="storefront" />
     </div>
   );
 };
