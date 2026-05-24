@@ -105,6 +105,47 @@ export const SiteProvider = ({ children }) => {
     try { document.documentElement.setAttribute('dir', lang.rtl ? 'rtl' : 'ltr'); } catch (_) {}
   }, [locale]);
 
+  // ITER146.A · Tenant-default-locale honor — if the visitor has NOT made an
+  // explicit choice (no localStorage entry), prefer the tenant's
+  // `default_locale` over the browser Accept-Language. This guarantees a
+  // visitor landing on an Italian studio sees the IT copy by default even
+  // when the browser is configured in English.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const hasExplicitChoice =
+          typeof window !== 'undefined' &&
+          !!window.localStorage.getItem(LOCALE_STORAGE_KEY);
+        if (hasExplicitChoice) return;
+        const base = process.env.REACT_APP_BACKEND_URL || '';
+        const r = await fetch(`${base}/api/tenant/configuration`, {
+          credentials: 'omit',
+        });
+        if (!r.ok) return;
+        const cfg = await r.json();
+        const tenantDefault =
+          cfg?.locales?.default_locale ||
+          cfg?.default_locale ||
+          cfg?.locale?.default ||
+          null;
+        if (!tenantDefault || cancelled) return;
+        const resolved = resolveLanguage(tenantDefault);
+        if (!resolved?.enabled || resolved.public_enabled === false) return;
+        // Switch silently — but do NOT persist to localStorage so a user
+        // visiting a different-locale tenant later still gets that tenant's
+        // default. We update state directly to bypass the persistence path.
+        setLocaleState(resolved.code);
+        try {
+          window.dispatchEvent(
+            new CustomEvent('mfd:locale:change', { detail: { locale: resolved.code } }),
+          );
+        } catch (_) {}
+      } catch (_) {}
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
   const value = useMemo(() => ({
     locale,
     setLocale,

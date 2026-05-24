@@ -268,6 +268,61 @@ def initiate_journey(body: InitiatePayload = Body(...)):
         },
     ]).execute()
 
+    # 8. ITER146.A · UNIFIED Lead Pipeline observability ────────────────
+    # Every public onboarding entry MUST also produce a `leads` row +
+    # `funnel_events` row so the CRM has ONE canonical pipeline view,
+    # regardless of whether the user arrived through /begin-journey
+    # (rich design-journey chain) or /begin-partnership (Pro form).
+    lead_id = str(uuid.uuid4())
+    try:
+        c.table('leads').insert({
+            "id":               lead_id,
+            "tenant_id":        tid,
+            "status":           "new",
+            "source":           "begin_journey_ritual",
+            "lead_type":        "private_client",
+            "onboarding_path":  "begin_journey",
+            "pipeline_stage":   "lead_captured",
+            "first_name":       first_name,
+            "email":            email,
+            "phone":            body.welcome.phone,
+            "language":         "it",
+            "locale_code":      "it-IT",
+            "runtime_identity": {
+                "onboarding_path": "begin_journey",
+                "journey_id":      journey_id,
+                "project_id":      project_id,
+                "account_id":      account_id,
+                "atmosphere":      (body.atmosphere.model_dump() if body.atmosphere else {}),
+                "lifestyle":       (body.lifestyle.model_dump()  if body.lifestyle  else {}),
+            },
+            "metadata_json":    {"journey_id": journey_id,
+                                  "project_id": project_id,
+                                  "account_id": account_id},
+            "created_at":       now,
+            "updated_at":       now,
+        }).execute()
+        c.table('funnel_events').insert({
+            "id":            str(uuid.uuid4()),
+            "tenant_id":     tid,
+            "lead_id":       lead_id,
+            "stage":         "lead_captured",
+            "event_name":    "begin_journey.submit",
+            "metadata_json": {
+                "source":          "begin_journey_ritual",
+                "lead_type":       "private_client",
+                "onboarding_path": "begin_journey",
+                "journey_id":      journey_id,
+                "project_id":      project_id,
+            },
+            "created_at":    now,
+        }).execute()
+    except Exception:
+        import logging
+        logging.getLogger(__name__).exception(
+            "unified leads/funnel insert failed (non-blocking)"
+        )
+
     # ITER146.A · Lead Pipeline Orchestration™ — fire email confirmation
     # to the private client + internal notification to the studio owner.
     # Failure NEVER blocks the journey creation.
@@ -323,6 +378,7 @@ def initiate_journey(body: InitiatePayload = Body(...)):
 
     return {
         "journey_id":    journey_id,
+        "lead_id":       lead_id,
         "welcome_token": welcome_token,
         "welcome_url":   f"/journey/welcome/{welcome_token}",
         "message":       "Il tuo Design Journey è iniziato.",

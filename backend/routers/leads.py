@@ -141,10 +141,22 @@ def submit_public_lead(
     # ITER146.A · capture runtime identity (subdomain, host, UA, UTM)
     resolved = getattr(request.state, 'resolved_tenant', None) or {}
     qs = dict(request.query_params)
+    request_host = request.headers.get('host') or ''
+    # ITER146.A fix · when the public form resolved tenant via PLATFORM_HOSTS
+    # preview-fallback (e.g. content-hub-pro-22.preview.emergentagent.com →
+    # 'studio'), the TenantResolverMiddleware doesn't populate resolved.{host,
+    # subdomain}. We derive them from the request host so the audit trail
+    # always reflects which entry surface produced the lead.
+    resolved_host = resolved.get('host') or request_host or None
+    resolved_subdomain = resolved.get('subdomain')
+    if not resolved_subdomain and request_host:
+        # First label of the host (before the first dot) — best-effort capture.
+        resolved_subdomain = request_host.split(':')[0].split('.')[0] or None
     runtime_identity = {
-        'resolved_subdomain': resolved.get('subdomain'),
-        'resolved_host':      resolved.get('host'),
-        'request_host':       request.headers.get('host'),
+        'resolved_subdomain': resolved_subdomain,
+        'resolved_host':      resolved_host,
+        'tenant_slug':        tenant_slug,
+        'request_host':       request_host or None,
         'user_agent':         request.headers.get('user-agent'),
         'referer':            request.headers.get('referer'),
         'source_locale':      payload.get('locale_code'),

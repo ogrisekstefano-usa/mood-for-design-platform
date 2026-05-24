@@ -3,6 +3,255 @@
    Welcome ritual — cinematic editorial atelier, NON typeform SaaS.
    ──────────────────────────────────────────────────────────────── */
 
+/* ────────────────────────────────────────────────────────────────
+   ITER146.A · BeginPartnership — Pro Pipeline (3-step wizard).
+   Reuses the editorial dark atelier feel but with its own scoped
+   class tree so we never collide with the Journey ritual.
+   ──────────────────────────────────────────────────────────────── */
+.begin-journey-root {
+  min-height: 100vh;
+  /* Dark editorial background — applied at ALL breakpoints (mobile + desktop).
+     Do NOT gate this behind a media query: the public onboarding wizard
+     MUST never let the global cream/light body color bleed through. */
+  background:
+    radial-gradient(900px 600px at 18% 8%, rgba(124, 228, 245, 0.06), transparent 70%),
+    radial-gradient(800px 500px at 82% 92%, rgba(180, 140, 100, 0.045), transparent 75%),
+    linear-gradient(170deg, #050608 0%, #0a0c10 55%, #050608 100%);
+  color: rgba(245, 247, 250, 0.92);
+  font-family: 'Inter', system-ui, sans-serif;
+  position: relative;
+  isolation: isolate;
+  padding: 96px 24px 120px;
+  display: flex;
+  justify-content: center;
+}
+.begin-journey-root::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+  opacity: 0.022;
+  pointer-events: none;
+  z-index: 0;
+}
+@media (max-width: 640px) {
+  .begin-journey-root { padding: 56px 18px 80px; }
+}
+
+.begin-journey-shell {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 720px;
+}
+
+/* Eyebrow / lede / title used by BeginPartnership */
+.begin-journey-shell .bj-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #7ce4f5;
+  margin-bottom: 24px;
+}
+.begin-journey-shell .bj-title {
+  font-size: clamp(34px, 4.4vw, 52px);
+  font-weight: 400;
+  line-height: 1.14;
+  color: rgba(245, 247, 250, 0.97);
+  margin: 0 0 18px;
+}
+.bj-lede {
+  font-size: 16px;
+  line-height: 1.65;
+  color: rgba(232, 235, 240, 0.62);
+  max-width: 540px;
+  margin: 0 0 48px;
+}
+
+/* Step indicator pills */
+.bj-steps {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 56px;
+}
+.bj-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(232, 235, 240, 0.4);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+}
+.bj-step--active {
+  background: rgba(124, 228, 245, 0.08);
+  border-color: rgba(124, 228, 245, 0.5);
+  color: #7ce4f5;
+}
+.bj-step--done {
+  border-color: rgba(124, 228, 245, 0.3);
+  color: rgba(124, 228, 245, 0.7);
+}
+
+/* Step content block */
+.bj-step-block { animation: bpStepIn 460ms cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes bpStepIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.bj-h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 26px;
+  font-weight: 400;
+  color: rgba(245, 247, 250, 0.96);
+  margin: 0 0 30px;
+}
+.bj-field-label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(232, 235, 240, 0.5);
+  margin: 28px 0 14px;
+}
+
+/* Chips grid (category / intent / sector) */
+.begin-journey-shell .bj-chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+@media (max-width: 640px) {
+  .begin-journey-shell .bj-chips { grid-template-columns: 1fr; }
+}
+.begin-journey-shell .bj-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 14px 18px;
+  color: rgba(245, 247, 250, 0.86);
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
+}
+.begin-journey-shell .bj-chip:hover {
+  border-color: rgba(124, 228, 245, 0.35);
+  background: rgba(124, 228, 245, 0.03);
+}
+.begin-journey-shell .bj-chip--active {
+  background: rgba(124, 228, 245, 0.08);
+  border-color: rgba(124, 228, 245, 0.55);
+  color: rgba(245, 247, 250, 0.98);
+  box-shadow: 0 6px 20px -10px rgba(124, 228, 245, 0.4);
+}
+.bj-chip__label { font-weight: 500; }
+.bj-chip__sub {
+  font-size: 11px;
+  color: rgba(232, 235, 240, 0.45);
+  letter-spacing: 0.01em;
+}
+.bj-chip--single { flex-direction: row; align-items: center; }
+
+/* Inputs / textarea (Pro flow) */
+.begin-journey-shell .bj-input,
+.begin-journey-shell .bj-textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(245, 247, 250, 0.96);
+  font-family: inherit;
+  font-size: 14.5px;
+  padding: 13px 16px;
+  transition: border-color 0.25s ease, background 0.25s ease;
+  margin-bottom: 4px;
+}
+.begin-journey-shell .bj-input::placeholder,
+.begin-journey-shell .bj-textarea::placeholder {
+  color: rgba(232, 235, 240, 0.28);
+}
+.begin-journey-shell .bj-input:focus,
+.begin-journey-shell .bj-textarea:focus {
+  outline: none;
+  border-color: rgba(124, 228, 245, 0.55);
+  background: rgba(124, 228, 245, 0.03);
+}
+.begin-journey-shell .bj-textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.55;
+}
+
+/* Action row + buttons (Pro flow) */
+.begin-journey-shell .bj-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.begin-journey-shell .bj-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+.begin-journey-shell .bj-btn--primary {
+  background: #7ce4f5;
+  color: #050608;
+  border-color: #7ce4f5;
+}
+.begin-journey-shell .bj-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px -10px rgba(124, 228, 245, 0.55);
+}
+.begin-journey-shell .bj-btn--primary:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.begin-journey-shell .bj-btn--ghost {
+  background: transparent;
+  color: rgba(232, 235, 240, 0.6);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+.begin-journey-shell .bj-btn--ghost:hover {
+  color: rgba(245, 247, 250, 0.92);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.bj-spin {
+  animation: bpSpin 0.9s linear infinite;
+}
+@keyframes bpSpin {
+  to { transform: rotate(360deg); }
+}
+
+
 .bj-shell {
   min-height: 100vh;
   background:
