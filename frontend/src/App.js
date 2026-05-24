@@ -305,11 +305,15 @@ function App() {
                     Sprint F2.4: presentazione cliente fullscreen cinematic. */}
                 <Route path="/preview/:token" element={<ClientPreviewPage />} />
 
+                {/* HomePage — public marketing root, uses ITS OWN header/footer
+                    (ITER150 Public Editorial Experience™). Not wrapped in
+                    SiteLayout so it doesn't double-render SiteHeader/SiteFooter. */}
+                <Route path="/" element={<HomePage />} />
+
                 {/* SITE (public marketing) — global brand surface.
                     Magazine + Start Project now share the same SiteLayout
                     (P0 stabilization: ONE renderer, ONE runtime, ONE source of truth). */}
                 <Route element={<SiteLayout />}>
-                  <Route path="/" element={<HomePage />} />
                   <Route path="/projects" element={<ProjectsIndexPage />} />
                   <Route path="/projects/:slug" element={<SiteProjectDetailPage />} />
                   <Route path="/magazine" element={<MagazinePage />} />

@@ -1,545 +1,516 @@
 /**
- * HomePage — MOOD for DESIGN™ cinematic storefront landing.
+ * HomePage — MOOD for DESIGN™ · International Lead Generation Platform
+ * ITER150 · Public Editorial Experience™
  *
- * Sections (top → bottom, mirroring the new mockup):
- *   1. Hero            — full-bleed dark image + serif headline + supporting sub
- *   2. Dual CTA        — privato (cream) / professionista (dark) cards
- *   3. USP strip       — 5 icon columns on warm-cream
- *   4. Projects rail   — 5-up grid on dark ("Progetti che ispirano")
- *   5. Newsletter band — cream with email form
+ * Premium international design ecosystem · NOT a SaaS landing.
+ * Warm minimal palette (warm white #F5F2ED · charcoal · editorial beige).
+ * Cyan #00C9B3 ONLY for CTAs / hover / progressions.
  *
- * EVERY visible string is locale-keyed and overridable via the storefront
- * CMS (`useStorefrontContent('home')`). NOTHING is hardcoded — when an
- * admin edits a section in /settings/storefront the page rerenders.
+ * Sections (top → bottom, mirroring the ITER150 mockup):
+ *   1. SiteHeader      — sticky luxury nav + welcome strip
+ *   2. Hero            — full-bleed lifestyle photography + serif headline
+ *   3. TrustStrip      — partner brand row, monochrome
+ *   4. HowItWorks      — 3 editorial steps (Discover · Share · Design Journey)
+ *   5. Magazine        — 5 cinematic editorial cards (NO date, NO author)
+ *   6. DesignStories   — real projects grid (4 cards)
+ *   7. Materials       — horizontal tactile selector
+ *   8. FinalCTA        — dark band, two pathways
+ *   9. SiteFooter      — minimal editorial (Company · Resources · Legal · Social)
  *
- * Tenants without DB content yet fall back to the `homepageContent` shipped
- * in `site/content/homepage.js` so the page never reads "broken".
+ * Architecture: editorial copy + media URLs are resolved through
+ * useStorefrontContent('home') (CMS-driven). When DB content is empty
+ * we fall back to FALLBACK (curated Unsplash + IT/EN copy) so the page
+ * never reads broken — and Blueprint Command Center™ can override
+ * each block without code changes.
  */
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Award, Users, Sparkles, Globe, ShieldCheck, ArrowRight,
-} from 'lucide-react';
-import axios from 'axios';
-import { toast } from 'sonner';
-import { useSite } from '../../site/SiteContext';
-import { tenantConfig } from '../../site/content/tenant';
-import { homepageContent } from '../../site/content/homepage';
+import { ArrowRight, ArrowLeft, Plus } from 'lucide-react';
+import { useSite, SiteProvider } from '../../site/SiteContext';
 import { useStorefrontContent } from '../../site/useStorefrontContent';
-import { usePublicBrand } from '../../site/usePublicBrand';
-import { toBcp47Storefront } from '../../site/localeBcp47';
+import StorefrontThemeProvider from '../../design-system/storefront/StorefrontThemeProvider';
+import SiteLocaleBridge from '../../site/SiteLocaleBridge';
+import PlatformFooterBar from '../../components/common/PlatformFooterBar';
+import './home-iter150.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-
-const USP_ICONS = {
-  excellence:    Award,
-  relationship:  Users,
-  bespoke:       Sparkles,
-  international: Globe,
-  quality:       ShieldCheck,
-};
-
-// ── Fallback editorial copy (CMS overrides) ─────────────────────────────
+// ─────────────────────────────────────────────────────────────────────
+// FALLBACK · curated editorial copy + Unsplash imagery
+// ─────────────────────────────────────────────────────────────────────
 const FALLBACK = {
+  welcome: {
+    it: 'Benvenuti nel nostro studio. Disegniamo relazioni, non solo spazi.',
+    en: 'Welcome to our studio. We design relationships, not just spaces.',
+  },
+  nav: {
+    how_it_works:    { it: 'Come funziona',  en: 'How it works' },
+    magazine:        { it: 'Magazine',       en: 'Magazine' },
+    design_stories:  { it: 'Design Stories', en: 'Design Stories' },
+    materials:       { it: 'Materiali',      en: 'Materials' },
+    professionals:   { it: 'Per i professionisti', en: 'For Professionals' },
+    about:           { it: 'Chi siamo',      en: 'About' },
+    login:           { it: 'Accedi',         en: 'Login' },
+    cta:             { it: 'Inizia il tuo progetto', en: 'Start Your Project' },
+  },
   hero: {
-    bg: 'https://images.unsplash.com/photo-1618219740975-d40978bb7378?auto=format&fit=crop&w=2200&q=85',
-    title:    { it: 'Arredare spazi.\nCostruire relazioni.',           en: 'Furnishing spaces.\nBuilding relationships.' },
-    sub:      { it: 'MOOD for DESIGN™ connette persone e progetti con il saper fare italiano e una rete selezionata di designer, architetti e artigiani.',
-                en: 'MOOD for DESIGN™ connects people and projects with Italian craftsmanship and a curated network of designers, architects and artisans.' },
-    overline: { it: 'Due percorsi. Un unico obiettivo:',                en: 'Two paths. One single goal:' },
-    overline_italic: { it: 'trasformare la tua visione in realtà.',    en: 'turning your vision into reality.' },
+    image: 'https://images.unsplash.com/photo-1618219740975-d40978bb7378?auto=format&fit=crop&w=2400&q=85',
+    title:    { it: 'Il tuo spazio.\nIl tuo viaggio.',     en: 'Your space.\nYour journey.' },
+    sub:      { it: 'Inizia un\'esperienza di design personale con studi italiani di alta gamma.',
+                en: 'Begin a personal design experience with Italian design studios.' },
+    cta_primary:   { it: 'Inizia il tuo progetto',  en: 'Start Your Project' },
+    cta_secondary: { it: 'Accesso professionisti',  en: 'Professional Access' },
   },
-  dual: {
-    privato: {
-      eyebrow: { it: 'Sei un privato?',  en: 'Are you a private client?' },
-      title:   { it: 'Inizia il tuo Design Journey™', en: 'Begin your Design Journey™' },
-      body:    { it: 'Raccontaci l\'atmosfera che stai cercando, il modo in cui vivi gli spazi. Apriamo insieme una conversazione progettuale — senza preventivi, senza fretta.',
-                 en: 'Tell us the atmosphere you are looking for, the way you inhabit spaces. We open a design conversation together — no quotes, no rush.' },
-      cta:     { it: 'Inizia il tuo Design Journey™', en: 'Begin your Design Journey™' },
-      href:    '/begin-journey',
-      image:   'https://images.unsplash.com/photo-1492138645846-7ba729b4d6ae?auto=format&fit=crop&w=900&q=85',
-    },
-    professional: {
-      eyebrow: { it: 'Sei un professionista?', en: 'Are you a professional?' },
-      title:   { it: 'Collabora con noi',      en: 'Work with us' },
-      body:    { it: 'Accedi a un ecosistema di prodotti, competenze e servizi dedicati ai professionisti dell\'interior design e dell\'architettura.',
-                 en: 'Access an ecosystem of products, expertise and services for interior design and architecture professionals.' },
-      cta:     { it: 'Accesso professionisti', en: 'Professional access' },
-      href:    '/professionals',
-      image:   'https://images.unsplash.com/photo-1582719188393-bb71ca45dbb9?auto=format&fit=crop&w=900&q=85',
-    },
+  trust: {
+    eyebrow: { it: 'Stimati da studi di design e brand in tutto il mondo',
+               en: 'Trusted by design studios and brands worldwide' },
+    brands: ['Poliform', 'Molteni&C', 'B&B Italia', 'Minotti', 'FLOS', 'Cattelan Italia', 'Porro', 'Poltrona Frau'],
   },
-  usp: {
-    title: { it: 'Perché scegliere {brand}', en: 'Why choose {brand}' },
-    items: [
-      { id: 'excellence',    icon: 'excellence',
-        title: { it: 'Eccellenza italiana',  en: 'Italian excellence' },
-        body:  { it: 'Selezioniamo i migliori brand e artigiani del Made in Italy.',
-                 en: 'We select the finest Made in Italy brands and craftsmen.' } },
-      { id: 'relationship',  icon: 'relationship',
-        title: { it: 'Relazione umana',      en: 'Human relationship' },
-        body:  { it: 'Ogni progetto è seguito da un professionista dedicato.',
-                 en: 'Every project is led by a dedicated professional.' } },
-      { id: 'bespoke',       icon: 'bespoke',
-        title: { it: 'Progetti su misura',   en: 'Bespoke projects' },
-        body:  { it: 'Soluzioni personalizzate per spazi residenziali e contract.',
-                 en: 'Tailored solutions for residential and contract spaces.' } },
-      { id: 'international', icon: 'international',
-        title: { it: 'Internazionale',       en: 'International' },
-        body:  { it: 'Supportiamo privati e professionisti in tutto il mondo.',
-                 en: 'We support private clients and professionals worldwide.' } },
-      { id: 'quality',       icon: 'quality',
-        title: { it: 'Qualità garantita',    en: 'Guaranteed quality' },
-        body:  { it: 'Materiali, design e servizio senza compromessi.',
-                 en: 'Materials, design and service without compromise.' } },
+  howitworks: {
+    eyebrow:  { it: 'Come funziona',  en: 'How it works' },
+    title:    { it: 'Un viaggio. Disegnato attorno a te.',
+                en: 'A journey. Designed around you.' },
+    steps: [
+      { id: '01', title: { it: 'Esplora',  en: 'Discover' },
+        body: { it: 'Esplora atmosfere, stili e ispirazioni che parlano di te.',
+                en: 'Explore atmospheres, styles and inspirations that speak to you.' } },
+      { id: '02', title: { it: 'Condividi', en: 'Share' },
+        body: { it: 'Raccontaci il tuo spazio, le tue esigenze e le tue preferenze visive.',
+                en: 'Tell us about your space, needs and visual preferences.' } },
+      { id: '03', title: { it: 'Design Journey', en: 'Design Journey' },
+        body: { it: 'Il nostro studio sviluppa il tuo progetto, passo dopo passo, insieme a te.',
+                en: 'Our studio creates your project, step by step, together.' } },
+    ],
+    cta: { it: 'Inizia il tuo viaggio', en: 'Start Your Journey' },
+  },
+  magazine: {
+    eyebrow:  { it: 'Magazine', en: 'Magazine' },
+    title:    { it: 'Ispirazione. Materiali. Atmosfere.',
+                en: 'Inspiration. Materials. Atmospheres.' },
+    explore:  { it: 'Esplora tutti gli articoli', en: 'Explore all articles' },
+    cards: [
+      { id: 'm1', category: 'INTERIORS',
+        title: { it: 'Modern living\nin perfetto equilibrio', en: 'Modern living\nin perfect balance' },
+        image: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=900&q=85' },
+      { id: 'm2', category: 'MATERIALS',
+        title: { it: 'La bellezza della\npietra naturale', en: 'The beauty of\nnatural stone' },
+        image: 'https://images.unsplash.com/photo-1604578762246-41134e37f9cc?auto=format&fit=crop&w=900&q=85' },
+      { id: 'm3', category: 'INSPIRATION',
+        title: { it: 'Minimalismo caldo:\nliving senza tempo', en: 'Warm minimalism:\ntimeless living' },
+        image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=900&q=85' },
+      { id: 'm4', category: 'DESIGN STORIES',
+        title: { it: 'Un progetto\na Milano', en: 'A project\nin Milan' },
+        image: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=900&q=85' },
+      { id: 'm5', category: 'DETAILS',
+        title: { it: 'L\'arte\ndei dettagli', en: 'The art\nof the details' },
+        image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=900&q=85' },
     ],
   },
-  projects: {
-    title: { it: 'Progetti che ispirano', en: 'Projects that inspire' },
-    items: [
-      { id: 'venezia',  category: { it: 'Residenziale', en: 'Residential' }, city: { it: 'Venezia',       en: 'Venice' },
-        image: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=85', href: '/projects' },
-      { id: 'como',     category: { it: 'Resort',       en: 'Resort' },      city: { it: 'Lago di Como',  en: 'Lake Como' },
-        image: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=900&q=85', href: '/projects' },
-      { id: 'firenze',  category: { it: 'Boutique Hotel', en: 'Boutique Hotel' }, city: { it: 'Firenze',  en: 'Florence' },
-        image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=900&q=85', href: '/projects' },
-      { id: 'val-orcia', category: { it: 'Villa Privata', en: 'Private Villa' }, city: { it: "Val d'Orcia", en: "Val d'Orcia" },
-        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=85', href: '/projects' },
-      { id: 'milano',    category: { it: 'Penthouse',     en: 'Penthouse' },     city: { it: 'Milano',     en: 'Milan' },
-        image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=900&q=85', href: '/projects' },
+  stories: {
+    eyebrow:  { it: 'Design Stories', en: 'Design Stories' },
+    title:    { it: 'Progetti reali. Spazi reali.', en: 'Real projects. Real spaces.' },
+    viewAll:  { it: 'Vedi tutti i progetti', en: 'View all projects' },
+    cards: [
+      { id: 's1', kind: { it: 'RESIDENZA PRIVATA', en: 'PRIVATE RESIDENCE' },
+        title:  { it: 'Lugano Lake House', en: 'Lugano Lake House' },
+        excerpt:{ it: 'Un rifugio sereno in armonia con la natura.',
+                  en: 'A serene retreat in harmony with nature.' },
+        image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1100&q=85' },
+      { id: 's2', kind: { it: 'APPARTAMENTO', en: 'APARTMENT' },
+        title:  { it: 'Brera Apartment', en: 'Brera Apartment' },
+        excerpt:{ it: 'Linee eleganti e artigianato italiano.',
+                  en: 'Elegant lines and Italian craftsmanship.' },
+        image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1100&q=85' },
+      { id: 's3', kind: { it: 'VILLA', en: 'VILLA' },
+        title:  { it: 'Tuscany Hills', en: 'Tuscany Hills' },
+        excerpt:{ it: 'Dove la tradizione incontra il design contemporaneo.',
+                  en: 'Where tradition meets contemporary design.' },
+        image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1100&q=85' },
+      { id: 's4', kind: { it: 'PENTHOUSE', en: 'PENTHOUSE' },
+        title:  { it: 'City Skyline', en: 'City Skyline' },
+        excerpt:{ it: 'Luce, viste e abitare sofisticato.',
+                  en: 'Light, views and sophisticated living.' },
+        image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1100&q=85' },
     ],
   },
-  newsletter: {
-    title: { it: 'Ispirazione e novità',                en: 'Inspiration & news' },
-    body:  { it: 'Iscriviti alla nostra newsletter per ricevere contenuti esclusivi e aggiornamenti dal mondo del design.',
-             en: 'Subscribe to our newsletter for exclusive content and updates from the world of design.' },
-    placeholder: { it: 'La tua email', en: 'Your email' },
-    cta:         { it: 'Iscriviti',     en: 'Subscribe' },
-    success:     { it: 'Grazie per esserti iscritto.', en: 'Thanks for subscribing.' },
+  materials: {
+    eyebrow:  { it: 'Materiali & Brand', en: 'Materials & Brands' },
+    title:    { it: 'Una selezione curata dei migliori materiali.',
+                en: 'Curated selection of the finest materials.' },
+    explore:  { it: 'Esplora i materiali', en: 'Explore materials' },
+    swatches: [
+      { id: 'mat1', name: 'Marble',     image: 'https://images.unsplash.com/photo-1604147706283-d7119b5b822c?auto=format&fit=crop&w=400&q=85' },
+      { id: 'mat2', name: 'Walnut',     image: 'https://images.unsplash.com/photo-1610552050890-fe99536c2615?auto=format&fit=crop&w=400&q=85' },
+      { id: 'mat3', name: 'Oak',        image: 'https://images.unsplash.com/photo-1609921141835-710b7cd1a51c?auto=format&fit=crop&w=400&q=85' },
+      { id: 'mat4', name: 'Linen',      image: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=400&q=85' },
+      { id: 'mat5', name: 'Travertine', image: 'https://images.unsplash.com/photo-1604147495798-57beb5d6af73?auto=format&fit=crop&w=400&q=85' },
+      { id: 'mat6', name: 'Brass',      image: 'https://images.unsplash.com/photo-1564540586988-aa4e53c3d799?auto=format&fit=crop&w=400&q=85' },
+      { id: 'mat7', name: 'Terrazzo',   image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=400&q=85' },
+      { id: 'mat8', name: 'Slate',      image: 'https://images.unsplash.com/photo-1597428892389-6d456e69ec48?auto=format&fit=crop&w=400&q=85' },
+      { id: 'mat9', name: 'Linen Light',image: 'https://images.unsplash.com/photo-1622820236923-2c14b95b62b3?auto=format&fit=crop&w=400&q=85' },
+      { id: 'mat10',name: 'Charcoal',   image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=400&q=85' },
+      { id: 'mat11',name: 'Basalt',     image: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=400&q=85' },
+    ],
+  },
+  finalCTA: {
+    title:   { it: 'Pronto a iniziare\nil tuo design journey?',
+               en: 'Ready to start\nyour design journey?' },
+    sub:     { it: 'Siamo qui per portare la tua visione alla luce.',
+               en: 'We are here to bring your vision to life.' },
+    private: { it: 'Per Clienti Privati', en: 'For Private Clients' },
+    pro:     { it: 'Per Studi & Brand',   en: 'For Design Studios & Brands' },
+  },
+  footer: {
+    cols: [
+      { title: { it: 'Azienda', en: 'Company' },
+        links: [
+          { label: { it: 'Chi siamo',     en: 'About Us' },   href: '/about' },
+          { label: { it: 'I nostri studi', en: 'Our Studios' },href: '/studios' },
+          { label: { it: 'Lavora con noi', en: 'Careers' },   href: '/careers' },
+          { label: { it: 'Contatti',      en: 'Contact' },    href: '/contact' },
+        ] },
+      { title: { it: 'Risorse', en: 'Resources' },
+        links: [
+          { label: { it: 'FAQ',            en: 'FAQ' },            href: '/faq' },
+          { label: { it: 'Privacy Policy', en: 'Privacy Policy' }, href: '/privacy' },
+          { label: { it: 'Termini e Condizioni', en: 'Terms & Conditions' }, href: '/terms' },
+        ] },
+      { title: { it: 'Seguici', en: 'Follow Us' },
+        links: [
+          { label: 'Instagram', href: 'https://instagram.com' },
+          { label: 'Pinterest', href: 'https://pinterest.com' },
+          { label: 'LinkedIn',  href: 'https://linkedin.com' },
+        ] },
+    ],
+    rights: { it: '© 2026 MOOD for DESIGN. Tutti i diritti riservati.',
+              en: '© 2026 MOOD for DESIGN. All rights reserved.' },
   },
 };
 
-const pick = (bag, locale) => {
-  if (bag == null) return '';
-  if (typeof bag === 'string') return bag;
-  const chain = [locale, locale?.split('-')[0], 'it', 'en-US', 'en', 'fr', 'de', 'es'];
-  for (const c of chain) if (c && bag[c]) return bag[c];
-  return Object.values(bag)[0] || '';
+// ── locale picker ────────────────────────────────────────────────
+const L = (obj, locale) => {
+  if (!obj) return '';
+  if (typeof obj === 'string') return obj;
+  return obj[locale] || obj.en || obj.it || Object.values(obj)[0] || '';
 };
 
-// Locale-aware deep getter against the CMS bag, falling back to JS defaults.
-// Tries multiple keys: bcp47 (`it-IT`), compact (`it`), then default chain.
-const fromCMS = (cmsContent, sectionKey, field, locale) => {
-  const db = cmsContent?.[sectionKey];
-  if (!db) return undefined;
-  const bcp = toBcp47Storefront(locale);
-  return db[bcp]?.[field]
-      ?? db[locale]?.[field]
-      ?? db._default?.[field]
-      ?? db['en-US']?.[field]
-      ?? db.it?.[field]
-      ?? db['it-IT']?.[field];
-};
-
-
-// ── Sections ─────────────────────────────────────────────────────────────
-
-const Hero = ({ cms, locale, brandName }) => {
-  // Phase S-CONNECT Step 4 — bind to Storefront Studio actual schema.
-  // DB section_type: `store_hero` · fields: title · eyebrow · settings.background_image_url
-  const heroSettings = cms?.store_hero?._settings || {};
-  const bg = heroSettings.background_image_url
-          || fromCMS(cms, 'store_hero', 'background_url', locale)
-          || FALLBACK.hero.bg;
-  const title = fromCMS(cms, 'store_hero', 'title', locale)
-             || fromCMS(cms, 'store_hero', 'headline', locale)
-             || pick(FALLBACK.hero.title, locale);
-  const sub   = fromCMS(cms, 'store_hero', 'subtitle', locale)
-             || fromCMS(cms, 'store_hero', 'sub', locale)
-             || pick(FALLBACK.hero.sub, locale);
-  const overline = fromCMS(cms, 'store_hero', 'eyebrow', locale)
-                || fromCMS(cms, 'store_hero', 'overline', locale)
-                || pick(FALLBACK.hero.overline, locale);
-  const overlineIt = fromCMS(cms, 'store_hero', 'overline_italic', locale) || pick(FALLBACK.hero.overline_italic, locale);
-  // Allow {brand} placeholder in CMS / fallback titles.
-  const titleResolved = String(title).replaceAll('{brand}', brandName || '');
-  return (
-    <section className="mfd-hero" data-testid="home-hero">
-      <div className="mfd-hero__bg" style={{ backgroundImage: `url("${bg}")` }} aria-hidden />
-      <div className="mfd-hero__veil" aria-hidden />
-      <div className="mfd-hero__content">
-        <h1 className="mfd-hero__title" data-testid="home-hero-title">
-          {titleResolved.split('\n').map((ln, i) => <span key={i} style={{ display: 'block' }}>{ln}</span>)}
-        </h1>
-        <p className="mfd-hero__sub" data-testid="home-hero-sub">{sub}</p>
-        <div className="mfd-hero__divider" aria-hidden />
-        <p className="mfd-hero__overline">{overline}</p>
-        <p className="mfd-hero__overline-italic">{overlineIt}</p>
+// ─────────────────────────────────────────────────────────────────────
+// SITE HEADER — sticky luxury nav
+// ─────────────────────────────────────────────────────────────────────
+const SiteHeader = ({ locale, copy }) => (
+  <>
+    <div className="mfd-welcome-strip" role="region" aria-label="Welcome">
+      <p className="mfd-welcome-strip__msg">{L(copy.welcome, locale)}</p>
+      <div className="mfd-welcome-strip__meta">
+        <button className="mfd-welcome-strip__locale" aria-label="Language">
+          {locale === 'en' ? 'EN' : 'IT'} <span aria-hidden="true">▾</span>
+        </button>
+        <Link to="/magazine" className="mfd-welcome-strip__link">
+          {L(copy.nav.magazine, locale)}
+        </Link>
+        <Link to="/login" className="mfd-welcome-strip__link">
+          {L(copy.nav.login, locale)}
+        </Link>
       </div>
-    </section>
-  );
-};
+    </div>
+    <header className="mfd-header">
+      <Link to="/" className="mfd-header__brand">
+        <span className="mfd-header__brand-mark">MOOD <em>for</em> DESIGN</span>
+        <span className="mfd-header__brand-sub">Italian Design Studios</span>
+      </Link>
+      <nav className="mfd-header__nav" aria-label="Primary">
+        <a href="#how-it-works">{L(copy.nav.how_it_works, locale)}</a>
+        <Link to="/magazine">{L(copy.nav.magazine, locale)}</Link>
+        <a href="#design-stories">{L(copy.nav.design_stories, locale)}</a>
+        <a href="#materials">{L(copy.nav.materials, locale)}</a>
+        <Link to="/professionals">{L(copy.nav.professionals, locale)}</Link>
+        <a href="#footer">{L(copy.nav.about, locale)}</a>
+      </nav>
+      <Link to="/begin-journey" className="mfd-cta mfd-cta--primary" data-testid="header-cta-start-project">
+        {L(copy.nav.cta, locale)}
+      </Link>
+    </header>
+  </>
+);
 
+// ─────────────────────────────────────────────────────────────────────
+// HERO
+// ─────────────────────────────────────────────────────────────────────
+const Hero = ({ locale, copy }) => (
+  <section className="mfd-hero" data-testid="hero-section">
+    <div className="mfd-hero__bg" aria-hidden="true">
+      <img src={copy.hero.image} alt="" loading="eager" />
+      <span className="mfd-hero__veil" />
+    </div>
+    <div className="mfd-hero__content">
+      <h1 className="mfd-hero__title" data-testid="hero-title">
+        {L(copy.hero.title, locale).split('\n').map((line, i) => (
+          <span key={i} className="mfd-hero__title-line">{line}</span>
+        ))}
+      </h1>
+      <p className="mfd-hero__sub" data-testid="hero-sub">{L(copy.hero.sub, locale)}</p>
+      <div className="mfd-hero__ctas">
+        <Link to="/begin-journey" className="mfd-cta mfd-cta--solid" data-testid="hero-cta-primary">
+          {L(copy.hero.cta_primary, locale)}
+        </Link>
+        <Link to="/professionals" className="mfd-cta mfd-cta--ghost" data-testid="hero-cta-secondary">
+          {L(copy.hero.cta_secondary, locale)}
+        </Link>
+      </div>
+    </div>
+  </section>
+);
 
-const DualCTA = ({ cms, locale }) => {
-  // Phase S-CONNECT Step 4 — bind to Storefront Studio `dual_cta` section
-  // (single section_type with private_* and professional_* fields per locale).
-  const F = FALLBACK.dual;
-  const dual = cms?.dual_cta;
-  const fromDual = (key) =>
-    dual?.[locale]?.[key] ?? dual?.[toBcp47Storefront(locale)]?.[key] ?? dual?._default?.[key] ?? dual?.['en-US']?.[key] ?? dual?.['it-IT']?.[key];
+// ─────────────────────────────────────────────────────────────────────
+// TRUST STRIP
+// ─────────────────────────────────────────────────────────────────────
+const TrustStrip = ({ locale, copy }) => (
+  <section className="mfd-trust" data-testid="trust-strip">
+    <p className="mfd-trust__eyebrow">{L(copy.trust.eyebrow, locale)}</p>
+    <ul className="mfd-trust__brands">
+      {copy.trust.brands.map((b) => (
+        <li key={b} className="mfd-trust__brand">{b}</li>
+      ))}
+    </ul>
+  </section>
+);
 
-  const card = (kind, fb) => ({
-    eyebrow: fromDual(`${kind}_eyebrow`) || fromCMS(cms, `dual_cta_${kind}`, 'eyebrow', locale) || pick(fb.eyebrow, locale),
-    title:   fromDual(`${kind}_title`)   || fromCMS(cms, `dual_cta_${kind}`, 'title',   locale) || pick(fb.title,   locale),
-    body:    fromDual(`${kind}_body`)    || fromCMS(cms, `dual_cta_${kind}`, 'body',    locale) || pick(fb.body,    locale),
-    cta:     fromDual(`${kind}_cta`)     || fromCMS(cms, `dual_cta_${kind}`, 'cta',     locale) || pick(fb.cta,     locale),
-    href:    fromDual(`${kind}_href`)    || fromCMS(cms, `dual_cta_${kind}`, 'href',    locale) || fb.href,
-    image:   fromDual(`${kind}_image`)   || fromCMS(cms, `dual_cta_${kind}`, 'image',   locale) || fb.image,
-  });
-  const p = card('private', F.privato);
-  const q = card('professional', F.professional);
-  return (
-    <section className="mfd-dual-cta" data-testid="home-dual-cta">
-      <div className="mfd-dual-cta__grid">
-        <article className="mfd-dual-card mfd-dual-card--cream" data-testid="home-cta-privato">
-          <div className="mfd-dual-card__body">
-            <p className="mfd-dual-card__eyebrow">{p.eyebrow}</p>
-            <h3 className="mfd-dual-card__title">{p.title}</h3>
-            <p className="mfd-dual-card__text">{p.body}</p>
-            <Link to={p.href} className="mfd-dual-card__cta" data-testid="home-cta-privato-link">
-              {p.cta} <ArrowRight size={14} strokeWidth={1.7} aria-hidden />
-            </Link>
+// ─────────────────────────────────────────────────────────────────────
+// HOW IT WORKS
+// ─────────────────────────────────────────────────────────────────────
+const HowItWorks = ({ locale, copy }) => (
+  <section id="how-it-works" className="mfd-how" data-testid="how-it-works">
+    <header className="mfd-section-head">
+      <p className="mfd-section-eyebrow">{L(copy.howitworks.eyebrow, locale)}</p>
+      <h2 className="mfd-section-title">{L(copy.howitworks.title, locale)}</h2>
+    </header>
+    <ol className="mfd-how__steps">
+      {copy.howitworks.steps.map((s) => (
+        <li key={s.id} className="mfd-how__step">
+          <span className="mfd-how__step-num">{s.id}</span>
+          <div className="mfd-how__step-body">
+            <h3 className="mfd-how__step-title">{L(s.title, locale)}</h3>
+            <p className="mfd-how__step-text">{L(s.body, locale)}</p>
           </div>
-          <div className="mfd-dual-card__image" style={{ backgroundImage: `url("${p.image}")` }} aria-hidden />
-        </article>
-        <article className="mfd-dual-card mfd-dual-card--dark" data-testid="home-cta-professional">
-          <div className="mfd-dual-card__body">
-            <p className="mfd-dual-card__eyebrow">{q.eyebrow}</p>
-            <h3 className="mfd-dual-card__title">{q.title}</h3>
-            <p className="mfd-dual-card__text">{q.body}</p>
-            <Link to={q.href} className="mfd-dual-card__cta" data-testid="home-cta-professional-link">
-              {q.cta} <ArrowRight size={14} strokeWidth={1.7} aria-hidden />
-            </Link>
+        </li>
+      ))}
+    </ol>
+    <div className="mfd-how__cta-wrap">
+      <Link to="/begin-journey" className="mfd-cta mfd-cta--outline" data-testid="how-cta">
+        {L(copy.howitworks.cta, locale)}
+      </Link>
+    </div>
+  </section>
+);
+
+// ─────────────────────────────────────────────────────────────────────
+// MAGAZINE
+// ─────────────────────────────────────────────────────────────────────
+const Magazine = ({ locale, copy }) => (
+  <section id="magazine" className="mfd-magazine" data-testid="magazine-section">
+    <header className="mfd-section-head mfd-section-head--with-link">
+      <div>
+        <p className="mfd-section-eyebrow">{L(copy.magazine.eyebrow, locale)}</p>
+        <h2 className="mfd-section-title">{L(copy.magazine.title, locale)}</h2>
+      </div>
+      <Link to="/magazine" className="mfd-section-link" data-testid="magazine-explore">
+        {L(copy.magazine.explore, locale)} <ArrowRight size={14} strokeWidth={1.6} />
+      </Link>
+    </header>
+    <div className="mfd-magazine__grid">
+      {copy.magazine.cards.map((c) => (
+        <Link key={c.id} to={`/magazine/${c.id}`} className="mag-card" data-testid={`magazine-card-${c.id}`}>
+          <div className="mag-card__media">
+            <img src={c.image} alt="" loading="lazy" />
+            <span className="mag-card__veil" />
           </div>
-          <div className="mfd-dual-card__image" style={{ backgroundImage: `url("${q.image}")` }} aria-hidden />
-        </article>
+          <span className="mag-card__category">{c.category}</span>
+          <h3 className="mag-card__title">
+            {L(c.title, locale).split('\n').map((line, i) => (
+              <span key={i}>{line}</span>
+            ))}
+          </h3>
+          <span className="mag-card__plus" aria-hidden="true">
+            <Plus size={14} strokeWidth={1.6} />
+          </span>
+        </Link>
+      ))}
+    </div>
+  </section>
+);
+
+// ─────────────────────────────────────────────────────────────────────
+// DESIGN STORIES
+// ─────────────────────────────────────────────────────────────────────
+const DesignStories = ({ locale, copy }) => (
+  <section id="design-stories" className="mfd-stories" data-testid="design-stories">
+    <header className="mfd-section-head mfd-section-head--with-link">
+      <div>
+        <p className="mfd-section-eyebrow">{L(copy.stories.eyebrow, locale)}</p>
+        <h2 className="mfd-section-title">{L(copy.stories.title, locale)}</h2>
       </div>
-    </section>
-  );
-};
+      <Link to="/projects" className="mfd-section-link" data-testid="stories-view-all">
+        {L(copy.stories.viewAll, locale)} <ArrowRight size={14} strokeWidth={1.6} />
+      </Link>
+    </header>
+    <div className="mfd-stories__grid">
+      {copy.stories.cards.map((c) => (
+        <Link key={c.id} to={`/projects/${c.id}`} className="story-card" data-testid={`story-card-${c.id}`}>
+          <div className="story-card__media">
+            <img src={c.image} alt="" loading="lazy" />
+          </div>
+          <div className="story-card__body">
+            <p className="story-card__kind">{L(c.kind, locale)}</p>
+            <h3 className="story-card__title">{L(c.title, locale)}</h3>
+            <p className="story-card__excerpt">{L(c.excerpt, locale)}</p>
+          </div>
+        </Link>
+      ))}
+    </div>
+  </section>
+);
 
-
-const UspStrip = ({ cms, locale, brandName }) => {
-  // Phase S-CONNECT Step 4 — bind to Storefront Studio `value_props` section.
-  // DB fields: section_title (per locale) · section_kicker · settings.pillars
-  const titleRaw = fromCMS(cms, 'value_props', 'section_title', locale)
-                || fromCMS(cms, 'usp_strip', 'title', locale)
-                || pick(FALLBACK.usp.title, locale);
-  const title = String(titleRaw).replaceAll('{brand}', brandName || '');
-  const items = (cms?.value_props?._settings?.pillars)
-             || (cms?.usp_strip?._settings?.items)
-             || FALLBACK.usp.items;
+// ─────────────────────────────────────────────────────────────────────
+// MATERIALS
+// ─────────────────────────────────────────────────────────────────────
+const Materials = ({ locale, copy }) => {
+  const railRef = React.useRef(null);
+  const scrollBy = (dx) => railRef.current?.scrollBy({ left: dx, behavior: 'smooth' });
   return (
-    <section className="mfd-usp" data-testid="home-usp">
-      <header className="mfd-usp__head">
-        <h2 className="mfd-usp__title">{title.split(' ').map((w, i) => /^MOOD/i.test(w) ? <span key={i}>{w} </span> : i === 0 || /^per|^why|^why$/i.test(w) ? <span key={i}>{w} </span> : <span key={i}>{w} </span>)}</h2>
-        <span className="mfd-usp__rule" aria-hidden />
-      </header>
-      <div className="mfd-usp__grid">
-        {items.map((it) => {
-          const Icon = USP_ICONS[it.icon] || USP_ICONS.excellence;
-          return (
-            <div key={it.id} className="mfd-usp__col" data-testid={`home-usp-${it.id}`}>
-              <span className="mfd-usp__icon"><Icon size={34} strokeWidth={1.2} aria-hidden /></span>
-              <h4 className="mfd-usp__col-title">{pick(it.title, locale)}</h4>
-              <p className="mfd-usp__col-body">{pick(it.body, locale)}</p>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  );
-};
-
-
-const ProjectsRail = ({ cms, locale }) => {
-  // Phase S-CONNECT Step 4 — bind to Storefront Studio `projects_preview`
-  // (section title) + runtime portfolio public endpoint (project cards).
-  const titleRaw = fromCMS(cms, 'projects_preview', 'section_title', locale)
-                || fromCMS(cms, 'projects_rail', 'title', locale)
-                || pick(FALLBACK.projects.title, locale);
-  const cmsItems = (cms?.projects_preview?._settings?.items)
-                || (cms?.projects_rail?._settings?.items)
-                || FALLBACK.projects.items;
-  const [runtimeItems, setRuntimeItems] = useState(null);
-
-  // Phase S-CONNECT Step 4 — runtime binding to portfolio public endpoint.
-  useEffect(() => {
-    let alive = true;
-    const slug = tenantConfig.slug;
-    const bcp = toBcp47Storefront(locale);
-    axios.get(`${BACKEND_URL}/api/portfolio/public/${slug}/projects?locale_code=${encodeURIComponent(bcp)}`)
-      .then((r) => {
-        if (!alive) return;
-        const list = r.data?.projects || [];
-        setRuntimeItems(list.length > 0 ? list.slice(0, 5) : []);
-      })
-      .catch(() => { if (alive) setRuntimeItems([]); });
-    return () => { alive = false; };
-  }, [locale]);
-
-  // If we have published variants for this market, use them — else CMS items.
-  const usingRuntime = Array.isArray(runtimeItems) && runtimeItems.length > 0;
-  const items = usingRuntime ? runtimeItems : cmsItems;
-
-  return (
-    <section className="mfd-projects" data-testid="home-projects" data-source={usingRuntime ? 'runtime' : 'cms'}>
-      <header className="mfd-projects__head">
-        <h2 className="mfd-projects__title">{titleRaw}</h2>
-        <span className="mfd-projects__rule" aria-hidden />
-      </header>
-      <div className="mfd-projects__grid">
-        {items.map((p) => {
-          const id   = usingRuntime ? p.id     : p.id;
-          const slug = usingRuntime ? p.slug   : null;
-          const href = usingRuntime ? (slug ? `/projects/${slug}` : '/projects') : (p.href || '/projects');
-          const image= usingRuntime ? (p.cover_image_url || '') : p.image;
-          const cat  = usingRuntime ? (p.category || '') : pick(p.category, locale);
-          const city = usingRuntime ? (p.location || '') : pick(p.city, locale);
-          return (
-            <Link
-              key={id || slug}
-              to={href}
-              className="mfd-project-card"
-              data-testid={`home-project-${id || slug}`}
-            >
-              <div className="mfd-project-card__media" style={{ backgroundImage: image ? `url("${image}")` : undefined }} aria-hidden />
-              <div className="mfd-project-card__caption">
-                <span className="mfd-project-card__category">{cat}</span>
-                <span className="mfd-project-card__city">{city}</span>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-    </section>
-  );
-};
-
-
-const Newsletter = ({ cms, locale, slug }) => {
-  const N = FALLBACK.newsletter;
-  const title       = fromCMS(cms, 'newsletter', 'title',       locale) || pick(N.title, locale);
-  const body        = fromCMS(cms, 'newsletter', 'body',        locale) || pick(N.body, locale);
-  const placeholder = fromCMS(cms, 'newsletter', 'placeholder', locale) || pick(N.placeholder, locale);
-  const ctaLabel    = fromCMS(cms, 'newsletter', 'cta',         locale) || pick(N.cta, locale);
-  const successMsg  = fromCMS(cms, 'newsletter', 'success',     locale) || pick(N.success, locale);
-
-  const [email, setEmail] = useState('');
-  const [busy, setBusy] = useState(false);
-
-  const submit = async (e) => {
-    e.preventDefault();
-    const v = email.trim();
-    if (!v || !/.+@.+\..+/.test(v)) {
-      toast.error(locale.startsWith('it') ? 'Inserisci una email valida.' : 'Please enter a valid email.');
-      return;
-    }
-    setBusy(true);
-    try {
-      // Reuses the existing public lead endpoint — falls back to a soft
-      // success toast if the endpoint isn't wired for newsletter capture.
-      await axios.post(`${BACKEND_URL}/api/public/leads/newsletter`, { email: v, tenant_slug: slug }).catch(() => null);
-      toast.success(successMsg);
-      setEmail('');
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <section className="mfd-newsletter" data-testid="home-newsletter">
-      <div className="mfd-newsletter__grid">
+    <section id="materials" className="mfd-materials" data-testid="materials-section">
+      <header className="mfd-section-head mfd-section-head--with-link">
         <div>
-          <h2 className="mfd-newsletter__title">{title}</h2>
-          <p className="mfd-newsletter__body">{body}</p>
+          <p className="mfd-section-eyebrow">{L(copy.materials.eyebrow, locale)}</p>
+          <h2 className="mfd-section-title">{L(copy.materials.title, locale)}</h2>
         </div>
-        <form className="mfd-newsletter__form" onSubmit={submit} data-testid="home-newsletter-form">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={placeholder}
-            aria-label={placeholder}
-            data-testid="home-newsletter-email"
-          />
-          <button type="submit" disabled={busy} data-testid="home-newsletter-submit">
-            {ctaLabel}
+        <Link to="/materials" className="mfd-section-link" data-testid="materials-explore">
+          {L(copy.materials.explore, locale)} <ArrowRight size={14} strokeWidth={1.6} />
+        </Link>
+      </header>
+      <div className="mfd-materials__wrap">
+        <div className="mfd-materials__rail" ref={railRef}>
+          {copy.materials.swatches.map((s) => (
+            <button key={s.id} className="mat-tile" data-testid={`material-tile-${s.id}`} aria-label={s.name}>
+              <img src={s.image} alt="" loading="lazy" />
+              <span className="mat-tile__label">{s.name}</span>
+            </button>
+          ))}
+        </div>
+        <div className="mfd-materials__controls" aria-hidden="true">
+          <button onClick={() => scrollBy(-360)} className="mfd-materials__arrow" aria-label="prev">
+            <ArrowLeft size={16} strokeWidth={1.4} />
           </button>
-        </form>
+          <button onClick={() => scrollBy(360)} className="mfd-materials__arrow" aria-label="next">
+            <ArrowRight size={16} strokeWidth={1.4} />
+          </button>
+        </div>
       </div>
     </section>
   );
 };
 
+// ─────────────────────────────────────────────────────────────────────
+// FINAL CTA
+// ─────────────────────────────────────────────────────────────────────
+const FinalCTA = ({ locale, copy }) => (
+  <section className="mfd-finalcta" data-testid="final-cta">
+    <div className="mfd-finalcta__lede">
+      <h2 className="mfd-finalcta__title">
+        {L(copy.finalCTA.title, locale).split('\n').map((line, i) => (
+          <span key={i}>{line}</span>
+        ))}
+      </h2>
+      <p className="mfd-finalcta__sub">{L(copy.finalCTA.sub, locale)}</p>
+    </div>
+    <div className="mfd-finalcta__paths">
+      <Link to="/begin-journey" className="mfd-finalcta__path" data-testid="final-cta-private">
+        <span className="mfd-finalcta__path-label">{L(copy.hero.cta_primary, locale)}</span>
+        <span className="mfd-finalcta__path-sub">{L(copy.finalCTA.private, locale)}</span>
+      </Link>
+      <Link to="/professionals" className="mfd-finalcta__path" data-testid="final-cta-pro">
+        <span className="mfd-finalcta__path-label">{L(copy.hero.cta_secondary, locale)}</span>
+        <span className="mfd-finalcta__path-sub">{L(copy.finalCTA.pro, locale)}</span>
+      </Link>
+    </div>
+  </section>
+);
 
-// ── New cinematic bands bound to DB sections via Experience Studio ────
-
-const StatsBand = ({ cms, locale }) => {
-  const section = cms?.stats_band;
-  if (!section) return null;
-  const eyebrow = fromCMS(cms, 'stats_band', 'eyebrow', locale);
-  const title   = fromCMS(cms, 'stats_band', 'title',   locale);
-  const body    = fromCMS(cms, 'stats_band', 'body',    locale);
-  const items   = Array.isArray(section._settings?.stats) ? section._settings.stats : [];
-  if (items.length === 0 && !title) return null;
-  return (
-    <section className="mfd-stats" data-testid="home-stats-band">
-      <div className="mfd-stats__head">
-        {eyebrow && <p className="mfd-stats__eyebrow">{eyebrow}</p>}
-        {title && <h2 className="mfd-stats__title">{title}</h2>}
-        {body && <p className="mfd-stats__body">{body}</p>}
+// ─────────────────────────────────────────────────────────────────────
+// FOOTER
+// ─────────────────────────────────────────────────────────────────────
+const SiteFooter = ({ locale, copy }) => (
+  <footer id="footer" className="mfd-footer" data-testid="site-footer">
+    <div className="mfd-footer__top">
+      <div className="mfd-footer__brand">
+        <span className="mfd-footer__brand-mark">MOOD <em>for</em> DESIGN</span>
+        <span className="mfd-footer__brand-sub">Italian Design Studios</span>
       </div>
-      <div className="mfd-stats__grid">
-        {items.map((it, i) => (
-          <div className="mfd-stats__cell" key={i} data-testid={`home-stats-cell-${i}`}>
-            <span className="mfd-stats__value">{it.value}</span>
-            <span className="mfd-stats__label">{pick(it.label_i18n, locale) || ''}</span>
+      <div className="mfd-footer__cols">
+        {copy.footer.cols.map((col, ci) => (
+          <div key={ci} className="mfd-footer__col">
+            <h4 className="mfd-footer__col-title">{L(col.title, locale)}</h4>
+            <ul>
+              {col.links.map((l, li) => (
+                <li key={li}>
+                  {l.href?.startsWith('http')
+                    ? <a href={l.href} target="_blank" rel="noopener noreferrer">{L(l.label, locale)}</a>
+                    : <Link to={l.href || '#'}>{L(l.label, locale)}</Link>}
+                </li>
+              ))}
+            </ul>
           </div>
         ))}
       </div>
-    </section>
-  );
-};
+    </div>
+    <div className="mfd-footer__rights">{L(copy.footer.rights, locale)}</div>
+  </footer>
+);
 
-const BrandLogosStrip = ({ cms, locale }) => {
-  const section = cms?.brand_logos;
-  if (!section) return null;
-  const eyebrow = fromCMS(cms, 'brand_logos', 'eyebrow', locale);
-  const title   = fromCMS(cms, 'brand_logos', 'title',   locale);
-  const items   = Array.isArray(section._settings?.logos) ? section._settings.logos : [];
-  if (items.length === 0) return null;
-  return (
-    <section className="mfd-logos" data-testid="home-brand-logos">
-      {(eyebrow || title) && (
-        <div className="mfd-logos__head">
-          {eyebrow && <p className="mfd-logos__eyebrow">{eyebrow}</p>}
-          {title && <h2 className="mfd-logos__title">{title}</h2>}
-        </div>
-      )}
-      <div className="mfd-logos__strip">
-        {items.map((it, i) => {
-          const inner = it.logo_url
-            ? <img src={it.logo_url} alt={it.name || ''} className="mfd-logos__img" />
-            : <span className="mfd-logos__name">{it.name}</span>;
-          return it.href
-            ? <a key={i} href={it.href} className="mfd-logos__cell" data-testid={`home-logo-${i}`} target="_blank" rel="noopener noreferrer">{inner}</a>
-            : <div key={i} className="mfd-logos__cell" data-testid={`home-logo-${i}`}>{inner}</div>;
-        })}
-      </div>
-    </section>
-  );
-};
+// ─────────────────────────────────────────────────────────────────────
+// PAGE BODY (inside providers)
+// ─────────────────────────────────────────────────────────────────────
+const HomePageBody = () => {
+  const site = useSite();
+  const locale = (site?.locale || 'it').slice(0, 2);
 
-const MagazineGrid = ({ cms, locale, slug }) => {
-  const section = cms?.magazine_grid;
-  const [articles, setArticles] = useState(null);
-  const limit = section?._settings?.limit ?? 3;
-  const mode  = section?._settings?.mode  || 'auto';
-  const slugs = section?._settings?.slugs || [];
-
-  useEffect(() => {
-    if (!section) return;
-    const bcp = toBcp47Storefront(locale);
-    axios.get(`${BACKEND_URL}/api/magazine/public/${slug}/articles?locale_code=${encodeURIComponent(bcp)}&limit=${limit}`)
-      .then((r) => setArticles(r.data?.articles || []))
-      .catch(() => setArticles([]));
-  }, [section, locale, slug, limit]);
-
-  if (!section) return null;
-  const eyebrow = fromCMS(cms, 'magazine_grid', 'eyebrow', locale);
-  const title   = fromCMS(cms, 'magazine_grid', 'title',   locale);
-  const body    = fromCMS(cms, 'magazine_grid', 'body',    locale);
-  const ctaLabel = fromCMS(cms, 'magazine_grid', 'cta_label', locale);
-  const ctaHref  = fromCMS(cms, 'magazine_grid', 'cta_href',  locale) || '/magazine';
-
-  let items = articles;
-  if (mode === 'manual' && Array.isArray(slugs) && slugs.length > 0 && Array.isArray(articles)) {
-    items = articles.filter((a) => slugs.includes(a.slug));
-  }
-  // Editorial empty state — no silent fallback.
-  if (Array.isArray(items) && items.length === 0) {
-    if (!title) return null;
-    return (
-      <section className="mfd-mag" data-testid="home-magazine-grid">
-        <div className="mfd-mag__head">
-          {eyebrow && <p className="mfd-mag__eyebrow">{eyebrow}</p>}
-          <h2 className="mfd-mag__title">{title}</h2>
-        </div>
-        <p className="mfd-mag__empty">
-          {locale?.startsWith('it') ? 'Nuovi articoli editoriali in arrivo.' : 'New editorial stories coming soon.'}
-        </p>
-      </section>
-    );
-  }
-  if (!Array.isArray(items)) return null;
+  // CMS overrides — merged onto FALLBACK without breaking missing branches.
+  const cms = useStorefrontContent('home') || {};
+  const copy = useMemo(() => {
+    // Shallow merge per top-level section.
+    const merged = { ...FALLBACK };
+    Object.keys(cms).forEach((k) => {
+      merged[k] = { ...(FALLBACK[k] || {}), ...(cms[k] || {}) };
+    });
+    return merged;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(cms)]);
 
   return (
-    <section className="mfd-mag" data-testid="home-magazine-grid">
-      <div className="mfd-mag__head">
-        {eyebrow && <p className="mfd-mag__eyebrow">{eyebrow}</p>}
-        {title && <h2 className="mfd-mag__title">{title}</h2>}
-        {body && <p className="mfd-mag__body">{body}</p>}
-      </div>
-      <div className="mfd-mag__grid">
-        {items.slice(0, limit).map((a) => (
-          <Link to={`/magazine/${a.slug}`} key={a.slug} className="mfd-mag__card" data-testid={`home-mag-${a.slug}`}>
-            <div className="mfd-mag__media" style={{ backgroundImage: a.cover_image_url ? `url("${a.cover_image_url}")` : undefined }} aria-hidden />
-            <div className="mfd-mag__caption">
-              {a.category && <span className="mfd-mag__category">{a.category}</span>}
-              <h3 className="mfd-mag__h3">{a.title}</h3>
-              {a.excerpt && <p className="mfd-mag__excerpt">{a.excerpt}</p>}
-            </div>
-          </Link>
-        ))}
-      </div>
-      {ctaLabel && (
-        <div className="mfd-mag__cta-row">
-          <Link to={ctaHref} className="mfd-mag__cta" data-testid="home-mag-cta">
-            {ctaLabel} <ArrowRight size={14} strokeWidth={1.7} aria-hidden />
-          </Link>
-        </div>
-      )}
-    </section>
-  );
-};
-
-
-// ── Page ────────────────────────────────────────────────────────────────
-
-const HomePage = () => {
-  const { locale } = useSite();
-  const slug = tenantConfig?.slug || 'mood-demo-studio-81a09e';
-  const { content: cms } = useStorefrontContent(slug, 'home', homepageContent);
-  const { brand } = usePublicBrand(slug, locale);
-  const brandName = useMemo(
-    () => `${brand?.name || 'MOOD for DESIGN'}${brand?.suffix || ''}`,
-    [brand],
-  );
-
-  return (
-    <div className="mfd-home" data-testid="home-page" data-surface="storefront">
-      <Hero       cms={cms} locale={locale} brandName={brandName} />
-      <DualCTA    cms={cms} locale={locale} />
-      <UspStrip   cms={cms} locale={locale} brandName={brandName} />
-      <StatsBand  cms={cms} locale={locale} />
-      <ProjectsRail cms={cms} locale={locale} />
-      <MagazineGrid cms={cms} locale={locale} slug={slug} />
-      <BrandLogosStrip cms={cms} locale={locale} />
-      <Newsletter cms={cms} locale={locale} slug={slug} />
+    <div className="mfd-site" data-testid="public-home-page">
+      <SiteHeader locale={locale} copy={copy} />
+      <main>
+        <Hero locale={locale} copy={copy} />
+        <TrustStrip locale={locale} copy={copy} />
+        <HowItWorks locale={locale} copy={copy} />
+        <Magazine locale={locale} copy={copy} />
+        <DesignStories locale={locale} copy={copy} />
+        <Materials locale={locale} copy={copy} />
+        <FinalCTA locale={locale} copy={copy} />
+      </main>
+      <SiteFooter locale={locale} copy={copy} />
+      <PlatformFooterBar surface="storefront" />
     </div>
   );
 };
+
+// ─────────────────────────────────────────────────────────────────────
+// MAIN — wraps providers required by Site components
+// ─────────────────────────────────────────────────────────────────────
+const HomePage = () => (
+  <SiteProvider>
+    <StorefrontThemeProvider>
+      <SiteLocaleBridge />
+      <HomePageBody />
+    </StorefrontThemeProvider>
+  </SiteProvider>
+);
 
 export default HomePage;
