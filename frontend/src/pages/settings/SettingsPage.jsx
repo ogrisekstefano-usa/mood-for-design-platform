@@ -21,13 +21,15 @@ import { useBlueprint } from '../../contexts/BlueprintContext';
 import { useAuth } from '../../contexts/AuthContext';
 import CulturalPerspectivePanel from '../../components/settings/CulturalPerspectivePanel';
 
-const SettingsTile = ({ icon: Icon, title, description, to, testid, accent = 'default', soon }) => {
+const SettingsTile = ({ icon: Icon, title, description, to, onClick, testid, accent = 'default', soon }) => {
   const navigate = useNavigate();
   const Tag = soon ? 'div' : 'button';
+  const handleClick = soon ? undefined
+    : (onClick ? onClick : () => navigate(to));
   return (
     <Tag
       data-testid={testid}
-      onClick={soon ? undefined : () => navigate(to)}
+      onClick={handleClick}
       className={`text-left bg-[var(--bp-surface-1)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] p-6 transition-colors group relative
         ${soon ? 'opacity-55 cursor-not-allowed' : 'hover:border-[var(--bp-border-strong)] hover:bg-[var(--bp-surface-1)]/80'}`}
     >
@@ -70,6 +72,8 @@ const SettingsPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const isSuper = user?.role === 'super_admin';
+  const role = (user?.role || '').toLowerCase();
+  const isOwner = role === 'tenant_admin' || role === 'super_admin';
 
   return (
     <div className="p-10 max-w-5xl mx-auto" data-testid="settings-page">
@@ -164,6 +168,20 @@ const SettingsPage = () => {
           body={t('settings.account.body', null, 'These settings apply only to your own user — not the rest of the studio.')}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {isOwner && (
+            <SettingsTile testid="tile-presentation"
+              icon={UserCircle}
+              accent="core"
+              onClick={() => {
+                try {
+                  window.dispatchEvent(new CustomEvent('mfd:open-owner-introduction'));
+                } catch (_) {}
+              }}
+              title={t('settings.presentation.title', null, 'Presentazione al cliente')}
+              description={t('settings.presentation.sub', null,
+                'La tua foto, ruolo e biografia visibili a ogni cliente — con versioni internazionali adattate ai mercati EN-US / FR / DE / ES.')}
+            />
+          )}
           <SettingsTile testid="tile-profile" icon={UserCircle} to="/settings/profile"
             title={t('settings.profile.title', null, 'Profile')}
             description={t('settings.profile.sub', null, 'Name, avatar, signature.')}
