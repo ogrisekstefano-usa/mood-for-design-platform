@@ -127,7 +127,7 @@ const StudioVoicePage = () => {
   }
 
   return (
-    <div data-testid="studio-voice-page" className="max-w-[1100px] mx-auto px-10 py-12">
+    <div data-testid="studio-voice-page" className="w-full px-10 py-12">
       {/* HEADER · editorial monograph */}
       <header className="mb-14 pb-12 border-b border-[var(--mood-border, rgba(255,255,255,0.06))]">
         <p className="text-[10px] uppercase tracking-[0.32em] text-[var(--mood-accent, #d9b285)] mb-3">

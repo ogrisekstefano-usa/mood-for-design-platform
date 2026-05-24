@@ -44,6 +44,34 @@ const NavItem = ({ item, collapsed }) => {
   const tid = item.test_id
     || `sidebar-nav-${item.code.replace(/_/g, '-')}`;
   const isSoon = item.state === 'beta' || item.state === 'locked';
+  // Open Super Admin / Command Center entries in a new tab — they're
+  // platform-level surfaces and shouldn't replace the studio session.
+  const openInNewTab = item.code === 'blueprint_admin'
+    || (item.route && item.route.startsWith('/admin'));
+  if (openInNewTab) {
+    return (
+      <a
+        href={item.route}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-testid={tid}
+        data-module-code={item.code}
+        data-module-state={item.state}
+        aria-label={item.label}
+        title={collapsed ? item.label : undefined}
+        className={`atelier-nav-item ${collapsed ? 'atelier-nav-item--collapsed' : ''}`}
+        style={collapsed ? { justifyContent: 'center', padding: '10px 0' } : undefined}
+      >
+        <Icon size={15} strokeWidth={1.5} className="atelier-nav-item__icon" />
+        {!collapsed && (
+          <span className="atelier-nav-item__label">
+            {item.label}
+            {item.has_mark && <span className="atelier-nav-item__mark">™</span>}
+          </span>
+        )}
+      </a>
+    );
+  }
   return (
     <NavLink
       to={item.route}

@@ -743,7 +743,7 @@ const BrandStudioPage = () => {
       </div>;
   }
   const palette = theme.palette || {};
-  return <div className="p-8 pb-24 max-w-[1500px] mx-auto" data-testid="brand-page">
+  return <div className="p-8 pb-24 w-full" data-testid="brand-page">
       {/* Header */}
       <div className="flex items-start justify-between mb-7">
         <div>

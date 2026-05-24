@@ -57,7 +57,7 @@ const FormsListView = ({ onOpen, onCreate }) => {
   };
 
   return (
-    <div className="p-10 max-w-5xl mx-auto" data-testid="forms-list-view">
+    <div className="p-10 w-full" data-testid="forms-list-view">
       <div className="flex items-start justify-between mb-10">
         <div>
           <p className="bp-eyebrow">Blueprint Form Engine™</p>

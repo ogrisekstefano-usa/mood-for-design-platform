@@ -220,7 +220,7 @@ const VariantApprovalInboxPage = () => {
   }, []);
 
   return (
-    <div className="max-w-5xl mx-auto px-8 py-12" data-testid="variant-approval-inbox"
+    <div className="w-full px-10 py-12" data-testid="variant-approval-inbox"
          data-locale-code={runtime.localeCode}>
       <header className="mb-10">
         <p className="text-[var(--bp-primary)] text-[10px] font-body uppercase tracking-[0.24em] font-semibold mb-2">

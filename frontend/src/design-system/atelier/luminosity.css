@@ -418,6 +418,97 @@
 [data-atelier="nordic"] .mv-header__sub,
 [data-atelier="nordic"] .bm-header__sub {
   color: rgba(255, 255, 255, 0.82) !important;
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 9. MODULE PAGES · FULL-WIDTH ENFORCEMENT
+ *    Tutte le pagine operative devono occupare l'intera shell come Library
+ *    e CRM. Override delle max-width hardcoded (Tailwind JIT) usando
+ *    selector ad alta specificità + !important.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+html [data-atelier="nordic"] [data-testid="cultural-editions-page"],
+html [data-atelier="nordic"] [data-testid="editorial-calendar-page"],
+html [data-atelier="nordic"] [data-testid="market-matrix-page"],
+html [data-atelier="nordic"] [data-testid="members-page"],
+html [data-atelier="nordic"] [data-testid="brand-page"],
+html [data-atelier="nordic"] [data-testid="studio-voice-page"],
+html [data-atelier="nordic"] [data-testid="forms-list-view"],
+html [data-atelier="nordic"] [data-testid="ins-page"],
+html [data-atelier="nordic"] .ins-page,
+html [data-atelier="nordic"] .ec-stage,
+html [data-atelier="nordic"] .ce-page,
+html [data-atelier="nordic"] .mxm-page,
+html [data-atelier="nordic"] [data-testid="settings-shell"],
+html [data-atelier="nordic"] [data-testid="settings-page"] {
+  max-width: none !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: clamp(28px, 3.5vw, 56px) !important;
+  padding-right: clamp(28px, 3.5vw, 56px) !important;
+}
+
+/* Editorial Inbox — top-level <main> wrapper has no testid */
+html [data-atelier="nordic"] main > [class*="max-w-5xl"],
+html [data-atelier="nordic"] main > [class*="max-w-6xl"],
+html [data-atelier="nordic"] main > [class*="max-w-7xl"] {
+  max-width: none !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 10. INSIGHTS PALETTE · luminous, brand-aligned
+ *     Sostituisce il warm hardcoded con cyan editorial scale.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .ins-page {
+  --ins-accent:        var(--atelier-cyan);
+  --ins-accent-soft:   rgba(94, 234, 212, 0.18);
+  --ins-accent-line:   rgba(94, 234, 212, 0.32);
+  --ins-heatmap-0:     rgba(255, 255, 255, 0.04);
+  --ins-heatmap-1:     rgba(94, 234, 212, 0.22);
+  --ins-heatmap-2:     rgba(94, 234, 212, 0.40);
+  --ins-heatmap-3:     rgba(94, 234, 212, 0.62);
+  --ins-heatmap-4:     rgba(94, 234, 212, 0.85);
+}
+
+[data-atelier="nordic"] .ins-spark__svg path,
+[data-atelier="nordic"] .ins-spark__svg polyline {
+  stroke: var(--atelier-cyan) !important;
+  fill: none !important;
+}
+
+[data-atelier="nordic"] .ins-heatmap__cell {
+  border-radius: 3px;
+}
+
+[data-atelier="nordic"] .ins-card,
+[data-atelier="nordic"] .ins-kpi {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-atelier="nordic"] .ins-kpi__value,
+[data-atelier="nordic"] .ins-card__value {
+  color: #ffffff;
+}
+
+[data-atelier="nordic"] .ins-kpi__label,
+[data-atelier="nordic"] .ins-card__label {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 11. LIBRARY SIDE-PANEL · luminosità sidebar facets
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .uppercase.tracking-\[0\.28em\],
+[data-atelier="nordic"] .uppercase.tracking-\[0\.22em\] {
+  color: rgba(255, 255, 255, 0.78);
+}
+
   font-size: 14px;
   line-height: 1.55;
   font-style: italic;

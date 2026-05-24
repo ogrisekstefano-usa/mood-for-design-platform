@@ -63,10 +63,6 @@ export default function MaterialViewPage() {
 
       {/* Header */}
       <header className="mv-header">
-        <Link to="/inspirations" className="pg-back" data-testid="mv-back">
-          <Icons.ChevronLeft size={14} />
-          <span>Archivio</span>
-        </Link>
         <div className="mv-header__meta">
           <p className="mv-header__eyebrow">Material View™ · {t('atelier_voice.material_view.eyebrow_suffix', null, 'curated materials library')}</p>
           <h1 className="mv-header__title"><em>{t('material_view.header.title', null, 'Material that speaks')}</em></h1>

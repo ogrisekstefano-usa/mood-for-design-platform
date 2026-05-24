@@ -4,8 +4,9 @@
 
 .ec-stage {
   padding: 64px 56px 96px;
-  max-width: 1480px;
-  margin: 0 auto;
+  max-width: none;
+  width: 100%;
+  margin: 0;
   font-family: var(--bp-font-body);
 }
 

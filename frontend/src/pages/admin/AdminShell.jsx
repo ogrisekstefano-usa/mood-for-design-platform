@@ -21,7 +21,7 @@ import { SiteProvider } from '../../site/SiteContext';
 import {
   LayoutGrid, Building2, Users, Sparkles, FileText, Languages,
   Mail, FlaskConical, LogOut, Circle, SlidersHorizontal,
-  ShieldCheck, Network, Activity, Cog,
+  ShieldCheck, Network, Activity, Cog, ClipboardList, ArrowLeft,
 } from 'lucide-react';
 import './admin-shell.css';
 
@@ -40,6 +40,7 @@ const NAV = [
   { to: '/admin/modules',               Icon: Cog,               keyName: 'nav.modules'    },
   { to: '/admin/language-governance',   Icon: Languages,         keyName: 'nav.language'   },
   { to: '/admin/email-governance',      Icon: Mail,              keyName: 'nav.email'      },
+  { to: '/admin/forms-journeys',        Icon: ClipboardList,     keyName: 'nav.forms_journeys' },
   { to: '/admin/audit',                 Icon: ShieldCheck,       keyName: 'nav.audit'      },
   { to: '/admin/demo-governance',       Icon: FlaskConical,      keyName: 'nav.demo'       },
 ];
@@ -81,6 +82,17 @@ const AdminShellInner = () => {
               <span><AdminLabel keyName={keyName} /></span>
             </NavLink>
           ))}
+
+          {/* Last item · return to tenant workspace */}
+          <NavLink
+            to="/dashboard"
+            className="bp-admin__nav-item bp-admin__nav-item--exit"
+            data-testid="bp-admin-nav-back-to-dashboard"
+            style={{ marginTop: 18, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 16 }}
+          >
+            <ArrowLeft size={15} strokeWidth={1.3} aria-hidden />
+            <span>Torna al workspace</span>
+          </NavLink>
         </nav>
 
         <div className="bp-admin__identity">

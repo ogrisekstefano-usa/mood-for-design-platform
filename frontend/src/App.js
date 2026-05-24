@@ -550,6 +550,8 @@ function App() {
                   <Route path="/admin/modules" element={<AdminModulesPage />} />
                   <Route path="/admin/advisors" element={<AdvisorNetworkAdminPage />} />
                   <Route path="/admin/advisors/:id" element={<AdvisorDetailPage />} />
+                  {/* ITER148.B · Command Center extras */}
+                  <Route path="/admin/forms-journeys" element={<FormBuilderPage />} />
                 </Route>
 
                 {/* ITER143C · Deprecated /superadmin/* aliases → hard redirect to /admin/* */}

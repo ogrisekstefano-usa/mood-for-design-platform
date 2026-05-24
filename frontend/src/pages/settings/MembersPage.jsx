@@ -570,7 +570,7 @@ const MembersPage = () => {
 
   // ── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="p-10 max-w-6xl mx-auto" data-testid="members-page">
+    <div className="p-10 w-full" data-testid="members-page">
       {/* Header */}
       <div className="flex items-start justify-between mb-8">
         <div>

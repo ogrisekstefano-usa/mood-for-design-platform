@@ -1,7 +1,57 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
-- **Sprint ITER148 · Phase 1 · CRM RELATIONSHIP MEMORY™ — Lead Data Model 2.0 + Closed-Question Schema™** · ✅ DELIVERED (backend) · 25 Feb 2026 · Fondazione del Relationship Memory Engine™. Le risposte di intake non sono più "form fields" — sono **signal projections strutturate** con tagging cluster, atmosphere/material fingerprinting e progression Lead→Prospect→Account.
+- **ITER148.A · Editorial Visual Hardening (Atelier Luminosity Pass)** · ✅ DELIVERED · 25 Feb 2026
+
+  **Sidebar registry polish** (migration `083_nav_registry_polish.sql`):
+  - `settings_workspace.display_name` "Workspace" → "Settings"
+  - `integrations`, `billing`, `forms_journeys`, `language_cc` → `nav_group=NULL, nav_route=NULL` (rimossi dalla sidebar tenant — rotte ancora accessibili dal `/settings` hub o dal Blueprint Command Center)
+  - "Super Admin" link nella sidebar tenant ora apre **in nuova scheda** (`target="_blank"` per qualsiasi route che inizi con `/admin`)
+
+  **Blueprint Command Center extension** (`AdminShell.jsx`):
+  - Aggiunto link `/admin/forms-journeys` (alias di `FormBuilderPage` per super admin)
+  - Aggiunta **ultima voce "Torna al workspace"** → `/dashboard` con separatore e icona ArrowLeft
+
+  **Full-width module enforcement**: rimosse max-width hardcoded (Tailwind JIT + CSS) su:
+  - `MembersPage`, `BrandStudioPage`, `StudioVoicePage`, `FormBuilderPage`, `VariantApprovalInboxPage` (Tailwind classes)
+  - `EditorialCalendarPage` (.ec-stage → max-width:none)
+  - `CulturalEditionsListPage` (.ce-page → max-width:none)
+  - Tutti ora occupano l'intera shell (1852px su 1920 viewport, identico a CRM / Library / Editorial)
+
+  **Editorial title unification** (luminosity layer):
+  - `Inspirations`, `Brand Atlas`, `Material View`, `Brand Detail` titoli ora in **Cormorant Garamond italic bianco** (era Playfair Display warm)
+  - Eyebrow ciano `var(--atelier-cyan)` uniforme su tutti i moduli
+  - `Material View` titolo `<em>` non più `var(--pg-warm)` hardcoded
+  - Rimosso link "Archivio" da `/inspirations/materials`
+  - Fix Unicode `\u2122 \u00B7` non interpretato in JSX text (sostituito con `™ ·` letterale)
+
+  **Global luminosity uplift** (canonical token bumps):
+  - `--bp-text-primary: #ffffff`, `secondary: 0.86`, `muted: 0.72`, `faint: 0.55`, `subtle: 0.45`
+  - `--mood-text` family parallelamente bumped per Brand Atlas / Material View / Inspirations
+  - Media Library piccola sidebar ora completamente leggibile (collections, search, tag chips)
+
+  **Dashboard hero refinement**:
+  - Layout full-bleed (`.atd-hero` block, `.atd-hero__image` absolute inset:0)
+  - Gradient sinistro nero profondo (`rgba(5,6,8,0.98) → 0`, sfumatura 18% → 100%)
+  - KPI bianchi (era cyan) con label estese e divider verticale `1px rgba(255,255,255,0.14)` fra ogni KPI
+
+  **Topbar polish**:
+  - Avatar utente con `<img>` quando `avatar_url` presente (re-signed URL via `/auth/me`)
+  - `AuthContext` ora ascolta `mfd:identity:refresh` → ricarica profilo senza refresh manuale
+  - Nome utente visibile inline accanto all'avatar (no email)
+
+  **Backend bug fix**:
+  - `MemberUpdate` schema esteso con `first_name` / `last_name` (erano silenziati da Pydantic)
+  - `update_member` handler patcha i nuovi campi + audit log
+  - Test live PASS: `designer@` → `ITER148Test NameSurname` → persistito + revert
+
+  **Insights palette**:
+  - Heatmap + spark line ora su scala ciano Atelier (era warm/amber hardcoded)
+  - `--ins-accent`, `--ins-heatmap-0..4` scoped per `[data-atelier="nordic"] .ins-page`
+
+  **Regression**: 25/25 PASS (ITER146 + ITER147 + ITER148.P1). Zero regressioni.
+
+- **ITER148 · Phase 1 · CRM RELATIONSHIP MEMORY™ — Lead Data Model 2.0 + Closed-Question Schema™** · ✅ DELIVERED (backend) · 25 Feb 2026 · Fondazione del Relationship Memory Engine™. Le risposte di intake non sono più "form fields" — sono **signal projections strutturate** con tagging cluster, atmosphere/material fingerprinting e progression Lead→Prospect→Account.
 
   **Migration `082_lead_data_model_v2.sql`** (additive, idempotent):
   - Estende `leads` con 12 colonne nuove: `closed_answers (JSONB)`, `behavioral_tags (JSONB)`, `ai_tags (JSONB)`, `atmosphere_signals (JSONB)`, `material_signals (JSONB)`, `cultural_register (TEXT)`, `luxury_perception_tier (TEXT)`, `progression_state (TEXT default 'lead')`, `progression_score (NUMERIC)`, `narrative_seed (TEXT)`, `intake_completed_at`, `intake_version`.
