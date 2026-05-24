@@ -10,21 +10,26 @@
  */
 
 .mem-shell {
-  --mem-bg-0:      #050816;
-  --mem-bg-1:      #08101D;
-  --mem-bg-2:      #0C1525;
-  --mem-text:      #F2EFEA;     /* warm ivory · WCAG-AA on dark */
-  --mem-text-2:    #D8D2C7;
-  --mem-text-3:    #8E8980;     /* never below 4.5:1 on bg-0 */
+  /* Atelier Warm Cinematic Palette™ — espresso + graphite + bronze */
+  --mem-bg-0:      #070809;
+  --mem-bg-1:      #0F1113;
+  --mem-bg-2:      #13161A;
+  --mem-bg-warm:   #171312;
+  --mem-text:      #F3EEE7;
+  --mem-text-2:    #DAD1C2;
+  --mem-text-3:    #968B7C;
   --mem-teal:      var(--mood-teal, #00C9B3);
   --mem-teal-soft: rgba(0,201,179,0.10);
-  --mem-rule:      rgba(255,255,255,0.10);
-  --mem-rule-soft: rgba(255,255,255,0.06);
+  --mem-warm:      #D6B48A;
+  --mem-warm-soft: rgba(214,180,138,0.08);
+  --mem-rule:      rgba(243,238,231,0.10);
+  --mem-rule-soft: rgba(243,238,231,0.06);
 
   min-height: 100vh;
   background:
-    radial-gradient(900px 600px at 80% -10%, rgba(0,201,179,0.05), transparent 60%),
-    var(--mem-bg-0);
+    radial-gradient(900px 600px at 80% -10%, rgba(0,201,179,0.045), transparent 60%),
+    radial-gradient(800px 600px at -10% 110%, rgba(214,180,138,0.06), transparent 60%),
+    linear-gradient(180deg, var(--mem-bg-0) 0%, var(--mem-bg-1) 100%);
   color: var(--mem-text);
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 17px;

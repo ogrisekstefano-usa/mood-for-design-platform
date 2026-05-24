@@ -15,24 +15,27 @@
  * Shell · shared chrome
  * ───────────────────────────────────────────────────────────────── */
 .cr-shell {
-  --cr-bg:           #050816;
-  --cr-bg-2:         #0A1024;
-  --cr-bg-panel:     #0B1220;
-  --cr-bg-card:      rgba(255,255,255,0.030);
-  --cr-bg-card-hi:   rgba(255,255,255,0.055);
-  --cr-border:       rgba(255,255,255,0.10);
-  --cr-border-2:     rgba(255,255,255,0.16);
-  --cr-text:         #F5F7FA;   /* WCAG-AA on #050816 */
-  --cr-text-2:       #DDE3EC;
-  --cr-text-3:       #A9B2BE;
+  /* Atelier Warm Cinematic Palette™ — NO electric navy. NO cold blue. */
+  --cr-bg:           #070809;
+  --cr-bg-2:         #0F1113;
+  --cr-bg-panel:     #13161A;
+  --cr-bg-warm:      #171312;
+  --cr-bg-card:      rgba(255,243,228,0.026);
+  --cr-bg-card-hi:   rgba(255,243,228,0.052);
+  --cr-border:       rgba(243,238,231,0.10);
+  --cr-border-2:     rgba(243,238,231,0.18);
+  --cr-text:         #F3EEE7;   /* ivory · WCAG-AA on #070809 */
+  --cr-text-2:       #DAD1C2;
+  --cr-text-3:       #968B7C;
   --cr-teal:         var(--mood-teal, #00C9B3);
-  --cr-teal-soft:    rgba(0,201,179,0.14);
+  --cr-teal-soft:    rgba(0,201,179,0.12);
   --cr-teal-glow:    0 0 32px rgba(0,201,179,0.22);
   --cr-gold:         #D6B48A;
-  --cr-gold-soft:    rgba(214,180,138,0.14);
-  --cr-gold-glow:    0 0 32px rgba(214,180,138,0.22);
-  --cr-slate:        #7C9BAE;
-  --cr-slate-soft:   rgba(124,155,174,0.12);
+  --cr-gold-soft:    rgba(214,180,138,0.12);
+  --cr-gold-glow:    0 0 32px rgba(214,180,138,0.18);
+  --cr-slate:        #A38B6E;   /* warm graphite, no cold blue */
+  --cr-slate-soft:   rgba(163,139,110,0.14);
+  --cr-smoke:        #7C6E64;
 
   /* Per-stage accent (overridden by shell modifier) */
   --cr-accent:       var(--cr-slate);
@@ -41,9 +44,9 @@
 
   min-height: 100vh;
   background:
-    radial-gradient(1200px 700px at 80% -10%, rgba(0,201,179,0.06), transparent 60%),
-    radial-gradient(900px 600px at -10% 110%, rgba(214,180,138,0.04), transparent 55%),
-    var(--cr-bg);
+    radial-gradient(1200px 700px at 80% -10%, rgba(0,201,179,0.05), transparent 60%),
+    radial-gradient(1000px 700px at -10% 110%, rgba(214,180,138,0.06), transparent 55%),
+    linear-gradient(180deg, var(--cr-bg) 0%, var(--cr-bg-2) 100%);
   color: var(--cr-text);
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 17px;
