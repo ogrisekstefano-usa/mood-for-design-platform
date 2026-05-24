@@ -46,6 +46,14 @@ export const AuthProvider = ({ children }) => {
     }
   }, [loadProfile]);
 
+  // Listen for identity refresh events (avatar upload, profile edit, etc.)
+  // so the topbar avatar updates without a full reload.
+  useEffect(() => {
+    const onRefresh = () => { loadProfile().catch(() => {}); };
+    window.addEventListener('mfd:identity:refresh', onRefresh);
+    return () => window.removeEventListener('mfd:identity:refresh', onRefresh);
+  }, [loadProfile]);
+
   const signIn = async (email, password) => {
     const { data } = await axios.post(`${BACKEND_URL}/api/auth/login`, { email, password });
     writeSession(data.session);
@@ -70,7 +78,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user: profile, session, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user: profile, session, loading, signIn, signUp, signOut, refreshUser: loadProfile }}>
       {children}
     </AuthContext.Provider>
   );

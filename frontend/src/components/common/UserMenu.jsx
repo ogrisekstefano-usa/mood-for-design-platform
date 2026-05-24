@@ -50,6 +50,7 @@ const UserMenu = () => {
 
   const initial = (user?.first_name?.[0] || user?.email?.[0] || 'U').toUpperCase();
   const fullName = (user?.first_name && `${user.first_name} ${user?.last_name || ''}`.trim()) || user?.email?.split('@')[0];
+  const avatarUrl = user?.avatar_url || null;
 
   const handleLogout = async () => {
     setOpen(false);
@@ -69,8 +70,20 @@ const UserMenu = () => {
         aria-expanded={open}
         className="flex items-center gap-2 pl-1 pr-2.5 py-[3px] rounded-full bg-[var(--bp-surface-2)]/40 border border-[var(--bp-border)] hover:border-[var(--bp-border-strong)] transition-colors"
       >
-        <span className="w-6 h-6 rounded-full bg-[var(--bp-primary)]/15 flex items-center justify-center">
-          <span className="text-[var(--bp-primary)] text-[10.5px] font-semibold font-body">{initial}</span>
+        <span
+          className="w-6 h-6 rounded-full bg-[var(--bp-primary)]/15 flex items-center justify-center overflow-hidden"
+          data-testid="topbar-user-avatar"
+        >
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt={fullName}
+              className="w-full h-full object-cover"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+          ) : (
+            <span className="text-[var(--bp-primary)] text-[10.5px] font-semibold font-body">{initial}</span>
+          )}
         </span>
         <span className="text-[var(--bp-text-secondary)] text-[11.5px] font-body hidden sm:block max-w-[120px] truncate">
           {fullName}

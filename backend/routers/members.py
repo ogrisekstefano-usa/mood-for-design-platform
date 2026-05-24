@@ -88,6 +88,8 @@ class InviteCreate(BaseModel):
 class MemberUpdate(BaseModel):
     role: Optional[str] = None
     status: Optional[str] = None  # active | suspended (cannot revert to invited)
+    first_name: Optional[str] = Field(default=None, max_length=80)
+    last_name: Optional[str] = Field(default=None, max_length=80)
 
 
 # ── Helpers ─────────────────────────────────────────────────────────────────
@@ -380,6 +382,21 @@ def update_member(
 
     update = {"updated_at": _now_iso()}
     audit_meta = {}
+
+    # Identity fields (first_name / last_name) — editable by anyone with write
+    # permission (including the user editing themselves).
+    if body.first_name is not None:
+        fn = body.first_name.strip()
+        if fn != (m.get("first_name") or ""):
+            update["first_name"] = fn or None
+            audit_meta["first_name_from"] = m.get("first_name")
+            audit_meta["first_name_to"] = fn or None
+    if body.last_name is not None:
+        ln = body.last_name.strip()
+        if ln != (m.get("last_name") or ""):
+            update["last_name"] = ln or None
+            audit_meta["last_name_from"] = m.get("last_name")
+            audit_meta["last_name_to"] = ln or None
 
     if body.role is not None:
         _validate_role(body.role, allow_super_admin=is_super_admin(ctx.get("role")))

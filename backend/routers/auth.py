@@ -218,7 +218,15 @@ def me(current_user: dict = Depends(get_current_user)):
     result = client.table('users_profile').select('*').eq('id', current_user['profile_id']).limit(1).execute()
     if not result.data:
         raise HTTPException(404, "Profile not found")
-    return _profile_to_resp(result.data[0])
+    profile = result.data[0]
+    # Re-sign avatar URL so the topbar receives a fresh signed link instead
+    # of an expired one from a previous session.
+    try:
+        from routers.profile import _resign_avatar_url
+        profile['avatar_url'] = _resign_avatar_url(profile.get('avatar_url'))
+    except Exception:
+        logger.exception("avatar resign in /auth/me failed")
+    return _profile_to_resp(profile)
 
 
 @router.post("/logout")
