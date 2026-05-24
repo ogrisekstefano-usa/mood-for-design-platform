@@ -4615,3 +4615,70 @@ Per user directive 2026-05-22:
 ### Next sprint
 **ITER138 — Blueprint Atelier™ Visual System** — BLOCKED on user-supplied 6 visual references (mood-board, layout, palette, density, atmosphere, typography). Per user mandate, agent will not invent any visual design choice.
 
+
+---
+
+## ITER146 Wave A · Lead Pipeline Validation™ — CLOSED (2026-02-24)
+
+**Goal**: Real end-to-end CRM persistence + email orchestration on both public
+onboarding flows. No fake success screens.
+
+### What's implemented
+- **/begin-partnership** (Pro flow, 3-step wizard) — fully wired to
+  `POST /api/leads/public?tenant_slug=studio`. Writes `leads` row with
+  `lead_type='professional'`, `onboarding_path='begin_partnership'`,
+  `professional_category`, `collaboration_intent`, `market_sector`,
+  `company_name`, `company_website`, `portfolio_url`. Triggers
+  ALE-localized `partnership_request` email + internal `generic` notification
+  to tenant_admin/super_admin owners.
+- **/begin-journey** (Private Client ritual) — keeps the rich
+  Account+Contact+Project+Journey+timeline chain AND now ALSO writes a
+  unified `leads` row + `funnel_events` row (additive, non-breaking) so the
+  CRM has one canonical pipeline view across both onboarding paths.
+- **runtime_identity** envelope is parity-consistent across both paths:
+  `resolved_host`, `resolved_subdomain`, `tenant_slug`, `request_host`,
+  `user_agent`, `referer`, `source_locale`, `utm.*`. On preview-host
+  fallback, the first hostname label is captured into resolved_subdomain.
+- **funnel_events** row is written with `stage='lead_captured'` and
+  `event_name='{begin_journey|begin_partnership}.submit'` for both paths.
+- **Tenant default-locale honor**: `SiteContext.jsx` reads
+  `configuration.default_locale` from the anonymous
+  `GET /api/tenant/configuration/public/{slug}` endpoint on first paint when
+  no localStorage choice exists. Falls back to browser Accept-Language only
+  when tenant config is unreachable. Never persists the tenant default
+  (preserves per-tenant runtime when visiting different tenants).
+- **Mobile dark theme on /begin-partnership** — added the missing scoped
+  CSS tree (`.begin-journey-root`, `.begin-journey-shell`, `.bj-step`,
+  `.bj-step-block`, `.bj-h2`, `.bj-field-label`, `.bj-chip__label`,
+  `.bj-chip__sub`, `.bj-chip--single`, `.bj-input/.bj-textarea`,
+  `.bj-actions`, `.bj-btn`, `.bj-spin`) with the dark gradient applied at
+  ALL breakpoints — no media-query gating.
+
+### Testing closeout
+- Backend: pytest 9/9 PASS on ITER146 + ITER149 parity suite.
+  Aggregate ITER143/144/145/146/149 = 69/70 PASS (single unrelated failure
+  is the Resend daily-quota flake in `test_iter143d_email_orchestration`).
+- Frontend E2E: full 3-step wizard navigation, HTTP 201, DB row verified,
+  funnel_event verified, email_events verified, mobile dark gradient
+  verified, persistence semantics verified (explicit locale choice still
+  wins over tenant default).
+- Test report: `/app/test_reports/iteration_149.json`.
+
+### Next sprint backlog (post-ITER146 Wave A)
+- **P0 CRM Operational Correctness Polish** — audit `/crm/accounts` UI to
+  ensure the new fields render: `lead_type`, `professional_category`,
+  `runtime_identity`, `locale`, `onboarding_path`. Currently the
+  CRM_ACCOUNTS module is disabled for `mood-demo` tenant — either enable
+  it there or document that operational verification requires
+  cross-tenant impersonation into `studio`.
+- **P0 Public Frontend UX Polish** — UX continuity between Magazine /
+  Homepage / Begin-Journey / Begin-Partnership; SEO meta integration.
+- **P1 Enhanced Tenant Detail™ UI** — Operational Cockpit inside
+  `/admin/tenants/:id` (modules, locales, branding).
+- **P2 Email Template Studio™ Visual Editor** (ITER145 Wave B).
+- **P2 Golden Snapshot™ Foundation**.
+- **Minor follow-ups**: (a) stub Resend in
+  `test_iter143d_email_orchestration::test_resend_test_email_endpoint` so
+  daily-quota errors don't flake CI; (b) i18n sweep — EN-US footer leaks
+  Italian phrase 'della Manifattura' in showroom column.
+
