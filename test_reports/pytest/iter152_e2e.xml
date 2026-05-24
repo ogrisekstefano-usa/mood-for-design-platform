@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="7" time="49.493" timestamp="2026-05-24T02:47:17.435311+00:00" hostname="agent-env-2479e3dc-7db3-468a-a990-94da8dcb375c"><testcase classname="tests.test_iter152_live_e2e" name="test_01_get_identity_shape" time="2.244" /><testcase classname="tests.test_iter152_live_e2e" name="test_02_cultural_adaptation_real_ale" time="13.648" /><testcase classname="tests.test_iter152_live_e2e" name="test_03_manual_override_persists_across_source_repatch" time="7.826" /><testcase classname="tests.test_iter152_live_e2e" name="test_04_regenerate" time="13.457" /><testcase classname="tests.test_iter152_live_e2e" name="test_05_lock_blocks_regenerate" time="2.549"><failure message="AssertionError: {'generated_by': 'ale', 'locale': 'en-us', 'status': 'auto', 'updated_at': '2026-05-24T02:47:55.018156+00:00', ...}&#10;assert 'auto' == 'locked'&#10;  &#10;  - locked&#10;  + auto">tests/test_iter152_live_e2e.py:112: in test_05_lock_blocks_regenerate
+    assert en["status"] == "locked", en
+E   AssertionError: {'generated_by': 'ale', 'locale': 'en-us', 'status': 'auto', 'updated_at': '2026-05-24T02:47:55.018156+00:00', ...}
+E   assert 'auto' == 'locked'
+E     
+E     - locked
+E     + auto</failure></testcase><testcase classname="tests.test_iter152_live_e2e" name="test_06_restore_ale" time="7.470" /><testcase classname="tests.test_iter152_live_e2e" name="test_07_resolve_for_locale" time="2.204" /></testsuite></testsuites>

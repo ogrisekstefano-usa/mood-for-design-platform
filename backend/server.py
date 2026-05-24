@@ -185,6 +185,8 @@ api_router.include_router(client_portal.router, prefix="/client", tags=["client-
 api_router.include_router(human_assignment.router, prefix="/human-assignment", tags=["human-layer"])
 api_router.include_router(tenant_onboarding.router, prefix="/tenant-onboarding", tags=["tenant-onboarding"])
 api_router.include_router(profile.router, prefix="/profile", tags=["profile"])
+from routers import profile_identity  # ITER147 · International Profile Identity™
+api_router.include_router(profile_identity.router, prefix="/profile", tags=["profile-identity"])
 api_router.include_router(client_messages.router, prefix="/client-messages", tags=["client-messages"])
 api_router.include_router(magazine.router, prefix="/magazine", tags=["magazine"])
 api_router.include_router(editorial_calendar.router, prefix="/blueprint/calendar", tags=["editorial-calendar"])

@@ -24,6 +24,7 @@ import { Camera, Loader2, X, Check, ZoomIn, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
 import { useT } from "../../i18n/useT";
+import InternationalVersionsPanel from './InternationalVersionsPanel';
 const BIO_MAX = 240;
 const CANVAS_SIZE = 360; // exported PNG side
 const PREVIEW_SIZE = 280; // editor canvas viewport
@@ -270,6 +271,19 @@ const OwnerIntroductionModal = ({
         contact_cta_label: form.contact_cta_label || null,
         avatar_url: avatarUrl
       });
+      // ITER147 · International Profile Identity™ — propagate the four
+      // editorial fields into the `profile.identity` namespace so ALE
+      // auto-composes culturally-adapted versions for every enabled
+      // tenant locale. Non-blocking: if it fails the profile is still
+      // saved on the source side.
+      try {
+        await api.patch('/api/profile/me/identity/source', {
+          role_label: form.role_label || null,
+          short_bio: form.short_bio || null,
+          response_time_label: form.response_time_label || null,
+          contact_cta_label: form.contact_cta_label || null,
+        });
+      } catch (_) {}
       try {
         await api.post('/api/tenant-onboarding/mark-done', {
           key: 'owner_introduced'
@@ -431,6 +445,19 @@ const OwnerIntroductionModal = ({
               ...s,
               contact_cta_label: v
             }))} testid="owner-introduction-cta" max={80} />
+              </div>
+            </details>
+
+            {/* ITER147 · International Profile Identity™ — editorial panel.
+                Only shows when the source role/bio have been saved. The
+                panel itself self-fetches /api/profile/me/identity and
+                gracefully shows an empty hint if nothing is yet authored. */}
+            <details className="group" data-testid="intl-versions-toggle">
+              <summary className="cursor-pointer text-[11px] uppercase tracking-[0.18em] text-[var(--bp-text-muted)] hover:text-[var(--bp-text-primary)] transition-colors select-none">
+                Versioni Internazionali™ · opzionale
+              </summary>
+              <div className="mt-5">
+                <InternationalVersionsPanel />
               </div>
             </details>
           </div>}

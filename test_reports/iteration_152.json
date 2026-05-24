@@ -1,0 +1,78 @@
+{
+  "summary": "ITER147 · International Profile Identity™ — VERIFIED end-to-end against REAL ALE/Claude. Backend pytest 27/27 PASS (test_iter147 + iter146 core safety + iter146 lead pipeline). Live E2E 6/7 PASS — cultural adaptation via the REAL Emergent LLM key works PERFECTLY for all four target locales (en-us 'Founder & Creative Director', fr-fr 'Fondateur & Directeur Artistique', de-de 'Inhaber & Kreativdirektor', es-es 'Fundador y Director Creativo'). Manual override survives source re-patch, regenerate produces fresh ALE output, restore-ale drops manual back to auto, lock blocks regenerate with HTTP 409, resolve_for_locale returns localized values for known locales and falls back to source (Italian) for unknown locales. Frontend OwnerIntroductionModal opens via the 'mfd:open-owner-introduction' custom event, the 'VERSIONI INTERNAZIONALI™ · OPZIONALE' details block is present (data-testid='intl-versions-toggle'), expanding it reveals the InternationalVersionsPanel with all 4 locale cards (testids intl-locale-card-en-us / -fr-fr / -de-de / -es-es), each showing flag + market name + editorial badge 'Adattata per il pubblico locale' + the localized ALE value + edit/regen/lock actions. NO forbidden brand phrases ('AI', 'AI generated', 'machine translated', 'Macchina', 'Generato da', 'tradotto') appear in the panel. ONE BUG FOUND: GET /api/profile/me/identity does NOT report status='locked' for locked rows — it returns status='auto' even though the locked boolean is persisted and POST /regenerate correctly returns 409. This breaks the frontend lock-badge and disabled-regenerate UX.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "GET /api/profile/me/identity",
+        "issue": "Status taxonomy does not report `locked` — locked rows return status='auto'. DB `locked=true` persists correctly and POST .../regenerate returns 409, but `get_identity()` ignores the locked column when building the per-locale status. Concrete repro: POST /api/profile/me/identity/role_label/en-US/lock?locked=true → 200 with result={'locked': true}; immediately GET /api/profile/me/identity returns en-us locale row with status='auto' (expected 'locked'). Fix likely lives in services/profile_identity_resolver.py — the locale row builder needs to check the editorial_block_translations.locked column and emit status='locked' before falling through to the underlying translation status.",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "InternationalVersionsPanel · lock indicator",
+        "issue": "Because backend GET /identity reports status='auto' for locked locales (see backend critical bug), the lock badge 'Approvata · bloccata' never renders and the regenerate button is not disabled — the UI cannot distinguish a locked locale from an auto one. This is a downstream effect of the backend bug above; fixing the backend status mapper will resolve it.",
+        "selector": "[data-testid='intl-locale-card-en-us'] badge / [data-testid='intl-locale-regen-en-us']",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Global console", "issues": ["Pre-existing i18n missing keys (nav.runtime.loading, nav.crm_accounts, nav.journey_index, nav.crm_follow_ups, nav.crm_archived, nav.language_cc, nav.settings_workspace, nav.blueprint_admin) — not introduced by this iter, but the dev pill at the bottom shows LEAK 8 / MISS 15"]}
+    ]
+  },
+  "verifications": {
+    "Backend_pytest_iter147_plus_iter146": "27/27 PASS · 38.10s · /app/test_reports/pytest/iter152.xml",
+    "Backend_live_E2E_iter152": "6/7 PASS · /app/test_reports/pytest/iter152_e2e.xml — only lock-status reporting fails (see backend critical)",
+    "REAL_ALE_cultural_adaptation": {
+      "source": "Fondatore (it-IT)",
+      "en-us": "Founder & Creative Director",
+      "fr-fr": "Fondateur & Directeur Artistique",
+      "de-de": "Inhaber & Kreativdirektor",
+      "es-es": "Fundador y Director Creativo",
+      "verdict": "PASS · all four locales return multi-word culturally adapted titles — directive injection is reaching Claude correctly"
+    },
+    "Frontend_modal_open_via_event": "PASS · window.dispatchEvent('mfd:open-owner-introduction') opens the OwnerIntroductionModal",
+    "Frontend_versioni_internazionali_toggle": "PASS · [data-testid='intl-versions-toggle'] present and expands the InternationalVersionsPanel",
+    "Frontend_locale_cards": "PASS · 4 cards rendered with flag + market name (Stati Uniti / Francia / Germania / Spagna) + badge + ALE value + edit/regen/lock actions",
+    "Frontend_editorial_wording": "PASS · all badges read 'Adattata per il pubblico locale'; NO 'AI', 'machine', 'tradotto', 'Generato da', 'Macchina' anywhere in panel",
+    "Endpoint_contracts": {
+      "GET /api/profile/me/identity": "200 · shape OK, 5 locales × 4 fields",
+      "PATCH /api/profile/me/identity/source": "200 · triggers ALE recompose for all enabled locales",
+      "PATCH /api/profile/me/identity/{field}/{locale}": "200 · sets status='manual', survives source re-patch",
+      "POST .../regenerate": "200 normally · 409 when locked",
+      "POST .../lock?locked=true|false": "200 · DB persists, but get_identity status mapper bug (see critical)",
+      "POST .../restore-ale": "200 · drops manual back to auto",
+      "GET /api/profile/{profile_id}/identity/resolve?locale=*": "200 · localized for known locales, source-fallback for zh-CN"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter147_profile_identity.py",
+    "/app/backend/tests/test_iter152_live_e2e.py",
+    "/app/test_reports/pytest/iter152.xml",
+    "/app/test_reports/pytest/iter152_e2e.xml"
+  ],
+  "action_items": [
+    "FIX backend: services/profile_identity_resolver.py get_identity() — when building each locale row, check editorial_block_translations.locked and emit status='locked' BEFORE returning the row's normal status. Without this fix the frontend cannot render the 'Approvata · bloccata' badge or disable the regenerate button for locked locales.",
+    "OPTIONAL: add a regression test asserting GET /api/profile/me/identity returns status='locked' for a locked row (e2e test_iter152_live_e2e.py::test_05 already covers this — re-run after fix)."
+  ],
+  "critical_code_review_comments": [
+    "Cultural directive build_profile_identity_addendum is correctly threaded through translate() via voice_addendum — verified by live ALE output that contains studio-narrative phrasing (& Creative Director, & Directeur Artistique, etc.) rather than literal one-word translations.",
+    "Manual override semantics are correct: set_manual writes status='manual', and the orchestrator preserves manual rows on subsequent non-force source upserts.",
+    "Editorial wording in InternationalVersionsPanel STATUS_BADGE map is brand-compliant — no 'AI'/'machine'/'tradotto' anywhere; the user-language requirement (Italian) is respected.",
+    "Status taxonomy gap: the resolver's `get_identity` function appears to derive `status` solely from the translation row's status column without consulting the new `locked` boolean (migration 081). This is the single defect of this iteration — see action item #1."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter152_live_e2e.py (NEW — live E2E with real ALE)"
+  ],
+  "success_rate": {"backend": "96% (32/33 — 27/27 pytest + 6/7 live E2E)", "frontend": "100% (panel renders, editorial wording compliant, testids present)"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (root superadmin, tenant_id=848354b9-a43e-4147-bdad-116fb93bd585, profile_id=caee7b92-34b4-4ecf-bdaa-8a3eda93a70e)",
+  "seed_data_creation": "Used the existing admin profile. PATCH source set role_label='Fondatore' (Italian). ALE created en-us/fr-fr/de-de/es-es auto rows. Tests transiently set/unset manual + locked states on en-us; the row was left in status='auto' after restore-ale at the end of the live E2E run.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All ITER147 backend endpoints work; the cultural adaptation through REAL ALE/Claude is verified and produces the expected studio-narrative output for en-US/fr-FR/de-DE/es-ES. The ONE defect is GET /api/profile/me/identity not surfacing status='locked' for locked rows — DB persists `locked=true` and POST .../regenerate correctly 409s, but the status mapper in services/profile_identity_resolver.py:get_identity ignores the locked column. After the fix, re-run /app/backend/tests/test_iter152_live_e2e.py::test_05_lock_blocks_regenerate to confirm.",
+  "rca of the issue": "Likely root cause: services/profile_identity_resolver.py builds each locale row from editorial_block_translations and copies the `status` column verbatim. Migration 081 added a separate `locked` boolean column, but the builder was not updated to coerce status='locked' when locked=True. The lock_locale function correctly writes locked=true to the DB and regenerate_locale correctly reads it (returning 409), but the read path in get_identity is missing the locked→status coercion."
+}

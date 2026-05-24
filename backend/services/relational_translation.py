@@ -126,15 +126,20 @@ def _build_prompt(text_masked: str, src_locale: str, tgt_locale: str,
         and not stripped.endswith(':')
     )
     if looks_like_label:
+        voice = (voice_addendum.strip() + "\n\n") if voice_addendum and voice_addendum.strip() else ""
         return (
             f"Translate this short UI label from {_label(src_locale)} to "
             f"{_label(tgt_locale)} in the editorial register of a luxury "
             f"interior-architecture studio (Cassina · Molteni · Minotti).\n\n"
+            f"{voice}"
             f"Rules:\n"
             f"  • Output ONLY the translated label, on a single line.\n"
             f"  • No quotes, no markdown, no commentary, no preamble.\n"
             f"  • Keep brand/proper nouns and §DNT#§ placeholders unchanged.\n"
-            f"  • Match the brevity of the source.\n\n"
+            f"  • If the VOICE block above prescribes a culturally-adapted "
+            f"form, prefer that form over the default literal translation.\n"
+            f"  • Length: ±50% of source for cultural-adaptation cases "
+            f"(e.g. 'Founder' may become 'Founder & Creative Director').\n\n"
             f"Source: {stripped}\n"
             f"Translation:"
         )
