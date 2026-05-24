@@ -170,6 +170,15 @@ def get_tenant_configuration(request: Request, ctx: dict = Depends(get_tenant_co
         }
     except Exception:
         bundle["email_identity"] = {"source": "unknown"}
+
+    # ITER145.A · Tenant Locale Orchestration™ — surface enabled_locales,
+    # default_locale, fallback chain (frontend selectors consume from here).
+    try:
+        from services.email_editorial_resolver import resolve_enabled_locales
+        bundle["locales"] = resolve_enabled_locales(ctx.get("tenant_id"))
+    except Exception:
+        bundle["locales"] = {"enabled_locales": [], "default_locale": "it-IT",
+                             "fallback_locale": "it-IT", "locale_source": "unknown"}
     return bundle
 
 
@@ -369,6 +378,9 @@ def runtime_inspector(
     from services.tenant_config_resolver import (
         resolve_modules, resolve_navigation, resolve_theme,
     )
+    from services.email_editorial_resolver import (
+        resolve_enabled_locales, resolve_email_stats,
+    )
 
     tid = tenant_id or user.get("tenant_id")
     cfg = resolve_tenant_config(tid)
@@ -377,6 +389,8 @@ def runtime_inspector(
     nav = resolve_navigation(tid, "tenant_admin",
                              is_super_admin=False, is_root=False)
     identity = resolve_email_identity(tid)
+    locale_info = resolve_enabled_locales(tid)
+    email_stats = resolve_email_stats()
     resolved = getattr(request.state, "resolved_tenant", None) or {}
 
     # Determine branding source
@@ -385,8 +399,8 @@ def runtime_inspector(
                        else ("tenant_legacy" if (cfg or {}).get("primary_color")
                              else "platform_default"))
 
-    # Locale source
-    locale_source = "tenant_default" if cfg.get("default_locale") else "platform_default"
+    # Locale source (legacy — superseded by `locale_info` block below)
+    _ = "tenant_default" if cfg.get("default_locale") else "platform_default"
 
     # Count effective module states
     module_state_counts: Dict[str, int] = {}
@@ -409,9 +423,17 @@ def runtime_inspector(
         },
         "email_identity": identity,
         "locale": {
-            "source": locale_source,
-            "default": cfg.get("default_locale"),
-            "enabled": cfg.get("enabled_locales") or [],
+            "source":  locale_info["locale_source"],
+            "default": locale_info["default_locale"],
+            "fallback": locale_info["fallback_locale"],
+            "enabled": locale_info["enabled_locales"],
+            "available_platform_locales": locale_info["available_platform_locales"],
+            "ale_status": {
+                "email_blocks":     email_stats.get("blocks", 0),
+                "email_translations": email_stats.get("translations", 0),
+                "stale_translations": email_stats.get("stale", 0),
+                "locales_covered":  email_stats.get("locales_covered", []),
+            },
         },
         "modules": {
             "total":         len(modules),

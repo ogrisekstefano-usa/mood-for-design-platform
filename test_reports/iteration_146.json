@@ -1,0 +1,37 @@
+{
+  "summary": "ITER145.A Multilingual Email Identity Studio + Tenant Locale Orchestration verified end-to-end. Backend: pytest test_iter145_multilingual_email.py 10/10 PASS; aggregate (ITER143a/c/d/e + ITER144 + ITER144_1 + ITER145) 61/61 PASS, zero regression. All required API surfaces validated via direct calls: GET /api/content/page/system-email-auth-reset returns 7 blocks per locale (Reimposta for it-IT, Reset for en-US, no Italian leak), /api/tenant/configuration exposes locales {enabled[5]=[it-IT,en-US,fr-FR,de-DE,es-ES] excluding en-GB, default=it-IT in enabled, fallback, locale_source=tenant, available_platform_locales[6]}, /api/blueprint-admin/runtime-inspector exposes locale.ale_status {email_blocks=35, email_translations=210, stale=0, locales_covered=6}, POST /api/tenant/email-branding/preview returns ALE-translated subjects for it-IT/en-US/fr-FR (all 3 distinct). Frontend /settings/email-branding: all required data-testids present (email-branding-page, preview-device-toggle + desktop/mobile, preview-color-toggle + dark/light, branding-preview-locale select, branding-identity-source badge='SOURCE · TENANT_LEGACY', branding-preview/Anteprima). Locale dropdown options exactly match tenant.enabled_locales (5 locales, en-GB NOT present — isolation correct). Clicking Anteprima with locale=en-US renders iframe whose body contains 'Reset' and NOT 'Reimposta' (verified via content_frame inspection). Mobile/Light visual toggles work (iframe ~375px width with rounded corners on light background — visible in screenshot). Source code review confirms branding-preview-container has data-device-mode={deviceMode} and data-color-mode={colorMode} React-bound attributes. Owner Introduction modal correctly dismissable via [aria-label='Close']. /admin/runtime-inspector page renders with locale-related runtime-stat-source/default/enabled testids.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Anteprima first-click", "issue": "On a fresh page load after dismissing the Owner Introduction modal, the very first click on [data-testid='branding-preview'] occasionally does NOT trigger the preview render (previewHtml remains empty, container does not mount). Second click or re-click after changing locale always works. May be a transient focus/event race after modal close. Not a code defect but worth verifying that the modal close handler doesn't swallow the next click event.", "affected_selectors": ["[data-testid='branding-preview']", "[data-testid='branding-preview-container']"]}
+    ],
+    "design_issues": [
+      {"screen": "global heatmap badge", "issues": ["Heatmap pill in bottom-right still flags 'MISS 15 · LEAK 13' on /settings/email-branding and 'MISS 0 · LEAK 3' on /admin/runtime-inspector. Unrelated to ITER145 scope but visible during testing (pre-existing language heatmap noise from ITER144.1 testing)."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter145_multilingual_email.py",
+    "/app/test_reports/pytest/iter145.xml",
+    "/app/test_reports/pytest/iter145_aggregate.xml"
+  ],
+  "action_items": [
+    "(Low) Investigate first-click race on [data-testid='branding-preview'] right after Owner Introduction modal close — possibly add explicit focus blur or a setTimeout(0) in the modal-close handler so the next click event registers reliably.",
+    "(Informational) Heatmap leakage/miss counters on /settings/email-branding (MISS 15, LEAK 13) and /admin/runtime-inspector (MISS 0, LEAK 3) are inherited from earlier iterations — out of ITER145 scope."
+  ],
+  "critical_code_review_comments": [
+    "email_editorial_resolver.filter_to_enabled() correctly degrades en-GB → en-US when tenant enabled_locales=[it-IT,en-US,...] (in-family family-match) and degrades ja-JP → default it-IT (no family match). Locale isolation is tight.",
+    "email_templates.render() retains hardcoded Italian as ultimate safety net for unmapped locales (documented zero-downtime architectural rule) — verified via test_resolve_email_copy_fallback_chain_in_family (en-AU still produces an email).",
+    "EmailBrandingPage.jsx line 303-305: branding-preview-container has React-bound data-device-mode and data-color-mode — clean test-friendly contract.",
+    "Locale dropdown is filtered via enabledLocales state (from /api/tenant/configuration.locales.enabled_locales) — confirms no global platform locale leak in tenant UI. en-GB correctly NOT shown for demo tenant.",
+    "Runtime Inspector locale.ale_status returns numeric counters (email_blocks=35, email_translations=210, stale=0) + locales_covered array (6 lowercase locale codes) — good governance observability surface."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (61/61 aggregate including 10/10 ITER145)", "frontend": "100% functional — all testids present, all toggles work, locale isolation works, English iframe renders. One transient first-click race documented."},
+  "test_credentials": "ROOT admin@moodfordesign.com / Blueprint2024!; TENANT demo@moodfordesign.com / Blueprint2024!",
+  "seed_data_creation": "None. Seed data already in place (35 email blocks + 210 ALE translations across 6 locales).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "ITER145 multilingual email pipeline + tenant locale orchestration are FULLY VERIFIED. Backend regression baseline now 61/61 (test_iter143a + test_iter143c + test_iter143d + test_iter143e + test_iter144 + test_iter144_1 + test_iter145). When testing EmailBrandingPage interactively: (1) login as admin@, (2) navigate to /settings/email-branding, (3) dismiss Owner Introduction via [aria-label='Close'] inside [data-testid='owner-introduction-modal'] — also dismiss the 'PROFILO PERSONALE' modal that may appear, (4) note the first Anteprima click after modal dismissal may not trigger render — click twice or change locale then click. The locale dropdown is a native <select> with values [it-IT,en-US,fr-FR,de-DE,es-ES] (en-GB excluded by tenant.enabled_locales). For backend regression, always run aggregate ITER143/144/145 file set to confirm zero regression. ale_status.locales_covered values are LOWERCASE (de-de, en-gb, en-us, es-es, fr-fr, it-it) — keep this in mind for assertions.",
+  "rca_of_the_issue": "N/A — no critical or blocking issues. One minor transient frontend timing nit on first Anteprima click after modal close documented as low-priority."
+}

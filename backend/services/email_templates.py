@@ -31,7 +31,10 @@ like part of the same editorial system.
 """
 from __future__ import annotations
 
+import logging
 from typing import Dict, Optional, Tuple
+
+logger = logging.getLogger(__name__)
 
 # Default platform branding (used when tenant_email_settings is empty).
 PLATFORM_DEFAULTS = {
@@ -294,7 +297,82 @@ REGISTRY = {
     "generic":        generic,
 }
 
+# ITER145.A · Editorial Runtime™ convergence — map template_key →
+# editorial namespace key. The system reads per-locale copy from
+# editorial_blocks (system.email.*) and merges it into `ctx['locale_copy']`
+# BEFORE the legacy template function runs. This way the hardcoded
+# fallback below stays as a safety net (zero-downtime migration).
+_EDITORIAL_TEMPLATE_KEY = {
+    "password_reset": "auth_reset",
+    "invite":         "invite",
+    "onboarding":     "onboarding",
+    "lead_captured":  "lead_captured",
+    "magic_link":     "magic_link",
+}
+
+
+def _interpolate(value: str, vars: dict) -> str:
+    """Simple {{var}} substitution. Missing vars → empty string."""
+    if not value or not isinstance(value, str) or "{{" not in value:
+        return value or ""
+    out = value
+    for k, v in (vars or {}).items():
+        out = out.replace("{{" + k + "}}", str(v if v is not None else ""))
+    # Clean up any remaining placeholders
+    import re
+    out = re.sub(r"\{\{[a-zA-Z0-9_\.]+\}\}", "", out)
+    return out
+
+
+def _enrich_with_editorial(template_key: str, ctx: dict) -> dict:
+    """Pull Editorial Runtime™ copy and merge into ctx['locale_copy'].
+
+    Strict: locale is filtered to tenant.enabled_locales by the resolver
+    so we never render a foreign-language leak.
+    """
+    editorial_key = _EDITORIAL_TEMPLATE_KEY.get(template_key)
+    if not editorial_key:
+        return ctx  # generic / unmapped → keep legacy behaviour
+    try:
+        from services.email_editorial_resolver import resolve_email_copy
+    except Exception:
+        return ctx
+    locale = (ctx.get("locale") or "it-IT")
+    tenant_id = ctx.get("tenant_id")
+    try:
+        copy = resolve_email_copy(editorial_key, locale, tenant_id=tenant_id)
+    except Exception as e:
+        logger.debug("editorial email copy resolve failed for %s: %s",
+                     template_key, e)
+        return ctx
+    if not copy:
+        return ctx
+    # Variables available to interpolation come from ctx + tenant brand.
+    brand = _branding(ctx.get("tenant_settings") or ctx.get("tenant_identity"))
+    interp_vars = {
+        "studio_name":  brand.get("brand_name") or "MOOD for DESIGN™",
+        "brand_name":   brand.get("brand_name") or "MOOD for DESIGN™",
+        "first_name":   ctx.get("first_name") or "",
+        "inviter_name": ctx.get("inviter_name") or "",
+    }
+    resolved = {k: _interpolate(v, interp_vars) for k, v in copy.items()}
+    # Merge under locale_copy WITHOUT overriding any caller-provided keys
+    # (so call-sites can still hard-override individual fields if needed).
+    locale_copy = dict(resolved)
+    locale_copy.update(ctx.get("locale_copy") or {})
+    ctx = {**ctx, "locale_copy": locale_copy, "editorial_resolved": True}
+    return ctx
+
 
 def render(template_key: str, ctx: dict) -> Tuple[str, str, str]:
+    """Render an email template.
+
+    Path:
+      1. Editorial Runtime™ resolves per-locale copy → ctx['locale_copy']
+      2. Legacy template function composes the HTML using locale_copy
+         (with hardcoded Italian fallback if a field is missing).
+    """
+    ctx = _enrich_with_editorial(template_key, ctx)
     fn = REGISTRY.get(template_key) or generic
     return fn(ctx)
+

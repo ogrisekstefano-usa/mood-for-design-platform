@@ -67,6 +67,13 @@ const EmailBrandingPage = () => {
   const [previewLocale, setPreviewLocale] = useState('it-IT');
   const [previewing, setPreviewing] = useState(false);
   const [identitySource, setIdentitySource] = useState(null);
+  // ITER145.A · live multi-device preview
+  const [deviceMode, setDeviceMode] = useState('desktop'); // 'desktop' | 'mobile'
+  const [colorMode, setColorMode]   = useState('dark');    // 'dark' | 'light'
+  // Tenant locale envelope — what the tenant is allowed to render
+  const [enabledLocales, setEnabledLocales] = useState(
+    ['it-IT', 'en-US', 'en-GB', 'fr-FR', 'de-DE', 'es-ES']
+  );
 
   const isRoot = !!user?.is_root_superadmin;
   const canEdit = (user?.role || '').toLowerCase() === 'tenant_admin' ||
@@ -84,6 +91,14 @@ const EmailBrandingPage = () => {
         try {
           const rc = await api.get('/api/tenant/configuration');
           setIdentitySource(rc.data?.email_identity?.source || null);
+          // ITER145.A · tenant locale orchestration — preview only
+          // surfaces what the tenant has enabled. NO global leakage.
+          const locs = rc.data?.locales?.enabled_locales;
+          if (locs && locs.length) {
+            setEnabledLocales(locs);
+            const def = rc.data?.locales?.default_locale;
+            if (def && locs.includes(def)) setPreviewLocale(def);
+          }
         } catch { /* non-critical */ }
       } catch (e) {
         toast.error('Impossibile caricare le impostazioni.');
@@ -223,7 +238,41 @@ const EmailBrandingPage = () => {
                        : 'rgba(232,235,240,0.5)',
                 }}>{identitySource || '—'}</span>
               </span>
-              <div style={{ display: 'flex', gap: 6 }}>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: 4 }}
+                     data-testid="preview-device-toggle">
+                  {['desktop', 'mobile'].map((m) => (
+                    <button key={m} type="button"
+                            data-testid={`preview-device-${m}`}
+                            onClick={() => setDeviceMode(m)}
+                            style={{
+                              padding: '6px 10px', fontSize: 10,
+                              letterSpacing: '0.18em', textTransform: 'uppercase',
+                              fontFamily: 'JetBrains Mono, monospace',
+                              background: deviceMode === m ? 'rgba(124,228,245,0.08)' : 'transparent',
+                              color: deviceMode === m ? '#7ce4f5' : 'rgba(232,235,240,0.55)',
+                              border: `1px solid ${deviceMode === m ? '#7ce4f5' : 'rgba(232,235,240,0.1)'}`,
+                              borderRadius: 999, cursor: 'pointer',
+                            }}>{m}</button>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', gap: 4 }}
+                     data-testid="preview-color-toggle">
+                  {['dark', 'light'].map((m) => (
+                    <button key={m} type="button"
+                            data-testid={`preview-color-${m}`}
+                            onClick={() => setColorMode(m)}
+                            style={{
+                              padding: '6px 10px', fontSize: 10,
+                              letterSpacing: '0.18em', textTransform: 'uppercase',
+                              fontFamily: 'JetBrains Mono, monospace',
+                              background: colorMode === m ? 'rgba(124,228,245,0.08)' : 'transparent',
+                              color: colorMode === m ? '#7ce4f5' : 'rgba(232,235,240,0.55)',
+                              border: `1px solid ${colorMode === m ? '#7ce4f5' : 'rgba(232,235,240,0.1)'}`,
+                              borderRadius: 999, cursor: 'pointer',
+                            }}>{m}</button>
+                  ))}
+                </div>
                 <select data-testid="branding-preview-locale"
                         value={previewLocale}
                         onChange={(e) => setPreviewLocale(e.target.value)}
@@ -231,12 +280,9 @@ const EmailBrandingPage = () => {
                                  border: '1px solid var(--bp-cc-border)',
                                  color: 'var(--bp-cc-ink)', fontSize: 12,
                                  padding: '6px 10px', borderRadius: 6 }}>
-                  <option value="it-IT">it-IT</option>
-                  <option value="en-US">en-US</option>
-                  <option value="en-GB">en-GB</option>
-                  <option value="fr-FR">fr-FR</option>
-                  <option value="de-DE">de-DE</option>
-                  <option value="es-ES">es-ES</option>
+                  {enabledLocales.map((loc) => (
+                    <option key={loc} value={loc}>{loc}</option>
+                  ))}
                 </select>
                 <select value={previewKey}
                         onChange={(e) => setPreviewKey(e.target.value)}
@@ -254,10 +300,28 @@ const EmailBrandingPage = () => {
               </div>
             </div>
             {previewHtml ? (
-              <iframe data-testid="branding-preview-frame"
-                      title="Email preview" srcDoc={previewHtml}
-                      style={{ width: '100%', height: 560, border: 0,
-                               background: '#050608' }} />
+              <div data-testid="branding-preview-container"
+                   data-device-mode={deviceMode}
+                   data-color-mode={colorMode}
+                   style={{
+                     display: 'flex', justifyContent: 'center',
+                     padding: deviceMode === 'mobile' ? '20px 0' : 0,
+                     background: colorMode === 'light' ? '#f3f4f6' : '#050608',
+                     minHeight: 560,
+                   }}>
+                <iframe data-testid="branding-preview-frame"
+                        title="Email preview" srcDoc={previewHtml}
+                        style={{
+                          width: deviceMode === 'mobile' ? 375 : '100%',
+                          height: 560,
+                          border: deviceMode === 'mobile'
+                            ? '1px solid rgba(232,235,240,0.1)' : 0,
+                          borderRadius: deviceMode === 'mobile' ? 18 : 0,
+                          background: colorMode === 'light' ? '#fff' : '#050608',
+                          boxShadow: deviceMode === 'mobile'
+                            ? '0 20px 60px rgba(0,0,0,0.5)' : 'none',
+                        }} />
+              </div>
             ) : (
               <div style={{ minHeight: 560, display: 'grid', placeItems: 'center',
                             color: 'var(--bp-cc-ink-mute)', fontStyle: 'italic',
