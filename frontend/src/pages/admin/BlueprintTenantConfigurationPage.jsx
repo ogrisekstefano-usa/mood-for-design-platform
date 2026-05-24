@@ -27,13 +27,26 @@ const STATE_STYLES = {
 };
 const STATES = ['enabled', 'beta', 'hidden', 'disabled', 'locked'];
 
-const StatePill = ({ state, onClick, current }) => {
+// ITER146 · Core Module Safety™ — these states are non-operational and
+// CANNOT be applied to a core-critical module. The backend enforces it;
+// the UI disables the toggle so the operator never even tries.
+const NON_OPERATIONAL_STATES = new Set(['disabled', 'hidden', 'locked',
+                                         'coming_soon', 'beta_restricted']);
+const CORE_CRITICAL_TOOLTIP =
+  'Modulo fondamentale per l’operatività runtime. Non può essere disattivato.';
+
+const StatePill = ({ state, onClick, current, locked }) => {
   const s = STATE_STYLES[state] || STATE_STYLES.enabled;
   const active = current === state;
+  const isLocked = !!locked;
   return (
     <button
-      type="button" onClick={onClick}
+      type="button"
+      onClick={isLocked ? undefined : onClick}
+      disabled={isLocked}
+      title={isLocked ? CORE_CRITICAL_TOOLTIP : undefined}
       data-testid={`module-state-${state}`}
+      data-locked={isLocked ? 'true' : 'false'}
       style={{
         padding: '5px 12px',
         fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase',
@@ -41,7 +54,9 @@ const StatePill = ({ state, onClick, current }) => {
         background: active ? 'rgba(255,255,255,0.04)' : 'transparent',
         border: `1px solid ${active ? s.color : 'rgba(255,255,255,0.08)'}`,
         color: active ? s.color : 'rgba(255,255,255,0.45)',
-        borderRadius: 999, cursor: 'pointer',
+        borderRadius: 999,
+        cursor: isLocked ? 'not-allowed' : 'pointer',
+        opacity: isLocked ? 0.35 : 1,
         boxShadow: active ? s.glow : 'none',
         transition: 'all 200ms var(--bp-ease-cinema)',
       }}>
@@ -173,12 +188,31 @@ const BlueprintTenantConfigurationPage = () => {
         )}
         {!loading && filtered.map((m) => {
           const current = defaults[m.code] || m.default_state;
+          const critical = !!m.is_core_critical;
           return (
-            <div key={m.code} data-testid={`module-row-${m.code}`} style={styles.moduleRow}>
+            <div key={m.code} data-testid={`module-row-${m.code}`}
+                 data-core-critical={critical ? 'true' : 'false'}
+                 style={styles.moduleRow}>
               <div>
                 <div style={styles.moduleName}>
                   {m.display_name}
-                  {m.is_core && (
+                  {critical && (
+                    <span data-testid={`module-core-critical-badge-${m.code}`}
+                          title={CORE_CRITICAL_TOOLTIP}
+                          style={{
+                            marginLeft: 12,
+                            ...styles.moduleMeta,
+                            padding: '3px 9px',
+                            border: '1px solid rgba(124,228,245,0.55)',
+                            color: 'var(--atelier-cyan)',
+                            background: 'rgba(124,228,245,0.06)',
+                            borderRadius: 999, letterSpacing: '0.30em',
+                            cursor: 'help',
+                          }}>
+                      CORE CRITICAL
+                    </span>
+                  )}
+                  {m.is_core && !critical && (
                     <span style={{ marginLeft: 12, ...styles.moduleMeta,
                                    color: 'var(--atelier-cyan)' }}>core</span>
                   )}
@@ -193,6 +227,7 @@ const BlueprintTenantConfigurationPage = () => {
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                 {STATES.map((s) => (
                   <StatePill key={s} state={s} current={current}
+                             locked={critical && NON_OPERATIONAL_STATES.has(s)}
                              onClick={() => patchModule(m.code, s)} />
                 ))}
               </div>

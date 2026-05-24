@@ -36,8 +36,13 @@ from database import db, db_available
 from core.tenant_context import get_tenant_context
 from middleware.auth import get_current_user, require_root_superadmin
 from services.tenant_config_resolver import (
+    NON_OPERATIONAL_STATES,
+    OPERATIONAL_STATES,
+    _log_core_critical_event,
     invalidate_registry,
     invalidate_tenant_config,
+    is_core_critical,
+    list_core_critical_codes,
     resolve_modules,
     resolve_runtime_bundle,
     resolve_tenant_config,
@@ -194,6 +199,50 @@ def _require_tenant_admin_or_root(ctx: dict):
         raise HTTPException(403, "tenant_admin required")
 
 
+def _enforce_core_critical_safety(update: Dict[str, Any],
+                                   *, tenant_id: Optional[str],
+                                   actor: Dict[str, Any]) -> None:
+    """ITER146 · reject any tenant-level mutation that targets a
+    core-critical module with a non-operational state. Mutations on
+    OTHER modules are passed through untouched.
+    """
+    critical = set(list_core_critical_codes())
+    if not critical:
+        return
+    blocked: List[str] = []
+    ff = update.get("feature_flags") or {}
+    if isinstance(ff, dict):
+        for code, state in ff.items():
+            if code in critical and (
+                state in NON_OPERATIONAL_STATES or
+                (state and state not in OPERATIONAL_STATES)
+            ):
+                blocked.append(f"feature_flags.{code}={state}")
+                _log_core_critical_event(
+                    code=code, attempted_state=str(state),
+                    attempted_source="tenant_feature_flag",
+                    action="mutation_blocked", actor=actor,
+                    tenant_id=tenant_id,
+                )
+    em = update.get("enabled_modules") or {}
+    if isinstance(em, dict):
+        for code, flag in em.items():
+            if code in critical and flag is False:
+                blocked.append(f"enabled_modules.{code}=false")
+                _log_core_critical_event(
+                    code=code, attempted_state="disabled(toggle=false)",
+                    attempted_source="tenant_module_toggle",
+                    action="mutation_blocked", actor=actor,
+                    tenant_id=tenant_id,
+                )
+    if blocked:
+        raise HTTPException(
+            400,
+            "core-critical modules cannot be disabled/hidden/locked: "
+            + ", ".join(blocked),
+        )
+
+
 @router.patch("/configuration")
 def patch_tenant_configuration(
     patch: TenantConfigurationPatch,
@@ -210,6 +259,9 @@ def patch_tenant_configuration(
               if k in _PATCHABLE_TENANT_FIELDS}
     if not update:
         raise HTTPException(400, "no patchable fields supplied")
+
+    # ITER146 · Core Module Safety™ — short-circuit before any DB write.
+    _enforce_core_critical_safety(update, tenant_id=tenant_id, actor=ctx)
 
     before = _ensure_tenant_configuration_row(tenant_id)
     update["updated_at"] = _now()
@@ -237,13 +289,19 @@ def patch_tenant_configuration(
 @admin_router.get("/feature-modules")
 def list_feature_modules(user: dict = Depends(require_root_superadmin)):
     if not db_available():
-        return {"modules": [], "platform_defaults": {}}
+        return {"modules": [], "platform_defaults": {}, "core_critical_codes": []}
     c = db()
     modules = (c.table("feature_modules_registry")
                .select("*").order("position").execute().data or [])
     defaults = (c.table("platform_feature_defaults")
                 .select("module_code, state, updated_at").execute().data or [])
-    return {"modules": modules, "platform_defaults": defaults}
+    critical = [m["code"] for m in modules if m.get("is_core_critical")]
+    return {
+        "modules": modules,
+        "platform_defaults": defaults,
+        "core_critical_codes": critical,
+        "non_operational_states": sorted(NON_OPERATIONAL_STATES),
+    }
 
 
 class PlatformDefaultPatch(BaseModel):
@@ -260,10 +318,24 @@ def patch_platform_default(
         raise HTTPException(503, "database unavailable")
     c = db()
     existing = (c.table("feature_modules_registry")
-                .select("code, is_core, default_state")
+                .select("code, is_core, is_core_critical, default_state")
                 .eq("code", code).limit(1).execute().data or [])
     if not existing:
         raise HTTPException(404, "module not found")
+    # ITER146 · Core Module Safety™ — reject ANY non-operational state on
+    # core-critical modules. Checked BEFORE the legacy is_core+disabled
+    # guard so the structured 400 detail is always returned.
+    if existing[0].get("is_core_critical") and payload.state in NON_OPERATIONAL_STATES:
+        _log_core_critical_event(
+            code=code, attempted_state=payload.state,
+            attempted_source="blueprint_admin_platform_default",
+            action="mutation_blocked", actor=user,
+        )
+        raise HTTPException(
+            400,
+            f"core-critical module '{code}' cannot be set to "
+            f"'{payload.state}'. Allowed states: enabled, beta.",
+        )
     if existing[0].get("is_core") and payload.state == "disabled":
         raise HTTPException(400, "core modules cannot be disabled")
 
@@ -317,6 +389,10 @@ def admin_patch_tenant_configuration(
               if k in _PATCHABLE_TENANT_FIELDS}
     if not update:
         raise HTTPException(400, "no patchable fields supplied")
+
+    # ITER146 · Core Module Safety™ also applies to root-superadmin
+    # admin-side patches — runtime essentials are never togglable.
+    _enforce_core_critical_safety(update, tenant_id=tenant_id, actor=user)
 
     before = _ensure_tenant_configuration_row(tenant_id)
     update["updated_at"] = _now()

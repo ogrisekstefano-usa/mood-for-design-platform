@@ -17,15 +17,66 @@ Public functions
 """
 from __future__ import annotations
 
+import logging
 import threading
 import time
+import uuid
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from database import db, db_available
 
+log = logging.getLogger(__name__)
+
 _CACHE_LOCK = threading.RLock()
 _CACHE: Dict[str, Any] = {}
 _TTL = 60.0
+
+# ITER146 · Core Module Safety™ — states that are NOT operationally usable.
+# A `is_core_critical` module must NEVER end up in any of these states.
+NON_OPERATIONAL_STATES = frozenset({
+    "disabled", "hidden", "locked", "coming_soon", "beta_restricted",
+})
+OPERATIONAL_STATES = frozenset({"enabled", "beta"})
+
+
+def _log_core_critical_event(*, code: str, attempted_state: str,
+                              attempted_source: str, action: str,
+                              actor: Optional[Dict[str, Any]] = None,
+                              tenant_id: Optional[str] = None) -> None:
+    """Best-effort audit log for any core-critical safety event.
+
+    `action` is one of:
+      - `resolver_auto_force`      (state silently promoted to enabled)
+      - `mutation_blocked`         (PATCH rejected at API layer)
+    """
+    log.warning(
+        "core_critical_safety event=%s code=%s attempted_state=%s "
+        "attempted_source=%s tenant_id=%s actor=%s",
+        action, code, attempted_state, attempted_source,
+        tenant_id, (actor or {}).get("email"),
+    )
+    if not db_available():
+        return
+    try:
+        db().table("configuration_change_events").insert({
+            "id":            str(uuid.uuid4()),
+            "tenant_id":     tenant_id,
+            "actor_user_id": (actor or {}).get("profile_id"),
+            "actor_email":   (actor or {}).get("email"),
+            "event_type":    f"core_critical.{action}",
+            "scope":         "platform" if action == "resolver_auto_force"
+                              else "tenant",
+            "source":        attempted_source or "resolver",
+            "module_code":   code,
+            "diff_before":   {"attempted_state": attempted_state},
+            "diff_after":    {"effective_state": "enabled"},
+            "notes":         (f"Core-critical module '{code}' protected against "
+                              f"non-operational state '{attempted_state}'."),
+            "created_at":    datetime.now(timezone.utc).isoformat(),
+        }).execute()
+    except Exception as e:  # never block on audit failure
+        log.warning("core_critical audit insert failed: %s", e)
 
 
 # ── visibility hierarchy ────────────────────────────────────────────
@@ -84,7 +135,8 @@ def _registry() -> List[Dict[str, Any]]:
         return []
     rows = (db().table("feature_modules_registry")
             .select("code, display_name, category, description, default_state, "
-                    "required_role, position, is_core, nav_route, nav_icon, "
+                    "required_role, position, is_core, is_core_critical, "
+                    "nav_route, nav_icon, "
                     "nav_group, nav_section_label, nav_visibility, nav_end_match, "
                     "nav_has_mark, nav_test_id, group_position")
             .order("position").execute().data or [])
@@ -166,7 +218,21 @@ def resolve_modules(tenant_id: Optional[str]) -> List[Dict[str, Any]]:
         else:
             state = m["default_state"]
             source = "registry_default"
-        if m.get("is_core") and state == "disabled":
+        # ITER146 · Core Module Safety™ — critical modules are runtime
+        # essentials. Any non-operational state coming from ANY source
+        # is auto-promoted to `enabled` and logged as a safety event.
+        # This check runs BEFORE the softer is_core legacy fallback so
+        # the structured `core_critical_force_enabled` source wins.
+        if m.get("is_core_critical") and state not in ("enabled", "beta"):
+            _log_core_critical_event(
+                code=code,
+                attempted_state=state,
+                attempted_source=source,
+                action="resolver_auto_force",
+            )
+            state = "enabled"
+            source = "core_critical_force_enabled"
+        elif m.get("is_core") and state == "disabled":
             state = "enabled"
             source = "core_force_enabled"
         out.append({
@@ -184,6 +250,19 @@ def is_module_enabled(tenant_id: Optional[str], code: str) -> bool:
         if m["code"] == code:
             return m["effective_state"] in ("enabled", "beta")
     return False
+
+
+def is_core_critical(code: str) -> bool:
+    """ITER146 · Core Module Safety™ — registry lookup."""
+    for m in _registry():
+        if m["code"] == code:
+            return bool(m.get("is_core_critical"))
+    return False
+
+
+def list_core_critical_codes() -> List[str]:
+    """ITER146 · canonical list (used by tests / UI)."""
+    return [m["code"] for m in _registry() if m.get("is_core_critical")]
 
 
 # ── role / visibility filter ────────────────────────────────────────
@@ -365,8 +444,9 @@ def resolve_runtime_bundle(tenant_id: Optional[str],
             "state":         m["effective_state"],
             "source":        m["resolution_source"],
             "visibility":    m.get("nav_visibility") or "tenant",
-            "is_core":       bool(m.get("is_core")),
-            "route":         m.get("nav_route"),
+            "is_core":          bool(m.get("is_core")),
+            "is_core_critical": bool(m.get("is_core_critical")),
+            "route":            m.get("nav_route"),
         } for m in modules],
         "navigation": resolve_navigation(tenant_id, user_role,
                                          is_super_admin, is_root),

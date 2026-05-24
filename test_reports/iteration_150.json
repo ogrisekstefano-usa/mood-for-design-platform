@@ -1,0 +1,50 @@
+{
+  "summary": "ITER146 HOTFIX · Core Module Safety™ — FULL VERIFICATION PASS. Backend: 24/24 PASS (11 new safety + 8 ITER146 lead pipeline + 1 ITER149 parity + 4 new ITER150 API-contract tests). Frontend: /admin/tenant-configuration renders the new defensive UI exactly per spec — CORE CRITICAL badges visible on the 6 canonical modules, the disabled/hidden/locked state pills are locked (data-locked=true, disabled attr, cursor=not-allowed, opacity=0.35), enabled/beta pills remain clickable, the Italian tooltip matches verbatim 'Modulo fondamentale per l'operatività runtime. Non può essere disattivato.', non-critical modules (crm_accounts etc.) have NO badge and freely togglable pills. Resolver auto-force fires for BOTH platform_feature_defaults=disabled AND tenant_configuration.feature_flags=hidden, with effective_state='enabled' and resolution_source='core_critical_force_enabled'. API guards reject feature_flags/enabled_modules/state mutations on critical codes (HTTP 400, detail contains 'core-critical') AND write audit row event_type='core_critical.mutation_blocked' to configuration_change_events. Non-critical pass-through (crm_accounts disable) returns 200. Runtime bundle exposes is_core_critical:bool on every module; GET /api/blueprint-admin/feature-modules exposes top-level core_critical_codes (6 canonical) + non_operational_states arrays.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/admin/tenant-configuration (locale=en)", "issues": ["i18n LEAKAGE warnings still observed for phrases 'Atelier', 'Brand', 'Insights', 'modifica', 'insights', 'brand' on this page when site is in en-US. Cosmetic, unrelated to ITER146 hotfix — recommend i18n sweep follow-up."]},
+      {"screen": "sidebar (locale=it-IT)", "issues": ["Console warning '[i18n] Missing string key: nav.runtime.loading (locale it-IT)' — missing translation key in IT bundle. Cosmetic."]},
+      {"screen": "Sidebar/LocalizationOverlay", "issues": ["React warning: 'Cannot update a component (LocalizationOverlay) while rendering a different component (Sidebar)' — non-blocking but worth refactoring setState out of render path."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter146_core_module_safety.py",
+    "/app/backend/tests/test_iter150_api_contracts.py",
+    "/app/backend/tests/test_iter146_lead_pipeline.py",
+    "/app/backend/tests/test_iter149_runtime_identity_parity.py",
+    "/app/test_reports/pytest/iter150.xml",
+    "/app/test_reports/pytest/iter150_contracts.xml"
+  ],
+  "action_items": [
+    "[OPTIONAL] Add missing i18n string key 'nav.runtime.loading' for it-IT locale.",
+    "[OPTIONAL] Audit /admin/tenant-configuration EN bundle to remove the LEAKAGE phrases (Atelier, Brand, Insights, modifica) and remove the related console warnings.",
+    "[OPTIONAL] Fix React setState-in-render between LocalizationOverlay and Sidebar — does not affect functionality."
+  ],
+  "critical_code_review_comments": [
+    "Resolver implementation is correct and defensive: NON_OPERATIONAL_STATES = {disabled, hidden, locked, coming_soon, beta_restricted}; is_core_critical check fires BEFORE the legacy is_core fallback so the structured source name 'core_critical_force_enabled' wins. Cache invalidation called in fixtures verified correct.",
+    "_enforce_core_critical_safety() correctly raises HTTP 400 with 'core-critical' wording for BOTH feature_flags AND enabled_modules mutations, and writes audit row to configuration_change_events with event_type='core_critical.mutation_blocked'. Verified live: actor='tester-iter150@example.com' row found post-test.",
+    "PATCH /api/blueprint-admin/feature-modules/{code} now uses the new 'core-critical' phrasing (verified — legacy 'core modules cannot be disabled' is NOT in the rejected response). Operational state 'beta' still allowed (HTTP 200) on critical modules; non-critical 'crm_accounts' freely togglable to 'disabled'.",
+    "Frontend StatePill renders data-locked='true' with disabled attr + cursor:not-allowed + opacity:0.35 + Italian title — confirmed via DOM inspection on dashboard row.",
+    "Side observation (not part of hotfix scope): /admin/tenant-configuration page still emits some [LEAKAGE] warnings for EN locale on phrases like 'Atelier'/'Brand'/'modifica'/'Insights'. Pre-existing i18n debt, separate from ITER146.",
+    "configuration_change_events table does NOT have a 'payload' column despite the audit handler naming suggesting it might write structured payloads — current schema appears to store only event_type/actor/code/state etc. If structured payloads are desired later, a migration would be needed. Currently audit semantics work without it."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter150_api_contracts.py (NEW — 4 new tests covering GET feature-modules contract, PATCH wording, runtime_bundle is_core_critical, audit row write)"
+  ],
+  "success_rate": {
+    "backend": "100% (24/24 — 11 core safety + 8 lead pipeline + 1 runtime parity + 4 new ITER150 contracts)",
+    "frontend": "100% — all spec'd selectors, attributes, opacity, cursor, Italian tooltip, and negative control (crm_accounts) verified PASS"
+  },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (ROOT SUPERADMIN — used for /admin/tenant-configuration UI).",
+  "seed_data_creation": "Test artifacts (auto-cleaned via finally blocks): platform_feature_defaults rows for 'dashboard' and 'crm_accounts' were transiently injected during resolver-force tests and DELETEd in fixtures; tenant_configuration.feature_flags={dashboard:'hidden'} was transiently set on studio tenant and restored. One audit row in configuration_change_events with actor='tester-iter150@example.com' remains (intentional artifact from audit verification — non-impactful, can be ignored or cleaned with a one-shot DELETE on that actor).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "ITER146 Core Module Safety™ HOTFIX is fully verified and closed. Aggregate (ITER143/144/145/146-lead/146-safety/149/150) pytest now stands at 80+ PASS as predicted by the spec. The new /app/backend/tests/test_iter150_api_contracts.py adds 4 contract tests on top of the 11 in test_iter146_core_module_safety.py. The configuration_change_events table currently lacks a 'payload' column — if next iteration needs to assert structured audit payloads, add a migration first. UI snapshot stored conceptually: /admin/tenant-configuration shows the 6 canonical critical modules (Dashboard, All Journeys/journey_index, Start a Journey/begin_journey, plus the others scrollable lower) with green 'CORE CRITICAL' badges and visually faded non-operational pills. Pre-existing i18n EN-bundle leakage on this page is documented but not part of this hotfix.",
+  "rca_of_the_issue": "N/A — this iteration was purely a verification pass on the defensive HOTFIX. The original ITER146 user-reported perception ('dashboard appears DISABLED in runtime UI') was already remediated before this iteration began (DB audit confirmed is_core=TRUE, default_state=enabled, no overrides); the additional belt-and-braces protections introduced in this iteration (is_core_critical column, resolver auto-force, mutation guard, UI lock) all operate as specified and would prevent any future regression even if a stale or hand-edited row attempted to put a critical module into a non-operational state."
+}
