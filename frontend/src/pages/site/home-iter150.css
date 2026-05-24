@@ -298,7 +298,7 @@
   grid-template-columns: minmax(220px, 320px) 1fr;
   align-items: center;
   gap: 40px;
-  padding: 20px clamp(28px, 6vw, 80px);
+  padding: 14px clamp(28px, 6vw, 80px);
   background: var(--mfd-bg);
   border-bottom: 1px solid var(--mfd-line);
 }
@@ -334,7 +334,7 @@
  * SECTION HEAD (shared)
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-section-head {
-  margin: 0 0 28px;
+  margin: 0 0 18px;
 }
 .mfd-section-head--with-link {
   display: flex; justify-content: space-between; align-items: flex-end; gap: 24px;
@@ -373,16 +373,16 @@
  * HOW IT WORKS
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-how {
-  padding: clamp(32px, 4vw, 56px) clamp(28px, 6vw, 80px);
+  padding: clamp(20px, 2.5vw, 36px) clamp(28px, 6vw, 80px);
   background: var(--mfd-bg);
 }
 .mfd-how__steps {
-  list-style: none; padding: 0; margin: 0 0 28px;
+  list-style: none; padding: 0; margin: 0 0 16px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 56px;
   border-top: 1px solid var(--mfd-line);
-  padding-top: 24px;
+  padding-top: 18px;
 }
 .mfd-how__step {
   display: grid;
@@ -429,18 +429,11 @@
  * MAGAZINE — 5 editorial cards (no date, no author)
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-magazine {
-  padding: clamp(48px, 5vw, 88px) clamp(28px, 6vw, 80px);
+  padding: clamp(16px, 2vw, 32px) clamp(28px, 6vw, 80px) clamp(8px, 1vw, 16px);
   background: var(--mfd-bg);
   position: relative;
 }
-.mfd-magazine::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 88px;
-  pointer-events: none;
-  background: linear-gradient(180deg, transparent 0%, rgba(14, 13, 11, 0.10) 60%, rgba(14, 13, 11, 0.32) 100%);
-}
+/* No bottom veil — was creating a visible grey shadow stripe before Stories */
 .mfd-magazine__grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -456,6 +449,7 @@
 .mag-card__media {
   position: relative;
   aspect-ratio: 4 / 5;
+  max-height: 480px;
   overflow: hidden;
 }
 .mag-card__media img {
@@ -508,8 +502,9 @@
  * DESIGN STORIES — real projects
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-stories {
-  padding: clamp(24px, 3vw, 48px) clamp(28px, 6vw, 80px);
+  padding: clamp(16px, 2vw, 32px) clamp(28px, 6vw, 80px);
   background: var(--mfd-bg-2);
+  box-shadow: none;
 }
 .mfd-stories__grid {
   display: grid;
@@ -562,7 +557,7 @@
  * MATERIALS — horizontal rail
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-materials {
-  padding: clamp(24px, 3vw, 48px) clamp(28px, 6vw, 80px);
+  padding: clamp(16px, 2vw, 32px) clamp(28px, 6vw, 80px);
   background: var(--mfd-bg);
 }
 .mfd-materials__wrap { position: relative; }
