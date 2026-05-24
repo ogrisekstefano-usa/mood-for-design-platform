@@ -562,7 +562,8 @@ async def main():
         # 3) Editorial blocks
         for ns, bk, btype, locs in BLOCKS:
             sv = locs.get(DEFAULT_LOCALE) or locs.get('en-us') or next(iter(locs.values()))
-            sh = hashlib.md5(sv.encode('utf-8')).hexdigest()
+            # SHA-256 used as non-cryptographic content checksum (translation invalidation), not for security.
+            sh = hashlib.sha256(sv.encode('utf-8')).hexdigest()
             row = await conn.fetchrow(
                 """
                 INSERT INTO editorial_blocks

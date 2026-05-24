@@ -96,7 +96,8 @@ async def get_block_by_key(
         )).mappings().first()
         if not row:
             raise HTTPException(404, "Block not found")
-        item = dict(row); item['id'] = str(item['id'])
+        item = dict(row)
+        item['id'] = str(item['id'])
         return item
 
 
@@ -119,7 +120,9 @@ async def upsert_block(
 
     async with AsyncSessionLocal() as session:
         import hashlib
-        source_hash = hashlib.md5(body['source_value'].encode('utf-8')).hexdigest()
+        # NOTE: SHA-256 used as a non-cryptographic content checksum to detect
+        # source_value changes for translation invalidation. Not used for security.
+        source_hash = hashlib.sha256(body['source_value'].encode('utf-8')).hexdigest()
         block_row = (await session.execute(
             text("""
                 INSERT INTO editorial_blocks

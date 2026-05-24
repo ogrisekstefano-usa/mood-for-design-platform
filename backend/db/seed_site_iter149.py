@@ -657,7 +657,8 @@ async def main():
         import hashlib
         for ns, bk, btype, locales in BLOCKS:
             source_value = locales.get(DEFAULT_LOCALE) or locales.get('en-us') or next(iter(locales.values()))
-            source_hash = hashlib.md5(source_value.encode('utf-8')).hexdigest()
+            # SHA-256 used as non-cryptographic content checksum (translation invalidation), not for security.
+            source_hash = hashlib.sha256(source_value.encode('utf-8')).hexdigest()
             row = await conn.fetchrow(
                 """
                 INSERT INTO editorial_blocks

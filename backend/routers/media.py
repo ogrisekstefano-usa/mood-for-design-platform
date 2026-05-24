@@ -37,7 +37,7 @@ async def upload(
     if len(raw) > 50 * 1024 * 1024:
         raise HTTPException(413, "File too large (max 50MB)")
     try:
-        result = await media.upload_asset(
+        return await media.upload_asset(
             db, tenant_id=tenant['id'],
             file_bytes=raw, filename=file.filename or 'upload.bin',
             content_type=file.content_type or 'application/octet-stream',
@@ -49,7 +49,6 @@ async def upload(
         )
     except ValueError as e:
         raise HTTPException(400, str(e))
-    return result
 
 
 @router.get('/assets')

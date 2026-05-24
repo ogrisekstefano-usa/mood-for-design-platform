@@ -56,11 +56,12 @@ async def publish_page(
         result = await cms.publish_page(db, tenant_id=tenant['id'], page_id=page_id)
     except ValueError as e:
         raise HTTPException(404, str(e))
-    # invalidate read caches
-    content_cache.clear_prefix(f'page:{tenant["id"]}')
-    content_cache.clear_prefix(f'pages_list:{tenant["id"]}')
-    content_cache.clear_prefix(f'nav:{tenant["id"]}')
-    return result
+    else:
+        # invalidate read caches
+        content_cache.clear_prefix(f'page:{tenant["id"]}')
+        content_cache.clear_prefix(f'pages_list:{tenant["id"]}')
+        content_cache.clear_prefix(f'nav:{tenant["id"]}')
+        return result
 
 
 @router.post('/pages/{page_id}/revert')
@@ -95,8 +96,9 @@ async def patch_section(
                                           section_id=section_id, patch=patch)
     except ValueError as e:
         raise HTTPException(400, str(e))
-    content_cache.clear_prefix(f'page:{tenant["id"]}')
-    return result
+    else:
+        content_cache.clear_prefix(f'page:{tenant["id"]}')
+        return result
 
 
 class SectionCreate(BaseModel):
