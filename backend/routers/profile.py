@@ -14,7 +14,8 @@ returned.
 """
 from datetime import datetime, timezone
 from typing import Optional
-import os
+import logging
+import re
 import uuid
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from pydantic import BaseModel, Field
@@ -22,16 +23,68 @@ from core.tenant_context import get_tenant_context
 from database import db, get_admin_client
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 ALLOWED_AVATAR_MIME = {
     "image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif",
 }
 MAX_AVATAR_BYTES = 4 * 1024 * 1024  # 4 MB
+AVATAR_BUCKET = "tenant-assets"
+AVATAR_SIGNED_TTL_SECONDS = 7 * 24 * 3600  # 7 days · Supabase max for signed URLs
 
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+# ITER147 HOTFIX · the `tenant-assets` bucket is PRIVATE on this project
+# (verified via `list_buckets()` — public=False). The original avatar
+# upload code emitted a `/storage/v1/object/public/...` URL that
+# returned HTTP 400 at fetch time. We now sign every avatar URL and
+# transparently re-sign at read-time so existing broken rows recover
+# without a backfill.
+def _avatar_path_from_url(url: Optional[str]) -> Optional[str]:
+    if not url or not isinstance(url, str):
+        return None
+    m = re.search(r"/storage/v1/object/(?:public|sign)/[^/]+/(.+?)(?:\?|$)", url)
+    return m.group(1) if m else None
+
+
+def _signed_avatar_url(path: str) -> Optional[str]:
+    admin = get_admin_client()
+    if admin is None or not path:
+        return None
+    try:
+        res = admin.storage.from_(AVATAR_BUCKET).create_signed_url(
+            path, AVATAR_SIGNED_TTL_SECONDS,
+        )
+        if isinstance(res, dict):
+            signed = (res.get("signedURL") or res.get("signed_url")
+                      or res.get("signedUrl"))
+        else:
+            signed = str(res or "")
+        if not signed:
+            return None
+        if signed.startswith("/"):
+            base = (admin.storage_url or "").rstrip("/")
+            signed = f"{base}{signed}" if base else signed
+        return signed.rstrip("?")
+    except Exception:
+        logger.exception("avatar signed URL failed for %s", path)
+        return None
+
+
+def _resign_avatar_url(stored: Optional[str]) -> Optional[str]:
+    """Return a freshly-signed URL for Supabase-hosted avatars; pass
+    through external/legacy URLs unchanged."""
+    if not stored:
+        return stored
+    path = _avatar_path_from_url(stored)
+    if not path:
+        return stored
+    fresh = _signed_avatar_url(path)
+    return fresh or stored
 
 
 def _profile_to_public(p: dict) -> dict:
@@ -44,7 +97,9 @@ def _profile_to_public(p: dict) -> dict:
         "first_name":       p.get("first_name"),
         "last_name":        p.get("last_name"),
         "role":             p.get("role"),
-        "avatar_url":       p.get("avatar_url"),
+        # ITER147 HOTFIX · re-sign at read-time so a legacy broken
+        # `/public/...` URL recovers without a backfill.
+        "avatar_url":       _resign_avatar_url(p.get("avatar_url")),
         "role_label":       p.get("role_label"),
         "short_bio":        p.get("short_bio"),
         "response_time_label": p.get("response_time_label"),
@@ -135,7 +190,6 @@ async def upload_avatar(
         "image/png": "png", "image/webp": "webp", "image/gif": "gif",
     }
     ext = ext_map.get(file.content_type, "jpg")
-    bucket = "tenant-assets"
     # Append a cache-buster uuid so subsequent uploads don't get cached
     # under the previous URL by browsers / CDNs.
     obj_path = f"avatars/{ctx['tenant_id']}/{ctx['profile_id']}-{uuid.uuid4().hex[:8]}.{ext}"
@@ -145,24 +199,20 @@ async def upload_avatar(
         raise HTTPException(500, "Storage non disponibile.")
 
     try:
-        admin.storage.from_(bucket).upload(
+        admin.storage.from_(AVATAR_BUCKET).upload(
             obj_path, content,
             {"content-type": file.content_type, "x-upsert": "true"},
         )
     except Exception as e:
         raise HTTPException(500, f"Upload fallito: {e}")
 
-    # Public URL — tenant-assets is a public bucket on this project
-    # (logos already use it). We rely on Supabase's public URL helper.
-    public = admin.storage.from_(bucket).get_public_url(obj_path)
-    if isinstance(public, dict):
-        url = public.get("publicURL") or public.get("publicUrl")
-    else:
-        url = public
-    if not url or not isinstance(url, str):
-        raise HTTPException(500, "Public URL non disponibile.")
-    # Strip trailing ? if Supabase added an empty querystring
-    url = url.rstrip("?")
+    # ITER147 HOTFIX · the `tenant-assets` bucket is PRIVATE — use a
+    # signed URL (TTL 7d). The DB column stores a fresh signed URL on
+    # upload; future reads re-sign via `_resign_avatar_url` so the row
+    # never goes stale to the client.
+    url = _signed_avatar_url(obj_path)
+    if not url:
+        raise HTTPException(500, "Signed URL non disponibile.")
 
     # Persist on the profile
     c = db()
