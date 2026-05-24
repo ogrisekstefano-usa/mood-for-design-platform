@@ -22,6 +22,38 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ## Sessions completed
 
+### Session IV: ITER149 — Public Website Engine + Blueprint Command Center (May 24, 2026) ✅
+- **Architectural pivot**: site is now 100% DB-driven via `editorial_blocks` (i18n copy) + `media_library` (UUID asset refs) + `cms_sections` (layout skeleton only). Zero hardcoded content.
+- **Backend (5 new files):**
+  - `services/site_resolver.py` — joins cms_sections ⇄ editorial_blocks ⇄ media_library with locale fallback chain
+  - `routers/site.py` — public read APIs (`/api/site/pages/{slug}`, `/site/navigation`, `/site/footer`, `/site/locales`, `/site/block`)
+  - `routers/admin_site.py` — Blueprint Command Center APIs (blocks CRUD, sections reorder/toggle, media list/register, publish/unpublish, cache invalidate, whoami)
+  - `db/seed_site_iter149.py` — comprehensive seed: 44 editorial_blocks × 5 locales (it/en-us/fr/de/es), 8 media_library entries, 8 cms_sections, navigation + footer config
+  - Added UNIQUE constraint `editorial_blocks(tenant_id, namespace, block_key)` for idempotent upserts
+- **Frontend Phase A — new homepage (6 sections, all DB-driven):**
+  - `HeroCinematic` — split layout with editorial italic teal subhead + cinematic image
+  - `SelectedProjects` — 3 luxury project tiles (Villa Riviera / Atelier Milano / Casa Brera)
+  - `MagazineHighlights` — 3 article cards on warm ivory background (no dates per brief)
+  - `MaterialsBrandPartners` — typographic-only (no fake brand logos)
+  - `ProcessJourney` — 4-step editorial (Ascolto / Curatela / Progetto / Realizzazione) on warm ivory
+  - `FinalCTA` — architectural cinematic CTA with Begin Journey + Professional Access
+- **Frontend chrome:**
+  - `MinimalNav` — Magazine · Progetti · Materiali · Chi siamo · Accedi + IT switcher + "Inizia il Percorso" primary CTA
+  - `SlimFooter` — manifesto + single-row links + social + locale + legal
+- **Frontend Phase D — Login page:**
+  - Single email/password form (no SSO)
+  - Two secondary CTA links: "Cliente privato? Inizia il tuo percorso" / "Professionista? Richiedi accesso"
+  - All copy from `site.login.*` editorial_blocks
+- **Blueprint Command Center Admin UI (`/admin`):**
+  - Auth gate (X-Admin-Key header, dev mode bypass)
+  - Editorial Blocks editor with namespace tabs (Homepage / Navigation / Footer / Login) + per-locale textareas (IT/EN-US/FR/DE/ES) + Save
+  - Sections manager — visibility toggle + up/down reorder, shows content-key and media-slot counts
+  - Media Library — grid view + URL registration + UUID copy
+  - Publishing console — publish/unpublish home + cache invalidate
+- **Locale Governance**: `tenants.active_languages` set to `[it, en-us, fr, de, es]`, default `it`. Public LocaleSwitcher and admin reads enabled list from `/api/site/locales`.
+- **Routes restructured**: `/admin/*` → AdminApp, all other `/*` → CorporateApp. Legacy paths redirected (/platform, /journal, /for-studios, etc.)
+- **Audit-clean**: no Unsplash URLs in components (only inside media_library rows), no hardcoded labels in nav/footer/sections.
+
 ### Session III: Premium Editorial Homepage V5 (May 19, 2026) ✅
 - Rewrote homepage to match the latest dark-luxury Italian mockup (no SaaS feel, no fake brands/testimonials/metrics)
 - **3 new section types** registered in `SectionRenderer`:

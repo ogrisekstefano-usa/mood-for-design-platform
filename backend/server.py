@@ -84,10 +84,14 @@ from routers.media import router as media_router
 from routers.journal import router as journal_router
 from routers.cms_admin import router as cms_admin_router
 from routers.ai_editorial import router as ai_editorial_router
+from routers.site import router as site_router
+from routers.admin_site import router as admin_site_router
 app.include_router(media_router,        prefix="/api")
 app.include_router(journal_router,      prefix="/api")
 app.include_router(cms_admin_router,    prefix="/api")
 app.include_router(ai_editorial_router, prefix="/api")
+app.include_router(site_router,         prefix="/api")
+app.include_router(admin_site_router,   prefix="/api")
 
 # Ensure Supabase Storage buckets exist on startup (idempotent)
 from services.storage import ensure_buckets

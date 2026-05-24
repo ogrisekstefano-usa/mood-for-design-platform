@@ -1,4 +1,12 @@
 import React from 'react';
+import HeroCinematic from './HeroCinematic';
+import SelectedProjects from './SelectedProjects';
+import MagazineHighlights from './MagazineHighlights';
+import MaterialsBrandPartners from './MaterialsBrandPartners';
+import ProcessJourney from './ProcessJourney';
+import FinalCTA from './FinalCTA';
+
+// Legacy registry (still mounted for backwards compatibility)
 import EditorialHero from './EditorialHero';
 import SplitStory from './SplitStory';
 import CinematicQuote from './CinematicQuote';
@@ -22,48 +30,66 @@ import ExperiencePillars from './ExperiencePillars';
 import FragmentedTools from './FragmentedTools';
 
 /**
- * MOOD Section Registry
- * Shared across corporate website and all tenant websites.
- * Maps section type strings to React components.
- * CMS-driven: section type determined by DB record.
+ * Section registry for the ITER149 site engine.
+ * Modern sections receive: { content, media, links, options } (resolved by site_resolver).
+ * Legacy sections continue to receive: { content, config } (cms_sections.locale_content path).
  */
 export const SECTION_REGISTRY = {
-  editorial_hero: EditorialHero,
-  split_story: SplitStory,
-  cinematic_quote: CinematicQuote,
-  logos_wall: LogosWall,
-  feature_narrative: FeatureNarrative,
-  metrics_strip: MetricsStrip,
-  pricing_cards: PricingCards,
-  cta_section: CTASection,
-  journal_grid: JournalGrid,
-  faq_accordion: FAQAccordion,
-  comparison_table: ComparisonTable,
-  timeline: Timeline,
-  template_showcase: TemplateShowcase,
-  process_steps: ProcessSteps,
-  project_showcase: ProjectShowcase,
-  press_logos: PressLogos,
-  device_showcase: DeviceShowcase,
-  testimonial_grid: TestimonialGrid,
-  workflow_ecosystem: WorkflowEcosystem,
-  experience_pillars: ExperiencePillars,
-  fragmented_tools: FragmentedTools,
+  // ITER149 — DB-driven sections
+  hero_cinematic:       HeroCinematic,
+  selected_projects:    SelectedProjects,
+  magazine_highlights:  MagazineHighlights,
+  materials_partners:   MaterialsBrandPartners,
+  process_journey:      ProcessJourney,
+  final_cta:            FinalCTA,
+
+  // Legacy (kept for backwards compat with cms_sections.locale_content rendering path)
+  editorial_hero:       EditorialHero,
+  split_story:          SplitStory,
+  cinematic_quote:      CinematicQuote,
+  logos_wall:           LogosWall,
+  feature_narrative:    FeatureNarrative,
+  metrics_strip:        MetricsStrip,
+  pricing_cards:        PricingCards,
+  cta_section:          CTASection,
+  journal_grid:         JournalGrid,
+  faq_accordion:        FAQAccordion,
+  comparison_table:     ComparisonTable,
+  timeline:             Timeline,
+  template_showcase:    TemplateShowcase,
+  process_steps:        ProcessSteps,
+  project_showcase:     ProjectShowcase,
+  press_logos:          PressLogos,
+  device_showcase:      DeviceShowcase,
+  testimonial_grid:     TestimonialGrid,
+  workflow_ecosystem:   WorkflowEcosystem,
+  experience_pillars:   ExperiencePillars,
+  fragmented_tools:     FragmentedTools,
 };
 
-/**
- * SectionRenderer — Renders any registered section type.
- * Receives pre-localized content from the API.
- */
 const SectionRenderer = ({ section }) => {
   if (!section || !section.type) return null;
-
   const Component = SECTION_REGISTRY[section.type];
   if (!Component) {
     console.warn(`[MOOD] Unknown section type: "${section.type}"`);
     return null;
   }
 
+  // ITER149 modern shape
+  if (section.media !== undefined || section.links !== undefined || section.options !== undefined) {
+    return (
+      <Component
+        key={section.id}
+        content={section.content || {}}
+        media={section.media || {}}
+        links={section.links || {}}
+        options={section.options || {}}
+        sectionId={section.id}
+      />
+    );
+  }
+
+  // Legacy shape
   return (
     <Component
       key={section.id}

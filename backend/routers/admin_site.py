@@ -1,0 +1,400 @@
+"""
+Admin Site Governance API (ITER149)
+Endpoints consumed by Blueprint Command Center UI to edit ALL public website
+content — editorial_blocks, cms_sections, media references — with publish
+workflow and locale completeness.
+"""
+from typing import Any
+from fastapi import APIRouter, Depends, HTTPException, Query, Body
+from sqlalchemy import text
+from datetime import datetime, timezone
+
+from database import AsyncSessionLocal
+from routers._auth import require_admin_tenant
+from services import site_resolver
+
+router = APIRouter(prefix="/admin/site", tags=["admin-site"])
+
+
+# ─────────────────────────────────────────────────────────────────────────
+#  EDITORIAL BLOCKS  (text / labels / CTA copy / SEO)
+# ─────────────────────────────────────────────────────────────────────────
+
+@router.get("/blocks")
+async def list_blocks(
+    namespace: str | None = Query(default=None, description="Filter by namespace, supports 'site.%' prefix-like with trailing %"),
+    locale: str | None = Query(default=None, description="Include translation value for this locale"),
+    limit: int = Query(default=200, le=500),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    async with AsyncSessionLocal() as session:
+        if namespace and namespace.endswith('%'):
+            ns_clause = "AND b.namespace LIKE :ns"
+            ns_param  = namespace
+        elif namespace:
+            ns_clause = "AND b.namespace = :ns"
+            ns_param  = namespace
+        else:
+            ns_clause = ""
+            ns_param  = None
+
+        params = {"tid": tenant['id'], "lim": limit}
+        if ns_param is not None:
+            params["ns"] = ns_param
+
+        rows = (await session.execute(
+            text(f"""
+                SELECT b.id, b.namespace, b.block_key, b.block_type,
+                       b.source_locale, b.source_value, b.is_active, b.notes,
+                       b.updated_at,
+                       COALESCE(
+                         (SELECT json_agg(json_build_object(
+                            'locale', t.locale, 'value', t.value, 'status', t.status,
+                            'locked', t.locked, 'updated_at', t.updated_at))
+                          FROM editorial_block_translations t WHERE t.block_id = b.id),
+                         '[]'::json
+                       ) AS translations
+                FROM editorial_blocks b
+                WHERE b.tenant_id = :tid
+                  {ns_clause}
+                ORDER BY b.namespace, b.block_key
+                LIMIT :lim
+            """),
+            params,
+        )).mappings().all()
+
+        out = []
+        for r in rows:
+            item = dict(r)
+            item['id'] = str(item['id'])
+            item['updated_at'] = item['updated_at'].isoformat() if item['updated_at'] else None
+            for t in item['translations']:
+                if t.get('updated_at'):
+                    t['updated_at'] = t['updated_at']  # already iso from json_build_object
+            out.append(item)
+        return {"blocks": out, "count": len(out)}
+
+
+@router.get("/blocks/by-key")
+async def get_block_by_key(
+    namespace: str = Query(...),
+    block_key: str = Query(...),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    async with AsyncSessionLocal() as session:
+        row = (await session.execute(
+            text("""
+                SELECT b.id, b.namespace, b.block_key, b.block_type, b.source_locale, b.source_value,
+                       b.is_active, b.notes,
+                       COALESCE((SELECT json_agg(json_build_object(
+                         'locale', t.locale, 'value', t.value, 'status', t.status, 'locked', t.locked))
+                         FROM editorial_block_translations t WHERE t.block_id = b.id), '[]'::json) AS translations
+                FROM editorial_blocks b
+                WHERE b.tenant_id = :tid AND b.namespace = :ns AND b.block_key = :bk
+            """),
+            {"tid": tenant['id'], "ns": namespace, "bk": block_key},
+        )).mappings().first()
+        if not row:
+            raise HTTPException(404, "Block not found")
+        item = dict(row); item['id'] = str(item['id'])
+        return item
+
+
+@router.put("/blocks")
+async def upsert_block(
+    body: dict = Body(...),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """
+    Upsert an editorial_block + per-locale translations.
+    Body: {
+      namespace, block_key, block_type, source_locale, source_value, is_active?, notes?,
+      translations: [{locale, value, status?, locked?}, ...]
+    }
+    """
+    required = ['namespace', 'block_key', 'block_type', 'source_locale', 'source_value']
+    for k in required:
+        if k not in body or body[k] is None:
+            raise HTTPException(400, f"Missing field: {k}")
+
+    async with AsyncSessionLocal() as session:
+        import hashlib
+        source_hash = hashlib.md5(body['source_value'].encode('utf-8')).hexdigest()
+        block_row = (await session.execute(
+            text("""
+                INSERT INTO editorial_blocks
+                  (id, scope, tenant_id, namespace, block_key, block_type,
+                   source_locale, source_value, source_hash, is_active, notes, created_at, updated_at)
+                VALUES
+                  (gen_random_uuid(), 'tenant', :tid, :ns, :bk, :bt,
+                   :sl, :sv, :sh, COALESCE(:active, true), :notes, NOW(), NOW())
+                ON CONFLICT (tenant_id, namespace, block_key) DO UPDATE SET
+                  block_type    = EXCLUDED.block_type,
+                  source_locale = EXCLUDED.source_locale,
+                  source_value  = EXCLUDED.source_value,
+                  source_hash   = EXCLUDED.source_hash,
+                  is_active     = EXCLUDED.is_active,
+                  notes         = EXCLUDED.notes,
+                  updated_at    = NOW()
+                RETURNING id
+            """),
+            {
+                "tid": tenant['id'],
+                "ns": body['namespace'], "bk": body['block_key'], "bt": body['block_type'],
+                "sl": body['source_locale'], "sv": body['source_value'], "sh": source_hash,
+                "active": body.get('is_active', True), "notes": body.get('notes'),
+            },
+        )).first()
+        block_id = block_row[0]
+
+        translations = body.get('translations') or []
+        for tr in translations:
+            if not tr.get('locale') or tr.get('value') is None:
+                continue
+            await session.execute(
+                text("""
+                    INSERT INTO editorial_block_translations
+                      (id, block_id, locale, value, status, generated_by, source_hash, locked, created_at, updated_at)
+                    VALUES
+                      (gen_random_uuid(), :bid, :loc, :val, COALESCE(:status,'manual'),
+                       'admin', :sh, COALESCE(:locked, false), NOW(), NOW())
+                    ON CONFLICT (block_id, locale) DO UPDATE SET
+                      value       = EXCLUDED.value,
+                      status      = EXCLUDED.status,
+                      source_hash = EXCLUDED.source_hash,
+                      locked      = EXCLUDED.locked,
+                      updated_at  = NOW()
+                """),
+                {"bid": block_id, "loc": tr['locale'], "val": tr['value'],
+                 "sh": source_hash,
+                 "status": tr.get('status'), "locked": tr.get('locked', False)},
+            )
+        await session.commit()
+        site_resolver.invalidate_site_cache()
+        return {"id": str(block_id), "ok": True}
+
+
+# ─────────────────────────────────────────────────────────────────────────
+#  CMS SECTIONS  (homepage layout/skeleton)
+# ─────────────────────────────────────────────────────────────────────────
+
+@router.get("/sections")
+async def list_sections(
+    page_slug: str = Query(default="home"),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    async with AsyncSessionLocal() as session:
+        page = (await session.execute(
+            text("SELECT id, page_key, status FROM cms_pages WHERE tenant_id=:tid AND page_key=:slug"),
+            {"tid": tenant['id'], "slug": page_slug},
+        )).mappings().first()
+        if not page:
+            raise HTTPException(404, f"Page '{page_slug}' not found")
+
+        rows = (await session.execute(
+            text("""
+                SELECT id, section_type, sort_order, visible, settings, updated_at
+                FROM cms_sections
+                WHERE page_id = :pid AND COALESCE(deleted_at IS NULL, true)
+                ORDER BY sort_order
+            """),
+            {"pid": page['id']},
+        )).mappings().all()
+
+        return {
+            "page": {"id": str(page['id']), "slug": page['page_key'], "status": page['status']},
+            "sections": [
+                {**dict(r), "id": str(r['id']),
+                 "updated_at": r['updated_at'].isoformat() if r['updated_at'] else None}
+                for r in rows
+            ],
+        }
+
+
+@router.patch("/sections/{section_id}")
+async def patch_section(
+    section_id: str,
+    body: dict = Body(...),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """Patch visible/sort_order/settings."""
+    sets, params = [], {"sid": section_id, "tid": tenant['id']}
+    if 'visible' in body:
+        sets.append("visible = :v")
+        params['v'] = bool(body['visible'])
+    if 'sort_order' in body:
+        sets.append("sort_order = :so")
+        params['so'] = int(body['sort_order'])
+    if 'settings' in body:
+        sets.append("settings = :s::jsonb")
+        import json as _json
+        params['s'] = _json.dumps(body['settings'])
+    if not sets:
+        raise HTTPException(400, "Nothing to patch")
+    sets.append("updated_at = NOW()")
+    async with AsyncSessionLocal() as session:
+        r = await session.execute(
+            text(f"""UPDATE cms_sections SET {', '.join(sets)}
+                     WHERE id=:sid AND tenant_id=:tid RETURNING id"""),
+            params,
+        )
+        if r.first() is None:
+            raise HTTPException(404, "Section not found")
+        await session.commit()
+        site_resolver.invalidate_site_cache()
+        return {"ok": True}
+
+
+@router.post("/sections/reorder")
+async def reorder_sections(
+    body: dict = Body(...),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """Body: { ordered_ids: [section_id_in_new_order, ...] }"""
+    ordered = body.get('ordered_ids') or []
+    if not isinstance(ordered, list) or not ordered:
+        raise HTTPException(400, "ordered_ids must be a non-empty list")
+    async with AsyncSessionLocal() as session:
+        for idx, sid in enumerate(ordered):
+            await session.execute(
+                text("UPDATE cms_sections SET sort_order=:o, updated_at=NOW() WHERE id=:sid AND tenant_id=:tid"),
+                {"o": idx, "sid": sid, "tid": tenant['id']},
+            )
+        await session.commit()
+        site_resolver.invalidate_site_cache()
+        return {"ok": True, "count": len(ordered)}
+
+
+# ─────────────────────────────────────────────────────────────────────────
+#  MEDIA LIBRARY  (list / patch / browse) — uploads still go via /api/media
+# ─────────────────────────────────────────────────────────────────────────
+
+@router.get("/media")
+async def list_media(
+    category: str | None = Query(default=None),
+    limit: int = Query(default=100, le=500),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    async with AsyncSessionLocal() as session:
+        params = {"tid": tenant['id'], "lim": limit}
+        cat_clause = ""
+        if category:
+            cat_clause = "AND category = :cat"
+            params['cat'] = category
+        rows = (await session.execute(
+            text(f"""
+                SELECT id, file_url, alt_text, category, tags, width, height,
+                       mime_type, focal_point, dominant_color, description,
+                       file_name, created_at
+                FROM media_library
+                WHERE tenant_id = :tid AND archived_at IS NULL
+                  {cat_clause}
+                ORDER BY created_at DESC
+                LIMIT :lim
+            """),
+            params,
+        )).mappings().all()
+        return {
+            "media": [
+                {**dict(r),
+                 "id": str(r['id']),
+                 "created_at": r['created_at'].isoformat() if r['created_at'] else None}
+                for r in rows
+            ],
+        }
+
+
+@router.post("/media/register")
+async def register_external_media(
+    body: dict = Body(...),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """
+    Register an externally-hosted asset into media_library.
+    Body: { file_url, file_name, alt_text?, category?, description?, mime_type?, width?, height?, dominant_color? }
+    """
+    if not body.get('file_url'):
+        raise HTTPException(400, "file_url required")
+    async with AsyncSessionLocal() as session:
+        r = (await session.execute(
+            text("""
+                INSERT INTO media_library
+                  (id, tenant_id, bucket, storage_path, file_url, file_name, file_type,
+                   alt_text, category, description, mime_type, width, height, dominant_color,
+                   created_at)
+                VALUES
+                  (gen_random_uuid(), :tid, 'external', :fname, :url, :fname, COALESCE(:mt,'image/jpeg'),
+                   :alt, :cat, :desc, COALESCE(:mt,'image/jpeg'), :w, :h, :dc, NOW())
+                RETURNING id
+            """),
+            {"tid": tenant['id'], "url": body['file_url'],
+             "fname": body.get('file_name', body['file_url'].rsplit('/', 1)[-1][:200]),
+             "alt": body.get('alt_text'), "cat": body.get('category', 'site'),
+             "desc": body.get('description'), "mt": body.get('mime_type'),
+             "w": body.get('width'), "h": body.get('height'), "dc": body.get('dominant_color')},
+        )).first()
+        await session.commit()
+        return {"id": str(r[0])}
+
+
+# ─────────────────────────────────────────────────────────────────────────
+#  PUBLISH  (page-level status)
+# ─────────────────────────────────────────────────────────────────────────
+
+@router.post("/pages/{slug}/publish")
+async def publish_page(slug: str, tenant: dict = Depends(require_admin_tenant)):
+    async with AsyncSessionLocal() as session:
+        r = await session.execute(
+            text("""
+                UPDATE cms_pages SET status='published', published_at=NOW(), updated_at=NOW()
+                WHERE tenant_id=:tid AND page_key=:slug RETURNING id
+            """),
+            {"tid": tenant['id'], "slug": slug},
+        )
+        if r.first() is None:
+            raise HTTPException(404, "Page not found")
+        await session.commit()
+        site_resolver.invalidate_site_cache()
+        return {"ok": True, "status": "published"}
+
+
+@router.post("/pages/{slug}/unpublish")
+async def unpublish_page(slug: str, tenant: dict = Depends(require_admin_tenant)):
+    async with AsyncSessionLocal() as session:
+        r = await session.execute(
+            text("UPDATE cms_pages SET status='draft', updated_at=NOW() WHERE tenant_id=:tid AND page_key=:slug RETURNING id"),
+            {"tid": tenant['id'], "slug": slug},
+        )
+        if r.first() is None:
+            raise HTTPException(404, "Page not found")
+        await session.commit()
+        site_resolver.invalidate_site_cache()
+        return {"ok": True, "status": "draft"}
+
+
+# ─────────────────────────────────────────────────────────────────────────
+#  LOCALES  (Locale Governance read for admin)
+# ─────────────────────────────────────────────────────────────────────────
+
+@router.get("/locales")
+async def admin_locales(tenant: dict = Depends(require_admin_tenant)):
+    return await site_resolver.resolve_locales()
+
+
+# ─────────────────────────────────────────────────────────────────────────
+#  CACHE
+# ─────────────────────────────────────────────────────────────────────────
+
+@router.post("/cache/invalidate")
+async def admin_invalidate(tenant: dict = Depends(require_admin_tenant)):
+    site_resolver.invalidate_site_cache()
+    return {"ok": True}
+
+
+# ─────────────────────────────────────────────────────────────────────────
+#  AUTH check (used by admin UI gate)
+# ─────────────────────────────────────────────────────────────────────────
+
+@router.get("/whoami")
+async def admin_whoami(tenant: dict = Depends(require_admin_tenant)):
+    return {"tenant": {"id": str(tenant['id']), "slug": tenant.get('slug', 'mood-corporate')}}

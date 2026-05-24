@@ -1,43 +1,53 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import CorporateNav from './components/CorporateNav';
-import CorporateFooter from './components/CorporateFooter';
+import MinimalNav from './components/MinimalNav';
+import SlimFooter from './components/SlimFooter';
 import {
   HomePage,
-  PlatformPage,
-  PricingPage,
+  MagazinePage,
+  ProjectsPage,
+  MaterialsPage,
   AboutPage,
-  JournalPage,
-  BlueprintPage,
-} from './pages/CorporatePages';
+  BeginJourneyPage,
+  ProfessionalAccessPg,
+} from './pages/SitePages';
+import LoginPage from './pages/LoginPage';
 import ContactPage from './pages/ContactPage';
 import StartStudioPage from './pages/StartStudioPage';
 
 /**
- * CorporateApp — Public corporate website for www.moodfordesign.com
- * Tenant: mood-corporate
- * ONE platform layer inside the Blueprint ecosystem.
+ * CorporateApp — public-facing MOOD for DESIGN website (ITER149).
+ * Fully DB-driven via /api/site/* endpoints.
+ * Slim nav + slim footer. Two primary user actions: Begin Journey / Professional Access.
  */
 const CorporateApp = () => (
-  <div className="corporate-app" style={{ fontFamily: 'Manrope, sans-serif', background: '#F9F9F8' }}>
-    <CorporateNav />
+  <div className="corporate-app" style={{ background: 'var(--mood-black)' }}>
+    <MinimalNav />
     <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/platform" element={<PlatformPage />} />
-      <Route path="/blueprint" element={<BlueprintPage />} />
-      <Route path="/pricing" element={<PricingPage />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/journal" element={<JournalPage />} />
-      <Route path="/journal/*" element={<JournalPage />} />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="/start-studio" element={<StartStudioPage />} />
-      {/* Redirect for unlisted pages */}
-      <Route path="/for-studios" element={<Navigate to="/platform" replace />} />
-      <Route path="/for-retailers" element={<Navigate to="/platform" replace />} />
-      <Route path="/templates" element={<Navigate to="/blueprint" replace />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/"                       element={<HomePage />} />
+      <Route path="/magazine"               element={<MagazinePage />} />
+      <Route path="/magazine/*"             element={<MagazinePage />} />
+      <Route path="/projects"               element={<ProjectsPage />} />
+      <Route path="/projects/*"             element={<ProjectsPage />} />
+      <Route path="/materials"              element={<MaterialsPage />} />
+      <Route path="/about"                  element={<AboutPage />} />
+      <Route path="/login"                  element={<LoginPage />} />
+      <Route path="/begin-journey"          element={<BeginJourneyPage />} />
+      <Route path="/professional-access"    element={<ProfessionalAccessPg />} />
+      <Route path="/contact"                element={<ContactPage />} />
+      <Route path="/start-studio"           element={<StartStudioPage />} />
+      {/* Legacy redirects */}
+      <Route path="/platform"      element={<Navigate to="/" replace />} />
+      <Route path="/pricing"       element={<Navigate to="/" replace />} />
+      <Route path="/blueprint"     element={<Navigate to="/about" replace />} />
+      <Route path="/journal"       element={<Navigate to="/magazine" replace />} />
+      <Route path="/journal/*"     element={<Navigate to="/magazine" replace />} />
+      <Route path="/for-studios"   element={<Navigate to="/projects" replace />} />
+      <Route path="/for-retailers" element={<Navigate to="/materials" replace />} />
+      <Route path="/templates"     element={<Navigate to="/" replace />} />
+      <Route path="*"              element={<Navigate to="/" replace />} />
     </Routes>
-    <CorporateFooter />
+    <SlimFooter />
   </div>
 );
 

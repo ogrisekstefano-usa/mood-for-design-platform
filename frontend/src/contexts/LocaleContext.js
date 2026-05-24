@@ -31,7 +31,7 @@ const LocaleContext = createContext({
 
 export const LocaleProvider = ({ children }) => {
   const [locale, setLocaleState] = useState(() => {
-    return localStorage.getItem('mood_locale') || 'it';
+    return localStorage.getItem('mood-locale') || localStorage.getItem('mood_locale') || 'it';
   });
   const [locales, setLocales] = useState([
     { code: 'it', name: 'Italiano', flag: 'IT' },
@@ -42,15 +42,24 @@ export const LocaleProvider = ({ children }) => {
   ]);
 
   useEffect(() => {
-    // Fetch available locales from backend
-    axios.get(`${BACKEND_URL}/api/corporate/locales`)
-      .then(res => { if (res.data?.locales?.length) setLocales(res.data.locales); })
+    // Fetch enabled locales (Locale Governance) from /api/site/locales
+    axios.get(`${BACKEND_URL}/api/site/locales`)
+      .then(res => {
+        const enabled = res.data?.enabled || [];
+        if (enabled.length) {
+          setLocales(enabled.map(code => ({
+            code,
+            name: LOCALE_FULL_NAMES[code] || code,
+            flag: LOCALE_LABELS[code] || code.toUpperCase(),
+          })));
+        }
+      })
       .catch(() => {});
   }, []);
 
   const setLocale = useCallback((code) => {
     setLocaleState(code);
-    localStorage.setItem('mood_locale', code);
+    localStorage.setItem('mood-locale', code);
   }, []);
 
   return (

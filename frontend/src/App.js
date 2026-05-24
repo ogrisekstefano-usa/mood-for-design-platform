@@ -1,24 +1,26 @@
 import "@/App.css";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LocaleProvider } from "./contexts/LocaleContext";
 import CorporateApp from "./corporate/CorporateApp";
+import AdminApp from "./admin/AdminApp";
 
 /**
- * MOOD for DESIGN — Root App
- * Architecture: ONE platform → MULTIPLE frontends
+ * MOOD for DESIGN — Root App (ITER149)
  *
- * www.moodfordesign.com     → CorporateApp (mood-corporate tenant)
- * blueprint.moodfordesign.com → Blueprint SaaS (handled via subdomain routing)
+ * /admin/*  → Blueprint Command Center (admin UI)
+ * /*        → Public website (CorporateApp)
  *
- * Both share: same backend, same CMS, same section registry,
- * same auth layer, same i18n system, same media storage.
+ * All content for both surfaces is governed by editorial_blocks + media_library
+ * + cms_sections via the /api/site/* and /api/admin/site/* APIs.
  */
 function App() {
   return (
     <BrowserRouter>
       <LocaleProvider>
-        {/* Corporate website — mood-corporate tenant */}
-        <CorporateApp />
+        <Routes>
+          <Route path="/admin/*" element={<AdminApp />} />
+          <Route path="/*"       element={<CorporateApp />} />
+        </Routes>
       </LocaleProvider>
     </BrowserRouter>
   );
