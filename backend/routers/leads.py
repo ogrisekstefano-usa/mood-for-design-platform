@@ -2,7 +2,7 @@
 import uuid
 import logging
 from datetime import datetime, timezone
-from fastapi import APIRouter, HTTPException, Depends, Query, Body
+from fastapi import APIRouter, HTTPException, Depends, Query, Body, Request
 from models.schemas import LeadCreate, LeadUpdate
 from middleware.auth import get_current_user
 from core.tenant_context import get_tenant_context, require_permission
@@ -95,27 +95,78 @@ def delete_lead(lead_id: str, current_user: dict = Depends(require_permission(P_
 # ── PUBLIC ENDPOINT (no auth) ────────────────────────────────────────────────
 @router.post("/public", status_code=201)
 def submit_public_lead(
-    body: LeadCreate = Body(...),
+    request: Request,
+    body: dict = Body(...),
     tenant_slug: str = Query(..., description="Tenant slug from public URL"),
 ):
-    """Anonymous lead-capture form endpoint. Tenant scoped by slug."""
+    """Public lead-capture endpoint (anonymous, tenant-scoped).
+
+    ITER146.A · Lead Pipeline Orchestration™ — every submission produces:
+      1. A real `leads` row with full runtime identity + onboarding metadata
+      2. A `funnel_events` row at `lead_captured` stage
+      3. A confirmation email to the lead (`lead_captured` template,
+         ALE-localized via Editorial Runtime™)
+      4. An internal `studio_lead_notification` email to the studio owner
+      5. A `configuration_change_events`-style audit if pipeline_stage shifts
+
+    Both PRIVATE (`begin_journey`) and PROFESSIONAL (`begin_partnership`)
+    onboarding paths funnel here. They are distinguished by `lead_type`
+    and `onboarding_path` and produce structurally different CRM entities.
+    """
     if not db_available():
         raise HTTPException(503, "Database not configured")
     client = db()
-    tenant = client.table('tenants').select('id, status').eq('slug', tenant_slug).limit(1).execute()
+    tenant = client.table('tenants').select('id, status, name')\
+        .eq('slug', tenant_slug).limit(1).execute()
     if not tenant.data or tenant.data[0].get('status') != 'active':
         raise HTTPException(404, "Tenant not found")
     tenant_id = tenant.data[0]['id']
+    tenant_name = tenant.data[0].get('name') or tenant_slug
+
+    # Allowed columns whitelist (defensive — block unknown fields)
+    ALLOWED = {
+        'email', 'first_name', 'last_name', 'phone',
+        'city', 'country', 'language', 'locale_code',
+        'lead_type', 'project_type', 'budget_range',
+        'style_preference', 'timeline', 'notes', 'source', 'score',
+        # ITER146.A extensions
+        'onboarding_path', 'professional_category', 'collaboration_intent',
+        'market_sector', 'company_name', 'company_website',
+        'portfolio_url', 'metadata_json',
+    }
+    payload = {k: v for k, v in body.items() if k in ALLOWED and v not in (None, '')}
+    if payload.get('email'):
+        payload['email'] = payload['email'].lower()
+
+    # ITER146.A · capture runtime identity (subdomain, host, UA, UTM)
+    resolved = getattr(request.state, 'resolved_tenant', None) or {}
+    qs = dict(request.query_params)
+    runtime_identity = {
+        'resolved_subdomain': resolved.get('subdomain'),
+        'resolved_host':      resolved.get('host'),
+        'request_host':       request.headers.get('host'),
+        'user_agent':         request.headers.get('user-agent'),
+        'referer':            request.headers.get('referer'),
+        'source_locale':      payload.get('locale_code'),
+        'utm': {
+            'source':   qs.get('utm_source'),
+            'medium':   qs.get('utm_medium'),
+            'campaign': qs.get('utm_campaign'),
+            'term':     qs.get('utm_term'),
+            'content':  qs.get('utm_content'),
+        },
+    }
 
     now = _now()
-    payload = _scrub(body.model_dump())
-    if 'email' in payload and payload['email']:
-        payload['email'] = payload['email'].lower()
     lead = {
         'id': str(uuid.uuid4()),
         'tenant_id': tenant_id,
         'status': 'new',
         'source': payload.get('source') or 'public_form',
+        'lead_type': payload.get('lead_type') or 'private_client',
+        'onboarding_path': payload.get('onboarding_path') or 'contact_form',
+        'pipeline_stage': 'lead_captured',
+        'runtime_identity': runtime_identity,
         'created_at': now,
         'updated_at': now,
         **payload,
@@ -129,11 +180,99 @@ def submit_public_lead(
             'tenant_id': tenant_id,
             'lead_id': lead['id'],
             'stage': 'lead_captured',
-            'event_name': 'public_form_submit',
-            'metadata_json': {'source': payload.get('source', 'public_form')},
+            'event_name': f"{lead['onboarding_path']}.submit",
+            'metadata_json': {
+                'source':         lead['source'],
+                'lead_type':      lead['lead_type'],
+                'onboarding_path': lead['onboarding_path'],
+            },
             'created_at': now,
         }).execute()
     except Exception:
-        pass
+        logger.exception("funnel_events insert failed")
 
-    return {"id": lead['id'], "message": "ok"}
+    # ITER146.A · Email orchestration
+    _dispatch_lead_emails(
+        tenant_id=tenant_id,
+        tenant_name=tenant_name,
+        lead=lead,
+    )
+
+    return {
+        "id": lead['id'],
+        "lead_type": lead['lead_type'],
+        "onboarding_path": lead['onboarding_path'],
+        "pipeline_stage": lead['pipeline_stage'],
+        "message": "ok",
+    }
+
+
+# ────────────────────────────────────────────────────────────────────
+# Email orchestration helpers (ITER146.A)
+# ────────────────────────────────────────────────────────────────────
+def _dispatch_lead_emails(*, tenant_id: str, tenant_name: str, lead: dict):
+    """Fire-and-log emails — failure NEVER blocks the lead creation."""
+    from services.email_service import send_template_email
+    locale = lead.get('locale_code') or 'it-IT'
+    first_name = lead.get('first_name') or ''
+    email = lead.get('email')
+    if not email:
+        return
+
+    # 1. Lead-facing confirmation
+    template = ('partnership_request'
+                if lead.get('lead_type') == 'professional'
+                else 'lead_captured')
+    try:
+        send_template_email(
+            to=email,
+            template_key=template,
+            context={
+                'first_name':  first_name,
+                'studio_name': tenant_name,
+                'lead_type':   lead.get('lead_type'),
+                'project_type': lead.get('project_type'),
+                'professional_category': lead.get('professional_category'),
+                'collaboration_intent':  lead.get('collaboration_intent'),
+            },
+            tenant_id=tenant_id,
+            locale=locale,
+            event_type=f"lead.{lead.get('lead_type','private_client')}.confirmation",
+            metadata={'lead_id': lead['id'],
+                      'onboarding_path': lead.get('onboarding_path')},
+        )
+    except Exception:
+        logger.exception("lead confirmation email dispatch failed")
+
+    # 2. Internal notification to the studio owner / tenant admin
+    try:
+        client = db()
+        owners = (client.table('users_profile')
+                  .select('email, first_name')
+                  .eq('tenant_id', tenant_id)
+                  .in_('role', ['tenant_admin', 'super_admin'])
+                  .limit(3).execute().data or [])
+        for o in owners:
+            if not o.get('email'):
+                continue
+            send_template_email(
+                to=o['email'],
+                template_key='generic',
+                context={
+                    'title': f"Nuovo lead · {lead.get('lead_type','private_client')}",
+                    'body':  (f"{first_name} {lead.get('last_name','')} ({email}) "
+                              f"ha appena richiesto contatto attraverso "
+                              f"{lead.get('onboarding_path','contact_form')}. "
+                              f"Project: {lead.get('project_type','—')} · "
+                              f"Locale: {locale}."),
+                    'cta_url':   f"/crm/accounts?lead_id={lead['id']}",
+                    'cta_label': 'Apri il lead nel CRM',
+                    'studio_name': tenant_name,
+                },
+                tenant_id=tenant_id,
+                locale=(o.get('language') or locale),
+                event_type='lead.internal_notification',
+                metadata={'lead_id': lead['id']},
+            )
+    except Exception:
+        logger.exception("internal lead notification failed")

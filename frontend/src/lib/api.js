@@ -50,6 +50,7 @@ api.interceptors.response.use(
         p === '/platform' ||
         p === '/start-project' ||
         p === '/begin-journey' ||
+        p === '/begin-partnership' ||
         p.startsWith('/journey/welcome/') ||
         p === '/magazine' ||
         p.startsWith('/magazine/') ||

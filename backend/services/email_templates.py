@@ -290,6 +290,7 @@ REGISTRY = {
     "onboarding":     onboarding,
     "lead_captured":  lead_captured,
     "magic_link":     magic_link,
+    "partnership_request": lead_captured,  # ITER146.A · reuse same composer, copy diverges via editorial
     "proposal_ready": generic,
     "journey_started": generic,
     "professional_partner_request": generic,
@@ -308,6 +309,7 @@ _EDITORIAL_TEMPLATE_KEY = {
     "onboarding":     "onboarding",
     "lead_captured":  "lead_captured",
     "magic_link":     "magic_link",
+    "partnership_request": "partnership_request",  # ITER146.A
 }
 
 

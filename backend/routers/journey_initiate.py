@@ -268,6 +268,59 @@ def initiate_journey(body: InitiatePayload = Body(...)):
         },
     ]).execute()
 
+    # ITER146.A · Lead Pipeline Orchestration™ — fire email confirmation
+    # to the private client + internal notification to the studio owner.
+    # Failure NEVER blocks the journey creation.
+    try:
+        from services.email_service import send_template_email
+        tenant_row = (c.table("tenants").select("name")
+                      .eq("id", tid).limit(1).execute().data or [])
+        tenant_name = tenant_row[0]["name"] if tenant_row else "MOOD for DESIGN™"
+        locale = (getattr(body, "locale", None) or "it-IT").strip()
+
+        # 1. Lead-facing confirmation
+        send_template_email(
+            to=email,
+            template_key="lead_captured",
+            context={
+                "first_name":  first_name,
+                "studio_name": tenant_name,
+                "project_type": "design_journey",
+            },
+            tenant_id=tid, locale=locale,
+            event_type="lead.private_client.confirmation",
+            metadata={"journey_id": journey_id,
+                      "onboarding_path": "begin_journey"},
+        )
+        # 2. Internal notifications
+        owners = (c.table("users_profile")
+                  .select("email, language")
+                  .eq("tenant_id", tid)
+                  .in_("role", ["tenant_admin", "super_admin"])
+                  .limit(3).execute().data or [])
+        for o in owners:
+            if not o.get("email"):
+                continue
+            send_template_email(
+                to=o["email"],
+                template_key="generic",
+                context={
+                    "title": f"Nuovo Design Journey™ · {first_name}",
+                    "body":  (f"{first_name} ({email}) ha appena iniziato "
+                              f"un Design Journey. Locale: {locale}."),
+                    "cta_url":   f"/workspace/projects/{project_id}",
+                    "cta_label": "Apri il progetto",
+                    "studio_name": tenant_name,
+                },
+                tenant_id=tid, locale=(o.get("language") or locale),
+                event_type="lead.internal_notification",
+                metadata={"journey_id": journey_id, "project_id": project_id,
+                          "onboarding_path": "begin_journey"},
+            )
+    except Exception:
+        import logging
+        logging.getLogger(__name__).exception("journey email dispatch failed")
+
     return {
         "journey_id":    journey_id,
         "welcome_token": welcome_token,
