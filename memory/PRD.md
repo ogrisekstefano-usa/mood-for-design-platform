@@ -1,6 +1,47 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **ITER148 · Phase 1+2 · Editorial Polish + Media System Unificato™ foundations** · ✅ DELIVERED · 24 Mag 2026
+
+  **PHASE 1 · Editorial polish:**
+  - Memory Engine event types extension — added 9 surface-driven editorial
+    narratives (moodboard_return · proposal_opened · silence_detector ·
+    direction_shift · inspiration_saved · material_revisited ·
+    emotional_alignment · concept_resonance · visual_preference) into
+    `memory_engine_service.SURFACE_NARRATIVES` + chapter routing map
+  - **Atelier Editorial Mode™** preset · 1-click button in
+    Settings → Display that snaps density to `editorial` (19px, slower
+    rhythm)
+
+  **PHASE 2 · Media System Unificato™ foundations:**
+  - SQL migration `086_media_system_unification.sql` applied via direct
+    psycopg connection to Supabase. Creates 3 new tables:
+    * `media_asset_variants` · non-destructive crop/focal/zoom/filter metadata
+    * `media_asset_usage` · Used-In™ relational map (8 entity types whitelisted)
+    * `media_filter_presets` · DB-driven filter registry (8 atelier
+      presets seeded: editorial_matte · warm_ivory · cyan_atelier ·
+      black_white · sepia · desaturated · cinematic_shadow + Original)
+  - Backend router `/api/media-system/*` (8 endpoints) — all
+    tenant-scoped at application layer
+  - `<UnifiedMediaPickerModal>` MVP at
+    `/app/frontend/src/components/media/UnifiedMediaPickerModal.jsx`
+    · reads `/api/media` archive · live-previews CSS filters · lazy
+    Used-In™ panel per tile · Atelier palette only · NO upload UI
+    (per "no duplication" rule)
+  - `useMediaLibrary` hook — single source of truth for media lists
+  - Smoke-test surface at `/admin/media-system-preview`
+  - **Audit document** `/app/docs/MEDIA_SYSTEM_AUDIT.md` outlines
+    deprecation list (4 components to replace), DB architecture, and
+    4-sprint roadmap for completion
+
+  **Verified live** (Gemini Vision @ 100% confidence): modal renders
+  centered with dark navy panel, italic serif title "Pick from the
+  studio archive", lede "master assets are immutable · variants are
+  metadata", 8 filter chips + Original, asset grid with thumbnails,
+  teal "Use this asset" footer button, NO purple/glassmorphism cheap.
+
+---
+
 - **ITER148 · CRM UX Refactor · UI Density + Card Polish + Memory Bridge** · ✅ DELIVERED · 24 Mag 2026
 
   **UI Density / Font Size Controller™** (NEW · brand-wide accessibility):

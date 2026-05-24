@@ -146,6 +146,9 @@ const RuntimeInspectorPage = lazy(() => import('./pages/admin/RuntimeInspectorPa
 // ITER144.1 · Runtime Route Governance™ — global ModuleRouteGuard.
 import ModuleRouteGuard from './components/runtime/ModuleRouteGuard';
 
+// ITER148 · Phase 2 · Media System Unificato™ preview
+const MediaSystemPreviewPage = lazy(() => import('./pages/admin/MediaSystemPreviewPage'));
+
 // ITER148 · P0 · Client Relations™ — editorial Lead/Prospect/Account layer
 const LeadsPage                = lazy(() => import('./pages/relations/LeadsPage'));
 const ProspectsPage            = lazy(() => import('./pages/relations/ProspectsPage'));
@@ -495,6 +498,7 @@ function App() {
                   <Route path="/relations/accounts"   element={<AccountsPage />} />
                   <Route path="/relations/memory"     element={<RelationshipMemoryPage />} />
                   <Route path="/relations/memory/:subjectId" element={<RelationshipMemoryTimeline />} />
+                  <Route path="/admin/media-system-preview" element={<MediaSystemPreviewPage />} />
                   <Route path="/relations/voice-log"  element={<Navigate to="/relations/memory" replace />} />
 
                   {/* Cultural Edition™ — versioni mercato dei contenuti dello studio */}

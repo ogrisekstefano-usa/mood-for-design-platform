@@ -18,6 +18,12 @@ const OPTIONS = [
 
 const DensitySwitcher = ({ variant = 'panel' }) => {
   const { density, setDensity } = useUiDensity();
+
+  // Atelier Editorial Mode™ · one-click preset that sets density + (in
+  // future) presence + cultural register. For now scoped to density;
+  // presence vocabulary is read-only from server metadata.
+  const applyAtelierMode = () => setDensity('editorial');
+
   return (
     <fieldset className={`density-switcher density-switcher--${variant}`} data-testid="density-switcher">
       <legend className="density-switcher__legend">UI Density · Font Size</legend>
@@ -42,6 +48,24 @@ const DensitySwitcher = ({ variant = 'panel' }) => {
             </button>
           );
         })}
+      </div>
+
+      <div className="density-switcher__preset" data-testid="atelier-editorial-mode">
+        <div>
+          <span className="density-switcher__preset-label">Atelier Editorial Mode™</span>
+          <p className="density-switcher__preset-sub">
+            One click · sets the studio to maximum breathing room (19px body, slower
+            rhythm) for showroom presentations and quiet reading sessions.
+          </p>
+        </div>
+        <button
+          type="button"
+          className="density-switcher__preset-btn"
+          onClick={applyAtelierMode}
+          data-testid="atelier-editorial-mode-apply"
+        >
+          Enter Editorial Mode
+        </button>
       </div>
     </fieldset>
   );

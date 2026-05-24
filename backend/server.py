@@ -188,6 +188,9 @@ api_router.include_router(branding.router, prefix="/branding", tags=["branding"]
 api_router.include_router(domains_router.router, prefix="/domains", tags=["domains"])
 api_router.include_router(onboarding.router, prefix="/onboarding", tags=["onboarding"])
 api_router.include_router(media.router, prefix="/media", tags=["media-library"])
+# ITER148 · Phase 2 · Media System Unificato™ · variants + Used-In + filter registry
+from routers import media_system as media_system_router  # noqa: E402
+api_router.include_router(media_system_router.router, prefix="/media-system", tags=["media-system"])
 api_router.include_router(dashboard.router, prefix="/dashboard", tags=["dashboard"])
 api_router.include_router(ai_editorial.router, prefix="/ai", tags=["ai-editorial"])
 api_router.include_router(client_portal.router, prefix="/client", tags=["client-portal"])

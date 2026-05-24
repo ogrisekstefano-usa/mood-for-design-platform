@@ -95,6 +95,40 @@ CHAPTER_ORDER = [
     ("project_momentum",       "Project Momentum"),
 ]
 
+# Map of "source_surface" values to chapter routing — used when the
+# event isn't a closed-question answer but a higher-level interaction
+# (moodboard return, proposal opened, silence detected, etc.).
+SURFACE_TO_CHAPTER = {
+    "moodboard":             "project_momentum",
+    "moodboard_return":      "project_momentum",
+    "proposal_share":        "project_momentum",
+    "proposal_opened":       "project_momentum",
+    "designer_message":      "concept_consolidation",
+    "silence_detector":      "concept_consolidation",
+    "direction_shift":       "concept_consolidation",
+    "inspiration_saved":     "atmosphere_alignment",
+    "material_revisited":    "material_direction",
+    "emotional_alignment":   "atmosphere_alignment",
+    "concept_resonance":     "concept_consolidation",
+    "visual_preference":     "atmosphere_alignment",
+}
+
+# Per-surface editorial narratives. These run BEFORE the group-based
+# transformer when an event ships a recognised source_surface, so a
+# `moodboard_return` event reads as curator prose, not "moodboard
+# opened 3 times".
+SURFACE_NARRATIVES = {
+    "moodboard_return":    "A moodboard direction has become a recurring reference point — the relationship keeps returning to it.",
+    "proposal_opened":     "A proposal was opened — the studio's intent is being read closely.",
+    "silence_detector":    "A long silence settled in the relationship — the studio is listening from a respectful distance.",
+    "direction_shift":     "The project direction shifted — a previous register is releasing its grip.",
+    "inspiration_saved":   "A new inspiration was saved — the visual vocabulary is widening.",
+    "material_revisited":  "A material instinct was revisited — the palette is consolidating.",
+    "emotional_alignment": "An emotional alignment emerged between the studio and the client — registers are syncing.",
+    "concept_resonance":   "The current concept is resonating — multiple signals point to the same direction.",
+    "visual_preference":   "A visual preference firmed — a new center of gravity is forming.",
+}
+
 CHAPTER_INTROS = {
     "early_signals":         "The first whispers — what the relationship is asking for, before it has the words.",
     "atmosphere_alignment":  "The relationship begins to recognise its own register — atmospheres settle into a recurring voice.",
@@ -108,8 +142,13 @@ def _chapter_for_event(ev: dict[str, Any], lead: dict[str, Any], chapter_hint: s
     """Decide which chapter an event belongs to."""
     if chapter_hint:
         return chapter_hint
-    group_key = (ev.get("group_key") or "").lower()
     surface = (ev.get("source_surface") or "").lower()
+    # Surface-driven routing wins so editorial events (moodboard_return,
+    # silence_detector, etc.) land in the right chapter even when their
+    # group_key is generic.
+    if surface in SURFACE_TO_CHAPTER:
+        return SURFACE_TO_CHAPTER[surface]
+    group_key = (ev.get("group_key") or "").lower()
     if group_key == "atmosphere":
         return "atmosphere_alignment"
     if group_key in ("materials", "material"):
@@ -231,6 +270,21 @@ def _card_relationship_opened(lead: dict) -> dict:
 
 
 def _build_event_card(ev: dict, lead: dict) -> dict:
+    # Surface-level editorial narratives take precedence for higher-order
+    # events that aren't tied to a closed-question group.
+    surface = (ev.get("source_surface") or "").lower()
+    if surface in SURFACE_NARRATIVES:
+        return {
+            "kind":           ("atmosphere_shift" if surface in ("inspiration_saved", "emotional_alignment", "visual_preference")
+                              else "designer_intervention" if surface == "designer_message"
+                              else "milestone"),
+            "narrative":      SURFACE_NARRATIVES[surface],
+            "atmosphere":     ev.get("option_value") if surface in ("inspiration_saved", "visual_preference") else None,
+            "materials":      [ev["option_value"]] if surface == "material_revisited" and ev.get("option_value") else [],
+            "when_label":     _format_when(ev.get("occurred_at")),
+            "occurred_at":    ev.get("occurred_at"),
+            "source_surface": surface,
+        }
     group = (ev.get("group_key") or "").lower()
     if group == "atmosphere":
         return _card_atmosphere_event(ev, lead)
