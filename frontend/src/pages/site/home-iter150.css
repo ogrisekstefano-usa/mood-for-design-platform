@@ -428,13 +428,13 @@
 /* ═════════════════════════════════════════════════════════════════
  * MAGAZINE — 5 editorial cards (no date, no author)
  * ═══════════════════════════════════════════════════════════════ */
-.mfd-magazine {
+.mfd-home-magazine {
   padding: clamp(16px, 2vw, 32px) clamp(28px, 6vw, 80px) 0;
   background: var(--mfd-bg);
   position: relative;
 }
 /* No bottom veil — was creating a visible grey shadow stripe before Stories */
-.mfd-magazine__grid {
+.mfd-home-magazine__grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 12px;
@@ -747,7 +747,7 @@
   .mfd-welcome-strip,
   .mfd-trust,
   .mfd-how,
-  .mfd-magazine,
+  .mfd-home-magazine,
   .mfd-stories,
   .mfd-materials,
   .mfd-finalcta,
@@ -759,7 +759,7 @@
   .mfd-hero { min-height: 880px; }
   .mfd-hero__title { font-size: clamp(96px, 6vw, 142px); }
   .mfd-section-title { font-size: clamp(56px, 3.6vw, 78px); }
-  .mfd-magazine__grid { gap: 18px; }
+  .mfd-home-magazine__grid { gap: 18px; }
   .mfd-stories__grid { gap: 22px; }
 }
 
@@ -772,7 +772,7 @@
 
 /* Tablet landscape (1180 - 880) */
 @media (max-width: 1180px) {
-  .mfd-magazine__grid { grid-template-columns: repeat(3, 1fr); }
+  .mfd-home-magazine__grid { grid-template-columns: repeat(3, 1fr); }
   .mag-card:nth-child(4), .mag-card:nth-child(5) { display: none; }
   .mfd-stories__grid { grid-template-columns: repeat(2, 1fr); }
   .mfd-footer__top { grid-template-columns: 1fr; gap: 22px; }
@@ -834,7 +834,7 @@
   .mfd-how__step:not(:last-child)::after { display: none; }
   .mfd-how__step-title { font-size: 20px; }
 
-  .mfd-magazine__grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mfd-home-magazine__grid { grid-template-columns: 1fr 1fr; gap: 8px; }
   .mag-card__title { font-size: 18px; }
   .mag-card__category { left: 14px; bottom: 70px; font-size: 9.5px; }
 
@@ -866,7 +866,7 @@
 @media (max-width: 480px) {
   .mfd-hero { min-height: 460px; padding: 48px 18px; }
   .mfd-hero__title { font-size: 36px; }
-  .mfd-magazine__grid { grid-template-columns: 1fr; gap: 8px; }
+  .mfd-home-magazine__grid { grid-template-columns: 1fr; gap: 8px; }
   .mfd-footer__cols { grid-template-columns: 1fr; }
   .mfd-trust__brand { font-size: 16px; }
 }

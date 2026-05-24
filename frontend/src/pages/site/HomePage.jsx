@@ -351,7 +351,7 @@ const HowItWorks = ({ locale, copy }) => (
 // MAGAZINE
 // ─────────────────────────────────────────────────────────────────────
 const Magazine = ({ locale, copy }) => (
-  <section id="magazine" className="mfd-magazine" data-testid="magazine-section">
+  <section id="magazine" className="mfd-home-magazine" data-testid="magazine-section">
     <header className="mfd-section-head mfd-section-head--with-link">
       <div>
         <p className="mfd-section-eyebrow">{L(copy.magazine.eyebrow, locale)}</p>
@@ -361,7 +361,7 @@ const Magazine = ({ locale, copy }) => (
         {L(copy.magazine.explore, locale)} <ArrowRight size={14} strokeWidth={1.6} />
       </Link>
     </header>
-    <div className="mfd-magazine__grid">
+    <div className="mfd-home-magazine__grid">
       {copy.magazine.cards.map((c) => (
         <Link key={c.id} to={`/magazine/${c.id}`} className="mag-card" data-testid={`magazine-card-${c.id}`}>
           <div className="mag-card__media">
