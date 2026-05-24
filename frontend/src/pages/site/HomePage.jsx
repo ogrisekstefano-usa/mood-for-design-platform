@@ -136,17 +136,17 @@ const FALLBACK = {
                 en: 'Curated selection of the finest materials.' },
     explore:  { it: 'Esplora i materiali', en: 'Explore materials' },
     swatches: [
-      { id: 'mat1', name: 'Marble',     image: 'https://images.unsplash.com/photo-1604147706283-d7119b5b822c?auto=format&fit=crop&w=400&q=85' },
-      { id: 'mat2', name: 'Walnut',     image: 'https://images.unsplash.com/photo-1610552050890-fe99536c2615?auto=format&fit=crop&w=400&q=85' },
-      { id: 'mat3', name: 'Oak',        image: 'https://images.unsplash.com/photo-1609921141835-710b7cd1a51c?auto=format&fit=crop&w=400&q=85' },
-      { id: 'mat4', name: 'Linen',      image: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=400&q=85' },
-      { id: 'mat5', name: 'Travertine', image: 'https://images.unsplash.com/photo-1604147495798-57beb5d6af73?auto=format&fit=crop&w=400&q=85' },
-      { id: 'mat6', name: 'Brass',      image: 'https://images.unsplash.com/photo-1564540586988-aa4e53c3d799?auto=format&fit=crop&w=400&q=85' },
-      { id: 'mat7', name: 'Terrazzo',   image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=400&q=85' },
-      { id: 'mat8', name: 'Slate',      image: 'https://images.unsplash.com/photo-1597428892389-6d456e69ec48?auto=format&fit=crop&w=400&q=85' },
-      { id: 'mat9', name: 'Linen Light',image: 'https://images.unsplash.com/photo-1622820236923-2c14b95b62b3?auto=format&fit=crop&w=400&q=85' },
-      { id: 'mat10',name: 'Charcoal',   image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=400&q=85' },
-      { id: 'mat11',name: 'Basalt',     image: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=400&q=85' },
+      { id: 'mat1',  name: 'Marble',      swatch: '#E8E4DE', tone: 'light' },
+      { id: 'mat2',  name: 'Walnut',      swatch: '#5C3A28', tone: 'dark'  },
+      { id: 'mat3',  name: 'Oak',         swatch: '#B8956A', tone: 'mid'   },
+      { id: 'mat4',  name: 'Linen',       swatch: '#D6CDB8', tone: 'light' },
+      { id: 'mat5',  name: 'Travertine',  swatch: '#C9B498', tone: 'mid'   },
+      { id: 'mat6',  name: 'Brass',       swatch: '#B5985A', tone: 'mid'   },
+      { id: 'mat7',  name: 'Terrazzo',    swatch: '#ECE7DE', tone: 'light' },
+      { id: 'mat8',  name: 'Slate',       swatch: '#3A4148', tone: 'dark'  },
+      { id: 'mat9',  name: 'Linen Light', swatch: '#E8DFC9', tone: 'light' },
+      { id: 'mat10', name: 'Charcoal',    swatch: '#2A2A2A', tone: 'dark'  },
+      { id: 'mat11', name: 'Basalt',      swatch: '#4A4744', tone: 'dark'  },
     ],
   },
   finalCTA: {
@@ -290,20 +290,22 @@ const Hero = ({ locale, copy }) => (
       <img src={copy.hero.image} alt="" loading="eager" />
       <span className="mfd-home-hero__veil" />
     </div>
-    <div className="mfd-home-hero__content">
-      <h1 className="mfd-home-hero__title" data-testid="hero-title">
-        {L(copy.hero.title, locale).split('\n').map((line, i) => (
-          <span key={i} className="mfd-home-hero__title-line">{line}</span>
-        ))}
-      </h1>
-      <p className="mfd-home-hero__sub" data-testid="hero-sub">{L(copy.hero.sub, locale)}</p>
-      <div className="mfd-home-hero__ctas">
-        <Link to="/begin-journey" className="mfd-cta mfd-cta--solid" data-testid="hero-cta-primary">
-          {L(copy.hero.cta_primary, locale)}
-        </Link>
-        <Link to="/professionals" className="mfd-cta mfd-cta--ghost" data-testid="hero-cta-secondary">
-          {L(copy.hero.cta_secondary, locale)}
-        </Link>
+    <div className="mfd-home-hero__inner">
+      <div className="mfd-home-hero__content">
+        <h1 className="mfd-home-hero__title" data-testid="hero-title">
+          {L(copy.hero.title, locale).split('\n').map((line, i) => (
+            <span key={i} className="mfd-home-hero__title-line">{line}</span>
+          ))}
+        </h1>
+        <p className="mfd-home-hero__sub" data-testid="hero-sub">{L(copy.hero.sub, locale)}</p>
+        <div className="mfd-home-hero__ctas">
+          <Link to="/begin-journey" className="mfd-cta mfd-cta--solid" data-testid="hero-cta-primary">
+            {L(copy.hero.cta_primary, locale)}
+          </Link>
+          <Link to="/professionals" className="mfd-cta mfd-cta--ghost" data-testid="hero-cta-secondary">
+            {L(copy.hero.cta_secondary, locale)}
+          </Link>
+        </div>
       </div>
     </div>
   </section>
@@ -442,8 +444,14 @@ const Materials = ({ locale, copy }) => {
         <div className="mfd-materials__wrap">
           <div className="mfd-materials__rail" ref={railRef}>
             {copy.materials.swatches.map((s) => (
-              <button key={s.id} className="mat-tile" data-testid={`material-tile-${s.id}`} aria-label={s.name}>
-                <img src={s.image} alt="" loading="lazy" />
+              <button
+                key={s.id}
+                className={`mat-tile mat-tile--${s.tone || 'mid'}`}
+                data-testid={`material-tile-${s.id}`}
+                aria-label={s.name}
+                style={{ '--mat-color': s.swatch }}
+              >
+                <span className="mat-tile__swatch" aria-hidden="true" />
                 <span className="mat-tile__label">{s.name}</span>
               </button>
             ))}

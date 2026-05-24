@@ -2,6 +2,28 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER150 · Public Editorial Hero Fix™** · ✅ DELIVERED · 24 May 2026
+
+  **HomePage layout corrections (post user-feedback "fa cagere")**
+  - Hero: aggiunto wrapper `.mfd-home-hero__inner` (max-width 1480px,
+    padding clamp(80px,8vw,140px) × clamp(24px,4vw,72px)) — il titolo
+    "Il tuo spazio. Il tuo viaggio." non tocca più il bordo sinistro
+  - Tutti i `__inner` portati da 1800px → **1480px** (4K-only override
+    1840px mantenuto nel media query ≥2200px come richiesto)
+  - Header nav + brand + CTA: `white-space: nowrap` per evitare
+    wrap a 2 righe alla larghezza ridotta
+  - Materiali: campioni cromatici puri (radial gradient + tone class)
+    al posto di immagini Unsplash 404. 11 swatches semantici
+    (Marble #E8E4DE · Walnut #5C3A28 · Oak #B8956A · Linen #D6CDB8 ·
+    Travertine #C9B498 · Brass #B5985A · Terrazzo #ECE7DE · Slate
+    #3A4148 · Linen Light #E8DFC9 · Charcoal #2A2A2A · Basalt #4A4744)
+
+  **Files touched**
+  - `frontend/src/pages/site/HomePage.jsx` (Hero wrapper · Materials swatches)
+  - `frontend/src/pages/site/home-iter150.css` (max-width sweep · nowrap · mat-tile)
+
+
+## 📌 Sprint Status (latest)
 - **ITER149 · Atelier Warm Cinematic Palette™ + Used-In™ live wiring** · ✅ DELIVERED · 24 May 2026
 
   **Global palette refactor — cold→warm**
