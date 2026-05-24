@@ -48,9 +48,11 @@ async def public_articles(
     tenant = await get_corporate_tenant()
     tag_list = [t.strip() for t in (tags or '').split(',') if t.strip()] or None
     return await js.list_public_articles(
-        db, tenant_id=tenant['id'], locale=locale,
-        category_slug=category, tag_slugs=tag_list, search=search,
-        limit=limit, offset=offset,
+        db, tenant_id=tenant['id'],
+        filters=js.ArticleListFilters(
+            locale=locale, category_slug=category, tag_slugs=tag_list,
+            search=search, limit=limit, offset=offset,
+        ),
     )
 
 
@@ -128,11 +130,13 @@ async def admin_create_article(
     try:
         return await js.create_article(
             db, tenant_id=tenant['id'],
-            article_type=body.article_type,
-            canonical_locale=body.canonical_locale,
-            localizations=[l.model_dump() for l in body.localizations],
-            hero_asset_id=body.hero_asset_id,
-            author_display_name=body.author_display_name,
+            data=js.ArticleCreateData(
+                article_type=body.article_type,
+                canonical_locale=body.canonical_locale,
+                localizations=[loc.model_dump() for loc in body.localizations],
+                hero_asset_id=body.hero_asset_id,
+                author_display_name=body.author_display_name,
+            ),
         )
     except ValueError as e:
         raise HTTPException(400, str(e))
@@ -179,7 +183,7 @@ async def admin_add_block(
     db: AsyncSession = Depends(get_db),
 ):
     return await js.add_block(db, tenant_id=tenant['id'], article_id=article_id,
-                               **body.model_dump())
+                               data=js.BlockCreateData(**body.model_dump()))
 
 
 class ReorderPayload(BaseModel):

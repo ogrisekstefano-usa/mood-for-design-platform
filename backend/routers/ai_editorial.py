@@ -5,7 +5,9 @@ Routes are admin-gated. All calls logged in ai_assist_logs.
 from typing import Optional
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from services.ai_editorial import EditorialAI, EDITORIAL_STRATEGIST, PHOTO_DIRECTOR
+from services.ai_editorial import (
+    EditorialAI, EDITORIAL_STRATEGIST, PHOTO_DIRECTOR, AILogContext,
+)
 from routers._auth import require_admin_tenant
 
 router = APIRouter(prefix='/ai/editorial', tags=['ai-editorial'])
@@ -83,8 +85,9 @@ async def suggest_topics(body: TopicsRequest, tenant=Depends(require_admin_tenan
         f"LOCALE: {body.locale}\nAUDIENCE: {body.audience}\n"
         "Return strict JSON: {\"topics\":[{\"title\":\"\",\"angle\":\"\",\"why_now\":\"\"}]}"
     )
-    return await _ai().ask(prompt, action='topics', tenant_id=tenant['id'],
-                            locale=body.locale, expect_json=True)
+    return await _ai().ask(prompt, action='topics',
+                            context=AILogContext(tenant_id=tenant['id'], locale=body.locale),
+                            expect_json=True)
 
 
 @router.post('/outline')
@@ -94,8 +97,9 @@ async def generate_outline(body: OutlineRequest, tenant=Depends(require_admin_te
         f"LOCALE: {body.locale}\nTARGET: {body.target_length_words} words.\n"
         "Return strict JSON: {\"hook\":\"\",\"sections\":[{\"heading\":\"\",\"summary\":\"\",\"target_words\":0}],\"closing\":\"\"}"
     )
-    return await _ai().ask(prompt, action='outline', tenant_id=tenant['id'],
-                            locale=body.locale, expect_json=True)
+    return await _ai().ask(prompt, action='outline',
+                            context=AILogContext(tenant_id=tenant['id'], locale=body.locale),
+                            expect_json=True)
 
 
 @router.post('/seo')
@@ -106,8 +110,9 @@ async def generate_seo(body: SEORequest, tenant=Depends(require_admin_tenant)):
         f"KEYWORDS: {', '.join(body.keywords or [])}\n"
         "Return strict JSON: {\"seo_title\":\"<=60 chars\",\"seo_description\":\"<=160 chars\",\"og_title\":\"\",\"og_description\":\"\",\"keywords\":[]}"
     )
-    return await _ai().ask(prompt, action='seo', tenant_id=tenant['id'],
-                            locale=body.locale, expect_json=True)
+    return await _ai().ask(prompt, action='seo',
+                            context=AILogContext(tenant_id=tenant['id'], locale=body.locale),
+                            expect_json=True)
 
 
 @router.post('/excerpt')
@@ -117,8 +122,9 @@ async def generate_excerpt(body: ExcerptRequest, tenant=Depends(require_admin_te
         f"LOCALE: {body.locale}\nTITLE: {body.title}\nSOURCE:\n{body.body_or_outline}\n"
         "Return strict JSON: {\"excerpt\":\"...\"}"
     )
-    return await _ai().ask(prompt, action='excerpt', tenant_id=tenant['id'],
-                            locale=body.locale, expect_json=True)
+    return await _ai().ask(prompt, action='excerpt',
+                            context=AILogContext(tenant_id=tenant['id'], locale=body.locale),
+                            expect_json=True)
 
 
 @router.post('/copy')
@@ -128,8 +134,9 @@ async def generate_copy(body: CopyRequest, tenant=Depends(require_admin_tenant))
         f"TONE: {body.tone}\nLOCALE: {body.locale}\nBRIEF: {body.section_brief}\n"
         "Return strict JSON: {\"copy\":\"...\"} — copy may contain line breaks."
     )
-    return await _ai().ask(prompt, action='copy', tenant_id=tenant['id'],
-                            locale=body.locale, expect_json=True)
+    return await _ai().ask(prompt, action='copy',
+                            context=AILogContext(tenant_id=tenant['id'], locale=body.locale),
+                            expect_json=True)
 
 
 @router.post('/translate')
@@ -140,8 +147,9 @@ async def translate(body: TranslateRequest, tenant=Depends(require_admin_tenant)
         f"SOURCE:\n{body.source_text}\n"
         "Return strict JSON: {\"translated\":\"...\",\"notes\":\"brief rationale\"}"
     )
-    return await _ai().ask(prompt, action='translate', tenant_id=tenant['id'],
-                            locale=body.target_locale, expect_json=True)
+    return await _ai().ask(prompt, action='translate',
+                            context=AILogContext(tenant_id=tenant['id'], locale=body.target_locale),
+                            expect_json=True)
 
 
 @router.post('/categorize')
@@ -152,8 +160,9 @@ async def suggest_categories(body: CategorizeRequest, tenant=Depends(require_adm
         f"KNOWN CATEGORIES: {', '.join(body.known_categories or [])}\n"
         "Return strict JSON: {\"categories\":[{\"slug\":\"\",\"label\":\"\"}],\"tags\":[{\"slug\":\"\",\"label\":\"\",\"group\":\"material|style|designer|country|year|other\"}]}"
     )
-    return await _ai().ask(prompt, action='categorize', tenant_id=tenant['id'],
-                            locale=body.locale, expect_json=True)
+    return await _ai().ask(prompt, action='categorize',
+                            context=AILogContext(tenant_id=tenant['id'], locale=body.locale),
+                            expect_json=True)
 
 
 @router.post('/photo-direction')

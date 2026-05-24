@@ -101,6 +101,71 @@ async def get_block_by_key(
         return item
 
 
+def _validate_block_payload(body: dict) -> None:
+    """Raise HTTPException if required block fields are missing."""
+    required = ['namespace', 'block_key', 'block_type', 'source_locale', 'source_value']
+    for k in required:
+        if k not in body or body[k] is None:
+            raise HTTPException(400, f"Missing field: {k}")
+
+
+async def _upsert_editorial_block_row(session, *, tenant_id: str, body: dict,
+                                       source_hash: str):
+    """Upsert the editorial_blocks row. Returns the block id."""
+    row = (await session.execute(
+        text("""
+            INSERT INTO editorial_blocks
+              (id, scope, tenant_id, namespace, block_key, block_type,
+               source_locale, source_value, source_hash, is_active, notes, created_at, updated_at)
+            VALUES
+              (gen_random_uuid(), 'tenant', :tid, :ns, :bk, :bt,
+               :sl, :sv, :sh, COALESCE(:active, true), :notes, NOW(), NOW())
+            ON CONFLICT (tenant_id, namespace, block_key) DO UPDATE SET
+              block_type    = EXCLUDED.block_type,
+              source_locale = EXCLUDED.source_locale,
+              source_value  = EXCLUDED.source_value,
+              source_hash   = EXCLUDED.source_hash,
+              is_active     = EXCLUDED.is_active,
+              notes         = EXCLUDED.notes,
+              updated_at    = NOW()
+            RETURNING id
+        """),
+        {
+            "tid": tenant_id,
+            "ns": body['namespace'], "bk": body['block_key'], "bt": body['block_type'],
+            "sl": body['source_locale'], "sv": body['source_value'], "sh": source_hash,
+            "active": body.get('is_active', True), "notes": body.get('notes'),
+        },
+    )).first()
+    return row[0]
+
+
+async def _upsert_block_translations(session, *, block_id, translations: list[dict],
+                                      source_hash: str) -> None:
+    """Upsert per-locale translations for a block."""
+    for tr in translations:
+        if not tr.get('locale') or tr.get('value') is None:
+            continue
+        await session.execute(
+            text("""
+                INSERT INTO editorial_block_translations
+                  (id, block_id, locale, value, status, generated_by, source_hash, locked, created_at, updated_at)
+                VALUES
+                  (gen_random_uuid(), :bid, :loc, :val, COALESCE(:status,'manual'),
+                   'admin', :sh, COALESCE(:locked, false), NOW(), NOW())
+                ON CONFLICT (block_id, locale) DO UPDATE SET
+                  value       = EXCLUDED.value,
+                  status      = EXCLUDED.status,
+                  source_hash = EXCLUDED.source_hash,
+                  locked      = EXCLUDED.locked,
+                  updated_at  = NOW()
+            """),
+            {"bid": block_id, "loc": tr['locale'], "val": tr['value'],
+             "sh": source_hash,
+             "status": tr.get('status'), "locked": tr.get('locked', False)},
+        )
+
+
 @router.put("/blocks")
 async def upsert_block(
     body: dict = Body(...),
@@ -113,65 +178,19 @@ async def upsert_block(
       translations: [{locale, value, status?, locked?}, ...]
     }
     """
-    required = ['namespace', 'block_key', 'block_type', 'source_locale', 'source_value']
-    for k in required:
-        if k not in body or body[k] is None:
-            raise HTTPException(400, f"Missing field: {k}")
-
+    _validate_block_payload(body)
+    import hashlib
+    # SHA-256 used as non-cryptographic content checksum (translation invalidation), not for security.
+    source_hash = hashlib.sha256(body['source_value'].encode('utf-8')).hexdigest()
     async with AsyncSessionLocal() as session:
-        import hashlib
-        # NOTE: SHA-256 used as a non-cryptographic content checksum to detect
-        # source_value changes for translation invalidation. Not used for security.
-        source_hash = hashlib.sha256(body['source_value'].encode('utf-8')).hexdigest()
-        block_row = (await session.execute(
-            text("""
-                INSERT INTO editorial_blocks
-                  (id, scope, tenant_id, namespace, block_key, block_type,
-                   source_locale, source_value, source_hash, is_active, notes, created_at, updated_at)
-                VALUES
-                  (gen_random_uuid(), 'tenant', :tid, :ns, :bk, :bt,
-                   :sl, :sv, :sh, COALESCE(:active, true), :notes, NOW(), NOW())
-                ON CONFLICT (tenant_id, namespace, block_key) DO UPDATE SET
-                  block_type    = EXCLUDED.block_type,
-                  source_locale = EXCLUDED.source_locale,
-                  source_value  = EXCLUDED.source_value,
-                  source_hash   = EXCLUDED.source_hash,
-                  is_active     = EXCLUDED.is_active,
-                  notes         = EXCLUDED.notes,
-                  updated_at    = NOW()
-                RETURNING id
-            """),
-            {
-                "tid": tenant['id'],
-                "ns": body['namespace'], "bk": body['block_key'], "bt": body['block_type'],
-                "sl": body['source_locale'], "sv": body['source_value'], "sh": source_hash,
-                "active": body.get('is_active', True), "notes": body.get('notes'),
-            },
-        )).first()
-        block_id = block_row[0]
-
-        translations = body.get('translations') or []
-        for tr in translations:
-            if not tr.get('locale') or tr.get('value') is None:
-                continue
-            await session.execute(
-                text("""
-                    INSERT INTO editorial_block_translations
-                      (id, block_id, locale, value, status, generated_by, source_hash, locked, created_at, updated_at)
-                    VALUES
-                      (gen_random_uuid(), :bid, :loc, :val, COALESCE(:status,'manual'),
-                       'admin', :sh, COALESCE(:locked, false), NOW(), NOW())
-                    ON CONFLICT (block_id, locale) DO UPDATE SET
-                      value       = EXCLUDED.value,
-                      status      = EXCLUDED.status,
-                      source_hash = EXCLUDED.source_hash,
-                      locked      = EXCLUDED.locked,
-                      updated_at  = NOW()
-                """),
-                {"bid": block_id, "loc": tr['locale'], "val": tr['value'],
-                 "sh": source_hash,
-                 "status": tr.get('status'), "locked": tr.get('locked', False)},
-            )
+        block_id = await _upsert_editorial_block_row(
+            session, tenant_id=tenant['id'], body=body, source_hash=source_hash,
+        )
+        await _upsert_block_translations(
+            session, block_id=block_id,
+            translations=body.get('translations') or [],
+            source_hash=source_hash,
+        )
         await session.commit()
         site_resolver.invalidate_site_cache()
         return {"id": str(block_id), "ok": True}

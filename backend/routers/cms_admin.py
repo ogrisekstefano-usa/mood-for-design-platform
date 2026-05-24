@@ -116,7 +116,12 @@ async def add_section(
     tenant=Depends(require_admin_tenant),
     db: AsyncSession = Depends(get_db),
 ):
-    result = await cms.add_section(db, tenant_id=tenant['id'], **body.model_dump())
+    payload = body.model_dump()
+    page_id = payload.pop('page_id')
+    result = await cms.add_section(
+        db, tenant_id=tenant['id'], page_id=page_id,
+        data=cms.SectionData(**payload),
+    )
     content_cache.clear_prefix(f'page:{tenant["id"]}')
     return result
 

@@ -5,12 +5,23 @@ All operations tenant-aware; revisions logged to content_revisions.
 import json
 import logging
 import uuid
+from dataclasses import dataclass
 from datetime import datetime, date
 from typing import Optional
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class SectionData:
+    section_type: str
+    sort_order: Optional[int] = None
+    locale_content: Optional[dict] = None
+    settings: Optional[dict] = None
+    asset_refs: Optional[list[str]] = None
+    actor_id: Optional[str] = None
 
 
 class _SafeEncoder(json.JSONEncoder):
@@ -183,11 +194,8 @@ async def reorder_sections(db: AsyncSession, *, tenant_id: str, page_id: str,
 
 
 async def add_section(db: AsyncSession, *, tenant_id: str, page_id: str,
-                      section_type: str, sort_order: Optional[int] = None,
-                      locale_content: Optional[dict] = None,
-                      settings: Optional[dict] = None,
-                      asset_refs: Optional[list[str]] = None,
-                      actor_id: Optional[str] = None) -> dict:
+                      data: SectionData) -> dict:
+    sort_order = data.sort_order
     if sort_order is None:
         m = (await db.execute(
             text("SELECT COALESCE(MAX(sort_order), -1) + 1 FROM cms_sections WHERE page_id = CAST(:pid AS uuid) AND deleted_at IS NULL"),
@@ -204,12 +212,13 @@ async def add_section(db: AsyncSession, *, tenant_id: str, page_id: str,
               (CAST(:sid AS uuid), CAST(:tid AS uuid), CAST(:pid AS uuid), :st, :so, true,
                CAST(:lc AS jsonb), CAST(:s AS jsonb), CAST(:ar AS uuid[]), NOW(), NOW())
         """),
-        {'sid': sid, 'tid': tenant_id, 'pid': page_id, 'st': section_type, 'so': sort_order,
-         'lc': _json(locale_content or {}), 's': _json(settings or {}),
-         'ar': asset_refs or []},
+        {'sid': sid, 'tid': tenant_id, 'pid': page_id,
+         'st': data.section_type, 'so': sort_order,
+         'lc': _json(data.locale_content or {}), 's': _json(data.settings or {}),
+         'ar': data.asset_refs or []},
     )
     await db.commit()
-    return {'id': sid, 'section_type': section_type, 'sort_order': sort_order}
+    return {'id': sid, 'section_type': data.section_type, 'sort_order': sort_order}
 
 
 async def soft_delete_section(db: AsyncSession, *, tenant_id: str, section_id: str,

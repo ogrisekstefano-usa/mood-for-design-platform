@@ -5,17 +5,21 @@ DDL is owned by Blueprint migrations — this module only opens read/write sessi
 """
 import os
 from pathlib import Path
+from typing import AsyncIterator
+
 from dotenv import load_dotenv
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine,
+)
 
 load_dotenv(Path(__file__).parent / '.env')
 
-DATABASE_URL = os.environ['DATABASE_URL']
+DATABASE_URL: str = os.environ['DATABASE_URL']
 
 # Convert to asyncpg-friendly URL
-_ASYNC_URL = DATABASE_URL.replace('postgresql://', 'postgresql+asyncpg://', 1)
+_ASYNC_URL: str = DATABASE_URL.replace('postgresql://', 'postgresql+asyncpg://', 1)
 
-engine = create_async_engine(
+engine: AsyncEngine = create_async_engine(
     _ASYNC_URL,
     pool_size=5,
     max_overflow=5,
@@ -30,7 +34,7 @@ engine = create_async_engine(
     },
 )
 
-AsyncSessionLocal = async_sessionmaker(
+AsyncSessionLocal: async_sessionmaker[AsyncSession] = async_sessionmaker(
     bind=engine,
     class_=AsyncSession,
     expire_on_commit=False,
@@ -39,7 +43,7 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 
-async def get_db():
+async def get_db() -> AsyncIterator[AsyncSession]:
     """FastAPI dependency: yields an async SQLAlchemy session."""
     async with AsyncSessionLocal() as session:
         try:

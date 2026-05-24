@@ -5,12 +5,44 @@ All operations tenant-aware. Snapshots saved to content_revisions.
 import json
 import logging
 import uuid
+from dataclasses import dataclass, field
 from datetime import datetime, date
 from typing import Optional
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
+
+
+# ── Service input models ─────────────────────────────────────────────────────
+
+@dataclass
+class ArticleCreateData:
+    article_type: str
+    canonical_locale: str
+    localizations: list[dict]
+    hero_asset_id: Optional[str] = None
+    author_display_name: Optional[str] = None
+    actor_id: Optional[str] = None
+
+
+@dataclass
+class BlockCreateData:
+    block_type: str
+    sort_order: int = 0
+    locale_content: Optional[dict] = None
+    settings: Optional[dict] = None
+    asset_refs: Optional[list[str]] = None
+
+
+@dataclass
+class ArticleListFilters:
+    locale: str = 'en-us'
+    category_slug: Optional[str] = None
+    tag_slugs: Optional[list[str]] = None
+    search: Optional[str] = None
+    limit: int = 24
+    offset: int = 0
 
 
 class _SafeEncoder(json.JSONEncoder):
@@ -154,20 +186,17 @@ async def list_tags(db: AsyncSession, *, tenant_id: str, locale: str = 'en-us',
 
 # ── Articles ─────────────────────────────────────────────────────────────────
 
-async def create_article(db: AsyncSession, *, tenant_id: str, article_type: str,
-                         canonical_locale: str, localizations: list[dict],
-                         hero_asset_id: Optional[str] = None,
-                         author_display_name: Optional[str] = None,
-                         actor_id: Optional[str] = None) -> dict:
+async def create_article(db: AsyncSession, *, tenant_id: str,
+                         data: ArticleCreateData) -> dict:
     """
     Create a new article in 'draft' status.
-    localizations: [{locale_code, slug, title, excerpt?, seo_title?, seo_description?}]
+    data.localizations: [{locale_code, slug, title, excerpt?, seo_title?, seo_description?}]
     """
-    if not localizations:
+    if not data.localizations:
         raise ValueError("At least one localization required")
 
     article_id = str(uuid.uuid4())
-    locale_codes = [l['locale_code'] for l in localizations]
+    locale_codes = [loc['locale_code'] for loc in data.localizations]
 
     await db.execute(
         text("""
@@ -179,11 +208,11 @@ async def create_article(db: AsyncSession, *, tenant_id: str, article_type: str,
               :cl, CAST(:tl AS text[]), CAST(NULLIF(:hid,'') AS uuid), :auth, :aid, :aid, NOW(), NOW()
             )
         """),
-        {'id': article_id, 'tid': tenant_id, 'typ': article_type, 'cl': canonical_locale,
-         'tl': locale_codes, 'hid': hero_asset_id or '', 'auth': author_display_name,
-         'aid': actor_id},
+        {'id': article_id, 'tid': tenant_id, 'typ': data.article_type, 'cl': data.canonical_locale,
+         'tl': locale_codes, 'hid': data.hero_asset_id or '', 'auth': data.author_display_name,
+         'aid': data.actor_id},
     )
-    for loc in localizations:
+    for loc in data.localizations:
         await db.execute(
             text("""
                 INSERT INTO article_localizations (
@@ -200,7 +229,7 @@ async def create_article(db: AsyncSession, *, tenant_id: str, article_type: str,
              'cu': loc.get('canonical_url')},
         )
     await _snapshot(db, tenant_id=tenant_id, entity_type='journal_article',
-                    entity_id=article_id, action='create', actor_id=actor_id)
+                    entity_id=article_id, action='create', actor_id=data.actor_id)
     await db.commit()
     return await get_article(db, tenant_id=tenant_id, article_id=article_id)
 
@@ -254,10 +283,7 @@ async def autosave_draft(db: AsyncSession, *, tenant_id: str, article_id: str,
 
 
 async def add_block(db: AsyncSession, *, tenant_id: str, article_id: str,
-                    block_type: str, sort_order: int = 0,
-                    locale_content: Optional[dict] = None,
-                    settings: Optional[dict] = None,
-                    asset_refs: Optional[list[str]] = None) -> dict:
+                    data: BlockCreateData) -> dict:
     block_id = str(uuid.uuid4())
     await db.execute(
         text("""
@@ -268,12 +294,13 @@ async def add_block(db: AsyncSession, *, tenant_id: str, article_id: str,
               (CAST(:bid AS uuid), CAST(:aid AS uuid), CAST(:tid AS uuid), :bt, :so,
                CAST(:lc AS jsonb), CAST(:st AS jsonb), CAST(:ar AS uuid[]), NOW(), NOW())
         """),
-        {'bid': block_id, 'aid': article_id, 'tid': tenant_id, 'bt': block_type, 'so': sort_order,
-         'lc': _json(locale_content or {}), 'st': _json(settings or {}),
-         'ar': asset_refs or []},
+        {'bid': block_id, 'aid': article_id, 'tid': tenant_id,
+         'bt': data.block_type, 'so': data.sort_order,
+         'lc': _json(data.locale_content or {}), 'st': _json(data.settings or {}),
+         'ar': data.asset_refs or []},
     )
     await db.commit()
-    return {'id': block_id, 'block_type': block_type, 'sort_order': sort_order}
+    return {'id': block_id, 'block_type': data.block_type, 'sort_order': data.sort_order}
 
 
 async def reorder_blocks(db: AsyncSession, *, tenant_id: str, article_id: str,
@@ -334,28 +361,26 @@ async def revert_article(db: AsyncSession, *, tenant_id: str, article_id: str,
     return {'ok': True}
 
 
-async def list_public_articles(db: AsyncSession, *, tenant_id: str, locale: str = 'en-us',
-                                category_slug: Optional[str] = None,
-                                tag_slugs: Optional[list[str]] = None,
-                                search: Optional[str] = None,
-                                limit: int = 24, offset: int = 0) -> dict:
+async def list_public_articles(db: AsyncSession, *, tenant_id: str,
+                                filters: ArticleListFilters) -> dict:
     joins = []
     where = ["a.tenant_id = CAST(:tid AS uuid)", "a.status = 'published'", "a.deleted_at IS NULL"]
-    params = {'tid': tenant_id, 'loc': locale, 'lim': limit, 'off': offset}
-    if category_slug:
+    params = {'tid': tenant_id, 'loc': filters.locale,
+              'lim': filters.limit, 'off': filters.offset}
+    if filters.category_slug:
         joins.append("JOIN article_category_map cm ON cm.article_id = a.id")
         joins.append("JOIN journal_categories c ON c.id = cm.category_id")
         where.append("c.slug = :cslug")
-        params['cslug'] = category_slug
-    if tag_slugs:
+        params['cslug'] = filters.category_slug
+    if filters.tag_slugs:
         joins.append("JOIN article_tag_map tm ON tm.article_id = a.id")
         joins.append("JOIN journal_tags tg ON tg.id = tm.tag_id")
         where.append("tg.slug = ANY(:tslugs)")
-        params['tslugs'] = tag_slugs
-    if search:
+        params['tslugs'] = filters.tag_slugs
+    if filters.search:
         joins.append("JOIN article_localizations alx ON alx.article_id = a.id")
         where.append("alx.locale_code = :loc AND (alx.title ILIKE :q OR alx.excerpt ILIKE :q)")
-        params['q'] = f"%{search}%"
+        params['q'] = f"%{filters.search}%"
 
     join_sql = " ".join(joins)
     # Optimized: LEFT JOIN to fetch hero asset + locale rows in a single pass
@@ -398,7 +423,7 @@ async def list_public_articles(db: AsyncSession, *, tenant_id: str, locale: str 
             'author': r['author_display_name'],
             'reading_time': r['reading_time_minutes'],
         })
-    return {'items': items, 'limit': limit, 'offset': offset}
+    return {'items': items, 'limit': filters.limit, 'offset': filters.offset}
 
 
 async def get_public_article(db: AsyncSession, *, tenant_id: str, slug: str,
@@ -441,8 +466,8 @@ async def get_public_article(db: AsyncSession, *, tenant_id: str, slug: str,
     pub = dict(row)
     published = pub.pop('published_json') or {}
     locs = published.get('localizations', [])
-    loc_row = next((l for l in locs if l.get('locale_code') == locale), None) \
-              or next((l for l in locs if l.get('locale_code') == pub['canonical_locale']), {})
+    loc_row = next((lc for lc in locs if lc.get('locale_code') == locale), None) \
+              or next((lc for lc in locs if lc.get('locale_code') == pub['canonical_locale']), {})
     return {
         'id': pub['id'],
         'type': pub['article_type'],

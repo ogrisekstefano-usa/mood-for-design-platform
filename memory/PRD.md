@@ -186,10 +186,30 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ---
 
+## Code Quality (Feb 2026)
+
+### Refactor passes applied (post code-review)
+- **Critical bugs fixed:**
+  - `result` undefined paths refactored with `return-in-try` / `try/except/else` in `routers/media.py`, `routers/cms_admin.py` (publish_page + patch_section)
+  - MD5 → SHA-256 (non-cryptographic content checksums) in `routers/admin_site.py`, `db/seed_site_iter149.py`, `db/seed_iter149_rebuild.py` — `source_hash` is never compared, only stored, so migration is transparent
+- **Service signatures consolidated via dataclasses:**
+  - `services/journal_service.py` → `ArticleCreateData`, `BlockCreateData`, `ArticleListFilters`
+  - `services/cms_writer.py` → `SectionData`
+  - `services/ai_editorial.py` → `AILogContext`
+  - All call sites updated in `routers/journal.py`, `routers/cms_admin.py`, `routers/ai_editorial.py`
+- **`routers/admin_site.py:upsert_block`** split into `_validate_block_payload`, `_upsert_editorial_block_row`, `_upsert_block_translations`
+- **Type hints** added to `database.py` (engine, sessionmaker, `get_db()`)
+
+### Code review false-positive policy
+- All `is`/`is not` comparisons in the codebase are `is None` / `is not None` — **PEP 8 mandated**, do NOT change to `==`. Any tool reporting these as bugs is producing systematic false positives (lacks `R0124` whitelisting).
+
+---
+
 ## Test Status
 - Iteration 1 (mocked): 100% (20/20)
 - Iteration 2 (Supabase migration): 100% (29/29)
 - Iteration 3 (Session I — Journal/Media/AI): 30/30 E2E green
+- Lint (Feb 2026 refactor): 7/7 files clean, full backend imports OK, 4 public endpoints smoke-tested 200
 
 ## Mocked / Non-prod
 - Contact form & newsletter persist to DB but NO email sent

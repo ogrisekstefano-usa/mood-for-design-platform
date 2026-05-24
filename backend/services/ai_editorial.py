@@ -9,6 +9,7 @@ import json
 import time
 import uuid
 import logging
+from dataclasses import dataclass
 from typing import Optional, Any
 from pathlib import Path
 from dotenv import load_dotenv
@@ -19,6 +20,16 @@ from database import AsyncSessionLocal
 
 load_dotenv(Path(__file__).parent.parent / '.env')
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class AILogContext:
+    """Groups optional observability fields for an AI call."""
+    tenant_id: Optional[str] = None
+    user_id: Optional[str] = None
+    entity_type: Optional[str] = None
+    entity_id: Optional[str] = None
+    locale: Optional[str] = None
 
 EMERGENT_LLM_KEY    = os.environ['EMERGENT_LLM_KEY']
 DEFAULT_PROVIDER    = os.environ.get('AI_DEFAULT_PROVIDER', 'anthropic')
@@ -71,14 +82,11 @@ class EditorialAI:
         prompt: str,
         *,
         action: str = 'copy',
-        tenant_id: Optional[str] = None,
-        user_id: Optional[str] = None,
-        entity_type: Optional[str] = None,
-        entity_id: Optional[str] = None,
-        locale: Optional[str] = None,
+        context: Optional[AILogContext] = None,
         expect_json: bool = False,
     ) -> dict:
         """Send a prompt, persist observability log, return {ok, text, json?}."""
+        ctx = context or AILogContext()
         started = time.time()
         success = True
         err_msg = None
@@ -97,12 +105,12 @@ class EditorialAI:
 
         latency_ms = int((time.time() - started) * 1000)
         await self._log(
-            tenant_id=tenant_id, user_id=user_id,
+            tenant_id=ctx.tenant_id, user_id=ctx.user_id,
             action=action, prompt=prompt,
             response_text=response_text, response_json=response_json,
             latency_ms=latency_ms,
-            entity_type=entity_type, entity_id=entity_id,
-            locale=locale, success=success, error_message=err_msg,
+            entity_type=ctx.entity_type, entity_id=ctx.entity_id,
+            locale=ctx.locale, success=success, error_message=err_msg,
         )
         return {
             'ok': success,
