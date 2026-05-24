@@ -1,6 +1,33 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **ITER148 · P0 · Client Relations™ Visual Distinction** · ✅ DELIVERED · 24 Mag 2026
+
+  **Three visually distinct stage experiences** (Leads · Prospects · Accounts).
+  Each stage now has its own card geometry, accent palette, and information
+  hierarchy so the journey is legible at a single glance.
+
+  **Architecture** (`/app/frontend/src/pages/relations/`):
+  - `ClientRelationsLayout.jsx` → slim shell · stage sub-nav + page header + slot
+  - `RelationsStageNav.jsx` → 3-pill sub-nav with counts (slate / teal / gold)
+  - `useRelations.js` → shared data hook (`/api/relations/{leads|prospects|accounts}`)
+  - `LeadsPage.jsx` → **DISCOVERY** · cool slate · editorial whisper cards
+    (monogram, atmosphere hero in italic serif, signal pills, "first contact")
+  - `ProspectsPage.jsx` → **CULTIVATION** · teal pulse · momentum lanes
+    (3 columns: Designer · Momentum · Decision · progression % + Promote CTA)
+  - `AccountsPage.jsx` → **ACTIVE STUDIO** · warm gold · ecosystem cards
+    (conic-ring monogram, moodboard color swatches, 3-metrics row, follow-up footer)
+  - `client-relations.css` → per-stage accents, body 17-18px, labels 15-16px,
+    WCAG-AA contrast, NO opacity body copy
+
+  **Designer/Operator surface** — explicitly NOT client-facing.
+  No kanban, no SaaS tables, no Hubspot tropes.
+  Verified via Playwright smoke + Gemini visual analysis (Leads 40 cards
+  rendered, Prospects 4 lanes with 97% progression bar, Accounts 37 cards
+  with gold rings + moodboard swatches).
+
+---
+
 - **ITER148.A · Editorial Visual Hardening (Atelier Luminosity Pass)** · ✅ DELIVERED · 25 Feb 2026
 
   **Sidebar registry polish** (migration `083_nav_registry_polish.sql`):
