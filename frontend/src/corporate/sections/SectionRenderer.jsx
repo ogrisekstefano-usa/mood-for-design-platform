@@ -1,4 +1,11 @@
 import React from 'react';
+import HeroEditorial from './HeroEditorial';
+import CuratedBrands from './CuratedBrands';
+import PlatformPillars from './PlatformPillars';
+import DesignJourney from './DesignJourney';
+import EditorialTriptych from './EditorialTriptych';
+import FinalCTAImmersive from './FinalCTAImmersive';
+
 import HeroCinematic from './HeroCinematic';
 import SelectedProjects from './SelectedProjects';
 import MagazineHighlights from './MagazineHighlights';
@@ -35,6 +42,14 @@ import FragmentedTools from './FragmentedTools';
  * Legacy sections continue to receive: { content, config } (cms_sections.locale_content path).
  */
 export const SECTION_REGISTRY = {
+  // ITER149 Rebuild (latest, matches official mockup)
+  hero_editorial:       HeroEditorial,
+  curated_brands:       CuratedBrands,
+  platform_pillars:     PlatformPillars,
+  design_journey:       DesignJourney,
+  editorial_triptych:   EditorialTriptych,
+  final_cta_immersive:  FinalCTAImmersive,
+
   // ITER149 — DB-driven sections
   hero_cinematic:       HeroCinematic,
   selected_projects:    SelectedProjects,

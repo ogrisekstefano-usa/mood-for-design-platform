@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MinimalNav from './components/MinimalNav';
-import SlimFooter from './components/SlimFooter';
+import EditorialFooter from './components/EditorialFooter';
 import {
   HomePage,
   MagazinePage,
@@ -47,7 +47,7 @@ const CorporateApp = () => (
       <Route path="/templates"     element={<Navigate to="/" replace />} />
       <Route path="*"              element={<Navigate to="/" replace />} />
     </Routes>
-    <SlimFooter />
+    <EditorialFooter />
   </div>
 );
 

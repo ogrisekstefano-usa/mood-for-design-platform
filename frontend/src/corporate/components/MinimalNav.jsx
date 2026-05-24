@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { useLocale } from '../../contexts/LocaleContext';
 import { useSiteNavigation } from '../hooks/useSiteChrome';
-import LocaleSwitcher from './LocaleSwitcher';
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_editorial-platform-4/artifacts/chlucgqo_Artboard%201.png";
 
@@ -19,11 +17,9 @@ const LogoLink = ({ compact = false }) => (
 );
 
 /**
- * MinimalNav — ITER149 navigation.
- * 100% DB-driven via /api/site/navigation.
- * Items: Magazine · Projects · Materials · About · Sign In
- * Primary CTA:  Begin Journey
- * Secondary CTA: Professional Access (compact)
+ * MinimalNav — ITER149 navigation matching the official mockup.
+ * Left: Logo. Center: Magazine · Projects · Materials · About.
+ * Right: Sign in · Begin your Journey (outline) · Professional Access (cyan filled).
  */
 const MinimalNav = () => {
   const location = useLocation();
@@ -39,79 +35,83 @@ const MinimalNav = () => {
 
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
+  const centerMain = main.filter((m) => m.key !== 'sign_in');
+  const signIn     = main.find((m) => m.key === 'sign_in');
+
   const showSolid = scrolled || mobileOpen;
 
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
       style={{
-        background: showSolid ? 'rgba(0,0,0,0.78)' : 'transparent',
+        background: showSolid ? 'rgba(5,8,22,0.85)' : 'transparent',
         backdropFilter: showSolid ? 'blur(20px) saturate(140%)' : 'none',
-        borderBottom: showSolid ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
+        borderBottom: showSolid ? '1px solid var(--mood-line-soft)' : '1px solid transparent',
       }}
       data-testid="minimal-nav"
     >
-      <div className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-14 flex items-center h-[88px]">
+      <div className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 flex items-center h-[92px] gap-6">
         <LogoLink />
 
-        {/* Center main nav */}
-        <div className="hidden lg:flex items-center gap-8 xl:gap-10 mx-auto">
-          {main.map(item => (
-            <Link
-              key={item.key}
-              to={item.href}
-              className="transition-colors duration-200"
-              style={{
-                fontFamily: 'Montserrat, sans-serif',
-                fontSize: '0.78rem',
-                fontWeight: 500,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                textDecoration: 'none',
-                color: location.pathname === item.href ? '#00C9B3' : 'rgba(255,255,255,0.85)',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#00C9B3')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = location.pathname === item.href ? '#00C9B3' : 'rgba(255,255,255,0.85)')}
-              data-testid={`nav-link-${item.key}`}
-            >
-              {item.label}
-            </Link>
-          ))}
+        <div className="hidden lg:flex items-center gap-9 mx-auto">
+          {centerMain.map(item => {
+            const isActive = location.pathname === item.href;
+            return (
+              <Link
+                key={item.key}
+                to={item.href}
+                style={{
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '0.98rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  color: isActive ? 'var(--mood-teal)' : 'var(--mood-text-1)',
+                  transition: 'color 0.2s',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--mood-teal)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = isActive ? 'var(--mood-teal)' : 'var(--mood-text-1)')}
+                data-testid={`nav-link-${item.key}`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
 
-        {/* Right cluster: locale + CTAs */}
         <div className="hidden lg:flex items-center gap-4 ml-auto">
-          <LocaleSwitcher dark />
-          {secondary_cta && (
+          {signIn && (
             <Link
-              to={secondary_cta.href}
+              to={signIn.href}
               style={{
-                fontFamily: 'Montserrat, sans-serif',
-                fontSize: '0.72rem',
-                fontWeight: 600,
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.85)',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '0.95rem',
+                fontWeight: 500,
+                color: 'var(--mood-text-1)',
                 textDecoration: 'none',
+                transition: 'color 0.2s',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#00C9B3')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.85)')}
-              data-testid="nav-secondary-cta"
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--mood-teal)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--mood-text-1)')}
+              data-testid="nav-sign-in"
             >
-              {secondary_cta.label}
+              {signIn.label}
             </Link>
           )}
           {cta && (
-            <Link to={cta.href} className="btn-pill-teal" style={{ padding: '0.65rem 1.4rem', fontSize: '0.72rem' }} data-testid="nav-primary-cta">
+            <Link to={cta.href} className="btn-pill-outline" style={{ padding: '0.6rem 1.25rem', fontSize: '0.85rem' }} data-testid="nav-primary-cta">
               {cta.label}
+            </Link>
+          )}
+          {secondary_cta && (
+            <Link to={secondary_cta.href} className="btn-pill-teal" style={{ padding: '0.6rem 1.25rem', fontSize: '0.85rem' }} data-testid="nav-secondary-cta">
+              {secondary_cta.label}
             </Link>
           )}
         </div>
 
-        {/* Mobile hamburger */}
         <button
           className="lg:hidden ml-auto p-2"
-          style={{ color: '#FFFFFF' }}
+          style={{ color: 'var(--mood-text-1)' }}
           onClick={() => setMobileOpen(o => !o)}
           aria-label="Toggle menu"
           data-testid="mobile-menu-toggle"
@@ -123,30 +123,21 @@ const MinimalNav = () => {
       {mobileOpen && (
         <div
           className="lg:hidden px-6 py-8 space-y-5 border-t"
-          style={{ background: 'rgba(0,0,0,0.96)', backdropFilter: 'blur(20px)', borderColor: 'rgba(255,255,255,0.06)' }}
+          style={{ background: 'rgba(5,8,22,0.96)', backdropFilter: 'blur(20px)', borderColor: 'var(--mood-line-soft)' }}
         >
           {main.map(item => (
             <Link
               key={item.key}
               to={item.href}
-              style={{ display: 'block', fontFamily: 'Montserrat,sans-serif', fontSize: '0.95rem', fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#FFFFFF', textDecoration: 'none' }}
+              style={{ display: 'block', fontFamily: 'Inter, sans-serif', fontSize: '1.05rem', fontWeight: 500, color: 'var(--mood-text-1)', textDecoration: 'none' }}
               data-testid={`mobile-nav-${item.key}`}
             >
               {item.label}
             </Link>
           ))}
-          {secondary_cta && (
-            <Link to={secondary_cta.href} style={{ display: 'block', fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
-              {secondary_cta.label}
-            </Link>
-          )}
-          <div className="pt-4 border-t flex items-center justify-between" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-            <LocaleSwitcher dark />
-            {cta && (
-              <Link to={cta.href} className="btn-pill-teal" style={{ padding: '0.6rem 1.2rem', fontSize: '0.72rem' }}>
-                {cta.label}
-              </Link>
-            )}
+          <div className="pt-4 flex flex-col gap-3" style={{ borderTop: '1px solid var(--mood-line-soft)' }}>
+            {cta && <Link to={cta.href} className="btn-pill-outline" style={{ padding: '0.7rem 1.4rem', fontSize: '0.85rem', justifyContent: 'center' }}>{cta.label}</Link>}
+            {secondary_cta && <Link to={secondary_cta.href} className="btn-pill-teal" style={{ padding: '0.7rem 1.4rem', fontSize: '0.85rem', justifyContent: 'center' }}>{secondary_cta.label}</Link>}
           </div>
         </div>
       )}

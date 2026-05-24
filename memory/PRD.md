@@ -22,6 +22,23 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ## Sessions completed
 
+### Session V: ITER149 REBUILD — Premium Editorial Homepage matching mockup (May 24, 2026) ✅
+- Complete rebuild of the homepage to match the official cinematic luxury mockup (laptop + phone hero, real curated brand wordmarks, 5 platform pillars, design journey, editorial triptych, immersive final CTA, full 5-column editorial footer)
+- **New palette**: navy `#050816 / #08101D / #0B1320` + cyan `#19F0FF / #11D9E6` + text `#F5F7FA / #C9D2DC / #8B96A7`
+- **New typography**: Playfair Display headlines + Inter body. Body **18px** desktop (16px mobile), labels 14px min, headings +25%. WCAG AA pass.
+- **6 new section components** (all DB-driven via editorial_blocks + media_library):
+  - `HeroEditorial` — split with cinematic device image on right
+  - `CuratedBrands` — monochromatic wordmark strip (PORRO · Minotti · B&B Italia · Poliform · Gallotti&Radice · FLOS · Flexform · Lualdi) — labels from `site.home.brands.*`
+  - `PlatformPillars` — 5 circular-icon cards (Curated Journeys™ / Editorial Moodboards™ / Relationship Memory™ / Material Intelligence™ / Blueprint Atelier™)
+  - `DesignJourney` — left rail title + 4 cinematic interior cards (Ascolto / Curatela / Progetto / Realizzazione) with numbered captions
+  - `EditorialTriptych` — 3 wide image cards (Magazine / Projects / Materials) with hover scale + cyan CTAs
+  - `FinalCTAImmersive` — full-bleed dim background "Pronto a iniziare il tuo percorso?"
+- **New chrome:**
+  - `MinimalNav`: Logo + Magazine · Projects · Materials · About + Sign in + Begin your Journey (outline) + Professional Access (cyan filled)
+  - `EditorialFooter`: 5 columns (Magazine · Projects · Materials · Company · Legal) + brand block + social + language dropdown
+- **New seed** `db/seed_iter149_rebuild.py` — 84 editorial blocks × 5 locales = 420 translations, 9 media_library entries, 8 cms_sections
+- Frontend lint clean, end-to-end smoke screenshots verified.
+
 ### Session IV: ITER149 — Public Website Engine + Blueprint Command Center (May 24, 2026) ✅
 - **Architectural pivot**: site is now 100% DB-driven via `editorial_blocks` (i18n copy) + `media_library` (UUID asset refs) + `cms_sections` (layout skeleton only). Zero hardcoded content.
 - **Backend (5 new files):**
