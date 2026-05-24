@@ -10,7 +10,8 @@
  * Editorial · operator-facing · NOT client-facing.
  */
 import React, { useEffect, useState } from 'react';
-import { X, ArrowRight, MessageCircle, Compass, Send, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { X, ArrowRight, MessageCircle, Compass, Send, Heart, BookOpen } from 'lucide-react';
 import api from '../../lib/api';
 import DesignerChip from './DesignerChip';
 
@@ -91,6 +92,22 @@ const WelcomeDrawer = ({ subjectId, open, onClose, onAction }) => {
             <section className="welcome-drawer__section">
               <span className="welcome-drawer__section-eyebrow">Cultivated by</span>
               <DesignerChip designer={designer} size="lg" testid="welcome-drawer-designer" />
+            </section>
+
+            <section className="welcome-drawer__section">
+              <Link
+                to={`/relations/memory/${lead.id}`}
+                className="welcome-drawer__memory-link"
+                data-testid="welcome-drawer-memory-link"
+                onClick={onClose}
+              >
+                <BookOpen size={18} strokeWidth={1.5} />
+                <span>
+                  <span className="welcome-drawer__memory-label">Open the relationship's memory</span>
+                  <span className="welcome-drawer__memory-sub">Chapters · atmospheres · materials · narrative continuity</span>
+                </span>
+                <ArrowRight size={16} strokeWidth={1.6} />
+              </Link>
             </section>
 
             <section className="welcome-drawer__section">

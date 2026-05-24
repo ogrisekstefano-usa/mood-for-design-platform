@@ -1,15 +1,27 @@
 /**
  * DesignerChip · Designer Presence™ chip.
- * Avatar + name + role label + presence dot.
- * Used inside Lead/Prospect/Account cards.
+ *
+ * The presence vocabulary is INTENTIONALLY editorial — never the SaaS
+ * available/away/offline trio. It reads like a studio's state of mind,
+ * not a notification status.
+ *
+ * Mapping from the raw metadata_json.online_status (kept for back-
+ * compatibility with seed data) to the editorial label is done below.
  */
 import React from 'react';
 
 const PRESENCE_LABEL = {
-  available: 'available',
-  away:      'away',
-  offline:   'offline',
-  unknown:   'studio',
+  in_studio:              'In Studio',
+  reviewing_materials:    'Reviewing Materials',
+  curating_inspirations:  'Curating Inspirations',
+  with_clients:           'With Clients',
+  preparing_new_directions: 'Preparing New Directions',
+  traveling:              'Traveling Between Projects',
+  // legacy SaaS values gracefully remapped
+  available:              'In Studio',
+  away:                   'Curating Inspirations',
+  offline:                'Traveling Between Projects',
+  unknown:                'In Studio',
 };
 
 const DesignerChip = ({ designer, size = 'md', testid, contextId }) => {

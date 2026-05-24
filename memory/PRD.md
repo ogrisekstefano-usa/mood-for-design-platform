@@ -1,6 +1,51 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 ## 📌 Sprint Status (latest)
+- **ITER148 · Sprint B · Relationship Memory™ Engine** · ✅ DELIVERED · 24 Mag 2026
+
+  **Backend** (`/app/backend/services/memory_engine_service.py`):
+  - Curatorial transformer · rewrites raw `relationship_answer_events` +
+    leads metadata into editorial narrative cards (NEVER literal CRM copy)
+  - Memory Clustering™ · 5 chapters (Early Signals · Atmosphere Alignment ·
+    Material Direction Emerging · Concept Consolidation · Project Momentum)
+  - Narrative dictionaries for 14 atmospheres · 10 materials · 4 cultural
+    registers · 4 luxury tiers
+  - Intelligence panel synthesis (warmth · recurring atmospheres ·
+    dominant materials · alignment tendencies — prose, never KPIs)
+  - Endpoint: `GET /api/relations/memory/{subject_id}` (auth required,
+    tenant-scoped from session)
+
+  **Frontend** (`/app/frontend/src/pages/relations/`):
+  - `RelationshipMemoryTimeline.jsx` · 2-column editorial surface
+    (chapters left · sticky Intelligence Panel right)
+  - `RelationshipMemoryChapter.jsx` · numbered chapter with serif italic
+    title, curator intro, narrative blocks, atmosphere/material chips
+  - `MemoryNarrativeCard.jsx` · single editorial card with UPPERCASE
+    when-label + prose narrative + chips
+  - `AtmosphereShiftCard.jsx` · promoted variant for atmosphere
+    transitions (teal accent rule + serif italic line)
+  - `MaterialEvolutionStrip.jsx` · horizontal palette emerging row
+  - `useMemoryTimeline.js` · data hook
+  - `relationship-memory.css` · pure palette (no gold), body 17-19px,
+    line-height 1.7+, WCAG-AA contrast, generous spacing
+  - Route: `/relations/memory/:subjectId`
+  - Welcome Drawer now surfaces a prominent "Open the relationship's
+    memory" link to enter the timeline
+
+  **Designer Presence™ vocabulary** updated per brand brief:
+  removed available/away/offline → replaced with
+  **In Studio · Reviewing Materials · Curating Inspirations ·
+  With Clients · Preparing New Directions · Traveling Between Projects**
+  (`DesignerChip.jsx` PRESENCE_LABEL with back-compat shims).
+
+  **Verified via** Playwright + Gemini Vision: 2 chapters render for
+  the demo lead, "01 Early Signals" + "02 Atmosphere Alignment", with
+  curator intros, italic narrative cards, Intelligence Panel showing
+  "Just Opened · the relationship is just opening — early whispers,
+  no firm direction yet." Pure dark+teal palette, NO gold/red/green.
+
+---
+
 - **ITER148 · Sprint C · Designer Presence™ + Welcome Drawer + Continuation Interview™** · ✅ DELIVERED · 24 Mag 2026
 
   **Backend** (`/app/backend/routers/client_relations.py`):

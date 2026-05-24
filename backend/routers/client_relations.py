@@ -27,6 +27,7 @@ from core.permissions import P_LEADS_READ, P_LEADS_WRITE
 from core.tenant_context import require_permission
 from database import db, db_available
 from services.relationship_catalog_service import question_to_group_key
+from services.memory_engine_service import build_memory_for_lead
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -405,3 +406,23 @@ def operator_answer_event(
     }
     db().table('relationship_answer_events').insert(event).execute()
     return {"event_id": event["id"], "occurred_at": event["occurred_at"]}
+
+
+# ── ITER148 · Sprint B · Relationship Memory™ Engine ────────────────────
+@router.get("/memory/{subject_id}")
+def relationship_memory(
+    subject_id: str,
+    current_user: dict = Depends(require_permission(P_LEADS_READ)),
+):
+    """Editorial Relationship Memory™ payload for a Lead/Prospect/Account.
+
+    Returns chapters of transformed narrative events + intelligence panel
+    (warmth, recurring atmospheres, dominant materials, alignment). Not
+    a CRM activity feed — every event is rewritten in curator voice.
+    """
+    if not db_available():
+        raise HTTPException(503, "Database not configured")
+    payload = build_memory_for_lead(current_user['tenant_id'], subject_id)
+    if payload.get("error") == "not_found":
+        raise HTTPException(404, "Relationship not found")
+    return payload

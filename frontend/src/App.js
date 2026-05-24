@@ -150,6 +150,8 @@ const LeadsPage                = lazy(() => import('./pages/relations/LeadsPage'
 const ProspectsPage            = lazy(() => import('./pages/relations/ProspectsPage'));
 const AccountsPage             = lazy(() => import('./pages/relations/AccountsPage'));
 const RelationshipMemoryPage   = lazy(() => import('./pages/relations/RelationshipMemoryPage'));
+// ITER148 · Sprint B · Relationship Memory™ editorial timeline (detail view).
+const RelationshipMemoryTimeline = lazy(() => import('./pages/relations/RelationshipMemoryTimeline'));
 
 /** Wrap a route element with a runtime module guard.
  *  When the module is disabled/locked/hidden, the route renders the
@@ -483,6 +485,7 @@ function App() {
                   <Route path="/relations/prospects"  element={<ProspectsPage />} />
                   <Route path="/relations/accounts"   element={<AccountsPage />} />
                   <Route path="/relations/memory"     element={<RelationshipMemoryPage />} />
+                  <Route path="/relations/memory/:subjectId" element={<RelationshipMemoryTimeline />} />
                   <Route path="/relations/voice-log"  element={<Navigate to="/relations/memory" replace />} />
 
                   {/* Cultural Edition™ — versioni mercato dei contenuti dello studio */}

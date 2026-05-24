@@ -962,6 +962,42 @@
   letter-spacing: 0.04em;
 }
 
+/* Memory link · prominent CTA to open the editorial timeline */
+.welcome-drawer__memory-link {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 18px 20px;
+  background: rgba(0,201,179,0.06);
+  border: 1px solid rgba(0,201,179,0.32);
+  color: #F5F7FA;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: all 200ms ease;
+}
+.welcome-drawer__memory-link:hover {
+  background: rgba(0,201,179,0.12);
+  border-color: var(--cr-teal, #00C9B3);
+  transform: translateX(2px);
+}
+.welcome-drawer__memory-link svg { color: var(--cr-teal, #00C9B3); }
+.welcome-drawer__memory-label {
+  display: block;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+  letter-spacing: -0.005em;
+  color: #F5F7FA;
+  margin-bottom: 4px;
+}
+.welcome-drawer__memory-sub {
+  display: block;
+  font-size: 13px;
+  color: rgba(245,247,250,0.66);
+  letter-spacing: 0.04em;
+}
+
 /* Continuation Interview drawer */
 .ci-drawer__progress {
   display: grid;
