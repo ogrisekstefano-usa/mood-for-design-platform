@@ -179,14 +179,25 @@
 /* ─────────────────────────────────────────────────────────────────────────
  * 3. SHARED TEXT TOKENS · luminosity uplift across all OS surfaces
  *    Bridge legacy --bp-text-* tokens to brighter values when Atelier active.
+ *    These are consumed by Media Library, Brand Atlas, Material View, all
+ *    settings panes, every nested ops page.
  * ──────────────────────────────────────────────────────────────────────── */
 
 [data-atelier="nordic"] {
-  --bp-text-headline:  #ffffff;
-  --bp-text-strong:    rgba(255, 255, 255, 0.96);
-  --bp-text-body:      rgba(255, 255, 255, 0.90);
-  --bp-text-muted:     rgba(255, 255, 255, 0.72);
-  --bp-text-faint:     rgba(255, 255, 255, 0.55);
+  /* Canonical scale — used everywhere */
+  --bp-text-primary:    #ffffff;
+  --bp-text-secondary:  rgba(255, 255, 255, 0.86);
+  --bp-text-muted:      rgba(255, 255, 255, 0.72);
+  --bp-text-faint:      rgba(255, 255, 255, 0.55);
+  --bp-text-subtle:     rgba(255, 255, 255, 0.45);
+  /* Aliases used by atelier modules */
+  --bp-text-headline:   #ffffff;
+  --bp-text-strong:     rgba(255, 255, 255, 0.96);
+  --bp-text-body:       rgba(255, 255, 255, 0.90);
+  /* Mood scale (used by Brand Atlas, Material View, Inspirations) */
+  --mood-text:          #ffffff;
+  --mood-text-2:        rgba(255, 255, 255, 0.78);
+  --mood-text-3:        rgba(255, 255, 255, 0.55);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -258,16 +269,17 @@
 [data-atelier="nordic"] .atd-hero__image-overlay {
   background:
     linear-gradient(90deg,
-      rgba(5, 6, 8, 0.88) 0%,
-      rgba(5, 6, 8, 0.62) 28%,
-      rgba(5, 6, 8, 0.32) 52%,
-      rgba(5, 6, 8, 0.10) 72%,
+      rgba(5, 6, 8, 0.98) 0%,
+      rgba(5, 6, 8, 0.92) 18%,
+      rgba(5, 6, 8, 0.72) 36%,
+      rgba(5, 6, 8, 0.38) 56%,
+      rgba(5, 6, 8, 0.12) 78%,
       rgba(5, 6, 8, 0.00) 100%),
     linear-gradient(180deg,
-      rgba(5, 6, 8, 0.15) 0%,
-      rgba(5, 6, 8, 0.00) 25%,
-      rgba(5, 6, 8, 0.00) 75%,
-      rgba(5, 6, 8, 0.45) 100%);
+      rgba(5, 6, 8, 0.18) 0%,
+      rgba(5, 6, 8, 0.00) 30%,
+      rgba(5, 6, 8, 0.00) 70%,
+      rgba(5, 6, 8, 0.48) 100%);
 }
 
 [data-atelier="nordic"] .atd-hero__image::after {
@@ -334,3 +346,80 @@
   white-space: normal;
   line-height: 1.35;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 7. MODULE PAGES · FULL-WIDTH UNIFICATION
+ *    Inspirations · Brand Atlas · Material View hanno max-width hardcoded
+ *    e padding diversi. Li uniformiamo agli altri moduli operativi (CRM,
+ *    Library, Editorial Studio …) che già occupano l'intera shell.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .ins-page,
+[data-atelier="nordic"] .bm-root,
+[data-atelier="nordic"] .bd-root,
+[data-atelier="nordic"] .mv-shell {
+  max-width: none !important;
+  margin: 0 !important;
+  width: 100%;
+}
+
+[data-atelier="nordic"] .ins-page {
+  padding: 40px clamp(40px, 5vw, 72px);
+}
+
+[data-atelier="nordic"] .mv-header,
+[data-atelier="nordic"] .mv-filters,
+[data-atelier="nordic"] .mv-grid {
+  padding-left: clamp(40px, 5vw, 72px);
+  padding-right: clamp(40px, 5vw, 72px);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * 8. MODULE TITLE UNIFICATION · stile editoriale unico
+ *    - Cormorant Garamond italic per i titoli H1 dei moduli
+ *    - Colore bianco editoriale (NON warm hardcoded di Material View)
+ *    - Eyebrow cyan come gli altri
+ * ──────────────────────────────────────────────────────────────────────── */
+
+[data-atelier="nordic"] .ins-title,
+[data-atelier="nordic"] .mv-header__title,
+[data-atelier="nordic"] .bm-header__title,
+[data-atelier="nordic"] .bd-hero__title {
+  font-family: var(--atelier-serif), 'Cormorant Garamond', Georgia, serif !important;
+  font-style: italic;
+  font-weight: 400;
+  color: #ffffff !important;
+  letter-spacing: -0.018em;
+  line-height: 1.05;
+}
+
+/* Material View · the warm hardcoded color was killing brand consistency */
+[data-atelier="nordic"] .mv-header__title em {
+  color: #ffffff !important;
+  font-style: italic;
+}
+
+/* Module eyebrows · uniform cyan across modules */
+[data-atelier="nordic"] .ins-eyebrow,
+[data-atelier="nordic"] .mv-header__eyebrow,
+[data-atelier="nordic"] .bm-header__eyebrow,
+[data-atelier="nordic"] .bd-hero__eyebrow {
+  color: var(--atelier-cyan) !important;
+  font-family: var(--atelier-sans), 'Inter', sans-serif !important;
+  font-size: 10.5px;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  font-weight: 500;
+  opacity: 1;
+}
+
+/* Module lede / subtitle */
+[data-atelier="nordic"] .ins-lede,
+[data-atelier="nordic"] .mv-header__sub,
+[data-atelier="nordic"] .bm-header__sub {
+  color: rgba(255, 255, 255, 0.82) !important;
+  font-size: 14px;
+  line-height: 1.55;
+  font-style: italic;
+}
+

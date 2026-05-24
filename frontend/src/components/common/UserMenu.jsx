@@ -68,10 +68,10 @@ const UserMenu = () => {
         data-testid="topbar-user-menu-trigger"
         aria-haspopup="menu"
         aria-expanded={open}
-        className="flex items-center gap-2 pl-1 pr-2.5 py-[3px] rounded-full bg-[var(--bp-surface-2)]/40 border border-[var(--bp-border)] hover:border-[var(--bp-border-strong)] transition-colors"
+        className="flex items-center pl-[3px] pr-[3px] py-[3px] rounded-full bg-[var(--bp-surface-2)]/40 border border-[var(--bp-border)] hover:border-[var(--bp-border-strong)] transition-colors"
       >
         <span
-          className="w-6 h-6 rounded-full bg-[var(--bp-primary)]/15 flex items-center justify-center overflow-hidden"
+          className="w-7 h-7 rounded-full bg-[var(--bp-primary)]/15 flex items-center justify-center overflow-hidden"
           data-testid="topbar-user-avatar"
         >
           {avatarUrl ? (
@@ -82,11 +82,8 @@ const UserMenu = () => {
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           ) : (
-            <span className="text-[var(--bp-primary)] text-[10.5px] font-semibold font-body">{initial}</span>
+            <span className="text-[var(--bp-primary)] text-[11px] font-semibold font-body">{initial}</span>
           )}
-        </span>
-        <span className="text-[var(--bp-text-secondary)] text-[11.5px] font-body hidden sm:block max-w-[120px] truncate">
-          {fullName}
         </span>
       </button>
 

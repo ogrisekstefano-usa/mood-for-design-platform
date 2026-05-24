@@ -69,31 +69,12 @@ const PrimaryCta = () => {
   );
 };
 
-// ── Identity chip (avatar + name + email) ────────────────────────
-const IdentityChip = () => {
-  const { user } = useAuth();
-  const fullName = (user?.first_name && `${user.first_name} ${user?.last_name || ''}`.trim())
-                    || user?.full_name
-                    || user?.email?.split('@')[0]
-                    || 'Studio';
-  const email = user?.email || '';
-
-  return (
-    <div data-testid="topbar-identity-chip" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-      <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', maxWidth: 220 }}>
-        <span className="atelier-avatar__name" style={{
-          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%',
-        }}>{fullName}</span>
-        {email && (
-          <span className="atelier-avatar__email" style={{
-            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%',
-          }}>{email}</span>
-        )}
-      </div>
-      <UserMenu />
-    </div>
-  );
-};
+// ── Identity chip (avatar only — name/email live inside the menu) ────
+const IdentityChip = () => (
+  <div data-testid="topbar-identity-chip" style={{ display: 'flex', alignItems: 'center' }}>
+    <UserMenu />
+  </div>
+);
 
 // ── Main Topbar ──────────────────────────────────────────────────
 const Topbar = () => {
