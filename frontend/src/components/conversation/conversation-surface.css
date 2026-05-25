@@ -260,3 +260,51 @@
   .conv-head { flex-direction: column; align-items: flex-start; }
   .conv-msg { max-width: 92%; }
 }
+
+/* ── Sprint F · F2 · realtime arrivals ─────────────────────────
+ * "Pensiero curatoriale" — slow, soft, no popping. 380ms cubic
+ * ease-out, gentle vertical reveal. Applied only to messages
+ * that arrived via realtime push, not to scrollback history.
+ */
+.conv-msg--fresh {
+  animation: conv-fresh-in 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes conv-fresh-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── "↓ una nuova nota" discreet hint ──────────────────────────
+ * Appears only if the reader is scrolled up in history while a
+ * new message arrives. Replaces the violent auto-scroll yank.
+ */
+.conv-new-note {
+  position: sticky;
+  bottom: 8px;
+  align-self: center;
+  margin: 8px auto 0;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px 6px 12px;
+  background: rgba(0, 201, 179, 0.10);
+  border: 1px solid rgba(0, 201, 179, 0.30);
+  color: rgba(0, 201, 179, 0.92);
+  border-radius: 999px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: background 220ms ease, border-color 220ms ease, transform 220ms ease;
+  animation: conv-hint-in 280ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
+}
+.conv-new-note:hover {
+  background: rgba(0, 201, 179, 0.18);
+  border-color: rgba(0, 201, 179, 0.55);
+  transform: translateY(-1px);
+}
+@keyframes conv-hint-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

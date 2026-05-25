@@ -2,6 +2,53 @@
 
 
 ## 📌 Sprint Status (latest)
+- **Sprint F · F2 — Chat / Conversation Realtime** · ✅ DELIVERED · 25 Mag 2026
+
+  **🎯 Goal**: la conversazione studio↔cliente respira in tempo
+  reale come corrispondenza progettuale, NON come messaging app.
+
+  **Architettura**:
+  - **Migration 094** — `relationship_messages` in publication
+    `supabase_realtime` + REPLICA IDENTITY FULL (idempotente)
+  - **`ConversationSurface.jsx`** — subscribe
+    `messages:<threadId>` filtro `thread_id=eq.<uuid>` su evento
+    `INSERT`, dedup per id, riconciliazione optimistic→realtime
+    (match per sender+content+timestamp ±30s → sostituzione
+    pulita dello stub ottimistico)
+  - Polling sceso da **5s → 15s** safety net
+  - **Smart auto-scroll**: segue il fondo SOLO se reader è già
+    entro 96px dal fondo. Altrimenti niente yank della viewport
+    → comparsa di una **pill discreta** `↓ una nuova nota`
+    sticky bottom cyan (`conv-new-note`) che marca la presenza
+    senza interrompere la lettura della cronologia
+  - **CSS `conv-msg--fresh`** — animazione di ingresso solo per
+    i messaggi arrivati in realtime: 380ms cubic-bezier(0.16, 1,
+    0.3, 1), slide-in verticale di 8px + fade. NO spring bounce,
+    NO scale pop. _Pensiero curatoriale_.
+  - `queueMicrotask` per evitare setState-in-render
+  - cleanup ref-counted via realtimeBus (no leak su unmount /
+    switch thread)
+
+  **E2E verificato live (client@moodfordesign.com)**:
+  - Reader a fondo chat: INSERT designer → messaggio appare in
+    4s (delta +1, sotto polling 15s) con `conv-msg--fresh` ·
+    eyebrow `STEFANO` cyan, body serif, timestamp `ORA`
+  - Reader scrollato all'alto: INSERT designer → `↓ UNA NUOVA
+    NOTA` pill compare, viewport NON viene yankata
+  - Click sulla pill → smooth scroll al fondo
+
+  **Files**:
+  - `supabase/migrations/094_realtime_publication_messages.sql`
+  - `backend/scripts/apply_migration_094.py`
+  - `backend/scripts/_test_insert_message.py` (helper)
+  - `frontend/src/components/conversation/ConversationSurface.jsx`
+  - `frontend/src/components/conversation/conversation-surface.css`
+
+  **Prossimo**: F3 · Designer Presence Realtime (crossfade 600ms,
+  "stato curatoriale dello studio", no status dot consumer).
+
+---
+
 - **Sprint F · F1 — Notifications Realtime** · ✅ DELIVERED · 25 Mag 2026
 
   **🎯 Goal**: il drawer Risonanze respira in tempo reale, senza

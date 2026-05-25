@@ -1,26 +1,36 @@
 /**
- * Conversation Surface · ITER151 Sprint B
+ * Conversation Surface · ITER151 Sprint B + Sprint F · F2 Realtime
  *
  * Shared editorial conversation between client and designer. Same
  * component used in:
  *   - Client portal (`role=client` → counterpart = assigned designer)
  *   - Designer workspace (`role=designer/admin` → counterpart = client)
  *
- * Polling 5s on /messages?since=…  •  optimistic send  •  unread auto-clear
+ * Realtime push via Supabase channel · `relationship_messages`
+ * filter `thread_id=eq.<thread>`. Polling 15s as silent safety net.
+ * Smart auto-scroll: only follows if the reader is already near
+ * the bottom (≤ 96px). If they are reading old messages, the new
+ * one appears with a soft "↓ una nuova nota" hint instead of
+ * yanking the viewport.
  *
- * NOT a generic chat. Big spacing. Serif on designer voice. Editorial
- * timestamps. No bubbles colored consumer-app style.
+ * Editorial rules:
+ *   - Serif on designer voice. NO consumer chat bubbles.
+ *   - NO typing indicator (will be added rarefatto in a later pass).
+ *   - Fresh realtime messages enter with `conv-msg--fresh` fade-in
+ *     (220ms, slow ease) — pensiero curatoriale, no popping.
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { Send, Loader2 } from 'lucide-react';
+import { Send, Loader2, ArrowDown } from 'lucide-react';
 import {
   ensureThread, getThread, listMessages, sendMessage, markAllRead, myStatus,
 } from '../../lib/conversation';
 import { getDesignerPresence } from '../../lib/orchestra';
+import { subscribe } from '../../lib/realtimeBus';
 import './conversation-surface.css';
 
-const POLL_MS = 5000;
+const POLL_MS = 15000; // safety net — realtime is the primary channel
+const AUTO_SCROLL_THRESHOLD = 96; // px from bottom = "still reading at the foot"
 
 const formatWhen = (iso, locale = 'it') => {
   if (!iso) return '';
@@ -61,6 +71,8 @@ const ConversationSurface = ({
   const lastSeenRef = useRef(null);
   const pollRef = useRef(null);
   const scrollRef = useRef(null);
+  const freshIdsRef = useRef(new Set()); // ids that should animate as "fresh"
+  const [pendingScroll, setPendingScroll] = useState(0); // unseen messages while scrolled up
 
   /* ── INITIAL LOAD ─────────────────────────────────────────── */
   const initialise = useCallback(async () => {
@@ -106,7 +118,47 @@ const ConversationSurface = ({
 
   useEffect(() => { initialise(); }, [initialise]);
 
-  /* ── POLLING ─────────────────────────────────────────────── */
+  /* ── REALTIME (primary) ──────────────────────────────────── */
+  useEffect(() => {
+    const tid = thread?.id;
+    if (!tid) return undefined;
+
+    const ingestIncoming = (row, source /* 'realtime' | 'poll' */) => {
+      setMessages(prev => {
+        if (prev.some(m => m.id === row.id)) return prev;       // dedup
+        // Reconcile against optimistic stub (same sender + content within 30s)
+        const optimisticIdx = prev.findIndex(
+          m => m._optimistic
+            && m.sender_type === row.sender_type
+            && m.content === row.content
+            && Math.abs(new Date(m.created_at).getTime() - new Date(row.created_at).getTime()) < 30000,
+        );
+        if (optimisticIdx !== -1) {
+          const next = prev.slice();
+          next[optimisticIdx] = { ...row, _optimistic: false };
+          return next;
+        }
+        // mark realtime arrivals as "fresh" so CSS fade-in only animates them
+        if (source === 'realtime') freshIdsRef.current.add(row.id);
+        return [...prev, row];
+      });
+      lastSeenRef.current = row.created_at;
+    };
+
+    const unsub = subscribe({
+      key: `messages:${tid}`,
+      table: 'relationship_messages',
+      event: 'INSERT',
+      filter: `thread_id=eq.${tid}`,
+      onPayload: (p) => {
+        if (p.eventType !== 'INSERT' || !p.new) return;
+        queueMicrotask(() => ingestIncoming(p.new, 'realtime'));
+      },
+    });
+    return unsub;
+  }, [thread?.id]);
+
+  /* ── POLLING (15s safety net) ────────────────────────────── */
   useEffect(() => {
     if (!thread?.id) return undefined;
     pollRef.current = setInterval(async () => {
@@ -127,12 +179,47 @@ const ConversationSurface = ({
     return () => clearInterval(pollRef.current);
   }, [thread?.id]);
 
-  /* ── AUTO-SCROLL ─────────────────────────────────────────── */
+  /* ── SMART AUTO-SCROLL ────────────────────────────────────
+   * Only follow the foot if the reader is already there.
+   * Otherwise show a discrete "↓ nuova nota" hint and let them
+   * keep their place. */
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    const el = scrollRef.current;
+    if (!el) return;
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    if (distanceFromBottom <= AUTO_SCROLL_THRESHOLD) {
+      // smooth follow
+      el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+      setPendingScroll(0);
+      // ensure server-side read marker too
+      if (thread?.id) markAllRead(thread.id).catch(() => {});
+    } else {
+      // reader is back in history: don't yank
+      setPendingScroll(p => p + 1);
     }
-  }, [messages.length]);
+  }, [messages.length, thread?.id]);
+
+  // Reset pending hint when user scrolls back to foot manually
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return undefined;
+    const onScroll = () => {
+      const dfb = el.scrollHeight - el.scrollTop - el.clientHeight;
+      if (dfb <= AUTO_SCROLL_THRESHOLD) {
+        setPendingScroll(0);
+        if (thread?.id) markAllRead(thread.id).catch(() => {});
+      }
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [thread?.id]);
+
+  const jumpToBottom = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+    setPendingScroll(0);
+  };
 
   /* ── SEND ────────────────────────────────────────────────── */
   const send = async () => {
@@ -233,10 +320,11 @@ const ConversationSurface = ({
         {!loading && messages.map(m => {
           const fromMe = (m.sender_type === 'client') === isClient;
           const isDesigner = m.sender_type === 'designer' || m.sender_type === 'studio';
+          const fresh = freshIdsRef.current.has(m.id);
           return (
             <article
               key={m.id}
-              className={`conv-msg ${fromMe ? 'conv-msg--mine' : 'conv-msg--theirs'} conv-msg--${m.sender_type} ${m._optimistic ? 'conv-msg--optimistic' : ''}`}
+              className={`conv-msg ${fromMe ? 'conv-msg--mine' : 'conv-msg--theirs'} conv-msg--${m.sender_type} ${m._optimistic ? 'conv-msg--optimistic' : ''} ${fresh ? 'conv-msg--fresh' : ''}`}
               data-testid={`conv-msg-${m.id}`}
             >
               <p className={`conv-msg__author ${isDesigner ? 'conv-msg__author--designer' : ''}`}>
@@ -247,6 +335,21 @@ const ConversationSurface = ({
             </article>
           );
         })}
+        {pendingScroll > 0 && (
+          <button
+            type="button"
+            className="conv-new-note"
+            onClick={jumpToBottom}
+            data-testid="conv-new-note-hint"
+          >
+            <ArrowDown size={12} strokeWidth={1.7} />
+            <span>
+              {locale === 'it'
+                ? (pendingScroll === 1 ? 'una nuova nota' : `${pendingScroll} nuove note`)
+                : (pendingScroll === 1 ? 'a new note' : `${pendingScroll} new notes`)}
+            </span>
+          </button>
+        )}
       </div>
 
       {/* COMPOSER */}
