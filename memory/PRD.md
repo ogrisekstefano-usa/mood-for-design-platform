@@ -2,6 +2,50 @@
 
 
 ## 📌 Sprint Status (latest)
+- **Sprint F · F1 — Notifications Realtime** · ✅ DELIVERED · 25 Mag 2026
+
+  **🎯 Goal**: il drawer Risonanze respira in tempo reale, senza
+  polling percepito · soft, cinematico, no jitter, no flashing.
+
+  **Architettura**:
+  - **Migration 093** — `relationship_notifications` ora ha
+    `REPLICA IDENTITY FULL` ed è iscritta alla publication
+    `supabase_realtime` (idempotente)
+  - **`lib/realtimeBus.js`** — singleton Supabase Realtime client
+    + channel registry **ref-counted** (cleanup robusto, no leak)
+    + tab-aware (`isTabVisible` helper)
+    + dedup-friendly (key per canale unico, listener Set)
+  - **`NotificationBell.jsx`**:
+    - subscribe `notif:<myId>` con filtro
+      `recipient_user_id=eq.<uuid>`
+    - merge handlers per `INSERT` / `UPDATE` / `DELETE`
+    - `queueMicrotask` per evitare setState-in-render quando
+      Supabase dispatcha callback sincroni
+    - polling **15s** mantenuto come safety net invisibile
+    - re-refresh su `visibilitychange` (tab focus)
+    - animazione `nb-item-in` 220ms ease soft (no spring bounce,
+      no scale pop) — "presenza che emerge"
+
+  **E2E verificato live (admin@moodfordesign.com)**:
+  1. Open drawer → 1 item iniziale
+  2. INSERT diretto su DB con narrative editoriale
+  3. **3 secondi dopo** (ben sotto i 15s di polling) → item +1,
+     badge unread visibile, glow cyan border-left, meta
+     `ORA · NEW MESSAGE`
+  4. No console flooding, no race condition, no badge storm
+
+  **Files**:
+  - `supabase/migrations/093_realtime_publication_notifications.sql`
+  - `backend/scripts/apply_migration_093.py`
+  - `backend/scripts/_test_insert_notification.py` (test helper)
+  - `frontend/src/lib/realtimeBus.js` (nuovo)
+  - `frontend/src/components/notifications/NotificationBell.jsx`
+    (realtime wire + polling ridotto a 15s)
+
+  **Prossimo**: F2 · Chat / Conversation Realtime.
+
+---
+
 - **ITER154 · Notifications Live Activation (drawer polish + portal fix)** · ✅ DELIVERED · 25 Mag 2026
 
   **🎯 Goal**: rifinire il drawer `RISONANZE` come strumento di

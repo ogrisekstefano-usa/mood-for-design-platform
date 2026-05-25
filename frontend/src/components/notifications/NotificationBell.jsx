@@ -1,22 +1,24 @@
 /**
- * NotificationBell + Drawer — ITER154 Notifications Activation
+ * NotificationBell + Drawer — ITER154 + Sprint F · F1
  *
- * Refinements over Sprint E:
- *   - 4 buckets (Oggi · Ieri · Questa settimana · Prima)
- *   - Editorial empty state ("Le tue relazioni stanno respirando lentamente.")
- *   - Soft priority glow (quiet · normal · high)
- *   - Favicon unread badge (dynamic canvas dot)
- *   - Smoother enter/exit transitions
- *   - Polling 3s, dedup-friendly
+ * Realtime activation:
+ *   - Supabase Realtime subscribe → `relationship_notifications`
+ *     filter `recipient_user_id=eq.<me>`
+ *   - INSERT/UPDATE/DELETE merge silently into local items
+ *   - Fallback polling 15s as safety net (also reconciles on tab focus)
+ *   - No flashing, no toast, no badge storm — items emerge with
+ *     the existing nb-item-in 220ms ease + stagger animation.
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Bell, X } from 'lucide-react';
 import { listNotifications, unreadCount, markNotifRead, markAllNotifRead } from '../../lib/studioOrchestra';
+import { subscribe, isTabVisible } from '../../lib/realtimeBus';
 import useFaviconBadge from '../../lib/useFaviconBadge';
+import { useAuth } from '../../contexts/AuthContext';
 import './notification-bell.css';
 
-const POLL_MS = 3000;
+const POLL_MS = 15000; // safety net — realtime is the primary channel
 
 const fmt = (iso) => {
   if (!iso) return '';
@@ -75,6 +77,8 @@ const NotificationBell = ({ locale = 'it' }) => {
   const [unread, setUnread] = useState(0);
   const [items, setItems] = useState([]);
   const pollRef = useRef(null);
+  const { user } = useAuth();
+  const myId = user?.id || null;
   const L = LABELS[locale] || LABELS.it;
 
   useFaviconBadge(unread);
@@ -90,11 +94,61 @@ const NotificationBell = ({ locale = 'it' }) => {
     } catch { /* silent */ }
   }, [open]);
 
+  // Fallback polling — 15s safety net, also reconciles on tab focus
   useEffect(() => {
     refresh();
     pollRef.current = setInterval(refresh, POLL_MS);
-    return () => clearInterval(pollRef.current);
+    const onVisible = () => { if (isTabVisible()) refresh(); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      clearInterval(pollRef.current);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, [refresh]);
+
+  // Realtime push — primary channel
+  useEffect(() => {
+    if (!myId) return undefined;
+
+    const mergeInsert = (row) => {
+      setItems(prev => {
+        if (prev.some(n => n.id === row.id)) return prev;          // dedup
+        return [row, ...prev].slice(0, 60);
+      });
+      if (!row.read_at) setUnread(u => u + 1);
+    };
+
+    const mergeUpdate = (row) => {
+      setItems(prev => {
+        const next = prev.map(n => n.id === row.id ? { ...n, ...row } : n);
+        const u = next.reduce((acc, n) => acc + (n.read_at ? 0 : 1), 0);
+        setUnread(u);
+        return next;
+      });
+    };
+
+    const mergeDelete = (row) => {
+      setItems(prev => prev.filter(n => n.id !== row.id));
+      if (row && !row.read_at) setUnread(u => Math.max(0, u - 1));
+    };
+
+    const unsub = subscribe({
+      key: `notif:${myId}`,
+      table: 'relationship_notifications',
+      event: '*',
+      filter: `recipient_user_id=eq.${myId}`,
+      onPayload: (p) => {
+        // Defer to microtask to avoid setState-in-render warnings when
+        // Supabase dispatches callbacks synchronously from inside React render.
+        queueMicrotask(() => {
+          if (p.eventType === 'INSERT' && p.new) mergeInsert(p.new);
+          else if (p.eventType === 'UPDATE' && p.new) mergeUpdate(p.new);
+          else if (p.eventType === 'DELETE' && p.old) mergeDelete(p.old);
+        });
+      },
+    });
+    return unsub;
+  }, [myId]);
 
   useEffect(() => {
     if (open) {
