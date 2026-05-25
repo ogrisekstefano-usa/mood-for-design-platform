@@ -17,6 +17,7 @@ import { Send, Loader2 } from 'lucide-react';
 import {
   ensureThread, getThread, listMessages, sendMessage, markAllRead, myStatus,
 } from '../../lib/conversation';
+import { getDesignerPresence } from '../../lib/orchestra';
 import './conversation-surface.css';
 
 const POLL_MS = 5000;
@@ -49,6 +50,7 @@ const ConversationSurface = ({
   const isClient = variant === 'client';
   const [thread, setThread] = useState(null);
   const [counterpart, setCounterpart] = useState(null);
+  const [presence, setPresence] = useState(null);  // ITER151 Sprint C
   const [messages, setMessages] = useState([]);
   const [status, setStatus] = useState(null);
   const [draft, setDraft] = useState('');
@@ -77,6 +79,15 @@ const ConversationSurface = ({
       setMessages(full.messages || []);
       if (full.messages?.length) {
         lastSeenRef.current = full.messages[full.messages.length - 1].created_at;
+      }
+      // ITER151 Sprint C — fetch real presence for the designer counterpart
+      if (isClient && full.thread?.primary_designer_id) {
+        getDesignerPresence(full.thread.primary_designer_id)
+          .then(({ data }) => setPresence(data))
+          .catch(() => {});
+      } else if (!isClient && full.thread?.client_profile_id) {
+        // designer doesn't need a presence pill — clear
+        setPresence(null);
       }
       if (isClient) {
         try {
@@ -157,7 +168,11 @@ const ConversationSurface = ({
 
   const counterpartName = counterpart?.name
     || (locale === 'it' ? 'Il tuo studio' : 'Your studio');
-  const counterpartRole = counterpart?.role_label
+  const presenceLabelLive = presence
+    ? (locale === 'it' ? presence.state_label_it : presence.state_label_en)
+    : null;
+  const counterpartRole = presenceLabelLive
+    || counterpart?.role_label
     || presenceLabel(counterpart?.role || (isClient ? 'designer' : 'client'), locale);
 
   /* ── RENDER ──────────────────────────────────────────────── */

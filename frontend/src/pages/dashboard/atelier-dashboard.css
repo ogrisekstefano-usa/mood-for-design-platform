@@ -621,3 +621,7 @@
   .atd-projects__grid { grid-template-columns: 1fr; gap: 14px; }
   .atd-desk { padding: 20px 24px 48px; grid-template-columns: 1fr; }
 }
+
+/* ITER151 Sprint C — live relationships header (presence picker + bookings) */
+.atd-live-relationships { margin-top: 36px; display: flex; flex-direction: column; gap: 16px; }
+.atd-live-relationships__head { display: flex; align-items: center; gap: 16px; }

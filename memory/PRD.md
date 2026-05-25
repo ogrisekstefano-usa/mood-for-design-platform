@@ -2,6 +2,97 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER151 · SPRINT C · Orchestra · Booking + Presence + Ownership** · ✅ DELIVERED · 25 May 2026
+
+  **🎯 Goal**: trasformare le richieste di incontro in flussi reali
+  curatoriali (NON Calendly) e introdurre presence narrativa (NON
+  online/offline) + relationship ownership multi-ruolo.
+
+  **DB · migration 089 applied**:
+  - `call_requests` esteso (+8 col): `client_timezone`,
+    `designer_timezone`, `confirmed_slot`, `confirmed_at`, `confirmed_by`,
+    `reschedule_slots`, `designer_note`, `conversation_kind`
+    (discovery|proposal_review|material_walk|site_walk|follow_up)
+  - `designer_presence` — UNIQUE per designer · 8 stati narrativi
+    (in_studio · reviewing_materials · curating_inspirations ·
+    preparing_concepts · in_presentation · with_clients · site_visit ·
+    away) · note + timezone + auto-expiry
+  - `relationship_ownership` — primary/secondary/collaborator/observer
+    per lead, UNIQUE primary, hydration con designer profile
+
+  **Backend (`/api/orchestra`)**:
+  - Bookings: `POST /bookings`, `GET /bookings/me`, `GET /bookings/pending`,
+    `PATCH /bookings/{id}/confirm`, `.../reschedule`, `.../reject`
+  - Presence: `GET /presence/options`, `GET/PUT /presence/me`,
+    `GET /presence/designer/{id}`
+  - Ownership: `GET /ownership/lead/{id}`, `POST .../`, `DELETE .../designer/{id}`
+  - Timezone: `GET /timezones/overlap?client_tz=&designer_tz=`
+  - Side-effects on confirm: emette `relationship_event`
+    (`approval_confirmed`) + `system_narrative` nel thread Sprint B
+
+  **Frontend**:
+  - `lib/orchestra.js` — SDK Sprint C
+  - `components/presence/DesignerPresencePicker.jsx` — pill cyan +
+    dropdown menu 8 stati editoriali serif
+  - `components/booking/CallBookingModal.jsx` — modale curatoriale
+    con kind chips (Conoscenza iniziale, Camminata materiali, …) +
+    3 slot picker datetime-local + note + tz auto-detect
+  - `components/booking/PendingBookingsPanel.jsx` — designer view
+    delle pending con confirm/reject per ogni slot
+  - `ConversationSurface` ora legge `getDesignerPresence()` e
+    sostituisce il label fisso con quello live
+
+  **Routing/Embed**:
+  - `/dashboard` (AtelierDashboardPage) ora ospita:
+    DesignerPresencePicker (top-right) + PendingBookingsPanel +
+    RelationshipLiveTimeline
+  - Client `/` ZeroDataExperience cablato a CallBookingModal sul CTA
+    "Book a Call"
+
+  **Verifica E2E** (curl + 2 screenshot):
+  - Designer presence `reviewing_materials` con note + tz + expiry 2h
+    → pill mostra "● SELEZIONE MATERIALI ▾"
+  - Client propone 3 slot, conversation_kind=material_walk
+  - Designer dashboard mostra "RICHIESTE IN ATTESA · Un cliente vuole parlarti"
+    con card editoriale "CONOSCENZA INIZIALE · *Vorrei discutere materiali*"
+  - Designer conferma slot via API → `approval_confirmed` event +
+    `system_narrative` "Incontro confermato per 2026-05-27..." appare
+    nel client conversation view
+  - Timezone overlap helper risponde con array di hour mapping
+
+  **Cosa è REALE ora**:
+  - Booking flow editoriale completo (propose → confirm → in-thread narrative)
+  - Designer presence narrativa visibile cross-side
+  - Ownership API per primary/secondary/collaborator/observer
+  - Timezone awareness su entrambi lati
+  - Integrazione completa con Sprint A (events) + Sprint B (system messages)
+
+  **Cosa è ancora MOCK / Sprint D+**:
+  - Ownership UI in lead detail page (API esiste, UI non ancora)
+  - Reschedule UI completa lato designer (API esiste, solo confirm/reject in UI)
+  - Design Direction™ panel (Sprint D)
+  - Notification center unificato (Sprint E)
+  - Team management UI (Sprint E)
+  - WebSocket real-time (post-Sprint E)
+
+  **Files touched** (Sprint C · 11 files):
+  - `supabase/migrations/089_orchestra_presence_ownership.sql`
+  - `backend/scripts/apply_migration_089.py`
+  - `backend/routers/relationship_orchestra.py`
+  - `backend/server.py` (router mount)
+  - `frontend/src/lib/orchestra.js`
+  - `frontend/src/components/presence/DesignerPresencePicker.{jsx,css}`
+  - `frontend/src/components/booking/CallBookingModal.{jsx,css}`
+  - `frontend/src/components/booking/PendingBookingsPanel.{jsx,css}`
+  - `frontend/src/components/conversation/ConversationSurface.jsx`
+    (presence integration)
+  - `frontend/src/pages/dashboard/AtelierDashboardPage.jsx` (embed)
+  - `frontend/src/pages/dashboard/atelier-dashboard.css` (layout)
+  - `frontend/src/pages/client/ClientOverviewPage.jsx`
+    (CallBookingModal wiring)
+
+
+## 📌 Sprint Status (latest)
 - **ITER151 · SPRINT B · Real Conversation Engine™** · ✅ DELIVERED · 25 May 2026
 
   **🎯 Goal**: chat reale cliente↔designer (NOT WhatsApp clone) —

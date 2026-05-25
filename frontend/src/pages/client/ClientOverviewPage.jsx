@@ -14,9 +14,9 @@ import { ArrowUpRight, Sparkles } from 'lucide-react';
 import api from '../../lib/api';
 import {
   fireBriefingCompleted,
-  fireCallRequested,
   fireJourneyResumed,
 } from '../../lib/relationshipEngine';
+import CallBookingModal from '../../components/booking/CallBookingModal';
 import ClientWelcomeHero from '../../components/client/ClientWelcomeHero';
 import ClientHumanCard from '../../components/client/ClientHumanCard';
 import HowItWorksSection from '../../components/client/HowItWorksSection';
@@ -71,6 +71,7 @@ const ClientOverviewPage = () => {
 /* ─── Zero-data ─────────────────────────────────────────────────── */
 
 const ZeroDataExperience = () => {
+  const [bookingOpen, setBookingOpen] = React.useState(false);
   // ITER150 · Sprint A — fire real relationship events on CTA click.
   const handleBrief = async () => {
     try {
@@ -80,14 +81,8 @@ const ZeroDataExperience = () => {
       toast.error('Non siamo riusciti a registrare la tua richiesta. Riprova.');
     }
   };
-  const handleCall = async () => {
-    try {
-      await fireCallRequested({ note: 'Richiesta dalla schermata di benvenuto' });
-      toast.success('Call richiesta. Il tuo studio ti risponderà a breve.');
-    } catch {
-      toast.error('Impossibile inviare la richiesta. Riprova fra poco.');
-    }
-  };
+  // ITER151 · Sprint C — curatorial booking modal (not Calendly clone)
+  const handleCall = () => setBookingOpen(true);
   const handleProc = () => {
     const el = document.querySelector('[data-testid="client-how-it-works"]');
     if (el) el.scrollIntoView({
@@ -111,6 +106,7 @@ const ZeroDataExperience = () => {
       </div>
       <HowItWorksSection />
       <WhatYouWillFindSection />
+      <CallBookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} locale="it" />
     </div>;
 };
 

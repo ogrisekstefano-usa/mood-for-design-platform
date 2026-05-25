@@ -23,6 +23,8 @@ import api from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useT, useBlueprint } from '../../contexts/BlueprintContext';
 import RelationshipLiveTimeline from '../../components/dashboard/RelationshipLiveTimeline';
+import PendingBookingsPanel from '../../components/booking/PendingBookingsPanel';
+import DesignerPresencePicker from '../../components/presence/DesignerPresencePicker';
 import './atelier-dashboard.css';
 
 // ── Helpers ─────────────────────────────────────────────────────────
@@ -412,6 +414,11 @@ const AtelierDashboardPage = () => {
 
       {/* ITER150 · Sprint A · Real Relationship Engine™ — live polling 5s */}
       <section className="atd-live-relationships" data-testid="atelier-live-relationships">
+        <div className="atd-live-relationships__head">
+          <div style={{ flex: 1 }} />
+          <DesignerPresencePicker locale="it" />
+        </div>
+        <PendingBookingsPanel locale="it" />
         <RelationshipLiveTimeline locale="it" />
       </section>
     </div>
