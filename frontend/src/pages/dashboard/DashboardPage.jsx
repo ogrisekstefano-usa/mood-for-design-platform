@@ -33,6 +33,7 @@ import { useT } from '../../i18n/useT';
 // Lazy below-the-fold sections — ridotti dal bundle iniziale.
 const StudioOnboardingPanel = lazy(() => import('../../components/dashboard/StudioOnboardingPanel'));
 const AssignedClientsPanel = lazy(() => import('../../components/dashboard/AssignedClientsPanel'));
+const RelationshipLiveTimeline = lazy(() => import('../../components/dashboard/RelationshipLiveTimeline'));
 const CockpitTimeline = lazy(() => import('./CockpitTimeline'));
 const CACHE_KEY = 'mfd_cockpit_cache_v3';
 const CACHE_TTL_MS = 90_000;
@@ -577,6 +578,10 @@ const DashboardPage = () => {
         <AssignedClientsPanel />
       </Suspense>
 
+      {/* ITER150 · Sprint A · Live Relationship Timeline™ (5s polling) */}
+      <Suspense fallback={null}>
+        <RelationshipLiveTimeline locale="it" />
+      </Suspense>
       {/* 2 · Suggested Next Actions™ */}
       <SuggestedNextActions suggestions={d.suggested_actions} loading={loading} />
 

@@ -2,6 +2,85 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER150 · SPRINT A · Real Relationship Engine™ FOUNDATION** · ✅ DELIVERED · 25 May 2026
+
+  **🎯 Goal**: trasformare le CTA cliente fake in eventi relazionali veri
+  che il designer vede in timeline live (polling 5s), con narrazione
+  editoriale (NOT activity log).
+
+  **DB · migration 087 applied**:
+  - `relationship_events` (14 col) — heartbeat table: event_type, actor_*,
+    narrative, payload JSONB, visibility, indexes per designer_id /
+    lead_id / tenant_id / client_profile_id
+  - `relationship_status` — pointer denormalizzato per Status Bar™
+    (status_key: awaiting_brief → reviewing_answers → preparing_direction
+    → waiting_client_feedback → proposal_shared → approval_pending →
+    journey_complete)
+  - `call_requests` — appoggio per Sprint C (booking flow), pending status
+    visibile nel designer dashboard
+
+  **Backend reale**:
+  - `services/relationship_narrator.py` — produce frasi editoriali server-side
+    ("Sofia è tornata sul moodboard dopo 3 giorni") + `EVENT_TO_STATUS` map
+    + `STATUS_LABELS` bilingual
+  - `routers/relationship_events.py` (mounted on `/api/relationship-engine`):
+    - `POST /actions/briefing-completed` · `message-sent` · `call-requested`
+      · `moodboard-viewed` · `journey-resumed`
+    - `GET /timeline` · `/timeline/lead/{id}` · `/status/lead/{id}`
+      · `/client/me` · `/briefing-summary/lead/{id}` · `/call-requests/pending`
+    - Polling-ready via `?since=ISO` filter
+
+  **Frontend cablato**:
+  - `lib/relationshipEngine.js` — SDK unico per tutte le chiamate
+  - `components/dashboard/RelationshipLiveTimeline.jsx` — feed editoriale
+    con polling 5s + animazione pulse cyan + relative timestamps + fade-in
+  - `pages/client/ClientOverviewPage.jsx` — CTA Briefing / Call / Journey
+    Resumed ora reali (toast success)
+  - `pages/client/ClientMessagesPage.jsx` — invio messaggio emette anche
+    `message_sent` event (non-blocking)
+  - `pages/dashboard/AtelierDashboardPage.jsx` — nuova sezione "VITA
+    RELAZIONALE · Cosa sta accadendo ora" sotto il desk
+
+  **Verifica E2E**:
+  - Client (Safari emulato) fires 4 CTA → events persistiti in `relationship_events`
+  - Designer (Chrome admin) → `/dashboard` mostra le 4 narrazioni live
+  - Status bar derivato → `reviewing_answers` dopo briefing_completed
+  - Call request `pending` visibile via `/call-requests/pending`
+
+  **Cosa è REALE**:
+  - Eventi: briefing_completed, message_sent, call_requested,
+    moodboard_viewed, journey_resumed
+  - Narrative editoriale server-side bilingual
+  - Timeline designer polling 5s
+  - Status bar derivato da eventi
+  - Call requests pending
+
+  **Cosa è ancora MOCK (Sprint B+)**:
+  - Chat reale cliente↔designer (Sprint B)
+  - Booking flow completo "Book a Call" (Sprint C)
+  - Designer presence states (Sprint C)
+  - Design Direction™ panel ("Atmosfera rilevata, Materiali emergenti")
+    derivato da `relationship_answer_events` (Sprint D)
+  - Studio team_members + primary/secondary designer (Sprint E)
+  - Notification center unificato (Sprint E)
+  - WebSocket real-time (post-Sprint E)
+
+  **Files touched** (Sprint A · 7 files):
+  - `supabase/migrations/087_relationship_live_engine.sql`
+  - `backend/scripts/apply_migration_087.py`
+  - `backend/services/relationship_narrator.py`
+  - `backend/routers/relationship_events.py`
+  - `backend/server.py` (router mount)
+  - `frontend/src/lib/relationshipEngine.js`
+  - `frontend/src/components/dashboard/RelationshipLiveTimeline.jsx`
+  - `frontend/src/components/dashboard/relationship-live-timeline.css`
+  - `frontend/src/pages/dashboard/AtelierDashboardPage.jsx`
+  - `frontend/src/pages/dashboard/DashboardPage.jsx`
+  - `frontend/src/pages/client/ClientOverviewPage.jsx`
+  - `frontend/src/pages/client/ClientMessagesPage.jsx`
+
+
+## 📌 Sprint Status (latest)
 - **ITER150 · Public Editorial Hero Fix™** · ✅ DELIVERED · 24 May 2026
 
   **HomePage layout corrections (post user-feedback "fa cagere")**

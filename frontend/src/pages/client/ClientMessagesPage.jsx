@@ -53,6 +53,10 @@ const ClientMessagesPage = () => {
         message_body: text,
         source_locale: uiLocale,  // iter124: real authoring locale
       });
+      // ITER150 · Sprint A · fire relationship event (non-blocking)
+      api.post('/api/relationship-engine/actions/message-sent', {
+        content: text, locale: uiLocale || 'it',
+      }).catch(() => {});
       setDraft('');
       await load();
     } catch (_) {

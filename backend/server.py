@@ -200,6 +200,9 @@ api_router.include_router(profile.router, prefix="/profile", tags=["profile"])
 from routers import profile_identity  # ITER147 · International Profile Identity™
 api_router.include_router(profile_identity.router, prefix="/profile", tags=["profile-identity"])
 api_router.include_router(client_messages.router, prefix="/client-messages", tags=["client-messages"])
+# ITER150 · SPRINT A · Relationship Live Engine™
+from routers import relationship_events  # noqa: E402
+api_router.include_router(relationship_events.router, prefix="/relationship-engine", tags=["relationship-live"])
 api_router.include_router(magazine.router, prefix="/magazine", tags=["magazine"])
 api_router.include_router(editorial_calendar.router, prefix="/blueprint/calendar", tags=["editorial-calendar"])
 api_router.include_router(advisor_network.router, tags=["advisor-network"])

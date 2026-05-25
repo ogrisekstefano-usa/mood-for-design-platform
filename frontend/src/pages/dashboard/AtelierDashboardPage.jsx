@@ -22,6 +22,7 @@ import {
 import api from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useT, useBlueprint } from '../../contexts/BlueprintContext';
+import RelationshipLiveTimeline from '../../components/dashboard/RelationshipLiveTimeline';
 import './atelier-dashboard.css';
 
 // ── Helpers ─────────────────────────────────────────────────────────
@@ -407,6 +408,11 @@ const AtelierDashboardPage = () => {
           quote={config?.inspiration_quote}
           ambient={config?.inspiration_media}
           t={t} />
+      </section>
+
+      {/* ITER150 · Sprint A · Real Relationship Engine™ — live polling 5s */}
+      <section className="atd-live-relationships" data-testid="atelier-live-relationships">
+        <RelationshipLiveTimeline locale="it" />
       </section>
     </div>
   );

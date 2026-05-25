@@ -12,6 +12,11 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { ArrowUpRight, Sparkles } from 'lucide-react';
 import api from '../../lib/api';
+import {
+  fireBriefingCompleted,
+  fireCallRequested,
+  fireJourneyResumed,
+} from '../../lib/relationshipEngine';
 import ClientWelcomeHero from '../../components/client/ClientWelcomeHero';
 import ClientHumanCard from '../../components/client/ClientHumanCard';
 import HowItWorksSection from '../../components/client/HowItWorksSection';
@@ -66,8 +71,23 @@ const ClientOverviewPage = () => {
 /* ─── Zero-data ─────────────────────────────────────────────────── */
 
 const ZeroDataExperience = () => {
-  const handleBrief = () => toast.info('Il briefing arriverà a breve dal tuo studio.');
-  const handleCall = () => toast.info('Il tuo studio ti contatterà per fissare la call.');
+  // ITER150 · Sprint A — fire real relationship events on CTA click.
+  const handleBrief = async () => {
+    try {
+      await fireBriefingCompleted({ source: 'overview_cta' });
+      toast.success('Briefing avviato. Il tuo studio è stato avvisato.');
+    } catch {
+      toast.error('Non siamo riusciti a registrare la tua richiesta. Riprova.');
+    }
+  };
+  const handleCall = async () => {
+    try {
+      await fireCallRequested({ note: 'Richiesta dalla schermata di benvenuto' });
+      toast.success('Call richiesta. Il tuo studio ti risponderà a breve.');
+    } catch {
+      toast.error('Impossibile inviare la richiesta. Riprova fra poco.');
+    }
+  };
   const handleProc = () => {
     const el = document.querySelector('[data-testid="client-how-it-works"]');
     if (el) el.scrollIntoView({
@@ -75,6 +95,15 @@ const ZeroDataExperience = () => {
       block: 'start'
     });
   };
+  // Mark a "journey_resumed" event each time the client lands here (>once/day)
+  React.useEffect(() => {
+    const key = 'mfd_journey_resumed_at';
+    const last = Number(localStorage.getItem(key) || 0);
+    if (Date.now() - last > 6 * 3600 * 1000) {
+      fireJourneyResumed().catch(() => {});
+      localStorage.setItem(key, String(Date.now()));
+    }
+  }, []);
   return <div data-testid="client-overview-zero" className="max-w-[1280px]">
       <ClientWelcomeHero onPrimary={handleBrief} onSecondary={handleCall} onTertiary={handleProc} />
       <div className="mt-8">
