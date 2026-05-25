@@ -32,6 +32,7 @@ const JourneyPulsePage = lazy(() => import('./pages/dashboard/JourneyPulsePage')
 const AtelierDashboardPage = lazy(() => import('./pages/dashboard/AtelierDashboardPage'));
 const LeadsLegacyPage = lazy(() => import('./pages/workspace/LeadsPage'));
 const ProjectsPage = lazy(() => import('./pages/workspace/ProjectsPage'));
+const DesignerConversationsPage = lazy(() => import('./pages/workspace/DesignerConversationsPage'));
 const ProjectDetailPage = lazy(() => import('./pages/workspace/ProjectDetailPage'));
 const ProposalsPage = lazy(() => import('./pages/workspace/ProposalsPage'));
 const ProposalComposerPage = lazy(() => import('./pages/workspace/ProposalComposerPage'));
@@ -426,6 +427,7 @@ function App() {
                   <Route path="/dashboard/legacy" element={<DashboardPage />} />
                   <Route path="/workspace/leads" element={<Navigate to="/crm/accounts" replace />} />
                   <Route path="/workspace/projects" element={G('journey_index', <ProjectsPage />)} />
+                  <Route path="/workspace/conversations" element={G('journey_index', <DesignerConversationsPage />)} />
                   <Route path="/workspace/projects/:id" element={G('journey_index', <ProjectDetailPage />)} />
                   {/* Sprint G.6 — Step-Anchored Artifact Pages™.
                       Il workspace dello step. Il contesto precede l'artifact. */}

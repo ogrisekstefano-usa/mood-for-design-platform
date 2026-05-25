@@ -1,0 +1,152 @@
+/* Designer Conversations · ITER151 Sprint B */
+
+.dcp-shell {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 18px;
+  align-items: stretch;
+  min-height: 78vh;
+  padding: 8px 0;
+}
+
+/* ── LEFT LIST ────────────────────────────────────────────── */
+.dcp-list {
+  background: #14110D;
+  border: 1px solid rgba(245, 242, 237, 0.06);
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.dcp-list__head {
+  padding: 24px 22px 18px;
+  border-bottom: 1px solid rgba(245, 242, 237, 0.05);
+}
+.dcp-list__eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(245, 242, 237, 0.5);
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+.dcp-list__title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  margin: 0;
+  color: rgba(245, 242, 237, 0.94);
+}
+.dcp-list__count {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: rgba(245, 242, 237, 0.5);
+  letter-spacing: 0.02em;
+}
+
+.dcp-list__hint,
+.dcp-list__empty {
+  padding: 26px 22px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(245, 242, 237, 0.5);
+}
+
+.dcp-list__items {
+  list-style: none; margin: 0; padding: 6px 8px 12px;
+  overflow-y: auto;
+}
+
+.dcp-item {
+  width: 100%; text-align: left;
+  background: transparent;
+  border: 0;
+  display: grid;
+  grid-template-columns: 38px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 12px;
+  border-radius: 12px;
+  color: inherit;
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+.dcp-item:hover { background: rgba(245, 242, 237, 0.04); }
+.dcp-item--current {
+  background: rgba(0, 201, 179, 0.10);
+  outline: 1px solid rgba(0, 201, 179, 0.32);
+}
+.dcp-item__avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: rgba(0, 201, 179, 0.10);
+  border: 1px solid rgba(0, 201, 179, 0.28);
+  color: #00C9B3;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  overflow: hidden;
+}
+.dcp-item__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.dcp-item__body {
+  min-width: 0;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.dcp-item__name {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(245, 242, 237, 0.94);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dcp-item__preview {
+  font-size: 12.5px;
+  color: rgba(245, 242, 237, 0.5);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-style: italic;
+}
+.dcp-item__meta {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+}
+.dcp-item__when {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(245, 242, 237, 0.42);
+  font-weight: 500;
+}
+.dcp-item__badge {
+  background: #00C9B3;
+  color: #0E0D0B;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  min-width: 18px; text-align: center;
+}
+.dcp-item--unread .dcp-item__name {
+  color: #fff;
+}
+.dcp-item--unread .dcp-item__preview {
+  color: rgba(245, 242, 237, 0.78);
+  font-style: normal;
+}
+
+/* ── RIGHT MAIN ───────────────────────────────────────────── */
+.dcp-main { min-width: 0; }
+.dcp-placeholder {
+  height: 100%;
+  display: grid; place-items: center;
+  border: 1px dashed rgba(245, 242, 237, 0.08);
+  border-radius: 18px;
+  color: rgba(245, 242, 237, 0.4);
+  font-style: italic;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+}
+
+@media (max-width: 980px) {
+  .dcp-shell { grid-template-columns: 1fr; }
+  .dcp-list { max-height: 360px; }
+}

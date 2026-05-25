@@ -1,0 +1,262 @@
+/* Conversation Surface · ITER151 Sprint B
+ * Editorial style — NOT consumer messaging.
+ * Tokens follow the existing Atelier dark palette + cyan accent.
+ */
+
+.conv-surface {
+  --conv-bg:        #14110D;
+  --conv-bg-2:      #1B1814;
+  --conv-line:      rgba(245, 242, 237, 0.08);
+  --conv-ink:       rgba(245, 242, 237, 0.92);
+  --conv-ink-2:     rgba(245, 242, 237, 0.66);
+  --conv-mute:      rgba(245, 242, 237, 0.40);
+  --conv-cyan:      #00C9B3;
+  --conv-cyan-2:    #00E0C8;
+
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--conv-bg);
+  color: var(--conv-ink);
+  border: 1px solid var(--conv-line);
+  border-radius: 18px;
+  overflow: hidden;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+}
+
+.conv-surface--fill { min-height: 640px; max-height: 80vh; }
+
+/* ── HEAD ──────────────────────────────────────────────────────── */
+.conv-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 24px;
+  padding: 22px clamp(20px, 2vw, 32px);
+  border-bottom: 1px solid var(--conv-line);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(0, 201, 179, 0.06), transparent 60%),
+    var(--conv-bg-2);
+}
+.conv-head__who { display: flex; gap: 16px; align-items: center; min-width: 0; }
+.conv-head__avatar {
+  position: relative;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: rgba(0, 201, 179, 0.10);
+  border: 1px solid rgba(0, 201, 179, 0.30);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--conv-cyan);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.conv-head__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.conv-head__pulse {
+  position: absolute;
+  right: 0; bottom: 2px;
+  width: 11px; height: 11px;
+  background: var(--conv-cyan);
+  border-radius: 50%;
+  border: 2px solid var(--conv-bg-2);
+  box-shadow: 0 0 0 0 rgba(0, 201, 179, 0.55);
+  animation: conv-pulse 1.8s ease-out infinite;
+}
+@keyframes conv-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(0, 201, 179, 0.55); }
+  70%  { box-shadow: 0 0 0 8px rgba(0, 201, 179, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 201, 179, 0); }
+}
+.conv-head__meta { min-width: 0; }
+.conv-head__name {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px; font-weight: 500;
+  margin: 0; letter-spacing: -0.005em;
+  color: var(--conv-ink);
+}
+.conv-head__role {
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--conv-mute);
+  margin: 2px 0 0;
+  font-weight: 600;
+}
+.conv-head__bio {
+  font-size: 13px;
+  color: var(--conv-ink-2);
+  font-style: italic;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  margin: 6px 0 0;
+  line-height: 1.45;
+}
+
+.conv-head__status {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 14px;
+  border: 1px solid rgba(0, 201, 179, 0.32);
+  border-radius: 999px;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--conv-cyan);
+  background: rgba(0, 201, 179, 0.04);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.conv-head__status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--conv-cyan);
+}
+
+/* ── STREAM ─────────────────────────────────────────────────── */
+.conv-stream {
+  overflow-y: auto;
+  padding: 28px clamp(20px, 2vw, 36px) 18px;
+  display: flex; flex-direction: column;
+  gap: 18px;
+}
+.conv-stream::-webkit-scrollbar { width: 6px; }
+.conv-stream::-webkit-scrollbar-thumb { background: rgba(245, 242, 237, 0.08); border-radius: 6px; }
+
+.conv-loading, .conv-empty, .conv-error {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 17px;
+  color: var(--conv-mute);
+  line-height: 1.55;
+  max-width: 56ch;
+  margin: 8px 0;
+}
+.conv-loading { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; }
+.conv-spin { animation: conv-spin 1s linear infinite; }
+@keyframes conv-spin { to { transform: rotate(360deg); } }
+
+.conv-error { color: #E08E72; }
+
+/* ── MESSAGES ──────────────────────────────────────────────── */
+.conv-msg {
+  max-width: 78%;
+  padding: 14px 20px 12px;
+  border-radius: 14px;
+  background: rgba(245, 242, 237, 0.04);
+  border: 1px solid var(--conv-line);
+  animation: conv-fadein 320ms ease-out;
+  position: relative;
+}
+@keyframes conv-fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.conv-msg--mine {
+  align-self: flex-end;
+  background: rgba(0, 201, 179, 0.10);
+  border-color: rgba(0, 201, 179, 0.24);
+}
+.conv-msg--theirs { align-self: flex-start; }
+
+/* Designer messages: more editorial typography (serif body) */
+.conv-msg--designer .conv-msg__body,
+.conv-msg--studio   .conv-msg__body {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: -0.002em;
+}
+
+.conv-msg__author {
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--conv-mute);
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+.conv-msg__author--designer { color: var(--conv-cyan); }
+.conv-msg__body {
+  font-size: 15.5px;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--conv-ink);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.conv-msg__when {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--conv-mute);
+  margin: 6px 0 0;
+  font-weight: 500;
+}
+
+.conv-msg--optimistic { opacity: 0.6; }
+
+/* ── COMPOSER ──────────────────────────────────────────────── */
+.conv-composer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: end;
+  padding: 18px clamp(20px, 2vw, 32px);
+  border-top: 1px solid var(--conv-line);
+  background: var(--conv-bg-2);
+}
+.conv-composer__input {
+  width: 100%;
+  resize: none;
+  background: transparent;
+  color: var(--conv-ink);
+  border: 1px solid var(--conv-line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.5;
+  outline: none;
+  transition: border-color 200ms ease, background 200ms ease;
+}
+.conv-composer__input::placeholder {
+  color: var(--conv-mute);
+  font-style: italic;
+}
+.conv-composer__input:focus {
+  border-color: rgba(0, 201, 179, 0.5);
+  background: rgba(0, 201, 179, 0.03);
+}
+
+.conv-composer__send {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 22px;
+  font-size: 11px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #0E0D0B;
+  background: var(--conv-cyan);
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 220ms ease, transform 220ms ease;
+}
+.conv-composer__send:hover:not(:disabled) {
+  background: var(--conv-cyan-2);
+  transform: translateY(-1px);
+}
+.conv-composer__send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Variant tweaks ───────────────────────────────────────── */
+.conv-surface--designer {
+  --conv-bg: #1A1714;
+}
+.conv-surface--client {
+  --conv-bg: #14110D;
+}
+
+@media (max-width: 760px) {
+  .conv-head { flex-direction: column; align-items: flex-start; }
+  .conv-msg { max-width: 92%; }
+}

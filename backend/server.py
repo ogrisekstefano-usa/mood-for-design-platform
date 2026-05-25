@@ -203,6 +203,9 @@ api_router.include_router(client_messages.router, prefix="/client-messages", tag
 # ITER150 · SPRINT A · Relationship Live Engine™
 from routers import relationship_events  # noqa: E402
 api_router.include_router(relationship_events.router, prefix="/relationship-engine", tags=["relationship-live"])
+# ITER151 · SPRINT B · Real Conversation Engine™
+from routers import relationship_conversation  # noqa: E402
+api_router.include_router(relationship_conversation.router, prefix="/conversation", tags=["conversation"])
 api_router.include_router(magazine.router, prefix="/magazine", tags=["magazine"])
 api_router.include_router(editorial_calendar.router, prefix="/blueprint/calendar", tags=["editorial-calendar"])
 api_router.include_router(advisor_network.router, tags=["advisor-network"])

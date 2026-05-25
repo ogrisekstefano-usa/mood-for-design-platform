@@ -2,6 +2,87 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER151 · SPRINT B · Real Conversation Engine™** · ✅ DELIVERED · 25 May 2026
+
+  **🎯 Goal**: chat reale cliente↔designer (NOT WhatsApp clone) —
+  editoriale, narrativa, integrata con eventi+memoria.
+
+  **DB · migration 088 applied**:
+  - `relationship_threads` (13 col) · unique per (tenant, lead) ·
+    last_message_*, unread_for_client/designer, status
+  - `relationship_messages` (13 col) · sender_type (client/designer/
+    studio/system) · message_type (text/image/inspiration/material_ref/
+    moodboard_link/proposal_ref/project_update/system_narrative) ·
+    attachments JSONB · read_at
+  - `relationship_memory_fragments` · atmosphere_shift, material_pref,
+    excitement, hesitation, direction_note (scaffold for Sprint D AI)
+
+  **Backend (`/api/conversation`)**:
+  - Threads: `GET /threads`, `POST /threads/ensure`, `GET /threads/{id}`
+  - Messages: `GET /threads/{id}/messages?since=ISO`, `POST .../messages`,
+    `PATCH /messages/{id}/read`, `POST /threads/{id}/mark-all-read`
+  - Memory: `GET /memory/lead/{id}` (studio-only)
+  - Status: `GET /status/me` (shared with Sprint A Status Bar™)
+  - Side-effects: every message emits a `relationship_event` (timeline
+    integration) + heuristic memory fragment (excitement/hesitation/
+    direction_note on long client messages or attachments)
+
+  **Frontend**:
+  - `lib/conversation.js` — SDK unico
+  - `components/conversation/ConversationSurface.jsx` — surface
+    editoriale condivisa client+designer · polling 5s · optimistic send
+    · auto-mark-as-read · serif Cormorant per voce designer · presence
+    pulse cyan
+  - `pages/workspace/DesignerConversationsPage.jsx` — workspace designer
+    con lista thread (avatar + name + preview + unread badge cyan +
+    timestamp) + dettaglio thread
+  - `pages/client/ClientMessagesPage.jsx` — riscritto, ora usa
+    `<ConversationSurface variant="client">`
+
+  **Routing**:
+  - Designer: `/workspace/conversations` (nuova rotta)
+  - Cliente: `/client/messages` (rotta esistente, refactor)
+
+  **Verifica E2E** (curl + screenshot):
+  - Client sends "Mi piace il rovere chiaro" → persisted, thread updated,
+    unread_for_designer=1
+  - Admin/designer apre `/workspace/conversations` → vede 1 thread con
+    counterpart "Client Studio", 2 messaggi nel pannello DX
+  - Admin replies → next client poll riceve in ≤5s
+  - Polling con `since` (URL-encoded) restituisce solo i nuovi messaggi
+  - Auto-mark-as-read funziona, unread torna a 0
+  - Status Bar™ "● IN ATTESA DEL BRIEF" visibile su client side
+
+  **Cosa è REALE ora**:
+  - Conversazione live cliente↔designer cross-browser (≤5s sync)
+  - Thread persistence + unread tracking
+  - Editorial styling differenziato client/designer
+  - Integrazione con Sprint A: ogni messaggio → relationship_event
+  - Memory fragments distillati automaticamente (heuristic)
+
+  **Cosa è ancora MOCK / Sprint C+**:
+  - Attachment upload (Media Library integration · Sprint D)
+  - Designer presence states attivi (Sprint C)
+  - Call booking flow (Sprint C)
+  - AI-driven memory detection (Sprint D)
+  - Studio team primary/secondary (Sprint E)
+  - WebSocket real-time (post-Sprint E)
+
+  **Files touched** (Sprint B · 8 files):
+  - `supabase/migrations/088_relationship_conversation.sql`
+  - `backend/scripts/apply_migration_088.py`
+  - `backend/routers/relationship_conversation.py`
+  - `backend/server.py` (router mount)
+  - `frontend/src/lib/conversation.js`
+  - `frontend/src/components/conversation/ConversationSurface.jsx`
+  - `frontend/src/components/conversation/conversation-surface.css`
+  - `frontend/src/pages/workspace/DesignerConversationsPage.jsx`
+  - `frontend/src/pages/workspace/designer-conversations.css`
+  - `frontend/src/pages/client/ClientMessagesPage.jsx` (rewritten)
+  - `frontend/src/App.js` (route mount)
+
+
+## 📌 Sprint Status (latest)
 - **ITER150 · SPRINT A · Real Relationship Engine™ FOUNDATION** · ✅ DELIVERED · 25 May 2026
 
   **🎯 Goal**: trasformare le CTA cliente fake in eventi relazionali veri
