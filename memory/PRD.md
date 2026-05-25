@@ -2,6 +2,87 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER153 · SPRINT E · Studio Orchestra (Team + Notifications)** · ✅ DELIVERED · 25 May 2026
+
+  **🎯 Goal**: ecosistema di studio editoriale con notifiche unificate
+  e team management.
+
+  **DB · migration 091 applied**:
+  - `studio_team_members` (14 col) · 9 ruoli editoriali
+    (founder | creative_director | interior_designer |
+    material_specialist | architect | project_coordinator |
+    account_director | collaborator | observer) · specialties +
+    territories + languages JSONB + bio + visibility
+  - `relationship_notifications` (17 col) · recipient_type · 17
+    notification_type · priority (soft/normal/high) · payload JSONB ·
+    action_url + action_label
+  - **Trigger SQL `fn_emit_notifications_for_event`** · AFTER INSERT
+    ON `relationship_events` · fan-out automatico designer/client
+    quando actor_type=client/designer
+  - Map event_type → notification_type: message_sent → new_message,
+    briefing_completed → journey_progressed, call_requested,
+    approval_confirmed → call_confirmed, moodboard_viewed →
+    moodboard_revisited, proposal_opened, client_returned,
+    designer_assigned, journey_resumed → client_returned
+
+  **Backend (`/api/orchestra-e`)**:
+  - Notifications: `GET /notifications?since=&limit=&only_unread=`,
+    `GET /notifications/unread-count`,
+    `PATCH /notifications/{id}/read`,
+    `POST /notifications/mark-all-read`
+  - Team: `GET /team`, `GET /team/roles`, `POST /team`,
+    `PATCH /team/{id}`, `DELETE /team/{id}` (soft via status=inactive)
+
+  **Frontend**:
+  - `lib/studioOrchestra.js` — SDK
+  - `components/notifications/NotificationBell.jsx` — pill cyan +
+    badge unread + glow pulse + drawer editoriale right-side ·
+    polling 3s · grouping Today/Yesterday/Earlier · serif narratives ·
+    mark-read on click
+  - Embedded in `AtelierDashboardPage` (designer side) + in
+    `ClientDashboardLayout` (replaces the old static Bell)
+
+  **Verifica E2E**:
+  - Client invia messaggio via Sprint B API → `relationship_event`
+    insertito → trigger SQL automatico → `relationship_notifications`
+    creata per il designer assegnato
+  - `GET /notifications/unread-count` → `{count: 1}`
+  - `GET /notifications` → 1 item narrative "Marco ha inviato un messaggio."
+  - Frontend: bell mostra badge "1" con glow cyan, click apre drawer
+    editoriale "RISONANZE · Cosa accade nelle tue relazioni" con item
+    serif "Marco ha inviato un messaggio." raggruppato sotto "Oggi"
+  - Team API: admin aggiunto come `creative_director` con
+    specialties=["Material direction","Editorial curation"] +
+    bio editoriale
+
+  **Cosa è REALE ora**:
+  - Pipeline notifications full automatica via trigger SQL
+  - Drawer editoriale narrativo (NOT SaaS alerts)
+  - Team API completa con 9 ruoli editoriali
+  - Fast polling 3s per perception "live"
+
+  **Cosa è ancora MOCK / Sprint F**:
+  - Vero WebSocket / Supabase realtime (polling 3s funziona benissimo)
+  - Studio Pulse leadership view (overview climate)
+  - Direction stabilization narrative (Sprint D extension)
+  - Ownership orchestration UI (drag & drop, observer flows)
+  - Team management UI completa (creation form, role editor)
+  - Blueprint Command Center config editor (notification templates,
+    role permissions, visibility logic)
+
+  **Files touched** (Sprint E · 9 files):
+  - `supabase/migrations/091_studio_orchestra.sql`
+  - `backend/scripts/apply_migration_091.py`
+  - `backend/routers/studio_orchestra.py`
+  - `backend/server.py` (router mount)
+  - `frontend/src/lib/studioOrchestra.js`
+  - `frontend/src/components/notifications/NotificationBell.{jsx,css}`
+  - `frontend/src/pages/dashboard/AtelierDashboardPage.jsx` (embed)
+  - `frontend/src/components/client/ClientDashboardLayout.jsx` (replace
+    static Bell with live NotificationBell)
+
+
+## 📌 Sprint Status (latest)
 - **ITER152 · SPRINT D · Design Direction™ Engine** · ✅ DELIVERED · 25 May 2026
 
   **🎯 Goal**: relationship intelligence editoriale per interior design.

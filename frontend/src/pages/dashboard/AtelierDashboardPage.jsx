@@ -25,6 +25,7 @@ import { useT, useBlueprint } from '../../contexts/BlueprintContext';
 import RelationshipLiveTimeline from '../../components/dashboard/RelationshipLiveTimeline';
 import PendingBookingsPanel from '../../components/booking/PendingBookingsPanel';
 import DesignerPresencePicker from '../../components/presence/DesignerPresencePicker';
+import NotificationBell from '../../components/notifications/NotificationBell';
 import './atelier-dashboard.css';
 
 // ── Helpers ─────────────────────────────────────────────────────────
@@ -416,6 +417,7 @@ const AtelierDashboardPage = () => {
       <section className="atd-live-relationships" data-testid="atelier-live-relationships">
         <div className="atd-live-relationships__head">
           <div style={{ flex: 1 }} />
+          <NotificationBell locale="it" />
           <DesignerPresencePicker locale="it" />
         </div>
         <PendingBookingsPanel locale="it" />

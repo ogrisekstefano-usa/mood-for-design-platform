@@ -17,6 +17,7 @@ import { Bell, Menu, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import ClientThemeProvider from '../../design-system/client/ClientThemeProvider';
 import ClientSidebar from './ClientSidebar';
+import NotificationBell from '../notifications/NotificationBell';
 import { useT } from "../../i18n/useT";
 const initialsOf = user => {
   if (!user) return '·';
@@ -55,12 +56,7 @@ const ClientTopbar = ({
       </div>
 
       <div className="flex items-center gap-3 md:gap-5 shrink-0">
-        <button type="button" data-testid="client-notifications-btn" aria-label="Notifications" className="relative w-9 h-9 rounded-full border border-[var(--cp-border)]
-                     flex items-center justify-center text-[var(--cp-text-muted)]
-                     hover:text-[var(--cp-text-primary)] hover:border-[var(--cp-border-hover)]
-                     transition-colors">
-          <Bell size={15} strokeWidth={1.5} />
-        </button>
+        <NotificationBell locale="it" />
         <div data-testid="client-avatar" className="w-9 h-9 rounded-full bg-[var(--cp-surface-2)]
                      border border-[var(--cp-border)]
                      flex items-center justify-center
