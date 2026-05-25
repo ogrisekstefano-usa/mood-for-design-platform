@@ -2,6 +2,49 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER154 · Notifications Live Activation (drawer polish + portal fix)** · ✅ DELIVERED · 25 Mag 2026
+
+  **🎯 Goal**: rifinire il drawer `RISONANZE` come strumento di
+  consapevolezza relazionale (no SaaS, no CRM, no Slack).
+
+  **Delivered**:
+  - Migration 092 · trigger SQL refinements (priority mapping +
+    action_url generation per event type)
+  - `useFaviconBadge.js` hook · favicon canvas dot dinamico
+    quando il tab è in background
+  - `NotificationBell.jsx` ridisegnato:
+    - 4 bucket narrativi: **Oggi · Ieri · Questa settimana · Prima**
+    - Empty state editoriale serif italic: _"Le tue relazioni
+      stanno respirando lentamente."_
+    - Priority glow (quiet · normal · high) con border-left cyan
+      `#00C9B3` + box-shadow inset per unread
+    - Slide-in cubic-bezier(0.16, 1, 0.3, 1) 260ms
+    - Stagger animation `nb-bucket-in` + `nb-item-in`
+    - Overlay con `backdrop-filter: blur(4px)`
+    - Bell pill con `nb-glow` pulse 2.4s infinite quando unread
+  - **🔧 BUG FIX critico**: drawer `position: fixed` veniva
+    confinato dal parent con `transform`, causava `y=-820 h=3183px`.
+    Fix: wrap dentro `createPortal(..., document.body)` →
+    drawer ora rispetta il viewport (`y=0 h=100vh`).
+
+  **Verifica visiva (admin@moodfordesign.com)**:
+  - Eyebrow `RISONANZE` cyan tracked uppercase ✅
+  - Title serif Cormorant Garamond `Cosa accade nelle tue relazioni` ✅
+  - Bucket header `OGGI` tracked uppercase grigio ✅
+  - Item serif italico + meta `32 MIN · NEW MESSAGE` cyan accent ✅
+  - Border-left cyan glow su unread ✅
+  - Mark-all-read pill `SEGNA TUTTO COME LETTO` ✅
+  - Drawer `460px` desktop · `min(460px, 100vw)` mobile ✅
+
+  **Files touched**:
+  - `supabase/migrations/092_notifications_activation.sql`
+  - `frontend/src/lib/useFaviconBadge.js` (nuovo)
+  - `frontend/src/components/notifications/NotificationBell.jsx`
+    (createPortal fix)
+  - `frontend/src/components/notifications/notification-bell.css`
+
+---
+
 - **ITER153 · SPRINT E · Studio Orchestra (Team + Notifications)** · ✅ DELIVERED · 25 May 2026
 
   **🎯 Goal**: ecosistema di studio editoriale con notifiche unificate

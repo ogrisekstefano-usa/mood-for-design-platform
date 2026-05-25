@@ -10,6 +10,7 @@
  *   - Polling 3s, dedup-friendly
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Bell, X } from 'lucide-react';
 import { listNotifications, unreadCount, markNotifRead, markAllNotifRead } from '../../lib/studioOrchestra';
 import useFaviconBadge from '../../lib/useFaviconBadge';
@@ -144,7 +145,7 @@ const NotificationBell = ({ locale = 'it' }) => {
         )}
       </button>
 
-      {open && (
+      {open && createPortal(
         <>
           <div className="nb-overlay" onClick={() => setOpen(false)} />
           <aside className="nb-drawer" role="dialog" data-testid="notification-drawer">
@@ -193,7 +194,8 @@ const NotificationBell = ({ locale = 'it' }) => {
               </section>
             ))}
           </aside>
-        </>
+        </>,
+        document.body
       )}
     </>
   );
