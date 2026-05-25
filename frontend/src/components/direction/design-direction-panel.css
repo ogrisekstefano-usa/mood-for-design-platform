@@ -1,0 +1,187 @@
+/* Design Direction™ Panel · Sprint D · editorial · NOT a dashboard */
+
+.ddp {
+  background: linear-gradient(180deg, #15120E 0%, #1B1814 100%);
+  border: 1px solid rgba(245, 242, 237, 0.06);
+  border-radius: 20px;
+  padding: 36px clamp(24px, 3vw, 48px) 28px;
+  color: rgba(245, 242, 237, 0.92);
+  font-family: 'Inter', system-ui, sans-serif;
+  display: flex; flex-direction: column;
+  gap: 28px;
+}
+
+.ddp--loading, .ddp--empty {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 17px;
+  color: rgba(245, 242, 237, 0.5);
+  display: flex; align-items: center; gap: 10px;
+  padding: 28px;
+}
+
+.ddp__spin { animation: ddp-spin 1s linear infinite; }
+@keyframes ddp-spin { to { transform: rotate(360deg); } }
+
+.ddp__head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(245, 242, 237, 0.06);
+}
+.ddp__eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(0, 201, 179, 0.78);
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+.ddp__title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: -0.008em;
+  margin: 0;
+  color: #f6f3ee;
+}
+.ddp__regen {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(0, 201, 179, 0.08);
+  border: 1px solid rgba(0, 201, 179, 0.32);
+  color: #00C9B3;
+  padding: 7px 14px;
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.ddp__regen:hover:not(:disabled) { background: rgba(0, 201, 179, 0.16); }
+
+.ddp__narrative {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.5;
+  color: rgba(245, 242, 237, 0.86);
+  margin: 0;
+  max-width: 68ch;
+  letter-spacing: -0.002em;
+}
+
+/* ── BLOCK · shared ───────────────────────────────────────── */
+.ddp-block { padding: 4px 0; }
+.ddp-block__eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(245, 242, 237, 0.5);
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+.ddp-block__headline {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 28px;
+  font-weight: 500;
+  margin: 0 0 10px;
+  letter-spacing: -0.005em;
+  color: rgba(245, 242, 237, 0.96);
+}
+.ddp-block__body {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(245, 242, 237, 0.78);
+  margin: 0;
+  max-width: 68ch;
+  font-weight: 400;
+}
+
+/* ── CHIPS · atmosphere ───────────────────────────────────── */
+.ddp-chips { list-style: none; margin: 14px 0 0; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }
+.ddp-chip {
+  padding: 6px 14px;
+  font-size: 12px;
+  border: 1px solid rgba(0, 201, 179, 0.35);
+  background: rgba(0, 201, 179, 0.06);
+  color: rgba(0, 201, 179, 0.92);
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+/* ── MATERIALS ────────────────────────────────────────────── */
+.ddp-materials { list-style: none; margin: 14px 0 0; padding: 0; display: flex; gap: 14px; flex-wrap: wrap; }
+.ddp-material { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border: 1px solid rgba(245, 242, 237, 0.10); border-radius: 999px; }
+.ddp-material__swatch { width: 14px; height: 14px; border-radius: 50%; }
+.ddp-material--light .ddp-material__swatch { background: #E5DDCC; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08); }
+.ddp-material--dark .ddp-material__swatch  { background: #3A2B1F; }
+.ddp-material--mid .ddp-material__swatch,
+.ddp-material--neutral .ddp-material__swatch { background: #A18E73; }
+.ddp-material__name {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 17px;
+  color: rgba(245, 242, 237, 0.92);
+}
+
+/* ── RHYTHMS / REFS ───────────────────────────────────────── */
+.ddp-rhythms, .ddp-refs {
+  list-style: none; margin: 12px 0 0; padding: 0;
+  display: flex; flex-direction: column; gap: 6px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 19px;
+  color: rgba(245, 242, 237, 0.78);
+  font-style: italic;
+}
+.ddp-rhythm, .ddp-ref { padding: 2px 0; }
+
+/* ── PALETTE ───────────────────────────────────────────────── */
+.ddp-palette {
+  list-style: none; margin: 14px 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+}
+.ddp-swatch {
+  background: rgba(245, 242, 237, 0.03);
+  border: 1px solid rgba(245, 242, 237, 0.08);
+  border-radius: 10px;
+  padding: 14px 14px 12px;
+}
+.ddp-swatch__color {
+  display: block;
+  width: 100%; height: 56px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+}
+.ddp-swatch__name {
+  display: block;
+  font-size: 12px;
+  color: rgba(245, 242, 237, 0.88);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.ddp-swatch__hex {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: rgba(245, 242, 237, 0.45);
+  text-transform: uppercase;
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ddp__foot {
+  padding-top: 16px;
+  border-top: 1px solid rgba(245, 242, 237, 0.05);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(245, 242, 237, 0.4);
+  font-weight: 500;
+}
+
+/* Variant adjustments */
+.ddp--designer { background: linear-gradient(180deg, #1A1714 0%, #221E18 100%); }

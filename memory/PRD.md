@@ -2,6 +2,94 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER152 · SPRINT D · Design Direction™ Engine** · ✅ DELIVERED · 25 May 2026
+
+  **🎯 Goal**: relationship intelligence editoriale per interior design.
+  AI distillation di atmosfere/materiali/lifestyle/cultura. NOT analytics,
+  NOT scoring, NOT charts.
+
+  **DB · migration 090 applied**:
+  - `relationship_direction_signals` (14 col) · 10 signal_type
+    (atmosphere | materials | lifestyle | cultural_register |
+    spatial_behavior | emotional_rhythm | hospitality_tendency |
+    color_language | project_energy | visual_alignment) · confidence +
+    weight + source_type
+  - `relationship_direction_snapshots` (14 col) · JSONB summaries per
+    atmosphere/material/lifestyle/cultural/palette + narrative_summary +
+    generated_by
+
+  **Service `design_direction_distiller.py`** (Claude Sonnet 4.5):
+  - Editorial SYSTEM prompt IT/EN che vieta percentuali/scoring
+  - JSON schema enforced (atmosphere/materials/lifestyle/cultural/
+    palette/narrative)
+  - Tolerant JSON extractor (gestisce code-fence leak)
+  - Async LLM call con loop policy + fallback editoriale calmo
+    se LLM non disponibile o zero signals
+
+  **Signal Harvester** (auto-ingest, read-only):
+  - Da `relationship_memory_fragments` (Sprint B)
+  - Da `relationship_messages` client-side (keyword detection IT/EN)
+  - Da `relationship_answer_events` (onboarding intake)
+  - Dedup per (signal_type, signal_key) keeping max weight
+
+  **Backend (`/api/direction`)**:
+  - Client: `GET /me` (auto-distil + persist on cold start)
+  - Studio: `GET /lead/{id}`, `GET /lead/{id}/signals`,
+    `POST /lead/{id}/distil`
+  - Both: `POST /signals` (manual signal injection)
+
+  **Frontend**:
+  - `lib/designDirection.js` — SDK
+  - `components/direction/DesignDirectionPanel.jsx` — pannello
+    editoriale shared client/designer · serif Cormorant Garamond per
+    headlines · 5 sezioni con eyebrow, narrative, chips, materiali,
+    palette swatches con hex
+  - `pages/client/ClientJourneysIndexPage.jsx` — embed in empty state
+    + active journey state
+
+  **Esempio di output reale (verificato via curl)**:
+  - "Quiete Luminosa" → *"L'atmosfera che emerge privilegia una calma
+    deliberata, dove la serenità non è assenza ma presenza discreta."*
+  - "Minimalismo Nordico Temperato" → *"guarda a Copenhagen e Kyoto
+    più che a Milano"*
+  - Materiali con tone (light/neutral/dark)
+  - 5 palette swatches con hex codes
+
+  **Verifica E2E**:
+  - Endpoint `/lead/{id}/distil` con 0 segnali → fallback "Atmosfera
+    in ascolto" + narrazione editoriale
+  - Endpoint con keyword "rovere" in conversazione → segnali raccolti
+    → AI distillation produce risposta editoriale completa in ~17s
+  - Persistence: snapshot scritto in `relationship_direction_snapshots`
+  - Caching: seconda chiamata ritorna snapshot cached
+  - Screenshot client `/client` → pannello renderizzato completo
+
+  **Cosa è REALE ora**:
+  - Pipeline signal ingestion → AI distillation → editorial UI
+  - Claude Sonnet 4.5 attivo via Emergent LLM key
+  - Auto-harvest da onboarding + conversation + memory fragments
+  - Fallback resiliente quando AI/segnali assenti
+  - Designer endpoint pronto (UI lead detail in prossimo sprint)
+
+  **Cosa è ancora MOCK / Sprint E**:
+  - Designer-side panel embed (API esiste, UI lead-detail page no)
+  - Magazine/moodboard activity harvest (placeholder)
+  - Cultural register from intake answers (heuristic, not yet AI)
+  - Notification quando direzione "stabilizza" (Sprint E)
+  - Team intelligence cross-relationships (Sprint E)
+
+  **Files touched** (Sprint D · 8 files):
+  - `supabase/migrations/090_design_direction_engine.sql`
+  - `backend/scripts/apply_migration_090.py`
+  - `backend/services/design_direction_distiller.py`
+  - `backend/routers/design_direction.py`
+  - `backend/server.py` (router mount)
+  - `frontend/src/lib/designDirection.js`
+  - `frontend/src/components/direction/DesignDirectionPanel.{jsx,css}`
+  - `frontend/src/pages/client/ClientJourneysIndexPage.jsx`
+
+
+## 📌 Sprint Status (latest)
 - **ITER151 · SPRINT C · Orchestra · Booking + Presence + Ownership** · ✅ DELIVERED · 25 May 2026
 
   **🎯 Goal**: trasformare le richieste di incontro in flussi reali

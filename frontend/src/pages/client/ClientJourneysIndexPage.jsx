@@ -12,6 +12,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
 import { useT as useBlueprintT, useBlueprint } from '../../contexts/BlueprintContext';
 import { tm } from '../../i18n/translation-memory';
+import DesignDirectionPanel from '../../components/direction/DesignDirectionPanel';
 import './client-companion.css';
 
 const fmtDate = (iso, locale) => {
@@ -144,6 +145,10 @@ const ClientJourneysIndexPage = () => {
                'Lo studio sta preparando il primo capitolo del vostro percorso.')}
           </p>
         </div>
+        {/* ITER152 Sprint D · Your Design Direction™ available from day one */}
+        <section className="cj-section" style={{ marginTop: 40 }} data-testid="client-direction-section">
+          <DesignDirectionPanel variant="client" locale={(locale || 'it').slice(0, 2)} />
+        </section>
       </div>
     );
   }
@@ -189,6 +194,11 @@ const ClientJourneysIndexPage = () => {
           </div>
         </section>
       )}
+
+      {/* ITER152 Sprint D · Your Design Direction™ — visible at every visit */}
+      <section className="cj-section" data-testid="client-direction-section" style={{ marginTop: 32 }}>
+        <DesignDirectionPanel variant="client" locale={(locale || 'it').slice(0, 2)} />
+      </section>
 
       {/* Memoria della casa — archivio sobrio */}
       {archived.length > 0 && (

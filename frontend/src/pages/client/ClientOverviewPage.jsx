@@ -17,6 +17,7 @@ import {
   fireJourneyResumed,
 } from '../../lib/relationshipEngine';
 import CallBookingModal from '../../components/booking/CallBookingModal';
+import DesignDirectionPanel from '../../components/direction/DesignDirectionPanel';
 import ClientWelcomeHero from '../../components/client/ClientWelcomeHero';
 import ClientHumanCard from '../../components/client/ClientHumanCard';
 import HowItWorksSection from '../../components/client/HowItWorksSection';
@@ -103,6 +104,10 @@ const ZeroDataExperience = () => {
       <ClientWelcomeHero onPrimary={handleBrief} onSecondary={handleCall} onTertiary={handleProc} />
       <div className="mt-8">
         <ClientHumanCard onBriefClick={handleBrief} />
+      </div>
+      {/* ITER152 Sprint D · Your Design Direction™ */}
+      <div className="mt-8">
+        <DesignDirectionPanel variant="client" locale="it" />
       </div>
       <HowItWorksSection />
       <WhatYouWillFindSection />

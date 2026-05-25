@@ -209,6 +209,9 @@ api_router.include_router(relationship_conversation.router, prefix="/conversatio
 # ITER151 · SPRINT C · Orchestra · Booking + Presence + Ownership
 from routers import relationship_orchestra  # noqa: E402
 api_router.include_router(relationship_orchestra.router, prefix="/orchestra", tags=["orchestra"])
+# ITER152 · SPRINT D · Design Direction™
+from routers import design_direction  # noqa: E402
+api_router.include_router(design_direction.router, prefix="/direction", tags=["direction"])
 api_router.include_router(magazine.router, prefix="/magazine", tags=["magazine"])
 api_router.include_router(editorial_calendar.router, prefix="/blueprint/calendar", tags=["editorial-calendar"])
 api_router.include_router(advisor_network.router, tags=["advisor-network"])
