@@ -1,13 +1,18 @@
 /**
- * NotificationBell + Drawer — ITER153 Sprint E
+ * NotificationBell + Drawer — ITER154 Notifications Activation
  *
- * Compact bell with editorial cyan glow + unread badge.
- * Click → side drawer with notifications grouped by Today / Yesterday /
- * Earlier. Polling 3s. NO red aggressive icons.
+ * Refinements over Sprint E:
+ *   - 4 buckets (Oggi · Ieri · Questa settimana · Prima)
+ *   - Editorial empty state ("Le tue relazioni stanno respirando lentamente.")
+ *   - Soft priority glow (quiet · normal · high)
+ *   - Favicon unread badge (dynamic canvas dot)
+ *   - Smoother enter/exit transitions
+ *   - Polling 3s, dedup-friendly
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Bell, X } from 'lucide-react';
 import { listNotifications, unreadCount, markNotifRead, markAllNotifRead } from '../../lib/studioOrchestra';
+import useFaviconBadge from '../../lib/useFaviconBadge';
 import './notification-bell.css';
 
 const POLL_MS = 3000;
@@ -25,30 +30,60 @@ const fmt = (iso) => {
 const groupBy = (items) => {
   const now = new Date();
   const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-  const t = startOfDay(now);
-  const y = t - 86400 * 1000;
-  const buckets = { today: [], yesterday: [], earlier: [] };
+  const today = startOfDay(now);
+  const yesterday = today - 86400 * 1000;
+  const weekAgo = today - 6 * 86400 * 1000;
+  const buckets = { today: [], yesterday: [], this_week: [], earlier: [] };
   for (const n of items) {
     const ts = new Date(n.created_at).getTime();
-    if (ts >= t) buckets.today.push(n);
-    else if (ts >= y) buckets.yesterday.push(n);
+    if (ts >= today) buckets.today.push(n);
+    else if (ts >= yesterday) buckets.yesterday.push(n);
+    else if (ts >= weekAgo) buckets.this_week.push(n);
     else buckets.earlier.push(n);
   }
   return buckets;
 };
 
-const NotificationBell = ({ locale = 'it', placement = 'header' }) => {
+const LABELS = {
+  it: {
+    today: 'Oggi',
+    yesterday: 'Ieri',
+    this_week: 'Questa settimana',
+    earlier: 'Prima',
+    empty_title: 'Le tue relazioni stanno respirando lentamente.',
+    empty_sub: 'Tornerà presto qualcosa da ascoltare.',
+    eyebrow: 'Risonanze',
+    title: 'Cosa accade nelle tue relazioni',
+    mark_all: 'Segna tutto come letto',
+  },
+  en: {
+    today: 'Today',
+    yesterday: 'Yesterday',
+    this_week: 'This week',
+    earlier: 'Earlier',
+    empty_title: 'Your relationships are breathing slowly.',
+    empty_sub: 'Something will return to listen to, soon.',
+    eyebrow: 'Resonances',
+    title: 'What is happening in your relationships',
+    mark_all: 'Mark all as read',
+  },
+};
+
+const NotificationBell = ({ locale = 'it' }) => {
   const [open, setOpen] = useState(false);
   const [unread, setUnread] = useState(0);
   const [items, setItems] = useState([]);
   const pollRef = useRef(null);
+  const L = LABELS[locale] || LABELS.it;
+
+  useFaviconBadge(unread);
 
   const refresh = useCallback(async () => {
     try {
       const { data: c } = await unreadCount();
       setUnread(c?.count || 0);
       if (open) {
-        const { data: d } = await listNotifications({ limit: 50 });
+        const { data: d } = await listNotifications({ limit: 60 });
         setItems(d?.data || []);
       }
     } catch { /* silent */ }
@@ -60,12 +95,11 @@ const NotificationBell = ({ locale = 'it', placement = 'header' }) => {
     return () => clearInterval(pollRef.current);
   }, [refresh]);
 
-  // When drawer opens, fetch full list
   useEffect(() => {
     if (open) {
       (async () => {
         try {
-          const { data } = await listNotifications({ limit: 50 });
+          const { data } = await listNotifications({ limit: 60 });
           setItems(data?.data || []);
         } catch { /* silent */ }
       })();
@@ -86,6 +120,12 @@ const NotificationBell = ({ locale = 'it', placement = 'header' }) => {
   };
 
   const buckets = groupBy(items);
+  const bucketsOrdered = [
+    ['today', buckets.today],
+    ['yesterday', buckets.yesterday],
+    ['this_week', buckets.this_week],
+    ['earlier', buckets.earlier],
+  ];
 
   return (
     <>
@@ -98,7 +138,9 @@ const NotificationBell = ({ locale = 'it', placement = 'header' }) => {
       >
         <Bell size={16} strokeWidth={1.6} />
         {unread > 0 && (
-          <span className="nb__badge" data-testid="notification-bell-badge">{unread > 99 ? '99+' : unread}</span>
+          <span className="nb__badge" data-testid="notification-bell-badge">
+            {unread > 99 ? '99+' : unread}
+          </span>
         )}
       </button>
 
@@ -108,10 +150,8 @@ const NotificationBell = ({ locale = 'it', placement = 'header' }) => {
           <aside className="nb-drawer" role="dialog" data-testid="notification-drawer">
             <header className="nb-drawer__head">
               <div>
-                <p className="nb-drawer__eyebrow">{locale === 'it' ? 'Risonanze' : 'Resonances'}</p>
-                <h3 className="nb-drawer__title">
-                  {locale === 'it' ? 'Cosa accade nelle tue relazioni' : 'What is happening in your relationships'}
-                </h3>
+                <p className="nb-drawer__eyebrow">{L.eyebrow}</p>
+                <h3 className="nb-drawer__title">{L.title}</h3>
               </div>
               <button className="nb-drawer__close" onClick={() => setOpen(false)} aria-label="close">
                 <X size={16} />
@@ -120,25 +160,20 @@ const NotificationBell = ({ locale = 'it', placement = 'header' }) => {
 
             {unread > 0 && (
               <button className="nb-drawer__markall" onClick={markAll} data-testid="nb-mark-all-read">
-                {locale === 'it' ? 'Segna tutto come letto' : 'Mark all as read'}
+                {L.mark_all}
               </button>
             )}
 
             {items.length === 0 && (
-              <p className="nb-drawer__empty">
-                {locale === 'it'
-                  ? 'Per ora silenzio. Le tue relazioni stanno respirando.'
-                  : 'Quiet for now. Your relationships are breathing.'}
-              </p>
+              <div className="nb-drawer__empty" data-testid="nb-empty">
+                <p className="nb-drawer__empty-title">{L.empty_title}</p>
+                <p className="nb-drawer__empty-sub">{L.empty_sub}</p>
+              </div>
             )}
 
-            {Object.entries(buckets).map(([k, arr]) => arr.length > 0 && (
+            {bucketsOrdered.map(([k, arr]) => arr.length > 0 && (
               <section key={k} className="nb-bucket">
-                <p className="nb-bucket__head">
-                  {k === 'today' ? (locale === 'it' ? 'Oggi' : 'Today')
-                    : k === 'yesterday' ? (locale === 'it' ? 'Ieri' : 'Yesterday')
-                    : (locale === 'it' ? 'Prima' : 'Earlier')}
-                </p>
+                <p className="nb-bucket__head">{L[k]}</p>
                 <ul className="nb-list">
                   {arr.map(n => (
                     <li
@@ -150,7 +185,7 @@ const NotificationBell = ({ locale = 'it', placement = 'header' }) => {
                       <p className="nb-item__narrative">{n.narrative || n.title || n.notification_type}</p>
                       <p className="nb-item__meta">
                         <span>{fmt(n.created_at)}</span>
-                        <span className="nb-item__type">· {n.notification_type.replaceAll('_', ' ')}</span>
+                        <span className="nb-item__type">· {(n.notification_type || '').replaceAll('_', ' ')}</span>
                       </p>
                     </li>
                   ))}
