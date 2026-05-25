@@ -181,6 +181,22 @@ const FALLBACK = {
     ],
     rights: { it: '© 2026 MOOD for DESIGN. Tutti i diritti riservati.',
               en: '© 2026 MOOD for DESIGN. All rights reserved.' },
+    colophon: {
+      enabled: true,
+      left: {
+        it: '© 2026 MOOD for DESIGN™',
+        en: '© 2026 MOOD for DESIGN™',
+      },
+      center: {
+        it: { prefix: 'Questo servizio è fornito da ', link_label: 'MOOD for DESIGN', suffix: '' },
+        en: { prefix: 'This service is provided by ',  link_label: 'MOOD for DESIGN', suffix: '' },
+      },
+      center_link_href: 'https://www.moodfordesign.com',
+      right: {
+        it: 'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios',
+        en: 'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios',
+      },
+    },
   },
 };
 
@@ -503,6 +519,45 @@ const FinalCTA = ({ locale, copy }) => (
 );
 
 // ─────────────────────────────────────────────────────────────────────
+// FOOTER — Colophon (LEFT · CENTER · RIGHT) · CMS-driven, multilingual
+// ─────────────────────────────────────────────────────────────────────
+const FooterColophon = ({ locale, copy }) => {
+  const c = copy.footer.colophon;
+  if (!c || c.enabled === false) return null;
+  const center = (c.center && (c.center[locale] || c.center.en || c.center.it)) || null;
+  const linkHref = c.center_link_href || 'https://www.moodfordesign.com';
+  return (
+    <div className="mfd-colophon" role="contentinfo" data-testid="footer-colophon">
+      <div className="mfd-colophon__inner">
+        <p className="mfd-colophon__col mfd-colophon__col--left" data-testid="colophon-left">
+          {L(c.left, locale)}
+        </p>
+        <p className="mfd-colophon__col mfd-colophon__col--center" data-testid="colophon-center">
+          {center ? (
+            <>
+              <span>{center.prefix}</span>
+              <a
+                href={linkHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mfd-colophon__link"
+                data-testid="colophon-center-link"
+              >
+                {center.link_label}
+              </a>
+              {center.suffix ? <span>{center.suffix}</span> : null}
+            </>
+          ) : null}
+        </p>
+        <p className="mfd-colophon__col mfd-colophon__col--right" data-testid="colophon-right">
+          {L(c.right, locale)}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────
 // FOOTER
 // ─────────────────────────────────────────────────────────────────────
 const SiteFooter = ({ locale, copy }) => (
@@ -532,9 +587,7 @@ const SiteFooter = ({ locale, copy }) => (
       </div>
       <div className="mfd-footer__rights">{L(copy.footer.rights, locale)}</div>
     </div>
-    <div className="mfd-footer__blueprint" aria-label="Blueprint OS">
-      <span>© 2026 Blueprint OS™</span>
-    </div>
+    <FooterColophon locale={locale} copy={copy} />
   </footer>
 );
 
