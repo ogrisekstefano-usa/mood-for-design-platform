@@ -58,3 +58,4 @@ export const FeaturesPage  = () => <SitePage slug="features" />;
 export const PricingPage   = () => <SitePage slug="pricing" />;
 export const TrainingPage  = () => <SitePage slug="training" />;
 export const SupportPage   = () => <SitePage slug="support" />;
+export const LoginSitePage = () => <SitePage slug="login" />;

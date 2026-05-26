@@ -209,7 +209,18 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **Auto-discoverable from Page Editor**: blocks flat-named (`item_01_eyebrow`...`item_15_body`), media slots flat-named (`item_01`...`item_15`) → all editable inline without backend changes.
 - Validated visually on `/caratteristiche`: hero + 5 numbered feature rows public; 49 editable input slots in admin.
 
-### ITER151e — Unified panoramic hero pattern (Feb 2026)
+### ITER151g — Support / Training / Login redesign + chrome polish (Feb 2026)
+- **Nav + Footer chrome** updated: navbar `rgba(18,18,18,0.78)` with 18px backdrop-blur + 140% saturation (scrolled state), footer `rgba(18,18,18,0.92)`. Hairline borders `rgba(255,255,255,0.06)`. Mobile panel matches.
+- **4 new section renderers** registered in `SECTION_REGISTRY`:
+  - `support_hero` — panoramic hero + global search bar with teal submit + 4 quick-access icon cards (BookOpen / HelpCircle / MessageSquare / Activity from lucide-react)
+  - `editorial_card_grid` — flexible card grid: `options.columns` (2|3|4), `options.featured_last` (full-span Academy-style), `options.background` (#000|#0A0A0A). Each card: eyebrow + serif title + body + teal CTA arrow link + photo bleeding from bottom-right corner via diagonal mask (or full right-pane image when `featured_last`).
+  - `training_hero` — split editorial hero (text left, photo right) with 3-line serif headline (each `title_line_N` on its own line) + body + dual CTA (outlined teal primary + ghost secondary)
+  - `login_hero` — panoramic hero + overlaid email/password form (frosted glass inputs, teal solid CTA) + "Non hai un account? Registrati" link. Auth backend still placeholder per PRD Phase D.
+- **Login route refactored**: `/accedi` (and locale variants) now flow through `SitePage('login')` → `LoginHero` from CMS. The legacy `LoginPage.jsx` standalone is no longer in the router. The new login content is fully editable from the Page Editor (Email/Password labels, CTA, register prompt, photo).
+- **Seed** `db/seed_iter151_pages_v2.py`: 60 editorial_blocks + 6 cms_sections across `/supporto`, `/formazione`, `/accedi`. Idempotent (deletes legacy `page_hero`/`page_intro` and existing variants before inserting).
+- **Tone**: Italian editorial sober register matches the user's mockups (Apple × Architectural Digest × Aman Journal). Default media slots cycle from latest library entries — replaceable via MediaPicker per slot.
+
+### ITER151f — Unified panoramic hero pattern (Feb 2026)
 - **Unified pattern** applied to all hero sections with a background photograph:
   `FeatureHeroSplit` (Caratteristiche), `PricingHeroCinematic` (Versioni e Prezzi), `PageHero` (Dedicato a / Formazione / Supporto / Accedi).
 - **Layout**: single-column, photo runs edge-to-edge (`width: 100%`, `object-fit: cover`, `object-position: center 35-40%`), panoramic height (`clamp(520-560px, 62-68vh, 720-780px)` — NOT full viewport).

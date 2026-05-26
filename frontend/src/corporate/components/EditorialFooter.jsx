@@ -77,9 +77,9 @@ const EditorialFooter = () => {
   return (
     <footer
       style={{
-        background: '#000000',
+        background: 'rgba(18,18,18,0.92)',
         color: 'var(--mood-text-1)',
-        borderTop: '1px solid var(--mood-line-soft)',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
       }}
       data-testid="editorial-footer"
     >

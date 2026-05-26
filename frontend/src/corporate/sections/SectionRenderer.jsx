@@ -13,6 +13,10 @@ import PricingHeroCinematic from './PricingHeroCinematic';
 import PricingPhilosophy from './PricingPhilosophy';
 import PricingTiersEditorial from './PricingTiersEditorial';
 import PricingEcosystemNote from './PricingEcosystemNote';
+import SupportHero from './SupportHero';
+import EditorialCardGrid from './EditorialCardGrid';
+import TrainingHero from './TrainingHero';
+import LoginHero from './LoginHero';
 
 import HeroCinematic from './HeroCinematic';
 import SelectedProjects from './SelectedProjects';
@@ -71,6 +75,12 @@ export const SECTION_REGISTRY = {
   pricing_philosophy:      PricingPhilosophy,
   pricing_tiers_editorial: PricingTiersEditorial,
   pricing_ecosystem_note:  PricingEcosystemNote,
+
+  // ITER151 — Support / Training / Login pages
+  support_hero:            SupportHero,
+  editorial_card_grid:     EditorialCardGrid,
+  training_hero:           TrainingHero,
+  login_hero:              LoginHero,
 
   // ITER149 — DB-driven sections
   hero_cinematic:       HeroCinematic,

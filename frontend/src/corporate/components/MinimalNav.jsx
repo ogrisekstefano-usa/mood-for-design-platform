@@ -67,8 +67,10 @@ const MinimalNav = () => {
     <nav
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
       style={{
-        background: showSolid ? '#000000' : 'transparent',
-        borderBottom: showSolid ? '1px solid var(--mood-line-soft)' : '1px solid transparent',
+        background: showSolid ? 'rgba(18,18,18,0.78)' : 'transparent',
+        backdropFilter: showSolid ? 'blur(18px) saturate(140%)' : 'none',
+        WebkitBackdropFilter: showSolid ? 'blur(18px) saturate(140%)' : 'none',
+        borderBottom: showSolid ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
       }}
       data-testid="minimal-nav"
     >
@@ -109,7 +111,7 @@ const MinimalNav = () => {
       {mobileOpen && (
         <div
           className="lg:hidden px-6 py-8 space-y-5 border-t"
-          style={{ background: '#000000', borderColor: 'var(--mood-line-soft)' }}
+          style={{ background: 'rgba(18,18,18,0.92)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', borderColor: 'rgba(255,255,255,0.06)' }}
           data-testid="mobile-nav-panel"
         >
           {[...main, ...right].map((item) => (

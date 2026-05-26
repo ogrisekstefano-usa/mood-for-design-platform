@@ -14,8 +14,8 @@ import {
   PricingPage,
   TrainingPage,
   SupportPage,
+  LoginSitePage,
 } from './pages/SitePages';
-import LoginPage from './pages/LoginPage';
 import ContactPage from './pages/ContactPage';
 import StartStudioPage from './pages/StartStudioPage';
 import { getAllSlugs } from './routes/localizedSlugs';
@@ -32,7 +32,7 @@ const PAGE_COMPONENTS = {
   pricing:  PricingPage,
   training: TrainingPage,
   support:  SupportPage,
-  login:    LoginPage,        // /login keeps the dedicated React component (form)
+  login:    LoginSitePage,    // /accedi now uses LoginHero from the CMS (login_hero section)
 };
 
 const renderLocalizedRoutes = () => {
