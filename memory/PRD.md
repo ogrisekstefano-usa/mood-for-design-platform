@@ -2,6 +2,85 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER154.R5 · Public site · header continuity + mobile menu bulletproof** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: rimuovere 3 bug critici di esperienza sul sito pubblico:
+  navbar che si scuriva facendo back dal browser, menu mobile sempre
+  visibile, layout discontinuo su `/begin-journey`.
+
+  **Bugs fixati**:
+
+  1. **Header scuro dopo back** (root cause: doppio header):
+     - `/begin-journey` era dentro `<SiteLayout />` che monta il
+       **vecchio `SiteHeader`** (`site/components/SiteHeader.jsx`)
+       con scroll-listener che applica
+       `.mfd-header--scrolled { background: rgba(17, 17, 17, 0.78); }`
+     - Quando navigavi a /begin-journey si aggiungeva un SECONDO
+       header (`MoodSiteHeader` mio + vecchio SiteHeader scuro)
+     - Andando back, il browser ripristinava un DOM con il vecchio
+       header ancora `--scrolled` → navbar dark sulla home
+     - **Fix**: spostato `<Route path="/begin-journey" />` FUORI da
+       `<SiteLayout>` in `App.js`
+     - Computed `mfd-header.backgroundColor` ora `rgba(245, 242, 237, 0.92)`
+       coerente su entrambi i path (verificato live)
+
+  2. **Layout discontinuo `/begin-journey`**:
+     - Pagina mostrava il proprio shell `.bj-shell` (full-screen
+       dark) senza header pubblico
+     - **Fix**: nuovo componente `MoodSiteHeader` condiviso
+       (estratto da HomePage), montato anche in BeginJourneyPage
+     - Aggiunto modifier `.bj-shell--embedded` che disabilita
+       `min-height: 100vh` e aggiunge `padding-top: 64px` per
+       lasciare respiro sotto l'header globale
+     - Anchor links `#how-it-works`, `#design-stories` ora
+       diventano `/#how-it-works` quando l'header è su pagina
+       diversa da `/` → l'utente torna home + scrolla al target
+
+  3. **Mobile menu sempre visibile** (bulletproof):
+     - CSS aggiunto `visibility: hidden; pointer-events: none`
+       sullo stato default `.mfd-mobile-menu`
+     - `.mfd-mobile-menu--open` ripristina `visibility: visible;
+       pointer-events: auto; transform: translateX(0)`
+     - `transition` con delay 360ms sul visibility quando chiude
+       per sincronizzare con la transition del transform
+     - JSX inline `style={{ visibility, pointerEvents }}` come
+       seconda linea di difesa contro override CSS futuri
+     - Hide su desktop (>1181px) con `display: none !important`
+       già esisteva
+
+  **New file**:
+  - `site/components/MoodSiteHeader.jsx` (~210 lines) — single
+    source of truth per il top chrome del sito editoriale cream
+
+  **Files touched** (5):
+  - `site/components/MoodSiteHeader.jsx` (NEW)
+  - `pages/site/HomePage.jsx` (importa + usa MoodSiteHeader)
+  - `pages/site/BeginJourneyPage.jsx` (wrap with MoodSiteHeader,
+    `.bj-shell--embedded`)
+  - `pages/site/home-iter150.css` (mobile menu visibility states)
+  - `styles/begin-journey.css` (embedded modifier)
+  - `App.js` (route `/begin-journey` fuori da SiteLayout)
+
+  **Verifica live**:
+  - Home → `header bg: rgba(245, 242, 237, 0.92)` ✓
+  - Click "INIZIA IL TUO VIAGGIO" → /begin-journey con stesso
+    header cream + 4 voci + CTA + form sotto ✓
+  - 1 sola `.mfd-header` sulla pagina (no più duplicate) ✓
+  - Browser back → home torna con header cream, no flash dark ✓
+  - Mobile (414px): menu chiuso = visibility:hidden + transform
+    translateX 399px (off-screen) ✓
+
+  **Architecturally**: il sito pubblico ora ha **un singolo
+  componente** per il top chrome (`MoodSiteHeader`). HomePage,
+  BeginJourneyPage e qualunque altra surface editoriale possono
+  riusarlo senza variazioni visuali. Le pagine sotto SiteLayout
+  (Magazine, Projects, Professionals) mantengono il vecchio
+  `SiteHeader` finché non saranno migrate — refactor opzionale
+  da fare in B (Editorial Copy CMS).
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER154.R4 · Public site · nav cleanup + marquee carousel** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: rifinire il sito pubblico — distribuzione del menu,

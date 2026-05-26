@@ -28,6 +28,7 @@ import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Plus } from 'lucide-react';
 import { useSite, SiteProvider } from '../../site/SiteContext';
+import MoodSiteHeader from '../../site/components/MoodSiteHeader';
 import { useStorefrontContent } from '../../site/useStorefrontContent';
 import StorefrontThemeProvider from '../../design-system/storefront/StorefrontThemeProvider';
 import SiteLocaleBridge from '../../site/SiteLocaleBridge';
@@ -675,7 +676,7 @@ const HomePageBody = () => {
 
   return (
     <div className="mfd-site" data-testid="public-home-page">
-      <SiteHeader locale={locale} copy={copy} onLocaleChange={onLocaleChange} />
+      <MoodSiteHeader locale={locale} copy={copy} onLocaleChange={onLocaleChange} />
       <main>
         <Hero locale={locale} copy={copy} />
         <TrustStrip locale={locale} copy={copy} />

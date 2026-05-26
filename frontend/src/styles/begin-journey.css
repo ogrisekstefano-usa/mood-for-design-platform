@@ -263,6 +263,13 @@
   position: relative;
   isolation: isolate;
 }
+/* When the form is embedded inside the public site shell, drop the
+   100vh height (the global header already sits above us) and let the
+   page scroll naturally. Container also stops forcing 100vh. */
+.bj-shell--embedded {
+  min-height: auto;
+}
+.bj-shell--embedded .bj-container { min-height: auto; padding-top: 64px; padding-bottom: 80px; }
 .bj-shell::before {
   content: '';
   position: absolute; inset: 0;

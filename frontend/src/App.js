@@ -325,13 +325,16 @@ function App() {
                   <Route path="/magazine" element={<MagazinePage />} />
                   <Route path="/magazine/:slug" element={<MagazineArticlePage />} />
                   <Route path="/start-project" element={<StartProjectWizard />} />
-                  <Route path="/begin-journey" element={<BeginJourneyPage />} />
                   <Route path="/begin-partnership" element={<BeginPartnershipPage />} />
                   <Route path="/journey/welcome/:token" element={<JourneyWelcomePage />} />
                   <Route path="/onboarding/:kind" element={<OnboardingPlaceholderPage />} />
                   <Route path="/professionals" element={<ProfessionalsGatewayPage />} />
                   <Route path="/professionals/intake" element={<ProfessionalIntakePage />} />
                 </Route>
+                {/* /begin-journey uses the HomePage-style header (MoodSiteHeader),
+                    NOT the SiteLayout wrapper — same look as / for visual
+                    continuity (ITER154.R5 fix). */}
+                <Route path="/begin-journey" element={<BeginJourneyPage />} />
 
                 {/* Locale-prefixed mirrors — strict BCP-47 segments only.
                     All public routes inherit SiteLayout. */}
