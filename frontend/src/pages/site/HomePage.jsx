@@ -24,6 +24,7 @@
  * each block without code changes.
  */
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Plus } from 'lucide-react';
 import { useSite, SiteProvider } from '../../site/SiteContext';
@@ -319,33 +320,40 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
       </div>
     </header>
 
-    {/* Mobile / tablet slide-down panel */}
-    <div
-      className={`mfd-mobile-menu ${menuOpen ? 'mfd-mobile-menu--open' : ''}`}
-      aria-hidden={!menuOpen}
-      data-testid="mobile-menu-panel"
-    >
-      <nav className="mfd-mobile-menu__nav" aria-label="Mobile">
-        <a href="#how-it-works" onClick={closeMenu}>{L(copy.nav.how_it_works, locale)}</a>
-        <Link to="/magazine" onClick={closeMenu}>{L(copy.nav.magazine, locale)}</Link>
-        <a href="#design-stories" onClick={closeMenu}>{L(copy.nav.design_stories, locale)}</a>
-        <a href="#materials" onClick={closeMenu}>{L(copy.nav.materials, locale)}</a>
-        <Link to="/professionals" onClick={closeMenu}>{L(copy.nav.professionals, locale)}</Link>
-        <a href="#footer" onClick={closeMenu}>{L(copy.nav.about, locale)}</a>
-      </nav>
-      <Link
-        to="/begin-journey"
-        className="mfd-cta mfd-cta--primary mfd-mobile-menu__cta"
-        onClick={closeMenu}
-        data-testid="mobile-menu-cta"
-      >
-        {L(copy.nav.cta, locale)}
-      </Link>
-      <Link to="/auth/login" className="mfd-mobile-menu__login" onClick={closeMenu}>
-        {L(copy.nav.login, locale)}
-      </Link>
-    </div>
-    {menuOpen && <div className="mfd-mobile-menu__overlay" onClick={closeMenu} />}
+    {/* Mobile / tablet slide-down panel — PORTALED to document.body
+        to escape parent transform/layout context, otherwise it would
+        leak into the page flow on desktop. */}
+    {createPortal(
+      <>
+        <div
+          className={`mfd-mobile-menu ${menuOpen ? 'mfd-mobile-menu--open' : ''}`}
+          aria-hidden={!menuOpen}
+          data-testid="mobile-menu-panel"
+        >
+          <nav className="mfd-mobile-menu__nav" aria-label="Mobile">
+            <a href="#how-it-works" onClick={closeMenu}>{L(copy.nav.how_it_works, locale)}</a>
+            <Link to="/magazine" onClick={closeMenu}>{L(copy.nav.magazine, locale)}</Link>
+            <a href="#design-stories" onClick={closeMenu}>{L(copy.nav.design_stories, locale)}</a>
+            <a href="#materials" onClick={closeMenu}>{L(copy.nav.materials, locale)}</a>
+            <Link to="/professionals" onClick={closeMenu}>{L(copy.nav.professionals, locale)}</Link>
+            <a href="#footer" onClick={closeMenu}>{L(copy.nav.about, locale)}</a>
+          </nav>
+          <Link
+            to="/begin-journey"
+            className="mfd-cta mfd-cta--primary mfd-mobile-menu__cta"
+            onClick={closeMenu}
+            data-testid="mobile-menu-cta"
+          >
+            {L(copy.nav.cta, locale)}
+          </Link>
+          <Link to="/auth/login" className="mfd-mobile-menu__login" onClick={closeMenu}>
+            {L(copy.nav.login, locale)}
+          </Link>
+        </div>
+        {menuOpen && <div className="mfd-mobile-menu__overlay" onClick={closeMenu} />}
+      </>,
+      document.body
+    )}
   </>
   );
 };

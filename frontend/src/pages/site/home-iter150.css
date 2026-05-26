@@ -1133,3 +1133,12 @@
 @media (max-width: 1180px) { .mat-tile { width: 168px; } }
 @media (max-width: 880px)  { .mat-tile { width: 148px; } }
 @media (max-width: 480px)  { .mat-tile { width: 132px; } }
+
+/* Belt-and-suspenders: hide mobile menu DOM entirely on desktop.
+   Even if React state went stale, no leakage on desktop. */
+@media (min-width: 1181px) {
+  .mfd-mobile-menu,
+  .mfd-mobile-menu__overlay {
+    display: none !important;
+  }
+}
