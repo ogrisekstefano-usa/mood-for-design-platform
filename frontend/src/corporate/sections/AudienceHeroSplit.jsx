@@ -3,13 +3,11 @@ import { Link } from 'react-router-dom';
 import { useReveal } from '../hooks/useReveal';
 
 /**
- * AudienceHeroSplit — split editorial hero.
+ * AudienceHeroSplit — panoramic editorial hero (now unified with the
+ * site-wide pattern used by Pricing / Support / Login / Page heroes).
  *
- * Solid black left panel (~46%) with eyebrow + serif title + body + CTA.
- * Cinematic photograph on the right (~54%) with subtle left-edge blend.
- *
- * Matches the "Dedicato a" mockup (library / atelier scene, woman
- * curating materials).
+ * Photo runs edge-to-edge; horizontal left-to-right black veil holds the
+ * editorial text in the top-left, container-aligned with the navigation.
  *
  * content: { eyebrow, title, body, cta_label }
  * media:   { background: { url, alt } }
@@ -21,24 +19,47 @@ const AudienceHeroSplit = ({ content = {}, media = {}, links = {} }) => {
 
   return (
     <section
-      className="relative overflow-hidden"
+      ref={ref}
+      className={`relative overflow-hidden reveal ${visible ? 'visible' : ''}`}
       style={{ background: '#000000', minHeight: 'clamp(640px, 82vh, 900px)' }}
       data-testid="audience-hero-split"
     >
+      {bg && bg.url && (
+        <img
+          src={bg.url}
+          alt={bg.alt || ''}
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%', objectFit: 'cover',
+            objectPosition: 'center 38%',
+          }}
+          loading="eager"
+        />
+      )}
+
+      {/* Left-to-right black veil */}
       <div
-        className="grid grid-cols-1 lg:grid-cols-[minmax(0,_46%)_1fr]"
+        aria-hidden
+        style={{
+          position: 'absolute', inset: 0,
+          background:
+            'linear-gradient(to right, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.94) 22%, rgba(0,0,0,0.78) 42%, rgba(0,0,0,0.5) 62%, rgba(0,0,0,0.18) 78%, rgba(0,0,0,0) 92%)',
+        }}
+      />
+
+      <div
+        className="relative z-10 flex items-center"
         style={{ minHeight: 'clamp(640px, 82vh, 900px)' }}
       >
-        {/* LEFT — text on solid black */}
         <div
-          ref={ref}
-          className={`relative z-10 flex items-center py-20 lg:py-28 reveal ${visible ? 'visible' : ''}`}
+          className="w-full"
           style={{
             paddingLeft: 'max(1.5rem, calc((100vw - 1536px) / 2 + 4rem))',
             paddingRight: 'clamp(1.5rem, 4vw, 3rem)',
+            paddingTop: '5rem', paddingBottom: '5rem',
           }}
         >
-          <div className="w-full max-w-[520px]">
+          <div className="max-w-[560px]">
             {content.eyebrow && (
               <p
                 style={{
@@ -70,7 +91,7 @@ const AudienceHeroSplit = ({ content = {}, media = {}, links = {} }) => {
                   fontFamily: 'Inter, sans-serif',
                   fontSize: 'clamp(1rem, 1.12vw, 1.08rem)',
                   lineHeight: 1.75, color: 'rgba(255,255,255,0.78)', fontWeight: 300,
-                  maxWidth: '44ch',
+                  maxWidth: '46ch',
                 }}
                 data-testid="audience-hero-body"
               >
@@ -80,7 +101,7 @@ const AudienceHeroSplit = ({ content = {}, media = {}, links = {} }) => {
             {content.cta_label && (
               <div className="mt-10 lg:mt-12">
                 <Link
-                  to={links.cta_href || '#chi-ci-rivolgiamo'}
+                  to={links.cta_href || '#a-chi-ci-rivolgiamo'}
                   style={{
                     display: 'inline-block',
                     fontFamily: 'Inter, sans-serif', fontSize: '0.82rem',
@@ -99,32 +120,6 @@ const AudienceHeroSplit = ({ content = {}, media = {}, links = {} }) => {
               </div>
             )}
           </div>
-        </div>
-
-        {/* RIGHT — cinematic photograph */}
-        <div className="relative" style={{ background: '#0A0A0A' }}>
-          {bg && bg.url && (
-            <>
-              <img
-                src={bg.url}
-                alt={bg.alt || ''}
-                style={{
-                  width: '100%', height: '100%', objectFit: 'cover',
-                  position: 'absolute', inset: 0,
-                }}
-                loading="eager"
-              />
-              {/* Subtle left-edge blend into the black text panel */}
-              <div
-                aria-hidden
-                style={{
-                  position: 'absolute', inset: 0,
-                  background:
-                    'linear-gradient(to right, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.35) 12%, rgba(0,0,0,0.08) 26%, rgba(0,0,0,0) 38%)',
-                }}
-              />
-            </>
-          )}
         </div>
       </div>
     </section>

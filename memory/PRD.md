@@ -209,6 +209,12 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **Auto-discoverable from Page Editor**: blocks flat-named (`item_01_eyebrow`...`item_15_body`), media slots flat-named (`item_01`...`item_15`) → all editable inline without backend changes.
 - Validated visually on `/caratteristiche`: hero + 5 numbered feature rows public; 49 editable input slots in admin.
 
+### ITER151j — Unified panoramic hero (Home / Audience / Training) + favicon + SEO meta polish (Feb 2026)
+- **`HeroEditorial` (Home)** rewritten to match the site-wide panoramic pattern: photo edge-to-edge with `object-position: center 40%`, unified horizontal veil (`0.98 → 0 over 0-92%`), text top-left aligned to nav container via `paddingLeft: max(1.5rem, calc((100vw - 1536px) / 2 + 4rem))`. CTAs: solid-teal primary + ghost outlined secondary (consistent with login/training).
+- **`AudienceHeroSplit`** + **`TrainingHero`** converted from split-column to the same panoramic pattern. Photo runs edge-to-edge (was confined to right column), veil is the unified strong gradient (was a soft 12-26% blend), text is top-left container-aligned. Body section + body-with-photo on /dedicato-a remains intact below the hero.
+- **Favicon** replaced: SVG inline icon (`/favicon.svg`) — 64×64 viewBox, `#121212` background + two outlined teal MOOD circles. Crisp at all DPRs, no PNG bloat. Apple-touch-icon still points to the full wordmark PNG.
+- **Document SEO meta (default)** expanded in `index.html`: Italian copy, `keywords`, `author`, `canonical`, `og:site_name`, `og:locale=it_IT`, `og:type=website`, `twitter:title/description`. Per-page meta still overridden dynamically by `SEOHead` (set from `cms_pages.locale_meta` via `SitePage`).
+
 ### ITER151i — Batch 2: Hero alignment + Favicon + SEO meta editor + Anchor sections + Mini markdown (Feb 2026)
 
 **Hero text alignment**
