@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { Instagram, Linkedin, Twitter, Youtube, Facebook, Globe, ChevronDown, Check } from 'lucide-react';
 import { useSiteFooter } from '../hooks/useSiteChrome';
 import { useLocale } from '../../contexts/LocaleContext';
 import { LOCALIZED_SLUGS, slugToCanonical } from '../routes/localizedSlugs';
+import { MoodLogo } from './CorporateNav';
 
 const SOCIAL_ICONS = {
   instagram: Instagram, linkedin: Linkedin, twitter: Twitter, x: Twitter,
@@ -11,9 +12,7 @@ const SOCIAL_ICONS = {
 };
 
 /**
- * Apple-style country/language picker (italy/italiano · united states/english …).
- * Each entry: { code, country, country_native, language }
- * `code` matches the locale codes used in LocaleContext.
+ * Apple-style country/language options. `code` matches LocaleContext locale codes.
  */
 const COUNTRY_OPTIONS = [
   { code: 'it',    country: 'Italia',         language: 'Italiano' },
@@ -24,26 +23,27 @@ const COUNTRY_OPTIONS = [
   { code: 'es',    country: 'España',         language: 'Español'  },
 ];
 
+const HEADING_STYLE = {
+  fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '0.78rem',
+  letterSpacing: '0.18em', textTransform: 'uppercase',
+  color: 'var(--mood-text-2)', marginBottom: '1.4rem',
+};
+
+const LINK_STYLE = {
+  fontFamily: 'Inter, sans-serif', fontSize: '0.9rem',
+  color: 'var(--mood-text-2)', textDecoration: 'none',
+  transition: 'color 0.2s',
+};
+
 const ColumnList = ({ heading, items, testid }) => (
   <div data-testid={testid}>
-    {heading && (
-      <p style={{
-        fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '0.78rem',
-        letterSpacing: '0.18em', textTransform: 'uppercase',
-        color: 'var(--mood-text-2)', marginBottom: '1.4rem',
-      }}>
-        {heading}
-      </p>
-    )}
+    {heading && <p style={HEADING_STYLE}>{heading}</p>}
     <ul className="space-y-3" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
       {items.map((L, i) => (
         <li key={L.key || i}>
           <a
             href={L.href || '#'}
-            style={{
-              fontFamily: 'Inter, sans-serif', fontSize: '0.9rem',
-              color: 'var(--mood-text-2)', textDecoration: 'none', transition: 'color 0.2s',
-            }}
+            style={LINK_STYLE}
             onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--mood-teal)')}
             onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--mood-text-2)')}
             data-testid={`footer-link-${L.key || i}`}
@@ -57,9 +57,8 @@ const ColumnList = ({ heading, items, testid }) => (
 );
 
 /**
- * CountryLanguagePicker — Apple-style central selector that displays a
- * "Country — Language" pill which opens a dropdown of every supported
- * locale. Communicates international presence at a glance.
+ * CountryLanguagePicker — Apple-style pill that opens upward, listing every
+ * supported locale. Entirely CMS-aware via the `locales` prop.
  */
 const CountryLanguagePicker = ({ locale, locales, onSelect }) => {
   const [open, setOpen] = useState(false);
@@ -92,18 +91,16 @@ const CountryLanguagePicker = ({ locale, locales, onSelect }) => {
         <span style={{ color: 'rgba(255,255,255,0.5)' }}>—</span>
         <span style={{ color: 'rgba(255,255,255,0.7)' }}>{current.language}</span>
         <ChevronDown size={14} strokeWidth={1.6} style={{ marginLeft: 4, opacity: 0.5,
-                       transform: open ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }} />
+          transform: open ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }} />
       </button>
 
       {open && (
         <>
-          {/* backdrop to close on outside click */}
           <div onClick={() => setOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 50 }} />
           <ul
             role="listbox"
             style={{
-              position: 'absolute', bottom: 'calc(100% + 0.5rem)', left: '50%',
-              transform: 'translateX(-50%)',
+              position: 'absolute', bottom: 'calc(100% + 0.5rem)', left: 0,
               minWidth: 280, padding: '0.4rem 0',
               background: 'rgba(18,18,18,0.98)',
               border: '1px solid rgba(255,255,255,0.1)',
@@ -179,20 +176,17 @@ const EditorialFooter = () => {
       }}
       data-testid="editorial-footer"
     >
-      <div className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 pt-14 pb-10">
-        {/* TOP: 2 link columns + social on the right */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
-          <ColumnList heading={navHeading}   items={navItems}   testid="footer-col-nav" />
-          <ColumnList heading={legalHeading} items={legalItems} testid="footer-col-legal" />
-
-          {social.length > 0 && (
-            <div data-testid="footer-col-social">
-              <p style={{
-                fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '0.78rem',
-                letterSpacing: '0.18em', textTransform: 'uppercase',
-                color: 'var(--mood-text-2)', marginBottom: '1.4rem',
-              }}>Social</p>
-              <div className="flex items-center gap-5">
+      <div className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 pt-16 pb-12">
+        {/* 4-column grid: Brand+Socials | Esplora | Legale | Language */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+          {/* Brand column — logo + social icons stacked underneath */}
+          <div data-testid="footer-col-brand">
+            <Link to="/" style={{ display: 'inline-block', marginBottom: '1.6rem', textDecoration: 'none' }}
+                  data-testid="footer-logo-link">
+              <MoodLogo compact />
+            </Link>
+            {social.length > 0 && (
+              <div className="flex items-center gap-5" data-testid="footer-socials">
                 {social.map((s, i) => {
                   const Icon = SOCIAL_ICONS[s.icon] || Instagram;
                   if (!s.href) return null;
@@ -210,28 +204,38 @@ const EditorialFooter = () => {
                   );
                 })}
               </div>
-            </div>
-          )}
+            )}
+          </div>
+
+          {/* Column 1: Esplora */}
+          <ColumnList heading={navHeading}   items={navItems}   testid="footer-col-nav" />
+
+          {/* Column 2: Legale */}
+          <ColumnList heading={legalHeading} items={legalItems} testid="footer-col-legal" />
+
+          {/* Column 3: Language / Country picker */}
+          <div data-testid="footer-col-locale">
+            <p style={HEADING_STYLE}>Lingua &amp; Paese</p>
+            <CountryLanguagePicker locale={locale} locales={locales} onSelect={onLocaleSelect} />
+          </div>
         </div>
 
-        {/* CENTERED Apple-style country/language picker */}
-        <div className="mt-14 pt-10 flex justify-center"
-             style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <CountryLanguagePicker locale={locale} locales={locales} onSelect={onLocaleSelect} />
-        </div>
-
-        {/* BOTTOM: copyright */}
+        {/* Copyright row */}
         {copyright && (
-          <p
-            className="mt-8 text-center"
-            style={{
-              fontFamily: 'Inter, sans-serif', fontSize: '0.78rem',
-              color: 'var(--mood-text-3)', letterSpacing: '0.02em',
-            }}
-            data-testid="footer-copyright"
+          <div
+            className="mt-14 pt-8"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
           >
-            {copyright}
-          </p>
+            <p
+              style={{
+                fontFamily: 'Inter, sans-serif', fontSize: '0.78rem',
+                color: 'var(--mood-text-3)', letterSpacing: '0.02em', margin: 0,
+              }}
+              data-testid="footer-copyright"
+            >
+              {copyright}
+            </p>
+          </div>
         )}
       </div>
     </footer>
