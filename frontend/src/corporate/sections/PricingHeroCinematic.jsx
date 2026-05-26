@@ -2,12 +2,11 @@ import React from 'react';
 import { useReveal } from '../hooks/useReveal';
 
 /**
- * PricingHeroCinematic — full-bleed cinematic hero for the Pricing page.
+ * PricingHeroCinematic — full-width panoramic hero.
  *
- * Visual register: interior photography (studio environment / workstation /
- * architectural light) as the foundation, with editorial typography
- * floating low-left. NOT a SaaS pricing hero — it reads like the cover
- * of an architectural journal.
+ * Photo runs edge-to-edge; a left-to-right black veil holds the editorial
+ * text in the top-left while the right side of the image breathes free.
+ * Height is panoramic (not full viewport), reading like a magazine spread.
  *
  * content: { eyebrow, title, subtitle }
  * media:   { background: { url, alt } }
@@ -19,11 +18,13 @@ const PricingHeroCinematic = ({ content = {}, media = {} }) => {
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden"
-      style={{ background: '#000000', minHeight: 'min(820px, 100vh)' }}
+      className={`relative overflow-hidden reveal ${visible ? 'visible' : ''}`}
+      style={{
+        background: '#000000',
+        minHeight: 'clamp(560px, 68vh, 780px)',
+      }}
       data-testid="pricing-hero-cinematic"
     >
-      {/* Background image */}
       {bg && bg.url && (
         <img
           src={bg.url}
@@ -31,28 +32,25 @@ const PricingHeroCinematic = ({ content = {}, media = {} }) => {
           style={{
             position: 'absolute', inset: 0,
             width: '100%', height: '100%', objectFit: 'cover',
-            opacity: 0.92,
+            objectPosition: 'center 40%',
           }}
           loading="eager"
         />
       )}
 
-      {/* Bottom gradient for legibility */}
+      {/* Left-to-right black veil */}
       <div
         aria-hidden
         style={{
           position: 'absolute', inset: 0,
           background:
-            'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.55) 25%, rgba(0,0,0,0.2) 55%, rgba(0,0,0,0) 80%)',
+            'linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.82) 22%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0.25) 62%, rgba(0,0,0,0) 82%)',
         }}
       />
 
-      {/* Editorial text block — low-left, like a magazine cover */}
-      <div
-        className={`relative z-10 flex flex-col justify-end reveal ${visible ? 'visible' : ''}`}
-        style={{ minHeight: 'min(820px, 100vh)' }}
-      >
-        <div className="px-6 md:px-12 lg:px-20 pb-20 lg:pb-28 max-w-screen-2xl mx-auto w-full">
+      {/* Editorial text block — top-left */}
+      <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-20 py-16 lg:py-24">
+        <div className="w-full max-w-[640px]">
           {content.eyebrow && (
             <p
               style={{
@@ -69,9 +67,9 @@ const PricingHeroCinematic = ({ content = {}, media = {} }) => {
             <h1
               style={{
                 fontFamily: 'Playfair Display, serif', fontWeight: 400,
-                fontSize: 'clamp(2.8rem, 5.4vw, 5.4rem)', lineHeight: 1.04,
+                fontSize: 'clamp(2.6rem, 4.8vw, 4.6rem)', lineHeight: 1.04,
                 letterSpacing: '-0.02em', color: '#FFFFFF',
-                maxWidth: '20ch',
+                maxWidth: '18ch',
               }}
               data-testid="pricing-hero-title"
             >
@@ -80,13 +78,13 @@ const PricingHeroCinematic = ({ content = {}, media = {} }) => {
           )}
           {content.subtitle && (
             <p
-              className="mt-8 lg:mt-10"
+              className="mt-7 lg:mt-9"
               style={{
                 fontFamily: 'Playfair Display, serif', fontStyle: 'italic',
                 fontWeight: 400,
-                fontSize: 'clamp(1.05rem, 1.3vw, 1.3rem)',
-                lineHeight: 1.65, color: 'rgba(255,255,255,0.82)',
-                maxWidth: '52ch',
+                fontSize: 'clamp(1.05rem, 1.25vw, 1.25rem)',
+                lineHeight: 1.6, color: 'rgba(255,255,255,0.82)',
+                maxWidth: '50ch',
               }}
               data-testid="pricing-hero-subtitle"
             >

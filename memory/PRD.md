@@ -209,6 +209,15 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **Auto-discoverable from Page Editor**: blocks flat-named (`item_01_eyebrow`...`item_15_body`), media slots flat-named (`item_01`...`item_15`) → all editable inline without backend changes.
 - Validated visually on `/caratteristiche`: hero + 5 numbered feature rows public; 49 editable input slots in admin.
 
+### ITER151e — Unified panoramic hero pattern (Feb 2026)
+- **Unified pattern** applied to all hero sections with a background photograph:
+  `FeatureHeroSplit` (Caratteristiche), `PricingHeroCinematic` (Versioni e Prezzi), `PageHero` (Dedicato a / Formazione / Supporto / Accedi).
+- **Layout**: single-column, photo runs edge-to-edge (`width: 100%`, `object-fit: cover`, `object-position: center 35-40%`), panoramic height (`clamp(520-560px, 62-68vh, 720-780px)` — NOT full viewport).
+- **Veil**: horizontal left-to-right black gradient
+  `linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.82) 22%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0.25) 62%, rgba(0,0,0,0) 82%)` — solid on the left for text contrast, fully transparent past 82%, letting the right side of the image breathe.
+- **Text overlay**: top-left, max-width 560-640px (eyebrow + serif title + body + CTA). Reads like a magazine spread.
+- The previous `FeatureHeroSplit` 46%/54% split layout has been replaced.
+
 ### ITER151d — Pricing page editorial ecosystem (Feb 2026)
 - **4 new section renderers** registered in `SECTION_REGISTRY`:
   - `pricing_hero_cinematic` — full-bleed cinematic environment hero with magazine-cover low-left typography (eyebrow · serif title · italic Playfair subtitle)

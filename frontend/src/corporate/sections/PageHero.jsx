@@ -2,9 +2,15 @@ import React from 'react';
 import { useReveal } from '../hooks/useReveal';
 
 /**
- * PageHero — minimal cinematic hero for the new ITER151 dynamic pages.
+ * PageHero — full-width panoramic hero for ITER151 dynamic pages.
+ *
+ * Photo runs edge-to-edge; a left-to-right black veil holds the text in
+ * the top-left while the right side of the image breathes. Panoramic
+ * height (not full viewport), reading like a magazine spread. Consistent
+ * with FeatureHeroSplit and PricingHeroCinematic.
+ *
  * content: { eyebrow, title, subtitle }
- * media:   { hero?: {url, alt} }   (optional background)
+ * media:   { hero?: {url, alt} }
  */
 const PageHero = ({ content = {}, media = {} }) => {
   const [ref, visible] = useReveal({ threshold: 0.15 });
@@ -12,81 +18,79 @@ const PageHero = ({ content = {}, media = {} }) => {
 
   return (
     <section
-      className="relative overflow-hidden"
-      style={{ background: '#000000', paddingTop: 'clamp(8rem, 14vh, 11rem)' }}
+      ref={ref}
+      className={`relative overflow-hidden reveal ${visible ? 'visible' : ''}`}
+      style={{
+        background: '#000000',
+        minHeight: 'clamp(520px, 62vh, 720px)',
+      }}
       data-testid="page-hero"
     >
       {bg && bg.url && (
-        <>
-          <img
-            src={bg.url}
-            alt={bg.alt || ''}
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ filter: 'brightness(0.55) saturate(0.95)', opacity: 0.55 }}
-            loading="eager"
-          />
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.85) 100%)',
-            }}
-          />
-        </>
+        <img
+          src={bg.url}
+          alt={bg.alt || ''}
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%', objectFit: 'cover',
+            objectPosition: 'center 38%',
+          }}
+          loading="eager"
+        />
       )}
 
+      {/* Left-to-right black veil */}
       <div
-        ref={ref}
-        className={`relative z-10 max-w-screen-xl mx-auto px-6 md:px-10 lg:px-16 pb-20 lg:pb-28 reveal ${visible ? 'visible' : ''}`}
-      >
-        {content.eyebrow && (
-          <p
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '0.72rem',
-              fontWeight: 500,
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              color: 'var(--mood-teal)',
-              marginBottom: '1.5rem',
-            }}
-            data-testid="page-hero-eyebrow"
-          >
-            {content.eyebrow}
-          </p>
-        )}
-        {content.title && (
-          <h1
-            style={{
-              fontFamily: 'Playfair Display, serif',
-              fontWeight: 400,
-              fontSize: 'clamp(2.4rem, 5vw, 4.4rem)',
-              lineHeight: 1.05,
-              letterSpacing: '-0.015em',
-              color: 'var(--mood-text-1)',
-              maxWidth: '22ch',
-            }}
-            data-testid="page-hero-title"
-          >
-            {content.title}
-          </h1>
-        )}
-        {content.subtitle && (
-          <p
-            className="mt-8"
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: 'clamp(1.05rem, 1.4vw, 1.18rem)',
-              lineHeight: 1.55,
-              color: 'var(--mood-text-2)',
-              maxWidth: '60ch',
-              fontWeight: 300,
-            }}
-            data-testid="page-hero-subtitle"
-          >
-            {content.subtitle}
-          </p>
-        )}
+        aria-hidden
+        style={{
+          position: 'absolute', inset: 0,
+          background:
+            'linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.82) 22%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0.25) 62%, rgba(0,0,0,0) 82%)',
+        }}
+      />
+
+      <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-20 py-16 lg:py-24">
+        <div className="w-full max-w-[620px]">
+          {content.eyebrow && (
+            <p
+              style={{
+                fontFamily: 'Inter, sans-serif', fontSize: '0.74rem', fontWeight: 500,
+                letterSpacing: '0.22em', textTransform: 'uppercase',
+                color: 'var(--mood-teal, #00C9B3)', marginBottom: '2.2rem',
+              }}
+              data-testid="page-hero-eyebrow"
+            >
+              {content.eyebrow}
+            </p>
+          )}
+          {content.title && (
+            <h1
+              style={{
+                fontFamily: 'Playfair Display, serif', fontWeight: 400,
+                fontSize: 'clamp(2.4rem, 4.6vw, 4.2rem)', lineHeight: 1.05,
+                letterSpacing: '-0.018em', color: '#FFFFFF',
+                maxWidth: '20ch',
+              }}
+              data-testid="page-hero-title"
+            >
+              {content.title}
+            </h1>
+          )}
+          {content.subtitle && (
+            <p
+              className="mt-7 lg:mt-9"
+              style={{
+                fontFamily: 'Inter, sans-serif',
+                fontSize: 'clamp(1rem, 1.15vw, 1.1rem)',
+                lineHeight: 1.7, color: 'rgba(255,255,255,0.78)', fontWeight: 300,
+                maxWidth: '48ch',
+              }}
+              data-testid="page-hero-subtitle"
+            >
+              {content.subtitle}
+            </p>
+          )}
+        </div>
       </div>
     </section>
   );
