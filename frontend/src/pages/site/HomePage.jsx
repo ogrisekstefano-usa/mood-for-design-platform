@@ -429,32 +429,67 @@ const Magazine = ({ locale, copy }) => {
 // ─────────────────────────────────────────────────────────────────────
 // DESIGN STORIES
 // ─────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────
+// DESIGN STORIES
+//
+// ITER157.B · Auto-fed from `published_design_journeys` (curated public
+// editorial layer). Each card represents a real completed Journey,
+// editorially frozen by the studio. Never auto-published.
+// ─────────────────────────────────────────────────────────────────────
+const usePublishedJourneys = (locale) => {
+  const [state, setState] = useState({ items: [], loading: true });
+  useEffect(() => {
+    let cancelled = false;
+    const loc = (locale === 'en') ? 'en-US' : (locale || 'it-IT');
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/public/published-journeys/${TENANT_SLUG}/feed?locale=${encodeURIComponent(loc)}&featured_only=true&limit=6`;
+    fetch(url)
+      .then((r) => r.ok ? r.json() : { items: [] })
+      .then((d) => { if (!cancelled) setState({ items: d.items || [], loading: false }); })
+      .catch(() => { if (!cancelled) setState({ items: [], loading: false }); });
+    return () => { cancelled = true; };
+  }, [locale]);
+  return state;
+};
+
 const DesignStories = ({ locale, copy }) => {
-  if (!copy.stories.cards || copy.stories.cards.length === 0) {
-    return <EmptyEditorialSlot section="featured_design_journeys" label="I Design Journey™ realizzati appariranno qui appena curati dal Blueprint." />;
+  const { items, loading } = usePublishedJourneys(locale === 'en' ? 'en-US' : 'it-IT');
+
+  if (loading) {
+    // No skeleton flash — keep the editorial silence until content lands.
+    return <section className="mfd-stories mfd-stories--loading" aria-hidden="true" />;
   }
+
+  if (!items || items.length === 0) {
+    return <EmptyEditorialSlot
+      section="featured_design_journeys"
+      label="Questa collezione è in corso di curation."
+      testid="empty-slot-design-stories"
+    />;
+  }
+
   return (
   <section id="design-stories" className="mfd-stories" data-testid="design-stories">
     <div className="mfd-stories__inner">
       <header className="mfd-section-head mfd-section-head--with-link">
         <div>
-          <p className="mfd-section-eyebrow">{L(copy.stories.eyebrow, locale)}</p>
-          <h2 className="mfd-section-title">{L(copy.stories.title, locale)}</h2>
+          <p className="mfd-section-eyebrow">{L(copy.stories.eyebrow, locale) || (locale === 'en' ? 'Design Stories' : 'Design Stories')}</p>
+          <h2 className="mfd-section-title">{L(copy.stories.title, locale) || (locale === 'en' ? 'Real journeys. Real spaces.' : 'Journey reali. Spazi reali.')}</h2>
         </div>
         <Link to="/projects" className="mfd-section-link" data-testid="stories-view-all">
-          {L(copy.stories.viewAll, locale)} <ArrowRight size={14} strokeWidth={1.6} />
+          {L(copy.stories.viewAll, locale) || (locale === 'en' ? 'View all journeys' : 'Vedi tutti i Journey')} <ArrowRight size={14} strokeWidth={1.6} />
         </Link>
       </header>
       <div className="mfd-stories__grid">
-        {copy.stories.cards.map((c) => (
-          <Link key={c.id} to={`/projects/${c.id}`} className="story-card" data-testid={`story-card-${c.id}`}>
+        {items.map((j) => (
+          <Link key={j.id} to={`/projects/${j.slug}`} className="story-card" data-testid={`story-card-${j.slug}`}>
             <div className="story-card__media">
-              <img src={c.image} alt="" loading="lazy" />
+              {j.hero_url ? <img src={j.hero_url} alt="" loading="lazy" /> : <div className="story-card__media-empty" aria-hidden="true" />}
             </div>
             <div className="story-card__body">
-              <p className="story-card__kind">{L(c.kind, locale)}</p>
-              <h3 className="story-card__title">{L(c.title, locale)}</h3>
-              <p className="story-card__excerpt">{L(c.excerpt, locale)}</p>
+              <p className="story-card__kind">{j.location || j.atmosphere || ''}</p>
+              <h3 className="story-card__title">{j.title}</h3>
+              {j.excerpt && <p className="story-card__excerpt">{j.excerpt}</p>}
+              {j.atmosphere && <p className="story-card__atmosphere" aria-hidden="true">— {j.atmosphere}</p>}
             </div>
           </Link>
         ))}

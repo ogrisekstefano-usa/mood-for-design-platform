@@ -1286,3 +1286,23 @@
   color: var(--color-cyan-dark, #009B8A);
   border-color: var(--color-cyan, #00C9B3);
 }
+
+/* ─────────────────────────────────────────────────────────────────
+ * ITER157.B · Published Design Journey™ card extensions
+ * ───────────────────────────────────────────────────────────────── */
+.story-card__atmosphere {
+  font-family: var(--font-serif, 'Cormorant Garamond', serif);
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(38, 38, 38, 0.62);
+  margin: 8px 0 0;
+  letter-spacing: 0.01em;
+}
+.story-card__media-empty {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: linear-gradient(135deg, #efeae1 0%, #e3dccf 100%);
+}
+.mfd-stories--loading {
+  min-height: 30vh;
+}

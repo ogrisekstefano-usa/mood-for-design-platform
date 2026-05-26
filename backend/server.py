@@ -227,6 +227,15 @@ api_router.include_router(editorial_copy_cms.router, prefix="/admin/editorial-co
 # ITER155.R2 · Editorial Runtime Overrides™ · public (non-admin) for useT()
 from routers import editorial_runtime_overrides  # noqa: E402
 api_router.include_router(editorial_runtime_overrides.router, prefix="/editorial-copy", tags=["editorial-copy"])
+
+# ITER157.B · Published Design Journeys™ · public + admin
+from routers import published_journeys  # noqa: E402
+api_router.include_router(published_journeys.router,
+                          prefix="/public/published-journeys",
+                          tags=["published-journeys"])
+api_router.include_router(published_journeys.admin_router,
+                          prefix="/admin/published-journeys",
+                          tags=["published-journeys"])
 api_router.include_router(magazine.router, prefix="/magazine", tags=["magazine"])
 api_router.include_router(editorial_calendar.router, prefix="/blueprint/calendar", tags=["editorial-calendar"])
 api_router.include_router(advisor_network.router, tags=["advisor-network"])

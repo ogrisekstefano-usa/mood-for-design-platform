@@ -2,6 +2,85 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER157.B · Published Design Journeys™ · Foundation (B.1)** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: connettere il livello operativo (Design Journey) al
+  livello editoriale pubblico (Published Design Journeys™) attraverso
+  un'infrastruttura curatoriale separata che mantiene la semantica
+  strategica intatta.
+
+  **Architettura (approvata utente)**
+  - `design_journeys`           → relazione operativa (CRM-like)
+  - `portfolio_projects`        → archivio portfolio
+  - `published_design_journeys` → **NUOVO** livello editoriale pubblico
+  - I tre layer NON si fondono mai. Editorial permanence: la pubblicazione
+    sopravvive alla cancellazione del Journey operativo.
+
+  **DB nuovo (migration 103)**
+  - `published_design_journeys` · spine canonica + visibility governance
+    (slug, title, editorial_excerpt, atmosphere, project_type, location,
+    year, hero_url, gallery_asset_ids[], material_tags JSONB, seo_*,
+    visibility_status, featured_order, homepage_featured, soft FK a
+    design_journey_id / portfolio_project_id, future linkage a
+    editorial_article_id / magazine_feature_id / cultural_edition_id)
+  - `published_design_journey_translations` · locale, status manual/ai,
+    generated_by, unique(published_journey_id, locale)
+  - Indici: feed homepage (tenant + homepage_featured + featured_order),
+    visibility (tenant + status + published_at), lookup translation
+
+  **Backend (`routers/published_journeys.py`)**
+  - **Public** (no auth): `GET /api/public/published-journeys/{tenant}/feed`
+    (locale-aware, featured-first, paginato, `empty_state: curating`),
+    `GET /api/public/published-journeys/{tenant}/{slug}`
+  - **Admin** (auth via `get_tenant_context`): list, create, PATCH,
+    archive (soft-delete, editorial permanence), upsert translation,
+    reorder bulk (drag-to-curate)
+  - Slug auto-univoco per tenant. Visibility states: draft|published|archived.
+
+  **Seed sample curato**
+  - `scripts/seed_sample_published_journeys.py` · 3 Published Journeys
+    inaugurali (Lugano Lake House · Brera Apartment · Tuscany Hills)
+    con traduzioni it-IT/en-US, atmosfere editoriali, location, anno,
+    material_tags, SEO bilingue, `homepage_featured=true`.
+  - Tenant: `studio`.
+
+  **Frontend HomePage**
+  - `usePublishedJourneys(locale)` hook che fetcha il feed pubblico.
+  - `DesignStories` section ora alimentata dai Published Journeys reali.
+    Card editoriale: hero_url cinematic, location uppercase, title,
+    editorial_excerpt, atmosphere line italic serif.
+  - Empty state grazioso: "Questa collezione è in corso di curation."
+  - Multi-locale: hook traduce `en` → `en-US` per la chiamata API.
+
+  **CSS**
+  - `.story-card__atmosphere` (italic serif), `.story-card__media-empty`
+    (linear-gradient warm placeholder), `.mfd-stories--loading` (silenzio
+    editoriale durante load — no skeleton flash).
+
+  **Test**
+  - 4/4 pytest passati in `backend/tests/test_published_journeys.py`:
+    feed returns items · locale en-US fallback chain · detail by slug ·
+    empty state for unknown tenant.
+
+  **File creati / modificati**
+  - ⨁ `supabase/migrations/103_published_design_journeys.sql`
+  - ⨁ `backend/scripts/apply_migration_103.py`
+  - ⨁ `backend/scripts/seed_sample_published_journeys.py`
+  - ⨁ `backend/routers/published_journeys.py`
+  - ⨁ `backend/tests/test_published_journeys.py`
+  - ↻ `backend/server.py` (mount router · prefix /public e /admin)
+  - ↻ `frontend/src/pages/site/HomePage.jsx` (`usePublishedJourneys`,
+    `DesignStories` rifattorizzato)
+  - ↻ `frontend/src/pages/site/home-iter150.css` (+15 righe card extension)
+
+  **Quello che MANCA in Sprint B (B.2 da fare):**
+  - **Editorial Publish Modal™** dentro il detail di un Design Journey
+    operativo (CTA "Pubblica nel portfolio editoriale" che apre modal
+    con tutti i campi editoriali)
+  - **Curation panel "Homepage Featured Design Journeys"** in
+    `/blueprint/experience` (multiselect, reorder drag, locale visibility,
+    cover override, atmosphere override, hero priority)
+
 - **ITER157.A · Public Editorial Infrastructure™ · Sprint A "Unify & Connect"** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: eliminare il contenuto hardcoded dalla HomePage pubblica
