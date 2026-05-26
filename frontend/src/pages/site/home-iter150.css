@@ -137,13 +137,16 @@
 
 .mfd-header {
   position: sticky !important; top: 0 !important; z-index: 50;
-  background: var(--mfd-bg);
+  background: var(--mfd-bg) !important;
+  color: var(--mfd-dark, #181513) !important;
   border-bottom: 1px solid var(--mfd-line);
   padding: 0 !important;
   display: block !important;
   left: auto !important; right: auto !important;
   width: 100% !important;
   box-sizing: border-box;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 .mfd-header__inner {
   box-sizing: border-box;

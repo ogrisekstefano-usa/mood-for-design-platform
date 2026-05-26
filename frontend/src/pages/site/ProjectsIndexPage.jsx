@@ -19,11 +19,31 @@ import { useSite } from '../../site/SiteContext';
 import { tenantConfig } from '../../site/content/tenant';
 import { toBcp47Storefront } from '../../site/localeBcp47';
 import { usePositioning, resolveCtaLabels } from '../../site/usePositioning';
-import { projects as fallbackProjects, projectCategories } from '../../site/content/projects';
+import { projectCategories } from '../../site/content/projects';
 import { uiContent } from '../../site/content/ui';
 import { Reveal, SiteImage } from '../../site/components/Reveal';
 
+// ITER157.B · `/projects` is now ALSO fed by published_design_journeys
+// (canonical public editorial layer). The legacy `portfolio_projects`
+// endpoint is consulted as a transitional secondary source only. The
+// hardcoded `fallbackProjects` (site/content/projects.js, 311 lines of
+// Unsplash fakes) has been REMOVED — no fake data ever again.
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+// Map a Published Design Journey item (from /api/public/published-journeys
+// feed) into the card shape consumed by `<ProjectCard>` runtime branch.
+const _adaptPublishedToCard = (j) => ({
+  slug:             j.slug,
+  title:            j.title,
+  subtitle:         j.excerpt,
+  cultural_angle:   j.atmosphere,
+  location:         j.location,
+  year:             j.year,
+  category:         j.project_type || 'residential',
+  cover_image_url:  j.hero_url,
+  material_palette: Array.isArray(j.material_tags) ? j.material_tags : [],
+  _source:          'published',
+});
 
 const EDITORIAL_LOADING = {
   'it-IT': 'Componendo l\'atmosfera editoriale…',
@@ -52,29 +72,39 @@ const ProjectsIndexPage = () => {
   const [usingFallback, setUsingFallback] = useState(false);
   const ui = uiContent.archive;
 
-  // Runtime bind to portfolio public endpoint.
+  // Runtime bind — ITER157.B resolution order:
+  //   1. /api/public/published-journeys/{tenant}/feed (canonical editorial)
+  //   2. /api/portfolio/public/{tenant}/projects     (legacy portfolio archive)
+  //   3. graceful empty editorial state               (no fake content)
   useEffect(() => {
     let alive = true;
     setItems(null); setUsingFallback(false);
     const bcp = toBcp47Storefront(locale);
-    const url = `${BACKEND_URL}/api/portfolio/public/${tenantConfig.slug}/projects?locale_code=${encodeURIComponent(bcp)}`;
-    axios.get(url)
+
+    const url1 = `${BACKEND_URL}/api/public/published-journeys/${tenantConfig.slug}/feed?locale=${encodeURIComponent(bcp)}&featured_only=false&limit=50`;
+    const url2 = `${BACKEND_URL}/api/portfolio/public/${tenantConfig.slug}/projects?locale_code=${encodeURIComponent(bcp)}`;
+
+    axios.get(url1)
       .then((r) => {
         if (!alive) return;
-        const list = r.data?.projects || [];
+        const list = (r.data?.items || []).map(_adaptPublishedToCard);
         if (list.length > 0) {
-          setItems(list);
-          setUsingFallback(false);
-        } else {
-          // Graceful fallback so the public site is never empty during onboarding.
-          setItems(fallbackProjects);
-          setUsingFallback(true);
+          setItems(list); setUsingFallback(false);
+          return;
         }
+        // Try legacy portfolio archive as a transitional secondary source.
+        return axios.get(url2).then((r2) => {
+          if (!alive) return;
+          const legacy = r2.data?.projects || [];
+          setItems(legacy);
+          setUsingFallback(false);  // legacy is real DB data, not hardcoded fakes
+        });
       })
       .catch(() => {
         if (!alive) return;
-        setItems(fallbackProjects);
-        setUsingFallback(true);
+        // No fake fallback — show graceful empty editorial state.
+        setItems([]);
+        setUsingFallback(false);
       });
     return () => { alive = false; };
   }, [locale]);
