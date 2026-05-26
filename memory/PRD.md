@@ -209,6 +209,18 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **Auto-discoverable from Page Editor**: blocks flat-named (`item_01_eyebrow`...`item_15_body`), media slots flat-named (`item_01`...`item_15`) → all editable inline without backend changes.
 - Validated visually on `/caratteristiche`: hero + 5 numbered feature rows public; 49 editable input slots in admin.
 
+### ITER151d — Pricing page editorial ecosystem (Feb 2026)
+- **4 new section renderers** registered in `SECTION_REGISTRY`:
+  - `pricing_hero_cinematic` — full-bleed cinematic environment hero with magazine-cover low-left typography (eyebrow · serif title · italic Playfair subtitle)
+  - `pricing_philosophy` — typographic intermezzo on black: left-rail eyebrow + italic Playfair headline + editorial body. No chrome.
+  - `pricing_tiers_editorial` — 3 vertical card tiers as "modalità operative" (Studio · Atelier · Maison): top environment photograph, eyebrow tag, serif title, italic editorial subtitle, body, typographic inclusions (hairlines, no bullets), italic secondary price, outlined CTA pill. Center tier marked as "Consigliato" via `options.featured_index`.
+  - `pricing_ecosystem_note` — closing 2-column block: editorial copy on the left + 3 outlined-serif numbered pillars (Onboarding curato · Formazione continua · Team dedicato) on the right. Elevates from "software pricing" to "ecosystem access".
+- **Seed** `db/seed_iter151_pricing.py`: 52 editorial_blocks (3 hero + 3 philosophy + 38 tier + 11 ecosystem) + 4 cms_sections (replaces page_hero / page_intro / pricing_cards on `pricing`). Idempotent.
+- **Default media** picked from latest 6 in library (cycled across hero + 3 tiers) — fully editable from the Page Editor MediaPicker.
+- **Tone**: Italian editorial, register "Apple × Architectural Digest × Aman Journal". Tier prices are italic secondary, never the protagonist. Copy says "modalità operative" instead of "piani". Three pillars surface onboarding + training + dedicated team without using the word "enterprise".
+- **Auto-discoverable from Page Editor**: all 52 blocks and 4 media slots flat-named → inline editable + MediaPicker-ready without backend changes.
+- **Bug fix**: `FeatureHeroSplit` gradient overlay diluted (max 0.55 alpha vs 0.95) and starts further left (0% → 78% vs 0% → 70%) per user feedback. The right-pane photograph now reads naturally without a heavy black wash on the left edge.
+
 ### ITER151c — Bug fix + AI auto-translate (Feb 2026)
 - **Bug fix**: `PUT /api/admin/site/sections/:id/media-slot` was failing with `ProgrammingError` due to `:s::jsonb` syntax (asyncpg parse conflict between bind params and PostgreSQL casts). Replaced with `CAST(:s AS jsonb)`. MediaPicker selection now works correctly.
 - **AI auto-translate** (Claude Sonnet 4.5 via `/api/ai/editorial/translate`):

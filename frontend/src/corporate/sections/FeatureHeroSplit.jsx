@@ -103,7 +103,7 @@ const FeatureHeroSplit = ({ content = {}, media = {}, links = {} }) => {
                 aria-hidden
                 style={{
                   position: 'absolute', inset: 0,
-                  background: 'linear-gradient(to right, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.75) 15%, rgba(0,0,0,0.45) 35%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0) 70%)',
+                  background: 'linear-gradient(to right, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.32) 18%, rgba(0,0,0,0.16) 38%, rgba(0,0,0,0.06) 58%, rgba(0,0,0,0) 78%)',
                 }}
               />
             </>

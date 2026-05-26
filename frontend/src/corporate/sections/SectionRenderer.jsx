@@ -9,6 +9,10 @@ import PageHero from './PageHero';
 import PageIntro from './PageIntro';
 import FeatureHeroSplit from './FeatureHeroSplit';
 import FeatureNumberedList from './FeatureNumberedList';
+import PricingHeroCinematic from './PricingHeroCinematic';
+import PricingPhilosophy from './PricingPhilosophy';
+import PricingTiersEditorial from './PricingTiersEditorial';
+import PricingEcosystemNote from './PricingEcosystemNote';
 
 import HeroCinematic from './HeroCinematic';
 import SelectedProjects from './SelectedProjects';
@@ -61,6 +65,12 @@ export const SECTION_REGISTRY = {
   // ITER151 — Features page (mockup-based)
   feature_hero_split:     FeatureHeroSplit,
   feature_numbered_list:  FeatureNumberedList,
+
+  // ITER151 — Pricing page (editorial ecosystem access)
+  pricing_hero_cinematic:  PricingHeroCinematic,
+  pricing_philosophy:      PricingPhilosophy,
+  pricing_tiers_editorial: PricingTiersEditorial,
+  pricing_ecosystem_note:  PricingEcosystemNote,
 
   // ITER149 — DB-driven sections
   hero_cinematic:       HeroCinematic,
