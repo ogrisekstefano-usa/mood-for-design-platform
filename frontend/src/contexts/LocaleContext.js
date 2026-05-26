@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import { LOCALIZED_SLUGS } from '../corporate/routes/localizedSlugs';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -31,7 +32,26 @@ const LocaleContext = createContext({
 
 export const LocaleProvider = ({ children }) => {
   const [locale, setLocaleState] = useState(() => {
-    return localStorage.getItem('mood-locale') || localStorage.getItem('mood_locale') || 'it';
+    const stored = localStorage.getItem('mood-locale') || localStorage.getItem('mood_locale');
+    // 1) Detect locale from URL path (e.g. /audience → en-us, /fonctionnalites → fr)
+    const path = typeof window !== 'undefined' ? window.location.pathname : '/';
+    for (const [, locales] of Object.entries(LOCALIZED_SLUGS)) {
+      for (const [code, slug] of Object.entries(locales)) {
+        if (slug === path) return code;
+      }
+    }
+    // 2) Fallback to stored, then browser language hint, then default 'it'
+    if (stored) return stored;
+    if (typeof navigator !== 'undefined') {
+      const lang = (navigator.language || '').toLowerCase();
+      if (lang.startsWith('en-gb')) return 'en-uk';
+      if (lang.startsWith('en'))    return 'en-us';
+      if (lang.startsWith('fr'))    return 'fr';
+      if (lang.startsWith('de'))    return 'de';
+      if (lang.startsWith('es'))    return 'es';
+      if (lang.startsWith('it'))    return 'it';
+    }
+    return 'it';
   });
   const [locales, setLocales] = useState([
     { code: 'it', name: 'Italiano', flag: 'IT' },

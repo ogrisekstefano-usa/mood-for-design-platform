@@ -217,8 +217,11 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **2 new section renderers**: `PageHero.jsx` (cinematic hero with optional bg), `PageIntro.jsx` (Playfair italic editorial intro + outline CTA pill). Both registered in `SECTION_REGISTRY`.
 - **Legacy redirects**: `/begin-journey` → `/dedicato-a`, `/professional-access` → `/accedi`.
 - **Seed script**: `db/seed_iter151_pages.py` — idempotent, 55 editorial_blocks + 6 cms_pages + 12 cms_sections + nav rewrite.
+- **Tenant locales**: `tenants.active_languages` updated to `[it, en-us, en-uk, fr, de, es]` (was `[it, en]`).
+- **Smart locale switcher** (`LocaleSwitcher.jsx` + `EditorialFooter.jsx`): when user changes locale on a localized page, it auto-navigates to the equivalent slug in the new locale (e.g. `/dedicato-a` IT → `/audience` EN, `/audience` EN → `/destine-a` FR, etc.). Validated E2E.
+- **Smart locale detection** (`LocaleContext.js`): on initial mount, if the current URL path matches a known localized slug, it auto-sets the locale accordingly — so direct visits to `/destine-a` immediately switch UI to FR.
 - **Tone**: Italian editorial copy (sober, cinematic, Apple × Architectural Digest × Aman Journal register). Non-IT locales inherit via fallback chain until Phase 3.
-- **Validated**: home + /caratteristiche + /versioni-prezzi all render correctly via screenshots.
+- **Validated**: home + /caratteristiche + /versioni-prezzi + /destine-a (FR) all render correctly via screenshots; locale switching round-trips via footer dropdown.
 
 ### Code review false-positive policy
 - All `is`/`is not` comparisons in the codebase are `is None` / `is not None` — **PEP 8 mandated**, do NOT change to `==`. Any tool reporting these as bugs is producing systematic false positives (lacks `R0124` whitelisting).

@@ -1,9 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, Globe } from 'lucide-react';
 import { useLocale } from '../../contexts/LocaleContext';
+import { LOCALIZED_SLUGS, slugToCanonical } from '../routes/localizedSlugs';
 
+/**
+ * LocaleSwitcher — when the user changes locale on a localized page
+ * (e.g. /dedicato-a in IT), it navigates to the equivalent localized path
+ * for the new locale (e.g. /audience in EN). Falls back to current path.
+ */
 const LocaleSwitcher = ({ dark = true }) => {
   const { locale, setLocale, locales, localeLabel } = useLocale();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -17,6 +26,21 @@ const LocaleSwitcher = ({ dark = true }) => {
   const menuBg       = dark ? 'rgba(10,19,32,0.95)' : '#FFFFFF';
   const menuBorder   = dark ? 'rgba(255,255,255,0.08)' : 'rgba(10,19,32,0.08)';
   const itemColor    = dark ? '#FFFFFF' : '#000000';
+
+  const onSelectLocale = (newLocale) => {
+    setLocale(newLocale);
+    setOpen(false);
+
+    // Smart route translation: if current path is a localized slug,
+    // navigate to the equivalent slug in the target locale.
+    const canonical = slugToCanonical(location.pathname);
+    if (canonical) {
+      const targetPath = LOCALIZED_SLUGS[canonical]?.[newLocale];
+      if (targetPath && targetPath !== location.pathname) {
+        navigate(targetPath, { replace: false });
+      }
+    }
+  };
 
   return (
     <div className="relative" ref={ref} data-testid="locale-switcher">
@@ -57,7 +81,7 @@ const LocaleSwitcher = ({ dark = true }) => {
           {locales.map(loc => (
             <button
               key={loc.code}
-              onClick={() => { setLocale(loc.code); setOpen(false); }}
+              onClick={() => onSelectLocale(loc.code)}
               className="w-full text-left transition-colors duration-150"
               style={{
                 padding: '0.7rem 1rem',

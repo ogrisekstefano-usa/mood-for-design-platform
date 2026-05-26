@@ -1,8 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Instagram, Linkedin, Twitter, Youtube } from 'lucide-react';
 import { useSiteFooter } from '../hooks/useSiteChrome';
 import { useLocale } from '../../contexts/LocaleContext';
+import { LOCALIZED_SLUGS, slugToCanonical } from '../routes/localizedSlugs';
 
 const SOCIAL_ICONS = { instagram: Instagram, linkedin: Linkedin, twitter: Twitter, youtube: Youtube, pinterest: Instagram };
 
@@ -52,6 +53,17 @@ const ColumnList = ({ heading, items, testid }) => (
 const EditorialFooter = () => {
   const { manifesto, copyright, links = [], legal = [], social = [] } = useSiteFooter();
   const { locale, locales, setLocale } = useLocale();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const onLocaleSelect = (newLocale) => {
+    setLocale(newLocale);
+    const canonical = slugToCanonical(location.pathname);
+    if (canonical) {
+      const target = LOCALIZED_SLUGS[canonical]?.[newLocale];
+      if (target && target !== location.pathname) navigate(target);
+    }
+  };
 
   // Group footer links by `group` setting
   const groups = {};
@@ -149,7 +161,7 @@ const EditorialFooter = () => {
             {locales.length > 0 && (
               <select
                 value={locale}
-                onChange={(e) => setLocale(e.target.value)}
+                onChange={(e) => onLocaleSelect(e.target.value)}
                 style={{
                   background: 'transparent',
                   border: '1px solid rgba(255,255,255,0.18)',
