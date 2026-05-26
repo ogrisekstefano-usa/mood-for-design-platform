@@ -392,6 +392,14 @@ const MediaActionEditor = ({ section, slotKey, onSaved }) => {
   const [busy, setBusy]     = useState(false);
   const [saved, setSaved]   = useState(false);
 
+  // Sync local state when section prop refreshes (after a save)
+  useEffect(() => {
+    setAction(stored.action || 'none');
+    setHref(stored.href   || '');
+    setTarget(stored.target || '_self');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [section.id, JSON.stringify(stored)]);
+
   const initial = { action: stored.action || 'none', href: stored.href || '', target: stored.target || '_self' };
   const dirty = action !== initial.action || (action === 'link' && (href !== initial.href || target !== initial.target));
 
@@ -570,10 +578,13 @@ const hasLinks = (section) => {
 
 // ── LinksEditor: edit CTA URL + open-in-new-tab per link key ───────────
 const LinksEditor = ({ section, onSaved }) => {
-  const initial = useMemo(() => ({ ...(section.settings?.links || {}) }), [section.id]);
+  const initial = useMemo(() => ({ ...(section.settings?.links || {}) }), [section.id, JSON.stringify(section.settings?.links)]);
   const [links, setLinks] = useState(initial);
   const [busy, setBusy]   = useState(false);
   const [saved, setSaved] = useState(false);
+
+  // Keep local state in sync with refreshed section prop (after save)
+  useEffect(() => { setLinks(initial); }, [initial]);
 
   const dirty = JSON.stringify(links) !== JSON.stringify(initial);
 

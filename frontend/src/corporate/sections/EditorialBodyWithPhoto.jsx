@@ -1,6 +1,7 @@
 import React from 'react';
 import { useReveal } from '../hooks/useReveal';
 import { renderInlineMarkdown } from '../utils/renderInlineMarkdown';
+import MediaTile from '../components/MediaTile';
 
 /**
  * EditorialBodyWithPhoto — magazine-style editorial body with a
@@ -14,9 +15,11 @@ import { renderInlineMarkdown } from '../utils/renderInlineMarkdown';
  * media:   { photo: { url, alt } }
  * options: { reverse?: boolean, background?: string }
  */
-const EditorialBodyWithPhoto = ({ content = {}, media = {}, options = {} }) => {
+const EditorialBodyWithPhoto = ({ content = {}, media = {}, mediaActions = {}, options = {} }) => {
   const [ref, visible] = useReveal({ threshold: 0.15 });
-  const photo = media.photo;
+  // Backwards-compat slot keys (CMS may use 'photo' OR 'hero' for the right-hand image)
+  const photoKey = media.photo ? 'photo' : (media.hero ? 'hero' : 'photo');
+  const photo = media[photoKey];
   const reverse = options.reverse === true;
   const bg = options.background || '#000000';
 
@@ -81,13 +84,12 @@ const EditorialBodyWithPhoto = ({ content = {}, media = {}, options = {} }) => {
           {/* Photograph */}
           <div style={{ direction: 'ltr', position: 'relative', aspectRatio: '4/5', overflow: 'hidden', background: '#0A0A0A' }}>
             {photo && photo.url && (
-              <img
-                src={photo.url}
-                alt={photo.alt || ''}
-                style={{
-                  width: '100%', height: '100%', objectFit: 'cover',
-                }}
-                loading="lazy"
+              <MediaTile
+                media={{ url: photo.url, alt: photo.alt, dominant_color: photo.dominant_color || '#0A0A0A' }}
+                action={mediaActions[photoKey]}
+                wrapperStyle={{ width: '100%', height: '100%' }}
+                imgStyle={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                testid="editorial-body-photo"
               />
             )}
           </div>
