@@ -1,0 +1,36 @@
+[
+  {
+    "id": "d01ec938-6055-431c-804f-8cfb6628fe3a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": null,
+    "client_user_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "assignee_user_id": "c3b5c672-1255-48de-b0e0-1bb57e4b1386",
+    "sender_user_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "recipient_user_id": "c3b5c672-1255-48de-b0e0-1bb57e4b1386",
+    "message_body": "Ciao Demo, aspetto un tuo contatto!",
+    "message_type": "client_message",
+    "visibility": "client_visible",
+    "status": "sent",
+    "created_at": "2026-05-24T17:30:30.680294+00:00",
+    "read_at": null,
+    "metadata_json": {},
+    "source_locale": null
+  },
+  {
+    "id": "87a77e32-b029-4be8-b7f9-4b489359f7f2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "project_id": null,
+    "client_user_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "assignee_user_id": "c3b5c672-1255-48de-b0e0-1bb57e4b1386",
+    "sender_user_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "recipient_user_id": "c3b5c672-1255-48de-b0e0-1bb57e4b1386",
+    "message_body": "ciao",
+    "message_type": "client_message",
+    "visibility": "client_visible",
+    "status": "sent",
+    "created_at": "2026-05-26T03:18:29.952106+00:00",
+    "read_at": null,
+    "metadata_json": {},
+    "source_locale": null
+  }
+]

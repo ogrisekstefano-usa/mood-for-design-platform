@@ -1,0 +1,303 @@
+[
+  {
+    "id": "c161c7a1-8afa-4b5a-b98d-f62bd81c76b9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "event_type": "briefing_completed",
+    "actor_type": "client",
+    "actor_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "actor_label": "Client Studio",
+    "narrative": "Client Studio ha completato il briefing iniziale.",
+    "payload": {
+      "summary": {
+        "atmosphere": "Warm Contemporary"
+      }
+    },
+    "visibility": "both",
+    "occurred_at": "2026-05-25T17:48:54.471302+00:00"
+  },
+  {
+    "id": "a6264df5-456e-4df4-8d77-c142b42e708b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "event_type": "call_requested",
+    "actor_type": "client",
+    "actor_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "actor_label": "Client Studio",
+    "narrative": "Client Studio ha richiesto una call.",
+    "payload": {
+      "note": "Vorrei discutere materiali",
+      "timezone": "Europe/Rome",
+      "call_request_id": "4bb16950-409a-4841-803f-d30bf7386e07",
+      "preferred_slots": []
+    },
+    "visibility": "both",
+    "occurred_at": "2026-05-25T17:48:55.634535+00:00"
+  },
+  {
+    "id": "2093df89-25b7-47ca-8163-38323ff6409f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "event_type": "moodboard_viewed",
+    "actor_type": "client",
+    "actor_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "actor_label": "Client Studio",
+    "narrative": "Client Studio sta esplorando il moodboard.",
+    "payload": {
+      "moodboard_id": null
+    },
+    "visibility": "both",
+    "occurred_at": "2026-05-25T17:48:56.609606+00:00"
+  },
+  {
+    "id": "8fe359d1-18b4-49e8-880f-e21260edfcfc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "event_type": "message_sent",
+    "actor_type": "client",
+    "actor_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "actor_label": "Client Studio",
+    "narrative": "Client Studio ha inviato un messaggio.",
+    "payload": {
+      "length": 37,
+      "preview": "Buongiorno, vorrei vedere i materiali",
+      "thread_id": null
+    },
+    "visibility": "both",
+    "occurred_at": "2026-05-25T17:48:57.587262+00:00"
+  },
+  {
+    "id": "c55e4ea9-9068-44b2-8ab0-52fa9c3f7872",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "event_type": "message_sent",
+    "actor_type": "client",
+    "actor_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "actor_label": "Studio",
+    "narrative": "Studio ha inviato un messaggio.",
+    "payload": {
+      "preview": "Buongiorno, vorrei discutere i materiali. Mi piace molto il rovere chiaro!",
+      "thread_id": "e105c1f9-a379-4653-a729-932471655f79",
+      "message_id": "3d5508b0-a047-491d-9dbd-8b8f293c6f34",
+      "message_type": "text"
+    },
+    "visibility": "both",
+    "occurred_at": "2026-05-25T18:01:53.360135+00:00"
+  },
+  {
+    "id": "4881707c-ac87-4a4f-b5a1-75bf9e67dc62",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "event_type": "message_sent",
+    "actor_type": "designer",
+    "actor_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "actor_label": "Studio",
+    "narrative": "Studio ha inviato un messaggio.",
+    "payload": {
+      "preview": "Perfetto. Il rovere chiaro è un punto di partenza eccellente — ti preparo una selezione di campioni materiali entro venerdì.",
+      "thread_id": "e105c1f9-a379-4653-a729-932471655f79",
+      "message_id": "bd19e419-1564-432b-95b5-055636526223",
+      "message_type": "text"
+    },
+    "visibility": "both",
+    "occurred_at": "2026-05-25T18:01:55.411595+00:00"
+  },
+  {
+    "id": "59243965-fc31-47b2-ab59-c18d1064f681",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "event_type": "call_requested",
+    "actor_type": "client",
+    "actor_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "actor_label": "Client Studio",
+    "narrative": "Client Studio ha richiesto una call · 3 slot proposti.",
+    "payload": {
+      "note": "Vorrei vedere la palette di rovere chiaro",
+      "timezone": "Europe/Rome",
+      "call_request_id": "1f29c57b-3b7a-4389-b1fc-edb0c9238ea2",
+      "preferred_slots": [
+        {
+          "tz": "Europe/Rome",
+          "start": "2026-05-26T10:00:00+02:00"
+        },
+        {
+          "tz": "Europe/Rome",
+          "start": "2026-05-27T15:00:00+02:00"
+        },
+        {
+          "tz": "Europe/Rome",
+          "start": "2026-05-28T09:00:00+02:00"
+        }
+      ],
+      "conversation_kind": "material_walk"
+    },
+    "visibility": "both",
+    "occurred_at": "2026-05-25T20:50:45.919004+00:00"
+  },
+  {
+    "id": "7e8ced64-92e4-4ee5-ae13-8a393b4bea74",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "event_type": "approval_confirmed",
+    "actor_type": "designer",
+    "actor_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "actor_label": "Stefano Ogrisek",
+    "narrative": "Stefano Ogrisek ha approvato.",
+    "payload": {
+      "slot": {
+        "tz": "Europe/Rome",
+        "start": "2026-05-27T15:00:00+02:00"
+      },
+      "booking_id": "1f29c57b-3b7a-4389-b1fc-edb0c9238ea2"
+    },
+    "visibility": "both",
+    "occurred_at": "2026-05-25T20:50:47.518673+00:00"
+  },
+  {
+    "id": "c95139de-4861-45d9-b3ed-06292013faac",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "event_type": "message_sent",
+    "actor_type": "client",
+    "actor_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "actor_label": "Client Studio",
+    "narrative": "Client Studio ha inviato un messaggio.",
+    "payload": {
+      "preview": "Test Sprint E — notification trigger",
+      "thread_id": "e105c1f9-a379-4653-a729-932471655f79",
+      "message_id": "8bcc276c-89fb-4e15-b83f-05a8ad4859b5",
+      "message_type": "text"
+    },
+    "visibility": "both",
+    "occurred_at": "2026-05-25T22:26:19.087361+00:00"
+  },
+  {
+    "id": "f4a10d1f-90ca-4310-a4fa-9df80a228052",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "event_type": "message_sent",
+    "actor_type": "client",
+    "actor_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "actor_label": "Marco",
+    "narrative": "Marco ha inviato un messaggio.",
+    "payload": {},
+    "visibility": "both",
+    "occurred_at": "2026-05-25T22:26:48.645560+00:00"
+  },
+  {
+    "id": "9f275355-9f5f-46b1-a4ed-3f902a9f5cb4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "event_type": "message_sent",
+    "actor_type": "client",
+    "actor_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "actor_label": "Client Studio",
+    "narrative": "Client Studio ha inviato un messaggio.",
+    "payload": {
+      "preview": "Test sprint F · prima nota",
+      "thread_id": "e105c1f9-a379-4653-a729-932471655f79",
+      "message_id": "ede33ba5-368b-49ff-be73-7e525e2e8481",
+      "message_type": "text"
+    },
+    "visibility": "both",
+    "occurred_at": "2026-05-25T22:40:00.417139+00:00"
+  },
+  {
+    "id": "9b4bc410-a960-4721-95ab-bce14b0c2673",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "event_type": "moodboard_viewed",
+    "actor_type": "client",
+    "actor_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "actor_label": "Client Studio",
+    "narrative": "Client Studio sta esplorando il moodboard.",
+    "payload": {
+      "moodboard_id": null
+    },
+    "visibility": "both",
+    "occurred_at": "2026-05-25T22:40:01.468263+00:00"
+  },
+  {
+    "id": "852709b8-e91d-4cf1-9f7a-459e6e9396cc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "event_type": "call_requested",
+    "actor_type": "client",
+    "actor_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "actor_label": "Client Studio",
+    "narrative": "Client Studio ha richiesto una call · 1 slot proposti.",
+    "payload": {
+      "note": "Test priority",
+      "timezone": "Europe/Rome",
+      "call_request_id": "acd48869-4109-42fd-8bf1-cec48e602fba",
+      "preferred_slots": [
+        {
+          "start": "2026-06-01T10:00:00+02:00"
+        }
+      ],
+      "conversation_kind": "material_walk"
+    },
+    "visibility": "both",
+    "occurred_at": "2026-05-25T22:40:02.396993+00:00"
+  },
+  {
+    "id": "7cf4ae57-d9de-4d14-b44d-c27d5cb8cbb2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "event_type": "message_sent",
+    "actor_type": "client",
+    "actor_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "actor_label": "Client Studio",
+    "narrative": "Client Studio ha inviato un messaggio.",
+    "payload": {
+      "preview": "Test sprint F · prima nota",
+      "thread_id": "e105c1f9-a379-4653-a729-932471655f79",
+      "message_id": "2027b6af-1560-42aa-a0f4-f3da3907f53a",
+      "message_type": "text"
+    },
+    "visibility": "both",
+    "occurred_at": "2026-05-25T22:40:03.264330+00:00"
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "233332fe-bae9-4b0b-ac9b-8647613771cc",
+    "studio_name": "Studio Persistence",
+    "slug": "studio-persistence",
+    "email": "sp@mood.dev",
+    "first_name": "Mario",
+    "last_name": "Rossi",
+    "role": "studio_owner",
+    "plan": "starter",
+    "locale_code": "en-us",
+    "status": "provisioning",
+    "tenant_id": null,
+    "created_at": "2026-05-15T12:59:14.355611+00:00"
+  },
+  {
+    "id": "ced5ac2d-fbe2-4908-be73-1ae09c339164",
+    "studio_name": "TEST Studio 1778850166",
+    "slug": "test-studio-1778850166",
+    "email": "o1778850166@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "role": "studio_owner",
+    "plan": "starter",
+    "locale_code": "en-us",
+    "status": "provisioning",
+    "tenant_id": null,
+    "created_at": "2026-05-15T13:02:47.299708+00:00"
+  }
+]

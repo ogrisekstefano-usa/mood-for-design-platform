@@ -1,0 +1,963 @@
+[
+  {
+    "id": "efaaf9f9-264f-4706-a086-fd30ef25321b",
+    "question_key": "space_typology",
+    "section_key": "space",
+    "question_type": "single",
+    "max_selections": null,
+    "options": [
+      {
+        "value": "residence",
+        "tag_cluster": [
+          "residential",
+          "private_living"
+        ]
+      },
+      {
+        "value": "apartment",
+        "tag_cluster": [
+          "residential",
+          "urban_living"
+        ]
+      },
+      {
+        "value": "villa",
+        "tag_cluster": [
+          "residential",
+          "large_estate",
+          "architectural_grade"
+        ]
+      },
+      {
+        "value": "penthouse",
+        "tag_cluster": [
+          "residential",
+          "urban_living",
+          "high_invest"
+        ]
+      },
+      {
+        "value": "showroom",
+        "tag_cluster": [
+          "retail",
+          "public_facing",
+          "brand_narrative"
+        ]
+      },
+      {
+        "value": "hospitality_hotel",
+        "tag_cluster": [
+          "hospitality",
+          "public_facing",
+          "complex_brief"
+        ]
+      },
+      {
+        "value": "hospitality_restaurant",
+        "tag_cluster": [
+          "hospitality",
+          "public_facing",
+          "sensorial_focus"
+        ]
+      },
+      {
+        "value": "office",
+        "tag_cluster": [
+          "corporate",
+          "workspace"
+        ]
+      },
+      {
+        "value": "retail",
+        "tag_cluster": [
+          "retail",
+          "public_facing",
+          "brand_narrative"
+        ]
+      },
+      {
+        "value": "yacht",
+        "tag_cluster": [
+          "mobility",
+          "luxury_segment",
+          "compact_complex"
+        ]
+      },
+      {
+        "value": "dedicated_space",
+        "tag_cluster": [
+          "specialty",
+          "custom_brief"
+        ]
+      }
+    ],
+    "is_required": true,
+    "display_order": 10,
+    "applies_to_lead_type": "private_client",
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:27.346535+00:00",
+    "updated_at": "2026-05-24T04:08:27.346535+00:00"
+  },
+  {
+    "id": "0b654b59-7c1a-4f90-9b0d-46b72d5127df",
+    "question_key": "space_size",
+    "section_key": "space",
+    "question_type": "single",
+    "max_selections": null,
+    "options": [
+      {
+        "value": "under_80",
+        "tag_cluster": [
+          "compact_scale"
+        ]
+      },
+      {
+        "value": "80_150",
+        "tag_cluster": [
+          "mid_scale"
+        ]
+      },
+      {
+        "value": "150_300",
+        "tag_cluster": [
+          "generous_scale"
+        ]
+      },
+      {
+        "value": "300_600",
+        "tag_cluster": [
+          "large_scale",
+          "complex_brief"
+        ]
+      },
+      {
+        "value": "over_600",
+        "tag_cluster": [
+          "extra_large_scale",
+          "complex_brief",
+          "architectural_grade"
+        ]
+      }
+    ],
+    "is_required": true,
+    "display_order": 20,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:27.613434+00:00",
+    "updated_at": "2026-05-24T04:08:27.613434+00:00"
+  },
+  {
+    "id": "8545aff1-cc94-4506-a9d4-cc2ae45a0441",
+    "question_key": "space_phase",
+    "section_key": "space",
+    "question_type": "single",
+    "max_selections": null,
+    "options": [
+      {
+        "value": "ideation",
+        "tag_cluster": [
+          "early_phase",
+          "exploration_mode"
+        ],
+        "intent_weight": 0.03
+      },
+      {
+        "value": "renovation",
+        "tag_cluster": [
+          "renovation_phase",
+          "active_phase"
+        ],
+        "intent_weight": 0.08
+      },
+      {
+        "value": "new_build",
+        "tag_cluster": [
+          "new_build",
+          "architectural_grade"
+        ],
+        "intent_weight": 0.08
+      },
+      {
+        "value": "restyling",
+        "tag_cluster": [
+          "restyling",
+          "light_touch"
+        ],
+        "intent_weight": 0.06
+      },
+      {
+        "value": "post_acquisition",
+        "tag_cluster": [
+          "post_acquisition",
+          "near_term_decision"
+        ],
+        "intent_weight": 0.1
+      }
+    ],
+    "is_required": true,
+    "display_order": 30,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:27.859645+00:00",
+    "updated_at": "2026-05-24T04:08:27.859645+00:00"
+  },
+  {
+    "id": "ae1b7228-195d-4add-9b32-fca9625f0298",
+    "question_key": "space_ownership",
+    "section_key": "space",
+    "question_type": "single",
+    "max_selections": null,
+    "options": [
+      {
+        "value": "owner",
+        "tag_cluster": [
+          "owner_decision_maker"
+        ],
+        "intent_weight": 0.04
+      },
+      {
+        "value": "tenant",
+        "tag_cluster": [
+          "tenant",
+          "constrained_decision"
+        ]
+      },
+      {
+        "value": "family_property",
+        "tag_cluster": [
+          "family_decision",
+          "multi_stakeholder"
+        ]
+      },
+      {
+        "value": "investor",
+        "tag_cluster": [
+          "investor",
+          "yield_orientation"
+        ],
+        "intent_weight": 0.04
+      },
+      {
+        "value": "corporate",
+        "tag_cluster": [
+          "corporate_decision",
+          "multi_stakeholder"
+        ]
+      }
+    ],
+    "is_required": false,
+    "display_order": 40,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:28.105815+00:00",
+    "updated_at": "2026-05-24T04:08:28.105815+00:00"
+  },
+  {
+    "id": "04b11795-c774-4235-aabb-8f50956c3b8e",
+    "question_key": "space_location_type",
+    "section_key": "space",
+    "question_type": "single",
+    "max_selections": null,
+    "options": [
+      {
+        "value": "city_center",
+        "tag_cluster": [
+          "urban_center",
+          "brand_visibility"
+        ]
+      },
+      {
+        "value": "residential_area",
+        "tag_cluster": [
+          "residential_calm"
+        ]
+      },
+      {
+        "value": "seaside",
+        "atmosphere": [
+          "mediterranean_light"
+        ],
+        "tag_cluster": [
+          "seaside",
+          "mediterranean_register"
+        ]
+      },
+      {
+        "value": "countryside",
+        "atmosphere": [
+          "warm_editorial"
+        ],
+        "tag_cluster": [
+          "countryside",
+          "slow_living"
+        ]
+      },
+      {
+        "value": "mountain",
+        "atmosphere": [
+          "nordic_silence"
+        ],
+        "tag_cluster": [
+          "mountain",
+          "alpine_register"
+        ]
+      },
+      {
+        "value": "historic_district",
+        "atmosphere": [
+          "contemporary_classic"
+        ],
+        "tag_cluster": [
+          "historic",
+          "heritage_brief"
+        ]
+      }
+    ],
+    "is_required": false,
+    "display_order": 50,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:28.355826+00:00",
+    "updated_at": "2026-05-24T04:08:28.355826+00:00"
+  },
+  {
+    "id": "d182f424-aebc-4182-ac32-5ff4fff234b1",
+    "question_key": "atmosphere_dominant",
+    "section_key": "atmosphere",
+    "question_type": "multi",
+    "max_selections": 3,
+    "options": [
+      {
+        "value": "nordic_silence",
+        "atmosphere": [
+          "nordic_silence"
+        ],
+        "tag_cluster": [
+          "nordic_register",
+          "minimalist_register"
+        ]
+      },
+      {
+        "value": "warm_editorial",
+        "atmosphere": [
+          "warm_editorial"
+        ],
+        "tag_cluster": [
+          "warm_register",
+          "editorial_aligned"
+        ]
+      },
+      {
+        "value": "architectural_dawn",
+        "atmosphere": [
+          "architectural_dawn"
+        ],
+        "tag_cluster": [
+          "architectural_register",
+          "light_aware"
+        ]
+      },
+      {
+        "value": "midnight_mood",
+        "atmosphere": [
+          "midnight_mood"
+        ],
+        "tag_cluster": [
+          "cinematic_register",
+          "dramatic_aligned"
+        ]
+      },
+      {
+        "value": "mediterranean_light",
+        "atmosphere": [
+          "mediterranean_light"
+        ],
+        "tag_cluster": [
+          "mediterranean_register",
+          "sun_aware"
+        ]
+      },
+      {
+        "value": "japandi",
+        "atmosphere": [
+          "japandi"
+        ],
+        "tag_cluster": [
+          "japandi_register",
+          "minimalist_register",
+          "tactile_calm"
+        ]
+      },
+      {
+        "value": "brutalist_calm",
+        "atmosphere": [
+          "brutalist_calm"
+        ],
+        "tag_cluster": [
+          "brutalist_register",
+          "architectural_grade"
+        ]
+      },
+      {
+        "value": "mid_century_refined",
+        "atmosphere": [
+          "mid_century_refined"
+        ],
+        "tag_cluster": [
+          "mid_century_register",
+          "craft_oriented"
+        ]
+      },
+      {
+        "value": "contemporary_classic",
+        "atmosphere": [
+          "contemporary_classic"
+        ],
+        "tag_cluster": [
+          "classic_register",
+          "heritage_aligned"
+        ]
+      }
+    ],
+    "is_required": true,
+    "display_order": 110,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:28.601460+00:00",
+    "updated_at": "2026-05-24T04:08:28.601460+00:00"
+  },
+  {
+    "id": "f702c758-9a06-4e8f-8624-a14530f4d67d",
+    "question_key": "mood_register",
+    "section_key": "atmosphere",
+    "question_type": "single",
+    "max_selections": null,
+    "options": [
+      {
+        "value": "minimal",
+        "tag_cluster": [
+          "minimal_register"
+        ],
+        "cultural_register": "editorial"
+      },
+      {
+        "value": "layered",
+        "tag_cluster": [
+          "layered_register",
+          "narrative_rich"
+        ],
+        "cultural_register": "concierge"
+      },
+      {
+        "value": "bold",
+        "tag_cluster": [
+          "bold_register",
+          "statement_oriented"
+        ],
+        "cultural_register": "consultative"
+      },
+      {
+        "value": "restrained",
+        "tag_cluster": [
+          "restrained_register",
+          "editorial_aligned"
+        ],
+        "cultural_register": "editorial"
+      },
+      {
+        "value": "sensorial",
+        "tag_cluster": [
+          "sensorial_register",
+          "tactile_complex"
+        ],
+        "cultural_register": "concierge"
+      }
+    ],
+    "is_required": true,
+    "display_order": 120,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:28.850286+00:00",
+    "updated_at": "2026-05-24T04:08:28.850286+00:00"
+  },
+  {
+    "id": "a73dbfdb-8034-4835-8d12-adcae6ef32bb",
+    "question_key": "light_preference",
+    "section_key": "atmosphere",
+    "question_type": "single",
+    "max_selections": null,
+    "options": [
+      {
+        "value": "cinematic_dim",
+        "atmosphere": [
+          "midnight_mood"
+        ],
+        "tag_cluster": [
+          "cinematic_light"
+        ]
+      },
+      {
+        "value": "natural_north",
+        "atmosphere": [
+          "nordic_silence"
+        ],
+        "tag_cluster": [
+          "northern_light"
+        ]
+      },
+      {
+        "value": "mediterranean_bright",
+        "atmosphere": [
+          "mediterranean_light"
+        ],
+        "tag_cluster": [
+          "mediterranean_light"
+        ]
+      },
+      {
+        "value": "mixed_warm",
+        "atmosphere": [
+          "warm_editorial"
+        ],
+        "tag_cluster": [
+          "warm_light",
+          "layered_register"
+        ]
+      },
+      {
+        "value": "dramatic_contrast",
+        "atmosphere": [
+          "midnight_mood"
+        ],
+        "tag_cluster": [
+          "dramatic_light",
+          "statement_oriented"
+        ]
+      }
+    ],
+    "is_required": false,
+    "display_order": 130,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:29.099515+00:00",
+    "updated_at": "2026-05-24T04:08:29.099515+00:00"
+  },
+  {
+    "id": "f71a754c-421a-4f09-9c25-0732a41936b9",
+    "question_key": "material_affinities",
+    "section_key": "material",
+    "question_type": "multi",
+    "max_selections": 4,
+    "options": [
+      {
+        "value": "marble",
+        "material": [
+          "marble"
+        ],
+        "tag_cluster": [
+          "luxury_materials",
+          "tactile_complex",
+          "architectural_grade"
+        ]
+      },
+      {
+        "value": "natural_wood",
+        "material": [
+          "wood"
+        ],
+        "tag_cluster": [
+          "warm_materials",
+          "craft_oriented"
+        ]
+      },
+      {
+        "value": "brushed_metal",
+        "material": [
+          "metal"
+        ],
+        "tag_cluster": [
+          "architectural_grade",
+          "industrial_register"
+        ]
+      },
+      {
+        "value": "textile_natural",
+        "material": [
+          "textile"
+        ],
+        "tag_cluster": [
+          "soft_materials",
+          "tactile_warm"
+        ]
+      },
+      {
+        "value": "glass",
+        "material": [
+          "glass"
+        ],
+        "tag_cluster": [
+          "transparent_register",
+          "architectural_grade"
+        ]
+      },
+      {
+        "value": "concrete",
+        "material": [
+          "concrete"
+        ],
+        "tag_cluster": [
+          "brutalist_register",
+          "architectural_grade"
+        ]
+      },
+      {
+        "value": "stone_porous",
+        "material": [
+          "stone"
+        ],
+        "tag_cluster": [
+          "natural_register",
+          "tactile_complex"
+        ]
+      },
+      {
+        "value": "leather",
+        "material": [
+          "leather"
+        ],
+        "tag_cluster": [
+          "luxury_materials",
+          "tactile_warm"
+        ]
+      },
+      {
+        "value": "ceramic_artisan",
+        "material": [
+          "ceramic"
+        ],
+        "tag_cluster": [
+          "craft_oriented",
+          "artisanal_register"
+        ]
+      },
+      {
+        "value": "lacquered_surfaces",
+        "material": [
+          "lacquer"
+        ],
+        "tag_cluster": [
+          "refined_materials",
+          "mid_century_register"
+        ]
+      }
+    ],
+    "is_required": true,
+    "display_order": 210,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:29.345289+00:00",
+    "updated_at": "2026-05-24T04:08:29.345289+00:00"
+  },
+  {
+    "id": "1afff1bc-8f0d-4734-82eb-1e10688088fb",
+    "question_key": "material_avoid",
+    "section_key": "material",
+    "question_type": "multi",
+    "max_selections": 3,
+    "options": [
+      {
+        "value": "chrome",
+        "tag_cluster": [
+          "avoid_chrome"
+        ]
+      },
+      {
+        "value": "high_gloss",
+        "tag_cluster": [
+          "avoid_gloss",
+          "restrained_register"
+        ]
+      },
+      {
+        "value": "industrial_steel",
+        "tag_cluster": [
+          "avoid_industrial"
+        ]
+      },
+      {
+        "value": "plastic_composite",
+        "tag_cluster": [
+          "avoid_synthetic",
+          "natural_register"
+        ]
+      },
+      {
+        "value": "none",
+        "tag_cluster": [
+          "material_open"
+        ]
+      }
+    ],
+    "is_required": false,
+    "display_order": 220,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:29.593860+00:00",
+    "updated_at": "2026-05-24T04:08:29.593860+00:00"
+  },
+  {
+    "id": "fa69fa2b-67d8-4367-82fb-d37d51443015",
+    "question_key": "cultural_register_preference",
+    "section_key": "cultural",
+    "question_type": "single",
+    "max_selections": null,
+    "options": [
+      {
+        "value": "editorial",
+        "tag_cluster": [
+          "editorial_aligned"
+        ],
+        "cultural_register": "editorial"
+      },
+      {
+        "value": "concierge",
+        "tag_cluster": [
+          "concierge_aligned"
+        ],
+        "cultural_register": "concierge"
+      },
+      {
+        "value": "consultative",
+        "tag_cluster": [
+          "consultative_aligned"
+        ],
+        "cultural_register": "consultative"
+      },
+      {
+        "value": "discovery",
+        "tag_cluster": [
+          "discovery_phase"
+        ],
+        "cultural_register": "discovery"
+      }
+    ],
+    "is_required": true,
+    "display_order": 310,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:29.839811+00:00",
+    "updated_at": "2026-05-24T04:08:29.839811+00:00"
+  },
+  {
+    "id": "1a4d5716-cfab-480e-aea2-26bdfc7c6cec",
+    "question_key": "decision_horizon",
+    "section_key": "cultural",
+    "question_type": "single",
+    "max_selections": null,
+    "options": [
+      {
+        "value": "immediate",
+        "tag_cluster": [
+          "active_phase",
+          "near_term_decision"
+        ],
+        "intent_weight": 0.12
+      },
+      {
+        "value": "within_3m",
+        "tag_cluster": [
+          "active_phase",
+          "near_term_decision"
+        ],
+        "intent_weight": 0.1
+      },
+      {
+        "value": "within_6m",
+        "tag_cluster": [
+          "mid_term_decision"
+        ],
+        "intent_weight": 0.06
+      },
+      {
+        "value": "within_year",
+        "tag_cluster": [
+          "long_horizon"
+        ],
+        "intent_weight": 0.03
+      },
+      {
+        "value": "exploring",
+        "tag_cluster": [
+          "exploration_mode"
+        ],
+        "intent_weight": 0.01
+      }
+    ],
+    "is_required": true,
+    "display_order": 320,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:30.084404+00:00",
+    "updated_at": "2026-05-24T04:08:30.084404+00:00"
+  },
+  {
+    "id": "eca0374a-8ce4-4bc5-ad39-30f7015b46e4",
+    "question_key": "budget_register",
+    "section_key": "cultural",
+    "question_type": "single",
+    "max_selections": null,
+    "options": [
+      {
+        "value": "atelier",
+        "luxury_tier": "atelier",
+        "tag_cluster": [
+          "atelier_tier",
+          "high_invest",
+          "custom_orientation"
+        ],
+        "intent_weight": 0.08
+      },
+      {
+        "value": "couture",
+        "luxury_tier": "couture",
+        "tag_cluster": [
+          "couture_tier",
+          "high_invest"
+        ],
+        "intent_weight": 0.06
+      },
+      {
+        "value": "pret_a_porter",
+        "luxury_tier": "pret_a_porter",
+        "tag_cluster": [
+          "pret_a_porter_tier",
+          "mid_invest"
+        ],
+        "intent_weight": 0.03
+      },
+      {
+        "value": "exploratory",
+        "luxury_tier": "exploratory",
+        "tag_cluster": [
+          "exploratory_tier",
+          "budget_undefined"
+        ]
+      }
+    ],
+    "is_required": true,
+    "display_order": 330,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:30.329072+00:00",
+    "updated_at": "2026-05-24T04:08:30.329072+00:00"
+  },
+  {
+    "id": "31b64cef-f13f-4402-827b-55ac4e6f5d40",
+    "question_key": "preferred_cadence",
+    "section_key": "engagement",
+    "question_type": "single",
+    "max_selections": null,
+    "options": [
+      {
+        "value": "weekly",
+        "tag_cluster": [
+          "editorial_cadence",
+          "high_engagement_potential"
+        ],
+        "intent_weight": 0.05
+      },
+      {
+        "value": "biweekly",
+        "tag_cluster": [
+          "editorial_cadence",
+          "mid_engagement_potential"
+        ],
+        "intent_weight": 0.03
+      },
+      {
+        "value": "monthly",
+        "tag_cluster": [
+          "editorial_cadence",
+          "calm_engagement"
+        ]
+      },
+      {
+        "value": "on_my_pace",
+        "tag_cluster": [
+          "on_demand_engagement"
+        ]
+      }
+    ],
+    "is_required": false,
+    "display_order": 410,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:30.578833+00:00",
+    "updated_at": "2026-05-24T04:08:30.578833+00:00"
+  },
+  {
+    "id": "3f4beb3f-cc1e-418b-8fb6-1708c20f9b1a",
+    "question_key": "preferred_channel",
+    "section_key": "engagement",
+    "question_type": "single",
+    "max_selections": null,
+    "options": [
+      {
+        "value": "editorial_email",
+        "tag_cluster": [
+          "channel_email",
+          "editorial_aligned"
+        ]
+      },
+      {
+        "value": "studio_visit",
+        "tag_cluster": [
+          "channel_in_person",
+          "concierge_aligned"
+        ],
+        "intent_weight": 0.05
+      },
+      {
+        "value": "video_call",
+        "tag_cluster": [
+          "channel_video",
+          "consultative_aligned"
+        ]
+      },
+      {
+        "value": "whatsapp_concierge",
+        "tag_cluster": [
+          "channel_whatsapp",
+          "concierge_aligned"
+        ]
+      },
+      {
+        "value": "written",
+        "tag_cluster": [
+          "channel_written",
+          "editorial_aligned"
+        ]
+      }
+    ],
+    "is_required": false,
+    "display_order": 420,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:30.824804+00:00",
+    "updated_at": "2026-05-24T04:08:30.824804+00:00"
+  },
+  {
+    "id": "17bd36d6-af63-4280-9558-f3a600b156aa",
+    "question_key": "narrative_seed",
+    "section_key": "narrative",
+    "question_type": "open",
+    "max_selections": null,
+    "options": [],
+    "is_required": false,
+    "display_order": 510,
+    "applies_to_lead_type": null,
+    "is_active": true,
+    "created_at": "2026-05-24T04:08:31.070734+00:00",
+    "updated_at": "2026-05-24T04:08:31.070734+00:00"
+  }
+]

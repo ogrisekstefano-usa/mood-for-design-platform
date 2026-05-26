@@ -1,0 +1,1085 @@
+[
+  {
+    "id": "0e8062ea-d5a5-4a48-a669-4b75c1063917",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Maria",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "sometimes",
+        "ambiance": "warm_enveloping",
+        "materials": [
+          "legno",
+          "pietra",
+          "lino"
+        ]
+      },
+      "atmosphere": {
+        "references": "Tadao Ando, una sera d'autunno",
+        "how_to_feel": "silenziosa, accolta, materica",
+        "space_kinds": [
+          "home"
+        ]
+      },
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-23T20:43:44.751379+00:00",
+    "updated_at": "2026-05-23T20:43:44.751379+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "31d49832-319e-48bb-99c0-fae277edb7cd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Anna",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {},
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-23T20:43:46.272425+00:00",
+    "updated_at": "2026-05-23T20:43:46.272425+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "a13bda53-93c4-4d26-8601-ce9b8b7f76c6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Maria",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "sometimes",
+        "ambiance": "warm_enveloping",
+        "materials": [
+          "legno",
+          "pietra",
+          "lino"
+        ]
+      },
+      "atmosphere": {
+        "references": "Tadao Ando, una sera d'autunno",
+        "how_to_feel": "silenziosa, accolta, materica",
+        "space_kinds": [
+          "home"
+        ]
+      },
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-23T20:43:47.774551+00:00",
+    "updated_at": "2026-05-23T20:43:47.774551+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "48edf08b-82dd-4a5b-9630-50b70a07cfa9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Maria",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "sometimes",
+        "ambiance": "warm_enveloping",
+        "materials": [
+          "legno",
+          "pietra",
+          "lino"
+        ]
+      },
+      "atmosphere": {
+        "references": "Tadao Ando, una sera d'autunno",
+        "how_to_feel": "silenziosa, accolta, materica",
+        "space_kinds": [
+          "home"
+        ]
+      },
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-23T20:43:50.777004+00:00",
+    "updated_at": "2026-05-23T20:43:50.777004+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "cc992491-a530-4c96-bc2e-8d9ddb8e50b0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di G3_HHQCOS",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "sometimes",
+        "ambiance": "tactile_sensory",
+        "materials": [
+          "pietra",
+          "legno",
+          "lino"
+        ]
+      },
+      "atmosphere": {
+        "references": "Tadao Ando · Yoshio Taniguchi",
+        "how_to_feel": "atmosfera contemplativa",
+        "space_kinds": null
+      },
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-23T20:43:53.801487+00:00",
+    "updated_at": "2026-05-23T20:43:53.801487+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "e63bc0ac-82c0-4c50-8c34-48b856af350c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "TEST_quota_proj",
+    "description": null,
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "en",
+    "metadata_json": {},
+    "created_at": "2026-05-23T20:52:33.602593+00:00",
+    "updated_at": "2026-05-23T20:52:33.602593+00:00",
+    "locale_code": null
+  },
+  {
+    "id": "e53b55fe-9f33-4b7e-accc-009597472159",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "TEST_Convert 21650c",
+    "description": null,
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "en",
+    "metadata_json": {},
+    "created_at": "2026-05-23T20:53:49.754360+00:00",
+    "updated_at": "2026-05-23T20:53:51.253442+00:00",
+    "locale_code": null
+  },
+  {
+    "id": "b3e3a5be-eec9-40d9-84a1-9855920a9bcb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Maria",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "sometimes",
+        "ambiance": "warm_enveloping",
+        "materials": [
+          "legno",
+          "pietra",
+          "lino"
+        ]
+      },
+      "atmosphere": {
+        "references": "Tadao Ando, una sera d'autunno",
+        "how_to_feel": "silenziosa, accolta, materica",
+        "space_kinds": [
+          "home"
+        ]
+      },
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-23T23:28:57.962330+00:00",
+    "updated_at": "2026-05-23T23:28:57.962330+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "c54d77f5-c63d-42d8-9e7d-75ddc178c87c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Maria",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "sometimes",
+        "ambiance": "warm_enveloping",
+        "materials": [
+          "legno",
+          "pietra",
+          "lino"
+        ]
+      },
+      "atmosphere": {
+        "references": "Tadao Ando, una sera d'autunno",
+        "how_to_feel": "silenziosa, accolta, materica",
+        "space_kinds": [
+          "home"
+        ]
+      },
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-23T23:29:18.768843+00:00",
+    "updated_at": "2026-05-23T23:29:18.768843+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "222d2fad-ff50-4c6e-b785-d8f0f43872d3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Maria",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "sometimes",
+        "ambiance": "warm_enveloping",
+        "materials": [
+          "legno",
+          "pietra",
+          "lino"
+        ]
+      },
+      "atmosphere": {
+        "references": "Tadao Ando, una sera d'autunno",
+        "how_to_feel": "silenziosa, accolta, materica",
+        "space_kinds": [
+          "home"
+        ]
+      },
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-23T23:29:21.770913+00:00",
+    "updated_at": "2026-05-23T23:29:21.770913+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "89b41f4d-f9d1-4a2a-9fb1-14a7a2d17eba",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di G3_THPAAO",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "sometimes",
+        "ambiance": "tactile_sensory",
+        "materials": [
+          "pietra",
+          "legno",
+          "lino"
+        ]
+      },
+      "atmosphere": {
+        "references": "Tadao Ando · Yoshio Taniguchi",
+        "how_to_feel": "atmosfera contemplativa",
+        "space_kinds": null
+      },
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-23T23:29:24.898522+00:00",
+    "updated_at": "2026-05-23T23:29:24.898522+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "b32f87c7-a602-4ed1-aed7-936c30c5f7da",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "TEST_quota_proj",
+    "description": null,
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "en",
+    "metadata_json": {},
+    "created_at": "2026-05-23T23:40:23.674265+00:00",
+    "updated_at": "2026-05-23T23:40:23.674265+00:00",
+    "locale_code": null
+  },
+  {
+    "id": "67db1579-ee0a-4122-b4c7-abe83af807f6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "TEST_Convert 98f101",
+    "description": null,
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "en",
+    "metadata_json": {},
+    "created_at": "2026-05-23T23:41:37.299384+00:00",
+    "updated_at": "2026-05-23T23:41:38.799268+00:00",
+    "locale_code": null
+  },
+  {
+    "id": "435af708-10af-42f1-8055-12393636e3c0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T00:43:25.613042+00:00",
+    "updated_at": "2026-05-24T00:43:25.613042+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "7a48a465-fed7-4567-8d24-8df7bd1ccf96",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T00:44:27.490163+00:00",
+    "updated_at": "2026-05-24T00:44:27.490163+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "f6a1d0fc-bc1a-460c-aec5-ac8d4b6bd4f5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T00:58:44.713339+00:00",
+    "updated_at": "2026-05-24T00:58:44.713339+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "ae1242e5-b846-478e-ba4f-8fd48e9c87ec",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T00:59:43.414101+00:00",
+    "updated_at": "2026-05-24T00:59:43.414101+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "0bb6f544-90ee-40bf-8c1c-05c42d56e2c1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Anna E2E",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "often",
+        "ambiance": "warm_enveloping",
+        "materials": [
+          "wood",
+          "stone"
+        ]
+      },
+      "atmosphere": {
+        "references": "Stile mediterraneo, materiali naturali",
+        "how_to_feel": "Calmo, naturale, elegante",
+        "space_kinds": [
+          "office"
+        ]
+      },
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:00:50.897397+00:00",
+    "updated_at": "2026-05-24T01:00:50.897397+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "8368fd3e-3802-4f1d-9402-5c6d0cc746d1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:09:11.879840+00:00",
+    "updated_at": "2026-05-24T01:09:11.879840+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "e207149c-390b-4cb3-a2e6-505650a837f5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:10:59.563245+00:00",
+    "updated_at": "2026-05-24T01:10:59.563245+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "daa7da17-74fd-482f-b699-ef117b27894a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Anna E2E",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "sometimes",
+        "ambiance": "warm_enveloping",
+        "materials": [
+          "wood"
+        ]
+      },
+      "atmosphere": {
+        "references": "",
+        "how_to_feel": "Una luce calma e materiali naturali.",
+        "space_kinds": [
+          "home"
+        ]
+      },
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:16:26.075081+00:00",
+    "updated_at": "2026-05-24T01:16:26.075081+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "0800eada-85f4-43d5-bb09-28a904c888e5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:18:33.251327+00:00",
+    "updated_at": "2026-05-24T01:18:33.251327+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "75515b26-df2f-43a8-8f4d-71a7e811b4be",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:21:40.119988+00:00",
+    "updated_at": "2026-05-24T01:21:40.119988+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "0ffc48bb-c5a4-47da-a9cb-12d8959e7f3f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:22:51.448706+00:00",
+    "updated_at": "2026-05-24T01:22:51.448706+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "b6ff3bcb-99a8-4af7-9394-3a6b4ce64902",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Giulia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:24:24.349237+00:00",
+    "updated_at": "2026-05-24T01:24:24.349237+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "62515f1a-ff59-452b-9f78-91dcdbfed511",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Giulia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:24:42.112622+00:00",
+    "updated_at": "2026-05-24T01:24:42.112622+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "bac583b9-f1bf-4014-bd1d-3527f99615f5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:24:57.133347+00:00",
+    "updated_at": "2026-05-24T01:24:57.133347+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "4ccaab3a-c011-46a9-9aac-2066d7b712bf",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:25:59.902928+00:00",
+    "updated_at": "2026-05-24T01:25:59.902928+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "567b3d02-aaf0-4112-afd9-0a84d8b249f9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Giulia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:26:02.250236+00:00",
+    "updated_at": "2026-05-24T01:26:02.250236+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "fd22cd83-9cb3-476c-b7fd-e414bb8fbe4b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:42:26.492978+00:00",
+    "updated_at": "2026-05-24T01:42:26.492978+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "0385e817-4ad8-4b44-9a16-9e295dae7c91",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:44:56.744612+00:00",
+    "updated_at": "2026-05-24T01:44:56.744612+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "bacb014f-85d6-47f2-85b5-d8d72c5e8ec9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Giulia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:44:59.052325+00:00",
+    "updated_at": "2026-05-24T01:44:59.052325+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "48886f6d-01dd-4fc7-92ae-271dc054eeb5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T01:58:59.405212+00:00",
+    "updated_at": "2026-05-24T01:58:59.405212+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "c6e27c35-792b-4df6-a409-0d717e103d25",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T02:09:13.420309+00:00",
+    "updated_at": "2026-05-24T02:09:13.420309+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "860e59fe-daa6-4982-8477-451c2e6f25dc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T02:14:52.703083+00:00",
+    "updated_at": "2026-05-24T02:14:52.703083+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "78bb86e2-7d57-4c8b-9dd0-768747be1a0a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T02:43:09.642799+00:00",
+    "updated_at": "2026-05-24T02:43:09.642799+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "e37d591e-9a97-4c5a-99e3-a9285f9ddacb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T02:45:10.776260+00:00",
+    "updated_at": "2026-05-24T02:45:10.776260+00:00",
+    "locale_code": "it"
+  },
+  {
+    "id": "ba03516a-4f30-4850-bfb0-a82fb9e9bf46",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_user_id": null,
+    "assigned_to": null,
+    "title": "Conversazione di Sofia",
+    "description": "Avviata dal rituale di accoglienza · Begin Design Journey™.",
+    "project_type": null,
+    "status": "new",
+    "priority": "normal",
+    "budget_range": null,
+    "timeline": null,
+    "language": "it",
+    "metadata_json": {
+      "lifestyle": {
+        "guests": "duo",
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {},
+      "journey_origin": "begin_journey_ritual"
+    },
+    "created_at": "2026-05-24T02:52:45.452230+00:00",
+    "updated_at": "2026-05-24T02:52:45.452230+00:00",
+    "locale_code": "it"
+  }
+]

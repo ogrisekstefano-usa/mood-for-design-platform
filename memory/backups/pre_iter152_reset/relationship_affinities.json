@@ -1,0 +1,46 @@
+[
+  {
+    "account_id": "1436728b-4a65-48ba-a209-35e3ae7b362a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "most_engaged_market_edition_id": null,
+    "preferred_atmosphere": "mediterranean",
+    "preferred_atmosphere_tags": [
+      "mediterranean",
+      "stone"
+    ],
+    "preferred_materials": [],
+    "preferred_cta_intent": "private_consultation",
+    "preferred_editorial_register": "Ceremonial Hospitality",
+    "hospitality_orientation_score": 0.0,
+    "specification_orientation_score": 0.0,
+    "long_form_engagement_score": 0.0,
+    "editorial_cadence_score": 8.0,
+    "luxury_perception_alignment": null,
+    "signal_count_total": 1,
+    "last_signal_at": "2026-05-23T20:47:32.591670+00:00",
+    "computed_at": "2026-05-23T20:47:34.377194+00:00",
+    "intelligence_payload": {}
+  },
+  {
+    "account_id": "c29d5cf9-6430-4014-a961-92cd60ccbdff",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "most_engaged_market_edition_id": null,
+    "preferred_atmosphere": "mediterranean",
+    "preferred_atmosphere_tags": [
+      "mediterranean",
+      "stone"
+    ],
+    "preferred_materials": [],
+    "preferred_cta_intent": "private_consultation",
+    "preferred_editorial_register": "Ceremonial Hospitality",
+    "hospitality_orientation_score": 0.0,
+    "specification_orientation_score": 0.0,
+    "long_form_engagement_score": 0.0,
+    "editorial_cadence_score": 8.0,
+    "luxury_perception_alignment": null,
+    "signal_count_total": 1,
+    "last_signal_at": "2026-05-23T23:32:59.983932+00:00",
+    "computed_at": "2026-05-23T23:33:01.717409+00:00",
+    "intelligence_payload": {}
+  }
+]

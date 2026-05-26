@@ -1,0 +1,50 @@
+[
+  {
+    "id": "2dcd5853-f81b-4f72-ba45-10167ead3e43",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "profile_id": "c3b5c672-1255-48de-b0e0-1bb57e4b1386",
+    "role": "tenant_admin",
+    "status": "active",
+    "is_primary": true,
+    "invited_by": null,
+    "invited_at": null,
+    "accepted_at": null,
+    "suspended_at": null,
+    "suspended_by": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23T16:51:11.329021+00:00",
+    "updated_at": "2026-05-23T16:51:11.329021+00:00"
+  },
+  {
+    "id": "acce3a15-96c3-4f69-a2a9-35adb7d8180d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "role": "client",
+    "status": "active",
+    "is_primary": true,
+    "invited_by": null,
+    "invited_at": null,
+    "accepted_at": null,
+    "suspended_at": null,
+    "suspended_by": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23T16:51:11.329021+00:00",
+    "updated_at": "2026-05-23T16:51:11.329021+00:00"
+  },
+  {
+    "id": "7012a51a-9338-490d-bd23-64b41d9e7e55",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "profile_id": "6cab5a1e-a0e9-4dc7-a561-c75179f2c778",
+    "role": "designer",
+    "status": "active",
+    "is_primary": true,
+    "invited_by": null,
+    "invited_at": null,
+    "accepted_at": null,
+    "suspended_at": null,
+    "suspended_by": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23T16:51:11.329021+00:00",
+    "updated_at": "2026-05-24T04:45:30.977330+00:00"
+  }
+]

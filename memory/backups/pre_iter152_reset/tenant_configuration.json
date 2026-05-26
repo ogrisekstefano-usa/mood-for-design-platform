@@ -1,0 +1,33 @@
+[
+  {
+    "id": "b39a7d4a-550d-4524-81b4-7b907e1be2d3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "logo_url": null,
+    "favicon_url": null,
+    "primary_color": "#7ce4f5",
+    "secondary_color": "#e8ebf0",
+    "typography_preset": "editorial-serif",
+    "homepage_variant": "variant_a",
+    "editorial_tone": "luxury_minimal",
+    "enabled_locales": [
+      "it-IT",
+      "en-US",
+      "fr-FR",
+      "de-DE",
+      "es-ES"
+    ],
+    "default_locale": "it-IT",
+    "enabled_modules": {},
+    "onboarding_mode": "editorial",
+    "design_journey_variant": "three_step",
+    "cta_style": "cinematic",
+    "feature_flags": {},
+    "runtime_metadata": {},
+    "created_at": "2026-05-23T21:54:57.519233+00:00",
+    "updated_at": "2026-05-24T01:25:42.866881+00:00",
+    "branding": {},
+    "navigation_overrides": {},
+    "custom_domain": null,
+    "custom_email_identity": {}
+  }
+]

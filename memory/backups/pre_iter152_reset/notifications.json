@@ -1,0 +1,24 @@
+[
+  {
+    "id": "81a2b73d-d8c4-4833-8ea6-131c872f2b80",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "c3b5c672-1255-48de-b0e0-1bb57e4b1386",
+    "project_id": null,
+    "type": "client_message",
+    "title": "Nuovo messaggio",
+    "message": "Ciao Demo, aspetto un tuo contatto!",
+    "read_at": null,
+    "created_at": "2026-05-24T17:30:30.846461+00:00"
+  },
+  {
+    "id": "4b908add-d55a-415c-a1e2-82ecedefebe9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "c3b5c672-1255-48de-b0e0-1bb57e4b1386",
+    "project_id": null,
+    "type": "client_message",
+    "title": "Nuovo messaggio",
+    "message": "ciao",
+    "read_at": null,
+    "created_at": "2026-05-26T03:18:30.137937+00:00"
+  }
+]

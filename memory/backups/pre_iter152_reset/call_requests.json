@@ -1,0 +1,85 @@
+[
+  {
+    "id": "4bb16950-409a-4841-803f-d30bf7386e07",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "status": "pending",
+    "preferred_slots": [],
+    "timezone": "Europe/Rome",
+    "client_note": "Vorrei discutere materiali",
+    "created_at": "2026-05-25T17:48:55.567162+00:00",
+    "updated_at": "2026-05-25T17:48:55.567162+00:00",
+    "client_timezone": null,
+    "designer_timezone": null,
+    "confirmed_slot": null,
+    "confirmed_at": null,
+    "confirmed_by": null,
+    "reschedule_slots": [],
+    "designer_note": null,
+    "conversation_kind": "discovery"
+  },
+  {
+    "id": "1f29c57b-3b7a-4389-b1fc-edb0c9238ea2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "status": "confirmed",
+    "preferred_slots": [
+      {
+        "tz": "Europe/Rome",
+        "start": "2026-05-26T10:00:00+02:00"
+      },
+      {
+        "tz": "Europe/Rome",
+        "start": "2026-05-27T15:00:00+02:00"
+      },
+      {
+        "tz": "Europe/Rome",
+        "start": "2026-05-28T09:00:00+02:00"
+      }
+    ],
+    "timezone": "Europe/Rome",
+    "client_note": "Vorrei vedere la palette di rovere chiaro",
+    "created_at": "2026-05-25T20:50:45.845654+00:00",
+    "updated_at": "2026-05-25T20:50:47.000445+00:00",
+    "client_timezone": "Europe/Rome",
+    "designer_timezone": null,
+    "confirmed_slot": {
+      "tz": "Europe/Rome",
+      "start": "2026-05-27T15:00:00+02:00"
+    },
+    "confirmed_at": "2026-05-25T20:50:47.000434+00:00",
+    "confirmed_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "reschedule_slots": [],
+    "designer_note": "Perfetto, ti aspetto in studio.",
+    "conversation_kind": "material_walk"
+  },
+  {
+    "id": "acd48869-4109-42fd-8bf1-cec48e602fba",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "designer_id": null,
+    "status": "pending",
+    "preferred_slots": [
+      {
+        "start": "2026-06-01T10:00:00+02:00"
+      }
+    ],
+    "timezone": "Europe/Rome",
+    "client_note": "Test priority",
+    "created_at": "2026-05-25T22:40:02.330855+00:00",
+    "updated_at": "2026-05-25T22:40:02.330855+00:00",
+    "client_timezone": "Europe/Rome",
+    "designer_timezone": null,
+    "confirmed_slot": null,
+    "confirmed_at": null,
+    "confirmed_by": null,
+    "reschedule_slots": [],
+    "designer_note": null,
+    "conversation_kind": "material_walk"
+  }
+]

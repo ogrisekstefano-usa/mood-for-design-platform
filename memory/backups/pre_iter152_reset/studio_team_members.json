@@ -1,0 +1,21 @@
+[
+  {
+    "id": "79ac795f-badc-41d5-9fc4-9bf70540b662",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "role": "creative_director",
+    "role_label_it": "Direzione creativa",
+    "role_label_en": "Creative Director",
+    "specialties": [
+      "Material direction",
+      "Editorial curation"
+    ],
+    "territories": [],
+    "languages": [],
+    "bio": "Direzione creativa di MOOD Demo Studio.",
+    "status": "active",
+    "visibility": "studio_and_clients",
+    "created_at": "2026-05-25T22:26:21.428571+00:00",
+    "updated_at": "2026-05-25T22:26:21.428571+00:00"
+  }
+]

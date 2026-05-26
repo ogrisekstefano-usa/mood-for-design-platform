@@ -1,0 +1,26 @@
+[
+  {
+    "id": "30f52c63-793f-4e70-8af0-9a06bb967f36",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "account_id": "1436728b-4a65-48ba-a209-35e3ae7b362a",
+    "material_id": "3d3ba679-80e5-4f92-8c8b-069090290c5d",
+    "attraction_score": 90.0,
+    "signal_count": 0,
+    "last_engaged_at": "2026-05-23T20:47:40.697215+00:00",
+    "sample_requested": false,
+    "specified": false,
+    "notes": null
+  },
+  {
+    "id": "144eb4e2-cc2c-4c21-b37e-99d54e861155",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "account_id": "c29d5cf9-6430-4014-a961-92cd60ccbdff",
+    "material_id": "923fcf11-e245-4966-9fd9-8f299b719af7",
+    "attraction_score": 90.0,
+    "signal_count": 0,
+    "last_engaged_at": "2026-05-23T23:33:07.186780+00:00",
+    "sample_requested": false,
+    "specified": false,
+    "notes": null
+  }
+]

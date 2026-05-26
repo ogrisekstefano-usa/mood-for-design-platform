@@ -1,0 +1,121 @@
+[
+  {
+    "id": "401d199e-400b-41e4-a298-674912bdaa5a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "client_profile_id": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "atmosphere_summary": {
+      "chips": [
+        "In ascolto",
+        "Curiosa"
+      ],
+      "headline": "Atmosfera in ascolto",
+      "narrative": "È ancora presto per leggere un'atmosfera chiara. Lo studio sta ascoltando."
+    },
+    "material_summary": {
+      "headline": "Direzione materica da rivelare",
+      "materials": [],
+      "narrative": "Le prime affinità materiche emergeranno con il dialogo."
+    },
+    "lifestyle_summary": {
+      "rhythms": [],
+      "headline": "Ritmo da scoprire",
+      "narrative": ""
+    },
+    "cultural_summary": {
+      "headline": "Registro culturale in apertura",
+      "narrative": "",
+      "references": []
+    },
+    "palette_summary": {
+      "headline": "Palette in formazione",
+      "swatches": []
+    },
+    "narrative_summary": "Lo studio è in ascolto. Una prima direzione progettuale emergerà dopo qualche conversazione e qualche riferimento.",
+    "signals_count": 0,
+    "generated_by": "claude-sonnet-4-5",
+    "created_by": "91548304-bfab-48b6-9cbd-f292115fc577",
+    "created_at": "2026-05-25T22:09:42.929141+00:00"
+  },
+  {
+    "id": "293e882e-12ac-43b9-b097-ac5244cebecc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "90ecc8df-7d39-4f32-a04c-9c3479a528a0",
+    "client_profile_id": null,
+    "atmosphere_summary": {
+      "chips": [
+        "Serenità architettonica",
+        "Calma intenzionale",
+        "Ritmo sospeso"
+      ],
+      "headline": "Quiete Luminosa",
+      "narrative": "L'atmosfera che emerge privilegia una calma deliberata, dove la serenità non è assenza ma presenza discreta. Spazi che respirano, silenzi abitati, luce che attraversa senza annunciare."
+    },
+    "material_summary": {
+      "headline": "Direzione Materica Che Si Stabilizza",
+      "materials": [
+        {
+          "name": "Rovere naturale spazzolato",
+          "tone": "light"
+        },
+        {
+          "name": "Pietra di Vicenza sabbiata",
+          "tone": "light"
+        },
+        {
+          "name": "Lino grezzo",
+          "tone": "neutral"
+        }
+      ],
+      "narrative": "La palette materica converge verso superfici che assorbono piuttosto che riflettere. Pietra naturale, legni chiari a poro aperto, tessiture che invitano al tocco senza ostentazione."
+    },
+    "lifestyle_summary": {
+      "rhythms": [
+        "Mattine senza fretta",
+        "Rituali contemplativi",
+        "Ospitalità silenziosa"
+      ],
+      "headline": "Vivere Lento",
+      "narrative": "I rituali quotidiani acquisiscono una cadenza meditativa. Gesti ripetuti con consapevolezza, spazi che accolgono la pausa, il tempo recuperato come dimensione progettuale."
+    },
+    "cultural_summary": {
+      "headline": "Minimalismo Nordico Temperato",
+      "narrative": "Si stabilisce un linguaggio visivo che guarda a Copenhagen e Kyoto più che a Milano. Contenimento formale, onestà materica, bellezza che non richiede spiegazioni.",
+      "references": [
+        "Case studio scandinave",
+        "Architettura contemplativa giapponese",
+        "Fotografia di interni Kinfolk"
+      ]
+    },
+    "palette_summary": {
+      "headline": "Chiarore Naturale",
+      "swatches": [
+        {
+          "hex": "#F4F1EA",
+          "name": "Gesso di calce"
+        },
+        {
+          "hex": "#E8E3D5",
+          "name": "Argilla asciutta"
+        },
+        {
+          "hex": "#D9D3C3",
+          "name": "Lino grezzo"
+        },
+        {
+          "hex": "#B8B2A1",
+          "name": "Pietra bagnata"
+        },
+        {
+          "hex": "#A89F8C",
+          "name": "Legno vecchio"
+        }
+      ]
+    },
+    "narrative_summary": "Si delinea un'identità progettuale fondata sulla sottrazione consapevole. Spazi dove serenità e calma diventano struttura, non decorazione. Un'architettura che accoglie il silenzio come materiale primario, dove ogni superficie racconta la ricerca di una bellezza essenziale e duratura.",
+    "signals_count": 2,
+    "generated_by": "claude-sonnet-4-5",
+    "created_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "created_at": "2026-05-25T22:10:25.183159+00:00"
+  }
+]

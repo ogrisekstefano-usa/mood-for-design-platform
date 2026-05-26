@@ -1,0 +1,721 @@
+[
+  {
+    "id": "7957822d-6673-4e23-80b0-5a9d052c06dc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "key": "form.design-request",
+    "value_json": {
+      "ai": {
+        "scoring": false,
+        "auto_localize": false,
+        "copy_enhancement": false,
+        "field_suggestions": false,
+        "question_generation": false
+      },
+      "slug": "design-request",
+      "steps": [
+        {
+          "id": "d5386d73-370c-4147-a68b-bf1a21553cc0",
+          "title": {
+            "_default": "About you"
+          },
+          "fields": [
+            {
+              "id": "72f3afb6-ab70-4367-ae0f-703548219ebb",
+              "key": "first_name",
+              "type": "short_text",
+              "label": {
+                "_default": "First name"
+              },
+              "required": true
+            },
+            {
+              "id": "6c383ba0-0fe7-4ebe-9496-74a472609d1d",
+              "key": "last_name",
+              "type": "short_text",
+              "label": {
+                "_default": "Last name"
+              },
+              "required": true
+            },
+            {
+              "id": "be950bfa-a2f1-4190-be3b-08d4be5b0d50",
+              "key": "email",
+              "type": "email",
+              "label": {
+                "_default": "Email"
+              },
+              "required": true
+            }
+          ],
+          "description": {
+            "_default": "A few essentials so we can introduce ourselves properly."
+          }
+        },
+        {
+          "id": "a7c036e3-dcb3-4f5e-8f22-b829d310b3fa",
+          "title": {
+            "_default": "About your project"
+          },
+          "fields": [
+            {
+              "id": "9221f608-5685-46a1-b148-40da3adeb54d",
+              "ui": "cards",
+              "key": "project_type",
+              "type": "single_choice",
+              "label": {
+                "_default": "What kind of project is this?"
+              },
+              "options": [
+                {
+                  "label": {
+                    "_default": "Residential"
+                  },
+                  "value": "residential"
+                },
+                {
+                  "label": {
+                    "_default": "Hospitality"
+                  },
+                  "value": "hospitality"
+                },
+                {
+                  "label": {
+                    "_default": "Retail"
+                  },
+                  "value": "retail"
+                },
+                {
+                  "label": {
+                    "_default": "Office"
+                  },
+                  "value": "office"
+                }
+              ],
+              "required": true
+            },
+            {
+              "id": "c0568880-94b0-44d4-b581-8b9ba3aac548",
+              "key": "budget",
+              "type": "budget_slider",
+              "label": {
+                "_default": "Indicative budget"
+              },
+              "validation": {
+                "max": 5000000,
+                "min": 5000,
+                "step": 5000,
+                "currency": "EUR"
+              }
+            },
+            {
+              "id": "86dac53c-bb23-4229-904f-851f2ea82648",
+              "key": "timeline",
+              "type": "timeline_picker",
+              "label": {
+                "_default": "Desired timeline"
+              }
+            }
+          ],
+          "description": {
+            "_default": "Help us understand the canvas."
+          }
+        },
+        {
+          "id": "e49ee729-fb55-402a-a20c-778b871069b9",
+          "title": {
+            "_default": "Aesthetic direction"
+          },
+          "fields": [
+            {
+              "id": "d6b760c8-b0bd-4db9-8de8-8ac8d436870b",
+              "key": "style_preferences",
+              "type": "style_cards",
+              "label": {
+                "_default": "Style preferences"
+              },
+              "options": [
+                {
+                  "image": null,
+                  "label": {
+                    "_default": "Minimal"
+                  },
+                  "value": "minimal"
+                },
+                {
+                  "image": null,
+                  "label": {
+                    "_default": "Classical"
+                  },
+                  "value": "classical"
+                },
+                {
+                  "image": null,
+                  "label": {
+                    "_default": "Japandi"
+                  },
+                  "value": "japandi"
+                },
+                {
+                  "image": null,
+                  "label": {
+                    "_default": "Industrial"
+                  },
+                  "value": "industrial"
+                },
+                {
+                  "image": null,
+                  "label": {
+                    "_default": "Art Deco"
+                  },
+                  "value": "art_deco"
+                },
+                {
+                  "image": null,
+                  "label": {
+                    "_default": "Mediterranean"
+                  },
+                  "value": "mediterranean"
+                }
+              ]
+            }
+          ],
+          "description": {
+            "_default": "Pick what resonates — we'll calibrate."
+          }
+        },
+        {
+          "id": "899f4956-ab54-4bba-b929-be2911e22c80",
+          "title": {
+            "_default": "Anything else?"
+          },
+          "fields": [
+            {
+              "id": "09057ba8-b6b1-4b33-bc97-b828f1668822",
+              "key": "notes",
+              "type": "long_text",
+              "label": {
+                "_default": "Notes"
+              },
+              "required": false
+            },
+            {
+              "id": "40c24b65-8403-434e-b1b2-0d04aa432aae",
+              "key": "references",
+              "type": "file_upload",
+              "label": {
+                "_default": "Reference files (plans, inspiration)"
+              },
+              "required": false
+            },
+            {
+              "id": "945366fe-e988-48e4-88d9-24418a708c61",
+              "key": "consent",
+              "type": "consent",
+              "label": {
+                "_default": "I agree to be contacted about my request."
+              },
+              "required": true
+            }
+          ]
+        }
+      ],
+      "title": {
+        "_default": "Design Request"
+      },
+      "layout": "editorial",
+      "status": "draft",
+      "purpose": "design_request",
+      "scoring": {
+        "rules": []
+      },
+      "settings": {
+        "thank_you": {
+          "subline": {
+            "_default": "We've received your request and will be in touch shortly."
+          },
+          "delay_ms": 0,
+          "headline": {
+            "_default": "Thank you."
+          },
+          "redirect_url": null
+        },
+        "submit_label": {
+          "_default": "Submit"
+        },
+        "show_progress": true,
+        "allow_draft_save": true,
+        "show_back_button": true,
+        "shuffle_questions": false
+      },
+      "atmosphere": "cinematic",
+      "created_at": "2026-05-23T23:26:28.378638+00:00",
+      "updated_at": "2026-05-23T23:26:28.378651+00:00",
+      "integrations": {
+        "crm": null,
+        "email": null
+      }
+    },
+    "created_at": "2026-05-23T20:42:32.163381+00:00",
+    "updated_at": "2026-05-23T23:26:28.579852+00:00"
+  },
+  {
+    "id": "220a93d3-05bb-402d-a5b0-eeb756381242",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "key": "public_footer",
+    "value_json": {
+      "bottom": {
+        "links": [
+          {
+            "href": "#",
+            "label": {
+              "_default": "Privacy"
+            }
+          },
+          {
+            "href": "#",
+            "label": {
+              "_default": "Terms"
+            }
+          }
+        ],
+        "copyright": {
+          "_default": "© {year} {brand}. All rights reserved."
+        },
+        "show_locale_switcher": true,
+        "show_blueprint_credit": false
+      },
+      "columns": [
+        {
+          "id": "studio",
+          "links": [
+            {
+              "href": "/about",
+              "label": {
+                "_default": "About"
+              }
+            },
+            {
+              "href": "/showcase",
+              "label": {
+                "_default": "Showcase"
+              }
+            },
+            {
+              "href": "#contact",
+              "label": {
+                "_default": "Contact"
+              }
+            }
+          ],
+          "heading": {
+            "_default": "Studio"
+          }
+        },
+        {
+          "id": "services",
+          "links": [
+            {
+              "href": "#",
+              "label": {
+                "_default": "Interior Design"
+              }
+            },
+            {
+              "href": "#",
+              "label": {
+                "_default": "Architecture"
+              }
+            },
+            {
+              "href": "#",
+              "label": {
+                "_default": "Consulting"
+              }
+            }
+          ],
+          "heading": {
+            "_default": "Services"
+          }
+        },
+        {
+          "id": "social",
+          "links": [
+            {
+              "href": "#",
+              "label": {
+                "_default": "Instagram"
+              }
+            },
+            {
+              "href": "#",
+              "label": {
+                "_default": "LinkedIn"
+              }
+            },
+            {
+              "href": "#",
+              "label": {
+                "_default": "Pinterest"
+              }
+            }
+          ],
+          "heading": {
+            "_default": "Connect"
+          }
+        }
+      ]
+    },
+    "created_at": "2026-05-23T20:57:21.105209+00:00",
+    "updated_at": "2026-05-23T23:45:59.001689+00:00"
+  },
+  {
+    "id": "d10ca294-2495-405e-8704-b824936ea324",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "key": "theme",
+    "value_json": {
+      "atmosphere": {
+        "grain_intensity": 0.1
+      }
+    },
+    "created_at": "2026-05-23T20:57:35.902702+00:00",
+    "updated_at": "2026-05-23T23:46:12.796172+00:00"
+  },
+  {
+    "id": "3c574a2d-b3b4-499e-9d57-e647f49fa050",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "key": "page.showcase",
+    "value_json": {
+      "slug": "showcase",
+      "title": "Showcase",
+      "sections": [
+        {
+          "id": "f746d115-a3f1-4e9e-9f3f-f2658034f874",
+          "type": "hero",
+          "order": 0,
+          "content": {
+            "_default": {
+              "height": "tall",
+              "layout": "editorial",
+              "eyebrow": "Blueprint OS™",
+              "subline": "A luxury operating system for international design firms.",
+              "headline": "Timeless elegance, engineered.",
+              "atmosphere": "cinematic",
+              "primary_cta": {
+                "href": "/auth/signup",
+                "label": "Get started"
+              },
+              "secondary_cta": {
+                "href": "#about",
+                "label": "Discover"
+              }
+            }
+          },
+          "visible": true,
+          "settings": {}
+        },
+        {
+          "id": "a2034f58-57e0-4d87-bf6a-e2e4f0f4a715",
+          "type": "gallery",
+          "order": 1,
+          "content": {
+            "_default": {
+              "items": [],
+              "aspect": "varied",
+              "eyebrow": "Recent work",
+              "variant": "mosaic",
+              "headline": "Selected projects."
+            }
+          },
+          "visible": true,
+          "settings": {}
+        },
+        {
+          "id": "96411eab-8d7e-4d2d-b0b0-f7dcbacc5ec0",
+          "type": "logo_strip",
+          "order": 2,
+          "content": {
+            "_default": {
+              "items": [],
+              "animate": true,
+              "eyebrow": "Trusted by"
+            }
+          },
+          "visible": true,
+          "settings": {}
+        },
+        {
+          "id": "ef47e60c-8b3b-43fc-994d-7d390489209b",
+          "type": "cta",
+          "order": 3,
+          "content": {
+            "_default": {
+              "eyebrow": "Start now",
+              "subline": "From first lead to final signoff — one calm operating system.",
+              "headline": "Build your studio's Blueprint.",
+              "atmosphere": "glass",
+              "primary_cta": {
+                "href": "/auth/signup",
+                "label": "Create workspace"
+              },
+              "secondary_cta": {
+                "href": "#contact",
+                "label": "Talk to us"
+              }
+            }
+          },
+          "visible": true,
+          "settings": {}
+        }
+      ],
+      "published": false,
+      "updated_at": "2026-05-23T23:46:03.199199+00:00",
+      "locale_default": null
+    },
+    "created_at": "2026-05-23T20:57:26.386608+00:00",
+    "updated_at": "2026-05-23T23:46:03.381899+00:00"
+  },
+  {
+    "id": "c93de85d-b6ff-4533-ae2a-0de4d28f919f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "key": "public_navigation",
+    "value_json": {
+      "cta": {
+        "href": "#contact",
+        "label": {
+          "_default": "Start a project"
+        }
+      },
+      "logo": {
+        "text": "MOOD Demo Showroom",
+        "use_brand_asset": true
+      },
+      "items": [
+        {
+          "id": "home",
+          "href": "/",
+          "type": "link",
+          "label": {
+            "_default": "Home"
+          }
+        },
+        {
+          "id": "showcase",
+          "href": "/showcase",
+          "type": "link",
+          "label": {
+            "_default": "Showcase"
+          }
+        },
+        {
+          "id": "about",
+          "href": "/about",
+          "type": "link",
+          "label": {
+            "_default": "About"
+          }
+        },
+        {
+          "id": "contact",
+          "href": "#contact",
+          "type": "link",
+          "label": {
+            "_default": "Contact"
+          }
+        }
+      ],
+      "sticky": true,
+      "transparent_on_hero": true,
+      "show_locale_switcher": true
+    },
+    "created_at": "2026-05-23T20:57:19.845111+00:00",
+    "updated_at": "2026-05-23T23:45:58.266903+00:00"
+  },
+  {
+    "id": "3e86493f-45af-40ce-a7d1-82a534eef899",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "key": "page.homepage",
+    "value_json": {
+      "slug": "homepage",
+      "title": "Homepage",
+      "sections": [
+        {
+          "id": "de38cb54-221e-41e3-b3be-ee0d5bed7783",
+          "type": "hero",
+          "order": 0,
+          "content": {
+            "_default": {
+              "height": "tall",
+              "layout": "editorial",
+              "eyebrow": "Blueprint OS™",
+              "subline": "A luxury operating system for international design firms.",
+              "headline": "Timeless elegance, engineered.",
+              "atmosphere": "cinematic",
+              "primary_cta": {
+                "href": "/auth/signup",
+                "label": "Get started"
+              },
+              "secondary_cta": {
+                "href": "#about",
+                "label": "Discover"
+              }
+            }
+          },
+          "visible": true,
+          "settings": {}
+        },
+        {
+          "id": "7ae22c9b-e64d-4dd5-9619-f2841ad4af4c",
+          "type": "feature_grid",
+          "order": 1,
+          "content": {
+            "_default": {
+              "items": [
+                {
+                  "icon": "Layers",
+                  "title": "Moodboards",
+                  "description": "Block-based canvas with hotspot intelligence."
+                },
+                {
+                  "icon": "FolderOpen",
+                  "title": "Projects",
+                  "description": "Lead-to-handoff visibility, in one workspace."
+                },
+                {
+                  "icon": "FileText",
+                  "title": "Proposals",
+                  "description": "Editorial pitch decks with client signoff."
+                }
+              ],
+              "layout": "editorial",
+              "columns": "3",
+              "eyebrow": "Capabilities",
+              "headline": "Refined. Intuitive. Powerful.",
+              "atmosphere": "clean"
+            }
+          },
+          "visible": true,
+          "settings": {}
+        },
+        {
+          "id": "2f53a772-134c-4f55-9440-fa279f6e572b",
+          "type": "split",
+          "order": 2,
+          "content": {
+            "_default": {
+              "body": "Every project begins with the silence between things — light, weight, proportion.",
+              "side": "right",
+              "media": null,
+              "eyebrow": "Philosophy",
+              "headline": "Material driven. Atmospherically conceived."
+            }
+          },
+          "visible": true,
+          "settings": {}
+        },
+        {
+          "id": "3bbc0793-eebb-4adc-9a6b-d7a7ebcc3b68",
+          "type": "gallery",
+          "order": 3,
+          "content": {
+            "_default": {
+              "items": [],
+              "aspect": "varied",
+              "eyebrow": "Recent work",
+              "variant": "mosaic",
+              "headline": "Selected projects."
+            }
+          },
+          "visible": true,
+          "settings": {}
+        },
+        {
+          "id": "5b215059-41d3-4667-9abe-87e416ee995d",
+          "type": "stats",
+          "order": 4,
+          "content": {
+            "_default": {
+              "items": [
+                {
+                  "label": "Projects delivered",
+                  "value": "120",
+                  "suffix": "+"
+                },
+                {
+                  "label": "Countries",
+                  "value": "14",
+                  "suffix": ""
+                },
+                {
+                  "label": "Practice",
+                  "value": "9",
+                  "suffix": "yr"
+                }
+              ],
+              "layout": "row"
+            }
+          },
+          "visible": true,
+          "settings": {}
+        },
+        {
+          "id": "dbc8b988-c745-4caf-a14f-3cf618dba56f",
+          "type": "quote",
+          "order": 5,
+          "content": {
+            "_default": {
+              "role": "Designer",
+              "quote": "Design is the silent ambassador of your brand.",
+              "author": "Paul Rand",
+              "alignment": "center"
+            }
+          },
+          "visible": true,
+          "settings": {}
+        },
+        {
+          "id": "018e90b7-38ac-4047-89df-31a67bccbb60",
+          "type": "magazine_grid",
+          "order": 6,
+          "content": {
+            "_default": {
+              "source": "/api/inspirations?limit=6",
+              "columns": "3",
+              "eyebrow": "Inspirations",
+              "headline": "Latest from the magazine."
+            }
+          },
+          "visible": true,
+          "settings": {}
+        },
+        {
+          "id": "4e6adbbb-a6aa-438a-9fe5-2bcf08348a46",
+          "type": "cta",
+          "order": 7,
+          "content": {
+            "_default": {
+              "eyebrow": "Start now",
+              "subline": "From first lead to final signoff — one calm operating system.",
+              "headline": "Build your studio's Blueprint.",
+              "atmosphere": "glass",
+              "primary_cta": {
+                "href": "/auth/signup",
+                "label": "Create workspace"
+              },
+              "secondary_cta": {
+                "href": "#contact",
+                "label": "Talk to us"
+              }
+            }
+          },
+          "visible": true,
+          "settings": {}
+        }
+      ],
+      "published": false,
+      "updated_at": "2026-05-23T23:46:10.828562+00:00",
+      "locale_default": null
+    },
+    "created_at": "2026-05-23T20:57:27.371161+00:00",
+    "updated_at": "2026-05-23T23:46:11.015407+00:00"
+  }
+]

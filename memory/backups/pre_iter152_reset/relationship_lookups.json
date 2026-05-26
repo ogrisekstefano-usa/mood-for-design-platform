@@ -1,0 +1,270 @@
+[
+  {
+    "id": "1e0c3453-9aa5-4805-a01c-2eea84e25302",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "group_key": "lifecycle_stage",
+    "value_key": "lead",
+    "label": {
+      "de-DE": "Lead",
+      "en-GB": "Lead",
+      "en-US": "Lead",
+      "es-ES": "Lead",
+      "fr-FR": "Lead",
+      "it-IT": "Lead"
+    },
+    "sort_order": 10,
+    "active": true,
+    "metadata": {
+      "tone": "first-touch",
+      "color": "#9CA3AF",
+      "order": 1,
+      "canonical_pipeline": true
+    },
+    "created_at": "2026-05-23T18:27:12.423015+00:00",
+    "updated_at": "2026-05-23T18:27:12.423015+00:00",
+    "scope": "tenant"
+  },
+  {
+    "id": "2d4a5cf4-ce3a-4d41-b679-8181e5903173",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "group_key": "lifecycle_stage",
+    "value_key": "prospect",
+    "label": {
+      "de-DE": "Prospekt",
+      "en-GB": "Prospect",
+      "en-US": "Prospect",
+      "es-ES": "Prospecto",
+      "fr-FR": "Prospect",
+      "it-IT": "Prospect"
+    },
+    "sort_order": 20,
+    "active": true,
+    "metadata": {
+      "tone": "qualifying",
+      "color": "#88c0d0",
+      "order": 2,
+      "canonical_pipeline": true
+    },
+    "created_at": "2026-05-23T18:27:12.423015+00:00",
+    "updated_at": "2026-05-23T18:27:12.423015+00:00",
+    "scope": "tenant"
+  },
+  {
+    "id": "29757a4b-fffe-40d3-9c12-5c08089e50a3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "group_key": "lifecycle_stage",
+    "value_key": "qualified",
+    "label": {
+      "de-DE": "Qualifiziert",
+      "en-GB": "Qualified",
+      "en-US": "Qualified",
+      "es-ES": "Cualificado",
+      "fr-FR": "Qualifié",
+      "it-IT": "Qualificato"
+    },
+    "sort_order": 30,
+    "active": true,
+    "metadata": {
+      "tone": "committed",
+      "color": "#5B7CA0",
+      "order": 3,
+      "canonical_pipeline": true
+    },
+    "created_at": "2026-05-23T18:27:12.423015+00:00",
+    "updated_at": "2026-05-23T18:27:12.423015+00:00",
+    "scope": "tenant"
+  },
+  {
+    "id": "f1e522bc-78ad-4460-b7f0-6c9adc12d9ef",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "group_key": "lifecycle_stage",
+    "value_key": "active_project",
+    "label": {
+      "de-DE": "Aktives Projekt",
+      "en-GB": "Active Project",
+      "en-US": "Active Project",
+      "es-ES": "Proyecto activo",
+      "fr-FR": "Projet actif",
+      "it-IT": "Progetto attivo"
+    },
+    "sort_order": 40,
+    "active": true,
+    "metadata": {
+      "tone": "engaged",
+      "color": "#C9A36E",
+      "order": 4,
+      "canonical_pipeline": true
+    },
+    "created_at": "2026-05-23T18:27:12.423015+00:00",
+    "updated_at": "2026-05-23T18:27:12.423015+00:00",
+    "scope": "tenant"
+  },
+  {
+    "id": "16174bee-6443-4128-a9c7-21a8033b013d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "group_key": "lifecycle_stage",
+    "value_key": "client",
+    "label": {
+      "de-DE": "Kunde",
+      "en-GB": "Client",
+      "en-US": "Client",
+      "es-ES": "Cliente",
+      "fr-FR": "Client",
+      "it-IT": "Cliente"
+    },
+    "sort_order": 50,
+    "active": true,
+    "metadata": {
+      "tone": "trusted",
+      "color": "#10B981",
+      "order": 5,
+      "canonical_pipeline": true
+    },
+    "created_at": "2026-05-23T18:27:12.423015+00:00",
+    "updated_at": "2026-05-23T18:27:12.423015+00:00",
+    "scope": "tenant"
+  },
+  {
+    "id": "9597e288-5560-4506-8689-95200bb07a4d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "group_key": "lifecycle_stage",
+    "value_key": "returning_client",
+    "label": {
+      "de-DE": "Wiederkehrender Kunde",
+      "en-GB": "Returning Client",
+      "en-US": "Returning Client",
+      "es-ES": "Cliente recurrente",
+      "fr-FR": "Client récurrent",
+      "it-IT": "Cliente di ritorno"
+    },
+    "sort_order": 60,
+    "active": true,
+    "metadata": {
+      "tone": "loyalty",
+      "color": "#059669",
+      "order": 6,
+      "canonical_pipeline": true
+    },
+    "created_at": "2026-05-23T18:27:12.423015+00:00",
+    "updated_at": "2026-05-23T18:27:12.423015+00:00",
+    "scope": "tenant"
+  },
+  {
+    "id": "662be24e-417d-4253-b11f-f8b503187ed3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "group_key": "lifecycle_stage",
+    "value_key": "archived",
+    "label": {
+      "de-DE": "Archiviert",
+      "en-GB": "Archived",
+      "en-US": "Archived",
+      "es-ES": "Archivado",
+      "fr-FR": "Archivé",
+      "it-IT": "Archiviato"
+    },
+    "sort_order": 70,
+    "active": true,
+    "metadata": {
+      "tone": "closed",
+      "color": "#6B7280",
+      "order": 7,
+      "terminal": true,
+      "canonical_pipeline": true
+    },
+    "created_at": "2026-05-23T18:27:12.423015+00:00",
+    "updated_at": "2026-05-23T18:27:12.423015+00:00",
+    "scope": "tenant"
+  },
+  {
+    "id": "3d80cab5-caae-4806-a4a9-b6c9bfb643c0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "group_key": "account_type",
+    "value_key": "hotel_group",
+    "label": {
+      "de-DE": "Hotelgruppe",
+      "en-GB": "Hotel group",
+      "en-US": "Hotel group",
+      "es-ES": "Grupo hotelero",
+      "fr-FR": "Groupe hôtelier",
+      "it-IT": "Gruppo alberghiero"
+    },
+    "sort_order": 120,
+    "active": true,
+    "metadata": {
+      "icon": "hotel",
+      "cultural": "hospitality-first"
+    },
+    "created_at": "2026-05-23T18:27:12.423015+00:00",
+    "updated_at": "2026-05-23T18:27:12.423015+00:00",
+    "scope": "tenant"
+  },
+  {
+    "id": "4ee0fbc9-bee5-406b-b597-adbfb12dcd22",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "group_key": "account_type",
+    "value_key": "yacht_client",
+    "label": {
+      "de-DE": "Yacht-Kunde",
+      "en-GB": "Yacht client",
+      "en-US": "Yacht client",
+      "es-ES": "Cliente náutico",
+      "fr-FR": "Client yacht",
+      "it-IT": "Cliente yacht"
+    },
+    "sort_order": 130,
+    "active": true,
+    "metadata": {
+      "icon": "yacht",
+      "cultural": "bespoke-marine"
+    },
+    "created_at": "2026-05-23T18:27:12.423015+00:00",
+    "updated_at": "2026-05-23T18:27:12.423015+00:00",
+    "scope": "tenant"
+  },
+  {
+    "id": "a4ca0351-9e23-408a-9873-17a83e74732d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "group_key": "account_type",
+    "value_key": "luxury_retail",
+    "label": {
+      "de-DE": "Luxus-Retail",
+      "en-GB": "Luxury retail",
+      "en-US": "Luxury retail",
+      "es-ES": "Retail de lujo",
+      "fr-FR": "Retail luxe",
+      "it-IT": "Retail luxury"
+    },
+    "sort_order": 140,
+    "active": true,
+    "metadata": {
+      "icon": "luxury",
+      "cultural": "flagship-experience"
+    },
+    "created_at": "2026-05-23T18:27:12.423015+00:00",
+    "updated_at": "2026-05-23T18:27:12.423015+00:00",
+    "scope": "tenant"
+  },
+  {
+    "id": "3bf8f6a5-677d-4a08-acdd-0d45c0357983",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "group_key": "account_type",
+    "value_key": "partner_brand",
+    "label": {
+      "de-DE": "Partnermarke",
+      "en-GB": "Partner brand",
+      "en-US": "Partner brand",
+      "es-ES": "Marca asociada",
+      "fr-FR": "Marque partenaire",
+      "it-IT": "Brand partner"
+    },
+    "sort_order": 150,
+    "active": true,
+    "metadata": {
+      "icon": "partner",
+      "cultural": "co-creation"
+    },
+    "created_at": "2026-05-23T18:27:12.423015+00:00",
+    "updated_at": "2026-05-23T18:27:12.423015+00:00",
+    "scope": "tenant"
+  }
+]

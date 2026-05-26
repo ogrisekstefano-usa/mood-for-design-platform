@@ -419,6 +419,22 @@ def resolve_runtime_bundle(tenant_id: Optional[str],
                            is_root: bool = False) -> Dict[str, Any]:
     cfg = resolve_tenant_config(tenant_id) if tenant_id else {}
     modules = resolve_modules(tenant_id)
+    branding = (cfg.get("branding") or {})
+    # Also surface tenant.name and logo_url as canonical brand_name/logo so
+    # the frontend can apply favicon + tab title without further fetch.
+    tenant_row = None
+    if tenant_id:
+        try:
+            r = db().table("tenants").select("name, logo_url").eq("id", tenant_id).limit(1).execute().data
+            tenant_row = r[0] if r else None
+        except Exception:
+            tenant_row = None
+    brand_block = {
+        "brand_name":  branding.get("brand_name") or (tenant_row and tenant_row.get("name")),
+        "tagline":     branding.get("tagline"),
+        "logo_url":    branding.get("logo_url") or (tenant_row and tenant_row.get("logo_url")),
+        "favicon_url": branding.get("favicon_url") or branding.get("logo_url"),
+    }
     return {
         "tenant_id":    tenant_id,
         "configuration": {
@@ -437,6 +453,7 @@ def resolve_runtime_bundle(tenant_id: Optional[str],
             "enabled_modules":        cfg.get("enabled_modules") or {},
         },
         "theme":      resolve_theme(tenant_id),
+        "branding":   brand_block,
         "modules":    [{
             "code":          m["code"],
             "display_name":  m["display_name"],

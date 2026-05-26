@@ -49,6 +49,28 @@ const applyTokens = (tokens) => {
   set('--atelier-cyan-runtime', tokens.color_primary);
 };
 
+/**
+ * Apply branding to the document: favicon + tab title.
+ * Reads from configuration bundle so it stays DB-driven.
+ */
+const applyBranding = (branding) => {
+  if (!branding || typeof document === 'undefined') return;
+  const fav = branding.favicon_url || branding.logo_url;
+  if (fav) {
+    let link = document.querySelector("link[rel='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.href = fav;
+  }
+  if (branding.brand_name) {
+    const tagline = branding.tagline ? ` · ${branding.tagline}` : '';
+    document.title = `${branding.brand_name}${tagline}`;
+  }
+};
+
 export const TenantConfigurationProvider = ({ children }) => {
   const { user } = useAuth();
   const [bundle, setBundle] = useState(null);
@@ -64,6 +86,7 @@ export const TenantConfigurationProvider = ({ children }) => {
       const { data } = await api.get('/api/tenant/configuration');
       setBundle(data);
       applyTokens(data?.theme);
+      applyBranding(data?.branding);
       setError(null);
     } catch (e) {
       // Silent in production — render still proceeds with defaults.

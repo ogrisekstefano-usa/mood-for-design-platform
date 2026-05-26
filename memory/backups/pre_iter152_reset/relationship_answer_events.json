@@ -1,0 +1,376 @@
+[
+  {
+    "id": "942df98a-1997-4b19-b5d3-bcfadc913880",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "af61581b-2e5f-40b8-9c15-1a80da15e2a7",
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "warm_enveloping",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T07:30:00.477613+00:00",
+    "source_surface": "intake_wizard",
+    "session_id": "8507df27-f5d3-444f-ae85-034169f75f12",
+    "metadata": {
+      "user_agent": "python-requests/2.33.1",
+      "tenant_slug": "studio"
+    }
+  },
+  {
+    "id": "b97fe135-fee0-4112-990c-6dd3be6fab8a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "af61581b-2e5f-40b8-9c15-1a80da15e2a7",
+    "account_id": null,
+    "question_key": "material_affinities_v2",
+    "option_value": "walnut",
+    "raw_value": null,
+    "group_key": "materials",
+    "occurred_at": "2026-05-24T07:30:00.740635+00:00",
+    "source_surface": "intake_wizard",
+    "session_id": "8507df27-f5d3-444f-ae85-034169f75f12",
+    "metadata": {
+      "user_agent": "python-requests/2.33.1",
+      "tenant_slug": "studio"
+    }
+  },
+  {
+    "id": "28afe692-a5da-449b-baff-f6edf046e127",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "af61581b-2e5f-40b8-9c15-1a80da15e2a7",
+    "account_id": null,
+    "question_key": "budget_range_v2",
+    "option_value": "bespoke",
+    "raw_value": null,
+    "group_key": "budget_range",
+    "occurred_at": "2026-05-24T07:30:01.004090+00:00",
+    "source_surface": "intake_wizard",
+    "session_id": "8507df27-f5d3-444f-ae85-034169f75f12",
+    "metadata": {
+      "user_agent": "python-requests/2.33.1",
+      "tenant_slug": "studio"
+    }
+  },
+  {
+    "id": "e26ecb91-4126-4838-8028-e0fcd1f4f980",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "797a24b4-46f3-47f4-9340-21aab94cbd02",
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "warm_enveloping",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T07:30:39.927513+00:00",
+    "source_surface": "intake_wizard",
+    "session_id": "bae8b8cf-478a-4dfe-88fd-629cb2f5ae68",
+    "metadata": {
+      "user_agent": "python-requests/2.33.1",
+      "tenant_slug": "studio"
+    }
+  },
+  {
+    "id": "d8f549d2-7a78-4448-9d5c-ff7af0952a02",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "797a24b4-46f3-47f4-9340-21aab94cbd02",
+    "account_id": null,
+    "question_key": "material_affinities_v2",
+    "option_value": "walnut",
+    "raw_value": null,
+    "group_key": "materials",
+    "occurred_at": "2026-05-24T07:30:40.175376+00:00",
+    "source_surface": "intake_wizard",
+    "session_id": "bae8b8cf-478a-4dfe-88fd-629cb2f5ae68",
+    "metadata": {
+      "user_agent": "python-requests/2.33.1",
+      "tenant_slug": "studio"
+    }
+  },
+  {
+    "id": "e98cb8cf-5634-4fa3-a6a2-783498adf43e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "797a24b4-46f3-47f4-9340-21aab94cbd02",
+    "account_id": null,
+    "question_key": "budget_range_v2",
+    "option_value": "bespoke",
+    "raw_value": null,
+    "group_key": "budget_range",
+    "occurred_at": "2026-05-24T07:30:40.427712+00:00",
+    "source_surface": "intake_wizard",
+    "session_id": "bae8b8cf-478a-4dfe-88fd-629cb2f5ae68",
+    "metadata": {
+      "user_agent": "python-requests/2.33.1",
+      "tenant_slug": "studio"
+    }
+  },
+  {
+    "id": "c08024f3-06f6-4f71-a399-29f86c05d39a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "warm_enveloping",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T08:33:42.736969+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": null,
+    "metadata": {
+      "user_agent": "curl/7.88.1",
+      "tenant_slug": "studio"
+    }
+  },
+  {
+    "id": "bac654cf-29d9-423d-86de-2f41ba0448ea",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": null,
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "warm_enveloping",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T08:34:14.694573+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": null,
+    "metadata": {
+      "user_agent": "curl/7.88.1",
+      "tenant_slug": "studio"
+    }
+  },
+  {
+    "id": "554d7ce7-9d4d-4666-a920-6634a217e2f4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "01179d78-aa70-4234-86cd-129812fe5074",
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "warm_enveloping",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T08:40:02.174536+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "40dd0432-0f1c-4d35-b653-ebc324133334",
+    "metadata": {
+      "user_agent": "curl/7.88.1",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "e4aade9d-be38-4850-900a-c14311603c83",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "01179d78-aa70-4234-86cd-129812fe5074",
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "warm_enveloping",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T08:42:00.102566+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "03f2eff3-7394-4254-a4a1-b62752159729",
+    "metadata": {
+      "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.7778.0 Safari/537.36",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "3727a048-1a2b-4f5a-a317-463cf6f5a824",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "90ecc8df-7d39-4f32-a04c-9c3479a528a0",
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "calm",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T08:45:17.189336+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "0be57920-3a8a-4ad8-a3e3-b4542bfda566",
+    "metadata": {
+      "user_agent": "python-requests/2.33.1",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "f25d276e-5c1a-42f1-9e70-a81dc266519b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "90ecc8df-7d39-4f32-a04c-9c3479a528a0",
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "serene",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T08:45:18.002836+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "80e5966c-27bc-4c48-87f9-b053994e17de",
+    "metadata": {
+      "user_agent": "python-requests/2.33.1",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "f7f786ca-2a56-4d8f-a667-abf6cf32d6bc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6bd44c13-d10d-4aaa-bda0-f753808ae3b2",
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "warm_enveloping",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T08:46:11.553699+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "e716caa1-8847-4110-ab75-ae1f97ac82cb",
+    "metadata": {
+      "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "f880ec36-b528-4fce-9240-573af7f34f43",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6bd44c13-d10d-4aaa-bda0-f753808ae3b2",
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "calm",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T14:43:23.716748+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "3096c1e7-41cc-4cd1-b215-f6f29d93755f",
+    "metadata": {
+      "user_agent": "python-requests/2.33.1",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "bb2f48e5-8794-49b5-baf2-5045bdb14195",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6bd44c13-d10d-4aaa-bda0-f753808ae3b2",
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "serene",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T14:43:24.543320+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "5c5ca19f-b548-4044-97fe-f581f2aae018",
+    "metadata": {
+      "user_agent": "python-requests/2.33.1",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "a9bc63e6-8494-4047-924b-142e91300612",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6bd44c13-d10d-4aaa-bda0-f753808ae3b2",
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "calm",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T14:43:42.791835+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": null,
+    "metadata": {
+      "user_agent": "python-requests/2.33.1",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "9a460775-22aa-4a61-8a81-baea9264466d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6bd44c13-d10d-4aaa-bda0-f753808ae3b2",
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "warm_enveloping",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T14:46:52.960347+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "1bbbc404-df3f-40e9-93a6-972672f93c6d",
+    "metadata": {
+      "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.7778.0 Safari/537.36",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "d2e9c905-2b20-4774-a7a9-5ada2575cf1a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6bd44c13-d10d-4aaa-bda0-f753808ae3b2",
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "timeless_elegance",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-24T15:25:15.652194+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "9eebca8f-6dcd-4ea6-92dd-2a327a9990b0",
+    "metadata": {
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "be61bc57-520f-4e50-a1b1-20660a3ca0f9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6bd44c13-d10d-4aaa-bda0-f753808ae3b2",
+    "account_id": null,
+    "question_key": "material_affinities_v2",
+    "option_value": "linen",
+    "raw_value": null,
+    "group_key": "materials",
+    "occurred_at": "2026-05-24T15:25:18.267905+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "9eebca8f-6dcd-4ea6-92dd-2a327a9990b0",
+    "metadata": {
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "3bb1be15-6f5b-497c-9578-03679e8cb9d2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6bd44c13-d10d-4aaa-bda0-f753808ae3b2",
+    "account_id": null,
+    "question_key": "lifestyle_rituals",
+    "option_value": "work_from_home",
+    "raw_value": null,
+    "group_key": "lifestyle",
+    "occurred_at": "2026-05-24T15:25:20.060161+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "9eebca8f-6dcd-4ea6-92dd-2a327a9990b0",
+    "metadata": {
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "942c340a-09ff-4d66-b883-b7b53a8f01da",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6bd44c13-d10d-4aaa-bda0-f753808ae3b2",
+    "account_id": null,
+    "question_key": "project_timing",
+    "option_value": "immediate",
+    "raw_value": null,
+    "group_key": "project_timing",
+    "occurred_at": "2026-05-24T15:25:25.510588+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "9eebca8f-6dcd-4ea6-92dd-2a327a9990b0",
+    "metadata": {
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "36011d21-ca1c-434c-b7bf-a3384272fd7d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "6bd44c13-d10d-4aaa-bda0-f753808ae3b2",
+    "account_id": null,
+    "question_key": "budget_range_v2",
+    "option_value": "premium",
+    "raw_value": null,
+    "group_key": "budget_range",
+    "occurred_at": "2026-05-24T15:25:31.950244+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "9eebca8f-6dcd-4ea6-92dd-2a327a9990b0",
+    "metadata": {
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+      "operator_user_id": null
+    }
+  }
+]

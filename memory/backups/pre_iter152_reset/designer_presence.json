@@ -1,0 +1,14 @@
+[
+  {
+    "id": "6db41345-35c9-49f3-b425-b894e280027a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "designer_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "state_key": "in_studio",
+    "state_label_it": "In studio",
+    "state_label_en": "In studio",
+    "note": "Sto curando palette di rovere e travertino",
+    "timezone": "Europe/Rome",
+    "expires_at": "2026-05-25T22:50:44.963858+00:00",
+    "updated_at": "2026-05-26T03:56:20.406734+00:00"
+  }
+]
