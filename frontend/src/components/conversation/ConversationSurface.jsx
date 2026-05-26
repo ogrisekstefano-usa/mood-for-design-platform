@@ -221,6 +221,26 @@ const ConversationSurface = ({
     setPendingScroll(0);
   };
 
+  /* ── PRESENCE REALTIME ────────────────────────────────────
+   * Sprint F · F3 — designer presence is pushed live to the
+   * client conversation header. Crossfade is handled by CSS
+   * via the conv-head__presence key change. */
+  useEffect(() => {
+    const did = isClient ? thread?.primary_designer_id : null;
+    if (!did) return undefined;
+    const unsub = subscribe({
+      key: `presence:${did}`,
+      table: 'designer_presence',
+      event: '*',
+      filter: `designer_id=eq.${did}`,
+      onPayload: (p) => {
+        if (!p.new) return;
+        queueMicrotask(() => setPresence(p.new));
+      },
+    });
+    return unsub;
+  }, [isClient, thread?.primary_designer_id]);
+
   /* ── SEND ────────────────────────────────────────────────── */
   const send = async () => {
     const text = draft.trim();
@@ -281,7 +301,13 @@ const ConversationSurface = ({
           </div>
           <div className="conv-head__meta">
             <p className="conv-head__name" data-testid="conv-counterpart-name">{counterpartName}</p>
-            <p className="conv-head__role">{counterpartRole}</p>
+            <p
+              key={presence?.state_key || counterpartRole}
+              className="conv-head__role conv-head__role--crossfade"
+              data-testid="conv-counterpart-role"
+            >
+              {counterpartRole}
+            </p>
             {counterpart?.short_bio && (
               <p className="conv-head__bio">{counterpart.short_bio}</p>
             )}

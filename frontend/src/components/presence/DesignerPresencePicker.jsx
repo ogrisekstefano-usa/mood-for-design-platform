@@ -1,12 +1,17 @@
 /**
- * DesignerPresencePicker — ITER151 Sprint C
+ * DesignerPresencePicker — ITER151 Sprint C + Sprint F · F3 Realtime
  *
  * Compact narrative state selector for the designer. NOT online/offline.
  * Sits in the workspace header / dashboard. Persists via PUT /orchestra/presence/me.
+ *
+ * Realtime: subscribes to own presence row so external changes
+ * (other tab, admin tool) reflect here with a soft crossfade.
  */
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { getMyPresence, setMyPresence, getPresenceOptions } from '../../lib/orchestra';
+import { subscribe } from '../../lib/realtimeBus';
+import { useAuth } from '../../contexts/AuthContext';
 import './designer-presence-picker.css';
 
 const DesignerPresencePicker = ({ locale = 'it', compact = false }) => {
@@ -14,11 +19,29 @@ const DesignerPresencePicker = ({ locale = 'it', compact = false }) => {
   const [current, setCurrent] = useState(null);
   const [options, setOptions] = useState([]);
   const [saving, setSaving] = useState(false);
+  const { user } = useAuth();
+  const myId = user?.id || null;
 
   useEffect(() => {
     getPresenceOptions().then(({ data }) => setOptions(data?.data || [])).catch(() => {});
     getMyPresence().then(({ data }) => setCurrent(data)).catch(() => {});
   }, []);
+
+  // Realtime — keep the picker in sync with external changes
+  useEffect(() => {
+    if (!myId) return undefined;
+    const unsub = subscribe({
+      key: `presence:${myId}`,
+      table: 'designer_presence',
+      event: '*',
+      filter: `designer_id=eq.${myId}`,
+      onPayload: (p) => {
+        if (!p.new) return;
+        queueMicrotask(() => setCurrent(prev => ({ ...prev, ...p.new })));
+      },
+    });
+    return unsub;
+  }, [myId]);
 
   const choose = async (state_key) => {
     setSaving(true);
@@ -45,7 +68,7 @@ const DesignerPresencePicker = ({ locale = 'it', compact = false }) => {
         data-testid="dpp-toggle"
       >
         <span className="dpp__dot" aria-hidden />
-        <span className="dpp__label">{label}</span>
+        <span key={current?.state_key || 'idle'} className="dpp__label dpp__label--crossfade">{label}</span>
         <span className="dpp__caret" aria-hidden>{open ? '▴' : '▾'}</span>
       </button>
       {open && (

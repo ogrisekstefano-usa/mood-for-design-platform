@@ -2,6 +2,58 @@
 
 
 ## 📌 Sprint Status (latest)
+- **Sprint F · F3 — Designer Presence Realtime** · ✅ DELIVERED · 25 Mag 2026
+
+  **🎯 Goal**: la presenza designer respira live come "stato
+  curatoriale dello studio", non come status tecnico.
+
+  **Architettura**:
+  - **Migration 095** — `designer_presence` in publication
+    `supabase_realtime` + REPLICA IDENTITY FULL
+  - **`ConversationSurface.jsx`** (client side) — subscribe
+    `presence:<primary_designer_id>` filtro
+    `designer_id=eq.<uuid>`, evento `*`, dedup-friendly
+  - **`DesignerPresencePicker.jsx`** (designer side) — subscribe
+    sulla propria riga, così cambi da altre sessioni/admin
+    riflettono live senza refresh
+  - **CSS `presence-crossfade` / `dpp-crossfade`**: animazione
+    600ms cubic-bezier(0.16, 1, 0.3, 1) con opacity + translateY
+    + filter blur. NO green dot, NO online/offline.
+  - Polling 15s come safety net (già attivo nel design system)
+
+  **Stati editoriali supportati**:
+  In Studio · Selezione materiali · Curando ispirazioni ·
+  Preparando concept · In presentazione · Con un cliente ·
+  Sopralluogo · Fuori studio
+
+  **E2E verificato live (client@moodfordesign.com vede admin)**:
+  - Cascata 3 cambi consecutivi · ogni cambio < 3s
+    IN STUDIO → CURANDO ISPIRAZIONI → PREPARANDO CONCEPT →
+    SELEZIONE MATERIALI
+  - Crossfade visivo, no flip secco
+  - Niente refresh manuale, niente flicker
+
+  **Files**:
+  - `supabase/migrations/095_realtime_publication_presence.sql`
+  - `backend/scripts/apply_migration_095.py`
+  - `backend/scripts/_test_set_presence.py` (helper)
+  - `frontend/src/components/conversation/ConversationSurface.jsx`
+  - `frontend/src/components/conversation/conversation-surface.css`
+  - `frontend/src/components/presence/DesignerPresencePicker.jsx`
+  - `frontend/src/components/presence/designer-presence-picker.css`
+
+  **Nota tecnica residua**: l'endpoint REST
+  `GET /api/orchestra/presence/designer/<id>` ritorna talvolta il
+  fallback `in_studio` invece dello stato reale nel DB — bug
+  preesistente NON legato a F3. La realtime push corregge
+  immediatamente al primo cambio di stato. Backlog tecnico
+  separato.
+
+  **Prossimo**: F4 · Timeline Events Realtime con pill
+  `↓ un nuovo movimento`.
+
+---
+
 - **Sprint F · F2 — Chat / Conversation Realtime** · ✅ DELIVERED · 25 Mag 2026
 
   **🎯 Goal**: la conversazione studio↔cliente respira in tempo
