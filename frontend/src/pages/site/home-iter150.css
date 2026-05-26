@@ -913,6 +913,11 @@
   .mfd-home-hero__content::before {
     inset: -32px -40px -32px -60px;
   }
+  /* Hide desktop nav + CTA, show burger from 1180px down */
+  .mfd-header__nav,
+  .mfd-header__cta { display: none; }
+  .mfd-burger { display: inline-flex; }
+  .mfd-header__inner { grid-template-columns: 1fr auto; }
 }
 
 /* Tablet portrait (880 - 640) */
@@ -925,6 +930,9 @@
     text-align: center;
   }
   .mfd-header {
+    padding: 0;
+  }
+  .mfd-header__inner {
     grid-template-columns: 1fr auto;
     gap: 14px;
     padding: 16px 22px;
@@ -993,3 +1001,135 @@
   .mfd-footer__cols { grid-template-columns: 1fr; }
   .mfd-trust__brand { font-size: 16px; }
 }
+
+/* ═════════════════════════════════════════════════════════════════
+ * ITER156 · Public header burger + slide-down panel
+ *   Default: burger hidden on desktop (≥ 1181px).
+ *   ≤ 1180px → nav + desktop CTA hidden, burger visible.
+ * ═══════════════════════════════════════════════════════════════ */
+.mfd-burger {
+  display: none;                    /* shown via media query (≤ 1180px) */
+  width: 44px; height: 44px;
+  border: 1px solid var(--mfd-line);
+  background: transparent;
+  border-radius: 50%;
+  padding: 0;
+  align-items: center; justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  transition: border-color 220ms ease, background 220ms ease;
+}
+.mfd-burger:hover { border-color: var(--mfd-ink); }
+.mfd-burger span {
+  display: block;
+  width: 18px; height: 1.5px;
+  background: var(--mfd-ink);
+  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 220ms ease;
+}
+.mfd-burger--open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+.mfd-burger--open span:nth-child(2) { opacity: 0; }
+.mfd-burger--open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+.mfd-mobile-menu {
+  position: fixed;
+  top: 0; right: 0;
+  width: min(380px, 100vw);
+  height: 100vh;
+  background: var(--mfd-bg);
+  border-left: 1px solid var(--mfd-line);
+  padding: 96px 32px 32px;
+  display: flex; flex-direction: column;
+  gap: 14px;
+  transform: translateX(105%);
+  transition: transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 60;
+  overflow-y: auto;
+}
+.mfd-mobile-menu--open { transform: translateX(0); }
+.mfd-mobile-menu__nav {
+  display: flex; flex-direction: column;
+  gap: 0;
+}
+.mfd-mobile-menu__nav a {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--mfd-ink);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--mfd-line);
+  transition: color 220ms ease, padding-left 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mfd-mobile-menu__nav a:hover {
+  color: var(--mfd-accent-2);
+  padding-left: 8px;
+}
+.mfd-mobile-menu__cta {
+  margin-top: 28px;
+  justify-content: center;
+  padding: 16px 24px;
+}
+.mfd-mobile-menu__login {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 11.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mfd-mute);
+  font-weight: 600;
+  padding: 12px 0;
+  transition: color 220ms ease;
+}
+.mfd-mobile-menu__login:hover { color: var(--mfd-ink); }
+.mfd-mobile-menu__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.32);
+  backdrop-filter: blur(4px);
+  z-index: 55;
+  animation: mfd-overlay-in 240ms ease;
+}
+@keyframes mfd-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ═════════════════════════════════════════════════════════════════
+ * ITER156 · Colophon · vertical alignment refinement
+ *   Three columns must sit on the same baseline at desktop.
+ * ═══════════════════════════════════════════════════════════════ */
+.mfd-colophon__inner {
+  align-items: center;
+  min-height: 56px;                 /* generous breathing room */
+}
+.mfd-colophon__col {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1.4;
+}
+.mfd-colophon__col--left   { justify-content: flex-start; }
+.mfd-colophon__col--center { justify-content: center; }
+.mfd-colophon__col--right  { justify-content: flex-end; }
+
+/* ═════════════════════════════════════════════════════════════════
+ * ITER156 · Materials carousel · uniform tile + label rhythm
+ * ═══════════════════════════════════════════════════════════════ */
+.mat-tile {
+  width: 200px;                     /* a bit larger, breathes better */
+  aspect-ratio: 4 / 5;              /* portrait tiles read more editorial */
+}
+.mat-tile__label {
+  padding: 14px 14px 12px;
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  background: linear-gradient(transparent, rgba(14, 13, 11, 0.85));
+  font-weight: 600;
+  line-height: 1.35;
+  min-height: 48px;
+  display: flex; align-items: flex-end;
+}
+@media (max-width: 1180px) { .mat-tile { width: 168px; } }
+@media (max-width: 880px)  { .mat-tile { width: 148px; } }
+@media (max-width: 480px)  { .mat-tile { width: 132px; } }

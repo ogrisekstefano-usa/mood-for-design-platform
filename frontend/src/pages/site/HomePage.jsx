@@ -23,7 +23,7 @@
  * never reads broken — and Blueprint Command Center™ can override
  * each block without code changes.
  */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Plus } from 'lucide-react';
 import { useSite, SiteProvider } from '../../site/SiteContext';
@@ -254,10 +254,25 @@ const LanguageSelector = ({ locale, locales, onChange }) => {
 };
 
 // ─────────────────────────────────────────────────────────────────────
-// SITE HEADER — sticky luxury nav
+// HEADER (with burger menu for tablet/mobile)
 // ─────────────────────────────────────────────────────────────────────
 const SiteHeader = ({ locale, copy, onLocaleChange }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
   const locales = (copy.locales && copy.locales.length) ? copy.locales : DEFAULT_LOCALES;
+
+  // Close menu on route change / anchor click
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  // Lock body scroll when menu open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
+
   return (
   <>
     <div className="mfd-welcome-strip" role="region" aria-label="Welcome">
@@ -276,7 +291,7 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
     </div>
     <header className="mfd-header">
       <div className="mfd-header__inner">
-        <Link to="/" className="mfd-header__brand">
+        <Link to="/" className="mfd-header__brand" onClick={closeMenu}>
           <span className="mfd-header__brand-mark">MOOD <em>for</em> DESIGN</span>
           <span className="mfd-header__brand-sub">Italian Design Studios</span>
         </Link>
@@ -288,11 +303,49 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
           <Link to="/professionals">{L(copy.nav.professionals, locale)}</Link>
           <a href="#footer">{L(copy.nav.about, locale)}</a>
         </nav>
-        <Link to="/begin-journey" className="mfd-cta mfd-cta--primary" data-testid="header-cta-start-project">
+        <Link to="/begin-journey" className="mfd-cta mfd-cta--primary mfd-header__cta" data-testid="header-cta-start-project">
           {L(copy.nav.cta, locale)}
         </Link>
+        <button
+          type="button"
+          className={`mfd-burger ${menuOpen ? 'mfd-burger--open' : ''}`}
+          aria-label="Menu"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(o => !o)}
+          data-testid="header-burger"
+        >
+          <span /><span /><span />
+        </button>
       </div>
     </header>
+
+    {/* Mobile / tablet slide-down panel */}
+    <div
+      className={`mfd-mobile-menu ${menuOpen ? 'mfd-mobile-menu--open' : ''}`}
+      aria-hidden={!menuOpen}
+      data-testid="mobile-menu-panel"
+    >
+      <nav className="mfd-mobile-menu__nav" aria-label="Mobile">
+        <a href="#how-it-works" onClick={closeMenu}>{L(copy.nav.how_it_works, locale)}</a>
+        <Link to="/magazine" onClick={closeMenu}>{L(copy.nav.magazine, locale)}</Link>
+        <a href="#design-stories" onClick={closeMenu}>{L(copy.nav.design_stories, locale)}</a>
+        <a href="#materials" onClick={closeMenu}>{L(copy.nav.materials, locale)}</a>
+        <Link to="/professionals" onClick={closeMenu}>{L(copy.nav.professionals, locale)}</Link>
+        <a href="#footer" onClick={closeMenu}>{L(copy.nav.about, locale)}</a>
+      </nav>
+      <Link
+        to="/begin-journey"
+        className="mfd-cta mfd-cta--primary mfd-mobile-menu__cta"
+        onClick={closeMenu}
+        data-testid="mobile-menu-cta"
+      >
+        {L(copy.nav.cta, locale)}
+      </Link>
+      <Link to="/auth/login" className="mfd-mobile-menu__login" onClick={closeMenu}>
+        {L(copy.nav.login, locale)}
+      </Link>
+    </div>
+    {menuOpen && <div className="mfd-mobile-menu__overlay" onClick={closeMenu} />}
   </>
   );
 };
@@ -585,7 +638,6 @@ const SiteFooter = ({ locale, copy }) => (
           ))}
         </div>
       </div>
-      <div className="mfd-footer__rights">{L(copy.footer.rights, locale)}</div>
     </div>
     <FooterColophon locale={locale} copy={copy} />
   </footer>
