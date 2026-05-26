@@ -253,6 +253,21 @@ const LinkList = ({ group, links, values, onSetField, onSetLink, onAdd, onRemove
             data-testid={`footer-${group}-href-${idx}`}
           />
         )}
+        {!L.isHeading && (
+          <label
+            title="Apri il link in una nuova scheda"
+            style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.7rem',
+                     color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={L.target === '_blank'}
+              onChange={(e) => onSetLink(idx, { target: e.target.checked ? '_blank' : '_self' })}
+              style={{ accentColor: 'var(--mood-teal, #00C9B3)' }}
+              data-testid={`footer-${group}-target-${idx}`}
+            />
+            nuova scheda
+          </label>
+        )}
         <label style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.7rem',
                         color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}>
           <input type="checkbox" checked={!!L.isHeading}

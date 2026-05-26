@@ -39,19 +39,27 @@ const ColumnList = ({ heading, items, testid }) => (
   <div data-testid={testid}>
     {heading && <p style={HEADING_STYLE}>{heading}</p>}
     <ul className="space-y-3" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-      {items.map((L, i) => (
-        <li key={L.key || i}>
-          <a
-            href={L.href || '#'}
-            style={LINK_STYLE}
-            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--mood-teal)')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--mood-text-2)')}
-            data-testid={`footer-link-${L.key || i}`}
-          >
-            {L.label}
-          </a>
-        </li>
-      ))}
+      {items.map((L, i) => {
+        const external = L.target === '_blank' || /^https?:\/\//i.test(L.href || '');
+        return (
+          <li key={L.key || i}>
+            <a
+              href={L.href || '#'}
+              target={L.target === '_blank' ? '_blank' : undefined}
+              rel={L.target === '_blank' ? 'noopener noreferrer' : undefined}
+              style={LINK_STYLE}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--mood-teal)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--mood-text-2)')}
+              data-testid={`footer-link-${L.key || i}`}
+            >
+              {L.label}
+              {external && L.target === '_blank' && (
+                <span aria-hidden="true" style={{ marginLeft: 6, opacity: 0.4, fontSize: '0.72em' }}>↗</span>
+              )}
+            </a>
+          </li>
+        );
+      })}
     </ul>
   </div>
 );
@@ -147,7 +155,7 @@ const CountryLanguagePicker = ({ locale, locales, onSelect }) => {
 };
 
 const EditorialFooter = () => {
-  const { copyright, links = [], legal = [], social = [] } = useSiteFooter();
+  const { links = [], legal = [], social = [] } = useSiteFooter();
   const { locale, locales, setLocale } = useLocale();
   const location = useLocation();
   const navigate = useNavigate();
@@ -219,24 +227,6 @@ const EditorialFooter = () => {
             <CountryLanguagePicker locale={locale} locales={locales} onSelect={onLocaleSelect} />
           </div>
         </div>
-
-        {/* Copyright row */}
-        {copyright && (
-          <div
-            className="mt-14 pt-8"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
-          >
-            <p
-              style={{
-                fontFamily: 'Inter, sans-serif', fontSize: '0.78rem',
-                color: 'var(--mood-text-3)', letterSpacing: '0.02em', margin: 0,
-              }}
-              data-testid="footer-copyright"
-            >
-              {copyright}
-            </p>
-          </div>
-        )}
       </div>
     </footer>
   );

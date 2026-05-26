@@ -316,13 +316,17 @@ async def resolve_footer(locale: str = DEFAULT_LOCALE) -> dict:
                 'links':  [{'key': L.get('key', ''), 'href': L.get('href', ''),
                             'label': values.get(L.get('label_block', ''), '') or L.get('fallback', ''),
                             'group': L.get('group'),
+                            'target': L.get('target') or ('_blank' if L.get('open_in_new_tab') else None),
                             'isHeading': L.get('isHeading', False)}
                            for L in links_cfg if L.get('visible', True)],
                 'legal':  [{'key': L.get('key', ''), 'href': L.get('href', ''),
                             'label': values.get(L.get('label_block', ''), '') or L.get('fallback', ''),
+                            'target': L.get('target') or ('_blank' if L.get('open_in_new_tab') else None),
                             'isHeading': L.get('isHeading', False)}
                            for L in legal_cfg if L.get('visible', True)],
-                'social': [{'key': s.get('key', s.get('icon', '')), 'href': s.get('href', ''), 'icon': s.get('icon', s.get('key', ''))}
+                'social': [{'key': s.get('key', s.get('icon', '')), 'href': s.get('href', ''),
+                            'target': s.get('target', '_blank'),
+                            'icon': s.get('icon', s.get('key', ''))}
                            for s in social_cfg if s.get('visible', True)],
             }
 
