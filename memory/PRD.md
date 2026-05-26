@@ -2,7 +2,86 @@
 
 
 ## 📌 Sprint Status (latest)
-- **Sprint F · F4 — Timeline Events Realtime™ (Living Memory Layer)** · ✅ DELIVERED · 26 Mag 2026
+- **ITER156 · Studio Pulse™ Sprint A — Living Climate Observatory** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: prima superficie sopra l'ecosistema realtime · founder/
+  leadership · NO dashboard, NO KPI, NO chart. Osservatorio editoriale
+  del clima vivo dello studio.
+
+  **Backend** (`routers/studio_pulse.py` · 5 endpoint, prefix
+  `/api/studio-pulse`):
+  - `GET /climate` — distillazione narrativa dello stato di respiro
+    (events 6h/24h, msgs 24h, direction snapshots 3d). 6 stati
+    narrativi: reflective_rhythm · intense_curatorial ·
+    active_convergence · deep_focus · quiet_momentum ·
+    hospitality_rising.
+  - `GET /silent-relationships` — relazioni che hanno smesso di
+    respirare da N giorni (default 3). Batched query (no N+1).
+    Aggregate narrative + per-item.
+  - `GET /designer-intensity` — lettura narrativa per ogni designer
+    (active threads, recent events, presence). NO task overload alert.
+  - `GET /atmosphere-convergence` — aggregazione dei Design
+    Direction™ snapshots: atmosfere ricorrenti, materiali emergenti,
+    palette in convergenza.
+  - `GET /recent-movements` — frammenti editoriali tenant-wide.
+  - Access guard: `_LEADERSHIP_ROLES = {super_admin, tenant_admin,
+    founder, creative_director, account_director}` · 403 altrimenti.
+
+  **Frontend**:
+  - `lib/studioPulse.js` — SDK
+  - `pages/studio/StudioPulsePage.jsx` — pagina cinematografica:
+    Hero atmosphere + 5 card editoriali · realtime subscribe a
+    `relationship_events:tenant_id=eq.<tid>` · soft refresh 60s
+    safety net · NO badge storm, NO flashing
+  - `pages/studio/studio-pulse.css` — atmospheric tokens:
+    gradient backgrounds, layered cards, serif hierarchy
+    (Cormorant Garamond), cyan accents only, breath-pulsing glow
+    sull'angolo del Respiro, hover-rises sui designer/swatches.
+    Animation `pulse-card-in` 700ms cubic-bezier con stagger
+    delay 80/160/240/320ms.
+  - Route: `/studio-pulse` protetta via `StudioAdminRoute`
+    (tenant_admin + super_admin)
+
+  **E2E verificato (admin@moodfordesign.com)**:
+  - Tutte le 5 card renderizzate
+  - 5 chips atmosfere · 3 materiali · 5 swatches · 6 designer
+    cards · 6 relazioni in silenzio · 8 movimenti recenti
+  - Climate state: "Attività curatoriale intensa" con narrativa
+  - Atmosphere convergence: "Lo studio sta convergendo verso
+    atmosfere di serenità architettonica..."
+  - Silent aggregate: "Diverse conversazioni si sono fermate,
+    in silenzio."
+  - **Realtime**: INSERT relationship_event → 4s dopo, top item
+    della sezione `MOVIMENTI RECENTI` mostra il nuovo narrative
+    + climate aggiornato (silent push, no flash, no badge storm)
+
+  **Files**:
+  - `backend/routers/studio_pulse.py` (nuovo · 240 righe)
+  - `backend/server.py` (mount router)
+  - `frontend/src/lib/studioPulse.js` (nuovo)
+  - `frontend/src/pages/studio/StudioPulsePage.jsx` (nuovo)
+  - `frontend/src/pages/studio/studio-pulse.css` (nuovo)
+  - `frontend/src/App.js` (lazy import + protected route)
+
+  **Future-ready foundations**:
+  - 5 endpoint isolati ed estendibili (Sprint B può aggiungere
+    cross-studio climate, atmosphere evolution history,
+    stabilization narratives, emotional rhythm)
+  - Stato climatico è una stringa narrativa interpretata, già
+    pronto a integrazione AI distiller (Claude Sonnet) per
+    refinement linguistico
+  - Realtime già attivo · riusa pattern realtimeBus + REST
+    authoritative delta-fetch
+  - Editorial copy interamente in italiano, pronto a switch
+    en-GB tramite locale runtime (chiavi nei prossimi sprint)
+
+  **Prossimo**: ITER157 · Atelier Sound™ (micro-sprint artistico)
+  OPPURE Sprint B Studio Pulse™ (atmosphere evolution history,
+  stabilization narratives).
+
+---
+
+- **Sprint F · F4 — Timeline Events Realtime™** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: trasformare la timeline da feed di attività in
   **emergenza di memoria relazionale viva**. Editoriale, riflessiva,

@@ -29,6 +29,7 @@ const AuthCallbackPage = lazy(() => import('./pages/auth/AuthCallbackPage'));
 const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage'));
 const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage'));
 const JourneyPulsePage = lazy(() => import('./pages/dashboard/JourneyPulsePage'));
+const StudioPulsePage = lazy(() => import('./pages/studio/StudioPulsePage'));
 const AtelierDashboardPage = lazy(() => import('./pages/dashboard/AtelierDashboardPage'));
 const LeadsLegacyPage = lazy(() => import('./pages/workspace/LeadsPage'));
 const ProjectsPage = lazy(() => import('./pages/workspace/ProjectsPage'));
@@ -424,6 +425,10 @@ function App() {
                 <Route element={<ProtectedRoute><StudioRoute><DashboardLayout /></StudioRoute></ProtectedRoute>}>
                   <Route path="/dashboard" element={G('dashboard', <AtelierDashboardPage />)} />
                   <Route path="/dashboard/pulse" element={G('dashboard', <JourneyPulsePage />)} />
+                  <Route
+                    path="/studio-pulse"
+                    element={<StudioAdminRoute><StudioPulsePage /></StudioAdminRoute>}
+                  />
                   <Route path="/dashboard/legacy" element={<DashboardPage />} />
                   <Route path="/workspace/leads" element={<Navigate to="/crm/accounts" replace />} />
                   <Route path="/workspace/projects" element={G('journey_index', <ProjectsPage />)} />
