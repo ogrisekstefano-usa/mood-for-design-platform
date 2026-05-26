@@ -2,6 +2,75 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER157.A · Public Editorial Infrastructure™ · Sprint A "Unify & Connect"** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: eliminare il contenuto hardcoded dalla HomePage pubblica
+  e unificare l'architettura CMS attorno allo Storefront CMS canonico.
+
+  **Decisioni architetturali approvate (utente)**
+  - **Canonical CMS**: Storefront CMS (`/blueprint/experience`) — più
+    maturo (revisions/diff/duplicate/asset picker). Homepage Builder
+    deprecato.
+  - **Design Journey pubblici**: NUOVA tabella `published_design_journeys`
+    (separata da `design_journeys` operativi e `portfolio_projects`
+    archivio). Sprint B la implementerà.
+  - **Editorial**: migrazione futura a `editorial_articles` con
+    categorie (`magazine` · `design_story` · `materials` ·
+    `inspiration` · `cultural_note` · `journal`). Sprint C.
+  - **Esecuzione**: A → B → C.
+  - **Tenant target**: solo `studio` (Golden Demo) in questa fase.
+
+  **Eseguito in Sprint A**
+  - ❌ Rimosso `FALLBACK` 200-righe da `HomePage.jsx` (5 magazine cards
+    fake, 4 stories fake, 11 swatches, 8 brand, hero fake con
+    Unsplash). Sostituito con `EDITORIAL_SHELL` minimale (solo label
+    UI chrome — zero contenuto editoriale).
+  - ⨁ `EmptyEditorialSlot` graceful placeholder per ogni sezione
+    senza content CMS. Mostra eyebrow + frase italica editoriale,
+    con CTA admin "Apri Blueprint Experience →" visibile solo in
+    `?editorial=preview` URL mode.
+  - ⨁ `mapCmsToCopy(content, locale)` bridge che mappa i nuovi
+    `section_type` canonici (`hero_editorial`, `editorial_grid`,
+    `featured_design_journeys`, `trust_marquee`, `materials_carousel`,
+    `cinematic_quote`, `editorial_footer`) → la shape `copy.*` già
+    consumata dal JSX. Nessun rewrite del DOM tree.
+  - ⨁ `scripts/seed_canonical_homepage.py` idempotente. Crea page
+    `home` (status: published) + 10 section types canonici:
+    `hero_editorial · featured_design_journeys · editorial_grid ·
+    trust_marquee · magazine_highlights · atmosphere_statement ·
+    professionals_cta · materials_carousel · cinematic_quote ·
+    editorial_footer`. Locale bag `{_default, it, en-US, fr, de, es}`.
+  - ✅ Eseguito su tenant `studio` + pubblicata revisione (revision_id
+    `ff1f244a-cebf-4608-82bd-107bc0af7266`, 10 sezioni).
+  - ↻ `HomepageBuilderPage.jsx` deprecato: card "This experience is
+    now managed inside Blueprint Experience" + auto-redirect 5s a
+    `/blueprint/experience`.
+  - ↻ `home-iter150.css` esteso con `.mfd-empty-slot` editorial
+    styling (italic serif, warm-white background, cyan CTA gated).
+
+  **Verifiche**
+  - `GET /api/storefront/public/studio/pages/home` → 200 · 10 sezioni
+    · `served_from: revision`
+  - HomePage `/` smoke test: hero "Il tuo spazio. Il tuo viaggio."
+    da CMS · brand marquee da CMS (8 brand) · materials da CMS
+    (11 swatches) · empty slot eleganti per `magazine_highlights` e
+    `featured_design_journeys` con CTA admin gated.
+
+  **File modificati / creati**
+  - ↻ `frontend/src/pages/site/HomePage.jsx` (rimossi 200+ righe di
+    FALLBACK, aggiunti EmptyEditorialSlot + mapCmsToCopy + hook
+    `useStorefrontContent(TENANT_SLUG, 'home')`)
+  - ↻ `frontend/src/pages/site/home-iter150.css` (+60 righe
+    `.mfd-empty-slot`)
+  - ↻ `frontend/src/pages/settings/HomepageBuilderPage.jsx`
+    (sostituito con deprecation card + auto-redirect)
+  - ⨁ `backend/scripts/seed_canonical_homepage.py`
+  - ✅ DB: `cms_pages.home` (studio) · 10 `cms_sections` ·
+    `cms_page_revisions` snapshot pubblicato
+
+  **Next**: Sprint B · Design Journey™ Auto-Feed (collega
+  `published_design_journeys` → `featured_design_journeys` section).
+
 - **ITER155.R3 · Semantic Hardcoded Audit™** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: stabilizzare progressivamente le superfici narrative

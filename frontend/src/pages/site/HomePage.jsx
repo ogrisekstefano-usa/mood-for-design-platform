@@ -37,7 +37,20 @@ import './home-iter150.css';
 // ─────────────────────────────────────────────────────────────────────
 // FALLBACK · curated editorial copy + Unsplash imagery
 // ─────────────────────────────────────────────────────────────────────
-const FALLBACK = {
+// ─────────────────────────────────────────────────────────────────────
+// ITER157 · Sprint A · Public Editorial Infrastructure™
+//
+// NO HARDCODED EDITORIAL CONTENT.
+// Every block of copy, image, project, magazine article, brand label
+// and CTA lives in the Storefront CMS (cms_pages/home + cms_sections).
+//
+// EDITORIAL_SHELL provides ONLY navigation-level UI labels needed
+// to render the chrome (header, footer link structure) when the CMS
+// has not yet been seeded. It contains NO editorial content, NO fake
+// images, NO mock arrays. Empty sections render the graceful
+// `EmptyEditorialSlot` placeholder instead.
+// ─────────────────────────────────────────────────────────────────────
+const EDITORIAL_SHELL = {
   welcome: {
     it: 'Benvenuti nel nostro studio. Disegniamo relazioni, non solo spazi.',
     en: 'Welcome to our studio. We design relationships, not just spaces.',
@@ -52,161 +65,80 @@ const FALLBACK = {
     login:           { it: 'Accedi',         en: 'Login' },
     cta:             { it: 'Inizia il tuo viaggio', en: 'Begin Your Journey™' },
   },
-  hero: {
-    image: 'https://images.unsplash.com/photo-1618219740975-d40978bb7378?auto=format&fit=crop&w=2400&q=85',
-    title:    { it: 'Il tuo spazio.\nIl tuo viaggio.',     en: 'Your space.\nYour journey.' },
-    sub:      { it: 'Inizia un\'esperienza di design personale con studi italiani di alta gamma.',
-                en: 'Begin a personal design experience with Italian design studios.' },
-    cta_primary:   { it: 'Inizia il tuo viaggio',   en: 'Begin Your Journey™' },
-    cta_secondary: { it: 'Per i professionisti',    en: 'For Professionals™' },
-  },
-  trust: {
-    eyebrow: { it: 'Materiali Selezionati & Design Partner',
-               en: 'Selected Materials & Design Partners' },
-    brands: ['Poliform', 'Molteni&C', 'B&B Italia', 'Minotti', 'FLOS', 'Cattelan Italia', 'Porro', 'Poltrona Frau'],
-  },
-  howitworks: {
-    eyebrow:  { it: 'Come funziona',  en: 'How it works' },
-    title:    { it: 'Un viaggio.\nDisegnato attorno a te.',
-                en: 'A journey.\nDesigned around you.' },
-    steps: [
-      { id: '01', title: { it: 'Esplora',  en: 'Discover' },
-        body: { it: 'Esplora atmosfere, stili e ispirazioni che parlano di te.',
-                en: 'Explore atmospheres, styles and inspirations that speak to you.' } },
-      { id: '02', title: { it: 'Condividi', en: 'Share' },
-        body: { it: 'Raccontaci il tuo spazio, le tue esigenze e le tue preferenze visive.',
-                en: 'Tell us about your space, needs and visual preferences.' } },
-      { id: '03', title: { it: 'Design Journey', en: 'Design Journey' },
-        body: { it: 'Il nostro studio sviluppa il tuo progetto, passo dopo passo, insieme a te.',
-                en: 'Our studio creates your project, step by step, together.' } },
-    ],
-    cta: { it: 'Inizia il tuo viaggio', en: 'Start Your Journey' },
-  },
-  magazine: {
-    eyebrow:  { it: 'Magazine', en: 'Magazine' },
-    title:    { it: 'Ispirazione. Materiali. Atmosfere.',
-                en: 'Inspiration. Materials. Atmospheres.' },
-    explore:  { it: 'Esplora tutti gli articoli', en: 'Explore all articles' },
-    cards: [
-      { id: 'm1', category: 'INTERIORS',
-        title: { it: 'Modern living\nin perfetto equilibrio', en: 'Modern living\nin perfect balance' },
-        image: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=900&q=85' },
-      { id: 'm2', category: 'MATERIALS',
-        title: { it: 'La bellezza della\npietra naturale', en: 'The beauty of\nnatural stone' },
-        image: 'https://images.unsplash.com/photo-1604578762246-41134e37f9cc?auto=format&fit=crop&w=900&q=85' },
-      { id: 'm3', category: 'INSPIRATION',
-        title: { it: 'Minimalismo caldo:\nliving senza tempo', en: 'Warm minimalism:\ntimeless living' },
-        image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=900&q=85' },
-      { id: 'm4', category: 'DESIGN STORIES',
-        title: { it: 'Un progetto\na Milano', en: 'A project\nin Milan' },
-        image: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=900&q=85' },
-      { id: 'm5', category: 'DETAILS',
-        title: { it: 'L\'arte\ndei dettagli', en: 'The art\nof the details' },
-        image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=900&q=85' },
-    ],
-  },
-  stories: {
-    eyebrow:  { it: 'Design Stories', en: 'Design Stories' },
-    title:    { it: 'Progetti reali. Spazi reali.', en: 'Real projects. Real spaces.' },
-    viewAll:  { it: 'Vedi tutti i progetti', en: 'View all projects' },
-    cards: [
-      { id: 's1', kind: { it: 'RESIDENZA PRIVATA', en: 'PRIVATE RESIDENCE' },
-        title:  { it: 'Lugano Lake House', en: 'Lugano Lake House' },
-        excerpt:{ it: 'Un rifugio sereno in armonia con la natura.',
-                  en: 'A serene retreat in harmony with nature.' },
-        image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1100&q=85' },
-      { id: 's2', kind: { it: 'APPARTAMENTO', en: 'APARTMENT' },
-        title:  { it: 'Brera Apartment', en: 'Brera Apartment' },
-        excerpt:{ it: 'Linee eleganti e artigianato italiano.',
-                  en: 'Elegant lines and Italian craftsmanship.' },
-        image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1100&q=85' },
-      { id: 's3', kind: { it: 'VILLA', en: 'VILLA' },
-        title:  { it: 'Tuscany Hills', en: 'Tuscany Hills' },
-        excerpt:{ it: 'Dove la tradizione incontra il design contemporaneo.',
-                  en: 'Where tradition meets contemporary design.' },
-        image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1100&q=85' },
-      { id: 's4', kind: { it: 'PENTHOUSE', en: 'PENTHOUSE' },
-        title:  { it: 'City Skyline', en: 'City Skyline' },
-        excerpt:{ it: 'Luce, viste e abitare sofisticato.',
-                  en: 'Light, views and sophisticated living.' },
-        image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1100&q=85' },
-    ],
-  },
-  materials: {
-    eyebrow:  { it: 'Materiali & Brand', en: 'Materials & Brands' },
-    title:    { it: 'Una selezione curata dei migliori materiali.',
-                en: 'Curated selection of the finest materials.' },
-    explore:  { it: 'Esplora i materiali', en: 'Explore materials' },
-    swatches: [
-      { id: 'mat1',  name: 'Marble',      swatch: '#E8E4DE', tone: 'light' },
-      { id: 'mat2',  name: 'Walnut',      swatch: '#5C3A28', tone: 'dark'  },
-      { id: 'mat3',  name: 'Oak',         swatch: '#B8956A', tone: 'mid'   },
-      { id: 'mat4',  name: 'Linen',       swatch: '#D6CDB8', tone: 'light' },
-      { id: 'mat5',  name: 'Travertine',  swatch: '#C9B498', tone: 'mid'   },
-      { id: 'mat6',  name: 'Brass',       swatch: '#B5985A', tone: 'mid'   },
-      { id: 'mat7',  name: 'Terrazzo',    swatch: '#ECE7DE', tone: 'light' },
-      { id: 'mat8',  name: 'Slate',       swatch: '#3A4148', tone: 'dark'  },
-      { id: 'mat9',  name: 'Linen Light', swatch: '#E8DFC9', tone: 'light' },
-      { id: 'mat10', name: 'Charcoal',    swatch: '#2A2A2A', tone: 'dark'  },
-      { id: 'mat11', name: 'Basalt',      swatch: '#4A4744', tone: 'dark'  },
-    ],
-  },
-  finalCTA: {
-    title:   { it: 'Pronto a iniziare\nil tuo design journey?',
-               en: 'Ready to start\nyour design journey?' },
-    sub:     { it: 'Siamo qui per portare la tua visione alla luce.',
-               en: 'We are here to bring your vision to life.' },
-    private: { it: 'Per Clienti Privati', en: 'For Private Clients' },
-    pro:     { it: 'Per Studi & Brand',   en: 'For Design Studios & Brands' },
-  },
+  // Editorial slots — empty by design. Populated by the CMS.
+  hero:       { image: '', title: { it: '', en: '' }, sub: { it: '', en: '' },
+                cta_primary: { it: '', en: '' }, cta_secondary: { it: '', en: '' } },
+  trust:      { eyebrow: { it: '', en: '' }, brands: [] },
+  howitworks: { eyebrow: { it: '', en: '' }, title: { it: '', en: '' }, steps: [], cta: { it: '', en: '' } },
+  magazine:   { eyebrow: { it: '', en: '' }, title: { it: '', en: '' }, explore: { it: '', en: '' }, cards: [] },
+  stories:    { eyebrow: { it: '', en: '' }, title: { it: '', en: '' }, viewAll: { it: '', en: '' }, cards: [] },
+  materials:  { eyebrow: { it: '', en: '' }, title: { it: '', en: '' }, explore: { it: '', en: '' }, swatches: [] },
+  finalCTA:   { title: { it: '', en: '' }, sub: { it: '', en: '' },
+                private: { it: '', en: '' }, pro: { it: '', en: '' } },
   footer: {
-    cols: [
-      { title: { it: 'Azienda', en: 'Company' },
-        links: [
-          { label: { it: 'Chi siamo',     en: 'About Us' },   href: '/about' },
-          { label: { it: 'I nostri studi', en: 'Our Studios' },href: '/studios' },
-          { label: { it: 'Lavora con noi', en: 'Careers' },   href: '/careers' },
-          { label: { it: 'Contatti',      en: 'Contact' },    href: '/contact' },
-        ] },
-      { title: { it: 'Risorse', en: 'Resources' },
-        links: [
-          { label: { it: 'FAQ',            en: 'FAQ' },            href: '/faq' },
-          { label: { it: 'Privacy Policy', en: 'Privacy Policy' }, href: '/privacy' },
-          { label: { it: 'Termini e Condizioni', en: 'Terms & Conditions' }, href: '/terms' },
-        ] },
-      { title: { it: 'Seguici', en: 'Follow Us' },
-        links: [
-          { label: 'Instagram', href: 'https://instagram.com' },
-          { label: 'Pinterest', href: 'https://pinterest.com' },
-          { label: 'LinkedIn',  href: 'https://linkedin.com' },
-        ] },
-    ],
+    cols: [],
     rights: { it: '© 2026 MOOD for DESIGN. Tutti i diritti riservati.',
               en: '© 2026 MOOD for DESIGN. All rights reserved.' },
     colophon: {
       enabled: true,
-      left: {
-        it: '© 2026 MOOD for DESIGN™',
-        en: '© 2026 MOOD for DESIGN™',
-      },
-      center: {
-        it: { prefix: 'Questo servizio è fornito da ', link_label: 'MOOD for DESIGN', suffix: '' },
-        en: { prefix: 'This service is provided by ',  link_label: 'MOOD for DESIGN', suffix: '' },
-      },
+      left:   { it: '© 2026 MOOD for DESIGN™', en: '© 2026 MOOD for DESIGN™' },
+      center: { it: { prefix: 'Questo servizio è fornito da ', link_label: 'MOOD for DESIGN', suffix: '' },
+                en: { prefix: 'This service is provided by ',  link_label: 'MOOD for DESIGN', suffix: '' } },
       center_link_href: 'https://www.moodfordesign.com',
-      right: {
-        it: 'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios',
-        en: 'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios',
-      },
+      right:  { it: 'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios',
+                en: 'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios' },
     },
   },
 };
+
+// Legacy alias retained while the JSX migrates section-by-section.
+// All bindings below resolve through `copy = useStorefrontContent('home')`
+// merged onto EDITORIAL_SHELL — the CMS is the source of truth.
+const FALLBACK = EDITORIAL_SHELL;
 
 // ── locale picker ────────────────────────────────────────────────
 const L = (obj, locale) => {
   if (!obj) return '';
   if (typeof obj === 'string') return obj;
   return obj[locale] || obj.en || obj.it || Object.values(obj)[0] || '';
+};
+
+// ────────────────────────────────────────────────────────────────
+// ITER157 · EmptyEditorialSlot — graceful empty state when the CMS
+// has not yet been populated for a given section.
+//
+// Renders a refined editorial placeholder (no fake content), with a
+// subtle admin CTA visible ONLY when `?editorial=preview` is in the
+// URL (so end-users never see "open Blueprint" prompts).
+// ────────────────────────────────────────────────────────────────
+const isEditorialPreview = () => {
+  if (typeof window === 'undefined') return false;
+  return new URLSearchParams(window.location.search).get('editorial') === 'preview';
+};
+
+const EmptyEditorialSlot = ({ section, label, testid }) => (
+  <section className="mfd-empty-slot" data-testid={testid || `empty-slot-${section}`}>
+    <div className="mfd-empty-slot__inner">
+      <span className="mfd-empty-slot__rule" aria-hidden="true" />
+      <p className="mfd-empty-slot__eyebrow">{section.toUpperCase()}</p>
+      <p className="mfd-empty-slot__hint">
+        {label || 'Sezione editoriale in attesa di curation.'}
+      </p>
+      {isEditorialPreview() && (
+        <a href="/blueprint/experience" className="mfd-empty-slot__cta" data-testid={`empty-slot-cta-${section}`}>
+          Apri Blueprint Experience →
+        </a>
+      )}
+    </div>
+  </section>
+);
+
+// Helper: is a locale-bag string empty (across all locales)?
+const isLocaleEmpty = (obj) => {
+  if (!obj) return true;
+  if (typeof obj === 'string') return obj.trim() === '';
+  if (typeof obj !== 'object') return true;
+  return Object.values(obj).every((v) => !v || (typeof v === 'string' && v.trim() === ''));
 };
 
 // ── locale registry · CMS-driven (fallback to active two) ──────
@@ -355,10 +287,16 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
 // ─────────────────────────────────────────────────────────────────────
 // HERO
 // ─────────────────────────────────────────────────────────────────────
-const Hero = ({ locale, copy }) => (
+const Hero = ({ locale, copy }) => {
+  const titleEmpty = isLocaleEmpty(copy.hero.title);
+  const imageEmpty = !copy.hero.image;
+  if (titleEmpty && imageEmpty) {
+    return <EmptyEditorialSlot section="hero_editorial" label="Componi l'apertura editoriale dal Blueprint." testid="empty-slot-hero" />;
+  }
+  return (
   <section className="mfd-home-hero" data-testid="hero-section">
     <div className="mfd-home-hero__bg" aria-hidden="true">
-      <img src={copy.hero.image} alt="" loading="eager" />
+      {copy.hero.image && <img src={copy.hero.image} alt="" loading="eager" />}
       <span className="mfd-home-hero__veil" />
     </div>
     <div className="mfd-home-hero__inner">
@@ -380,12 +318,14 @@ const Hero = ({ locale, copy }) => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 // ─────────────────────────────────────────────────────────────────────
 // TRUST / MATERIAL & PARTNER STRIP — marquee carousel
 // ─────────────────────────────────────────────────────────────────────
 const TrustStrip = ({ locale, copy }) => {
+  if (!copy.trust.brands || copy.trust.brands.length === 0) return null;
   // Duplicate brand list once so the CSS marquee can loop seamlessly.
   const loopBrands = [...copy.trust.brands, ...copy.trust.brands];
   return (
@@ -407,7 +347,11 @@ const TrustStrip = ({ locale, copy }) => {
 // ─────────────────────────────────────────────────────────────────────
 // HOW IT WORKS
 // ─────────────────────────────────────────────────────────────────────
-const HowItWorks = ({ locale, copy }) => (
+const HowItWorks = ({ locale, copy }) => {
+  if (!copy.howitworks.steps || copy.howitworks.steps.length === 0) {
+    return <EmptyEditorialSlot section="how_it_works" label="Definisci i passi del Design Journey dal Blueprint." testid="empty-slot-how-it-works" />;
+  }
+  return (
   <section id="how-it-works" className="mfd-how" data-testid="how-it-works">
     <div className="mfd-how__inner">
       <header className="mfd-section-head">
@@ -436,12 +380,17 @@ const HowItWorks = ({ locale, copy }) => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 // ─────────────────────────────────────────────────────────────────────
 // MAGAZINE
 // ─────────────────────────────────────────────────────────────────────
-const Magazine = ({ locale, copy }) => (
+const Magazine = ({ locale, copy }) => {
+  if (!copy.magazine.cards || copy.magazine.cards.length === 0) {
+    return <EmptyEditorialSlot section="magazine_highlights" label="Seleziona gli articoli editoriali in evidenza dal Blueprint." />;
+  }
+  return (
   <section id="magazine" className="mfd-home-magazine" data-testid="magazine-section">
     <div className="mfd-home-magazine__inner">
       <header className="mfd-section-head mfd-section-head--with-link">
@@ -474,12 +423,17 @@ const Magazine = ({ locale, copy }) => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 // ─────────────────────────────────────────────────────────────────────
 // DESIGN STORIES
 // ─────────────────────────────────────────────────────────────────────
-const DesignStories = ({ locale, copy }) => (
+const DesignStories = ({ locale, copy }) => {
+  if (!copy.stories.cards || copy.stories.cards.length === 0) {
+    return <EmptyEditorialSlot section="featured_design_journeys" label="I Design Journey™ realizzati appariranno qui appena curati dal Blueprint." />;
+  }
+  return (
   <section id="design-stories" className="mfd-stories" data-testid="design-stories">
     <div className="mfd-stories__inner">
       <header className="mfd-section-head mfd-section-head--with-link">
@@ -507,7 +461,8 @@ const DesignStories = ({ locale, copy }) => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 // ─────────────────────────────────────────────────────────────────────
 // MATERIALS
@@ -515,6 +470,9 @@ const DesignStories = ({ locale, copy }) => (
 const Materials = ({ locale, copy }) => {
   const railRef = React.useRef(null);
   const scrollBy = (dx) => railRef.current?.scrollBy({ left: dx, behavior: 'smooth' });
+  if (!copy.materials.swatches || copy.materials.swatches.length === 0) {
+    return <EmptyEditorialSlot section="materials_carousel" label="Componi il carosello materiali dal Blueprint." />;
+  }
   return (
     <section id="materials" className="mfd-materials" data-testid="materials-section">
       <div className="mfd-materials__inner">
@@ -651,9 +609,136 @@ const SiteFooter = ({ locale, copy }) => (
   </footer>
 );
 
-// ─────────────────────────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────────
+// ITER157 · CMS → legacy copy mapper.
+//
+// The Storefront CMS returns sections keyed by `section_type` with a
+// locale-bag of `{ _default, it, en-US, fr, de, es }`. The JSX still
+// consumes a legacy "copy" shape (copy.hero / copy.magazine.cards /
+// copy.stories.cards / …). This mapper bridges the two so the page
+// is driven by the CMS without rewriting the entire DOM tree.
+//
+// `locale` here is a short code ('it' / 'en'); we map to the BCP-47
+// locale keys used by the CMS bags ('it', 'en-US').
+// ────────────────────────────────────────────────────────────────
+const _resolveBag = (bag, locale) => {
+  if (!bag || typeof bag !== 'object') return {};
+  const norm = (locale || 'it').toLowerCase();
+  if (norm.startsWith('en')) return { ...(bag._default || {}), ...(bag['en-US'] || bag.en || {}) };
+  if (norm.startsWith('it')) return { ...(bag._default || {}), ...(bag.it || {}) };
+  if (norm.startsWith('fr')) return { ...(bag._default || {}), ...(bag.fr || {}) };
+  if (norm.startsWith('de')) return { ...(bag._default || {}), ...(bag.de || {}) };
+  if (norm.startsWith('es')) return { ...(bag._default || {}), ...(bag.es || {}) };
+  return { ...(bag._default || {}) };
+};
+
+const mapCmsToCopy = (content, locale) => {
+  if (!content || typeof content !== 'object') return null;
+  const merged = {};
+  const _b = (k) => _resolveBag(content[k], locale);
+
+  // hero_editorial → copy.hero
+  const hero = _b('hero_editorial');
+  const heroSettings = content.hero_editorial?._settings || {};
+  if (Object.keys(hero).length) {
+    merged.hero = {
+      image:         hero.image || '',
+      title:         { it: hero.title || '',  en: hero.title || '' },
+      sub:           { it: hero.sub   || '',  en: hero.sub   || '' },
+      cta_primary:   { it: hero.cta_primary   || '', en: hero.cta_primary   || '' },
+      cta_secondary: { it: hero.cta_secondary || '', en: hero.cta_secondary || '' },
+      cta_primary_href:   heroSettings.cta_primary_href   || '/begin-journey',
+      cta_secondary_href: heroSettings.cta_secondary_href || '/professionals',
+    };
+  }
+
+  // trust_marquee → copy.trust
+  const trust = _b('trust_marquee');
+  const trustSettings = content.trust_marquee?._settings || {};
+  if (Object.keys(trust).length || (trustSettings.brands || []).length) {
+    merged.trust = {
+      eyebrow: { it: trust.eyebrow || '', en: trust.eyebrow || '' },
+      brands:  Array.isArray(trustSettings.brands) ? trustSettings.brands : [],
+    };
+  }
+
+  // editorial_grid → copy.magazine
+  const mag = _b('editorial_grid');
+  const magSettings = content.editorial_grid?._settings || {};
+  if (Object.keys(mag).length || (magSettings.cards || []).length) {
+    merged.magazine = {
+      eyebrow: { it: mag.eyebrow || '', en: mag.eyebrow || '' },
+      title:   { it: mag.title   || '', en: mag.title   || '' },
+      explore: { it: mag.explore || '', en: mag.explore || '' },
+      // ITER157.B will wire the auto-feed from magazine_articles here.
+      cards:   Array.isArray(magSettings.cards) ? magSettings.cards : [],
+    };
+  }
+
+  // featured_design_journeys → copy.stories
+  const stories = _b('featured_design_journeys');
+  const storiesSettings = content.featured_design_journeys?._settings || {};
+  if (Object.keys(stories).length || (storiesSettings.cards || []).length) {
+    merged.stories = {
+      eyebrow: { it: stories.eyebrow || '', en: stories.eyebrow || '' },
+      title:   { it: stories.title   || '', en: stories.title   || '' },
+      viewAll: { it: stories.viewAll || '', en: stories.viewAll || '' },
+      // ITER157.B will wire the auto-feed from published_design_journeys here.
+      cards:   Array.isArray(storiesSettings.cards) ? storiesSettings.cards : [],
+    };
+  }
+
+  // materials_carousel → copy.materials
+  const mat = _b('materials_carousel');
+  const matSettings = content.materials_carousel?._settings || {};
+  if (Object.keys(mat).length || (matSettings.swatches || []).length) {
+    merged.materials = {
+      eyebrow:  { it: mat.eyebrow || '', en: mat.eyebrow || '' },
+      title:    { it: mat.title   || '', en: mat.title   || '' },
+      explore:  { it: mat.explore || '', en: mat.explore || '' },
+      swatches: Array.isArray(matSettings.swatches) ? matSettings.swatches : [],
+    };
+  }
+
+  // professionals_cta + cinematic_quote → copy.howitworks + copy.finalCTA
+  const finalc = _b('cinematic_quote');
+  const finalSettings = content.cinematic_quote?._settings || {};
+  if (Object.keys(finalc).length) {
+    merged.finalCTA = {
+      title:        { it: finalc.title   || '', en: finalc.title   || '' },
+      sub:          { it: finalc.sub     || '', en: finalc.sub     || '' },
+      private:      { it: finalc.private || '', en: finalc.private || '' },
+      pro:          { it: finalc.pro     || '', en: finalc.pro     || '' },
+      private_href: finalSettings.private_href || '/begin-journey',
+      pro_href:     finalSettings.pro_href     || '/professionals',
+    };
+  }
+
+  // editorial_footer → copy.footer
+  const footer = _b('editorial_footer');
+  if (Object.keys(footer).length) {
+    merged.footer = {
+      rights: { it: footer.rights || '', en: footer.rights || '' },
+      cols:   Array.isArray(footer.cols) ? footer.cols : [],
+    };
+  }
+
+  return merged;
+};
+
+const TENANT_SLUG = (() => {
+  if (typeof window === 'undefined') return 'studio';
+  const host = window.location.hostname || '';
+  const first = (host.split('.')[0] || '').toLowerCase();
+  const PLATFORM = ['studio', 'blueprint', 'www', 'localhost'];
+  if (first.startsWith('content-hub-pro-')) return 'studio';
+  if (PLATFORM.some((h) => first === h || first.startsWith(h))) return 'studio';
+  return first || 'studio';
+})();
+
+// ────────────────────────────────────────────────────────────────
 // PAGE BODY (inside providers)
-// ─────────────────────────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────────
 const HomePageBody = () => {
   const site = useSite();
   const locale = (site?.locale || 'it').slice(0, 2);
@@ -662,17 +747,19 @@ const HomePageBody = () => {
     if (setLocale) setLocale(code);
   }, [setLocale]);
 
-  // CMS overrides — merged onto FALLBACK without breaking missing branches.
-  const cms = useStorefrontContent('home') || {};
+  // CMS — single source of truth for editorial copy.
+  const cms = useStorefrontContent(TENANT_SLUG, 'home');
   const copy = useMemo(() => {
-    // Shallow merge per top-level section.
-    const merged = { ...FALLBACK };
-    Object.keys(cms).forEach((k) => {
-      merged[k] = { ...(FALLBACK[k] || {}), ...(cms[k] || {}) };
-    });
+    const merged = { ...EDITORIAL_SHELL };
+    const mapped = mapCmsToCopy(cms?.content, locale === 'en' ? 'en-US' : locale);
+    if (mapped && typeof mapped === 'object') {
+      Object.keys(mapped).forEach((k) => {
+        merged[k] = { ...(EDITORIAL_SHELL[k] || {}), ...mapped[k] };
+      });
+    }
     return merged;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(cms)]);
+  }, [JSON.stringify(cms?.content), locale]);
 
   return (
     <div className="mfd-site" data-testid="public-home-page">
