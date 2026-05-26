@@ -697,7 +697,7 @@ const PagesEditor = () => {
   };
 
   return (
-    <div data-testid="pages-editor" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 0.85fr)', gap: 0, marginLeft: -24, marginRight: -24, marginBottom: -24, marginTop: -24, height: 'calc(100vh - 0px)' }}>
+    <div data-testid="pages-editor" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 0.85fr)', gap: 0, height: '100vh' }}>
       {/* Left: editor */}
       <div ref={mainScrollRef} style={{ overflowY: 'auto', padding: '2rem 1.75rem' }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
