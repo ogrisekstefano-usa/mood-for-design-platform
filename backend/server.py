@@ -218,6 +218,9 @@ api_router.include_router(studio_orchestra.router, prefix="/orchestra-e", tags=[
 # ITER156 · Studio Pulse™ · living climate observatory
 from routers import studio_pulse  # noqa: E402
 api_router.include_router(studio_pulse.router, prefix="/studio-pulse", tags=["studio-pulse"])
+# ITER154 · Guided Tour / Interactive Onboarding
+from routers import onboarding_tour  # noqa: E402
+api_router.include_router(onboarding_tour.router, prefix="/onboarding", tags=["onboarding"])
 api_router.include_router(magazine.router, prefix="/magazine", tags=["magazine"])
 api_router.include_router(editorial_calendar.router, prefix="/blueprint/calendar", tags=["editorial-calendar"])
 api_router.include_router(advisor_network.router, tags=["advisor-network"])

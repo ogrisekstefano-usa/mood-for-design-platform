@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BlueprintProvider, useBlueprint } from './contexts/BlueprintContext';
 import { TenantConfigurationProvider } from './contexts/TenantConfigurationContext';
+import { GuidedTourProvider } from './components/onboarding/GuidedTourProvider';
 import { TenantThemeProvider } from './contexts/TenantThemeContext';
 import { StudioPaletteProvider } from './contexts/StudioPaletteContext';
 import { LocaleRuntimeProvider } from './contexts/LocaleRuntimeContext';
@@ -13,6 +14,8 @@ import CinematicLoader from './components/CinematicLoader';
 import { Toaster } from 'sonner';
 import './App.css';
 import './styles/ui-density.css';
+import './components/onboarding/guided-tour.css';
+import './components/onboarding/start-your-atelier.css';
 // ── Sprint HARDENING-01.1 · Design System Kernel™ (single source of truth) ──
 import './design-system/kernel.css';
 // Frozen Blueprint OS tokens — declared under [data-surface="os"] only,
@@ -300,6 +303,7 @@ function App() {
             <UiDensityBoot />
             <GovernanceOverlay />
             <LocalizationOverlay />
+            <GuidedTourProvider>
             <Suspense fallback={<Loading />}>
               <LocaleHead />
               <Routes>
@@ -620,6 +624,7 @@ function App() {
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </Suspense>
+            </GuidedTourProvider>
           </BrowserRouter>
           <Toaster
             position="bottom-right"

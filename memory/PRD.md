@@ -2,6 +2,102 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER154 · GUIDED TOUR™ + START YOUR ATELIER™ — First Experience Activation** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: orientare il nuovo professionista A&D al primo login con
+  un'introduzione cinematica al proprio atelier digitale. NON tooltip
+  software · NON SaaS onboarding · invito operativo curatoriale.
+
+  **DB · migration 098 applied**:
+  - `guided_tour_config` (12 col) · DB-driven step catalog · tenant
+    override pattern (tenant_id IS NULL = global default) · JSONB
+    eyebrow/title/body bilingual (it/en) · role_visibility array ·
+    placement (center/top/bottom/left/right/auto)
+  - `user_onboarding_state` · status (not_started/in_progress/completed/
+    skipped) · current_step · completed_at · skipped_at · UNIQUE per
+    (user_id, tour_key)
+  - **Seed editoriale** 7 step (`studio_first_login`):
+    1. Il tuo atelier digitale (welcome center)
+    2. Il respiro dello studio · halo su `[data-testid="atelier-hero"]`
+    3. Accogli la prima relazione · halo su Start-Card "create lead"
+    4. Apri un Design Journey™ · halo su Start-Card "new journey"
+    5. L'archivio dello studio · halo su Start-Card "media library"
+    6. Componi le tue atmosfere · halo su Start-Card "moodboards"
+    7. Lo studio è pronto (closing center)
+  - Copy editoriale: NON spiega funzionalità, spiega INTENZIONE.
+
+  **Backend** (`/api/onboarding`):
+  - `GET /tour?key=studio_first_login` — risolve step (tenant override
+    → platform default) + role-filtered + user state
+  - `POST /tour/state` — upsert {status, current_step}
+  - `POST /tour/reset` — clear state (debug / re-run)
+
+  **Frontend**:
+  - `lib/guidedTour.js` · SDK
+  - `components/onboarding/GuidedTourProvider.jsx` · context provider,
+    auto-detect first login (800ms defer), suppressed on /login /admin
+    /client /public routes
+  - `components/onboarding/GuidedTourWelcome.jsx` · cinematic welcome
+    screen · radial gradient veil + backdrop-filter 18px blur +
+    shimmer animation · serif italic title 64px · "07 movimenti"
+  - `components/onboarding/GuidedTourOverlay.jsx` · spotlight cinematic
+    via createPortal(document.body) · halo border-radius 18px +
+    cyan box-shadow + pulsing border 2.4s · card placement
+    auto-clamped to viewport · keyboard nav (Esc=skip, ←→=back/next)
+  - `components/onboarding/GuidedTourStepCard.jsx` · progress bar
+    cyan glow + serif italic title + body 17px + Salta/Indietro/Avanti
+    pill buttons (IBM Plex Mono uppercase tracked)
+  - `components/onboarding/StartYourAtelierCards.jsx` · 5 action cards
+    cinematic (cyan/bronze/ivory accent) · animation stagger 70ms ·
+    rail glow on hover · NON dashboard vuota con CTA, INVITO OPERATIVO
+  - Mounted in `App.js` (provider wraps Suspense+Routes) +
+    `AtelierDashboardPage` (StartYourAtelier shown when projects=0 OR
+    tour completed/skipped)
+  - 4 data-testid sync con migration: guided-tour-create-lead,
+    guided-tour-new-journey, guided-tour-media-library,
+    guided-tour-moodboards (+ guided-tour-editorial-plan)
+
+  **Verifica E2E live (admin@moodfordesign.com · fresh state)**:
+  - Login → welcome appears at +800ms ✓
+  - Click "Inizia il tour" → step 1 centered ✓
+  - Avanti → step 2 con halo su atelier-hero ✓
+  - Avanti → step 3 con halo su Start Card "Accogli la prima relazione" ✓
+  - Back button → returns to step 2 ✓
+  - Skip → overlay dismissed · state=skipped persisted · reload conferma ✓
+  - Finish (step 7) → state=completed · reload conferma · NO welcome
+    re-trigger ✓
+  - Start Your Atelier 5 cards: cyan/bronze/ivory accent, hover rail,
+    cinematic radial gradient section background ✓
+
+  **Files touched** (ITER154 GT · 11 files):
+  - `supabase/migrations/098_guided_tour.sql` (rewrite editoriale + seed)
+  - `backend/scripts/apply_migration_098.py`
+  - `backend/routers/onboarding_tour.py` (nuovo · 3 endpoint)
+  - `backend/server.py` (mount router)
+  - `frontend/src/lib/guidedTour.js` (nuovo)
+  - `frontend/src/components/onboarding/GuidedTourProvider.jsx` (nuovo)
+  - `frontend/src/components/onboarding/GuidedTourWelcome.jsx` (nuovo)
+  - `frontend/src/components/onboarding/GuidedTourOverlay.jsx` (nuovo)
+  - `frontend/src/components/onboarding/GuidedTourStepCard.jsx` (nuovo)
+  - `frontend/src/components/onboarding/StartYourAtelierCards.jsx` (nuovo)
+  - `frontend/src/components/onboarding/guided-tour.css` (nuovo)
+  - `frontend/src/components/onboarding/start-your-atelier.css` (nuovo)
+  - `frontend/src/App.js` (provider mount + css imports)
+  - `frontend/src/pages/dashboard/AtelierDashboardPage.jsx` (StartYourAtelier embed)
+
+  **Architectural foundation pronta**:
+  - DB-driven: aggiungere/modificare uno step = INSERT/UPDATE in
+    `guided_tour_config`, ZERO frontend redeploy
+  - Tenant override: ogni tenant può creare la propria sequenza
+    di tour customizzati con tenant_id specifico
+  - Role-aware: `role_visibility` array filtra server-side
+  - Multi-tour ready: `tour_key` permette future sequenze
+    (es. "client_first_login", "designer_onboarding_advanced")
+  - i18n nativo: tutti i campi copy sono JSONB bilingual
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER156 · Studio Pulse™ Sprint A — Living Climate Observatory** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: prima superficie sopra l'ecosistema realtime · founder/

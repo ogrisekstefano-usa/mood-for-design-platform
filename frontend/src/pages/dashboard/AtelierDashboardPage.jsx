@@ -26,6 +26,8 @@ import RelationshipLiveTimeline from '../../components/dashboard/RelationshipLiv
 import PendingBookingsPanel from '../../components/booking/PendingBookingsPanel';
 import DesignerPresencePicker from '../../components/presence/DesignerPresencePicker';
 import NotificationBell from '../../components/notifications/NotificationBell';
+import StartYourAtelierCards from '../../components/onboarding/StartYourAtelierCards';
+import { useGuidedTour } from '../../components/onboarding/GuidedTourProvider';
 import './atelier-dashboard.css';
 
 // ── Helpers ─────────────────────────────────────────────────────────
@@ -359,9 +361,19 @@ const AtelierDashboardPage = () => {
   const recent   = useMemo(() => pulse.recent_evolutions || [], [pulse.recent_evolutions]);
   const milestones = useMemo(() => pulse.chapters_waiting || [], [pulse.chapters_waiting]);
 
+  // Show Start-Your-Atelier when the studio is silent (no journeys yet) OR
+  // when the guided tour was just completed/skipped — orientation moment.
+  const tour = useGuidedTour();
+  const showStartCards =
+    projects.length === 0 ||
+    tour.state?.status === 'completed' ||
+    tour.state?.status === 'skipped';
+
   return (
     <div className="atd-canvas" data-testid="atelier-dashboard">
       <Hero config={config} counts={counts} userName={userName} />
+
+      {showStartCards && <StartYourAtelierCards />}
 
       <section className="atd-projects" data-testid="atelier-projects-section">
         <header className="atd-section__head">
