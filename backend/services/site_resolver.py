@@ -359,6 +359,123 @@ async def resolve_block(full_key: str, locale: str = DEFAULT_LOCALE) -> dict[str
         return {'key': full_key, 'value': values.get(full_key, ''), 'locale': locale}
 
 
+# ── LEGAL STRIP ─────────────────────────────────────────────────────────
+LEGAL_STRIP_FALLBACK = {
+    'it': {
+        'left':   '© {year} MOOD for DESIGN™',
+        'center': 'Questo servizio è fornito da MOOD for DESIGN',
+        'right':  'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios',
+    },
+    'en-us': {
+        'left':   '© {year} MOOD for DESIGN™',
+        'center': 'This service is provided by MOOD for DESIGN',
+        'right':  'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios',
+    },
+}
+
+
+async def resolve_legal_strip(locale: str = DEFAULT_LOCALE) -> dict[str, Any]:
+    """Return the three editable strings of the legal strip for a locale."""
+    from datetime import datetime
+    year = datetime.now().year
+    tenant = await get_corporate_tenant()
+    keys = [
+        'site.footer.legal_strip.left',
+        'site.footer.legal_strip.center',
+        'site.footer.legal_strip.right',
+    ]
+    async with AsyncSessionLocal() as session:
+        values = await _fetch_block_values(session, tenant['id'], keys, locale)
+    fallback = LEGAL_STRIP_FALLBACK.get(locale) or LEGAL_STRIP_FALLBACK['it']
+    out = {
+        'left':   values.get(keys[0]) or fallback['left'].format(year=year),
+        'center': values.get(keys[1]) or fallback['center'],
+        'right':  values.get(keys[2]) or fallback['right'],
+    }
+    # Inject {year} into any user-customized "left" line that still uses the
+    # placeholder, so editors can write "© {year} ..." once and it stays fresh.
+    out['left'] = out['left'].replace('{year}', str(year))
+    return out
+
+
+# ── SITEMAP ─────────────────────────────────────────────────────────────
+SITEMAP_BASE_URL = 'https://www.moodfordesign.com'
+
+
+async def generate_sitemap() -> str:
+    """
+    Generate a multi-locale sitemap.xml.
+
+    Enumerates every published cms_page across every locale defined for the
+    tenant. Adds hreflang `<xhtml:link>` alternates so search engines can
+    map equivalent URLs across languages. Uses LOCALIZED_SLUGS map if
+    available via a `localized_slugs` jsonb column on cms_pages, otherwise
+    falls back to the canonical page_key for every locale.
+    """
+    from xml.sax.saxutils import escape as xml_escape
+    tenant = await get_corporate_tenant()
+    # Locales — try the optional table, fall back gracefully.
+    locales: list[str] = []
+    try:
+        async with AsyncSessionLocal() as session:
+            locales = (await session.execute(
+                text("""SELECT code FROM tenant_locales WHERE tenant_id = :tid
+                         AND is_active = TRUE ORDER BY sort_order"""),
+                {"tid": tenant['id']},
+            )).scalars().all() or []
+    except Exception:
+        locales = []
+    if not locales:
+        locales = ['it', 'en-us', 'en-uk', 'fr', 'de', 'es']
+
+    async with AsyncSessionLocal() as session:
+        pages = (await session.execute(
+            text("""SELECT page_key, updated_at FROM cms_pages
+                     WHERE tenant_id = :tid AND status = 'published'
+                     ORDER BY page_key"""),
+            {"tid": tenant['id']},
+        )).mappings().all()
+
+    # In Italian-rooted sites: keep IT slugs editorial, default to /<page_key>
+    # for other locales (frontend already maps them through localizedSlugs.js).
+    SLUG_OVERRIDES = {
+        'home':     {'it': '/', 'en-us': '/', 'en-uk': '/', 'fr': '/', 'de': '/', 'es': '/'},
+        'audience': {'it': '/dedicato-a',     'en-us': '/audience',     'en-uk': '/audience',     'fr': '/dedie-a',         'de': '/fuer-wen',     'es': '/dedicado-a'},
+        'features': {'it': '/caratteristiche','en-us': '/features',     'en-uk': '/features',     'fr': '/fonctionnalites', 'de': '/funktionen',   'es': '/caracteristicas'},
+        'pricing':  {'it': '/versioni-prezzi','en-us': '/pricing',      'en-uk': '/pricing',      'fr': '/tarifs',          'de': '/preise',       'es': '/precios'},
+        'training': {'it': '/formazione',     'en-us': '/training',     'en-uk': '/training',     'fr': '/formation',       'de': '/schulung',     'es': '/formacion'},
+        'support':  {'it': '/supporto',       'en-us': '/support',      'en-uk': '/support',      'fr': '/assistance',      'de': '/hilfe',        'es': '/soporte'},
+        'login':    {'it': '/accedi',         'en-us': '/sign-in',      'en-uk': '/sign-in',      'fr': '/connexion',       'de': '/anmelden',     'es': '/acceder'},
+    }
+    def slug_for(page_key: str, loc: str) -> str:
+        overrides = SLUG_OVERRIDES.get(page_key, {})
+        return overrides.get(loc) or overrides.get('it') or f'/{page_key}'
+
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>']
+    lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+                 'xmlns:xhtml="http://www.w3.org/1999/xhtml">')
+    for page in pages:
+        for loc in locales:
+            slug = slug_for(page['page_key'], loc)
+            loc_url = f"{SITEMAP_BASE_URL}/{loc}{slug if slug != '/' else ''}"
+            lines.append('  <url>')
+            lines.append(f'    <loc>{xml_escape(loc_url)}</loc>')
+            if page['updated_at']:
+                lines.append(f'    <lastmod>{page["updated_at"].date().isoformat()}</lastmod>')
+            for alt in locales:
+                alt_slug = slug_for(page['page_key'], alt)
+                alt_url = f"{SITEMAP_BASE_URL}/{alt}{alt_slug if alt_slug != '/' else ''}"
+                lines.append(f'    <xhtml:link rel="alternate" hreflang="{alt}" href="{xml_escape(alt_url)}"/>')
+            # x-default for SEO
+            default_slug = slug_for(page['page_key'], 'en-us')
+            lines.append(f'    <xhtml:link rel="alternate" hreflang="x-default" '
+                         f'href="{xml_escape(SITEMAP_BASE_URL + "/en-us" + (default_slug if default_slug != "/" else ""))}"/>')
+            lines.append('  </url>')
+    lines.append('</urlset>')
+    return '\n'.join(lines)
+
+
+
 def invalidate_site_cache():
     """Call after any admin mutation."""
     content_cache.clear_prefix('site:')

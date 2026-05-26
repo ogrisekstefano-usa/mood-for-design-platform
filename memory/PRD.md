@@ -209,6 +209,33 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **Auto-discoverable from Page Editor**: blocks flat-named (`item_01_eyebrow`...`item_15_body`), media slots flat-named (`item_01`...`item_15`) → all editable inline without backend changes.
 - Validated visually on `/caratteristiche`: hero + 5 numbered feature rows public; 49 editable input slots in admin.
 
+### ITER153 — Batch 3 SEO infrastructure + Markdown preview + Legal Strip nel CMS (Feb 2026)
+
+**Markdown preview toggle nel BlockEditor**
+- Quando un blocco `body` è in modifica, la `MarkdownToolbar` ora include un toggle a destra: `[ Markdown | Anteprima ]`. In modalità Anteprima il textarea viene sostituito da un render in-place che applica grassetto/corsivo/link/paragrafi con la stessa tipografia del frontend pubblico (Inter, line-height 1.7, color rgba 0.86). I bottoni di formattazione sono disabled in preview mode. Click sulla preview → torna a Markdown.
+- Anche il box "Resa pubblica" sotto al campo ora renderizza i body con tipografia editoriale (font Inter, line-height 1.7) invece del fallback monospace.
+- Helper `renderBlockPreview` riusa lo stesso parser usato dal frontend pubblico → garanzia di parity 1:1 tra editor e pagina live.
+
+**Legal Strip nel CMS (multilingua)**
+- `LegalStrip` componente fetcha `/api/site/legal-strip?locale=<loc>` al mount. Fallback ai default IT se l'API è unreachable.
+- Backend `services/site_resolver.resolve_legal_strip(locale)`: legge 3 editorial_blocks (`site.footer.legal_strip.left|center|right`) per il locale, sostituisce `{year}` dinamicamente.
+- Endpoint pubblico `GET /api/site/legal-strip?locale=<loc>`.
+- Admin `FooterEditor` esteso con sezione "Fascia Legale": 3 textfield per le 3 linee, ognuna per locale (gestione tramite il dropdown lingua già esistente nel FooterEditor). Placeholder `{year}` documentato inline.
+
+**Sitemap dinamica + Hreflang + Canonical + robots.txt**
+- `services/site_resolver.generate_sitemap()`: enumera `cms_pages WHERE status='published'` × locales (legge da `tenant_locales` se esiste, fallback `it,en-us,en-uk,fr,de,es`). Per ogni URL emette `<lastmod>` + `<xhtml:link rel="alternate" hreflang>` per ogni locale + `x-default` verso en-us. SLUG_OVERRIDES tabella IT-rooted (e.g. `/dedicato-a` ↔ `/audience` ↔ `/dedie-a`).
+- Endpoint pubblico `GET /api/site/sitemap.xml` (XML standard sitemaps.org 0.9).
+- 7 pagine × 6 locales = **42 URL** indicizzabili al primo deploy.
+- `frontend/public/robots.txt` aggiunto (Allow / · Disallow /admin /api · Sitemap link).
+- `SEOHead` riscritto: oltre a title/description/og:image, ora aggiunge dinamicamente `<link rel="canonical">` + `<link rel="alternate" hreflang="...">` per ogni locale + `x-default`. Pulisce gli alternates al cambio route (no leak su page navigation). Setta anche `<html lang>`.
+
+**Search Console helper admin page**
+- Nuova rotta `/admin/seo` con `SearchConsoleHelper` component:
+  - 3 status card: Sitemap (URL totali · locale coperti · link "Apri sitemap" + "Versione produzione") · robots.txt (Disponibile · Esclusioni · "Apri robots.txt") · Hreflang multilingua (lista capability)
+  - 4 quick-link tool: Google Search Console · Bing Webmaster Tools · Rich Results Test · Sitemap Validator
+  - Hint card "Prima del lancio: invia il sitemap a Google Search Console..."
+- Aggiunto al sidebar dell'admin tra Footer e Publishing.
+
 ### ITER152b — Single CTA · Legal strip · Favicon definitivo · Footer reset (Feb 2026)
 - **CTASection / FinalCTA / FinalCTAImmersive**: il bottone secondario è stato rimosso. La sezione finale di ogni pagina ora ha un SOLO CTA primary teal solid. Il blocco `site.home.final.cta_primary` ora dice "Scopri le licenze MOOD for DESIGN" (IT) / "Discover MOOD for DESIGN licenses" (EN), con link a `/versioni-prezzi`.
 - **`LegalStrip`** componente: fascia bianca sottile sotto il footer su ogni pagina pubblica. 3 testi (copyright a sinistra · "Questo servizio è fornito da MOOD for DESIGN" al centro · "Running on Blueprint OS™ - Editorial Infrastructure for Design Studios" a destra). Aggiunto a `CorporateApp` dopo `EditorialFooter`. Responsive: mobile collassa a colonna centrata.

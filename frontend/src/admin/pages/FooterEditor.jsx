@@ -120,6 +120,31 @@ const FooterEditor = ({ locales = ['it','en-us','en-uk','fr','de','es'] }) => {
         />
       </Section>
 
+      {/* Legal strip (white bar below footer) */}
+      <Section title="Fascia Legale · Strip in fondo al sito (3 linee)">
+        <p style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.45)', margin: '-0.5rem 0 0.9rem', lineHeight: 1.5 }}>
+          La fascia bianca che appare sotto al footer su ogni pagina. Usa <code>{'{year}'}</code> per inserire l'anno corrente in modo automatico.
+        </p>
+        <TextField
+          label="Sinistra (es. © {year} MOOD for DESIGN™)"
+          value={values[settings.blocks?.legal_strip_left] || ''}
+          onChange={(v) => setValueAt(settings.blocks.legal_strip_left, v)}
+          testid="footer-legal-left"
+        />
+        <TextField
+          label="Centro (es. Questo servizio è fornito da MOOD for DESIGN)"
+          value={values[settings.blocks?.legal_strip_center] || ''}
+          onChange={(v) => setValueAt(settings.blocks.legal_strip_center, v)}
+          testid="footer-legal-center"
+        />
+        <TextField
+          label="Destra (es. Running on Blueprint OS™ · Editorial Infrastructure for Design Studios)"
+          value={values[settings.blocks?.legal_strip_right] || ''}
+          onChange={(v) => setValueAt(settings.blocks.legal_strip_right, v)}
+          testid="footer-legal-right"
+        />
+      </Section>
+
       {/* Nav column */}
       <Section title="Colonna “Esplora” (titolo + voci)">
         <LinkList
@@ -251,6 +276,10 @@ const ensureShape = (settings) => {
   const out = { ...settings };
   out.blocks = out.blocks || {};
   if (!out.blocks.copyright) out.blocks.copyright = 'site.footer.copyright';
+  // Legal strip blocks (white narrow strip below the footer)
+  if (!out.blocks.legal_strip_left)   out.blocks.legal_strip_left   = 'site.footer.legal_strip.left';
+  if (!out.blocks.legal_strip_center) out.blocks.legal_strip_center = 'site.footer.legal_strip.center';
+  if (!out.blocks.legal_strip_right)  out.blocks.legal_strip_right  = 'site.footer.legal_strip.right';
   if (!out.links || out.links.length === 0) {
     out.links = [
       { key: 'nav_heading', isHeading: true, label_block: 'site.footer.links.nav_heading', fallback: 'Esplora', visible: true },

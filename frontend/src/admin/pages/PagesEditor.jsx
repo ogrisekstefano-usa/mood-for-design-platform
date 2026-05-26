@@ -47,6 +47,7 @@ const BlockEditor = ({ block, locale, onSaved, onFocus }) => {
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState('idle');  // 'idle' | 'saved' | 'error'
   const [translating, setTranslating] = useState(false);
+  const [previewMode, setPreviewMode] = useState(false);
 
   useEffect(() => { setValue(initial); setStatus('idle'); }, [initial, locale]);
 
@@ -151,22 +152,52 @@ const BlockEditor = ({ block, locale, onSaved, onFocus }) => {
       <div style={blockBody}>
         {/* Editor */}
         {block.block_type === 'body' && (
-          <MarkdownToolbar value={value} setValue={setValue} testid={`mdtb-${block.full_key}`} />
+          <MarkdownToolbar
+            value={value} setValue={setValue}
+            previewMode={previewMode} setPreviewMode={setPreviewMode}
+            testid={`mdtb-${block.full_key}`}
+          />
         )}
-        <textarea
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          rows={minLines}
-          style={textarea}
-          placeholder={`Scrivi in ${locale.toUpperCase()}…`}
-          data-testid={`block-input-${block.full_key}`}
-        />
+        {previewMode ? (
+          <div
+            style={{
+              ...textarea,
+              minHeight: minLines * 22,
+              whiteSpace: 'pre-wrap',
+              cursor: 'text',
+              background: 'rgba(0,0,0,0.5)',
+              color: 'rgba(255,255,255,0.86)',
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '0.96rem',
+              lineHeight: 1.7,
+            }}
+            onClick={() => setPreviewMode(false)}
+            data-testid={`block-preview-md-${block.full_key}`}
+          >
+            {renderBlockPreview(value)}
+          </div>
+        ) : (
+          <textarea
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            rows={minLines}
+            style={textarea}
+            placeholder={`Scrivi in ${locale.toUpperCase()}…`}
+            data-testid={`block-input-${block.full_key}`}
+          />
+        )}
         {/* Preview */}
         <div style={previewWrap}>
-          <p style={previewLabel}>Anteprima · {locale.toUpperCase()}</p>
+          <p style={previewLabel}>Resa pubblica · {locale.toUpperCase()}</p>
           <div style={previewBox}>
             {block.block_type === 'cta' ? (
               <span style={previewStyle}>{value || '—'}</span>
+            ) : block.block_type === 'body' ? (
+              <div style={{ ...previewStyle, fontFamily: 'Inter, sans-serif',
+                            fontSize: '0.92rem', lineHeight: 1.7,
+                            color: 'rgba(255,255,255,0.78)', fontWeight: 300 }}>
+                {value ? renderBlockPreview(value) : <span style={{ color: 'rgba(255,255,255,0.25)' }}>—</span>}
+              </div>
             ) : (
               <div style={previewStyle}>{value || <span style={{ color: 'rgba(255,255,255,0.25)' }}>—</span>}</div>
             )}
@@ -177,8 +208,41 @@ const BlockEditor = ({ block, locale, onSaved, onFocus }) => {
   );
 };
 
+// ── renderBlockPreview: inline markdown → React (used by preview pane) ──
+const renderBlockPreview = (text) => {
+  if (!text) return '—';
+  const TOKEN = /(\*\*[^*]+\*\*|\*[^*]+\*|\[[^\]]+\]\([^)]+\))/g;
+  // Split paragraphs first (\n\n)
+  const paragraphs = String(text).split(/\n\n+/);
+  return paragraphs.map((p, pi) => {
+    const out = [];
+    let last = 0, m, k = 0;
+    while ((m = TOKEN.exec(p)) !== null) {
+      if (m.index > last) out.push(p.slice(last, m.index));
+      const tok = m[0];
+      if (tok.startsWith('**')) {
+        out.push(<strong key={`b${pi}-${k++}`} style={{ fontWeight: 600, color: '#FFF' }}>{tok.slice(2, -2)}</strong>);
+      } else if (tok.startsWith('*')) {
+        out.push(<em key={`i${pi}-${k++}`} style={{ fontStyle: 'italic' }}>{tok.slice(1, -1)}</em>);
+      } else if (tok.startsWith('[')) {
+        const label = tok.slice(1, tok.indexOf(']'));
+        const url   = tok.slice(tok.indexOf('(') + 1, -1);
+        out.push(
+          <a key={`a${pi}-${k++}`} href={url} target="_blank" rel="noreferrer"
+             style={{ color: 'var(--mood-teal, #00C9B3)', textDecoration: 'none', borderBottom: '1px solid rgba(0,201,179,0.4)' }}>
+            {label}
+          </a>,
+        );
+      }
+      last = m.index + tok.length;
+    }
+    if (last < p.length) out.push(p.slice(last));
+    return <p key={pi} style={{ margin: pi > 0 ? '0.9em 0 0' : 0 }}>{out}</p>;
+  });
+};
+
 // ── MarkdownToolbar: minimal inline markdown helpers (body blocks only) ──
-const MarkdownToolbar = ({ value, setValue, testid }) => {
+const MarkdownToolbar = ({ value, setValue, previewMode, setPreviewMode, testid }) => {
   const wrap = (left, right = left) => {
     const ta = document.activeElement;
     let start = 0, end = value.length;
@@ -202,16 +266,39 @@ const MarkdownToolbar = ({ value, setValue, testid }) => {
     fontFamily: 'Inter, sans-serif', fontSize: '0.72rem',
     cursor: 'pointer', borderRadius: 2,
   };
+  const disabled = previewMode;
   return (
-    <div style={{ display: 'flex', gap: '0.35rem', marginBottom: '0.5rem' }} data-testid={testid}>
-      <button type="button" style={{ ...btn, fontWeight: 700 }} onClick={() => wrap('**')} title="Grassetto (Cmd/Ctrl+B)">B</button>
-      <button type="button" style={{ ...btn, fontStyle: 'italic' }} onClick={() => wrap('*')} title="Corsivo">I</button>
-      <button type="button" style={btn} onClick={link} title="Link">↗</button>
-      <button type="button" style={btn} onClick={bullet} title="Riga puntata">•</button>
-      <button type="button" style={btn} onClick={() => setValue(value + '\n\n')} title="Spaziatura paragrafo">¶</button>
-      <span style={{ marginLeft: 'auto', fontFamily: 'Inter, sans-serif', fontSize: '0.66rem', color: 'rgba(255,255,255,0.32)', alignSelf: 'center' }}>
+    <div style={{ display: 'flex', gap: '0.35rem', marginBottom: '0.5rem', alignItems: 'center' }} data-testid={testid}>
+      <button type="button" disabled={disabled} style={{ ...btn, fontWeight: 700, opacity: disabled ? 0.4 : 1 }} onClick={() => wrap('**')} title="Grassetto">B</button>
+      <button type="button" disabled={disabled} style={{ ...btn, fontStyle: 'italic', opacity: disabled ? 0.4 : 1 }} onClick={() => wrap('*')} title="Corsivo">I</button>
+      <button type="button" disabled={disabled} style={{ ...btn, opacity: disabled ? 0.4 : 1 }} onClick={link} title="Link">↗</button>
+      <button type="button" disabled={disabled} style={{ ...btn, opacity: disabled ? 0.4 : 1 }} onClick={bullet} title="Riga puntata">•</button>
+      <button type="button" disabled={disabled} style={{ ...btn, opacity: disabled ? 0.4 : 1 }} onClick={() => setValue(value + '\n\n')} title="Spaziatura paragrafo">¶</button>
+      <span style={{ marginLeft: '0.4rem', fontFamily: 'Inter, sans-serif', fontSize: '0.66rem', color: 'rgba(255,255,255,0.32)' }}>
         markdown: **grassetto** · *corsivo* · [link](url)
       </span>
+      <div style={{ marginLeft: 'auto', display: 'inline-flex', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 2 }} data-testid={`${testid}-toggle`}>
+        <button
+          type="button"
+          onClick={() => setPreviewMode(false)}
+          style={{
+            ...btn,
+            border: 'none', borderRadius: 0,
+            background: !previewMode ? 'rgba(0,201,179,0.18)' : 'transparent',
+            color: !previewMode ? 'var(--mood-teal, #00C9B3)' : 'rgba(255,255,255,0.5)',
+          }}
+        >Markdown</button>
+        <button
+          type="button"
+          onClick={() => setPreviewMode(true)}
+          style={{
+            ...btn,
+            border: 'none', borderLeft: '1px solid rgba(255,255,255,0.08)', borderRadius: 0,
+            background: previewMode ? 'rgba(0,201,179,0.18)' : 'transparent',
+            color: previewMode ? 'var(--mood-teal, #00C9B3)' : 'rgba(255,255,255,0.5)',
+          }}
+        >Anteprima</button>
+      </div>
     </div>
   );
 };
