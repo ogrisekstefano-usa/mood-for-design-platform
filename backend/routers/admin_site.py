@@ -249,7 +249,7 @@ async def patch_section(
         sets.append("sort_order = :so")
         params['so'] = int(body['sort_order'])
     if 'settings' in body:
-        sets.append("settings = :s::jsonb")
+        sets.append("settings = CAST(:s AS jsonb)")
         import json as _json
         params['s'] = _json.dumps(body['settings'])
     if not sets:
