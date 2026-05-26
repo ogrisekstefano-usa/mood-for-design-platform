@@ -73,7 +73,7 @@ const GuidedTourStepCard = ({
               onClick={onFinish}
               data-testid="guided-tour-finish"
             >
-              Inizia il tuo atelier
+              Inizia
             </button>
           )}
         </div>

@@ -1,10 +1,11 @@
 /* ============================================================
-   Start Your Atelier — ITER154 First Experience Activation
+   First Moves — ITER154 First Experience Activation
    Editorial action cards, cinematic, no SaaS chrome.
+   Naming: "Atelier" removed — Studio / Blueprint / Design Journey only.
    ============================================================ */
 
-.sya-section {
-  margin: 0 0 48px;
+.fm-section {
+  margin: 48px clamp(40px, 5vw, 72px) 72px;
   padding: clamp(28px, 4vw, 56px) clamp(24px, 4vw, 56px);
   background:
     radial-gradient(140% 90% at 0% 0%, rgba(0, 201, 179, 0.07), transparent 55%),
@@ -15,7 +16,7 @@
   position: relative;
   overflow: hidden;
 }
-.sya-section::before {
+.fm-section::before {
   content: '';
   position: absolute; inset: 0;
   background-image:
@@ -25,12 +26,12 @@
   mix-blend-mode: overlay;
   opacity: 0.5;
 }
-.sya-section__head {
+.fm-section__head {
   position: relative;
   max-width: 760px;
   margin: 0 0 36px;
 }
-.sya-section__eyebrow {
+.fm-section__eyebrow {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10.5px;
   letter-spacing: 0.26em;
@@ -38,7 +39,7 @@
   text-transform: uppercase;
   margin: 0 0 14px;
 }
-.sya-section__title {
+.fm-section__title {
   font-family: 'Cormorant Garamond', 'Georgia', serif;
   font-weight: 400;
   font-size: clamp(28px, 3.4vw, 38px);
@@ -47,11 +48,11 @@
   margin: 0 0 12px;
   letter-spacing: -0.005em;
 }
-.sya-section__title em {
+.fm-section__title em {
   font-style: italic;
   color: #F4EFE6;
 }
-.sya-section__lede {
+.fm-section__lede {
   font-family: 'Cormorant Garamond', 'Georgia', serif;
   font-size: 17px;
   line-height: 1.6;
@@ -60,16 +61,16 @@
   font-style: italic;
 }
 
-.sya-grid {
+.fm-grid {
   position: relative;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 14px;
 }
-@media (max-width: 1280px) { .sya-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 760px) { .sya-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1280px) { .fm-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 760px) { .fm-grid { grid-template-columns: 1fr; } }
 
-.sya-card {
+.fm-card {
   position: relative;
   display: flex; flex-direction: column;
   padding: 22px 20px 20px;
@@ -80,33 +81,33 @@
   text-decoration: none;
   overflow: hidden;
   transition: all 360ms cubic-bezier(0.16, 1, 0.3, 1);
-  animation: sya-card-in 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: calc(var(--sya-index, 0) * 70ms + 80ms);
+  animation: fm-card-in 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--fm-index, 0) * 70ms + 80ms);
   min-height: 240px;
 }
-.sya-card:hover {
+.fm-card:hover {
   transform: translateY(-3px);
   border-color: rgba(0, 201, 179, 0.32);
   box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.55),
               0 0 0 1px rgba(0, 201, 179, 0.10);
 }
-.sya-card__rail {
+.fm-card__rail {
   position: absolute; left: 0; top: 22px; bottom: 22px; width: 2px;
   background: linear-gradient(180deg, #00C9B3, transparent);
   opacity: 0;
   transition: opacity 280ms ease;
 }
-.sya-card:hover .sya-card__rail { opacity: 0.9; }
+.fm-card:hover .fm-card__rail { opacity: 0.9; }
 
-.sya-card--cyan { /* default */ }
-.sya-card--bronze .sya-card__rail {
+.fm-card--cyan { /* default */ }
+.fm-card--bronze .fm-card__rail {
   background: linear-gradient(180deg, #C9A26B, transparent);
 }
-.sya-card--ivory .sya-card__rail {
+.fm-card--ivory .fm-card__rail {
   background: linear-gradient(180deg, rgba(244, 239, 230, 0.6), transparent);
 }
 
-.sya-card__icon {
+.fm-card__icon {
   display: inline-flex;
   width: 36px; height: 36px;
   align-items: center; justify-content: center;
@@ -116,17 +117,17 @@
   margin: 0 0 18px;
   border: 1px solid rgba(0, 201, 179, 0.22);
 }
-.sya-card--bronze .sya-card__icon {
+.fm-card--bronze .fm-card__icon {
   background: rgba(184, 152, 112, 0.10);
   color: #C9A26B;
   border-color: rgba(201, 162, 107, 0.30);
 }
-.sya-card--ivory .sya-card__icon {
+.fm-card--ivory .fm-card__icon {
   background: rgba(244, 239, 230, 0.06);
   color: #F4EFE6;
   border-color: rgba(244, 239, 230, 0.18);
 }
-.sya-card__eyebrow {
+.fm-card__eyebrow {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 9.5px;
   letter-spacing: 0.26em;
@@ -134,7 +135,7 @@
   margin: 0 0 8px;
   text-transform: uppercase;
 }
-.sya-card__title {
+.fm-card__title {
   font-family: 'Cormorant Garamond', 'Georgia', serif;
   font-style: italic;
   font-weight: 400;
@@ -143,7 +144,7 @@
   color: #F4EFE6;
   margin: 0 0 10px;
 }
-.sya-card__body {
+.fm-card__body {
   font-family: 'Cormorant Garamond', 'Georgia', serif;
   font-size: 15px;
   line-height: 1.55;
@@ -151,7 +152,7 @@
   margin: 0 0 18px;
   flex: 1;
 }
-.sya-card__cta {
+.fm-card__cta {
   display: inline-flex; align-items: center; gap: 6px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10.5px;
@@ -161,11 +162,11 @@
   margin-top: auto;
   transition: gap 260ms ease;
 }
-.sya-card--bronze .sya-card__cta { color: #C9A26B; }
-.sya-card--ivory .sya-card__cta { color: rgba(244, 239, 230, 0.86); }
-.sya-card:hover .sya-card__cta { gap: 10px; }
+.fm-card--bronze .fm-card__cta { color: #C9A26B; }
+.fm-card--ivory .fm-card__cta { color: rgba(244, 239, 230, 0.86); }
+.fm-card:hover .fm-card__cta { gap: 10px; }
 
-@keyframes sya-card-in {
+@keyframes fm-card-in {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }

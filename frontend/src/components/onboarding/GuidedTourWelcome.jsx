@@ -3,6 +3,10 @@
  *
  * Cinematic full-screen overlay introducing the studio.
  * Two choices: begin the tour, or skip.
+ *
+ * Semantic note (ITER154 rev): "Atelier" terminology removed —
+ * we speak about Studio (workspace), Blueprint (platform),
+ * Design Journey (single client path).
  */
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
@@ -10,10 +14,10 @@ import { createPortal } from 'react-dom';
 const COPY = {
   it: {
     eyebrow: 'BLUEPRINT OS™ · PRIMA APERTURA',
-    title: 'Benvenuto nel tuo atelier digitale.',
+    title: 'Benvenuto nel tuo studio digitale.',
     lede:
       'Blueprint OS™ è lo spazio dove il tuo studio respira. ' +
-      'Non un software da imparare — un atelier da abitare. ' +
+      'Non un software da imparare — uno spazio da abitare. ' +
       'Ti accompagno in sette movimenti, con calma.',
     start: 'Inizia il tour',
     skip: 'Esplora da solo',
@@ -21,10 +25,10 @@ const COPY = {
   },
   en: {
     eyebrow: 'BLUEPRINT OS™ · FIRST OPENING',
-    title: 'Welcome to your digital atelier.',
+    title: 'Welcome to your digital studio.',
     lede:
       'Blueprint OS™ is the space where your studio breathes. ' +
-      'Not software to learn — an atelier to inhabit. ' +
+      'Not software to learn — a space to inhabit. ' +
       'I will walk you through seven movements, slowly.',
     start: 'Begin the tour',
     skip: 'Explore on my own',

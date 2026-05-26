@@ -11,10 +11,12 @@
  * cinematic dark canvas: hairline border + bg-soft + ample horizontal rhythm.
  */
 import React, { useContext, createContext, useState, useMemo } from 'react';
-import { Bell, ChevronDown, Plus } from 'lucide-react';
+import { ChevronDown, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import NavigableBreadcrumb from '../common/NavigableBreadcrumb';
 import UserMenu from '../common/UserMenu';
+import NotificationBell from '../notifications/NotificationBell';
+import DesignerPresencePicker from '../presence/DesignerPresencePicker';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -115,15 +117,8 @@ const Topbar = () => {
 
         <PrimaryCta />
 
-        <button
-          type="button"
-          data-testid="topbar-notifications-btn"
-          className="atelier-icon-btn"
-          aria-label="Notifications"
-        >
-          <Bell size={15} strokeWidth={1.6} />
-          <span className="atelier-icon-btn__dot" aria-hidden />
-        </button>
+        <DesignerPresencePicker locale="it" compact />
+        <NotificationBell locale="it" />
 
         <IdentityChip />
       </div>

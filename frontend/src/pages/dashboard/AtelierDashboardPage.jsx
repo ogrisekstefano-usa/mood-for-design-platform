@@ -24,9 +24,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useT, useBlueprint } from '../../contexts/BlueprintContext';
 import RelationshipLiveTimeline from '../../components/dashboard/RelationshipLiveTimeline';
 import PendingBookingsPanel from '../../components/booking/PendingBookingsPanel';
-import DesignerPresencePicker from '../../components/presence/DesignerPresencePicker';
-import NotificationBell from '../../components/notifications/NotificationBell';
-import StartYourAtelierCards from '../../components/onboarding/StartYourAtelierCards';
+import FirstMovesCards from '../../components/onboarding/FirstMovesCards';
 import { useGuidedTour } from '../../components/onboarding/GuidedTourProvider';
 import './atelier-dashboard.css';
 
@@ -373,7 +371,7 @@ const AtelierDashboardPage = () => {
     <div className="atd-canvas" data-testid="atelier-dashboard">
       <Hero config={config} counts={counts} userName={userName} />
 
-      {showStartCards && <StartYourAtelierCards />}
+      {showStartCards && <FirstMovesCards />}
 
       <section className="atd-projects" data-testid="atelier-projects-section">
         <header className="atd-section__head">
@@ -425,13 +423,9 @@ const AtelierDashboardPage = () => {
           t={t} />
       </section>
 
-      {/* ITER150 · Sprint A · Real Relationship Engine™ — live polling 5s */}
+      {/* ITER150 · Sprint A · Real Relationship Engine™ — live polling 5s
+          Note: NotificationBell & DesignerPresencePicker moved to global Topbar (ITER154 fix). */}
       <section className="atd-live-relationships" data-testid="atelier-live-relationships">
-        <div className="atd-live-relationships__head">
-          <div style={{ flex: 1 }} />
-          <NotificationBell locale="it" />
-          <DesignerPresencePicker locale="it" />
-        </div>
         <PendingBookingsPanel locale="it" />
         <RelationshipLiveTimeline locale="it" />
       </section>

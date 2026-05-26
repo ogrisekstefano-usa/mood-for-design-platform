@@ -15,7 +15,7 @@ import { Toaster } from 'sonner';
 import './App.css';
 import './styles/ui-density.css';
 import './components/onboarding/guided-tour.css';
-import './components/onboarding/start-your-atelier.css';
+import './components/onboarding/first-moves.css';
 // ── Sprint HARDENING-01.1 · Design System Kernel™ (single source of truth) ──
 import './design-system/kernel.css';
 // Frozen Blueprint OS tokens — declared under [data-surface="os"] only,

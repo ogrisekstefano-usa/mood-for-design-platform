@@ -2,6 +2,71 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER154.R · Semantic Cleanup + Header UX fix** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: cleanup linguistico urgentissimo dopo iter precedente —
+  "Atelier" rimosso dai termini operativi (resta solo per preset
+  grafici/stile). UX fix: notifiche e presence in header globale.
+
+  **Semantic architecture freezata**:
+  - **Blueprint OS™** = infrastruttura piattaforma
+  - **Studio** = spazio operativo dello studio (il tuo studio,
+    studio presence, studio ecosystem, studio direction)
+  - **Design Journey™** = singola relazione/progetto cliente
+  - **Atelier Mode™** = preset/stile/esperienza visuale (NON sistema
+    operativo, NON termine globale)
+
+  **Changes**:
+  - `StartYourAtelierCards` → **`FirstMovesCards`** (file + component
+    + css + testid `start-your-atelier` → `first-moves` + classi CSS
+    `sya-*` → `fm-*`)
+  - Eyebrow "START YOUR ATELIER™ · INVITO OPERATIVO" →
+    **"LE PRIME MOSSE · INIZIA DA QUI"**
+  - Titolo "Il tuo atelier inizia con cinque movimenti" →
+    **"Il tuo studio inizia con cinque mosse"**
+  - Card eyebrow "PRIMO MOVIMENTO" → **"PRIMA MOSSA"**
+  - Welcome screen: "Il tuo atelier digitale" → **"Il tuo studio
+    digitale"** · "un atelier da abitare" → **"uno spazio da abitare"**
+  - Guided Tour finish button: "Inizia il tuo atelier" → **"Inizia"**
+  - Migration 098 ri-applicata con copy editoriale corretto
+    (Studio/Blueprint, ZERO Atelier in user-facing text)
+
+  **UX fix (dashboard)**:
+  - `NotificationBell` + `DesignerPresencePicker` rimossi da
+    `atd-live-relationships__head` (fondo dashboard) e spostati
+    in **`Topbar` globale** · accanto a "+ Nuovo Journey" e identity
+    chip · visibili su OGNI pagina autenticata
+  - Margin generoso tra fasce dashboard:
+    * Hero → FirstMoves: 48px (era 0)
+    * FirstMoves → Journeys: 72px + 64px padding-top (era 0 + 48px)
+    * Journeys → Desk: 56px (era 32px)
+    * Desk → LiveRelationships: 56px (era 36px)
+
+  **Files touched** (5):
+  - `components/onboarding/FirstMovesCards.jsx` (nuovo, rinominato)
+  - `components/onboarding/first-moves.css` (nuovo, rinominato)
+  - `components/onboarding/GuidedTourWelcome.jsx` (rewrite copy)
+  - `components/onboarding/GuidedTourStepCard.jsx` (finish button)
+  - `components/layout/Topbar.jsx` (mount NotificationBell + Presence)
+  - `pages/dashboard/AtelierDashboardPage.jsx` (remove duplicate widgets)
+  - `pages/dashboard/atelier-dashboard.css` (spacing)
+  - `supabase/migrations/098_guided_tour.sql` (copy fix)
+  - `App.js` (import first-moves.css)
+  - DELETED: `StartYourAtelierCards.jsx`, `start-your-atelier.css`
+
+  **Verifica visiva**: header globale mostra correttamente
+  `+ Nuovo Journey` · `● IN STUDIO ▾` · `🔔` · `Stefano Ogrisek`.
+  Dashboard mostra "LE PRIME MOSSE · INIZIA DA QUI" / "Il tuo studio
+  inizia con cinque mosse" / "PRIMA MOSSA · Accogli la prima relazione"
+  con margini ariosi tra le sezioni.
+
+  **Next**: B · Surface del CMS Editorial Copy esistente
+  (Language Command Center™) per vista per-superficie (Dashboard /
+  Guided Tour / Design Journey / Empty States) invece di 2268 chiavi.
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER154 · GUIDED TOUR™ + START YOUR ATELIER™ — First Experience Activation** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: orientare il nuovo professionista A&D al primo login con

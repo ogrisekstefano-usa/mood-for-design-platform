@@ -58,8 +58,8 @@ VALUES
   -- Step 1 · Welcome to the studio (centered, no selector)
   (NULL, 'studio_first_login', 1, NULL, '/dashboard',
    '{"it":"Benvenuto","en":"Welcome"}'::jsonb,
-   '{"it":"Il tuo atelier digitale","en":"Your digital atelier"}'::jsonb,
-   '{"it":"Blueprint OS™ è lo spazio dove il tuo studio respira. Non un software da imparare — un atelier da abitare. Ti accompagno in sette movimenti, con calma.","en":"Blueprint OS™ is the space where your studio breathes. Not software to learn — an atelier to inhabit. I will walk you through seven movements, slowly."}'::jsonb,
+   '{"it":"Il tuo studio digitale","en":"Your digital studio"}'::jsonb,
+   '{"it":"Blueprint OS™ è lo spazio dove il tuo studio respira. Non un software da imparare — uno spazio da abitare. Ti accompagno in sette movimenti, con calma.","en":"Blueprint OS™ is the space where your studio breathes. Not software to learn — a space to inhabit. I will walk you through seven movements, slowly."}'::jsonb,
    ARRAY['tenant_admin','super_admin','designer','studio_owner','project_manager','founder','creative_director'],
    'center'),
 
@@ -107,6 +107,6 @@ VALUES
   (NULL, 'studio_first_login', 7, NULL, '/dashboard',
    '{"it":"L\u2019osservatorio","en":"The observatory"}'::jsonb,
    '{"it":"Lo studio è pronto","en":"The studio is ready"}'::jsonb,
-   '{"it":"Tutto il resto — chat, presenza, calendario, intelligenza relazionale — emergerà nel tempo, naturalmente. Adesso, inizia a costruire il tuo atelier.","en":"Everything else — chat, presence, calendar, relational intelligence — will emerge over time, naturally. Now, begin to build your atelier."}'::jsonb,
+   '{"it":"Tutto il resto — chat, presenza, calendario, intelligenza relazionale — emergerà nel tempo, naturalmente. Adesso, inizia a costruire il tuo studio.","en":"Everything else — chat, presence, calendar, relational intelligence — will emerge over time, naturally. Now, begin to build your studio."}'::jsonb,
    ARRAY['tenant_admin','super_admin','designer','studio_owner','project_manager','founder','creative_director'],
    'center');

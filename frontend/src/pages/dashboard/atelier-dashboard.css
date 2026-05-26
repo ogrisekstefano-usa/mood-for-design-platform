@@ -143,7 +143,7 @@
 
 /* ─── PROJECTS SECTION ────────────────────────────────────────────────── */
 .atd-projects {
-  padding: 48px clamp(40px, 5vw, 72px) 16px;
+  padding: 64px clamp(40px, 5vw, 72px) 24px;
 }
 
 .atd-section__head {
@@ -392,7 +392,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
-  padding: 32px clamp(40px, 5vw, 72px) 64px;
+  padding: 56px clamp(40px, 5vw, 72px) 64px;
 }
 
 .atd-panel {
@@ -623,5 +623,5 @@
 }
 
 /* ITER151 Sprint C — live relationships header (presence picker + bookings) */
-.atd-live-relationships { margin-top: 36px; display: flex; flex-direction: column; gap: 16px; }
+.atd-live-relationships { margin: 56px clamp(40px, 5vw, 72px) 64px; display: flex; flex-direction: column; gap: 16px; }
 .atd-live-relationships__head { display: flex; align-items: center; gap: 16px; }
