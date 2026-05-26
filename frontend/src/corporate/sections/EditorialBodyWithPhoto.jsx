@@ -1,5 +1,6 @@
 import React from 'react';
 import { useReveal } from '../hooks/useReveal';
+import { renderInlineMarkdown } from '../utils/renderInlineMarkdown';
 
 /**
  * EditorialBodyWithPhoto — magazine-style editorial body with a
@@ -72,7 +73,7 @@ const EditorialBodyWithPhoto = ({ content = {}, media = {}, options = {} }) => {
                 }}
                 data-testid="editorial-body-body"
               >
-                {content.body}
+                {renderInlineMarkdown(content.body)}
               </div>
             )}
           </div>

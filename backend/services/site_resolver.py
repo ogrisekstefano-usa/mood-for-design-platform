@@ -186,7 +186,23 @@ async def resolve_page(slug: str, locale: str = DEFAULT_LOCALE) -> dict | None:
                 })
 
             seo_map = page['locale_meta'] or {}
-            seo = seo_map.get(locale) or seo_map.get(DEFAULT_LOCALE) or {}
+            seo = dict(seo_map.get(locale) or seo_map.get(DEFAULT_LOCALE) or {})
+
+            # Resolve og_image (media UUID) → public URL
+            og_image_id = seo.get('og_image')
+            if og_image_id:
+                try:
+                    media_row = await session.execute(
+                        text("""SELECT file_url FROM media_library
+                                WHERE id = CAST(:id AS uuid) AND tenant_id = :tid
+                                  AND archived_at IS NULL LIMIT 1"""),
+                        {"id": og_image_id, "tid": tenant['id']},
+                    )
+                    m = media_row.mappings().first()
+                    if m:
+                        seo['og_image_url'] = m['file_url']
+                except Exception:
+                    pass
 
             return {
                 'page': {

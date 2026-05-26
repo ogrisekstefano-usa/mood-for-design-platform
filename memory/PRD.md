@@ -209,6 +209,41 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **Auto-discoverable from Page Editor**: blocks flat-named (`item_01_eyebrow`...`item_15_body`), media slots flat-named (`item_01`...`item_15`) → all editable inline without backend changes.
 - Validated visually on `/caratteristiche`: hero + 5 numbered feature rows public; 49 editable input slots in admin.
 
+### ITER151i — Batch 2: Hero alignment + Favicon + SEO meta editor + Anchor sections + Mini markdown (Feb 2026)
+
+**Hero text alignment**
+- `AudienceHeroSplit` and `TrainingHero` left text panels now align with the navigation container: `paddingLeft: max(1.5rem, calc((100vw - 1536px) / 2 + 4rem))` matches the logo's left edge at every breakpoint. The titles "Progettato per chi progetta il futuro." and "Conosci. Impara. Cresci." now read perfectly under the MOOD logo.
+
+**Favicon & document-level SEO**
+- `frontend/public/index.html`: real favicon + apple-touch-icon pointing to the MOOD wordmark, `theme-color: #121212`, updated default OG/Twitter meta (Italian copy, OG image set).
+- New `SEOHead` component (`components/SEOHead.jsx`): imperative head manager — sets/upserts `<title>`, `meta[name=description]`, `og:title/description/image`, `twitter:image` on every page mount. No `react-helmet` dependency.
+
+**Per-page SEO meta editor (Blueprint Command Center)**
+- Backend endpoints (`routers/admin_site.py`):
+  - `GET  /api/admin/site/pages/{page_key}/seo` — returns `locale_meta` with resolved `og_image_url` for each locale.
+  - `PUT  /api/admin/site/pages/{page_key}/seo` — body `{locale, title, description, og_image}`. Validates, writes `cms_pages.locale_meta`, invalidates cache.
+- Public resolver (`services/site_resolver.py`) now resolves `og_image` UUID → public `og_image_url` in the page payload.
+- Admin UI (`PagesEditor.jsx`): collapsible **SEOEditor panel** at the top of each page — per-locale title (max 70 chars), description (max 170 chars), and og:image picker (uses the same `MediaPicker`). Shows char counter, dirty indicator, save status pill.
+
+**`anchor_section` component**
+- Renderer (`AnchorSection.jsx`): editorial landing for in-page anchors. Renders `<section id={anchor_id} data-anchor-id>`, eyebrow + serif title + italic Playfair subtitle + 2-column body+photo (markdown-aware). `options.reverse` flips columns, `options.background` alternates `#000000`/`#050606`. `scrollMarginTop: 92px` keeps target below fixed nav.
+- Seed `db/seed_iter151_training_anchors.py`: 5 anchor sections on `/formazione` — `#percorsi · #tutorial · #guide · #webinar · #academy`. Each has full editorial copy with markdown (e.g. **bold** highlights). Updates `training_hero` CTAs to point to anchors.
+
+**Mini Markdown Editor (admin) + safe renderer (public)**
+- `PagesEditor.BlockEditor` — when `block_type === 'body'`, a minimal **MarkdownToolbar** is rendered above the textarea:
+  - **B** → wraps selection with `**…**`
+  - **I** → wraps selection with `*…*`
+  - **↗** → prompts URL, inserts `[selection](url)`
+  - **•** → appends a bullet line
+  - **¶** → appends a paragraph break (`\n\n`)
+  - inline hint: "markdown: **grassetto** · *corsivo* · [link](url)"
+- Headlines / eyebrows / CTAs are NOT editable as markdown (intentional — preserves visual hierarchy).
+- `utils/renderInlineMarkdown.jsx`: safe-by-construction inline parser used by `EditorialBodyWithPhoto` and `AnchorSection`. Token regex matches only `**bold**`, `*italic*`, `[label](url)`. Anything else renders as plain text. `\n\n` → `<br><br>`.
+
+**Veil & navbar polish**
+- Hero veils strengthened: `0.98 → 0.94 → 0.78 → 0.5 → 0.18 → 0` (was `0.92→0.82→0.55→0.25→0`). Uniform contrast on bright photos.
+- `MinimalNav.showSolid = true` constant — `#121212` (`rgba(18,18,18,0.78)` + blur) visible immediately, no scroll required.
+
 ### ITER151h — Audience rebuild + Pricing 4-tier + Comparison table + Veil opacity (Feb 2026)
 - **Navbar always solid**: `MinimalNav.showSolid = true` constant — `rgba(18,18,18,0.78)` with backdrop-blur visible immediately, no scroll required.
 - **Veil opacity strengthened** on all panoramic heroes (`FeatureHeroSplit`, `PricingHeroCinematic`, `PageHero`, `SupportHero`, `LoginHero`): max α `0.98 → 0.94 → 0.78 → 0.5 → 0.18 → 0` over 0-92%. Text contrast on dark photos is now uniformly strong.

@@ -48,6 +48,10 @@ export const adminApi = {
     client.put(`/sections/${sectionId}/media-slot`, { slot, media_id: mediaId }),
   getMediaUsages:   () => client.get('/media-usages'),
 
+  // SEO meta (per-locale title / description / og_image)
+  getPageSEO:       (pageKey) => client.get(`/pages/${pageKey}/seo`),
+  updatePageSEO:    (pageKey, body) => client.put(`/pages/${pageKey}/seo`, body),
+
   // AI translate (uses /api/ai/editorial/translate, with admin headers)
   translate: (sourceText, sourceLocale, targetLocale) =>
     axios.post(

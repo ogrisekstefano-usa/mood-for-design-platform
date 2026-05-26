@@ -20,6 +20,7 @@ import LoginHero from './LoginHero';
 import AudienceHeroSplit from './AudienceHeroSplit';
 import EditorialBodyWithPhoto from './EditorialBodyWithPhoto';
 import PricingComparisonTable from './PricingComparisonTable';
+import AnchorSection from './AnchorSection';
 
 import HeroCinematic from './HeroCinematic';
 import SelectedProjects from './SelectedProjects';
@@ -87,6 +88,7 @@ export const SECTION_REGISTRY = {
   audience_hero_split:     AudienceHeroSplit,
   editorial_body_with_photo: EditorialBodyWithPhoto,
   pricing_comparison_table:  PricingComparisonTable,
+  anchor_section:            AnchorSection,
 
   // ITER149 — DB-driven sections
   hero_cinematic:       HeroCinematic,

@@ -484,6 +484,87 @@ async def get_page_content(
         }
 
 
+# ─────────────────────────────────────────────────────────────────────────
+#  PAGE SEO META  (per-locale title / description / og_image)
+# ─────────────────────────────────────────────────────────────────────────
+
+@router.get("/pages/{page_key}/seo")
+async def get_page_seo(
+    page_key: str,
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """Return cms_pages.locale_meta (per-locale SEO) + resolved og_image URLs."""
+    async with AsyncSessionLocal() as session:
+        page = (await session.execute(
+            text("SELECT id, locale_meta FROM cms_pages WHERE tenant_id=:tid AND page_key=:slug"),
+            {"tid": tenant['id'], "slug": page_key},
+        )).mappings().first()
+        if not page:
+            raise HTTPException(404, "page not found")
+        locale_meta = dict(page['locale_meta'] or {})
+
+        # Resolve og_image UUIDs → public URLs
+        all_ids = {v.get('og_image') for v in locale_meta.values() if isinstance(v, dict) and v.get('og_image')}
+        media_map: dict[str, str] = {}
+        if all_ids:
+            rows = (await session.execute(
+                text("""SELECT id, file_url FROM media_library
+                        WHERE id = ANY(CAST(:ids AS uuid[]))
+                          AND tenant_id = :tid AND archived_at IS NULL"""),
+                {"ids": list(all_ids), "tid": tenant['id']},
+            )).mappings().all()
+            media_map = {str(r['id']): r['file_url'] for r in rows}
+
+        for loc, meta in locale_meta.items():
+            if isinstance(meta, dict) and meta.get('og_image'):
+                meta['og_image_url'] = media_map.get(meta['og_image'])
+
+        return {"page_key": page_key, "locale_meta": locale_meta}
+
+
+@router.put("/pages/{page_key}/seo")
+async def update_page_seo(
+    page_key: str,
+    body: dict = Body(...),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """
+    Update SEO meta for a specific locale.
+    Body: { locale: "it", title: "...", description: "...", og_image: "<media uuid>" | null }
+    """
+    import json as _json
+    locale = (body.get('locale') or '').strip().lower()
+    if not locale:
+        raise HTTPException(400, "locale is required")
+    title       = (body.get('title') or '').strip()
+    description = (body.get('description') or '').strip()
+    og_image    = body.get('og_image')
+    if og_image and not isinstance(og_image, str):
+        raise HTTPException(400, "og_image must be a media UUID string or null")
+
+    new_meta = {"title": title, "description": description}
+    if og_image:
+        new_meta["og_image"] = og_image
+
+    async with AsyncSessionLocal() as session:
+        page = (await session.execute(
+            text("SELECT id, locale_meta FROM cms_pages WHERE tenant_id=:tid AND page_key=:slug"),
+            {"tid": tenant['id'], "slug": page_key},
+        )).mappings().first()
+        if not page:
+            raise HTTPException(404, "page not found")
+        locale_meta = dict(page['locale_meta'] or {})
+        locale_meta[locale] = new_meta
+        await session.execute(
+            text("UPDATE cms_pages SET locale_meta = CAST(:m AS jsonb), updated_at = NOW() WHERE id = CAST(:pid AS uuid)"),
+            {"m": _json.dumps(locale_meta), "pid": str(page['id'])},
+        )
+        await session.commit()
+    # Invalidate cache
+    site_resolver.invalidate_site_cache()
+    return {"page_key": page_key, "locale": locale, "meta": new_meta}
+
+
 @router.put("/sections/{section_id}/media-slot")
 async def update_section_media_slot(
     section_id: str,

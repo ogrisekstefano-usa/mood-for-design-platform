@@ -34,7 +34,11 @@ const TrainingHero = ({ content = {}, media = {}, links = {} }) => {
         {/* LEFT — editorial text */}
         <div
           ref={ref}
-          className={`relative z-10 flex items-center px-6 md:px-12 lg:px-20 py-20 lg:py-28 reveal ${visible ? 'visible' : ''}`}
+          className={`relative z-10 flex items-center py-20 lg:py-28 reveal ${visible ? 'visible' : ''}`}
+          style={{
+            paddingLeft: 'max(1.5rem, calc((100vw - 1536px) / 2 + 4rem))',
+            paddingRight: 'clamp(1.5rem, 4vw, 3rem)',
+          }}
         >
           <div className="w-full max-w-[540px]">
             {content.eyebrow && (

@@ -150,6 +150,9 @@ const BlockEditor = ({ block, locale, onSaved, onFocus }) => {
 
       <div style={blockBody}>
         {/* Editor */}
+        {block.block_type === 'body' && (
+          <MarkdownToolbar value={value} setValue={setValue} testid={`mdtb-${block.full_key}`} />
+        )}
         <textarea
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -170,6 +173,45 @@ const BlockEditor = ({ block, locale, onSaved, onFocus }) => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+// ── MarkdownToolbar: minimal inline markdown helpers (body blocks only) ──
+const MarkdownToolbar = ({ value, setValue, testid }) => {
+  const wrap = (left, right = left) => {
+    const ta = document.activeElement;
+    let start = 0, end = value.length;
+    if (ta && ta.tagName === 'TEXTAREA') {
+      start = ta.selectionStart; end = ta.selectionEnd;
+    }
+    const sel = value.slice(start, end) || 'testo';
+    const next = value.slice(0, start) + left + sel + right + value.slice(end);
+    setValue(next);
+  };
+  const link = () => {
+    const url = window.prompt('URL del link:', 'https://');
+    if (!url) return;
+    wrap('[', `](${url})`);
+  };
+  const bullet = () => setValue((value || '') + (value && !value.endsWith('\n') ? '\n' : '') + '• ');
+
+  const btn = {
+    background: 'transparent', color: 'rgba(255,255,255,0.7)',
+    border: '1px solid rgba(255,255,255,0.1)', padding: '0.32rem 0.5rem',
+    fontFamily: 'Inter, sans-serif', fontSize: '0.72rem',
+    cursor: 'pointer', borderRadius: 2,
+  };
+  return (
+    <div style={{ display: 'flex', gap: '0.35rem', marginBottom: '0.5rem' }} data-testid={testid}>
+      <button type="button" style={{ ...btn, fontWeight: 700 }} onClick={() => wrap('**')} title="Grassetto (Cmd/Ctrl+B)">B</button>
+      <button type="button" style={{ ...btn, fontStyle: 'italic' }} onClick={() => wrap('*')} title="Corsivo">I</button>
+      <button type="button" style={btn} onClick={link} title="Link">↗</button>
+      <button type="button" style={btn} onClick={bullet} title="Riga puntata">•</button>
+      <button type="button" style={btn} onClick={() => setValue(value + '\n\n')} title="Spaziatura paragrafo">¶</button>
+      <span style={{ marginLeft: 'auto', fontFamily: 'Inter, sans-serif', fontSize: '0.66rem', color: 'rgba(255,255,255,0.32)', alignSelf: 'center' }}>
+        markdown: **grassetto** · *corsivo* · [link](url)
+      </span>
     </div>
   );
 };
@@ -352,6 +394,170 @@ const BulkTranslateButton = ({ content, targetLocale, onDone }) => {
   );
 };
 
+// ── SEOEditor: per-locale title / description / og_image ──────────────
+const SEOEditor = ({ pageKey, locale, onSaved }) => {
+  const [meta, setMeta] = useState({ title: '', description: '', og_image: '', og_image_url: '' });
+  const [allMeta, setAllMeta] = useState({});
+  const [busy, setBusy] = useState(false);
+  const [savedAt, setSavedAt] = useState(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
+
+  useEffect(() => {
+    if (!pageKey) return;
+    adminApi.getPageSEO(pageKey)
+      .then(r => {
+        const all = r.data?.locale_meta || {};
+        setAllMeta(all);
+        const m = all[locale] || {};
+        setMeta({
+          title: m.title || '',
+          description: m.description || '',
+          og_image: m.og_image || '',
+          og_image_url: m.og_image_url || '',
+        });
+      });
+  }, [pageKey, locale]);
+
+  const dirty = useMemo(() => {
+    const src = allMeta[locale] || {};
+    return (src.title || '') !== meta.title
+      || (src.description || '') !== meta.description
+      || (src.og_image || '') !== meta.og_image;
+  }, [meta, allMeta, locale]);
+
+  const save = async () => {
+    setBusy(true);
+    try {
+      await adminApi.updatePageSEO(pageKey, {
+        locale,
+        title: meta.title,
+        description: meta.description,
+        og_image: meta.og_image || null,
+      });
+      setSavedAt(Date.now());
+      setAllMeta({ ...allMeta, [locale]: { ...meta } });
+      onSaved?.();
+    } catch (e) {
+      window.alert('Errore: ' + (e?.response?.data?.detail || e.message));
+    } finally { setBusy(false); }
+  };
+
+  return (
+    <div style={{
+      background: 'rgba(255,255,255,0.02)',
+      border: '1px solid rgba(255,255,255,0.06)',
+      padding: '1.1rem 1.4rem', marginBottom: 24,
+    }} data-testid="seo-editor">
+      <div
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
+        onClick={() => setCollapsed(!collapsed)}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{
+            fontFamily: 'Inter, sans-serif', fontSize: '0.72rem', fontWeight: 500,
+            letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--mood-teal, #00C9B3)',
+          }}>SEO · {locale.toUpperCase()}</span>
+          {dirty && <span style={{ fontSize: '0.66rem', color: '#F5A623' }}>● non salvato</span>}
+          {savedAt && !dirty && <span style={{ fontSize: '0.66rem', color: 'rgba(0,201,179,0.85)' }}><Check size={10} /> salvato</span>}
+        </div>
+        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem' }}>{collapsed ? '▾ apri' : '▴ chiudi'}</span>
+      </div>
+
+      {!collapsed && (
+        <div style={{ marginTop: '1.2rem', display: 'grid', gap: '0.9rem' }}>
+          <label style={{ display: 'block' }}>
+            <span style={{ fontSize: '0.68rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>Title (tag &lt;title&gt;)</span>
+            <input
+              type="text" value={meta.title} maxLength={70}
+              onChange={(e) => setMeta({ ...meta, title: e.target.value })}
+              placeholder="Es. Caratteristiche — MOOD for DESIGN"
+              style={{ width: '100%', marginTop: 6, padding: '0.7rem 0.9rem',
+                background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.08)',
+                color: '#FFF', fontFamily: 'Inter, sans-serif', fontSize: '0.88rem', outline: 'none' }}
+              data-testid="seo-title"
+            />
+            <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.35)' }}>{meta.title.length}/70 caratteri (50-60 raccomandato)</span>
+          </label>
+          <label style={{ display: 'block' }}>
+            <span style={{ fontSize: '0.68rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>Description (meta)</span>
+            <textarea
+              value={meta.description} maxLength={170} rows={3}
+              onChange={(e) => setMeta({ ...meta, description: e.target.value })}
+              placeholder="Riassunto editoriale della pagina (150-160 caratteri)."
+              style={{ width: '100%', marginTop: 6, padding: '0.7rem 0.9rem',
+                background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.08)',
+                color: '#FFF', fontFamily: 'Inter, sans-serif', fontSize: '0.88rem', outline: 'none',
+                lineHeight: 1.5, resize: 'vertical' }}
+              data-testid="seo-description"
+            />
+            <span style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.35)' }}>{meta.description.length}/170 caratteri</span>
+          </label>
+          <div>
+            <span style={{ fontSize: '0.68rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>Open Graph Image (og:image)</span>
+            <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
+              {meta.og_image_url ? (
+                <img src={meta.og_image_url} alt="" style={{ width: 96, height: 60, objectFit: 'cover', border: '1px solid rgba(255,255,255,0.1)' }} />
+              ) : (
+                <div style={{ width: 96, height: 60, background: 'rgba(255,255,255,0.04)', border: '1px dashed rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <ImageIcon size={18} color="rgba(255,255,255,0.3)" />
+                </div>
+              )}
+              <button
+                onClick={() => setPickerOpen(true)}
+                style={{ padding: '0.55rem 1rem', fontSize: '0.72rem',
+                  background: 'transparent', border: '1px solid rgba(255,255,255,0.18)',
+                  color: 'rgba(255,255,255,0.85)', cursor: 'pointer', borderRadius: 2,
+                  fontFamily: 'Inter, sans-serif', letterSpacing: '0.04em' }}
+                data-testid="seo-og-pick"
+              >
+                {meta.og_image_url ? 'Cambia immagine' : 'Scegli immagine'}
+              </button>
+              {meta.og_image && (
+                <button
+                  onClick={() => setMeta({ ...meta, og_image: '', og_image_url: '' })}
+                  style={{ padding: '0.55rem 0.8rem', fontSize: '0.72rem',
+                    background: 'transparent', border: '1px solid rgba(255,255,255,0.08)',
+                    color: 'rgba(255,255,255,0.45)', cursor: 'pointer', borderRadius: 2 }}
+                >
+                  Rimuovi
+                </button>
+              )}
+            </div>
+          </div>
+          <button
+            onClick={save}
+            disabled={!dirty || busy}
+            style={{
+              alignSelf: 'flex-start', marginTop: 8,
+              padding: '0.7rem 1.4rem', fontSize: '0.76rem',
+              background: 'var(--mood-teal, #00C9B3)', color: '#000', border: 'none',
+              cursor: (!dirty || busy) ? 'not-allowed' : 'pointer',
+              opacity: (!dirty || busy) ? 0.4 : 1,
+              fontFamily: 'Inter, sans-serif', letterSpacing: '0.04em', fontWeight: 500,
+            }}
+            data-testid="seo-save"
+          >
+            {busy ? 'Salvataggio…' : 'Salva SEO'}
+          </button>
+        </div>
+      )}
+
+      {pickerOpen && (
+        <MediaPicker
+          open={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          currentMediaId={meta.og_image}
+          onSelect={(m) => {
+            setMeta({ ...meta, og_image: m.id, og_image_url: m.file_url });
+            setPickerOpen(false);
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
 // ── Main: PagesEditor ───────────────────────────────────────────────────
 const PagesEditor = () => {
   const [pages, setPages]       = useState([]);
@@ -474,6 +680,7 @@ const PagesEditor = () => {
                     {content.page.key} · {content.page.status} · {visibleSections.length} {visibleSections.length === 1 ? 'sezione' : 'sezioni'}
                   </p>
                 </div>
+                <SEOEditor pageKey={activePage} locale={locale} onSaved={reload} />
                 {visibleSections.length === 0 && (
                   <p style={{ color: 'rgba(255,255,255,0.4)' }}>
                     Nessun contenuto modificabile in questa pagina.

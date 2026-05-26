@@ -1,13 +1,14 @@
 import React from 'react';
 import { useSitePage } from '../hooks/useSitePage';
 import SectionRenderer from '../sections/SectionRenderer';
+import SEOHead from '../components/SEOHead';
 
 /**
  * SitePage — generic page renderer using the ITER149 /api/site/pages endpoint.
  * All content is DB-driven (editorial_blocks + media_library + cms_sections).
  */
 export const SitePage = ({ slug }) => {
-  const { sections, loading, error } = useSitePage(slug);
+  const { page, sections, loading, error } = useSitePage(slug);
 
   if (loading) {
     return (
@@ -39,6 +40,11 @@ export const SitePage = ({ slug }) => {
 
   return (
     <main data-testid={`site-page-${slug}`}>
+      <SEOHead
+        title={page?.title}
+        description={page?.meta_description}
+        ogImage={page?.seo?.og_image_url}
+      />
       {sections.map((s) => <SectionRenderer key={s.id} section={s} />)}
     </main>
   );
