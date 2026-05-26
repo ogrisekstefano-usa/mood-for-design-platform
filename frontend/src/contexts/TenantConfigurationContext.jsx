@@ -52,18 +52,50 @@ const applyTokens = (tokens) => {
 /**
  * Apply branding to the document: favicon + tab title.
  * Reads from configuration bundle so it stays DB-driven.
+ *
+ * ITER154.R fix: when the source favicon image isn't square, we render
+ * it onto a 64×64 canvas with object-fit:contain semantics (centered,
+ * letterboxed by transparent padding) — no more horizontal squash.
  */
-const applyBranding = (branding) => {
+const _renderSquareFavicon = (src) => new Promise((resolve) => {
+  try {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const size = 64;
+        const canvas = document.createElement('canvas');
+        canvas.width = size; canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, size, size);
+        // object-fit:contain
+        const ratio = Math.min(size / img.width, size / img.height);
+        const dw = img.width * ratio;
+        const dh = img.height * ratio;
+        const dx = (size - dw) / 2;
+        const dy = (size - dh) / 2;
+        ctx.drawImage(img, dx, dy, dw, dh);
+        resolve(canvas.toDataURL('image/png'));
+      } catch { resolve(src); }
+    };
+    img.onerror = () => resolve(src);
+    img.src = src;
+  } catch { resolve(src); }
+});
+
+const applyBranding = async (branding) => {
   if (!branding || typeof document === 'undefined') return;
   const fav = branding.favicon_url || branding.logo_url;
   if (fav) {
-    let link = document.querySelector("link[rel='icon']");
-    if (!link) {
-      link = document.createElement('link');
-      link.rel = 'icon';
-      document.head.appendChild(link);
-    }
-    link.href = fav;
+    const squared = await _renderSquareFavicon(fav);
+    // Remove any existing icon links so the browser doesn't keep a squashed one
+    document.querySelectorAll("link[rel='icon'], link[rel='shortcut icon']")
+      .forEach((n) => n.remove());
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.type = 'image/png';
+    link.href = squared;
+    document.head.appendChild(link);
   }
   if (branding.brand_name) {
     const tagline = branding.tagline ? ` · ${branding.tagline}` : '';

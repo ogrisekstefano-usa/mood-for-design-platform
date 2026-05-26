@@ -2,6 +2,100 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER154.R2 · Semantic + UX polish round 2** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: chiudere il debito semantico ("Journey" solo → "Design
+  Journey™"), fixare KPI illeggibili, riparare il favicon schiacciato,
+  rimuovere voci di sidebar non funzionanti.
+
+  **Changes**:
+
+  1. **KPI labels** (`.atd-kpi__label`) — single line + bold:
+     - `font-weight: 400` → **600**
+     - `font-size: 10.5px` → **11.5px**
+     - `color: text-secondary` → **text-headline**
+     - `max-width: 14ch` → rimosso
+     - `white-space: nowrap` aggiunto
+     - Grid columns `minmax(0,1fr)` → `minmax(max-content, 1fr)` per
+       allargare automaticamente i box. Max-width 580 → 760px.
+
+  2. **"Journey" alone → "Design Journey™"** in user-facing strings:
+     - `nav.new_journey` "Nuovo Journey" → "Nuovo Design Journey™"
+     - `atelier.dashboard.kpi.active_journeys` "Journey attivi"
+       → "Design Journey™ attivi"
+     - `atelier.dashboard.hero.summary_template` "{active} Journey
+       in respiro …" → "{active} Design Journey™ in respiro …"
+     - `atelier.dashboard.projects.title` "Journey in respiro"
+       → "Design Journey™ in respiro"
+     - `atelier.dashboard.card.untitled` "Journey senza titolo"
+       → "Design Journey™ senza titolo"
+     - Empty state "Journey in attesa di una nuova voce"
+       → "Design Journey™ in attesa di una nuova voce"
+     - `FirstMovesCards`: CTA "Apri un Journey"
+       → "Apri un Design Journey™"
+
+  3. **"Progetti" → "Design Journey™"** sulla rotta pubblica
+     `/projects` (`site/content/ui.js`):
+     - archive.title "Progetti selezionati. Storie reali di spazi."
+       → "Design Journey™ selezionati. Storie reali di spazi."
+     - archive.ctaPrivate "INIZIA IL TUO PROGETTO"
+       → "INIZIA IL TUO DESIGN JOURNEY™"
+     - archive.empty "Nessun progetto in questa categoria."
+       → "Nessun Design Journey™ in questa categoria."
+     - detail.label "Progetto" → "Design Journey™"
+     - detail.overview "Il progetto" → "Il Design Journey™"
+     - detail.cta "Inizia un progetto come questo"
+       → "Inizia un Design Journey™ come questo"
+     - detail.explore "Esplora altri progetti"
+       → "Esplora altri Design Journey™"
+     - 6 locale (it, en-US, en-GB, fr, de, es) tutte aggiornate
+     - `document.title` "Projects — MOOD for DESIGN™"
+       → "Design Journeys™ — MOOD for DESIGN™"
+
+  4. **Sidebar brand mark**:
+     - "BLUEPRINT ATELIER™" → **"BLUEPRINT OS™"**
+       (`Sidebar.jsx` `RailBrand` component)
+
+  5. **Voice Log sidebar nascosto** (Migration 099):
+     - `client_relations_voice_log` aveva nav_route
+       `/relations/voice-log` che era solo un `<Navigate>` a
+       placeholder. Hidden via UPDATE `feature_modules_registry`
+       SET `nav_group=NULL, nav_route=NULL`. Tornerà quando esisterà
+       una vera Voice Log surface (CRM voice notes feature
+       backend già pronto in `crm_voice_notes.py`).
+
+  6. **Favicon schiacciato fixato** (`TenantConfigurationContext.jsx`
+     `applyBranding`):
+     - Vecchio: applicava direttamente `favicon_url` non-square
+       (552×348 logo OO) → browser lo comprimeva 1:1 nei 16/32px
+       favorite-bar.
+     - Nuovo: `_renderSquareFavicon` rendera il PNG remoto su un
+       canvas 64×64 con `object-fit:contain` (centered +
+       padding trasparente). Rimuove eventuali `<link rel="icon">`
+       precedenti e installa quello canvas via `data:image/png`.
+     - Risultato: favicon proporzionato, "OO" non più schiacciato.
+
+  **Files touched** (8):
+  - `pages/dashboard/atelier-dashboard.css` (KPI hero CSS)
+  - `i18n/strings/it-IT.json` (6 string updates)
+  - `site/content/ui.js` (archive + detail labels 6 locale)
+  - `pages/site/ProjectsIndexPage.jsx` (document.title)
+  - `components/onboarding/FirstMovesCards.jsx` (CTA)
+  - `components/layout/Sidebar.jsx` (BLUEPRINT OS™)
+  - `contexts/TenantConfigurationContext.jsx` (favicon canvas)
+  - `supabase/migrations/099_sidebar_cleanup.sql` (Voice Log hide)
+
+  **Verifica live (admin@moodfordesign.com)**:
+  - KPI in 1 riga bold con cyan numbers + ivory labels ✓
+  - Hero "0 Design Journey™ in respiro · 0 voci ricevute oggi" ✓
+  - Topbar "+ Nuovo Design Journey™" ✓
+  - Sidebar brand "MOOD for DESIGN · BLUEPRINT OS™" ✓
+  - Voice Log assente da sidebar ✓
+  - Favicon `data:image/png;base64,…` (canvas 64×64) ✓
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER154.R · Semantic Cleanup + Header UX fix** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: cleanup linguistico urgentissimo dopo iter precedente —

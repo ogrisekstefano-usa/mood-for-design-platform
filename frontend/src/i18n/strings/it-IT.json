@@ -369,7 +369,7 @@
         },
         "silent": {
           "eyebrow": "In silenzio",
-          "title": "Journey in attesa di una nuova voce"
+          "title": "Design Journey™ in attesa di una nuova voce"
         },
         "actions": {
           "eyebrow": "Prossimi gesti progettuali",
@@ -491,7 +491,7 @@
     },
     "dashboard": "Dashboard",
     "workspace_switcher": "Spazio di lavoro",
-    "new_journey": "Nuovo Journey"
+    "new_journey": "Nuovo Design Journey™"
   },
   "projects": {
     "tabs": {
@@ -2136,11 +2136,11 @@
           "evening": "Buonasera"
         },
         "eyebrow": "Studio Pulse™ · Ritmo Progettuale",
-        "summary_template": "{active} Journey in respiro · {voices} voci ricevute oggi",
+        "summary_template": "{active} Design Journey™ in respiro · {voices} voci ricevute oggi",
         "signature": "Diamo forma a spazi belli."
       },
       "kpi": {
-        "active_journeys": "Journey attivi",
+        "active_journeys": "Design Journey™ attivi",
         "dossier_in_progress": "Dossier in corso",
         "awaiting_feedback": "In attesa di voce",
         "deliveries_week": "Consegne della settimana"
@@ -2156,7 +2156,7 @@
           "paused": "IN PAUSA",
           "active": "ATTIVO"
         },
-        "untitled": "Journey senza titolo",
+        "untitled": "Design Journey™ senza titolo",
         "updated": "Aggiornato {when}",
         "no_updates": "In attesa del primo capitolo"
       },
@@ -2169,7 +2169,7 @@
         "inspiration_empty": "Nessuna citazione curata ancora."
       },
       "projects": {
-        "title": "Journey in respiro",
+        "title": "Design Journey™ in respiro",
         "see_all": "Vedi tutti",
         "empty": "Il tuo atelier è in silenzio. Il prossimo journey aspetta di iniziare.",
         "empty_cta": "Inizia un nuovo journey"

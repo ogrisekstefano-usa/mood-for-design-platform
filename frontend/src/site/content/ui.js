@@ -16,14 +16,14 @@ export const uiContent = {
   archive: {
     eyebrow: tag('Archivio editoriale', 'Editorial archive', 'Archives éditoriales', 'Redaktionsarchiv', 'Archivo editorial'),
     title: tag(
-      'Progetti selezionati.\nStorie reali di spazi.',
-      'Selected projects.\nReal stories of space.',
-      'Projets sélectionnés.\nVraies histoires d\u2019espaces.',
-      'Ausgewählte Projekte.\nEchte Geschichten von Räumen.',
-      'Proyectos seleccionados.\nHistorias reales de espacios.',
+      'Design Journey™ selezionati.\nStorie reali di spazi.',
+      'Selected Design Journeys™.\nReal stories of space.',
+      'Design Journeys™ sélectionnés.\nVraies histoires d\u2019espaces.',
+      'Ausgewählte Design Journeys™.\nEchte Geschichten von Räumen.',
+      'Design Journeys™ seleccionados.\nHistorias reales de espacios.',
     ),
     filterLabel: tag('Filtra per categoria', 'Filter by category', 'Filtrer par catégorie', 'Nach Kategorie filtern', 'Filtrar por categoría'),
-    empty: tag('Nessun progetto in questa categoria.', 'No projects in this category.', 'Aucun projet dans cette catégorie.', 'Keine Projekte in dieser Kategorie.', 'No hay proyectos en esta categoría.'),
+    empty: tag('Nessun Design Journey™ in questa categoria.', 'No Design Journeys™ in this category.', 'Aucun Design Journey™ dans cette catégorie.', 'Keine Design Journeys™ in dieser Kategorie.', 'No hay Design Journeys™ en esta categoría.'),
     finalTitle: tag(
       'Vuoi vedere il tuo prossimo spazio\nentrare in questo archivio?',
       'Want your next space\nto enter this archive?',
@@ -31,23 +31,23 @@ export const uiContent = {
       'Soll Ihr nächster Raum\nin dieses Archiv?',
       '¿Quieres que tu próximo espacio\nentre en este archivo?',
     ),
-    ctaPrivate: tag('INIZIA IL TUO PROGETTO', 'BEGIN YOUR PROJECT', 'COMMENCER VOTRE PROJET', 'PROJEKT BEGINNEN', 'COMIENZA TU PROYECTO'),
+    ctaPrivate: tag('INIZIA IL TUO DESIGN JOURNEY™', 'BEGIN YOUR DESIGN JOURNEY™', 'COMMENCER VOTRE DESIGN JOURNEY™', 'DESIGN JOURNEY™ STARTEN', 'COMIENZA TU DESIGN JOURNEY™'),
     ctaPro: tag('SONO UN PROFESSIONISTA', 'I AM A PROFESSIONAL', 'JE SUIS UN PROFESSIONNEL', 'ICH BIN FACHPERSON', 'SOY UN PROFESIONAL'),
   },
 
   // Project detail
   detail: {
-    label: tag('Progetto', 'Project', 'Projet', 'Projekt', 'Proyecto'),
-    overview: tag('Il progetto', 'Overview', 'Le projet', 'Das Projekt', 'El proyecto'),
+    label: tag('Design Journey™', 'Design Journey™', 'Design Journey™', 'Design Journey™', 'Design Journey™'),
+    overview: tag('Il Design Journey™', 'Overview', 'Le Design Journey™', 'Das Design Journey™', 'El Design Journey™'),
     studio: tag('Studio', 'Studio', 'Studio', 'Studio', 'Estudio'),
     designer: tag('Designer', 'Designer', 'Designer', 'Designer', 'Diseñador'),
     location: tag('Luogo', 'Location', 'Lieu', 'Ort', 'Ubicación'),
     year: tag('Anno', 'Year', 'Année', 'Jahr', 'Año'),
     materials: tag('Materiali e fornitori', 'Materials & suppliers', 'Matériaux et fournisseurs', 'Materialien & Lieferanten', 'Materiales y proveedores'),
     related: tag('Continua a esplorare', 'Continue exploring', 'Continuer l\u2019exploration', 'Weiter erkunden', 'Sigue explorando'),
-    cta: tag('Inizia un progetto come questo', 'Begin a project like this', 'Commencer un projet similaire', 'Ein ähnliches Projekt beginnen', 'Comienza un proyecto como este'),
-    beginProject: tag('INIZIA IL TUO PROGETTO', 'BEGIN YOUR PROJECT', 'COMMENCER VOTRE PROJET', 'PROJEKT BEGINNEN', 'COMIENZA TU PROYECTO'),
-    explore: tag('Esplora altri progetti', 'Explore other projects', 'Voir d\u2019autres projets', 'Weitere Projekte', 'Otros proyectos'),
+    cta: tag('Inizia un Design Journey™ come questo', 'Begin a Design Journey™ like this', 'Commencer un Design Journey™ similaire', 'Ein ähnliches Design Journey™ beginnen', 'Comienza un Design Journey™ como este'),
+    beginProject: tag('INIZIA IL TUO DESIGN JOURNEY™', 'BEGIN YOUR DESIGN JOURNEY™', 'COMMENCER VOTRE DESIGN JOURNEY™', 'DESIGN JOURNEY™ STARTEN', 'COMIENZA TU DESIGN JOURNEY™'),
+    explore: tag('Esplora altri Design Journey™', 'Explore other Design Journeys™', 'Voir d\u2019autres Design Journeys™', 'Weitere Design Journeys™', 'Otros Design Journeys™'),
   },
 
   // Onboarding placeholders (Private + Pro)

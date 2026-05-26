@@ -88,11 +88,11 @@
 
 .atd-hero__kpis {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(16px, 2vw, 36px);
+  grid-template-columns: repeat(4, minmax(max-content, 1fr));
+  gap: clamp(20px, 2.4vw, 40px);
   padding-top: 22px;
   border-top: 1px solid var(--bp-border-soft);
-  max-width: 580px;
+  max-width: 760px;
 }
 
 .atd-kpi { display: flex; flex-direction: column; gap: 10px; }
@@ -110,13 +110,13 @@
 
 .atd-kpi__label {
   font-family: var(--atelier-sans);
-  font-size: 10.5px;
-  font-weight: 400;
+  font-size: 11.5px;
+  font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: none;
-  color: var(--bp-text-secondary);
+  color: var(--bp-text-headline);
   line-height: 1.4;
-  max-width: 14ch;
+  white-space: nowrap;
 }
 
 /* Hero image — full bleed right side */

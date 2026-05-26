@@ -39,7 +39,7 @@ const CARDS = [
     eyebrow: 'IL VIAGGIO',
     title: 'Apri un Design Journey',
     body: 'Un cammino progettuale che accompagna il cliente dall\u2019intuizione iniziale all\u2019atmosfera finale.',
-    cta: 'Apri un Journey',
+    cta: 'Apri un Design Journey™',
     to: '/workspace/projects',
     accent: 'cyan',
     testid: 'guided-tour-new-journey',

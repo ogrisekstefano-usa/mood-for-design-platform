@@ -79,7 +79,7 @@ const ProjectsIndexPage = () => {
     return () => { alive = false; };
   }, [locale]);
 
-  useEffect(() => { document.title = 'Projects — MOOD for DESIGN\u2122'; }, []);
+  useEffect(() => { document.title = 'Design Journeys\u2122 — MOOD for DESIGN\u2122'; }, []);
 
   const filtered = useMemo(() => {
     if (!items) return null;

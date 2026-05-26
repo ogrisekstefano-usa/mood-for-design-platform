@@ -231,7 +231,7 @@ const RailBrand = ({ collapsed, onToggle, impersonating, monogram }) => (
     {!collapsed && (
       <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
         <span className="atelier-rail__brand-name">MOOD <em>for</em> DESIGN</span>
-        <span className="atelier-rail__brand-meta">BLUEPRINT ATELIER™</span>
+        <span className="atelier-rail__brand-meta">BLUEPRINT OS™</span>
       </div>
     )}
     {impersonating && !collapsed && (
