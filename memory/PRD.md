@@ -2,6 +2,55 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER154.R4 · Public site · nav cleanup + marquee carousel** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: rifinire il sito pubblico — distribuzione del menu,
+  rimozione voci ridondanti, conversione del trust strip in un
+  carosello marquee che resta sempre dentro il container a tutte le
+  risoluzioni.
+
+  **Changes**:
+
+  1. **Nav voci rimosse**: "Materiali" e "Chi siamo" eliminate da
+     `HomePage.jsx` (sia desktop nav che mobile menu). La nav ora
+     mostra solo le voci editorialmente rilevanti:
+     - Come funziona · Magazine · Design Stories ·
+       Per i professionisti
+
+  2. **Distribuzione header bilanciata**: `mfd-header__inner` da
+     `grid-template-columns: auto minmax(0,1fr) auto`
+     → `1fr auto 1fr`. Brand justify-self start, nav center, CTA end.
+     Gap responsive `clamp(20px, 3vw, 48px)`.
+
+  3. **Trust strip → marquee carousel** (`mfd-trust__viewport`):
+     - Brand array duplicato per loop senza salto:
+       `loopBrands = [...brands, ...brands]`
+     - CSS marquee: animation `mfd-trust-marquee 38s linear infinite`
+       translatX 0 → -50%
+     - Viewport con `overflow:hidden` + `mask-image:
+       linear-gradient(90deg, transparent 0, #000 5%, #000 95%,
+       transparent 100%)` per fade ai bordi
+     - Pause on hover · respect `prefers-reduced-motion`
+     - Container grid `auto minmax(0, 1fr)` mantiene eyebrow fisso
+       a sinistra e viewport scrollabile a destra
+     - Risultato: il carosello scorre orizzontalmente entro il
+       container in tutte le risoluzioni (verificato 1920 / 1280 / 1100)
+     - Sotto 1180px → eyebrow + viewport diventano stacked
+
+  **Files touched** (2):
+  - `pages/site/HomePage.jsx` (nav links + TrustStrip marquee)
+  - `pages/site/home-iter150.css` (header grid + carousel CSS)
+
+  **Verifica live** (3 risoluzioni):
+  - 1920px: 4 voci centrate · brand a sx · CTA a dx · marquee in loop
+  - 1280px: stessa distribuzione, gap auto-shrunk
+  - 1100px: nav ancora visibile, carosello in loop dentro il
+    container con mask fade
+  - Track width 1814px / viewport 933px → loop perfetto al -50%
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER154.R3 · Client Portal · logo + notifiche + avatar menu + auto-refresh referente** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: portare il Client Portal allo stesso livello di

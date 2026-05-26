@@ -297,9 +297,7 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
           <a href="#how-it-works">{L(copy.nav.how_it_works, locale)}</a>
           <Link to="/magazine">{L(copy.nav.magazine, locale)}</Link>
           <a href="#design-stories">{L(copy.nav.design_stories, locale)}</a>
-          <a href="#materials">{L(copy.nav.materials, locale)}</a>
           <Link to="/professionals">{L(copy.nav.professionals, locale)}</Link>
-          <a href="#footer">{L(copy.nav.about, locale)}</a>
         </nav>
         <Link to="/begin-journey" className="mfd-cta mfd-cta--primary mfd-header__cta" data-testid="header-cta-start-project">
           {L(copy.nav.cta, locale)}
@@ -331,9 +329,7 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
             <a href="#how-it-works" onClick={closeMenu}>{L(copy.nav.how_it_works, locale)}</a>
             <Link to="/magazine" onClick={closeMenu}>{L(copy.nav.magazine, locale)}</Link>
             <a href="#design-stories" onClick={closeMenu}>{L(copy.nav.design_stories, locale)}</a>
-            <a href="#materials" onClick={closeMenu}>{L(copy.nav.materials, locale)}</a>
             <Link to="/professionals" onClick={closeMenu}>{L(copy.nav.professionals, locale)}</Link>
-            <a href="#footer" onClick={closeMenu}>{L(copy.nav.about, locale)}</a>
           </nav>
           <Link
             to="/begin-journey"
@@ -386,20 +382,26 @@ const Hero = ({ locale, copy }) => (
 );
 
 // ─────────────────────────────────────────────────────────────────────
-// TRUST / MATERIAL & PARTNER STRIP
+// TRUST / MATERIAL & PARTNER STRIP — marquee carousel
 // ─────────────────────────────────────────────────────────────────────
-const TrustStrip = ({ locale, copy }) => (
-  <section className="mfd-trust" data-testid="trust-strip">
-    <div className="mfd-trust__inner">
-      <p className="mfd-trust__eyebrow">{L(copy.trust.eyebrow, locale)}</p>
-      <ul className="mfd-trust__brands">
-        {copy.trust.brands.map((b) => (
-          <li key={b} className="mfd-trust__brand">{b}</li>
-        ))}
-      </ul>
-    </div>
-  </section>
-);
+const TrustStrip = ({ locale, copy }) => {
+  // Duplicate brand list once so the CSS marquee can loop seamlessly.
+  const loopBrands = [...copy.trust.brands, ...copy.trust.brands];
+  return (
+    <section className="mfd-trust" data-testid="trust-strip">
+      <div className="mfd-trust__inner">
+        <p className="mfd-trust__eyebrow">{L(copy.trust.eyebrow, locale)}</p>
+        <div className="mfd-trust__viewport" aria-hidden="false">
+          <ul className="mfd-trust__brands" data-testid="trust-brands-track">
+            {loopBrands.map((b, i) => (
+              <li key={`${b}-${i}`} className="mfd-trust__brand">{b}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 // ─────────────────────────────────────────────────────────────────────
 // HOW IT WORKS
