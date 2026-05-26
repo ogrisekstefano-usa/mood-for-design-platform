@@ -350,7 +350,11 @@ export const BlueprintProvider = ({ children }) => {
     // requiring a backend deploy for every UI string.
     try {
       const picked = pickString(key, locale, vars || null);
-      if (picked && picked !== key) return picked;
+      // ITER155.R3 · ⟦key⟧ tokens are strict-mode missing markers — treat them
+      // as a miss so the editorial `fallback` (English copy) is shown instead.
+      const isMissingToken = typeof picked === 'string'
+        && picked.startsWith('\u27E6') && picked.endsWith('\u27E7');
+      if (picked && picked !== key && !isMissingToken) return picked;
     } catch (_) { /* ignore — fall through to fallback */ }
     // Sprint HARDENING-I18N-GUARD™: nothing matched, register the miss so the
     // LiveQA overlay can surface it. We deliberately do NOT record when an

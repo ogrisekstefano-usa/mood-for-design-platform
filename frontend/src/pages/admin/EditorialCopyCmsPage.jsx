@@ -317,12 +317,20 @@ const EditorialCopyCmsPage = () => {
     await api.patch(`/api/admin/editorial-copy/phrases/${phraseId}`, payload);
     await loadPhrases(active);
     setRefreshKey((k) => k + 1);
+    // ITER155.R2 · live propagation — refresh runtime overrides everywhere
+    // (this tab + same-origin tabs) without rebuild / hard refresh.
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('mfd:editorial-overrides:invalidate'));
+    }
   };
 
   const handleReset = async (phraseId) => {
     await api.delete(`/api/admin/editorial-copy/phrases/${phraseId}/override`);
     await loadPhrases(active);
     setRefreshKey((k) => k + 1);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('mfd:editorial-overrides:invalidate'));
+    }
   };
 
   if (loading) {

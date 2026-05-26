@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom';
 import {
   UserPlus, Compass, BookOpen, Sparkles, Calendar,
 } from 'lucide-react';
+import { useT } from '../../i18n/useT';
 
 const CARDS = [
   {
@@ -80,19 +81,20 @@ const CARDS = [
 ];
 
 const FirstMovesCards = () => {
+  const { t } = useT();
   return (
     <section
       className="fm-section"
       data-testid="first-moves"
-      aria-label="Le prime mosse"
+      aria-label={t('onboarding.first_moves.aria')}
     >
       <header className="fm-section__head">
-        <p className="fm-section__eyebrow">LE PRIME MOSSE · INIZIA DA QUI</p>
+        <p className="fm-section__eyebrow">{t('onboarding.first_moves.eyebrow')}</p>
         <h2 className="fm-section__title">
-          <em>Il tuo studio inizia</em> con cinque mosse.
+          <em>{t('onboarding.first_moves.title_emphasis')}</em> {t('onboarding.first_moves.title_rest')}
         </h2>
         <p className="fm-section__lede">
-          Nessuna fretta. Ogni gesto è una direzione progettuale, non un task da spuntare.
+          {t('onboarding.first_moves.lede')}
         </p>
       </header>
 

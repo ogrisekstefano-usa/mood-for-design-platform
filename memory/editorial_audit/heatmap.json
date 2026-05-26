@@ -1,0 +1,342 @@
+[
+  {
+    "surface": "Dashboard",
+    "files_scanned": 7,
+    "hardcoded_count": 9,
+    "category_a": 0,
+    "category_b": 9,
+    "category_c": 0,
+    "top_offenders": [
+      {
+        "file": "pages/dashboard/DashboardPage.jsx",
+        "line": 482,
+        "value": "Registra nota",
+        "category": "B"
+      },
+      {
+        "file": "components/dashboard/StudioOnboardingPanel.jsx",
+        "line": 86,
+        "value": "Dismiss",
+        "category": "B"
+      },
+      {
+        "file": "pages/dashboard/JourneyPulsePage.jsx",
+        "line": 128,
+        "value": "0 &&",
+        "category": "B"
+      },
+      {
+        "file": "pages/dashboard/JourneyPulsePage.jsx",
+        "line": 129,
+        "value": "0 &&",
+        "category": "B"
+      },
+      {
+        "file": "pages/dashboard/JourneyPulsePage.jsx",
+        "line": 130,
+        "value": "0 &&",
+        "category": "B"
+      },
+      {
+        "file": "pages/dashboard/DashboardPage.jsx",
+        "line": 168,
+        "value": "0 ?",
+        "category": "B"
+      },
+      {
+        "file": "pages/dashboard/DashboardPage.jsx",
+        "line": 230,
+        "value": "0 ?",
+        "category": "B"
+      },
+      {
+        "file": "pages/dashboard/DashboardPage.jsx",
+        "line": 399,
+        "value": "0 ?",
+        "category": "B"
+      }
+    ]
+  },
+  {
+    "surface": "First Moves",
+    "files_scanned": 1,
+    "hardcoded_count": 0,
+    "category_a": 0,
+    "category_b": 0,
+    "category_c": 0,
+    "top_offenders": []
+  },
+  {
+    "surface": "Guided Tour",
+    "files_scanned": 4,
+    "hardcoded_count": 1,
+    "category_a": 0,
+    "category_b": 1,
+    "category_c": 0,
+    "top_offenders": [
+      {
+        "file": "components/onboarding/GuidedTourWelcome.jsx",
+        "line": 59,
+        "value": "movimenti",
+        "category": "B"
+      }
+    ]
+  },
+  {
+    "surface": "Notifications",
+    "files_scanned": 1,
+    "hardcoded_count": 1,
+    "category_a": 0,
+    "category_b": 1,
+    "category_c": 0,
+    "top_offenders": [
+      {
+        "file": "components/notifications/NotificationBell.jsx",
+        "line": 191,
+        "value": "notifications",
+        "category": "B"
+      }
+    ]
+  },
+  {
+    "surface": "Client Portal",
+    "files_scanned": 18,
+    "hardcoded_count": 29,
+    "category_a": 0,
+    "category_b": 29,
+    "category_c": 0,
+    "top_offenders": [
+      {
+        "file": "components/client/SharedVoiceComposer.jsx",
+        "line": 108,
+        "value": "Una nota, un'impressione, un dettaglio che senti più vicino…",
+        "category": "B"
+      },
+      {
+        "file": "components/client/SharedVoiceComposer.jsx",
+        "line": 126,
+        "value": "Pinterest · Instagram · qualsiasi link",
+        "category": "B"
+      },
+      {
+        "file": "components/client/SiteEvolutionSection.jsx",
+        "line": 66,
+        "value": "Trascina per confrontare prima e dopo",
+        "category": "B"
+      },
+      {
+        "file": "components/client/SharedVoiceComposer.jsx",
+        "line": 100,
+        "value": "Raccontaci una impressione",
+        "category": "B"
+      },
+      {
+        "file": "components/client/ClientUserMenu.jsx",
+        "line": 209,
+        "value": "Carica foto profilo",
+        "category": "B"
+      },
+      {
+        "file": "pages/client/ClientOverviewPage.jsx",
+        "line": 211,
+        "value": "/client/moodboards",
+        "category": "B"
+      },
+      {
+        "file": "components/client/ClientUserMenu.jsx",
+        "line": 289,
+        "value": "Breve descrizione",
+        "category": "B"
+      },
+      {
+        "file": "components/client/ClientUserMenu.jsx",
+        "line": 286,
+        "value": "Ruolo / titolo",
+        "category": "B"
+      }
+    ]
+  },
+  {
+    "surface": "Design Journey",
+    "files_scanned": 10,
+    "hardcoded_count": 10,
+    "category_a": 3,
+    "category_b": 7,
+    "category_c": 0,
+    "top_offenders": [
+      {
+        "file": "components/journey/JourneyContextHeader.jsx",
+        "line": 112,
+        "value": "Torna al Design Journey™",
+        "category": "A"
+      },
+      {
+        "file": "components/journey/JourneyContextHeader.jsx",
+        "line": 115,
+        "value": "Design Journey™",
+        "category": "A"
+      },
+      {
+        "file": "components/journey/StepContextHeader.jsx",
+        "line": 71,
+        "value": "Studio Pulse",
+        "category": "A"
+      },
+      {
+        "file": "components/journey/JourneyClosureCeremony.jsx",
+        "line": 132,
+        "value": "Cover visiva (URL · opzionale)",
+        "category": "B"
+      },
+      {
+        "file": "components/journey/JourneyContextHeader.jsx",
+        "line": 92,
+        "value": "Stai attraversando",
+        "category": "B"
+      },
+      {
+        "file": "components/journey/JourneyClosureCeremony.jsx",
+        "line": 116,
+        "value": "Closure Statement",
+        "category": "B"
+      },
+      {
+        "file": "components/journey/StepContextHeader.jsx",
+        "line": 97,
+        "value": "sw-meta-pill",
+        "category": "B"
+      },
+      {
+        "file": "components/journey/StepContextHeader.jsx",
+        "line": 109,
+        "value": "Avanzamento",
+        "category": "B"
+      }
+    ]
+  },
+  {
+    "surface": "Public Marketing",
+    "files_scanned": 28,
+    "hardcoded_count": 71,
+    "category_a": 18,
+    "category_b": 53,
+    "category_c": 0,
+    "top_offenders": [
+      {
+        "file": "pages/site/BeginPartnershipPage.jsx",
+        "line": 329,
+        "value": "Racconta brevemente lo studio e il tipo di progetti su cui collaborereste con noi.",
+        "category": "A"
+      },
+      {
+        "file": "site/components/SiteHeader.jsx",
+        "line": 184,
+        "value": "Configure navigation in Experience Studio",
+        "category": "A"
+      },
+      {
+        "file": "pages/site/BeginPartnershipPage.jsx",
+        "line": 266,
+        "value": "Nome dello studio o azienda *",
+        "category": "A"
+      },
+      {
+        "file": "pages/site/BeginPartnershipPage.jsx",
+        "line": 269,
+        "value": "Studio Bianchi Architetti",
+        "category": "A"
+      },
+      {
+        "file": "pages/site/BeginPartnershipPage.jsx",
+        "line": 264,
+        "value": "Raccontaci dello studio.",
+        "category": "A"
+      },
+      {
+        "file": "pages/site/HomePage.jsx",
+        "line": 295,
+        "value": "Italian Design Studios",
+        "category": "A"
+      },
+      {
+        "file": "pages/site/HomePage.jsx",
+        "line": 630,
+        "value": "Italian Design Studios",
+        "category": "A"
+      },
+      {
+        "file": "site/components/MoodSiteHeader.jsx",
+        "line": 121,
+        "value": "Italian Design Studios",
+        "category": "A"
+      }
+    ]
+  },
+  {
+    "surface": "Auth",
+    "files_scanned": 5,
+    "hardcoded_count": 0,
+    "category_a": 0,
+    "category_b": 0,
+    "category_c": 0,
+    "top_offenders": []
+  },
+  {
+    "surface": "Editorial Copy CMS",
+    "files_scanned": 1,
+    "hardcoded_count": 10,
+    "category_a": 1,
+    "category_b": 9,
+    "category_c": 0,
+    "top_offenders": [
+      {
+        "file": "pages/admin/EditorialCopyCmsPage.jsx",
+        "line": 180,
+        "value": "Eyebrow",
+        "category": "A"
+      },
+      {
+        "file": "pages/admin/EditorialCopyCmsPage.jsx",
+        "line": 371,
+        "value": "Nessuna frase su questa superficie ancora — verranno aggiunte progressivamente con la migrazione C.",
+        "category": "B"
+      },
+      {
+        "file": "pages/admin/EditorialCopyCmsPage.jsx",
+        "line": 172,
+        "value": "Customizzato dal tenant",
+        "category": "B"
+      },
+      {
+        "file": "pages/admin/EditorialCopyCmsPage.jsx",
+        "line": 44,
+        "value": "SURFACE GOVERNANCE™",
+        "category": "B"
+      },
+      {
+        "file": "pages/admin/EditorialCopyCmsPage.jsx",
+        "line": 51,
+        "value": "Editorial surfaces",
+        "category": "B"
+      },
+      {
+        "file": "pages/admin/EditorialCopyCmsPage.jsx",
+        "line": 83,
+        "value": "VOICE GUARDRAILS",
+        "category": "B"
+      },
+      {
+        "file": "pages/admin/EditorialCopyCmsPage.jsx",
+        "line": 45,
+        "value": "Editorial Copy",
+        "category": "B"
+      },
+      {
+        "file": "pages/admin/EditorialCopyCmsPage.jsx",
+        "line": 253,
+        "value": "ANTEPRIMA LIVE",
+        "category": "B"
+      }
+    ]
+  }
+]

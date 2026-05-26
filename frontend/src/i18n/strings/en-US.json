@@ -405,6 +405,25 @@
       "tutti_gli_account": "All accounts",
       "riprova": "Try again",
       "apri_timeline": "Apri timeline"
+    },
+    "surface": {
+      "hero_eyebrow_label": "Daily Studio Status™",
+      "hero_cta_new_project": "New project",
+      "hero_cta_new_account": "New account",
+      "hero_cta_cultural_edition": "Cultural Edition™",
+      "suggested_eyebrow": "Suggested Next Actions™",
+      "quick_eyebrow": "Quick Actions™",
+      "quick_title": "What would you like to do?",
+      "attention_eyebrow": "Studio Attention™",
+      "attention_see_all": "See all",
+      "attention_stale_pill": "To resume",
+      "attention_empty_title": "No project needs attention right now.",
+      "attention_empty_hint": "Projects converted from leads will appear here.",
+      "relationship_eyebrow": "Relationship Engine™",
+      "relationship_empty_hint": "When an account goes days without a gesture, it will surface here.",
+      "timeline_eyebrow": "Studio Timeline",
+      "timeline_calendar_link": "Calendar",
+      "timeline_empty_title": "Studio in creative stillness."
     }
   },
   "errors": {
@@ -1782,6 +1801,13 @@
       "ad_esempio_sono_qui_per_accompagnarti_nelle_prime": "For instance: I'm here to guide you through the early stages of the project…",
       "visibile_sotto_il_tuo_nome_nella_human_card": "Visible below your name on the Human Card.",
       "es_scrivi_a_stefano_default_ricavato_dal_nome": "Es. 'Scrivi a Stefano'. Default ricavato dal nome."
+    },
+    "first_moves": {
+      "aria": "First moves",
+      "eyebrow": "FIRST MOVES · START HERE",
+      "title_emphasis": "Your studio begins",
+      "title_rest": "with five moves.",
+      "lede": "No rush. Every gesture is a design direction, not a task to tick off."
     }
   },
   "stubs": {

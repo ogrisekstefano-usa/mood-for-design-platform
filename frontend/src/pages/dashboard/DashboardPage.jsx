@@ -152,7 +152,7 @@ const DailyStudioStatus = ({
       <StudioLogo logoUrl={logoUrl} name={studioName} />
 
       <p className="cck-hero__eyebrow" data-testid="cockpit-hero-eyebrow">
-        Daily Studio Status™ · {new Date().toLocaleDateString('it-IT', {
+        {t('dashboard.surface.hero_eyebrow_label')} · {new Date().toLocaleDateString('it-IT', {
         day: 'numeric',
         month: 'long'
       })}
@@ -182,16 +182,16 @@ const DailyStudioStatus = ({
 
       <div className="cck-hero__ctas" data-testid="cockpit-hero-ctas">
         <Link to="/workspace/projects?new=1" className="cck-cta cck-cta--paper" data-testid="cck-hero-cta-project">
-          <Icons.Plus size={12} /> Nuovo progetto
+          <Icons.Plus size={12} /> {t('dashboard.surface.hero_cta_new_project')}
         </Link>
         <Link to="/moodboards?new=1" className="cck-cta" data-testid="cck-hero-cta-moodboard">
           <Icons.Layers size={12} /> {t("dashboard.dashboard.nuova_moodboard")}
         </Link>
         <Link to="/crm/accounts?new=1" className="cck-cta" data-testid="cck-hero-cta-account">
-          <Icons.UserPlus size={12} /> Nuovo account
+          <Icons.UserPlus size={12} /> {t('dashboard.surface.hero_cta_new_account')}
         </Link>
         <button type="button" onClick={onOpenCulturalWizard} className="cck-cta cck-cta--accent" data-testid="cck-hero-cta-edition">
-          <Icons.Globe size={12} /> Cultural Edition™
+          <Icons.Globe size={12} /> {t('dashboard.surface.hero_cta_cultural_edition')}
         </button>
       </div>
     </section>;
@@ -216,7 +216,7 @@ const SuggestedNextActions = ({
   return <section className="cck-block" data-testid="cockpit-suggested-actions">
     <header className="cck-block__head">
       <div>
-        <p className="cck-block__eyebrow">Suggested Next Actions™</p>
+        <p className="cck-block__eyebrow">{t('dashboard.surface.suggested_eyebrow')}</p>
         <h3 className="cck-block__title">{t('dashboard.dashboard.decisioni_che_la_giornata_sussurra')}</h3>
       </div>
     </header>
@@ -327,11 +327,13 @@ const QUICK_CLUSTERS = [{
 }];
 const QuickActions = ({
   onOpenCulturalWizard
-}) => <section className="cck-block" data-testid="cockpit-quick-actions">
+}) => {
+  const { t } = useT();
+  return <section className="cck-block" data-testid="cockpit-quick-actions">
     <header className="cck-block__head">
       <div>
-        <p className="cck-block__eyebrow">Quick Actions™</p>
-        <h3 className="cck-block__title">Cosa vuoi fare ora?</h3>
+        <p className="cck-block__eyebrow">{t('dashboard.surface.quick_eyebrow')}</p>
+        <h3 className="cck-block__title">{t('dashboard.surface.quick_title')}</h3>
       </div>
     </header>
     <div className="cck-quick-grid">
@@ -364,6 +366,7 @@ const QuickActions = ({
     })}
     </div>
   </section>;
+};
 
 // ═══════════════════════════════════════════════════════════════════════
 // 4 · STUDIO ATTENTION™ — progetti che chiedono presenza
@@ -380,11 +383,11 @@ const StudioAttention = ({
   return <section className="cck-block" data-testid="cockpit-studio-attention">
       <header className="cck-block__head">
         <div>
-          <p className="cck-block__eyebrow">Studio Attention™</p>
+          <p className="cck-block__eyebrow">{t('dashboard.surface.attention_eyebrow')}</p>
           <h3 className="cck-block__title">{t('dashboard.dashboard.progetti_che_chiedono_la_tua_presenza')}</h3>
         </div>
         <Link to="/workspace/projects" className="cck-block__link" data-testid="cockpit-attention-all">
-          Vedi tutti <Icons.ArrowUpRight size={11} />
+          {t('dashboard.surface.attention_see_all')} <Icons.ArrowUpRight size={11} />
         </Link>
       </header>
       {loading && (!projects || projects.length === 0) ? <div className="cck-grid-4">
@@ -400,7 +403,7 @@ const StudioAttention = ({
                 <div className="cck-attn__cover">
                   {p.cover_url ? <img src={p.cover_url} alt={p.title} loading="lazy" /> : <Icons.FolderOpen size={22} strokeWidth={1.2} className="cck-attn__cover-fallback" />}
                   {stale && <span className="cck-attn__pill">
-                      <span className="cck-pulse" /> Da riprendere
+                      <span className="cck-pulse" /> {t('dashboard.surface.attention_stale_pill')}
                     </span>}
                 </div>
                 <h4 className="cck-attn__title">{p.title}</h4>
@@ -414,8 +417,8 @@ const StudioAttention = ({
       })}
         </div> : <div className="cck-empty">
           <Icons.FolderOpen size={22} strokeWidth={1.2} className="cck-empty__icon" />
-          <p className="cck-empty__title">Nessun progetto richiede attenzione ora.</p>
-          <p className="cck-empty__hint">I progetti convertiti dai lead appariranno qui.</p>
+          <p className="cck-empty__title">{t('dashboard.surface.attention_empty_title')}</p>
+          <p className="cck-empty__hint">{t('dashboard.surface.attention_empty_hint')}</p>
         </div>}
     </section>;
 };
@@ -444,7 +447,7 @@ const RelationshipEngine = ({
   return <section className="cck-block" data-testid="cockpit-relationship-engine">
       <header className="cck-block__head">
         <div>
-          <p className="cck-block__eyebrow">Relationship Engine™</p>
+          <p className="cck-block__eyebrow">{t('dashboard.surface.relationship_eyebrow')}</p>
           <h3 className="cck-block__title">{t('dashboard.dashboard.le_relazioni_che_attendono_un_gesto')}</h3>
         </div>
         <Link to="/crm/accounts" className="cck-block__link" data-testid="cockpit-rel-all">
@@ -488,7 +491,7 @@ const RelationshipEngine = ({
         </div> : <div className="cck-empty">
           <Icons.Users size={22} strokeWidth={1.2} className="cck-empty__icon" />
           <p className="cck-empty__title">{t('dashboard.dashboard.nessuna_relazione_raffreddata')}</p>
-          <p className="cck-empty__hint">Quando un account passa giorni senza un gesto, apparirà qui.</p>
+          <p className="cck-empty__hint">{t('dashboard.surface.relationship_empty_hint')}</p>
         </div>}
     </section>;
 };

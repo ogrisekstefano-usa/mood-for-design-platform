@@ -283,6 +283,7 @@ const PublicMoodboardWrapper = () => <MoodboardEditor readOnly={true} />;
 
 import GovernanceOverlay from './design-system/GovernanceOverlay';
 import LocalizationOverlay from './i18n/LocalizationOverlay';
+import EditorialDebugOverlay from './i18n/EditorialDebugOverlay';
 import useUiDensity from './hooks/useUiDensity';
 
 /** Mount the UI density hook once globally — applies data attribute + hydrates from server. */
@@ -301,10 +302,12 @@ function App() {
           <StudioPaletteProvider>
           <LocaleRuntimeProvider>
           <BlueprintI18nProvider>
+          <EditorialOverridesProvider>
           <BrowserRouter>
             <UiDensityBoot />
             <GovernanceOverlay />
             <LocalizationOverlay />
+            <EditorialDebugOverlay />
             <GuidedTourProvider>
             <Suspense fallback={<Loading />}>
               <LocaleHead />
@@ -633,6 +636,7 @@ function App() {
             </Suspense>
             </GuidedTourProvider>
           </BrowserRouter>
+          </EditorialOverridesProvider>
           <Toaster
             position="bottom-right"
             theme="dark"

@@ -98,17 +98,17 @@ const CockpitTimeline = ({ events = [], activity = [] }) => {
     <section className="cck-block" data-testid="cockpit-timeline">
       <header className="cck-block__head">
         <div>
-          <p className="cck-block__eyebrow">Timeline operativa</p>
+          <p className="cck-block__eyebrow">{t('dashboard.surface.timeline_eyebrow')}</p>
           <h3 className="cck-block__title">{t('dashboard.cockpit_timeline.il_battito_del_tuo_studio')}</h3>
         </div>
         <Link to="/workspace/calendar" className="cck-block__link" data-testid="cockpit-timeline-calendar">
-          Calendario <Icons.ArrowUpRight size={11} />
+          {t('dashboard.surface.timeline_calendar_link')} <Icons.ArrowUpRight size={11} />
         </Link>
       </header>
       {items.length === 0 ? (
         <div className="cck-empty">
           <Icons.Activity size={22} strokeWidth={1.2} className="cck-empty__icon" />
-          <p className="cck-empty__title">Studio in quiete creativa.</p>
+          <p className="cck-empty__title">{t('dashboard.surface.timeline_empty_title')}</p>
           <p className="cck-empty__hint">{t('dashboard.cockpit_timeline.carica_un_riferimento_o_crea_una_moodboard_per_dar')}</p>
         </div>
       ) : (

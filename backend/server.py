@@ -224,9 +224,9 @@ api_router.include_router(onboarding_tour.router, prefix="/onboarding", tags=["o
 # ITER155 · Editorial Copy CMS · Surface Governance System™
 from routers import editorial_copy_cms  # noqa: E402
 api_router.include_router(editorial_copy_cms.router, prefix="/admin/editorial-copy", tags=["editorial-copy"])
-# ITER155.R2 · Editorial Runtime · public (non-admin) for useT() wiring
-from routers import editorial_runtime  # noqa: E402
-api_router.include_router(editorial_runtime.router, prefix="/editorial-copy", tags=["editorial-copy"])
+# ITER155.R2 · Editorial Runtime Overrides™ · public (non-admin) for useT()
+from routers import editorial_runtime_overrides  # noqa: E402
+api_router.include_router(editorial_runtime_overrides.router, prefix="/editorial-copy", tags=["editorial-copy"])
 api_router.include_router(magazine.router, prefix="/magazine", tags=["magazine"])
 api_router.include_router(editorial_calendar.router, prefix="/blueprint/calendar", tags=["editorial-calendar"])
 api_router.include_router(advisor_network.router, tags=["advisor-network"])

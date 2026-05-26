@@ -1,59 +1,104 @@
-"""
-Editorial Runtime · public (non-admin) endpoint for resolved overrides.
+"""ITER143A+ · Dynamic Editorial Runtime™ — Public API.
 
-Mounted at `/api/editorial-copy/runtime`. Any authenticated user can
-call it; returns the flat `{i18n_key: string}` map for their tenant +
-locale. The frontend `useT()` consults this BEFORE the static JSON,
-so admin copy edits propagate to the live UI without a redeploy.
+Routes
+──────
+  GET  /api/content/page/{page_key}    → bundle of {key: value} for a page
+  GET  /api/content/blocks             → mirror, for targeted lookups
+  POST /api/content/blocks/{id}/regenerate  (SuperAdmin) → force ALE re-gen
+
+The bundle endpoint is intentionally PUBLIC (no auth) — it serves the
+storefront / begin-journey / professionals / footer / header copy that
+the prospect sees before they sign in. Tenant-scoped lookups still
+require the resolved tenant context (via subdomain or header).
 """
 from __future__ import annotations
-from fastapi import APIRouter, Depends
 
-from core.tenant_context import get_tenant_context
-from database import db
+import logging
+from typing import Optional
 
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
+
+from core.permissions import is_super_admin
+from middleware.auth import get_current_user
+from services.editorial_content_orchestrator import (
+    resolve_page_bundle,
+    list_blocks,
+    upsert_block,
+    regenerate_block,
+    ACTIVE_LOCALES,
+)
+
+log = logging.getLogger(__name__)
 router = APIRouter()
 
 
-@router.get("/runtime")
-def runtime_overrides(
-    locale: str = "it",
-    ctx: dict = Depends(get_tenant_context),
+@router.get("/page/{page_key}")
+def get_page_bundle(
+    page_key: str,
+    request: Request,
+    locale: str = Query("it-IT"),
+    scope: str = Query("system"),
 ):
-    sb = db()
-    tid = ctx["tenant_id"]
-    loc = (locale or "it").split("-")[0].lower()
+    """Resolve a page bundle for the requested locale.
 
-    phrases = (
-        sb.table("editorial_phrases")
-        .select("id, phrase_key, i18n_keys, eyebrow, title, body, cta")
-        .neq("i18n_keys", "{}")
-        .execute()
-    ).data or []
+    Tenant scope is auto-derived from the request (subdomain → resolved
+    tenant). For scope=system, tenant_id is ignored.
+    """
+    if scope not in ("system", "tenant"):
+        raise HTTPException(400, "invalid scope")
+    tenant_id: Optional[str] = None
+    if scope == "tenant":
+        rt = getattr(request.state, "resolved_tenant", None)
+        if not rt or not rt.get("tenant_id"):
+            raise HTTPException(400, "tenant scope requires a resolved tenant context")
+        tenant_id = rt["tenant_id"]
+    blocks = resolve_page_bundle(page_key, locale, scope=scope, tenant_id=tenant_id)
+    return {
+        "page_key":   page_key,
+        "locale":     locale,
+        "scope":      scope,
+        "tenant_id":  tenant_id,
+        "blocks":     blocks,
+        "count":      len(blocks),
+    }
 
-    if not phrases:
-        return {"locale": loc, "overrides": {}}
 
-    ids = [p["id"] for p in phrases]
-    overrides = (
-        sb.table("editorial_phrase_overrides")
-        .select("phrase_id, eyebrow, title, body, cta")
-        .eq("tenant_id", tid)
-        .in_("phrase_id", ids)
-        .execute()
-    ).data or []
-    by_pid = {o["phrase_id"]: o for o in overrides}
+@router.get("/blocks")
+def list_content_blocks(
+    request: Request,
+    scope: str = Query("system"),
+    page_key: Optional[str] = Query(None),
+    namespace: Optional[str] = Query(None),
+    current_user: dict = Depends(get_current_user),
+):
+    """Governance helper — list all blocks for inspection / future CMS UI.
 
-    out: dict = {}
-    for p in phrases:
-        ov = by_pid.get(p["id"]) or {}
-        mapping = p.get("i18n_keys") or {}
-        for scope, i18n_key in mapping.items():
-            src = ov.get(scope) if ov.get(scope) else p.get(scope)
-            if not src:
-                continue
-            val = src.get(loc) or src.get("it") or src.get("en")
-            if val:
-                out[i18n_key] = val
+    SuperAdmin → can list any scope.
+    tenant_admin → only their own tenant scope.
+    """
+    role = (current_user or {}).get("role") or ""
+    super_admin = is_super_admin(role)
+    if scope == "system" and not super_admin:
+        raise HTTPException(403, "SuperAdmin required for system scope")
+    tenant_id = None
+    if scope == "tenant":
+        tenant_id = current_user.get("tenant_id")
+        if not tenant_id:
+            raise HTTPException(400, "tenant context required")
+    return {
+        "scope":    scope,
+        "tenant_id": tenant_id,
+        "blocks":   list_blocks(scope=scope, tenant_id=tenant_id,
+                                page_key=page_key, namespace=namespace),
+        "active_locales": list(ACTIVE_LOCALES),
+    }
 
-    return {"locale": loc, "overrides": out}
+
+@router.post("/blocks/{block_id}/regenerate")
+def regenerate(block_id: str,
+               current_user: dict = Depends(get_current_user)):
+    """Force ALE regeneration for a block (SuperAdmin only)."""
+    role = (current_user or {}).get("role") or ""
+    if not is_super_admin(role):
+        raise HTTPException(403, "SuperAdmin required")
+    return regenerate_block(block_id, force=True)

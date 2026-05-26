@@ -32,9 +32,20 @@ export const BlueprintI18nProvider = ({ children, tenantDefaultLocale = null }) 
     [runtime?.localeCode],
   );
 
+  // ITER155.R2 · runtime override version — bumps on every CMS save so
+  // every `t()` consumer re-renders with the new copy. No hard refresh.
+  const [overrideVersion, setOverrideVersion] = useState(0);
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const bump = () => setOverrideVersion((v) => v + 1);
+    window.addEventListener('mfd:editorial-overrides:loaded', bump);
+    return () => window.removeEventListener('mfd:editorial-overrides:loaded', bump);
+  }, []);
+
   const t = useCallback(
     (key, params = null) => pickString(key, locale, params, tenantDefaultLocale),
-    [locale, tenantDefaultLocale],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [locale, tenantDefaultLocale, overrideVersion],
   );
 
   const pickLabel = useCallback(

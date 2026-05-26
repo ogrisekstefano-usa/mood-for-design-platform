@@ -2,6 +2,84 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER155.R3 · Semantic Hardcoded Audit™** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: stabilizzare progressivamente le superfici narrative
+  governate da `useT()` + Editorial Copy CMS. Audit non distruttivo:
+  identificare e classificare le stringhe hardcoded prima di migrare.
+
+  **Audit infrastructure**
+  - `/app/scripts/editorial_audit.py` — scanner Python che produce
+    `Hardcoded Heatmap™` per superficie (Dashboard, First Moves,
+    Guided Tour, Notifications, Client Portal, Design Journey,
+    Public Marketing, Auth, CMS).
+  - Output: `/app/memory/editorial_audit/heatmap.{json,md}`
+  - Classificazione 🔴 A (Core Narrative) · 🟡 B (Operational UI) · 🟢 C (Dev).
+
+  **Heatmap baseline → post-migrazione** (priorità top-4)
+  | Superficie    | Pre | Post | Δ      |
+  |---------------|----:|-----:|-------:|
+  | Dashboard     | 19  | 9    | −10    |
+  | First Moves   | 3   | 0    | −3     |
+  | Guided Tour   | 1   | 1    | 0      |
+  | Notifications | 1   | 1    | 0      |
+  | **Cat-A totale priorità** | **5** | **0** | ✅ |
+
+  **Runtime Editorial Overrides™ (R2) verificato**
+  - Fix critico: il modulo `editorial_runtime.py` era stato sovrascritto
+    eliminando `/api/content/page/*` (storefront bundle). Ripristinato
+    e isolato il nuovo endpoint in `editorial_runtime_overrides.py`
+    montato a `/api/editorial-copy/runtime`.
+  - `EditorialOverridesProvider` ora effettivamente avvolto in `App.js`
+    (era importato ma non renderizzato — provider inerte).
+  - `BlueprintI18nProvider.t` ora bumpa una version su
+    `mfd:editorial-overrides:loaded` → re-render immediato di ogni
+    consumatore di `t()` senza hard refresh.
+  - CMS save handler emette `mfd:editorial-overrides:invalidate`
+    → propagazione live cross-tab.
+  - `BlueprintContext.t` ora tratta `⟦key⟧` come miss e cade sulla
+    fallback inline editoriale (fix tono inglese su login page).
+
+  **Editorial Debug Overlay™ (dev-only)**
+  - `/app/frontend/src/i18n/EditorialDebugOverlay.jsx` — chip
+    fluttuante bottom-left visibile solo se
+    `REACT_APP_EDITORIAL_DEBUG=true` AND `NODE_ENV !== 'production'`.
+  - Mostra: runtime overrides count · missing keys count · click per
+    espandere lista chiavi mancanti con deep-link al CMS.
+
+  **Migrazioni effettuate (Dashboard + First Moves)**
+  - `dashboard.surface.hero_eyebrow_label`, `hero_cta_new_project`,
+    `hero_cta_new_account`, `hero_cta_cultural_edition`,
+    `suggested_eyebrow`, `quick_eyebrow`, `quick_title`,
+    `attention_eyebrow`, `attention_see_all`, `attention_stale_pill`,
+    `attention_empty_title`, `attention_empty_hint`,
+    `relationship_eyebrow`, `relationship_empty_hint`,
+    `timeline_eyebrow`, `timeline_calendar_link`,
+    `timeline_empty_title`.
+  - `onboarding.first_moves.aria/eyebrow/title_emphasis/title_rest/lede`.
+  - Aggiunte a `it-IT.json` + `en-US.json`.
+
+  **API verificato**
+  - `GET /api/editorial-copy/runtime?locale=it` → 200 · 3 overrides
+  - `GET /api/content/page/home?locale=it-IT` → 200 (regressione fixed)
+
+  **File modificati / creati**
+  - ⨁ `backend/routers/editorial_runtime_overrides.py` (nuovo)
+  - ↻ `backend/routers/editorial_runtime.py` (ripristinato all'originale)
+  - ↻ `backend/server.py` (route prefix invariato, modulo cambiato)
+  - ↻ `frontend/src/App.js` (wrappa con EditorialOverridesProvider + monta overlay)
+  - ⨁ `frontend/src/i18n/EditorialDebugOverlay.jsx`
+  - ↻ `frontend/src/i18n/useT.jsx` (version bump on overrides loaded)
+  - ↻ `frontend/src/contexts/BlueprintContext.jsx` (⟦key⟧ aware fallback)
+  - ↻ `frontend/src/pages/dashboard/DashboardPage.jsx` (8 stringhe migrate)
+  - ↻ `frontend/src/pages/dashboard/CockpitTimeline.jsx` (3 stringhe migrate)
+  - ↻ `frontend/src/components/onboarding/FirstMovesCards.jsx` (5 stringhe migrate)
+  - ↻ `frontend/src/pages/admin/EditorialCopyCmsPage.jsx` (dispatch invalidate event)
+  - ↻ `frontend/src/i18n/strings/{it-IT,en-US}.json` (chiavi `dashboard.surface.*`, `onboarding.first_moves.*`)
+  - ↻ `frontend/.env` (REACT_APP_EDITORIAL_DEBUG=true)
+  - ⨁ `scripts/editorial_audit.py`
+  - ⨁ `memory/editorial_audit/heatmap.{json,md}`
+
 - **ITER155 · Editorial Copy CMS · Surface Governance System™ · MVP** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: governance narrativa unificata. Trasformare 2268
