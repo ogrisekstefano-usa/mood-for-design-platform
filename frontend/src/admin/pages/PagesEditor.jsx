@@ -356,6 +356,10 @@ const MediaSlot = ({ section, slot, onChange }) => {
             <span>Seleziona una fotografia</span>
           </button>
         )}
+
+        {m && (
+          <MediaActionEditor section={section} slotKey={slot.slot} onSaved={onChange} />
+        )}
       </div>
 
       {pickerOpen && (
@@ -373,6 +377,126 @@ const MediaSlot = ({ section, slot, onChange }) => {
             }
           }}
         />
+      )}
+    </div>
+  );
+};
+
+// ── MediaActionEditor: per-image click action ───────────────────────────
+// settings.media_actions[slotKey] = { action: 'none'|'lightbox'|'link', href, target }
+const MediaActionEditor = ({ section, slotKey, onSaved }) => {
+  const stored = (section.settings?.media_actions || {})[slotKey] || {};
+  const [action, setAction] = useState(stored.action || 'none');
+  const [href, setHref]     = useState(stored.href   || '');
+  const [target, setTarget] = useState(stored.target || '_self');
+  const [busy, setBusy]     = useState(false);
+  const [saved, setSaved]   = useState(false);
+
+  const initial = { action: stored.action || 'none', href: stored.href || '', target: stored.target || '_self' };
+  const dirty = action !== initial.action || (action === 'link' && (href !== initial.href || target !== initial.target));
+
+  const save = async () => {
+    setBusy(true); setSaved(false);
+    try {
+      const all = { ...(section.settings?.media_actions || {}) };
+      if (action === 'none') {
+        delete all[slotKey];
+      } else if (action === 'link') {
+        all[slotKey] = { action: 'link', href, target };
+      } else if (action === 'lightbox') {
+        all[slotKey] = { action: 'lightbox' };
+      }
+      const newSettings = { ...(section.settings || {}), media_actions: all };
+      await adminApi.patchSection(section.id, { settings: newSettings });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+      onSaved?.();
+    } catch (e) {
+      window.alert('Errore salvataggio azione: ' + (e?.response?.data?.detail || e.message));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const radio = (val, label, hint) => (
+    <label
+      style={{
+        display: 'flex', alignItems: 'flex-start', gap: 8, cursor: 'pointer',
+        padding: '0.5rem 0.7rem',
+        background: action === val ? 'rgba(0,201,179,0.08)' : 'transparent',
+        border: `1px solid ${action === val ? 'rgba(0,201,179,0.4)' : 'rgba(255,255,255,0.08)'}`,
+        borderRadius: 4, flex: 1,
+      }}
+      data-testid={`media-action-${section.id}-${slotKey}-${val}`}
+    >
+      <input
+        type="radio"
+        checked={action === val}
+        onChange={() => setAction(val)}
+        style={{ marginTop: 2, accentColor: 'var(--mood-teal, #00C9B3)' }}
+      />
+      <div>
+        <div style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.78rem', color: '#FFF', fontWeight: 500 }}>{label}</div>
+        {hint && <div style={{ fontSize: '0.66rem', color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>{hint}</div>}
+      </div>
+    </label>
+  );
+
+  return (
+    <div style={{ marginTop: 12, padding: '12px 14px', background: 'rgba(255,255,255,0.02)',
+                  border: '1px solid rgba(255,255,255,0.06)', borderRadius: 6 }}
+         data-testid={`media-action-editor-${section.id}-${slotKey}`}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+        <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.66rem', fontWeight: 500,
+                    letterSpacing: '0.16em', textTransform: 'uppercase',
+                    color: 'rgba(255,255,255,0.55)', margin: 0 }}>
+          Azione al click
+        </p>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          {saved && <span style={{ fontSize:'0.66rem', color:'rgba(0,201,179,0.9)' }}>✓ salvato</span>}
+          <button onClick={save} disabled={busy || !dirty}
+                  style={{
+                    padding: '0.4rem 0.85rem', fontSize: '0.66rem',
+                    background: dirty ? 'var(--mood-teal, #00C9B3)' : 'rgba(255,255,255,0.08)',
+                    color: dirty ? '#000' : 'rgba(255,255,255,0.55)',
+                    border: 'none', cursor: (busy || !dirty) ? 'not-allowed' : 'pointer',
+                    opacity: (busy || !dirty) ? 0.55 : 1, fontWeight: 500,
+                    fontFamily: 'Inter, sans-serif', letterSpacing: '0.04em',
+                  }}
+                  data-testid={`media-action-save-${section.id}-${slotKey}`}>
+            {busy ? 'Salvataggio…' : 'Salva'}
+          </button>
+        </div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+        {radio('none',     'Nessuna azione',  'Immagine statica')}
+        {radio('lightbox', 'Ingrandisci',     'Apre in fullscreen')}
+        {radio('link',     'Vai al link',     'Apre una URL al click')}
+      </div>
+      {action === 'link' && (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 10, marginTop: 10, alignItems: 'center' }}>
+          <input
+            type="text" placeholder="/url-interno  oppure  https://..."
+            value={href} onChange={(e) => setHref(e.target.value)}
+            style={{
+              background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)',
+              color: '#FFF', padding: '0.5rem 0.7rem', fontSize: '0.84rem',
+              outline: 'none', fontFamily: 'Inter, sans-serif',
+            }}
+            data-testid={`media-action-href-${section.id}-${slotKey}`}
+          />
+          <label title="Apre il link in una nuova scheda"
+                 style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.7rem',
+                          color: 'rgba(255,255,255,0.55)', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+            <input
+              type="checkbox" checked={target === '_blank'}
+              onChange={(e) => setTarget(e.target.checked ? '_blank' : '_self')}
+              style={{ accentColor: 'var(--mood-teal, #00C9B3)' }}
+              data-testid={`media-action-newtab-${section.id}-${slotKey}`}
+            />
+            nuova scheda
+          </label>
+        </div>
       )}
     </div>
   );

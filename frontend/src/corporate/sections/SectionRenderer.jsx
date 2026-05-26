@@ -137,6 +137,7 @@ const SectionRenderer = ({ section }) => {
         <Component
           content={section.content || {}}
           media={section.media || {}}
+          mediaActions={section.media_actions || {}}
           links={section.links || {}}
           options={section.options || {}}
           sectionId={section.id}

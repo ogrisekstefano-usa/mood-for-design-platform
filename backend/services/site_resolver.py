@@ -181,6 +181,7 @@ async def resolve_page(slug: str, locale: str = DEFAULT_LOCALE) -> dict | None:
                     'sort': s['sort_order'],
                     'content': content,
                     'media': media,
+                    'media_actions': settings.get('media_actions') or {},
                     'links': settings.get('links') or {},
                     'options': settings.get('options') or {},
                 })

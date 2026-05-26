@@ -1,6 +1,8 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
+import MediaTile from '../components/MediaTile';
+import { linkTarget } from '../utils/linkTarget';
 
 /**
  * DesignJourney — "From atmosphere to realization."
@@ -10,7 +12,7 @@ import { useReveal } from '../hooks/useReveal';
  */
 const STEPS = ['s1', 's2', 's3', 's4'];
 
-const DesignJourney = ({ content = {}, media = {}, links = {} }) => {
+const DesignJourney = ({ content = {}, media = {}, mediaActions = {}, links = {} }) => {
   const [ref, visible] = useReveal({ threshold: 0.08 });
 
   return (
@@ -64,9 +66,12 @@ const DesignJourney = ({ content = {}, media = {}, links = {} }) => {
                   data-testid={`journey-step-${i + 1}`}
                 >
                   {img && img.url && (
-                    <div style={{ aspectRatio: '4/5', overflow: 'hidden', borderRadius: 4, background: img.dominant_color || '#0F1828' }}>
-                      <img src={img.url} alt={img.alt || title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
+                    <MediaTile
+                      media={img}
+                      action={mediaActions[k]}
+                      wrapperStyle={{ aspectRatio: '4/5', borderRadius: 4 }}
+                      testid={`journey-tile-${k}`}
+                    />
                   )}
                   <div className="mt-5 flex items-center gap-3">
                     <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.78rem', color: 'var(--mood-teal)', fontWeight: 600, letterSpacing: '0.06em' }}>
@@ -92,6 +97,7 @@ const DesignJourney = ({ content = {}, media = {}, links = {} }) => {
           <div className="mt-14 text-center">
             <a
               href={links.cta_href || '#'}
+              {...linkTarget(links.cta_target)}
               className="inline-flex items-center gap-2"
               style={{
                 color: 'var(--mood-teal)',

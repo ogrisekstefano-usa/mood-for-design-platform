@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
+import { linkTarget } from '../utils/linkTarget';
 
 /**
  * EditorialTriptych — three wide editorial cards for Magazine / Projects /
@@ -31,6 +32,7 @@ const EditorialTriptych = ({ content = {}, media = {}, links = {} }) => {
               <a
                 key={k}
                 href={href}
+                {...linkTarget(links[`${k}_target`])}
                 className={`group relative block overflow-hidden reveal ${visible ? 'visible' : ''}`}
                 style={{
                   aspectRatio: '5/4',
