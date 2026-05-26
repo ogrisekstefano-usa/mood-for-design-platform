@@ -2,6 +2,56 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER154.R7 · Mobile fixes · welcome strip stack + projects grid + opaque header** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: chiudere i 3 bug mobile visibili nelle screenshot
+  utente (iPhone Preview).
+
+  **Bugs fixati**:
+
+  1. **Welcome strip cramped su mobile**:
+     - Message + IT dropdown + Accedi si sovrapponevano a 390px
+     - **Fix**: media query `max-width: 720px` → `flex-direction:
+       column; align-items: flex-start; gap: 8px`. Messaggio
+       sopra, controlli IT + Accedi sotto. Font ridotto a 12px.
+
+  2. **Projects archive grid mancante**:
+     - `.mfd-strip-list` era usata in `ProjectsIndexPage.jsx` ma
+       NON aveva CSS definita → cards stack verticali con larghezze
+       incoerenti
+     - **Fix**: aggiunto grid CSS responsivo:
+       * Desktop: `repeat(3, 1fr)` con gap `clamp(2rem, 3.5vw, 3.5rem)`
+       * ≤1100px: 2 colonne
+       * ≤720px: 1 colonna, gap 2.4rem
+     - `.mfd-strip-list__item { min-width: 0 }` previene overflow
+     - `.mfd-strip-list__link { display: block; text-decoration: none; color: inherit }`
+     - `.mfd-strip__media img { width: 100%; height: auto; display: block }`
+
+  3. **Header semi-trasparente bleed-through**:
+     - `.mfd-header { background: rgba(245, 242, 237, 0.92);
+       backdrop-filter: saturate(140%) blur(14px) }` lasciava
+       trasparire lo sfondo dark di `/begin-journey` → brand
+       "MOOD for DESIGN" appariva ghost/pale
+     - **Fix**: `background: var(--mfd-bg)` opaco (cream solido
+       `#F5F2ED`), rimosso `backdrop-filter`. Header isolato
+       da qualsiasi gradient/colore della pagina sottostante.
+
+  **Files touched** (1):
+  - `pages/site/home-iter150.css` (3 CSS sections in fondo file)
+
+  **Verifica live (390px mobile)**:
+  - `/`: welcome strip stack vertical · brand + burger · hero ok ✓
+  - `/projects`: archive cards full-width single column con immagini
+    grandi (es. "Casa Naviglio · MILANO, ITALIA" con tags RESIDENZIALE
+    · EDITORIALE · HERITAGE) ✓
+  - `/begin-journey`: welcome strip stack + brand MoodSiteHeader
+    cream opaco + form dark sotto, niente più bleed-through ✓
+  - `.mfd-header` computed bg: cream solido (no transparency) ✓
+  - `.mfd-strip-list` grid-template-columns: 1fr a 390px ✓
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER154.R6 · UNIFIED public header · burger menu fix · nav left-align** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: chiudere DEFINITIVAMENTE i bug del menu pubblico —

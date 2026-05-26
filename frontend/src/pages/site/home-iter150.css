@@ -137,8 +137,7 @@
 
 .mfd-header {
   position: sticky !important; top: 0 !important; z-index: 50;
-  background: rgba(245, 242, 237, 0.92);
-  backdrop-filter: saturate(140%) blur(14px);
+  background: var(--mfd-bg);
   border-bottom: 1px solid var(--mfd-line);
   padding: 0 !important;
   display: block !important;
@@ -1182,4 +1181,45 @@
   .mfd-burger { display: inline-flex !important; margin-left: auto; }
   .mfd-header__nav,
   .mfd-header__cta { display: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Projects archive grid + welcome strip mobile (ITER154.R7)
+   ═══════════════════════════════════════════════════════════════ */
+.mfd-strip-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(2rem, 3.5vw, 3.5rem);
+  width: 100%;
+}
+.mfd-strip-list__item { min-width: 0; }
+.mfd-strip-list__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+.mfd-strip__media img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+@media (max-width: 1100px) {
+  .mfd-strip-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .mfd-strip-list { grid-template-columns: 1fr; gap: 2.4rem; }
+}
+
+/* Welcome strip — stack on narrow screens so message + IT + Accedi
+   don't overlap. Below 720px, message wraps to its own row above
+   the meta controls. */
+@media (max-width: 720px) {
+  .mfd-welcome-strip__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px clamp(16px, 5vw, 24px);
+  }
+  .mfd-welcome-strip__msg { font-size: 12px; line-height: 1.45; }
+  .mfd-welcome-strip__meta { gap: 18px; font-size: 12px; }
 }
