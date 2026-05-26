@@ -273,6 +273,9 @@ const ensureShape = (settings) => {
       { key: 'instagram', icon: 'instagram', href: '', visible: true },
       { key: 'linkedin',  icon: 'linkedin',  href: '', visible: true },
     ];
+  } else {
+    // Ensure no entries with empty href (a stale 3rd icon) remain in defaults.
+    out.social = out.social.filter((s) => s && s.icon);
   }
   return out;
 };

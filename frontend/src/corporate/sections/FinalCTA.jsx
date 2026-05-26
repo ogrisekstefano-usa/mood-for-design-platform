@@ -60,18 +60,11 @@ const FinalCTA = ({ content = {}, media = {}, links = {}, options = {} }) => {
             </p>
           )}
 
-          {(content.cta_primary || content.cta_secondary) && (
-            <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
-              {content.cta_primary && (
-                <a href={links.cta_primary_href || '#'} className="btn-pill-teal" data-testid="final-cta-primary">
-                  {content.cta_primary}
-                </a>
-              )}
-              {content.cta_secondary && (
-                <a href={links.cta_secondary_href || '#'} className="btn-pill-outline" data-testid="final-cta-secondary">
-                  {content.cta_secondary}
-                </a>
-              )}
+          {content.cta_primary && (
+            <div className="mt-12 flex items-center justify-center">
+              <a href={links.cta_primary_href || '#'} className="btn-pill-teal" data-testid="final-cta-primary">
+                {content.cta_primary}
+              </a>
             </div>
           )}
         </div>

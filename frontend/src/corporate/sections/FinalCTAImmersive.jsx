@@ -71,18 +71,11 @@ const FinalCTAImmersive = ({ content = {}, media = {}, links = {} }) => {
             </p>
           )}
 
-          {(content.cta_primary || content.cta_secondary) && (
-            <div className="mt-8 flex flex-wrap items-center justify-end gap-3">
-              {content.cta_primary && (
-                <a href={links.cta_primary_href || '#'} className="btn-pill-teal" data-testid="final-cta-primary">
-                  {content.cta_primary}
-                </a>
-              )}
-              {content.cta_secondary && (
-                <a href={links.cta_secondary_href || '#'} className="btn-pill-outline" data-testid="final-cta-secondary">
-                  {content.cta_secondary}
-                </a>
-              )}
+          {content.cta_primary && (
+            <div className="mt-8 flex items-center justify-end">
+              <a href={links.cta_primary_href || '#'} className="btn-pill-teal" data-testid="final-cta-primary">
+                {content.cta_primary}
+              </a>
             </div>
           )}
         </div>

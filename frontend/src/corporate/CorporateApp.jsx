@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MinimalNav from './components/MinimalNav';
 import EditorialFooter from './components/EditorialFooter';
+import LegalStrip from './components/LegalStrip';
 import PreviewBridge from './components/PreviewBridge';
 import {
   HomePage,
@@ -75,6 +76,7 @@ const CorporateApp = () => (
       <Route path="*"                     element={<Navigate to="/" replace />} />
     </Routes>
     <EditorialFooter />
+    <LegalStrip />
   </div>
 );
 

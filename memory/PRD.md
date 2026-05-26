@@ -209,6 +209,12 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **Auto-discoverable from Page Editor**: blocks flat-named (`item_01_eyebrow`...`item_15_body`), media slots flat-named (`item_01`...`item_15`) → all editable inline without backend changes.
 - Validated visually on `/caratteristiche`: hero + 5 numbered feature rows public; 49 editable input slots in admin.
 
+### ITER152b — Single CTA · Legal strip · Favicon definitivo · Footer reset (Feb 2026)
+- **CTASection / FinalCTA / FinalCTAImmersive**: il bottone secondario è stato rimosso. La sezione finale di ogni pagina ora ha un SOLO CTA primary teal solid. Il blocco `site.home.final.cta_primary` ora dice "Scopri le licenze MOOD for DESIGN" (IT) / "Discover MOOD for DESIGN licenses" (EN), con link a `/versioni-prezzi`.
+- **`LegalStrip`** componente: fascia bianca sottile sotto il footer su ogni pagina pubblica. 3 testi (copyright a sinistra · "Questo servizio è fornito da MOOD for DESIGN" al centro · "Running on Blueprint OS™ - Editorial Infrastructure for Design Studios" a destra). Aggiunto a `CorporateApp` dopo `EditorialFooter`. Responsive: mobile collassa a colonna centrata.
+- **Favicon definitivo**: usato il PNG ufficiale fornito dall'utente (`logotipo_OO.png`) come `<link rel="icon" type="image/png">` + `<link rel="shortcut icon">` + `<link rel="apple-touch-icon" sizes="180x180">`. Aggiunto cache-buster `?v=3`. SVG fallback rimosso (era la causa della "distorsione" su alcuni browser).
+- **Footer reset**: `cms_sections` di tipo `footer` cancellate per ripartire con bootstrap pulito. Al primo save dal `/admin/footer` il FooterEditor inizializzerà 2 social (Instagram + LinkedIn) + 2 colonne configurabili (Esplora + Legale). Niente più 3a icona social non gestibile dal CMS.
+
 ### ITER152 — Multi-tenant JWT auth + Navbar CTA buttons + Footer CMS (Feb 2026)
 
 **JWT-based multi-tenant authentication** (full backend playbook adaptation from MongoDB → Postgres)

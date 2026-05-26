@@ -50,18 +50,11 @@ const CTASection = ({ content = {}, config = {} }) => {
               {content.body}
             </p>
           )}
-          {(content.cta_primary || content.cta_secondary) && (
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              {content.cta_primary && (
-                <a href={content.cta_primary.href} className="btn-pill-teal" data-testid="cta-primary">
-                  {content.cta_primary.text}
-                </a>
-              )}
-              {content.cta_secondary && (
-                <a href={content.cta_secondary.href} className="btn-pill-outline" data-testid="cta-secondary">
-                  {content.cta_secondary.text}
-                </a>
-              )}
+          {content.cta_primary && (
+            <div className="mt-10 flex items-center justify-center">
+              <a href={content.cta_primary.href} className="btn-pill-teal" data-testid="cta-primary">
+                {content.cta_primary.text}
+              </a>
             </div>
           )}
         </div>
