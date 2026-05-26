@@ -26,7 +26,11 @@ import {
   clearLeaks,
 } from './leakageDetector';
 
-const isDev = process.env.NODE_ENV !== 'production';
+// ITER154.R7 fix · the overlay used to show whenever NODE_ENV !== 'production',
+// which meant it was visible on staging/preview too. Now it is explicit:
+// only show when REACT_APP_SHOW_I18N_DEBUG === 'true'. Local dev can opt in
+// via .env.local; staging/preview/prod stay clean.
+const isDev = process.env.REACT_APP_SHOW_I18N_DEBUG === 'true';
 
 const LocalizationOverlay = () => {
   const { locale } = useBlueprint();

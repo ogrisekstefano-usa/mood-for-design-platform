@@ -221,6 +221,9 @@ api_router.include_router(studio_pulse.router, prefix="/studio-pulse", tags=["st
 # ITER154 · Guided Tour / Interactive Onboarding
 from routers import onboarding_tour  # noqa: E402
 api_router.include_router(onboarding_tour.router, prefix="/onboarding", tags=["onboarding"])
+# ITER155 · Editorial Copy CMS · Surface Governance System™
+from routers import editorial_copy_cms  # noqa: E402
+api_router.include_router(editorial_copy_cms.router, prefix="/admin/editorial-copy", tags=["editorial-copy"])
 api_router.include_router(magazine.router, prefix="/magazine", tags=["magazine"])
 api_router.include_router(editorial_calendar.router, prefix="/blueprint/calendar", tags=["editorial-calendar"])
 api_router.include_router(advisor_network.router, tags=["advisor-network"])

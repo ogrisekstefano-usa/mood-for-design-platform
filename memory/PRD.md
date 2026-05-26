@@ -2,6 +2,118 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER155 · Editorial Copy CMS · Surface Governance System™ · MVP** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: governance narrativa unificata. Trasformare 2268
+  chiavi i18n flat in **surface-first navigation** editoriale, con
+  anteprima live e voice guardrails. Priorità #1 dell'utente,
+  confermata 3 volte.
+
+  **Schema DB** (`100_editorial_copy_cms.sql`):
+  - `editorial_surfaces` — 8 superfici seedate:
+    * public.home · Sito pubblico — Home · /
+    * public.begin_journey · Begin Journey · /begin-journey
+    * studio.dashboard · Studio — Dashboard · /dashboard
+    * studio.guided_tour · Guided Tour · /dashboard
+    * studio.first_moves · Le Prime Mosse · /dashboard
+    * studio.notifications · Notifiche · /dashboard
+    * client.portal · Client Portal · /client
+    * auth · Autenticazione · /auth/login
+  - `editorial_phrases` (id, surface_id, phrase_key, scope, position,
+    eyebrow JSONB, title JSONB, body JSONB, cta JSONB, meta JSONB)
+    — 13 frasi canoniche seedate
+  - `editorial_phrase_overrides` (tenant_id, phrase_id, eyebrow,
+    title, body, cta, updated_by) — UNIQUE (tenant_id, phrase_id)
+
+  **Voice guardrails per superficie** (JSONB array embedded
+  nella surface):
+  - Home: "Mantieni tono editoriale, non SaaS" / "Evita ''piattaforma'', ''software'', ''utenti''"
+  - Begin Journey: "Parla di intenzione, non di campi" / "Niente ''form'', ''wizard'', ''step''"
+  - Dashboard: "Preferisci linguaggio relazionale a metrico" / "Evita ''KPI'', ''metriche''"
+  - Guided Tour: "NON spiegare funzionalità — spiega intenzione" / "Mai ''clicca''/''vai a''"
+  - Notifications: "Trasforma eventi tecnici in segnali relazionali" / "Niente ''CRM''/''log''/''sistema''"
+  - Client Portal: "Tono curatoriale e umano, mai gestionale"
+  - Auth: "Linguaggio sobrio, ospitale, non frettoloso"
+
+  **Backend** (`routers/editorial_copy_cms.py`, mounted at
+  `/api/admin/editorial-copy`):
+  - `GET /surfaces` — list 8 surfaces enabled, ordered, with
+    name/description/icon/preview_route/voice_hints
+  - `GET /surfaces/{code}/phrases` — phrases con override applicati,
+    espone `default`, `override` e `effective` per il diff inline
+  - `PATCH /phrases/{id}` — upsert override per tenant (eyebrow,
+    title, body, cta in JSONB con locale come chiave)
+  - `DELETE /phrases/{id}/override` — clear override (revert default)
+  - Admin-only: super_admin, tenant_admin, studio_owner, founder
+
+  **Frontend** (`pages/admin/EditorialCopyCmsPage.jsx` · 320 lines):
+  - 3-zone layout cinematico: sidebar surfaces · phrase editor · live preview iframe
+  - Sidebar: 8 surfaces con icon Lucide + name italiano + route mono
+  - Phrase cards: eyebrow / title / body / cta editabili inline,
+    badge CUSTOM se override, pulsante Reset al default
+  - Voice Guardrails panel: info (cyan) + warn (arancio) con
+    icone Lucide AlertTriangle/Info
+  - Locale selector (IT/EN) per cambiare lingua di edit
+  - Live preview iframe (`?preview=1&_={refreshKey}`) si refresha
+    automaticamente dopo ogni save
+  - Theme dark editoriale: Cormorant italic per titoli, IBM Plex
+    Mono per eyebrow/key, cyan accent #00C9B3
+
+  **Navigation registration** (`101_editorial_copy_nav.sql`):
+  - Aggiunto a `feature_modules_registry` come modulo
+    `editorial_copy_cms` · group `platform` · section
+    "Governance" · route `/admin/editorial-copy` · icon BookText ·
+    visibility `tenant_admin` · position 20
+  - La sidebar DB-driven lo mostra automaticamente per gli admin
+
+  **Bonus fix (ITER155.A)**:
+  - `i18n/LocalizationOverlay.jsx`: l'overlay "I18N · MISS X · LEAK Y"
+    in basso-destra ora dietro `REACT_APP_SHOW_I18N_DEBUG === 'true'`
+    invece di `NODE_ENV !== 'production'` — su staging/preview/prod
+    è nascosto by default, dev locale lo attiva via .env.local
+
+  **Files touched** (8):
+  - `supabase/migrations/100_editorial_copy_cms.sql` (NEW)
+  - `supabase/migrations/101_editorial_copy_nav.sql` (NEW)
+  - `backend/scripts/apply_migration_100.py` (NEW)
+  - `backend/scripts/apply_migration_101.py` (NEW)
+  - `backend/routers/editorial_copy_cms.py` (NEW · 4 endpoints)
+  - `backend/server.py` (mount router)
+  - `frontend/src/pages/admin/EditorialCopyCmsPage.jsx` (NEW · 320 lines)
+  - `frontend/src/pages/admin/editorial-copy-cms.css` (NEW · 230 lines)
+  - `frontend/src/App.js` (lazy import + route)
+  - `frontend/src/i18n/LocalizationOverlay.jsx` (env flag fix)
+
+  **Verifica live (admin@moodfordesign.com)**:
+  - Login → `/admin/editorial-copy` carica ✓
+  - 8 surfaces in sidebar con icon + nome + route mono ✓
+  - Click "public.home" → mostra 4 frasi: welcome_strip, header_cta,
+    hero, trust ✓
+  - Voice Guardrails: 1 info cyan + 1 warn arancio ✓
+  - Live preview iframe a destra mostra `/?preview=1` con
+    "Benvenuti nel nostro studio", brand cream, hero
+    "Il tuo spazio. Il tuo viaggio." ✓
+  - Locale selector IT/EN ✓
+  - Card hero: eyebrow "MOOD for DESIGN™", title "Il tuo spazio.
+    Il tuo viaggio.", body editabili ✓
+  - Click "studio.first_moves" → mostra section_title +
+    card_create_lead con guardrail "Inviti, non task da spuntare" ✓
+
+  **Architectural impact**:
+  - Editorial copy ora ha **un single source of truth** governabile
+    dal admin senza redeploy
+  - Tenant-scoped: ogni studio può customizzare la propria voce
+    senza toccare il default platform
+  - Live preview = feature differenziante (UX critica per editorial
+    governance)
+  - Voice guardrails inline = pattern editoriale proprietario di
+    MOOD for DESIGN™
+  - Foundation per: C (Guided Tour migration), D (hardcoded audit),
+    B-bis (Global Header navigation governance)
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER154.R7 · Mobile fixes · welcome strip stack + projects grid + opaque header** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: chiudere i 3 bug mobile visibili nelle screenshot

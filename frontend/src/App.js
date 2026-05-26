@@ -48,6 +48,7 @@ const MarketInsightsPage = lazy(() => import('./pages/governance/MarketInsightsP
 const BrandVoiceAdaptersPage = lazy(() => import('./pages/governance/BrandVoiceAdaptersPage'));
 const StudioVoicePage = lazy(() => import('./pages/blueprint/StudioVoicePage'));
 const LanguageCommandCenter = lazy(() => import('./pages/blueprint/LanguageCommandCenter'));
+const EditorialCopyCmsPage = lazy(() => import('./pages/admin/EditorialCopyCmsPage'));
 const CrmAccountsPage = lazy(() => import('./pages/crm/CrmAccountsPage'));
 const AccountDetailPage = lazy(() => import('./pages/crm/AccountDetailPage'));
 const CulturalEditionsListPage = lazy(() => import('./pages/cultural/CulturalEditionsListPage'));
@@ -496,6 +497,8 @@ function App() {
                   <Route path="/blueprint/voice" element={<StudioAdminRoute><BrandVoiceAdaptersPage /></StudioAdminRoute>} />
                   <Route path="/blueprint/studio-voice" element={<StudioAdminRoute>{G('studio_voice', <StudioVoicePage />)}</StudioAdminRoute>} />
                   <Route path="/blueprint/language" element={<StudioAdminRoute><LanguageCommandCenter /></StudioAdminRoute>} />
+                  {/* ITER155 · Editorial Copy CMS · Surface Governance System™ */}
+                  <Route path="/admin/editorial-copy" element={<StudioAdminRoute><EditorialCopyCmsPage /></StudioAdminRoute>} />
                   {/* ITER143C · /admin/language → consolidated into /admin/language-governance under RootSuperAdmin shell. */}
                   <Route path="/admin/language" element={<Navigate to="/admin/language-governance" replace />} />
                   <Route path="/admin/language/:tab" element={<Navigate to="/admin/language-governance" replace />} />
