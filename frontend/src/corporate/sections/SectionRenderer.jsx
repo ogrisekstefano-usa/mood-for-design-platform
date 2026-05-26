@@ -17,6 +17,9 @@ import SupportHero from './SupportHero';
 import EditorialCardGrid from './EditorialCardGrid';
 import TrainingHero from './TrainingHero';
 import LoginHero from './LoginHero';
+import AudienceHeroSplit from './AudienceHeroSplit';
+import EditorialBodyWithPhoto from './EditorialBodyWithPhoto';
+import PricingComparisonTable from './PricingComparisonTable';
 
 import HeroCinematic from './HeroCinematic';
 import SelectedProjects from './SelectedProjects';
@@ -81,6 +84,9 @@ export const SECTION_REGISTRY = {
   editorial_card_grid:     EditorialCardGrid,
   training_hero:           TrainingHero,
   login_hero:              LoginHero,
+  audience_hero_split:     AudienceHeroSplit,
+  editorial_body_with_photo: EditorialBodyWithPhoto,
+  pricing_comparison_table:  PricingComparisonTable,
 
   // ITER149 — DB-driven sections
   hero_cinematic:       HeroCinematic,

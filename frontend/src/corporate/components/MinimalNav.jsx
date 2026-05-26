@@ -37,7 +37,7 @@ const MinimalNav = () => {
 
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
-  const showSolid = scrolled || mobileOpen;
+  const showSolid = true;
   const linkColor = (active) => (active ? 'var(--mood-teal)' : 'var(--mood-text-1)');
 
   const NavLink = ({ item, testid, fontSize = '0.98rem' }) => {

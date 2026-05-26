@@ -29,7 +29,7 @@ import { useReveal } from '../hooks/useReveal';
 const PricingTiersEditorial = ({ content = {}, media = {}, links = {}, options = {} }) => {
   const featuredIdx = Number(options.featured_index ?? 1);
 
-  const tiers = [1, 2, 3].map((n) => {
+  const tiers = [1, 2, 3, 4, 5].map((n) => {
     const key = String(n).padStart(2, '0');
     return {
       idx: n - 1,

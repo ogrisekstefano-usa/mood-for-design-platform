@@ -209,6 +209,19 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **Auto-discoverable from Page Editor**: blocks flat-named (`item_01_eyebrow`...`item_15_body`), media slots flat-named (`item_01`...`item_15`) → all editable inline without backend changes.
 - Validated visually on `/caratteristiche`: hero + 5 numbered feature rows public; 49 editable input slots in admin.
 
+### ITER151h — Audience rebuild + Pricing 4-tier + Comparison table + Veil opacity (Feb 2026)
+- **Navbar always solid**: `MinimalNav.showSolid = true` constant — `rgba(18,18,18,0.78)` with backdrop-blur visible immediately, no scroll required.
+- **Veil opacity strengthened** on all panoramic heroes (`FeatureHeroSplit`, `PricingHeroCinematic`, `PageHero`, `SupportHero`, `LoginHero`): max α `0.98 → 0.94 → 0.78 → 0.5 → 0.18 → 0` over 0-92%. Text contrast on dark photos is now uniformly strong.
+- **`audience_hero_split`** — new component for /dedicato-a: split layout (text on solid black left ~46%, cinematic photo right ~54% with subtle left-edge blend). Mirrors the user's mockup ("La nostra comunità · Progettato per chi progetta il futuro.").
+- **`editorial_body_with_photo`** — new component: magazine-style 2-column editorial spread (eyebrow + serif title + long-form paragraph on left, 4:5 aspect photo on right). `options.reverse` flips columns. Used as second section on /dedicato-a.
+- **`PricingTiersEditorial` extended to 5 slots**: declares tier_04 and tier_05 (empty source on seed) — invisible on public site until admin fills `title`/`body`. Auto-discoverable from Page Editor: 12 extra blocks + 1 media slot per new tier.
+- **`pricing_comparison_table`** — new component on /versioni-prezzi: editorial feature matrix with up to 4 tier columns (Essential / Studio / Professional / Enterprise) in gold-italic Playfair, 12 declarable rows. Cell values:
+  - `✓ / yes / true / si` → teal check icon
+  - `- / empty / no` → dim em-dash
+  - anything else → text label (e.g. "10 GB", "Email", "Prioritario")
+  Empty tier columns auto-hidden; empty rows auto-hidden. Optional footer note + "Contatta il team" outlined CTA.
+- **Seed** `db/seed_iter151_audience_pricing.py`: 98 editorial_blocks + 3 new sections + section reorder. Idempotent.
+
 ### ITER151g — Support / Training / Login redesign + chrome polish (Feb 2026)
 - **Nav + Footer chrome** updated: navbar `rgba(18,18,18,0.78)` with 18px backdrop-blur + 140% saturation (scrolled state), footer `rgba(18,18,18,0.92)`. Hairline borders `rgba(255,255,255,0.06)`. Mobile panel matches.
 - **4 new section renderers** registered in `SECTION_REGISTRY`:
