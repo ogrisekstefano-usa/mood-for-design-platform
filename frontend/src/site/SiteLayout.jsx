@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import SiteHeader from './components/SiteHeader';
+import MoodSiteHeader from './components/MoodSiteHeader';
 import SiteFooter from './components/SiteFooter';
 import { SiteProvider } from './SiteContext';
 import StorefrontThemeProvider from '../design-system/storefront/StorefrontThemeProvider';
@@ -9,6 +9,7 @@ import SiteLocaleBridge from './SiteLocaleBridge';
 import './site.css';
 import './exe.css';
 import './mood.css';
+import '../pages/site/home-iter150.css';
 import '../components/demo/demo.css';
 
 const ScrollToTopOnNav = () => {
@@ -35,7 +36,7 @@ const SiteLayout = ({ children }) => {
         <div className="mfd-site" data-testid="mfd-site-root">
           <SiteLocaleBridge />
           <ScrollToTopOnNav />
-          <SiteHeader />
+          <MoodSiteHeader />
           <main className="mfd-site__container">
             {children || <Outlet />}
           </main>

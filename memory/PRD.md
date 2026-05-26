@@ -2,6 +2,75 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER154.R6 · UNIFIED public header · burger menu fix · nav left-align** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: chiudere DEFINITIVAMENTE i bug del menu pubblico —
+  allinearlo a sinistra, fare apparire il burger sul mobile, e
+  applicare `MoodSiteHeader` a TUTTE le pagine pubbliche (Magazine,
+  Projects, Professionals, Begin Partnership, ecc.) sotto SiteLayout.
+
+  **Changes**:
+
+  1. **Nav left-aligned (non più centrata)**:
+     - `.mfd-header__inner` da `display: grid; grid-template-columns:
+       1fr auto 1fr` → `display: flex; align-items: center; gap: clamp(28px, 4vw, 56px)`
+     - `.mfd-header__nav` con `flex: 1 1 auto; justify-content: flex-start`
+       → le voci stanno subito a destra del brand
+     - `.mfd-header__cta` con `margin-left: auto` → resta a destra
+
+  2. **Burger menu sul mobile (root cause + fix)**:
+     - **Root cause**: `.mfd-burger { display: none }` era definita
+       a riga 1029, MENTRE la media query `@media (max-width: 1180px)
+       { .mfd-burger { display: inline-flex } }` era a riga 939 —
+       source order CSS faceva vincere il default `display: none`!
+     - **Fix**: aggiunte le override `!important` a FINE file (post
+       qualsiasi default) per garantire che a `max-width: 1180px`
+       il burger sia inline-flex e nav/cta siano none
+     - Burger ora visibile a 414px con display:flex e larghezza 44px
+       (verificato live)
+     - Click burger → drawer slide-in con visibility:visible +
+       pointer-events:auto + transform:translateX(0)
+
+  3. **SiteLayout migrato a `MoodSiteHeader`**:
+     - `site/SiteLayout.jsx` ora importa `MoodSiteHeader` (era
+       `SiteHeader` con scroll-listener dark)
+     - Aggiunto import di `pages/site/home-iter150.css` in SiteLayout
+       per garantire tutte le `.mfd-*` CSS variables/classi
+       disponibili
+     - **Risultato**: Magazine, Projects, Professionals, Begin
+       Partnership, Journey Welcome, Onboarding, Professional Intake,
+       Start Project Wizard — TUTTE le pagine pubbliche ora hanno
+       lo stesso header cream con welcome strip + brand + nav 4 voci
+       + CTA pillola scura
+     - Niente più header doppio, niente più "Studio · IT · ACCEDI"
+       dark band
+
+  **Files touched** (3):
+  - `pages/site/home-iter150.css` (flex layout + burger fix con
+    `!important` end-of-file)
+  - `site/SiteLayout.jsx` (import MoodSiteHeader + home-iter150.css)
+  - `pages/site/HomePage.jsx` (già migrato in R5)
+
+  **Verifica live**:
+  - Desktop 1600px: `/magazine`, `/projects`, `/professionals` →
+    header MoodSiteHeader cream con 4 voci nav a sinistra (subito
+    dopo brand "MOOD for DESIGN · ITALIAN DESIGN STUDIOS") + CTA
+    "INIZIA IL TUO VIAGGIO" a destra ✓
+  - Mobile 414px: burger 44px circolare in alto a destra,
+    `display: flex`, click → drawer cinematico con voci stack
+    verticale + CTA + Accedi link ✓
+  - Computed `.mfd-header backgroundColor: rgba(245, 242, 237, 0.92)`
+    coerente su tutte le pagine ✓
+
+  **Architectural state**: il sito pubblico ha ora **una sola
+  componente** per il top chrome (`MoodSiteHeader`) usata da
+  HomePage + SiteLayout (tutte le altre pubbliche) + BeginJourneyPage.
+  La governance è unificata — questo era il pre-requisito per
+  partire con Editorial Copy CMS (priorità #1 confermata).
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER154.R5 · Public site · header continuity + mobile menu bulletproof** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: rimuovere 3 bug critici di esperienza sul sito pubblico:
