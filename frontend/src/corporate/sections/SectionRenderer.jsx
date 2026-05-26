@@ -7,6 +7,8 @@ import EditorialTriptych from './EditorialTriptych';
 import FinalCTAImmersive from './FinalCTAImmersive';
 import PageHero from './PageHero';
 import PageIntro from './PageIntro';
+import FeatureHeroSplit from './FeatureHeroSplit';
+import FeatureNumberedList from './FeatureNumberedList';
 
 import HeroCinematic from './HeroCinematic';
 import SelectedProjects from './SelectedProjects';
@@ -55,6 +57,10 @@ export const SECTION_REGISTRY = {
   // ITER151 — generic dynamic page sections
   page_hero:            PageHero,
   page_intro:           PageIntro,
+
+  // ITER151 — Features page (mockup-based)
+  feature_hero_split:     FeatureHeroSplit,
+  feature_numbered_list:  FeatureNumberedList,
 
   // ITER149 — DB-driven sections
   hero_cinematic:       HeroCinematic,

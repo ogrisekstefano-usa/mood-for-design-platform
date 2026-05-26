@@ -200,6 +200,15 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **`routers/admin_site.py:upsert_block`** split into `_validate_block_payload`, `_upsert_editorial_block_row`, `_upsert_block_translations`
 - **Type hints** added to `database.py` (engine, sessionmaker, `get_db()`)
 
+### ITER151b — Features page mockup redesign (Feb 2026)
+- 2 new section renderers:
+  - `feature_hero_split` — split hero: text on solid black left + cinematic photo right with gradient blend
+  - `feature_numbered_list` — 5 rows: outlined teal serif number (01–05) | eyebrow/title/body | screenshot with teal radial glow
+- Both registered in `SECTION_REGISTRY`.
+- Seed `db/seed_iter151_features.py`: idempotent, 19 editorial_blocks (IT) + 2 sections inserted on `features` page, replacing previous page_hero/page_intro. SEO meta updated.
+- **Auto-discoverable from Page Editor**: blocks flat-named (`item_01_eyebrow`, `item_01_title`, `item_01_body`, … `item_05_*`), media slots flat-named (`item_01`, … `item_05`) → all editable inline without backend changes.
+- Validated visually on `/caratteristiche`: hero with "Progettato per chi progetta il futuro." + outlined CTA + 5 numbered feature rows.
+
 ### ITER152 Phase 1 — Live Preview / Synchronized Editorial Canvas (Feb 2026)
 - **Split layout** `/admin/pages`: editor on left (~60%), live preview iframe on right (~40%). Preview is sticky (always visible while scrolling editor).
 - **Real renderer reuse**: the right pane embeds the actual public site via iframe — same React app, same `SectionRenderer`, same typography/spacing/animations. No duplicated rendering logic.
