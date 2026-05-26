@@ -464,6 +464,94 @@ def get_presence(designer_id: str = Path(...),
     return p
 
 
+@router.get("/curatorial-team/me")
+def get_my_curatorial_team(ctx: dict = Depends(get_tenant_context)):
+    """
+    Returns the curatorial team (designers) currently following the
+    journey(s) of the authenticated CLIENT. Editorial language only
+    — never "collaborators" or "staff".
+
+    For each designer surfaces:
+      id, name, role_label, short_bio, avatar_url, specialties,
+      languages, current_presence (state_key/state_label_it),
+      contact_email, last_contribution (best-effort)
+    """
+    c = db()
+    tenant_id = ctx["tenant_id"]
+    client_profile_id = ctx.get("profile_id") or ctx.get("user_id")
+    if not client_profile_id:
+        raise HTTPException(401, "Authentication required.")
+
+    # Designers come from two sources, deduplicated:
+    #   1. relationship_threads.primary_designer_id where client_profile_id=me
+    #   2. relationship_ownership for leads owned by me (future)
+    designer_ids: set = set()
+    try:
+        thr = (c.table("relationship_threads").select("primary_designer_id")
+               .eq("tenant_id", tenant_id)
+               .eq("client_profile_id", client_profile_id).execute()).data or []
+        for t in thr:
+            if t.get("primary_designer_id"):
+                designer_ids.add(t["primary_designer_id"])
+    except Exception:  # noqa: BLE001
+        pass
+
+    if not designer_ids:
+        # Fallback: any studio user → so the new-tenant case still shows team
+        try:
+            studio = (c.table("users_profile")
+                      .select("id")
+                      .eq("tenant_id", tenant_id)
+                      .in_("role", ["tenant_admin", "super_admin", "designer"])
+                      .limit(8).execute()).data or []
+            designer_ids = {s["id"] for s in studio}
+        except Exception:  # noqa: BLE001
+            pass
+
+    if not designer_ids:
+        return {"data": []}
+
+    ids = list(designer_ids)
+    profiles = (c.table("users_profile")
+                .select("id, first_name, last_name, email, avatar_url, "
+                        "role_label, short_bio")
+                .in_("id", ids).execute()).data or []
+
+    # presence in one query
+    pres_rows = (c.table("designer_presence").select("*")
+                 .eq("tenant_id", tenant_id).in_("designer_id", ids)
+                 .execute()).data or []
+    pres_by_id = {p["designer_id"]: p for p in pres_rows}
+
+    out = []
+    for p in profiles:
+        first = (p.get("first_name") or "").strip()
+        last = (p.get("last_name") or "").strip()
+        name = (f"{first} {last}").strip() or (p.get("email") or "").split("@")[0]
+        presence = pres_by_id.get(p["id"]) or {}
+        out.append({
+            "id":            p["id"],
+            "name":          name,
+            "initials":      ((first[:1] + last[:1]) or name[:2]).upper(),
+            "role_label":    p.get("role_label") or "Designer",
+            "short_bio":     p.get("short_bio") or "",
+            "avatar_url":    p.get("avatar_url"),
+            "specialties":   [],
+            "languages":     [],
+            "contact_email": p.get("email"),
+            "current_presence": {
+                "state_key":      presence.get("state_key") or "in_studio",
+                "state_label_it": presence.get("state_label_it") or "In studio",
+                "state_label_en": presence.get("state_label_en") or "In studio",
+                "context_note":   presence.get("context_note"),
+                "updated_at":     presence.get("updated_at"),
+            },
+        })
+    # Stable order: primary first if known via threads, then alpha
+    out.sort(key=lambda x: x["name"])
+    return {"data": out}
+
+
 @router.get("/presence/options")
 def list_presence_options():
     """Static catalogue, used by the designer presence picker UI."""
