@@ -281,9 +281,6 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
         <p className="mfd-welcome-strip__msg">{L(copy.welcome, locale)}</p>
         <div className="mfd-welcome-strip__meta">
           <LanguageSelector locale={locale} locales={locales} onChange={onLocaleChange} />
-          <Link to="/magazine" className="mfd-welcome-strip__link" data-testid="welcome-magazine-link">
-            {L(copy.nav.magazine, locale)}
-          </Link>
           <Link to="/auth/login" className="mfd-welcome-strip__link" data-testid="welcome-login-link">
             {L(copy.nav.login, locale)}
           </Link>
