@@ -13,12 +13,13 @@
  */
 import React, { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { Bell, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import ClientThemeProvider from '../../design-system/client/ClientThemeProvider';
 import ClientSidebar from './ClientSidebar';
 import NotificationBell from '../notifications/NotificationBell';
 import CuratorialTeamCluster from './CuratorialTeamCluster';
+import ClientUserMenu from './ClientUserMenu';
 import { useT } from "../../i18n/useT";
 const initialsOf = user => {
   if (!user) return '·';
@@ -59,13 +60,7 @@ const ClientTopbar = ({
       <div className="flex items-center gap-3 md:gap-5 shrink-0">
         <CuratorialTeamCluster locale="it" />
         <NotificationBell locale="it" />
-        <div data-testid="client-avatar" className="w-9 h-9 rounded-full bg-[var(--cp-surface-2)]
-                     border border-[var(--cp-border)]
-                     flex items-center justify-center
-                     text-[12px] tracking-[0.08em]
-                     text-[var(--cp-gold-soft)] font-body uppercase">
-          {initialsOf(user)}
-        </div>
+        <ClientUserMenu />
       </div>
     </header>;
 };

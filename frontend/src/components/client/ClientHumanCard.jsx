@@ -25,15 +25,43 @@ const ClientHumanCard = ({ onBriefClick }) => {
 
   useEffect(() => {
     let alive = true;
-    (async () => {
+    let timer = null;
+
+    const fetchOnce = async () => {
       try {
         const { data } = await api.get('/api/human-assignment/me');
-        if (alive) setState({ loading: false, assignment: data?.assignment || null });
+        if (!alive) return null;
+        const assignment = data?.assignment || null;
+        setState({ loading: false, assignment });
+        return assignment;
       } catch (_) {
-        if (alive) setState({ loading: false, assignment: null });
+        if (alive) setState((s) => ({ ...s, loading: false }));
+        return null;
       }
+    };
+
+    const startPolling = () => {
+      if (timer) return;
+      // Poll every 20s while still unassigned, so the page auto-updates
+      // as soon as the studio assigns a referent (ITER154.R3).
+      timer = setInterval(async () => {
+        const a = await fetchOnce();
+        if (a?.assignee && timer) {
+          clearInterval(timer); timer = null;
+          toast.success(`Il tuo referente è ${a.assignee.first_name || ''}`.trim() || 'Referente assegnato.');
+        }
+      }, 20000);
+    };
+
+    (async () => {
+      const a = await fetchOnce();
+      if (!a?.assignee) startPolling();
     })();
-    return () => { alive = false; };
+
+    return () => {
+      alive = false;
+      if (timer) clearInterval(timer);
+    };
   }, []);
 
   if (state.loading) {

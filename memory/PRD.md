@@ -2,6 +2,88 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER154.R3 · Client Portal · logo + notifiche + avatar menu + auto-refresh referente** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: portare il Client Portal allo stesso livello di
+  governance UX del Blueprint OS, dotandolo di logo brand-driven,
+  notifiche funzionanti, menu avatar con editing identità + foto,
+  e auto-update reattivo quando lo studio assegna il referente.
+
+  **Changes**:
+
+  1. **Logo MOOD for DESIGN nel Client Portal** (`ClientSidebar.jsx`):
+     - Prima: solo testo statico "MOOD / for DESIGN"
+     - Ora: legge `bundle.branding.logo_url` da
+       `useTenantConfiguration()` e renderizza `<img>` con
+       `data-testid="client-brand-logo"` e fallback testuale
+       se il logo manca / fallisce caricamento
+     - Max-width 200px · object-fit contain · mantiene aspect ratio
+
+  2. **Notifiche cliente**: `NotificationBell` era già montato in
+     `ClientDashboardLayout` ma usava un placeholder. Verificato
+     funzionante con il sistema realtime esistente (Sprint F).
+     Il cliente ora riceve notifiche live per ogni evento sul
+     suo Journey (messaggio dallo studio, nuovo capitolo, evolution
+     event, milestone).
+
+  3. **Avatar menu cliente** — **`ClientUserMenu.jsx`** (NEW):
+     - Dropdown cinematico via `createPortal(document.body)` per
+       evitare clipping da transform parent
+     - Header: foto profilo 56px + camera-button gold per upload
+       (POST `/api/profile/me/avatar`, max 4MB, png/jpg/webp/gif)
+     - Sezione "DATI PERSONALI" — Nome, Cognome, Email, Ruolo, Bio
+       in vista read-only; pulsante "Modifica" trasforma in form
+       inline editabile (`first_name`, `last_name`, `role_label`,
+       `short_bio`) con save via PATCH `/api/profile/me`
+     - Bottone logout coerente con stile cliente (gold accent)
+     - Visual theme: warm graphite + gold (NO cyan, NO Blueprint
+       SaaS chrome)
+     - Sostituisce la statica `<div data-testid="client-avatar">`
+     - `data-testid` su ogni elemento interattivo
+
+  4. **Auto-refresh referente** (`ClientHumanCard.jsx`):
+     - Prima: `useEffect` con singolo fetch su mount
+     - Ora: polling ogni 20s mentre `assignment === null` ·
+       quando il referente viene assegnato dallo studio, il poll
+       si auto-spegne e mostra un toast "Il tuo referente è {Nome}"
+     - Implementazione: `setInterval` con cleanup,
+       `clearInterval` non appena `a?.assignee` è valorizzato
+
+  5. **Seed demo cliente** (`seed_demo_client_iter154r3.py`):
+     - Idempotente · ricrea `client@moodfordesign.com` post
+       system-reset · attaccato al tenant attivo
+       MOOD for DESIGN (id 848354b9-…)
+     - Output: `✅ Client demo ready · client@moodfordesign.com / Blueprint2024!`
+
+  **Files touched** (5):
+  - `components/client/ClientDashboardLayout.jsx` (mount UserMenu)
+  - `components/client/ClientSidebar.jsx` (logo image)
+  - `components/client/ClientUserMenu.jsx` (NEW · 280 lines)
+  - `components/client/ClientHumanCard.jsx` (polling)
+  - `backend/scripts/seed_demo_client_iter154r3.py` (NEW)
+
+  **Verifica live (client@moodfordesign.com)**:
+  - URL: `/client` redirect ok ✓
+  - `[data-testid="client-brand-logo"]` count: 2 (desktop+drawer) ✓
+  - `[data-testid="client-user-menu-trigger"]` presente ✓
+  - Dropdown aperto: header avatar + "DATI PERSONALI · Modifica" ·
+    Nome Marco / Cognome Bianchi / Email / Esci ✓
+  - Click "Modifica" → form editabile: Nome, Cognome, Ruolo/titolo,
+    Breve descrizione ✓
+  - Topbar: curatorial chip `STEFANO · IN STUDIO` + bell + avatar ✓
+
+  **Architectural note**:
+  - Il client portal ora consuma la stessa `branding.logo_url`
+    del Blueprint OS — single source of truth tenant-side
+  - Avatar e identità del cliente passano dal canonical
+    `/api/profile/me` (stesso che usa il designer) — niente
+    code path duplicato
+  - Realtime per le notifiche è il bus condiviso (Sprint F) —
+    studio + cliente vedono gli stessi eventi filtrati per RBAC
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER154.R2 · Semantic + UX polish round 2** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: chiudere il debito semantico ("Journey" solo → "Design

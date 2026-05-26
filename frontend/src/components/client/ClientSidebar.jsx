@@ -20,6 +20,7 @@ import {
   Compass, Sparkles, Layers, MessageSquareQuote,
   Clock4, Palette, Archive, HardHat,
 } from 'lucide-react';
+import { useTenantConfiguration } from '../../contexts/TenantConfigurationContext';
 
 const NAV = [
   { to: '/client',                  label: 'I miei Journey',     icon: Compass,           hasMark: true, end: true },
@@ -35,6 +36,9 @@ const NAV = [
 const ClientSidebar = () => {
   const location = useLocation();
   const onCompanion = location.pathname.startsWith('/client/journey/');
+  const { bundle } = useTenantConfiguration();
+  const logoUrl = bundle?.branding?.logo_url;
+  const brandName = bundle?.branding?.brand_name || 'MOOD for DESIGN';
 
   return (
     <aside
@@ -47,12 +51,25 @@ const ClientSidebar = () => {
       {/* Brand */}
       <div className="space-y-12">
         <div data-testid="client-brand" className="select-none">
-          <p className="font-heading text-[26px] leading-[0.95] tracking-[-0.01em] text-[var(--cp-text-primary)]">
-            MOOD
-          </p>
-          <p className="font-heading text-[15px] leading-[1] tracking-[0.32em] text-[var(--cp-gold)] mt-1 uppercase">
-            for DESIGN
-          </p>
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={brandName}
+              data-testid="client-brand-logo"
+              className="block max-w-[200px] h-auto"
+              style={{ objectFit: 'contain' }}
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+          ) : (
+            <>
+              <p className="font-heading text-[26px] leading-[0.95] tracking-[-0.01em] text-[var(--cp-text-primary)]">
+                MOOD
+              </p>
+              <p className="font-heading text-[15px] leading-[1] tracking-[0.32em] text-[var(--cp-gold)] mt-1 uppercase">
+                for DESIGN
+              </p>
+            </>
+          )}
         </div>
 
         {/* Section eyebrow */}
