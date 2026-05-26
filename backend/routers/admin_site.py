@@ -526,7 +526,7 @@ async def update_section_media_slot(
             media_map[slot] = media_id
         settings['media'] = media_map
         await session.execute(
-            text("UPDATE cms_sections SET settings = :s::jsonb, updated_at = NOW() WHERE id = CAST(:sid AS uuid)"),
+            text("UPDATE cms_sections SET settings = CAST(:s AS jsonb), updated_at = NOW() WHERE id = CAST(:sid AS uuid)"),
             {"sid": section_id, "s": _json.dumps(settings)},
         )
         await session.commit()

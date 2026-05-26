@@ -203,11 +203,19 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 ### ITER151b — Features page mockup redesign (Feb 2026)
 - 2 new section renderers:
   - `feature_hero_split` — split hero: text on solid black left + cinematic photo right with gradient blend
-  - `feature_numbered_list` — 5 rows: outlined teal serif number (01–05) | eyebrow/title/body | screenshot with teal radial glow
+  - `feature_numbered_list` — up to 15 rows: outlined teal serif number (01–15) | eyebrow/title/body | screenshot with teal radial glow. Empty items (no eyebrow/title/body) hidden on the public site.
 - Both registered in `SECTION_REGISTRY`.
-- Seed `db/seed_iter151_features.py`: idempotent, 19 editorial_blocks (IT) + 2 sections inserted on `features` page, replacing previous page_hero/page_intro. SEO meta updated.
-- **Auto-discoverable from Page Editor**: blocks flat-named (`item_01_eyebrow`, `item_01_title`, `item_01_body`, … `item_05_*`), media slots flat-named (`item_01`, … `item_05`) → all editable inline without backend changes.
-- Validated visually on `/caratteristiche`: hero with "Progettato per chi progetta il futuro." + outlined CTA + 5 numbered feature rows.
+- Seed `db/seed_iter151_features.py`: idempotent, 49 editorial_blocks (4 hero + 45 items × 3) + 2 sections inserted on `features` page. SEO meta updated. Slots `item_06`..`item_15` declared empty so they appear in the Page Editor ready to fill.
+- **Auto-discoverable from Page Editor**: blocks flat-named (`item_01_eyebrow`...`item_15_body`), media slots flat-named (`item_01`...`item_15`) → all editable inline without backend changes.
+- Validated visually on `/caratteristiche`: hero + 5 numbered feature rows public; 49 editable input slots in admin.
+
+### ITER151c — Bug fix + AI auto-translate (Feb 2026)
+- **Bug fix**: `PUT /api/admin/site/sections/:id/media-slot` was failing with `ProgrammingError` due to `:s::jsonb` syntax (asyncpg parse conflict between bind params and PostgreSQL casts). Replaced with `CAST(:s AS jsonb)`. MediaPicker selection now works correctly.
+- **AI auto-translate** (Claude Sonnet 4.5 via `/api/ai/editorial/translate`):
+  - Per-block button "Traduci da IT" inside BlockEditor (visible only on non-IT locales when IT source has content)
+  - Bulk-translate toolbar button "Traduci N blocchi → LOCALE" (visible when at least one block has IT source and missing target translation) — iterates over candidates with progress counter
+  - Translations are pre-filled into the textarea; user must click "Salva" to persist (allows review)
+  - `adminApi.translate(text, srcLocale, tgtLocale)` calls `/api/ai/editorial/translate` with admin headers
 
 ### ITER152 Phase 1 — Live Preview / Synchronized Editorial Canvas (Feb 2026)
 - **Split layout** `/admin/pages`: editor on left (~60%), live preview iframe on right (~40%). Preview is sticky (always visible while scrolling editor).

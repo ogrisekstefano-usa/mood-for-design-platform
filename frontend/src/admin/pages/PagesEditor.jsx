@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Save, Check, AlertCircle, Image as ImageIcon, Languages, Eye, EyeOff } from 'lucide-react';
+import { Save, Check, AlertCircle, Image as ImageIcon, Languages, Eye, EyeOff, Sparkles, Wand2 } from 'lucide-react';
 import { adminApi } from '../adminApi';
 import MediaPicker from '../components/MediaPicker';
 import LivePreview from '../components/LivePreview';
@@ -42,15 +42,19 @@ const Header = ({ title, subtitle }) => (
 // ── BlockEditor: inline textarea + preview, multilingual ─────────────────
 const BlockEditor = ({ block, locale, onSaved, onFocus }) => {
   const initial = (block.translations && block.translations[locale]) || '';
+  const italianSource = (block.translations && block.translations['it']) || '';
   const [value, setValue]   = useState(initial);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState('idle');  // 'idle' | 'saved' | 'error'
+  const [translating, setTranslating] = useState(false);
 
   useEffect(() => { setValue(initial); setStatus('idle'); }, [initial, locale]);
 
   const previewStyle = PREVIEW_STYLE[block.block_type] || PREVIEW_STYLE.default;
   const dirty = value !== initial;
   const minLines = (block.block_type === 'body') ? 4 : 2;
+  // AI-translate button shows only on non-IT locales with a non-empty IT source
+  const canTranslate = locale !== 'it' && italianSource && italianSource.trim().length > 1;
 
   const save = async () => {
     setSaving(true); setStatus('idle');
@@ -86,6 +90,24 @@ const BlockEditor = ({ block, locale, onSaved, onFocus }) => {
     }
   };
 
+  const translateFromIT = async () => {
+    if (!italianSource || translating) return;
+    setTranslating(true);
+    try {
+      const res = await adminApi.translate(italianSource, 'it', locale);
+      const translated = res?.data?.json?.translated;
+      if (translated) {
+        setValue(translated);
+      } else {
+        window.alert('Traduzione non disponibile (risposta vuota).');
+      }
+    } catch (e) {
+      window.alert('Traduzione fallita: ' + (e?.response?.data?.detail || e.message));
+    } finally {
+      setTranslating(false);
+    }
+  };
+
   return (
     <div style={blockCard} data-testid={`block-${block.full_key}`} onFocus={onFocus} tabIndex={-1}>
       <div style={blockHeader}>
@@ -94,6 +116,17 @@ const BlockEditor = ({ block, locale, onSaved, onFocus }) => {
           <p style={blockKey}>{block.full_key}</p>
         </div>
         <div style={blockActions}>
+          {canTranslate && (
+            <button
+              onClick={translateFromIT}
+              disabled={translating}
+              style={{ ...translateBtn, opacity: translating ? 0.5 : 1 }}
+              title="Traduci da IT con Claude AI"
+              data-testid={`block-translate-${block.full_key}`}
+            >
+              <Wand2 size={11} /> {translating ? 'Traducendo…' : 'Traduci da IT'}
+            </button>
+          )}
           {dirty && status !== 'saved' && (
             <span style={{ ...statusPill, color: 'rgba(255,210,0,0.9)' }}>
               <AlertCircle size={11} /> Non salvato
@@ -237,6 +270,88 @@ const SectionCard = ({ section, locale, onChanged }) => {
   );
 };
 
+// ── BulkTranslateButton: translate all IT content into target locale ─────
+const BulkTranslateButton = ({ content, targetLocale, onDone }) => {
+  const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(null);
+
+  // Collect blocks with non-empty IT source and missing/empty target translation
+  const candidates = [];
+  for (const sec of content.sections) {
+    for (const b of (sec.blocks || [])) {
+      const it = (b.translations || {})['it'] || '';
+      const tgt = (b.translations || {})[targetLocale] || '';
+      if (it.trim() && !tgt.trim()) candidates.push(b);
+    }
+  }
+  if (candidates.length === 0) return null;
+
+  const runAll = async () => {
+    if (!window.confirm(`Tradurrò ${candidates.length} blocchi da IT a ${targetLocale.toUpperCase()} usando Claude AI. Procedere?`)) return;
+    setBusy(true);
+    let ok = 0, fail = 0;
+    for (let i = 0; i < candidates.length; i++) {
+      const b = candidates[i];
+      setProgress({ at: i + 1, total: candidates.length, key: b.full_key });
+      try {
+        const res = await adminApi.translate(
+          (b.translations || {})['it'],
+          'it',
+          targetLocale,
+        );
+        const translated = res?.data?.json?.translated;
+        if (!translated) { fail += 1; continue; }
+        const parts = b.full_key.split('.');
+        const ns = parts.slice(0, 2).join('.');
+        const bk = parts.slice(2).join('.');
+        const merged = Object.entries(b.translations || {})
+          .map(([loc, val]) => ({ locale: loc, value: val }))
+          .filter(t => t.locale !== targetLocale);
+        merged.push({ locale: targetLocale, value: translated });
+        await adminApi.upsertBlock({
+          namespace: ns,
+          block_key: bk,
+          block_type: b.block_type || 'body',
+          source_locale: b.source_locale || 'it',
+          source_value: b.source_value || (b.translations || {})['it'],
+          translations: merged,
+        });
+        ok += 1;
+      } catch {
+        fail += 1;
+      }
+    }
+    setBusy(false);
+    setProgress(null);
+    window.alert(`Traduzione completata.\n✓ ${ok} riusciti\n✗ ${fail} falliti`);
+    onDone?.();
+  };
+
+  return (
+    <button
+      onClick={runAll}
+      disabled={busy}
+      style={{
+        padding: '0.55rem 1rem', fontSize: '0.7rem', borderRadius: 999,
+        background: 'rgba(180,140,255,0.12)',
+        border: '1px solid rgba(180,140,255,0.35)',
+        color: 'rgba(200,170,255,0.95)',
+        cursor: busy ? 'wait' : 'pointer',
+        fontFamily: 'Inter, sans-serif', letterSpacing: '0.04em',
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        opacity: busy ? 0.6 : 1,
+      }}
+      title={`Traduce ${candidates.length} blocchi IT → ${targetLocale.toUpperCase()} con Claude AI`}
+      data-testid="bulk-translate"
+    >
+      <Sparkles size={12} />
+      {busy && progress
+        ? `Traducendo ${progress.at}/${progress.total}…`
+        : `Traduci ${candidates.length} blocchi → ${targetLocale.toUpperCase()}`}
+    </button>
+  );
+};
+
 // ── Main: PagesEditor ───────────────────────────────────────────────────
 const PagesEditor = () => {
   const [pages, setPages]       = useState([]);
@@ -316,6 +431,13 @@ const PagesEditor = () => {
               </button>
             ))}
           </div>
+          {locale !== 'it' && content && (
+            <BulkTranslateButton
+              content={content}
+              targetLocale={locale}
+              onDone={reload}
+            />
+          )}
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: 22 }}>
@@ -441,6 +563,13 @@ const saveBtn = {
   fontSize: '0.7rem', padding: '0.45rem 0.9rem',
   background: 'rgba(0,201,179,0.12)', border: '1px solid rgba(0,201,179,0.35)',
   color: 'var(--mood-teal, #00C9B3)', borderRadius: 999, cursor: 'pointer',
+  fontFamily: 'Inter, sans-serif', letterSpacing: '0.04em',
+  display: 'inline-flex', alignItems: 'center', gap: 5,
+};
+const translateBtn = {
+  fontSize: '0.66rem', padding: '0.4rem 0.8rem',
+  background: 'rgba(180,140,255,0.1)', border: '1px solid rgba(180,140,255,0.3)',
+  color: 'rgba(200,170,255,0.95)', borderRadius: 999, cursor: 'pointer',
   fontFamily: 'Inter, sans-serif', letterSpacing: '0.04em',
   display: 'inline-flex', alignItems: 'center', gap: 5,
 };

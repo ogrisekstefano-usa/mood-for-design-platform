@@ -48,6 +48,14 @@ export const adminApi = {
     client.put(`/sections/${sectionId}/media-slot`, { slot, media_id: mediaId }),
   getMediaUsages:   () => client.get('/media-usages'),
 
+  // AI translate (uses /api/ai/editorial/translate, with admin headers)
+  translate: (sourceText, sourceLocale, targetLocale) =>
+    axios.post(
+      `${BACKEND_URL}/api/ai/editorial/translate`,
+      { source_text: sourceText, source_locale: sourceLocale, target_locale: targetLocale, register: 'editorial' },
+      { headers: headers() },
+    ),
+
   // Media
   listMedia:     (category) => client.get('/media', { params: { category } }),
   registerMedia: (body) => client.post('/media/register', body),

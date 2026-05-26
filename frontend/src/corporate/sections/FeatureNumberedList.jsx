@@ -10,7 +10,8 @@ import { useReveal } from '../hooks/useReveal';
  *   media:   { item_01, item_02, item_03, item_04, item_05 }
  */
 const FeatureNumberedList = ({ content = {}, media = {} }) => {
-  const items = [1, 2, 3, 4, 5].map((n) => {
+  const items = Array.from({ length: 15 }, (_, i) => {
+    const n = i + 1;
     const key = String(n).padStart(2, '0');
     return {
       number: key,
@@ -19,7 +20,8 @@ const FeatureNumberedList = ({ content = {}, media = {} }) => {
       body:    content[`item_${key}_body`],
       media:   media[`item_${key}`],
     };
-  });
+  // Hide items without any text content (title/body empty)
+  }).filter((it) => (it.title && it.title.trim()) || (it.body && it.body.trim()) || (it.eyebrow && it.eyebrow.trim()));
 
   return (
     <section

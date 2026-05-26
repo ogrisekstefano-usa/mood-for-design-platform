@@ -44,12 +44,23 @@ FEATURES = [
     ('05', 'magazine',       'Editorial Magazine',  'Contenuti che costruiscono cultura.', 'Pubblica articoli, trend e storie che ispirano e posizionano il tuo studio.'),
 ]
 
+# Extra empty slots (item_06 → item_15) — declared so they show up in the
+# Page Editor as empty, ready to be filled. Public site hides empties.
+EXTRA_SLOTS = [f'{n:02d}' for n in range(6, 16)]
+
 ITEM_BLOCKS = []
 for num, _slug, eyebrow, title, body in FEATURES:
     ITEM_BLOCKS += [
         ('site.features', f'item_{num}.eyebrow', 'eyebrow', {'it': eyebrow}),
         ('site.features', f'item_{num}.title',   'headline',{'it': title}),
         ('site.features', f'item_{num}.body',    'body',    {'it': body}),
+    ]
+# Declare 10 extra empty slots so the Page Editor shows editable rows
+for num in EXTRA_SLOTS:
+    ITEM_BLOCKS += [
+        ('site.features', f'item_{num}.eyebrow', 'eyebrow', {'it': ''}),
+        ('site.features', f'item_{num}.title',   'headline',{'it': ''}),
+        ('site.features', f'item_{num}.body',    'body',    {'it': ''}),
     ]
 
 
@@ -155,13 +166,15 @@ async def main():
             tid, page['id'], json.dumps(hero_settings),
         )
 
-        # SECTION 2: feature_numbered_list with 5 items flattened in blocks + media
+        # SECTION 2: feature_numbered_list with 15 items declared in blocks
         list_blocks = {}
         list_media = {}
-        for idx, (num, _slug, *_rest) in enumerate(FEATURES):
+        all_nums = [f[0] for f in FEATURES] + EXTRA_SLOTS
+        for idx, num in enumerate(all_nums):
             list_blocks[f'item_{num}_eyebrow'] = f'site.features.item_{num}.eyebrow'
             list_blocks[f'item_{num}_title']   = f'site.features.item_{num}.title'
             list_blocks[f'item_{num}_body']    = f'site.features.item_{num}.body'
+            # Only assign media for the first 5 (existing). New slots are picker-ready.
             if idx < len(item_media):
                 list_media[f'item_{num}'] = item_media[idx]
         list_settings = {'blocks': list_blocks, 'media': list_media}
