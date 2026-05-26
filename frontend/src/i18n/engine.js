@@ -202,6 +202,16 @@ export function pickLocaleValue(labelObj, locale, tenantDefault = null) {
 export function pickString(key, locale, params = null, tenantDefault = null) {
   if (!key) return '';
   const target = toBcp47(locale);
+
+  // ITER155.R2 · Runtime Editorial Overrides™ —
+  // consult the live CMS map BEFORE static dictionaries so admin
+  // edits propagate instantly without redeploy.
+  const ov = _resolveRuntimeOverride(key, target);
+  if (typeof ov === 'string') {
+    if (!params) return ov;
+    return ov.replace(/\{(\w+)\}/g, (_, p) => (params[p] != null ? String(params[p]) : `{${p}}`));
+  }
+
   const chain = buildFallbackChain(target, tenantDefault);
   const path = String(key).split('.');
   for (const code of chain) {
@@ -235,4 +245,37 @@ export function pickString(key, locale, params = null, tenantDefault = null) {
     return `⟦${key}⟧`;
   }
   return key;
+}
+
+// ════════════════════════════════════════════════════════════════
+// ITER155.R2 · Runtime Editorial Overrides™ registry
+// ════════════════════════════════════════════════════════════════
+// Module-level map populated by the editorial CMS context at boot.
+// Keyed by base locale (it/en/fr/de/es) → { i18n_key: string }.
+// pickString() consults this BEFORE static dictionaries.
+
+const _runtimeOverrides = { it: {}, en: {}, fr: {}, de: {}, es: {} };
+
+/**
+ * Replace the runtime overrides for a locale. Called by
+ * EditorialOverridesProvider on boot and after every CMS save.
+ */
+export function setRuntimeOverrides(locale, map) {
+  const base = (locale || 'it').split('-')[0].toLowerCase();
+  _runtimeOverrides[base] = map || {};
+}
+
+/** Internal · resolve runtime override for a key/locale, returns string|null */
+function _resolveRuntimeOverride(key, target) {
+  const base = (target || 'it').split('-')[0].toLowerCase();
+  const map = _runtimeOverrides[base];
+  if (map && Object.prototype.hasOwnProperty.call(map, key)) return map[key];
+  // Cross-locale fallback: try Italian map then English
+  if (base !== 'it' && _runtimeOverrides.it && _runtimeOverrides.it[key]) {
+    return _runtimeOverrides.it[key];
+  }
+  if (base !== 'en' && _runtimeOverrides.en && _runtimeOverrides.en[key]) {
+    return _runtimeOverrides.en[key];
+  }
+  return null;
 }

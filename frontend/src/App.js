@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BlueprintProvider, useBlueprint } from './contexts/BlueprintContext';
 import { TenantConfigurationProvider } from './contexts/TenantConfigurationContext';
 import { GuidedTourProvider } from './components/onboarding/GuidedTourProvider';
+import EditorialOverridesProvider from './i18n/EditorialOverridesProvider';
 import { TenantThemeProvider } from './contexts/TenantThemeContext';
 import { StudioPaletteProvider } from './contexts/StudioPaletteContext';
 import { LocaleRuntimeProvider } from './contexts/LocaleRuntimeContext';
