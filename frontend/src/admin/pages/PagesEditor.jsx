@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Save, Check, AlertCircle, Image as ImageIcon, Languages, Eye, EyeOff } from 'lucide-react';
 import { adminApi } from '../adminApi';
 import MediaPicker from '../components/MediaPicker';
+import LivePreview from '../components/LivePreview';
 
 const LOCALES = [
   { code: 'it',    label: 'IT'    },
@@ -39,7 +40,7 @@ const Header = ({ title, subtitle }) => (
 );
 
 // ── BlockEditor: inline textarea + preview, multilingual ─────────────────
-const BlockEditor = ({ block, locale, onSaved }) => {
+const BlockEditor = ({ block, locale, onSaved, onFocus }) => {
   const initial = (block.translations && block.translations[locale]) || '';
   const [value, setValue]   = useState(initial);
   const [saving, setSaving] = useState(false);
@@ -86,7 +87,7 @@ const BlockEditor = ({ block, locale, onSaved }) => {
   };
 
   return (
-    <div style={blockCard} data-testid={`block-${block.full_key}`}>
+    <div style={blockCard} data-testid={`block-${block.full_key}`} onFocus={onFocus} tabIndex={-1}>
       <div style={blockHeader}>
         <div>
           <p style={blockSlot}>{block.slot}</p>
@@ -243,6 +244,9 @@ const PagesEditor = () => {
   const [content, setContent]   = useState(null);
   const [locale, setLocale]     = useState('it');
   const [loading, setLoading]   = useState(false);
+  const [refreshKey, setRefreshKey]   = useState(0);  // bump → reload preview iframe
+  const [selectedSection, setSelectedSection] = useState(null);
+  const mainScrollRef = useRef(null);
 
   useEffect(() => {
     adminApi.listPages().then(r => {
@@ -259,92 +263,125 @@ const PagesEditor = () => {
     adminApi.getPageContent(activePage)
       .then(r => setContent(r.data))
       .finally(() => setLoading(false));
+    // Trigger preview reload too (debounced via key bump)
+    setRefreshKey(k => k + 1);
   };
   useEffect(reload, [activePage]);
 
   const visibleSections = useMemo(() => {
     if (!content) return [];
-    // Skip navigation/footer when on non-home pages to reduce noise (still editable from home)
     if (activePage !== 'home') {
       return content.sections.filter(s => !['navigation', 'footer'].includes(s.section_type));
     }
     return content.sections;
   }, [content, activePage]);
 
+  // When preview reports a section click, scroll editor to it
+  const onPreviewSectionClick = (sectionId) => {
+    setSelectedSection(sectionId);
+    const el = document.querySelector(`[data-testid="section-${sectionId}"]`);
+    if (el && mainScrollRef.current) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.style.transition = 'box-shadow 0.4s ease';
+      el.style.boxShadow = '0 0 0 2px rgba(0,201,179,0.5)';
+      setTimeout(() => { el.style.boxShadow = 'none'; }, 1600);
+    }
+  };
+
   return (
-    <div data-testid="pages-editor">
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '2rem' }}>
-        <Header
-          title="Pagine"
-          subtitle="Editorial operating console. Modifica testi e fotografie di ogni pagina, per ogni lingua."
-        />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 3, background: 'rgba(255,255,255,0.04)', borderRadius: 999 }}>
-          <Languages size={13} color="rgba(255,255,255,0.45)" style={{ marginLeft: 10 }} />
-          {LOCALES.map(l => (
-            <button
-              key={l.code}
-              onClick={() => setLocale(l.code)}
-              style={{
-                padding: '0.4rem 0.85rem', fontSize: '0.7rem', borderRadius: 999,
-                background: locale === l.code ? '#FFFFFF' : 'transparent',
-                color: locale === l.code ? '#000000' : 'rgba(255,255,255,0.65)',
-                border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-                fontWeight: 500, letterSpacing: '0.04em',
-              }}
-              data-testid={`locale-tab-${l.code}`}
-            >
-              {l.label}
-            </button>
-          ))}
+    <div data-testid="pages-editor" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 0.85fr)', gap: 0, marginLeft: -24, marginRight: -24, marginBottom: -24, marginTop: -24, height: 'calc(100vh - 0px)' }}>
+      {/* Left: editor */}
+      <div ref={mainScrollRef} style={{ overflowY: 'auto', padding: '2rem 1.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+          <Header
+            title="Pagine"
+            subtitle="Editorial operating console. Modifica testi e fotografie di ogni pagina, per ogni lingua. La preview a destra rispecchia il sito pubblico reale."
+          />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 3, background: 'rgba(255,255,255,0.04)', borderRadius: 999 }}>
+            <Languages size={13} color="rgba(255,255,255,0.45)" style={{ marginLeft: 10 }} />
+            {LOCALES.map(l => (
+              <button
+                key={l.code}
+                onClick={() => { setLocale(l.code); setRefreshKey(k => k + 1); }}
+                style={{
+                  padding: '0.4rem 0.85rem', fontSize: '0.7rem', borderRadius: 999,
+                  background: locale === l.code ? '#FFFFFF' : 'transparent',
+                  color: locale === l.code ? '#000000' : 'rgba(255,255,255,0.65)',
+                  border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                  fontWeight: 500, letterSpacing: '0.04em',
+                }}
+                data-testid={`locale-tab-${l.code}`}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: 22 }}>
+          {/* Sidebar pages */}
+          <aside style={sidebar}>
+            {pages.map(p => (
+              <button
+                key={p.key}
+                onClick={() => setActive(p.key)}
+                style={{
+                  ...pageItem,
+                  background: activePage === p.key ? 'rgba(0,201,179,0.1)' : 'transparent',
+                  borderLeft: activePage === p.key ? '2px solid var(--mood-teal, #00C9B3)' : '2px solid transparent',
+                  color: activePage === p.key ? '#FFFFFF' : 'rgba(255,255,255,0.65)',
+                }}
+                data-testid={`sidebar-page-${p.key}`}
+              >
+                <div style={{ fontWeight: activePage === p.key ? 500 : 400 }}>{p.title}</div>
+                <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>/{p.key}</div>
+              </button>
+            ))}
+          </aside>
+
+          {/* Main editor area */}
+          <main>
+            {loading && <p style={{ color: 'rgba(255,255,255,0.4)' }}>Caricamento contenuto…</p>}
+            {!loading && content && (
+              <>
+                <div style={{ marginBottom: 24 }}>
+                  <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.4rem', margin: 0, color: '#FFFFFF', fontWeight: 400 }}>
+                    {content.page.title}
+                  </h2>
+                  <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)', marginTop: 4, fontFamily: 'monospace' }}>
+                    {content.page.key} · {content.page.status} · {visibleSections.length} {visibleSections.length === 1 ? 'sezione' : 'sezioni'}
+                  </p>
+                </div>
+                {visibleSections.length === 0 && (
+                  <p style={{ color: 'rgba(255,255,255,0.4)' }}>
+                    Nessun contenuto modificabile in questa pagina.
+                  </p>
+                )}
+                {visibleSections.map(s => (
+                  <SectionCard
+                    key={s.id}
+                    section={s}
+                    locale={locale}
+                    onChanged={reload}
+                    onSelect={(sid) => setSelectedSection(sid)}
+                  />
+                ))}
+              </>
+            )}
+          </main>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 28 }}>
-        {/* Sidebar */}
-        <aside style={sidebar}>
-          {pages.map(p => (
-            <button
-              key={p.key}
-              onClick={() => setActive(p.key)}
-              style={{
-                ...pageItem,
-                background: activePage === p.key ? 'rgba(0,201,179,0.1)' : 'transparent',
-                borderLeft: activePage === p.key ? '2px solid var(--mood-teal, #00C9B3)' : '2px solid transparent',
-                color: activePage === p.key ? '#FFFFFF' : 'rgba(255,255,255,0.65)',
-              }}
-              data-testid={`sidebar-page-${p.key}`}
-            >
-              <div style={{ fontWeight: activePage === p.key ? 500 : 400 }}>{p.title}</div>
-              <div style={{ fontSize: '0.62rem', color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>/{p.key}</div>
-            </button>
-          ))}
-        </aside>
-
-        {/* Main */}
-        <main>
-          {loading && <p style={{ color: 'rgba(255,255,255,0.4)' }}>Caricamento contenuto…</p>}
-          {!loading && content && (
-            <>
-              <div style={{ marginBottom: 24 }}>
-                <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.4rem', margin: 0, color: '#FFFFFF', fontWeight: 400 }}>
-                  {content.page.title}
-                </h2>
-                <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)', marginTop: 4, fontFamily: 'monospace' }}>
-                  {content.page.key} · {content.page.status} · {visibleSections.length} {visibleSections.length === 1 ? 'sezione' : 'sezioni'}
-                </p>
-              </div>
-              {visibleSections.length === 0 && (
-                <p style={{ color: 'rgba(255,255,255,0.4)' }}>
-                  Nessun contenuto modificabile in questa pagina.
-                </p>
-              )}
-              {visibleSections.map(s => (
-                <SectionCard key={s.id} section={s} locale={locale} onChanged={reload} />
-              ))}
-            </>
-          )}
-        </main>
-      </div>
+      {/* Right: live preview */}
+      {activePage && (
+        <LivePreview
+          pageKey={activePage}
+          locale={locale}
+          refreshKey={refreshKey}
+          scrollToSectionId={selectedSection}
+          onSectionClick={onPreviewSectionClick}
+        />
+      )}
     </div>
   );
 };

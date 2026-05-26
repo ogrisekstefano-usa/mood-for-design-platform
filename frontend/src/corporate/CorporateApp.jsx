@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MinimalNav from './components/MinimalNav';
 import EditorialFooter from './components/EditorialFooter';
+import PreviewBridge from './components/PreviewBridge';
 import {
   HomePage,
   MagazinePage,
@@ -47,6 +48,7 @@ const renderLocalizedRoutes = () => {
 
 const CorporateApp = () => (
   <div className="corporate-app" style={{ background: 'var(--mood-black)' }}>
+    <PreviewBridge />
     <MinimalNav />
     <Routes>
       <Route path="/"                       element={<HomePage />} />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, NavLink, useNavigate, Navigate } from 'react-router-dom';
+import { Routes, Route, NavLink, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { LogOut, FileText, Layout, Image, Settings as SettingsIcon, RefreshCw, ExternalLink, BookOpen } from 'lucide-react';
 import { adminAuth, adminApi } from './adminApi';
 import BlocksEditor from './pages/BlocksEditor';
@@ -96,6 +96,7 @@ const NavItem = ({ to, icon: Icon, label }) => (
 
 const AdminShell = ({ children }) => {
   const nav = useNavigate();
+  const location = useLocation();
   const logout = () => { adminAuth.clear(); nav('/admin'); window.location.reload(); };
   const refresh = async () => { try { await adminApi.invalidate(); window.alert('Cache cleared'); } catch {} };
 
@@ -135,8 +136,10 @@ const AdminShell = ({ children }) => {
         </div>
       </aside>
 
-      <main style={{ flex: 1, padding: '2.5rem 3rem', minWidth: 0 }} data-testid="admin-main">
-        {children}
+      <main style={{ flex: 1, minWidth: 0 }} data-testid="admin-main">
+        <div style={{ padding: location?.pathname === '/admin/pages' ? 0 : '2.5rem 3rem' }}>
+          {children}
+        </div>
       </main>
     </div>
   );

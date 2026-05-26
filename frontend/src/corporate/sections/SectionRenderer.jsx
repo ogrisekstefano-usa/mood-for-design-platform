@@ -99,25 +99,27 @@ const SectionRenderer = ({ section }) => {
   // ITER149 modern shape
   if (section.media !== undefined || section.links !== undefined || section.options !== undefined) {
     return (
-      <Component
-        key={section.id}
-        content={section.content || {}}
-        media={section.media || {}}
-        links={section.links || {}}
-        options={section.options || {}}
-        sectionId={section.id}
-      />
+      <div data-section-id={section.id} data-section-type={section.type} key={section.id}>
+        <Component
+          content={section.content || {}}
+          media={section.media || {}}
+          links={section.links || {}}
+          options={section.options || {}}
+          sectionId={section.id}
+        />
+      </div>
     );
   }
 
   // Legacy shape
   return (
-    <Component
-      key={section.id}
-      content={section.content || {}}
-      config={section.config || {}}
-      sectionId={section.id}
-    />
+    <div data-section-id={section.id} data-section-type={section.type} key={section.id}>
+      <Component
+        content={section.content || {}}
+        config={section.config || {}}
+        sectionId={section.id}
+      />
+    </div>
   );
 };
 

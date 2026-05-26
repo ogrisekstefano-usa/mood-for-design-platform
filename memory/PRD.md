@@ -200,7 +200,19 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **`routers/admin_site.py:upsert_block`** split into `_validate_block_payload`, `_upsert_editorial_block_row`, `_upsert_block_translations`
 - **Type hints** added to `database.py` (engine, sessionmaker, `get_db()`)
 
+### ITER152 Phase 1 — Live Preview / Synchronized Editorial Canvas (Feb 2026)
+- **Split layout** `/admin/pages`: editor on left (~60%), live preview iframe on right (~40%). Preview is sticky (always visible while scrolling editor).
+- **Real renderer reuse**: the right pane embeds the actual public site via iframe — same React app, same `SectionRenderer`, same typography/spacing/animations. No duplicated rendering logic.
+
 ### Admin Page Content Editor — Editorial Operating Console (Feb 2026)
+- **PreviewBridge** (`corporate/components/PreviewBridge.jsx`): mounts only when `window.parent !== window`. Sends `mood-preview:ready` on mount; listens for `mood-preview:scroll-to-section`; forwards user clicks as `mood-preview:section-clicked`. Shows a "LIVE PREVIEW" pill so the embedded context is unambiguous.
+- **LivePreview** (`admin/components/LivePreview.jsx`): viewport modes Desktop (100%) / Tablet (820px) / Mobile (390px) with animated `width` transition (350ms cubic-bezier). Reload button + open-in-new-tab. Receives `refreshKey` to force iframe reload (e.g. after save).
+- **Bidirectional sync**: clicking a block/section in the editor triggers preview scroll-to via postMessage; clicking inside the preview iframe pushes section id back to the editor (forwarded via parent).
+- **Locale-aware URL**: locale switch in editor → resolves the localized slug via internal map and reloads iframe (e.g. `audience` + `en-us` → `/audience`, `audience` + `fr` → `/destine-a`).
+- **Auto-reload on save**: every block save bumps `refreshKey`, causing the iframe to refetch the published page so changes appear instantly.
+- **Section anchors**: `SectionRenderer` wraps every section in a `<div data-section-id="..." data-section-type="...">` for stable cross-frame targeting.
+- **AdminShell**: padding removed for `/admin/pages` route to give the split layout edge-to-edge space.
+- **Validated E2E**: Desktop → Tablet → Mobile viewport switching with animated resize; page switching reloads preview; locale switching reloads preview with localized slug; "LIVE PREVIEW" pill visible inside the embedded view.
 - **Backend endpoints**:
   - `GET /api/admin/site/pages` — list of all cms_pages (ordered: home → audience → features → pricing → training → support → login → others)
   - `GET /api/admin/site/page-content/:page_key` — full editable content in ONE call (sections + auto-discovered text blocks with translations + media slots with full metadata)
