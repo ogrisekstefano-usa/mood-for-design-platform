@@ -807,6 +807,29 @@ async def upload_media(
         }
 
 
+@router.delete("/sections/{section_id}")
+async def delete_section(
+    section_id: str,
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """Soft-delete a section (sets deleted_at). It disappears from the editor and the public site."""
+    async with AsyncSessionLocal() as session:
+        r = await session.execute(
+            text("""
+                UPDATE cms_sections SET deleted_at = NOW(), updated_at = NOW()
+                WHERE id = CAST(:sid AS uuid) AND tenant_id = :tid
+                  AND deleted_at IS NULL
+                RETURNING id
+            """),
+            {"sid": section_id, "tid": tenant['id']},
+        )
+        if r.first() is None:
+            raise HTTPException(404, "Section not found")
+        await session.commit()
+        site_resolver.invalidate_site_cache()
+        return {"ok": True}
+
+
 @router.delete("/media/{media_id}")
 async def delete_media(
     media_id: str,

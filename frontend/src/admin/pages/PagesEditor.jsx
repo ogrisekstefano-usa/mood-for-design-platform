@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Save, Check, AlertCircle, Image as ImageIcon, Languages, Eye, EyeOff, Sparkles, Wand2 } from 'lucide-react';
+import { Save, Check, AlertCircle, Image as ImageIcon, Languages, Eye, EyeOff, Sparkles, Wand2, Trash2 } from 'lucide-react';
 import { adminApi } from '../adminApi';
 import MediaPicker from '../components/MediaPicker';
 import LivePreview from '../components/LivePreview';
@@ -504,7 +504,23 @@ const MediaActionEditor = ({ section, slotKey, onSaved }) => {
 
 // ── SectionCard ─────────────────────────────────────────────────────────
 const SectionCard = ({ section, locale, onChanged }) => {
+  const [deleting, setDeleting] = useState(false);
   if (!section.blocks.length && !section.media.length && !hasLinks(section)) return null;
+
+  const onDelete = async () => {
+    const label = (section.section_type || '').replace(/_/g, ' ');
+    if (!window.confirm(`Eliminare la sezione "${label}" da questa pagina?\nL'azione è reversibile dal database (soft-delete).`)) return;
+    setDeleting(true);
+    try {
+      await adminApi.deleteSection(section.id);
+      onChanged?.();
+    } catch (e) {
+      window.alert('Errore eliminazione: ' + (e?.response?.data?.detail || e.message));
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div style={sectionWrap} data-testid={`section-${section.id}`}>
       <div style={sectionHead}>
@@ -512,6 +528,25 @@ const SectionCard = ({ section, locale, onChanged }) => {
           <p style={sectionType}>{section.section_type.replace(/_/g, ' ')}</p>
           <p style={sectionMeta}>Sort {section.sort_order} · {section.visible ? <><Eye size={10} /> visible</> : <><EyeOff size={10} /> hidden</>}</p>
         </div>
+        <button
+          onClick={onDelete}
+          disabled={deleting}
+          title="Elimina sezione"
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            padding: '0.45rem 0.85rem', fontSize: '0.7rem',
+            background: 'transparent',
+            border: '1px solid rgba(255,180,162,0.3)',
+            color: 'rgba(255,180,162,0.85)',
+            borderRadius: 6,
+            fontFamily: 'Inter, sans-serif', letterSpacing: '0.04em',
+            cursor: deleting ? 'not-allowed' : 'pointer',
+            opacity: deleting ? 0.5 : 1,
+          }}
+          data-testid={`section-delete-${section.id}`}
+        >
+          <Trash2 size={12} /> {deleting ? 'Elimino…' : 'Elimina sezione'}
+        </button>
       </div>
       {section.blocks.map(b => (
         <BlockEditor key={b.full_key} block={b} locale={locale} onSaved={onChanged} />

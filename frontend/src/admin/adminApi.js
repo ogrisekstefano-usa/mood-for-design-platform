@@ -39,6 +39,7 @@ export const adminApi = {
   // Sections
   listSections:  (page_slug = 'home') => client.get('/sections', { params: { page_slug } }),
   patchSection:  (id, body) => client.patch(`/sections/${id}`, body),
+  deleteSection: (id) => client.delete(`/sections/${id}`),
   reorderSections: (ordered_ids) => client.post('/sections/reorder', { ordered_ids }),
 
   // Pages
