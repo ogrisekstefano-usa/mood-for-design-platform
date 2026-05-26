@@ -1,5 +1,6 @@
 import React from 'react';
 import { useReveal } from '../hooks/useReveal';
+import { linkTarget } from '../utils/linkTarget';
 
 /**
  * HeroCinematic — panoramic homepage hero (unified pattern with the
@@ -114,6 +115,7 @@ const HeroCinematic = ({ content = {}, media = {}, links = {} }) => {
                 {content.cta_primary && (
                   <a
                     href={links.cta_primary_href || '#'}
+                    {...linkTarget(links.cta_primary_target)}
                     style={{
                       display: 'inline-block',
                       fontFamily: 'Inter, sans-serif', fontSize: '0.82rem',
@@ -133,6 +135,7 @@ const HeroCinematic = ({ content = {}, media = {}, links = {} }) => {
                 {content.cta_secondary && (
                   <a
                     href={links.cta_secondary_href || '#'}
+                    {...linkTarget(links.cta_secondary_target)}
                     style={{
                       display: 'inline-block',
                       fontFamily: 'Inter, sans-serif', fontSize: '0.82rem',

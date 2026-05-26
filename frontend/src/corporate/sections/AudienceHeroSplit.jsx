@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useReveal } from '../hooks/useReveal';
+import { linkTarget } from '../utils/linkTarget';
 
 /**
  * AudienceHeroSplit — panoramic editorial hero (now unified with the
@@ -21,7 +22,7 @@ const AudienceHeroSplit = ({ content = {}, media = {}, links = {} }) => {
     <section
       ref={ref}
       className={`relative overflow-hidden reveal ${visible ? 'visible' : ''}`}
-      style={{ background: '#000000', minHeight: 'clamp(640px, 82vh, 900px)' }}
+      style={{ background: '#000000', minHeight: 'clamp(640px, 84vh, 920px)' }}
       data-testid="audience-hero-split"
     >
       {bg && bg.url && (
@@ -49,7 +50,7 @@ const AudienceHeroSplit = ({ content = {}, media = {}, links = {} }) => {
 
       <div
         className="relative z-10 flex items-center"
-        style={{ minHeight: 'clamp(640px, 82vh, 900px)' }}
+        style={{ minHeight: 'clamp(640px, 84vh, 920px)' }}
       >
         <div
           className="w-full"
@@ -102,6 +103,7 @@ const AudienceHeroSplit = ({ content = {}, media = {}, links = {} }) => {
               <div className="mt-10 lg:mt-12">
                 <Link
                   to={links.cta_href || '#a-chi-ci-rivolgiamo'}
+                  {...linkTarget(links.cta_target)}
                   style={{
                     display: 'inline-block',
                     fontFamily: 'Inter, sans-serif', fontSize: '0.82rem',

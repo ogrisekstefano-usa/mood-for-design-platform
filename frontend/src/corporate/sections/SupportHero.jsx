@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, HelpCircle, MessageSquare, Activity, Search } from 'lucide-react';
 import { useReveal } from '../hooks/useReveal';
+import { linkTarget } from '../utils/linkTarget';
 
 /**
  * SupportHero — panoramic hero with search bar + 4 quick-access cards.
@@ -29,6 +30,7 @@ const SupportHero = ({ content = {}, media = {}, links = {} }) => {
       n: k,
       label: content[`link_${k}_label`],
       href:  links[`link_${k}_href`] || '#',
+      target: links[`link_${k}_target`],
       Icon:  QUICK_ICONS[n - 1],
     };
   }).filter((q) => q.label && q.label.trim());
@@ -37,7 +39,7 @@ const SupportHero = ({ content = {}, media = {}, links = {} }) => {
     <section
       ref={ref}
       className={`relative overflow-hidden reveal ${visible ? 'visible' : ''}`}
-      style={{ background: '#000000', minHeight: 'clamp(680px, 84vh, 920px)' }}
+      style={{ background: '#000000', minHeight: 'clamp(640px, 84vh, 920px)' }}
       data-testid="support-hero"
     >
       {bg && bg.url && (
@@ -172,6 +174,7 @@ const SupportHero = ({ content = {}, media = {}, links = {} }) => {
                   <Link
                     key={q.n}
                     to={q.href}
+                    {...linkTarget(q.target)}
                     style={{
                       display: 'flex', flexDirection: 'column', alignItems: 'center',
                       gap: '0.6rem', padding: '1.1rem 0.6rem',

@@ -380,7 +380,7 @@ const MediaSlot = ({ section, slot, onChange }) => {
 
 // ── SectionCard ─────────────────────────────────────────────────────────
 const SectionCard = ({ section, locale, onChanged }) => {
-  if (!section.blocks.length && !section.media.length) return null;
+  if (!section.blocks.length && !section.media.length && !hasLinks(section)) return null;
   return (
     <div style={sectionWrap} data-testid={`section-${section.id}`}>
       <div style={sectionHead}>
@@ -395,6 +395,115 @@ const SectionCard = ({ section, locale, onChanged }) => {
       {section.media.map(s => (
         <MediaSlot key={`${section.id}-${s.slot}`} section={section} slot={s} onChange={onChanged} />
       ))}
+      {hasLinks(section) && (
+        <LinksEditor section={section} onSaved={onChanged} />
+      )}
+    </div>
+  );
+};
+
+// True if the section settings expose any *_href key (CTA / link destinations).
+const hasLinks = (section) => {
+  const links = section?.settings?.links;
+  if (!links || typeof links !== 'object') return false;
+  return Object.keys(links).some((k) => /_href$|^href$|action$/.test(k));
+};
+
+// ── LinksEditor: edit CTA URL + open-in-new-tab per link key ───────────
+const LinksEditor = ({ section, onSaved }) => {
+  const initial = useMemo(() => ({ ...(section.settings?.links || {}) }), [section.id]);
+  const [links, setLinks] = useState(initial);
+  const [busy, setBusy]   = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const dirty = JSON.stringify(links) !== JSON.stringify(initial);
+
+  // Collect link slots (every key ending with _href / href / _action)
+  const slots = Object.keys(links).filter((k) => /_href$|^href$|action$/.test(k));
+  if (slots.length === 0) return null;
+
+  const setHref   = (k, v) => setLinks((s) => ({ ...s, [k]: v }));
+  const setTarget = (k, openNewTab) => {
+    const tKey = k.endsWith('_href') ? k.replace(/_href$/, '_target') : `${k}_target`;
+    setLinks((s) => ({ ...s, [tKey]: openNewTab ? '_blank' : '_self' }));
+  };
+  const tKeyFor = (k) => (k.endsWith('_href') ? k.replace(/_href$/, '_target') : `${k}_target`);
+
+  const save = async () => {
+    setBusy(true); setSaved(false);
+    try {
+      // Merge with existing settings so we don't clobber blocks/media
+      const newSettings = { ...(section.settings || {}), links };
+      await adminApi.patchSection(section.id, { settings: newSettings });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2200);
+      onSaved?.();
+    } catch (e) {
+      window.alert('Errore salvataggio link: ' + (e?.response?.data?.detail || e.message));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div style={{ marginTop: 18, padding: '14px 16px', background: 'rgba(255,255,255,0.02)',
+                  border: '1px solid rgba(255,255,255,0.06)', borderRadius: 6 }}
+         data-testid={`section-links-${section.id}`}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+        <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.7rem', fontWeight: 500,
+                    letterSpacing: '0.18em', textTransform: 'uppercase',
+                    color: 'var(--mood-teal, #00C9B3)', margin: 0 }}>
+          Link / CTA
+        </p>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          {saved && <span style={{ fontSize:'0.7rem', color:'rgba(0,201,179,0.9)' }}>✓ salvato</span>}
+          <button onClick={save} disabled={busy || !dirty}
+                  style={{
+                    padding: '0.45rem 0.95rem', fontSize: '0.7rem',
+                    background: dirty ? 'var(--mood-teal, #00C9B3)' : 'rgba(255,255,255,0.08)',
+                    color: dirty ? '#000' : 'rgba(255,255,255,0.55)',
+                    border: 'none', cursor: (busy || !dirty) ? 'not-allowed' : 'pointer',
+                    opacity: (busy || !dirty) ? 0.55 : 1, fontWeight: 500,
+                    fontFamily: 'Inter, sans-serif', letterSpacing: '0.04em',
+                  }}
+                  data-testid={`section-links-save-${section.id}`}>
+            {busy ? 'Salvataggio…' : 'Salva link'}
+          </button>
+        </div>
+      </div>
+      {slots.map((k) => {
+        const open = links[tKeyFor(k)] === '_blank';
+        return (
+          <div key={k} style={{ display: 'grid', gridTemplateColumns: '180px 1fr auto',
+                                 gap: 10, alignItems: 'center', marginBottom: 8 }}>
+            <code style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.55)',
+                           fontFamily: 'monospace' }}>{k}</code>
+            <input
+              type="text"
+              value={links[k] || ''}
+              onChange={(e) => setHref(k, e.target.value)}
+              placeholder="/url-interno  oppure  https://..."
+              style={{
+                background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)',
+                color: '#FFF', padding: '0.5rem 0.7rem', fontSize: '0.84rem',
+                outline: 'none', fontFamily: 'Inter, sans-serif',
+              }}
+              data-testid={`section-link-href-${section.id}-${k}`}
+            />
+            <label title="Apre il link in una nuova scheda"
+                   style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.7rem',
+                            color: 'rgba(255,255,255,0.55)', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+              <input
+                type="checkbox" checked={open}
+                onChange={(e) => setTarget(k, e.target.checked)}
+                style={{ accentColor: 'var(--mood-teal, #00C9B3)' }}
+                data-testid={`section-link-target-${section.id}-${k}`}
+              />
+              nuova scheda
+            </label>
+          </div>
+        );
+      })}
     </div>
   );
 };

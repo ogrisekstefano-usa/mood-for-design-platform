@@ -1,5 +1,6 @@
 import React from 'react';
 import { useReveal } from '../hooks/useReveal';
+import { linkTarget } from '../utils/linkTarget';
 
 /**
  * FinalCTA — closing editorial CTA with cinematic architectural background.
@@ -62,7 +63,7 @@ const FinalCTA = ({ content = {}, media = {}, links = {}, options = {} }) => {
 
           {content.cta_primary && (
             <div className="mt-12 flex items-center justify-center">
-              <a href={links.cta_primary_href || '#'} className="btn-pill-teal" data-testid="final-cta-primary">
+              <a href={links.cta_primary_href || '#'} {...linkTarget(links.cta_primary_target)} className="btn-pill-teal" data-testid="final-cta-primary">
                 {content.cta_primary}
               </a>
             </div>

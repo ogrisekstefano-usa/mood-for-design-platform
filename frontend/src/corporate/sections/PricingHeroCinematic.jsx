@@ -21,7 +21,7 @@ const PricingHeroCinematic = ({ content = {}, media = {} }) => {
       className={`relative overflow-hidden reveal ${visible ? 'visible' : ''}`}
       style={{
         background: '#000000',
-        minHeight: 'clamp(560px, 68vh, 780px)',
+        minHeight: 'clamp(640px, 84vh, 920px)',
       }}
       data-testid="pricing-hero-cinematic"
     >
@@ -48,8 +48,12 @@ const PricingHeroCinematic = ({ content = {}, media = {} }) => {
         }}
       />
 
-      {/* Editorial text block — top-left */}
-      <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-20 py-16 lg:py-24">
+      {/* Editorial text block — vertically centered to match panoramic heroes */}
+      <div
+        className="relative z-10 flex items-center"
+        style={{ minHeight: 'clamp(640px, 84vh, 920px)' }}
+      >
+        <div className="w-full max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-20 py-16 lg:py-24">
         <div className="w-full max-w-[640px]">
           {content.eyebrow && (
             <p
@@ -91,6 +95,7 @@ const PricingHeroCinematic = ({ content = {}, media = {} }) => {
               {content.subtitle}
             </p>
           )}
+        </div>
         </div>
       </div>
     </section>

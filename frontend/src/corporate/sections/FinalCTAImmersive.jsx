@@ -1,5 +1,6 @@
 import React from 'react';
 import { useReveal } from '../hooks/useReveal';
+import { linkTarget } from '../utils/linkTarget';
 
 /**
  * FinalCTAImmersive — short cinematic CTA band.
@@ -73,7 +74,7 @@ const FinalCTAImmersive = ({ content = {}, media = {}, links = {} }) => {
 
           {content.cta_primary && (
             <div className="mt-8 flex items-center justify-end">
-              <a href={links.cta_primary_href || '#'} className="btn-pill-teal" data-testid="final-cta-primary">
+              <a href={links.cta_primary_href || '#'} {...linkTarget(links.cta_primary_target)} className="btn-pill-teal" data-testid="final-cta-primary">
                 {content.cta_primary}
               </a>
             </div>

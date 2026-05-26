@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useReveal } from '../hooks/useReveal';
+import { linkTarget } from '../utils/linkTarget';
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
 
@@ -74,7 +75,7 @@ const LoginHero = ({ content = {}, media = {}, links = {} }) => {
     <section
       ref={ref}
       className={`relative overflow-hidden reveal ${visible ? 'visible' : ''}`}
-      style={{ background: '#000000', minHeight: 'clamp(680px, 88vh, 940px)' }}
+      style={{ background: '#000000', minHeight: 'clamp(640px, 84vh, 920px)' }}
       data-testid="login-hero"
     >
       {bg && bg.url && (
@@ -97,7 +98,7 @@ const LoginHero = ({ content = {}, media = {}, links = {} }) => {
         }}
       />
 
-      <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-20 py-20 lg:py-28 flex items-center" style={{ minHeight: 'clamp(680px, 88vh, 940px)' }}>
+      <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-20 py-20 lg:py-28 flex items-center" style={{ minHeight: 'clamp(640px, 84vh, 920px)' }}>
         <div className="w-full max-w-[520px]">
           {content.eyebrow && (
             <p
@@ -246,6 +247,7 @@ const LoginHero = ({ content = {}, media = {}, links = {} }) => {
               {content.register_link_label && (
                 <Link
                   to={links.register_href || '/dedicato-a'}
+                  {...linkTarget(links.register_target)}
                   style={{ color: 'var(--mood-teal, #00C9B3)', textDecoration: 'none', fontWeight: 500 }}
                   onMouseEnter={(e) => { e.currentTarget.style.textDecoration = 'underline'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.textDecoration = 'none'; }}

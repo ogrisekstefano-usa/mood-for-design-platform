@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useReveal } from '../hooks/useReveal';
+import { linkTarget } from '../utils/linkTarget';
 
 /**
  * TrainingHero — panoramic editorial hero (unified pattern with the
@@ -107,6 +108,7 @@ const TrainingHero = ({ content = {}, media = {}, links = {} }) => {
                 {content.cta_primary && (
                   <Link
                     to={links.cta_primary_href || '#percorsi'}
+                    {...linkTarget(links.cta_primary_target)}
                     style={{
                       display: 'inline-block',
                       fontFamily: 'Inter, sans-serif', fontSize: '0.82rem',
@@ -126,6 +128,7 @@ const TrainingHero = ({ content = {}, media = {}, links = {} }) => {
                 {content.cta_secondary && (
                   <Link
                     to={links.cta_secondary_href || '#tutorial'}
+                    {...linkTarget(links.cta_secondary_target)}
                     style={{
                       fontFamily: 'Inter, sans-serif', fontSize: '0.82rem',
                       fontWeight: 400, letterSpacing: '0.04em',

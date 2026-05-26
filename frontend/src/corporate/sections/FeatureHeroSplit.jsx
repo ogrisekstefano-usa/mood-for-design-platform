@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useReveal } from '../hooks/useReveal';
+import { linkTarget } from '../utils/linkTarget';
 
 /**
  * FeatureHeroSplit — full-width cinematic panoramic hero.
@@ -31,8 +32,8 @@ const FeatureHeroSplit = ({ content = {}, media = {}, links = {} }) => {
       className={`relative overflow-hidden reveal ${visible ? 'visible' : ''}`}
       style={{
         background: '#000000',
-        // Panoramic, not full height
-        minHeight: 'clamp(520px, 62vh, 720px)',
+        // Panoramic, unified cinematic height
+        minHeight: 'clamp(640px, 84vh, 920px)',
       }}
       data-testid="feature-hero-split"
     >
@@ -60,8 +61,12 @@ const FeatureHeroSplit = ({ content = {}, media = {}, links = {} }) => {
         }}
       />
 
-      {/* Text overlay — top-left */}
-      <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-20 py-16 lg:py-24">
+      {/* Text overlay — vertically centered to match all panoramic heroes */}
+      <div
+        className="relative z-10 flex items-center"
+        style={{ minHeight: 'clamp(640px, 84vh, 920px)' }}
+      >
+        <div className="w-full max-w-screen-2xl mx-auto px-6 md:px-12 lg:px-20 py-16 lg:py-24">
         <div className="w-full max-w-[560px]">
           {content.eyebrow && (
             <p
@@ -105,6 +110,7 @@ const FeatureHeroSplit = ({ content = {}, media = {}, links = {} }) => {
             <div className="mt-9 lg:mt-11">
               <Link
                 to={links.cta_href || '/dedicato-a'}
+                {...linkTarget(links.cta_target)}
                 style={{
                   display: 'inline-block',
                   fontFamily: 'Inter, sans-serif', fontSize: '0.82rem',
@@ -122,6 +128,7 @@ const FeatureHeroSplit = ({ content = {}, media = {}, links = {} }) => {
               </Link>
             </div>
           )}
+        </div>
         </div>
       </div>
     </section>
