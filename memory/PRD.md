@@ -200,6 +200,14 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **`routers/admin_site.py:upsert_block`** split into `_validate_block_payload`, `_upsert_editorial_block_row`, `_upsert_block_translations`
 - **Type hints** added to `database.py` (engine, sessionmaker, `get_db()`)
 
+### Admin Media Upload (Feb 2026)
+- **Backend**: `POST /api/admin/site/media/upload` (multipart, JPEG/PNG/WebP/AVIF, max 25MB) — uploads to Supabase Storage bucket `cms-assets`, extracts width/height/dominant_color via Pillow, inserts into `media_library`.
+- **Backend**: `DELETE /api/admin/site/media/{id}` — soft-archive (sets `archived_at`).
+- **Frontend**: `src/admin/components/MediaUploader.jsx` — drag/drop, react-easy-crop for crop with 7 aspect presets (1:1, 4:5, 3:2, 16:9, 21:9, 9:16, free), 6 filter presets (Editoriale, Cinematico, B&N, Caldo, Freddo, Matte) + 6 fine sliders (brightness 50-150%, contrast 50-150%, saturate 0-200%, grayscale 0-100%, sepia 0-100%, blur 0-8px). Canvas pipeline produces a Blob with cropped + filtered output before upload.
+- **Frontend**: `src/admin/utils/cropFilter.js` — pure canvas utility, no extra deps beyond `react-easy-crop`.
+- **Frontend**: `MediaLibrary.jsx` updated with `Carica foto` (upload) and `Registra URL` buttons + per-card delete with confirm.
+- **Validated**: real upload test produced `400×300` JPEG with `#7832C8` dominant color matching the source, then DELETE soft-archived correctly.
+
 ### Code review false-positive policy
 - All `is`/`is not` comparisons in the codebase are `is None` / `is not None` — **PEP 8 mandated**, do NOT change to `==`. Any tool reporting these as bugs is producing systematic false positives (lacks `R0124` whitelisting).
 

@@ -44,6 +44,10 @@ export const adminApi = {
   // Media
   listMedia:     (category) => client.get('/media', { params: { category } }),
   registerMedia: (body) => client.post('/media/register', body),
+  uploadMedia:   (formData) => client.post('/media/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
+  deleteMedia:   (id) => client.delete(`/media/${id}`),
 
   // Publish
   publish:       (slug) => client.post(`/pages/${slug}/publish`),

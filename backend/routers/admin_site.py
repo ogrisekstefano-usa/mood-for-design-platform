@@ -4,14 +4,15 @@ Endpoints consumed by Blueprint Command Center UI to edit ALL public website
 content — editorial_blocks, cms_sections, media references — with publish
 workflow and locale completeness.
 """
-from typing import Any
-from fastapi import APIRouter, Depends, HTTPException, Query, Body
+from typing import Any, Optional
+from fastapi import APIRouter, Depends, HTTPException, Query, Body, File, UploadFile, Form
 from sqlalchemy import text
 from datetime import datetime, timezone
 
 from database import AsyncSessionLocal
 from routers._auth import require_admin_tenant
 from services import site_resolver
+from services import storage as supa_storage
 
 router = APIRouter(prefix="/admin/site", tags=["admin-site"])
 
@@ -357,6 +358,111 @@ async def register_external_media(
         )).first()
         await session.commit()
         return {"id": str(r[0])}
+
+
+@router.post("/media/upload")
+async def upload_media(
+    file: UploadFile = File(...),
+    alt_text: str = Form(default=''),
+    category: str = Form(default='site'),
+    description: Optional[str] = Form(default=None),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """
+    Direct file upload to Supabase Storage with metadata in media_library.
+    Accepts JPEG/PNG/WebP/AVIF. Max 25MB (post crop/filter compression).
+    """
+    if file.content_type not in ('image/jpeg', 'image/png', 'image/webp', 'image/avif'):
+        raise HTTPException(400, f"Unsupported MIME: {file.content_type}")
+    raw = await file.read()
+    if not raw:
+        raise HTTPException(400, "Empty file")
+    if len(raw) > 25 * 1024 * 1024:
+        raise HTTPException(413, "File too large (max 25MB)")
+
+    # Extract dimensions + dominant color (Pillow)
+    try:
+        from PIL import Image
+        import io as _io
+        from collections import Counter
+        img = Image.open(_io.BytesIO(raw))
+        img.load()
+        w, h = img.size
+        thumb = img.convert('RGB').resize((48, 48))
+        quant = thumb.quantize(colors=4)
+        palette = quant.getpalette()[:12]
+        idx = Counter(quant.getdata()).most_common(1)[0][0]
+        r0, g0, b0 = palette[idx*3], palette[idx*3+1], palette[idx*3+2]
+        dominant = f"#{r0:02X}{g0:02X}{b0:02X}"
+    except Exception:
+        w = h = None
+        dominant = None
+
+    # Upload to Supabase Storage (cms-assets bucket)
+    import uuid
+    safe_name = (file.filename or 'upload').rsplit('.', 1)[0][:60]
+    ext = (file.content_type.split('/')[-1] or 'jpg').replace('jpeg', 'jpg')
+    storage_path = f"{tenant['id']}/{category}/{uuid.uuid4().hex[:10]}-{safe_name}.{ext}"
+    public_url = await supa_storage.upload_file(
+        bucket=supa_storage.BUCKET_CMS_ASSETS,
+        storage_path=storage_path,
+        file_bytes=raw,
+        content_type=file.content_type,
+    )
+
+    async with AsyncSessionLocal() as session:
+        row = (await session.execute(
+            text("""
+                INSERT INTO media_library
+                  (id, tenant_id, bucket, storage_path, file_url, file_name, file_type,
+                   alt_text, category, description, mime_type, width, height,
+                   dominant_color, created_at)
+                VALUES
+                  (gen_random_uuid(), :tid, :bk, :sp, :url, :fname, :mt,
+                   :alt, :cat, :desc, :mt, :w, :h, :dc, NOW())
+                RETURNING id, file_url, alt_text, category, mime_type, width, height,
+                          dominant_color, file_name, created_at
+            """),
+            {"tid": tenant['id'], "bk": supa_storage.BUCKET_CMS_ASSETS,
+             "sp": storage_path, "url": public_url,
+             "fname": f"{safe_name}.{ext}",
+             "alt": alt_text or None, "cat": category,
+             "desc": description, "mt": file.content_type,
+             "w": w, "h": h, "dc": dominant},
+        )).mappings().first()
+        await session.commit()
+        return {
+            "id": str(row['id']),
+            "file_url": row['file_url'],
+            "alt_text": row['alt_text'],
+            "category": row['category'],
+            "width": row['width'], "height": row['height'],
+            "dominant_color": row['dominant_color'],
+            "file_name": row['file_name'],
+            "mime_type": row['mime_type'],
+            "created_at": row['created_at'].isoformat() if row['created_at'] else None,
+        }
+
+
+@router.delete("/media/{media_id}")
+async def delete_media(
+    media_id: str,
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """Soft-archive a media_library entry. Storage object is kept (manual cleanup)."""
+    async with AsyncSessionLocal() as session:
+        r = await session.execute(
+            text("""
+                UPDATE media_library SET archived_at = NOW()
+                WHERE id = CAST(:mid AS uuid) AND tenant_id = :tid AND archived_at IS NULL
+                RETURNING id
+            """),
+            {"mid": media_id, "tid": tenant['id']},
+        )
+        if r.first() is None:
+            raise HTTPException(404, "Media not found")
+        await session.commit()
+        return {"ok": True}
 
 
 # ─────────────────────────────────────────────────────────────────────────
