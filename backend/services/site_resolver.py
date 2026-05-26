@@ -224,8 +224,8 @@ async def resolve_navigation(locale: str = DEFAULT_LOCALE) -> dict:
             )).mappings().first()
 
             settings = (sec_row or {}).get('settings') or {}
-            items_cfg: list[dict] = settings.get('items') or []   # [{key, href, label_block, visible}]
-            cta_cfg: dict | None  = settings.get('cta') or None   # {key, href, label_block}
+            items_cfg: list[dict] = settings.get('items') or []   # [{key, href, label_block, visible, position?}]
+            cta_cfg: dict | None  = settings.get('cta') or None   # legacy {key, href, label_block}
 
             block_keys: list[str] = []
             for it in items_cfg:
@@ -236,14 +236,17 @@ async def resolve_navigation(locale: str = DEFAULT_LOCALE) -> dict:
 
             values = await _fetch_block_values(session, tenant['id'], block_keys, locale)
 
-            main = [
-                {
-                    'key': it['key'],
+            def _render(it: dict) -> dict:
+                return {
+                    'key':  it['key'],
                     'href': it['href'],
                     'label': values.get(it.get('label_block', ''), '') or it.get('fallback', it['key']),
                 }
-                for it in items_cfg if it.get('visible', True)
-            ]
+
+            visible = [it for it in items_cfg if it.get('visible', True)]
+            main  = [_render(it) for it in visible if (it.get('position') or 'main') == 'main']
+            right = [_render(it) for it in visible if it.get('position') == 'right']
+
             cta = None
             if cta_cfg:
                 cta = {
@@ -252,7 +255,7 @@ async def resolve_navigation(locale: str = DEFAULT_LOCALE) -> dict:
                     'label': values.get(cta_cfg.get('label_block', ''), '') or cta_cfg.get('fallback', ''),
                 }
 
-            return {'main': main, 'cta': cta}
+            return {'main': main, 'right': right, 'cta': cta}
 
     return await content_cache.get_or_set(cache_key, loader, ttl=60)
 

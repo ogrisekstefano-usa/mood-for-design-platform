@@ -17,13 +17,15 @@ const LogoLink = ({ compact = false }) => (
 );
 
 /**
- * MinimalNav — ITER149 navigation matching the official mockup.
- * Left: Logo. Center: Magazine · Projects · Materials · About.
- * Right: Sign in · Begin your Journey (outline) · Professional Access (cyan filled).
+ * MinimalNav — ITER151 navigation.
+ * Left: Logo.
+ * Center: main items (Dedicato a · Caratteristiche · Versioni e Prezzi · Formazione).
+ * Right: secondary links (Supporto · Accedi) — no pill CTAs.
+ * Driven by /api/site/navigation → { main, right }.
  */
 const MinimalNav = () => {
   const location = useLocation();
-  const { main, cta, secondary_cta } = useSiteNavigation();
+  const { main, right } = useSiteNavigation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -35,10 +37,31 @@ const MinimalNav = () => {
 
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
-  const centerMain = main.filter((m) => m.key !== 'sign_in');
-  const signIn     = main.find((m) => m.key === 'sign_in');
-
   const showSolid = scrolled || mobileOpen;
+  const linkColor = (active) => (active ? 'var(--mood-teal)' : 'var(--mood-text-1)');
+
+  const NavLink = ({ item, testid, fontSize = '0.98rem' }) => {
+    const active = location.pathname === item.href;
+    return (
+      <Link
+        to={item.href}
+        style={{
+          fontFamily: 'Inter, sans-serif',
+          fontSize,
+          fontWeight: 500,
+          textDecoration: 'none',
+          color: linkColor(active),
+          transition: 'color 0.2s',
+          letterSpacing: '0.01em',
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--mood-teal)')}
+        onMouseLeave={(e) => (e.currentTarget.style.color = linkColor(active))}
+        data-testid={testid}
+      >
+        {item.label}
+      </Link>
+    );
+  };
 
   return (
     <nav
@@ -52,66 +75,30 @@ const MinimalNav = () => {
       <div className="max-w-screen-2xl mx-auto px-6 md:px-10 lg:px-16 flex items-center h-[92px] gap-6">
         <LogoLink />
 
+        {/* Center: main */}
         <div className="hidden lg:flex items-center gap-9 mx-auto">
-          {centerMain.map(item => {
-            const isActive = location.pathname === item.href;
-            return (
-              <Link
-                key={item.key}
-                to={item.href}
-                style={{
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '0.98rem',
-                  fontWeight: 500,
-                  textDecoration: 'none',
-                  color: isActive ? 'var(--mood-teal)' : 'var(--mood-text-1)',
-                  transition: 'color 0.2s',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--mood-teal)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = isActive ? 'var(--mood-teal)' : 'var(--mood-text-1)')}
-                data-testid={`nav-link-${item.key}`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
+          {main.map((item) => (
+            <NavLink key={item.key} item={item} testid={`nav-link-${item.key}`} />
+          ))}
         </div>
 
-        <div className="hidden lg:flex items-center gap-4 ml-auto">
-          {signIn && (
-            <Link
-              to={signIn.href}
-              style={{
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '0.95rem',
-                fontWeight: 500,
-                color: 'var(--mood-text-1)',
-                textDecoration: 'none',
-                transition: 'color 0.2s',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--mood-teal)')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--mood-text-1)')}
-              data-testid="nav-sign-in"
-            >
-              {signIn.label}
-            </Link>
-          )}
-          {cta && (
-            <Link to={cta.href} className="btn-pill-outline" style={{ padding: '0.6rem 1.25rem', fontSize: '0.85rem' }} data-testid="nav-primary-cta">
-              {cta.label}
-            </Link>
-          )}
-          {secondary_cta && (
-            <Link to={secondary_cta.href} className="btn-pill-teal" style={{ padding: '0.6rem 1.25rem', fontSize: '0.85rem' }} data-testid="nav-secondary-cta">
-              {secondary_cta.label}
-            </Link>
-          )}
+        {/* Right: secondary links — plain, no pills */}
+        <div className="hidden lg:flex items-center gap-7 ml-auto">
+          {right.map((item, idx) => (
+            <NavLink
+              key={item.key}
+              item={item}
+              testid={`nav-right-${item.key}`}
+              fontSize={idx === right.length - 1 ? '0.92rem' : '0.92rem'}
+            />
+          ))}
         </div>
 
+        {/* Mobile hamburger */}
         <button
           className="lg:hidden ml-auto p-2"
           style={{ color: 'var(--mood-text-1)' }}
-          onClick={() => setMobileOpen(o => !o)}
+          onClick={() => setMobileOpen((o) => !o)}
           aria-label="Toggle menu"
           data-testid="mobile-menu-toggle"
         >
@@ -123,21 +110,22 @@ const MinimalNav = () => {
         <div
           className="lg:hidden px-6 py-8 space-y-5 border-t"
           style={{ background: '#000000', borderColor: 'var(--mood-line-soft)' }}
+          data-testid="mobile-nav-panel"
         >
-          {main.map(item => (
+          {[...main, ...right].map((item) => (
             <Link
               key={item.key}
               to={item.href}
-              style={{ display: 'block', fontFamily: 'Inter, sans-serif', fontSize: '1.05rem', fontWeight: 500, color: 'var(--mood-text-1)', textDecoration: 'none' }}
+              style={{
+                display: 'block', fontFamily: 'Inter, sans-serif',
+                fontSize: '1.05rem', fontWeight: 500,
+                color: 'var(--mood-text-1)', textDecoration: 'none',
+              }}
               data-testid={`mobile-nav-${item.key}`}
             >
               {item.label}
             </Link>
           ))}
-          <div className="pt-4 flex flex-col gap-3" style={{ borderTop: '1px solid var(--mood-line-soft)' }}>
-            {cta && <Link to={cta.href} className="btn-pill-outline" style={{ padding: '0.7rem 1.4rem', fontSize: '0.85rem', justifyContent: 'center' }}>{cta.label}</Link>}
-            {secondary_cta && <Link to={secondary_cta.href} className="btn-pill-teal" style={{ padding: '0.7rem 1.4rem', fontSize: '0.85rem', justifyContent: 'center' }}>{secondary_cta.label}</Link>}
-          </div>
         </div>
       )}
     </nav>

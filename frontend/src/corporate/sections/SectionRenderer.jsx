@@ -5,6 +5,8 @@ import PlatformPillars from './PlatformPillars';
 import DesignJourney from './DesignJourney';
 import EditorialTriptych from './EditorialTriptych';
 import FinalCTAImmersive from './FinalCTAImmersive';
+import PageHero from './PageHero';
+import PageIntro from './PageIntro';
 
 import HeroCinematic from './HeroCinematic';
 import SelectedProjects from './SelectedProjects';
@@ -49,6 +51,10 @@ export const SECTION_REGISTRY = {
   design_journey:       DesignJourney,
   editorial_triptych:   EditorialTriptych,
   final_cta_immersive:  FinalCTAImmersive,
+
+  // ITER151 — generic dynamic page sections
+  page_hero:            PageHero,
+  page_intro:           PageIntro,
 
   // ITER149 — DB-driven sections
   hero_cinematic:       HeroCinematic,

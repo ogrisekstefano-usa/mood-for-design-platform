@@ -208,6 +208,18 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **Frontend**: `MediaLibrary.jsx` updated with `Carica foto` (upload) and `Registra URL` buttons + per-card delete with confirm.
 - **Validated**: real upload test produced `400×300` JPEG with `#7832C8` dominant color matching the source, then DELETE soft-archived correctly.
 
+### ITER151 Phase 1 — Public Website Restructure (Feb 2026)
+- **New top navigation** (Italian source, locale-fallback ready): Dedicato a · Caratteristiche · Versioni e Prezzi · Formazione + (Supporto · Accedi). Removed "Inizia il Percorso" / "Accesso Professionale" CTAs entirely.
+- **Backend resolver**: `site_resolver.resolve_navigation()` now returns `{main, right, cta}` grouping nav items by `position` setting.
+- **Homepage CTA collapse**: hero + final_cta now show a single `Scopri MOOD for DESIGN` button (cta_secondary forced empty for all locales).
+- **6 new dynamic pages** in `cms_pages` (canonical EN slug: audience, features, pricing, training, support, login). Each has 2 sections (`page_hero` + `page_intro`) and editorial blocks (eyebrow/title/subtitle/intro_body/cta_label/seo_title/seo_description).
+- **Localized routing**: `src/corporate/routes/localizedSlugs.js` maps 6 canonical keys × 6 locales (IT/EN-US/EN-UK/FR/DE/ES) → 36 React routes resolving to same component. IT slugs: `/dedicato-a`, `/caratteristiche`, `/versioni-prezzi`, `/formazione`, `/supporto`, `/accedi`. `/login` retained for backwards compat.
+- **2 new section renderers**: `PageHero.jsx` (cinematic hero with optional bg), `PageIntro.jsx` (Playfair italic editorial intro + outline CTA pill). Both registered in `SECTION_REGISTRY`.
+- **Legacy redirects**: `/begin-journey` → `/dedicato-a`, `/professional-access` → `/accedi`.
+- **Seed script**: `db/seed_iter151_pages.py` — idempotent, 55 editorial_blocks + 6 cms_pages + 12 cms_sections + nav rewrite.
+- **Tone**: Italian editorial copy (sober, cinematic, Apple × Architectural Digest × Aman Journal register). Non-IT locales inherit via fallback chain until Phase 3.
+- **Validated**: home + /caratteristiche + /versioni-prezzi all render correctly via screenshots.
+
 ### Code review false-positive policy
 - All `is`/`is not` comparisons in the codebase are `is None` / `is not None` — **PEP 8 mandated**, do NOT change to `==`. Any tool reporting these as bugs is producing systematic false positives (lacks `R0124` whitelisting).
 

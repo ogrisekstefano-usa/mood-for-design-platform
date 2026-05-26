@@ -51,3 +51,10 @@ export const MaterialsPage         = () => <SitePage slug="materials" />;
 export const AboutPage             = () => <SitePage slug="about" />;
 export const BeginJourneyPage      = () => <SitePage slug="begin-journey" />;
 export const ProfessionalAccessPg  = () => <SitePage slug="professional-access" />;
+
+// ITER151 — new dynamic pages
+export const AudiencePage  = () => <SitePage slug="audience" />;
+export const FeaturesPage  = () => <SitePage slug="features" />;
+export const PricingPage   = () => <SitePage slug="pricing" />;
+export const TrainingPage  = () => <SitePage slug="training" />;
+export const SupportPage   = () => <SitePage slug="support" />;
