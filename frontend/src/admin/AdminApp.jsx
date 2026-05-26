@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, NavLink, useNavigate, Navigate } from 'react-router-dom';
-import { LogOut, FileText, Layout, Image, Settings as SettingsIcon, RefreshCw, ExternalLink } from 'lucide-react';
+import { LogOut, FileText, Layout, Image, Settings as SettingsIcon, RefreshCw, ExternalLink, BookOpen } from 'lucide-react';
 import { adminAuth, adminApi } from './adminApi';
 import BlocksEditor from './pages/BlocksEditor';
 import SectionsManager from './pages/SectionsManager';
 import MediaLibrary from './pages/MediaLibrary';
 import PublishConsole from './pages/PublishConsole';
+import PagesEditor from './pages/PagesEditor';
 
 const AdminLogin = ({ onSuccess }) => {
   const [tenant, setTenant] = useState(adminAuth.getTenant());
@@ -114,6 +115,7 @@ const AdminShell = ({ children }) => {
         </div>
 
         <nav className="space-y-1 mt-6">
+          <NavItem to="/admin/pages"    icon={BookOpen}     label="Pagine" />
           <NavItem to="/admin/blocks"   icon={FileText}     label="Editorial Blocks" />
           <NavItem to="/admin/sections" icon={Layout}       label="Sections" />
           <NavItem to="/admin/media"    icon={Image}        label="Media Library" />
@@ -168,12 +170,13 @@ const AdminApp = () => {
   return (
     <AdminShell>
       <Routes>
-        <Route index            element={<Navigate to="/admin/blocks" replace />} />
+        <Route index            element={<Navigate to="/admin/pages" replace />} />
+        <Route path="pages"     element={<PagesEditor />} />
         <Route path="blocks"    element={<BlocksEditor />} />
         <Route path="sections"  element={<SectionsManager />} />
         <Route path="media"     element={<MediaLibrary />} />
         <Route path="publish"   element={<PublishConsole />} />
-        <Route path="*"         element={<Navigate to="/admin/blocks" replace />} />
+        <Route path="*"         element={<Navigate to="/admin/pages" replace />} />
       </Routes>
     </AdminShell>
   );

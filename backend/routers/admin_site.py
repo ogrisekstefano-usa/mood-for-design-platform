@@ -288,6 +288,288 @@ async def reorder_sections(
         return {"ok": True, "count": len(ordered)}
 
 
+@router.get("/pages")
+async def list_admin_pages(
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """List all CMS pages for the page-editor sidebar."""
+    async with AsyncSessionLocal() as session:
+        rows = (await session.execute(
+            text("""
+                SELECT id, page_key, title, status, updated_at
+                FROM cms_pages
+                WHERE tenant_id = :tid AND COALESCE(deleted_at IS NULL, true)
+                ORDER BY
+                  CASE page_key
+                    WHEN 'home' THEN 0
+                    WHEN 'audience' THEN 1
+                    WHEN 'features' THEN 2
+                    WHEN 'pricing' THEN 3
+                    WHEN 'training' THEN 4
+                    WHEN 'support' THEN 5
+                    WHEN 'login' THEN 6
+                    ELSE 99
+                  END,
+                  page_key
+            """),
+            {"tid": tenant['id']},
+        )).mappings().all()
+        return {"pages": [
+            {"id": str(r['id']), "key": r['page_key'], "title": r['title'],
+             "status": r['status'],
+             "updated_at": r['updated_at'].isoformat() if r['updated_at'] else None}
+            for r in rows
+        ]}
+
+
+# ─────────────────────────────────────────────────────────────────────────
+#  PAGE CONTENT EDITOR  (ITER151 — unified text + media editing per page)
+# ─────────────────────────────────────────────────────────────────────────
+
+@router.get("/page-content/{page_key}")
+async def get_page_content(
+    page_key: str,
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """
+    Returns full editable content for a page in ONE call:
+    - sections (with type, sort_order, visible)
+    - text blocks (auto-discovered from section.settings.blocks, with translations)
+    - media slots (auto-discovered from section.settings.media, with media metadata)
+    """
+    async with AsyncSessionLocal() as session:
+        page = (await session.execute(
+            text("SELECT id, page_key, title, status FROM cms_pages WHERE tenant_id=:tid AND page_key=:slug"),
+            {"tid": tenant['id'], "slug": page_key},
+        )).mappings().first()
+        if not page:
+            raise HTTPException(404, f"Page '{page_key}' not found")
+
+        sec_rows = (await session.execute(
+            text("""
+                SELECT id, section_type, sort_order, visible, settings
+                FROM cms_sections
+                WHERE page_id=:pid AND COALESCE(deleted_at IS NULL, true)
+                ORDER BY sort_order
+            """),
+            {"pid": page['id']},
+        )).mappings().all()
+
+        # Auto-discover all block keys and media UUIDs referenced
+        all_block_keys: set[str] = set()
+        all_media_ids: set[str] = set()
+        section_data = []
+        for s in sec_rows:
+            settings = s['settings'] or {}
+            blocks_map = settings.get('blocks') or {}
+            media_map  = settings.get('media')  or {}
+            for k in blocks_map.values():
+                if isinstance(k, str):
+                    all_block_keys.add(k)
+            for mid in media_map.values():
+                if isinstance(mid, str):
+                    all_media_ids.add(mid)
+            section_data.append({
+                "id":          str(s['id']),
+                "section_type": s['section_type'],
+                "sort_order":  s['sort_order'],
+                "visible":     s['visible'],
+                "blocks_map":  blocks_map,
+                "media_map":   media_map,
+                "settings":    settings,
+            })
+
+        # Bulk fetch blocks + translations
+        blocks_by_key: dict[str, dict] = {}
+        if all_block_keys:
+            # Split each full_key 'site.home.hero.title' → namespace + block_key
+            # using same convention as resolver: ns = first 2 parts, key = rest
+            block_lookups: list[tuple[str, str, str]] = []
+            for fk in all_block_keys:
+                parts = fk.split('.')
+                if len(parts) < 3:
+                    continue
+                ns = '.'.join(parts[:2])
+                bk = '.'.join(parts[2:])
+                block_lookups.append((fk, ns, bk))
+
+            # Build a UNION of (ns, key) pairs in one query
+            namespaces = tuple({n for _, n, _ in block_lookups})
+            keys       = tuple({k for _, _, k in block_lookups})
+            rows = (await session.execute(
+                text("""
+                    SELECT b.id, b.namespace, b.block_key, b.block_type, b.source_locale, b.source_value,
+                           COALESCE(
+                             (SELECT json_agg(json_build_object('locale', t.locale, 'value', t.value))
+                              FROM editorial_block_translations t WHERE t.block_id = b.id),
+                             '[]'::json
+                           ) AS translations
+                    FROM editorial_blocks b
+                    WHERE b.tenant_id = :tid
+                      AND b.namespace = ANY(:nss)
+                      AND b.block_key = ANY(:bks)
+                """),
+                {"tid": tenant['id'], "nss": list(namespaces), "bks": list(keys)},
+            )).mappings().all()
+            indexed = {(r['namespace'], r['block_key']): r for r in rows}
+            for full_key, ns, bk in block_lookups:
+                row = indexed.get((ns, bk))
+                if not row:
+                    blocks_by_key[full_key] = {
+                        "full_key": full_key, "id": None, "block_type": "text",
+                        "source_locale": None, "source_value": "", "translations": {},
+                    }
+                    continue
+                trs = {t['locale']: t['value'] for t in (row['translations'] or [])}
+                blocks_by_key[full_key] = {
+                    "full_key":      full_key,
+                    "id":            str(row['id']),
+                    "block_type":    row['block_type'],
+                    "source_locale": row['source_locale'],
+                    "source_value":  row['source_value'],
+                    "translations":  trs,
+                }
+
+        # Bulk fetch media
+        media_by_id: dict[str, dict] = {}
+        if all_media_ids:
+            mrows = (await session.execute(
+                text("""
+                    SELECT id, file_url, alt_text, category, mime_type,
+                           width, height, dominant_color, file_name
+                    FROM media_library
+                    WHERE id = ANY(CAST(:ids AS uuid[])) AND archived_at IS NULL
+                """),
+                {"ids": list(all_media_ids)},
+            )).mappings().all()
+            for m in mrows:
+                media_by_id[str(m['id'])] = {
+                    **dict(m), "id": str(m['id']),
+                }
+
+        # Assemble final response: each section gets its resolved blocks + media
+        sections_out = []
+        for sd in section_data:
+            blocks_out = []
+            for slot, full_key in sd['blocks_map'].items():
+                if not isinstance(full_key, str):
+                    continue
+                b = blocks_by_key.get(full_key)
+                if b:
+                    blocks_out.append({"slot": slot, **b})
+            media_out = []
+            for slot, media_id in sd['media_map'].items():
+                if not isinstance(media_id, str):
+                    continue
+                m = media_by_id.get(media_id)
+                media_out.append({
+                    "slot":      slot,
+                    "media_id":  media_id,
+                    "media":     m,  # None if archived/missing
+                })
+            sections_out.append({
+                "id":          sd['id'],
+                "section_type": sd['section_type'],
+                "sort_order":  sd['sort_order'],
+                "visible":     sd['visible'],
+                "blocks":      blocks_out,
+                "media":       media_out,
+                "settings":    sd['settings'],
+            })
+
+        return {
+            "page": {"id": str(page['id']), "key": page['page_key'],
+                     "title": page['title'], "status": page['status']},
+            "sections": sections_out,
+        }
+
+
+@router.put("/sections/{section_id}/media-slot")
+async def update_section_media_slot(
+    section_id: str,
+    body: dict = Body(...),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """
+    Update or remove a single media slot inside cms_sections.settings.media.
+    Body: { slot: "image", media_id: "<uuid>" | null }
+    """
+    slot     = (body.get('slot') or '').strip()
+    media_id = body.get('media_id')
+    if not slot:
+        raise HTTPException(400, "slot is required")
+    if media_id is not None and not isinstance(media_id, str):
+        raise HTTPException(400, "media_id must be string or null")
+
+    async with AsyncSessionLocal() as session:
+        # Validate media exists (if assigning)
+        if media_id:
+            mrow = (await session.execute(
+                text("SELECT id FROM media_library WHERE id = CAST(:mid AS uuid) AND tenant_id = :tid AND archived_at IS NULL"),
+                {"mid": media_id, "tid": tenant['id']},
+            )).first()
+            if mrow is None:
+                raise HTTPException(404, "media not found")
+        # Patch settings.media[slot]
+        import json as _json
+        row = (await session.execute(
+            text("""SELECT settings FROM cms_sections WHERE id = CAST(:sid AS uuid) AND tenant_id = :tid"""),
+            {"sid": section_id, "tid": tenant['id']},
+        )).mappings().first()
+        if not row:
+            raise HTTPException(404, "section not found")
+        settings = dict(row['settings'] or {})
+        media_map = dict(settings.get('media') or {})
+        if media_id is None:
+            media_map.pop(slot, None)
+        else:
+            media_map[slot] = media_id
+        settings['media'] = media_map
+        await session.execute(
+            text("UPDATE cms_sections SET settings = :s::jsonb, updated_at = NOW() WHERE id = CAST(:sid AS uuid)"),
+            {"sid": section_id, "s": _json.dumps(settings)},
+        )
+        await session.commit()
+        site_resolver.invalidate_site_cache()
+        return {"ok": True, "slot": slot, "media_id": media_id}
+
+
+@router.get("/media-usages")
+async def get_media_usages(
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """
+    Returns a map of {media_id: [{page_key, section_type, slot}, ...]}
+    so the MediaPicker can display "used in Home Hero" etc.
+    """
+    async with AsyncSessionLocal() as session:
+        rows = (await session.execute(
+            text("""
+                SELECT s.id AS section_id, s.section_type, s.settings, p.page_key
+                FROM cms_sections s
+                JOIN cms_pages p ON p.id = s.page_id
+                WHERE p.tenant_id = :tid AND COALESCE(s.deleted_at IS NULL, true)
+            """),
+            {"tid": tenant['id']},
+        )).mappings().all()
+
+        usages: dict[str, list[dict]] = {}
+        for r in rows:
+            settings = r['settings'] or {}
+            media_map = settings.get('media') or {}
+            if not isinstance(media_map, dict):
+                continue
+            for slot, mid in media_map.items():
+                if not isinstance(mid, str):
+                    continue
+                usages.setdefault(mid, []).append({
+                    "page_key":     r['page_key'],
+                    "section_type": r['section_type'],
+                    "slot":         slot,
+                })
+        return {"usages": usages}
+
+
 # ─────────────────────────────────────────────────────────────────────────
 #  MEDIA LIBRARY  (list / patch / browse) — uploads still go via /api/media
 # ─────────────────────────────────────────────────────────────────────────

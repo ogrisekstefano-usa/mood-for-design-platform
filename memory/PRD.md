@@ -200,7 +200,25 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **`routers/admin_site.py:upsert_block`** split into `_validate_block_payload`, `_upsert_editorial_block_row`, `_upsert_block_translations`
 - **Type hints** added to `database.py` (engine, sessionmaker, `get_db()`)
 
-### Admin Media Upload (Feb 2026)
+### Admin Page Content Editor — Editorial Operating Console (Feb 2026)
+- **Backend endpoints**:
+  - `GET /api/admin/site/pages` — list of all cms_pages (ordered: home → audience → features → pricing → training → support → login → others)
+  - `GET /api/admin/site/page-content/:page_key` — full editable content in ONE call (sections + auto-discovered text blocks with translations + media slots with full metadata)
+  - `PUT /api/admin/site/sections/:id/media-slot` — assign/remove a media slot (validates media exists)
+  - `GET /api/admin/site/media-usages` — `{media_id: [{page_key, section_type, slot}]}` map for the picker
+- **Frontend `/admin/pages`** (new primary tab, set as default route):
+  - Left sidebar with all CMS pages
+  - Top locale tabs: IT · EN-US · EN-UK · FR · DE · ES
+  - Each section renders: type heading, then per-block inline editor + per-media slot panel
+  - **Block editor**: textarea + live preview with REAL typography (Playfair italic for body, Inter for cta/eyebrow, Playfair display for headlines). Save button with "Salvato" / "Non salvato" pill status.
+  - **Media slot panel**: thumbnail with dominant color background, dimensions, color swatch, category. "Cambia foto" button opens MediaPicker.
+- **MediaPicker** (`components/MediaPicker.jsx`): full-screen modal with:
+  - Tabs "Tutte" (grid) + "Per categoria" (grouped by `category` field)
+  - Global search across `alt_text`, `file_name`, `category`
+  - Each card displays: image, aspect ratio chip (16:9, 4:5, 1:1, etc.), category pill, **current usage label** ("used in home · final cta immersive"), "IN USO" badge if currently assigned to the slot
+  - "Carica nuova" button opens the existing MediaUploader (crop + filters pipeline) — uploaded image is auto-selected
+- **Auto-discovery**: blocks and media slots are read from `cms_sections.settings.{blocks, media}` — adding a new section type doesn't require new admin code, just declare the slots.
+- **Validated E2E**: navigated through all 7 pages, opened picker on real Home section, verified usage labels show "used in home · ...", verified search filter (`hero` → 2 results including the active one with IN USO badge).
 - **Backend**: `POST /api/admin/site/media/upload` (multipart, JPEG/PNG/WebP/AVIF, max 25MB) — uploads to Supabase Storage bucket `cms-assets`, extracts width/height/dominant_color via Pillow, inserts into `media_library`.
 - **Backend**: `DELETE /api/admin/site/media/{id}` — soft-archive (sets `archived_at`).
 - **Frontend**: `src/admin/components/MediaUploader.jsx` — drag/drop, react-easy-crop for crop with 7 aspect presets (1:1, 4:5, 3:2, 16:9, 21:9, 9:16, free), 6 filter presets (Editoriale, Cinematico, B&N, Caldo, Freddo, Matte) + 6 fine sliders (brightness 50-150%, contrast 50-150%, saturate 0-200%, grayscale 0-100%, sepia 0-100%, blur 0-8px). Canvas pipeline produces a Blob with cropped + filtered output before upload.

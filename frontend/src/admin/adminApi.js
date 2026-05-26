@@ -41,6 +41,13 @@ export const adminApi = {
   patchSection:  (id, body) => client.patch(`/sections/${id}`, body),
   reorderSections: (ordered_ids) => client.post('/sections/reorder', { ordered_ids }),
 
+  // Pages
+  listPages:        () => client.get('/pages'),
+  getPageContent:   (pageKey) => client.get(`/page-content/${pageKey}`),
+  setSectionMedia:  (sectionId, slot, mediaId) =>
+    client.put(`/sections/${sectionId}/media-slot`, { slot, media_id: mediaId }),
+  getMediaUsages:   () => client.get('/media-usages'),
+
   // Media
   listMedia:     (category) => client.get('/media', { params: { category } }),
   registerMedia: (body) => client.post('/media/register', body),
