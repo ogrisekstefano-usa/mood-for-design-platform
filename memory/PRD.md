@@ -2,6 +2,93 @@
 
 
 ## 📌 Sprint Status (latest)
+- **Sprint F · F4 — Timeline Events Realtime™ (Living Memory Layer)** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: trasformare la timeline da feed di attività in
+  **emergenza di memoria relazionale viva**. Editoriale, riflessiva,
+  curatoriale. NO feed, NO activity wall, NO log stream.
+
+  **Phase 1 · Realtime Enablement**:
+  - **Migration 096** — `relationship_events` con
+    `REPLICA IDENTITY FULL` + publication `supabase_realtime`
+  - subscribe via `realtimeBus` singleton, channel
+    `events:<tenantId>`, filtro `tenant_id=eq.<uuid>`
+
+  **Phase 2 · Realtime behaviour**:
+  - Trigger realtime → **delta fetch REST autoritativo** invece
+    di trust del raw payload → permission filtering server-side
+    intatto, no leak cross-tenant
+  - Polling **15s** safety net
+  - Dedup via `Set(prev.id)` su ogni delta
+
+  **Phase 3 · Memory emergence animation**:
+  - `.rl-event--fresh` · 420ms cubic-bezier(0.16, 1, 0.3, 1) ·
+    opacity + translateY 6px + blur 1.6px → 0
+  - `.rl-event:not(.rl-event--fresh) { animation: none }` →
+    al primo render le memorie statiche NON danzano
+
+  **Phase 4 · Narrative gravity**:
+  - Padding 14px (era 12px), titolo serif `Memoria in evoluzione`
+    (era "Cosa sta accadendo ora" più feed-like)
+
+  **Phase 5 · Bucket grouping**:
+  - Oggi · Ieri · Prima (stesso linguaggio di RISONANZE)
+  - Inserimenti realtime NON collassano sezioni · ordering
+    stabile via timestamp
+
+  **Phase 6 · Smart positioning**:
+  - Threshold 96px (riuso del pattern F2)
+  - At edge (top) → fade-in soft
+  - Scrolled down → **pill `↑ UN NUOVO MOVIMENTO`** sticky
+    top-center, cyan + backdrop-blur. Click → smooth scroll
+    al fresh edge
+
+  **Phase 7 · Cross-system sync**: ogni event_type esistente
+  (message_sent, call_requested, moodboard_viewed,
+  proposal_opened, approval_*, designer_*, client_returned,
+  journey_resumed, status_changed, …) emerge live.
+
+  **Phase 8 · Visual language**: serif Cormorant body, eyebrow
+  tracked cyan, bucket header tracked grey, LIVE dot pulse.
+
+  **Phase 9 · Stability**:
+  - Stable React keys (event.id)
+  - Dedup reconciliation via Set
+  - cleanup ref-counted via realtimeBus
+  - re-render relative timestamps ogni 30s (separato dal
+    realtime, non causa re-fetch)
+
+  **E2E verificato live (admin@moodfordesign.com)**:
+  - State iniziale: `events_before=14`, bucket `IERI` 14 voci
+  - INSERT A "Marco è tornato sul moodboard dopo 2 giorni."
+    while at edge → `events_after=15 delta=1 pill=0 fresh=1`
+    → bucket `OGGI` appare in cima con memory emergence ✅
+  - INSERT B "Sofia ha aperto la proposta materiali."
+    while scrolled down → `pill=1` testo `UN NUOVO MOVIMENTO`
+    viewport ferma ✅
+  - Click pill → smooth scroll al fresh edge, `pill=0`,
+    `OGGI` ora con 2 memorie ✅
+
+  **Files**:
+  - `supabase/migrations/096_realtime_publication_events.sql`
+  - `backend/scripts/apply_migration_096.py`
+  - `backend/scripts/_test_insert_event.py` (helper)
+  - `frontend/src/components/dashboard/RelationshipLiveTimeline.jsx`
+    (rewrite completo · realtime + buckets + smart scroll)
+  - `frontend/src/components/dashboard/relationship-live-timeline.css`
+    (append F4 styles)
+
+  **Readiness check per Studio Pulse™**:
+  - 🟢 Notifications realtime
+  - 🟢 Chat realtime
+  - 🟢 Presence realtime
+  - 🟢 Timeline realtime
+  - `realtimeBus` gestisce 4 canali (notif/chat/presence/events)
+    su un solo WebSocket Supabase con ref-counting
+  - Foundation pronta per Studio Pulse™
+
+---
+
 - **Sprint F · F3 — Designer Presence Realtime** · ✅ DELIVERED · 25 Mag 2026
 
   **🎯 Goal**: la presenza designer respira live come "stato

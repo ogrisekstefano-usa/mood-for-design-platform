@@ -122,3 +122,90 @@
   letter-spacing: 0.08em;
   text-transform: none;
 }
+
+/* ── Sprint F · F4 · viewport, buckets, fresh emergence, pill ────
+ *
+ * Memories surface here. NOT a feed.
+ */
+.rl-timeline__viewport {
+  position: relative;
+  max-height: 560px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245, 242, 237, 0.18) transparent;
+  padding-right: 4px;
+}
+.rl-timeline__viewport::-webkit-scrollbar { width: 6px; }
+.rl-timeline__viewport::-webkit-scrollbar-thumb {
+  background: rgba(245, 242, 237, 0.14);
+  border-radius: 999px;
+}
+
+/* Editorial bucket headers — same language as RISONANZE drawer */
+.rl-bucket { margin-bottom: 18px; }
+.rl-bucket__head {
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(245, 242, 237, 0.40);
+  font-weight: 600;
+  margin: 18px 0 10px;
+  padding-left: 0;
+}
+.rl-bucket:first-child .rl-bucket__head { margin-top: 4px; }
+
+/* "↑ un nuovo movimento" pill — sticky at the top of the viewport.
+ * Editorial. NO bounce. NO pulse spam. Cyan, minimal, calm. */
+.rl-new-movement {
+  position: sticky;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 14px 7px 12px;
+  background: rgba(0, 201, 179, 0.10);
+  border: 1px solid rgba(0, 201, 179, 0.32);
+  color: rgba(0, 201, 179, 0.92);
+  border-radius: 999px;
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  z-index: 3;
+  transition: background 220ms ease, border-color 220ms ease, transform 220ms ease;
+  animation: rl-pill-in 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  margin: 0 auto 12px;
+}
+.rl-new-movement:hover {
+  background: rgba(0, 201, 179, 0.16);
+  border-color: rgba(0, 201, 179, 0.55);
+  transform: translateX(-50%) translateY(-1px);
+}
+@keyframes rl-pill-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Memory emergence — 420ms cubic-bezier. Opacity + translateY + blur.
+ * NO scale, NO spring. Only fresh items get this; the rest render
+ * statically so opening the page doesn't make every memory dance. */
+.rl-event--fresh {
+  animation: rl-memory-emerge 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes rl-memory-emerge {
+  0%   { opacity: 0; transform: translateY(6px); filter: blur(1.6px); }
+  70%  { filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Override the legacy first-render fadein for items already rendered:
+ * fresh handles its own emergence, normal items appear without animation. */
+.rl-event:not(.rl-event--fresh) { animation: none; }
+
+/* Tighten spacing — narrative gravity */
+.rl-event {
+  padding: 14px 0;
+  border-top: 1px solid rgba(245, 242, 237, 0.06);
+}
