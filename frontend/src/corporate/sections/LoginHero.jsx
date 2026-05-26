@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { useReveal } from '../hooks/useReveal';
+
+const BACKEND = process.env.REACT_APP_BACKEND_URL;
 
 /**
  * LoginHero — panoramic hero with overlaid login form.
@@ -21,17 +24,50 @@ const LoginHero = ({ content = {}, media = {}, links = {} }) => {
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null);
+  const [error, setError] = useState(null);
+  const [tenantOptions, setTenantOptions] = useState(null); // [{slug, name}] when multi-tenant
+  const [chosenTenant, setChosenTenant] = useState(null);
   const bg = media.background;
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setMessage(null);
-    // Auth backend not yet wired — friendly placeholder per PRD
-    setTimeout(() => {
+    setError(null);
+    try {
+      const { data } = await axios.post(
+        `${BACKEND}/api/auth/login`,
+        {
+          email: email.trim().toLowerCase(),
+          password,
+          tenant_slug: chosenTenant || null,
+        },
+      );
+      if (data.requires_tenant_selection) {
+        setTenantOptions(data.tenants || []);
+        setSubmitting(false);
+        return;
+      }
+      // Successful login
+      if (data.token) {
+        localStorage.setItem('mood_auth_token', data.token);
+        localStorage.setItem('mood_auth_user', JSON.stringify(data.user));
+        localStorage.setItem('mood_auth_tenant', JSON.stringify(data.tenant));
+      }
+      setMessage(`Benvenuto ${data.user?.full_name || data.user?.email}.`);
+      setTimeout(() => {
+        window.location.href = data.redirect_url || '/admin';
+      }, 600);
+    } catch (err) {
+      const detail = err?.response?.data?.detail;
+      const msg = typeof detail === 'string'
+        ? detail
+        : Array.isArray(detail)
+          ? detail.map((d) => d?.msg || JSON.stringify(d)).join(' · ')
+          : err?.message || 'Errore imprevisto.';
+      setError(msg);
       setSubmitting(false);
-      setMessage("L'autenticazione è in fase di preparazione. Tornerà presto.");
-    }, 500);
+    }
   };
 
   return (
@@ -137,14 +173,58 @@ const LoginHero = ({ content = {}, media = {}, links = {} }) => {
               onMouseLeave={(e) => { if (!submitting) e.currentTarget.style.background = 'var(--mood-teal, #00C9B3)'; }}
               data-testid="login-submit"
             >
-              {submitting ? '…' : (content.cta_label || 'Accedi')}
+              {submitting ? '…' : (chosenTenant ? `Accedi come ${chosenTenant}` : (content.cta_label || 'Accedi'))}
             </button>
 
+            {tenantOptions && tenantOptions.length > 1 && (
+              <div style={{ marginTop: '1.2rem' }} data-testid="login-tenant-picker">
+                <p style={{
+                  fontFamily: 'Inter, sans-serif', fontSize: '0.78rem',
+                  color: 'rgba(255,255,255,0.7)', marginBottom: '0.7rem',
+                }}>
+                  Più studi corrispondono a queste credenziali. Scegli dove accedere:
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {tenantOptions.map((t) => (
+                    <button
+                      type="button"
+                      key={t.slug}
+                      onClick={() => setChosenTenant(t.slug)}
+                      style={{
+                        textAlign: 'left',
+                        padding: '0.8rem 1rem',
+                        background: chosenTenant === t.slug ? 'rgba(0,201,179,0.12)' : 'rgba(255,255,255,0.04)',
+                        border: chosenTenant === t.slug
+                          ? '1px solid var(--mood-teal, #00C9B3)'
+                          : '1px solid rgba(255,255,255,0.1)',
+                        color: '#FFF', fontFamily: 'Inter, sans-serif',
+                        fontSize: '0.88rem', cursor: 'pointer',
+                      }}
+                      data-testid={`login-tenant-${t.slug}`}
+                    >
+                      {t.name} <span style={{ color: 'rgba(255,255,255,0.4)' }}>· {t.slug}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <p
+                style={{
+                  marginTop: '1rem', fontFamily: 'Inter, sans-serif',
+                  fontSize: '0.85rem', color: '#F88', fontWeight: 300,
+                }}
+                data-testid="login-error"
+              >
+                {error}
+              </p>
+            )}
             {message && (
               <p
                 style={{
                   marginTop: '1rem', fontFamily: 'Inter, sans-serif',
-                  fontSize: '0.85rem', color: 'rgba(0,201,179,0.85)', fontWeight: 300,
+                  fontSize: '0.85rem', color: 'rgba(0,201,179,0.95)', fontWeight: 300,
                 }}
                 data-testid="login-message"
               >

@@ -889,3 +889,152 @@ async def admin_invalidate(tenant: dict = Depends(require_admin_tenant)):
 @router.get("/whoami")
 async def admin_whoami(tenant: dict = Depends(require_admin_tenant)):
     return {"tenant": {"id": str(tenant['id']), "slug": tenant.get('slug', 'mood-corporate')}}
+
+
+
+# ─────────────────────────────────────────────────────────────────────────
+#  FOOTER  (read / write the global footer section + its editorial blocks)
+# ─────────────────────────────────────────────────────────────────────────
+
+@router.get("/footer")
+async def get_footer_settings(
+    locale: str = Query(default="it"),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """Return current footer section settings + resolved block values for the given locale."""
+    async with AsyncSessionLocal() as session:
+        row = (await session.execute(
+            text("""SELECT s.id, s.settings
+                    FROM cms_sections s
+                    JOIN cms_pages p ON p.id = s.page_id
+                    WHERE p.tenant_id = :tid AND s.section_type = 'footer'
+                    LIMIT 1"""),
+            {"tid": tenant['id']},
+        )).mappings().first()
+        if not row:
+            return {"section_id": None, "settings": {}, "values": {}, "locale": locale}
+
+        settings = row['settings'] or {}
+        block_keys = []
+        block_keys.extend((settings.get('blocks') or {}).values())
+        for L in (settings.get('links') or []):
+            if L.get('label_block'): block_keys.append(L['label_block'])
+        for L in (settings.get('legal') or []):
+            if L.get('label_block'): block_keys.append(L['label_block'])
+
+        values = {}
+        if block_keys:
+            res = (await session.execute(
+                text("""SELECT b.namespace||'.'||b.block_key AS k,
+                               COALESCE(tr.value, b.source_value, '') AS v
+                          FROM editorial_blocks b
+                          LEFT JOIN editorial_block_translations tr
+                                 ON tr.block_id = b.id AND tr.locale = :loc
+                         WHERE b.tenant_id = :tid
+                           AND b.namespace||'.'||b.block_key = ANY(:keys)"""),
+                {"loc": locale, "tid": tenant['id'], "keys": block_keys},
+            )).mappings().all()
+            values = {r['k']: r['v'] for r in res}
+
+        return {
+            "section_id": str(row['id']),
+            "settings": settings,
+            "values": values,
+            "locale": locale,
+        }
+
+
+@router.put("/footer")
+async def update_footer_settings(
+    body: dict = Body(...),
+    locale: str = Query(default="it"),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """
+    Update the footer settings and the editorial_block values for the locale.
+    Body:
+      {
+        "settings": { blocks: {...}, links: [...], legal: [...], social: [...] },
+        "values":   { "site.footer.<key>": "value", ... }   // optional
+      }
+    """
+    import json as _json, hashlib
+    settings = body.get('settings') or {}
+    values   = body.get('values') or {}
+
+    async with AsyncSessionLocal() as session:
+        # Find or create footer page
+        page = (await session.execute(
+            text("SELECT id FROM cms_pages WHERE tenant_id=:tid AND page_key='footer' LIMIT 1"),
+            {"tid": tenant['id']},
+        )).mappings().first()
+        if not page:
+            page_row = (await session.execute(
+                text("""INSERT INTO cms_pages (id, tenant_id, page_key, title, status, locale_meta,
+                                              created_at, updated_at)
+                        VALUES (gen_random_uuid(), :tid, 'footer', 'Footer', 'published', '{}'::jsonb,
+                                NOW(), NOW())
+                        RETURNING id"""),
+                {"tid": tenant['id']},
+            )).mappings().first()
+            page_id = page_row['id']
+        else:
+            page_id = page['id']
+
+        # Upsert footer section
+        existing = (await session.execute(
+            text("SELECT id FROM cms_sections WHERE page_id=:pid AND section_type='footer' LIMIT 1"),
+            {"pid": page_id},
+        )).mappings().first()
+        if existing:
+            await session.execute(
+                text("UPDATE cms_sections SET settings=CAST(:s AS jsonb), updated_at=NOW() WHERE id=:id"),
+                {"s": _json.dumps(settings), "id": existing['id']},
+            )
+        else:
+            await session.execute(
+                text("""INSERT INTO cms_sections (id, tenant_id, page_id, section_type, sort_order,
+                                                  visible, settings, created_at, updated_at)
+                        VALUES (gen_random_uuid(), :tid, :pid, 'footer', 0, true,
+                                CAST(:s AS jsonb), NOW(), NOW())"""),
+                {"tid": tenant['id'], "pid": page_id, "s": _json.dumps(settings)},
+            )
+
+        # Upsert editorial_blocks for the given locale
+        for full_key, val in values.items():
+            if '.' not in full_key:
+                continue
+            ns, _, bk = full_key.partition('.')
+            sh = hashlib.sha256((val or '').encode('utf-8')).hexdigest()
+            block_row = (await session.execute(
+                text("""INSERT INTO editorial_blocks
+                          (id, scope, tenant_id, namespace, block_key, block_type,
+                           source_locale, source_value, source_hash, is_active, created_at, updated_at)
+                        VALUES (gen_random_uuid(), 'tenant', :tid, :ns, :bk, 'body',
+                                'it', :val, :sh, true, NOW(), NOW())
+                        ON CONFLICT (tenant_id, namespace, block_key) DO UPDATE SET
+                          source_value = CASE WHEN :loc = 'it' THEN EXCLUDED.source_value
+                                              ELSE editorial_blocks.source_value END,
+                          source_hash  = CASE WHEN :loc = 'it' THEN EXCLUDED.source_hash
+                                              ELSE editorial_blocks.source_hash END,
+                          updated_at = NOW()
+                        RETURNING id"""),
+                {"tid": tenant['id'], "ns": ns, "bk": bk, "val": val, "sh": sh, "loc": locale},
+            )).mappings().first()
+            bid = block_row['id']
+            await session.execute(
+                text("""INSERT INTO editorial_block_translations
+                          (id, block_id, locale, value, status, generated_by, source_hash,
+                           locked, created_at, updated_at)
+                        VALUES (gen_random_uuid(), :bid, :loc, :val, 'manual', 'cms',
+                                :sh, false, NOW(), NOW())
+                        ON CONFLICT (block_id, locale) DO UPDATE SET
+                          value = EXCLUDED.value, status = 'manual',
+                          source_hash = EXCLUDED.source_hash, updated_at = NOW()"""),
+                {"bid": bid, "loc": locale, "val": val, "sh": sh},
+            )
+
+        await session.commit()
+
+    site_resolver.invalidate_site_cache()
+    return {"ok": True}

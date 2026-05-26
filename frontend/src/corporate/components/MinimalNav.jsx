@@ -84,16 +84,57 @@ const MinimalNav = () => {
           ))}
         </div>
 
-        {/* Right: secondary links — plain, no pills */}
-        <div className="hidden lg:flex items-center gap-7 ml-auto">
-          {right.map((item, idx) => (
-            <NavLink
-              key={item.key}
-              item={item}
-              testid={`nav-right-${item.key}`}
-              fontSize={idx === right.length - 1 ? '0.92rem' : '0.92rem'}
-            />
-          ))}
+        {/* Right: support (teal outlined) + login (solid teal) */}
+        <div className="hidden lg:flex items-center gap-3 ml-auto">
+          {right.map((item, idx) => {
+            const isLast = idx === right.length - 1;
+            const active = location.pathname === item.href;
+            return (
+              <Link
+                key={item.key}
+                to={item.href}
+                data-testid={`nav-right-${item.key}`}
+                style={{
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '0.84rem',
+                  fontWeight: isLast ? 500 : 400,
+                  letterSpacing: '0.04em',
+                  padding: '0.7rem 1.4rem',
+                  textDecoration: 'none',
+                  transition: 'all 0.25s ease',
+                  ...(isLast
+                    ? {
+                        background: 'var(--mood-teal, #00C9B3)',
+                        color: '#000',
+                        border: '1px solid var(--mood-teal, #00C9B3)',
+                      }
+                    : {
+                        background: 'transparent',
+                        color: active ? 'var(--mood-teal, #00C9B3)' : 'var(--mood-text-1)',
+                        border: '1px solid var(--mood-teal, #00C9B3)',
+                      }),
+                }}
+                onMouseEnter={(e) => {
+                  if (isLast) {
+                    e.currentTarget.style.background = 'rgba(0,201,179,0.85)';
+                  } else {
+                    e.currentTarget.style.background = 'rgba(0,201,179,0.08)';
+                    e.currentTarget.style.color = 'var(--mood-teal, #00C9B3)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (isLast) {
+                    e.currentTarget.style.background = 'var(--mood-teal, #00C9B3)';
+                  } else {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = active ? 'var(--mood-teal, #00C9B3)' : 'var(--mood-text-1)';
+                  }
+                }}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Mobile hamburger */}

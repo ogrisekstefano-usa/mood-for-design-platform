@@ -52,6 +52,10 @@ export const adminApi = {
   getPageSEO:       (pageKey) => client.get(`/pages/${pageKey}/seo`),
   updatePageSEO:    (pageKey, body) => client.put(`/pages/${pageKey}/seo`, body),
 
+  // Footer (global, multi-language)
+  getFooter:        (locale = 'it') => client.get('/footer', { params: { locale } }),
+  updateFooter:     (body, locale = 'it') => client.put('/footer', body, { params: { locale } }),
+
   // AI translate (uses /api/ai/editorial/translate, with admin headers)
   translate: (sourceText, sourceLocale, targetLocale) =>
     axios.post(

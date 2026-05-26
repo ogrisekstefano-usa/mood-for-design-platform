@@ -209,6 +209,34 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 - **Auto-discoverable from Page Editor**: blocks flat-named (`item_01_eyebrow`...`item_15_body`), media slots flat-named (`item_01`...`item_15`) → all editable inline without backend changes.
 - Validated visually on `/caratteristiche`: hero + 5 numbered feature rows public; 49 editable input slots in admin.
 
+### ITER152 — Multi-tenant JWT auth + Navbar CTA buttons + Footer CMS (Feb 2026)
+
+**JWT-based multi-tenant authentication** (full backend playbook adaptation from MongoDB → Postgres)
+- New tables: `users(id, tenant_id, email, password_hash, full_name, role, is_active, last_login_at)` with `UNIQUE (tenant_id, email)` — same email may exist across tenants. `login_attempts(identifier, success, created_at)` for brute-force throttle.
+- `routers/auth.py` (prefix `/api/auth`):
+  - `POST /login` — normalizes email, queries `users` JOIN `tenants` across ALL tenants for the email, validates bcrypt password against each candidate. 0 match → 401; 1 match → JWT + `{user, tenant, redirect_url}`; N matches → `{requires_tenant_selection: true, tenants: [...]}` so the client renders a picker and resubmits with `tenant_slug`.
+  - `GET /me` — Bearer token → user payload + tenant.
+  - `POST /logout` — stateless (client discards token).
+  - JWT lifetime 24h, HS256, claims `{sub, tenant_id, tenant_slug, role, email, exp, type}`.
+  - Brute-force: 5 failed attempts within 15min per email → 423 Locked.
+- Seed `db/seed_auth_admin.py`: creates/updates admin user for tenant `studio` reading `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env`. Idempotent.
+- `LoginHero` rewired: real `axios.post` to `/api/auth/login`, multi-tenant picker rendered when backend returns `requires_tenant_selection`, error handling for 401/422/423, JWT stored in `localStorage` (`mood_auth_token`, `mood_auth_user`, `mood_auth_tenant`), redirect to `data.redirect_url` (`/admin` for admin role).
+- Test creds in `/app/memory/test_credentials.md` (`admin@moodfordesign.com` / `MoodAdmin2026!`).
+
+**Navbar CTA polish**
+- "Supporto" → outlined teal pill (transparent bg + teal border + teal text on hover)
+- "Accedi"  → solid teal pill (filled #00C9B3 with black text — strongest visual call-to-action)
+- Both buttons now visually consistent with hero CTAs across the site.
+
+**Footer snellito + CMS editor**
+- `EditorialFooter` reduced to a clean 2-column layout (brand+social block left, then 2 link columns: configurable "Esplora" + "Legale"). The 4-column "magazine/projects/materials/company" grid is gone. Copyright sits at the bottom with the locale switcher.
+- Backend `GET/PUT /api/admin/site/footer?locale=<loc>`: reads/writes `cms_sections(section_type='footer').settings` + per-locale editorial_block values in one call. Auto-creates the `footer` cms_page if missing. Cache-invalidating.
+- New admin route `/admin/footer` → `FooterEditor` component: per-language dropdown (IT · EN-US · EN-UK · FR · DE · ES), inline editors for copyright + nav column (heading + items, each row has label + href + "titolo" checkbox + remove) + legal column + social network rows (icon dropdown supporting `instagram · linkedin · twitter · x · youtube · facebook · pinterest` + URL). Bootstrap-on-empty so new tenants get a sensible default tree to edit immediately. Save pill shows dirty/saved status.
+- Social icons dynamically resolved on the public footer via `SOCIAL_ICONS` map (lucide-react). Rows with empty `href` are hidden.
+
+**Misc**
+- Login "Registrati" CTA now points to `/supporto#contact` (was `/dedicato-a`). Editable from the Page Editor.
+
 ### ITER151j — Unified panoramic hero (Home / Audience / Training) + favicon + SEO meta polish (Feb 2026)
 - **`HeroEditorial` (Home)** rewritten to match the site-wide panoramic pattern: photo edge-to-edge with `object-position: center 40%`, unified horizontal veil (`0.98 → 0 over 0-92%`), text top-left aligned to nav container via `paddingLeft: max(1.5rem, calc((100vw - 1536px) / 2 + 4rem))`. CTAs: solid-teal primary + ghost outlined secondary (consistent with login/training).
 - **`AudienceHeroSplit`** + **`TrainingHero`** converted from split-column to the same panoramic pattern. Photo runs edge-to-edge (was confined to right column), veil is the unified strong gradient (was a soft 12-26% blend), text is top-left container-aligned. Body section + body-with-photo on /dedicato-a remains intact below the hero.
