@@ -84,8 +84,24 @@ def register_media(body: MediaUploadComplete, current_user: dict = Depends(get_t
     else:
         safe_path = tenant_prefix + raw_path
 
-    # Public URL helper (works for public buckets; private uses signed URLs)
-    public = client.storage.from_(body.bucket).get_public_url(safe_path)
+    # Public URL helper (works for public buckets; private uses signed URLs).
+    # ITER157.E.7 hotfix · `tenant-assets` is PRIVATE → `get_public_url`
+    # returns a `/public/...` URL that resolves to HTTP 400 from the browser.
+    # For private buckets we sign the URL with the maximum TTL Supabase
+    # allows. The CMS will refresh long-lived signed URLs via background
+    # job (out of scope here). For now: 1 year covers the editorial cycle.
+    PRIVATE_BUCKETS = {'tenant-assets', 'project-files', 'proposal-files', 'moodboard-assets'}
+    if body.bucket in PRIVATE_BUCKETS:
+        try:
+            signed_long = client.storage.from_(body.bucket).create_signed_url(
+                safe_path, 60 * 60 * 24 * 365  # 1 year
+            )
+            public = signed_long.get('signed_url') or signed_long.get('signedUrl') or \
+                     client.storage.from_(body.bucket).get_public_url(safe_path)
+        except Exception:
+            public = client.storage.from_(body.bucket).get_public_url(safe_path)
+    else:
+        public = client.storage.from_(body.bucket).get_public_url(safe_path)
     media = {
         'id': str(uuid.uuid4()), 'tenant_id': current_user['tenant_id'],
         'uploaded_by': current_user['profile_id'],
