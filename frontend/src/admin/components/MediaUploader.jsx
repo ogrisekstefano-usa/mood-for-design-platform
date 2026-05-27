@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Cropper from 'react-easy-crop';
 import { Upload, X, RotateCcw, Check, Image as ImageIcon } from 'lucide-react';
 import {
@@ -15,10 +15,14 @@ import {
  *   onUploaded: (mediaRow) => void     // called after a successful upload
  *   uploadFn:  (FormData) => Promise<{data}>   // typically adminApi.uploadMedia
  *   defaultCategory?: string
+ *   sourceMedia?: { file_url, file_name, alt_text, category, mime_type }
+ *                — when provided, opens directly in crop/filter mode for an
+ *                  existing library asset (used by MediaPicker → "Edit before assign")
  */
-const MediaUploader = ({ onClose, onUploaded, uploadFn, defaultCategory = 'site' }) => {
+const MediaUploader = ({ onClose, onUploaded, uploadFn, defaultCategory = 'site', sourceMedia = null }) => {
   const [file, setFile]         = useState(null);
   const [imageSrc, setImageSrc] = useState(null);
+  const [sourceUrl, setSourceUrl] = useState(null); // existing media URL
   const [crop, setCrop]         = useState({ x: 0, y: 0 });
   const [zoom, setZoom]         = useState(1);
   const [aspect, setAspect]     = useState(ASPECT_PRESETS[0].ratio);
@@ -26,10 +30,34 @@ const MediaUploader = ({ onClose, onUploaded, uploadFn, defaultCategory = 'site'
   const [cropPx, setCropPx]     = useState(null);
   const [filters, setFilters]   = useState({ ...FILTER_DEFAULTS });
   const [filterKey, setFilterKey] = useState('none');
-  const [alt, setAlt]           = useState('');
-  const [category, setCategory] = useState(defaultCategory);
+  const [alt, setAlt]           = useState(sourceMedia?.alt_text || '');
+  const [category, setCategory] = useState(sourceMedia?.category || defaultCategory);
   const [busy, setBusy]         = useState(false);
   const [err, setErr]           = useState(null);
+
+  // If sourceMedia is provided, fetch the image and pre-load it in crop view
+  useEffect(() => {
+    if (!sourceMedia?.file_url) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const resp = await fetch(sourceMedia.file_url, { mode: 'cors' });
+        const blob = await resp.blob();
+        if (cancelled) return;
+        const name = sourceMedia.file_name || 'edit.jpg';
+        const f = new File([blob], name, { type: blob.type || 'image/jpeg' });
+        setFile(f);
+        setImageSrc(URL.createObjectURL(blob));
+        setSourceUrl(sourceMedia.file_url);
+      } catch (e) {
+        // CORS fallback: pass URL directly to Cropper (react-easy-crop supports URLs)
+        setImageSrc(sourceMedia.file_url);
+        setSourceUrl(sourceMedia.file_url);
+        setFile({ name: sourceMedia.file_name || 'edit.jpg', type: sourceMedia.mime_type || 'image/jpeg' });
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [sourceMedia]);
 
   const onCropComplete = useCallback((_area, areaPx) => { setCropPx(areaPx); }, []);
 
@@ -72,20 +100,26 @@ const MediaUploader = ({ onClose, onUploaded, uploadFn, defaultCategory = 'site'
   };
 
   const upload = async () => {
-    if (!file || !imageSrc) return;
+    if (!imageSrc) return;
     setBusy(true); setErr(null);
     try {
-      const outputMime = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+      const outputMime = (file?.type === 'image/png') ? 'image/png' : 'image/jpeg';
       const ext = outputMime === 'image/png' ? 'png' : 'jpg';
       let blob;
-      if (cropPx) {
+      // If we have a crop or filters not at default, render canvas; else use original
+      const filtersTouched = JSON.stringify(filters) !== JSON.stringify(FILTER_DEFAULTS);
+      if (cropPx || filtersTouched) {
         blob = await cropAndFilterImage(imageSrc, cropPx, filters, outputMime, 0.92);
-      } else {
-        // no crop selected → upload original (still no filters applied unless via canvas)
+      } else if (file && file instanceof File) {
         blob = file;
+      } else {
+        // sourceUrl without crop/filter: just register as-is via fetched blob
+        const resp = await fetch(imageSrc);
+        blob = await resp.blob();
       }
       const fd = new FormData();
-      const safeName = (file.name || `upload.${ext}`).replace(/\.[^.]+$/, '') + `.${ext}`;
+      const baseName = file?.name || sourceUrl?.split('/').pop() || `image.${ext}`;
+      const safeName = baseName.replace(/\.[^.]+$/, '') + (cropPx || filtersTouched ? '-edited' : '') + `.${ext}`;
       fd.append('file', new File([blob], safeName, { type: outputMime }));
       fd.append('alt_text', alt || '');
       fd.append('category', category || 'site');
@@ -119,7 +153,7 @@ const MediaUploader = ({ onClose, onUploaded, uploadFn, defaultCategory = 'site'
             <ImageIcon size={18} color="#00C9B3" />
             <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.05rem',
                           color: '#FFFFFF', letterSpacing: '0.01em', margin: 0 }}>
-              Carica fotografia
+              {sourceMedia ? 'Modifica fotografia (crop & filtri)' : 'Carica fotografia'}
             </h2>
           </div>
           <button onClick={onClose} className="hover:opacity-70" style={btnIcon} data-testid="uploader-close">

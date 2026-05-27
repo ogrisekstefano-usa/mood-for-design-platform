@@ -11,6 +11,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { adminApi } from '../adminApi';
 import MediaPicker from '../components/MediaPicker';
+import MediaUploader from '../components/MediaUploader';
 import LivePreview from '../components/LivePreview';
 
 const LOCALES = [
@@ -315,6 +316,7 @@ const MarkdownToolbar = ({ value, setValue, previewMode, setPreviewMode, testid 
 // ── MediaSlot: thumbnail + "Change photo" + dimensions/usages ───────────
 const MediaSlot = ({ section, slot, onChange }) => {
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [editingMedia, setEditingMedia] = useState(null);
   const m = slot.media;
   return (
     <div style={blockCard} data-testid={`media-slot-${section.id}-${slot.slot}`}>
@@ -376,10 +378,24 @@ const MediaSlot = ({ section, slot, onChange }) => {
           open={pickerOpen}
           onClose={() => setPickerOpen(false)}
           currentMediaId={slot.media_id}
-          onSelect={async (newMedia) => {
+          onSelect={(newMedia) => {
+            // After picking from library, open crop/filter editor for fine-tuning.
+            setPickerOpen(false);
+            setEditingMedia(newMedia);
+          }}
+        />
+      )}
+
+      {editingMedia && (
+        <MediaUploader
+          sourceMedia={editingMedia}
+          uploadFn={adminApi.uploadMedia}
+          onClose={() => setEditingMedia(null)}
+          onUploaded={async (uploaded) => {
             try {
-              await adminApi.setSectionMedia(section.id, slot.slot, newMedia.id);
-              setPickerOpen(false);
+              // Use the (possibly transformed) uploaded media id
+              await adminApi.setSectionMedia(section.id, slot.slot, uploaded.id);
+              setEditingMedia(null);
               onChange?.();
             } catch (e) {
               window.alert('Errore: ' + (e?.response?.data?.detail || e.message));
@@ -522,7 +538,7 @@ const MediaActionEditor = ({ section, slotKey, onSaved }) => {
 // ── SectionCard ─────────────────────────────────────────────────────────
 const SectionCard = ({ section, locale, onChanged, isSelected }) => {
   const [deleting, setDeleting] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);   // default: closed for cleaner list
   const [toggling, setToggling] = useState(false);
 
   // dnd-kit sortable hook
@@ -565,6 +581,24 @@ const SectionCard = ({ section, locale, onChanged, isSelected }) => {
     }
   };
 
+  // When user expands the section, scroll the iframe preview to it
+  const onToggleCollapse = () => {
+    const next = !collapsed;
+    setCollapsed(next);
+    if (!next) {
+      // Opening — notify the preview iframe to scroll to this section
+      try {
+        const iframe = document.querySelector('iframe[data-testid="preview-iframe"]');
+        if (iframe?.contentWindow) {
+          iframe.contentWindow.postMessage(
+            { type: 'mood-preview:scroll-to-section', sectionId: section.id },
+            '*',
+          );
+        }
+      } catch { /* noop */ }
+    }
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -596,12 +630,12 @@ const SectionCard = ({ section, locale, onChanged, isSelected }) => {
 
         {/* Collapse toggle */}
         <button
-          onClick={() => setCollapsed((c) => !c)}
+          onClick={onToggleCollapse}
           style={{
             background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.55)',
             padding: 4, display: 'inline-flex', cursor: 'pointer',
           }}
-          title={collapsed ? 'Espandi' : 'Comprimi'}
+          title={collapsed ? 'Espandi e mostra in preview' : 'Comprimi'}
           data-testid={`section-collapse-${section.id}`}
         >
           {collapsed ? <ChevronRight size={14} /> : <ChevronDown size={14} />}
