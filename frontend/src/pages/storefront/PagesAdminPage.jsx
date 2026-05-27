@@ -167,7 +167,18 @@ const ADVANCED_TYPES = new Set([
   'footer_columns',
   'stats_band', 'newsletter', 'dual_cta',
   'magazine_grid', 'journal_intro',
+  // ITER157.E.5: home page stubs that delegate to dedicated pages
+  // or use opaque settings.{cells,blocks,items,links} structures.
+  'navigation', 'footer',
+  'platform_pillars', 'design_journey', 'curated_brands',
+  'editorial_triptych', 'final_cta_immersive', 'flexible_layout',
 ]);
+
+// Helper hints for sections that delegate to other pages.
+const DELEGATED_HINTS = {
+  navigation: { label: 'Navigation', path: 'navigation', cta: 'Apri pagina Navigation' },
+  footer:     { label: 'Footer',     path: 'footer',     cta: 'Apri pagina Footer' },
+};
 
 // Section types with a `settings.<key>` array that should be edited
 // inline via the SettingsListEditor. Maps section_type → list config.
@@ -604,6 +615,7 @@ const PagesAdminPage = () => {
               setDraggingId(null);
               setDragOverId(null);
             }}
+            onNavigatePage={switchPage}
           />
         ))}
       </main>
@@ -777,6 +789,7 @@ const SectionGroup = ({
   onToggleVisible, onDelete, onSaveImage, patchSectionPayload, focused, onSelect,
   collapsed, onToggleCollapse,
   draggingId, dragOverId, onDragStart, onDragEnd, onDragOver, onDrop,
+  onNavigatePage,
 }) => {
   const isAdvanced = ADVANCED_TYPES.has(section.section_type);
   const schema = FIELD_SCHEMAS[section.section_type] || DEFAULT_TEXT_FIELDS;
@@ -862,6 +875,7 @@ const SectionGroup = ({
               section={section}
               locale={locale}
               patchSectionPayload={patchSectionPayload}
+              onNavigatePage={onNavigatePage}
             />
           </div>
         ) : (
@@ -1001,7 +1015,7 @@ const ImageFieldCard = ({ section, field, locale, value, onSave }) => {
 };
 
 // ─── AdvancedSlot: bridges into existing bandEditors.jsx ──────
-const AdvancedSlot = ({ section, locale, patchSectionPayload }) => {
+const AdvancedSlot = ({ section, locale, patchSectionPayload, onNavigatePage }) => {
   const onPatchLocale = (field, value) => {
     const lc = writeFieldValue(section, locale, field, value);
     patchSectionPayload(section, { locale_content: lc });
@@ -1018,10 +1032,37 @@ const AdvancedSlot = ({ section, locale, patchSectionPayload }) => {
     onPatchSetting,
   });
   if (node) return node;
+  // Delegated section types — route the user to the dedicated page
+  const delegated = DELEGATED_HINTS[section.section_type];
+  if (delegated) {
+    return (
+      <div className="pa-delegated" data-testid={`pa-delegated-${section.section_type}`}>
+        <p className="pa-delegated__title">
+          Questa sezione ha una pagina dedicata.
+        </p>
+        <p className="pa-delegated__hint">
+          Per modificare la {delegated.label.toLowerCase()} apri la pagina <strong>{delegated.label}</strong>:
+          struttura più ricca (voci, link, lingue) e un'esperienza dedicata.
+        </p>
+        <button
+          type="button"
+          className="pa-publish-btn"
+          onClick={() => onNavigatePage?.(delegated.path)}>
+          {delegated.cta} →
+        </button>
+      </div>
+    );
+  }
+  // Generic structured-block hint
   return (
-    <p className="pa-empty" style={{ padding: '24px 12px' }}>
-      Editor specializzato non disponibile per questa sezione.
-    </p>
+    <div className="pa-delegated" data-testid={`pa-delegated-${section.section_type}`}>
+      <p className="pa-delegated__title">Blocco strutturato</p>
+      <p className="pa-delegated__hint">
+        Questa fascia gestisce contenuti complessi (celle, link, media) e si
+        modifica attraverso pannelli specializzati. Editor inline non
+        disponibile per <code>{section.section_type}</code>.
+      </p>
+    </div>
   );
 };
 
