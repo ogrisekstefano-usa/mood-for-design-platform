@@ -41,25 +41,39 @@ const PreviewBridge = () => {
     };
     window.addEventListener('message', onMessage);
 
-    // Forward section clicks to admin
+    // Visual: outline section on hover when embedded
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `
+      [data-section-id] { transition: box-shadow 0.18s ease; cursor: pointer; }
+      [data-section-id]:hover { box-shadow: inset 0 0 0 2px rgba(0,201,179,0.35) !important; }
+    `;
+    document.head.appendChild(styleEl);
+
+    // Forward section clicks to admin (capture phase, intercept links)
     const onClick = (e) => {
       const sec = e.target.closest('[data-section-id]');
-      if (sec) {
-        try {
-          window.parent.postMessage(
-            { type: 'mood-preview:section-clicked',
-              sectionId: sec.getAttribute('data-section-id'),
-              sectionType: sec.getAttribute('data-section-type') },
-            '*',
-          );
-        } catch { /* noop */ }
+      if (!sec) return;
+      // Block link navigation inside the preview iframe
+      const linkLike = e.target.closest('a, button[type="submit"]');
+      if (linkLike) {
+        e.preventDefault();
+        e.stopPropagation();
       }
+      try {
+        window.parent.postMessage(
+          { type: 'mood-preview:section-clicked',
+            sectionId: sec.getAttribute('data-section-id'),
+            sectionType: sec.getAttribute('data-section-type') },
+          '*',
+        );
+      } catch { /* noop */ }
     };
-    document.addEventListener('click', onClick);
+    document.addEventListener('click', onClick, true);  // capture phase
 
     return () => {
       window.removeEventListener('message', onMessage);
-      document.removeEventListener('click', onClick);
+      document.removeEventListener('click', onClick, true);
+      try { styleEl.remove(); } catch {}
     };
   }, [location.pathname]);
 

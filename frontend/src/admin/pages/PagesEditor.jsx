@@ -1,5 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Save, Check, AlertCircle, Image as ImageIcon, Languages, Eye, EyeOff, Sparkles, Wand2, Trash2 } from 'lucide-react';
+import { Save, Check, AlertCircle, Image as ImageIcon, Languages, Eye, EyeOff, Sparkles, Wand2, Trash2, ChevronDown, ChevronRight, GripVertical } from 'lucide-react';
+import {
+  DndContext, closestCenter, KeyboardSensor, PointerSensor,
+  useSensor, useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove, SortableContext, sortableKeyboardCoordinates,
+  useSortable, verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { adminApi } from '../adminApi';
 import MediaPicker from '../components/MediaPicker';
 import LivePreview from '../components/LivePreview';
@@ -511,8 +520,22 @@ const MediaActionEditor = ({ section, slotKey, onSaved }) => {
 };
 
 // ── SectionCard ─────────────────────────────────────────────────────────
-const SectionCard = ({ section, locale, onChanged }) => {
+const SectionCard = ({ section, locale, onChanged, isSelected }) => {
   const [deleting, setDeleting] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [toggling, setToggling] = useState(false);
+
+  // dnd-kit sortable hook
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: section.id });
+
+  const dragStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 10 : 'auto',
+  };
+
   if (!section.blocks.length && !section.media.length && !hasLinks(section)) return null;
 
   const onDelete = async () => {
@@ -529,13 +552,91 @@ const SectionCard = ({ section, locale, onChanged }) => {
     }
   };
 
+  const onToggleVisible = async (e) => {
+    e.stopPropagation();
+    setToggling(true);
+    try {
+      await adminApi.patchSection(section.id, { visible: !section.visible });
+      onChanged?.();
+    } catch (err) {
+      window.alert('Errore: ' + (err?.response?.data?.detail || err.message));
+    } finally {
+      setToggling(false);
+    }
+  };
+
   return (
-    <div style={sectionWrap} data-testid={`section-${section.id}`}>
-      <div style={sectionHead}>
-        <div>
+    <div
+      ref={setNodeRef}
+      style={{
+        ...sectionWrap,
+        ...dragStyle,
+        outline: isSelected ? '2px solid rgba(0,201,179,0.55)' : 'none',
+        outlineOffset: 4,
+        opacity: section.visible ? (isDragging ? 0.5 : 1) : 0.45,
+      }}
+      data-testid={`section-${section.id}`}
+    >
+      <div style={{ ...sectionHead, alignItems: 'center' }}>
+        {/* Drag handle */}
+        <button
+          {...attributes} {...listeners}
+          style={{
+            cursor: 'grab', background: 'transparent', border: 'none',
+            color: 'rgba(255,255,255,0.35)', padding: 4, marginRight: 6,
+            display: 'inline-flex', alignItems: 'center',
+          }}
+          title="Trascina per riordinare"
+          data-testid={`section-drag-${section.id}`}
+          aria-label="Drag handle"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <GripVertical size={14} />
+        </button>
+
+        {/* Collapse toggle */}
+        <button
+          onClick={() => setCollapsed((c) => !c)}
+          style={{
+            background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.55)',
+            padding: 4, display: 'inline-flex', cursor: 'pointer',
+          }}
+          title={collapsed ? 'Espandi' : 'Comprimi'}
+          data-testid={`section-collapse-${section.id}`}
+        >
+          {collapsed ? <ChevronRight size={14} /> : <ChevronDown size={14} />}
+        </button>
+
+        <div style={{ flex: 1, marginLeft: 6 }}>
           <p style={sectionType}>{section.section_type.replace(/_/g, ' ')}</p>
-          <p style={sectionMeta}>Sort {section.sort_order} · {section.visible ? <><Eye size={10} /> visible</> : <><EyeOff size={10} /> hidden</>}</p>
+          <p style={sectionMeta}>
+            Sort {section.sort_order} · {section.visible ? 'visible' : 'hidden'}
+            {section.blocks.length > 0 && ` · ${section.blocks.length} blocchi`}
+            {section.media.length > 0 && ` · ${section.media.length} immagini`}
+          </p>
         </div>
+
+        {/* Visibility toggle */}
+        <button
+          onClick={onToggleVisible}
+          disabled={toggling}
+          title={section.visible ? 'Nascondi sezione' : 'Mostra sezione'}
+          style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            padding: '0.45rem', marginRight: 6,
+            background: 'transparent',
+            border: `1px solid ${section.visible ? 'rgba(255,255,255,0.15)' : 'rgba(255,180,162,0.35)'}`,
+            color: section.visible ? 'rgba(255,255,255,0.7)' : 'rgba(255,180,162,0.85)',
+            borderRadius: 6,
+            cursor: toggling ? 'wait' : 'pointer',
+            opacity: toggling ? 0.5 : 1,
+          }}
+          data-testid={`section-visibility-${section.id}`}
+        >
+          {section.visible ? <Eye size={13} /> : <EyeOff size={13} />}
+        </button>
+
+        {/* Delete */}
         <button
           onClick={onDelete}
           disabled={deleting}
@@ -553,17 +654,22 @@ const SectionCard = ({ section, locale, onChanged }) => {
           }}
           data-testid={`section-delete-${section.id}`}
         >
-          <Trash2 size={12} /> {deleting ? 'Elimino…' : 'Elimina sezione'}
+          <Trash2 size={12} /> {deleting ? '…' : 'Elimina'}
         </button>
       </div>
-      {section.blocks.map(b => (
-        <BlockEditor key={b.full_key} block={b} locale={locale} onSaved={onChanged} />
-      ))}
-      {section.media.map(s => (
-        <MediaSlot key={`${section.id}-${s.slot}`} section={section} slot={s} onChange={onChanged} />
-      ))}
-      {hasLinks(section) && (
-        <LinksEditor section={section} onSaved={onChanged} />
+
+      {!collapsed && (
+        <>
+          {section.blocks.map(b => (
+            <BlockEditor key={b.full_key} block={b} locale={locale} onSaved={onChanged} />
+          ))}
+          {section.media.map(s => (
+            <MediaSlot key={`${section.id}-${s.slot}`} section={section} slot={s} onChange={onChanged} />
+          ))}
+          {hasLinks(section) && (
+            <LinksEditor section={section} onSaved={onChanged} />
+          )}
+        </>
       )}
     </div>
   );
@@ -975,6 +1081,43 @@ const PagesEditor = () => {
     }
   };
 
+  // ── Drag & drop reorder ────────────────────────────────────────────
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  const onDragEnd = async (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = visibleSections.findIndex((s) => s.id === active.id);
+    const newIndex = visibleSections.findIndex((s) => s.id === over.id);
+    if (oldIndex < 0 || newIndex < 0) return;
+    const reordered = arrayMove(visibleSections, oldIndex, newIndex);
+    // Optimistic UI update
+    setContent((c) => {
+      if (!c) return c;
+      const reorderedIds = reordered.map((s) => s.id);
+      const nextSections = [...c.sections].sort((a, b) => {
+        const ai = reorderedIds.indexOf(a.id);
+        const bi = reorderedIds.indexOf(b.id);
+        if (ai === -1 && bi === -1) return 0;
+        if (ai === -1) return 1;
+        if (bi === -1) return -1;
+        return ai - bi;
+      });
+      return { ...c, sections: nextSections };
+    });
+    try {
+      await adminApi.reorderSections(reordered.map((s) => s.id));
+      // No reload — keeps the optimistic order; preview refresh on next save
+      setRefreshKey((k) => k + 1);
+    } catch (e) {
+      window.alert('Errore riordino: ' + (e?.response?.data?.detail || e.message));
+      reload();
+    }
+  };
+
   return (
     <div data-testid="pages-editor" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 0.85fr)', gap: 0, height: '100vh' }}>
       {/* Left: editor */}
@@ -1052,15 +1195,26 @@ const PagesEditor = () => {
                     Nessun contenuto modificabile in questa pagina.
                   </p>
                 )}
-                {visibleSections.map(s => (
-                  <SectionCard
-                    key={s.id}
-                    section={s}
-                    locale={locale}
-                    onChanged={reload}
-                    onSelect={(sid) => setSelectedSection(sid)}
-                  />
-                ))}
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={onDragEnd}
+                >
+                  <SortableContext
+                    items={visibleSections.map((s) => s.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {visibleSections.map(s => (
+                      <SectionCard
+                        key={s.id}
+                        section={s}
+                        locale={locale}
+                        onChanged={reload}
+                        isSelected={selectedSection === s.id}
+                      />
+                    ))}
+                  </SortableContext>
+                </DndContext>
               </>
             )}
           </main>
