@@ -2,6 +2,49 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER157.CHECK.fix · Navigation Architecture Correction** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: correggere un errore architetturale introdotto in ITER157.CHECK.
+
+  **Errore originale**
+  Avevo seedato la navigation come `cms_section` dentro `cms_pages.home` (sort_order=-10)
+  con uno schema custom `{ welcome, cta, login, main:[{key,label,href}] }`. MA Blueprint OS
+  ha una **pagina dedicata `cms_pages.navigation`** con sezione `cms_sections.nav_top` che
+  ha il suo editor specifico (`NavTopEditor` in `bandEditors.jsx`) con schema canonico
+  `{ links:[{id, href, label_i18n:{...}, visible}], cta, login }`.
+
+  Risultato: il pannello Blueprint mostrava "Nessuna voce di menu" perché guardava il
+  posto giusto (vuoto), mentre i dati erano nel posto sbagliato.
+
+  **Correzione applicata**
+  - ❌ Eliminato `cms_sections.navigation` rogue da `cms_pages.home`
+  - ✅ Popolato `cms_sections.nav_top` in `cms_pages.navigation` con schema canonico:
+    4 links (how_it_works · magazine · design_stories · professionals) con
+    `label_i18n` per `_default`/`it-IT`/`en-US`, + CTA + login
+  - ✅ `cms_pages.navigation` promossa a `published`
+  - ✅ Pubblicate due revisioni: `navigation/5af899bb` + `home/58040870`
+  - ↻ `HomePage.jsx`: nuovo hook `useNavBundle(locale)` che fetcha
+    `/api/storefront/public/studio/pages/navigation` e merge in `copy.nav`
+    (sostituisce la pipeline `mapCmsToCopy` precedente per la nav)
+
+  **Verifica end-to-end**
+  - Pannello Blueprint `/blueprint/experience?page=navigation` → 4 voci visibili in
+    tabella editor con campi ID · LABEL · DESTINATION · VISIBLE editabili
+  - Sito pubblico `/` → MoodSiteHeader mostra "Come funziona · Magazine · Design Stories
+    · Per i professionisti" letti dalla stessa fonte
+  - Workflow chiuso: edit in Blueprint → "Pubblica Pagina" → "Apri Sito Live" → riload → vedi update
+
+  **Insight architettonico per i prossimi sprint**
+  Blueprint OS ha pagine CMS dedicate per ruoli specifici (`navigation`, `footer`, `home`,
+  `audience`, `professionals`, ecc.). Ogni pagina ha le sue sezioni con editor specializzati
+  registrati nel `bandEditors` registry. Quando si aggiunge nuovo contenuto pubblico, va
+  prima identificata la **pagina CMS corretta** + il **section_type esistente con editor
+  specializzato**, NON inventare un nuovo section_type.
+
+  **File modificati**
+  - ↻ `frontend/src/pages/site/HomePage.jsx` (useNavBundle + cleanup mapCmsToCopy.nav)
+  - ✅ DB: nav_top popolato, rogue navigation rimossa, 2 revisioni pubblicate
+
 - **ITER157.CHECK · Blueprint Alignment Audit™** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: verificare l'allineamento reale fra HomePage pubblica e

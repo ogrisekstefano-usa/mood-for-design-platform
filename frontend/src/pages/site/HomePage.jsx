@@ -758,30 +758,6 @@ const mapCmsToCopy = (content, locale) => {
     };
   }
 
-  // ITER157.CHECK · P0-A — navigation → copy.nav  (governs MoodSiteHeader)
-  // The bag shape is { welcome, cta:{label,href}, login:{label,href}, main:[{key,label,href}] }.
-  // We flatten to the legacy `copy.nav.*` keys consumed by `<MoodSiteHeader>`.
-  const nav = _b('navigation');
-  if (nav && Object.keys(nav).length) {
-    const main = Array.isArray(nav.main) ? nav.main : [];
-    const byKey = (k) => (main.find((m) => m.key === k) || {});
-    merged.nav = {
-      how_it_works:    { it: byKey('how_it_works').label   || '', en: byKey('how_it_works').label   || '' },
-      magazine:        { it: byKey('magazine').label        || '', en: byKey('magazine').label        || '' },
-      design_stories:  { it: byKey('design_stories').label  || '', en: byKey('design_stories').label  || '' },
-      materials:       { it: byKey('materials').label       || '', en: byKey('materials').label       || '' },
-      professionals:   { it: byKey('professionals').label   || '', en: byKey('professionals').label   || '' },
-      about:           { it: byKey('about').label           || '', en: byKey('about').label           || '' },
-      login:           { it: (nav.login   || {}).label || '', en: (nav.login   || {}).label || '' },
-      cta:             { it: (nav.cta     || {}).label || '', en: (nav.cta     || {}).label || '' },
-      cta_href:        (nav.cta || {}).href || '/begin-journey',
-      login_href:      (nav.login || {}).href || '/auth/login',
-    };
-    if (nav.welcome) {
-      merged.welcome = { it: nav.welcome, en: nav.welcome };
-    }
-  }
-
   return merged;
 };
 
@@ -794,6 +770,54 @@ const TENANT_SLUG = (() => {
   if (PLATFORM.some((h) => first === h || first.startsWith(h))) return 'studio';
   return first || 'studio';
 })();
+
+// ITER157.CHECK · navigation lives in its OWN CMS page (`cms_pages.navigation`)
+// → section `nav_top` whose settings.links is the canonical menu source.
+// We fetch it as a sibling of the home page so MoodSiteHeader has DB-driven nav.
+const useNavBundle = (locale) => {
+  const [bag, setBag] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/storefront/public/${TENANT_SLUG}/pages/navigation`;
+    fetch(url)
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => {
+        if (cancelled || !d?.page) return;
+        const sec = (d.page.sections || []).find((s) => s.section_type === 'nav_top');
+        if (!sec) return;
+        const settings = sec.settings || {};
+        setBag({ links: settings.links || [], cta: settings.cta, login: settings.login });
+      })
+      .catch(() => { /* silent — empty bag is the graceful default */ });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return useMemo(() => {
+    if (!bag) return null;
+    const loc = locale === 'en' ? 'en-US' : 'it-IT';
+    const pick = (i18n) => (i18n || {})[loc] || (i18n || {})['_default'] || '';
+    const linksByKey = {};
+    (bag.links || []).filter((l) => l.visible !== false).forEach((l) => {
+      linksByKey[l.id] = { label: pick(l.label_i18n), href: l.href || '/' };
+    });
+    return {
+      nav: {
+        how_it_works:   { it: linksByKey.how_it_works?.label   || '', en: linksByKey.how_it_works?.label   || '' },
+        magazine:       { it: linksByKey.magazine?.label       || '', en: linksByKey.magazine?.label       || '' },
+        design_stories: { it: linksByKey.design_stories?.label || '', en: linksByKey.design_stories?.label || '' },
+        materials:      { it: linksByKey.materials?.label      || '', en: linksByKey.materials?.label      || '' },
+        professionals:  { it: linksByKey.professionals?.label  || '', en: linksByKey.professionals?.label  || '' },
+        about:          { it: linksByKey.about?.label          || '', en: linksByKey.about?.label          || '' },
+        login:          { it: pick(bag.login?.label_i18n)      || '', en: pick(bag.login?.label_i18n)      || '' },
+        cta:            { it: pick(bag.cta?.label_i18n)        || '', en: pick(bag.cta?.label_i18n)        || '' },
+        cta_href:       bag.cta?.href   || '/begin-journey',
+        login_href:     bag.login?.href || '/auth/login',
+        hrefs:          linksByKey,
+      },
+    };
+  }, [bag, locale]);
+};
 
 // ────────────────────────────────────────────────────────────────
 // PAGE BODY (inside providers)
@@ -808,6 +832,7 @@ const HomePageBody = () => {
 
   // CMS — single source of truth for editorial copy.
   const cms = useStorefrontContent(TENANT_SLUG, 'home');
+  const navBundle = useNavBundle(locale);
   const copy = useMemo(() => {
     const merged = { ...EDITORIAL_SHELL };
     const mapped = mapCmsToCopy(cms?.content, locale === 'en' ? 'en-US' : locale);
@@ -816,9 +841,14 @@ const HomePageBody = () => {
         merged[k] = { ...(EDITORIAL_SHELL[k] || {}), ...mapped[k] };
       });
     }
+    // ITER157.CHECK · navigation is fetched from cms_pages.navigation
+    // (canonical Blueprint-governed) — override last so it always wins.
+    if (navBundle?.nav) {
+      merged.nav = { ...(EDITORIAL_SHELL.nav || {}), ...navBundle.nav };
+    }
     return merged;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(cms?.content), locale]);
+  }, [JSON.stringify(cms?.content), JSON.stringify(navBundle), locale]);
 
   return (
     <div className="mfd-site" data-testid="public-home-page">
