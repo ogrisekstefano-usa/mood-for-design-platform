@@ -45,12 +45,30 @@ CORP_SLUG = os.environ.get('CORPORATE_TENANT_SLUG', 'studio')
 # format: (namespace, block_key, block_type, {locale: value})
 
 NAV_BLOCKS = [
-    ('site.nav', 'audience',  'label', {'it': 'Dedicato a'}),
-    ('site.nav', 'features',  'label', {'it': 'Caratteristiche'}),
-    ('site.nav', 'pricing',   'label', {'it': 'Versioni e Prezzi'}),
-    ('site.nav', 'training',  'label', {'it': 'Formazione'}),
-    ('site.nav', 'support',   'label', {'it': 'Supporto'}),
-    ('site.nav', 'login',     'label', {'it': 'Accedi'}),
+    ('site.nav', 'audience',  'label', {
+        'it': 'Dedicato a',         'en-us': 'Audience',       'en-uk': 'Audience',
+        'fr': 'Dédié à',            'de': 'Zielgruppe',        'es': 'Dedicado a',
+    }),
+    ('site.nav', 'features',  'label', {
+        'it': 'Caratteristiche',    'en-us': 'Features',       'en-uk': 'Features',
+        'fr': 'Fonctionnalités',    'de': 'Funktionen',        'es': 'Características',
+    }),
+    ('site.nav', 'pricing',   'label', {
+        'it': 'Versioni e Prezzi',  'en-us': 'Editions & Pricing', 'en-uk': 'Editions & Pricing',
+        'fr': 'Versions & Prix',    'de': 'Versionen & Preise',    'es': 'Ediciones y Precios',
+    }),
+    ('site.nav', 'training',  'label', {
+        'it': 'Formazione',         'en-us': 'Training',       'en-uk': 'Training',
+        'fr': 'Formation',          'de': 'Schulung',          'es': 'Formación',
+    }),
+    ('site.nav', 'support',   'label', {
+        'it': 'Supporto',           'en-us': 'Support',        'en-uk': 'Support',
+        'fr': 'Assistance',         'de': 'Support',           'es': 'Soporte',
+    }),
+    ('site.nav', 'login',     'label', {
+        'it': 'Accedi',             'en-us': 'Sign in',        'en-uk': 'Sign in',
+        'fr': 'Connexion',          'de': 'Anmelden',          'es': 'Acceder',
+    }),
 ]
 
 # Pages content blocks — namespace, block_key, type, locales
