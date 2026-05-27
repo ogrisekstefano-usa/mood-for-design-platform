@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 load_dotenv(ROOT / '.env')
 
 NS = uuid.UUID('a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d')
-CORP_SLUG = 'mood-corporate'
+CORP_SLUG = 'studio'
 LOCALES = ['it', 'en-us', 'en-uk', 'fr', 'de', 'es']
 
 # ── Imagery — editorial interior architecture ───────────────────────────────
