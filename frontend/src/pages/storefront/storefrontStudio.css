@@ -15,6 +15,96 @@
   grid-template-columns: 1fr;
 }
 
+/* ITER157.D · Visual Editor split layout
+   • selected band + preview open  → 3-column: stage | editor | preview
+   • no selection + preview open   → 2-column: stage | preview
+   • no selection + preview closed → 1-column: stage                       */
+.ss-root[data-preview-open="true"] {
+  grid-template-columns: minmax(420px, 0.85fr) 460px minmax(560px, 1.1fr);
+}
+.ss-root[data-preview-open="true"][data-no-edit="true"] {
+  grid-template-columns: minmax(420px, 0.85fr) minmax(560px, 1.1fr);
+}
+@media (max-width: 1380px) {
+  .ss-root[data-preview-open="true"] { grid-template-columns: 1fr; }
+  .ss-root[data-preview-open="true"][data-no-edit="true"] { grid-template-columns: 1fr; }
+  .ss-preview { display: none; }
+}
+
+/* ── LIVE PREVIEW PANE (right column, ITER157.D) ─────────────── */
+.ss-preview {
+  position: sticky; top: 0;
+  height: 100vh;
+  background: #0a0e10;
+  border-left: 1px solid var(--bp-border);
+  display: flex; flex-direction: column;
+}
+.ss-preview__head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: rgba(8,12,16,0.96);
+}
+.ss-preview__viewport {
+  display: inline-flex; gap: 2px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  padding: 2px;
+}
+.ss-preview__vp {
+  width: 28px; height: 22px;
+  display: grid; place-items: center;
+  background: transparent; color: rgba(230,247,244,0.5);
+  border: none; border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+.ss-preview__vp[data-active="true"] {
+  background: rgba(0,201,179,0.18);
+  color: #00C9B3;
+}
+.ss-preview__vp:hover { color: #e6f7f4; }
+.ss-preview__status {
+  flex: 1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(230,247,244,0.62);
+}
+.ss-preview__actions { display: inline-flex; gap: 4px; }
+.ss-preview__btn {
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  background: transparent; color: rgba(230,247,244,0.62);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.16s ease;
+}
+.ss-preview__btn:hover { color: #00C9B3; border-color: rgba(0,201,179,0.4); }
+.ss-preview__frame-wrap {
+  flex: 1; min-height: 0;
+  background: linear-gradient(180deg, #0a0e10 0%, #050709 100%);
+  display: flex; justify-content: center;
+  padding: 12px;
+  overflow: auto;
+}
+.ss-preview__frame-inner {
+  height: 100%;
+  max-width: 100%;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.45);
+  overflow: hidden;
+  transition: width 0.24s cubic-bezier(0.22,0.61,0.36,1);
+}
+.ss-preview__iframe {
+  width: 100%; height: 100%;
+  border: none; display: block;
+}
+
 /* ── LEFT: BANDS ORCHESTRATION ───────────────────────────────── */
 .ss-stage {
   padding: 56px 64px 120px;

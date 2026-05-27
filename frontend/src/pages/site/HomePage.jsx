@@ -32,6 +32,7 @@ import MoodSiteHeader from '../../site/components/MoodSiteHeader';
 import { useStorefrontContent } from '../../site/useStorefrontContent';
 import StorefrontThemeProvider from '../../design-system/storefront/StorefrontThemeProvider';
 import SiteLocaleBridge from '../../site/SiteLocaleBridge';
+import EditorialBridge from '../../site/EditorialBridge';
 import './home-iter150.css';
 
 // ─────────────────────────────────────────────────────────────────────
@@ -852,6 +853,7 @@ const HomePageBody = () => {
 
   return (
     <div className="mfd-site" data-testid="public-home-page">
+      <EditorialBridge />
       <MoodSiteHeader locale={locale} copy={copy} onLocaleChange={onLocaleChange} />
       <main>
         <Hero locale={locale} copy={copy} />

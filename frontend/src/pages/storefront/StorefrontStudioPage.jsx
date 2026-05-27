@@ -24,10 +24,11 @@
  * UI Direction: editorial orchestration room, NOT CMS admin. Blueprint
  * palette only (--bp-* tokens).
  */
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../../lib/api';
 import { GripVertical, Eye, EyeOff } from 'lucide-react';
+import LivePreviewPane from './LivePreviewPane';
 import { toast } from 'sonner';
 import './storefrontStudio.css';
 import { renderBandEditor, TraceabilityChip } from './bandEditors';
@@ -201,6 +202,17 @@ const StorefrontStudioPage = () => {
   const [dragId, setDragId] = useState(null);
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
+  // ITER157.D · Visual editor — side-by-side preview state
+  const [previewOpen, setPreviewOpen] = useState(true);
+  const [previewKey, setPreviewKey]   = useState(0);
+  // When iframe says a section was clicked → open editor for that band.
+  const onPreviewSectionClick = useCallback((section_type) => {
+    setSections((current) => {
+      const found = (current || []).find((s) => s.section_type === section_type);
+      if (found) setSelected(found);
+      return current;
+    });
+  }, []);
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -298,6 +310,7 @@ const StorefrontStudioPage = () => {
         ...r.data
       });
       setDirty(false);
+      setPreviewKey((k) => k + 1);
       toast.success('Variante salvata');
     } catch (e) {
       toast.error(e?.response?.data?.detail || 'Salvataggio fallito');
@@ -312,11 +325,12 @@ const StorefrontStudioPage = () => {
       // refresh
       const r = await api.get(`/api/storefront/admin/pages/${activePage}`);
       setPage(r.data || null);
+      setPreviewKey((k) => k + 1);
     } catch (e) {
       toast.error(e?.response?.data?.detail || 'Pubblicazione fallita');
     }
   };
-  return <div className="ss-root" data-no-edit={!selected} data-testid="ss-root">
+  return <div className="ss-root ss-root--with-preview" data-no-edit={!selected} data-preview-open={previewOpen} data-testid="ss-root">
       <div className="ss-stage">
         <header className="ss-head">
           <p className="ss-head__eyebrow">Blueprint · Experience Orchestration</p>
@@ -337,20 +351,19 @@ const StorefrontStudioPage = () => {
             <span className="ss-publish-bar__dot" data-status={page?.status || 'draft'} />
             {page?.status === 'published' ? 'Live · pubblicata' : 'Bozza · non pubblicata'}
           </span>
-          <a
+          <button
+            type="button"
             className="ss-btn ss-btn--ghost"
-            href="/?editorial=preview"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-testid="ss-open-live-site"
+            onClick={() => setPreviewOpen((v) => !v)}
+            data-testid="ss-toggle-preview"
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 6,
-              textDecoration: 'none', marginRight: 8,
+              marginRight: 8,
             }}
-            title="Apri il sito pubblico in una nuova scheda con i marker editoriali visibili"
+            title={previewOpen ? 'Chiudi pannello di anteprima' : 'Apri anteprima visiva del sito'}
           >
-            <Eye size={13} strokeWidth={1.6} /> Apri Sito Live
-          </a>
+            <Eye size={13} strokeWidth={1.6} /> {previewOpen ? 'Nascondi anteprima' : 'Apri anteprima'}
+          </button>
           <button className="ss-btn ss-btn--primary" data-testid="ss-publish" onClick={publishPage}>{t('storefront.storefront_studio.pubblica_pagina')}</button>
         </div>
 
@@ -414,6 +427,15 @@ const StorefrontStudioPage = () => {
       setSelected(null);
       setDirty(false);
     }} />}
+
+      {previewOpen && (
+        <LivePreviewPane
+          pageKey={activePage}
+          refreshKey={previewKey}
+          onSectionClick={onPreviewSectionClick}
+          selectedSectionType={selected?.section_type || null}
+        />
+      )}
     </div>;
 };
 const BandEditor = ({

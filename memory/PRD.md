@@ -2,6 +2,56 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER157.D · Visual Editor with Live Preview™** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: editor visuale tipo WordPress/Webflow — click sulla preview
+  apre l'editor sulla sezione esatta. Esperienza usabile da non-tecnici.
+
+  **Architettura postMessage bridge**
+  - `EditorialBridge.jsx` (public site, attivo SOLO con `?editorial=preview`):
+    tagga ogni sezione DOM con `data-mfd-editable={section_type}`, inietta
+    CSS hover cyan + label "Edit · {type}", emette `mfd:section-click` al
+    parent window quando un utente clicca una fascia. Listener inverso
+    `mfd:scroll-to` riceve coordinate dalla bottega editor.
+  - `LivePreviewPane.jsx` (Blueprint Experience, sticky right column):
+    iframe del sito reale, viewport switcher (desktop/tablet/mobile),
+    status bar bridge, reload manuale, apri-in-nuova-tab.
+
+  **Layout 3-colonne dinamico**
+  - `data-preview-open="true"` + selezione → stage | editor | preview
+  - `data-preview-open="true"` + no selezione → stage | preview
+  - Sotto 1380px → collapse a 1 colonna (mobile-safe)
+
+  **Auto-refresh dopo save/publish**
+  - `previewKey` bump dopo `saveSelected()` e `publishPage()` → iframe
+    src cambia query string `&_r=N` → React forza reload pulito
+
+  **Cleanup database (CRITICAL!)**
+  - Eliminate **14 sezioni legacy** in `cms_pages.home` (curated_brands,
+    editorial_triptych, platform_pillars, design_journey, ecc.) lasciate
+    da seed precedenti (`seed_storefront_cms.py`). Erano `visible=True`
+    con `locale_content` vuoto → creavano sezioni "fantasma" che
+    coprivano i seed canonici (visible=False).
+  - Home ora ha esattamente **10 sezioni canoniche** ordinate
+    (hero_editorial → featured_design_journeys → editorial_grid →
+    trust_marquee → magazine_highlights → atmosphere_statement →
+    professionals_cta → materials_carousel → cinematic_quote →
+    editorial_footer), tutte `visible=True` con contenuto reale.
+  - Revisione pubblicata: `04660ff3`.
+
+  **Toggle "Apri Sito Live" → "Nascondi/Apri anteprima"**
+  - Sostituito con un toggle che apre/chiude il pannello iframe.
+    L'esperienza ora è "sempre split view" (default open), con la
+    possibilità di nasconderlo se l'admin vuole concentrarsi sul testo.
+
+  **File creati / modificati**
+  - ⨁ `frontend/src/site/EditorialBridge.jsx` (postMessage bridge public side)
+  - ⨁ `frontend/src/pages/storefront/LivePreviewPane.jsx` (iframe pane)
+  - ↻ `frontend/src/pages/site/HomePage.jsx` (mount EditorialBridge)
+  - ↻ `frontend/src/pages/storefront/StorefrontStudioPage.jsx` (toggle, integration, previewKey)
+  - ↻ `frontend/src/pages/storefront/storefrontStudio.css` (+90 righe split layout + preview styling)
+  - ✅ DB: 14 sezioni legacy eliminate · 10 canoniche promosse a visible=True · revision 04660ff3
+
 - **ITER157.CHECK.fix · Navigation Architecture Correction** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: correggere un errore architetturale introdotto in ITER157.CHECK.
