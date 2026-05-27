@@ -34,7 +34,9 @@
   --pa-radius-lg: 12px;
   --pa-font-heading: var(--bp-font-heading, 'Playfair Display', serif);
   --pa-font-body: var(--bp-font-body, 'Inter', system-ui, sans-serif);
-  --pa-font-mono: var(--bp-font-mono, 'JetBrains Mono', ui-monospace, monospace);
+  /* Was: JetBrains Mono — too "techno" for an editorial CMS console.
+     Now: Inter with tight letter-spacing for refined editorial labels. */
+  --pa-font-mono: 'Inter', system-ui, sans-serif;
 
   display: grid;
   grid-template-columns: var(--pa-rail) var(--pa-pagelist) minmax(560px, 1fr) var(--pa-preview);
