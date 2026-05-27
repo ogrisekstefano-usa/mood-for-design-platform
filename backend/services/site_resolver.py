@@ -234,6 +234,7 @@ async def resolve_navigation(locale: str = DEFAULT_LOCALE) -> dict:
                     JOIN cms_pages p ON s.page_id = p.id
                     WHERE p.tenant_id = :tid AND s.section_type = 'navigation'
                       AND s.visible = true
+                      AND s.deleted_at IS NULL
                     ORDER BY s.sort_order
                     LIMIT 1
                 """),
@@ -291,6 +292,8 @@ async def resolve_footer(locale: str = DEFAULT_LOCALE) -> dict:
                     JOIN cms_pages p ON s.page_id = p.id
                     WHERE p.tenant_id = :tid AND s.section_type = 'footer'
                       AND s.visible = true
+                      AND s.deleted_at IS NULL
+                    ORDER BY s.sort_order
                     LIMIT 1
                 """),
                 {"tid": tenant['id']},
