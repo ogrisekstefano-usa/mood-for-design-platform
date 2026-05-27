@@ -2,6 +2,103 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER157.E.3 · Reference-aligned Field Operations** · ✅ DELIVERED · 27 Mag 2026
+
+  **🎯 Goal**: replicare l'esperienza editorial-platform-4 mostrata
+  dall'utente (font leggibili, cyan accent, sezioni collapse, drag
+  riordino, aggiunta blocchi) sopra l'infrastruttura esistente.
+
+  **Cyan accent restituito al Command Center**
+  - Le regole CSS globali risolvevano `--bp-primary` in bronze gold
+    `#C9A26B` invece del cyan `#00C9B3` per la shell admin.
+  - Fix: `.pa-shell` (con classe `bp-admin`) re-ancora hard-coded
+    `--bp-primary: #00C9B3` + `--bp-accent: #00C9B3` + variants.
+    Tutto il sottoalbero (eyebrow, save buttons, focus border, pulse)
+    risolve in cyan canonico Atelier.
+  - Verificato: `rail eyebrow rgb(0,201,179)`, `section eyebrow
+    rgb(0,201,179)`.
+
+  **Font significativamente ingranditi**
+  - `pa-main__title` 38 → **48px**
+  - `pa-pagelist__title` 13.5 → **16px** (link Home, Dedicato a, …)
+  - `pa-pagelist__path` 10.5 → **12px**
+  - `pa-section-group__eyebrow` 10.5 → **12.5px**
+  - `pa-section-group__meta` 10.5 → **12px** (Sort 1 · visible · 7
+    blocchi · 1 immagine)
+  - `pa-field__eyebrow` 11 → **13px**
+  - `pa-input` / `pa-textarea` 13.5 → **15px**
+  - `pa-rail__brand` 26 → **30px**
+  - `pa-locale-btn` 10.5 → **12px**
+  - Base font-size della shell impostato a **15px** (era default 14px).
+
+  **Collapse/Expand per sezione**
+  - Default: tutte le sezioni `collapsed=true` → riga singola compatta
+    (drag handle ⋮⋮ · chevron · TITOLO · Sort · visible · N blocchi ·
+    N immagini · eye toggle · Elimina).
+  - Click su chevron, o sull'header, o focus dalla preview → expand.
+  - In stato `collapsed=true`: padding ridotto, no body, no borders.
+
+  **Drag&Drop riordino**
+  - Ogni `.pa-section-group` ha `draggable={true}` con handler
+    `onDragStart/End/Over/Drop`.
+  - Visual feedback: opacità 0.45 sulla draggata, barra cyan di drop
+    indicator sopra la sezione hover target.
+  - Backend: ricalcolo `sort_order` con step di 10, batch PUT su
+    tutte le sezioni in parallelo.
+  - Drop su stessa sezione = no-op silenzioso.
+
+  **+ Aggiungi blocco con 4 tipi generici**
+  - Pulsante "Aggiungi blocco" accanto a "Pubblica pagina".
+  - Apre `BlockPicker` card cyan con 4 tile (icone Lucide):
+    * **Titolo** (`block_heading`) — Type icon
+    * **Testo** (`block_text`) — AlignLeft icon
+    * **Immagine** (`block_image`) — Image icon
+    * **Video YouTube** (`block_video_youtube`) — Youtube icon
+  - Backend registry esteso: `block_heading`, `block_text`,
+    `block_image`, `block_video_youtube` registrati in
+    `STOREFRONT_SECTION_TYPES` con schemi minimi.
+  - POST → la nuova sezione viene aggiunta in coda con sort=N*10,
+    auto-expanded, auto-focused, e l'editor scrolla.
+  - Verificato live: `block_heading` e `block_text` creati, campi IT
+    salvati (`"Questo è un blocco di testo libero aggiunto
+    dall'editor."`).
+
+  **Auto-expand on focus**
+  - Quando una fascia viene cliccata nella preview, la sezione
+    corrispondente nell'editor si auto-espande oltre a scrollare e
+    accendere il bordo cyan.
+
+  **Note di scope (P2 — sprint successivo)**
+  - **Rendering pubblico dei blocchi generici**: i nuovi
+    `block_heading/text/image/video_youtube` sono salvati e renderizzati
+    nell'editor, ma il sito pubblico (`HomePage.jsx`) non ha ancora un
+    renderer per loro. Necessario `<EditorialFreeBlocks>` component
+    nell'ordine `sort_order`. ~1 ora.
+  - **Rich text minimal**: bold/italic/link sui textarea (TipTap o
+    contenteditable + toolbar inline).
+  - **Image crop + filters**: react-easy-crop + slider
+    brightness/contrast/grayscale.
+
+  **File modificati**
+  - ↻ `backend/core/storefront_registry.py` (+4 generic block types)
+  - ↻ `frontend/src/pages/storefront/PagesAdminPage.jsx`
+    (drag&drop, collapse state, BlockPicker, addBlock, .bp-admin class,
+    auto-expand on focus, sort_order reorder)
+  - ↻ `frontend/src/pages/storefront/pagesAdmin.css` (token aliases,
+    bigger fonts, collapsed states, drag visuals, picker UI,
+    hard-cyan reset for --bp-primary)
+
+  **Verifica E2E live (admin@moodfordesign.com · 1920×1000)**
+  - Cyan attivo ovunque (rail eyebrow, section eyebrows, focus border)
+  - 21 → 22 sezioni dopo Aggiungi blocco
+  - block_text salvato in IT
+  - Collapse/expand su hero_editorial funzionante
+  - Drag handle visibile su tutte le sezioni
+  - Page switcher Home/Projects mantiene tutto
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER157.E.2 · Bi-directional Bridge + Atelier styling** · ✅ DELIVERED · 27 Mag 2026
 
   **🎯 Goal**: chiudere il loop di sincronizzazione editor↔preview e

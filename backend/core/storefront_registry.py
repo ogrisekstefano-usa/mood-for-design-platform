@@ -430,6 +430,70 @@ STOREFRONT_SECTION_TYPES: List[Dict[str, Any]] = [
         },
         "defaults": {"labels": {}},
     },
+    # ── GENERIC BLOCKS (ITER157.E.3) ────────────────────────────────────
+    # Drag-and-drop friendly free-form blocks that any editor can add to
+    # any page. They render via the EditorialFreeBlocks component on the
+    # public site.
+    {
+        "type": "block_heading",
+        "category": "generic",
+        "label": "Titolo",
+        "description": "Titolo editoriale autonomo. Trascinabile, riutilizzabile in qualsiasi pagina.",
+        "icon": "Heading",
+        "reusable_in": "*",
+        "schema": {
+            "title":    {"type": "string",   "i18n": True, "max": 240, "required": True},
+            "eyebrow":  {"type": "string",   "i18n": True, "max": 80},
+            "size":     {"type": "enum",     "options": ["sm", "md", "lg", "xl"], "default": "lg"},
+            "align":    {"type": "enum",     "options": ["left", "center", "right"], "default": "left"},
+        },
+        "defaults": {"size": "lg", "align": "left"},
+    },
+    {
+        "type": "block_text",
+        "category": "generic",
+        "label": "Testo",
+        "description": "Paragrafo editoriale autonomo. Supporta formattazione minimale (P2).",
+        "icon": "AlignLeft",
+        "reusable_in": "*",
+        "schema": {
+            "body":     {"type": "richtext", "i18n": True, "max": 4000, "required": True},
+            "align":    {"type": "enum",     "options": ["left", "center", "right"], "default": "left"},
+            "width":    {"type": "enum",     "options": ["narrow", "default", "wide"], "default": "default"},
+        },
+        "defaults": {"align": "left", "width": "default"},
+    },
+    {
+        "type": "block_image",
+        "category": "generic",
+        "label": "Immagine",
+        "description": "Immagine editoriale autonoma con caption e ratio configurabile.",
+        "icon": "Image",
+        "reusable_in": "*",
+        "schema": {
+            "url":      {"type": "string",   "required": True},
+            "caption":  {"type": "string",   "i18n": True, "max": 240},
+            "alt":      {"type": "string",   "i18n": True, "max": 240},
+            "ratio":    {"type": "enum",     "options": ["1:1", "4:3", "3:2", "16:9", "21:9"], "default": "16:9"},
+            "filter":   {"type": "string",   "max": 240},  # future P2: brightness/contrast/grayscale
+        },
+        "defaults": {"ratio": "16:9"},
+    },
+    {
+        "type": "block_video_youtube",
+        "category": "generic",
+        "label": "Video YouTube",
+        "description": "Embed YouTube responsive. Inserire URL o ID video.",
+        "icon": "Youtube",
+        "reusable_in": "*",
+        "schema": {
+            "video_id":     {"type": "string", "required": True},
+            "title":        {"type": "string", "i18n": True, "max": 240},
+            "caption":      {"type": "string", "i18n": True, "max": 240},
+            "autoplay":     {"type": "bool",   "default": False},
+        },
+        "defaults": {"autoplay": False},
+    },
 ]
 
 

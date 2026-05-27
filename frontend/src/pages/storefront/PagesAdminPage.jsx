@@ -15,7 +15,8 @@ import { useSearchParams, Link } from 'react-router-dom';
 import {
   FileText, Layers, LayoutGrid, Image as ImageIcon, Compass,
   Search, Send, Eye, EyeOff, Languages, Trash2, ExternalLink,
-  RefreshCw, LogOut,
+  RefreshCw, LogOut, Plus, ChevronDown, ChevronRight, GripVertical,
+  Type, AlignLeft, Youtube,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
@@ -91,6 +92,24 @@ const FIELD_SCHEMAS = {
     { key: 'rights',  label: 'COPYRIGHT', textarea: false },
     { key: 'tagline', label: 'TAGLINE',   textarea: true, rows: 2 },
   ],
+  // ── Generic free-form blocks (ITER157.E.3) ───────────────────────
+  block_heading: [
+    { key: 'eyebrow', label: 'EYEBROW', textarea: false },
+    { key: 'title',   label: 'TITOLO',  textarea: true, rows: 2, display: true },
+  ],
+  block_text: [
+    { key: 'body', label: 'TESTO', textarea: true, rows: 5, display: true },
+  ],
+  block_image: [
+    { key: 'url',     label: 'IMMAGINE', kind: 'image' },
+    { key: 'caption', label: 'CAPTION',  textarea: true, rows: 2 },
+    { key: 'alt',     label: 'ALT TEXT', textarea: false },
+  ],
+  block_video_youtube: [
+    { key: 'video_id', label: 'VIDEO ID / URL YOUTUBE', textarea: false, placeholder: 'es: dQw4w9WgXcQ oppure https://youtu.be/dQw4w9WgXcQ' },
+    { key: 'title',    label: 'TITOLO',                 textarea: false },
+    { key: 'caption',  label: 'CAPTION',                textarea: true, rows: 2 },
+  ],
 };
 
 // Section types whose editor is best handled by the existing advanced
@@ -149,6 +168,23 @@ const PagesAdminPage = () => {
   const sectionsRef = React.useRef(sections);
   React.useEffect(() => { sectionsRef.current = sections; }, [sections]);
 
+  // Collapsed state per section (default: collapsed for compact list).
+  // Auto-expand on focus.
+  const [collapsed, setCollapsed] = useState({}); // id → boolean
+  const setSectionCollapsed = (id, value) =>
+    setCollapsed((prev) => ({ ...prev, [id]: value }));
+  const isCollapsed = (s) => {
+    if (s.id in collapsed) return collapsed[s.id];
+    return true; // default: all collapsed
+  };
+
+  // Drag&drop reorder state
+  const [draggingId, setDraggingId] = useState(null);
+  const [dragOverId, setDragOverId] = useState(null);
+
+  // Block picker (+ Aggiungi blocco) panel state
+  const [pickerOpen, setPickerOpen] = useState(false);
+
   const draftKey = (sid, loc, field) => `${sid}__${loc}__${field}`;
 
   const switchPage = (k) => {
@@ -186,6 +222,9 @@ const PagesAdminPage = () => {
     const list = sectionsRef.current || [];
     const matched = candidates.find((t) => list.some((s) => s.section_type === t)) || section_type;
     setFocusedSectionType(matched);
+    // Auto-expand the focused section when clicked from preview
+    const matchedSection = list.find((s) => s.section_type === matched);
+    if (matchedSection) setSectionCollapsed(matchedSection.id, false);
     // Scroll the editor column to the section header. We use a tiny setTimeout
     // so React has time to flush state→DOM, then read the live offset and
     // command the scroll directly. Some browsers ignore scroll commands
@@ -276,6 +315,62 @@ const PagesAdminPage = () => {
     }
   };
 
+  // ── DRAG&DROP REORDER ───────────────────────────────────────
+  const reorderSections = async (fromId, toId) => {
+    if (!fromId || !toId || fromId === toId) return;
+    const list = [...sections].sort((a, b) => a.sort_order - b.sort_order);
+    const fromIdx = list.findIndex((s) => s.id === fromId);
+    const toIdx = list.findIndex((s) => s.id === toId);
+    if (fromIdx < 0 || toIdx < 0) return;
+    const [moved] = list.splice(fromIdx, 1);
+    list.splice(toIdx, 0, moved);
+    // Reassign sort_order with steps of 10 to leave room for future inserts
+    const updated = list.map((s, i) => ({ ...s, sort_order: i * 10 }));
+    setSections(updated);
+    // Persist only the changed ones to backend
+    try {
+      await Promise.all(
+        updated.map((s) =>
+          api.put(`/api/storefront/admin/sections/${s.id}`, { sort_order: s.sort_order })
+        )
+      );
+      setPreviewKey((k) => k + 1);
+      toast.success('Ordine aggiornato');
+    } catch (e) {
+      toast.error('Riordino non salvato — ricarico');
+      const r = await api.get(`/api/storefront/admin/pages/${activePage}`);
+      setSections((r.data?.sections || []).sort((a, b) => a.sort_order - b.sort_order));
+    }
+  };
+
+  // ── ADD BLOCK ───────────────────────────────────────────────
+  const addBlock = async (section_type) => {
+    try {
+      const r = await api.post(`/api/storefront/admin/pages/${activePage}/sections`, {
+        section_type,
+        visible: true,
+      });
+      const created = r.data;
+      setSections((list) => [...list, created].sort((a, b) => a.sort_order - b.sort_order));
+      setSectionCollapsed(created.id, false); // auto-expand
+      setFocusedSectionType(created.section_type);
+      setPickerOpen(false);
+      setPreviewKey((k) => k + 1);
+      toast.success(`Blocco aggiunto: ${section_type}`);
+      // Scroll to new block
+      setTimeout(() => {
+        const el = document.getElementById(`pa-section-${created.section_type}`);
+        if (el) {
+          const scroller = document.scrollingElement || document.documentElement;
+          const rect = el.getBoundingClientRect();
+          scroller.scrollTop = Math.max(0, rect.top + scroller.scrollTop - 96);
+        }
+      }, 100);
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || 'Aggiunta fallita');
+    }
+  };
+
   const publishPage = async () => {
     try {
       await api.post(`/api/storefront/admin/pages/${activePage}/publish`, {});
@@ -305,7 +400,7 @@ const PagesAdminPage = () => {
 
   return (
     <BlueprintThemeProvider>
-    <div className="pa-shell" data-preview-open="true" data-testid="pa-shell">
+    <div className="pa-shell bp-admin" data-preview-open="true" data-testid="pa-shell">
       {/* ── LEFT RAIL ───────────────────────────────────── */}
       <aside className="pa-rail">
         <p className="pa-rail__eyebrow">Blueprint</p>
@@ -394,7 +489,17 @@ const PagesAdminPage = () => {
           <button className="pa-publish-btn" onClick={publishPage} data-testid="pa-publish">
             Pubblica pagina
           </button>
+          <button className="pa-addblock-btn" onClick={() => setPickerOpen(!pickerOpen)} data-testid="pa-addblock-toggle">
+            <Plus size={14} strokeWidth={2} /> Aggiungi blocco
+          </button>
         </div>
+
+        {pickerOpen && (
+          <BlockPicker
+            onPick={(type) => addBlock(type)}
+            onClose={() => setPickerOpen(false)}
+          />
+        )}
 
         {loading && <p className="pa-empty">Caricamento dell'orchestrazione…</p>}
         {!loading && sections.length === 0 && (
@@ -419,6 +524,20 @@ const PagesAdminPage = () => {
             patchSectionPayload={patchSectionPayload}
             focused={focusedSectionType === section.section_type}
             onSelect={() => setFocusedSectionType(section.section_type)}
+            collapsed={isCollapsed(section)}
+            onToggleCollapse={() => setSectionCollapsed(section.id, !isCollapsed(section))}
+            draggingId={draggingId}
+            dragOverId={dragOverId}
+            onDragStart={() => setDraggingId(section.id)}
+            onDragEnd={() => { setDraggingId(null); setDragOverId(null); }}
+            onDragOver={() => setDragOverId(section.id)}
+            onDrop={() => {
+              if (draggingId && draggingId !== section.id) {
+                reorderSections(draggingId, section.id);
+              }
+              setDraggingId(null);
+              setDragOverId(null);
+            }}
           />
         ))}
       </main>
@@ -435,51 +554,119 @@ const PagesAdminPage = () => {
   );
 };
 
+// ─── BlockPicker (+ Aggiungi blocco) ──────────────────────────
+const BLOCK_TILES = [
+  { type: 'block_heading',        icon: Type,      label: 'Titolo',         hint: 'Headline editoriale autonoma' },
+  { type: 'block_text',           icon: AlignLeft, label: 'Testo',          hint: 'Paragrafo libero con formattazione' },
+  { type: 'block_image',          icon: ImageIcon, label: 'Immagine',       hint: 'Foto editoriale con caption' },
+  { type: 'block_video_youtube',  icon: Youtube,   label: 'Video YouTube',  hint: 'Embed responsive da URL/ID' },
+];
+
+const BlockPicker = ({ onPick, onClose }) => (
+  <div className="pa-picker" data-testid="pa-block-picker">
+    <header className="pa-picker__head">
+      <span className="pa-picker__eyebrow">Aggiungi un nuovo blocco</span>
+      <button className="pa-picker__close" onClick={onClose} data-testid="pa-picker-close">×</button>
+    </header>
+    <div className="pa-picker__grid">
+      {BLOCK_TILES.map((t) => {
+        const Icon = t.icon;
+        return (
+          <button key={t.type}
+            className="pa-picker__tile"
+            data-testid={`pa-picker-${t.type}`}
+            onClick={() => onPick(t.type)}>
+            <Icon size={28} strokeWidth={1.5} />
+            <span className="pa-picker__tile-label">{t.label}</span>
+            <span className="pa-picker__tile-hint">{t.hint}</span>
+          </button>
+        );
+      })}
+    </div>
+  </div>
+);
+
 // ─── SectionGroup ─────────────────────────────────────────────
 const SectionGroup = ({
   section, page, locale,
   isDirty, getDraftValue, onChangeDraft, onSaveField, savingKey, draftKey,
   onToggleVisible, onDelete, onSaveImage, patchSectionPayload, focused, onSelect,
+  collapsed, onToggleCollapse,
+  draggingId, dragOverId, onDragStart, onDragEnd, onDragOver, onDrop,
 }) => {
   const isAdvanced = ADVANCED_TYPES.has(section.section_type);
   const schema = FIELD_SCHEMAS[section.section_type] || DEFAULT_TEXT_FIELDS;
   const trace = TRACEABILITY[section.section_type] || section.section_type;
   const eyebrow = (section.section_type || '').toUpperCase().replace(/_/g, ' ');
 
+  // Count "blocks" (fields) and images for the meta line, like the reference.
+  const fieldCount = isAdvanced ? null : schema.length;
+  const imageCount = isAdvanced ? null : schema.filter((f) => f.kind === 'image').length;
+  const metaParts = [
+    `Sort ${section.sort_order}`,
+    section.visible ? 'visible' : 'hidden',
+  ];
+  if (fieldCount != null) metaParts.push(`${fieldCount} ${fieldCount === 1 ? 'blocco' : 'blocchi'}`);
+  if (imageCount) metaParts.push(`${imageCount} ${imageCount === 1 ? 'immagine' : 'immagini'}`);
+
+  const isDragging = draggingId === section.id;
+  const isDragOver = dragOverId === section.id && draggingId && draggingId !== section.id;
+
   return (
     <article
       id={`pa-section-${section.section_type}`}
       className="pa-section-group"
       data-testid={`pa-section-${section.section_type}`}
-      data-focused={focused ? 'true' : 'false'}>
+      data-focused={focused ? 'true' : 'false'}
+      data-collapsed={collapsed ? 'true' : 'false'}
+      data-dragging={isDragging ? 'true' : 'false'}
+      data-dragover={isDragOver ? 'true' : 'false'}
+      draggable={true}
+      onDragStart={(e) => {
+        e.dataTransfer.effectAllowed = 'move';
+        try { e.dataTransfer.setData('text/plain', section.id); } catch (_) {}
+        onDragStart?.();
+      }}
+      onDragEnd={onDragEnd}
+      onDragOver={(e) => { e.preventDefault(); onDragOver?.(); }}
+      onDrop={(e) => { e.preventDefault(); onDrop?.(); }}>
       <header
         className="pa-section-group__head"
-        onClick={onSelect}
+        onClick={() => { onSelect?.(); if (collapsed) onToggleCollapse?.(); }}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => { if (e.key === 'Enter') onSelect?.(); }}
-        title="Sincronizza la preview a destra su questa sezione"
-        style={{ cursor: 'pointer' }}>
-        <span className="pa-section-group__eyebrow">{eyebrow}</span>
-        <span className="pa-section-group__meta">
-          Sort {section.sort_order} {section.visible ? '' : '· hidden'}
-          {trace ? ` · ${trace}` : ''}
+        onKeyDown={(e) => { if (e.key === 'Enter') { onSelect?.(); onToggleCollapse?.(); } }}
+        title="Click per editare · drag per riordinare">
+        <span className="pa-grip" title="Trascina per riordinare" aria-hidden>
+          <GripVertical size={14} strokeWidth={1.8} />
         </span>
+        <button
+          className="pa-collapse-btn"
+          onClick={(e) => { e.stopPropagation(); onToggleCollapse?.(); }}
+          data-testid={`pa-collapse-${section.section_type}`}
+          title={collapsed ? 'Espandi' : 'Comprimi'}>
+          {collapsed
+            ? <ChevronRight size={14} strokeWidth={2} />
+            : <ChevronDown size={14} strokeWidth={2} />}
+        </button>
+        <span className="pa-section-group__eyebrow">{eyebrow}</span>
+        <span className="pa-section-group__meta">{metaParts.join(' · ')}</span>
         <div className="pa-section-group__actions" onClick={(e) => e.stopPropagation()}>
           <button className="pa-toggle-btn"
             onClick={() => onToggleVisible(section)}
             data-testid={`pa-toggle-${section.section_type}`}
             title={section.visible ? 'Nascondi sezione' : 'Mostra sezione'}>
-            {section.visible ? <Eye size={13} strokeWidth={1.7} /> : <EyeOff size={13} strokeWidth={1.7} />}
+            {section.visible ? <Eye size={14} strokeWidth={1.7} /> : <EyeOff size={14} strokeWidth={1.7} />}
           </button>
           <button className="pa-ghost-btn pa-ghost-btn--danger"
             onClick={() => onDelete(section)}
             data-testid={`pa-delete-${section.section_type}`}>
-            <Trash2 size={11} strokeWidth={1.7} /> Elimina sezione
+            <Trash2 size={12} strokeWidth={1.7} /> Elimina
           </button>
         </div>
       </header>
 
+      {!collapsed && (
       <div className="pa-section-group__body">
         {isAdvanced ? (
           <div className="pa-advanced">
@@ -525,6 +712,7 @@ const SectionGroup = ({
           })
         )}
       </div>
+      )}
     </article>
   );
 };
