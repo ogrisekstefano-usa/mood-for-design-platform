@@ -337,6 +337,20 @@ const StorefrontStudioPage = () => {
             <span className="ss-publish-bar__dot" data-status={page?.status || 'draft'} />
             {page?.status === 'published' ? 'Live · pubblicata' : 'Bozza · non pubblicata'}
           </span>
+          <a
+            className="ss-btn ss-btn--ghost"
+            href="/?editorial=preview"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="ss-open-live-site"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              textDecoration: 'none', marginRight: 8,
+            }}
+            title="Apri il sito pubblico in una nuova scheda con i marker editoriali visibili"
+          >
+            <Eye size={13} strokeWidth={1.6} /> Apri Sito Live
+          </a>
           <button className="ss-btn ss-btn--primary" data-testid="ss-publish" onClick={publishPage}>{t('storefront.storefront_studio.pubblica_pagina')}</button>
         </div>
 

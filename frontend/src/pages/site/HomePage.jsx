@@ -758,6 +758,30 @@ const mapCmsToCopy = (content, locale) => {
     };
   }
 
+  // ITER157.CHECK · P0-A — navigation → copy.nav  (governs MoodSiteHeader)
+  // The bag shape is { welcome, cta:{label,href}, login:{label,href}, main:[{key,label,href}] }.
+  // We flatten to the legacy `copy.nav.*` keys consumed by `<MoodSiteHeader>`.
+  const nav = _b('navigation');
+  if (nav && Object.keys(nav).length) {
+    const main = Array.isArray(nav.main) ? nav.main : [];
+    const byKey = (k) => (main.find((m) => m.key === k) || {});
+    merged.nav = {
+      how_it_works:    { it: byKey('how_it_works').label   || '', en: byKey('how_it_works').label   || '' },
+      magazine:        { it: byKey('magazine').label        || '', en: byKey('magazine').label        || '' },
+      design_stories:  { it: byKey('design_stories').label  || '', en: byKey('design_stories').label  || '' },
+      materials:       { it: byKey('materials').label       || '', en: byKey('materials').label       || '' },
+      professionals:   { it: byKey('professionals').label   || '', en: byKey('professionals').label   || '' },
+      about:           { it: byKey('about').label           || '', en: byKey('about').label           || '' },
+      login:           { it: (nav.login   || {}).label || '', en: (nav.login   || {}).label || '' },
+      cta:             { it: (nav.cta     || {}).label || '', en: (nav.cta     || {}).label || '' },
+      cta_href:        (nav.cta || {}).href || '/begin-journey',
+      login_href:      (nav.login || {}).href || '/auth/login',
+    };
+    if (nav.welcome) {
+      merged.welcome = { it: nav.welcome, en: nav.welcome };
+    }
+  }
+
   return merged;
 };
 

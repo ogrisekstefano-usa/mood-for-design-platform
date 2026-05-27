@@ -73,6 +73,8 @@ const BrandStudioPage = lazy(() => import('./pages/settings/BrandStudioPage'));
 const DomainsPage = lazy(() => import('./pages/settings/DomainsPage'));
 // ITER143E · Tenant Email Branding™
 const EmailBrandingPage = lazy(() => import('./pages/EmailBrandingPage'));
+// ITER157.A · HomepageBuilderPage deprecated — consolidated into Storefront CMS.
+// Import retained for the legacy redirect-card route. Will be removed in Sprint B.3.
 const HomepageBuilderPage = lazy(() => import('./pages/settings/HomepageBuilderPage'));
 const NavigationEditorPage = lazy(() => import('./pages/settings/NavigationEditorPage'));
 const FormBuilderPage = lazy(() => import('./pages/settings/FormBuilderPage'));

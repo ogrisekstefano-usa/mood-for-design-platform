@@ -2,6 +2,60 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER157.CHECK · Blueprint Alignment Audit™** · ✅ DELIVERED · 26 Mag 2026
+
+  **🎯 Goal**: verificare l'allineamento reale fra HomePage pubblica e
+  Blueprint Command Center prima di procedere con Sprint B.2.
+
+  **Audit completo prodotto** in `memory/editorial_audit/iter157_alignment_audit.md`
+  - 10 control points · 8 ✅ · 2 🟡 (in remediation) · 0 🔴 blocker residuo
+
+  **Residui hardcoded eliminati (P0)**
+  - ❌ `EDITORIAL_SHELL.nav.*` (8 nav labels IT/EN hardcoded) → CMS-driven via
+    `cms_sections.navigation` (re-seeded con schema consumer-landing corretto:
+    Come funziona · Magazine · Design Stories · Per i professionisti)
+  - ❌ Schema obsoleto `navigation` (Dedicato a · Caratteristiche · Pricing
+    legacy del prodotto Blueprint OS) → sostituito con consumer-landing schema
+  - ❌ `HomepageBuilderPage` dead import in `App.js` → commento di deprecazione
+    aggiornato; il routing era già deprecato in ITER157.A
+  - 🟡 Header CSS bleed risolto: `mood.css` impostava `color: var(--mfd-cream)`
+    su `.mfd-header` (logo cream-on-cream = invisibile su /magazine e /projects).
+    `home-iter150.css` ora forza `color: var(--mfd-dark) !important` +
+    `backdrop-filter: none !important`
+  - 🟡 `/projects` page ora consuma `published_design_journeys` PRIMA del
+    legacy portfolio. Eliminato fallback a `site/content/projects.js` (311
+    righe di Casa Naviglio/Aman/Galerie fake Unsplash). Empty editorial state
+    graceful se entrambi feed vuoti.
+  - 🟡 `tenantConfig.slug` allineato da `mood-demo-studio-81a09e` (legacy
+    inesistente) → `studio` (tenant reale in DB)
+
+  **Live preview pattern**
+  - `/blueprint/experience` ora include CTA "Apri Sito Live" che apre
+    `/?editorial=preview` in nuova tab (target `_blank`, rel `noopener`).
+    Pattern per il futuro iframe side-by-side (Sprint B.3).
+  - Workflow ora possibile: admin modifica sezione → click "Pubblica pagina"
+    → tab "Sito Live" reload → vede update in produzione locale.
+
+  **`mapCmsToCopy()` esteso**
+  - Nuovo mapping: `content.navigation` → `copy.nav.*` + `copy.welcome`
+  - Locale resolution chain: `tenant override → translation → canonical → fallback`
+
+  **DB published**
+  - Page `home` revisione `c58486af` con 11 sezioni (`navigation` ora coerente
+    a sort_order=-1 perché render-controlled dal header, non dal flow main)
+
+  **File modificati**
+  - ↻ `frontend/src/pages/site/HomePage.jsx` (`mapCmsToCopy` extends nav binding)
+  - ↻ `frontend/src/pages/storefront/StorefrontStudioPage.jsx` (Apri Sito Live)
+  - ↻ `frontend/src/pages/site/home-iter150.css` (color + backdrop-filter fix)
+  - ↻ `frontend/src/pages/site/ProjectsIndexPage.jsx` (published_journeys feed)
+  - ↻ `frontend/src/site/content/tenant.js` (slug alignment)
+  - ↻ `frontend/src/App.js` (deprecation comment)
+  - ⨁ `memory/editorial_audit/iter157_alignment_audit.md`
+
+  **Verdict**
+  🟢 GO per Sprint B.2 (Editorial Publish Modal™ + Curation Panel)
+
 - **ITER157.B · Published Design Journeys™ · Foundation (B.1)** · ✅ DELIVERED · 26 Mag 2026
 
   **🎯 Goal**: connettere il livello operativo (Design Journey) al
