@@ -16,22 +16,25 @@ const SUPABASE_URL  = process.env.REACT_APP_SUPABASE_URL || '';
 const SUPABASE_ANON = process.env.REACT_APP_SUPABASE_ANON_KEY || '';
 const STORAGE_KEY   = 'mfd_session';
 
-// Score 0-4 → red (0-1) / yellow (2) / green (3-4)
+// Policy: ≥ 8 caratteri · maiuscola · numero · carattere speciale.
+// L'alfanumerico è implicito (lettere + numeri).
+const _rulesOf = (pw) => ({
+  len:     (pw || '').length >= 8,
+  upper:   /[A-Z]/.test(pw || ''),
+  digit:   /\d/.test(pw || ''),
+  special: /[^A-Za-z0-9]/.test(pw || ''),
+});
+
 const _scorePassword = (pw) => {
-  if (!pw || pw.length < 8) return 0;
-  let score = 1;
-  if (pw.length >= 12)               score++;
-  if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) score++;
-  if (/\d/.test(pw))                 score++;
-  if (/[^A-Za-z0-9]/.test(pw))       score++;
-  return Math.min(4, score);
+  const r = _rulesOf(pw);
+  return [r.len, r.upper, r.digit, r.special].filter(Boolean).length;
 };
 
 const _strengthMeta = (score) => {
-  if (score <= 1) return { label: 'Debole',    tone: 'weak',    fill: 33 };
-  if (score === 2) return { label: 'Decente',   tone: 'fair',    fill: 60 };
-  if (score === 3) return { label: 'Solida',    tone: 'good',    fill: 80 };
-  return            { label: 'Eccellente', tone: 'strong', fill: 100 };
+  if (score <= 1) return { label: 'Debole',     tone: 'weak',   fill: 25  };
+  if (score === 2) return { label: 'Incompleta', tone: 'fair',   fill: 50  };
+  if (score === 3) return { label: 'Quasi',      tone: 'good',   fill: 75  };
+  return            { label: 'Conforme',    tone: 'strong', fill: 100 };
 };
 
 const CreatePasswordPanel = ({ onClose }) => {
@@ -43,13 +46,17 @@ const CreatePasswordPanel = ({ onClose }) => {
 
   const score = useMemo(() => _scorePassword(pw), [pw]);
   const meta  = useMemo(() => _strengthMeta(score), [score]);
+  const rules = useMemo(() => _rulesOf(pw), [pw]);
+  const policyOk = rules.len && rules.upper && rules.digit && rules.special;
   const matches = pw2.length > 0 && pw === pw2;
-  const minOk = pw.length >= 8;
-  const canSubmit = minOk && matches && !busy;
+  const canSubmit = policyOk && matches && !busy;
 
   const submit = async (e) => {
     e?.preventDefault?.();
-    if (!minOk) { toast.error('Almeno 8 caratteri.'); return; }
+    if (!policyOk) {
+      toast.error('La password deve contenere maiuscola, numero e carattere speciale (min 8).');
+      return;
+    }
     if (!matches) { toast.error('Le password non coincidono.'); return; }
     setBusy(true);
     try {
@@ -126,7 +133,7 @@ const CreatePasswordPanel = ({ onClose }) => {
                 </button>
               </div>
 
-              {/* Complexity meter */}
+              {/* Complexity meter + 4 rules checklist */}
               <div
                 id="cw-pw-meter"
                 className={`cw-pw-meter cw-pw-meter--${meta.tone} ${pw.length === 0 ? 'is-empty' : ''}`}
@@ -140,11 +147,9 @@ const CreatePasswordPanel = ({ onClose }) => {
                   />
                 </div>
                 <div className="cw-pw-meter__row">
-                  <span className={`cw-pw-meter__rule ${minOk ? 'is-ok' : ''}`}
-                        data-testid="client-create-password-rule-min">
-                    {minOk ? <Check size={11} strokeWidth={2}/>
-                           : <AlertCircle size={11} strokeWidth={2}/>}
-                    Almeno 8 caratteri
+                  <span className="cw-pw-meter__policy"
+                        data-testid="client-create-password-policy">
+                    8 caratteri · maiuscola · numero · simbolo
                   </span>
                   {pw.length > 0 && (
                     <span className="cw-pw-meter__label"
@@ -153,6 +158,36 @@ const CreatePasswordPanel = ({ onClose }) => {
                     </span>
                   )}
                 </div>
+                <ul className="cw-pw-rules" data-testid="client-create-password-rules">
+                  <li className={rules.len ? 'is-ok' : ''}
+                      data-testid="client-create-password-rule-len"
+                      data-ok={rules.len ? '1' : '0'}>
+                    {rules.len ? <Check size={11} strokeWidth={2}/>
+                               : <AlertCircle size={11} strokeWidth={2}/>}
+                    Almeno 8 caratteri
+                  </li>
+                  <li className={rules.upper ? 'is-ok' : ''}
+                      data-testid="client-create-password-rule-upper"
+                      data-ok={rules.upper ? '1' : '0'}>
+                    {rules.upper ? <Check size={11} strokeWidth={2}/>
+                                 : <AlertCircle size={11} strokeWidth={2}/>}
+                    Una maiuscola (A–Z)
+                  </li>
+                  <li className={rules.digit ? 'is-ok' : ''}
+                      data-testid="client-create-password-rule-digit"
+                      data-ok={rules.digit ? '1' : '0'}>
+                    {rules.digit ? <Check size={11} strokeWidth={2}/>
+                                 : <AlertCircle size={11} strokeWidth={2}/>}
+                    Un numero (0–9)
+                  </li>
+                  <li className={rules.special ? 'is-ok' : ''}
+                      data-testid="client-create-password-rule-special"
+                      data-ok={rules.special ? '1' : '0'}>
+                    {rules.special ? <Check size={11} strokeWidth={2}/>
+                                   : <AlertCircle size={11} strokeWidth={2}/>}
+                    Un carattere speciale (! ? # …)
+                  </li>
+                </ul>
               </div>
             </div>
 

@@ -462,3 +462,36 @@
 
 /* Disabled submit feedback */
 .cw-btn--primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ── ITER161 rev3 · 4-rule policy checklist ──────────────────────────── */
+.cw-pw-meter__policy {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--cp-text-primary, #efece4) 50%, transparent);
+}
+.cw-pw-rules {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 18px;
+}
+.cw-pw-rules li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--cp-text-primary, #efece4) 50%, transparent);
+  transition: color 200ms ease;
+}
+.cw-pw-rules li.is-ok { color: #6BBE7A; }
+.cw-pw-rules li svg { flex-shrink: 0; }
+
+@media (max-width: 520px) {
+  .cw-pw-rules { grid-template-columns: 1fr; }
+}
