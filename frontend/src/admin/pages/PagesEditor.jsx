@@ -535,6 +535,158 @@ const MediaActionEditor = ({ section, slotKey, onSaved }) => {
   );
 };
 
+// ── AddSectionPalette ───────────────────────────────────────────────────
+// Pill button at the bottom of a page that opens a layout picker modal.
+// Each option creates a new `flexible_layout` section with the chosen layout.
+const LAYOUT_OPTIONS = [
+  { layout: 'single',        title: '1/1',          desc: 'Una cella full-width — titolo, testo, CTA',     visual: ['full'] },
+  { layout: 'two_col',       title: '6 + 6',        desc: 'Due colonne uguali — split editorial',          visual: ['half','half'] },
+  { layout: 'three_col',     title: '4 + 4 + 4',    desc: 'Tre colonne — triptych modulare',                visual: ['third','third','third'] },
+  { layout: 'image_overlay', title: 'BG + overlay', desc: 'Immagine full + testo + CTA sovrapposti',       visual: ['overlay'] },
+];
+
+const AddSectionPalette = ({ pageKey, onCreated }) => {
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(null);
+
+  const create = async (layout) => {
+    if (!pageKey) {
+      window.alert('Page key non disponibile, ricarica la pagina.');
+      return;
+    }
+    setBusy(layout);
+    try {
+      await adminApi.createSection({ page_key: pageKey, section_type: 'flexible_layout', layout });
+      setOpen(false);
+      onCreated?.();
+    } catch (e) {
+      window.alert('Errore creazione sezione: ' + (e?.response?.data?.detail || e.message));
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="mt-8 w-full"
+        style={{
+          background: 'transparent', border: '1px dashed rgba(0,201,179,0.35)',
+          color: 'var(--mood-teal, #00C9B3)',
+          padding: '1.25rem', borderRadius: 6,
+          fontFamily: 'Inter, sans-serif', fontSize: '0.84rem',
+          letterSpacing: '0.06em', cursor: 'pointer',
+          transition: 'all 0.18s ease',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(0,201,179,0.05)';
+          e.currentTarget.style.borderColor = 'rgba(0,201,179,0.6)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'transparent';
+          e.currentTarget.style.borderColor = 'rgba(0,201,179,0.35)';
+        }}
+        data-testid="add-section-button"
+      >
+        + Aggiungi sezione
+      </button>
+
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(0,0,0,0.85)',
+                    backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4vh' }}
+          data-testid="add-section-modal"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)',
+                      borderRadius: 12, padding: '2rem 2.4rem', width: 'min(900px, 96vw)' }}
+          >
+            <div style={{ marginBottom: '1.8rem' }}>
+              <p style={{ fontSize: '0.66rem', letterSpacing: '0.22em', textTransform: 'uppercase',
+                          color: 'var(--mood-teal, #00C9B3)', margin: 0 }}>
+                Block Palette
+              </p>
+              <h2 style={{ fontFamily: 'Playfair Display, serif', color: '#FFF', fontSize: '1.4rem',
+                            marginTop: 8, marginBottom: 4 }}>
+                Scegli un layout
+              </h2>
+              <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.55)' }}>
+                Aggiungi una nuova sezione alla pagina. Imposterai contenuti, immagini e CTA subito dopo la creazione.
+              </p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14 }}>
+              {LAYOUT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.layout}
+                  onClick={() => create(opt.layout)}
+                  disabled={!!busy}
+                  style={{
+                    textAlign: 'left', background: 'rgba(255,255,255,0.025)',
+                    border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8,
+                    padding: '1.1rem 1.2rem',
+                    cursor: busy ? 'wait' : 'pointer', opacity: busy ? 0.6 : 1,
+                    transition: 'all 0.18s ease',
+                  }}
+                  onMouseEnter={(e) => { if (!busy) e.currentTarget.style.borderColor = 'rgba(0,201,179,0.55)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+                  data-testid={`layout-${opt.layout}`}
+                >
+                  {/* Visual mini-preview */}
+                  <div style={{ display: 'flex', gap: 4, marginBottom: 12, height: 56 }}>
+                    {opt.visual.map((v, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          flex: v === 'full' ? 1 : v === 'half' ? 0.5 : v === 'third' ? 0.33 : 1,
+                          background: v === 'overlay'
+                            ? 'linear-gradient(135deg, rgba(0,201,179,0.18), rgba(0,0,0,0.6))'
+                            : 'rgba(0,201,179,0.12)',
+                          border: '1px solid rgba(0,201,179,0.3)',
+                          borderRadius: 4,
+                          position: 'relative',
+                        }}
+                      >
+                        {v === 'overlay' && (
+                          <div style={{ position: 'absolute', bottom: 6, left: 6, right: 6 }}>
+                            <div style={{ height: 4, background: 'rgba(255,255,255,0.6)', borderRadius: 2, marginBottom: 3, width: '70%' }} />
+                            <div style={{ height: 3, background: 'rgba(0,201,179,0.7)', borderRadius: 2, width: 36 }} />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ fontFamily: 'Inter, sans-serif', color: '#FFF',
+                                fontSize: '0.92rem', fontWeight: 500, letterSpacing: '0.02em', marginBottom: 4 }}>
+                    {opt.title}
+                    {busy === opt.layout && <span style={{ marginLeft: 8, color: 'var(--mood-teal,#00C9B3)' }}>…</span>}
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: 'rgba(255,255,255,0.5)' }}>
+                    {opt.desc}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div style={{ marginTop: 18, textAlign: 'right' }}>
+              <button
+                onClick={() => setOpen(false)}
+                style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.55)',
+                          fontSize: '0.78rem', cursor: 'pointer', padding: '0.4rem 0.8rem' }}
+              >
+                Annulla
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 // ── SectionCard ─────────────────────────────────────────────────────────
 const SectionCard = ({ section, locale, onChanged, isSelected }) => {
   const [deleting, setDeleting] = useState(false);
@@ -1249,6 +1401,9 @@ const PagesEditor = () => {
                     ))}
                   </SortableContext>
                 </DndContext>
+
+                {/* Add Section Palette */}
+                <AddSectionPalette pageKey={content?.page?.key} onCreated={reload} />
               </>
             )}
           </main>

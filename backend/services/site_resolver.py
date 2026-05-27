@@ -175,6 +175,11 @@ async def resolve_page(slug: str, locale: str = DEFAULT_LOCALE) -> dict | None:
                 media = {}
                 for sem, mid in (settings.get('media') or {}).items():
                     media[sem] = media_index.get(mid) if mid else None
+                # Merge options with layout-specific fields (for flexible_layout)
+                opts = dict(settings.get('options') or {})
+                if 'layout' in settings: opts['layout'] = settings['layout']
+                if 'cells' in settings:  opts['cells']  = settings['cells']
+
                 resolved_sections.append({
                     'id': str(s['id']),
                     'type': s['section_type'],
@@ -183,7 +188,7 @@ async def resolve_page(slug: str, locale: str = DEFAULT_LOCALE) -> dict | None:
                     'media': media,
                     'media_actions': settings.get('media_actions') or {},
                     'links': settings.get('links') or {},
-                    'options': settings.get('options') or {},
+                    'options': opts,
                 })
 
             seo_map = page['locale_meta'] or {}

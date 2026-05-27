@@ -288,6 +288,127 @@ async def reorder_sections(
         return {"ok": True, "count": len(ordered)}
 
 
+# ─────────────────────────────────────────────────────────────────────────
+# CREATE NEW SECTION (flexible_layout) — drag & drop palette feature
+# ─────────────────────────────────────────────────────────────────────────
+@router.post("/sections")
+async def create_section(
+    body: dict = Body(...),
+    tenant: dict = Depends(require_admin_tenant),
+):
+    """
+    Create a new section on a page. Used by the "Aggiungi sezione" palette.
+
+    Body: {
+      page_key:   'home' | 'audience' | ...
+      section_type: 'flexible_layout' | 'hero_cinematic' | ...
+      layout?:    'single' | 'two_col' | 'three_col' | 'image_overlay'   (only for flexible_layout)
+      sort_order?: number   (defaults to MAX(sort_order)+1)
+    }
+    """
+    page_key = body.get('page_key')
+    sec_type = body.get('section_type', 'flexible_layout')
+    layout   = body.get('layout', 'single')
+    if not page_key:
+        raise HTTPException(400, "page_key required")
+
+    # Cells layout map: how many child cells the layout has, with default content_type
+    LAYOUT_CELLS = {
+        'single':        [{'slot': 'cell_1', 'span': 12}],
+        'two_col':       [{'slot': 'cell_1', 'span': 6}, {'slot': 'cell_2', 'span': 6}],
+        'three_col':     [{'slot': 'cell_1', 'span': 4}, {'slot': 'cell_2', 'span': 4}, {'slot': 'cell_3', 'span': 4}],
+        'image_overlay': [{'slot': 'cell_1', 'span': 12}],  # bg image + overlay text/CTA
+    }
+    cells_meta = LAYOUT_CELLS.get(layout, LAYOUT_CELLS['single'])
+
+    async with AsyncSessionLocal() as session:
+        # Look up page
+        page = (await session.execute(
+            text("SELECT id FROM cms_pages WHERE tenant_id=:tid AND page_key=:pk"),
+            {"tid": tenant['id'], "pk": page_key},
+        )).first()
+        if not page:
+            raise HTTPException(404, f"Page '{page_key}' not found")
+
+        # Next sort_order
+        max_sort = (await session.execute(
+            text("SELECT COALESCE(MAX(sort_order), -1) FROM cms_sections WHERE page_id=:pid AND deleted_at IS NULL"),
+            {"pid": page[0]},
+        )).scalar() or -1
+        sort_order = body.get('sort_order', max_sort + 1)
+
+        # Generate unique namespace for this section's blocks
+        import uuid as _uuid
+        section_id = _uuid.uuid4()
+        ns_token = str(section_id).split('-')[0]
+        block_ns = f"site.{page_key}.flex_{ns_token}"
+
+        # Build initial settings with cells, blocks slots and media slots
+        cells = []
+        blocks_map = {}
+        media_map = {}
+        for c in cells_meta:
+            slot = c['slot']
+            cells.append({
+                'slot': slot, 'span': c['span'],
+                'content_type': 'heading',  # default; user can switch in admin
+            })
+            # Pre-define block keys so the editor shows text inputs immediately
+            blocks_map[f"{slot}_heading"] = f"{block_ns}.{slot}.heading"
+            blocks_map[f"{slot}_body"]    = f"{block_ns}.{slot}.body"
+            blocks_map[f"{slot}_cta"]     = f"{block_ns}.{slot}.cta"
+            media_map[slot] = None
+        # For image_overlay: add bg media slot
+        if layout == 'image_overlay':
+            media_map['background'] = None
+            blocks_map['overlay_eyebrow'] = f"{block_ns}.overlay.eyebrow"
+            blocks_map['overlay_title']   = f"{block_ns}.overlay.title"
+            blocks_map['overlay_body']    = f"{block_ns}.overlay.body"
+            blocks_map['overlay_cta']     = f"{block_ns}.overlay.cta"
+
+        settings = {
+            'layout': layout,
+            'cells': cells,
+            'blocks': blocks_map,
+            'media': media_map,
+            'links': {},
+            'options': {},
+        }
+
+        # Seed required editorial blocks (empty)
+        import json as _json
+        for full_key in blocks_map.values():
+            namespace, block_key = full_key.rsplit('.', 1)
+            await session.execute(
+                text("""
+                    INSERT INTO editorial_blocks
+                      (id, scope, tenant_id, namespace, block_key, block_type,
+                       source_locale, source_value, source_hash, is_active, created_at, updated_at)
+                    VALUES (gen_random_uuid(), 'tenant', :tid, :ns, :bk, 'body',
+                            'it', '', '', true, NOW(), NOW())
+                    ON CONFLICT (tenant_id, namespace, block_key) DO NOTHING
+                """),
+                {"tid": tenant['id'], "ns": namespace, "bk": block_key},
+            )
+
+        # Insert the section
+        await session.execute(
+            text("""
+                INSERT INTO cms_sections (id, tenant_id, page_id, section_type, sort_order,
+                                          visible, settings, created_at, updated_at)
+                VALUES (:sid, :tid, :pid, :stype, :so, true,
+                        CAST(:settings AS jsonb), NOW(), NOW())
+            """),
+            {"sid": section_id, "tid": tenant['id'], "pid": page[0],
+             "stype": sec_type, "so": sort_order,
+             "settings": _json.dumps(settings)},
+        )
+
+        await session.commit()
+        site_resolver.invalidate_site_cache()
+        return {"ok": True, "id": str(section_id), "settings": settings}
+
+
 @router.get("/pages")
 async def list_admin_pages(
     tenant: dict = Depends(require_admin_tenant),

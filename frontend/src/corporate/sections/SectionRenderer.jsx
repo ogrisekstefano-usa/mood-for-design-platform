@@ -1,5 +1,6 @@
 import React from 'react';
 import HeroEditorial from './HeroEditorial';
+import FlexibleLayout from './FlexibleLayout';
 import CuratedBrands from './CuratedBrands';
 import PlatformPillars from './PlatformPillars';
 import DesignJourney from './DesignJourney';
@@ -60,6 +61,7 @@ import FragmentedTools from './FragmentedTools';
 export const SECTION_REGISTRY = {
   // ITER149 Rebuild (latest, matches official mockup)
   hero_editorial:       HeroEditorial,
+  flexible_layout:      FlexibleLayout,
   curated_brands:       CuratedBrands,
   platform_pillars:     PlatformPillars,
   design_journey:       DesignJourney,
