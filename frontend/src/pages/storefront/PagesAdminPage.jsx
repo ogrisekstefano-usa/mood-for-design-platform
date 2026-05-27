@@ -110,18 +110,76 @@ const FIELD_SCHEMAS = {
     { key: 'title',    label: 'TITOLO',                 textarea: false },
     { key: 'caption',  label: 'CAPTION',                textarea: true, rows: 2 },
   ],
+  // ── Curated narrative bands ──────────────────────────────────────
+  featured_design_journeys: [
+    { key: 'eyebrow', label: 'EYEBROW', textarea: false },
+    { key: 'title',   label: 'TITLE',   textarea: true, rows: 2, display: true },
+    { key: 'viewAll', label: 'CTA · "VEDI TUTTI"', textarea: false },
+  ],
+  editorial_grid: [
+    { key: 'eyebrow', label: 'EYEBROW', textarea: false },
+    { key: 'title',   label: 'TITLE',   textarea: true, rows: 2, display: true },
+    { key: 'explore', label: 'CTA · "ESPLORA"', textarea: false },
+  ],
+  magazine_highlights: [
+    { key: 'eyebrow', label: 'EYEBROW', textarea: false },
+    { key: 'title',   label: 'TITLE',   textarea: true, rows: 2, display: true },
+  ],
+  atmosphere_statement: [
+    { key: 'eyebrow',     label: 'EYEBROW',     textarea: false },
+    { key: 'quote',       label: 'QUOTE',       textarea: true, rows: 3, display: true },
+    { key: 'attribution', label: 'ATTRIBUTION', textarea: false },
+  ],
+  professionals_cta: [
+    { key: 'eyebrow', label: 'EYEBROW',         textarea: false },
+    { key: 'title',   label: 'TITLE',           textarea: true, rows: 2, display: true },
+    { key: 'sub',     label: 'SUBTITLE',        textarea: true, rows: 2 },
+    { key: 'cta',     label: 'CTA LABEL',       textarea: false },
+  ],
+  materials_carousel: [
+    { key: 'eyebrow', label: 'EYEBROW', textarea: false },
+    { key: 'title',   label: 'TITLE',   textarea: true, rows: 2, display: true },
+    { key: 'body',    label: 'BODY',    textarea: true, rows: 3 },
+    { key: 'explore', label: 'CTA · "ESPLORA MATERIALI"', textarea: false },
+  ],
+  trust_marquee: [
+    { key: 'eyebrow', label: 'EYEBROW', textarea: false },
+  ],
+  brand_logos: [
+    { key: 'eyebrow', label: 'EYEBROW', textarea: false },
+  ],
 };
 
-// Section types whose editor is best handled by the existing advanced
-// renderers (lists, multi-row data) — we render that via renderBandEditor.
+// Section types whose editor needs a fully-custom complex renderer
+// (true multi-row data structures). Schema-driven + list-augmented
+// sections are NOT here — they get the standard card flow + the
+// SettingsListEditor when needed.
 const ADVANCED_TYPES = new Set([
   'nav_top', 'main_links', 'navigation_main',
-  'footer_columns', 'brand_logos', 'materials', 'materials_carousel',
-  'magazine_grid', 'magazine_highlights', 'journal_intro',
+  'footer_columns',
   'stats_band', 'newsletter', 'dual_cta',
-  'featured_design_journeys', 'editorial_grid', 'trust_marquee',
-  'professionals_cta',
+  'magazine_grid', 'journal_intro',
 ]);
+
+// Section types with a `settings.<key>` array that should be edited
+// inline via the SettingsListEditor. Maps section_type → list config.
+const SETTINGS_LISTS = {
+  trust_marquee:   { key: 'brands',   label: 'BRAND',     itemLabel: 'Brand',     fields: [{ key: '$value', label: 'Nome brand', placeholder: 'es: Poliform' }] },
+  brand_logos:     { key: 'brands',   label: 'BRAND',     itemLabel: 'Brand',     fields: [{ key: '$value', label: 'Nome brand', placeholder: 'es: Poliform' }] },
+  materials_carousel: {
+    key: 'swatches',
+    label: 'MATERIALI · MOODBOARD',
+    itemLabel: 'Materiale',
+    fields: [
+      { key: 'name',     label: 'Nome',     placeholder: 'es: Marmo Calacatta' },
+      { key: 'category', label: 'Categoria', placeholder: 'pietra · tessuto · vetro · legno · pittura', kind: 'select',
+        options: ['pietra naturale', 'tessuto', 'vetro', 'legno', 'pittura', 'metallo', 'ceramica', 'altro'] },
+      { key: 'tone',     label: 'Tono',     placeholder: 'light · mid · dark', kind: 'select', options: ['light', 'mid', 'dark'] },
+      { key: 'swatch',   label: 'Colore HEX', placeholder: '#E8E4DE', kind: 'color' },
+      { key: 'image',    label: 'Immagine (opzionale)', placeholder: 'https://…' },
+    ],
+  },
+};
 
 // ─── Locale resolution helper ──────────────────────────────────
 // Walk the locale_content map and find the saved value for `field`
@@ -554,6 +612,124 @@ const PagesAdminPage = () => {
   );
 };
 
+// ─── SettingsListEditor (brands, swatches, materials…) ────────
+// Generic editor for an array stored in `section.settings[<key>]`.
+// Items can be strings or objects with multiple fields.
+const SettingsListEditor = ({ section, config, onPatchSettings }) => {
+  const items = section.settings?.[config.key] || [];
+
+  const writeItems = (next) => {
+    const settings = { ...(section.settings || {}), [config.key]: next };
+    onPatchSettings(settings);
+  };
+  const updateItem = (idx, patch) => {
+    const next = items.map((it, i) => {
+      if (i !== idx) return it;
+      // If the schema uses $value (single-string item), patch is the raw value
+      if (config.fields.length === 1 && config.fields[0].key === '$value') return patch;
+      return { ...(it || {}), ...patch };
+    });
+    writeItems(next);
+  };
+  const addItem = () => {
+    if (config.fields.length === 1 && config.fields[0].key === '$value') {
+      writeItems([...items, '']);
+    } else {
+      const blank = {};
+      config.fields.forEach((f) => { blank[f.key] = ''; });
+      writeItems([...items, blank]);
+    }
+  };
+  const removeItem = (idx) => writeItems(items.filter((_, i) => i !== idx));
+  const moveItem = (idx, delta) => {
+    const j = idx + delta;
+    if (j < 0 || j >= items.length) return;
+    const next = [...items];
+    [next[idx], next[j]] = [next[j], next[idx]];
+    writeItems(next);
+  };
+
+  return (
+    <div className="pa-list" data-testid={`pa-list-${config.key}`}>
+      <header className="pa-list__head">
+        <span className="pa-list__eyebrow">{config.label}</span>
+        <span className="pa-list__count">{items.length} {items.length === 1 ? 'elemento' : 'elementi'}</span>
+        <button
+          type="button"
+          className="pa-list__add"
+          data-testid={`pa-list-add-${config.key}`}
+          onClick={addItem}>
+          <Plus size={13} strokeWidth={2} /> Aggiungi {config.itemLabel}
+        </button>
+      </header>
+      <div className="pa-list__items">
+        {items.length === 0 && (
+          <p className="pa-list__empty">Nessun elemento. Clicca "Aggiungi {config.itemLabel}" per iniziare.</p>
+        )}
+        {items.map((item, idx) => {
+          const isStringItem = config.fields.length === 1 && config.fields[0].key === '$value';
+          return (
+            <div key={idx} className="pa-list__row" data-testid={`pa-list-row-${config.key}-${idx}`}>
+              <span className="pa-list__index">{String(idx + 1).padStart(2, '0')}</span>
+              <div className="pa-list__row-fields">
+                {config.fields.map((f) => {
+                  const value = isStringItem ? (item || '') : (item?.[f.key] || '');
+                  const onChange = (e) => {
+                    if (isStringItem) updateItem(idx, e.target.value);
+                    else updateItem(idx, { [f.key]: e.target.value });
+                  };
+                  if (f.kind === 'select') {
+                    return (
+                      <label key={f.key} className="pa-list__field">
+                        <span className="pa-list__field-label">{f.label}</span>
+                        <select className="pa-input" value={value} onChange={onChange}>
+                          <option value="">— scegli —</option>
+                          {(f.options || []).map((o) => <option key={o} value={o}>{o}</option>)}
+                        </select>
+                      </label>
+                    );
+                  }
+                  if (f.kind === 'color') {
+                    return (
+                      <label key={f.key} className="pa-list__field pa-list__field--color">
+                        <span className="pa-list__field-label">{f.label}</span>
+                        <div className="pa-list__color-wrap">
+                          <input type="color"
+                            value={value || '#cccccc'}
+                            onChange={onChange}
+                            className="pa-list__color-swatch" />
+                          <input className="pa-input pa-list__color-hex"
+                            value={value} placeholder={f.placeholder || ''} onChange={onChange} />
+                        </div>
+                      </label>
+                    );
+                  }
+                  return (
+                    <label key={f.key} className="pa-list__field">
+                      <span className="pa-list__field-label">{f.label}</span>
+                      <input className="pa-input" value={value} placeholder={f.placeholder || ''} onChange={onChange} />
+                    </label>
+                  );
+                })}
+              </div>
+              <div className="pa-list__row-actions">
+                <button type="button" className="pa-list__icon-btn" title="Sposta su"
+                  onClick={() => moveItem(idx, -1)} disabled={idx === 0}>↑</button>
+                <button type="button" className="pa-list__icon-btn" title="Sposta giù"
+                  onClick={() => moveItem(idx, +1)} disabled={idx === items.length - 1}>↓</button>
+                <button type="button" className="pa-list__icon-btn pa-list__icon-btn--danger"
+                  onClick={() => removeItem(idx)} title="Rimuovi">
+                  <Trash2 size={13} strokeWidth={1.8} />
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 // ─── BlockPicker (+ Aggiungi blocco) ──────────────────────────
 const BLOCK_TILES = [
   { type: 'block_heading',        icon: Type,      label: 'Titolo',         hint: 'Headline editoriale autonoma' },
@@ -710,6 +886,14 @@ const SectionGroup = ({
               />
             );
           })
+        )}
+        {/* Settings list (brands, swatches, materials…) shown below the text fields */}
+        {!isAdvanced && SETTINGS_LISTS[section.section_type] && (
+          <SettingsListEditor
+            section={section}
+            config={SETTINGS_LISTS[section.section_type]}
+            onPatchSettings={(settings) => patchSectionPayload(section, { settings })}
+          />
         )}
       </div>
       )}

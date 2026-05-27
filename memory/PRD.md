@@ -2,6 +2,66 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER157.E.4 · List Editors (brand · swatches · materiali)** · ✅ DELIVERED · 27 Mag 2026
+
+  **🎯 Goal**: rimuovere il "Editor specializzato non disponibile per
+  questa sezione" per i blocchi con liste (Materials, Trust Marquee,
+  Brand Logos, Featured Journeys, Editorial Grid, Magazine
+  Highlights, Atmosphere Statement, Professionals CTA).
+
+  **Schemi testuali aggiunti**
+  Per ognuno dei tipi sopra elencati, aggiunti i `FIELD_SCHEMAS` con
+  i campi corretti derivati dall'analisi di `locale_content` reale:
+  - `materials_carousel`: eyebrow · title · body · "Esplora materiali" CTA
+  - `trust_marquee` / `brand_logos`: eyebrow
+  - `featured_design_journeys`: eyebrow · title · "Vedi tutti" CTA
+  - `editorial_grid`: eyebrow · title · "Esplora" CTA
+  - `magazine_highlights`: eyebrow · title
+  - `atmosphere_statement`: eyebrow · quote · attribution
+  - `professionals_cta`: eyebrow · title · sub · CTA label
+
+  **SettingsListEditor — generico**
+  Nuovo componente che modifica array dentro `section.settings.<key>`:
+  - **Add / Remove / Reorder ↑↓** per ogni riga
+  - Schema-driven: ogni riga ha N campi configurabili (testo, select,
+    color picker HEX, ecc)
+  - Supporta sia array di stringhe (`brands: ['Poliform', 'Molteni&C',
+    ...]`) che array di oggetti (`swatches: [{name, tone, swatch}]`)
+  - Persistenza: PATCH `settings` dell'intera sezione via API esistente
+  - Badge "N elementi" + bottone "+ Aggiungi {label}" cyan
+
+  **SETTINGS_LISTS configurate**
+  - `trust_marquee` · `brand_logos` → lista `brands` (string array)
+  - `materials_carousel` → lista `swatches` (object array):
+    * Nome · **Categoria** (pietra naturale · tessuto · vetro · legno ·
+      pittura · metallo · ceramica · altro) · Tono · Color HEX · Immagine
+    * La categoria è il campo richiesto dall'utente per organizzare
+      moodboard (pietra naturale, tessuti, vetri, legni, pitture)
+
+  **Verifica E2E live**
+  - `materials_carousel` espanso → eyebrow "Materiali & Brand" + title
+    "Una selezione curata dei migliori materiali." editabili + 11 swatches
+    (Marble #E8E4DE light, Walnut, Oak…)
+  - `trust_marquee` espanso → eyebrow "Materiali Selezionati & Design
+    Partner" + 8 brands (Poliform, Molteni&C…) con frecce ↑↓ e cestino
+  - `ADVANCED_TYPES` ridotto solo ai veri editor complessi (nav,
+    footer_columns, stats_band, newsletter, dual_cta, magazine_grid)
+
+  **File modificati**
+  - ↻ `frontend/src/pages/storefront/PagesAdminPage.jsx`
+    (FIELD_SCHEMAS estesi + SETTINGS_LISTS + SettingsListEditor component)
+  - ↻ `frontend/src/pages/storefront/pagesAdmin.css`
+    (`.pa-list*` styles per row, color picker, icon buttons)
+
+  **Note di scope**
+  - I dati salvati sono persistenti, ma il **rendering pubblico** del
+    sito (HomePage.jsx) usa già `settings.brands` e `settings.swatches`
+    nei suoi loop di rendering — quindi modifiche/aggiunte dovrebbero
+    materializzarsi subito nella preview live (verifica utente).
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER157.E.3 · Reference-aligned Field Operations** · ✅ DELIVERED · 27 Mag 2026
 
   **🎯 Goal**: replicare l'esperienza editorial-platform-4 mostrata
