@@ -4,8 +4,10 @@ import uuid
 import logging
 import re
 from datetime import datetime, timezone
+from typing import Optional
 import requests
 from fastapi import APIRouter, HTTPException, Depends, Request
+from pydantic import BaseModel, EmailStr
 from models.schemas import (
     SignupRequest, LoginRequest, ForgotPasswordRequest,
     AuthResponse, AuthSession, UserProfileResponse,
@@ -327,3 +329,65 @@ def forgot_password(body: ForgotPasswordRequest, request: Request):
 
     return {"message": "If the account exists, a reset email has been sent",
             "redirect_to_will_be": redirect_to}
+
+
+# ── ITER161 · Silent magic-link (Apple-style entry from landing) ──────
+class SilentMagicLinkRequest(BaseModel):
+    email: EmailStr
+    next:  Optional[str] = "/client"
+
+
+@router.post("/silent-magic-link")
+def silent_magic_link_endpoint(body: SilentMagicLinkRequest, request: Request):
+    """Cliente clicca 'Accedi' dalla landing, inserisce solo l'email.
+
+    Risposta SEMPRE opaca: "Ti abbiamo inviato un accesso sicuro."
+    - Se l'email esiste → magic link via email (no password challenge).
+    - Se non esiste → silent no-op (nessuna enumerazione).
+    """
+    from services.client_provisioning import silent_magic_link
+    host = (request.headers.get("host") or "").lower()
+    next_path = body.next or "/client"
+    if not next_path.startswith("/"):
+        next_path = "/" + next_path
+    try:
+        silent_magic_link(body.email, host, next_path=next_path)
+    except Exception:
+        logger.exception("silent_magic_link orchestrator failed")
+    return {
+        "message": "Ti abbiamo inviato un accesso sicuro.",
+        "ok": True,
+    }
+
+
+# ── ITER161 · Resolve post-auth destination (role-aware) ──────────────
+def _resolve_role_redirect(role: Optional[str], is_root_superadmin: bool = False) -> str:
+    r = (role or "").lower()
+    if is_root_superadmin:
+        return "/admin"
+    if r == "client":
+        return "/client"
+    if r == "super_admin":
+        return "/dashboard"  # legacy super_admin still lands on dashboard
+    return "/dashboard"
+
+
+@router.get("/resolve-post-login")
+def resolve_post_login(current_user: dict = Depends(get_current_user)):
+    """Restituisce la destinazione corretta dopo login/reset/magic-link.
+
+    Usato dal frontend (ResetPasswordPage, AuthCallbackPage) per evitare
+    di mandare un client al /dashboard generico.
+    """
+    client = db()
+    result = client.table("users_profile").select(
+        "id,role,is_root_superadmin,tenant_id"
+    ).eq("id", current_user["profile_id"]).limit(1).execute()
+    if not result.data:
+        return {"redirect_to": "/auth/login"}
+    p = result.data[0]
+    return {
+        "redirect_to": _resolve_role_redirect(p.get("role"), bool(p.get("is_root_superadmin"))),
+        "role": p.get("role"),
+        "is_root_superadmin": bool(p.get("is_root_superadmin")),
+    }

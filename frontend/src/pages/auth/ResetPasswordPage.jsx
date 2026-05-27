@@ -102,7 +102,18 @@ const ResetPasswordPage = () => {
           },
         });
       toast('Password aggiornata. Apriamo il tuo spazio…');
-      setTimeout(() => navigate('/auth/login', { replace: true }), 800);
+      // ITER161 · P0.1 · Role-aware post-reset redirect.
+      // Mai più "homepage Blueprint" generica: chiediamo al backend
+      // qual è la destinazione corretta (client → /client, ecc).
+      let dest = '/dashboard';
+      try {
+        const BACKEND = process.env.REACT_APP_BACKEND_URL || '';
+        const me = await axios.get(`${BACKEND}/api/auth/resolve-post-login`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (me?.data?.redirect_to) dest = me.data.redirect_to;
+      } catch (_) { /* fall back to /dashboard */ }
+      setTimeout(() => navigate(dest, { replace: true }), 800);
     } catch (e2) {
       toast.error(e2?.response?.data?.msg || e2.message || 'Errore inatteso.');
     } finally {

@@ -19,7 +19,7 @@
  *   • Same-origin → SPA navigation (no full reload).
  */
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 const PLATFORM_ROOT   = 'moodfordesign.com';
 const PLATFORM_DOMAIN = `blueprint.${PLATFORM_ROOT}`;
@@ -61,7 +61,6 @@ function _parseHash() {
 
 const AuthCallbackPage = () => {
   const [params] = useSearchParams();
-  const navigate = useNavigate();
   const [state, setState] = useState({ status: 'processing', message: 'Apriamo il tuo spazio…' });
 
   useEffect(() => {
@@ -72,6 +71,14 @@ const AuthCallbackPage = () => {
         const targetHost = _normalize(params.get('origin')) || PLATFORM_DOMAIN;
         let next = params.get('next') || (flow === 'recovery' ? '/auth/reset-password' : '/auth/login');
         if (!next.startsWith('/')) next = '/' + next;
+        // ITER161 · P0.2 · marca il primo ingresso da magic-link verso
+        // il Client Profile per evitare l'auto-deep-entry al journey
+        // (mostriamo il benvenuto editoriale).
+        if (flow === 'magic_link' && next.startsWith('/client')) {
+          if (!/[?&]welcome=/.test(next)) {
+            next += (next.includes('?') ? '&' : '?') + 'welcome=1';
+          }
+        }
 
         // If no hash session → the link expired or has been already consumed.
         if (!session) {
@@ -93,7 +100,16 @@ const AuthCallbackPage = () => {
               expires_in: session.expires_in,
             }));
           } catch (_) {}
-          navigate(next, { replace: true });
+          // ITER161 · P0.2 · force AuthProvider a ricaricare il profilo
+          // così l'app riconosce subito che siamo loggati come client.
+          try {
+            window.dispatchEvent(new Event('mfd:identity:refresh'));
+          } catch (_) {}
+          // Hard navigation per garantire che TUTTI i provider (Blueprint,
+          // Tenant, Locale) re-inizializzino con la session appena
+          // installata. SPA navigate funziona quasi sempre ma su deep
+          // entry post-magic-link è più affidabile un full reload.
+          window.location.replace(next);
           return;
         }
 
@@ -113,7 +129,7 @@ const AuthCallbackPage = () => {
       }
     };
     run();
-  }, [params, navigate]);
+  }, [params]);
 
   return (
     <div data-testid="auth-callback-page"

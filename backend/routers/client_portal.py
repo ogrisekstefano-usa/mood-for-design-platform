@@ -83,6 +83,111 @@ def _build_pipeline(current_index: int) -> List[dict]:
     return out
 
 
+@router.get("/welcome-summary")
+def client_welcome_summary(ctx: dict = Depends(get_tenant_context)):
+    """ITER161 · P0.2 · Welcome card per il Client Profile.
+
+    Restituisce: nome cliente, nome studio, referente principale,
+    summary delle prime indicazioni (initial brief), prossimo capitolo.
+
+    Lessico: spazio progettuale · referente · percorso (NON dashboard).
+    """
+    profile_id = _require_client(ctx)
+    tenant_id = ctx["tenant_id"]
+    c = db()
+
+    # Profile cliente
+    prof = (c.table("users_profile").select("id,first_name,last_name,email")
+            .eq("id", profile_id).limit(1).execute().data or [])
+    client_first_name = (prof[0].get("first_name") if prof else None) or "amico"
+
+    # Studio
+    t = (c.table("tenants").select("name,slug").eq("id", tenant_id)
+         .limit(1).execute().data or [])
+    studio_name = t[0]["name"] if t else "Lo Studio"
+
+    # Referente principale (assignment + assignee profile)
+    from core.human_assignment import (
+        get_active_assignment, hydrate_assignee, ensure_assignment_for_client,
+    )
+    existing = get_active_assignment(tenant_id, "client", profile_id)
+    if not existing:
+        existing = ensure_assignment_for_client(tenant_id, profile_id)
+    hydrated = hydrate_assignee(existing) if existing else None
+    assignee = (hydrated or {}).get("assignee")
+
+    # Journey più recente del cliente (via account.email == profile.email)
+    summary = None
+    atmosphere = {}
+    lifestyle = {}
+    journey_id = None
+    next_step = None
+    try:
+        if prof and prof[0].get("email"):
+            acc = (c.table("accounts").select("id")
+                   .eq("tenant_id", tenant_id).ilike("email", prof[0]["email"])
+                   .order("created_at", desc=True).limit(1).execute().data or [])
+            if acc:
+                aid = acc[0]["id"]
+                jr = (c.table("design_journeys")
+                      .select("id,project_id,current_milestone_id")
+                      .eq("tenant_id", tenant_id).eq("account_id", aid)
+                      .order("created_at", desc=True).limit(1).execute().data or [])
+                if jr:
+                    journey_id = jr[0]["id"]
+                    # Atmosphere + lifestyle dal project metadata
+                    if jr[0].get("project_id"):
+                        pjr = (c.table("projects")
+                               .select("metadata_json")
+                               .eq("id", jr[0]["project_id"]).limit(1)
+                               .execute().data or [])
+                        if pjr:
+                            meta = pjr[0].get("metadata_json") or {}
+                            atmosphere = meta.get("atmosphere") or {}
+                            lifestyle  = meta.get("lifestyle")  or {}
+                    # Summary = primo capitolo Brief
+                    brief = (c.table("journey_milestones").select("id,title")
+                             .eq("journey_id", journey_id)
+                             .eq("milestone_type", "brief")
+                             .limit(1).execute().data or [])
+                    if brief:
+                        ver = (c.table("milestone_versions")
+                               .select("title,rationale")
+                               .eq("milestone_id", brief[0]["id"])
+                               .order("created_at", desc=False).limit(1)
+                               .execute().data or [])
+                        if ver:
+                            summary = ver[0].get("rationale")
+                    # Prossimo capitolo: il milestone più piccolo non-completato
+                    if jr[0].get("current_milestone_id"):
+                        nxt = (c.table("journey_milestones")
+                               .select("title,milestone_type")
+                               .eq("id", jr[0]["current_milestone_id"]).limit(1)
+                               .execute().data or [])
+                        if nxt:
+                            next_step = {
+                                "title": nxt[0].get("title"),
+                                "type":  nxt[0].get("milestone_type"),
+                            }
+    except Exception:
+        import logging
+        logging.getLogger(__name__).exception("welcome-summary journey lookup failed")
+
+    return {
+        "client": {
+            "first_name": client_first_name,
+            "email":      prof[0].get("email") if prof else None,
+        },
+        "studio_name": studio_name,
+        "referente":   assignee,  # null OK: "Lo studio ti accompagnerà"
+        "summary":     summary,
+        "atmosphere":  atmosphere,
+        "lifestyle":   lifestyle,
+        "journey_id":  journey_id,
+        "next_step":   next_step,
+    }
+
+
 @router.get("/overview")
 def client_overview(ctx: dict = Depends(get_tenant_context)):
     """Returns the client's primary project + light counts. Strictly

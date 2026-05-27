@@ -347,65 +347,66 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
             "unified leads/funnel insert failed (non-blocking)"
         )
 
-    # ITER146.A · Lead Pipeline Orchestration™ — fire email confirmation
-    # to the private client + internal notification to the studio owner.
-    # Failure NEVER blocks the journey creation.
+    # ITER161 · P0.2 · Lead → Prospect transition (interview completata)
+    # Appena il cliente ha condiviso le prime 3 indicazioni, NON è più un lead
+    # puro: ha investito tempo emotivo e ha condiviso una direzione.
     try:
-        from services.email_service import send_template_email
-        tenant_row = (c.table("tenants").select("name")
-                      .eq("id", tid).limit(1).execute().data or [])
-        tenant_name = tenant_row[0]["name"] if tenant_row else "MOOD for DESIGN™"
-        locale = (getattr(body, "locale", None) or "it-IT").strip()
-
-        # 1. Lead-facing confirmation
-        send_template_email(
-            to=email,
-            template_key="lead_captured",
-            context={
-                "first_name":  first_name,
-                "studio_name": tenant_name,
-                "project_type": "design_journey",
-            },
-            tenant_id=tid, locale=locale,
-            event_type="lead.private_client.confirmation",
-            metadata={"journey_id": journey_id,
-                      "onboarding_path": "begin_journey"},
-        )
-        # 2. Internal notifications
-        owners = (c.table("users_profile")
-                  .select("email, language")
-                  .eq("tenant_id", tid)
-                  .in_("role", ["tenant_admin", "super_admin"])
-                  .limit(3).execute().data or [])
-        for o in owners:
-            if not o.get("email"):
-                continue
-            send_template_email(
-                to=o["email"],
-                template_key="generic",
-                context={
-                    "title": f"Nuovo Design Journey™ · {first_name}",
-                    "body":  (f"{first_name} ({email}) ha appena iniziato "
-                              f"un Design Journey. Locale: {locale}."),
-                    "cta_url":   f"/workspace/projects/{project_id}",
-                    "cta_label": "Apri il progetto",
-                    "studio_name": tenant_name,
-                },
-                tenant_id=tid, locale=(o.get("language") or locale),
-                event_type="lead.internal_notification",
-                metadata={"journey_id": journey_id, "project_id": project_id,
-                          "onboarding_path": "begin_journey"},
-            )
+        c.table("leads").update({
+            "status":         "qualified",
+            "pipeline_stage": "prospect_initial_brief",
+            "updated_at":     now,
+        }).eq("id", lead_id).execute()
+        c.table("funnel_events").insert({
+            "id":            str(uuid.uuid4()),
+            "tenant_id":     tid,
+            "lead_id":       lead_id,
+            "stage":         "prospect_initial_brief",
+            "event_name":    "begin_journey.prospect_promoted",
+            "metadata_json": {"journey_id": journey_id,
+                              "reason": "initial_brief_completed"},
+            "created_at":    now,
+        }).execute()
     except Exception:
         import logging
-        logging.getLogger(__name__).exception("journey email dispatch failed")
+        logging.getLogger(__name__).exception("lead → prospect update failed")
+
+    # ITER161 · P0.2 · Client Provisioning™ — magic link first.
+    # Crea auth.user + users_profile + assignment + thread + email backup.
+    # Tutto NON-blocking: se uno step accessorio fallisce, il journey è
+    # comunque creato e il frontend riceve magic_link_url=null (caso degradato).
+    provisioning: dict = {}
+    try:
+        from services.client_provisioning import provision_client_after_journey
+        summary_text = rationale  # le prime indicazioni dei 3 step
+        provisioning = provision_client_after_journey(
+            tenant_id=tid,
+            request_host=request_host or "",
+            first_name=first_name,
+            email=email,
+            phone=body.welcome.phone,
+            locale="it",
+            journey_id=journey_id,
+            account_id=account_id,
+            lead_id=lead_id,
+            summary_text=summary_text,
+        )
+    except Exception:
+        import logging
+        logging.getLogger(__name__).exception("client provisioning failed")
+        provisioning = {}
 
     return {
-        "journey_id":    journey_id,
-        "lead_id":       lead_id,
-        "welcome_token": welcome_token,
-        "welcome_url":   f"/journey/welcome/{welcome_token}",
-        "message":       "Il tuo Design Journey è iniziato.",
+        "journey_id":     journey_id,
+        "lead_id":        lead_id,
+        "welcome_token":  welcome_token,
+        "welcome_url":    f"/journey/welcome/{welcome_token}",
+        # ITER161 · primary continuity path — il frontend lo apre subito
+        # in modo che il cliente entri direttamente nel Client Profile.
+        "magic_link_url": provisioning.get("magic_link_url"),
+        "profile_id":     provisioning.get("profile_id"),
+        "assignee":       provisioning.get("assignee_profile"),
+        "thread_id":      provisioning.get("thread_id"),
+        "message":        "Il tuo spazio progettuale è pronto.",
     }
 
 

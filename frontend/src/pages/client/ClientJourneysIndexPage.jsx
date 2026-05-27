@@ -13,6 +13,7 @@ import api from '../../lib/api';
 import { useT as useBlueprintT, useBlueprint } from '../../contexts/BlueprintContext';
 import { tm } from '../../i18n/translation-memory';
 import DesignDirectionPanel from '../../components/direction/DesignDirectionPanel';
+import ClientWelcomePanel from '../../components/client/ClientWelcomePanel';
 import './client-companion.css';
 
 const fmtDate = (iso, locale) => {
@@ -87,6 +88,13 @@ const ClientJourneysIndexPage = () => {
   const [data, setData]       = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // ITER161 · P0.2 — Se è la prima visita post-magic-link, NON
+  // auto-redirezionare al journey: lasciamo che il cliente veda il
+  // benvenuto del Client Profile (welcome=1 nel query string).
+  const skipAutoDeepEntry =
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).has('welcome');
+
   useEffect(() => {
     let alive = true;
     const fetchOnce = () => api.get('/api/client/journeys').then((r) => r.data);
@@ -101,7 +109,7 @@ const ClientJourneysIndexPage = () => {
         }
         if (!alive) return;
         const activeOnly = (d.journeys || []).filter((j) => !j.is_archived);
-        if (!d.zero_data && activeOnly.length === 1 && (d.journeys || []).length === 1) {
+        if (!skipAutoDeepEntry && !d.zero_data && activeOnly.length === 1 && (d.journeys || []).length === 1) {
           navigate(`/client/journey/${activeOnly[0].journey_id}`, { replace: true });
           return;
         }
@@ -114,7 +122,7 @@ const ClientJourneysIndexPage = () => {
       }
     })();
     return () => { alive = false; };
-  }, [navigate]);
+  }, [navigate, skipAutoDeepEntry]);
 
   if (loading) {
     return (
@@ -135,6 +143,8 @@ const ClientJourneysIndexPage = () => {
   if (!data || data.zero_data || !data.journeys?.length) {
     return (
       <div className="cj-shell" data-testid="client-journeys-empty">
+        {/* ITER161 · P0.2 · Welcome panel — primo contatto post-onboarding */}
+        <ClientWelcomePanel />
         <div className="cj-welcome">
           <p className="cj-hero__eyebrow">{t('companion.hero.eyebrow', null, `${tm('designJourney')} · Companion`)}</p>
           <h1 className="cj-welcome__title">
@@ -161,6 +171,9 @@ const ClientJourneysIndexPage = () => {
 
   return (
     <div className="cj-shell" data-testid="client-journeys-page">
+      {/* ITER161 · P0.2 · Welcome panel — visibile finché il cliente non lo chiude */}
+      <ClientWelcomePanel />
+
       {/* Hero editoriale */}
       <section className="cj-hero" data-testid="client-journeys-hero">
         <div className="cj-hero__veil" aria-hidden="true" />

@@ -2,6 +2,135 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER161 · Client Profile Access Fix · P0.1 + P0.2** · ✅ DELIVERED · 28 Mag 2026
+
+  **🎯 Goal**: rendere l'accesso al Client Profile semplice, persistente,
+  naturale. Eliminare la pagina "magic link manuale", role-aware redirect
+  ovunque, post-onboarding provisioning relazionale completo.
+
+  **P0.1 · Password Recovery / Login Routing**
+  - `LoginPage.jsx`: post-login redirect ora role-aware
+    (`client → /client`, altrimenti `/dashboard`) + supporto `?returnTo=…`
+    validato (no open-redirect: refusa `//`, schemi assoluti, e i client
+    non possono andare fuori da `/client*`).
+  - `ResetPasswordPage.jsx`: dopo update password chiama
+    `/api/auth/resolve-post-login` → redirect role-based. Mai più
+    "homepage Blueprint" generica.
+  - Nuovo endpoint `POST /api/auth/silent-magic-link` (Apple-style):
+    `{email, next}` → sempre 200 opaque. Se il profilo esiste, genera
+    magic link Supabase e invia email "Ti aspettiamo nel tuo spazio."
+    Niente errori di enumerazione, niente password challenge.
+  - LoginPage ha ora un toggle discreto "Entra senza ricordare la
+    password" che apre un mini-form solo-email → conferma silenziosa
+    "Ti abbiamo inviato un accesso sicuro."
+  - Nuovo endpoint `GET /api/auth/resolve-post-login` per il
+    role-aware redirect lato frontend.
+
+  **P0.2 · Post 3-step Onboarding → Client Profile**
+  - `services/client_provisioning.py` (NEW · 500 righe): orchestra
+    idempotente il provisioning relazionale del cliente. Crea
+    auth.user passwordless + users_profile (role=client) + human
+    assignment (referente principale via round-robin) + relationship
+    thread con primo messaggio di sistema ("[Nome] ha completato le
+    prime indicazioni del Journey") + magic link Supabase + email
+    backup "Il tuo spazio è pronto".
+  - `journey_initiate.py` esteso: dopo i 3 step, lead diventa
+    **Prospect** (pipeline_stage=`prospect_initial_brief`, status=
+    `qualified`) e chiama `provision_client_after_journey()`. La
+    response include `magic_link_url`, `profile_id`, `assignee`,
+    `thread_id`. Tutto NON-blocking: se uno step fallisce, il
+    journey è creato comunque.
+  - `BeginJourneyPage.jsx` step 3: il submit ora apre **direttamente**
+    il magic link (`window.location.assign`) — il cliente entra nel
+    Client Profile senza pagina intermedia. Welcome token resta come
+    fallback degradato.
+  - `AuthCallbackPage.jsx`: aggiunge `?welcome=1` alle next URL che
+    puntano a `/client`, così la pagina mostra il benvenuto editoriale
+    invece dell'auto-deep-entry al journey.
+
+  **Client Profile First Screen · Welcome Panel**
+  - `components/client/ClientWelcomePanel.jsx` (NEW · 230 righe):
+    pannello editoriale con eyebrow "Il tuo spazio progettuale",
+    titolo "Benvenuto, [Nome].", referente (foto + nome + ruolo +
+    short bio), summary delle prime parole (rationale), 3 CTA
+    relazionali (Continua brief · Scrivi al tuo referente ·
+    Possiamo sentirci) + card discreta opzionale "Crea password".
+    Dismissible, persistente in localStorage, riapribile.
+  - `components/client/RecallRequestModal.jsx` (NEW · 200 righe):
+    "Possiamo sentirci?" con preferenze giorni/fascia/canale/note.
+    Tono editoriale ("Il tuo referente ti proporrà un momento che
+    funziona per entrambi"), NON un calendar SaaS.
+  - `components/client/CreatePasswordPanel.jsx` (NEW · 130 righe):
+    password opzionale, accessibile da dentro la session attiva.
+  - `clientWelcome.css` (NEW · 320 righe): palette Atelier (bronzo
+    `#C9A26B` + cream `#efece4`), Cormorant italic per titoli,
+    Inter per micro-label, modali con backdrop blur.
+  - Nuovo endpoint `GET /api/client/welcome-summary`: ritorna
+    client name, studio name, referente hydrated, summary brief,
+    journey_id, next_step.
+
+  **Recall Requests**
+  - Migration `104_recall_requests.sql`: tabella `recall_requests`
+    (preferred_days JSONB, preferred_time, preferred_channel, note,
+    status). Indici tenant/client/assignee.
+  - Nuovo router `routers/recall_requests.py`:
+    * `POST /api/client/recall-requests` → crea la richiesta,
+      appende system message nel relationship_thread del cliente
+      ("Il cliente vorrebbe sentirvi · {days} · {time} · via {channel}"),
+      invia email relazionale al referente ("{Nome} vorrebbe sentirvi.
+      Quando ti è comodo, proponigli un momento.")
+    * `GET /api/client/recall-requests/mine`
+
+  **Lessico curato (richiesta utente)**
+  - SI: spazio progettuale · Design Journey · Client Profile ·
+    percorso · capitoli · conversazione · referente · persona di
+    riferimento · lo studio che ti accompagna.
+  - NO: dashboard · CRM · ticket · task · pipeline · workflow ·
+    owner · assigned user · sales rep.
+
+  **File**
+  - ⨁ `backend/services/client_provisioning.py`
+  - ⨁ `backend/routers/recall_requests.py`
+  - ⨁ `supabase/migrations/104_recall_requests.sql`
+  - ⨁ `backend/scripts/apply_migration_104.py`
+  - ⨁ `frontend/src/components/client/ClientWelcomePanel.jsx`
+  - ⨁ `frontend/src/components/client/RecallRequestModal.jsx`
+  - ⨁ `frontend/src/components/client/CreatePasswordPanel.jsx`
+  - ⨁ `frontend/src/components/client/clientWelcome.css`
+  - ↻ `backend/routers/journey_initiate.py` (provisioning + prospect)
+  - ↻ `backend/routers/auth.py` (silent-magic-link + resolve-post-login)
+  - ↻ `backend/routers/client_portal.py` (+ welcome-summary endpoint)
+  - ↻ `backend/server.py` (mount recall_requests)
+  - ↻ `frontend/src/pages/auth/LoginPage.jsx` (role redirect + silent)
+  - ↻ `frontend/src/pages/auth/ResetPasswordPage.jsx` (role redirect)
+  - ↻ `frontend/src/pages/auth/AuthCallbackPage.jsx` (welcome=1)
+  - ↻ `frontend/src/pages/site/BeginJourneyPage.jsx` (magic-link first)
+  - ↻ `frontend/src/pages/client/ClientJourneysIndexPage.jsx` (panel mount)
+  - ↻ `frontend/src/pages/auth/auth-login.css` (silent block styles)
+
+  **Verifica E2E live**
+  - `POST /api/auth/silent-magic-link` → 200 opaque ✓
+  - `POST /api/public/journeys/initiate` ritorna `magic_link_url`,
+    `assignee`, `thread_id` ✓
+  - `GET /api/client/welcome-summary` (auth=client) → referente
+    "Stefano Ogrisek · Fondatore" ✓
+  - LoginPage: silent toggle apre form solo-email + conferma "Ti
+    abbiamo inviato un accesso sicuro." ✓
+  - Client Profile: Welcome panel visibile con "Benvenuto, Marco." +
+    referente card + 3 CTA + password discreta ✓
+  - Recall modal: 6 giorni × 4 fasce × 4 canali + nota libera ✓
+
+  **Nota preview env**
+  - In preview, il `redirect_to` del magic link viene normalizzato
+    da Supabase verso il Site URL whitelistato (`blueprint.moodfordesign.com`).
+    Per testare il flusso end-to-end completo dentro la preview,
+    aggiungere `https://content-hub-pro-22.preview.emergentagent.com/auth/callback`
+    alla Supabase Auth redirect allow-list. In produzione il link
+    funziona out-of-the-box.
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER157.E.9 · Public-site free blocks + inline markup** · ✅ DELIVERED · 27 Mag 2026
 
   **🎯 Goal**: chiudere il loop dei blocchi generici (rendere visibili

@@ -13,13 +13,34 @@
  * This component is the new UI/UX baseline for the platform.
  */
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, ArrowRight, User, Briefcase } from 'lucide-react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
+import { Eye, EyeOff, ArrowRight, User, Briefcase, Mail } from 'lucide-react';
+import { toast } from 'sonner';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBlueprint } from '../../contexts/BlueprintContext';
 import { formatError } from '../../lib/api';
 import LocaleSwitcher from '../../components/common/LocaleSwitcher';
 import './auth-login.css';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+
+// ITER161 · P0.1 · returnTo allow-list — same-origin internal paths only.
+// Blocca qualsiasi tentativo di open-redirect: solo path che iniziano con "/"
+// e non con "//" (protocol-relative) sono accettati.
+const _safeReturnTo = (raw) => {
+  if (!raw || typeof raw !== 'string') return null;
+  if (!raw.startsWith('/') || raw.startsWith('//')) return null;
+  // Ulteriore safety: niente schema:// dentro.
+  if (/^[a-z]+:/i.test(raw)) return null;
+  return raw;
+};
+
+const _roleHome = (role) => {
+  const r = (role || '').toLowerCase();
+  if (r === 'client') return '/client';
+  return '/dashboard';
+};
 
 const HERO_IMAGE_DEFAULT =
   'https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/ys8jrftd_AdobeStock_1014843351.jpeg';
@@ -31,11 +52,17 @@ const LoginPage = () => {
   const { signIn } = useAuth();
   const { t } = useBlueprint();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPw, setShowPw] = useState(false);
   const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  // ITER161 · P0.1 · Silent magic-link entry — "Accedi senza password"
+  const [silentOpen, setSilentOpen] = useState(false);
+  const [silentEmail, setSilentEmail] = useState('');
+  const [silentBusy, setSilentBusy] = useState(false);
+  const [silentSent, setSilentSent] = useState(false);
 
   // All strings runtime-driven from BlueprintContext (fallback for empty tenants)
   const copy = {
@@ -71,16 +98,49 @@ const LoginPage = () => {
     setError('');
     setLoading(true);
     try {
-      await signIn(form.email, form.password);
+      const resp = await signIn(form.email, form.password);
       if (remember) {
         try { localStorage.setItem('mfd_remember', '1'); } catch (_) {}
       }
-      navigate('/dashboard');
+      // ITER161 · P0.1 · returnTo + role-aware destination.
+      const returnTo = _safeReturnTo(searchParams.get('returnTo'));
+      const role = (resp?.user?.role || '').toLowerCase();
+      // returnTo è onorato SOLO se il ruolo non è client OPPURE il path
+      // inizia con /client (stesso surface). Mai mandare un client a /admin.
+      if (returnTo) {
+        if (role === 'client' && !returnTo.startsWith('/client')) {
+          navigate('/client');
+        } else {
+          navigate(returnTo);
+        }
+      } else {
+        navigate(_roleHome(role));
+      }
     } catch (err) {
       setError(formatError(err));
     } finally {
       setLoading(false);
     }
+  };
+
+  // ITER161 · P0.1 · Silent magic-link "Accedi senza password".
+  // Apple-style: nessun errore se l'email non esiste, nessuna password
+  // challenge, solo "Ti abbiamo inviato un accesso sicuro."
+  const handleSilentLink = async (e) => {
+    e?.preventDefault?.();
+    if (!silentEmail || !/.+@.+\..+/.test(silentEmail)) {
+      toast('Lascia la tua email — ti accompagniamo dentro.');
+      return;
+    }
+    setSilentBusy(true);
+    try {
+      await axios.post(`${BACKEND_URL}/api/auth/silent-magic-link`, {
+        email: silentEmail.toLowerCase().trim(),
+        next: '/client',
+      });
+    } catch (_) { /* opaque: sempre 200 */ }
+    setSilentBusy(false);
+    setSilentSent(true);
   };
 
   return (
@@ -216,6 +276,57 @@ const LoginPage = () => {
 
         <div className="mfd-auth__or" aria-hidden>
           <span className="mfd-auth__or-text">{copy.or}</span>
+        </div>
+
+        {/* ITER161 · P0.1 · Silent magic-link entry (Apple-style).
+            Tono editoriale: "accesso sicuro", "senza ricordare password".
+            Visibile come link discreto; espanso → solo email. */}
+        <div className="mfd-auth__silent" data-testid="login-silent-magic">
+          {!silentOpen && !silentSent && (
+            <button
+              type="button"
+              className="mfd-auth__silent-toggle"
+              onClick={() => setSilentOpen(true)}
+              data-testid="login-silent-toggle"
+            >
+              <Mail size={14} strokeWidth={1.4} aria-hidden />
+              <span>Entra senza ricordare la password</span>
+            </button>
+          )}
+          {silentOpen && !silentSent && (
+            <form className="mfd-auth__silent-form" onSubmit={handleSilentLink}>
+              <p className="mfd-auth__silent-lede" data-testid="login-silent-lede">
+                Lascia la tua email — ti inviamo un accesso sicuro.
+              </p>
+              <input
+                type="email"
+                required
+                value={silentEmail}
+                onChange={(e) => setSilentEmail(e.target.value)}
+                placeholder={copy.emailPh}
+                className="mfd-auth__input"
+                data-testid="login-silent-email"
+              />
+              <button
+                type="submit"
+                disabled={silentBusy}
+                className="mfd-auth__silent-submit"
+                data-testid="login-silent-submit"
+              >
+                {silentBusy ? 'Apriamo…' : 'Inviami il link'}
+              </button>
+            </form>
+          )}
+          {silentSent && (
+            <div className="mfd-auth__silent-done" data-testid="login-silent-done">
+              <p className="mfd-auth__silent-title">
+                Ti abbiamo inviato un accesso sicuro.
+              </p>
+              <p className="mfd-auth__silent-sub">
+                Apri l'email per entrare nel tuo spazio.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Two Entry Paths™ — Private Client / Design Professional */}

@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import httpx
 
-from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_archive, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine, ai_studio_brief, project_workspace_v2, proposal_composer, market_perspectives, locale_runtime, editorial_variants, advisor_suggestions, reference_intelligence, relationships, markets, editorial, advisor_network, crm_voice_notes, crm_intelligence
+from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_archive, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine, ai_studio_brief, project_workspace_v2, proposal_composer, market_perspectives, locale_runtime, editorial_variants, advisor_suggestions, reference_intelligence, relationships, markets, editorial, advisor_network, crm_voice_notes, crm_intelligence, recall_requests
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -105,6 +105,7 @@ api_router.include_router(relationship_engine.router, prefix="/relationships", t
 # ITER148 · P0 · Client Relations™ (Lead/Prospect/Account editorial layer)
 from routers import client_relations  # noqa: E402
 api_router.include_router(client_relations.router, prefix="/relations", tags=["relations"])
+api_router.include_router(recall_requests.router, tags=["recall-requests"])
 from routers import g3_constellation  # noqa: F401  (extends crm_intelligence.router BEFORE include)
 api_router.include_router(crm_intelligence.router, tags=["relationships"])
 api_router.include_router(markets.router, tags=["markets"])

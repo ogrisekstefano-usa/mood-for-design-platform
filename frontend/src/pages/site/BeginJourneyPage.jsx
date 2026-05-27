@@ -114,8 +114,21 @@ const BeginJourneyForm = () => {
         },
       };
       const r = await axios.post(`${API}/api/public/journeys/initiate`, payload);
-      const url = r.data?.welcome_url;
-      if (url) { navigate(url); return; }
+      const magicLink = r.data?.magic_link_url;
+      const welcomeUrl = r.data?.welcome_url;
+      // ITER161 · P0.2 · Magic-link first.
+      // Il cliente entra SUBITO nel Client Profile. Niente più pagina
+      // magic link manuale come schermo principale. L'email backup
+      // viene comunque inviata dal backend.
+      if (magicLink) {
+        // window.location preserva il fragment con i token Supabase quando
+        // il link viene seguito; restiamo sullo stesso origin nel preview env.
+        window.location.assign(magicLink);
+        return;
+      }
+      // Caso degradato (Supabase admin API indisponibile): fallback al
+      // welcome token così non perdiamo il cliente.
+      if (welcomeUrl) { navigate(welcomeUrl); return; }
       toast(get(k('toast.started')));
     } catch (e) {
       console.error(e);
