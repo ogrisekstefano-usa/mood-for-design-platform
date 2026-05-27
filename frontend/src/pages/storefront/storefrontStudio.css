@@ -18,17 +18,42 @@
 /* ITER157.D · Visual Editor split layout
    • selected band + preview open  → 3-column: stage | editor | preview
    • no selection + preview open   → 2-column: stage | preview
-   • no selection + preview closed → 1-column: stage                       */
+   • no selection + preview closed → 1-column: stage
+   At tight widths (<1480px) the preview moves UNDER the stage so the
+   editor never gets squeezed off-screen.                            */
 .ss-root[data-preview-open="true"] {
-  grid-template-columns: minmax(420px, 0.85fr) 460px minmax(560px, 1.1fr);
+  grid-template-columns: minmax(360px, 0.7fr) 420px minmax(420px, 1fr);
 }
 .ss-root[data-preview-open="true"][data-no-edit="true"] {
-  grid-template-columns: minmax(420px, 0.85fr) minmax(560px, 1.1fr);
+  grid-template-columns: minmax(360px, 0.85fr) minmax(420px, 1.1fr);
 }
-@media (max-width: 1380px) {
-  .ss-root[data-preview-open="true"] { grid-template-columns: 1fr; }
-  .ss-root[data-preview-open="true"][data-no-edit="true"] { grid-template-columns: 1fr; }
-  .ss-preview { display: none; }
+/* Tight → 2-row stack so the preview iframe is still reachable. */
+@media (max-width: 1480px) {
+  .ss-root[data-preview-open="true"] {
+    grid-template-columns: 1fr 420px;
+    grid-template-rows: auto auto;
+  }
+  .ss-root[data-preview-open="true"] .ss-stage  { grid-column: 1; grid-row: 1; }
+  .ss-root[data-preview-open="true"] .ss-editor { grid-column: 2; grid-row: 1; }
+  .ss-root[data-preview-open="true"] .ss-preview {
+    grid-column: 1 / -1; grid-row: 2;
+    position: relative; height: 720px;
+  }
+  .ss-root[data-preview-open="true"][data-no-edit="true"] {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+  .ss-root[data-preview-open="true"][data-no-edit="true"] .ss-preview {
+    height: 820px;
+  }
+}
+@media (max-width: 900px) {
+  .ss-root[data-preview-open="true"] {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+  .ss-root[data-preview-open="true"] .ss-editor  { grid-column: 1; grid-row: 2; position: relative; max-height: none; height: auto; }
+  .ss-root[data-preview-open="true"] .ss-preview { grid-column: 1; grid-row: 3; height: 600px; }
 }
 
 /* ── LIVE PREVIEW PANE (right column, ITER157.D) ─────────────── */
