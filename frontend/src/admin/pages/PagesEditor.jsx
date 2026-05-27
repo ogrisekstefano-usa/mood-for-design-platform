@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Save, Check, AlertCircle, Image as ImageIcon, Languages, Eye, EyeOff, Sparkles, Wand2, Trash2, ChevronDown, ChevronRight, GripVertical } from 'lucide-react';
 import {
   DndContext, closestCenter, KeyboardSensor, PointerSensor,
@@ -787,9 +787,9 @@ const FlexibleCellsEditor = ({ section, onSaved }) => {
   );
 };
 
-const SectionCard = ({ section, locale, onChanged, isSelected }) => {
+const SectionCard = ({ section, locale, onChanged, onChangedStructural, isSelected, expanded, onToggleExpanded }) => {
   const [deleting, setDeleting] = useState(false);
-  const [collapsed, setCollapsed] = useState(true);   // default: closed for cleaner list
+  const collapsed = !expanded;  // controlled by parent → persists across reloads
   const [toggling, setToggling] = useState(false);
 
   // dnd-kit sortable hook
@@ -811,7 +811,7 @@ const SectionCard = ({ section, locale, onChanged, isSelected }) => {
     setDeleting(true);
     try {
       await adminApi.deleteSection(section.id);
-      onChanged?.();
+      (onChangedStructural || onChanged)?.();
     } catch (e) {
       window.alert('Errore eliminazione: ' + (e?.response?.data?.detail || e.message));
     } finally {
@@ -834,10 +834,9 @@ const SectionCard = ({ section, locale, onChanged, isSelected }) => {
 
   // When user expands the section, scroll the iframe preview to it
   const onToggleCollapse = () => {
-    const next = !collapsed;
-    setCollapsed(next);
-    if (!next) {
-      // Opening — notify the preview iframe to scroll to this section
+    const willExpand = collapsed;
+    onToggleExpanded?.();
+    if (willExpand) {
       try {
         const iframe = document.querySelector('iframe[data-testid="preview-iframe"]');
         if (iframe?.contentWindow) {
@@ -1325,6 +1324,15 @@ const PagesEditor = () => {
   const [content, setContent]   = useState(null);
   const [locale, setLocale]     = useState('it');
   const [loading, setLoading]   = useState(false);
+  // Sections expanded by user — survives content reloads
+  const [expanded, setExpanded] = useState(() => new Set());
+  const toggleExpanded = useCallback((id) => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }, []);
   const [refreshKey, setRefreshKey]   = useState(0);  // bump → reload preview iframe
   const [selectedSection, setSelectedSection] = useState(null);
   const mainScrollRef = useRef(null);
@@ -1338,15 +1346,23 @@ const PagesEditor = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Hard reload (used on page switch / structural changes)
   const reload = () => {
     if (!activePage) return;
     setLoading(true);
     adminApi.getPageContent(activePage)
       .then(r => setContent(r.data))
       .finally(() => setLoading(false));
-    // Trigger preview reload too (debounced via key bump)
     setRefreshKey(k => k + 1);
   };
+
+  // Silent refresh (used after block/media saves, keeps UI mounted)
+  const silentReload = useCallback(() => {
+    if (!activePage) return;
+    adminApi.getPageContent(activePage).then(r => setContent(r.data));
+    setRefreshKey(k => k + 1);
+  }, [activePage]);
+
   useEffect(reload, [activePage]);
 
   const visibleSections = useMemo(() => {
@@ -1466,8 +1482,8 @@ const PagesEditor = () => {
 
           {/* Main editor area */}
           <main>
-            {loading && <p style={{ color: 'rgba(255,255,255,0.4)' }}>Caricamento contenuto…</p>}
-            {!loading && content && (
+            {loading && !content && <p style={{ color: 'rgba(255,255,255,0.4)' }}>Caricamento contenuto…</p>}
+            {content && (
               <>
                 <div style={{ marginBottom: 24 }}>
                   <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.4rem', margin: 0, color: '#FFFFFF', fontWeight: 400 }}>
@@ -1477,7 +1493,7 @@ const PagesEditor = () => {
                     {content.page.key} · {content.page.status} · {visibleSections.length} {visibleSections.length === 1 ? 'sezione' : 'sezioni'}
                   </p>
                 </div>
-                <SEOEditor pageKey={activePage} locale={locale} onSaved={reload} />
+                <SEOEditor pageKey={activePage} locale={locale} onSaved={silentReload} />
                 {visibleSections.length === 0 && (
                   <p style={{ color: 'rgba(255,255,255,0.4)' }}>
                     Nessun contenuto modificabile in questa pagina.
@@ -1497,8 +1513,11 @@ const PagesEditor = () => {
                         key={s.id}
                         section={s}
                         locale={locale}
-                        onChanged={reload}
+                        onChanged={silentReload}
+                        onChangedStructural={reload}
                         isSelected={selectedSection === s.id}
+                        expanded={expanded.has(s.id)}
+                        onToggleExpanded={() => toggleExpanded(s.id)}
                       />
                     ))}
                   </SortableContext>
