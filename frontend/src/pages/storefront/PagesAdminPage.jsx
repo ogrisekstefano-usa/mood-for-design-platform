@@ -86,7 +86,7 @@ const FIELD_SCHEMAS = {
     { key: 'sub',           label: 'SOTTOTITOLO',        textarea: true,  rows: 2 },
     { key: 'cta_primary',   label: 'CTA · PRIMARIO',     textarea: false },
     { key: 'cta_secondary', label: 'CTA · SECONDARIO',   textarea: false },
-    { key: 'cover_url',     label: 'COPERTINA · IMMAGINE', kind: 'image' },
+    { key: 'image',         label: 'COPERTINA · IMMAGINE', kind: 'image' },
   ],
   store_hero: [
     ...DEFAULT_TEXT_FIELDS,

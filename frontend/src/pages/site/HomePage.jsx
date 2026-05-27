@@ -711,6 +711,19 @@ const mapCmsToCopy = (content, locale) => {
     };
   }
 
+  // design_journey → copy.howitworks (ITER157.E.6 — was missing entirely)
+  const journey = _b('design_journey');
+  const journeySettings = content.design_journey?._settings || {};
+  if (Object.keys(journey).length || (journeySettings.steps || []).length) {
+    merged.howitworks = {
+      eyebrow: { it: journey.eyebrow || '', en: journey.eyebrow || '' },
+      title:   { it: journey.title   || journey.title_pre || '',
+                 en: journey.title   || journey.title_pre || '' },
+      cta:     { it: journey.cta     || '', en: journey.cta || '' },
+      steps:   Array.isArray(journeySettings.steps) ? journeySettings.steps : [],
+    };
+  }
+
   // featured_design_journeys → copy.stories
   const stories = _b('featured_design_journeys');
   const storiesSettings = content.featured_design_journeys?._settings || {};
