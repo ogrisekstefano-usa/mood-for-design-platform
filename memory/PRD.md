@@ -2,6 +2,65 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER157.E.2 · Bi-directional Bridge + Atelier styling** · ✅ DELIVERED · 27 Mag 2026
+
+  **🎯 Goal**: chiudere il loop di sincronizzazione editor↔preview e
+  allineare visualmente il Command Center al preset Blueprint Atelier™.
+
+  **Bi-directional Bridge**
+  - Click su card sezione a sinistra (`pa-section-group__head`) →
+    `setFocusedSectionType(section_type)` → `LivePreviewPane`
+    propaga `mfd:scroll-to` via postMessage all'iframe →
+    `EditorialBridge` (lato pubblico) scrolla la fascia in cima al
+    viewport iframe + aggiunge `.mfd-editable-active` (highlight cyan).
+  - Click su fascia preview a destra → editor scrolla alla card (già
+    cablato in E.1).
+  - Loop chiuso, verificato: click su "CINEMATIC QUOTE" nell'editor →
+    iframe scrollY 0 → 3626px, sezione a top=54.
+  - `e.stopPropagation()` su `.pa-section-group__actions` perché il
+    click su Nascondi/Elimina non triggeri il focus.
+
+  **Blueprint Atelier Style Alignment**
+  - `pagesAdmin.css` ora consuma i token canonici `--bp-*` invece
+    della palette custom `--pa-*`:
+    * `--pa-bg → --bp-bg` (#070707)
+    * `--pa-surface → --bp-surface-1` (#0D0F12)
+    * `--pa-cyan → --bp-primary` (risolve a #C9A26B con preset
+      Atelier Nordic — bronzo dorato, non più cyan custom)
+    * `--pa-font-heading → --bp-font-heading` (Playfair Display)
+    * `--pa-font-mono → --bp-font-mono` (JetBrains Mono)
+    * `--pa-font-body → --bp-font-body` (Inter)
+  - `PagesAdminPage` ora avvolto in `BlueprintThemeProvider` → eredita
+    `data-surface="os"` + `data-atelier="nordic"` come tutto il resto
+    di Blueprint OS.
+  - Rimossi tutti i font-family hardcoded (`ui-monospace`,
+    `Cormorant Garamond`) sostituiti con i token.
+
+  **Verifica E2E (admin@moodfordesign.com, 1920×1000)**
+  - `data-surface="os"` presente nella catena ancestor ✓
+  - `--bp-primary` = `#C9A26B` (Atelier Nordic bronzo) ✓
+  - pa-shell bg = `rgb(15,15,16)` (var(--bp-surface-elevated)) ✓
+  - Click su `pa-section-cinematic_quote` header →
+    iframe scrolla a y=3626, sezione active in iframe a top=54px ✓
+  - Highlight visivo: bordo bronzo, glow bronzo, barra animata bronzo
+  - Tipografia Playfair su "Command Center" header, mono su paths
+    `site.home.*` ✓
+
+  **File modificati**
+  - ↻ `frontend/src/pages/storefront/PagesAdminPage.jsx`
+    (BlueprintThemeProvider wrap + onSelect handler)
+  - ↻ `frontend/src/pages/storefront/pagesAdmin.css`
+    (token aliasing + font alignment)
+
+  **Pending da utente (sprint successivo)**
+  - P1: collapse/expand sezioni + drag&drop riordino
+  - P1: + Aggiungi blocco con drag (Titolo · Testo · Immagine · YouTube)
+  - P2: formattazione testo minimale (bold/italic/link)
+  - P2: crop immagine + filtri base
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER157.E.1 · Click-to-Edit Bridge P0 fix** · ✅ DELIVERED · 27 Mag 2026
 
   **🎯 Goal**: il click su una fascia della preview deve aprire e

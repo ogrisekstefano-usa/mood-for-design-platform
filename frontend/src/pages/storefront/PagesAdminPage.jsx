@@ -22,6 +22,7 @@ import api from '../../lib/api';
 import LivePreviewPane from './LivePreviewPane';
 import EditorialMediaField from '../../components/common/EditorialMediaField';
 import { renderBandEditor, TRACEABILITY } from './bandEditors';
+import BlueprintThemeProvider from '../../design-system/os/BlueprintThemeProvider';
 import './pagesAdmin.css';
 
 // ─── Page registry shown in the second column ────────────────
@@ -303,6 +304,7 @@ const PagesAdminPage = () => {
   const sectionMeta = page ? `${page.page_key} · ${page.status || 'draft'} · ${sections.length} sezioni · ${visibleSectionsCount} visibili` : '—';
 
   return (
+    <BlueprintThemeProvider>
     <div className="pa-shell" data-preview-open="true" data-testid="pa-shell">
       {/* ── LEFT RAIL ───────────────────────────────────── */}
       <aside className="pa-rail">
@@ -416,6 +418,7 @@ const PagesAdminPage = () => {
             onSaveImage={saveImageField}
             patchSectionPayload={patchSectionPayload}
             focused={focusedSectionType === section.section_type}
+            onSelect={() => setFocusedSectionType(section.section_type)}
           />
         ))}
       </main>
@@ -428,6 +431,7 @@ const PagesAdminPage = () => {
         selectedSectionType={focusedSectionType}
       />
     </div>
+    </BlueprintThemeProvider>
   );
 };
 
@@ -435,7 +439,7 @@ const PagesAdminPage = () => {
 const SectionGroup = ({
   section, page, locale,
   isDirty, getDraftValue, onChangeDraft, onSaveField, savingKey, draftKey,
-  onToggleVisible, onDelete, onSaveImage, patchSectionPayload, focused,
+  onToggleVisible, onDelete, onSaveImage, patchSectionPayload, focused, onSelect,
 }) => {
   const isAdvanced = ADVANCED_TYPES.has(section.section_type);
   const schema = FIELD_SCHEMAS[section.section_type] || DEFAULT_TEXT_FIELDS;
@@ -448,13 +452,20 @@ const SectionGroup = ({
       className="pa-section-group"
       data-testid={`pa-section-${section.section_type}`}
       data-focused={focused ? 'true' : 'false'}>
-      <header className="pa-section-group__head">
+      <header
+        className="pa-section-group__head"
+        onClick={onSelect}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter') onSelect?.(); }}
+        title="Sincronizza la preview a destra su questa sezione"
+        style={{ cursor: 'pointer' }}>
         <span className="pa-section-group__eyebrow">{eyebrow}</span>
         <span className="pa-section-group__meta">
           Sort {section.sort_order} {section.visible ? '' : '· hidden'}
           {trace ? ` · ${trace}` : ''}
         </span>
-        <div className="pa-section-group__actions">
+        <div className="pa-section-group__actions" onClick={(e) => e.stopPropagation()}>
           <button className="pa-toggle-btn"
             onClick={() => onToggleVisible(section)}
             data-testid={`pa-toggle-${section.section_type}`}

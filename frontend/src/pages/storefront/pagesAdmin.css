@@ -8,26 +8,34 @@
   --pa-rail: 220px;
   --pa-pagelist: 220px;
   --pa-preview: clamp(420px, 38vw, 640px);
-  --pa-bg: #0c1012;
-  --pa-bg-2: #131718;
-  --pa-surface: #161b1c;
-  --pa-surface-2: #1a2022;
-  --pa-border: rgba(255,255,255,0.06);
-  --pa-border-strong: rgba(255,255,255,0.14);
-  --pa-text: #e6eceb;
-  --pa-text-mute: rgba(230,236,235,0.62);
-  --pa-text-faint: rgba(230,236,235,0.36);
-  --pa-cyan: #00c9b3;
-  --pa-cyan-2: #1adfca;
-  --pa-radius: 6px;
-  --pa-radius-lg: 10px;
+  /* Bind to Blueprint OS Atelier preset tokens (loaded globally,
+     scoped to [data-surface="os"]). This keeps the editor visually
+     coherent with the rest of Blueprint Atelier™. */
+  --pa-bg: var(--bp-bg, #070707);
+  --pa-bg-2: var(--bp-bg-deep, #050505);
+  --pa-surface: var(--bp-surface-1, #0D0F12);
+  --pa-surface-2: var(--bp-surface-2, #111318);
+  --pa-border: var(--bp-border, rgba(255,255,255,0.06));
+  --pa-border-strong: var(--bp-border-strong, rgba(255,255,255,0.10));
+  --pa-text: var(--bp-text-primary, rgba(248,242,230,0.96));
+  --pa-text-mute: var(--bp-text-secondary, rgba(245,236,220,0.78));
+  --pa-text-faint: var(--bp-text-muted, rgba(238,224,200,0.62));
+  --pa-cyan: var(--bp-primary, #00C9B3);
+  --pa-cyan-2: var(--bp-primary-2, #7EE6DA);
+  --pa-cyan-soft: var(--bp-primary-soft, rgba(0,201,179,0.12));
+  --pa-cyan-glow: var(--bp-primary-glow, rgba(0,201,179,0.18));
+  --pa-radius: var(--bp-radius-sm, 8px);
+  --pa-radius-lg: var(--bp-radius-md, 12px);
+  --pa-font-heading: var(--bp-font-heading, 'Playfair Display', 'Cormorant Garamond', Georgia, serif);
+  --pa-font-body: var(--bp-font-body, 'Inter', system-ui, sans-serif);
+  --pa-font-mono: var(--bp-font-mono, 'JetBrains Mono', ui-monospace, monospace);
 
   display: grid;
   grid-template-columns: var(--pa-rail) var(--pa-pagelist) minmax(520px, 1fr) var(--pa-preview);
   min-height: 100vh;
   background: var(--pa-bg);
   color: var(--pa-text);
-  font-family: var(--bp-font-body, 'Inter', system-ui, sans-serif);
+  font-family: var(--pa-font-body);
 }
 
 .pa-shell[data-preview-open="false"] {
@@ -44,15 +52,15 @@
   height: 100vh;
 }
 .pa-rail__eyebrow {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--pa-font-mono);
   font-size: 10px; letter-spacing: 0.36em; text-transform: uppercase;
   color: var(--pa-cyan); margin-bottom: 6px;
 }
 .pa-rail__brand {
-  font-family: 'Cormorant Garamond', 'Times New Roman', serif;
-  font-size: 22px; font-weight: 400; letter-spacing: -0.01em;
+  font-family: var(--pa-font-heading);
+  font-size: 26px; font-weight: 400; letter-spacing: -0.01em;
   color: var(--pa-text); margin: 0 0 36px;
-  line-height: 1.1;
+  line-height: 1.05;
 }
 .pa-rail__nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
 .pa-rail__link {
@@ -118,7 +126,7 @@
   margin-bottom: 3px;
 }
 .pa-pagelist__path {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--pa-font-mono);
   font-size: 10.5px; color: var(--pa-text-faint);
   letter-spacing: 0.02em;
 }
@@ -131,7 +139,7 @@
 }
 .pa-main__head { margin-bottom: 28px; }
 .pa-main__title {
-  font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+  font-family: var(--pa-font-heading);
   font-size: 38px; font-weight: 400; letter-spacing: -0.01em;
   margin: 0 0 8px; color: var(--pa-text);
 }
@@ -145,7 +153,7 @@
   flex-wrap: wrap;
 }
 .pa-main__breadcrumb {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--pa-font-mono);
   font-size: 11px; color: var(--pa-text-faint);
   letter-spacing: 0.04em;
 }
@@ -163,7 +171,7 @@
 .pa-locale-btn {
   background: transparent; border: none;
   padding: 6px 14px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--pa-font-mono);
   font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--pa-text-mute); cursor: pointer;
   border-radius: 999px;
@@ -247,12 +255,12 @@
   background: var(--pa-surface);
 }
 .pa-section-group__eyebrow {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--pa-font-mono);
   font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
   color: var(--pa-cyan); font-weight: 600;
 }
 .pa-section-group__meta {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--pa-font-mono);
   font-size: 10.5px; color: var(--pa-text-faint);
   letter-spacing: 0.04em; flex: 1;
 }
@@ -299,13 +307,13 @@
 }
 .pa-field__heading { flex: 1; min-width: 0; }
 .pa-field__eyebrow {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--pa-font-mono);
   font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--pa-cyan); font-weight: 600;
   margin-bottom: 4px;
 }
 .pa-field__path {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--pa-font-mono);
   font-size: 10.5px; color: var(--pa-text-faint);
   letter-spacing: 0.02em;
 }
@@ -336,7 +344,7 @@
   display: flex; flex-direction: column;
 }
 .pa-field__col-label {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--pa-font-mono);
   font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase;
   color: var(--pa-text-faint); font-weight: 500;
   margin-bottom: 6px;
@@ -382,7 +390,7 @@
 }
 .pa-image-field__caption { font-size: 13.5px; color: var(--pa-text); margin-bottom: 6px; line-height: 1.4; }
 .pa-image-field__id {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--pa-font-mono);
   font-size: 10.5px; color: var(--pa-text-faint);
   letter-spacing: 0.04em;
   display: inline-flex; align-items: center; gap: 8px;
@@ -412,7 +420,7 @@
   padding: 80px 40px;
   text-align: center;
   color: var(--pa-text-faint);
-  font-family: 'Cormorant Garamond', serif; font-style: italic;
+  font-family: var(--pa-font-heading); font-style: italic;
   font-size: 17px;
 }
 
@@ -423,7 +431,7 @@
 .pa-pill {
   display: inline-flex; align-items: center;
   padding: 3px 9px; border-radius: 999px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--pa-font-mono);
   font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase;
   font-weight: 600;
 }
@@ -441,6 +449,6 @@
 .pa-advanced__head { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
 .pa-advanced__hint {
   font-size: 12px; color: var(--pa-text-mute);
-  font-style: italic; font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-family: var(--pa-font-heading);
   margin-bottom: 12px;
 }
