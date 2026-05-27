@@ -72,8 +72,25 @@
 .pa-rail__brand {
   font-family: var(--pa-font-heading);
   font-size: 30px; font-weight: 400; letter-spacing: -0.012em;
-  color: var(--pa-text); margin: 0 0 40px;
+  color: var(--pa-text); margin: 0 0 18px;
   line-height: 1.05;
+}
+.pa-rail__backlink {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; letter-spacing: 0.04em;
+  color: var(--pa-text-faint);
+  text-decoration: none;
+  padding: 8px 12px;
+  border: 1px solid var(--pa-border);
+  border-radius: 999px;
+  margin: 0 0 28px;
+  width: fit-content;
+  transition: color .18s, border-color .18s, background-color .18s;
+}
+.pa-rail__backlink:hover {
+  color: var(--pa-cyan);
+  border-color: var(--pa-cyan);
+  background: var(--pa-cyan-soft);
 }
 .pa-rail__nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
 .pa-rail__link {

@@ -482,6 +482,9 @@ const PagesAdminPage = () => {
       <aside className="pa-rail">
         <p className="pa-rail__eyebrow">Blueprint</p>
         <h1 className="pa-rail__brand">Command<br/>Center</h1>
+        <Link to="/dashboard" className="pa-rail__backlink" data-testid="pa-rail-back-blueprint">
+          ← Dashboard Blueprint
+        </Link>
         <nav className="pa-rail__nav">
           <button className="pa-rail__link" data-active="true" data-testid="pa-rail-pages">
             <FileText size={14} strokeWidth={1.7} /> Pagine

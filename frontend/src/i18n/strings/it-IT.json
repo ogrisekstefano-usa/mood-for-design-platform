@@ -1144,7 +1144,7 @@
       "rejected": "Rifiutati"
     },
     "title": "Moodboard",
-    "subtitle": "Narrazioni visive curate per i tuoi progetti.",
+    "subtitle": "Narrazioni visive curate per ogni Design Journey™ del tuo studio.",
     "new": "Nuova moodboard",
     "empty": "Nessuna moodboard ancora composta.",
     "emptyCta": "Componi la prima moodboard",
@@ -1181,8 +1181,8 @@
     },
     "create": {
       "failed": "Impossibile creare la moodboard. Riprova.",
-      "projectLabel": "Journey",
-      "projectPh": "Seleziona un journey",
+      "projectLabel": "Design Journey™",
+      "projectPh": "Seleziona un Design Journey™",
       "submit": "Crea",
       "timeout": "La creazione sta impiegando troppo tempo. Riprova.",
       "title": "Nuova moodboard",

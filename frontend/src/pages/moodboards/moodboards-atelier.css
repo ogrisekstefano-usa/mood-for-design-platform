@@ -6,27 +6,29 @@
 
 .mb-page {
   min-height: 100vh;
+  width: 100%;
   background: var(--mood-bg);
   background-image: var(--mood-atmosphere);
   color: #e8e6e1;
 }
 .mb-page__inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 48px 56px 80px;
+  max-width: none;
+  margin: 0;
+  padding: clamp(40px, 6vw, 80px) clamp(28px, 5vw, 80px) clamp(56px, 7vw, 96px);
 }
 
 .mb-page__eyebrow {
-  font-size: 10.5px;
-  letter-spacing: 0.28em;
+  font-size: 11px;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--mood-warm);
   margin: 0 0 14px;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
 }
 .mb-page__title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 44px;
+  font-size: clamp(40px, 5vw, 64px);
   line-height: 1.05;
   font-weight: 400;
   margin: 0;
@@ -35,22 +37,24 @@
 }
 .mb-page__title em { font-style: italic; }
 .mb-page__sub {
-  margin: 12px 0 0;
-  font-size: 13px;
+  margin: 16px 0 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(17px, 1.5vw, 20px);
+  line-height: 1.55;
   color: #a8a8a4;
-  max-width: 56ch;
+  max-width: 760px;
   font-style: italic;
-  font-family: 'Playfair Display', Georgia, serif;
 }
 
-/* ── Atelier grid ── */
+/* ── Atelier grid (allargata) ── */
 .mb-atelier {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
 }
+@media (max-width: 1500px) { .mb-atelier { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 1200px) { .mb-atelier { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 720px)  { .mb-atelier { grid-template-columns: 1fr; } .mb-page__inner { padding: 32px 22px 60px; } .mb-page__title { font-size: 32px; } }
+@media (max-width: 720px)  { .mb-atelier { grid-template-columns: 1fr; } .mb-page__inner { padding: 32px 22px 60px; } }
 
 /* ── Atelier Card ── */
 .mbcard {

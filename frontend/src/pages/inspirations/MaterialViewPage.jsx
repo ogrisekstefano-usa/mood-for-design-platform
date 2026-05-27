@@ -55,25 +55,31 @@ export default function MaterialViewPage() {
   }, [data.items]);
 
   return (
-    <div className="mv-shell" data-testid="mv-shell">
-      {/* Journey Continuity™ — atmospheric strip that reminds the
-          designer which milestone of the Design Journey™ this materioteca
-          serves. Renders only when ?project=<id> is in the URL. */}
+    <div className="mv-shell mv-shell--editorial" data-testid="mv-shell">
       <JourneyContextHeader compact />
 
-      {/* Header */}
-      <header className="mv-header">
-        <div className="mv-header__meta">
-          <p className="mv-header__eyebrow">Material View™ · {t('atelier_voice.material_view.eyebrow_suffix', null, 'curated materials library')}</p>
-          <h1 className="mv-header__title"><em>{t('material_view.header.title', null, 'Material that speaks')}</em></h1>
-          <p className="mv-header__sub">
-            Un atlante materico organizzato per family cromatica e ritmo visuale —
-            non un catalogo tecnico, ma un tavolo curatoriale tattile.
-          </p>
+      {/* Header — coerente con /inspirations (Cultural Design Intelligence Layer) */}
+      <header className="mv-header" data-testid="mv-header">
+        <p className="mv-eyebrow">CURATED MATERIALS LIBRARY · MATERIAL VIEW™</p>
+        <h1 className="mv-title">
+          <em>Material that speaks</em>
+        </h1>
+        <p className="mv-sub">
+          Un atlante materico organizzato per famiglia cromatica e ritmo visuale —
+          non un catalogo tecnico, ma un tavolo curatoriale tattile su cui si compongono
+          le moodboard di progetto.
+        </p>
+        <div className="mv-actions">
+          <Link to="/inspirations" className="mv-action-btn" data-testid="mv-add-material">
+            <Icons.Plus size={14} strokeWidth={2} /> Aggiungi materiale
+          </Link>
+          <Link to="/inspirations" className="mv-action-btn mv-action-btn--ghost">
+            <Icons.ArrowLeft size={13} strokeWidth={1.8} /> Torna a Inspirations™
+          </Link>
+          <span className="mv-count-pill" data-testid="mv-count">
+            <Icons.Layers size={11} strokeWidth={1.8} /> {data.count} elementi curati
+          </span>
         </div>
-        <span className="mv-header__count" data-testid="mv-count">
-          {data.count} elementi
-        </span>
       </header>
 
       {/* Filters */}
@@ -131,9 +137,19 @@ export default function MaterialViewPage() {
           </div>
         )}
         {!loading && tiles.length === 0 && (
-          <div className="mv-empty">
-            <p>{t('inspirations.material_view.nessun_elemento_materico_ancora_classificato_per_q')}</p>
-            <p>{t('inspirations.material_view.aumenta_il_numero_di_asset_curati_per_arricchire_l')}</p>
+          <div className="mv-empty mv-empty--editorial" data-testid="mv-empty">
+            <Icons.Layers size={28} strokeWidth={1.4} className="mv-empty__icon" />
+            <h3 className="mv-empty__title">L'atlante materico è ancora vuoto.</h3>
+            <p className="mv-empty__sub">
+              Aggiungi il primo materiale da Inspirations™ — un upload diretto, un link Pinterest,
+              uno scatto del campionario, qualsiasi URL: MOOD lo classifica per famiglia cromatica
+              e materialità.
+            </p>
+            <div className="mv-empty__actions">
+              <Link to="/inspirations" className="mv-action-btn" data-testid="mv-empty-cta">
+                <Icons.Plus size={14} strokeWidth={2} /> Aggiungi il primo materiale
+              </Link>
+            </div>
           </div>
         )}
         {tiles.map(it => (
