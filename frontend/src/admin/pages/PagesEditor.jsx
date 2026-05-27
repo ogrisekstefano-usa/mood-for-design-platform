@@ -787,7 +787,7 @@ const FlexibleCellsEditor = ({ section, onSaved }) => {
   );
 };
 
-const SectionCard = ({ section, locale, onChanged, onChangedStructural, isSelected, expanded, onToggleExpanded }) => {
+const SectionCard = ({ section, locale, onChanged, onChangedStructural, isSelected, expanded, onToggleExpanded, onSelect }) => {
   const [deleting, setDeleting] = useState(false);
   const collapsed = !expanded;  // controlled by parent → persists across reloads
   const [toggling, setToggling] = useState(false);
@@ -804,6 +804,30 @@ const SectionCard = ({ section, locale, onChanged, onChangedStructural, isSelect
   };
 
   if (!section.blocks.length && !section.media.length && !hasLinks(section)) return null;
+
+  // Notify preview iframe to scroll to this section
+  const scrollPreview = () => {
+    try {
+      const iframe = document.querySelector('iframe[data-testid="preview-iframe"]');
+      if (iframe?.contentWindow) {
+        iframe.contentWindow.postMessage(
+          { type: 'mood-preview:scroll-to-section', sectionId: section.id },
+          '*',
+        );
+      }
+    } catch { /* noop */ }
+  };
+
+  // Click anywhere on the card (not on inner controls) → select + scroll preview
+  const onCardClick = (e) => {
+    // Ignore clicks inside interactive controls
+    const interactive = e.target.closest(
+      'button, a, input, textarea, select, label, [contenteditable="true"]'
+    );
+    if (interactive) return;
+    onSelect?.(section.id);
+    scrollPreview();
+  };
 
   const onDelete = async () => {
     const label = (section.section_type || '').replace(/_/g, ' ');
@@ -832,32 +856,29 @@ const SectionCard = ({ section, locale, onChanged, onChangedStructural, isSelect
     }
   };
 
-  // When user expands the section, scroll the iframe preview to it
+  // Expand/collapse chevron — also selects + scrolls preview when opening
   const onToggleCollapse = () => {
     const willExpand = collapsed;
     onToggleExpanded?.();
     if (willExpand) {
-      try {
-        const iframe = document.querySelector('iframe[data-testid="preview-iframe"]');
-        if (iframe?.contentWindow) {
-          iframe.contentWindow.postMessage(
-            { type: 'mood-preview:scroll-to-section', sectionId: section.id },
-            '*',
-          );
-        }
-      } catch { /* noop */ }
+      onSelect?.(section.id);
+      scrollPreview();
     }
   };
 
   return (
     <div
       ref={setNodeRef}
+      onClick={onCardClick}
       style={{
         ...sectionWrap,
         ...dragStyle,
-        outline: isSelected ? '2px solid rgba(0,201,179,0.55)' : 'none',
-        outlineOffset: 4,
+        cursor: 'pointer',
+        outline: isSelected ? '2px solid rgba(0,201,179,0.7)' : '1px solid rgba(255,255,255,0.05)',
+        outlineOffset: isSelected ? 4 : 0,
+        boxShadow: isSelected ? '0 0 0 4px rgba(0,201,179,0.12), 0 6px 22px rgba(0,201,179,0.18)' : 'none',
         opacity: section.visible ? (isDragging ? 0.5 : 1) : 0.45,
+        transition: 'outline 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease',
       }}
       data-testid={`section-${section.id}`}
     >
@@ -1518,6 +1539,7 @@ const PagesEditor = () => {
                         isSelected={selectedSection === s.id}
                         expanded={expanded.has(s.id)}
                         onToggleExpanded={() => toggleExpanded(s.id)}
+                        onSelect={(sid) => setSelectedSection(sid)}
                       />
                     ))}
                   </SortableContext>
