@@ -30,6 +30,7 @@ import { ArrowRight, ArrowLeft, Plus } from 'lucide-react';
 import { useSite, SiteProvider } from '../../site/SiteContext';
 import MoodSiteHeader from '../../site/components/MoodSiteHeader';
 import { useStorefrontContent } from '../../site/useStorefrontContent';
+import EditorialFreeBlocks from '../../site/EditorialFreeBlocks';
 import StorefrontThemeProvider from '../../design-system/storefront/StorefrontThemeProvider';
 import SiteLocaleBridge from '../../site/SiteLocaleBridge';
 import EditorialBridge from '../../site/EditorialBridge';
@@ -875,6 +876,7 @@ const HomePageBody = () => {
         <Magazine locale={locale} copy={copy} />
         <DesignStories locale={locale} copy={copy} />
         <Materials locale={locale} copy={copy} />
+        <EditorialFreeBlocks sections={cms?.page?.sections} locale={locale} />
         <FinalCTA locale={locale} copy={copy} />
       </main>
       <SiteFooter locale={locale} copy={copy} />

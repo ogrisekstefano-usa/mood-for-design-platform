@@ -2,6 +2,71 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER157.E.9 · Public-site free blocks + inline markup** · ✅ DELIVERED · 27 Mag 2026
+
+  **🎯 Goal**: chiudere il loop dei blocchi generici (rendere visibili
+  sul sito pubblico i `block_heading/text/image/video_youtube` creati
+  dall'editor) e fornire formattazione minimale (bold/italic/link) sui
+  textarea CMS.
+
+  **EditorialFreeBlocks (rendering pubblico)**
+  - Nuovo componente `frontend/src/site/EditorialFreeBlocks.jsx` che
+    riceve `cms.page.sections` filtra i 4 tipi `block_*`, sorta per
+    `sort_order` e renderizza ognuno con stile editoriale.
+  - Inserito in `HomePage.jsx` tra `Materials` e `FinalCTA`.
+  - Solo le sezioni con `visible: true` vengono rese.
+  - **block_heading**: title + eyebrow, size (sm/md/lg/xl) e
+    align (left/center/right). Tipografia Cormorant 36-88px.
+  - **block_text**: body con `renderInline()` (markdown), align,
+    width (narrow/default/wide), italic/bold/link inline reali.
+  - **block_image**: figure + caption + alt + 5 ratio (1:1, 4:3, 3:2,
+    16:9, 21:9). Lazy loading nativo.
+  - **block_video_youtube**: estrae ID da URL o raw ID, iframe
+    responsive 16:9 con title + caption.
+
+  **Inline markup (markdown leggero)**
+  - Sintassi: `**bold**` · `*italic*` · `[testo](url)`
+  - Parser sicuro `frontend/src/lib/inlineMarkup.js` (no HTML
+    pass-through, escaping via React, validazione `isSafeHref`,
+    apertura link esterni in `target=_blank rel=noopener noreferrer`,
+    ricorsivo fino a depth 6).
+  - **Toolbar editor**: 3 bottoni B (Ctrl+B) · I (Ctrl+I) · ↗ (Ctrl+K)
+    sopra ogni textarea. Inserisce la sintassi attorno alla selezione,
+    restaura cursor position dopo il re-render React.
+  - Shortcut da tastiera supportate ovunque (Ctrl/Cmd + B/I/K).
+
+  **Verifica E2E live**
+  - Creato `block_heading` "Una storia raccontata in editoriale" →
+    visibile sul sito pubblico ✓
+  - Creato `block_text` con `"Lo studio italiano disegna ambienti
+    dove **materia** e *luce* si incontrano. Scopri il
+    [nostro magazine](/magazine)."` → renderizzato come HTML semantico:
+    `<strong>materia</strong>` ✓ `<em>luce</em>` ✓
+    `<a href="/magazine">nostro magazine</a>` ✓
+  - Toolbar bold/italic/link presente in ogni textarea ✓
+  - Cleanup junk content di test ✓ + ripublish revision ✓
+
+  **File**
+  - ⨁ `frontend/src/site/EditorialFreeBlocks.jsx`
+  - ⨁ `frontend/src/site/editorialFreeBlocks.css`
+  - ⨁ `frontend/src/lib/inlineMarkup.js`
+  - ↻ `frontend/src/pages/site/HomePage.jsx` (import + render slot)
+  - ↻ `frontend/src/pages/storefront/PagesAdminPage.jsx`
+    (rich toolbar B/I/Link in FieldCard, shortcut Ctrl+B/I/K)
+  - ↻ `frontend/src/pages/storefront/pagesAdmin.css`
+    (`.pa-richtoolbar`, `.pa-rich-btn` styles)
+
+  **Note di scope**
+  - Solo i `block_text` parsano markdown. Gli altri campi testuali
+    delle sezioni canoniche (hero, cinematic_quote, ecc) ricevono la
+    toolbar editor ma il sito pubblico li renderizza come plain text
+    nei punti dove si appoggia ancora sui `merged.copy.*` legacy.
+    Switching graduale: i renderer pubblici possono adottare
+    `renderInline()` campo per campo nelle iterazioni successive.
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER157.E.8 · Image Editor (crop + filtri) + private bucket fix** · ✅ DELIVERED · 27 Mag 2026
 
   **🎯 Goal**: editor immagine in-browser con crop & filtri al momento

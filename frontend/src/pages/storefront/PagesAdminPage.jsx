@@ -927,6 +927,47 @@ const SectionGroup = ({
 const FieldCard = ({ section, pageKey, field, locale, value, savedValue, dirty, saving, onChange, onSave }) => {
   const path = `site.${pageKey || ''}.${section.section_type}.${field.key}`;
   const localeShort = (LOCALES.find((l) => l.code === locale) || LOCALES[0]).label;
+  // Inline-markup toolbar — only for textarea fields. Inserts **bold**,
+  // *italic*, [text](url) into the current selection.
+  const textareaRef = React.useRef(null);
+  const applyMarkup = (kind) => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const v = ta.value;
+    const sel = v.slice(start, end);
+    let next; let cursorStart; let cursorEnd;
+    if (kind === 'bold') {
+      const inner = sel || 'testo grassetto';
+      next = v.slice(0, start) + '**' + inner + '**' + v.slice(end);
+      cursorStart = start + 2; cursorEnd = start + 2 + inner.length;
+    } else if (kind === 'italic') {
+      const inner = sel || 'testo corsivo';
+      next = v.slice(0, start) + '*' + inner + '*' + v.slice(end);
+      cursorStart = start + 1; cursorEnd = start + 1 + inner.length;
+    } else if (kind === 'link') {
+      const url = window.prompt('URL del link (https:// oppure /percorso):', 'https://');
+      if (!url) return;
+      const label = sel || 'testo del link';
+      next = v.slice(0, start) + '[' + label + '](' + url + ')' + v.slice(end);
+      cursorStart = start + 1; cursorEnd = start + 1 + label.length;
+    } else return;
+    onChange(next);
+    // restore selection on next tick (after React re-render)
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        textareaRef.current.setSelectionRange(cursorStart, cursorEnd);
+      }
+    }, 30);
+  };
+  const onKeyDown = (e) => {
+    if (!(e.ctrlKey || e.metaKey)) return;
+    if (e.key === 'b' || e.key === 'B') { e.preventDefault(); applyMarkup('bold'); }
+    else if (e.key === 'i' || e.key === 'I') { e.preventDefault(); applyMarkup('italic'); }
+    else if (e.key === 'k' || e.key === 'K') { e.preventDefault(); applyMarkup('link'); }
+  };
   return (
     <div className="pa-field" data-dirty={dirty} data-testid={`pa-field-${section.section_type}-${field.key}`}>
       <header className="pa-field__head">
@@ -947,12 +988,31 @@ const FieldCard = ({ section, pageKey, field, locale, value, savedValue, dirty, 
         <div className="pa-field__col">
           <span className="pa-field__col-label">In modifica · {localeShort}</span>
           {field.textarea ? (
-            <textarea className={`pa-textarea${field.display ? ' pa-textarea--lg' : ''}`}
-              rows={field.rows || 3}
-              value={value || ''}
-              onChange={(e) => onChange(e.target.value)}
-              placeholder={field.placeholder || ''}
-              data-testid={`pa-input-${section.section_type}-${field.key}`} />
+            <>
+              <div className="pa-richtoolbar" data-testid={`pa-richtoolbar-${section.section_type}-${field.key}`}>
+                <button type="button" className="pa-rich-btn"
+                  onClick={() => applyMarkup('bold')}
+                  data-testid={`pa-rich-bold-${section.section_type}-${field.key}`}
+                  title="Grassetto (Ctrl+B)"><strong>B</strong></button>
+                <button type="button" className="pa-rich-btn"
+                  onClick={() => applyMarkup('italic')}
+                  data-testid={`pa-rich-italic-${section.section_type}-${field.key}`}
+                  title="Corsivo (Ctrl+I)"><em>I</em></button>
+                <button type="button" className="pa-rich-btn"
+                  onClick={() => applyMarkup('link')}
+                  data-testid={`pa-rich-link-${section.section_type}-${field.key}`}
+                  title="Link (Ctrl+K)">↗</button>
+                <span className="pa-richtoolbar__hint">**grassetto** *corsivo* [link](url)</span>
+              </div>
+              <textarea ref={textareaRef}
+                className={`pa-textarea${field.display ? ' pa-textarea--lg' : ''}`}
+                rows={field.rows || 3}
+                value={value || ''}
+                onChange={(e) => onChange(e.target.value)}
+                onKeyDown={onKeyDown}
+                placeholder={field.placeholder || ''}
+                data-testid={`pa-input-${section.section_type}-${field.key}`} />
+            </>
           ) : (
             <input className="pa-input"
               value={value || ''}
