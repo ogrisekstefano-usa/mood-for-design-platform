@@ -2,7 +2,75 @@
 
 
 ## 📌 Sprint Status (latest)
-- **ITER157.E.4 · List Editors (brand · swatches · materiali)** · ✅ DELIVERED · 27 Mag 2026
+- **ITER157.E.8 · Image Editor (crop + filtri) + private bucket fix** · ✅ DELIVERED · 27 Mag 2026
+
+  **🎯 Goal**: editor immagine in-browser con crop & filtri al momento
+  dell'upload, e fix del bug del bucket Supabase privato che mostrava
+  "Immagine non disponibile" dopo ogni upload.
+
+  **Fix backend · signed URL per bucket privati**
+  - `register_media` ora rileva se il bucket è privato (`tenant-assets`,
+    `project-files`, `proposal-files`, `moodboard-assets`) e genera un
+    **signed URL di 1 anno** invece del public URL (che ritornava HTTP
+    400 per i bucket privati).
+  - Tutti i futuri upload vanno LIVE immediatamente, senza il flicker
+    "Immagine non disponibile" segnalato dall'utente.
+  - Migrato anche il file uploadato corrente (`1779856322093-d6lgxk.jpeg`)
+    via Supabase SDK direttamente sul hero_editorial → skyline ora live
+    su tutti i locale (it/en-US/_default).
+
+  **Frontend · ImageEditorModal**
+  - Nuovo componente `ImageEditorModal.jsx` (200 righe) + CSS
+  - Dipendenza: `react-easy-crop@5.5.7` (~50KB gzip)
+  - Triggerato automaticamente quando l'utente carica un'immagine via
+    `EditorialMediaField` (drag&drop o file picker). Il file originale
+    NON viene uploadato finché l'utente non clicca "Applica" o "Salta".
+  - **Crop**: 6 proporzioni preset (Libero · 1:1 · 4:3 · 3:2 · 16:9 ·
+    21:9) + zoom slider 1×–3× + grid overlay
+  - **Filtri**: 3 slider live (Luminosità 40-160% · Contrasto 40-180% ·
+    Saturazione 0-180%) + toggle Bianco & Nero
+  - **Anteprima live**: cropper con CSS filter applicato in real-time
+  - **Output**: PNG max 2400px lato lungo, qualità 92%, baked via
+    `canvas.toBlob()` con `ctx.filter` + cropPixels
+  - **3 azioni**: "Applica e carica" (bake → upload), "Salta editor &
+    carica originale" (upload tale-quale), "Annulla" (chiudi senza
+    upload)
+  - **Aspect preset intelligente** dal field preset:
+    * `preset="hero"` → default 16/9
+    * `preset="square"` → default 1/1
+    * `preset="portrait"` → default 3/4
+    * `preset="story"` → default 9/16
+    * `preset="logo"` → libero (no crop)
+
+  **Stile coerente Atelier**
+  - Modal full-screen con backdrop blur, palette nera neutra
+  - Cyan accent (`#00C9B3`) per slider thumb, aspect button active,
+    apply button, eyebrow "EDITOR IMMAGINE"
+  - Tipografia Playfair Display per il titolo "Ritaglio & Filtri",
+    Inter per il resto
+  - Responsive: sotto 900px diventa 1 colonna
+
+  **Verifica E2E**
+  - File input trovato dentro `pa-image-hero_editorial-image` ✓
+  - Upload PNG 1×1 px → modal apre automaticamente ✓
+  - Tutti i controlli presenti: 6 aspect, 3 filtri, grayscale,
+    apply/skip ✓
+  - Cancel chiude correttamente ✓
+  - Modifiche slider (brightness 100→115, contrast 100→120)
+    applicate live al cropper ✓
+
+  **File**
+  - ⨁ `frontend/src/components/common/ImageEditorModal.jsx`
+  - ⨁ `frontend/src/components/common/imageEditorModal.css`
+  - ↻ `frontend/src/components/common/EditorialMediaField.jsx`
+    (state `editorFile`, intercept uploadFile, render ImageEditorModal,
+    aspect preset mapping)
+  - ↻ `backend/routers/storage.py` (signed URL for private buckets)
+
+---
+
+## 📌 Sprint Status (previous)
+- **ITER157.E.7 · DB content restore + missing mappers** · ✅ DELIVERED · 27 Mag 2026
 
   **🎯 Goal**: rimuovere il "Editor specializzato non disponibile per
   questa sezione" per i blocchi con liste (Materials, Trust Marquee,

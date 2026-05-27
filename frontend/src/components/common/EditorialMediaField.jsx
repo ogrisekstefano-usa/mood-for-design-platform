@@ -29,6 +29,7 @@ import { ImagePlus, RefreshCw, Trash2, Link2, FolderOpen, Loader2, AlertCircle, 
 import { toast } from 'sonner';
 import { media, links, uploadMediaFile } from '../../lib/mediaApi';
 import AssetPickerModal from '../../pages/settings/AssetPickerModal';
+import ImageEditorModal from './ImageEditorModal';
 import { DEFAULT_FILTERS, cssFilterOf } from '../../lib/imageFilters';
 import './editorial-media-field.css';
 import { useT } from '../../i18n/useT';
@@ -186,12 +187,23 @@ const EditorialMediaField = ({
     }
   }, [onChange, valueShape]);
 
+  // ── Image Editor modal (crop + filters before upload)
+  const [editorFile, setEditorFile] = useState(null);
+
   // ── Direct file upload (drag&drop or pick)
   const uploadFile = useCallback(async file => {
     if (!file || !file.type?.startsWith('image/')) {
       toast.error('Solo immagini');
       return;
     }
+    // ITER157.E.8: open the in-browser crop/filter editor first.
+    // The user can either apply edits (re-upload baked blob) or skip
+    // (use the original file). Either way uploadFile receives a File.
+    setEditorFile(file);
+  }, []);
+
+  // Actual upload primitive — receives the (maybe edited) File.
+  const _doUpload = useCallback(async file => {
     setState('uploading');
     setProgress(5);
     setError(null);
@@ -230,6 +242,13 @@ const EditorialMediaField = ({
       setError(e?.response?.data?.detail || e?.message || 'Upload fallito');
     }
   }, [bucket, folder, entityType, entityId, role, normalized.alt_text, normalized.image_intent, normalized.focal_point, emit]);
+
+  // Handler called by the editor modal once user applies / skips.
+  const handleEditorApply = useCallback(async (file) => {
+    setEditorFile(null);
+    await _doUpload(file);
+  }, [_doUpload]);
+  const handleEditorCancel = useCallback(() => setEditorFile(null), []);
 
   // ── Picker (library) callback
   const handlePicked = useCallback(async ({
@@ -566,6 +585,22 @@ const EditorialMediaField = ({
 
       {/* Picker modal */}
       {pickerOpen && <AssetPickerModal open onClose={() => setPickerOpen(false)} onSelect={handlePicked} entityType={entityType} entityId={entityId} role={role} bucket={bucket} folder={folder} title={t("common.editorial_media_field.scegli_o_carica_un_immagine")} eyebrow="EDITORIAL MEDIA" defaultTab="library" />}
+      {editorFile && (
+        <ImageEditorModal
+          file={editorFile}
+          filename={editorFile.name || 'image.png'}
+          initialAspect={
+            preset === 'square' ? 1 :
+            preset === 'portrait' ? 3/4 :
+            preset === 'story' ? 9/16 :
+            preset === 'hero' ? 16/9 :
+            preset === 'logo' ? null :
+            16/9
+          }
+          onApply={handleEditorApply}
+          onCancel={handleEditorCancel}
+        />
+      )}
     </div>;
 };
 export default EditorialMediaField;
