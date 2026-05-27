@@ -688,6 +688,105 @@ const AddSectionPalette = ({ pageKey, onCreated }) => {
 };
 
 // ── SectionCard ─────────────────────────────────────────────────────────
+const FlexibleCellsEditor = ({ section, onSaved }) => {
+  const cells = (section.settings?.cells || []);
+  const [savingSlot, setSavingSlot] = useState(null);
+  if (!cells.length) return null;
+
+  const setType = async (slot, content_type) => {
+    setSavingSlot(slot);
+    try {
+      const newCells = cells.map((c) => c.slot === slot ? { ...c, content_type } : c);
+      const settings = { ...(section.settings || {}), cells: newCells };
+      await adminApi.patchSection(section.id, { settings });
+      onSaved?.();
+    } catch (e) {
+      window.alert('Errore: ' + (e?.response?.data?.detail || e.message));
+    } finally {
+      setSavingSlot(null);
+    }
+  };
+
+  const setVideoUrl = async (slot, url) => {
+    setSavingSlot(slot);
+    try {
+      const videos = { ...(section.settings?.videos || {}), [slot]: url || null };
+      const settings = { ...(section.settings || {}), videos };
+      await adminApi.patchSection(section.id, { settings });
+      onSaved?.();
+    } catch (e) {
+      window.alert('Errore: ' + (e?.response?.data?.detail || e.message));
+    } finally {
+      setSavingSlot(null);
+    }
+  };
+
+  const TYPES = [
+    { id: 'heading', label: 'Titolo + testo + CTA' },
+    { id: 'body',    label: 'Solo testo' },
+    { id: 'image',   label: 'Immagine' },
+    { id: 'button',  label: 'Solo CTA' },
+    { id: 'video',   label: 'Video YouTube' },
+  ];
+
+  return (
+    <div style={{ marginTop: 12, padding: '14px 16px', background: 'rgba(0,201,179,0.03)',
+                  border: '1px solid rgba(0,201,179,0.18)', borderRadius: 6 }}
+         data-testid={`flex-cells-${section.id}`}>
+      <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.66rem', fontWeight: 500,
+                  letterSpacing: '0.18em', textTransform: 'uppercase',
+                  color: 'var(--mood-teal, #00C9B3)', margin: '0 0 12px' }}>
+        Contenuto delle celle
+      </p>
+      {cells.map((c) => (
+        <div key={c.slot} style={{ marginBottom: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '0.72rem', color: 'rgba(255,255,255,0.55)',
+                            minWidth: 70 }}>
+              {c.slot} <span style={{ opacity: 0.5 }}>· {c.span}/12</span>
+            </span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {TYPES.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => setType(c.slot, t.id)}
+                  disabled={savingSlot === c.slot}
+                  style={{
+                    padding: '0.32rem 0.7rem', fontSize: '0.66rem',
+                    background: c.content_type === t.id ? 'rgba(0,201,179,0.18)' : 'transparent',
+                    border: `1px solid ${c.content_type === t.id ? 'rgba(0,201,179,0.55)' : 'rgba(255,255,255,0.12)'}`,
+                    color: c.content_type === t.id ? '#FFF' : 'rgba(255,255,255,0.6)',
+                    borderRadius: 999,
+                    fontFamily: 'Inter, sans-serif', cursor: 'pointer',
+                  }}
+                  data-testid={`flex-cell-${c.slot}-type-${t.id}`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          {c.content_type === 'video' && (
+            <input
+              type="url"
+              placeholder="https://www.youtube.com/watch?v=..."
+              defaultValue={section.settings?.videos?.[c.slot] || ''}
+              onBlur={(e) => setVideoUrl(c.slot, e.target.value)}
+              style={{
+                width: '100%', marginTop: 4, marginLeft: 80, maxWidth: 'calc(100% - 80px)',
+                background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)',
+                color: '#FFF', padding: '0.5rem 0.7rem', fontSize: '0.82rem',
+                fontFamily: 'Inter, sans-serif',
+              }}
+              data-testid={`flex-cell-${c.slot}-video-url`}
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const SectionCard = ({ section, locale, onChanged, isSelected }) => {
   const [deleting, setDeleting] = useState(false);
   const [collapsed, setCollapsed] = useState(true);   // default: closed for cleaner list
@@ -846,6 +945,9 @@ const SectionCard = ({ section, locale, onChanged, isSelected }) => {
 
       {!collapsed && (
         <>
+          {section.section_type === 'flexible_layout' && (
+            <FlexibleCellsEditor section={section} onSaved={onChanged} />
+          )}
           {section.blocks.map(b => (
             <BlockEditor key={b.full_key} block={b} locale={locale} onSaved={onChanged} />
           ))}

@@ -179,6 +179,7 @@ async def resolve_page(slug: str, locale: str = DEFAULT_LOCALE) -> dict | None:
                 opts = dict(settings.get('options') or {})
                 if 'layout' in settings: opts['layout'] = settings['layout']
                 if 'cells' in settings:  opts['cells']  = settings['cells']
+                if 'videos' in settings: opts['videos'] = settings['videos']
 
                 resolved_sections.append({
                     'id': str(s['id']),

@@ -61,8 +61,36 @@ const CTAButton = ({ label, href, target }) => {
   );
 };
 
-const Cell = ({ cell, content, media, mediaActions, links }) => {
+const youtubeEmbedUrl = (url) => {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    let id = null;
+    if (u.hostname.includes('youtu.be')) id = u.pathname.slice(1);
+    else if (u.searchParams.get('v')) id = u.searchParams.get('v');
+    else if (u.pathname.includes('/embed/')) id = u.pathname.split('/embed/')[1];
+    return id ? `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1` : null;
+  } catch { return null; }
+};
+
+const Cell = ({ cell, content, media, mediaActions, links, videos = {} }) => {
   const t = cell.content_type || 'heading';
+  if (t === 'video') {
+    const src = youtubeEmbedUrl(videos[cell.slot]);
+    if (!src) return <div style={{ minHeight: 240 }} />;
+    return (
+      <div style={{ position: 'relative', aspectRatio: '16/9', borderRadius: 4, overflow: 'hidden', background: '#000' }}>
+        <iframe
+          src={src} title="Video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          loading="lazy"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+          data-testid={`flex-${cell.slot}-video`}
+        />
+      </div>
+    );
+  }
   if (t === 'image') {
     const img = media[cell.slot];
     if (!img?.url) return <div style={{ minHeight: 240 }} />;
@@ -113,6 +141,7 @@ const FlexibleLayout = ({ content = {}, media = {}, mediaActions = {}, links = {
   const [ref, visible] = useReveal({ threshold: 0.12 });
   const layout = options.layout || 'single';
   const cells  = Array.isArray(options.cells) ? options.cells : [];
+  const videos = options.videos || {};
 
   // ─── image_overlay: full-bleed bg + text/CTA centered-left ────────────
   if (layout === 'image_overlay') {
@@ -181,7 +210,7 @@ const FlexibleLayout = ({ content = {}, media = {}, mediaActions = {}, links = {
         <div className={`grid ${gridClass} gap-10 lg:gap-16`}>
           {cells.map((c) => (
             <div key={c.slot} data-testid={`flex-cell-${c.slot}`}>
-              <Cell cell={c} content={content} media={media} mediaActions={mediaActions} links={links} />
+              <Cell cell={c} content={content} media={media} mediaActions={mediaActions} links={links} videos={videos} />
             </div>
           ))}
         </div>
