@@ -15,45 +15,53 @@
   grid-template-columns: 1fr;
 }
 
-/* ITER157.D · Visual Editor split layout
-   • selected band + preview open  → 3-column: stage | editor | preview
-   • no selection + preview open   → 2-column: stage | preview
-   • no selection + preview closed → 1-column: stage
-   At tight widths (<1480px) the preview moves UNDER the stage so the
-   editor never gets squeezed off-screen.                            */
+/* ITER157.D · Visual Editor — WordPress/Webflow-style layout
+   • Default split (no preview):      stage stretches alone
+   • Preview open + no editor:        stage 1fr | preview ~720px
+   • Preview open + editor selected:  same 2-col, but editor is a
+                                      DRAWER overlay sliding from the
+                                      right edge of the stage, never
+                                      stealing space from preview.    */
 .ss-root[data-preview-open="true"] {
-  grid-template-columns: minmax(360px, 0.7fr) 420px minmax(420px, 1fr);
+  grid-template-columns: minmax(480px, 1fr) minmax(560px, 720px);
 }
 .ss-root[data-preview-open="true"][data-no-edit="true"] {
-  grid-template-columns: minmax(360px, 0.85fr) minmax(420px, 1.1fr);
+  grid-template-columns: minmax(480px, 1fr) minmax(560px, 720px);
 }
-/* Tight → 2-row stack so the preview iframe is still reachable. */
-@media (max-width: 1480px) {
-  .ss-root[data-preview-open="true"] {
-    grid-template-columns: 1fr 420px;
-    grid-template-rows: auto auto;
-  }
-  .ss-root[data-preview-open="true"] .ss-stage  { grid-column: 1; grid-row: 1; }
-  .ss-root[data-preview-open="true"] .ss-editor { grid-column: 2; grid-row: 1; }
-  .ss-root[data-preview-open="true"] .ss-preview {
-    grid-column: 1 / -1; grid-row: 2;
-    position: relative; height: 720px;
-  }
+
+/* When the preview is open, the editor stops being a grid column and
+   becomes an absolute drawer over the stage. */
+.ss-root[data-preview-open="true"]:not([data-no-edit="true"]) .ss-editor {
+  position: fixed;
+  top: 56px; right: calc(560px + 0px); /* slide from right edge of preview */
+  height: calc(100vh - 56px);
+  width: min(440px, 38vw);
+  z-index: 80;
+  box-shadow: -16px 0 32px rgba(0,0,0,0.32);
+  border-left: 1px solid var(--bp-border);
+  background: var(--bp-surface-1);
+  animation: ss-editor-slide 0.24s cubic-bezier(0.22,0.61,0.36,1);
+}
+@keyframes ss-editor-slide {
+  from { transform: translateX(40px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* Tight viewport: collapse below the stage but keep iframe sticky in view. */
+@media (max-width: 1180px) {
+  .ss-root[data-preview-open="true"],
   .ss-root[data-preview-open="true"][data-no-edit="true"] {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
+    grid-template-rows: minmax(400px, 60vh) auto;
   }
-  .ss-root[data-preview-open="true"][data-no-edit="true"] .ss-preview {
-    height: 820px;
+  .ss-root[data-preview-open="true"] .ss-stage { grid-column: 1; grid-row: 2; }
+  .ss-root[data-preview-open="true"] .ss-preview {
+    grid-column: 1; grid-row: 1;
+    position: sticky; top: 56px; height: 60vh;
   }
-}
-@media (max-width: 900px) {
-  .ss-root[data-preview-open="true"] {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
+  .ss-root[data-preview-open="true"]:not([data-no-edit="true"]) .ss-editor {
+    position: fixed; top: 56px; right: 0; width: min(420px, 90vw);
   }
-  .ss-root[data-preview-open="true"] .ss-editor  { grid-column: 1; grid-row: 2; position: relative; max-height: none; height: auto; }
-  .ss-root[data-preview-open="true"] .ss-preview { grid-column: 1; grid-row: 3; height: 600px; }
 }
 
 /* ── LIVE PREVIEW PANE (right column, ITER157.D) ─────────────── */
