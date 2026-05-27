@@ -67,9 +67,13 @@ const DEFAULT_TEXT_FIELDS = [
 // Sections that include cinematic editorial extras (quote/attribution etc).
 const FIELD_SCHEMAS = {
   cinematic_quote: [
-    { key: 'eyebrow',     label: 'EYEBROW',     textarea: false },
-    { key: 'quote',       label: 'QUOTE',       textarea: true, rows: 3, display: true },
-    { key: 'attribution', label: 'ATTRIBUTION', textarea: false },
+    { key: 'eyebrow', label: 'EYEBROW',           textarea: false },
+    { key: 'title',   label: 'TITOLO',            textarea: true, rows: 2, display: true },
+    { key: 'sub',     label: 'SOTTOTITOLO',       textarea: true, rows: 2 },
+    { key: 'private', label: 'CTA · CLIENTI PRIVATI', textarea: false },
+    { key: 'pro',     label: 'CTA · PROFESSIONISTI',  textarea: false },
+    { key: 'quote',   label: 'QUOTE (alternativa)', textarea: true, rows: 2 },
+    { key: 'attribution', label: 'ATTRIBUTION (alternativa)', textarea: false },
   ],
   atmosphere_statement: [
     { key: 'eyebrow', label: 'EYEBROW', textarea: false },
@@ -77,8 +81,12 @@ const FIELD_SCHEMAS = {
     { key: 'body',    label: 'BODY',    textarea: true, rows: 3 },
   ],
   hero_editorial: [
-    ...DEFAULT_TEXT_FIELDS,
-    { key: 'cover_url', label: 'COVER · IMAGE', kind: 'image' },
+    { key: 'eyebrow',       label: 'EYEBROW',           textarea: false },
+    { key: 'title',         label: 'TITOLO',             textarea: true,  display: true, rows: 2 },
+    { key: 'sub',           label: 'SOTTOTITOLO',        textarea: true,  rows: 2 },
+    { key: 'cta_primary',   label: 'CTA · PRIMARIO',     textarea: false },
+    { key: 'cta_secondary', label: 'CTA · SECONDARIO',   textarea: false },
+    { key: 'cover_url',     label: 'COPERTINA · IMMAGINE', kind: 'image' },
   ],
   store_hero: [
     ...DEFAULT_TEXT_FIELDS,
@@ -132,9 +140,9 @@ const FIELD_SCHEMAS = {
   ],
   professionals_cta: [
     { key: 'eyebrow', label: 'EYEBROW',         textarea: false },
-    { key: 'title',   label: 'TITLE',           textarea: true, rows: 2, display: true },
-    { key: 'sub',     label: 'SUBTITLE',        textarea: true, rows: 2 },
-    { key: 'cta',     label: 'CTA LABEL',       textarea: false },
+    { key: 'title',   label: 'TITOLO',           textarea: true, rows: 2, display: true },
+    { key: 'sub',     label: 'SOTTOTITOLO',      textarea: true, rows: 2 },
+    { key: 'cta',     label: 'CTA · LABEL',     textarea: false },
   ],
   materials_carousel: [
     { key: 'eyebrow', label: 'EYEBROW', textarea: false },
