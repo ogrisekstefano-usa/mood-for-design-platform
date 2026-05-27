@@ -143,22 +143,22 @@ const ClientWelcomePanel = () => {
         </div>
       )}
 
-      {/* CTA editoriali */}
+      {/* CTA editoriali — sempre 3, anche se journey_id è null (fallback elegante) */}
       <div className="cw-cta-row" data-testid="client-welcome-cta-row">
-        {journeyId && (
-          <Link
-            to={`/client/journey/${journeyId}`}
-            className="cw-cta cw-cta--primary"
-            data-testid="client-welcome-cta-continue"
-          >
-            <span>
-              {nextStep?.title
-                ? `Continua · ${nextStep.title}`
-                : 'Continua il brief'}
-            </span>
-            <ArrowRight size={16} strokeWidth={1.6} />
-          </Link>
-        )}
+        <Link
+          to={journeyId ? `/client/journey/${journeyId}` : '/client'}
+          className="cw-cta cw-cta--primary"
+          data-testid="client-welcome-cta-continue"
+        >
+          <span>
+            {journeyId
+              ? (nextStep?.title
+                  ? `Continua · ${nextStep.title}`
+                  : 'Continua il tuo brief')
+              : 'Esplora il tuo percorso'}
+          </span>
+          <ArrowRight size={16} strokeWidth={1.6} />
+        </Link>
         <Link
           to="/client/messages"
           className="cw-cta cw-cta--secondary"

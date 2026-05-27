@@ -119,6 +119,10 @@
   - Client Profile: Welcome panel visibile con "Benvenuto, Marco." +
     referente card + 3 CTA + password discreta ✓
   - Recall modal: 6 giorni × 4 fasce × 4 canali + nota libera ✓
+  - **Testing Agent**: backend 10/11 pass (1 skipped — designer seed
+    mancante, fuori scope); frontend tutti i flussi richiesti
+    verificati. Post-fix CTA continue sempre visibile (anche zero-journey
+    state). Pytest regression suite a `/app/backend/tests/test_iter161_client_access.py`.
 
   **Nota preview env**
   - In preview, il `redirect_to` del magic link viene normalizzato
