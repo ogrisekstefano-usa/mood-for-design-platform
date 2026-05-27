@@ -204,6 +204,41 @@
   border-radius: var(--pa-radius-lg);
   border: 1px solid var(--pa-border);
   overflow: hidden;
+  scroll-margin-top: 40px;
+  position: relative;
+  transition:
+    border-color 0.32s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.32s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.pa-section-group[data-focused="true"] {
+  border-color: var(--pa-cyan);
+  box-shadow:
+    0 0 0 1px var(--pa-cyan) inset,
+    0 0 0 1px rgba(0,201,179,0.45),
+    0 18px 48px rgba(0,201,179,0.18),
+    0 0 36px rgba(0,201,179,0.12);
+  transform: translateY(-2px);
+}
+.pa-section-group[data-focused="true"]::before {
+  content: '';
+  position: absolute;
+  left: -1px; top: 14px; bottom: 14px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--pa-cyan);
+  box-shadow: 0 0 14px rgba(0,201,179,0.7);
+  animation: pa-focus-pulse 1.8s ease-in-out infinite;
+}
+@keyframes pa-focus-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+.pa-section-group[data-focused="true"] .pa-section-group__head {
+  background: linear-gradient(180deg, rgba(0,201,179,0.10), var(--pa-surface));
+}
+.pa-section-group[data-focused="true"] .pa-section-group__eyebrow {
+  color: var(--pa-cyan-2);
 }
 .pa-section-group__head {
   display: flex; align-items: center; gap: 12px;

@@ -2,6 +2,66 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER157.E.1 · Click-to-Edit Bridge P0 fix** · ✅ DELIVERED · 27 Mag 2026
+
+  **🎯 Goal**: il click su una fascia della preview deve aprire e
+  evidenziare la card corretta nell'editor a sinistra.
+
+  **Root cause**
+  1. `SECTION_TAG_RULES` in `EditorialBridge.jsx` mappava solo 9 tipi
+     base e ignorava `atmosphere_statement`, `magazine_highlights`,
+     `professionals_cta` → quei blocchi nel sito non emettevano
+     evento click verso il parent.
+  2. `window.scrollTo({ behavior: 'smooth' })` invocato dal
+     handler postMessage veniva **silenziosamente cancellato dal
+     browser** (scrollY restava 0–60px su delta di 14000px).
+  3. L'evidenza visiva nella card era un `boxShadow: 0 0 0 1px`
+     inset — troppo sottile per essere notato dall'utente.
+
+  **Fix applicato**
+  - `SECTION_TAG_RULES` ora supporta `section_type` come **array di
+    alias**. Ogni nodo DOM ottiene `data-mfd-editable` (primary) +
+    `data-mfd-section-types` (lista whitespace-separata). Bridge emette
+    sia il primary che la lista completa al parent.
+  - Editor riceve `(section_type, alternates[])` e cerca la **prima
+    sezione presente in DB** fra gli alias, evitando "no match" su
+    pagine che usano alias diversi.
+  - Scroll: passato da `window.scrollTo({behavior:smooth})` a
+    **`scroller.scrollTop = targetY` instant** (con setTimeout 40ms per
+    flush React). Risultato: scroll da 0 a 14349px in un frame, no
+    cancellazione browser.
+  - Evidenza visiva forte: bordo 1px cyan + glow `0 18px 48px
+    rgba(0,201,179,0.18)` + barra animata 3px a sinistra con
+    `pa-focus-pulse` 1.8s, gradient cyan sull'header della sezione
+    focused, `translateY(-2px)` lift cinematico.
+  - `focusedSectionType` resettato al cambio pagina.
+
+  **Verifica E2E (1920×1000, admin@moodfordesign.com)**
+  - 7 nodi taggati nell'iframe (navigation, hero_editorial,
+    trust_marquee, featured_design_journeys, materials_carousel,
+    cinematic_quote, editorial_footer) con array di alias
+  - Click `trust_marquee` nell'iframe → scrollY 0 → editor scroll
+    completato, sezione visibile in viewport, highlight cyan attivo
+  - Click `cinematic_quote` (alias multipli) → editor apre la sezione
+    `cinematic_quote` con EYEBROW · QUOTE · ATTRIBUTION editabili,
+    bordo + glow + barra animata visibili
+  - Cambio pagina home → projects → focus si resetta
+
+  **File modificati**
+  - ↻ `frontend/src/site/EditorialBridge.jsx` (rules array + types in postMessage)
+  - ↻ `frontend/src/pages/storefront/LivePreviewPane.jsx` (forward alternates)
+  - ↻ `frontend/src/pages/storefront/PagesAdminPage.jsx` (matching + instant scroll)
+  - ↻ `frontend/src/pages/storefront/pagesAdmin.css` (focus state visuals)
+
+  **Pending da utente (sprint successivo)**
+  - P1 (next): collapse/expand sezioni + drag&drop riordino
+  - P1 (next): "+ Aggiungi blocco" con tipi Titolo · Testo · Immagine · YouTube
+  - P2: formattazione testo minimale (bold/italic/link)
+  - P2: crop immagine + filtri base (brightness/contrast/grayscale)
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER157.E · Pages Admin · Command Center field-as-card UX** · ✅ DELIVERED · 27 Mag 2026
 
   **🎯 Goal**: trasformare il visual editor della Storefront CMS in

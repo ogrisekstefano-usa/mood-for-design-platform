@@ -49,7 +49,8 @@ const LivePreviewPane = ({ pageKey = 'home', refreshKey = 0, onSectionClick, sel
       if (data.type === 'mfd:bridge-ready') {
         setBridgeReady(true);
       } else if (data.type === 'mfd:section-click' && data.section_type) {
-        onSectionClick?.(data.section_type);
+        // Pass primary + alternates so the editor can pick the right CMS row.
+        onSectionClick?.(data.section_type, data.section_types || [data.section_type]);
       }
     };
     window.addEventListener('message', onMsg);

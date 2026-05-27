@@ -142,6 +142,11 @@ const PagesAdminPage = () => {
   const [drafts, setDrafts] = useState({}); // key: `${sid}__${loc}__${field}` → value
   const [savingKey, setSavingKey] = useState(null);
   const [previewKey, setPreviewKey] = useState(0);
+  // Focused section: highlighted in the editor column when user clicks
+  // on a corresponding block inside the live preview iframe.
+  const [focusedSectionType, setFocusedSectionType] = useState(null);
+  const sectionsRef = React.useRef(sections);
+  React.useEffect(() => { sectionsRef.current = sections; }, [sections]);
 
   const draftKey = (sid, loc, field) => `${sid}__${loc}__${field}`;
 
@@ -157,6 +162,7 @@ const PagesAdminPage = () => {
     (async () => {
       setLoading(true);
       setDrafts({});
+      setFocusedSectionType(null);
       try {
         const r = await api.get(`/api/storefront/admin/pages/${activePage}`);
         if (!alive) return;
@@ -171,13 +177,32 @@ const PagesAdminPage = () => {
     return () => { alive = false; };
   }, [activePage]);
 
-  // Live preview: scroll to the section that was last clicked in editor
-  const [focusedSectionType, setFocusedSectionType] = useState(null);
-  const onPreviewSectionClick = useCallback((section_type) => {
-    setFocusedSectionType(section_type);
-    // Smooth-scroll the editor column to the section header
-    const el = document.getElementById(`pa-section-${section_type}`);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const onPreviewSectionClick = useCallback((section_type, alternates) => {
+    // The bridge may report multiple candidate section types for a single DOM
+    // block (e.g. "navigation" alias of "nav_top"). Find the first one that
+    // actually exists in this page's sections; fall back to the primary.
+    const candidates = (alternates && alternates.length) ? alternates : [section_type];
+    const list = sectionsRef.current || [];
+    const matched = candidates.find((t) => list.some((s) => s.section_type === t)) || section_type;
+    setFocusedSectionType(matched);
+    // Scroll the editor column to the section header. We use a tiny setTimeout
+    // so React has time to flush state→DOM, then read the live offset and
+    // command the scroll directly. Some browsers ignore scroll commands
+    // issued synchronously from a postMessage handler — `setTimeout(0)`
+    // breaks out of that frame.
+    setTimeout(() => {
+      const el = document.getElementById(`pa-section-${matched}`);
+      if (!el) return;
+      const scroller = document.scrollingElement || document.documentElement;
+      const rect = el.getBoundingClientRect();
+      const targetY = Math.max(0, rect.top + (scroller.scrollTop || window.scrollY || 0) - 96);
+      // Instant jump first so we never miss the scroll, then smoothly settle.
+      try {
+        scroller.scrollTop = targetY;
+      } catch (_) {
+        window.scrollTo(0, targetY);
+      }
+    }, 40);
   }, []);
 
   const getDraftValue = (section, field) => {
@@ -422,8 +447,7 @@ const SectionGroup = ({
       id={`pa-section-${section.section_type}`}
       className="pa-section-group"
       data-testid={`pa-section-${section.section_type}`}
-      data-focused={focused}
-      style={focused ? { boxShadow: '0 0 0 1px var(--pa-cyan) inset' } : undefined}>
+      data-focused={focused ? 'true' : 'false'}>
       <header className="pa-section-group__head">
         <span className="pa-section-group__eyebrow">{eyebrow}</span>
         <span className="pa-section-group__meta">

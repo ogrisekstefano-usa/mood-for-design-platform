@@ -32,17 +32,20 @@ const isEmbedded = () => {
 };
 
 // Mapping: how to identify a section_type from a DOM node.
-// Each rule: { selector → section_type }
+// Each rule: { selector → section_type | string[] }
+// When `section_type` is an array, ALL types are tagged on the same node.
+// Order matters: more-specific selectors should be first; a node already
+// tagged is not re-tagged.
 const SECTION_TAG_RULES = [
-  { selector: '.mfd-header',          section_type: 'navigation' },
-  { selector: '[data-testid="hero-section"]',     section_type: 'hero_editorial' },
-  { selector: '.mfd-trust',                       section_type: 'trust_marquee' },
-  { selector: '[data-testid="how-it-works"]',     section_type: 'how_it_works' },
-  { selector: '[data-testid="magazine-section"]', section_type: 'editorial_grid' },
-  { selector: '[data-testid="design-stories"]',   section_type: 'featured_design_journeys' },
-  { selector: '.mfd-materials',                   section_type: 'materials_carousel' },
-  { selector: '.mfd-finalcta',                    section_type: 'cinematic_quote' },
-  { selector: '.mfd-footer',                      section_type: 'editorial_footer' },
+  { selector: '.mfd-header',                       section_type: ['navigation', 'nav_top', 'main_links'] },
+  { selector: '[data-testid="hero-section"]',      section_type: ['hero_editorial', 'store_hero', 'hero'] },
+  { selector: '.mfd-trust',                        section_type: ['trust_marquee', 'brand_logos'] },
+  { selector: '[data-testid="how-it-works"]',      section_type: ['how_it_works', 'value_props', 'services'] },
+  { selector: '[data-testid="magazine-section"]',  section_type: ['magazine_highlights', 'editorial_grid', 'magazine_grid', 'journal_intro'] },
+  { selector: '[data-testid="design-stories"]',    section_type: ['featured_design_journeys', 'projects_preview', 'projects'] },
+  { selector: '.mfd-materials',                    section_type: ['materials_carousel', 'materials'] },
+  { selector: '.mfd-finalcta',                     section_type: ['cinematic_quote', 'atmosphere_statement', 'professionals_cta', 'proposal_cta'] },
+  { selector: '.mfd-footer',                       section_type: ['editorial_footer', 'footer_narrative', 'footer_columns'] },
 ];
 
 const STYLE_ID = 'mfd-editorial-bridge-style';
@@ -102,8 +105,11 @@ const tagSections = () => {
   SECTION_TAG_RULES.forEach(({ selector, section_type }) => {
     document.querySelectorAll(selector).forEach((el) => {
       if (el.hasAttribute('data-mfd-editable')) return;
-      el.setAttribute('data-mfd-editable', section_type);
-      el.setAttribute('data-mfd-label', `Edit · ${section_type}`);
+      const types = Array.isArray(section_type) ? section_type : [section_type];
+      const primary = types[0];
+      el.setAttribute('data-mfd-editable', primary);
+      el.setAttribute('data-mfd-section-types', types.join(' '));
+      el.setAttribute('data-mfd-label', `Edit · ${primary}`);
     });
   });
 };
@@ -147,11 +153,14 @@ const EditorialBridge = () => {
         e.stopPropagation();
       }
       const section_type = target.getAttribute('data-mfd-editable');
+      const types = (target.getAttribute('data-mfd-section-types') || section_type || '')
+        .split(/\s+/).filter(Boolean);
       try {
         window.parent?.postMessage({
           source: 'mfd-editorial',
           type:   'mfd:section-click',
           section_type,
+          section_types: types,
         }, '*');
       } catch (_) { /* noop */ }
       // Visual feedback on the public side.
@@ -165,7 +174,8 @@ const EditorialBridge = () => {
       const data = ev?.data || {};
       if (data.source !== 'mfd-editor') return;
       if (data.type === 'mfd:scroll-to' && data.section_type) {
-        const node = document.querySelector(`[data-mfd-editable="${data.section_type}"]`);
+        const sel = `[data-mfd-editable="${data.section_type}"], [data-mfd-section-types~="${data.section_type}"]`;
+        const node = document.querySelector(sel);
         if (node) {
           node.scrollIntoView({ behavior: 'smooth', block: 'start' });
           document.querySelectorAll('.mfd-editable-active').forEach((n) => n.classList.remove('mfd-editable-active'));
