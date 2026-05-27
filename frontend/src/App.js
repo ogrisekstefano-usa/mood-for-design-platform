@@ -56,6 +56,7 @@ const CulturalEditionsListPage = lazy(() => import('./pages/cultural/CulturalEdi
 const CulturalEditionReviewPage = lazy(() => import('./pages/cultural/CulturalEditionReviewPage'));
 const InternationalPresencePage = lazy(() => import('./pages/settings/InternationalPresencePage'));
 const StorefrontStudioPage = lazy(() => import('./pages/storefront/StorefrontStudioPage'));
+const PagesAdminPage = lazy(() => import('./pages/storefront/PagesAdminPage'));
 const EditorialCalendarPage = lazy(() => import('./pages/editorial/EditorialCalendarPage'));
 const ProjectsStudioPage = lazy(() => import('./pages/projects/ProjectsStudioPage'));
 const MoodboardsPage = lazy(() => import('./pages/moodboards/MoodboardsPage'));
@@ -540,8 +541,10 @@ function App() {
 
                   {/* Experience Studio™ — single canonical route.
                       `/blueprint/storefront` and `/settings/storefront`
-                      have been DELETED (P0 stabilization: route collapse). */}
-                  <Route path="/blueprint/experience" element={<StudioAdminRoute><StorefrontStudioPage /></StudioAdminRoute>} />
+                      have been DELETED (P0 stabilization: route collapse).
+                      ITER157.E: new field-as-card UX moved OUTSIDE the
+                      DashboardLayout (full-screen Command Center). */}
+                  <Route path="/blueprint/experience/legacy" element={<StudioAdminRoute><StorefrontStudioPage /></StudioAdminRoute>} />
 
                   {/* Forms & Journeys™ — Luxury Lead Architecture (Fase 0). */}
                   <Route path="/blueprint/forms-journeys" element={<StudioAdminRoute><FormBuilderPage /></StudioAdminRoute>} />
@@ -624,6 +627,11 @@ function App() {
                     default_locale / RTL / ai_translation). The newer
                     LanguageCommandCenter lives at /admin/language-governance. */}
                 <Route path="/admin/languages" element={<LanguagesPage />} />
+
+                {/* ITER157.E · Pages Admin (Command Center) — full-screen,
+                    OUTSIDE DashboardLayout, like a true CMS console. */}
+                <Route path="/blueprint/experience" element={<StudioAdminRoute><PagesAdminPage /></StudioAdminRoute>} />
+                <Route path="/admin/pages" element={<StudioAdminRoute><PagesAdminPage /></StudioAdminRoute>} />
 
                 {/* PUBLIC tenant routes — runtime composition via Blueprint engine */}
                 <Route path="/moodboard/share/:shareToken" element={<PublicMoodboardWrapper />} />

@@ -15,6 +15,7 @@
  */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Monitor, Tablet, Smartphone, RefreshCw, ExternalLink } from 'lucide-react';
+import './storefrontStudio.css';
 
 const VIEWPORTS = {
   desktop: { w: '100%',  label: 'Desktop' },

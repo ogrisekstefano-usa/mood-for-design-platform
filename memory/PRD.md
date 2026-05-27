@@ -2,7 +2,97 @@
 
 
 ## 📌 Sprint Status (latest)
-- **ITER157.D · Visual Editor with Live Preview™** · ✅ DELIVERED · 26 Mag 2026
+- **ITER157.E · Pages Admin · Command Center field-as-card UX** · ✅ DELIVERED · 27 Mag 2026
+
+  **🎯 Goal**: trasformare il visual editor della Storefront CMS in
+  un'esperienza WordPress/Webflow-style, **comprensibile a utenza
+  non-tecnica** (su ispirazione esplicita screenshot utente).
+
+  **Paradigma "Field = Card"**
+  - Niente più drawer fluttuante sopra la preview. Ogni campo
+    editoriale (eyebrow, title, subtitle, body, CTA, cover image, …)
+    è una **card a doppia colonna**:
+    * sinistra → "In modifica · {LOCALE}" (textarea editabile)
+    * destra  → "Resa pubblica · {LOCALE}" (read-only, ciò che è live)
+  - Bottone **Salva per campo** (granulare, non più save bulk).
+  - Locale tab IT · EN-US · EN-UK · FR · DE · ES sempre visibili in
+    alto a destra, click cambia tutto il contenuto delle card.
+  - Live preview iframe sempre a destra (640px), Bridge attivo, click
+    su una fascia nel preview → scroll automatico alla card corrispondente.
+
+  **Bug critici risolti**
+  1. ❌ **Pannello editor sovrapposto alla preview** → eliminato il
+     drawer `position: fixed`, sostituito da **griglia a 4 colonne**
+     (`220 | 220 | 1fr | clamp(420,38vw,640)`). Mobile-safe sotto 1180px.
+  2. ❌ **Campi italiani vuoti in editor** → root cause: il seed scrive
+     con chiave `it` (corta) mentre l'editor leggeva `it-IT` (lunga
+     da `markets.primary_locale`). Aggiunto `resolveLocaleKey()` con
+     catena di fallback `[localeTab] → [shortCode] → [_default]` sia
+     in lettura che in scrittura. Le scritture preservano la chiave
+     esistente (no data fragmentation).
+  3. ❌ **Layout dentro DashboardLayout** rubava spazio alla preview →
+     route spostata **fuori** dal wrapper globale, esperienza
+     full-screen come gli editor Webflow.
+
+  **Layout 4-colonne (1920px)**
+  - Colonna 1 (220px) — Rail "BLUEPRINT / Command Center" + nav
+    (Pagine, Editorial Blocks, Sections, Media Library, Footer,
+    SEO & Indexing, Publishing) + foot (View site, Clear cache, Logout)
+  - Colonna 2 (220px) — Page list (Home · Dedicato a · Caratteristiche
+    · Versioni e Prezzi · Formazione · Supporto · Accedi · Footer ·
+    Navigation · Professionals · Projects · Start Project · Ui),
+    barra cyan a sinistra sulla pagina attiva
+  - Colonna 3 (1fr) — Pages title + breadcrumb (`home · published ·
+    18 sezioni`) + locale tabs + Pubblica Pagina + section groups
+    con field cards
+  - Colonna 4 (640px) — `LivePreviewPane` (iframe + viewport switcher
+    desktop/tablet/mobile + reload + open external + bridge status)
+
+  **Sezioni complesse (multi-row)**
+  Per `nav_top`, `footer_columns`, `brand_logos`, `materials`,
+  `magazine_grid`, `stats_band`, `newsletter`, `dual_cta`, ecc.
+  embed dell'editor specializzato esistente (`bandEditors.jsx`)
+  dentro un container "Advanced" con autosave.
+
+  **Cleanup DB**
+  - Identificata e cancellata sezione `hero_editorial` duplicata su
+    `cms_pages.home` (5735efae) che aveva solo `it-IT` con contenuto
+    di test. La canonica (d02e01c9, con `it / en-US / _default`) è
+    stata resa visibile e ripubblicata.
+
+  **Routing**
+  - `/admin/pages` · canonical (nuovo)
+  - `/blueprint/experience` · redirect al nuovo (deep-link compat)
+  - `/blueprint/experience/legacy` · vecchia StorefrontStudioPage
+    mantenuta come fallback temporaneo
+
+  **Verifica live (admin@moodfordesign.com · 1920×1000)**
+  - Layout 4-colonne renderizzato correttamente
+  - iframe preview 616×927px (no più 300×150 schiacciato)
+  - IT eyebrow `MOOD for DESIGN™` · title `Il tuo spazio. Il tuo viaggio.`
+  - EN-US eyebrow `MOOD for DESIGN™` · title `Your space. Your journey.`
+  - FR (fallback `_default`) eyebrow `MOOD for DESIGN™` · title vuoto
+    (graceful empty, niente sparizione del campo)
+  - Save di un campo aggiorna `Resa pubblica` accanto e bumpa il
+    `previewKey` dell'iframe → preview ricarica
+  - Page switcher (Home → Projects) funziona, breadcrumb si aggiorna
+
+  **File creati / modificati**
+  - ⨁ `frontend/src/pages/storefront/PagesAdminPage.jsx` (480 righe)
+  - ⨁ `frontend/src/pages/storefront/pagesAdmin.css` (320 righe)
+  - ↻ `frontend/src/pages/storefront/LivePreviewPane.jsx`
+    (auto-import CSS storefrontStudio)
+  - ↻ `frontend/src/App.js` (route fuori da DashboardLayout)
+  - ✅ DB cleanup: hero_editorial duplicato eliminato, canonico
+    riattivato, revisione pubblicata
+
+  **Prossimo**: Sprint B.2 · Editorial Publish Modal™ (CTA "Pubblica
+  nel portfolio editoriale" dentro il detail di un Design Journey™
+  operativo) — sbloccato dalla risoluzione di questo P0.
+
+---
+
+## 📌 Sprint Status (previous)
 
   **🎯 Goal**: editor visuale tipo WordPress/Webflow — click sulla preview
   apre l'editor sulla sezione esatta. Esperienza usabile da non-tecnici.
