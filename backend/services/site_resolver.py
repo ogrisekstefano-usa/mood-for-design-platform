@@ -22,8 +22,8 @@ from database import AsyncSessionLocal
 from cache import content_cache
 from tenant_resolver import get_corporate_tenant
 
-DEFAULT_LOCALE = 'en-us'
-LOCALE_FALLBACK = ['en-us', 'it']
+DEFAULT_LOCALE = 'it'
+LOCALE_FALLBACK = ['it', 'en-us']
 
 
 def _split_block_key(full_key: str) -> tuple[str, str]:

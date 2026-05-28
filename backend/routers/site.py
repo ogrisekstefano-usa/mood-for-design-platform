@@ -9,6 +9,8 @@ from services import site_resolver
 
 router = APIRouter(prefix="/site", tags=["site"])
 
+_DEFAULT = site_resolver.DEFAULT_LOCALE
+
 
 @router.get("/sitemap.xml")
 async def get_sitemap():
@@ -18,7 +20,7 @@ async def get_sitemap():
 
 
 @router.get("/pages/{slug}")
-async def get_site_page(slug: str, locale: str = Query(default="en-us")):
+async def get_site_page(slug: str, locale: str = Query(default=_DEFAULT)):
     page = await site_resolver.resolve_page(slug, locale)
     if not page:
         raise HTTPException(status_code=404, detail=f"Page '{slug}' not found")
@@ -26,12 +28,12 @@ async def get_site_page(slug: str, locale: str = Query(default="en-us")):
 
 
 @router.get("/navigation")
-async def get_site_navigation(locale: str = Query(default="en-us")):
+async def get_site_navigation(locale: str = Query(default=_DEFAULT)):
     return await site_resolver.resolve_navigation(locale)
 
 
 @router.get("/footer")
-async def get_site_footer(locale: str = Query(default="en-us")):
+async def get_site_footer(locale: str = Query(default=_DEFAULT)):
     return await site_resolver.resolve_footer(locale)
 
 
@@ -42,13 +44,12 @@ async def get_site_locales():
 
 @router.get("/block")
 async def get_block(key: str = Query(..., description="Full block key, e.g. site.home.hero.title"),
-                    locale: str = Query(default="en-us")):
+                    locale: str = Query(default=_DEFAULT)):
     """Resolve a single editorial block — useful for ad-hoc rendering (login page etc)."""
     return await site_resolver.resolve_block(key, locale)
 
 
-
 @router.get("/legal-strip")
-async def get_legal_strip(locale: str = Query(default="it")):
+async def get_legal_strip(locale: str = Query(default=_DEFAULT)):
     """Public read for the legal strip (3 editable lines)."""
     return await site_resolver.resolve_legal_strip(locale)

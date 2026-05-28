@@ -23,11 +23,11 @@ const LOCALE_FULL_NAMES = {
 };
 
 const LocaleContext = createContext({
-  locale: 'en-us',
+  locale: 'it',
   setLocale: () => {},
   locales: [],
-  localeLabel: 'EN',
-  localeFullName: 'English (US)',
+  localeLabel: 'IT',
+  localeFullName: 'Italiano',
 });
 
 export const LocaleProvider = ({ children }) => {
@@ -40,17 +40,12 @@ export const LocaleProvider = ({ children }) => {
         if (slug === path) return code;
       }
     }
-    // 2) Fallback to stored, then browser language hint, then default 'it'
+    // 2) Honor an explicit prior user choice
     if (stored) return stored;
-    if (typeof navigator !== 'undefined') {
-      const lang = (navigator.language || '').toLowerCase();
-      if (lang.startsWith('en-gb')) return 'en-uk';
-      if (lang.startsWith('en'))    return 'en-us';
-      if (lang.startsWith('fr'))    return 'fr';
-      if (lang.startsWith('de'))    return 'de';
-      if (lang.startsWith('es'))    return 'es';
-      if (lang.startsWith('it'))    return 'it';
-    }
+    // 3) MOOD is an Italian-first editorial platform. The default is `it`.
+    //    Browser-language hints can later be re-enabled when all EN/FR/DE/ES
+    //    blocks are fully translated; until then, the navigator hint would
+    //    surface stale seed content to visitors with an EN browser.
     return 'it';
   });
   const [locales, setLocales] = useState([
