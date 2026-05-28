@@ -680,7 +680,19 @@ export const DemoGovernancePage = () => {
 };
 
 
-/* ── Default index → redirect to dashboard. Keeps router clean. ──── */
+/* ── Default index → editorial grid of governance entries.
+ *    All governance surfaces (Lingue inclusa) sono raggiungibili
+ *    direttamente da /admin, oltre che dalla sidebar.
+ *    Nessuna navigazione "lasciata fuori".
+ * ───────────────────────────────────────────────────────────── */
+const AdminIndexEntry = ({ to, eyebrow, title, sub, testid }) => (
+  <Link to={to} className="bp-card bp-card--clickable" data-testid={testid}>
+    <span className="bp-card__eyebrow">{eyebrow}</span>
+    <h3 className="bp-card__title">{title}</h3>
+    {sub && <p className="bp-card__sub">{sub}</p>}
+  </Link>
+);
+
 export const AdminIndexPage = () => (
   <div data-testid="bp-page-index">
     <PageHeader
@@ -688,10 +700,105 @@ export const AdminIndexPage = () => (
       tk="admin.index.title"
       sk="admin.index.sub"
     />
-    <div className="bp-card">
-      <Link to="/admin/dashboard" className="bp-btn">
-        <Label k="admin.index.cta" />
-      </Link>
+    <div className="bp-index-grid" data-testid="bp-admin-index-grid">
+      <AdminIndexEntry
+        to="/admin/dashboard"
+        eyebrow="01"
+        title="Governance"
+        sub="Live counters & coverage matrix"
+        testid="bp-admin-link-dashboard"
+      />
+      <AdminIndexEntry
+        to="/admin/tenants"
+        eyebrow="02"
+        title="Studi"
+        sub="Tenant orchestration"
+        testid="bp-admin-link-tenants"
+      />
+      <AdminIndexEntry
+        to="/admin/users"
+        eyebrow="03"
+        title="Utenti"
+        sub="Ruoli e identità"
+        testid="bp-admin-link-users"
+      />
+      <AdminIndexEntry
+        to="/admin/advisors"
+        eyebrow="04"
+        title="Advisor Network™"
+        sub="Esperti, ambito e visibilità"
+        testid="bp-admin-link-advisors"
+      />
+      <AdminIndexEntry
+        to="/admin/presets"
+        eyebrow="05"
+        title="Preset Atelier"
+        sub="Registry congelato"
+        testid="bp-admin-link-presets"
+      />
+      <AdminIndexEntry
+        to="/admin/editorial-runtime"
+        eyebrow="06"
+        title="Editorial Runtime"
+        sub="Narrative Orchestration™"
+        testid="bp-admin-link-editorial"
+      />
+      <AdminIndexEntry
+        to="/admin/tenant-configuration"
+        eyebrow="07"
+        title="Tenant Configuration"
+        sub="Runtime governance"
+        testid="bp-admin-link-tenant-config"
+      />
+      <AdminIndexEntry
+        to="/admin/runtime-inspector"
+        eyebrow="08"
+        title="Runtime Inspector"
+        sub="Context, sessione, debugging"
+        testid="bp-admin-link-runtime-inspector"
+      />
+      <AdminIndexEntry
+        to="/admin/modules"
+        eyebrow="09"
+        title="Platform Capabilities™"
+        sub="Moduli e feature flags"
+        testid="bp-admin-link-modules"
+      />
+      <AdminIndexEntry
+        to="/admin/languages"
+        eyebrow="10"
+        title="Lingue"
+        sub="Registry pubblico + Blueprint operational"
+        testid="bp-admin-link-languages"
+      />
+      <AdminIndexEntry
+        to="/admin/email-governance"
+        eyebrow="11"
+        title="Email Governance"
+        sub="Provider & event feed"
+        testid="bp-admin-link-email"
+      />
+      <AdminIndexEntry
+        to="/admin/forms-journeys"
+        eyebrow="12"
+        title="Forms & Journeys"
+        sub="Lead architecture editoriale"
+        testid="bp-admin-link-forms"
+      />
+      <AdminIndexEntry
+        to="/admin/audit"
+        eyebrow="13"
+        title="Audit log"
+        sub="Trail completo delle azioni admin"
+        testid="bp-admin-link-audit"
+      />
+      <AdminIndexEntry
+        to="/admin/demo-governance"
+        eyebrow="14"
+        title="Demo Governance"
+        sub="Restore Golden Snapshot™"
+        testid="bp-admin-link-demo"
+      />
     </div>
   </div>
 );

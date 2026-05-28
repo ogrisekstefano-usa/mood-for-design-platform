@@ -346,3 +346,65 @@
   font-style: italic;
   font-family: 'Cormorant Garamond', serif;
 }
+
+
+/* ── /admin index — editorial grid of governance entries ─────────── */
+.bp-index-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 28px;
+}
+.bp-card--clickable {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 320ms ease, transform 360ms cubic-bezier(.2,.7,.2,1), background 320ms ease;
+  cursor: pointer;
+}
+.bp-card--clickable::after {
+  content: '→';
+  position: absolute;
+  top: 18px; right: 22px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-style: italic;
+  color: var(--bp-cc-accent);
+  opacity: 0;
+  transition: opacity 320ms ease, transform 320ms ease;
+}
+.bp-card--clickable:hover {
+  border-color: var(--bp-cc-border-hi, rgba(124, 228, 245, 0.4));
+  transform: translateY(-2px);
+}
+.bp-card--clickable:hover::after {
+  opacity: 1;
+  transform: translateX(2px);
+}
+.bp-card__eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--bp-cc-ink-mute);
+  text-transform: uppercase;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+}
+.bp-card__title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-style: italic;
+  color: var(--bp-cc-ink);
+  margin: 0;
+  line-height: 1.2;
+}
+.bp-card__sub {
+  font-size: 12.5px;
+  color: var(--bp-cc-ink-soft);
+  margin: 0;
+  max-width: 260px;
+  line-height: 1.45;
+}

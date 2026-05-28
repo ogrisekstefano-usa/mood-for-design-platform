@@ -13,7 +13,6 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import '../../styles/begin-journey.css';
 import '../site/home-iter150.css';
-import MoodSiteHeader from '../../site/components/MoodSiteHeader';
 import {
   EditorialBundleProvider,
   useEditorialBundle,
@@ -142,7 +141,6 @@ const BeginJourneyForm = () => {
   if (!ready) {
     return (
       <>
-        <MoodSiteHeader locale="it" />
         <div className="bj-shell bj-shell--embedded" data-testid="begin-journey-page" aria-busy="true">
           <div className="bj-overlay" data-editorial-skeleton="true" />
         </div>
@@ -152,7 +150,6 @@ const BeginJourneyForm = () => {
 
   return (
     <>
-      <MoodSiteHeader locale="it" />
       <div className="bj-shell bj-shell--embedded" data-testid="begin-journey-page">
       {submitting && (
         <div className="bj-overlay" data-testid="bj-overlay">

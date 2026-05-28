@@ -2,6 +2,49 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER166.1 · Unified Public Header + Language Registry Sync + Admin Index Grid** · ✅ DELIVERED · 28 Feb 2026
+
+  **🎯 Goal**: 3 richieste utente da screenshot:
+    1. Sistema header+footer coerente su `/begin-journey` (come `/magazine`,
+       `/projects/:slug`).
+    2. Language selector pubblico ⇄ allineato a `/admin/languages`.
+    3. Voce "Lingue" mai lasciata fuori da `/admin` (oltre alla sidebar).
+
+  **Cosa è stato fatto**
+  - `App.js`: `/begin-journey` ora vive sotto `<Route element={<SiteLayout/>}>`
+    insieme a `/magazine`, `/projects`, `/start-project`, `/professionals`.
+    Rimosso commento ITER154.R5 ("header HomePage-style"); la coerenza
+    visiva ora viene dal singolo SiteLayout cinematic.
+  - `BeginJourneyPage.jsx`: rimosso il `<MoodSiteHeader/>` interno (lo
+    fornisce SiteLayout). Footer (`SiteFooter` + `PlatformFooterBar`)
+    ora presente su tutti e 3 gli step del Design Journey™.
+  - `MoodSiteHeader.jsx`: il language selector ora legge da
+    `publicLanguages()` (Global Language Registry — sorgente unica per
+    `/admin/languages`). Listener `mfd:languages:change` + `storage`
+    aggiorna il dropdown live quando l'admin salva nuovi toggle
+    nel Blueprint Command Center.
+  - `BlueprintGovernancePages.jsx` · `AdminIndexPage`: trasformato da
+    redirect-card stub in **griglia editoriale di 14 governance entries**
+    (Governance · Studi · Utenti · Advisor Network™ · Preset Atelier ·
+    Editorial Runtime · Tenant Configuration · Runtime Inspector ·
+    Platform Capabilities™ · **Lingue** · Email Governance · Forms & Journeys
+    · Audit log · Demo Governance). Ogni entry: eyebrow numerico (JetBrains
+    Mono), titolo italico Cormorant, sub editoriale, hover lift + freccia
+    bronze, `data-testid="bp-admin-link-{slug}"`.
+  - `admin-shell.css`: `.bp-index-grid`, `.bp-card--clickable`,
+    `.bp-card__eyebrow/title/sub` (responsive minmax 260px, gap 14px,
+    transizioni 320-360ms).
+
+  **Testing**
+  - Smoke test `/begin-journey`: header count = 1 (no double-render),
+    footer count = 2 (SiteFooter + PlatformFooterBar), 2× "Entra nel tuo
+    spazio", 0× "Accedi/Login".
+  - Smoke test `/admin`: grid presente, Lingue card presente,
+    `data-testid="bp-admin-link-languages"` puntante a `/admin/languages`.
+  - Lint: tutti i file modificati clean (0 errori).
+
+---
+
 - **ITER166 · Cinematic Post-Onboarding Flow — P0 Bug Fix** · ✅ DELIVERED · 28 Feb 2026
 
   **🎯 Goal**: chiudere il loop narrativo del Design Journey™. `/journey/preparing`

@@ -15,6 +15,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
+import { publicLanguages, getDefaultLocale } from '../content/languages';
 
 // Localized copy resolver
 const L = (v, l) => (typeof v === 'string' ? v : (v?.[l] || v?.en || v?.it || ''));
@@ -34,11 +35,13 @@ const DEFAULT_COPY = {
   },
 };
 
-// LanguageSelector — small inline dropdown for locale
-const DEFAULT_LOCALES = [
-  { code: 'it', label: 'IT' },
-  { code: 'en', label: 'EN' },
-];
+// LanguageSelector — small inline dropdown for locale.
+// Sourced from the Global Language Registry (`/site/content/languages.js`),
+// which is also the source of truth for `/admin/languages`.
+// Any toggle change in the Blueprint Command Center → here, instantly.
+const buildPublicLocales = () =>
+  publicLanguages().map((l) => ({ code: l.base, label: l.short || l.base.toUpperCase(), full: l.code }));
+const DEFAULT_LOCALES = buildPublicLocales();
 
 const LanguageSelector = ({ locale, locales, onChange }) => {
   const [open, setOpen] = useState(false);
@@ -82,10 +85,24 @@ const MoodSiteHeader = ({
   onLocaleChange,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [livePublicLocales, setLivePublicLocales] = useState(() => buildPublicLocales());
   const location = useLocation();
   const onHome = location.pathname === '/' || location.pathname === '';
-  const locales = (copy.locales && copy.locales.length) ? copy.locales : DEFAULT_LOCALES;
+  // Source of truth: live registry from /admin/languages. The static
+  // `copy.locales` (if passed) wins, otherwise the live public registry.
+  const locales = (copy.locales && copy.locales.length) ? copy.locales : livePublicLocales;
   const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  // Re-read the language registry whenever an admin saves /admin/languages.
+  useEffect(() => {
+    const onChange = () => setLivePublicLocales(buildPublicLocales());
+    window.addEventListener('mfd:languages:change', onChange);
+    window.addEventListener('storage', onChange);
+    return () => {
+      window.removeEventListener('mfd:languages:change', onChange);
+      window.removeEventListener('storage', onChange);
+    };
+  }, []);
 
   // Always close the menu when route changes (defensive)
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
