@@ -1,0 +1,42 @@
+{
+  "summary": "ITER166 frontend-only test of cinematic post-onboarding Design Journey flow. 11/12 cases PASS. The 401-interceptor fix in /app/frontend/src/lib/api.js works as intended: /journey/preparing and /auth/recovery remain stable for >6s with no redirect to /auth/login despite 401s from provider calls. JourneyPreparingPage cinematic copy, personalization (?name=Maria), opaque resend success, and 'Tornare alla landing' link all behave per spec. AuthRecoveryPage renders concierge title, both CTAs ('Invia nuovo accesso' / 'Entra con la tua password') and pre-fills email from ?email=. Backend POST /api/auth/silent-magic-link with admin returns 200 opaque. /begin-journey accessible without session. Smoke on /, /auth/login, /magazine, /projects passes. ONE P2 violation: homepage CTA reads 'Accedi' (twice in DOM, visible top-right) instead of the required editorial copy 'Entra nel tuo spazio'.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "HomePage header (MoodSiteHeader)",
+        "issue": "Top-right re-entry CTA renders the banned word 'Accedi' (link). User explicitly requested: 'MAI Accedi o Login. Termini consentiti: Entra nel tuo spazio, Design Journey, Client Profile, Spazio progettuale.' The DOM contains 2 occurrences of the word 'accedi' on / (likely desktop + mobile). Same header is reused on /begin-journey so the violation propagates there too. Replace with 'Entra nel tuo spazio' (or 'Il tuo spazio progettuale').",
+        "selector": "header a:has-text('Accedi')",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Replace 'Accedi' link in the public HomePage header with 'Entra nel tuo spazio' (or equivalent editorial copy). The same header component is rendered on /begin-journey via reuse, so a single fix solves both surfaces.",
+    "(carry-over from iter157) Add data-testid='client-welcome-cta-continue' to ClientWelcomePanel.",
+    "(carry-over) Address 17 missing it-IT i18n keys flagged by editorial-debug badge on /auth/login."
+  ],
+  "critical_code_review_comments": [
+    "api.js public-surface allowlist is a STRING list — adding new public routes requires touching this file. Recommend extracting to a single PUBLIC_SURFACE_PATTERNS array (regex/glob) so future cinematic surfaces (e.g., /journey/welcome/*, /preview/*) opt-in declaratively without scattering startsWith() calls. Current implementation works correctly but is brittle.",
+    "JourneyPreparingPage.jsx imports `useNavigate` but never uses it (line 11). Minor lint cleanup.",
+    "AuthRecoveryPage.jsx also imports `useNavigate` unused (line 10). Minor lint cleanup.",
+    "AuthRecoveryPage.jsx: when sendNew submits with invalid email it silently no-ops (just returns) — consider showing a soft hint to preserve concierge tone instead of dead-click."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (1/1 — silent-magic-link)",
+    "frontend": "92% (11/12 — homepage CTA copy is the only deviation)"
+  },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (used for silent-magic-link 200 verification).",
+  "seed_data_creation": "None.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Core ITER166 P0/P1 cinematic flow is solid. The only outstanding deviation is the homepage header copy ('Accedi'). After the main agent swaps the link text to 'Entra nel tuo spazio', a 5-second smoke on / should be enough to validate (look for absence of /accedi|login/i in all visible button/anchor text). Helper assertion: `await page.evaluate(() => Array.from(document.querySelectorAll('a,button')).map(e => e.textContent.trim().toLowerCase()).filter(t => t === 'accedi' || t === 'login'))` should return [].",
+  "rca_of_the_issue": "RCA confirmed: the 401-interceptor in /app/frontend/src/lib/api.js was redirecting visitors out of cinematic surfaces because BlueprintContext / TenantThemeContext make background GETs that return 401 when no session exists. The fix correctly adds /journey/preparing and /preview/* to the public-surface allowlist (lines 105-128 in api.js). Manual reproduction: navigate to /journey/preparing without a session, wait 6.5s — page stays. Before fix, redirect happened ~3.3s after mount. No regression observed on other surfaces (auth login flow still redirects to login as expected when API calls fail on protected routes)."
+}

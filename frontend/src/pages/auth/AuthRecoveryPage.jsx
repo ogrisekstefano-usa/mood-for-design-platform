@@ -94,7 +94,7 @@ const AuthRecoveryPage = () => {
                 data-testid="auth-recovery-password"
               >
                 <KeyRound size={16} strokeWidth={1.6} aria-hidden />
-                <span>Accedi con password</span>
+                <span>Entra con la tua password</span>
               </Link>
             </div>
           </form>

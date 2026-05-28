@@ -97,11 +97,16 @@ api.interceptors.response.use(
       const p = window.location.pathname || '';
       // Locale-prefixed public storefront (Phase R-MARKET-1B): /it-IT, /en-US, …
       const localePrefix = /^\/[a-z]{2}-[A-Z]{2}(\/|$)/.test(p);
+      // ── PUBLIC EXPERIENCE surfaces — NEVER force /auth/login on 401.
+      //    These are narrative / transitional pages that belong to the
+      //    Design Journey™ public layer (concierge UX, not app UX).
+      //    A 401 from a background provider call (Blueprint, Tenant, i18n)
+      //    must NEVER tear the visitor out of the cinematic experience.
       const isPublicSurface =
         localePrefix ||
         p === '/' ||
         p === '/auth/login' ||
-        p.startsWith('/auth/') ||
+        p.startsWith('/auth/') ||                  // /auth/callback /auth/recovery /auth/reset-password …
         p === '/projects' ||
         p.startsWith('/projects/') ||
         p === '/professionals' ||
@@ -110,9 +115,12 @@ api.interceptors.response.use(
         p === '/begin-journey' ||
         p === '/begin-partnership' ||
         p.startsWith('/journey/welcome/') ||
+        p === '/journey/preparing' ||              // ITER166 · cinematic post-onboarding screen
+        p.startsWith('/journey/preparing') ||      // safety: querystring variants
         p === '/magazine' ||
         p.startsWith('/magazine/') ||
         p.startsWith('/onboarding/') ||
+        p.startsWith('/preview/') ||               // Client Preview Link™ public surface
         p.startsWith('/presentation/') ||
         p.startsWith('/moodboard/share/') ||
         p.startsWith('/review/') ||

@@ -319,6 +319,26 @@ function App() {
             <Suspense fallback={<Loading />}>
               <LocaleHead />
               <Routes>
+                {/* ═══════════════════════════════════════════════════════════
+                 *  PUBLIC EXPERIENCE — Design Journey™ public narrative layer
+                 *  -----------------------------------------------------------
+                 *  Nessuna auth-guard. Nessun redirect tecnico.
+                 *  Queste rotte fanno parte dell'esperienza narrativa, NON
+                 *  dell'applicazione. Mai mostrare "Login required",
+                 *  "Session expired", o terminologia software.
+                 *
+                 *  Surfaces incluse:
+                 *    · Landing (HomePage)
+                 *    · Begin Journey / Begin Partnership / Start Project
+                 *    · Journey · Preparing Screen (post-onboarding cinematic)
+                 *    · Auth Callback / Recovery / Reset / Magic-Link bridge
+                 *    · Password Creation
+                 *    · "Entra nel tuo spazio" (LoginPage)
+                 *    · Magazine / Projects / Professionals
+                 *    · Client Preview Link™ (presentation surfaces)
+                 *    · Public Tenant Pages / Public Forms
+                 * ═══════════════════════════════════════════════════════════ */}
+
                 {/* Client Preview Link™ — public, no auth, no layout.
                     Sprint F2.4: presentazione cliente fullscreen cinematic. */}
                 <Route path="/preview/:token" element={<ClientPreviewPage />} />
@@ -428,20 +448,42 @@ function App() {
                 <Route path="/de/*" element={<ShortLocaleRedirect to="de-DE" />} />
                 <Route path="/gb/*" element={<ShortLocaleRedirect to="en-GB" />} />
 
-                {/* Auth routes — Blueprint OS theme (admin-style chrome) */}
+                {/* ── Public auth surfaces (concierge UX, NOT app UX) ──
+                    These pages are part of the public narrative experience.
+                    The Design Journey™ enters and exits through here.
+                    ITER166 · Nessuna terminologia tecnica. */}
+
+                {/* "Entra nel tuo spazio" — la nostra alternativa narrativa al login */}
                 <Route path="/auth/login" element={<OSWrap><PublicRoute><LoginPage /></PublicRoute></OSWrap>} />
                 <Route path="/auth/signup" element={<OSWrap><PublicRoute><SignupPage /></PublicRoute></OSWrap>} />
                 <Route path="/auth/forgot-password" element={<OSWrap><ForgotPasswordPage /></OSWrap>} />
                 {/* ITER143D · Auth Redirect Governance™ — single platform callback that bounces to the right tenant subdomain. */}
                 <Route path="/auth/callback" element={<AuthCallbackPage />} />
+                {/* Password Creation — soft invitation, NOT modal aggressiva */}
                 <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
+                {/* AuthRecoveryPage — magic link expired → esperienza concierge, mai errore software */}
                 <Route path="/auth/recovery" element={<AuthRecoveryPage />} />
+                {/* JourneyPreparingPage — transitional, emozionale, narrativa.
+                    NON applicativa. NIENTE useAuth(). NIENTE redirect.
+                    Vive INTENZIONALMENTE fuori da ogni layer protetto. */}
                 <Route path="/journey/preparing" element={<JourneyPreparingPage />} />
                 {/* Legacy / convenience aliases */}
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/invite" element={<AuthCallbackPage />} />
                 <Route path="/magic-link" element={<AuthCallbackPage />} />
                 <Route path="/form/:slug" element={<LeadFormPage />} />
+
+                {/* ═══════════════════════════════════════════════════════════
+                 *  PROTECTED EXPERIENCE — Relationship Operating System™
+                 *  -----------------------------------------------------------
+                 *  Da qui in poi: utente autenticato. Auth-guard attivi.
+                 *
+                 *  Surfaces:
+                 *    · Client Profile™ (private client area)
+                 *    · Studio Workspace (designer / tenant_admin)
+                 *    · Blueprint Command Center (root super admin)
+                 *    · Advisor self-service
+                 * ═══════════════════════════════════════════════════════════ */}
 
                 <Route element={<ProtectedRoute><StudioRoute><DashboardLayout /></StudioRoute></ProtectedRoute>}>
                   <Route path="/dashboard" element={G('dashboard', <AtelierDashboardPage />)} />
