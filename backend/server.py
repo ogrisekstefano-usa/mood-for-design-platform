@@ -147,6 +147,9 @@ api_router.include_router(curated_references.router, prefix="/inspirations", tag
 api_router.include_router(usage_memory.router,      prefix="/inspirations", tags=["usage-memory"])
 api_router.include_router(client_preview.router,    prefix="/inspirations", tags=["client-preview"])
 api_router.include_router(design_journey.router,                            tags=["design-journey"])
+# ITER168 · Journey-keyed root API (overview/artifacts/brief/lifecycle/milestone)
+from routers import journeys as _journeys_router  # noqa: E402
+api_router.include_router(_journeys_router.router, prefix="/journeys", tags=["journeys"])
 api_router.include_router(milestone_dialogue.router,                        tags=["milestone-dialogue"])
 api_router.include_router(journey_initiate.router,                          tags=["begin-journey"])
 api_router.include_router(journey_pulse.router,                             tags=["dashboard-pulse"])

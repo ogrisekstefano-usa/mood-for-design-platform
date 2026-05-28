@@ -556,6 +556,103 @@ o pane dentro la journey.
 
 ---
 
+## §9.5 · PRINCIPI LOAD-BEARING (aggiunti post-review utente)
+
+### 9.5.A · Milestone ELASTICHE, non waterfall
+
+Le 10 milestone canoniche sono **template narrativo**, non gate waterfall.
+Nel mondo reale:
+- alcuni clienti **saltano** step (es. no concept, vanno diretti a tech)
+- alcuni **tornano indietro** (riapertura material_direction dopo concept)
+- alcuni fanno **solo** un sotto-insieme (es. solo "Bathroom Materials" come consulenza spot)
+- alcuni **partono da metà** (es. cliente arriva con brief esterno, parte da inspirations)
+- alcuni aprono **filoni paralleli** (kitchen track + bathroom track + lighting track contemporanei)
+
+Implicazioni schema (incluse in migration 107):
+
+```sql
+ALTER TABLE journey_milestones
+  ADD COLUMN is_applicable  BOOLEAN NOT NULL DEFAULT TRUE,
+    -- false → milestone NON pertinente per questo cliente (es. no proposals)
+  ADD COLUMN skipped_at     TIMESTAMPTZ,
+  ADD COLUMN skipped_reason TEXT,
+  ADD COLUMN reopened_at    TIMESTAMPTZ,
+    -- una milestone approved può essere riaperta → status=in_progress
+  ADD COLUMN parallel_track TEXT;
+    -- 'main' | 'kitchen' | 'bathroom_master' | 'lighting' | 'hospitality'
+    -- NULL = main track (default)
+```
+
+E i nuovi `status` ammessi (CHECK relaxato):
+- `not_started` · `in_progress` · `presented` · `revision_requested`
+- `partially_approved` · `approved` · `closed`
+- **NEW**: `skipped` · `not_applicable` · `reopened` · `parallel_active`
+
+Lo Studio può quindi:
+- attivare/disattivare milestone per cliente
+- aprire MULTIPLE istanze della stessa milestone su `parallel_track` diversi
+  (es. 3 istanze di `moodboard_direction`: main, kitchen, bathroom)
+- riaprire una milestone già approved (`reopened_at` registra la riapertura)
+
+> Il Client Profile™ rende solo le milestone `is_applicable=true` e con
+> status diverso da `not_applicable/skipped`. Lo Workspace™ le mostra
+> tutte (con dimming visivo per quelle dismesse).
+
+### 9.5.B · 2 layer separati (NON confondere)
+
+```
+LAYER 1 · JOURNEY LIFECYCLE (relazione)
+  conversation_open → in_progress → presenting → drifting/on_pause
+                                  → approved → closed → editioned
+                                  → abandoned
+
+LAYER 2 · MILESTONE STATE (operativo, per ogni milestone)
+  not_started → in_progress → presented → revision_requested
+              → partially_approved → approved → closed
+              → skipped / not_applicable / reopened / parallel_active
+```
+
+Regole di interlock:
+- la **journey lifecycle** può evolvere indipendentemente dalle milestone
+  (es. journey può essere `on_pause` mentre alcune milestone restano
+  `presented` in attesa di feedback)
+- la **milestone state** è azionabile dallo Studio e/o dal Cliente
+  (approve/revision)
+- NESSUNA milestone "blocca" l'altra automaticamente. Lo Studio decide
+  l'ordine narrativo. Le dipendenze sono **soft** (visualizzate come
+  hint, non come constraint).
+
+Tradotto in API:
+- `PATCH /api/journeys/:jid/lifecycle` → cambia lifecycle (livello relazionale)
+- `PATCH /api/journeys/:jid/milestones/:mid/status` → cambia milestone state
+  (livello operativo)
+
+I due endpoint NON si triggerano a vicenda. Mai. Lo studio decide.
+
+### 9.5.C · Multi-track parallelo (filoni)
+
+Una journey può avere N "track" attivi simultaneamente:
+
+```
+Journey "Casa Verdi"
+├── Track MAIN (default · narrativa progettuale completa)
+│   ├── milestone: brief [approved]
+│   ├── milestone: inspirations [approved]
+│   └── milestone: moodboard_direction [in_progress]
+├── Track KITCHEN (filone parallelo · approfondimento cucina)
+│   ├── milestone: moodboard_direction [parallel_active]
+│   └── milestone: material_direction [in_progress]
+└── Track BATHROOM_MASTER (filone parallelo)
+    └── milestone: material_direction [presented]
+```
+
+Implementato via `journey_milestones.parallel_track`. UI Studio raggruppa
+visualmente per track. UI Cliente li **fonde** in una timeline editoriale
+unica (mostra solo i milestone più rilevanti per cliente, con badge "Cucina"
+o "Bagno padronale" come hint).
+
+---
+
 ## §10 · Cosa NON sto facendo ora
 
 - Non sto scrivendo codice.

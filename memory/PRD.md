@@ -2,6 +2,97 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER168 · Phase 1 · Design Journey™ Operational Refactor — Schema Lock** · ✅ DELIVERED · 28 Feb 2026
+
+  **🎯 Goal**: stop costruendo feature, refactor dell'ossatura.
+  Il Design Journey™ deve diventare la **root entity** reale del prodotto.
+  Tutto orbita attorno al DJ: brief, moodboard, room, chapter, proposal,
+  approval, conversation. Lead/Prospect/Client diventano lifecycle stati
+  dell'account, NON entità parallele.
+
+  **Documento architetturale (proposal-only, no UI)**
+  `/app/memory/ITER168_DJ_OPERATIONAL_REFACTOR.md` (10 sezioni · ~500 righe):
+  · UX Map · Entity Relationship · Lifecycle · Moodboard Contextual
+    Architecture · 3 viste (Client Profile™ + Workspace™ + JourneyTimeline)
+    · Flow operativo studio · Roadmap 3 fasi · Principi load-bearing
+  · §9.5 · **Milestone ELASTICHE non waterfall** + **2-layer separation**
+    (lifecycle relazione ≠ status operativo) + multi-track parallelo
+
+  **6 decision points approvati dall'utente**
+  · 1a · `design_journeys.account_id` NOT NULL (backfill "Archivio storico")
+  · 2a · `projects` resta come tabella subordinata, journey-first
+  · 3c · `/relations/inbox` unificato con redirect legacy preservati
+  · 4a · `calendar/activity/messages/reports` dentro la singola journey
+  · 5a · Seed iniziale catalog rooms/chapters via migration
+  · 6a · URL prefisso `/studio` invece di `/workspace`
+
+  **Migration `107_dj_operational_lock.sql` (24.5KB, idempotente)**
+  - `moodboards` · `+scope` `+room_key` `+chapter_key` `+visibility`
+    `+approval_state` + CHECK constraints + indici composti
+  - `moodboards.journey_id` → **NOT NULL** (backfill verso journey
+    "Archivio storico" del tenant)
+  - `design_journeys.account_id` → **NOT NULL** (backfill verso account
+    "Archivio storico" del tenant)
+  - `journey_milestones` · `+is_applicable` `+skipped_at` `+skipped_reason`
+    `+reopened_at` `+parallel_track` + status CHECK esteso a 11 stati
+    (incluso `skipped|not_applicable|reopened|parallel_active`)
+  - Tabelle catalog `moodboard_rooms` (16 stanze IT/EN/FR/DE/ES) +
+    `moodboard_chapters` (9 capitoli IT/EN/FR/DE/ES)
+  - Tabella `journey_briefs` (1:1 con design_journeys)
+  - VIEW `journey_overview` (KPI: lifecycle + milestone counts +
+    artifact counts + last event + open health signals)
+  - Trigger `sync_leads_progression_from_account` (AFTER UPDATE):
+    mantiene `leads.progression_state` allineato a
+    `accounts.lifecycle_stage` (single source of truth: accounts)
+
+  **Backend · nuovo router `routers/journeys.py` (470 righe)**
+  - `GET   /api/journeys/{jid}/overview` · snapshot completo
+    (journey + account + brief + milestones_by_track + artifact_counts +
+    timeline_recent + open_health_signals). Single source of truth per
+    Workspace™ e Client Profile™.
+  - `GET   /api/journeys/{jid}/artifacts?scope=&room=` · moodboards
+    raggruppati per room_key → chapter_key
+  - `GET   /api/journeys/{jid}/brief` · auto-materializza da leads se
+    mancante (provenance tracking via `source_lead_id`)
+  - `PATCH /api/journeys/{jid}/lifecycle` · LAYER 1 (relazionale,
+    9 stati canonici) · emette journey_timeline_event
+  - `PATCH /api/journeys/{jid}/milestones/{mid}/status` · LAYER 2
+    (operativo, 11 stati) · NON tocca lifecycle
+  - `POST  /api/journeys/{jid}/milestones/{mid}/skip`
+  - `POST  /api/journeys/{jid}/milestones/{mid}/reopen`
+  - `POST  /api/journeys/{jid}/milestones/parallel` · crea filone
+    parallelo (es. `moodboard_direction` su track `kitchen`)
+  - `GET   /api/journeys/catalog/rooms?locale=&category=` · public
+  - `GET   /api/journeys/catalog/chapters?locale=` · public
+
+  **`journey_initiate.py` esteso**
+  - Step 7.5 (nuovo, non-blocking): materializza `journey_briefs` 1:1
+    al primo intake → indipendenza dal leads table
+
+  **Test pytest · `test_iter168_dj_operational_lock.py` · 22/22 PASS**
+  - 3× catalog rooms (IT default, EN fallback, category filter)
+  - 1× catalog chapters (i18n labels + descriptions)
+  - 3× e2e intake → overview + brief auto-materializzato
+  - 3× lifecycle layer 1 (patch valido, invalid 400, idempotent)
+  - 6× milestone layer 2 (presented, skip, reopen, parallel, dup 409,
+    visible in overview)
+  - 6× schema lock (cols NOT NULL · elastic cols · view · catalog seed ·
+    trigger fn)
+  - Regression: ITER167 test suite 18/18 PASS (nessuna rottura auth/email)
+
+  **Fase 2/3 NON ancora avviate** (esplicitamente, per user decision)
+  - Fase 2 · URL canonicalization (`/studio/journey/:jid` ecc.)
+  - Fase 3 · Moodboard contextual UI + `/relations/inbox` unificato
+
+  **Cosa NON è stato fatto** (per scope discipline)
+  - Nessuna nuova UI
+  - Nessun nuovo componente React
+  - Nessuna modifica al Client Profile™ visivo
+  - Nessuna Atmospheric Panels polish
+  - Nessuna AI/Signals/Chameleon
+
+---
+
 - **ITER167 · Round 4 follow-up #2 · Official MOOD PNG + Hardcoded Text Removal** · ✅ DELIVERED · 28 Feb 2026
 
   **🎯 Goal**: sostituire il JPG temporaneo con l'asset PNG ufficiale

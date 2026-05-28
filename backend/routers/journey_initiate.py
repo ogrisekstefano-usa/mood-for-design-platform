@@ -287,6 +287,30 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         },
     ]).execute()
 
+    # 7.5 ITER168 · Materializza journey_briefs 1:1 (root entity-aligned)
+    # Cattura l'intake direttamente come entità del DJ, indipendente da `leads`.
+    try:
+        atmo = body.atmosphere.model_dump() if body.atmosphere else {}
+        life = body.lifestyle.model_dump() if body.lifestyle else {}
+        c.table('journey_briefs').insert({
+            "id":                 str(uuid.uuid4()),
+            "tenant_id":          tid,
+            "journey_id":         journey_id,
+            "closed_answers":     {"atmosphere": atmo, "lifestyle": life,
+                                     "welcome": {"first_name": first_name,
+                                                  "email": email}},
+            "atmosphere_signals": [],
+            "material_signals":   [],
+            "intake_version":     "iter168_begin_journey",
+            "created_at":         now,
+            "updated_at":         now,
+        }).execute()
+    except Exception:
+        import logging
+        logging.getLogger(__name__).exception(
+            "journey_briefs materialization failed (non-blocking)"
+        )
+
     # 8. ITER146.A · UNIFIED Lead Pipeline observability ────────────────
     # Every public onboarding entry MUST also produce a `leads` row +
     # `funnel_events` row so the CRM has ONE canonical pipeline view,
