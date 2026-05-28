@@ -1,0 +1,46 @@
+{
+  "summary": "ITER167 Round 4 — Real Mobile QA. Backend 11/11 pytest pass (identify enumeration-safe, silent-magic-link no leak, /api/public/journeys/initiate accepts country_code/dial_code/normalized_phone, magic_link email template editorial + dark-mode meta). Frontend mobile 414x900: PhoneCountryPrefix dropdown present, Italy default (🇮🇹 +39), menu opens, US click switches trigger to (🇺🇸 +1). 3-step /begin-journey flow completes without /auth/login redirect; final CTA transitions to cinematic 'Stiamo aprendo il tuo Design Journey™…' inline view. /journey/preparing stable >5s with 'Maria' personalization. /auth/recovery editorial (no banned terms). /auth/login Adaptive Access™ probe→client→sent flow works (sent title 'Ti abbiamo inviato un accesso personale.' visible).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Homepage trust brands (mobile)", "issue": "Massive horizontal overflow: scrollWidth=1480, innerWidth=414 (1066px overflow). UL.mfd-trust__brands is 1263px wide and LI.mfd-trust__brand items extend to right=1260px. Violates P1 'scrollWidth ≤ innerWidth' requirement.", "selector": ".mfd-trust__brands", "priority": "HIGH"},
+      {"component": "LoginPage (Adaptive Access)", "issue": "React warning: 'Cannot update a component while rendering a different component' — invalid setState during render on /auth/login.", "selector": "/auth/login", "priority": "MEDIUM"},
+      {"component": "i18n auth.access.*", "issue": "25 missing i18n keys on /auth/login (auth.access.eyebrow, auth.access.probe.title/subtitle/cta, auth.access.client.title/subtitle/cta_email/cta_password, auth.access.professional.*, auth.access.sent.title/copy/resend, auth.access.quote/quote_author/need_help/support/support_email, auth.login.hero_image/brand_logo). Page still renders correct Italian fallback copy, but registry strings must be seeded.", "selector": "/auth/login", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Homepage mobile footer", "issues": ["FOOTER.mfd-footer is full-width pure black, 761px tall — directive says 'NO fascia nera'. Borderline: this is the standard dark footer, but flagged for review against editorial spec."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter167_r4_journey_email.py",
+    "/app/test_reports/pytest/iter167_r4_results.xml"
+  ],
+  "action_items": [
+    "Fix homepage mobile horizontal overflow (.mfd-trust__brands) on viewport 414 — likely needs flex-wrap, max-width:100%, or marquee/overflow:hidden container.",
+    "Seed missing 25 editorial_blocks keys auth.access.* + auth.login.* (it-IT) so /auth/login no longer relies on hard-coded fallback.",
+    "Investigate React 'setState during render' warning on /auth/login (LoginPage Adaptive Access phase machine).",
+    "Confirm whether full-width black FOOTER on mobile homepage is the intended editorial 'fascia nera' or needs softer treatment."
+  ],
+  "critical_code_review_comments": [
+    "P0 PhoneCountryPrefix DB-driven dropdown: works, Italy default, US switch (🇺🇸 +1). data-testids exposed (bj-phone-prefix-trigger/menu/option-XX) — excellent.",
+    "Backend /api/public/journeys/initiate accepts welcome.country_code/dial_code/normalized_phone without 422 and returns continuity surface (welcome_url/magic_link_url/welcome_token). 201 Created.",
+    "Email render('magic_link') contains: subject 'spazio progettuale ti aspetta', html 'Bentornato, Maria.', 'Vorrei una casa', 'Apri il tuo spazio progettuale', 'Stefano Ogrisek', 'Con cura', AND dark-mode meta (color-scheme dark light + supported-color-schemes + @media prefers-color-scheme:dark). All P1 email assertions satisfied.",
+    "Identify endpoint enumeration-safe: identical key shape for admin (professional/password_exists:true) vs unknown (client/password_exists:false).",
+    "/auth/login renders fallback IT copy even with 25 missing keys — defensive UX is good, but registry should still be seeded.",
+    "Horizontal overflow on homepage trust strip is the only meaningful P1 regression — easily fixable but blocks 'no horizontal overflow' P1 acceptance."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter167_r4_journey_email.py"
+  ],
+  "success_rate": {"backend": "100% (11/11)", "frontend": "P0 100% (phone prefix + 3-step flow + preparing + recovery + adaptive login OK); P1 60% (home overflow + missing i18n keys regressions)"},
+  "test_credentials": "Admin: admin@moodfordesign.com / Blueprint2024! (used for identify/professional and silent-magic-link probes)",
+  "seed_data_creation": "Created multiple unique TEST_ journey leads via /api/public/journeys/initiate (maria<timestamp>@example.com). No manual cleanup performed; data is journey-scoped and additive.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Phone prefix testids confirmed: bj-phone-prefix-trigger / bj-phone-prefix-menu / bj-phone-prefix-option-{COUNTRY_CODE} (e.g. -IT, -US, -GB). BeginJourneyPage uses 0-indexed steps (step 0 = ATMOSFERA spaces+textareas; step 1 = COME VIVI guests+ambiance; step 2 = CONOSCIAMOCI form). Space chip values are English keys (home, showroom, hospitality, office, other) while backend payload uses Italian tokens (casa, da_soli, caldi_avvolgenti) — frontend maps internally on submit. The backend journey endpoint is /api/public/journeys/initiate (NOT /api/journey/initiate) and returns 201. Final CTA on step 2 renders inline cinematic preparing view on same /begin-journey path (does NOT navigate to /journey/preparing) — verify with main agent whether this is intended.",
+  "rca of the issue": "Homepage mobile overflow: UL.mfd-trust__brands keeps a fixed-width horizontal layout (1263px) on a 414px viewport, with no flex-wrap / overflow:hidden / scroll-snap marquee container. Fix likely in /app/frontend/src/styles for .mfd-trust__brands (add flex-wrap:wrap or wrap into a horizontally-scrolling marquee with overflow-x:hidden on parent and translate-X animation)."
+}

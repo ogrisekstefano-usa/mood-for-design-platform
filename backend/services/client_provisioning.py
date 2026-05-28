@@ -348,29 +348,43 @@ def provision_client_after_journey(
     magic_link = _generate_magic_link(email, redirect_to)
     result["magic_link_url"] = magic_link
 
-    # ── 5. Email backup "Il tuo spazio è pronto" (lessico editoriale) ─
+    # ── 5. Email Continuity™ "Il tuo spazio è pronto" (ITER167.R3) ────
     if magic_link:
         try:
             studio_row = (c.table("tenants").select("name").eq("id", tenant_id)
                           .limit(1).execute().data or [])
             studio_name = studio_row[0]["name"] if studio_row else "Lo Studio"
+            # Pull the referente's real name for the signature.
+            referente_name = ""
+            if primary_designer_id:
+                try:
+                    ref = (c.table("users_profile")
+                           .select("first_name,last_name")
+                           .eq("id", primary_designer_id).limit(1).execute().data or [])
+                    if ref:
+                        ref0 = ref[0]
+                        referente_name = (
+                            f"{ref0.get('first_name') or ''} {ref0.get('last_name') or ''}"
+                        ).strip()
+                except Exception:
+                    pass
+            # Hero quote: short excerpt from the brief, if available.
+            hero_quote = ""
+            if summary_text:
+                qt = (summary_text or "").strip().split("\n", 1)[0]
+                if 12 < len(qt) <= 160:
+                    hero_quote = qt
+            # Editorial template_key="space_ready" → uses email.space_ready.* blocks.
+            # We reuse the magic_link composer (same cinematic shell, different copy).
             send_template_email(
                 to=email,
-                template_key="generic",
+                template_key="space_ready",
                 context={
-                    "eyebrow": "Il tuo spazio progettuale",
-                    "title": f"Il tuo spazio è pronto, {first_name}.",
-                    "body": (
-                        f"Le tue prime indicazioni sono al sicuro nel Client Profile. "
-                        f"Lo studio {studio_name} ti accompagna da qui in avanti. "
-                        "Quando vorrai rientrare, basterà aprire questo link — "
-                        "o tornare sulla landing e cliccare 'Accedi'."
-                    ),
-                    "cta_label": "Entra nel tuo spazio",
-                    "cta_url": magic_link,
-                    "subject": f"{studio_name} · Il tuo spazio progettuale è pronto",
-                    "preheader": "Le tue prime indicazioni ti aspettano.",
-                    "studio_name": studio_name,
+                    "magic_url":      magic_link,
+                    "first_name":     first_name,
+                    "studio_name":    studio_name,
+                    "referente_name": referente_name,
+                    "hero_quote":     hero_quote,
                 },
                 tenant_id=tenant_id,
                 locale=locale or "it",
@@ -476,25 +490,35 @@ def silent_magic_link(email: str, request_host: str, next_path: str = "/client")
         logger.exception("silent_magic_link branding lookup failed")
 
     try:
+        # ITER167.R3 · Email Continuity™ — cinematic letter from the studio.
+        # Lookup the assigned referente for the real signature.
+        referente_name = ""
+        try:
+            assigns = (c.table("human_assignments")
+                       .select("assignee_id")
+                       .eq("subject_type", "users_profile")
+                       .eq("subject_id", rows[0].get("id") if rows else None)
+                       .eq("role", "primary_designer")
+                       .limit(1).execute().data or [])
+            if assigns:
+                ref = (c.table("users_profile")
+                       .select("first_name,last_name")
+                       .eq("id", assigns[0]["assignee_id"]).limit(1).execute().data or [])
+                if ref:
+                    referente_name = (
+                        f"{ref[0].get('first_name') or ''} {ref[0].get('last_name') or ''}"
+                    ).strip()
+        except Exception:
+            pass
+
         send_template_email(
             to=email,
-            template_key="generic",
+            template_key="magic_link",
             context={
-                "eyebrow": "Accesso sicuro",
-                "title": (
-                    f"Ti aspettiamo, {first_name}." if first_name
-                    else "Ti aspettiamo nel tuo spazio."
-                ),
-                "body": (
-                    "Apri questo link per rientrare nel tuo Client Profile. "
-                    "È un accesso sicuro, valido pochi minuti. "
-                    "Non serve ricordare alcuna password."
-                ),
-                "cta_label": "Entra nel tuo spazio",
-                "cta_url": link,
-                "subject": f"{studio_name} · Il tuo accesso sicuro",
-                "preheader": "Apri il link per rientrare nel tuo spazio.",
-                "studio_name": studio_name,
+                "magic_url":      link,
+                "first_name":     first_name or "",
+                "studio_name":    studio_name,
+                "referente_name": referente_name,
             },
             tenant_id=tenant_id,
             locale=locale,

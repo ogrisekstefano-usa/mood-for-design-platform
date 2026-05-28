@@ -17,6 +17,7 @@ import {
   EditorialBundleProvider,
   useEditorialBundle,
 } from '../../site/editorial/EditorialBundleProvider';
+import PhoneCountryPrefix, { normalizePhone } from '../../components/journey/PhoneCountryPrefix';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 const NS = 'site.begin_journey';
@@ -38,6 +39,8 @@ const BeginJourneyForm = () => {
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  // ITER167 R4 · Phone Country Prefix — DB-driven from /admin/languages.
+  const [phoneCountry, setPhoneCountry] = useState(null);
 
   // Editorial taxonomy built from the dynamic bundle.
   const taxonomy = useMemo(() => ({
@@ -110,6 +113,10 @@ const BeginJourneyForm = () => {
           first_name: firstName.trim(),
           email: email.trim(),
           phone: phone.trim() || null,
+          // ITER167 R4 · structured phone payload (future routing/Chameleon/timezone)
+          country_code:     phoneCountry?.country_code || null,
+          dial_code:        phoneCountry?.dial_code    || null,
+          normalized_phone: phone.trim() ? normalizePhone(phoneCountry?.dial_code || '', phone) : null,
         },
       };
       const r = await axios.post(`${API}/api/public/journeys/initiate`, payload);
@@ -121,7 +128,7 @@ const BeginJourneyForm = () => {
       // l'esperienza resta editorial, mai SaaS.
       const params = new URLSearchParams();
       if (email) params.set('email', email);
-      if (first_name) params.set('name', first_name);
+      if (firstName) params.set('name', firstName);
       // In preview env il magic_link punta al dominio whitelistato di prod;
       // lo passiamo come fallback bypass per dev/UX, NON come destinazione
       // primaria.
@@ -382,13 +389,22 @@ const BeginJourneyForm = () => {
                 <label className="bj-field__label">
                   {get(k('step3.field.phone.label'))}
                 </label>
-                <input
-                  className="bj-input"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  data-testid="bj-phone"
-                />
+                <div className="bj-phone-row">
+                  <PhoneCountryPrefix
+                    value={phoneCountry}
+                    onChange={setPhoneCountry}
+                  />
+                  <input
+                    className="bj-input bj-input--phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel-national"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    data-testid="bj-phone"
+                    placeholder="0123 456 7890"
+                  />
+                </div>
                 <span className="bj-field__hint">
                   {get(k('step3.field.phone.hint'))}
                 </span>

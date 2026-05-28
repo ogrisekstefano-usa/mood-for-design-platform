@@ -617,3 +617,102 @@
   padding: 0;
 }
 .jw-footer__btn:hover { color: color-mix(in srgb, var(--jo-accent) 100%, transparent); }
+
+/* ── ITER167 R4 · Phone Country Prefix ────────────────────────────── */
+.bj-phone-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+.bj-input--phone {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.bj-phone-prefix {
+  position: relative;
+  flex: 0 0 auto;
+}
+.bj-phone-prefix__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color .25s, background .25s;
+  white-space: nowrap;
+}
+.bj-phone-prefix__trigger:hover {
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.06);
+}
+.bj-phone-prefix__flag {
+  font-size: 18px;
+  line-height: 1;
+}
+.bj-phone-prefix__dial {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  opacity: 0.92;
+}
+.bj-phone-prefix__menu {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 280px;
+  max-height: 280px;
+  overflow-y: auto;
+  background: #0e1014;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+  box-shadow: 0 24px 48px -16px rgba(0, 0, 0, 0.6);
+}
+.bj-phone-prefix__menu li {
+  margin: 0;
+  padding: 0;
+}
+.bj-phone-prefix__option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s;
+}
+.bj-phone-prefix__option:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.bj-phone-prefix__option.is-active {
+  background: rgba(124, 228, 245, 0.08);
+}
+.bj-phone-prefix__option-label {
+  flex: 1 1 auto;
+  opacity: 0.88;
+}
+.bj-phone-prefix__option-dial {
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+@media (max-width: 480px) {
+  .bj-phone-prefix__menu { min-width: 240px; }
+  .bj-phone-prefix__trigger { padding: 0 12px; }
+}
+

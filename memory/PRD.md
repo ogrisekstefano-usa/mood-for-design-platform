@@ -2,6 +2,85 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER167 · Round 3 · Email Continuity™ Layer** · ✅ DELIVERED · 28 Feb 2026
+
+  **🎯 Goal**: trasformare l'email del magic-link da notifica software
+  a **lettera dallo studio**. Tenant-aware, multilingue, DB-driven,
+  mobile-first, dark-mode safe.
+
+  **Cosa è stato fatto**
+
+  · **Template Continuity** · `services/email_templates.py::magic_link()`
+    riscritto da zero con struttura editoriale:
+      ▸ Brand mark centrato (italic Cormorant — no immagini fragili)
+      ▸ Eyebrow letter-spaced (10px, primary bronze)
+      ▸ Title cinematic "Bentornato, {{first_name}}." (Cormorant italic 28px)
+      ▸ **Hero quote** opzionale (estratta dal brief, bordo primary 2px)
+      ▸ Body editoriale Inter 14px line-height 1.7
+      ▸ **CTA mobile-first** full-width, padding 18×24, font-size 13px,
+        letter-spacing 0.18em, min-height ~52px (≥44px WCAG)
+      ▸ Microcopy soft
+      ▸ **Firma reale** "Con cura, / {{referente_name}}" con divider
+        hairline (border-top rgba 8%)
+      ▸ Plain-text twin completo per client che non renderizzano HTML.
+
+  · **Template `space_ready`** (post-3-step welcome) · stessa shell
+    cinematic, copy diverso (`Il tuo spazio è pronto, Maria. /
+    Abbiamo raccolto le tue prime indicazioni e preparato…`).
+    Registrato in `REGISTRY` come alias di `magic_link()` con
+    namespace editoriale separato.
+
+  · **Interpolazione variabili** · `_enrich_with_editorial` esteso con
+    `referente_name` + `hero_quote` (oltre a `studio_name`, `first_name`).
+
+  · **DB / CMS Governance** · 16 chiavi editoriali seedate via
+    `scripts/iter167_seed_email_continuity.py`:
+      · `system.email.magic_link.{subject, preheader, eyebrow, title,
+        body, cta, microcopy, sign_off}` (8 chiavi)
+      · `system.email.space_ready.{…}` (8 chiavi)
+    Source IT. ALE propaga automaticamente alle locali attive
+    (it-IT, en-US, en-GB, fr-FR, de-DE, es-ES).
+
+  · **Provisioning hooks** · `services/client_provisioning.py`:
+      ▸ Post-3-step intake → ora chiama `template_key="space_ready"`
+        (no più "generic" con copy hardcoded "Accedi", "Entra nel
+        tuo spazio").
+      ▸ `silent_magic_link` → ora chiama `template_key="magic_link"`,
+        passando `first_name`, `studio_name`, `referente_name`
+        (lookup automatico dal `human_assignments.primary_designer`).
+
+  · **Legacy cleanup** · eliminate 7 righe legacy in `editorial_blocks`
+    con `namespace='system.email'` + `block_key='magic_link.*'` che
+    contenevano "Accedi al tuo spazio", "Accesso rapido", "Apri il link
+    qui sotto entro 15 minuti", ecc.
+
+  **Testing**
+  - Render diretto `render('magic_link', ctx)` verificato live:
+      ▸ Subject: "MOOD for DESIGN™ · Il tuo spazio progettuale ti aspetta"
+      ▸ Title: "Bentornato, Maria."
+      ▸ Hero quote rendered: "Vorrei una casa che mi faccia rallentare."
+      ▸ CTA: "Apri il tuo spazio progettuale"
+      ▸ Signature: "Con cura, / Stefano Ogrisek"
+      ▸ **0 parole bandite**: Accedi/Login/Sign in/Entra nel tuo spazio
+  - Render `space_ready` verificato live: stessa quality, copy diverso.
+  - Screenshot HTML preview mobile (414px) + desktop (1280px): layout
+    cinematic, CTA tappabile, dark-mode safe.
+  - Backend endpoint `/api/auth/silent-magic-link` → 200 OK (opaque).
+  - Backend endpoint `/api/auth/identify` → 200 OK enumeration-safe.
+
+  **Backlog ITER167 — Round 4 (next sprint)**
+  - **P0**: QA E2E mobile reale (iPhone Safari + Gmail iOS) del flow
+    Landing → 3-step → Email Continuity → Magic-link click → Client
+    Profile → Logout → Rientra → Re-entry.
+  - **P0**: Phone country prefix dropdown nello step 3 di `/begin-journey`.
+  - **P1**: Atmospheric Panels™ nel Client Profile "Le tue prime
+    indicazioni" (texture/luce/macro, no persone realistiche).
+  - **P1**: Mobile overflow homepage (P1 testing agent reportato).
+  - **P2**: React warning "setState in render" su LoginPage.
+  - **P2 Hardcoded sweep**: `seed_editorial_runtime_v1.py:191` ("Accedi").
+
+---
+
 - **ITER167 · Round 2 · Adaptive Access™ + Hero Editorial Cleanup** · ✅ DELIVERED · 28 Feb 2026
 
   **🎯 Goal**: trasformare `/auth/login` da pagina software a soglia narrativa

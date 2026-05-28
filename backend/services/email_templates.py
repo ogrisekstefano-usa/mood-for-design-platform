@@ -90,7 +90,34 @@ def _wrap_email(*, brand: Dict[str, str], preheader: str, body_html: str) -> str
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="supported-color-schemes" content="dark light" />
   <title>{brand["brand_name"]}</title>
+  <style>
+    /* Apple Mail / Gmail iOS dark-mode hardening (ITER167 R4).
+       The cinematic palette IS dark by default — these rules force
+       the few light-mode clients to KEEP the dark intent so the
+       bronze/cream contrast never inverts on the client side.       */
+    :root {{
+      color-scheme: dark light;
+      supported-color-schemes: dark light;
+    }}
+    /* CTA: never let a client invert the bronze/cyan accent. */
+    .mfd-cta-link {{ color: #050608 !important; }}
+    /* Gmail dark-mode color-block override safety net. */
+    @media (prefers-color-scheme: dark) {{
+      .mfd-card    {{ background:#0e1014 !important; }}
+      .mfd-ink     {{ color:#e8ebf0 !important; }}
+      .mfd-ink-soft{{ color:rgba(232,235,240,0.7) !important; }}
+    }}
+    /* Block Outlook / Gmail "blue link auto-styling". */
+    a {{ color: inherit; text-decoration: none; }}
+    /* Mobile: extra breathing room for the CTA on iPhone screens. */
+    @media (max-width: 480px) {{
+      .mfd-card    {{ padding: 32px 22px !important; }}
+      .mfd-cta-cell{{ padding: 18px 18px !important; }}
+    }}
+  </style>
 </head>
 <body style="margin:0;padding:0;background:{brand['background']};color:{brand['ink']};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <!-- Preheader (hidden) -->
@@ -103,7 +130,7 @@ def _wrap_email(*, brand: Dict[str, str], preheader: str, body_html: str) -> str
             <td style="padding:0 0 24px;">{logo_block}</td>
           </tr>
           <tr>
-            <td style="background:{brand['card_background']};border:1px solid rgba(232,235,240,0.06);border-radius:12px;padding:40px 36px;">
+            <td class="mfd-card" style="background:{brand['card_background']};border:1px solid rgba(232,235,240,0.06);border-radius:12px;padding:40px 36px;">
               {body_html}
             </td>
           </tr>
@@ -250,18 +277,116 @@ def lead_captured(ctx: dict) -> Tuple[str, str, str]:
 
 # ─── Template: magic_link ─────────────────────────────────────────────
 def magic_link(ctx: dict) -> Tuple[str, str, str]:
+    """ITER167 Round 3 · Email Continuity™.
+
+    Cinematic letter from the studio (NOT a software auth notification).
+    Structure:
+      • small studio logo (mark)
+      • eyebrow (e.g. "IL TUO SPAZIO PROGETTUALE")
+      • cinematic title in italic Cormorant
+      • optional hero quote (drawn from the brief)
+      • short editorial body
+      • single, mobile-first CTA
+      • real signature (referente_name / studio_name)
+
+    Mobile-first: padding generous, CTA min-height 44px, font sizes scale,
+    dark-mode safe (uses explicit hex colors on every element).
+    Locale-aware: all strings come from `ctx['locale_copy']` populated by
+    `_enrich_with_editorial`. Hardcoded Italian only as safety net.
+    """
     brand = _branding(ctx.get("tenant_settings"))
     link = ctx["magic_url"]
-    body_html = (
-        _eyebrow("Accesso", brand["primary_color"])
-        + _title("Il tuo link di accesso.", brand["ink"])
-        + _p("Premi il pulsante qui sotto per entrare. Il link è valido "
-             "una sola volta e per pochi minuti.", brand["ink_soft"])
-        + _button("Entra", link, brand["primary_color"], brand["ink"])
+    locale = ctx.get("locale_copy", {}) or {}
+
+    studio_name    = ctx.get("studio_name")    or brand["brand_name"]
+    first_name     = (ctx.get("first_name")    or "").strip()
+    referente_name = (ctx.get("referente_name") or "").strip()
+    hero_quote     = (ctx.get("hero_quote")    or "").strip()
+
+    # Editorial source-of-truth (with editorial fallbacks)
+    eyebrow_txt = locale.get("eyebrow")  or "Il tuo spazio progettuale"
+    title_txt = locale.get("title") or (
+        f"Bentornato, {first_name}." if first_name else "Bentornato nel tuo spazio."
     )
-    subject = f"{brand['brand_name']} · Accedi al tuo spazio"
-    text = f"Accedi qui: {link}"
-    return subject, _wrap_email(brand=brand, preheader=subject, body_html=body_html), text
+    body_txt = locale.get("body") or (
+        "Abbiamo preparato il tuo spazio progettuale. "
+        "Da qui potrai continuare il tuo Design Journey™, "
+        "condividere idee e confrontarti con noi."
+    )
+    cta_txt   = locale.get("cta")       or "Apri il tuo spazio progettuale"
+    micro_txt = locale.get("microcopy") or (
+        "Il tuo accesso è personale. Potrai rientrare in qualsiasi momento."
+    )
+    sign_off  = locale.get("sign_off")  or "Con cura,"
+    signer = referente_name or studio_name
+
+    # Cinematic body — mobile-first inline styling, dark-mode safe.
+    quote_block = ""
+    if hero_quote:
+        quote_block = (
+            f'<table role="presentation" cellpadding="0" cellspacing="0" border="0" '
+            f'style="margin:0 0 24px 0;width:100%;">'
+            f'  <tr><td style="border-left:2px solid {brand["primary_color"]};padding:8px 0 8px 18px;">'
+            f'    <p style="margin:0;font-family:Georgia,\'Cormorant Garamond\',serif;'
+            f'    font-style:italic;font-size:18px;line-height:1.45;color:{brand["ink"]};">'
+            f'    \u201C{hero_quote}\u201D'
+            f'    </p>'
+            f'  </td></tr>'
+            f'</table>'
+        )
+
+    body_html = (
+        _eyebrow(eyebrow_txt, brand["primary_color"])
+        + _title(title_txt, brand["ink"])
+        + quote_block
+        + _p(body_txt, brand["ink_soft"])
+        + _mobile_cta(cta_txt, link, brand["primary_color"])
+        + _p(micro_txt, brand["ink_soft"])
+        + _signature(sign_off, signer, brand["ink"], brand["ink_soft"])
+    )
+
+    subject   = locale.get("subject")   or f"{studio_name} \u00b7 Il tuo spazio progettuale ti aspetta"
+    preheader = locale.get("preheader") or "Apri il link per continuare il tuo Design Journey\u2122."
+
+    text = (
+        f"{title_txt}\n\n"
+        + (f"\u201C{hero_quote}\u201D\n\n" if hero_quote else "")
+        + f"{body_txt}\n\n"
+        f"{cta_txt}: {link}\n\n"
+        f"{micro_txt}\n\n"
+        f"{sign_off}\n{signer}"
+    )
+    return subject, _wrap_email(brand=brand, preheader=preheader, body_html=body_html), text
+
+
+# ─── Email Continuity™ helpers (ITER167.R3) ────────────────────────────
+def _mobile_cta(label: str, href: str, primary: str) -> str:
+    """Big, tappable, mobile-first CTA. min-height ~52px (44px target + padding)."""
+    return (
+        f'<table role="presentation" cellpadding="0" cellspacing="0" border="0" '
+        f'style="margin:28px 0;width:100%;">'
+        f'  <tr><td class="mfd-cta-cell" align="center" style="border-radius:6px;background:{primary};">'
+        f'    <a href="{href}" target="_blank" class="mfd-cta-link" '
+        f'       style="display:block;padding:18px 24px;'
+        f'              font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Helvetica,Arial,sans-serif;'
+        f'              font-size:13px;letter-spacing:0.18em;text-transform:uppercase;'
+        f'              text-decoration:none;color:#050608;font-weight:600;'
+        f'              min-height:18px;line-height:1.4;">'
+        f'      {label}'
+        f'    </a>'
+        f'  </td></tr>'
+        f'</table>'
+    )
+
+
+def _signature(sign_off: str, signer: str, ink: str, ink_soft: str) -> str:
+    return (
+        f'<div style="margin-top:36px;padding-top:24px;border-top:1px solid rgba(232,235,240,0.08);">'
+        f'  <p style="margin:0 0 6px;font-size:13px;line-height:1.6;color:{ink_soft};">{sign_off}</p>'
+        f'  <p style="margin:0;font-family:Georgia,\'Cormorant Garamond\',serif;'
+        f'  font-style:italic;font-size:18px;color:{ink};">{signer}</p>'
+        f'</div>'
+    )
 
 
 # ─── Template: generic notification (proposal_ready, journey_started…) ─
@@ -290,6 +415,10 @@ REGISTRY = {
     "onboarding":     onboarding,
     "lead_captured":  lead_captured,
     "magic_link":     magic_link,
+    # ITER167.R3 · Email Continuity™ — post-3-step welcome reuses the same
+    # cinematic composer as magic_link, with editorial copy from
+    # `email.space_ready.*` editorial blocks.
+    "space_ready":    magic_link,
     "partnership_request": lead_captured,  # ITER146.A · reuse same composer, copy diverges via editorial
     "proposal_ready": generic,
     "journey_started": generic,
@@ -309,6 +438,7 @@ _EDITORIAL_TEMPLATE_KEY = {
     "onboarding":     "onboarding",
     "lead_captured":  "lead_captured",
     "magic_link":     "magic_link",
+    "space_ready":    "space_ready",  # ITER167.R3
     "partnership_request": "partnership_request",  # ITER146.A
 }
 
@@ -352,10 +482,13 @@ def _enrich_with_editorial(template_key: str, ctx: dict) -> dict:
     # Variables available to interpolation come from ctx + tenant brand.
     brand = _branding(ctx.get("tenant_settings") or ctx.get("tenant_identity"))
     interp_vars = {
-        "studio_name":  brand.get("brand_name") or "MOOD for DESIGN™",
-        "brand_name":   brand.get("brand_name") or "MOOD for DESIGN™",
-        "first_name":   ctx.get("first_name") or "",
-        "inviter_name": ctx.get("inviter_name") or "",
+        "studio_name":    brand.get("brand_name") or "MOOD for DESIGN™",
+        "brand_name":     brand.get("brand_name") or "MOOD for DESIGN™",
+        "first_name":     ctx.get("first_name") or "",
+        "inviter_name":   ctx.get("inviter_name") or "",
+        # ITER167.R3 · Email Continuity™
+        "referente_name": ctx.get("referente_name") or "",
+        "hero_quote":     ctx.get("hero_quote") or "",
     }
     resolved = {k: _interpolate(v, interp_vars) for k, v in copy.items()}
     # Merge under locale_copy WITHOUT overriding any caller-provided keys

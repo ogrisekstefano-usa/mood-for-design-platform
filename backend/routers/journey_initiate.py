@@ -37,6 +37,11 @@ class WelcomePayload(BaseModel):
     first_name: str = Field(..., min_length=1, max_length=80)
     email:      EmailStr
     phone:      Optional[str] = None
+    # ITER167 R4 · Phone Country Prefix — DB-driven structured payload
+    # for future routing, Chameleon™, timezone, and WhatsApp/recall logic.
+    country_code:     Optional[str] = Field(default=None, max_length=2)   # ISO-3166-1 alpha-2
+    dial_code:        Optional[str] = Field(default=None, max_length=8)   # "+39", "+971"
+    normalized_phone: Optional[str] = Field(default=None, max_length=32)  # "+390123456789"
 
 
 class InitiatePayload(BaseModel):
@@ -132,6 +137,17 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
 
     now = _now()
 
+    # Phone normalization (ITER167 R4): use the normalized version if
+    # the frontend sent one (full E.164-style "+39…"), otherwise the raw
+    # value. Country code / dial code go to metadata_json for future
+    # routing (Chameleon™, timezone, WhatsApp/recall logic).
+    _phone_normalized = body.welcome.normalized_phone or body.welcome.phone
+    _phone_meta = {}
+    if body.welcome.country_code:
+        _phone_meta["country_code"] = body.welcome.country_code
+    if body.welcome.dial_code:
+        _phone_meta["dial_code"] = body.welcome.dial_code
+
     # 1. Account
     account_id = str(uuid.uuid4())
     c.table('accounts').insert({
@@ -142,9 +158,11 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         "lifecycle_stage": "conversation_open",
         "source":          "begin_journey_ritual",
         "email":           email,
-        "phone":           body.welcome.phone,
+        "phone":           _phone_normalized,
         "language":        "it",
         "locale_code":     "it",
+        "country":         body.welcome.country_code,
+        "metadata_json":   _phone_meta or None,
         "created_at":      now,
         "updated_at":      now,
     }).execute()
@@ -157,7 +175,8 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         "account_id":      account_id,
         "first_name":      first_name,
         "email":           email,
-        "phone":           body.welcome.phone,
+        "phone":           _phone_normalized,
+        "metadata_json":   _phone_meta or None,
         "primary_contact": True,
         "lifecycle_stage": "conversation_open",
         "created_at":      now,
