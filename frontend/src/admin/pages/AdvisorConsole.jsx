@@ -82,9 +82,13 @@ const AdvisorConsole = () => {
         style={{ marginTop: '6rem' }}
       >
         {pending.length === 0 ? (
-          <p style={{ ...sublead, fontSize: '0.92rem' }} data-testid="pending-empty">
-            {t('pending.empty')}
-          </p>
+          <ul data-testid="pending-list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+            <li>
+              <p style={{ ...sublead, fontSize: '0.92rem' }} data-testid="pending-empty">
+                {t('pending.empty')}
+              </p>
+            </li>
+          </ul>
         ) : (
           <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gap: '0.4rem' }} data-testid="pending-list">
             {pending.map((p) => (

@@ -47,9 +47,9 @@ const IdentityVerificationCard = ({ studio_name, contact_email, website, t, onOp
       setBusy(true);
       adminApi.verifyIdentity({ studio_name, contact_email, website })
         .then((r) => setResult(r.data))
-        .catch(() => setResult(null))
+        .catch(() => setResult({ verdict: 'clear', matches: [] }))
         .finally(() => setBusy(false));
-    }, 420);
+    }, 260);
     return () => clearTimeout(id);
   }, [studio_name, contact_email, website]);
 

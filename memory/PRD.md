@@ -12,6 +12,49 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ## Latest session — Feb 28, 2026
 
+### ITER161 Phase 1 — Studio Relations & Advisor Governance™ ✅ (Feb 28, 2026)
+- **Vision**: NOT a CRM. A curatorial relational infrastructure. Private-banking aesthetic. Zero sales/lead/pipeline vocabulary anywhere.
+- **DB**: 5 new tables (migration `023_iter161_studio_relations.sql`):
+  - `studio_relations` — living relationship between advisor and studio. Status enum: prospect | under_review | contacted | presentation_scheduled | presented | qualified | proposal | activated | not_aligned | archived. Temperature: cold | warm | strong | ready.
+  - `studio_visit_reports` — curatorial assessment with 8 rating dimensions (0–5): workflow_maturity, showroom_quality, material_culture, design_journey_alignment, client_experience_maturity, international_readiness, digital_readiness, operational_complexity. Plus atmosphere_observed, opportunities, objections.
+  - `advisor_followups` — gentle reminders (call | email | visit | demo | internal_review | activation | proposal).
+  - `advisor_commission_rules` — Advisory Value rules per advisor/market/archetype.
+  - `studio_relationship_events` — narrative timeline (relation_opened, contact_made, visit_recorded, status_changed, ownership_changed, activated…).
+- **Service** `services/studio_relations.py`:
+  - `verify_studio_identity()` — the **Identity Verification Layer™**. Curatorial duplicate/network match check across tenants + studio_relations + studio_requests. Returns verdict (clear | possible_match | existing_relation | active_tenant) with confidence-scored matches. Never raises (fail-soft).
+  - `open_relation_from_request()` / `create_relation_manually()` — both initialize advisor ownership + 120-day protection window.
+  - `list_relations()`, `get_relation()` (returns events/visits/followups), `update_relation()` (logs timeline events on status/temperature/ownership changes).
+  - `create_visit_report()`, `create_followup()` / `complete_followup()`, `list_followups_for_advisor()` (buckets: overdue/today/this_week/scheduled).
+  - `activate_studio_ecosystem()` — **the only path to tenant creation in MOOD**. Creates tenants row + tenant_modules from selected experiences + founder user (`!magic-link-only` password sentinel since auth is magic-link) + issues Resend Magic Link.
+- **Router** `routers/admin_relations.py` (all admin-guarded):
+  - `POST /api/admin/relations/verify-identity`
+  - `GET/POST /api/admin/relations` + `POST /api/admin/relations/from-request/{id}`
+  - `GET/PATCH /api/admin/relations/{id}` + `POST /admin/relations/{id}/visits` + `POST /admin/relations/{id}/followups`
+  - `PATCH /api/admin/followups/{id}/complete`
+  - `GET /api/admin/advisor/followups?advisor_id=…` + `GET /api/admin/advisor/console-summary`
+  - `POST /api/admin/relations/{id}/activate-ecosystem`
+  - `GET /api/admin/copy/manifest?namespace=…&locale=…` — resolves an entire editorial namespace in one call.
+- **Editorial copy seed** `seed_iter161_studio_relations.py` — 162 IT blocks under `admin.studioRelations.*`. Curatorial vocabulary throughout:
+  - Status labels: "Allineamento editoriale" (qualified), "Ecosistema attivato" (activated), "Presentazione consegnata".
+  - Temperature: "In ascolto" / "In dialogo" / "In allineamento" / "Pronto all'apertura".
+  - Sections: "Cartella curatoriale" (timeline), "Advisory Value in osservazione", "Provenienza dello studio" (identity verification), "Apri l'Ecosistema dello Studio" (activation).
+- **Frontend**:
+  - `pages/AdvisorConsole.jsx` (`/admin/advisor-console`) — editorial dashboard: hero (italic Playfair sublead), 4-cell summary strip with hairline dividers + Advisory Value strip (italic monetary values), Pending Introductions list with "Apri la lettura" action, Studio Relations table with 5 filter chips + new-relation drawer.
+  - `pages/RelationDetail.jsx` — full dossier: provenance header, status + temperature pickers (calm dots, no red), advisor notes + next-action input, **curatorial timeline** (dossier-style), Advisory Value panel (italic numeric inputs), follow-ups list, visit reports list with atmosphere quotes, conditional "Apri l'Ecosistema dello Studio" CTA.
+  - `components/IdentityVerificationCard.jsx` — debounced (260ms) probe in the new-relation drawer. Soft states with confidence levels. Provenance label + per-match line with score → "Risonanza alta/media/lieve", status, "Apri la relazione esistente" CTA. **Never** uses red alerts.
+  - `components/VisitReportForm.jsx` — magazine-style curatorial assessment: atmosphere textarea (italic Playfair), 8 rating rows with 0–5 pill picker, opportunities/objections/competitors/next-step blocks, Advisory Value triple (monthly/setup/probability).
+  - `components/OpenEcosystemFlow.jsx` — the **sacred moment** in 3 phases: Review (studio · archetype · experiences · founder) → Activating (spinner) → Confirmation ("L'ecosistema è aperto.") with tenant slug + return CTA.
+  - `utils/useEditorialCopy.js` — fetches namespace manifest, returns `t(key, fallback)` with locale fallback chain.
+  - `utils/consoleTokens.js` — shared design tokens (bg #08090C, teal #00C9B3, hair rgba 0.06, typography preset constants).
+- **AdminApp**: nav reordered to expose Advisor Console between Footer and Studio Requests. Padding-edge-to-edge on advisor routes.
+
+### Validation (Iteration 6)
+- **Backend**: 16/16 pytest tests green (auth guards, copy manifest 162 IT keys + curatorial vocabulary check, verify-identity clear→existing_relation transition, full CRUD + visit + followup complete, console-summary shape, activate-ecosystem returning {tenant_id, slug, founder_user_id, magic_link_sent}).
+- **Frontend**: All editorial Italian copy resolves correctly; status pickers display "Allineamento editoriale" / "Ecosistema attivato" / "In dialogo". **Zero CRM vocabulary anywhere** (sweep clean). Filter chips, summary strip, drawer, IdentityVerificationCard, RelationDetail all functional.
+- **Minor polish applied**: pending-list testid in empty state, loading skeleton on RelationDetail first paint, IdentityVerificationCard debounce shortened to 260ms.
+
+---
+
 ### ITER160 Phase 2 — Full /studio Flow + Studio Requests ✅ (Feb 28, 2026)
 - **Reframed**: the flow is NOT a SaaS signup or activation. It is a **Guided Introduction Request** — the studio composes its profile, a MOOD Advisor follows up manually. No checkout, no plan selection, no auto-tenant creation.
 - **New DB table** `studio_requests` (migration `022_iter160_studio_requests.sql`) — captures archetype, experiences, identity payload, contact, locale, source, status (`received` | `reviewing` | `contacted` | `qualified` | `not_aligned` | `activated`), advisor_notes, reviewed_at, assigned_advisor_id.

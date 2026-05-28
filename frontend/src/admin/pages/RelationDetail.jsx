@@ -73,7 +73,27 @@ const RelationDetail = () => {
     } catch { setSavingNotes(false); }
   };
 
-  if (!loaded || !data) return <div style={{ minHeight: 600, background: tokens.bg }} />;
+  if (!loaded || !data) return (
+    <div data-testid="relation-detail-loading" style={{
+      background: tokens.bg, color: tokens.ink, minHeight: '100vh',
+      padding: '3rem 4.5rem 6rem',
+    }}>
+      <div style={{ maxWidth: 760 }}>
+        <div style={{
+          width: 240, height: 12, background: tokens.hair,
+          borderRadius: 1, marginBottom: '1.4rem', opacity: 0.5,
+        }} />
+        <div style={{
+          width: 460, height: 36, background: tokens.hair,
+          borderRadius: 1, marginBottom: '1rem', opacity: 0.6,
+        }} />
+        <div style={{
+          width: 320, height: 14, background: tokens.hair,
+          borderRadius: 1, opacity: 0.4,
+        }} />
+      </div>
+    </div>
+  );
 
   return (
     <div data-testid="relation-detail" style={{
