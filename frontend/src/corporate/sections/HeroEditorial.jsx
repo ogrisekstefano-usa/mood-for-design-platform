@@ -44,7 +44,7 @@ const HeroEditorial = ({ content = {}, media = {}, links = {} }) => {
         style={{
           position: 'absolute', inset: 0,
           background:
-            'linear-gradient(to right, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.94) 22%, rgba(0,0,0,0.78) 42%, rgba(0,0,0,0.5) 62%, rgba(0,0,0,0.18) 78%, rgba(0,0,0,0) 92%)',
+            'linear-gradient(to right, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.95) 28%, rgba(0,0,0,0.82) 50%, rgba(0,0,0,0.55) 68%, rgba(0,0,0,0.22) 82%, rgba(0,0,0,0) 95%)',
         }}
       />
 
@@ -60,7 +60,7 @@ const HeroEditorial = ({ content = {}, media = {}, links = {} }) => {
             paddingTop: '5rem', paddingBottom: '5rem',
           }}
         >
-          <div className="max-w-[640px]">
+          <div className="max-w-[860px]">
             {content.eyebrow && (
               <p
                 style={{
@@ -76,7 +76,7 @@ const HeroEditorial = ({ content = {}, media = {}, links = {} }) => {
             <h1
               style={{
                 fontFamily: 'Playfair Display, serif', fontWeight: 400,
-                fontSize: 'clamp(2.8rem, 5.2vw, 5rem)', lineHeight: 1.04,
+                fontSize: 'clamp(2.8rem, 5.6vw, 5.8rem)', lineHeight: 1.04,
                 letterSpacing: '-0.02em', color: '#FFFFFF',
               }}
               data-testid="hero-title"
@@ -95,9 +95,9 @@ const HeroEditorial = ({ content = {}, media = {}, links = {} }) => {
                 className="mt-8 lg:mt-10"
                 style={{
                   fontFamily: 'Inter, sans-serif',
-                  fontSize: 'clamp(1rem, 1.15vw, 1.1rem)',
+                  fontSize: 'clamp(1rem, 1.15vw, 1.15rem)',
                   lineHeight: 1.72, color: 'rgba(255,255,255,0.78)', fontWeight: 300,
-                  maxWidth: '48ch',
+                  maxWidth: '62ch',
                 }}
                 data-testid="hero-body"
               >
