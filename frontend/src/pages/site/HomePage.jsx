@@ -64,7 +64,7 @@ const EDITORIAL_SHELL = {
     materials:       { it: 'Materiali',      en: 'Materials' },
     professionals:   { it: 'Per i professionisti', en: 'For Professionals™' },
     about:           { it: 'Chi siamo',      en: 'About' },
-    login:           { it: 'Entra nel tuo spazio', en: 'Enter your space' },
+    login:           { it: 'Rientra', en: 'Re-enter' },
     cta:             { it: 'Inizia il tuo Design Journey™', en: 'Begin your Design Journey™' },
   },
   // Editorial slots — empty by design. Populated by the CMS.

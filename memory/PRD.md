@@ -2,6 +2,69 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER167 · Round 2 · Adaptive Access™ + Hero Editorial Cleanup** · ✅ DELIVERED · 28 Feb 2026
+
+  **🎯 Goal**: trasformare `/auth/login` da pagina software a soglia narrativa
+  adattiva (email-first, role-aware) + ripulire ogni residuo "viaggio"/"Accedi"
+  dalle superfici pubbliche cinematiche.
+
+  **Cosa è stato fatto**
+
+  · **Backend** · nuovo endpoint enumeration-safe
+    `POST /api/auth/identify` → `{kind, password_exists}` (kind = `client` |
+    `professional`). Email sconosciuta → fallback client default, nessun
+    leak. Professionals → password_exists sempre `True`. Clients →
+    `True` solo se `users_profile.metadata_json.password_chosen`.
+
+  · **Frontend** · `LoginPage.jsx` riscritta completamente con phase
+    machine **probe → adaptive → sent**:
+      ▸ Phase 1: solo email + "Continua"
+      ▸ Phase 2 (client): "Continua via email" primario; "Usa password"
+        secondario (solo se password_exists)
+      ▸ Phase 2 (professional): password-first, CTA "Accedi al
+        workspace"; secondario "Ricevi accesso via email"
+      ▸ Phase 3: confirmation cinematic "Ti abbiamo inviato un accesso
+        personale"
+    · Back button persistent, ogni step.
+    · Tutti i copy via `t()` (BlueprintContext) + fallback editoriali.
+
+  · **CSS** · `auth-login.css` nuove classi `.mfd-auth__back`,
+    `.mfd-auth__secondary` (ghost CTA), `.mfd-auth__resolved-email`
+    (italic Cormorant 19px), `.mfd-auth__row--single`.
+
+  · **i18n governance** · 26 chiavi `auth.access.*` seedate in
+    `editorial_blocks` (scope=system) via
+    `scripts/iter167_seed_adaptive_access_i18n.py`. ALE propaga
+    automaticamente alle locali attive. NO più hardcoded copy.
+
+  · **Hero editorial cleanup** ·
+    `cms_sections.hero_editorial.locale_content.it`:
+      - title: "Il tuo spazio. / Il tuo viaggio." → "Il tuo spazio. / Il tuo Design Journey™."
+      - cta_primary: "Inizia il tuo viaggio" → "Inizia il tuo Design Journey™"
+    Snapshot `cms_page_revisions` re-frozen per servire l'endpoint pubblico.
+
+  · **HomePage.jsx** · custom-header login label "Entra nel tuo spazio" → "Rientra".
+
+  **Testing**
+  - iteration 159 (testing agent): Backend 7/7 PASS · Frontend 9/12 PASS.
+    P0 violations risolte tutte (HomePage label + i18n keys + hero copy).
+  - Self-test post-fix: 0× parole bandite su `/`, hero CTA = "Inizia il
+    tuo Design Journey™", hero title = "Il tuo Design Journey™".
+  - Adaptive Access™ verificato live:
+      ▸ admin@moodfordesign.com → kind=professional ✓ password field
+      ▸ visitor_test@example.com → kind=client ✓ "Continua via email"
+
+  **Backlog ITER167 — Round 3 (next sprint)**
+  - Phone country prefix dropdown nello step 3 di `/begin-journey`
+  - Email template editoriali multilingue (magic-link + password creation)
+  - Atmospheric Panels™ in Client Profile · "Le tue prime indicazioni"
+  - Mobile overflow homepage (P1 testing agent reportato)
+  - React warning "setState in render" su LoginPage (P2 cosmetic)
+  - Hardcoded sweep: `seed_editorial_runtime_v1.py`, `email_templates.py`
+    (residui "Accedi al tuo spazio" nei subject email)
+
+---
+
 - **ITER167 · Round 1 · Access Continuity™ Header + Naming Governance** · ✅ DELIVERED · 28 Feb 2026
 
   **🎯 Goal**: rimuovere ogni residuo "software" dalla navbar pubblica e
