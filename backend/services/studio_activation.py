@@ -183,9 +183,8 @@ async def patch_draft(
 
 def manifest() -> dict:
     """
-    Static map consumed by the frontend on mount — archetypes (with their
-    visual identity hints), experiences, and the editorial copy keys per
-    movement. This avoids 30+ /api/site/block round-trips.
+    Static map consumed by the frontend on mount — archetypes, experiences,
+    pre-suggestion logic, and the editorial copy keys per movement.
     """
     BASE = ("https://ytctctmvgdkmyjrbgmqs.supabase.co/storage/v1/object/public/"
             "cms-assets/848354b9-a43e-4147-bdad-116fb93bd585/site/")
@@ -264,9 +263,92 @@ def manifest() -> dict:
             "studio.activation.practice.continue_cta",
             "studio.activation.practice.fallback_line",
             "studio.activation.practice.fallback_link",
+            # Movement III — Ecosystem
+            "studio.activation.ecosystem.eyebrow",
+            "studio.activation.ecosystem.headline",
+            "studio.activation.ecosystem.sublead",
+            "studio.activation.ecosystem.included_line",
+            "studio.activation.ecosystem.exclude_line",
+            "studio.activation.ecosystem.continue_cta",
+            "studio.activation.ecosystem.helper",
+            # Movement IV — Identity
+            "studio.activation.identity.eyebrow",
+            "studio.activation.identity.headline",
+            "studio.activation.identity.sublead",
+            "studio.activation.identity.studio_name.label",
+            "studio.activation.identity.studio_name.placeholder",
+            "studio.activation.identity.monogram.label",
+            "studio.activation.identity.monogram.helper",
+            "studio.activation.identity.where.label",
+            "studio.activation.identity.where.city_placeholder",
+            "studio.activation.identity.where.country_placeholder",
+            "studio.activation.identity.languages.label",
+            "studio.activation.identity.atelier.label",
+            "studio.activation.identity.atelier.name_placeholder",
+            "studio.activation.identity.atelier.role_placeholder",
+            "studio.activation.identity.atelier.add",
+            "studio.activation.identity.markets.label",
+            "studio.activation.identity.temperament.label",
+            "studio.activation.identity.temperament.helper",
+            "studio.activation.identity.contact.eyebrow",
+            "studio.activation.identity.contact.headline",
+            "studio.activation.identity.contact.name_placeholder",
+            "studio.activation.identity.contact.role_placeholder",
+            "studio.activation.identity.contact.email_label",
+            "studio.activation.identity.contact.email_placeholder",
+            "studio.activation.identity.contact.phone_label",
+            "studio.activation.identity.contact.phone_prefix_placeholder",
+            "studio.activation.identity.contact.phone_number_placeholder",
+            "studio.activation.identity.contact.website_label",
+            "studio.activation.identity.contact.website_placeholder",
+            "studio.activation.identity.contact.notes_label",
+            "studio.activation.identity.contact.notes_placeholder",
+            "studio.activation.identity.continue_cta",
+            "studio.activation.identity.confirm_inline",
+            # Movement V — Request
+            "studio.activation.request.eyebrow",
+            "studio.activation.request.headline",
+            "studio.activation.request.body",
+            "studio.activation.request.guided_intro",
+            "studio.activation.request.reference_label",
+            "studio.activation.request.return_cta",
+            # Temperament cards
+            "studio.activation.temperament.quiet.title",
+            "studio.activation.temperament.quiet.body",
+            "studio.activation.temperament.composed.title",
+            "studio.activation.temperament.composed.body",
+            "studio.activation.temperament.vivid.title",
+            "studio.activation.temperament.vivid.body",
+            # Markets (single source of truth)
+            "studio.activation.market.private_residential",
+            "studio.activation.market.hospitality",
+            "studio.activation.market.cultural",
+            "studio.activation.market.yacht",
+            "studio.activation.market.aviation",
+            "studio.activation.market.retail",
+            "studio.activation.market.office",
+            "studio.activation.market.showroom",
+            "studio.activation.market.restaurant",
+            # Roles (atelier role suggestions)
+            "studio.activation.role.founder",
+            "studio.activation.role.partner",
+            "studio.activation.role.designer",
+            "studio.activation.role.project_lead",
+            "studio.activation.role.curator",
+            "studio.activation.role.advisor",
+            "studio.activation.role.studio_manager",
+            # Languages (display labels)
+            "studio.activation.language.it",
+            "studio.activation.language.en-us",
+            "studio.activation.language.fr",
+            "studio.activation.language.de",
+            "studio.activation.language.es",
             # Archetype copy
             *[f"studio.activation.archetype.{k}.title" for k in VALID_ARCHETYPES],
             *[f"studio.activation.archetype.{k}.body"  for k in VALID_ARCHETYPES],
+            # Experience copy
+            *[f"studio.activation.experience.{k}.title" for k in VALID_EXPERIENCES],
+            *[f"studio.activation.experience.{k}.body"  for k in VALID_EXPERIENCES],
         ],
     }
 
@@ -289,6 +371,221 @@ def _serialize_draft(row, *, resumed: bool) -> dict:
     }
 
 
-def _json_dump(d: dict) -> str:
+def _json_dump(d) -> str:
     import json
     return json.dumps(d, default=str, ensure_ascii=False)
+
+
+async def manifest_with_copy(locale: str = 'it') -> dict:
+    """
+    Same as `manifest()` but with `copy` map already resolved server-side
+    so the frontend can render with a SINGLE network round-trip.
+    """
+    base = manifest()
+    keys = base.get('copy_keys', [])
+    # Batch-resolve in a single session call (avoid 108x session-open).
+    from services.site_resolver import _fetch_block_values
+    from tenant_resolver import get_corporate_tenant
+    tenant = await get_corporate_tenant()
+    async with AsyncSessionLocal() as session:
+        values = await _fetch_block_values(session, tenant['id'], keys, locale)
+    base['copy'] = {k: (values.get(k) or '') for k in keys}
+    return base
+
+
+# ── Final submission (Guided Introduction Request) ───────────────
+VALID_TEMPERAMENTS = {'quiet', 'composed', 'vivid'}
+
+
+async def submit_request(
+    *,
+    draft_token: str,
+    contact_email: str,
+    contact_name: str | None = None,
+    contact_role: str | None = None,
+    phone_prefix: str | None = None,
+    phone_number: str | None = None,
+    website: str | None = None,
+    notes: str | None = None,
+    locale: str = 'it',
+    ip: str | None = None,
+    user_agent: str | None = None,
+) -> dict:
+    """
+    Convert a draft into a qualified `studio_requests` row. The studio
+    does NOT become an active tenant. A MOOD Advisor will review the
+    request and continue the conversation manually.
+
+    Returns:
+      { ok: True,  request_id: "...", reference: "MOOD-XXXX-XXXX" }
+      { ok: False, reason: "empty_email" | "no_draft" | "internal" }
+    """
+    contact_email = (contact_email or '').lower().strip()
+    if not contact_email or '@' not in contact_email:
+        return {"ok": False, "reason": "empty_email"}
+    if not draft_token:
+        return {"ok": False, "reason": "no_draft"}
+
+    async with AsyncSessionLocal() as s:
+        drow = (await s.execute(
+            text("""
+                SELECT id, archetype, experiences, payload, founder_email
+                  FROM studio_activation_drafts
+                 WHERE draft_token = :tok
+                 LIMIT 1
+            """),
+            {"tok": draft_token},
+        )).mappings().first()
+        if not drow:
+            return {"ok": False, "reason": "no_draft"}
+
+        payload = drow['payload'] or {}
+        # Coerce values out of the identity payload
+        studio_name = (payload.get('studio_name') or '').strip() or None
+        monogram    = (payload.get('monogram')    or '').strip() or None
+        city        = (payload.get('city')        or '').strip() or None
+        country     = (payload.get('country')     or '').strip() or None
+        languages   = payload.get('languages') or []
+        atelier     = payload.get('atelier')   or []
+        markets     = payload.get('markets')   or []
+        temperament = payload.get('temperament')
+        if temperament not in VALID_TEMPERAMENTS:
+            temperament = None
+
+        # Insert the request
+        new = (await s.execute(
+            text("""
+                INSERT INTO studio_requests
+                    (draft_id, archetype, experiences,
+                     studio_name, monogram, city, country, languages,
+                     atelier, markets, temperament,
+                     contact_name, contact_role, contact_email,
+                     phone_prefix, phone_number, website, notes,
+                     locale, ip, user_agent)
+                VALUES (:did, :arc, :exp,
+                        :sn, :mg, :ci, :co, :langs,
+                        CAST(:atelier AS jsonb), :mk, :tmp,
+                        :cn, :cr, :em,
+                        :pp, :ph, :ws, :nt,
+                        :loc, :ip, :ua)
+                RETURNING id, created_at
+            """),
+            {
+                "did": str(drow['id']),
+                "arc": drow['archetype'],
+                "exp": list(drow['experiences'] or []),
+                "sn": studio_name, "mg": monogram,
+                "ci": city, "co": country, "langs": list(languages),
+                "atelier": _json_dump(atelier),
+                "mk": list(markets), "tmp": temperament,
+                "cn": (contact_name or '').strip() or None,
+                "cr": (contact_role or '').strip() or None,
+                "em": contact_email,
+                "pp": (phone_prefix or '').strip() or None,
+                "ph": (phone_number or '').strip() or None,
+                "ws": (website or '').strip() or None,
+                "nt": (notes or '').strip() or None,
+                "loc": locale, "ip": ip, "ua": user_agent,
+            },
+        )).mappings().first()
+
+        # Mark the draft completed
+        await s.execute(
+            text("UPDATE studio_activation_drafts "
+                 "   SET completed_at = NOW(), founder_email = :em, "
+                 "       current_movement = 'activate', updated_at = NOW() "
+                 " WHERE id = :id"),
+            {"id": str(drow['id']), "em": contact_email},
+        )
+        await s.commit()
+
+        request_id = str(new['id'])
+        reference  = _format_reference(request_id)
+        return {"ok": True, "request_id": request_id, "reference": reference}
+
+
+def _format_reference(uid: str) -> str:
+    """Return a human-friendly 'MOOD-XXXX-XXXX' reference from a UUID."""
+    h = uid.replace('-', '').upper()
+    return f"MOOD-{h[:4]}-{h[4:8]}"
+
+
+# ── Admin: list requests ─────────────────────────────────────────
+async def list_requests(*, status: str | None = None, limit: int = 50) -> list[dict]:
+    where = ""
+    params: dict = {"limit": int(limit)}
+    if status:
+        where = "WHERE status = :st"
+        params["st"] = status
+    async with AsyncSessionLocal() as s:
+        rows = (await s.execute(
+            text(f"""
+                SELECT id, archetype, experiences, studio_name, monogram,
+                       city, country, languages, markets, temperament,
+                       contact_name, contact_role, contact_email,
+                       phone_prefix, phone_number, website, notes,
+                       locale, status, created_at, updated_at,
+                       reviewed_at, advisor_notes
+                  FROM studio_requests
+                  {where}
+                 ORDER BY created_at DESC
+                 LIMIT :limit
+            """),
+            params,
+        )).mappings().all()
+    out = []
+    for r in rows:
+        out.append({
+            "id":               str(r['id']),
+            "reference":        _format_reference(str(r['id'])),
+            "archetype":        r['archetype'],
+            "experiences":      list(r['experiences'] or []),
+            "studio_name":      r['studio_name'],
+            "monogram":         r['monogram'],
+            "city":             r['city'],
+            "country":          r['country'],
+            "languages":        list(r['languages'] or []),
+            "markets":          list(r['markets'] or []),
+            "temperament":      r['temperament'],
+            "contact_name":     r['contact_name'],
+            "contact_role":     r['contact_role'],
+            "contact_email":    r['contact_email'],
+            "phone_prefix":     r['phone_prefix'],
+            "phone_number":     r['phone_number'],
+            "website":          r['website'],
+            "notes":            r['notes'],
+            "locale":           r['locale'],
+            "status":           r['status'],
+            "created_at":       r['created_at'].isoformat() if r['created_at'] else None,
+            "updated_at":       r['updated_at'].isoformat() if r['updated_at'] else None,
+            "reviewed_at":      r['reviewed_at'].isoformat() if r['reviewed_at'] else None,
+            "advisor_notes":    r['advisor_notes'],
+        })
+    return out
+
+
+async def update_request_status(
+    *, request_id: str, status: str | None = None,
+    advisor_notes: str | None = None,
+) -> bool:
+    VALID = {'received', 'reviewing', 'contacted', 'qualified', 'not_aligned', 'activated'}
+    if status and status not in VALID:
+        return False
+    sets: list[str] = ["updated_at = NOW()"]
+    params: dict = {"id": request_id}
+    if status is not None:
+        sets.append("status = :st")
+        params["st"] = status
+        if status != 'received':
+            sets.append("reviewed_at = COALESCE(reviewed_at, NOW())")
+    if advisor_notes is not None:
+        sets.append("advisor_notes = :nt")
+        params["nt"] = advisor_notes
+    async with AsyncSessionLocal() as s:
+        r = await s.execute(
+            text(f"UPDATE studio_requests SET {', '.join(sets)} "
+                 "WHERE id = :id RETURNING id"),
+            params,
+        )
+        await s.commit()
+        return r.scalar() is not None

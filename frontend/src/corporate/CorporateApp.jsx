@@ -21,6 +21,9 @@ import StartStudioPage from './pages/StartStudioPage';
 import AccessContinuityPage from './pages/AccessContinuityPage';
 import MovementEntrance from './pages/studio/MovementEntrance';
 import MovementPractice from './pages/studio/MovementPractice';
+import MovementEcosystem from './pages/studio/MovementEcosystem';
+import MovementIdentity from './pages/studio/MovementIdentity';
+import MovementRequest from './pages/studio/MovementRequest';
 import { getAllSlugs } from './routes/localizedSlugs';
 
 /**
@@ -88,9 +91,12 @@ const CorporateApp = () => {
         {/* ITER167 — Magic link landing (universal route, all locales). */}
         <Route path="/journey/continue" element={<AccessContinuityPage />} />
 
-        {/* ITER160 — Studio Activation Flow (Phase 1 routes) */}
-        <Route path="/studio"          element={<MovementEntrance />} />
-        <Route path="/studio/practice" element={<MovementPractice />} />
+        {/* ITER160 — Studio Activation Flow (all 5 movements) */}
+        <Route path="/studio"           element={<MovementEntrance />} />
+        <Route path="/studio/practice"  element={<MovementPractice />} />
+        <Route path="/studio/ecosystem" element={<MovementEcosystem />} />
+        <Route path="/studio/identity"  element={<MovementIdentity />} />
+        <Route path="/studio/request"   element={<MovementRequest />} />
 
         {/* Legacy redirects */}
         <Route path="/start-studio"         element={<Navigate to="/studio" replace />} />

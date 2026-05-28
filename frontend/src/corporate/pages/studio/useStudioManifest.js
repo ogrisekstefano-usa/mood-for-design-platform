@@ -21,18 +21,13 @@ export const useStudioManifest = () => {
     let cancelled = false;
     (async () => {
       try {
-        const m = await axios.get(`${BACKEND}/api/studio/activation/manifest`);
+        const m = await axios.get(
+          `${BACKEND}/api/studio/activation/manifest?locale=${locale}`,
+        );
         if (cancelled) return;
         setManifest(m.data);
-        const keys = m.data?.copy_keys || [];
-        // Resolve copy in parallel
-        const pairs = await Promise.all(
-          keys.map((k) => axios
-            .get(`${BACKEND}/api/site/block?key=${encodeURIComponent(k)}&locale=${locale}`)
-            .then((r) => [k, r.data?.value || ''])
-            .catch(() => [k, ''])),
-        );
-        if (!cancelled) setT(Object.fromEntries(pairs));
+        // The manifest now returns `copy` pre-resolved.
+        setT(m.data?.copy || {});
       } catch {
         // silent
       } finally {

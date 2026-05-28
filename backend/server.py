@@ -88,6 +88,7 @@ from routers.site import router as site_router
 from routers.admin_site import router as admin_site_router
 from routers.auth import router as auth_router
 from routers.studio_activation import router as studio_activation_router
+from routers.admin_studio import router as admin_studio_router
 app.include_router(media_router,        prefix="/api")
 app.include_router(journal_router,      prefix="/api")
 app.include_router(cms_admin_router,    prefix="/api")
@@ -96,6 +97,7 @@ app.include_router(site_router,         prefix="/api")
 app.include_router(admin_site_router,   prefix="/api")
 app.include_router(auth_router)  # already prefixed with /api/auth
 app.include_router(studio_activation_router, prefix="/api")
+app.include_router(admin_studio_router,      prefix="/api")
 
 # Ensure Supabase Storage buckets exist on startup (idempotent)
 from services.storage import ensure_buckets

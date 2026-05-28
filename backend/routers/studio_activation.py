@@ -16,9 +16,13 @@ router = APIRouter(prefix="/studio/activation", tags=["studio-activation"])
 
 
 @router.get("/manifest")
-async def get_manifest():
-    """Static archetypes + experiences + copy-keys map."""
-    return studio_activation.manifest()
+async def get_manifest(locale: str = "it"):
+    """
+    Static archetypes + experiences + copy-keys map.
+    When `locale` is provided, includes a `copy` dict with all blocks
+    pre-resolved (eliminates 100+ round-trips on page mount).
+    """
+    return await studio_activation.manifest_with_copy(locale)
 
 
 @router.post("/draft")
@@ -77,3 +81,48 @@ async def patch_draft(body: dict = Body(...)):
     except Exception:
         # Silent failure — the UI continues without a confirmation.
         return {"ok": False}
+
+
+@router.post("/submit")
+async def submit_request(request: Request, body: dict = Body(...)):
+    """
+    Submit the Guided Introduction Request.
+
+    This is *NOT* an account creation. The studio profile is stored as a
+    `studio_requests` row with status='received' and a MOOD Advisor
+    follows up manually.
+
+    Body shape:
+      {
+        "draft_token":    "...",
+        "contact_email":  "founder@studio.com",
+        "contact_name":   "...",
+        "contact_role":   "...",
+        "phone_prefix":   "+39",
+        "phone_number":   "...",
+        "website":        "...",
+        "notes":          "...",
+        "locale":         "it"
+      }
+
+    Response:
+      { ok:true,  request_id: "...", reference: "MOOD-XXXX-XXXX" }
+      { ok:false, reason: "empty_email"|"no_draft"|"internal" }
+    """
+    try:
+        ip = request.client.host if request.client else None
+        ua = request.headers.get("user-agent")
+        return await studio_activation.submit_request(
+            draft_token=body.get("draft_token") or "",
+            contact_email=body.get("contact_email") or "",
+            contact_name=body.get("contact_name"),
+            contact_role=body.get("contact_role"),
+            phone_prefix=body.get("phone_prefix"),
+            phone_number=body.get("phone_number"),
+            website=body.get("website"),
+            notes=body.get("notes"),
+            locale=body.get("locale") or "it",
+            ip=ip, user_agent=ua,
+        )
+    except Exception:
+        return {"ok": False, "reason": "internal"}

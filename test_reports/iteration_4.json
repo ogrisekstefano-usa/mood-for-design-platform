@@ -1,0 +1,53 @@
+{
+  "summary": "ITER160 Phase 2 Studio Activation Flow tested end-to-end. Backend manifest/draft/submit/admin all functional (15/16 pytest pass; 1 P0 security finding). Frontend Movements I→V flow works (entrance → practice → ecosystem → identity → request), submit completes with proper MOOD-XXXX-XXXX reference, zero-jargon scan PASSES on all 5 movements, soft empty-email validation works without forbidden vocabulary. Two important issues found: (1) P0 admin endpoint /api/admin/studio/requests is accessible WITHOUT any auth headers — exposes PII (emails, phones, names); (2) P0 ecosystem pre-suggestion logic does NOT initialize included-state from archetype_to_suggested when entering Movement III fresh — all bands show '— non per ora.' even for archetypes with pre-suggested experiences (breaks FRONTEND-G + FRONTEND-K).",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "GET /api/admin/studio/requests", "issue": "Endpoint returns 200 with full studio_requests payload (incl. PII: contact_email, phone, name) WITHOUT any auth headers. `require_admin_tenant` in /app/backend/routers/_auth.py only enforces ADMIN_API_KEY when ADMIN_API_KEY env var is set; in prod env var is unset so auth is effectively bypassed. Same risk applies to PATCH /api/admin/studio/requests/{id}.", "priority": "CRITICAL"}
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "MovementEcosystem.jsx", "issue": "When entering /studio/ecosystem after choosing an archetype (e.g. architecture_firm or luxury_showroom), ALL five bands render with state '— non per ora.' instead of the expected '— inclusa nella tua composizione.' for the archetype's pre-suggested experiences (e.g. architecture_firm → design_journey_os + material_intelligence; luxury_showroom → showroom_continuity + material_intelligence + client_presentation_flow). The ecosystem state derives 'included' purely from the persisted `experiences` array, which is empty after PRACTICE since the practice movement only patches `archetype`. Fix: on Ecosystem mount, if `experiences` is empty AND `archetype` is set, initialize state from `archetype_to_suggested[archetype]` (or have practice-continue patch the suggested experiences into the draft).", "selector": "[data-testid='ecosystem-band-<key>-state']", "priority": "HIGH"}
+    ],
+    "integration_issues": [
+      {"flow": "Admin Studio Requests list loading", "issue": "/admin/studio-requests page shows 'Loading composition requests...' indefinitely on initial render — list rows did not appear within 3s of page load (re-test recommended; may be slow first-paint or missing auth header on first list call).", "affected_selectors": ["[data-testid='studio-requests-admin']"]}
+    ],
+    "design_issues": [
+      {"screen": "global", "issues": ["React hydration warnings in console: '<a> cannot be a descendant of <a>' — nested anchor tags somewhere in LocaleProvider/Routes tree."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter160_studio_activation.py",
+    "/app/test_reports/pytest/iter160.xml"
+  ],
+  "action_items": [
+    "P0 SECURITY: Wire /api/admin/studio/requests (GET + PATCH) to real JWT auth (Bearer with role admin/owner) — current placeholder `require_admin_tenant` is no-op when ADMIN_API_KEY env is unset; data is fully public.",
+    "P0 UX: Fix MovementEcosystem to initialize included-state from archetype_to_suggested[archetype] when experiences array is empty (or have MovementPractice patch the suggested experiences on continue). Currently breaks the 'curated path' premise — every user sees an empty ecosystem regardless of practice.",
+    "P1: Investigate admin list slow/stuck loading on /admin/studio-requests.",
+    "P2: Fix nested <a> hydration warning in LocaleProvider/Routes tree."
+  ],
+  "critical_code_review_comments": [
+    "/app/backend/routers/_auth.py is a placeholder admin auth — comment even says 'TODO (P1): wire to Supabase Auth JWT + tenant_memberships RBAC.' This is being used in production by ALL admin endpoints. With ADMIN_API_KEY unset, every admin endpoint becomes public.",
+    "Manifest endpoint correctly returns pre-resolved copy map (>100 keys) — confirms the perf optimization (no more 108 parallel /api/site/block requests).",
+    "Submit returns 200 with {ok:false, reason:...} for empty_email / no_draft — matches spec (no 4xx for soft failures).",
+    "Reference generator produces uppercase hex MOOD-XXXX-XXXX correctly.",
+    "Italian copy resolution is perfect: 'Residenziale privato', 'Quieto', 'English' all rendered (no raw keys leaking)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter160_studio_activation.py (new)"
+  ],
+  "success_rate": {
+    "backend": "94% (15/16 pytest — 1 failure is the security finding I flagged via assertion)",
+    "frontend": "85% (Entrance/Practice/Identity/Request/Zero-Jargon/Admin-page-load all PASS; Ecosystem pre-suggestion + Admin list rendering FAIL)"
+  },
+  "test_credentials": "Admin: admin@moodfordesign.com / MoodAdmin2026! (works; tenant_slug=studio). Admin header fallback X-Admin-Key:dev + X-Tenant-Slug:studio NOT required because endpoint accepts unauthenticated calls — see P0.",
+  "seed_data_creation": "Test data: contact_email='advisor-test@studio.com' (backend) and 'ui-test@studio.com' (UI). Both rows + completed drafts deleted from studio_requests / studio_activation_drafts at end of cycle.",
+  "retest_needed": true,
+  "main_agent_can_self_test": false,
+  "context_for_next_testing_agent": "After main agent fixes (1) the admin auth bypass and (2) the ecosystem pre-suggestion logic, retest: (a) curl /api/admin/studio/requests without headers → expect 401/403; (b) on /studio/practice select luxury_showroom → continue → /studio/ecosystem should show showroom_continuity, material_intelligence, client_presentation_flow with '— inclusa nella tua composizione.' state; (c) reload and direct-navigate to /studio/ecosystem → resumed draft should preserve the state.",
+  "rca_of_the_issue": {
+    "admin_auth_bypass": "Root cause: /app/backend/routers/_auth.py:require_admin_tenant only raises 401 if ADMIN_API_KEY env var is set. In current env (and likely prod) ADMIN_API_KEY is unset → if-branch skipped → falls through to tenant resolve → returns 200. Fix: enforce JWT validation unconditionally with admin/owner role check; treat ADMIN_API_KEY as fallback only.",
+    "ecosystem_pre_suggestion": "Root cause: MovementEcosystem.jsx initial included-state is derived from `draft.experiences` only; archetype_to_suggested is not consulted on mount. MovementPractice.jsx on continue patches `archetype` only, not `experiences`. Net effect: every user lands on ecosystem with all bands empty, defeating the 'curated entry' UX described in the manifest. Reproduction: visit /studio → click any practice tile → continue → observe ALL 5 bands show '— non per ora.'."
+  }
+}

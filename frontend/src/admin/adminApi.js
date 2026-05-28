@@ -13,6 +13,10 @@ export const adminAuth = {
     localStorage.removeItem(KEY_KEY);
     localStorage.removeItem(TENANT_SLUG_KEY);
   },
+  headers:   () => ({
+    'X-Admin-Key':   localStorage.getItem(KEY_KEY) || '',
+    'X-Tenant-Slug': localStorage.getItem(TENANT_SLUG_KEY) || 'studio',
+  }),
 };
 
 const headers = () => ({

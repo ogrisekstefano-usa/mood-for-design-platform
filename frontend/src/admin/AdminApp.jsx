@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, NavLink, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { LogOut, FileText, Layout, Image, Settings as SettingsIcon, RefreshCw, ExternalLink, BookOpen, AlignEndHorizontal, Search } from 'lucide-react';
+import { LogOut, FileText, Layout, Image, Settings as SettingsIcon, RefreshCw, ExternalLink, BookOpen, AlignEndHorizontal, Search, Building2 } from 'lucide-react';
 import { adminAuth, adminApi } from './adminApi';
 import BlocksEditor from './pages/BlocksEditor';
 import SectionsManager from './pages/SectionsManager';
@@ -9,6 +9,7 @@ import PublishConsole from './pages/PublishConsole';
 import PagesEditor from './pages/PagesEditor';
 import FooterEditor from './pages/FooterEditor';
 import SearchConsoleHelper from './pages/SearchConsoleHelper';
+import StudioRequestsAdmin from './pages/StudioRequestsAdmin';
 
 const AdminLogin = ({ onSuccess }) => {
   const [tenant, setTenant] = useState(adminAuth.getTenant());
@@ -123,6 +124,7 @@ const AdminShell = ({ children }) => {
           <NavItem to="/admin/sections" icon={Layout}       label="Sections" />
           <NavItem to="/admin/media"    icon={Image}        label="Media Library" />
           <NavItem to="/admin/footer"   icon={AlignEndHorizontal} label="Footer" />
+          <NavItem to="/admin/studio-requests" icon={Building2} label="Studio Requests" />
           <NavItem to="/admin/seo"      icon={Search}       label="SEO & Indexing" />
           <NavItem to="/admin/publish"  icon={SettingsIcon} label="Publishing" />
         </nav>
@@ -182,8 +184,9 @@ const AdminApp = () => {
         <Route path="blocks"    element={<BlocksEditor />} />
         <Route path="sections"  element={<SectionsManager />} />
         <Route path="media"     element={<MediaLibrary />} />
-        <Route path="footer"    element={<FooterEditor />} />
-        <Route path="seo"       element={<SearchConsoleHelper />} />
+        <Route path="footer"          element={<FooterEditor />} />
+        <Route path="studio-requests" element={<StudioRequestsAdmin />} />
+        <Route path="seo"             element={<SearchConsoleHelper />} />
         <Route path="publish"   element={<PublishConsole />} />
         <Route path="*"         element={<Navigate to="/admin/pages" replace />} />
       </Routes>
