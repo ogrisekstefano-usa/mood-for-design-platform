@@ -542,16 +542,17 @@
   padding-left: 2px; opacity: .8;
 }
 /* ITER167.R4 · Shared footer official wordmark — square black PNG
-   blends naturally with the dark footer (no cell wrapper needed). */
+   blends naturally with the dark footer (no cell wrapper needed).
+   Larger 140px per user request. */
 .mfd-footer__brand-block .mfd-footer__brand-img {
   display: block;
-  height: 96px;
-  width: 96px;
+  height: 140px;
+  width: 140px;
   object-fit: contain;
   user-select: none;
 }
 @media (max-width: 768px) {
-  .mfd-footer__brand-block .mfd-footer__brand-img { height: 80px; width: 80px; }
+  .mfd-footer__brand-block .mfd-footer__brand-img { height: 112px; width: 112px; }
 }
 .mfd-footer__tagline {
   margin-top: 18px;

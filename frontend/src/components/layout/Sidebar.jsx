@@ -230,11 +230,11 @@ const RailBrand = ({ collapsed, onToggle, impersonating, monogram }) => (
     </span>
     {!collapsed && (
       <img
-        src="https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/3gkc6rcw_logo_mood_for_design_color.png"
+        src="https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/iow4xdfw_logo_mood_for_design_color.png"
         alt="MOOD for DESIGN™"
         className="atelier-rail__brand-logo"
         draggable={false}
-        style={{ height: 42, width: 'auto', objectFit: 'contain' }}
+        style={{ height: 64, width: 'auto', objectFit: 'contain' }}
       />
     )}
     {impersonating && !collapsed && (

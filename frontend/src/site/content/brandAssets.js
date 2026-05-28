@@ -20,7 +20,7 @@
 
 // Canonical CDN URL (preferred — cacheable on the Emergent customer-assets bucket).
 export const MOOD_BRAND_LOGO_URL =
-  'https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/3gkc6rcw_logo_mood_for_design_color.png';
+  'https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/iow4xdfw_logo_mood_for_design_color.png';
 
 // Local fallback (bundled in /public/brand/) used by Brand.jsx as last resort.
 export const MOOD_BRAND_LOGO_LOCAL = '/brand/logo-official.png';

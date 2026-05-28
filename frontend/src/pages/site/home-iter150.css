@@ -157,7 +157,9 @@
   width: 100%;
   max-width: 1480px;
   margin: 0 auto;
-  padding: 20px clamp(24px, 4vw, 72px);
+  /* ITER167.R4 · vertical padding reduced because the brand image is
+     now 88px tall and provides its own visual breathing. */
+  padding: 14px clamp(24px, 4vw, 72px);
   display: flex;
   align-items: center;
   gap: clamp(28px, 4vw, 56px);
@@ -176,19 +178,20 @@
 .mfd-header__brand-mark em { font-style: italic; color: var(--mfd-mute); }
 /* ITER167.R4 · Official wordmark — square black PNG with mint MOOD
    letters + editorial tagline baked into the image. Display as a
-   self-contained brand stamp. */
+   self-contained brand stamp. Larger (88px) per user request for
+   stronger editorial presence. */
 .mfd-header__brand-img {
   display: block;
-  height: 56px;
-  width: 56px;
+  height: 88px;
+  width: 88px;
   object-fit: contain;
   user-select: none;
 }
 @media (max-width: 980px) {
-  .mfd-header__brand-img { height: 48px; width: 48px; }
+  .mfd-header__brand-img { height: 72px; width: 72px; }
 }
 @media (max-width: 600px) {
-  .mfd-header__brand-img { height: 42px; width: 42px; }
+  .mfd-header__brand-img { height: 58px; width: 58px; }
 }
 .mfd-header__brand-sub {
   font-size: 9.5px;
@@ -826,16 +829,16 @@
 .mfd-footer__brand-mark em { color: rgba(245, 242, 237, 0.55); font-style: italic; }
 /* ITER167.R4 · Footer official wordmark — square black PNG, no cream cell
    needed (the image background is already pure black and blends with
-   the footer surface). */
+   the footer surface). Larger (140px) per user request. */
 .mfd-footer__brand-img {
   display: block;
-  height: 96px;
-  width: 96px;
+  height: 140px;
+  width: 140px;
   object-fit: contain;
   user-select: none;
 }
 @media (max-width: 768px) {
-  .mfd-footer__brand-img { height: 80px; width: 80px; }
+  .mfd-footer__brand-img { height: 112px; width: 112px; }
 }
 .mfd-footer__brand-sub {
   font-size: 10px;
@@ -1344,5 +1347,8 @@
   background: linear-gradient(135deg, #efeae1 0%, #e3dccf 100%);
 }
 .mfd-stories--loading {
+  min-height: 30vh;
+}
+ading {
   min-height: 30vh;
 }
