@@ -91,6 +91,7 @@ const MoodboardEditor = lazy(() => import('./pages/moodboards/MoodboardEditor'))
 const PublicPresentation = lazy(() => import('./pages/moodboards/PublicPresentation'));
 const ReviewMode = lazy(() => import('./pages/collab/ReviewMode'));
 const AuthClientCallback = lazy(() => import('./pages/auth/AuthClientCallback'));
+import AccessEntryPage from './pages/auth/AccessEntryPage';
 const StepWorkspacePage = lazy(() => import('./pages/journey/StepWorkspacePage'));
 const ComingSoonPage = lazy(() => import('./pages/placeholder/ComingSoonPage'));
 
@@ -470,6 +471,10 @@ function App() {
                     the auth-hydration redirect race against homepage. */}
                 <Route path="/auth/client/callback" element={<AuthClientCallback />} />
                 <Route path="/auth/client/access"   element={<AuthClientCallback />} />
+                {/* ITER169.2 · Unified Entry UX™ — single elegant access surface
+                    that silently dispatches to client magic-link or pro password. */}
+                <Route path="/access"               element={<AccessEntryPage />} />
+                <Route path="/journey/access"       element={<AccessEntryPage />} />
                 {/* Password Creation — soft invitation, NOT modal aggressiva */}
                 <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
                 {/* AuthRecoveryPage — magic link expired → esperienza concierge, mai errore software */}

@@ -52,7 +52,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [email, setEmail]     = useState('');
+  const [email, setEmail]     = useState(() => searchParams.get('email') || '');
   const [password, setPw]     = useState('');
   const [showPw, setShowPw]   = useState(false);
   const [loading, setLoading] = useState(false);

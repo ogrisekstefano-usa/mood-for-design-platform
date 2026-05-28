@@ -83,7 +83,7 @@ const MoodSiteHeader = ({
           {/* RIENTRA — Access Continuity™ CTA (ghost, accanto al CTA primario).
               ITER167 · "RIENTRA" perché elegante, corto, non software. */}
           <Link
-            to="/auth/login"
+            to="/access"
             className="mfd-header__reenter"
             data-testid="header-cta-reenter"
             onClick={closeMenu}
@@ -140,7 +140,7 @@ const MoodSiteHeader = ({
             >
               {L(copy.nav.cta, locale)}
             </Link>
-            <Link to="/auth/login" className="mfd-mobile-menu__login" onClick={closeMenu}>
+            <Link to="/access" className="mfd-mobile-menu__login" onClick={closeMenu}>
               {L(copy.nav.login, locale)}
             </Link>
           </div>

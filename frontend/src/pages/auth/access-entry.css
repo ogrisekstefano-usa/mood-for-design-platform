@@ -1,0 +1,52 @@
+/* ITER169.2 · /access page · supplemental styles on top of auth-login.css */
+
+.mfd-access__confirmed {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.mfd-access__confirmed-glyph {
+  color: #C9A26B;
+  margin-bottom: 4px;
+}
+.mfd-access__mail-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 1px solid rgba(245, 239, 230, 0.16);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(245, 239, 230, 0.85);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  align-self: flex-start;
+}
+.mfd-access__hint {
+  color: rgba(245, 239, 230, 0.5);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 0;
+}
+.mfd-access__confirmed-row {
+  display: flex;
+  gap: 24px;
+  margin-top: 12px;
+  align-items: center;
+}
+.mfd-access__footer { margin-top: 32px; }
+.mfd-auth__link-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: rgba(245, 239, 230, 0.7);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition: color .15s;
+}
+.mfd-auth__link-btn:hover { color: #f5efe6; }

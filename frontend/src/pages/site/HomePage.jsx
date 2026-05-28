@@ -229,8 +229,8 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
           <a href="#design-stories">{L(copy.nav.design_stories, locale)}</a>
           <Link to="/professionals">{L(copy.nav.professionals, locale)}</Link>
         </nav>
-        {/* RIENTRA — ghost Access Continuity™ link (ITER167). */}
-        <Link to="/auth/login" className="mfd-header__reenter" data-testid="header-cta-reenter" onClick={closeMenu}>
+        {/* RIENTRA — ghost Access Continuity™ link (ITER169.2 · /access unified). */}
+        <Link to="/access" className="mfd-header__reenter" data-testid="header-cta-reenter" onClick={closeMenu}>
           {L(copy.nav.login, locale)}
         </Link>
         <Link to="/begin-journey" className="mfd-cta mfd-cta--primary mfd-header__cta" data-testid="header-cta-start-project">
@@ -273,7 +273,7 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
           >
             {L(copy.nav.cta, locale)}
           </Link>
-          <Link to="/auth/login" className="mfd-mobile-menu__login" onClick={closeMenu}>
+          <Link to="/access" className="mfd-mobile-menu__login" onClick={closeMenu}>
             {L(copy.nav.login, locale)}
           </Link>
         </div>
@@ -831,7 +831,7 @@ const useNavBundle = (locale) => {
         login:          { it: pick(bag.login?.label_i18n)      || '', en: pick(bag.login?.label_i18n)      || '' },
         cta:            { it: pick(bag.cta?.label_i18n)        || '', en: pick(bag.cta?.label_i18n)        || '' },
         cta_href:       bag.cta?.href   || '/begin-journey',
-        login_href:     bag.login?.href || '/auth/login',
+        login_href:     bag.login?.href || '/access',
         hrefs:          linksByKey,
       },
     };

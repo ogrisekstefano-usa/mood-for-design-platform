@@ -107,6 +107,8 @@ api.interceptors.response.use(
         p === '/' ||
         p === '/auth/login' ||
         p.startsWith('/auth/') ||                  // /auth/callback /auth/recovery /auth/reset-password …
+        p === '/access' ||                         // ITER169.2 · Unified Entry UX™
+        p === '/journey/access' ||                 // ITER169.2 alias
         p === '/projects' ||
         p.startsWith('/projects/') ||
         p === '/professionals' ||

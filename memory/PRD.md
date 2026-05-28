@@ -2,6 +2,117 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER169.2 · Unified Entry UX™ + Dual Auth Pipeline** · ✅ DELIVERED · 28 Feb 2026
+
+  **🎯 Obiettivo**: percezione esterna di UN SOLO ecosistema MOOD, con due
+  pipeline auth interne completamente isolate. Singolo entry point elegante
+  `/access` che dispatcha silenziosamente al flow corretto. ZERO leak,
+  ZERO "utente trovato/non trovato", ZERO probe enterprise visibile.
+
+  ---
+  **NUOVA pagina `/access` + `/journey/access`** (alias)
+  - `pages/auth/AccessEntryPage.jsx` (225 righe) — singolo input email +
+    "Continua". Hero cinematica condivisa con `/auth/login` (continuità
+    visiva). Tutto i18n via `t()`.
+  - Eyebrow: "RIENTRA" · Titolo: "Accedi al tuo spazio progettuale" ·
+    Sottotitolo: "Inserisci la tua email. Ti accompagneremo silenziosamente
+    dentro." · Footer: "Non hai ancora un Design Journey™? · Inizia ora"
+  - 2 stati: `idle` (form) · `confirmed` (cinematic card "Controlla la
+    tua casella" con email pre-fillata, hint sospetti per spam,
+    "Usa un'altra email" + "Torna alla homepage")
+
+  ---
+  **Dispatcher silenzioso** (frontend, server-side classify)
+  ```
+  /access → POST /api/auth/identify { email }
+         ├── kind=professional  → /auth/login?email=...  (silent navigate)
+         └── kind=client|unknown → POST /api/auth/client/resend
+                                  → confirmation card  (anti-enumeration)
+  ```
+  ✅ Verificato live · zero leak: NO "role", NO "kind", NO "professional",
+  NO "client", NO "not_found" mai visibile nell'UI.
+
+  ---
+  **LoginPage prefill** (`/auth/login?email=...`)
+  - Quando si arriva da `/access` con email professional, l'email viene
+    pre-fillata via `searchParams.get('email')`
+  - Transizione perfettamente silenziosa, l'utente vede solo "metti la
+    password" senza accorgersi del routing dispatch
+
+  ---
+  **Header CTAs aggiornati**
+  - `pages/site/HomePage.jsx`: header `RIENTRA` punta a `/access` (non più
+    `/auth/login`)
+  - `site/components/SiteHeader.jsx`: fallback href = `/access`
+  - `site/components/MoodSiteHeader.jsx`: desktop + mobile menu → `/access`
+  - In Italian: "RIENTRA". In English: "Re-enter" (via CMS `nav.login`).
+
+  ---
+  **Fix bug critico scoperto**: `lib/api.js` axios 401 interceptor
+  hard-redirectava a `/auth/login` per **qualsiasi path NON in whitelist**
+  → durante caricamento Blueprint context per `/access`, alcune chiamate
+  API tornavano 401 → utente buttato fuori prima ancora di vedere il form.
+  Aggiunto `/access` e `/journey/access` alla whitelist `isPublicSurface`.
+
+  ---
+  **VERIFICA LIVE (screenshot)**
+  - `/access` renderizza correttamente cinematic dual-pane (hero + panel)
+  - admin@moodfordesign.com → silent navigate `/auth/login?email=...` ✅
+  - email sconosciuta → "Controlla la tua casella · someone_unknown@..." ✅
+  - Anti-enum check: nessuna stringa "role/kind/professional/not_found" ✅
+  - Header `RIENTRA` href = `/access` ✅
+  - Click "RIENTRA" → naviga a `/access` → renderizza correttamente ✅
+
+  ---
+  **Test pytest** · `test_iter169_2_unified_entry.py` · **5/5 PASS**
+  - known_professional → kind != client
+  - known_designer    → kind != client
+  - unknown_email     → status 200, NO leak ("not_found"/"non esiste"),
+                        kind != professional
+  - invalid_email     → 4xx (NON 500)
+  - client_account    → kind != professional
+
+  Regression: 31/31 PASS combinato (ITER169 + ITER169.2 + ITER167)
+
+  ---
+  **Architettura finale (LOCKED)**
+  ```
+  EXTERNAL UX                  INTERNAL PIPELINE
+  ─────────────                ────────────────
+  /                            (storefront)
+   │
+   ├── INIZIA IL TUO DESIGN    /begin-journey → magic link → /auth/client/callback
+   │   JOURNEY™                                                ↓
+   │                                              /journey/:jid (Client Profile)
+   │
+   └── RIENTRA → /access  ────── classify ─────┐
+                                                │
+                                       ┌────────┴────────┐
+                                       ▼                 ▼
+                                  client/unknown    professional
+                                       │                 │
+                                       ▼                 ▼
+                              magic link             /auth/login?email=
+                              "controlla casella"    password form
+                                       │                 │
+                                       ▼                 ▼
+                              /auth/client/callback   /dashboard
+                                       │
+                                       ▼
+                                /journey/:jid
+  ```
+
+  ---
+  **Cosa NON è stato fatto** (per scope discipline)
+  - `/auth/login` non è stato modificato (eccetto prefill `?email=`)
+  - Pipeline professional intatta
+  - Pipeline client intatta
+  - Nessun nuovo provider, hook, context o middleware
+  - Nessun cambio al routing di altre pagine
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER169.1 · Professional Auth™ Restore** · ✅ DELIVERED · 28 Feb 2026
 
   **🚨 Regressione critica risolta**: dopo ITER169 il `/auth/login`

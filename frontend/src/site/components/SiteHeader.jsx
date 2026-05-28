@@ -193,7 +193,7 @@ const SiteHeader = () => {
               Country & Language vive solo nel footer (Market & Locale™). */}
           {nav?.show_login !== false && (
             <Link
-              to={nav?.login_href || '/auth/login'}
+              to={nav?.login_href || '/access'}
               className="mfd-header__cta"
               data-testid="header-cta-login"
             >
@@ -220,7 +220,7 @@ const SiteHeader = () => {
             {mainLinks.map((l) => renderLink(l, { mobile: true }))}
             {nav?.show_login !== false && (
               <Link
-                to={nav?.login_href || '/auth/login'}
+                to={nav?.login_href || '/access'}
                 className="mfd-header__cta mfd-header__cta--mobile"
                 data-testid="header-mobile-cta-login"
               >
