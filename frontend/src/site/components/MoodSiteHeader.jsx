@@ -15,6 +15,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
+import { MOOD_BRAND_LOGO_URL, MOOD_BRAND_ALT } from '../content/brandAssets';
 
 // Localized copy resolver
 const L = (v, l) => (typeof v === 'string' ? v : (v?.[l] || v?.en || v?.it || ''));
@@ -56,8 +57,14 @@ const MoodSiteHeader = ({
     <>
       <header className="mfd-header" data-testid="mfd-header">
         <div className="mfd-header__inner">
-          <Link to="/" className="mfd-header__brand" onClick={closeMenu}>
-            <span className="mfd-header__brand-mark">MOOD <em>for</em> DESIGN</span>
+          <Link to="/" className="mfd-header__brand" onClick={closeMenu} aria-label={MOOD_BRAND_ALT}>
+            <img
+              src={MOOD_BRAND_LOGO_URL}
+              alt={MOOD_BRAND_ALT}
+              className="mfd-header__brand-img"
+              draggable={false}
+              data-testid="mfd-header-brand-img"
+            />
             <span className="mfd-header__brand-sub">Italian Design Studios</span>
           </Link>
           <nav className="mfd-header__nav" aria-label="Primary">

@@ -230,7 +230,13 @@ const RailBrand = ({ collapsed, onToggle, impersonating, monogram }) => (
     </span>
     {!collapsed && (
       <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-        <span className="atelier-rail__brand-name">MOOD <em>for</em> DESIGN</span>
+        <img
+          src="https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/4ecnf6t5_logo_mood_for_design_color.jpg"
+          alt="MOOD for DESIGN™"
+          className="atelier-rail__brand-logo"
+          draggable={false}
+          style={{ height: 26, width: 'auto', objectFit: 'contain' }}
+        />
         <span className="atelier-rail__brand-meta">BLUEPRINT OS™</span>
       </div>
     )}

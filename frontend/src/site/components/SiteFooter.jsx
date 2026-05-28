@@ -23,6 +23,7 @@ import { tenantConfig } from '../content/tenant';
 import { useStorefrontContent, pickContent } from '../useStorefrontContent';
 import { navigationContent } from '../content/navigation';
 import CountryLanguageSelector from './CountryLanguageSelector';
+import { MOOD_BRAND_LOGO_URL, MOOD_BRAND_ALT } from '../content/brandAssets';
 
 const pickLocale = (bag, locale) => {
   if (bag == null) return '';
@@ -134,16 +135,14 @@ const SiteFooter = () => {
       <div className="mfd-footer__cols">
         {/* Brand block */}
         <div className="mfd-footer__brand-block">
-          <Link to="/" data-testid="footer-brand">
-            <span className="mfd-footer__brand-wordmark">
-              {stacked ? (
-                <>
-                  <span>{parts[0]}</span>
-                  <span className="mid">{parts[1]}</span>
-                  <span>{parts.slice(2).join(' ')}{brandSuffix}</span>
-                </>
-              ) : <span>{brandName}{brandSuffix}</span>}
-            </span>
+          <Link to="/" data-testid="footer-brand" aria-label={MOOD_BRAND_ALT}>
+            <img
+              src={brand?.logo_url || MOOD_BRAND_LOGO_URL}
+              alt={MOOD_BRAND_ALT}
+              className="mfd-footer__brand-img"
+              draggable={false}
+              data-testid="footer-brand-img"
+            />
           </Link>
           {brand?.tagline && (
             <p className="mfd-footer__tagline" data-testid="footer-tagline">{brand.tagline}</p>

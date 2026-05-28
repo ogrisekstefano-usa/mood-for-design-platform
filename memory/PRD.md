@@ -2,6 +2,59 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER167 · Round 4 follow-up · Official MOOD Wordmark Migration** · ✅ DELIVERED · 28 Feb 2026
+
+  **🎯 Goal**: sostituire ogni logo fake / text-based "MOOD <em>for</em> DESIGN"
+  con l'asset ufficiale color (cyan M + black for + DESIGN) caricato dall'utente.
+
+  **Cosa è stato fatto**
+
+  · **Brand asset constants** · nuovo file
+    `frontend/src/site/content/brandAssets.js`:
+      ▸ `MOOD_BRAND_LOGO_URL` (CDN canonico)
+      ▸ `MOOD_BRAND_LOGO_LOCAL` (`/brand/logo-official.jpg`)
+      ▸ `MOOD_BRAND_ALT` ("MOOD for DESIGN™")
+
+  · **Asset locale** · copiato il logo in
+    `frontend/public/brand/logo-official.jpg` (426 KB) per fallback offline.
+
+  · **Sostituzioni front-end** (5 surfaces):
+      ▸ `MoodSiteHeader.jsx` (variant globale)
+      ▸ `HomePage.jsx` (custom header + custom footer)
+      ▸ `SiteFooter.jsx` (shared footer)
+      ▸ `Sidebar.jsx` (Blueprint OS sidebar — workspace operativo)
+      ▸ `LoginPage.jsx` (`BRAND_LOGO_DEFAULT`)
+
+  · **Email Continuity™ template** ·
+    `services/email_templates.py::PLATFORM_DEFAULTS.logo_url` ora punta
+    al CDN ufficiale. `_wrap_email` aggiornato:
+      ▸ `max-height: 32px` → `56px`
+      ▸ `width: auto` + `background: transparent`
+      ▸ margin-bottom 28px → 32px (più respiro editoriale)
+    I tenant possono ancora override via
+    `tenant_email_settings.logo_url`.
+
+  · **CSS** · nuove regole responsive:
+      ▸ `.mfd-header__brand-img` height 40px desktop / 34px tablet / 30px mobile
+      ▸ `.mfd-footer__brand-img` (HomePage + SiteFooter) — inset in cell
+        cream (`#F5F2ED`) con padding 10×18px e border-radius 4px
+        per gestire il contrasto sul footer nero (il logo è
+        full-color su white, non on-black).
+      ▸ Mobile breakpoint 768px: dimensioni ridotte mantenendo proporzioni.
+
+  **Testing**
+  - Self-test homepage desktop (1920×1100):
+      ▸ Header: logo color ufficiale visibile e proporzionato.
+      ▸ Hero cinematic invariato.
+      ▸ Trust strip cinematic invariato.
+      ▸ Footer: logo ufficiale in cella cream editorial, leggibile su
+        sfondo nero.
+  - Build pass · 5 file JS + 1 file Python · 0 lint errors.
+  - Bug fix collaterale: ripristinato `useEffect` import in
+    MoodSiteHeader.jsx (rimosso accidentalmente nella prima passata).
+
+---
+
 - **ITER167 · Round 4 · Phone Country Prefix + Dark-Mode Email + Mobile QA** · ✅ DELIVERED · 28 Feb 2026
 
   **🎯 Goal**: chiudere il loop del Client Magic-Link First slice con

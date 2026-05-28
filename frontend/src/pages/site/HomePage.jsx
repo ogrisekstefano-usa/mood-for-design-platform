@@ -34,6 +34,7 @@ import EditorialFreeBlocks from '../../site/EditorialFreeBlocks';
 import StorefrontThemeProvider from '../../design-system/storefront/StorefrontThemeProvider';
 import SiteLocaleBridge from '../../site/SiteLocaleBridge';
 import EditorialBridge from '../../site/EditorialBridge';
+import { MOOD_BRAND_LOGO_URL, MOOD_BRAND_ALT } from '../../site/content/brandAssets';
 import './home-iter150.css';
 
 // ─────────────────────────────────────────────────────────────────────
@@ -213,8 +214,14 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
   <>
     <header className="mfd-header">
       <div className="mfd-header__inner">
-        <Link to="/" className="mfd-header__brand" onClick={closeMenu}>
-          <span className="mfd-header__brand-mark">MOOD <em>for</em> DESIGN</span>
+        <Link to="/" className="mfd-header__brand" onClick={closeMenu} aria-label={MOOD_BRAND_ALT}>
+          <img
+            src={MOOD_BRAND_LOGO_URL}
+            alt={MOOD_BRAND_ALT}
+            className="mfd-header__brand-img"
+            draggable={false}
+            data-testid="home-header-brand-img"
+          />
           <span className="mfd-header__brand-sub">Italian Design Studios</span>
         </Link>
         <nav className="mfd-header__nav" aria-label="Primary">
@@ -614,7 +621,13 @@ const SiteFooter = ({ locale, copy }) => (
     <div className="mfd-footer__inner">
       <div className="mfd-footer__top">
         <div className="mfd-footer__brand">
-          <span className="mfd-footer__brand-mark">MOOD <em>for</em> DESIGN</span>
+          <img
+            src={MOOD_BRAND_LOGO_URL}
+            alt={MOOD_BRAND_ALT}
+            className="mfd-footer__brand-img"
+            draggable={false}
+            data-testid="home-footer-brand-img"
+          />
           <span className="mfd-footer__brand-sub">Italian Design Studios</span>
         </div>
         <div className="mfd-footer__cols">

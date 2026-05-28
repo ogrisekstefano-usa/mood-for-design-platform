@@ -47,7 +47,9 @@ PLATFORM_DEFAULTS = {
     "ink_soft":         "rgba(232,235,240,0.6)",
     "footer_signature": "MOOD for DESIGN™ · Curated atmospheres for international ateliers.",
     "support_email":    "support@moodfordesign.com",
-    "logo_url":         "",
+    # ITER167.R4 · Official MOOD for DESIGN™ wordmark (color logo on white).
+    # Tenants can override per-studio via tenant_email_settings.logo_url.
+    "logo_url":         "https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/4ecnf6t5_logo_mood_for_design_color.jpg",
 }
 
 
@@ -74,9 +76,13 @@ def _wrap_email(*, brand: Dict[str, str], preheader: str, body_html: str) -> str
     """The shared cinematic shell. body_html is dropped into the central card."""
     logo_block = ""
     if brand.get("logo_url"):
+        # ITER167.R4 · Official wordmark — generous editorial sizing.
+        # max-height 56px (≈ 64-72 visual including padding) gives the
+        # mark proper presence on Apple Mail, Gmail iOS, and Outlook web.
         logo_block = (
             f'<img src="{brand["logo_url"]}" alt="{brand["brand_name"]}" '
-            f'style="display:block;max-height:32px;margin:0 auto 28px;border:0;outline:none;text-decoration:none" />'
+            f'style="display:block;max-height:56px;width:auto;margin:0 auto 32px;'
+            f'border:0;outline:none;text-decoration:none;background:transparent;" />'
         )
     else:
         logo_block = (

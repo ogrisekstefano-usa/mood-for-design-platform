@@ -43,8 +43,9 @@ const _roleHome = (role) => {
 const HERO_IMAGE_DEFAULT =
   'https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/ys8jrftd_AdobeStock_1014843351.jpeg';
 
+// Official MOOD for DESIGN™ wordmark (ITER167 R4 — user-provided asset)
 const BRAND_LOGO_DEFAULT =
-  'https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/klo86yi6_logo_top_frontend.png';
+  'https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/4ecnf6t5_logo_mood_for_design_color.jpg';
 
 const LoginPage = () => {
   const { signIn } = useAuth();
