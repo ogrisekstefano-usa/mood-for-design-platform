@@ -1075,8 +1075,9 @@ const Stat = ({ label, value }) => (
   </div>
 );
 
-const ProjectDetailPage = () => {
-  const { id } = useParams();
+const ProjectDetailPage = ({ projectIdOverride } = {}) => {
+  const params = useParams();
+  const id = projectIdOverride || params.id;
   const navigate = useNavigate();
   const { t } = useBlueprint();
   const [searchParams, setSearchParams] = useSearchParams();

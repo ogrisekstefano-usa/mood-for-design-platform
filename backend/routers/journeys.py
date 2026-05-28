@@ -577,3 +577,77 @@ def list_chapters(locale: str = Query("it")):
                            or descs.get("en") or "",
         })
     return {"chapters": out, "total": len(out)}
+
+
+# ─── RESOLVER endpoints (Phase 2 · URL canonicalization) ──────────────
+@router.get("/mine")
+def my_primary_journey(ctx=Depends(get_tenant_context)):
+    """Resolves the authenticated user's primary journey.
+
+    Used by `/journey` (no jid) shortcut to land the client on their
+    own Design Journey™ without exposing internal IDs.
+
+    Strategy:
+      1. Look for an account row matching `user.email` (case-insensitive)
+      2. Pick the most recent journey for that account (lifecycle ≠ abandoned)
+      3. Fallback: any non-archived journey for the tenant where the user
+         appears as designer/owner (studio users)
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+    email = (ctx.get("email") or "").lower()
+
+    if not email:
+        raise HTTPException(404, "Nessuna journey associata")
+
+    # Try by email match on account
+    acc_rows = (c.table("accounts")
+                .select("id")
+                .eq("tenant_id", tid)
+                .ilike("email", email)
+                .limit(5).execute().data or [])
+    for a in acc_rows:
+        jrows = (c.table("design_journeys").select("id, lifecycle_state, updated_at")
+                 .eq("tenant_id", tid).eq("account_id", a["id"])
+                 .neq("lifecycle_state", "abandoned")
+                 .order("updated_at", desc=True).limit(1).execute().data or [])
+        if jrows:
+            return {"journey_id": jrows[0]["id"],
+                    "lifecycle_state": jrows[0].get("lifecycle_state")}
+
+    raise HTTPException(404, "Nessuna journey associata")
+
+
+@router.get("/resolve")
+def resolve_journey(
+    project_id: Optional[str] = Query(None),
+    account_id: Optional[str] = Query(None),
+    ctx=Depends(get_tenant_context),
+):
+    """Resolves a journey_id from a project_id or account_id.
+
+    Used by silent redirects from legacy URLs (e.g. /workspace/projects/:id
+    → /studio/journey/:jid). Returns 404 with `linked:false` when no
+    journey exists, so the caller can fall back gracefully.
+    """
+    c = db()
+    tid = ctx["tenant_id"]
+
+    if not (project_id or account_id):
+        raise HTTPException(400, "Either project_id or account_id required")
+
+    q = c.table("design_journeys").select("id, project_id, account_id, lifecycle_state").eq("tenant_id", tid).neq("lifecycle_state", "abandoned")
+    if project_id:
+        q = q.eq("project_id", project_id)
+    if account_id:
+        q = q.eq("account_id", account_id)
+    rows = q.order("updated_at", desc=True).limit(1).execute().data or []
+    if not rows:
+        return {"linked": False, "journey_id": None}
+    return {
+        "linked":         True,
+        "journey_id":     rows[0]["id"],
+        "project_id":     rows[0].get("project_id"),
+        "account_id":     rows[0].get("account_id"),
+        "lifecycle_state": rows[0].get("lifecycle_state"),
+    }

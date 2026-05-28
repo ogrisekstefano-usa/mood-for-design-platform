@@ -2,7 +2,77 @@
 
 
 ## 📌 Sprint Status (latest)
-- **ITER168 · Phase 1 · Design Journey™ Operational Refactor — Schema Lock** · ✅ DELIVERED · 28 Feb 2026
+- **ITER168 · Phase 2 · URL Canonicalization · journey-keyed routing** · ✅ DELIVERED · 28 Feb 2026
+
+  **🎯 Goal**: rendere `/journey/:jid` e `/studio/journey/:jid` le URL
+  canoniche del prodotto. Silent redirect dalle vecchie URL project-keyed.
+  Nessuna percezione di "refactor interno" da parte dell'utente.
+  ZERO redesign UI · solo plumbing di rotte.
+
+  **Backend `routers/journeys.py` esteso (+90 righe)**
+  - `GET /api/journeys/mine` · risolve la primary journey del client
+    autenticato via email (404 se assente)
+  - `GET /api/journeys/resolve?project_id=…` o `?account_id=…` · ritorna
+    `{linked, journey_id, project_id, account_id, lifecycle_state}`.
+    Esclude automaticamente le journey con `lifecycle_state='abandoned'`
+    (cioè le "Archivio storico" create dal backfill 107.§5).
+
+  **Frontend `routes/JourneyCanonicalRoutes.jsx` (NEW · 195 righe)**
+  6 piccoli wrapper component:
+  · `StudioJourneyView` — resolve jid → project_id e monta `ProjectDetailPage`
+  · `StudioJourneyStepView` — same flow per step pages
+  · `CanonicalClientJourney` — alias che monta `ClientCompanionPage` su `/journey/:journeyId`
+  · `ProjectToJourneyRedirect` — silent redirect da `/workspace/projects/:id`
+  · `LegacyStepRedirect` — silent redirect da `/journey/:projectId/step/:m`
+  · `ClientMineRedirect` — risolve "primary journey del cliente" (opt-in,
+    non ancora attivato sul `/client/welcome` per non interferire con preset)
+
+  **`App.js` · 4 cambi minimi**
+  - NEW: `/studio/journey/:jid` + `/studio/journey/:jid/step/:milestoneType`
+  - NEW: `/journey/:journeyId` (client canonical alias)
+  - NEW: `/studio/pulse` (rename canonico da `/studio-pulse`)
+  - REDIRECT: `/dashboard/pulse` → `/studio/pulse`
+  - REDIRECT: `/workspace/projects/:id` → `/studio/journey/:jid` (via resolver)
+  - REDIRECT: `/journey/:projectId/step/:m` → `/studio/journey/:jid/step/:m`
+  - REDIRECT: `/studio-pulse` → `/studio/pulse`
+
+  **Patch chirurgici a 2 componenti esistenti** (2 righe ognuno):
+  - `ProjectDetailPage.jsx` · accetta `projectIdOverride` prop opzionale
+  - `StepWorkspacePage.jsx` · accetta `projectIdOverride` prop opzionale
+  Nessun'altra modifica UI · le pagine si vedono identiche sotto nuova URL.
+
+  **Test pytest** · 29/29 PASS · (22 di Phase 1 + 7 nuovi resolver)
+  - `test_mine_unauthenticated_returns_401`
+  - `test_resolve_unauthenticated_returns_401`
+  - `test_mine_for_admin_returns_404_no_journey`
+  - `test_resolve_by_project_id_links` · journey reale risolta correttamente
+  - `test_resolve_excludes_abandoned` · archivio storico NON ritornato
+  - `test_resolve_unknown_project_returns_linked_false`
+  - `test_resolve_missing_params_returns_400`
+
+  **Smoke verificato**
+  - Homepage `/` carica regolarmente (no regressione dalle nuove rotte)
+  - Lint: 0 errori su JourneyCanonicalRoutes.jsx + App.js
+  - Backend log: nessun errore post-restart
+
+  **Decisione di scope rispetta richiesta utente**
+  - `/client/welcome` NON è stato redirezionato a `/journey/:jid` per ora
+    (eviterebbe rischio di perdita visuale rispetto al preset Atelier).
+    Verrà attivato in Phase 3 quando ClientCompanionPage avrà parità visuale
+    con ClientWelcomePresetPage.
+  - Le vecchie URL continuano a funzionare ma con silent redirect
+    (nessun "deprecated", nessun warning, nessun modal "new experience").
+
+  **Cosa NON è stato fatto** (per discipline · prossima fase)
+  - Workspace contestuale (Brief/Moodboards/Materials/Proposals come tab
+    DENTRO `/studio/journey/:jid`) → Fase 3
+  - Moodboard create flow con scope/room/chapter UI → Fase 3
+  - `/relations/inbox` unificato → Fase 3
+  - Nessuna nuova UI Atmospheric, Chameleon, Signals, AI
+
+---
+
+
 
   **🎯 Goal**: stop costruendo feature, refactor dell'ossatura.
   Il Design Journey™ deve diventare la **root entity** reale del prodotto.

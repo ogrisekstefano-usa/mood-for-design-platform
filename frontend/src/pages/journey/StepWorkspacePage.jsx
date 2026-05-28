@@ -73,8 +73,10 @@ const WORKSPACE_BY_TYPE = {
   material_direction:  MaterialDirectionWorkspace,
 };
 
-const StepWorkspacePage = () => {
-  const { projectId, milestoneType } = useParams();
+const StepWorkspacePage = ({ projectIdOverride } = {}) => {
+  const params = useParams();
+  const projectId = projectIdOverride || params.projectId;
+  const { milestoneType } = params;
   const [data, setData]       = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);

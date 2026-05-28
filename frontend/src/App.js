@@ -93,6 +93,12 @@ const ReviewMode = lazy(() => import('./pages/collab/ReviewMode'));
 const StepWorkspacePage = lazy(() => import('./pages/journey/StepWorkspacePage'));
 const ComingSoonPage = lazy(() => import('./pages/placeholder/ComingSoonPage'));
 
+// ITER168 · Phase 2 · canonical journey-keyed routes + silent legacy redirects
+import {
+  StudioJourneyView, StudioJourneyStepView, CanonicalClientJourney,
+  ProjectToJourneyRedirect, LegacyStepRedirect,
+} from './routes/JourneyCanonicalRoutes';
+
 // Site (public marketing) — global brand surface
 const SiteLayout = lazy(() => import('./site/SiteLayout'));
 const HomePage = lazy(() => import('./pages/site/HomePage'));
@@ -494,19 +500,26 @@ function App() {
 
                 <Route element={<ProtectedRoute><StudioRoute><DashboardLayout /></StudioRoute></ProtectedRoute>}>
                   <Route path="/dashboard" element={G('dashboard', <AtelierDashboardPage />)} />
-                  <Route path="/dashboard/pulse" element={G('dashboard', <JourneyPulsePage />)} />
+                  <Route path="/dashboard/pulse" element={<Navigate to="/studio/pulse" replace />} />
+                  <Route
+                    path="/studio/pulse"
+                    element={<StudioAdminRoute><StudioPulsePage /></StudioAdminRoute>}
+                  />
+                  {/* Legacy alias kept silent — old code may still link here */}
                   <Route
                     path="/studio-pulse"
-                    element={<StudioAdminRoute><StudioPulsePage /></StudioAdminRoute>}
+                    element={<Navigate to="/studio/pulse" replace />}
                   />
                   <Route path="/dashboard/legacy" element={<DashboardPage />} />
                   <Route path="/workspace/leads" element={<Navigate to="/crm/accounts" replace />} />
                   <Route path="/workspace/projects" element={G('journey_index', <ProjectsPage />)} />
                   <Route path="/workspace/conversations" element={G('journey_index', <DesignerConversationsPage />)} />
-                  <Route path="/workspace/projects/:id" element={G('journey_index', <ProjectDetailPage />)} />
-                  {/* Sprint G.6 — Step-Anchored Artifact Pages™.
-                      Il workspace dello step. Il contesto precede l'artifact. */}
-                  <Route path="/journey/:projectId/step/:milestoneType" element={G('journey_index', <StepWorkspacePage />)} />
+                  {/* ITER168 · Phase 2 · journey-keyed canonical (NEW) */}
+                  <Route path="/studio/journey/:jid" element={G('journey_index', <StudioJourneyView />)} />
+                  <Route path="/studio/journey/:jid/step/:milestoneType" element={G('journey_index', <StudioJourneyStepView />)} />
+                  {/* ITER168 · Phase 2 · silent legacy redirects (project_id → jid) */}
+                  <Route path="/workspace/projects/:id" element={G('journey_index', <ProjectToJourneyRedirect />)} />
+                  <Route path="/journey/:projectId/step/:milestoneType" element={G('journey_index', <LegacyStepRedirect />)} />
                   <Route path="/workspace/proposals" element={G('journey_index', <ProposalsPage />)} />
                   <Route path="/workspace/proposals/:id/compose" element={G('journey_index', <ProposalComposerPage />)} />
                   <Route path="/workspace/references" element={<Navigate to="/inspirations" replace />} />
@@ -627,6 +640,17 @@ function App() {
                     Il cliente entra nel proprio Journey, non in un dashboard.
                     Legacy routes (project / moodboards / timeline / approvals /
                     files) redirezionano alla nuova IA. */}
+                {/* ITER168 · Phase 2 · CLIENT canonical (NEW)
+                    /journey/:journeyId  → Client Profile (Companion experience).
+                    Vive direttamente sotto ClientRoute, NO ClientDashboardLayout
+                    wrapper perché Companion porta la propria chrome editoriale.
+                    Legacy /client/journey/:journeyId resta come alias. */}
+                <Route path="/journey/:journeyId" element={
+                  <ClientRoute>
+                    <CanonicalClientJourney />
+                  </ClientRoute>
+                } />
+
                 {/* ITER162 · Welcome Panel Atelier™ — full-bleed preset surface.
                     Vive FUORI da ClientDashboardLayout perché porta una sua
                     sidebar narrativa e gestisce il proprio chrome.

@@ -415,3 +415,59 @@ class TestSchemaLock:
         cur.close(); conn.close()
         assert row is not None
         assert tg is not None
+
+
+# ════════════════════════════════════════════════════════════════════════
+# §6 · Phase 2 · Resolver endpoints (canonical URL plumbing)
+# ════════════════════════════════════════════════════════════════════════
+class TestResolverEndpoints:
+    def test_mine_unauthenticated_returns_401(self):
+        r = requests.get(f"{BASE_URL}/api/journeys/mine")
+        assert r.status_code in (401, 403)
+
+    def test_resolve_unauthenticated_returns_401(self):
+        r = requests.get(
+            f"{BASE_URL}/api/journeys/resolve"
+            "?project_id=00000000-0000-0000-0000-000000000000")
+        assert r.status_code in (401, 403)
+
+    def test_mine_for_admin_returns_404_no_journey(self, admin_session):
+        """Admin user is not a client → 'Nessuna journey associata'."""
+        r = admin_session.get(f"{BASE_URL}/api/journeys/mine")
+        assert r.status_code == 404
+
+    def test_resolve_by_project_id_links(self, fresh_journey, admin_session):
+        """Lookup project_id from a freshly-created journey resolves to its jid."""
+        jid = fresh_journey["journey_id"]
+        # Fetch project_id via overview (intake response doesn't expose it)
+        ov = admin_session.get(f"{BASE_URL}/api/journeys/{jid}/overview").json()
+        pid = ov["journey"]["project_id"]
+        assert pid, "no project_id in overview"
+        r = admin_session.get(
+            f"{BASE_URL}/api/journeys/resolve?project_id={pid}")
+        assert r.status_code == 200, r.text
+        body = r.json()
+        assert body["linked"] is True
+        assert body["journey_id"] == jid
+
+    def test_resolve_excludes_abandoned(self, admin_session):
+        """Sentinel project_id (used by backfill archivio) must NOT be returned
+        in /resolve, since archivio journeys are lifecycle_state=abandoned."""
+        r = admin_session.get(
+            f"{BASE_URL}/api/journeys/resolve"
+            "?project_id=00000000-0000-0000-0000-000000000000")
+        assert r.status_code == 200
+        body = r.json()
+        assert body["linked"] is False
+        assert body["journey_id"] is None
+
+    def test_resolve_unknown_project_returns_linked_false(self, admin_session):
+        random_pid = str(uuid.uuid4())
+        r = admin_session.get(
+            f"{BASE_URL}/api/journeys/resolve?project_id={random_pid}")
+        assert r.status_code == 200
+        assert r.json()["linked"] is False
+
+    def test_resolve_missing_params_returns_400(self, admin_session):
+        r = admin_session.get(f"{BASE_URL}/api/journeys/resolve")
+        assert r.status_code == 400
