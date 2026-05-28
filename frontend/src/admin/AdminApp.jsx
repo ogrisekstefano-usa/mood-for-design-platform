@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, NavLink, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { LogOut, FileText, Layout, Image, Settings as SettingsIcon, RefreshCw, ExternalLink, BookOpen, AlignEndHorizontal, Search, Building2 } from 'lucide-react';
+import { LogOut, FileText, Layout, Image, Settings as SettingsIcon, RefreshCw, ExternalLink, BookOpen, AlignEndHorizontal, Search, Building2, Compass } from 'lucide-react';
 import { adminAuth, adminApi } from './adminApi';
 import BlocksEditor from './pages/BlocksEditor';
 import SectionsManager from './pages/SectionsManager';
@@ -10,6 +10,8 @@ import PagesEditor from './pages/PagesEditor';
 import FooterEditor from './pages/FooterEditor';
 import SearchConsoleHelper from './pages/SearchConsoleHelper';
 import StudioRequestsAdmin from './pages/StudioRequestsAdmin';
+import AdvisorConsole from './pages/AdvisorConsole';
+import RelationDetail from './pages/RelationDetail';
 
 const AdminLogin = ({ onSuccess }) => {
   const [tenant, setTenant] = useState(adminAuth.getTenant());
@@ -124,6 +126,7 @@ const AdminShell = ({ children }) => {
           <NavItem to="/admin/sections" icon={Layout}       label="Sections" />
           <NavItem to="/admin/media"    icon={Image}        label="Media Library" />
           <NavItem to="/admin/footer"   icon={AlignEndHorizontal} label="Footer" />
+          <NavItem to="/admin/advisor-console" icon={Compass}  label="Advisor Console" />
           <NavItem to="/admin/studio-requests" icon={Building2} label="Studio Requests" />
           <NavItem to="/admin/seo"      icon={Search}       label="SEO & Indexing" />
           <NavItem to="/admin/publish"  icon={SettingsIcon} label="Publishing" />
@@ -143,7 +146,7 @@ const AdminShell = ({ children }) => {
       </aside>
 
       <main style={{ flex: 1, minWidth: 0 }} data-testid="admin-main">
-        <div style={{ padding: location?.pathname === '/admin/pages' ? 0 : '2.5rem 3rem' }}>
+        <div style={{ padding: (location?.pathname === '/admin/pages' || location?.pathname?.startsWith('/admin/advisor-console')) ? 0 : '2.5rem 3rem' }}>
           {children}
         </div>
       </main>
@@ -186,6 +189,8 @@ const AdminApp = () => {
         <Route path="media"     element={<MediaLibrary />} />
         <Route path="footer"          element={<FooterEditor />} />
         <Route path="studio-requests" element={<StudioRequestsAdmin />} />
+        <Route path="advisor-console" element={<AdvisorConsole />} />
+        <Route path="advisor-console/relations/:id" element={<RelationDetail />} />
         <Route path="seo"             element={<SearchConsoleHelper />} />
         <Route path="publish"   element={<PublishConsole />} />
         <Route path="*"         element={<Navigate to="/admin/pages" replace />} />

@@ -84,4 +84,38 @@ export const adminApi = {
 
   // Cache
   invalidate:    () => client.post('/cache/invalidate'),
+
+  // ─── ITER161 — Studio Relations & Advisor Governance ───
+  copyManifest:  (namespace, locale = 'it') =>
+    axios.get(`${BACKEND_URL}/api/admin/copy/manifest`, {
+      params: { namespace, locale }, headers: headers(),
+    }),
+  consoleSummary: (advisor_id) =>
+    axios.get(`${BACKEND_URL}/api/admin/advisor/console-summary`, {
+      params: advisor_id ? { advisor_id } : {}, headers: headers(),
+    }),
+  listRelations: (params = {}) =>
+    axios.get(`${BACKEND_URL}/api/admin/relations`, { params, headers: headers() }),
+  getRelation: (id) =>
+    axios.get(`${BACKEND_URL}/api/admin/relations/${id}`, { headers: headers() }),
+  createRelation: (body) =>
+    axios.post(`${BACKEND_URL}/api/admin/relations`, body, { headers: headers() }),
+  patchRelation: (id, body) =>
+    axios.patch(`${BACKEND_URL}/api/admin/relations/${id}`, body, { headers: headers() }),
+  verifyIdentity: (body) =>
+    axios.post(`${BACKEND_URL}/api/admin/relations/verify-identity`, body, { headers: headers() }),
+  openFromRequest: (request_id, body = {}) =>
+    axios.post(`${BACKEND_URL}/api/admin/relations/from-request/${request_id}`, body, { headers: headers() }),
+  createVisit: (relationId, body) =>
+    axios.post(`${BACKEND_URL}/api/admin/relations/${relationId}/visits`, body, { headers: headers() }),
+  createFollowup: (relationId, body) =>
+    axios.post(`${BACKEND_URL}/api/admin/relations/${relationId}/followups`, body, { headers: headers() }),
+  completeFollowup: (followupId, body = {}) =>
+    axios.patch(`${BACKEND_URL}/api/admin/followups/${followupId}/complete`, body, { headers: headers() }),
+  advisorFollowups: (advisor_id) =>
+    axios.get(`${BACKEND_URL}/api/admin/advisor/followups`, {
+      params: { advisor_id }, headers: headers(),
+    }),
+  activateEcosystem: (relationId, body = {}) =>
+    axios.post(`${BACKEND_URL}/api/admin/relations/${relationId}/activate-ecosystem`, body, { headers: headers() }),
 };

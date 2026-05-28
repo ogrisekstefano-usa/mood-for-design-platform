@@ -1,0 +1,54 @@
+{
+  "summary": "ITER161 — Studio Relations & Advisor Governance. Backend: 16/16 pytest tests green (auth guards, copy manifest 162 IT keys + curatorial vocabulary check, verify-identity clear→existing_relation, full Relations CRUD + visit + followup complete, console-summary shape, activate-ecosystem returning tenant_id/slug/founder_user_id/magic_link_sent). Frontend: AdvisorConsole hero/summary-strip/advisory-value-strip/relations-table/filter chips/new-relation-cta all render with full Italian editorial copy (Le tue relazioni di studio. / L'ecosistema, in questo momento. / Quadro generale / Advisory Value in osservazione). Status pickers display 'Allineamento editoriale', 'Ecosistema attivato', 'In dialogo'. Zero CRM vocabulary present. Drawer opens, fields fill, form submission creates relation and navigates to /admin/advisor-console/relations/:id. RelationDetail fully renders status-picker, temperature-picker, advisory-notes, save-notes, timeline, next-action, advisory-value-panel (value-recurring/value-setup), add-followup/followups-list, add-visit, and conditional activate-cta (or 'L'ecosistema è aperto' once activated).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Submit new-relation drawer → immediate RelationDetail render",
+        "issue": "First-paint of /relations/:id immediately after POST returns blank shell (page fully renders correctly on direct navigation/reload). Suspect race: navigate() fires before GET /api/admin/relations/{id} resolves and useEffect re-fetches. Loading skeleton would mask this.",
+        "affected_selectors": ["[data-testid='relation-detail']"]
+      },
+      {
+        "flow": "IdentityVerificationCard debounced render in new-relation drawer",
+        "issue": "When typing unique studio_name+email (no existing matches) the [data-testid='identity-verification-card'] does not appear within 2.5s debounce. Backend POST /verify-identity returns verdict=clear properly (verified by pytest), so card may be conditionally hidden when matches=[]. Recommend rendering card with empty-state copy or 'clear' verdict so the flow shows ANY feedback. Not retested with matching values due to drawer state-loss after navigation.",
+        "affected_selectors": ["[data-testid='identity-verification-card']", "[data-testid^='identity-match-']"]
+      }
+    ],
+    "design_issues": [
+      {
+        "screen": "AdvisorConsole pending-introductions section",
+        "issues": [
+          "Empty-state copy renders ('Nessuna nuova introduzione in attesa…') but the parent container does not expose data-testid='pending-list' — empty branch must still carry the testid for stable testing."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter161_studio_relations.py",
+    "/app/test_reports/pytest/iter161.xml"
+  ],
+  "action_items": [
+    "Add data-testid='pending-list' to the pending-introductions container regardless of empty state in AdvisorConsole.jsx.",
+    "RelationDetail.jsx: show a loading skeleton while initial GET /api/admin/relations/{id} is in flight (avoids blank first-paint after drawer submit).",
+    "IdentityVerificationCard.jsx: render the card on first verify-response regardless of matches count — at minimum show the 'clear' verdict copy. Today the card appears only when verdict=existing_relation."
+  ],
+  "critical_code_review_comments": [
+    "Backend create_relation_manually returns relation_id (not id) and the IdentityVerifyResponse correctly uses {verdict, matches} — frontend appears aligned (drawer submit navigates to /relations/:id). Good consistency.",
+    "Sandbox magic-link issuance is logged-only (RESEND_API_KEY=re_sandbox_placeholder); activate-ecosystem returns magic_link_sent=false in sandbox — acceptable, but ensure prod toggle is wired via env without code change.",
+    "Console emits a single 401 on /admin landing before localStorage is set — cosmetic but adds noise; consider deferring the whoami probe until adminAuth.getKey() is non-empty."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter161_studio_relations.py"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "92%"},
+  "test_credentials": "Admin via header: X-Admin-Key: dev + X-Tenant-Slug: studio. Frontend uses localStorage 'mood-admin-key'='dev', 'mood-admin-tenant'='studio'. Bearer JWT admin@moodfordesign.com / MoodAdmin2026! also valid (not retested this iteration).",
+  "seed_data_creation": "Pytest creates several TEST_-prefixed studio_relations rows for the verify→existing flow and the activate-ecosystem flow. A new test relation id c0abe924-6f9e-49d8-92ae-cb8fc0391fa1 (TEST_UI_Drawer_Atelier) was also created via UI submission. Existing seed (Atelier Brera, id a1475339-7a31-4fdc-b5c2-4170ef3a7ca0, status=activated) used for RelationDetail visual validation.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend regression file: /app/backend/tests/test_iter161_studio_relations.py (pytest, 16 tests). Frontend admin auth: set localStorage mood-admin-key=dev + mood-admin-tenant=studio on the /admin route BEFORE navigating to /admin/advisor-console (otherwise initial whoami emits 401). Atelier Brera relation is already activated → activation-block/activate-cta hidden, replaced by 'L'ECOSISTEMA È APERTO' block — use a freshly-created relation (e.g. /admin/advisor-console/relations/c0abe924-6f9e-49d8-92ae-cb8fc0391fa1) when validating activate-cta. IdentityVerificationCard appears only on existing_relation verdict in current UI build.",
+  "rca of the issue": "RelationDetail blank-first-paint: state initialisation order — after react-router navigate() the component mounts with relation=null, and the in-flight GET is not visualised because there's no loading state, so the user sees an empty pane. On reload/direct nav the request completes synchronously enough for the first paint to include data. Fix: add a 'loading' state or render the chrome shell (sidebar/back button/header skeleton) immediately, then hydrate fields when relation arrives."
+}

@@ -109,9 +109,9 @@ async def verify_studio_identity(*,
                     SELECT id, studio_name, contact_email, website,
                            owner_advisor_id, status, protection_expires_at
                       FROM studio_relations
-                     WHERE (:name   IS NOT NULL AND lower(studio_name) = :name)
-                        OR (:email  IS NOT NULL AND lower(contact_email) = :email)
-                        OR (:domain IS NOT NULL AND lower(website) LIKE '%' || :domain || '%')
+                     WHERE (CAST(:name   AS text) IS NOT NULL AND lower(studio_name) = CAST(:name AS text))
+                        OR (CAST(:email  AS text) IS NOT NULL AND lower(contact_email) = CAST(:email AS text))
+                        OR (CAST(:domain AS text) IS NOT NULL AND lower(website) LIKE '%' || CAST(:domain AS text) || '%')
                      LIMIT 5
                 """),
                 params,
@@ -134,9 +134,9 @@ async def verify_studio_identity(*,
                 text("""
                     SELECT id, studio_name, contact_email, website, status
                       FROM studio_requests
-                     WHERE (:name   IS NOT NULL AND lower(studio_name) = :name)
-                        OR (:email  IS NOT NULL AND lower(contact_email) = :email)
-                        OR (:domain IS NOT NULL AND lower(website) LIKE '%' || :domain || '%')
+                     WHERE (CAST(:name   AS text) IS NOT NULL AND lower(studio_name) = CAST(:name AS text))
+                        OR (CAST(:email  AS text) IS NOT NULL AND lower(contact_email) = CAST(:email AS text))
+                        OR (CAST(:domain AS text) IS NOT NULL AND lower(website) LIKE '%' || CAST(:domain AS text) || '%')
                      ORDER BY created_at DESC
                      LIMIT 5
                 """),
@@ -205,8 +205,8 @@ async def open_relation_from_request(*,
                         :ci, :co, :ws,
                         :cn, :cr, :em,
                         :pp, :ph,
-                        'under_review', :owner,
-                        CASE WHEN :owner IS NOT NULL THEN NOW() END,
+                        'under_review', CAST(:owner AS uuid),
+                        CASE WHEN CAST(:owner AS uuid) IS NOT NULL THEN NOW() END,
                         :prot, NOW())
                 RETURNING id
             """),
@@ -258,8 +258,8 @@ async def create_relation_manually(*,
                    status, owner_advisor_id,
                    assigned_at, protection_expires_at, last_activity_at)
                 VALUES (:sn, :arc, :em, :cn, :ws, :ci, :co,
-                        'prospect', :owner,
-                        CASE WHEN :owner IS NOT NULL THEN NOW() END,
+                        'prospect', CAST(:owner AS uuid),
+                        CASE WHEN CAST(:owner AS uuid) IS NOT NULL THEN NOW() END,
                         :prot, NOW())
                 RETURNING id
             """),
@@ -577,7 +577,7 @@ async def activate_studio_ecosystem(*, relation_id: str,
 
         trow = (await s.execute(
             text("""
-                INSERT INTO tenants (slug, name, status, primary_locale)
+                INSERT INTO tenants (slug, name, status, default_language)
                 VALUES (:slug, :name, 'active', 'it')
                 RETURNING id
             """),
@@ -600,9 +600,9 @@ async def activate_studio_ecosystem(*, relation_id: str,
             urow = (await s.execute(
                 text("""
                     INSERT INTO users
-                      (tenant_id, email, full_name, role, is_active)
-                    VALUES (:t, :em, :nm, 'owner', true)
-                    ON CONFLICT (tenant_id, lower(email)) DO UPDATE
+                      (tenant_id, email, full_name, role, is_active, password_hash)
+                    VALUES (:t, :em, :nm, 'owner', true, '!magic-link-only')
+                    ON CONFLICT (tenant_id, email) DO UPDATE
                         SET full_name = COALESCE(EXCLUDED.full_name, users.full_name)
                     RETURNING id
                 """),
