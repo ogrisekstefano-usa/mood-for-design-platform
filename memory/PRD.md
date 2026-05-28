@@ -2,6 +2,69 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER169.1 · Professional Auth™ Restore** · ✅ DELIVERED · 28 Feb 2026
+
+  **🚨 Regressione critica risolta**: dopo ITER169 il `/auth/login`
+  mostrava Adaptive Access (probe email → magic link silent) anche per
+  utenti professional. L'utente ha imposto la separazione canonica.
+
+  **Regola architetturale (LOCKED, no future change without approval)**
+  ```
+  /auth/login              → PROFESSIONAL only · password only
+  /auth/client/callback    → CLIENT only · magic link only
+  ```
+
+  **Fix LoginPage.jsx (riscritto 245 righe)**
+  - **RIMOSSO**: `phase=probe`, `phase=adaptive`, chiamata
+    `/api/auth/identify`, blocco "Ricevi accesso via email", branch
+    client `signInWithOtp`, copy adaptive
+  - **MANTENUTO**: hero cinematica, brand logo, quote editoriale,
+    footer support, CSS auth-login.css, `useBlueprint().t()` per i18n
+  - **AGGIUNTO**: data-testid `data-phase="password"` (lockato),
+    fallback role-based redirect (`super_admin/admin/studio → /dashboard`,
+    `advisor → /advisor`, `client → /client`)
+  - **ZERO chiamate** a `/api/auth/identify` o `signInWithOtp` da
+    `/auth/login`. Il flusso è strettamente `signIn(email, password)`.
+
+  **Verifica live (screenshot capture)**
+  - UI cinematica intatta: "PROFESSIONAL ACCESS" eyebrow, "Bentornato"
+    title, email+password visibili immediatamente, CTA
+    "ACCEDI AL WORKSPACE", "Password dimenticata?", support link
+  - admin@moodfordesign.com / Blueprint2024! → `/dashboard` ✅
+  - designer@moodfordesign.com / Designer2024! → `/dashboard` ✅
+    (dopo creazione `users_profile` row mancante — vedi backfill)
+  - client@moodfordesign.com / Blueprint2024! → `/client/welcome` ✅
+    (i client possono usare `/auth/login` se hanno password, ma non è
+    il flusso canonico — il loro flusso primario è magic link)
+  - Password sbagliata → errore inline pulito "Invalid login credentials"
+    (NESSUNA redirect, NESSUNA homepage)
+
+  **Backfill `users_profile` per designer**
+  - Designer aveva `auth.users` row ma NO `users_profile` → login
+    falliva con "User profile not found"
+  - Creata riga via SQL diretto: `Giulia Ferri / designer / tenant studio`
+  - Re-seedable: `python3 /app/backend/scripts/seed_demo_users.py`
+
+  **Client Pipeline confermata isolata**
+  - `/auth/client/callback` continua a renderizzare concierge UX
+    (testato con `?error=otp_expired`)
+  - URL pulito da history.replaceState
+  - Resend CTA funzionante
+  - NO leak del form `login-form-password` dentro la pagina client
+    (verificato via screenshot assert)
+
+  **Test status** · 8/8 ITER169 pytest PASS · 18/18 ITER167 regression PASS
+
+  **⚠️ Da fare ancora**: l'utente deve aggiungere in Supabase Dashboard
+  → Authentication → URL Configuration → Redirect URLs:
+  ```
+  https://content-hub-pro-22.preview.emergentagent.com/auth/client/callback
+  https://*.preview.emergentagent.com/auth/client/callback
+  ```
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER169 · CRITICAL · Client Auth Lifecycle Orchestration™** · ✅ DELIVERED · 28 Feb 2026
 
   **🚨 P0 BLOCKER risolto**: il magic link cliente NON entrava nel Client Profile™.
