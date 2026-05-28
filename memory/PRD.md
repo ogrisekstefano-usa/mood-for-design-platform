@@ -12,6 +12,34 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ## Latest session — Feb 28, 2026
 
+### ITER160 Phase 1 — Studio Activation Onboarding Flow ✅
+- **Architectural decision**: established the two-layer relational architecture (Tenant Layer vs Client Layer). ITER160 lives strictly in the tenant layer; the client layer is deferred to ITER180+. Full PRD canonicalized in `/app/memory/ITER160_PRD.md` (15 sections, ~10k words).
+- **DB**: `studio_activation_drafts` + `tenant_modules` tables (migration `021_iter160_studio_activation.sql`).
+- **Service** `services/studio_activation.py`: `get_or_create_draft` (resume via cookie/token), silent `patch_draft` autosave, `manifest()` returning archetypes + experiences + pre-suggestion logic + copy_keys.
+- **Router** `routers/studio_activation.py` — endpoints `/api/studio/activation/{manifest,draft}` (POST/PATCH). All errors fail-soft.
+- **Editorial copy seed** `seed_iter160_studio_phase1.py` — 25 blocks IT (Movements I + II only, namespace `studio.activation.*`). Other locales deferred until manual editorial review.
+- **Frontend** `pages/studio/`:
+  - `StudioActivationLayout.jsx` — full-bleed dark chrome, MOOD monogram top-left, ascending hairline progress indicator on the left margin (no numbers, never "Step X of Y"), monogram-in-formation slot top-right.
+  - `useActivationDraft.js` — silent autosave (320ms debounce + sendBeacon on unload). Resume invisible.
+  - `useStudioManifest.js` — single manifest call + parallel copy resolution.
+  - `MovementEntrance.jsx` — `/studio` — full-bleed editorial photograph, slow Ken-Burns, single CTA, whisper return link to `/accedi`.
+  - `MovementPractice.jsx` — `/studio/practice` — 3×2 magazine grid, six archetype tiles (Studio di Interior Design · Showroom Luxury · Studio di Architettura · Galleria di Materiali · Design Retail · Specialisti della Pietra). Hover reveals italic descriptor. Click expands tile edge-to-edge, shows confirmation line `Entri in MOOD come {practice}.`, then Continue → Movement III.
+- **Route rewire**: `/studio` and `/studio/practice` mount the new flow. `/start-studio` (legacy) → 301 to `/studio`. Top nav + footer hidden on all `/studio/*` routes for full immersion.
+
+### Side fixes in the same session
+- **Default locale flipped from `en-us` → `it`** — both `site_resolver.DEFAULT_LOCALE` and `LocaleContext` initial state. Reason: the EN/FR/DE/ES editorial blocks still hold the original seed content; users with non-IT browsers saw stale "Curated Journeys / Editorial Moodboards" copy. The IT-first default surfaces the authored content correctly.
+- **Locale switcher temporarily hidden** in `EditorialFooter` until a manual editorial-grade review of EN/FR/DE/ES translations is completed.
+- **Migration runner** now actually records `schema_migrations` rows (was idempotently re-running every migration).
+
+### Validation
+- Manifest + draft endpoints: curl-tested end-to-end (resume, archetype patch, movement bump).
+- Movement I + II: cinematic smoke-tests confirm tile hover/click → expansion → confirm-line → continue flow.
+- All editorial copy resolves from DB (`studio.activation.*` namespace, namespace=`studio.activation`, block_key=remainder).
+
+---
+
+## Previous sessions — preserved below
+
 ### P0 Bug fixes ✅
 - **Free crop in MediaUploader** — react-easy-crop doesn't natively support unconstrained aspect. Fixed by introducing `cropSize` state driven by W/H% sliders that appear only in `Libero` mode (`/app/frontend/src/admin/components/MediaUploader.jsx`). Sliders 10–100% of the displayed media, real-time crop-box resize.
 - **Empty-text persistence in CMS** — `site_resolver._fetch_block_values` was using `if v:` which silently skipped empty-string translations and fell back to the source_value (old text). Replaced with `if loc in bucket:` so an explicit `""` is now respected as authoritative. Verified end-to-end via API.

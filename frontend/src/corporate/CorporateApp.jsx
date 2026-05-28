@@ -19,6 +19,8 @@ import {
 import ContactPage from './pages/ContactPage';
 import StartStudioPage from './pages/StartStudioPage';
 import AccessContinuityPage from './pages/AccessContinuityPage';
+import MovementEntrance from './pages/studio/MovementEntrance';
+import MovementPractice from './pages/studio/MovementPractice';
 import { getAllSlugs } from './routes/localizedSlugs';
 
 /**
@@ -61,11 +63,16 @@ const CorporateApp = () => {
   const isAccessRoute =
     location.pathname === '/journey/continue' ||
     accessSlugs.includes(location.pathname);
+  // ITER160 — Studio Activation Flow: full-bleed editorial shell,
+  // top nav + footer hidden. The page is the experience.
+  const isStudioActivationRoute = location.pathname.startsWith('/studio');
+
+  const stripChrome = isAccessRoute || isStudioActivationRoute;
 
   return (
     <div className="corporate-app" style={{ background: 'var(--mood-black)' }}>
       <PreviewBridge />
-      {!isAccessRoute && <MinimalNav />}
+      {!stripChrome && <MinimalNav />}
       <Routes>
         <Route path="/"                       element={<HomePage />} />
         <Route path="/magazine"               element={<MagazinePage />} />
@@ -81,7 +88,12 @@ const CorporateApp = () => {
         {/* ITER167 — Magic link landing (universal route, all locales). */}
         <Route path="/journey/continue" element={<AccessContinuityPage />} />
 
+        {/* ITER160 — Studio Activation Flow (Phase 1 routes) */}
+        <Route path="/studio"          element={<MovementEntrance />} />
+        <Route path="/studio/practice" element={<MovementPractice />} />
+
         {/* Legacy redirects */}
+        <Route path="/start-studio"         element={<Navigate to="/studio" replace />} />
         <Route path="/platform"             element={<Navigate to="/" replace />} />
         <Route path="/blueprint"            element={<Navigate to="/about" replace />} />
         <Route path="/journal"              element={<Navigate to="/magazine" replace />} />
@@ -93,8 +105,8 @@ const CorporateApp = () => {
         <Route path="/professional-access"  element={<Navigate to="/accedi" replace />} />
         <Route path="*"                     element={<Navigate to="/" replace />} />
       </Routes>
-      {!isAccessRoute && <EditorialFooter />}
-      {!isAccessRoute && <LegalStrip />}
+      {!stripChrome && <EditorialFooter />}
+      {!stripChrome && <LegalStrip />}
     </div>
   );
 };

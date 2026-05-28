@@ -27,7 +27,13 @@ async def main():
             print(f"  → applying {f.name} ...")
             sql = f.read_text()
             try:
-                await conn.execute(sql)
+                async with conn.transaction():
+                    await conn.execute(sql)
+                    await conn.execute(
+                        "INSERT INTO schema_migrations (version) VALUES ($1) "
+                        "ON CONFLICT (version) DO NOTHING",
+                        f.name,
+                    )
                 print(f"  ✓ {f.name} applied")
             except Exception as e:
                 print(f"  ✗ {f.name} FAILED: {e}")

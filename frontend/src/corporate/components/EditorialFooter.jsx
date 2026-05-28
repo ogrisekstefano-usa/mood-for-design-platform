@@ -221,11 +221,15 @@ const EditorialFooter = () => {
           {/* Column 2: Legale */}
           <ColumnList heading={legalHeading} items={legalItems} testid="footer-col-legal" />
 
-          {/* Column 3: Language / Country picker */}
-          <div data-testid="footer-col-locale">
-            <p style={HEADING_STYLE}>Lingua &amp; Paese</p>
-            <CountryLanguagePicker locale={locale} locales={locales} onSelect={onLocaleSelect} />
-          </div>
+          {/* Column 3: Language picker — temporarily hidden until EN/FR/DE/ES
+              receive editorial-grade translations (not the original seed).
+              Re-enable once the bulk-translate review is complete. */}
+          {false && (
+            <div data-testid="footer-col-locale">
+              <p style={HEADING_STYLE}>Lingua &amp; Paese</p>
+              <CountryLanguagePicker locale={locale} locales={locales} onSelect={onLocaleSelect} />
+            </div>
+          )}
         </div>
       </div>
     </footer>
