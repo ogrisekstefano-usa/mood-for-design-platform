@@ -71,7 +71,12 @@ async def _fetch_block_values(session, tenant_id: str, full_keys: list[str], loc
         if r['tx_locale']:
             bucket[r['tx_locale']] = r['tx_value']
 
-    # Resolve per requested locale with fallback chain
+    # Resolve per requested locale with fallback chain.
+    # IMPORTANT: an explicit translation row counts as authoritative even
+    # when the value is an empty string. The editor must respect the
+    # "if empty I want empty" intent (the user can intentionally hide
+    # a cell). We only fall back to another locale when there is NO
+    # translation row at all for the requested locale.
     chain = [locale] + [l for l in LOCALE_FALLBACK if l != locale]
     out: dict[str, str] = {}
     for fk in full_keys:
@@ -81,14 +86,13 @@ async def _fetch_block_values(session, tenant_id: str, full_keys: list[str], loc
             continue
         val = None
         for loc in chain:
-            v = bucket.get(loc)
-            if v:
-                val = v
+            if loc in bucket:           # explicit translation exists (even if "")
+                val = bucket[loc]
                 break
         if val is None:
-            # final fallback: source_value
+            # no translations at all → fall back to the source copy
             val = bucket.get('_source_value') or ''
-        out[fk] = val
+        out[fk] = val if val is not None else ''
     return out
 
 

@@ -28,12 +28,26 @@ const MediaUploader = ({ onClose, onUploaded, uploadFn, defaultCategory = 'site'
   const [aspect, setAspect]     = useState(ASPECT_PRESETS[0].ratio);
   const [aspectKey, setAspectKey] = useState('free');
   const [cropPx, setCropPx]     = useState(null);
+  const [mediaSize, setMediaSize] = useState(null); // { width, height, naturalWidth, naturalHeight }
+  const [freeW, setFreeW]       = useState(80); // % of container width
+  const [freeH, setFreeH]       = useState(80); // % of container height
   const [filters, setFilters]   = useState({ ...FILTER_DEFAULTS });
   const [filterKey, setFilterKey] = useState('none');
   const [alt, setAlt]           = useState(sourceMedia?.alt_text || '');
   const [category, setCategory] = useState(sourceMedia?.category || defaultCategory);
   const [busy, setBusy]         = useState(false);
   const [err, setErr]           = useState(null);
+
+  // Free-crop: convert W%/H% → pixel cropSize relative to the displayed media.
+  // react-easy-crop expects cropSize in the same coordinate system as the
+  // rendered media (i.e. its fitted container size), and ignores `aspect`
+  // when cropSize is set. This is what enables a true unconstrained crop.
+  const freeCropSize = (aspectKey === 'free' && mediaSize)
+    ? {
+        width:  Math.max(20, Math.round(mediaSize.width  * freeW / 100)),
+        height: Math.max(20, Math.round(mediaSize.height * freeH / 100)),
+      }
+    : undefined;
 
   // If sourceMedia is provided, fetch the image and pre-load it in crop view
   useEffect(() => {
@@ -199,10 +213,13 @@ const MediaUploader = ({ onClose, onUploaded, uploadFn, defaultCategory = 'site'
                 <div style={{ position: 'absolute', inset: 0, filter: buildFilterString(filters) }}>
                   <Cropper
                     image={imageSrc}
-                    crop={crop} zoom={zoom} aspect={aspect}
+                    crop={crop} zoom={zoom}
+                    aspect={aspectKey === 'free' ? undefined : aspect}
+                    cropSize={freeCropSize}
                     onCropChange={setCrop}
                     onZoomChange={setZoom}
                     onCropComplete={onCropComplete}
+                    onMediaLoaded={(m) => setMediaSize(m)}
                     objectFit="contain"
                     showGrid={true}
                     style={{ containerStyle: { background: '#000' } }}
@@ -233,6 +250,48 @@ const MediaUploader = ({ onClose, onUploaded, uploadFn, defaultCategory = 'site'
                       </button>
                     ))}
                   </div>
+
+                  {/* Free-form crop: dedicated W/H sliders (visible only in 'Libero' mode) */}
+                  {aspectKey === 'free' && (
+                    <div style={{ marginTop: 14, padding: '10px 12px', borderRadius: 8,
+                                   background: 'rgba(0,201,179,0.06)',
+                                   border: '1px solid rgba(0,201,179,0.18)' }}
+                          data-testid="free-crop-controls">
+                      <p style={{ fontSize: '0.66rem', color: 'rgba(0,201,179,0.85)',
+                                    margin: '0 0 10px 0', fontFamily: 'Inter, sans-serif',
+                                    letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                        Crop libero · trascina la cornice, regola le dimensioni
+                      </p>
+                      <div style={{ marginBottom: 10 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between',
+                                        fontSize: '0.7rem', color: 'rgba(255,255,255,0.75)',
+                                        marginBottom: 4, fontFamily: 'Inter, sans-serif' }}>
+                          <span>Larghezza</span><span>{freeW}%</span>
+                        </div>
+                        <input
+                          type="range" min={10} max={100} step={1}
+                          value={freeW}
+                          onChange={(e) => setFreeW(Number(e.target.value))}
+                          style={range}
+                          data-testid="free-crop-width"
+                        />
+                      </div>
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between',
+                                        fontSize: '0.7rem', color: 'rgba(255,255,255,0.75)',
+                                        marginBottom: 4, fontFamily: 'Inter, sans-serif' }}>
+                          <span>Altezza</span><span>{freeH}%</span>
+                        </div>
+                        <input
+                          type="range" min={10} max={100} step={1}
+                          value={freeH}
+                          onChange={(e) => setFreeH(Number(e.target.value))}
+                          style={range}
+                          data-testid="free-crop-height"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </section>
 
                 {/* Zoom */}
