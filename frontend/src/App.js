@@ -118,6 +118,7 @@ const ClientDashboardLayout = lazy(() => import('./components/client/ClientDashb
 const ClientOverviewPage = lazy(() => import('./pages/client/ClientOverviewPage'));
 const ClientMessagesPage = lazy(() => import('./pages/client/ClientMessagesPage'));
 const ClientJourneysIndexPage = lazy(() => import('./pages/client/ClientJourneysIndexPage'));
+const ClientWelcomePresetPage = lazy(() => import('./pages/client/ClientWelcomePresetPage'));
 const ClientCompanionPage = lazy(() => import('./pages/client/ClientCompanionPage'));
 // Legacy client stub pages — still mountable at /client/overview-legacy for QA;
 // daily routes redirect to the new Journey Companion (Sprint G.7).
@@ -572,6 +573,14 @@ function App() {
                     Il cliente entra nel proprio Journey, non in un dashboard.
                     Legacy routes (project / moodboards / timeline / approvals /
                     files) redirezionano alla nuova IA. */}
+                {/* ITER162 · Welcome Panel Atelier™ — full-bleed preset surface.
+                    Vive FUORI da ClientDashboardLayout perché porta una sua
+                    sidebar narrativa e gestisce il proprio chrome. */}
+                <Route path="/client/welcome" element={
+                  <ClientRoute>
+                    <ClientWelcomePresetPage />
+                  </ClientRoute>
+                } />
                 <Route element={<ClientRoute><ClientDashboardLayout /></ClientRoute>}>
                   <Route path="/client" element={<ClientJourneysIndexPage />} />
                   <Route path="/client/journey/:journeyId" element={<ClientCompanionPage />} />

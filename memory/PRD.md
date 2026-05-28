@@ -2,6 +2,104 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER162 · Welcome Panel Atelier™ (Client Profile Preset System)** · ✅ DELIVERED · 28 Mag 2026
+
+  **🎯 Goal**: prima versione del sistema preset visuale del Client
+  Profile. Il `/client/welcome` ora è una full-bleed cinematic
+  experience: NON una dashboard, NON un CRM — una "stanza" relazionale.
+  Architettura già preset-ready per Axis™ / Gallery™ / Residence™.
+
+  **Preset Engine**
+  - `presets/client-profile/presetEngine.js`: `resolveClientProfilePreset({tenant, profile, journey, overrideKey})`
+    ritorna `{preset, layout, components, visualDensity, typography,
+    spacing, navigationStyle}`. P0: hardcoded `atelier`; firma pronta
+    per tenant preferences + project category + country/tier overrides.
+  - Componenti opzionali pre-cablati (off di default): `moodboardPreview`,
+    `documents`, `appointments`, `quickActions` — il preset Atelier
+    li dichiara già nella sua mappa.
+
+  **Atelier components (8)**
+  - `AtelierWelcomePanel.jsx` (root, layout three-column cinematic)
+  - `AtelierSidebar.jsx` (narrative: brand MOOD rings + nav editoriale
+    Panoramica/Il mio percorso/Conversazioni 2/Ispirazioni/Materiali/
+    Documenti/Appuntamenti + support card + security card + identity)
+  - `AtelierHero.jsx` (hero serif "Benvenuto, [Nome]." con punto
+    bronze + lede 3 righe + quote glassmorphism con virgolette grandi)
+  - `AtelierQuickSummary.jsx` (4 card editoriali Atmosfera / Stile di
+    vita / Preferenze / Priorità, icona + label + titolo serif + body
+    + thumbnail materica + hover lift)
+  - `AtelierReferenceCard.jsx` (referente: avatar 88px bordo bronze
+    + nome serif + ruolo maiuscoletto + bio + CTA "Scrivi al
+    referente" + tempo medio risposta)
+  - `AtelierActionPanel.jsx` (cream sand: "Cosa vuoi fare ora?" +
+    3 azioni relazionali — Continua il brief / Scrivi al referente /
+    Possiamo sentirci?)
+  - `AtelierTimeline.jsx` (4 step Journey: nodi tondi, bronze done,
+    linea bronze→neutro)
+  - `AtelierNextStep.jsx` (card Prossimo passo + immagine)
+  - `AtelierPasswordPrompt.jsx` (floating bottom-right, cream gradient,
+    dismiss persistente)
+  - `atelier.css` (650+ righe — palette `--atl-ink #0a0807`,
+    `--atl-bronze #C9A26B`, `--atl-cream #efece4`, `--atl-sand #ece5d6`;
+    motion editoriale fade-up 480–800ms; responsive 1280/1100/880)
+  - `atelierViewModel.js`: trasforma `/api/client/welcome-summary` in
+    view model + libreria dummy per Atmosfera/Lifestyle/Priorità +
+    quote estratto da `atmosphere.how_to_feel` con fallback
+    "Voglio sentire la casa quando entro."
+
+  **Routing**
+  - Nuovo route standalone `/client/welcome` (fuori da
+    `ClientDashboardLayout`, perché Atelier porta la propria sidebar)
+  - `AuthCallbackPage`: il next post-magic-link diventa `/client/welcome`
+  - `services/client_provisioning.py`: `redirect_to` aggiornato a
+    `/client/welcome` per il flow post-3-step
+
+  **Lessico**
+  - Sidebar voci: Panoramica · Il mio percorso · Conversazioni ·
+    Ispirazioni · Materiali · Documenti · Appuntamenti. Footer
+    "Hai domande? Scrivi al tuo referente". Identity badge
+    "Marco Bentornato · Client Profile".
+  - Azioni: "Continua il brief guidato" / "Scrivi al tuo referente" /
+    "Possiamo sentirci?" (mai Open Ticket / Create Request / Support).
+  - Quote labeled "Le tue prime parole nel Journey™".
+
+  **Future-ready hooks (NON implementati)**
+  - `showMoodboardPreview` / `showDocuments` / `showAppointments` /
+    `showReferenceDesigner` / `showQuickActions` slot dichiarati nella
+    `components` map del preset
+  - Stub preset `axis`, `gallery`, `residence` nel registry — fallback
+    ad `atelier` finché non vengono buildati
+  - Override `?preset=atelier|axis|gallery|residence` già supportato
+    in query string (Blueprint preview-ready)
+
+  **Verifica live (1920×1200 desktop + 420×900 mobile)**
+  - panel + sidebar + hero "Benvenuto, Marco." + quote "Voglio
+    sentire la casa quando entro." + 4 cards + referente Stefano
+    Ogrisek + 3 CTA + 4 timeline + Prossimo passo + password prompt ✓
+  - Recall modal apre da CTA ✓
+  - Responsive mobile collassa sidebar + hero ridotto + cards stacked ✓
+
+  **File**
+  - ⨁ `frontend/src/presets/client-profile/presetEngine.js`
+  - ⨁ `frontend/src/presets/client-profile/atelier/atelierViewModel.js`
+  - ⨁ `frontend/src/presets/client-profile/atelier/AtelierWelcomePanel.jsx`
+  - ⨁ `frontend/src/presets/client-profile/atelier/AtelierSidebar.jsx`
+  - ⨁ `frontend/src/presets/client-profile/atelier/AtelierHero.jsx`
+  - ⨁ `frontend/src/presets/client-profile/atelier/AtelierQuickSummary.jsx`
+  - ⨁ `frontend/src/presets/client-profile/atelier/AtelierReferenceCard.jsx`
+  - ⨁ `frontend/src/presets/client-profile/atelier/AtelierActionPanel.jsx`
+  - ⨁ `frontend/src/presets/client-profile/atelier/AtelierTimeline.jsx`
+  - ⨁ `frontend/src/presets/client-profile/atelier/AtelierNextStep.jsx`
+  - ⨁ `frontend/src/presets/client-profile/atelier/AtelierPasswordPrompt.jsx`
+  - ⨁ `frontend/src/presets/client-profile/atelier/atelier.css`
+  - ⨁ `frontend/src/pages/client/ClientWelcomePresetPage.jsx`
+  - ↻ `frontend/src/App.js` (lazy import + route /client/welcome)
+  - ↻ `frontend/src/pages/auth/AuthCallbackPage.jsx` (next = /client/welcome)
+  - ↻ `backend/services/client_provisioning.py` (redirect_to = /client/welcome)
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER161 · Client Profile Access Fix · P0.1 + P0.2** · ✅ DELIVERED · 28 Mag 2026
 
   **🎯 Goal**: rendere l'accesso al Client Profile semplice, persistente,

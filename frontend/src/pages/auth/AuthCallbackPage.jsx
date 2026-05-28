@@ -71,10 +71,12 @@ const AuthCallbackPage = () => {
         const targetHost = _normalize(params.get('origin')) || PLATFORM_DOMAIN;
         let next = params.get('next') || (flow === 'recovery' ? '/auth/reset-password' : '/auth/login');
         if (!next.startsWith('/')) next = '/' + next;
-        // ITER161 · P0.2 · marca il primo ingresso da magic-link verso
-        // il Client Profile per evitare l'auto-deep-entry al journey
-        // (mostriamo il benvenuto editoriale).
-        if (flow === 'magic_link' && next.startsWith('/client')) {
+        // ITER161/162 · marca il primo ingresso da magic-link verso
+        // il Client Profile: rotta = Welcome Panel Atelier™.
+        if (flow === 'magic_link' && (next.startsWith('/client') || next === '/')) {
+          if (!next.startsWith('/client/welcome')) {
+            next = '/client/welcome';
+          }
           if (!/[?&]welcome=/.test(next)) {
             next += (next.includes('?') ? '&' : '?') + 'welcome=1';
           }

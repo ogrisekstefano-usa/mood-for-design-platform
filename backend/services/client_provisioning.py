@@ -336,11 +336,14 @@ def provision_client_after_journey(
             },
         )
 
-    # ── 4. Magic link (redirect → Blueprint callback → /client) ──────
+    # ── 4. Magic link (redirect → Blueprint callback → /client/welcome) ─
+    # ITER162 · il magic-link porta direttamente al Welcome Panel Atelier™,
+    # non al journey: il cliente vede prima la "stanza" relazionale,
+    # poi naviga.
     redirect_to = build_callback_url(
         request_host,
         "magic_link",
-        next_path="/client",
+        next_path="/client/welcome",
     )
     magic_link = _generate_magic_link(email, redirect_to)
     result["magic_link_url"] = magic_link
