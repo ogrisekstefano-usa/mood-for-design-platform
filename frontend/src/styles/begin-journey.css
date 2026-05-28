@@ -302,13 +302,17 @@
 @media (max-width: 1100px) { .bj-rail { position: static; } }
 
 .bj-rail__brand {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-style: normal;
-  font-size: 22px;
-  letter-spacing: -0.01em;
+  margin-bottom: 40px;
+}
+.bj-rail__brand-mark {
+  display: block;
+  font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 32px;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
   color: #ffffff;
-  margin-bottom: 32px;
-  font-weight: 600;
+  font-weight: 400;
 }
 .bj-rail__brand small {
   display: block;

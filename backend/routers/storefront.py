@@ -747,8 +747,15 @@ def public_brand(tenant_slug: str, locale_code: str = Query(default="it-IT")):
         "main_links":         main_links,  # canonical from Experience Studio (may be empty)
         "show_login":         bool(nav_cfg.get('show_login',         True)),
         "show_register":      bool(nav_cfg.get('show_register',      True)),
-        "show_lang_switcher": bool(nav_cfg.get('show_lang_switcher', True)),
-        "login_label":        nav_cfg.get('login_label') or {"it": "Accedi", "en": "Sign in", "fr": "Accéder", "de": "Anmelden", "es": "Acceder"},
+        "show_lang_switcher": bool(nav_cfg.get('show_lang_switcher', False)),
+        # ITER167 · Access Continuity™ — "RIENTRA" (corto, editoriale, mai software).
+        "login_label":        nav_cfg.get('login_label') or {
+            "it": "Rientra",
+            "en": "Re-enter",
+            "fr": "Revenir",
+            "de": "Wiedereintreten",
+            "es": "Volver",
+        },
         "login_href":         nav_cfg.get('login_href')    or '/auth/login',
         "register_href":      nav_cfg.get('register_href') or '/auth/register',
     }

@@ -15,94 +15,29 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
-import { publicLanguages, getDefaultLocale } from '../content/languages';
 
 // Localized copy resolver
 const L = (v, l) => (typeof v === 'string' ? v : (v?.[l] || v?.en || v?.it || ''));
 
 const DEFAULT_COPY = {
-  welcome: {
-    it: 'Benvenuti nel nostro studio. Disegniamo relazioni, non solo spazi.',
-    en: 'Welcome to our studio. We design relationships, not just spaces.',
-  },
   nav: {
     how_it_works:  { it: 'Come funziona',  en: 'How it works' },
     magazine:      { it: 'Magazine',       en: 'Magazine' },
     design_stories:{ it: 'Design Stories', en: 'Design Stories' },
     professionals: { it: 'Per i professionisti', en: 'For professionals' },
-    cta:           { it: 'Inizia il tuo viaggio', en: 'Begin your journey' },
-    login:         { it: 'Entra nel tuo spazio', en: 'Enter your space' },
+    cta:           { it: 'Inizia il tuo Design Journey™', en: 'Begin your Design Journey™' },
+    login:         { it: 'Rientra', en: 'Re-enter' },
   },
-};
-
-// LanguageSelector — small inline dropdown for locale.
-// Sourced from the Global Language Registry (`/site/content/languages.js`),
-// which is also the source of truth for `/admin/languages`.
-// Any toggle change in the Blueprint Command Center → here, instantly.
-const buildPublicLocales = () =>
-  publicLanguages().map((l) => ({ code: l.base, label: l.short || l.base.toUpperCase(), full: l.code }));
-const DEFAULT_LOCALES = buildPublicLocales();
-
-const LanguageSelector = ({ locale, locales, onChange }) => {
-  const [open, setOpen] = useState(false);
-  const current = locales.find((l) => l.code === locale) || locales[0];
-  return (
-    <div className="mfd-langsel" data-testid="language-selector">
-      <button
-        type="button"
-        className="mfd-langsel__trigger"
-        onClick={() => setOpen((v) => !v)}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        data-testid="language-selector-trigger"
-      >
-        {current.label.toUpperCase()} <span aria-hidden>▾</span>
-      </button>
-      {open && (
-        <ul className="mfd-langsel__menu" role="menu" data-testid="language-selector-menu">
-          {locales.map((l) => (
-            <li key={l.code}>
-              <button
-                type="button"
-                className={`mfd-langsel__option ${l.code === locale ? 'is-active' : ''}`}
-                onClick={() => { onChange?.(l.code); setOpen(false); }}
-                role="menuitem"
-                data-testid={`language-option-${l.code}`}
-              >
-                {l.label}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
 };
 
 const MoodSiteHeader = ({
   locale = 'it',
   copy = DEFAULT_COPY,
-  onLocaleChange,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [livePublicLocales, setLivePublicLocales] = useState(() => buildPublicLocales());
   const location = useLocation();
   const onHome = location.pathname === '/' || location.pathname === '';
-  // Source of truth: live registry from /admin/languages. The static
-  // `copy.locales` (if passed) wins, otherwise the live public registry.
-  const locales = (copy.locales && copy.locales.length) ? copy.locales : livePublicLocales;
   const closeMenu = useCallback(() => setMenuOpen(false), []);
-
-  // Re-read the language registry whenever an admin saves /admin/languages.
-  useEffect(() => {
-    const onChange = () => setLivePublicLocales(buildPublicLocales());
-    window.addEventListener('mfd:languages:change', onChange);
-    window.addEventListener('storage', onChange);
-    return () => {
-      window.removeEventListener('mfd:languages:change', onChange);
-      window.removeEventListener('storage', onChange);
-    };
-  }, []);
 
   // Always close the menu when route changes (defensive)
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
@@ -119,18 +54,6 @@ const MoodSiteHeader = ({
 
   return (
     <>
-      <div className="mfd-welcome-strip" role="region" aria-label="Welcome">
-        <div className="mfd-welcome-strip__inner">
-          <p className="mfd-welcome-strip__msg">{L(copy.welcome, locale)}</p>
-          <div className="mfd-welcome-strip__meta">
-            <LanguageSelector locale={locale} locales={locales} onChange={onLocaleChange} />
-            <Link to="/auth/login" className="mfd-welcome-strip__link" data-testid="welcome-login-link">
-              {L(copy.nav.login, locale)}
-            </Link>
-          </div>
-        </div>
-      </div>
-
       <header className="mfd-header" data-testid="mfd-header">
         <div className="mfd-header__inner">
           <Link to="/" className="mfd-header__brand" onClick={closeMenu}>
@@ -151,6 +74,16 @@ const MoodSiteHeader = ({
             )}
             <Link to="/professionals">{L(copy.nav.professionals, locale)}</Link>
           </nav>
+          {/* RIENTRA — Access Continuity™ CTA (ghost, accanto al CTA primario).
+              ITER167 · "RIENTRA" perché elegante, corto, non software. */}
+          <Link
+            to="/auth/login"
+            className="mfd-header__reenter"
+            data-testid="header-cta-reenter"
+            onClick={closeMenu}
+          >
+            {L(copy.nav.login, locale)}
+          </Link>
           <Link
             to="/begin-journey"
             className="mfd-cta mfd-cta--primary mfd-header__cta"

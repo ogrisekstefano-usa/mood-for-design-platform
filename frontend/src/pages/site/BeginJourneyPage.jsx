@@ -161,8 +161,7 @@ const BeginJourneyForm = () => {
         {/* LEFT RAIL */}
         <aside className="bj-rail">
           <div className="bj-rail__brand">
-            MOOD
-            <small>Design Journey™</small>
+            <span className="bj-rail__brand-mark">Design Journey™</span>
           </div>
           {STEPS.map((s) => (
             <div

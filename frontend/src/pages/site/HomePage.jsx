@@ -65,7 +65,7 @@ const EDITORIAL_SHELL = {
     professionals:   { it: 'Per i professionisti', en: 'For Professionals™' },
     about:           { it: 'Chi siamo',      en: 'About' },
     login:           { it: 'Entra nel tuo spazio', en: 'Enter your space' },
-    cta:             { it: 'Inizia il tuo viaggio', en: 'Begin Your Journey™' },
+    cta:             { it: 'Inizia il tuo Design Journey™', en: 'Begin your Design Journey™' },
   },
   // Editorial slots — empty by design. Populated by the CMS.
   hero:       { image: '', title: { it: '', en: '' }, sub: { it: '', en: '' },
@@ -211,17 +211,6 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
 
   return (
   <>
-    <div className="mfd-welcome-strip" role="region" aria-label="Welcome">
-      <div className="mfd-welcome-strip__inner">
-        <p className="mfd-welcome-strip__msg">{L(copy.welcome, locale)}</p>
-        <div className="mfd-welcome-strip__meta">
-          <LanguageSelector locale={locale} locales={locales} onChange={onLocaleChange} />
-          <Link to="/auth/login" className="mfd-welcome-strip__link" data-testid="welcome-login-link">
-            {L(copy.nav.login, locale)}
-          </Link>
-        </div>
-      </div>
-    </div>
     <header className="mfd-header">
       <div className="mfd-header__inner">
         <Link to="/" className="mfd-header__brand" onClick={closeMenu}>
@@ -234,6 +223,10 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
           <a href="#design-stories">{L(copy.nav.design_stories, locale)}</a>
           <Link to="/professionals">{L(copy.nav.professionals, locale)}</Link>
         </nav>
+        {/* RIENTRA — ghost Access Continuity™ link (ITER167). */}
+        <Link to="/auth/login" className="mfd-header__reenter" data-testid="header-cta-reenter" onClick={closeMenu}>
+          {L(copy.nav.login, locale)}
+        </Link>
         <Link to="/begin-journey" className="mfd-cta mfd-cta--primary mfd-header__cta" data-testid="header-cta-start-project">
           {L(copy.nav.cta, locale)}
         </Link>

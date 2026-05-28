@@ -154,7 +154,7 @@ const SiteHeader = () => {
   }, [mobileOpen]);
 
   const mainLinks = nav?.main_links || [];
-  const accediLabel = pickLabel(nav?.login_label, locale) || 'Entra nel tuo spazio';
+  const accediLabel = pickLabel(nav?.login_label, locale) || 'Rientra';
   const navEmpty = mainLinks.length === 0;
 
   const renderLink = (link, opts = {}) => {
@@ -189,7 +189,8 @@ const SiteHeader = () => {
         </nav>
 
         <div className="mfd-header__right">
-          {nav?.show_lang_switcher !== false && <LanguageSwitcher />}
+          {/* ITER167: language switcher rimosso dalla topbar.
+              Country & Language vive solo nel footer (Market & Locale™). */}
           {nav?.show_login !== false && (
             <Link
               to={nav?.login_href || '/auth/login'}

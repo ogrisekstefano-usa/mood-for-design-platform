@@ -2,6 +2,51 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER167 · Round 1 · Access Continuity™ Header + Naming Governance** · ✅ DELIVERED · 28 Feb 2026
+
+  **🎯 Goal**: rimuovere ogni residuo "software" dalla navbar pubblica e
+  spostare il selettore lingua nel footer (Market & Locale™), trasformando
+  la copy in narrativa editoriale ("Rientra", "Inizia il tuo Design Journey™").
+
+  **Cosa è stato fatto**
+  - `MoodSiteHeader.jsx`: rimossa fascia nera superiore (welcome strip),
+    rimosso LanguageSelector inline. Aggiunto ghost-link **`Rientra`**
+    (`data-testid="header-cta-reenter"`) accanto al CTA primario.
+  - `HomePage.jsx` (custom header interno): stesso refactor — niente
+    welcome strip, ghost link Rientra, CTA "Inizia il tuo Design Journey™".
+  - `SiteHeader.jsx` (variante locale-prefixed): rimosso il LanguageSwitcher
+    inline (`show_lang_switcher` default ora `False`). Fallback testo `Rientra`.
+  - `BeginJourneyPage.jsx` · rail: rimossa la scritta "MOOD", ingrandito
+    "Design Journey™" in Cormorant italic 32px (cinematic ritual marker).
+  - CSS `mood.css`: nuova classe `.mfd-header__reenter` (ghost ink,
+    `font-size:10.5px`, `letter-spacing:0.24em`, opacity 0.62 → 1 hover).
+  - CSS `begin-journey.css`: `.bj-rail__brand-mark` (Cormorant italic
+    32px), `.bj-rail__brand` semplificata (margin-bottom 40px).
+  - **Backend governance** · `routers/storefront.py`:
+      • `nav.login_label` fallback default ora `{it:"Rientra", en:"Re-enter", …}`
+      • `nav.show_lang_switcher` default `False`
+  - **DB migration** · `scripts/iter167_update_storefront_nav.py`:
+    aggiorna `cms_sections.nav_top.settings.login.label_i18n` e
+    `.cta.label_i18n` (idempotente). Re-freeze del
+    `cms_page_revisions.snapshot` per sincronizzare l'endpoint pubblico.
+    Eseguito una volta: 1 sezione + 1 snapshot aggiornati.
+
+  **Testing**
+  - `/` (homepage): 0× "Accedi/Login/Entra nel tuo spazio". 2× "Rientra",
+    2× "Design Journey". No welcome strip nera. Screenshot conferma.
+  - `/begin-journey`: sidebar mostra "Design Journey™" in italic editoriale,
+    nessuna scritta "MOOD". Header identico a homepage.
+  - Lint: tutti i 4 file modificati clean.
+
+  **Backlog ITER167 — Round 2 + 3 (next sprint)**
+  - Phone country prefix dropdown nello step 3 di `/begin-journey`
+  - Adaptive Access™ refactor di `/auth/login` (email-first, role-aware)
+  - Atmospheric Panels™ in Client Profile · "Le tue prime indicazioni"
+  - Email template editoriali multilingue (magic-link, password creation)
+  - Migration completa delle CMS keys (auth.access.*, preparing.*, etc.)
+
+---
+
 - **ITER166.1 · Unified Public Header + Language Registry Sync + Admin Index Grid** · ✅ DELIVERED · 28 Feb 2026
 
   **🎯 Goal**: 3 richieste utente da screenshot:

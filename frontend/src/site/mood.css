@@ -191,6 +191,28 @@
   color: var(--mfd-gold-tan);
 }
 
+/* RIENTRA — ghost ink Access Continuity™ link. ITER167.
+   Vive accanto al CTA primario. Tipografia editoriale, mai bold. */
+.mfd-header__reenter {
+  display: inline-flex; align-items: center;
+  padding: 11px 16px;
+  margin-right: 8px;
+  font-family: var(--mfd-sans);
+  font-size: 10.5px; letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--mfd-ink, #1A1714);
+  opacity: 0.62;
+  text-decoration: none;
+  transition: opacity .25s, color .25s;
+  border: none;
+  background: transparent;
+}
+.mfd-header__reenter:hover { opacity: 1; color: var(--mfd-gold-tan, #8E7340); }
+@media (max-width: 980px) {
+  .mfd-header__reenter { display: none; }
+}
+
+
 .mfd-header__burger {
   display: none;
   background: transparent; border: none; color: var(--mfd-cream);
