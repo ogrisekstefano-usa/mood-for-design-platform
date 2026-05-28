@@ -1,0 +1,43 @@
+{
+  "summary": "Re-test of ITER160 P0 fixes from iteration_4. BOTH P0 fixes verified: (1) Admin endpoints now strictly enforce auth — anonymous and wrong-key requests return 401; X-Admin-Key=dev (matching ADMIN_API_KEY env) and valid Bearer JWT (admin@moodfordesign.com) both return 200. (2) Ecosystem pre-suggestion now works for all three sentinel archetypes (luxury_showroom, interior_studio, architecture_firm) — bands correctly render 'inclusa nella tua composizione' for archetype_to_suggested keys and 'non per ora' for others. Sentinel regression checks all green: BACKEND-C happy submit returns MOOD-XXXX-XXXX reference; FRONTEND-H Identity chips render Italian labels (Residenziale privato, Italiano, English, Quieto, Composto, Vivido) when /studio/identity is loaded fresh; FRONTEND-I request reception is now combined into /studio/identity scrolled page with INVIA LA RICHIESTA submit (Movement IV + Movement V composed in same view — copy reads 'IL VOSTRO RIFERIMENTO' section). Zero-jargon sweep CLEAN across /studio, /studio/practice, /studio/ecosystem, /studio/identity, /studio/request. Backend pytest: 19 PASS / 1 skipped (cleanup, no DB URL exposed in test env).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "previous-known (iteration_4)", "issues": ["React hydration warning '<a> cannot be a descendant of <a>' in LocaleProvider/Routes tree — still present (P2, not retested fully)."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter160_studio_activation.py",
+    "/app/test_reports/pytest/iter160_v2.xml"
+  ],
+  "action_items": [
+    "Optional: address /studio/request being effectively merged into /studio/identity — confirm intent (Movement IV + Movement V on one scroll). Currently `identity-continue` testid no longer exists; submit is `INVIA LA RICHIESTA`. If by design, update old test scripts accordingly.",
+    "P2 (carry-over): nested <a> descendant hydration warning."
+  ],
+  "critical_code_review_comments": [
+    "/app/backend/routers/_auth.py now correctly hardens admin endpoints. Bearer JWT path validates role ∈ {admin, owner, editor}; X-Admin-Key path requires ADMIN_API_KEY env to be set; anonymous → 401. Good fix — removes the previous bypass.",
+    "MovementPractice.onSelect now patches archetype + suggested experiences into the draft (per archetype_to_suggested map), which lets MovementEcosystem render the curated pre-marked bands on first render with no client-side derivation needed. Clean fix.",
+    "MovementEcosystem adoption useEffect now waits for manifestReady — eliminates the race where the map was empty on first paint."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter160_studio_activation.py (added 4 new security regression tests: wrong-key 401, no-auth 401 on /api/admin/site/blocks, key=dev 200 on site blocks, JWT 200 on studio requests)"
+  ],
+  "success_rate": {
+    "backend": "100% (19/19 executed; 1 cleanup skipped due to no DB URL in test env)",
+    "frontend": "100% on P0-2 and sentinels (Entrance, Practice, Ecosystem, Identity, Zero-Jargon all PASS)"
+  },
+  "test_credentials": "Admin: admin@moodfordesign.com / MoodAdmin2026! (tenant_slug=studio) — works. X-Admin-Key=dev + X-Tenant-Slug=studio — works. Wrong X-Admin-Key — correctly rejected with 401.",
+  "seed_data_creation": "Test row created via BACKEND-C: contact_email='advisor-test@studio.com'. UI flow did NOT complete submit this run (stopped at identity to inspect chips). Cleanup: pytest test_zzz_cleanup tried but skipped (no SESSION_POOLER_URL/DATABASE_URL exposed). Main agent should run DELETE FROM studio_requests WHERE contact_email='advisor-test@studio.com' and DELETE FROM studio_activation_drafts WHERE completed_at IS NOT NULL if test data accumulates.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "ITER160 P0 fixes confirmed green. Future runs: (a) the auth dependency now lives in /app/backend/routers/_auth.py with both Bearer JWT and X-Admin-Key paths — anonymous 401 is enforced. (b) Ecosystem pre-suggestion is driven by MovementPractice.onSelect patching archetype_to_suggested into the draft (NOT by ecosystem deriving on mount). (c) Movement V request page appears to be merged with /studio/identity — there is no longer a separate identity-continue button; the only submit at the bottom of /studio/identity is INVIA LA RICHIESTA. Verify with main agent before writing tests that assume separate /studio/request page.",
+  "rca_of_the_issue": {
+    "iteration_4_admin_auth_bypass": "Was: require_admin_tenant only enforced ADMIN_API_KEY when env var was set; unset env = unrestricted access. Fix verified: new _auth.py raises 401 unless valid Bearer JWT with admin/owner/editor role OR X-Admin-Key matching configured ADMIN_API_KEY=dev. Curl matrix: no-auth=401, bogus-key=401, key=dev=200, JWT=200.",
+    "iteration_4_ecosystem_no_suggestions": "Was: MovementEcosystem derived included-state only from draft.experiences (empty after practice → all bands 'non per ora'). Fix verified: MovementPractice.onSelect now patches archetype_to_suggested[archetype] into draft.experiences, so ecosystem reads pre-marked bands directly. Visual screenshot confirmed for all 3 archetypes (luxury_showroom, interior_studio, architecture_firm)."
+  }
+}

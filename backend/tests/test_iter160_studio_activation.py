@@ -175,6 +175,27 @@ class TestAdmin:
         r = client.get(f"{BASE_URL}/api/admin/studio/requests")
         assert r.status_code in (401, 403)
 
+    def test_admin_wrong_key_rejected(self, client):
+        r = client.get(f"{BASE_URL}/api/admin/studio/requests",
+                       headers={"X-Admin-Key": "bogus", "X-Tenant-Slug": "studio"})
+        assert r.status_code in (401, 403)
+
+    def test_admin_site_blocks_requires_auth(self, client):
+        r = client.get(f"{BASE_URL}/api/admin/site/blocks?namespace=site.access")
+        assert r.status_code in (401, 403)
+
+    def test_admin_site_blocks_key_ok(self, client):
+        r = client.get(f"{BASE_URL}/api/admin/site/blocks?namespace=site.access",
+                       headers={"X-Admin-Key": "dev", "X-Tenant-Slug": "studio"})
+        assert r.status_code == 200
+
+    def test_admin_with_jwt_ok(self, client, admin_jwt):
+        if not admin_jwt:
+            pytest.skip("No JWT obtained")
+        r = client.get(f"{BASE_URL}/api/admin/studio/requests",
+                       headers={"Authorization": f"Bearer {admin_jwt}"})
+        assert r.status_code == 200
+
     def test_admin_list(self, client, admin_jwt):
         h = self._auth_headers(admin_jwt)
         r = client.get(f"{BASE_URL}/api/admin/studio/requests", headers=h)

@@ -30,7 +30,13 @@ const MovementPractice = () => {
   const onSelect = (key) => {
     if (selected) return;
     setSelected(key);
-    patch({ archetype: key });
+    // Also pre-fill the suggested experiences for this archetype so
+    // Movement III lands with the curated composition already proposed.
+    const suggested = manifest?.archetype_to_suggested?.[key] || [];
+    patch({
+      archetype: key,
+      experiences: suggested,
+    });
     // Show confirmation line after the tile expansion
     setTimeout(() => setConfirming(true), 480);
   };

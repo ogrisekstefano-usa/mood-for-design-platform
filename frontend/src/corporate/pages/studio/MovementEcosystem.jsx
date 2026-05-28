@@ -26,17 +26,21 @@ const MovementEcosystem = () => {
   const [selected, setSelected] = useState(null);
   const [initialised, setInitialised] = useState(false);
 
-  // Adopt the suggested experiences once (if no choice persisted yet)
+  // Adopt experiences once both draft + manifest are ready.
+  // Priority: persisted draft.experiences (resumed flow) → archetype-suggested.
   useEffect(() => {
-    if (initialised || !draftReady) return;
-    if (draft?.experiences && draft.experiences.length > 0) {
-      setSelected(new Set(draft.experiences));
-    } else {
+    if (initialised || !draftReady || !manifestReady) return;
+    const persisted = (draft?.experiences || []);
+    if (persisted.length > 0) {
+      setSelected(new Set(persisted));
+    } else if (suggested.length > 0) {
       setSelected(new Set(suggested));
-      if (suggested.length > 0) patch({ experiences: suggested });
+      patch({ experiences: suggested });
+    } else {
+      setSelected(new Set());
     }
     setInitialised(true);
-  }, [draftReady, draft?.experiences, suggested, initialised, patch]);
+  }, [draftReady, manifestReady, draft?.experiences, suggested, initialised, patch]);
 
   const toggle = (key) => {
     const next = new Set(selected || []);
