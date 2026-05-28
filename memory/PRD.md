@@ -2,6 +2,54 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER168 · Hotfix · Language/Locale DB-Driven Alignment** · ✅ DELIVERED · 28 Feb 2026
+
+  **🚨 Bug riportato dall'utente** (screenshot 3 immagini):
+  - `/admin/languages` mostrava 7 lingue attive (IT, en-US, en-GB, FR, DE, ES, AR)
+  - Ma il **PhoneCountryPrefix** in `/begin-journey` mostrava solo 3 paesi (IT, US, GB)
+  - E il **CountryLanguageSelector** (modal Market & Locale) mostrava solo 3 mercati
+    (Italy, UK & Ireland, USA National) invece dei 7 corrispondenti
+  - Cit. utente: *"tutte le funzioni correlate alle lingue DEVONO lavorare con
+    languages dove sono settate correttamente. Altrimenti inutile!!!"*
+
+  **Root cause**:
+  1. **Bug 1 — PhoneCountryPrefix**: `buildCountries()` estraeva il region da
+     `code.split('-')[1]`. Solo `en-US`/`en-GB` hanno la forma `xx-YY`. Tutti
+     gli altri (`it`, `fr`, `de`, `es`, `ar`) → region vuoto → SKIPPED.
+  2. **Bug 2 — CountryLanguageSelector**: il `tenant_markets` del demo (tenant
+     `studio`) aveva solo 3 mercati attivi. Mancavano dach, france_fr_europe,
+     spain_iberian, gcc_luxury anche se i mercati corrispondenti esistevano già
+     nella tabella globale `markets`.
+
+  **Fix applicati**
+  - `frontend/src/site/content/languages.js`: ogni entry del LANGUAGE_REGISTRY
+    ora carica `region` (ISO 3166-1 alpha-2) + `dial_code` esplicito.
+    Es. `it→IT/+39`, `fr→FR/+33`, `de→DE/+49`, `es→ES/+34`, `ar→AE/+971`.
+  - `frontend/src/components/journey/PhoneCountryPrefix.jsx`: `buildCountries()`
+    ora legge `l.region` prima (con fallback al vecchio split su `-`).
+    Country list ora rispecchia 1:1 le lingue `enabled+public_enabled`.
+  - `supabase/migrations/108_tenant_markets_language_sync.sql` (NEW, idempotente):
+    attiva i 4 mercati mancanti (`france_fr_europe`, `dach`, `spain_iberian`,
+    `gcc_luxury`) per il tenant `studio`. Italy resta default. ON CONFLICT
+    update-only per re-runnability.
+
+  **Verifica live (screenshot in-pagina)**
+  - PhoneCountryPrefix: ora 7 paesi visibili —
+    🇮🇹 +39 · 🇺🇸 +1 · 🇬🇧 +44 · 🇫🇷 +33 · 🇩🇪 +49 · 🇪🇸 +34 · 🇦🇪 +971
+  - CountryLanguageSelector: ora 7 mercati raggruppati per macro_region —
+    Italy · Spain/Iberian · DACH · France · UK&Ireland · USA National · GCC Luxury
+  - Default ancora Italy (DEFAULT badge preservato)
+  - Pytest regression: 40/40 PASS (22 Phase 1 + 7 Phase 2 + 11 ITER167)
+  - 0 regressioni · 0 modifiche backend ai router (solo migration di seed)
+
+  **Principio confermato**: il PhoneCountryPrefix e il CountryLanguageSelector
+  sono ora reattivi al CMS Languages registry. Quando un admin attiva/disattiva
+  una lingua in `/admin/languages` → il `LANGUAGE_REGISTRY` cambia → entrambi
+  i componenti aggiornano il loro contenuto via custom event `mfd:languages:change`.
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER168 · Phase 2 · URL Canonicalization · journey-keyed routing** · ✅ DELIVERED · 28 Feb 2026
 
   **🎯 Goal**: rendere `/journey/:jid` e `/studio/journey/:jid` le URL

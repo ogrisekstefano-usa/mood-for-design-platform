@@ -17,8 +17,9 @@ import { ChevronDown } from 'lucide-react';
 import { publicLanguages } from '../../site/content/languages';
 
 // ── Country registry (DB-driven via languages.js) ─────────────────────
-// Each public locale carries its country/region + dial code. Sources:
-// languages.js (the same data /admin/languages reads/writes).
+// Country / dial / flag mapping. Each region code MUST appear here for the
+// language registry to render its country in the phone prefix dropdown.
+// Source of truth: /admin/languages (LANGUAGE_REGISTRY entry.region + dial_code).
 const COUNTRY_REGISTRY = {
   IT: { dial: '+39',  flag: '🇮🇹', label: 'Italia' },
   US: { dial: '+1',   flag: '🇺🇸', label: 'United States' },
@@ -29,26 +30,33 @@ const COUNTRY_REGISTRY = {
   AE: { dial: '+971', flag: '🇦🇪', label: 'United Arab Emirates' },
   CH: { dial: '+41',  flag: '🇨🇭', label: 'Schweiz' },
   AT: { dial: '+43',  flag: '🇦🇹', label: 'Österreich' },
-  // Future additions arrive automatically as locales are enabled.
+  CN: { dial: '+86',  flag: '🇨🇳', label: '中国' },
+  JP: { dial: '+81',  flag: '🇯🇵', label: '日本' },
 };
 
 /** Build the visible country list from the currently-enabled public locales.
- *  Any locale whose region code isn't in COUNTRY_REGISTRY is silently skipped
- *  (a future migration in /admin/languages will require the dial_code on
- *  every locale row → at that point this static map can be deprecated). */
+ *  Each language entry carries an explicit `region` (ISO 3166-1 alpha-2)
+ *  field. We map region → COUNTRY_REGISTRY entry for the visible row.
+ *  Languages without a known region are silently skipped. */
 function buildCountries() {
   const langs = publicLanguages();
   const out = [];
   const seen = new Set();
   for (const l of langs) {
-    // l.code is like 'it-IT', 'en-US' — region is the part after '-'.
-    const region = (l.code.split('-')[1] || '').toUpperCase();
+    // Primary path: explicit region on the language entry
+    let region = (l.region || '').toUpperCase();
+    // Legacy path: derive from BCP-47 like 'en-US' → 'US'
+    if (!region && typeof l.code === 'string' && l.code.includes('-')) {
+      region = l.code.split('-')[1].toUpperCase();
+    }
     const entry = COUNTRY_REGISTRY[region];
     if (!entry || seen.has(region)) continue;
     seen.add(region);
+    // Prefer the dial_code from the language entry (DB-aligned) when present.
+    const dial = l.dial_code || entry.dial;
     out.push({
       country_code: region,
-      dial_code:    entry.dial,
+      dial_code:    dial,
       flag:         entry.flag,
       label:        entry.label,
     });
