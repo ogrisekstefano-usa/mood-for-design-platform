@@ -16,7 +16,7 @@ import {
   FileText, Layers, LayoutGrid, Image as ImageIcon, Compass,
   Search, Send, Eye, EyeOff, Languages, Trash2, ExternalLink,
   RefreshCw, LogOut, Plus, ChevronDown, ChevronRight, GripVertical,
-  Type, AlignLeft, Youtube,
+  Type, AlignLeft, Youtube, Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../../lib/api';
@@ -497,6 +497,9 @@ const PagesAdminPage = () => {
           </button>
           <Link className="pa-rail__link" to="/blueprint/media-library" data-testid="pa-rail-media">
             <ImageIcon size={14} strokeWidth={1.7} /> Media Library
+          </Link>
+          <Link className="pa-rail__link" to="/blueprint/client-profile" data-testid="pa-rail-client-profile">
+            <Sparkles size={14} strokeWidth={1.7} /> Client Profile
           </Link>
           <button className="pa-rail__link" onClick={() => switchPage('footer')} data-testid="pa-rail-footer">
             <Compass size={14} strokeWidth={1.7} /> Footer

@@ -11,16 +11,13 @@
  */
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
 import {
   User, Globe, Sparkles, LogOut, Check, ChevronRight,
 } from 'lucide-react';
 import { useAuth } from '../../../contexts/AuthContext';
 
-const LANGUAGES = [
-  { code: 'it', label: 'Italiano' },
-  { code: 'en', label: 'English' },
-  { code: 'fr', label: 'Français' },
-];
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const PRESETS = [
   { key: 'atelier',   label: 'Atelier™',   sub: 'Cinematic editorial' },
@@ -37,7 +34,29 @@ const AtelierUserMenu = ({ client }) => {
   const navigate = useNavigate();
   const [search, setSearch] = useSearchParams();
 
-  const currentLang = (typeof navigator !== 'undefined' && navigator.language ? navigator.language.slice(0, 2) : 'it');
+  // ── Lingue · sorgente unica Blueprint Languages ──────────────
+  // Carichiamo le lingue dal backend così il dropdown rispecchia
+  // esattamente ciò che lo studio ha attivato in /admin/languages.
+  const [languages, setLanguages] = useState([]);
+  useEffect(() => {
+    let alive = true;
+    axios.get(`${BACKEND_URL}/api/locale/available-languages`)
+      .then((r) => { if (alive) setLanguages(r.data?.languages || []); })
+      .catch(() => { if (alive) setLanguages([
+        { code: 'it-IT', short: 'it', native: 'Italiano' },
+      ]); });
+    return () => { alive = false; };
+  }, []);
+
+  const _initialLang = () => {
+    try {
+      const saved = localStorage.getItem('mfd_locale');
+      if (saved) return saved.toLowerCase().slice(0, 2);
+    } catch (_) {}
+    return (typeof navigator !== 'undefined' && navigator.language
+            ? navigator.language.slice(0, 2) : 'it');
+  };
+  const [currentLang, setCurrentLang] = useState(_initialLang);
   const currentPreset = search.get('preset') || 'atelier';
 
   const initial = ((client?.firstName || '?')[0] || '?').toUpperCase();
@@ -61,10 +80,18 @@ const AtelierUserMenu = ({ client }) => {
   }, [open]);
 
   const handleLanguage = (code) => {
+    const short = (code || '').slice(0, 2).toLowerCase();
     try { localStorage.setItem('mfd_locale', code); } catch (_) {}
+    setCurrentLang(short);
     window.dispatchEvent(new CustomEvent('mfd:locale:change', { detail: code }));
     setOpen(false); setView('root');
   };
+
+  const _matchLang = (l) => {
+    const sShort = (l.short || '').toLowerCase().slice(0, 2);
+    return sShort === currentLang;
+  };
+  const activeLang = languages.find(_matchLang) || languages[0];
 
   const handlePreset = (key) => {
     const next = new URLSearchParams(search);
@@ -133,7 +160,7 @@ const AtelierUserMenu = ({ client }) => {
                     <Globe size={15} strokeWidth={1.5} aria-hidden />
                     <span>Lingua</span>
                     <span className="atelier-menu__hint">
-                      {LANGUAGES.find((l) => l.code === currentLang)?.label || 'Italiano'}
+                      {activeLang?.native || 'Italiano'}
                     </span>
                     <ChevronRight size={14} strokeWidth={1.4} className="atelier-menu__chev" aria-hidden />
                   </button>
@@ -187,23 +214,33 @@ const AtelierUserMenu = ({ client }) => {
                 <p className="atelier-menu__title">Lingua</p>
               </header>
               <ul className="atelier-menu__list" role="none">
-                {LANGUAGES.map((l) => (
-                  <li key={l.code}>
-                    <button
-                      type="button"
-                      className="atelier-menu__item"
-                      onClick={() => handleLanguage(l.code)}
-                      data-testid={`atelier-user-menu-lang-${l.code}`}
-                      role="menuitemradio"
-                      aria-checked={currentLang === l.code}
-                    >
-                      <span>{l.label}</span>
-                      {currentLang === l.code && (
-                        <Check size={14} strokeWidth={2} className="atelier-menu__check" aria-hidden />
-                      )}
-                    </button>
+                {languages.map((l) => {
+                  const active = _matchLang(l);
+                  return (
+                    <li key={l.code}>
+                      <button
+                        type="button"
+                        className="atelier-menu__item"
+                        onClick={() => handleLanguage(l.code)}
+                        data-testid={`atelier-user-menu-lang-${l.short}`}
+                        role="menuitemradio"
+                        aria-checked={active}
+                      >
+                        <span>{l.native}</span>
+                        {active && (
+                          <Check size={14} strokeWidth={2} className="atelier-menu__check" aria-hidden />
+                        )}
+                      </button>
+                    </li>
+                  );
+                })}
+                {languages.length === 0 && (
+                  <li>
+                    <p className="atelier-menu__lede" data-testid="atelier-user-menu-lang-empty">
+                      Caricamento lingue…
+                    </p>
                   </li>
-                ))}
+                )}
               </ul>
             </>
           )}

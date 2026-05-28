@@ -57,6 +57,7 @@ const CulturalEditionReviewPage = lazy(() => import('./pages/cultural/CulturalEd
 const InternationalPresencePage = lazy(() => import('./pages/settings/InternationalPresencePage'));
 const StorefrontStudioPage = lazy(() => import('./pages/storefront/StorefrontStudioPage'));
 const PagesAdminPage = lazy(() => import('./pages/storefront/PagesAdminPage'));
+const ClientProfileAdminPage = lazy(() => import('./pages/storefront/ClientProfileAdminPage'));
 const EditorialCalendarPage = lazy(() => import('./pages/editorial/EditorialCalendarPage'));
 const ProjectsStudioPage = lazy(() => import('./pages/projects/ProjectsStudioPage'));
 const MoodboardsPage = lazy(() => import('./pages/moodboards/MoodboardsPage'));
@@ -642,6 +643,7 @@ function App() {
                 {/* ITER157.E · Pages Admin (Command Center) — full-screen,
                     OUTSIDE DashboardLayout, like a true CMS console. */}
                 <Route path="/blueprint/experience" element={<StudioAdminRoute><PagesAdminPage /></StudioAdminRoute>} />
+                <Route path="/blueprint/client-profile" element={<StudioAdminRoute><ClientProfileAdminPage /></StudioAdminRoute>} />
                 <Route path="/admin/pages" element={<StudioAdminRoute><PagesAdminPage /></StudioAdminRoute>} />
 
                 {/* PUBLIC tenant routes — runtime composition via Blueprint engine */}

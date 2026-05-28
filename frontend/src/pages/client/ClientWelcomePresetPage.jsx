@@ -19,21 +19,30 @@ import AtelierWelcomePanel from '../../presets/client-profile/atelier/AtelierWel
 const ClientWelcomePresetPage = () => {
   const [search] = useSearchParams();
   const [data, setData]   = useState(null);
+  const [config, setConfig] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Preview override (Blueprint admin will use this later)
+  // Preview override (Blueprint admin can hot-swap preset via ?preset=)
   const overrideKey = search.get('preset');
 
-  const config = useMemo(
-    () => resolveClientProfilePreset({ overrideKey }),
-    [overrideKey],
+  const config_resolved = useMemo(
+    () => resolveClientProfilePreset({
+      overrideKey: overrideKey || config?.preset_key,
+    }),
+    [overrideKey, config],
   );
 
   useEffect(() => {
     let alive = true;
-    api.get('/api/client/welcome-summary')
-      .then((r) => { if (alive) { setData(r.data); setLoading(false); } })
-      .catch(()  => { if (alive) { setData({}); setLoading(false); } });
+    Promise.allSettled([
+      api.get('/api/client/welcome-summary'),
+      api.get('/api/client/profile-config'),
+    ]).then(([wsRes, cfgRes]) => {
+      if (!alive) return;
+      setData(wsRes.status === 'fulfilled' ? wsRes.value.data : {});
+      setConfig(cfgRes.status === 'fulfilled' ? cfgRes.value.data : null);
+      setLoading(false);
+    });
     return () => { alive = false; };
   }, []);
 
@@ -47,21 +56,23 @@ const ClientWelcomePresetPage = () => {
     );
   }
 
-  const viewModel = buildAtelierViewModel(data);
+  const viewModel = buildAtelierViewModel(data, {
+    placeholders: config?.placeholders || {},
+  });
 
   // Preset switch (atelier-only for P0)
-  if (config.preset === 'atelier') {
+  if (config_resolved.preset === 'atelier') {
     return (
       <AtelierWelcomePanel
         viewModel={viewModel}
-        components={config.components}
+        components={config_resolved.components}
       />
     );
   }
 
   // Fallback (other presets not implemented yet)
   return (
-    <AtelierWelcomePanel viewModel={viewModel} components={config.components} />
+    <AtelierWelcomePanel viewModel={viewModel} components={config_resolved.components} />
   );
 };
 

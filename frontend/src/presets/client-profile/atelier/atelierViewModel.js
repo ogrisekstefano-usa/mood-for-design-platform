@@ -41,8 +41,10 @@ const PRIO_LIBRARY = {
                         body:  'La casa come cornice\nper ciò che ami.' },
 };
 
-// Static editorial imagery — picked once, stable, no rotation.
-// Replace with backend-served assets when MoodboardPreview ships.
+// Static editorial imagery — fallback usato quando il tenant non ha
+// caricato placeholder custom dal Command Center CMS.
+// Il backend ritorna anche questi DEFAULT da /api/admin/client-profile-config
+// in modo che la sorgente di verità sia condivisa.
 const ATELIER_IMAGES = {
   hero:     'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=85&w=2400&auto=format&fit=crop',
   atmosphere: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=85&w=800&auto=format&fit=crop',
@@ -52,6 +54,12 @@ const ATELIER_IMAGES = {
   nextStep:   'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?q=85&w=800&auto=format&fit=crop',
 };
 
+const _imageFor = (slot, placeholders) => {
+  const fromCfg = placeholders?.[slot]?.url;
+  if (fromCfg) return fromCfg;
+  return ATELIER_IMAGES[slot];
+};
+
 const _pickFromLibrary = (lib, key, fallbackKey) =>
   lib[(key || '').toLowerCase()] || lib[fallbackKey] || Object.values(lib)[0];
 
@@ -59,22 +67,22 @@ const _pickFromLibrary = (lib, key, fallbackKey) =>
  * Build the "Le tue prime indicazioni" 4-card deck.
  * Mapping atmosphere/lifestyle → 4 editorial cards.
  */
-const _buildIndications = (atmosphere = {}, lifestyle = {}) => {
+const _buildIndications = (atmosphere = {}, lifestyle = {}, placeholders = {}) => {
   const atm  = _pickFromLibrary(ATM_LIBRARY,  atmosphere.ambiance,  'warm_enveloping');
   const life = _pickFromLibrary(LIFE_LIBRARY, lifestyle.pace,       'slow_living');
   const prio = _pickFromLibrary(PRIO_LIBRARY, lifestyle.priority,   'light_continuity');
 
   return [
     { id: 'atmosphere', label: 'Atmosfera',    icon: 'sparkles',
-      title: atm.title,  body: atm.body,  image: ATELIER_IMAGES.atmosphere },
+      title: atm.title,  body: atm.body,  image: _imageFor('atmosphere', placeholders) },
     { id: 'lifestyle',  label: 'Stile di vita', icon: 'home',
-      title: life.title, body: life.body, image: ATELIER_IMAGES.lifestyle },
+      title: life.title, body: life.body, image: _imageFor('lifestyle', placeholders) },
     { id: 'materials',  label: 'Preferenze',   icon: 'leaf',
       title: 'Materiali naturali',
       body: 'Ami le texture autentiche\ne i toni neutri e materici.',
-      image: ATELIER_IMAGES.materials },
+      image: _imageFor('materials', placeholders) },
     { id: 'priority',   label: 'Priorità',     icon: 'shield',
-      title: prio.title, body: prio.body, image: ATELIER_IMAGES.priority },
+      title: prio.title, body: prio.body, image: _imageFor('priority', placeholders) },
   ];
 };
 
@@ -110,9 +118,13 @@ const _buildTimeline = (firstStepDone = true) => ([
     status: 'pending' },
 ]);
 
-/** Master mapper. */
-export function buildAtelierViewModel(welcomeSummary) {
+/** Master mapper. Accetta opzionalmente `placeholders` (oggetto
+ * `{hero, atmosphere, lifestyle, materials, priority, nextStep}` con
+ * struttura `{url, asset_id?, alt?}`) per consentire al Command Center
+ * di sovrascrivere le immagini editoriali per tenant. */
+export function buildAtelierViewModel(welcomeSummary, opts = {}) {
   const s = welcomeSummary || {};
+  const placeholders = opts.placeholders || {};
   const first = (s.client?.first_name) || 'a casa';
   const studio = s.studio_name || 'Lo Studio';
   const referente = s.referente || null;
@@ -129,16 +141,16 @@ export function buildAtelierViewModel(welcomeSummary) {
       eyebrow: 'Il tuo spazio progettuale',
       title:   `Benvenuto, ${first}.`,
       lede:    `Questo è il tuo spazio progettuale.\nLo studio è al lavoro per trasformare le tue idee\nin un progetto su misura per te.`,
-      image:   ATELIER_IMAGES.hero,
+      image:   _imageFor('hero', placeholders),
     },
     quote:        _buildQuote(s.summary, s.atmosphere),
-    indications:  _buildIndications(s.atmosphere, s.lifestyle),
+    indications:  _buildIndications(s.atmosphere, s.lifestyle, placeholders),
     timeline:     _buildTimeline(true),
     nextStep: {
       title: 'Prossimo passo',
       body:  'Lo studio sta analizzando le tue indicazioni per proporti una prima direzione progettuale.',
       hint:  'Ti aggiorneremo a breve.',
-      image: ATELIER_IMAGES.nextStep,
+      image: _imageFor('nextStep', placeholders),
     },
     journeyId: s.journey_id || null,
   };
