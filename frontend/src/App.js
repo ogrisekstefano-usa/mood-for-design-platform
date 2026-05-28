@@ -575,14 +575,16 @@ function App() {
                     files) redirezionano alla nuova IA. */}
                 {/* ITER162 · Welcome Panel Atelier™ — full-bleed preset surface.
                     Vive FUORI da ClientDashboardLayout perché porta una sua
-                    sidebar narrativa e gestisce il proprio chrome. */}
+                    sidebar narrativa e gestisce il proprio chrome.
+                    `/client` ora redireziona qui: l'Atelier È la home. */}
                 <Route path="/client/welcome" element={
                   <ClientRoute>
                     <ClientWelcomePresetPage />
                   </ClientRoute>
                 } />
                 <Route element={<ClientRoute><ClientDashboardLayout /></ClientRoute>}>
-                  <Route path="/client" element={<ClientJourneysIndexPage />} />
+                  <Route path="/client" element={<Navigate to="/client/welcome" replace />} />
+                  <Route path="/client/journeys" element={<ClientJourneysIndexPage />} />
                   <Route path="/client/journey/:journeyId" element={<ClientCompanionPage />} />
                   <Route path="/client/messages" element={<ClientMessagesPage />} />
                   {/* Legacy redirects → tutto torna ai Journey */}

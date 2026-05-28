@@ -13,7 +13,6 @@ import api from '../../lib/api';
 import { useT as useBlueprintT, useBlueprint } from '../../contexts/BlueprintContext';
 import { tm } from '../../i18n/translation-memory';
 import DesignDirectionPanel from '../../components/direction/DesignDirectionPanel';
-import ClientWelcomePanel from '../../components/client/ClientWelcomePanel';
 import './client-companion.css';
 
 const fmtDate = (iso, locale) => {
@@ -143,8 +142,6 @@ const ClientJourneysIndexPage = () => {
   if (!data || data.zero_data || !data.journeys?.length) {
     return (
       <div className="cj-shell" data-testid="client-journeys-empty">
-        {/* ITER161 · P0.2 · Welcome panel — primo contatto post-onboarding */}
-        <ClientWelcomePanel />
         <div className="cj-welcome">
           <p className="cj-hero__eyebrow">{t('companion.hero.eyebrow', null, `${tm('designJourney')} · Companion`)}</p>
           <h1 className="cj-welcome__title">

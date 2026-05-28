@@ -13,8 +13,8 @@ import {
 } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { key: 'overview',     label: 'Panoramica',     to: '/client',          icon: LayoutGrid },
-  { key: 'journey',      label: 'Il mio percorso', to: '/client/journey', icon: Map },
+  { key: 'overview',     label: 'Panoramica',     to: '/client/welcome',   icon: LayoutGrid },
+  { key: 'journey',      label: 'Il mio percorso', to: '/client/journeys', icon: Map },
   { key: 'conversation', label: 'Conversazioni',  to: '/client/messages', icon: MessageCircle, badge: 2 },
   { key: 'inspirations', label: 'Ispirazioni',    to: '/client/inspirations', icon: Sparkles },
   { key: 'materials',    label: 'Materiali',      to: '/client/materials', icon: Layers },
@@ -46,8 +46,8 @@ const AtelierSidebar = ({ client, referente }) => {
       {/* Nav */}
       <nav className="atelier-sidebar__nav">
         {NAV_ITEMS.map((it) => {
-          const Active = it.to === '/client' ? pathname === '/client' || pathname.startsWith('/client/welcome')
-                                             : pathname === it.to || pathname.startsWith(it.to + '/');
+          const Active = it.to === '/client/welcome' ? pathname === '/client/welcome' || pathname === '/client'
+                                                     : pathname === it.to || pathname.startsWith(it.to + '/');
           const Icon = it.icon;
           return (
             <Link
