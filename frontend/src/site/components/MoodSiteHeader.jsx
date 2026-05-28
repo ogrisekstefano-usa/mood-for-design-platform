@@ -30,7 +30,7 @@ const DEFAULT_COPY = {
     design_stories:{ it: 'Design Stories', en: 'Design Stories' },
     professionals: { it: 'Per i professionisti', en: 'For professionals' },
     cta:           { it: 'Inizia il tuo viaggio', en: 'Begin your journey' },
-    login:         { it: 'Accedi', en: 'Sign in' },
+    login:         { it: 'Entra nel tuo spazio', en: 'Enter your space' },
   },
 };
 

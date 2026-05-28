@@ -8,7 +8,7 @@
  * Copy editoriale relazionale.
  */
 import React, { useEffect, useState } from 'react';
-import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { Mail, RefreshCw, Check } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'sonner';
@@ -18,7 +18,6 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const JourneyPreparingPage = () => {
   const [search] = useSearchParams();
-  const navigate = useNavigate();
   const [resendBusy, setResendBusy] = useState(false);
   const [resentOk, setResentOk] = useState(false);
   const [mounted, setMounted] = useState(false);

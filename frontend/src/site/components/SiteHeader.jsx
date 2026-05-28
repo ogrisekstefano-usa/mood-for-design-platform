@@ -154,7 +154,7 @@ const SiteHeader = () => {
   }, [mobileOpen]);
 
   const mainLinks = nav?.main_links || [];
-  const accediLabel = pickLabel(nav?.login_label, locale) || 'Accedi';
+  const accediLabel = pickLabel(nav?.login_label, locale) || 'Entra nel tuo spazio';
   const navEmpty = mainLinks.length === 0;
 
   const renderLink = (link, opts = {}) => {

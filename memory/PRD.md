@@ -2,6 +2,55 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER166 · Cinematic Post-Onboarding Flow — P0 Bug Fix** · ✅ DELIVERED · 28 Feb 2026
+
+  **🎯 Goal**: chiudere il loop narrativo del Design Journey™. `/journey/preparing`
+  deve restare stabile, mai redirezionare a `/auth/login`. Mai terminologia
+  software ("Accedi", "Login", "Sign in") sulle superfici pubbliche.
+
+  **Root Cause risolto**
+  - `/app/frontend/src/lib/api.js` (lines 90-130): l'interceptor 401 redirigeva
+    a `/auth/login` dopo ~3.3s perché `BlueprintContext` / `TenantThemeContext`
+    facevano GET di sistema (`/api/branding`, `/api/blueprint/*`) che tornavano
+    401 quando l'utente arrivava senza session. La rotta `/journey/preparing`
+    NON era nella allowlist delle "public surfaces" → l'interceptor forzava
+    `window.location.href = '/auth/login'` distruggendo la transizione cinematica.
+
+  **Fix applicati**
+  - api.js · allowlist estesa: `/journey/preparing` (+ varianti querystring)
+    e `/preview/*` (Client Preview Link™) sono ora superfici pubbliche.
+    Aggiunto banner di commento "PUBLIC EXPERIENCE surfaces" per evitare
+    regressioni future.
+  - App.js · refactoring strutturale: routes riorganizzate sotto due banner
+    di sezione cinematici:
+      • `PUBLIC EXPERIENCE — Design Journey™ public narrative layer`
+      • `PROTECTED EXPERIENCE — Relationship Operating System™`
+    `/journey/preparing` ora commentata esplicitamente "transitional,
+    emozionale, narrativa. NON applicativa. NIENTE useAuth(). NIENTE redirect.
+    Vive INTENZIONALMENTE fuori da ogni layer protetto."
+  - Terminologia · sostituiti **tutti** gli header CTA ("Accedi"/"Login"/
+    "Sign in") con `Entra nel tuo spazio` / `Enter your space` in:
+      • `pages/site/HomePage.jsx` (line 67)
+      • `site/components/MoodSiteHeader.jsx` (line 33)
+      • `site/components/SiteHeader.jsx` (fallback line 157)
+  - `AuthRecoveryPage.jsx`: CTA secondaria "Accedi con password" →
+    "Entra con la tua password" (concierge tone).
+
+  **Testing**
+  - Iteration 158: 11/12 frontend cases PASS · backend POST `/api/auth/silent-magic-link`
+    200 OK. `/journey/preparing` resta stabile >6s senza redirect.
+  - Self-test post-fix: 0 occorrenze di "accedi"/"login"/"sign in" in
+    `<a>`/`<button>` su `/`. Conteggio "Entra nel tuo spazio" su `/` = 2
+    (desktop topbar + mobile menu).
+
+  **Carry-over items (non bloccanti, da affrontare nei prossimi sprint)**
+  - 17 missing it-IT i18n keys sul Login page (debug badge editoriale).
+  - `data-testid="client-welcome-cta-continue"` da aggiungere a ClientWelcomePanel.
+  - api.js public-surface allowlist potrebbe essere refactorata in un
+    array di pattern regex per maggiore manutenibilità (P2).
+
+---
+
 - **ITER162 · Welcome Panel Atelier™ (Client Profile Preset System)** · ✅ DELIVERED · 28 Mag 2026
 
   **🎯 Goal**: prima versione del sistema preset visuale del Client

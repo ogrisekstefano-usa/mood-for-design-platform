@@ -7,7 +7,7 @@
  * Coerente col preset Chameleon™ (palette bronze/cream).
  */
 import React, { useEffect, useState } from 'react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Mail, KeyRound, RefreshCw, Check } from 'lucide-react';
 import axios from 'axios';
 import './AuthRecoveryPage.css';
@@ -16,7 +16,6 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const AuthRecoveryPage = () => {
   const [search] = useSearchParams();
-  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [busy, setBusy]   = useState(false);
   const [sent, setSent]   = useState(false);
