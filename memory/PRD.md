@@ -12,7 +12,37 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ## Latest session — Feb 28, 2026
 
-### ITER160 Phase 1 — Studio Activation Onboarding Flow ✅
+### ITER160 Phase 2 — Full /studio Flow + Studio Requests ✅ (Feb 28, 2026)
+- **Reframed**: the flow is NOT a SaaS signup or activation. It is a **Guided Introduction Request** — the studio composes its profile, a MOOD Advisor follows up manually. No checkout, no plan selection, no auto-tenant creation.
+- **New DB table** `studio_requests` (migration `022_iter160_studio_requests.sql`) — captures archetype, experiences, identity payload, contact, locale, source, status (`received` | `reviewing` | `contacted` | `qualified` | `not_aligned` | `activated`), advisor_notes, reviewed_at, assigned_advisor_id.
+- **Service** extensions in `studio_activation.py`:
+  - `manifest_with_copy(locale)` — bundles all 108 editorial keys pre-resolved in ONE call (was firing 108 parallel /api/site/block requests).
+  - `submit_request()` — converts draft → studio_requests row + returns a friendly `MOOD-XXXX-XXXX` reference. Validates email softly (concierge tone, no 4xx).
+  - `list_requests()` + `update_request_status()` for advisor workflow.
+- **Endpoints**:
+  - `POST /api/studio/activation/submit` (public, fail-soft)
+  - `GET  /api/admin/studio/requests` (admin-guarded)
+  - `PATCH /api/admin/studio/requests/{id}` (status + advisor_notes)
+- **Editorial copy seed** `seed_iter160_studio_phase2.py` — 83 new IT blocks under `studio.activation.*` covering Movements III/IV/V + markets + roles + languages + temperaments + experiences. Total namespace now 108 keys × IT.
+- **Frontend** completed all 5 movements:
+  - `MovementEcosystem.jsx` — 5 horizontal editorial bands with archetype-driven pre-suggestion (`Material Intelligence — inclusa nella tua composizione`).
+  - `MovementIdentity.jsx` — vertical magazine-style form: studio name (Playfair 1.6rem), monogram (centered 1.8rem serif), city + country, languages (chip row), atelier (1–8 members), markets (9 chips), temperament (3 cards Quieto/Composto/Vivido), contact (name, role, email, phone prefix+number, website, notes). Underline-only inputs, NO boxes, autosave on blur with `Composto.` italic confirmation.
+  - `MovementRequest.jsx` — `/studio/request` final reception screen with reference badge `MOOD-XXXX-XXXX`. Tone: "La tua composizione è stata ricevuta. Un MOOD Advisor leggerà il profilo del vostro studio e vi contatterà per continuare la conversazione."
+- **Admin page** `StudioRequestsAdmin.jsx` mounted at `/admin/studio-requests` — magazine-style cards with status filter chips, status dropdown, advisor-notes textarea, studio composition snapshot (3-column cell grid).
+
+### Security hardening
+- **`require_admin_tenant`** rewritten — was permitting anonymous when `ADMIN_API_KEY` env was unset (silent open-door). Now strictly requires either:
+  - `Authorization: Bearer <jwt>` with role admin/owner/editor, OR
+  - `X-Admin-Key: <key>` matching `ADMIN_API_KEY` env (set to `dev` in preview).
+  Anonymous + wrong-key both return 401. Verified by testing agent and curl.
+
+### Validation (Iteration 5)
+- **Backend**: 19/19 pytest tests pass. Auth matrix verified: no-auth 401, wrong-key 401, key=dev 200, Bearer JWT 200. Full submit flow returns `MOOD-XXXX-XXXX` reference.
+- **Frontend**: ecosystem pre-suggestion verified for all 3 sentinel archetypes. Movement IV chip labels render Italian editorial copy correctly (Residenziale privato, Italiano, English, Quieto/Composto/Vivido). Zero-jargon sweep CLEAN.
+
+---
+
+### ITER160 Phase 1 — Studio Activation Onboarding Flow ✅ (Feb 28, 2026)
 - **Architectural decision**: established the two-layer relational architecture (Tenant Layer vs Client Layer). ITER160 lives strictly in the tenant layer; the client layer is deferred to ITER180+. Full PRD canonicalized in `/app/memory/ITER160_PRD.md` (15 sections, ~10k words).
 - **DB**: `studio_activation_drafts` + `tenant_modules` tables (migration `021_iter160_studio_activation.sql`).
 - **Service** `services/studio_activation.py`: `get_or_create_draft` (resume via cookie/token), silent `patch_draft` autosave, `manifest()` returning archetypes + experiences + pre-suggestion logic + copy_keys.
