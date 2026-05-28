@@ -33,6 +33,8 @@ const AuthCallbackPage = lazy(() => import('./pages/auth/AuthCallbackPage'));
 const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage'));
 const AuthRecoveryPage = lazy(() => import('./pages/auth/AuthRecoveryPage'));
 const JourneyPreparingPage = lazy(() => import('./pages/journey/JourneyPreparingPage'));
+// ITER168 · Atmospheric Panels™ internal QA preview
+const AtmosphericPreviewPage = lazy(() => import('./pages/AtmosphericPreviewPage'));
 const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage'));
 const JourneyPulsePage = lazy(() => import('./pages/dashboard/JourneyPulsePage'));
 const StudioPulsePage = lazy(() => import('./pages/studio/StudioPulsePage'));
@@ -464,6 +466,14 @@ function App() {
                     NON applicativa. NIENTE useAuth(). NIENTE redirect.
                     Vive INTENZIONALMENTE fuori da ogni layer protetto. */}
                 <Route path="/journey/preparing" element={<JourneyPreparingPage />} />
+
+                {/* ITER168 · Atmospheric Panels™ internal QA preview
+                    (no auth — under /dev/* so it never leaks into the
+                    client narrative path). */}
+                <Route
+                  path="/dev/atmospheric-preview"
+                  element={<AtmosphericPreviewPage />}
+                />
                 {/* Legacy / convenience aliases */}
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/invite" element={<AuthCallbackPage />} />

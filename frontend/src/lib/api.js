@@ -117,6 +117,7 @@ api.interceptors.response.use(
         p.startsWith('/journey/welcome/') ||
         p === '/journey/preparing' ||              // ITER166 · cinematic post-onboarding screen
         p.startsWith('/journey/preparing') ||      // safety: querystring variants
+        p.startsWith('/dev/') ||                   // ITER168 · internal QA previews
         p === '/magazine' ||
         p.startsWith('/magazine/') ||
         p.startsWith('/onboarding/') ||

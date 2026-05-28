@@ -1,0 +1,133 @@
+/* ─────────────────────────────────────────────────────────────────────
+ * Atmospheric Panels™ · ITER168
+ * Cinematic, slow-breathing composition. NO Pinterest cards.
+ * NO heavy borders. Minimal typography (italic Cormorant).
+ * ───────────────────────────────────────────────────────────────────── */
+
+.atm-panels {
+  margin: 56px 0 24px;
+}
+
+.atm-panels__head {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 24px;
+}
+.atm-panels__eyebrow {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 10.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(26, 23, 20, 0.5);
+  font-weight: 500;
+}
+
+.atm-panels__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+/* Single panel — tall editorial frame, no border, soft shadow only */
+.atm-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  opacity: 0;
+  animation: atm-fade-in 1100ms cubic-bezier(.2,.7,.2,1) forwards;
+}
+
+@keyframes atm-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.atm-panel__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #1a1714;
+}
+
+.atm-panel__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.04);
+  transition: transform 5000ms cubic-bezier(.2,.7,.2,1);
+  will-change: transform;
+  user-select: none;
+}
+/* Soft / dynamic motion variants — extremely slow, almost imperceptible */
+.atm-panel--soft .atm-panel__image {
+  animation: atm-breathe 12s ease-in-out infinite alternate;
+}
+.atm-panel--dynamic .atm-panel__image {
+  animation: atm-breathe 8s ease-in-out infinite alternate;
+}
+@keyframes atm-breathe {
+  from { transform: scale(1.04); }
+  to   { transform: scale(1.10); }
+}
+
+.atm-panel__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.atm-panel__copy {
+  padding: 4px 2px 0;
+}
+.atm-panel__title {
+  font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: rgba(26, 23, 20, 0.92);
+  margin: 0 0 6px 0;
+  font-weight: 400;
+}
+.atm-panel__interp {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(26, 23, 20, 0.62);
+  margin: 0;
+  max-width: 360px;
+}
+
+/* Skeleton state — soft cream blocks, no shimmer (calm, not transactional) */
+.atm-panel--ghost {
+  aspect-ratio: 3 / 4;
+  background: linear-gradient(180deg, rgba(26,23,20,0.04), rgba(26,23,20,0.08));
+  border-radius: 2px;
+}
+
+/* Dark surface adaptation (Atelier preset, Blueprint OS workspace) */
+[data-surface="dark"] .atm-panels__eyebrow,
+.atm-panels--on-dark .atm-panels__eyebrow {
+  color: rgba(245, 242, 237, 0.5);
+}
+[data-surface="dark"] .atm-panel__title,
+.atm-panels--on-dark .atm-panel__title {
+  color: rgba(245, 242, 237, 0.95);
+}
+[data-surface="dark"] .atm-panel__interp,
+.atm-panels--on-dark .atm-panel__interp {
+  color: rgba(245, 242, 237, 0.62);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .atm-panels { margin: 40px 0 16px; }
+  .atm-panels__row { grid-template-columns: 1fr; gap: 22px; }
+  .atm-panel__frame { aspect-ratio: 4 / 3; }
+  .atm-panel__title { font-size: 20px; }
+}

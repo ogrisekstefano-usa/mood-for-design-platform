@@ -60,6 +60,8 @@ const AtelierWelcomePanel = ({ viewModel, components }) => {
               <AtelierQuickSummary
                 indications={vm.indications}
                 journeyId={vm.journeyId}
+                locale={vm.locale}
+                market={vm.market}
               />
             )}
           </div>

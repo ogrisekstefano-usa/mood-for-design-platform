@@ -260,6 +260,11 @@ from routers import tenant_configuration  # noqa: E402
 api_router.include_router(tenant_configuration.router, prefix="/tenant", tags=["tenant-configuration"])
 api_router.include_router(tenant_configuration.admin_router, prefix="/blueprint-admin", tags=["blueprint-command-center"])
 
+# ITER168 · Atmospheric Panels™ — Chameleon™ Emotional Interpretation Layer.
+from routers import atmospheric_panels  # noqa: E402
+# The router already declares the /api prefix internally; mount it at app root.
+app.include_router(atmospheric_panels.router)
+
 
 @api_router.get("/health")
 def health_check():
