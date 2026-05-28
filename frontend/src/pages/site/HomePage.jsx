@@ -222,7 +222,6 @@ const SiteHeader = ({ locale, copy, onLocaleChange }) => {
             draggable={false}
             data-testid="home-header-brand-img"
           />
-          <span className="mfd-header__brand-sub">Italian Design Studios</span>
         </Link>
         <nav className="mfd-header__nav" aria-label="Primary">
           <a href="#how-it-works">{L(copy.nav.how_it_works, locale)}</a>
@@ -628,7 +627,6 @@ const SiteFooter = ({ locale, copy }) => (
             draggable={false}
             data-testid="home-footer-brand-img"
           />
-          <span className="mfd-footer__brand-sub">Italian Design Studios</span>
         </div>
         <div className="mfd-footer__cols">
           {copy.footer.cols.map((col, ci) => (

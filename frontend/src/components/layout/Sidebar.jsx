@@ -229,16 +229,13 @@ const RailBrand = ({ collapsed, onToggle, impersonating, monogram }) => (
       }}>{monogram || 'M'}</span>
     </span>
     {!collapsed && (
-      <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-        <img
-          src="https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/4ecnf6t5_logo_mood_for_design_color.jpg"
-          alt="MOOD for DESIGN™"
-          className="atelier-rail__brand-logo"
-          draggable={false}
-          style={{ height: 26, width: 'auto', objectFit: 'contain' }}
-        />
-        <span className="atelier-rail__brand-meta">BLUEPRINT OS™</span>
-      </div>
+      <img
+        src="https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/3gkc6rcw_logo_mood_for_design_color.png"
+        alt="MOOD for DESIGN™"
+        className="atelier-rail__brand-logo"
+        draggable={false}
+        style={{ height: 42, width: 'auto', objectFit: 'contain' }}
+      />
     )}
     {impersonating && !collapsed && (
       <span aria-label="Impersonating"

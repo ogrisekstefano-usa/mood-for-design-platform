@@ -65,7 +65,6 @@ const MoodSiteHeader = ({
               draggable={false}
               data-testid="mfd-header-brand-img"
             />
-            <span className="mfd-header__brand-sub">Italian Design Studios</span>
           </Link>
           <nav className="mfd-header__nav" aria-label="Primary">
             {onHome ? (

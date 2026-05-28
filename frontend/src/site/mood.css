@@ -541,23 +541,18 @@
   font-style: italic; font-size: 13px; letter-spacing: 0.08em;
   padding-left: 2px; opacity: .8;
 }
-/* ITER167.R4 · Footer official wordmark — inset in cream cell so the
-   color logo on white never collides with the dark footer surface. */
+/* ITER167.R4 · Shared footer official wordmark — square black PNG
+   blends naturally with the dark footer (no cell wrapper needed). */
 .mfd-footer__brand-block .mfd-footer__brand-img {
   display: block;
-  height: 56px;
-  width: auto;
-  max-width: 240px;
+  height: 96px;
+  width: 96px;
   object-fit: contain;
-  background: var(--mfd-cream, #F5F2ED);
-  padding: 10px 18px;
-  border-radius: 4px;
   user-select: none;
 }
 @media (max-width: 768px) {
-  .mfd-footer__brand-block .mfd-footer__brand-img { height: 48px; padding: 8px 14px; }
+  .mfd-footer__brand-block .mfd-footer__brand-img { height: 80px; width: 80px; }
 }
-
 .mfd-footer__tagline {
   margin-top: 18px;
   font-family: var(--mfd-sans);

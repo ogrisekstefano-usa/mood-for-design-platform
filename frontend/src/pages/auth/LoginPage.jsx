@@ -45,7 +45,7 @@ const HERO_IMAGE_DEFAULT =
 
 // Official MOOD for DESIGN™ wordmark (ITER167 R4 — user-provided asset)
 const BRAND_LOGO_DEFAULT =
-  'https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/4ecnf6t5_logo_mood_for_design_color.jpg';
+  'https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/3gkc6rcw_logo_mood_for_design_color.png';
 
 const LoginPage = () => {
   const { signIn } = useAuth();

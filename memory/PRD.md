@@ -2,7 +2,48 @@
 
 
 ## 📌 Sprint Status (latest)
-- **ITER167 · Round 4 follow-up · Official MOOD Wordmark Migration** · ✅ DELIVERED · 28 Feb 2026
+- **ITER167 · Round 4 follow-up #2 · Official MOOD PNG + Hardcoded Text Removal** · ✅ DELIVERED · 28 Feb 2026
+
+  **🎯 Goal**: sostituire il JPG temporaneo con l'asset PNG ufficiale
+  (square black, mint M⊙⊙D + "INSPIRATION. DESIGN. SOLUTIONS." baked)
+  e rimuovere ogni testo hardcoded adiacente al logo.
+
+  **Cosa è stato fatto**
+
+  · **brandAssets.js** · URL/locale aggiornati al PNG ufficiale:
+    `https://customer-assets.emergentagent.com/job_content-hub-pro-22/artifacts/3gkc6rcw_logo_mood_for_design_color.png`
+    Doc-string aggiornata con monito: "NEVER add subtitle copy next to
+    the logo — the wordmark + tagline are baked into the image."
+
+  · **Hardcoded text removal**:
+      ▸ `MoodSiteHeader.jsx` — `<span>Italian Design Studios</span>` rimosso.
+      ▸ `HomePage.jsx` — sottotitoli header + footer rimossi (2 occorrenze).
+      ▸ `Sidebar.jsx` — `<span>BLUEPRINT OS™</span>` rimosso, logo
+        ingrandito da 26px → 42px.
+      ▸ `LoginPage.jsx` — già senza sottotitolo, URL aggiornato.
+      ▸ `email_templates.py` — `PLATFORM_DEFAULTS.logo_url` aggiornato.
+
+  · **CSS aggiornato** (logo è ora SQUARE PNG, non wordmark transparent):
+      ▸ `.mfd-header__brand-img` 56×56px desktop / 48×48px tablet /
+        42×42px mobile.
+      ▸ `.mfd-footer__brand-img` 96×96px desktop / 80×80px tablet.
+      ▸ Rimossa la cream cell wrapper dal footer (no più necessaria —
+        il PNG è già black-on-black e blende col footer dark).
+      ▸ Email template: logo `height/width 96px` con `object-fit:contain`
+        + `background:transparent`.
+
+  · **Subtitle leftovers check** · `document.querySelectorAll('.mfd-header__brand-sub, .mfd-footer__brand-sub, .atelier-rail__brand-meta')` → **0 elementi**.
+
+  **Testing**
+  - Self-test homepage desktop (1920×1080):
+      ▸ Header top-left: M⊙⊙D / DESIGN PNG 56×56 visibile, no sottotitolo.
+      ▸ Footer black: PNG 96×96 con tagline baked, seamless on dark.
+      ▸ Hero "Il tuo spazio. / Il tuo Design Journey™." invariato.
+  - Lint: 5 file JS + 1 file Python → 0 errors.
+
+---
+
+- **ITER167 · Round 4 · Phone Country Prefix + Dark-Mode Email + Mobile QA** · ✅ DELIVERED · 28 Feb 2026
 
   **🎯 Goal**: sostituire ogni logo fake / text-based "MOOD <em>for</em> DESIGN"
   con l'asset ufficiale color (cyan M + black for + DESIGN) caricato dall'utente.

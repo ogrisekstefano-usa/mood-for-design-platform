@@ -174,19 +174,21 @@
   color: var(--mfd-ink);
 }
 .mfd-header__brand-mark em { font-style: italic; color: var(--mfd-mute); }
-/* ITER167.R4 · Official wordmark — display the user-uploaded color logo. */
+/* ITER167.R4 · Official wordmark — square black PNG with mint MOOD
+   letters + editorial tagline baked into the image. Display as a
+   self-contained brand stamp. */
 .mfd-header__brand-img {
   display: block;
-  height: 40px;
-  width: auto;
+  height: 56px;
+  width: 56px;
   object-fit: contain;
   user-select: none;
 }
 @media (max-width: 980px) {
-  .mfd-header__brand-img { height: 34px; }
+  .mfd-header__brand-img { height: 48px; width: 48px; }
 }
 @media (max-width: 600px) {
-  .mfd-header__brand-img { height: 30px; }
+  .mfd-header__brand-img { height: 42px; width: 42px; }
 }
 .mfd-header__brand-sub {
   font-size: 9.5px;
@@ -822,23 +824,18 @@
   color: #f5f2ed;
 }
 .mfd-footer__brand-mark em { color: rgba(245, 242, 237, 0.55); font-style: italic; }
-/* ITER167.R4 · Footer official wordmark — inverted/darker context.
-   The logo JPEG is full-color on white background → we wrap it in a
-   warm cream cell so the editorial wordmark stays legible against
-   the dark footer (NO direct on-black, which crushes the M's bronze). */
+/* ITER167.R4 · Footer official wordmark — square black PNG, no cream cell
+   needed (the image background is already pure black and blends with
+   the footer surface). */
 .mfd-footer__brand-img {
   display: block;
-  height: 56px;
-  width: auto;
-  max-width: 240px;
+  height: 96px;
+  width: 96px;
   object-fit: contain;
-  background: #F5F2ED;
-  padding: 10px 18px;
-  border-radius: 4px;
   user-select: none;
 }
 @media (max-width: 768px) {
-  .mfd-footer__brand-img { height: 48px; padding: 8px 14px; }
+  .mfd-footer__brand-img { height: 80px; width: 80px; }
 }
 .mfd-footer__brand-sub {
   font-size: 10px;
