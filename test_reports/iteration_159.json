@@ -1,0 +1,82 @@
+{
+  "summary": "ITER167 Round 2 Adaptive Access™ — backend 7/7 PASS, frontend 9/12 PASS. Adaptive phase machine works end-to-end (probe→adaptive→sent) for both client and professional. Backend /api/auth/identify is enumeration-safe. P0 violation on HomePage: custom header uses banned phrase 'Entra nel tuo spazio' instead of 'Rientra' (welcome-strip & body otherwise compliant). P1 violation: mobile homepage has horizontal overflow and 'Rientra' link is not present at all on mobile (neither hidden nor visible). /admin requires auth so the 14-card grid (incl. 'Lingue') could not be verified through the public route.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "HomePage.jsx custom header (line 67)",
+        "issue": "Re-entry CTA label is hardcoded as 'Entra nel tuo spazio' (BANNED phrase per ITER167 directive). MoodSiteHeader.jsx correctly uses 'Rientra' (line 29) but HomePage renders its OWN custom header that overrides this. Required: replace label with 'Rientra' (or remove the custom header and let MoodSiteHeader render on '/').",
+        "selector": "header a[href='/auth/login']",
+        "priority": "HIGH"
+      },
+      {
+        "component": "HomePage hero CTA on mobile (375px)",
+        "issue": "Mobile hero shows 'INIZIA IL TUO VIAGGIO' and 'PER I PROFESSIONISTI' instead of the required 'INIZIA IL TUO DESIGN JOURNEY™'. The desktop variant DOES include 'inizia il tuo design journey' text somewhere on the page, but the mobile hero variant uses different copy. Verify mobile copy matches directive.",
+        "selector": ".hero CTA buttons (mobile viewport)",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "HomePage mobile layout (375x667)",
+        "issue": "documentElement.scrollWidth > window.innerWidth → horizontal overflow on mobile homepage. Login page mobile is fine (no overflow).",
+        "selector": "body",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "HomePage 'Rientra' ghost link on mobile",
+        "issue": "Directive: ghost link 'Rientra' should be hidden on mobile via media query, but the link is ENTIRELY ABSENT from the DOM on mobile homepage (not just hidden). Since the visible re-entry CTA on mobile reads 'Entra nel tuo spazio' (the wrong copy), this point compounds the first bug.",
+        "selector": "header a:has-text('Rientra')",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "/admin index (governance grid)",
+        "issue": "Direct navigation to /admin redirects to /auth/login (correct protection). Could not verify the 14 governance cards or [data-testid='bp-admin-link-languages'] without an authenticated session. The backend route exists; needs an authenticated walk-through to validate the grid.",
+        "affected_selectors": ["[data-testid='bp-admin-link-languages']"]
+      }
+    ],
+    "design_issues": [
+      {
+        "screen": "/auth/login",
+        "issues": [
+          "[i18n] 17 missing string keys flagged in console for locale 'it-IT' (auth.access.eyebrow, auth.access.probe.title, auth.access.client.title, auth.access.client.subtitle, auth.access.client.cta_email, auth.access.professional.title, auth.access.professional.subtitle, auth.access.professional.cta, auth.access.password_label, auth.access.sent.title, auth.access.sent.copy, auth.access.back, auth.access.quote, …). The page works via JS fallbacks but VIOLATES the 'TUTTO multilingue DB-driven, NO hardcoded copy' directive. These keys must be seeded in the i18n DB.",
+          "React warning on mount: 'Cannot update a component while rendering a different component' — likely a setState-in-render in LoginPage.jsx (or its provider). Cosmetic for now but a real bug to investigate."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter167_adaptive_access.py",
+    "/app/test_reports/pytest/iter167_results.xml"
+  ],
+  "action_items": [
+    "P0: Replace 'Entra nel tuo spazio' with 'Rientra' in /app/frontend/src/pages/site/HomePage.jsx line 67 (the custom header override). Verify both desktop and mobile pick up the change.",
+    "P0: Seed the 17 missing i18n keys (auth.access.*) for locale 'it-IT' to remove all fallback-via-default-string. Per directive 'NO hardcoded copy'.",
+    "P1: Investigate mobile homepage horizontal overflow (scrollWidth > innerWidth). Likely an oversized image/grid in the hero or partners strip.",
+    "P1: Re-check mobile hero copy ('INIZIA IL TUO VIAGGIO' vs required 'INIZIA IL TUO DESIGN JOURNEY™') — copy seems split between two CTAs in two viewports.",
+    "P2: Fix React 'setState in render' warning in LoginPage.jsx phase machine (likely a useState setter called during render path or inside an inline IIFE).",
+    "P2 (manual): Auth-walk /admin and confirm the 14 governance cards including [data-testid='bp-admin-link-languages'] are present in the editorial grid."
+  ],
+  "critical_code_review_comments": [
+    "HomePage.jsx duplicates the public header (custom 'login' label inline). This is a long-standing anti-pattern: a single component (MoodSiteHeader) should be the only public header. The duplication is exactly why iter158's fix on MoodSiteHeader didn't propagate to '/'. Recommend deleting the custom header in HomePage.jsx and using <MoodSiteHeader/> directly.",
+    "LoginPage.jsx ships 26+ inline default strings via t(key, null, 'fallback'). All of those are exactly what triggers the 17 'Missing string key' warnings. Move every default into the DB layer (run /app/backend/scripts/iter167_*.py extended for auth.access.*).",
+    "LoginPage.jsx: the back button is implemented via class 'mfd-auth__back' without an explicit data-testid='login-back-btn'. Adding the test id would harden Playwright assertions.",
+    "Backend /api/auth/identify already correctly conforms to enumeration-safety: known + unknown emails produce identical response keys and shape — good."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter167_adaptive_access.py (NEW — 7 tests, all pass)"
+  ],
+  "success_rate": {
+    "backend": "100% (7/7)",
+    "frontend": "75% (9/12 — HomePage header copy + mobile overflow + mobile Rientra missing)"
+  },
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (professional probe). Unknown client emails generated as visitor_test_<timestamp>@example.com.",
+  "seed_data_creation": "None.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Adaptive Access™ phase machine (probe→adaptive→sent) is fully functional end-to-end. /api/auth/identify backend is rock-solid (7/7). The single recurring blocker between iter158 and now is the HomePage.jsx custom-header override that hardcodes 'Entra nel tuo spazio' as the re-entry label (line 67). After main agent replaces that string with 'Rientra' (or refactors HomePage to use MoodSiteHeader directly), the desktop homepage will be compliant. Then re-run the homepage banned-words helper assertion (Array.from(document.querySelectorAll('a,button,span')).map(e=>e.textContent.toLowerCase().trim()).filter(t=>['accedi','login','sign in','entra nel tuo spazio'].includes(t))) → must be []. For the i18n keys, run a DB seed script for the 17 auth.access.* keys in it-IT and verify the [i18n] Missing warnings disappear from the console.",
+  "rca_of_the_issue": "Homepage copy violation RCA: HomePage.jsx (line 67) defines its OWN inline navigation labels dict that overrides MoodSiteHeader's correct 'Rientra' label. MoodSiteHeader.jsx already has the right label (line 29). The fix in iter158 only touched MoodSiteHeader, so '/' still renders the override. Solution: either (a) delete the custom header in HomePage.jsx and let RouterLayout render MoodSiteHeader on '/' as on other surfaces, or (b) change line 67 from 'Entra nel tuo spazio' to 'Rientra'. Option (a) is preferable to remove ongoing duplication risk."
+}

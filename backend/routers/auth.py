@@ -391,3 +391,57 @@ def resolve_post_login(current_user: dict = Depends(get_current_user)):
         "role": p.get("role"),
         "is_root_superadmin": bool(p.get("is_root_superadmin")),
     }
+
+
+# ── ITER167 Round 2 · Adaptive Access™ Identity Probe ─────────────────
+class IdentifyAccessRequest(BaseModel):
+    email: EmailStr
+
+
+@router.post("/identify")
+def identify_access(body: IdentifyAccessRequest):
+    """Adaptive Access™ identity probe (NOT authentication).
+
+    Returns `{kind, password_exists}` so the public Access page can adapt
+    its UI before requesting credentials.
+
+    Enumeration-safe — unknown emails return the *client* default
+    (`kind='client'`, `password_exists=false`), the same shape a brand-new
+    visitor would see. The frontend's primary CTA stays "Continua via email"
+    regardless, and the silent magic-link endpoint is a no-op on unknown
+    accounts. Nothing leaks the existence of an account.
+
+    The `kind` value is the experiential category, not a technical role:
+      · `client`        → magic-link first (concierge tone)
+      · `professional`  → password first   (workspace operativo)
+    """
+    email = (body.email or "").strip().lower()
+    if not email:
+        return {"kind": "client", "password_exists": False}
+
+    try:
+        client = db()
+        prof = (client.table("users_profile")
+                .select("role, is_root_superadmin, metadata_json")
+                .ilike("email", email).limit(1).execute())
+        if not prof.data:
+            return {"kind": "client", "password_exists": False}
+        row = prof.data[0]
+        role = (row.get("role") or "").lower()
+        # Anything *not* a client is treated as professional for UX purposes:
+        # designer, advisor, studio_admin, tenant_admin, partner, super_admin…
+        kind = "client" if role == "client" else "professional"
+        # Professionals always have a password set on creation.
+        # Clients only have one if they explicitly created it via the soft
+        # invitation prompt (tracked in users_profile.metadata_json.password_chosen).
+        if kind == "professional":
+            password_exists = True
+        else:
+            meta = row.get("metadata_json") or {}
+            password_exists = bool(meta.get("password_chosen"))
+        return {"kind": kind, "password_exists": password_exists}
+    except Exception:
+        logger.exception("identify_access failed")
+        # Fail-safe to the most permissive UX (no leakage)
+        return {"kind": "client", "password_exists": False}
+

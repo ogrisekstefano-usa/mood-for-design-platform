@@ -588,3 +588,88 @@
   font-size: 13px;
   color: var(--auth-text-muted);
 }
+
+/* ── Adaptive Access™ (ITER167 Round 2) ────────────────────────────── */
+
+/* Back button — discrete, top of the panel */
+.mfd-auth__back {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: var(--mfd-sans, 'Inter'), sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(26, 23, 20, 0.55);
+  padding: 6px 8px;
+  transition: color .25s, opacity .25s;
+}
+.mfd-auth__back:hover {
+  color: rgba(26, 23, 20, 0.9);
+}
+.mfd-auth__panel {
+  position: relative;
+}
+
+/* Resolved email — surfaced ghost label between probe and adaptive */
+.mfd-auth__resolved-email {
+  font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 19px;
+  color: rgba(26, 23, 20, 0.72);
+  margin: 8px 0 22px 0;
+  letter-spacing: -0.005em;
+}
+
+/* Secondary CTA — soft ghost, never dominates the primary action */
+.mfd-auth__secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px 18px;
+  background: transparent;
+  border: 1px solid rgba(26, 23, 20, 0.14);
+  border-radius: 2px;
+  font-family: var(--mfd-sans, 'Inter'), sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(26, 23, 20, 0.62);
+  cursor: pointer;
+  transition: border-color .25s, color .25s, background .25s;
+}
+.mfd-auth__secondary:hover {
+  border-color: rgba(26, 23, 20, 0.35);
+  color: rgba(26, 23, 20, 0.92);
+  background: rgba(26, 23, 20, 0.02);
+}
+.mfd-auth__secondary svg { opacity: 0.7; }
+
+/* Single-row variant (only forgot password, no remember-me anymore) */
+.mfd-auth__row--single {
+  display: flex;
+  justify-content: flex-end;
+  margin: 4px 0 14px 0;
+}
+
+/* Phase 3 — sent confirmation */
+.mfd-auth__sent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Submit button: support inline icons (mail, etc.) without breaking spinner */
+.mfd-auth__submit svg {
+  flex-shrink: 0;
+}
+
