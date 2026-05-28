@@ -2,6 +2,71 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER167 · Round 4 · Phone Country Prefix + Dark-Mode Email + Mobile QA** · ✅ DELIVERED · 28 Feb 2026
+
+  **🎯 Goal**: chiudere il loop del Client Magic-Link First slice con
+  phone prefix DB-driven, email Continuity™ hardenata per dark-mode
+  Gmail/Apple Mail, e fix degli overflow mobile.
+
+  **Cosa è stato fatto**
+
+  · **PhoneCountryPrefix dropdown** ·
+    `components/journey/PhoneCountryPrefix.jsx` (nuovo, 150 righe):
+    registry editoriale DB-driven da `publicLanguages()` (stessa sorgente
+    di `/admin/languages`). Default preselect dal `document.documentElement.lang`.
+    Listener `mfd:languages:change` + `storage` per refresh live.
+    Export anche `normalizePhone(dial, local)` → "+390123456789".
+    Testids esposti: `bj-phone-prefix-trigger`/`-menu`/`-option-{COUNTRY_CODE}`.
+
+  · **BeginJourneyPage.jsx** · step 3 con `[country select] [phone input]`.
+    `phoneCountry` state + `normalizePhone` al submit. Bug fix:
+    `first_name` → `firstName` nel ramo `else` del navigate.
+
+  · **Backend** · `journey_initiate.py::WelcomePayload`:
+      ▸ `country_code` (ISO-3166-1 alpha-2, 2 chars)
+      ▸ `dial_code` (max 8 chars)
+      ▸ `normalized_phone` (max 32 chars, E.164-style)
+    Salvati su `accounts.country` + `accounts.metadata_json` +
+    `contacts.metadata_json` (futuro routing/Chameleon/timezone/WhatsApp).
+
+  · **Email dark-mode hardening** · `services/email_templates.py`:
+      ▸ Aggiunto `<meta name="color-scheme" content="dark light">` +
+        `<meta name="supported-color-schemes">`.
+      ▸ `<style>` con `:root { color-scheme: dark light; }`,
+        `@media (prefers-color-scheme: dark)` override per
+        `.mfd-card`/`.mfd-ink`/`.mfd-ink-soft`, mobile breakpoint
+        `@media (max-width:480px)` (padding aumentato).
+      ▸ `.mfd-cta-link { color: #050608 !important; }` (Gmail iOS
+        non potrà più invertire il contrasto del CTA bronze).
+      ▸ Generic `a { color: inherit; text-decoration: none; }`
+        per disabilitare l'auto-styling Outlook/Gmail.
+
+  · **Mobile overflow fix** · `home-iter150.css`:
+      ▸ `.mfd-site { overflow-x: clip; max-width: 100%; }`
+        (safety net per qualsiasi marquee/immagine wide nel tree).
+      ▸ `.mfd-trust { overflow-x: hidden; max-width: 100%; }`
+        (sigilla il marquee `.mfd-trust__brands`).
+
+  **Testing**
+  - **iteration 160 testing agent**: Backend **11/11 PASS (100%)**.
+    Frontend **P0 100% PASS** (phone prefix, 3-step, preparing,
+    recovery, adaptive login). P1 fix applicati post-testing.
+  - Self-test mobile (414x900) post-fix: bodyScrollWidth = innerWidth
+    = 0 diff. Trust strip cinematic visibile.
+  - Phone Country Prefix verificato live: Italia default `🇮🇹 +39`,
+    dropdown apre con UK/US/IT/FR/DE/ES/AE, click US → trigger `🇺🇸 +1`.
+  - Email magic_link render: contiene meta color-scheme + @media
+    prefers-color-scheme dark + classi mfd-card/mfd-ink/mfd-cta-link.
+
+  **Carry-over P1/P2 (next sprint)**
+  - 25 chiavi `auth.access.*` + `auth.login.*` da seedare nel registry
+    `editorial_blocks` (la UI già rende correttamente il fallback IT).
+  - React warning "setState during render" su LoginPage (cosmetic).
+  - Footer mobile "full-width pure black 761px tall" — review se
+    è la "fascia editoriale" voluta o serve trattamento più soft.
+
+---
+
 - **ITER167 · Round 3 · Email Continuity™ Layer** · ✅ DELIVERED · 28 Feb 2026
 
   **🎯 Goal**: trasformare l'email del magic-link da notifica software

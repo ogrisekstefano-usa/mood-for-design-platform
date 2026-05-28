@@ -21,6 +21,10 @@
  * SCOPE RESET — escape from dark internal OS tokens
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-site {
+  /* ITER167.R4 · mobile overflow safety net: a marquee or wide image
+     anywhere down the tree must NEVER push the document horizontally. */
+  overflow-x: clip;
+  max-width: 100%;
   --mfd-bg:        #F5F2ED;
   --mfd-bg-2:      #EFEAE2;
   --mfd-ink:       #111111;
@@ -343,6 +347,10 @@
   padding: 14px 0;
   background: var(--mfd-bg);
   border-bottom: 1px solid var(--mfd-line);
+  /* ITER167.R4 · mobile overflow safety. The marquee strip MUST never
+     push the document horizontally on small viewports. */
+  overflow-x: hidden;
+  max-width: 100%;
 }
 .mfd-trust__inner {
   max-width: 1480px;
