@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import MinimalNav from './components/MinimalNav';
 import EditorialFooter from './components/EditorialFooter';
 import LegalStrip from './components/LegalStrip';
@@ -15,16 +15,21 @@ import {
   PricingPage,
   TrainingPage,
   SupportPage,
-  LoginSitePage,
 } from './pages/SitePages';
 import ContactPage from './pages/ContactPage';
 import StartStudioPage from './pages/StartStudioPage';
+import AccessContinuityPage from './pages/AccessContinuityPage';
 import { getAllSlugs } from './routes/localizedSlugs';
 
 /**
  * CorporateApp — public-facing MOOD for DESIGN website.
  * ITER151: new top nav (Dedicato a · Caratteristiche · Versioni e Prezzi ·
  * Formazione) + (Supporto · Accedi). All routes locale-localized.
+ *
+ * ITER167: /accedi (and all localized variants) now mount the
+ * AccessContinuity™ experience — a single hospitality-grade entrance
+ * that handles magic-link, adaptive password, and concierge flows.
+ * The /journey/continue route consumes magic-link tokens.
  */
 
 const PAGE_COMPONENTS = {
@@ -33,7 +38,7 @@ const PAGE_COMPONENTS = {
   pricing:  PricingPage,
   training: TrainingPage,
   support:  SupportPage,
-  login:    LoginSitePage,    // /accedi now uses LoginHero from the CMS (login_hero section)
+  login:    AccessContinuityPage,  // ITER167 — replaces LoginHero
 };
 
 const renderLocalizedRoutes = () => {
@@ -47,37 +52,51 @@ const renderLocalizedRoutes = () => {
   return routes;
 };
 
-const CorporateApp = () => (
-  <div className="corporate-app" style={{ background: 'var(--mood-black)' }}>
-    <PreviewBridge />
-    <MinimalNav />
-    <Routes>
-      <Route path="/"                       element={<HomePage />} />
-      <Route path="/magazine"               element={<MagazinePage />} />
-      <Route path="/magazine/*"             element={<MagazinePage />} />
-      <Route path="/projects"               element={<ProjectsPage />} />
-      <Route path="/projects/*"             element={<ProjectsPage />} />
-      <Route path="/materials"              element={<MaterialsPage />} />
-      <Route path="/about"                  element={<AboutPage />} />
+const CorporateApp = () => {
+  const location = useLocation();
+  // ITER167 — Access Continuity™ routes render in a stripped, cinematic
+  // shell: no top nav, no footer, no legal strip. The page IS the
+  // experience. Localized /accedi variants also trigger this.
+  const accessSlugs = getAllSlugs('login');
+  const isAccessRoute =
+    location.pathname === '/journey/continue' ||
+    accessSlugs.includes(location.pathname);
 
-      {/* ITER151 — localized dynamic pages */}
-      {renderLocalizedRoutes()}
+  return (
+    <div className="corporate-app" style={{ background: 'var(--mood-black)' }}>
+      <PreviewBridge />
+      {!isAccessRoute && <MinimalNav />}
+      <Routes>
+        <Route path="/"                       element={<HomePage />} />
+        <Route path="/magazine"               element={<MagazinePage />} />
+        <Route path="/magazine/*"             element={<MagazinePage />} />
+        <Route path="/projects"               element={<ProjectsPage />} />
+        <Route path="/projects/*"             element={<ProjectsPage />} />
+        <Route path="/materials"              element={<MaterialsPage />} />
+        <Route path="/about"                  element={<AboutPage />} />
 
-      {/* Legacy redirects */}
-      <Route path="/platform"             element={<Navigate to="/" replace />} />
-      <Route path="/blueprint"            element={<Navigate to="/about" replace />} />
-      <Route path="/journal"              element={<Navigate to="/magazine" replace />} />
-      <Route path="/journal/*"            element={<Navigate to="/magazine" replace />} />
-      <Route path="/for-studios"          element={<Navigate to="/projects" replace />} />
-      <Route path="/for-retailers"        element={<Navigate to="/materials" replace />} />
-      <Route path="/templates"            element={<Navigate to="/" replace />} />
-      <Route path="/begin-journey"        element={<Navigate to="/dedicato-a" replace />} />
-      <Route path="/professional-access"  element={<Navigate to="/accedi" replace />} />
-      <Route path="*"                     element={<Navigate to="/" replace />} />
-    </Routes>
-    <EditorialFooter />
-    <LegalStrip />
-  </div>
-);
+        {/* ITER151 — localized dynamic pages */}
+        {renderLocalizedRoutes()}
+
+        {/* ITER167 — Magic link landing (universal route, all locales). */}
+        <Route path="/journey/continue" element={<AccessContinuityPage />} />
+
+        {/* Legacy redirects */}
+        <Route path="/platform"             element={<Navigate to="/" replace />} />
+        <Route path="/blueprint"            element={<Navigate to="/about" replace />} />
+        <Route path="/journal"              element={<Navigate to="/magazine" replace />} />
+        <Route path="/journal/*"            element={<Navigate to="/magazine" replace />} />
+        <Route path="/for-studios"          element={<Navigate to="/projects" replace />} />
+        <Route path="/for-retailers"        element={<Navigate to="/materials" replace />} />
+        <Route path="/templates"            element={<Navigate to="/" replace />} />
+        <Route path="/begin-journey"        element={<Navigate to="/dedicato-a" replace />} />
+        <Route path="/professional-access"  element={<Navigate to="/accedi" replace />} />
+        <Route path="*"                     element={<Navigate to="/" replace />} />
+      </Routes>
+      {!isAccessRoute && <EditorialFooter />}
+      {!isAccessRoute && <LegalStrip />}
+    </div>
+  );
+};
 
 export default CorporateApp;

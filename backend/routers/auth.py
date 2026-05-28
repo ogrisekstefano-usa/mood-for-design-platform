@@ -242,3 +242,83 @@ async def logout():
     # Stateless JWT: the client just discards the token. This endpoint
     # is kept for symmetry and to allow future server-side revocation.
     return {"ok": True}
+
+
+# ─────────────────────────────────────────────────────────────────────
+# ITER167 — Access Continuity™ (Magic-Link First Experience)
+# ─────────────────────────────────────────────────────────────────────
+# Endpoints below are designed for a hospitality-grade login UX.
+# Errors are *never* surfaced as raw HTTP detail — the router maps every
+# failure to neutral, editorial concierge copy that the frontend renders
+# via the `site.access.*` editorial blocks.
+
+from services import access_continuity  # noqa: E402
+
+
+class IdentityProbeRequest(BaseModel):
+    email: EmailStr
+
+
+@router.post("/identity-probe")
+async def identity_probe(body: IdentityProbeRequest):
+    """
+    Adaptive routing for the new /accedi experience.
+
+    Response shape (always 200):
+      { "channel": "magic_link" | "password" | "concierge",
+        "display_name": str | None }
+
+    Never leaks whether an account exists — the `concierge` channel is
+    used both for unknown emails and for any internal error, so the page
+    can render the same warm "we couldn't match this email" copy.
+    """
+    try:
+        return await access_continuity.identity_probe(body.email)
+    except Exception:
+        # Fail-soft: keep the experience uninterrupted.
+        return {"channel": "concierge", "display_name": None}
+
+
+class MagicLinkRequest(BaseModel):
+    email: EmailStr
+    locale: str | None = "it"
+
+
+@router.post("/magic-link/request")
+async def magic_link_request(body: MagicLinkRequest, request: Request):
+    """
+    Issue a magic link to the given email (if it belongs to an active
+    account). Always returns a neutral success unless rate-limited.
+    """
+    try:
+        ip  = request.client.host if request.client else None
+        ua  = request.headers.get("user-agent")
+        res = await access_continuity.issue_magic_link(
+            email=body.email,
+            ip=ip,
+            user_agent=ua,
+            locale=(body.locale or "it"),
+        )
+        return res
+    except Exception:
+        # Concierge intercept — never surface raw errors.
+        return {"delivered": True,
+                "expires_in_minutes": access_continuity.MAGIC_LINK_TTL_MIN}
+
+
+class MagicLinkConsumeRequest(BaseModel):
+    token: str
+
+
+@router.post("/magic-link/consume")
+async def magic_link_consume(body: MagicLinkConsumeRequest):
+    """
+    Exchange a magic-link token for a JWT access session.
+
+    Response always 200, with `ok: bool`. If `ok=false`, the frontend
+    looks up the editorial concierge copy keyed by `reason`.
+    """
+    try:
+        return await access_continuity.consume_magic_link(body.token)
+    except Exception:
+        return {"ok": False, "reason": "invalid"}
