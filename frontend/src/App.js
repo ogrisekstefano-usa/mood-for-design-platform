@@ -90,6 +90,7 @@ const LeadFormPage = lazy(() => import('./pages/public/LeadFormPage'));
 const MoodboardEditor = lazy(() => import('./pages/moodboards/MoodboardEditor'));
 const PublicPresentation = lazy(() => import('./pages/moodboards/PublicPresentation'));
 const ReviewMode = lazy(() => import('./pages/collab/ReviewMode'));
+const AuthClientCallback = lazy(() => import('./pages/auth/AuthClientCallback'));
 const StepWorkspacePage = lazy(() => import('./pages/journey/StepWorkspacePage'));
 const ComingSoonPage = lazy(() => import('./pages/placeholder/ComingSoonPage'));
 
@@ -464,6 +465,11 @@ function App() {
                 <Route path="/auth/forgot-password" element={<OSWrap><ForgotPasswordPage /></OSWrap>} />
                 {/* ITER143D · Auth Redirect Governance™ — single platform callback that bounces to the right tenant subdomain. */}
                 <Route path="/auth/callback" element={<AuthCallbackPage />} />
+                {/* ITER169 · ISOLATED client magic-link callback. Lives
+                    OUTSIDE ClientRoute/ProtectedRoute by design to avoid
+                    the auth-hydration redirect race against homepage. */}
+                <Route path="/auth/client/callback" element={<AuthClientCallback />} />
+                <Route path="/auth/client/access"   element={<AuthClientCallback />} />
                 {/* Password Creation — soft invitation, NOT modal aggressiva */}
                 <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
                 {/* AuthRecoveryPage — magic link expired → esperienza concierge, mai errore software */}

@@ -147,6 +147,9 @@ api_router.include_router(curated_references.router, prefix="/inspirations", tag
 api_router.include_router(usage_memory.router,      prefix="/inspirations", tags=["usage-memory"])
 api_router.include_router(client_preview.router,    prefix="/inspirations", tags=["client-preview"])
 api_router.include_router(design_journey.router,                            tags=["design-journey"])
+# ITER169 · Client access continuity (resend magic link endpoint)
+from routers import auth_client as _auth_client_router  # noqa: E402
+api_router.include_router(_auth_client_router.router, tags=["auth-client"])
 # ITER168 · Journey-keyed root API (overview/artifacts/brief/lifecycle/milestone)
 from routers import journeys as _journeys_router  # noqa: E402
 api_router.include_router(_journeys_router.router, prefix="/journeys", tags=["journeys"])

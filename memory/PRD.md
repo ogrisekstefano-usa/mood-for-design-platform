@@ -2,6 +2,111 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER169 · CRITICAL · Client Auth Lifecycle Orchestration™** · ✅ DELIVERED · 28 Feb 2026
+
+  **🚨 P0 BLOCKER risolto**: il magic link cliente NON entrava nel Client Profile™.
+  Il browser veniva lasciato su URL sporchi con `#access_token=` o
+  `?error=otp_expired&error_code=access_denied` e cadeva in homepage.
+
+  ---
+  **ROOT CAUSE precise (3 cause coincidenti)**:
+  1. `_is_dev_host()` non riconosceva il dominio K8s ingress
+     `*.preview.emergentcf.cloud` → fallback su `blueprint.moodfordesign.com`
+     anche in preview → utente arrivava su un dominio non whitelistato in
+     Supabase project → callback rifiutato → cade su Site URL
+  2. `AuthCallbackPage` (legacy) faceva `window.location.replace(next)`
+     PRIMA che `AuthContext.loadProfile()` finisse → ClientRoute vedeva
+     `user=null, loading=false` per un istante → redirect a `/`
+  3. Errore Supabase nel hash veniva passato a `/auth/recovery` (route
+     condivisa con professional) → utente vedeva schermata generica
+     "qualcosa è andato storto" senza CTA contestuale
+
+  ---
+  **FIX implementati (pipeline cliente ISOLATA dalla professionale)**
+
+  **Backend**
+  - `services/auth_redirect.py`: nuova fn `build_client_callback_url()`
+    + `_is_dev_host()` esteso a `.preview.emergentcf.cloud` +
+    `.cluster-11.preview.emergentcf.cloud` (K8s ingress)
+  - `routers/journey_initiate.py`: legge `X-Forwarded-Host` prima di
+    `Host` (K8s ingress sostituisce l'header Host con dominio interno
+    non pubblicamente raggiungibile)
+  - `services/client_provisioning.py`: magic link client ora redirige
+    a `/auth/client/callback` (NOT `/auth/callback`)
+  - **NEW** `routers/auth_client.py` · `POST /api/auth/client/resend`:
+    rigenera un magic link per un'email nota, invia Email Continuity™,
+    anti-enumeration (200 sempre, `sent: false` per email sconosciute)
+
+  **Frontend**
+  - **NEW** `pages/auth/AuthClientCallback.jsx` (270 righe):
+    pipeline cinematica isolata che:
+    · monta su `/auth/client/callback` (OUT of ClientRoute/ProtectedRoute
+      → niente race condition con AuthGuard)
+    · intercetta errori `otp_expired/access_denied` PRIMA di renderizzare
+      → concierge UX inline con CTA "Invia nuovo accesso"
+    · esegue Auth Hydration Gate™: scrive `mfd_session` localStorage,
+      dispatch `mfd:identity:refresh`, **attende** `/api/auth/me`,
+      poi `GET /api/journeys/mine` per il journey_id
+    · `history.replaceState()` per pulire URL (no `#access_token` leak)
+    · `navigate('/journey/:jid', {replace:true})` — MAI homepage `/`
+    · NESSUNA stringa Supabase raw mostrata all'utente
+  - `App.js`: route `/auth/client/callback` + `/auth/client/access`
+    aggiunte fuori da qualsiasi auth guard
+
+  ---
+  **VERIFICA LIVE (screenshot)**
+  - Concierge UX renderizzata con titolo "Il tuo accesso personale è stato
+    aggiornato", body editoriale, input email + CTA gold
+  - URL pulito da history.replaceState (no `?error=otp_expired&...`)
+  - Click su "Invia un nuovo accesso" → conferma "Controlla la tua casella"
+  - **ZERO raw Supabase error visibili all'utente**
+  - **ZERO redirect a `/` o `/auth/login`**
+
+  ---
+  **TEST pytest** · `test_iter169_client_auth_pipeline.py` · **8/8 PASS**
+  - 4× auth_redirect builder (dev hosts emergentagent.com + emergentcf.cloud
+    → same-origin · prod hosts → blueprint.moodfordesign.com · origin param
+    per dispatch)
+  - 1× magic link end-to-end (redirect_to punta a `/auth/client/callback`)
+  - 3× resend endpoint (unknown 200 + sent=false, invalid 422, known 200 + sent=true)
+  - Regression ITER167 · 18/18 PASS
+
+  ---
+  **⚠️ AZIONE RICHIESTA UTENTE in Supabase Dashboard**
+  Per far funzionare il flow ANCHE in PREVIEW (in PROD già whitelistato):
+
+  Vai su Supabase Dashboard → Project Settings → Authentication → URL Configuration
+  → Redirect URLs → **aggiungi**:
+  ```
+  https://content-hub-pro-22.preview.emergentagent.com/auth/client/callback
+  https://*.preview.emergentagent.com/auth/client/callback
+  ```
+
+  Senza questa modifica Supabase ignora il redirect_to dinamico e cade
+  sul Site URL (`https://blueprint.moodfordesign.com`). In PROD la
+  whitelist `https://blueprint.moodfordesign.com/auth/client/callback`
+  è già presente → flow funziona out-of-the-box.
+
+  ---
+  **Architettura finale (separazione canonica)**
+  ```
+  CLIENT (magic-link first)         PROFESSIONAL (password)
+  ───────────────────────           ──────────────────────
+  /begin-journey                    /auth/login
+       ↓                                 ↓
+  email cinematic                   email + password
+       ↓                                 ↓
+  /auth/client/callback             /auth/callback
+   (ISOLATED · concierge)            (legacy, shared)
+       ↓                                 ↓
+  Auth Hydration Gate™              role_redirect()
+       ↓                                 ↓
+  /journey/:jid                     /dashboard|/studio
+  ```
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER168 · Hotfix B · Phone Codes vs Language Registry Separation** · ✅ DELIVERED · 28 Feb 2026
 
   **🎯 Principio architetturale enunciato dall'utente**:

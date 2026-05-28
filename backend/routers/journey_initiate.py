@@ -319,7 +319,11 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
     # Capture the SAME runtime_identity envelope as routers/leads.py
     # so audit trails are consistent across onboarding paths.
     resolved = getattr(request.state, 'resolved_tenant', None) or {}
-    request_host = (request.headers.get('host') or '')
+    # ITER169 · prefer X-Forwarded-Host when present (K8s ingress rewrites
+    # the internal Host header to a non-public cluster domain).
+    request_host = ((request.headers.get('x-forwarded-host')
+                     or request.headers.get('x-original-host')
+                     or request.headers.get('host') or '').split(',')[0].strip())
     resolved_host = resolved.get('host') or request_host or None
     resolved_subdomain = resolved.get('subdomain')
     if not resolved_subdomain and request_host:

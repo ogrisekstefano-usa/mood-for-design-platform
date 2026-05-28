@@ -336,15 +336,17 @@ def provision_client_after_journey(
             },
         )
 
-    # ── 4. Magic link (redirect → Blueprint callback → /client/welcome) ─
-    # ITER162 · il magic-link porta direttamente al Welcome Panel Atelier™,
-    # non al journey: il cliente vede prima la "stanza" relazionale,
-    # poi naviga.
-    redirect_to = build_callback_url(
+    # ── 4. Magic link (redirect → /auth/client/callback → /journey/:jid) ─
+    # ITER169 · CLIENT auth pipeline isolated. The magic link returns
+    # to the DEDICATED client callback (NOT /auth/callback) so the
+    # AuthGuard race condition with homepage fallback is eliminated.
+    from .auth_redirect import build_client_callback_url
+    logger.info("[ITER169] client magic-link host=%r", request_host)
+    redirect_to = build_client_callback_url(
         request_host,
-        "magic_link",
-        next_path="/client/welcome",
+        next_path="/journey/auto",
     )
+    logger.info("[ITER169] redirect_to=%r", redirect_to)
     magic_link = _generate_magic_link(email, redirect_to)
     result["magic_link_url"] = magic_link
 

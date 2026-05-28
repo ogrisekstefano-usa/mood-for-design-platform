@@ -49,6 +49,8 @@ def _is_dev_host(host: str) -> bool:
     return (h in ("localhost", "127.0.0.1")
             or h.endswith(".localhost")
             or h.endswith(".preview.emergentagent.com")
+            or h.endswith(".preview.emergentcf.cloud")
+            or h.endswith(".cluster-11.preview.emergentcf.cloud")
             or h.endswith(".emergent.sh"))
 
 
@@ -135,6 +137,43 @@ def build_callback_url(
     if next_path:
         params["next"] = next_path
     return f"{base}/auth/callback?{urlencode(params)}"
+
+
+def build_client_callback_url(
+    request_host: str,
+    *,
+    next_path: Optional[str] = None,
+    scheme: str = "https",
+) -> str:
+    """ITER169 · Dedicated client magic-link callback.
+
+    The CLIENT pipeline is ISOLATED from the professional one:
+      • Client emails redirect to `/auth/client/callback`
+      • Professional emails (recovery, invite) keep using `/auth/callback`
+
+    This ensures:
+      - the client never lands on `/auth/login` or homepage as a fallback
+      - the client never sees a raw Supabase error string in the URL
+      - the session hydration runs in a route the AuthGuard does NOT
+        race against (it is OUTSIDE ClientRoute / ProtectedRoute)
+
+    In dev / preview environments we return same-origin so the magic
+    link works on the preview URL too. In production we always return
+    https://blueprint.moodfordesign.com/auth/client/callback to keep
+    the Supabase Redirect URLs whitelist finite.
+    """
+    origin = _strip_port(request_host or "")
+    if _is_dev_host(origin):
+        base = normalize_origin(origin, scheme="https")
+    else:
+        base = f"{scheme}://{PLATFORM_DOMAIN}"
+    params = {}
+    if origin and not _is_dev_host(origin):
+        params["origin"] = origin
+    if next_path:
+        params["next"] = next_path
+    qs = ("?" + urlencode(params)) if params else ""
+    return f"{base}/auth/client/callback{qs}"
 
 
 def build_tenant_url(host: str, path: str = "/", scheme: str = "https") -> str:
