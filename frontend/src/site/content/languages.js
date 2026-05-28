@@ -74,6 +74,12 @@ export const LANGUAGE_REGISTRY = [
 ];
 
 const RUNTIME_OVERRIDE_KEY = 'mfd_language_registry_override';
+const DB_CACHE_KEY = 'mfd_language_registry_db_cache_v1';
+
+// In-memory mirror populated by `bootstrapLanguagesFromDB()`. Until that
+// resolves we serve the static LANGUAGE_REGISTRY as cold-boot fallback
+// (prevents flash of empty switcher on first render).
+let _dbMirror = null;
 
 // SuperAdmin/tenant override — when set, replaces the static registry at runtime.
 function readOverride() {
@@ -84,9 +90,79 @@ function readOverride() {
   return null;
 }
 
+/** Read a previously-cached DB snapshot (localStorage). Survives reloads. */
+function readDbCache() {
+  try {
+    const raw = localStorage.getItem(DB_CACHE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (_) {}
+  return null;
+}
+
+/** Persist the DB mirror so next page-load is instant. */
+function writeDbCache(rows) {
+  try {
+    localStorage.setItem(DB_CACHE_KEY, JSON.stringify(rows));
+  } catch (_) {}
+}
+
+/** Bootstrap the registry from /api/platform/languages.
+ *  Call once at app startup. Subsequent calls revalidate the cache.
+ *  Returns the resolved registry (array). */
+export async function bootstrapLanguagesFromDB(apiBase = null) {
+  try {
+    const base = apiBase
+      || (typeof process !== 'undefined' && process.env?.REACT_APP_BACKEND_URL)
+      || '';
+    const url = `${base}/api/platform/languages?scope=all`;
+    const r = await fetch(url, { credentials: 'omit' });
+    if (!r.ok) throw new Error(`platform/languages ${r.status}`);
+    const body = await r.json();
+    const rows = (body.languages || []).map((l) => ({
+      code:                    l.code,
+      name:                    l.name,
+      native_name:             l.native_name,
+      region:                  l.region,
+      dial_code:               l.dial_code,
+      enabled:                 !!l.enabled,
+      public_enabled:          !!l.public_enabled,
+      blueprint_enabled:       !!l.blueprint_enabled,
+      default_locale:          !!l.default_locale,
+      rtl:                     !!l.rtl,
+      fallback_locale:         l.fallback_locale,
+      sort_order:              l.sort_order ?? 100,
+      ai_translation_enabled:  !!l.ai_translation_enabled,
+      short:                   l.short_label,
+      base:                    l.base_code,
+    }));
+    _dbMirror = rows;
+    writeDbCache(rows);
+    try {
+      window.dispatchEvent(new CustomEvent('mfd:languages:change',
+        { detail: { source: 'db_bootstrap', registry: rows } }));
+    } catch (_) {}
+    return rows;
+  } catch (e) {
+    // Silent fallback to localStorage cache or static registry
+    const cached = readDbCache();
+    if (cached) { _dbMirror = cached; return cached; }
+    return LANGUAGE_REGISTRY;
+  }
+}
+
+// Eagerly try the cached DB snapshot at module import time so the first
+// synchronous getLanguageRegistry() call returns the freshest data.
+try {
+  const cached = readDbCache();
+  if (cached) _dbMirror = cached;
+} catch (_) {}
+
 export function getLanguageRegistry() {
+  // Priority: explicit override (localStorage) > DB mirror > static fallback
   const override = readOverride();
-  return Array.isArray(override) && override.length > 0 ? override : LANGUAGE_REGISTRY;
+  if (Array.isArray(override) && override.length > 0) return override;
+  if (Array.isArray(_dbMirror) && _dbMirror.length > 0) return _dbMirror;
+  return LANGUAGE_REGISTRY;
 }
 
 export function setLanguageRegistry(next) {

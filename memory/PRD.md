@@ -2,7 +2,88 @@
 
 
 ## 📌 Sprint Status (latest)
-- **ITER168 · Hotfix · Language/Locale DB-Driven Alignment** · ✅ DELIVERED · 28 Feb 2026
+- **ITER168 · Hotfix B · Phone Codes vs Language Registry Separation** · ✅ DELIVERED · 28 Feb 2026
+
+  **🎯 Principio architetturale enunciato dall'utente**:
+  > "Il telefono identifica una persona, il market localizza l'esperienza.
+  >  Sono due logiche diverse."
+
+  Quindi due domini distinti:
+  - **PhoneCountryPrefix** → registry GLOBALE ISO 3166 (196 paesi)
+  - **CountryLanguageSelector** → mercati attivi del tenant (collegato a `/admin/languages`)
+  - **`/admin/languages`** → migrato da localStorage a **Supabase reale**
+
+  ---
+  **Fase A · Phone Dial Codes globali**
+
+  - `supabase/migrations/109_phone_dial_codes.sql` · 196 paesi (ISO 3166-1
+    alpha-2 completo) con `dial_code`, `flag_emoji`, `name_i18n` (IT/EN/FR/DE/ES),
+    `search_aliases`, `display_priority` (Italy=1, US=2, UK=3, FR=4 ecc.),
+    `region`. Idempotente · ON CONFLICT DO UPDATE per i top + DO NOTHING per long-tail.
+  - Backend `routers/platform.py` (NEW · 230 righe):
+    · `GET /api/platform/phone-dial-codes?locale=&q=&region=`
+    · `GET /api/platform/phone-dial-codes/{iso2}?locale=`
+  - Frontend `components/journey/PhoneCountryPrefix.jsx` riscritto (-25%):
+    fetch da API, search bar in dropdown, locale-aware labels.
+    Nessun coupling a `publicLanguages()` o al tenant.
+  - CSS `styles/begin-journey.css`: search-wrap + lista scrollable + empty state.
+
+  ---
+  **Fase B · Language registry DB-driven (sostituisce localStorage)**
+
+  - `supabase/migrations/110_platform_languages.sql` · tabella `platform_languages`
+    con 9 righe seedate dal vecchio `LANGUAGE_REGISTRY` JS. Partial unique
+    index `WHERE default_locale = TRUE` garantisce un solo default.
+  - Backend endpoints:
+    · `GET /api/platform/languages?scope=public|blueprint|all`
+    · `GET /api/platform/admin/languages` (super_admin)
+    · `PATCH /api/platform/admin/languages/{code}` (super_admin)
+      — enforce: no `blueprint_enabled=true` per non-operational codes,
+        no `enabled=false` se è il default
+    · `POST /api/platform/admin/languages/{code}/default` (atomic flip)
+  - `frontend/src/site/content/languages.js`:
+    · `bootstrapLanguagesFromDB()` async loader
+    · in-memory `_dbMirror` + localStorage cache `mfd_language_registry_db_cache_v1`
+    · `getLanguageRegistry()` priorità: override > DB mirror > static fallback
+    · invocato in `index.js` al boot dell'app
+  - `pages/settings/LanguagesPage.jsx`:
+    · `onSave()` ora **PATCH** ogni riga via API + `POST .../default`
+    · Re-bootstrap dopo save → tutti i listener si aggiornano
+    · UI: pulsante "Salvataggio…" durante save, banner errore visibile
+    · NO PIÙ localStorage come source of truth
+
+  ---
+  **Test pytest** · `test_iter168_platform_registry.py` · **20/20 PASS**
+  - 9× phone dial codes (lista 196, ordering, search IT, search ISO/dial,
+    region filter, lookup singolo, 404 unknown)
+  - 3× languages public read (scope=public/blueprint/all)
+  - 8× admin CRUD (auth required, list, patch, blueprint whitelist,
+    cannot disable default, 404 unknown, set-default atomic, disabled rejected)
+  - Regression: 67/67 PASS combinato con Phase 1+2 + ITER167
+
+  ---
+  **Verifica live (screenshot in-pagina)**
+  - PhoneCountryPrefix: **196 paesi** in dropdown (vs 7 prima)
+  - Search "giapp" → 🇯🇵 Giappone +81 (filtro IT works)
+  - CountryLanguageSelector: ancora 7 mercati corretti (separazione rispettata)
+  - Default phone auto-selected 🇮🇹 +39 da locale `it`
+
+  ---
+  **Architettura risultante (final)**
+  ```
+  USER PHONE INPUT         MARKET / LOCALE SELECTOR    BLUEPRINT APP CHROME
+  ↓                        ↓                            ↓
+  /api/platform/           /api/storefront/public/      /api/platform/
+   phone-dial-codes         {slug}/markets               languages?scope=blueprint
+  (ISO 3166 · 196 rows)    (tenant_markets · 7 rows)    (DB · operational whitelist)
+
+      ←──── DECOUPLED ────→        ←──── DB-DRIVEN ────→
+  ```
+
+---
+
+## 📌 Sprint Status (previous)
+- **ITER168 · Hotfix A · Language/Locale DB-Driven Alignment** · ✅ DELIVERED · 28 Feb 2026
 
   **🚨 Bug riportato dall'utente** (screenshot 3 immagini):
   - `/admin/languages` mostrava 7 lingue attive (IT, en-US, en-GB, FR, DE, ES, AR)

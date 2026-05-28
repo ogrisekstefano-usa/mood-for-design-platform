@@ -68,6 +68,17 @@ const LanguagesPage = () => {
   const { t } = useBlueprint();
   const [registry, setRegistry] = useState(() => getLanguageRegistry());
   const [dirty, setDirty] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
+
+  // Refresh from DB on mount (admin sees authoritative state, not localStorage)
+  React.useEffect(() => {
+    import('../../site/content/languages').then(({ bootstrapLanguagesFromDB }) => {
+      bootstrapLanguagesFromDB().then((rows) => {
+        if (rows && rows.length) setRegistry(rows);
+      });
+    });
+  }, []);
 
   const update = (code, patch) => {
     setRegistry((prev) => prev.map((l) => {
@@ -88,9 +99,51 @@ const LanguagesPage = () => {
     setDirty(true);
   };
 
-  const onSave = () => {
-    setLanguageRegistry(registry);
-    setDirty(false);
+  const onSave = async () => {
+    setSaving(true); setSaveError(null);
+    try {
+      const api = (await import('../../lib/api')).default;
+      // Compute current default once
+      const wantDefault = registry.find((l) => l.default_locale)?.code;
+
+      // PATCH each row (small N = 9 · fine to do serially for predictability)
+      for (const l of registry) {
+        await api.patch(`/api/platform/admin/languages/${l.code}`, {
+          name:                   l.name,
+          native_name:            l.native_name,
+          region:                 l.region,
+          dial_code:              l.dial_code,
+          enabled:                !!l.enabled,
+          public_enabled:         !!l.public_enabled,
+          blueprint_enabled:      !!l.blueprint_enabled,
+          rtl:                    !!l.rtl,
+          fallback_locale:        l.fallback_locale,
+          sort_order:             l.sort_order,
+          ai_translation_enabled: !!l.ai_translation_enabled,
+        });
+      }
+      // Set default after toggles so we don't disable the current default
+      if (wantDefault) {
+        await api.post(`/api/platform/admin/languages/${wantDefault}/default`);
+      }
+      // Re-pull from DB and notify the rest of the app
+      const { bootstrapLanguagesFromDB } = await import('../../site/content/languages');
+      const fresh = await bootstrapLanguagesFromDB();
+      if (fresh && fresh.length) setRegistry(fresh);
+      // Notify mirror listeners
+      try {
+        window.dispatchEvent(new CustomEvent('mfd:languages:change',
+          { detail: { source: 'admin_save', registry: fresh } }));
+      } catch (_) {}
+      // Also write to legacy override key for back-compat
+      setLanguageRegistry(fresh);
+      setDirty(false);
+    } catch (err) {
+      console.error('[LanguagesPage] save failed', err);
+      setSaveError(err?.response?.data?.detail || err?.message || 'Save failed');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const onReset = () => {
@@ -225,11 +278,11 @@ const LanguagesPage = () => {
       <div className="mt-6 flex items-center gap-3">
         <button
           onClick={onSave}
-          disabled={!dirty}
+          disabled={!dirty || saving}
           className="bg-[var(--bp-primary)] text-[var(--bp-on-primary)] disabled:opacity-30 px-5 py-2.5 text-xs font-body uppercase tracking-[0.2em] inline-flex items-center gap-2 hover:opacity-90 transition-opacity"
           data-testid="languages-save"
         >
-          <Save size={12} /> {t('common.save', null, 'Save')}
+          <Save size={12} /> {saving ? 'Salvataggio…' : t('common.save', null, 'Save')}
         </button>
         <button
           onClick={onReset}
@@ -242,6 +295,14 @@ const LanguagesPage = () => {
           <Globe size={12} /> {registry.filter((l) => l.enabled).length} / {registry.length} {t('settings.languages.active', null, 'active')}
         </span>
       </div>
+      {saveError && (
+        <div
+          data-testid="languages-save-error"
+          className="mt-3 px-4 py-2 bg-red-950/30 border border-red-900/50 text-red-200 text-xs font-body rounded-[var(--bp-radius-md)]"
+        >
+          {saveError}
+        </div>
+      )}
 
       <div className="mt-8 p-5 bg-[var(--bp-surface-2)] border border-[var(--bp-border)] rounded-[var(--bp-radius-md)] text-[var(--bp-text-muted)] text-xs font-body" data-testid="languages-architecture-note">
         <strong className="text-[var(--bp-text-secondary)]">{t('settings.languages.architecture', null, 'Architecture')}:</strong>{' '}

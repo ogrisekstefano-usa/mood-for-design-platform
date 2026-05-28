@@ -1,124 +1,132 @@
 /**
- * PhoneCountryPrefix · ITER167 Round 4 — Phone Country Prefix dropdown
+ * PhoneCountryPrefix · ITER168 Hotfix B — Global ISO 3166 dial codes.
  *
- * Step 3 of `/begin-journey`. NO free-text prefix. Country list curated
- * from the active public locales (the SAME source of truth that powers
- * `/admin/languages` via `publicLanguages()`). Preselect derives from
- * the current document locale.
+ * ARCHITECTURAL SEPARATION (post-hotfix):
+ *   • PhoneCountryPrefix     → /api/platform/phone-dial-codes (FULL world list)
+ *   • CountryLanguageSelector → /admin/languages (active markets only)
  *
- * Emits on change:
- *   { country_code: 'IT', dial_code: '+39', flag: '🇮🇹', label: 'Italia' }
+ * A client living in Milan may have a Japanese phone number (+81). We must
+ * NEVER restrict the phone prefix to the tenant's active markets.
+ *
+ * Features:
+ *   - Fetch full list from API on mount (196+ countries)
+ *   - Locale-aware labels (it/en/fr/de/es)
+ *   - Free-text search (country name, ISO code, dial, aliases)
+ *   - Preselect default from current document locale (heuristic, not enforced)
+ *   - Emits: { country_code, dial_code, flag, label }
  *
  * The PARENT keeps the raw phone number; the normalized value
- * (`+39 0123 456 7890`) is computed at submit time.
+ * (`+390123456789`) is computed at submit time via `normalizePhone()`.
  */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { publicLanguages } from '../../site/content/languages';
+import { ChevronDown, Search } from 'lucide-react';
+import api from '../../lib/api';
 
-// ── Country registry (DB-driven via languages.js) ─────────────────────
-// Country / dial / flag mapping. Each region code MUST appear here for the
-// language registry to render its country in the phone prefix dropdown.
-// Source of truth: /admin/languages (LANGUAGE_REGISTRY entry.region + dial_code).
-const COUNTRY_REGISTRY = {
-  IT: { dial: '+39',  flag: '🇮🇹', label: 'Italia' },
-  US: { dial: '+1',   flag: '🇺🇸', label: 'United States' },
-  GB: { dial: '+44',  flag: '🇬🇧', label: 'United Kingdom' },
-  FR: { dial: '+33',  flag: '🇫🇷', label: 'France' },
-  DE: { dial: '+49',  flag: '🇩🇪', label: 'Deutschland' },
-  ES: { dial: '+34',  flag: '🇪🇸', label: 'España' },
-  AE: { dial: '+971', flag: '🇦🇪', label: 'United Arab Emirates' },
-  CH: { dial: '+41',  flag: '🇨🇭', label: 'Schweiz' },
-  AT: { dial: '+43',  flag: '🇦🇹', label: 'Österreich' },
-  CN: { dial: '+86',  flag: '🇨🇳', label: '中国' },
-  JP: { dial: '+81',  flag: '🇯🇵', label: '日本' },
+const FALLBACK_DEFAULT = {
+  country_code: 'IT', dial_code: '+39', flag: '🇮🇹', label: 'Italia',
 };
 
-/** Build the visible country list from the currently-enabled public locales.
- *  Each language entry carries an explicit `region` (ISO 3166-1 alpha-2)
- *  field. We map region → COUNTRY_REGISTRY entry for the visible row.
- *  Languages without a known region are silently skipped. */
-function buildCountries() {
-  const langs = publicLanguages();
-  const out = [];
-  const seen = new Set();
-  for (const l of langs) {
-    // Primary path: explicit region on the language entry
-    let region = (l.region || '').toUpperCase();
-    // Legacy path: derive from BCP-47 like 'en-US' → 'US'
-    if (!region && typeof l.code === 'string' && l.code.includes('-')) {
-      region = l.code.split('-')[1].toUpperCase();
-    }
-    const entry = COUNTRY_REGISTRY[region];
-    if (!entry || seen.has(region)) continue;
-    seen.add(region);
-    // Prefer the dial_code from the language entry (DB-aligned) when present.
-    const dial = l.dial_code || entry.dial;
-    out.push({
-      country_code: region,
-      dial_code:    dial,
-      flag:         entry.flag,
-      label:        entry.label,
-    });
-  }
-  // Always include Italia as a graceful default even if locale registry
-  // didn't return it yet (avoids an empty dropdown during cold-boot).
-  if (!seen.has('IT')) {
-    out.unshift({ country_code: 'IT', dial_code: '+39', flag: '🇮🇹', label: 'Italia' });
-  }
-  return out;
+/** Try to read the current UI locale (it/en/fr/de/es). */
+function currentLocale() {
+  try {
+    const ls = (localStorage.getItem('mfd_locale') || '').toLowerCase();
+    if (ls) return ls.split('-')[0];
+    const html = (document.documentElement.lang || '').toLowerCase();
+    if (html) return html.split('-')[0];
+  } catch (_) { /* SSR */ }
+  return 'it';
 }
 
-/** Preselect the country from the document locale (fallback: IT). */
-function inferDefault() {
+/** Heuristic default ISO2 from document locale. */
+function inferDefaultISO() {
   try {
-    const docLocale = (document.documentElement.lang || 'it').toLowerCase();
-    const region = (docLocale.split('-')[1] || '').toUpperCase();
-    if (region && COUNTRY_REGISTRY[region]) return region;
-    // Italian doc → Italia
-    if (docLocale.startsWith('it')) return 'IT';
-  } catch (_) {/* SSR / no DOM */}
+    const ls = (localStorage.getItem('mfd_locale') || '').toLowerCase();
+    if (ls) {
+      const parts = ls.split('-');
+      // BCP-47 like 'en-US' → 'US'
+      if (parts[1]) return parts[1].toUpperCase();
+      const base = parts[0];
+      // Base-only locale: best-effort map
+      const baseToISO = { it: 'IT', fr: 'FR', de: 'DE', es: 'ES', ar: 'AE' };
+      if (baseToISO[base]) return baseToISO[base];
+    }
+  } catch (_) { /* noop */ }
   return 'IT';
 }
 
 export const PhoneCountryPrefix = ({ value, onChange, testid = 'bj-phone-prefix' }) => {
-  const [open, setOpen] = useState(false);
-  const [countries, setCountries] = useState(() => buildCountries());
-  const ref = useRef(null);
+  const [open, setOpen]           = useState(false);
+  const [countries, setCountries] = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [q, setQ]                 = useState('');
+  const ref      = useRef(null);
+  const searchRef = useRef(null);
 
-  // Live re-read when /admin/languages saves new toggles
+  // ── Initial fetch ─────────────────────────────────────────────────
   useEffect(() => {
-    const refresh = () => setCountries(buildCountries());
-    window.addEventListener('mfd:languages:change', refresh);
-    window.addEventListener('storage', refresh);
-    return () => {
-      window.removeEventListener('mfd:languages:change', refresh);
-      window.removeEventListener('storage', refresh);
-    };
+    let cancel = false;
+    setLoading(true);
+    const locale = currentLocale();
+    api.get(`/api/platform/phone-dial-codes?locale=${locale}`)
+      .then((r) => {
+        if (cancel) return;
+        const list = (r.data?.codes || []).map((c) => ({
+          country_code: c.iso2,
+          dial_code:    c.dial_code,
+          flag:         c.flag || '',
+          label:        c.label,
+          region:       c.region,
+          priority:     c.priority,
+        }));
+        setCountries(list);
+        setLoading(false);
+      })
+      .catch(() => { if (!cancel) { setCountries([]); setLoading(false); } });
+    return () => { cancel = true; };
   }, []);
 
-  // Close on outside click
-  useEffect(() => {
-    if (!open) return undefined;
-    const onDoc = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, [open]);
-
-  // Initialise default value if parent hasn't provided one
+  // ── Default selection once list arrives ──────────────────────────
   useEffect(() => {
     if (!value?.country_code && countries.length) {
-      const defaultCC = inferDefault();
+      const defaultCC = inferDefaultISO();
       const found = countries.find((c) => c.country_code === defaultCC) || countries[0];
       onChange?.(found);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countries.length]);
 
+  // ── Close on outside click ───────────────────────────────────────
+  useEffect(() => {
+    if (!open) return undefined;
+    const onDoc = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) {
+        setOpen(false);
+        setQ('');
+      }
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, [open]);
+
+  // ── Auto-focus search on open ────────────────────────────────────
+  useEffect(() => {
+    if (open && searchRef.current) {
+      setTimeout(() => searchRef.current?.focus(), 50);
+    }
+  }, [open]);
+
+  // ── Filtered view ───────────────────────────────────────────────
+  const filtered = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    if (!needle) return countries;
+    return countries.filter((c) => {
+      const hay = `${c.country_code} ${c.label} ${c.dial_code}`.toLowerCase();
+      return hay.includes(needle);
+    });
+  }, [countries, q]);
+
   const current = useMemo(
-    () => value || countries[0] || { dial_code: '+39', flag: '🇮🇹', country_code: 'IT', label: 'Italia' },
+    () => value || countries[0] || FALLBACK_DEFAULT,
     [value, countries]
   );
 
@@ -130,29 +138,60 @@ export const PhoneCountryPrefix = ({ value, onChange, testid = 'bj-phone-prefix'
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
+        aria-busy={loading || undefined}
         data-testid={`${testid}-trigger`}
+        disabled={loading}
       >
         <span className="bj-phone-prefix__flag" aria-hidden>{current.flag}</span>
         <span className="bj-phone-prefix__dial">{current.dial_code}</span>
         <ChevronDown size={14} strokeWidth={1.6} aria-hidden />
       </button>
       {open && (
-        <ul className="bj-phone-prefix__menu" role="listbox" data-testid={`${testid}-menu`}>
-          {countries.map((c) => (
-            <li key={c.country_code} role="option" aria-selected={c.country_code === current.country_code}>
-              <button
-                type="button"
-                className={`bj-phone-prefix__option ${c.country_code === current.country_code ? 'is-active' : ''}`}
-                onClick={() => { onChange?.(c); setOpen(false); }}
-                data-testid={`${testid}-option-${c.country_code}`}
-              >
-                <span className="bj-phone-prefix__flag" aria-hidden>{c.flag}</span>
-                <span className="bj-phone-prefix__option-label">{c.label}</span>
-                <span className="bj-phone-prefix__option-dial">{c.dial_code}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div
+          className="bj-phone-prefix__menu"
+          role="listbox"
+          data-testid={`${testid}-menu`}
+        >
+          <div className="bj-phone-prefix__search-wrap">
+            <Search size={14} strokeWidth={1.6} aria-hidden
+                    className="bj-phone-prefix__search-ic" />
+            <input
+              ref={searchRef}
+              type="search"
+              placeholder="Cerca paese o prefisso…"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              className="bj-phone-prefix__search"
+              data-testid={`${testid}-search`}
+              autoComplete="off"
+            />
+          </div>
+          <ul className="bj-phone-prefix__list" role="presentation">
+            {filtered.length === 0 && (
+              <li className="bj-phone-prefix__empty">Nessun paese trovato</li>
+            )}
+            {filtered.map((c) => (
+              <li key={c.country_code} role="option"
+                  aria-selected={c.country_code === current.country_code}>
+                <button
+                  type="button"
+                  className={`bj-phone-prefix__option ${
+                    c.country_code === current.country_code ? 'is-active' : ''}`}
+                  onClick={() => {
+                    onChange?.(c);
+                    setOpen(false);
+                    setQ('');
+                  }}
+                  data-testid={`${testid}-option-${c.country_code}`}
+                >
+                  <span className="bj-phone-prefix__flag" aria-hidden>{c.flag}</span>
+                  <span className="bj-phone-prefix__option-label">{c.label}</span>
+                  <span className="bj-phone-prefix__option-dial">{c.dial_code}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );
@@ -160,7 +199,7 @@ export const PhoneCountryPrefix = ({ value, onChange, testid = 'bj-phone-prefix'
 
 /** Normalize a phone number for storage/transport.
  *  Strips everything but digits and re-attaches the dial code.
- *  Example: ("+39", "0123 456-7890") → "+390123 4567890"
+ *  Example: ("+39", "0123 456-7890") → "+3901234567890"
  *  Returns null if the local part is empty. */
 export function normalizePhone(dial_code, local) {
   if (!local) return null;
