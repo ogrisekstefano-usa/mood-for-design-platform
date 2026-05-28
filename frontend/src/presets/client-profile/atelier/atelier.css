@@ -1018,7 +1018,7 @@
 }
 .atelier-notif-panel__all:hover { color: var(--atl-cream); }
 
-/* User menu */
+/* ── User menu ────────────────────────────────────────────────── */
 .atelier-userbtn {
   width: 38px; height: 38px;
   background: transparent;
@@ -1043,128 +1043,228 @@
 
 .atelier-menu {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 12px);
   right: 0;
-  width: 280px;
-  background: #11100e;
+  width: 320px;
+  background: linear-gradient(180deg, #15120f 0%, #0f0d0b 100%);
   border: 1px solid var(--atl-line-strong);
-  border-radius: 8px;
-  box-shadow: 0 24px 50px rgba(0,0,0,0.55);
+  border-radius: 10px;
+  box-shadow:
+    0 24px 60px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(255,255,255,0.02) inset;
   z-index: 50;
   overflow: hidden;
-  animation: atl-fade-up 240ms ease;
+  animation: atl-menu-in 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+@keyframes atl-menu-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+/* delicate top bronze line */
+.atelier-menu::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 16px; right: 16px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent, var(--atl-bronze) 30%, var(--atl-bronze) 70%, transparent);
+  opacity: 0.5;
+}
+
+/* ── HEADER (root) ───────────────────────────────────────────── */
 .atelier-menu__head {
-  display: flex; align-items: center; gap: 12px;
-  padding: 16px 18px;
+  display: flex; align-items: center; gap: 14px;
+  padding: 22px 22px 18px;
   border-bottom: 1px solid var(--atl-line);
-}
-.atelier-menu__head--sub { border-bottom: 1px solid var(--atl-line); }
-.atelier-menu__back {
-  background: transparent;
-  border: 1px solid var(--atl-line);
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  color: var(--atl-cream-soft);
-  font-size: 16px;
-  line-height: 1;
-  cursor: pointer;
-}
-.atelier-menu__back:hover { border-color: var(--atl-bronze); color: var(--atl-bronze); }
-.atelier-menu__title {
-  margin: 0;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  color: var(--atl-cream);
 }
 .atelier-menu__avatar {
   display: grid; place-items: center;
-  width: 38px; height: 38px;
+  width: 46px; height: 46px;
   border-radius: 50%;
   background: linear-gradient(135deg, #2c2520, #1a1614);
   color: var(--atl-bronze);
   font-family: 'Cormorant Garamond', serif;
   font-style: italic;
-  font-size: 18px;
+  font-size: 22px;
   flex-shrink: 0;
+  border: 1px solid rgba(201, 162, 107, 0.22);
 }
 .atelier-menu__name {
-  margin: 0;
+  margin: 0 0 3px;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 16px;
-  color: var(--atl-cream);
+  font-size: 19px;
+  font-weight: 400;
   font-style: italic;
+  color: var(--atl-cream);
+  line-height: 1.1;
 }
 .atelier-menu__sub {
-  margin: 1px 0 0;
+  margin: 0;
   font-size: 11px;
   color: var(--atl-cream-soft);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
 }
+
+/* ── HEADER (submenu) ───────────────────────────────────────── */
+.atelier-menu__head--sub {
+  display: grid;
+  grid-template-columns: 28px 1fr 28px;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--atl-line);
+}
+.atelier-menu__back {
+  background: transparent;
+  border: 1px solid var(--atl-line);
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  color: var(--atl-cream-soft);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: color 180ms ease, border-color 180ms ease;
+}
+.atelier-menu__back:hover { border-color: var(--atl-bronze); color: var(--atl-bronze); }
+.atelier-menu__title {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-style: italic;
+  color: var(--atl-cream);
+  text-align: center;
+  font-weight: 400;
+}
+
 .atelier-menu__lede {
   margin: 0;
-  padding: 12px 18px 4px;
+  padding: 14px 22px 6px;
   font-size: 11px;
   font-style: italic;
+  letter-spacing: 0.02em;
   color: var(--atl-cream-soft);
 }
 
+/* ── ITEM ROWS ────────────────────────────────────────────── */
 .atelier-menu__list {
   list-style: none;
-  margin: 0; padding: 6px 0;
+  margin: 0;
+  padding: 8px 0;
 }
 .atelier-menu__item {
-  display: flex; align-items: center; gap: 10px;
+  display: grid;
+  grid-template-columns: 18px 1fr auto auto;
+  align-items: center;
+  column-gap: 14px;
   width: 100%;
-  padding: 10px 18px;
+  padding: 12px 22px;
   background: transparent;
   border: none;
   text-align: left;
   text-decoration: none;
   color: var(--atl-cream);
-  font-family: inherit;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
+  letter-spacing: 0.01em;
   cursor: pointer;
-  transition: background-color 160ms ease, color 160ms ease;
+  transition: background-color 200ms ease, color 200ms ease;
+  position: relative;
 }
-.atelier-menu__item:hover { background: rgba(255,255,255,0.03); color: var(--atl-bronze); }
-.atelier-menu__item:disabled { opacity: 0.55; cursor: not-allowed; }
+.atelier-menu__item:hover {
+  background: rgba(201, 162, 107, 0.05);
+  color: var(--atl-bronze);
+}
+.atelier-menu__item:disabled { cursor: not-allowed; }
 .atelier-menu__item:disabled:hover { background: transparent; color: var(--atl-cream); }
-.atelier-menu__item > svg { color: var(--atl-cream-soft); flex-shrink: 0; }
+.atelier-menu__item > svg {
+  color: var(--atl-cream-soft);
+  flex-shrink: 0;
+  transition: color 200ms ease;
+}
 .atelier-menu__item:hover > svg { color: var(--atl-bronze); }
-.atelier-menu__item > span:nth-of-type(1) { flex: 1; }
+/* la label è sempre nel secondo slot */
+.atelier-menu__item > span:nth-of-type(1) {
+  font-weight: 400;
+}
 .atelier-menu__hint {
   font-size: 11px;
-  color: var(--atl-cream-soft);
+  font-style: italic;
+  color: var(--atl-bronze);
   letter-spacing: 0.02em;
+  opacity: 0.85;
 }
-.atelier-menu__chev { color: var(--atl-cream-soft); flex-shrink: 0; }
-.atelier-menu__check { color: var(--atl-bronze); flex-shrink: 0; }
-.atelier-menu__item--danger { color: #d68b6a; }
-.atelier-menu__item--danger > svg { color: #d68b6a; }
-.atelier-menu__item--danger:hover { background: rgba(214,139,106,0.06); color: #e9a385; }
-.atelier-menu__item--danger:hover > svg { color: #e9a385; }
+.atelier-menu__chev {
+  color: rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+  transition: transform 200ms ease, color 200ms ease;
+}
+.atelier-menu__item:hover .atelier-menu__chev {
+  color: var(--atl-bronze);
+  transform: translateX(2px);
+}
+.atelier-menu__check {
+  color: var(--atl-bronze);
+  flex-shrink: 0;
+}
+
+/* Danger row — discreet, never SaaS-red */
+.atelier-menu__item--danger {
+  color: var(--atl-cream-soft);
+}
+.atelier-menu__item--danger > svg { color: var(--atl-cream-soft); }
+.atelier-menu__item--danger:hover {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--atl-cream);
+}
+.atelier-menu__item--danger:hover > svg { color: var(--atl-cream); }
 
 .atelier-menu__divider {
   height: 1px;
-  margin: 2px 0;
+  margin: 4px 14px;
   background: var(--atl-line);
 }
 
-.atelier-menu__preset { padding: 12px 18px; }
-.atelier-menu__preset.is-locked { opacity: 0.55; }
-.atelier-menu__preset-body { display: flex; flex-direction: column; gap: 2px; flex: 1; }
-.atelier-menu__preset-label {
-  font-size: 13px;
-  color: var(--atl-cream);
+/* ── Lingua: items single-column with check on right ─────── */
+.atelier-menu[data-view="lang"] .atelier-menu__item {
+  grid-template-columns: 1fr auto;
+  padding: 14px 22px;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 16px;
+  font-size: 17px;
   font-style: italic;
+  font-weight: 400;
+}
+
+/* ── Preset (Chameleon Atelier™) ───────────────────────── */
+.atelier-menu__preset {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 14px 22px;
+}
+.atelier-menu__preset.is-locked { opacity: 0.45; }
+.atelier-menu__preset-body { display: flex; flex-direction: column; gap: 3px; }
+.atelier-menu__preset-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--atl-cream);
+}
+.atelier-menu__preset:hover:not(:disabled) .atelier-menu__preset-label {
+  color: var(--atl-bronze);
 }
 .atelier-menu__preset-sub {
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--atl-cream-soft);
-  letter-spacing: 0.06em;
 }
 
 @media (max-width: 880px) {
