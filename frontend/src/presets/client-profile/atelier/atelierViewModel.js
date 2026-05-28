@@ -41,17 +41,22 @@ const PRIO_LIBRARY = {
                         body:  'La casa come cornice\nper ciò che ami.' },
 };
 
-// Static editorial imagery — fallback usato quando il tenant non ha
-// caricato placeholder custom dal Command Center CMS.
-// Il backend ritorna anche questi DEFAULT da /api/admin/client-profile-config
-// in modo che la sorgente di verità sia condivisa.
+// ITER166 · P1 · Atmospheric Panels™
+// NO persone, NO famiglie, NO ambienti riconoscibili.
+// SI texture, luce, ombre, dettagli materiali, gradienti cinematici.
+// Ogni immagine evoca, non definisce.
 const ATELIER_IMAGES = {
-  hero:     'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=85&w=2400&auto=format&fit=crop',
-  atmosphere: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=85&w=800&auto=format&fit=crop',
-  lifestyle:  'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?q=85&w=800&auto=format&fit=crop',
-  materials:  'https://images.unsplash.com/photo-1604014237800-1c9102c219da?q=85&w=800&auto=format&fit=crop',
-  priority:   'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=85&w=800&auto=format&fit=crop',
-  nextStep:   'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?q=85&w=800&auto=format&fit=crop',
+  hero:       'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=85&w=2400&auto=format&fit=crop',
+  // Atmosfera · luce calda che taglia un muro materico
+  atmosphere: 'https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?q=85&w=800&auto=format&fit=crop',
+  // Stile di vita · ombra architettonica + texture lino/cemento
+  lifestyle:  'https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=85&w=800&auto=format&fit=crop',
+  // Materiali · macro materica (marmo · noce · pietra)
+  materials:  'https://images.unsplash.com/photo-1604147495798-57beb5d6af73?q=85&w=800&auto=format&fit=crop',
+  // Priorità · gioco di luce e ombra, gradiente cinematic
+  priority:   'https://images.unsplash.com/photo-1541971297127-c4e6f5c44966?q=85&w=800&auto=format&fit=crop',
+  // Prossimo passo · texture editoriale
+  nextStep:   'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=85&w=800&auto=format&fit=crop',
 };
 
 const _imageFor = (slot, placeholders) => {
@@ -106,15 +111,15 @@ const _buildQuote = (summary, atmosphere = {}) => {
   };
 };
 
-/** Static 4-step opening timeline. Real status comes later from journey state. */
+/** Static 4-step opening timeline · ITER166 · lessico Design Journey™ */
 const _buildTimeline = (firstStepDone = true) => ([
-  { id: 'brief_received', label: 'Prime indicazioni\ncompletate', icon: 'check',
+  { id: 'brief_received', label: 'Le tue prime\nindicazioni', icon: 'check',
     status: firstStepDone ? 'done' : 'pending' },
-  { id: 'studio_listen',  label: 'In attesa di\nriscontro dallo studio', icon: 'ear',
+  { id: 'studio_listen',  label: 'Lo studio\nè in ascolto', icon: 'ear',
     status: firstStepDone ? 'active' : 'pending' },
-  { id: 'first_direction', label: 'Progetto in\npreparazione', icon: 'pencil',
+  { id: 'first_direction', label: 'Prima\ndirezione progettuale', icon: 'pencil',
     status: 'pending' },
-  { id: 'first_meeting',  label: 'Primo incontro\ne direzione',   icon: 'users',
+  { id: 'first_meeting',  label: 'Incontro e\nvisione condivisa',   icon: 'users',
     status: 'pending' },
 ]);
 

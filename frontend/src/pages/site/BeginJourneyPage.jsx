@@ -116,20 +116,19 @@ const BeginJourneyForm = () => {
       const r = await axios.post(`${API}/api/public/journeys/initiate`, payload);
       const magicLink = r.data?.magic_link_url;
       const welcomeUrl = r.data?.welcome_url;
-      // ITER161 · P0.2 · Magic-link first.
-      // Il cliente entra SUBITO nel Client Profile. Niente più pagina
-      // magic link manuale come schermo principale. L'email backup
-      // viene comunque inviata dal backend.
-      if (magicLink) {
-        // window.location preserva il fragment con i token Supabase quando
-        // il link viene seguito; restiamo sullo stesso origin nel preview env.
-        window.location.assign(magicLink);
-        return;
-      }
-      // Caso degradato (Supabase admin API indisponibile): fallback al
-      // welcome token così non perdiamo il cliente.
-      if (welcomeUrl) { navigate(welcomeUrl); return; }
-      toast(get(k('toast.started')));
+      // ITER166 · P0 · Transitional screen cinematic.
+      // NIENTE redirect homepage, NIENTE window.location.assign al magic link.
+      // Mandiamo il cliente alla "Il tuo Client Profile™ è quasi pronto":
+      // l'esperienza resta editorial, mai SaaS.
+      const params = new URLSearchParams();
+      if (email) params.set('email', email);
+      if (first_name) params.set('name', first_name);
+      // In preview env il magic_link punta al dominio whitelistato di prod;
+      // lo passiamo come fallback bypass per dev/UX, NON come destinazione
+      // primaria.
+      if (magicLink) params.set('m', magicLink);
+      navigate(`/journey/preparing?${params.toString()}`, { replace: true });
+      return;
     } catch (e) {
       console.error(e);
       toast(get(k('toast.failed')));

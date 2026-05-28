@@ -19,7 +19,7 @@ const AtelierTimeline = ({ steps }) => {
     <section className="atelier-tl" data-testid="atelier-timeline">
       <header className="atelier-tl__head">
         <p className="atelier-tl__title" data-testid="atelier-timeline-title">
-          Il tuo Journey inizia ora
+          I capitoli del tuo <em>Design Journey™</em>
         </p>
       </header>
 

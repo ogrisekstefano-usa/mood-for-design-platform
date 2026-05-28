@@ -303,8 +303,28 @@
 .atelier-hero__veil {
   position: absolute; inset: 0;
   background:
-    linear-gradient(95deg, rgba(10,8,7,0.92) 0%, rgba(10,8,7,0.55) 38%, rgba(10,8,7,0.18) 100%),
-    linear-gradient(0deg,  rgba(10,8,7,0.6) 0%, rgba(10,8,7,0.10) 60%);
+    linear-gradient(95deg, rgba(10,8,7,0.95) 0%, rgba(10,8,7,0.78) 32%, rgba(10,8,7,0.42) 62%, rgba(10,8,7,0.18) 100%),
+    linear-gradient(0deg,  rgba(10,8,7,0.72) 0%, rgba(10,8,7,0.16) 55%, rgba(10,8,7,0) 100%),
+    radial-gradient(ellipse at 18% 50%, rgba(201,162,107,0.10) 0%, transparent 60%);
+}
+.atelier-hero::after {
+  /* subtle grain over the hero for cinematic depth */
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 3px 3px;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  z-index: 0;
+}
+.atelier-hero__inner { position: relative; z-index: 1; }
+.atelier-hero__title {
+  /* readability boost — drop-shadow molto morbido */
+  text-shadow: 0 2px 30px rgba(0,0,0,0.5);
+}
+.atelier-hero__lede {
+  text-shadow: 0 1px 16px rgba(0,0,0,0.4);
 }
 .atelier-hero__inner {
   max-width: 560px;
@@ -675,6 +695,10 @@
   border-radius: 10px;
   padding: 28px 32px;
   animation: atl-fade-up 540ms 200ms both ease;
+}
+.atelier-tl__title em {
+  font-style: italic;
+  color: #C9A26B;
 }
 .atelier-tl__title {
   margin: 0 0 26px;

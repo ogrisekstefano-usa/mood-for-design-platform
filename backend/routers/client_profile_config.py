@@ -40,13 +40,15 @@ PLACEHOLDER_SLOTS = (
 )
 
 # Editorial fallback library — used when the tenant has not customised yet.
+# ITER166 · Atmospheric Panels™ · NO persone, NO ambienti completi.
+# Solo texture, luce, materia, gradienti editoriali.
 DEFAULT_PLACEHOLDERS = {
     "hero":       {"url": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=85&w=2400&auto=format&fit=crop"},
-    "atmosphere": {"url": "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=85&w=800&auto=format&fit=crop"},
-    "lifestyle":  {"url": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?q=85&w=800&auto=format&fit=crop"},
-    "materials":  {"url": "https://images.unsplash.com/photo-1604014237800-1c9102c219da?q=85&w=800&auto=format&fit=crop"},
-    "priority":   {"url": "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=85&w=800&auto=format&fit=crop"},
-    "nextStep":   {"url": "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?q=85&w=800&auto=format&fit=crop"},
+    "atmosphere": {"url": "https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?q=85&w=800&auto=format&fit=crop"},
+    "lifestyle":  {"url": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=85&w=800&auto=format&fit=crop"},
+    "materials":  {"url": "https://images.unsplash.com/photo-1604147495798-57beb5d6af73?q=85&w=800&auto=format&fit=crop"},
+    "priority":   {"url": "https://images.unsplash.com/photo-1541971297127-c4e6f5c44966?q=85&w=800&auto=format&fit=crop"},
+    "nextStep":   {"url": "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=85&w=800&auto=format&fit=crop"},
 }
 
 # Languages exposed to clients — keep in sync with /api/language/_LOCALES.

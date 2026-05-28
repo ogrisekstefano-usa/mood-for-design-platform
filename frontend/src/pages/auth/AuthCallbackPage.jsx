@@ -20,6 +20,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import '../journey/journeyPreparing.css';
 
 const PLATFORM_ROOT   = 'moodfordesign.com';
 const PLATFORM_DOMAIN = `blueprint.${PLATFORM_ROOT}`;
@@ -66,6 +67,26 @@ const AuthCallbackPage = () => {
   useEffect(() => {
     const run = async () => {
       try {
+        // ── ITER166 · P0.1 · Magic-link errors interception ─────────
+        // Supabase può rispondere con: ?error=…&error_code=otp_expired
+        // oppure mettere lo stesso payload nel HASH (#error=…&error_code=…).
+        // Catturiamo TUTTO prima di provare a leggere la session.
+        const rawHash = (window.location.hash || '').replace(/^#/, '');
+        const hashParams = new URLSearchParams(rawHash);
+        const errCode = params.get('error_code') ||
+                        hashParams.get('error_code') ||
+                        params.get('error') ||
+                        hashParams.get('error');
+        if (errCode) {
+          // Mai mostrare il messaggio raw di Supabase. Solo redirect
+          // elegante alla pagina di recovery editoriale.
+          const carry = new URLSearchParams();
+          const e = params.get('email') || hashParams.get('email');
+          if (e) carry.set('email', e);
+          window.location.replace(`/auth/recovery${carry.toString() ? '?' + carry : ''}`);
+          return;
+        }
+
         const session = _parseHash();
         const flow = params.get('flow') || session?.type || 'recovery';
         const targetHost = _normalize(params.get('origin')) || PLATFORM_DOMAIN;
@@ -84,14 +105,17 @@ const AuthCallbackPage = () => {
 
         // If no hash session → the link expired or has been already consumed.
         if (!session) {
-          setState({ status: 'redirecting',
-                     message: 'Il link non è più valido. Ti riaccompagniamo all’accesso…' });
-          const url = `https://${targetHost}/auth/login?flow=${encodeURIComponent(flow)}`;
-          setTimeout(() => window.location.replace(url), 1200);
+          // ITER166 · P0.1 · invece di mandare a /auth/login generic,
+          // mandiamo alla recovery editoriale.
+          setState({ status: 'cinematic',
+                     message: 'Stiamo controllando il tuo accesso…' });
+          setTimeout(() => window.location.replace('/auth/recovery'), 900);
           return;
         }
 
         const currentHost = window.location.hostname.toLowerCase();
+        const isMagicLinkToClient = (flow === 'magic_link' && next.startsWith('/client'));
+
         if (targetHost === currentHost) {
           // Same origin → install session locally and use SPA router.
           try {
@@ -102,15 +126,18 @@ const AuthCallbackPage = () => {
               expires_in: session.expires_in,
             }));
           } catch (_) {}
-          // ITER161 · P0.2 · force AuthProvider a ricaricare il profilo
-          // così l'app riconosce subito che siamo loggati come client.
-          try {
-            window.dispatchEvent(new Event('mfd:identity:refresh'));
-          } catch (_) {}
-          // Hard navigation per garantire che TUTTI i provider (Blueprint,
-          // Tenant, Locale) re-inizializzino con la session appena
-          // installata. SPA navigate funziona quasi sempre ma su deep
-          // entry post-magic-link è più affidabile un full reload.
+          try { window.dispatchEvent(new Event('mfd:identity:refresh')); } catch (_) {}
+
+          // ── ITER166 · P0.2 · Mini cinematic transition ────────────
+          // 1500ms · "Stiamo aprendo il tuo Design Journey™…"
+          // Solo per il primo ingresso magic-link verso il Client Profile.
+          if (isMagicLinkToClient) {
+            setState({ status: 'cinematic',
+                       message: 'Stiamo aprendo il tuo Design Journey™…' });
+            setTimeout(() => window.location.replace(next), 1500);
+            return;
+          }
+
           window.location.replace(next);
           return;
         }
@@ -134,23 +161,19 @@ const AuthCallbackPage = () => {
   }, [params]);
 
   return (
-    <div data-testid="auth-callback-page"
-         style={{
-           minHeight: '100vh', display: 'grid', placeItems: 'center',
-           background: '#050608', color: '#e8ebf0',
-           fontFamily: 'Georgia, "Cormorant Garamond", serif',
-         }}>
-      <div style={{ textAlign: 'center', maxWidth: 420, padding: 24 }}>
-        <div style={{ fontSize: 10, letterSpacing: '0.32em',
-                      textTransform: 'uppercase', color: '#7ce4f5',
-                      marginBottom: 16 }}>
-          MOOD · Auth Bridge
+    <div className="jp-mini" data-testid="auth-callback-page">
+      <div className="jp-mini__inner">
+        <div className="jp-mini__rings" aria-hidden>
+          <span /><span />
         </div>
-        <div style={{ fontSize: 22, fontStyle: 'italic' }}>{state.message}</div>
+        <p className="jp-mini__text" data-testid="auth-callback-message">
+          {state.message}
+        </p>
         {state.status === 'error' && (
-          <div style={{ marginTop: 18, fontSize: 12, color: '#f3a8a8' }}>
-            {state.message}
-          </div>
+          <p style={{ margin: 0, fontSize: 12, color: '#a09a8e', maxWidth: 360, textAlign: 'center' }}>
+            Se l'esperienza non riprende da sola, torna alla{' '}
+            <a href="/auth/login" style={{ color: '#C9A26B' }}>landing</a>.
+          </p>
         )}
       </div>
     </div>
