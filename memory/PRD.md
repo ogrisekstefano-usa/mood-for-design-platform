@@ -6,17 +6,34 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 **Live tenant:** `mood-corporate` (uuid `51f9ab4d-1aaf-5b8b-b7a9-8a4c8f942a50`)
 **Domain:** `www.moodfordesign.com` (mapped via `tenant_domains`)
-**Stack:** React + FastAPI + Supabase PostgreSQL + Supabase Storage + Anthropic Claude (AI editorial)
+**Stack:** React + FastAPI + Supabase PostgreSQL + Supabase Storage + Anthropic Claude (AI editorial) + Resend (transactional email)
 
 ---
 
-## Architecture
-- ONE Supabase project (16 + custom migrations applied)
-- Tenant isolation: `tenant_id` FK on every business table
-- Locale chain: requested → `en-us` → first available
-- Cache: in-process TTL (Redis-ready)
-- Draft/Published architecture on `cms_pages` + `journal_articles` (`draft_json`, `published_json`, `content_revisions`)
-- AI service is **provider-abstracted** (`services/ai_editorial.py`) — swap provider via `.env`
+## Latest session — Feb 28, 2026
+
+### P0 Bug fixes ✅
+- **Free crop in MediaUploader** — react-easy-crop doesn't natively support unconstrained aspect. Fixed by introducing `cropSize` state driven by W/H% sliders that appear only in `Libero` mode (`/app/frontend/src/admin/components/MediaUploader.jsx`). Sliders 10–100% of the displayed media, real-time crop-box resize.
+- **Empty-text persistence in CMS** — `site_resolver._fetch_block_values` was using `if v:` which silently skipped empty-string translations and fell back to the source_value (old text). Replaced with `if loc in bucket:` so an explicit `""` is now respected as authoritative. Verified end-to-end via API.
+
+### ITER167 — Access Continuity™ (Magic-Link First Experience) ✅
+- **DB**: `access_magic_links` table (migration `020_iter167_access_continuity.sql`) — SHA-256-hashed tokens, single-use, 15min TTL, rate-limit 3/email/10min (applies to **known AND unknown** emails to prevent enumeration probing).
+- **Service** `services/access_continuity.py`: identity-probe, issue_magic_link (Resend wrapper with sandbox-safe dev-preview log), consume_magic_link → JWT.
+- **Endpoints** under `/api/auth`:
+  - `POST /identity-probe` → `{channel: "magic_link"|"password"|"concierge", display_name}` (200 always — no enumeration leakage)
+  - `POST /magic-link/request` → `{delivered:true, expires_in_minutes:15}` (neutral on unknown emails)
+  - `POST /magic-link/consume` → `{ok, jwt, user, tenant, redirect_url}` or `{ok:false, reason:"expired"|"already_used"|"invalid"}`
+- **Resend** (sandbox): logs `MAGIC_LINK_DEV_PREVIEW email=... url=...` when `RESEND_API_KEY=re_sandbox_placeholder`. Switch to real key + verified sender (`journey@moodfordesign.com` planned) to enable real send.
+- **Editorial copy** — 28 blocks × 5 locales = 140 translations seeded under `site.access.*` namespace (`db/seed_iter167_access.py`). Hospitality / luxury tone, zero SaaS jargon.
+- **Frontend** `AccessContinuityPage.jsx`:
+  - Single page handles email → probing → password|magic|concierge, plus the `/journey/continue?token=…` landing flow (consuming → welcome_back → /admin).
+  - Cinematic dark backdrop, slow-drifting radial pools (Chicago natural light), grain layer, serif headlines (Playfair), underline inputs, teal pill CTAs.
+  - Top nav + footer hidden on access routes (full immersion).
+  - Concierge intercept on every error path — no raw HTTP errors ever surface.
+- **Route rewire**: `/accedi` (+ all localized variants) and `/journey/continue` mount `AccessContinuityPage`. Old `LoginPage.jsx` / `LoginHero.jsx` no longer routed (dead code, kept for safety).
+
+### Validation
+Testing agent (`iteration_3`) — 100% backend (15/15) + 100% frontend (7 ITER167 UI checks + bug-fix 1 UI + 2 regressions). Concierge tone confirmed across all error paths. One MEDIUM finding (rate-limit on unknown emails) was patched in the same session.
 
 ---
 

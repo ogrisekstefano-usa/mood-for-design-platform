@@ -127,6 +127,13 @@ async def issue_magic_link(
         return {"delivered": True, "expires_in_minutes": MAGIC_LINK_TTL_MIN}
 
     async with AsyncSessionLocal() as session:
+        # Rate-limit FIRST (before any account lookup). This applies to
+        # every email — known OR unknown — so the endpoint cannot be
+        # used as a free enumeration relay.
+        if not await _rate_limit_ok(session, email):
+            return {"delivered": False, "reason": "rate_limited",
+                    "retry_after_minutes": RATE_LIMIT_WINDOW}
+
         # Look up user; tolerate unknown emails silently.
         urow = (await session.execute(
             text("""
@@ -145,11 +152,21 @@ async def issue_magic_link(
             {"em": email},
         )).mappings().first()
 
-        if not await _rate_limit_ok(session, email):
-            return {"delivered": False, "reason": "rate_limited",
-                    "retry_after_minutes": RATE_LIMIT_WINDOW}
-
         if not urow:
+            # Record the *attempt* anyway so the rate-limit window
+            # counts unknown-email probes. We use a hash-marker row
+            # (no user_id, no token) — purely a tally entry.
+            await session.execute(
+                text("""
+                    INSERT INTO access_magic_links
+                      (email_attempt, token_hash, expires_at, ip, user_agent)
+                    VALUES (:em, :th, NOW(), :ip, :ua)
+                """),
+                {"em": email,
+                 "th": f"probe:{secrets.token_hex(16)}",
+                 "ip": ip, "ua": user_agent},
+            )
+            await session.commit()
             # silent success to prevent enumeration
             return {"delivered": True, "expires_in_minutes": MAGIC_LINK_TTL_MIN}
 
