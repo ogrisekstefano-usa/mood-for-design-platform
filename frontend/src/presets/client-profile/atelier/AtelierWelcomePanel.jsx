@@ -11,7 +11,6 @@
  * mappati da `buildAtelierViewModel`. Niente backend qui.
  */
 import React, { useState } from 'react';
-import { Bell, ChevronDown } from 'lucide-react';
 import AtelierSidebar         from './AtelierSidebar';
 import AtelierHero            from './AtelierHero';
 import AtelierQuickSummary    from './AtelierQuickSummary';
@@ -20,6 +19,8 @@ import AtelierActionPanel     from './AtelierActionPanel';
 import AtelierTimeline        from './AtelierTimeline';
 import AtelierNextStep        from './AtelierNextStep';
 import AtelierPasswordPrompt  from './AtelierPasswordPrompt';
+import AtelierNotifications   from './AtelierNotifications';
+import AtelierUserMenu        from './AtelierUserMenu';
 import RecallRequestModal     from '../../../components/client/RecallRequestModal';
 import './atelier.css';
 
@@ -40,34 +41,28 @@ const AtelierWelcomePanel = ({ viewModel, components }) => {
 
       {/* Main */}
       <main className="atelier-main" data-testid="atelier-main">
-        {/* Top bar (notifiche + studio) */}
+        {/* Top bar · notifiche + avatar menu */}
         <header className="atelier-topbar" data-testid="atelier-topbar">
-          <button
-            type="button"
-            className="atelier-topbar__bell"
-            aria-label="Notifiche"
-            data-testid="atelier-topbar-bell"
-          >
-            <Bell size={16} strokeWidth={1.4} />
-            <span aria-hidden className="atelier-topbar__bell-dot" />
-          </button>
-          <div className="atelier-topbar__studio" data-testid="atelier-topbar-studio">
-            <span>Studio {vm.studio?.name}</span>
-            <ChevronDown size={14} strokeWidth={1.4} aria-hidden />
-          </div>
+          <span className="atelier-topbar__studio" data-testid="atelier-topbar-studio">
+            <em>Studio</em> {vm.studio?.name}
+          </span>
+          <AtelierNotifications studioName={vm.studio?.name} />
+          <AtelierUserMenu client={vm.client} />
         </header>
 
-        {/* MID column */}
+        {/* MID column · hero + summary integrati in un unico blocco */}
         <section className="atelier-mid">
-          {c.hero !== false && (
-            <AtelierHero hero={vm.hero} quote={c.quote !== false ? vm.quote : null} />
-          )}
-          {c.quickSummary !== false && (
-            <AtelierQuickSummary
-              indications={vm.indications}
-              journeyId={vm.journeyId}
-            />
-          )}
+          <div className="atelier-mid__inner" data-testid="atelier-mid-inner">
+            {c.hero !== false && (
+              <AtelierHero hero={vm.hero} quote={c.quote !== false ? vm.quote : null} />
+            )}
+            {c.quickSummary !== false && (
+              <AtelierQuickSummary
+                indications={vm.indications}
+                journeyId={vm.journeyId}
+              />
+            )}
+          </div>
         </section>
 
         {/* DX column */}

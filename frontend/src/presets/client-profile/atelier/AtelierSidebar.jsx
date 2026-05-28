@@ -9,7 +9,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutGrid, Map, MessageCircle, Sparkles, Layers,
-  FileText, Calendar, ShieldCheck,
+  FileText, Calendar,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -24,23 +24,18 @@ const NAV_ITEMS = [
 
 const AtelierSidebar = ({ client, referente }) => {
   const { pathname } = useLocation();
-  const fi = (client?.firstName || '·')[0] || '·';
-  const li = (client?.lastName  || '')[0] || '';
-  const initials = (fi + li).toUpperCase();
 
   return (
     <aside className="atelier-sidebar" data-testid="atelier-sidebar" aria-label="Spazio progettuale · navigazione">
-      {/* Brand mark */}
+      {/* Brand mark · logo MOOD for DESIGN */}
       <div className="atelier-sidebar__brand" data-testid="atelier-sidebar-brand">
-        <div className="atelier-brand__rings" aria-hidden>
-          <span />
-          <span />
-        </div>
-        <p className="atelier-brand__type">
-          <span>MOOD</span>
-          <em>for</em>
-          <span>DESIGN</span>
-        </p>
+        <img
+          src="/atelier-logo.png"
+          alt="MOOD for DESIGN · Inspiration. Design. Solutions."
+          className="atelier-sidebar__brand-img"
+          loading="eager"
+          decoding="sync"
+        />
       </div>
 
       {/* Nav */}
@@ -88,26 +83,6 @@ const AtelierSidebar = ({ client, referente }) => {
           </Link>
         </div>
       )}
-
-      {/* Security card */}
-      <div className="atelier-sidebar__security" data-testid="atelier-sidebar-security">
-        <ShieldCheck size={14} strokeWidth={1.5} aria-hidden />
-        <div>
-          <p className="atelier-sidebar__security-title">Il tuo spazio è protetto</p>
-          <p className="atelier-sidebar__security-sub">I tuoi dati sono al sicuro.</p>
-        </div>
-      </div>
-
-      {/* Identity bottom */}
-      <div className="atelier-sidebar__identity" data-testid="atelier-sidebar-identity">
-        <span className="atelier-sidebar__identity-avatar" aria-hidden>{initials}</span>
-        <div>
-          <p className="atelier-sidebar__identity-name" data-testid="atelier-sidebar-identity-name">
-            {client?.firstName} {client?.lastName || 'Bentornato'}
-          </p>
-          <p className="atelier-sidebar__identity-role">Client Profile</p>
-        </div>
-      </div>
     </aside>
   );
 };
