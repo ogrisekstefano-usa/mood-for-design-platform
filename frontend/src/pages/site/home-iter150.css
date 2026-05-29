@@ -971,6 +971,7 @@
 
 /* 4K · ultra-wide screens — cap CONTENT width only, backgrounds stay full-bleed */
 @media (min-width: 2200px) {
+  .mfd-header__inner,
   .mfd-trust__inner,
   .mfd-how__inner,
   .mfd-home-hero__inner,
