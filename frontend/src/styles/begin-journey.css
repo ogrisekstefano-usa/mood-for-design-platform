@@ -491,6 +491,19 @@
   backdrop-filter: blur(8px);
   animation: bjOverlayIn 0.5s ease;
 }
+/* ITER171 · Editorial bundle skeleton — gentle cream wash during the
+   pre-paint gate so users don't see a startling fullscreen black flash
+   while the locale dictionary is loading. The actual submitting overlay
+   (no data-attr) keeps its cinematic dark look. */
+.bj-overlay[data-editorial-skeleton="true"] {
+  position: absolute;
+  inset: 0;
+  background: var(--mfd-bg, #F9F4EC);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  z-index: 1;
+  animation: none;
+}
 @keyframes bjOverlayIn { from { opacity: 0; } to { opacity: 1; } }
 .bj-overlay__text {
   font-family: 'Playfair Display', serif;

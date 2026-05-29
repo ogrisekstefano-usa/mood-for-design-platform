@@ -999,8 +999,10 @@
   .mfd-header__nav { gap: 26px; font-size: 14px; }
 }
 
-/* Tablet landscape (1180 - 880) */
-@media (max-width: 1180px) {
+/* Tablet landscape (1280 - 880) — burger takes over earlier to prevent
+   the header from wrapping when the 4 nav items + RIENTRA + CTA can't
+   all fit on a single row. */
+@media (max-width: 1280px) {
   .mfd-home-magazine__grid { grid-template-columns: repeat(3, 1fr); }
   .mag-card:nth-child(4), .mag-card:nth-child(5) { display: none; }
   .mfd-stories__grid { grid-template-columns: repeat(2, 1fr); }
@@ -1013,9 +1015,12 @@
   .mfd-home-hero__content::before {
     inset: -32px -40px -32px -60px;
   }
-  /* Hide desktop nav + CTA, show burger from 1180px down */
+  /* Collapse the entire right cluster into the burger menu: nav, the
+     primary CTA, AND the RIENTRA pill — nothing stays inline next to
+     the logo so the burger is the single entry point. */
   .mfd-header__nav,
-  .mfd-header__cta { display: none; }
+  .mfd-header__cta,
+  .mfd-header__reenter { display: none !important; }
   .mfd-burger { display: inline-flex; margin-left: auto; }
 }
 
@@ -1107,16 +1112,18 @@
  *   ≤ 1180px → nav + desktop CTA hidden, burger visible.
  * ═══════════════════════════════════════════════════════════════ */
 .mfd-burger {
-  display: none;                    /* shown via media query (≤ 1180px) */
+  display: none;                    /* shown via media query (≤ 1280px) */
   width: 44px; height: 44px;
   border: 1px solid var(--mfd-line);
-  background: transparent;
+  background: var(--mfd-bg);        /* solid bg so it stays visible above the menu panel */
   border-radius: 50%;
   padding: 0;
   align-items: center; justify-content: center;
   flex-direction: column;
   gap: 4px;
   cursor: pointer;
+  position: relative;
+  z-index: 80;                      /* ABOVE .mfd-mobile-menu (z-index 60) */
   transition: border-color 220ms ease, background 220ms ease;
 }
 .mfd-burger:hover { border-color: var(--mfd-ink); }
@@ -1125,8 +1132,13 @@
   width: 18px; height: 1.5px;
   background: var(--mfd-ink);
   transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 220ms ease;
+              opacity 220ms ease, background 220ms ease;
 }
+.mfd-burger--open {
+  background: #111111;              /* black X on cream menu bg, always visible */
+  border-color: #111111;
+}
+.mfd-burger--open span { background: #ffffff; }
 .mfd-burger--open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
 .mfd-burger--open span:nth-child(2) { opacity: 0; }
 .mfd-burger--open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
@@ -1176,20 +1188,31 @@
 .mfd-mobile-menu__cta {
   margin-top: 28px;
   justify-content: center;
-  padding: 16px 24px;
+  padding: 18px 32px;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.10em !important;
 }
+/* ITER171 · RIENTRA dentro al mobile menu — stesso black-pill del desktop. */
 .mfd-mobile-menu__login {
-  margin-top: 18px;
-  text-align: center;
-  font-size: 11.5px;
-  letter-spacing: 0.24em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  padding: 18px 32px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.10em;
+  font-weight: 700;
   text-transform: uppercase;
-  color: var(--mfd-mute);
-  font-weight: 600;
-  padding: 12px 0;
-  transition: color 220ms ease;
+  color: #ffffff !important;
+  background: #111111;
+  border: 1px solid #111111;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 200ms ease, border-color 200ms ease;
 }
-.mfd-mobile-menu__login:hover { color: var(--mfd-ink); }
+.mfd-mobile-menu__login:hover { background: #2A2A2A; border-color: #2A2A2A; }
 .mfd-mobile-menu__overlay {
   position: fixed;
   inset: 0;
@@ -1244,7 +1267,7 @@
 
 /* Belt-and-suspenders: hide mobile menu DOM entirely on desktop.
    Even if React state went stale, no leakage on desktop. */
-@media (min-width: 1181px) {
+@media (min-width: 1281px) {
   .mfd-mobile-menu,
   .mfd-mobile-menu__overlay {
     display: none !important;
@@ -1252,16 +1275,18 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Burger visibility fix (ITER154.R6): the burger default
+   Burger visibility fix (ITER154.R6 + ITER171): the burger default
    `display: none` (above) lives AFTER the original media query that
    tries to set it to inline-flex — source order made the default win.
    These overrides live at the END of the file so they always win
-   on mobile, regardless of cascade.
+   on mobile, regardless of cascade. Breakpoint pushed to 1280px so
+   the header never wraps in the 1180–1280 dead zone.
    ═══════════════════════════════════════════════════════════════ */
-@media (max-width: 1180px) {
+@media (max-width: 1280px) {
   .mfd-burger { display: inline-flex !important; margin-left: auto; }
   .mfd-header__nav,
-  .mfd-header__cta { display: none !important; }
+  .mfd-header__cta,
+  .mfd-header__reenter { display: none !important; }
 }
 
 /* ═══════════════════════════════════════════════════════════════

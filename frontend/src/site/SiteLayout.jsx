@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import MoodSiteHeader from './components/MoodSiteHeader';
-import SiteFooter from './components/SiteFooter';
+import MoodSiteFooter from './components/MoodSiteFooter';
 import { SiteProvider } from './SiteContext';
 import StorefrontThemeProvider from '../design-system/storefront/StorefrontThemeProvider';
 import PlatformFooterBar from '../components/common/PlatformFooterBar';
@@ -40,7 +40,7 @@ const SiteLayout = ({ children }) => {
           <main className="mfd-site__container">
             {children || <Outlet />}
           </main>
-          <SiteFooter />
+          <MoodSiteFooter />
           <PlatformFooterBar surface="storefront" />
         </div>
       </StorefrontThemeProvider>

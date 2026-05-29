@@ -34,6 +34,7 @@ import EditorialFreeBlocks from '../../site/EditorialFreeBlocks';
 import StorefrontThemeProvider from '../../design-system/storefront/StorefrontThemeProvider';
 import SiteLocaleBridge from '../../site/SiteLocaleBridge';
 import EditorialBridge from '../../site/EditorialBridge';
+import MoodSiteFooter from '../../site/components/MoodSiteFooter';
 import { MOOD_BRAND_LOGO_URL, MOOD_BRAND_ALT } from '../../site/content/brandAssets';
 import './home-iter150.css';
 
@@ -883,7 +884,7 @@ const HomePageBody = () => {
         <EditorialFreeBlocks sections={cms?.page?.sections} locale={locale} />
         <FinalCTA locale={locale} copy={copy} />
       </main>
-      <SiteFooter locale={locale} copy={copy} />
+      <MoodSiteFooter />
     </div>
   );
 };
