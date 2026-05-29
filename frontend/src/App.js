@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { Suspense, lazy, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BlueprintProvider, useBlueprint } from './contexts/BlueprintContext';
 import { TenantConfigurationProvider } from './contexts/TenantConfigurationContext';
@@ -309,6 +309,55 @@ const UiDensityBoot = () => {
   return null;
 };
 
+/**
+ * ITER171.2 · MagicLinkHashGuard — defensive hash-token interceptor.
+ *
+ * In production, if the Supabase Redirect URLs whitelist does not include
+ * `https://blueprint.moodfordesign.com/auth/client/callback`, Supabase
+ * silently falls back to the bare Site URL (the homepage `/`). The magic
+ * link tokens then land on the homepage in `window.location.hash` and the
+ * SPA never installs them.
+ *
+ * This guard runs once on app mount: if the URL hash contains
+ * `access_token=` AND we are NOT already on the dedicated client callback
+ * route, we rewrite the location to `/auth/client/callback#<hash>` so the
+ * AuthClientCallback page can exchange the tokens. The hash is preserved
+ * intentionally so Supabase parsing logic continues to work.
+ */
+const MagicLinkHashGuard = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    try {
+      // Read the hash snapshot captured by index.html BEFORE React mounted.
+      // Falls back to live window.location.hash if the snapshot is missing.
+      const rawHash = (window.__MFD_INITIAL_HASH || window.location.hash || '').replace(/^#/, '');
+      const rawSearch = (window.__MFD_INITIAL_SEARCH || window.location.search || '');
+      if (!rawHash) return;
+      const params = new URLSearchParams(rawHash);
+      const hasAccessToken = !!params.get('access_token');
+      const hasError       = !!(params.get('error') || params.get('error_code'));
+      const onCallback = window.location.pathname.startsWith('/auth/client/callback')
+                      || window.location.pathname.startsWith('/auth/callback');
+      if ((hasAccessToken || hasError) && !onCallback) {
+        // Restore the hash on the live URL too (some pre-mount code stripped it),
+        // then navigate so AuthClientCallback can parse window.location.hash.
+        const liveHash = '#' + rawHash;
+        if (window.location.hash !== liveHash) {
+          try {
+            window.history.replaceState(window.history.state,
+                                        document.title,
+                                        window.location.pathname + rawSearch + liveHash);
+          } catch (_) { /* noop */ }
+        }
+        const target = '/auth/client/callback' + rawSearch + liveHash;
+        navigate(target, { replace: true });
+      }
+    } catch (_) { /* noop — defensive only */ }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return null;
+};
+
 function App() {
   return (
     <div className="App">
@@ -322,6 +371,7 @@ function App() {
           <EditorialOverridesProvider>
           <BrowserRouter>
             <UiDensityBoot />
+            <MagicLinkHashGuard />
             <GovernanceOverlay />
             <LocalizationOverlay />
             <EditorialDebugOverlay />

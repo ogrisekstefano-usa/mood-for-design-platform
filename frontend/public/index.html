@@ -9,6 +9,17 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap" rel="stylesheet" />
         <title>MOOD for DESIGN™</title>
+        <script>
+          // ITER171.2 · Magic-link hash capture (synchronous, pre-React).
+          // Some 3rd-party scripts (PostHog, react-router init) may scrub or
+          // rewrite the URL hash before our React useEffect can read it.
+          // Snapshot the original hash here so AuthClientCallback /
+          // MagicLinkHashGuard can always recover the magic-link tokens.
+          try {
+            window.__MFD_INITIAL_HASH = window.location.hash || '';
+            window.__MFD_INITIAL_SEARCH = window.location.search || '';
+          } catch (e) { /* noop */ }
+        </script>
         <script>window.addEventListener("error",function(e){if(e.error instanceof DOMException&&e.error.name==="DataCloneError"&&e.message&&e.message.includes("PerformanceServerTiming")){e.stopImmediatePropagation();e.preventDefault()}},true);</script>
     </head>
     <body>

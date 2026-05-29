@@ -25,6 +25,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader2, Mail, ArrowRight, Sparkles } from 'lucide-react';
 import api from '../../lib/api';
+import { useAuth } from '../../contexts/AuthContext';
 import '../journey/journeyPreparing.css';
 
 const STORAGE_KEY = 'mfd_session';
@@ -42,7 +43,9 @@ const CONCIERGE_COPY = {
 
 
 function parseHashTokens() {
-  const raw = (window.location.hash || '').replace(/^#/, '');
+  // Prefer the snapshot captured by index.html BEFORE any 3rd-party script
+  // could scrub the URL. Fall back to live window.location.hash.
+  const raw = ((window.__MFD_INITIAL_HASH || window.location.hash) || '').replace(/^#/, '');
   if (!raw) return null;
   const p = new URLSearchParams(raw);
   const access_token = p.get('access_token');
@@ -57,7 +60,7 @@ function parseHashTokens() {
 }
 
 function readErrorFromUrl(searchParams) {
-  const rawHash = (window.location.hash || '').replace(/^#/, '');
+  const rawHash = ((window.__MFD_INITIAL_HASH || window.location.hash) || '').replace(/^#/, '');
   const hashParams = new URLSearchParams(rawHash);
   const errCode =
        searchParams.get('error_code') || hashParams.get('error_code')
@@ -82,6 +85,7 @@ function cleanUrl() {
 const AuthClientCallback = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { installSession } = useAuth();
   // states: hydrating | error | resending | resent
   const [state, setState] = useState('hydrating');
   const [message, setMessage] = useState('Stiamo aprendo il tuo Design Journey™…');
@@ -133,20 +137,18 @@ const AuthClientCallback = () => {
       }
 
       // (c) Install session BEFORE cleaning the URL so AuthContext sees it
+      const nextSession = {
+        access_token:  tokens.access_token,
+        refresh_token: tokens.refresh_token,
+        token_type:    tokens.token_type,
+        expires_in:    tokens.expires_in,
+      };
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          access_token:  tokens.access_token,
-          refresh_token: tokens.refresh_token,
-          token_type:    tokens.token_type,
-          expires_in:    tokens.expires_in,
-        }));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(nextSession));
       } catch (_) {
         if (!cancelled) concierge();
         return;
       }
-
-      // Notify AuthContext to start hydrating in parallel
-      try { window.dispatchEvent(new Event('mfd:identity:refresh')); } catch (_) {}
 
       // (d) Verify the session with the backend (Auth Hydration Gate)
       let profile = null;
@@ -161,6 +163,13 @@ const AuthClientCallback = () => {
         return;
       }
       if (cancelled || !profile) return;
+
+      // ITER171.2 · Atomic propagation to AuthContext BEFORE navigation.
+      // This prevents ClientRoute from seeing `user=null` on mount and
+      // bouncing the magic-link client back to /auth/login.
+      try { installSession(nextSession, profile); } catch (_) {}
+      // Also keep the legacy event for any subscriber that still listens.
+      try { window.dispatchEvent(new Event('mfd:identity:refresh')); } catch (_) {}
 
       // (e) Resolve client's primary journey
       let journeyId = null;

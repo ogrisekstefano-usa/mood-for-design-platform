@@ -77,8 +77,23 @@ export const AuthProvider = ({ children }) => {
     setProfile(null);
   };
 
+  // ITER171.2 · Atomic session install — used by AuthClientCallback after
+  // exchanging the magic-link tokens + fetching /api/auth/me. Prevents
+  // the race where ClientRoute would mount with user=null and bounce to
+  // /auth/login before AuthContext.loadProfile() finishes its parallel call.
+  const installSession = useCallback((nextSession, nextProfile) => {
+    if (nextSession) {
+      writeSession(nextSession);
+      setSession(nextSession);
+    }
+    if (nextProfile) {
+      setProfile(nextProfile);
+    }
+    setLoading(false);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user: profile, session, loading, signIn, signUp, signOut, refreshUser: loadProfile }}>
+    <AuthContext.Provider value={{ user: profile, session, loading, signIn, signUp, signOut, installSession, refreshUser: loadProfile }}>
       {children}
     </AuthContext.Provider>
   );
