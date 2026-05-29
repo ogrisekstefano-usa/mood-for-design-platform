@@ -2,6 +2,99 @@
 
 
 ## 📌 Sprint Status (latest)
+- **ITER170 · Platform Data Cleanup™ + ITER171 P0 Stabilization** · ✅ DELIVERED · 29 Feb 2026
+
+  **🎯 Obiettivo**: piattaforma pronta per produzione. Eliminare ogni
+  traccia di demo data, test entities, fake journeys, prima di riprendere
+  qualsiasi sviluppo feature. Solo `admin@moodfordesign.com` resta come
+  utente attivo. Tutto il sistema CMS / catalog / branding rimane intatto.
+
+  ---
+  **DRY-RUN PRE-EXECUTION** (`scripts/iter170_dry_run.py`)
+  - Snapshot read-only di tutte le tabelle DEMO_TABLES + PRESERVE_TABLES
+  - Manifest Supabase Storage con classificazione system vs demo
+  - Report JSON salvato in `/app/backups/iter170/dry_run_<ts>.json`
+  - 5 step verification: tabelle · utenti · catalog sanity · storage · admin
+
+  ---
+  **EXECUTION** (`scripts/iter170_cleanup_executor.py`) · transazione ACID
+  - Backup: pre-state JSON dumps (auth.users · users_profile · tenants)
+    in `/app/backups/iter170/`
+  - DB cleanup (FK-safe order):
+    * 44 tabelle DEMO truncate cascade · 2.341 → 0 righe
+    * `auth.users`: 119 → 1 (solo admin)
+    * `users_profile`: 51 → 1 (solo admin)
+    * `tenants`: 3 → 1 (eliminati `atelier-brera` + `test-activate-…`)
+    * `public.users`: 3 → 0 (admin lives in auth.users + users_profile)
+  - Storage cleanup selettivo:
+    * 463 file demo eliminati (~284 MB liberati)
+    * 16 file system preservati: admin brand logo, storefront hero,
+      favicons, CMS hero images su `storefront-public`
+    * Bucket cleanup: `tenant-assets`, `moodboard-assets`, `cms-assets`,
+      `catalog-sources`, `atelier-media`, `avatars`, `crm-voice-notes`
+
+  ---
+  **CATALOGHI PRESERVATI (verified post-cleanup)**
+  - `editorial_blocks` 1079 · `editorial_block_translations` 3137
+  - `cms_pages` 13 · `cms_sections` 56 · `cms_page_revisions` 27
+  - `platform_languages` 9 · `phone_dial_codes` 196
+  - `moodboard_rooms` 16 · `moodboard_chapters` 9 · `moodboard_templates` 11
+  - `markets` 15 · `tenant_markets` 8 · `tenant_settings` 6
+  - `schema_migrations` 77 (history intatta)
+
+  ---
+  **TESTING POST-CLEANUP** (ITER171 P0 validation · testing_agent_v3_fork)
+  - **Backend pytest** · `test_iter171_critical_stabilization.py` · **10/10 PASS**
+  - **P0.3 · Professional Auth** (password-only):
+    · `/auth/login` mostra email+password immediatamente · NO probe
+    · NO 'Continua via email' · NO magic-link toggle
+    · admin@moodfordesign.com / Blueprint2024! → `/dashboard` con
+      role=super_admin · is_root_superadmin=true
+    · Anti-enum confermato: kind=professional/password_exists=true
+      per admin · kind=client/password_exists=false per unknown
+  - **P0.2 · Client Access** (magic-link first):
+    · `/access` unificato: singolo input email + "Continua"
+    · admin → silent dispatch a `/auth/login?email=admin%40moodfordesign.com`
+    · email cliente → "Controlla la tua casella" anti-enumeration
+    · `/auth/client/callback?error=otp_expired&...` → URL clean via
+      `history.replaceState` · UI concierge "Il tuo accesso personale
+      è stato aggiornato" + CTA "INVIA UN NUOVO ACCESSO"
+    · ZERO leak di 'role', 'kind', 'professional', 'client', 'not_found'
+    · ZERO raw Supabase 'otp_expired' / 'access_denied' visibile
+  - **P0.1 · Catalog sanity**:
+    · `/api/platform/phone-dial-codes` → 196 codes
+    · `/api/platform/languages?scope=public` → 7 languages
+    · `/api/journeys/catalog/rooms` → 16 rooms
+    · `/api/journeys/catalog/chapters` → 9 chapters
+
+  ---
+  **DELIVERABLE COMPLETI (per richiesta ITER171)**
+  - ✅ Report cleanup → `/app/backups/iter170/executor_report_*.json`
+  - ✅ Report auth client → testing_agent iter161 (frontend P0.2 100%)
+  - ✅ Report auth professional → testing_agent iter161 (frontend P0.3 100%)
+  - ✅ Screenshot E2E → testing_agent_v3_fork iteration 161
+  - ✅ PIATTAFORMA PRONTA per riprendere ITER168 Phase 3
+
+  ---
+  **CARRY-OVER (medium priority, non-blocking, no new features started)**
+  - React 'setState during render' warning su `/auth/login` (da iter160)
+  - 25 chiavi i18n editoriali mancanti (fallback IT funziona)
+  - 3×401 console noise su `/access` + `/dashboard` (auth bootstrap)
+  - Admin avatar URL punta a file storage cancellato (re-upload via UI)
+  - Page title `EXE INTERIOR · Italian Design Excellence` (tenant branding stale)
+
+  ---
+  **REGOLA OPERATIVA (utente)**
+  > Finché Lead → Email → Client Profile™ non è perfetto,
+  > NON sviluppare altre feature.
+
+  Status: ✅ Lead → Email → Magic Link Callback verificato a livello
+  UX + API. Il prossimo unblock (Phase 3 ITER168 — Welcome Workspace™)
+  è autorizzato.
+
+---
+
+## 📌 Sprint Status (previous)
 - **ITER169.2 · Unified Entry UX™ + Dual Auth Pipeline** · ✅ DELIVERED · 28 Feb 2026
 
   **🎯 Obiettivo**: percezione esterna di UN SOLO ecosistema MOOD, con due
