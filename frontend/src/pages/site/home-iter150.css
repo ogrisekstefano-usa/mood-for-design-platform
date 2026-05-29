@@ -251,29 +251,30 @@
   cursor: pointer;
   white-space: nowrap;
 }
-.mfd-cta--primary {                          /* sticky header CTA — CYAN MOOD pill */
-  background: var(--mfd-accent) !important;     /* #00C9B3 cyan brand */
+.mfd-cta--primary {                          /* sticky header CTA — match hero --solid */
+  background: #00C9B3 !important;
   color: #0E0D0B !important;
-  border: 1px solid var(--mfd-accent) !important;
-  letter-spacing: 0.10em !important;
+  border: 1px solid #00C9B3 !important;
+  padding: 18px 32px;
   font-weight: 700;
+  letter-spacing: 0.10em !important;
 }
 .mfd-cta--primary:hover {
-  background: var(--mfd-accent-2) !important;    /* #00B0A0 darker cyan */
-  border-color: var(--mfd-accent-2) !important;
+  background: #00E0C8 !important;
+  border-color: #00E0C8 !important;
   color: #0E0D0B !important;
-  box-shadow: 0 6px 20px rgba(0, 201, 179, 0.28);
+  box-shadow: 0 6px 24px rgba(0, 201, 179, 0.30);
 }
 
 /* ITER171 · RIENTRA — black pill with white text (Access Continuity™). */
 .mfd-header__reenter {
   display: inline-flex; align-items: center;
-  padding: 12px 22px;
+  padding: 18px 32px;
   margin-right: 4px;
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 11.5px;
+  font-size: 12px;
   letter-spacing: 0.10em;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   color: #ffffff !important;
   background: #111111;
