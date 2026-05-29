@@ -155,10 +155,12 @@
 .mfd-header__inner {
   box-sizing: border-box;
   width: 100%;
-  /* ITER171 · header 100% width inside boxed container per user request */
-  max-width: none;
-  margin: 0;
-  padding: 14px clamp(24px, 3vw, 56px);
+  /* ITER171 · BOXED — stesso container dei contenuti sotto la hero (.mfd-inner).
+     Allineato a max-width 1480px + padding clamp(24px, 4vw, 72px), così logo +
+     CTA sono sulla stessa colonna verticale di "01 Briefing & Mood" ecc. */
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 14px clamp(24px, 4vw, 72px);
   display: flex;
   align-items: center;
   gap: clamp(20px, 2.4vw, 40px);
