@@ -213,6 +213,13 @@ async def consume_magic_link(raw_token: str) -> dict:
 
     On consume, we mark consumed_at and issue an access JWT identical
     to the password-login flow (so the rest of the app is unchanged).
+
+    P0.2 hardening: within a 60-second window after a successful consume,
+    requests for the same token are treated as idempotent replays and
+    return a fresh JWT for the same user. This neutralises any client
+    race (React 18 StrictMode, browser link-prefetch, HMR remount) that
+    would otherwise cause the legitimate founder's first click to land
+    on `already_used`. After 60 seconds the link reverts to single-use.
     """
     if not raw_token or len(raw_token) < 16:
         return {"ok": False, "reason": "invalid"}
@@ -235,22 +242,31 @@ async def consume_magic_link(raw_token: str) -> dict:
 
         if not row:
             return {"ok": False, "reason": "invalid"}
+        # Idempotent replay window: if the link was consumed less than
+        # 60 seconds ago, treat this call as the same arrival and re-issue
+        # the JWT. This is the defensive backstop for race conditions on
+        # the founder's first click.
         if row["consumed_at"] is not None:
-            return {"ok": False, "reason": "already_used"}
-        if row["expires_at"] < datetime.now(timezone.utc):
+            age = (datetime.now(timezone.utc) - row["consumed_at"]).total_seconds()
+            if age > 60:
+                return {"ok": False, "reason": "already_used"}
+            # Within the replay window — fall through and re-issue the JWT.
+        elif row["expires_at"] < datetime.now(timezone.utc):
             return {"ok": False, "reason": "expired"}
         if not row["user_id"]:
             return {"ok": False, "reason": "invalid"}
 
-        await session.execute(
-            text("UPDATE access_magic_links SET consumed_at = NOW() WHERE id = :id"),
-            {"id": str(row["id"])},
-        )
-        await session.execute(
-            text("UPDATE users SET last_login_at = NOW() WHERE id = :id"),
-            {"id": str(row["user_id"])},
-        )
-        await session.commit()
+        # Mark consumed only on the first call (idempotent thereafter).
+        if row["consumed_at"] is None:
+            await session.execute(
+                text("UPDATE access_magic_links SET consumed_at = NOW() WHERE id = :id"),
+                {"id": str(row["id"])},
+            )
+            await session.execute(
+                text("UPDATE users SET last_login_at = NOW() WHERE id = :id"),
+                {"id": str(row["user_id"])},
+            )
+            await session.commit()
 
         # Issue the same JWT shape used by /auth/login
         from routers.auth import create_access_token, tenant_redirect_for

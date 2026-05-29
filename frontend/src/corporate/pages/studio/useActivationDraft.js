@@ -66,7 +66,18 @@ export const useActivationDraft = () => {
     setDraft((d) => d ? ({ ...d, ...partial,
                             payload: { ...(d.payload || {}),
                                        ...(partial.payload || {}) } }) : d);
-    pendingRef.current = { ...pendingRef.current, ...partial };
+    // P0.1 fix: deep-merge `payload` into pendingRef so that consecutive
+    // persist() calls (e.g. studio_name then city then markets) don't
+    // clobber each other before the debounce flushes. Without this,
+    // only the last call's `payload` keys survive — the rest are lost.
+    pendingRef.current = {
+      ...pendingRef.current,
+      ...partial,
+      payload: {
+        ...(pendingRef.current.payload || {}),
+        ...(partial.payload || {}),
+      },
+    };
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(flush, 320);
   }, [flush]);

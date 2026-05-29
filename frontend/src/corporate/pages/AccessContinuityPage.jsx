@@ -22,6 +22,23 @@ import { useSiteBlocks } from '../hooks/useSitePage';
  */
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
 
+/**
+ * P0.2 fix: tokens we've already attempted to consume in this browser
+ * session. Lives in `sessionStorage` so that React 18 StrictMode's
+ * mount→unmount→remount dance — and webpack HMR module reloads in dev —
+ * can't trigger a second `/consume` call that would mark a perfectly
+ * fresh link as `already_used`.
+ */
+const CONSUMED_KEY = 'mood_consumed_magic_tokens';
+const _readConsumed = () => {
+  try { return new Set(JSON.parse(sessionStorage.getItem(CONSUMED_KEY) || '[]')); }
+  catch { return new Set(); }
+};
+const _writeConsumed = (set) => {
+  try { sessionStorage.setItem(CONSUMED_KEY, JSON.stringify([...set])); } catch {}
+};
+const PENDING_CONSUMES = new Map();  // token -> Promise<response>
+
 const ACCESS_KEYS = [
   'site.access.eyebrow',
   'site.access.headline',
@@ -79,16 +96,42 @@ const AccessContinuityPage = () => {
     if (!incomingToken) return;
     if (consumedRef.current) return;
     consumedRef.current = true;
+    // P0.2 fix: dedupe at the module level so a second mount (caused by
+    // React 18 StrictMode unmount→remount, or webpack HMR module reload
+    // in dev) reuses the in-flight promise instead of firing a second
+    // POST that would race with the first and surface `already_used`
+    // for a perfectly valid token.
+    const consumed = _readConsumed();
+    let consumePromise = PENDING_CONSUMES.get(incomingToken);
+    if (!consumePromise && consumed.has(incomingToken)) {
+      // Already consumed in this session — just stay in the
+      // initial 'opening' state; the original first call has already
+      // redirected (or will redirect) this tab.
+      return;
+    }
+    if (!consumePromise) {
+      consumePromise = axios.post(`${BACKEND}/api/auth/magic-link/consume`, {
+        token: incomingToken,
+      });
+      PENDING_CONSUMES.set(incomingToken, consumePromise);
+    }
     (async () => {
       try {
-        const res = await axios.post(`${BACKEND}/api/auth/magic-link/consume`, {
-          token: incomingToken,
-        });
+        const res = await consumePromise;
+        consumed.add(incomingToken);
+        _writeConsumed(consumed);
+        PENDING_CONSUMES.delete(incomingToken);
         if (res.data?.ok) {
-          // Persist session like the password flow does.
-          localStorage.setItem('mood_jwt',  res.data.jwt);
-          localStorage.setItem('mood_user', JSON.stringify(res.data.user));
-          localStorage.setItem('mood_tenant', JSON.stringify(res.data.tenant));
+          // Persist session — write to BOTH key shapes so that any
+          // downstream page (Admin/Studio shell with `mood_auth_token`,
+          // legacy code with `mood_jwt`) sees the founder as logged in.
+          localStorage.setItem('mood_jwt',        res.data.jwt);
+          localStorage.setItem('mood_auth_token', res.data.jwt);
+          localStorage.setItem('mood_user',         JSON.stringify(res.data.user));
+          localStorage.setItem('mood_auth_user',    JSON.stringify(res.data.user));
+          localStorage.setItem('mood_tenant',       JSON.stringify(res.data.tenant));
+          localStorage.setItem('mood_auth_tenant',  JSON.stringify(res.data.tenant));
+          localStorage.setItem('mood-admin-tenant', res.data.tenant?.slug || 'studio');
           setStage('welcome_back');
           setTimeout(() => {
             window.location.assign(res.data.redirect_url || '/admin');
@@ -101,6 +144,7 @@ const AccessContinuityPage = () => {
           setStage('invalid');
         }
       } catch {
+        PENDING_CONSUMES.delete(incomingToken);
         setStage('invalid');
       }
     })();
