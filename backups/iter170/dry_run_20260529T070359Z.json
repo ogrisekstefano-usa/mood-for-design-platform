@@ -1,0 +1,897 @@
+{
+  "timestamp": "20260529T070359Z",
+  "mode": "dry_run",
+  "admin_email_preserved": "admin@moodfordesign.com",
+  "demo_tables_to_truncate": {
+    "milestone_feedback": 2,
+    "milestone_versions": 57,
+    "journey_timeline_events": 152,
+    "journey_briefs": 43,
+    "journey_milestones": 566,
+    "moodboard_elements": 61,
+    "moodboard_pages": 9,
+    "moodboard_shares": 2,
+    "moodboards": 2,
+    "curated_collections": 19,
+    "proposals": 0,
+    "published_design_journey_translations": 3,
+    "published_design_journeys": 3,
+    "cultural_edition_drafts": 8,
+    "design_journeys": 57,
+    "relationship_direction_snapshots": 2,
+    "relationship_answer_events": 3,
+    "relationship_messages": 53,
+    "relationship_threads": 53,
+    "relationship_lookups": 11,
+    "message_translations": 10,
+    "human_assignment_events": 49,
+    "human_assignments": 49,
+    "recall_requests": 4,
+    "studio_visit_reports": 2,
+    "studio_relationship_events": 19,
+    "studio_relations": 8,
+    "studio_registrations": 2,
+    "studio_activation_drafts": 77,
+    "project_activity": 1,
+    "projects": 56,
+    "contacts": 92,
+    "accounts": 57,
+    "leads": 62,
+    "email_events": 571,
+    "login_attempts": 9,
+    "funnel_events": 113,
+    "product_events": 5,
+    "market_behavior_events": 39,
+    "market_signal_aggregates": 3,
+    "designer_presence": 1,
+    "user_onboarding_state": 2,
+    "reference_collections": 1,
+    "media_links": 3
+  },
+  "demo_rows_total_to_delete": 2341,
+  "preserve_tables": {
+    "tenants": 3,
+    "tenant_settings": 6,
+    "tenant_configuration": 1,
+    "tenant_atelier_identity": 1,
+    "tenant_dnt_registry": 4,
+    "tenant_domains": 4,
+    "tenant_email_settings": 1,
+    "tenant_markets": 8,
+    "tenant_onboarding": 1,
+    "studio_translation_preferences": 1,
+    "markets": 15,
+    "market_submarkets": 48,
+    "market_cultural_profiles": 7,
+    "market_narrative_profiles": 7,
+    "market_positioning_profiles": 7,
+    "platform_languages": 9,
+    "phone_dial_codes": 196,
+    "moodboard_rooms": 16,
+    "moodboard_chapters": 9,
+    "moodboard_templates": 11,
+    "editorial_blocks": 1079,
+    "editorial_block_translations": 3137,
+    "editorial_translations": 65,
+    "editorial_masters": 42,
+    "editorial_phrases": 13,
+    "editorial_surfaces": 8,
+    "editorial_variants": 4,
+    "cms_pages": 13,
+    "cms_sections": 56,
+    "cms_page_revisions": 27,
+    "template_blocks": 98,
+    "template_pages": 23,
+    "theme_presets": 33,
+    "tag_registry": 42,
+    "feature_modules_registry": 34,
+    "platform_feature_defaults": 1,
+    "locale_profiles": 7,
+    "cultural_descriptors": 29,
+    "reference_locale_interpretations": 6,
+    "lead_intake_questions": 16,
+    "relationship_questions": 5,
+    "relationship_question_groups": 5,
+    "relationship_question_options": 32,
+    "guided_tour_config": 7,
+    "media_filter_presets": 8,
+    "media_library": 63,
+    "supplier_catalogs": 5,
+    "schema_migrations": 77,
+    "users": 3,
+    "users_profile": 51
+  },
+  "auth_users_total": 119,
+  "auth_users_will_keep": [
+    {
+      "id": "18712745-bffc-4b42-b489-654a2aa83d6b",
+      "email": "admin@moodfordesign.com",
+      "role": "authenticated",
+      "created_at": "2026-05-23 19:35:26.279328+00:00"
+    }
+  ],
+  "auth_users_will_delete": [
+    {
+      "id": "8019ff59-a29c-49f1-993f-9ed61d459302",
+      "email": "demo@moodfordesign.com",
+      "role": "authenticated",
+      "created_at": "2026-05-12 22:35:44.160890+00:00"
+    },
+    {
+      "id": "65b63b09-94df-45d9-81ab-5f7f163c4182",
+      "email": "designer@moodfordesign.com",
+      "role": "authenticated",
+      "created_at": "2026-05-13 10:39:15.223376+00:00"
+    },
+    {
+      "id": "82454a58-5e74-44ca-a61d-f7d5419c7fc0",
+      "email": "client@moodfordesign.com",
+      "role": "authenticated",
+      "created_at": "2026-05-13 10:39:15.973548+00:00"
+    },
+    {
+      "id": "e7cb17b6-6870-48d4-911c-76581b92fdfa",
+      "email": "studio2@moodfordesign.com",
+      "role": "authenticated",
+      "created_at": "2026-05-13 10:39:16.689850+00:00"
+    },
+    {
+      "id": "4cba50e2-6d36-4cac-8361-bbd160e964d2",
+      "email": "test-1778810168@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 01:56:08.701977+00:00"
+    },
+    {
+      "id": "a7d433bb-76a2-4060-9034-f6eeefa3d118",
+      "email": "test-7351457@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 01:57:23.135002+00:00"
+    },
+    {
+      "id": "40bb4444-ad76-4d9e-ba85-8e2748c9a7c9",
+      "email": "test-2882479@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 01:59:09.311335+00:00"
+    },
+    {
+      "id": "bbcffeaf-9367-4fcd-93b0-0a19b44f132c",
+      "email": "rr1-4953926@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 01:59:22.915766+00:00"
+    },
+    {
+      "id": "58483891-5b0d-48a9-8638-5718edf46e59",
+      "email": "rr2-1729359@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 01:59:25.754344+00:00"
+    },
+    {
+      "id": "955b8ccd-8327-4798-9800-4c694a799911",
+      "email": "rr3-3061169@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 01:59:28.958812+00:00"
+    },
+    {
+      "id": "e0f46395-b310-4024-8d74-168447a762cd",
+      "email": "alessio-1778810739815@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:05:41.073521+00:00"
+    },
+    {
+      "id": "6eea310c-5c4e-438e-8a06-af24ec425d13",
+      "email": "magic-5077470@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:06:48.101226+00:00"
+    },
+    {
+      "id": "f6407663-e387-4034-a734-5c6ed7f1dd6f",
+      "email": "test_hp_9633c5c174@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:09:52.473472+00:00"
+    },
+    {
+      "id": "a7a7da21-0229-4ea4-8f7f-71d8441f3e13",
+      "email": "test_en_b1740b83c9@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:10:00.051885+00:00"
+    },
+    {
+      "id": "051c2db7-f95e-4f7d-bd33-b30ba434d426",
+      "email": "test_fr_12b30c4bdc@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:10:03.058972+00:00"
+    },
+    {
+      "id": "d5925ae8-4e62-48c1-862d-45335c4c768c",
+      "email": "test_pro_89b702eb25@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:10:06.103487+00:00"
+    },
+    {
+      "id": "f5be7fdf-692c-4bbb-bb34-dd4ac24420a4",
+      "email": "test_rr0_01c89ac89b@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:10:09.100471+00:00"
+    },
+    {
+      "id": "9e92bfad-6907-4562-9364-17cf1040bcf7",
+      "email": "test_rr1_5ac548c182@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:10:12.112496+00:00"
+    },
+    {
+      "id": "2d5816d0-8d0f-4fd7-b0c5-738f2531a058",
+      "email": "test_rr2_381443d71c@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:10:15.314378+00:00"
+    },
+    {
+      "id": "7a40f38d-4b22-4135-b35b-ac9ba7307fa9",
+      "email": "test_rr3_da74fa4174@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:10:18.332253+00:00"
+    },
+    {
+      "id": "a4b3548f-c656-457a-a282-652aa5a1676f",
+      "email": "test_check_5729006d@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:10:30.728384+00:00"
+    },
+    {
+      "id": "bfaa04e6-476c-4f96-88f3-2f5878e4711f",
+      "email": "test_hp_78bf862e49@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:11:11.151475+00:00"
+    },
+    {
+      "id": "3da73866-f4a9-4db2-bad3-c064e099dd4b",
+      "email": "test_ui_67285152@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:12:25.353448+00:00"
+    },
+    {
+      "id": "c8fed707-c4b6-4c0f-8fc5-25ba168a0d5c",
+      "email": "fix-0914803@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:17:06.385614+00:00"
+    },
+    {
+      "id": "b74389ab-2b9b-49e1-86c5-6b9c14205f45",
+      "email": "test_ret37_e4ac8bc4@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:19:01.039135+00:00"
+    },
+    {
+      "id": "fa868986-ae35-4a75-bf44-30c243e17c48",
+      "email": "test_ret37b_77e5f5c0@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:19:10.494972+00:00"
+    },
+    {
+      "id": "d828fc94-e81d-4395-99f5-4c28a9fac7b7",
+      "email": "test_ret37c_9e7524f9@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:19:46.801742+00:00"
+    },
+    {
+      "id": "079e44f5-2ede-4a73-bdc8-95324439b68b",
+      "email": "test_rr37_bce0518d@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:19:57.557590+00:00"
+    },
+    {
+      "id": "ffdc49ac-9054-4a1d-aba5-aba6e43025d5",
+      "email": "test_rr37_4caad603@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:20:00.516963+00:00"
+    },
+    {
+      "id": "b48d2a46-4e79-4348-b054-7608246e9ccc",
+      "email": "test_rr37_0ff6de33@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:20:03.593600+00:00"
+    },
+    {
+      "id": "f21df942-719f-4ab7-8fae-105aef9bbdf5",
+      "email": "test_rr37_05275577@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:20:06.869723+00:00"
+    },
+    {
+      "id": "3001e121-787c-4d57-82ef-2be890ed070d",
+      "email": "test_hp_d08b364504@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:20:15.189897+00:00"
+    },
+    {
+      "id": "b9935ac5-ef88-4f7c-b6f6-dd224eb17a8b",
+      "email": "test_en_d28f1537c2@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:20:22.791053+00:00"
+    },
+    {
+      "id": "ac8f6b7a-2478-43be-8e7d-a75fed21dd66",
+      "email": "test_fr_c772b447be@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:20:25.824511+00:00"
+    },
+    {
+      "id": "bd228313-5eff-48bf-84c2-3d11fc3796c3",
+      "email": "test_pro_ce01516735@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:20:28.877526+00:00"
+    },
+    {
+      "id": "d0278604-d246-4ad8-9619-26a1fa375dd4",
+      "email": "test_rr0_d7f4f7b5ee@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:20:31.921154+00:00"
+    },
+    {
+      "id": "e1cf96af-849b-48f5-a846-fee0c69d244a",
+      "email": "test_rr1_47613f3c2a@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:20:34.988593+00:00"
+    },
+    {
+      "id": "007bf05e-60b4-459a-b563-a0e4e5f888b6",
+      "email": "test_rr2_52373b8e66@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:20:38.011175+00:00"
+    },
+    {
+      "id": "26b22678-d741-4d7b-8889-2729a876cf0d",
+      "email": "test_rr3_666bd04893@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:20:41.065178+00:00"
+    },
+    {
+      "id": "79382911-a2f6-4b53-932e-eb94abd0204b",
+      "email": "test_hp_df477ab6b6@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:21:16.941284+00:00"
+    },
+    {
+      "id": "b2d54230-c042-4d2d-84a8-a0fbac59da89",
+      "email": "test_en_91466cb29a@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:21:24.560787+00:00"
+    },
+    {
+      "id": "bd6178d1-f061-4a07-8558-ea3736a31d28",
+      "email": "test_fr_08b956370e@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:21:27.821081+00:00"
+    },
+    {
+      "id": "15060c42-55a9-45e0-b455-9c7f59b10fd9",
+      "email": "test_pro_90c369bda8@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:21:30.965204+00:00"
+    },
+    {
+      "id": "3e8b857b-a089-484b-8407-be83decc909b",
+      "email": "test_rr0_69b6f6434f@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:21:34.066979+00:00"
+    },
+    {
+      "id": "7765fc31-fb1b-4f48-8eb3-90a8a4952089",
+      "email": "test_rr1_8d9bd77141@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:21:37.209284+00:00"
+    },
+    {
+      "id": "78e1870c-c11c-4df0-9c0d-4fb5c1959e8d",
+      "email": "test_rr2_7f74dde726@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:21:40.299053+00:00"
+    },
+    {
+      "id": "7fb1c699-2532-4e9e-aae7-bde38b66239d",
+      "email": "test_rr3_43116231fb@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:21:43.462159+00:00"
+    },
+    {
+      "id": "1b37b85a-c7d5-4275-9ca2-ca4fb70e10f0",
+      "email": "test_ptype_8d63c813ba@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:21:46.554610+00:00"
+    },
+    {
+      "id": "a17b12c9-8852-42af-aedc-a069ed2a2239",
+      "email": "test_fe37_6dd72a04@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:22:22.885591+00:00"
+    },
+    {
+      "id": "9b0bfba1-b119-4e03-9690-a64effae319d",
+      "email": "test_fe37b_0367f069@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 02:23:09.513766+00:00"
+    },
+    {
+      "id": "7bbe2851-0b9d-4bad-a51e-92fc6251db7c",
+      "email": "invite-test-1778843885@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 11:18:06.194453+00:00"
+    },
+    {
+      "id": "9af6204f-1dbf-417b-a630-b5099ce14f79",
+      "email": "slabreality@gmail.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 18:11:45.658733+00:00"
+    },
+    {
+      "id": "002e97df-3e8e-4189-aa25-9b388bcba217",
+      "email": "ogriusa@gmail.com",
+      "role": "authenticated",
+      "created_at": "2026-05-15 18:56:43.585243+00:00"
+    },
+    {
+      "id": "9da61e20-0f8e-4d2a-8612-512bab5919dd",
+      "email": "ogrisek.stefano@gmail.com",
+      "role": "authenticated",
+      "created_at": "2026-05-16 21:00:36.597781+00:00"
+    },
+    {
+      "id": "ee1a689f-0b12-4630-9c5f-4c8348090f25",
+      "email": "test@test.com",
+      "role": "authenticated",
+      "created_at": "2026-05-19 05:18:07.384722+00:00"
+    },
+    {
+      "id": "5849eed8-585f-4bba-b2f3-d04ead59ca02",
+      "email": "test_hp_b0395d51fd@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-20 14:21:14.273890+00:00"
+    },
+    {
+      "id": "8b7d16d7-7fca-4ec5-8fb1-b5ebba3781eb",
+      "email": "test_en_92dbe1e9f0@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-20 14:21:21.917021+00:00"
+    },
+    {
+      "id": "05813ede-c830-401f-93fd-563f6d659a8d",
+      "email": "test_fr_6756f00edf@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-20 14:21:25.009819+00:00"
+    },
+    {
+      "id": "e7ddde4e-5f5a-4be0-ba57-2c73f57dd00a",
+      "email": "test_pro_9b2363ea98@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-20 14:21:28.171381+00:00"
+    },
+    {
+      "id": "8a9ca8bb-f973-4b71-b402-4f87466135a5",
+      "email": "test_rr0_862e555a34@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-20 14:21:29.771990+00:00"
+    },
+    {
+      "id": "8fa9aae6-a8ae-4de3-8f68-61bf9e6dae2e",
+      "email": "test_ptype_c4b1c4eb2e@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-20 14:21:32.600757+00:00"
+    },
+    {
+      "id": "e11f29c4-15a7-49a4-b177-8132e24b5675",
+      "email": "test_hp_f1db9a9f41@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-21 14:26:11.507198+00:00"
+    },
+    {
+      "id": "681d2a45-2170-4310-94a9-873937fa6b74",
+      "email": "test_en_5ab2da6355@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-21 14:26:19.503883+00:00"
+    },
+    {
+      "id": "0bd5ec0e-c4ec-47f5-82a8-f93d0531964b",
+      "email": "test_fr_4ebcd6d09c@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-21 14:26:22.695700+00:00"
+    },
+    {
+      "id": "e0b6d0ec-b4e4-46eb-b5e3-2cac00f40063",
+      "email": "test_pro_844368a2a4@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-21 14:26:25.919826+00:00"
+    },
+    {
+      "id": "2a5894db-f075-48ad-9dbf-6f008edf8d2a",
+      "email": "test_rr0_93aba13594@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-21 14:26:29.098915+00:00"
+    },
+    {
+      "id": "b9a45360-8a2c-46e8-b358-fe7abc458034",
+      "email": "test_rr1_bc99f1e1c4@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-21 14:26:32.287715+00:00"
+    },
+    {
+      "id": "8740b670-0de7-45b7-9925-437a2fe31b03",
+      "email": "test_rr2_aab8b991b2@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-21 14:26:35.479904+00:00"
+    },
+    {
+      "id": "c3b18c3c-7284-470d-a90d-8f0e38719f54",
+      "email": "test_rr3_c72b5684d5@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-21 14:26:38.719789+00:00"
+    },
+    {
+      "id": "1be0d39f-bbb8-4894-aa59-d356090b9df1",
+      "email": "test_ptype_bf6fa8526f@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-21 14:26:41.901465+00:00"
+    },
+    {
+      "id": "9a07cb4d-31af-4a6a-a5bf-2838e5a08368",
+      "email": "iter161-test-1779923163@moodfordesign.com",
+      "role": "authenticated",
+      "created_at": "2026-05-27 23:06:07.294522+00:00"
+    },
+    {
+      "id": "80c07eaa-8543-4d85-8d08-a95fd19165e0",
+      "email": "iter161-test-1779923187@moodfordesign.com",
+      "role": "authenticated",
+      "created_at": "2026-05-27 23:06:32.262017+00:00"
+    },
+    {
+      "id": "b64dae9f-2b59-4f46-acfa-a674e1084cfd",
+      "email": "iter161-test-1779923761391@moodfordesign.com",
+      "role": "authenticated",
+      "created_at": "2026-05-27 23:16:10.993972+00:00"
+    },
+    {
+      "id": "5035c763-9840-43d4-a1d1-ec30c6396246",
+      "email": "iter161-idemp-1779923775261@moodfordesign.com",
+      "role": "authenticated",
+      "created_at": "2026-05-27 23:16:17.545075+00:00"
+    },
+    {
+      "id": "99848a34-ab80-44bf-8fcc-6f62a8828675",
+      "email": "maria1779940449005@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 03:54:11.353480+00:00"
+    },
+    {
+      "id": "565a1788-cb44-4917-b5a6-bc688ce7f5cb",
+      "email": "maria_meta_1779940455283@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 03:54:17.379449+00:00"
+    },
+    {
+      "id": "ff26c9b9-547f-4c70-9871-51e48088fe85",
+      "email": "maria1779940831236@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 04:00:34.785230+00:00"
+    },
+    {
+      "id": "f3fd13f3-8826-40fd-838c-401ec4d3e50d",
+      "email": "iter168_test_1779946689883@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 05:38:12.994187+00:00"
+    },
+    {
+      "id": "f39f2ab6-0c18-41bd-9212-fe00a256306a",
+      "email": "iter168_test_1779946711167@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 05:38:33.979373+00:00"
+    },
+    {
+      "id": "3eb457af-9ffe-4ce8-b085-1f25cf9a2e7c",
+      "email": "maria1779946750963@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 05:39:13.288207+00:00"
+    },
+    {
+      "id": "bb6e55e4-0bd9-48fe-870e-b21a4cf3735d",
+      "email": "maria_meta_1779946757077@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 05:39:19.386533+00:00"
+    },
+    {
+      "id": "6b1913c5-a24f-4bc4-a792-76a6b1c10de4",
+      "email": "iter168_test_1779948171574@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 06:02:54.518745+00:00"
+    },
+    {
+      "id": "ade77537-1ff9-4e2f-9a2c-f9aeeefb57ee",
+      "email": "iter168_test_1779948227892@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 06:03:50.329283+00:00"
+    },
+    {
+      "id": "1c495c3d-8cc5-4707-b9e4-14b6c9ac1c13",
+      "email": "exeadvisor@gmail.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 06:35:24.406331+00:00"
+    },
+    {
+      "id": "ef5a7c20-81f8-4352-8ab3-e5e6e6690517",
+      "email": "iter168_test_1779950460007@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 06:41:02.726951+00:00"
+    },
+    {
+      "id": "32cf3174-b47f-42da-8e77-eb286d9a235a",
+      "email": "maria1779950495911@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 06:41:38.045587+00:00"
+    },
+    {
+      "id": "8695bd91-2e6c-4e6d-a68c-8afa018f0345",
+      "email": "maria_meta_1779950501592@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 06:41:43.720421+00:00"
+    },
+    {
+      "id": "24035517-a173-4e5d-b105-43152d54d687",
+      "email": "iter168_test_1779988703526@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 17:18:26.431155+00:00"
+    },
+    {
+      "id": "107961f7-0cca-4c1d-a21b-4dfde7e1384d",
+      "email": "maria1779988741112@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 17:19:03.473897+00:00"
+    },
+    {
+      "id": "c0b6a510-dc29-488b-941c-21e2c7e61007",
+      "email": "maria_meta_1779988747511@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 17:19:09.906050+00:00"
+    },
+    {
+      "id": "99159b3b-e885-4dbb-adcb-8cd9157a7308",
+      "email": "iter169_test_1779996907@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:35:12.227067+00:00"
+    },
+    {
+      "id": "457cdc78-e862-48df-8b19-e9468f2d86ac",
+      "email": "iter169_1779996928@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:35:31.273797+00:00"
+    },
+    {
+      "id": "20386e5e-d69f-4d0a-ab1d-7fc6a1cdeaf1",
+      "email": "iter169_1779996956@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:35:59.082103+00:00"
+    },
+    {
+      "id": "ac43cac8-77d2-4df9-93b8-479b51a49f38",
+      "email": "iter169x_1779997045@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:37:28.777351+00:00"
+    },
+    {
+      "id": "339ab1de-8ca2-47fa-9a04-3c1f4bd5b97c",
+      "email": "iter169z_1779997145@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:39:08.182781+00:00"
+    },
+    {
+      "id": "cc80bc3c-c83e-4fcd-a0de-199f71f5a36f",
+      "email": "iter169_redir_1779997247250@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:40:50.407661+00:00"
+    },
+    {
+      "id": "cb7ea754-2ce3-479d-8395-007f95b9c3dd",
+      "email": "iter169_resend_1779997254947@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:40:57.250473+00:00"
+    },
+    {
+      "id": "9b300ff7-9205-4439-b831-93780d6038f1",
+      "email": "iter169_redir_1779997283314@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:41:26.154208+00:00"
+    },
+    {
+      "id": "3ff2ccc7-370a-4d09-b864-ce2b69684d77",
+      "email": "iter169_resend_1779997290632@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:41:32.893004+00:00"
+    },
+    {
+      "id": "c1458cef-7d28-4545-8d49-55eca3e21688",
+      "email": "iter169_redir_1779997335806@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:42:19.119489+00:00"
+    },
+    {
+      "id": "fd579f22-c2ac-4a5f-a938-4449cb098c1a",
+      "email": "iter169_resend_1779997343635@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:42:25.941500+00:00"
+    },
+    {
+      "id": "070ed1da-be11-450c-bc6c-cce55eeb2758",
+      "email": "maria1779997523221@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:45:25.463370+00:00"
+    },
+    {
+      "id": "e15eb1f8-5d74-4712-bb6a-0847dd54390f",
+      "email": "maria_meta_1779997529550@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:45:31.801635+00:00"
+    },
+    {
+      "id": "d586514c-4c2f-45ae-9b06-eae7ea3ba34b",
+      "email": "iter168_test_1779997536979@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:45:39.422828+00:00"
+    },
+    {
+      "id": "6a5e59db-a638-4780-ba38-f64ba703ec3f",
+      "email": "iter169_redir_1779997577052@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:46:19.391992+00:00"
+    },
+    {
+      "id": "894dbb7a-cdde-4702-8f1b-ef972993ac4f",
+      "email": "iter169_resend_1779997583691@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:46:26.259261+00:00"
+    },
+    {
+      "id": "a389ae5b-4e54-4121-98ae-c7ef58574854",
+      "email": "iter169_redir_1779997665628@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:47:59.841860+00:00"
+    },
+    {
+      "id": "88edc403-50e4-41ac-b395-1c4e00ccbff0",
+      "email": "iter169_resend_1779997684554@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:48:06.833106+00:00"
+    },
+    {
+      "id": "7a2f0100-6db2-43a2-b311-2d3eb9563ea8",
+      "email": "iter168_test_1779997692752@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:48:15.127609+00:00"
+    },
+    {
+      "id": "7debcd94-d7fc-46bd-b890-18e54ca1dff8",
+      "email": "maria1779997893614@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:51:35.985120+00:00"
+    },
+    {
+      "id": "245db467-6036-4b16-a12c-5eeaf8534ebb",
+      "email": "maria_meta_1779997900402@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 19:51:42.969518+00:00"
+    },
+    {
+      "id": "af481fe7-418f-421f-a680-90e9e7b9ac97",
+      "email": "iter169_2_client_1780009550679@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 23:05:53.732268+00:00"
+    },
+    {
+      "id": "ad086d82-8b58-44ff-98e3-eef83a4a727f",
+      "email": "iter169_2_client_1780009569982@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 23:06:12.389492+00:00"
+    },
+    {
+      "id": "6a33bba5-987e-41c0-a756-0158e9a4312c",
+      "email": "iter169_redir_1780009576537@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 23:06:18.892291+00:00"
+    },
+    {
+      "id": "60c3a025-1a2f-4b42-9526-d6e611954f1d",
+      "email": "iter169_resend_1780009582997@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 23:06:25.376375+00:00"
+    },
+    {
+      "id": "0cdf6ec9-8f3f-4049-b70d-3b0b0533f12f",
+      "email": "maria1780009594439@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 23:06:36.708623+00:00"
+    },
+    {
+      "id": "998d0843-210c-407e-a9f3-4b2dc843fe0c",
+      "email": "maria_meta_1780009600365@example.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 23:06:42.643623+00:00"
+    },
+    {
+      "id": "b3f1fed2-1e02-41d3-9817-905a45368511",
+      "email": "st.ogrisek@margraf-usa.com",
+      "role": "authenticated",
+      "created_at": "2026-05-28 23:13:01.578677+00:00"
+    }
+  ],
+  "storage": {
+    "tenant-assets": {
+      "system_count": 0,
+      "demo_count": 0,
+      "system_files": [],
+      "demo_files": []
+    },
+    "project-files": {
+      "system_count": 0,
+      "demo_count": 0,
+      "system_files": [],
+      "demo_files": []
+    },
+    "proposal-files": {
+      "system_count": 0,
+      "demo_count": 0,
+      "system_files": [],
+      "demo_files": []
+    },
+    "moodboard-assets": {
+      "system_count": 0,
+      "demo_count": 0,
+      "system_files": [],
+      "demo_files": []
+    },
+    "magazine-media": {
+      "system_count": 0,
+      "demo_count": 0,
+      "system_files": [],
+      "demo_files": []
+    },
+    "exports": {
+      "system_count": 0,
+      "demo_count": 0,
+      "system_files": [],
+      "demo_files": []
+    },
+    "storefront-public": {
+      "system_count": 0,
+      "demo_count": 0,
+      "system_files": [],
+      "demo_files": []
+    },
+    "cms-assets": {
+      "system_count": 0,
+      "demo_count": 0,
+      "system_files": [],
+      "demo_files": []
+    },
+    "journal-media": {
+      "system_count": 0,
+      "demo_count": 0,
+      "system_files": [],
+      "demo_files": []
+    },
+    "tenant-branding": {
+      "system_count": 0,
+      "demo_count": 0,
+      "system_files": [],
+      "demo_files": []
+    },
+    "catalog-sources": {
+      "system_count": 0,
+      "demo_count": 0,
+      "system_files": [],
+      "demo_files": []
+    },
+    "media": {
+      "system_count": 0,
+      "demo_count": 0,
+      "system_files": [],
+      "demo_files": []
+    }
+  }
+}
