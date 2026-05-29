@@ -1,0 +1,47 @@
+{
+  "summary": "ITER171 Critical Platform Stabilization — Backend 10/10 pytest PASS (post-cleanup catalogs verified: 196 dial codes, 7 languages, 16 rooms, 9 chapters; identify anti-enumeration; admin password login returns role=super_admin + is_root_superadmin=true; /api/public/journeys/initiate 3-step accepted; client/resend silent). Frontend P0.3 PASS: /auth/login is STRICTLY password-only (email+password visible immediately, no probe/continue/magic-link toggle), admin login lands on /dashboard with Italian-only concierge copy ('Buongiorno, Stefano', 'Benvenuto nel tuo studio digitale', '07 movimenti'). Frontend /access PASS: single email + 'Continua' CTA, admin → dispatches to /auth/login?email=admin%40moodfordesign.com (password field + prefilled email), fresh client email → 'Controlla la tua casella' (no role/kind/professional/not_found leak). /auth/client/callback?error=otp_expired&error_code=access_denied PASS: URL cleaned via history.replaceState (no error params visible), concierge UI 'Il tuo accesso personale è stato aggiornato' + CTA 'INVIA UN NUOVO ACCESSO'. /begin-journey Step 1 renders ATMOSFERA with all testids (bj-space-*, bj-step1-next).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "LoginPage / AccessEntryPage", "issue": "React warning persists: 'Cannot update a component while rendering a different component' on /auth/login (and recurs after navigation to /dashboard). Same warning flagged in iter160 — still unresolved.", "selector": "/auth/login, /access", "priority": "MEDIUM"},
+      {"component": "i18n string registry", "issue": "Many missing editorial_blocks keys still trigger console warnings on /auth/login: auth.login.eyebrow/email_label/email_placeholder/password_label/password_placeholder/cta/hero_image/brand_logo + auth.access.quote/quote_author/need_help/support/support_email + nav.editorial_copy_cms/admin_languages/blueprint_admin. UI falls back to hard-coded IT copy (works) but registry not seeded.", "selector": "/auth/login console", "priority": "MEDIUM"},
+      {"component": "DEBUG dev banner", "issue": "Visible 'EDITORIAL · DEBUG runtime 3 · missing N' badge sits bottom-left of EVERY public page (homepage, /access, /auth/login, /auth/client/callback, /begin-journey, /dashboard) including in production-preview. Likely DevTools overlay that should be gated to non-prod.", "selector": "fixed bottom-left badge", "priority": "MEDIUM"},
+      {"component": "Auth bootstrap (post-login)", "issue": "3× HTTP 401 console errors right after /access load and right after admin login on /dashboard. Suggests authenticated API calls firing before bearer token is propagated (or unauthenticated probe calls). Not blocking UX but noisy and may mask real auth bugs.", "selector": "network on /access and /dashboard", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Public pages (all)", "issues": ["The bottom-left DEBUG badge breaks the cinematic editorial aesthetic and should not be visible on preview/prod URLs."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter171_critical_stabilization.py",
+    "/app/test_reports/pytest/iter171_results.xml"
+  ],
+  "action_items": [
+    "Investigate React 'setState during render' warning in LoginPage / AccessEntryPage (recurs across navigation). Likely a setState call inside a render path or a parent–child render cycle (e.g. setting a context value inside a child useEffect-less branch).",
+    "Seed missing i18n editorial_blocks keys: auth.login.{eyebrow,email_label,email_placeholder,password_label,password_placeholder,cta,hero_image,brand_logo}, auth.access.{quote,quote_author,need_help,support,support_email}, nav.{editorial_copy_cms,admin_languages,blueprint_admin} in IT locale.",
+    "Gate the 'EDITORIAL · DEBUG runtime' overlay to NODE_ENV==='development' (or behind a ?debug flag). It should NOT render on content-hub-pro-22.preview.emergentagent.com.",
+    "Root-cause the 3×401 console errors on /access and /dashboard load — either delay auth-protected fetches until token is hydrated or ensure unauthenticated requests don't go to bearer-required endpoints."
+  ],
+  "critical_code_review_comments": [
+    "P0.3 strictly enforced — /auth/login has NO email-probe phase, NO 'Continua via email' button, NO magic-link toggle. Just email + password + 'ACCEDI AL WORKSPACE'. Excellent.",
+    "P0.2 magic-link error UX is production-grade — history.replaceState cleans URL, concierge copy 'Il tuo accesso personale è stato aggiornato', no raw Supabase 'otp_expired' / 'access_denied' visible.",
+    "Anti-enumeration on /api/auth/identify is symmetric (admin → professional/password_exists=true, unknown → client/password_exists=false). No 'not_found' / 'role' / 'kind' leak in /access UI.",
+    "Italian-only UI confirmed across all tested pages — no 'login', 'dashboard' SaaS terms visible (header uses 'RIENTRA' + 'IN STUDIO'; dashboard title uses 'studio digitale').",
+    "Post-cleanup state verified: only admin@moodfordesign.com present, tenant 848354b9 only, dial_codes=196, languages=7, rooms=16, chapters=9, all green.",
+    "Dispatch flow /access → admin properly URL-encodes email as ?email=admin%40moodfordesign.com and prefills the password page. Clean separation between professional and client lanes."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter171_critical_stabilization.py"
+  ],
+  "success_rate": {"backend": "100% (10/10)", "frontend": "P0.2 100%, P0.3 100% — all critical flows green; only secondary issues (React warning, missing i18n keys, DEBUG overlay, 401 noise) remain"},
+  "test_credentials": "Admin: admin@moodfordesign.com / Blueprint2024! (super_admin, is_root_superadmin=true)",
+  "seed_data_creation": "Created throwaway journey lead via /api/public/journeys/initiate (iter171client_<timestamp>@example.com) — journey-scoped, additive only, no cleanup needed.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend post-ITER170 cleanup state is healthy and verified. All P0.2 + P0.3 critical UI flows pass. Remaining issues are all secondary/cosmetic: (1) React 'setState during render' warning on /auth/login (carried over from iter160), (2) ~25 missing i18n keys (fallback IT copy works), (3) DEBUG runtime overlay visible on every page (should be dev-only), (4) 3×401 console errors on /access + /dashboard (auth bootstrap noise). The full 3-step /begin-journey submit-to-magic-link wasn't end-to-end clicked through Step 2/Step 3 in this run, but Step 1 renders all testids (bj-step1-next, bj-space-*) and backend POST /api/public/journeys/initiate accepts the full 3-step payload. PhoneCountryPrefix testids confirmed in earlier iter160: bj-phone-prefix-trigger/menu/option-{IT,US,GB,...}. Main agent can self-verify by clicking through Step 1→2→3 with a fresh email and asserting URL stays /journey/preparing >6s without redirecting.",
+  "rca of the issue": "No critical bugs to RCA. Carry-over warnings: React setState-in-render almost certainly originates from AccessEntryPage / LoginPage phase machine calling a context/router setter inside render rather than inside a useEffect — inspect the phase-detection useMemo/useState pair. The 3×401s are most likely /api/me, /api/tenant/me, or /api/notifications/unread firing before the JWT cookie/header is hydrated; gate them on auth.isReady."
+}

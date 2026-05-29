@@ -1,0 +1,26 @@
+[
+  {
+    "id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "slug": "studio",
+    "name": "MOOD for DESIGN",
+    "created_at": "2026-05-12 07:57:03.348758+00:00"
+  },
+  {
+    "id": "624d0d61-b29e-4ad3-a268-88a120d1b881",
+    "slug": "atelier-brera",
+    "name": "Atelier Brera",
+    "created_at": "2026-05-28 23:12:45.124685+00:00"
+  },
+  {
+    "id": "52779052-87f2-40b7-9aa5-b112b1daf5c4",
+    "slug": "test-activate-a3e0c807",
+    "name": "TEST_Activate_a3e0c807",
+    "created_at": "2026-05-28 23:16:32.016026+00:00"
+  },
+  {
+    "id": "b296c9ba-ea28-41e4-a69a-34445d82a9e5",
+    "slug": "untitled-studio",
+    "name": "Untitled studio",
+    "created_at": "2026-05-29 07:18:42.766843+00:00"
+  }
+]
