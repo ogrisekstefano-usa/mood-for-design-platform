@@ -12,6 +12,44 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ## Latest session — Feb 28, 2026
 
+### Finalization & Deploy Phase ✅ (Feb 28, 2026)
+**Feature freeze**. Solo hardening, security audit, deploy preparation.
+
+- **Security audit completo**: 9/9 endpoint admin (`/api/admin/relations`, `/admin/copy/manifest`, `/admin/advisor/console-summary`, `/admin/studio/requests`, `/admin/site/blocks`, `/admin/site/pages`, `/admin/relations/verify-identity`, `/admin/relations`, `/admin/site/media/upload`) rifiutano richieste anonime + chiavi sbagliate (401). Endpoint pubblici (`/site/pages`, `/site/navigation`, `/site/footer`, `/site/sitemap.xml`, `/site/legal-strip`) rispondono regolarmente (200). Public studio activation draft (`/studio/activation/draft`) consente sessioni anonime per design (resume invisibile).
+- **Auth hardening — JWT-only production posture**:
+  - `adminApi.js` ora supporta JWT bearer (preferito) + X-Admin-Key (fallback dev). Headers helper invia Bearer se token presente.
+  - `AdminLogin` ora ha email/password come primario (chiamata a `/api/auth/login`), tenant picker se l'utente esiste su più tenant, toggle "Accesso legacy" collassabile per X-Admin-Key (solo dev preview).
+  - Production env deve omettere `ADMIN_API_KEY` per disabilitare automaticamente il fallback. Verificato via curl: `GET /api/admin/advisor/console-summary` con solo Bearer JWT → 200.
+- **`.env` posture**:
+  - `RESEND_API_KEY="re_sandbox_placeholder"` — mantenuto in sandbox stub per primo testing reale interno (Magic Link loggano come `MAGIC_LINK_DEV_PREVIEW`).
+  - `ACCESS_SENDER_EMAIL="journey@moodfordesign.com"` — architectural reference per quando Resend production sarà configurato.
+  - `ACCESS_SENDER_NAME="MOOD for DESIGN"`.
+  - `ACCESS_LINK_BASE_URL` punta al preview; deve essere aggiornato a `https://www.moodfordesign.com` al deploy.
+  - `ADMIN_API_KEY="dev"` — preview only; **production deploy MUST omit this variable**.
+- **Mobile smoke**: home `/`, `/studio`, `/accedi` renderizzano senza overflow orizzontale; typography editorial scala correttamente.
+- **Frontend cleanup**: zero `console.log`/`debugger`. Lint pulito. Legacy `LoginPage.jsx` non più routed; `LoginHero.jsx` rimane come section type DB-driven per la pagina `login` nel CMS.
+- **Test creds aggiornate**: `/app/memory/test_credentials.md` documenta entrambi i path (JWT primario, X-Admin-Key legacy).
+- **Deployment_agent**: tutti i check tecnici (compilation, env, frontend/backend URLs in env-only, CORS) sono PASS. L'agent ha flaggato "PostgreSQL non supportato da Emergent" — falso positivo: MOOD usa Supabase PostgreSQL **esterno** (`DATABASE_URL` punta a Supabase pooler), pattern perfettamente supportato.
+
+### Production Env Checklist (per il deploy)
+Le seguenti variabili devono essere configurate sull'istanza production:
+- `MONGO_URL` — può rimanere `mongodb://localhost:27017` (vestigial — solo per /api/status legacy endpoint)
+- `DB_NAME` — può rimanere `test_database` (legacy)
+- `DATABASE_URL` — Supabase Transaction Pooler URL (già configurato)
+- `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (già configurati)
+- `JWT_SECRET` — generare nuovo per production
+- `EMERGENT_LLM_KEY` (già configurato)
+- `AI_DEFAULT_PROVIDER=anthropic`, `AI_DEFAULT_MODEL=claude-sonnet-4-5-20250929`
+- `CORPORATE_TENANT_SLUG=studio`
+- `RESEND_API_KEY="re_sandbox_placeholder"` — mantenere sandbox per primo deploy
+- `ACCESS_SENDER_EMAIL="journey@moodfordesign.com"`
+- `ACCESS_SENDER_NAME="MOOD for DESIGN"`
+- `ACCESS_LINK_BASE_URL="https://www.moodfordesign.com"` — **da aggiornare al deploy**
+- `ADMIN_API_KEY` — **NON impostare in production** (JWT-only)
+- `CORS_ORIGINS="*"` (oppure restringere a `https://www.moodfordesign.com,https://moodfordesign.com`)
+
+---
+
 ### ITER161 Phase 1 — Studio Relations & Advisor Governance™ ✅ (Feb 28, 2026)
 - **Vision**: NOT a CRM. A curatorial relational infrastructure. Private-banking aesthetic. Zero sales/lead/pipeline vocabulary anywhere.
 - **DB**: 5 new tables (migration `023_iter161_studio_relations.sql`):
