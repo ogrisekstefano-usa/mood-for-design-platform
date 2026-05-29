@@ -3,26 +3,57 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const TENANT_SLUG_KEY = 'mood-admin-tenant';
 const KEY_KEY         = 'mood-admin-key';
+const TOKEN_KEY       = 'mood_auth_token';
 
 export const adminAuth = {
+  // Legacy header-based (kept for dev preview where ADMIN_API_KEY=dev).
   getKey:    () => localStorage.getItem(KEY_KEY) || '',
   getTenant: () => localStorage.getItem(TENANT_SLUG_KEY) || 'studio',
   setKey:    (k) => localStorage.setItem(KEY_KEY, k || ''),
   setTenant: (t) => localStorage.setItem(TENANT_SLUG_KEY, t || 'studio'),
+
+  // JWT bearer (production-grade).
+  getToken:  () => localStorage.getItem(TOKEN_KEY) || '',
+  setToken:  (t) => { if (t) localStorage.setItem(TOKEN_KEY, t); else localStorage.removeItem(TOKEN_KEY); },
+
   clear:     () => {
     localStorage.removeItem(KEY_KEY);
     localStorage.removeItem(TENANT_SLUG_KEY);
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem('mood_auth_user');
+    localStorage.removeItem('mood_auth_tenant');
   },
-  headers:   () => ({
-    'X-Admin-Key':   localStorage.getItem(KEY_KEY) || '',
-    'X-Tenant-Slug': localStorage.getItem(TENANT_SLUG_KEY) || 'studio',
-  }),
+
+  // Auth headers — JWT bearer wins, X-Admin-Key is sent as fallback for
+  // dev environments where ADMIN_API_KEY is configured.
+  headers: () => {
+    const h = { 'X-Tenant-Slug': localStorage.getItem(TENANT_SLUG_KEY) || 'studio' };
+    const tok = localStorage.getItem(TOKEN_KEY);
+    if (tok) {
+      h.Authorization = `Bearer ${tok}`;
+    }
+    const k = localStorage.getItem(KEY_KEY);
+    if (k) {
+      h['X-Admin-Key'] = k;
+    }
+    return h;
+  },
+
+  // Login via /api/auth/login → stores JWT on success.
+  login: async (email, password, tenant_slug = null) => {
+    const r = await axios.post(`${BACKEND_URL}/api/auth/login`,
+      { email, password, tenant_slug });
+    if (r.data?.token) {
+      localStorage.setItem(TOKEN_KEY, r.data.token);
+      localStorage.setItem('mood_auth_user',   JSON.stringify(r.data.user || {}));
+      localStorage.setItem('mood_auth_tenant', JSON.stringify(r.data.tenant || {}));
+      localStorage.setItem(TENANT_SLUG_KEY, r.data.tenant?.slug || 'studio');
+    }
+    return r.data;
+  },
 };
 
-const headers = () => ({
-  'X-Admin-Key':   adminAuth.getKey(),
-  'X-Tenant-Slug': adminAuth.getTenant(),
-});
+const headers = () => adminAuth.headers();
 
 const client = axios.create({ baseURL: `${BACKEND_URL}/api/admin/site` });
 
