@@ -135,7 +135,7 @@ def admin_tenants(user: dict = Depends(require_root_superadmin)):
         return {"tenants": []}
     c = db()
     rows = (c.table('tenants')
-            .select('id, slug, name, status, plan, default_locale_code, is_demo, created_at')
+            .select('id, slug, name, status, active_plan, default_locale_code, is_demo, created_at')
             .order('created_at', desc=True).execute().data or [])
     # Augment with member + journey counts (best-effort)
     for r in rows:
