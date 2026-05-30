@@ -57,10 +57,16 @@ export const useSiteBlock = (key) => {
 
 /**
  * useSiteBlocks — batch-fetch multiple blocks (1 call per key — backend caches).
+ *
+ * `defaults` (optional): inline localized text used as the initial state and
+ * as fallback for keys that resolve empty/missing from the API. This keeps
+ * the page readable on first paint (zero black screen waiting for 29 round-trips)
+ * while the editorial copy hydrates from the DB in the background. The same
+ * pattern used by the /studio funnel.
  */
-export const useSiteBlocks = (keys) => {
+export const useSiteBlocks = (keys, defaults = {}) => {
   const { locale } = useLocale();
-  const [values, setValues] = useState({});
+  const [values, setValues] = useState(defaults);
   useEffect(() => {
     if (!keys || keys.length === 0) return;
     let cancelled = false;
@@ -73,9 +79,14 @@ export const useSiteBlocks = (keys) => {
       ),
     ).then((pairs) => {
       if (cancelled) return;
-      setValues(Object.fromEntries(pairs));
+      // Merge: API value wins if non-empty; otherwise keep the inline default.
+      const merged = { ...defaults };
+      for (const [k, v] of pairs) {
+        if (v) merged[k] = v;
+      }
+      setValues(merged);
     });
     return () => { cancelled = true; };
-  }, [JSON.stringify(keys), locale]);
+  }, [JSON.stringify(keys), locale]);  // eslint-disable-line react-hooks/exhaustive-deps
   return values;
 };

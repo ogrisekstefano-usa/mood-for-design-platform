@@ -72,8 +72,47 @@ const ACCESS_KEYS = [
   'site.access.legal_note',
 ];
 
+/**
+ * Inline IT defaults — eliminate the black-screen wait while the 29
+ * editorial blocks hydrate from /api/site/block. The DB copy still
+ * wins (overrides these) the moment it arrives. Authored to mirror the
+ * `site.access.*` seeds in `db/seed_iter167_access.py`.
+ */
+const ACCESS_FALLBACK_IT = {
+  'site.access.eyebrow':                 'MOOD for DESIGN',
+  'site.access.headline':                'Continua il tuo Design Journey.',
+  'site.access.sublead':                 'MOOD.',
+  'site.access.email.label':             "L'indirizzo del tuo Design Journey",
+  'site.access.email.placeholder':       'nome@studio.com',
+  'site.access.email.continue':          'Entra nel tuo spazio',
+  'site.access.password.label':          "Parola d'accesso",
+  'site.access.password.continue':       'Entra nel tuo spazio',
+  'site.access.password.helper':         'Prosegui con magic-link',
+  'site.access.magic.headline':          "Il tuo link d'accesso è in viaggio.",
+  'site.access.magic.body':              "Apri la posta del tuo Design Journey, troverai il link per continuare l'esperienza.",
+  'site.access.magic.cta_resend':        'Invia di nuovo il link',
+  'site.access.magic.helper':            'Il link è valido per 15 minuti.',
+  'site.access.concierge.headline':      'Concierge a disposizione',
+  'site.access.concierge.body':          'Non siamo riusciti a riconoscere questo indirizzo. Scrivici e ti accompagniamo dentro la tua esperienza.',
+  'site.access.concierge.cta':           'Scrivi al concierge',
+  'site.access.studio_pending.headline': 'La tua candidatura è in lettura.',
+  'site.access.studio_pending.body':     'Il team curatoriale sta leggendo la composizione del tuo studio. Ti contatteremo per continuare la conversazione.',
+  'site.access.studio_pending.cta':      'Torna alla home',
+  'site.access.expired.headline':        "Il link è scaduto con grazia.",
+  'site.access.expired.body':            'Possiamo inviartene uno nuovo, valido per i prossimi 15 minuti.',
+  'site.access.expired.cta':             "Richiedi un nuovo link",
+  'site.access.already_used.headline':   'Questo link è già stato utilizzato.',
+  'site.access.already_used.body':       "Per riservatezza, ogni link d'accesso è valido una sola volta. Possiamo inviartene un altro.",
+  'site.access.welcome_back.headline':   'Bentornato nel tuo Design Journey.',
+  'site.access.welcome_back.body':       'Stiamo aprendo il tuo spazio progettuale.',
+  'site.access.loading.preparing':       "Preparazione dell'accesso…",
+  'site.access.loading.opening':         'Apertura del tuo Design Journey…',
+  'site.access.loading.verifying':       'Verifica del tuo accesso…',
+  'site.access.legal_note':              'MOOD for DESIGN protegge il tuo accesso con riservatezza editoriale. Niente password salvate sui server quando scegli il link.',
+};
+
 const AccessContinuityPage = () => {
-  const t = useSiteBlocks(ACCESS_KEYS);
+  const t = useSiteBlocks(ACCESS_KEYS, ACCESS_FALLBACK_IT);
   const navigate = useNavigate();
   const location = useLocation();
 
