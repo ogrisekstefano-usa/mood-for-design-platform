@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Luxury Showroom">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="40%" r="80%">
+      <stop offset="0%"   stop-color="#3F1A18"/>
+      <stop offset="60%"  stop-color="#1A0808"/>
+      <stop offset="100%" stop-color="#080403"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <rect x="200"  y="180" width="2" height="720" fill="rgba(199,159,75,0.20)"/>
+  <rect x="640"  y="160" width="2" height="760" fill="rgba(199,159,75,0.12)"/>
+  <rect x="1280" y="160" width="2" height="760" fill="rgba(199,159,75,0.12)"/>
+  <rect x="1720" y="180" width="2" height="720" fill="rgba(199,159,75,0.20)"/>
+</svg>

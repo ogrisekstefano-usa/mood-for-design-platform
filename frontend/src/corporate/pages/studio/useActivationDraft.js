@@ -1,12 +1,17 @@
 /**
  * useActivationDraft — silent autosave + resume for the Studio Activation flow.
  *
- * Behaviour:
- *  • On mount, reads `mood_studio_draft_token` from localStorage and calls
- *    POST /api/studio/activation/draft (resume or fresh).
- *  • Returns { draft, patch, ready, resumed }.
- *  • `patch(partial)` is debounced (320ms) and PATCHes silently. Failures
- *    are absorbed — the composition never breaks for the user.
+ * Lazy creation policy (P1, Mar 2026):
+ *  • On mount: read `mood_studio_draft_token` from localStorage.
+ *      - If a token is present → POST /draft to resume (returns the existing draft).
+ *      - If no token           → DO NOT create a draft. `ready` flips true
+ *                                immediately and `draft` stays null until
+ *                                the user actually starts composing.
+ *  • First `patch()` call creates the draft on demand (if not yet created)
+ *    and then PATCHes it. This eliminates the always-on ~1s POST /draft
+ *    that previously ran on /studio even for visitors who never compose.
+ *
+ *  • All errors are absorbed — the composition never breaks for the user.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
@@ -15,20 +20,27 @@ const BACKEND = process.env.REACT_APP_BACKEND_URL;
 const STORAGE_KEY = 'mood_studio_draft_token';
 
 export const useActivationDraft = () => {
-  const [draft, setDraft]   = useState(null);
-  const [ready, setReady]   = useState(false);
+  const [draft, setDraft]     = useState(null);
+  const [ready, setReady]     = useState(false);
   const [resumed, setResumed] = useState(false);
-  const debounceRef = useRef(null);
-  const pendingRef  = useRef({});
+  const debounceRef           = useRef(null);
+  const pendingRef            = useRef({});
+  const creatingRef           = useRef(false);
 
-  // Initial fetch / creation
+  // Initial fetch — RESUME ONLY. No fresh draft is created on mount.
   useEffect(() => {
     let cancelled = false;
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) {
+      // No prior session — nothing to resume. Mark ready immediately;
+      // the draft will be created on the first patch().
+      setReady(true);
+      return () => { cancelled = true; };
+    }
     (async () => {
-      const stored = localStorage.getItem(STORAGE_KEY);
       try {
         const res = await axios.post(`${BACKEND}/api/studio/activation/draft`, {
-          draft_token: stored || undefined,
+          draft_token: stored,
         });
         if (cancelled) return;
         if (res.data?.draft_token) {
@@ -37,7 +49,7 @@ export const useActivationDraft = () => {
         setDraft(res.data);
         setResumed(Boolean(res.data?.resumed));
       } catch {
-        // silent — UI continues without a draft
+        // silent — token may have expired; treat as fresh session.
       } finally {
         if (!cancelled) setReady(true);
       }
@@ -45,9 +57,30 @@ export const useActivationDraft = () => {
     return () => { cancelled = true; };
   }, []);
 
-  // Debounced patch
+  // Ensure a draft exists (lazily). Returns the draft_token.
+  const ensureDraft = useCallback(async () => {
+    const existing = localStorage.getItem(STORAGE_KEY);
+    if (existing) return existing;
+    if (creatingRef.current) return null;
+    creatingRef.current = true;
+    try {
+      const res = await axios.post(`${BACKEND}/api/studio/activation/draft`, {});
+      const tok = res.data?.draft_token;
+      if (tok) {
+        localStorage.setItem(STORAGE_KEY, tok);
+        setDraft(res.data);
+      }
+      return tok || null;
+    } catch {
+      return null;
+    } finally {
+      creatingRef.current = false;
+    }
+  }, []);
+
+  // Debounced patch — also lazily creates the draft if missing.
   const flush = useCallback(async () => {
-    const tok = draft?.draft_token || localStorage.getItem(STORAGE_KEY);
+    const tok = (await ensureDraft()) || draft?.draft_token;
     if (!tok) return;
     const body = { draft_token: tok, ...pendingRef.current };
     pendingRef.current = {};
@@ -59,17 +92,13 @@ export const useActivationDraft = () => {
     } catch {
       // silent
     }
-  }, [draft?.draft_token]);
+  }, [ensureDraft, draft?.draft_token]);
 
   const patch = useCallback((partial) => {
-    // Apply optimistically
+    // Apply optimistically. Carries the `payload` deep-merge fix from P0.1.
     setDraft((d) => d ? ({ ...d, ...partial,
                             payload: { ...(d.payload || {}),
                                        ...(partial.payload || {}) } }) : d);
-    // P0.1 fix: deep-merge `payload` into pendingRef so that consecutive
-    // persist() calls (e.g. studio_name then city then markets) don't
-    // clobber each other before the debounce flushes. Without this,
-    // only the last call's `payload` keys survive — the rest are lost.
     pendingRef.current = {
       ...pendingRef.current,
       ...partial,
@@ -94,7 +123,7 @@ export const useActivationDraft = () => {
           `${BACKEND}/api/studio/activation/draft`,
           new Blob([body], { type: 'application/json' }),
         );
-      } catch {}
+      } catch { /* noop */ }
     };
     window.addEventListener('beforeunload', onBeforeUnload);
     return () => window.removeEventListener('beforeunload', onBeforeUnload);

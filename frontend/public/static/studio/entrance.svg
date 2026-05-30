@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-label="MOOD for DESIGN — Entrance">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="55%" r="80%">
+      <stop offset="0%"   stop-color="#0E2A28"/>
+      <stop offset="42%"  stop-color="#082018"/>
+      <stop offset="100%" stop-color="#040806"/>
+    </radialGradient>
+    <linearGradient id="b" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%"   stop-color="rgba(0,201,179,0.14)"/>
+      <stop offset="50%"  stop-color="rgba(0,201,179,0)"/>
+      <stop offset="100%" stop-color="rgba(5,5,5,0.7)"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <rect x="940" y="120" width="40" height="840" fill="rgba(0,201,179,0.05)"/>
+  <rect width="1920" height="1080" fill="url(#b)"/>
+</svg>

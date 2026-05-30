@@ -185,50 +185,55 @@ def manifest() -> dict:
     """
     Static map consumed by the frontend on mount — archetypes, experiences,
     pre-suggestion logic, and the editorial copy keys per movement.
+
+    Images: local static assets shipped with the frontend at
+    /static/studio/*. Editorial SVG posters by default; replace with
+    curated photographs at the same filenames to upgrade visually
+    without any code change (just drop a new file in
+    /app/frontend/public/static/studio/).
     """
-    BASE = ("https://ytctctmvgdkmyjrbgmqs.supabase.co/storage/v1/object/public/"
-            "cms-assets/848354b9-a43e-4147-bdad-116fb93bd585/site/")
+    BASE = "/static/studio/"
     return {
         "archetypes": [
             {
                 "key": "interior_studio",
                 "title_key":      "studio.activation.archetype.interior_studio.title",
                 "descriptor_key": "studio.activation.archetype.interior_studio.body",
-                "image_url":      BASE + "1ae982fb57-3-edited-edited.jpg",
+                "image_url":      BASE + "archetype-interior_studio.svg",
             },
             {
                 "key": "luxury_showroom",
                 "title_key":      "studio.activation.archetype.luxury_showroom.title",
                 "descriptor_key": "studio.activation.archetype.luxury_showroom.body",
-                "image_url":      BASE + "597a6ace33-4-edited-edited.jpg",
+                "image_url":      BASE + "archetype-luxury_showroom.svg",
             },
             {
                 "key": "architecture_firm",
                 "title_key":      "studio.activation.archetype.architecture_firm.title",
                 "descriptor_key": "studio.activation.archetype.architecture_firm.body",
-                "image_url":      BASE + "b949d9d0be-5-edited-edited.jpg",
+                "image_url":      BASE + "archetype-architecture_firm.svg",
             },
             {
                 "key": "material_gallery",
                 "title_key":      "studio.activation.archetype.material_gallery.title",
                 "descriptor_key": "studio.activation.archetype.material_gallery.body",
-                "image_url":      BASE + "e92596565f-2-edited-edited.jpg",
+                "image_url":      BASE + "archetype-material_gallery.svg",
             },
             {
                 "key": "design_retail",
                 "title_key":      "studio.activation.archetype.design_retail.title",
                 "descriptor_key": "studio.activation.archetype.design_retail.body",
-                "image_url":      BASE + "51edd9748f-6-edited-edited.jpg",
+                "image_url":      BASE + "archetype-design_retail.svg",
             },
             {
                 "key": "stone_specialist",
                 "title_key":      "studio.activation.archetype.stone_specialist.title",
                 "descriptor_key": "studio.activation.archetype.stone_specialist.body",
-                "image_url":      BASE + "2762bad91b-7-edited-edited.jpg",
+                "image_url":      BASE + "archetype-stone_specialist.svg",
             },
         ],
-        # Entrance full-bleed photograph (slow Ken-Burns drift on the page)
-        "entrance_image_url": BASE + "efce52b92e-AdobeStock_1014843351.jpg",
+        # Entrance full-bleed editorial poster (slow Ken-Burns drift)
+        "entrance_image_url": BASE + "entrance.svg",
         "archetype_to_suggested": ARCHETYPE_TO_SUGGESTED,
         "experiences": [
             {"key": "design_journey_os",

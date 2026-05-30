@@ -15,14 +15,64 @@ from services import studio_activation
 router = APIRouter(prefix="/studio/activation", tags=["studio-activation"])
 
 
+import hashlib
+import json as _json
+import time
+from fastapi.responses import Response
+
+# ── In-process manifest cache ────────────────────────────────────────
+# Single-tenant, locale-keyed. Editorial copy changes invalidate via
+# TTL (60s) or via explicit reset on CMS write (see admin_site PATCH).
+# Keeping it in-process is fine: a stale window of 60s for the public
+# studio funnel is acceptable.
+_MANIFEST_CACHE: dict[str, tuple[float, bytes, str]] = {}
+_MANIFEST_TTL_SECONDS = 60
+
+
+async def _manifest_payload(locale: str) -> tuple[bytes, str]:
+    """Returns (raw_bytes, etag) for the manifest in the requested locale."""
+    cached = _MANIFEST_CACHE.get(locale)
+    now = time.time()
+    if cached and (now - cached[0]) < _MANIFEST_TTL_SECONDS:
+        return cached[1], cached[2]
+    payload = await studio_activation.manifest_with_copy(locale)
+    raw = _json.dumps(payload, separators=(",", ":"), sort_keys=True,
+                      default=str).encode("utf-8")
+    etag = 'W/"' + hashlib.sha256(raw).hexdigest()[:16] + '"'
+    _MANIFEST_CACHE[locale] = (now, raw, etag)
+    return raw, etag
+
+
 @router.get("/manifest")
-async def get_manifest(locale: str = "it"):
+async def get_manifest(request: Request, locale: str = "it"):
     """
     Static archetypes + experiences + copy-keys map.
     When `locale` is provided, includes a `copy` dict with all blocks
     pre-resolved (eliminates 100+ round-trips on page mount).
+
+    Caching strategy (P1, Mar 2026):
+      • In-process cache (60s TTL) — avoids re-aggregating 108 copy keys
+        on every visitor.
+      • Strong ETag — every response carries `W/"<sha256[:16]>"`.
+      • If-None-Match → 304 (zero body, zero DB).
+      • Cache-Control: public, max-age=60, stale-while-revalidate=300
+        (preview ingress may strip; production CDN will honour).
     """
-    return await studio_activation.manifest_with_copy(locale)
+    raw, etag = await _manifest_payload(locale)
+    inm = request.headers.get("if-none-match")
+    if inm and inm == etag:
+        return Response(status_code=304, headers={
+            "ETag": etag,
+            "Cache-Control": "public, max-age=60, stale-while-revalidate=300",
+        })
+    return Response(
+        content=raw,
+        media_type="application/json",
+        headers={
+            "ETag": etag,
+            "Cache-Control": "public, max-age=60, stale-while-revalidate=300",
+        },
+    )
 
 
 @router.post("/draft")

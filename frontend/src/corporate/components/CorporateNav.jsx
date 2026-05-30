@@ -36,7 +36,7 @@ const CorporateNav = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [navItems, setNavItems] = useState([]);
-  const [ctaItem, setCtaItem] = useState({ label: 'Book a Demo', href: '/start-studio' });
+  const [ctaItem, setCtaItem] = useState({ label: 'Apri uno Studio', href: '/studio' });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -98,8 +98,8 @@ const CorporateNav = () => {
           {/* Right cluster */}
           <div className="hidden lg:flex items-center gap-5 ml-auto">
             <LocaleSwitcher dark />
-            <Link to={ctaItem.href || '/start-studio'} className="btn-pill-outline-teal" data-testid="corporate-nav-cta">
-              {ctaItem.label || 'Book a Demo'}
+            <Link to={ctaItem.href || '/studio'} className="btn-pill-outline-teal" data-testid="corporate-nav-cta">
+              {ctaItem.label || 'Apri uno Studio'}
             </Link>
           </div>
 
@@ -132,8 +132,8 @@ const CorporateNav = () => {
             ))}
             <div className="pt-4 border-t flex items-center justify-between" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
               <LocaleSwitcher dark />
-              <Link to="/start-studio" className="btn-pill-outline-teal" data-testid="mobile-nav-cta">
-                {ctaItem.label || 'Book a Demo'}
+              <Link to={ctaItem.href || '/studio'} className="btn-pill-outline-teal" data-testid="mobile-nav-cta">
+                {ctaItem.label || 'Apri uno Studio'}
               </Link>
             </div>
           </div>

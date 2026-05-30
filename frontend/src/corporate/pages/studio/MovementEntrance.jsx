@@ -16,7 +16,8 @@ const MovementEntrance = () => {
   const navigate = useNavigate();
   const { manifest, t, ready: manifestReady } = useStudioManifest();
   const { draft, patch, resumed, ready: draftReady } = useActivationDraft();
-  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgLoaded, setImgLoaded]   = useState(false);
+  const [imgFailed, setImgFailed]   = useState(false);
 
   useEffect(() => {
     if (draftReady && draft && draft.current_movement === 'entrance') {
@@ -30,25 +31,41 @@ const MovementEntrance = () => {
   };
 
   const heroImage = manifest?.entrance_image_url || '';
-  const ready = manifestReady && draftReady;
+  // Editorial poster gradient — always present so the page never
+  // shows a blank black surface, even if the hero asset is missing
+  // or still loading. Mirrors the entrance.svg mood (teal-emerald).
+  const posterGradient =
+    'radial-gradient(ellipse at 50% 55%, #0E2A28 0%, #082018 42%, #040806 100%)';
 
   return (
     <StudioActivationLayout movement="entrance" resumed={resumed}>
-      {/* Full-bleed photograph + cinematic vignette */}
+      {/* Full-bleed editorial backdrop — poster + photograph + vignette */}
       <div style={{ position: 'absolute', inset: 0 }}>
+        {/* Layer 1 — always-on editorial poster (no blank state ever) */}
         <div
+          aria-hidden="true"
           style={{
             position: 'absolute', inset: 0,
-            backgroundImage: heroImage ? `url("${heroImage}")` : 'none',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: imgLoaded ? 1 : 0,
-            transition: 'opacity 1400ms ease',
-            animation: imgLoaded ? 'studioKenBurns 38s ease-in-out infinite alternate' : 'none',
-            transformOrigin: 'center',
+            background: posterGradient,
           }}
         />
-        {/* Vignette + cinematic gradients */}
+        {/* Layer 2 — hero photograph (fades in over the poster) */}
+        {heroImage && !imgFailed && (
+          <div
+            style={{
+              position: 'absolute', inset: 0,
+              backgroundImage: `url("${heroImage}")`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              opacity: imgLoaded ? 1 : 0,
+              transition: 'opacity 1400ms ease',
+              animation: imgLoaded ? 'studioKenBurns 38s ease-in-out infinite alternate' : 'none',
+              transformOrigin: 'center',
+            }}
+            data-testid="entrance-hero-image"
+          />
+        )}
+        {/* Layer 3 — vignette + cinematic gradients */}
         <div style={{
           position: 'absolute', inset: 0,
           background:
@@ -57,19 +74,25 @@ const MovementEntrance = () => {
         }} />
       </div>
 
-      {/* Hidden preload image to trigger the fade */}
+      {/* Hidden preload image — fades in the photo on load, falls back
+          gracefully to the poster on error. */}
       {heroImage && (
         <img
           src={heroImage}
           alt=""
           aria-hidden="true"
+          decoding="async"
+          fetchpriority="high"
           onLoad={() => setImgLoaded(true)}
+          onError={() => { setImgFailed(true); setImgLoaded(true); }}
           style={{ position: 'absolute', width: 1, height: 1, opacity: 0,
                    pointerEvents: 'none' }}
         />
       )}
 
-      {/* Editorial composition */}
+      {/* Editorial composition — text is visible from the first paint;
+          the `studio-rise` animation is an enhancement applied once the
+          manifest copy resolves (so we don't flash empty strings). */}
       <div
         style={{
           position: 'absolute', inset: 0,
@@ -80,7 +103,7 @@ const MovementEntrance = () => {
         }}
       >
         <div /> {/* left gutter */}
-        <div className={ready ? 'studio-rise' : ''} style={{ paddingTop: 60 }}>
+        <div className={manifestReady ? 'studio-rise' : ''} style={{ paddingTop: 60 }}>
           <p data-testid="entrance-eyebrow"
               style={{
                 margin: 0,

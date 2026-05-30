@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Architecture Firm">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#1E2630"/>
+      <stop offset="60%"  stop-color="#0F151B"/>
+      <stop offset="100%" stop-color="#06090C"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <g stroke="rgba(140,170,200,0.08)" stroke-width="1" fill="none">
+    <path d="M0 270 L1920 270"/>
+    <path d="M0 540 L1920 540"/>
+    <path d="M0 810 L1920 810"/>
+    <path d="M480 0 L480 1080"/>
+    <path d="M960 0 L960 1080"/>
+    <path d="M1440 0 L1440 1080"/>
+  </g>
+</svg>

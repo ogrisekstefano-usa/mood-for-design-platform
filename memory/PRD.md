@@ -12,6 +12,42 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ## Latest session — Mar 01, 2026 (cont.)
 
+### `/studio` Funnel Performance + Image Hardening ✅ (Mar 01, 2026)
+
+**P0**
+- **Studio images decoupled from Supabase**: 7 editorial SVG posters in `/app/frontend/public/static/studio/` (entrance + 6 archetypes). Backend `studio_activation.py.manifest()` ora punta a `/static/studio/*.svg`. Bucket Supabase non più dipendenza per il funnel. Tutti i file sono sostituibili 1:1 (stesso filename) quando l'utente vorrà caricare foto curate.
+- **Hero fallback in `MovementEntrance.jsx`**: 3 strati ora — (1) poster gradient teal-emerald **sempre presente** (mai sfondo nero), (2) foto hero che fade-in sopra il poster, (3) vignetta cinematografica. Aggiunto `onError` handler: se l'immagine fallisce, `setImgFailed(true)` + `setImgLoaded(true)` → il poster resta visibile come fondo finale (zero stati vuoti).
+- **CTA Header riallineato al funnel**: aggiunto nuovo item `studio_open` in `cms_sections.navigation` posizionato come ultimo `right` (filled teal pill). Label "Apri uno Studio" (IT) · "Open a Studio" (EN) · "Ouvrir un Studio" · "Studio eröffnen" · "Abrir un Studio". Href `/studio`. "Accedi" rimane outlined teal per advisor/founder/admin che già hanno accesso.
+
+**P1**
+- **Manifest cache**: nuovo strato in `routers/studio_activation.py.get_manifest` con in-process cache 60s TTL + ETag (sha256 first 16 hex) + `Cache-Control: public, max-age=60, stale-while-revalidate=300`. Conditional GET `If-None-Match` → 304 vuoto. **Tempo warm**: da 1.10s a 0.12s (-89%). **Tempo 304**: 0.08s.
+- **Draft lazy creation**: `useActivationDraft.js` riscritto. Su mount: solo resume se `mood_studio_draft_token` esiste in localStorage. Niente POST automatico. Prima chiamata `patch()` (es. al click CTA "Inizia la composizione") crea la draft on-demand via `ensureDraft()`. Visitatori che non compongono non toccano più il backend per la draft (-1 richiesta).
+- **Decoupling text da animation gate**: classe `studio-rise` ora applicata solo quando `manifestReady` (non più `manifestReady && draftReady`). Il testo è già visibile via default opacity, l'animazione è enhancement non blocco.
+
+**Benchmark prima/dopo (preview, fresh visitor, dev mode)**
+
+| Metrica | Prima | Dopo | Delta |
+|---|---|---|---|
+| TTFB | 69 ms | 154 ms | +85 ms (variazione naturale) |
+| First Contentful Paint | 296 ms | 297 ms | invariato |
+| Eyebrow visibile (testid) | 2.60 s | **0.36 s** | **-86%** |
+| Headline visibile (testid) | n/a | **0.38 s** | nuovo |
+| NetworkIdle (complete) | 3.20 s | **1.09 s** | **-66%** |
+| Image failures (4xx) | 7 (bucket Supabase) | **0** | **-100%** |
+| API calls (fresh visitor) | 6 (3 unique × 2 StrictMode) | 4 (2 unique × 2 StrictMode) | -33% |
+| POST /draft on entrance load | sì (sempre) | **no** (solo on CTA click) | rimosso |
+| Manifest warm latency | 1.10 s | **0.12 s** | -89% |
+| Sfondo nero vuoto | persistente | **mai** | risolto |
+
+**Files modificati**
+- Frontend: `pages/studio/MovementEntrance.jsx`, `pages/studio/useActivationDraft.js`, `components/CorporateNav.jsx`, `public/static/studio/*.svg` (7 nuovi).
+- Backend: `routers/studio_activation.py`, `services/studio_activation.py`.
+- DB: `cms_sections.navigation` settings ampliata con nuovo item + `editorial_blocks` per label `site.nav.studio_open.label` (5 traduzioni IT/EN-US/EN-UK/FR/DE/ES).
+
+---
+
+## Earlier in session — Mar 01, 2026
+
 ### Chunk 2 completion — Super Admin Overview + Role-aware Workspace ✅ (Mar 01, 2026)
 
 **Problem solved**: previously both admin and advisor landed on `/command-center/advisor-console`. The advisor console is a scoped read of the viewer's own dossier — wrong default for super admin who needs governance breadth.

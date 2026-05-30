@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Material Gallery">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#3A241A"/>
+      <stop offset="55%"  stop-color="#1B100B"/>
+      <stop offset="100%" stop-color="#0A0604"/>
+    </linearGradient>
+    <pattern id="weave" x="0" y="0" width="180" height="180" patternUnits="userSpaceOnUse">
+      <rect width="180" height="180" fill="rgba(180,110,70,0.04)"/>
+      <rect x="0" y="0" width="180" height="2" fill="rgba(180,110,70,0.07)"/>
+      <rect x="0" y="0" width="2" height="180" fill="rgba(180,110,70,0.06)"/>
+    </pattern>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <rect width="1920" height="1080" fill="url(#weave)"/>
+</svg>

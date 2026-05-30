@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Stone Specialist">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#2A2C2F"/>
+      <stop offset="55%"  stop-color="#15161A"/>
+      <stop offset="100%" stop-color="#080A0C"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <g stroke="rgba(200,200,200,0.06)" stroke-width="1" fill="none">
+    <path d="M0 320 L1920 220"/>
+    <path d="M0 540 L1920 440"/>
+    <path d="M0 760 L1920 660"/>
+    <path d="M0 960 L1920 860"/>
+  </g>
+</svg>
