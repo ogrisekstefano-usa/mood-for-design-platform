@@ -8,6 +8,8 @@ Endpoints (PUBLIC, no auth):
 """
 from datetime import datetime, timezone
 from typing import Optional, List
+import logging
+import os
 import secrets
 import uuid
 
@@ -17,6 +19,7 @@ from pydantic import BaseModel, EmailStr, Field
 from database import db
 from routers.design_journey import DEFAULT_MILESTONES
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -57,19 +60,54 @@ def _now() -> str:
 
 
 def _resolve_tenant_id(client, slug: Optional[str]) -> str:
-    """Resolve the tenant. Falls back to the first active tenant if slug
-    missing — the welcome ritual is sometimes opened without tenant context
-    (es. dalla homepage di MOOD)."""
+    """Resolve the tenant for an anonymous Begin Journey™ submission.
+
+    ITER173 · Tenant Isolation Hardening Phase 1:
+      - If `slug` is provided AND maps to an active tenant → use it.
+      - Otherwise → use env-configured DEFAULT_PUBLIC_TENANT_SLUG.
+      - If the env var is missing or its slug is not active → 503 with
+        a clear message. NO silent fallback to "first tenant by
+        created_at", which was fragile (ITER173 audit R3).
+
+    The env-driven default is the canonical DEMO tenant that owns the
+    public marketing site. It must be configured per environment.
+    """
+    # 1) Explicit slug wins
     if slug:
         t = (client.table('tenants').select('id,status')
              .eq('slug', slug).limit(1).execute().data or [])
         if t and t[0].get('status') == 'active':
             return t[0]['id']
-    # Fallback: first active tenant (the platform demo studio)
-    t = (client.table('tenants').select('id')
-         .eq('status', 'active').order('created_at').limit(1).execute().data or [])
-    if not t:
-        raise HTTPException(status_code=503, detail="No active studio available")
+        # Slug provided but unknown/archived → hard fail rather than mis-route.
+        raise HTTPException(
+            status_code=404,
+            detail=f"Tenant '{slug}' is not active.",
+        )
+
+    # 2) Env-driven default (single source of truth)
+    default_slug = os.environ.get('DEFAULT_PUBLIC_TENANT_SLUG')
+    if not default_slug:
+        logger.error(
+            "DEFAULT_PUBLIC_TENANT_SLUG env var missing — refusing to "
+            "silently fall back to a random tenant."
+        )
+        raise HTTPException(
+            status_code=503,
+            detail="Public tenant routing is not configured on this server.",
+        )
+
+    t = (client.table('tenants').select('id,status')
+         .eq('slug', default_slug).limit(1).execute().data or [])
+    if not t or t[0].get('status') != 'active':
+        logger.error(
+            "DEFAULT_PUBLIC_TENANT_SLUG='%s' does not resolve to an active "
+            "tenant. Refusing to route anonymous journey.",
+            default_slug,
+        )
+        raise HTTPException(
+            status_code=503,
+            detail="Default public tenant is not active.",
+        )
     return t[0]['id']
 
 
