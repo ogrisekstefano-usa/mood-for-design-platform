@@ -73,9 +73,21 @@ const WorkspaceShell = ({
         </div>
 
         <nav className="space-y-1 mt-6" data-testid="workspace-nav">
-          {(navItems || []).map((it) => (
-            <NavItem key={it.to} to={it.to} icon={it.icon} label={it.label} testid={it.testid} />
-          ))}
+          {(navItems || []).map((it, idx) => {
+            const prev = idx > 0 ? navItems[idx - 1] : null;
+            const showDivider = prev && prev.group && it.group && prev.group !== it.group;
+            return (
+              <React.Fragment key={it.to}>
+                {showDivider && (
+                  <div aria-hidden="true" style={{
+                    height: 1, background: 'rgba(255,255,255,0.06)',
+                    margin: '12px 8px 12px',
+                  }} />
+                )}
+                <NavItem to={it.to} icon={it.icon} label={it.label} testid={it.testid} />
+              </React.Fragment>
+            );
+          })}
         </nav>
 
         <div style={{ position: 'absolute', bottom: '2rem', left: '1rem', right: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

@@ -12,6 +12,53 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ## Latest session — Mar 01, 2026 (cont.)
 
+### Command Center — Unified Admin Workspace ✅ (Mar 01, 2026)
+
+**Problema**: dopo aver introdotto la separazione `/command-center` (MOOD Core) ≠ `/blueprint` (Tenant CMS), il super admin aveva 2 sidebar separate e doveva saltare tra workspaces per gestire Pages/Blocks/Sections/Media/Footer/SEO/Publishing. Le voci della gestione precedente apparivano "perse".
+
+**Soluzione**: ho mantenuto la regola architetturale "MOOD Core ≠ Blueprint Tenant" ma ho **unificato la superficie operativa del super admin**. Tutte le pagine CMS sono ora montate **anche** sotto `/command-center/*` (le stesse component, no duplicazione). Il workspace `/blueprint/*` resta intatto per i futuri tenant subdomain (founder lo userà sul proprio sottodominio).
+
+**Sidebar admin Command Center** (11 voci, con divisore visivo):
+
+```
+─── MOOD Core ───
+• Overview          /command-center/overview
+• Advisors          /command-center/advisors
+• Advisor Console   /command-center/advisor-console
+• Studio Requests   /command-center/studio-requests
+
+─── CMS Blueprint ───
+• Pagine            /command-center/pages
+• Editorial Blocks  /command-center/blocks
+• Sections          /command-center/sections
+• Media Library     /command-center/media
+• Footer            /command-center/footer
+• SEO & Indexing    /command-center/seo
+• Publishing        /command-center/publish
+```
+
+**Sidebar advisor** (invariata, 2 voci): Advisor Console · Studio Requests.
+
+**Files toccati**:
+- `CommandCenterApp.jsx` — 7 nuove route CMS + sidebar admin estesa con `group: 'core'|'cms'`.
+- `shared/WorkspaceShell.jsx` — supporto divisore visivo tra gruppi nella sidebar (hairline 1px rgba 0.06).
+- `AdminApp.jsx` (LegacyAdminRedirect) — `/admin/pages|blocks|...` ora redirige a `/command-center/<path>` (non più `/blueprint/<path>`). Bookmark legacy restano funzionanti.
+
+**Verifica visiva**:
+- Admin atterra su `/command-center/overview` con tutte le 11 voci visibili.
+- Click "Pagine" → carica `PagesEditor` con tutte le funzionalità precedenti (locale switcher, edit, preview).
+- Click "Editorial Blocks" → `BlocksEditor` funzionante.
+- Cross-link `/blueprint` rimosso dalla sidebar admin (era ridondante).
+
+**Regola architetturale finale**:
+- `/command-center/*` = workspace operativo del super admin di MOOD (tutto in un posto solo) + console scoped per advisor + landing founder.
+- `/blueprint/*` = workspace dedicato per i futuri tenant founder (oggi monta gli stessi component CMS, ma scopato per il loro tenant via JWT slug).
+- `/admin/*` = redirect permanente bookmark-safe.
+
+---
+
+## Earlier in session — Mar 01, 2026
+
 ### Command Center — Admin governance shell completata ✅ (Mar 01, 2026)
 
 **Problema**: la login a `/command-center` autenticava correttamente admin/advisor, ma il Super Admin non aveva accesso operativo a:

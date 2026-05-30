@@ -174,8 +174,9 @@ const AuthGate = ({ workspaceLabel, children }) => {
 /**
  * LegacyAdminRedirect — keeps every bookmarked /admin/... URL working
  * by mapping it onto the new /command-center namespace. Specific path
- * mappings translate the old Blueprint sub-paths to /blueprint, the
- * MOOD Core ones to /command-center, and the founder Welcome to its
+ * mappings translate every old Blueprint sub-path to the corresponding
+ * /command-center entry (super admin's unified workspace), the MOOD
+ * Core ones to /command-center, and the founder Welcome to its
  * full-bleed route. Tail + query string are preserved.
  */
 const LegacyAdminRedirect = () => {
@@ -188,16 +189,16 @@ const LegacyAdminRedirect = () => {
     return <Navigate to={`/command-center/welcome${search}`} replace />;
   }
 
-  // Blueprint surfaces (tenant CMS)
-  const BLUEPRINT_PATHS = ['/pages', '/blocks', '/sections', '/media', '/footer', '/seo', '/publish'];
-  for (const p of BLUEPRINT_PATHS) {
+  // CMS surfaces — now lived inside Command Center for the super admin.
+  const CMS_PATHS = ['/pages', '/blocks', '/sections', '/media', '/footer', '/seo', '/publish'];
+  for (const p of CMS_PATHS) {
     if (path === p || path.startsWith(p + '/')) {
-      return <Navigate to={`/blueprint${path}${search}`} replace />;
+      return <Navigate to={`/command-center${path}${search}`} replace />;
     }
   }
 
-  // MOOD Core surfaces (advisor + studio requests)
-  const COMMAND_PATHS = ['/advisor-console', '/studio-requests'];
+  // MOOD Core surfaces (advisor + studio requests + advisors mgmt)
+  const COMMAND_PATHS = ['/advisor-console', '/studio-requests', '/advisors', '/overview'];
   for (const p of COMMAND_PATHS) {
     if (path === p || path.startsWith(p + '/')) {
       return <Navigate to={`/command-center${path}${search}`} replace />;
