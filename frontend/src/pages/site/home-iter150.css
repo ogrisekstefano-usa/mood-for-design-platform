@@ -886,6 +886,35 @@
   background: var(--mfd-accent, #00C9B3);
   border-color: var(--mfd-accent, #00C9B3);
 }
+
+/* ITER171.8 · Country & language picker trigger */
+.mfd-footer__locale {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(245, 242, 237, 0.08);
+}
+.mfd-footer__locale-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 16px;
+  background: transparent;
+  border: 1px solid rgba(245, 242, 237, 0.18);
+  border-radius: 999px;
+  color: rgba(245, 242, 237, 0.80);
+  font: 600 11px/1 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 200ms ease, border-color 200ms ease, background 200ms ease;
+}
+.mfd-footer__locale-btn:hover {
+  color: #0e0d0b;
+  background: var(--mfd-accent, #00C9B3);
+  border-color: var(--mfd-accent, #00C9B3);
+}
+.mfd-footer__locale-current {
+  opacity: 0.65;
+  letter-spacing: 0.16em;
+}
 .mfd-footer__brand-mark {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 20px; font-weight: 500;

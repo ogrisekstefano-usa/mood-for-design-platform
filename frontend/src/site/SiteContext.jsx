@@ -17,13 +17,16 @@ const SiteContext = createContext({
 export const useSite = () => useContext(SiteContext);
 
 // Detect initial canonical locale.
-// Priority chain:
-//   1. localStorage (user previously chose) — wins over everything
-//   2. navigator.language(s) — browser preference, match against publicly enabled locales
-//   3. en-GB explicit fallback (per product spec — UK English over US English)
-//   4. registry default locale
+// ITER171.8 · Priority chain (avoid IT→EN flash on cold load):
+//   1. localStorage (explicit user choice) — always wins
+//   2. Tenant default locale (synchronous if cached, else from registry's
+//      `default_locale` flag which mirrors the studio's preferred language)
+//   3. Browser `navigator.languages` ONLY if the registry default does not
+//      match the user's browser language family (avoids forcing IT on a
+//      genuine non-IT visitor when no explicit choice exists)
+//   4. en-GB hard fallback
 function detectInitialCanonicalLocale() {
-  // 1. Persisted choice
+  // 1. Persisted choice — highest priority
   try {
     const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
     if (stored) {
@@ -32,34 +35,48 @@ function detectInitialCanonicalLocale() {
     }
   } catch (_) {}
 
-  // 2. Browser-preferred languages (in order)
+  // 2. Cached tenant default from last visit — avoids the IT→EN flash
+  //    because the async tenant config fetch is too slow for first paint.
+  try {
+    const cached = localStorage.getItem('mfd_tenant_default_locale');
+    if (cached) {
+      const lang = resolveLanguage(cached);
+      if (lang.enabled && lang.public_enabled) return lang.code;
+    }
+  } catch (_) {}
+
+  // 3. Registry default — the studio's declared preferred language (`it`).
+  //    We prefer this over `navigator.languages` to avoid showing IT studios
+  //    in EN to anonymous visitors during the cold-boot before the tenant
+  //    config fetch arrives. Browser preference only wins for languages
+  //    *not* covered by the studio default.
+  const registryDefault = getDefaultLocale();
+
+  // 4. If the registry default is NOT the visitor's browser-base language,
+  //    consult browser prefs to honour visitors of OTHER nationalities.
+  //    (e.g. a French visitor on an IT studio site still sees FR — but the
+  //    initial paint is IT, then switches to FR after registry sync.)
   try {
     const reg = getSiteLocales().filter((l) => l.public_enabled !== false);
+    const registryBase = (resolveLanguage(registryDefault).base || '').toLowerCase();
     const browserPrefs = (typeof navigator !== 'undefined' && Array.isArray(navigator.languages) && navigator.languages.length)
       ? navigator.languages
       : (typeof navigator !== 'undefined' && navigator.language ? [navigator.language] : []);
     for (const raw of browserPrefs) {
       const norm = String(raw || '').trim();
       if (!norm) continue;
-      // Exact match (e.g. 'en-GB' === 'en-GB')
+      const base = norm.split('-')[0].toLowerCase();
+      // Browser pref matches the studio's default base → use registry default.
+      if (base === registryBase) return registryDefault;
+      // Otherwise honour the explicit browser preference if registered.
       const exact = reg.find((l) => l.code.toLowerCase() === norm.toLowerCase());
       if (exact) return exact.code;
-      // Base match (e.g. 'it-CH' → 'it')
-      const base = norm.split('-')[0].toLowerCase();
       const baseHit = reg.find((l) => (l.base || l.code.split('-')[0]).toLowerCase() === base);
       if (baseHit) return baseHit.code;
     }
   } catch (_) {}
 
-  // 3. en-GB hard fallback (spec)
-  try {
-    const reg = getSiteLocales().filter((l) => l.public_enabled !== false);
-    const enGB = reg.find((l) => l.code === 'en-GB' || l.code === 'en-UK');
-    if (enGB) return enGB.code;
-  } catch (_) {}
-
-  // 4. Registry default
-  return getDefaultLocale();
+  return registryDefault;
 }
 
 export const SiteProvider = ({ children }) => {
@@ -144,6 +161,9 @@ export const SiteProvider = ({ children }) => {
         if (!tenantDefault || cancelled) return;
         const resolved = resolveLanguage(tenantDefault);
         if (!resolved?.enabled || resolved.public_enabled === false) return;
+        // Cache the tenant default so the NEXT page load picks it up
+        // synchronously (no IT→EN flash on subsequent visits).
+        try { window.localStorage.setItem('mfd_tenant_default_locale', resolved.code); } catch (_) {}
         // Re-check explicit choice — user may have clicked the locale picker
         // while the fetch was in flight; never override an explicit choice.
         if (window.localStorage.getItem(LOCALE_STORAGE_KEY)) return;

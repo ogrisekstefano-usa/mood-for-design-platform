@@ -10,12 +10,13 @@
  * Layout: brand block (logo + social icons) on the left, cols distributed
  * edge-to-edge on the right with equal weighting.
  */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Linkedin, Facebook, Youtube, Twitter, Mail, Globe } from 'lucide-react';
 import { useStorefrontContent } from '../useStorefrontContent';
 import { useSite } from '../SiteContext';
 import { MOOD_BRAND_LOGO_URL, MOOD_BRAND_ALT } from '../content/brandAssets';
+import { CountryLanguageSelector } from './CountryLanguageSelector';
 
 const resolveTenantSlug = () => {
   if (typeof window === 'undefined') return 'studio';
@@ -134,6 +135,7 @@ const MoodSiteFooter = () => {
   const site = useSite();
   const locale = (site?.locale || 'it').slice(0, 2);
   const i18nLocale = locale === 'en' ? 'en-US' : (locale === 'it' ? 'it-IT' : locale);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const tenantSlug = useMemo(() => resolveTenantSlug(), []);
   const cmsHome = useStorefrontContent(tenantSlug, 'home');
@@ -248,8 +250,31 @@ const MoodSiteFooter = () => {
             </div>
           )}
         </div>
+
+        {/* ITER171.8 · Country & language picker — opens the global modal */}
+        <div className="mfd-footer__locale">
+          <button
+            type="button"
+            className="mfd-footer__locale-btn"
+            onClick={() => setPickerOpen(true)}
+            data-testid="footer-locale-picker"
+          >
+            <Globe size={14} strokeWidth={1.6} />
+            <span>
+              {locale.startsWith('it') ? 'Paese · Lingua'
+               : locale.startsWith('fr') ? 'Pays · Langue'
+               : locale.startsWith('de') ? 'Land · Sprache'
+               : locale.startsWith('es') ? 'País · Idioma'
+               : 'Country · Language'}
+            </span>
+            <span className="mfd-footer__locale-current">
+              · {(i18nLocale || locale).toUpperCase()}
+            </span>
+          </button>
+        </div>
       </div>
       <FooterColophon locale={locale} colophon={SHELL_COLOPHON} />
+      <CountryLanguageSelector open={pickerOpen} onClose={() => setPickerOpen(false)} />
     </footer>
   );
 };
