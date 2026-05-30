@@ -1,12 +1,13 @@
 import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { Building2, Compass, LayoutDashboard } from 'lucide-react';
+import { Building2, Compass, LayoutDashboard, Users, Layers } from 'lucide-react';
 
 import WorkspaceShell from './shared/WorkspaceShell';
 import StudioRequestsAdmin from './pages/StudioRequestsAdmin';
 import AdvisorConsole from './pages/AdvisorConsole';
 import RelationDetail from './pages/RelationDetail';
 import CommandOverview from './pages/CommandOverview';
+import AdvisorsAdmin from './pages/AdvisorsAdmin';
 
 /**
  * CommandCenterShell™ — MOOD Core workspace.
@@ -25,8 +26,10 @@ import CommandOverview from './pages/CommandOverview';
  */
 const ADMIN_NAV = [
   { to: '/command-center/overview',         icon: LayoutDashboard, label: 'Overview',         testid: 'cc-nav-overview' },
+  { to: '/command-center/advisors',         icon: Users,           label: 'Advisors',         testid: 'cc-nav-advisors' },
   { to: '/command-center/advisor-console',  icon: Compass,         label: 'Advisor Console',  testid: 'cc-nav-advisor-console' },
   { to: '/command-center/studio-requests',  icon: Building2,       label: 'Studio Requests',  testid: 'cc-nav-studio-requests' },
+  { to: '/blueprint',                       icon: Layers,          label: 'Blueprint · CMS',  testid: 'cc-nav-blueprint' },
 ];
 
 const ADVISOR_NAV = [
@@ -99,12 +102,14 @@ const CommandCenterApp = () => {
       logoutTo="/command-center"
       edgeToEdgeWhen={(p) =>
         p.startsWith('/command-center/advisor-console') ||
-        p.startsWith('/command-center/overview')
+        p.startsWith('/command-center/overview') ||
+        p.startsWith('/command-center/advisors')
       }
     >
       <Routes>
         <Route index                                  element={<RootRedirect />} />
         <Route path="overview"                        element={<SuperAdminOnly><CommandOverview /></SuperAdminOnly>} />
+        <Route path="advisors"                        element={<SuperAdminOnly><AdvisorsAdmin /></SuperAdminOnly>} />
         <Route path="advisor-console"                 element={<NotFounder><AdvisorConsole /></NotFounder>} />
         <Route path="advisor-console/relations/:id"   element={<NotFounder><RelationDetail /></NotFounder>} />
         <Route path="studio-requests"                 element={<NotFounder><StudioRequestsAdmin /></NotFounder>} />

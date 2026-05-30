@@ -698,3 +698,239 @@ async def command_overview(
             } for t in tenants_rows
         ],
     }
+
+
+# ── Advisor Management (super-admin only) ────────────────────────────
+def _gen_advisor_code(prefix: str = "ADV") -> str:
+    """Deterministic-ish 8-char advisor code (e.g. ADV-A1B2C3)."""
+    import secrets
+    import string
+    alphabet = string.ascii_uppercase + string.digits
+    return f"{prefix}-" + "".join(secrets.choice(alphabet) for _ in range(6))
+
+
+@router.get("/admin/advisors")
+async def list_advisors(
+    scope: dict = Depends(require_advisor_scope),
+):
+    """List every advisor profile + linked user info."""
+    if not scope["is_super_admin"]:
+        raise HTTPException(status_code=403, detail="Super admin required")
+    async with AsyncSessionLocal() as s:
+        rows = (await s.execute(
+            text("""
+                SELECT ap.id            AS profile_id,
+                       ap.user_id,
+                       ap.advisor_code,
+                       ap.name,
+                       ap.email,
+                       ap.status,
+                       ap.commission_percentage,
+                       ap.created_at,
+                       u.email          AS user_email,
+                       u.is_active      AS user_active,
+                       u.last_login_at  AS user_last_login,
+                       (SELECT COUNT(*) FROM studio_relations sr
+                          WHERE sr.owner_advisor_id = ap.user_id) AS relations_count
+                  FROM advisor_profiles ap
+                  LEFT JOIN users u ON u.id = ap.user_id
+                 ORDER BY ap.created_at NULLS LAST, ap.name
+            """),
+        )).mappings().all()
+    return [
+        {
+            "profile_id":            str(r["profile_id"]),
+            "user_id":               str(r["user_id"]) if r["user_id"] else None,
+            "advisor_code":          r["advisor_code"],
+            "name":                  r["name"],
+            "email":                 r["email"],
+            "status":                r["status"],
+            "commission_percentage": float(r["commission_percentage"] or 0),
+            "created_at":            r["created_at"].isoformat() if r["created_at"] else None,
+            "user_active":           bool(r["user_active"]) if r["user_active"] is not None else None,
+            "user_last_login":       r["user_last_login"].isoformat() if r["user_last_login"] else None,
+            "relations_count":       int(r["relations_count"] or 0),
+        } for r in rows
+    ]
+
+
+@router.post("/admin/advisors")
+async def create_advisor(
+    body: dict = Body(...),
+    scope: dict = Depends(require_advisor_scope),
+):
+    """
+    Create a new Advisor identity on the central `studio` tenant.
+
+    Body:
+      { name, email, advisor_code (opt), commission_percentage (opt) }
+
+    Effect:
+      • Creates a users row (role='advisor', tenant=studio,
+        password_hash='!magic-link-only').
+      • Creates an advisor_profiles row linked via user_id.
+      • Advisor can then authenticate exclusively via magic-link at
+        /accedi (identity probe → magic_link channel).
+
+    Idempotent on (lower(email)) — re-creating an existing advisor
+    refreshes the profile metadata without duplicating identities.
+    """
+    if not scope["is_super_admin"]:
+        raise HTTPException(status_code=403, detail="Super admin required")
+
+    name  = (body.get("name") or "").strip()
+    email = (body.get("email") or "").strip().lower()
+    code  = (body.get("advisor_code") or "").strip() or _gen_advisor_code()
+    try:
+        pct = float(body.get("commission_percentage") or 10)
+    except (TypeError, ValueError):
+        pct = 10.0
+
+    if not name or not email:
+        raise HTTPException(status_code=400, detail="name and email are required")
+    if "@" not in email or "." not in email:
+        raise HTTPException(status_code=400, detail="invalid email")
+
+    async with AsyncSessionLocal() as s:
+        # Resolve central tenant id.
+        tenant_id = (await s.execute(
+            text("SELECT id FROM tenants WHERE slug = 'studio' LIMIT 1"),
+        )).scalar()
+        if not tenant_id:
+            raise HTTPException(status_code=500, detail="Central tenant missing")
+
+        # Upsert users row (advisor identity).
+        user_row = (await s.execute(
+            text("""
+                SELECT id, role FROM users
+                 WHERE tenant_id = CAST(:tid AS uuid)
+                   AND lower(email) = :em
+                 LIMIT 1
+            """),
+            {"tid": str(tenant_id), "em": email},
+        )).mappings().first()
+
+        if user_row:
+            user_id = str(user_row["id"])
+            await s.execute(
+                text("""
+                    UPDATE users SET
+                      role          = 'advisor',
+                      is_active     = TRUE,
+                      full_name     = :nm,
+                      password_hash = CASE WHEN password_hash LIKE '!%' THEN password_hash
+                                           ELSE '!magic-link-only' END,
+                      updated_at    = NOW()
+                     WHERE id = CAST(:uid AS uuid)
+                """),
+                {"uid": user_id, "nm": name},
+            )
+            user_was_created = False
+        else:
+            user_id = str((await s.execute(
+                text("""
+                    INSERT INTO users
+                      (tenant_id, email, password_hash, full_name, role, is_active)
+                    VALUES (CAST(:tid AS uuid), :em, '!magic-link-only', :nm, 'advisor', TRUE)
+                    RETURNING id
+                """),
+                {"tid": str(tenant_id), "em": email, "nm": name},
+            )).scalar())
+            user_was_created = True
+
+        # Upsert advisor_profile.
+        profile = (await s.execute(
+            text("""
+                SELECT id FROM advisor_profiles
+                 WHERE user_id = CAST(:uid AS uuid)
+                    OR lower(email) = :em
+                 LIMIT 1
+            """),
+            {"uid": user_id, "em": email},
+        )).mappings().first()
+
+        if profile:
+            profile_id = str(profile["id"])
+            await s.execute(
+                text("""
+                    UPDATE advisor_profiles SET
+                      user_id               = CAST(:uid AS uuid),
+                      advisor_code          = COALESCE(NULLIF(advisor_code, ''), :code),
+                      name                  = :nm,
+                      email                 = :em,
+                      status                = 'active',
+                      commission_percentage = :pct,
+                      updated_at            = NOW()
+                     WHERE id = CAST(:pid AS uuid)
+                """),
+                {"uid": user_id, "code": code, "nm": name, "em": email,
+                 "pct": pct, "pid": profile_id},
+            )
+            profile_was_created = False
+        else:
+            profile_id = str((await s.execute(
+                text("""
+                    INSERT INTO advisor_profiles
+                      (id, user_id, advisor_code, name, email, status,
+                       commission_percentage, created_at, updated_at)
+                    VALUES (gen_random_uuid(), CAST(:uid AS uuid), :code, :nm, :em,
+                            'active', :pct, NOW(), NOW())
+                    RETURNING id
+                """),
+                {"uid": user_id, "code": code, "nm": name, "em": email, "pct": pct},
+            )).scalar())
+            profile_was_created = True
+
+        await s.commit()
+
+    return {
+        "ok": True,
+        "profile_id":          profile_id,
+        "user_id":             user_id,
+        "advisor_code":        code,
+        "name":                name,
+        "email":               email,
+        "commission_percentage": pct,
+        "user_was_created":    user_was_created,
+        "profile_was_created": profile_was_created,
+    }
+
+
+@router.patch("/admin/advisors/{profile_id}")
+async def update_advisor(
+    profile_id: str,
+    body: dict = Body(...),
+    scope: dict = Depends(require_advisor_scope),
+):
+    """Update mutable fields: name, status (active/inactive),
+    commission_percentage. Email and user_id are immutable."""
+    if not scope["is_super_admin"]:
+        raise HTTPException(status_code=403, detail="Super admin required")
+    sets, params = ["updated_at = NOW()"], {"pid": profile_id}
+    if "name" in body:
+        sets.append("name = :nm")
+        params["nm"] = (body["name"] or "").strip()
+    if "status" in body:
+        st = body["status"]
+        if st not in ("active", "inactive"):
+            raise HTTPException(status_code=400, detail="invalid status")
+        sets.append("status = :st")
+        params["st"] = st
+    if "commission_percentage" in body:
+        try:
+            params["pct"] = float(body["commission_percentage"])
+        except (TypeError, ValueError):
+            raise HTTPException(status_code=400, detail="invalid commission_percentage")
+        sets.append("commission_percentage = :pct")
+    async with AsyncSessionLocal() as s:
+        res = await s.execute(
+            text(f"UPDATE advisor_profiles SET {', '.join(sets)} "
+                 f"WHERE id = CAST(:pid AS uuid) RETURNING id"),
+            params,
+        )
+        ok = res.scalar() is not None
+        await s.commit()
+    if not ok:
+        raise HTTPException(status_code=404, detail="Advisor not found")
+    return {"ok": True}
+

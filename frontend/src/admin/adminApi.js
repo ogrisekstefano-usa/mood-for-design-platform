@@ -153,4 +153,10 @@ export const adminApi = {
     axios.get(`${BACKEND_URL}/api/admin/command/overview`, { headers: headers() }),
   tenantManifest: (slug) =>
     axios.get(`${BACKEND_URL}/api/admin/tenants/${slug}/manifest`, { headers: headers() }),
+  listAdvisors: () =>
+    axios.get(`${BACKEND_URL}/api/admin/advisors`, { headers: headers() }),
+  createAdvisor: (body) =>
+    axios.post(`${BACKEND_URL}/api/admin/advisors`, body, { headers: headers() }),
+  updateAdvisor: (profileId, body) =>
+    axios.patch(`${BACKEND_URL}/api/admin/advisors/${profileId}`, body, { headers: headers() }),
 };

@@ -12,6 +12,45 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ## Latest session — Mar 01, 2026 (cont.)
 
+### Command Center — Admin governance shell completata ✅ (Mar 01, 2026)
+
+**Problema**: la login a `/command-center` autenticava correttamente admin/advisor, ma il Super Admin non aveva accesso operativo a:
+- Gestione Advisor (creazione, attivazione/disattivazione)
+- CMS Blueprint (pagine, blocks, sections, media, footer, SEO, publish)
+
+L'Overview era read-only. Mancavano i link operativi.
+
+**Soluzione**:
+- Backend: 3 nuovi endpoint super-admin in `routers/admin_relations.py`:
+  - `GET  /api/admin/advisors` → lista advisor con KPI per profilo (status, commission, relations_count, last_login)
+  - `POST /api/admin/advisors` → crea/aggiorna advisor (users role=advisor + advisor_profiles, idempotente su email)
+  - `PATCH /api/admin/advisors/{profile_id}` → attiva/disattiva, aggiorna commissione
+- Frontend: nuova pagina `pages/AdvisorsAdmin.jsx`:
+  - Form editoriale "Apri un canale" (Nome, Email, Codice opzionale auto-generato, Commissione %)
+  - Tabella "Registro Advisor" con status pill teal/coral, ultimo accesso, # relazioni, toggle Disattiva/Riattiva
+  - Tono curatoriale (Playfair + Montserrat + Inter)
+- Sidebar admin in `CommandCenterApp.jsx` espansa a 5 voci:
+  - Overview · **Advisors** (NEW) · Advisor Console · Studio Requests · **Blueprint · CMS** (NEW link cross-namespace a `/blueprint`)
+- React route `/command-center/advisors` protetta da `SuperAdminOnly` (advisor → redirect a `/advisor-console`, founder → redirect a `/blueprint`).
+
+**Flusso operativo admin** (verificato curl + screenshot):
+1. Admin login → `/command-center/overview` (governance globale, KPI, tabelle read-only).
+2. Click "Advisors" sidebar → form di creazione.
+3. Inserisce Nome + Email + (opz) Codice + Commissione % → POST `/api/admin/advisors` → crea identità centrale (users role=advisor + advisor_profiles).
+4. Nuovo advisor appare nella tabella, può immediatamente fare `/accedi` con magic-link (identity-probe → `magic_link`).
+5. Click "Advisor Console" sidebar → vista cross-advisor.
+6. Click "Blueprint · CMS" sidebar → cross-namespace verso il workspace CMS tenant.
+
+**Test curl-verified**: admin crea "Marco Bianchi" → identity-probe ritorna `magic_link` → JWT con role=advisor → scoping E2E intatto.
+
+**Files modificati**
+- Backend: `routers/admin_relations.py` (+220 righe per 3 endpoint advisor).
+- Frontend: `pages/AdvisorsAdmin.jsx` (NEW), `CommandCenterApp.jsx` (sidebar + route), `adminApi.js` (3 helpers).
+
+---
+
+## Earlier in session — Mar 01, 2026
+
 ### `/studio` Funnel Performance + Image Hardening ✅ (Mar 01, 2026)
 
 **P0**
