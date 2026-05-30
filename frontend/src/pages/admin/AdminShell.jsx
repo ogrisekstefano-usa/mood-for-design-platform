@@ -32,7 +32,8 @@ const NAV = [
   { to: '/admin/dashboard',             Icon: LayoutGrid,        keyName: 'nav.dashboard',            label: 'Governance' },
   { to: '/admin/tenants',               Icon: Building2,         keyName: 'nav.tenants',              label: 'Studi' },
   { to: '/admin/users',                 Icon: Users,             keyName: 'nav.users',                label: 'Utenti' },
-  { to: '/admin/advisors',              Icon: Network,           keyName: 'nav.advisors',             label: 'Advisor Network™' },
+  // ITER172 · Advisor Network™ FROZEN — nav entry removed.
+  // { to: '/admin/advisors',           Icon: Network,           keyName: 'nav.advisors',             label: 'Advisor Network™' },
   { to: '/admin/presets',               Icon: Sparkles,          keyName: 'nav.presets',              label: 'Preset Atelier' },
   { to: '/admin/editorial-runtime',     Icon: FileText,          keyName: 'nav.editorial',            label: 'Editorial Runtime' },
   { to: '/admin/tenant-configuration',  Icon: SlidersHorizontal, keyName: 'nav.tenant_configuration', label: 'Tenant Configuration' },

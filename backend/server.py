@@ -11,7 +11,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import httpx
 
-from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_archive, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine, ai_studio_brief, project_workspace_v2, proposal_composer, market_perspectives, locale_runtime, editorial_variants, advisor_suggestions, reference_intelligence, relationships, markets, editorial, advisor_network, crm_voice_notes, crm_intelligence, recall_requests, client_profile_config
+from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_archive, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine, ai_studio_brief, project_workspace_v2, proposal_composer, market_perspectives, locale_runtime, editorial_variants, advisor_suggestions, reference_intelligence, relationships, markets, editorial, crm_voice_notes, crm_intelligence, recall_requests, client_profile_config
+# ITER172 · Advisor Network™ FROZEN — source kept, runtime disabled.
+# Do NOT re-import `advisor_network` here unless the freeze is officially lifted.
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -249,7 +251,10 @@ api_router.include_router(published_journeys.admin_router,
                           tags=["published-journeys"])
 api_router.include_router(magazine.router, prefix="/magazine", tags=["magazine"])
 api_router.include_router(editorial_calendar.router, prefix="/blueprint/calendar", tags=["editorial-calendar"])
-api_router.include_router(advisor_network.router, tags=["advisor-network"])
+# ITER172 · Advisor Network™ FROZEN — router NOT mounted. Source preserved at
+# routers/advisor_network.py. Tables retained in DB. To restore: re-add the
+# `advisor_network` import above and uncomment the line below.
+# api_router.include_router(advisor_network.router, tags=["advisor-network"])
 api_router.include_router(market_intelligence.router, tags=["market-intelligence"])
 api_router.include_router(cultural_editions.router, tags=["cultural-editions"])
 # ITER143A+ · Dynamic Editorial Runtime™ — page bundle resolver + governance.

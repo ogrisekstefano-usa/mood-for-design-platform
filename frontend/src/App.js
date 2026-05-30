@@ -153,9 +153,12 @@ const AdminTenantsPage = lazy(() => import('./pages/admin/AdminTenantsPage'));
 const AdminTenantDetailPage = lazy(() => import('./pages/admin/AdminTenantDetailPage'));
 const AdminModulesPage = lazy(() => import('./pages/admin/PlatformCapabilitiesPage'));
 const AdminAuditPage = lazy(() => import('./pages/admin/AdminAuditPage'));
-const AdvisorNetworkAdminPage = lazy(() => import('./pages/admin/AdvisorNetworkAdminPage'));
-const AdvisorDetailPage = lazy(() => import('./pages/admin/AdvisorDetailPage'));
-const AdvisorDashboardPage = lazy(() => import('./pages/advisor/AdvisorDashboardPage'));
+// ITER172 · Advisor Network™ FROZEN — pages NOT imported at runtime.
+// Source preserved in /pages/admin/Advisor*.jsx and /pages/advisor/AdvisorDashboardPage.jsx.
+// To restore: uncomment the three lazy imports below.
+// const AdvisorNetworkAdminPage = lazy(() => import('./pages/admin/AdvisorNetworkAdminPage'));
+// const AdvisorDetailPage = lazy(() => import('./pages/admin/AdvisorDetailPage'));
+// const AdvisorDashboardPage = lazy(() => import('./pages/advisor/AdvisorDashboardPage'));
 
 // ITER143C · Blueprint Command Center™ — cinematic admin shell + 8 pages.
 const AdminShell = lazy(() => import('./pages/admin/AdminShell'));
@@ -735,8 +738,9 @@ function App() {
                   <Route path="/client/files" element={<Navigate to="/client#direzioni" replace />} />
                 </Route>
 
-                {/* ADVISOR self-service — standalone surface, gated by API (advisor_profile lookup) */}
-                <Route path="/advisor" element={<ProtectedRoute><OSWrap><AdvisorDashboardPage /></OSWrap></ProtectedRoute>} />
+                {/* ITER172 · Advisor Network™ FROZEN — /advisor route removed at runtime.
+                    Source preserved. To restore: re-add the lazy import + this Route. */}
+                {/* <Route path="/advisor" element={<ProtectedRoute><OSWrap><AdvisorDashboardPage /></OSWrap></ProtectedRoute>} /> */}
 
                 <Route element={<RootSuperAdminRoute><AdminShell /></RootSuperAdminRoute>}>
                   {/* ITER143C · Blueprint Command Center™ — canonical /admin/* freeze */}
@@ -759,8 +763,10 @@ function App() {
                       under their original paths but mounted in the cinematic shell. */}
                   <Route path="/admin/audit" element={<AdminAuditPage />} />
                   <Route path="/admin/modules" element={<AdminModulesPage />} />
-                  <Route path="/admin/advisors" element={<AdvisorNetworkAdminPage />} />
-                  <Route path="/admin/advisors/:id" element={<AdvisorDetailPage />} />
+                  {/* ITER172 · Advisor Network™ FROZEN — admin routes removed at runtime.
+                      Source preserved. To restore: uncomment imports + these Routes. */}
+                  {/* <Route path="/admin/advisors" element={<AdvisorNetworkAdminPage />} /> */}
+                  {/* <Route path="/admin/advisors/:id" element={<AdvisorDetailPage />} /> */}
                   {/* ITER148.B · Command Center extras */}
                   <Route path="/admin/forms-journeys" element={<FormBuilderPage />} />
                 </Route>

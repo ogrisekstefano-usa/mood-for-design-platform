@@ -157,7 +157,8 @@ const AccountDetailPage = () => {
   const mood    = summary?.mood;
   const insights = summary?.insights || [];
   const owner   = summary?.owner;
-  const advisor = summary?.advisor;
+  // ITER172 · Advisor Network™ FROZEN — Territory Advisor widget removed.
+  // const advisor = summary?.advisor;
   const sub     = summary?.submarket;
   const style   = summary?.style;
   const nextAction = summary?.next_action;
@@ -365,18 +366,7 @@ const AccountDetailPage = () => {
             <span>Owner</span>
             <span>{owner?.full_name || owner?.email || '—'}</span>
           </div>
-          {advisor && (
-            <>
-              <div className="rl-panel__row">
-                <span>Advisor</span>
-                <span>{advisor.name} · {advisor.advisor_code}</span>
-              </div>
-              <div className="rl-panel__row">
-                <span>Territory advisor</span>
-                <span>{advisor.territory || '—'}</span>
-              </div>
-            </>
-          )}
+          {/* ITER172 · Advisor Network™ FROZEN — Territory Advisor rows removed. */}
           <div className="rl-panel__row">
             <span>Territory cliente</span>
             <span>{[account.city, account.country].filter(Boolean).join(' · ') || '—'}</span>

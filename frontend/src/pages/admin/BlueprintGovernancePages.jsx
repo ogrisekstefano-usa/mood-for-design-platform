@@ -722,16 +722,11 @@ export const AdminIndexPage = () => (
         sub="Ruoli e identità"
         testid="bp-admin-link-users"
       />
-      <AdminIndexEntry
-        to="/admin/advisors"
-        eyebrow="04"
-        title="Advisor Network™"
-        sub="Esperti, ambito e visibilità"
-        testid="bp-admin-link-advisors"
-      />
+      {/* ITER172 · Advisor Network™ FROZEN — index card removed.
+          Source preserved at pages/admin/AdvisorNetworkAdminPage.jsx. */}
       <AdminIndexEntry
         to="/admin/presets"
-        eyebrow="05"
+        eyebrow="04"
         title="Preset Atelier"
         sub="Registry congelato"
         testid="bp-admin-link-presets"

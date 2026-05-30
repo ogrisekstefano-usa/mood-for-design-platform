@@ -75,9 +75,8 @@ const AdminLayout = () => {
           <AdminNavItem to="/admin/tenants" icon={Building2}
                         labelKey="admin.nav.tenants" fallback="Studi" />
 
-          <p className="acc-nav__section">Network</p>
-          <AdminNavItem to="/admin/advisors" icon={Handshake}
-                        labelKey="admin.nav.advisors" fallback="Advisor Network™" />
+          {/* ITER172 · Advisor Network™ FROZEN — Network section removed.
+              Source preserved at pages/admin/AdvisorNetworkAdminPage.jsx. */}
 
           <p className="acc-nav__section">Piattaforma</p>
           <AdminNavItem to="/admin/modules" icon={Layers}
