@@ -1,0 +1,1258 @@
+{
+  "iteration": "ITER174",
+  "mode": "DRY_RUN_ONLY",
+  "writes_performed": false,
+  "timestamp_utc": "20260530T232439Z",
+  "operational_tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+  "admin_email_preserved": "admin@moodfordesign.com",
+  "tenants": [
+    {
+      "id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "slug": "studio",
+      "name": "MOOD for DESIGN",
+      "status": "active",
+      "active_plan": "enterprise",
+      "is_demo": false,
+      "created_at": "2026-05-12 07:57:03.348758+00:00",
+      "users_count": 9,
+      "journeys_count": 9,
+      "classification": "PRESERVE (operational)"
+    },
+    {
+      "id": "ffc845f0-c049-45ae-ba80-0d217aeb39c2",
+      "slug": "atelier-p0-final",
+      "name": "Atelier P0 Final",
+      "status": "archived",
+      "active_plan": "starter",
+      "is_demo": false,
+      "created_at": "2026-05-29 07:45:48.122863+00:00",
+      "users_count": 0,
+      "journeys_count": 0,
+      "classification": "ALREADY ARCHIVED (no live data)"
+    },
+    {
+      "id": "f0e30282-2b15-407f-8787-c122ed97c0bc",
+      "slug": "studio-verifica-e2e",
+      "name": "Studio Verifica E2E",
+      "status": "archived",
+      "active_plan": "starter",
+      "is_demo": false,
+      "created_at": "2026-05-29 07:52:50.562862+00:00",
+      "users_count": 0,
+      "journeys_count": 0,
+      "classification": "ALREADY ARCHIVED (no live data)"
+    },
+    {
+      "id": "4dcfe2aa-f6aa-4a8a-992d-31c7f798c680",
+      "slug": "studio-tenant-lifecycle",
+      "name": "Studio Tenant Lifecycle",
+      "status": "archived",
+      "active_plan": "studio",
+      "is_demo": false,
+      "created_at": "2026-05-30 03:22:03.139004+00:00",
+      "users_count": 0,
+      "journeys_count": 0,
+      "classification": "ALREADY ARCHIVED (no live data)"
+    },
+    {
+      "id": "62fddb8f-7b20-4b79-a252-7239e0ee809e",
+      "slug": "atelier-lifecycle",
+      "name": "Atelier Lifecycle",
+      "status": "archived",
+      "active_plan": "studio",
+      "is_demo": false,
+      "created_at": "2026-05-30 03:24:21.005447+00:00",
+      "users_count": 0,
+      "journeys_count": 0,
+      "classification": "ALREADY ARCHIVED (no live data)"
+    },
+    {
+      "id": "0618756f-ac41-40b0-ac10-76f882846efe",
+      "slug": "margraf-usa",
+      "name": "Margraf USA",
+      "status": "active",
+      "active_plan": "studio",
+      "is_demo": false,
+      "created_at": "2026-05-30 21:19:32.955787+00:00",
+      "users_count": 0,
+      "journeys_count": 0,
+      "classification": "DECISION REQUIRED (active, empty)"
+    }
+  ],
+  "auth_users": [
+    {
+      "id": "18712745-bffc-4b42-b489-654a2aa83d6b",
+      "email": "admin@moodfordesign.com",
+      "created_at": "2026-05-23 19:35:26.279328+00:00",
+      "last_sign_in_at": "2026-05-30 23:02:03.432374+00:00",
+      "classification": "PRESERVE (admin root)"
+    },
+    {
+      "id": "954da316-63e3-421c-88c7-a9f2254262a2",
+      "email": "iter171client_1780040627@example.com",
+      "created_at": "2026-05-29 07:43:49.997745+00:00",
+      "last_sign_in_at": null,
+      "classification": "DELETE (synthetic test)"
+    },
+    {
+      "id": "5e983349-a8f0-423a-802f-2ca2de354bbb",
+      "email": "support@moodfordesign.com",
+      "created_at": "2026-05-29 21:27:58.679653+00:00",
+      "last_sign_in_at": "2026-05-29 21:28:09.260590+00:00",
+      "classification": "DECISION REQUIRED (real-looking)"
+    },
+    {
+      "id": "bc8cabac-2325-45f7-9beb-841b023309a7",
+      "email": "iter171repro_1780090804@example.com",
+      "created_at": "2026-05-29 21:40:07.520069+00:00",
+      "last_sign_in_at": null,
+      "classification": "DELETE (synthetic test)"
+    },
+    {
+      "id": "9a191bae-e336-4a09-9866-daf8b2ab1c80",
+      "email": "iter171client_1780091682@example.com",
+      "created_at": "2026-05-29 21:54:45.535489+00:00",
+      "last_sign_in_at": null,
+      "classification": "DELETE (synthetic test)"
+    },
+    {
+      "id": "379f7f54-8a01-4b3c-b9aa-99fcdf2a818f",
+      "email": "ogriusa@gmail.com",
+      "created_at": "2026-05-30 01:28:40.860860+00:00",
+      "last_sign_in_at": "2026-05-30 03:06:52.778648+00:00",
+      "classification": "DECISION REQUIRED (real-looking)"
+    },
+    {
+      "id": "3bcd141c-3a5a-4dfc-8d6f-bd1287b2675c",
+      "email": "ogrisek.stefano@gmail.com",
+      "created_at": "2026-05-30 06:17:27.919033+00:00",
+      "last_sign_in_at": "2026-05-30 19:49:22.045292+00:00",
+      "classification": "DECISION REQUIRED (real-looking)"
+    },
+    {
+      "id": "765f9566-c935-4935-ab19-8ac0230fb3bf",
+      "email": "audit-iter173@test.example",
+      "created_at": "2026-05-30 21:21:36.028756+00:00",
+      "last_sign_in_at": null,
+      "classification": "DELETE (synthetic test)"
+    },
+    {
+      "id": "afb1edea-6fa7-4fd6-bc57-21fa0be39caa",
+      "email": "audit-exp@test.example",
+      "created_at": "2026-05-30 21:21:44.221933+00:00",
+      "last_sign_in_at": null,
+      "classification": "DELETE (synthetic test)"
+    }
+  ],
+  "auth_users_total": 9,
+  "auth_users_preserve": [
+    {
+      "id": "18712745-bffc-4b42-b489-654a2aa83d6b",
+      "email": "admin@moodfordesign.com",
+      "created_at": "2026-05-23 19:35:26.279328+00:00",
+      "last_sign_in_at": "2026-05-30 23:02:03.432374+00:00",
+      "classification": "PRESERVE (admin root)"
+    }
+  ],
+  "auth_users_delete_synthetic": [
+    {
+      "id": "954da316-63e3-421c-88c7-a9f2254262a2",
+      "email": "iter171client_1780040627@example.com",
+      "created_at": "2026-05-29 07:43:49.997745+00:00",
+      "last_sign_in_at": null,
+      "classification": "DELETE (synthetic test)"
+    },
+    {
+      "id": "bc8cabac-2325-45f7-9beb-841b023309a7",
+      "email": "iter171repro_1780090804@example.com",
+      "created_at": "2026-05-29 21:40:07.520069+00:00",
+      "last_sign_in_at": null,
+      "classification": "DELETE (synthetic test)"
+    },
+    {
+      "id": "9a191bae-e336-4a09-9866-daf8b2ab1c80",
+      "email": "iter171client_1780091682@example.com",
+      "created_at": "2026-05-29 21:54:45.535489+00:00",
+      "last_sign_in_at": null,
+      "classification": "DELETE (synthetic test)"
+    },
+    {
+      "id": "765f9566-c935-4935-ab19-8ac0230fb3bf",
+      "email": "audit-iter173@test.example",
+      "created_at": "2026-05-30 21:21:36.028756+00:00",
+      "last_sign_in_at": null,
+      "classification": "DELETE (synthetic test)"
+    },
+    {
+      "id": "afb1edea-6fa7-4fd6-bc57-21fa0be39caa",
+      "email": "audit-exp@test.example",
+      "created_at": "2026-05-30 21:21:44.221933+00:00",
+      "last_sign_in_at": null,
+      "classification": "DELETE (synthetic test)"
+    }
+  ],
+  "auth_users_decision_required": [
+    {
+      "id": "5e983349-a8f0-423a-802f-2ca2de354bbb",
+      "email": "support@moodfordesign.com",
+      "created_at": "2026-05-29 21:27:58.679653+00:00",
+      "last_sign_in_at": "2026-05-29 21:28:09.260590+00:00",
+      "classification": "DECISION REQUIRED (real-looking)"
+    },
+    {
+      "id": "379f7f54-8a01-4b3c-b9aa-99fcdf2a818f",
+      "email": "ogriusa@gmail.com",
+      "created_at": "2026-05-30 01:28:40.860860+00:00",
+      "last_sign_in_at": "2026-05-30 03:06:52.778648+00:00",
+      "classification": "DECISION REQUIRED (real-looking)"
+    },
+    {
+      "id": "3bcd141c-3a5a-4dfc-8d6f-bd1287b2675c",
+      "email": "ogrisek.stefano@gmail.com",
+      "created_at": "2026-05-30 06:17:27.919033+00:00",
+      "last_sign_in_at": "2026-05-30 19:49:22.045292+00:00",
+      "classification": "DECISION REQUIRED (real-looking)"
+    }
+  ],
+  "users_profile": [
+    {
+      "id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+      "auth_user_id": "18712745-bffc-4b42-b489-654a2aa83d6b",
+      "email": "admin@moodfordesign.com",
+      "role": "super_admin",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "is_root_superadmin": true,
+      "first_name": "Stefano",
+      "last_name": "Ogrisek",
+      "created_at": "2026-05-23 19:35:26.517684+00:00"
+    },
+    {
+      "id": "996e708e-78ee-4b40-af7b-80b029b72f25",
+      "auth_user_id": "954da316-63e3-421c-88c7-a9f2254262a2",
+      "email": "iter171client_1780040627@example.com",
+      "role": "client",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "is_root_superadmin": false,
+      "first_name": "TestIter171",
+      "last_name": null,
+      "created_at": "2026-05-29 07:43:50.209231+00:00"
+    },
+    {
+      "id": "a39d798a-926a-4286-9fd1-16014f0c47ea",
+      "auth_user_id": "5e983349-a8f0-423a-802f-2ca2de354bbb",
+      "email": "support@moodfordesign.com",
+      "role": "client",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "is_root_superadmin": false,
+      "first_name": "Stephano",
+      "last_name": null,
+      "created_at": "2026-05-29 21:27:58.923250+00:00"
+    },
+    {
+      "id": "7e4e68fc-89ad-428f-8109-15de6c32d58f",
+      "auth_user_id": "bc8cabac-2325-45f7-9beb-841b023309a7",
+      "email": "iter171repro_1780090804@example.com",
+      "role": "client",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "is_root_superadmin": false,
+      "first_name": "Marco",
+      "last_name": null,
+      "created_at": "2026-05-29 21:40:07.765655+00:00"
+    },
+    {
+      "id": "fe502dc7-3007-4846-898c-763acd3c700a",
+      "auth_user_id": "9a191bae-e336-4a09-9866-daf8b2ab1c80",
+      "email": "iter171client_1780091682@example.com",
+      "role": "client",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "is_root_superadmin": false,
+      "first_name": "ClientTest",
+      "last_name": null,
+      "created_at": "2026-05-29 21:54:45.785255+00:00"
+    },
+    {
+      "id": "448d6139-349b-4e69-b76b-15f468278965",
+      "auth_user_id": "379f7f54-8a01-4b3c-b9aa-99fcdf2a818f",
+      "email": "ogriusa@gmail.com",
+      "role": "client",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "is_root_superadmin": false,
+      "first_name": "stef",
+      "last_name": null,
+      "created_at": "2026-05-30 01:28:41.103029+00:00"
+    },
+    {
+      "id": "9ceb7874-3496-47e8-930c-f9215dc871e2",
+      "auth_user_id": "3bcd141c-3a5a-4dfc-8d6f-bd1287b2675c",
+      "email": "ogrisek.stefano@gmail.com",
+      "role": "client",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "is_root_superadmin": false,
+      "first_name": "Stef",
+      "last_name": null,
+      "created_at": "2026-05-30 06:17:28.182181+00:00"
+    },
+    {
+      "id": "a6b841c8-cd70-4d0c-bc30-5b8846c3a922",
+      "auth_user_id": "765f9566-c935-4935-ab19-8ac0230fb3bf",
+      "email": "audit-iter173@test.example",
+      "role": "client",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "is_root_superadmin": false,
+      "first_name": "AuditTest",
+      "last_name": null,
+      "created_at": "2026-05-30 21:21:36.291060+00:00"
+    },
+    {
+      "id": "9210720c-b377-446e-a43e-bb05bb405142",
+      "auth_user_id": "afb1edea-6fa7-4fd6-bc57-21fa0be39caa",
+      "email": "audit-exp@test.example",
+      "role": "client",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "is_root_superadmin": false,
+      "first_name": "AuditExp",
+      "last_name": null,
+      "created_at": "2026-05-30 21:21:44.429512+00:00"
+    }
+  ],
+  "users_profile_total": 9,
+  "demo_data_table_counts": {
+    "leads": 9,
+    "accounts": 9,
+    "contacts": 9,
+    "projects": 9,
+    "design_journeys": 9,
+    "journey_briefs": 9,
+    "journey_milestones": 90,
+    "journey_overview": 9,
+    "journey_timeline_events": 18,
+    "milestone_versions": 9,
+    "relationship_threads": 10,
+    "relationship_messages": 9,
+    "relationship_answer_events": 5,
+    "human_assignments": 9,
+    "human_assignment_events": 9,
+    "studio_relations": 9,
+    "studio_relationship_events": 16,
+    "access_magic_links": 31,
+    "login_attempts": 48,
+    "email_events": 117,
+    "funnel_events": 18,
+    "ai_assist_logs": 54,
+    "audit_logs": 111,
+    "configuration_change_events": 318,
+    "user_onboarding_state": 2,
+    "studio_activation_drafts": 30,
+    "studio_requests": 8
+  },
+  "demo_data_total_rows": 984,
+  "preserve_table_counts": {
+    "tenants": 6,
+    "tenant_settings": 8,
+    "tenant_configuration": 1,
+    "tenant_atelier_identity": 1,
+    "tenant_email_settings": 1,
+    "tenant_markets": 8,
+    "tenant_modules": 14,
+    "tenant_onboarding": 1,
+    "tenant_domains": 4,
+    "tenant_dnt_registry": 4,
+    "tenant_subdomain_lookup": 2,
+    "cms_pages": 13,
+    "cms_sections": 56,
+    "cms_page_revisions": 27,
+    "editorial_blocks": 1156,
+    "editorial_block_translations": 3224,
+    "editorial_translations": 65,
+    "editorial_masters": 42,
+    "editorial_phrases": 13,
+    "editorial_surfaces": 8,
+    "editorial_variants": 4,
+    "atelier_dashboard_config": 2,
+    "atelier_dashboard_media": 24,
+    "atelier_dashboard_quotes": 8,
+    "atelier_presets_registry": 6,
+    "atmospheric_panels": 6,
+    "template_blocks": 98,
+    "template_pages": 23,
+    "theme_presets": 33,
+    "moodboard_rooms": 16,
+    "moodboard_chapters": 9,
+    "moodboard_templates": 11,
+    "moodboard_candidates": 0,
+    "lead_intake_questions": 16,
+    "relationship_questions": 5,
+    "relationship_question_groups": 5,
+    "relationship_question_options": 32,
+    "relationship_catalog_v1": 32,
+    "relationship_intelligence_v": 9,
+    "markets": 15,
+    "market_submarkets": 48,
+    "market_cultural_profiles": 7,
+    "market_narrative_profiles": 7,
+    "market_positioning_profiles": 7,
+    "platform_languages": 9,
+    "phone_dial_codes": 196,
+    "locale_profiles": 7,
+    "cultural_descriptors": 29,
+    "brands": 20,
+    "brand_collections": 4,
+    "supplier_catalogs": 5,
+    "feature_modules_registry": 34,
+    "platform_feature_defaults": 1,
+    "tag_registry": 42,
+    "media_filter_presets": 8,
+    "schema_migrations": 78,
+    "guided_tour_config": 7,
+    "studio_translation_preferences": 1,
+    "users": 9,
+    "users_profile": 9,
+    "media_library": 81
+  },
+  "leads_detail": [
+    {
+      "id": "9b0bca66-0248-4d68-88b6-6879e89d4db3",
+      "name": "TestIter171",
+      "email": "iter171client_1780040627@example.com",
+      "source": "begin_journey_ritual",
+      "status": "qualified",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-29 07:43:47.538106+00:00"
+    },
+    {
+      "id": "70881d82-b888-4acc-9881-2dfee12f7a4a",
+      "name": "Stephano",
+      "email": "support@moodfordesign.com",
+      "source": "begin_journey_ritual",
+      "status": "qualified",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-29 21:27:55.997138+00:00"
+    },
+    {
+      "id": "0503897d-5a8d-4277-a274-ae4aa9d62d61",
+      "name": "Marco",
+      "email": "iter171repro_1780090804@example.com",
+      "source": "begin_journey_ritual",
+      "status": "qualified",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-29 21:40:05.051667+00:00"
+    },
+    {
+      "id": "712ea80e-1f29-4125-b5e3-a0cbf0fb17f5",
+      "name": "ClientTest",
+      "email": "iter171client_1780091682@example.com",
+      "source": "begin_journey_ritual",
+      "status": "qualified",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-29 21:54:42.988806+00:00"
+    },
+    {
+      "id": "a7cc3c60-ae9a-4f48-b9b6-e16713d906bd",
+      "name": "stef",
+      "email": "ogriusa@gmail.com",
+      "source": "begin_journey_ritual",
+      "status": "qualified",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 01:28:38.449212+00:00"
+    },
+    {
+      "id": "dba02a1e-66f7-4f09-91cc-9dea1754e759",
+      "name": "Stef",
+      "email": "ogrisek.stefano@gmail.com",
+      "source": "begin_journey_ritual",
+      "status": "qualified",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 06:17:24.917566+00:00"
+    },
+    {
+      "id": "cfdc557c-3b96-4110-8040-b1e5d42cb7ed",
+      "name": "stef",
+      "email": "ogrisek.stefano@gmail.com",
+      "source": "begin_journey_ritual",
+      "status": "qualified",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 06:19:48.956222+00:00"
+    },
+    {
+      "id": "03a2580f-c2d9-4829-8375-8b4d339a42ec",
+      "name": "AuditTest",
+      "email": "audit-iter173@test.example",
+      "source": "begin_journey_ritual",
+      "status": "qualified",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 21:21:33.257145+00:00"
+    },
+    {
+      "id": "bc9ca699-5977-4684-81dc-48e9913b77a8",
+      "name": "AuditExp",
+      "email": "audit-exp@test.example",
+      "source": "begin_journey_ritual",
+      "status": "qualified",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 21:21:40.992318+00:00"
+    }
+  ],
+  "accounts_detail": [
+    {
+      "id": "e9ded350-502b-4ac8-ac24-32972c90b2d3",
+      "account_name": "TestIter171",
+      "account_type": "private_client",
+      "lifecycle_stage": "conversation_open",
+      "email": "iter171client_1780040627@example.com",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-29 07:43:47.538106+00:00"
+    },
+    {
+      "id": "1666e23f-69f4-46fb-97bc-9d19149065e8",
+      "account_name": "Stephano",
+      "account_type": "private_client",
+      "lifecycle_stage": "conversation_open",
+      "email": "support@moodfordesign.com",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-29 21:27:55.997138+00:00"
+    },
+    {
+      "id": "807e78fc-a3a0-41af-993d-f69e17078807",
+      "account_name": "Marco",
+      "account_type": "private_client",
+      "lifecycle_stage": "conversation_open",
+      "email": "iter171repro_1780090804@example.com",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-29 21:40:05.051667+00:00"
+    },
+    {
+      "id": "c358ce2d-c1d7-4e59-beda-2c714219f36a",
+      "account_name": "ClientTest",
+      "account_type": "private_client",
+      "lifecycle_stage": "conversation_open",
+      "email": "iter171client_1780091682@example.com",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-29 21:54:42.988806+00:00"
+    },
+    {
+      "id": "c9e60f2a-1480-4c6f-a81e-b8ea7f62d17e",
+      "account_name": "stef",
+      "account_type": "private_client",
+      "lifecycle_stage": "conversation_open",
+      "email": "ogriusa@gmail.com",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 01:28:38.449212+00:00"
+    },
+    {
+      "id": "92d317e7-8e2e-4859-879b-a2770919793b",
+      "account_name": "Stef",
+      "account_type": "private_client",
+      "lifecycle_stage": "conversation_open",
+      "email": "ogrisek.stefano@gmail.com",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 06:17:24.917566+00:00"
+    },
+    {
+      "id": "6845c0b1-0063-4815-962c-88def94fcac3",
+      "account_name": "stef",
+      "account_type": "private_client",
+      "lifecycle_stage": "conversation_open",
+      "email": "ogrisek.stefano@gmail.com",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 06:19:48.956222+00:00"
+    },
+    {
+      "id": "eefaf5c9-72ff-4515-b56a-b213e0e756ab",
+      "account_name": "AuditTest",
+      "account_type": "private_client",
+      "lifecycle_stage": "conversation_open",
+      "email": "audit-iter173@test.example",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 21:21:33.257145+00:00"
+    },
+    {
+      "id": "d29739b0-4906-485d-bde2-e0f2fd6b4abd",
+      "account_name": "AuditExp",
+      "account_type": "private_client",
+      "lifecycle_stage": "conversation_open",
+      "email": "audit-exp@test.example",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 21:21:40.992318+00:00"
+    }
+  ],
+  "design_journeys_detail": [
+    {
+      "id": "1d5875f2-370e-4728-a626-4167351eeec3",
+      "account_id": "e9ded350-502b-4ac8-ac24-32972c90b2d3",
+      "lifecycle_state": "conversation_open",
+      "created_by": null,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-29 07:43:47.538106+00:00"
+    },
+    {
+      "id": "7f7b172c-4545-4b39-8eee-ab16d8e12ad2",
+      "account_id": "1666e23f-69f4-46fb-97bc-9d19149065e8",
+      "lifecycle_state": "conversation_open",
+      "created_by": null,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-29 21:27:55.997138+00:00"
+    },
+    {
+      "id": "9425fc82-bde3-4384-b07c-2c37e620a1d9",
+      "account_id": "807e78fc-a3a0-41af-993d-f69e17078807",
+      "lifecycle_state": "conversation_open",
+      "created_by": null,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-29 21:40:05.051667+00:00"
+    },
+    {
+      "id": "af052363-5cb8-42c7-b7eb-61890a2b9219",
+      "account_id": "c358ce2d-c1d7-4e59-beda-2c714219f36a",
+      "lifecycle_state": "conversation_open",
+      "created_by": null,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-29 21:54:42.988806+00:00"
+    },
+    {
+      "id": "30950769-99c2-4d78-bdd5-55720ad7c44e",
+      "account_id": "c9e60f2a-1480-4c6f-a81e-b8ea7f62d17e",
+      "lifecycle_state": "conversation_open",
+      "created_by": "448d6139-349b-4e69-b76b-15f468278965",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 01:28:38.449212+00:00"
+    },
+    {
+      "id": "9a96de23-48ee-4c66-b92f-e08806f27a66",
+      "account_id": "92d317e7-8e2e-4859-879b-a2770919793b",
+      "lifecycle_state": "conversation_open",
+      "created_by": "9ceb7874-3496-47e8-930c-f9215dc871e2",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 06:17:24.917566+00:00"
+    },
+    {
+      "id": "62c6c27a-98f5-4f98-a3c8-2bebf917bbd3",
+      "account_id": "6845c0b1-0063-4815-962c-88def94fcac3",
+      "lifecycle_state": "conversation_open",
+      "created_by": "9ceb7874-3496-47e8-930c-f9215dc871e2",
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 06:19:48.956222+00:00"
+    },
+    {
+      "id": "d55f712f-04c0-4ca0-af87-d149924e7994",
+      "account_id": "eefaf5c9-72ff-4515-b56a-b213e0e756ab",
+      "lifecycle_state": "conversation_open",
+      "created_by": null,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 21:21:33.257145+00:00"
+    },
+    {
+      "id": "d8f49119-f835-4bba-aa5a-a50e93a1e97d",
+      "account_id": "d29739b0-4906-485d-bde2-e0f2fd6b4abd",
+      "lifecycle_state": "conversation_open",
+      "created_by": null,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-30 21:21:40.992318+00:00"
+    }
+  ],
+  "magic_links_by_email": [
+    {
+      "email": "st.ogrisek@margraf-usa.com",
+      "total": 12,
+      "consumed": 10,
+      "pending": 2
+    },
+    {
+      "email": "admin@moodfordesign.com",
+      "total": 6,
+      "consumed": 3,
+      "pending": 3
+    },
+    {
+      "email": "raffaella@moodfordesign.com",
+      "total": 3,
+      "consumed": 3,
+      "pending": 0
+    },
+    {
+      "email": "e2e-final@test.example",
+      "total": 3,
+      "consumed": 1,
+      "pending": 2
+    },
+    {
+      "email": "ogrisekadvisor@gmail.com",
+      "total": 1,
+      "consumed": 0,
+      "pending": 1
+    },
+    {
+      "email": "p0final@test.example",
+      "total": 1,
+      "consumed": 1,
+      "pending": 0
+    },
+    {
+      "email": "slabreality@gmail.com",
+      "total": 1,
+      "consumed": 0,
+      "pending": 1
+    },
+    {
+      "email": "mai-vista@nowhere.example",
+      "total": 1,
+      "consumed": 0,
+      "pending": 1
+    },
+    {
+      "email": "ogrisek.stefano@gmail.com",
+      "total": 1,
+      "consumed": 0,
+      "pending": 1
+    },
+    {
+      "email": "tlc2-founder@test.example",
+      "total": 1,
+      "consumed": 1,
+      "pending": 0
+    },
+    {
+      "email": "tlc-founder@test.example",
+      "total": 1,
+      "consumed": 0,
+      "pending": 1
+    }
+  ],
+  "studio_requests_detail": [
+    {
+      "id": "4d3d769a-36ac-48f4-86c2-35b1c883de1f",
+      "studio_name": "Atelier P0 Final",
+      "contact_email": "p0final@test.example",
+      "status": "activated",
+      "created_at": "2026-05-29 07:45:17.991032+00:00"
+    },
+    {
+      "id": "155cd08d-e8eb-4106-8219-b1ce18483402",
+      "studio_name": "Studio Verifica E2E",
+      "contact_email": "e2e-final@test.example",
+      "status": "activated",
+      "created_at": "2026-05-29 07:52:18.947811+00:00"
+    },
+    {
+      "id": "97d0107f-4a49-432b-af50-aef67215e201",
+      "studio_name": "Studio In Lettura",
+      "contact_email": "studio-pending@test.example",
+      "status": "received",
+      "created_at": "2026-05-30 02:17:28.471019+00:00"
+    },
+    {
+      "id": "ca36795c-d565-45dd-b440-88b13bfb5772",
+      "studio_name": "Studio Tenant Lifecycle",
+      "contact_email": "tlc-founder@test.example",
+      "status": "activated",
+      "created_at": "2026-05-30 03:21:53.235855+00:00"
+    },
+    {
+      "id": "0f439d49-8e4e-4e57-9485-7aec98daa160",
+      "studio_name": "Atelier Lifecycle",
+      "contact_email": "tlc2-founder@test.example",
+      "status": "activated",
+      "created_at": "2026-05-30 03:24:16.220295+00:00"
+    },
+    {
+      "id": "76dccda3-2aab-4911-90d0-384665b4cedb",
+      "studio_name": "Margraf USA",
+      "contact_email": "st.ogrisek@margraf-usa.com",
+      "status": "activated",
+      "created_at": "2026-05-30 07:29:27.024296+00:00"
+    },
+    {
+      "id": "377bf753-c1ee-4bca-b82c-6a4469fe8472",
+      "studio_name": "Stefano USA",
+      "contact_email": "ogrisek.stefano@gmail.com",
+      "status": "reviewing",
+      "created_at": "2026-05-30 16:48:22.676865+00:00"
+    },
+    {
+      "id": "78e9c0b1-eb14-4bed-a1f8-2fe7e57eb6b8",
+      "studio_name": "Margraf",
+      "contact_email": "slabreality@gmail.com",
+      "status": "reviewing",
+      "created_at": "2026-05-30 19:31:15.290950+00:00"
+    }
+  ],
+  "media_library_total": 81,
+  "media_library_preserve_count": 71,
+  "media_library_candidate_count": 10,
+  "media_library_by_category": {
+    "inspiration": 6,
+    "<none>": 2,
+    "site.home": 14,
+    "site.projects": 3,
+    "site.magazine": 3,
+    "branding": 2,
+    "test": 1,
+    "branding_asset": 1,
+    "site": 46,
+    "cms_section": 1,
+    "moodboard": 2
+  },
+  "media_library_by_bucket": {
+    "external": 26,
+    "magazine-media": 2,
+    "media": 2,
+    "cms-assets": 47,
+    "tenant-assets": 2,
+    "moodboard-assets": 2
+  },
+  "media_library_candidate_sample": [
+    {
+      "id": "7d9c995d-8db9-4729-a0a5-fc4f71bbfcc6",
+      "bucket": "external",
+      "path": "external/url/7d9c995d-8db9-4729-a0a5-fc4f71bbfcc6",
+      "category": "inspiration",
+      "size": null,
+      "uploaded_by": null,
+      "is_inspiration": false,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-23 20:48:50.841016+00:00",
+      "classification": "CANDIDATE CLEANUP"
+    },
+    {
+      "id": "0751627b-5c3e-4efd-99b0-c519d7c7c710",
+      "bucket": "external",
+      "path": "external/pinterest/0751627b-5c3e-4efd-99b0-c519d7c7c710",
+      "category": "inspiration",
+      "size": null,
+      "uploaded_by": null,
+      "is_inspiration": true,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-23 20:48:52.146603+00:00",
+      "classification": "CANDIDATE CLEANUP"
+    },
+    {
+      "id": "52d9c014-5f21-40cc-9cf5-33f83d4d24e5",
+      "bucket": "external",
+      "path": "external/url/52d9c014-5f21-40cc-9cf5-33f83d4d24e5",
+      "category": "inspiration",
+      "size": null,
+      "uploaded_by": null,
+      "is_inspiration": false,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-23 20:49:00.200023+00:00",
+      "classification": "CANDIDATE CLEANUP"
+    },
+    {
+      "id": "ac95db14-d086-4725-bf5f-3aa53d03708c",
+      "bucket": "magazine-media",
+      "path": "848354b9-a43e-4147-bdad-116fb93bd585/tenants/00000000-0000-0000-0000-000000000000/foreign.jpg",
+      "category": null,
+      "size": 1024,
+      "uploaded_by": null,
+      "is_inspiration": false,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-23 20:57:06.960313+00:00",
+      "classification": "CANDIDATE CLEANUP"
+    },
+    {
+      "id": "ceec864a-5a07-4432-b895-42f3b89ba9c7",
+      "bucket": "external",
+      "path": "external/url/ceec864a-5a07-4432-b895-42f3b89ba9c7",
+      "category": "inspiration",
+      "size": null,
+      "uploaded_by": null,
+      "is_inspiration": false,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-23 23:34:10.796139+00:00",
+      "classification": "CANDIDATE CLEANUP"
+    },
+    {
+      "id": "64af9086-4c31-4488-b165-03828d6ecbb6",
+      "bucket": "external",
+      "path": "external/pinterest/64af9086-4c31-4488-b165-03828d6ecbb6",
+      "category": "inspiration",
+      "size": null,
+      "uploaded_by": null,
+      "is_inspiration": true,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-23 23:34:12.186222+00:00",
+      "classification": "CANDIDATE CLEANUP"
+    },
+    {
+      "id": "19f9df7a-bf7e-4e31-902f-9571ef371ad4",
+      "bucket": "external",
+      "path": "external/url/19f9df7a-bf7e-4e31-902f-9571ef371ad4",
+      "category": "inspiration",
+      "size": null,
+      "uploaded_by": null,
+      "is_inspiration": false,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-23 23:34:39.963106+00:00",
+      "classification": "CANDIDATE CLEANUP"
+    },
+    {
+      "id": "651d4f46-8c23-43a1-b47a-66bd569fdde0",
+      "bucket": "magazine-media",
+      "path": "848354b9-a43e-4147-bdad-116fb93bd585/tenants/00000000-0000-0000-0000-000000000000/foreign.jpg",
+      "category": null,
+      "size": 1024,
+      "uploaded_by": null,
+      "is_inspiration": false,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-23 23:45:42.933760+00:00",
+      "classification": "CANDIDATE CLEANUP"
+    },
+    {
+      "id": "34c4464e-5dec-4405-92e1-d7ecc5ffcee7",
+      "bucket": "moodboard-assets",
+      "path": "848354b9-a43e-4147-bdad-116fb93bd585/moodboards/1779896676827-ijq6p4.png",
+      "category": "moodboard",
+      "size": 2492890,
+      "uploaded_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+      "is_inspiration": false,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-27 15:44:41.221451+00:00",
+      "classification": "CANDIDATE CLEANUP"
+    },
+    {
+      "id": "c8e05d2e-3036-42ff-88a5-3a848bf8dd3c",
+      "bucket": "moodboard-assets",
+      "path": "848354b9-a43e-4147-bdad-116fb93bd585/moodboards/1779896707162-t9eq7n.jpeg",
+      "category": "moodboard",
+      "size": 3976907,
+      "uploaded_by": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+      "is_inspiration": false,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-27 15:45:11.491159+00:00",
+      "classification": "CANDIDATE CLEANUP"
+    }
+  ],
+  "media_library_preserve_sample": [
+    {
+      "id": "5528efad-bf86-4d26-a2c3-3e75128c5898",
+      "bucket": "external",
+      "path": "hero_living_room",
+      "category": "site.home",
+      "size": null,
+      "uploaded_by": null,
+      "is_inspiration": false,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-24 04:50:46.890058+00:00",
+      "classification": "PRESERVE (CMS/branding)"
+    },
+    {
+      "id": "13b1d112-0e96-491e-a0a8-124ef74fdcbc",
+      "bucket": "external",
+      "path": "project_villa_riviera",
+      "category": "site.projects",
+      "size": null,
+      "uploaded_by": null,
+      "is_inspiration": false,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-24 04:50:47.229237+00:00",
+      "classification": "PRESERVE (CMS/branding)"
+    },
+    {
+      "id": "933aa7c7-1dc7-4247-88e3-71157d5931a2",
+      "bucket": "external",
+      "path": "project_atelier_milano",
+      "category": "site.projects",
+      "size": null,
+      "uploaded_by": null,
+      "is_inspiration": false,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-24 04:50:47.445171+00:00",
+      "classification": "PRESERVE (CMS/branding)"
+    },
+    {
+      "id": "0c2e24f4-8460-48d8-a822-cc5ecb21d6c2",
+      "bucket": "external",
+      "path": "project_casa_brera",
+      "category": "site.projects",
+      "size": null,
+      "uploaded_by": null,
+      "is_inspiration": false,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-24 04:50:47.661545+00:00",
+      "classification": "PRESERVE (CMS/branding)"
+    },
+    {
+      "id": "0447b3f9-45a7-4676-b00d-ce55b193fcc5",
+      "bucket": "external",
+      "path": "magazine_editorial_1",
+      "category": "site.magazine",
+      "size": null,
+      "uploaded_by": null,
+      "is_inspiration": false,
+      "archived": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "created_at": "2026-05-24 04:50:47.877745+00:00",
+      "classification": "PRESERVE (CMS/branding)"
+    }
+  ],
+  "storage_buckets": {
+    "cms-assets": {
+      "total_files": 18,
+      "total_bytes": 17895497,
+      "preserve_files": 18,
+      "preserve_bytes": 17895497,
+      "candidate_files": 0,
+      "candidate_bytes": 0,
+      "orphan_files": 0,
+      "orphan_bytes": 0,
+      "preserve_sample": [
+        {
+          "path": "848354b9-a43e-4147-bdad-116fb93bd585/site/016e3d7892-6-edited.jpg",
+          "size": 124730,
+          "created_at": "2026-05-30 03:29:01.452842+00:00"
+        },
+        {
+          "path": "848354b9-a43e-4147-bdad-116fb93bd585/site/15ee3be433-3-edited.jpg",
+          "size": 216362,
+          "created_at": "2026-05-30 03:36:59.730890+00:00"
+        },
+        {
+          "path": "848354b9-a43e-4147-bdad-116fb93bd585/site/16f9152ff8-7-edited-edited.jpg",
+          "size": 114878,
+          "created_at": "2026-05-30 03:29:30.691942+00:00"
+        },
+        {
+          "path": "848354b9-a43e-4147-bdad-116fb93bd585/site/3f6ab3a537-2-edited.jpg",
+          "size": 239853,
+          "created_at": "2026-05-30 03:36:28.585294+00:00"
+        },
+        {
+          "path": "848354b9-a43e-4147-bdad-116fb93bd585/site/63f80f33d2-AdobeStock_1014843351-edited.jpg",
+          "size": 6307755,
+          "created_at": "2026-05-30 03:34:52.269610+00:00"
+        }
+      ],
+      "candidate_sample": [],
+      "orphan_sample": []
+    },
+    "media": {
+      "total_files": 3,
+      "total_bytes": 122323,
+      "preserve_files": 3,
+      "preserve_bytes": 122323,
+      "candidate_files": 0,
+      "candidate_bytes": 0,
+      "orphan_files": 0,
+      "orphan_bytes": 0,
+      "preserve_sample": [
+        {
+          "path": "848354b9-a43e-4147-bdad-116fb93bd585/brand/favicon_5fb3e8c53dda8212.png",
+          "size": 9098,
+          "created_at": "2026-05-26 04:18:02.550873+00:00"
+        },
+        {
+          "path": "848354b9-a43e-4147-bdad-116fb93bd585/brand/favicon_squared_35151197f714.png",
+          "size": 79487,
+          "created_at": "2026-05-26 16:09:11.975994+00:00"
+        },
+        {
+          "path": "848354b9-a43e-4147-bdad-116fb93bd585/brand/logo_ece7d3cc7379b2d3.png",
+          "size": 33738,
+          "created_at": "2026-05-26 04:18:01.980287+00:00"
+        }
+      ],
+      "candidate_sample": [],
+      "orphan_sample": []
+    },
+    "storefront-public": {
+      "total_files": 4,
+      "total_bytes": 3923747,
+      "preserve_files": 0,
+      "preserve_bytes": 0,
+      "candidate_files": 0,
+      "candidate_bytes": 0,
+      "orphan_files": 4,
+      "orphan_bytes": 3923747,
+      "preserve_sample": [],
+      "candidate_sample": [],
+      "orphan_sample": [
+        {
+          "path": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/0d60edaf-45cb-40e6-839a-0bc604ebbe2e-AdobeStock_866570850.jpeg",
+          "size": 3842439,
+          "created_at": "2026-05-17 20:27:16.628978+00:00"
+        },
+        {
+          "path": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/ee319f01-21dd-423e-b4a9-bddaed33a3bb-Artboard 1.png",
+          "size": 32882,
+          "created_at": "2026-05-15 09:04:47.351904+00:00"
+        },
+        {
+          "path": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/f0d9ba99-4f17-424e-ba62-cf4f122a1cbf-Artboard 1.png",
+          "size": 32882,
+          "created_at": "2026-05-15 09:04:48.811631+00:00"
+        },
+        {
+          "path": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/ff1fe78e-53e4-413e-9d09-60342d1c5b9c-logo_top_frontend.png",
+          "size": 15544,
+          "created_at": "2026-05-15 09:07:15.917334+00:00"
+        }
+      ]
+    },
+    "tenant-assets": {
+      "total_files": 8,
+      "total_bytes": 12017445,
+      "preserve_files": 2,
+      "preserve_bytes": 4010645,
+      "candidate_files": 6,
+      "candidate_bytes": 8006800,
+      "orphan_files": 0,
+      "orphan_bytes": 0,
+      "preserve_sample": [
+        {
+          "path": "848354b9-a43e-4147-bdad-116fb93bd585/brand/logo/1779770704608-yawu7d.png",
+          "size": 33738,
+          "created_at": "2026-05-26 04:45:06.547651+00:00"
+        },
+        {
+          "path": "848354b9-a43e-4147-bdad-116fb93bd585/storefront/hero_editorial/1779856322093-d6lgxk.jpeg",
+          "size": 3976907,
+          "created_at": "2026-05-27 04:32:06.779679+00:00"
+        }
+      ],
+      "candidate_sample": [
+        {
+          "path": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/a0d510d2-1920.jpg",
+          "size": 293542,
+          "created_at": "2026-05-30 18:06:04.872240+00:00"
+        },
+        {
+          "path": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/a0d510d2-480.jpg",
+          "size": 28223,
+          "created_at": "2026-05-30 18:06:05.078947+00:00"
+        },
+        {
+          "path": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/a0d510d2.jpg",
+          "size": 3681635,
+          "created_at": "2026-05-30 18:06:04.093219+00:00"
+        },
+        {
+          "path": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/bca844da-1920.jpg",
+          "size": 293542,
+          "created_at": "2026-05-29 21:34:38.452544+00:00"
+        },
+        {
+          "path": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/bca844da-480.jpg",
+          "size": 28223,
+          "created_at": "2026-05-29 21:34:38.976300+00:00"
+        }
+      ],
+      "orphan_sample": []
+    }
+  },
+  "storage_totals": {
+    "preserve_files": 23,
+    "preserve_bytes": 22028465,
+    "preserve_mb": 21.01,
+    "candidate_files": 6,
+    "candidate_bytes": 8006800,
+    "candidate_mb": 7.64,
+    "orphan_files": 4,
+    "orphan_bytes": 3923747,
+    "orphan_mb": 3.74
+  },
+  "all_public_tables_with_rows": {
+    "access_magic_links": 31,
+    "accounts": 9,
+    "advisor_profiles": 3,
+    "ai_assist_logs": 54,
+    "atelier_dashboard_config": 2,
+    "atelier_dashboard_media": 24,
+    "atelier_dashboard_quotes": 8,
+    "atelier_presets_registry": 6,
+    "atmospheric_panels": 6,
+    "audit_logs": 111,
+    "brand_collections": 4,
+    "brands": 20,
+    "cms_page_revisions": 27,
+    "cms_pages": 13,
+    "cms_sections": 56,
+    "configuration_change_events": 318,
+    "contacts": 9,
+    "cultural_descriptors": 29,
+    "design_journeys": 9,
+    "editorial_block_translations": 3224,
+    "editorial_blocks": 1156,
+    "editorial_masters": 42,
+    "editorial_phrases": 13,
+    "editorial_surfaces": 8,
+    "editorial_translations": 65,
+    "editorial_variants": 4,
+    "email_events": 117,
+    "feature_modules_registry": 34,
+    "funnel_events": 18,
+    "guided_tour_config": 7,
+    "human_assignment_events": 9,
+    "human_assignments": 9,
+    "journey_briefs": 9,
+    "journey_milestones": 90,
+    "journey_overview": 9,
+    "journey_timeline_events": 18,
+    "lead_intake_questions": 16,
+    "leads": 9,
+    "locale_profiles": 7,
+    "login_attempts": 48,
+    "market_cultural_profiles": 7,
+    "market_narrative_profiles": 7,
+    "market_positioning_profiles": 7,
+    "market_submarkets": 48,
+    "markets": 15,
+    "media_filter_presets": 8,
+    "media_library": 81,
+    "media_with_usage": 81,
+    "milestone_versions": 9,
+    "moodboard_chapters": 9,
+    "moodboard_rooms": 16,
+    "moodboard_templates": 11,
+    "phone_dial_codes": 196,
+    "platform_feature_defaults": 1,
+    "platform_languages": 9,
+    "projects": 9,
+    "relationship_answer_events": 5,
+    "relationship_catalog_v1": 32,
+    "relationship_intelligence_v": 9,
+    "relationship_messages": 9,
+    "relationship_question_groups": 5,
+    "relationship_question_options": 32,
+    "relationship_questions": 5,
+    "relationship_threads": 10,
+    "schema_migrations": 78,
+    "studio_activation_drafts": 30,
+    "studio_relations": 9,
+    "studio_relationship_events": 16,
+    "studio_requests": 8,
+    "studio_translation_preferences": 1,
+    "supplier_catalogs": 5,
+    "tag_registry": 42,
+    "template_blocks": 98,
+    "template_pages": 23,
+    "tenant_atelier_identity": 1,
+    "tenant_configuration": 1,
+    "tenant_dnt_registry": 4,
+    "tenant_domains": 4,
+    "tenant_email_settings": 1,
+    "tenant_markets": 8,
+    "tenant_modules": 14,
+    "tenant_onboarding": 1,
+    "tenant_settings": 8,
+    "tenant_subdomain_lookup": 2,
+    "tenants": 6,
+    "theme_presets": 33,
+    "user_onboarding_state": 2,
+    "users": 9,
+    "users_profile": 9
+  },
+  "all_public_tables_with_rows_count": 89
+}
