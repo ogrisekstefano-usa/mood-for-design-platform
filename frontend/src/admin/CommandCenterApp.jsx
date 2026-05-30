@@ -1,51 +1,117 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { Building2, Compass } from 'lucide-react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Building2, Compass, LayoutDashboard } from 'lucide-react';
 
 import WorkspaceShell from './shared/WorkspaceShell';
 import StudioRequestsAdmin from './pages/StudioRequestsAdmin';
 import AdvisorConsole from './pages/AdvisorConsole';
 import RelationDetail from './pages/RelationDetail';
+import CommandOverview from './pages/CommandOverview';
 
 /**
  * CommandCenterShell™ — MOOD Core workspace.
  *
- * Surfaces:
- *   • Studio Requests        (prospect intake)
- *   • Advisor Console        (own studio relations, follow-ups, visits)
- *   • Relation Detail        (full dossier — provenance, timeline, terms)
+ * Two scopes share the same shell:
+ *   • Super Admin (role=admin/editor)
+ *       Nav: Overview · Advisor Console · Studio Requests
+ *       Default surface: /command-center/overview (governance)
+ *   • Advisor (role=advisor)
+ *       Nav: Advisor Console (own) · Studio Requests (own + unassigned)
+ *       Default surface: /command-center/advisor-console
  *
- * Future Chunks (3–6, deferred until current chunk approved):
- *   • Commercial Terms       (list prices + discounts + audit)
- *   • Tenant Payments        (cash actual ledger)
- *   • Advisor Commissions    (accrued on actual income)
- *   • Advisor Payouts        (settlement to advisors)
- *
- * Lives at /command-center/*  — strictly separated from the tenant
- * Blueprint workspace (/blueprint/*). This is the "MOOD Core ≠ Blueprint"
- * line approved in the latest architectural review.
+ * Founder (role=owner) can only reach /command-center/welcome — every
+ * other Command Center path redirects them to /blueprint (their own
+ * tenant workspace).
  */
-const COMMAND_CENTER_NAV = [
-  { to: '/command-center/advisor-console', icon: Compass,    label: 'Advisor Console',  testid: 'cc-nav-advisor-console' },
-  { to: '/command-center/studio-requests', icon: Building2,  label: 'Studio Requests',  testid: 'cc-nav-studio-requests' },
+const ADMIN_NAV = [
+  { to: '/command-center/overview',         icon: LayoutDashboard, label: 'Overview',         testid: 'cc-nav-overview' },
+  { to: '/command-center/advisor-console',  icon: Compass,         label: 'Advisor Console',  testid: 'cc-nav-advisor-console' },
+  { to: '/command-center/studio-requests',  icon: Building2,       label: 'Studio Requests',  testid: 'cc-nav-studio-requests' },
 ];
 
-const CommandCenterApp = () => (
-  <WorkspaceShell
-    eyebrow="MOOD"
-    title="Command Center"
-    navItems={COMMAND_CENTER_NAV}
-    logoutTo="/command-center"
-    edgeToEdgeWhen={(p) => p.startsWith('/command-center/advisor-console')}
-  >
-    <Routes>
-      <Route index                                   element={<Navigate to="/command-center/advisor-console" replace />} />
-      <Route path="advisor-console"                  element={<AdvisorConsole />} />
-      <Route path="advisor-console/relations/:id"    element={<RelationDetail />} />
-      <Route path="studio-requests"                  element={<StudioRequestsAdmin />} />
-      <Route path="*"                                element={<Navigate to="/command-center/advisor-console" replace />} />
-    </Routes>
-  </WorkspaceShell>
-);
+const ADVISOR_NAV = [
+  { to: '/command-center/advisor-console',  icon: Compass,    label: 'Advisor Console',  testid: 'cc-nav-advisor-console' },
+  { to: '/command-center/studio-requests',  icon: Building2,  label: 'Studio Requests',  testid: 'cc-nav-studio-requests' },
+];
+
+const readRole = () => {
+  try {
+    const u = JSON.parse(
+      localStorage.getItem('mood_auth_user') ||
+      localStorage.getItem('mood_user') ||
+      '{}',
+    );
+    return (u.role || '').toLowerCase();
+  } catch {
+    return '';
+  }
+};
+
+/**
+ * Decide where /command-center (index) should send each role.
+ *   • super admin (admin/editor) → /overview
+ *   • advisor                    → /advisor-console
+ *   • founder (owner)            → /blueprint  (their own workspace)
+ *   • anything else              → /advisor-console (defensive default)
+ */
+const RootRedirect = () => {
+  const role = readRole();
+  if (role === 'admin' || role === 'editor') {
+    return <Navigate to="/command-center/overview" replace />;
+  }
+  if (role === 'owner') {
+    return <Navigate to="/blueprint" replace />;
+  }
+  return <Navigate to="/command-center/advisor-console" replace />;
+};
+
+/**
+ * SuperAdminOnly — wraps Overview. Advisors get redirected to their
+ * scoped console rather than seeing a 403 page.
+ */
+const SuperAdminOnly = ({ children }) => {
+  const role = readRole();
+  if (role === 'admin' || role === 'editor') return children;
+  if (role === 'owner') return <Navigate to="/blueprint" replace />;
+  return <Navigate to="/command-center/advisor-console" replace />;
+};
+
+/**
+ * NotFounder — Command Center surfaces (other than /welcome) are not
+ * for founders. Pushes them to Blueprint.
+ */
+const NotFounder = ({ children }) => {
+  const role = readRole();
+  if (role === 'owner') return <Navigate to="/blueprint" replace />;
+  return children;
+};
+
+const CommandCenterApp = () => {
+  const role = readRole();
+  const navItems = (role === 'admin' || role === 'editor') ? ADMIN_NAV : ADVISOR_NAV;
+  const location = useLocation();
+
+  return (
+    <WorkspaceShell
+      eyebrow="MOOD"
+      title="Command Center"
+      navItems={navItems}
+      logoutTo="/command-center"
+      edgeToEdgeWhen={(p) =>
+        p.startsWith('/command-center/advisor-console') ||
+        p.startsWith('/command-center/overview')
+      }
+    >
+      <Routes>
+        <Route index                                  element={<RootRedirect />} />
+        <Route path="overview"                        element={<SuperAdminOnly><CommandOverview /></SuperAdminOnly>} />
+        <Route path="advisor-console"                 element={<NotFounder><AdvisorConsole /></NotFounder>} />
+        <Route path="advisor-console/relations/:id"   element={<NotFounder><RelationDetail /></NotFounder>} />
+        <Route path="studio-requests"                 element={<NotFounder><StudioRequestsAdmin /></NotFounder>} />
+        <Route path="*"                               element={<RootRedirect />} />
+      </Routes>
+    </WorkspaceShell>
+  );
+};
 
 export default CommandCenterApp;

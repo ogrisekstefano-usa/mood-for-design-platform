@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 
 from database import AsyncSessionLocal
 from routers._auth import require_admin_tenant
+from routers._advisor_scope import require_advisor_scope
 from services import site_resolver
 from services import storage as supa_storage
 
@@ -1031,8 +1032,18 @@ async def admin_invalidate(tenant: dict = Depends(require_admin_tenant)):
 # ─────────────────────────────────────────────────────────────────────────
 
 @router.get("/whoami")
-async def admin_whoami(tenant: dict = Depends(require_admin_tenant)):
-    return {"tenant": {"id": str(tenant['id']), "slug": tenant.get('slug', 'mood-corporate')}}
+async def admin_whoami(scope: dict = Depends(require_advisor_scope)):
+    """Session-check endpoint used by the workspace shells.
+
+    Permissive on role (admin / editor / advisor / owner) so each shell
+    (Blueprint, Command Center, Founder Welcome) can verify a valid
+    session without requiring CMS-level privileges.
+    """
+    tenant = scope["tenant"]
+    return {
+        "tenant": {"id": str(tenant['id']), "slug": tenant.get('slug', 'mood-corporate')},
+        "role":   scope["role"],
+    }
 
 
 

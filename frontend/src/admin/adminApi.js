@@ -149,4 +149,8 @@ export const adminApi = {
     }),
   activateEcosystem: (relationId, body = {}) =>
     axios.post(`${BACKEND_URL}/api/admin/relations/${relationId}/activate-ecosystem`, body, { headers: headers() }),
+  commandOverview: () =>
+    axios.get(`${BACKEND_URL}/api/admin/command/overview`, { headers: headers() }),
+  tenantManifest: (slug) =>
+    axios.get(`${BACKEND_URL}/api/admin/tenants/${slug}/manifest`, { headers: headers() }),
 };

@@ -469,12 +469,13 @@ async def founder_first_access_state(
 async def copy_manifest(
     namespace: str = Query(...),
     locale: str = Query(default=DEFAULT_LOCALE),
-    _tenant: dict = Depends(require_admin_tenant),
+    _scope: dict = Depends(require_advisor_scope),
 ):
     """
     Resolve every editorial_block under a namespace into a flat map.
-    Used by the Advisor Console to render editorial copy with the same
-    locale fallback chain as the public site.
+    Used by every workspace shell (Blueprint, Command Center, Founder
+    Welcome) to render editorial copy with the same locale fallback
+    chain as the public site. Accessible by any authenticated viewer.
     """
     tenant = await get_corporate_tenant()
     async with AsyncSessionLocal() as s:
@@ -491,3 +492,209 @@ async def copy_manifest(
     prefix = namespace + "."
     out = {k[len(prefix):]: v for k, v in values.items()}
     return {"namespace": namespace, "locale": locale, "values": out}
+
+
+
+# ── Command Center Overview (super-admin governance) ─────────────────
+@router.get("/admin/command/overview")
+async def command_overview(
+    scope: dict = Depends(require_advisor_scope),
+):
+    """
+    Aggregated read-only governance view for MOOD Super Admin.
+
+    Returns:
+      • kpi: cross-advisor counts and pipeline totals
+      • advisors: list of active advisors with per-advisor mini-KPI
+      • relations: latest 50 across all advisors (denormalised owner name)
+      • studio_requests: latest 50 (assignment column denormalised)
+      • activated_tenants: tenants whose lifecycle reached 'activated'
+
+    Access:
+      • role admin/editor → full payload (no scoping)
+      • role advisor      → 403 (this is super-admin only — advisors have
+                            /advisor-console for their own scoped view)
+    """
+    if not scope["is_super_admin"]:
+        raise HTTPException(status_code=403, detail="Super admin required")
+
+    async with AsyncSessionLocal() as s:
+        # ── Cross-advisor KPI ─────────────────────────────────────────
+        kpi = (await s.execute(
+            text("""
+                SELECT
+                    COUNT(*)                                       AS total_relations,
+                    COUNT(*) FILTER (WHERE status IN
+                        ('under_review','contacted','presentation_scheduled',
+                         'presented','qualified','proposal'))      AS active_relations,
+                    COUNT(*) FILTER (WHERE status = 'activated')   AS activated_relations,
+                    COUNT(*) FILTER (WHERE temperature = 'ready')  AS ready,
+                    COUNT(*) FILTER (WHERE temperature = 'strong') AS strong,
+                    COUNT(*) FILTER (WHERE temperature = 'warm')   AS warm,
+                    COALESCE(SUM(expected_monthly_value), 0)       AS pipeline_recurring,
+                    COALESCE(SUM(expected_setup_value), 0)         AS pipeline_setup
+                  FROM studio_relations
+            """),
+        )).mappings().first()
+
+        requests_total = (await s.execute(
+            text("""
+                SELECT
+                    COUNT(*)                                       AS total,
+                    COUNT(*) FILTER (WHERE status IN ('received','reviewing'))     AS open,
+                    COUNT(*) FILTER (WHERE assigned_advisor_id IS NULL)            AS unassigned
+                  FROM studio_requests
+            """),
+        )).mappings().first()
+
+        tenants_total = (await s.execute(
+            text("""
+                SELECT COUNT(*) AS n FROM tenants
+                 WHERE status = 'active' AND slug <> 'studio'
+            """),
+        )).scalar() or 0
+
+        # ── Advisors (active) with per-advisor counts ────────────────
+        advisors = (await s.execute(
+            text("""
+                SELECT
+                    ap.id                AS profile_id,
+                    ap.user_id           AS user_id,
+                    ap.advisor_code,
+                    ap.name,
+                    ap.email,
+                    ap.status,
+                    ap.commission_percentage,
+                    (SELECT COUNT(*) FROM studio_relations sr
+                       WHERE sr.owner_advisor_id = ap.user_id
+                         AND sr.status IN
+                             ('under_review','contacted','presentation_scheduled',
+                              'presented','qualified','proposal')
+                    ) AS active_count,
+                    (SELECT COUNT(*) FROM studio_relations sr
+                       WHERE sr.owner_advisor_id = ap.user_id
+                         AND sr.status = 'activated'
+                    ) AS activated_count,
+                    (SELECT COUNT(*) FROM studio_requests rq
+                       WHERE rq.assigned_advisor_id = ap.user_id
+                    ) AS requests_count
+                  FROM advisor_profiles ap
+                 ORDER BY ap.created_at NULLS LAST, ap.name
+            """),
+        )).mappings().all()
+
+        # ── Relations (cross-advisor, latest first) ──────────────────
+        relations = (await s.execute(
+            text("""
+                SELECT sr.id, sr.studio_name, sr.archetype, sr.city, sr.country,
+                       sr.status, sr.temperature,
+                       sr.owner_advisor_id, sr.expected_monthly_value,
+                       sr.expected_setup_value, sr.last_activity_at, sr.created_at,
+                       u.full_name AS owner_full_name,
+                       u.email     AS owner_email
+                  FROM studio_relations sr
+                  LEFT JOIN users u ON u.id = sr.owner_advisor_id
+                 ORDER BY sr.last_activity_at DESC NULLS LAST, sr.created_at DESC
+                 LIMIT 50
+            """),
+        )).mappings().all()
+
+        # ── Studio Requests (latest first, with assigned advisor) ────
+        requests_rows = (await s.execute(
+            text("""
+                SELECT sq.id, sq.studio_name, sq.archetype, sq.city, sq.country,
+                       sq.contact_email, sq.status, sq.assigned_advisor_id,
+                       sq.created_at,
+                       u.full_name AS assigned_name,
+                       u.email     AS assigned_email
+                  FROM studio_requests sq
+                  LEFT JOIN users u ON u.id = sq.assigned_advisor_id
+                 ORDER BY sq.created_at DESC
+                 LIMIT 50
+            """),
+        )).mappings().all()
+
+        # ── Activated Tenants ────────────────────────────────────────
+        tenants_rows = (await s.execute(
+            text("""
+                SELECT t.id, t.slug, t.name, t.status, t.created_at
+                  FROM tenants t
+                 WHERE t.status = 'active' AND t.slug <> 'studio'
+                 ORDER BY t.created_at DESC
+                 LIMIT 50
+            """),
+        )).mappings().all()
+
+    return {
+        "kpi": {
+            "total_relations":     int(kpi["total_relations"] or 0),
+            "active_relations":    int(kpi["active_relations"] or 0),
+            "activated_relations": int(kpi["activated_relations"] or 0),
+            "ready":               int(kpi["ready"] or 0),
+            "strong":              int(kpi["strong"] or 0),
+            "warm":                int(kpi["warm"] or 0),
+            "pipeline_recurring":  float(kpi["pipeline_recurring"] or 0),
+            "pipeline_setup":      float(kpi["pipeline_setup"] or 0),
+            "requests_total":      int(requests_total["total"] or 0),
+            "requests_open":       int(requests_total["open"] or 0),
+            "requests_unassigned": int(requests_total["unassigned"] or 0),
+            "activated_tenants":   int(tenants_total),
+            "advisors_active":     sum(1 for a in advisors if a["status"] == 'active'),
+        },
+        "advisors": [
+            {
+                "profile_id":            str(a["profile_id"]),
+                "user_id":               str(a["user_id"]) if a["user_id"] else None,
+                "advisor_code":          a["advisor_code"],
+                "name":                  a["name"],
+                "email":                 a["email"],
+                "status":                a["status"],
+                "commission_percentage": float(a["commission_percentage"] or 0),
+                "active_count":          int(a["active_count"] or 0),
+                "activated_count":       int(a["activated_count"] or 0),
+                "requests_count":        int(a["requests_count"] or 0),
+            } for a in advisors
+        ],
+        "relations": [
+            {
+                "id":                str(r["id"]),
+                "studio_name":       r["studio_name"],
+                "archetype":         r["archetype"],
+                "city":              r["city"],
+                "country":           r["country"],
+                "status":            r["status"],
+                "temperature":       r["temperature"],
+                "owner_advisor_id":  str(r["owner_advisor_id"]) if r["owner_advisor_id"] else None,
+                "owner_name":        r["owner_full_name"],
+                "owner_email":       r["owner_email"],
+                "expected_monthly":  float(r["expected_monthly_value"] or 0),
+                "expected_setup":    float(r["expected_setup_value"] or 0),
+                "last_activity_at":  r["last_activity_at"].isoformat() if r["last_activity_at"] else None,
+                "created_at":        r["created_at"].isoformat() if r["created_at"] else None,
+            } for r in relations
+        ],
+        "studio_requests": [
+            {
+                "id":                  str(q["id"]),
+                "studio_name":         q["studio_name"],
+                "archetype":           q["archetype"],
+                "city":                q["city"],
+                "country":             q["country"],
+                "contact_email":       q["contact_email"],
+                "status":              q["status"],
+                "assigned_advisor_id": str(q["assigned_advisor_id"]) if q["assigned_advisor_id"] else None,
+                "assigned_name":       q["assigned_name"],
+                "assigned_email":      q["assigned_email"],
+                "created_at":          q["created_at"].isoformat() if q["created_at"] else None,
+            } for q in requests_rows
+        ],
+        "activated_tenants": [
+            {
+                "id":          str(t["id"]),
+                "slug":        t["slug"],
+                "name":        t["name"],
+                "status":      t["status"],
+                "created_at":  t["created_at"].isoformat() if t["created_at"] else None,
+            } for t in tenants_rows
+        ],
+    }

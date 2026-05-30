@@ -89,19 +89,21 @@ def tenant_redirect_for(tenant_slug: str, role: str) -> str:
       • Founder (role=owner)         → /command-center/welcome (cinematic
                                        first access for the studio; the
                                        CTA then takes them to /blueprint).
-      • Advisor (role=advisor)       → /command-center
-                                       (MOOD Core surfaces only).
-      • Admin / editor               → /command-center
-                                       (super admin lands on MOOD Core;
-                                       the Blueprint workspace is one
-                                       click away from there).
+      • Advisor (role=advisor)       → /command-center/advisor-console
+                                       (own scoped console).
+      • Admin / editor               → /command-center/overview
+                                       (super-admin governance dashboard;
+                                       advisor-console & blueprint are
+                                       one click away from there).
       • Anything else (clients, …)   → /  (public site; future:
                                        tenant private panel on subdomain).
     """
     if role == "owner":
         return "/command-center/welcome"
-    if role in ("admin", "editor", "advisor"):
-        return "/command-center"
+    if role == "advisor":
+        return "/command-center/advisor-console"
+    if role in ("admin", "editor"):
+        return "/command-center/overview"
     return "/"
 
 

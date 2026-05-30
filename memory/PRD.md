@@ -10,7 +10,50 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ---
 
-## Latest session — Mar 01, 2026
+## Latest session — Mar 01, 2026 (cont.)
+
+### Chunk 2 completion — Super Admin Overview + Role-aware Workspace ✅ (Mar 01, 2026)
+
+**Problem solved**: previously both admin and advisor landed on `/command-center/advisor-console`. The advisor console is a scoped read of the viewer's own dossier — wrong default for super admin who needs governance breadth.
+
+**Architecture delivered**:
+- `/command-center/overview` (NEW) — Super Admin governance dashboard:
+  - 8 KPI cards: Advisor in dialogo · Relazioni nell'orbitale · Conversazioni vive · Ecosistemi attivati · Introduzioni ricevute · Da assegnare · Ricorrente in osservazione · Setup in osservazione
+  - Table: Advisors (per-advisor counts of active/activated/requests + commission %)
+  - Table: Studio Relations (cross-advisor, latest 50 by signal date)
+  - Table: Studio Requests (latest 50 with assignment status)
+  - Table: Activated Tenants (with Manifest link per tenant)
+- `/command-center/advisor-console` — scoped advisor view (unchanged behaviour).
+- Role-aware sidebar:
+  - admin/editor → Overview · Advisor Console · Studio Requests
+  - advisor      → Advisor Console · Studio Requests
+- Role-aware redirect:
+  - admin/editor on `/command-center` → `/overview`
+  - advisor on `/command-center`      → `/advisor-console`
+  - founder (owner) on `/command-center` → `/blueprint`
+- React guards `SuperAdminOnly` + `NotFounder` reject advisors from Overview (redirect to advisor-console) and founders from any Command Center page (redirect to Blueprint).
+
+**Backend**:
+- `GET /api/admin/command/overview` — aggregated payload `{kpi, advisors, relations, studio_requests, activated_tenants}`. Returns 403 to non-super-admin (verified curl).
+- `tenant_redirect_for` updated: admin/editor → `/command-center/overview`, advisor → `/command-center/advisor-console`, owner → `/command-center/welcome`.
+- `/api/admin/site/whoami` rewired to `require_advisor_scope` so all roles (admin/editor/advisor/owner) can authenticate the shell. CMS-write endpoints remain restricted to `require_admin_tenant` (admin/owner/editor only — advisor cannot touch CMS).
+- `/api/admin/copy/manifest` permissive guard (read-only editorial copy is non-sensitive).
+
+**Translation seed** `command.overview.*` (62 keys IT) — zero hardcoded strings in CommandOverview.jsx.
+
+**Founder Journey verified**:
+- Magic-link consume for `tlc2-founder@test.example` → JWT role=owner, redirect `/command-center/welcome`.
+- Welcome screen renders: monogram AL · "Il tuo ecosistema è pronto" · founder name · advisor · esperienze attivate · CTA "Entra nello Studio" → `/blueprint`.
+- Founder trying `/command-center/overview` or `/advisor-console` → React redirect to `/blueprint` (verified via `NotFounder` guard).
+
+**Files touched**:
+- Frontend: `App.js`, `AdminApp.jsx`, `CommandCenterApp.jsx`, `pages/CommandOverview.jsx` (NEW), `pages/FounderWelcome.jsx`, `adminApi.js`.
+- Backend: `routers/auth.py`, `routers/admin_relations.py`, `routers/admin_site.py`, `routers/_advisor_scope.py`.
+- DB: seed `db/seed_command_overview.py` (NEW).
+
+---
+
+## Earlier in session — Mar 01, 2026
 
 ### MOOD Advisor Program™ · Chunk 1+2 — Route separation + Advisor scoping ✅ (Mar 01, 2026)
 
