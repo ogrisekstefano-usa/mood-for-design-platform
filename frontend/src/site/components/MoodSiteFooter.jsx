@@ -35,7 +35,20 @@ const resolveTenantSlug = () => {
 const L = (obj, locale) => {
   if (!obj) return '';
   if (typeof obj === 'string') return obj;
-  return obj[locale] || obj.en || obj.it || Object.values(obj)[0] || '';
+  const norm = (locale || 'it').toLowerCase();
+  const candidates = [
+    locale,
+    norm,
+    norm === 'it' ? 'it-IT' : null,
+    norm === 'en' ? 'en-US' : null,
+    norm === 'en' ? 'en-GB' : null,
+    norm === 'fr' ? 'fr-FR' : null,
+    norm === 'de' ? 'de-DE' : null,
+    norm === 'es' ? 'es-ES' : null,
+    'it-IT', '_default', 'en-US', 'en', 'it',
+  ].filter(Boolean);
+  for (const k of candidates) if (obj[k]) return obj[k];
+  return Object.values(obj)[0] || '';
 };
 
 const resolveBag = (bag, locale) => {
@@ -102,19 +115,61 @@ const FooterColophon = ({ locale, colophon }) => {
 const MoodSiteFooter = () => {
   const site = useSite();
   const locale = (site?.locale || 'it').slice(0, 2);
+  const i18nLocale = locale === 'en' ? 'en-US' : (locale === 'it' ? 'it-IT' : locale);
 
   const tenantSlug = useMemo(() => resolveTenantSlug(), []);
-  const cms = useStorefrontContent(tenantSlug, 'home');
+  const cmsHome = useStorefrontContent(tenantSlug, 'home');
+  const cmsNav  = useStorefrontContent(tenantSlug, 'navigation');
 
-  const { cols, colophon } = useMemo(() => {
-    const footerBag = resolveBag(cms?.content?.editorial_footer,
-                                 locale === 'en' ? 'en-US' : locale);
-    return {
-      cols: Array.isArray(footerBag.cols) ? footerBag.cols : [],
-      colophon: SHELL_COLOPHON,  // colophon is static brand chrome
-    };
+  // ────────────────────────────────────────────────────────────────────
+  // ITER171.3 · Single source of truth for footer columns.
+  //
+  // 1. Navigation column (mirrors the top nav so users always see the
+  //    same site map at top and bottom). Reads from
+  //    `navigation.nav_top.settings.links`. Editing the nav in CMS
+  //    updates the footer automatically.
+  //
+  // 2. Editorial columns (Azienda · Risorse · Seguici) come from the
+  //    `home.editorial_footer` section. Admin can edit them inside
+  //    Command Center → Pagine → Home → "EDITORIAL_FOOTER".
+  // ────────────────────────────────────────────────────────────────────
+  const cols = useMemo(() => {
+    const out = [];
+
+    // 1 · Navigation mirror column
+    const navSection = cmsNav?.content?.nav_top
+                    || cmsNav?.content?.navigation_main
+                    || cmsNav?.content?.main_links;
+    const navLinks = navSection?._settings?.links || navSection?.settings?.links || [];
+    if (Array.isArray(navLinks) && navLinks.length) {
+      const navCol = {
+        title: { it: 'Navigazione', en: 'Navigation' },
+        links: navLinks
+          .filter((l) => l.visible !== false)
+          .map((l) => ({
+            href:  l.href,
+            label: l.label_i18n || l.label || {},
+          })),
+      };
+      if (navCol.links.length) out.push(navCol);
+    }
+
+    // 2 · Editorial cols from home.editorial_footer
+    const footerBag = resolveBag(cmsHome?.content?.editorial_footer, i18nLocale);
+    const editorialCols = Array.isArray(footerBag.cols) ? footerBag.cols : [];
+    for (const c of editorialCols) {
+      out.push({
+        title: c.title,
+        links: Array.isArray(c.links) ? c.links : [],
+      });
+    }
+    return out;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(cms?.content?.editorial_footer), locale]);
+  }, [JSON.stringify(cmsNav?.content?.nav_top || cmsNav?.content?.navigation_main),
+      JSON.stringify(cmsHome?.content?.editorial_footer),
+      i18nLocale]);
+
+  const colophon = SHELL_COLOPHON;
 
   return (
     <footer id="footer" className="mfd-footer" data-testid="site-footer">

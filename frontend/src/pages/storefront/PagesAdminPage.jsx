@@ -99,6 +99,7 @@ const FIELD_SCHEMAS = {
   editorial_footer: [
     { key: 'rights',  label: 'COPYRIGHT', textarea: false },
     { key: 'tagline', label: 'TAGLINE',   textarea: true, rows: 2 },
+    { key: 'cols',    label: 'COLONNE (JSON · [{title, links:[{href,label}]}])', textarea: true, rows: 14, isJson: true },
   ],
   // ── Generic free-form blocks (ITER157.E.3) ───────────────────────
   block_heading: [
@@ -325,7 +326,16 @@ const PagesAdminPage = () => {
   const getDraftValue = (section, field) => {
     const k = draftKey(section.id, activeLocale, field);
     if (k in drafts) return drafts[k];
-    return getSavedFieldValue(section, activeLocale, field);
+    const raw = getSavedFieldValue(section, activeLocale, field);
+    // JSON-typed fields are stored as objects/arrays in locale_content but
+    // edited as a textarea. Pretty-print them when first loading into the
+    // editor so the admin sees readable JSON.
+    const schema = FIELD_SCHEMAS[section.section_type] || DEFAULT_TEXT_FIELDS;
+    const fieldDef = schema.find((f) => f.key === field);
+    if (fieldDef?.isJson && raw && typeof raw !== 'string') {
+      try { return JSON.stringify(raw, null, 2); } catch (_) { return ''; }
+    }
+    return raw;
   };
   const isDirty = (section, field) => {
     const k = draftKey(section.id, activeLocale, field);
@@ -337,7 +347,21 @@ const PagesAdminPage = () => {
   };
 
   const saveField = async (section, field) => {
-    const value = getDraftValue(section, field);
+    let value = getDraftValue(section, field);
+    // ITER171 · JSON-typed fields (e.g. editorial_footer.cols) — parse the
+    // textarea contents back to a real array/object before writing it to
+    // locale_content. If the JSON is invalid, surface a clear error and abort.
+    const schema = FIELD_SCHEMAS[section.section_type] || DEFAULT_TEXT_FIELDS;
+    const fieldDef = schema.find((f) => f.key === field);
+    if (fieldDef?.isJson) {
+      const raw = typeof value === 'string' ? value : JSON.stringify(value);
+      try {
+        value = raw.trim() === '' ? null : JSON.parse(raw);
+      } catch (err) {
+        toast.error(`JSON non valido in "${field}": ${String(err.message).slice(0, 80)}`);
+        return;
+      }
+    }
     const lc = writeFieldValue(section, activeLocale, field, value);
     const key = draftKey(section.id, activeLocale, field);
     setSavingKey(key);
