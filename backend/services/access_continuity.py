@@ -48,21 +48,24 @@ async def identity_probe(email: str) -> dict:
       { "channel": "magic_link" | "password" | "studio_pending" | "concierge",
         "display_name": Optional[str] }
 
+    MOOD is a strictly B2B platform. The central identity probe recognises
+    only platform-side identities (Admin, Advisor, Founder, Tenant Staff)
+    and studio applicants. `private_client` belongs to the tenant CRM and
+    has NO central identity — those emails resolve to concierge.
+
     Order of resolution (matches the MOOD access model exactly):
       Step 1 — public.users
                ├─ has real password AND role in (admin, editor)
                │      → channel="password"
                └─ otherwise (magic-only sentinel OR role in
-                  owner/member/client/guest)        → channel="magic_link"
-      Step 2 — accounts (private_client) without a users row
-               • Provision a placeholder users row, then
-                 → channel="magic_link"
-      Step 3 — studio_requests
-               ├─ status='approved'      → channel="magic_link"   (post-activation
-               │                            user row will exist; fallthrough)
+                  owner/member/guest)               → channel="magic_link"
+      Step 2 — studio_requests
+               ├─ status='approved'      → channel="concierge"   (post-activation
+               │                            user row should exist; if it doesn't,
+               │                            something is off — fall to concierge)
                └─ status in (received, reviewing, contacted, …)
                                           → channel="studio_pending"
-      Step 4 — nothing matched           → channel="concierge"
+      Step 3 — nothing matched           → channel="concierge"
     """
     email = (email or "").lower().strip()
     if not email:
@@ -95,40 +98,7 @@ async def identity_probe(email: str) -> dict:
             return {"channel": "magic_link",
                     "display_name": urow["full_name"]}
 
-        # ── Step 2: private clients in `accounts` ──────────────────
-        acct = (await session.execute(
-            text("""
-                SELECT a.id, a.tenant_id, a.account_name, a.email
-                  FROM accounts a
-                 WHERE lower(a.email) = :em
-                   AND a.account_type = 'private_client'
-                 ORDER BY a.created_at DESC
-                 LIMIT 1
-            """),
-            {"em": email},
-        )).mappings().first()
-
-        if acct:
-            # Provision a magic-link-only `users` row so issue_magic_link
-            # (which joins users↔tenants) can route the link correctly.
-            await session.execute(
-                text("""
-                    INSERT INTO users
-                      (tenant_id, email, full_name, role, is_active,
-                       password_hash)
-                    VALUES
-                      (:t, :em, :nm, 'client', TRUE, '!magic-link-only')
-                    ON CONFLICT (tenant_id, email) DO NOTHING
-                """),
-                {"t": str(acct["tenant_id"]),
-                 "em": email,
-                 "nm": acct["account_name"] or email.split("@")[0]},
-            )
-            await session.commit()
-            return {"channel": "magic_link",
-                    "display_name": acct["account_name"]}
-
-        # ── Step 3: studio applications ────────────────────────────
+        # ── Step 2: studio applications ────────────────────────────
         sreq = (await session.execute(
             text("""
                 SELECT id, status, studio_name, contact_name
@@ -149,7 +119,7 @@ async def identity_probe(email: str) -> dict:
             return {"channel": "studio_pending",
                     "display_name": sreq["contact_name"] or sreq["studio_name"]}
 
-        # ── Step 4: nothing matched ────────────────────────────────
+        # ── Step 3: nothing matched ────────────────────────────────
         return {"channel": "concierge", "display_name": None}
 
 

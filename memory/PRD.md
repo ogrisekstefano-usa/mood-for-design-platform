@@ -10,7 +10,18 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ---
 
-## Latest session — Feb 28, 2026
+## Latest session — Mar 01, 2026
+
+### B2B Identity Hardening — `private_client` removed from central probe ✅ (Mar 01, 2026)
+- **Regola architetturale**: MOOD è esclusivamente B2B. `private_client` è un dato del CRM del tenant (tabella `accounts`), NON un'identità centrale.
+- **`services/access_continuity.py.identity_probe()`** — rimosso interamente lo Step 2 che leggeva `accounts.account_type='private_client'` e auto-provisionava una riga `users` con `role='client'` + sentinel `!magic-link-only`. Docstring riscritto, numerazione step compattata (3 step: users → studio_requests → concierge).
+- **Cleanup DB**: rimosso 1 utente provvisorio (`ogriusa@gmail.com`) creato da Step 2 in passato + 2 magic_links pendenti. La tabella `accounts` (5 `private_client`) preservata intatta.
+- **Verifica**: 8/8 scenari `/api/auth/identity-probe` PASS — Admin→password, Founder→magic_link (×2), StudioPending→studio_pending, UnknownEmail→concierge, PrivateClient→concierge (×3). Zero enumeration leak: email private_client e email sconosciute restituiscono lo stesso shape `{channel:"concierge", display_name:null}`.
+- **Pending utente**: test reale E2E Tenant Lifecycle (Application → Review → Advisor Console → Open Ecosystem → Founder Invitation → Founder First Access).
+
+---
+
+## Previous session — Feb 28, 2026
 
 ### Finalization & Deploy Phase ✅ (Feb 28, 2026)
 **Feature freeze**. Solo hardening, security audit, deploy preparation.
