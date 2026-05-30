@@ -592,6 +592,15 @@ def my_primary_journey(ctx=Depends(get_tenant_context)):
       2. Pick the most recent journey for that account (lifecycle ≠ abandoned)
       3. Fallback: any non-archived journey for the tenant where the user
          appears as designer/owner (studio users)
+
+    ITER171.10 · Client rebind. The `/api/public/journeys/initiate` flow
+    creates accounts/projects/journeys BEFORE the magic link is consumed,
+    so `projects.client_user_id`, `accounts.primary_owner_id`, and
+    `design_journeys.created_by` are NULL at creation time. On the first
+    authenticated /mine call (i.e. the post-magic-link callback) we
+    idempotently rebind those NULL fields to the resolved profile id.
+    This is condition-safe: rows already bound to another user are NEVER
+    overwritten (we use `.is_("field","null")`).
     """
     c = db()
     tid = ctx["tenant_id"]
@@ -602,20 +611,122 @@ def my_primary_journey(ctx=Depends(get_tenant_context)):
 
     # Try by email match on account
     acc_rows = (c.table("accounts")
-                .select("id")
+                .select("id, primary_owner_id")
                 .eq("tenant_id", tid)
                 .ilike("email", email)
                 .limit(5).execute().data or [])
     for a in acc_rows:
-        jrows = (c.table("design_journeys").select("id, lifecycle_state, updated_at")
+        jrows = (c.table("design_journeys").select("id, lifecycle_state, project_id, created_by, updated_at")
                  .eq("tenant_id", tid).eq("account_id", a["id"])
                  .neq("lifecycle_state", "abandoned")
                  .order("updated_at", desc=True).limit(1).execute().data or [])
         if jrows:
-            return {"journey_id": jrows[0]["id"],
-                    "lifecycle_state": jrows[0].get("lifecycle_state")}
+            j = jrows[0]
+            # ── ITER171.10 · idempotent rebind ────────────────────────
+            profile_id = ctx.get("profile_id") or ctx.get("user_id")
+            role = (ctx.get("role") or "").lower()
+            if profile_id and role == "client":
+                _rebind_client_ownership(
+                    c, tid=tid, profile_id=profile_id, email=email,
+                    account_id=a["id"], project_id=j.get("project_id"),
+                    journey_id=j["id"],
+                    account_owner_already=a.get("primary_owner_id"),
+                    journey_creator_already=j.get("created_by"),
+                )
+            return {"journey_id": j["id"],
+                    "lifecycle_state": j.get("lifecycle_state")}
 
     raise HTTPException(404, "Nessuna journey associata")
+
+
+def _rebind_client_ownership(
+    c, *, tid: str, profile_id: str, email: str,
+    account_id: Optional[str], project_id: Optional[str], journey_id: Optional[str],
+    account_owner_already: Optional[str], journey_creator_already: Optional[str],
+) -> None:
+    """ITER171.10 · idempotent ownership rebind on first authenticated load.
+
+    Updates ONLY the three target fields when they are NULL — never
+    overwrites a binding to a different user. Logs the outcome per field
+    with a structured marker (CLIENT_REBIND_SUCCESS / CLIENT_REBIND_SKIPPED)
+    so SRE can grep audit trails post-incident.
+
+    Race-safe: each UPDATE filters `.is_("col", "null")` server-side, so
+    two concurrent magic-link consumes can't both win — Postgres atomicity
+    guarantees a single writer.
+    """
+    ctx_log = {
+        "user_id": profile_id, "email": email,
+        "account_id": account_id, "project_id": project_id,
+        "journey_id": journey_id,
+    }
+
+    # 1) accounts.primary_owner_id
+    if account_id:
+        if account_owner_already:
+            logger.info("CLIENT_REBIND_SKIPPED field=accounts.primary_owner_id "
+                        "reason=already_bound bound_to=%s ctx=%s",
+                        account_owner_already, ctx_log)
+        else:
+            try:
+                res = (c.table("accounts")
+                       .update({"primary_owner_id": profile_id})
+                       .eq("id", account_id)
+                       .eq("tenant_id", tid)
+                       .is_("primary_owner_id", "null")
+                       .execute())
+                n = len(res.data or [])
+                if n:
+                    logger.info("CLIENT_REBIND_SUCCESS field=accounts.primary_owner_id ctx=%s", ctx_log)
+                else:
+                    logger.info("CLIENT_REBIND_SKIPPED field=accounts.primary_owner_id "
+                                "reason=no_rows_matched ctx=%s", ctx_log)
+            except Exception as e:
+                logger.warning("CLIENT_REBIND_ERROR field=accounts.primary_owner_id "
+                               "err=%s ctx=%s", str(e)[:140], ctx_log)
+
+    # 2) projects.client_user_id
+    if project_id:
+        try:
+            res = (c.table("projects")
+                   .update({"client_user_id": profile_id})
+                   .eq("id", project_id)
+                   .eq("tenant_id", tid)
+                   .is_("client_user_id", "null")
+                   .execute())
+            n = len(res.data or [])
+            if n:
+                logger.info("CLIENT_REBIND_SUCCESS field=projects.client_user_id ctx=%s", ctx_log)
+            else:
+                logger.info("CLIENT_REBIND_SKIPPED field=projects.client_user_id "
+                            "reason=already_bound_or_no_rows ctx=%s", ctx_log)
+        except Exception as e:
+            logger.warning("CLIENT_REBIND_ERROR field=projects.client_user_id "
+                           "err=%s ctx=%s", str(e)[:140], ctx_log)
+
+    # 3) design_journeys.created_by
+    if journey_id:
+        if journey_creator_already:
+            logger.info("CLIENT_REBIND_SKIPPED field=design_journeys.created_by "
+                        "reason=already_bound bound_to=%s ctx=%s",
+                        journey_creator_already, ctx_log)
+        else:
+            try:
+                res = (c.table("design_journeys")
+                       .update({"created_by": profile_id})
+                       .eq("id", journey_id)
+                       .eq("tenant_id", tid)
+                       .is_("created_by", "null")
+                       .execute())
+                n = len(res.data or [])
+                if n:
+                    logger.info("CLIENT_REBIND_SUCCESS field=design_journeys.created_by ctx=%s", ctx_log)
+                else:
+                    logger.info("CLIENT_REBIND_SKIPPED field=design_journeys.created_by "
+                                "reason=no_rows_matched ctx=%s", ctx_log)
+            except Exception as e:
+                logger.warning("CLIENT_REBIND_ERROR field=design_journeys.created_by "
+                               "err=%s ctx=%s", str(e)[:140], ctx_log)
 
 
 @router.get("/resolve")
