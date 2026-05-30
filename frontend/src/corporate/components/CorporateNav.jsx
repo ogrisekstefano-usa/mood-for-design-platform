@@ -36,7 +36,7 @@ const CorporateNav = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [navItems, setNavItems] = useState([]);
-  const [ctaItem, setCtaItem] = useState({ label: 'Apri uno Studio', href: '/studio' });
+  const [ctaItem, setCtaItem] = useState({ label: 'Attiva Blueprint™', href: '/studio' });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -99,7 +99,7 @@ const CorporateNav = () => {
           <div className="hidden lg:flex items-center gap-5 ml-auto">
             <LocaleSwitcher dark />
             <Link to={ctaItem.href || '/studio'} className="btn-pill-outline-teal" data-testid="corporate-nav-cta">
-              {ctaItem.label || 'Apri uno Studio'}
+              {ctaItem.label || 'Attiva Blueprint™'}
             </Link>
           </div>
 
@@ -133,7 +133,7 @@ const CorporateNav = () => {
             <div className="pt-4 border-t flex items-center justify-between" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
               <LocaleSwitcher dark />
               <Link to={ctaItem.href || '/studio'} className="btn-pill-outline-teal" data-testid="mobile-nav-cta">
-                {ctaItem.label || 'Apri uno Studio'}
+                {ctaItem.label || 'Attiva Blueprint™'}
               </Link>
             </div>
           </div>

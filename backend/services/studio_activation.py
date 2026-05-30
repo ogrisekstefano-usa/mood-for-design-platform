@@ -186,54 +186,61 @@ def manifest() -> dict:
     Static map consumed by the frontend on mount — archetypes, experiences,
     pre-suggestion logic, and the editorial copy keys per movement.
 
-    Images: local static assets shipped with the frontend at
-    /static/studio/*. Editorial SVG posters by default; replace with
-    curated photographs at the same filenames to upgrade visually
-    without any code change (just drop a new file in
-    /app/frontend/public/static/studio/).
+    Images: editorial Unsplash CDN URLs (placeholder photographs while the
+    curated MOOD photo library is being prepared). Each archetype carries
+    a fallback SVG poster at /static/studio/ as ultimate fallback so the
+    funnel never shows a blank state, even if the CDN is unreachable.
     """
-    BASE = "/static/studio/"
+    UNSPLASH = "https://images.unsplash.com/"
+    Q = "?auto=format&fit=crop&w=2400&q=72"
     return {
         "archetypes": [
             {
                 "key": "interior_studio",
                 "title_key":      "studio.activation.archetype.interior_studio.title",
                 "descriptor_key": "studio.activation.archetype.interior_studio.body",
-                "image_url":      BASE + "archetype-interior_studio.svg",
+                "image_url":      UNSPLASH + "photo-1618221195710-dd6b41faaea6" + Q,
+                "image_fallback": "/static/studio/archetype-interior_studio.svg",
             },
             {
                 "key": "luxury_showroom",
                 "title_key":      "studio.activation.archetype.luxury_showroom.title",
                 "descriptor_key": "studio.activation.archetype.luxury_showroom.body",
-                "image_url":      BASE + "archetype-luxury_showroom.svg",
+                "image_url":      UNSPLASH + "photo-1565183997392-2f6f122e5912" + Q,
+                "image_fallback": "/static/studio/archetype-luxury_showroom.svg",
             },
             {
                 "key": "architecture_firm",
                 "title_key":      "studio.activation.archetype.architecture_firm.title",
                 "descriptor_key": "studio.activation.archetype.architecture_firm.body",
-                "image_url":      BASE + "archetype-architecture_firm.svg",
+                "image_url":      UNSPLASH + "photo-1486718448742-163732cd1544" + Q,
+                "image_fallback": "/static/studio/archetype-architecture_firm.svg",
             },
             {
                 "key": "material_gallery",
                 "title_key":      "studio.activation.archetype.material_gallery.title",
                 "descriptor_key": "studio.activation.archetype.material_gallery.body",
-                "image_url":      BASE + "archetype-material_gallery.svg",
+                "image_url":      UNSPLASH + "photo-1556228720-195a672e8a03" + Q,
+                "image_fallback": "/static/studio/archetype-material_gallery.svg",
             },
             {
                 "key": "design_retail",
                 "title_key":      "studio.activation.archetype.design_retail.title",
                 "descriptor_key": "studio.activation.archetype.design_retail.body",
-                "image_url":      BASE + "archetype-design_retail.svg",
+                "image_url":      UNSPLASH + "photo-1555041469-a586c61ea9bc" + Q,
+                "image_fallback": "/static/studio/archetype-design_retail.svg",
             },
             {
                 "key": "stone_specialist",
                 "title_key":      "studio.activation.archetype.stone_specialist.title",
                 "descriptor_key": "studio.activation.archetype.stone_specialist.body",
-                "image_url":      BASE + "archetype-stone_specialist.svg",
+                "image_url":      UNSPLASH + "photo-1503387762-592deb58ef4e" + Q,
+                "image_fallback": "/static/studio/archetype-stone_specialist.svg",
             },
         ],
-        # Entrance full-bleed editorial poster (slow Ken-Burns drift)
-        "entrance_image_url": BASE + "entrance.svg",
+        # Entrance full-bleed editorial photograph (Ken-Burns drift)
+        "entrance_image_url":       UNSPLASH + "photo-1600210492486-724fe5c67fb0" + Q,
+        "entrance_image_fallback":  "/static/studio/entrance.svg",
         "archetype_to_suggested": ARCHETYPE_TO_SUGGESTED,
         "experiences": [
             {"key": "design_journey_os",

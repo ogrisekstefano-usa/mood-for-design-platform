@@ -31,9 +31,16 @@ const MovementEntrance = () => {
   };
 
   const heroImage = manifest?.entrance_image_url || '';
+  const heroFallback = manifest?.entrance_image_fallback || '/static/studio/entrance.svg';
+  const [heroSrc, setHeroSrc] = useState(heroImage);
+
+  useEffect(() => {
+    if (heroImage) setHeroSrc(heroImage);
+  }, [heroImage]);
+
   // Editorial poster gradient — always present so the page never
-  // shows a blank black surface, even if the hero asset is missing
-  // or still loading. Mirrors the entrance.svg mood (teal-emerald).
+  // shows a blank black surface, even if both the photograph and the
+  // local SVG fallback fail to load.
   const posterGradient =
     'radial-gradient(ellipse at 50% 55%, #0E2A28 0%, #082018 42%, #040806 100%)';
 
@@ -50,11 +57,11 @@ const MovementEntrance = () => {
           }}
         />
         {/* Layer 2 — hero photograph (fades in over the poster) */}
-        {heroImage && !imgFailed && (
+        {heroSrc && !imgFailed && (
           <div
             style={{
               position: 'absolute', inset: 0,
-              backgroundImage: `url("${heroImage}")`,
+              backgroundImage: `url("${heroSrc}")`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               opacity: imgLoaded ? 1 : 0,
@@ -74,17 +81,26 @@ const MovementEntrance = () => {
         }} />
       </div>
 
-      {/* Hidden preload image — fades in the photo on load, falls back
-          gracefully to the poster on error. */}
-      {heroImage && (
+      {/* Hidden preload image — fades in the photo on load. On error
+          (CDN unreachable, blocked, 404), swap to the local SVG
+          fallback; if even that fails, the poster gradient remains. */}
+      {heroSrc && (
         <img
-          src={heroImage}
+          src={heroSrc}
           alt=""
           aria-hidden="true"
           decoding="async"
           fetchpriority="high"
           onLoad={() => setImgLoaded(true)}
-          onError={() => { setImgFailed(true); setImgLoaded(true); }}
+          onError={() => {
+            if (heroSrc !== heroFallback) {
+              setHeroSrc(heroFallback);
+              setImgLoaded(false);
+            } else {
+              setImgFailed(true);
+              setImgLoaded(true);
+            }
+          }}
           style={{ position: 'absolute', width: 1, height: 1, opacity: 0,
                    pointerEvents: 'none' }}
         />
