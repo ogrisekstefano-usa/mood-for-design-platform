@@ -1,13 +1,4 @@
 /**
- * ⚠️ ITER172 · FROZEN — CLIENT DESIGN JOURNEY™ V1 RECONSOLIDATION
- * ─────────────────────────────────────────────────────────────────
- * This is Gen 2 of the Client Workspace ("Companion Experience").
- * Per Founder approval (30 May 2026), Gen 3 (Atelier preset) is the
- * canonical V1 mounted on /journey/:jid. This file is preserved for
- * archival purposes only; no route mounts it at runtime.
- * Restore plan: see /app/memory/client-journey-history/CLIENT_JOURNEY_HISTORY.md
- * ─────────────────────────────────────────────────────────────────
- *
  * ClientCompanionPage — Design Journey Companion Experience™.
  * Sprint G.7. Route: /client/journey/:journeyId
  *

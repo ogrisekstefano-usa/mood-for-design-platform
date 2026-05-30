@@ -1,0 +1,296 @@
+/**
+ * Brief Guidato™ · Cinematic single-column · ITER172
+ * Lessico: editorial. Mai SaaS. Black/bronze palette coerente con Atelier.
+ */
+
+.brief-shell {
+  min-height: 100vh;
+  background: var(--atl-ink, #0c0c0e);
+  color: var(--atl-cream, #ece6dc);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Topbar ────────────────────────────────────────────────── */
+.brief-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 48px;
+  border-bottom: 1px solid rgba(201, 162, 107, 0.08);
+}
+.brief-topbar__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 0;
+  color: var(--atl-bronze, #c9a26b);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 6px 0;
+  transition: color 220ms ease;
+}
+.brief-topbar__back:hover { color: var(--atl-cream, #ece6dc); }
+.brief-topbar__studio {
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(236, 230, 220, 0.55);
+}
+.brief-topbar__studio em {
+  font-style: italic;
+  color: var(--atl-bronze, #c9a26b);
+  margin-right: 6px;
+}
+
+/* ── Main column ───────────────────────────────────────────── */
+.brief-main {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 80px 32px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  animation: brief-fade-up 540ms both ease;
+}
+
+@keyframes brief-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Hero ──────────────────────────────────────────────────── */
+.brief-hero { display: flex; flex-direction: column; gap: 18px; }
+.brief-hero__eyebrow {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--atl-bronze, #c9a26b);
+}
+.brief-hero__title {
+  margin: 0;
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 42px;
+  line-height: 1.1;
+  color: var(--atl-cream, #ece6dc);
+  letter-spacing: -0.005em;
+}
+.brief-hero__lede {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(236, 230, 220, 0.7);
+  max-width: 56ch;
+}
+
+/* ── Deck (4 reading cards) ────────────────────────────────── */
+.brief-deck {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.brief-card {
+  background: var(--atl-ink-2, #131316);
+  border: 1px solid rgba(201, 162, 107, 0.12);
+  border-radius: 8px;
+  padding: 22px 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  transition: border-color 280ms ease, transform 320ms ease;
+}
+.brief-card:hover {
+  border-color: rgba(201, 162, 107, 0.28);
+  transform: translateY(-1px);
+}
+.brief-card__head {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.brief-card__icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(201, 162, 107, 0.12);
+  color: var(--atl-bronze, #c9a26b);
+}
+.brief-card__label {
+  margin: 0;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--atl-bronze, #c9a26b);
+  font-weight: 500;
+}
+.brief-card__title {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.2;
+  color: var(--atl-cream, #ece6dc);
+}
+.brief-card__body {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(236, 230, 220, 0.7);
+}
+.brief-empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 40px 0;
+  text-align: center;
+  font-style: italic;
+  color: rgba(236, 230, 220, 0.45);
+}
+
+/* ── Composer ──────────────────────────────────────────────── */
+.brief-composer {
+  background: rgba(201, 162, 107, 0.04);
+  border: 1px solid rgba(201, 162, 107, 0.14);
+  border-radius: 10px;
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.brief-composer__head {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--atl-bronze, #c9a26b);
+}
+.brief-composer__title {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-style: italic;
+  color: var(--atl-cream, #ece6dc);
+}
+.brief-composer__sub {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(236, 230, 220, 0.7);
+}
+.brief-composer__form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.brief-composer__textarea {
+  width: 100%;
+  background: rgba(12, 12, 14, 0.6);
+  border: 1px solid rgba(201, 162, 107, 0.18);
+  border-radius: 6px;
+  padding: 14px 16px;
+  color: var(--atl-cream, #ece6dc);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 120px;
+  transition: border-color 240ms ease, background 240ms ease;
+}
+.brief-composer__textarea:focus {
+  outline: none;
+  border-color: rgba(201, 162, 107, 0.5);
+  background: rgba(12, 12, 14, 0.85);
+}
+.brief-composer__textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.brief-composer__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.brief-composer__hint {
+  flex: 1;
+  font-size: 11.5px;
+  font-style: italic;
+  color: rgba(236, 230, 220, 0.45);
+  letter-spacing: 0.02em;
+}
+.brief-composer__submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--atl-bronze, #c9a26b);
+  color: #0c0c0e;
+  border: 0;
+  border-radius: 4px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 220ms ease, transform 220ms ease;
+}
+.brief-composer__submit:hover:not(:disabled) {
+  background: #d4b07d;
+  transform: translateY(-1px);
+}
+.brief-composer__submit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Footer link ───────────────────────────────────────────── */
+.brief-foot {
+  display: flex;
+  justify-content: center;
+  padding-top: 24px;
+  border-top: 1px solid rgba(201, 162, 107, 0.08);
+}
+.brief-foot__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--atl-bronze, #c9a26b);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 8px 0;
+  transition: color 220ms ease;
+}
+.brief-foot__link:hover { color: var(--atl-cream, #ece6dc); }
+
+/* ── Loading state ─────────────────────────────────────────── */
+.brief-loading {
+  margin: auto;
+  padding: 80px 24px;
+  font-style: italic;
+  color: rgba(236, 230, 220, 0.55);
+  text-align: center;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .brief-topbar { padding: 20px 24px; }
+  .brief-main { padding: 48px 20px 80px; gap: 48px; }
+  .brief-hero__title { font-size: 32px; }
+  .brief-deck { grid-template-columns: 1fr; }
+  .brief-composer { padding: 22px; }
+  .brief-composer__actions { flex-direction: column; align-items: stretch; }
+  .brief-composer__submit { justify-content: center; }
+}

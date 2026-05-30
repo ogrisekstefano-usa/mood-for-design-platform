@@ -1,6 +1,58 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 
+## 🆕 ITER172 · Client Design Journey™ V1 Reconsolidation · ✅ DELIVERED · 30 May 2026
+
+**🎯 Obiettivo:** consolidare 3 generazioni parallele del Client Workspace
+in una sola UX canonica (Atelier · Gen 3). Zero quarta UX. Zero new endpoints.
+Una sola pagina nuova autorizzata: Brief Guidato™.
+
+**Decisioni Founder approvate (D1-D4):**
+- **D1** Gen 3 Atelier promossa a Client Design Journey™ V1
+- **D2** `/journey/:jid` canonical, `/client/welcome` → alias di risoluzione
+- **D3** Atmospheric Panels opzionali, default `mode="text-only"`
+- **D4** Brief Guidato™ come pagina dedicata `/journey/:jid/brief`
+
+**Implementato (5 step):**
+1. ✅ `JourneyCanonicalRoutes.CanonicalClientJourney` ora renderizza `ClientWelcomePresetPage` (Gen 3) invece di `ClientCompanionPage` (Gen 2 FROZEN)
+2. ✅ Nuova route `/journey/:jid/brief` + componente `BriefGuidedPage.jsx` + `brief-guided.css` (single page, cinematic, lessico relazionale, no SaaS)
+3. ✅ `AtelierActionPanel` CTA primaria "Continua il Brief Guidato™" → punta a `/journey/:jid/brief`
+4. ✅ `AtelierQuickSummary` riscritto con `mode="text-only"` default (4 reading cards derivate da indications reali, senza foto stock obbligatorie); `mode="atmospheric"` opt-in per journey con contenuti reali
+5. ✅ Conservazione storica: `/app/memory/client-journey-history/CLIENT_JOURNEY_HISTORY.md` + snapshot integrali (3 file) in `snapshots/`
+6. ✅ Marker `ITER172 · FROZEN` applicati a `ClientCompanionPage` (Gen 2), `ClientOverviewPage` (Gen 1), `ClientStubPages`. Route legacy disabilitate: `/client/journey/:jid` ora redirige a `/journey/:jid`, `/client/overview-legacy` rimossa.
+
+**File modificati (8):**
+- `frontend/src/App.js` · import + 4 route edit + RedirectClientJourneyToCanonical
+- `frontend/src/routes/JourneyCanonicalRoutes.jsx` · render Gen 3
+- `frontend/src/presets/client-profile/atelier/AtelierActionPanel.jsx` · CTA brief wiring
+- `frontend/src/presets/client-profile/atelier/AtelierQuickSummary.jsx` · rewrite text-only
+- `frontend/src/pages/client/BriefGuidedPage.jsx` · NEW
+- `frontend/src/pages/client/brief-guided.css` · NEW
+- `frontend/src/pages/client/ClientCompanionPage.jsx` · header FROZEN marker
+- `frontend/src/pages/client/ClientOverviewPage.jsx` · header FROZEN marker
+- `frontend/src/pages/client/ClientStubPages.jsx` · header FROZEN marker
+
+**Endpoint utilizzati (zero nuovi, zero migration):**
+- `GET /api/client/welcome-summary` (V1 + Brief)
+- `GET /api/client/profile-config` (V1)
+- `GET /api/client/journeys/{jid}/companion` (Brief: per recuperare active milestone)
+- `POST /api/client/journeys/{jid}/voice` (Brief composer)
+- `POST /api/client/recall-requests` (RecallRequestModal · invariato)
+
+**Testing:**
+- ✅ Lint pulito su tutti i 5 file modificati/nuovi
+- ✅ Backend smoke: 4 endpoint chiave OK (admin role testato, client role richiede magic-link consumption manuale)
+- ✅ Bundle frontend compila pulito (route `/journey/:jid` e `/journey/:jid/brief` risolvono e auth-gate redirige correttamente)
+- ⚠️ **E2E client manuale richiesto**: il magic-link consumption non è automatizzabile da agent (workflow Supabase). Richiede al Founder un click finale su un magic link generato per validare flusso completo (login → /journey/:jid → CTA brief → /journey/:jid/brief → submit voce → toast → torna).
+
+**Successi (success criteria spec):**
+- Cliente atterra in `/journey/:jid` e capisce in 10s dove si trova, chi lo segue, qual è il prossimo passo, come completare brief / richiedere call / scrivere al referente
+- Una sola UX canonica · Gen 1 + Gen 2 archiviati FROZEN
+- Lessico editoriale preservato · zero SaaS
+
+---
+
+
 ## 📌 Sprint Status (latest)
 - **ITER170 · Platform Data Cleanup™ + ITER171 P0 Stabilization** · ✅ DELIVERED · 29 Feb 2026
 

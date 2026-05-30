@@ -20,7 +20,7 @@ const AtelierActionPanel = ({ journeyId, onRecallClick }) => {
       </h3>
 
       <Link
-        to={journeyId ? `/client/journey/${journeyId}` : '/client'}
+        to={journeyId ? `/journey/${journeyId}/brief` : '/client'}
         className="atelier-action"
         data-testid="atelier-action-continue"
       >
@@ -28,7 +28,7 @@ const AtelierActionPanel = ({ journeyId, onRecallClick }) => {
           <Sparkles size={16} strokeWidth={1.5} />
         </span>
         <span className="atelier-action__body">
-          <span className="atelier-action__label">Continua il brief guidato</span>
+          <span className="atelier-action__label">Continua il Brief Guidato™</span>
           <span className="atelier-action__sub">
             Approfondiamo insieme esigenze, preferenze e obiettivi del progetto.
           </span>

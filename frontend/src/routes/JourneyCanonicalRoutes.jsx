@@ -23,9 +23,14 @@ import api from '../lib/api';
 import CinematicLoader from '../components/CinematicLoader';
 
 // Lazy-load the existing pages we will mount under the new canonical paths
-const ProjectDetailPage   = lazy(() => import('../pages/workspace/ProjectDetailPage'));
-const StepWorkspacePage   = lazy(() => import('../pages/journey/StepWorkspacePage'));
-const ClientCompanionPage = lazy(() => import('../pages/client/ClientCompanionPage'));
+const ProjectDetailPage          = lazy(() => import('../pages/workspace/ProjectDetailPage'));
+const StepWorkspacePage          = lazy(() => import('../pages/journey/StepWorkspacePage'));
+// ITER172 · Gen 3 (Atelier) promoted to V1 — /journey/:jid renders the Atelier
+// preset (via ClientWelcomePresetPage) instead of the Gen 2 narrative companion.
+// ClientCompanionPage source kept on disk (marker `ITER172 · FROZEN`), no route
+// mounts it anymore. Restore: swap the lazy import below.
+const ClientWelcomePresetPage    = lazy(() => import('../pages/client/ClientWelcomePresetPage'));
+// const ClientCompanionPage     = lazy(() => import('../pages/client/ClientCompanionPage')); // FROZEN — Gen 2
 
 const Loader = () => (
   <div style={{
@@ -103,11 +108,14 @@ export const StudioJourneyStepView = () => {
 
 
 /* ════════════════════════════════════════════════════════════════════
- * 3 · /journey/:journeyId · CLIENT profile canonical (alias)
+ * 3 · /journey/:journeyId · CLIENT Design Journey™ V1 (Atelier · Gen 3)
+ *
+ * ITER172 · Gen 3 (AtelierWelcomePanel) is the canonical V1.
+ * Previously rendered ClientCompanionPage (Gen 2). Gen 2 is FROZEN.
  * ════════════════════════════════════════════════════════════════════ */
 export const CanonicalClientJourney = () => (
   <Suspense fallback={<Loader />}>
-    <ClientCompanionPage />
+    <ClientWelcomePresetPage />
   </Suspense>
 );
 

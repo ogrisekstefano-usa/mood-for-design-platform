@@ -1,12 +1,4 @@
 /**
- * ⚠️ ITER172 · FROZEN — CLIENT DESIGN JOURNEY™ V1 RECONSOLIDATION
- * ─────────────────────────────────────────────────────────────────
- * This is Gen 1 of the Client Workspace. Per Founder approval
- * (30 May 2026), Gen 3 (Atelier) is the canonical V1. This file is
- * preserved for archival purposes only; no route mounts it.
- * Restore plan: see /app/memory/client-journey-history/CLIENT_JOURNEY_HISTORY.md
- * ─────────────────────────────────────────────────────────────────
- *
  * ClientOverviewPage — the heart of the Client Portal.
  *
  * Two states, one component:

@@ -1,4 +1,10 @@
 /**
+ * ⚠️ ITER172 · FROZEN — CLIENT DESIGN JOURNEY™ V1 RECONSOLIDATION
+ * ─────────────────────────────────────────────────────────────────
+ * Stub pages associated with Gen 1/Gen 2 client routes that no longer
+ * mount at runtime. Source preserved for archive only.
+ * ─────────────────────────────────────────────────────────────────
+ *
  * ClientStubPage — premium "coming soon" filler for the secondary
  * sidebar entries (project / moodboards / timeline / approvals /
  * files / messages). Keeps the tone calm and reassuring instead of

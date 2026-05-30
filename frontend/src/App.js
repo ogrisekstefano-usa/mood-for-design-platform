@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BlueprintProvider, useBlueprint } from './contexts/BlueprintContext';
 import { TenantConfigurationProvider } from './contexts/TenantConfigurationContext';
@@ -132,12 +132,21 @@ const ClientOverviewPage = lazy(() => import('./pages/client/ClientOverviewPage'
 const ClientMessagesPage = lazy(() => import('./pages/client/ClientMessagesPage'));
 const ClientJourneysIndexPage = lazy(() => import('./pages/client/ClientJourneysIndexPage'));
 const ClientWelcomePresetPage = lazy(() => import('./pages/client/ClientWelcomePresetPage'));
-const ClientCompanionPage = lazy(() => import('./pages/client/ClientCompanionPage'));
-// Legacy client stub pages — still mountable at /client/overview-legacy for QA;
-// daily routes redirect to the new Journey Companion (Sprint G.7).
-// eslint-disable-next-line no-unused-vars
-import { ClientProjectPage, ClientMoodboardsPage, ClientTimelinePage,
-         ClientApprovalsPage, ClientFilesPage } from './pages/client/ClientStubPages';
+const BriefGuidedPage = lazy(() => import('./pages/client/BriefGuidedPage'));  // ITER172 · Client Design Journey™ V1
+// ITER172 · FROZEN — Gen 2 narrative companion. Source preserved; route disabled.
+// To restore: uncomment the lazy import below + the corresponding <Route> mounts.
+// const ClientCompanionPage = lazy(() => import('./pages/client/ClientCompanionPage'));
+// ITER172 · FROZEN — Gen 1 overview. Source preserved; /client/overview-legacy disabled.
+// const ClientOverviewPage = lazy(() => import('./pages/client/ClientOverviewPage'));
+// ITER172 · FROZEN — Legacy client stub pages. Source preserved.
+// import { ClientProjectPage, ClientMoodboardsPage, ClientTimelinePage,
+//          ClientApprovalsPage, ClientFilesPage } from './pages/client/ClientStubPages';
+
+// ITER172 · Silent redirect from legacy /client/journey/:jid → canonical /journey/:jid
+const RedirectClientJourneyToCanonical = () => {
+  const { journeyId } = useParams();
+  return <Navigate to={`/journey/${journeyId}`} replace />;
+};
 
 // MVP-lite operational hubs replacing the previous "Coming soon" placeholders.
 // Workflow-aware: each redirects/links to the real feature that already
@@ -709,9 +718,17 @@ function App() {
                     Vive direttamente sotto ClientRoute, NO ClientDashboardLayout
                     wrapper perché Companion porta la propria chrome editoriale.
                     Legacy /client/journey/:journeyId resta come alias. */}
+                {/* ITER172 · Client Design Journey™ V1 (Atelier promoted to canonical).
+                    /journey/:journeyId → Welcome Workspace V1
+                    /journey/:journeyId/brief → Brief Guidato™ dedicated page (D4 approved). */}
                 <Route path="/journey/:journeyId" element={
                   <ClientRoute>
                     <CanonicalClientJourney />
+                  </ClientRoute>
+                } />
+                <Route path="/journey/:jid/brief" element={
+                  <ClientRoute>
+                    <BriefGuidedPage />
                   </ClientRoute>
                 } />
 
@@ -727,15 +744,17 @@ function App() {
                 <Route element={<ClientRoute><ClientDashboardLayout /></ClientRoute>}>
                   <Route path="/client" element={<Navigate to="/client/welcome" replace />} />
                   <Route path="/client/journeys" element={<ClientJourneysIndexPage />} />
-                  <Route path="/client/journey/:journeyId" element={<ClientCompanionPage />} />
+                  {/* ITER172 · Gen 2 narrative companion FROZEN — redirect to canonical V1.
+                      <Route path="/client/journey/:journeyId" element={<ClientCompanionPage />} /> */}
+                  <Route path="/client/journey/:journeyId" element={<RedirectClientJourneyToCanonical />} />
                   <Route path="/client/messages" element={<ClientMessagesPage />} />
-                  {/* Legacy redirects → tutto torna ai Journey */}
-                  <Route path="/client/overview-legacy" element={<ClientOverviewPage />} />
+                  {/* ITER172 · Gen 1 overview FROZEN — /client/overview-legacy disabled.
+                      <Route path="/client/overview-legacy" element={<ClientOverviewPage />} /> */}
                   <Route path="/client/project" element={<Navigate to="/client" replace />} />
                   <Route path="/client/moodboards" element={<Navigate to="/client" replace />} />
-                  <Route path="/client/timeline" element={<Navigate to="/client#evoluzione" replace />} />
+                  <Route path="/client/timeline" element={<Navigate to="/client" replace />} />
                   <Route path="/client/approvals" element={<Navigate to="/client" replace />} />
-                  <Route path="/client/files" element={<Navigate to="/client#direzioni" replace />} />
+                  <Route path="/client/files" element={<Navigate to="/client" replace />} />
                 </Route>
 
                 {/* ITER172 · Advisor Network™ FROZEN — /advisor route removed at runtime.
