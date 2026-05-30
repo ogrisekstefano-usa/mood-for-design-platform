@@ -348,9 +348,9 @@ EMAIL_COPY = {
         "eyebrow":     "MOOD for DESIGN",
         "headline":    "Il tuo Design Journey è pronto a continuare.",
         "body":        "Il tuo accesso è stato approvato. Continua la tua esperienza dentro MOOD for DESIGN.",
-        "cta":         "Continua l'esperienza",
+        "cta":         "Attiva Blueprint™",
         "note":        "Questo link è valido per 15 minuti e può essere utilizzato una sola volta. Se non hai richiesto l'accesso, puoi ignorare questo messaggio in tutta tranquillità.",
-        "signature":   "Lo studio MOOD for DESIGN",
+        "signature":   "Il team MOOD for DESIGN",
     },
     "en-us": {
         "subject":     "Continue your Design Journey",
@@ -358,9 +358,9 @@ EMAIL_COPY = {
         "eyebrow":     "MOOD for DESIGN",
         "headline":    "Your Design Journey is ready to continue.",
         "body":        "Your access has been approved. Continue your experience inside MOOD for DESIGN.",
-        "cta":         "Continue the experience",
+        "cta":         "Attiva Blueprint™",
         "note":        "This link is valid for 15 minutes and can be used only once. If you did not request access, you may safely disregard this message.",
-        "signature":   "The MOOD for DESIGN studio",
+        "signature":   "The MOOD for DESIGN team",
     },
     "fr": {
         "subject":     "Poursuivez votre Design Journey",
@@ -368,9 +368,9 @@ EMAIL_COPY = {
         "eyebrow":     "MOOD for DESIGN",
         "headline":    "Votre Design Journey est prêt à se poursuivre.",
         "body":        "Votre accès a été approuvé. Poursuivez votre expérience à l'intérieur de MOOD for DESIGN.",
-        "cta":         "Poursuivre l'expérience",
+        "cta":         "Attiva Blueprint™",
         "note":        "Ce lien est valable 15 minutes et ne peut être utilisé qu'une seule fois. Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce message en toute tranquillité.",
-        "signature":   "Le studio MOOD for DESIGN",
+        "signature":   "L'équipe MOOD for DESIGN",
     },
     "de": {
         "subject":     "Setzen Sie Ihre Design Journey fort",
@@ -378,9 +378,9 @@ EMAIL_COPY = {
         "eyebrow":     "MOOD for DESIGN",
         "headline":    "Ihre Design Journey kann fortgesetzt werden.",
         "body":        "Ihr Zugang wurde freigegeben. Setzen Sie Ihre Erfahrung innerhalb von MOOD for DESIGN fort.",
-        "cta":         "Erfahrung fortsetzen",
+        "cta":         "Attiva Blueprint™",
         "note":        "Dieser Link ist 15 Minuten gültig und kann nur einmal verwendet werden. Wenn Sie keinen Zugang angefordert haben, dürfen Sie diese Nachricht in aller Ruhe ignorieren.",
-        "signature":   "Das MOOD for DESIGN Studio",
+        "signature":   "Das MOOD for DESIGN Team",
     },
     "es": {
         "subject":     "Continúa tu Design Journey",
@@ -388,9 +388,9 @@ EMAIL_COPY = {
         "eyebrow":     "MOOD for DESIGN",
         "headline":    "Tu Design Journey está listo para continuar.",
         "body":        "Tu acceso ha sido aprobado. Continúa tu experiencia dentro de MOOD for DESIGN.",
-        "cta":         "Continuar la experiencia",
+        "cta":         "Attiva Blueprint™",
         "note":        "Este enlace tiene una validez de 15 minutos y solo puede usarse una vez. Si no has solicitado el acceso, puedes ignorar este mensaje con total tranquilidad.",
-        "signature":   "El estudio MOOD for DESIGN",
+        "signature":   "El equipo MOOD for DESIGN",
     },
 }
 
@@ -447,7 +447,7 @@ def _render_email(*, raw_token: str, locale: str) -> tuple[str, str, str]:
     </table>
     <p style="margin:24px 0 0 0;font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;
               color:rgba(255,255,255,0.35);letter-spacing:0.06em;">
-      MOOD for DESIGN · Editorial Operating System
+      MOOD for DESIGN™ · Blueprint Command Center™
     </p>
   </td></tr>
 </table>
