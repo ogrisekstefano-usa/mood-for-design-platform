@@ -36,6 +36,7 @@ const AtelierWelcomePanel = ({ viewModel, components }) => {
         <AtelierSidebar
           client={vm.client}
           referente={vm.referente}
+          journeyId={vm.journeyId}
         />
       )}
 

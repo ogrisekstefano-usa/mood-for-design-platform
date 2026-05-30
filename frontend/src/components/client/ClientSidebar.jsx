@@ -14,6 +14,11 @@
  *
  * Nessun riferimento a SaaS PM / queue di gestione / file repo.
  */
+/**
+ * ⚠️ ITER173 · FROZEN — replaced by AtelierSidebar across all /client/* routes.
+ * Source preserved for archive only. No imports remain at runtime.
+ * Restore plan: see /app/memory/client-journey-history/CLIENT_JOURNEY_HISTORY.md
+ */
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {

@@ -7,6 +7,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MessageCircle, Clock } from 'lucide-react';
+import { initialsOf } from '../../../lib/initials';
 
 const AtelierReferenceCard = ({ referente }) => {
   if (!referente) {
@@ -43,8 +44,12 @@ const AtelierReferenceCard = ({ referente }) => {
             data-testid="atelier-reference-avatar"
           />
         ) : (
-          <span className="atelier-ref__avatar atelier-ref__avatar--placeholder">
-            {(referente.first_name || name || '·')[0]}
+          <span
+            className="atelier-ref__avatar atelier-ref__avatar--placeholder"
+            data-testid="atelier-reference-monogram"
+            aria-label={`Iniziali di ${name}`}
+          >
+            {initialsOf(referente)}
           </span>
         )}
         <p className="atelier-ref__name" data-testid="atelier-reference-name">
