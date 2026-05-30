@@ -887,13 +887,11 @@
   border-color: var(--mfd-accent, #00C9B3);
 }
 
-/* ITER171.8 · Country & language picker trigger */
-.mfd-footer__locale {
-  margin-top: 26px;
-  padding-top: 22px;
-  border-top: 1px solid rgba(245, 242, 237, 0.08);
-}
+/* ITER171.9 · Country & language picker — sits in the brand stack,
+   slightly detached from the social icons row. */
 .mfd-footer__locale-btn {
+  align-self: flex-start;
+  margin-top: 18px;
   display: inline-flex; align-items: center; gap: 8px;
   padding: 9px 16px;
   background: transparent;

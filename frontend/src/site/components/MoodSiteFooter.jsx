@@ -230,6 +230,26 @@ const MoodSiteFooter = () => {
                 })}
               </ul>
             )}
+            {/* ITER171.9 · Country & language picker — sits inside the brand
+                stack, slightly detached from the social icons. */}
+            <button
+              type="button"
+              className="mfd-footer__locale-btn"
+              onClick={() => setPickerOpen(true)}
+              data-testid="footer-locale-picker"
+            >
+              <Globe size={14} strokeWidth={1.6} />
+              <span>
+                {locale.startsWith('it') ? 'Paese · Lingua'
+                 : locale.startsWith('fr') ? 'Pays · Langue'
+                 : locale.startsWith('de') ? 'Land · Sprache'
+                 : locale.startsWith('es') ? 'País · Idioma'
+                 : 'Country · Language'}
+              </span>
+              <span className="mfd-footer__locale-current">
+                · {(i18nLocale || locale).toUpperCase()}
+              </span>
+            </button>
           </div>
           {cols.length > 0 && (
             <div className="mfd-footer__cols" data-cols={cols.length}>
@@ -249,28 +269,6 @@ const MoodSiteFooter = () => {
               ))}
             </div>
           )}
-        </div>
-
-        {/* ITER171.8 · Country & language picker — opens the global modal */}
-        <div className="mfd-footer__locale">
-          <button
-            type="button"
-            className="mfd-footer__locale-btn"
-            onClick={() => setPickerOpen(true)}
-            data-testid="footer-locale-picker"
-          >
-            <Globe size={14} strokeWidth={1.6} />
-            <span>
-              {locale.startsWith('it') ? 'Paese · Lingua'
-               : locale.startsWith('fr') ? 'Pays · Langue'
-               : locale.startsWith('de') ? 'Land · Sprache'
-               : locale.startsWith('es') ? 'País · Idioma'
-               : 'Country · Language'}
-            </span>
-            <span className="mfd-footer__locale-current">
-              · {(i18nLocale || locale).toUpperCase()}
-            </span>
-          </button>
         </div>
       </div>
       <FooterColophon locale={locale} colophon={SHELL_COLOPHON} />
