@@ -80,17 +80,28 @@ def tenant_redirect_for(tenant_slug: str, role: str) -> str:
     """
     Where to land after a successful login.
 
-    • Founder (role=owner)         → /admin/welcome (cinematic first access
-                                     for the studio; falls through to /admin
-                                     once the moment has been consumed)
-    • Admin / editor               → /admin (Blueprint Command Center)
-    • Anything else (clients, …)   → /  (public site for now; future:
-                                     tenant private panel on its subdomain)
+    Architectural rule (Mar 2026): MOOD Core ≠ Blueprint Tenant.
+    Two workspaces live on separate routes:
+      • /command-center → MOOD Core   (admin, advisor, founder welcome)
+      • /blueprint      → Tenant runtime (CMS, media, publishing)
+
+    Role routing:
+      • Founder (role=owner)         → /command-center/welcome (cinematic
+                                       first access for the studio; the
+                                       CTA then takes them to /blueprint).
+      • Advisor (role=advisor)       → /command-center
+                                       (MOOD Core surfaces only).
+      • Admin / editor               → /command-center
+                                       (super admin lands on MOOD Core;
+                                       the Blueprint workspace is one
+                                       click away from there).
+      • Anything else (clients, …)   → /  (public site; future:
+                                       tenant private panel on subdomain).
     """
     if role == "owner":
-        return "/admin/welcome"
-    if role in ("admin", "editor"):
-        return "/admin"
+        return "/command-center/welcome"
+    if role in ("admin", "editor", "advisor"):
+        return "/command-center"
     return "/"
 
 

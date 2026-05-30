@@ -57,7 +57,7 @@ const LoginHero = ({ content = {}, media = {}, links = {} }) => {
       }
       setMessage(`Benvenuto ${data.user?.full_name || data.user?.email}.`);
       setTimeout(() => {
-        window.location.href = data.redirect_url || '/admin';
+        window.location.href = data.redirect_url || '/command-center';
       }, 600);
     } catch (err) {
       const detail = err?.response?.data?.detail;

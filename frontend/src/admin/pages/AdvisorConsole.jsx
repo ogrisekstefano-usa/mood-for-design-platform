@@ -257,7 +257,7 @@ const PendingRow = ({ p, t }) => {
   const open = async () => {
     try {
       const r = await adminApi.openFromRequest(p.id);
-      if (r.data?.relation_id) navigate(`/admin/advisor-console/relations/${r.data.relation_id}`);
+      if (r.data?.relation_id) navigate(`/command-center/advisor-console/relations/${r.data.relation_id}`);
     } catch {}
   };
   return (
@@ -318,7 +318,7 @@ const RelationRow = ({ r, t }) => {
                     + (r.expected_setup_value || 0);
   return (
     <Link
-      to={`/admin/advisor-console/relations/${r.id}`}
+      to={`/command-center/advisor-console/relations/${r.id}`}
       data-testid={`relation-row-${r.id}`}
       style={{
         display: 'grid',
@@ -390,7 +390,7 @@ const NewRelationDrawer = ({ t, onClose, onCreated }) => {
       const r = await adminApi.createRelation(form);
       if (r.data?.relation_id) {
         onCreated && onCreated();
-        navigate(`/admin/advisor-console/relations/${r.data.relation_id}`);
+        navigate(`/command-center/advisor-console/relations/${r.data.relation_id}`);
       }
     } finally { setBusy(false); }
   };
@@ -428,7 +428,7 @@ const NewRelationDrawer = ({ t, onClose, onCreated }) => {
           onOpenExisting={(m) => {
             if (m.kind === 'existing_relation') {
               onClose();
-              navigate(`/admin/advisor-console/relations/${m.id}`);
+              navigate(`/command-center/advisor-console/relations/${m.id}`);
             }
           }}
         />

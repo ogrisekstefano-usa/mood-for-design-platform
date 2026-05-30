@@ -56,7 +56,7 @@ const RelationDetail = () => {
       setData(r.data);
       setNotes(r.data?.advisory_notes || '');
       setNext(r.data?.next_action || '');
-    }).catch(() => navigate('/admin/advisor-console'));
+    }).catch(() => navigate('/command-center/advisor-console'));
 
   useEffect(() => { refresh(); /* eslint-disable-next-line */ }, [id]);
 
@@ -101,7 +101,7 @@ const RelationDetail = () => {
       padding: '3rem 4.5rem 6rem',
     }}>
       {/* Back */}
-      <Link to="/admin/advisor-console" data-testid="relation-back" style={{
+      <Link to="/command-center/advisor-console" data-testid="relation-back" style={{
         display: 'inline-flex', alignItems: 'center', gap: 8,
         color: tokens.inkDim, fontFamily: 'Inter, sans-serif',
         fontSize: '0.72rem', letterSpacing: '0.22em',

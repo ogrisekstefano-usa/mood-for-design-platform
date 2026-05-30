@@ -12,6 +12,68 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ## Latest session — Mar 01, 2026
 
+### MOOD Advisor Program™ · Chunk 1+2 — Route separation + Advisor scoping ✅ (Mar 01, 2026)
+
+**Architectural rule enforced**: `MOOD Core ≠ Blueprint Tenant`. The Advisor Program lives in MOOD Core (`/command-center`), not inside the tenant Blueprint.
+
+**Chunk 1 — Route Separation**
+- New shells under `/app/frontend/src/admin/`:
+  - `shared/WorkspaceShell.jsx` — shared chrome (header, sidebar, logout, cache, view-site).
+  - `CommandCenterApp.jsx` (`/command-center/*`) — MOOD Core: Advisor Console + Studio Requests + Founder Welcome (`/command-center/welcome`).
+  - `BlueprintApp.jsx` (`/blueprint/*`) — Tenant runtime CMS: Pagine · Editorial Blocks · Sections · Media · Footer · SEO · Publishing.
+  - `AdminApp.jsx` rewritten as `LegacyAdminRedirect` — `/admin/*` is now permanently redirected: founder welcome → `/command-center/welcome`, blueprint paths → `/blueprint/*`, MOOD Core paths → `/command-center/*`. Bookmark-safe (tail + query string preserved).
+- `App.js` mounts 4 routes: `/command-center/*`, `/blueprint/*`, `/admin/*` (legacy), `/*` (corporate).
+- Backend `routers/auth.py.tenant_redirect_for`:
+  - role=`owner` → `/command-center/welcome`
+  - role=`admin/editor/advisor` → `/command-center`
+  - else → `/`
+- 12+ internal links updated: AdvisorConsole (4×), RelationDetail (2×), FounderWelcome CTA → `/blueprint`, LoginHero fallback, AccessContinuityPage (3 fallbacks).
+- SEO posture: `robots.txt` adds `Disallow: /command-center` + `Disallow: /blueprint`. SearchConsoleHelper updates UI label.
+- Test backend: `test_iter167_and_bugs.py:279` updated to assert `redirect_url == "/command-center"`.
+- **Smoke verified**: `/command-center` shows "MOOD · COMMAND CENTER" login. `/blueprint` shows "BLUEPRINT · TENANT" login. `/admin/advisor-console` 301-redirects to `/command-center/advisor-console`. Post-login admin → `/command-center/advisor-console` with only MOOD Core nav. Post-login same admin on `/blueprint` → 7-item CMS nav.
+
+**Chunk 2 — Advisor Identity & Scoping**
+- Migration `024_mood_core_advisor_identity.sql`:
+  - **Backup logico** of 4 orphan tables (zero rows, zero Python references) into `*_archive` companions: `advisor_referrals`, `advisor_commission_periods`, `advisor_activity_months`, `advisor_reports`.
+  - DROP the 4 orphan tables.
+  - ALTER `advisor_profiles` ADD `user_id` FK to `users(id)` ON DELETE SET NULL, UNIQUE partial index, status index.
+- Seed `seed_advisor_identity.py` (idempotent): links every `advisor_profiles` row to a central `users` row on tenant `studio` with `role='advisor'`, `password_hash='!magic-link-only'`. Creates the row if missing. Currently linked: Raffaella (ADV-80A9C5).
+- New helper `routers/_advisor_scope.py.require_advisor_scope`:
+  - Accepts Bearer JWT (admin/editor/advisor/owner) or X-Admin-Key (dev).
+  - Returns `{role, is_super_admin, advisor_id (=users.id), user_id, email, tenant}`.
+  - **Identity model**: `studio_requests.assigned_advisor_id` / `studio_relations.owner_advisor_id` / `advisor_followups.advisor_id` all FK → `users(id)`. So the canonical advisor identifier is `users.id`. `advisor_profiles` is metadata (commission %, territory, code).
+  - Advisor without active `advisor_profiles` → 403.
+- `routers/admin_relations.py` — 9 endpoints rewired to `require_advisor_scope`:
+  - `GET /relations`: advisor sees only own (filter forced).
+  - `POST /relations` + `POST /relations/from-request/{id}`: advisor self-claims ownership.
+  - `GET /relations/{id}`: advisor 404 on other's relation (no leak).
+  - `PATCH /relations/{id}`: advisor must own; cannot reassign ownership.
+  - `POST /relations/{id}/visits`, `POST /relations/{id}/followups`, `POST /relations/{id}/activate-ecosystem`: advisor must own.
+  - `PATCH /followups/{id}/complete`, `GET /advisor/followups`: advisor scoped to self.
+  - `GET /advisor/console-summary`: aggregate filtered by owner; pending introductions visible = own + unassigned (not other advisors' assigned).
+- `routers/admin_studio.py` — 2 endpoints rewired:
+  - `GET /admin/studio/requests`: advisor sees own + unassigned (visibility rule approved).
+  - `PATCH /admin/studio/requests/{id}`: advisor cannot edit another advisor's assigned request; editing an unassigned request triggers **auto self-claim** via `COALESCE(assigned_advisor_id, advisor_id)`.
+- `services/studio_activation.py`:
+  - `list_requests` extended with `advisor_visibility_id` (own + unassigned filter).
+  - `update_request_status` accepts `assigned_advisor_id` (self-claim).
+  - New `get_request(request_id)` for guard pre-checks.
+  - Serialization adds `assigned_advisor_id` to API response.
+- **Validation** (curl-tested E2E with 2 advisor users + 1 admin):
+  - identity-probe(raffaella@) → `magic_link` ✅
+  - magic-link consume → JWT role=`advisor`, redirect=`/command-center` ✅
+  - list_relations admin → 4 rows; advisor → 0 rows (none owned) ✅
+  - studio_requests admin → 5; Raffaella → 5 (4 unassigned + 1 self-claimed); Second Advisor → 4 (Raffaella's hidden) ✅
+  - PATCH unassigned by advisor → auto-assigns to advisor (verified in DB) ✅
+  - Anonymous → 401 ✅
+- Test artifact for next chunks: 4 orphan tables backed up; 1 active advisor user (Raffaella) linked; super admin (admin@) keeps full access.
+
+**STATUS**: Chunk 1 + Chunk 2 complete & verified. Waiting for user E2E test before proceeding to Chunk 3+ (Commercial Terms, Tenant Payments, Advisor Commissions, Advisor Payouts).
+
+---
+
+## Previous session — Mar 01, 2026
+
 ### B2B Identity Hardening — `private_client` removed from central probe ✅ (Mar 01, 2026)
 - **Regola architetturale**: MOOD è esclusivamente B2B. `private_client` è un dato del CRM del tenant (tabella `accounts`), NON un'identità centrale.
 - **`services/access_continuity.py.identity_probe()`** — rimosso interamente lo Step 2 che leggeva `accounts.account_type='private_client'` e auto-provisionava una riga `users` con `role='client'` + sentinel `!magic-link-only`. Docstring riscritto, numerazione step compattata (3 step: users → studio_requests → concierge).

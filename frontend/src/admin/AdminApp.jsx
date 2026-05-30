@@ -1,23 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, NavLink, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { LogOut, FileText, Layout, Image, Settings as SettingsIcon, RefreshCw, ExternalLink, BookOpen, AlignEndHorizontal, Search, Building2, Compass } from 'lucide-react';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { adminAuth, adminApi } from './adminApi';
-import BlocksEditor from './pages/BlocksEditor';
-import SectionsManager from './pages/SectionsManager';
-import MediaLibrary from './pages/MediaLibrary';
-import PublishConsole from './pages/PublishConsole';
-import PagesEditor from './pages/PagesEditor';
-import FooterEditor from './pages/FooterEditor';
-import SearchConsoleHelper from './pages/SearchConsoleHelper';
-import StudioRequestsAdmin from './pages/StudioRequestsAdmin';
-import AdvisorConsole from './pages/AdvisorConsole';
-import RelationDetail from './pages/RelationDetail';
+
+import BlueprintApp from './BlueprintApp';
+import CommandCenterApp from './CommandCenterApp';
 import FounderWelcome from './pages/FounderWelcome';
 
-const AdminLogin = ({ onSuccess }) => {
+const Field = ({ label, value, onChange, testid, type = 'text' }) => (
+  <label className="block">
+    <span style={{ display: 'block', fontFamily: 'Montserrat, sans-serif', fontSize: '0.65rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', marginBottom: 8 }}>
+      {label}
+    </span>
+    <input
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      style={{
+        width: '100%', background: 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.12)', borderRadius: 6,
+        padding: '0.75rem 0.9rem', color: '#FFFFFF', fontSize: '0.92rem', outline: 'none',
+      }}
+      onFocus={(e) => (e.target.style.borderColor = '#00C9B3')}
+      onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.12)')}
+      data-testid={testid}
+    />
+  </label>
+);
+
+const AdminLogin = ({ workspaceLabel = 'Command Center', onSuccess }) => {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
-  const [tenants, setTenants]   = useState(null);  // array if backend returns picker
+  const [tenants, setTenants]   = useState(null);
   const [tenantSlug, setTenantSlug] = useState(null);
   const [err, setErr]           = useState(null);
   const [busy, setBusy]         = useState(false);
@@ -30,19 +43,14 @@ const AdminLogin = ({ onSuccess }) => {
     setBusy(true); setErr(null);
     try {
       const data = await adminAuth.login(email, password, tenantSlug);
-      if (data?.requires_tenant_selection) {
-        setTenants(data.tenants || []);
-      } else if (data?.token) {
-        onSuccess();
-      }
+      if (data?.requires_tenant_selection) setTenants(data.tenants || []);
+      else if (data?.token) onSuccess();
     } catch (e2) {
       const s = e2?.response?.status;
       if (s === 423)      setErr('Troppi tentativi falliti. Riprova fra 15 minuti.');
       else if (s === 401) setErr('Credenziali non valide.');
       else                setErr('Errore di connessione.');
-    } finally {
-      setBusy(false);
-    }
+    } finally { setBusy(false); }
   };
 
   const submitLegacy = async (e) => {
@@ -55,16 +63,15 @@ const AdminLogin = ({ onSuccess }) => {
       onSuccess();
     } catch (e2) {
       setErr(e2?.response?.status === 401 ? 'Chiave non valida' : 'Errore di connessione');
-    } finally {
-      setBusy(false);
-    }
+    } finally { setBusy(false); }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: '#0A0A0B' }} data-testid="admin-login">
       <div style={{ width: 460, padding: '2.5rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14 }}>
-        <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.66rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: '#00C9B3', marginBottom: '0.75rem' }}>
-          Blueprint Command Center
+        <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.66rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: '#00C9B3', marginBottom: '0.75rem' }}
+           data-testid="admin-login-eyebrow">
+          {workspaceLabel}
         </p>
         <h1 style={{ fontFamily: 'Playfair Display, serif', fontSize: '2rem', color: '#FFFFFF', lineHeight: 1.1, marginBottom: '2rem' }}>
           Accesso amministratore
@@ -138,118 +145,15 @@ const AdminLogin = ({ onSuccess }) => {
   );
 };
 
-const Field = ({ label, value, onChange, testid, type = 'text' }) => (
-  <label className="block">
-    <span style={{ display: 'block', fontFamily: 'Montserrat, sans-serif', fontSize: '0.65rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', marginBottom: 8 }}>
-      {label}
-    </span>
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      style={{
-        width: '100%', background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.12)', borderRadius: 6,
-        padding: '0.75rem 0.9rem', color: '#FFFFFF', fontSize: '0.92rem', outline: 'none',
-      }}
-      onFocus={(e) => (e.target.style.borderColor = '#00C9B3')}
-      onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.12)')}
-      data-testid={testid}
-    />
-  </label>
-);
-
-const NavItem = ({ to, icon: Icon, label }) => (
-  <NavLink
-    to={to}
-    className={({ isActive }) => `admin-nav-item ${isActive ? 'active' : ''}`}
-    style={({ isActive }) => ({
-      display: 'flex', alignItems: 'center', gap: '0.75rem',
-      padding: '0.65rem 0.9rem', borderRadius: 8,
-      color: isActive ? '#00C9B3' : 'rgba(255,255,255,0.75)',
-      background: isActive ? 'rgba(0,201,179,0.08)' : 'transparent',
-      fontFamily: 'Montserrat, sans-serif', fontSize: '0.82rem', fontWeight: 500,
-      letterSpacing: '0.04em', textDecoration: 'none',
-      transition: 'all 0.2s',
-    })}
-    data-testid={`admin-nav-${label.toLowerCase().replace(/\s+/g, '-')}`}
-  >
-    <Icon size={16} strokeWidth={1.6} /> {label}
-  </NavLink>
-);
-
-const AdminShell = ({ children }) => {
-  const nav = useNavigate();
-  const location = useLocation();
-  const logout = () => { adminAuth.clear(); nav('/admin'); window.location.reload(); };
-  const refresh = async () => { try { await adminApi.invalidate(); window.alert('Cache cleared'); } catch {} };
-
-  // Detect role from JWT-stored user, so the nav adapts to the audience:
-  // • admin / editor → full MOOD operations
-  // • owner (tenant founder) → only their own studio
-  let role = 'admin';
-  try {
-    const u = JSON.parse(localStorage.getItem('mood_auth_user') || localStorage.getItem('mood_user') || '{}');
-    role = u.role || 'admin';
-  } catch {}
-  const isFounder = role === 'owner';
-
-  return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#0A0A0B', color: '#FFFFFF' }}>
-      <aside style={{
-        width: 260, padding: '2rem 1rem', borderRight: '1px solid rgba(255,255,255,0.06)',
-        position: 'sticky', top: 0, height: '100vh', overflowY: 'auto', background: '#0A0A0B',
-      }}>
-        <div style={{ padding: '0 0.5rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.6rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: '#00C9B3' }}>
-            {isFounder ? 'Studio' : 'Blueprint'}
-          </p>
-          <p style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.2rem', color: '#FFFFFF', marginTop: 2 }}>
-            {isFounder ? 'Workspace' : 'Command Center'}
-          </p>
-        </div>
-
-        <nav className="space-y-1 mt-6">
-          <NavItem to="/admin/pages"    icon={BookOpen}     label="Pagine" />
-          <NavItem to="/admin/blocks"   icon={FileText}     label="Editorial Blocks" />
-          <NavItem to="/admin/sections" icon={Layout}       label="Sections" />
-          <NavItem to="/admin/media"    icon={Image}        label="Media Library" />
-          <NavItem to="/admin/footer"   icon={AlignEndHorizontal} label="Footer" />
-          {!isFounder && <NavItem to="/admin/advisor-console" icon={Compass}  label="Advisor Console" />}
-          {!isFounder && <NavItem to="/admin/studio-requests" icon={Building2} label="Studio Requests" />}
-          <NavItem to="/admin/seo"      icon={Search}       label="SEO & Indexing" />
-          <NavItem to="/admin/publish"  icon={SettingsIcon} label="Publishing" />
-        </nav>
-
-        <div style={{ position: 'absolute', bottom: '2rem', left: '1rem', right: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          <a href="/" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'rgba(255,255,255,0.5)', fontSize: '0.78rem', textDecoration: 'none', padding: '0.5rem 0.6rem' }} data-testid="admin-view-site">
-            <ExternalLink size={14} /> View site
-          </a>
-          <button onClick={refresh} style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'rgba(255,255,255,0.6)', fontSize: '0.78rem', background: 'transparent', border: 'none', cursor: 'pointer', padding: '0.5rem 0.6rem', textAlign: 'left' }} data-testid="admin-refresh-cache">
-            <RefreshCw size={14} /> Clear cache
-          </button>
-          <button onClick={logout} style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'rgba(255,180,162,0.7)', fontSize: '0.78rem', background: 'transparent', border: 'none', cursor: 'pointer', padding: '0.5rem 0.6rem', textAlign: 'left' }} data-testid="admin-logout">
-            <LogOut size={14} /> Logout
-          </button>
-        </div>
-      </aside>
-
-      <main style={{ flex: 1, minWidth: 0 }} data-testid="admin-main">
-        <div style={{ padding: (location?.pathname === '/admin/pages' || location?.pathname?.startsWith('/admin/advisor-console')) ? 0 : '2.5rem 3rem' }}>
-          {children}
-        </div>
-      </main>
-    </div>
-  );
-};
-
-const AdminApp = () => {
-  const [authed, setAuthed]   = useState(false);
+/**
+ * AuthGate — wraps any workspace surface with the login modal when the
+ * caller has no valid admin session.
+ */
+const AuthGate = ({ workspaceLabel, children }) => {
+  const [authed, setAuthed]     = useState(false);
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    const k = adminAuth.getKey();
-    // Even with empty key, backend allows in dev mode if ADMIN_API_KEY isn't set
     adminApi.whoami()
       .then(() => setAuthed(true))
       .catch(() => setAuthed(false))
@@ -263,36 +167,65 @@ const AdminApp = () => {
       </div>
     );
   }
-
-  if (!authed) {
-    return <AdminLogin onSuccess={() => setAuthed(true)} />;
-  }
-
-  return (
-    <Routes>
-      {/* Founder Welcome — renders WITHOUT the AdminShell chrome,
-          full-bleed cinematic moment. */}
-      <Route path="welcome" element={<FounderWelcome />} />
-      <Route path="*" element={
-        <AdminShell>
-          <Routes>
-            <Route index            element={<Navigate to="/admin/pages" replace />} />
-            <Route path="pages"     element={<PagesEditor />} />
-            <Route path="blocks"    element={<BlocksEditor />} />
-            <Route path="sections"  element={<SectionsManager />} />
-            <Route path="media"     element={<MediaLibrary />} />
-            <Route path="footer"          element={<FooterEditor />} />
-            <Route path="studio-requests" element={<StudioRequestsAdmin />} />
-            <Route path="advisor-console" element={<AdvisorConsole />} />
-            <Route path="advisor-console/relations/:id" element={<RelationDetail />} />
-            <Route path="seo"             element={<SearchConsoleHelper />} />
-            <Route path="publish"   element={<PublishConsole />} />
-            <Route path="*"         element={<Navigate to="/admin/pages" replace />} />
-          </Routes>
-        </AdminShell>
-      } />
-    </Routes>
-  );
+  if (!authed) return <AdminLogin workspaceLabel={workspaceLabel} onSuccess={() => setAuthed(true)} />;
+  return children;
 };
 
+/**
+ * LegacyAdminRedirect — keeps every bookmarked /admin/... URL working
+ * by mapping it onto the new /command-center namespace. Specific path
+ * mappings translate the old Blueprint sub-paths to /blueprint, the
+ * MOOD Core ones to /command-center, and the founder Welcome to its
+ * full-bleed route. Tail + query string are preserved.
+ */
+const LegacyAdminRedirect = () => {
+  const location = useLocation();
+  const path = location.pathname.replace(/^\/admin/, '') || '/';
+  const search = location.search || '';
+
+  // Founder cinematic landing
+  if (path === '/welcome' || path === '/welcome/') {
+    return <Navigate to={`/command-center/welcome${search}`} replace />;
+  }
+
+  // Blueprint surfaces (tenant CMS)
+  const BLUEPRINT_PATHS = ['/pages', '/blocks', '/sections', '/media', '/footer', '/seo', '/publish'];
+  for (const p of BLUEPRINT_PATHS) {
+    if (path === p || path.startsWith(p + '/')) {
+      return <Navigate to={`/blueprint${path}${search}`} replace />;
+    }
+  }
+
+  // MOOD Core surfaces (advisor + studio requests)
+  const COMMAND_PATHS = ['/advisor-console', '/studio-requests'];
+  for (const p of COMMAND_PATHS) {
+    if (path === p || path.startsWith(p + '/')) {
+      return <Navigate to={`/command-center${path}${search}`} replace />;
+    }
+  }
+
+  // Root /admin → Command Center (MOOD Core default surface)
+  return <Navigate to={`/command-center${search}`} replace />;
+};
+
+/**
+ * Default AdminApp export — mounted at /admin/* by App.js to keep
+ * existing bookmarks working. Always redirects to the new namespaces.
+ */
+const AdminApp = () => <LegacyAdminRedirect />;
+
 export default AdminApp;
+
+// Named exports used directly from App.js to mount the two real shells.
+export const CommandCenterRoot = () => (
+  <Routes>
+    <Route path="welcome" element={<AuthGate workspaceLabel="MOOD · Founder"><FounderWelcome /></AuthGate>} />
+    <Route path="*"       element={<AuthGate workspaceLabel="MOOD · Command Center"><CommandCenterApp /></AuthGate>} />
+  </Routes>
+);
+
+export const BlueprintRoot = () => (
+  <AuthGate workspaceLabel="Blueprint · Tenant">
+    <BlueprintApp />
+  </AuthGate>
+);

@@ -511,12 +511,24 @@ def _format_reference(uid: str) -> str:
 
 
 # ── Admin: list requests ─────────────────────────────────────────
-async def list_requests(*, status: str | None = None, limit: int = 50) -> list[dict]:
-    where = ""
+async def list_requests(*, status: str | None = None, limit: int = 50,
+                          advisor_visibility_id: str | None = None) -> list[dict]:
+    """
+    List studio_requests. Visibility:
+      • advisor_visibility_id=None → returns ALL (super admin path)
+      • advisor_visibility_id set  → returns only rows with
+            assigned_advisor_id IS NULL OR assigned_advisor_id = <id>
+        (advisor's "prospect pool": own + unassigned)
+    """
+    where_parts: list[str] = []
     params: dict = {"limit": int(limit)}
     if status:
-        where = "WHERE status = :st"
+        where_parts.append("status = :st")
         params["st"] = status
+    if advisor_visibility_id:
+        where_parts.append("(assigned_advisor_id IS NULL OR assigned_advisor_id = :avis)")
+        params["avis"] = advisor_visibility_id
+    where = ("WHERE " + " AND ".join(where_parts)) if where_parts else ""
     async with AsyncSessionLocal() as s:
         rows = (await s.execute(
             text(f"""
@@ -525,7 +537,7 @@ async def list_requests(*, status: str | None = None, limit: int = 50) -> list[d
                        contact_name, contact_role, contact_email,
                        phone_prefix, phone_number, website, notes,
                        locale, status, created_at, updated_at,
-                       reviewed_at, advisor_notes
+                       reviewed_at, advisor_notes, assigned_advisor_id
                   FROM studio_requests
                   {where}
                  ORDER BY created_at DESC
@@ -560,13 +572,38 @@ async def list_requests(*, status: str | None = None, limit: int = 50) -> list[d
             "updated_at":       r['updated_at'].isoformat() if r['updated_at'] else None,
             "reviewed_at":      r['reviewed_at'].isoformat() if r['reviewed_at'] else None,
             "advisor_notes":    r['advisor_notes'],
+            "assigned_advisor_id": str(r['assigned_advisor_id']) if r['assigned_advisor_id'] else None,
         })
     return out
+
+
+async def get_request(request_id: str) -> dict | None:
+    """Single-row lookup of a studio_request — used by advisor-scoped guards."""
+    async with AsyncSessionLocal() as s:
+        row = (await s.execute(
+            text("""
+                SELECT id, status, assigned_advisor_id, contact_email
+                  FROM studio_requests
+                 WHERE id = CAST(:id AS uuid)
+                 LIMIT 1
+            """),
+            {"id": request_id},
+        )).mappings().first()
+    if not row:
+        return None
+    return {
+        "id":                  str(row["id"]),
+        "status":              row["status"],
+        "assigned_advisor_id": str(row["assigned_advisor_id"]) if row["assigned_advisor_id"] else None,
+        "contact_email":       row["contact_email"],
+    }
+
 
 
 async def update_request_status(
     *, request_id: str, status: str | None = None,
     advisor_notes: str | None = None,
+    assigned_advisor_id: str | None = None,
 ) -> bool:
     VALID = {'received', 'reviewing', 'contacted', 'qualified', 'not_aligned', 'activated'}
     if status and status not in VALID:
@@ -581,6 +618,10 @@ async def update_request_status(
     if advisor_notes is not None:
         sets.append("advisor_notes = :nt")
         params["nt"] = advisor_notes
+    if assigned_advisor_id is not None:
+        # Only fill assignment if currently NULL (self-claim of unassigned).
+        sets.append("assigned_advisor_id = COALESCE(assigned_advisor_id, CAST(:aaid AS uuid))")
+        params["aaid"] = assigned_advisor_id
     async with AsyncSessionLocal() as s:
         r = await s.execute(
             text(f"UPDATE studio_requests SET {', '.join(sets)} "

@@ -110,7 +110,7 @@ const FounderWelcome = () => {
       {/* Editorial CTA */}
       <button
         data-testid="founder-enter-cta"
-        onClick={() => navigate('/admin')}
+        onClick={() => navigate('/blueprint')}
         style={{
           marginTop: '4.5rem',
           background: tokens.teal, color: '#08090C',

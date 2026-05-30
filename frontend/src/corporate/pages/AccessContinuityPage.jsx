@@ -137,7 +137,7 @@ const AccessContinuityPage = () => {
           localStorage.setItem('mood-admin-tenant', res.data.tenant?.slug || 'studio');
           setStage('welcome_back');
           setTimeout(() => {
-            window.location.assign(res.data.redirect_url || '/admin');
+            window.location.assign(res.data.redirect_url || '/command-center');
           }, 1600);
         } else if (res.data?.reason === 'expired') {
           setStage('expired');
@@ -204,7 +204,7 @@ const AccessContinuityPage = () => {
         localStorage.setItem('mood_jwt',    res.data.token);
         localStorage.setItem('mood_user',   JSON.stringify(res.data.user));
         localStorage.setItem('mood_tenant', JSON.stringify(res.data.tenant));
-        window.location.assign(res.data.redirect_url || '/admin');
+        window.location.assign(res.data.redirect_url || '/command-center');
       } else if (res.data?.requires_tenant_selection) {
         // Edge case: same email across tenants. Pick first for now.
         const slug = res.data.tenants?.[0]?.slug;
@@ -217,7 +217,7 @@ const AccessContinuityPage = () => {
           localStorage.setItem('mood_jwt',    r2.data.token);
           localStorage.setItem('mood_user',   JSON.stringify(r2.data.user));
           localStorage.setItem('mood_tenant', JSON.stringify(r2.data.tenant));
-          window.location.assign(r2.data.redirect_url || '/admin');
+          window.location.assign(r2.data.redirect_url || '/command-center');
         }
       }
     } catch {

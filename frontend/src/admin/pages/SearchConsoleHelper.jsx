@@ -52,7 +52,7 @@ const SearchConsoleHelper = () => {
 
         <Card title="robots.txt" icon={Globe} state={robotsStatus.loading ? 'loading' : robotsStatus.ok ? 'ok' : 'warning'}>
           <KV k="Disponibile" v={robotsStatus.loading ? '…' : (robotsStatus.ok ? 'sì' : 'no — verifica deploy')} />
-          <KV k="Esclusioni" v="/admin · /api" />
+          <KV k="Esclusioni" v="/command-center · /blueprint · /admin (legacy) · /api" />
           <ButtonRow>
             <ExtLink href={`/robots.txt`} label="Apri robots.txt" />
           </ButtonRow>

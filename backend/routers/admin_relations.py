@@ -17,6 +17,7 @@ from services import studio_relations
 from services.site_resolver import _fetch_block_values, LOCALE_FALLBACK, DEFAULT_LOCALE
 from tenant_resolver import get_corporate_tenant
 from routers._auth import require_admin_tenant
+from routers._advisor_scope import require_advisor_scope
 
 
 router = APIRouter(tags=["admin-relations"])
@@ -46,8 +47,12 @@ async def list_relations(
     advisor_id: Optional[str] = Query(default=None),
     status: Optional[str] = Query(default=None),
     limit: int = Query(default=100, ge=1, le=500),
-    _tenant: dict = Depends(require_admin_tenant),
+    scope: dict = Depends(require_advisor_scope),
 ):
+    # Scoped advisor (role=advisor) only sees relations they own.
+    # Super admin can pass `advisor_id` filter explicitly or see all.
+    if not scope["is_super_admin"]:
+        advisor_id = scope["advisor_id"]
     return await studio_relations.list_relations(
         advisor_id=advisor_id, status=status, limit=limit,
     )
@@ -56,8 +61,12 @@ async def list_relations(
 @router.post("/admin/relations")
 async def create_relation(
     body: dict = Body(...),
-    _tenant: dict = Depends(require_admin_tenant),
+    scope: dict = Depends(require_advisor_scope),
 ):
+    # Advisor: forced ownership = self. Super admin: may pick.
+    owner = body.get("owner_advisor_id")
+    if not scope["is_super_admin"]:
+        owner = scope["advisor_id"]
     return await studio_relations.create_relation_manually(
         studio_name=(body.get("studio_name") or "").strip(),
         archetype=body.get("archetype"),
@@ -66,7 +75,7 @@ async def create_relation(
         website=body.get("website"),
         city=body.get("city"),
         country=body.get("country"),
-        owner_advisor_id=body.get("owner_advisor_id"),
+        owner_advisor_id=owner,
     )
 
 
@@ -74,22 +83,30 @@ async def create_relation(
 async def open_from_request(
     request_id: str,
     body: dict = Body(default={}),
-    _tenant: dict = Depends(require_admin_tenant),
+    scope: dict = Depends(require_advisor_scope),
 ):
+    # Advisor auto-claims ownership; super admin may override.
+    owner = body.get("owner_advisor_id")
+    if not scope["is_super_admin"]:
+        owner = scope["advisor_id"]
     return await studio_relations.open_relation_from_request(
         studio_request_id=request_id,
-        owner_advisor_id=body.get("owner_advisor_id"),
+        owner_advisor_id=owner,
     )
 
 
 @router.get("/admin/relations/{relation_id}")
 async def get_relation(
     relation_id: str,
-    _tenant: dict = Depends(require_admin_tenant),
+    scope: dict = Depends(require_advisor_scope),
 ):
     r = await studio_relations.get_relation(relation_id)
     if not r:
         raise HTTPException(status_code=404, detail="Relation not found")
+    # Advisor scope: only own relations.
+    if not scope["is_super_admin"]:
+        if (r.get("owner_advisor_id") or None) != scope["advisor_id"]:
+            raise HTTPException(status_code=404, detail="Relation not found")
     return r
 
 
@@ -97,11 +114,18 @@ async def get_relation(
 async def patch_relation(
     relation_id: str,
     body: dict = Body(...),
-    _tenant: dict = Depends(require_admin_tenant),
+    scope: dict = Depends(require_advisor_scope),
 ):
+    # Advisor scope: must own the relation.
+    if not scope["is_super_admin"]:
+        current = await studio_relations.get_relation(relation_id)
+        if not current or (current.get("owner_advisor_id") or None) != scope["advisor_id"]:
+            raise HTTPException(status_code=404, detail="Relation not found")
+        # Advisor cannot reassign ownership.
+        body.pop("owner_advisor_id", None)
     res = await studio_relations.update_relation(
         relation_id=relation_id,
-        actor_id=body.pop("actor_id", None),
+        actor_id=body.pop("actor_id", None) or scope.get("user_id"),
         patch=body,
     )
     if not res.get("ok"):
@@ -114,9 +138,15 @@ async def patch_relation(
 async def create_visit(
     relation_id: str,
     body: dict = Body(...),
-    _tenant: dict = Depends(require_admin_tenant),
+    scope: dict = Depends(require_advisor_scope),
 ):
-    advisor_id = body.pop("advisor_id", None)
+    if not scope["is_super_admin"]:
+        current = await studio_relations.get_relation(relation_id)
+        if not current or (current.get("owner_advisor_id") or None) != scope["advisor_id"]:
+            raise HTTPException(status_code=404, detail="Relation not found")
+        advisor_id = scope["advisor_id"]
+    else:
+        advisor_id = body.pop("advisor_id", None)
     return await studio_relations.create_visit_report(
         relation_id=relation_id, advisor_id=advisor_id, data=body,
     )
@@ -127,8 +157,15 @@ async def create_visit(
 async def create_followup(
     relation_id: str,
     body: dict = Body(...),
-    _tenant: dict = Depends(require_admin_tenant),
+    scope: dict = Depends(require_advisor_scope),
 ):
+    if not scope["is_super_admin"]:
+        current = await studio_relations.get_relation(relation_id)
+        if not current or (current.get("owner_advisor_id") or None) != scope["advisor_id"]:
+            raise HTTPException(status_code=404, detail="Relation not found")
+        advisor_id = scope["advisor_id"]
+    else:
+        advisor_id = body.get("advisor_id")
     due_raw = body.get("due_at")
     try:
         due_at = datetime.fromisoformat(due_raw.replace("Z", "+00:00")) if due_raw else None
@@ -138,7 +175,7 @@ async def create_followup(
         raise HTTPException(status_code=400, detail="invalid_due_at")
     return await studio_relations.create_followup(
         relation_id=relation_id,
-        advisor_id=body.get("advisor_id"),
+        advisor_id=advisor_id,
         type_=body.get("type") or "call",
         due_at=due_at,
         notes=body.get("notes"),
@@ -149,11 +186,12 @@ async def create_followup(
 async def complete_followup(
     followup_id: str,
     body: dict = Body(default={}),
-    _tenant: dict = Depends(require_admin_tenant),
+    scope: dict = Depends(require_advisor_scope),
 ):
+    advisor_id = scope["advisor_id"] if not scope["is_super_admin"] else body.get("advisor_id")
     res = await studio_relations.complete_followup(
         followup_id=followup_id,
-        advisor_id=body.get("advisor_id"),
+        advisor_id=advisor_id,
         next_action=body.get("next_action"),
     )
     if not res.get("ok"):
@@ -163,9 +201,14 @@ async def complete_followup(
 
 @router.get("/admin/advisor/followups")
 async def advisor_followups(
-    advisor_id: str = Query(...),
-    _tenant: dict = Depends(require_admin_tenant),
+    advisor_id: Optional[str] = Query(default=None),
+    scope: dict = Depends(require_advisor_scope),
 ):
+    # Advisor: scoped to own follow-ups regardless of query param.
+    if not scope["is_super_admin"]:
+        advisor_id = scope["advisor_id"]
+    if not advisor_id:
+        raise HTTPException(status_code=400, detail="advisor_id required")
     return await studio_relations.list_followups_for_advisor(advisor_id=advisor_id)
 
 
@@ -174,11 +217,16 @@ async def advisor_followups(
 async def activate_ecosystem(
     relation_id: str,
     body: dict = Body(default={}),
-    _tenant: dict = Depends(require_admin_tenant),
+    scope: dict = Depends(require_advisor_scope),
 ):
+    # Advisor scope: must own the relation.
+    if not scope["is_super_admin"]:
+        current = await studio_relations.get_relation(relation_id)
+        if not current or (current.get("owner_advisor_id") or None) != scope["advisor_id"]:
+            raise HTTPException(status_code=404, detail="Relation not found")
     res = await studio_relations.activate_studio_ecosystem(
         relation_id=relation_id,
-        actor_id=body.get("actor_id"),
+        actor_id=body.get("actor_id") or scope.get("user_id"),
     )
     if not res.get("ok"):
         raise HTTPException(status_code=400, detail=res.get("reason"))
@@ -189,12 +237,17 @@ async def activate_ecosystem(
 @router.get("/admin/advisor/console-summary")
 async def console_summary(
     advisor_id: Optional[str] = Query(default=None),
-    _tenant: dict = Depends(require_admin_tenant),
+    scope: dict = Depends(require_advisor_scope),
 ):
     """
     Quiet, editorial business-intelligence summary.
     No KPIs labelled as sales. Everything reads as Advisory Value.
+
+    Advisor scope: aggregates are always restricted to own relations,
+    even if a misleading advisor_id is passed in the query.
     """
+    if not scope["is_super_admin"]:
+        advisor_id = scope["advisor_id"]
     where = ""
     params: dict = {}
     if advisor_id:
@@ -219,15 +272,24 @@ async def console_summary(
             params,
         )).mappings().first()
 
+        # Pending introductions visibility rule:
+        #   • super admin → all received/reviewing requests
+        #   • advisor      → own (assigned_advisor_id == me) + unassigned
+        pending_where = "status IN ('received','reviewing')"
+        pending_params: dict = {}
+        if not scope["is_super_admin"]:
+            pending_where += " AND (assigned_advisor_id IS NULL OR assigned_advisor_id = :aid_p)"
+            pending_params["aid_p"] = scope["advisor_id"]
         pending = (await s.execute(
-            text("""
+            text(f"""
                 SELECT id, studio_name, archetype, city, country,
-                       contact_email, created_at, status
+                       contact_email, created_at, status, assigned_advisor_id
                   FROM studio_requests
-                 WHERE status IN ('received','reviewing')
+                 WHERE {pending_where}
                  ORDER BY created_at DESC
                  LIMIT 12
             """),
+            pending_params,
         )).mappings().all()
 
     return {

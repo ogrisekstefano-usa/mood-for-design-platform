@@ -276,7 +276,7 @@ class TestMagicLinkConsume:
         assert body["user"]["role"] == "admin"
         assert body["user"]["email"].lower() == ADMIN_EMAIL
         assert body["tenant"]["slug"] == "studio"
-        assert body.get("redirect_url") == "/admin"
+        assert body.get("redirect_url") == "/command-center"
 
         # Replay → already_used
         r2 = requests.post(f"{BASE_URL}/api/auth/magic-link/consume",

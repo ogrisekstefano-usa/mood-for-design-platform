@@ -2,24 +2,30 @@ import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LocaleProvider } from "./contexts/LocaleContext";
 import CorporateApp from "./corporate/CorporateApp";
-import AdminApp from "./admin/AdminApp";
+import AdminApp, { CommandCenterRoot, BlueprintRoot } from "./admin/AdminApp";
 
 /**
- * MOOD for DESIGN — Root App (ITER149)
+ * MOOD for DESIGN — Root App
  *
- * /admin/*  → Blueprint Command Center (admin UI)
- * /*        → Public website (CorporateApp)
+ * /command-center/*  → MOOD Core   (advisors, studio relations, lifecycle, founder welcome)
+ * /blueprint/*       → Tenant runtime workspace (CMS — pages, blocks, sections, media, …)
+ * /admin/*           → Legacy redirect → /command-center (bookmarks keep working)
+ * /*                 → Public website (CorporateApp)
  *
- * All content for both surfaces is governed by editorial_blocks + media_library
- * + cms_sections via the /api/site/* and /api/admin/site/* APIs.
+ * Architectural rule (Feb 2026): MOOD Core ≠ Blueprint Tenant.
+ * The two workspaces are intentionally separate React shells so the
+ * Advisor Program (MOOD Core) cannot bleed into the tenant CMS, and
+ * future tenants will mount their own Blueprint on their subdomain.
  */
 function App() {
   return (
     <BrowserRouter>
       <LocaleProvider>
         <Routes>
-          <Route path="/admin/*" element={<AdminApp />} />
-          <Route path="/*"       element={<CorporateApp />} />
+          <Route path="/command-center/*" element={<CommandCenterRoot />} />
+          <Route path="/blueprint/*"      element={<BlueprintRoot />} />
+          <Route path="/admin/*"          element={<AdminApp />} />
+          <Route path="/*"                element={<CorporateApp />} />
         </Routes>
       </LocaleProvider>
     </BrowserRouter>

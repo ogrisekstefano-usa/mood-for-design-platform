@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /command-center
+Disallow: /blueprint
 Disallow: /api
 
 Sitemap: https://www.moodfordesign.com/api/site/sitemap.xml
