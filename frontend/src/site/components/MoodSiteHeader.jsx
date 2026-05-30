@@ -12,11 +12,23 @@
  * when closed, so even if a CSS transform regression appeared it would
  * never leak content into the page flow.
  */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { MOOD_BRAND_LOGO_URL, MOOD_BRAND_ALT } from '../content/brandAssets';
 import { useSite } from '../SiteContext';
+import { useStorefrontContent } from '../useStorefrontContent';
+
+// Resolve tenant slug from host (used for the CMS storefront fetch).
+const resolveTenantSlug = () => {
+  if (typeof window === 'undefined') return 'studio';
+  const host = (window.location.hostname || '').toLowerCase();
+  const first = host.split('.')[0] || '';
+  const PLATFORM = ['studio', 'blueprint', 'www', 'localhost'];
+  if (first.startsWith('content-hub-pro-')) return 'studio';
+  if (PLATFORM.some((h) => first === h || first.startsWith(h))) return 'studio';
+  return first || 'studio';
+};
 
 // Localized copy resolver
 const L = (v, l) => (typeof v === 'string' ? v : (v?.[l] || v?.en || v?.it || ''));
@@ -45,6 +57,16 @@ const MoodSiteHeader = ({
   const onHome = location.pathname === '/' || location.pathname === '';
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
+  // ITER171.6 · CMS-driven logo. Reads from `navigation.nav_top.settings.logo_url`.
+  // Falls back to the bundled brand asset when CMS has no override yet.
+  const tenantSlug = useMemo(() => resolveTenantSlug(), []);
+  const cmsNav = useStorefrontContent(tenantSlug, 'navigation');
+  const brandLogoUrl = useMemo(() => {
+    const navTop = cmsNav?.content?.nav_top || cmsNav?.content?.navigation_main;
+    const fromSettings = navTop?._settings?.logo_url || navTop?.settings?.logo_url;
+    return (fromSettings && String(fromSettings).trim()) || MOOD_BRAND_LOGO_URL;
+  }, [cmsNav]);
+
   // Always close the menu when route changes (defensive)
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
@@ -64,7 +86,7 @@ const MoodSiteHeader = ({
         <div className="mfd-header__inner">
           <Link to="/" className="mfd-header__brand" onClick={closeMenu} aria-label={MOOD_BRAND_ALT}>
             <img
-              src={MOOD_BRAND_LOGO_URL}
+              src={brandLogoUrl}
               alt={MOOD_BRAND_ALT}
               className="mfd-header__brand-img"
               draggable={false}

@@ -199,6 +199,22 @@ const SETTINGS_LISTS = {
       { key: 'image',    label: 'Immagine (opzionale)', placeholder: 'https://…' },
     ],
   },
+  // ITER171.6 · Footer-band brand controls (logo + social icons).
+  // The MoodSiteFooter reads `settings.logo_url` and `settings.social_links`.
+  editorial_footer: {
+    key: 'social_links',
+    label: 'SOCIAL · ICONE SOTTO LOGO',
+    itemLabel: 'Profilo social',
+    extraFields: [
+      { key: 'logo_url', label: 'LOGO FOOTER (URL)', placeholder: 'https://…/logo.png · lascia vuoto per usare il logo di default' },
+    ],
+    fields: [
+      { key: 'kind',  label: 'Piattaforma', kind: 'select',
+        options: ['instagram', 'linkedin', 'facebook', 'youtube', 'twitter', 'email', 'website'] },
+      { key: 'href',  label: 'URL',         placeholder: 'https://instagram.com/moodfordesign' },
+      { key: 'label', label: 'Etichetta (opzionale)', placeholder: 'Instagram' },
+    ],
+  },
 };
 
 // ─── Locale resolution helper ──────────────────────────────────
@@ -678,6 +694,28 @@ const SettingsListEditor = ({ section, config, onPatchSettings }) => {
 
   return (
     <div className="pa-list" data-testid={`pa-list-${config.key}`}>
+      {/* ITER171.6 · Top-level extra settings fields (e.g. logo_url for the
+          editorial_footer section). These live as scalar keys directly under
+          `settings`, NOT inside the list array. */}
+      {Array.isArray(config.extraFields) && config.extraFields.length > 0 && (
+        <div className="pa-list__extra-fields">
+          {config.extraFields.map((f) => (
+            <label key={f.key} className="pa-list__field pa-list__field--extra">
+              <span className="pa-list__field-label">{f.label}</span>
+              <input
+                className="pa-input"
+                value={section.settings?.[f.key] || ''}
+                placeholder={f.placeholder || ''}
+                onChange={(e) => {
+                  const settings = { ...(section.settings || {}), [f.key]: e.target.value };
+                  onPatchSettings(settings);
+                }}
+                data-testid={`pa-extra-${config.key}-${f.key}`}
+              />
+            </label>
+          ))}
+        </div>
+      )}
       <header className="pa-list__head">
         <span className="pa-list__eyebrow">{config.label}</span>
         <span className="pa-list__count">{items.length} {items.length === 1 ? 'elemento' : 'elementi'}</span>

@@ -728,6 +728,31 @@
   font-family: inherit; font-size: 13px;
   transition: color .18s, border-color .18s, background-color .18s;
 }
+
+.pa-list__extra-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  padding: 16px 18px;
+  margin: 0 0 18px;
+  border: 1px dashed var(--pa-line);
+  border-radius: 8px;
+  background: rgba(0, 201, 179, 0.03);
+}
+.pa-list__field--extra .pa-input {
+  width: 100%;
+  background: rgba(0,0,0,0.28);
+  border: 1px solid var(--pa-line);
+  border-radius: 6px;
+  padding: 9px 12px;
+  color: var(--pa-text);
+  font: 500 12.5px/1.3 'JetBrains Mono', ui-monospace, monospace;
+}
+.pa-list__field--extra .pa-input:focus {
+  outline: none; border-color: var(--pa-cyan);
+  background: rgba(0, 201, 179, 0.05);
+}
+
 .pa-list__icon-btn:hover { color: var(--pa-cyan); border-color: var(--pa-cyan); }
 .pa-list__icon-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 .pa-list__icon-btn--danger:hover { color: #e57373; border-color: #e57373; }

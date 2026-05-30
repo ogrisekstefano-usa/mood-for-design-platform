@@ -571,3 +571,29 @@
   transition: color .2s;
 }
 .ss-head__back:hover { color: var(--bp-primary); }
+
+/* ITER171.6 · Logo URL field in NavTopEditor */
+.ss-nav-top__logo-field {
+  margin: 0 0 22px;
+  padding: 16px 18px;
+  border: 1px dashed var(--ss-line, rgba(255,255,255,0.10));
+  border-radius: 8px;
+  background: rgba(0, 201, 179, 0.03);
+}
+.ss-nav-top__logo-field label {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.ss-nav-top__logo-field label > span:first-child {
+  font: 600 11px/1 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ss-cyan, #00C9B3);
+}
+.ss-nav-top__hint {
+  font-size: 11px; color: var(--ss-text-mute, rgba(255,255,255,0.45));
+  line-height: 1.4;
+}
+.ss-nav-top__logo-field .ss-input {
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: 12px !important;
+}
+

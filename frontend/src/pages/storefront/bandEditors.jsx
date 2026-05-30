@@ -132,6 +132,24 @@ export const NavTopEditor = ({
     update(copy);
   };
   return <div className="ss-table" data-testid="ss-nav-top-editor">
+      {/* ITER171.6 · Logo URL — overrides the bundled MoodSiteHeader logo */}
+      <div className="ss-nav-top__logo-field" data-testid="ss-nav-top-logo-field">
+        <label>
+          <span>LOGO HEADER (URL)</span>
+          <input
+            type="text"
+            className="ss-input"
+            value={section.settings?.logo_url || ''}
+            placeholder="https://…/logo.png · lascia vuoto per usare il logo di default"
+            onChange={(e) => onPatchSetting('logo_url', e.target.value)}
+            data-testid="ss-nav-top-logo-url"
+          />
+          <span className="ss-nav-top__hint">
+            Il logo del navbar appare in alto a sinistra su ogni pagina del sito pubblico.
+            Lascia vuoto per usare il logo MOOD for DESIGN™ di default.
+          </span>
+        </label>
+      </div>
       <div className="ss-table__head">
         <span style={{
         flex: '0 0 28px'

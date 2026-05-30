@@ -1,27 +1,22 @@
 /**
- * MoodSiteFooter — Editorial 4-col + Colophon footer.
+ * MoodSiteFooter — Editorial 4-col + colophon footer (CMS-driven end-to-end).
  *
- * Single source of truth: this is the SAME footer used on the public
- * homepage. Replaces the legacy `SiteFooter` on all inner pages so the
- * site has consistent chrome end-to-end. CMS-driven via the
- * `editorial_footer` section of the `home` storefront page (the one
- * already maintained by the studio admin).
+ * Reads from 3 CMS sources:
+ *   1. `navigation.nav_top.settings.links` → first "Navigazione" column
+ *   2. `home.editorial_footer.locale_content.<locale>.cols` → custom columns
+ *   3. `home.editorial_footer.settings.logo_url` → footer brand logo
+ *   4. `home.editorial_footer.settings.social_links` → icon row under the logo
  *
- * Layout:
- *   ┌──────────────────────────────────────────────────────────────┐
- *   │  [MOOD logo]   col 1   col 2   col 3   col 4                 │
- *   │                                                              │
- *   │  © 2026 MOOD for DESIGN™      …powered by MOOD…   Blueprint  │
- *   └──────────────────────────────────────────────────────────────┘
+ * Layout: brand block (logo + social icons) on the left, cols distributed
+ * edge-to-edge on the right with equal weighting.
  */
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { Instagram, Linkedin, Facebook, Youtube, Twitter, Mail, Globe } from 'lucide-react';
 import { useStorefrontContent } from '../useStorefrontContent';
 import { useSite } from '../SiteContext';
 import { MOOD_BRAND_LOGO_URL, MOOD_BRAND_ALT } from '../content/brandAssets';
 
-// Resolve the tenant slug from the host — keeps the footer DB-driven
-// without forcing every page to thread the slug as a prop.
 const resolveTenantSlug = () => {
   if (typeof window === 'undefined') return 'studio';
   const host = (window.location.hostname || '').toLowerCase();
@@ -76,6 +71,29 @@ const SHELL_COLOPHON = {
   },
 };
 
+// Map a social platform code to an icon component (lucide-react).
+// Editors set `kind` in the CMS, the visual icon is rendered here.
+const SOCIAL_ICON_MAP = {
+  instagram: Instagram,
+  linkedin:  Linkedin,
+  facebook:  Facebook,
+  youtube:   Youtube,
+  twitter:   Twitter,
+  x:         Twitter,
+  email:     Mail,
+  website:   Globe,
+};
+const inferKindFromHref = (href = '') => {
+  const h = href.toLowerCase();
+  if (h.includes('instagram')) return 'instagram';
+  if (h.includes('linkedin'))  return 'linkedin';
+  if (h.includes('facebook'))  return 'facebook';
+  if (h.includes('youtube'))   return 'youtube';
+  if (h.includes('twitter') || h.startsWith('https://x.com') || h.startsWith('https://www.x.com')) return 'twitter';
+  if (h.startsWith('mailto:')) return 'email';
+  return 'website';
+};
+
 const FooterColophon = ({ locale, colophon }) => {
   const c = colophon;
   if (!c || c.enabled === false) return null;
@@ -121,22 +139,27 @@ const MoodSiteFooter = () => {
   const cmsHome = useStorefrontContent(tenantSlug, 'home');
   const cmsNav  = useStorefrontContent(tenantSlug, 'navigation');
 
-  // ────────────────────────────────────────────────────────────────────
-  // ITER171.3 · Single source of truth for footer columns.
-  //
-  // 1. Navigation column (mirrors the top nav so users always see the
-  //    same site map at top and bottom). Reads from
-  //    `navigation.nav_top.settings.links`. Editing the nav in CMS
-  //    updates the footer automatically.
-  //
-  // 2. Editorial columns (Azienda · Risorse · Seguici) come from the
-  //    `home.editorial_footer` section. Admin can edit them inside
-  //    Command Center → Pagine → Home → "EDITORIAL_FOOTER".
-  // ────────────────────────────────────────────────────────────────────
+  // Settings layer of the editorial_footer section (logo + socials).
+  const footerSettings = useMemo(() => {
+    const sec = cmsHome?.content?.editorial_footer || {};
+    return sec._settings || sec.settings || {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(cmsHome?.content?.editorial_footer)]);
+
+  const brandLogoUrl = (footerSettings.logo_url && String(footerSettings.logo_url).trim())
+                   || MOOD_BRAND_LOGO_URL;
+
+  const socialLinks = Array.isArray(footerSettings.social_links)
+    ? footerSettings.social_links.filter((s) => s && s.href)
+    : [];
+
+  // Editorial cols come from per-locale locale_content. SEGUICI col is
+  // intentionally skipped here because the same data is rendered as icons
+  // under the logo (avoids duplication).
   const cols = useMemo(() => {
     const out = [];
 
-    // 1 · Navigation mirror column
+    // 1 · Navigation mirror
     const navSection = cmsNav?.content?.nav_top
                     || cmsNav?.content?.navigation_main
                     || cmsNav?.content?.main_links;
@@ -146,18 +169,19 @@ const MoodSiteFooter = () => {
         title: { it: 'Navigazione', en: 'Navigation' },
         links: navLinks
           .filter((l) => l.visible !== false)
-          .map((l) => ({
-            href:  l.href,
-            label: l.label_i18n || l.label || {},
-          })),
+          .map((l) => ({ href: l.href, label: l.label_i18n || l.label || {} })),
       };
       if (navCol.links.length) out.push(navCol);
     }
 
-    // 2 · Editorial cols from home.editorial_footer
+    // 2 · Editorial cols
     const footerBag = resolveBag(cmsHome?.content?.editorial_footer, i18nLocale);
     const editorialCols = Array.isArray(footerBag.cols) ? footerBag.cols : [];
     for (const c of editorialCols) {
+      const titleNorm = L(c.title, locale).toLowerCase();
+      // Skip the "Seguici"/"Follow" column — we render socials as icons
+      // under the logo to avoid duplication.
+      if (/segu|follow|social/i.test(titleNorm)) continue;
       out.push({
         title: c.title,
         links: Array.isArray(c.links) ? c.links : [],
@@ -167,9 +191,7 @@ const MoodSiteFooter = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(cmsNav?.content?.nav_top || cmsNav?.content?.navigation_main),
       JSON.stringify(cmsHome?.content?.editorial_footer),
-      i18nLocale]);
-
-  const colophon = SHELL_COLOPHON;
+      i18nLocale, locale]);
 
   return (
     <footer id="footer" className="mfd-footer" data-testid="site-footer">
@@ -177,15 +199,38 @@ const MoodSiteFooter = () => {
         <div className="mfd-footer__top">
           <div className="mfd-footer__brand">
             <img
-              src={MOOD_BRAND_LOGO_URL}
+              src={brandLogoUrl}
               alt={MOOD_BRAND_ALT}
               className="mfd-footer__brand-img"
               draggable={false}
               data-testid="site-footer-brand-img"
             />
+            {socialLinks.length > 0 && (
+              <ul className="mfd-footer__socials" data-testid="footer-socials">
+                {socialLinks.map((s, i) => {
+                  const kind = (s.kind || inferKindFromHref(s.href)).toLowerCase();
+                  const Icon = SOCIAL_ICON_MAP[kind] || Globe;
+                  return (
+                    <li key={i}>
+                      <a
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={s.label || kind}
+                        title={s.label || kind}
+                        className="mfd-footer__social"
+                        data-testid={`footer-social-${kind}`}
+                      >
+                        <Icon size={16} strokeWidth={1.6} />
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
           {cols.length > 0 && (
-            <div className="mfd-footer__cols">
+            <div className="mfd-footer__cols" data-cols={cols.length}>
               {cols.map((col, ci) => (
                 <div key={ci} className="mfd-footer__col">
                   <h4 className="mfd-footer__col-title">{L(col.title, locale)}</h4>
@@ -204,7 +249,7 @@ const MoodSiteFooter = () => {
           )}
         </div>
       </div>
-      <FooterColophon locale={locale} colophon={colophon} />
+      <FooterColophon locale={locale} colophon={SHELL_COLOPHON} />
     </footer>
   );
 };

@@ -854,9 +854,37 @@
 }
 .mfd-footer__top {
   display: grid;
-  grid-template-columns: 1fr 2.4fr;
-  gap: 56px;
+  /* ITER171.6 · brand block fixed-width, cols stretch edge-to-edge so the
+     footer content fills the entire boxed inner width. */
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: clamp(40px, 6vw, 96px);
   margin-bottom: 22px;
+  align-items: start;
+}
+/* ITER171.6 · brand stack — logo + social icons below */
+.mfd-footer__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+.mfd-footer__socials {
+  list-style: none; padding: 0; margin: 4px 0 0;
+  display: flex; gap: 10px;
+  flex-wrap: wrap;
+}
+.mfd-footer__social {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  border: 1px solid rgba(245, 242, 237, 0.18);
+  border-radius: 50%;
+  color: rgba(245, 242, 237, 0.65);
+  transition: color 200ms ease, border-color 200ms ease, background 200ms ease;
+}
+.mfd-footer__social:hover {
+  color: #0e0d0b;
+  background: var(--mfd-accent, #00C9B3);
+  border-color: var(--mfd-accent, #00C9B3);
 }
 .mfd-footer__brand-mark {
   font-family: 'Cormorant Garamond', Georgia, serif;
@@ -885,9 +913,16 @@
 }
 .mfd-footer__cols {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 36px;
+  /* ITER171.6 · Distribute cols across full available width. The
+     `data-cols` attribute lets us auto-adjust the template count. */
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: clamp(28px, 4vw, 56px);
+  width: 100%;
 }
+.mfd-footer__cols[data-cols="1"] { grid-template-columns: 1fr; }
+.mfd-footer__cols[data-cols="2"] { grid-template-columns: repeat(2, 1fr); }
+.mfd-footer__cols[data-cols="3"] { grid-template-columns: repeat(3, 1fr); }
+.mfd-footer__cols[data-cols="4"] { grid-template-columns: repeat(4, 1fr); }
 .mfd-footer__col-title {
   font-size: 10.5px;
   letter-spacing: 0.28em;
