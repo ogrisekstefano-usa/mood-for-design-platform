@@ -56,6 +56,9 @@ const ACCESS_KEYS = [
   'site.access.concierge.headline',
   'site.access.concierge.body',
   'site.access.concierge.cta',
+  'site.access.studio_pending.headline',
+  'site.access.studio_pending.body',
+  'site.access.studio_pending.cta',
   'site.access.expired.headline',
   'site.access.expired.body',
   'site.access.expired.cta',
@@ -169,6 +172,10 @@ const AccessContinuityPage = () => {
           email: email.trim().toLowerCase(), locale: 'it',
         });
         setStage('magic_sent');
+      } else if (ch === 'studio_pending') {
+        // Studio application is being read by the curatorial team.
+        // No access yet — show the editorial pending screen.
+        setStage('studio_pending');
       } else {
         // concierge — but to prevent enumeration we ALSO send a magic-link
         // request (which silently no-ops if the email is unknown).
@@ -411,6 +418,20 @@ const AccessContinuityPage = () => {
                      dataTestid="access-concierge-back">
                   ← {t['site.access.email.label']}
                 </Cta>
+              </div>
+            </Frame>
+          )}
+
+          {stage === 'studio_pending' && (
+            <Frame fadeKey="studio_pending">
+              <Headline data-testid="access-studio-pending-headline">
+                {t['site.access.studio_pending.headline']}
+              </Headline>
+              <Sublead>{t['site.access.studio_pending.body']}</Sublead>
+              <div style={{ display: 'flex', gap: 14, marginTop: 32, flexWrap: 'wrap' }}>
+                <a href="/" data-testid="access-studio-pending-back" style={ctaStyle('solid')}>
+                  {t['site.access.studio_pending.cta']}
+                </a>
               </div>
             </Frame>
           )}

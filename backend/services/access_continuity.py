@@ -45,43 +45,112 @@ async def identity_probe(email: str) -> dict:
     Return the routing hint for an email.
 
     Never reveals whether an account exists. The shape is:
-      { "channel": "magic_link" | "password" | "concierge",
+      { "channel": "magic_link" | "password" | "studio_pending" | "concierge",
         "display_name": Optional[str] }
 
-    Rules:
-      • admin/owner/editor role → channel="password"      (still allow magic link as fallback)
-      • client/member/guest role → channel="magic_link"
-      • unknown email            → channel="concierge"   (don't say "user not found")
+    Order of resolution (matches the MOOD access model exactly):
+      Step 1 — public.users
+               ├─ has real password AND role in (admin, editor)
+               │      → channel="password"
+               └─ otherwise (magic-only sentinel OR role in
+                  owner/member/client/guest)        → channel="magic_link"
+      Step 2 — accounts (private_client) without a users row
+               • Provision a placeholder users row, then
+                 → channel="magic_link"
+      Step 3 — studio_requests
+               ├─ status='approved'      → channel="magic_link"   (post-activation
+               │                            user row will exist; fallthrough)
+               └─ status in (received, reviewing, contacted, …)
+                                          → channel="studio_pending"
+      Step 4 — nothing matched           → channel="concierge"
     """
     email = (email or "").lower().strip()
     if not email:
         return {"channel": "concierge", "display_name": None}
 
     async with AsyncSessionLocal() as session:
-        rows = (await session.execute(
+        # ── Step 1: applicative users ──────────────────────────────
+        urow = (await session.execute(
             text("""
-                SELECT u.role, u.full_name
+                SELECT u.id, u.role, u.full_name, u.password_hash
                   FROM users u
-                 WHERE lower(u.email) = :email
-                   AND u.is_active = TRUE
+                 WHERE lower(u.email) = :em AND u.is_active = TRUE
                  ORDER BY CASE u.role
-                            WHEN 'admin' THEN 1
-                            WHEN 'owner' THEN 1
+                            WHEN 'admin'  THEN 1
                             WHEN 'editor' THEN 2
-                            ELSE 3
+                            WHEN 'owner'  THEN 3
+                            ELSE 4
                           END
                  LIMIT 1
             """),
-            {"email": email},
-        )).mappings().all()
+            {"em": email},
+        )).mappings().first()
 
-    if not rows:
+        if urow:
+            ph = (urow["password_hash"] or "").strip()
+            has_real_password = bool(ph) and not ph.startswith("!")
+            if has_real_password and urow["role"] in ("admin", "editor"):
+                return {"channel": "password",
+                        "display_name": urow["full_name"]}
+            return {"channel": "magic_link",
+                    "display_name": urow["full_name"]}
+
+        # ── Step 2: private clients in `accounts` ──────────────────
+        acct = (await session.execute(
+            text("""
+                SELECT a.id, a.tenant_id, a.account_name, a.email
+                  FROM accounts a
+                 WHERE lower(a.email) = :em
+                   AND a.account_type = 'private_client'
+                 ORDER BY a.created_at DESC
+                 LIMIT 1
+            """),
+            {"em": email},
+        )).mappings().first()
+
+        if acct:
+            # Provision a magic-link-only `users` row so issue_magic_link
+            # (which joins users↔tenants) can route the link correctly.
+            await session.execute(
+                text("""
+                    INSERT INTO users
+                      (tenant_id, email, full_name, role, is_active,
+                       password_hash)
+                    VALUES
+                      (:t, :em, :nm, 'client', TRUE, '!magic-link-only')
+                    ON CONFLICT (tenant_id, email) DO NOTHING
+                """),
+                {"t": str(acct["tenant_id"]),
+                 "em": email,
+                 "nm": acct["account_name"] or email.split("@")[0]},
+            )
+            await session.commit()
+            return {"channel": "magic_link",
+                    "display_name": acct["account_name"]}
+
+        # ── Step 3: studio applications ────────────────────────────
+        sreq = (await session.execute(
+            text("""
+                SELECT id, status, studio_name, contact_name
+                  FROM studio_requests
+                 WHERE lower(contact_email) = :em
+                 ORDER BY created_at DESC
+                 LIMIT 1
+            """),
+            {"em": email},
+        )).mappings().first()
+
+        if sreq:
+            if sreq["status"] == "approved":
+                # The activation flow should already have created a
+                # users row. If it didn't, fall through to concierge
+                # rather than silently inventing one.
+                return {"channel": "concierge", "display_name": None}
+            return {"channel": "studio_pending",
+                    "display_name": sreq["contact_name"] or sreq["studio_name"]}
+
+        # ── Step 4: nothing matched ────────────────────────────────
         return {"channel": "concierge", "display_name": None}
-
-    r = rows[0]
-    if r["role"] in ("admin", "owner", "editor"):
-        return {"channel": "password", "display_name": r["full_name"]}
-    return {"channel": "magic_link", "display_name": r["full_name"]}
 
 
 # ──────────────────────────────────────────────────────────────────────
