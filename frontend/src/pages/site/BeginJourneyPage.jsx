@@ -24,7 +24,7 @@ const NS = 'site.begin_journey';
 const k = (suffix) => `${NS}.${suffix}`;
 
 const BeginJourneyForm = () => {
-  const { get, ready } = useEditorialBundle();
+  const { get } = useEditorialBundle();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -143,17 +143,10 @@ const BeginJourneyForm = () => {
   };
   const meta = useMemo(() => STEPS[step], [STEPS, step]);
 
-  // Pre-paint gate: hold first render until the bundle is ready, so users
-  // never see a flash of IT before the right locale arrives.
-  if (!ready) {
-    return (
-      <>
-        <div className="bj-shell bj-shell--embedded" data-testid="begin-journey-page" aria-busy="true">
-          <div className="bj-overlay" data-editorial-skeleton="true" />
-        </div>
-      </>
-    );
-  }
+  // ITER171.4 · No pre-paint gate. The fallback text inside `get()` is
+  // already locale-aware, so we render the content immediately. The
+  // previous dark fullscreen skeleton was experienced as a "double load"
+  // by users and is removed.
 
   return (
     <>

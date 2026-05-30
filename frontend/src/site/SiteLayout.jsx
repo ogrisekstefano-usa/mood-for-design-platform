@@ -4,7 +4,6 @@ import MoodSiteHeader from './components/MoodSiteHeader';
 import MoodSiteFooter from './components/MoodSiteFooter';
 import { SiteProvider } from './SiteContext';
 import StorefrontThemeProvider from '../design-system/storefront/StorefrontThemeProvider';
-import PlatformFooterBar from '../components/common/PlatformFooterBar';
 import SiteLocaleBridge from './SiteLocaleBridge';
 import './site.css';
 import './exe.css';
@@ -41,7 +40,6 @@ const SiteLayout = ({ children }) => {
             {children || <Outlet />}
           </main>
           <MoodSiteFooter />
-          <PlatformFooterBar surface="storefront" />
         </div>
       </StorefrontThemeProvider>
     </SiteProvider>

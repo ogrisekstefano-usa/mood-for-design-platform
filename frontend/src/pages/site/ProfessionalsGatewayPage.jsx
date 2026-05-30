@@ -34,7 +34,7 @@ const ProCtaContent = ({ get, kicker, title, body, label }) => (
 );
 
 const ProfessionalsGatewayInner = () => {
-  const { get, ready } = useEditorialBundle();
+  const { get } = useEditorialBundle();
   const c = professionalsContent.gateway;
 
   useEffect(() => {
@@ -45,14 +45,6 @@ const ProfessionalsGatewayInner = () => {
   const exploreUrl = tenantConfig.studioExternal.url;
   const exploreTarget = tenantConfig.studioExternal.target || '_self';
   const isExternal = /^https?:\/\//.test(exploreUrl);
-
-  if (!ready) {
-    return (
-      <div data-testid="site-professionals-gateway" aria-busy="true">
-        <section className="mfd-pro-hero" data-editorial-skeleton="true" />
-      </div>
-    );
-  }
 
   return (
     <div data-testid="site-professionals-gateway">

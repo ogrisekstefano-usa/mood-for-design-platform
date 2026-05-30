@@ -16,6 +16,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { MOOD_BRAND_LOGO_URL, MOOD_BRAND_ALT } from '../content/brandAssets';
+import { useSite } from '../SiteContext';
 
 // Localized copy resolver
 const L = (v, l) => (typeof v === 'string' ? v : (v?.[l] || v?.en || v?.it || ''));
@@ -32,9 +33,13 @@ const DEFAULT_COPY = {
 };
 
 const MoodSiteHeader = ({
-  locale = 'it',
+  locale: localeProp,
   copy = DEFAULT_COPY,
 }) => {
+  const site = useSite();
+  // Prefer the prop (used by HomePage), then the SiteContext locale, then 'it'.
+  // The short form ('it' / 'en') is what DEFAULT_COPY keys use.
+  const locale = (localeProp || site?.locale || 'it').slice(0, 2);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const onHome = location.pathname === '/' || location.pathname === '';
