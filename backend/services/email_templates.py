@@ -505,14 +505,72 @@ def _enrich_with_editorial(template_key: str, ctx: dict) -> dict:
     return ctx
 
 
+def _apply_tenant_template_override(template_key: str, ctx: dict) -> Optional[Tuple[str, str, str]]:
+    """ITER173 · P1.5 — If the tenant has authored a subject+body override
+    for this template+locale, render it directly (with {{var}} interpolation
+    against ctx). Returns (subject, html, text) or None if no override.
+
+    Protected templates (magic_link, etc.) MUST never call this path —
+    the tenant_email_governance router rejects PUT for those keys, so
+    they should never have an override in tenant_settings. We still
+    guard here for defence in depth.
+    """
+    PROTECTED = {"magic_link"}
+    if template_key in PROTECTED:
+        return None
+    tenant_id = ctx.get("tenant_id")
+    if not tenant_id:
+        return None
+    locale = (ctx.get("locale") or "it-IT").split("-")[0].lower()
+    try:
+        from services.email_service import get_tenant_template_override
+        override = get_tenant_template_override(tenant_id, template_key, locale)
+    except Exception:
+        return None
+    if not override or not override.get("subject") or not override.get("body"):
+        return None
+    # Variables available for interpolation
+    brand = _branding(ctx.get("tenant_settings") or ctx.get("tenant_identity"))
+    vars_ = {
+        "studio_name":    brand.get("brand_name") or "MOOD for DESIGN™",
+        "brand_name":     brand.get("brand_name") or "MOOD for DESIGN™",
+        "tenant_name":    brand.get("brand_name") or "MOOD for DESIGN™",
+        "client_name":    (ctx.get("first_name") or "") + (" " + ctx.get("last_name") if ctx.get("last_name") else ""),
+        "first_name":     ctx.get("first_name") or "",
+        "journey_name":   ctx.get("journey_name") or ctx.get("project_name") or "",
+        "designer_name":  ctx.get("referente_name") or ctx.get("designer_name") or "",
+        "referente_name": ctx.get("referente_name") or "",
+        "magic_link":     ctx.get("magic_url") or ctx.get("cta_url") or "",
+        "magic_url":      ctx.get("magic_url") or ctx.get("cta_url") or "",
+        "appointment_date": ctx.get("appointment_date") or "",
+        "hero_quote":     ctx.get("hero_quote") or "",
+    }
+    subject = _interpolate(override["subject"], vars_)
+    body_md = _interpolate(override["body"], vars_)
+    # Convert raw body (plain text with line breaks) to the cinematic shell.
+    body_html_inner = (
+        _eyebrow(ctx.get("eyebrow") or brand["brand_name"], brand["primary_color"])
+        + _title(subject, brand["ink"])
+        + "".join(_p(line, brand["ink_soft"])
+                  for line in body_md.split("\n\n") if line.strip())
+    )
+    text = body_md
+    html = _wrap_email(brand=brand, preheader=subject, body_html=body_html_inner)
+    return subject, html, text
+
+
 def render(template_key: str, ctx: dict) -> Tuple[str, str, str]:
     """Render an email template.
 
-    Path:
-      1. Editorial Runtime™ resolves per-locale copy → ctx['locale_copy']
-      2. Legacy template function composes the HTML using locale_copy
+    Path (ITER173 · P1.5 Fallback Hierarchy™):
+      1. tenant_settings.email_template:{key}:{locale}     → tenant override
+      2. Editorial Runtime™ resolves per-locale copy       → ctx['locale_copy']
+      3. Legacy template function composes the HTML using locale_copy
          (with hardcoded Italian fallback if a field is missing).
     """
+    override = _apply_tenant_template_override(template_key, ctx)
+    if override:
+        return override
     ctx = _enrich_with_editorial(template_key, ctx)
     fn = REGISTRY.get(template_key) or generic
     return fn(ctx)

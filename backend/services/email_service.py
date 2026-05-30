@@ -48,15 +48,41 @@ SYSTEM_SENDERS = {
 
 # ─── Runtime identity resolver (ITER144 · Email Identity Runtime™) ────
 # Fallback chain (highest → lowest):
-#   1. tenant_configuration.custom_email_identity   (ITER144)
-#   2. tenant_email_settings (active row)           (ITER143E)
-#   3. platform DEFAULT_FROM / DEFAULT_REPLY        (env)
+#   1. tenant_settings.email_identity                (ITER173 · P1.4)
+#   2. tenant_configuration.custom_email_identity   (ITER144)
+#   3. tenant_email_settings (active row)           (ITER143E)
+#   4. platform DEFAULT_FROM / DEFAULT_REPLY        (env)
+def _get_tenant_setting_json(tenant_id: Optional[str], key: str) -> Optional[Dict[str, Any]]:
+    """Best-effort tenant_settings lookup. Returns the JSON value or None."""
+    if not tenant_id:
+        return None
+    try:
+        rows = (db().table("tenant_settings").select("value_json")
+                .eq("tenant_id", tenant_id).eq("key", key)
+                .limit(1).execute().data or [])
+        return rows[0]["value_json"] if rows else None
+    except Exception as e:
+        logger.debug("tenant_settings[%s] lookup failed: %s", key, e)
+        return None
+
+
+def get_tenant_template_override(tenant_id: Optional[str], template_key: str,
+                                  locale: str) -> Optional[Dict[str, str]]:
+    """ITER173 · P1.5 — Resolve a tenant-authored override for a given
+    (template_key, locale). Returns {subject, body} or None."""
+    if not tenant_id:
+        return None
+    locale = (locale or "it").split("-")[0].lower()
+    setting_key = f"email_template:{template_key}:{locale}"
+    return _get_tenant_setting_json(tenant_id, setting_key)
+
+
 def resolve_email_identity(tenant_id: Optional[str]) -> Dict[str, Any]:
     """Return the merged identity used to send + brand an email.
 
     Output shape:
       {
-        'source': 'tenant_runtime' | 'tenant_legacy' | 'platform',
+        'source': 'tenant_settings' | 'tenant_runtime' | 'tenant_legacy' | 'platform',
         'sender_name','sender_email','reply_to','support_email',
         'logo_url','footer','legal','website',
         'from_address',
@@ -66,13 +92,19 @@ def resolve_email_identity(tenant_id: Optional[str]) -> Dict[str, Any]:
     legacy_settings = get_tenant_settings(tenant_id)
     cfg = resolve_tenant_config(tenant_id) if tenant_id else {}
     custom = (cfg or {}).get("custom_email_identity") or {}
+    # ITER173 · P1.4 — highest priority: tenant_settings.email_identity
+    identity_kv = _get_tenant_setting_json(tenant_id, "email_identity") or {}
 
     def pick(field: str, *keys: str) -> Optional[str]:
-        # 1. tenant_configuration.custom_email_identity
+        # 1. tenant_settings.email_identity (ITER173)
+        for k in keys:
+            if identity_kv.get(k):
+                return identity_kv[k]
+        # 2. tenant_configuration.custom_email_identity
         for k in keys:
             if custom.get(k):
                 return custom[k]
-        # 2. tenant_email_settings (legacy)
+        # 3. tenant_email_settings (legacy)
         if legacy_settings:
             for k in keys:
                 if legacy_settings.get(k):
@@ -84,7 +116,7 @@ def resolve_email_identity(tenant_id: Optional[str]) -> Dict[str, Any]:
     runtime["reply_to"]      = pick("reply_to",      "reply_to", "support_email")
     runtime["support_email"] = pick("support_email", "support_email")
     runtime["logo_url"]      = pick("logo_url",      "logo_url")
-    runtime["footer"]        = pick("footer",        "footer_signature", "footer", "email_signature")
+    runtime["footer"]        = pick("footer",        "signature", "footer_signature", "footer", "email_signature")
     runtime["legal"]         = pick("legal",         "legal_footer", "legal")
     runtime["website"]       = pick("website",       "website")
 
@@ -99,7 +131,9 @@ def resolve_email_identity(tenant_id: Optional[str]) -> Dict[str, Any]:
         runtime["reply_to"] = DEFAULT_REPLY
 
     # Source attribution (for diagnostics + audit)
-    if any(custom.get(k) for k in ("sender_email", "sender_name", "logo_url", "footer")):
+    if identity_kv and any(identity_kv.get(k) for k in ("sender_email", "sender_name", "signature")):
+        runtime["source"] = "tenant_settings"
+    elif any(custom.get(k) for k in ("sender_email", "sender_name", "logo_url", "footer")):
         runtime["source"] = "tenant_runtime"
     elif legacy_settings:
         runtime["source"] = "tenant_legacy"

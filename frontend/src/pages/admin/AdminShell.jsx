@@ -22,6 +22,7 @@ import {
   LayoutGrid, Building2, Users, Sparkles, FileText, Languages,
   Mail, FlaskConical, LogOut, Circle, SlidersHorizontal,
   ShieldCheck, Network, Activity, Cog, ClipboardList, ArrowLeft,
+  AtSign, FileEdit,
 } from 'lucide-react';
 import './admin-shell.css';
 
@@ -41,6 +42,9 @@ const NAV = [
   { to: '/admin/modules',               Icon: Cog,               keyName: 'nav.modules',              label: 'Platform Capabilities™' },
   { to: '/admin/language-governance',   Icon: Languages,         keyName: 'nav.language',             label: 'Lingue' },
   { to: '/admin/email-governance',      Icon: Mail,              keyName: 'nav.email',                label: 'Email Governance' },
+  // ITER173 · P1 · Communication (Email Identity + Templates)
+  { to: '/admin/email-identity',        Icon: AtSign,            keyName: 'nav.email_identity',       label: 'Email Identity' },
+  { to: '/admin/email-templates',       Icon: FileEdit,          keyName: 'nav.email_templates',      label: 'Email Templates' },
   { to: '/admin/forms-journeys',        Icon: ClipboardList,     keyName: 'nav.forms_journeys',       label: 'Forms & Journeys' },
   { to: '/admin/audit',                 Icon: ShieldCheck,       keyName: 'nav.audit',                label: 'Audit log' },
   { to: '/admin/demo-governance',       Icon: FlaskConical,      keyName: 'nav.demo',                 label: 'Demo Governance' },

@@ -162,6 +162,9 @@ const AdminTenantsPage = lazy(() => import('./pages/admin/AdminTenantsPage'));
 const AdminTenantDetailPage = lazy(() => import('./pages/admin/AdminTenantDetailPage'));
 const AdminModulesPage = lazy(() => import('./pages/admin/PlatformCapabilitiesPage'));
 const AdminAuditPage = lazy(() => import('./pages/admin/AdminAuditPage'));
+// ITER173 · P1 · Email Identity + Email Templates
+const EmailIdentityPage = lazy(() => import('./pages/admin/EmailIdentityPage'));
+const EmailTemplatesPage = lazy(() => import('./pages/admin/EmailTemplatesPage'));
 // ITER172 · Advisor Network™ FROZEN — pages NOT imported at runtime.
 // Source preserved in /pages/admin/Advisor*.jsx and /pages/advisor/AdvisorDashboardPage.jsx.
 // To restore: uncomment the three lazy imports below.
@@ -782,6 +785,9 @@ function App() {
                       under their original paths but mounted in the cinematic shell. */}
                   <Route path="/admin/audit" element={<AdminAuditPage />} />
                   <Route path="/admin/modules" element={<AdminModulesPage />} />
+                  {/* ITER173 · P1 · Communication */}
+                  <Route path="/admin/email-identity" element={<EmailIdentityPage />} />
+                  <Route path="/admin/email-templates" element={<EmailTemplatesPage />} />
                   {/* ITER172 · Advisor Network™ FROZEN — admin routes removed at runtime.
                       Source preserved. To restore: uncomment imports + these Routes. */}
                   {/* <Route path="/admin/advisors" element={<AdvisorNetworkAdminPage />} /> */}

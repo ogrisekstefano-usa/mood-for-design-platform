@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import httpx
 
-from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_archive, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine, ai_studio_brief, project_workspace_v2, proposal_composer, market_perspectives, locale_runtime, editorial_variants, advisor_suggestions, reference_intelligence, relationships, markets, editorial, crm_voice_notes, crm_intelligence, recall_requests, client_profile_config
+from routers import auth, leads, projects, proposals, moodboards, inspirations, inspirations_archive, inspirations_boards, insights, settings, storage, blueprint, superadmin, pages, public, navigation, forms, workspace, moodboards_v1, templates, collab, events, storefront, onboarding, members, license as license_router, branding, domains as domains_router, demo, media, dashboard, ai_editorial, client_portal, human_assignment, tenant_onboarding, profile, client_messages, magazine, ai_studio_brief, project_workspace_v2, proposal_composer, market_perspectives, locale_runtime, editorial_variants, advisor_suggestions, reference_intelligence, relationships, markets, editorial, crm_voice_notes, crm_intelligence, recall_requests, client_profile_config, tenant_email_governance
 # ITER172 · Advisor Network™ FROZEN — source kept, runtime disabled.
 # Do NOT re-import `advisor_network` here unless the freeze is officially lifted.
 
@@ -256,6 +256,8 @@ api_router.include_router(editorial_calendar.router, prefix="/blueprint/calendar
 # `advisor_network` import above and uncomment the line below.
 # api_router.include_router(advisor_network.router, tags=["advisor-network"])
 api_router.include_router(market_intelligence.router, tags=["market-intelligence"])
+# ITER173 · P1 · Tenant Email Governance™ (Email Identity + Template Manager)
+api_router.include_router(tenant_email_governance.router, prefix="/admin/tenant", tags=["tenant-email-governance"])
 api_router.include_router(cultural_editions.router, tags=["cultural-editions"])
 # ITER143A+ · Dynamic Editorial Runtime™ — page bundle resolver + governance.
 from routers import editorial_runtime  # noqa: E402
