@@ -12,6 +12,7 @@ import SearchConsoleHelper from './pages/SearchConsoleHelper';
 import StudioRequestsAdmin from './pages/StudioRequestsAdmin';
 import AdvisorConsole from './pages/AdvisorConsole';
 import RelationDetail from './pages/RelationDetail';
+import FounderWelcome from './pages/FounderWelcome';
 
 const AdminLogin = ({ onSuccess }) => {
   const [email, setEmail]       = useState('');
@@ -183,6 +184,16 @@ const AdminShell = ({ children }) => {
   const logout = () => { adminAuth.clear(); nav('/admin'); window.location.reload(); };
   const refresh = async () => { try { await adminApi.invalidate(); window.alert('Cache cleared'); } catch {} };
 
+  // Detect role from JWT-stored user, so the nav adapts to the audience:
+  // • admin / editor → full MOOD operations
+  // • owner (tenant founder) → only their own studio
+  let role = 'admin';
+  try {
+    const u = JSON.parse(localStorage.getItem('mood_auth_user') || localStorage.getItem('mood_user') || '{}');
+    role = u.role || 'admin';
+  } catch {}
+  const isFounder = role === 'owner';
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#0A0A0B', color: '#FFFFFF' }}>
       <aside style={{
@@ -191,10 +202,10 @@ const AdminShell = ({ children }) => {
       }}>
         <div style={{ padding: '0 0.5rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.6rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: '#00C9B3' }}>
-            Blueprint
+            {isFounder ? 'Studio' : 'Blueprint'}
           </p>
           <p style={{ fontFamily: 'Playfair Display, serif', fontSize: '1.2rem', color: '#FFFFFF', marginTop: 2 }}>
-            Command Center
+            {isFounder ? 'Workspace' : 'Command Center'}
           </p>
         </div>
 
@@ -204,8 +215,8 @@ const AdminShell = ({ children }) => {
           <NavItem to="/admin/sections" icon={Layout}       label="Sections" />
           <NavItem to="/admin/media"    icon={Image}        label="Media Library" />
           <NavItem to="/admin/footer"   icon={AlignEndHorizontal} label="Footer" />
-          <NavItem to="/admin/advisor-console" icon={Compass}  label="Advisor Console" />
-          <NavItem to="/admin/studio-requests" icon={Building2} label="Studio Requests" />
+          {!isFounder && <NavItem to="/admin/advisor-console" icon={Compass}  label="Advisor Console" />}
+          {!isFounder && <NavItem to="/admin/studio-requests" icon={Building2} label="Studio Requests" />}
           <NavItem to="/admin/seo"      icon={Search}       label="SEO & Indexing" />
           <NavItem to="/admin/publish"  icon={SettingsIcon} label="Publishing" />
         </nav>
@@ -258,22 +269,29 @@ const AdminApp = () => {
   }
 
   return (
-    <AdminShell>
-      <Routes>
-        <Route index            element={<Navigate to="/admin/pages" replace />} />
-        <Route path="pages"     element={<PagesEditor />} />
-        <Route path="blocks"    element={<BlocksEditor />} />
-        <Route path="sections"  element={<SectionsManager />} />
-        <Route path="media"     element={<MediaLibrary />} />
-        <Route path="footer"          element={<FooterEditor />} />
-        <Route path="studio-requests" element={<StudioRequestsAdmin />} />
-        <Route path="advisor-console" element={<AdvisorConsole />} />
-        <Route path="advisor-console/relations/:id" element={<RelationDetail />} />
-        <Route path="seo"             element={<SearchConsoleHelper />} />
-        <Route path="publish"   element={<PublishConsole />} />
-        <Route path="*"         element={<Navigate to="/admin/pages" replace />} />
-      </Routes>
-    </AdminShell>
+    <Routes>
+      {/* Founder Welcome — renders WITHOUT the AdminShell chrome,
+          full-bleed cinematic moment. */}
+      <Route path="welcome" element={<FounderWelcome />} />
+      <Route path="*" element={
+        <AdminShell>
+          <Routes>
+            <Route index            element={<Navigate to="/admin/pages" replace />} />
+            <Route path="pages"     element={<PagesEditor />} />
+            <Route path="blocks"    element={<BlocksEditor />} />
+            <Route path="sections"  element={<SectionsManager />} />
+            <Route path="media"     element={<MediaLibrary />} />
+            <Route path="footer"          element={<FooterEditor />} />
+            <Route path="studio-requests" element={<StudioRequestsAdmin />} />
+            <Route path="advisor-console" element={<AdvisorConsole />} />
+            <Route path="advisor-console/relations/:id" element={<RelationDetail />} />
+            <Route path="seo"             element={<SearchConsoleHelper />} />
+            <Route path="publish"   element={<PublishConsole />} />
+            <Route path="*"         element={<Navigate to="/admin/pages" replace />} />
+          </Routes>
+        </AdminShell>
+      } />
+    </Routes>
   );
 };
 

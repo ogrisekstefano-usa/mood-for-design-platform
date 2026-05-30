@@ -256,6 +256,152 @@ async def console_summary(
     }
 
 
+# ── Tenant Manifest (read-only) ──────────────────────────────────────
+@router.get("/admin/tenants/{slug}/manifest")
+async def tenant_manifest(
+    slug: str,
+    _tenant: dict = Depends(require_admin_tenant),
+):
+    """
+    Returns the complete Tenant Manifest™ — the canonical, B2B-only
+    record of a studio inside MOOD's ecosystem. Used by the Founder
+    First Access screen and the Advisor Console's tenant detail.
+    """
+    async with AsyncSessionLocal() as s:
+        t = (await s.execute(
+            text("""
+                SELECT id, slug, name, status, active_plan, subscription_status,
+                       default_language, default_locale_code, active_languages,
+                       enabled_modules, branding_settings, theme_settings,
+                       plan_assigned_at, plan_assigned_by, created_at
+                  FROM tenants
+                 WHERE slug = :slug
+                 LIMIT 1
+            """),
+            {"slug": slug},
+        )).mappings().first()
+        if not t:
+            raise HTTPException(status_code=404, detail="tenant_not_found")
+
+        modules = [dict(r) for r in (await s.execute(
+            text("""
+                SELECT module_key, state, activated_at
+                  FROM tenant_modules
+                 WHERE tenant_id = :tid
+                 ORDER BY activated_at
+            """),
+            {"tid": str(t['id'])},
+        )).mappings().all()]
+
+        founder = (await s.execute(
+            text("""
+                SELECT id, email, full_name, last_login_at, created_at
+                  FROM users
+                 WHERE tenant_id = :tid AND role = 'owner' AND is_active = TRUE
+                 ORDER BY created_at
+                 LIMIT 1
+            """),
+            {"tid": str(t['id'])},
+        )).mappings().first()
+
+        advisor = None
+        if t['plan_assigned_by']:
+            adv = (await s.execute(
+                text("""
+                    SELECT id, email, full_name
+                      FROM users
+                     WHERE id = :id
+                     LIMIT 1
+                """),
+                {"id": str(t['plan_assigned_by'])},
+            )).mappings().first()
+            if adv:
+                advisor = {"id": str(adv['id']), "email": adv['email'],
+                           "full_name": adv['full_name']}
+
+        relation = (await s.execute(
+            text("""
+                SELECT id, studio_name, archetype, city, country,
+                       contact_email, contact_name, website
+                  FROM studio_relations
+                 WHERE tenant_id = :tid
+                 ORDER BY created_at DESC
+                 LIMIT 1
+            """),
+            {"tid": str(t['id'])},
+        )).mappings().first()
+
+    branding = t['branding_settings'] or {}
+    return {
+        "tenant": {
+            "id":       str(t['id']),
+            "slug":     t['slug'],
+            "name":     t['name'],
+            "status":   t['status'],
+            "plan":     t['active_plan'],
+            "subscription_status": t['subscription_status'],
+            "created_at": t['created_at'].isoformat() if t['created_at'] else None,
+        },
+        "identity": {
+            "monogram":  branding.get('monogram'),
+            "archetype": branding.get('archetype') or (relation['archetype'] if relation else None),
+            "country":   branding.get('country')   or (relation['country']   if relation else None),
+            "city":      branding.get('city')      or (relation['city']      if relation else None),
+            "website":   branding.get('website')   or (relation['website']   if relation else None),
+        },
+        "language": {
+            "default":  t['default_language'],
+            "locale":   t['default_locale_code'],
+            "active":   list(t['active_languages'] or []),
+            "timezone": "Europe/Rome" if (t['default_language'] or 'it') == 'it' else "Europe/London",
+        },
+        "modules": modules,
+        "founder": ({
+            "id":           str(founder['id']),
+            "email":        founder['email'],
+            "full_name":    founder['full_name'],
+            "last_login_at": founder['last_login_at'].isoformat() if founder['last_login_at'] else None,
+            "first_access_completed": founder['last_login_at'] is not None,
+        } if founder else None),
+        "advisor": advisor,
+    }
+
+
+# ── Founder First Access — has it been completed? ────────────────────
+@router.get("/founder/first-access-state")
+async def founder_first_access_state(
+    _tenant: dict = Depends(require_admin_tenant),
+):
+    """
+    The Founder Welcome page asks this on mount to decide whether to
+    play the cinematic 'Il tuo ecosistema è pronto' moment or skip
+    directly to the workspace. Idempotent.
+    """
+    tenant = _tenant
+    async with AsyncSessionLocal() as s:
+        f = (await s.execute(
+            text("""
+                SELECT u.id, u.last_login_at, u.created_at,
+                       (SELECT COUNT(*) FROM access_magic_links
+                          WHERE user_id = u.id AND consumed_at IS NOT NULL
+                       ) AS consumed_count
+                  FROM users u
+                 WHERE u.tenant_id = :tid AND u.role = 'owner' AND u.is_active = TRUE
+                 ORDER BY u.created_at
+                 LIMIT 1
+            """),
+            {"tid": tenant['id']},
+        )).mappings().first()
+    if not f:
+        return {"is_founder": False, "first_access": False}
+    # First-access = the founder has consumed at most ONE magic link
+    # (the activation one). After the second login, the welcome moment
+    # is permanently behind them.
+    return {
+        "is_founder": True,
+        "first_access": (f['consumed_count'] or 0) <= 1,
+    }
+
 # ── Editorial copy manifest for ITER161 console ──────────────────────
 @router.get("/admin/copy/manifest")
 async def copy_manifest(

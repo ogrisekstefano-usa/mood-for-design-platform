@@ -558,7 +558,24 @@ async def activate_studio_ecosystem(*, relation_id: str,
             {"id": relation_id},
         )).mappings().first()
         if not rel:
-            return {"ok": False, "reason": "not_found"}
+            return {"ok": False, "reason": "relation_not_found"}
+
+        # Look up the original studio_request to recover fields that the
+        # studio_relations table does not store (monogram, languages,
+        # temperament, markets). Studio identity must survive intact
+        # from /studio → /admin/welcome.
+        req = None
+        if rel.get('studio_request_id'):
+            req = (await s.execute(
+                text("""
+                    SELECT monogram, languages, temperament, markets
+                      FROM studio_requests
+                     WHERE id = :id LIMIT 1
+                """),
+                {"id": str(rel['studio_request_id'])},
+            )).mappings().first()
+        req_monogram   = (req or {}).get('monogram')
+
         if rel['tenant_id']:
             return {"ok": False, "reason": "already_activated",
                     "tenant_id": str(rel['tenant_id'])}
@@ -575,13 +592,50 @@ async def activate_studio_ecosystem(*, relation_id: str,
                 break
             slug = f"{slug_base}-{i}"; i += 1
 
+        # Build a complete Tenant Manifest from the relation (B2B,
+        # tenant-scoped, founder-owned). All fields the system can derive
+        # at activation time are written explicitly — no silent defaults.
+        archetype_iso       = (rel['archetype']     or 'studio')
+        country_iso         = (rel['country']       or rel.get('city') and 'IT') or 'IT'
+        language_iso        = 'it' if country_iso and country_iso.lower().startswith('it') else 'en'
+        advisor_id          = rel.get('owner_advisor_id')
+        experiences         = list(rel['experiences'] or [])
+        enabled_modules     = experiences
+
         trow = (await s.execute(
             text("""
-                INSERT INTO tenants (slug, name, status, default_language)
-                VALUES (:slug, :name, 'active', 'it')
+                INSERT INTO tenants
+                  (slug, name, status,
+                   default_language, default_locale_code, active_languages,
+                   enabled_modules, branding_settings, theme_settings,
+                   plan_assigned_at, plan_assigned_by,
+                   subscription_status, active_plan)
+                VALUES
+                  (:slug, :name, 'active',
+                   :lang, :loc, ARRAY[:lang],
+                   CAST(:mods AS jsonb),
+                   CAST(:brand AS jsonb),
+                   CAST(:theme AS jsonb),
+                   NOW(), CAST(:advisor AS uuid),
+                   'active', 'studio')
                 RETURNING id
             """),
-            {"slug": slug, "name": rel['studio_name']},
+            {
+                "slug":    slug,
+                "name":    rel['studio_name'],
+                "lang":    language_iso,
+                "loc":     language_iso,
+                "mods":    json.dumps(enabled_modules),
+                "brand":   json.dumps({
+                    "monogram":   req_monogram or rel.get('monogram') or rel['studio_name'][:2].upper(),
+                    "archetype":  archetype_iso,
+                    "country":    country_iso,
+                    "website":    rel.get('website'),
+                    "city":       rel.get('city'),
+                }),
+                "theme":   json.dumps({}),
+                "advisor": str(advisor_id) if advisor_id else None,
+            },
         )).mappings().first()
         tenant_id = str(trow['id'])
 

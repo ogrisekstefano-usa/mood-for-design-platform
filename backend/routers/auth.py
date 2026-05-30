@@ -79,10 +79,17 @@ def decode_token(token: str) -> dict:
 def tenant_redirect_for(tenant_slug: str, role: str) -> str:
     """
     Where to land after a successful login.
-    For now: admins/editors → /admin (Blueprint Command Center).
-    Members → / (public site, eventually their tenant subdomain).
+
+    • Founder (role=owner)         → /admin/welcome (cinematic first access
+                                     for the studio; falls through to /admin
+                                     once the moment has been consumed)
+    • Admin / editor               → /admin (Blueprint Command Center)
+    • Anything else (clients, …)   → /  (public site for now; future:
+                                     tenant private panel on its subdomain)
     """
-    if role in ("admin", "owner", "editor"):
+    if role == "owner":
+        return "/admin/welcome"
+    if role in ("admin", "editor"):
         return "/admin"
     return "/"
 
