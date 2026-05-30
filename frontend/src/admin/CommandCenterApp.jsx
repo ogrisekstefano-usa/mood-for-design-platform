@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import {
   Building2, Compass, LayoutDashboard, Users,
@@ -6,6 +7,7 @@ import {
 } from 'lucide-react';
 
 import WorkspaceShell from './shared/WorkspaceShell';
+import SetPasswordModal from './components/SetPasswordModal';
 
 // MOOD Core surfaces
 import StudioRequestsAdmin from './pages/StudioRequestsAdmin';
@@ -95,11 +97,35 @@ const NotFounder = ({ children }) => {
   return children;
 };
 
+const BACKEND = process.env.REACT_APP_BACKEND_URL;
+
 const CommandCenterApp = () => {
   const role = readRole();
   const isAdmin = role === 'admin' || role === 'editor';
   const navItems = isAdmin ? ADMIN_NAV : ADVISOR_NAV;
   const location = useLocation();
+
+  // ── Password onboarding gate ──
+  // Fetches /api/auth/me once on mount. If the authenticated user has
+  // no password set (magic-link sentinel), show a blocking modal that
+  // forces them to create one. Founder (owner) is redirected to
+  // /blueprint before this component renders, so the modal effectively
+  // applies to advisor + editor + future roles arriving via magic-link.
+  const [me, setMe] = useState(null);
+  const refreshMe = async () => {
+    try {
+      const tok = localStorage.getItem('mood_auth_token') || '';
+      if (!tok) { setMe({ ok: false }); return; }
+      const r = await axios.get(`${BACKEND}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${tok}` },
+      });
+      setMe(r.data);
+    } catch {
+      setMe({ ok: false });
+    }
+  };
+  useEffect(() => { refreshMe(); }, []);
+  const mustSetPassword = me && me.id && me.has_password === false;
 
   // Identify edge-to-edge surfaces (no internal padding around <main>).
   const edgeRoutes = [
@@ -141,6 +167,13 @@ const CommandCenterApp = () => {
 
         <Route path="*"                               element={<RootRedirect />} />
       </Routes>
+
+      {mustSetPassword && (
+        <SetPasswordModal
+          userEmail={me?.email}
+          onSuccess={refreshMe}
+        />
+      )}
     </WorkspaceShell>
   );
 };

@@ -232,18 +232,22 @@ async def get_current_user(
     async with AsyncSessionLocal() as session:
         row = (await session.execute(
             text("""SELECT u.id, u.email, u.full_name, u.role, u.is_active,
-                          u.tenant_id, t.slug AS tenant_slug, t.name AS tenant_name
+                          u.password_hash, u.tenant_id,
+                          t.slug AS tenant_slug, t.name AS tenant_name
                    FROM users u JOIN tenants t ON t.id = u.tenant_id
                    WHERE u.id = CAST(:id AS uuid) LIMIT 1"""),
             {"id": payload["sub"]},
         )).mappings().first()
     if not row or not row["is_active"]:
         raise HTTPException(status_code=401, detail="Utente non trovato.")
+    ph = (row["password_hash"] or "").strip()
+    has_password = bool(ph) and not ph.startswith("!")
     return {
         "id": str(row["id"]),
         "email": row["email"],
         "full_name": row["full_name"],
         "role": row["role"],
+        "has_password": has_password,
         "tenant": {
             "id": str(row["tenant_id"]),
             "slug": row["tenant_slug"],
@@ -261,6 +265,77 @@ async def me(user: dict = Depends(get_current_user)):
 async def logout():
     # Stateless JWT: the client just discards the token. This endpoint
     # is kept for symmetry and to allow future server-side revocation.
+    return {"ok": True}
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Password creation / change (advisor onboarding + general use)
+# ─────────────────────────────────────────────────────────────────────
+import re  # noqa: E402
+
+PASSWORD_MIN_LEN = 8
+
+
+def _password_strength_issues(pw: str) -> list[str]:
+    """Return a list of human-readable Italian issues. Empty list = OK."""
+    issues = []
+    if not pw or len(pw) < PASSWORD_MIN_LEN:
+        issues.append(f"Almeno {PASSWORD_MIN_LEN} caratteri")
+    if not re.search(r"[A-Z]", pw or ""):
+        issues.append("Almeno una lettera maiuscola")
+    if not re.search(r"[0-9]", pw or ""):
+        issues.append("Almeno un numero")
+    if not re.search(r"[^A-Za-z0-9]", pw or ""):
+        issues.append("Almeno un carattere speciale")
+    return issues
+
+
+class SetPasswordRequest(BaseModel):
+    password: str
+    confirm_password: str
+
+
+@router.post("/set-password")
+async def set_password(
+    body: SetPasswordRequest,
+    user: dict = Depends(get_current_user),
+):
+    """
+    Authenticated user sets (or rotates) their own password.
+
+    Use cases:
+      • Advisor onboarding: first login via magic-link → modal forces a
+        password so subsequent accesses use email+password (no email).
+      • Any user who wants to change their password.
+
+    Strength rules (server-side, authoritative):
+      • ≥ 8 characters
+      • ≥ 1 uppercase letter
+      • ≥ 1 number
+      • ≥ 1 special character
+    """
+    pw = body.password or ""
+    if pw != (body.confirm_password or ""):
+        raise HTTPException(
+            status_code=422,
+            detail="Le due password non coincidono.",
+        )
+    issues = _password_strength_issues(pw)
+    if issues:
+        raise HTTPException(
+            status_code=422,
+            detail="Password non valida: " + " · ".join(issues),
+        )
+    new_hash = hash_password(pw)
+    async with AsyncSessionLocal() as session:
+        await session.execute(
+            text("""UPDATE users
+                       SET password_hash = :ph,
+                           updated_at = NOW()
+                     WHERE id = CAST(:id AS uuid)"""),
+            {"ph": new_hash, "id": user["id"]},
+        )
+        await session.commit()
     return {"ok": True}
 
 

@@ -92,7 +92,11 @@ async def identity_probe(email: str) -> dict:
         if urow:
             ph = (urow["password_hash"] or "").strip()
             has_real_password = bool(ph) and not ph.startswith("!")
-            if has_real_password and urow["role"] in ("admin", "editor"):
+            # Password channel for ANY role that has set a real password
+            # (admin, editor, advisor, owner...). The sentinel "!magic-link-only"
+            # forces magic_link for first-time advisors/founders, who will then
+            # set a password during onboarding.
+            if has_real_password:
                 return {"channel": "password",
                         "display_name": urow["full_name"]}
             return {"channel": "magic_link",

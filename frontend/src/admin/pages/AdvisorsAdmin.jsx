@@ -179,7 +179,7 @@ const AdvisorsAdmin = () => {
         )}
         <p style={{ marginTop: '1rem', fontSize: '0.75rem', color: tokens.fade3,
                      fontFamily: 'Inter, sans-serif', lineHeight: 1.55 }}>
-          L'Advisor accede esclusivamente via magic-link. Nessuna password. Dopo la creazione, l'Advisor può chiedere il link da <code style={{ color: tokens.fade2 }}>/accedi</code>.
+          Al primo accesso l'Advisor riceve un magic-link via email da <code style={{ color: tokens.fade2 }}>/accedi</code>. Una volta dentro, gli viene chiesto di impostare una password personale: dai login successivi entrerà con email + password (il magic-link resta come fallback in caso di smarrimento).
         </p>
       </section>
 

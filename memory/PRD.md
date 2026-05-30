@@ -12,6 +12,61 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ## Latest session — Mar 01, 2026 (cont.)
 
+### Advisor onboarding — Hybrid auth (magic-link first, then password) ✅ (Mar 01, 2026)
+
+**Problema**: gli advisor erano "magic-link only" (sentinella `!magic-link-only` in `users.password_hash`). Ogni accesso richiedeva controllare la mail, attendere il link, cliccare. Esperienza accettabile per i founder dei tenant (accessi rari), pesante per gli advisor (uso quotidiano interno).
+
+**Soluzione (decisa con l'utente)**: modello **ibrido**.
+1. Il super admin crea l'advisor in `/command-center/advisors` (form invariato: nome, email, codice, commissione).
+2. Al primo accesso, l'advisor inserisce l'email su `/accedi`. `identity_probe` legge il `password_hash` con sentinella `!` → ritorna `channel=magic_link`. L'advisor riceve il magic-link (oggi sandbox Resend → log backend `MAGIC_LINK_DEV_PREVIEW`).
+3. Clicca il link → token consumato → JWT issued → atterra su `/command-center/advisor-console`.
+4. `CommandCenterApp` fetcha `/api/auth/me` (nuovo campo `has_password: bool`). Se `false` → monta un **modale bloccante** `SetPasswordModal` (overlay glass `blur(8px)`, non-dismissible, no ESC, no overlay-click).
+5. Il modale chiede una password con 4 regole **validate real-time** (indicatori teal con check):
+   - Almeno 8 caratteri
+   - Almeno una lettera maiuscola
+   - Almeno un numero
+   - Almeno un carattere speciale
+   - + Conferma password che deve coincidere
+   - Pulsante submit disabilitato finché tutte le regole + match passano
+6. `POST /api/auth/set-password` (Bearer JWT) valida lato server le stesse 4 regole, scrive `bcrypt(password)` in `users.password_hash` (sovrascrive la sentinella).
+7. Da quel momento `identity_probe` ritorna `channel=password` per quell'email → form password come canale principale.
+8. Il magic-link **resta sempre disponibile** come fallback: sulla password stage di `/accedi` c'è il link secondario **"Prosegui con magic-link"** (richiesta esplicita utente: testo "Prosegui con", non "Accedi con").
+
+**Generalizzazione di `identity_probe`**: prima il `channel=password` era riservato a `role in ('admin','editor')`. Ora viene ritornato per **qualsiasi ruolo** che abbia una password reale (non sentinella `!`). Questo abilita il flusso anche per advisor + future role onboardate via magic-link.
+
+**Files toccati**
+- Backend:
+  - `services/access_continuity.py.identity_probe` — rimossa restrizione di ruolo per `channel=password`.
+  - `routers/auth.py` — `/api/auth/me` ora espone `has_password: bool`. Nuovo `POST /api/auth/set-password` con strength validation (regex Python lato server).
+- Frontend:
+  - `admin/components/SetPasswordModal.jsx` (NEW) — modale bloccante glass-morph, 4 indicatori real-time, show/hide password, testid completi.
+  - `admin/CommandCenterApp.jsx` — fetch `/api/auth/me` su mount, monta modale se `has_password === false`, refetch dopo success.
+  - `admin/pages/AdvisorsAdmin.jsx` — helper text aggiornato per descrivere il flusso onboarding.
+- DB editorial copy:
+  - `site.access.password.helper` aggiornato da "Preferisci un link senza parola d'accesso?…" → **"Prosegui con magic-link"** (5 locales: IT/EN/FR/DE/ES).
+  - Seed `db/seed_iter167_access.py` aggiornato per coerenza.
+
+**Verifica E2E (curl + Playwright)**
+- `identity-probe(advisor con sentinella)` → `magic_link` ✅
+- `identity-probe(advisor con password)` → `password` ✅
+- Consume magic-link → JWT `role=advisor` ✅
+- `/me` → `has_password: false` ✅
+- `POST /set-password {weak}` → 422 con elenco regole mancanti ✅
+- `POST /set-password {mismatch}` → 422 "Le due password non coincidono" ✅
+- `POST /set-password {valid}` → 200 `{ok:true}` ✅
+- `/me` dopo set → `has_password: true` ✅
+- `identity-probe` dopo set → `password` ✅
+- Login con la nuova password → JWT issued ✅
+- Frontend: modale visibile dopo consume del magic-link, regole reagiscono real-time (tutte rosse → tutte verdi al crescere della password), submit attivo solo a regole soddisfatte + conferma match ✅
+- Frontend: stage password su `/accedi` mostra link "Prosegui con magic-link" sotto il submit ✅
+
+**Architettura linguistica**: in `users.password_hash`:
+- `'!magic-link-only'` → utente ancora in onboarding (advisor creato da admin, founder appena attivato)
+- bcrypt hash reale → utente che ha completato l'onboarding e usa password come canale primario
+La sentinella `!` (qualsiasi stringa che inizia con `!`) è considerata "no real password" → magic-link channel.
+
+---
+
 ### Command Center — Unified Admin Workspace ✅ (Mar 01, 2026)
 
 **Problema**: dopo aver introdotto la separazione `/command-center` (MOOD Core) ≠ `/blueprint` (Tenant CMS), il super admin aveva 2 sidebar separate e doveva saltare tra workspaces per gestire Pages/Blocks/Sections/Media/Footer/SEO/Publishing. Le voci della gestione precedente apparivano "perse".

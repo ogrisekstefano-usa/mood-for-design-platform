@@ -94,11 +94,11 @@ COPY: dict[str, dict[str, str]] = {
         "es":    "Entra en tu espacio",
     },
     "password.helper": {
-        "it":    "Preferisci un link senza parola d'accesso? Te lo inviamo per email.",
-        "en-us": "Prefer a passwordless link? We can send one to your inbox.",
-        "fr":    "Vous préférez un lien sans mot de passe ? Nous pouvons vous l'envoyer.",
-        "de":    "Lieber ein passwortloser Link? Wir senden ihn an Ihren Posteingang.",
-        "es":    "¿Prefieres un enlace sin contraseña? Te lo enviamos al correo.",
+        "it":    "Prosegui con magic-link",
+        "en-us": "Continue with magic-link",
+        "fr":    "Poursuivre avec un lien magique",
+        "de":    "Mit Magic-Link fortfahren",
+        "es":    "Continuar con enlace mágico",
     },
 
     # ── Magic link sent (client channel) ──────────────────────────────
