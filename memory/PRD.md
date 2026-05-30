@@ -10,6 +10,59 @@ Multi-tenant editorial SaaS for interior design, architecture firms, showrooms a
 
 ---
 
+## 🧊 ARCHITECTURAL FREEZE — May 30, 2026
+
+**Direttiva utente (autorità: founder)**: congelati Blueprint Origin™ e Tenant Cloning fino a che Blueprint Tenant non sarà feature-complete.
+
+### Roadmap approvata (in ordine vincolante)
+
+**FASE 1 — Blueprint Tenant feature-complete** (in corso)
+- Design Journey™
+- CRM
+- Leads
+- Media Library
+- Material Intelligence™
+- Moodboards
+- Workflow
+- Team
+
+**FASE 2 — Studio Application funnel completo** (corporate `/studio`)
+
+**FASE 3 — Definizione ufficiale di Blueprint Origin™**
+- Specifica dell'archetipo "tenant blueprint" canonico
+- Versionamento
+- Manifest di clonazione
+
+**FASE 4 — Tenant Provisioning Engine** (sbloccata solo dopo Fase 3)
+- Tenant Factory
+- Tenant Cloning da Blueprint Origin™
+- Founder automatic routing
+- Subdomain provisioning (`martinel.moodfordesign.com`, `format.moodfordesign.com`, `197design.moodfordesign.com`, etc.)
+
+### Vincoli operativi durante il freeze
+
+🛑 **STOP** su qualsiasi sviluppo che tocchi:
+- Blueprint Origin™ (template di clonazione)
+- Tenant Factory (logica di provisioning automatico)
+- Tenant Cloning (duplicazione di tenant)
+- Subdomain routing automatico per Founder
+
+✅ **Permesso** durante il freeze:
+- Completamento moduli Blueprint Tenant (lista Fase 1)
+- Iterazioni sul funnel `/studio`
+- Bug fix e refinement su Advisor Lifecycle / Tenant Lifecycle già validati
+- Manutenzione email/auth/identity
+
+### Nota architetturale — Founder ≠ Command Center user
+
+Il Founder **NON deve essere considerato utente del Command Center**.
+
+- Oggi (temporaneo): redirect Founder post-magic-link → `/command-center/welcome` → CTA → `/blueprint` (ambiente di test).
+- Futuro (post-Fase 4): Founder atterra direttamente sul proprio subdomain (es. `martinel.moodfordesign.com`), il Blueprint runtime del tenant è esposto su quel host, senza passare dal Command Center MOOD.
+- `/command-center/welcome` resta SOLO come landing transitoria di onboarding finché il subdomain provisioning non sarà attivo.
+
+---
+
 ## Latest session — Mar 01, 2026 (cont.)
 
 ### Advisor onboarding — Hybrid auth (magic-link first, then password) ✅ (Mar 01, 2026)
