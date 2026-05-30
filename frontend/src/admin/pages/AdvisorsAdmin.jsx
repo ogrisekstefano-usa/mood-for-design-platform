@@ -75,12 +75,22 @@ const AdvisorsAdmin = () => {
         advisor_code: form.advisor_code.trim() || undefined,
         commission_percentage: parseFloat(form.commission_percentage) || 10,
       });
-      setToast({
-        kind: 'ok',
-        msg: r.data.user_was_created
-          ? `Nuovo Advisor creato · codice ${r.data.advisor_code}`
-          : `Advisor aggiornato · codice ${r.data.advisor_code}`,
-      });
+      const created   = r.data.user_was_created;
+      const invitedOk = r.data.invitation_sent === true;
+      const reason    = r.data.invitation_skipped_reason;
+      let msg;
+      if (created && invitedOk) {
+        msg = `Advisor creato · invito inviato a ${form.email.trim().toLowerCase()} · codice ${r.data.advisor_code}`;
+      } else if (created && !invitedOk) {
+        msg = `Advisor creato (codice ${r.data.advisor_code}) · invito NON inviato (${reason || 'errore'})`;
+      } else if (!created && invitedOk) {
+        msg = `Advisor aggiornato · nuovo invito inviato (l'utente non aveva ancora una password)`;
+      } else if (reason === 'already_has_password') {
+        msg = `Advisor aggiornato · invito NON re-inviato (ha già una password attiva)`;
+      } else {
+        msg = `Advisor aggiornato · invito skipped (${reason || 'unknown'})`;
+      }
+      setToast({ kind: invitedOk || reason === 'already_has_password' ? 'ok' : 'err', msg });
       setForm({ name: '', email: '', advisor_code: '', commission_percentage: '10' });
       await fetchList();
     } catch (e2) {
@@ -179,7 +189,7 @@ const AdvisorsAdmin = () => {
         )}
         <p style={{ marginTop: '1rem', fontSize: '0.75rem', color: tokens.fade3,
                      fontFamily: 'Inter, sans-serif', lineHeight: 1.55 }}>
-          Al primo accesso l'Advisor riceve un magic-link via email da <code style={{ color: tokens.fade2 }}>/accedi</code>. Una volta dentro, gli viene chiesto di impostare una password personale: dai login successivi entrerà con email + password (il magic-link resta come fallback in caso di smarrimento).
+          Alla creazione, il sistema invia automaticamente un'email di invito a <code style={{ color: tokens.fade2 }}>no-reply@mail.moodfordesign.com</code> con magic-link per il primo accesso. Al click, l'Advisor imposta la propria password. Dai login successivi entra con email + password (il magic-link resta come fallback).
         </p>
       </section>
 

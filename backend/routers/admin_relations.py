@@ -6,6 +6,7 @@ Mounted under /api/admin/relations + /api/admin/advisor.
 """
 from __future__ import annotations
 
+import logging
 from datetime import datetime
 from typing import Optional
 
@@ -18,6 +19,8 @@ from services.site_resolver import _fetch_block_values, LOCALE_FALLBACK, DEFAULT
 from tenant_resolver import get_corporate_tenant
 from routers._auth import require_admin_tenant
 from routers._advisor_scope import require_advisor_scope
+
+logger = logging.getLogger(__name__)
 
 
 router = APIRouter(tags=["admin-relations"])
@@ -883,6 +886,48 @@ async def create_advisor(
 
         await s.commit()
 
+    # ── Advisor Invitation — auto-send magic-link ─────────────────────
+    #
+    # On creation (or re-issue when the advisor still has no real password),
+    # we immediately fire a magic-link email so the advisor receives the
+    # invitation in their inbox. The token persists in `access_magic_links`,
+    # which serves as the audit log (one row per invitation issued, with
+    # email/created_at/expires_at/consumed_at).
+    #
+    # We only auto-send when:
+    #   • the user row was just created (new advisor), OR
+    #   • the existing user is still on the magic-link sentinel
+    #     (`!magic-link-only`) — meaning they never finished onboarding.
+    #
+    # If the advisor already has a real password (re-creation for metadata
+    # refresh), we skip the email — they have a working credential.
+    invitation_sent = False
+    invitation_skipped_reason = None
+    try:
+        # Re-read password_hash to decide.
+        async with AsyncSessionLocal() as s2:
+            ph_row = (await s2.execute(
+                text("SELECT password_hash FROM users WHERE id = CAST(:uid AS uuid)"),
+                {"uid": user_id},
+            )).scalar()
+        is_magic_only = bool(ph_row) and (ph_row or "").startswith("!")
+        if user_was_created or is_magic_only:
+            from services import access_continuity
+            res = await access_continuity.issue_magic_link(
+                email=email,
+                locale="it",
+                ip=None,
+                user_agent="advisor-invitation",
+            )
+            invitation_sent = bool(res.get("delivered"))
+            if not invitation_sent:
+                invitation_skipped_reason = res.get("reason") or "delivery_failed"
+        else:
+            invitation_skipped_reason = "already_has_password"
+    except Exception as e:
+        logger.warning("Advisor invitation send failed (email=%s): %s", email, e)
+        invitation_skipped_reason = "send_error"
+
     return {
         "ok": True,
         "profile_id":          profile_id,
@@ -893,6 +938,8 @@ async def create_advisor(
         "commission_percentage": pct,
         "user_was_created":    user_was_created,
         "profile_was_created": profile_was_created,
+        "invitation_sent":     invitation_sent,
+        "invitation_skipped_reason": invitation_skipped_reason,
     }
 
 
