@@ -1,6 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "@/index.css";
+// ITER171.5 · Storefront chrome CSS — imported at the entry point so
+// the styles for MoodSiteHeader / MoodSiteFooter are in the main bundle.
+// Without this, navigating directly to a lazy-loaded route like
+// `/begin-journey` would render the header in a "naked" (unstyled) state
+// for a moment until the SiteLayout chunk arrives.
+import "@/site/site.css";
+import "@/site/mood.css";
+import "@/pages/site/home-iter150.css";
 import App from "@/App";
 import { bootstrapLanguagesFromDB } from "@/site/content/languages";
 
