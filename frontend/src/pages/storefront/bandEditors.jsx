@@ -17,6 +17,7 @@
 import React from 'react';
 import { Plus, Trash2, ArrowUp, ArrowDown, ExternalLink } from 'lucide-react';
 import EditorialMediaField from '../../components/common/EditorialMediaField';
+import LogoUploadField from '../../components/storefront/LogoUploadField';
 import { useT } from '../../i18n/useT';
 
 // ───────────────────────────────────────────────────────────────────────
@@ -132,23 +133,15 @@ export const NavTopEditor = ({
     update(copy);
   };
   return <div className="ss-table" data-testid="ss-nav-top-editor">
-      {/* ITER171.6 · Logo URL — overrides the bundled MoodSiteHeader logo */}
+      {/* ITER171.7 · Logo URL — upload-based, overrides bundled header logo */}
       <div className="ss-nav-top__logo-field" data-testid="ss-nav-top-logo-field">
-        <label>
-          <span>LOGO HEADER (URL)</span>
-          <input
-            type="text"
-            className="ss-input"
-            value={section.settings?.logo_url || ''}
-            placeholder="https://…/logo.png · lascia vuoto per usare il logo di default"
-            onChange={(e) => onPatchSetting('logo_url', e.target.value)}
-            data-testid="ss-nav-top-logo-url"
-          />
-          <span className="ss-nav-top__hint">
-            Il logo del navbar appare in alto a sinistra su ogni pagina del sito pubblico.
-            Lascia vuoto per usare il logo MOOD for DESIGN™ di default.
-          </span>
-        </label>
+        <LogoUploadField
+          value={section.settings?.logo_url || ''}
+          onChange={(url) => onPatchSetting('logo_url', url)}
+          label="LOGO HEADER"
+          hint="Appare in alto a sinistra su ogni pagina pubblica. Lascia vuoto per usare il logo MOOD for DESIGN™ di default."
+          testid="ss-nav-top-logo"
+        />
       </div>
       <div className="ss-table__head">
         <span style={{

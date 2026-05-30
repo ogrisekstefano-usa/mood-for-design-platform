@@ -24,6 +24,7 @@ import LivePreviewPane from './LivePreviewPane';
 import EditorialMediaField from '../../components/common/EditorialMediaField';
 import { renderBandEditor, TRACEABILITY } from './bandEditors';
 import EditorialFooterColsEditor from './EditorialFooterColsEditor';
+import LogoUploadField from '../../components/storefront/LogoUploadField';
 import BlueprintThemeProvider from '../../design-system/os/BlueprintThemeProvider';
 import './pagesAdmin.css';
 
@@ -206,7 +207,8 @@ const SETTINGS_LISTS = {
     label: 'SOCIAL · ICONE SOTTO LOGO',
     itemLabel: 'Profilo social',
     extraFields: [
-      { key: 'logo_url', label: 'LOGO FOOTER (URL)', placeholder: 'https://…/logo.png · lascia vuoto per usare il logo di default' },
+      { key: 'logo_url', label: 'LOGO FOOTER', kind: 'logo',
+        hint: 'Appare in basso a sinistra in tutte le pagine pubbliche. Lascia vuoto per usare il logo MOOD for DESIGN™ di default.' },
     ],
     fields: [
       { key: 'kind',  label: 'Piattaforma', kind: 'select',
@@ -694,25 +696,39 @@ const SettingsListEditor = ({ section, config, onPatchSettings }) => {
 
   return (
     <div className="pa-list" data-testid={`pa-list-${config.key}`}>
-      {/* ITER171.6 · Top-level extra settings fields (e.g. logo_url for the
-          editorial_footer section). These live as scalar keys directly under
-          `settings`, NOT inside the list array. */}
+      {/* ITER171.7 · Top-level extra settings fields (e.g. logo_url for the
+          editorial_footer section). When `kind === 'logo'` we render the
+          full file-upload editor instead of a bare URL text input. */}
       {Array.isArray(config.extraFields) && config.extraFields.length > 0 && (
         <div className="pa-list__extra-fields">
           {config.extraFields.map((f) => (
-            <label key={f.key} className="pa-list__field pa-list__field--extra">
-              <span className="pa-list__field-label">{f.label}</span>
-              <input
-                className="pa-input"
+            f.kind === 'logo' ? (
+              <LogoUploadField
+                key={f.key}
                 value={section.settings?.[f.key] || ''}
-                placeholder={f.placeholder || ''}
-                onChange={(e) => {
-                  const settings = { ...(section.settings || {}), [f.key]: e.target.value };
+                onChange={(url) => {
+                  const settings = { ...(section.settings || {}), [f.key]: url };
                   onPatchSettings(settings);
                 }}
-                data-testid={`pa-extra-${config.key}-${f.key}`}
+                label={f.label}
+                hint={f.hint}
+                testid={`pa-extra-${config.key}-${f.key}`}
               />
-            </label>
+            ) : (
+              <label key={f.key} className="pa-list__field pa-list__field--extra">
+                <span className="pa-list__field-label">{f.label}</span>
+                <input
+                  className="pa-input"
+                  value={section.settings?.[f.key] || ''}
+                  placeholder={f.placeholder || ''}
+                  onChange={(e) => {
+                    const settings = { ...(section.settings || {}), [f.key]: e.target.value };
+                    onPatchSettings(settings);
+                  }}
+                  data-testid={`pa-extra-${config.key}-${f.key}`}
+                />
+              </label>
+            )
           ))}
         </div>
       )}
