@@ -118,6 +118,26 @@ ROLE_PERMISSIONS: Dict[str, Set[str]] = {
                # use the collaboration layer.
                P_COLLAB_READ, P_COLLAB_WRITE},
     "ad_partner": {P_PROJECTS_READ, P_MOODBOARDS_READ, P_INSPIRATIONS_READ},
+    # ITER177 Phase 0 · Team Foundation — new operator roles. Permissions
+    # are conservative defaults; tenant_admin can refine via UI later.
+    "sales": {
+        # Sales focus: pipeline + lead nurture, no proposal authoring/approval.
+        P_LEADS_READ, P_LEADS_WRITE,
+        P_PROJECTS_READ,
+        P_PROPOSALS_READ,
+        P_MOODBOARDS_READ,
+        P_INSPIRATIONS_READ,
+        P_INSIGHTS_READ,
+        P_COLLAB_READ,
+    },
+    "advisor": {
+        # Advisor (frozen module / external partner): read-only on the studio
+        # surface. Real advisor commission flow lives outside this MVP scope.
+        P_LEADS_READ,
+        P_PROJECTS_READ,
+        P_PROPOSALS_READ,
+        P_INSIGHTS_READ,
+    },
 }
 
 

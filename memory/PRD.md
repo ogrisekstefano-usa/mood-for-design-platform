@@ -1,6 +1,51 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 
+## 🆕 ITER177 · TEAM FOUNDATION™ Phase 0 · ✅ DELIVERED · 31 May 2026
+
+**Scope:** Unblock Invite — far funzionare end-to-end l'invito collaboratore dal modulo Team.
+
+**4 deliverable:**
+1. ✅ **Migration enum `user_role`** (`/app/supabase/migrations/111_team_foundation_roles.sql`) — aggiunti `sales` + `advisor`, preservata compatibilità (enum esistente: super_admin, tenant_admin, editor, analyst, project_manager, designer, client, ad_partner + sales, advisor = **10 ruoli**). Helper SQL `mark_member_accepted()` + index `(tenant_id, status, role)`.
+2. ✅ **First-Login Listener** in `/app/backend/routers/auth.py:_accept_invite_if_pending()` — invocato sia da `/api/auth/login` (path password) sia da `/api/auth/me` (path magic-link). Transita `users_profile.status invited→active` + mirror su `tenant_memberships` + `member_invites`. Failure-safe (mai blocca l'auth).
+3. ✅ **Team Filter** in `/app/backend/routers/members.py:list_members(include_clients=False)` — modulo Team esclude `role='client'` di default. Override via `?include_clients=true`.
+4. ✅ **Smoke test E2E** in `/app/backend/scripts/iter177_smoke_test.py` — **16/16 step passati**:
+   - admin login → invite designer → DB rows (`status='invited'` su 3 tabelle) → designer in `/api/members` → set password Supabase Admin → designer login → status `invited→active` mirrored 3 tabelle → designer `/auth/me` OK → designer 403 su `/members/invite` (RBAC).
+
+**Permission sets nuovi ruoli:**
+- `sales`: leads:RW + projects:R + proposals:R + moodboards:R + inspirations:R + insights:R + collab:R (8 permessi)
+- `advisor`: leads:R + projects:R + proposals:R + insights:R (4 permessi)
+
+**Path canale invito attuale:**
+- Path A (magic-link automatico): richiede SMTP Supabase configurato
+- **Path B (fallback attivo oggi)**: `silent_create` → admin informa off-band → designer va su `/forgot-password`
+- Comportamento atteso: smoke test ha riportato `member_invites.status='sent_silent'` (corretto)
+
+**Stato DB post-smoke test (cleanup automatico):**
+- `users_profile` = 1 (admin), `tenant_memberships`/`member_invites`/`audit_logs`/`login_attempts` = 0
+- `auth.users` = 1 (admin) · **Founder Only preservato al 100%**
+
+**File:**
+- NEW: `/app/supabase/migrations/111_team_foundation_roles.sql`
+- NEW: `/app/backend/scripts/iter177_smoke_test.py`
+- NEW: `/app/backups/iter177_smoke_results.json`
+- NEW: `/app/memory/TEAM_FOUNDATION_REPORT.md`
+- EDIT: `/app/backend/core/permissions.py` (+sales/+advisor permission sets)
+- EDIT: `/app/backend/routers/members.py` (TENANT_ASSIGNABLE_ROLES + include_clients filter)
+- EDIT: `/app/backend/routers/auth.py` (_accept_invite_if_pending in /login + /me)
+
+**Esplicitamente RINVIATO a Phase 1+** (come da direttiva):
+- Journey Assignments · Notification Bus · Team Visibility avanzata · Client Visibility refinement · Designer Workspace redesign
+
+**Next operational steps:**
+- 🟢 Manuale: Founder esegue un invito reale di Designer via UI `/settings/members`
+- 🟢 Op (opzionale): configurare SMTP Supabase per Path A automatico
+- 🟠 Phase 1: Journey Assignments table + CRUD + "Le mie journey" page
+- 🟠 ITER175: hotfix `metadata_json` Begin Journey
+
+---
+
+
 ## 🆕 ITER174 · CLEAN RESET CONTROLLED™ · ✅ DELIVERED · 31 May 2026
 
 **🎯 Obiettivo:** riportare la piattaforma a uno stato "Founder Only" prima di Ring 1. Eliminare TUTTI i dati operazionali test (CRM, journey, conversazioni, login traces, magic-link, audit logs, configuration events, studio_requests, studio_activation_drafts). Mantenere intatti CMS, editorial, catalogi i18n, branding, email templates, schema, codebase.

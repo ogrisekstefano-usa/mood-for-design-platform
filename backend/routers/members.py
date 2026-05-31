@@ -45,6 +45,8 @@ TENANT_ASSIGNABLE_ROLES = {
     # Reserved for future personas — already supported by the RBAC engine,
     # surfaced in the UI as soon as we map them in permissions.py.
     "editor", "project_manager", "analyst", "ad_partner",
+    # ITER177 Phase 0 · Team Foundation — new operator roles.
+    "sales", "advisor",
 }
 
 VALID_STATUS = {"active", "invited", "suspended"}
@@ -177,11 +179,19 @@ def _profile_to_member(p: dict) -> MemberOut:
 @router.get("", response_model=List[MemberOut])
 def list_members(
     status_filter: Optional[str] = None,
+    include_clients: bool = False,
     ctx: dict = Depends(require_permission(P_TENANT_MEMBERS_READ)),
 ):
-    """List members of the current tenant (effective tenant via impersonation)."""
+    """List Team members of the current tenant (effective tenant via impersonation).
+
+    ITER177 Phase 0 · Team ≠ CRM separation. Clients (`role='client'`)
+    are excluded by default — they belong to the CRM module
+    (`/relations/accounts`). Pass `include_clients=true` to override.
+    """
     client = db()
     q = client.table("users_profile").select("*").eq("tenant_id", ctx["tenant_id"])
+    if not include_clients:
+        q = q.neq("role", "client")
     if status_filter and status_filter in VALID_STATUS:
         q = q.eq("status", status_filter)
     r = q.order("created_at", desc=False).execute()

@@ -43,6 +43,56 @@ def _profile_to_resp(p: dict) -> UserProfileResponse:
     )
 
 
+def _accept_invite_if_pending(client, profile: dict) -> dict:
+    """ITER177 Phase 0 · First-Login Listener.
+
+    When an invited member authenticates for the first time, transition
+    `users_profile.status` from `invited` → `active` and stamp
+    `accepted_at`. Mirrors the same update to `tenant_memberships` +
+    `member_invites` so the Team UI reflects acceptance immediately.
+
+    Idempotent: if status is already `active`/`suspended` it's a no-op.
+    Failures are swallowed — auth must never be blocked by accounting.
+    """
+    if not profile or profile.get('status') != 'invited':
+        return profile
+    pid = profile.get('id')
+    if not pid:
+        return profile
+    now_iso = _now_iso()
+    try:
+        client.table('users_profile').update({
+            'status':      'active',
+            'accepted_at': now_iso,
+            'updated_at':  now_iso,
+        }).eq('id', pid).execute()
+        # Mirror to tenant_memberships
+        try:
+            client.table('tenant_memberships').update({
+                'status':     'active',
+                'updated_at': now_iso,
+            }).eq('profile_id', pid).eq('status', 'invited').execute()
+        except Exception:
+            logger.exception("tenant_memberships mirror failed (non-fatal)")
+        # Mirror to member_invites
+        try:
+            client.table('member_invites').update({
+                'status':      'accepted',
+                'accepted_at': now_iso,
+                'updated_at':  now_iso,
+            }).eq('tenant_id', profile.get('tenant_id')) \
+              .eq('email',     profile.get('email')) \
+              .execute()
+        except Exception:
+            logger.exception("member_invites mirror failed (non-fatal)")
+        profile['status']      = 'active'
+        profile['accepted_at'] = now_iso
+        logger.info(f"[invite-accept] profile={pid} transitioned invited→active")
+    except Exception:
+        logger.exception("first-login accept transition failed (non-fatal)")
+    return profile
+
+
 def _supabase_password_grant(email: str, password: str) -> dict:
     """Sign in via Supabase REST API to get access + refresh tokens."""
     url = f"{SUPABASE_URL}/auth/v1/token?grant_type=password"
@@ -168,6 +218,9 @@ def login(body: LoginRequest):
     if p.get('status') == 'suspended':
         raise HTTPException(403, "Account suspended")
 
+    # ITER177 Phase 0 · First-Login Listener — invited → active.
+    p = _accept_invite_if_pending(client, p)
+
     # Stamp last_login_at — used by /settings/members to show the
     # "Last login" column. Non-blocking on failure: a missed stamp
     # must never block the user from signing in.
@@ -221,6 +274,9 @@ def me(current_user: dict = Depends(get_current_user)):
     if not result.data:
         raise HTTPException(404, "Profile not found")
     profile = result.data[0]
+    # ITER177 Phase 0 · First-Login Listener for magic-link paths that
+    # skip /auth/login (e.g., Supabase Auth callback → frontend calls /me).
+    profile = _accept_invite_if_pending(client, profile)
     # Re-sign avatar URL so the topbar receives a fresh signed link instead
     # of an expired one from a previous session.
     try:
