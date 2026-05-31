@@ -25,6 +25,8 @@ import { useT, useBlueprint } from '../../contexts/BlueprintContext';
 import RelationshipLiveTimeline from '../../components/dashboard/RelationshipLiveTimeline';
 import PendingBookingsPanel from '../../components/booking/PendingBookingsPanel';
 import FirstMovesCards from '../../components/onboarding/FirstMovesCards';
+import { ActivationMeter, WorkspaceActivationChecklist } from '../../components/activation/ActivationMeter';
+import { useActivationFoundation } from '../../hooks/useActivationFoundation';
 import { useGuidedTour } from '../../components/onboarding/GuidedTourProvider';
 import './atelier-dashboard.css';
 
@@ -371,6 +373,8 @@ const AtelierDashboardPage = () => {
     <div className="atd-canvas" data-testid="atelier-dashboard">
       <Hero config={config} counts={counts} userName={userName} />
 
+      <ActivationFoundationCard />
+
       {showStartCards && <FirstMovesCards />}
 
       <section className="atd-projects" data-testid="atelier-projects-section">
@@ -430,6 +434,27 @@ const AtelierDashboardPage = () => {
         <RelationshipLiveTimeline locale="it" />
       </section>
     </div>
+
+// ── Activation Foundation card (ITER180 · AF2 + AF3) ──────────────
+function ActivationFoundationCard() {
+  const { data } = useActivationFoundation();
+  if (!data) return null;
+  // Always show until activated; hide once Workspace Activated™ reached.
+  if (data.activated) return null;
+  return (
+    <section
+      data-testid="dashboard-activation-card"
+      style={{
+        margin: '24px 0 8px',
+        display: 'grid', gridTemplateColumns: 'minmax(260px, 1fr) 2fr',
+        gap: 18, alignItems: 'stretch',
+      }}
+    >
+      <ActivationMeter />
+      <WorkspaceActivationChecklist />
+    </section>
+  );
+}
   );
 };
 

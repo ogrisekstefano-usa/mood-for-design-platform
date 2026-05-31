@@ -10,6 +10,9 @@ import { StudioPaletteProvider } from './contexts/StudioPaletteContext';
 import { LocaleRuntimeProvider } from './contexts/LocaleRuntimeContext';
 import { BlueprintI18nProvider } from './i18n';
 import { NewRelationshipProvider } from './hooks/useNewRelationship';
+import { ActivationFoundationProvider } from './hooks/useActivationFoundation';
+import PersistentAlertBanner from './components/activation/PersistentAlertBanner';
+const IdentityPage = lazy(() => import('./pages/settings/IdentityPage'));
 import LocaleRoute from './site/LocaleRoute';
 import LocaleHead from './site/LocaleHead';
 import CinematicLoader from './components/CinematicLoader';
@@ -392,7 +395,9 @@ function App() {
             <LocalizationOverlay />
             <EditorialDebugOverlay />
             <GuidedTourProvider>
+            <ActivationFoundationProvider>
             <NewRelationshipProvider>
+            <PersistentAlertBanner />
             <Suspense fallback={<Loading />}>
               <LocaleHead />
               <Routes>
@@ -626,6 +631,7 @@ function App() {
                   <Route path="/inspirations/materials" element={G('material_view', <MaterialViewPage />)} />
                   <Route path="/insights" element={G('insights', <InsightsPage />)} />
                   <Route path="/settings" element={<SettingsPage />} />
+                  <Route path="/settings/identity" element={<StudioAdminRoute><IdentityPage /></StudioAdminRoute>} />
                   <Route path="/settings/atelier-dashboard" element={<StudioAdminRoute><AtelierDashboardAdminPage /></StudioAdminRoute>} />
                   <Route path="/settings/brand" element={<StudioAdminRoute><BrandStudioPage /></StudioAdminRoute>} />
                   {/* Sprint UI-SYS-01 · Studio Identity™ canonical alias */}
@@ -829,6 +835,7 @@ function App() {
               </Routes>
             </Suspense>
             </NewRelationshipProvider>
+            </ActivationFoundationProvider>
             </GuidedTourProvider>
           </BrowserRouter>
           </EditorialOverridesProvider>
