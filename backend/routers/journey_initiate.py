@@ -200,7 +200,7 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         "language":        "it",
         "locale_code":     "it",
         "country":         body.welcome.country_code,
-        "metadata_json":   _phone_meta or None,
+        "metadata_json":   _phone_meta or {},
         "created_at":      now,
         "updated_at":      now,
     }).execute()
@@ -214,7 +214,7 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         "first_name":      first_name,
         "email":           email,
         "phone":           _phone_normalized,
-        "metadata_json":   _phone_meta or None,
+        "metadata_json":   _phone_meta or {},
         "primary_contact": True,
         "lifecycle_stage": "conversation_open",
         "created_at":      now,

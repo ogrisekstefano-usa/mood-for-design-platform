@@ -9311,3 +9311,42 @@ addendum (previously short labels skipped it).
 - Pre-existing cosmetic warnings (i18n missing keys, React
   setState-in-render Sidebar) — out of scope.
 
+
+---
+
+## ITER176.B · DESIGN JOURNEY CANON™ INTEGRATION + IMPLEMENTATION PLANS (2026-05-31)
+
+### Deliverables consegnati
+1. **`/app/memory/DESIGN_JOURNEY_CANON.md` §18 · REAL WORLD SHOWROOM FLOW™**
+   - 6 scenari operativi reali (A walk-in, B lead returning, C prospect, D customer, E architect partner, F public form)
+   - Tabelle attore × azione × schermata × entità × stato CRM × stato Journey per ognuno
+   - 6 gap di canon rivelati dagli scenari reali (mappati su Phase implementation)
+   - Matrice riassuntiva 6 scenari × 7 dimensioni
+
+2. **`/app/memory/CRM_LIFECYCLE_IMPLEMENTATION_PLAN.md` (nuovo)**
+   - Piano operativo per portare il CRM al modello canonico Lead → Discovery → Prospect → Journey
+   - 5 phase: R1 Nuova Relazione · R2 Discovery Interview · R3 Prospect Lifecycle · R4 Journey Creation Rules · R5 UI polish
+   - Effort stimato ~8 giorni full-stack su 2.5 settimane
+   - Test cases canonici (backend + Playwright e2e per 6 scenari)
+   - Checkbox approvazione Founder
+
+3. **`/app/memory/BLUEPRINT_CHAMELEON_REBRAND_IMPACT.md` (nuovo)**
+   - Rebrand Studio Identity → Blueprint Chameleon (solo lessicale, zero estetico)
+   - Verifica integrità 6 preset canonici (SQL test pre/post deployment)
+   - Endpoint alias `/api/blueprint/chameleon/*` con deprecation 90gg sui vecchi `/atelier/identity/*`
+   - Effort stimato ~2 giorni
+   - Out of scope espliciti: no Client Chameleon separation, no nuovi preset, no rename DB
+
+### Hotfix P0 applicato
+- **`/app/backend/routers/journey_initiate.py`** linee 203 + 217: `_phone_meta or None` → `_phone_meta or {}`
+- Previene 500 su `POST /api/public/journeys/initiate` quando manca `country_code` (violazione `accounts.metadata_json NOT NULL`).
+- Backend hot-reloaded senza errori.
+
+### Decisioni canoniche Founder
+- ✅ Priorità assoluta confermata: **CRM Lifecycle Canon** (NON Error Registry, NON Editorial, NON Journey Assignments Phase 2)
+- ✅ Blueprint Chameleon rebrand autorizzato in parallelo, scope limitato
+- ✅ Studio Activation 10-step ridotto a **Activation Foundation™ 5-step** (1.Blueprint, 2.Invita team, 3.Primo Lead, 4.Qualifica Prospect, 5.Apri prima Journey)
+- ✅ Backlog congelato: Error Registry completo, Editorial Onboarding, Journey Assignments Phase 2, Client Chameleon avanzato
+
+### Next gate
+**Attesa approvazione Founder sui 3 documenti** prima di toccare codice produzione.
