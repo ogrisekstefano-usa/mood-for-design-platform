@@ -1,0 +1,290 @@
+[
+  {
+    "id": 1,
+    "identifier": "admin@moodfordesign.com",
+    "success": false,
+    "created_at": "2026-05-29 07:44:17.484940+00:00"
+  },
+  {
+    "id": 2,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-29 07:45:26.206463+00:00"
+  },
+  {
+    "id": 3,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-29 07:52:27.708896+00:00"
+  },
+  {
+    "id": 4,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 02:17:58.558552+00:00"
+  },
+  {
+    "id": 5,
+    "identifier": "admin@moodfordesign.com",
+    "success": false,
+    "created_at": "2026-05-30 02:48:12.897447+00:00"
+  },
+  {
+    "id": 6,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 02:49:17.417677+00:00"
+  },
+  {
+    "id": 7,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 04:40:27.354569+00:00"
+  },
+  {
+    "id": 8,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 04:46:39.485469+00:00"
+  },
+  {
+    "id": 9,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 04:47:09.801119+00:00"
+  },
+  {
+    "id": 10,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 04:49:30.426899+00:00"
+  },
+  {
+    "id": 11,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 04:52:38.023915+00:00"
+  },
+  {
+    "id": 12,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 04:52:56.824144+00:00"
+  },
+  {
+    "id": 13,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 06:09:38.949070+00:00"
+  },
+  {
+    "id": 14,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 06:19:31.330053+00:00"
+  },
+  {
+    "id": 15,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 06:19:51.792609+00:00"
+  },
+  {
+    "id": 16,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 06:19:53.613575+00:00"
+  },
+  {
+    "id": 17,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 06:20:42.760882+00:00"
+  },
+  {
+    "id": 18,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 06:24:21.477432+00:00"
+  },
+  {
+    "id": 19,
+    "identifier": "admin@moodfordesign.com",
+    "success": false,
+    "created_at": "2026-05-30 06:41:32.654587+00:00"
+  },
+  {
+    "id": 20,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 06:42:37.143855+00:00"
+  },
+  {
+    "id": 21,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 07:18:54.233949+00:00"
+  },
+  {
+    "id": 22,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 07:24:30.794017+00:00"
+  },
+  {
+    "id": 23,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 07:27:58.802512+00:00"
+  },
+  {
+    "id": 24,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 07:32:30.563764+00:00"
+  },
+  {
+    "id": 25,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 07:33:15.730056+00:00"
+  },
+  {
+    "id": 26,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 15:32:58.198621+00:00"
+  },
+  {
+    "id": 27,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 16:29:01.672350+00:00"
+  },
+  {
+    "id": 28,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 16:31:10.227438+00:00"
+  },
+  {
+    "id": 29,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 16:40:41.493793+00:00"
+  },
+  {
+    "id": 30,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 16:41:10.720050+00:00"
+  },
+  {
+    "id": 31,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 16:43:46.339365+00:00"
+  },
+  {
+    "id": 32,
+    "identifier": "raffaella@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 16:44:35.752348+00:00"
+  },
+  {
+    "id": 33,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 16:48:51.482605+00:00"
+  },
+  {
+    "id": 34,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 19:33:25.996236+00:00"
+  },
+  {
+    "id": 35,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 19:48:02.323429+00:00"
+  },
+  {
+    "id": 36,
+    "identifier": "e2e-advisor-lifecycle@test.example",
+    "success": true,
+    "created_at": "2026-05-30 19:48:16.315709+00:00"
+  },
+  {
+    "id": 37,
+    "identifier": "e2e-advisor-lifecycle@test.example",
+    "success": true,
+    "created_at": "2026-05-30 19:48:37.835231+00:00"
+  },
+  {
+    "id": 38,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 19:48:39.722696+00:00"
+  },
+  {
+    "id": 39,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 21:04:59.015316+00:00"
+  },
+  {
+    "id": 40,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 21:10:21.413206+00:00"
+  },
+  {
+    "id": 41,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 21:16:21.283445+00:00"
+  },
+  {
+    "id": 42,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 21:18:46.023661+00:00"
+  },
+  {
+    "id": 43,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 21:19:00.818293+00:00"
+  },
+  {
+    "id": 44,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 21:19:30.258373+00:00"
+  },
+  {
+    "id": 45,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 21:23:51.497714+00:00"
+  },
+  {
+    "id": 46,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 21:24:00.107810+00:00"
+  },
+  {
+    "id": 47,
+    "identifier": "admin@moodfordesign.com",
+    "success": true,
+    "created_at": "2026-05-30 21:33:48.816351+00:00"
+  },
+  {
+    "id": 48,
+    "identifier": "admin@moodfordesign.com",
+    "success": false,
+    "created_at": "2026-05-30 23:23:41.002185+00:00"
+  }
+]

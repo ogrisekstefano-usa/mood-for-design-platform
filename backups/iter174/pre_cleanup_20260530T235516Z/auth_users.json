@@ -1,0 +1,164 @@
+[
+  {
+    "id": "954da316-63e3-421c-88c7-a9f2254262a2",
+    "email": "iter171client_1780040627@example.com",
+    "created_at": "2026-05-29 07:43:49.997745+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": "2026-05-29 07:43:50.015024+00:00",
+    "raw_app_meta_data": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "raw_user_meta_data": {
+      "source": "begin_journey_ritual",
+      "first_name": "TestIter171",
+      "email_verified": true
+    }
+  },
+  {
+    "id": "765f9566-c935-4935-ab19-8ac0230fb3bf",
+    "email": "audit-iter173@test.example",
+    "created_at": "2026-05-30 21:21:36.028756+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": "2026-05-30 21:21:36.077147+00:00",
+    "raw_app_meta_data": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "raw_user_meta_data": {
+      "source": "begin_journey_ritual",
+      "first_name": "AuditTest",
+      "email_verified": true
+    }
+  },
+  {
+    "id": "afb1edea-6fa7-4fd6-bc57-21fa0be39caa",
+    "email": "audit-exp@test.example",
+    "created_at": "2026-05-30 21:21:44.221933+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": "2026-05-30 21:21:44.232994+00:00",
+    "raw_app_meta_data": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "raw_user_meta_data": {
+      "source": "begin_journey_ritual",
+      "first_name": "AuditExp",
+      "email_verified": true
+    }
+  },
+  {
+    "id": "5e983349-a8f0-423a-802f-2ca2de354bbb",
+    "email": "support@moodfordesign.com",
+    "created_at": "2026-05-29 21:27:58.679653+00:00",
+    "last_sign_in_at": "2026-05-29 21:28:09.260590+00:00",
+    "email_confirmed_at": "2026-05-29 21:27:58.720464+00:00",
+    "raw_app_meta_data": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "raw_user_meta_data": {
+      "source": "begin_journey_ritual",
+      "first_name": "Stephano",
+      "email_verified": true
+    }
+  },
+  {
+    "id": "bc8cabac-2325-45f7-9beb-841b023309a7",
+    "email": "iter171repro_1780090804@example.com",
+    "created_at": "2026-05-29 21:40:07.520069+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": "2026-05-29 21:40:07.555618+00:00",
+    "raw_app_meta_data": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "raw_user_meta_data": {
+      "source": "begin_journey_ritual",
+      "first_name": "Marco",
+      "email_verified": true
+    }
+  },
+  {
+    "id": "9a191bae-e336-4a09-9866-daf8b2ab1c80",
+    "email": "iter171client_1780091682@example.com",
+    "created_at": "2026-05-29 21:54:45.535489+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": "2026-05-29 21:54:45.581099+00:00",
+    "raw_app_meta_data": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "raw_user_meta_data": {
+      "source": "begin_journey_ritual",
+      "first_name": "ClientTest",
+      "email_verified": true
+    }
+  },
+  {
+    "id": "379f7f54-8a01-4b3c-b9aa-99fcdf2a818f",
+    "email": "ogriusa@gmail.com",
+    "created_at": "2026-05-30 01:28:40.860860+00:00",
+    "last_sign_in_at": "2026-05-30 03:06:52.778648+00:00",
+    "email_confirmed_at": "2026-05-30 01:28:40.903527+00:00",
+    "raw_app_meta_data": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "raw_user_meta_data": {
+      "source": "begin_journey_ritual",
+      "first_name": "stef",
+      "email_verified": true
+    }
+  },
+  {
+    "id": "3bcd141c-3a5a-4dfc-8d6f-bd1287b2675c",
+    "email": "ogrisek.stefano@gmail.com",
+    "created_at": "2026-05-30 06:17:27.919033+00:00",
+    "last_sign_in_at": "2026-05-30 19:49:22.045292+00:00",
+    "email_confirmed_at": "2026-05-30 06:17:27.960600+00:00",
+    "raw_app_meta_data": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "raw_user_meta_data": {
+      "source": "begin_journey_ritual",
+      "first_name": "Stef",
+      "email_verified": true
+    }
+  },
+  {
+    "id": "18712745-bffc-4b42-b489-654a2aa83d6b",
+    "email": "admin@moodfordesign.com",
+    "created_at": "2026-05-23 19:35:26.279328+00:00",
+    "last_sign_in_at": "2026-05-30 23:02:03.432374+00:00",
+    "email_confirmed_at": "2026-05-23 19:35:26.305626+00:00",
+    "raw_app_meta_data": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "raw_user_meta_data": {
+      "role": "super_admin",
+      "platform_root": true,
+      "email_verified": true
+    }
+  }
+]

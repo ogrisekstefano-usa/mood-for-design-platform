@@ -1,0 +1,290 @@
+[
+  {
+    "id": "045c61e0-442a-4428-9afe-1cb7bfe70ebd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "journey_id": "1d5875f2-370e-4728-a626-4167351eeec3",
+    "closed_answers": {
+      "welcome": {
+        "email": "iter171client_1780040627@example.com",
+        "first_name": "TestIter171"
+      },
+      "lifestyle": {},
+      "atmosphere": {
+        "references": null,
+        "how_to_feel": null,
+        "space_kinds": null
+      }
+    },
+    "atmosphere_signals": [],
+    "material_signals": [],
+    "cultural_register": null,
+    "luxury_perception_tier": null,
+    "narrative_seed": null,
+    "intake_version": "iter168_begin_journey",
+    "source_lead_id": null,
+    "created_at": "2026-05-29 07:43:47.538106+00:00",
+    "updated_at": "2026-05-29 07:43:47.538106+00:00"
+  },
+  {
+    "id": "5f0ddae5-9b7d-4a6c-924f-4736485f240e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "journey_id": "7f7b172c-4545-4b39-8eee-ab16d8e12ad2",
+    "closed_answers": {
+      "welcome": {
+        "email": "support@moodfordesign.com",
+        "first_name": "Stephano"
+      },
+      "lifestyle": {
+        "guests": "rarely",
+        "ambiance": "sober_minimal",
+        "materials": [
+          "wood",
+          "textiles",
+          "glass"
+        ]
+      },
+      "atmosphere": {
+        "references": "123",
+        "how_to_feel": "123",
+        "space_kinds": [
+          "home",
+          "hospitality"
+        ]
+      }
+    },
+    "atmosphere_signals": [],
+    "material_signals": [],
+    "cultural_register": null,
+    "luxury_perception_tier": null,
+    "narrative_seed": null,
+    "intake_version": "iter168_begin_journey",
+    "source_lead_id": null,
+    "created_at": "2026-05-29 21:27:55.997138+00:00",
+    "updated_at": "2026-05-29 21:27:55.997138+00:00"
+  },
+  {
+    "id": "fd4bac8a-9ab0-4259-94d6-5eed7b440105",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "journey_id": "9425fc82-bde3-4384-b07c-2c37e620a1d9",
+    "closed_answers": {
+      "welcome": {
+        "email": "iter171repro_1780090804@example.com",
+        "first_name": "Marco"
+      },
+      "lifestyle": {
+        "guests": null,
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {
+        "references": null,
+        "how_to_feel": "calmo e ispirato",
+        "space_kinds": null
+      }
+    },
+    "atmosphere_signals": [],
+    "material_signals": [],
+    "cultural_register": null,
+    "luxury_perception_tier": null,
+    "narrative_seed": null,
+    "intake_version": "iter168_begin_journey",
+    "source_lead_id": null,
+    "created_at": "2026-05-29 21:40:05.051667+00:00",
+    "updated_at": "2026-05-29 21:40:05.051667+00:00"
+  },
+  {
+    "id": "bc684061-e61b-496d-9a79-7e5a2647b0b8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "journey_id": "af052363-5cb8-42c7-b7eb-61890a2b9219",
+    "closed_answers": {
+      "welcome": {
+        "email": "iter171client_1780091682@example.com",
+        "first_name": "ClientTest"
+      },
+      "lifestyle": {
+        "guests": null,
+        "ambiance": null,
+        "materials": null
+      },
+      "atmosphere": {
+        "references": null,
+        "how_to_feel": "calmo",
+        "space_kinds": null
+      }
+    },
+    "atmosphere_signals": [],
+    "material_signals": [],
+    "cultural_register": null,
+    "luxury_perception_tier": null,
+    "narrative_seed": null,
+    "intake_version": "iter168_begin_journey",
+    "source_lead_id": null,
+    "created_at": "2026-05-29 21:54:42.988806+00:00",
+    "updated_at": "2026-05-29 21:54:42.988806+00:00"
+  },
+  {
+    "id": "00456445-7841-400c-87aa-029438cc5f7c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "journey_id": "30950769-99c2-4d78-bdd5-55720ad7c44e",
+    "closed_answers": {
+      "welcome": {
+        "email": "ogriusa@gmail.com",
+        "first_name": "stef"
+      },
+      "lifestyle": {
+        "guests": "often",
+        "ambiance": "luminous_airy",
+        "materials": [
+          "stone",
+          "metals",
+          "velvet"
+        ]
+      },
+      "atmosphere": {
+        "references": "789",
+        "how_to_feel": "456",
+        "space_kinds": [
+          "home"
+        ]
+      }
+    },
+    "atmosphere_signals": [],
+    "material_signals": [],
+    "cultural_register": null,
+    "luxury_perception_tier": null,
+    "narrative_seed": null,
+    "intake_version": "iter168_begin_journey",
+    "source_lead_id": null,
+    "created_at": "2026-05-30 01:28:38.449212+00:00",
+    "updated_at": "2026-05-30 01:28:38.449212+00:00"
+  },
+  {
+    "id": "6dc8a3cc-028c-4e60-84b6-7662a766f237",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "journey_id": "9a96de23-48ee-4c66-b92f-e08806f27a66",
+    "closed_answers": {
+      "welcome": {
+        "email": "ogrisek.stefano@gmail.com",
+        "first_name": "Stef"
+      },
+      "lifestyle": {
+        "guests": "sometimes",
+        "ambiance": "warm_enveloping",
+        "materials": [
+          "wood"
+        ]
+      },
+      "atmosphere": {
+        "references": "",
+        "how_to_feel": "calm",
+        "space_kinds": [
+          "home"
+        ]
+      }
+    },
+    "atmosphere_signals": [],
+    "material_signals": [],
+    "cultural_register": null,
+    "luxury_perception_tier": null,
+    "narrative_seed": null,
+    "intake_version": "iter168_begin_journey",
+    "source_lead_id": null,
+    "created_at": "2026-05-30 06:17:24.917566+00:00",
+    "updated_at": "2026-05-30 06:17:24.917566+00:00"
+  },
+  {
+    "id": "2a01dd71-e13a-47c3-9e11-28c70e157426",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "journey_id": "62c6c27a-98f5-4f98-a3c8-2bebf917bbd3",
+    "closed_answers": {
+      "welcome": {
+        "email": "ogrisek.stefano@gmail.com",
+        "first_name": "stef"
+      },
+      "lifestyle": {
+        "guests": "alone",
+        "ambiance": "luminous_airy",
+        "materials": [
+          "textiles"
+        ]
+      },
+      "atmosphere": {
+        "references": "vvv",
+        "how_to_feel": "vvv",
+        "space_kinds": [
+          "showroom",
+          "office"
+        ]
+      }
+    },
+    "atmosphere_signals": [],
+    "material_signals": [],
+    "cultural_register": null,
+    "luxury_perception_tier": null,
+    "narrative_seed": null,
+    "intake_version": "iter168_begin_journey",
+    "source_lead_id": null,
+    "created_at": "2026-05-30 06:19:48.956222+00:00",
+    "updated_at": "2026-05-30 06:19:48.956222+00:00"
+  },
+  {
+    "id": "6eac5190-8aa1-402a-b52b-b6e2fc430e85",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "journey_id": "d55f712f-04c0-4ca0-af87-d149924e7994",
+    "closed_answers": {
+      "welcome": {
+        "email": "audit-iter173@test.example",
+        "first_name": "AuditTest"
+      },
+      "lifestyle": {
+        "guests": null,
+        "ambiance": "warm_enveloping",
+        "materials": null
+      },
+      "atmosphere": {
+        "references": null,
+        "how_to_feel": "calmo",
+        "space_kinds": null
+      }
+    },
+    "atmosphere_signals": [],
+    "material_signals": [],
+    "cultural_register": null,
+    "luxury_perception_tier": null,
+    "narrative_seed": null,
+    "intake_version": "iter168_begin_journey",
+    "source_lead_id": null,
+    "created_at": "2026-05-30 21:21:33.257145+00:00",
+    "updated_at": "2026-05-30 21:21:33.257145+00:00"
+  },
+  {
+    "id": "33ed4bd8-7544-43c2-85e4-64010446bae0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "journey_id": "d8f49119-f835-4bba-aa5a-a50e93a1e97d",
+    "closed_answers": {
+      "welcome": {
+        "email": "audit-exp@test.example",
+        "first_name": "AuditExp"
+      },
+      "lifestyle": {
+        "guests": null,
+        "ambiance": "warm_enveloping",
+        "materials": null
+      },
+      "atmosphere": {
+        "references": null,
+        "how_to_feel": "luce",
+        "space_kinds": null
+      }
+    },
+    "atmosphere_signals": [],
+    "material_signals": [],
+    "cultural_register": null,
+    "luxury_perception_tier": null,
+    "narrative_seed": null,
+    "intake_version": "iter168_begin_journey",
+    "source_lead_id": null,
+    "created_at": "2026-05-30 21:21:40.992318+00:00",
+    "updated_at": "2026-05-30 21:21:40.992318+00:00"
+  }
+]

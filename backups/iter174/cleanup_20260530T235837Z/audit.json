@@ -1,0 +1,593 @@
+{
+  "iteration": "ITER174",
+  "timestamp_utc": "20260530T235837Z",
+  "operational_tenant_preserve": "848354b9-a43e-4147-bdad-116fb93bd585",
+  "admin_email_preserve": "admin@moodfordesign.com",
+  "phases": [],
+  "counts_before": {
+    "access_magic_links": 31,
+    "accounts": 9,
+    "advisor_profiles": 3,
+    "ai_assist_logs": 54,
+    "atelier_dashboard_config": 2,
+    "atelier_dashboard_media": 24,
+    "atelier_dashboard_quotes": 8,
+    "atelier_presets_registry": 6,
+    "atmospheric_panels": 6,
+    "audit_logs": 111,
+    "brand_collections": 4,
+    "brands": 20,
+    "cms_page_revisions": 27,
+    "cms_pages": 13,
+    "cms_sections": 56,
+    "configuration_change_events": 318,
+    "contacts": 9,
+    "cultural_descriptors": 29,
+    "design_journeys": 9,
+    "editorial_block_translations": 3224,
+    "editorial_blocks": 1156,
+    "editorial_masters": 42,
+    "editorial_phrases": 13,
+    "editorial_surfaces": 8,
+    "editorial_translations": 65,
+    "editorial_variants": 4,
+    "email_events": 117,
+    "feature_modules_registry": 34,
+    "funnel_events": 18,
+    "guided_tour_config": 7,
+    "human_assignment_events": 9,
+    "human_assignments": 9,
+    "journey_briefs": 9,
+    "journey_milestones": 90,
+    "journey_overview": 9,
+    "journey_timeline_events": 18,
+    "lead_intake_questions": 16,
+    "leads": 9,
+    "locale_profiles": 7,
+    "login_attempts": 48,
+    "market_cultural_profiles": 7,
+    "market_narrative_profiles": 7,
+    "market_positioning_profiles": 7,
+    "market_submarkets": 48,
+    "markets": 15,
+    "media_filter_presets": 8,
+    "media_library": 81,
+    "media_with_usage": 81,
+    "milestone_versions": 9,
+    "moodboard_chapters": 9,
+    "moodboard_rooms": 16,
+    "moodboard_templates": 11,
+    "phone_dial_codes": 196,
+    "platform_feature_defaults": 1,
+    "platform_languages": 9,
+    "projects": 9,
+    "relationship_answer_events": 5,
+    "relationship_catalog_v1": 32,
+    "relationship_intelligence_v": 9,
+    "relationship_messages": 9,
+    "relationship_question_groups": 5,
+    "relationship_question_options": 32,
+    "relationship_questions": 5,
+    "relationship_threads": 10,
+    "schema_migrations": 78,
+    "studio_activation_drafts": 30,
+    "studio_relations": 9,
+    "studio_relationship_events": 16,
+    "studio_requests": 8,
+    "studio_translation_preferences": 1,
+    "supplier_catalogs": 5,
+    "tag_registry": 42,
+    "template_blocks": 98,
+    "template_pages": 23,
+    "tenant_atelier_identity": 1,
+    "tenant_configuration": 1,
+    "tenant_dnt_registry": 4,
+    "tenant_domains": 4,
+    "tenant_email_settings": 1,
+    "tenant_markets": 8,
+    "tenant_modules": 14,
+    "tenant_onboarding": 1,
+    "tenant_settings": 8,
+    "tenant_subdomain_lookup": 2,
+    "tenants": 6,
+    "theme_presets": 33,
+    "user_onboarding_state": 2,
+    "users": 9,
+    "users_profile": 9,
+    "auth.users": 9,
+    "storage.objects": 33
+  },
+  "auth_users_to_delete": [
+    [
+      "954da316-63e3-421c-88c7-a9f2254262a2",
+      "iter171client_1780040627@example.com"
+    ],
+    [
+      "5e983349-a8f0-423a-802f-2ca2de354bbb",
+      "support@moodfordesign.com"
+    ],
+    [
+      "bc8cabac-2325-45f7-9beb-841b023309a7",
+      "iter171repro_1780090804@example.com"
+    ],
+    [
+      "9a191bae-e336-4a09-9866-daf8b2ab1c80",
+      "iter171client_1780091682@example.com"
+    ],
+    [
+      "379f7f54-8a01-4b3c-b9aa-99fcdf2a818f",
+      "ogriusa@gmail.com"
+    ],
+    [
+      "3bcd141c-3a5a-4dfc-8d6f-bd1287b2675c",
+      "ogrisek.stefano@gmail.com"
+    ],
+    [
+      "765f9566-c935-4935-ab19-8ac0230fb3bf",
+      "audit-iter173@test.example"
+    ],
+    [
+      "afb1edea-6fa7-4fd6-bc57-21fa0be39caa",
+      "audit-exp@test.example"
+    ]
+  ],
+  "storage_to_delete": [
+    {
+      "bucket": "storefront-public",
+      "path": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/0d60edaf-45cb-40e6-839a-0bc604ebbe2e-AdobeStock_866570850.jpeg",
+      "size": 3842439
+    },
+    {
+      "bucket": "storefront-public",
+      "path": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/ee319f01-21dd-423e-b4a9-bddaed33a3bb-Artboard 1.png",
+      "size": 32882
+    },
+    {
+      "bucket": "storefront-public",
+      "path": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/f0d9ba99-4f17-424e-ba62-cf4f122a1cbf-Artboard 1.png",
+      "size": 32882
+    },
+    {
+      "bucket": "storefront-public",
+      "path": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/ff1fe78e-53e4-413e-9d09-60342d1c5b9c-logo_top_frontend.png",
+      "size": 15544
+    },
+    {
+      "bucket": "tenant-assets",
+      "path": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/a0d510d2-1920.jpg",
+      "size": 293542
+    },
+    {
+      "bucket": "tenant-assets",
+      "path": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/a0d510d2-480.jpg",
+      "size": 28223
+    },
+    {
+      "bucket": "tenant-assets",
+      "path": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/a0d510d2.jpg",
+      "size": 3681635
+    },
+    {
+      "bucket": "tenant-assets",
+      "path": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/bca844da-1920.jpg",
+      "size": 293542
+    },
+    {
+      "bucket": "tenant-assets",
+      "path": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/bca844da-480.jpg",
+      "size": 28223
+    },
+    {
+      "bucket": "tenant-assets",
+      "path": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/bca844da.jpg",
+      "size": 3681635
+    }
+  ],
+  "storage_to_preserve_count": 23,
+  "operational_deletes": {
+    "relationship_answer_events": 5,
+    "relationship_messages": 9,
+    "relationship_threads": 10,
+    "human_assignment_events": 9,
+    "human_assignments": 9,
+    "studio_relationship_events": 16,
+    "studio_relations": 9,
+    "journey_timeline_events": 18,
+    "milestone_versions": 9,
+    "journey_milestones": 90,
+    "journey_briefs": 9,
+    "design_journeys": 9,
+    "projects": 9,
+    "contacts": 9,
+    "accounts": 9,
+    "leads": 9,
+    "access_magic_links": 31,
+    "login_attempts": 48,
+    "email_events": 117,
+    "funnel_events": 18,
+    "ai_assist_logs": 54,
+    "audit_logs": 111,
+    "configuration_change_events": 318,
+    "user_onboarding_state": 2,
+    "studio_activation_drafts": 30,
+    "studio_requests": 8
+  },
+  "users_profile_deleted": 8,
+  "public_users_deleted": 9,
+  "media_library_deleted": 11,
+  "tenants_archived": 1,
+  "tenant_domains_test_deleted": 4,
+  "db_transaction_status": "committed",
+  "storage_deletion_results": [
+    {
+      "bucket": "storefront-public",
+      "files_requested": 4,
+      "status_code": 200,
+      "ok": true,
+      "response": [
+        {
+          "name": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/ee319f01-21dd-423e-b4a9-bddaed33a3bb-Artboard 1.png",
+          "bucket_id": "storefront-public",
+          "owner": "",
+          "owner_id": "",
+          "version": "60525ee8-423b-4a74-bf4a-dcf63763d3c2",
+          "id": "cbdf587f-a180-4ac0-a38b-7fccf0320620",
+          "updated_at": "2026-05-15T09:04:47.351Z",
+          "created_at": "2026-05-15T09:04:47.351Z",
+          "last_accessed_at": "2026-05-15T09:04:47.351Z",
+          "metadata": {
+            "eTag": "\"a1756d6d6b904614c918485eed3b718f\"",
+            "size": 32882,
+            "mimetype": "image/png",
+            "cacheControl": "no-cache",
+            "lastModified": "2026-05-15T09:04:48.000Z",
+            "contentLength": 32882,
+            "httpStatusCode": 200
+          },
+          "user_metadata": {}
+        },
+        {
+          "name": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/f0d9ba99-4f17-424e-ba62-cf4f122a1cbf-Artboard 1.png",
+          "bucket_id": "storefront-public",
+          "owner": "",
+          "owner_id": "",
+          "version": "323477d3-6646-48e0-9315-f39b4d72905f",
+          "id": "ccf3c4d7-16f5-451f-8741-45f796660cc5",
+          "updated_at": "2026-05-15T09:04:48.811Z",
+          "created_at": "2026-05-15T09:04:48.811Z",
+          "last_accessed_at": "2026-05-15T09:04:48.811Z",
+          "metadata": {
+            "eTag": "\"a1756d6d6b904614c918485eed3b718f\"",
+            "size": 32882,
+            "mimetype": "image/png",
+            "cacheControl": "no-cache",
+            "lastModified": "2026-05-15T09:04:49.000Z",
+            "contentLength": 32882,
+            "httpStatusCode": 200
+          },
+          "user_metadata": {}
+        },
+        {
+          "name": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/ff1fe78e-53e4-413e-9d09-60342d1c5b9c-logo_top_frontend.png",
+          "bucket_id": "storefront-public",
+          "owner": "",
+          "owner_id": "",
+          "version": "2bc20b5e-935d-4c96-8752-06cbac0b7a47",
+          "id": "dfe3c058-3183-45e4-822d-5cc138dabf70",
+          "updated_at": "2026-05-15T09:07:15.917Z",
+          "created_at": "2026-05-15T09:07:15.917Z",
+          "last_accessed_at": "2026-05-15T09:07:15.917Z",
+          "metadata": {
+            "eTag": "\"142cf0bde11ff2a1f06e9d9c425bb051\"",
+            "size": 15544,
+            "mimetype": "image/png",
+            "cacheControl": "no-cache",
+            "lastModified": "2026-05-15T09:07:16.000Z",
+            "contentLength": 15544,
+            "httpStatusCode": 200
+          },
+          "user_metadata": {}
+        },
+        {
+          "name": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/0d60edaf-45cb-40e6-839a-0bc604ebbe2e-AdobeStock_866570850.jpeg",
+          "bucket_id": "storefront-public",
+          "owner": "",
+          "owner_id": "",
+          "version": "d60b599c-0446-4129-863f-ce9cee0db9b4",
+          "id": "cbdf2300-1645-4641-9b86-cf1bde39eb94",
+          "updated_at": "2026-05-17T20:27:16.628Z",
+          "created_at": "2026-05-17T20:27:16.628Z",
+          "last_accessed_at": "2026-05-17T20:27:16.628Z",
+          "metadata": {
+            "eTag": "\"50101c60bc0da9694caa6f8cbafdb843\"",
+            "size": 3842439,
+            "mimetype": "image/jpeg",
+            "cacheControl": "no-cache",
+            "lastModified": "2026-05-17T20:27:17.000Z",
+            "contentLength": 3842439,
+            "httpStatusCode": 200
+          },
+          "user_metadata": {}
+        }
+      ]
+    },
+    {
+      "bucket": "tenant-assets",
+      "files_requested": 6,
+      "status_code": 200,
+      "ok": true,
+      "response": [
+        {
+          "name": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/bca844da.jpg",
+          "bucket_id": "tenant-assets",
+          "owner": "",
+          "owner_id": "",
+          "version": "0d14d50c-89be-4ef7-86c4-bdaef9a0cf2b",
+          "id": "1d203df6-327f-4a32-9c87-9c232717bf96",
+          "updated_at": "2026-05-29T21:34:37.617Z",
+          "created_at": "2026-05-29T21:34:37.617Z",
+          "last_accessed_at": "2026-05-29T21:34:37.617Z",
+          "metadata": {
+            "eTag": "\"df6b12c8a3d229fa97c3380dd80dc205\"",
+            "size": 3681635,
+            "mimetype": "image/jpeg",
+            "cacheControl": "no-cache",
+            "lastModified": "2026-05-29T21:34:38.000Z",
+            "contentLength": 3681635,
+            "httpStatusCode": 200
+          },
+          "user_metadata": {}
+        },
+        {
+          "name": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/bca844da-1920.jpg",
+          "bucket_id": "tenant-assets",
+          "owner": "",
+          "owner_id": "",
+          "version": "526380d1-f044-42da-8a85-0dac0a816646",
+          "id": "fa9b9f7e-be32-4940-b13d-b40a75e48c04",
+          "updated_at": "2026-05-29T21:34:38.452Z",
+          "created_at": "2026-05-29T21:34:38.452Z",
+          "last_accessed_at": "2026-05-29T21:34:38.452Z",
+          "metadata": {
+            "eTag": "\"2f74a91447400c0e6ec7360eb4b9e9ba\"",
+            "size": 293542,
+            "mimetype": "image/jpeg",
+            "cacheControl": "no-cache",
+            "lastModified": "2026-05-29T21:34:39.000Z",
+            "contentLength": 293542,
+            "httpStatusCode": 200
+          },
+          "user_metadata": {}
+        },
+        {
+          "name": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/bca844da-480.jpg",
+          "bucket_id": "tenant-assets",
+          "owner": "",
+          "owner_id": "",
+          "version": "f8c22f40-53d6-4e6e-ba55-1293d8ef24da",
+          "id": "2e1010a3-1769-483a-b78b-ca91fe6f44ff",
+          "updated_at": "2026-05-29T21:34:38.976Z",
+          "created_at": "2026-05-29T21:34:38.976Z",
+          "last_accessed_at": "2026-05-29T21:34:38.976Z",
+          "metadata": {
+            "eTag": "\"7cd656ad6730aa65341ad23dc087ce9d\"",
+            "size": 28223,
+            "mimetype": "image/jpeg",
+            "cacheControl": "no-cache",
+            "lastModified": "2026-05-29T21:34:39.000Z",
+            "contentLength": 28223,
+            "httpStatusCode": 200
+          },
+          "user_metadata": {}
+        },
+        {
+          "name": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/a0d510d2.jpg",
+          "bucket_id": "tenant-assets",
+          "owner": "",
+          "owner_id": "",
+          "version": "7e5967db-1106-4d6e-bbf9-d4d0d7da7893",
+          "id": "24ebcf05-f98d-4f18-9d29-8ed369cb773d",
+          "updated_at": "2026-05-30T18:06:04.093Z",
+          "created_at": "2026-05-30T18:06:04.093Z",
+          "last_accessed_at": "2026-05-30T18:06:04.093Z",
+          "metadata": {
+            "eTag": "\"df6b12c8a3d229fa97c3380dd80dc205\"",
+            "size": 3681635,
+            "mimetype": "image/jpeg",
+            "cacheControl": "no-cache",
+            "lastModified": "2026-05-30T18:06:05.000Z",
+            "contentLength": 3681635,
+            "httpStatusCode": 200
+          },
+          "user_metadata": {}
+        },
+        {
+          "name": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/a0d510d2-1920.jpg",
+          "bucket_id": "tenant-assets",
+          "owner": "",
+          "owner_id": "",
+          "version": "8c781128-06ac-40bc-bf92-e8654aeac215",
+          "id": "478f975e-5f8a-4439-8664-538653ddf89d",
+          "updated_at": "2026-05-30T18:06:04.872Z",
+          "created_at": "2026-05-30T18:06:04.872Z",
+          "last_accessed_at": "2026-05-30T18:06:04.872Z",
+          "metadata": {
+            "eTag": "\"2f74a91447400c0e6ec7360eb4b9e9ba\"",
+            "size": 293542,
+            "mimetype": "image/jpeg",
+            "cacheControl": "no-cache",
+            "lastModified": "2026-05-30T18:06:05.000Z",
+            "contentLength": 293542,
+            "httpStatusCode": 200
+          },
+          "user_metadata": {}
+        },
+        {
+          "name": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/a0d510d2-480.jpg",
+          "bucket_id": "tenant-assets",
+          "owner": "",
+          "owner_id": "",
+          "version": "addccb43-300c-4d41-92fa-b2be1ba8adf8",
+          "id": "958a7bb5-ebcb-4121-a9a1-6cafabbf04c1",
+          "updated_at": "2026-05-30T18:06:05.078Z",
+          "created_at": "2026-05-30T18:06:05.078Z",
+          "last_accessed_at": "2026-05-30T18:06:05.078Z",
+          "metadata": {
+            "eTag": "\"7cd656ad6730aa65341ad23dc087ce9d\"",
+            "size": 28223,
+            "mimetype": "image/jpeg",
+            "cacheControl": "no-cache",
+            "lastModified": "2026-05-30T18:06:06.000Z",
+            "contentLength": 28223,
+            "httpStatusCode": 200
+          },
+          "user_metadata": {}
+        }
+      ]
+    }
+  ],
+  "auth_deletion_results": [
+    {
+      "user_id": "954da316-63e3-421c-88c7-a9f2254262a2",
+      "status_code": 200,
+      "ok": true,
+      "error": null
+    },
+    {
+      "user_id": "5e983349-a8f0-423a-802f-2ca2de354bbb",
+      "status_code": 200,
+      "ok": true,
+      "error": null
+    },
+    {
+      "user_id": "bc8cabac-2325-45f7-9beb-841b023309a7",
+      "status_code": 200,
+      "ok": true,
+      "error": null
+    },
+    {
+      "user_id": "9a191bae-e336-4a09-9866-daf8b2ab1c80",
+      "status_code": 200,
+      "ok": true,
+      "error": null
+    },
+    {
+      "user_id": "379f7f54-8a01-4b3c-b9aa-99fcdf2a818f",
+      "status_code": 200,
+      "ok": true,
+      "error": null
+    },
+    {
+      "user_id": "3bcd141c-3a5a-4dfc-8d6f-bd1287b2675c",
+      "status_code": 200,
+      "ok": true,
+      "error": null
+    },
+    {
+      "user_id": "765f9566-c935-4935-ab19-8ac0230fb3bf",
+      "status_code": 200,
+      "ok": true,
+      "error": null
+    },
+    {
+      "user_id": "afb1edea-6fa7-4fd6-bc57-21fa0be39caa",
+      "status_code": 200,
+      "ok": true,
+      "error": null
+    }
+  ],
+  "counts_after": {
+    "advisor_profiles": 3,
+    "atelier_dashboard_config": 2,
+    "atelier_dashboard_media": 24,
+    "atelier_dashboard_quotes": 8,
+    "atelier_presets_registry": 6,
+    "atmospheric_panels": 6,
+    "brand_collections": 4,
+    "brands": 20,
+    "cms_page_revisions": 27,
+    "cms_pages": 13,
+    "cms_sections": 56,
+    "cultural_descriptors": 29,
+    "editorial_block_translations": 3224,
+    "editorial_blocks": 1156,
+    "editorial_masters": 42,
+    "editorial_phrases": 13,
+    "editorial_surfaces": 8,
+    "editorial_translations": 65,
+    "editorial_variants": 4,
+    "feature_modules_registry": 34,
+    "guided_tour_config": 7,
+    "lead_intake_questions": 16,
+    "locale_profiles": 7,
+    "market_cultural_profiles": 7,
+    "market_narrative_profiles": 7,
+    "market_positioning_profiles": 7,
+    "market_submarkets": 48,
+    "markets": 15,
+    "media_filter_presets": 8,
+    "media_library": 70,
+    "media_with_usage": 70,
+    "moodboard_chapters": 9,
+    "moodboard_rooms": 16,
+    "moodboard_templates": 11,
+    "phone_dial_codes": 196,
+    "platform_feature_defaults": 1,
+    "platform_languages": 9,
+    "relationship_catalog_v1": 32,
+    "relationship_question_groups": 5,
+    "relationship_question_options": 32,
+    "relationship_questions": 5,
+    "schema_migrations": 78,
+    "studio_translation_preferences": 1,
+    "supplier_catalogs": 5,
+    "tag_registry": 42,
+    "template_blocks": 98,
+    "template_pages": 23,
+    "tenant_atelier_identity": 1,
+    "tenant_configuration": 1,
+    "tenant_dnt_registry": 4,
+    "tenant_email_settings": 1,
+    "tenant_markets": 8,
+    "tenant_modules": 14,
+    "tenant_onboarding": 1,
+    "tenant_settings": 8,
+    "tenants": 6,
+    "theme_presets": 33,
+    "users_profile": 1,
+    "auth.users": 1,
+    "storage.objects": 23
+  },
+  "final_checks": {
+    "operational_tenant_preserved": true,
+    "operational_tenant_detail": {
+      "id": "848354b9-a43e-4147-bdad-116fb93bd585",
+      "slug": "studio",
+      "name": "MOOD for DESIGN",
+      "status": "active"
+    },
+    "admin_auth_preserved": true,
+    "admin_profile_preserved": true,
+    "admin_profile_detail": {
+      "id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+      "email": "admin@moodfordesign.com",
+      "role": "super_admin",
+      "is_root_superadmin": true,
+      "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585"
+    },
+    "leads_count": 0,
+    "accounts_count": 0,
+    "contacts_count": 0,
+    "projects_count": 0,
+    "design_journeys_count": 0,
+    "relationship_threads_count": 0,
+    "relationship_messages_count": 0,
+    "auth_users_count": 1,
+    "users_profile_count": 1,
+    "active_tenants_count": 1,
+    "cms_pages_count": 13,
+    "cms_sections_count": 56,
+    "editorial_blocks_count": 1156,
+    "operational_tenant_settings_count": 8
+  }
+}

@@ -1,0 +1,167 @@
+[
+  {
+    "id": "539717fc-b46f-4ac9-bc53-58bec48bcf5f",
+    "relation_id": "92723fed-ab0a-462d-a314-bd4da03d531d",
+    "actor_id": null,
+    "kind": "relation_opened",
+    "payload": {
+      "from_request": "4d3d769a-36ac-48f4-86c2-35b1c883de1f"
+    },
+    "occurred_at": "2026-05-29 07:45:38.454593+00:00"
+  },
+  {
+    "id": "2f1647da-d9e9-4038-8ab1-796effd05296",
+    "relation_id": "92723fed-ab0a-462d-a314-bd4da03d531d",
+    "actor_id": null,
+    "kind": "temperature_changed",
+    "payload": {
+      "to": "ready"
+    },
+    "occurred_at": "2026-05-29 07:45:45.688966+00:00"
+  },
+  {
+    "id": "4cd33afd-d2ca-4e10-8435-02c9c7998382",
+    "relation_id": "92723fed-ab0a-462d-a314-bd4da03d531d",
+    "actor_id": null,
+    "kind": "activated",
+    "payload": {
+      "slug": "atelier-p0-final",
+      "tenant_id": "ffc845f0-c049-45ae-ba80-0d217aeb39c2"
+    },
+    "occurred_at": "2026-05-29 07:45:48.122863+00:00"
+  },
+  {
+    "id": "4b32aace-a834-460f-9e05-4800e4536c51",
+    "relation_id": "47b5fbfe-ffab-4ea4-ba06-2df471317fc0",
+    "actor_id": null,
+    "kind": "relation_opened",
+    "payload": {
+      "from_request": "155cd08d-e8eb-4106-8219-b1ce18483402"
+    },
+    "occurred_at": "2026-05-29 07:52:41.212244+00:00"
+  },
+  {
+    "id": "29b9c4ed-aa1a-44a2-b1e0-ea931a598071",
+    "relation_id": "47b5fbfe-ffab-4ea4-ba06-2df471317fc0",
+    "actor_id": null,
+    "kind": "temperature_changed",
+    "payload": {
+      "to": "ready"
+    },
+    "occurred_at": "2026-05-29 07:52:48.433502+00:00"
+  },
+  {
+    "id": "eb6449cc-9f02-4f38-bf75-0da94e5154a2",
+    "relation_id": "47b5fbfe-ffab-4ea4-ba06-2df471317fc0",
+    "actor_id": null,
+    "kind": "activated",
+    "payload": {
+      "slug": "studio-verifica-e2e",
+      "tenant_id": "f0e30282-2b15-407f-8787-c122ed97c0bc"
+    },
+    "occurred_at": "2026-05-29 07:52:50.562862+00:00"
+  },
+  {
+    "id": "44f5d6d4-9c6a-40b4-90ab-8789345a2325",
+    "relation_id": "974fff28-e75d-40c9-af17-94abda3bd25f",
+    "actor_id": null,
+    "kind": "relation_opened",
+    "payload": {
+      "from_request": "ca36795c-d565-45dd-b440-88b13bfb5772"
+    },
+    "occurred_at": "2026-05-30 03:21:58.123136+00:00"
+  },
+  {
+    "id": "77652965-bd50-4e45-90f0-248e7c3b78b9",
+    "relation_id": "974fff28-e75d-40c9-af17-94abda3bd25f",
+    "actor_id": null,
+    "kind": "activated",
+    "payload": {
+      "slug": "studio-tenant-lifecycle",
+      "tenant_id": "4dcfe2aa-f6aa-4a8a-992d-31c7f798c680"
+    },
+    "occurred_at": "2026-05-30 03:22:03.139004+00:00"
+  },
+  {
+    "id": "caef62bf-9f1a-4c76-9b57-f03d5c5754d7",
+    "relation_id": "230d9541-fcfa-466d-b237-628aee2dee9d",
+    "actor_id": "98fe84c0-7c0b-4816-aa86-4eaeaf6c3a03",
+    "kind": "relation_opened",
+    "payload": {
+      "from_request": "0f439d49-8e4e-4e57-9485-7aec98daa160"
+    },
+    "occurred_at": "2026-05-30 03:24:18.500681+00:00"
+  },
+  {
+    "id": "9a049a28-e56f-48f3-ab2e-95d3556cf594",
+    "relation_id": "230d9541-fcfa-466d-b237-628aee2dee9d",
+    "actor_id": null,
+    "kind": "activated",
+    "payload": {
+      "slug": "atelier-lifecycle",
+      "tenant_id": "62fddb8f-7b20-4b79-a252-7239e0ee809e"
+    },
+    "occurred_at": "2026-05-30 03:24:21.005447+00:00"
+  },
+  {
+    "id": "d00f5dda-5f40-4d2d-bf26-d3c92b9595fc",
+    "relation_id": "2303a2bc-5e16-4dff-97d6-32fb4e494142",
+    "actor_id": null,
+    "kind": "relation_opened",
+    "payload": {
+      "from_request": "76dccda3-2aab-4911-90d0-384665b4cedb"
+    },
+    "occurred_at": "2026-05-30 16:29:37.716362+00:00"
+  },
+  {
+    "id": "9f931e5c-c1f6-4fd8-8c2b-011f55307033",
+    "relation_id": "267aa3b0-7976-4825-8882-e606c2f87a77",
+    "actor_id": null,
+    "kind": "relation_opened",
+    "payload": {
+      "from_request": "76dccda3-2aab-4911-90d0-384665b4cedb"
+    },
+    "occurred_at": "2026-05-30 16:29:39.618626+00:00"
+  },
+  {
+    "id": "4597a2d4-78b9-467a-9b70-3f456dc577f9",
+    "relation_id": "ec19cd1d-d238-44c3-b3ae-7153c244f33a",
+    "actor_id": null,
+    "kind": "relation_opened",
+    "payload": {
+      "from_request": "377bf753-c1ee-4bca-b82c-6a4469fe8472"
+    },
+    "occurred_at": "2026-05-30 16:50:30.535223+00:00"
+  },
+  {
+    "id": "1c8c1e15-6dab-4592-b71a-07e03f34bca9",
+    "relation_id": "c4374e96-a041-4b6d-940e-968fadc0ec1c",
+    "actor_id": null,
+    "kind": "relation_opened",
+    "payload": {
+      "from_request": "78e9c0b1-eb14-4bed-a1f8-2fe7e57eb6b8"
+    },
+    "occurred_at": "2026-05-30 19:37:53.910365+00:00"
+  },
+  {
+    "id": "f6880bf2-c361-4717-98c5-0352e658b039",
+    "relation_id": "e440d72a-29dd-4800-be4c-044d1302b76b",
+    "actor_id": null,
+    "kind": "relation_opened",
+    "payload": {
+      "from_request": "76dccda3-2aab-4911-90d0-384665b4cedb"
+    },
+    "occurred_at": "2026-05-30 21:19:03.545559+00:00"
+  },
+  {
+    "id": "4170f93d-ccc7-4dd2-8103-1fe7c99306f7",
+    "relation_id": "e440d72a-29dd-4800-be4c-044d1302b76b",
+    "actor_id": "98fe84c0-7c0b-4816-aa86-4eaeaf6c3a03",
+    "kind": "activated",
+    "payload": {
+      "slug": "margraf-usa",
+      "tenant_id": "0618756f-ac41-40b0-ac10-76f882846efe"
+    },
+    "occurred_at": "2026-05-30 21:19:32.955787+00:00"
+  }
+]

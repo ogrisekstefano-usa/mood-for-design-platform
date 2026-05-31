@@ -1,0 +1,92 @@
+[
+  {
+    "id": "45882437-905f-4f0e-8669-87759eea2936",
+    "assignment_id": "853971f7-8bcb-4174-8925-67fc9add0fd0",
+    "event_type": "assigned",
+    "actor_user_id": null,
+    "payload_json": {
+      "reason": "only_available_user"
+    },
+    "created_at": "2026-05-29 07:43:51.250013+00:00"
+  },
+  {
+    "id": "ad9a7ba9-113c-49cd-bbcf-320f4f8aeb12",
+    "assignment_id": "d8fdbb3a-2b95-4c6f-8b21-f37a304b0ccc",
+    "event_type": "assigned",
+    "actor_user_id": null,
+    "payload_json": {
+      "reason": "only_available_user"
+    },
+    "created_at": "2026-05-29 21:27:59.943335+00:00"
+  },
+  {
+    "id": "6f59e4b9-61c5-417f-8682-536d1541ed15",
+    "assignment_id": "561b5154-892d-4023-b838-0f46325e1dcc",
+    "event_type": "assigned",
+    "actor_user_id": null,
+    "payload_json": {
+      "reason": "only_available_user"
+    },
+    "created_at": "2026-05-29 21:40:08.892338+00:00"
+  },
+  {
+    "id": "af2aa896-7052-4402-bb80-07bde635cf59",
+    "assignment_id": "bf5936ef-c716-494b-bc28-f7a67787ca07",
+    "event_type": "assigned",
+    "actor_user_id": null,
+    "payload_json": {
+      "reason": "only_available_user"
+    },
+    "created_at": "2026-05-29 21:54:46.849423+00:00"
+  },
+  {
+    "id": "8495b55e-3b32-4f48-aebb-5273a354e1db",
+    "assignment_id": "c6715326-034a-4176-9749-44e7c45d925b",
+    "event_type": "assigned",
+    "actor_user_id": null,
+    "payload_json": {
+      "reason": "only_available_user"
+    },
+    "created_at": "2026-05-30 01:28:42.183472+00:00"
+  },
+  {
+    "id": "7f2202d8-75e2-4f8d-87af-561354629bb0",
+    "assignment_id": "248209c9-5342-4652-9fa6-1b40903d4aec",
+    "event_type": "assigned",
+    "actor_user_id": null,
+    "payload_json": {
+      "reason": "only_available_user"
+    },
+    "created_at": "2026-05-30 06:17:29.233675+00:00"
+  },
+  {
+    "id": "45d96819-4b8f-4969-9542-420b0bbb7f95",
+    "assignment_id": "f4744569-ca6f-4de0-adfc-0e3d4869f7a2",
+    "event_type": "assigned",
+    "actor_user_id": null,
+    "payload_json": {
+      "reason": "only_available_user"
+    },
+    "created_at": "2026-05-30 07:11:42.641674+00:00"
+  },
+  {
+    "id": "871e975e-d745-4b13-8643-91002407f3f9",
+    "assignment_id": "87050eef-e08f-4b09-a5c5-103abd72a91a",
+    "event_type": "assigned",
+    "actor_user_id": null,
+    "payload_json": {
+      "reason": "only_available_user"
+    },
+    "created_at": "2026-05-30 21:21:37.375815+00:00"
+  },
+  {
+    "id": "2fbf0074-7d13-4626-a76b-f5da5cea2995",
+    "assignment_id": "0be81ff6-2a7d-4a10-b480-558b83bff88e",
+    "event_type": "assigned",
+    "actor_user_id": null,
+    "payload_json": {
+      "reason": "only_available_user"
+    },
+    "created_at": "2026-05-30 21:21:45.497034+00:00"
+  }
+]

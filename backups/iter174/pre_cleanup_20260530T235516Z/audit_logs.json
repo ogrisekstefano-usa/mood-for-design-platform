@@ -1,0 +1,1339 @@
+[
+  {
+    "id": "1163c57b-b408-43dd-957b-4d1de546ccf5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "media.update",
+    "resource_type": "media",
+    "resource_id": "233bd836-660d-4dce-b9d3-038364acb377",
+    "metadata_json": {
+      "width": 1330,
+      "height": 830
+    },
+    "created_at": "2026-05-26 04:45:08.232140+00:00"
+  },
+  {
+    "id": "f49bbd18-6554-47c3-83a4-5988e386d511",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"759b5fd4-88d8-4455-abe1-111ab8812f57\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":0,\"sections_modified\":4,\"sections_reordered\":0,\"field_changes\":1,\"has_changes\":true}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-27 04:27:12.632480+00:00"
+  },
+  {
+    "id": "2b7b59f5-e1b8-4db8-921f-4ce70a22bc24",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"f7abacb2-1e4c-4265-b306-4eb9cc2c8969\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":0,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":false}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-27 05:41:31.617608+00:00"
+  },
+  {
+    "id": "f3f2cbb1-9a2c-4486-9f93-b683a2a91746",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "moodboard.share_created",
+    "resource_type": "moodboard",
+    "resource_id": "748df1f0-fb02-4107-86e6-10fdeac82b61",
+    "metadata_json": {},
+    "created_at": "2026-05-27 19:08:39.819434+00:00"
+  },
+  {
+    "id": "e642b0a1-cc89-493d-98a5-cca2a7bd9287",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "navigation.reset",
+    "resource_type": null,
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:57:22.428986+00:00"
+  },
+  {
+    "id": "a39cded9-ba25-4863-ac60-56180726af90",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.interpretation_generated",
+    "resource_type": "design_reference",
+    "resource_id": "74691279-e82d-402b-8cb2-095373089ec1",
+    "metadata_json": {
+      "locale": "EN_US"
+    },
+    "created_at": "2026-05-23 20:47:23.500061+00:00"
+  },
+  {
+    "id": "86081bfd-0fd9-4c4e-9c29-cfac5debddc3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.ingested",
+    "resource_type": "design_reference",
+    "resource_id": "74691279-e82d-402b-8cb2-095373089ec1",
+    "metadata_json": {
+      "locale": "EN_US",
+      "project_id": null,
+      "interpreted": true
+    },
+    "created_at": "2026-05-23 20:47:23.765256+00:00"
+  },
+  {
+    "id": "bb9c4e6e-547a-40d2-934a-aa5a90c49a6d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "account.stage_changed",
+    "resource_type": "account",
+    "resource_id": "1436728b-4a65-48ba-a209-35e3ae7b362a",
+    "metadata_json": {
+      "to": "discovery"
+    },
+    "created_at": "2026-05-23 20:48:03.090126+00:00"
+  },
+  {
+    "id": "d30dc38c-c2d5-4299-b0aa-0a84c82af45e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "account.stage_changed",
+    "resource_type": "account",
+    "resource_id": "1436728b-4a65-48ba-a209-35e3ae7b362a",
+    "metadata_json": {
+      "to": "conversation_open"
+    },
+    "created_at": "2026-05-23 20:48:03.826583+00:00"
+  },
+  {
+    "id": "1546f19b-0509-4427-88ad-cbd109817e2c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "account.created",
+    "resource_type": "account",
+    "resource_id": "feae814f-52cb-443e-8745-40f852b6004c",
+    "metadata_json": {
+      "account_type": "private_client"
+    },
+    "created_at": "2026-05-23 20:48:13.749060+00:00"
+  },
+  {
+    "id": "5a91a5bb-a15f-40ed-aa91-562463fc754f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "branding.updated",
+    "resource_type": "tenant",
+    "resource_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "metadata_json": {
+      "keys_changed": [
+        "branding_settings"
+      ]
+    },
+    "created_at": "2026-05-23 20:49:18.055879+00:00"
+  },
+  {
+    "id": "98aaf997-a91e-4e6a-b39e-80e0c6eab2ad",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "branding.updated",
+    "resource_type": "tenant",
+    "resource_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "metadata_json": {
+      "keys_changed": [
+        "branding_settings"
+      ]
+    },
+    "created_at": "2026-05-23 20:49:19.057226+00:00"
+  },
+  {
+    "id": "f1848d31-6b22-4d89-96e1-4f08bf0d9b43",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "branding.updated",
+    "resource_type": "tenant",
+    "resource_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "metadata_json": {
+      "keys_changed": [
+        "branding_settings"
+      ]
+    },
+    "created_at": "2026-05-23 20:49:19.753023+00:00"
+  },
+  {
+    "id": "178e1abf-e247-4301-a262-b348c9f1a669",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "domain.created",
+    "resource_type": "domain",
+    "resource_id": "d4916295-7665-4a22-bc60-73553b0181bc",
+    "metadata_json": {
+      "hostname": "test-custom-8cb9ce65.example.com",
+      "domain_type": "custom"
+    },
+    "created_at": "2026-05-23 20:52:36.425295+00:00"
+  },
+  {
+    "id": "0373485f-c40d-4e57-8042-d90e53e8a615",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "domain.created",
+    "resource_type": "domain",
+    "resource_id": "6a079ba2-e6c7-4af6-8612-dc08afbf5514",
+    "metadata_json": {
+      "hostname": "test-custom-1b9fddf1.example.com",
+      "domain_type": "custom"
+    },
+    "created_at": "2026-05-23 20:52:37.967367+00:00"
+  },
+  {
+    "id": "cbca6e10-40f7-447b-8686-c1694f7d50f0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "domain.created",
+    "resource_type": "domain",
+    "resource_id": "c4759881-7ca2-49ee-976f-438edb7ac129",
+    "metadata_json": {
+      "hostname": "test-sub-c3ce0cd4.moodfordesign.com",
+      "domain_type": "subdomain"
+    },
+    "created_at": "2026-05-23 20:52:39.953265+00:00"
+  },
+  {
+    "id": "147fdeba-a887-46f9-9301-15381a1fb28d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "domain.deleted",
+    "resource_type": "domain",
+    "resource_id": "c4759881-7ca2-49ee-976f-438edb7ac129",
+    "metadata_json": {
+      "hostname": "test-sub-c3ce0cd4.moodfordesign.com"
+    },
+    "created_at": "2026-05-23 20:52:40.575528+00:00"
+  },
+  {
+    "id": "da5e5f9c-fd90-4cee-9f90-57df2f771b86",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.sent",
+    "resource_type": "moodboard",
+    "resource_id": "0a7f2c59-b8c1-4067-b304-d4ca59bf5494",
+    "metadata_json": {
+      "to": "sent",
+      "from": "draft",
+      "note": null
+    },
+    "created_at": "2026-05-23 20:53:30.559858+00:00"
+  },
+  {
+    "id": "e284242f-f48c-49e9-97e1-e4eb468c619c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.approved",
+    "resource_type": "moodboard",
+    "resource_id": "0a7f2c59-b8c1-4067-b304-d4ca59bf5494",
+    "metadata_json": {
+      "to": "approved",
+      "from": "sent",
+      "note": "ok"
+    },
+    "created_at": "2026-05-23 20:53:31.263048+00:00"
+  },
+  {
+    "id": "b1cf36fe-d1d8-45e7-b690-3aea38f186bb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.sent",
+    "resource_type": "moodboard",
+    "resource_id": "12a20304-5d78-4e57-85ee-7b6e9279dba0",
+    "metadata_json": {
+      "to": "sent",
+      "from": "draft",
+      "note": null
+    },
+    "created_at": "2026-05-23 20:53:34.814315+00:00"
+  },
+  {
+    "id": "aabdd1de-79a2-44a7-bafa-df0d8ece5a00",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.revision_requested",
+    "resource_type": "moodboard",
+    "resource_id": "12a20304-5d78-4e57-85ee-7b6e9279dba0",
+    "metadata_json": {
+      "to": "revision_requested",
+      "from": "sent",
+      "note": "spostare blocchi"
+    },
+    "created_at": "2026-05-23 20:53:35.505738+00:00"
+  },
+  {
+    "id": "88645fac-7a3d-4e46-b0f1-7010052859eb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.share_created",
+    "resource_type": "moodboard",
+    "resource_id": "65595bd2-e395-46e5-b124-14808972afec",
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:53:38.248775+00:00"
+  },
+  {
+    "id": "ebf1b468-3d50-4f7f-9dc7-c77e9c4d852e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.sent",
+    "resource_type": "moodboard",
+    "resource_id": "7454d52a-4cf1-4850-a001-c44a682438c6",
+    "metadata_json": {
+      "to": "sent",
+      "from": "draft",
+      "note": null
+    },
+    "created_at": "2026-05-23 20:53:41.165821+00:00"
+  },
+  {
+    "id": "9e708689-9135-4fd1-a957-19d0e6131b23",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.share_created",
+    "resource_type": "moodboard",
+    "resource_id": "7454d52a-4cf1-4850-a001-c44a682438c6",
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:53:41.858877+00:00"
+  },
+  {
+    "id": "4f683ad8-1bca-4f41-a09a-dd3b17d6956f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "lead.convert",
+    "resource_type": "lead",
+    "resource_id": "f75d7497-b720-4cef-9826-56603e5b4748",
+    "metadata_json": {
+      "project_id": "e53b55fe-9f33-4b7e-accc-009597472159"
+    },
+    "created_at": "2026-05-23 20:53:50.146918+00:00"
+  },
+  {
+    "id": "12a41d82-5739-478b-ab9d-3c731c78e79c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.interpretation_generated",
+    "resource_type": "design_reference",
+    "resource_id": "7dc56048-0365-480a-97eb-18eb62ebe136",
+    "metadata_json": {
+      "locale": "EN_AE"
+    },
+    "created_at": "2026-05-23 20:55:17.749974+00:00"
+  },
+  {
+    "id": "5a382911-4301-4c27-bffc-acd18c24f457",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.ingested",
+    "resource_type": "design_reference",
+    "resource_id": "7dc56048-0365-480a-97eb-18eb62ebe136",
+    "metadata_json": {
+      "locale": "EN_AE",
+      "project_id": null,
+      "interpreted": true
+    },
+    "created_at": "2026-05-23 20:55:18.007524+00:00"
+  },
+  {
+    "id": "64c152f7-60cb-448c-a5ac-1e66cc8b27c6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.interpretation_generated",
+    "resource_type": "design_reference",
+    "resource_id": "7dc56048-0365-480a-97eb-18eb62ebe136",
+    "metadata_json": {
+      "locale": "DE_DE"
+    },
+    "created_at": "2026-05-23 20:55:32.722484+00:00"
+  },
+  {
+    "id": "0ecd6315-6821-4493-90b2-e445f575dfb0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference_collection.created",
+    "resource_type": "reference_collection",
+    "resource_id": "99b0ad48-3036-4dfc-9ada-ab952fc4f8a2",
+    "metadata_json": {
+      "title": "Test Direction \u2014 pytest"
+    },
+    "created_at": "2026-05-23 20:55:33.810451+00:00"
+  },
+  {
+    "id": "9d205783-674a-4ee8-8e5a-d350ab82e085",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.action.link_project",
+    "resource_type": "design_reference",
+    "resource_id": "7dc56048-0365-480a-97eb-18eb62ebe136",
+    "metadata_json": {
+      "project_id": "e53b55fe-9f33-4b7e-accc-009597472159"
+    },
+    "created_at": "2026-05-23 20:55:40.521545+00:00"
+  },
+  {
+    "id": "3522bd80-9e26-491d-b0ed-add6a6008ee5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.action.discuss",
+    "resource_type": "design_reference",
+    "resource_id": "7dc56048-0365-480a-97eb-18eb62ebe136",
+    "metadata_json": {
+      "project_id": "e53b55fe-9f33-4b7e-accc-009597472159"
+    },
+    "created_at": "2026-05-23 20:55:41.063160+00:00"
+  },
+  {
+    "id": "7a3e2b45-3c1b-4811-b9ef-97b029fb3819",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.action.moodboard",
+    "resource_type": "design_reference",
+    "resource_id": "7dc56048-0365-480a-97eb-18eb62ebe136",
+    "metadata_json": {
+      "project_id": "e53b55fe-9f33-4b7e-accc-009597472159"
+    },
+    "created_at": "2026-05-23 20:55:41.598478+00:00"
+  },
+  {
+    "id": "3fe44792-2a82-4e8c-9ac5-be5c77282a59",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.action.material_study",
+    "resource_type": "design_reference",
+    "resource_id": "7dc56048-0365-480a-97eb-18eb62ebe136",
+    "metadata_json": {
+      "project_id": "e53b55fe-9f33-4b7e-accc-009597472159"
+    },
+    "created_at": "2026-05-23 20:55:42.129867+00:00"
+  },
+  {
+    "id": "350cde48-bfd0-435e-b830-7229d64dd41b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "account.stage_changed",
+    "resource_type": "account",
+    "resource_id": "5e3b122a-1a25-48f7-8017-cc6d6a81de1d",
+    "metadata_json": {
+      "to": "lead"
+    },
+    "created_at": "2026-05-23 20:55:50.638035+00:00"
+  },
+  {
+    "id": "8f02c519-1856-4aa5-b25f-83384cd00d33",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "account.stage_changed",
+    "resource_type": "account",
+    "resource_id": "5e3b122a-1a25-48f7-8017-cc6d6a81de1d",
+    "metadata_json": {
+      "to": "conversation_open"
+    },
+    "created_at": "2026-05-23 20:55:52.321667+00:00"
+  },
+  {
+    "id": "a42ca0cc-519d-4c72-8e08-b3a630be68e0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"ae81b1cc-9970-477f-b7a6-844b0a574b09\",\"change_summary\":{}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:56:06.981561+00:00"
+  },
+  {
+    "id": "eaae3453-fe93-462b-bbeb-f5ceb265c173",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "footer.reset",
+    "resource_type": null,
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:57:23.165345+00:00"
+  },
+  {
+    "id": "b975e33f-238a-4491-bed3-6bcd97e19f1e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "theme.update",
+    "resource_type": "tenant",
+    "resource_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "metadata_json": {
+      "keys": [
+        "atmosphere"
+      ]
+    },
+    "created_at": "2026-05-23 20:57:36.148883+00:00"
+  },
+  {
+    "id": "322fb289-3802-4141-85ad-a3589194fd29",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.sent",
+    "resource_type": "moodboard",
+    "resource_id": "f7b457ba-394f-4947-8719-7ea425b9b4ff",
+    "metadata_json": {
+      "to": "sent",
+      "from": "draft",
+      "note": null
+    },
+    "created_at": "2026-05-23 20:57:51.042370+00:00"
+  },
+  {
+    "id": "c67710a6-62e7-4abe-8bbd-441a80b0772e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.share_created",
+    "resource_type": "moodboard",
+    "resource_id": "f7b457ba-394f-4947-8719-7ea425b9b4ff",
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:57:51.705846+00:00"
+  },
+  {
+    "id": "f3652917-a652-47fb-8a62-538b43ae5490",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.sent",
+    "resource_type": "moodboard",
+    "resource_id": "c3ea3a01-6a85-41f8-b8d2-e2f49717fe22",
+    "metadata_json": {
+      "to": "sent",
+      "from": "draft",
+      "note": null
+    },
+    "created_at": "2026-05-23 20:57:55.331267+00:00"
+  },
+  {
+    "id": "e811c211-52f2-4c50-89f0-ce365efbffd2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.share_created",
+    "resource_type": "moodboard",
+    "resource_id": "c3ea3a01-6a85-41f8-b8d2-e2f49717fe22",
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:57:55.986167+00:00"
+  },
+  {
+    "id": "ee0ff1a9-dfba-48bc-8c46-ebeb69fc5b83",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"b7c750d5-95aa-4ae1-bb49-414910a7fdb8\",\"change_summary\":{\"sections_added\":1,\"sections_removed\":0,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":true}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:58:09.764913+00:00"
+  },
+  {
+    "id": "bb8e98ff-fed4-4fb3-a3b8-5e154384c521",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"dfcdce44-3c47-4aac-80d5-d6305d4f5a4e\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":0,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":false}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:58:11.044132+00:00"
+  },
+  {
+    "id": "c7db9ecc-1a9a-45a9-89bc-130e8fe79a25",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.update",
+    "resource_type": "{\"page_key\":\"ui\"}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:58:11.847576+00:00"
+  },
+  {
+    "id": "515f4b5d-36e0-457e-946e-9e960673e7be",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"90d9ebbd-debe-4739-b161-06bbbd66173f\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":1,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":true}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:58:16.140134+00:00"
+  },
+  {
+    "id": "e4c7b1fc-6d6c-40a4-ae06-f39a2bd51b6b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.revert",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"90d9ebbd-debe-4739-b161-06bbbd66173f\"}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:58:18.657188+00:00"
+  },
+  {
+    "id": "861e2efa-20f4-44ea-89e9-4964cc09753a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"8e67b0a3-a9b5-43f5-a1c4-056561eb70c8\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":0,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":false}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:58:21.104316+00:00"
+  },
+  {
+    "id": "6e95aa71-553a-43ef-b7f9-a8933acf8110",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "branding.updated",
+    "resource_type": "tenant",
+    "resource_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "metadata_json": {
+      "keys_changed": [
+        "branding_settings",
+        "theme_settings"
+      ]
+    },
+    "created_at": "2026-05-26 04:45:22.815175+00:00"
+  },
+  {
+    "id": "7c857426-1b4e-4418-84ec-77a0e65d23a6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"3d6f2f52-4546-405d-8e36-518cfef793ea\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":0,\"sections_modified\":2,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":true}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-27 04:28:22.746384+00:00"
+  },
+  {
+    "id": "1e190180-1b2b-4376-bf06-a55d61ba8424",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"5794fc9b-eeb2-4998-bafe-55761d6333c9\",\"change_summary\":{\"sections_added\":14,\"sections_removed\":0,\"sections_modified\":10,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":true}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-27 01:13:59.690352+00:00"
+  },
+  {
+    "id": "fa3d5aef-e05a-4def-a859-876c0477903e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "media.update",
+    "resource_type": "media",
+    "resource_id": "321e5188-8c54-4589-8012-94ce5f55cb7c",
+    "metadata_json": {
+      "width": 5376,
+      "height": 3072
+    },
+    "created_at": "2026-05-27 04:32:08.643482+00:00"
+  },
+  {
+    "id": "8262ab8b-395c-4d30-943f-abbfe19ce7e4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"a509d97b-6c2e-468b-a558-b3c19e14c5d4\",\"change_summary\":{\"sections_added\":1,\"sections_removed\":0,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":true}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-27 05:42:29.664125+00:00"
+  },
+  {
+    "id": "b2c69db2-d294-48f0-877f-6aeafde9690a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "moodboard.share_created",
+    "resource_type": "moodboard",
+    "resource_id": "748df1f0-fb02-4107-86e6-10fdeac82b61",
+    "metadata_json": {},
+    "created_at": "2026-05-27 19:08:49.838012+00:00"
+  },
+  {
+    "id": "6eeb2eb0-0b9b-49f9-9934-5fba74b35ae6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.interpretation_generated",
+    "resource_type": "design_reference",
+    "resource_id": "092999c9-18dc-426b-941f-443f632cf6c0",
+    "metadata_json": {
+      "locale": "IT_IT"
+    },
+    "created_at": "2026-05-23 23:32:49.235103+00:00"
+  },
+  {
+    "id": "6befd2e6-568f-4025-88f0-35e11bc9f5ab",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"8a2bb116-2002-415e-9e95-f2c4c464f134\",\"change_summary\":{\"sections_added\":10,\"sections_removed\":0,\"sections_modified\":10,\"sections_reordered\":10,\"field_changes\":2,\"has_changes\":true}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-27 04:06:22.249534+00:00"
+  },
+  {
+    "id": "70628bf9-1dfa-4d67-9a36-c7820bd5cae7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"abe86de9-fb9d-4d79-90e1-cddc41ba3129\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":0,\"sections_modified\":1,\"sections_reordered\":0,\"field_changes\":3,\"has_changes\":true}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-27 04:38:55.156137+00:00"
+  },
+  {
+    "id": "5f7c45af-ca91-4276-8b2f-667e8c042f7d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "branding.updated",
+    "resource_type": "tenant",
+    "resource_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "metadata_json": {
+      "keys_changed": [
+        "branding_settings",
+        "theme_settings"
+      ]
+    },
+    "created_at": "2026-05-24 03:00:28.214201+00:00"
+  },
+  {
+    "id": "6a90bfc2-3ddc-4532-8491-9064a2fadbb7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"e1860686-992d-46f7-ab2c-fd6215e78e86\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":1,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":true}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-27 05:44:00.104366+00:00"
+  },
+  {
+    "id": "f84a300d-de9e-4d2f-86a3-6f4cd0373f15",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "template.saved_from_moodboard",
+    "resource_type": "template",
+    "resource_id": "f8238284-b833-4444-a614-f7d14b18ebdd",
+    "metadata_json": {
+      "page_count": 1,
+      "block_count": 1,
+      "source_moodboard_id": "748df1f0-fb02-4107-86e6-10fdeac82b61"
+    },
+    "created_at": "2026-05-27 19:09:32.403015+00:00"
+  },
+  {
+    "id": "91f3855e-770a-45ca-8e69-e40dc7b16fef",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "member.updated",
+    "resource_type": "profile",
+    "resource_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "metadata_json": {
+      "last_name_to": "Ogrisek",
+      "first_name_to": "Stefano",
+      "last_name_from": "Root",
+      "first_name_from": "MOOD"
+    },
+    "created_at": "2026-05-24 04:49:44.340748+00:00"
+  },
+  {
+    "id": "2091e8a3-1b24-4893-aff6-9b9cfad71bab",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "branding.updated",
+    "resource_type": "tenant",
+    "resource_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "metadata_json": {
+      "keys_changed": [
+        "branding_settings",
+        "theme_settings"
+      ]
+    },
+    "created_at": "2026-05-24 17:02:26.998276+00:00"
+  },
+  {
+    "id": "cdb23a0c-0c41-434a-b024-89c9bd07b8cd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "branding.updated",
+    "resource_type": "tenant",
+    "resource_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "metadata_json": {
+      "keys_changed": [
+        "branding_settings",
+        "theme_settings"
+      ]
+    },
+    "created_at": "2026-05-24 17:03:40.715940+00:00"
+  },
+  {
+    "id": "ce2c56e9-f084-4ea1-bb2b-656ed4fd0f3f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "branding.updated",
+    "resource_type": "tenant",
+    "resource_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "metadata_json": {
+      "keys_changed": [
+        "branding_settings",
+        "theme_settings"
+      ]
+    },
+    "created_at": "2026-05-24 17:03:53.238003+00:00"
+  },
+  {
+    "id": "fb871e8c-ab31-44f8-b83a-58f9c4e49c1e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"5e0b9773-8b42-4529-bace-43f3382db110\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":0,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":false}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 20:58:23.027811+00:00"
+  },
+  {
+    "id": "65571745-4ef6-47b3-a727-e33e3fa3d644",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.ingested",
+    "resource_type": "design_reference",
+    "resource_id": "092999c9-18dc-426b-941f-443f632cf6c0",
+    "metadata_json": {
+      "locale": "IT_IT",
+      "project_id": null,
+      "interpreted": true
+    },
+    "created_at": "2026-05-23 23:32:49.498268+00:00"
+  },
+  {
+    "id": "9b967f8a-3afe-4f1a-b114-614adcdc2f00",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "account.stage_changed",
+    "resource_type": "account",
+    "resource_id": "c29d5cf9-6430-4014-a961-92cd60ccbdff",
+    "metadata_json": {
+      "to": "discovery"
+    },
+    "created_at": "2026-05-23 23:33:16.584702+00:00"
+  },
+  {
+    "id": "46561f37-e7b1-4fa9-b5f3-f614b586cf35",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "account.stage_changed",
+    "resource_type": "account",
+    "resource_id": "c29d5cf9-6430-4014-a961-92cd60ccbdff",
+    "metadata_json": {
+      "to": "conversation_open"
+    },
+    "created_at": "2026-05-23 23:33:17.334071+00:00"
+  },
+  {
+    "id": "13e8511c-c511-4996-abe1-9df87c2789b7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "account.created",
+    "resource_type": "account",
+    "resource_id": "3bb01f72-119d-4c06-ac0b-42722e4476e5",
+    "metadata_json": {
+      "account_type": "private_client"
+    },
+    "created_at": "2026-05-23 23:33:26.198878+00:00"
+  },
+  {
+    "id": "dd3d33ed-1330-4eec-845e-a0b8b371e541",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "branding.updated",
+    "resource_type": "tenant",
+    "resource_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "metadata_json": {
+      "keys_changed": [
+        "branding_settings"
+      ]
+    },
+    "created_at": "2026-05-23 23:34:57.748696+00:00"
+  },
+  {
+    "id": "84321631-98c9-4e6a-b2ea-cfa198608ada",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "branding.updated",
+    "resource_type": "tenant",
+    "resource_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "metadata_json": {
+      "keys_changed": [
+        "branding_settings"
+      ]
+    },
+    "created_at": "2026-05-23 23:34:58.747807+00:00"
+  },
+  {
+    "id": "0eb2dd67-e705-4012-ad56-8cb65a9f2df7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "branding.updated",
+    "resource_type": "tenant",
+    "resource_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "metadata_json": {
+      "keys_changed": [
+        "branding_settings"
+      ]
+    },
+    "created_at": "2026-05-23 23:34:59.439744+00:00"
+  },
+  {
+    "id": "93ef8f8d-e21b-4e78-90ed-3d4de8718293",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "domain.created",
+    "resource_type": "domain",
+    "resource_id": "b1436be0-23e9-4143-ba3a-1c316b1491f6",
+    "metadata_json": {
+      "hostname": "test-sub-c79eda89.moodfordesign.com",
+      "domain_type": "subdomain"
+    },
+    "created_at": "2026-05-23 23:40:28.848534+00:00"
+  },
+  {
+    "id": "d62131c9-5abe-4841-b0d2-dae917dce996",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "domain.deleted",
+    "resource_type": "domain",
+    "resource_id": "b1436be0-23e9-4143-ba3a-1c316b1491f6",
+    "metadata_json": {
+      "hostname": "test-sub-c79eda89.moodfordesign.com"
+    },
+    "created_at": "2026-05-23 23:40:29.482546+00:00"
+  },
+  {
+    "id": "ac5398d3-6e1c-4768-a52f-fe47ba39823b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.sent",
+    "resource_type": "moodboard",
+    "resource_id": "002ccf46-a71c-4567-97bf-597e9ab22648",
+    "metadata_json": {
+      "to": "sent",
+      "from": "draft",
+      "note": null
+    },
+    "created_at": "2026-05-23 23:41:18.902354+00:00"
+  },
+  {
+    "id": "9de215e6-d281-4576-a1cd-e25628e4a885",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.approved",
+    "resource_type": "moodboard",
+    "resource_id": "002ccf46-a71c-4567-97bf-597e9ab22648",
+    "metadata_json": {
+      "to": "approved",
+      "from": "sent",
+      "note": "ok"
+    },
+    "created_at": "2026-05-23 23:41:19.577812+00:00"
+  },
+  {
+    "id": "806e5475-a8fb-4aec-8a74-06581e48b465",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.sent",
+    "resource_type": "moodboard",
+    "resource_id": "9194a640-7f81-4493-a406-2dc73ce14299",
+    "metadata_json": {
+      "to": "sent",
+      "from": "draft",
+      "note": null
+    },
+    "created_at": "2026-05-23 23:41:23.067470+00:00"
+  },
+  {
+    "id": "67f2b8b9-f8e6-4d65-a72e-4f97bb339994",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.revision_requested",
+    "resource_type": "moodboard",
+    "resource_id": "9194a640-7f81-4493-a406-2dc73ce14299",
+    "metadata_json": {
+      "to": "revision_requested",
+      "from": "sent",
+      "note": "spostare blocchi"
+    },
+    "created_at": "2026-05-23 23:41:23.742134+00:00"
+  },
+  {
+    "id": "52de095e-9318-4535-92ac-35db6d6b76af",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.share_created",
+    "resource_type": "moodboard",
+    "resource_id": "1e56bbbd-abc3-49a0-8ead-92e637e0b87f",
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:41:25.983454+00:00"
+  },
+  {
+    "id": "c7dc608c-8ec3-4437-b840-5370d835ace9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.sent",
+    "resource_type": "moodboard",
+    "resource_id": "42dfc8c8-5f0c-4773-8790-8825ea3d32cc",
+    "metadata_json": {
+      "to": "sent",
+      "from": "draft",
+      "note": null
+    },
+    "created_at": "2026-05-23 23:41:28.843409+00:00"
+  },
+  {
+    "id": "2446e89d-b38e-41bf-99ac-3b5b5d394136",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.share_created",
+    "resource_type": "moodboard",
+    "resource_id": "42dfc8c8-5f0c-4773-8790-8825ea3d32cc",
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:41:29.536613+00:00"
+  },
+  {
+    "id": "2897075b-e9b1-4867-91c5-1c34ff009c2a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "lead.convert",
+    "resource_type": "lead",
+    "resource_id": "71e501f0-9c8e-4666-9383-5a2f30758695",
+    "metadata_json": {
+      "project_id": "67db1579-ee0a-4122-b4c7-abe83af807f6"
+    },
+    "created_at": "2026-05-23 23:41:37.683598+00:00"
+  },
+  {
+    "id": "9e23d346-b546-4c16-beac-7d3b741220cf",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.interpretation_generated",
+    "resource_type": "design_reference",
+    "resource_id": "ffd7f04d-4116-45a6-85af-59288278d5dc",
+    "metadata_json": {
+      "locale": "EN_AE"
+    },
+    "created_at": "2026-05-23 23:43:16.206240+00:00"
+  },
+  {
+    "id": "76140f3f-7ded-4b88-a5d7-035afd18efda",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.ingested",
+    "resource_type": "design_reference",
+    "resource_id": "ffd7f04d-4116-45a6-85af-59288278d5dc",
+    "metadata_json": {
+      "locale": "EN_AE",
+      "project_id": null,
+      "interpreted": true
+    },
+    "created_at": "2026-05-23 23:43:16.547898+00:00"
+  },
+  {
+    "id": "8469b929-ab7c-480f-9524-98a76f25346b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.interpretation_generated",
+    "resource_type": "design_reference",
+    "resource_id": "ffd7f04d-4116-45a6-85af-59288278d5dc",
+    "metadata_json": {
+      "locale": "DE_DE"
+    },
+    "created_at": "2026-05-23 23:43:31.584008+00:00"
+  },
+  {
+    "id": "f517afa2-2ac7-4e27-bfca-2982a1b3eeb6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.action.link_project",
+    "resource_type": "design_reference",
+    "resource_id": "ffd7f04d-4116-45a6-85af-59288278d5dc",
+    "metadata_json": {
+      "project_id": "67db1579-ee0a-4122-b4c7-abe83af807f6"
+    },
+    "created_at": "2026-05-23 23:43:53.110295+00:00"
+  },
+  {
+    "id": "f960443a-0bbd-4132-b02b-07a53a156ac8",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.action.discuss",
+    "resource_type": "design_reference",
+    "resource_id": "ffd7f04d-4116-45a6-85af-59288278d5dc",
+    "metadata_json": {
+      "project_id": "67db1579-ee0a-4122-b4c7-abe83af807f6"
+    },
+    "created_at": "2026-05-23 23:43:53.718816+00:00"
+  },
+  {
+    "id": "88c2d516-fb74-494c-a088-90130becd44a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.action.moodboard",
+    "resource_type": "design_reference",
+    "resource_id": "ffd7f04d-4116-45a6-85af-59288278d5dc",
+    "metadata_json": {
+      "project_id": "67db1579-ee0a-4122-b4c7-abe83af807f6"
+    },
+    "created_at": "2026-05-23 23:43:54.334664+00:00"
+  },
+  {
+    "id": "d34d9b49-8af3-45da-b97b-560d480b35e1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "reference.action.material_study",
+    "resource_type": "design_reference",
+    "resource_id": "ffd7f04d-4116-45a6-85af-59288278d5dc",
+    "metadata_json": {
+      "project_id": "67db1579-ee0a-4122-b4c7-abe83af807f6"
+    },
+    "created_at": "2026-05-23 23:43:54.933989+00:00"
+  },
+  {
+    "id": "e06e6306-23d3-44cf-880b-039f4ebe48fe",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "account.stage_changed",
+    "resource_type": "account",
+    "resource_id": "5c707c83-a9e8-41e0-aaa1-d74670af4ad7",
+    "metadata_json": {
+      "to": "lead"
+    },
+    "created_at": "2026-05-23 23:44:03.540200+00:00"
+  },
+  {
+    "id": "5bbc49dd-2ec7-4d4e-a1d6-1a0df65364cd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "account.stage_changed",
+    "resource_type": "account",
+    "resource_id": "5c707c83-a9e8-41e0-aaa1-d74670af4ad7",
+    "metadata_json": {
+      "to": "conversation_open"
+    },
+    "created_at": "2026-05-23 23:44:05.321121+00:00"
+  },
+  {
+    "id": "f1d80d39-6de2-4ae0-8f58-74cbe07c0020",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"087ad017-96c1-4d00-8daf-b537d356cbe7\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":0,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":false}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:44:20.706281+00:00"
+  },
+  {
+    "id": "779aa1b8-bc1e-49c9-ab59-07fbb00e3e8a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "navigation.reset",
+    "resource_type": null,
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:45:58.326482+00:00"
+  },
+  {
+    "id": "94044f66-342b-41e4-b8e7-03fd6d8a1e3a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "footer.reset",
+    "resource_type": null,
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:45:59.063495+00:00"
+  },
+  {
+    "id": "46c2bd3d-65ba-43dc-87c4-acad14d39480",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "theme.update",
+    "resource_type": "tenant",
+    "resource_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "metadata_json": {
+      "keys": [
+        "atmosphere"
+      ]
+    },
+    "created_at": "2026-05-23 23:46:12.855805+00:00"
+  },
+  {
+    "id": "7e4e635a-440d-4ff9-ae90-6ed5040806e2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.sent",
+    "resource_type": "moodboard",
+    "resource_id": "d0402218-1259-4ffa-80d4-d500142f2453",
+    "metadata_json": {
+      "to": "sent",
+      "from": "draft",
+      "note": null
+    },
+    "created_at": "2026-05-23 23:46:27.289115+00:00"
+  },
+  {
+    "id": "5415127d-187f-40fc-a426-b62db973281e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.share_created",
+    "resource_type": "moodboard",
+    "resource_id": "d0402218-1259-4ffa-80d4-d500142f2453",
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:46:27.958145+00:00"
+  },
+  {
+    "id": "6bb8b4b1-0d82-4d99-a5bb-7bf46d239ad4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.sent",
+    "resource_type": "moodboard",
+    "resource_id": "64f33225-4dd5-4fc7-bb71-31ffa76daff8",
+    "metadata_json": {
+      "to": "sent",
+      "from": "draft",
+      "note": null
+    },
+    "created_at": "2026-05-23 23:46:31.649505+00:00"
+  },
+  {
+    "id": "dd1dc091-5595-4ac4-9155-b5ddd8b3def2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "moodboard.share_created",
+    "resource_type": "moodboard",
+    "resource_id": "64f33225-4dd5-4fc7-bb71-31ffa76daff8",
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:46:32.310140+00:00"
+  },
+  {
+    "id": "1d5e91db-6160-4ec7-9476-fae0da697300",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"e744f6b0-4e53-4cf0-b1d5-e3e7966b42c5\",\"change_summary\":{\"sections_added\":1,\"sections_removed\":0,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":true}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:46:46.041151+00:00"
+  },
+  {
+    "id": "670be40d-4a7d-4e58-8d2b-5cb949b11203",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"87b23f4d-c0c7-4ed0-af32-7d505ae50c5f\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":0,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":false}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:46:47.314468+00:00"
+  },
+  {
+    "id": "e28cd4f0-e2a2-49bd-9035-1363b38387ab",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.update",
+    "resource_type": "{\"page_key\":\"ui\"}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:46:48.110358+00:00"
+  },
+  {
+    "id": "e05be4c7-5030-4b7e-be86-eef823cb36e4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"be65de54-2c81-445c-b240-ded7e53470e0\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":1,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":true}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:46:51.937794+00:00"
+  },
+  {
+    "id": "184ccc0c-78f5-42dc-82d8-63fa0fb66a05",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.revert",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"be65de54-2c81-445c-b240-ded7e53470e0\"}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:46:54.502791+00:00"
+  },
+  {
+    "id": "63393c91-367d-409e-9494-eb6b79f7577e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"c68e232c-f683-48b8-9a03-3b387c709320\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":0,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":false}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:46:56.941331+00:00"
+  },
+  {
+    "id": "098c017b-463c-499a-bf81-5dc86cdc3566",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"94aca996-b2dd-44e1-885a-2de4ff5159f7\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":0,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":false}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-23 23:46:58.883729+00:00"
+  },
+  {
+    "id": "7c318080-663c-403d-9ec7-f92dd8c7acb0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "member.updated",
+    "resource_type": "profile",
+    "resource_id": "6cab5a1e-a0e9-4dc7-a561-c75179f2c778",
+    "metadata_json": {
+      "last_name_to": "NameSurname",
+      "first_name_to": "ITER148Test",
+      "last_name_from": "Studio",
+      "first_name_from": "Designer"
+    },
+    "created_at": "2026-05-24 04:45:29.715268+00:00"
+  },
+  {
+    "id": "889c92ca-28db-4da6-8399-6a0aded313f2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": null,
+    "action": "member.updated",
+    "resource_type": "profile",
+    "resource_id": "6cab5a1e-a0e9-4dc7-a561-c75179f2c778",
+    "metadata_json": {
+      "last_name_to": "Studio",
+      "first_name_to": "Designer",
+      "last_name_from": "NameSurname",
+      "first_name_from": "ITER148Test"
+    },
+    "created_at": "2026-05-24 04:45:31.237987+00:00"
+  },
+  {
+    "id": "ac516c7e-a00f-45a9-ae6b-fb7cb907e0ac",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"5a606f75-8458-4d2f-b004-a69bdb7f7d40\",\"change_summary\":{\"sections_added\":0,\"sections_removed\":0,\"sections_modified\":9,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":true}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-27 04:21:06.437565+00:00"
+  },
+  {
+    "id": "c3c624ba-e83a-4c7a-b695-dba4a2e90dee",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "storefront.page.publish",
+    "resource_type": "{\"page_key\":\"home\",\"revision_id\":\"1ed97daa-8955-47b9-967a-48d65b9ebb7a\",\"change_summary\":{\"sections_added\":1,\"sections_removed\":0,\"sections_modified\":0,\"sections_reordered\":0,\"field_changes\":0,\"has_changes\":true}}",
+    "resource_id": null,
+    "metadata_json": {},
+    "created_at": "2026-05-27 05:40:12.409838+00:00"
+  },
+  {
+    "id": "f315c8b9-46d3-4d7e-902a-e19fdc22ef6d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "action": "template.applied",
+    "resource_type": "moodboard",
+    "resource_id": "ed7da019-75cc-4c97-81f2-be91e27e5277",
+    "metadata_json": {
+      "slug": "luxury-editorial",
+      "template_id": "11111111-0000-0000-0000-000000000001"
+    },
+    "created_at": "2026-05-27 15:42:56.572914+00:00"
+  }
+]

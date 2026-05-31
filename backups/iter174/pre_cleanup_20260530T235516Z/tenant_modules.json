@@ -1,0 +1,86 @@
+[
+  {
+    "tenant_id": "ffc845f0-c049-45ae-ba80-0d217aeb39c2",
+    "module_key": "design_journey_os",
+    "state": "active",
+    "activated_at": "2026-05-29 07:45:48.122863+00:00"
+  },
+  {
+    "tenant_id": "ffc845f0-c049-45ae-ba80-0d217aeb39c2",
+    "module_key": "moodboard_experience",
+    "state": "active",
+    "activated_at": "2026-05-29 07:45:48.122863+00:00"
+  },
+  {
+    "tenant_id": "ffc845f0-c049-45ae-ba80-0d217aeb39c2",
+    "module_key": "client_presentation_flow",
+    "state": "active",
+    "activated_at": "2026-05-29 07:45:48.122863+00:00"
+  },
+  {
+    "tenant_id": "f0e30282-2b15-407f-8787-c122ed97c0bc",
+    "module_key": "design_journey_os",
+    "state": "active",
+    "activated_at": "2026-05-29 07:52:50.562862+00:00"
+  },
+  {
+    "tenant_id": "f0e30282-2b15-407f-8787-c122ed97c0bc",
+    "module_key": "moodboard_experience",
+    "state": "active",
+    "activated_at": "2026-05-29 07:52:50.562862+00:00"
+  },
+  {
+    "tenant_id": "f0e30282-2b15-407f-8787-c122ed97c0bc",
+    "module_key": "client_presentation_flow",
+    "state": "active",
+    "activated_at": "2026-05-29 07:52:50.562862+00:00"
+  },
+  {
+    "tenant_id": "4dcfe2aa-f6aa-4a8a-992d-31c7f798c680",
+    "module_key": "design_journey_os",
+    "state": "active",
+    "activated_at": "2026-05-30 03:22:03.139004+00:00"
+  },
+  {
+    "tenant_id": "4dcfe2aa-f6aa-4a8a-992d-31c7f798c680",
+    "module_key": "moodboard_experience",
+    "state": "active",
+    "activated_at": "2026-05-30 03:22:03.139004+00:00"
+  },
+  {
+    "tenant_id": "4dcfe2aa-f6aa-4a8a-992d-31c7f798c680",
+    "module_key": "client_presentation_flow",
+    "state": "active",
+    "activated_at": "2026-05-30 03:22:03.139004+00:00"
+  },
+  {
+    "tenant_id": "62fddb8f-7b20-4b79-a252-7239e0ee809e",
+    "module_key": "design_journey_os",
+    "state": "active",
+    "activated_at": "2026-05-30 03:24:21.005447+00:00"
+  },
+  {
+    "tenant_id": "62fddb8f-7b20-4b79-a252-7239e0ee809e",
+    "module_key": "moodboard_experience",
+    "state": "active",
+    "activated_at": "2026-05-30 03:24:21.005447+00:00"
+  },
+  {
+    "tenant_id": "0618756f-ac41-40b0-ac10-76f882846efe",
+    "module_key": "showroom_continuity",
+    "state": "active",
+    "activated_at": "2026-05-30 21:19:32.955787+00:00"
+  },
+  {
+    "tenant_id": "0618756f-ac41-40b0-ac10-76f882846efe",
+    "module_key": "material_intelligence",
+    "state": "active",
+    "activated_at": "2026-05-30 21:19:32.955787+00:00"
+  },
+  {
+    "tenant_id": "0618756f-ac41-40b0-ac10-76f882846efe",
+    "module_key": "client_presentation_flow",
+    "state": "active",
+    "activated_at": "2026-05-30 21:19:32.955787+00:00"
+  }
+]

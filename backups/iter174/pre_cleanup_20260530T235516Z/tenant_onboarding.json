@@ -1,0 +1,18 @@
+[
+  {
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "profile_completed": false,
+    "branding_completed": false,
+    "service_completed": false,
+    "team_invited": false,
+    "project_created": false,
+    "materials_uploaded": false,
+    "storefront_published": false,
+    "completed_at": null,
+    "dismissed_at": null,
+    "dismissed_by": null,
+    "created_at": "2026-05-17 01:29:14.763094+00:00",
+    "updated_at": "2026-05-26 03:21:18.990515+00:00",
+    "owner_introduced": true
+  }
+]

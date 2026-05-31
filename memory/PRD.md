@@ -1,6 +1,62 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 
+## 🆕 ITER174 · CLEAN RESET CONTROLLED™ · ✅ DELIVERED · 31 May 2026
+
+**🎯 Obiettivo:** riportare la piattaforma a uno stato "Founder Only" prima di Ring 1. Eliminare TUTTI i dati operazionali test (CRM, journey, conversazioni, login traces, magic-link, audit logs, configuration events, studio_requests, studio_activation_drafts). Mantenere intatti CMS, editorial, catalogi i18n, branding, email templates, schema, codebase.
+
+**Workflow controllato in 3 fasi:**
+1. ✅ **DRY-RUN** (read-only) → `ITER174_DRY_RUN_REPORT.md` con 3 scenari (Strict / Conservativo Ring 1 / Light wipe)
+2. ✅ **APPROVAZIONE esplicita** founder → Scenario A "Strict reset"
+3. ✅ **ESECUZIONE**: full JSON backup → DB transaction (BEGIN/COMMIT) → storage REST delete → Supabase auth admin API delete → smoke test → report finale
+
+**Risultati:**
+- **Tenant attivi**: 1 (`studio` · MOOD for DESIGN · `848354b9-…` — slug invariato per vincolo founder; rename audit in backlog)
+- **Tenant archivati**: 5 (`atelier-p0-final`, `studio-verifica-e2e`, `studio-tenant-lifecycle`, `atelier-lifecycle`, `margraf-usa` newly archived)
+- **Auth.users**: 1 (`admin@moodfordesign.com`)
+- **users_profile**: 1 (`super_admin` + `is_root_superadmin=true`)
+- **CRM**: 0 (leads / accounts / contacts / projects / design_journeys / journey_briefs / journey_milestones / threads / messages / relations)
+- **Telemetria**: 0 (login_attempts / email_events / audit_logs / configuration_change_events / ai_assist_logs / funnel_events / user_onboarding_state)
+- **Magic-links / studio_requests / studio_activation_drafts**: 0
+- **Righe operazionali eliminate**: 1006 (984 baseline + 22 from smoke test)
+- **Storage**: 23 file / 21.01 MB preservati (cms-assets, media, tenant-assets/brand+storefront) · 10 file eliminati (4 orphan + 6 atelier-media test, -11.38 MB)
+- **media_library**: 70 rows preservate (CMS site/branding), 11 eliminate (inspiration/moodboard/test/NULL)
+- **CMS preservato al 100%**: 13 cms_pages · 56 cms_sections · 1156 editorial_blocks · 3224 editorial_block_translations · 65 editorial_translations · 42 editorial_masters · tenant_settings (8 keys: theme, page.homepage, page.showcase, public_navigation, public_footer, form.design-request, email_identity, email_template:space_ready:it)
+- **Catalogi i18n preservati al 100%**: 9 platform_languages · 196 phone_dial_codes · 15 markets · 33 theme_presets · 98 template_blocks · 16 moodboard_rooms
+
+**Smoke test post-cleanup (8/8 OK):**
+- Admin login (Blueprint2024!) ✅
+- Magic-link silent ✅
+- Public tenant info `/api/public/tenants/studio` ✅ (brand, theme, navigation, footer)
+- Storefront brand `/api/storefront/public/studio/brand` ✅
+- CMS pages: `home` ✅, `professionals` ✅
+- Navigation defaults ✅
+- Begin Journey (`POST /api/public/journeys/initiate` con payload completo) → HTTP 201 ✅ (journey_id + magic_link + thread + assignee=Stefano)
+
+**Bug pre-esistente individuato (NON risolto in ITER174):**
+- `/app/backend/routers/journey_initiate.py` linee 203 e 220: `"metadata_json": _phone_meta or None` viola `accounts.metadata_json NOT NULL`. Fix triviale (`or {}` invece di `or None`). Scheduled per ITER175 hotfix.
+
+**Vincoli rispettati:**
+- ✅ NON rinominato tenant · NON modificata architettura · NON nuove feature · NON toccato frontend / CMS / email templates / languages / schema
+
+**File creati:**
+- `/app/backend/scripts/iter174_dry_run.py` (read-only snapshot)
+- `/app/backend/scripts/iter174_backup.py` (full pre-cleanup JSON backup)
+- `/app/backend/scripts/iter174_cleanup_executor.py` (transactional cleanup + storage + auth deletion)
+- `/app/memory/ITER174_DRY_RUN_REPORT.md` (narrativa pre-execution)
+- `/app/memory/ITER174_CLEANUP_REPORT.md` (report finale)
+- `/app/backups/iter174/dry_run_20260530T232439Z.json`
+- `/app/backups/iter174/pre_cleanup_20260530T235516Z/` (44 file: snapshot per tabella + storage manifest + MANIFEST.json)
+- `/app/backups/iter174/cleanup_20260530T235837Z/audit.json + counts_before.json + counts_after.json`
+
+**Next:**
+- 🔴 P0 FOUNDER TENANT RENAMING AUDIT™ (fase separata) — decidere se rinominare slug `studio`
+- 🟠 P0 ITER175 hotfix Begin Journey `metadata_json`
+- 🟡 P1 Rate limiting endpoint pubblici · Retry logic Supabase REST
+
+---
+
+
 ## 🆕 ITER172 · Client Design Journey™ V1 Reconsolidation · ✅ DELIVERED · 30 May 2026
 
 **🎯 Obiettivo:** consolidare 3 generazioni parallele del Client Workspace

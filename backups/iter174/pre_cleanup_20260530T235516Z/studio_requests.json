@@ -1,0 +1,340 @@
+[
+  {
+    "id": "4d3d769a-36ac-48f4-86c2-35b1c883de1f",
+    "draft_id": "e6537887-0576-403e-8496-f718e9373b51",
+    "archetype": "interior_studio",
+    "experiences": [
+      "design_journey_os",
+      "moodboard_experience",
+      "client_presentation_flow"
+    ],
+    "studio_name": "Atelier P0 Final",
+    "monogram": "PF",
+    "city": "Milano",
+    "country": "Italia",
+    "languages": [],
+    "atelier": [],
+    "markets": [
+      "private_residential"
+    ],
+    "temperament": "composed",
+    "contact_name": "Stefano Final",
+    "contact_role": "Founder",
+    "contact_email": "p0final@test.example",
+    "phone_prefix": "+39",
+    "phone_number": "3334445555",
+    "website": "www.atelier-final.it",
+    "notes": null,
+    "locale": "it",
+    "source": "studio_flow",
+    "ip": "10.201.5.2",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "status": "activated",
+    "advisor_notes": null,
+    "reviewed_at": "2026-05-29 07:45:38.454593+00:00",
+    "assigned_advisor_id": null,
+    "created_at": "2026-05-29 07:45:17.991032+00:00",
+    "updated_at": "2026-05-29 07:45:48.122863+00:00"
+  },
+  {
+    "id": "155cd08d-e8eb-4106-8219-b1ce18483402",
+    "draft_id": "683feb10-2c20-410c-a747-27c0d017e861",
+    "archetype": "interior_studio",
+    "experiences": [
+      "design_journey_os",
+      "moodboard_experience",
+      "client_presentation_flow"
+    ],
+    "studio_name": "Studio Verifica E2E",
+    "monogram": "SV",
+    "city": "Milano",
+    "country": "Italia",
+    "languages": [],
+    "atelier": [],
+    "markets": [
+      "private_residential"
+    ],
+    "temperament": "composed",
+    "contact_name": "Founder E2E",
+    "contact_role": "Founder",
+    "contact_email": "e2e-final@test.example",
+    "phone_prefix": "+39",
+    "phone_number": "3331234567",
+    "website": "www.studio-e2e.it",
+    "notes": null,
+    "locale": "it",
+    "source": "studio_flow",
+    "ip": "10.201.7.17",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "status": "activated",
+    "advisor_notes": null,
+    "reviewed_at": "2026-05-29 07:52:41.212244+00:00",
+    "assigned_advisor_id": null,
+    "created_at": "2026-05-29 07:52:18.947811+00:00",
+    "updated_at": "2026-05-29 07:52:50.562862+00:00"
+  },
+  {
+    "id": "ca36795c-d565-45dd-b440-88b13bfb5772",
+    "draft_id": "53b8ee9e-f9c4-4647-b83c-0d19e586d130",
+    "archetype": "interior_studio",
+    "experiences": [
+      "design_journey_os",
+      "moodboard_experience",
+      "client_presentation_flow"
+    ],
+    "studio_name": "Studio Tenant Lifecycle",
+    "monogram": "TL",
+    "city": "Firenze",
+    "country": "Italia",
+    "languages": [],
+    "atelier": [
+      {
+        "name": "Lucia Bianchi",
+        "role": "Founder"
+      }
+    ],
+    "markets": [
+      "private_residential"
+    ],
+    "temperament": null,
+    "contact_name": "Lucia Bianchi",
+    "contact_role": "Founder",
+    "contact_email": "tlc-founder@test.example",
+    "phone_prefix": "+39",
+    "phone_number": "3331234567",
+    "website": "www.studio-tlc.it",
+    "notes": null,
+    "locale": "it",
+    "source": "studio_flow",
+    "ip": "10.201.7.17",
+    "user_agent": "curl/7.88.1",
+    "status": "activated",
+    "advisor_notes": null,
+    "reviewed_at": "2026-05-30 03:21:58.123136+00:00",
+    "assigned_advisor_id": null,
+    "created_at": "2026-05-30 03:21:53.235855+00:00",
+    "updated_at": "2026-05-30 03:22:03.139004+00:00"
+  },
+  {
+    "id": "0f439d49-8e4e-4e57-9485-7aec98daa160",
+    "draft_id": "babc8e40-33e1-4e4e-9dfb-4192de5c3eee",
+    "archetype": "interior_studio",
+    "experiences": [
+      "design_journey_os",
+      "moodboard_experience"
+    ],
+    "studio_name": "Atelier Lifecycle",
+    "monogram": "AL",
+    "city": "Bologna",
+    "country": "Italia",
+    "languages": [],
+    "atelier": [
+      {
+        "name": "Carlo Vinciani",
+        "role": "Founder"
+      }
+    ],
+    "markets": [
+      "private_residential"
+    ],
+    "temperament": null,
+    "contact_name": "Carlo Vinciani",
+    "contact_role": "Founder",
+    "contact_email": "tlc2-founder@test.example",
+    "phone_prefix": "+39",
+    "phone_number": "3331234567",
+    "website": "www.atelier-lifecycle.it",
+    "notes": null,
+    "locale": "it",
+    "source": "studio_flow",
+    "ip": "10.201.5.2",
+    "user_agent": "curl/7.88.1",
+    "status": "activated",
+    "advisor_notes": null,
+    "reviewed_at": "2026-05-30 03:24:18.500681+00:00",
+    "assigned_advisor_id": null,
+    "created_at": "2026-05-30 03:24:16.220295+00:00",
+    "updated_at": "2026-05-30 03:24:21.005447+00:00"
+  },
+  {
+    "id": "97d0107f-4a49-432b-af50-aef67215e201",
+    "draft_id": null,
+    "archetype": "interior_studio",
+    "experiences": [],
+    "studio_name": "Studio In Lettura",
+    "monogram": "SL",
+    "city": "Roma",
+    "country": "Italia",
+    "languages": [],
+    "atelier": [],
+    "markets": [],
+    "temperament": null,
+    "contact_name": "Founder Pending",
+    "contact_role": "Founder",
+    "contact_email": "studio-pending@test.example",
+    "phone_prefix": null,
+    "phone_number": null,
+    "website": null,
+    "notes": null,
+    "locale": "it",
+    "source": "studio_flow",
+    "ip": null,
+    "user_agent": null,
+    "status": "received",
+    "advisor_notes": null,
+    "reviewed_at": null,
+    "assigned_advisor_id": null,
+    "created_at": "2026-05-30 02:17:28.471019+00:00",
+    "updated_at": "2026-05-30 04:49:39.750987+00:00"
+  },
+  {
+    "id": "377bf753-c1ee-4bca-b82c-6a4469fe8472",
+    "draft_id": "b8b305fc-0dce-4819-b178-b3abecc45caa",
+    "archetype": "stone_specialist",
+    "experiences": [
+      "material_intelligence",
+      "showroom_continuity",
+      "design_journey_os",
+      "client_presentation_flow",
+      "moodboard_experience"
+    ],
+    "studio_name": "Stefano USA",
+    "monogram": "S",
+    "city": "Chicago",
+    "country": "United States",
+    "languages": [],
+    "atelier": [
+      {
+        "name": "Stefano Ogrisek",
+        "role": "Managing Director"
+      },
+      {
+        "name": "Raffaella Ruggieri",
+        "role": "Project Manager"
+      }
+    ],
+    "markets": [
+      "yacht",
+      "retail",
+      "aviation",
+      "cultural",
+      "hospitality",
+      "private_residential",
+      "showroom",
+      "restaurant",
+      "office"
+    ],
+    "temperament": "composed",
+    "contact_name": "Stefano Ogrisek",
+    "contact_role": "Managing Director",
+    "contact_email": "ogrisek.stefano@gmail.com",
+    "phone_prefix": "+39",
+    "phone_number": "3409899769",
+    "website": "www.margraf-usa.com",
+    "notes": "Test test test per fare soldi...!",
+    "locale": "it",
+    "source": "studio_flow",
+    "ip": "34.49.222.149",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+    "status": "reviewing",
+    "advisor_notes": null,
+    "reviewed_at": "2026-05-30 16:50:30.535223+00:00",
+    "assigned_advisor_id": null,
+    "created_at": "2026-05-30 16:48:22.676865+00:00",
+    "updated_at": "2026-05-30 16:50:30.535223+00:00"
+  },
+  {
+    "id": "78e9c0b1-eb14-4bed-a1f8-2fe7e57eb6b8",
+    "draft_id": "8ee13bcb-41ac-4692-af63-b115dbccfdef",
+    "archetype": "stone_specialist",
+    "experiences": [
+      "material_intelligence",
+      "showroom_continuity",
+      "design_journey_os",
+      "moodboard_experience",
+      "client_presentation_flow"
+    ],
+    "studio_name": "Margraf",
+    "monogram": "M",
+    "city": "Vicenza",
+    "country": "Italia",
+    "languages": [
+      "it",
+      "en-us",
+      "fr",
+      "de",
+      "es"
+    ],
+    "atelier": [
+      {
+        "name": "Stefano Ogrisek",
+        "role": "MD"
+      },
+      {
+        "name": "Raffaella",
+        "role": "PM"
+      }
+    ],
+    "markets": [
+      "private_residential",
+      "hospitality",
+      "cultural",
+      "yacht"
+    ],
+    "temperament": "vivid",
+    "contact_name": "Stef",
+    "contact_role": "Manager",
+    "contact_email": "slabreality@gmail.com",
+    "phone_prefix": "+39",
+    "phone_number": "3409899769",
+    "website": "www.margraf.it",
+    "notes": "test italia, da sistemare!",
+    "locale": "it",
+    "source": "studio_flow",
+    "ip": "34.49.222.149",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+    "status": "reviewing",
+    "advisor_notes": null,
+    "reviewed_at": "2026-05-30 19:37:53.910365+00:00",
+    "assigned_advisor_id": null,
+    "created_at": "2026-05-30 19:31:15.290950+00:00",
+    "updated_at": "2026-05-30 19:37:53.910365+00:00"
+  },
+  {
+    "id": "76dccda3-2aab-4911-90d0-384665b4cedb",
+    "draft_id": "b4cb8c10-d63f-4b36-a7cf-637554aa1aa5",
+    "archetype": "luxury_showroom",
+    "experiences": [
+      "showroom_continuity",
+      "material_intelligence",
+      "client_presentation_flow"
+    ],
+    "studio_name": "Margraf USA",
+    "monogram": "M",
+    "city": "Chicago",
+    "country": "Stati Uniti",
+    "languages": [],
+    "atelier": [],
+    "markets": [
+      "private_residential"
+    ],
+    "temperament": "vivid",
+    "contact_name": "Stef",
+    "contact_role": "Managing Director",
+    "contact_email": "st.ogrisek@margraf-usa.com",
+    "phone_prefix": "+39",
+    "phone_number": "3409899769",
+    "website": "www.margraf-usa.com",
+    "notes": "Soldi",
+    "locale": "it",
+    "source": "studio_flow",
+    "ip": "34.49.222.149",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+    "status": "activated",
+    "advisor_notes": null,
+    "reviewed_at": "2026-05-30 16:29:37.716362+00:00",
+    "assigned_advisor_id": null,
+    "created_at": "2026-05-30 07:29:27.024296+00:00",
+    "updated_at": "2026-05-30 21:19:32.955787+00:00"
+  }
+]

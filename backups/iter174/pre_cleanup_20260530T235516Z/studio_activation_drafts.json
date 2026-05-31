@@ -1,0 +1,656 @@
+[
+  {
+    "id": "c8e6f97e-d264-44f2-8846-5b671e768d07",
+    "draft_token": "hJOA8m1qJtRRUvWMcIS2sEkyCWzQgAae",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.5.2",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-29 07:44:57.913591+00:00",
+    "updated_at": "2026-05-29 07:44:57.913591+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "343d9396-e0d6-4419-82fc-650338dc3e33",
+    "draft_token": "LScDlmbxftuuJ2CxfpSjKVgYRxkfiRV9",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.7.17",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-29 07:44:57.924442+00:00",
+    "updated_at": "2026-05-29 07:44:57.924442+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "6447ea6a-aff8-4c97-974e-a04538c9885c",
+    "draft_token": "EFmQK7jGI22KlXnC8FuhmHoVyHGNGNYf",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.5.2",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-29 07:44:58.277991+00:00",
+    "updated_at": "2026-05-29 07:44:58.277991+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "c209c4cd-c500-4c50-95f6-a8acb151b472",
+    "draft_token": "wnTfeQiGCUJwfdHU4Y-LW09TIJ_Cy5Df",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.5.2",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-29 07:44:58.288575+00:00",
+    "updated_at": "2026-05-29 07:44:58.288575+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "c2323fba-1c25-46b0-917c-828ef1cdb8c4",
+    "draft_token": "u7cQEZP08avYflmkKs_ND4enTYu8seKF",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.7.17",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-30 06:42:42.155208+00:00",
+    "updated_at": "2026-05-30 06:42:42.155208+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "f473a017-107d-4e49-a377-fc552a18d784",
+    "draft_token": "dZclpjOxc1j10bceUcX_J97uSuJbdTH8",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.7.17",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-29 07:45:02.266549+00:00",
+    "updated_at": "2026-05-29 07:45:02.266549+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "fd86e754-9fdf-4444-83c2-4a46e833fa55",
+    "draft_token": "v5SaFzDb4-obR329wdDgRHhDCwHESuX5",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.5.2",
+    "user_agent": "curl/7.88.1",
+    "created_at": "2026-05-30 06:44:24.168878+00:00",
+    "updated_at": "2026-05-30 06:44:24.168878+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "2c379019-ffd5-454e-a8c0-de140fc97030",
+    "draft_token": "yYHAZ32kB9hTiAPaY2-4JVoqI9rJyws4",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.5.2",
+    "user_agent": "curl/7.88.1",
+    "created_at": "2026-05-30 06:44:25.117324+00:00",
+    "updated_at": "2026-05-30 06:44:25.117324+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "e3111543-86ff-4dd5-9d4d-fc2a97a8bb34",
+    "draft_token": "GDHrk0CZa94cky8FRMv9Z8LwMNhRDK6J",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.7.17",
+    "user_agent": "curl/7.88.1",
+    "created_at": "2026-05-30 06:44:26.074559+00:00",
+    "updated_at": "2026-05-30 06:44:26.074559+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "6a1248be-e382-443c-a0e5-faa59aef47f6",
+    "draft_token": "vScbhkkZYkgrOVy9UadiJ0wASFqrHZL5",
+    "archetype": "design_retail",
+    "experiences": [
+      "showroom_continuity",
+      "client_presentation_flow"
+    ],
+    "payload": {},
+    "current_movement": "ecosystem",
+    "founder_email": null,
+    "resumed_count": 2,
+    "ip": "10.201.5.2",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+    "created_at": "2026-05-30 15:51:00.239346+00:00",
+    "updated_at": "2026-05-30 15:51:10.193813+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "e6537887-0576-403e-8496-f718e9373b51",
+    "draft_token": "RoLA8B371hrcWKSfd_Gw4yBEEuajAaDP",
+    "archetype": "interior_studio",
+    "experiences": [
+      "design_journey_os",
+      "moodboard_experience",
+      "client_presentation_flow"
+    ],
+    "payload": {
+      "city": "Milano",
+      "country": "Italia",
+      "markets": [
+        "private_residential"
+      ],
+      "website": "www.atelier-final.it",
+      "monogram": "PF",
+      "studio_name": "Atelier P0 Final",
+      "temperament": "composed",
+      "contact_name": "Stefano Final",
+      "contact_role": "Founder",
+      "phone_number": "3334445555",
+      "contact_email": "p0final@test.example"
+    },
+    "current_movement": "activate",
+    "founder_email": "p0final@test.example",
+    "resumed_count": 6,
+    "ip": "10.201.5.2",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-29 07:45:02.258384+00:00",
+    "updated_at": "2026-05-29 07:45:17.991032+00:00",
+    "completed_at": "2026-05-29 07:45:17.991032+00:00"
+  },
+  {
+    "id": "10d3091e-a3fa-454f-8912-cc6c8efaac3b",
+    "draft_token": "t47dASGGLPJf6wHHxFLmYdHSOBzhXPqy",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.7.17",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-29 07:51:59.666904+00:00",
+    "updated_at": "2026-05-29 07:51:59.666904+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "7d8abc23-b3c9-4c7f-9a69-28d6f00fe5bf",
+    "draft_token": "mRAgpfBRLMGEtj6bbPFApQYvfbsJnOhK",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.7.17",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-29 07:51:59.668970+00:00",
+    "updated_at": "2026-05-29 07:51:59.668970+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "8ee13bcb-41ac-4692-af63-b115dbccfdef",
+    "draft_token": "9U7Q_0KsLRIpFZJl1bTTGXqGDXQ7Peln",
+    "archetype": "stone_specialist",
+    "experiences": [
+      "material_intelligence",
+      "showroom_continuity",
+      "design_journey_os",
+      "moodboard_experience",
+      "client_presentation_flow"
+    ],
+    "payload": {
+      "city": "Vicenza",
+      "notes": "test italia, da sistemare!",
+      "atelier": [
+        {
+          "name": "Stefano Ogrisek",
+          "role": "MD"
+        },
+        {
+          "name": "Raffaella",
+          "role": "PM"
+        }
+      ],
+      "country": "Italia",
+      "markets": [
+        "private_residential",
+        "hospitality",
+        "cultural",
+        "yacht"
+      ],
+      "website": "www.margraf.it",
+      "monogram": "M",
+      "languages": [
+        "it",
+        "en-us",
+        "fr",
+        "de",
+        "es"
+      ],
+      "studio_name": "Margraf",
+      "temperament": "vivid",
+      "contact_name": "Stef",
+      "contact_role": "Manager",
+      "phone_number": "3409899769",
+      "phone_prefix": "+39",
+      "contact_email": "slabreality@gmail.com"
+    },
+    "current_movement": "activate",
+    "founder_email": "slabreality@gmail.com",
+    "resumed_count": 4,
+    "ip": "34.49.222.149",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+    "created_at": "2026-05-30 19:29:02.421939+00:00",
+    "updated_at": "2026-05-30 19:31:15.290950+00:00",
+    "completed_at": "2026-05-30 19:31:15.290950+00:00"
+  },
+  {
+    "id": "965d4a1e-05d0-4e2d-a27c-6b2c92e64fee",
+    "draft_token": "ZumPiWV6AyjSoEG2nHwXTmgCubxs5-r6",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.7.17",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-29 07:52:00.067723+00:00",
+    "updated_at": "2026-05-29 07:52:00.067723+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "023aa0b6-0bed-405b-9fb4-fc61166fb148",
+    "draft_token": "W3syqqpWlmiaXz5aKDAaXVs1GhiGVtiw",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.7.17",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-29 07:52:03.583109+00:00",
+    "updated_at": "2026-05-29 07:52:03.583109+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "b24ed9c1-47f0-461e-b55d-456b46bbc16c",
+    "draft_token": "Q8Z2ub4eDDwsz3clMDBQZrDBgFRg_034",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.5.2",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-30 06:42:42.209190+00:00",
+    "updated_at": "2026-05-30 06:42:42.209190+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "d9323273-1486-44b2-85d6-ac830a6e7f0a",
+    "draft_token": "ImcOOW9X2-Wrjv8tNlYkpyEPWoR5ykyv",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.5.2",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-30 06:42:42.830521+00:00",
+    "updated_at": "2026-05-30 06:42:42.830521+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "953bad56-bc7b-4f9a-9f90-5c683e2dafe4",
+    "draft_token": "eE34wVAjX1zXtT-SmB9hCB_fhBb-3Q39",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "practice",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "34.49.222.149",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+    "created_at": "2026-05-30 21:21:34.499459+00:00",
+    "updated_at": "2026-05-30 21:21:35.451657+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "b8b305fc-0dce-4819-b178-b3abecc45caa",
+    "draft_token": "VHE-WA4rlpFj7Po_UfJZybwYdVRvQkYO",
+    "archetype": "stone_specialist",
+    "experiences": [
+      "material_intelligence",
+      "showroom_continuity",
+      "design_journey_os",
+      "client_presentation_flow",
+      "moodboard_experience"
+    ],
+    "payload": {
+      "city": "Chicago",
+      "notes": "Test test test per fare soldi...!",
+      "atelier": [
+        {
+          "name": "Stefano Ogrisek",
+          "role": "Managing Director"
+        },
+        {
+          "name": "Raffaella Ruggieri",
+          "role": "Project Manager"
+        }
+      ],
+      "country": "United States",
+      "markets": [
+        "yacht",
+        "retail",
+        "aviation",
+        "cultural",
+        "hospitality",
+        "private_residential",
+        "showroom",
+        "restaurant",
+        "office"
+      ],
+      "website": "www.margraf-usa.com",
+      "monogram": "S",
+      "studio_name": "Stefano USA",
+      "temperament": "composed",
+      "contact_name": "Stefano Ogrisek",
+      "contact_role": "Managing Director",
+      "phone_number": "3409899769",
+      "phone_prefix": "+39",
+      "contact_email": "ogrisek.stefano@gmail.com"
+    },
+    "current_movement": "activate",
+    "founder_email": "ogrisek.stefano@gmail.com",
+    "resumed_count": 2,
+    "ip": "34.49.222.149",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+    "created_at": "2026-05-30 16:42:26.066200+00:00",
+    "updated_at": "2026-05-30 16:48:22.676865+00:00",
+    "completed_at": "2026-05-30 16:48:22.676865+00:00"
+  },
+  {
+    "id": "1685a7d1-a247-49de-a53f-d41f5e5cb9b6",
+    "draft_token": "Rnr_cVf1vumhZI3fXXnkd0-0oGA5v7UZ",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.7.17",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-29 07:52:00.344955+00:00",
+    "updated_at": "2026-05-29 07:52:00.344955+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "26c92181-c4d0-4ca9-927d-b946073e5c5d",
+    "draft_token": "fz6Jt6OXkuE6bvfHuGrtil_3Xo8ulhmJ",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.5.2",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-30 06:42:42.811327+00:00",
+    "updated_at": "2026-05-30 06:42:42.811327+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "683feb10-2c20-410c-a747-27c0d017e861",
+    "draft_token": "2aJOPKXgCq7uX3jmkIg0c2b6xCBQxW9p",
+    "archetype": "interior_studio",
+    "experiences": [
+      "design_journey_os",
+      "moodboard_experience",
+      "client_presentation_flow"
+    ],
+    "payload": {
+      "city": "Milano",
+      "country": "Italia",
+      "markets": [
+        "private_residential"
+      ],
+      "website": "www.studio-e2e.it",
+      "monogram": "SV",
+      "studio_name": "Studio Verifica E2E",
+      "temperament": "composed",
+      "contact_name": "Founder E2E",
+      "contact_role": "Founder",
+      "phone_number": "3331234567",
+      "contact_email": "e2e-final@test.example"
+    },
+    "current_movement": "activate",
+    "founder_email": "e2e-final@test.example",
+    "resumed_count": 6,
+    "ip": "10.201.7.17",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.0 Safari/537.36",
+    "created_at": "2026-05-29 07:52:03.588379+00:00",
+    "updated_at": "2026-05-29 07:52:18.947811+00:00",
+    "completed_at": "2026-05-29 07:52:18.947811+00:00"
+  },
+  {
+    "id": "06e8bec8-daca-4af3-bed8-82358c9e76d0",
+    "draft_token": "Y1mdYSsB16IUo8m5un7FeycYEB3K-7Sy",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.5.2",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+    "created_at": "2026-05-30 02:16:28.364614+00:00",
+    "updated_at": "2026-05-30 02:16:28.364614+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "8381af8a-5b7c-41de-b207-7e2ea35e97ab",
+    "draft_token": "LfLPAnydKaC1lYo_d8aV0pDzr5KB4m-9",
+    "archetype": null,
+    "experiences": [],
+    "payload": {},
+    "current_movement": "entrance",
+    "founder_email": null,
+    "resumed_count": 0,
+    "ip": "10.201.7.17",
+    "user_agent": "curl/7.88.1",
+    "created_at": "2026-05-30 03:19:55.332742+00:00",
+    "updated_at": "2026-05-30 03:19:55.332742+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "83975ec6-503d-4c5d-82b1-135045afbc91",
+    "draft_token": "iFxiCeB3-FxP0LwzoiizysoYAFbFI3-x",
+    "archetype": "interior_studio",
+    "experiences": [
+      "design_journey_os",
+      "moodboard_experience",
+      "client_presentation_flow"
+    ],
+    "payload": {
+      "city": "Firenze",
+      "atelier": {
+        "name": "Lucia Bianchi",
+        "role": "Founder"
+      },
+      "country": "Italia",
+      "markets": [
+        "private_residential"
+      ],
+      "website": "www.studio-tlc.it",
+      "monogram": "TL",
+      "studio_name": "Studio Tenant Lifecycle",
+      "temperament": "composto",
+      "contact_name": "Lucia Bianchi",
+      "contact_role": "Founder",
+      "contact_email": "tlc-founder@test.example",
+      "contact_phone_number": "3331234567",
+      "country_phone_prefix": "+39"
+    },
+    "current_movement": "entrance",
+    "founder_email": "tlc-founder@test.example",
+    "resumed_count": 0,
+    "ip": "10.201.7.17",
+    "user_agent": "curl/7.88.1",
+    "created_at": "2026-05-30 03:20:46.091487+00:00",
+    "updated_at": "2026-05-30 03:20:47.105937+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "53b8ee9e-f9c4-4647-b83c-0d19e586d130",
+    "draft_token": "GGP9tb9Vzqoluhfentc36-H24Av5ZDbx",
+    "archetype": "interior_studio",
+    "experiences": [
+      "design_journey_os",
+      "moodboard_experience",
+      "client_presentation_flow"
+    ],
+    "payload": {
+      "city": "Firenze",
+      "atelier": [
+        {
+          "name": "Lucia Bianchi",
+          "role": "Founder"
+        }
+      ],
+      "country": "Italia",
+      "markets": [
+        "private_residential"
+      ],
+      "monogram": "TL",
+      "studio_name": "Studio Tenant Lifecycle",
+      "temperament": "composto"
+    },
+    "current_movement": "activate",
+    "founder_email": "tlc-founder@test.example",
+    "resumed_count": 0,
+    "ip": "10.201.7.17",
+    "user_agent": "curl/7.88.1",
+    "created_at": "2026-05-30 03:21:50.524150+00:00",
+    "updated_at": "2026-05-30 03:21:53.235855+00:00",
+    "completed_at": "2026-05-30 03:21:53.235855+00:00"
+  },
+  {
+    "id": "babc8e40-33e1-4e4e-9dfb-4192de5c3eee",
+    "draft_token": "Kg3XZ51xm_YbRxHf-1jltnvSEGocXLKO",
+    "archetype": "interior_studio",
+    "experiences": [
+      "design_journey_os",
+      "moodboard_experience"
+    ],
+    "payload": {
+      "city": "Bologna",
+      "atelier": [
+        {
+          "name": "Carlo Vinciani",
+          "role": "Founder"
+        }
+      ],
+      "country": "Italia",
+      "markets": [
+        "private_residential"
+      ],
+      "monogram": "AL",
+      "studio_name": "Atelier Lifecycle",
+      "temperament": "composto"
+    },
+    "current_movement": "activate",
+    "founder_email": "tlc2-founder@test.example",
+    "resumed_count": 0,
+    "ip": "10.201.7.17",
+    "user_agent": "curl/7.88.1",
+    "created_at": "2026-05-30 03:24:13.878380+00:00",
+    "updated_at": "2026-05-30 03:24:16.220295+00:00",
+    "completed_at": "2026-05-30 03:24:16.220295+00:00"
+  },
+  {
+    "id": "462ff77d-402b-4ef4-bf78-47776a8513d8",
+    "draft_token": "BRYmBdNhJcKG3eTgO0K_k_qxJ1GI34WW",
+    "archetype": "stone_specialist",
+    "experiences": [
+      "material_intelligence",
+      "showroom_continuity"
+    ],
+    "payload": {},
+    "current_movement": "practice",
+    "founder_email": null,
+    "resumed_count": 14,
+    "ip": "10.201.7.17",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+    "created_at": "2026-05-30 02:16:28.364614+00:00",
+    "updated_at": "2026-05-30 04:39:49.339122+00:00",
+    "completed_at": null
+  },
+  {
+    "id": "b4cb8c10-d63f-4b36-a7cf-637554aa1aa5",
+    "draft_token": "jWFek8wzKTz8wOLhYK3oA7WXM7mtymKG",
+    "archetype": "luxury_showroom",
+    "experiences": [
+      "showroom_continuity",
+      "material_intelligence",
+      "client_presentation_flow"
+    ],
+    "payload": {
+      "city": "Chicago",
+      "notes": "Soldi",
+      "country": "Stati Uniti",
+      "markets": [
+        "private_residential"
+      ],
+      "website": "www.margraf-usa.com",
+      "monogram": "M",
+      "studio_name": "Margraf USA",
+      "temperament": "vivid",
+      "contact_name": "Stef",
+      "contact_role": "Managing Director",
+      "phone_number": "3409899769",
+      "phone_prefix": "+39",
+      "contact_email": "st.ogrisek@margraf-usa.com"
+    },
+    "current_movement": "activate",
+    "founder_email": "st.ogrisek@margraf-usa.com",
+    "resumed_count": 15,
+    "ip": "34.49.222.149",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+    "created_at": "2026-05-30 06:33:21.991048+00:00",
+    "updated_at": "2026-05-30 07:29:27.024296+00:00",
+    "completed_at": "2026-05-30 07:29:27.024296+00:00"
+  }
+]

@@ -1,0 +1,263 @@
+[
+  {
+    "id": "41f15533-22b8-440e-9c19-f7ab27a9cdf5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "9b0bca66-0248-4d68-88b6-6879e89d4db3",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "1d5875f2-370e-4728-a626-4167351eeec3",
+      "project_id": "1e8fd636-a14e-4bd7-a1e1-c9fffe9f9d8d",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-05-29 07:43:47.538106+00:00"
+  },
+  {
+    "id": "5431b881-efd1-477f-a4ca-41065f6af45d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "9b0bca66-0248-4d68-88b6-6879e89d4db3",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "1d5875f2-370e-4728-a626-4167351eeec3"
+    },
+    "created_at": "2026-05-29 07:43:47.538106+00:00"
+  },
+  {
+    "id": "525a20e6-7efc-4e1e-9056-29bde4f48095",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "70881d82-b888-4acc-9881-2dfee12f7a4a",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "7f7b172c-4545-4b39-8eee-ab16d8e12ad2",
+      "project_id": "bd4fad10-76f1-4959-943a-202f550a665f",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-05-29 21:27:55.997138+00:00"
+  },
+  {
+    "id": "a66d7cc8-c69a-427c-95c0-a70317ad6a15",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "70881d82-b888-4acc-9881-2dfee12f7a4a",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "7f7b172c-4545-4b39-8eee-ab16d8e12ad2"
+    },
+    "created_at": "2026-05-29 21:27:55.997138+00:00"
+  },
+  {
+    "id": "92c2a65a-d325-4f86-affc-05c229480ba4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "0503897d-5a8d-4277-a274-ae4aa9d62d61",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "9425fc82-bde3-4384-b07c-2c37e620a1d9",
+      "project_id": "67b6ec7a-31b8-4098-bce9-fc256d6b10b9",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-05-29 21:40:05.051667+00:00"
+  },
+  {
+    "id": "7500aece-df67-413a-b5b7-0744fecac0a7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "0503897d-5a8d-4277-a274-ae4aa9d62d61",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "9425fc82-bde3-4384-b07c-2c37e620a1d9"
+    },
+    "created_at": "2026-05-29 21:40:05.051667+00:00"
+  },
+  {
+    "id": "605293fe-4146-4e86-ba7b-f3deb117d8d4",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "712ea80e-1f29-4125-b5e3-a0cbf0fb17f5",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "af052363-5cb8-42c7-b7eb-61890a2b9219",
+      "project_id": "d81b9a51-cded-44ed-83c6-52ef99e8f822",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-05-29 21:54:42.988806+00:00"
+  },
+  {
+    "id": "8b9ec6fa-c195-4560-958c-d2a918359c2d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "712ea80e-1f29-4125-b5e3-a0cbf0fb17f5",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "af052363-5cb8-42c7-b7eb-61890a2b9219"
+    },
+    "created_at": "2026-05-29 21:54:42.988806+00:00"
+  },
+  {
+    "id": "c78b2707-5959-4f19-b2c1-cfea123f4305",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a7cc3c60-ae9a-4f48-b9b6-e16713d906bd",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "30950769-99c2-4d78-bdd5-55720ad7c44e",
+      "project_id": "eecb57a2-4e37-43cd-ab59-13e06e55ad46",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-05-30 01:28:38.449212+00:00"
+  },
+  {
+    "id": "5fb9e09a-4523-4223-ba56-4f69085bf020",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "a7cc3c60-ae9a-4f48-b9b6-e16713d906bd",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "30950769-99c2-4d78-bdd5-55720ad7c44e"
+    },
+    "created_at": "2026-05-30 01:28:38.449212+00:00"
+  },
+  {
+    "id": "b8d4cc9e-6c7d-4e54-860c-61cb36046e46",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "dba02a1e-66f7-4f09-91cc-9dea1754e759",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "9a96de23-48ee-4c66-b92f-e08806f27a66",
+      "project_id": "ee291251-62a4-400c-90b6-bd0ac6b85971",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-05-30 06:17:24.917566+00:00"
+  },
+  {
+    "id": "2fb11076-29e9-41ee-bb4f-2a524427e189",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "dba02a1e-66f7-4f09-91cc-9dea1754e759",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "9a96de23-48ee-4c66-b92f-e08806f27a66"
+    },
+    "created_at": "2026-05-30 06:17:24.917566+00:00"
+  },
+  {
+    "id": "f70dd1bd-783a-42dd-b57c-4db47f9e13d0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "cfdc557c-3b96-4110-8040-b1e5d42cb7ed",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "62c6c27a-98f5-4f98-a3c8-2bebf917bbd3",
+      "project_id": "61518d4e-fb7e-4f1e-ad44-89534e19d579",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-05-30 06:19:48.956222+00:00"
+  },
+  {
+    "id": "a5fde80f-89c6-49d9-856d-626b7495bcc0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "cfdc557c-3b96-4110-8040-b1e5d42cb7ed",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "62c6c27a-98f5-4f98-a3c8-2bebf917bbd3"
+    },
+    "created_at": "2026-05-30 06:19:48.956222+00:00"
+  },
+  {
+    "id": "3e7882e0-9610-4b20-b0e5-ff3fefed2d05",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "03a2580f-c2d9-4829-8375-8b4d339a42ec",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "d55f712f-04c0-4ca0-af87-d149924e7994",
+      "project_id": "4d6ebb81-bc8a-48e0-8dd7-64dd890d2f8f",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-05-30 21:21:33.257145+00:00"
+  },
+  {
+    "id": "7c8a28c3-d6dd-41ef-a3f2-1159bf6f8e57",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "03a2580f-c2d9-4829-8375-8b4d339a42ec",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "d55f712f-04c0-4ca0-af87-d149924e7994"
+    },
+    "created_at": "2026-05-30 21:21:33.257145+00:00"
+  },
+  {
+    "id": "511e9016-8b8d-4a87-95ae-27f2f27a95a7",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "bc9ca699-5977-4684-81dc-48e9913b77a8",
+    "project_id": null,
+    "stage": "lead_captured",
+    "event_name": "begin_journey.submit",
+    "metadata_json": {
+      "source": "begin_journey_ritual",
+      "lead_type": "private_client",
+      "journey_id": "d8f49119-f835-4bba-aa5a-a50e93a1e97d",
+      "project_id": "7f488f3e-d174-4174-90f7-98e009476c85",
+      "onboarding_path": "begin_journey"
+    },
+    "created_at": "2026-05-30 21:21:40.992318+00:00"
+  },
+  {
+    "id": "ad40c4df-87e1-4ee9-9d45-261e2c3687ad",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "bc9ca699-5977-4684-81dc-48e9913b77a8",
+    "project_id": null,
+    "stage": "prospect_initial_brief",
+    "event_name": "begin_journey.prospect_promoted",
+    "metadata_json": {
+      "reason": "initial_brief_completed",
+      "journey_id": "d8f49119-f835-4bba-aa5a-a50e93a1e97d"
+    },
+    "created_at": "2026-05-30 21:21:40.992318+00:00"
+  }
+]

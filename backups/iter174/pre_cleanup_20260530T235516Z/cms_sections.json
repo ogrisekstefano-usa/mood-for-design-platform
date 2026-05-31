@@ -1,0 +1,2547 @@
+[
+  {
+    "id": "de6f00ee-9553-4ba1-90dc-125ec17f3f1a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "70919242-71b8-48d4-bc7b-251812b6e3c4",
+    "section_type": "pricing_hero_cinematic",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "media": {
+        "background": "6a76f7f7-b939-435a-94bd-ed10393b7287"
+      },
+      "blocks": {
+        "title": "site.pricing.hero.title",
+        "eyebrow": "site.pricing.hero.eyebrow",
+        "subtitle": "site.pricing.hero.subtitle"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 06:26:45.942618+00:00",
+    "updated_at": "2026-05-26 06:26:45.942618+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "253449f9-9ecc-4bda-814e-02b2d4c75b48",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "70919242-71b8-48d4-bc7b-251812b6e3c4",
+    "section_type": "pricing_philosophy",
+    "sort_order": 1,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "blocks": {
+        "body": "site.pricing.philosophy.body",
+        "eyebrow": "site.pricing.philosophy.eyebrow",
+        "headline": "site.pricing.philosophy.headline"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 06:26:46.161598+00:00",
+    "updated_at": "2026-05-26 06:26:46.161598+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "94e3aebd-3b84-4190-a95a-94ec67595529",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "70919242-71b8-48d4-bc7b-251812b6e3c4",
+    "section_type": "pricing_tiers_editorial",
+    "sort_order": 2,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "tier_01_href": "/dedicato-a",
+        "tier_02_href": "/dedicato-a",
+        "tier_03_href": "/dedicato-a",
+        "tier_04_href": "/dedicato-a",
+        "tier_05_href": "/dedicato-a"
+      },
+      "media": {
+        "tier_01": "301cb7bb-e53d-45a1-9c46-916be4cd144d",
+        "tier_02": "540056cb-163a-4f7c-9a75-bd76a9ccc062",
+        "tier_03": "c953747e-de24-4bbc-81c8-1a0b95f62f21"
+      },
+      "blocks": {
+        "tier_01_cta": "site.pricing.tier_01.cta",
+        "tier_02_cta": "site.pricing.tier_02.cta",
+        "tier_03_cta": "site.pricing.tier_03.cta",
+        "tier_04_cta": "site.pricing.tier_04.cta",
+        "tier_05_cta": "site.pricing.tier_05.cta",
+        "tier_01_body": "site.pricing.tier_01.body",
+        "tier_02_body": "site.pricing.tier_02.body",
+        "tier_03_body": "site.pricing.tier_03.body",
+        "tier_04_body": "site.pricing.tier_04.body",
+        "tier_05_body": "site.pricing.tier_05.body",
+        "tier_01_inc_1": "site.pricing.tier_01.inc_1",
+        "tier_01_inc_2": "site.pricing.tier_01.inc_2",
+        "tier_01_inc_3": "site.pricing.tier_01.inc_3",
+        "tier_01_inc_4": "site.pricing.tier_01.inc_4",
+        "tier_01_inc_5": "site.pricing.tier_01.inc_5",
+        "tier_01_price": "site.pricing.tier_01.price",
+        "tier_01_title": "site.pricing.tier_01.title",
+        "tier_02_inc_1": "site.pricing.tier_02.inc_1",
+        "tier_02_inc_2": "site.pricing.tier_02.inc_2",
+        "tier_02_inc_3": "site.pricing.tier_02.inc_3",
+        "tier_02_inc_4": "site.pricing.tier_02.inc_4",
+        "tier_02_inc_5": "site.pricing.tier_02.inc_5",
+        "tier_02_price": "site.pricing.tier_02.price",
+        "tier_02_title": "site.pricing.tier_02.title",
+        "tier_03_inc_1": "site.pricing.tier_03.inc_1",
+        "tier_03_inc_2": "site.pricing.tier_03.inc_2",
+        "tier_03_inc_3": "site.pricing.tier_03.inc_3",
+        "tier_03_inc_4": "site.pricing.tier_03.inc_4",
+        "tier_03_inc_5": "site.pricing.tier_03.inc_5",
+        "tier_03_price": "site.pricing.tier_03.price",
+        "tier_03_title": "site.pricing.tier_03.title",
+        "tier_04_inc_1": "site.pricing.tier_04.inc_1",
+        "tier_04_inc_2": "site.pricing.tier_04.inc_2",
+        "tier_04_inc_3": "site.pricing.tier_04.inc_3",
+        "tier_04_inc_4": "site.pricing.tier_04.inc_4",
+        "tier_04_inc_5": "site.pricing.tier_04.inc_5",
+        "tier_04_price": "site.pricing.tier_04.price",
+        "tier_04_title": "site.pricing.tier_04.title",
+        "tier_05_inc_1": "site.pricing.tier_05.inc_1",
+        "tier_05_inc_2": "site.pricing.tier_05.inc_2",
+        "tier_05_inc_3": "site.pricing.tier_05.inc_3",
+        "tier_05_inc_4": "site.pricing.tier_05.inc_4",
+        "tier_05_inc_5": "site.pricing.tier_05.inc_5",
+        "tier_05_price": "site.pricing.tier_05.price",
+        "tier_05_title": "site.pricing.tier_05.title",
+        "tier_01_eyebrow": "site.pricing.tier_01.eyebrow",
+        "tier_02_eyebrow": "site.pricing.tier_02.eyebrow",
+        "tier_03_eyebrow": "site.pricing.tier_03.eyebrow",
+        "tier_04_eyebrow": "site.pricing.tier_04.eyebrow",
+        "tier_05_eyebrow": "site.pricing.tier_05.eyebrow",
+        "tier_01_subtitle": "site.pricing.tier_01.subtitle",
+        "tier_02_subtitle": "site.pricing.tier_02.subtitle",
+        "tier_03_subtitle": "site.pricing.tier_03.subtitle",
+        "tier_04_subtitle": "site.pricing.tier_04.subtitle",
+        "tier_05_subtitle": "site.pricing.tier_05.subtitle",
+        "tier_01_price_caption": "site.pricing.tier_01.price_caption",
+        "tier_02_price_caption": "site.pricing.tier_02.price_caption",
+        "tier_03_price_caption": "site.pricing.tier_03.price_caption",
+        "tier_04_price_caption": "site.pricing.tier_04.price_caption",
+        "tier_05_price_caption": "site.pricing.tier_05.price_caption"
+      },
+      "options": {
+        "featured_index": 1
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 06:26:46.374002+00:00",
+    "updated_at": "2026-05-26 07:06:10.970447+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "ddf456f0-e0eb-4eca-b9f1-d646ca15e801",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "70919242-71b8-48d4-bc7b-251812b6e3c4",
+    "section_type": "pricing_ecosystem_note",
+    "sort_order": 4,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "/supporto"
+      },
+      "blocks": {
+        "body": "site.pricing.ecosystem.body",
+        "eyebrow": "site.pricing.ecosystem.eyebrow",
+        "headline": "site.pricing.ecosystem.headline",
+        "cta_label": "site.pricing.ecosystem.cta_label",
+        "pillar_01_body": "site.pricing.ecosystem.pillar_01_body",
+        "pillar_02_body": "site.pricing.ecosystem.pillar_02_body",
+        "pillar_03_body": "site.pricing.ecosystem.pillar_03_body",
+        "pillar_01_title": "site.pricing.ecosystem.pillar_01_title",
+        "pillar_02_title": "site.pricing.ecosystem.pillar_02_title",
+        "pillar_03_title": "site.pricing.ecosystem.pillar_03_title"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 06:26:46.586353+00:00",
+    "updated_at": "2026-05-26 06:26:46.586353+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "25c6db43-c44b-4cc9-b14f-6af4e7415b2a",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "70919242-71b8-48d4-bc7b-251812b6e3c4",
+    "section_type": "pricing_comparison_table",
+    "sort_order": 3,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "contact_cta_href": "/supporto"
+      },
+      "blocks": {
+        "title": "site.pricing.comparison.title",
+        "row_01_v01": "site.pricing.comparison.row_01_v01",
+        "row_01_v02": "site.pricing.comparison.row_01_v02",
+        "row_01_v03": "site.pricing.comparison.row_01_v03",
+        "row_01_v04": "site.pricing.comparison.row_01_v04",
+        "row_02_v01": "site.pricing.comparison.row_02_v01",
+        "row_02_v02": "site.pricing.comparison.row_02_v02",
+        "row_02_v03": "site.pricing.comparison.row_02_v03",
+        "row_02_v04": "site.pricing.comparison.row_02_v04",
+        "row_03_v01": "site.pricing.comparison.row_03_v01",
+        "row_03_v02": "site.pricing.comparison.row_03_v02",
+        "row_03_v03": "site.pricing.comparison.row_03_v03",
+        "row_03_v04": "site.pricing.comparison.row_03_v04",
+        "row_04_v01": "site.pricing.comparison.row_04_v01",
+        "row_04_v02": "site.pricing.comparison.row_04_v02",
+        "row_04_v03": "site.pricing.comparison.row_04_v03",
+        "row_04_v04": "site.pricing.comparison.row_04_v04",
+        "row_05_v01": "site.pricing.comparison.row_05_v01",
+        "row_05_v02": "site.pricing.comparison.row_05_v02",
+        "row_05_v03": "site.pricing.comparison.row_05_v03",
+        "row_05_v04": "site.pricing.comparison.row_05_v04",
+        "row_06_v01": "site.pricing.comparison.row_06_v01",
+        "row_06_v02": "site.pricing.comparison.row_06_v02",
+        "row_06_v03": "site.pricing.comparison.row_06_v03",
+        "row_06_v04": "site.pricing.comparison.row_06_v04",
+        "row_07_v01": "site.pricing.comparison.row_07_v01",
+        "row_07_v02": "site.pricing.comparison.row_07_v02",
+        "row_07_v03": "site.pricing.comparison.row_07_v03",
+        "row_07_v04": "site.pricing.comparison.row_07_v04",
+        "row_08_v01": "site.pricing.comparison.row_08_v01",
+        "row_08_v02": "site.pricing.comparison.row_08_v02",
+        "row_08_v03": "site.pricing.comparison.row_08_v03",
+        "row_08_v04": "site.pricing.comparison.row_08_v04",
+        "row_09_v01": "site.pricing.comparison.row_09_v01",
+        "row_09_v02": "site.pricing.comparison.row_09_v02",
+        "row_09_v03": "site.pricing.comparison.row_09_v03",
+        "row_09_v04": "site.pricing.comparison.row_09_v04",
+        "row_10_v01": "site.pricing.comparison.row_10_v01",
+        "row_10_v02": "site.pricing.comparison.row_10_v02",
+        "row_10_v03": "site.pricing.comparison.row_10_v03",
+        "row_10_v04": "site.pricing.comparison.row_10_v04",
+        "row_11_v01": "site.pricing.comparison.row_11_v01",
+        "row_11_v02": "site.pricing.comparison.row_11_v02",
+        "row_11_v03": "site.pricing.comparison.row_11_v03",
+        "row_11_v04": "site.pricing.comparison.row_11_v04",
+        "row_12_v01": "site.pricing.comparison.row_12_v01",
+        "row_12_v02": "site.pricing.comparison.row_12_v02",
+        "row_12_v03": "site.pricing.comparison.row_12_v03",
+        "row_12_v04": "site.pricing.comparison.row_12_v04",
+        "contact_cta": "site.pricing.comparison.contact_cta",
+        "footer_note": "site.pricing.comparison.footer_note",
+        "row_01_label": "site.pricing.comparison.row_01_label",
+        "row_02_label": "site.pricing.comparison.row_02_label",
+        "row_03_label": "site.pricing.comparison.row_03_label",
+        "row_04_label": "site.pricing.comparison.row_04_label",
+        "row_05_label": "site.pricing.comparison.row_05_label",
+        "row_06_label": "site.pricing.comparison.row_06_label",
+        "row_07_label": "site.pricing.comparison.row_07_label",
+        "row_08_label": "site.pricing.comparison.row_08_label",
+        "row_09_label": "site.pricing.comparison.row_09_label",
+        "row_10_label": "site.pricing.comparison.row_10_label",
+        "row_11_label": "site.pricing.comparison.row_11_label",
+        "row_12_label": "site.pricing.comparison.row_12_label",
+        "tier_01_name": "site.pricing.comparison.tier_01_name",
+        "tier_02_name": "site.pricing.comparison.tier_02_name",
+        "tier_03_name": "site.pricing.comparison.tier_03_name",
+        "tier_04_name": "site.pricing.comparison.tier_04_name"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 07:06:11.613042+00:00",
+    "updated_at": "2026-05-26 07:06:11.613042+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "23e6c4bd-3198-426d-b40d-db86e9f2967b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0ee93768-f0ad-440a-a84e-9d38997b43b1",
+    "section_type": "anchor_section",
+    "sort_order": 10,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "#percorsi-detail"
+      },
+      "media": {
+        "photo": "6a76f7f7-b939-435a-94bd-ed10393b7287"
+      },
+      "blocks": {
+        "body": "site.training.anchor_percorsi.body",
+        "title": "site.training.anchor_percorsi.title",
+        "eyebrow": "site.training.anchor_percorsi.eyebrow",
+        "subtitle": "site.training.anchor_percorsi.subtitle",
+        "cta_label": "site.training.anchor_percorsi.cta"
+      },
+      "options": {
+        "reverse": false,
+        "anchor_id": "percorsi",
+        "background": "#050606"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 07:17:48.115805+00:00",
+    "updated_at": "2026-05-26 07:17:48.115805+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "270da65e-d79f-40b8-aabc-8347d675d9bb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0d16db51-e310-4d7e-9119-38b1085216a5",
+    "section_type": "audience_hero_split",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "#a-chi-ci-rivolgiamo"
+      },
+      "media": {
+        "background": "95cfb1b5-4ffc-4182-995e-6fa6cdc7d34d"
+      },
+      "blocks": {
+        "body": "site.audience.hero.body",
+        "title": "site.audience.hero.title",
+        "eyebrow": "site.audience.hero.eyebrow",
+        "cta_label": "site.audience.hero.cta"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 07:06:10.101886+00:00",
+    "updated_at": "2026-05-26 21:19:04.786551+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "2ec4e75f-4cb7-4e4b-a2b4-cecc99a0f20d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0d16db51-e310-4d7e-9119-38b1085216a5",
+    "section_type": "editorial_body_with_photo",
+    "sort_order": 1,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "media": {
+        "hero": "6a76f7f7-b939-435a-94bd-ed10393b7287"
+      },
+      "blocks": {
+        "body": "site.audience.body.body",
+        "title": "site.audience.body.title",
+        "eyebrow": "site.audience.body.eyebrow"
+      },
+      "media_actions": {
+        "hero": {
+          "action": "lightbox"
+        }
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 07:06:10.327302+00:00",
+    "updated_at": "2026-05-26 21:51:17.719064+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "85c88a77-f1c9-4a45-9525-be6f4fd541c9",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0ee93768-f0ad-440a-a84e-9d38997b43b1",
+    "section_type": "training_hero",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_primary_href": "#percorsi",
+        "cta_secondary_href": "#tutorial"
+      },
+      "media": {
+        "background": "6a76f7f7-b939-435a-94bd-ed10393b7287"
+      },
+      "blocks": {
+        "body": "site.training.hero.body",
+        "eyebrow": "site.training.hero.eyebrow",
+        "cta_primary": "site.training.hero.cta_primary",
+        "title_line_1": "site.training.hero.title_line_1",
+        "title_line_2": "site.training.hero.title_line_2",
+        "title_line_3": "site.training.hero.title_line_3",
+        "cta_secondary": "site.training.hero.cta_secondary"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 06:44:31.380620+00:00",
+    "updated_at": "2026-05-26 07:17:57.840522+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "21764436-4303-425e-a92f-f32dc8119ee5",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "block_heading",
+    "sort_order": 190,
+    "visible": true,
+    "locale_content": {
+      "_default": {
+        "size": "lg",
+        "align": "left",
+        "title": "Una storia raccontata in editoriale"
+      }
+    },
+    "settings": {},
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 05:40:05.317730+00:00",
+    "updated_at": "2026-05-27 05:40:07.649123+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "2d9d6027-82ff-4faf-b6f3-4e06b7dd2d36",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "4b5d7097-ce4e-4b82-934a-9ad98be534fc",
+    "section_type": "support_hero",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "link_01_href": "#guide",
+        "link_02_href": "#faq",
+        "link_03_href": "#contact",
+        "link_04_href": "#status",
+        "search_action": "/supporto"
+      },
+      "media": {
+        "background": "6a76f7f7-b939-435a-94bd-ed10393b7287"
+      },
+      "blocks": {
+        "body": "site.support.hero.body",
+        "title": "site.support.hero.title",
+        "eyebrow": "site.support.hero.eyebrow",
+        "quick_label": "site.support.hero.quick_label",
+        "link_01_label": "site.support.hero.link_01_label",
+        "link_02_label": "site.support.hero.link_02_label",
+        "link_03_label": "site.support.hero.link_03_label",
+        "link_04_label": "site.support.hero.link_04_label",
+        "search_placeholder": "site.support.hero.search_placeholder"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 06:44:30.523186+00:00",
+    "updated_at": "2026-05-26 06:44:30.523186+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "ce03075a-44d5-4fc9-b946-43408dfe2dcd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "4b5d7097-ce4e-4b82-934a-9ad98be534fc",
+    "section_type": "editorial_card_grid",
+    "sort_order": 1,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "item_01_href": "#guide",
+        "item_02_href": "#faq",
+        "item_03_href": "#contact",
+        "item_04_href": "#status"
+      },
+      "media": {
+        "item_01": "301cb7bb-e53d-45a1-9c46-916be4cd144d",
+        "item_02": "540056cb-163a-4f7c-9a75-bd76a9ccc062",
+        "item_03": "c953747e-de24-4bbc-81c8-1a0b95f62f21",
+        "item_04": "9441a803-64c2-4d47-95a4-48de1750ddd7"
+      },
+      "blocks": {
+        "item_01_cta": "site.support.sections.item_01_cta",
+        "item_02_cta": "site.support.sections.item_02_cta",
+        "item_03_cta": "site.support.sections.item_03_cta",
+        "item_04_cta": "site.support.sections.item_04_cta",
+        "item_01_body": "site.support.sections.item_01_body",
+        "item_02_body": "site.support.sections.item_02_body",
+        "item_03_body": "site.support.sections.item_03_body",
+        "item_04_body": "site.support.sections.item_04_body",
+        "item_01_title": "site.support.sections.item_01_title",
+        "item_02_title": "site.support.sections.item_02_title",
+        "item_03_title": "site.support.sections.item_03_title",
+        "item_04_title": "site.support.sections.item_04_title",
+        "item_01_eyebrow": "site.support.sections.item_01_eyebrow",
+        "item_02_eyebrow": "site.support.sections.item_02_eyebrow",
+        "item_03_eyebrow": "site.support.sections.item_03_eyebrow",
+        "item_04_eyebrow": "site.support.sections.item_04_eyebrow"
+      },
+      "options": {
+        "columns": 4,
+        "featured_last": false
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 06:44:30.743738+00:00",
+    "updated_at": "2026-05-26 06:44:30.743738+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "0fbf9f81-6ba8-4e80-894e-8749d9b46b65",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0ee93768-f0ad-440a-a84e-9d38997b43b1",
+    "section_type": "anchor_section",
+    "sort_order": 11,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "#tutorial-detail"
+      },
+      "media": {
+        "photo": "301cb7bb-e53d-45a1-9c46-916be4cd144d"
+      },
+      "blocks": {
+        "body": "site.training.anchor_tutorial.body",
+        "title": "site.training.anchor_tutorial.title",
+        "eyebrow": "site.training.anchor_tutorial.eyebrow",
+        "subtitle": "site.training.anchor_tutorial.subtitle",
+        "cta_label": "site.training.anchor_tutorial.cta"
+      },
+      "options": {
+        "reverse": true,
+        "anchor_id": "tutorial",
+        "background": "#000000"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 07:17:50.475594+00:00",
+    "updated_at": "2026-05-26 07:17:50.475594+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "0914ba85-3507-42eb-b1dd-9903c84c576d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "4b5d7097-ce4e-4b82-934a-9ad98be534fc",
+    "section_type": "flexible_layout",
+    "sort_order": 2,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "cells": [
+        {
+          "slot": "cell_1",
+          "span": 4,
+          "content_type": "body"
+        },
+        {
+          "slot": "cell_2",
+          "span": 4,
+          "content_type": "button"
+        },
+        {
+          "slot": "cell_3",
+          "span": 4,
+          "content_type": "video"
+        }
+      ],
+      "links": {},
+      "media": {
+        "cell_1": null,
+        "cell_2": null,
+        "cell_3": null
+      },
+      "blocks": {
+        "cell_1_cta": "site.support.flex_0914ba85.cell_1.cta",
+        "cell_2_cta": "site.support.flex_0914ba85.cell_2.cta",
+        "cell_3_cta": "site.support.flex_0914ba85.cell_3.cta",
+        "cell_1_body": "site.support.flex_0914ba85.cell_1.body",
+        "cell_2_body": "site.support.flex_0914ba85.cell_2.body",
+        "cell_3_body": "site.support.flex_0914ba85.cell_3.body",
+        "cell_1_heading": "site.support.flex_0914ba85.cell_1.heading",
+        "cell_2_heading": "site.support.flex_0914ba85.cell_2.heading",
+        "cell_3_heading": "site.support.flex_0914ba85.cell_3.heading"
+      },
+      "layout": "three_col",
+      "options": {}
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 04:02:01.228911+00:00",
+    "updated_at": "2026-05-27 04:12:55.604637+00:00",
+    "deleted_at": "2026-05-27 04:12:55.604637+00:00"
+  },
+  {
+    "id": "1f8c28f1-017c-483b-98b3-f03549fa0383",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "block_text",
+    "sort_order": 200,
+    "visible": true,
+    "locale_content": {
+      "_default": {
+        "body": "Lo studio italiano disegna ambienti dove **materia** e *luce* si incontrano. Scopri il [nostro magazine](/magazine).",
+        "align": "left",
+        "width": "default"
+      }
+    },
+    "settings": {},
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 05:42:22.212398+00:00",
+    "updated_at": "2026-05-27 05:42:26.153644+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "5c40880c-7975-4d78-9bbe-baafac4ee8f0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "flexible_layout",
+    "sort_order": 170,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "cells": [
+        {
+          "slot": "cell_1",
+          "span": 6,
+          "content_type": "heading"
+        },
+        {
+          "slot": "cell_2",
+          "span": 6,
+          "content_type": "heading"
+        }
+      ],
+      "links": {},
+      "media": {
+        "cell_1": null,
+        "cell_2": null
+      },
+      "blocks": {
+        "cell_1_cta": "site.home.flex_5c40880c.cell_1.cta",
+        "cell_2_cta": "site.home.flex_5c40880c.cell_2.cta",
+        "cell_1_body": "site.home.flex_5c40880c.cell_1.body",
+        "cell_2_body": "site.home.flex_5c40880c.cell_2.body",
+        "cell_1_heading": "site.home.flex_5c40880c.cell_1.heading",
+        "cell_2_heading": "site.home.flex_5c40880c.cell_2.heading"
+      },
+      "layout": "two_col",
+      "options": {}
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 03:33:10.635608+00:00",
+    "updated_at": "2026-05-27 03:46:27.792318+00:00",
+    "deleted_at": "2026-05-27 03:33:32.640343+00:00"
+  },
+  {
+    "id": "68e3e17f-e3ed-4786-b26e-155a2fd881d6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0d16db51-e310-4d7e-9119-38b1085216a5",
+    "section_type": "page_hero",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "blocks": {
+        "title": "site.audience.hero.title",
+        "eyebrow": "site.audience.hero.eyebrow",
+        "subtitle": "site.audience.hero.subtitle"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:23.247038+00:00",
+    "updated_at": "2026-05-28 02:49:16.719430+00:00",
+    "deleted_at": "2026-05-28 02:49:16.719430+00:00"
+  },
+  {
+    "id": "45151f6b-4223-4244-8f2b-6bb6987a5e6f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "94700e27-736c-4403-a952-42972ff074a5",
+    "section_type": "page_hero",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "blocks": {
+        "title": "site.features.hero.title",
+        "eyebrow": "site.features.hero.eyebrow",
+        "subtitle": "site.features.hero.subtitle"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:24.325740+00:00",
+    "updated_at": "2026-05-28 02:49:42.561764+00:00",
+    "deleted_at": "2026-05-28 02:49:42.561764+00:00"
+  },
+  {
+    "id": "4bef70ac-caf0-41f7-87cb-3d9466da4398",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0d16db51-e310-4d7e-9119-38b1085216a5",
+    "section_type": "page_intro",
+    "sort_order": 1,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "/caratteristiche"
+      },
+      "blocks": {
+        "body": "site.audience.intro.body",
+        "cta_label": "site.audience.cta.label"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:23.464719+00:00",
+    "updated_at": "2026-05-27 02:55:23.464719+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "40e36f58-ec7a-4d36-bf45-d9fd831ed967",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0ee93768-f0ad-440a-a84e-9d38997b43b1",
+    "section_type": "anchor_section",
+    "sort_order": 12,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "#guide-detail"
+      },
+      "media": {
+        "photo": "540056cb-163a-4f7c-9a75-bd76a9ccc062"
+      },
+      "blocks": {
+        "body": "site.training.anchor_guide.body",
+        "title": "site.training.anchor_guide.title",
+        "eyebrow": "site.training.anchor_guide.eyebrow",
+        "subtitle": "site.training.anchor_guide.subtitle",
+        "cta_label": "site.training.anchor_guide.cta"
+      },
+      "options": {
+        "reverse": false,
+        "anchor_id": "guide",
+        "background": "#050606"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 07:17:52.797633+00:00",
+    "updated_at": "2026-05-26 07:17:52.797633+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "88e3f6e9-16a0-41ca-b513-c9ba1eaa5152",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "94700e27-736c-4403-a952-42972ff074a5",
+    "section_type": "page_intro",
+    "sort_order": 1,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "/dedicato-a"
+      },
+      "blocks": {
+        "body": "site.features.intro.body",
+        "cta_label": "site.features.cta.label"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:24.539325+00:00",
+    "updated_at": "2026-05-27 02:55:24.539325+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "72711a1c-ebfd-403a-8733-f64040401942",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "70919242-71b8-48d4-bc7b-251812b6e3c4",
+    "section_type": "page_hero",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "blocks": {
+        "title": "site.pricing.hero.title",
+        "eyebrow": "site.pricing.hero.eyebrow",
+        "subtitle": "site.pricing.hero.subtitle"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:25.393001+00:00",
+    "updated_at": "2026-05-28 02:50:00.320625+00:00",
+    "deleted_at": "2026-05-28 02:50:00.320625+00:00"
+  },
+  {
+    "id": "a03d6736-10e2-460c-93ec-07b5630f17de",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "70919242-71b8-48d4-bc7b-251812b6e3c4",
+    "section_type": "page_intro",
+    "sort_order": 1,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "/dedicato-a"
+      },
+      "blocks": {
+        "body": "site.pricing.intro.body",
+        "cta_label": "site.pricing.cta.label"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:25.606657+00:00",
+    "updated_at": "2026-05-27 02:55:25.606657+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "ec3cf498-627d-4c01-a653-9c71bd352696",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0ee93768-f0ad-440a-a84e-9d38997b43b1",
+    "section_type": "page_hero",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "blocks": {
+        "title": "site.training.hero.title",
+        "eyebrow": "site.training.hero.eyebrow",
+        "subtitle": "site.training.hero.subtitle"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:26.461672+00:00",
+    "updated_at": "2026-05-28 02:50:19.432665+00:00",
+    "deleted_at": "2026-05-28 02:50:19.432665+00:00"
+  },
+  {
+    "id": "dca880a8-022a-44e5-ba09-aaa7ab0aedda",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0ee93768-f0ad-440a-a84e-9d38997b43b1",
+    "section_type": "page_intro",
+    "sort_order": 1,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "/dedicato-a"
+      },
+      "blocks": {
+        "body": "site.training.intro.body",
+        "cta_label": "site.training.cta.label"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:26.674922+00:00",
+    "updated_at": "2026-05-27 02:55:26.674922+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "e7072886-e736-4011-8311-2d52382aa615",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "4b5d7097-ce4e-4b82-934a-9ad98be534fc",
+    "section_type": "page_hero",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "blocks": {
+        "title": "site.support.hero.title",
+        "eyebrow": "site.support.hero.eyebrow",
+        "subtitle": "site.support.hero.subtitle"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:27.532179+00:00",
+    "updated_at": "2026-05-28 02:50:33.248858+00:00",
+    "deleted_at": "2026-05-28 02:50:33.248858+00:00"
+  },
+  {
+    "id": "729d11b3-204d-4e35-8b77-ce51e2242b49",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "4b5d7097-ce4e-4b82-934a-9ad98be534fc",
+    "section_type": "page_intro",
+    "sort_order": 1,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "/dedicato-a"
+      },
+      "blocks": {
+        "body": "site.support.intro.body",
+        "cta_label": "site.support.cta.label"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:27.746461+00:00",
+    "updated_at": "2026-05-27 02:55:27.746461+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "b9e8b80c-4b83-425f-ad92-cb2af7f484fe",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "c62fd455-4748-4fb7-b11e-f59848b42304",
+    "section_type": "page_intro",
+    "sort_order": 1,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "/dedicato-a"
+      },
+      "blocks": {
+        "body": "site.login.intro.body",
+        "cta_label": "site.login.cta.label"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:28.817150+00:00",
+    "updated_at": "2026-05-27 02:55:28.817150+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "25b68bf8-7ec1-4851-88ba-6718554a9342",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "c62fd455-4748-4fb7-b11e-f59848b42304",
+    "section_type": "page_hero",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "blocks": {
+        "title": "site.login.hero.title",
+        "eyebrow": "site.login.hero.eyebrow",
+        "subtitle": "site.login.hero.subtitle"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:28.602948+00:00",
+    "updated_at": "2026-05-28 02:50:45.059793+00:00",
+    "deleted_at": "2026-05-28 02:50:45.059793+00:00"
+  },
+  {
+    "id": "9a086206-8d32-4b3a-9f7b-e0de2390a378",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0ee93768-f0ad-440a-a84e-9d38997b43b1",
+    "section_type": "anchor_section",
+    "sort_order": 13,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "#webinar-detail"
+      },
+      "media": {
+        "photo": "c953747e-de24-4bbc-81c8-1a0b95f62f21"
+      },
+      "blocks": {
+        "body": "site.training.anchor_webinar.body",
+        "title": "site.training.anchor_webinar.title",
+        "eyebrow": "site.training.anchor_webinar.eyebrow",
+        "subtitle": "site.training.anchor_webinar.subtitle",
+        "cta_label": "site.training.anchor_webinar.cta"
+      },
+      "options": {
+        "reverse": true,
+        "anchor_id": "webinar",
+        "background": "#000000"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 07:17:55.109881+00:00",
+    "updated_at": "2026-05-26 07:17:55.109881+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "42f7ed96-eeea-4803-a46f-66b008bb39be",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0ee93768-f0ad-440a-a84e-9d38997b43b1",
+    "section_type": "anchor_section",
+    "sort_order": 14,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "#academy-detail"
+      },
+      "media": {
+        "photo": "9441a803-64c2-4d47-95a4-48de1750ddd7"
+      },
+      "blocks": {
+        "body": "site.training.anchor_academy.body",
+        "title": "site.training.anchor_academy.title",
+        "eyebrow": "site.training.anchor_academy.eyebrow",
+        "subtitle": "site.training.anchor_academy.subtitle",
+        "cta_label": "site.training.anchor_academy.cta"
+      },
+      "options": {
+        "reverse": false,
+        "anchor_id": "academy",
+        "background": "#050606"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 07:17:57.421329+00:00",
+    "updated_at": "2026-05-26 07:17:57.421329+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "d49ece95-c4f7-4bc8-80e8-8cd49bd2d02d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "94700e27-736c-4403-a952-42972ff074a5",
+    "section_type": "feature_hero_split",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "/dedicato-a"
+      },
+      "media": {
+        "background": "6a76f7f7-b939-435a-94bd-ed10393b7287"
+      },
+      "blocks": {
+        "body": "site.features.hero.body",
+        "title": "site.features.hero.title",
+        "eyebrow": "site.features.hero.eyebrow",
+        "cta_label": "site.features.hero.cta"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 06:07:39.632208+00:00",
+    "updated_at": "2026-05-26 06:24:44.918080+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "b4778468-abdd-4632-8b8e-c041c447df34",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "94700e27-736c-4403-a952-42972ff074a5",
+    "section_type": "feature_numbered_list",
+    "sort_order": 1,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "media": {
+        "item_01": "540056cb-163a-4f7c-9a75-bd76a9ccc062",
+        "item_02": "c953747e-de24-4bbc-81c8-1a0b95f62f21",
+        "item_03": "9441a803-64c2-4d47-95a4-48de1750ddd7",
+        "item_04": "ff7277a0-ef25-40a0-ac19-e9be7d2bdd24",
+        "item_05": "84bacdc0-987f-49eb-a1d9-6bbf38e244c9"
+      },
+      "blocks": {
+        "item_01_body": "site.features.item_01.body",
+        "item_02_body": "site.features.item_02.body",
+        "item_03_body": "site.features.item_03.body",
+        "item_04_body": "site.features.item_04.body",
+        "item_05_body": "site.features.item_05.body",
+        "item_06_body": "site.features.item_06.body",
+        "item_07_body": "site.features.item_07.body",
+        "item_08_body": "site.features.item_08.body",
+        "item_09_body": "site.features.item_09.body",
+        "item_10_body": "site.features.item_10.body",
+        "item_11_body": "site.features.item_11.body",
+        "item_12_body": "site.features.item_12.body",
+        "item_13_body": "site.features.item_13.body",
+        "item_14_body": "site.features.item_14.body",
+        "item_15_body": "site.features.item_15.body",
+        "item_01_title": "site.features.item_01.title",
+        "item_02_title": "site.features.item_02.title",
+        "item_03_title": "site.features.item_03.title",
+        "item_04_title": "site.features.item_04.title",
+        "item_05_title": "site.features.item_05.title",
+        "item_06_title": "site.features.item_06.title",
+        "item_07_title": "site.features.item_07.title",
+        "item_08_title": "site.features.item_08.title",
+        "item_09_title": "site.features.item_09.title",
+        "item_10_title": "site.features.item_10.title",
+        "item_11_title": "site.features.item_11.title",
+        "item_12_title": "site.features.item_12.title",
+        "item_13_title": "site.features.item_13.title",
+        "item_14_title": "site.features.item_14.title",
+        "item_15_title": "site.features.item_15.title",
+        "item_01_eyebrow": "site.features.item_01.eyebrow",
+        "item_02_eyebrow": "site.features.item_02.eyebrow",
+        "item_03_eyebrow": "site.features.item_03.eyebrow",
+        "item_04_eyebrow": "site.features.item_04.eyebrow",
+        "item_05_eyebrow": "site.features.item_05.eyebrow",
+        "item_06_eyebrow": "site.features.item_06.eyebrow",
+        "item_07_eyebrow": "site.features.item_07.eyebrow",
+        "item_08_eyebrow": "site.features.item_08.eyebrow",
+        "item_09_eyebrow": "site.features.item_09.eyebrow",
+        "item_10_eyebrow": "site.features.item_10.eyebrow",
+        "item_11_eyebrow": "site.features.item_11.eyebrow",
+        "item_12_eyebrow": "site.features.item_12.eyebrow",
+        "item_13_eyebrow": "site.features.item_13.eyebrow",
+        "item_14_eyebrow": "site.features.item_14.eyebrow",
+        "item_15_eyebrow": "site.features.item_15.eyebrow"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 06:07:39.851482+00:00",
+    "updated_at": "2026-05-26 06:07:39.851482+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "471199ef-f3c6-4eec-93c5-3fab1062abce",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0ee93768-f0ad-440a-a84e-9d38997b43b1",
+    "section_type": "editorial_card_grid",
+    "sort_order": 1,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "item_01_href": "#percorsi",
+        "item_02_href": "#tutorial",
+        "item_03_href": "#guide",
+        "item_04_href": "#webinar"
+      },
+      "media": {
+        "item_01": "301cb7bb-e53d-45a1-9c46-916be4cd144d",
+        "item_02": "540056cb-163a-4f7c-9a75-bd76a9ccc062",
+        "item_03": "c953747e-de24-4bbc-81c8-1a0b95f62f21",
+        "item_04": "9441a803-64c2-4d47-95a4-48de1750ddd7"
+      },
+      "blocks": {
+        "item_01_cta": "site.training.sections.item_01_cta",
+        "item_02_cta": "site.training.sections.item_02_cta",
+        "item_03_cta": "site.training.sections.item_03_cta",
+        "item_04_cta": "site.training.sections.item_04_cta",
+        "item_01_body": "site.training.sections.item_01_body",
+        "item_02_body": "site.training.sections.item_02_body",
+        "item_03_body": "site.training.sections.item_03_body",
+        "item_04_body": "site.training.sections.item_04_body",
+        "item_01_title": "site.training.sections.item_01_title",
+        "item_02_title": "site.training.sections.item_02_title",
+        "item_03_title": "site.training.sections.item_03_title",
+        "item_04_title": "site.training.sections.item_04_title",
+        "item_01_eyebrow": "site.training.sections.item_01_eyebrow",
+        "item_02_eyebrow": "site.training.sections.item_02_eyebrow",
+        "item_03_eyebrow": "site.training.sections.item_03_eyebrow",
+        "item_04_eyebrow": "site.training.sections.item_04_eyebrow"
+      },
+      "options": {
+        "columns": 2,
+        "featured_last": false
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 06:44:31.593196+00:00",
+    "updated_at": "2026-05-26 06:44:31.593196+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "c7516f2d-a92e-448f-9a28-b8ef5edf9f15",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "0ee93768-f0ad-440a-a84e-9d38997b43b1",
+    "section_type": "editorial_card_grid",
+    "sort_order": 2,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "item_01_href": "#academy"
+      },
+      "media": {
+        "item_01": "ff7277a0-ef25-40a0-ac19-e9be7d2bdd24"
+      },
+      "blocks": {
+        "item_01_cta": "site.training.academy.item_01_cta",
+        "item_01_body": "site.training.academy.item_01_body",
+        "item_01_title": "site.training.academy.item_01_title",
+        "item_01_eyebrow": "site.training.academy.item_01_eyebrow"
+      },
+      "options": {
+        "columns": 1,
+        "background": "#0A0A0A",
+        "featured_last": true
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 06:44:31.805932+00:00",
+    "updated_at": "2026-05-26 06:44:31.805932+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "c5fc79ad-20b7-4bd0-9b04-006eca913898",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "c62fd455-4748-4fb7-b11e-f59848b42304",
+    "section_type": "login_hero",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "forgot_href": "#",
+        "register_href": "/supporto#contact"
+      },
+      "media": {
+        "background": "6a76f7f7-b939-435a-94bd-ed10393b7287"
+      },
+      "blocks": {
+        "body": "site.login.hero.body",
+        "title": "site.login.hero.title",
+        "eyebrow": "site.login.hero.eyebrow",
+        "cta_label": "site.login.hero.cta_label",
+        "email_label": "site.login.hero.email_label",
+        "password_label": "site.login.hero.password_label",
+        "register_prompt": "site.login.hero.register_prompt",
+        "register_link_label": "site.login.hero.register_link_label"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 06:44:32.442890+00:00",
+    "updated_at": "2026-05-26 07:42:18.369149+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "c3dea917-79e0-40be-b3b7-d83b8d7084c0",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "94871bcf-7f21-4a7e-942d-161284abed8f",
+    "section_type": "nav_top",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "cta": {
+        "href": "/begin-journey",
+        "label_i18n": {
+          "en-US": "Begin your Design Journey\u2122",
+          "it-IT": "Inizia il tuo Design Journey\u2122",
+          "_default": "Begin your Design Journey\u2122"
+        }
+      },
+      "links": [
+        {
+          "id": "how_it_works",
+          "href": "/#how-it-works",
+          "visible": true,
+          "label_i18n": {
+            "en-US": "How it works",
+            "it-IT": "Come funziona",
+            "_default": "How it works"
+          }
+        },
+        {
+          "id": "magazine",
+          "href": "/magazine",
+          "visible": true,
+          "label_i18n": {
+            "en-US": "Magazine",
+            "it-IT": "Magazine",
+            "_default": "Magazine"
+          }
+        },
+        {
+          "id": "design_stories",
+          "href": "/projects",
+          "visible": true,
+          "label_i18n": {
+            "en-US": "Design Stories",
+            "it-IT": "Design Stories",
+            "_default": "Design Stories"
+          }
+        },
+        {
+          "id": "professionals",
+          "href": "/professionals",
+          "visible": true,
+          "label_i18n": {
+            "en-US": "For Professionals\u2122",
+            "it-IT": "Per i professionisti",
+            "_default": "For Professionals\u2122"
+          }
+        }
+      ],
+      "login": {
+        "href": "/auth/login",
+        "label_i18n": {
+          "en-US": "Re-enter",
+          "it-IT": "Rientra",
+          "_default": "Re-enter"
+        }
+      },
+      "logo_url": ""
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-18 05:03:01.682222+00:00",
+    "updated_at": "2026-05-27 00:41:37.033037+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "049428ad-16bf-4611-8b31-a09e640be62e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "cinematic_quote",
+    "sort_order": 160,
+    "visible": true,
+    "locale_content": {
+      "it": {
+        "pro": "Per Studi & Brand",
+        "sub": "Siamo qui per portare la tua visione alla luce.",
+        "title": "Pronto a iniziare il tuo design journey?",
+        "eyebrow": "Final invitation",
+        "private": "Per Clienti Privati"
+      },
+      "en-US": {
+        "pro": "For Design Studios & Brands",
+        "sub": "We are here to bring your vision to life.",
+        "title": "Ready to start your design journey?",
+        "eyebrow": "Final invitation",
+        "private": "For Private Clients"
+      },
+      "_default": {
+        "quote": "Ready to start your design journey?"
+      }
+    },
+    "settings": {
+      "blocks": {
+        "quote": "site.home.atmosphere.quote",
+        "author": "site.home.atmosphere.author",
+        "eyebrow": "site.home.atmosphere.eyebrow",
+        "subtitle": "site.home.atmosphere.subtitle"
+      },
+      "pro_href": "/professionals",
+      "background": "dark",
+      "private_href": "/begin-journey?audience=private"
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 22:48:45.820397+00:00",
+    "updated_at": "2026-05-27 04:42:01.929199+00:00",
+    "deleted_at": "2026-05-27 04:42:01.929199+00:00"
+  },
+  {
+    "id": "d02e01c9-6713-4e09-8ed6-17d28d8e4531",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "hero_editorial",
+    "sort_order": 20,
+    "visible": true,
+    "locale_content": {
+      "en": {},
+      "it": {
+        "sub": "Inizia un'esperienza di design personale con studi italiani di alta gamma.",
+        "image": "https://ytctctmvgdkmyjrbgmqs.supabase.co/storage/v1/object/sign/tenant-assets/848354b9-a43e-4147-bdad-116fb93bd585/storefront/hero_editorial/1779856322093-d6lgxk.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mYjZkOTk3YS0zZjYzLTRlMzgtOGE5YS0yNjZmNjk2NGUzMDQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ0ZW5hbnQtYXNzZXRzLzg0ODM1NGI5LWE0M2UtNDE0Ny1iZGFkLTExNmZiOTNiZDU4NS9zdG9yZWZyb250L2hlcm9fZWRpdG9yaWFsLzE3Nzk4NTYzMjIwOTMtZDZsZ3hrLmpwZWciLCJpYXQiOjE3Nzk4NTY2NzEsImV4cCI6MTgxMTM5MjY3MX0.pWVS1hDDXTBMviVIwlTrkfM7aX_DEM2LJLbA3_yKDfs",
+        "title": "Il tuo spazio.\nIl tuo Design Journey\u2122.",
+        "eyebrow": "MOOD for DESIGN\u2122",
+        "cover_url": "https://customer-assets.emergentagent.com/job_editorial-platform-4/artifacts/rbieihyf_AdobeStock_1770266732.jpeg",
+        "cta_primary": "Inizia il tuo Design Journey\u2122",
+        "cta_secondary": "Per i professionisti"
+      },
+      "en-US": {
+        "sub": "Begin a personal design experience with Italian design studios.",
+        "image": "https://ytctctmvgdkmyjrbgmqs.supabase.co/storage/v1/object/sign/tenant-assets/848354b9-a43e-4147-bdad-116fb93bd585/storefront/hero_editorial/1779856322093-d6lgxk.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mYjZkOTk3YS0zZjYzLTRlMzgtOGE5YS0yNjZmNjk2NGUzMDQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ0ZW5hbnQtYXNzZXRzLzg0ODM1NGI5LWE0M2UtNDE0Ny1iZGFkLTExNmZiOTNiZDU4NS9zdG9yZWZyb250L2hlcm9fZWRpdG9yaWFsLzE3Nzk4NTYzMjIwOTMtZDZsZ3hrLmpwZWciLCJpYXQiOjE3Nzk4NTY2NzEsImV4cCI6MTgxMTM5MjY3MX0.pWVS1hDDXTBMviVIwlTrkfM7aX_DEM2LJLbA3_yKDfs",
+        "title": "Your space.\nYour journey.",
+        "eyebrow": "MOOD for DESIGN\u2122",
+        "cta_primary": "Begin Your Journey\u2122",
+        "cta_secondary": "For Professionals\u2122"
+      },
+      "_default": {
+        "image": "https://ytctctmvgdkmyjrbgmqs.supabase.co/storage/v1/object/sign/tenant-assets/848354b9-a43e-4147-bdad-116fb93bd585/storefront/hero_editorial/1779856322093-d6lgxk.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mYjZkOTk3YS0zZjYzLTRlMzgtOGE5YS0yNjZmNjk2NGUzMDQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ0ZW5hbnQtYXNzZXRzLzg0ODM1NGI5LWE0M2UtNDE0Ny1iZGFkLTExNmZiOTNiZDU4NS9zdG9yZWZyb250L2hlcm9fZWRpdG9yaWFsLzE3Nzk4NTYzMjIwOTMtZDZsZ3hrLmpwZWciLCJpYXQiOjE3Nzk4NTY2NzEsImV4cCI6MTgxMTM5MjY3MX0.pWVS1hDDXTBMviVIwlTrkfM7aX_DEM2LJLbA3_yKDfs",
+        "eyebrow": "MOOD for DESIGN\u2122"
+      }
+    },
+    "settings": {
+      "media": {
+        "image": "1c7e64e4-c902-4992-a729-6f713a012178"
+      },
+      "blocks": {
+        "body": "site.home.hero.body",
+        "eyebrow": "site.home.hero.eyebrow",
+        "title_1": "site.home.hero.title_1",
+        "title_2": "site.home.hero.title_2",
+        "title_3": "site.home.hero.title_3",
+        "cta_primary": "site.home.hero.cta_primary",
+        "cta_secondary": "site.home.hero.cta_secondary"
+      },
+      "atmosphere": "cinematic",
+      "cta_primary_href": "/begin-journey",
+      "cta_secondary_href": "/professionals"
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 22:48:44.766324+00:00",
+    "updated_at": "2026-05-30 03:25:41.434775+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "57bc2f05-a817-4b41-91dd-0a2be7079049",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "trust_marquee",
+    "sort_order": 60,
+    "visible": true,
+    "locale_content": {
+      "it": {
+        "eyebrow": "Materiali Selezionati & Design Partner"
+      },
+      "en-US": {
+        "eyebrow": "Selected Materials & Design Partners"
+      },
+      "_default": {
+        "eyebrow": "Selected Materials & Design Partners"
+      }
+    },
+    "settings": {
+      "blocks": {
+        "brand_1": "site.home.brands.brand_1.label",
+        "brand_2": "site.home.brands.brand_2.label",
+        "brand_3": "site.home.brands.brand_3.label",
+        "brand_4": "site.home.brands.brand_4.label",
+        "brand_5": "site.home.brands.brand_5.label",
+        "brand_6": "site.home.brands.brand_6.label",
+        "brand_7": "site.home.brands.brand_7.label",
+        "brand_8": "site.home.brands.brand_8.label",
+        "eyebrow": "site.home.brands.eyebrow"
+      },
+      "brands": [
+        "Poliform",
+        "Molteni&C",
+        "B&B Italia",
+        "Minotti",
+        "FLOS",
+        "Cattelan Italia",
+        "Porro",
+        "Poltrona Frau"
+      ]
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 22:48:45.176775+00:00",
+    "updated_at": "2026-05-27 04:17:58.367466+00:00",
+    "deleted_at": "2026-05-27 02:53:20.772457+00:00"
+  },
+  {
+    "id": "be24c46f-4a04-4584-9f80-12cc423a314f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "magazine_highlights",
+    "sort_order": 100,
+    "visible": true,
+    "locale_content": {
+      "it": {
+        "title": "Storie curate dallo studio.",
+        "eyebrow": "In evidenza"
+      },
+      "en-US": {
+        "title": "Curated stories from the studio.",
+        "eyebrow": "Editorial Highlights"
+      },
+      "_default": {
+        "title": "Curated stories from the studio.",
+        "eyebrow": "Editorial Highlights"
+      }
+    },
+    "settings": {
+      "cards": [
+        {
+          "id": "01",
+          "href": "/magazine",
+          "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+          "title": {
+            "en": "Matter & Light: the silent dialogue of Italian residential design",
+            "it": "Materia & Luce: il dialogo silenzioso del residenziale italiano"
+          },
+          "category": "Atmosfere"
+        },
+        {
+          "id": "02",
+          "href": "/magazine",
+          "image": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80",
+          "title": {
+            "en": "Natural stone, burnt wood, brass: new tactile grammars",
+            "it": "Pietra naturale, legno bruciato, ottone: nuove grammatiche tattili"
+          },
+          "category": "Materiali"
+        },
+        {
+          "id": "03",
+          "href": "/magazine",
+          "image": "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80",
+          "title": {
+            "en": "The studio portrait: how Italian studios design the contemporary home",
+            "it": "Il ritratto dello studio: come gli studi italiani disegnano la casa contemporanea"
+          },
+          "category": "Studi"
+        }
+      ],
+      "blocks": {
+        "body": "site.home.magazine.body",
+        "title": "site.home.magazine.title",
+        "eyebrow": "site.home.magazine.eyebrow"
+      },
+      "source": "magazine_articles",
+      "max_items": 3,
+      "featured_only": true
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 22:48:45.302914+00:00",
+    "updated_at": "2026-05-27 05:36:25.055300+00:00",
+    "deleted_at": "2026-05-27 05:36:25.055300+00:00"
+  },
+  {
+    "id": "24e62939-a2d0-4a41-bd5e-16f0d49bbc34",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "navigation",
+    "sort_order": 10,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "items": [
+        {
+          "key": "audience",
+          "href": "/dedicato-a",
+          "visible": true,
+          "fallback": "Dedicato a",
+          "position": "main",
+          "label_block": "site.nav.audience"
+        },
+        {
+          "key": "features",
+          "href": "/caratteristiche",
+          "visible": true,
+          "fallback": "Caratteristiche",
+          "position": "main",
+          "label_block": "site.nav.features"
+        },
+        {
+          "key": "pricing",
+          "href": "/versioni-prezzi",
+          "visible": true,
+          "fallback": "Versioni e Prezzi",
+          "position": "main",
+          "label_block": "site.nav.pricing"
+        },
+        {
+          "key": "training",
+          "href": "/formazione",
+          "visible": true,
+          "fallback": "Formazione",
+          "position": "main",
+          "label_block": "site.nav.training"
+        },
+        {
+          "key": "support",
+          "href": "/supporto",
+          "visible": true,
+          "fallback": "Supporto",
+          "position": "right",
+          "label_block": "site.nav.support"
+        },
+        {
+          "key": "login",
+          "href": "/accedi",
+          "visible": true,
+          "fallback": "Accedi",
+          "position": "right",
+          "label_block": "site.nav.login"
+        },
+        {
+          "key": "activate_blueprint",
+          "href": "/studio",
+          "visible": true,
+          "fallback": "Attiva Blueprint\u2122",
+          "position": "right",
+          "label_block": "site.nav.activate_blueprint.label"
+        }
+      ]
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:29.672435+00:00",
+    "updated_at": "2026-05-30 15:47:32.229980+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "6af0252c-7e3f-5fb8-95c5-2e32711d1807",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "platform_pillars",
+    "sort_order": 70,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "blocks": {
+        "p1.body": "site.home.pillars.p1.body",
+        "p2.body": "site.home.pillars.p2.body",
+        "p3.body": "site.home.pillars.p3.body",
+        "p4.body": "site.home.pillars.p4.body",
+        "p5.body": "site.home.pillars.p5.body",
+        "p1.title": "site.home.pillars.p1.title",
+        "p2.title": "site.home.pillars.p2.title",
+        "p3.title": "site.home.pillars.p3.title",
+        "p4.title": "site.home.pillars.p4.title",
+        "p5.title": "site.home.pillars.p5.title"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:54:29.523538+00:00",
+    "updated_at": "2026-05-27 03:46:27.790435+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "6e122ae3-86fa-5622-81fe-663a592f1f09",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "curated_brands",
+    "sort_order": 40,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "blocks": {
+        "eyebrow": "site.home.brands.eyebrow",
+        "brand_1.label": "site.home.brands.brand_1.label",
+        "brand_2.label": "site.home.brands.brand_2.label",
+        "brand_3.label": "site.home.brands.brand_3.label",
+        "brand_4.label": "site.home.brands.brand_4.label",
+        "brand_5.label": "site.home.brands.brand_5.label",
+        "brand_6.label": "site.home.brands.brand_6.label",
+        "brand_7.label": "site.home.brands.brand_7.label",
+        "brand_8.label": "site.home.brands.brand_8.label"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:54:29.415717+00:00",
+    "updated_at": "2026-05-27 03:46:27.802426+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "20b8e610-65da-507e-9681-8e2acfc13f0b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "final_cta_immersive",
+    "sort_order": 140,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_primary_href": "/begin-journey",
+        "cta_secondary_href": "/professional-access"
+      },
+      "media": {
+        "background": "b0119a6c-1ced-401a-95d1-dcb5af3db23e"
+      },
+      "blocks": {
+        "body": "site.home.final.body",
+        "title": "site.home.final.title",
+        "cta_primary": "site.home.final.cta_primary",
+        "cta_secondary": "site.home.final.cta_secondary"
+      },
+      "options": {
+        "dim": 0.7
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:54:29.846921+00:00",
+    "updated_at": "2026-05-30 03:35:08.846640+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "180d69a0-3eaf-5c16-96ba-440439b18fec",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "editorial_triptych",
+    "sort_order": 110,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "magazine_href": "/magazine",
+        "projects_href": "/projects",
+        "materials_href": "/materials"
+      },
+      "media": {
+        "magazine": "5d50eb01-d302-4ad9-87fa-d69a90904d17",
+        "projects": "b5561801-6d94-4b60-9f40-be5bb1807ab3",
+        "materials": "4a346890-3a8c-4552-9c5c-8afda592c268"
+      },
+      "blocks": {
+        "magazine.cta": "site.home.triptych.magazine.cta",
+        "projects.cta": "site.home.triptych.projects.cta",
+        "materials.cta": "site.home.triptych.materials.cta",
+        "magazine.title": "site.home.triptych.magazine.title",
+        "projects.title": "site.home.triptych.projects.title",
+        "materials.title": "site.home.triptych.materials.title",
+        "magazine.category": "site.home.triptych.magazine.category",
+        "projects.category": "site.home.triptych.projects.category",
+        "materials.category": "site.home.triptych.materials.category"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:54:29.739162+00:00",
+    "updated_at": "2026-05-30 03:37:09.821449+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "c9926015-b94a-43dc-a676-84af72722950",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "featured_design_journeys",
+    "sort_order": 30,
+    "visible": true,
+    "locale_content": {
+      "it": {
+        "title": "Progetti reali. Spazi reali.",
+        "eyebrow": "Design Stories",
+        "viewAll": "Vedi tutti i progetti"
+      },
+      "en-US": {
+        "title": "Real projects. Real spaces.",
+        "eyebrow": "Design Stories",
+        "viewAll": "View all projects"
+      },
+      "_default": {
+        "title": "Real projects. Real spaces.",
+        "eyebrow": "Design Stories"
+      }
+    },
+    "settings": {
+      "blocks": {
+        "cta": "site.home.journey.cta",
+        "body": "site.home.journey.body",
+        "title": "site.home.journey.title",
+        "eyebrow": "site.home.journey.eyebrow",
+        "s1_title": "site.home.journey.s1_title",
+        "s2_title": "site.home.journey.s2_title",
+        "s3_title": "site.home.journey.s3_title",
+        "s4_title": "site.home.journey.s4_title"
+      },
+      "source": "portfolio_projects",
+      "auto_feed": true,
+      "max_items": 4,
+      "fallback_visible": false
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 22:48:44.918394+00:00",
+    "updated_at": "2026-05-27 04:17:57.342565+00:00",
+    "deleted_at": "2026-05-27 02:53:20.772457+00:00"
+  },
+  {
+    "id": "fdbfcf00-843f-44a1-914e-a253f933a4bc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "atmosphere_statement",
+    "sort_order": 90,
+    "visible": true,
+    "locale_content": {
+      "it": {
+        "quote": "Il design non \u00e8 solo ci\u00f2 che vedi. \u00c8 come vivi.",
+        "attribution": "MOOD for DESIGN\u2122"
+      },
+      "en-US": {
+        "quote": "Design is not just what you see. It is how you live.",
+        "attribution": "MOOD for DESIGN\u2122"
+      },
+      "_default": {
+        "quote": "Design is not just what you see. It is how you live."
+      }
+    },
+    "settings": {
+      "blocks": {
+        "quote": "site.home.atmosphere.quote",
+        "author": "site.home.atmosphere.author",
+        "eyebrow": "site.home.atmosphere.eyebrow",
+        "subtitle": "site.home.atmosphere.subtitle"
+      },
+      "alignment": "editorial-left",
+      "background": "warm-white"
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 22:48:45.430171+00:00",
+    "updated_at": "2026-05-27 04:17:58.893536+00:00",
+    "deleted_at": "2026-05-27 02:53:20.772457+00:00"
+  },
+  {
+    "id": "49b4b8d5-72e7-48de-866e-c784c8634c8d",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "professionals_cta",
+    "sort_order": 130,
+    "visible": true,
+    "locale_content": {
+      "it": {
+        "cta": "Esplora For Professionals\u2122",
+        "sub": "Scopri come Blueprint OS\u2122 orchestra l'esperienza editoriale del tuo studio.",
+        "title": "Studi di design e brand del lusso.",
+        "eyebrow": "Per i professionisti"
+      },
+      "en-US": {
+        "cta": "Explore For Professionals\u2122",
+        "sub": "Discover how Blueprint OS\u2122 orchestrates your studio's editorial experience.",
+        "title": "Design studios & luxury brands.",
+        "eyebrow": "For Professionals\u2122"
+      },
+      "_default": {
+        "title": "For Design Studios & Brands"
+      }
+    },
+    "settings": {
+      "blocks": {
+        "body": "site.home.final.body",
+        "title": "site.home.final.title",
+        "eyebrow": "site.home.final.eyebrow",
+        "cta_primary": "site.home.final.cta_primary",
+        "cta_secondary": "site.home.final.cta_secondary"
+      },
+      "cta_href": "/professionals"
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 22:48:45.563579+00:00",
+    "updated_at": "2026-05-27 04:17:59.918872+00:00",
+    "deleted_at": "2026-05-27 02:53:20.772457+00:00"
+  },
+  {
+    "id": "42e1f69c-644b-43a7-8b66-d8a8dbb24ecb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "editorial_grid",
+    "sort_order": 50,
+    "visible": true,
+    "locale_content": {
+      "it": {
+        "title": "Ispirazione. Materiali. Atmosfere.",
+        "explore": "Esplora tutti gli articoli",
+        "eyebrow": "Magazine"
+      },
+      "en-US": {
+        "title": "Inspiration. Materials. Atmospheres.",
+        "explore": "Explore all articles",
+        "eyebrow": "Magazine"
+      },
+      "_default": {
+        "title": "Inspiration. Materials. Atmospheres.",
+        "eyebrow": "Magazine"
+      }
+    },
+    "settings": {
+      "cards": [
+        {
+          "id": "01",
+          "href": "/magazine",
+          "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+          "title": {
+            "en": "Matter & Light: the silent dialogue of Italian residential design",
+            "it": "Materia & Luce: il dialogo silenzioso del residenziale italiano"
+          },
+          "category": "Atmosfere"
+        },
+        {
+          "id": "02",
+          "href": "/magazine",
+          "image": "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80",
+          "title": {
+            "en": "Natural stone, burnt wood, brass: new tactile grammars",
+            "it": "Pietra naturale, legno bruciato, ottone: nuove grammatiche tattili"
+          },
+          "category": "Materiali"
+        },
+        {
+          "id": "03",
+          "href": "/magazine",
+          "image": "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80",
+          "title": {
+            "en": "The studio portrait: how Italian studios design the contemporary home",
+            "it": "Il ritratto dello studio: come gli studi italiani disegnano la casa contemporanea"
+          },
+          "category": "Studi"
+        }
+      ],
+      "blocks": {
+        "body": "site.home.magazine.body",
+        "title": "site.home.magazine.title",
+        "eyebrow": "site.home.magazine.eyebrow"
+      },
+      "source": "magazine_articles",
+      "auto_feed": true,
+      "max_items": 5,
+      "category_filter": null
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 22:48:45.049744+00:00",
+    "updated_at": "2026-05-27 04:28:20.226333+00:00",
+    "deleted_at": "2026-05-27 02:53:20.772457+00:00"
+  },
+  {
+    "id": "336615b1-4a01-5602-8634-903b98914edd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "design_journey",
+    "sort_order": 80,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "links": {
+        "cta_href": "/about"
+      },
+      "media": {
+        "s1": "1db024b5-2f20-4342-9b53-c701175617b6",
+        "s2": "235d9014-b377-4922-b838-8566727fa540",
+        "s3": "0155285c-bed5-44d6-8546-ce438a773376",
+        "s4": "fa9633f4-3270-4cb3-9f95-414c864b0361"
+      },
+      "steps": [
+        {
+          "id": "01",
+          "body": {
+            "en": "We define together the atmosphere, materials and functions of the space.",
+            "it": "Definiamo insieme atmosfere, materiali e funzioni dello spazio."
+          },
+          "title": {
+            "en": "Briefing & Mood",
+            "it": "Briefing & Mood"
+          }
+        },
+        {
+          "id": "02",
+          "body": {
+            "en": "The Italian studio develops the concept with photorealistic renders and material boards.",
+            "it": "Lo studio italiano sviluppa il concept con render fotografici e tavole materiche."
+          },
+          "title": {
+            "en": "Project Concept",
+            "it": "Concept di progetto"
+          }
+        },
+        {
+          "id": "03",
+          "body": {
+            "en": "We curate the selection of brands, finishes and fabrics through final approval.",
+            "it": "Curiamo la selezione di brand, finiture e tessuti fino all'approvazione finale."
+          },
+          "title": {
+            "en": "Selection & Approval",
+            "it": "Selezione & Approvazione"
+          }
+        },
+        {
+          "id": "04",
+          "body": {
+            "en": "We coordinate production, logistics and installation, in Italy and abroad.",
+            "it": "Coordiniamo produzione, logistica e installazione, in Italia e all'estero."
+          },
+          "title": {
+            "en": "Realisation",
+            "it": "Realizzazione"
+          }
+        }
+      ],
+      "blocks": {
+        "cta": "site.home.journey.cta",
+        "eyebrow": "site.home.journey.eyebrow",
+        "s1.body": "site.home.journey.s1.body",
+        "s2.body": "site.home.journey.s2.body",
+        "s3.body": "site.home.journey.s3.body",
+        "s4.body": "site.home.journey.s4.body",
+        "s1.title": "site.home.journey.s1.title",
+        "s2.title": "site.home.journey.s2.title",
+        "s3.title": "site.home.journey.s3.title",
+        "s4.title": "site.home.journey.s4.title",
+        "title_pre": "site.home.journey.title_pre",
+        "title_accent": "site.home.journey.title_accent"
+      }
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:54:29.631384+00:00",
+    "updated_at": "2026-05-30 03:29:33.022028+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "b73b357e-98cd-42b7-bd67-cfd0c446ec8c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "materials_carousel",
+    "sort_order": 150,
+    "visible": true,
+    "locale_content": {
+      "it": {
+        "title": "Una selezione curata dei migliori materiali.",
+        "explore": "Esplora i materiali",
+        "eyebrow": "Materiali & Brand"
+      },
+      "en-US": {
+        "title": "Curated selection of the finest materials.",
+        "explore": "Explore materials",
+        "eyebrow": "Materials & Brands"
+      },
+      "_default": {
+        "title": "Curated selection of the finest materials.",
+        "eyebrow": "Materials & Brands"
+      }
+    },
+    "settings": {
+      "blocks": {
+        "body": "site.home.materials.body",
+        "title": "site.home.materials.title",
+        "eyebrow": "site.home.materials.eyebrow"
+      },
+      "source": "curated_swatches",
+      "swatches": [
+        {
+          "id": "mat1",
+          "name": "Marble",
+          "tone": "light",
+          "swatch": "#E8E4DE"
+        },
+        {
+          "id": "mat2",
+          "name": "Walnut",
+          "tone": "dark",
+          "swatch": "#5C3A28"
+        },
+        {
+          "id": "mat3",
+          "name": "Oak",
+          "tone": "mid",
+          "swatch": "#B8956A"
+        },
+        {
+          "id": "mat4",
+          "name": "Linen",
+          "tone": "light",
+          "swatch": "#D6CDB8"
+        },
+        {
+          "id": "mat5",
+          "name": "Travertine",
+          "tone": "mid",
+          "swatch": "#C9B498"
+        },
+        {
+          "id": "mat6",
+          "name": "Brass",
+          "tone": "mid",
+          "swatch": "#B5985A"
+        },
+        {
+          "id": "mat7",
+          "name": "Terrazzo",
+          "tone": "light",
+          "swatch": "#ECE7DE"
+        },
+        {
+          "id": "mat8",
+          "name": "Slate",
+          "tone": "dark",
+          "swatch": "#3A4148"
+        },
+        {
+          "id": "mat9",
+          "name": "Linen Light",
+          "tone": "light",
+          "swatch": "#E8DFC9"
+        },
+        {
+          "id": "mat10",
+          "name": "Charcoal",
+          "tone": "dark",
+          "swatch": "#2A2A2A"
+        },
+        {
+          "id": "mat11",
+          "name": "Basalt",
+          "tone": "dark",
+          "swatch": "#4A4744"
+        }
+      ]
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 22:48:45.690721+00:00",
+    "updated_at": "2026-05-27 04:18:00.426193+00:00",
+    "deleted_at": "2026-05-27 02:53:20.772457+00:00"
+  },
+  {
+    "id": "d839a470-c9ce-449d-bd5d-4e8a5a0e30db",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "editorial_footer",
+    "sort_order": 180,
+    "visible": true,
+    "locale_content": {
+      "it": {
+        "cols": [
+          {
+            "links": [
+              {
+                "href": "/about",
+                "label": "Chi siamo"
+              },
+              {
+                "href": "/studios",
+                "label": "I nostri studi"
+              },
+              {
+                "href": "/careers",
+                "label": "Lavora con noi"
+              },
+              {
+                "href": "/contact",
+                "label": "Contatti"
+              }
+            ],
+            "title": "Azienda"
+          },
+          {
+            "links": [
+              {
+                "href": "/faq",
+                "label": "FAQ"
+              },
+              {
+                "href": "/privacy",
+                "label": "Privacy Policy"
+              },
+              {
+                "href": "/terms",
+                "label": "Termini e Condizioni"
+              }
+            ],
+            "title": "Risorse"
+          },
+          {
+            "links": [
+              {
+                "href": "https://instagram.com",
+                "label": "Instagram"
+              },
+              {
+                "href": "https://pinterest.com",
+                "label": "Pinterest"
+              },
+              {
+                "href": "https://linkedin.com",
+                "label": "LinkedIn"
+              }
+            ],
+            "title": "Seguici"
+          }
+        ],
+        "rights": "\u00a9 2026 MOOD for DESIGN. Tutti i diritti riservati.fffffff"
+      },
+      "en-US": {
+        "cols": [
+          {
+            "links": [
+              {
+                "href": "/about",
+                "label": "About Us"
+              },
+              {
+                "href": "/studios",
+                "label": "Our Studios"
+              },
+              {
+                "href": "/careers",
+                "label": "Careers"
+              },
+              {
+                "href": "/contact",
+                "label": "Contact"
+              }
+            ],
+            "title": "Company"
+          },
+          {
+            "links": [
+              {
+                "href": "/faq",
+                "label": "FAQ"
+              },
+              {
+                "href": "/privacy",
+                "label": "Privacy Policy"
+              },
+              {
+                "href": "/terms",
+                "label": "Terms & Conditions"
+              }
+            ],
+            "title": "Resources"
+          },
+          {
+            "links": [
+              {
+                "href": "https://instagram.com",
+                "label": "Instagram"
+              },
+              {
+                "href": "https://pinterest.com",
+                "label": "Pinterest"
+              },
+              {
+                "href": "https://linkedin.com",
+                "label": "LinkedIn"
+              }
+            ],
+            "title": "Follow Us"
+          }
+        ],
+        "rights": "\u00a9 2026 MOOD for DESIGN. All rights reserved."
+      },
+      "_default": {
+        "rights": "\u00a9 2026 MOOD for DESIGN. All rights reserved."
+      }
+    },
+    "settings": {
+      "logo_url": "",
+      "social_links": [
+        {
+          "href": "https://instagram.com/moodfordesign",
+          "kind": "instagram",
+          "label": "Instagram"
+        },
+        {
+          "href": "https://linkedin.com/company/moodfordesign",
+          "kind": "linkedin",
+          "label": "LinkedIn"
+        }
+      ],
+      "colophon_link": "https://www.moodfordesign.com",
+      "colophon_enabled": true
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-26 22:48:45.951467+00:00",
+    "updated_at": "2026-05-27 04:18:01.508395+00:00",
+    "deleted_at": "2026-05-27 02:53:20.772457+00:00"
+  },
+  {
+    "id": "982d41e4-7812-5d81-acf5-49dbf5e7d8dd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "footer",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "legal": [
+        {
+          "key": "leg_h",
+          "href": "#",
+          "visible": true,
+          "isHeading": true,
+          "label_block": "site.footer.col.legal.heading"
+        },
+        {
+          "key": "lg_priv",
+          "href": "/privacy",
+          "visible": true,
+          "label_block": "site.footer.col.legal.privacy"
+        },
+        {
+          "key": "lg_cook",
+          "href": "/cookies",
+          "visible": true,
+          "label_block": "site.footer.col.legal.cookies"
+        },
+        {
+          "key": "lg_terms",
+          "href": "/terms",
+          "visible": true,
+          "label_block": "site.footer.col.legal.terms"
+        }
+      ],
+      "links": [
+        {
+          "key": "col_mag_h",
+          "href": "#",
+          "group": "magazine",
+          "visible": true,
+          "isHeading": true,
+          "label_block": "site.footer.col.magazine.heading"
+        },
+        {
+          "key": "mag_art",
+          "href": "/magazine",
+          "group": "magazine",
+          "visible": true,
+          "label_block": "site.footer.col.magazine.articles"
+        },
+        {
+          "key": "mag_int",
+          "href": "/magazine?cat=interviews",
+          "group": "magazine",
+          "visible": true,
+          "label_block": "site.footer.col.magazine.interviews"
+        },
+        {
+          "key": "mag_insp",
+          "href": "/magazine?cat=inspirations",
+          "group": "magazine",
+          "visible": true,
+          "label_block": "site.footer.col.magazine.inspirations"
+        },
+        {
+          "key": "mag_news",
+          "href": "/magazine?cat=news",
+          "group": "magazine",
+          "visible": true,
+          "label_block": "site.footer.col.magazine.news"
+        },
+        {
+          "key": "col_proj_h",
+          "href": "#",
+          "group": "projects",
+          "visible": true,
+          "isHeading": true,
+          "label_block": "site.footer.col.projects.heading"
+        },
+        {
+          "key": "p_res",
+          "href": "/projects?cat=residential",
+          "group": "projects",
+          "visible": true,
+          "label_block": "site.footer.col.projects.residential"
+        },
+        {
+          "key": "p_hosp",
+          "href": "/projects?cat=hospitality",
+          "group": "projects",
+          "visible": true,
+          "label_block": "site.footer.col.projects.hospitality"
+        },
+        {
+          "key": "p_ret",
+          "href": "/projects?cat=retail",
+          "group": "projects",
+          "visible": true,
+          "label_block": "site.footer.col.projects.retail"
+        },
+        {
+          "key": "p_off",
+          "href": "/projects?cat=offices",
+          "group": "projects",
+          "visible": true,
+          "label_block": "site.footer.col.projects.offices"
+        },
+        {
+          "key": "col_mat_h",
+          "href": "#",
+          "group": "materials",
+          "visible": true,
+          "isHeading": true,
+          "label_block": "site.footer.col.materials.heading"
+        },
+        {
+          "key": "m_br",
+          "href": "/materials?cat=brands",
+          "group": "materials",
+          "visible": true,
+          "label_block": "site.footer.col.materials.brands"
+        },
+        {
+          "key": "m_fin",
+          "href": "/materials?cat=finishes",
+          "group": "materials",
+          "visible": true,
+          "label_block": "site.footer.col.materials.finishes"
+        },
+        {
+          "key": "m_tex",
+          "href": "/materials?cat=textiles",
+          "group": "materials",
+          "visible": true,
+          "label_block": "site.footer.col.materials.textiles"
+        },
+        {
+          "key": "m_sur",
+          "href": "/materials?cat=surfaces",
+          "group": "materials",
+          "visible": true,
+          "label_block": "site.footer.col.materials.surfaces"
+        },
+        {
+          "key": "col_co_h",
+          "href": "#",
+          "group": "company",
+          "visible": true,
+          "isHeading": true,
+          "label_block": "site.footer.col.company.heading"
+        },
+        {
+          "key": "co_ab",
+          "href": "/about",
+          "group": "company",
+          "visible": true,
+          "label_block": "site.footer.col.company.about"
+        },
+        {
+          "key": "co_me",
+          "href": "/about#method",
+          "group": "company",
+          "visible": true,
+          "label_block": "site.footer.col.company.method"
+        },
+        {
+          "key": "co_ne",
+          "href": "/about#network",
+          "group": "company",
+          "visible": true,
+          "label_block": "site.footer.col.company.network"
+        },
+        {
+          "key": "co_co",
+          "href": "/contact",
+          "group": "company",
+          "visible": true,
+          "label_block": "site.footer.col.company.contact"
+        }
+      ],
+      "blocks": {
+        "copyright": "site.footer.copyright",
+        "manifesto": "site.footer.manifesto"
+      },
+      "social": [
+        {
+          "key": "instagram",
+          "href": "https://instagram.com/moodfordesign",
+          "icon": "instagram",
+          "visible": true
+        },
+        {
+          "key": "linkedin",
+          "href": "https://linkedin.com/company/moodfordesign",
+          "icon": "linkedin",
+          "visible": true
+        },
+        {
+          "key": "pinterest",
+          "href": "https://pinterest.com/moodfordesign",
+          "icon": "pinterest",
+          "visible": true
+        }
+      ]
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:54:30.062630+00:00",
+    "updated_at": "2026-05-27 03:46:27.787565+00:00",
+    "deleted_at": "2026-05-27 02:55:45.887222+00:00"
+  },
+  {
+    "id": "5200ed87-b21e-4e03-837a-09e7f6861949",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "1644352c-bd88-4cae-99b1-96f5800634d5",
+    "section_type": "footer",
+    "sort_order": 0,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "legal": [
+        {
+          "key": "h_leg",
+          "href": "#",
+          "visible": true,
+          "fallback": "Legale",
+          "isHeading": true,
+          "label_block": "site.footer.col.legal.heading"
+        },
+        {
+          "key": "privacy",
+          "href": "/privacy",
+          "visible": true,
+          "fallback": "Privacy Policy",
+          "label_block": "site.footer.col.legal.privacy"
+        },
+        {
+          "key": "cookies",
+          "href": "/cookies",
+          "visible": true,
+          "fallback": "Cookie Policy",
+          "label_block": "site.footer.col.legal.cookies"
+        },
+        {
+          "key": "terms",
+          "href": "/terms",
+          "visible": true,
+          "fallback": "Termini di Servizio",
+          "label_block": "site.footer.col.legal.terms"
+        }
+      ],
+      "links": [
+        {
+          "key": "h_exp",
+          "href": "#",
+          "visible": true,
+          "fallback": "Esplora",
+          "isHeading": true,
+          "label_block": "site.footer.col.explore.heading"
+        },
+        {
+          "key": "audience",
+          "href": "/dedicato-a",
+          "visible": true,
+          "fallback": "Dedicato a",
+          "label_block": "site.footer.col.explore.audience"
+        },
+        {
+          "key": "features",
+          "href": "/caratteristiche",
+          "visible": true,
+          "fallback": "Caratteristiche",
+          "label_block": "site.footer.col.explore.features"
+        },
+        {
+          "key": "pricing",
+          "href": "/versioni-prezzi",
+          "visible": true,
+          "fallback": "Versioni e Prezzi",
+          "label_block": "site.footer.col.explore.pricing"
+        },
+        {
+          "key": "training",
+          "href": "/formazione",
+          "visible": true,
+          "fallback": "Formazione",
+          "label_block": "site.footer.col.explore.training"
+        }
+      ],
+      "social": [
+        {
+          "key": "instagram",
+          "href": "https://instagram.com/moodfordesign",
+          "icon": "instagram",
+          "target": "_blank",
+          "visible": true
+        },
+        {
+          "key": "linkedin",
+          "href": "https://linkedin.com/company/moodfordesign",
+          "icon": "linkedin",
+          "target": "_blank",
+          "visible": true
+        }
+      ],
+      "copyright": "\u00a9 2026 MOOD for DESIGN. Tutti i diritti riservati.",
+      "manifesto": ""
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 02:55:44.815784+00:00",
+    "updated_at": "2026-05-27 02:55:44.815784+00:00",
+    "deleted_at": null
+  },
+  {
+    "id": "1b091ec9-c660-4ee8-9f87-292747b0836b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "page_id": "20180a51-6a04-415f-b798-84a1e6b6087e",
+    "section_type": "flexible_layout",
+    "sort_order": 161,
+    "visible": true,
+    "locale_content": {},
+    "settings": {
+      "cells": [
+        {
+          "slot": "cell_1",
+          "span": 6,
+          "content_type": "heading"
+        },
+        {
+          "slot": "cell_2",
+          "span": 6,
+          "content_type": "heading"
+        }
+      ],
+      "links": {},
+      "media": {
+        "cell_1": null,
+        "cell_2": null
+      },
+      "blocks": {
+        "cell_1_cta": "site.home.flex_1b091ec9.cell_1.cta",
+        "cell_2_cta": "site.home.flex_1b091ec9.cell_2.cta",
+        "cell_1_body": "site.home.flex_1b091ec9.cell_1.body",
+        "cell_2_body": "site.home.flex_1b091ec9.cell_2.body",
+        "cell_1_heading": "site.home.flex_1b091ec9.cell_1.heading",
+        "cell_2_heading": "site.home.flex_1b091ec9.cell_2.heading"
+      },
+      "layout": "two_col",
+      "options": {}
+    },
+    "asset_refs": "{}",
+    "created_at": "2026-05-27 03:55:17.558435+00:00",
+    "updated_at": "2026-05-27 04:41:49.889228+00:00",
+    "deleted_at": "2026-05-27 04:41:49.889228+00:00"
+  }
+]

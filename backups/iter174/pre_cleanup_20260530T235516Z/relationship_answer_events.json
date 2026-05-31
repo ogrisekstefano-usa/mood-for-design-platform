@@ -1,0 +1,87 @@
+[
+  {
+    "id": "0f68ad44-c8c0-4418-9c0d-8bf0a1b69939",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "bc9ca699-5977-4684-81dc-48e9913b77a8",
+    "account_id": null,
+    "question_key": "atmosphere_dominant_v2",
+    "option_value": "natural_calm",
+    "raw_value": null,
+    "group_key": "atmosphere",
+    "occurred_at": "2026-05-30 23:03:56.548058+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "30b26e4f-c865-446a-aa1e-8eb580047c1e",
+    "metadata": {
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "bf3754fa-d427-44a8-af35-93fb118c63ff",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "bc9ca699-5977-4684-81dc-48e9913b77a8",
+    "account_id": null,
+    "question_key": "material_affinities_v2",
+    "option_value": "smoked_glass",
+    "raw_value": null,
+    "group_key": "materials",
+    "occurred_at": "2026-05-30 23:03:59.164449+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "30b26e4f-c865-446a-aa1e-8eb580047c1e",
+    "metadata": {
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "5b6f39f8-0f22-48a4-b9ba-39cdde497583",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "bc9ca699-5977-4684-81dc-48e9913b77a8",
+    "account_id": null,
+    "question_key": "lifestyle_rituals",
+    "option_value": "entertain_frequently",
+    "raw_value": null,
+    "group_key": "lifestyle",
+    "occurred_at": "2026-05-30 23:04:00.634481+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "30b26e4f-c865-446a-aa1e-8eb580047c1e",
+    "metadata": {
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "43834c64-6589-46c0-ad9a-8514956ba3f1",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "bc9ca699-5977-4684-81dc-48e9913b77a8",
+    "account_id": null,
+    "question_key": "project_timing",
+    "option_value": "renovation_planned",
+    "raw_value": null,
+    "group_key": "project_timing",
+    "occurred_at": "2026-05-30 23:04:03.370338+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "30b26e4f-c865-446a-aa1e-8eb580047c1e",
+    "metadata": {
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "operator_user_id": null
+    }
+  },
+  {
+    "id": "03fe03e9-db23-4733-b775-a0dac9875650",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "lead_id": "bc9ca699-5977-4684-81dc-48e9913b77a8",
+    "account_id": null,
+    "question_key": "budget_range_v2",
+    "option_value": "premium",
+    "raw_value": null,
+    "group_key": "budget_range",
+    "occurred_at": "2026-05-30 23:04:06.861759+00:00",
+    "source_surface": "continuation_interview",
+    "session_id": "30b26e4f-c865-446a-aa1e-8eb580047c1e",
+    "metadata": {
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+      "operator_user_id": null
+    }
+  }
+]

@@ -1,0 +1,5050 @@
+[
+  {
+    "id": "0068e481-7b5b-4155-b6a5-ebbaf1f471a1",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "f2cff50f-2d1d-4342-9564-a9fd292bf39f",
+        "created_at": "2026-05-28T19:51:31.892Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:52:03.786690+00:00"
+    },
+    "created_at": "2026-05-29 07:44:00.937769+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "f2cff50f-2d1d-4342-9564-a9fd292bf39f",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:52:03.786696+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:52:03.786673+00:00"
+  },
+  {
+    "id": "98197cba-3a47-44fe-818d-2cc559b9fe1b",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client_access_resend",
+    "recipient": "ogriusa@gmail.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+    "template": "magic_link",
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": "46024a8a-7d31-418d-928b-62f9a1cf4afa",
+    "error": null,
+    "metadata": {
+      "last_webhook": "email.clicked",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T02:39:10.036370+00:00"
+    },
+    "created_at": "2026-05-30 02:38:53.718587+00:00",
+    "sent_at": "2026-05-30 02:38:57.123140+00:00",
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": "2026-05-30 02:39:10.036377+00:00",
+    "bounce_reason": null,
+    "template_key": "magic_link",
+    "source_domain": "content-hub-pro-22.cluster-7.deploy.emergentcf.cloud",
+    "provider_message_id": "46024a8a-7d31-418d-928b-62f9a1cf4afa",
+    "recipient_email": "ogriusa@gmail.com",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 02:39:10.036350+00:00"
+  },
+  {
+    "id": "cc1b9661-9229-444d-bf5c-d47f516392e9",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Maria",
+        "email_id": "17018fd1-582b-4a85-8c6f-37ed2ca34f72",
+        "created_at": "2026-05-28T19:51:40.331Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:52:12.763321+00:00"
+    },
+    "created_at": "2026-05-29 09:15:47.660051+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "17018fd1-582b-4a85-8c6f-37ed2ca34f72",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:52:12.763327+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:52:12.763301+00:00"
+  },
+  {
+    "id": "71715318-9a48-43d7-a8ae-b9ef60b1ccda",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"maria_meta_1780009600365@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "maria_meta_1780009600365@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "755ad63f-bc9a-4c32-8b38-86d5602ecbf5",
+        "created_at": "2026-05-28T23:06:45.584Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:06:48.070482+00:00"
+    },
+    "created_at": "2026-05-29 07:47:14.803980+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "755ad63f-bc9a-4c32-8b38-86d5602ecbf5",
+    "recipient_email": "[\"maria_meta_1780009600365@example.com\"]",
+    "bounced_at": "2026-05-29 13:06:48.070494+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:06:48.070453+00:00"
+  },
+  {
+    "id": "8f2fe4e2-6fd1-4102-a5a8-c9010d1e68fe",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client.space_ready",
+    "recipient": "iter171client_1780040627@example.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+    "template": "space_ready",
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": "2122a148-9998-4887-abbc-aad0c26198ca",
+    "error": null,
+    "metadata": {
+      "kind": "post_journey_welcome",
+      "journey_id": "1d5875f2-370e-4728-a626-4167351eeec3",
+      "profile_id": "996e708e-78ee-4b40-af7b-80b029b72f25",
+      "last_webhook": "email.bounced",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-29T21:43:55.794268+00:00"
+    },
+    "created_at": "2026-05-29 07:43:53.529264+00:00",
+    "sent_at": "2026-05-29 07:43:55.146054+00:00",
+    "locale": "it",
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": "space_ready",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": "2122a148-9998-4887-abbc-aad0c26198ca",
+    "recipient_email": "iter171client_1780040627@example.com",
+    "bounced_at": "2026-05-29 21:43:55.794274+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 21:43:55.794249+00:00"
+  },
+  {
+    "id": "86b6d4e8-7c94-46b8-93bb-987bcecf3aef",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "a4e48f74-eca7-4ab2-b29c-c528148290e9",
+        "created_at": "2026-05-28T23:06:32.710Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:07:03.990393+00:00"
+    },
+    "created_at": "2026-05-29 08:53:34.051221+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "a4e48f74-eca7-4ab2-b29c-c528148290e9",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 13:07:03.990401+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:07:03.990373+00:00"
+  },
+  {
+    "id": "08217512-5e21-45ef-bf63-b4e38fec77bf",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 X",
+        "email_id": "bda8a043-0063-428e-a3c7-ace522d733d4",
+        "created_at": "2026-05-28T19:37:32.953Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:38:04.826198+00:00"
+    },
+    "created_at": "2026-05-29 07:47:59.356139+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "bda8a043-0063-428e-a3c7-ace522d733d4",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:38:04.826204+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:38:04.826180+00:00"
+  },
+  {
+    "id": "583d3e92-5fcb-427a-950b-654ebfc95198",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"priv-5e2f87d3@iter146-test.example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "priv-5e2f87d3@iter146-test.example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "MOOD for DESIGN \u00b7 Abbiamo ricevuto la tua richiesta",
+        "email_id": "7b48d9f7-9f0c-4093-bded-7436a8426bbc",
+        "created_at": "2026-05-28T19:43:27.782Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:43:30.118223+00:00"
+    },
+    "created_at": "2026-05-29 07:42:57.797729+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "7b48d9f7-9f0c-4093-bded-7436a8426bbc",
+    "recipient_email": "[\"priv-5e2f87d3@iter146-test.example.com\"]",
+    "bounced_at": "2026-05-29 09:43:30.118246+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:43:30.118207+00:00"
+  },
+  {
+    "id": "ebe269e3-ba2f-42a0-976e-16e7ceea41c0",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuovo lead \u00b7 private_client",
+        "email_id": "dad0d8a4-f35b-412b-b70c-8224565dfc69",
+        "created_at": "2026-05-28T19:43:26.746Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:43:59.432466+00:00"
+    },
+    "created_at": "2026-05-29 07:44:15.753774+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "dad0d8a4-f35b-412b-b70c-8224565dfc69",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:43:59.432472+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:43:59.432443+00:00"
+  },
+  {
+    "id": "bf033974-8388-4941-a8ac-6ceffa8b9762",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuovo lead \u00b7 professional",
+        "email_id": "623c9aa7-9772-47be-a660-6c743850d903",
+        "created_at": "2026-05-28T19:43:32.414Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:44:04.503853+00:00"
+    },
+    "created_at": "2026-05-29 07:41:27.269018+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "623c9aa7-9772-47be-a660-6c743850d903",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:44:04.503859+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:44:04.503835+00:00"
+  },
+  {
+    "id": "a1d472a1-ed21-441c-8b40-b71fcb5d1243",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Resend",
+        "email_id": "107c3f7d-d50e-48ef-92a2-6885463498bf",
+        "created_at": "2026-05-28T19:46:30.103Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:47:02.286555+00:00"
+    },
+    "created_at": "2026-05-29 08:10:01.492758+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "107c3f7d-d50e-48ef-92a2-6885463498bf",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:47:02.286563+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:47:02.286514+00:00"
+  },
+  {
+    "id": "cdac0c17-e8f9-40c2-9314-7196d6f3a0f1",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Test",
+        "email_id": "71759402-4b1b-4b0b-b01f-e7cf6a064123",
+        "created_at": "2026-05-28T19:48:04.124Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:48:37.273215+00:00"
+    },
+    "created_at": "2026-05-29 07:48:56.953200+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "71759402-4b1b-4b0b-b01f-e7cf6a064123",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:48:37.273221+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:48:37.273196+00:00"
+  },
+  {
+    "id": "8ba816aa-5d22-4da1-9d17-eb95d257ccd0",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"maria1779997893614@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "maria1779997893614@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "33c1f05b-a729-44c1-a8dc-0deb5c75fdfe",
+        "created_at": "2026-05-28T19:51:39.378Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:51:41.873654+00:00"
+    },
+    "created_at": "2026-05-29 09:41:40.196129+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "33c1f05b-a729-44c1-a8dc-0deb5c75fdfe",
+    "recipient_email": "[\"maria1779997893614@example.com\"]",
+    "bounced_at": "2026-05-29 09:51:41.873661+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:51:41.873636+00:00"
+  },
+  {
+    "id": "66b974a0-c6cc-4c29-9f14-458063df4575",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Maria",
+        "email_id": "1f60129d-6a51-40ce-a6be-f85c9c52afac",
+        "created_at": "2026-05-28T19:35:16.872Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:35:49.845703+00:00"
+    },
+    "created_at": "2026-05-29 07:59:59.711975+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "1f60129d-6a51-40ce-a6be-f85c9c52afac",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:35:49.845708+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:35:49.845683+00:00"
+  },
+  {
+    "id": "7415f582-ad72-4032-8ab4-a57afef76abd",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_redir_1779997283314@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_redir_1779997283314@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "73696024-d318-43d1-885e-11aab2479442",
+        "created_at": "2026-05-28T19:41:29.529Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:41:32.163182+00:00"
+    },
+    "created_at": "2026-05-29 07:54:46.732297+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "73696024-d318-43d1-885e-11aab2479442",
+    "recipient_email": "[\"iter169_redir_1779997283314@example.com\"]",
+    "bounced_at": "2026-05-29 09:41:32.163207+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:41:32.163143+00:00"
+  },
+  {
+    "id": "d46f268a-7f64-4028-98b9-2e0a07f284a4",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Resend",
+        "email_id": "730fcb80-2d24-4740-9a54-2e627a5aa821",
+        "created_at": "2026-05-28T19:41:36.597Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:42:09.629888+00:00"
+    },
+    "created_at": "2026-05-29 07:57:29.671725+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "730fcb80-2d24-4740-9a54-2e627a5aa821",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:42:09.629903+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:42:09.629822+00:00"
+  },
+  {
+    "id": "15b21ab1-99c2-4903-b612-6a9e6a74cdfb",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"maria_meta_1779997529550@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "maria_meta_1779997529550@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "a63b1d7c-6394-4f68-b23c-048335699c48",
+        "created_at": "2026-05-28T19:45:34.885Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:45:36.851941+00:00"
+    },
+    "created_at": "2026-05-29 07:54:09.465817+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "a63b1d7c-6394-4f68-b23c-048335699c48",
+    "recipient_email": "[\"maria_meta_1779997529550@example.com\"]",
+    "bounced_at": "2026-05-29 09:45:36.851954+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:45:36.851900+00:00"
+  },
+  {
+    "id": "ac3a5901-f1e6-4ff0-b127-47ab54513829",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "5398ecba-4ca9-4aca-976a-9bf0f6ae377b",
+        "created_at": "2026-05-28T19:45:21.501Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:45:53.362345+00:00"
+    },
+    "created_at": "2026-05-29 08:05:30.667280+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "5398ecba-4ca9-4aca-976a-9bf0f6ae377b",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:45:53.362350+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:45:53.362324+00:00"
+  },
+  {
+    "id": "026074ef-12cf-409e-a384-e153334eb264",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Maria",
+        "email_id": "1cc47031-e55d-4f77-b823-0084c0ef7e06",
+        "created_at": "2026-05-28T19:45:29.405Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:46:01.876219+00:00"
+    },
+    "created_at": "2026-05-29 08:00:50.075691+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "1cc47031-e55d-4f77-b823-0084c0ef7e06",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:46:01.876231+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:46:01.876192+00:00"
+  },
+  {
+    "id": "1493a56b-cfb3-4554-99e3-4204bdec6c5e",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_redir_1779997577052@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "queued",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_redir_1779997577052@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "55e9fdbe-e54a-44f3-babb-e171a321e764",
+        "created_at": "2026-05-28T19:46:22.534Z"
+      },
+      "last_webhook": "email.delivery_delayed",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:46:24.999701+00:00"
+    },
+    "created_at": "2026-05-29 08:06:46.652228+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "55e9fdbe-e54a-44f3-babb-e171a321e764",
+    "recipient_email": "[\"iter169_redir_1779997577052@example.com\"]",
+    "bounced_at": "2026-05-29 09:46:24.733288+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:46:24.999683+00:00"
+  },
+  {
+    "id": "da58b6fd-6eb7-46d7-9973-ed9eb147bd85",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_resend_1779997684554@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_resend_1779997684554@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "39f2b8ba-34b5-4e75-afa6-b2a46f955109",
+        "created_at": "2026-05-28T19:48:11.777Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:48:13.993986+00:00"
+    },
+    "created_at": "2026-05-29 08:06:32.143310+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "39f2b8ba-34b5-4e75-afa6-b2a46f955109",
+    "recipient_email": "[\"iter169_resend_1779997684554@example.com\"]",
+    "bounced_at": "2026-05-29 09:48:13.993994+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:48:13.993965+00:00"
+  },
+  {
+    "id": "89b07239-f7c4-4065-9f57-0066bfd446c3",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "MOOD for DESIGN \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "7c925b29-d496-426d-a651-ec353ed27c90",
+        "created_at": "2026-05-28T19:50:24.362Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:50:56.285455+00:00"
+    },
+    "created_at": "2026-05-29 08:28:05.870885+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "7c925b29-d496-426d-a651-ec353ed27c90",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:50:56.285462+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:50:56.285437+00:00"
+  },
+  {
+    "id": "3b1d87d5-6a0a-45f8-8933-9bdb885cb04b",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "c5489a10-c279-4bde-baa8-839694d915c4",
+        "created_at": "2026-05-28T19:50:26.306Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:50:57.954826+00:00"
+    },
+    "created_at": "2026-05-29 08:21:12.404051+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "c5489a10-c279-4bde-baa8-839694d915c4",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:50:57.954831+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:50:57.954804+00:00"
+  },
+  {
+    "id": "6d3d5ec0-0c98-4c09-83a3-41c0a7a19f0c",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "b52f9fbf-a141-4a2a-9530-db7d90bde5d1",
+        "created_at": "2026-05-28T23:07:40.581Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:08:13.901220+00:00"
+    },
+    "created_at": "2026-05-29 09:55:28.952929+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "b52f9fbf-a141-4a2a-9530-db7d90bde5d1",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 13:08:13.901226+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:08:13.901202+00:00"
+  },
+  {
+    "id": "9ce8e2e2-f059-4d80-897c-33ec31f46f45",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Resend",
+        "email_id": "1aef688b-4e21-4985-a557-fc5a859383d4",
+        "created_at": "2026-05-28T19:42:29.568Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:43:01.699904+00:00"
+    },
+    "created_at": "2026-05-29 08:37:14.158270+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "1aef688b-4e21-4985-a557-fc5a859383d4",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:43:01.699911+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:43:01.699866+00:00"
+  },
+  {
+    "id": "c9c33bc6-88de-4714-8292-18a733387d16",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Maria",
+        "email_id": "5c0aa5ff-d8d0-4fd9-a1ca-bf9b3e44ddb4",
+        "created_at": "2026-05-28T19:45:35.498Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:46:07.797744+00:00"
+    },
+    "created_at": "2026-05-29 08:16:07.408518+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "5c0aa5ff-d8d0-4fd9-a1ca-bf9b3e44ddb4",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:46:07.797750+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:46:07.797725+00:00"
+  },
+  {
+    "id": "d4bcfb0b-320e-4dee-848d-a8f05e636982",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 TestCliente",
+        "email_id": "e874af7c-e775-4319-8ece-400d54196fc4",
+        "created_at": "2026-05-28T19:45:43.411Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:46:16.095065+00:00"
+    },
+    "created_at": "2026-05-29 08:31:15.887146+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "e874af7c-e775-4319-8ece-400d54196fc4",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:46:16.095073+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:46:16.095040+00:00"
+  },
+  {
+    "id": "f4d6bbe1-0573-4730-a660-3b1b67e20e32",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_redir_1779997665628@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_redir_1779997665628@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "d3f106b1-2771-4222-9a8e-d2dc27296697",
+        "created_at": "2026-05-28T19:48:03.474Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:48:06.537018+00:00"
+    },
+    "created_at": "2026-05-29 08:32:29.312929+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "d3f106b1-2771-4222-9a8e-d2dc27296697",
+    "recipient_email": "[\"iter169_redir_1779997665628@example.com\"]",
+    "bounced_at": "2026-05-29 09:48:06.537024+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:48:06.537001+00:00"
+  },
+  {
+    "id": "40c14eb3-02a3-4895-b1f4-2afbda26564a",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_resend_1779997684554@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_resend_1779997684554@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "b71cd9ff-f9dc-4b8b-80af-d0dd8b24169e",
+        "created_at": "2026-05-28T19:48:09.758Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:48:11.910912+00:00"
+    },
+    "created_at": "2026-05-29 08:12:20.589053+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "b71cd9ff-f9dc-4b8b-80af-d0dd8b24169e",
+    "recipient_email": "[\"iter169_resend_1779997684554@example.com\"]",
+    "bounced_at": "2026-05-29 09:48:11.910923+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:48:11.910874+00:00"
+  },
+  {
+    "id": "1545c027-233f-4597-9ccd-46fa9b17bb25",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_resend_1780009582997@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_resend_1780009582997@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "1c141cb3-7911-46fc-98ea-fdc9cd2d1cd4",
+        "created_at": "2026-05-28T23:06:30.506Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:06:32.723257+00:00"
+    },
+    "created_at": "2026-05-29 08:28:07.656864+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "1c141cb3-7911-46fc-98ea-fdc9cd2d1cd4",
+    "recipient_email": "[\"iter169_resend_1780009582997@example.com\"]",
+    "bounced_at": "2026-05-29 13:06:32.723267+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:06:32.723228+00:00"
+  },
+  {
+    "id": "f87f4c4a-e4c8-4baf-9f72-9dc48b9ddc24",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"designer@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "designer@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 T",
+        "email_id": "a22355af-cbb4-4ec2-aad3-faab44a066c2",
+        "created_at": "2026-05-28T23:05:58.148Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:06:29.488703+00:00"
+    },
+    "created_at": "2026-05-29 08:37:23.463100+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "a22355af-cbb4-4ec2-aad3-faab44a066c2",
+    "recipient_email": "[\"designer@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 13:06:29.488779+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:06:29.488680+00:00"
+  },
+  {
+    "id": "e4f3d658-dd98-4f4d-83b6-2210af1be84a",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "20b98849-b49c-42c2-b88a-3d60111f6617",
+        "created_at": "2026-05-28T19:51:33.384Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:52:05.253208+00:00"
+    },
+    "created_at": "2026-05-29 09:48:28.636411+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "20b98849-b49c-42c2-b88a-3d60111f6617",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:52:05.253213+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:52:05.253191+00:00"
+  },
+  {
+    "id": "f7fa56f1-e418-4c92-b16d-7aef19f52485",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"maria1780009594439@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "maria1780009594439@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "8d8bd7ad-da82-48a0-bdd6-ee4e00091463",
+        "created_at": "2026-05-28T23:06:39.602Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:06:41.887290+00:00"
+    },
+    "created_at": "2026-05-29 08:52:35.070787+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "8d8bd7ad-da82-48a0-bdd6-ee4e00091463",
+    "recipient_email": "[\"maria1780009594439@example.com\"]",
+    "bounced_at": "2026-05-29 13:06:41.887296+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:06:41.887267+00:00"
+  },
+  {
+    "id": "0d09d814-c2e1-4683-bc55-1f0bf7b3fcad",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_1779996956@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_1779996956@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "f724aa92-e5bf-4c68-8746-92f91221d8f4",
+        "created_at": "2026-05-28T19:36:02.163Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:36:04.532970+00:00"
+    },
+    "created_at": "2026-05-29 08:43:49.724501+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "f724aa92-e5bf-4c68-8746-92f91221d8f4",
+    "recipient_email": "[\"iter169_1779996956@example.com\"]",
+    "bounced_at": "2026-05-29 09:36:04.532976+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:36:04.532954+00:00"
+  },
+  {
+    "id": "88681713-64ea-4476-9464-9aca66513dd9",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169x_1779997045@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169x_1779997045@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "ba2e6f46-5ce0-49b9-a3ec-9ea462dd0162",
+        "created_at": "2026-05-28T19:37:32.159Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:37:34.394334+00:00"
+    },
+    "created_at": "2026-05-29 08:46:15.338760+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "ba2e6f46-5ce0-49b9-a3ec-9ea462dd0162",
+    "recipient_email": "[\"iter169x_1779997045@example.com\"]",
+    "bounced_at": "2026-05-29 09:37:34.394339+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:37:34.394316+00:00"
+  },
+  {
+    "id": "858257a9-c147-46bf-97f6-05060ccbd9ac",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_redir_1779997335806@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_redir_1779997335806@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "ec89bb7c-bbde-46ea-bb6b-fdd03ca2cae2",
+        "created_at": "2026-05-28T19:42:22.530Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:42:24.942602+00:00"
+    },
+    "created_at": "2026-05-29 08:42:36.012736+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "ec89bb7c-bbde-46ea-bb6b-fdd03ca2cae2",
+    "recipient_email": "[\"iter169_redir_1779997335806@example.com\"]",
+    "bounced_at": "2026-05-29 09:42:24.942610+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:42:24.942578+00:00"
+  },
+  {
+    "id": "96205146-ec1e-4518-9729-aa339dfce890",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"maria1779997523221@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "maria1779997523221@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "f6d05742-9832-42f7-9304-3f515a11b6ae",
+        "created_at": "2026-05-28T19:45:28.686Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:45:31.788354+00:00"
+    },
+    "created_at": "2026-05-29 08:48:02.210254+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "f6d05742-9832-42f7-9304-3f515a11b6ae",
+    "recipient_email": "[\"maria1779997523221@example.com\"]",
+    "bounced_at": "2026-05-29 09:45:31.788360+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:45:31.788335+00:00"
+  },
+  {
+    "id": "1a83a79c-d8f9-46b2-923f-0910d0f71e9e",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "e5747a91-780e-4920-badc-1ca8d39df815",
+        "created_at": "2026-05-28T19:45:22.902Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:45:55.193747+00:00"
+    },
+    "created_at": "2026-05-29 08:50:07.261837+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "e5747a91-780e-4920-badc-1ca8d39df815",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:45:55.193756+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:45:55.193719+00:00"
+  },
+  {
+    "id": "482b1807-4253-4a78-94e3-44ad27fe5404",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_resend_1779997583691@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_resend_1779997583691@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "0acc1590-b041-487a-95b0-3c940cdcec33",
+        "created_at": "2026-05-28T19:46:29.391Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:46:31.623167+00:00"
+    },
+    "created_at": "2026-05-29 08:46:30.370068+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "0acc1590-b041-487a-95b0-3c940cdcec33",
+    "recipient_email": "[\"iter169_resend_1779997583691@example.com\"]",
+    "bounced_at": "2026-05-29 09:46:31.623172+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:46:31.623150+00:00"
+  },
+  {
+    "id": "50ca8ac1-f677-48c0-9bcf-0fbfecbca14d",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_resend_1779997583691@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_resend_1779997583691@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "0ad9a737-1fe3-4a6e-9e18-0ef70b857388",
+        "created_at": "2026-05-28T19:46:31.439Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:46:33.760094+00:00"
+    },
+    "created_at": "2026-05-29 08:49:58.326990+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "0ad9a737-1fe3-4a6e-9e18-0ef70b857388",
+    "recipient_email": "[\"iter169_resend_1779997583691@example.com\"]",
+    "bounced_at": "2026-05-29 09:46:33.760100+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:46:33.760077+00:00"
+  },
+  {
+    "id": "1db82765-931f-476d-94da-e817395c9f3b",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter168_test_1779997692752@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "queued",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter168_test_1779997692752@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "df584b53-3ce3-4b18-a577-acc64ed0c45d",
+        "created_at": "2026-05-28T19:48:18.056Z"
+      },
+      "last_webhook": "email.delivery_delayed",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:48:20.255836+00:00"
+    },
+    "created_at": "2026-05-29 07:51:13.531850+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "df584b53-3ce3-4b18-a577-acc64ed0c45d",
+    "recipient_email": "[\"iter168_test_1779997692752@example.com\"]",
+    "bounced_at": "2026-05-29 09:48:19.687834+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:48:20.255807+00:00"
+  },
+  {
+    "id": "734a1b5b-2cdf-4904-a7de-9e4faec238b5",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "6ab6c5b3-a301-4172-9115-a9d55ba3f2c7",
+        "created_at": "2026-05-28T19:51:49.936Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:52:22.120403+00:00"
+    },
+    "created_at": "2026-05-29 09:02:40.327126+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "6ab6c5b3-a301-4172-9115-a9d55ba3f2c7",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:52:22.120408+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:52:22.120384+00:00"
+  },
+  {
+    "id": "c27567ff-87e6-4aec-90bd-5bc652434ec9",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"designer@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "designer@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Maria",
+        "email_id": "fbff0517-6918-43ac-b0dd-1a99c41ed485",
+        "created_at": "2026-05-28T23:06:46.258Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:07:18.464068+00:00"
+    },
+    "created_at": "2026-05-29 10:04:49.268279+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "fbff0517-6918-43ac-b0dd-1a99c41ed485",
+    "recipient_email": "[\"designer@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 13:07:18.464080+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:07:18.464025+00:00"
+  },
+  {
+    "id": "af014509-09f9-4939-b191-34e72ee276fa",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Test",
+        "email_id": "9d385238-4a22-4cc8-b537-f75a0c78bac4",
+        "created_at": "2026-05-28T19:40:54.466Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:41:26.397476+00:00"
+    },
+    "created_at": "2026-05-29 08:55:45.404584+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "9d385238-4a22-4cc8-b537-f75a0c78bac4",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:41:26.397481+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:41:26.397457+00:00"
+  },
+  {
+    "id": "8e3e2e68-7c01-4a47-b771-3b10edc27649",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Test",
+        "email_id": "22e1449e-b4ee-4dbe-a116-d531ae55b590",
+        "created_at": "2026-05-28T19:41:30.228Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:42:02.388028+00:00"
+    },
+    "created_at": "2026-05-29 09:05:03.710691+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "22e1449e-b4ee-4dbe-a116-d531ae55b590",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:42:02.388038+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:42:02.387940+00:00"
+  },
+  {
+    "id": "beb719c1-97d0-41e8-8404-14c1098c1c83",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"designer@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "designer@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Steve",
+        "email_id": "7090920a-863f-4b02-8b19-2510f0d06b4e",
+        "created_at": "2026-05-28T23:13:28.560Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:14:01.000353+00:00"
+    },
+    "created_at": "2026-05-29 09:06:29.502019+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "7090920a-863f-4b02-8b19-2510f0d06b4e",
+    "recipient_email": "[\"designer@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 13:14:01.000408+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:14:01.000304+00:00"
+  },
+  {
+    "id": "96b8d42d-74e1-4f65-9e69-425339a05888",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_resend_1779997343635@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_resend_1779997343635@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "d9543e7a-98c5-417f-ac90-ddf9bdc5b736",
+        "created_at": "2026-05-28T19:42:30.946Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:42:33.245862+00:00"
+    },
+    "created_at": "2026-05-29 09:07:59.227239+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "d9543e7a-98c5-417f-ac90-ddf9bdc5b736",
+    "recipient_email": "[\"iter169_resend_1779997343635@example.com\"]",
+    "bounced_at": "2026-05-29 09:42:33.245871+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:42:33.245838+00:00"
+  },
+  {
+    "id": "cb97fa46-6914-4e2d-8e55-91e87aa117e3",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuovo lead \u00b7 private_client",
+        "email_id": "c873ad4e-e5fe-4d81-a217-01f5c99d674f",
+        "created_at": "2026-05-28T19:43:28.648Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:44:00.686784+00:00"
+    },
+    "created_at": "2026-05-29 07:41:06.541066+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "c873ad4e-e5fe-4d81-a217-01f5c99d674f",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:44:00.686792+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:44:00.686761+00:00"
+  },
+  {
+    "id": "bd65a88f-6ba7-4caf-8a5c-243c178cd3e6",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter168_test_1779997536979@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter168_test_1779997536979@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "484298d4-5816-4f96-9284-f960c596e6ff",
+        "created_at": "2026-05-28T19:45:42.673Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:45:44.684969+00:00"
+    },
+    "created_at": "2026-05-29 09:09:21.097160+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "484298d4-5816-4f96-9284-f960c596e6ff",
+    "recipient_email": "[\"iter168_test_1779997536979@example.com\"]",
+    "bounced_at": "2026-05-29 09:45:44.684975+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:45:44.684950+00:00"
+  },
+  {
+    "id": "e1e08282-dcd2-4574-bf09-089c884f3bdf",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Test",
+        "email_id": "8f7fb9ef-3486-422f-8e6e-efb9cd2662ee",
+        "created_at": "2026-05-28T19:46:23.204Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:46:55.290912+00:00"
+    },
+    "created_at": "2026-05-29 09:00:57.211133+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "8f7fb9ef-3486-422f-8e6e-efb9cd2662ee",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:46:55.290995+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:46:55.290882+00:00"
+  },
+  {
+    "id": "f0e104f4-d2dc-400b-800f-f398b0facc2b",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"designer@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "designer@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Steve",
+        "email_id": "6e9a5653-25d2-48b1-a475-363e5ba709a6",
+        "created_at": "2026-05-28T23:54:14.405Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:54:47.475967+00:00"
+    },
+    "created_at": "2026-05-29 08:57:10.336093+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "6e9a5653-25d2-48b1-a475-363e5ba709a6",
+    "recipient_email": "[\"designer@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 13:54:47.475977+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:54:47.475942+00:00"
+  },
+  {
+    "id": "e85f08a2-5617-4a8c-b539-c8b7a00c4ebb",
+    "tenant_id": null,
+    "event_type": "email.bounced",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "bounce": {
+          "type": "Transient",
+          "message": "The recipient's email provider sent a general bounce message. You might be able to send a message to the same recipient in the future if the issue that caused the message to bounce is resolved.",
+          "subType": "General",
+          "diagnosticCode": [
+            "smtp; 550 4.4.7 Message expired: unable to deliver in 840 minutes.<421 4.4.1 Failed to establish connection>"
+          ]
+        },
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Resend",
+        "email_id": "7f5aedf8-628c-4d23-9bc0-38e0280c1639",
+        "created_at": "2026-05-28T19:48:10.516Z"
+      },
+      "orphan_webhook": true
+    },
+    "created_at": "2026-05-29 09:48:42.894170+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "7f5aedf8-628c-4d23-9bc0-38e0280c1639",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:48:42.894187+00:00"
+  },
+  {
+    "id": "2dd0759f-a554-4cb5-82a4-ed98896fedd6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client_access_resend",
+    "recipient": "ogrisek.stefano@gmail.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+    "template": "magic_link",
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": "2fda633a-34a9-4e18-b04c-cdab42ff193b",
+    "error": null,
+    "metadata": {
+      "last_webhook": "email.clicked",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T17:07:02.914871+00:00"
+    },
+    "created_at": "2026-05-30 17:06:42.717683+00:00",
+    "sent_at": "2026-05-30 17:06:45.251930+00:00",
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": "2026-05-30 17:07:02.914877+00:00",
+    "bounce_reason": null,
+    "template_key": "magic_link",
+    "source_domain": "content-hub-pro-22.cluster-7.deploy.emergentcf.cloud",
+    "provider_message_id": "2fda633a-34a9-4e18-b04c-cdab42ff193b",
+    "recipient_email": "ogrisek.stefano@gmail.com",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 17:07:02.914849+00:00"
+  },
+  {
+    "id": "29332bb6-ee90-44c5-be25-092345887f57",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"designer@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "designer@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Steve",
+        "email_id": "e17525be-5097-4a47-aeac-533b8dbd89e0",
+        "created_at": "2026-05-28T23:13:05.866Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:13:38.885634+00:00"
+    },
+    "created_at": "2026-05-29 09:31:41.791931+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "e17525be-5097-4a47-aeac-533b8dbd89e0",
+    "recipient_email": "[\"designer@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 13:13:38.885655+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:13:38.885577+00:00"
+  },
+  {
+    "id": "7056bb13-992f-4552-9b22-ba7a20a93c06",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_2_client_1780009569982@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_2_client_1780009569982@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "433393d0-5f73-4ef0-b17f-008933d029d6",
+        "created_at": "2026-05-28T23:06:15.427Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:06:17.930464+00:00"
+    },
+    "created_at": "2026-05-29 09:30:40.489673+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "433393d0-5f73-4ef0-b17f-008933d029d6",
+    "recipient_email": "[\"iter169_2_client_1780009569982@example.com\"]",
+    "bounced_at": "2026-05-29 13:06:17.930516+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:06:17.930446+00:00"
+  },
+  {
+    "id": "2a1a4453-2539-428f-81f0-097fc4556fa7",
+    "tenant_id": null,
+    "event_type": "email.bounced",
+    "recipient": "[\"iter169_test_1779996907@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_test_1779996907@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "bounce": {
+          "type": "Transient",
+          "message": "The recipient's email provider sent a general bounce message. You might be able to send a message to the same recipient in the future if the issue that caused the message to bounce is resolved.",
+          "subType": "General",
+          "diagnosticCode": [
+            "smtp; 550 4.4.7 Message expired: unable to deliver in 840 minutes.<421 4.4.1 Unable to connect to remote host>"
+          ]
+        },
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "ac284583-4907-4e7c-8307-715ebe609687",
+        "created_at": "2026-05-28T19:35:16.090Z"
+      },
+      "orphan_webhook": true
+    },
+    "created_at": "2026-05-29 09:35:19.162736+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "ac284583-4907-4e7c-8307-715ebe609687",
+    "recipient_email": "[\"iter169_test_1779996907@example.com\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:35:19.162998+00:00"
+  },
+  {
+    "id": "98aec3f4-c85f-4f91-a237-125568fb1ffd",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_1779996928@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_1779996928@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "d900f6d7-8d0d-4a31-8310-5f080e970a63",
+        "created_at": "2026-05-28T19:35:35.276Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:35:37.750238+00:00"
+    },
+    "created_at": "2026-05-29 08:45:30.697496+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "d900f6d7-8d0d-4a31-8310-5f080e970a63",
+    "recipient_email": "[\"iter169_1779996928@example.com\"]",
+    "bounced_at": "2026-05-29 09:35:37.750250+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:35:37.750210+00:00"
+  },
+  {
+    "id": "9af83562-0946-4d61-adf4-a512b91aa197",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 X",
+        "email_id": "2a35ca04-4189-4f1d-9d44-2261c1c132f4",
+        "created_at": "2026-05-28T19:35:35.981Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:36:08.504701+00:00"
+    },
+    "created_at": "2026-05-29 09:19:22.233228+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "2a35ca04-4189-4f1d-9d44-2261c1c132f4",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:36:08.504707+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:36:08.504680+00:00"
+  },
+  {
+    "id": "83ec092e-d75e-4493-98cd-e11b78691ff9",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Resend",
+        "email_id": "2ee71fc2-8ea7-476e-9177-89dd8be1d240",
+        "created_at": "2026-05-28T19:41:04.041Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:41:35.532928+00:00"
+    },
+    "created_at": "2026-05-29 09:29:54.101444+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "2ee71fc2-8ea7-476e-9177-89dd8be1d240",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:41:35.532943+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:41:35.532850+00:00"
+  },
+  {
+    "id": "7cdfda47-875c-44df-9f3d-00e4ced56a31",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Test",
+        "email_id": "9e03e866-e777-4425-80d1-0bb8daa86287",
+        "created_at": "2026-05-28T19:42:23.309Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:42:55.722795+00:00"
+    },
+    "created_at": "2026-05-29 09:29:02.636494+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "9e03e866-e777-4425-80d1-0bb8daa86287",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:42:55.722801+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:42:55.722774+00:00"
+  },
+  {
+    "id": "606116ea-4f0c-425f-b3db-f7f71e09f9a0",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Marco \u00b7 Richiesta di una call",
+        "email_id": "0fc46ac2-edb1-42b4-89fc-ba67f1b89f54",
+        "created_at": "2026-05-28T19:45:15.595Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:45:47.483431+00:00"
+    },
+    "created_at": "2026-05-29 09:28:41.295504+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "0fc46ac2-edb1-42b4-89fc-ba67f1b89f54",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:45:47.483436+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:45:47.483411+00:00"
+  },
+  {
+    "id": "9bde691d-6c50-4e80-a544-bffe29d575c0",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 X",
+        "email_id": "b59f1b70-34ee-4fd9-8faf-5f82cea0a55b",
+        "created_at": "2026-05-28T19:36:02.886Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:36:36.157778+00:00"
+    },
+    "created_at": "2026-05-29 08:36:35.403220+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "b59f1b70-34ee-4fd9-8faf-5f82cea0a55b",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:36:36.157783+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:36:36.157760+00:00"
+  },
+  {
+    "id": "fde5768f-71f0-4283-99c5-21b69e45eb41",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169z_1779997145@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169z_1779997145@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "2fd1b280-97bb-4048-ba6b-067ea5089d9d",
+        "created_at": "2026-05-28T19:39:11.530Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:39:14.635850+00:00"
+    },
+    "created_at": "2026-05-29 08:42:27.918392+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "2fd1b280-97bb-4048-ba6b-067ea5089d9d",
+    "recipient_email": "[\"iter169z_1779997145@example.com\"]",
+    "bounced_at": "2026-05-29 09:39:14.635855+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:39:14.635829+00:00"
+  },
+  {
+    "id": "e2f62aac-9bf8-4479-86b4-d8d0e8f4e38d",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 X",
+        "email_id": "6faaae96-c7e6-4fda-81bf-c9a68d7ee0ee",
+        "created_at": "2026-05-28T19:39:12.197Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:39:44.000402+00:00"
+    },
+    "created_at": "2026-05-29 09:10:04.460581+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "6faaae96-c7e6-4fda-81bf-c9a68d7ee0ee",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:39:44.000409+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:39:44.000382+00:00"
+  },
+  {
+    "id": "9eefa355-61aa-4e9a-b0c3-2f2c80f17e65",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client.space_ready",
+    "recipient": "ogrisek.stefano@gmail.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+    "template": "space_ready",
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": "2b2d0347-a7b0-4f74-ab3f-b569d2b6cca3",
+    "error": null,
+    "metadata": {
+      "kind": "post_journey_welcome",
+      "journey_id": "9a96de23-48ee-4c66-b92f-e08806f27a66",
+      "profile_id": "9ceb7874-3496-47e8-930c-f9215dc871e2",
+      "last_webhook": "email.delivered",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T06:17:34.627200+00:00"
+    },
+    "created_at": "2026-05-30 06:17:31.658279+00:00",
+    "sent_at": "2026-05-30 06:17:34.627205+00:00",
+    "locale": "it",
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": "space_ready",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": "2b2d0347-a7b0-4f74-ab3f-b569d2b6cca3",
+    "recipient_email": "ogrisek.stefano@gmail.com",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 06:17:34.627179+00:00"
+  },
+  {
+    "id": "99784681-0ee1-47d7-9d35-992992ed5ae1",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_redir_1779997247250@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_redir_1779997247250@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "02337f85-e319-4259-a6e3-2ecd3c09a7b1",
+        "created_at": "2026-05-28T19:40:53.738Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:40:56.446487+00:00"
+    },
+    "created_at": "2026-05-29 09:40:56.130160+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "02337f85-e319-4259-a6e3-2ecd3c09a7b1",
+    "recipient_email": "[\"iter169_redir_1779997247250@example.com\"]",
+    "bounced_at": "2026-05-29 09:40:56.446493+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:40:56.446461+00:00"
+  },
+  {
+    "id": "963cec65-f20c-4c50-b087-3d60176f614f",
+    "tenant_id": null,
+    "event_type": "email.bounced",
+    "recipient": "[\"iter169_resend_1779997254947@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_resend_1779997254947@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "bounce": {
+          "type": "Transient",
+          "message": "The recipient's email provider sent a general bounce message. You might be able to send a message to the same recipient in the future if the issue that caused the message to bounce is resolved.",
+          "subType": "General",
+          "diagnosticCode": [
+            "smtp; 550 4.4.7 Message expired: unable to deliver in 840 minutes.<421 4.4.1 Unable to connect to remote host>"
+          ]
+        },
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "23305cbc-bcea-40c5-841f-4bac7b6e771f",
+        "created_at": "2026-05-28T19:41:00.222Z"
+      },
+      "orphan_webhook": true
+    },
+    "created_at": "2026-05-29 09:41:02.964060+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "23305cbc-bcea-40c5-841f-4bac7b6e771f",
+    "recipient_email": "[\"iter169_resend_1779997254947@example.com\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:41:02.964079+00:00"
+  },
+  {
+    "id": "a3a189ab-3203-4b1f-90d8-ddc50670f295",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"maria_meta_1779997900402@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "maria_meta_1779997900402@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "ac51b05f-5723-48e5-b545-c521fde274b2",
+        "created_at": "2026-05-28T19:51:46.012Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:51:48.264353+00:00"
+    },
+    "created_at": "2026-05-29 09:36:48.382356+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "ac51b05f-5723-48e5-b545-c521fde274b2",
+    "recipient_email": "[\"maria_meta_1779997900402@example.com\"]",
+    "bounced_at": "2026-05-29 09:51:48.264359+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:51:48.264333+00:00"
+  },
+  {
+    "id": "3202ca4d-1679-4b42-834c-fd21205d9f25",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_resend_1779997290632@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_resend_1779997290632@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "4f0e197e-91c5-4558-a15b-b45d9b12d2d1",
+        "created_at": "2026-05-28T19:41:35.921Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:41:38.065898+00:00"
+    },
+    "created_at": "2026-05-29 09:26:56.265313+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "4f0e197e-91c5-4558-a15b-b45d9b12d2d1",
+    "recipient_email": "[\"iter169_resend_1779997290632@example.com\"]",
+    "bounced_at": "2026-05-29 09:41:38.065928+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:41:38.065806+00:00"
+  },
+  {
+    "id": "f8b7f759-a152-488d-a6ed-55073661403a",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_resend_1779997343635@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_resend_1779997343635@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "a766e614-c3ca-4157-a081-fbafe89e0677",
+        "created_at": "2026-05-28T19:42:28.923Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:42:31.300352+00:00"
+    },
+    "created_at": "2026-05-29 07:53:38.029664+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "a766e614-c3ca-4157-a081-fbafe89e0677",
+    "recipient_email": "[\"iter169_resend_1779997343635@example.com\"]",
+    "bounced_at": "2026-05-29 09:42:31.300360+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:42:31.300330+00:00"
+  },
+  {
+    "id": "56cccef7-2b15-47d9-8344-266f83c8646f",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"priv-fd71359e@iter146-test.example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "priv-fd71359e@iter146-test.example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "MOOD for DESIGN \u00b7 Abbiamo ricevuto la tua richiesta",
+        "email_id": "0ed3a89c-44da-4de4-9fb9-d8ad9eac7b37",
+        "created_at": "2026-05-28T19:43:24.253Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:43:27.606410+00:00"
+    },
+    "created_at": "2026-05-29 09:41:06.494520+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "0ed3a89c-44da-4de4-9fb9-d8ad9eac7b37",
+    "recipient_email": "[\"priv-fd71359e@iter146-test.example.com\"]",
+    "bounced_at": "2026-05-29 09:43:27.606416+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:43:27.606389+00:00"
+  },
+  {
+    "id": "880b5791-382a-4dc0-8ff1-0052fac48fa3",
+    "tenant_id": null,
+    "event_type": "email.bounced",
+    "recipient": "[\"priv-ddee279b@iter146-test.example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "priv-ddee279b@iter146-test.example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "bounce": {
+          "type": "Transient",
+          "message": "The recipient's email provider sent a general bounce message. You might be able to send a message to the same recipient in the future if the issue that caused the message to bounce is resolved.",
+          "subType": "General",
+          "diagnosticCode": [
+            "smtp; 550 4.4.7 Message expired: unable to deliver in 840 minutes.<451 4.4.4 Unknown mail server. Could not find a mail server for iter146-test.example.com>"
+          ]
+        },
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "MOOD for DESIGN \u00b7 Abbiamo ricevuto la tua richiesta",
+        "email_id": "93354cef-c2b0-4cb9-9170-153fbc1d7d9e",
+        "created_at": "2026-05-28T19:43:26.059Z"
+      },
+      "orphan_webhook": true
+    },
+    "created_at": "2026-05-29 09:43:28.592334+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "93354cef-c2b0-4cb9-9170-153fbc1d7d9e",
+    "recipient_email": "[\"priv-ddee279b@iter146-test.example.com\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:43:28.592358+00:00"
+  },
+  {
+    "id": "e0167d4a-82c9-438d-badb-84b2b381eef9",
+    "tenant_id": null,
+    "event_type": "email.bounced",
+    "recipient": "[\"pro-2054a558@iter146-test.example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "pro-2054a558@iter146-test.example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "bounce": {
+          "type": "Transient",
+          "message": "The recipient's email provider sent a general bounce message. You might be able to send a message to the same recipient in the future if the issue that caused the message to bounce is resolved.",
+          "subType": "General",
+          "diagnosticCode": [
+            "smtp; 550 4.4.7 Message expired: unable to deliver in 840 minutes.<451 4.4.4 Unknown mail server. Could not find a mail server for iter146-test.example.com>"
+          ]
+        },
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "MOOD for DESIGN \u00b7 Abbiamo ricevuto la tua richiesta",
+        "email_id": "ac398706-fe3f-48de-b4f0-f44651e6374b",
+        "created_at": "2026-05-28T19:43:29.995Z"
+      },
+      "orphan_webhook": true
+    },
+    "created_at": "2026-05-29 09:43:32.460240+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "ac398706-fe3f-48de-b4f0-f44651e6374b",
+    "recipient_email": "[\"pro-2054a558@iter146-test.example.com\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:43:32.460261+00:00"
+  },
+  {
+    "id": "b22e0cc7-1cc3-424d-b3fd-12c60409040c",
+    "tenant_id": null,
+    "event_type": "email.bounced",
+    "recipient": "[\"pro-4be7ff4b@iter146-test.example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "pro-4be7ff4b@iter146-test.example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "bounce": {
+          "type": "Transient",
+          "message": "The recipient's email provider sent a general bounce message. You might be able to send a message to the same recipient in the future if the issue that caused the message to bounce is resolved.",
+          "subType": "General",
+          "diagnosticCode": [
+            "smtp; 550 4.4.7 Message expired: unable to deliver in 840 minutes.<451 4.4.4 Unknown mail server. Could not find a mail server for iter146-test.example.com>"
+          ]
+        },
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "MOOD for DESIGN \u00b7 Abbiamo ricevuto la tua richiesta",
+        "email_id": "a7ef415e-df78-4d2a-b379-d83e1b432f36",
+        "created_at": "2026-05-28T19:43:31.740Z"
+      },
+      "orphan_webhook": true
+    },
+    "created_at": "2026-05-29 09:43:34.581635+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "a7ef415e-df78-4d2a-b379-d83e1b432f36",
+    "recipient_email": "[\"pro-4be7ff4b@iter146-test.example.com\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:43:34.581653+00:00"
+  },
+  {
+    "id": "40ba0f7d-c137-4fef-b163-a5300e8d33d1",
+    "tenant_id": null,
+    "event_type": "email.bounced",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "bounce": {
+          "type": "Transient",
+          "message": "The recipient's email provider sent a general bounce message. You might be able to send a message to the same recipient in the future if the issue that caused the message to bounce is resolved.",
+          "subType": "General",
+          "diagnosticCode": [
+            "smtp; 550 4.4.7 Message expired: unable to deliver in 840 minutes.<421 4.4.1 Failed to establish connection>"
+          ]
+        },
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuovo lead \u00b7 private_client",
+        "email_id": "f3acb1fd-01dd-4d57-b00b-7beaff331e54",
+        "created_at": "2026-05-28T19:43:24.960Z"
+      },
+      "orphan_webhook": true
+    },
+    "created_at": "2026-05-29 09:43:57.222773+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "f3acb1fd-01dd-4d57-b00b-7beaff331e54",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:43:57.222803+00:00"
+  },
+  {
+    "id": "304df84f-47b5-4490-8fea-82509834f48c",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuovo lead \u00b7 professional",
+        "email_id": "d9dcfee1-ac5e-4964-9d3a-1fba68dd3925",
+        "created_at": "2026-05-28T19:43:30.692Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:44:02.923500+00:00"
+    },
+    "created_at": "2026-05-29 08:16:56.239993+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "d9dcfee1-ac5e-4964-9d3a-1fba68dd3925",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:44:02.923507+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:44:02.923476+00:00"
+  },
+  {
+    "id": "3f7e2f71-e49e-439e-b280-d51738a43457",
+    "tenant_id": null,
+    "event_type": "email.bounced",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "bounce": {
+          "type": "Transient",
+          "message": "The recipient's email provider sent a general bounce message. You might be able to send a message to the same recipient in the future if the issue that caused the message to bounce is resolved.",
+          "subType": "General",
+          "diagnosticCode": [
+            "smtp; 550 4.4.7 Message expired: unable to deliver in 840 minutes.<421 4.4.1 Failed to establish connection>"
+          ]
+        },
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "80aac0b6-58bb-41b8-b820-803ce1af38f3",
+        "created_at": "2026-05-28T19:45:18.791Z"
+      },
+      "orphan_webhook": true
+    },
+    "created_at": "2026-05-29 09:45:50.910217+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "80aac0b6-58bb-41b8-b820-803ce1af38f3",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:45:50.910254+00:00"
+  },
+  {
+    "id": "c290aa13-c28f-44c1-a4cc-5b499e83b39f",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 TestCliente",
+        "email_id": "e4395eda-d5f1-431e-9ded-bfd00e10d0c7",
+        "created_at": "2026-05-28T19:48:18.789Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T09:48:50.797911+00:00"
+    },
+    "created_at": "2026-05-29 08:01:59.139226+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "e4395eda-d5f1-431e-9ded-bfd00e10d0c7",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 09:48:50.797918+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:48:50.797893+00:00"
+  },
+  {
+    "id": "7b44a4e6-9cc7-4320-822d-3fe037279472",
+    "tenant_id": null,
+    "event_type": "email.bounced",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "bounce": {
+          "type": "Transient",
+          "message": "The recipient's email provider sent a general bounce message. You might be able to send a message to the same recipient in the future if the issue that caused the message to bounce is resolved.",
+          "subType": "General",
+          "diagnosticCode": [
+            "smtp; 550 4.4.7 Message expired: unable to deliver in 840 minutes.<421 4.4.1 Failed to establish connection>"
+          ]
+        },
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Maria",
+        "email_id": "2bb7ddfa-3a42-4615-88de-7922d53d4bd3",
+        "created_at": "2026-05-28T19:51:46.696Z"
+      },
+      "orphan_webhook": true
+    },
+    "created_at": "2026-05-29 09:52:02.343750+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "2bb7ddfa-3a42-4615-88de-7922d53d4bd3",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-29 09:52:02.343809+00:00"
+  },
+  {
+    "id": "cdf79b21-6c31-4cdb-8f31-a5aa938a36bc",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client_access_resend",
+    "recipient": "ogrisek.stefano@gmail.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+    "template": "magic_link",
+    "status": "failed",
+    "provider": "resend",
+    "provider_id": null,
+    "error": "The moodfordesign.com domain is not verified. Please, add and verify your domain on https://resend.com/domains",
+    "metadata": {
+      "identity_source": "tenant_settings"
+    },
+    "created_at": "2026-05-30 20:24:49.946692+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": "magic_link",
+    "source_domain": "content-hub-pro-22.cluster-7.deploy.emergentcf.cloud",
+    "provider_message_id": null,
+    "recipient_email": "ogrisek.stefano@gmail.com",
+    "bounced_at": null,
+    "failed_at": "2026-05-30 20:24:49.946692+00:00",
+    "updated_at": "2026-05-30 20:24:50.014081+00:00"
+  },
+  {
+    "id": "e201464d-a612-4be7-aecf-c418a4e57927",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client.space_ready",
+    "recipient": "ogriusa@gmail.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+    "template": "space_ready",
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": "46159a8b-23d2-4fbe-82ef-901f2b12604e",
+    "error": null,
+    "metadata": {
+      "kind": "post_journey_welcome",
+      "journey_id": "30950769-99c2-4d78-bdd5-55720ad7c44e",
+      "profile_id": "448d6139-349b-4e69-b76b-15f468278965",
+      "last_webhook": "email.clicked",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T02:36:52.379784+00:00"
+    },
+    "created_at": "2026-05-30 01:28:44.290591+00:00",
+    "sent_at": "2026-05-30 01:28:47.577877+00:00",
+    "locale": "it",
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": "2026-05-30 02:36:52.379790+00:00",
+    "bounce_reason": null,
+    "template_key": "space_ready",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": "46159a8b-23d2-4fbe-82ef-901f2b12604e",
+    "recipient_email": "ogriusa@gmail.com",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 02:36:52.379762+00:00"
+  },
+  {
+    "id": "00edf7cc-0161-4b2e-a955-561f8c9db3bc",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"designer@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "designer@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Maria",
+        "email_id": "22b72fb2-a730-4114-8f9f-b80207ed0eba",
+        "created_at": "2026-05-28T23:06:40.306Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:07:13.107916+00:00"
+    },
+    "created_at": "2026-05-29 08:31:24.355255+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "22b72fb2-a730-4114-8f9f-b80207ed0eba",
+    "recipient_email": "[\"designer@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 13:07:13.107927+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:07:13.107889+00:00"
+  },
+  {
+    "id": "4be5c5b9-38f2-4480-82a1-74e2d5a32b6f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "referente.new_conversation",
+    "recipient": "admin@moodfordesign.com",
+    "subject": "Nuova conversazione progettuale \u00b7 TestIter171",
+    "template": "generic",
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": "9e9fb302-d47a-49c6-bb72-2d3afbd5aea3",
+    "error": null,
+    "metadata": {
+      "kind": "internal_referente_notification",
+      "thread_id": "3cbecf90-9d41-4d93-b353-467a6d151922",
+      "journey_id": "1d5875f2-370e-4728-a626-4167351eeec3",
+      "profile_id": "996e708e-78ee-4b40-af7b-80b029b72f25",
+      "last_webhook": "email.bounced",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-29T21:44:26.327429+00:00"
+    },
+    "created_at": "2026-05-29 07:43:54.176939+00:00",
+    "sent_at": "2026-05-29 07:43:55.680911+00:00",
+    "locale": "it",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": "generic",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": "9e9fb302-d47a-49c6-bb72-2d3afbd5aea3",
+    "recipient_email": "admin@moodfordesign.com",
+    "bounced_at": "2026-05-29 21:44:26.327436+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 21:44:26.327335+00:00"
+  },
+  {
+    "id": "b533a363-61d6-4136-90ce-9c7da0e026e5",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "5f238e6f-3b7e-41a9-96b1-bd97e1f10b8a",
+        "created_at": "2026-05-28T23:06:49.349Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:07:21.218798+00:00"
+    },
+    "created_at": "2026-05-29 08:08:45.523363+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "5f238e6f-3b7e-41a9-96b1-bd97e1f10b8a",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 13:07:21.218804+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:07:21.218777+00:00"
+  },
+  {
+    "id": "a04209a9-4989-4bc6-8576-942432a25a0c",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_2_client_1780009550679@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "queued",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_2_client_1780009550679@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "b527a470-31a8-4656-8a31-45673b1a21e2",
+        "created_at": "2026-05-28T23:05:57.443Z"
+      },
+      "last_webhook": "email.delivery_delayed",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:06:01.098831+00:00"
+    },
+    "created_at": "2026-05-29 08:55:25.898314+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "b527a470-31a8-4656-8a31-45673b1a21e2",
+    "recipient_email": "[\"iter169_2_client_1780009550679@example.com\"]",
+    "bounced_at": "2026-05-29 13:06:00.519656+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:06:01.098692+00:00"
+  },
+  {
+    "id": "4cd7f2bf-443c-4e65-ae76-6513afa588a8",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_redir_1780009576537@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_redir_1780009576537@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "679c72ef-1ed2-482d-95b0-3133e18a25b5",
+        "created_at": "2026-05-28T23:06:21.807Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:06:24.402094+00:00"
+    },
+    "created_at": "2026-05-29 10:25:03.099410+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "679c72ef-1ed2-482d-95b0-3133e18a25b5",
+    "recipient_email": "[\"iter169_redir_1780009576537@example.com\"]",
+    "bounced_at": "2026-05-29 13:06:24.402100+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:06:24.402077+00:00"
+  },
+  {
+    "id": "aaa46702-d892-4fdf-a429-4cb2cbbcc389",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"iter169_resend_1780009582997@example.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "iter169_resend_1780009582997@example.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+        "email_id": "9e490e96-2106-4bfc-b610-262638d99f2b",
+        "created_at": "2026-05-28T23:06:28.366Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:06:30.478824+00:00"
+    },
+    "created_at": "2026-05-29 09:15:31.807981+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "9e490e96-2106-4bfc-b610-262638d99f2b",
+    "recipient_email": "[\"iter169_resend_1780009582997@example.com\"]",
+    "bounced_at": "2026-05-29 13:06:30.478830+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:06:30.478777+00:00"
+  },
+  {
+    "id": "a6c6be99-eef5-4aae-8221-c27048ca740c",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"designer@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "designer@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 T",
+        "email_id": "c8f4b415-dded-4c90-b576-76f5ff03e411",
+        "created_at": "2026-05-28T23:06:16.251Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:06:48.351899+00:00"
+    },
+    "created_at": "2026-05-29 08:16:55.818738+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "c8f4b415-dded-4c90-b576-76f5ff03e411",
+    "recipient_email": "[\"designer@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 13:06:48.351905+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:06:48.351878+00:00"
+  },
+  {
+    "id": "9cd5cc93-16f2-41c5-a99d-6d6f4916bb81",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"designer@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "designer@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Resend",
+        "email_id": "f4ff7415-4616-4ec0-8491-9262c3c0bccd",
+        "created_at": "2026-05-28T23:06:29.041Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:07:01.064366+00:00"
+    },
+    "created_at": "2026-05-29 08:54:53.419190+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "f4ff7415-4616-4ec0-8491-9262c3c0bccd",
+    "recipient_email": "[\"designer@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 13:07:01.064372+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:07:01.064345+00:00"
+  },
+  {
+    "id": "c69c75fe-bb9d-4197-91ef-d1ed8ea811ff",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"admin@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "admin@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+        "email_id": "01e38837-c6e7-421b-998d-f5273aaaf60d",
+        "created_at": "2026-05-28T23:06:34.195Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:07:06.438313+00:00"
+    },
+    "created_at": "2026-05-29 07:43:10.462635+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "01e38837-c6e7-421b-998d-f5273aaaf60d",
+    "recipient_email": "[\"admin@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 13:07:06.438319+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:07:06.438297+00:00"
+  },
+  {
+    "id": "845c0d81-6f35-4b06-83dd-c0ac08ec5c1c",
+    "tenant_id": null,
+    "event_type": "email.delivery_delayed",
+    "recipient": "[\"designer@moodfordesign.com\"]",
+    "subject": null,
+    "template": null,
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "designer@moodfordesign.com"
+        ],
+        "from": "Atelier Demo <no-reply@mail.moodfordesign.com>",
+        "headers": [
+          {
+            "name": "Reply-To",
+            "value": "atelier-demo@example.test"
+          }
+        ],
+        "subject": "Nuova conversazione progettuale \u00b7 Test",
+        "email_id": "8c9cecaa-3b03-4f8f-836c-72882501ecda",
+        "created_at": "2026-05-28T23:06:22.498Z"
+      },
+      "last_webhook": "email.bounced",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-29T13:06:54.638697+00:00"
+    },
+    "created_at": "2026-05-29 10:19:36.837987+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "8c9cecaa-3b03-4f8f-836c-72882501ecda",
+    "recipient_email": "[\"designer@moodfordesign.com\"]",
+    "bounced_at": "2026-05-29 13:06:54.638748+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-29 13:06:54.638670+00:00"
+  },
+  {
+    "id": "9c8d21ad-870a-42a9-8a2a-fb3ac900a361",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client_access_resend",
+    "recipient": "ogrisek.stefano@gmail.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+    "template": "magic_link",
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": "5c517eff-7bd0-45e2-94b4-c9bff7621932",
+    "error": null,
+    "metadata": {
+      "last_webhook": "email.clicked",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T07:18:17.158181+00:00"
+    },
+    "created_at": "2026-05-30 06:59:08.707297+00:00",
+    "sent_at": "2026-05-30 06:59:11.604516+00:00",
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": "2026-05-30 07:18:17.158187+00:00",
+    "bounce_reason": null,
+    "template_key": "magic_link",
+    "source_domain": "content-hub-pro-22.cluster-7.deploy.emergentcf.cloud",
+    "provider_message_id": "5c517eff-7bd0-45e2-94b4-c9bff7621932",
+    "recipient_email": "ogrisek.stefano@gmail.com",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 07:18:17.158159+00:00"
+  },
+  {
+    "id": "dd674194-cd65-42e2-b3ee-2aeec06f9e31",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "referente.new_conversation",
+    "recipient": "admin@moodfordesign.com",
+    "subject": "Nuova conversazione progettuale \u00b7 Stephano",
+    "template": "generic",
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": "1f8a81e8-2e77-4d24-a79c-b54cecac356a",
+    "error": null,
+    "metadata": {
+      "kind": "internal_referente_notification",
+      "thread_id": "58d0f87e-f267-4515-aed3-925e3e4c8d6d",
+      "journey_id": "7f7b172c-4545-4b39-8eee-ab16d8e12ad2",
+      "profile_id": "a39d798a-926a-4286-9fd1-16014f0c47ea",
+      "last_webhook": "email.bounced",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T11:28:36.446572+00:00"
+    },
+    "created_at": "2026-05-29 21:28:02.985204+00:00",
+    "sent_at": "2026-05-29 21:28:05.111263+00:00",
+    "locale": "it",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": "generic",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": "1f8a81e8-2e77-4d24-a79c-b54cecac356a",
+    "recipient_email": "admin@moodfordesign.com",
+    "bounced_at": "2026-05-30 11:28:36.446578+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-30 11:28:36.446551+00:00"
+  },
+  {
+    "id": "604f221b-2f4d-44d1-899e-7cb2ef6f0967",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "referente.new_conversation",
+    "recipient": "admin@moodfordesign.com",
+    "subject": "Nuova conversazione progettuale \u00b7 ClientTest",
+    "template": "generic",
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": "5edf31bd-e5ff-44c7-b792-67eb7d92cef0",
+    "error": null,
+    "metadata": {
+      "kind": "internal_referente_notification",
+      "thread_id": "503429a9-8f6c-41ce-8916-5833b07a5f1c",
+      "journey_id": "af052363-5cb8-42c7-b7eb-61890a2b9219",
+      "profile_id": "fe502dc7-3007-4846-898c-763acd3c700a",
+      "last_webhook": "email.bounced",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T11:55:21.511052+00:00"
+    },
+    "created_at": "2026-05-29 21:54:49.645238+00:00",
+    "sent_at": "2026-05-29 21:54:51.913953+00:00",
+    "locale": "it",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": "generic",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": "5edf31bd-e5ff-44c7-b792-67eb7d92cef0",
+    "recipient_email": "admin@moodfordesign.com",
+    "bounced_at": "2026-05-30 11:55:21.511059+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-30 11:55:21.511032+00:00"
+  },
+  {
+    "id": "f3c62c77-e14c-48a7-b399-d94fee7c9abb",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client.space_ready",
+    "recipient": "iter171repro_1780090804@example.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+    "template": "space_ready",
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": "4dfcc51f-0c8b-4451-8804-9969649d785c",
+    "error": null,
+    "metadata": {
+      "kind": "post_journey_welcome",
+      "journey_id": "9425fc82-bde3-4384-b07c-2c37e620a1d9",
+      "profile_id": "7e4e68fc-89ad-428f-8109-15de6c32d58f",
+      "last_webhook": "email.bounced",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T11:40:14.037231+00:00"
+    },
+    "created_at": "2026-05-29 21:40:11.206294+00:00",
+    "sent_at": "2026-05-29 21:40:14.288043+00:00",
+    "locale": "it",
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": "space_ready",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": "4dfcc51f-0c8b-4451-8804-9969649d785c",
+    "recipient_email": "iter171repro_1780090804@example.com",
+    "bounced_at": "2026-05-30 11:40:14.037237+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-30 11:40:14.037211+00:00"
+  },
+  {
+    "id": "102b458c-0141-415e-a3c7-041cb9c046bd",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client_access_resend",
+    "recipient": "ogriusa@gmail.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+    "template": "magic_link",
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": "717b451a-ff3e-42d5-b18c-745c138cafb6",
+    "error": null,
+    "metadata": {
+      "last_webhook": "email.clicked",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T02:38:43.745709+00:00"
+    },
+    "created_at": "2026-05-30 02:38:14.978135+00:00",
+    "sent_at": "2026-05-30 02:38:17.867702+00:00",
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": "2026-05-30 02:38:43.745719+00:00",
+    "bounce_reason": null,
+    "template_key": "magic_link",
+    "source_domain": "content-hub-pro-22.cluster-7.deploy.emergentcf.cloud",
+    "provider_message_id": "717b451a-ff3e-42d5-b18c-745c138cafb6",
+    "recipient_email": "ogriusa@gmail.com",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 02:38:43.745676+00:00"
+  },
+  {
+    "id": "b130949e-7031-4c67-a90d-007a9e893d1c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "referente.new_conversation",
+    "recipient": "admin@moodfordesign.com",
+    "subject": "Nuova conversazione progettuale \u00b7 Marco",
+    "template": "generic",
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": "09882392-8fea-4a6b-b62a-a82d2c8365bb",
+    "error": null,
+    "metadata": {
+      "kind": "internal_referente_notification",
+      "thread_id": "7057319f-d0f2-49a1-a257-8bff6eb88f63",
+      "journey_id": "9425fc82-bde3-4384-b07c-2c37e620a1d9",
+      "profile_id": "7e4e68fc-89ad-428f-8109-15de6c32d58f",
+      "last_webhook": "email.bounced",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T11:40:44.739482+00:00"
+    },
+    "created_at": "2026-05-29 21:40:11.930390+00:00",
+    "sent_at": "2026-05-29 21:40:14.011657+00:00",
+    "locale": "it",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": "generic",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": "09882392-8fea-4a6b-b62a-a82d2c8365bb",
+    "recipient_email": "admin@moodfordesign.com",
+    "bounced_at": "2026-05-30 11:40:44.739532+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-30 11:40:44.739462+00:00"
+  },
+  {
+    "id": "a8a1c5f7-5e86-494e-a331-775a0a409d03",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client.space_ready",
+    "recipient": "support@moodfordesign.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+    "template": "space_ready",
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": "84268c85-a99d-4e2b-a6a1-f50a44a3f229",
+    "error": null,
+    "metadata": {
+      "kind": "post_journey_welcome",
+      "journey_id": "7f7b172c-4545-4b39-8eee-ab16d8e12ad2",
+      "profile_id": "a39d798a-926a-4286-9fd1-16014f0c47ea",
+      "last_webhook": "email.bounced",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T11:28:36.104724+00:00"
+    },
+    "created_at": "2026-05-29 21:28:02.313848+00:00",
+    "sent_at": "2026-05-29 21:28:04.837012+00:00",
+    "locale": "it",
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": "space_ready",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": "84268c85-a99d-4e2b-a6a1-f50a44a3f229",
+    "recipient_email": "support@moodfordesign.com",
+    "bounced_at": "2026-05-30 11:28:36.104730+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-30 11:28:36.104702+00:00"
+  },
+  {
+    "id": "3c972953-3861-4011-b767-0a1de4967473",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client.space_ready",
+    "recipient": "iter171client_1780091682@example.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+    "template": "space_ready",
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": "fd5aa487-1055-47d7-8576-dc5ec15b5647",
+    "error": null,
+    "metadata": {
+      "kind": "post_journey_welcome",
+      "journey_id": "af052363-5cb8-42c7-b7eb-61890a2b9219",
+      "profile_id": "fe502dc7-3007-4846-898c-763acd3c700a",
+      "last_webhook": "email.bounced",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T11:54:52.021511+00:00"
+    },
+    "created_at": "2026-05-29 21:54:48.952915+00:00",
+    "sent_at": "2026-05-29 21:54:52.177396+00:00",
+    "locale": "it",
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": "space_ready",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": "fd5aa487-1055-47d7-8576-dc5ec15b5647",
+    "recipient_email": "iter171client_1780091682@example.com",
+    "bounced_at": "2026-05-30 11:54:52.021517+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-30 11:54:52.021493+00:00"
+  },
+  {
+    "id": "d8c3075b-37bb-4307-971f-3ecd12c10f16",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client_access_resend",
+    "recipient": "ogrisek.stefano@gmail.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+    "template": "magic_link",
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": "e9dddf87-1b6d-481c-a8b0-ba1edfec3f8d",
+    "error": null,
+    "metadata": {
+      "last_webhook": "email.clicked",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T16:53:27.241973+00:00"
+    },
+    "created_at": "2026-05-30 07:18:22.043340+00:00",
+    "sent_at": "2026-05-30 07:18:24.896451+00:00",
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": "2026-05-30 16:53:27.241978+00:00",
+    "bounce_reason": null,
+    "template_key": "magic_link",
+    "source_domain": "content-hub-pro-22.cluster-7.deploy.emergentcf.cloud",
+    "provider_message_id": "e9dddf87-1b6d-481c-a8b0-ba1edfec3f8d",
+    "recipient_email": "ogrisek.stefano@gmail.com",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 16:53:27.241954+00:00"
+  },
+  {
+    "id": "b649133f-7d9b-499d-96c3-c1b1c5feeada",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "referente.new_conversation",
+    "recipient": "admin@moodfordesign.com",
+    "subject": "Nuova conversazione progettuale \u00b7 stef",
+    "template": "generic",
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": "974f725e-d083-4c41-ab48-53876b6987c8",
+    "error": null,
+    "metadata": {
+      "kind": "internal_referente_notification",
+      "thread_id": "214a3616-99ef-4cc9-bc99-8f338e585dce",
+      "journey_id": "30950769-99c2-4d78-bdd5-55720ad7c44e",
+      "profile_id": "448d6139-349b-4e69-b76b-15f468278965",
+      "last_webhook": "email.bounced",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T15:29:19.349172+00:00"
+    },
+    "created_at": "2026-05-30 01:28:45.083463+00:00",
+    "sent_at": "2026-05-30 01:28:47.312023+00:00",
+    "locale": "it",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": "generic",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": "974f725e-d083-4c41-ab48-53876b6987c8",
+    "recipient_email": "admin@moodfordesign.com",
+    "bounced_at": "2026-05-30 15:29:19.349182+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-30 15:29:19.349118+00:00"
+  },
+  {
+    "id": "41b73b5c-bfd9-4e6d-8c54-a4d413392d0e",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client.space_ready",
+    "recipient": "ogrisek.stefano@gmail.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+    "template": "space_ready",
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": "066cdf81-54d4-4a3f-8611-1baff36f65dd",
+    "error": null,
+    "metadata": {
+      "kind": "post_journey_welcome",
+      "journey_id": "62c6c27a-98f5-4f98-a3c8-2bebf917bbd3",
+      "profile_id": "9ceb7874-3496-47e8-930c-f9215dc871e2",
+      "last_webhook": "email.clicked",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T06:59:02.381533+00:00"
+    },
+    "created_at": "2026-05-30 06:19:53.705506+00:00",
+    "sent_at": "2026-05-30 06:19:56.179895+00:00",
+    "locale": "it",
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": "2026-05-30 06:59:02.381540+00:00",
+    "bounce_reason": null,
+    "template_key": "space_ready",
+    "source_domain": "content-hub-pro-22.emergent.host",
+    "provider_message_id": "066cdf81-54d4-4a3f-8611-1baff36f65dd",
+    "recipient_email": "ogrisek.stefano@gmail.com",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 06:59:02.381508+00:00"
+  },
+  {
+    "id": "944cea8f-affa-42b1-82f0-b8edbebc7b79",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "referente.new_conversation",
+    "recipient": "admin@moodfordesign.com",
+    "subject": "Nuova conversazione progettuale \u00b7 Stef",
+    "template": "generic",
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": "d0e0295b-534b-4da6-aa5b-14257218519a",
+    "error": null,
+    "metadata": {
+      "kind": "internal_referente_notification",
+      "thread_id": "b6b4e064-0ab4-4a16-a119-25d06e3d1353",
+      "journey_id": "9a96de23-48ee-4c66-b92f-e08806f27a66",
+      "profile_id": "9ceb7874-3496-47e8-930c-f9215dc871e2",
+      "last_webhook": "email.bounced",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T20:18:16.899588+00:00"
+    },
+    "created_at": "2026-05-30 06:17:32.314048+00:00",
+    "sent_at": "2026-05-30 06:17:34.884088+00:00",
+    "locale": "it",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": "generic",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": "d0e0295b-534b-4da6-aa5b-14257218519a",
+    "recipient_email": "admin@moodfordesign.com",
+    "bounced_at": "2026-05-30 20:18:16.899596+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-30 20:18:16.899561+00:00"
+  },
+  {
+    "id": "3d129506-4012-4ca3-a534-72b9e5b4ffb2",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "referente.new_conversation",
+    "recipient": "admin@moodfordesign.com",
+    "subject": "Nuova conversazione progettuale \u00b7 stef",
+    "template": "generic",
+    "status": "bounced",
+    "provider": "resend",
+    "provider_id": "130ff75b-a62c-4422-8f2c-73da949537fb",
+    "error": null,
+    "metadata": {
+      "kind": "internal_referente_notification",
+      "thread_id": "2674a12d-2bed-4daf-9c74-f508cbb96303",
+      "journey_id": "62c6c27a-98f5-4f98-a3c8-2bebf917bbd3",
+      "profile_id": "9ceb7874-3496-47e8-930c-f9215dc871e2",
+      "last_webhook": "email.bounced",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T20:20:27.154140+00:00"
+    },
+    "created_at": "2026-05-30 06:19:54.357593+00:00",
+    "sent_at": "2026-05-30 06:19:56.622091+00:00",
+    "locale": "it",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": "General",
+    "template_key": "generic",
+    "source_domain": "content-hub-pro-22.emergent.host",
+    "provider_message_id": "130ff75b-a62c-4422-8f2c-73da949537fb",
+    "recipient_email": "admin@moodfordesign.com",
+    "bounced_at": "2026-05-30 20:20:27.154168+00:00",
+    "failed_at": null,
+    "updated_at": "2026-05-30 20:20:27.154117+00:00"
+  },
+  {
+    "id": "71731be9-c13c-4cd0-896e-be887f493fed",
+    "tenant_id": null,
+    "event_type": "email.sent",
+    "recipient": "[\"Stefano Ogrisek <ogrisek.stefano@gmail.com>\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "Stefano Ogrisek <ogrisek.stefano@gmail.com>"
+        ],
+        "from": "MOOD for DESIGN <no-reply@mail.moodfordesign.com>",
+        "subject": "Continua il tuo Design Journey",
+        "email_id": "4f6eea15-a80a-4b49-b63f-90b5e3ce58a9",
+        "created_at": "2026-05-30T21:10:27.742Z"
+      },
+      "last_webhook": "email.delivered",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-30T21:10:30.733890+00:00"
+    },
+    "created_at": "2026-05-30 21:10:29.965696+00:00",
+    "sent_at": "2026-05-30 21:10:30.733896+00:00",
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "4f6eea15-a80a-4b49-b63f-90b5e3ce58a9",
+    "recipient_email": "[\"Stefano Ogrisek <ogrisek.stefano@gmail.com>\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 21:10:30.733870+00:00"
+  },
+  {
+    "id": "f277ac85-7434-44b6-b9ed-3edd58c8f9df",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client_access_resend",
+    "recipient": "ogrisek.stefano@gmail.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+    "template": "magic_link",
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": "c53116cf-d807-4c3f-bed3-dcae73ad5499",
+    "error": null,
+    "metadata": {
+      "last_webhook": "email.clicked",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T16:55:08.843763+00:00"
+    },
+    "created_at": "2026-05-30 16:53:33.566365+00:00",
+    "sent_at": "2026-05-30 16:53:36.393343+00:00",
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": "2026-05-30 16:55:08.843768+00:00",
+    "bounce_reason": null,
+    "template_key": "magic_link",
+    "source_domain": "content-hub-pro-22.cluster-7.deploy.emergentcf.cloud",
+    "provider_message_id": "c53116cf-d807-4c3f-bed3-dcae73ad5499",
+    "recipient_email": "ogrisek.stefano@gmail.com",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 16:55:08.843745+00:00"
+  },
+  {
+    "id": "2bd250dc-8b48-4e54-9b85-7358a94b039f",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client_access_resend",
+    "recipient": "ogrisek.stefano@gmail.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+    "template": "magic_link",
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": "2f921eba-baa3-4f8a-adf3-3965f46d16cc",
+    "error": null,
+    "metadata": {
+      "last_webhook": "email.clicked",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T16:55:45.152253+00:00"
+    },
+    "created_at": "2026-05-30 16:55:14.661130+00:00",
+    "sent_at": "2026-05-30 16:55:17.132367+00:00",
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": "2026-05-30 16:55:45.152261+00:00",
+    "bounce_reason": null,
+    "template_key": "magic_link",
+    "source_domain": "content-hub-pro-22.cluster-7.deploy.emergentcf.cloud",
+    "provider_message_id": "2f921eba-baa3-4f8a-adf3-3965f46d16cc",
+    "recipient_email": "ogrisek.stefano@gmail.com",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 16:55:45.152227+00:00"
+  },
+  {
+    "id": "bb763bb1-a1fc-4a60-b61a-b259fc44d7ec",
+    "tenant_id": null,
+    "event_type": "email.sent",
+    "recipient": "[\"Stef <st.ogrisek@margraf-usa.com>\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "Stef <st.ogrisek@margraf-usa.com>"
+        ],
+        "from": "MOOD for DESIGN <no-reply@mail.moodfordesign.com>",
+        "subject": "Continua il tuo Design Journey",
+        "email_id": "84818b14-7502-44f1-8a2f-e673a4af4998",
+        "created_at": "2026-05-30T21:19:37.126Z"
+      },
+      "last_webhook": "email.delivered",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-30T21:19:40.437605+00:00"
+    },
+    "created_at": "2026-05-30 21:19:39.581184+00:00",
+    "sent_at": "2026-05-30 21:19:40.437613+00:00",
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "84818b14-7502-44f1-8a2f-e673a4af4998",
+    "recipient_email": "[\"Stef <st.ogrisek@margraf-usa.com>\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 21:19:40.437582+00:00"
+  },
+  {
+    "id": "73bf85f4-0e3d-43ce-91ee-172173e2d130",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client_access_resend",
+    "recipient": "ogrisek.stefano@gmail.com",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale ti aspetta",
+    "template": "magic_link",
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": "e04a6ec7-3d44-492e-9402-1164c25b4778",
+    "error": null,
+    "metadata": {
+      "last_webhook": "email.clicked",
+      "identity_source": "tenant_legacy",
+      "last_webhook_at": "2026-05-30T19:49:23.575806+00:00"
+    },
+    "created_at": "2026-05-30 19:48:58.132591+00:00",
+    "sent_at": "2026-05-30 19:49:00.599645+00:00",
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": "2026-05-30 19:49:23.575813+00:00",
+    "bounce_reason": null,
+    "template_key": "magic_link",
+    "source_domain": "content-hub-pro-22.cluster-7.deploy.emergentcf.cloud",
+    "provider_message_id": "e04a6ec7-3d44-492e-9402-1164c25b4778",
+    "recipient_email": "ogrisek.stefano@gmail.com",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 19:49:23.575787+00:00"
+  },
+  {
+    "id": "9a29632b-9cb1-40bb-8322-757448f0d8fc",
+    "tenant_id": null,
+    "event_type": "email.sent",
+    "recipient": "[\"Stefano Ogrisek <ogrisek.stefano@gmail.com>\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "Stefano Ogrisek <ogrisek.stefano@gmail.com>"
+        ],
+        "from": "MOOD for DESIGN <no-reply@mail.moodfordesign.com>",
+        "subject": "Continua il tuo Design Journey",
+        "email_id": "37c472a4-459f-4f0f-bfa9-08dd5d212d50",
+        "created_at": "2026-05-30T21:05:05.971Z"
+      },
+      "last_webhook": "email.clicked",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-30T21:10:09.814783+00:00"
+    },
+    "created_at": "2026-05-30 21:05:08.863153+00:00",
+    "sent_at": "2026-05-30 21:05:09.230875+00:00",
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": "2026-05-30 21:10:09.814792+00:00",
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "37c472a4-459f-4f0f-bfa9-08dd5d212d50",
+    "recipient_email": "[\"Stefano Ogrisek <ogrisek.stefano@gmail.com>\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 21:10:09.814759+00:00"
+  },
+  {
+    "id": "a6d396f4-9fd4-466e-bae6-da97fad24544",
+    "tenant_id": null,
+    "event_type": "email.sent",
+    "recipient": "[\"Stef <st.ogrisek@margraf-usa.com>\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "Stef <st.ogrisek@margraf-usa.com>"
+        ],
+        "from": "MOOD for DESIGN <no-reply@mail.moodfordesign.com>",
+        "subject": "Continua il tuo Design Journey",
+        "email_id": "3c0b3df9-23b4-404d-8ebf-4acfd69af032",
+        "created_at": "2026-05-30T21:20:09.268Z"
+      },
+      "last_webhook": "email.delivered",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-30T21:20:12.897750+00:00"
+    },
+    "created_at": "2026-05-30 21:20:11.122935+00:00",
+    "sent_at": "2026-05-30 21:20:12.897756+00:00",
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "3c0b3df9-23b4-404d-8ebf-4acfd69af032",
+    "recipient_email": "[\"Stef <st.ogrisek@margraf-usa.com>\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 21:20:12.897730+00:00"
+  },
+  {
+    "id": "c42e204b-d1e4-4a8e-ab5d-29cf9be235ef",
+    "tenant_id": null,
+    "event_type": "email.sent",
+    "recipient": "[\"Stef <st.ogrisek@margraf-usa.com>\"]",
+    "subject": null,
+    "template": null,
+    "status": "sent",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "Stef <st.ogrisek@margraf-usa.com>"
+        ],
+        "from": "MOOD for DESIGN <no-reply@mail.moodfordesign.com>",
+        "subject": "Continua il tuo Design Journey",
+        "email_id": "663d5bba-4481-4157-8293-852ce82084dd",
+        "created_at": "2026-05-30T21:20:14.321Z"
+      },
+      "last_webhook": "email.delivered",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-30T21:20:17.638521+00:00"
+    },
+    "created_at": "2026-05-30 21:20:16.051502+00:00",
+    "sent_at": "2026-05-30 21:20:17.638557+00:00",
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "663d5bba-4481-4157-8293-852ce82084dd",
+    "recipient_email": "[\"Stef <st.ogrisek@margraf-usa.com>\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 21:20:17.638497+00:00"
+  },
+  {
+    "id": "45de47c1-a159-41e1-b1a0-7bde79319e1c",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client.space_ready",
+    "recipient": "audit-iter173@test.example",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+    "template": "space_ready",
+    "status": "failed",
+    "provider": "resend",
+    "provider_id": null,
+    "error": "The moodfordesign.com domain is not verified. Please, add and verify your domain on https://resend.com/domains",
+    "metadata": {
+      "kind": "post_journey_welcome",
+      "journey_id": "d55f712f-04c0-4ca0-af87-d149924e7994",
+      "profile_id": "a6b841c8-cd70-4d0c-bc30-5b8846c3a922",
+      "identity_source": "tenant_settings"
+    },
+    "created_at": "2026-05-30 21:21:39.775518+00:00",
+    "sent_at": null,
+    "locale": "it",
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": "space_ready",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": null,
+    "recipient_email": "audit-iter173@test.example",
+    "bounced_at": null,
+    "failed_at": "2026-05-30 21:21:39.775518+00:00",
+    "updated_at": "2026-05-30 21:21:39.841814+00:00"
+  },
+  {
+    "id": "a98a46a0-1474-4877-8de8-296c3e5f66f2",
+    "tenant_id": null,
+    "event_type": "email.sent",
+    "recipient": "[\"MOOD Admin <admin@moodfordesign.com>\"]",
+    "subject": null,
+    "template": null,
+    "status": "queued",
+    "provider": "resend",
+    "provider_id": null,
+    "error": null,
+    "metadata": {
+      "payload": {
+        "to": [
+          "MOOD Admin <admin@moodfordesign.com>"
+        ],
+        "from": "MOOD for DESIGN <no-reply@mail.moodfordesign.com>",
+        "subject": "Continua il tuo Design Journey",
+        "email_id": "6c9d8e5b-66e3-4531-8d9d-26723e588986",
+        "created_at": "2026-05-30T21:16:24.321Z"
+      },
+      "last_webhook": "email.delivery_delayed",
+      "orphan_webhook": true,
+      "last_webhook_at": "2026-05-30T23:16:05.657578+00:00"
+    },
+    "created_at": "2026-05-30 21:16:26.883714+00:00",
+    "sent_at": null,
+    "locale": null,
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": null,
+    "source_domain": null,
+    "provider_message_id": "6c9d8e5b-66e3-4531-8d9d-26723e588986",
+    "recipient_email": "[\"MOOD Admin <admin@moodfordesign.com>\"]",
+    "bounced_at": null,
+    "failed_at": null,
+    "updated_at": "2026-05-30 23:16:05.657558+00:00"
+  },
+  {
+    "id": "3a4f03aa-2f2a-4746-87c0-27fbb799e713",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "referente.new_conversation",
+    "recipient": "admin@moodfordesign.com",
+    "subject": "Nuova conversazione progettuale \u00b7 AuditTest",
+    "template": "generic",
+    "status": "failed",
+    "provider": "resend",
+    "provider_id": null,
+    "error": "The moodfordesign.com domain is not verified. Please, add and verify your domain on https://resend.com/domains",
+    "metadata": {
+      "kind": "internal_referente_notification",
+      "thread_id": "a713d98b-6d62-4917-b5c2-1b0346eb825e",
+      "journey_id": "d55f712f-04c0-4ca0-af87-d149924e7994",
+      "profile_id": "a6b841c8-cd70-4d0c-bc30-5b8846c3a922",
+      "identity_source": "tenant_settings"
+    },
+    "created_at": "2026-05-30 21:21:40.568687+00:00",
+    "sent_at": null,
+    "locale": "it",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": "generic",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": null,
+    "recipient_email": "admin@moodfordesign.com",
+    "bounced_at": null,
+    "failed_at": "2026-05-30 21:21:40.568687+00:00",
+    "updated_at": "2026-05-30 21:21:40.632866+00:00"
+  },
+  {
+    "id": "5002ed40-f17d-44c8-ae0d-b7c995a89888",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "referente.new_conversation",
+    "recipient": "admin@moodfordesign.com",
+    "subject": "Nuova conversazione progettuale \u00b7 AuditExp",
+    "template": "generic",
+    "status": "failed",
+    "provider": "resend",
+    "provider_id": null,
+    "error": "The moodfordesign.com domain is not verified. Please, add and verify your domain on https://resend.com/domains",
+    "metadata": {
+      "kind": "internal_referente_notification",
+      "thread_id": "05adb723-863f-4590-b429-8566a9e4cc70",
+      "journey_id": "d8f49119-f835-4bba-aa5a-a50e93a1e97d",
+      "profile_id": "9210720c-b377-446e-a43e-bb05bb405142",
+      "identity_source": "tenant_settings"
+    },
+    "created_at": "2026-05-30 21:21:48.143578+00:00",
+    "sent_at": null,
+    "locale": "it",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": "generic",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": null,
+    "recipient_email": "admin@moodfordesign.com",
+    "bounced_at": null,
+    "failed_at": "2026-05-30 21:21:48.143578+00:00",
+    "updated_at": "2026-05-30 21:21:48.209544+00:00"
+  },
+  {
+    "id": "ec9cbef8-b719-498b-b718-846e384589b3",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "event_type": "client.space_ready",
+    "recipient": "audit-exp@test.example",
+    "subject": "Atelier Demo \u00b7 Il tuo spazio progettuale \u00e8 pronto",
+    "template": "space_ready",
+    "status": "failed",
+    "provider": "resend",
+    "provider_id": null,
+    "error": "The moodfordesign.com domain is not verified. Please, add and verify your domain on https://resend.com/domains",
+    "metadata": {
+      "kind": "post_journey_welcome",
+      "journey_id": "d8f49119-f835-4bba-aa5a-a50e93a1e97d",
+      "profile_id": "9210720c-b377-446e-a43e-bb05bb405142",
+      "identity_source": "tenant_settings"
+    },
+    "created_at": "2026-05-30 21:21:47.317971+00:00",
+    "sent_at": null,
+    "locale": "it",
+    "user_id": null,
+    "opened_at": null,
+    "clicked_at": null,
+    "bounce_reason": null,
+    "template_key": "space_ready",
+    "source_domain": "content-hub-pro-22.preview.emergentagent.com",
+    "provider_message_id": null,
+    "recipient_email": "audit-exp@test.example",
+    "bounced_at": null,
+    "failed_at": "2026-05-30 21:21:47.317971+00:00",
+    "updated_at": "2026-05-30 21:21:47.381622+00:00"
+  }
+]

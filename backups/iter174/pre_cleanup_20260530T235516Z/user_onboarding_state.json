@@ -1,0 +1,26 @@
+[
+  {
+    "id": "41c70e0c-9b17-4773-9637-f0317df70ac6",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "caee7b92-34b4-4ecf-bdaa-8a3eda93a70e",
+    "tour_key": "studio_first_login",
+    "status": "completed",
+    "current_step": 7,
+    "completed_at": "2026-05-29 21:32:25.631498+00:00",
+    "skipped_at": null,
+    "created_at": "2026-05-29 21:31:58.715110+00:00",
+    "updated_at": "2026-05-29 21:32:25.631498+00:00"
+  },
+  {
+    "id": "c1aa3389-5ffc-4aec-970e-3d60f930e9db",
+    "tenant_id": "848354b9-a43e-4147-bdad-116fb93bd585",
+    "user_id": "9ceb7874-3496-47e8-930c-f9215dc871e2",
+    "tour_key": "studio_first_login",
+    "status": "in_progress",
+    "current_step": 1,
+    "completed_at": null,
+    "skipped_at": null,
+    "created_at": "2026-05-30 07:17:47.698389+00:00",
+    "updated_at": "2026-05-30 07:17:47.698389+00:00"
+  }
+]

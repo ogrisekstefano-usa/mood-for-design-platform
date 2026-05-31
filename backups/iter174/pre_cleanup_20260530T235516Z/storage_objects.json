@@ -1,0 +1,530 @@
+[
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/016e3d7892-6-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"c99e6c31e53de7f9161cf10c5a61e38b\"",
+      "size": 124730,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:29:02.000Z",
+      "contentLength": 124730,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:29:01.452842+00:00",
+    "updated_at": "2026-05-30 03:29:01.452842+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/15ee3be433-3-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"e73a9245c00414eba68f28a664a483a7\"",
+      "size": 216362,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:37:00.000Z",
+      "contentLength": 216362,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:36:59.730890+00:00",
+    "updated_at": "2026-05-30 03:36:59.730890+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/16f9152ff8-7-edited-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"23caf22a4c969a54dd48f57494249ed1\"",
+      "size": 114878,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:29:31.000Z",
+      "contentLength": 114878,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:29:30.691942+00:00",
+    "updated_at": "2026-05-30 03:29:30.691942+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/3f6ab3a537-2-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"5989d61fc1c9ca56acd56e25b283c3aa\"",
+      "size": 239853,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:36:29.000Z",
+      "contentLength": 239853,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:36:28.585294+00:00",
+    "updated_at": "2026-05-30 03:36:28.585294+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/63f80f33d2-AdobeStock_1014843351-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"54c8267a826921097ebd51e478522851-2\"",
+      "size": 6307755,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:34:53.000Z",
+      "contentLength": 6307755,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:34:52.269610+00:00",
+    "updated_at": "2026-05-30 03:34:52.269610+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/6656f2a5e4-AdobeStock_931484633-edited-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"43ce3b871620099eb06fccbe21d8c505\"",
+      "size": 1354109,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:25:39.000Z",
+      "contentLength": 1354109,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:25:39.026581+00:00",
+    "updated_at": "2026-05-30 03:25:39.026581+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/88e6f2c942-7-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"206c556af7eed63ce78a806c06083993\"",
+      "size": 114927,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:29:24.000Z",
+      "contentLength": 114927,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:29:23.969869+00:00",
+    "updated_at": "2026-05-30 03:29:23.969869+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/8edac6ecaa-1-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"df543d8af6bebe8c994e51ccee7c76dc\"",
+      "size": 267617,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:35:55.000Z",
+      "contentLength": 267617,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:35:54.331180+00:00",
+    "updated_at": "2026-05-30 03:35:54.331180+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/a0fda69679-4-edited-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"2d920fd98dcff977ff34961275469989\"",
+      "size": 146169,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:28:15.000Z",
+      "contentLength": 146169,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:28:14.214856+00:00",
+    "updated_at": "2026-05-30 03:28:14.214856+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/af1e017889-4-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"e62ef5a57ba23b14409dd6447e9e4695\"",
+      "size": 146123,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:27:54.000Z",
+      "contentLength": 146123,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:27:53.151040+00:00",
+    "updated_at": "2026-05-30 03:27:53.151040+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/b26f544bcc-AdobeStock_1014843351-edited-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"aab72b798d78a7dce63b15614920f911-2\"",
+      "size": 6308169,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:35:07.000Z",
+      "contentLength": 6308169,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:35:06.511427+00:00",
+    "updated_at": "2026-05-30 03:35:06.511427+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/c12a099181-2-edited-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"dd49e2b59f87fcdb38d27a3bc6c3cddf\"",
+      "size": 240071,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:36:37.000Z",
+      "contentLength": 240071,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:36:36.415515+00:00",
+    "updated_at": "2026-05-30 03:36:36.415515+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/cc89268583-5-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"178887190f8b8721bfa3ac416b6d3821\"",
+      "size": 175887,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:28:33.000Z",
+      "contentLength": 175887,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:28:32.158087+00:00",
+    "updated_at": "2026-05-30 03:28:32.158087+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/d0669ad56a-1-edited-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"b49ff8a04ee3bcdc70f25e3a53cd68e9\"",
+      "size": 267566,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:36:02.000Z",
+      "contentLength": 267566,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:36:01.953684+00:00",
+    "updated_at": "2026-05-30 03:36:01.953684+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/e1769961c2-5-edited-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"b4dd60171b01e561ff43b8b4ae6bd461\"",
+      "size": 175906,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:28:41.000Z",
+      "contentLength": 175906,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:28:40.333212+00:00",
+    "updated_at": "2026-05-30 03:28:40.333212+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/e351b0dab0-6-edited-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"18054c9522283316722d3b5949056092\"",
+      "size": 124853,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:29:08.000Z",
+      "contentLength": 124853,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:29:07.963689+00:00",
+    "updated_at": "2026-05-30 03:29:07.963689+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/e3d05f08a1-3-edited-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"684a95f9e74c03e372ec36e2ed39a952\"",
+      "size": 216493,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:37:08.000Z",
+      "contentLength": 216493,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:37:07.521629+00:00",
+    "updated_at": "2026-05-30 03:37:07.521629+00:00"
+  },
+  {
+    "bucket_id": "cms-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/site/f0dd60099f-AdobeStock_931484633-edited.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"6edb5736e84e6f287c9f973043405ea8\"",
+      "size": 1354029,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T03:25:25.000Z",
+      "contentLength": 1354029,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 03:25:24.478222+00:00",
+    "updated_at": "2026-05-30 03:25:24.478222+00:00"
+  },
+  {
+    "bucket_id": "media",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/brand/favicon_5fb3e8c53dda8212.png",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"5e0a1b8b5ceb8421866284773158bc94\"",
+      "size": 9098,
+      "mimetype": "image/png",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-26T04:18:03.000Z",
+      "contentLength": 9098,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-26 04:18:02.550873+00:00",
+    "updated_at": "2026-05-26 04:18:02.550873+00:00"
+  },
+  {
+    "bucket_id": "media",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/brand/favicon_squared_35151197f714.png",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"9b021660343a01032683646eba466195\"",
+      "size": 79487,
+      "mimetype": "image/png",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-26T16:09:12.000Z",
+      "contentLength": 79487,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-26 16:09:11.975994+00:00",
+    "updated_at": "2026-05-26 16:09:11.975994+00:00"
+  },
+  {
+    "bucket_id": "media",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/brand/logo_ece7d3cc7379b2d3.png",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"3c925a4d84eec15c28739cedc6358cea\"",
+      "size": 33738,
+      "mimetype": "image/png",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-26T04:18:02.000Z",
+      "contentLength": 33738,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-26 04:18:01.980287+00:00",
+    "updated_at": "2026-05-26 04:18:01.980287+00:00"
+  },
+  {
+    "bucket_id": "storefront-public",
+    "name": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/0d60edaf-45cb-40e6-839a-0bc604ebbe2e-AdobeStock_866570850.jpeg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"50101c60bc0da9694caa6f8cbafdb843\"",
+      "size": 3842439,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-17T20:27:17.000Z",
+      "contentLength": 3842439,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-17 20:27:16.628978+00:00",
+    "updated_at": "2026-05-17 20:27:16.628978+00:00"
+  },
+  {
+    "bucket_id": "storefront-public",
+    "name": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/ee319f01-21dd-423e-b4a9-bddaed33a3bb-Artboard 1.png",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"a1756d6d6b904614c918485eed3b718f\"",
+      "size": 32882,
+      "mimetype": "image/png",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-15T09:04:48.000Z",
+      "contentLength": 32882,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-15 09:04:47.351904+00:00",
+    "updated_at": "2026-05-15 09:04:47.351904+00:00"
+  },
+  {
+    "bucket_id": "storefront-public",
+    "name": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/f0d9ba99-4f17-424e-ba62-cf4f122a1cbf-Artboard 1.png",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"a1756d6d6b904614c918485eed3b718f\"",
+      "size": 32882,
+      "mimetype": "image/png",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-15T09:04:49.000Z",
+      "contentLength": 32882,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-15 09:04:48.811631+00:00",
+    "updated_at": "2026-05-15 09:04:48.811631+00:00"
+  },
+  {
+    "bucket_id": "storefront-public",
+    "name": "81a09ead-0306-4d71-a5c4-ca2b3956add2/storefront/ff1fe78e-53e4-413e-9d09-60342d1c5b9c-logo_top_frontend.png",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"142cf0bde11ff2a1f06e9d9c425bb051\"",
+      "size": 15544,
+      "mimetype": "image/png",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-15T09:07:16.000Z",
+      "contentLength": 15544,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-15 09:07:15.917334+00:00",
+    "updated_at": "2026-05-15 09:07:15.917334+00:00"
+  },
+  {
+    "bucket_id": "tenant-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/brand/logo/1779770704608-yawu7d.png",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"3c925a4d84eec15c28739cedc6358cea\"",
+      "size": 33738,
+      "mimetype": "image/png",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-26T04:45:07.000Z",
+      "contentLength": 33738,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-26 04:45:06.547651+00:00",
+    "updated_at": "2026-05-26 04:45:06.547651+00:00"
+  },
+  {
+    "bucket_id": "tenant-assets",
+    "name": "848354b9-a43e-4147-bdad-116fb93bd585/storefront/hero_editorial/1779856322093-d6lgxk.jpeg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"2e70f261d3457300d811359e6b89e57c\"",
+      "size": 3976907,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-27T04:32:07.000Z",
+      "contentLength": 3976907,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-27 04:32:06.779679+00:00",
+    "updated_at": "2026-05-27 04:32:06.779679+00:00"
+  },
+  {
+    "bucket_id": "tenant-assets",
+    "name": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/a0d510d2-1920.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"2f74a91447400c0e6ec7360eb4b9e9ba\"",
+      "size": 293542,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T18:06:05.000Z",
+      "contentLength": 293542,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 18:06:04.872240+00:00",
+    "updated_at": "2026-05-30 18:06:04.872240+00:00"
+  },
+  {
+    "bucket_id": "tenant-assets",
+    "name": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/a0d510d2-480.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"7cd656ad6730aa65341ad23dc087ce9d\"",
+      "size": 28223,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T18:06:06.000Z",
+      "contentLength": 28223,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 18:06:05.078947+00:00",
+    "updated_at": "2026-05-30 18:06:05.078947+00:00"
+  },
+  {
+    "bucket_id": "tenant-assets",
+    "name": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/a0d510d2.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"df6b12c8a3d229fa97c3380dd80dc205\"",
+      "size": 3681635,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-30T18:06:05.000Z",
+      "contentLength": 3681635,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-30 18:06:04.093219+00:00",
+    "updated_at": "2026-05-30 18:06:04.093219+00:00"
+  },
+  {
+    "bucket_id": "tenant-assets",
+    "name": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/bca844da-1920.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"2f74a91447400c0e6ec7360eb4b9e9ba\"",
+      "size": 293542,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-29T21:34:39.000Z",
+      "contentLength": 293542,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-29 21:34:38.452544+00:00",
+    "updated_at": "2026-05-29 21:34:38.452544+00:00"
+  },
+  {
+    "bucket_id": "tenant-assets",
+    "name": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/bca844da-480.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"7cd656ad6730aa65341ad23dc087ce9d\"",
+      "size": 28223,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-29T21:34:39.000Z",
+      "contentLength": 28223,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-29 21:34:38.976300+00:00",
+    "updated_at": "2026-05-29 21:34:38.976300+00:00"
+  },
+  {
+    "bucket_id": "tenant-assets",
+    "name": "atelier-media/848354b9-a43e-4147-bdad-116fb93bd585/bca844da.jpg",
+    "owner": null,
+    "metadata": {
+      "eTag": "\"df6b12c8a3d229fa97c3380dd80dc205\"",
+      "size": 3681635,
+      "mimetype": "image/jpeg",
+      "cacheControl": "no-cache",
+      "lastModified": "2026-05-29T21:34:38.000Z",
+      "contentLength": 3681635,
+      "httpStatusCode": 200
+    },
+    "created_at": "2026-05-29 21:34:37.617084+00:00",
+    "updated_at": "2026-05-29 21:34:37.617084+00:00"
+  }
+]
