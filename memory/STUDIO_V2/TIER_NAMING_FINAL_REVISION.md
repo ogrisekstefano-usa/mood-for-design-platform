@@ -1,12 +1,17 @@
 # TIER NAMING — FINAL REVISION
 ## MOOD for DESIGN™ · Blueprint adoption modes
 
+> ✅ **APPROVATO 2026-05-31** — Decisione definitiva utente.
+> **Naming approvato**: `Blueprint Studio` · `Blueprint Practice` · `Blueprint Enterprise`
+> Motivazione utente: internazionale · comprensibile · coerente con mercato USA · coerente con interior design e architettura · coerente con posizionamento Blueprint™.
+> Vincolo: nessuna ulteriore revisione naming salvo problemi reali emersi da test utenti.
+
 > ⚠️ **OVERRIDE DIRETTIVA LOCALE 2026-05-31** — Vedi `LOCALE_ARCHITECTURE_DIRECTIVE.md`
 > §6.3 mitigation "Practice in italiano" si applica a **tutte le locale non-EN attive** in `active_languages`:
 > il **brand name** dei tier (`Blueprint Studio`, `Blueprint Practice`, `Blueprint Enterprise`) resta in inglese
 > in ogni locale; solo le **descrizioni** vengono tradotte editorialmente.
 
-> **Status**: DESIGN ONLY · revisione finale prima di autorizzazione implementazione
+> **Status**: APPROVED · cleared for implementation
 > **Versione**: 2026-05-31
 > **Scope**: chiudere D1 con un naming definitivo, eliminato il registro aulico (Atelier/Maison)
 > **Autorizzazioni utente già acquisite**: D6 (no prezzi pubblici) · D7 (no CTA "Demo") · D2 con revisione (manifesto trasformato in "Come viene adottato Blueprint™")

@@ -22,8 +22,57 @@ from database import AsyncSessionLocal
 from cache import content_cache
 from tenant_resolver import get_corporate_tenant
 
-DEFAULT_LOCALE = 'it'
-LOCALE_FALLBACK = ['it', 'en-us']
+# ── Locale Architecture Directive (2026-05-31) ────────────────────────
+# NO HARDCODED LOCALES. Defaults below are BOOTSTRAP-ONLY values used
+# when platform_languages is unreachable. The canonical default comes
+# from platform_languages.default_locale=true.
+_BOOTSTRAP_DEFAULT_LOCALE = 'it-IT'
+_BOOTSTRAP_FALLBACK_CHAIN = ['it-IT', 'en-US']
+
+DEFAULT_LOCALE = _BOOTSTRAP_DEFAULT_LOCALE  # legacy import compat
+LOCALE_FALLBACK = _BOOTSTRAP_FALLBACK_CHAIN  # legacy import compat
+
+
+async def _get_default_locale() -> str:
+    """Return canonical default locale from platform_languages, cached."""
+    async def loader():
+        async with AsyncSessionLocal() as session:
+            row = (await session.execute(
+                text("SELECT code FROM platform_languages WHERE default_locale = true AND enabled = true LIMIT 1")
+            )).first()
+            return row[0] if row else _BOOTSTRAP_DEFAULT_LOCALE
+    return await content_cache.get_or_set('platform:default_locale', loader, ttl=300)
+
+
+async def _get_fallback_chain(starting_locale: str) -> list[str]:
+    """Dynamic fallback chain from platform_languages.fallback_locale.
+
+    Walks the chain max 5 hops to prevent loops. Always ends with the
+    platform default. Returns list of locale codes including starting_locale.
+    """
+    chain = [starting_locale]
+    default = await _get_default_locale()
+
+    async def loader():
+        async with AsyncSessionLocal() as session:
+            rows = (await session.execute(
+                text("SELECT code, fallback_locale FROM platform_languages WHERE enabled = true")
+            )).all()
+            return {r[0]: r[1] for r in rows}
+
+    mapping = await content_cache.get_or_set('platform:fallback_map', loader, ttl=300)
+
+    current = starting_locale
+    for _ in range(5):
+        nxt = mapping.get(current)
+        if not nxt or nxt in chain:
+            break
+        chain.append(nxt)
+        current = nxt
+
+    if default not in chain:
+        chain.append(default)
+    return chain
 
 
 def _split_block_key(full_key: str) -> tuple[str, str]:
@@ -71,13 +120,14 @@ async def _fetch_block_values(session, tenant_id: str, full_keys: list[str], loc
         if r['tx_locale']:
             bucket[r['tx_locale']] = r['tx_value']
 
-    # Resolve per requested locale with fallback chain.
+    # Resolve per requested locale with dynamic fallback chain
+    # built from platform_languages.fallback_locale (NO hardcoded list).
     # IMPORTANT: an explicit translation row counts as authoritative even
     # when the value is an empty string. The editor must respect the
     # "if empty I want empty" intent (the user can intentionally hide
     # a cell). We only fall back to another locale when there is NO
     # translation row at all for the requested locale.
-    chain = [locale] + [l for l in LOCALE_FALLBACK if l != locale]
+    chain = await _get_fallback_chain(locale)
     out: dict[str, str] = {}
     for fk in full_keys:
         bucket = grouped.get(fk)
@@ -348,26 +398,33 @@ async def resolve_footer(locale: str = DEFAULT_LOCALE) -> dict:
 
 
 async def resolve_locales() -> dict:
-    """Returns enabled locales for the corporate tenant (Locale Governance)."""
-    tenant = await get_corporate_tenant()
+    """Returns enabled locales from platform_languages (canonical source).
 
+    Per LOCALE_ARCHITECTURE_DIRECTIVE: no hardcoded list. Reads from
+    platform_languages WHERE enabled = true, returns BCP-47 codes.
+    """
     async def loader():
         async with AsyncSessionLocal() as session:
-            row = (await session.execute(
+            rows = (await session.execute(
                 text("""
-                    SELECT default_language, active_languages
-                    FROM tenants WHERE id = :tid
+                    SELECT code, name, native_name, rtl, default_locale,
+                           fallback_locale, sort_order, short_label
+                    FROM platform_languages
+                    WHERE enabled = true
+                    ORDER BY sort_order, code
                 """),
-                {"tid": tenant['id']},
-            )).mappings().first()
-            if not row:
-                return {'default': DEFAULT_LOCALE, 'enabled': [DEFAULT_LOCALE]}
+            )).mappings().all()
+            if not rows:
+                return {'default': _BOOTSTRAP_DEFAULT_LOCALE, 'enabled': [_BOOTSTRAP_DEFAULT_LOCALE], 'locales': []}
+            locales = [dict(r) for r in rows]
+            default_locale = next((r['code'] for r in rows if r['default_locale']), rows[0]['code'])
             return {
-                'default': row['default_language'] or DEFAULT_LOCALE,
-                'enabled': list(row['active_languages'] or [DEFAULT_LOCALE]),
+                'default': default_locale,
+                'enabled': [r['code'] for r in rows],
+                'locales': locales,
             }
 
-    return await content_cache.get_or_set(f"site:locales:{tenant['id']}", loader, ttl=120)
+    return await content_cache.get_or_set('platform:locales:enabled', loader, ttl=120)
 
 
 async def resolve_block(full_key: str, locale: str = DEFAULT_LOCALE) -> dict[str, Any] | None:
@@ -379,12 +436,12 @@ async def resolve_block(full_key: str, locale: str = DEFAULT_LOCALE) -> dict[str
 
 # ── LEGAL STRIP ─────────────────────────────────────────────────────────
 LEGAL_STRIP_FALLBACK = {
-    'it': {
+    'it-IT': {
         'left':   '© {year} MOOD for DESIGN™',
         'center': 'Questo servizio è fornito da MOOD for DESIGN',
         'right':  'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios',
     },
-    'en-us': {
+    'en-US': {
         'left':   '© {year} MOOD for DESIGN™',
         'center': 'This service is provided by MOOD for DESIGN',
         'right':  'Running on Blueprint OS™ · Editorial Infrastructure for Design Studios',
@@ -404,7 +461,7 @@ async def resolve_legal_strip(locale: str = DEFAULT_LOCALE) -> dict[str, Any]:
     ]
     async with AsyncSessionLocal() as session:
         values = await _fetch_block_values(session, tenant['id'], keys, locale)
-    fallback = LEGAL_STRIP_FALLBACK.get(locale) or LEGAL_STRIP_FALLBACK['it']
+    fallback = LEGAL_STRIP_FALLBACK.get(locale) or LEGAL_STRIP_FALLBACK['it-IT']
     out = {
         'left':   values.get(keys[0]) or fallback['left'].format(year=year),
         'center': values.get(keys[1]) or fallback['center'],

@@ -262,26 +262,26 @@ Pattern di ogni item: **eyebrow** (capability operativa) → **title** (cosa acc
 
 | key | copy IT (T1) |
 |---|---|
-| `site.pricing.tier_01.eyebrow` | `<<NAME_T1>>` |
-| `site.pricing.tier_01.title` | `Per chi inizia con MOOD.` |
-| `site.pricing.tier_01.subtitle` | `Studio individuale o team ristretto che vuole strutturare il lavoro.` |
-| `site.pricing.tier_01.body` | `Tutta la piattaforma Blueprint per la gestione del lavoro quotidiano. Onboarding guidato, supporto email, formazione iniziale.` |
-| `site.pricing.tier_01.inc_1` | `Blueprint completa` |
-| `site.pricing.tier_01.inc_2` | `Onboarding guidato` |
-| `site.pricing.tier_01.inc_3` | `Formazione iniziale` |
-| `site.pricing.tier_01.inc_4` | `Supporto email` |
-| `site.pricing.tier_01.inc_5` | `Aggiornamenti continui` |
-| `site.pricing.tier_01.price` | _(vuoto — nessun prezzo pubblico)_ |
-| `site.pricing.tier_01.cta` | `Parlane con un Advisor` |
+| `…tier_01.eyebrow` | `Blueprint Studio` |
+| `…tier_01.title` | `Per chi inizia con MOOD.` |
+| `…tier_01.subtitle` | `Studio individuale o team ristretto che vuole strutturare il lavoro.` |
+| `…tier_01.body` | `Tutta la piattaforma Blueprint per la gestione del lavoro quotidiano. Onboarding guidato, supporto email, formazione iniziale.` |
+| `…tier_01.inc_1` | `Blueprint completa` |
+| `…tier_01.inc_2` | `Onboarding guidato` |
+| `…tier_01.inc_3` | `Formazione iniziale` |
+| `…tier_01.inc_4` | `Supporto email` |
+| `…tier_01.inc_5` | `Aggiornamenti continui` |
+| `…tier_01.price` | _(vuoto — nessun prezzo pubblico)_ |
+| `…tier_01.cta` | `Parlane con un Advisor` |
 
 T2 (`tier_02`):
 | key | copy IT |
 |---|---|
-| `…tier_02.eyebrow` | `<<NAME_T2>>` |
+| `…tier_02.eyebrow` | `Blueprint Practice` |
 | `…tier_02.title` | `Per lo studio strutturato.` |
 | `…tier_02.subtitle` | `Team di 5–15 persone, progetti articolati, più mercati.` |
-| `…tier_02.body` | `Tutta la configurazione di <<NAME_T1>> più: accessi team avanzati, workspace personalizzato, supporto prioritario, Advisor di riferimento.` |
-| `…tier_02.inc_1` | `Tutto della modalità <<NAME_T1>>` |
+| `…tier_02.body` | `Tutta la configurazione di Blueprint Studio più: accessi team avanzati, workspace personalizzato, supporto prioritario, Advisor di riferimento.` |
+| `…tier_02.inc_1` | `Tutto della modalità Blueprint Studio` |
 | `…tier_02.inc_2` | `Accessi team avanzati` |
 | `…tier_02.inc_3` | `Workspace personalizzato` |
 | `…tier_02.inc_4` | `Supporto prioritario` |
@@ -292,11 +292,11 @@ T2 (`tier_02`):
 T3 (`tier_03`):
 | key | copy IT |
 |---|---|
-| `…tier_03.eyebrow` | `<<NAME_T3>>` |
+| `…tier_03.eyebrow` | `Blueprint Enterprise` |
 | `…tier_03.title` | `Per il gruppo e il brand.` |
 | `…tier_03.subtitle` | `Più studi, più mercati, più brand sotto la stessa governance.` |
 | `…tier_03.body` | `Configurazione su misura. Multi-tenant, governance condivisa, integrazioni dedicate, Advisor e team relazionale dedicati.` |
-| `…tier_03.inc_1` | `Tutto della modalità <<NAME_T2>>` |
+| `…tier_03.inc_1` | `Tutto della modalità Blueprint Practice` |
 | `…tier_03.inc_2` | `Multi-tenant e multi-brand` |
 | `…tier_03.inc_3` | `Integrazioni su misura` |
 | `…tier_03.inc_4` | `Advisor dedicato` |
@@ -310,7 +310,7 @@ T3 (`tier_03`):
 
 Tabella che racconta cosa è incluso. Niente numeri quantitativi. Niente prezzo.
 
-| Row label | `<<T1>>` | `<<T2>>` | `<<T3>>` |
+| Row label | Blueprint Studio | Blueprint Practice | Blueprint Enterprise |
 |---|---|---|---|
 | Piattaforma Blueprint completa | ✓ | ✓ | ✓ |
 | Design Journey™ | ✓ | ✓ | ✓ |
