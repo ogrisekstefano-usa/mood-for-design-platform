@@ -1,6 +1,65 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 
+## 🆕 ITER178 · JOURNEY ASSIGNMENTS™ Phase 1 · ✅ DELIVERED · 31 May 2026
+
+**Scope:** Foundation team-per-journey (multi-row, role-aware). Coesiste con `human_assignments` (referente account-level).
+
+**Decisioni Founder approvate (Q1-Q9):** observer enabled, contributor multipli, founder NON visible default, client_visible flag esplicito, owner senza replacement vietato, 1 owner unique, observer non visibile default, owner handoff supportato, audit events SI.
+
+**5 deliverable:**
+1. ✅ **Migration `113_design_journey_assignments.sql`** — tabelle `design_journey_assignments` + `design_journey_assignment_events`, 2 UNIQUE PARTIAL INDEX (1 owner per journey + 1 active per user-journey), trigger `updated_at`, FK con CASCADE/SET NULL appropriati
+2. ✅ **Auto-owner alla creazione Journey** in `client_provisioning.py` (+18 righe) → `ensure_owner()` invocato dopo `human_assignment.assign()`. Failure-safe (non-fatal su exception)
+3. ✅ **CRUD Admin** in `routers/journey_assignments_admin.py`:
+   - `GET    /api/admin/journeys/{jid}/assignments` (P_PROJECTS_READ)
+   - `POST   /api/admin/journeys/{jid}/assignments` (contributor/observer · P_PROJECTS_WRITE)
+   - `POST   /api/admin/journeys/{jid}/assignments/change-owner` (handoff atomico)
+   - `DELETE /api/admin/journeys/{jid}/assignments/{aid}` (soft revoke, owner rifiutato)
+   - `GET    /api/admin/journeys/{jid}/assignments/events`
+4. ✅ **Workspace endpoint** `GET /api/workspace/journeys/mine` — restituisce journey con qualsiasi assignment attivo (owner/contributor/observer) per l'utente loggato
+5. ✅ **Audit events** — 6 event types: `owner_assigned, owner_changed, contributor_added, contributor_removed, observer_added, observer_removed` (+ `role_changed, visibility_changed, revoked, reinstated` in CHECK)
+
+**Service layer:** `/app/backend/core/journey_assignments.py` (309 righe): `ensure_owner`, `add_assignment`, `change_owner`, `revoke_assignment`, `list_user_journeys`, `list_events`, helpers `get_current_owner`, `get_active_assignments`, `get_active_assignment_for_user`.
+
+**Invarianti enforced:**
+- 🔒 DB: 1 owner UNIQUE attivo per journey (partial unique index)
+- 🔒 DB: 1 active assignment UNIQUE per (journey, user)
+- 🔒 App: revoke owner senza replacement → 409 (Q5)
+- 🔒 App: re-add stesso user attivo → 409 user_already_assigned
+- 🔒 App: client/suspended → 409
+- 🔒 Tenant isolation: tutte le query filtrate per tenant_id
+
+**Smoke test E2E (24/24 step ✅):** admin login → invite Designer A → set password + login → Begin Journey → verify auto-owner (Designer A by priority) → add admin as contributor → change-owner handoff → DB invariants check → workspace/mine for both users → re-add rejection → observer add/remove → owner revoke rejection → audit events check → cleanup → Founder Only restored.
+
+**Comportamento priority chain confermato:** `human_assignment` core picks `tenant_admin > project_manager > designer/editor > super_admin`. Quando esistono admin (super_admin) + Designer A (designer), il sistema auto-assegna **Designer A** come referente E owner journey. Founder resta `super_admin` last-resort fallback (intenzionale: founder backoffice non frontline).
+
+**File:**
+- NEW: `/app/supabase/migrations/113_design_journey_assignments.sql`
+- NEW: `/app/backend/core/journey_assignments.py`
+- NEW: `/app/backend/routers/journey_assignments_admin.py`
+- NEW: `/app/backend/scripts/iter178_smoke_test.py`
+- NEW: `/app/backups/iter178_smoke_results.json`
+- NEW: `/app/memory/JOURNEY_ASSIGNMENTS_ARCHITECTURE.md` (ITER178 audit step)
+- NEW: `/app/memory/JOURNEY_ASSIGNMENTS_PHASE1_REPORT.md`
+- EDIT: `/app/backend/server.py` (mount routers)
+- EDIT: `/app/backend/services/client_provisioning.py` (+ensure_owner step)
+
+**Esplicitamente NON implementato (rinviato Phase 2/3):**
+- UI drawer "Assegna Team" admin
+- Endpoint cliente `GET /api/client/journeys/{jid}/team` (filtered)
+- Page `/workspace/journeys` "Le mie Journey™" frontend
+- Notification Bus fan-out
+- Auto-revoke on user suspend
+
+**Next:**
+- 🟢 Manuale: Founder esegue invito + Begin Journey via UI per validazione visiva
+- 🟠 Phase 2: UI drawer admin + client team endpoint + workspace journeys page (~3g)
+- 🟡 P1: Auto-revoke on suspend (0.5g)
+- 🟢 Phase 3: Notification Bus (3-4g)
+
+---
+
+
 ## 🆕 ITER177 · TEAM FOUNDATION™ Phase 0 · ✅ DELIVERED · 31 May 2026
 
 **Scope:** Unblock Invite — far funzionare end-to-end l'invito collaboratore dal modulo Team.

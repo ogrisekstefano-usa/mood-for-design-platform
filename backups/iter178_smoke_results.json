@@ -1,0 +1,126 @@
+{
+  "passed": 24,
+  "total": 24,
+  "results": [
+    {
+      "step": "admin login",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "step": "invite Designer A",
+      "ok": true,
+      "detail": "HTTP 201"
+    },
+    {
+      "step": "set Designer A password",
+      "ok": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "step": "Designer A login \u2192 status active",
+      "ok": true,
+      "detail": "HTTP 200, status=active"
+    },
+    {
+      "step": "Begin Journey (public) \u2192 201",
+      "ok": true,
+      "detail": "HTTP 201"
+    },
+    {
+      "step": "auto-created 1 owner row at journey init",
+      "ok": true,
+      "detail": "rows=[('58d93d46', 'owner', 'ff66feac')] (expected owner=Designer ff66feac)"
+    },
+    {
+      "step": "admin POST add contributor (admin himself)",
+      "ok": true,
+      "detail": "HTTP 201, role=contributor"
+    },
+    {
+      "step": "GET list \u2192 2 rows (owner+contributor)",
+      "ok": true,
+      "detail": "HTTP 200, rows=2, order=['owner', 'contributor']"
+    },
+    {
+      "step": "admin POST change-owner \u2192 admin",
+      "ok": true,
+      "detail": "HTTP 201, new_owner=caee7b92-34b4-4ecf-bdaa-8a3eda93a70e"
+    },
+    {
+      "step": "DB: active owner is now admin",
+      "ok": true,
+      "detail": "owner=('caee7b92-34b4-4ecf-bdaa-8a3eda93a70e', 'owner')"
+    },
+    {
+      "step": "DB: previous Designer A owner row revoked",
+      "ok": true,
+      "detail": "revoked_at=2026-05-31 16:42:19.145708+00:00, reason=test_handoff_to_admin"
+    },
+    {
+      "step": "DB: admin's old contributor row revoked (auto-promoted)",
+      "ok": true,
+      "detail": "revoked_at=2026-05-31 16:42:19.145708+00:00, reason=promoted_to_owner"
+    },
+    {
+      "step": "invariant: exactly 1 active owner per journey",
+      "ok": true,
+      "detail": "count=1"
+    },
+    {
+      "step": "Designer A GET /workspace/journeys/mine \u2192 0 (handed off)",
+      "ok": true,
+      "detail": "HTTP 200, rows=0"
+    },
+    {
+      "step": "admin GET /workspace/journeys/mine \u2192 1 (now owner)",
+      "ok": true,
+      "detail": "HTTP 200, rows=1"
+    },
+    {
+      "step": "re-add admin \u2192 409 user_already_assigned",
+      "ok": true,
+      "detail": "HTTP 409, detail=user_already_assigned: caee7b92-34b4-4ecf-bdaa-8a3eda93a70e is already 'owner' o"
+    },
+    {
+      "step": "add Designer A as observer (client_visible=False default)",
+      "ok": true,
+      "detail": "HTTP 201, client_visible=False"
+    },
+    {
+      "step": "DELETE owner via revoke \u2192 409 (rejected)",
+      "ok": true,
+      "detail": "HTTP 409, detail=cannot_revoke_owner_without_replacement: use change_owner() to handoff to a different user"
+    },
+    {
+      "step": "DELETE observer \u2192 200 ok",
+      "ok": true,
+      "detail": "HTTP 200, response={'ok': True, 'assignment_id': '478a8d46-65b4-4998-bc47-faf6b942c090', 'revoked_at': '2026-05-31T16:42:24.282291+00:00'}"
+    },
+    {
+      "step": "DB: observer revoked_at != NULL",
+      "ok": true,
+      "detail": "revoke_reason=no_longer_needed"
+    },
+    {
+      "step": "Designer A GET admin assignments (READ permission ok)",
+      "ok": true,
+      "detail": "HTTP 200, rows=1"
+    },
+    {
+      "step": "audit events include all expected types",
+      "ok": true,
+      "detail": "got=['contributor_added', 'observer_added', 'observer_removed', 'owner_assigned', 'owner_changed', 'role_changed'], missing=set()"
+    },
+    {
+      "step": "client human_assignments referente assigned (Designer A by priority)",
+      "ok": true,
+      "detail": "referente_user_id=ff66feac-d56f-43cf-9d60-cd4c9fba6ca6"
+    },
+    {
+      "step": "post-cleanup: Founder Only restored",
+      "ok": true,
+      "detail": "users=1, journeys=0, assignments=0"
+    }
+  ]
+}

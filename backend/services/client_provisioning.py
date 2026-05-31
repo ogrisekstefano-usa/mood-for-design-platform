@@ -310,6 +310,21 @@ def provision_client_after_journey(
     result["assignee_profile"] = hydrated.get("assignee") if hydrated else None
     primary_designer_id = (hydrated or {}).get("assignee_user_id")
 
+    # ── 2.b · ITER178 · Journey owner assignment ─────────────────────
+    # The journey owner is, by default, the same user as the account-level
+    # referente. The two systems coexist intentionally (see
+    # JOURNEY_ASSIGNMENTS_ARCHITECTURE.md §5.1). The owner can be handed
+    # off later via POST /api/admin/journeys/{jid}/assignments/change-owner.
+    if journey_id and primary_designer_id:
+        try:
+            from core.journey_assignments import ensure_owner
+            ensure_owner(
+                tenant_id, journey_id, primary_designer_id,
+                created_by=primary_designer_id,  # system-initiated
+            )
+        except Exception:
+            logger.exception("journey owner assignment failed (non-fatal)")
+
     # ── 3. Relationship thread + system message ──────────────────────
     thread_id = _ensure_thread(
         tenant_id=tenant_id,

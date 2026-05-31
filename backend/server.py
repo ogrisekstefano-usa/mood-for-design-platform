@@ -276,6 +276,19 @@ from routers import tenant_configuration  # noqa: E402
 api_router.include_router(tenant_configuration.router, prefix="/tenant", tags=["tenant-configuration"])
 api_router.include_router(tenant_configuration.admin_router, prefix="/blueprint-admin", tags=["blueprint-command-center"])
 
+# ITER178 · JOURNEY ASSIGNMENTS™ Phase 1 — admin CRUD + workspace endpoints
+from routers import journey_assignments_admin  # noqa: E402
+api_router.include_router(
+    journey_assignments_admin.admin_router,
+    prefix="/admin/journeys",
+    tags=["journey-assignments"],
+)
+api_router.include_router(
+    journey_assignments_admin.router,
+    prefix="/workspace",
+    tags=["workspace"],
+)
+
 # ITER168 · Atmospheric Panels™ — Chameleon™ Emotional Interpretation Layer.
 from routers import atmospheric_panels  # noqa: E402
 # The router already declares the /api prefix internally; mount it at app root.
