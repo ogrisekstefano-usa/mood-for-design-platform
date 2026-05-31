@@ -38,6 +38,8 @@ const WorkspaceShell = ({
   navItems,         // array of { to, icon, label, testid }
   logoutTo,         // route to navigate to on logout (default '/')
   edgeToEdgeWhen,   // function(pathname) => boolean — disables padding
+  logoSrc,          // optional brand logo (rendered above eyebrow/title)
+  logoAlt,          // alt text for the brand logo
   children,
 }) => {
   const nav = useNavigate();
@@ -62,6 +64,22 @@ const WorkspaceShell = ({
         position: 'sticky', top: 0, height: '100vh', overflowY: 'auto', background: '#0A0A0B',
       }}>
         <div style={{ padding: '0 0.5rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          {logoSrc && (
+            <img
+              src={logoSrc}
+              alt={logoAlt || 'MOOD for DESIGN'}
+              data-testid="workspace-brand-logo"
+              draggable={false}
+              style={{
+                display: 'block',
+                width: '100%',
+                maxWidth: 168,
+                height: 'auto',
+                margin: '0 auto 1.1rem',
+                userSelect: 'none',
+              }}
+            />
+          )}
           <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.6rem', letterSpacing: '0.32em', textTransform: 'uppercase', color: '#00C9B3' }}
              data-testid="workspace-eyebrow">
             {eyebrow}

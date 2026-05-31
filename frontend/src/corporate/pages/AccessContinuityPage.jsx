@@ -327,9 +327,9 @@ const AccessContinuityPage = () => {
          onMouseOver={(e) => (e.currentTarget.style.opacity = '1')}
          onMouseOut={(e)  => (e.currentTarget.style.opacity = '0.55')}>
         <img
-          src="https://customer-assets.emergentagent.com/job_editorial-platform-4/artifacts/chlucgqo_Artboard%201.png"
+          src="/mood_logo_full.png"
           alt="MOOD for DESIGN"
-          style={{ height: 38, width: 'auto', display: 'block' }}
+          style={{ height: 56, width: 'auto', display: 'block' }}
           draggable={false}
         />
       </a>

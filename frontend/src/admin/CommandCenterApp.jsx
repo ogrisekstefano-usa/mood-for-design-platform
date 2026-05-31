@@ -144,6 +144,8 @@ const CommandCenterApp = () => {
       navItems={navItems}
       logoutTo="/command-center"
       edgeToEdgeWhen={edge}
+      logoSrc="/mood_logo_full.png"
+      logoAlt="MOOD for DESIGN"
     >
       <Routes>
         <Route index                                  element={<RootRedirect />} />
