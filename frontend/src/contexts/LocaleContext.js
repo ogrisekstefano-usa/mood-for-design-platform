@@ -87,12 +87,17 @@ export const LocaleProvider = ({ children }) => {
     axios.get(`${BACKEND_URL}/api/site/locales`)
       .then(res => {
         const enabled = res.data?.enabled || [];
+        const enrichedLocales = res.data?.locales || [];
         if (enabled.length) {
-          setLocales(enabled.map(code => ({
-            code,
-            name: LOCALE_FULL_NAMES[code] || code,
-            flag: LOCALE_LABELS[code] || code.split('-')[0].toUpperCase(),
-          })));
+          setLocales(enabled.map(code => {
+            const meta = enrichedLocales.find(l => l.code === code) || {};
+            return {
+              code,
+              name: meta.native_name || LOCALE_FULL_NAMES[code] || code,
+              flag: meta.short_label || LOCALE_LABELS[code] || code.split('-')[0].toUpperCase(),
+              rtl: !!meta.rtl,
+            };
+          }));
         }
         // If current locale is not in enabled list, fall back to platform default
         const defaultLocale = res.data?.default;
@@ -102,6 +107,15 @@ export const LocaleProvider = ({ children }) => {
       })
       .catch(() => {});
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Sync <html lang> and <html dir> with current locale (BCP-47 + RTL support).
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.setAttribute('lang', locale);
+    const currentLocaleMeta = locales.find(l => l.code === locale);
+    const isRtl = !!currentLocaleMeta?.rtl;
+    document.documentElement.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+  }, [locale, locales]);
 
   const setLocale = useCallback((code) => {
     const norm = normalize(code);
