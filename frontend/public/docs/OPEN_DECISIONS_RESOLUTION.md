@@ -378,20 +378,43 @@ Un studio_request `rejected` può essere ri-submitted dalla stessa email/founder
 
 # Recommended Package
 
-> Approvando questo blocco approvi tutte e 10 le decisioni in un colpo solo. Per overriding singoli, rispondi indicando "Decision NN → A/B" per le sole variazioni.
+> **Approvato dall'utente il 2026-05-31.**
+> Lo storico delle scelte effettive è di seguito; la sezione di scelta originale è preservata come reference.
 
 ```
-Decision 01 → A   · subdomain pattern: <slug>.moodfordesign.com
-Decision 02 → A   · Bring Your Own Domain: roadmap P3 (sì, ma dopo)
-Decision 03 → A   · 1 founder + co-founder come ruolo derivato
-Decision 04 → A   · suspension UX: 3 template + email pre-notifica 48h
-Decision 05 → B   · Blueprint Origin: stay-on-version + opt-in upgrade
-Decision 06 → B   · provisioning failure: escalation, mai auto-rollback
-Decision 07 → A   · reserved subdomains: solo Super Admin
-Decision 08 → SPLIT 50/50 · referral + closer (FROZEN fino a P3)
-Decision 09 → A   · TQS mai esposto al founder
-Decision 10 → A   · re-submission permessa dopo 30 giorni
+Decision 01 → A   · APPROVED   · subdomain: <slug>.moodfordesign.com
+Decision 02 → A   · DEFAULT    · BYOD: roadmap P3
+Decision 03 → A   · APPROVED   · 1 founder + co-founder come ruolo
+Decision 04 → A   · DEFAULT    · suspension UX con template per ragione
+Decision 05 → B   · APPROVED W/NOTE · Origin: stay-on-version + opt-in MVP
+                                       Nota utente: "rivalutare aggiornamenti modulari
+                                       dopo Blueprint Origin™"
+Decision 06 → B   · APPROVED W/NOTE · provisioning failure: escalation manuale
+                                       Nota utente: "ammessa solo come policy operativa MVP.
+                                       Obiettivo futuro: provisioning engine resiliente
+                                       e automatizzato"
+Decision 07 → A   · APPROVED   · reserved subdomains: Super Admin only
+Decision 08 → FROZEN          · Congelata fino a definizione di Advisor Program™,
+                                  Billing™, Commissions™ e Attribution™
+Decision 09 → A   · APPROVED   · TQS mai esposto al founder
+Decision 10 → A   · APPROVED   · re-submission permessa dopo 30 giorni
 ```
+
+## Action items derivati
+
+| Decision | Implementazione richiede |
+|---|---|
+| 01 | DNS wildcard `*.moodfordesign.com` + cert wildcard + ingress configurabile |
+| 03 | Schema `users` con ruoli `founder` + `co_founder` + `tenant_memberships` con billing_owner flag |
+| 05 | Campo `origin_version` su tutto il Blueprint scoped + endpoint `POST /api/admin/tenants/:id/blueprint/upgrade` (P2) |
+| 06 | Queue worker con max 3 retry + tabella `provisioning_incidents` per escalation HQ |
+| 07 | Pagina admin `/command-center/system-config/reserved-subdomains` (P2) |
+| 09 | Nessuna esposizione TQS in API Blueprint-facing |
+| 10 | Campo `previous_attempts_count` + `previous_rejection_at` su `studio_requests_v2` |
+
+## In FROZEN
+
+- **Decision 08 — Commission Attribution**: il sistema registra entrambi i campi (`referrer_advisor_token` + `advisor_assigned_to`) dal giorno 1. Il calcolo commissioni resta non-implementato fino a definizione completa di Advisor Program™ + Billing™ + Commissions™ + Attribution™ (P3).
 
 ---
 
