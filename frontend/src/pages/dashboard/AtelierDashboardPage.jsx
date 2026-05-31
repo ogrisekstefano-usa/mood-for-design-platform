@@ -434,12 +434,14 @@ const AtelierDashboardPage = () => {
         <RelationshipLiveTimeline locale="it" />
       </section>
     </div>
+  );
+};
 
 // ── Activation Foundation card (ITER180 · AF2 + AF3) ──────────────
 function ActivationFoundationCard() {
   const { data } = useActivationFoundation();
   if (!data) return null;
-  // Always show until activated; hide once Workspace Activated™ reached.
+  // Mostra finché non attivato; nasconde quando Workspace Activated™ raggiunto.
   if (data.activated) return null;
   return (
     <section
@@ -455,7 +457,5 @@ function ActivationFoundationCard() {
     </section>
   );
 }
-  );
-};
 
 export default AtelierDashboardPage;

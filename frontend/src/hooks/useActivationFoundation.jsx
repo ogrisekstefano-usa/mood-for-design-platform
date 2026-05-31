@@ -5,14 +5,8 @@
  * Auto-refresh on focus per riflettere step completati altrove.
  */
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
-
-const API = process.env.REACT_APP_BACKEND_URL;
-const auth = () => {
-  const t = localStorage.getItem('token');
-  return t ? { Authorization: `Bearer ${t}` } : {};
-};
 
 const Ctx = createContext({
   data: null, loading: false, refresh: () => {}, dismissBanner: () => {}, bannerDismissed: false,
@@ -35,7 +29,7 @@ export function ActivationFoundationProvider({ children }) {
     if (role === 'client') { setData(null); return; }
     setLoading(true);
     try {
-      const r = await axios.get(`${API}/api/tenant-onboarding/activation-foundation`, { headers: auth() });
+      const r = await api.get('/api/tenant-onboarding/activation-foundation');
       setData(r.data);
     } catch (e) {
       setData(null);

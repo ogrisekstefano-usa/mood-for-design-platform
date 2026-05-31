@@ -310,7 +310,7 @@ _AF_CATALOGUE = [
         "key": "blueprint",
         "ordinal": 1,
         "title": "Blueprint Chameleon™",
-        "description": "Scegli l'atmosfera visiva che definisce lo studio.",
+        "description": "Scegli lo stile visivo che definisce lo studio.",
         "cta_label": "Apri impostazioni",
         "cta_route": "/settings",
         "critical": True,

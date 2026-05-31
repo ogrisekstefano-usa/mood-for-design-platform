@@ -4,17 +4,11 @@
  * Form a 4 campi per "Identità Operativa": nome, mercato, lingua, timezone.
  */
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../lib/api';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle2, ArrowLeft } from 'lucide-react';
 import { useActivationFoundation } from '../../hooks/useActivationFoundation';
-
-const API = process.env.REACT_APP_BACKEND_URL;
-const auth = () => {
-  const t = localStorage.getItem('token');
-  return t ? { Authorization: `Bearer ${t}` } : {};
-};
 
 const MARKETS = [
   { value: 'IT', label: 'Italia' },
@@ -62,10 +56,9 @@ export default function IdentityPage() {
   const submit = async () => {
     setBusy(true);
     try {
-      await axios.post(
-        `${API}/api/tenant-onboarding/identity`,
-        { name, primary_market: primaryMarket, language, timezone },
-        { headers: { ...auth(), 'Content-Type': 'application/json' } }
+      await api.post(
+        '/api/tenant-onboarding/identity',
+        { name, primary_market: primaryMarket, language, timezone }
       );
       toast.success('Identità operativa aggiornata.');
       refresh();

@@ -1,0 +1,43 @@
+{
+  "summary": "ITER180 ACTIVATION FOUNDATION™ — Backend 10/10 pytest PASS, Frontend critical flows all GREEN. Backend: GET /api/tenant-onboarding/activation-foundation returns canonical 6-step structure (identity, blueprint, team, first_lead, first_prospect, first_journey) with items[], completed, total=6, progress%, activated bool, next_action (first missing critical). Step order verified. CTA route 'modal:new-relationship' confirmed on first_lead+first_journey, '/settings/identity' on identity. Identity step is already done for seed tenant (name=MOOD for DESIGN, primary_market=IT, language=it-IT, timezone=Europe/Rome). POST /api/tenant-onboarding/identity persists name, default_language, default_locale_code, branding_settings.{primary_market,timezone}; partial updates preserve identity state. Unauthenticated calls correctly rejected (401). Copy Governance C3: catalogue contains NONE of {atmosfera, cinematic, ecosistema, curatoriale}. Frontend on /dashboard: PersistentAlertBanner sticky visible at top (data-testid='activation-banner') with copy 'Activation Foundation™ · 1/6 · Blueprint Chameleon™ — Scegli lo stile visivo che definisce lo studio', dismiss button (data-testid='activation-banner-dismiss') hides the banner. ActivationFoundationCard renders ActivationMeter ('1 / 6 step' progress bar) and WorkspaceActivationChecklist with all 6 data-testid='activation-step-{key}'. STEP 0 /settings/identity reachable, form has 4 fields (identity-name, identity-market as SELECT, identity-language as SELECT, identity-timezone as SELECT) + 'identity-save' button; submit redirects to /dashboard. Smart CTA Routing: 'Apri Nuova Relazione' button on first_lead step opens NewRelationshipModal (CRM · NUOVA RELAZIONE / 'Da dove vuoi iniziare?' with Nuovo Lead / Prospect esistente / Cliente esistente). Auth uses localStorage key 'mfd_session' (NOT 'token') — confirmed.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Dashboard (post-login) and /settings/identity", "issues": ["Carried-over from iter161: DEBUG runtime overlay 'EDITORIAL · DEBUG runtime 3 · missing N' still visible bottom-left on preview env. Should be gated to NODE_ENV==='development'.", "Carried-over: many missing i18n editorial_blocks keys (auth.login.*, auth.access.*, nav.editorial_copy_cms/admin_languages/blueprint_admin) — fallback IT copy works but registry not seeded.", "Carried-over: React warning 'Cannot update a component (LocalizationOverlay) while rendering a different component (Sidebar)' still fires on dashboard mount.", "Carried-over: several HTTP 403 errors in console after login (resource loads — likely some sidebar/admin probes for which the active session lacks scope). Not blocking UX, but noisy."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter180_activation_foundation.py",
+    "/app/test_reports/pytest/iter180_results.xml"
+  ],
+  "action_items": [
+    "(Optional, pre-existing) Gate the 'EDITORIAL · DEBUG runtime' overlay to non-prod.",
+    "(Optional, pre-existing) Seed missing i18n keys (auth.login.*, auth.access.*, nav.*) — already flagged in iter161.",
+    "(Optional, pre-existing) Investigate LocalizationOverlay setState-in-render warning on dashboard.",
+    "ITER180 itself: NO action items — all AF1/AF2/AF3/AF4/STEP0 acceptance criteria pass."
+  ],
+  "critical_code_review_comments": [
+    "Backend _AF_CATALOGUE is clean, Italian-professional, and C3-compliant. No banned terms ('atmosfera', 'cinematic', 'ecosistema', 'curatoriale').",
+    "_activation_state computes live signals from tenants + tenant_atelier_identity + users_profile + leads + accounts + design_journeys — no hardcoded flags, RBAC correctly forbids 'client' role with 403.",
+    "POST /identity is properly scoped to {tenant_admin, super_admin}; partial updates are idempotent and preserve branding_settings via merge pattern.",
+    "Frontend uses the api wrapper correctly — localStorage key is 'mfd_session' (full JSON session), NOT legacy 'token'. Bearer Authorization is applied transparently.",
+    "PersistentAlertBanner is sticky at the very top of the dashboard chrome, with concise IT copy + concrete next-step CTA ('Apri impostazioni'). Hidden when data.activated=true is the right contract.",
+    "Smart CTA Routing™ is correctly bifurcated: cta_route='modal:new-relationship' opens NewRelationshipModal, '/...' paths use react-router navigate. Verified via click on first_lead step.",
+    "Identity form is admin-only, all 4 required fields present with data-testids, save → /dashboard redirect works. Pre-filled values for the seed tenant come from /activation-foundation.items[0].metadata.values (good UX choice)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter180_activation_foundation.py"
+  ],
+  "success_rate": {"backend": "100% (10/10)", "frontend": "100% on ITER180 acceptance criteria; pre-existing cosmetic issues unchanged"},
+  "test_credentials": "Admin: admin@moodfordesign.com / Blueprint2024! (super_admin, tenant 848354b9-a43e-4147-bdad-116fb93bd585)",
+  "seed_data_creation": "None — POST /identity was called with the same values already present on the seed tenant (idempotent).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "ITER180 Activation Foundation™ is fully shipped and verified end-to-end. Backend pytest suite at /app/backend/tests/test_iter180_activation_foundation.py covers GET /activation-foundation (6-step structure, RBAC, CTA routes, next_action), POST /identity (admin-only, patch, partial-update idempotency), and C3 copy governance. All 10 pass. Frontend smoke through Playwright: banner sticky+dismiss, ActivationFoundationCard with meter + 6-step checklist, /settings/identity form with redirect, Smart CTA opens NewRelationshipModal. Carried-over (pre-ITER180) issues remain: DEBUG overlay visible in preview env, missing i18n keys, LocalizationOverlay setState-in-render warning, 403 noise in console. None block ITER180 acceptance. localStorage key is 'mfd_session' (full session JSON); access_token lives at session.access_token.",
+  "rca of the issue": "No issues to RCA for ITER180. All acceptance criteria from the review request pass."
+}
