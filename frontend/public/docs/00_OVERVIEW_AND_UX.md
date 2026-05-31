@@ -1,6 +1,10 @@
 # MOOD for DESIGN™ — Studio Activation Flow v2
 ## Documento 00 · Overview & UX Map
 
+> ⚠️ **OVERRIDE DIRETTIVA LOCALE 2026-05-31** — Vedi `LOCALE_ARCHITECTURE_DIRECTIVE.md`
+> Ovunque questo documento citi "lingue", "locale", "IT/EN/FR/DE/ES" o quantità statiche di idiomi:
+> leggere "**tutte le locale attive in `active_languages` configurate dal Command Center**". Formato `xx-XX` obbligatorio.
+
 > **Stato**: DESIGN ONLY · in attesa di approvazione · zero codice prodotto
 > **Versione**: 2026-05-31 · drafting agent
 > **Ambito**: redesign integrale della route `/studio` (funnel di candidatura tenant)

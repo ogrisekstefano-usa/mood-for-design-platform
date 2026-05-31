@@ -1,6 +1,12 @@
 # PRICING & POSITIONING REVISION
 ## MOOD for DESIGN™ · Features + Pricing Pages
 
+> ⚠️ **OVERRIDE DIRETTIVA LOCALE 2026-05-31** — Vedi `LOCALE_ARCHITECTURE_DIRECTIVE.md`
+> §5.4 "Traduzioni" e §6 "CMS mapping" sono **superseded**: traduzioni generate dinamicamente
+> per **tutte le locale attive in `active_languages`** al go-live (non per 5 lingue hardcoded).
+> Stima "154 touch points" diventa `N_chiavi × M_locale_attive` (M variabile, governato da Command Center).
+> Formato `xx-XX` obbligatorio nei translation file.
+
 > **Status**: DESIGN ONLY · in attesa di approvazione · zero codice · zero CMS update · zero deploy
 > **Versione**: 2026-05-31
 > **Scope**: revisione completa di `/features` e `/pricing` (copy + IA + positioning)
@@ -474,15 +480,21 @@ Regola: **un nome proprietario è introdotto solo dopo aver spiegato cosa risolv
 
 ### 5.4 Traduzioni
 
-Source `it`, target `en-us · fr · de · es`. Per ogni chiave, principio della traduzione:
-- **Non letterale**. La traduzione cerca lo stesso registro (essenziale, professionale), non la corrispondenza parola-per-parola.
-- Esempio: `"Blueprint non si compra. Si configura."` →
-  - EN-US: `"Blueprint isn't bought. It's configured."`
-  - FR: `"Blueprint ne s'achète pas. Il se configure."`
-  - DE: `"Blueprint kauft man nicht. Man konfiguriert es."`
-  - ES: `"Blueprint no se compra. Se configura."`
+> ⚠️ **Vedi `LOCALE_ARCHITECTURE_DIRECTIVE.md`**: NO HARDCODED LOCALES. Le traduzioni sono generate runtime per **tutte le locale attive in `active_languages`** al go-live, in formato BCP-47 con region tag (`xx-XX`).
 
-Le traduzioni complete saranno in `PRICING_POSITIONING_TRANSLATIONS.md` (separato, da produrre al go-ahead implementazione).
+Source = locale `active_languages.is_default = true`. Target = ogni altra locale in `active_languages.is_enabled = true`. Per ogni chiave, principio della traduzione:
+- **Non letterale**. La traduzione cerca lo stesso registro (essenziale, professionale), non la corrispondenza parola-per-parola.
+- Esempio: `"Blueprint non si compra. Si configura."` (source `it-IT`) potrebbe diventare:
+  - `en-US`: `"Blueprint isn't bought. It's configured."`
+  - `en-GB`: `"Blueprint isn't bought. It's configured."`
+  - `fr-FR`: `"Blueprint ne s'achète pas. Il se configure."`
+  - `de-DE`: `"Blueprint kauft man nicht. Man konfiguriert es."`
+  - `es-ES`: `"Blueprint no se compra. Se configura."`
+  - `es-MX`: `"Blueprint no se compra. Se configura."` (revisione regionale possibile)
+  - `pt-BR`: `"Blueprint não se compra. Se configura."`
+  - `ar-AE`: `"بلوبرنت لا يُشترى. يُكوَّن."` + flag RTL
+
+Le traduzioni complete saranno in `PRICING_POSITIONING_TRANSLATIONS.md` (separato, da produrre al go-ahead implementazione, **per ogni locale attiva al momento della generazione**).
 
 ---
 
@@ -521,12 +533,15 @@ Le traduzioni complete saranno in `PRICING_POSITIONING_TRANSLATIONS.md` (separat
 
 ### 6.3 Stima volume operazioni CMS
 
+> ⚠️ **Vedi `LOCALE_ARCHITECTURE_DIRECTIVE.md`**: il numero di traduzioni è **dinamico** = `N_chiavi × M_locale_attive`, dove M è governato dal Command Center.
+
 | Operazione | Features | Pricing | Totale |
 |---|---|---|---|
-| UPDATE chiavi esistenti | 18 | 32 | 50 |
-| CREATE nuove chiavi | 18 | 24 | 42 |
+| UPDATE chiavi esistenti (source) | 18 | 32 | 50 |
+| CREATE nuove chiavi (source) | 18 | 24 | 42 |
 | DEPRECATE (vuotare, non rimuovere row) | 27 (item_07..15) | 35 (tier_04/05, row_*_v04, philosophy) | 62 |
-| **Totale touch points** | **63** | **91** | **154** |
+| **Source touch points** | **63** | **91** | **154** |
+| **Localization rows generate** | **N_keys_features × M_locales** | **N_keys_pricing × M_locales** | **154 × M** dove M = `SELECT COUNT(*) FROM active_languages WHERE is_enabled = true` al go-live |
 
 Tutte queste operazioni saranno additive/idempotenti via `PUT /api/admin/site/blocks`. Zero `DELETE` di rows. Compatibile con hold P0.
 

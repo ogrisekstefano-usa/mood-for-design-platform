@@ -1,6 +1,11 @@
 # TIER NAMING — FINAL REVISION
 ## MOOD for DESIGN™ · Blueprint adoption modes
 
+> ⚠️ **OVERRIDE DIRETTIVA LOCALE 2026-05-31** — Vedi `LOCALE_ARCHITECTURE_DIRECTIVE.md`
+> §6.3 mitigation "Practice in italiano" si applica a **tutte le locale non-EN attive** in `active_languages`:
+> il **brand name** dei tier (`Blueprint Studio`, `Blueprint Practice`, `Blueprint Enterprise`) resta in inglese
+> in ogni locale; solo le **descrizioni** vengono tradotte editorialmente.
+
 > **Status**: DESIGN ONLY · revisione finale prima di autorizzazione implementazione
 > **Versione**: 2026-05-31
 > **Scope**: chiudere D1 con un naming definitivo, eliminato il registro aulico (Atelier/Maison)

@@ -1,6 +1,11 @@
 # MOOD for DESIGN™ — Studio Activation Flow v2
 ## Documento 03 · Tenant Qualification Score™ · E2E Test Plan · Migration v1→v2
 
+> ⚠️ **OVERRIDE DIRETTIVA LOCALE 2026-05-31** — Vedi `LOCALE_ARCHITECTURE_DIRECTIVE.md`
+> Cutover criteria §3.6 "FR/DE/ES possono arrivare in cutover+7gg" è **superseded**:
+> Leggere "le locale `active_languages.is_enabled=true` con coverage < 100% possono completarsi in cutover+7gg".
+> Formato locale `xx-XX` obbligatorio nei test case e snapshot.
+
 > **Stato**: DESIGN ONLY · in attesa di approvazione
 > **Versione**: 2026-05-31
 

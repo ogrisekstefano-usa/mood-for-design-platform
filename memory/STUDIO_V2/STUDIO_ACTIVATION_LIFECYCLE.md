@@ -1,6 +1,10 @@
 # STUDIO ACTIVATION LIFECYCLE™
 ## MOOD for DESIGN — Canonical Architecture Document
 
+> ⚠️ **OVERRIDE DIRETTIVA LOCALE 2026-05-31** — Vedi `LOCALE_ARCHITECTURE_DIRECTIVE.md`
+> §8.4 Internationalization è **esteso**: tutte le locale sono governate da `active_languages` (Command Center owner),
+> in formato `xx-XX` con region tag obbligatorio. Nessuna lista hardcoded. Vedi direttiva globale per dettagli.
+
 > **Status**: CANONICAL · v1.0 · 2026-05-31
 > **Audience**: Product · UX · Backend · Frontend · Advisor Program · Tenant Provisioning · Blueprint Origin™
 > **Scope**: End-to-end ciclo di vita di un tenant — dal primo visitatore al workspace operativo

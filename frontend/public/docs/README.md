@@ -26,12 +26,27 @@
 
 | File | Contenuto | LOC |
 |---|---|---|
-| `00_OVERVIEW_AND_UX.md` | Executive summary, UX map, 5 movimenti, visual direction, post-submit, accessibilità, abbandono, telemetria, open questions | ~400 |
-| `01_COPY_AND_CMS.md` | Tone of voice, editorial test, naming convention chiavi, copy audit vecchio→nuovo, traduzioni IT/EN/FR/DE/ES, CMS mapping, governance lingue | ~450 |
-| `02_TECH_DESIGN.md` | Schema DB additivo (countries, active_languages, reserved_subdomains, studio_requests_v2, studio_v2_drafts, v_global_email_registry), API contracts, Pydantic/Zod rules, Mapbox spec, rate-limit, anti-enumeration | ~500 |
-| `03_SCORE_E2E_MIGRATION.md` | Tenant Qualification Score™ (algoritmo + pesi + tier), test plan E2E (pytest + Playwright + integration), migration plan v1→v2 con feature flag e rollback, risk register | ~400 |
+| **`LOCALE_ARCHITECTURE_DIRECTIVE.md`** ⚠️ **BINDING** | Direttiva globale "No Hardcoded Locales". Override su tutti gli altri documenti per qualsiasi questione di lingue. | ~350 |
+| `00_OVERVIEW_AND_UX.md` | Executive summary, UX map, 5 movimenti, visual direction, post-submit, accessibilità, abbandono, telemetria, open questions | ~430 |
+| `01_COPY_AND_CMS.md` | Tone of voice, editorial test, naming convention chiavi, copy audit vecchio→nuovo, **traduzioni come template (locale finali governate da `active_languages`)**, CMS mapping | ~445 |
+| `02_TECH_DESIGN.md` | Schema DB additivo (countries, **active_languages — superseded da direttiva**, reserved_subdomains, studio_requests_v2, studio_v2_drafts, v_global_email_registry), API contracts, Pydantic/Zod rules, Mapbox spec, rate-limit, anti-enumeration | ~780 |
+| `03_SCORE_E2E_MIGRATION.md` | Tenant Qualification Score™ (algoritmo + pesi + tier), test plan E2E (pytest + Playwright + integration), migration plan v1→v2 con feature flag e rollback, risk register | ~530 |
+| `STUDIO_ACTIVATION_LIFECYCLE.md` | **Canonical** end-to-end lifecycle | ~840 |
+| `OPEN_DECISIONS_RESOLUTION.md` | 10 decisioni architettura — approvate | ~430 |
+| `PRICING_POSITIONING_REVISION.md` | Revisione /features + /pricing (IA + copy + CMS mapping) | ~610 |
+| `TIER_NAMING_FINAL_REVISION.md` | Naming finale dei tier — in attesa di approvazione | ~250 |
 
-**Totale**: ~1.750 righe di documentazione
+**Totale**: ~4.665 righe di documentazione
+
+### Quick-start lettura
+1. **Direttiva locale** → `LOCALE_ARCHITECTURE_DIRECTIVE.md` (precedenza su tutti gli altri)
+2. **Lifecycle canonical** → `STUDIO_ACTIVATION_LIFECYCLE.md`
+3. **Funnel UX** → `00_OVERVIEW_AND_UX.md`
+4. **Copy + CMS** → `01_COPY_AND_CMS.md`
+5. **DB + API** → `02_TECH_DESIGN.md`
+6. **Score + test + migration** → `03_SCORE_E2E_MIGRATION.md`
+7. **Pricing/Features** → `PRICING_POSITIONING_REVISION.md` + `TIER_NAMING_FINAL_REVISION.md`
+8. **Decisioni** → `OPEN_DECISIONS_RESOLUTION.md`
 
 ---
 

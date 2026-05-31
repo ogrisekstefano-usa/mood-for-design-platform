@@ -1,6 +1,11 @@
 # MOOD for DESIGN™ — Studio Activation Flow v2
 ## Documento 02 · Technical Design (DB · API · Validations · Mapbox)
 
+> ⚠️ **OVERRIDE DIRETTIVA LOCALE 2026-05-31** — Vedi `LOCALE_ARCHITECTURE_DIRECTIVE.md`
+> Lo schema `active_languages` in §1.2 è **superseded** dalla versione canonical in `LOCALE_ARCHITECTURE_DIRECTIVE.md` §4.
+> Aggiunte obbligatorie: `text_direction` (LTR/RTL), `is_default`, `fallback_locale`, region tag `xx-XX`.
+> Il seed in §1.2 è **starter, non definitivo** — il Command Center governa attivazioni runtime.
+
 > **Stato**: DESIGN ONLY — nessuna migration sarà eseguita finché l'incidente DB Supabase non sarà chiuso
 > **Versione**: 2026-05-31
 > **Vincolo**: tutte le tabelle qui descritte sono **ADDITIVE** — zero `ALTER TABLE` su tabelle esistenti, zero `DROP`, zero `DELETE`/`UPDATE` di dati esistenti
@@ -44,38 +49,11 @@ CREATE INDEX idx_countries_sort   ON countries(sort_order, english_name) WHERE i
 
 ### 1.2 `active_languages`
 
-```sql
-CREATE TABLE IF NOT EXISTS active_languages (
-  code            VARCHAR(10)   PRIMARY KEY,                  -- BCP-47: "it", "en-us", "fr", "de", "es"
-  english_name    TEXT          NOT NULL,                     -- "Italian", "English (US)"
-  native_name     TEXT          NOT NULL,                     -- "Italiano", "English"
-  flag_emoji      TEXT,                                       -- "🇮🇹" (opzionale, alcune lingue non hanno bandiera)
-  iso_639_1       CHAR(2)       NOT NULL,                     -- "it", "en", "fr"
-  region          CHAR(2),                                    -- "IT", "US", "FR", "DE", "ES" (per varianti)
-  is_enabled      BOOLEAN       NOT NULL DEFAULT true,
-  sort_order      INTEGER       NOT NULL DEFAULT 1000,
-  created_at      TIMESTAMPTZ   NOT NULL DEFAULT now(),
-  updated_at      TIMESTAMPTZ   NOT NULL DEFAULT now()
-);
+> ⚠️ **SUPERSEDED** — lo schema canonical definitivo è in `LOCALE_ARCHITECTURE_DIRECTIVE.md` §4 (include `text_direction`, `is_default`, `fallback_locale`, region tag `xx-XX` obbligatorio, max 1 default attivo).
+> Il seed iniziale al MVP è ridotto a `it-IT` + `en-US` enabled; tutte le altre locale (`fr-FR`, `de-DE`, `es-ES`, `es-MX`, `pt-BR`, `ar-AE`, `zh-CN`, `ja-JP`, …) sono **pre-registrate disabilitate** e attivabili runtime dal Command Center senza release.
+> Nessuna lista hardcoded di locale è ammessa nel codice o nei documenti.
 
-CREATE INDEX idx_active_languages_enabled ON active_languages(sort_order) WHERE is_enabled = true;
-```
-
-**Seed iniziale (hybrid — decision 3→c)**:
-```sql
-INSERT INTO active_languages (code, english_name, native_name, flag_emoji, iso_639_1, region, sort_order)
-VALUES
-  ('it',    'Italian',         'Italiano',     '🇮🇹', 'it', 'IT',   10),
-  ('en-us', 'English (US)',    'English',      '🇺🇸', 'en', 'US',   20),
-  ('fr',    'French',          'Français',     '🇫🇷', 'fr', NULL,  30),
-  ('de',    'German',          'Deutsch',      '🇩🇪', 'de', NULL,  40),
-  ('es',    'Spanish',         'Español',      '🇪🇸', 'es', NULL,  50)
-ON CONFLICT (code) DO UPDATE SET updated_at = now();
-```
-
-**Sync con `block_localizations`**:
-- Constraint logico (non foreign key per evitare lock contention): tutte le locale presenti in `block_localizations.locale` devono esistere in `active_languages.code` con `is_enabled=true`
-- Validation script post-deploy: `python -m backend.scripts.validate_language_coverage`
+Vedi `LOCALE_ARCHITECTURE_DIRECTIVE.md` §4 per lo schema completo e §4.1 per il seed.
 
 ---
 

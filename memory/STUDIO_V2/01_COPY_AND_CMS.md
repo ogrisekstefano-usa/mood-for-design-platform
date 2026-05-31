@@ -1,6 +1,11 @@
 # MOOD for DESIGN™ — Studio Activation Flow v2
 ## Documento 01 · Copy Audit, Tone of Voice, CMS & Translation Strategy
 
+> ⚠️ **OVERRIDE DIRETTIVA LOCALE 2026-05-31** — Vedi `LOCALE_ARCHITECTURE_DIRECTIVE.md`
+> Le tabelle "IT/EN/FR/DE/ES" in questo documento sono **esempi indicativi**, NON la lista definitiva.
+> Le traduzioni reali saranno generate dinamicamente per **tutte le locale attive in `active_languages`** al momento del go-live.
+> Formato locale obbligatorio: BCP-47 con region tag (`it-IT`, `en-US`, `fr-FR`, `de-DE`, `es-ES`, `pt-BR`, `ar-AE`, etc.).
+
 > **Stato**: DESIGN ONLY · in attesa di approvazione
 > **Versione**: 2026-05-31
 
@@ -389,6 +394,8 @@ Endpoint `GET /api/site/block?key=<full_key>&locale=<l>`:
 
 ## 6. Conta chiavi (stima)
 
+> ⚠️ **Le traduzioni effettive si generano runtime per ogni locale attiva** in `active_languages` — vedi `LOCALE_ARCHITECTURE_DIRECTIVE.md`. Le 5 lingue indicate sopra (IT/EN/FR/DE/ES) sono **esempio template**, non lista definitiva.
+
 | Sezione | Chiavi |
 |---|---|
 | Landing + Nav | 7 |
@@ -403,26 +410,29 @@ Endpoint `GET /api/site/block?key=<full_key>&locale=<l>`:
 | Misc (helper, legals) | ~10 |
 | **Totale stimato** | **~118 chiavi** |
 
-Con 5 locale (IT source + 4) → **~590 rows in `block_localizations`** (escluse source rows).
+Con **N locale attive** → **~118 × N rows in `block_localizations`** (escluse source rows). N è governato dal Command Center e può variare nel tempo senza modifiche al codice.
 
 ---
 
-## 7. Governance lingue attive (decisione 3→c)
+## 7. Governance lingue attive
 
-### Tabella `active_languages` (vedi `02_TECH_DESIGN.md` §1.2)
-- Seed iniziale: `it`, `en-us`, `fr`, `de`, `es` (dalle locale già usate in `block_localizations`)
-- Tutte `is_enabled=true`, `sort_order` definito
-- Admin UI futura in Command Center → `/command-center/languages` (P1, backlog)
+> ⚠️ **Vedi `LOCALE_ARCHITECTURE_DIRECTIVE.md`** per la direttiva globale "No Hardcoded Locales". Quanto segue è coerente con quella direttiva.
+
+### Tabella `active_languages` (schema canonical in `LOCALE_ARCHITECTURE_DIRECTIVE.md` §4)
+- Seed iniziale al MVP: solo `it-IT` e `en-US` enabled. Altre locale (`fr-FR`, `de-DE`, `es-ES`, `es-MX`, `pt-BR`, `ar-AE`, `zh-CN`, `ja-JP`, …) **pre-registrate ma disabilitate**.
+- Tutte in formato BCP-47 con region tag (`xx-XX`).
+- `text_direction` rispettato (RTL per `ar-*`, `he-*`).
+- Admin UI Command Center → `/command-center/languages` per attivazione/disattivazione runtime senza release.
 
 ### Impatto sul funnel
-- Endpoint `GET /api/studio/v2/languages` filtra `WHERE is_enabled=true`
-- Se admin disabilita una lingua:
+- Endpoint `GET /api/studio/v2/languages` filtra `WHERE is_enabled=true` e ritorna locale in `xx-XX`
+- Se admin disabilita una locale:
   - Funnel non la mostra più nel multi-select M2
-  - Richieste già submitted con quella lingua mantengono il dato (no rewrite)
-- Quando si aggiunge una NUOVA lingua (es. `pt-br`):
-  - Le chiavi `studio.activation.v2.*` devono esistere in `block_localizations` per `pt-br`
-  - Finché non esistono → fallback automatico a `en-us` (vedi §5.5)
-  - Warning in Command Center: "Lingua attivata ma X/118 chiavi mancanti per `pt-br`"
+  - Richieste già submitted con quella locale mantengono il dato (no rewrite)
+- Quando si aggiunge una NUOVA locale (es. `pt-BR`):
+  - Le chiavi `studio.activation.v2.*` devono esistere in `block_localizations` per `pt-BR`
+  - Finché non esistono → fallback automatico tramite `active_languages.fallback_locale` chain (vedi direttiva §5)
+  - Warning in Command Center: "Locale attivata ma X/Y chiavi mancanti per `pt-BR`"
 
 ---
 
