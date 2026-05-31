@@ -316,7 +316,7 @@ const NARRATIVE_MODES = [
   { key: 'strategic',         label: 'Strategica · sintetica e progettuale' },
   { key: 'technical',         label: 'Tecnica · architettonica, zero metafore' },
   { key: 'emotional',         label: 'Emozionale · misurata, sensoriale' },
-  { key: 'cinematic',         label: 'Cinematografica · immersiva' },
+  { key: 'cinematic',         label: 'Visiva · immersiva' },
   { key: 'hospitality',       label: 'Ospitale · esperienziale' },
   { key: 'luxury_editorial',  label: 'Editorial luxury · magazine alta gamma' },
   { key: 'commercial_soft',   label: 'Commerciale morbida · rassicurante' },
@@ -329,7 +329,7 @@ const NARRATIVE_INTENSITIES = [
   { key: 'minimal',   label: 'Minimal · essenziale' },
   { key: 'balanced',  label: 'Bilanciata · misurata' },
   { key: 'editorial', label: 'Editoriale · densa' },
-  { key: 'cinematic', label: 'Cinematica · narrativa' },
+  { key: 'cinematic', label: 'Visiva · narrativa' },
 ];
 
 // ── CulturalReadingBlock ─────────────────────────────────────────────

@@ -10,11 +10,28 @@
  */
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Plus } from 'lucide-react';
 import api from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useT, useBlueprint } from '../../contexts/BlueprintContext';
+import { useNewRelationship } from '../../hooks/useNewRelationship';
 import './journey-pulse.css';
+
+// ITER179 · empty-state CTA che apre il modale Nuova Relazione™
+const NewRelationshipCta = () => {
+  const { open } = useNewRelationship();
+  return (
+    <button
+      type="button"
+      onClick={() => open()}
+      className="jp-empty__cta"
+      data-testid="jp-empty-new-relationship-cta"
+    >
+      <Plus size={13} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: '-2px' }} />
+      Nuova Relazione
+    </button>
+  );
+};
 
 const LIFECYCLE_GLOW = {
   conversation_open: 'teal',
@@ -143,9 +160,7 @@ const JourneyPulsePage = () => {
           {active_journeys.length === 0 ? (
             <div className="jp-empty" data-testid="jp-active-empty">
               <p>{t('dashboard.pulse.sections.active.empty')}</p>
-              <Link to="/begin-journey" className="jp-empty__cta">
-                {t('dashboard.pulse.sections.active.cta')}
-              </Link>
+              <NewRelationshipCta />
             </div>
           ) : (
             <div className="jp-journey-grid">

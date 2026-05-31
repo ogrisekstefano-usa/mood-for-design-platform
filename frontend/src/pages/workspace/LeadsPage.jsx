@@ -103,7 +103,14 @@ const LeadsPage = () => {
 
   useEffect(() => { load(); }, [load]);
 
-  const convertLead = async (leadId, e) => {
+  const openDiscovery = (leadId, e) => {
+    e.preventDefault(); e.stopPropagation();
+    navigate(`/relations/leads/${leadId}?discovery=1`);
+  };
+
+  // ITER179 · convertLead deprecated · kept for backward-compat only
+  // eslint-disable-next-line no-unused-vars
+  const _convertLead = async (leadId, e) => {
     e.preventDefault(); e.stopPropagation();
     setConvertingId(leadId);
     try {
@@ -196,11 +203,10 @@ const LeadsPage = () => {
                 <td className="px-5 py-3.5"><span className="text-[var(--bp-text-subtle)] text-xs font-body">{lead.created_at ? new Date(lead.created_at).toLocaleDateString() : '—'}</span></td>
                 <td className="px-5 py-3.5 text-right">
                   {lead.status !== 'project_opened' && lead.status !== 'archived' && (
-                    <button onClick={(e) => convertLead(lead.id, e)}
-                            disabled={convertingId === lead.id}
-                            data-testid={`convert-lead-${lead.id}`}
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-body text-[var(--bp-primary)] border border-[var(--bp-primary)]/30 hover:bg-[var(--bp-primary)]/10 rounded-[3px] disabled:opacity-50">
-                      {convertingId === lead.id ? '…' : <>{t('workspace.lead.convert')} <ArrowRight size={11} strokeWidth={1.5} /></>}
+                    <button onClick={(e) => openDiscovery(lead.id, e)}
+                            data-testid={`open-discovery-${lead.id}`}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-body text-[var(--bp-primary)] border border-[var(--bp-primary)]/30 hover:bg-[var(--bp-primary)]/10 rounded-[3px]">
+                      Apri Discovery <ArrowRight size={11} strokeWidth={1.5} />
                     </button>
                   )}
                 </td>

@@ -84,7 +84,7 @@ const InspirationsPage = () => {
         <p className="ins-eyebrow">{t('inspirations.eyebrow', null, 'Cultural Design Intelligence Layer')}</p>
         <h1 className="ins-title">Inspirations™</h1>
         <p className="ins-lede">
-          {t('inspirations.lede', null, "L'archivio curatoriale dello studio. Ogni riferimento è letto attraverso la lente culturale dei mercati internazionali: atmosfera, materia, affinità editoriale.")}
+          {t('inspirations.lede', null, "L'archivio dello studio. Ogni riferimento è letto attraverso il contesto dei mercati internazionali: stile, materia, posizionamento.")}
         </p>
         <div className="ins-header__actions">
           <div className="ins-search">

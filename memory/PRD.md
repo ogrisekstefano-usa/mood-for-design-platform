@@ -9475,3 +9475,54 @@ Attesa approvazione Founder. Prossimo passo (se approvato): **Phase C1 · IT cri
 
 ### Restanti da fixare (RED)
 - 5 entry point RED documentati (vedi `CRM_ENTRY_POINTS_AUDIT §5`): convert-lead-btn, /api/leads/public senza discovery, JourneyPulse empty CTA, MvpLitePage "Apri Lead", i18n cross-lingua `nav.new_journey`
+
+---
+
+## ITER179 · ACTIVATION FOUNDATION AUDIT + RED ELIMINATION + C3 (2026-05-31)
+
+### 0 RED entry points (target raggiunto)
+- **R1 + R2** · `convert-lead-btn` deprecato. `LeadsPage` ora mostra "Apri Discovery" (testid `open-discovery-{id}`) che naviga a `LeadDetailPage?discovery=1`. Endpoint backend `/api/workspace/leads/{lid}/convert` lasciato attivo per back-compat ma frontend non lo chiama più
+- **R3** · `POST /api/leads/public?tenant_slug=...` ora emette esplicitamente `discovery_interviews(status='pending', source='public_lead_form')` (verificato via curl + DB query)
+- **R4** · `JourneyPulsePage` empty CTA `"+ Inizia il tuo viaggio"` (Link `/begin-journey`) → `<NewRelationshipCta>` che apre Modal Nuova Relazione™
+- **R5** · `MvpLitePage` ClientsHub label "Apri Lead" → "Apri elenco Lead" + body riallineato al canon Discovery
+
+### Bonus
+- i18n `nav.new_relationship` alias cross-lingua (7 lingue) come specchio di legacy `nav.new_journey`
+- Linter v1.1 con 8 path EXEMPT aggiuntivi (CinematicLoader, CSS vars, brand collection names, admin layout variants)
+
+### Copy Governance C3
+- 6 file JSX hardcoded riscritti: ClientSidebar, ComingSoonPage, InspirationsPage, BrandFormModal, InspirationDetailDrawer, CuratorialInspirationsModal — 10 substitutions
+- Risultato lint: 467 → 428 violations (−39, −8.4%) · `cinematic*` 139 → 116 · `capitolo` 67 → 62 · `curatorial*` 59 → 56
+
+### Activation Foundation™ Audit
+- Documento canonico `ACTIVATION_FOUNDATION_AUDIT.md` con:
+  - Stato inventariato (DB, UI components, endpoint backend) — plumbing c'è, UX consolidata manca
+  - 5 step canonici (Blueprint · Team invite · Lead · Prospect · Journey)
+  - Configurazioni obbligatorie vs consigliate vs opzionali
+  - Mockup `<ActivationMeter />`, `<PersistentAlertBanner />`, `<TenantOnboardingHeader />` badge
+  - User stories step-by-step (signup → Activated 5/5)
+  - Implementation plan AF1-AF8 (~3.25g effort) per ITER180/181
+  - KPI di successo (>80% tenant Activated entro 7gg)
+- **Zero codice modificato** — solo audit document
+
+### Deliverable consegnati
+- `/app/memory/RED_ENTRY_POINTS_CLOSURE_REPORT.md`
+- `/app/memory/ACTIVATION_FOUNDATION_AUDIT.md`
+- `/app/memory/COPY_GOVERNANCE_C3_REPORT.md`
+
+### Status CRM Entry Points (cumulativo)
+| Pre-ITER178 | Post-ITER178 | Post-ITER179 |
+|---|---|---|
+| 13🟢 / 7🟡 / 9🔴 | 15🟢 / 7🟡 / 5🔴 | **17🟢 / 8🟡 / 0🔴** ✅ |
+
+### Test eseguiti
+- ✅ Public lead → discovery row creata (`('pending', 'public_lead_form')`)
+- ✅ Ruff + ESLint clean su tutti i nuovi file
+- ✅ Backend hot-reload OK
+
+### Restano per ITER180
+- Implementare Activation Foundation™ (AF1-AF8)
+- Phase R3 IT residui (55 chiavi)
+- C4 sweep JSX residui (CuratorialInspirationsModal full, Inspirations totale)
+- T1 EN re-translation
+- T2 FR madrelingua

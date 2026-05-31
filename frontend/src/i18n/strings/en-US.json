@@ -500,7 +500,8 @@
     },
     "dashboard": "Dashboard",
     "workspace_switcher": "Workspace",
-    "new_journey": "New Journey"
+    "new_journey": "Nuova Relazione",
+    "new_relationship": "Nuova Relazione"
   },
   "projects": {
     "tabs": {

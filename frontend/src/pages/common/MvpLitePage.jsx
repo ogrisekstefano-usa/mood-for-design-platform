@@ -61,9 +61,9 @@ export default MvpLitePage;
 
 // ── Module-specific presets ────────────────────────────────────────────
 
-export const ClientsHub = () => <MvpLitePage testid="clients-hub" icon="UserCircle" eyebrow="STUDIO · CLIENTI" title="I tuoi clienti emergono dai Lead." body="Ogni lead qualificato che apre un progetto diventa automaticamente un cliente nella tua relazione. La gestione anagrafica dedicata arriverà come estensione del Lead system." primaryCta={{
+export const ClientsHub = () => <MvpLitePage testid="clients-hub" icon="UserCircle" eyebrow="STUDIO · CLIENTI" title="I tuoi clienti emergono dalla Discovery." body="Ogni lead qualificato che apre un progetto diventa automaticamente un cliente nella tua relazione. La gestione anagrafica dedicata arriverà come estensione del CRM Lifecycle." primaryCta={{
   to: '/workspace/leads',
-  label: 'Apri Lead'
+  label: 'Apri elenco Lead'
 }} secondaryCta={{
   to: '/workspace/projects',
   label: 'Progetti attivi'

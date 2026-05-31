@@ -481,7 +481,8 @@
     },
     "dashboard": "Panel",
     "workspace_switcher": "Espacio de trabajo",
-    "new_journey": "Nuevo Journey"
+    "new_journey": "Nuevo Journey",
+    "new_relationship": "Nuevo Journey"
   },
   "projects": {
     "tabs": {

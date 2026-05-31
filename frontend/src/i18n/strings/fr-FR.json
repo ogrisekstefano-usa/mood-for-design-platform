@@ -481,7 +481,8 @@
     },
     "dashboard": "Tableau de bord",
     "workspace_switcher": "Espace de travail",
-    "new_journey": "Nouveau Parcours"
+    "new_journey": "Nouveau Parcours",
+    "new_relationship": "Nouveau Parcours"
   },
   "projects": {
     "tabs": {

@@ -60,6 +60,15 @@ EXEMPT_PATHS = [
     r"COPY_LINT_SPEC\.md",
     r"GLOBAL_COPY_AUDIT\.md",
     r"copy_lint\.py",
+    # ITER179 · v1.1 false-positive guards
+    r"/CinematicLoader",                  # canonical component name
+    r"/JourneyCanonicalRoutes",           # route file (only component imports)
+    r"premiumTemplates\.js",              # asset keys + brand-canonical collection names
+    r"/blueprint/sections/MagazineGridSection",  # CSS var --bp-duration-cinematic
+    r"/blueprint/sections/GallerySection",
+    r"/blueprint/forms/fields/StyleCardsField",
+    r"/pages/settings/AtelierDashboardAdminPage",  # admin layout variants
+    r"/pages/site/JourneyWelcomePage",    # canonical map keys
 ]
 
 # File extensions to scan

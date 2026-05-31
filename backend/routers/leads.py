@@ -311,6 +311,27 @@ def submit_public_lead(
         lead=lead,
     )
 
+    # ITER179 · CRM Canon — emit explicit Discovery row for traceability.
+    # Source = 'public_lead_form' to distinguish from begin-journey flow.
+    try:
+        client.table('discovery_interviews').insert({
+            'id':                    str(uuid.uuid4()),
+            'tenant_id':             tenant_id,
+            'lead_id':                lead['id'],
+            'status':                'pending',
+            'source':                'public_lead_form',
+            'qualification_signals': {
+                'auto_capture': True,
+                'lead_type':    lead.get('lead_type'),
+                'source_path':  lead.get('onboarding_path'),
+            },
+            'metadata_json':         {'auto': True},
+            'created_at':            now,
+            'updated_at':            now,
+        }).execute()
+    except Exception:
+        logger.exception("discovery_interviews insert (public_lead_form) failed")
+
     return {
         "id": lead['id'],
         "lead_type": lead['lead_type'],

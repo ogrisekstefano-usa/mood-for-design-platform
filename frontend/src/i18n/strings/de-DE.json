@@ -481,7 +481,8 @@
     },
     "dashboard": "Dashboard",
     "workspace_switcher": "Arbeitsbereich",
-    "new_journey": "Neue Journey"
+    "new_journey": "Neue Beziehung",
+    "new_relationship": "Neue Beziehung"
   },
   "projects": {
     "tabs": {

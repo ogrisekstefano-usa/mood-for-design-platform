@@ -8,7 +8,7 @@
  *   • bottoni pill rounded, conferma elegante
  *
  * Linguaggio: "produttore", "posizionamento", "mercati prevalenti",
- * "atmosfera dominante", "note curatoriale".
+ * "stile dominante", "note di selezione".
  * MAI: vendor, supplier, brand entity.
  */
 import React, { useEffect, useMemo, useState } from 'react';

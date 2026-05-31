@@ -15,7 +15,7 @@
  *   │  · markets │                                  │  moodboard) │
  *   └────────────┴──────────────────────────────────┴─────────────┘
  *
- * Linguaggio: "Tavolo curatoriale", "Riferimenti", "Atmosfera",
+ * Linguaggio: "Tavolo selezione", "Riferimenti", "Mood",
  * "Porta nel moodboard". MAI: "media picker", "asset browser".
  *
  * Filtri persistenti via localStorage (chiave per moodboard + globale).

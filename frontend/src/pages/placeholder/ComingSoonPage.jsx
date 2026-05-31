@@ -46,7 +46,7 @@ const PLACEHOLDERS = {
   'visual-archive': {
     eyebrow:  'Capitolo · Visual Archive',
     title:    'La memoria visuale dello studio',
-    body:     'Archivio cinematico delle immagini, materie e dettagli accumulati nel tempo — la grammatica visiva che lo studio costruisce capitolo dopo capitolo. In sviluppo. Disponibile a breve.',
+    body:     'Archivio visivo delle immagini, materie e dettagli accumulati nel tempo — la grammatica visiva che lo studio costruisce progetto dopo progetto. In sviluppo. Disponibile a breve.',
     milestone: null,
   },
   'product-gallery': {

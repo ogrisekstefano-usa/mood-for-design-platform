@@ -29,7 +29,7 @@ import { useTenantConfiguration } from '../../contexts/TenantConfigurationContex
 
 const NAV = [
   { to: '/client',                  label: 'I miei Journey',     icon: Compass,           hasMark: true, end: true },
-  { to: '/client#capitolo',         label: 'Capitolo attivo',    icon: Sparkles,          hasMark: true, anchor: 'capitolo' },
+  { to: '/client#sezione',         label: 'Sezione attiva',    icon: Sparkles,          hasMark: true, anchor: 'sezione' },
   { to: '/client#direzioni',        label: 'Direzioni condivise', icon: Layers,           hasMark: true, anchor: 'direzioni' },
   { to: '/client#conversazioni',    label: 'Conversazioni',      icon: MessageSquareQuote, hasMark: true, anchor: 'conversazioni' },
   { to: '/client#evoluzione',       label: 'Evolution Timeline', icon: Clock4,            hasMark: true, anchor: 'evoluzione' },
