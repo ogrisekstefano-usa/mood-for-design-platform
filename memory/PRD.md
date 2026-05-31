@@ -9432,3 +9432,46 @@ Attesa approvazione Founder. Prossimo passo (se approvato): **Phase C1 · IT cri
 - Enum `account_lifecycle_stage` normalizzato (Phase 3 plan)
 - Promote Prospect → Customer endpoint
 - Journey Assignments Phase 2, Notification Bus, Editorial Onboarding
+
+---
+
+## ITER178 · CRM ENTRY POINTS CLEANUP + CMD+K SHOWROOM + COPY C2 (2026-05-31)
+
+### Deliverable consegnati
+1. **Cmd+K Showroom Flow™** (`components/relations/CommandPalette.jsx` nuovo + `hooks/useNewRelationship.jsx` esteso)
+   - Hotkey globale ⌘+K / Ctrl+K
+   - Search debounced 260ms parallela su `/api/leads/search` + `/api/relations/accounts`
+   - Caso 1: risultato trovato → click → naviga al detail
+   - Caso 2: 0 risultati → CTA "Crea nuovo Lead «query»" → Modal Nuova Relazione™ con **prefill automatico** ("Mario Rossi" → first/last name)
+   - ✅ Verificato end-to-end via Playwright
+
+2. **Modal Nuova Relazione™ esteso** con prop `prefill` (parsing intelligente di query con spazi / email rilevata via `@`)
+
+3. **CTA legacy rilocate**
+   - `Topbar.jsx`: `topbar-new-journey-cta` → `topbar-new-relationship-cta` apre Modal (era redirect `/begin-journey`)
+   - `ActiveJourneyRail.jsx`: empty CTA da `/begin-journey` → `/relations/leads` con testid `sidebar-new-relationship-cta`
+   - Lessico: "Inizia una conversazione" → "Apri Nuova Relazione"
+
+4. **Copy C2 sweep IT** (`it-IT.json`)
+   - 51 stringhe modificate in un singolo passaggio
+   - Pattern: capitolo / atmosfera / cinematic / curatoriale / ecosistema / orchestrazione / temperamento / narrazione / respira / prende forma / rituale
+   - Esclusioni di sicurezza: keys con `magazine`, `editorial`, `site.`, `public.`, `mood_radio`
+   - Risultato lint: 538 → 467 violations (−71, −13%); `it-IT.json` 126 → 55 (−56%)
+
+5. **5 report obbligatori** in `/app/memory/`
+   - `CRM_ENTRY_POINTS_AUDIT.md` (27 entry point: 15🟢 / 7🟡 / 5🔴)
+   - `CMDK_SHOWROOM_FLOW_REPORT.md`
+   - `JOURNEY_LEGACY_CTA_AUDIT.md` (14 CTA mappate, 3 rilocate)
+   - `COPY_GOVERNANCE_C2_REPORT.md`
+   - `COPY_LINT_BASELINE_REVIEW.md` (top 30 stringhe problematiche, distribuzione per modulo, piano R1-R7)
+
+### Test
+- ✅ ESLint puliti su CommandPalette + useNewRelationship
+- ✅ Playwright smoke: login → ⌘+K → palette aperta → input query → no-results banner → CTA create → modal aperto con prefill `first_name="Mario"`, `last_name="Rossi Showroom Test"`
+- ✅ Backend endpoints inalterati (test ITER177.B ancora validi)
+
+### Criterio di successo verificato
+**Cliente entra → Cmd+K → nessun risultato → Crea Lead → Discovery → Prospect → Design Journey™** funziona end-to-end **senza uscire dal contesto operativo**.
+
+### Restanti da fixare (RED)
+- 5 entry point RED documentati (vedi `CRM_ENTRY_POINTS_AUDIT §5`): convert-lead-btn, /api/leads/public senza discovery, JourneyPulse empty CTA, MvpLitePage "Apri Lead", i18n cross-lingua `nav.new_journey`

@@ -232,9 +232,9 @@
         }
       },
       "active_chapter": {
-        "empty_hint_lede": "Quando il tuo studio aprirà un nuovo capitolo, lo troverai qui.",
-        "empty_hint_title": "In attesa del prossimo capitolo",
-        "empty_title": "Nessun capitolo attivo",
+        "empty_hint_lede": "Quando il tuo studio aprirà un nuovo progetto, lo troverai qui.",
+        "empty_hint_title": "In attesa del prossimo progetto",
+        "empty_title": "Nessun progetto attivo",
         "eyebrow": "Capitolo attivo"
       },
       "archive": {
@@ -561,7 +561,7 @@
   },
   "inspirations": {
     "eyebrow": "Cultural Design Intelligence Layer",
-    "lede": "L'archivio curatoriale dello studio. Ogni riferimento è letto attraverso la lente culturale dei mercati internazionali: atmosfera, materia, affinità editoriale.",
+    "lede": "L'archivio dello studio. Ogni riferimento è letto attraverso la lente culturale dei mercati internazionali: atmosfera, materia, affinità editoriale.",
     "search": {
       "placeholder": "Cerca per atmosfera, materia, brand…"
     },
@@ -613,7 +613,7 @@
       "riferimenti_editoriali": "Riferimenti editoriali",
       "moodboard_correlate": "Moodboard correlate",
       "continua_la_lettura": "Continua la lettura",
-      "nessuna_collezione_registrata_il_primo_capitolo_ed": "Nessuna collezione registrata — il primo capitolo editoriale apre la lettura curatoriale del brand.",
+      "nessuna_collezione_registrata_il_primo_capitolo_ed": "Nessuna collezione registrata — il primo sezione apre la analisi del brand.",
       "modifica_produttore": "Modifica produttore",
       "aggiungi_capitolo_editoriale": "Aggiungi collezione",
       "modifica_collezione": "Modifica collezione",
@@ -631,7 +631,7 @@
     "brand_mode": {
       "entra_nell_atelier": "Entra nell'atelier",
       "nessun_produttore_corrisponde_alla_ricerca": "Nessun produttore corrisponde alla ricerca",
-      "l_atlante_curatoriale_e_in_costruzione_aggiungi_un": "L'atlante curatoriale è in costruzione. Aggiungi un produttore o importa un catalogo per iniziare la lettura.",
+      "l_atlante_curatoriale_e_in_costruzione_aggiungi_un": "L'atlante è in costruzione. Aggiungi un produttore o importa un catalogo per iniziare la lettura.",
       "esplora_i_marchi_le_collezioni_e_il_linguaggio_pro": "Esplora i marchi, le collezioni e il linguaggio progettuale dei produttori presenti in MOOD.\n              Ogni brand è una lettura — atmosfere prevalenti, materialità ricorrenti, geografie narrative\n              dove compare nei tuoi progetti.",
       "aggiungi_produttore": "Aggiungi produttore",
       "tutti_i_posizionamenti": "tutti i posizionamenti",
@@ -646,11 +646,11 @@
       "aggiungi_collezione": "Aggiungi collezione",
       "annulla": "Annulla",
       "chiudi": "Chiudi",
-      "il_linguaggio_progettuale_di_questo_capitolo_le_ma": "Il linguaggio progettuale di questo capitolo, le materialità prevalenti, l'atmosfera."
+      "il_linguaggio_progettuale_di_questo_capitolo_le_ma": "Il linguaggio progettuale di questo progetto, le materialità prevalenti, l'atmosfera."
     },
     "curated_collection": {
       "descrizione_editoriale": "Descrizione editoriale",
-      "description_placeholder": "Cosa raccoglie questo capitolo curatoriale?"
+      "description_placeholder": "Cosa raccoglie questo collezione?"
     },
     "inspiration_detail": {
       "apertura_del_riferimento": "Apertura del riferimento…",
@@ -689,15 +689,15 @@
       "in_attesa_di_riscontro_dal_cliente": "In attesa di riscontro dal cliente",
       "curatela_editoriale_non_raccomandazione_algoritmic": "Curatela editoriale — non raccomandazione algoritmica.",
       "sto_leggendo_le_relazioni": "Sto leggendo le relazioni…",
-      "ancora_nessuna_affinita_curatoriale_rilevata": "Ancora nessuna affinità curatoriale rilevata.",
+      "ancora_nessuna_affinita_curatoriale_rilevata": "Ancora nessuna affinità selezionata rilevata.",
       "product_gallery_visual_atelier": "Product Gallery™ · Visual Atelier",
-      "atmosfera_in_lettura_curatoriale": "Atmosfera in lettura curatoriale",
+      "atmosfera_in_lettura_curatoriale": "Atmosfera in analisi",
       "salva_in_references": "Salva in References™",
       "aggiungi_al_moodboard": "Aggiungi al moodboard",
       "feedback_title": "Riscontri dal cliente"
     },
     "studio_collections": {
-      "archivio_curatoriale_dello_studio": "Archivio curatoriale dello studio",
+      "archivio_curatoriale_dello_studio": "Archivio selezionata dello studio",
       "nessuna_collezione_importata_inizia_caricando_un_c": "Nessuna collezione importata. Inizia caricando un catalogo fornitore.",
       "importa_il_primo_catalogo": "Importa il primo catalogo",
       "tutti_i_produttori_e_le_collezioni_che_lo_studio_h": "Tutti i produttori e le collezioni che lo studio ha aggiunto al proprio\n            registro."
@@ -854,7 +854,7 @@
     "exit": "Esci",
     "impersonate": "Impersona",
     "modules": {
-      "sub": "Catalogo dei moduli orchestrati dalla piattaforma.",
+      "sub": "Catalogo dei moduli configurato dalla piattaforma.",
       "title": "Moduli"
     },
     "nav": {
@@ -1078,25 +1078,25 @@
       "il_tavolo_della_materia": "Il tavolo della materia"
     },
     "milestone_dialogue": {
-      "nuovo_capitolo_progettuale": "Nuovo capitolo progettuale",
+      "nuovo_capitolo_progettuale": "Nuovo progetto progettuale",
       "voce_del_cliente": "Voce del cliente",
       "chiudi": "Chiudi",
       "sto_preparando_il_dialogo_progettuale": "Sto preparando il dialogo progettuale…",
       "evoluzione_del_progetto": "Evoluzione del progetto",
-      "nessun_capitolo_condiviso_ancora": "Nessun capitolo condiviso ancora.",
+      "nessun_capitolo_condiviso_ancora": "Nessun progetto condiviso ancora.",
       "annulla": "Annulla",
-      "capitolo": "capitolo ·",
+      "capitolo": "progetto ·",
       "condividi": "Condividi",
-      "aggiungi_un_capitolo": "Aggiungi un capitolo",
-      "il_primo_capitolo_apre_la_conversazione_progettual": "Il primo capitolo apre la conversazione progettuale con il cliente.",
-      "titolo_del_capitolo_es_luce_mediterranea": "Titolo del capitolo (es. Luce mediterranea)",
-      "cosa_cambia_in_questo_capitolo_in_poche_righe": "Cosa cambia in questo capitolo — in poche righe",
+      "aggiungi_un_capitolo": "Aggiungi una sezione",
+      "il_primo_capitolo_apre_la_conversazione_progettual": "Il primo progetto apre la conversazione progettuale con il cliente.",
+      "titolo_del_capitolo_es_luce_mediterranea": "Titolo del progetto (es. Luce mediterranea)",
+      "cosa_cambia_in_questo_capitolo_in_poche_righe": "Cosa cambia in questo progetto — in poche righe",
       "il_perche_di_questa_direzione_materia_luce_atmosfe": "Il perché di questa direzione — materia, luce, atmosfera, linguaggio progettuale",
       "racconta_a_parole_tue_un_atmosfera_un_riferimento": "Racconta a parole tue — un'atmosfera, un riferimento, una sensazione…"
     },
     "moodboard_direction_workspace": {
       "direzione_editoriale": "Direzione editoriale",
-      "l_orizzonte_di_questo_capitolo": "L'orizzonte di questo capitolo",
+      "l_orizzonte_di_questo_capitolo": "L'orizzonte di questo progetto",
       "capitoli_moodboard": "Capitoli moodboard",
       "le_direzioni_proposte": "Le direzioni proposte"
     },
@@ -1106,13 +1106,13 @@
       "posizione_nel_journey": "Posizione nel Journey"
     },
     "version_stack": {
-      "ancora_nessun_capitolo": "Ancora nessun capitolo"
+      "ancora_nessun_capitolo": "Ancora nessun progetto"
     },
     "tab": {
       "first_conversation": "La prima conversazione",
-      "brief_editor_coming": "L'editor del Brief arriverà nel prossimo capitolo.",
+      "brief_editor_coming": "L'editor del Brief arriverà nel prossimo progetto.",
       "evolution_real": "L'evoluzione reale del progetto",
-      "timeline_coming": "La timeline fotografica arriverà nel prossimo capitolo.",
+      "timeline_coming": "La timeline fotografica arriverà nel prossimo progetto.",
       "update_direction": "Aggiorna direzione",
       "evolution": "Evoluzione del progetto",
       "story": "La storia che il progetto sta scrivendo"
@@ -1130,7 +1130,7 @@
     "empty_inside_journey": "Le moodboard vivono dentro i loro Journey",
     "archive": {
       "eyebrow": "Archivio trasversale · Sprint G.6",
-      "lede": "Questa è una vista d'archivio per ritrovare le moodboard composte attraverso tutti i Journey. La composizione vera avviene nel capitolo Moodboard Direction™ del singolo Journey.",
+      "lede": "Questa è una vista d'archivio per ritrovare le moodboard composte attraverso tutti i Journey. La composizione vera avviene nel progetto Moodboard Direction™ del singolo Journey.",
       "cta": "Apri Studio Pulse"
     },
     "eyebrow": "Design Journey · Tavolo Creativo",
@@ -1525,7 +1525,7 @@
         "copy": "Le lingue su cui la traduzione AI è abilitata."
       },
       "architecture": "Architettura linguistica",
-      "architectureBody": "Tre livelli orchestrati: pubblico, blueprint operativo, traduzione AI.",
+      "architectureBody": "Tre livelli configurato: pubblico, blueprint operativo, traduzione AI.",
       "blueprint": {
         "copy": "Le lingue in cui il blueprint operativo è disponibile.",
         "eyebrow": "Blueprint operativo",
@@ -1567,7 +1567,7 @@
       "sub": "Vetrina pubblica, contenuti e SEO.",
       "title": "Storefront"
     },
-    "sub": "L'orchestrazione delle voci che compongono l'atelier.",
+    "sub": "L'configurazione delle voci che compongono l'atelier.",
     "team": {
       "sub": "Membri, ruoli e permessi del workspace.",
       "title": "Team"
@@ -1585,7 +1585,7 @@
     },
     "atelier_dashboard": {
       "title": "Dashboard Atelier",
-      "sub": "Cura immagini hero, copy cinematografica e citazioni ispirazionali per Studio Pulse™. Sovrascritture per lingua."
+      "sub": "Cura immagini hero, copy  e citazioni ispirazionali per Studio Pulse™. Sovrascritture per lingua."
     }
   },
   "site": {
@@ -1672,7 +1672,7 @@
       "caricamento_dell_orchestrazione": "Caricamento…",
       "nessuna_fascia_per_questa_pagina": "Nessuna fascia per questa pagina.",
       "chiudi": "Chiudi",
-      "l_orchestrazione_cinematica_della_presenza_pubblic": "L'orchestrazione cinematica della presenza pubblica. Ogni fascia\n            è una superficie narrativa che adatta tono, ritmo e CTA al mercato che la guarda.\n            Tutto ciò che vedi qui è il sito pubblico — niente di nascosto, niente di hardcoded.",
+      "l_orchestrazione_cinematica_della_presenza_pubblic": "L'configurazione  della presenza pubblica. Ogni fascia\n            è una superficie narrativa che adatta tono, ritmo e CTA al mercato che la guarda.\n            Tutto ciò che vedi qui è il sito pubblico — niente di nascosto, niente di hardcoded.",
       "sopra_titolo_editoriale": "Sopra-titolo editoriale"
     },
     "band_editors": {
@@ -1706,9 +1706,9 @@
     },
     "design_journey_tab": {
       "la_prima_conversazione": "La prima conversazione",
-      "l_editor_del_brief_arrivera_nel_prossimo_capitolo": "L'editor del Brief arriverà nel prossimo capitolo.",
+      "l_editor_del_brief_arrivera_nel_prossimo_capitolo": "L'editor del Brief arriverà nel prossimo progetto.",
       "l_evoluzione_reale_del_progetto": "L'evoluzione reale del progetto",
-      "la_timeline_fotografica_arrivera_nel_prossimo_capi": "La timeline fotografica arriverà nel prossimo capitolo.",
+      "la_timeline_fotografica_arrivera_nel_prossimo_capi": "La timeline fotografica arriverà nel prossimo progetto.",
       "aggiorna_direzione": "Aggiorna direzione",
       "evoluzione_del_progetto": "Evoluzione del progetto",
       "la_storia_che_il_progetto_sta_scrivendo": "La storia che il progetto sta scrivendo"
@@ -2051,16 +2051,16 @@
   },
   "atelier_voice": {
     "curatorial_modal": {
-      "tray_eyebrow": "Tavolo curatoriale",
+      "tray_eyebrow": "Tavolo selezionata",
       "tray_empty_line1": "Marca i riferimenti più rilevanti.",
       "tray_empty_line2": "Saranno portati nel moodboard insieme.",
-      "head_eyebrow": "Tavolo curatoriale · Inspirations™",
+      "head_eyebrow": "Tavolo selezionata · Inspirations™",
       "head_title_lead": "Componi",
       "head_title_em": "riferimenti progettuali",
       "empty_lede": "Allarga atmosfera, materialità o geografia per leggere altri linguaggi progettuali dello studio."
     },
     "editor_panel": {
-      "curatorial_cta_eyebrow": "Tavolo curatoriale"
+      "curatorial_cta_eyebrow": "Tavolo selezionata"
     },
     "material_direction": {
       "eyebrow": "Direzione materica"
@@ -2103,20 +2103,20 @@
       "new_master_short": "Nuovo Master"
     },
     "insights": {
-      "signature_label": "Signature curatoriale"
+      "signature_label": "Signature selezionata"
     },
     "add_inspiration": {
       "main_material_label": "Materia principale"
     },
     "brand_detail": {
-      "atlas_eyebrow": "Atlante curatoriale",
-      "reading_eyebrow": "Lettura curatoriale",
+      "atlas_eyebrow": "Atlante",
+      "reading_eyebrow": "Lettura selezionata",
       "count_collections": "collezioni",
       "count_products": "prodotti",
       "count_references": "riferimenti"
     },
     "collection_form": {
-      "description_label": "Descrizione curatoriale"
+      "description_label": "Descrizione selezionata"
     },
     "curated_collection": {
       "new_collection": "Nuova collezione"
@@ -2125,14 +2125,14 @@
       "material_label": "Materia"
     },
     "material_view": {
-      "eyebrow_suffix": "materioteca curatoriale"
+      "eyebrow_suffix": "materioteca selezionata"
     },
     "product_gallery": {
       "design_language": "Linguaggio progettuale",
       "new_collection": "Nuova collezione"
     },
     "studio_collections": {
-      "loading": "Carico l’archivio curatoriale…"
+      "loading": "Carico l’archivio selezionata…"
     },
     "supplier_import": {
       "no_producer_found": "Nessun produttore trovato.",
@@ -2146,11 +2146,11 @@
       "open_new_hint": "o aprine uno nuovo per iniziare"
     },
     "brand_atlas": {
-      "eyebrow": "Brand Atlas™ · atlante curatoriale dei produttori",
+      "eyebrow": "Brand Atlas™ · atlante dei produttori",
       "title_lead": "I produttori come",
       "title_em": "linguaggi progettuali",
-      "lead": "Esplora i marchi, le collezioni e il linguaggio progettuale dei produttori presenti in MOOD. Ogni brand è una pagina del nostro atlante curatoriale.",
-      "empty_lede": "L’atlante curatoriale è in costruzione. Aggiungi un produttore o importa un catalogo per iniziare la lettura."
+      "lead": "Esplora i marchi, le collezioni e il linguaggio progettuale dei produttori presenti in MOOD. Ogni brand è una pagina del nostro atlante.",
+      "empty_lede": "L’atlante è in costruzione. Aggiungi un produttore o importa un catalogo per iniziare la lettura."
     }
   },
   "atelier": {
@@ -2162,7 +2162,7 @@
           "evening": "Buonasera"
         },
         "eyebrow": "Studio Pulse™ · Ritmo Progettuale",
-        "summary_template": "{active} Design Journey™ in respiro · {voices} voci ricevute oggi",
+        "summary_template": "{active} Design Journey™ attive · {voices} voci ricevute oggi",
         "signature": "Diamo forma a spazi belli."
       },
       "kpi": {
@@ -2184,18 +2184,18 @@
         },
         "untitled": "Design Journey™ senza titolo",
         "updated": "Aggiornato {when}",
-        "no_updates": "In attesa del primo capitolo"
+        "no_updates": "In attesa del primo progetto"
       },
       "col": {
         "recent_activity": "Movimenti recenti",
         "upcoming_milestones": "Prossimi capitoli",
         "daily_inspiration": "Ispirazione del giorno",
         "activity_empty": "Nessuna attività recente.",
-        "milestones_empty": "In attesa del prossimo capitolo.",
+        "milestones_empty": "In attesa del prossimo progetto.",
         "inspiration_empty": "Nessuna citazione curata ancora."
       },
       "projects": {
-        "title": "Design Journey™ in respiro",
+        "title": "Design Journey™ attive",
         "see_all": "Vedi tutti",
         "empty": "Il tuo atelier è in silenzio. Il prossimo journey aspetta di iniziare.",
         "empty_cta": "Inizia un nuovo journey"
@@ -2211,7 +2211,7 @@
       "back": "Torna alle impostazioni",
       "eyebrow": "Atelier · Identità dello studio",
       "title": "Dashboard Atelier",
-      "lede": "Cura la copy del hero, l'immagine cinematografica e la libreria di citazioni ispirazionali che compongono la dashboard Studio Pulse™. Le sovrascritture per lingua si applicano in cascata automatica.",
+      "lede": "Cura la copy del hero, l'immagine  e la libreria di citazioni ispirazionali che compongono la dashboard Studio Pulse™. Le sovrascritture per lingua si applicano in cascata automatica.",
       "tab": {
         "copy": "Hero e sezioni",
         "media": "Libreria media",
@@ -2238,14 +2238,14 @@
     "blocker": {
       "eyebrow": "Blueprint Atelier™",
       "title": "Disegnato per la postazione di studio.",
-      "lede": "Il tuo atelier respira su una tela ampia. Il sistema operativo cinematografico riposa sull'architettura desktop — torna alla postazione di studio per continuare.",
+      "lede": "Il tuo atelier respira su una tela ampia. Il sistema operativo desktop riposa sull'architettura desktop — torna alla postazione di studio per continuare.",
       "cta": "Invia alla mia postazione",
       "whisper": "Tela consigliata · da 1280 px in su."
     },
     "loader": {
       "phrase_preparing_atelier": "Preparando il tuo atelier…",
       "phrase_curating_atmosphere": "Curando l'atmosfera…",
-      "phrase_opening_chapter": "Aprendo il prossimo capitolo…",
+      "phrase_opening_chapter": "Aprendo il prossimo progetto…",
       "phrase_synchronizing_rhythm": "Sincronizzando il ritmo del progetto…",
       "phrase_listening_voices": "In ascolto delle voci dello studio…",
       "phrase_arranging_silence": "Disponendo il silenzio…"
@@ -2255,12 +2255,12 @@
       "title": "Componi l'atmosfera.",
       "lede": "Carica, inquadra e gradua le immagini che respirano attraverso la tua dashboard. Ogni asset vive dentro l'atelier — nessun link esterno.",
       "drop_title": "Trascina un'immagine · o sfoglia",
-      "drop_hint": "JPG · PNG · WebP — fino a 10 MB. Elaboriamo l'asset cinematograficamente e lo conserviamo dentro l'atelier.",
+      "drop_hint": "JPG · PNG · WebP — fino a 10 MB. Elaboriamo l'asset  e lo conserviamo dentro l'atelier.",
       "invalid_file": "Per favore trascina un file immagine.",
       "too_large": "L'immagine supera 10 MB.",
       "file_required": "Trascina o seleziona prima un'immagine.",
       "mobile_blocker_zone": "Safe zone mobile blocker — il fotogramma mostrato sui telefoni",
-      "focal_hint": "Clicca sulla tela per impostare il punto focale — l'ancora cinematografica di questo asset.",
+      "focal_hint": "Clicca sulla tela per impostare il punto focale — l'ancora  di questo asset.",
       "reset": "Cambia immagine",
       "presets_label": "Registro di grading",
       "manual_label": "Regolazione manuale",

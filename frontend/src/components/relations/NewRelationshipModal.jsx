@@ -21,7 +21,7 @@ const auth = () => {
   return t ? { Authorization: `Bearer ${t}` } : {};
 };
 
-export default function NewRelationshipModal({ open, onClose, onCreated }) {
+export default function NewRelationshipModal({ open, onClose, onCreated, prefill }) {
   const navigate = useNavigate();
   const [choice, setChoice] = useState(null); // 'lead' | 'prospect' | 'customer'
   const [busy, setBusy] = useState(false);
@@ -30,8 +30,11 @@ export default function NewRelationshipModal({ open, onClose, onCreated }) {
     if (!open) {
       setChoice(null);
       setBusy(false);
+    } else if (prefill?.choice) {
+      // Auto-pick the right choice when launched from Cmd+K with prefill
+      setChoice(prefill.choice);
     }
-  }, [open]);
+  }, [open, prefill]);
 
   if (!open) return null;
 
@@ -103,6 +106,7 @@ export default function NewRelationshipModal({ open, onClose, onCreated }) {
 
         {choice === 'lead' && (
           <NewLeadForm
+            prefill={prefill}
             onCancel={() => setChoice(null)}
             onCreated={(payload) => {
               onClose?.();
@@ -175,11 +179,36 @@ function ChoiceCard({ icon, title, desc, onClick, testid }) {
   );
 }
 
-function NewLeadForm({ onCancel, onCreated, busy, setBusy }) {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+function NewLeadForm({ onCancel, onCreated, busy, setBusy, prefill }) {
+  // Parse prefill query "Mario Rossi" → first_name="Mario", last_name="Rossi"
+  const parsedFirst = useMemo(() => {
+    if (!prefill) return '';
+    if (prefill.first_name) return prefill.first_name;
+    if (prefill.query && !prefill.query.includes('@')) {
+      const parts = prefill.query.trim().split(/\s+/);
+      return parts[0] || '';
+    }
+    return '';
+  }, [prefill]);
+  const parsedLast = useMemo(() => {
+    if (!prefill) return '';
+    if (prefill.last_name) return prefill.last_name;
+    if (prefill.query && !prefill.query.includes('@')) {
+      const parts = prefill.query.trim().split(/\s+/);
+      return parts.slice(1).join(' ') || '';
+    }
+    return '';
+  }, [prefill]);
+  const parsedEmail = useMemo(() => {
+    if (prefill?.email) return prefill.email;
+    if (prefill?.query && prefill.query.includes('@')) return prefill.query.trim();
+    return '';
+  }, [prefill]);
+
+  const [firstName, setFirstName] = useState(parsedFirst);
+  const [lastName, setLastName] = useState(parsedLast);
+  const [email, setEmail] = useState(parsedEmail);
+  const [phone, setPhone] = useState(prefill?.phone || '');
   const [matches, setMatches] = useState([]);
   const [checkedDedup, setCheckedDedup] = useState(false);
 
