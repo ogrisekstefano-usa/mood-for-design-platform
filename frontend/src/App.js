@@ -9,6 +9,7 @@ import { TenantThemeProvider } from './contexts/TenantThemeContext';
 import { StudioPaletteProvider } from './contexts/StudioPaletteContext';
 import { LocaleRuntimeProvider } from './contexts/LocaleRuntimeContext';
 import { BlueprintI18nProvider } from './i18n';
+import { NewRelationshipProvider } from './hooks/useNewRelationship';
 import LocaleRoute from './site/LocaleRoute';
 import LocaleHead from './site/LocaleHead';
 import CinematicLoader from './components/CinematicLoader';
@@ -391,6 +392,7 @@ function App() {
             <LocalizationOverlay />
             <EditorialDebugOverlay />
             <GuidedTourProvider>
+            <NewRelationshipProvider>
             <Suspense fallback={<Loading />}>
               <LocaleHead />
               <Routes>
@@ -826,6 +828,7 @@ function App() {
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </Suspense>
+            </NewRelationshipProvider>
             </GuidedTourProvider>
           </BrowserRouter>
           </EditorialOverridesProvider>

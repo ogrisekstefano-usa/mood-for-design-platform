@@ -455,6 +455,33 @@ def initiate_journey(request: Request, body: InitiatePayload = Body(...)):
         import logging
         logging.getLogger(__name__).exception("lead → prospect update failed")
 
+    # ITER177.B · CRM Phase 1 — Discovery Interview esplicito (source=public_form)
+    # Il form pubblico contiene già qualifica implicita. Per coerenza canon §4.5
+    # creiamo un record discovery_interviews(qualified) audit-friendly.
+    try:
+        c.table("discovery_interviews").insert({
+            "id":                     str(uuid.uuid4()),
+            "tenant_id":              tid,
+            "lead_id":                lead_id,
+            "status":                 "qualified",
+            "source":                 "public_form",
+            "completed_at":           now,
+            "qualification_signals":  {
+                "auto_qualified": True,
+                "source_path":    "begin_journey_ritual",
+                "journey_id":     journey_id,
+            },
+            "metadata_json":          {
+                "account_id": account_id,
+                "auto":       True,
+            },
+            "created_at":             now,
+            "updated_at":             now,
+        }).execute()
+    except Exception:
+        import logging
+        logging.getLogger(__name__).exception("discovery_interview backfill (public_form) failed")
+
     # ITER161 · P0.2 · Client Provisioning™ — magic link first.
     # Crea auth.user + users_profile + assignment + thread + email backup.
     # Tutto NON-blocking: se uno step accessorio fallisce, il journey è

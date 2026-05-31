@@ -18,6 +18,7 @@ import {
 } from '../../contexts/TenantConfigurationContext';
 import useSidebarCollapsed from '../../hooks/useSidebarCollapsed';
 import ActiveJourneyRail from './ActiveJourneyRail';
+import { useNewRelationship } from '../../hooks/useNewRelationship';
 
 const SECTION_STORAGE_KEY = 'mood.sidebar.sections.v6';
 const useSectionCollapse = () => {
@@ -275,6 +276,9 @@ const Sidebar = () => {
                  impersonating={impersonating && !inAdmin}
                  monogram={monogram} />
 
+      <NewRelationshipCta collapsed={collapsed} />
+
+
       <nav className="atelier-rail__sections">
         {(groups || []).map((group) => (
           <Section key={group.code} group={group} t={t}
@@ -333,3 +337,45 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+// ── Nuova Relazione CTA (ITER177.B) ─────────────────────────────
+const NewRelationshipCta = ({ collapsed }) => {
+  const { open } = useNewRelationship();
+  if (collapsed) {
+    return (
+      <button
+        type="button"
+        onClick={() => open()}
+        data-testid="sidebar-new-relationship-trigger"
+        aria-label="Nuova Relazione"
+        title="Nuova Relazione"
+        style={{
+          margin: '10px 10px 6px', padding: '10px 0',
+          background: '#0c0e12', color: '#ffffff',
+          border: 0, borderRadius: 8, cursor: 'pointer',
+          fontSize: 18, fontWeight: 400,
+        }}
+      >+</button>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={() => open()}
+      data-testid="sidebar-new-relationship-trigger"
+      style={{
+        margin: '12px 14px 8px', padding: '10px 14px',
+        background: '#0c0e12', color: '#ffffff',
+        border: 0, borderRadius: 8, cursor: 'pointer',
+        fontSize: 13, fontWeight: 500, letterSpacing: '0.01em',
+        display: 'flex', alignItems: 'center', gap: 8,
+        transition: 'background 160ms ease',
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = '#1f2329'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = '#0c0e12'; }}
+    >
+      <span aria-hidden style={{ fontSize: 16, lineHeight: 1 }}>+</span>
+      <span>Nuova Relazione</span>
+    </button>
+  );
+};

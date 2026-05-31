@@ -167,6 +167,14 @@ api_router.include_router(journey_closure.router,                           tags
 api_router.include_router(atelier_dashboard.router,                         tags=["atelier-dashboard"])
 api_router.include_router(atelier_media.router,                             tags=["atelier-media"])
 api_router.include_router(atelier_identity.router,                          tags=["atelier-identity"])
+# ITER177.B · Blueprint Chameleon™ — canonical alias (Studio Identity rebrand)
+from routers import blueprint_chameleon as _blueprint_chameleon  # noqa: E402
+api_router.include_router(_blueprint_chameleon.router,                      tags=["blueprint-chameleon"])
+# ITER177.B · CRM Phase 1 — Discovery Interviews + Account → Journey
+from routers import discovery as _discovery_router  # noqa: E402
+from routers import account_journeys as _account_journeys_router  # noqa: E402
+api_router.include_router(_discovery_router.router,                         tags=["discovery"])
+api_router.include_router(_account_journeys_router.router,                  tags=["account-journeys"])
 api_router.include_router(inspirations.router, prefix="/inspirations", tags=["inspirations"])
 api_router.include_router(insights.router, prefix="/insights", tags=["insights"])
 api_router.include_router(settings.router, prefix="/settings", tags=["settings"])

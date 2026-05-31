@@ -343,7 +343,7 @@ const ProjectsPage = () => {
         <div className="atlas-page__empty" data-testid="projects-empty">
           <Layers size={36} strokeWidth={1} />
           <h3 data-testid="projects-empty-title">Nessuna relazione ancora.</h3>
-          <p data-testid="projects-empty-subtitle">Apri il primo capitolo dello studio.</p>
+          <p data-testid="projects-empty-subtitle">Avvia il primo progetto.</p>
           <button onClick={onCta} data-testid="projects-empty-cta" className="atlas-page__cta">
             {cap.atCap ? 'Upgrade plan' : '+ Apri la prima relazione'}
           </button>

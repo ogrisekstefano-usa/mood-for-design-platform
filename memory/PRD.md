@@ -9383,3 +9383,52 @@ addendum (previously short labels skipped it).
 
 ### Next gate
 Attesa approvazione Founder. Prossimo passo (se approvato): **Phase C1 · IT critical rewrite** (~1.5g) sui 15 casi 🔴 Critical individuati.
+
+---
+
+## ITER177.B · CRM PHASE 1 + BLUEPRINT R1 + COPY C1 (2026-05-31) — SHIPPED
+
+### Cosa è stato consegnato
+1. **CRM Lifecycle Phase 1** (Nuova Relazione™)
+   - Migration `114_discovery_interviews.sql` (enum + tabella + 3 indici + trigger + backfill + view stats)
+   - Backend: `routers/discovery.py` (7 endpoint lifecycle) + `routers/account_journeys.py` (R1-R5 enforced) + `leads.py` esteso con `dedup-check` e `search`
+   - Frontend: `NewRelationshipModal.jsx` (3-way · Lead/Prospect/Customer) + `DiscoveryInterviewPanel.jsx` (inline autosave) + `useNewRelationship` provider montato globalmente
+   - Sidebar: bottone CTA `+ Nuova Relazione` (visibile in mode espanso e collapsed)
+   - `journey_initiate.py` patchato per emettere `discovery_interviews(qualified, source='public_form')` esplicito
+
+2. **Blueprint Chameleon R1** (rebrand lessicale)
+   - `routers/blueprint_chameleon.py` (alias router su 3 endpoint, zero duplicazione logica)
+   - Header `X-Canonical-Path` sui responses
+   - Path legacy `/api/atelier/identity/*` mantenuti (deprecation `2026-08-31`)
+   - 6 preset canonici verificati intatti (nordic_emotions, milano_editoriale, desert_atelier, japanese_gallery, mood_for_design, bloom_atelier)
+
+3. **Copy Governance C1** (15+ critical fixes)
+   - 18 stringhe i18n IT riscritte (capitolo→progetto, ritmo→stato, sussurra→giorno, narrazione→aggiungi blocco, rituale di chiusura→Chiudi, Studio Identity→Blueprint Chameleon, ecc.)
+   - 7 occorrenze JSX hardcoded fix (ProjectsPage + ComingSoonPage×6)
+
+4. **COPY_LINT™** (`scripts/copy_lint.py`)
+   - 20 pattern blacklist con severity/advice
+   - Baseline iniziale 538 violations (296 high + 242 medium) salvato in `scripts/copy_lint_baseline.json`
+   - Modalità `--baseline` per flaggare solo nuove violazioni
+   - Report-only, NON blocca build
+
+### Test eseguiti
+- ✅ End-to-end showroom flow via curl: Lead → Discovery → Qualify → Account(prospect) → Journey
+- ✅ Second journey su stesso account → HTTP 409 (R5 enforced)
+- ✅ Frontend smoke Playwright: login → sidebar CTA → modal 3-way → render OK
+- ✅ Ruff + ESLint puliti su tutti i nuovi file
+
+### Deliverable documentali (`/app/memory/`)
+- `CRM_PHASE1_IMPLEMENTATION_REPORT.md`
+- `BLUEPRINT_CHAMELEON_R1_REPORT.md`
+- `COPY_GOVERNANCE_C1_REPORT.md`
+- `COPY_LINT_SPEC.md`
+
+### Non in scope (in backlog)
+- Cmd+K command palette globale
+- Rimozione vecchi CTA "Nuova Journey" sparsi (cleanup successivo)
+- i18n sweep cross-lingua (EN/FR/DE/ES/AR) per Studio Identity + tone
+- Phase C2/C3 IT high + medium
+- Enum `account_lifecycle_stage` normalizzato (Phase 3 plan)
+- Promote Prospect → Customer endpoint
+- Journey Assignments Phase 2, Notification Bus, Editorial Onboarding

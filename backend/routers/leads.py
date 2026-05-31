@@ -92,6 +92,107 @@ def delete_lead(lead_id: str, current_user: dict = Depends(require_permission(P_
     return {"message": "Lead deleted"}
 
 
+# ── DEDUP CHECK (ITER177.B · CRM Phase 1) ─────────────────────────────────────
+@router.post("/dedup-check")
+def dedup_check(
+    body: dict = Body(...),
+    current_user: dict = Depends(require_permission(P_LEADS_READ)),
+):
+    """Find potential duplicates across leads/accounts/contacts.
+
+    Body: {email?, phone?, first_name?, last_name?}
+    Returns: {matches: [{type, id, score, reasons, display}]}
+    """
+    client = db()
+    tid = current_user['tenant_id']
+    email = (body.get('email') or '').strip().lower() or None
+    phone = (body.get('phone') or '').strip() or None
+    first_name = (body.get('first_name') or '').strip().lower() or None
+
+    matches = []
+
+    if email:
+        # Leads by email exact
+        rl = client.table('leads').select('id, first_name, last_name, email, phone, status') \
+            .eq('tenant_id', tid).eq('email', email).limit(5).execute()
+        for r in (rl.data or []):
+            matches.append({
+                "type": "lead",
+                "id": r["id"],
+                "score": 1.0,
+                "reasons": ["email_exact"],
+                "display": f"{r.get('first_name') or ''} {r.get('last_name') or ''}".strip() or r.get('email'),
+                "status": r.get("status"),
+            })
+        # Accounts by email exact
+        ra = client.table('accounts').select('id, account_name, email, phone, lifecycle_stage') \
+            .eq('tenant_id', tid).eq('email', email).limit(5).execute()
+        for r in (ra.data or []):
+            matches.append({
+                "type": "account",
+                "id": r["id"],
+                "score": 1.0,
+                "reasons": ["email_exact"],
+                "display": r.get("account_name") or r.get("email"),
+                "lifecycle_stage": r.get("lifecycle_stage"),
+            })
+
+    if phone and len(phone) >= 6:
+        # Normalize: keep digits only for fuzzy match
+        digits = ''.join(c for c in phone if c.isdigit())
+        if digits:
+            rl = client.table('leads').select('id, first_name, last_name, email, phone, status') \
+                .eq('tenant_id', tid).ilike('phone', f'%{digits[-8:]}%').limit(5).execute()
+            for r in (rl.data or []):
+                if any(m["id"] == r["id"] and m["type"] == "lead" for m in matches):
+                    continue
+                matches.append({
+                    "type": "lead",
+                    "id": r["id"],
+                    "score": 0.85,
+                    "reasons": ["phone_fuzzy"],
+                    "display": f"{r.get('first_name') or ''} {r.get('last_name') or ''}".strip() or r.get('phone'),
+                    "status": r.get("status"),
+                })
+
+    if first_name and len(first_name) >= 3 and not matches:
+        # Fallback: fuzzy first_name match on leads (low score)
+        rl = client.table('leads').select('id, first_name, last_name, email, status') \
+            .eq('tenant_id', tid).ilike('first_name', f'{first_name}%').limit(3).execute()
+        for r in (rl.data or []):
+            matches.append({
+                "type": "lead",
+                "id": r["id"],
+                "score": 0.5,
+                "reasons": ["name_prefix"],
+                "display": f"{r.get('first_name') or ''} {r.get('last_name') or ''}".strip(),
+                "status": r.get("status"),
+            })
+
+    matches.sort(key=lambda m: m["score"], reverse=True)
+    return {"matches": matches, "count": len(matches)}
+
+
+# ── SEARCH (ITER177.B · for Cmd+K Global Search) ─────────────────────────────
+@router.get("/search")
+def search_leads(
+    q: str = Query(..., min_length=1),
+    limit: int = Query(10, le=50),
+    current_user: dict = Depends(require_permission(P_LEADS_READ)),
+):
+    """Lightweight search for global search palette."""
+    client = db()
+    tid = current_user['tenant_id']
+    q_lower = q.lower().strip()
+    # OR query across first_name, last_name, email
+    res = client.table('leads').select('id, first_name, last_name, email, status, created_at') \
+        .eq('tenant_id', tid) \
+        .or_(f'first_name.ilike.%{q_lower}%,last_name.ilike.%{q_lower}%,email.ilike.%{q_lower}%') \
+        .order('created_at', desc=True).limit(limit).execute()
+    return {"data": res.data or [], "query": q}
+
+
+
 # ── PUBLIC ENDPOINT (no auth) ────────────────────────────────────────────────
 @router.post("/public", status_code=201)
 def submit_public_lead(

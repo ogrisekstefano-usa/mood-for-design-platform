@@ -176,7 +176,7 @@
   "companion": {
     "hero": {
       "eyebrow": "Design Journey™ · Il tuo viaggio progettuale",
-      "cta": "Apri il prossimo capitolo"
+      "cta": "Apri il prossimo articolo"
     },
     "index": {
       "hero": {
@@ -186,7 +186,7 @@
       },
       "zero": {
         "title": "Il tuo Design Journey™ sta per iniziare",
-        "lede": "Lo studio sta preparando il primo capitolo del vostro percorso."
+        "lede": "Il tuo studio sta preparando i primi aggiornamenti."
       },
       "active": {
         "eyebrow": "In corso",
@@ -329,8 +329,8 @@
   },
   "dashboard": {
     "pulse": {
-      "eyebrow": "Studio Pulse™ · ritmo progettuale",
-      "loading_title": "Lettura del ritmo progettuale…",
+      "eyebrow": "Dashboard · stato dei progetti",
+      "loading_title": "Caricamento dashboard…",
       "greet": {
         "morning": "Buongiorno",
         "afternoon": "Buon pomeriggio",
@@ -392,11 +392,11 @@
     },
     "cockpit_timeline": {
       "il_battito_del_tuo_studio": "Il battito del tuo studio",
-      "carica_un_riferimento_o_crea_una_moodboard_per_dar": "Carica un riferimento o crea una moodboard per dare ritmo alla giornata."
+      "carica_un_riferimento_o_crea_una_moodboard_per_dar": "Carica un riferimento o crea una moodboard per iniziare."
     },
     "dashboard": {
-      "decisioni_che_la_giornata_sussurra": "Decisioni che la giornata sussurra",
-      "mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud": "MOOD sta iniziando a leggere il ritmo del tuo studio.",
+      "decisioni_che_la_giornata_sussurra": "Decisioni del giorno",
+      "mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud": "MOOD sta analizzando l'attività dello studio.",
       "i_primi_suggerimenti_appariranno_con_l_utilizzo_re": "I primi suggerimenti appariranno con l'utilizzo reale della piattaforma.",
       "progetti_che_chiedono_la_tua_presenza": "Progetti che chiedono la tua presenza",
       "le_relazioni_che_attendono_un_gesto": "Le relazioni che attendono un gesto",
@@ -437,7 +437,7 @@
       "eyebrow": "Certified Closure™",
       "title": "Il percorso entra nella memoria della casa",
       "sub": "Quando il Journey raggiunge la sua forma definitiva, lo studio deposita un dossier editoriale: titolo, statement, cover. Il percorso non finisce — viene cristallizzato come memoria progettuale viva.",
-      "cta": "Apri il rituale di chiusura"
+      "cta": "Chiudi la Journey"
     },
     "ceremony": {
       "eyebrow": "Rituale di chiusura · Certified Closure™",
@@ -490,7 +490,7 @@
     "web_presence": "Web Presence",
     "team": "Team",
     "insights": "Insights",
-    "studio_identity": "Studio Identity",
+    "studio_identity": "Blueprint Chameleon",
     "forms_journeys": "Forms & Journeys",
     "integrations": "Integrations",
     "billing": "Billing",
@@ -523,8 +523,8 @@
     },
     "empty": {
       "title": "Nessun viaggio progettuale ancora aperto",
-      "subtitle": "Apri il primo capitolo del tuo studio.",
-      "open_first_journey": "+ Apri il primo viaggio"
+      "subtitle": "Avvia il primo progetto.",
+      "open_first_journey": "+ Crea Journey"
     },
     "actions": {
       "upgrade_plan": "Aggiorna il piano",
@@ -549,7 +549,7 @@
       "aggiungi_cta": "+ Aggiungi CTA"
     },
     "studio": {
-      "mood_placeholder": "Atmosfera, materia, ritmo",
+      "mood_placeholder": "Stile, materia, progetto",
       "tag_input_placeholder": "aggiungi…",
       "status_live": "Live"
     },
@@ -615,7 +615,7 @@
       "continua_la_lettura": "Continua la lettura",
       "nessuna_collezione_registrata_il_primo_capitolo_ed": "Nessuna collezione registrata — il primo capitolo editoriale apre la lettura curatoriale del brand.",
       "modifica_produttore": "Modifica produttore",
-      "aggiungi_capitolo_editoriale": "Aggiungi capitolo editoriale",
+      "aggiungi_capitolo_editoriale": "Aggiungi collezione",
       "modifica_collezione": "Modifica collezione",
       "curated_by_mood": "Curato da MOOD"
     },
@@ -835,7 +835,7 @@
       "contesto_storia_sensibilita_della_relazione": "Contesto, storia, sensibilità della relazione…"
     },
     "advisor_network_admin": {
-      "network_degli_advisor": "Network degli Advisor",
+      "network_degli_advisor": "Rete Advisor",
       "crea_advisor": "Crea Advisor",
       "annulla": "Annulla"
     },
@@ -1596,7 +1596,7 @@
       "facoltativo_alcune_cose_si_capiscono_meglio_a_voce": "Facoltativo — alcune cose si capiscono meglio a voce.",
       "stiamo_aprendo_il_tuo_design_journey": "Stiamo aprendo il tuo Design Journey…",
       "quale_atmosfera_stai_cercando": "Quale atmosfera stai cercando?",
-      "inizia_a_raccontarci_lo_spazio_che_immagini_senza": "Inizia a raccontarci lo spazio che immagini — senza fretta.",
+      "inizia_a_raccontarci_lo_spazio_che_immagini_senza": "Descrivici lo spazio che hai in mente.",
       "continua_il_racconto": "Continua il racconto →",
       "come_vivi_gli_spazi": "Come vivi gli spazi?",
       "aiutaci_a_comprendere_il_tuo_modo_di_abitare_non_i": "Aiutaci a comprendere il tuo modo di abitare, non il tuo budget.",
@@ -1669,7 +1669,7 @@
   "storefront": {
     "storefront_studio": {
       "pubblica_pagina": "Pubblica pagina",
-      "caricamento_dell_orchestrazione": "Caricamento dell'orchestrazione…",
+      "caricamento_dell_orchestrazione": "Caricamento…",
       "nessuna_fascia_per_questa_pagina": "Nessuna fascia per questa pagina.",
       "chiudi": "Chiudi",
       "l_orchestrazione_cinematica_della_presenza_pubblic": "L'orchestrazione cinematica della presenza pubblica. Ogni fascia\n            è una superficie narrativa che adatta tono, ritmo e CTA al mercato che la guarda.\n            Tutto ciò che vedi qui è il sito pubblico — niente di nascosto, niente di hardcoded.",
@@ -1755,7 +1755,7 @@
     },
     "story_sections": {
       "sezioni_della_storia": "Sezioni della storia",
-      "nessun_blocco_ancora_inizia_la_narrazione": "Nessun blocco ancora. Inizia la narrazione.",
+      "nessun_blocco_ancora_inizia_la_narrazione": "Nessun elemento. Aggiungi il primo blocco.",
       "annulla": "Annulla",
       "apri_editor_hotspot": "Apri editor hotspot",
       "add_to_moodboard": "Add to moodboard",
@@ -2190,7 +2190,7 @@
         "recent_activity": "Movimenti recenti",
         "upcoming_milestones": "Prossimi capitoli",
         "daily_inspiration": "Ispirazione del giorno",
-        "activity_empty": "Nessun movimento. Lo studio respira in silenzio.",
+        "activity_empty": "Nessuna attività recente.",
         "milestones_empty": "In attesa del prossimo capitolo.",
         "inspiration_empty": "Nessuna citazione curata ancora."
       },

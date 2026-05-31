@@ -16,37 +16,37 @@ const PLACEHOLDERS = {
   render: {
     eyebrow:  'Capitolo · Render',
     title:    'Il progetto trova la sua immagine',
-    body:     'Renderizzazioni, viste cinematiche, presentazioni finali — il momento in cui la direzione progettuale diventa visibile al cliente. Sarà disponibile in un prossimo capitolo.',
+    body:     'Renderizzazioni, viste cinematiche, presentazioni finali — il momento in cui la direzione progettuale diventa visibile al cliente. In sviluppo. Disponibile a breve.',
     milestone: 'Final Presentation',
   },
   hotspots: {
     eyebrow:  'Capitolo · Hotspots',
     title:    'Punti di lettura visiva',
-    body:     'Hotspots curatoriali per guidare lo sguardo del cliente attraverso le immagini del progetto. Sarà disponibile in un prossimo capitolo.',
+    body:     'Hotspots curatoriali per guidare lo sguardo del cliente attraverso le immagini del progetto. In sviluppo. Disponibile a breve.',
     milestone: 'Curated Selections',
   },
   'site-evolution': {
     eyebrow:  'Capitolo · Site Evolution',
     title:    'L\u2019evoluzione reale del progetto',
-    body:     'Timeline fotografica del cantiere, prima e dopo, dettagli che maturano nel tempo. Il progetto raccontato per immagini in ordine cronologico. Sarà disponibile in un prossimo capitolo.',
+    body:     'Timeline fotografica del cantiere, prima e dopo, dettagli che maturano nel tempo. Il progetto raccontato per immagini in ordine cronologico. In sviluppo. Disponibile a breve.',
     milestone: 'Site Evolution',
   },
   documents: {
     eyebrow:  'Capitolo · Documents',
     title:    'Il Technical Package',
-    body:     'Tavole tecniche, schede materia, documenti firmati — il progetto pronto per il cantiere. Sarà disponibile in un prossimo capitolo.',
+    body:     'Tavole tecniche, schede materia, documenti firmati — il progetto pronto per il cantiere. In sviluppo. Disponibile a breve.',
     milestone: 'Technical Package',
   },
   'design-stories': {
     eyebrow:  'Capitolo · Design Stories',
     title:    'Progetti che diventano storie',
-    body:     'Case narrative editoriali, showcase, journey pubblicati. Il momento in cui un progetto completato si trasforma in contenuto culturale per lo studio. Sarà disponibile in un prossimo capitolo.',
+    body:     'Case narrative editoriali, showcase, journey pubblicati. Il momento in cui un progetto completato si trasforma in contenuto culturale per lo studio. In sviluppo. Disponibile a breve.',
     milestone: null,
   },
   'visual-archive': {
     eyebrow:  'Capitolo · Visual Archive',
     title:    'La memoria visuale dello studio',
-    body:     'Archivio cinematico delle immagini, materie e dettagli accumulati nel tempo — la grammatica visiva che lo studio costruisce capitolo dopo capitolo. Sarà disponibile in un prossimo capitolo.',
+    body:     'Archivio cinematico delle immagini, materie e dettagli accumulati nel tempo — la grammatica visiva che lo studio costruisce capitolo dopo capitolo. In sviluppo. Disponibile a breve.',
     milestone: null,
   },
   'product-gallery': {
