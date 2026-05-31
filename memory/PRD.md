@@ -9350,3 +9350,36 @@ addendum (previously short labels skipped it).
 
 ### Next gate
 **Attesa approvazione Founder sui 3 documenti** prima di toccare codice produzione.
+
+---
+
+## ITER176.B · GLOBAL COPY & TONE OF VOICE AUDIT™ (2026-05-31)
+
+### Deliverable consegnato
+- **`/app/memory/GLOBAL_COPY_AUDIT.md`** (774 righe, 51 KB) — audit completo del linguaggio della piattaforma.
+
+### Scope dell'analisi
+- 7 file di stringhe i18n (`it-IT`, `en-US`, `en-GB`, `fr-FR`, `de-DE`, `es-ES`, `ar`) — ~2.260 chiavi per lingua
+- 140+ componenti React con copy hardcoded (`pages/`, `components/`)
+- Template email backend
+- Empty states, errors, toast, modal, CTA
+
+### Contenuto canonico del documento
+1. Executive Summary + stima distribuzione violazioni (5% critical, 12% high, 20% medium)
+2. Positioning Compliance per sezione (Workspace, Client Portal, Sistema, Email)
+3. 10 pattern di violazione sistemici (V1 Capitolo · V2 Atmosfera · V3 Cinematic · V4 Curatoriale · V5 Maiestatico · V6 Ecosistema · V7 Metafore · V8 Orchestrazione · V9 Editoriale · V10 CTA emotivi) con heatmap pattern × area
+4. Severity ranking: 15 casi 🔴 Critical (con file + chiave + stringa attuale) + 20 casi 🟠 High + sweep Medium/Low
+5. Rewrite proposals (~50 esempi before/after) per Dashboard, Inspirations, Studio Activation, Errors, CTA, Client Portal, Email subjects
+6. Translation issues per ogni lingua — caso più grave: FR letterario (es. `"Cet espace est dédié aux Advisors de MOOD, gardiens d'un regard et d'un geste qui façonnent la matière du conseil"`)
+7. **Future Copy Rules** — manuale editoriale operativo per agenti/sviluppatori futuri (7 principi cardinali, vocabolario permesso/vietato, regole CTA, empty states, errori, email, pronomi tu/lei/voi, casing, ™ audit)
+8. Phase plan implementazione (~9 giorni full team)
+9. Positioning statement canonico: *"MOOD for DESIGN è una piattaforma che organizza e registra ogni fase del rapporto tra studio, cliente, materiali e progetto."*
+10. Glossary translation table IT → EN/FR/DE/ES per termini canonici
+
+### Vincoli rispettati
+- ✅ ZERO modifiche a frontend, backend, database, file di traduzione
+- ✅ Solo audit, analisi, proposte e guida editoriale
+- ✅ Approvazione Founder richiesta su 9 checkbox prima di avviare Phase C1
+
+### Next gate
+Attesa approvazione Founder. Prossimo passo (se approvato): **Phase C1 · IT critical rewrite** (~1.5g) sui 15 casi 🔴 Critical individuati.
