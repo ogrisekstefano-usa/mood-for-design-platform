@@ -1,6 +1,54 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 
+## 🆕 ITER184 · CRM FOUNDATION AUDIT™ · ✅ DELIVERED · 01 Jun 2026
+
+**🎯 Goal:** Bloccare definitivamente il modello operativo CRM (Lead → Discovery → Prospect → Customer → Design Journey) prima di sviluppare Notification Bus / Journey Assignments Phase 2 / Editorial Onboarding / Error Registry / Client Chameleon. **AUDIT + ARCHITECTURE + VALIDATION ONLY** — zero code/DB/API/UI changes.
+
+**Deliverable:**
+- ✅ `/app/memory/CRM_FOUNDATION_AUDIT.md` (641 righe · 15 sezioni)
+  - §1 Lifecycle attuale (tabelle + endpoint reali mappati)
+  - §2 Lifecycle canonico (diagramma immutabile)
+  - §3 8 Lead entry points (5 funzionanti, 3 mancanti)
+  - §4 Lead Wizard 6-step gap analysis (vs 1-step attuale)
+  - §5 Discovery foundation (migration 114 + 7 endpoint ✅)
+  - §6 Prospect qualification rules (R1-R4)
+  - §7 Customer lifecycle (endpoint mancante)
+  - §8 Design Journey creation rules (R1-R5 enforced)
+  - §9 CTA audit (13/15 corretti, 2 da verificare)
+  - §10 Dashboard alignment (KPI canon)
+  - §11 Gap analysis (5 DB, 5 API, 8 UX, 4 workflow, 4 data quality)
+  - §12 Roadmap ITER185 (4 phase · ~4-5g effettivi)
+  - §13 Conclusioni (70% completamento · 5 percorsi errati individuati)
+
+**5 lacune sistemiche individuate:**
+1. 🔴 Lead Wizard 6-step mancante (oggi 1-step minimal: nome/cognome/email/telefono)
+2. 🔴 `POST /api/accounts/{aid}/convert-to-customer` NON ESISTE
+3. 🟠 `accounts.lifecycle_stage` text libero senza CHECK/enum
+4. 🟡 Public Begin Journey auto-qualifica Discovery (canon-compliant per public, gap per non-public paths)
+5. 🟡 `ProspectsPage.handlePromote` opaque — audit-trace richiesto su hook `useRelations.promote()`
+
+**5 percorsi errati identificati:**
+- EP-1: `handlePromote(p, 'account')` destinazione opaca (🔴)
+- EP-2: Begin Journey public bypassa Discovery manuale (🟡)
+- EP-3: `accounts.lifecycle_stage` SET libero a livello DB (🟠)
+- EP-4: `leads.first_journey_id` ancora popolato post-canon (🟡)
+- EP-5: Workspace "Apri Journey" → `/workspace/projects` lista (🟢 minor)
+
+**Roadmap ITER185 (proposta):**
+- Phase 1 P0 (1.5g): Customer convert endpoint · Lead Wizard 6-step · Source picker enum · ProspectsPage audit-trace
+- Phase 2 P1 (2g): account_lifecycle_stage enum migration · v_crm_funnel view · /put-on-hold/resume/churn endpoint · CTA conferma cliente · KPI dashboard Lead/Prospect/Customer count
+- Phase 3 P2 (1.5g): deprecate first_journey_id · lead_source enum · filtri status Leads · tooltip "no journey from Lead"
+- Phase 4 P3 (1g): trigger DB-level · bulk import CSV · audit timeline visual
+
+**% completamento CRM Foundation: ~70%.**
+
+**Next gating (BLOCKED until Founder approval):**
+- 🔴 ITER185 Phase 1+2 — non avviare Notification Bus / Journey Assignments Ph2 / Editorial Onboarding / Error Registry / Client Chameleon prima del completamento
+
+---
+
+
 ## 🆕 ITER183 · APP-WIDE NAMING LOCK™ Phase 1 · ✅ DELIVERED · 01 Jun 2026
 
 **🎯 Goal:** Enforce `/app/memory/MOOD_LANGUAGE_CANON.md` v1.0 across the entire operational platform. Eliminate poetic/editorial banned terms (atmosfera, atmosphere, curatoriale, curatorial, relazione/relationship, viaggio, capitolo, segnale, Studio Pulse, Journey Pulse, Nuova Relazione) and replace with concrete CRM terminology (Lead, Prospect, Cliente, Design Journey, Activity Log, Blueprint Dashboard).
