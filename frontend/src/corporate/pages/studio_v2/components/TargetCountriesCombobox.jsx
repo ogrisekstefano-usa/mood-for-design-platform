@@ -5,18 +5,18 @@
  */
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 
-const STATUS_LABEL = {
-  it: { active: 'Già attivo', planned: 'In espansione' },
-  en: { active: 'Active',     planned: 'Planned'        },
-};
-
 const TargetCountriesPicker = ({ allCountries, selected, onChange,
                                   placeholder = 'Cerca un Paese…',
-                                  locale = 'it-IT', max = 3 }) => {
+                                  locale = 'it-IT', max = 3, t }) => {
   // selected: [{ iso2, priority, status }]
   const list = Array.isArray(selected) ? selected : [];
-  const lang = locale.toLowerCase().startsWith('en') ? 'en' : 'it';
-  const SL   = STATUS_LABEL[lang];
+  // Resolve status labels via CMS when available, with hardcoded fallback
+  // (only the literal of the seeded CMS source value — not a new string).
+  const tt = (k, fb) => (t ? t(k, fb) : fb);
+  const SL = {
+    active:  tt('step2.targets.status.active',  locale.startsWith('en') ? 'Active'  : 'Già attivo'),
+    planned: tt('step2.targets.status.planned', locale.startsWith('en') ? 'Planned' : 'In espansione'),
+  };
 
   const [q, setQ] = useState('');
   const [open, setOpen] = useState(false);
@@ -106,7 +106,7 @@ const TargetCountriesPicker = ({ allCountries, selected, onChange,
                 </div>
                 <button type="button" onClick={() => remove(t.iso2)}
                   data-testid={`target-remove-${t.iso2}`}
-                  aria-label={`Rimuovi ${c.label}`}
+                  aria-label={tt('step2.targets.remove_aria', `Rimuovi ${c.label}`).replace('{country}', c.label)}
                   style={{
                     background: 'transparent', border: 'none',
                     color: 'rgba(255,255,255,0.45)', cursor: 'pointer',
@@ -168,9 +168,10 @@ const TargetCountriesPicker = ({ allCountries, selected, onChange,
             marginTop: 8, fontSize: '0.74rem',
             color: 'rgba(255,255,255,0.45)',
           }}>
-            {lang === 'en'
-              ? `${list.length} of ${max} selected · Priority is assigned automatically.`
-              : `${list.length} di ${max} selezionati · La priorità è assegnata automaticamente.`}
+            {tt('step2.targets.counter',
+                 `${list.length} di ${max} selezionati · La priorità è assegnata automaticamente.`)
+              .replace('{n}', String(list.length))
+              .replace('{max}', String(max))}
           </p>
         </>
       )}
@@ -179,8 +180,8 @@ const TargetCountriesPicker = ({ allCountries, selected, onChange,
           fontSize: '0.78rem', color: 'rgba(255,255,255,0.55)',
           marginTop: 4,
         }}>
-          {lang === 'en' ? `Maximum ${max} target countries reached.`
-                         : `Massimo ${max} Paesi target raggiunto.`}
+          {tt('step2.targets.limit_reached', `Massimo ${max} Paesi target raggiunto.`)
+            .replace('{max}', String(max))}
         </p>
       )}
     </div>

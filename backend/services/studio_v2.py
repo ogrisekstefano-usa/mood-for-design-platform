@@ -157,6 +157,27 @@ async def manifest(locale: str = 'it-IT') -> dict:
             "email_taken_pending":  _c("studio_v2.ui.email.taken_pending",  "Una candidatura per questa email è già in revisione."),
             "email_invalid":        _c("studio_v2.ui.email.invalid",        "Inserisci un indirizzo email valido."),
             "field_required":       _c("studio_v2.ui.field.required",       "Campo obbligatorio."),
+            # ── P0 audit additions (2026-06-01): expose all newly seeded keys
+            "step2.market.eyebrow":           _c("studio_v2.ui.step2.market.eyebrow",           "A · Mercato operativo"),
+            "step2.market.label":             _c("studio_v2.ui.step2.market.label",             "Mercato MOOD"),
+            "step2.hq.eyebrow":               _c("studio_v2.ui.step2.hq.eyebrow",               "B · Sede"),
+            "step2.targets.eyebrow":          _c("studio_v2.ui.step2.targets.eyebrow",          "C · Paesi target · Opzionale"),
+            "step2.city.placeholder":         _c("studio_v2.ui.step2.city.placeholder",         "Inserisci la città…"),
+            "step2.city.placeholder_italy":   _c("studio_v2.ui.step2.city.placeholder_italy",   "Milano…"),
+            "step2.city.fallback_hint":       _c("studio_v2.ui.step2.city.fallback_hint",       "Inserisci manualmente il nome della città."),
+            "step2.targets.search.placeholder": _c("studio_v2.ui.step2.targets.search.placeholder", "Cerca un Paese…"),
+            "step2.targets.status.active":    _c("studio_v2.ui.step2.targets.status.active",    "Già attivo"),
+            "step2.targets.status.planned":   _c("studio_v2.ui.step2.targets.status.planned",   "In espansione"),
+            "step2.targets.counter":          _c("studio_v2.ui.step2.targets.counter",          "{n} di {max} selezionati · La priorità è assegnata automaticamente."),
+            "step2.targets.limit_reached":    _c("studio_v2.ui.step2.targets.limit_reached",    "Massimo {max} Paesi target raggiunto."),
+            "step2.targets.remove_aria":      _c("studio_v2.ui.step2.targets.remove_aria",      "Rimuovi {country}"),
+            "step3.email.checking":           _c("studio_v2.ui.step3.email.checking",           "Verifica in corso…"),
+            "step3.email.ok":                 _c("studio_v2.ui.step3.email.ok",                 "Email disponibile."),
+            "step4.help_other.placeholder":   _c("studio_v2.ui.step4.help_other.placeholder",   "Specifica…"),
+            "step4.error.prefix":             _c("studio_v2.ui.step4.error.prefix",             "Si è verificato un errore"),
+            "loading.brand":                  _c("studio_v2.ui.loading.brand",                  "MOOD"),
+            "loading.message":                _c("studio_v2.ui.loading.message",                "Un attimo…"),
+            "manifest.error":                 _c("studio_v2.ui.manifest.error",                 "Servizio temporaneamente non disponibile."),
         }
     }
 

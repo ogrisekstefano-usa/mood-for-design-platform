@@ -1,9 +1,7 @@
 /**
  * StudioFunnelV2 — single-mount routing wrapper for the 5-step funnel.
- * Mounts at /studio and switches between Step1..Step5 using internal
- * state. URL-driven sub-routes are intentionally absent: the funnel
- * is a single editorial flow with browser back/forward driven by the
- * UI buttons.
+ * Wraps the funnel in <LoadingProvider> so every async operation
+ * (submit, fetch, geocode) can show the branded MOOD overlay.
  */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -15,35 +13,45 @@ import Step4Help from './Step4Help';
 import Step5Received from './Step5Received';
 import { useStudioV2Manifest } from './hooks/useStudioV2Manifest';
 import { useV2Draft } from './hooks/useV2Draft';
+import { LoadingProvider, useLoading } from './components/LoadingContext';
 
 const TOTAL_STEPS = 5;
 
-const StudioFunnelV2 = () => {
-  const [step, setStep] = useState(0);   // 0..4
+const FunnelInner = ({ locale }) => {
+  const [step, setStep] = useState(0);
   const [submitResult, setSubmitResult] = useState(null);
   const navigate = useNavigate();
-
-  const locale = (typeof navigator !== 'undefined' && navigator.language?.startsWith('en'))
-    ? 'en-US' : 'it-IT';
+  const { withLoading } = useLoading();
 
   const { manifest, ready: manifestReady, t } = useStudioV2Manifest(locale);
   const { draftToken, form, update, reset, ready: draftReady } = useV2Draft();
 
-  const next = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1));
-  const back = () => setStep((s) => Math.max(s - 1, 0));
+  // Smooth step transition: brief branded overlay during state batching
+  // so the visitor never sees a blank or frozen interim state.
+  const advanceStep = async (delta) => {
+    await withLoading(t('loading.message', 'Un attimo…'), async () => {
+      await new Promise((r) => setTimeout(r, 280));
+      setStep((s) => Math.min(Math.max(s + delta, 0), TOTAL_STEPS - 1));
+    });
+  };
+  const next = () => advanceStep(+1);
+  const back = () => advanceStep(-1);
 
-  // Reset funnel if landing on /studio after a successful submit
   useEffect(() => {
-    if (submitResult?.ok && step !== 4) {
-      setStep(4);
-    }
+    if (submitResult?.ok && step !== 4) setStep(4);
   }, [submitResult, step]);
 
   if (!manifestReady || !draftReady) {
+    // Inline branded loading state until manifest+draft are ready.
+    // Once mounted we never see this again; advanceStep covers the rest.
     return (
       <StudioV2Layout stepIndex={step} totalSteps={TOTAL_STEPS}>
-        <div style={{ padding: 80, opacity: 0.55, textAlign: 'center' }}
-             data-testid="loading">…</div>
+        <div data-testid="initial-loading" style={{
+          minHeight: 360, display: 'flex',
+          alignItems: 'center', justifyContent: 'center',
+          color: 'rgba(255,255,255,0.4)', letterSpacing: '0.18em',
+          textTransform: 'uppercase', fontSize: '0.8rem',
+        }}>{locale.startsWith('en') ? 'One moment…' : 'Un attimo…'}</div>
       </StudioV2Layout>
     );
   }
@@ -52,7 +60,7 @@ const StudioFunnelV2 = () => {
     return (
       <StudioV2Layout stepIndex={step} totalSteps={TOTAL_STEPS}>
         <p style={{ color: '#FFB4A2' }} data-testid="manifest-error">
-          Servizio temporaneamente non disponibile.
+          {t('manifest.error', 'Servizio temporaneamente non disponibile.')}
         </p>
       </StudioV2Layout>
     );
@@ -60,7 +68,7 @@ const StudioFunnelV2 = () => {
 
   const ctx = { manifest, t, form, update, draftToken, locale,
                 next, back, setStep, submitResult, setSubmitResult,
-                reset, navigate };
+                reset, navigate, withLoading };
 
   return (
     <StudioV2Layout stepIndex={step} totalSteps={TOTAL_STEPS}>
@@ -70,6 +78,16 @@ const StudioFunnelV2 = () => {
       {step === 3 && <Step4Help      {...ctx} />}
       {step === 4 && <Step5Received  {...ctx} />}
     </StudioV2Layout>
+  );
+};
+
+const StudioFunnelV2 = () => {
+  const locale = (typeof navigator !== 'undefined' && navigator.language?.startsWith('en'))
+    ? 'en-US' : 'it-IT';
+  return (
+    <LoadingProvider defaultMessage={locale.startsWith('en') ? 'One moment…' : 'Un attimo…'}>
+      <FunnelInner locale={locale} />
+    </LoadingProvider>
   );
 };
 

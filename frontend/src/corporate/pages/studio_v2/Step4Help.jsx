@@ -9,7 +9,7 @@ import axios from 'axios';
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
 
 const Step4Help = ({ manifest, t, form, update, next, back,
-                     draftToken, locale, setSubmitResult }) => {
+                     draftToken, locale, setSubmitResult, withLoading }) => {
   const topics = manifest?.help_topics || [];
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -26,8 +26,9 @@ const Step4Help = ({ manifest, t, form, update, next, back,
   const onSubmit = async () => {
     setSubmitting(true);
     setError(null);
-    try {
-      const r = await axios.post(`${BACKEND}/api/studio/v2/submit`, {
+    const doSubmit = async () => {
+      try {
+        const r = await axios.post(`${BACKEND}/api/studio/v2/submit`, {
         draft_token:        draftToken,
         archetype_code:     form.archetype_code,
         // New V2 geo (Step 2 refactor)
@@ -60,6 +61,12 @@ const Step4Help = ({ manifest, t, form, update, next, back,
       setError(e.response?.data?.reason || e.message);
     } finally {
       setSubmitting(false);
+    }
+    };
+    if (withLoading) {
+      await withLoading(t('loading.message', 'Un attimo…'), doSubmit);
+    } else {
+      await doSubmit();
     }
   };
 
@@ -107,7 +114,7 @@ const Step4Help = ({ manifest, t, form, update, next, back,
         <div style={{ marginBottom: 24 }}>
           <input type="text" value={form.help_other_text || ''}
             onChange={(e) => update({ help_other_text: e.target.value })}
-            placeholder="Specifica…"
+            placeholder={t('step4.help_other.placeholder', 'Specifica…')}
             data-testid="help-other-input"
             style={{
               width: '100%', background: 'rgba(255,255,255,0.04)',
@@ -121,7 +128,7 @@ const Step4Help = ({ manifest, t, form, update, next, back,
       {error && (
         <p data-testid="step4-error" style={{
           color: '#FFB4A2', fontSize: '0.88rem', marginBottom: 16,
-        }}>Errore: {error}</p>
+        }}>{t('step4.error.prefix', 'Si è verificato un errore')}: {error}</p>
       )}
 
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>

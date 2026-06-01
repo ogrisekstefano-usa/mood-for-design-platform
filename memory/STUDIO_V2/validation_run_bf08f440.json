@@ -1,0 +1,127 @@
+{
+  "run_id": "bf08f440",
+  "email": "studio.rossi.bf08f440@moodtest.example.com",
+  "results": {
+    "phase1": {
+      "manifest_ok": true,
+      "draft_ok": true,
+      "email_unique_ok": true,
+      "submit_ok": true,
+      "reference": "MOOD-D9DC-CA80",
+      "request_id": "d9dcca80-b4b6-4bed-9db3-13f141c9fc46",
+      "duplicate_rejected": true
+    },
+    "phase2": {
+      "templates_seen": [
+        "studio_request_received",
+        "admin_new_studio_request"
+      ],
+      "visitor_confirmation": true,
+      "admin_notification": true,
+      "advisor_template_available": true,
+      "no_fallback_subjects": true,
+      "locale_correct": true,
+      "cms_subjects_complete": true
+    },
+    "phase3": {
+      "endpoint_ok": true,
+      "request_visible": true,
+      "has_operating_market": true,
+      "has_headquarter": true,
+      "has_region": true,
+      "target_count": 3,
+      "all_priorities_set": true,
+      "all_statuses_valid": true,
+      "advisor_pool": 3
+    },
+    "phase4": {
+      "transitions": [
+        [
+          "reviewing",
+          true
+        ],
+        [
+          "contacted",
+          true
+        ],
+        [
+          "qualified",
+          true
+        ],
+        [
+          "activated",
+          true
+        ]
+      ],
+      "all_transitions_ok": true,
+      "final_status": "activated",
+      "reviewed_at": "2026-06-01T17:04:55.433088+00:00",
+      "templates_to_visitor": [
+        "studio_request_approved",
+        "studio_request_qualified",
+        "studio_request_review",
+        "studio_request_received"
+      ],
+      "status_review_email": true,
+      "qualified_email": true,
+      "activated_email": true
+    },
+    "phase5": {
+      "hq_fields": {
+        "operating_market_id": true,
+        "country_iso": true,
+        "region": true,
+        "city": true,
+        "lat": true,
+        "lng": true,
+        "mapbox_place_id": true
+      },
+      "target_match": true,
+      "target_count": 3,
+      "no_duplicates": true,
+      "single_request": true
+    },
+    "phase6": {
+      "manifest_no_legacy": true,
+      "markets_no_tech_codes": true,
+      "hq_to_market_mapping_only": false,
+      "countries_no_legacy": true,
+      "ui_copy_no_legacy": true
+    }
+  },
+  "flat_checks": {
+    "phase1.manifest_ok": true,
+    "phase1.draft_ok": true,
+    "phase1.email_unique_ok": true,
+    "phase1.submit_ok": true,
+    "phase1.duplicate_rejected": true,
+    "phase2.visitor_confirmation": true,
+    "phase2.admin_notification": true,
+    "phase2.advisor_template_available": true,
+    "phase2.no_fallback_subjects": true,
+    "phase2.locale_correct": true,
+    "phase2.cms_subjects_complete": true,
+    "phase3.endpoint_ok": true,
+    "phase3.request_visible": true,
+    "phase3.has_operating_market": true,
+    "phase3.has_headquarter": true,
+    "phase3.has_region": true,
+    "phase3.all_priorities_set": true,
+    "phase3.all_statuses_valid": true,
+    "phase4.all_transitions_ok": true,
+    "phase4.status_review_email": true,
+    "phase4.qualified_email": true,
+    "phase4.activated_email": true,
+    "phase5.target_match": true,
+    "phase5.no_duplicates": true,
+    "phase5.single_request": true,
+    "phase6.manifest_no_legacy": true,
+    "phase6.markets_no_tech_codes": true,
+    "phase6.hq_to_market_mapping_only": false,
+    "phase6.countries_no_legacy": true,
+    "phase6.ui_copy_no_legacy": true
+  },
+  "passed": 29,
+  "total": 30,
+  "timestamp": "2026-06-01T17:05:12.154762"
+}

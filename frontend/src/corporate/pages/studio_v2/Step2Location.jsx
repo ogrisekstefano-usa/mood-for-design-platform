@@ -1,16 +1,18 @@
 /**
- * Step 2 — Dove operate? (refactor 2026-06-01)
- *  A · MOOD Operating Market   (single, required)        ← /api/geo/operating-markets
- *  B · Headquarter Country + City (Mapbox)               ← /api/geo/countries + /api/studio/v2/cities
- *  C · Target Countries (multi-select, optional)         ← /api/geo/countries
+ * Step 2 — Dove operate? (P0 refactor 2026-06-01)
+ *  A · MOOD Operating Market   → MarketCardGrid visual picker
+ *  B · Headquarter             → Country dropdown + city autocomplete (Mapbox + fallback)
+ *  C · Target Countries        → up to 3 with priority + status
  *
- * NO hardcoded labels, no technical codes shown to the visitor.
+ * Tutti gli eyebrow, label, placeholder, helper text e messaggi
+ * provengono dal manifest CMS (studio_v2.ui.*). Zero hardcoded.
  */
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useCountries } from './hooks/useCountries';
 import { useOperatingMarkets } from './hooks/useOperatingMarkets';
 import TargetCountriesPicker from './components/TargetCountriesCombobox';
+import MarketCardGrid from './components/MarketCardGrid';
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
 
@@ -43,26 +45,58 @@ const dividerStyle = {
   margin: '36px 0', height: 1, background: 'rgba(255,255,255,0.06)', border: 'none',
 };
 
+// HQ Country ISO → suggested MOOD market code. Stays in code because it
+// is *technical metadata*, not user-visible. The codes are never shown.
+const HQ_TO_MARKET = {
+  IT: 'italy', SM: 'italy', VA: 'italy',
+  DE: 'dach', AT: 'dach', CH: 'dach', LI: 'dach',
+  FR: 'france_fr_europe', BE: 'france_fr_europe', LU: 'france_fr_europe',
+  MC: 'france_fr_europe', AD: 'france_fr_europe',
+  GB: 'uk_ireland', IE: 'uk_ireland',
+  ES: 'spain_iberian', PT: 'spain_iberian',
+  SE: 'scandinavia', NO: 'scandinavia', DK: 'scandinavia',
+  FI: 'scandinavia', IS: 'scandinavia',
+  US: 'usa_national',
+  AE: 'gcc_luxury', SA: 'gcc_luxury', QA: 'gcc_luxury', KW: 'gcc_luxury',
+  BH: 'gcc_luxury', OM: 'gcc_luxury',
+  GT: 'central_america', PA: 'central_america', CR: 'central_america',
+  HN: 'central_america', NI: 'central_america', SV: 'central_america',
+  BZ: 'central_america', DO: 'central_america', CU: 'central_america',
+  AR: 'spanish_latam', CL: 'spanish_latam', CO: 'spanish_latam',
+  PE: 'spanish_latam', UY: 'spanish_latam', BO: 'spanish_latam',
+  EC: 'spanish_latam', PY: 'spanish_latam', VE: 'spanish_latam',
+  BR: 'brazil',
+  MX: 'spanish_mexico',
+};
+
 const Step2Location = ({ t, form, update, next, back, locale }) => {
   const { items: markets, ready: marketsReady } = useOperatingMarkets(locale || 'it-IT');
   const { items: countries, ready: countriesReady } = useCountries(locale || 'it-IT');
   const [citySuggestions, setCitySuggestions] = useState([]);
   const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [cityLoading, setCityLoading] = useState(false);
+  const [cityError, setCityError] = useState(false);
 
-  // Mapbox debounced city search
+  // Mapbox debounced city search — graceful fallback to free-text when 403
   useEffect(() => {
     const cc = form.headquarter_country_iso || form.country || '';
     const q  = (form.headquarter_city || form.city || '').trim();
-    if (!cc || q.length < 2) { setCitySuggestions([]); return; }
+    if (!cc || q.length < 2) { setCitySuggestions([]); setCityError(false); return; }
     setCityLoading(true);
     const tid = setTimeout(async () => {
       try {
         const r = await axios.get(`${BACKEND}/api/studio/v2/cities`,
           { params: { country: cc, q, limit: 6 } });
-        setCitySuggestions(r.data?.items || []);
-      } catch { setCitySuggestions([]); }
-      finally { setCityLoading(false); }
+        const items = r.data?.items || [];
+        setCitySuggestions(items);
+        // If Mapbox returned no items, mark "no suggestions" — fallback
+        // remains free text; we DO NOT show an error to the user, just
+        // hide the dropdown.
+        setCityError(items.length === 0);
+      } catch {
+        setCitySuggestions([]);
+        setCityError(true);
+      } finally { setCityLoading(false); }
     }, 380);
     return () => clearTimeout(tid);
   }, [form.headquarter_country_iso, form.headquarter_city, form.country, form.city]);
@@ -81,43 +115,13 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
     }
   }, [countries]); // eslint-disable-line
 
-  // Auto-suggest operating market when HQ country changes.
-  // The suggestion mirrors the country: if HQ=IT → italy, HQ=US → usa_national,
-  // HQ=DE/AT/CH → dach, HQ=FR/BE/LU → france_fr_europe, etc. The user can
-  // still override by picking another market manually.
-  const HQ_TO_MARKET = {
-    IT: 'italy', SM: 'italy', VA: 'italy',
-    DE: 'dach', AT: 'dach', CH: 'dach', LI: 'dach',
-    FR: 'france_fr_europe', BE: 'france_fr_europe', LU: 'france_fr_europe',
-    MC: 'france_fr_europe', AD: 'france_fr_europe',
-    GB: 'uk_ireland', IE: 'uk_ireland',
-    ES: 'spain_iberian', PT: 'spain_iberian',
-    SE: 'scandinavia', NO: 'scandinavia', DK: 'scandinavia',
-    FI: 'scandinavia', IS: 'scandinavia',
-    US: 'usa_national',
-    AE: 'gcc_luxury', SA: 'gcc_luxury', QA: 'gcc_luxury', KW: 'gcc_luxury',
-    BH: 'gcc_luxury', OM: 'gcc_luxury',
-    GT: 'central_america', PA: 'central_america', CR: 'central_america',
-    HN: 'central_america', NI: 'central_america', SV: 'central_america',
-    BZ: 'central_america', DO: 'central_america', CU: 'central_america',
-    AR: 'spanish_latam', CL: 'spanish_latam', CO: 'spanish_latam',
-    PE: 'spanish_latam', UY: 'spanish_latam', BO: 'spanish_latam',
-    EC: 'spanish_latam', PY: 'spanish_latam', VE: 'spanish_latam',
-    BR: 'brazil',
-    MX: 'spanish_mexico',
-  };
   const hqAutoApplied = useRef(false);
   useEffect(() => {
     if (!form.headquarter_country_iso) return;
     const suggested = HQ_TO_MARKET[form.headquarter_country_iso];
-    if (suggested && markets.find((m) => m.code === suggested)) {
-      // Only auto-apply on the very first time we see the HQ country,
-      // unless the user has manually picked something. We never overwrite
-      // a user-chosen market on subsequent renders.
-      if (!hqAutoApplied.current) {
-        update({ primary_operating_market_code: suggested });
-        hqAutoApplied.current = true;
-      }
+    if (suggested && markets.find((m) => m.code === suggested) && !hqAutoApplied.current) {
+      update({ primary_operating_market_code: suggested });
+      hqAutoApplied.current = true;
     }
   }, [form.headquarter_country_iso, markets]); // eslint-disable-line
 
@@ -142,6 +146,10 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
     setShowCityDropdown(false);
   };
 
+  const cityPlaceholder = hqCountry?.iso2 === 'IT'
+    ? t('step2.city.placeholder_italy', 'Milano…')
+    : t('step2.city.placeholder', 'Inserisci la città…');
+
   return (
     <div data-testid="step2-location">
       <h1 style={{
@@ -150,30 +158,23 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
         color: 'var(--mood-text-1, #F4F4F5)',
       }} data-testid="step2-title">{t('step2_title')}</h1>
 
-      {/* ─── A · MOOD Operating Market ─────────────────────────────── */}
+      {/* ─── A · MOOD Operating Market — VISUAL CARD GRID ──────────── */}
       <section data-testid="section-operating-market">
-        <p style={sectionEyebrowStyle}>A · Mercato operativo</p>
+        <p style={sectionEyebrowStyle}>{t('step2.market.eyebrow', 'A · Mercato operativo')}</p>
         <h2 style={sectionTitleStyle}>{t('step2_market_title')}</h2>
-        <label style={labelStyle}>Mercato MOOD</label>
-        <select
-          data-testid="operating-market-select"
-          value={form.primary_operating_market_code || ''}
-          onChange={(e) => update({ primary_operating_market_code: e.target.value })}
-          style={inputStyle}>
-          {markets.map((m) => (
-            <option key={m.code} value={m.code} style={{ background: '#0A0A0B' }}>
-              {m.label}
-            </option>
-          ))}
-        </select>
-        <p style={helperStyle}>{t('step2_market_helper')}</p>
+        <p style={{ ...helperStyle, marginTop: 0, marginBottom: 16 }}>{t('step2_market_helper')}</p>
+
+        <MarketCardGrid
+          markets={markets}
+          value={form.primary_operating_market_code}
+          onChange={(code) => update({ primary_operating_market_code: code })} />
       </section>
 
       <hr style={dividerStyle} />
 
       {/* ─── B · Headquarter ────────────────────────────────────────── */}
       <section data-testid="section-headquarter">
-        <p style={sectionEyebrowStyle}>B · Sede</p>
+        <p style={sectionEyebrowStyle}>{t('step2.hq.eyebrow', 'B · Sede')}</p>
         <h2 style={sectionTitleStyle}>{t('step2_hq_title')}</h2>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 18 }}>
@@ -182,9 +183,12 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
             <select
               data-testid="hq-country-select"
               value={form.headquarter_country_iso || ''}
-              onChange={(e) => update({ headquarter_country_iso: e.target.value,
-                                        headquarter_city: '', headquarter_lat: null,
-                                        headquarter_lng: null, mapbox_place_id: null })}
+              onChange={(e) => { hqAutoApplied.current = false;
+                                 update({ headquarter_country_iso: e.target.value,
+                                          headquarter_city: '', headquarter_lat: null,
+                                          headquarter_lng: null,
+                                          headquarter_region: null,
+                                          mapbox_place_id: null }); }}
               style={inputStyle}>
               {countries.map((c) => (
                 <option key={c.iso2} value={c.iso2} style={{ background: '#0A0A0B' }}>
@@ -199,14 +203,16 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
               data-testid="hq-city-input"
               type="text"
               value={form.headquarter_city || ''}
-              onChange={(e) => { update({ headquarter_city: e.target.value });
+              onChange={(e) => { update({ headquarter_city: e.target.value,
+                                          headquarter_lat: null, headquarter_lng: null,
+                                          mapbox_place_id: null });
                                   setShowCityDropdown(true); }}
               onFocus={() => setShowCityDropdown(true)}
-              placeholder={hqCountry?.iso2 === 'IT' ? 'Milano…' : 'Inserisci la città…'}
+              placeholder={cityPlaceholder}
               autoComplete="off"
               style={inputStyle} />
             {cityLoading && (
-              <span data-testid="city-loading" style={{
+              <span data-testid="city-loading" aria-hidden="true" style={{
                 position: 'absolute', right: 12, top: 44,
                 fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)',
               }}>…</span>
@@ -240,6 +246,13 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
                 ))}
               </ul>
             )}
+            {/* Fallback hint when Mapbox not configured / scope missing */}
+            {cityError && (form.headquarter_city || '').length >= 2 && (
+              <p data-testid="city-fallback-hint" style={{
+                fontSize: '0.74rem', color: 'rgba(255,255,255,0.4)',
+                marginTop: 6, marginBottom: 0,
+              }}>{t('step2.city.fallback_hint', 'Inserisci manualmente il nome della città.')}</p>
+            )}
           </div>
         </div>
       </section>
@@ -248,15 +261,16 @@ const Step2Location = ({ t, form, update, next, back, locale }) => {
 
       {/* ─── C · Target Countries (optional) ────────────────────────── */}
       <section data-testid="section-target-countries">
-        <p style={sectionEyebrowStyle}>C · Paesi target  ·  Opzionale</p>
+        <p style={sectionEyebrowStyle}>{t('step2.targets.eyebrow', 'C · Paesi target  ·  Opzionale')}</p>
         <h2 style={sectionTitleStyle}>{t('step2_targets_title')}</h2>
         <p style={{ ...helperStyle, marginTop: 0, marginBottom: 16 }}>{t('step2_targets_helper')}</p>
 
         <TargetCountriesPicker
           allCountries={countries.filter((c) => c.iso2 !== form.headquarter_country_iso)}
           selected={form.target_countries || []}
-          onChange={(next) => update({ target_countries: next })}
-          placeholder={t('step2_targets_placeholder')}
+          onChange={(nx) => update({ target_countries: nx })}
+          placeholder={t('step2.targets.search.placeholder', 'Cerca un Paese…')}
+          t={t}
           locale={locale}
           max={3} />
       </section>
