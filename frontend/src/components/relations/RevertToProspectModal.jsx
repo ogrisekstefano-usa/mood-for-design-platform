@@ -14,18 +14,7 @@ import { toast } from 'sonner';
 import { X, RotateCcw } from 'lucide-react';
 
 const API = process.env.REACT_APP_BACKEND_URL;
-
-const auth = () => {
-  try {
-    const raw = localStorage.getItem('mfd_session');
-    if (raw) {
-      const s = JSON.parse(raw);
-      if (s?.access_token) return { Authorization: `Bearer ${s.access_token}` };
-    }
-  } catch (_) {}
-  const legacy = localStorage.getItem('token');
-  return legacy ? { Authorization: `Bearer ${legacy}` } : {};
-};
+import { getAuthHeader as auth } from '../../lib/authHeader';
 
 export default function RevertToProspectModal({ open, account, onClose, onReverted }) {
   const [reason, setReason] = useState('');

@@ -1,6 +1,91 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 
+## 🚢 ITER185 · Phase 1 · CRM FOUNDATION SHIPPED · ✅ DELIVERED · 01 Jun 2026
+
+**🎯 Goal:** Implementare CRM Foundation completo: Fast Lead Capture · Discovery Progress Engine · Prospect Qualification · Customer Conversion · Journey Enforcement. **Founder DoD 95% raggiunto · SHIPPABLE.**
+
+**Metriche finali:**
+- ✅ Backend pytest: **22/22 PASS · 100%**
+- ✅ Frontend testing_agent_v3 iter186: **12/13 PASS · 95%**
+- ✅ Lint zero issues (backend + frontend)
+- ✅ Build production clean
+
+**Endpoint nuovi (5):**
+- `POST /api/leads/fast-capture` — 4-field <30s intake (name + email OR phone + source + source_detail conditional)
+- `GET /api/discovery/{did}/progress` — deterministico 0/25/50/75/100 · 4 sezioni (contact_info · project_type · budget · timeline)
+- `GET /api/leads/{lid}/discovery/progress` — convenience
+- `POST /api/accounts/{aid}/convert-to-customer` — manual conversion + proposal validation + admin_override
+- `POST /api/accounts/{aid}/revert-to-prospect` — rollback con reason ≥10 char mandatory
+
+**Endpoint modificati (3):**
+- `POST /api/discovery/{did}/qualify` — added 75% progress gate + force=true admin override + funnel_events audit
+- `POST /api/public/journeys/initiate` — forward-only fix `lifecycle_stage='prospect'`
+- `POST /api/relations/leads/{lid}/promote` — **DEPRECATED 410 Gone** con migration_endpoints map
+
+**Frontend nuovi componenti:**
+- `DiscoveryProgressWidget.jsx` — visual bar + named checklist (Founder UX: "□ Informazioni di contatto · □ Tipo di progetto · □ Budget · □ Tempistiche")
+- `ConvertToCustomerModal.jsx` — proposal_id + signed_at + admin_override
+- `RevertToProspectModal.jsx` — reason ≥10 char gate
+- `useDiscoveryProgress.js` hook (refetch on autosave)
+- `lib/authHeader.js` — shared auth util (extracted to prevent localStorage-key drift)
+
+**Frontend refactor:**
+- `NewRelationshipModal.NewLeadForm` → Fast Capture 4-field con 9-source chips picker + source_detail conditional
+- `DiscoveryInterviewPanel.jsx` — embedded DiscoveryProgressWidget · live refetch
+- `AccountsPage.AccountCard` — Convert/Revert CTAs conditional su lifecycle_stage
+- `useRelations.promote()` throws `PROMOTE_DEPRECATED` error (migration helper)
+- `useNewRelationship.handleCreated()` → navigate `/relations/leads?focus={leadId}`
+
+**Database (migration 115):**
+- `accounts.signed_proposal_id` nullable column + index
+- `tenant_settings.crm_foundation_v2=true` feature flag (idempotent)
+
+**Founder corrections applied:**
+1. ✅ Fast Capture: phone OR email (NOT both required)
+2. ✅ Discovery Progress: named checklist over % text
+3. ✅ Customer rollback consentito con audit
+4. ✅ Begin Journey forward-only fix
+5. ✅ DoD 95% = ship
+6. ✅ Tenant Setting feature flag
+7. ✅ Test schedule distributed
+8. ✅ No effort squeeze (Revert + Complete Capture + i18n tutti inclusi)
+
+**Lifecycle canon LOCKED enforced:**
+```
+Lead (status='new')
+    ↓ auto-create Discovery(pending)
+Discovery (pending → in_progress, 75% gate)
+    ↓ qualify() OR admin force
+Prospect (account.lifecycle_stage='prospect')
+    ↓ optional · convert-to-customer
+Customer (account.lifecycle_stage='customer')
+    ↓ rollback consentito · revert-to-prospect
+back to Prospect
+
+Design Journey aperto da Prospect OR Customer (parallel)
+via POST /api/accounts/{aid}/journeys
+```
+
+**Deliverable doc:** `/app/memory/ITER185_PHASE1_IMPLEMENTATION_REPORT.md` (336 righe)
+
+**Carry-over (non-blocking · ITER185 Phase 2+):**
+- 🟠 ITER185 Phase 2: enum migrations (`accounts.lifecycle_stage`, `leads.source`, `leads.market_sector`), `v_crm_funnel` view, put-on-hold/resume/churn endpoints, KPI dashboard
+- 🟡 ITER185 Phase 3: LeadDetailPage standalone + CompleteCapturePanel 6 progressive sections
+- 🟢 ITER185 Phase 4: `crm_lifecycle_lint.py` CI baseline, trigger automatico signed_proposal → customer
+
+**Status:** 🚢 **SHIPPED · CRM Foundation è ora inattaccabile**
+
+**Next gate (BLOCKED until ITER185 Phase 2 shipped):**
+- Notification Bus
+- Journey Assignments Phase 2
+- Editorial Onboarding
+- Error Registry
+- Client Chameleon
+
+---
+
+
 ## 🔓 ITER185 · Phase 1 · IMPLEMENTATION PLAN™ · ✅ DELIVERED · 01 Jun 2026 (AWAITING FOUNDER APPROVAL)
 
 **🎯 Goal:** Produrre l'ultimo documento esecutivo prima di scrivere codice. Conflict analysis + execution plan + test plan + effort estimate + risk register. **Solo piano**, zero codice/migration/API/FE.
