@@ -1,6 +1,81 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 
+## 🔓 ITER185 · Phase 1 · IMPLEMENTATION PLAN™ · ✅ DELIVERED · 01 Jun 2026 (AWAITING FOUNDER APPROVAL)
+
+**🎯 Goal:** Produrre l'ultimo documento esecutivo prima di scrivere codice. Conflict analysis + execution plan + test plan + effort estimate + risk register. **Solo piano**, zero codice/migration/API/FE.
+
+**Deliverable:** `/app/memory/ITER185_PHASE1_IMPLEMENTATION_PLAN.md` (808 righe · 13 sezioni)
+
+**Conflict Analysis (DB · API · FE):**
+- 🔴 **INCOMP-1 (P0)**: `/api/relations/leads/{lid}/promote` endpoint legacy mutates `leads.progression_state` direct e permette `lead → account` SKIP-step. **Da deprecare** (410 Gone).
+- 🟠 **INCOMP-2 (P1)**: `journey_initiate.py` setta `accounts.lifecycle_stage='new_inquiry'` invece di `'prospect'` — micro-fix.
+- 🟠 **INCOMP-3 (P1)**: Legacy `accounts.lifecycle_stage` values (`new_inquiry/lead/discovery/active_project/existing_client/repeat_client/partner_ad/archived`) outside LOCKED set (`prospect/in_proposal/customer/churned/on_hold`). Strategy: "interpret-on-read" mapping in Phase 1, enum migration Phase 2.
+- ✅ DB Trigger `sync_leads_progression_from_account` (migration 107): preserved. Single-source-of-truth = `accounts.lifecycle_stage` → `leads.progression_state` mirror automatico.
+
+**Endpoint Plan:**
+- **CREATE** (5): `/api/leads/fast-capture` · `/api/accounts/{aid}/convert-to-customer` · `/api/accounts/{aid}/revert-to-prospect` · `/api/discovery/{did}/progress` · `/api/dashboard/kpi-funnel` (Phase 2)
+- **MODIFY** (3): `/api/leads` (add source enum validation) · `/api/discovery/{did}/qualify` (add progress 75% gate) · `/api/relations/leads/{lid}/promote` (410 Gone)
+- **DEPRECATE** (1): legacy `/api/relations/leads/{lid}/promote`
+
+**Fast Lead Capture™ (Goal <30s):**
+- 4 campi obbligatori: nome · phone OR email · source (enum mandatory)
+- + condizionale: `source_detail` se `source='other'`
+- Submit → POST `/api/leads/fast-capture` → Lead + Discovery(pending) in transazione
+
+**Complete Lead Capture™:**
+- 🟢 **Scelta architetturale: Progressive Disclosure**, non Wizard multi-step
+- Motivazione: rapidità intake (founder priority), dati opzionali arrivano nel tempo, mobile-friendly, no rituale UX
+- 6 sezioni collapsible: Informazioni base · Contatti · Interesse/progetto · Budget/tempistiche · Note · Owner&team
+
+**Discovery Progress Engine™ (deterministic 0/25/50/75/100):**
+- A · Identificazione (25%): name + source + email/phone
+- B · Contatto qualificato (25%): company OR role OR city
+- C · Interesse identificato (25%): market_sector OR interest_level
+- D · Brief raccolto (25%): budget + timeline + notes≥20 char
+- Gating: `qualify()` requires ≥75% (admin force override)
+
+**Customer Conversion (manual):**
+- `POST /api/accounts/{aid}/convert-to-customer` body: proposal_id + signed_at + signed_by_contact_id
+- Rollback: `POST /api/accounts/{aid}/revert-to-prospect` body: reason mandatory (≥10 char)
+- Audit trail: funnel_events stage='customer'/event='customer.confirmed'|'customer.reverted'
+
+**Journey Enforcement audit:**
+- ✅ 7 paths CORRETTI · 🔴 2 ERRATI (DA BLOCCARE: WelcomeDrawer.promote_account, ProspectsPage.handlePromote) · 1 micro-fix Begin Journey lifecycle_stage
+
+**Test Plan:**
+- Backend pytest: 40+ test in `/app/backend/tests/test_iter185_phase1.py` (8 fast-capture · 6 progress · 7 qualify · 10 customer · 7 journey enforcement)
+- Frontend Playwright via testing_agent_v3: 12 scenarios
+- E2E smoke: Flow A (Lead→Discovery→Prospect→Journey skipping Customer) · B (full chain) · C (public Begin Journey)
+
+**Effort Estimate:**
+- 18 task · totale **~8.75 giorni effettivi** (~1.5-2 sprint settimanali)
+- Backend: 2.85g · Frontend: 4.5g · Test+i18n+docs: 1.5g
+
+**Risk Register (10 risks):**
+- 🔴 R-1: legacy lifecycle_stage values gap → interpret-on-read mapping
+- 🟠 R-4: 75% progress gate blocca discovery legacy → admin override + no retroactive backfill
+- 🟡 R-2: rimozione handlePromote rompe abitudini → banner deprecation
+- + 7 risks medium/low con mitigation documentata
+- Rollback plan per ogni componente
+
+**5 domande aperte al Founder (sezione §12.2):**
+1. DoD coverage target: 95% o 100% testing pass rate?
+2. Feature flag strategy: env-var (semplice) o tenant-setting (granulare)?
+3. Public Begin Journey `new_inquiry`→`prospect` fix retroattivo o forward-only?
+4. Effort squeeze: skip RevertModal (-0.5g) o CompleteCapture 6-sezioni (-1.5g) o i18n limit (-0.25g)?
+5. Test schedule: batch end (1g) o test-as-you-go distributed?
+
+**Status:** 🔓 **PLAN READY FOR FOUNDER APPROVAL** — codice scritto solo dopo approvazione esplicita
+
+**Next gating (BLOCKED):**
+- Coding ITER185 Phase 1
+- ITER185 Phase 2-3-4
+- Notification Bus / Journey Assignments Ph2 / Editorial Onboarding / Error Registry / Client Chameleon
+
+---
+
+
 ## 🔒 ITER185 · Phase 0 · CRM FOUNDATION LOCKED MODEL™ · ✅ DELIVERED · 01 Jun 2026 (AWAITING FOUNDER APPROVAL)
 
 **🎯 Goal:** Bloccare definitivamente il modello CRM PRIMA di implementare Lead Wizard / Prospect Qualification / Customer Conversion / Journey Creation Rules. **Audit + Architecture + Model Lock only** — zero code changes.
