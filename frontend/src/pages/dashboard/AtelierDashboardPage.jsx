@@ -242,8 +242,8 @@ const ActivityColumn = ({ title, events, t }) => (
   <section className="atd-panel" data-testid="atelier-col-activity">
     <h3 className="atd-panel__title">{title}</h3>
     {events.length === 0 ? (
-      <p className="atd-panel__empty">{t('atelier.dashboard.col.activity_empty_v2', null,
-        'Nessuna attività registrata. Le attività appariranno qui quando inizierai a gestire relazioni e progetti.')}</p>
+      <p className="atd-panel__empty">{t('atelier.dashboard.col.activity_empty_v3', null,
+        'Nessuna attività registrata.')}</p>
     ) : (
       <ul className="atd-feed">
         {events.slice(0, 4).map((e, i) => {
@@ -269,8 +269,8 @@ const MilestonesColumn = ({ title, milestones, t }) => (
   <section className="atd-panel" data-testid="atelier-col-milestones">
     <h3 className="atd-panel__title">{title}</h3>
     {milestones.length === 0 ? (
-      <p className="atd-panel__empty">{t('atelier.dashboard.col.milestones_empty_v2', null,
-        'Nessuna scadenza in arrivo. Le scadenze appariranno qui quando avrai una Journey attiva con milestone configurate.')}</p>
+      <p className="atd-panel__empty">{t('atelier.dashboard.col.milestones_empty_v3', null,
+        'Nessuna scadenza in arrivo.')}</p>
     ) : (
       <ul className="atd-feed">
         {milestones.slice(0, 4).map((m, i) => {
@@ -333,14 +333,14 @@ const AtelierDashboardPage = () => {
     <div className="atd-canvas" data-testid="atelier-dashboard">
       <Hero config={config} biz={biz} userName={userName} />
 
-      <ActivationFoundationCard />
+      <ActivationFoundationSection />
 
-      <RecommendedActions />
+      <RecommendedActionsSection />
 
       <section className="atd-projects" data-testid="atelier-projects-section">
         <header className="atd-section__head">
           <h2 className="atd-section__title">
-            {t('atelier.dashboard.projects.title_v2', null, 'Journey attive')}
+            {t('atelier.dashboard.projects.title_v2', null, 'Design Journey attive')}
           </h2>
           <Link to="/workspace/projects" className="atd-section__cta" data-testid="atd-see-all-projects">
             {t('atelier.dashboard.projects.see_all', null, 'Vedi tutte')}
@@ -349,8 +349,7 @@ const AtelierDashboardPage = () => {
         </header>
         {projects.length === 0 ? (
           <div className="atd-projects__empty" data-testid="atelier-projects-empty">
-            <p>{t('atelier.dashboard.projects.empty_v2', null,
-                  'Nessuna Journey attiva. Le Journey appariranno qui quando convertirai un Prospect.')}</p>
+            <p>{t('atelier.dashboard.projects.empty_v3', null, 'Nessuna Design Journey attiva.')}</p>
           </div>
         ) : (
           <div className="atd-projects__grid">
@@ -382,23 +381,27 @@ const AtelierDashboardPage = () => {
   );
 };
 
-// ── Activation Foundation card (ITER180 · AF2 + AF3) ──────────────
-function ActivationFoundationCard() {
+// ── Activation Foundation section (ITER181.C visual alignment) ────
+function ActivationFoundationSection() {
   const { data } = useActivationFoundation();
-  if (!data) return null;
-  // Mostra finché non attivato; nasconde quando Workspace Activated™ raggiunto.
-  if (data.activated) return null;
+  if (!data || data.activated) return null;
   return (
-    <section
-      data-testid="dashboard-activation-card"
-      style={{
-        margin: '24px 0 8px',
-        display: 'grid', gridTemplateColumns: 'minmax(260px, 1fr) 2fr',
-        gap: 18, alignItems: 'stretch',
-      }}
-    >
-      <ActivationMeter />
-      <WorkspaceActivationChecklist />
+    <section className="atd-section" data-testid="dashboard-activation-section">
+      <p className="atd-section__eyebrow">Setup workspace</p>
+      <div className="atd-activation" data-testid="dashboard-activation-card">
+        <ActivationMeter />
+        <WorkspaceActivationChecklist />
+      </div>
+    </section>
+  );
+}
+
+// ── Recommended Actions section (ITER181.C visual alignment) ──────
+function RecommendedActionsSection() {
+  return (
+    <section className="atd-section" data-testid="dashboard-recommended-actions">
+      <p className="atd-section__eyebrow">Azioni consigliate</p>
+      <RecommendedActions />
     </section>
   );
 }

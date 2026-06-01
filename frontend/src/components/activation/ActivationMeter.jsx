@@ -1,15 +1,17 @@
 /**
- * ActivationMeter™ + WorkspaceActivationChecklist™ — ITER180 · AF2 + AF3
+ * ActivationMeter™ + WorkspaceActivationChecklist™
+ * ITER180 · AF2 + AF3 → ITER181.C visual consolidation
  *
- * - ActivationMeter: widget compatto con %, badge "Activated" quando 6/6
- * - WorkspaceActivationChecklist: dettaglio in-card con 6 step + CTA Smart
+ * Componenti nativi della dashboard: usano i token canonici
+ * (--bp-surface-1, --bp-border, --atelier-cyan, --atelier-sans/serif).
+ * Nessuno stile inline: tutto in atelier-dashboard.css.
  */
 import React from 'react';
 import { CheckCircle2, Circle, ArrowRight, Sparkles } from 'lucide-react';
 import { useActivationFoundation } from '../../hooks/useActivationFoundation';
 import { useSmartCtaRouter } from '../../hooks/useSmartCtaRouter';
 
-// ── ActivationMeter (compact) ──────────────────────────────────────
+// ── ActivationMeter ────────────────────────────────────────────────
 export function ActivationMeter({ compact = false }) {
   const { data } = useActivationFoundation();
   if (!data) return null;
@@ -17,65 +19,43 @@ export function ActivationMeter({ compact = false }) {
 
   if (compact) {
     return (
-      <div
+      <span
         data-testid="activation-meter-compact"
-        style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          padding: '4px 10px', background: activated ? '#dcfce7' : '#f1f1f3',
-          color: activated ? '#15803d' : '#0c0e12',
-          borderRadius: 999, fontSize: 11, fontWeight: 500, letterSpacing: '0.04em',
-        }}
+        className="atd-activation__meter-badge"
       >
-        {activated ? <Sparkles size={12} /> : null}
-        <span>{activated ? 'Workspace Activated' : `Activation ${completed}/${total}`}</span>
-      </div>
+        {activated ? <Sparkles size={11} /> : null}
+        {activated ? 'Workspace Activated™' : `Setup ${completed}/${total}`}
+      </span>
     );
   }
 
   return (
-    <div
-      data-testid="activation-meter"
-      style={{
-        background: '#ffffff', border: '1px solid #e6e6e8', borderRadius: 12,
-        padding: '20px 22px',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+    <div data-testid="activation-meter" className="atd-activation__panel">
+      <div className="atd-activation__meter-head">
         <div>
-          <div style={{ fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#7a7d83' }}>
-            Activation Foundation™
-          </div>
-          <div style={{ fontSize: 22, fontWeight: 600, marginTop: 2, color: '#0c0e12' }}>
-            {completed} / {total} step
+          <div className="atd-activation__meter-eyebrow">Avanzamento</div>
+          <div className="atd-activation__meter-value">
+            {completed} <span className="atd-activation__meter-total">/ {total}</span>
           </div>
         </div>
         {activated && (
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            padding: '6px 12px', background: '#dcfce7', color: '#15803d',
-            borderRadius: 999, fontSize: 11, fontWeight: 500,
-          }}>
-            <Sparkles size={12} /> Workspace Activated
-          </div>
+          <span className="atd-activation__meter-badge">
+            <Sparkles size={11} /> Workspace Activated™
+          </span>
         )}
       </div>
-      <div style={{
-        height: 6, borderRadius: 3, background: '#f1f1f3', overflow: 'hidden',
-      }}>
+      <div className="atd-activation__meter-bar">
         <div
           data-testid="activation-meter-progress"
-          style={{
-            width: `${progress}%`, height: '100%',
-            background: activated ? '#16a34a' : '#0c0e12',
-            transition: 'width 320ms ease',
-          }}
+          className="atd-activation__meter-bar-fill"
+          style={{ width: `${progress}%` }}
         />
       </div>
     </div>
   );
 }
 
-// ── WorkspaceActivationChecklist (full panel) ─────────────────────
+// ── WorkspaceActivationChecklist ──────────────────────────────────
 export function WorkspaceActivationChecklist() {
   const { data } = useActivationFoundation();
   const route = useSmartCtaRouter();
@@ -86,18 +66,13 @@ export function WorkspaceActivationChecklist() {
     return (
       <div
         data-testid="activation-checklist-completed"
-        style={{
-          background: '#ffffff', border: '1px solid #dcfce7', borderRadius: 12,
-          padding: 22, color: '#15803d',
-        }}
+        className="atd-activation__activated"
       >
-        <Sparkles size={18} />
-        <div style={{ fontSize: 16, fontWeight: 600, marginTop: 8, color: '#0c0e12' }}>
-          Workspace Activated™
-        </div>
-        <div style={{ fontSize: 13, color: '#5a5d63', marginTop: 4 }}>
-          Lo studio ha completato tutti i 6 passi della Foundation. I moduli avanzati sono ora abilitati.
-        </div>
+        <Sparkles size={18} className="atd-activation__activated-icon" />
+        <p className="atd-activation__activated-title">Workspace Activated™</p>
+        <p className="atd-activation__activated-desc">
+          Setup completato. I moduli avanzati sono ora abilitati.
+        </p>
       </div>
     );
   }
@@ -105,59 +80,40 @@ export function WorkspaceActivationChecklist() {
   return (
     <div
       data-testid="activation-checklist"
-      style={{
-        background: '#ffffff', border: '1px solid #e6e6e8', borderRadius: 12,
-        padding: '8px 0',
-      }}
+      className="atd-activation__panel atd-activation__checklist"
     >
-      <div style={{ padding: '12px 22px 8px', fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#7a7d83', fontWeight: 600 }}>
-        Cosa fare adesso
-      </div>
-      <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
+      <p className="atd-activation__checklist-eyebrow">Prossimi passi</p>
+      <ul className="atd-activation__list">
         {items.map((item) => (
           <li
             key={item.key}
+            className="atd-activation__item"
             data-testid={`activation-step-${item.key}`}
             data-step-done={item.done ? 'true' : 'false'}
-            style={{
-              display: 'flex', alignItems: 'flex-start', gap: 12,
-              padding: '12px 22px',
-              borderTop: '1px solid #f1f1f3',
-              opacity: item.done ? 0.65 : 1,
-            }}
           >
-            <div style={{ flexShrink: 0, paddingTop: 2 }}>
+            <div className="atd-activation__item-icon">
               {item.done
-                ? <CheckCircle2 size={18} color="#16a34a" strokeWidth={1.6} />
-                : <Circle size={18} color="#9b9da3" strokeWidth={1.4} />}
+                ? <CheckCircle2 size={18} strokeWidth={1.6} />
+                : <Circle size={18} strokeWidth={1.4} />}
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{
-                fontSize: 14, fontWeight: 500, color: '#0c0e12',
-                textDecoration: item.done ? 'line-through' : 'none',
-              }}>
-                <span style={{ opacity: 0.6, marginRight: 8 }}>{item.ordinal}.</span>
+            <div className="atd-activation__item-body">
+              <p className="atd-activation__item-title">
+                <span className="atd-activation__item-ordinal">{item.ordinal}.</span>
                 {item.title}
-              </div>
-              <div style={{ fontSize: 12, color: '#5a5d63', marginTop: 2 }}>
-                {item.description}
-              </div>
+              </p>
+              <p className="atd-activation__item-desc">{item.description}</p>
               {!item.done && item.metadata?.missing && item.metadata.missing.length > 0 && (
-                <div style={{ fontSize: 11, color: '#92400e', marginTop: 6 }}>
-                  Manca: {item.metadata.missing.join(', ')}
-                </div>
+                <p className="atd-activation__item-missing">
+                  Da completare: {item.metadata.missing.join(', ')}
+                </p>
               )}
             </div>
             {!item.done && (
               <button
+                type="button"
                 data-testid={`activation-step-${item.key}-cta`}
+                className="atd-activation__item-cta"
                 onClick={() => route(item.cta_route)}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 4,
-                  padding: '6px 12px', background: '#0c0e12', color: '#ffffff',
-                  border: 0, borderRadius: 6, cursor: 'pointer',
-                  fontSize: 12, fontWeight: 500, flexShrink: 0,
-                }}
               >
                 {item.cta_label} <ArrowRight size={11} />
               </button>

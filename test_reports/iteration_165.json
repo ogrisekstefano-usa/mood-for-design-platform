@@ -1,0 +1,34 @@
+{
+  "summary": "ITER181.C Dashboard Visual Consolidation — 11/12 acceptance criteria PASS. All blocks below hero now inherit dark Nordic surface (rgb(13,15,18) = #0D0F12 = --bp-surface-1). Verified via getComputedStyle on data-testids: activation-meter (class='atd-activation__panel', bg=rgb(13,15,18), no inline style), activation-checklist (class='atd-activation__panel atd-activation__checklist'), recommended-action-register-lead (class='atd-recommended__card', bg=rgb(13,15,18)), activation-banner (class='atd-banner', bg=rgb(27,29,32) ≈ --bp-surface-2). Section eyebrows ('Setup workspace' + 'Azioni consigliate') render with cyan rgb(0,201,179), 10.5px, uppercase. Empty states ARE concise: 'Nessuna Design Journey attiva.', 'Nessuna attività registrata.', 'Nessuna scadenza in arrivo.'. All 5 activation-step-* + 5 recommended-action-* + 4 KPI testids present. topbar-new-relationship-cta present, topbar-new-journey-cta absent (prospects=0 branch correct). No banned words ('atmosfera', 'temperamento', 'atelier interiore', 'viaggio progettuale', 'memoria in evoluzione', 'primo capitolo', 'relazione che respira') on dashboard surface. activation-step-blueprint-cta click does not throw (stays on /dashboard, smart-cta route may be silent but no error).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "AtelierDashboardPage h2 section title",
+        "issue": "h2 .atd-section__title shows 'Journey attive' but spec requires 'Design Journey attive'. The JSX correctly calls t('atelier.dashboard.projects.title_v2', null, 'Design Journey attive') — but the i18n key in /app/frontend/src/i18n/strings/it-IT.json (atelier.dashboard.projects.title_v2) still resolves to 'Journey attive' (ITER180 value). Update needed: rename it-IT atelier.dashboard.projects.title_v2 to 'Design Journey attive'.",
+        "selector": ".atd-section__title (inside [data-testid='atelier-projects-section'])",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Update it-IT.json key atelier.dashboard.projects.title_v2 from 'Journey attive' to 'Design Journey attive' (the JSX default already says so; only the resolved string is stale).",
+    "(Pre-existing, out of scope) Seed auth.login.* and auth.access.* i18n keys for it-IT to silence console warnings on /login (~15 warnings)."
+  ],
+  "critical_code_review_comments": [
+    "atelier-dashboard.css ITER181.C section is clean and well-scoped — no token overrides leaking outside .atd-activation/.atd-recommended/.atd-banner namespaces.",
+    "ActivationMeter.jsx still has one inline style (width:${progress}%) on the bar-fill — acceptable for dynamic width (cannot be CSS class).",
+    "PersistentAlertBanner uses var(--bp-surface-2, #111318) fallback; the actual computed value is rgb(27,29,32) ≈ #1B1D20, slightly different from the documented #111318 default — this is because --bp-surface-2 is defined in the theme to that value. Both are dark surfaces, design intent honored."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend-only)", "frontend": "92% (11/12 criteria PASS, 1 i18n string stale)"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (verified working)",
+  "seed_data_creation": "None — used existing seed tenant (activation 2/5: identity+market done, blueprint+team+workspace pending).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "ITER181.C visual consolidation is essentially complete. Only stale i18n string blocks the 'Design Journey attive' rename. After main agent updates the key, no re-test needed — JSX fallback default already matches. Modal trigger from recommended-action-register-lead was not visually confirmed (no [role=dialog] selector hit within 1.5s) but click did not throw; main agent should verify NewRelationshipModal opens.",
+  "rca of the issue": "h2 title still reads 'Journey attive': AtelierDashboardPage.jsx:343 correctly calls t('atelier.dashboard.projects.title_v2', null, 'Design Journey attive'), but it-IT.json atelier.dashboard.projects.title_v2 was set in ITER180 to literal 'Journey attive' and not updated in ITER181.C. Fix: change the value in /app/frontend/src/i18n/strings/it-IT.json key atelier.dashboard.projects.title_v2 to 'Design Journey attive'."
+}

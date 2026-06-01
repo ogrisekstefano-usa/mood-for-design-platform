@@ -1,10 +1,11 @@
 /**
- * PersistentAlertBanner™ — ITER180 · AF1
+ * PersistentAlertBanner™ — ITER180 · AF1 → ITER181.C visual consolidation
  *
- * Banner sticky in alto a tutta l'app.
+ * Banner sticky in alto a tutta l'app. Usa token canonici --bp-surface-2
+ * (dark Nordic), --atelier-cyan come accento, tipografia atelier-sans.
  * Visible IFF:
  *   - utente è studio member (non client)
- *   - tenant non è ancora Activated (completed < total)
+ *   - tenant non ancora Activated (completed < total)
  *   - esiste almeno uno step critico mancante
  *   - banner non dismissed nelle ultime 24h
  */
@@ -25,46 +26,33 @@ export default function PersistentAlertBanner() {
     <div
       data-testid="activation-banner"
       data-step={next.key}
-      style={{
-        position: 'sticky', top: 0, zIndex: 90,
-        background: '#0c0e12', color: '#ffffff',
-        display: 'flex', alignItems: 'center', gap: 14,
-        padding: '10px 22px',
-        borderBottom: '1px solid #1f2329',
-        fontSize: 13,
-      }}
+      className="atd-banner"
     >
-      <AlertCircle size={16} strokeWidth={1.7} style={{ flexShrink: 0, opacity: 0.85 }} />
-      <span style={{ flex: 1, lineHeight: 1.4 }}>
-        <strong style={{ fontWeight: 600 }}>Activation Foundation™ · {data.completed}/{data.total}</strong>
-        {' · '}
-        <span style={{ opacity: 0.85 }}>{next.title}</span>
-        {' — '}
-        <span style={{ opacity: 0.7 }}>{next.description}</span>
+      <AlertCircle size={15} strokeWidth={1.6} className="atd-banner__icon" />
+      <span className="atd-banner__body">
+        <span className="atd-banner__title">Setup workspace · {data.completed}/{data.total}</span>
+        <span className="atd-banner__sep">·</span>
+        <span>{next.title}</span>
+        <span className="atd-banner__sep">·</span>
+        <span className="atd-banner__desc">{next.description}</span>
       </span>
       <button
+        type="button"
         data-testid="activation-banner-cta"
+        className="atd-banner__cta"
         onClick={() => route(next.cta_route)}
-        style={{
-          display: 'inline-flex', alignItems: 'center', gap: 6,
-          padding: '6px 12px', background: '#ffffff', color: '#0c0e12',
-          border: 0, borderRadius: 6, cursor: 'pointer',
-          fontSize: 12, fontWeight: 500,
-        }}
       >
-        {next.cta_label} <ArrowRight size={12} />
+        {next.cta_label} <ArrowRight size={11} />
       </button>
       <button
+        type="button"
         data-testid="activation-banner-dismiss"
+        className="atd-banner__dismiss"
         onClick={dismissBanner}
         aria-label="Nascondi per 24 ore"
         title="Nascondi per 24 ore"
-        style={{
-          background: 'transparent', border: 0, color: 'rgba(255,255,255,0.55)',
-          cursor: 'pointer', padding: 4,
-        }}
       >
-        <X size={14} />
+        <X size={13} />
       </button>
     </div>
   );

@@ -2203,7 +2203,9 @@
         "recent_activity_v2": "Attività recenti",
         "upcoming_milestones_v2": "Prossime scadenze",
         "activity_empty_v2": "Nessuna attività registrata. Le attività appariranno qui quando inizierai a gestire relazioni e progetti.",
-        "milestones_empty_v2": "Nessuna scadenza in arrivo. Le scadenze appariranno qui quando avrai una Journey attiva con milestone configurate."
+        "milestones_empty_v2": "Nessuna scadenza in arrivo. Le scadenze appariranno qui quando avrai una Journey attiva con milestone configurate.",
+        "activity_empty_v3": "Nessuna attività registrata.",
+        "milestones_empty_v3": "Nessuna scadenza in arrivo."
       },
       "projects": {
         "title": "Design Journey™ attive",
@@ -2211,7 +2213,8 @@
         "empty": "Il tuo atelier è in silenzio. Il prossimo journey aspetta di iniziare.",
         "empty_cta": "Inizia un nuovo journey",
         "title_v2": "Journey attive",
-        "empty_v2": "Nessuna Journey attiva. Le Journey appariranno qui quando convertirai un Prospect."
+        "empty_v2": "Nessuna Journey attiva. Le Journey appariranno qui quando convertirai un Prospect.",
+        "empty_v3": "Nessuna Design Journey attiva."
       },
       "time": {
         "just_now": "adesso",
