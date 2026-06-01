@@ -1,5 +1,39 @@
 # Changelog
 
+## ITER181.C · Dashboard Governance Fix™ — 2026-06-01
+
+**Stato:** ✅ Completato (8/9 problemi del brief utente · Problem 5 "Lead Wizard 5-step" documentato come P1 follow-up) · 13/15 testing agent criteri PASS · 0 ui_bug critici · le 2 medium concerns sono state risolte (modal apre correttamente con eyebrow "CRM · NUOVO LEAD"; i18n sidebar verificato).
+
+### Consegnato (UX governance, **zero backend**, **zero nuove API**)
+- **P1** "Studio Pulse" → **"Blueprint Dashboard"** (audit i18n it-IT.json: `nav.studio_pulse`, editorial admin eyebrow/sub, CTA "Apri Blueprint Dashboard").
+- **P2** Pagina Leads · nuovo copy operativo ("Contatti da qualificare. I Lead rappresentano persone o aziende…"). Rimossi "segnali" + "atmosfere" + "Ascolta prima di rispondere".
+- **P3** Rimossi i 5 filter chips fake (warm_editorial, nordic_silence, midnight_mood, mediterranean_light, architectural_dawn) — `ATMOSPHERES = []`.
+- **P4** Pagina Leads · aggiunta CTA primaria **"+ Nuovo Lead"** nel toolbar; click apre `NewRelationshipModal` con `{choice:'lead'}`.
+- **P5** Lead Wizard 5-step: **documentato come P1 follow-up** in `DASHBOARD_INFORMATION_ARCHITECTURE_FIX.md`.
+- **P6** Sidebar simplification: `nav.journey_index = "Design Journey"`, `nav.begin_journey = "+ Nuovo Design Journey"`. ActiveJourneyRail empty state senza CTA "Apri Nuova Relazione".
+- **P7** "Nuova Relazione" → entità reali: **Topbar smart CTA** ora "+ Nuovo Lead" (prospects=0) o "+ Nuovo Design Journey" (prospects>0). Modal eyebrow "CRM · NUOVO LEAD".
+- **P8** Quick Actions Scenario A reorder: [Nuovo Lead, Nuovo Design Journey, Media Library, Material View, Calendario Editoriale]; rimosso Blueprint Chameleon (in checklist) e Team (in checklist).
+- **P9** Post-setup state: `WorkspaceActionHub` ritorna `null` quando `data.activated === true`. Nuovo `<StandaloneQuickActions />` renderizza sezione standalone full-width 5-up SOLO dopo il completamento del setup. La dashboard non lascia "buchi" — si densifica.
+
+### Deliverables prodotti
+- `/app/memory/DASHBOARD_NAMING_AUDIT.md`
+- `/app/memory/DASHBOARD_COPY_AUDIT.md`
+- `/app/memory/DASHBOARD_INFORMATION_ARCHITECTURE_FIX.md`
+
+### File modificati principali
+- `/app/frontend/src/components/activation/WorkspaceActionHub.jsx` (catalogue + priority function + HubReady rimosso + StandaloneQuickActions exportata)
+- `/app/frontend/src/pages/dashboard/AtelierDashboardPage.jsx` (mount `<StandaloneQuickActions />`)
+- `/app/frontend/src/components/layout/Topbar.jsx` (label "Nuovo Lead" + choice:'lead')
+- `/app/frontend/src/components/relations/NewRelationshipModal.jsx` (eyebrow "CRM · Nuovo Lead")
+- `/app/frontend/src/pages/relations/LeadsPage.jsx` (nuovo lede + CTA "+ Nuovo Lead" + rimossi filter chips fake)
+- `/app/frontend/src/components/layout/ActiveJourneyRail.jsx` (rimosso CTA "Apri Nuova Relazione")
+- `/app/frontend/src/i18n/strings/it-IT.json` (nav.studio_pulse, nav.journey_index, nav.begin_journey, nav.your_journeys, nav.new_lead aggiornati/aggiunti; editorial_copy.atelier_dashboard.eyebrow → "Blueprint Dashboard · Ritmo Progettuale")
+
+### Test report
+- `/app/test_reports/iteration_169.json`
+
+---
+
 ## ITER181.A.3 · Workspace Action Hub UX Refactor — 2026-06-01
 
 **Stato:** ✅ Completato · Tutti criteri PASS · 0 ui_bug · 0 regressioni
