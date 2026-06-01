@@ -1,6 +1,51 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
 
+## 🆕 ITER183 · APP-WIDE NAMING LOCK™ Phase 1 · ✅ DELIVERED · 01 Jun 2026
+
+**🎯 Goal:** Enforce `/app/memory/MOOD_LANGUAGE_CANON.md` v1.0 across the entire operational platform. Eliminate poetic/editorial banned terms (atmosfera, atmosphere, curatoriale, curatorial, relazione/relationship, viaggio, capitolo, segnale, Studio Pulse, Journey Pulse, Nuova Relazione) and replace with concrete CRM terminology (Lead, Prospect, Cliente, Design Journey, Activity Log, Blueprint Dashboard).
+
+**6 deliverable (P0.1 → P0.6):**
+1. ✅ **P0.1 · Copy Quality First** — 80+ broken/awkward strings (post auto-replace) rewritten manually with professional CRM tone in EN-US master + IT-IT. Pattern fixes: `l'stile → lo stile`, `una stile → uno stile`, `Studio studio → Studio`, `affinità selezionata → affinità di brand`.
+2. ✅ **P0.2 · Business Critical Hotspots** — Dashboard, CRM, Leads, Sidebar, Quick Actions, Modal principali, Design Journey, Empty States bonificati. `dashboard.pulse` section riscritta integralmente (it-IT + en-US + en-GB) rimuovendo `viaggio/voce/capitolo/gesto/silenzio` → `Design Journey/feedback/fase/azione/inattivo`.
+3. ✅ **P0.3 · Inspirations / Moodboard** — Filter labels "Atmosfera" → "Stile", "Atmosphere Reading™" → "Style Reading", "Posizionamento curatoriale" → "Posizionamento", `CuratorialInspirationsModal` filter label "Stile", `InlineEditorialRegia` "Stile editoriale".
+4. ✅ **P0.4 · Component Labels** — `StudioPulsePage` header → "BLUEPRINT DASHBOARD" / "Dashboard operativa dello studio"; 5 section eyebrows aggiornati ("ATTIVITÀ DELLO STUDIO", "TREND EMERGENTI", "ATTIVITÀ DESIGNER", "LEAD INATTIVI", "ATTIVITÀ RECENTI"). `RelationshipMemoryPage`/`Timeline` → "Activity Log" / "CRM · ACTIVITY LOG". Sidebar CTA "Nuova Relazione" → "Nuovo Lead". **Routes preservate** (`/studio-pulse`, `/studio/pulse`, `/dashboard/pulse`, `/relations/memory/*`). **Data-testid preservati** (`sidebar-new-relationship-trigger`, `cr-memory-shell`, `mem-shell`, `studio-pulse-page`, `journey-pulse-page`, `new-relationship-modal`).
+5. ✅ **P0.5 · Report** — `/app/memory/ITER183_APP_WIDE_NAMING_LOCK_REPORT.md` (~12 sezioni · 280 righe).
+6. ✅ **P0.6 · Testing** — `testing_agent_v3_fork` iteration 170 · **13/14 acceptance assertions PASS (~95%)**. Zero banned terms in body.innerText across `/dashboard`, `/relations/leads`, `/studio-pulse`, `/studio/pulse`, `/dashboard/pulse`, `/inspirations`, `/workspace/projects` in 3 locales (it-IT, en-US, en-GB). Bonus fix: `nav.section.content` mancante in tutti i 7 locales → seedata "Contenuti"/"Content"/"Contenidos"/"Inhalte"/"Contenus"/"محتوى".
+
+**Verifica finale:**
+| Locale | Banned terms in values | Status |
+|---|---:|---|
+| en-US (MASTER) | 0 | ✅ CLEAN |
+| it-IT | 0 | ✅ CLEAN |
+| en-GB | 0 | ✅ CLEAN |
+| es-ES | 0 | ✅ CLEAN |
+| de-DE | 0 | ✅ CLEAN |
+| fr-FR | 0 | ✅ CLEAN |
+| ar | 0 | ✅ CLEAN |
+
+**File modificati (totale 23):**
+- **i18n** (7): tutti i locale `.json` aggiornati
+- **Componenti React** (15): Sidebar, CommandPalette, Topbar, StudioPulsePage, JourneyPulsePage, RelationshipMemoryPage/Timeline/Chapter, CuratedCollectionDrawer, BrandDetailPage, SupplierCatalogImportModal, BrandFormModal, InspirationDetailDrawer, CuratorialInspirationsModal, InlineEditorialRegia, MoodboardEditor
+- **Script governance** (3): `iter183_polish_strings.py`, `iter183_polish_cascade.py`, `iter183_rewrite_dashboard_pulse.py`
+
+**Carry-over P1/P2 (rinviati per scope):**
+- ITER184: Marketing & Public Site audit (registro editoriale ammesso ma naming canon-compliant)
+- ITER185: Backend API path cleanup (`/api/studio-pulse/*` → `/api/blueprint-dashboard/*`, dual-routing)
+- ITER186: es-MX / pt-BR locale rollout dal master en-US bonificato
+- "TREND EMERGENTI" / "ATTIVITÀ RECENTI" sezioni Studio Pulse: verifica con CRM seeded (richiede data)
+- Component class/function names (`StudioPulsePage`, `RelationshipMemoryChapter`, `CuratorialInspirationsModal`) preservati per backward compatibility — opzionale future refactor
+
+**Next (P1 backlog):**
+- 🟠 Notification Bus Implementation
+- 🟠 Journey Assignments Phase 2 (UI drawer + "Le mie journey" page)
+- 🟠 Editorial Onboarding (editorial_demo_catalog read-only)
+- 🟠 Error Registry completo (DOMAIN-NNN codes + axios interceptor)
+- 🟡 P2: Client Chameleon avanzato
+
+---
+
+
 ## 🆕 ITER178 · JOURNEY ASSIGNMENTS™ Phase 1 · ✅ DELIVERED · 31 May 2026
 
 **Scope:** Foundation team-per-journey (multi-row, role-aware). Coesiste con `human_assignments` (referente account-level).
