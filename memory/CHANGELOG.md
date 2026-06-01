@@ -1,5 +1,23 @@
 # Changelog
 
+## ITER181.C · Dashboard Visual Consolidation™ — 2026-06-01
+
+**Stato:** ✅ Completato · 12/12 acceptance criteria PASS · 0 ui_bug residui · 0 regressioni
+
+### Consegnato
+- **Design System Lock**: tutti i nuovi componenti ITER180/181 ereditano `--bp-surface-1` (dark Nordic), `--bp-border`, `--bp-radius-lg`, `--atelier-cyan`, `--atelier-sans/serif` — zero inline-style residui.
+- **CSS section dedicato** in `atelier-dashboard.css` (+220 righe): `.atd-section`, `.atd-section__eyebrow`, `.atd-activation__*`, `.atd-recommended__*`, `.atd-banner__*`, `.atd-desk--2col`.
+- **Componenti riscritti**: `ActivationMeter` + `WorkspaceActivationChecklist`, `RecommendedActions`, `PersistentAlertBanner` — solo classi semantiche.
+- **Empty states v3** concisi: "Nessuna Design Journey attiva.", "Nessuna attività registrata.", "Nessuna scadenza in arrivo." (al posto delle versioni narrative).
+- **Sezione titolo**: "Journey attive" → "Design Journey attive" (h2 serif italic).
+- **Eyebrow uniformi**: tutte le sezioni sotto l'Hero usano cyan uppercase 10.5px (Setup workspace, Azioni consigliate).
+
+### Report
+- `/app/memory/DASHBOARD_VISUAL_CONSOLIDATION_REPORT.md`
+- `/app/test_reports/iteration_165.json`
+
+---
+
 ## ITER181.A · Dashboard Refocus™ Founder Experience — 2026-06-01
 
 **Stato:** ✅ Completato · 8/8 backend pytest PASS · Frontend 100% PASS · 0 ui_bugs
