@@ -17,10 +17,14 @@ import axios from 'axios';
 import { useLocale } from '../../../contexts/LocaleContext';
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
-const CACHE_PREFIX = 'mood_studio_manifest_v1::';
+const CACHE_PREFIX = 'mood_studio_manifest_v2::';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24h
 
 // Editorial IT defaults — bundled so the page is never blank on cold visit.
+// Locale-aware: applied only when the active locale matches the bundle locale
+// (it-IT). For other locales the first paint stays minimal until the manifest
+// arrives, avoiding a cross-locale flicker (e.g. IT default → EN CMS).
+const BUNDLE_LOCALE = 'it-IT';
 const IT_DEFAULTS = {
   'studio.activation.entrance.eyebrow':            'Composizione',
   'studio.activation.entrance.headline':           'Componi il tuo Studio.',
@@ -50,10 +54,14 @@ const writeCache = (locale, data) => {
 export const useStudioManifest = () => {
   const { locale } = useLocale();
 
+  // Locale-aware bundle: only show bundled defaults if active locale matches
+  // the bundle's locale, otherwise rely on cache or empty until manifest fetch.
+  const defaults = locale === BUNDLE_LOCALE ? IT_DEFAULTS : {};
+
   // Synchronous hydration from cache → first paint already has text.
   const cached = readCache(locale);
   const [manifest, setManifest] = useState(cached || null);
-  const [t, setT] = useState({ ...IT_DEFAULTS, ...(cached?.copy || {}) });
+  const [t, setT] = useState({ ...defaults, ...(cached?.copy || {}) });
   const [ready, setReady] = useState(Boolean(cached));
 
   useEffect(() => {
@@ -65,7 +73,7 @@ export const useStudioManifest = () => {
         );
         if (cancelled) return;
         setManifest(r.data);
-        setT({ ...IT_DEFAULTS, ...(r.data?.copy || {}) });
+        setT({ ...defaults, ...(r.data?.copy || {}) });
         writeCache(locale, r.data);
       } catch {
         // silent — cached defaults already shown.
@@ -74,7 +82,7 @@ export const useStudioManifest = () => {
       }
     })();
     return () => { cancelled = true; };
-  }, [locale]);
+  }, [locale]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { manifest, t, ready };
 };
