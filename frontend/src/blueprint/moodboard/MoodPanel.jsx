@@ -257,7 +257,7 @@ const MoodPanel = ({ onAddInspiration, moodboardId }) => {
             </div>
           )}
 
-          <ChipRow label="Atmosfera">
+          <ChipRow label="Stile">
             {ATMOSPHERE_CHIPS.map((c) => (
               <Chip key={c} label={c}
                     active={atmosphere === c}

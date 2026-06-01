@@ -14,7 +14,7 @@ const ProposalsPage = () => {
     api.get('/api/proposals').then(r => setItems(r.data.data || [])).catch(() => setItems([])).finally(() => setLoading(false));
   }, []);
   return <div className="p-8 max-w-7xl mx-auto" data-testid="proposals-page">
-      <ArchiveBanner testid="proposals-archive-banner" eyebrow="Archivio trasversale · Sprint G.6" title={t("workspace.proposals.le_presentazioni_vivono_dentro_i_loro_journey")} lede="Le presentazioni di concept, technical package e momenti finali si compongono nel capitolo del Journey che le ha generate. Qui le ritrovi tutte, attraverso ogni viaggio." ctaLabel="Apri Studio Pulse" ctaTo="/dashboard" />
+      <ArchiveBanner testid="proposals-archive-banner" eyebrow="Archivio · Sprint G.6" title={t("workspace.proposals.le_presentazioni_vivono_dentro_i_loro_journey")} lede="Le presentazioni di concept, technical package e momenti finali si organizzano nel Design Journey che le ha generate. Qui le ritrovi tutte." ctaLabel="Apri Blueprint Dashboard" ctaTo="/dashboard" />
       <div className="mb-8">
         <p className="text-[var(--bp-text-muted)] text-[10px] font-body uppercase tracking-[0.2em] mb-1">{t('nav.section.workspace')}</p>
         <h1 className="font-heading text-4xl font-light text-[var(--bp-text-primary)]">{t('proposals.title')}</h1>

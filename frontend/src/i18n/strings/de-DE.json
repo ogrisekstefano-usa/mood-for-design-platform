@@ -329,7 +329,7 @@
   },
   "dashboard": {
     "pulse": {
-      "eyebrow": "Studio Pulse™ · Projektrhythmus",
+      "eyebrow": "Blueprint Dashboard · Projektrhythmus",
       "loading_title": "Lese den Projektrhythmus…",
       "greet": {
         "morning": "Guten Morgen",
@@ -434,15 +434,15 @@
     "section": {
       "home": "Start",
       "design_journey": "Design Journey",
-      "curatorial_atlas": "Curatorial Atlas",
+      "curatorial_atlas": "Brand Atlas™",
       "client_relations": "Kundenbeziehungen",
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
       "platform": "Plattform",
       "workspace": "Atelier",
-      "studio_pulse": "Studio Pulse™"
+      "studio_pulse": "Blueprint Dashboard"
     },
-    "studio_pulse": "Studio Pulse",
+    "studio_pulse": "Blueprint Dashboard",
     "your_journeys": "Deine Journeys",
     "begin_journey": "Journey eröffnen",
     "inspirations": "Inspirations",
@@ -1163,7 +1163,7 @@
   },
   "moodboards": {
     "archive": {
-      "cta": "Studio Pulse öffnen",
+      "cta": "Blueprint Dashboard öffnen",
       "eyebrow": "Disziplinübergreifendes Archiv · Sprint G.6",
       "lede": "Dieses Archiv versammelt alle gestalterischen Moodboards aus sämtlichen Journeys. Die eigentliche Komposition findet im Kapitel Moodboard Direction™ des jeweiligen Journeys statt."
     },
@@ -1652,7 +1652,7 @@
     },
     "atelier_dashboard": {
       "title": "Dashboard Atelier",
-      "sub": "Kuratieren Sie Hero-Bilder, kinematische Copy und tägliche Inspirationszitate für Studio Pulse™. Sprachspezifische Überschreibungen."
+      "sub": "Kuratieren Sie Hero-Bilder, kinematische Copy und tägliche Inspirationszitate für Blueprint Dashboard. Sprachspezifische Überschreibungen."
     }
   },
   "site": {
@@ -2126,7 +2126,7 @@
           "afternoon": "Guten Tag",
           "evening": "Guten Abend"
         },
-        "eyebrow": "Studio Pulse™ · Projekt-Rhythmus",
+        "eyebrow": "Blueprint Dashboard · Projekt-Rhythmus",
         "summary_template": "{active} Journeys im Atemzug · {voices} Stimmen heute eingegangen",
         "signature": "Wir formen Räume mit Bedeutung."
       },
@@ -2176,7 +2176,7 @@
       "back": "Zurück zu den Einstellungen",
       "eyebrow": "Atelier · Studio-Identität",
       "title": "Dashboard Atelier",
-      "lede": "Kuratieren Sie Hero-Copy, kinematische Bildsprache und die Zitatbibliothek, die das Studio Pulse™ Dashboard prägen. Sprachspezifische Überschreibungen werden automatisch kaskadiert.",
+      "lede": "Kuratieren Sie Hero-Copy, kinematische Bildsprache und die Zitatbibliothek, die das Blueprint Dashboard Dashboard prägen. Sprachspezifische Überschreibungen werden automatisch kaskadiert.",
       "tab": {
         "copy": "Hero & Sektionen",
         "media": "Medien-Bibliothek",

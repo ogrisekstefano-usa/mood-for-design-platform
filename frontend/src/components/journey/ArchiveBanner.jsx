@@ -12,7 +12,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Compass } from 'lucide-react';
 
-const ArchiveBanner = ({ eyebrow, title, lede, ctaLabel = 'Apri Studio Pulse', ctaTo = '/dashboard', testid }) => (
+const ArchiveBanner = ({ eyebrow, title, lede, ctaLabel = 'Apri Blueprint Dashboard', ctaTo = '/dashboard', testid }) => (
   <div className="sw-archive-banner" data-testid={testid || 'archive-banner'}>
     <Compass size={20} className="sw-archive-banner__icon" />
     <div className="sw-archive-banner__body">

@@ -312,7 +312,7 @@ const MoodboardsPage = () => {
         title={t('moodboards.empty_inside_journey')}
         lede={t('moodboards.archive.lede', null,
           "This is an archive view that lets you rediscover moodboards composed across every Journey. True composition happens inside the Moodboard Direction™ chapter of each Journey.")}
-        ctaLabel={t('moodboards.archive.cta', null, 'Open Studio Pulse')}
+        ctaLabel={t('moodboards.archive.cta', null, 'Open Blueprint Dashboard')}
         ctaTo="/dashboard"
       />
       <div className="flex items-start justify-between mb-10 gap-6">

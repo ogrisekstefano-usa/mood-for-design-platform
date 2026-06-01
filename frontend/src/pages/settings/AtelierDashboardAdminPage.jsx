@@ -228,7 +228,7 @@ const AtelierDashboardAdminPage = () => {
         <p className="ada__eyebrow">{t('atelier.admin.eyebrow', null, 'Atelier · Studio Identity')}</p>
         <h1 className="ada__title"><em>{t('atelier.admin.title', null, 'Dashboard Atelier')}</em></h1>
         <p className="ada__lede">{t('atelier.admin.lede', null,
-          'Curate the hero copy, cinematic imagery and inspiration quote library that compose the Studio Pulse™ dashboard. Per-locale overrides cascade automatically.')}</p>
+          'Curate the hero copy, editorial imagery and inspiration quote library that compose the Blueprint Dashboard. Per-locale overrides cascade automatically.')}</p>
       </header>
 
       <nav className="ada__tabs" role="tablist">

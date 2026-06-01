@@ -194,7 +194,7 @@ const QuickPreview = ({ item, onAdd, onClose }) => {
 
           {(item.atmosphere_tags || []).length > 0 && (
             <div>
-              <p className="ci-eyebrow">Atmosfera</p>
+              <p className="ci-eyebrow">Stile</p>
               <div className="ci-chip-cloud">
                 {item.atmosphere_tags.map((a) => <span key={a} className="ci-chip">{a}</span>)}
               </div>

@@ -128,7 +128,7 @@ const SettingsPage = () => {
           <SettingsTile testid="tile-atelier-dashboard" icon={Palette} to="/settings/atelier-dashboard" accent="core"
             title={t('settings.atelier_dashboard.title', null, 'Dashboard Atelier')}
             description={t('settings.atelier_dashboard.sub', null,
-              'Curate hero imagery, cinematic copy and daily inspiration quotes for Studio Pulse™. Per-locale overrides.')}
+              'Curate hero imagery, editorial copy and daily inspiration quotes for Blueprint Dashboard. Per-locale overrides.')}
           />
           <SettingsTile testid="tile-international-presence" icon={Globe} to="/settings/international-presence" accent="core"
             title={t('settings.internationalPresence.title', null, 'International Presence™')}

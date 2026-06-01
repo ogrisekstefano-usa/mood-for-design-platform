@@ -329,7 +329,7 @@
   },
   "dashboard": {
     "pulse": {
-      "eyebrow": "Studio Pulse™ · rythme du projet",
+      "eyebrow": "Blueprint Dashboard · rythme du projet",
       "loading_title": "Lecture du rythme du projet…",
       "greet": {
         "morning": "Bonjour",
@@ -434,15 +434,15 @@
     "section": {
       "home": "Accueil",
       "design_journey": "Design Journey",
-      "curatorial_atlas": "Curatorial Atlas",
+      "curatorial_atlas": "Brand Atlas™",
       "client_relations": "Relations Clients",
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
       "platform": "Plateforme",
       "workspace": "Atelier",
-      "studio_pulse": "Studio Pulse™"
+      "studio_pulse": "Blueprint Dashboard"
     },
-    "studio_pulse": "Studio Pulse",
+    "studio_pulse": "Blueprint Dashboard",
     "your_journeys": "Vos Journeys",
     "begin_journey": "Ouvrir un Journey",
     "inspirations": "Inspirations",
@@ -533,7 +533,7 @@
   },
   "inspirations": {
     "eyebrow": "Cultural Design Intelligence Layer",
-    "lede": "L'archive curatorial de l'atelier. Chaque référence est lue à travers le prisme culturel des marchés internationaux : atmosphère, matière, affinité éditoriale.",
+    "lede": "L'archive editorial de l'atelier. Chaque référence est lue à travers le prisme culturel des marchés internationaux : atmosphère, matière, affinité éditoriale.",
     "search": {
       "placeholder": "Recherche par atmosphère, matière, brand…"
     },
@@ -588,11 +588,11 @@
       "modifica_produttore": "Modifier le regard porté sur la maison",
       "moodboard": "Récit visuel de matières et d'inspirations",
       "moodboard_correlate": "Moodboards apparentés par la matière et le regard",
-      "nessuna_collezione_registrata_il_primo_capitolo_ed": "Aucune collection n'a encore été inscrite — le premier récit éditorial posera les fondations du regard curatorial porté sur la marque.",
+      "nessuna_collezione_registrata_il_primo_capitolo_ed": "Aucune collection n'a encore été inscrite — le premier récit éditorial posera les fondations du regard editorial porté sur la marque.",
       "riferimenti_editoriali": "Mémoire éditoriale du regard"
     },
     "brand_form": {
-      "aggiungi_all_atlante": "Inscrire dans votre atlas curatorial",
+      "aggiungi_all_atlante": "Inscrire dans votre atlas editorial",
       "annulla": "Interrompre le geste",
       "chiudi": "Refermer l'atelier",
       "es_atelier_sereno": "p. ex. Atelier Sereno",
@@ -621,7 +621,7 @@
       "salvataggio": "Archivage de votre regard"
     },
     "curated_collection": {
-      "description_placeholder": "Quel récit matériel et sensoriel se dessine au fil de cette constellation curatoriale ?",
+      "description_placeholder": "Quel récit matériel et sensoriel se dessine au fil de cette constellation editoriale ?",
       "descrizione_editoriale": "Récit de la matière"
     },
     "inspiration_detail": {
@@ -656,9 +656,9 @@
     },
     "product_gallery": {
       "aggiungi_al_moodboard": "Composer ce regard dans votre atelier de matières",
-      "ancora_nessuna_affinita_curatoriale_rilevata": "Aucune correspondance n'a encore été inscrite dans la mémoire curatoriale de votre atelier.",
+      "ancora_nessuna_affinita_curatoriale_rilevata": "Aucune correspondance n'a encore été inscrite dans la mémoire editoriale de votre atelier.",
       "atmosfera": "Émotions sensorielles et récit matériel",
-      "atmosfera_in_lettura_curatoriale": "L'atmosphère déchiffrée selon le regard curatorial de l'atelier",
+      "atmosfera_in_lettura_curatoriale": "L'atmosphère déchiffrée selon le regard editorial de l'atelier",
       "curatela_editoriale_non_raccomandazione_algoritmic": "Un regard éditorial porté par la main humaine — jamais le reflet d'un algorithme.",
       "feedback_title": "Retours d'atelier et récit d'usage",
       "in_attesa_di_riscontro_dal_cliente": "En attente du regard du client sur cette proposition de matière",
@@ -669,7 +669,7 @@
       "sto_leggendo_le_relazioni": "Je parcours les récits de matière en cours de constitution"
     },
     "studio_collections": {
-      "archivio_curatoriale_dello_studio": "Mémoire curatoriale de l'atelier",
+      "archivio_curatoriale_dello_studio": "Mémoire editoriale de l'atelier",
       "importa_il_primo_catalogo": "Ouvrez le premier récit des matières qui habitera votre atelier",
       "nessuna_collezione_importata_inizia_caricando_un_c": "L'atelier attend sa première matière : commencez par déposer un catalogue fournisseur pour composer votre récit.",
       "tutti_i_produttori_e_le_collezioni_che_lo_studio_h": "L'atlas des maisons et des collections que l'atelier a choisi d'inscrire dans son regard créatif."
@@ -1652,7 +1652,7 @@
     },
     "atelier_dashboard": {
       "title": "Dashboard Atelier",
-      "sub": "Curatez l'imagerie hero, la copy cinématographique et les citations d'inspiration pour Studio Pulse™. Surcharges par langue."
+      "sub": "Curatez l'imagerie hero, la copy cinématographique et les citations d'inspiration pour Blueprint Dashboard. Surcharges par langue."
     }
   },
   "site": {
@@ -2037,7 +2037,7 @@
     "brand_atlas": {
       "empty_lede": "L'atlas des maisons et des matières attend son premier geste : ajoutez un producteur ou importez un catalogue pour que le récit prenne forme.",
       "eyebrow": "Brand Atlas™ · cartographie sensible des éditeurs de matière",
-      "lead": "Parcourez l'écriture formelle, la mémoire matérielle et le geste créatif des maisons présentes dans MOOD, où chaque signature compose une page vivante de notre atlas curatorial.",
+      "lead": "Parcourez l'écriture formelle, la mémoire matérielle et le geste créatif des maisons présentes dans MOOD, où chaque signature compose une page vivante de notre atlas editorial.",
       "title_em": "vocabulaires de l'atelier",
       "title_lead": "Les créateurs tels que"
     },
@@ -2067,7 +2067,7 @@
       "head_title_lead": "Composez votre récit visuel avec la précision d'un geste d'atelier",
       "tray_empty_line1": "Marquez les présences qui fondent votre récit visuel.",
       "tray_empty_line2": "Ils rejoindront ensemble la trame du récit visuel que vous composez.",
-      "tray_eyebrow": "Plateau de l'écriture curatoriale"
+      "tray_eyebrow": "Plateau de l'écriture editoriale"
     },
     "editor_panel": {
       "curatorial_cta_eyebrow": "Table de travail éditorial"
@@ -2126,7 +2126,7 @@
           "afternoon": "Bon après-midi",
           "evening": "Bonsoir"
         },
-        "eyebrow": "Studio Pulse™ · Rythme du Projet",
+        "eyebrow": "Blueprint Dashboard · Rythme du Projet",
         "summary_template": "{active} parcours en souffle · {voices} voix reçues aujourd'hui",
         "signature": "Donnons forme à des espaces qui touchent."
       },
@@ -2176,7 +2176,7 @@
       "back": "Retour aux paramètres",
       "eyebrow": "Atelier · Identité du Studio",
       "title": "Dashboard Atelier",
-      "lede": "Curatez la copy du hero, l'imagerie cinématographique et la bibliothèque de citations qui composent le tableau de bord Studio Pulse™. Les surcharges par langue s'appliquent en cascade.",
+      "lede": "Curatez la copy du hero, l'imagerie cinématographique et la bibliothèque de citations qui composent le tableau de bord Blueprint Dashboard. Les surcharges par langue s'appliquent en cascade.",
       "tab": {
         "copy": "Hero & Sections",
         "media": "Bibliothèque Média",

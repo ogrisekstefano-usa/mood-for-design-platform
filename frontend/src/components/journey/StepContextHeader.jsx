@@ -68,7 +68,7 @@ const StepContextHeader = ({
   return <header className="sw-context" data-testid="sw-context-header">
       {/* Breadcrumb editoriale */}
       <nav className="sw-context__crumbs" aria-label={t("journey.step_context_header.posizione_nel_journey")}>
-        <Link to="/dashboard" data-testid="sw-crumb-pulse">Studio Pulse</Link>
+        <Link to="/dashboard" data-testid="sw-crumb-pulse">Blueprint Dashboard</Link>
         <span className="sw-crumb-sep" aria-hidden="true">/</span>
         <Link to={`/workspace/projects/${projectId}`} data-testid="sw-crumb-journey">
           {project?.title || 'Journey'}

@@ -188,15 +188,15 @@
     "section": {
       "home": "الرئيسية",
       "design_journey": "Design Journey",
-      "curatorial_atlas": "Curatorial Atlas",
+      "curatorial_atlas": "Brand Atlas™",
       "client_relations": "العلاقات مع العملاء",
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
       "platform": "المنصة",
       "workspace": "ورشة الأثر",
-      "studio_pulse": "Studio Pulse™"
+      "studio_pulse": "Blueprint Dashboard"
     },
-    "studio_pulse": "Studio Pulse",
+    "studio_pulse": "Blueprint Dashboard",
     "your_journeys": "رحلاتك",
     "begin_journey": "ابدأ Journey",
     "inspirations": "Inspirations",
@@ -393,7 +393,7 @@
   },
   "dashboard": {
     "pulse": {
-      "eyebrow": "Studio Pulse™ · إيقاع المشروع",
+      "eyebrow": "Blueprint Dashboard · إيقاع المشروع",
       "loading_title": "قراءة إيقاع المشروع…",
       "greet": {
         "morning": "صباح الخير",
@@ -1173,7 +1173,7 @@
   },
   "moodboards": {
     "archive": {
-      "cta": "ادخل إلى Studio Pulse",
+      "cta": "ادخل إلى Blueprint Dashboard",
       "eyebrow": "ذاكرة مفتوحة · إطلاق G.6",
       "lede": "هذا أرشيف بصري يحفظ ذاكرة اللوحات المؤلّفة عبر كل الرحلات، بينما يتمّ النسج الحقيقي ضمن فصل Moodboard Direction™ في قلب كل Journey على حدة."
     },
@@ -1662,7 +1662,7 @@
     },
     "atelier_dashboard": {
       "title": "لوحة الورشة",
-      "sub": "نظِّم صور البطل والنص السينمائي واقتباسات الإلهام لـ Studio Pulse™. تجاوزات لكل لغة."
+      "sub": "نظِّم صور البطل والنص السينمائي واقتباسات الإلهام لـ Blueprint Dashboard. تجاوزات لكل لغة."
     }
   },
   "site": {
@@ -2128,7 +2128,7 @@
           "afternoon": "مساء الخير",
           "evening": "مساء الخير"
         },
-        "eyebrow": "Studio Pulse™ · إيقاع المشروع",
+        "eyebrow": "Blueprint Dashboard · إيقاع المشروع",
         "summary_template": "{active} رحلات في تنفّس · {voices} أصوات وصلت اليوم",
         "signature": "لِنشكّل فضاءات جميلة معاً."
       },
@@ -2178,7 +2178,7 @@
       "back": "العودة إلى الإعدادات",
       "eyebrow": "الورشة · هوية الاستوديو",
       "title": "لوحة الورشة",
-      "lede": "نظِّم نص البطل والصور السينمائية ومكتبة اقتباسات الإلهام التي تُشكِّل لوحة Studio Pulse™. تُطبَّق التجاوزات حسب اللغة تلقائياً.",
+      "lede": "نظِّم نص البطل والصور السينمائية ومكتبة اقتباسات الإلهام التي تُشكِّل لوحة Blueprint Dashboard. تُطبَّق التجاوزات حسب اللغة تلقائياً.",
       "tab": {
         "copy": "البطل والأقسام",
         "media": "مكتبة الوسائط",

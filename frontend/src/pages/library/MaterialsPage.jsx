@@ -213,7 +213,7 @@ const MaterialsPage = () => {
           NON un workspace. Le materie scelte vivono nel capitolo
           Material Direction™ del singolo Journey. */}
       <div className="px-10 pt-10">
-        <ArchiveBanner testid="materials-archive-banner" eyebrow="Archivio trasversale · Sprint G.6" title={t("library.materials.le_materie_scelte_vivono_dentro_i_loro_journey")} lede="Questo archivio elenca ogni voce materica registrata dallo studio. Selezione, alternative e decisioni materiche di un progetto si incontrano invece nel capitolo Material Direction™ del Journey." ctaLabel="Apri Studio Pulse" ctaTo="/dashboard" />
+        <ArchiveBanner testid="materials-archive-banner" eyebrow="Archivio · Sprint G.6" title={t("library.materials.le_materie_scelte_vivono_dentro_i_loro_journey")} lede="Questo archivio elenca ogni voce materica registrata dallo studio. Selezione, alternative e decisioni materiche di un progetto si trovano nel Material Direction™ del Design Journey." ctaLabel="Apri Blueprint Dashboard" ctaTo="/dashboard" />
       </div>
       {/* Hero */}
       <div className="px-10 pt-10 pb-8 border-b border-[var(--bp-border)]">

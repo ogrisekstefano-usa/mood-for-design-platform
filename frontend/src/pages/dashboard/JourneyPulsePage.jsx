@@ -17,18 +17,18 @@ import { useT, useBlueprint } from '../../contexts/BlueprintContext';
 import { useNewRelationship } from '../../hooks/useNewRelationship';
 import './journey-pulse.css';
 
-// ITER179 · empty-state CTA che apre il modale Nuova Relazione™
+// ITER179 · empty-state CTA che apre il modale CRM (Nuovo Lead)
 const NewRelationshipCta = () => {
   const { open } = useNewRelationship();
   return (
     <button
       type="button"
-      onClick={() => open()}
+      onClick={() => open({ choice: 'lead' })}
       className="jp-empty__cta"
       data-testid="jp-empty-new-relationship-cta"
     >
       <Plus size={13} strokeWidth={1.5} style={{ marginRight: 6, verticalAlign: '-2px' }} />
-      Nuova Relazione
+      Nuovo Lead
     </button>
   );
 };

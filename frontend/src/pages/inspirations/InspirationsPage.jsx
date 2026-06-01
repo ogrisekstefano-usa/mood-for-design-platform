@@ -91,7 +91,7 @@ const InspirationsPage = () => {
             <Icons.Search size={13} strokeWidth={1.5} />
             <input
               type="text"
-              placeholder={t('inspirations.search.placeholder', null, 'Search by atmosphere, material, brand…')}
+              placeholder={t('inspirations.search.placeholder', null, 'Search by style, material, brand…')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') load(); }}
@@ -237,7 +237,7 @@ const FilterBar = ({ config, value, onChange, t }) => {
   return (
     <div className="ins-filter-bar" data-testid="inspirations-filters">
       <Sel name="market"     options={config.markets}              placeholder={t('inspirations.filter.market',     null, 'Mercato')}     testid="ins-filter-market" />
-      <Sel name="atmosphere" options={config.atmosphere_tags}      placeholder={t('inspirations.filter.atmosphere', null, 'Atmosfera')}   testid="ins-filter-atmosphere" />
+      <Sel name="atmosphere" options={config.atmosphere_tags}      placeholder={t('inspirations.filter.atmosphere', null, 'Stile')}   testid="ins-filter-atmosphere" />
       <Sel name="material"   options={config.material_tags}        placeholder={t('inspirations.filter.material',   null, 'Materia')}     testid="ins-filter-material" />
       {config.product_categories && config.product_categories.length > 0 && (
         <Sel name="product_category"

@@ -101,7 +101,7 @@
     "searchPlaceholder": "Search by name, email, city…",
     "viewTable": "Table",
     "viewKanban": "Kanban",
-    "ctaNew": "New relationship",
+    "ctaNew": "New Lead",
     "sidebarTitle": "Relationships",
     "filters": {
       "all": "All relationships",
@@ -155,8 +155,8 @@
       "reopen": "Reopen"
     },
     "newModal": {
-      "eyebrow": "New relationship",
-      "title": "Open a new relationship",
+      "eyebrow": "New Lead",
+      "title": "Open a new lead",
       "accountName": "Account / family / studio name",
       "accountType": "Account type",
       "source": "Source",
@@ -218,7 +218,7 @@
         "eyebrow": "Evolution"
       },
       "materials": {
-        "title": "Matter and atmosphere",
+        "title": "Matter and style",
         "empty_lede": "Materials shared by the studio will appear here.",
         "empty_title": "No materials yet",
         "eyebrow": "Materials"
@@ -329,8 +329,8 @@
   },
   "dashboard": {
     "pulse": {
-      "eyebrow": "Studio Pulse™ · project rhythm",
-      "loading_title": "Reading the project rhythm…",
+      "eyebrow": "Blueprint Dashboard · project cadence",
+      "loading_title": "Reading the project cadence…",
       "greet": {
         "morning": "Good morning",
         "afternoon": "Good afternoon",
@@ -453,15 +453,15 @@
     "section": {
       "home": "Home",
       "design_journey": "Design Journey",
-      "curatorial_atlas": "Curatorial Atlas",
+      "curatorial_atlas": "Brand Atlas™",
       "client_relations": "Client Relations",
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
       "platform": "Platform",
       "workspace": "Workspace",
-      "studio_pulse": "Studio Pulse™"
+      "studio_pulse": "Blueprint Dashboard"
     },
-    "studio_pulse": "Studio Pulse",
+    "studio_pulse": "Blueprint Dashboard",
     "your_journeys": "Your Journeys",
     "begin_journey": "Begin a Journey",
     "inspirations": "Inspirations",
@@ -540,7 +540,7 @@
       "aggiungi_cta": "Add Call to Action"
     },
     "studio": {
-      "mood_placeholder": "Atmosphere, material, cadence",
+      "mood_placeholder": "Style, material, cadence",
       "tag_input_placeholder": "add a tag…",
       "status_live": "Live"
     },
@@ -552,9 +552,9 @@
   },
   "inspirations": {
     "eyebrow": "Cultural Design Intelligence Layer",
-    "lede": "The studio's curatorial archive. Every reference is read through the cultural lens of international markets: atmosphere, material, editorial affinity.",
+    "lede": "The studio's studio archive. Every reference is read through the cultural lens of international markets: style, material, editorial affinity.",
     "search": {
-      "placeholder": "Search by atmosphere, material, brand…"
+      "placeholder": "Search by style, material, brand…"
     },
     "cta": {
       "import_catalog": "Import supplier catalog",
@@ -579,7 +579,7 @@
     },
     "filter": {
       "market": "Market",
-      "atmosphere": "Atmosphere",
+      "atmosphere": "Style",
       "material": "Material",
       "product_category": "Furnishing category",
       "luxury": "Luxury tone",
@@ -590,7 +590,7 @@
       "aggiungi_riferimento": "Aggiungi riferimento",
       "url_della_reference": "URL della reference",
       "descrizione_editoriale_opzionale": "Descrizione editoriale (opzionale)",
-      "atmosfera": "Atmosphere",
+      "atmosfera": "Style",
       "carica_un_immagine_oppure_incolla_un_link_pinteres": "Upload an image, or paste a Pinterest, Instagram, or any other URL.\nMOOD adds it to the Media Library and makes it available system-wide.",
       "carica_file": "Upload file",
       "pinterest_instagram_o_link_diretto_mood_prova_a_es": "Pinterest, Instagram, or a direct link. MOOD will attempt to extract the hero image — if it can't, the link is saved anyway and you can update the cover later.",
@@ -604,7 +604,7 @@
       "riferimenti_editoriali": "Riferimenti editoriali",
       "moodboard_correlate": "Moodboard correlate",
       "continua_la_lettura": "Continua la lettura",
-      "nessuna_collezione_registrata_il_primo_capitolo_ed": "No collections on record yet — this opening chapter begins the brand's curatorial narrative.",
+      "nessuna_collezione_registrata_il_primo_capitolo_ed": "No collections on record yet — this first collection records the brand's brand profile.",
       "modifica_produttore": "Edit manufacturer",
       "aggiungi_capitolo_editoriale": "Add editorial chapter",
       "modifica_collezione": "Edit collection",
@@ -622,8 +622,8 @@
     "brand_mode": {
       "entra_nell_atelier": "Step into the atelier",
       "nessun_produttore_corrisponde_alla_ricerca": "No manufacturers match your search",
-      "l_atlante_curatoriale_e_in_costruzione_aggiungi_un": "Your curatorial atlas is still taking shape. Add a manufacturer or import a catalog to begin browsing.",
-      "esplora_i_marchi_le_collezioni_e_il_linguaggio_pro": "Explore the brands, collections, and design vocabulary of the manufacturers featured in MOOD.\nEach brand is a study in itself — prevailing atmospheres, recurring material vocabularies, narrative geographies where it appears across your work.",
+      "l_atlante_curatoriale_e_in_costruzione_aggiungi_un": "Your Brand Atlas™ is still taking shape. Add a manufacturer or import a catalog to begin browsing.",
+      "esplora_i_marchi_le_collezioni_e_il_linguaggio_pro": "Explore the brands, collections, and design vocabulary of the manufacturers featured in MOOD.\nEach brand is profiled individually — prevailing styles, recurring material vocabularies, narrative geographies where it appears across your work.",
       "aggiungi_produttore": "Add manufacturer",
       "tutti_i_posizionamenti": "tutti i posizionamenti",
       "cerca_per_nome_atmosfera_materia": "Search by name, mood, or material…",
@@ -637,16 +637,16 @@
       "aggiungi_collezione": "Add to collection",
       "annulla": "Cancel",
       "chiudi": "Close",
-      "il_linguaggio_progettuale_di_questo_capitolo_le_ma": "The design language of this chapter, its prevailing materials, the atmosphere."
+      "il_linguaggio_progettuale_di_questo_capitolo_le_ma": "The design language of this chapter, its prevailing materials, the style."
     },
     "curated_collection": {
       "descrizione_editoriale": "Descrizione editoriale",
-      "description_placeholder": "What does this curatorial chapter gather?"
+      "description_placeholder": "What does this collection gather?"
     },
     "inspiration_detail": {
       "apertura_del_riferimento": "Apertura del riferimento…",
       "modifica": "Edit",
-      "atmosfera": "Atmosphere",
+      "atmosfera": "Style",
       "le_percentuali_sono_secondarie_il_significato_e_ne": "The percentages are secondary. What matters is the editorial interpretation above.",
       "mood_sta_leggendo_il_linguaggio_culturale_di_quest": "MOOD is reading the cultural language of this reference…",
       "adatta_la_direzione_editoriale_per_questo_riferime": "Adapt the editorial direction for this reference",
@@ -675,20 +675,20 @@
     },
     "product_gallery": {
       "moodboard_priority": "Moodboard priority",
-      "atmosfera": "Atmosphere",
+      "atmosfera": "Style",
       "linguaggio_progettuale_dello_studio": "The studio's design language",
       "in_attesa_di_riscontro_dal_cliente": "In attesa di riscontro dal cliente",
       "curatela_editoriale_non_raccomandazione_algoritmic": "Curatela editoriale — non raccomandazione algoritmica.",
       "sto_leggendo_le_relazioni": "Sto leggendo le relazioni…",
-      "ancora_nessuna_affinita_curatoriale_rilevata": "No curatorial affinities identified yet.",
+      "ancora_nessuna_affinita_curatoriale_rilevata": "No brand affinities identified yet.",
       "product_gallery_visual_atelier": "Product Gallery™ · Visual Atelier",
-      "atmosfera_in_lettura_curatoriale": "Atmosfera in lettura curatoriale",
+      "atmosfera_in_lettura_curatoriale": "Atmosfera in lettura editoriale",
       "salva_in_references": "Salva in References™",
       "aggiungi_al_moodboard": "Add to moodboard",
-      "feedback_title": "Client signals"
+      "feedback_title": "Client feedback"
     },
     "studio_collections": {
-      "archivio_curatoriale_dello_studio": "Studio curatorial archive",
+      "archivio_curatoriale_dello_studio": "Studio studio archive",
       "nessuna_collezione_importata_inizia_caricando_un_c": "No collections imported. Start by uploading a supplier catalog.",
       "importa_il_primo_catalogo": "Importa il primo catalogo",
       "tutti_i_produttori_e_le_collezioni_che_lo_studio_h": "All producers and collections the studio has added to its own registry."
@@ -703,7 +703,7 @@
     "supplier_import": {
       "wizard_step_aria": "Wizard progress",
       "search_placeholder": "Search a maker (Minotti, Poliform, …)",
-      "atmosphere_title": "Habitual atmosphere"
+      "atmosphere_title": "Habitual style"
     }
   },
   "editorial": {
@@ -755,7 +755,7 @@
       "tutti_i_mercati": "Tutti i mercati"
     },
     "editorial_calendar": {
-      "nessun_segnale_operativo_critico_il_ritmo_editoria": "No critical operational signals. Editorial rhythm is balanced across active markets."
+      "nessun_segnale_operativo_critico_il_ritmo_editoria": "No critical operational alerts. Editorial cadence is balanced across active markets."
     },
     "market_editions_toolbar": {
       "annulla": "Cancel",
@@ -763,7 +763,7 @@
       "apri_calendario": "Apri Calendario",
       "la_direzione_editoriale_globale_da_cui_nasceranno": "The global editorial direction from which the Market Editions will emerge.",
       "scegli_il_mercato_di_destinazione_tono_cta_e_ritmo": "Choose your destination market. Tone, calls-to-action, and pacing will adapt to the local culture.",
-      "una_frase_che_cattura_l_atmosfera_non_un_brief_tec": "A phrase that captures the atmosphere, not a technical brief."
+      "una_frase_che_cattura_l_atmosfera_non_un_brief_tec": "A phrase that captures the style, not a technical brief."
     },
     "public_preview": {
       "mercato_editoriale": "Mercato editoriale",
@@ -795,7 +795,7 @@
       }
     },
     "intelligence": {
-      "empty": "No critical operational signals. The editorial cadence is balanced across active markets."
+      "empty": "No critical operational alerts. The editorial cadence is balanced across active markets."
     }
   },
   "clientpreview": {
@@ -917,11 +917,11 @@
       "una_sensazione_un_dettaglio_che_senti_piu_vicino_u": "A feeling, a detail that resonates with you, a reference you'd like to share with the studio.",
       "condividi_una_voce": "Share an entry",
       "aggiungi_un_riferimento": "Aggiungi un riferimento",
-      "condividi_una_atmosfera": "Share an atmosphere",
+      "condividi_una_atmosfera": "Share an style",
       "aggiungi_una_nota": "Add a note",
       "annulla": "Cancel",
       "chiudi": "Close",
-      "url_di_un_immagine_che_racconta_l_atmosfera": "Image URL that captures the atmosphere",
+      "url_di_un_immagine_che_racconta_l_atmosfera": "Image URL that captures the style",
       "una_nota_privata_per_lo_studio_facoltativa": "Una nota privata per lo studio (facoltativa)"
     }
   },
@@ -1007,15 +1007,15 @@
   "cultural": {
     "cultural_edition_review": {
       "revisione_editoriale": "Revisione editoriale",
-      "atmosfera_originaria": "Primordial atmosphere",
+      "atmosfera_originaria": "Primordial style",
       "corpo_editoriale": "Corpo editoriale",
-      "atmosfera": "Atmosphere",
+      "atmosfera": "Style",
       "status_updated": "Status updated"
     },
     "cultural_editions_list": {
       "le_tue_versioni_mercato": "Your market versions.",
       "nessuna_edizione_ancora": "No editions yet.",
-      "lede": "Every edition is an editorial act: a piece of your content adapted to a specific market culture — tone, references, atmosphere.",
+      "lede": "Every edition is an editorial act: a piece of your content adapted to a specific market culture — tone, references, style.",
       "new_edition": "New edition"
     },
     "cultural_edition": {
@@ -1027,7 +1027,7 @@
       "hai_personalizzato_la_direzione_del_mercato": "Hai personalizzato la direzione del mercato.",
       "briefing_al_caporedattore_opzionale": "Briefing al caporedattore (opzionale)",
       "revisione_editoriale_prima_di_creare": "Revisione editoriale prima di creare.",
-      "atmosfera": "Atmosphere",
+      "atmosfera": "Style",
       "suggerita_dal_mercato": "· suggerita dal mercato",
       "mood_prende_un_tuo_contenuto_e_ne_prepara_una_vers": "DNT0 takes your content and crafts an editorial version tuned to the culture of your target market—not machine translation, but guided editorial adaptation.",
       "showcase_e_selezioni_materiali_sono_in_lavorazione": "Showcase e selezioni materiali sono in lavorazione — al momento puoi inserire un riferimento manuale.",
@@ -1082,8 +1082,8 @@
       "il_primo_capitolo_apre_la_conversazione_progettual": "The first chapter opens the design conversation with the client.",
       "titolo_del_capitolo_es_luce_mediterranea": "Chapter Title (e.g., Mediterranean Light)",
       "cosa_cambia_in_questo_capitolo_in_poche_righe": "Cosa cambia in questo capitolo — in poche righe",
-      "il_perche_di_questa_direzione_materia_luce_atmosfe": "Why this direction — material, light, atmosphere, design language",
-      "racconta_a_parole_tue_un_atmosfera_un_riferimento": "Tell us in your own words—an atmosphere, a reference, a feeling…"
+      "il_perche_di_questa_direzione_materia_luce_atmosfe": "Why this direction — material, light, style, design language",
+      "racconta_a_parole_tue_un_atmosfera_un_riferimento": "Tell us in your own words—an style, a reference, a feeling…"
     },
     "moodboard_direction_workspace": {
       "direzione_editoriale": "Direzione editoriale",
@@ -1122,7 +1122,7 @@
     "archive": {
       "eyebrow": "Cross-Journey archive · Sprint G.6",
       "lede": "This is an archive view that lets you rediscover moodboards composed across every Journey. True composition happens inside the Moodboard Direction™ chapter of each Journey.",
-      "cta": "Open Studio Pulse"
+      "cta": "Open Blueprint Dashboard"
     },
     "eyebrow": "Design Journey · Creative Table",
     "filter": {
@@ -1263,7 +1263,7 @@
       "brightness": "Brightness",
       "caption": "Caption",
       "chapter": "Chapter",
-      "chapterPlaceholder": "e.g. Material atmosphere",
+      "chapterPlaceholder": "e.g. Material style",
       "color": "Color",
       "colors": "Colors",
       "contrast": "Contrast",
@@ -1576,7 +1576,7 @@
     },
     "atelier_dashboard": {
       "title": "Dashboard Atelier",
-      "sub": "Curate hero imagery, cinematic copy and daily inspiration quotes for Studio Pulse™. Per-locale overrides."
+      "sub": "Curate hero imagery, editorial copy and inspiration quotes for Blueprint Dashboard. Per-locale overrides."
     }
   },
   "site": {
@@ -1627,8 +1627,8 @@
         "cinematic": "Cinematic"
       },
       "step1": {
-        "eyebrow": "First Step · Atmosphere",
-        "short": "Atmosphere"
+        "eyebrow": "First Step · Style",
+        "short": "Style"
       },
       "step2": {
         "eyebrow": "Second Step · How You Live",
@@ -1648,12 +1648,12 @@
       "questo_link_non_e_piu_disponibile": "This link is no longer available.",
       "aprendo_il_tuo_design_journey": "Opening your DNT0…",
       "lo_studio_che_ti_accompagna": "Lo studio che ti accompagna:",
-      "l_atmosfera_che_cerchi": "The atmosphere you're looking for",
+      "l_atmosfera_che_cerchi": "The style you're looking for",
       "il_modo_in_cui_vivi": "Il modo in cui vivi ·",
       "capitolo_primo_brief_cliente": "Chapter One · Client Brief",
       "forse_il_viaggio_e_stato_gia_archiviato_o_il_link": "This page may have been archived — or the link has changed.\n            Reach out to the studio and we'll help you find it.",
       "il_tuo_design_journey_e_iniziato": "Your Design Journey™ has begun",
-      "questo_e_il_tuo_design_journey_tutto_cio_che_condi": "This is your Design Journey™. Everything we share from here forward will live in this space—chapters, atmospheres, conversations.",
+      "questo_e_il_tuo_design_journey_tutto_cio_che_condi": "This is your Design Journey™. Everything we share from here forward will live in this space—chapters, styles, conversations.",
       "salva_questo_link_e_la_porta_del_tuo_design_journe": "Save this link — it's your gateway to Design Journey.\nThe studio will be in touch soon at the email you shared."
     }
   },
@@ -1691,7 +1691,7 @@
       "url_del_pin": "URL del pin",
       "stiamo_salvando_l_url_del_pin_scraping_automatico": "We're saving the pin URL. Automatic scraping—title, image, and description—will roll out in Phase P2 with the official Pinterest API integration.",
       "annulla": "Cancel",
-      "es_hospitality_emotion_material_atmosphere": "Es. Hospitality emotion · Material atmosphere",
+      "es_hospitality_emotion_material_atmosphere": "Es. Hospitality emotion · Material style",
       "perche_questo_riferimento_entra_nell_archivio": "Why does this reference belong in the archive?",
       "scegli_un_asset_dalla_library": "Select an asset from the Library"
     },
@@ -1791,7 +1791,7 @@
   "onboarding": {
     "owner_introduction": {
       "presentati_ai_tuoi_clienti": "Introduce yourself to your clients.",
-      "foto_ruolo_e_bio_sono_visibili_a_ogni_cliente_del": "Your photo, role, and bio are visible to every client at your studio. It's the first signal of care they'll receive.",
+      "foto_ruolo_e_bio_sono_visibili_a_ogni_cliente_del": "Your photo, role, and bio are visible to every client at your studio. It's the first sign of care they'll receive.",
       "annulla": "Cancel",
       "conferma_foto": "Confirm photo",
       "salva_e_pubblica": "Save and Publish",
@@ -1821,7 +1821,7 @@
       "moodboards": {
         "eyebrow": "Moodboards",
         "title": "Your moodboards will land here.",
-        "body": "Our team is selecting images, materials and atmospheres to compose the first visual directions for your project."
+        "body": "Our team is selecting images, materials and styles to compose the first visual directions for your project."
       },
       "timeline": {
         "eyebrow": "Timeline",
@@ -2042,16 +2042,16 @@
   },
   "atelier_voice": {
     "curatorial_modal": {
-      "tray_eyebrow": "Curatorial table",
+      "tray_eyebrow": "Brand table",
       "tray_empty_line1": "Mark the references that matter most.",
       "tray_empty_line2": "They’ll travel into the moodboard together.",
-      "head_eyebrow": "Curatorial table · Inspirations™",
+      "head_eyebrow": "Brand table · Inspirations™",
       "head_title_lead": "Compose",
       "head_title_em": "design references",
-      "empty_lede": "Broaden the atmosphere, materiality or geography to read other design languages from the studio."
+      "empty_lede": "Broaden the style, materiality or geography to read other design languages from the studio."
     },
     "editor_panel": {
-      "curatorial_cta_eyebrow": "Curatorial table"
+      "curatorial_cta_eyebrow": "Brand table"
     },
     "material_direction": {
       "eyebrow": "Material direction"
@@ -2080,7 +2080,7 @@
       "eyebrow": "New activity"
     },
     "crm_accounts": {
-      "new_relationship_eyebrow": "CRM · New relationship"
+      "new_relationship_eyebrow": "CRM · New Lead"
     },
     "cultural_edition": {
       "palette_label": "Material palette"
@@ -2094,20 +2094,20 @@
       "new_master_short": "New master"
     },
     "insights": {
-      "signature_label": "Curatorial signature"
+      "signature_label": "Editorial signature"
     },
     "add_inspiration": {
       "main_material_label": "Primary material"
     },
     "brand_detail": {
       "atlas_eyebrow": "Curated atlas",
-      "reading_eyebrow": "Curatorial reading",
+      "reading_eyebrow": "Editorial reading",
       "count_collections": "collections",
       "count_products": "products",
       "count_references": "references"
     },
     "collection_form": {
-      "description_label": "Curatorial description"
+      "description_label": "Editorial description"
     },
     "curated_collection": {
       "new_collection": "New collection"
@@ -2152,7 +2152,7 @@
           "afternoon": "Good afternoon",
           "evening": "Good evening"
         },
-        "eyebrow": "Studio Pulse™ · Project Rhythm",
+        "eyebrow": "Blueprint Dashboard · Project Rhythm",
         "summary_template": "{active} Journeys unfolding · {voices} voices received today",
         "signature": "Let's shape beautiful spaces."
       },
@@ -2202,7 +2202,7 @@
       "back": "Back to settings",
       "eyebrow": "Atelier · Studio Identity",
       "title": "Dashboard Atelier",
-      "lede": "Curate the hero copy, cinematic imagery and inspiration quote library that compose the Studio Pulse™ dashboard. Per-locale overrides cascade automatically.",
+      "lede": "Curate the hero copy, cinematic imagery and inspiration quote library that compose the Blueprint Dashboard dashboard. Per-locale overrides cascade automatically.",
       "tab": {
         "copy": "Hero & Sections",
         "media": "Media Library",
@@ -2235,7 +2235,7 @@
     },
     "loader": {
       "phrase_preparing_atelier": "Preparing your atelier…",
-      "phrase_curating_atmosphere": "Curating the atmosphere…",
+      "phrase_curating_atmosphere": "Curating the style…",
       "phrase_opening_chapter": "Opening the next chapter…",
       "phrase_synchronizing_rhythm": "Synchronising the design rhythm…",
       "phrase_listening_voices": "Listening for voices in the studio…",
@@ -2243,7 +2243,7 @@
     },
     "media": {
       "eyebrow": "Atelier · Media Direction",
-      "title": "Compose the atmosphere.",
+      "title": "Compose the style.",
       "lede": "Upload, frame and grade the images that breathe through your dashboard. Every asset lives inside the atelier — no external links.",
       "drop_title": "Drop an image · or browse",
       "drop_hint": "JPG · PNG · WebP — up to 10 MB. We process the asset cinematically and store it inside the atelier.",
@@ -2258,11 +2258,11 @@
       "grain": "Grain",
       "vignette": "Vignette",
       "warmth": "Warmth",
-      "cyan": "Cyan atmosphere",
+      "cyan": "Cyan style",
       "overlay": "Overlay intensity",
       "metadata_label": "Asset metadata",
       "alt_text": "Alt text",
-      "alt_placeholder": "Architectural luxury interior · atmospheric warmth",
+      "alt_placeholder": "Architectural luxury interior · stylistic warmth",
       "kind": "Role",
       "locale_label": "Locale",
       "kind_hero": "Hero",

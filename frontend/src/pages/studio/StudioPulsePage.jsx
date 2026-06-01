@@ -106,7 +106,7 @@ const StudioPulsePage = () => {
         <p className="pulse-hero__sub">
           Le relazioni si muovono, rallentano, convergono.
           <br />
-          Studio Pulse™ osserva il ritmo curatoriale dello studio.
+          Blueprint Dashboard registra la cadenza progettuale dello studio.
         </p>
       </header>
 

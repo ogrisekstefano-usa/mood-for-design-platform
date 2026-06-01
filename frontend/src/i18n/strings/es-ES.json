@@ -329,7 +329,7 @@
   },
   "dashboard": {
     "pulse": {
-      "eyebrow": "Studio Pulse™ · ritmo del proyecto",
+      "eyebrow": "Blueprint Dashboard · ritmo del proyecto",
       "loading_title": "Leyendo el ritmo del proyecto…",
       "greet": {
         "morning": "Buenos días",
@@ -434,15 +434,15 @@
     "section": {
       "home": "Inicio",
       "design_journey": "Design Journey",
-      "curatorial_atlas": "Curatorial Atlas",
+      "curatorial_atlas": "Brand Atlas™",
       "client_relations": "Relaciones con Clientes",
       "content_studio": "Content Studio",
       "studio_os": "Studio OS",
       "platform": "Plataforma",
       "workspace": "Atelier",
-      "studio_pulse": "Studio Pulse™"
+      "studio_pulse": "Blueprint Dashboard"
     },
-    "studio_pulse": "Studio Pulse",
+    "studio_pulse": "Blueprint Dashboard",
     "your_journeys": "Tus Journeys",
     "begin_journey": "Abre un Journey",
     "inspirations": "Inspirations",
@@ -533,7 +533,7 @@
   },
   "inspirations": {
     "eyebrow": "Cultural Design Intelligence Layer",
-    "lede": "El archivo curatorial del estudio. Cada referencia se lee a través de la lente cultural de los mercados internacionales: atmósfera, materia, afinidad editorial.",
+    "lede": "El archivo editorial del estudio. Cada referencia se lee a través de la lente cultural de los mercados internacionales: atmósfera, materia, afinidad editorial.",
     "search": {
       "placeholder": "Busca por atmósfera, materia, brand…"
     },
@@ -588,7 +588,7 @@
       "modifica_produttore": "Editar identidad del fabricante",
       "moodboard": "Cuaderno de atmósfera",
       "moodboard_correlate": "Atmósferas afines",
-      "nessuna_collezione_registrata_il_primo_capitolo_ed": "Aún sin colecciones registradas — el primer relato abre la mirada curatorial sobre la identidad de la marca.",
+      "nessuna_collezione_registrata_il_primo_capitolo_ed": "Aún sin colecciones registradas — el primer relato abre la mirada editorial sobre la identidad de la marca.",
       "riferimenti_editoriali": "Referentes visuales del universo de marca"
     },
     "brand_form": {
@@ -621,7 +621,7 @@
       "salvataggio": "Guardar el gesto"
     },
     "curated_collection": {
-      "description_placeholder": "¿Qué materias y miradas reúne este capítulo curatorial?",
+      "description_placeholder": "¿Qué materias y miradas reúne este capítulo editorial?",
       "descrizione_editoriale": "Relato editorial"
     },
     "inspiration_detail": {
@@ -658,7 +658,7 @@
       "aggiungi_al_moodboard": "Guarde en su tablero de atmósferas",
       "ancora_nessuna_affinita_curatoriale_rilevata": "Aún no hemos encontrado afinidades en su atlas de materias y marcas",
       "atmosfera": "Atmósfera",
-      "atmosfera_in_lettura_curatoriale": "Atmósfera en clave curatorial",
+      "atmosfera_in_lettura_curatoriale": "Atmósfera en clave editorial",
       "curatela_editoriale_non_raccomandazione_algoritmic": "Curación editorial — no sugerencias automáticas",
       "feedback_title": "La mirada del cliente",
       "in_attesa_di_riscontro_dal_cliente": "Pendiente de respuesta del atelier",
@@ -1652,7 +1652,7 @@
     },
     "atelier_dashboard": {
       "title": "Dashboard Atelier",
-      "sub": "Cura imágenes del hero, copy cinematográfica y citas inspiracionales para Studio Pulse™. Sobrescrituras por idioma."
+      "sub": "Cura imágenes del hero, copy cinematográfica y citas inspiracionales para Blueprint Dashboard. Sobrescrituras por idioma."
     }
   },
   "site": {
@@ -2126,7 +2126,7 @@
           "afternoon": "Buenas tardes",
           "evening": "Buenas noches"
         },
-        "eyebrow": "Studio Pulse™ · Ritmo del Proyecto",
+        "eyebrow": "Blueprint Dashboard · Ritmo del Proyecto",
         "summary_template": "{active} Journeys en respiración · {voices} voces recibidas hoy",
         "signature": "Demos forma a espacios bellos."
       },
@@ -2176,7 +2176,7 @@
       "back": "Volver a ajustes",
       "eyebrow": "Atelier · Identidad del Estudio",
       "title": "Dashboard Atelier",
-      "lede": "Cura la copy del hero, la imagen cinematográfica y la biblioteca de citas inspiracionales que componen el dashboard Studio Pulse™. Las sobrescrituras por idioma se aplican en cascada automática.",
+      "lede": "Cura la copy del hero, la imagen cinematográfica y la biblioteca de citas inspiracionales que componen el dashboard Blueprint Dashboard. Las sobrescrituras por idioma se aplican en cascada automática.",
       "tab": {
         "copy": "Hero y secciones",
         "media": "Biblioteca de medios",
