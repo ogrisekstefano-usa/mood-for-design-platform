@@ -73,7 +73,7 @@ const PrimaryCta = () => {
   const isJourneyMode = prospects > 0;
   const label = isJourneyMode
     ? t('nav.new_journey', null, 'Nuovo Design Journey™')
-    : t('nav.new_relationship', null, 'Nuova Relazione');
+    : t('nav.new_contact', null, 'Nuovo Contatto');
   const testid = isJourneyMode ? 'topbar-new-journey-cta' : 'topbar-new-relationship-cta';
   return (
     <button
