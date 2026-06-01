@@ -21,19 +21,20 @@ import React from 'react';
 import {
   CheckCircle2, Circle, ArrowRight, Sparkles,
   UserPlus, UserCheck, Compass, FolderOpen, CalendarRange,
-  Layers, Palette, Image as ImageIcon, FolderTree,
+  Layers, Image as ImageIcon, FolderTree,
 } from 'lucide-react';
 import { useActivationFoundation } from '../../hooks/useActivationFoundation';
 import { useSmartCtaRouter } from '../../hooks/useSmartCtaRouter';
 
 // ── Action library (route audit pass — tutti i path verificati in App.js) ─
 const A = {
-  newContact: {
-    key: 'new-contact',
+  newLead: {
+    key: 'new-lead',
     icon: UserPlus,
-    label: 'Nuovo Contatto',
+    label: 'Nuovo Lead',
     description: 'Registra un Lead e apri la Discovery.',
     route: 'modal:new-relationship',
+    opts: { choice: 'lead' },
   },
   qualifyProspect: {
     key: 'qualify-prospect',
@@ -92,23 +93,16 @@ const A = {
     description: 'Pianifica contenuti e cadenze.',
     route: '/blueprint/editorial-calendar',
   },
-  blueprintChameleon: {
-    key: 'blueprint-chameleon',
-    icon: Palette,
-    label: 'Blueprint Chameleon',
-    description: 'Stile visivo dello studio.',
-    route: '/settings',
-  },
 };
 
 /**
  * Priority function: dato lo stato del funnel CRM,
  * restituisce le Quick Actions ordinate per rilevanza.
  *
- * Scenario A — studio vuoto                : Nuovo Contatto, Media Library, Material View, Calendario, Blueprint
- * Scenario B — leads>0 & prospects=0       : Qualifica Prospect, Nuovo Contatto, Media Library, Calendario
- * Scenario C — prospects>0 & journeys=0    : Nuovo Journey, Media Library, Material View, Calendario
- * Scenario D — journeys>0 (regime)         : Apri Journey, Nuovo Journey, Materiali, Moodboard, Calendario
+ * Scenario A — studio vuoto                : Nuovo Lead, Nuovo Design Journey, Media Library, Material View, Calendario
+ * Scenario B — leads>0 & prospects=0       : Qualifica Prospect, Nuovo Lead, Media Library, Calendario
+ * Scenario C — prospects>0 & journeys=0    : Nuovo Design Journey, Media Library, Material View, Calendario
+ * Scenario D — journeys>0 (regime)         : Apri Journey, Nuovo Design Journey, Materiali, Moodboard, Calendario
  */
 function getQuickActionsForState(biz) {
   const leads     = biz?.leads || 0;
@@ -125,10 +119,10 @@ function getQuickActionsForState(biz) {
   }
   if (leads > 0) {
     // B
-    return [A.qualifyProspect, A.newContact, A.mediaLibrary, A.editorialCalendar];
+    return [A.qualifyProspect, A.newLead, A.mediaLibrary, A.editorialCalendar];
   }
-  // A — empty studio
-  return [A.newContact, A.mediaLibrary, A.materialView, A.editorialCalendar, A.blueprintChameleon];
+  // A — empty studio: Nuovo Lead + Nuovo Design Journey + Media Library + Material View + Calendario Editoriale
+  return [A.newLead, A.newJourney, A.mediaLibrary, A.materialView, A.editorialCalendar];
 }
 
 // ── Public component (mode-switch) ───────────────────────────────
@@ -142,9 +136,57 @@ export default function WorkspaceActionHub({ mode }) {
     return null;
   }
   if (resolvedMode === 'ready') {
-    return <HubReady />;
+    // ITER181.C: setup completato → il blocco scompare.
+    // Le Quick Actions vengono renderizzate come sezione standalone full-width.
+    return null;
   }
   return <HubSetup />;
+}
+
+/**
+ * Standalone Quick Actions section.
+ * - Setup mode in corso: NON renderizza (le actions vivono dentro il Hub).
+ * - Setup completato:    renderizza full-width come sezione operativa.
+ */
+export function StandaloneQuickActions() {
+  const { data } = useActivationFoundation();
+  const route = useSmartCtaRouter();
+  if (!data) return null;
+  // Mostriamo le Quick Actions standalone SOLO dopo il completamento del setup.
+  if (!data.activated) return null;
+  const quickActions = getQuickActionsForState(data.business_counts);
+  return (
+    <section
+      className="atd-section"
+      data-testid="dashboard-quick-actions"
+      data-hub-mode="ready-standalone"
+    >
+      <p className="atd-section__eyebrow">Quick Actions</p>
+      <div className="atd-hub__actions-rail" data-testid="standalone-quick-actions-rail">
+        {quickActions.map((a) => {
+          const Icon = a.icon;
+          return (
+            <button
+              key={a.key}
+              type="button"
+              className="atd-hub__action-card"
+              data-testid={`quick-action-${a.key}`}
+              onClick={() => route(a.route, a.opts || {})}
+            >
+              <span className="atd-hub__action-icon">
+                <Icon size={14} strokeWidth={1.6} />
+              </span>
+              <span className="atd-hub__action-body">
+                <span className="atd-hub__action-label">{a.label}</span>
+                <span className="atd-hub__action-desc">{a.description}</span>
+              </span>
+              <ArrowRight size={12} strokeWidth={1.7} className="atd-hub__action-arrow" />
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
 }
 
 // ── Setup mode (completion < 100%) ───────────────────────────────
@@ -253,55 +295,7 @@ function HubSetup() {
   );
 }
 
-// ── Ready mode (completion = 100%) — "Workspace Operativo" ───────
-function HubReady() {
-  const { data } = useActivationFoundation();
-  const route = useSmartCtaRouter();
-  const quickActions = getQuickActionsForState(data?.business_counts);
-  return (
-    <section
-      className="atd-section"
-      data-testid="dashboard-workspace-hub"
-      data-hub-mode="ready"
-    >
-      <div className="atd-hub" data-testid="workspace-hub-card">
-        <header className="atd-hub__ready" data-testid="workspace-hub-ready">
-          <Sparkles size={16} strokeWidth={1.7} className="atd-hub__ready-icon" />
-          <div>
-            <p className="atd-hub__eyebrow">Workspace Operativo</p>
-            <p className="atd-hub__ready-text">
-              Lo studio è configurato. Centro operativo attivo.
-            </p>
-          </div>
-        </header>
-
-        <div className="atd-hub__body atd-hub__body--ready">
-          <p className="atd-hub__col-eyebrow">Azioni rapide</p>
-          <div className="atd-hub__actions-rail" data-testid="workspace-hub-quick-actions">
-            {quickActions.map((a) => {
-              const Icon = a.icon;
-              return (
-                <button
-                  key={a.key}
-                  type="button"
-                  className="atd-hub__action-card"
-                  data-testid={`quick-action-${a.key}`}
-                  onClick={() => route(a.route, a.opts || {})}
-                >
-                  <span className="atd-hub__action-icon">
-                    <Icon size={14} strokeWidth={1.6} />
-                  </span>
-                  <span className="atd-hub__action-body">
-                    <span className="atd-hub__action-label">{a.label}</span>
-                    <span className="atd-hub__action-desc">{a.description}</span>
-                  </span>
-                  <ArrowRight size={12} strokeWidth={1.7} className="atd-hub__action-arrow" />
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+// HubReady removed in ITER181.C · Problem 9:
+// after setup completion the hub disappears entirely;
+// Quick Actions become a standalone full-width section
+// rendered by <StandaloneQuickActions />.

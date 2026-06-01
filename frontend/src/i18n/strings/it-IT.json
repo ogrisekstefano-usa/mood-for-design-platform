@@ -459,12 +459,12 @@
       "studio_os": "Studio OS",
       "platform": "Platform",
       "workspace": "Workspace",
-      "studio_pulse": "Studio Pulse™"
+      "studio_pulse": "Blueprint Dashboard"
     },
-    "studio_pulse": "Studio Pulse",
-    "your_journeys": "I tuoi Journey",
-    "begin_journey": "Inizia un Journey",
-    "journey_index": "Indice Journey",
+    "studio_pulse": "Blueprint Dashboard",
+    "your_journeys": "I tuoi Design Journey",
+    "begin_journey": "+ Nuovo Design Journey",
+    "journey_index": "Design Journey",
     "settings_workspace": "Impostazioni Workspace",
     "client_relations_leads": "Leads",
     "client_relations_prospects": "Prospects",
@@ -512,7 +512,8 @@
     "workspace_switcher": "Spazio di lavoro",
     "new_journey": "Nuovo Design Journey™",
     "new_relationship": "Nuova Relazione",
-    "new_contact": "Nuovo Contatto"
+    "new_contact": "Nuovo Contatto",
+    "new_lead": "Nuovo Lead"
   },
   "projects": {
     "tabs": {
@@ -1133,7 +1134,7 @@
     "archive": {
       "eyebrow": "Archivio trasversale · Sprint G.6",
       "lede": "Questa è una vista d'archivio per ritrovare le moodboard composte attraverso tutti i Journey. La composizione vera avviene nel progetto Moodboard Direction™ del singolo Journey.",
-      "cta": "Apri Studio Pulse"
+      "cta": "Apri Blueprint Dashboard"
     },
     "eyebrow": "Design Journey · Tavolo Creativo",
     "filter": {
@@ -1587,7 +1588,7 @@
     },
     "atelier_dashboard": {
       "title": "Dashboard Atelier",
-      "sub": "Cura immagini hero, copy  e citazioni ispirazionali per Studio Pulse™. Sovrascritture per lingua."
+      "sub": "Cura immagini hero, copy  e citazioni ispirazionali per Blueprint Dashboard. Sovrascritture per lingua."
     }
   },
   "site": {
@@ -2163,7 +2164,7 @@
           "afternoon": "Buon pomeriggio",
           "evening": "Buonasera"
         },
-        "eyebrow": "Studio Pulse™ · Ritmo Progettuale",
+        "eyebrow": "Blueprint Dashboard · Ritmo Progettuale",
         "summary_template": "{active} Design Journey™ attive · {voices} voci ricevute oggi",
         "signature": "Diamo forma a spazi belli.",
         "eyebrow_v2": "Dashboard operativa",
@@ -2228,7 +2229,7 @@
       "back": "Torna alle impostazioni",
       "eyebrow": "Atelier · Identità dello studio",
       "title": "Dashboard Atelier",
-      "lede": "Cura la copy del hero, l'immagine  e la libreria di citazioni ispirazionali che compongono la dashboard Studio Pulse™. Le sovrascritture per lingua si applicano in cascata automatica.",
+      "lede": "Cura la copy del hero, l'immagine  e la libreria di citazioni ispirazionali che compongono la Blueprint Dashboard. Le sovrascritture per lingua si applicano in cascata automatica.",
       "tab": {
         "copy": "Hero e sezioni",
         "media": "Libreria media",

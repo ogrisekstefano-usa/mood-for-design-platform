@@ -73,7 +73,7 @@ const PrimaryCta = () => {
   const isJourneyMode = prospects > 0;
   const label = isJourneyMode
     ? t('nav.new_journey', null, 'Nuovo Design Journey™')
-    : t('nav.new_contact', null, 'Nuovo Contatto');
+    : t('nav.new_lead', null, 'Nuovo Lead');
   const testid = isJourneyMode ? 'topbar-new-journey-cta' : 'topbar-new-relationship-cta';
   return (
     <button
@@ -82,7 +82,7 @@ const PrimaryCta = () => {
       data-testid={testid}
       data-mode={isJourneyMode ? 'journey' : 'relationship'}
       onClick={() => openModal
-        ? openModal(isJourneyMode ? { choice: 'prospect' } : null)
+        ? openModal(isJourneyMode ? { choice: 'prospect' } : { choice: 'lead' })
         : window.location.assign('/relations/leads')}
     >
       <Plus size={13} strokeWidth={2} />

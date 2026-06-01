@@ -1,28 +1,21 @@
 /**
- * LeadsPage · DISCOVERY layer.
+ * LeadsPage · CRM Discovery — record commerciali da qualificare.
  *
- * Visual intent: signals appearing on the studio — atmospheric, distant,
- * editorial. Each lead is an atmosphere + a material + a moment, NOT a
- * sales record. Cards are large, sparse, hushed. No CTAs, no progression
- * pressure. The reader is "listening".
+ * ITER181.C · Governance Fix:
+ *   - copy operativa (no "segnali" / "atmosfere" / poetic register)
+ *   - rimossi i filtri tag fake (atmospheres)
+ *   - aggiunta CTA primary "+ Nuovo Lead" che apre il modal CRM
  */
 import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, X, BookOpen } from 'lucide-react';
+import { Search, X, Plus } from 'lucide-react';
 import ClientRelationsLayout from './ClientRelationsLayout';
 import useRelations from './useRelations';
 import useDesigners from './useDesigners';
-import DesignerChip from './DesignerChip';
 import WelcomeDrawer from './WelcomeDrawer';
 import ContinuationInterviewDrawer from './ContinuationInterviewDrawer';
+import { useNewRelationship } from '../../hooks/useNewRelationship';
 
-const ATMOSPHERES = [
-  { v: 'warm_editorial',       l: 'Warm editorial'       },
-  { v: 'nordic_silence',       l: 'Nordic silence'       },
-  { v: 'midnight_mood',        l: 'Midnight mood'        },
-  { v: 'mediterranean_light',  l: 'Mediterranean light'  },
-  { v: 'architectural_dawn',   l: 'Architectural dawn'   },
-];
+const ATMOSPHERES = []; // ITER181.C: filtri fake rimossi (nessun filtro reale dietro)
 
 const formatAgo = (iso) => {
   if (!iso) return '—';
@@ -139,10 +132,10 @@ const LeadCard = ({ lead, designer, onOpen }) => {
 
 const LeadsPage = () => {
   const [q, setQ] = useState('');
-  const [atmosphere, setAtmosphere] = useState(null);
-  const filters = useMemo(() => ({ q, atmosphere }), [q, atmosphere]);
+  const filters = useMemo(() => ({ q }), [q]);
   const { items, total, counts, loading } = useRelations('/api/relations/leads', filters);
   const { pickDesigner } = useDesigners();
+  const newRel = useNewRelationship();
 
   // Drawer state — Welcome + Continuation Interview.
   const [welcomeId, setWelcomeId] = useState(null);
@@ -161,8 +154,22 @@ const LeadsPage = () => {
     }
   };
 
+  const handleNewLead = () => {
+    if (newRel && typeof newRel.open === 'function') {
+      newRel.open({ choice: 'lead' });
+    }
+  };
+
   const toolbar = (
     <>
+      <button
+        type="button"
+        className="cr-chip cr-chip--primary"
+        data-testid="leads-new-cta"
+        onClick={handleNewLead}
+      >
+        <Plus size={13} strokeWidth={1.8} /> Nuovo Lead
+      </button>
       <div className="cr-search">
         <Search size={16} />
         <input
@@ -173,17 +180,8 @@ const LeadsPage = () => {
           data-testid="leads-search"
         />
       </div>
-      {ATMOSPHERES.map((a) => (
-        <button
-          key={a.v}
-          type="button"
-          className={`cr-chip cr-chip--slate ${atmosphere === a.v ? 'is-active' : ''}`}
-          onClick={() => setAtmosphere(atmosphere === a.v ? null : a.v)}
-          data-testid={`leads-filter-${a.v}`}
-        >{a.l}</button>
-      ))}
-      {(q || atmosphere) && (
-        <button type="button" className="cr-chip cr-chip--reset" onClick={() => { setQ(''); setAtmosphere(null); }} data-testid="leads-reset">
+      {q && (
+        <button type="button" className="cr-chip cr-chip--reset" onClick={() => setQ('')} data-testid="leads-reset">
           <X size={13} /> Reset
         </button>
       )}
@@ -193,14 +191,14 @@ const LeadsPage = () => {
   return (
     <ClientRelationsLayout
       stage="lead"
-      eyebrow="CLIENT RELATIONS™ · DISCOVERY"
+      eyebrow="CRM · DISCOVERY"
       title="Leads"
-      lede="Segnali appena arrivati nello studio. Atmosfere, materiali, registri — non record commerciali. Ascolta prima di rispondere."
+      lede="Contatti da qualificare. I Lead rappresentano persone o aziende che hanno manifestato un interesse verso lo studio, un progetto o un servizio. Registra, organizza e qualifica ogni contatto prima di trasformarlo in Prospect."
       counts={counts}
       toolbar={toolbar}
     >
       <p className="cr-resultbar" data-testid="leads-resultbar">
-        <strong>{total}</strong> signal{total === 1 ? '' : 's'} listening
+        <strong>{total}</strong> Lead {total === 1 ? 'registrato' : 'registrati'}
       </p>
 
       {loading && (
@@ -211,8 +209,8 @@ const LeadsPage = () => {
 
       {!loading && items.length === 0 && (
         <div className="cr-empty" data-testid="leads-empty">
-          <p className="cr-empty__title">Nessun segnale, per ora.</p>
-          <p className="cr-empty__sub">I nuovi lead appariranno qui dal Begin&nbsp;Journey™ pubblico.</p>
+          <p className="cr-empty__title">Nessun Lead registrato.</p>
+          <p className="cr-empty__sub">Usa "+ Nuovo Lead" per registrare il primo contatto.</p>
         </div>
       )}
 

@@ -24,7 +24,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useT, useBlueprint } from '../../contexts/BlueprintContext';
 import RelationshipLiveTimeline from '../../components/dashboard/RelationshipLiveTimeline';
 import PendingBookingsPanel from '../../components/booking/PendingBookingsPanel';
-import WorkspaceActionHub from '../../components/activation/WorkspaceActionHub';
+import WorkspaceActionHub, { StandaloneQuickActions } from '../../components/activation/WorkspaceActionHub';
 import { useActivationFoundation } from '../../hooks/useActivationFoundation';
 import './atelier-dashboard.css';
 
@@ -333,6 +333,7 @@ const AtelierDashboardPage = () => {
       <Hero config={config} biz={biz} userName={userName} />
 
       <WorkspaceActionHub />
+      <StandaloneQuickActions />
 
       <section className="atd-projects" data-testid="atelier-projects-section">
         <header className="atd-section__head">

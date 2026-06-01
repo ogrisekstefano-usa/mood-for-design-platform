@@ -45,16 +45,10 @@ const ActiveJourneyRail = ({ collapsed }) => {
   if (items.length === 0) {
     return (
       <div className="px-3 py-3" data-testid="sidebar-journeys-empty">
-        <p className="text-[11.5px] italic" style={{ color: 'var(--jo-text-mute)',
-            fontFamily: "'Playfair Display', serif" }}>
-          Nessuna Design Journey attiva.
+        <p className="text-[11.5px]" style={{ color: 'var(--jo-text-mute)',
+            fontFamily: 'var(--atelier-sans, Inter, sans-serif)' }}>
+          Nessun Design Journey attivo.
         </p>
-        <NavLink to="/relations/leads"
-                 className="inline-block mt-2 text-[10px] tracking-[0.22em] uppercase font-medium"
-                 style={{ color: 'var(--jo-accent)' }}
-                 data-testid="sidebar-new-relationship-cta">
-          Apri Nuova Relazione →
-        </NavLink>
       </div>
     );
   }

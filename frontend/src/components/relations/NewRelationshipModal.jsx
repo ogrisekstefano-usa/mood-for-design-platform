@@ -62,7 +62,7 @@ export default function NewRelationshipModal({ open, onClose, onCreated, prefill
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
           <div>
             <div style={{ fontSize: 11, letterSpacing: '0.15em', color: '#7a7d83', textTransform: 'uppercase', marginBottom: 4 }}>
-              CRM · Nuovo Contatto
+              CRM · Nuovo Lead
             </div>
             <h2 style={{ fontSize: 22, fontWeight: 600, margin: 0, color: '#0c0e12' }}>
               Da dove vuoi iniziare?

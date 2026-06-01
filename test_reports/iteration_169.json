@@ -1,0 +1,30 @@
+{
+  "summary": "ITER181.C Dashboard Governance Fix — frontend-only review. Logged in as admin@moodfordesign.com. Verified 13/15 critical assertions PASS. Two concerns: (1) NewRelationshipModal eyebrow 'CRM · Nuovo Lead' not detected in DOM after clicking topbar/leads CTA (eyebrows visible: 'DASHBOARD OPERATIVA', 'SETUP WORKSPACE', 'CHECKLIST', 'AZIONI RAPIDE', 'CRM · LIVE') — modal may not have opened due to Setup-workspace banner overlay, or eyebrow markup differs. (2) Sidebar appears collapsed (icons-only) so 'Blueprint Dashboard' label is not currently in body.innerText — i18n key value confirmed correct in it-IT.json (nav.studio_pulse = 'Blueprint Dashboard'). All other governance requirements satisfied: topbar shows 'Nuovo Lead'; forbidden texts (Indice Journey, Inizia un Journey, Studio Pulse, Apri Nuova Relazione) absent; hub-mode='setup'; standalone quick-actions absent in setup; quick-actions order exactly [new-lead, new-journey, media-library, material-view, editorial-calendar] with no forbidden cards; sidebar-new-relationship-cta removed; all 5 activation-step-* render; Leads page copy 'Contatti da qualificare' + 'I Lead rappresentano persone o aziende' present; forbidden lead copy and 5 fake filter chips removed; leads-new-cta='Nuovo Lead'; empty state 'Nessun Lead registrato' present; navigation media-library→/library and editorial-calendar→/blueprint/editorial-calendar OK.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "NewRelationshipModal", "issue": "Clicking [data-testid='topbar-new-relationship-cta'] and [data-testid='leads-new-cta'] did not yield modal eyebrow 'CRM · Nuovo Lead' in DOM. Either modal did not open (possibly intercepted by 'Setup workspace · 2/5' top-banner overlay) or eyebrow string differs from spec.", "selector": "[data-testid='topbar-new-relationship-cta'], [data-testid='leads-new-cta']", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Sidebar", "issues": ["Sidebar rendered collapsed (icons only) so the 'Blueprint Dashboard' label isn't visible without expansion — i18n value is correct (nav.studio_pulse='Blueprint Dashboard') but main agent should confirm expanded-sidebar rendering shows the new label."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Verify NewRelationshipModal opens after topbar/leads CTA click — confirm eyebrow renders 'CRM · Nuovo Lead' (current DOM scan only found 'CRM · LIVE'). Check whether activation 'Setup workspace · 2/5' banner intercepts the click, and whether eyebrow text is wrapped in a different element class than [class*='eyebrow'].",
+    "Confirm sidebar in expanded mode displays 'Blueprint Dashboard' label (i18n key already correct)."
+  ],
+  "critical_code_review_comments": [
+    "Many console warnings: missing i18n keys auth.login.* / auth.access.* / nav.editorial_copy_cms / nav.admin_languages / nav.blueprint_admin — out of scope for ITER181.C but should be tracked.",
+    "Repeated 403 responses on protected endpoints during dashboard load — likely permission scoping; investigate to ensure they don't degrade UX."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "~87% (13/15 assertions PASS)"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "None — tenant in FOUNDER ONLY clean state; activation incomplete (Setup workspace 2/5), CRM empty as expected.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All ITER181.C governance assertions pass except modal eyebrow detection. Use force=True clicks and explicit waits, then query [data-testid='new-relationship-modal'] or look for eyebrow span inside the modal portal. Activation 'Setup workspace · 2/5' top banner may intercept clicks — try dismissing it or scrolling past it before clicking the topbar CTA. i18n keys (nav.studio_pulse='Blueprint Dashboard', nav.your_journeys, nav.begin_journey, nav.journey_index, nav.new_lead) all confirmed correct in /app/frontend/src/i18n/strings/it-IT.json.",
+  "rca of the issue": "Eyebrow assertion failure RCA: scan of body.innerText after click did not find 'CRM · Nuovo Lead'. Eyebrow elements detected belonged to underlying page (CRM · LIVE on Leads, etc.). Hypotheses: (a) modal mounted in portal outside scanned tree — unlikely since body.innerText covers portals; (b) click was intercepted by setup-banner overlay; (c) modal opens with different eyebrow string. Recommended next step: check NewRelationshipModal.jsx render path and verify eyebrow renders unconditionally when {choice:'lead'}."
+}
