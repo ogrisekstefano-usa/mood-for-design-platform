@@ -1,5 +1,42 @@
 # Changelog
 
+## ITER182 · MOOD Language Lock™ — 2026-06-01
+
+**Stato:** ✅ Completato (documentazione governance) · **0 modifiche codice/db/API** come richiesto dal Founder Directive
+
+### Consegnato
+- **`/app/memory/MOOD_LANGUAGE_CANON.md`** (15 sezioni) — Documento governance ufficiale per UI, UX writing, dashboard, CRM, Design Journey, Libraries, Editorial, Onboarding, modali, traduzioni, AI agents. Contiene:
+  - Principio costituzionale (Brand ≠ Interfaccia)
+  - Quality test (regola dei 2 secondi)
+  - Livello 1 (Brand language: MOOD for DESIGN™, Design Journey™, Blueprint™, Material View™, Brand Atlas™, ecc.)
+  - Livello 2 (UI language: chiaro, immediato, concreto, internazionale)
+  - Vocabolario approvato (CRM, Progetto, Workspace, Library, Editorial, Team, KPI)
+  - Lista nera ufficiale con severity (critical/high/medium) + replacement
+  - CRM/Dashboard/Sidebar/Modal/Translation governance
+  - AI Agents prompt governance
+  - Enforcement (copy_lint.py + PR review + onboarding)
+- **`/app/memory/MOOD_LANGUAGE_AUDIT.md`** (13 sezioni) — Audit repository completo. Contiene:
+  - Tabella violazioni per termine × area (pages/components/i18n/backend/scripts)
+  - Violazioni per locale (7 locale: en-US, en-GB, it-IT, es-ES, de-DE, fr-FR, ar; mancanti: es-MX, pt-BR)
+  - Top 25 file hot-spot
+  - Sample stringhe IT-IT con replacement
+  - 3 categorie di violazioni (critical/high/medium)
+  - Roadmap sostituzione (ITER183-186)
+  - Impatto stimato per area (effort ~10-12 giorni-developer)
+
+### Findings principali
+- **EN-US master**: 67 stringhe con termini banditi → bonifica EN-US risolve a cascata gli altri locale
+- **Hot-spots backend**: `studio_pulse.py` (22), `client_relations.py` (16), `inspirations_archive.py` (23), `brands_registry.py` (23)
+- **Hot-spots frontend**: `CuratorialInspirationsModal.jsx` (28), `StudioPulsePage.jsx` (15), `RelationshipMemoryChapter.jsx` (14), `MoodPanel.jsx` (14)
+- **Locales mancanti**: `es-MX`, `pt-BR` da creare prima del rollout LATAM/BR
+- **Dashboard surface**: ✅ già bonificata da ITER181.A→C
+- **Libraries/Inspirations**: 🔴 area con maggiore concentrazione di violazioni (~25 file)
+
+### Vincolo rispettato
+**AUDIT + GOVERNANCE ONLY.** Zero modifiche a codice/database/API. Solo 2 file documentazione in `/app/memory/`.
+
+---
+
 ## ITER181.C · Dashboard Governance Fix™ — 2026-06-01
 
 **Stato:** ✅ Completato (8/9 problemi del brief utente · Problem 5 "Lead Wizard 5-step" documentato come P1 follow-up) · 13/15 testing agent criteri PASS · 0 ui_bug critici · le 2 medium concerns sono state risolte (modal apre correttamente con eyebrow "CRM · NUOVO LEAD"; i18n sidebar verificato).
