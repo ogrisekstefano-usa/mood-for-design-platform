@@ -1,5 +1,31 @@
 # Changelog
 
+## ITER181.A.2 · Workspace Action Hub™ — 2026-06-01
+
+**Stato:** ✅ Completato · 14/14 acceptance criteria PASS · 0 ui_bug · 0 regressioni
+
+### Consegnato (**solo layout/architettura**, zero backend, zero API)
+- **Nuovo componente** `WorkspaceActionHub.jsx` con 3 modi:
+  - `setup` (auto-detect quando `data.activated === false`): HEADER (eyebrow "Setup Workspace" + progress bar + counter "N/total completati") + BODY 70/30 (Checklist | Azioni rapide).
+  - `ready` (auto-detect quando `data.activated === true`): HEADER "Workspace Ready" + BODY 5-up Quick Actions full-width.
+  - `contextual` (predisposizione P2 per Next-Best-Action engine): restituisce `null`.
+- **Unificate** Activation Foundation + Quick Actions in un singolo contenitore. Eliminata la sezione "Azioni Consigliate" separata e l'eyebrow `Quick Actions` stand-alone.
+- **5 Quick Actions** permanenti (sempre disponibili anche dopo setup completo): Nuova Relazione · Nuovo Design Journey · Media Library · Calendario Editoriale · Team.
+- **Nuovo ordine dashboard**: Hero → WorkspaceActionHub → Design Journey attive → Attività recenti / Prossime scadenze → Attività relazionali. Eliminato il rail Quick Actions in coda.
+- **Zero buco dopo completamento**: il blocco non sparisce, si trasforma in "Workspace Ready" mode.
+
+### File rimossi (sostituiti dal Hub)
+- `/app/frontend/src/components/activation/ActivationMeter.jsx` (deleted)
+- `/app/frontend/src/components/activation/RecommendedActions.jsx` (deleted)
+
+### CSS
+- `.atd-hub*` namespace nuovo in `atelier-dashboard.css`: container, header (setup + ready), body 70/30 e full-width rail, item rows, action rows/cards. Media queries 1180 (tablet collapse) e 760 (mobile stack).
+
+### Report
+- `/app/test_reports/iteration_167.json`
+
+---
+
 ## ITER181.A.1 · Dashboard Layout Optimization — 2026-06-01
 
 **Stato:** ✅ Completato · 14/14 acceptance criteria PASS · 0 ui_bug · 0 regressioni

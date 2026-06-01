@@ -925,9 +925,9 @@
 /* Section wrapper inherits horizontal rhythm di .atd-projects */
 .atd-section {
   padding: 0 clamp(40px, 5vw, 72px);
-  margin: 28px 0 0;
+  margin: 32px 0 0;
 }
-.atd-section + .atd-section { margin-top: 20px; }
+.atd-section + .atd-section { margin-top: 24px; }
 .atd-section--quick-actions { margin-top: 32px; padding-bottom: 56px; }
 
 .atd-section__eyebrow {
