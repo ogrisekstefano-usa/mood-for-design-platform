@@ -11,6 +11,7 @@ import SetPasswordModal from './components/SetPasswordModal';
 
 // MOOD Core surfaces
 import StudioRequestsAdmin from './pages/StudioRequestsAdmin';
+import TenantActivationConsole from './pages/TenantActivationConsole';
 import AdvisorConsole from './pages/AdvisorConsole';
 import RelationDetail from './pages/RelationDetail';
 import CommandOverview from './pages/CommandOverview';
@@ -157,6 +158,7 @@ const CommandCenterApp = () => {
         <Route path="advisor-console"                 element={<NotFounder><AdvisorConsole /></NotFounder>} />
         <Route path="advisor-console/relations/:id"   element={<NotFounder><RelationDetail /></NotFounder>} />
         <Route path="studio-requests"                 element={<NotFounder><StudioRequestsAdmin /></NotFounder>} />
+        <Route path="tenant-activation"               element={<NotFounder><TenantActivationConsole /></NotFounder>} />
 
         {/* CMS Blueprint (mounted in-shell for super admin) */}
         <Route path="pages"                           element={<SuperAdminOnly><PagesEditor /></SuperAdminOnly>} />

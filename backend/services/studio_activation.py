@@ -513,6 +513,71 @@ async def submit_request(
 
         request_id = str(new['id'])
         reference  = _format_reference(request_id)
+
+        # ── Tenant Activation Hardening — fire & forget transactional emails ──
+        try:
+            import os as _os
+            from services import email_dispatcher
+            import asyncio as _aio
+            phone_full = ((phone_prefix or '') + ' ' + (phone_number or '')).strip()
+            base_vars = {
+                'reference':     reference,
+                'request_id':    request_id,
+                'studio_name':   studio_name or '—',
+                'contact_name':  contact_name or '—',
+                'contact_role':  contact_role or '—',
+                'contact_email': contact_email or '—',
+                'phone_full':    phone_full or '—',
+                'city':          city or '—',
+                'country':       country or '—',
+                'markets':       ', '.join(markets) if markets else '—',
+                'languages':     ', '.join(languages) if languages else '—',
+                'archetype':     drow['archetype'] or '—',
+                'experiences':   ', '.join(drow['experiences'] or []) or '—',
+                'website':       (website or '').strip() or '—',
+                'notes':         (notes or '').strip() or '—',
+                'source':        drow.get('source') or 'public',
+            }
+            # 1) Visitor confirmation
+            if contact_email:
+                _aio.create_task(email_dispatcher.dispatch_email(
+                    template_key='studio_request_received',
+                    to_email=contact_email,
+                    to_name=contact_name,
+                    locale=locale or 'it-IT',
+                    variables=base_vars,
+                ))
+            # 2) Super-admin notification
+            admin_email = _os.environ.get('MOOD_ADMIN_NOTIFY_EMAIL') \
+                          or _os.environ.get('ADMIN_EMAIL')
+            if admin_email:
+                _aio.create_task(email_dispatcher.dispatch_email(
+                    template_key='admin_new_studio_request',
+                    to_email=admin_email,
+                    locale='it-IT',
+                    variables=base_vars,
+                ))
+            # 3) Advisor notification (if attribution present)
+            attribution_advisor_id = drow.get('attribution_advisor_id')
+            if attribution_advisor_id:
+                adv_row = (await s.execute(text("""
+                    SELECT email, name FROM advisor_profiles
+                     WHERE id = :aid AND status = 'active'
+                """), {"aid": str(attribution_advisor_id)})).mappings().first()
+                if adv_row and adv_row['email']:
+                    _aio.create_task(email_dispatcher.dispatch_email(
+                        template_key='advisor_new_lead',
+                        to_email=adv_row['email'],
+                        to_name=adv_row['name'],
+                        locale='it-IT',
+                        variables=base_vars,
+                    ))
+        except Exception as _ex:
+            # Email failure must never block the actual submit transaction.
+            import logging
+            logging.getLogger('studio_activation').warning(
+                'transactional email dispatch failed: %s', _ex)
+
         return {"ok": True, "request_id": request_id, "reference": reference}
 
 
@@ -641,4 +706,50 @@ async def update_request_status(
             params,
         )
         await s.commit()
-        return r.scalar() is not None
+        if r.scalar() is None:
+            return False
+
+        # Trigger transactional email on status transition
+        if status:
+            try:
+                await _send_status_email(s, request_id, status)
+            except Exception as ex:
+                import logging
+                logging.getLogger('studio_activation').warning(
+                    "status email failed for %s -> %s: %s", request_id, status, ex)
+        return True
+
+
+# Maps internal status to email template key (None = no email for that status)
+_STATUS_EMAIL_MAP = {
+    'reviewing':    'studio_request_review',
+    'qualified':    'studio_request_qualified',
+    'not_aligned':  'studio_request_rejected',
+    'activated':    'studio_request_approved',
+    # 'received' and 'contacted' do not trigger automated email
+}
+
+
+async def _send_status_email(session, request_id: str, status: str) -> None:
+    template_key = _STATUS_EMAIL_MAP.get(status)
+    if not template_key:
+        return
+    row = (await session.execute(text("""
+        SELECT id, studio_name, contact_name, contact_email, locale
+          FROM studio_requests WHERE id = :id
+    """), {"id": request_id})).mappings().first()
+    if not row or not row['contact_email']:
+        return
+    from services import email_dispatcher
+    import asyncio as _aio
+    _aio.create_task(email_dispatcher.dispatch_email(
+        template_key=template_key,
+        to_email=row['contact_email'],
+        to_name=row['contact_name'],
+        locale=row['locale'] or 'it-IT',
+        variables={
+            'reference':    _format_reference(str(row['id'])),
+            'studio_name':  row['studio_name'] or '—',
+            'contact_name': row['contact_name'] or '—',
+        },
+    ))
