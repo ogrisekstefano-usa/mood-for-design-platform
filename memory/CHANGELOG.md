@@ -1,5 +1,23 @@
 # Changelog
 
+## ITER181.A.1 · Dashboard Layout Optimization — 2026-06-01
+
+**Stato:** ✅ Completato · 14/14 acceptance criteria PASS · 0 ui_bug · 0 regressioni
+
+### Consegnato (solo layout, **zero backend**, **zero API**)
+- **Activation Foundation** → singola card full-width: HEADER (eyebrow "Setup Workspace" + progress bar orizzontale + "N/total completati") + BODY (checklist con CTA inline). Rimossa la colonna sinistra "Avanzamento".
+- **Quick Actions rail** (ex Recommended Actions): 5 card compatte in 1 riga, altezza 64px (target ≤140), icona + titolo + 1 riga descrizione + arrow inline. Non dominano più la dashboard.
+- **Nuovo ordine sezioni**: Hero → Activation → Design Journey attive → Attività recenti / Prossime scadenze (2-col) → Attività relazionali → Quick Actions. Journey ora prima delle azioni suggerite.
+- **Density tighter**: ridotti i padding verticali delle sezioni (`atd-projects` 64→36px top, `atd-desk` 56→32px, `atd-live-relationships` 56→32px, `atd-panel` min-height 320→200px).
+- **Rinominato** "Timeline relazioni" → "Attività relazionali" · eyebrow → "CRM · Live".
+- **Empty state Timeline aggiornato**: "Nessuna attività registrata. Le attività di Lead, Prospect, Clienti e Design Journey appariranno qui."
+- **Responsive**: desktop 5-up, tablet 3-up, mobile 1-col; checklist + CTA stack su mobile (`flex-wrap`); zero overflow.
+
+### Report
+- `/app/test_reports/iteration_166.json`
+
+---
+
 ## ITER181.C · Dashboard Visual Consolidation™ — 2026-06-01
 
 **Stato:** ✅ Completato · 12/12 acceptance criteria PASS · 0 ui_bug residui · 0 regressioni
