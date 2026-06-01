@@ -1,5 +1,23 @@
 # Changelog
 
+## ITER181.A.3 · Workspace Action Hub UX Refactor — 2026-06-01
+
+**Stato:** ✅ Completato · Tutti criteri PASS · 0 ui_bug · 0 regressioni
+
+### Consegnato (UX/business-logic, **zero backend**)
+- **"Nuova Relazione" → "Nuovo Contatto"** su tutte le superfici user-facing: Topbar primary CTA, Quick Actions, NewRelationshipModal eyebrow, i18n key `nav.new_contact`.
+- **Team rimosso** dalle Quick Actions (è configurazione, non attività operativa quotidiana).
+- **Quick Actions DINAMICHE** basate su `business_counts` con 4 scenari A/B/C/D — la prima card è sempre il next-best-step del funnel CRM.
+- **Ready mode rebrand**: "Setup Workspace" → **"Workspace Operativo"** quando `activated === true`. Il blocco non sparisce, diventa centro operativo permanente.
+- **Catalogue di 10 azioni** operative: newContact, qualifyProspect, newJourney, openJourney, mediaLibrary, materials, materialView, moodboard, editorialCalendar, blueprintChameleon.
+- **Route audit**: tutte le 10 azioni risolvono a pagine esistenti (verificate in App.js); 0 placeholders, 0 link errati, 0 404.
+
+### Report
+- `/app/memory/WORKSPACE_ACTION_HUB_UX_REFACTOR_REPORT.md`
+- `/app/test_reports/iteration_168.json`
+
+---
+
 ## ITER181.A.2 · Workspace Action Hub™ — 2026-06-01
 
 **Stato:** ✅ Completato · 14/14 acceptance criteria PASS · 0 ui_bug · 0 regressioni
