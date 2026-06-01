@@ -1,5 +1,71 @@
 # MOOD for DESIGN™ — Design Journey OS™
 
+## 🛡️ ITER186 · PRODUCT HARDENING · AUDIT DELIVERED · 01 Feb 2026
+
+**🎯 Goal:** Audit completo pre-attivazione 10 showroom reali. Zero nuove feature, zero codice. Solo report di stabilizzazione.
+
+**📄 Deliverable:** `/app/memory/ITER186_PRODUCT_HARDENING_REPORT.md` (512 righe, 14 sezioni)
+
+**🟡 Verdetto Founder:** **GO WITH FIXES** — ~3 giorni effettivi per "GO assoluto"
+
+**Sezioni audit consegnate (12/12):**
+1. ✅ CRM Flow Audit (Flow A-E con PASS/FIX REQUIRED)
+2. ✅ Dashboard Audit (KPI · Quick Actions · Empty States · Activation Foundation)
+3. ✅ Team Foundation Audit (members lifecycle, 6 endpoint)
+4. ✅ Email System Validation (Resend + Supabase invite)
+5. ✅ First Tenant Experience (15-min simulation)
+6. ✅ Journey Assignment Readiness (Backend READY · Frontend NOT READY)
+7. ✅ Error Registry Backlog (Top 20 codici)
+8. ✅ Editorial Reality Check (CONFUSING)
+9. ✅ Technical Debt Inventory
+10. ✅ P0 Fix List (8 items · ~3.25g)
+11. ✅ P1 Fix List (5 items · ~2.1g)
+12. ✅ Go/No-Go Assessment con 4 opzioni Founder
+
+**🔴 P0 Fix List (~3.25g):**
+1. Email magic-link real test (delivery + branding + spam)
+2. DKIM/SPF sender domain audit
+3. Lead resumption UX (auto-open Discovery post Fast Capture)
+4. `/relations/leads/{id}` route detail
+5. Empty states pedagogici (Leads · Prospects · Accounts)
+6. KPI consistency (dashboard vs `/api/relations/stats` legacy)
+7. AccountsPage CTA "Nuovo Design Journey" inline su Customer
+8. Activation Foundation step "Crea il primo Lead"
+
+**🟠 P1 Fix List (~2.1g):**
+1. i18n errors mapping top-10 codici
+2. Editorial demo content seed o empty state
+3. ProposalPicker UI in ConvertToCustomerModal
+4. Rimuovi duplicato Quick Action "Material View"
+5. Members invite resend audit log UI
+
+**Vincolo Founder rispettato:**
+- ✅ Zero nuove feature
+- ✅ Zero modifiche DB/migration
+- ✅ Zero modifiche API
+- ✅ Zero modifiche frontend
+- ✅ Solo audit + report
+
+**Decisione richiesta al Founder (Opzioni):**
+- A. Attiva ora 10 showroom (🔴 alto rischio churn)
+- B. Pilot 1-2 + fix P0 in parallelo (🟡 rischio medio)
+- **C. Fix P0 (3g) → pilot 3-5 showroom** (✅ raccomandato)
+- D. Fix P0 + P1 (5g) → 10 showroom (✅ safe ma ritarda mercato)
+
+**Status:** ⏸️ PENDING Founder approval su opzione operativa
+
+**Blocked iterations post-ITER186:**
+- Journey Assignments Phase 2 (UI)
+- Notification Bus
+- Client Chameleon
+- Editorial Onboarding
+- Error Registry implementation
+
+---
+
+
+# MOOD for DESIGN™ — Design Journey OS™
+
 
 ## 🚢 ITER185 · Phase 1 · CRM FOUNDATION SHIPPED · ✅ DELIVERED · 01 Jun 2026
 
