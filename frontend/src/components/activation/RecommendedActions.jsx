@@ -1,9 +1,10 @@
 /**
- * RecommendedActions — ITER181.A · Phase 3 → ITER181.C visual consolidation
+ * RecommendedActions — ITER181.A · Phase 3
+ *                    → ITER181.A.1 compact Quick Actions rail
  *
- * Card operative sotto Activation Foundation. Stesso linguaggio visuale
- * delle Project Cards: superfici dark, bordi sottili, accent cyan,
- * tipografia canonica. Nessun white-panel fuori contesto.
+ * 5 card compatte in una sola riga (desktop). Altezza ≤ 140px.
+ * Icona inline, 1 riga di descrizione, CTA inline. Bassa enfasi visiva:
+ * non devono dominare la dashboard.
  */
 import React from 'react';
 import { UserPlus, UserCheck, Compass, FolderOpen, CalendarRange, ArrowRight } from 'lucide-react';
@@ -14,8 +15,7 @@ const ACTIONS = [
     key: 'register-lead',
     icon: UserPlus,
     label: 'Registra un Lead',
-    description: 'Apri una Nuova Relazione e avvia la Discovery.',
-    cta: 'Nuova Relazione',
+    description: 'Apri una Nuova Relazione.',
     route: 'modal:new-relationship',
     opts: { choice: 'lead' },
   },
@@ -23,16 +23,14 @@ const ACTIONS = [
     key: 'qualify-prospect',
     icon: UserCheck,
     label: 'Qualifica un Prospect',
-    description: 'Promuovi un Lead a Prospect dopo la Discovery.',
-    cta: 'Vai ai Lead',
+    description: 'Promuovi un Lead dopo la Discovery.',
     route: '/relations/leads',
   },
   {
     key: 'open-journey',
     icon: Compass,
     label: 'Apri una Design Journey',
-    description: 'Crea una Journey su un Prospect o un Cliente.',
-    cta: 'Nuova Journey',
+    description: 'Crea una Journey su un Prospect.',
     route: 'modal:new-relationship',
     opts: { choice: 'prospect' },
   },
@@ -40,16 +38,14 @@ const ACTIONS = [
     key: 'upload-materials',
     icon: FolderOpen,
     label: 'Carica materiali',
-    description: 'Immagini, prodotti e riferimenti nella libreria studio.',
-    cta: 'Apri libreria',
+    description: 'Immagini, prodotti, riferimenti.',
     route: '/library',
   },
   {
     key: 'editorial-calendar',
     icon: CalendarRange,
     label: 'Calendario editoriale',
-    description: 'Pianifica contenuti, pubblicazioni e cadenze.',
-    cta: 'Apri calendario',
+    description: 'Pianifica contenuti e cadenze.',
     route: '/editorial/calendar',
   },
 ];
@@ -69,13 +65,13 @@ export default function RecommendedActions() {
             onClick={() => route(a.route, a.opts || {})}
           >
             <span className="atd-recommended__icon">
-              <Icon size={15} strokeWidth={1.6} />
+              <Icon size={14} strokeWidth={1.6} />
             </span>
-            <p className="atd-recommended__label">{a.label}</p>
-            <p className="atd-recommended__desc">{a.description}</p>
-            <span className="atd-recommended__cta">
-              {a.cta} <ArrowRight size={11} />
+            <span className="atd-recommended__body">
+              <span className="atd-recommended__label">{a.label}</span>
+              <span className="atd-recommended__desc">{a.description}</span>
             </span>
+            <ArrowRight size={12} strokeWidth={1.7} className="atd-recommended__arrow" />
           </button>
         );
       })}

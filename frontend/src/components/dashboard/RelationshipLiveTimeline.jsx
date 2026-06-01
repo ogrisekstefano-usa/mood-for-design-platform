@@ -207,9 +207,9 @@ const RelationshipLiveTimeline = ({ locale = 'it' }) => {
     <section className="rl-timeline" data-testid="relationship-live-timeline">
       <header className="rl-timeline__head">
         <div>
-          <p className="rl-timeline__eyebrow">{locale === 'it' ? 'Attività relazioni' : 'Relationship activity'}</p>
+          <p className="rl-timeline__eyebrow">{locale === 'it' ? 'CRM · Live' : 'CRM · Live'}</p>
           <h3 className="rl-timeline__title">
-            {locale === 'it' ? 'Timeline relazioni' : 'Relationships timeline'}
+            {locale === 'it' ? 'Attività relazionali' : 'Relationship activity'}
           </h3>
         </div>
         <span className="rl-timeline__pulse" aria-hidden="true" title={polledAt || ''}>
@@ -228,8 +228,8 @@ const RelationshipLiveTimeline = ({ locale = 'it' }) => {
         <div className="rl-timeline__empty" data-testid="rl-timeline-empty">
           <p>
             {locale === 'it'
-              ? 'Nessun movimento ancora. Quando la relazione respirerà, le memorie emergeranno qui.'
-              : 'No movement yet. When the relationship breathes, memories will surface here.'}
+              ? 'Nessuna attività registrata. Le attività di Lead, Prospect, Clienti e Design Journey appariranno qui.'
+              : 'No activity yet. Lead, Prospect, Customer and Design Journey activity will appear here.'}
           </p>
         </div>
       )}

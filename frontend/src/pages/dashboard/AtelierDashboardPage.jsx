@@ -335,8 +335,6 @@ const AtelierDashboardPage = () => {
 
       <ActivationFoundationSection />
 
-      <RecommendedActionsSection />
-
       <section className="atd-projects" data-testid="atelier-projects-section">
         <header className="atd-section__head">
           <h2 className="atd-section__title">
@@ -371,23 +369,23 @@ const AtelierDashboardPage = () => {
           milestones={milestones} t={t} />
       </section>
 
-      {/* ITER150 · Sprint A · Real Relationship Engine™ — live polling 5s
-          Note: NotificationBell & DesignerPresencePicker moved to global Topbar (ITER154 fix). */}
+      {/* Attività relazionali (ex Timeline relazioni) */}
       <section className="atd-live-relationships" data-testid="atelier-live-relationships">
         <PendingBookingsPanel locale="it" />
         <RelationshipLiveTimeline locale="it" />
       </section>
+
+      <QuickActionsSection />
     </div>
   );
 };
 
-// ── Activation Foundation section (ITER181.C visual alignment) ────
+// ── Activation Foundation — single full-width card ──────────────
 function ActivationFoundationSection() {
   const { data } = useActivationFoundation();
   if (!data || data.activated) return null;
   return (
     <section className="atd-section" data-testid="dashboard-activation-section">
-      <p className="atd-section__eyebrow">Setup workspace</p>
       <div className="atd-activation" data-testid="dashboard-activation-card">
         <ActivationMeter />
         <WorkspaceActivationChecklist />
@@ -396,11 +394,11 @@ function ActivationFoundationSection() {
   );
 }
 
-// ── Recommended Actions section (ITER181.C visual alignment) ──────
-function RecommendedActionsSection() {
+// ── Quick Actions — compact rail (ex Recommended Actions) ───────
+function QuickActionsSection() {
   return (
-    <section className="atd-section" data-testid="dashboard-recommended-actions">
-      <p className="atd-section__eyebrow">Azioni consigliate</p>
+    <section className="atd-section atd-section--quick-actions" data-testid="dashboard-recommended-actions">
+      <p className="atd-section__eyebrow">Quick Actions</p>
       <RecommendedActions />
     </section>
   );

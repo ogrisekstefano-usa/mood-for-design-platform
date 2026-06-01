@@ -1,17 +1,18 @@
 /**
  * ActivationMeter™ + WorkspaceActivationChecklist™
- * ITER180 · AF2 + AF3 → ITER181.C visual consolidation
+ * ITER180 · AF2 + AF3 → ITER181.A.1 layout optimization
  *
- * Componenti nativi della dashboard: usano i token canonici
- * (--bp-surface-1, --bp-border, --atelier-cyan, --atelier-sans/serif).
- * Nessuno stile inline: tutto in atelier-dashboard.css.
+ * Layout: single full-width card.
+ *   - ActivationMeter renders a slim HEADER (eyebrow + bar + "N/total completati")
+ *   - WorkspaceActivationChecklist renders the BODY (steps + inline CTAs)
+ * Entrambi usano i token canonici del Design System (atelier-dashboard.css).
  */
 import React from 'react';
 import { CheckCircle2, Circle, ArrowRight, Sparkles } from 'lucide-react';
 import { useActivationFoundation } from '../../hooks/useActivationFoundation';
 import { useSmartCtaRouter } from '../../hooks/useSmartCtaRouter';
 
-// ── ActivationMeter ────────────────────────────────────────────────
+// ── ActivationMeter (slim header inside the full-width card) ─────
 export function ActivationMeter({ compact = false }) {
   const { data } = useActivationFoundation();
   if (!data) return null;
@@ -30,19 +31,12 @@ export function ActivationMeter({ compact = false }) {
   }
 
   return (
-    <div data-testid="activation-meter" className="atd-activation__panel">
-      <div className="atd-activation__meter-head">
-        <div>
-          <div className="atd-activation__meter-eyebrow">Avanzamento</div>
-          <div className="atd-activation__meter-value">
-            {completed} <span className="atd-activation__meter-total">/ {total}</span>
-          </div>
-        </div>
-        {activated && (
-          <span className="atd-activation__meter-badge">
-            <Sparkles size={11} /> Workspace Activated™
-          </span>
-        )}
+    <div data-testid="activation-meter" className="atd-activation__header">
+      <div className="atd-activation__header-row">
+        <p className="atd-activation__header-eyebrow">Setup Workspace</p>
+        <p className="atd-activation__header-counter" data-testid="activation-meter-counter">
+          {completed}/{total} completati
+        </p>
       </div>
       <div className="atd-activation__meter-bar">
         <div
@@ -51,11 +45,16 @@ export function ActivationMeter({ compact = false }) {
           style={{ width: `${progress}%` }}
         />
       </div>
+      {activated && (
+        <span className="atd-activation__meter-badge" style={{ marginTop: 10 }}>
+          <Sparkles size={11} /> Workspace Activated™
+        </span>
+      )}
     </div>
   );
 }
 
-// ── WorkspaceActivationChecklist ──────────────────────────────────
+// ── WorkspaceActivationChecklist (body of the same card) ─────────
 export function WorkspaceActivationChecklist() {
   const { data } = useActivationFoundation();
   const route = useSmartCtaRouter();
@@ -64,10 +63,7 @@ export function WorkspaceActivationChecklist() {
 
   if (activated) {
     return (
-      <div
-        data-testid="activation-checklist-completed"
-        className="atd-activation__activated"
-      >
+      <div data-testid="activation-checklist-completed" className="atd-activation__activated">
         <Sparkles size={18} className="atd-activation__activated-icon" />
         <p className="atd-activation__activated-title">Workspace Activated™</p>
         <p className="atd-activation__activated-desc">
@@ -78,11 +74,7 @@ export function WorkspaceActivationChecklist() {
   }
 
   return (
-    <div
-      data-testid="activation-checklist"
-      className="atd-activation__panel atd-activation__checklist"
-    >
-      <p className="atd-activation__checklist-eyebrow">Prossimi passi</p>
+    <div data-testid="activation-checklist" className="atd-activation__checklist">
       <ul className="atd-activation__list">
         {items.map((item) => (
           <li

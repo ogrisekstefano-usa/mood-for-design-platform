@@ -143,14 +143,14 @@
 
 /* ─── PROJECTS SECTION ────────────────────────────────────────────────── */
 .atd-projects {
-  padding: 64px clamp(40px, 5vw, 72px) 24px;
+  padding: 36px clamp(40px, 5vw, 72px) 8px;
 }
 
 .atd-section__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 28px;
+  margin-bottom: 18px;
   gap: 24px;
 }
 
@@ -391,18 +391,18 @@
 .atd-desk {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px;
-  padding: 56px clamp(40px, 5vw, 72px) 64px;
+  gap: 18px;
+  padding: 32px clamp(40px, 5vw, 72px) 8px;
 }
 
 .atd-panel {
   background: var(--bp-surface-1);
   border: 1px solid var(--bp-border);
   border-radius: var(--bp-radius-lg);
-  padding: 24px 24px 22px;
+  padding: 20px 22px 18px;
   display: flex;
   flex-direction: column;
-  min-height: 320px;
+  min-height: 200px;
 }
 
 .atd-panel--inspiration {
@@ -623,7 +623,7 @@
 }
 
 /* ITER151 Sprint C — live relationships header (presence picker + bookings) */
-.atd-live-relationships { margin: 56px clamp(40px, 5vw, 72px) 64px; display: flex; flex-direction: column; gap: 16px; }
+.atd-live-relationships { margin: 32px clamp(40px, 5vw, 72px) 8px; display: flex; flex-direction: column; gap: 16px; }
 .atd-live-relationships__head { display: flex; align-items: center; gap: 16px; }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -641,9 +641,10 @@
 /* Section wrapper inherits horizontal rhythm di .atd-projects */
 .atd-section {
   padding: 0 clamp(40px, 5vw, 72px);
-  margin: 40px 0 0;
+  margin: 28px 0 0;
 }
-.atd-section + .atd-section { margin-top: 32px; }
+.atd-section + .atd-section { margin-top: 20px; }
+.atd-section--quick-actions { margin-top: 32px; padding-bottom: 56px; }
 
 .atd-section__eyebrow {
   font-family: var(--atelier-sans);
@@ -652,57 +653,50 @@
   letter-spacing: var(--atelier-track-eyebrow);
   text-transform: uppercase;
   color: var(--atelier-cyan);
-  margin: 0 0 10px;
+  margin: 0 0 12px;
 }
 
-/* ─── Activation Foundation card ─────────────────────────────────────── */
+/* ─── Activation Foundation card (single full-width) ─────────────── */
 .atd-activation {
-  display: grid;
-  grid-template-columns: minmax(280px, 1fr) 2fr;
-  gap: 18px;
-  align-items: stretch;
-}
-@media (max-width: 1180px) {
-  .atd-activation { grid-template-columns: 1fr; }
-}
-
-.atd-activation__panel {
   background: var(--bp-surface-1);
   border: 1px solid var(--bp-border);
   border-radius: var(--bp-radius-lg);
-  padding: 22px 24px;
+  overflow: hidden;
 }
 
-/* Meter */
-.atd-activation__meter-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 18px;
+/* HEADER: eyebrow + counter + progress bar */
+.atd-activation__header {
+  padding: 18px 24px 16px;
+  border-bottom: 1px solid var(--bp-border);
 }
-.atd-activation__meter-eyebrow {
+.atd-activation__header-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.atd-activation__header-eyebrow {
   font-family: var(--atelier-sans);
   font-size: 10.5px;
+  font-weight: 500;
   letter-spacing: var(--atelier-track-eyebrow);
   text-transform: uppercase;
   color: var(--atelier-cyan);
-  margin: 0 0 6px;
-  font-weight: 500;
+  margin: 0;
 }
-.atd-activation__meter-value {
+.atd-activation__header-counter {
   font-family: var(--atelier-sans);
   font-feature-settings: 'tnum';
   font-variant-numeric: tabular-nums;
-  font-weight: 300;
-  font-size: 28px;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  color: var(--bp-text-headline);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--bp-text-secondary);
+  margin: 0;
 }
-.atd-activation__meter-value .atd-activation__meter-total {
-  color: var(--bp-text-faint);
-}
+
+/* Legacy / compact badge variant kept for backward compat */
 .atd-activation__meter-badge {
   display: inline-flex;
   align-items: center;
@@ -717,6 +711,7 @@
   letter-spacing: 0.04em;
   font-weight: 500;
 }
+
 .atd-activation__meter-bar {
   height: 4px;
   border-radius: 2px;
@@ -729,17 +724,9 @@
   transition: width 320ms var(--bp-ease-soft, ease);
 }
 
-/* Checklist */
-.atd-activation__checklist { padding: 6px 0; }
-.atd-activation__checklist-eyebrow {
-  font-family: var(--atelier-sans);
-  font-size: 10.5px;
-  letter-spacing: var(--atelier-track-eyebrow);
-  text-transform: uppercase;
-  color: var(--bp-text-faint);
-  font-weight: 500;
-  padding: 10px 22px 8px;
-  margin: 0;
+/* BODY: checklist */
+.atd-activation__checklist {
+  padding: 4px 0 6px;
 }
 .atd-activation__list {
   list-style: none;
@@ -750,7 +737,7 @@
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  padding: 14px 22px;
+  padding: 14px 24px;
   border-top: 1px solid var(--bp-border);
 }
 .atd-activation__item:first-child { border-top: 0; }
@@ -818,6 +805,17 @@
   background: rgba(0, 201, 179, 0.06);
   border-color: var(--atelier-cyan);
 }
+
+@media (max-width: 900px) {
+  .atd-activation__item {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .atd-activation__item-cta {
+    margin-left: 32px;
+  }
+}
+
 .atd-activation__activated {
   background: var(--bp-surface-1);
   border: 1px solid var(--atelier-cyan-line);
@@ -844,41 +842,44 @@
   line-height: 1.5;
 }
 
-/* ─── Recommended Actions ────────────────────────────────────────────── */
+/* ─── Quick Actions rail (compact 5-up) ──────────────────────────── */
 .atd-recommended {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
 }
 @media (max-width: 1180px) {
-  .atd-recommended { grid-template-columns: repeat(2, 1fr); }
+  .atd-recommended { grid-template-columns: repeat(3, 1fr); }
 }
-@media (max-width: 900px) {
+@media (max-width: 760px) {
   .atd-recommended { grid-template-columns: 1fr; }
 }
 
 .atd-recommended__card {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: 12px;
   text-align: left;
   background: var(--bp-surface-1);
   border: 1px solid var(--bp-border);
-  border-radius: var(--bp-radius-lg);
-  padding: 18px 18px 16px;
+  border-radius: var(--bp-radius-md);
+  padding: 14px 14px;
   cursor: pointer;
-  min-height: 130px;
+  min-height: 64px;
+  max-height: 88px;
   transition: border-color var(--bp-dur-base, 220ms) var(--bp-ease-cinema, ease),
               transform var(--bp-dur-base, 220ms) var(--bp-ease-cinema, ease);
   color: var(--bp-text-primary);
+  font-family: var(--atelier-sans);
+  width: 100%;
 }
 .atd-recommended__card:hover {
   border-color: var(--atelier-cyan-line);
   transform: translateY(-1px);
 }
 .atd-recommended__icon {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: rgba(0, 201, 179, 0.08);
   border: 1px solid var(--atelier-cyan-line);
@@ -888,33 +889,34 @@
   justify-content: center;
   flex-shrink: 0;
 }
-.atd-recommended__label {
-  font-family: var(--atelier-sans);
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--bp-text-headline);
-  margin: 8px 0 0;
-  letter-spacing: 0.01em;
-}
-.atd-recommended__desc {
-  font-family: var(--atelier-sans);
-  font-size: 12px;
-  color: var(--bp-text-secondary);
-  margin: 0;
-  line-height: 1.5;
+.atd-recommended__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
   flex: 1;
 }
-.atd-recommended__cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-family: var(--atelier-sans);
+.atd-recommended__label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--bp-text-headline);
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.atd-recommended__desc {
   font-size: 11px;
-  font-weight: 500;
+  color: var(--bp-text-secondary);
+  line-height: 1.35;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.atd-recommended__arrow {
   color: var(--atelier-cyan);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin-top: 6px;
+  flex-shrink: 0;
 }
 
 /* ─── Persistent Alert Banner ─────────────────────────────────────────── */
