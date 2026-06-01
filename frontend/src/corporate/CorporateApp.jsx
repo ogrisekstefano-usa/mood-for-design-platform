@@ -67,9 +67,9 @@ const CorporateApp = () => {
   const isAccessRoute =
     location.pathname === '/journey/continue' ||
     accessSlugs.includes(location.pathname);
-  // V2 funnel (mount at /studio) + V1 quarantined to /studio-legacy.
-  const isStudioActivationRoute = location.pathname.startsWith('/studio')
-                               || location.pathname.startsWith('/studio-legacy');
+  // /studio (V2 funnel) ora vive dentro il chrome classico (navbar+footer).
+  // Solo /studio-legacy resta full-bleed per regression test.
+  const isStudioActivationRoute = location.pathname.startsWith('/studio-legacy');
 
   const stripChrome = isAccessRoute || isStudioActivationRoute;
 
