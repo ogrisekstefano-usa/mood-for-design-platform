@@ -206,7 +206,7 @@ const BrandFormModal = ({
           }))} placeholder={t("inspirations.brand_form.es_atelier_sereno")} data-testid="brand-form-name" autoFocus />
           </Field>
 
-          <Field label="Posizionamento curatoriale" testid="bf-field-positioning">
+          <Field label="Posizionamento" testid="bf-field-positioning">
             <textarea rows={2} value={form.positioning} onChange={e => setForm(f => ({
             ...f,
             positioning: e.target.value

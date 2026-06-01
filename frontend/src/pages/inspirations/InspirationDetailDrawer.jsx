@@ -440,7 +440,7 @@ const CulturalReadingBlock = ({ data, mediaId, onRefresh }) => {
         )}
         {ed.atmosphere_language && (
           <div className="insd-cultural__cell">
-            <p className="ins-label">Atmosphere Reading™</p>
+            <p className="ins-label">Style Reading</p>
             <p className="insd-cultural__cell-body">{ed.atmosphere_language}</p>
           </div>
         )}

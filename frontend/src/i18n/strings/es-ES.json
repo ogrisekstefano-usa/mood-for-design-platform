@@ -95,7 +95,7 @@
     "welcome": "Bienvenido a su espacio de oficio"
   },
   "relationships": {
-    "eyebrow": "Relationship OS",
+    "eyebrow": "CRM Workspace",
     "title": "Relaciones",
     "subtitle": "La memoria compartida del estudio — cuentas, contactos, conversaciones, próximos pasos.",
     "searchPlaceholder": "Buscar por nombre, email, ciudad…",
@@ -1002,7 +1002,7 @@
     "relationship_graph": {
       "dove_vive_la_relazione": "Donde habita la relación",
       "nessun_progetto_moodboard_o_materiale_ancora_colle": "Aún no hay proyectos, tableros ni materiales vinculados a esta relación",
-      "relationship_graph_mappa_editoriale": "Relationship Graph™ · territorio relacional y oficio editorial",
+      "relationship_graph_mappa_editoriale": "CRM Network · Mapa de cuentas",
       "tracciando_la_mappa_della_relazione": "Tejiendo el mapa de la relación…"
     },
     "stage_change": {

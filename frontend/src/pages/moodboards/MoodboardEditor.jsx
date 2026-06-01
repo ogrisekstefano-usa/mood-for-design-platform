@@ -1216,7 +1216,7 @@ const MoodboardEditor = ({ readOnly = false }) => {
                   <p className="bp-caption !text-[12px] !text-[var(--bp-text-muted)] leading-[1.6] max-w-[240px] italic"
                      style={{ fontFamily: 'Playfair Display, var(--bp-font-heading), serif' }}>
                     {t('moodboards.inspector.empty.body', null,
-                      'Select an element to refine its composition, typography, materials or atmosphere.')}
+                      'Select an element to refine its composition, typography, materials or style.')}
                   </p>
                 </div>
               )

@@ -97,48 +97,48 @@ const StudioPulsePage = () => {
 
   return (
     <main className="pulse" data-testid="studio-pulse-page">
-      {/* ── HERO ATMOSPHERE ─────────────────────────────────── */}
+      {/* ── HERO ─────────────────────────────────── */}
       <header className="pulse-hero" data-testid="pulse-hero">
-        <p className="pulse-hero__eyebrow">STUDIO PULSE™</p>
+        <p className="pulse-hero__eyebrow">BLUEPRINT DASHBOARD</p>
         <h1 className="pulse-hero__title">
-          Il clima vivo delle relazioni dello studio
+          Dashboard operativa dello studio
         </h1>
         <p className="pulse-hero__sub">
-          Le relazioni si muovono, rallentano, convergono.
+          Panoramica delle attività in corso, Lead da seguire,
           <br />
-          Blueprint Dashboard registra la cadenza progettuale dello studio.
+          stato dei Design Journey e cadenza di lavoro del team.
         </p>
       </header>
 
       {loading && (
         <p className="pulse-loading" data-testid="pulse-loading">
-          Lo studio sta riprendendo respiro…
+          Caricamento dashboard…
         </p>
       )}
 
       {!loading && (
         <>
-          {/* ── RESPIRO DELLO STUDIO ──────────────────────────── */}
+          {/* ── ATTIVITÀ DELLO STUDIO ──────────────────────────── */}
           {climate && (
             <section className="pulse-card pulse-climate" data-testid="pulse-climate">
-              <p className="pulse-card__eyebrow">RESPIRO DELLO STUDIO™</p>
+              <p className="pulse-card__eyebrow">ATTIVITÀ DELLO STUDIO</p>
               <h2 className="pulse-card__title">{climate.headline}</h2>
               <p className="pulse-card__narrative">{climate.narrative}</p>
               <span className="pulse-climate__breath" aria-hidden />
             </section>
           )}
 
-          {/* ── ATMOSFERE EMERGENTI ───────────────────────────── */}
+          {/* ── TREND EMERGENTI ───────────────────────────── */}
           {convergence && convergence.snapshot_count > 0 && (
             <section className="pulse-card pulse-atmos" data-testid="pulse-atmospheres">
-              <p className="pulse-card__eyebrow">ATMOSFERE EMERGENTI™</p>
+              <p className="pulse-card__eyebrow">TREND EMERGENTI</p>
               <p className="pulse-card__narrative pulse-atmos__lede">
                 {convergence.narrative}
               </p>
 
               {convergence.atmospheres?.length > 0 && (
                 <div className="pulse-atmos__group">
-                  <p className="pulse-atmos__group-head">Linguaggi ricorrenti</p>
+                  <p className="pulse-atmos__group-head">Stili ricorrenti</p>
                   <ul className="pulse-chips">
                     {convergence.atmospheres.map((a, i) => (
                       <li key={i} className="pulse-chip" data-testid={`pulse-atmos-chip-${i}`}>
@@ -152,7 +152,7 @@ const StudioPulsePage = () => {
 
               {convergence.materials?.length > 0 && (
                 <div className="pulse-atmos__group">
-                  <p className="pulse-atmos__group-head">Materiali che emergono</p>
+                  <p className="pulse-atmos__group-head">Materiali ricorrenti</p>
                   <ul className="pulse-materials">
                     {convergence.materials.map((m, i) => (
                       <li key={i} className="pulse-material">{m.label}</li>
@@ -163,7 +163,7 @@ const StudioPulsePage = () => {
 
               {convergence.palette?.length > 0 && (
                 <div className="pulse-atmos__group">
-                  <p className="pulse-atmos__group-head">Palette in convergenza</p>
+                  <p className="pulse-atmos__group-head">Palette ricorrenti</p>
                   <div className="pulse-palette" data-testid="pulse-palette">
                     {convergence.palette.map((s) => (
                       <span
@@ -179,11 +179,11 @@ const StudioPulsePage = () => {
             </section>
           )}
 
-          {/* ── INTENSITÀ CURATORIALE ────────────────────────── */}
+          {/* ── ATTIVITÀ DESIGNER ────────────────────────── */}
           {intensity && intensity.length > 0 && (
             <section className="pulse-card pulse-intensity" data-testid="pulse-intensity">
-              <p className="pulse-card__eyebrow">INTENSITÀ CURATORIALE™</p>
-              <h2 className="pulse-card__title">Come respirano i designer</h2>
+              <p className="pulse-card__eyebrow">ATTIVITÀ DESIGNER</p>
+              <h2 className="pulse-card__title">Carico di lavoro del team</h2>
               <ul className="pulse-designers">
                 {intensity.map(d => (
                   <li key={d.designer_id} className="pulse-designer" data-testid={`pulse-designer-${d.designer_id}`}>
@@ -198,10 +198,10 @@ const StudioPulsePage = () => {
             </section>
           )}
 
-          {/* ── RELAZIONI IN SILENZIO ────────────────────────── */}
+          {/* ── LEAD INATTIVI ────────────────────────── */}
           {silent && (
             <section className="pulse-card pulse-silent" data-testid="pulse-silent">
-              <p className="pulse-card__eyebrow">RELAZIONI IN SILENZIO™</p>
+              <p className="pulse-card__eyebrow">LEAD INATTIVI</p>
               <h2 className="pulse-card__title pulse-silent__title">
                 {silent.aggregate}
               </h2>
@@ -212,7 +212,7 @@ const StudioPulsePage = () => {
                       <p className="pulse-silent__narrative">{s.narrative}</p>
                       {s.last_movement && (
                         <p className="pulse-silent__when">
-                          ultimo movimento · {fmtAgo(s.last_movement)}
+                          ultima attività · {fmtAgo(s.last_movement)}
                         </p>
                       )}
                     </li>
@@ -222,11 +222,11 @@ const StudioPulsePage = () => {
             </section>
           )}
 
-          {/* ── MOVIMENTI RECENTI ────────────────────────────── */}
+          {/* ── ATTIVITÀ RECENTI ────────────────────────────── */}
           {movements.length > 0 && (
             <section className="pulse-card pulse-movements" data-testid="pulse-movements">
-              <p className="pulse-card__eyebrow">MOVIMENTI RECENTI™</p>
-              <h2 className="pulse-card__title">Gesti che attraversano lo studio</h2>
+              <p className="pulse-card__eyebrow">ATTIVITÀ RECENTI</p>
+              <h2 className="pulse-card__title">Aggiornamenti recenti</h2>
               <ol className="pulse-movements__list">
                 {movements.map(m => (
                   <li key={m.id} className="pulse-movement" data-testid={`pulse-movement-${m.event_type}`}>

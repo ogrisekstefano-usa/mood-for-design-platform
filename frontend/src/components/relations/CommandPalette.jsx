@@ -200,7 +200,7 @@ export default function CommandPalette({ open, onClose, onCreateLead, onPickLead
                 <ArrowRight size={16} />
               </button>
               <div style={{ fontSize: 11, color: '#9b9da3', marginTop: 8, textAlign: 'center' }}>
-                Il modale Nuova Relazione™ si aprirà con il nome già compilato.
+                Il modale Nuovo Lead si aprirà con il nome già compilato.
               </div>
             </div>
           )}
@@ -213,7 +213,7 @@ export default function CommandPalette({ open, onClose, onCreateLead, onPickLead
           fontSize: 11, color: '#9b9da3', letterSpacing: '0.03em',
         }}>
           <span>CRM · Ricerca globale</span>
-          <span>Powered by Nuova Relazione™</span>
+          <span>Powered by Nuovo Lead</span>
         </div>
       </div>
     </div>

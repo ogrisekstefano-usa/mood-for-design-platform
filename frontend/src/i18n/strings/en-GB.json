@@ -95,7 +95,7 @@
     "welcome": "Good to see you"
   },
   "relationships": {
-    "eyebrow": "Relationship OS",
+    "eyebrow": "CRM Workspace",
     "title": "Relationships",
     "subtitle": "The studio's shared memory — accounts, contacts, conversations, next steps.",
     "searchPlaceholder": "Search by name, email, city…",
@@ -150,7 +150,7 @@
       "stageChanged": "Stage updated",
       "stageError": "Unable to change stage.",
       "actionError": "Error updating action.",
-      "loadingRelation": "Loading relationship…",
+      "loadingRelation": "Loading record…",
       "markDone": "Mark as done",
       "reopen": "Reopen"
     },
@@ -166,9 +166,9 @@
       "email": "Email",
       "phone": "Telephone",
       "notes": "Initial notes (optional)",
-      "submit": "Create relationship",
-      "successCreated": "Relationship created.",
-      "errorCreate": "Unable to create the relationship.",
+      "submit": "Create Lead",
+      "successCreated": "Lead created.",
+      "errorCreate": "Unable to create the Lead.",
       "errorNameRequired": "Please enter an account name."
     },
     "loadingAccounts": "Reading the studio's memory…"
@@ -330,58 +330,58 @@
   "dashboard": {
     "pulse": {
       "eyebrow": "Blueprint Dashboard · project cadence",
-      "loading_title": "Reading the project cadence…",
+      "loading_title": "Loading dashboard…",
       "greet": {
         "morning": "Good morning",
         "afternoon": "Good afternoon",
         "evening": "Good evening"
       },
       "summary": {
-        "empty": "No Journey is alive yet. Open a project conversation to begin.",
-        "one": "{n} Journey unfolding",
-        "many": "{n} Journeys unfolding",
-        "voices_today": "{n} voices received today",
-        "chapters_waiting": "{n} chapters waiting",
+        "empty": "No Design Journey active yet. Create a Lead to begin.",
+        "one": "{n} Design Journey active",
+        "many": "{n} Design Journeys active",
+        "voices_today": "{n} feedback received today",
+        "chapters_waiting": "{n} phases waiting",
         "revisions_open": "{n} revisions open"
       },
       "sections": {
         "active": {
-          "eyebrow": "Dominant section",
-          "title": "Journeys unfolding",
-          "empty": "The studio is awaiting its first journey.",
-          "cta": "Open a project conversation"
+          "eyebrow": "Primary section",
+          "title": "Active Design Journeys",
+          "empty": "No active Design Journey.",
+          "cta": "Create a new Lead"
         },
         "voices": {
-          "eyebrow": "Latest gestures",
-          "title": "Today's voices"
+          "eyebrow": "Recent activity",
+          "title": "Today's feedback"
         },
         "waiting": {
-          "eyebrow": "Awaiting a voice",
-          "title": "Chapters shared · still silent"
+          "eyebrow": "Awaiting feedback",
+          "title": "Shared phases · awaiting feedback"
         },
         "revisions": {
-          "eyebrow": "A new direction is awaiting",
-          "title": "Revisions open"
+          "eyebrow": "To review",
+          "title": "Open revisions"
         },
         "evolutions": {
           "eyebrow": "Last 7 days",
-          "title": "Recent evolutions"
+          "title": "Recent updates"
         },
         "silent": {
-          "eyebrow": "In silence",
-          "title": "Journeys awaiting a new voice"
+          "eyebrow": "Inactive",
+          "title": "Inactive Design Journeys™"
         },
         "actions": {
-          "eyebrow": "Next project gestures",
-          "title": "Where you can continue"
+          "eyebrow": "Next steps",
+          "title": "Where to resume"
         }
       },
       "card": {
-        "last_voice": "Last voice · {when}",
-        "opening": "Opening"
+        "last_voice": "Last feedback · {when}",
+        "opening": "Getting started"
       },
       "action": {
-        "open_journey": "Open the Journey",
+        "open_journey": "Open Journey",
         "presented_relative": "presented {when}"
       },
       "relative": {
@@ -481,8 +481,8 @@
     },
     "dashboard": "Dashboard",
     "workspace_switcher": "Workspace",
-    "new_journey": "Nuova Relazione",
-    "new_relationship": "Nuova Relazione"
+    "new_journey": "New Lead",
+    "new_relationship": "New Lead"
   },
   "projects": {
     "tabs": {
@@ -937,10 +937,10 @@
     "account_constellation": {
       "apri_il_journey": "View the client narrative",
       "apri_una_conversazione_progettuale_per_cominciare": "Begin with a considered conversation about the work ahead.",
-      "le_persone_della_relazione": "The people in the relationship",
-      "nessun_journey_aperto_con_questa_relazione": "No active journey registered with this relationship.",
+      "le_persone_della_relazione": "Contacts in this Account",
+      "nessun_journey_aperto_con_questa_relazione": "No Design Journey open for this Account.",
       "segnali_del_viaggio": "Markers from the journey",
-      "sezione_dominante": "Principal relationship",
+      "sezione_dominante": "Principal Account",
       "sto_leggendo_la_costellazione_relazionale": "Mapping the relational structure now…"
     },
     "account_detail": {
@@ -950,7 +950,7 @@
       "chiudi": "Close",
       "collegate_a_questo_account_i_membri_del_team_appar": "Team members associated with this Account are listed within the",
       "files_allegati_arriva_con_il_media_library_inspect": "Attached files arrive with the Media Library inspector.",
-      "la_memoria_della_relazione_e_ancora_bianca": "No record of this relationship has yet been registered.",
+      "la_memoria_della_relazione_e_ancora_bianca": "No activity logged for this Account yet.",
       "linkaggio_moodboard_arriva_in_p1_dedicato_le_moodb": "Moodboard Linkage now resides in its own P1 environment. Board collections authored by your team appear within",
       "materiali_preferiti": "Materials of record",
       "nessun_contact_ancora_aggiungi_il_primo_qui_sotto": "No contacts recorded. Consider adding the first below.",
@@ -976,7 +976,7 @@
       "crea_account": "Establish your archive",
       "due": "Due date",
       "empty": {
-        "accounts_hint": "An Account is a relationship — a client, a practice, a household. Contacts are the individuals within that relationship.",
+        "accounts_hint": "An Account groups your business with a client, practice, or household. Contacts are the individuals within that Account.",
         "accounts_lead": "Your archive begins here. Start building the record of your connections.",
         "other_hint": "Consider switching view, or begin by registering a new account.",
         "other_lead": "No {label} recorded in this view."
@@ -986,7 +986,7 @@
       "no_due_date": "Open-ended",
       "no_follow_ups": "All follow-ups attended to",
       "sala_delle_relazioni": "Relationships Room",
-      "tutti_gli_stage": "All stages in the relationship",
+      "tutti_gli_stage": "All stages",
       "tutti_i_tipi": "All categories",
       "lead_outside_team": "— not here."
     },
@@ -1002,7 +1002,7 @@
     "relationship_graph": {
       "dove_vive_la_relazione": "Where relation is registered",
       "nessun_progetto_moodboard_o_materiale_ancora_colle": "No projects, moodboards or materials yet registered to this record.",
-      "relationship_graph_mappa_editoriale": "Relationship Graph™ · editorial cartography",
+      "relationship_graph_mappa_editoriale": "CRM Network · Account map",
       "tracciando_la_mappa_della_relazione": "Mapping the lineage of connection…"
     },
     "stage_change": {

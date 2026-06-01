@@ -338,7 +338,7 @@ const Sidebar = () => {
 
 export default Sidebar;
 
-// ── Nuova Relazione CTA (ITER177.B) ─────────────────────────────
+// ── Nuovo Lead CTA (ITER183) ─────────────────────────────
 const NewRelationshipCta = ({ collapsed }) => {
   const { open } = useNewRelationship();
   if (collapsed) {
@@ -347,8 +347,8 @@ const NewRelationshipCta = ({ collapsed }) => {
         type="button"
         onClick={() => open()}
         data-testid="sidebar-new-relationship-trigger"
-        aria-label="Nuova Relazione"
-        title="Nuova Relazione"
+        aria-label="Nuovo Lead"
+        title="Nuovo Lead"
         style={{
           margin: '10px 10px 6px', padding: '10px 0',
           background: '#0c0e12', color: '#ffffff',
@@ -375,7 +375,7 @@ const NewRelationshipCta = ({ collapsed }) => {
       onMouseLeave={(e) => { e.currentTarget.style.background = '#0c0e12'; }}
     >
       <span aria-hidden style={{ fontSize: 16, lineHeight: 1 }}>+</span>
-      <span>Nuova Relazione</span>
+      <span>Nuovo Lead</span>
     </button>
   );
 };

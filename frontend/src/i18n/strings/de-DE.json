@@ -95,7 +95,7 @@
     "welcome": "Willkommen in Ihrem Atelier"
   },
   "relationships": {
-    "eyebrow": "Relationship OS",
+    "eyebrow": "CRM Workspace",
     "title": "Beziehungen",
     "subtitle": "Das geteilte Gedächtnis des Studios — Accounts, Kontakte, Gespräche, nächste Schritte.",
     "searchPlaceholder": "Nach Name, E-Mail, Stadt suchen…",
@@ -1002,7 +1002,7 @@
     "relationship_graph": {
       "dove_vive_la_relazione": "Wo die Beziehung ihre Form findet",
       "nessun_progetto_moodboard_o_materiale_ancora_colle": "Noch keine Verknüpfung zu Projekten, Moodboards oder Materialien.",
-      "relationship_graph_mappa_editoriale": "Relationship Graph™ · redaktionelle Kartografie",
+      "relationship_graph_mappa_editoriale": "CRM Network · Account-Karte",
       "tracciando_la_mappa_della_relazione": "Die Architektur der Beziehung wird sichtbar gemacht"
     },
     "stage_change": {

@@ -83,7 +83,7 @@
       "scegli_su_quali_superfici_aggiornare_l_asset_e_qua": "Choose which surfaces to update with the asset and which to leave unchanged. Useful for market-specific A/B testing of images.",
       "l_asset_viene_archiviato_non_piu_visibile_nella_li": "The asset is archived — no longer visible in the Library — but all relationships remain active. The public continues to see this image until you replace it.",
       "apri_le_superfici_interessate": "Apri le superfici interessate",
-      "chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp": "Close this drawer and open the Usage tab in the Inspector to navigate each relationship manually."
+      "chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp": "Close this drawer and open the Usage tab in the Inspector to review each link manually."
     },
     "brand_mode": {
       "aggiungi_produttore": "Add maker"
@@ -95,7 +95,7 @@
     "welcome": "Welcome"
   },
   "relationships": {
-    "eyebrow": "Relationship OS",
+    "eyebrow": "CRM Workspace",
     "title": "Relationships",
     "subtitle": "The studio's shared memory — accounts, contacts, conversations, next steps.",
     "searchPlaceholder": "Search by name, email, city…",
@@ -150,7 +150,7 @@
       "stageChanged": "Stage updated",
       "stageError": "Unable to change stage.",
       "actionError": "Error updating action.",
-      "loadingRelation": "Loading relationship…",
+      "loadingRelation": "Loading record…",
       "markDone": "Mark as done",
       "reopen": "Reopen"
     },
@@ -166,9 +166,9 @@
       "email": "Email",
       "phone": "Phone",
       "notes": "Initial notes (optional)",
-      "submit": "Create relationship",
-      "successCreated": "Relationship created.",
-      "errorCreate": "Unable to create the relationship.",
+      "submit": "Create Lead",
+      "successCreated": "Lead created.",
+      "errorCreate": "Unable to create the Lead.",
       "errorNameRequired": "Please enter an account name."
     },
     "loadingAccounts": "Reading the studio's memory…"
@@ -330,58 +330,58 @@
   "dashboard": {
     "pulse": {
       "eyebrow": "Blueprint Dashboard · project cadence",
-      "loading_title": "Reading the project cadence…",
+      "loading_title": "Loading dashboard…",
       "greet": {
         "morning": "Good morning",
         "afternoon": "Good afternoon",
         "evening": "Good evening"
       },
       "summary": {
-        "empty": "No Journey is alive yet. Open a project conversation to begin.",
-        "one": "{n} Journey unfolding",
-        "many": "{n} Journeys unfolding",
-        "voices_today": "{n} voices received today",
-        "chapters_waiting": "{n} chapters waiting",
+        "empty": "No Design Journey active yet. Create a Lead to begin.",
+        "one": "{n} Design Journey active",
+        "many": "{n} Design Journeys active",
+        "voices_today": "{n} feedback received today",
+        "chapters_waiting": "{n} phases waiting",
         "revisions_open": "{n} revisions open"
       },
       "sections": {
         "active": {
-          "eyebrow": "Dominant section",
-          "title": "Journeys unfolding",
-          "empty": "The studio is awaiting its first journey.",
-          "cta": "Open a project conversation"
+          "eyebrow": "Primary section",
+          "title": "Active Design Journeys",
+          "empty": "No active Design Journey.",
+          "cta": "Create a new Lead"
         },
         "voices": {
-          "eyebrow": "Latest gestures",
-          "title": "Today's voices"
+          "eyebrow": "Recent activity",
+          "title": "Today's feedback"
         },
         "waiting": {
-          "eyebrow": "Awaiting a voice",
-          "title": "Chapters shared · still silent"
+          "eyebrow": "Awaiting feedback",
+          "title": "Shared phases · awaiting feedback"
         },
         "revisions": {
-          "eyebrow": "A new direction is waiting",
-          "title": "Revisions open"
+          "eyebrow": "To review",
+          "title": "Open revisions"
         },
         "evolutions": {
           "eyebrow": "Last 7 days",
-          "title": "Recent evolutions"
+          "title": "Recent updates"
         },
         "silent": {
-          "eyebrow": "In silence",
-          "title": "Journeys awaiting a new voice"
+          "eyebrow": "Inactive",
+          "title": "Inactive Design Journeys™"
         },
         "actions": {
-          "eyebrow": "Next project gestures",
-          "title": "Where you can continue"
+          "eyebrow": "Next steps",
+          "title": "Where to resume"
         }
       },
       "card": {
-        "last_voice": "Last voice · {when}",
-        "opening": "Opening"
+        "last_voice": "Last feedback · {when}",
+        "opening": "Getting started"
       },
       "action": {
-        "open_journey": "Open the Journey",
+        "open_journey": "Open Journey",
         "presented_relative": "presented {when}"
       },
       "relative": {
@@ -399,8 +399,8 @@
       "mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud": "MOOD is beginning to read the rhythm of your studio.",
       "i_primi_suggerimenti_appariranno_con_l_utilizzo_re": "Suggestions will appear once you begin using the platform.",
       "progetti_che_chiedono_la_tua_presenza": "Projects that ask for your presence",
-      "le_relazioni_che_attendono_un_gesto": "Le relazioni che attendono un gesto",
-      "nessuna_relazione_raffreddata": "No relationship has gone cold.",
+      "le_relazioni_che_attendono_un_gesto": "Leads to follow up",
+      "nessuna_relazione_raffreddata": "No Lead has gone cold.",
       "nuova_moodboard": "Nuova moodboard",
       "tutti_gli_account": "All accounts",
       "riprova": "Try again",
@@ -419,7 +419,7 @@
       "attention_stale_pill": "To resume",
       "attention_empty_title": "No project needs attention right now.",
       "attention_empty_hint": "Projects converted from leads will appear here.",
-      "relationship_eyebrow": "Relationship Engine™",
+      "relationship_eyebrow": "CRM Engine™",
       "relationship_empty_hint": "When an account goes days without a gesture, it will surface here.",
       "timeline_eyebrow": "Studio Timeline",
       "timeline_calendar_link": "Calendar",
@@ -500,8 +500,8 @@
     },
     "dashboard": "Dashboard",
     "workspace_switcher": "Workspace",
-    "new_journey": "Nuova Relazione",
-    "new_relationship": "Nuova Relazione"
+    "new_journey": "New Lead",
+    "new_relationship": "New Lead"
   },
   "projects": {
     "tabs": {
@@ -679,16 +679,16 @@
       "linguaggio_progettuale_dello_studio": "The studio's design language",
       "in_attesa_di_riscontro_dal_cliente": "In attesa di riscontro dal cliente",
       "curatela_editoriale_non_raccomandazione_algoritmic": "Curatela editoriale — non raccomandazione algoritmica.",
-      "sto_leggendo_le_relazioni": "Sto leggendo le relazioni…",
+      "sto_leggendo_le_relazioni": "Loading…",
       "ancora_nessuna_affinita_curatoriale_rilevata": "No brand affinities identified yet.",
       "product_gallery_visual_atelier": "Product Gallery™ · Visual Atelier",
-      "atmosfera_in_lettura_curatoriale": "Atmosfera in lettura editoriale",
+      "atmosfera_in_lettura_curatoriale": "Style analysis in progress",
       "salva_in_references": "Salva in References™",
       "aggiungi_al_moodboard": "Add to moodboard",
       "feedback_title": "Client feedback"
     },
     "studio_collections": {
-      "archivio_curatoriale_dello_studio": "Studio studio archive",
+      "archivio_curatoriale_dello_studio": "Studio archive",
       "nessuna_collezione_importata_inizia_caricando_un_c": "No collections imported. Start by uploading a supplier catalog.",
       "importa_il_primo_catalogo": "Importa il primo catalogo",
       "tutti_i_produttori_e_le_collezioni_che_lo_studio_h": "All producers and collections the studio has added to its own registry."
@@ -817,13 +817,13 @@
     },
     "advisor_edit": {
       "identita_contatti": "Identity & contacts",
-      "economia_della_relazione": "Relationship Economics",
-      "specializzazione_lettura_della_relazione": "Specialization & Understanding the Relationship",
+      "economia_della_relazione": "Compensation Model",
+      "specializzazione_lettura_della_relazione": "Specialization & Approach",
       "annulla": "Cancel",
       "aree_di_rappresentanza_editoriale_cambi_sono_salva": "Aree di rappresentanza editoriale. Cambi sono salvati istantaneamente.",
       "chiudi": "Close",
       "es_consigliere_architettura_partner_editoriale": "es. consigliere · architettura · partner editoriale",
-      "contesto_storia_sensibilita_della_relazione": "Context, history, the sensibility of the relationship…"
+      "contesto_storia_sensibilita_della_relazione": "Context, history, professional approach…"
     },
     "advisor_network_admin": {
       "network_degli_advisor": "Advisor Network",
@@ -928,10 +928,10 @@
   "crm": {
     "account_constellation": {
       "sezione_dominante": "Dominant section",
-      "nessun_journey_aperto_con_questa_relazione": "No Journey open for this relationship.",
+      "nessun_journey_aperto_con_questa_relazione": "No Design Journey open for this Account.",
       "apri_una_conversazione_progettuale_per_cominciare": "Apri una conversazione progettuale per cominciare.",
-      "le_persone_della_relazione": "The people in the relationship",
-      "segnali_del_viaggio": "Segnali del viaggio",
+      "le_persone_della_relazione": "Contacts in this Account",
+      "segnali_del_viaggio": "Recent activity",
       "sto_leggendo_la_costellazione_relazionale": "Sto leggendo la costellazione relazionale…",
       "apri_il_journey": "Apri il Journey"
     },
@@ -943,7 +943,7 @@
       "nessuna_interazione_registrata": "No interactions recorded.",
       "files_allegati_arriva_con_il_media_library_inspect": "Files allegati arriva con il Media Library inspector.",
       "style_dna_non_ancora_compilato_per_questo_account": "Style DNA non ancora compilato per questo Account.",
-      "la_memoria_della_relazione_e_ancora_bianca": "The memory of the relationship is still blank.",
+      "la_memoria_della_relazione_e_ancora_bianca": "No activity logged for this Account yet.",
       "registra_il_primo_contatto_una_call_una_nota_vocal": "Registra il primo contatto — una call, una nota vocale, una visita.",
       "materiali_preferiti": "Materiali preferiti",
       "collegate_a_questo_account_i_membri_del_team_appar": "connected to this Account.\n        Team members belong to the",
@@ -972,7 +972,7 @@
       "empty": {
         "accounts_lead": "No Accounts yet. Begin composing the memory of your relationships.",
         "other_lead": "No {label} in this view.",
-        "accounts_hint": "An Account is a relationship — a client, a studio, a family. Contacts are the people inside that relationship.",
+        "accounts_hint": "An Account groups your business with a client, studio, or family. Contacts are the people inside that Account.",
         "other_hint": "Try another tab or compose a new Account to begin."
       },
       "lead_outside_team": "— not here."
@@ -988,8 +988,8 @@
     },
     "relationship_graph": {
       "tracciando_la_mappa_della_relazione": "Charting the landscape of connection…",
-      "relationship_graph_mappa_editoriale": "Relationship Graph™ · mappa editoriale",
-      "dove_vive_la_relazione": "Dove vive la relazione",
+      "relationship_graph_mappa_editoriale": "CRM Network · Account map",
+      "dove_vive_la_relazione": "Account location",
       "nessun_progetto_moodboard_o_materiale_ancora_colle": "No projects, moodboards, or materials linked yet."
     },
     "stage_change": {
@@ -1056,7 +1056,7 @@
   },
   "journey": {
     "step_workspace": {
-      "capitolo_in_corso": "Capitolo in corso",
+      "capitolo_in_corso": "Current phase",
       "le_tracce_di_questo_passaggio": "The marks of this passage"
     },
     "client_interaction_layer": {
@@ -1080,8 +1080,8 @@
       "condividi": "Share",
       "aggiungi_un_capitolo": "Add a chapter",
       "il_primo_capitolo_apre_la_conversazione_progettual": "The first chapter opens the design conversation with the client.",
-      "titolo_del_capitolo_es_luce_mediterranea": "Chapter Title (e.g., Mediterranean Light)",
-      "cosa_cambia_in_questo_capitolo_in_poche_righe": "Cosa cambia in questo capitolo — in poche righe",
+      "titolo_del_capitolo_es_luce_mediterranea": "Phase title (e.g. First concept review)",
+      "cosa_cambia_in_questo_capitolo_in_poche_righe": "What changes in this phase — in a few lines",
       "il_perche_di_questa_direzione_materia_luce_atmosfe": "Why this direction — material, light, style, design language",
       "racconta_a_parole_tue_un_atmosfera_un_riferimento": "Tell us in your own words—an style, a reference, a feeling…"
     },
@@ -1263,7 +1263,7 @@
       "brightness": "Brightness",
       "caption": "Caption",
       "chapter": "Chapter",
-      "chapterPlaceholder": "e.g. Material style",
+      "chapterPlaceholder": "e.g. Hospitality · Warm woods",
       "color": "Color",
       "colors": "Colors",
       "contrast": "Contrast",
@@ -1691,7 +1691,7 @@
       "url_del_pin": "URL del pin",
       "stiamo_salvando_l_url_del_pin_scraping_automatico": "We're saving the pin URL. Automatic scraping—title, image, and description—will roll out in Phase P2 with the official Pinterest API integration.",
       "annulla": "Cancel",
-      "es_hospitality_emotion_material_atmosphere": "Es. Hospitality emotion · Material style",
+      "es_hospitality_emotion_material_atmosphere": "e.g. Hospitality · Warm woods",
       "perche_questo_riferimento_entra_nell_archivio": "Why does this reference belong in the archive?",
       "scegli_un_asset_dalla_library": "Select an asset from the Library"
     },

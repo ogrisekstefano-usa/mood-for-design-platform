@@ -21,16 +21,16 @@ const IntelligencePanel = ({ intelligence }) => {
   if (!intelligence) return null;
   const { warmth, recurring_atmospheres = [], dominant_materials = [], alignment = [] } = intelligence;
   return (
-    <aside className="mem-intel" data-testid="mem-intel-panel" aria-label="Relationship intelligence">
+    <aside className="mem-intel" data-testid="mem-intel-panel" aria-label="Account intelligence">
       <section className="mem-intel__section">
-        <span className="mem-intel__eyebrow">Relationship warmth</span>
+        <span className="mem-intel__eyebrow">Account warmth</span>
         <h3 className="mem-intel__line">{warmth?.label || 'Listening'}</h3>
         <p className="mem-intel__prose">{warmth?.lede}</p>
       </section>
 
       {recurring_atmospheres.length > 0 && (
         <section className="mem-intel__section">
-          <span className="mem-intel__eyebrow">Recurring atmospheres</span>
+          <span className="mem-intel__eyebrow">Recurring styles</span>
           <ul className="mem-intel__list" data-testid="mem-intel-atmos">
             {recurring_atmospheres.map((a, i) => (
               <li key={i} className="mem-intel__item">
@@ -82,13 +82,13 @@ const RelationshipMemoryTimeline = () => {
           <ArrowLeft size={16} strokeWidth={1.5} /> Back
         </button>
         <span className="mem-shell__crumb">
-          <Link to="/relations/leads">Client Relations™</Link> · Relationship Memory
+          <Link to="/relations/leads">CRM</Link> · Activity Log
         </span>
       </header>
 
       {loading && (
         <div className="mem-shell__loading" data-testid="mem-loading">
-          Opening the relationship's memory…
+          Caricamento attività…
         </div>
       )}
       {error && <div className="mem-shell__error" data-testid="mem-error">{error}</div>}
@@ -96,11 +96,11 @@ const RelationshipMemoryTimeline = () => {
       {!loading && !error && data && (
         <>
           <header className="mem-hero" data-testid="mem-hero">
-            <p className="mem-hero__eyebrow">RELATIONSHIP MEMORY™</p>
-            <h1 className="mem-hero__title">{data.subject?.name || 'A relationship'}</h1>
+            <p className="mem-hero__eyebrow">ACTIVITY LOG</p>
+            <h1 className="mem-hero__title">{data.subject?.name || 'Account'}</h1>
             <p className="mem-hero__sub">
               {(data.subject?.kind || 'lead').toUpperCase()} · {(data.subject?.locale_code || '—').toUpperCase()} ·
-              {' '}{data.event_count} captured moment{data.event_count === 1 ? '' : 's'}
+              {' '}{data.event_count} attività registrat{data.event_count === 1 ? 'a' : 'e'}
             </p>
           </header>
 
@@ -108,10 +108,10 @@ const RelationshipMemoryTimeline = () => {
             <main className="mem-chapters" data-testid="mem-chapters">
               {(!data.chapters || data.chapters.length === 0) ? (
                 <div className="mem-empty" data-testid="mem-empty">
-                  <p className="mem-empty__title">No memory yet.</p>
+                  <p className="mem-empty__title">Nessuna attività registrata.</p>
                   <p className="mem-empty__sub">
-                    The relationship hasn't spoken enough for chapters to form.
-                    Continue the interview to begin the editorial memory.
+                    Le attività di questo Account compariranno qui man mano che vengono registrate
+                    nel CRM.
                   </p>
                 </div>
               ) : (

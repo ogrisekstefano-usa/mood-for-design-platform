@@ -79,11 +79,11 @@
       "questo_asset_e_utilizzato_in": "Questo asset è utilizzato in",
       "rimuoverlo_senza_sostituirlo_lascera_spazi_vuoti_s": "Rimuoverlo senza sostituirlo lascerà spazi vuoti sulle superfici pubbliche.\n                Scegli un'azione consapevole.",
       "il_dam_ragiona_come_un_editorial_relationships_gra": "Il DAM ragiona come un editorial relationships graph, non come un file system.\n            Ogni rimozione produce conseguenze sulle superfici pubbliche.",
-      "carica_un_nuovo_file_tutte_le_relazioni_vengono_mi": "Carica un nuovo file. Tutte le relazioni vengono migrate automaticamente al nuovo asset. La versione vecchia resta nel version chain.",
+      "carica_un_nuovo_file_tutte_le_relazioni_vengono_mi": "Carica un nuovo file. Tutti i collegamenti vengono migrati automaticamente al nuovo asset. La versione precedente resta nel version chain.",
       "scegli_su_quali_superfici_aggiornare_l_asset_e_qua": "Scegli su quali superfici aggiornare l'asset e quali lasciare invariate. Utile per A/B test di immagini per mercato.",
-      "l_asset_viene_archiviato_non_piu_visibile_nella_li": "L'asset viene archiviato (non più visibile nella Library) ma le relazioni restano attive. Il pubblico continua a vedere questa immagine finché non la sostituisci.",
+      "l_asset_viene_archiviato_non_piu_visibile_nella_li": "L'asset viene archiviato (non più visibile nella Library) ma i collegamenti restano attivi. Il pubblico continua a vedere questa immagine finché non la sostituisci.",
       "apri_le_superfici_interessate": "Apri le superfici interessate",
-      "chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp": "Chiudi questo drawer e apri la tab Usage dell'Inspector per navigare manualmente ogni relazione."
+      "chiudi_questo_drawer_e_apri_la_tab_usage_dell_insp": "Chiudi questo drawer e apri la tab Usage dell'Inspector per gestire manualmente ogni collegamento."
     },
     "brand_mode": {
       "aggiungi_produttore": "Aggiungi produttore"
@@ -95,16 +95,16 @@
     "welcome": "Benvenuto"
   },
   "relationships": {
-    "eyebrow": "Relationship OS",
-    "title": "Relazioni",
+    "eyebrow": "CRM",
+    "title": "CRM",
     "subtitle": "La memoria condivisa dello studio — accounts, contatti, conversazioni, prossimi passi.",
     "searchPlaceholder": "Cerca per nome, email, città…",
     "viewTable": "Tabella",
     "viewKanban": "Kanban",
     "ctaNew": "Nuovo Lead",
-    "sidebarTitle": "Relazioni",
+    "sidebarTitle": "CRM",
     "filters": {
-      "all": "Tutte le relazioni",
+      "all": "Tutti i record",
       "new": "Nuove",
       "unassigned": "Non assegnate",
       "follow_up": "Da seguire",
@@ -122,7 +122,7 @@
       "lastActivity": "Ultima attività",
       "open": "Aperti",
       "owner": "Owner",
-      "emptyFiltered": "Nessuna relazione in questo filtro."
+      "emptyFiltered": "Nessun record in questo filtro."
     },
     "kanban": {
       "emptyColumn": "Vuoto"
@@ -150,7 +150,7 @@
       "stageChanged": "Stage aggiornato",
       "stageError": "Impossibile cambiare stage.",
       "actionError": "Errore aggiornamento azione.",
-      "loadingRelation": "Sto caricando la relazione…",
+      "loadingRelation": "Caricamento in corso…",
       "markDone": "Segna come fatto",
       "reopen": "Riapri"
     },
@@ -166,9 +166,9 @@
       "email": "Email",
       "phone": "Telefono",
       "notes": "Note iniziali (opzionale)",
-      "submit": "Crea relazione",
-      "successCreated": "Relazione creata.",
-      "errorCreate": "Impossibile creare la relazione.",
+      "submit": "Crea Lead",
+      "successCreated": "Lead creato.",
+      "errorCreate": "Impossibile creare il Lead.",
       "errorNameRequired": "Inserisci un nome account."
     },
     "loadingAccounts": "Sto leggendo la memoria dello studio…"
@@ -203,7 +203,7 @@
       }
     },
     "card": {
-      "chapter_active": "Capitolo attivo",
+      "chapter_active": "Fase attiva",
       "progress": "{done} su {total} capitoli approvati",
       "deposited_at": "Memoria depositata · {date}"
     },
@@ -212,7 +212,7 @@
         "title": "Pensieri condivisi"
       },
       "evolution": {
-        "title": "L'evoluzione del viaggio",
+        "title": "L'evoluzione del Design Journey",
         "empty_lede": "L'evoluzione del progetto verrà tracciata qui.",
         "empty_title": "Nessuna evoluzione",
         "eyebrow": "Evoluzione"
@@ -235,7 +235,7 @@
         "empty_hint_lede": "Quando il tuo studio aprirà un nuovo progetto, lo troverai qui.",
         "empty_hint_title": "In attesa del prossimo progetto",
         "empty_title": "Nessun progetto attivo",
-        "eyebrow": "Capitolo attivo"
+        "eyebrow": "Fase attiva"
       },
       "archive": {
         "empty_lede": "I capitoli approvati e archiviati appariranno qui.",
@@ -320,7 +320,7 @@
     "chapter": {
       "approved": "Approvato",
       "closed": "Chiuso",
-      "default": "Capitolo",
+      "default": "Fase",
       "in_progress": "In lavorazione",
       "presented": "Presentato",
       "revision_requested": "Revisione richiesta"
@@ -337,30 +337,30 @@
         "evening": "Buonasera"
       },
       "summary": {
-        "empty": "Nessun Journey è ancora vivo. Apri una conversazione progettuale per cominciare.",
-        "one": "{n} Journey vivo",
-        "many": "{n} Journey vivi",
-        "voices_today": "{n} voci ricevute oggi",
-        "chapters_waiting": "{n} capitoli in attesa",
+        "empty": "Nessun Design Journey attivo. Crea un Lead per iniziare.",
+        "one": "{n} Design Journey attivo",
+        "many": "{n} Design Journey attivi",
+        "voices_today": "{n} feedback ricevuti oggi",
+        "chapters_waiting": "{n} fasi in attesa",
         "revisions_open": "{n} revisioni aperte"
       },
       "sections": {
         "active": {
-          "eyebrow": "Sezione dominante",
-          "title": "I Journey vivi",
-          "empty": "Lo studio è in attesa del primo viaggio.",
-          "cta": "Inizia una conversazione progettuale"
+          "eyebrow": "Sezione principale",
+          "title": "Design Journey attivi",
+          "empty": "Nessun Design Journey attivo.",
+          "cta": "Crea un nuovo Lead"
         },
         "voices": {
-          "eyebrow": "Negli ultimi gesti",
-          "title": "Le voci di oggi"
+          "eyebrow": "Attività recenti",
+          "title": "Feedback di oggi"
         },
         "waiting": {
-          "eyebrow": "In attesa di voce",
-          "title": "Capitoli condivisi · ancora silenziosi"
+          "eyebrow": "In attesa di feedback",
+          "title": "Fasi condivise · in attesa di feedback"
         },
         "revisions": {
-          "eyebrow": "Una nuova direzione attende",
+          "eyebrow": "Da rivedere",
           "title": "Revisioni aperte"
         },
         "evolutions": {
@@ -368,17 +368,17 @@
           "title": "Ultime evoluzioni"
         },
         "silent": {
-          "eyebrow": "In silenzio",
-          "title": "Design Journey™ in attesa di una nuova voce"
+          "eyebrow": "Inattivi",
+          "title": "Design Journey™ inattivi"
         },
         "actions": {
-          "eyebrow": "Prossimi gesti progettuali",
-          "title": "Da dove puoi continuare"
+          "eyebrow": "Prossime azioni",
+          "title": "Dove ripartire"
         }
       },
       "card": {
-        "last_voice": "Ultima voce · {when}",
-        "opening": "In apertura"
+        "last_voice": "Ultimo feedback · {when}",
+        "opening": "In avvio"
       },
       "action": {
         "open_journey": "Apri il Journey",
@@ -399,8 +399,8 @@
       "mood_sta_iniziando_a_leggere_il_ritmo_del_tuo_stud": "MOOD sta analizzando l'attività dello studio.",
       "i_primi_suggerimenti_appariranno_con_l_utilizzo_re": "I primi suggerimenti appariranno con l'utilizzo reale della piattaforma.",
       "progetti_che_chiedono_la_tua_presenza": "Progetti che chiedono la tua presenza",
-      "le_relazioni_che_attendono_un_gesto": "Le relazioni che attendono un gesto",
-      "nessuna_relazione_raffreddata": "Nessuna relazione raffreddata.",
+      "le_relazioni_che_attendono_un_gesto": "Lead da contattare",
+      "nessuna_relazione_raffreddata": "Nessun Lead inattivo.",
       "nuova_moodboard": "Nuova moodboard",
       "tutti_gli_account": "Tutti gli account",
       "riprova": "Riprova",
@@ -419,7 +419,7 @@
       "attention_stale_pill": "Da riprendere",
       "attention_empty_title": "Nessun progetto richiede attenzione ora.",
       "attention_empty_hint": "I progetti convertiti dai lead appariranno qui.",
-      "relationship_eyebrow": "Relationship Engine™",
+      "relationship_eyebrow": "CRM Engine™",
       "relationship_empty_hint": "Quando un account passa giorni senza un gesto, apparirà qui.",
       "timeline_eyebrow": "Timeline operativa",
       "timeline_calendar_link": "Calendario",
@@ -521,7 +521,7 @@
     },
     "card": {
       "last_movement": "Ultimo movimento · {when}",
-      "continue_journey": "Continua il viaggio",
+      "continue_journey": "Continua il Design Journey",
       "for_client": "Per · {name}"
     },
     "empty": {
@@ -643,7 +643,7 @@
       "curated_by_mood": "Curato da MOOD"
     },
     "collection_form": {
-      "capitolo_editoriale": "Capitolo editoriale ·",
+      "capitolo_editoriale": "Sezione ·",
       "salvataggio": "Salvataggio",
       "salva_modifiche": "Salva modifiche",
       "aggiungi_collezione": "Aggiungi collezione",
@@ -691,8 +691,8 @@
       "linguaggio_progettuale_dello_studio": "Linguaggio progettuale dello studio",
       "in_attesa_di_riscontro_dal_cliente": "In attesa di riscontro dal cliente",
       "curatela_editoriale_non_raccomandazione_algoritmic": "Curatela editoriale — non raccomandazione algoritmica.",
-      "sto_leggendo_le_relazioni": "Sto leggendo le relazioni…",
-      "ancora_nessuna_affinita_curatoriale_rilevata": "Ancora nessuna affinità selezionata rilevata.",
+      "sto_leggendo_le_relazioni": "Caricamento in corso…",
+      "ancora_nessuna_affinita_curatoriale_rilevata": "Nessuna affinità di brand rilevata.",
       "product_gallery_visual_atelier": "Product Gallery™ · Visual Atelier",
       "atmosfera_in_lettura_curatoriale": "Stile in analisi",
       "salva_in_references": "Salva in References™",
@@ -700,7 +700,7 @@
       "feedback_title": "Riscontri dal cliente"
     },
     "studio_collections": {
-      "archivio_curatoriale_dello_studio": "Archivio selezionata dello studio",
+      "archivio_curatoriale_dello_studio": "Archivio dello studio",
       "nessuna_collezione_importata_inizia_caricando_un_c": "Nessuna collezione importata. Inizia caricando un catalogo fornitore.",
       "importa_il_primo_catalogo": "Importa il primo catalogo",
       "tutti_i_produttori_e_le_collezioni_che_lo_studio_h": "Tutti i produttori e le collezioni che lo studio ha aggiunto al proprio\n            registro."
@@ -775,7 +775,7 @@
       "apri_calendario": "Apri Calendario",
       "la_direzione_editoriale_globale_da_cui_nasceranno": "La direzione editoriale globale da cui nasceranno le Market Editions.",
       "scegli_il_mercato_di_destinazione_tono_cta_e_ritmo": "Scegli il mercato di destinazione. Tono, CTA e ritmo si adatteranno alla cultura locale.",
-      "una_frase_che_cattura_l_atmosfera_non_un_brief_tec": "Una frase che cattura l'stile, non un brief tecnico."
+      "una_frase_che_cattura_l_atmosfera_non_un_brief_tec": "Una frase che cattura lo stile, non un brief tecnico."
     },
     "public_preview": {
       "mercato_editoriale": "Mercato editoriale",
@@ -829,13 +829,13 @@
     },
     "advisor_edit": {
       "identita_contatti": "Identità & contatti",
-      "economia_della_relazione": "Economia della relazione",
-      "specializzazione_lettura_della_relazione": "Specializzazione & lettura della relazione",
+      "economia_della_relazione": "Modello di compenso",
+      "specializzazione_lettura_della_relazione": "Specializzazione & approccio",
       "annulla": "Annulla",
       "aree_di_rappresentanza_editoriale_cambi_sono_salva": "Aree di rappresentanza editoriale. Cambi sono salvati istantaneamente.",
       "chiudi": "Chiudi",
       "es_consigliere_architettura_partner_editoriale": "es. consigliere · architettura · partner editoriale",
-      "contesto_storia_sensibilita_della_relazione": "Contesto, storia, sensibilità della relazione…"
+      "contesto_storia_sensibilita_della_relazione": "Contesto, storia, approccio professionale…"
     },
     "advisor_network_admin": {
       "network_degli_advisor": "Rete Advisor",
@@ -929,21 +929,21 @@
       "una_sensazione_un_dettaglio_che_senti_piu_vicino_u": "Una sensazione, un dettaglio che senti più vicino, un riferimento\n          che vorresti condividere con il tuo studio.",
       "condividi_una_voce": "Condividi una voce",
       "aggiungi_un_riferimento": "Aggiungi un riferimento",
-      "condividi_una_atmosfera": "Condividi una stile",
+      "condividi_una_atmosfera": "Condividi uno stile",
       "aggiungi_una_nota": "Aggiungi una nota",
       "annulla": "Annulla",
       "chiudi": "Chiudi",
-      "url_di_un_immagine_che_racconta_l_atmosfera": "URL di un'immagine che racconta l'stile",
+      "url_di_un_immagine_che_racconta_l_atmosfera": "URL di un'immagine che racconta lo stile",
       "una_nota_privata_per_lo_studio_facoltativa": "Una nota privata per lo studio (facoltativa)"
     }
   },
   "crm": {
     "account_constellation": {
       "sezione_dominante": "Sezione dominante",
-      "nessun_journey_aperto_con_questa_relazione": "Nessun Journey aperto con questa relazione.",
+      "nessun_journey_aperto_con_questa_relazione": "Nessun Design Journey aperto per questo Account.",
       "apri_una_conversazione_progettuale_per_cominciare": "Apri una conversazione progettuale per cominciare.",
-      "le_persone_della_relazione": "Le persone della relazione",
-      "segnali_del_viaggio": "Segnali del viaggio",
+      "le_persone_della_relazione": "Contatti dell'Account",
+      "segnali_del_viaggio": "Attività recenti",
       "sto_leggendo_la_costellazione_relazionale": "Sto leggendo la costellazione relazionale…",
       "apri_il_journey": "Apri il Journey"
     },
@@ -955,7 +955,7 @@
       "nessuna_interazione_registrata": "Nessuna interazione registrata.",
       "files_allegati_arriva_con_il_media_library_inspect": "Files allegati arriva con il Media Library inspector.",
       "style_dna_non_ancora_compilato_per_questo_account": "Style DNA non ancora compilato per questo Account.",
-      "la_memoria_della_relazione_e_ancora_bianca": "La memoria della relazione è ancora bianca.",
+      "la_memoria_della_relazione_e_ancora_bianca": "Nessuna attività registrata per questo Account.",
       "registra_il_primo_contatto_una_call_una_nota_vocal": "Registra il primo contatto — una call, una nota vocale, una visita.",
       "materiali_preferiti": "Materiali preferiti",
       "collegate_a_questo_account_i_membri_del_team_appar": "collegate a questo Account.\n        I membri del Team appartengono alla sezione",
@@ -967,11 +967,11 @@
       "nessun_contatto_primario_aggiungi_al_drawer": "Nessun contatto primario · aggiungi al drawer",
       "aggiungi_un_account": "Aggiungi un Account",
       "annulla": "Annulla",
-      "le_relazioni_della_tua_casa_di_design": "Le relazioni della tua casa di design",
+      "le_relazioni_della_tua_casa_di_design": "Il CRM del tuo studio",
       "tutti_gli_stage": "Tutti gli stage",
       "tutti_i_tipi": "Tutti i tipi",
       "caricamento": "Caricamento…",
-      "sala_delle_relazioni": "Sala delle relazioni",
+      "sala_delle_relazioni": "CRM",
       "crea_account": "Crea Account",
       "account_centered_ogni_account_puo_avere_piu_contac": "Account-centered. Ogni Account può avere più Contact.\n          I membri del Team vivono in",
       "apri_il_primo_account": "Apri il primo Account",
@@ -982,9 +982,9 @@
       "due": "Scadenza",
       "no_due_date": "Senza scadenza",
       "empty": {
-        "accounts_lead": "Nessun Account ancora. Inizia a costruire la memoria delle tue relazioni.",
+        "accounts_lead": "Nessun Account registrato. Inizia a costruire il tuo CRM.",
         "other_lead": "Nessun {label} in questa vista.",
-        "accounts_hint": "Un Account è una relazione — un cliente, uno studio, una famiglia. I Contact sono le persone dentro quella relazione.",
+        "accounts_hint": "Un Account raggruppa il tuo business con un cliente, uno studio o una famiglia. I Contact sono le persone dentro quell'Account.",
         "other_hint": "Prova a cambiare tab o crea un nuovo Account per iniziare."
       },
       "lead_outside_team": "— non qui."
@@ -999,9 +999,9 @@
       "briefing_editoriale_angle_desiderato_vincoli": "Briefing editoriale — angle desiderato, vincoli…"
     },
     "relationship_graph": {
-      "tracciando_la_mappa_della_relazione": "Tracciando la mappa della relazione…",
-      "relationship_graph_mappa_editoriale": "Relationship Graph™ · mappa editoriale",
-      "dove_vive_la_relazione": "Dove vive la relazione",
+      "tracciando_la_mappa_della_relazione": "Caricamento mappa Account…",
+      "relationship_graph_mappa_editoriale": "CRM Network · Mappa Account",
+      "dove_vive_la_relazione": "Sede dell'Account",
       "nessun_progetto_moodboard_o_materiale_ancora_colle": "Nessun progetto, moodboard o materiale ancora collegato."
     },
     "stage_change": {
@@ -1068,7 +1068,7 @@
   },
   "journey": {
     "step_workspace": {
-      "capitolo_in_corso": "Capitolo in corso",
+      "capitolo_in_corso": "Fase in corso",
       "le_tracce_di_questo_passaggio": "Le tracce di questo passaggio"
     },
     "client_interaction_layer": {
@@ -1104,8 +1104,8 @@
       "le_direzioni_proposte": "Le direzioni proposte"
     },
     "step_context_header": {
-      "capitolo_precedente": "Capitolo precedente",
-      "capitolo_seguente": "Capitolo seguente",
+      "capitolo_precedente": "Fase precedente",
+      "capitolo_seguente": "Fase successiva",
       "posizione_nel_journey": "Posizione nel Journey"
     },
     "version_stack": {
@@ -1274,7 +1274,7 @@
       "borderWidth": "Spessore del bordo",
       "brightness": "Luminosità",
       "caption": "Didascalia",
-      "chapter": "Capitolo",
+      "chapter": "Fase",
       "chapterPlaceholder": "Es. Stile materica",
       "color": "Colore",
       "colors": "Colori",
@@ -1662,8 +1662,8 @@
       "lo_studio_che_ti_accompagna": "Lo studio che ti accompagna:",
       "l_atmosfera_che_cerchi": "Lo stile che cerchi",
       "il_modo_in_cui_vivi": "Il modo in cui vivi ·",
-      "capitolo_primo_brief_cliente": "Capitolo primo · Brief Cliente",
-      "forse_il_viaggio_e_stato_gia_archiviato_o_il_link": "Forse il viaggio è stato già archiviato — o il link è stato modificato.\n            Scrivi allo studio per ritrovarlo.",
+      "capitolo_primo_brief_cliente": "Step 1 · Brief Cliente",
+      "forse_il_viaggio_e_stato_gia_archiviato_o_il_link": "Forse il Design Journey è stato già archiviato — o il link è stato modificato.\n            Scrivi allo studio per ritrovarlo.",
       "il_tuo_design_journey_e_iniziato": "Il tuo Design Journey™ · è iniziato",
       "questo_e_il_tuo_design_journey_tutto_cio_che_condi": "Questo è il tuo Design Journey™. Tutto ciò che condivideremo da qui in\n          avanti vivrà in questo spazio — capitoli, stili, conversazioni.",
       "salva_questo_link_e_la_porta_del_tuo_design_journe": "Salva questo link — è la porta del tuo Design Journey.\n            Lo studio ti scriverà presto sulla mail che hai condiviso."
@@ -1703,7 +1703,7 @@
       "url_del_pin": "URL del pin",
       "stiamo_salvando_l_url_del_pin_scraping_automatico": "Stiamo salvando l'URL del pin. Scraping automatico (titolo · immagine · descrizione) arriverà in Fase P2 con l'integrazione Pinterest API ufficiale.",
       "annulla": "Annulla",
-      "es_hospitality_emotion_material_atmosphere": "Es. Hospitality emotion · Material atmosphere",
+      "es_hospitality_emotion_material_atmosphere": "Es. Hospitality · Legni caldi",
       "perche_questo_riferimento_entra_nell_archivio": "Perché questo riferimento entra nell'archivio?",
       "scegli_un_asset_dalla_library": "Scegli un asset dalla Library"
     },
@@ -2054,10 +2054,10 @@
   },
   "atelier_voice": {
     "curatorial_modal": {
-      "tray_eyebrow": "Tavolo selezionata",
+      "tray_eyebrow": "Tavolo riferimenti",
       "tray_empty_line1": "Marca i riferimenti più rilevanti.",
       "tray_empty_line2": "Saranno portati nel moodboard insieme.",
-      "head_eyebrow": "Tavolo selezionata · Inspirations™",
+      "head_eyebrow": "Tavolo riferimenti · Inspirations™",
       "head_title_lead": "Componi",
       "head_title_em": "riferimenti progettuali",
       "empty_lede": "Allarga stile, materialità o geografia per leggere altri linguaggi progettuali dello studio."
@@ -2083,7 +2083,7 @@
       "support_report": "Report di supporto"
     },
     "account_constellation": {
-      "people_eyebrow": "Compagni di viaggio",
+      "people_eyebrow": "Team del progetto",
       "memory_eyebrow": "Memoria progettuale",
       "memory_title": "Ciò che è già stato detto",
       "artifacts_title": "Ciò che è stato presentato"
@@ -2204,7 +2204,7 @@
         "inspiration_empty": "Nessuna citazione curata ancora.",
         "recent_activity_v2": "Attività recenti",
         "upcoming_milestones_v2": "Prossime scadenze",
-        "activity_empty_v2": "Nessuna attività registrata. Le attività appariranno qui quando inizierai a gestire relazioni e progetti.",
+        "activity_empty_v2": "Nessuna attività registrata. Le attività compariranno qui quando inizierai a gestire Lead e Design Journey.",
         "milestones_empty_v2": "Nessuna scadenza in arrivo. Le scadenze appariranno qui quando avrai una Journey attiva con milestone configurate.",
         "activity_empty_v3": "Nessuna attività registrata.",
         "milestones_empty_v3": "Nessuna scadenza in arrivo."
@@ -2262,7 +2262,7 @@
     },
     "loader": {
       "phrase_preparing_atelier": "Preparando il tuo atelier…",
-      "phrase_curating_atmosphere": "Curando l'stile…",
+      "phrase_curating_atmosphere": "Componendo lo stile…",
       "phrase_opening_chapter": "Aprendo il prossimo progetto…",
       "phrase_synchronizing_rhythm": "Sincronizzando il ritmo del progetto…",
       "phrase_listening_voices": "In ascolto delle voci dello studio…",
@@ -2270,7 +2270,7 @@
     },
     "media": {
       "eyebrow": "Atelier · Direzione media",
-      "title": "Componi l'stile.",
+      "title": "Componi lo stile.",
       "lede": "Carica, inquadra e gradua le immagini che respirano attraverso la tua dashboard. Ogni asset vive dentro l'atelier — nessun link esterno.",
       "drop_title": "Trascina un'immagine · o sfoglia",
       "drop_hint": "JPG · PNG · WebP — fino a 10 MB. Elaboriamo l'asset  e lo conserviamo dentro l'atelier.",

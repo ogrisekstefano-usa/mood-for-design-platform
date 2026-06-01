@@ -66,8 +66,8 @@ export default function CuratedCollectionDrawer({ onClose, onCreated }) {
             <p className="cc-drawer__eyebrow">Curated References™</p>
             <h3 className="cc-drawer__title"><em>{t('atelier_voice.curated_collection.new_collection', null, 'New collection')}</em></h3>
             <p className="cc-drawer__sub">
-              Un capitolo curatoriale del tuo atelier. Lo userai per organizzare
-              riferimenti per cliente, materia, mercato o atmosfera.
+              Una collezione del tuo studio. La userai per organizzare
+              riferimenti per cliente, materia, mercato o stile.
             </p>
           </div>
           <button

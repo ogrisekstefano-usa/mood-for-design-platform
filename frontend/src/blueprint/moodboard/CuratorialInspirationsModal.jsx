@@ -406,7 +406,7 @@ const CuratorialInspirationsModal = ({ open, onClose, moodboardId, onAddInspirat
           </div>
 
           <div className="ci-filter-group">
-            <p className="ci-filter-group__lbl">Atmosfera</p>
+            <p className="ci-filter-group__lbl">Stile</p>
             <div className="ci-pills">
               {ATMOSPHERE.map((a) => (
                 <button key={a} type="button"

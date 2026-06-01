@@ -55,7 +55,7 @@ const WorkspaceChip = () => {
 };
 
 // ── Primary CTA pill (RIGHT) ─────────────────────────────────────
-// ITER181.A · Smart CTA: routes to "Nuova Relazione" when no prospects yet,
+// ITER181.A · Smart CTA: routes to "Nuovo Lead" when no prospects yet,
 // to "Nuovo Design Journey™" (prospect path) when at least one prospect exists.
 const PrimaryCta = () => {
   const { t } = useBlueprint();

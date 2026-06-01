@@ -337,7 +337,7 @@ const BrandDetailPage = () => {
       <BrandFormModal open={editOpen} mode="edit" brand={brand} onClose={() => setEditOpen(false)} onSaved={() => reload()} />
 
       {/* Cinematic Delete Confirm (brand) */}
-      <ConfirmCinematicDialog open={confirmDel} title={`Rimuovere ${brand?.name || 'il produttore'} dall'atlante?`} body="Il produttore verrà rimosso dall'atlante curatoriale dello studio. Le collezioni e i moodboard associati restano archiviati." confirmLabel="Rimuovi produttore" tone="destructive" onConfirm={handleDelete} onClose={() => setConfirmDel(false)} testid="bd-delete-confirm" />
+      <ConfirmCinematicDialog open={confirmDel} title={`Rimuovere ${brand?.name || 'il produttore'} dal Brand Atlas™?`} body="Il produttore verrà rimosso dal Brand Atlas™ dello studio. Le collezioni e i moodboard associati restano archiviati." confirmLabel="Rimuovi produttore" tone="destructive" onConfirm={handleDelete} onClose={() => setConfirmDel(false)} testid="bd-delete-confirm" />
 
       {/* Collection form modal — create/edit */}
       <CollectionFormModal open={!!collForm} mode={collForm?.mode || 'create'} brand={brand} collection={collForm?.collection} onClose={() => setCollForm(null)} onSaved={() => reload()} />

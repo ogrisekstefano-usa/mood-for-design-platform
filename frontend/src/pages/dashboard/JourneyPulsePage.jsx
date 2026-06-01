@@ -1,12 +1,11 @@
 /**
- * JourneyPulsePage · Sprint G.4 — Studio Pulse™.
+ * JourneyPulsePage · Design Journey Overview.
  *
- * NON è analytics. NON è KPI. NON è BI.
- * È il ritmo progettuale dello studio: dove siamo, dove le voci attendono,
- * dove serve un capitolo, dove un viaggio respira in silenzio.
+ * Vista operativa per il team studio. Mostra Design Journey attivi,
+ * feedback ricevuti, fasi in attesa, revisioni aperte e prossime azioni.
  *
- * 7 sezioni: I Journey vivi · Le voci di oggi · Capitoli in attesa ·
- * Revisioni aperte · Ultime evoluzioni · Journey in silenzio · Prossimi gesti.
+ * 7 sezioni: Design Journey attivi · Feedback recenti · Fasi in attesa ·
+ * Revisioni aperte · Ultime evoluzioni · Journey inattivi · Prossime azioni.
  */
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';

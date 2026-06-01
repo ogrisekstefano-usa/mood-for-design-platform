@@ -180,7 +180,7 @@ const InlineEditorialRegia = ({
       <header className="ir-head">
         <div>
           <span className="ir-eyebrow">Regia immagine</span>
-          <h4 className="ir-title">Atmosfera editoriale</h4>
+          <h4 className="ir-title">Stile editoriale</h4>
         </div>
         <button type="button" className="ir-close" onClick={onClose}
                 data-testid="inline-regia-close" aria-label="Chiudi">

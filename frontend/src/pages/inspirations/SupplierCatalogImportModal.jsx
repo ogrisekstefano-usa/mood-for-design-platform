@@ -559,7 +559,7 @@ const AddBrandDrawer = ({
               <input className="scim-input" value={country} onChange={e => setCountry(e.target.value)} placeholder="IT, FR, DE…" maxLength={2} data-testid="add-brand-country" />
             </Field>
           </div>
-          <Field label="Positioning curatoriale">
+          <Field label="Posizionamento">
             <input className="scim-input" value={positioning} onChange={e => setPositioning(e.target.value)} placeholder="es. editorial luxury · design contemporaneo" data-testid="add-brand-positioning" />
           </Field>
           <Field label="Mercati principali">

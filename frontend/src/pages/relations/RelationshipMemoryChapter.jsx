@@ -54,7 +54,7 @@ const RelationshipMemoryChapter = ({ chapter, index }) => {
         <footer className="mem-chapter__foot">
           {atmospheres.length > 0 && (
             <ul className="mem-chapter__chips" data-testid={`mem-chapter-atmos-${key}`}>
-              <li className="mem-chapter__chips-label">atmospheres</li>
+              <li className="mem-chapter__chips-label">stili</li>
               {atmospheres.map((a, i) => (
                 <li key={i} className="mem-chapter__chip">{String(a).replace(/_/g, ' ')}</li>
               ))}

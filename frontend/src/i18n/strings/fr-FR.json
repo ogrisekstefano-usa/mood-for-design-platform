@@ -95,7 +95,7 @@
     "welcome": "Vous entrez dans l'atelier où la lumière dialogue avec la matière"
   },
   "relationships": {
-    "eyebrow": "Relationship OS",
+    "eyebrow": "CRM Workspace",
     "title": "Relations",
     "subtitle": "La mémoire partagée du studio — comptes, contacts, conversations, prochaines étapes.",
     "searchPlaceholder": "Rechercher par nom, email, ville…",
@@ -1002,7 +1002,7 @@
     "relationship_graph": {
       "dove_vive_la_relazione": "Là où s'écrit la relation dans sa durée, son épaisseur, sa mémoire sensible",
       "nessun_progetto_moodboard_o_materiale_ancora_colle": "Aucun projet, moodboard ou matière n'habite encore cet espace de relation.",
-      "relationship_graph_mappa_editoriale": "Relationship Graph™ · la cartographie du regard éditorial",
+      "relationship_graph_mappa_editoriale": "CRM Network · Carte des comptes",
       "tracciando_la_mappa_della_relazione": "Nous dessinons la géographie sensible de chaque relation, ligne après ligne, mémoire après mémoire"
     },
     "stage_change": {
@@ -1298,7 +1298,7 @@
       "borderWidth": "Épaisseur du trait qui encadre le regard",
       "brightness": "Intensité de la lumière, ou comment le regard ajuste la présence même de l'image",
       "caption": "Écriture visuelle accompagnant le regard",
-      "chapter": "Séquence visuelle\n\n\nThis rewrite transforms the Italian \"Capitolo\" (chapter) into \"Séquence visuelle\" (visual sequence), which:\n- Honors the editorial/narrative context of moodboard storytelling\n- Uses elevated French vocabulary appropriate for ultra-luxury creative tools\n- Avoids literal translation while preserving the segmentation/organization meaning\n- Fits the sensorial, atelier-focused voice (visual sequences as part of a creative récit)\n- Maintains similar brevity for UI field labeling",
+      "chapter": "Phase",
       "chapterPlaceholder": "Ex. Matière brute et présence lumineuse",
       "color": "Palette chromatique — le récit de la lumière et de la matière",
       "colors": "Palette sensorielle",
