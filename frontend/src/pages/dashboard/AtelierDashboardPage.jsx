@@ -24,10 +24,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useT, useBlueprint } from '../../contexts/BlueprintContext';
 import RelationshipLiveTimeline from '../../components/dashboard/RelationshipLiveTimeline';
 import PendingBookingsPanel from '../../components/booking/PendingBookingsPanel';
-import FirstMovesCards from '../../components/onboarding/FirstMovesCards';
 import { ActivationMeter, WorkspaceActivationChecklist } from '../../components/activation/ActivationMeter';
+import RecommendedActions from '../../components/activation/RecommendedActions';
 import { useActivationFoundation } from '../../hooks/useActivationFoundation';
-import { useGuidedTour } from '../../components/onboarding/GuidedTourProvider';
 import './atelier-dashboard.css';
 
 // ── Helpers ─────────────────────────────────────────────────────────
@@ -99,21 +98,16 @@ const statusLabel = (status, t) => {
 };
 
 // ── Hero ────────────────────────────────────────────────────────────
-const Hero = ({ config, counts, userName }) => {
+const Hero = ({ config, biz, userName }) => {
   const t = useT();
   const slot = greetSlot();
-  // i18n always wins; DB config is admin-override only (passed as fallback to t())
   const greeting = t(`atelier.dashboard.hero.greeting.${slot}`, null,
-    config?.[`hero_greeting_${slot}`] ||
-    (slot === 'morning' ? 'Good morning' : slot === 'afternoon' ? 'Good afternoon' : 'Good evening'));
-  const eyebrow = t('atelier.dashboard.hero.eyebrow', null,
-    config?.hero_eyebrow || 'Studio Pulse™ · Project Rhythm');
-  const signature = t('atelier.dashboard.hero.signature', null,
-    config?.hero_signature || "Let's shape beautiful spaces.");
+    slot === 'morning' ? 'Buongiorno' : slot === 'afternoon' ? 'Buon pomeriggio' : 'Buonasera');
+  const eyebrow = t('atelier.dashboard.hero.eyebrow_v2', null, 'Dashboard operativa');
   const summary = fillTemplate(
-    t('atelier.dashboard.hero.summary_template', null,
-      config?.hero_summary_template || '{active} Journeys unfolding · {voices} voices received today'),
-    { active: counts.active || 0, voices: counts.voices_today || 0 }
+    t('atelier.dashboard.hero.summary_template_v2', null,
+      '{leads} Lead · {prospects} Prospect · {journeys} Journey attive'),
+    { leads: biz.leads || 0, prospects: biz.prospects || 0, journeys: biz.active_journeys || 0 }
   );
 
   const heroSrc = config?.hero_media?.file_url;
@@ -132,25 +126,20 @@ const Hero = ({ config, counts, userName }) => {
         </h1>
 
         <p className="atd-hero__lede" data-testid="atelier-hero-lede">{summary}</p>
-        <p className="atd-hero__signature">{signature}</p>
 
         <div className="atd-hero__kpis" data-testid="atelier-hero-kpis">
-          <Kpi value={counts.active || 0}
-               label={t('atelier.dashboard.kpi.active_journeys', null,
-                        config?.kpi_active_label || 'Active Journeys')}
-               testid="kpi-active" />
-          <Kpi value={counts.chapters_waiting || 0}
-               label={t('atelier.dashboard.kpi.dossier_in_progress', null,
-                        config?.kpi_dossier_label || 'Dossier in progress')}
-               testid="kpi-chapters" />
-          <Kpi value={counts.voices_today || 0}
-               label={t('atelier.dashboard.kpi.awaiting_feedback', null,
-                        config?.kpi_awaiting_label || 'Awaiting feedback')}
-               testid="kpi-voices" />
-          <Kpi value={counts.revisions_open || 0}
-               label={t('atelier.dashboard.kpi.deliveries_week', null,
-                        config?.kpi_deliveries_label || 'Deliveries this week')}
-               testid="kpi-revisions" />
+          <Kpi value={biz.leads || 0}
+               label={t('atelier.dashboard.kpi.leads', null, 'Lead')}
+               testid="kpi-leads" />
+          <Kpi value={biz.prospects || 0}
+               label={t('atelier.dashboard.kpi.prospects', null, 'Prospect')}
+               testid="kpi-prospects" />
+          <Kpi value={biz.customers || 0}
+               label={t('atelier.dashboard.kpi.customers', null, 'Clienti')}
+               testid="kpi-customers" />
+          <Kpi value={biz.active_journeys || 0}
+               label={t('atelier.dashboard.kpi.active_journeys_v2', null, 'Journey attive')}
+               testid="kpi-active-journeys" />
         </div>
       </div>
 
@@ -253,7 +242,8 @@ const ActivityColumn = ({ title, events, t }) => (
   <section className="atd-panel" data-testid="atelier-col-activity">
     <h3 className="atd-panel__title">{title}</h3>
     {events.length === 0 ? (
-      <p className="atd-panel__empty">{t('atelier.dashboard.col.activity_empty', null, 'No movement yet.')}</p>
+      <p className="atd-panel__empty">{t('atelier.dashboard.col.activity_empty_v2', null,
+        'Nessuna attività registrata. Le attività appariranno qui quando inizierai a gestire relazioni e progetti.')}</p>
     ) : (
       <ul className="atd-feed">
         {events.slice(0, 4).map((e, i) => {
@@ -279,7 +269,8 @@ const MilestonesColumn = ({ title, milestones, t }) => (
   <section className="atd-panel" data-testid="atelier-col-milestones">
     <h3 className="atd-panel__title">{title}</h3>
     {milestones.length === 0 ? (
-      <p className="atd-panel__empty">{t('atelier.dashboard.col.milestones_empty', null, 'Awaiting the next chapter.')}</p>
+      <p className="atd-panel__empty">{t('atelier.dashboard.col.milestones_empty_v2', null,
+        'Nessuna scadenza in arrivo. Le scadenze appariranno qui quando avrai una Journey attiva con milestone configurate.')}</p>
     ) : (
       <ul className="atd-feed">
         {milestones.slice(0, 4).map((m, i) => {
@@ -304,38 +295,15 @@ const MilestonesColumn = ({ title, milestones, t }) => (
   </section>
 );
 
-const InspirationColumn = ({ title, quote, ambient, t }) => (
-  <section className="atd-panel atd-panel--inspiration" data-testid="atelier-col-inspiration">
-    <h3 className="atd-panel__title">{title}</h3>
-    {quote ? (
-      <figure className="atd-quote">
-        {ambient?.file_url && (
-          <img className="atd-quote__image"
-               src={ambient.file_url}
-               alt={ambient.alt_text || ''}
-               loading="lazy"
-               style={{ objectPosition:
-                 `${(ambient.focal_point_x * 100).toFixed(1)}% ${(ambient.focal_point_y * 100).toFixed(1)}%` }} />
-        )}
-        <div className="atd-quote__overlay" aria-hidden />
-        <figcaption className="atd-quote__caption">
-          <blockquote className="atd-quote__line">{quote.quote_text}</blockquote>
-          {quote.quote_author && <p className="atd-quote__author">— {quote.quote_author}</p>}
-        </figcaption>
-      </figure>
-    ) : (
-      <p className="atd-panel__empty">
-        {t('atelier.dashboard.col.inspiration_empty', null, 'No quote curated yet.')}
-      </p>
-    )}
-  </section>
-);
+const InspirationColumn = null; // ITER181.A · removed
+void InspirationColumn;
 
 // ── Main ────────────────────────────────────────────────────────────
 const AtelierDashboardPage = () => {
   const t = useT();
   const { locale } = useBlueprint();
   const { user } = useAuth();
+  const { data: afData } = useActivationFoundation();
   const userName = user?.first_name || user?.full_name?.split(' ')[0] || '';
 
   const [config, setConfig] = useState(null);
@@ -356,48 +324,33 @@ const AtelierDashboardPage = () => {
     return () => { alive = false; };
   }, [locale]);
 
-  const counts = pulse.counts || {};
+  const biz = afData?.business_counts || { leads: 0, prospects: 0, customers: 0, active_journeys: 0 };
   const projects = useMemo(() => (pulse.active_journeys || []).slice(0, 4), [pulse.active_journeys]);
   const recent   = useMemo(() => pulse.recent_evolutions || [], [pulse.recent_evolutions]);
   const milestones = useMemo(() => pulse.chapters_waiting || [], [pulse.chapters_waiting]);
 
-  // Show Start-Your-Atelier when the studio is silent (no journeys yet) OR
-  // when the guided tour was just completed/skipped — orientation moment.
-  const tour = useGuidedTour();
-  const showStartCards =
-    projects.length === 0 ||
-    tour.state?.status === 'completed' ||
-    tour.state?.status === 'skipped';
-
   return (
     <div className="atd-canvas" data-testid="atelier-dashboard">
-      <Hero config={config} counts={counts} userName={userName} />
+      <Hero config={config} biz={biz} userName={userName} />
 
       <ActivationFoundationCard />
 
-      {showStartCards && <FirstMovesCards />}
+      <RecommendedActions />
 
       <section className="atd-projects" data-testid="atelier-projects-section">
         <header className="atd-section__head">
           <h2 className="atd-section__title">
-            {t('atelier.dashboard.projects.title', null,
-               config?.section_projects_title || 'Journeys unfolding')}
+            {t('atelier.dashboard.projects.title_v2', null, 'Journey attive')}
           </h2>
           <Link to="/workspace/projects" className="atd-section__cta" data-testid="atd-see-all-projects">
-            {t('atelier.dashboard.projects.see_all', null,
-               config?.section_projects_cta || 'See all')}
+            {t('atelier.dashboard.projects.see_all', null, 'Vedi tutte')}
             <ArrowUpRight size={13} strokeWidth={1.6} />
           </Link>
         </header>
         {projects.length === 0 ? (
           <div className="atd-projects__empty" data-testid="atelier-projects-empty">
-            <p>{t('atelier.dashboard.projects.empty',
-                  null,
-                  'Your atelier is in silence. The next journey is waiting to begin.')}</p>
-            <Link to="/workspace/projects" className="atd-projects__empty-cta">
-              {t('atelier.dashboard.projects.empty_cta', null, 'Begin a new journey')}
-              <ArrowUpRight size={13} strokeWidth={1.6} />
-            </Link>
+            <p>{t('atelier.dashboard.projects.empty_v2', null,
+                  'Nessuna Journey attiva. Le Journey appariranno qui quando convertirai un Prospect.')}</p>
           </div>
         ) : (
           <div className="atd-projects__grid">
@@ -410,21 +363,13 @@ const AtelierDashboardPage = () => {
         )}
       </section>
 
-      <section className="atd-desk">
+      <section className="atd-desk atd-desk--2col">
         <ActivityColumn
-          title={t('atelier.dashboard.col.recent_activity', null,
-                   config?.section_activity_title || 'Recent activity')}
+          title={t('atelier.dashboard.col.recent_activity_v2', null, 'Attività recenti')}
           events={recent} t={t} />
         <MilestonesColumn
-          title={t('atelier.dashboard.col.upcoming_milestones', null,
-                   config?.section_milestones_title || 'Upcoming milestones')}
+          title={t('atelier.dashboard.col.upcoming_milestones_v2', null, 'Prossime scadenze')}
           milestones={milestones} t={t} />
-        <InspirationColumn
-          title={t('atelier.dashboard.col.daily_inspiration', null,
-                   config?.section_inspiration_title || 'Daily inspiration')}
-          quote={config?.inspiration_quote}
-          ambient={config?.inspiration_media}
-          t={t} />
       </section>
 
       {/* ITER150 · Sprint A · Real Relationship Engine™ — live polling 5s

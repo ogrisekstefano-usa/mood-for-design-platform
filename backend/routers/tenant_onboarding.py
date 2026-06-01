@@ -217,43 +217,53 @@ def dismiss(ctx: dict = Depends(get_tenant_context)):
 # Distinct from the legacy 8-step `_checklist` which targets full Studio Activation.
 
 def _activation_state(tenant_id: str) -> dict:
-    """Compute the 6-step Activation Foundation™ state from live data."""
+    """Compute the 5-step Activation Foundation™ state from live data.
+
+    ITER181.A · Foundation = WORKSPACE SETUP ONLY.
+    Lead/Prospect/Journey are *operational* activities and live in
+    "Recommended Actions" — they do NOT influence activation %.
+    """
     c = db()
     out = {
-        "identity":   {"done": False, "missing": []},
-        "blueprint":  {"done": False},
-        "team":       {"done": False},
-        "first_lead": {"done": False},
-        "first_prospect": {"done": False},
-        "first_journey":  {"done": False},
+        "identity":  {"done": False, "missing": []},
+        "blueprint": {"done": False},
+        "team":      {"done": False},
+        "market":    {"done": False, "missing": []},
+        "workspace": {"done": False, "missing": []},
     }
 
-    # Step 0 · Identity
+    # Step 0 · Identity (name + language + timezone)
+    name_val = ""
+    market_val = ""
+    language_val = ""
+    timezone_val = ""
     t = c.table("tenants").select(
         "id, name, default_language, default_locale_code, branding_settings"
     ).eq("id", tenant_id).limit(1).execute()
     if t.data:
         td = t.data[0]
         bs = td.get("branding_settings") or {}
-        name_ok     = bool((td.get("name") or "").strip())
-        market_ok   = bool((bs.get("primary_market") or "").strip())
-        language_ok = bool((td.get("default_language") or td.get("default_locale_code") or "").strip())
-        timezone_ok = bool((bs.get("timezone") or "").strip())
-        missing = []
-        if not name_ok:     missing.append("name")
-        if not market_ok:   missing.append("primary_market")
-        if not language_ok: missing.append("language")
-        if not timezone_ok: missing.append("timezone")
-        out["identity"] = {
-            "done": not missing,
-            "missing": missing,
-            "values": {
-                "name":           td.get("name") or "",
-                "primary_market": bs.get("primary_market") or "",
-                "language":       td.get("default_language") or td.get("default_locale_code") or "",
-                "timezone":       bs.get("timezone") or "",
-            },
-        }
+        name_val     = (td.get("name") or "").strip()
+        market_val   = (bs.get("primary_market") or "").strip()
+        language_val = (td.get("default_language") or td.get("default_locale_code") or "").strip()
+        timezone_val = (bs.get("timezone") or "").strip()
+
+    identity_missing = []
+    if not name_val:
+        identity_missing.append("name")
+    if not language_val:
+        identity_missing.append("language")
+    if not timezone_val:
+        identity_missing.append("timezone")
+    out["identity"] = {
+        "done": not identity_missing,
+        "missing": identity_missing,
+        "values": {
+            "name": name_val,
+            "language": language_val,
+            "timezone": timezone_val,
+        },
+    }
 
     # Step 1 · Blueprint Chameleon
     try:
@@ -269,30 +279,60 @@ def _activation_state(tenant_id: str) -> dict:
     out["team"]["done"] = (m.count or 0) >= 2
     out["team"]["count"] = m.count or 0
 
-    # Step 3 · First Lead
-    ld = c.table("leads").select("id", count="exact") \
-          .eq("tenant_id", tenant_id).limit(1).execute()
-    out["first_lead"]["done"] = (ld.count or 0) >= 1
-    out["first_lead"]["count"] = ld.count or 0
+    # Step 3 · Market — primary operational market
+    out["market"] = {
+        "done": bool(market_val),
+        "missing": [] if market_val else ["primary_market"],
+        "values": {"primary_market": market_val},
+    }
 
-    # Step 4 · First Prospect
+    # Step 4 · Workspace active — at least one configured project_type
+    workspace_done = False
     try:
-        pr = c.table("accounts").select("id", count="exact") \
-              .eq("tenant_id", tenant_id).eq("lifecycle_stage", "prospect").limit(1).execute()
-        out["first_prospect"]["done"] = (pr.count or 0) >= 1
-        out["first_prospect"]["count"] = pr.count or 0
+        p = c.table("projects").select("project_type", count="exact") \
+             .eq("tenant_id", tenant_id).limit(50).execute()
+        rows = p.data or []
+        workspace_done = any((r.get("project_type") or "").strip() for r in rows)
     except Exception:
-        out["first_prospect"]["done"] = False
+        workspace_done = False
+    out["workspace"] = {
+        "done": workspace_done,
+        "missing": [] if workspace_done else ["project_type"],
+    }
 
-    # Step 5 · First Journey
+    return out
+
+
+def _business_counts(tenant_id: str) -> dict:
+    """Live counts for the operational dashboard KPIs and Smart CTA.
+
+    Returns: {leads, prospects, customers, active_journeys}
+    """
+    c = db()
+    out = {"leads": 0, "prospects": 0, "customers": 0, "active_journeys": 0}
     try:
-        dj = c.table("design_journeys").select("id", count="exact") \
-              .eq("tenant_id", tenant_id).limit(1).execute()
-        out["first_journey"]["done"] = (dj.count or 0) >= 1
-        out["first_journey"]["count"] = dj.count or 0
+        r = c.table("leads").select("id", count="exact").eq("tenant_id", tenant_id).limit(1).execute()
+        out["leads"] = r.count or 0
     except Exception:
-        out["first_journey"]["done"] = False
-
+        pass
+    try:
+        r = c.table("accounts").select("id", count="exact") \
+             .eq("tenant_id", tenant_id).eq("lifecycle_stage", "prospect").limit(1).execute()
+        out["prospects"] = r.count or 0
+    except Exception:
+        pass
+    try:
+        r = c.table("accounts").select("id", count="exact") \
+             .eq("tenant_id", tenant_id).eq("lifecycle_stage", "customer").limit(1).execute()
+        out["customers"] = r.count or 0
+    except Exception:
+        pass
+    try:
+        r = c.table("design_journeys").select("id", count="exact") \
+             .eq("tenant_id", tenant_id).not_.in_("lifecycle_state", ["closed", "abandoned"]).limit(1).execute()
+        out["active_journeys"] = r.count or 0
+    except Exception:
+        pass
     return out
 
 
@@ -301,7 +341,7 @@ _AF_CATALOGUE = [
         "key": "identity",
         "ordinal": 0,
         "title": "Identità operativa",
-        "description": "Nome, mercato principale, lingua e timezone dello studio.",
+        "description": "Nome studio, lingua principale e timezone.",
         "cta_label": "Configura identità",
         "cta_route": "/settings/identity",
         "critical": True,
@@ -318,37 +358,28 @@ _AF_CATALOGUE = [
     {
         "key": "team",
         "ordinal": 2,
-        "title": "Invita il primo collaboratore",
-        "description": "Designer, project manager, sales o advisor.",
+        "title": "Team",
+        "description": "Invita il primo collaboratore (designer, project manager, sales).",
         "cta_label": "Invita un membro",
         "cta_route": "/settings/members",
         "critical": False,
     },
     {
-        "key": "first_lead",
+        "key": "market",
         "ordinal": 3,
-        "title": "Primo Lead",
-        "description": "Crea il primo contatto e apri la Discovery.",
-        "cta_label": "Apri Nuova Relazione",
-        "cta_route": "modal:new-relationship",
+        "title": "Mercato operativo",
+        "description": "Imposta il mercato principale dello studio (IT, EU, US, UK, Globale).",
+        "cta_label": "Configura mercato",
+        "cta_route": "/settings/identity",
         "critical": True,
     },
     {
-        "key": "first_prospect",
+        "key": "workspace",
         "ordinal": 4,
-        "title": "Primo Prospect qualificato",
-        "description": "Promuovi un Lead a Prospect via Discovery.",
-        "cta_label": "Vai ai Lead",
-        "cta_route": "/relations/leads",
-        "critical": True,
-    },
-    {
-        "key": "first_journey",
-        "ordinal": 5,
-        "title": "Prima Design Journey™",
-        "description": "Apri la prima Journey sul Prospect qualificato.",
-        "cta_label": "Apri Nuova Relazione",
-        "cta_route": "modal:new-relationship",
+        "title": "Workspace attivo",
+        "description": "Configura almeno un tipo di progetto (residenziale, retail, hospitality…).",
+        "cta_label": "Apri workspace",
+        "cta_route": "/workspace/projects",
         "critical": True,
     },
 ]
@@ -379,6 +410,7 @@ def get_activation_foundation(ctx: dict = Depends(get_tenant_context)):
     total = len(items)
     # First missing critical step (the "next action")
     next_critical = next((i for i in items if i["critical"] and not i["done"]), None)
+    business = _business_counts(tenant_id)
     return {
         "tenant_id": tenant_id,
         "items": items,
@@ -387,6 +419,7 @@ def get_activation_foundation(ctx: dict = Depends(get_tenant_context)):
         "progress": round((completed / total) * 100) if total else 0,
         "activated": completed == total,
         "next_action": next_critical,
+        "business_counts": business,
     }
 
 

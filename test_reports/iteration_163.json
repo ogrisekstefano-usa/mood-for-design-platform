@@ -1,0 +1,55 @@
+{
+  "summary": "ITER181.A Dashboard Refocus tested end-to-end. Backend: 8/8 pytest tests PASS — activation-foundation returns exactly 5 steps in order [identity, blueprint, team, market, workspace], no legacy keys (first_lead/first_prospect/first_journey), new business_counts payload present and well-typed (leads/prospects/customers/active_journeys=0 on seed tenant). POST /api/tenant-onboarding/identity idempotent and admin-gated. Frontend: dashboard refocus verified — new hero KPIs (kpi-leads, kpi-prospects, kpi-customers, kpi-active-journeys) present; legacy KPIs (kpi-active/chapters/voices/revisions) removed; FirstMovesCards section & all 5 legacy cards removed; new Recommended Actions block with all 5 cards present and clickable (register-lead → NewRelationshipModal opens, open-journey → modal opens); Activation Foundation checklist shows exactly 5 steps with no legacy keys; Inspiration column removed (only 2 cols remain); Smart-CTA topbar correctly shows 'Nuova Relazione' (data-testid=topbar-new-relationship-cta) since prospects=0; topbar-new-journey-cta absent as expected. Copy governance: 6 of 7 banned words absent — but 'Memoria in evoluzione' STILL appears on dashboard (sourced from /app/frontend/src/components/dashboard/RelationshipLiveTimeline.jsx:212).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "RelationshipLiveTimeline",
+        "issue": "Banned phrase 'Memoria in evoluzione' (locale=='it') still rendered on dashboard. Violates ITER181.A copy governance.",
+        "selector": "/app/frontend/src/components/dashboard/RelationshipLiveTimeline.jsx:212",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Dashboard (post-login)",
+        "issues": [
+          "Many missing i18n string keys flooding the console (it-IT locale): atelier.dashboard.projects.title_v2, atelier.dashboard.projects.empty_v2, atelier.dashboard.col.recent_activity_v2, atelier.dashboard.col.upcoming_milestones_v2, atelier.dashboard.col.activity_empty_v2, atelier.dashboard.col.milestones_empty_v2, atelier.dashboard.hero.eyebrow_v2, atelier.dashboard.hero.summary_template_v2, atelier.dashboard.kpi.leads, atelier.dashboard.kpi.prospects, atelier.dashboard.kpi.customers, atelier.dashboard.kpi.active_journeys_v2 — and many auth.login.* / auth.access.* keys on /login. Fallback text appears to render OK but i18n catalog is out of sync.",
+          "React warning repeated: 'Cannot update a component while rendering a different component.' Probably a setState during render in the Topbar/Hero CTA toggle or dashboard hero. Non-blocking but should be tracked.",
+          "Console errors: two 403 responses on dashboard load (network calls). Could not identify the endpoint from log; likely a permission-gated panel call. Doesn't break UX."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter181a_dashboard_refocus.py",
+    "/app/test_reports/pytest/iter181a_results.xml"
+  ],
+  "action_items": [
+    "Remove or refactor RelationshipLiveTimeline.jsx line 212 to drop the banned 'Memoria in evoluzione' label (replace with operative copy e.g. 'Cronologia relazione' / 'Timeline relazione').",
+    "Add the missing i18n keys to /app/frontend/src/i18n/strings/it-IT.json (or remap to existing keys): atelier.dashboard.kpi.{leads,prospects,customers,active_journeys_v2}, atelier.dashboard.hero.{eyebrow_v2,summary_template_v2}, atelier.dashboard.projects.{title_v2,empty_v2}, atelier.dashboard.col.{recent_activity_v2,upcoming_milestones_v2,activity_empty_v2,milestones_empty_v2}; also auth.login.* and auth.access.* on login screen.",
+    "Investigate React 'Cannot update a component while rendering' warning (likely setState in render path of Topbar SmartCTA or Hero KPI render).",
+    "Investigate the two 403 responses fired during dashboard hydration — identify the endpoint and decide if call is needed for this role."
+  ],
+  "critical_code_review_comments": [
+    "Backend tenant_onboarding.py _AF_CATALOGUE correctly defines 5 entries; _activation_state and _business_counts queries look minimal and parameterised — OK. business_counts uses live aggregation against accounts/journeys collections — verify indexes exist on (tenant_id, lifecycle_stage) and (tenant_id, status) for performance under load.",
+    "AtelierDashboardPage.jsx still imports/renders RelationshipLiveTimeline which contains a banned phrase — either remove the timeline from this page or update its copy to comply with copy governance.",
+    "Topbar PrimaryCta smart toggle correctly hides journey CTA when prospects=0 — verified via DOM count.",
+    "RecommendedActions component renders 5 cards with stable data-testids — good for QA.",
+    "I18n catalogue lags the v2 string-key migration: ~12+ keys missing on it-IT for dashboard alone. Fallbacks rendering but warnings pollute console and may surface raw keys in some browsers."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter181a_dashboard_refocus.py (NEW)"
+  ],
+  "success_rate": {"backend": "100% (8/8)", "frontend": "~93% (28/30 functional checks PASS; banned word leak + i18n keys missing)"},
+  "test_credentials": "admin@moodfordesign.com / Blueprint2024! (super_admin, tenant 848354b9-a43e-4147-bdad-116fb93bd585) — verified working.",
+  "seed_data_creation": "None — used existing seed tenant. Note: business_counts.prospects=0 on this tenant, so smart-CTA topbar toggle to 'Nuovo Design Journey™' could only be verified logically (via business_counts payload + topbar absence test). To physically exercise the switch, create a CRM account via POST /api/accounts with lifecycle_stage='prospect' and reload.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend 5-step Activation Foundation is solid. Frontend dashboard refocus structure is correct. Two follow-ups for next pass: (1) confirm banned-phrase fix in RelationshipLiveTimeline.jsx, (2) confirm i18n missing keys resolved. To validate smart-CTA topbar prospect>0 branch end-to-end, seed a prospect account first (POST /api/accounts {lifecycle_stage:'prospect'}) then refresh /dashboard and assert data-testid='topbar-new-journey-cta' present with label 'Nuovo Design Journey™' AND data-testid='topbar-new-relationship-cta' absent.",
+  "rca of the issue": "Banned phrase 'Memoria in evoluzione' is hard-coded as Italian literal in RelationshipLiveTimeline.jsx:212 inside a `locale === 'it' ? ... : ...` ternary. Since the seed tenant uses it-IT locale, the literal renders. Fix: replace literal with operative copy (e.g., 'Timeline relazione') OR remove the timeline section from AtelierDashboardPage if it is not part of the refocused dashboard. Reproduction: login admin@moodfordesign.com → /dashboard → inspect body innerText for 'memoria in evoluzione' (case-insensitive)."
+}

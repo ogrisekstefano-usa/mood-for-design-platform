@@ -55,25 +55,38 @@ const WorkspaceChip = () => {
 };
 
 // ── Primary CTA pill (RIGHT) ─────────────────────────────────────
-// ITER178 — was navigate('/begin-journey'); now opens Nuova Relazione™ modal.
-// /begin-journey remains the public site form; topbar CTA is studio-side.
+// ITER181.A · Smart CTA: routes to "Nuova Relazione" when no prospects yet,
+// to "Nuovo Design Journey™" (prospect path) when at least one prospect exists.
 const PrimaryCta = () => {
   const { t } = useBlueprint();
   let openModal = null;
   try {
-    // Lazy require to avoid hard coupling in storybook tests
     // eslint-disable-next-line global-require
     openModal = require('../../hooks/useNewRelationship').useNewRelationship().open;
   } catch (e) { /* noop */ }
+  let af = null;
+  try {
+    // eslint-disable-next-line global-require
+    af = require('../../hooks/useActivationFoundation').useActivationFoundation();
+  } catch (e) { /* noop */ }
+  const prospects = af?.data?.business_counts?.prospects || 0;
+  const isJourneyMode = prospects > 0;
+  const label = isJourneyMode
+    ? t('nav.new_journey', null, 'Nuovo Design Journey™')
+    : t('nav.new_relationship', null, 'Nuova Relazione');
+  const testid = isJourneyMode ? 'topbar-new-journey-cta' : 'topbar-new-relationship-cta';
   return (
     <button
       type="button"
       className="atelier-cta"
-      data-testid="topbar-new-relationship-cta"
-      onClick={() => openModal ? openModal() : window.location.assign('/relations/leads')}
+      data-testid={testid}
+      data-mode={isJourneyMode ? 'journey' : 'relationship'}
+      onClick={() => openModal
+        ? openModal(isJourneyMode ? { choice: 'prospect' } : null)
+        : window.location.assign('/relations/leads')}
     >
       <Plus size={13} strokeWidth={2} />
-      {t('nav.new_relationship', null, 'Nuova Relazione')}
+      {label}
     </button>
   );
 };
