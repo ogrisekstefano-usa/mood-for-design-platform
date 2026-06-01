@@ -42,7 +42,7 @@ async def pipeline(
         params["st"] = status
     async with AsyncSessionLocal() as s:
         rows = (await s.execute(text(f"""
-            # Need to fetch headquarter_region too
+            -- Need to fetch headquarter_region too
             SELECT sr.id, sr.studio_name, sr.contact_name, sr.contact_email,
                    sr.city, sr.country, sr.markets, sr.archetype, sr.locale, sr.status,
                    sr.assigned_advisor_id, sr.advisor_notes,

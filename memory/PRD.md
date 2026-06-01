@@ -1,7 +1,7 @@
 # MOOD for DESIGN™ — Product Requirements & Progress
 
-> **Versione**: 2026-05-31 · Aggiornato dopo Preview Deploy Pricing & Positioning Revision
-> **Stato globale**: Multi-fase. Hold P0 Supabase ancora attivo per `users`/`studio_requests`/`studio_relations`/`access_magic_links` (in attesa log dashboard utente).
+> **Versione**: 2026-06-01 · Aggiornato dopo Market Selection Refactor (Priority/Status + Region + SQL bugfix)
+> **Stato globale**: Studio V2 + Geografia commerciale READY_FOR_USER_ACCEPTANCE. Hold P0 Supabase ancora attivo (DB wipe 2026-05-30 in attesa log).
 
 ---
 
@@ -29,7 +29,8 @@ Founder ≠ Command Center user. Studio Request ≠ Tenant. Provisioning asincro
 ## Implementation Status
 
 ### ✅ COMPLETATO
-- **STUDIO MARKET SELECTION REFACTOR** (2026-06-01) — Step 02/05 ristrutturato in 3 sezioni: A·Operating Market (singolo) · B·Headquarter (Mapbox geocoder) · C·Target Countries (multi-select 245 paesi DB-driven). Migration 029a/b/c applicate. Drawer Command Center con sezione "Geografia commerciale". Report `STUDIO_MARKET_SELECTION_REFACTOR_REPORT.md` (READY_FOR_USER_ACCEPTANCE). Mapbox token in fallback (scope Geocoding da abilitare).
+- **STUDIO MARKET SELECTION REFACTOR — PRIORITY/STATUS + REGION** (2026-06-01, iterazione finale) — Step 02 con max 3 Target Countries, ognuno con `priority` (1-3 auto) e `status` (active|planned toggle). HQ con `headquarter_region` salvato (es. "Lombardia"). Drawer Command Center mostra chip target con priority+status. Migration 030 applicata. Bug-fix SQL `#`-comment in `tenant_activation.py`. E2E backend 12/12 passati (`scripts/e2e_studio_v2_full.py`). Report `STUDIO_MARKET_SELECTION_REFACTOR_REPORT.md`. Classificazione READY_FOR_USER_ACCEPTANCE.
+- **STUDIO MARKET SELECTION REFACTOR — Base** (2026-06-01) — Step 02/05 ristrutturato in 3 sezioni: A·Operating Market (singolo) · B·Headquarter (Mapbox geocoder) · C·Target Countries (multi-select 245 paesi DB-driven). Migration 029a/b/c applicate. Mapbox token in fallback (scope Geocoding da abilitare lato utente).
 - **STUDIO ACTIVATION FLOW V2** (2026-06-01) — Nuovo funnel pubblico `/studio` a 5 step DB-driven (categoria · paese · referente · aiuto · ricevuto). Zero foto reali, zero hardcoded, lifecycle V1 riutilizzato senza duplicazione. V1 quarantenato su `/studio-legacy`. Report `STUDIO_V2_IMPLEMENTATION_REPORT.md` (READY_FOR_USER_ACCEPTANCE).
 - Resend Production Go-Live (`no-reply@mail.moodfordesign.com`)
 - Tenant Lifecycle (validazione E2E)
